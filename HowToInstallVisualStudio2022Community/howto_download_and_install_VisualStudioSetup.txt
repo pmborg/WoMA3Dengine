@@ -4,4 +4,4 @@ https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Comm
 //And copy VisualStudioSetup.exe file to this directory: C:\WoMA3Dengine\InstallVisualStudio2022Community
 
 //Step-2:  and then Run
-InstallVisualStudioForDirectX.bat
+InstallVisualStudioForDirectX12.bat
