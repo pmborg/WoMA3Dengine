@@ -1,0 +1,607 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>World of Middle Age (WoMA) Tutorial file</title>
+	<script type="text/javascript" src="scripts/shCore.js"></script>
+	<script type="text/javascript" src="scripts/shBrushCpp.js"></script>
+	<link type="text/css" rel="stylesheet" href="styles/shCore.css"/>
+	<!--link type="text/css" rel="stylesheet" href="styles/shThemeDefault.css"/-->
+	<link type="text/css" rel="stylesheet" href="styles/pmborg.css"/>
+	
+	<script type="text/javascript">
+		SyntaxHighlighter.config.clipboardSwf = 'scripts/clipboard.swf';
+		SyntaxHighlighter.all();
+	</script>
+</head>
+
+<body>
+<h1>Tutorial CoreEngine 000 - OSENGINE SYSTEM</h1>
+<p>
+Copyright(C) 2013 - 2023 Pedro Miguel Borges &lt;pmborg@yahoo.com&gt;<br>
+This file is part of the WorldOfMiddleAge project.<br>
+<br>
+The WorldOfMiddleAge project files can not be copied or distributed for comercial use<br>
+without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]<br>
+You may not alter or remove any copyright or other notice from copies of the content.<br>
+The content contained in this file is provided only for educational and informational purposes.<br>
+</p>
+<hr>
+<h2>main.cpp</h2>
+<pre class="brush: cpp;">// -------------------------------------------------------------------------------------------------------------------------------------
+// Filename: main.cpp
+// --------------------------------------------------------------------------------------------
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// --------------------------------------------------------------------------------------------
+// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+//
+// This file is part of the WorldOfMiddleAge project.
+//
+// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
+// You may not alter or remove any copyright or other notice from copies of the content.
+// The content contained in this file is provided only for educational and informational purposes.
+// 
+// Downloaded from : http://woma.servegame.com
+// --------------------------------------------------------------------------------------------
+// PURPOSE: Entry point of all WoMA ENGINE Applications OS: WINDOWS
+// --------------------------------------------------------------------------------------------
+
+#include "OSengine.h"
+int Command = 0; //old Restart
+
+// -------------------------------------------------------------------------------------------------------------------------------------
+// SUBSYSTEM:CONSOLE
+// -------------------------------------------------------------------------------------------------------------------------------------
+int main(int argc, char* argv[])    // FOR: WOMA_CONSOLE_APPLICATION (LINUX or ANDROID or WINDOWS Console)
+{
+    OS_ENGINE_START(argc, argv);    // ENGINE SETUP:(DEBUG) Memory leaks check + Mini Dump + Log + Process Command Line Arg(s)
+    return ENGINE_RUN();            // ENGINE RETURN: to OS
+}
+
+// -------------------------------------------------------------------------------------------------------------------------------------
+// SUBSYSTEM:WINDOWS
+// -------------------------------------------------------------------------------------------------------------------------------------
+int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)    //FOR: WOMA_WIN32_APPLICATION
+{
+    OS_ENGINE_START(lpCmdLine, nShowCmd);   // START Memory leaks check + START: Mini-dumpper + START: Log + Process: Command Line Arg(s)
+    return ENGINE_RUN();                    // START Application
+}
+
+// -------------------------------------------------------------------------------------------------------------------------------------
+void OS_ENGINE_START(int argc, char* argv[])        //FOR: WOMA_CONSOLE_APPLICATION
+{
+    HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+    if (FAILED(hr)) WomaFatalException("CoInitializeEx Failed!");
+
+    START_OS_SYSTEM_KERNEL(argc, argv);
+}
+
+
+void OS_ENGINE_START(LPSTR pScmdline, int iCmdshow)	//FOR: WOMA_WIN32_APPLICATION
+{
+    WOMA::Scmdline = pScmdline;
+    WOMA::Cmdshow = iCmdshow;
+
+    char* argv[] = { NULL };
+    OS_ENGINE_START(0, argv);
+}
+
+// -------------------------------------------------------------------------------------------------------------------------------------
+int ENGINE_RUN()
+// -------------------------------------------------------------------------------------------------------------------------------------
+{
+    do {
+        Command = START_3D_ENGINE();	    // Run until the "GAME_EXIT" or do a "ENGINE_RESTART"
+        if (Command == ENGINE_RESTART)
+            Sleep(1000);
+    } while (Command == ENGINE_RESTART);	// New Setings from user?, restart the Engine with new seetings...
+
+    OS_ENGINE_STOP();                       // ENGINE STOP: RELEASE Mini Dump, CLOSE Log File & DELETE Temp Dir. (cache) files
+    return Command;                         // ENGINE RETURN: to OS
+}
+
+// -------------------------------------------------------------------------------------------------------------------------------------
+int START_3D_ENGINE()
+// -------------------------------------------------------------------------------------------------------------------------------------
+{
+    CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+    SYSTEM Sys(&WOMA::settings);        // NEW DX/WinSystemClass() 4OS + NEW ApplicationClass() + MyRegisterClass
+
+    if (!Sys.InitializeSystem())        // START Woma Engine + RUN SystemCheck + INIT GUI + 
+        return EXIT_FAILURE;            // START THREAD/Load all WoMA Engine "Objects"
+
+    return Sys.ApplicationMainLoop();   // RUN:  WIN32 MAIN LOOP: PROCESS FRAME (UPDATE & RENDER) FRAMES!
+}
+
+</pre>
+<hr>
+<h2>OSengine.cpp</h2>
+<pre class="brush: cpp;">// --------------------------------------------------------------------------------------------
+// Filename: OSengine.cpp
+// --------------------------------------------------------------------------------------------
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// --------------------------------------------------------------------------------------------
+// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+//
+// This file is part of the WorldOfMiddleAge project.
+//
+// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
+// You may not alter or remove any copyright or other notice from copies of the content.
+// The content contained in this file is provided only for educational and informational purposes.
+// 
+// Downloaded from : http://woma.servegame.com
+// --------------------------------------------------------------------------------------------
+// PURPOSE: START and STOP WorldOfMiddleAge 3D ENGINE
+// --------------------------------------------------------------------------------------------
+
+#include "main.h"
+#include "OSengine.h"
+
+WinSystemClass* SystemHandle = NULL;
+
+// WINDOWS vs LINUX
+// -------------------------------------------------------------------------------------------------------------------------------------
+// "C:\Program Files\APP_PROJECT_NAME\"										==> "/opt/APP_PROJECT_NAME"
+// "C:\Users\[username]\AppData\Local\APP_COMPANY_NAME\APP_PROJECT_NAME\"   ==> ~/.APP_COMPANY_NAME/APP_PROJECT_NAME
+// -------------------------------------------------------------------------------------------------------------------------------------
+namespace WOMA
+{
+	// SUBSYSTEM:WINDOWS
+	PSTR    Scmdline = { 0 };
+	int     Cmdshow = SW_SHOWDEFAULT;           //Useful when using: WOMA_CONSOLE_APPLICATION
+	// SUBSYSTEM:CONSOLE
+	int     ARGc = 0;
+	CHAR**	ARGv = { 0 };
+
+	TCHAR strConsoleTitle[MAX_STR_LEN] = { 0 };
+
+}
+
+// Global Public:
+UINT CLASS_LOAD_N = 1;
+UINT CLASS_DELETE_N = 1;
+
+namespace WOMA
+{
+
+int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption, bool yesORno)
+//----------------------------------------------------------------------------------
+{
+	TCHAR fullMsg[5000] = { 0 };
+	StringCchPrintf(fullMsg, sizeof(fullMsg), TEXT("[MessageBox] %s\n"), lpText);
+
+	{ HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_INTENSITY); }
+
+	WOMA_LOGManager_DebugMSGAUTO(fullMsg);
+	{ HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED); }
+
+	int res = 0;
+		res = MessageBox(NULL, lpText, lpCaption, (yesORno) ? MB_YESNO : MB_OK);
+
+	return res;
+}
+
+// --------------------------------------------------------------------------------------------
+// GLOBAL - MACROS:
+// --------------------------------------------------------------------------------------------
+#if !defined(_DEBUG) && defined(NDEBUG) // Get String of the Build Type: Debug / Release
+#define BUILD "RELEASE"
+#else
+#define BUILD "DEBUG"
+#endif
+
+#if defined _DEBUG && !defined NDEBUG	//_DEBUG;_CONSOLE
+	STRING BINARY = TEXT("DEBUG");
+#elif !defined _DEBUG && defined NDEBUG
+	STRING BINARY = TEXT("RELEASE");	//NDEBUG
+#else
+	STRING BINARY = TEXT("DBGREL");		//_DEBUG;NDEBUG
+#endif
+
+	int getTaskBarHeight()
+	{
+		RECT rect;
+		HWND taskBar = FindWindow(TEXT("Shell_traywnd"), NULL);
+		return (taskBar && GetWindowRect(taskBar, &rect)) ? (rect.bottom - rect.top) : 0;
+	}
+
+#if defined WINDOWS_PLATFORM && defined WOMA_CONSOLE_APPLICATION 
+	// "Console Window": Set handler:
+	static BOOL WINAPI console_ctrl_handler(DWORD dwCtrlType)
+	{
+		if (SystemHandle)
+			::PostMessage(NULL, WM_QUIT, 0, 0); // NOTE: (SystemHandle->m_hWnd) CANT be used!
+		return TRUE;
+	}
+#endif
+}
+
+void DefineConsoleTitle() 
+{
+	// -------------------------------------------------------------------------------------------
+	// SETUP: "Console Window":
+	// -------------------------------------------------------------------------------------------
+	TCHAR cpu_type[256] = { 0 };
+#if defined CPU_X86
+	_stprintf(cpu_type, TEXT("32 bits"));
+#elif defined X64
+	_stprintf(cpu_type, TEXT("64 bits"));
+#endif
+
+	TCHAR charSet[256] = { 0 };
+#if defined UNICODE
+	_stprintf(charSet, TEXT("UNICODE"));
+#else
+	_stprintf(charSet, TEXT("MultiByte"));
+#endif
+
+	StringCchPrintf(WOMA::strConsoleTitle, sizeof(WOMA::strConsoleTitle), TEXT("WOMA ENGINE Level: %d - %s [%s] %s\n"), CORE_ENGINE_LEVEL, charSet, WOMA::BINARY.c_str(), cpu_type);
+
+#if defined WOMA_CONSOLE_APPLICATION 
+	// "Console Window": Set handler:
+	SetConsoleCtrlHandler(WOMA::console_ctrl_handler, TRUE);
+
+	// "Console Window": Move away... :)
+	int Bar = WOMA::getTaskBarHeight();
+	HWND hConsole = GetConsoleWindow();
+	MoveWindow(hConsole, GetSystemMetrics(SM_CXSCREEN) - CONSOLE_LOG_WIDTH, 0, CONSOLE_LOG_WIDTH, GetSystemMetrics(SM_CYSCREEN) - Bar, TRUE);
+
+	// "Console Window": Set Title
+	SetConsoleTitle(TEXT("WOMA ENGINE - Console Window"));
+
+	LEVELHIGHLIGHT(CORE_ENGINE_LEVEL);
+	//Use printf: WOMA_LOGManager dont exist yet
+	_tprintf(TEXT("------------------------------------------------------------------------------------------\n"));
+	_tprintf(WOMA::strConsoleTitle);
+	_tprintf(TEXT("------------------------------------------------------------------------------------------\n"));
+#endif
+
+#ifdef UNICODE
+	OutputDebugStringW(TEXT("------------------------------------------------------------------------------------------\n"));
+	OutputDebugStringW(WOMA::strConsoleTitle);
+	OutputDebugStringW(TEXT("------------------------------------------------------------------------------------------\n"));
+#else
+	OutputDebugString(TEXT("------------------------------------------------------------------------------------------\n"));
+	OutputDebugString(WOMA::strConsoleTitle);
+	OutputDebugString(TEXT("------------------------------------------------------------------------------------------"));
+#endif
+
+	LEVELNORMAL();
+	OutputDebugString(TEXT("\n"));
+
+}
+
+void START_OS_SYSTEM_KERNEL(int argc, char* argv[])
+{
+
+	DefineConsoleTitle();
+
+	// Save Command Line Arguments to use later on
+#if defined WOMA_CONSOLE_APPLICATION  || !defined WINDOWS_PLATFORM
+	WOMA::ARGc = argc;
+	WOMA::ARGv = argv;
+
+#if defined WOMA_WIN32_APPLICATION && defined WINDOWS_PLATFORM 
+	// Convert WINDOWS CommandLine --> ARGc & ARGc:
+	WOMA::ARGv = CommandLineToArgvA(GetCommandLineA(), &WOMA::ARGc); // NOTE: CommandLine is allways CHAR
+#endif
+
+#endif
+
+	// [4] Set A Top level "Exception handler" for all Exceptions. Catch, Dump & Send Report WOMA ENGINE HOME using FTP!
+	// -------------------------------------------------------------------------------------------
+
+}
+
+void OS_ENGINE_STOP()
+{
+	CoUninitialize();
+
+}
+
+</pre>
+<hr>
+<h2>SystemClass.cpp</h2>
+<pre class="brush: cpp;">// --------------------------------------------------------------------------------------------
+// Filename: Systemclass.cpp
+// --------------------------------------------------------------------------------------------
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// --------------------------------------------------------------------------------------------
+// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+//
+// This file is part of the WorldOfMiddleAge project.
+//
+// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
+// You may not alter or remove any copyright or other notice from copies of the content.
+// The content contained in this file is provided only for educational and informational purposes.
+// 
+// Downloaded from : http://woma.servegame.com
+// --------------------------------------------------------------------------------------------
+//
+// PURPOSE: Define APIs for systemclass.cpp which is the common OS API
+//
+// --------------------------------------------------------------------------------------------
+#define _CRT_SECURE_NO_WARNINGS
+#pragma warning( disable : 4477 )
+#pragma warning( disable : 4838 )
+
+#include "SystemClass.h"
+#include "winSystemClass.h"
+#include "default_settings_xml.h"
+#include "OSengine.h"
+#include "woma_macros.h"
+
+
+SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
+{
+	// STARTING POINT of WOMA ENGINE!
+	CLASSLOADER();
+
+	AppSettings = NULL;
+
+}
+
+
+SystemClass::~SystemClass() { CLASSDELETE(); }
+
+void SystemClass::Shutdown()
+{
+
+	AppSettings = NULL;				// Pointer to Static object, no need to free.
+}
+
+</pre>
+<hr>
+<h2>winSystemClass</h2>
+<pre class="brush: cpp;">// --------------------------------------------------------------------------------------------
+// Filename: winSystemclass.cpp
+// --------------------------------------------------------------------------------------------
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// --------------------------------------------------------------------------------------------
+// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+//
+// This file is part of the WorldOfMiddleAge project.
+//
+// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
+// You may not alter or remove any copyright or other notice from copies of the content.
+// The content contained in this file is provided only for educational and informational purposes.
+// 
+// Downloaded from : http://woma.servegame.com
+// --------------------------------------------------------------------------------------------
+//
+// PURPOSE: Define APIs for winSystemClass.cpp which is the WINDOWS OS API
+//
+// --------------------------------------------------------------------------------------------
+
+#include "OSengine.h"
+
+//#include "winSystemClass.h" //#include "main.h" //LPCSTR
+
+/////////////////////
+// Windows GLOBALS //
+/////////////////////
+
+
+//----------------------------------------------------------------------------------
+WinSystemClass::WinSystemClass() : SystemClass() 
+//----------------------------------------------------------------------------------
+{
+	CLASSLOADER();
+	//public:
+	SystemHandle = this;
+	WinSystemClass_init();
+}
+
+//----------------------------------------------------------------------------------
+WinSystemClass::WinSystemClass(WOMA::Settings* appSettings): SystemClass() //	SystemClass::SystemClass() Will Run!
+//----------------------------------------------------------------------------------
+{
+	CLASSLOADER();
+
+	//public:
+	AppSettings		= appSettings; // Super
+	SystemHandle	= this;
+	WinSystemClass_init();
+}
+
+void WinSystemClass::WinSystemClass_init()
+{
+// --------------------------------------------------------------
+// Init Vars:
+// --------------------------------------------------------------
+
+}
+
+WinSystemClass::~WinSystemClass()
+{
+
+	Shutdown();
+	CLASSDELETE();
+	SystemHandle = NULL;
+}
+
+
+//extern int Res;
+bool WinSystemClass::InitializeSystem()
+//----------------------------------------------------------------------------
+{
+	//  NOTE: Constructors run, First!
+	//  SystemClass::SystemClass()				Run: 1st - OS common: low level
+	//	ApplicationClass::ApplicationClass()	Run: 2th - User: level
+	//	WinSystemClass::WinSystemClass()		Run: 3nd - This OS: hi-level (Check for another instance)
+
+	MessageBox(NULL, WOMA::strConsoleTitle, TEXT("WOMA Tutorial 000: Hello World!"), MB_OK);
+	Publish_Quit_Message();
+
+	return true;				// GREEN LIGHT: to Start Rendering! :)
+}
+
+
+//----------------------------------------------------------------------------
+int WinSystemClass::ApplicationMainLoop()		// [RUN] - MAIN "INFINITE" LOOP!
+//----------------------------------------------------------------------------
+{
+	MSG msg = { 0 };						// Reset msg
+
+	//DEBUG:
+	do
+	{
+		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))	// There is any OS messages to handle?
+		{
+			TranslateMessage(&msg); // TranslateMessage produces WM_CHAR messages only for keys that are mapped to ASCII characters by the keyboard driver.
+			DispatchMessage(&msg);  // Process Msg:  (INVOKE: WinSystemClass::MessageHandler)
+		}
+	} while (msg.message != WM_QUIT);
+
+	return S_OK;
+}
+
+void WinSystemClass::Shutdown()
+//----------------------------------------------------------------------------------
+{
+	// WinSystemClass Shutdown:
+	WOMA_LOGManager_DebugMSGAUTO ((TCHAR*)TEXT("WinSystemClass::Shutdown()\n"));
+
+	// Destroy Drivers:
+	SystemClass::Shutdown();
+
+	
+	ShutdownWindows();				// Shutdown the Main Window.
+}
+
+
+void WinSystemClass::ShutdownWindows()
+//----------------------------------------------------------------------------
+{
+
+}
+
+namespace WOMA
+{
+	extern TCHAR* getCurrentDir();
+}
+
+
+
+</pre>
+<hr>
+<h2>default_settings_xml</h2>
+<pre class="brush: cpp;">// --------------------------------------------------------------------------------------------
+// Filename: default_settings_xml.cpp
+// --------------------------------------------------------------------------------------------
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// --------------------------------------------------------------------------------------------
+// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+//
+// This file is part of the WorldOfMiddleAge project.
+//
+// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
+// You may not alter or remove any copyright or other notice from copies of the content.
+// The content contained in this file is provided only for educational and informational purposes.
+// 
+// Downloaded from : http://woma.servegame.com
+// --------------------------------------------------------------------------------------------
+// PURPOSE: SET DEFAULT: "Aplication Settings" (they will be overwritten by "settings.xml" in run-time)
+//
+// --------------------------------------------------------------------------------------------
+
+// --------------------------------------------------------------------------------------------
+// Includes:
+// --------------------------------------------------------------------------------------------
+#define _CRT_SECURE_NO_WARNINGS
+#include "OSengine.h"
+
+#include "default_settings_xml.h"			// Settings
+
+// --------------------------------------------------------------------------------------------
+// Global Aplication Settings: ("Release" build only, "Debug" use local files)
+// --------------------------------------------------------------------------------------------
+namespace WOMA
+{
+
+	UINT ENGINE_LEVEL_USED = 0;
+
+	// --------------------------------------------------------------------------------------------
+	// Driver Settings:
+	// --------------------------------------------------------------------------------------------
+	Settings settings =
+	{
+		NULL,		// LANGID id
+		//false,	// HaswellCPU
+		0,			// Endian (BIG_ENDIAN 0) & (LITTLE_ENDIAN 1)
+
+		// driver
+		// -------------------------------------------------------------------------------------------
+		-1,			// Use Woma Driver		{DRIVER_GL3=0, DRIVER_DX11};
+		0,			// USE MONITOR
+		false,		// UseAllMonitors
+		true,		// Use Double Buffering?
+		true,		// Start in VSYNC?		(TRUE: Benchmark | FALSE: Smooth)
+
+		true,	// MSAA_ENABLED?
+		0,		// MSAA_X: 0 = Autodetect best mode (Values: 1,2,4,8...)
+
+		//	Texture
+		// -------------------------------------------------------------------------------------------
+		1024,	// maxTexture Resolution Size
+		false,	// bilinear
+		false,	// trilinear
+		false,	// Anisotropic;
+		16,		// AnisotropicLevel
+
+		// screen
+		// -------------------------------------------------------------------------------------------
+		false,	// Start in FULLSCREEN?
+		false, 
+		0,		// PosX:		Note: 0 = (AUTO) Bottom Right Corner.
+		0,		// PosY			Note: 0 = (AUTO) Bottom Right Corner.
+		0,		// PosX_ori
+		0,		// PosY_ori
+		1280,	// WIN_WIDTH	Note: On Fullscreen WIN_WIDTH = SCREEN_RESOLUTION_WIDTH
+		1024,	// WIN_HEIGHT	Note: On Fullscreen WIN_HEIGHT = SCREEN_RESOLUTION_HEIGHT
+		1280,	// WIN_WIDTH_ori	
+		1024,	// WIN_HEIGHT_ori	
+		32,		// BITSPERPEL	16,24,32?
+
+		// -------------------------------------------------------------------------------------------
+		//  Camera:
+		0.1f,	// SCR_NEAR
+		512.0f, // SCR_DEPTH	(Depend of Computer Performance)
+
+		0,	//INIT_CAMX;
+		0,	//INIT_CAMY;
+		0,	//INIT_CAMZ;
+
+		0,	//INIT_ROTX;
+		0,	//INIT_ROTY;
+		0,	//INIT_ROTZ;
+
+	// ------------------------------------------------------------------------------------------
+	// FOG
+	1,
+	512,
+
+	// ------------------------------------------------------------------------------------------
+	// SOUND
+	true,	// Bk Music...
+	true,	// Sounding...
+
+	// ------------------------------------------------------------------------------------------
+	0,		// 800 SCREEN_RESOLUTION_WIDTH NOTE: 0 = Auto Detect
+	0,		// 600 SCREEN_RESOLUTION_HEIGHT NOTE: 0 = Auto Detect
+
+	// ------------------------------------------------------------------------------------------
+	// TODO: Networking...
+	false,
+	"012345678912345",// char only!
+	0,
+	};
+}
+</pre>
+</html>
+
