@@ -38,16 +38,26 @@
     <ClInclude Include="include\default_settings_xml.h" />
     <ClInclude Include="include\dumpUploader.h" />
     <ClInclude Include="include\fileLoader.h" />
+    <ClInclude Include="include\fpsClass.h" />
     <ClInclude Include="include\main.h" />
+    <ClInclude Include="include\Math3D.h" />
     <ClInclude Include="include\minidumperClass.h" />
     <ClInclude Include="include\OSengine.h" />
     <ClInclude Include="include\platform.h" />
+    <ClInclude Include="include\processorInfo.h" />
     <ClInclude Include="include\stackTrace.h" />
     <ClInclude Include="include\standard_platform.h" />
     <ClInclude Include="include\stateMachine.h" />
     <ClInclude Include="include\SystemClass.h" />
+    <ClInclude Include="include\systemFeatures.h" />
+    <ClInclude Include="include\systemManager.h" />
+    <ClInclude Include="include\timerClass.h" />
+    <ClInclude Include="include\TrigonometryMathClass.h" />
     <ClInclude Include="include\win32InputClass.h" />
+    <ClInclude Include="include\winCpuCores.h" />
+    <ClInclude Include="include\WindowPaintClass.h" />
     <ClInclude Include="include\winSystemClass.h" />
+    <ClInclude Include="include\wmiUtilClass.h" />
     <ClInclude Include="include\woma_exception.h" />
     <ClInclude Include="include\woma_macros.h" />
     <ClInclude Include="core_engine_level.h" />
@@ -57,31 +67,47 @@
     <ClInclude Include="include\OSmain_dir.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\0CheckOS.cpp" />
+    <ClCompile Include="src\1CheckSYS.cpp" />
+    <ClCompile Include="src\2UpdateOSifNeeded.cpp" />
+    <ClCompile Include="src\3CheckSetup.cpp" />
+    <ClCompile Include="src\4CheckEngineUpdates.cpp" />
+    <ClCompile Include="src\5LaunchEngine.cpp" />
+    <ClCompile Include="src\6OperatingSystem.cpp" />
+    <ClCompile Include="src\7ProcessorInfo.cpp" />
+    <ClCompile Include="src\8SystemFeatures.cpp" />
     <ClCompile Include="src\default_settings_xml.cpp" />
     <ClCompile Include="src\dumpUploader.cpp" />
     <ClCompile Include="src\fileLoader.cpp" />
+    <ClCompile Include="src\fpsClass.cpp" />
+    <ClCompile Include="src\Math3D.cpp" />
     <ClCompile Include="src\minidumperClass.cpp" />
     <ClCompile Include="src\OSengine.cpp" />
     <ClCompile Include="src\stackTrace.cpp" />
     <ClCompile Include="src\SystemClass.cpp" />
+    <ClCompile Include="src\TimerClass.cpp" />
+    <ClCompile Include="src\TrigonometryMathClass.cpp" />
     <ClCompile Include="src\win32InputClass.cpp" />
     <ClCompile Include="src\win32MainWindowEvents.cpp" />
     <ClCompile Include="src\win32PaintEvents.cpp" />
+    <ClCompile Include="src\winCpuCores.cpp" />
+    <ClCompile Include="src\WindowPaintClass.cpp" />
     <ClCompile Include="src\winSystemClass.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="src\language.cpp" />
     <ClCompile Include="src\log.cpp" />
     <ClCompile Include="src\mem_leak.cpp" />
     <ClCompile Include="src\OSmain_dir.cpp" />
+    <ClCompile Include="src\winWMIutilClass.cpp" />
     <ClCompile Include="src\woma_exception.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{30BDD9B8-4EB4-4A46-9060-B6CC4FCBFF45}</ProjectGuid>
+    <ProjectGuid>{B0041EC4-E72B-49B3-9F78-25F97B26553F}</ProjectGuid>
     <RootNamespace>CoreEngine</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>CoreEngine_003</ProjectName>
+    <ProjectName>CoreEngine_004</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

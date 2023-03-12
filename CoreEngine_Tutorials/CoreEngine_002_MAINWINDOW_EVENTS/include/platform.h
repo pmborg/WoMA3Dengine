@@ -330,7 +330,7 @@
 	// 64 bits WIN10 SDK + AVX2, VS2015: In Target Platform Windows 10 -> (Compile for DX12)
 	#if VER_PRODUCTMAJORVERSION >= 10 && _MSC_VER >= 1900
 		#ifndef WIN10
-			#define WIN10					// Target Windows: Window 10!
+			#define WIN10				// Target Windows: Window 10!
 		#endif
 	#endif
 
@@ -353,18 +353,18 @@
 	//DX9 can be selected
 	#ifndef WIN6x
 		#define WIN6x			// Target Windows: Vista, 7, 8 or 8.1
-		#define DX9 	can be selected 
+		#define DX9 			//can be selected 
 	#endif
 #endif
 #if VER_PRODUCTMAJORVERSION >= 10	// 64 bits WIN10 SDK + AVX2, VS2015: In Target Platform Windows 10 -> (Compile for DX12)
 	#if _MSC_VER >= 1900
 		// AVX2	 (i3/5/7 Haswell) = (Q2 2013) TARGET CODE: WIN10 64b+AVX2 API:DX12 (Level DX12.x)
 		#if (defined __AVX512F__ || defined __AVX512__ || defined __AVX__ || defined __AVX2__)
-			#define DX11	can be selected DX11.x, DX10.x and DX9.x
-			#define DX12	can be selected DX12.x
+			#define DX11	//can be selected DX11.x, DX10.x and DX9.x
+			#define DX12	//can be selected DX12.x
 		#else
 			#define DX9
-			#define DX11	can be selected DX11.x, DX10.x and DX9.x
+			#define DX11	//can be selected DX11.x, DX10.x and DX9.x
 		#endif
 	#endif
 #endif
