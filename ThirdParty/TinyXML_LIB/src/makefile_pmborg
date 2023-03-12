@@ -1,0 +1,140 @@
+# [XML]
+
+# sudo make ENGINE_LEVEL=0 PLAT=linux ARCH=x86 DEBUG=1
+
+# /cygdrive/c/WoMAengine2014/XML_LIB
+# Compile: mak
+
+include $(BUILD_STATIC_LIBRARY)
+
+#DEBUG ?= 1
+ifeq ($(DEBUG), 1)
+    DFLAGS =-g3 -DDEBUG
+else
+    DFLAGS=-DNDEBUG
+endif
+
+
+# --------------------------------------------------------------------------------------------------
+#Set Default Architecture (check: make help)
+ARCH := x86
+PLAT := linux
+
+NDK = /opt/android-ndk-r9d
+SYSROOT = $(TOOLCHAIN)/sysroot
+
+# --------------------------------------------------------------------------------------------------
+ifeq ($(PLAT),android)
+ifeq ($(ARCH),arm)
+	# Android: ARM
+	TOOLCHAIN = /tmp/ndk-arm
+	STRIP = $(TOOLCHAIN)/bin/arm-linux-androideabi-strip
+	GCC = $(TOOLCHAIN)/bin/arm-linux-androideabi-gcc
+	CFLAGS = $(DFLAGS) -DENGINE_LEVEL=$(ENGINE_LEVEL) -march=armv7-a -mfloat-abi=softfp -I$(SYSROOT)/usr/include -DARCH=arm
+else
+	# Android: x86
+	TOOLCHAIN = /tmp/ndk-x86
+	STRIP = $(TOOLCHAIN)/i686-linux-android/bin/strip
+	GCC = $(TOOLCHAIN)/i686-linux-android/bin/gcc
+	CFLAGS = $(DFLAGS) -DENGINE_LEVEL=$(ENGINE_LEVEL) -march=i686 -mtune=atom -mstackrealign -msse3 -mfpmath=sse -m32 -I$(SYSROOT)/usr/include -DARCH=x86
+endif
+else 
+	# LINUX: -m32 or -m64
+	GCC = g++ -m64
+	#GCC = g++ -m32
+	CFLAGS = $(DFLAGS) -DENGINE_LEVEL=$(ENGINE_LEVEL) -g -Wno-write-strings -fpermissive -DTIXML_USE_STL
+	#-Wall
+endif
+
+# -------------------------------------------------------------------------------------------------
+
+TARGET = libtinyxml
+#SOURCES := tinyxml.cpp tinystr.cpp tinyxmlparser.cpp tinyxmlerror.cpp
+SOURCES := $(wildcard *.cpp)
+
+OBJECTS=$(SOURCES:.cpp=.o)
+OBJS=$(addprefix $(PLAT)/,$(SOURCES:.cpp=.o))
+
+# --------------------------------------------------------------------------------------------------
+# Compile
+INCLUDES = -I ../../XML_LIB/include -I ../include -I ../../Woma/include -I ../../Launcher/include -I ../include/platform
+
+#CC = g++
+#
+#CFLAGS = -Wall -g -Wno-write-strings 
+#LIBS = `pkg-config --cflags --libs gtk+-2.0`
+#
+#.cpp.o:
+#	$(CC) $(CFLAGS) $(INCLUDES) $(LIBS) -c $< -o $@
+.cpp.o: $(OBJECTS)
+	@echo [COMPILING] 
+	@echo [ENGINE LEVEL] $(ENGINE_LEVEL)
+	@#echo SOURCES: (SOURCES)
+	@#echo OBJECTS: (OBJECTS)
+	@#echo OBJS: (OBJS)
+	@#echo
+	mkdir -p $(PLAT)
+ifeq ($(PLAT),android)
+	$(GCC) $(CFLAGS) $(INCLUDES) -I native_app_glue -I /usr/src/glm $(LIBS) -l log -l android -l EGL -l GLESv2 -c $< -o $(PLAT)/$@
+else
+	$(GCC) $(CFLAGS) $(INCLUDES) $(LIBS) `pkg-config --cflags --libs gtk+-2.0` -l X11 -l XML -L ../../WomaEngine/source -c $< -o $(PLAT)/$@
+endif
+
+# --------------------------------------------------------------------------------------------------
+# Link.LIB
+# --------------------------------------------------------------------------------------------------
+$(TARGET): $(OBJECTS)
+	@echo [LINK]
+	@#echo OBJS: (OBJS)
+	@#echo
+	ar rcs $(TARGET).a $(OBJS)
+
+# -----------------------------------------------------------------------------------------------
+# Default Targets:
+all: environment $(TOOLCHAIN) $(TARGET)
+
+clean:  
+	rm -f *.a $(PLAT)/*.o
+
+#run: $(EXECUTABLE)
+#	./$(EXECUTABLE)
+
+# -----------------------------------------------------------------------------------------------
+# Config Android ENV.
+
+environment:
+	@echo
+	@echo "NDK=$(NDK)"
+	@echo "SYSROOT=$(SYSROOT)"
+	@echo "GCC=$(GCC)"
+	@echo "PLAT=$(PLAT)"
+	@echo "ARCH=$(ARCH)"
+
+$(TOOLCHAIN):
+ifeq ($(ARCH),arm)
+	$(NDK)/build/tools/make-standalone-toolchain.sh --install-dir=$@
+else
+	$(NDK)/build/tools/make-standalone-toolchain.sh --toolchain=x86-4.8 --install-dir=$@
+endif
+
+# ------------------------------------------------------------------------------------------------
+# Help option
+# http://rico-studio.com/linux/cross-compiling-makefile-linux/
+
+help:
+	@echo
+	@echo "make ENGINE_LEVEL=[1..150] [PLAT=android | linux] [ARCH=arm | x86] [target]"
+	@echo
+	@echo "SAMPLES:"
+	@echo "sudo make                        (OS: Linux/Cygwin - CISC 686 processor)"
+	@echo "sudo make PLAT=android ARCH=arm  (OS: Android - RISC ARMv7 processor)"
+	@echo "sudo make PLAT=android           (OS: Android - CISC 686 processor)"
+
+
+depend:
+	#makedepend ${INCS} ${SRCS}
+
+tinyxml.o: tinyxml.h tinystr.h
+tinyxmlparser.o: tinyxml.h tinystr.h
+xmltest.o: tinyxml.h tinystr.h
+tinyxmlerror.o: tinyxml.h tinystr.h
