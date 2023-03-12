@@ -132,16 +132,16 @@
     <ExecutablePath>$(DXSDK_DIR)Utilities\Bin\x64;$(ExecutablePath);$(VSInstallDir)Common7/Tools</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(UniversalCRT_IncludePath)__;$(UniversalCRT_LibraryPath_x64)__;../ultimateTCP_IP/src;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);$(WindowsSdkDir)include;$(FrameworkSDKDir)\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);inc</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WDebug|Win32'">
-    <IncludePath>../../../_LIBS/Microsoft_DirectX_SDK_June_2010/Include;$(UniversalCRT_IncludePath)__;$(UniversalCRT_LibraryPath_x64)__;../ultimateTCP_IP/src;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);$(WindowsSdkDir)include;$(FrameworkSDKDir)\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);inc</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);\WoMA3Dengine\ThirdParty\ultimateTCP_IP_LIB\inc</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);inc</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);inc</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LibraryPath>$(LibraryPath);$(DXSDK_DIR)Lib\x86;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib;</LibraryPath>
@@ -176,10 +176,10 @@
     <ExecutablePath>$(DXSDK_DIR)Utilities\Bin\x64;$(ExecutablePath);$(VSInstallDir)Common7/Tools</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(DXSDK_DIR)Include;../ultimateTCP_IP/src;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);inc</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(DXSDK_DIR)Include;../ultimateTCP_IP/src;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);inc</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LibraryPath>$(DXSDK_DIR)Lib\x86;$(LibraryPath);$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib;</LibraryPath>

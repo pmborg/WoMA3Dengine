@@ -1,4 +1,7 @@
 @echo off
+del /S /F /Q .vs 2> nul
+rmdir /S /Q .vs 2> nul
+
 del /S /F /Q Release 2> nul
 rmdir /S /Q Release 2> nul
 
