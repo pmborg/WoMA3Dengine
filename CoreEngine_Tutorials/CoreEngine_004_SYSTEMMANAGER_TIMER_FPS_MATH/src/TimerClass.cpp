@@ -1,4 +1,4 @@
-// ----------------------------------------------------------------------------------------------
+﻿// ----------------------------------------------------------------------------------------------
 // Filename: timerClass.cpp
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
@@ -45,7 +45,7 @@ TimerClass::TimerClass()
 	Initialize();
 }
 
-TimerClass::~TimerClass() { CLASSDELETE(); }
+TimerClass::~TimerClass() {CLASSDELETE();}
 
 //The Initialize function will first query the system to see if it supports high frequency timers. 
 //If it returns a frequency then we use that value to determine how many counter ticks will occur each millisecond. 
@@ -55,7 +55,7 @@ bool TimerClass::Initialize()
 {
 	// Check to see if this system supports high performance timers.
 	QueryPerformanceFrequency((LARGE_INTEGER*)&m_frequency);
-	if (m_frequency == 0)
+	if(m_frequency == 0)
 	{
 		return false;
 	}
@@ -78,7 +78,7 @@ void TimerClass::Frame()
 {
 	float timeDifference;
 
-	QueryPerformanceCounter((LARGE_INTEGER*)&currentTime);
+	QueryPerformanceCounter((LARGE_INTEGER*)& currentTime);
 
 	timeDifference = (float)(currentTime - m_startTime);
 

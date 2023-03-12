@@ -1,12 +1,20 @@
-// --------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // Filename: wmiUtilClass.cpp
 // --------------------------------------------------------------------------------------------
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
 // --------------------------------------------------------------------------------------------
-// World of Middle Age  - 3D Multi-Platform ENGINE 2017
-//-------------------------------------------------------------------------------------------
-// code by : Pedro Borges - pmborg@yahoo.com
-// Downloaded from : https://github.com/pmborg/WoMA3Dengine
+// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
 //
+// This file is part of the WorldOfMiddleAge project.
+//
+// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
+// You may not alter or remove any copyright or other notice from copies of the content.
+// The content contained in this file is provided only for educational and informational purposes.
+// 
+// Downloaded from : https://github.com/pmborg/WoMA3Dengine
+// --------------------------------------------------------------------------------------------
+// PURPOSE:
 // --------------------------------------------------------------------------------------------
 
 #include "platform.h"
@@ -19,43 +27,43 @@
 using namespace std;	//endl
 #include <sstream>		//wstring
 
-wmiUtilClass::wmiUtilClass()
+wmiUtilClass::wmiUtilClass() 
 {
-    CLASSLOADER();
+	CLASSLOADER();
 
-    //public:
-    description = L"";
-    AdapterRAM = NULL;
-    AdapterDACType = L"";
+	//public:
+	description = L"";
+	AdapterRAM	= NULL;
+	AdapterDACType = L"";
 
-    totalMemoryCapacity = NULL;
+	totalMemoryCapacity = NULL;
 
-    //private:
+	//private:
     pLocator = NULL;
     pServices = NULL;
-
-#if DX_ENGINE_LEVEL >= 20 // Initializing Engine
+    
+	#if DX_ENGINE_LEVEL >= 20 // Initializing Engine
     GetVideoControllerInfoFromWMI();
-#endif
+	#endif
 }
 
-wmiUtilClass::~wmiUtilClass()
+wmiUtilClass::~wmiUtilClass() 
 {
-    SAFE_RELEASE(pServices);
+    SAFE_RELEASE (pServices);
     SAFE_RELEASE(pLocator);
     CoUninitialize();
 
-    CLASSDELETE();
+	CLASSDELETE();
 }
 
 // serialize constant value T to STRING
-template<typename T> inline STRING ToWideString(const T& X)
+template<typename T> inline STRING ToWideString(const T &X)
 {
-#ifdef UNICODE
+  #ifdef UNICODE
     std::wstringstream stream;
-#else
-    std::stringstream stream;
-#endif
+  #else
+	std::stringstream stream;
+  #endif
 
     stream << X;
     return stream.str();
@@ -71,14 +79,14 @@ bool wmiUtilClass::initWMI(STRING connectTo)
         return false;
 
     // Obtain initial locator to WMI.
-    if (FAILED(CoCreateInstance(CLSID_WbemLocator, NULL, CLSCTX_INPROC_SERVER, IID_IWbemLocator, reinterpret_cast<LPVOID*>(&pLocator))))
+    if (FAILED(CoCreateInstance(CLSID_WbemLocator, NULL, CLSCTX_INPROC_SERVER, IID_IWbemLocator, reinterpret_cast<LPVOID *>(&pLocator))))
     {
         CoUninitialize();
         return false;
     }
 
     // Connect to WMI.
-    if (FAILED(pLocator->ConnectServer(_bstr_t(connectTo.c_str()), NULL, NULL, NULL, NULL, NULL, NULL, &pServices)))
+	if (FAILED(pLocator->ConnectServer(_bstr_t(connectTo.c_str()), NULL, NULL, NULL, NULL, NULL, NULL, &pServices)))
     {
         SAFE_RELEASE(pLocator);
         CoUninitialize();
@@ -131,17 +139,15 @@ bool wmiUtilClass::GetCpuTemperature()
         NULL              // Reserved
     );
 
-    if (!pServices)
+    if (!pServices) 
         if (!initWMI(TEXT("ROOT\\WMI"))) // cimv2
-        {
-            WOMA::WomaMessageBox(TEXT("WARNING: GetCpuTemperature, failed!")); return false;
-        }
+			{ WOMA::WomaMessageBox(TEXT("WARNING: GetCpuTemperature, failed!")); return false; }
 
-    //WriteConsoleOutput(TEXT(""));
+	//WriteConsoleOutput(TEXT(""));
 
-    // You can use also:
-    // CMD LINE:	C:\WINDOWS\system32>wmic /namespace:\\root\wmi PATH MSAcpi_ThermalZoneTemperature get CurrentTemperature /value
-    // WIN APP:		%windir%\system32\wbem\wbemtest.exe
+	// You can use also:
+	// CMD LINE:	C:\WINDOWS\system32>wmic /namespace:\\root\wmi PATH MSAcpi_ThermalZoneTemperature get CurrentTemperature /value
+	// WIN APP:		%windir%\system32\wbem\wbemtest.exe
 
     // Request WMI data:
     IEnumWbemClassObject* pEnumerator = NULL;
@@ -155,49 +161,49 @@ bool wmiUtilClass::GetCpuTemperature()
         SAFE_RELEASE(pServices);
         SAFE_RELEASE(pLocator);
         CoUninitialize();
-        WOMA::WomaMessageBox(TEXT("WARNING: GetCpuTemperature, failed!"));
-        return false;
+        WOMA::WomaMessageBox(TEXT("WARNING: GetCpuTemperature, failed!")); 
+		return false;
     }
 
     VARIANT varProp;
-    ULONG uReturn = 0;
-    IWbemClassObject* pClassObj = NULL;
+	ULONG uReturn = 0;
+    IWbemClassObject *pClassObj = NULL;
 
-    while (pEnumerator != NULL)
+	while (pEnumerator != NULL)
     {
-        pEnumerator->Next(WBEM_INFINITE, 1, &pClassObj, &uReturn);
-        if (uReturn == 0)
-            break;
+		pEnumerator->Next(WBEM_INFINITE, 1, &pClassObj, &uReturn);
+		if (uReturn == 0)
+			break;
 
-        /*		[1]											  [2]	([3]	/[4] )
-                --------------------------------------------------------------------------------------------
-                ACPI\ThermalZone\CPUZ_0 | CurrentTemperature: 59.00 (59.00	/59.00)	<-- CPU TEMP
-                ACPI\ThermalZone\GFXZ_0 | CurrentTemperature: 0.00	(0.00	/0.00)	<-- GPU TEMP
-                ACPI\ThermalZone\EXTZ_0 | CurrentTemperature: 37.00 (37.00	/37.00)	<-- External FAN TEMP
-                ACPI\ThermalZone\LOCZ_0 | CurrentTemperature: 44.00 (44.00	/44.00)	<--
-                ACPI\ThermalZone\BATZ_0 | CurrentTemperature: 30.00 (30.00	/30.00) <-- Baterry TEMP
-                ACPI\ThermalZone\PCHZ_0 | CurrentTemperature: 114.00(114.00	/114.00)<-- Chipset motherboard Component TEMP
-                PCH is the chipset component of your motherboard.
-                It tends to run a bit hotter than processors, especially at idle.
-                Anything above 80 Celsius is considered high for chipsets
-                and beyond 90 Celsius is considered critical.
-        */
+/*		[1]											  [2]	([3]	/[4] )
+		--------------------------------------------------------------------------------------------
+		ACPI\ThermalZone\CPUZ_0 | CurrentTemperature: 59.00 (59.00	/59.00)	<-- CPU TEMP
+		ACPI\ThermalZone\GFXZ_0 | CurrentTemperature: 0.00	(0.00	/0.00)	<-- GPU TEMP
+		ACPI\ThermalZone\EXTZ_0 | CurrentTemperature: 37.00 (37.00	/37.00)	<-- External FAN TEMP
+		ACPI\ThermalZone\LOCZ_0 | CurrentTemperature: 44.00 (44.00	/44.00)	<-- 
+		ACPI\ThermalZone\BATZ_0 | CurrentTemperature: 30.00 (30.00	/30.00) <-- Baterry TEMP
+		ACPI\ThermalZone\PCHZ_0 | CurrentTemperature: 114.00(114.00	/114.00)<-- Chipset motherboard Component TEMP 
+		PCH is the chipset component of your motherboard. 
+		It tends to run a bit hotter than processors, especially at idle. 
+		Anything above 80 Celsius is considered high for chipsets
+		and beyond 90 Celsius is considered critical.
+*/
 
-        pClassObj->Get(L"InstanceName", 0, &varProp, NULL, NULL);			// 1 Teperature Description
-        std::wstring instanceName = varProp.bstrVal;
+		pClassObj->Get(L"InstanceName", 0, &varProp, NULL, NULL);			// 1 Teperature Description
+		std::wstring instanceName = varProp.bstrVal;
 
-        pClassObj->Get(L"CurrentTemperature", 0, &varProp, NULL, NULL);		// 2 CPU Temperature
-        int temp = (int)ConvertToCelsius(varProp.intVal);
+		pClassObj->Get(L"CurrentTemperature", 0, &varProp, NULL, NULL);		// 2 CPU Temperature
+		int temp = (int)ConvertToCelsius(varProp.intVal);
 
-        pClassObj->Get(L"MinReadable", 0, &varProp, NULL, NULL);			// 3 Min Read
+		pClassObj->Get(L"MinReadable", 0, &varProp, NULL, NULL);			// 3 Min Read
         int min_read = (int)ConvertToCelsius(varProp.intVal);
 
-        pClassObj->Get(L"MaxReadable", 0, &varProp, NULL, NULL);			// 4 Max read
+		pClassObj->Get(L"MaxReadable", 0, &varProp, NULL, NULL);			// 4 Max read
         int max_read = (int)ConvertToCelsius(varProp.intVal);
 
-        WOMA_LOGManager_DebugMSGW(L"%s | CurrentTemperature: %02.2f (Min: %02.2f / Max: %02.2f)\n",
-            instanceName.c_str(), temp, min_read, max_read);
-    }
+		WOMA_LOGManager_DebugMSGW(L"%s | CurrentTemperature: %02.2f (Min: %02.2f / Max: %02.2f)\n",
+		instanceName.c_str(), temp, min_read, max_read);
+	}
 
     SAFE_RELEASE(pServices);
     SAFE_RELEASE(pLocator);
@@ -212,11 +218,9 @@ bool wmiUtilClass::GetCpuTemperature()
 //
 bool wmiUtilClass::GetTotalPhysicalMemory()
 {
-    if (!pServices)
-        if (!initWMI(TEXT("ROOT\\CIMV2")))
-        {
-            WOMA::WomaMessageBox(TEXT("WARNING: GetTotalPhysicalMemory, failed!")); return false;
-        }
+    if (!pServices) 
+        if (!initWMI(TEXT("ROOT\\CIMV2"))) 
+			{ WOMA::WomaMessageBox(TEXT("WARNING: GetTotalPhysicalMemory, failed!")); return false; }
 
     // Request WMI data.
     IEnumWbemClassObject* pEnumerator = NULL;
@@ -230,37 +234,37 @@ bool wmiUtilClass::GetTotalPhysicalMemory()
         SAFE_RELEASE(pServices);
         SAFE_RELEASE(pLocator);
         CoUninitialize();
-        WOMA::WomaMessageBox(TEXT("WARNING: GetTotalPhysicalMemory, failed!"));
-        return false;
+        WOMA::WomaMessageBox(TEXT("WARNING: GetTotalPhysicalMemory, failed!")); 
+		return false;
     }
 
     VARIANT varProp;
 
-    IWbemClassObject* pClassObj = NULL;
+    IWbemClassObject *pClassObj = NULL;
     ULONG uReturn = 0;
 
-    while (pEnumerator != NULL)
+	while (pEnumerator != NULL)
     {
-        pEnumerator->Next(WBEM_INFINITE, 1, &pClassObj, &uReturn);
-        if (uReturn == 0)
-            break;
+		pEnumerator->Next(WBEM_INFINITE, 1, &pClassObj, &uReturn);
+		if (uReturn == 0)
+			break;
 
-        pClassObj->Get(L"Capacity", 0, &varProp, NULL, NULL);
-        std::wstring mem = varProp.bstrVal;
-        totalMemoryCapacity += (float)_wtof(mem.c_str()) / ((float)GBs);
-    }
+		pClassObj->Get(L"Capacity", 0, &varProp, NULL, NULL);
+		std::wstring mem = varProp.bstrVal;
+        totalMemoryCapacity += (float) _wtof(mem.c_str()) / ((float)GBs);
+	}
 
     SAFE_RELEASE(pServices);
     SAFE_RELEASE(pLocator);
     CoUninitialize();
 
-    if (totalMemoryCapacity == 0)
-    {
-        MEMORYSTATUSEX memInfo;
-        memInfo.dwLength = sizeof(MEMORYSTATUSEX);
-        GlobalMemoryStatusEx(&memInfo);
-        totalMemoryCapacity = memInfo.ullTotalPhys / ((float)GBs);
-    }
+	if (totalMemoryCapacity == 0)
+	{
+		MEMORYSTATUSEX memInfo;
+		memInfo.dwLength = sizeof(MEMORYSTATUSEX);
+		GlobalMemoryStatusEx(&memInfo);
+		totalMemoryCapacity = memInfo.ullTotalPhys / ((float)GBs);
+	}
 
     return true;
 }
@@ -268,11 +272,9 @@ bool wmiUtilClass::GetTotalPhysicalMemory()
 
 bool wmiUtilClass::GetSystemInfo()
 {
-    if (!pServices)
-        if (!initWMI(TEXT("ROOT\\CIMV2")))
-        {
-            WOMA::WomaMessageBox(TEXT("WARNING: GetTotalPhysicalMemory, failed!")); return false;
-        }
+    if (!pServices) 
+        if (!initWMI(TEXT("ROOT\\CIMV2"))) 
+			{ WOMA::WomaMessageBox(TEXT("WARNING: GetTotalPhysicalMemory, failed!")); return false; }
 
     // Request WMI data.
     IEnumWbemClassObject* pEnumerator = NULL;
@@ -286,30 +288,30 @@ bool wmiUtilClass::GetSystemInfo()
         SAFE_RELEASE(pServices);
         SAFE_RELEASE(pLocator);
         CoUninitialize();
-        WOMA::WomaMessageBox(TEXT("WARNING: GetSystemInfo, failed!"));
-        return false;
+        WOMA::WomaMessageBox(TEXT("WARNING: GetSystemInfo, failed!")); 
+		return false;
     }
 
     VARIANT varProp;
 
-    IWbemClassObject* pClassObj = NULL;
+    IWbemClassObject *pClassObj = NULL;
     ULONG uReturn = 0;
 
-    while (pEnumerator != NULL)
+	while (pEnumerator != NULL)
     {
-        pEnumerator->Next(WBEM_INFINITE, 1, &pClassObj, &uReturn);
-        if (uReturn == 0)
-            break;
+		pEnumerator->Next(WBEM_INFINITE, 1, &pClassObj, &uReturn);
+		if (uReturn == 0)
+			break;
 
-        pClassObj->Get(L"manufacturer", 0, &varProp, NULL, NULL);
-        std::wstring computerManufacturer = varProp.bstrVal;
+		pClassObj->Get(L"manufacturer", 0, &varProp, NULL, NULL);
+		std::wstring computerManufacturer = varProp.bstrVal;
 
-        pClassObj->Get(L"model", 0, &varProp, NULL, NULL);
-        std::wstring computerModel = varProp.bstrVal;
+		pClassObj->Get(L"model", 0, &varProp, NULL, NULL);
+		std::wstring computerModel = varProp.bstrVal;
 
-        WOMA_LOGManager_DebugMSGW(L"Motherboard Manufacture: %s\n", computerManufacturer.c_str());
-        WOMA_LOGManager_DebugMSGW(L"Motherboard Model: %s\n", computerModel.c_str());
-    }
+		WOMA_LOGManager_DebugMSGW(L"Motherboard Manufacture: %s\n", computerManufacturer.c_str());
+		WOMA_LOGManager_DebugMSGW(L"Motherboard Model: %s\n", computerModel.c_str());
+	}
 
     SAFE_RELEASE(pServices);
     SAFE_RELEASE(pLocator);
@@ -326,7 +328,7 @@ bool wmiUtilClass::GetSystemInfo()
 bool wmiUtilClass::GetVideoControllerInfoFromWMI()
 {
     if (!pServices)
-        if (!initWMI(TEXT("ROOT\\CIMV2")))
+        if (!initWMI(TEXT("ROOT\\CIMV2"))) 
             return false;
 
     // Request WMI data.
@@ -346,26 +348,26 @@ bool wmiUtilClass::GetVideoControllerInfoFromWMI()
     VARIANT varProp;
 
     //QUERY: Win32_VideoController
-    IWbemClassObject* pClassObj = NULL;
+    IWbemClassObject *pClassObj = NULL;
     ULONG uReturn = 0;
     pEnumerator->Next(WBEM_INFINITE, 1, &pClassObj, &uReturn);
-    pEnumerator->Release();
+	pEnumerator->Release();
 
-    HRESULT hr;
-    if (pClassObj)
-    {
-        hr = pClassObj->Get(L"Description", 0, &varProp, NULL, NULL);
-        description = varProp.bstrVal;
+	HRESULT hr;
+	if (pClassObj)
+	{
+		hr = pClassObj->Get(L"Description", 0, &varProp, NULL, NULL);
+		description = varProp.bstrVal;
 
-        hr = pClassObj->Get(L"AdapterRAM", 0, &varProp, NULL, NULL);
-        if (varProp.intVal > 0)
-            AdapterRAM = varProp.intVal / (MBs);
-        else
-            AdapterRAM = 0;
+		hr = pClassObj->Get(L"AdapterRAM", 0, &varProp, NULL, NULL);
+		if (varProp.intVal > 0)
+			AdapterRAM = varProp.intVal / (MBs);
+		else
+			AdapterRAM = 0;
 
-        hr = pClassObj->Get(L"AdapterDACType", 0, &varProp, NULL, NULL);
-        AdapterDACType = varProp.bstrVal;
-    }
+		hr = pClassObj->Get(L"AdapterDACType", 0, &varProp, NULL, NULL);
+		AdapterDACType = varProp.bstrVal;
+	}
     //pClassObj->Get(L"DriverDate", 0, &varProp, NULL, NULL);
     //pClassObj->Get(L"DriverVersion", 0, &varProp, NULL, NULL);
 
@@ -402,7 +404,7 @@ STRING wmiUtilClass::GetMonitorDescriptonFromWMI(DWORD iMonitor)
     // Try to compile a correct description.
     std::wstring description;
     DWORD iLoop = 0; // Monitor index is 1-based.
-    IWbemClassObject* pClassObj = NULL;
+    IWbemClassObject *pClassObj = NULL;
     while (pEnumerator != NULL)
     {
         ULONG uReturn = 0;
@@ -430,13 +432,13 @@ STRING wmiUtilClass::GetMonitorDescriptonFromWMI(DWORD iMonitor)
     CoUninitialize();
 
     // With a bit of luck this string was just built.
-#ifdef UNICODE
-    return description;
-#else
-    CHAR desc[MAX_STR_LEN] = { 0 };
-    WideCharToMultiByte(CP_ACP, 0, description.c_str(), -1, desc, MAX_STR_LEN, NULL, NULL); //Note: Cant use: wtoa
-    return desc;
-#endif
+	#ifdef UNICODE
+		return description;
+	#else
+		CHAR desc[MAX_STR_LEN] = { 0 };
+		WideCharToMultiByte(CP_ACP,0, description.c_str(),-1, desc, MAX_STR_LEN,NULL,NULL); //Note: Cant use: wtoa
+		return desc;
+	#endif
 }
 
 //	-------------------------------------------------------------------------------------------
@@ -454,7 +456,7 @@ STRING wmiUtilClass::GetMonitorDescription(HMONITOR hMonitor)
             dispDev.cb = sizeof(DISPLAY_DEVICE);
             EnumDisplayDevices(NULL, iDevNum, &dispDev, 0);
             ++iDevNum; // Incrementing here is right since we want a 1-based display.
-        } while (0 != _tcscmp(dispDev.DeviceName, monInfoEx.szDevice));
+        } while (0 != _tcscmp (dispDev.DeviceName, monInfoEx.szDevice));
 
         // Attempt to get the description from WMI.
         // If it's empty, carry on.
