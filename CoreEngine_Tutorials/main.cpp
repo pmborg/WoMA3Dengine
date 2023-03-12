@@ -19,7 +19,7 @@
 // --------------------------------------------------------------------------------------------
 
 #include "OSengine.h"
-int Command = 0; //old Restart
+int Command = 0;
 
 // -------------------------------------------------------------------------------------------------------------------------------------
 // SUBSYSTEM:CONSOLE
@@ -68,7 +68,7 @@ int ENGINE_RUN()
             Sleep(1000);
     } while (Command == ENGINE_RESTART);	// New Setings from user?, restart the Engine with new seetings...
 
-    OS_ENGINE_STOP();                       // ENGINE STOP: RELEASE Mini Dump, CLOSE Log File & DELETE Temp Dir. (cache) files
+    OS_ENGINE_STOP();                       // ENGINE STOP: RELEASE Mini Dump, CLOSE Log File and DELETE Temp Dir. (cache) files
     return Command;                         // ENGINE RETURN: to OS
 }
 
@@ -79,8 +79,7 @@ int START_3D_ENGINE()
     CoInitializeEx(nullptr, COINIT_MULTITHREADED);
     SYSTEM Sys(&WOMA::settings);        // NEW DX/WinSystemClass() 4OS + NEW ApplicationClass() + MyRegisterClass
 
-    if (!Sys.InitializeSystem())        // START Woma Engine + RUN SystemCheck + INIT GUI + 
-        return EXIT_FAILURE;            // START THREAD/Load all WoMA Engine "Objects"
+    if (!Sys.InitializeSystem())        // START Woma Engine + RUN SystemCheck + INIT GUI + START THREAD/Load all WoMA Engine "Objects"
 
     return Sys.ApplicationMainLoop();   // RUN:  WIN32 MAIN LOOP: PROCESS FRAME (UPDATE & RENDER) FRAMES!
 }
