@@ -41,12 +41,10 @@
 #endif
 
 #if CORE_ENGINE_LEVEL >= 4 && !defined GOTO_BASICS
-	#define USE_SYSTEM_CHECK
-	#define USE_TIMER_CLASS
-
-  //#ifdef RELEASE
-	#define USE_CHECK_IO
-  //#endif
+	#define USE_SYSTEM_CHECK	
+	#define USE_TIMER_CLASS		
+	#define ALLOW_LOADING_SPLASH
+	#define USE_CHECK_IO		//Check Mouse & Keyboard
 #endif
 
 #if CORE_ENGINE_LEVEL >= 5 && !defined GOTO_BASICS

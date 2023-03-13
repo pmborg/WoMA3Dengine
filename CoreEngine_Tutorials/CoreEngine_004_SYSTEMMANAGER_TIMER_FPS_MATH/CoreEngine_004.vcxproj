@@ -194,7 +194,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;../../ThirdParty/ultimateTCP_IP_LIB/inc</IncludePath>
-    <TargetName>CoreEngine_002</TargetName>
+    <TargetName>CoreEngine_004</TargetName>
     <LibraryPath>$(LibraryPath);\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_003_MINIDUMPER_STACK_EXCEPTION</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'">

@@ -16,7 +16,6 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Define/Activate techonology by levels
 // --------------------------------------------------------------------------------------------
-//------------------------------------------------------------------------------------------------------------
 #define DX_ENGINE_LEVEL 0
 #define CORE_ENGINE_LEVEL 4
 #define DEMO_TITLE TEXT("From now on: PRESS [F1] for: [SYSTEM MANAGER DISPLAY] and added FPS(title bar)")
@@ -41,7 +40,8 @@
 #endif
 
 #if CORE_ENGINE_LEVEL >= 4 && !defined GOTO_BASICS
-	#define USE_SYSTEM_CHECK
-	#define USE_TIMER_CLASS
+	#define USE_SYSTEM_CHECK	
+	#define USE_TIMER_CLASS		
+	#define ALLOW_LOADING_SPLASH
 	#define USE_CHECK_IO		//Check Mouse & Keyboard
 #endif

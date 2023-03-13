@@ -94,25 +94,6 @@
 	}\
 }
 
-/*
-	// DX & OPENGL3
-	#if (defined DX9 || defined DX11 || defined DX12) && defined OPENGL3
-		#define CREATE_MODEL_IF_NOT_EXCEPTION(model, model3D, castShadow, renderShadow) {\
-			if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) { model = NEW GLmodelClass(model3D); IF_NOT_THROW_EXCEPTION (model); } \
-			if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) { model = NEW DirectX::DXmodelClass(model3D, TRIANGLELIST, true, castShadow, renderShadow); IF_NOT_THROW_EXCEPTION (model); } \
-		}
-
-		#define SAFE_SHUTDOWN_MODEL(model) {\
-			if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) if (model) { (model)->Shutdown(); delete ((GLmodelClass*)model); model=NULL; } \
-			if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) if(model) { (model)->Shutdown(); delete ((DirectX::DXmodelClass*)model); model=NULL; } \
-		}\
-		/*\
-		#define CAMERA_RENDER(camera) {\
-			if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) ((GLopenGLclass*)m_Driver)->camera->Render(); \
-			if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) ((DX_CLASS*)m_Driver)->camera->Render(); \
-		}
-	#endif
-*/
 #pragma warning( pop )
 
 ////////////////////////////////////////////////////////////////////////////////

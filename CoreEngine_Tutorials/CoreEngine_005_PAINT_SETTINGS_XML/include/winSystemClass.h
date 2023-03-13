@@ -32,7 +32,7 @@
 
 #include <combaseapi.h>				// VC7: ships with updated headers: CoInitializeEx()
 
-#define WOMA_ENGINE_CLASS TEXT("WomaEngine2023")
+#define WOMA_ENGINE_CLASS TEXT("WoMA3Dengine")
 
 #define m_contextDriver NULL
 

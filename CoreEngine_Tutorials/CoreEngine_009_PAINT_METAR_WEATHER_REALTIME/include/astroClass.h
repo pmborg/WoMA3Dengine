@@ -115,5 +115,6 @@ double AstroClass::Calculate_UTC_SunEvent (bool rising)
     h is the "hour angle", in the local solar time.
     δ is the current declination of the Sun
     φ is the local latitude.
+}
 #endif
 

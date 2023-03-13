@@ -32,7 +32,6 @@
 	#include "winsystemclass.h"			// Are we a Windows Instance?
 
 #include "xml_loader.h"
-//#include "SystemPlatform.h"			// Get [SystemHandle] Pointer to System Class: WINDOWS, LINUX & ANDROID
 
 #if TUTORIAL_PRE_CHAP >= 72
 #include "../sound/soundClass.h" // To include SOUND3D

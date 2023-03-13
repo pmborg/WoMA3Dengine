@@ -89,7 +89,6 @@ TCHAR FileName[MAX_PATH];
 	return TRUE;
 }
 
-#if CORE_ENGINE_LEVEL >= 6 // ZIP PACK: engine dir
 void PackDir(STRING dir, STRING packName)
 {
 	int res = _tchdir(dir.c_str()); //_chdir
@@ -99,5 +98,4 @@ void PackDir(STRING dir, STRING packName)
 	IF_NOT_THROW_EXCEPTION(b);
 	CloseZip(hz);
 }
-#endif
 

@@ -199,7 +199,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include</IncludePath>
-    <TargetName>CoreEngine_002</TargetName>
+    <TargetName>CoreEngine_005</TargetName>
     <LibraryPath>$(LibraryPath);\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_005_PAINT_SETTINGS_XML\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'">
