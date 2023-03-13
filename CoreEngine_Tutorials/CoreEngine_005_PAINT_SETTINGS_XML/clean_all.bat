@@ -1,6 +1,4 @@
 @echo off
-del /S /F /Q REPORT.txt 2> nul
-
 del /S /F /Q .vs 2> nul
 rmdir /S /Q .vs 2> nul
 

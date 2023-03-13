@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------------------------------------
 #define DX_ENGINE_LEVEL 0
-#define CORE_ENGINE_LEVEL 4
-#define DEMO_TITLE TEXT("From now on: PRESS [F1] for: [SYSTEM MANAGER DISPLAY] and added FPS(title bar)")
+#define CORE_ENGINE_LEVEL 5
+#define DEMO_TITLE TEXT("From now on: PRESS [F6] for: [GAME SETUP] and added FILE: C:\\Users\\Public\\Documents\\<user>\\<core-level>\\<dx-level>\\settings.xml")
 //------------------------------------------------------------------------------------------------------------
 
 #if defined _DEBUG
@@ -14,7 +14,7 @@
 #endif
 
 #if CORE_ENGINE_LEVEL >= 2 && !defined GOTO_BASICS
-	
+
 #endif
 
 #if CORE_ENGINE_LEVEL >= 3 && !defined GOTO_BASICS
@@ -26,5 +26,13 @@
 #if CORE_ENGINE_LEVEL >= 4 && !defined GOTO_BASICS
 	#define USE_SYSTEM_CHECK
 	#define USE_TIMER_CLASS
-	#define USE_CHECK_IO		//Check Mouse & Keyboard
+
+  //#ifdef RELEASE
+	#define USE_CHECK_IO
+  //#endif
+#endif
+
+#if CORE_ENGINE_LEVEL >= 5 && !defined GOTO_BASICS
+	#define USE_TINYXML_LOADER	
+	#define CLIENT_SCENE_SETUP //USE_GAME_SYSTEM_SETTINGS
 #endif

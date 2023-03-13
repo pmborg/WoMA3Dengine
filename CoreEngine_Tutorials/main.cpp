@@ -79,7 +79,8 @@ int START_3D_ENGINE()
     CoInitializeEx(nullptr, COINIT_MULTITHREADED);
     SYSTEM Sys(&WOMA::settings);        // NEW DX/WinSystemClass() 4OS + NEW ApplicationClass() + MyRegisterClass
 
-    if (!Sys.InitializeSystem())        // START Woma Engine + RUN SystemCheck + INIT GUI + START THREAD/Load all WoMA Engine "Objects"
+    if (!Sys.InitializeSystem())        // START Woma Engine + RUN SystemCheck + INIT GUI
+        return EXIT_FAILURE;            // START THREAD/Load all WoMA Engine "Objects"
 
     return Sys.ApplicationMainLoop();   // RUN:  WIN32 MAIN LOOP: PROCESS FRAME (UPDATE & RENDER) FRAMES!
 }
