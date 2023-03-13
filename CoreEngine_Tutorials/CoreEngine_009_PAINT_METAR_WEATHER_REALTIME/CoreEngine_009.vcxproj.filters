@@ -1,0 +1,271 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\language.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\log.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mem_leak.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\OSmain_dir.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\platform.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\standard_platform.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\default_settings_xml.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\main.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\OSengine.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SystemClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\winSystemClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\woma_macros.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core_engine_level.h" />
+    <ClInclude Include="include\stateMachine.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\win32InputClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dumpUploader.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fileLoader.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\minidumperClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stackTrace.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\woma_exception.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fpsClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Math3D.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\processorInfo.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\systemFeatures.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\systemManager.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\timerClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TrigonometryMathClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\winCpuCores.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\WindowPaintClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wmiUtilClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\WomaSetupManager.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xml_loader.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ApplicationClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GLmathClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\idea.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\packManager.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\winCpuClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\astroClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\initWorld.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\metarClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\weatherClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="src\language.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\log.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mem_leak.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OSmain_dir.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\default_settings_xml.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OSengine.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SystemClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\winSystemClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\win32InputClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\win32MainWindowEvents.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\win32PaintEvents.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dumpUploader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fileLoader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\minidumperClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stackTrace.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\woma_exception.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\0CheckOS.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\1CheckSYS.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\2UpdateOSifNeeded.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\3CheckSetup.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\4CheckEngineUpdates.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\5LaunchEngine.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\6OperatingSystem.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\7ProcessorInfo.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\8SystemFeatures.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpsClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math3D.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TimerClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TrigonometryMathClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\winCpuCores.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\WindowPaintClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\winWMIutilClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xml_settings_loader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xml_settings_saver.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ApplicationClass_ext.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GLmathClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\idea.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\packManager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\winCpuClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\astroClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\initWorld.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MetarClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\WeatherClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoreEngine_007_PAINT_REALTIMECELESTIAL_ASTROCLASS\src\winWomaSetupManager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
