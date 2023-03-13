@@ -1,7 +1,20 @@
-////////////////////////////////////////////////////////////////////////////////
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
+// --------------------------------------------------------------------------------------------
 // Filename: GLmathClass.cpp
-////////////////////////////////////////////////////////////////////////////////
-//#if ENGINE_LEVEL >= 10
+// --------------------------------------------------------------------------------------------
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// --------------------------------------------------------------------------------------------
+// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+//
+// This file is part of the WorldOfMiddleAge project.
+//
+// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
+// You may not alter or remove any copyright or other notice from copies of the content.
+// The content contained in this file is provided only for educational and informational purposes.
+// 
+// Downloaded from : https://github.com/pmborg/WoMA3Dengine
+// --------------------------------------------------------------------------------------------
 
 #include "main.h" // CLASSLOADER
 #include "GLmathClass.h"
@@ -89,39 +102,6 @@ mat4 rotateZXY(const float angleX, const float angleY, const float angleZ){
 		cosX * sinY,                         sinX,           cosX * cosY,                       0,
 		0,                                   0,              0,                                 1);
 }
-
-/*
-mat4 GLmathClass::translation(float x, float y, float z)
-{
-	return mat4(1,0,0,0, 0,1,0,0, 0,0,1,0, x,y,z,1);
-}
-*/
-/*
-//OLD:
-void GLmathClass::MatrixTranslation(float* matrix, float x, float y, float z)
-{
-	matrix[0]  = 1.0f;
-	matrix[1]  = 0.0f;
-	matrix[2]  = 0.0f;
-	matrix[3]  = 0.0f;
-
-	matrix[4]  = 0.0f;
-	matrix[5]  = 1.0f;
-	matrix[6]  = 0.0f;
-	matrix[7]  = 0.0f;
-
-	matrix[8]  = 0.0f;
-	matrix[9]  = 0.0f;
-	matrix[10] = 1.0f;
-	matrix[11] = 0.0f;
-
-	matrix[12] = x;
-	matrix[13] = y;
-	matrix[14] = z;
-	matrix[15] = 1.0f;
-}
-*/
-
 mat4 operator * (const mat4 &mat1, const mat4 &mat2) 
 {
 	return mat4(
@@ -172,31 +152,3 @@ void MatrixTranspose(mat4* result, mat4* matrix)
 	return;
 }
 
-/*
-//OLD:
-void GLmathClass::MatrixMultiply(float* result, float* matrix1, float* matrix2)
-{
-	result[0]  = (matrix1[0] * matrix2[0]) + (matrix1[1] * matrix2[4]) + (matrix1[2] * matrix2[8]) + (matrix1[3] * matrix2[12]);
-	result[1]  = (matrix1[0] * matrix2[1]) + (matrix1[1] * matrix2[5]) + (matrix1[2] * matrix2[9]) + (matrix1[3] * matrix2[13]);
-	result[2]  = (matrix1[0] * matrix2[2]) + (matrix1[1] * matrix2[6]) + (matrix1[2] * matrix2[10]) + (matrix1[3] * matrix2[14]);
-	result[3]  = (matrix1[0] * matrix2[3]) + (matrix1[1] * matrix2[7]) + (matrix1[2] * matrix2[11]) + (matrix1[3] * matrix2[15]);
-
-	result[4]  = (matrix1[4] * matrix2[0]) + (matrix1[5] * matrix2[4]) + (matrix1[6] * matrix2[8]) + (matrix1[7] * matrix2[12]);
-	result[5]  = (matrix1[4] * matrix2[1]) + (matrix1[5] * matrix2[5]) + (matrix1[6] * matrix2[9]) + (matrix1[7] * matrix2[13]);
-	result[6]  = (matrix1[4] * matrix2[2]) + (matrix1[5] * matrix2[6]) + (matrix1[6] * matrix2[10]) + (matrix1[7] * matrix2[14]);
-	result[7]  = (matrix1[4] * matrix2[3]) + (matrix1[5] * matrix2[7]) + (matrix1[6] * matrix2[11]) + (matrix1[7] * matrix2[15]);
-
-	result[8]  = (matrix1[8] * matrix2[0]) + (matrix1[9] * matrix2[4]) + (matrix1[10] * matrix2[8]) + (matrix1[11] * matrix2[12]);
-	result[9]  = (matrix1[8] * matrix2[1]) + (matrix1[9] * matrix2[5]) + (matrix1[10] * matrix2[9]) + (matrix1[11] * matrix2[13]);
-	result[10] = (matrix1[8] * matrix2[2]) + (matrix1[9] * matrix2[6]) + (matrix1[10] * matrix2[10]) + (matrix1[11] * matrix2[14]);
-	result[11] = (matrix1[8] * matrix2[3]) + (matrix1[9] * matrix2[7]) + (matrix1[10] * matrix2[11]) + (matrix1[11] * matrix2[15]);
-
-	result[12] = (matrix1[12] * matrix2[0]) + (matrix1[13] * matrix2[4]) + (matrix1[14] * matrix2[8]) + (matrix1[15] * matrix2[12]);
-	result[13] = (matrix1[12] * matrix2[1]) + (matrix1[13] * matrix2[5]) + (matrix1[14] * matrix2[9]) + (matrix1[15] * matrix2[13]);
-	result[14] = (matrix1[12] * matrix2[2]) + (matrix1[13] * matrix2[6]) + (matrix1[14] * matrix2[10]) + (matrix1[15] * matrix2[14]);
-	result[15] = (matrix1[12] * matrix2[3]) + (matrix1[13] * matrix2[7]) + (matrix1[14] * matrix2[11]) + (matrix1[15] * matrix2[15]);
-}
-*/
-
-
-//#endif
