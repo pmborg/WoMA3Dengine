@@ -9,7 +9,7 @@
 #include <string>
 #include <sstream>
 #include <system_error>
-#include "../../libmaxminddb-main/include/maxminddb.h"
+#include "maxminddb.h"
 
 
 /** The entire GeoLite2++ library is encapsulated in the GeoLite2PP namespace to prevent namespace pollution.
