@@ -58,21 +58,21 @@
 	#endif
 
 	#if CORE_ENGINE_LEVEL >= 7
-		#define USE_ASTRO_CLASS     //CoreEngine_007 (PAINT RealTimeCelestial)		#if ENGINE_LEVEL >= 11
+		#define USE_ASTRO_CLASS     //CoreEngine_007 (PAINT RealTimeCelestial)		
 		#if CORE_ENGINE_LEVEL == 7
 			#define USE_NETWORK
 		#endif
 	#endif
 
 	#if CORE_ENGINE_LEVEL >= 8
-		#define USE_GPS_MAP			//CoreEngine_008 (PAINT RealTimeMapGPSPosition)	#if ENGINE_LEVEL >= 12
+		#define USE_GPS_MAP			//CoreEngine_008 (PAINT RealTimeMapGPSPosition)	
 		#if CORE_ENGINE_LEVEL == 8
 			#define USE_NETWORK
 		#endif
 	#endif
 
 	#if CORE_ENGINE_LEVEL >= 9
-		#define USE_METARCLASS		//CoreEngine_009 (PAINT RealTimeWeather)		#if ENGINE_LEVEL >= 13
+		#define USE_METARCLASS		//CoreEngine_009 (PAINT RealTimeWeather)		
 		#if CORE_ENGINE_LEVEL == 9
 			#define USE_NETWORK
 		#endif
