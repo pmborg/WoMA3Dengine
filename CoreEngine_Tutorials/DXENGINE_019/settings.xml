@@ -1,0 +1,4 @@
+<generalsettings>
+    <screen uiMonitor="0" fullScreen="false" posX="0" posY="0" width="1200" height="1000" allowResize="true" vsync="true" bitsPerPixel="32" />
+    <driver name="DX11" UseAllMonitors="false" useDoubleBuffering="true" msaa="false" />
+</generalsettings>
