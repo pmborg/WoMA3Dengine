@@ -10,9 +10,8 @@
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
 // 
-// Downloaded from : http://woma.servegame.com
-//
-// ********************************************************************************************
+// Downloaded from : https://github.com/pmborg/WoMA3Dengine
+// --------------------------------------------------------------------------------------------
 #pragma once
 
 // Globals GAME STATE: [NO RENDEING]

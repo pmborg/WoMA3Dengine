@@ -310,12 +310,4 @@ void PaintSplashScreen(HDC hdc)
     SelectObject(hdcMem, hbmOld);
     DeleteDC(hdcMem);
 
-	#if TUTORIAL_PRE_CHAP >= 7 // totalPackCounter --- 100%
-	TCHAR str[100];			   // packCounter  --- X
-	if (totalPackCounter > 0) 
-	{
-		StringCchPrintf(str, sizeof(str), TEXT("Loading: %d %%"), packCounter * 100 / totalPackCounter);
-		TextOut(hdc, 10, yPos, str, (int) _tcslen(str)); yPos += LineHeigth;
-	}
-	#endif
 }

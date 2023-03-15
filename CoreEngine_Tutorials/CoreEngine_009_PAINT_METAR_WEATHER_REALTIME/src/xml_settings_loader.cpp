@@ -44,10 +44,6 @@ generalsettings GenSettings;
 
 	TiXmlElement* child_screen = NULL;
 
-#if _NOT_ // ENGINE_LEVEL >= 30
-	camera cam;
-#endif
-
 // -------------------------------------------------------------------------------------------
 bool initAppicationSettings(TCHAR* filename) //Note: Have to be char
 // -------------------------------------------------------------------------------------------

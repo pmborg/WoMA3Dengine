@@ -28,8 +28,6 @@
 #include "GLmathClass.h"
 #include "GLopenGLclass.h"
 
-//#include "winSystemClass.h" //#include "main.h" //LPCSTR
-
 #include "mem_leak.h"
 #include "OSmain_dir.h"
 #include "language.h"
@@ -179,8 +177,8 @@ bool WinSystemClass::InitializeSystem()
 	IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 
 	InitializeSetupScreen(10, 10);					//SETUP SCREEN: F1,F2,F3,F4
 
-		if (AppSettings->DRIVER == DRIVER_GL3)
-			IF_NOT_RETURN_FALSE(newDriver());
+	if (AppSettings->DRIVER == DRIVER_GL3)
+		IF_NOT_RETURN_FALSE(newDriver());
 
 	IF_NOT_RETURN_FALSE(ApplicationInitMainWindow());		// CREATE: The/all "MainWindow(s) + INIT DX/GL "rendering-device"
 
@@ -409,7 +407,7 @@ void WinSystemClass::ShutdownWindows()
 		int errcode = GetLastError();
 		TCHAR   lpBuffer[256] = _T("?");
 		if (errcode != 0)									// Don't want to see a "operation done successfully" error ;-)
-			::FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,		// It�s a system error
+			::FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,		// It's a system error
 				NULL,										// No string to be formatted needed
 				errcode,									// Hey Windows: Please explain this error!
 				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),	// Do it in the standard language

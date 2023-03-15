@@ -32,7 +32,6 @@
 	#include "winsystemclass.h"			// Are we a Windows Instance?
 
 #include "xml_loader.h"
-//#include "SystemPlatform.h"			// Get [SystemHandle] Pointer to System Class: WINDOWS, LINUX & ANDROID
 
 #if TUTORIAL_PRE_CHAP >= 72
 #include "../sound/soundClass.h" // To include SOUND3D
@@ -44,10 +43,6 @@
 generalsettings GenSettings;
 
 	TiXmlElement* child_screen = NULL;
-
-#if _NOT_ // ENGINE_LEVEL >= 30
-	camera cam;
-#endif
 
 // -------------------------------------------------------------------------------------------
 bool initAppicationSettings(TCHAR* filename) //Note: Have to be char

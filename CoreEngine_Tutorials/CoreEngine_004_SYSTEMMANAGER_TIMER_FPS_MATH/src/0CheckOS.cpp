@@ -20,7 +20,6 @@
 
 #include "OSengine.h"
 #include "OSmain_dir.h"		//#include "OsDirectories.h"
-//#include "SystemPlatform.h"	// Get [SystemHandle] Pointer to System Class: WINDOWS, LINUX & ANDROID
 #include "systemManager.h"
 #include "mem_leak.h"
 

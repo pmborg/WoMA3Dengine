@@ -53,24 +53,10 @@ namespace WOMA
 		_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
 
 		_CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDERR);
-	  #if _NOTUSED_
-		HANDLE hWarnLogFile = CreateFile("Warnlog.txt", GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-		_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
-		_CrtSetReportFile(_CRT_WARN, hWarnLogFile);
-	  #endif
 		_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
-	  #if _NOTUSED_
-		HANDLE hAssertLogFile = CreateFile("Assertlog.txt", GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-		_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
-		_CrtSetReportFile(_CRT_ASSERT, hAssertLogFile);
-	  #endif
 #endif
 
-	#if _NOTUSED_
-		setpriority(PRIO_PROCESS, 0, 20);	// Be nice to other processes, helps reduce mouse lag
-	#else
 		SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
-	#endif
 
 		// START MEMORY MANAGER - To Handle: "out of Memory: Exceptions"
 		// -------------------------------------------------------------------------------------------

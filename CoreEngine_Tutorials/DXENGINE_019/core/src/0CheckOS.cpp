@@ -27,6 +27,10 @@ SystemManager::SystemManager()
 {
 	CLASSLOADER();
 
+	CPUSpeedMHz = 0;
+
+	driveLetter = 0;
+
 	//CheckOS:
 	ZeroMemory(&pszOS, sizeof(pszOS));
 	MajorVersion = MinorVersion = BuildVersion = 0;

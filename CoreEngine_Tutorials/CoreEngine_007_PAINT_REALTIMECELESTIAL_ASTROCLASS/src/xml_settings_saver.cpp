@@ -89,65 +89,6 @@ bool saveConfigSettings (char* file) // Note: Have to be char
 			child_screen->SetAttribute("bitsPerPixel", stri);
 		}
 
-#if _NOT_
-		///*<texture>*/TiXmlElement* child_texture = root->FirstChildElement("texture");
-		TiXmlElement* child_texture = NEW TiXmlElement("texture");
-		root->LinkEndChild(child_texture);
-		if (child_texture)
-		{
-			_itoa(SystemHandle->AppSettings->MaxTextureSize, stri, 10);
-			child_texture->SetAttribute("maxTexture", stri);
-
-			str = (SystemHandle->AppSettings->bilinear) ? "true" : "false";
-			child_texture->SetAttribute("bilinear", str.c_str());
-
-			str = (SystemHandle->AppSettings->trilinear) ? "true" : "false";
-			child_texture->SetAttribute("trilinear", str.c_str());
-
-			str = (SystemHandle->AppSettings->Anisotropic) ? "true" : "false";
-			child_texture->SetAttribute("Anisotropic", str.c_str());
-
-			_itoa(SystemHandle->AppSettings->AnisotropicLevel, stri, 10);
-			child_texture->SetAttribute("AnisotropicLevel", stri);
-		}
-
-		///*<fog>*/TiXmlElement* child_fog = root->FirstChildElement("fog");
-		TiXmlElement* child_fog = NEW TiXmlElement("fog");
-		root->LinkEndChild(child_fog);
-		if (child_fog)
-		{
-			_itoa(SystemHandle->AppSettings->START_FOG, stri, 10);
-			child_fog->SetAttribute("start", stri);
-
-			_itoa(SystemHandle->AppSettings->END_FOG, stri, 10);
-			child_fog->SetAttribute("end", stri);
-		}
-
-		///*<sound>*/TiXmlElement* child_sound = root->FirstChildElement( "sound" );
-		TiXmlElement* child_sound = NEW TiXmlElement("sound");
-		root->LinkEndChild(child_sound);
-		if ( child_sound )
-		{
-			str = (SystemHandle->AppSettings->MUSIC_ENABLED) ? "true" : "false";
-			child_sound->SetAttribute("music", str.c_str());
-
-			str = (SystemHandle->AppSettings->SOUND_ENABLED) ? "true" : "false";
-			child_sound->SetAttribute("effects", str.c_str());
-		}
-#endif
-
-#if _NOT_
-		/*<minimap>*/TiXmlElement* child_minimap = root->FirstChildElement("minimap");
-		if (child_minimap)
-		{
-			child_minimap->SetAttribute("enabled", (SendMessage(m_MiniMap, BM_GETSTATE, 0, 0) == BST_CHECKED) ? "true" : "false");
-		}
-		/*<network>*/TiXmlElement* child_network = root->FirstChildElement( "network" );
-		if ( child_network )
-		{
-			child_network->SetAttribute("enabled", (SendMessage(m_Network, BM_GETSTATE, 0, 0) == BST_CHECKED) ? "true" : "false");
-		}
-#endif
 	}
 	else
 		return false;

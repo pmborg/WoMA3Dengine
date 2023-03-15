@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CoreEngine_004", "CoreEngine_004.vcxproj", "{B0041EC4-E72B-49B3-9F78-25F97B26553F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8701029E-A496-403A-91DF-C7E7FACF0D88} = {8701029E-A496-403A-91DF-C7E7FACF0D88}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UltimateTCPIP_LIB", "..\..\ThirdParty\ultimateTCP_IP_LIB\ultimateTCP_IP.vcxproj", "{8701029E-A496-403A-91DF-C7E7FACF0D88}"
 EndProject

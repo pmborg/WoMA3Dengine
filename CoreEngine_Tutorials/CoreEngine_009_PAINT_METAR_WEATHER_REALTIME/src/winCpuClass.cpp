@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: winCpuClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -124,54 +125,3 @@ int WinCpuClass::GetCpuPercentage()
 
 #endif
 
-#if defined USE_LOADING_THREADS //ENGINE_LEVEL >= 25
-// MultiThreading:
-// http://msdn.microsoft.com/en-us/library/windows/desktop/ff476884%28v=vs.85%29.aspx
-//
-
-int getCpuNumberFromMask(DWORD_PTR dwAffinityMask)
-{
-    int id = 0;
-
-    while ((dwAffinityMask & 1) == 0) {
-        dwAffinityMask /= 2;
-        id++;
-    }
-
-    return id;
-}
-
-void WinCpuClass::SetProcessorAffinity(int cpuNumber)
-{
-    // Assign the current thread to one processor. This ensures that timing
-    // code runs on only one processor.
-
-    DWORD_PTR dwProcessAffinityMask = 0;
-    DWORD_PTR dwSystemAffinityMask = 0;
-    HANDLE hCurrentProcess = GetCurrentProcess();
-
-    // A thread affinity mask is a bit vector in which each bit represents a logical processor that a thread is allowed to run on:
-    if (!GetProcessAffinityMask(hCurrentProcess, &dwProcessAffinityMask, &dwSystemAffinityMask))
-        return;
-
-    if (dwProcessAffinityMask)
-    {
-        // Set this as the processor that our thread must always run against.
-        // This must be a subset of the process affinity mask.
-
-        HANDLE hCurrentThread = GetCurrentThread();
-        if (hCurrentThread != INVALID_HANDLE_VALUE)
-        {
-            DWORD_PTR dwAffinityMask = (DWORD_PTR) pow(2.0, cpuNumber);
-            SetThreadAffinityMask(hCurrentThread, dwAffinityMask);
-            CloseHandle(hCurrentThread);
-        }
-
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("Set CPU/Core: %d\n"), cpuNumber);
-    }
-
-    //while (true) {} //To test Thread Alocation...
-
-    CloseHandle(hCurrentProcess);
-}
-#endif

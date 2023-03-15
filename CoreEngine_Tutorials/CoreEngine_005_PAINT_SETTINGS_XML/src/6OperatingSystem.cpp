@@ -45,35 +45,6 @@ int GETOS(void)
     IEnumWbemClassObject* pEnum = NULL;
     HRESULT hres;
     int ret = 0;
-
-    // Initialize COM
-    //hres = CoInitializeEx(0, COINIT_MULTITHREADED); 
-    //if (FAILED(hres))
-    //{
-    //    cout << "Failed to initialize COM library. Error code = 0x" << hex << hres << endl;
-    //    EXIT(1);
-    //}
-	/*
-    // Set general COM security levels
-    hres =  CoInitializeSecurity(
-        NULL, 
-        -1,                          // COM authentication
-        NULL,                        // Authentication services
-        NULL,                        // Reserved
-        RPC_C_AUTHN_LEVEL_DEFAULT,   // Default authentication 
-        RPC_C_IMP_LEVEL_IDENTIFY,    // Default Impersonation  
-        NULL,                        // Authentication info
-        EOAC_NONE,                   // Additional capabilities 
-        NULL                         // Reserved
-        );
-
-    if (FAILED(hres))
-    {
-        cout << "Failed to initialize security. Error code = 0x" << hex << hres << endl;
-        //CoUninitialize();
-        EXIT(1);
-    }
-	*/
     // Obtain the initial locator to WMI 
     hres = CoCreateInstance(
         CLSID_WbemLocator,             
@@ -96,69 +67,16 @@ int GETOS(void)
     
     bool useToken = false;
     bool useNTLM = true;
-
-    //wchar_t pszName[CREDUI_MAX_USERNAME_LENGTH+1] = {0};
-    //wchar_t pszPwd[CREDUI_MAX_PASSWORD_LENGTH+1] = {0};
-    //wchar_t pszDomain[CREDUI_MAX_USERNAME_LENGTH+1];
-    //wchar_t pszUserName[CREDUI_MAX_USERNAME_LENGTH+1];
-
-/*
-    wchar_t pszAuthority[CREDUI_MAX_USERNAME_LENGTH+1];
-	CREDUI_INFOW cui;
-    BOOL fSave;
-    DWORD dwErr;
-
-    memset(&cui,0,sizeof(CREDUI_INFO));
-    cui.cbSize = sizeof(CREDUI_INFO);
-    cui.hwndParent = NULL;
-
-    cui.pszMessageText = L"Press cancel to use process token";
-    cui.pszCaptionText = L"Enter Account Information";
-    cui.hbmBanner = NULL;
-    fSave = FALSE;
-
-    dwErr = CredUIPromptForCredentialsW( 
-        &cui,                             // CREDUI_INFO structure
-        L"",							  // Target for credentials
-        NULL,                             // Reserved
-        0,                                // Reason
-        pszName,                          // User name
-        CREDUI_MAX_USERNAME_LENGTH+1,     // Max number for user name
-        pszPwd,                           // Password
-        CREDUI_MAX_PASSWORD_LENGTH+1,     // Max number for password
-        &fSave,                           // State of save check box
-        CREDUI_FLAGS_GENERIC_CREDENTIALS |// flags
-        CREDUI_FLAGS_ALWAYS_SHOW_UI |
-        CREDUI_FLAGS_DO_NOT_PERSIST);  
-
-    if (ERROR_CANCELLED == dwErr)
-    {
-        useToken = true;
-    }
-    else if (dwErr)
-    {
-        cout << "Did not get credentials: " << dwErr << endl;
-        pLoc->Release();
-        //CoUninitialize();
-        EXIT(1);  
-    }
-
-    if (!useNTLM)
-    {
-        cout << "not using NTLM" << endl;
-        StringCchPrintfW(pszAuthority, CREDUI_MAX_USERNAME_LENGTH+1, L"kERBEROS: %s", L"serverdude");
-    }
-*/
     // Connect to the remote root\cimv2 namespace and obtain pointer pSvc to make IWbemServices calls.
     hres = pLoc->ConnectServer(
         _bstr_t(L"ROOT\\CIMV2"),
-        NULL/*_bstr_t(useToken?NULL:pszName)*/,    // User name
-        NULL/*_bstr_t(useToken?NULL:pszPwd)*/,     // User password
-        NULL,                              // Locale             
-        NULL,                              // Security flags
-        NULL/*_bstr_t(useNTLM?NULL:pszAuthority)*/,// Authority        
-        NULL,                              // Context object
-        &pSvc                              // IWbemServices proxy
+        NULL/*_bstr_t(useToken?NULL:pszName)*/,     // User name
+        NULL/*_bstr_t(useToken?NULL:pszPwd)*/,      // User password
+        NULL,                                       // Locale             
+        NULL,                                       // Security flags
+        NULL/*_bstr_t(useNTLM?NULL:pszAuthority)*/, // Authority        
+        NULL,                                       // Context object
+        &pSvc                                       // IWbemServices proxy
         );
 
     if (FAILED(hres))
@@ -169,50 +87,16 @@ int GETOS(void)
         EXIT(1);
     }
     cout << "Connected to ROOT\\CIMV2 WMI namespace" << endl;
-
-/*
-    // Create COAUTHIDENTITY that can be used for setting security on proxy
-    COAUTHIDENTITY* userAcct = NULL;
-    COAUTHIDENTITY authIdent;
-
-    if (!useToken)
-    {
-        memset(&authIdent, 0, sizeof(COAUTHIDENTITY));
-        authIdent.PasswordLength = wcslen (pszPwd);
-        authIdent.Password = (USHORT*)pszPwd;
-
-        LPWSTR slash = wcschr (pszName, L'\\');
-        if (NULL == slash)
-        {
-            cout << "Could not create Auth identity. No domain specified.\n";
-            pSvc->Release();
-            pLoc->Release();
-            //CoUninitialize();
-            EXIT(1);
-        }
-
-        StringCchCopyW(pszUserName, CREDUI_MAX_USERNAME_LENGTH+1, slash+1);
-        authIdent.User = (USHORT*)pszUserName;
-        authIdent.UserLength = wcslen(pszUserName);
-
-        StringCchCopyNW(pszDomain, CREDUI_MAX_USERNAME_LENGTH+1, pszName, slash - pszName);
-        authIdent.Domain = (USHORT*)pszDomain;
-        authIdent.DomainLength = slash - pszName;
-        authIdent.Flags = SEC_WINNT_AUTH_IDENTITY_UNICODE;
-
-        userAcct = &authIdent;
-    }
-*/
     // Set security levels on a WMI connection
     hres = CoSetProxyBlanket(
-       pSvc,                           // Indicates the proxy to set
-	   RPC_C_AUTHN_WINNT,            // RPC_C_AUTHN_xxx
+       pSvc,                        // Indicates the proxy to set
+	   RPC_C_AUTHN_WINNT,           // RPC_C_AUTHN_xxx
 	   RPC_C_AUTHZ_NONE,            // RPC_C_AUTHZ_xxx
-	   NULL,         // Server principal name 
-	   RPC_C_AUTHN_LEVEL_CALL,  // RPC_C_AUTHN_LEVEL_xxx 
-	   RPC_C_IMP_LEVEL_IMPERSONATE,    // RPC_C_IMP_LEVEL_xxx
-       NULL/*userAcct*/,                       // client identity
-       EOAC_NONE                       // proxy capabilities 
+	   NULL,                        // Server principal name 
+	   RPC_C_AUTHN_LEVEL_CALL,      // RPC_C_AUTHN_LEVEL_xxx 
+	   RPC_C_IMP_LEVEL_IMPERSONATE, // RPC_C_IMP_LEVEL_xxx
+       NULL/*userAcct*/,            // client identity
+       EOAC_NONE                    // proxy capabilities 
     );
 
     if (FAILED(hres))
@@ -251,7 +135,7 @@ int GETOS(void)
         COLE_DEFAULT_PRINCIPAL,         // Server principal name 
         RPC_C_AUTHN_LEVEL_PKT_PRIVACY,  // RPC_C_AUTHN_LEVEL_xxx 
         RPC_C_IMP_LEVEL_IMPERSONATE,    // RPC_C_IMP_LEVEL_xxx
-        NULL/*userAcct*/,                       // client identity
+        NULL/*userAcct*/,               // client identity
         EOAC_NONE                       // proxy capabilities 
         );
 
@@ -264,13 +148,6 @@ int GETOS(void)
         //CoUninitialize();
         EXIT(1);
     }
-
-    // Erase credentials from memory.
-    //SecureZeroMemory(pszName, sizeof(pszName));
-    //SecureZeroMemory(pszPwd, sizeof(pszPwd));
-    //SecureZeroMemory(pszUserName, sizeof(pszUserName));
-    //SecureZeroMemory(pszDomain, sizeof(pszDomain));
-
     // Get the data from the OS query
 
     ULONG uReturn = 0;
@@ -288,13 +165,12 @@ int GETOS(void)
         cout << "IEnumWbemClassObject::Next returned 0x" << hex << hr << endl;
 #endif
 
-        // PATCH: NOT SURE WHY IT WORKS
         if (0 == uReturn)
             continue;
+
+		// MORE INFO: https://msdn.microsoft.com/en-us/library/aa394239%28v=vs.85%29.aspx
         VARIANT vtProp;
 
-		//#ifdef WIN10
-		//if (SystemHandle->systemManager->MajorVersion >= 6 && SystemHandle->systemManager->MinorVersion >= 2) // NOTE: Win10 is detected as Win 8.1 ?
 		{
 			//
 			if (SUCCEEDED(pclsObj->Get(L"Name", 0, &vtProp, 0, 0)))
@@ -322,8 +198,6 @@ int GETOS(void)
 
 			SystemHandle->systemManager->BuildVersion = _wtoi(vtProp.bstrVal);
 		}
-		//#endif
-
 		if (SUCCEEDED(pclsObj->Get(L"Manufacturer", 0, &vtProp, 0, 0)))
 			WOMA_LOGManager_DebugMSGW(L"Manufacturer: %s\n", vtProp.bstrVal);
 
@@ -354,10 +228,6 @@ out:
     if (pclsObj) 
         pclsObj->Release(); 
 
-    //CoUninitialize(); 
-
-
-    //system("pause");
     return ret;
 }
 

@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 //-----------------------------------------------------------------------------
 // This file was automatic generated:
 // ==================================

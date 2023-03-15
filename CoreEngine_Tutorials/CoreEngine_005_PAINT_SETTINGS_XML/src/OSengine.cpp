@@ -43,7 +43,7 @@ namespace WOMA
 	TCHAR strConsoleTitle[MAX_STR_LEN] = { 0 };
 
 	TCHAR   APP_COMPANY_NAME[] = TEXT("Pmborg");			// "Company" Directory Name: 1st lvl
-	TCHAR   APP_PROJECT_NAME[] = TEXT("WoMAengine2023");	// "Project" Directory Name: 2nd lvl
+	TCHAR   APP_PROJECT_NAME[] = TEXT("WoMA3Dengine");	// "Project" Directory Name: 2nd lvl
 
 	TCHAR   APP_NAME[MAX_STR_LEN];              // "Aplication Name"
 

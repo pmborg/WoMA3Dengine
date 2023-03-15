@@ -28,7 +28,7 @@
 #include "TrigonometryMathClass.h"
 #include "systemManager.h"
 #include "fpsClass.h"
-#define N_SCREEN_TEXT 4			// N� of total dif. Screens
+#define N_SCREEN_TEXT 4			// N. of total dif. Screens
 
 struct resolutionType
 {
