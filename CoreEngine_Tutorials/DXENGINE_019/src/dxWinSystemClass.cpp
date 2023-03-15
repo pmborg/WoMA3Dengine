@@ -57,21 +57,6 @@ dxWinSystemClass::dxWinSystemClass(WOMA::Settings* appSettings) : WinSystemClass
 
 	DXsystemHandle = this;
 
-#ifdef _NOT_
-
-#if defined USE_INTRO_VIDEO_DEMO
-	g_DShowPlayer = NULL;
-#endif
-
-	ASSERT(GuiHWND.size() == 0);
-	ASSERT(SelectedItemHWND.size() == 0);
-
-	XML_WORLD_FILE = TEXT("");
-
-//#if defined USE_SOUND_MANAGER || defined USE_PLAY_MUSIC
-//	audio			= NULL;
-//#endif
-#endif
 }
 
 dxWinSystemClass::~dxWinSystemClass()
@@ -219,7 +204,6 @@ int dxWinSystemClass::ApplicationMainLoop()		// [RUN] - MAIN "INFINITE" LOOP!
 void dxWinSystemClass::Shutdown()
 //----------------------------------------------------------------------------------
 {
-	//CHAMAR FILHO...
 	//WinSystemClass::Shutdown();
 
 #if defined USE_INTRO_VIDEO_DEMO
@@ -267,14 +251,11 @@ void dxWinSystemClass::GPH_RESIZE()
 
 void dxWinSystemClass::ProcessOSInput() // This Function will be invoked several times per second
 {
-	//CHAMAR FILHO...
 	womaSetup->Initialize(m_Driver);
 }
 
 bool dxWinSystemClass::LoadXmlSettings()
 {
-	//CHAMAR FILHO...
-	
 	// Load and Parse XML [world.xml] the Configuration file
 //----------------------------------------------------------------------------
 
@@ -283,8 +264,6 @@ bool dxWinSystemClass::LoadXmlSettings()
 
 bool dxWinSystemClass::ApplicationInitMainWindow()
 {
-	//CHAMAR FILHO...
-
 
 	return true;
 }
@@ -292,21 +271,16 @@ bool dxWinSystemClass::ApplicationInitMainWindow()
 //----------------------------------------------------------------------------
 void dxWinSystemClass::PAUSE()
 {
-	//CHAMAR FILHO...
-
 }
 
 void dxWinSystemClass::UNPAUSE()
 {
-	//CHAMAR FILHO...
-
 }
 
 //----------------------------------------------------------------------------
 void dxWinSystemClass::ProcessFrame()
 //----------------------------------------------------------------------------
 {
-	//CHAMAR FILHO...
 	WinSystemClass::ProcessFrame();
 
 	// Process Special: "PRINT SCREEN" key, the "Back-Buffer" have 1 frame rendered, now we can dump it:
@@ -388,170 +362,5 @@ bool dxWinSystemClass::SaveScreenshot()
 }
 #endif
 
-
-
-#ifdef _NOT_
-
-// ENGINE_LEVEL >= 1
-#define _CRT_SECURE_NO_WARNINGS
-#include "SystemPlatform.h"		// Get [SystemHandle] Pointer to System Class: WINDOWS, LINUX & ANDROID
-#include "osDirectories.h"
-#include "logManager.h"
-//#include "../../SAMPLES/Include/svn.h"
-
-#include "../../WomaUtils/include/TrigonometryMathClass.h" //sim, cos table
-
-#define m_contextDriver NULL
-
-#if defined USE_SOUND_MANAGER || defined USE_PLAY_MUSIC
-#include "AudioClass.h"
-#endif
-
-#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
-#include "../../IMAGING/ImageLoaderClass.h"
-#endif
-
-#include <shlobj.h>
-
-// Cant BE Inside Class:
-
-#if defined LINUX_PLATFORM || defined WINDOWS_PLATFORM && !defined WOMA_WIN32_APPLICATION
-int		ARGc;
-char** ARGv;
-#endif
-
-#define GET_NAME(NAME) #NAME
-#define GET_VERSION(VERSION) GET_NAME(VERSION)
-
-#include "sdkddkver.h"
-
-
-//-------------------------------------------------------------------------------------------
-bool SystemClass::AFTER_SYSTEM_CHECK()
-{
-	WOMA_LOGManager_DebugMSG("==========================================================\n");
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("BEFORE SYSTEM START - ENGINE_LEVEL: %d\n"), ENGINE_LEVEL);
-	WOMA_LOGManager_DebugMSG("==========================================================\n");
-
-	return true;	// NOTE: for a basic program without woma engine, return false.
-}
-
-
-
-
-void Init_Console_Chapters()
-{
-
-}
-
-
-
-
-
-
-
-
-
-
-void SystemClass::StopAllThreads()
-{
-	// [STOP] - Wait for all threads to Stop:
-	// ------------------------------------------------------------------------------------------
-	WOMA_LOGManager_DebugMSG("WinSystemClass::Stop()\n");
-
-	WOMA::game_state = GAME_STOP;
-
-	int tries = 0;
-#define WAIT_MS 100
-	while (WOMA::game_state == GAME_STOP)
-	{
-		if (WOMA::num_running_THREADS == 0)
-		{
-			WOMA::game_state = GAME_EXIT; // All Threads are Stopped, we can now Stop Safelly and end the Show!
-			WOMA_LOGManager_DebugMSG("===============================================================================\n");
-			WOMA_LOGManager_DebugMSGAUTO(TEXT("SHUTDOWN - Waiting for thread(s) stop, %d (ms) \n"), tries * WAIT_MS);
-			WOMA_LOGManager_DebugMSG("===============================================================================\n");
-			break;
-		}
-
-		Sleep(WAIT_MS);			// Zzzz: Idle main thread.
-		if (tries++ > 5000 / WAIT_MS) // Wait MAX: 5 seconds! (20 Cycle Tries)
-		{
-			WomaFatalException("PROBLEM! Waiting for thread(s) stop, exceed 1 second.");
-			break;
-		}
-	}
-}
-
-
-#endif
-
-
-
-#ifdef _NOT_
-#include "packManager.h"
-#include "xml_loader.h"
-
-#include "SystemPlatform.h"		// To define OS [SystemHandle] Pointer (System Class) & define WomaSYSTEM for: WINDOWS, LINUX & ANDROID
-#include "winsystemclass.h"
-
-//----------------------------------------------------------------------------
-
-#ifdef _NOT_
-
-#if defined USE_INTRO_VIDEO_DEMO
-void CALLBACK OnGraphEvent(HWND hwnd, long evCode, LONG_PTR param1, LONG_PTR param2)
-{
-	switch (evCode)
-	{
-	case EC_COMPLETE:
-	case EC_USERABORT:
-		SystemHandle->g_DShowPlayer->Pause(); //Stop();
-		break;
-
-	case EC_ERRORABORT:
-		WomaFatalException("VIDEO: Playback error");
-		SystemHandle->g_DShowPlayer->Stop();
-		break;
-	}
-}
-#endif
-
-#endif //_NOT_
-
-#if defined USE_INTRO_VIDEO_DEMO
-
-HRESULT WinSystemClass::PlayIntroMovie(TCHAR* movie)
-//----------------------------------------------------------------------------
-{
-	HRESULT hr = g_DShowPlayer->OpenFile(movie);
-	IF_FAILED_RETURN_FALSE(hr);
-
-	InvalidateRect(m_hWnd, NULL, FALSE);
-	g_DShowPlayer->Play();
-
-	RECT rc;
-	GetClientRect(m_hWnd, &rc);
-	g_DShowPlayer->UpdateVideoWindow(&rc);
-
-	MSG msg = { };
-	while (msg.message != WM_QUIT)
-	{
-		while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-		{	// Process OS Messages
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
-
-		if ((!threadLoadPacksAlive) && (g_DShowPlayer->State() != STATE_RUNNING))		// Video Ended? get out of here
-			break;
-	}
-
-	return hr;
-}
-#endif
-
-
-#endif //_NOT_
 
 
