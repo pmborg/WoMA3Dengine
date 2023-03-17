@@ -28,3 +28,12 @@ cd..
 cd CoreEngine_009_PAINT_METAR_WEATHER_REALTIME
 call CLEAN_ALL.bat
 cd..
+cd DXENGINE_019
+call CLEAN_ALL.bat
+cd..
+cd DXENGINE_020
+call CLEAN_ALL.bat
+cd..
+cd DXENGINE_021
+call CLEAN_ALL.bat
+cd..

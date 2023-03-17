@@ -1,0 +1,56 @@
+<!--*******************************************************************************************
+// Filename: settings.xml LEVEL:25
+//*********************************************************************************************
+//*********************************************************************************************
+//	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2014
+//	********************************************************************************************
+//	code by : Pedro Borges - pmborg@yahoo.com
+//	Downloaded from : http://woma.servegame.com
+//
+// Oficial Min (DEMO): 500 350
+// Recomended (DEBUG): 640 x 480 VGA
+// 800 x 600 
+// 1024 x 768 
+// 1280 x 1024 
+// 1920 x 1080  	FULL-HD
+// 3840 x 2160  	4K
+//*******************************************************************************************-->
+<generalsettings>
+  <!-- MAIN Window Settings: (fullScreen="true") & (width="0" height="0") = (AutoDetect Best) -->
+  <!--uiMonitor: 1 2 0-->
+  <screen uiMonitor="0" fullScreen="false" posX="0" posY="0"  width="1050" height="600" 
+		  allowResize="true" vsync="true" bitsPerPixel="32" />
+
+  <!-- ENGINE LVL 20: [DX12] / [DX11] / [GL3+] / [DX9]     useMonitor=-1 Means Render in All Monitors -->
+  <driver name="DX11"
+          UseAllMonitors="false"
+          useDoubleBuffering="true" 
+          msaa="false" />
+  <!-- msaa="true/false/X1/X2/X4/X8" ("true" == Autodetect: best mode) -->
+
+  <!-- ENGINE LVL 25-->
+  <camera screenNear="0.1f" screenDepth="2048" >
+    <!--initPos x="0" y="0" z="-200"/-->
+    <initPos x="0" y="2" z="-8" />
+    <initRot x="0" y="0" z="0" />
+  </camera>
+  
+  <!-- ENGINE LVL 22-->
+  <!-- Texture Filtering: -->
+  <!-- 1- Point filtering (default ==> all = false) -->
+  <!-- 2- Bilinear filtering -->
+  <!-- 3- Trilinear filtering -->
+  <!-- 4- Anisotropic filtering -->
+  
+  <texture maxTexture="1024" 
+           bilinear="false" 
+           trilinear="false" 
+           Anisotropic="false" 
+           AnisotropicLevel="16" />
+	
+  <!-- ENGINE LVL 31-->
+  <fog start="32" end="256"/>
+
+  <!-- ENGINE LVL 36-->
+  <sound music="true" effects="true"/>
+</generalsettings>
