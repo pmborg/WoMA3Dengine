@@ -1,0 +1,1 @@
+C:\WoMAengine2014\EXTRA\SDK 8.0\DirectXTK\Bin\Desktop_2013\Win32\Release\DirectXTK.lib

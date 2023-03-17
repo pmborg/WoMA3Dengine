@@ -1,0 +1,32 @@
+﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Bin\Desktop_2013\x64\Debug\) contains files shared from another project (DirectXTK.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  pch.cpp
+  WICTextureLoader.cpp
+  VertexTypes.cpp
+  SpriteFont.cpp
+  PrimitiveBatch.cpp
+  SpriteBatch.cpp
+  SkinnedEffect.cpp
+  SimpleMath.cpp
+  ScreenGrab.cpp
+  ModelLoadVBO.cpp
+  ModelLoadSDKMESH.cpp
+  ModelLoadCMO.cpp
+  Model.cpp
+  GeometricPrimitive.cpp
+  GamePad.cpp
+  EnvironmentMapEffect.cpp
+  EffectFactory.cpp
+  EffectCommon.cpp
+  BinaryReader.cpp
+  DualTextureEffect.cpp
+  DGSLEffectFactory.cpp
+  Generating Code...
+  Compiling...
+  DGSLEffect.cpp
+  DDSTextureLoader.cpp
+  CommonStates.cpp
+  BasicEffect.cpp
+  AlphaTestEffect.cpp
+  Generating Code...
+  DirectXTK_Desktop_2013.vcxproj -> D:\WoMAengine2014\EXTRA\SDK 8.0\DirectXTK\Bin\Desktop_2013\x64\Debug\DirectX11TK.lib
+BSCMAKE : warning BK4503: minor error in .SBR file 'Bin\Desktop_2013\x64\Debug\GeometricPrimitive.sbr' ignored
