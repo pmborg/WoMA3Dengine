@@ -20,3 +20,6 @@ rmdir /S /Q WRelease 2> nul
 
 del /S /F /Q x64 2> nul
 rmdir /S /Q x64 2> nul
+
+del /S /F /Q Libs 2> nul
+rmdir /S /Q Libs 2> nul

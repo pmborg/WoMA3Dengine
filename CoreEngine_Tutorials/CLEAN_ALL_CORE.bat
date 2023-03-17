@@ -40,3 +40,7 @@ cd..
 cd DXENGINE_022
 call CLEAN_ALL.bat
 cd..
+cd ../ThirdParty/DirectXTK
+del /S /F /Q x64 2> nul
+rmdir /S /Q x64 2> nul
+cd ..
