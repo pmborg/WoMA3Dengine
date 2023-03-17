@@ -22,6 +22,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UltimateTCPIP_LIB", "..\..\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZipUtils_LIB", "..\..\ThirdParty\ZipUtils_LIB\ZipUtils_LIB.vcxproj", "{0BDF6BA9-3A46-4E8A-B996-12F51D2FB632}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LIBs", "LIBs", "{4F8F6BB9-9A03-44DB-BDFD-FB339D348931}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -133,6 +135,13 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C2ECE45C-3C70-42C5-BDE1-E06DDAF7D7AE} = {4F8F6BB9-9A03-44DB-BDFD-FB339D348931}
+		{2CEB20A8-A257-442A-B2A9-81D21CAC9AA1} = {4F8F6BB9-9A03-44DB-BDFD-FB339D348931}
+		{08803CF9-A189-40A9-BD69-F4B8A9CF7FB1} = {4F8F6BB9-9A03-44DB-BDFD-FB339D348931}
+		{8701029E-A496-403A-91DF-C7E7FACF0D88} = {4F8F6BB9-9A03-44DB-BDFD-FB339D348931}
+		{0BDF6BA9-3A46-4E8A-B996-12F51D2FB632} = {4F8F6BB9-9A03-44DB-BDFD-FB339D348931}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {566AEB68-3814-418F-9A47-693F27D42891}

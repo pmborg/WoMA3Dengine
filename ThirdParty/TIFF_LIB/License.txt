@@ -1,0 +1,2 @@
+https://en.wikipedia.org/wiki/Libtiff
+License 	BSD-like licence

@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Src">
+      <UniqueIdentifier>{f3e333e0-eb12-4930-8c89-b09395fd4314}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include">
+      <UniqueIdentifier>{9373820b-9dc7-447f-8c80-e155ce3170e7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\tiffiop.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\tif_config.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\tif_dir.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\tiffio.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\tiff.h" />
+    <ClInclude Include="include\tiffconf.h" />
+    <ClInclude Include="include\tiffvers.h" />
+    <ClInclude Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\t4.h" />
+    <ClInclude Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tiff.h" />
+    <ClInclude Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tiffconf.h" />
+    <ClInclude Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tiffio.h" />
+    <ClInclude Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tiffiop.h" />
+    <ClInclude Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tiffvers.h" />
+    <ClInclude Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_dir.h" />
+    <ClInclude Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_fax3.h" />
+    <ClInclude Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_predict.h" />
+    <ClInclude Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\uvcode.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\tif_win32.c">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\mkg3states.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_aux.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_close.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_codec.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_color.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_compress.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_dir.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_dirinfo.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_dirread.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_dirwrite.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_dumpmode.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_error.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_extension.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_fax3.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_fax3sm.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_flush.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_getimage.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_jpeg.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_luv.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_lzw.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_next.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_open.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_packbits.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_pixarlog.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_predict.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_print.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_read.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_strip.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_swab.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_thunder.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_tile.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_version.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_warning.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_write.c" />
+    <ClCompile Include="..\..\..\_LIBS\tiff-3.8.2-src\libtiff\tif_zip.c" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,8 @@
+http://sourceforge.net/projects/libjpeg/files/libjpeg/
+D:\WoMAengine2014\EXTRA\_LIBS
+
+libjpeg-win64-0603ef644fb5.tar.gz
+Had problems to compile...
+
+Source Used:
+D:\WoMAengine2014\EXTRA\_TO LEARN FREE\SoftPixelEngine(v.3.2)\SoftPixelEngine\repository\sources\Plugins\jpeglib
