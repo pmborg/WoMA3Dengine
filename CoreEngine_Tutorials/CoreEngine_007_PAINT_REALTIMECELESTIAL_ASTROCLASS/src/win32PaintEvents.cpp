@@ -30,7 +30,6 @@ int		MainWindowPaint(UINT monitor);
 
 void	PaintSplashScreen(HDC hdc);
 
-//#define LineHeigth 20
 
 // ---------------------------------------------------------------------------------------------
 LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
@@ -45,6 +44,16 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 	}
 
 	case WM_PAINT:
+#if defined _DEBUG
+		if (SystemHandle->m_hWnd) {
+			if (SystemHandle->statusbar)
+				DestroyWindow(SystemHandle->statusbar);
+			SystemHandle->statusbar = DoCreateStatusBar(SystemHandle->m_hWnd, 0/*idStatus*/, SystemHandle->m_hinstance, 1/*cParts*/);
+			SendMessage(SystemHandle->statusbar, SB_SETTEXT, 0, (LPARAM)DEMO_TITLE);
+			if (SystemHandle->AppSettings->FULL_SCREEN)
+				ShowWindow(SystemHandle->statusbar, SW_HIDE);
+		}
+#endif
 	{
 		for (UINT i = 0; i < SystemHandle->windowsArray.size(); i++)
 			MainWindowPaint(i);
@@ -115,9 +124,6 @@ int MainWindowPaint(UINT monitor)
 		scr = 1;
 		break;
 	}
-
-	//if (WOMA::game_state != GAME_SETUP)
-	//	return scr;
 
 	// Paint BackGround Image:
 	// ---------------------------------------------------------------------------------------------

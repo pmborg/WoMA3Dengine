@@ -133,7 +133,6 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 
 	case WM_CLOSE:	// During the shutdown process of the device, the WM_CLOSE message is broadcasted to the applications.
 		{
-			ASSERT(SystemHandle);
 			WOMA::game_state = GAME_STOP;
 		}
 

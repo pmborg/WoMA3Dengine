@@ -62,7 +62,7 @@ bool WomaSetupManager::Initialize(void* Driver)
 {
 	static int yPos_initial = 250;
 	int xPos = 20, yPos = yPos_initial;
-#if _NOT_
+#if defined _NOT
 	m_driver = (DX_CLASS*)Driver;
 #endif
 
@@ -129,7 +129,12 @@ bool WomaSetupManager::Initialize(void* Driver)
 #if CORE_ENGINE_LEVEL >= 10
 		//Convert HW monitor list to windows orderder list:
 		{
-		int deviceIndex = (SystemHandle->allWindowsArray[mon].deviceIndex) - 1;
+		int deviceIndex;
+		if (SystemHandle->allWindowsArray.size() == 0)
+			deviceIndex = 0;
+		else
+			deviceIndex = (SystemHandle->allWindowsArray[mon].deviceIndex) - 1;
+
 		StringCchPrintf(MONITOR, sizeof(MONITOR), TEXT("Resolution Mon: %d"), deviceIndex);
 		}
 #else
@@ -148,9 +153,14 @@ bool WomaSetupManager::Initialize(void* Driver)
 		UINT resolutionHeight = 0;
 
 		//Convert HW monitor list to windows orderder list:
-		int deviceIndex=(SystemHandle->allWindowsArray[mon].deviceIndex)-1; //printf(SystemHandle->allWindowsArray[deviceIndex].MonitorName.c_str());
+		//int deviceIndex=(SystemHandle->allWindowsArray[mon].deviceIndex)-1;
+		int deviceIndex;
+		if (SystemHandle->allWindowsArray.size() == 0)
+			deviceIndex = 0;
+		else
+			deviceIndex = (SystemHandle->allWindowsArray[mon].deviceIndex) - 1;
 
-		if (SystemHandle->allWindowsArray[mon].ScreenResolution.size() > 1)
+		if ((SystemHandle->allWindowsArray.size() > 0) && (SystemHandle->allWindowsArray[mon].ScreenResolution.size() > 1))
 		{
 			//int cuurent_width = SystemHandle->monitorArray[mon].rcMonitor.right - SystemHandle->monitorArray[mon].rcMonitor.left;
 			//int cuurent_heigth = SystemHandle->monitorArray[mon].rcMonitor.bottom - SystemHandle->monitorArray[mon].rcMonitor.top;

@@ -169,7 +169,6 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 						//GET UI_MONITOR COMBOBOX:
 						int		previous_DRIVER = SystemHandle->AppSettings->DRIVER;
 						SystemHandle->AppSettings->DRIVER = (int)(SendMessage(womaSetup->hWndComboBox[7], CB_GETCURSEL, NULL, NULL));
-
 						CHAR str[MAX_STR_LEN] = { 0 }; wtoa(str, (TCHAR*)SystemHandle->XML_SETTINGS_FILE.c_str(), MAX_STR_LEN); // wchar ==> char
 						saveConfigSettings(str);
 
@@ -207,7 +206,6 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 
 	case WM_CLOSE:	// During the shutdown process of the device, the WM_CLOSE message is broadcasted to the applications.
 		{
-			ASSERT(SystemHandle);
 			WOMA::game_state = GAME_STOP;
 		}
 
@@ -312,6 +310,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 			switch (wparam)
 			{
 			case TIMER_TITLE:
+				if (!SystemHandle->AppSettings->FULL_SCREEN)
 					SystemHandle->refreshTitle();
 				return 0;
 

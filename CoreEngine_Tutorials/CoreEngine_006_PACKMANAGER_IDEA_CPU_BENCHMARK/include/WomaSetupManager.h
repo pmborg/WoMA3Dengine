@@ -41,11 +41,6 @@ public:
 	HWND m_hBtnOK;
 	HWND m_hBtnCancel;
 
-//private:
-	//#if (defined DX9 || defined DX11 || defined DX12) && defined _NOT_
-	//DX_CLASS*	m_driver;
-	//#endif
-
 	std::vector<HWND> hWndTitleLabel;	// hWndTitleLabel[11]
 	std::vector<HWND> hWndComboBox;		// hWndComboBox[7]
 	std::vector<HWND> hWndCheckBox;		// hWndCheckBox[4]

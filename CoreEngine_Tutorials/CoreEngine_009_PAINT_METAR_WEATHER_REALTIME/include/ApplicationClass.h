@@ -49,32 +49,22 @@
 // -------------------------------------------------------------------------------------------------
 
 
-#if defined USE_SCENE_MANAGER
-	#include "SceneManager.h"
-#endif
-
 #if  defined USE_RASTERTEK_TEXT_FONT
-	#include "ApplicationTextClass.h"
+#include "ApplicationTextClass.h"
 #endif
 
 #if defined SCENE_MAIN_TOPO_TERRAIN
-	#define MAX_TERRAINS 3
+#define MAX_TERRAINS 3
 
 #elif defined SCENE_WATER_TERRAIN
-	#define MAX_TERRAINS 2
+#define MAX_TERRAINS 2
 
-#elif defined SCENE_GENERATEDUNDERWATER
-	#define MAX_TERRAINS 1
 #elif defined SCENE_MAIN_TERRAIN
-	#define MAX_TERRAINS 1
+#define MAX_TERRAINS 1
 #else
-	#define MAX_TERRAINS 0
+#define MAX_TERRAINS 0
 #endif
 
-
-#if defined SCENE_TERRAIN_QUAD_TREE
-#include "TerrainQuadtreeClass.h"
-#endif
 
 #pragma warning( push )
 #pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
@@ -130,22 +120,6 @@ public:
 
 	virtual bool WOMA_APPLICATION_InitGUI();
 
-#if defined USE_LIGHT_RAY && defined USE_ASTRO_CLASS
-	void CalculateLightRayVertex (float SunDistance);
-#endif
-
-
-
-
-#if defined USE_LIGHT_RAY
-	void initLightRay(WomaDriverClass* m_Driver);
-#endif
-
-#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN //24
-	CTerrain*	autoGenUnderWaterTerrain;
-	void		initUnderWaterDemo(UINT terrainId);
-#endif
-
 #if defined SCENE_MAIN_TOPO_TERRAIN
 	CTerrain*	mainTopoTerrain;
 	void		initMainTopoTerrainDemo(UINT terrainId);
@@ -170,9 +144,6 @@ public:
 #if defined SCENE_WATER_TERRAIN
 	void		initTerrainWaterMeshDemo(UINT terrainId);	
 #endif
-
-
-
 
 #if  DX_ENGINE_LEVEL >= 22 || defined USE_RASTERTEK_TEXT_FONT
 	void	initText();
@@ -200,17 +171,9 @@ public:
 	WeatherClass*	weatherClass;
 	MetarClass*		metarClass;
 
-#if defined USE_LIGHT_RAY // LightModel
-	VirtualModelClass* m_lightRayModel = NULL;
-#endif
-
 	//	-------------------------------------------------------------------------------------------
 	//	WoMA Vertex(s) Arrays:  NOTE: Cant be used to create and Obj more than ONCE!
 	//	-------------------------------------------------------------------------------------------
-
-#if defined USE_SCENE_MANAGER
-	//SceneManager*				m_sceneManager;
-#endif
 
 };
 

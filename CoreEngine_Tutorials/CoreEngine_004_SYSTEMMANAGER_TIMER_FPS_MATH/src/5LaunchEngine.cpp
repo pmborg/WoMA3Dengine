@@ -21,7 +21,6 @@
 #pragma warning( push )
 #pragma warning( disable : 4996 ) // Disable warning C4996: '': This function or variable may be unsafe.
 #include "main.h"
-
 #include "OSmain_dir.h"
 #include "systemManager.h"
 

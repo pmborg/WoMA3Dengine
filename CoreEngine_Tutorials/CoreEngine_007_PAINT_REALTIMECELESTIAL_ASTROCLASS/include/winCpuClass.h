@@ -11,7 +11,7 @@
 #pragma once
 
 #include "platform.h"
-#if CORE_ENGINE_LEVEL >= 6 && defined WINDOWS_PLATFORM && !defined WIN_XP //&& ENGINE_LEVEL >= 19
+#if CORE_ENGINE_LEVEL >= 6 && defined WINDOWS_PLATFORM && !defined WIN_XP
 
 //We use the pdh library to query the cpu usage.
 

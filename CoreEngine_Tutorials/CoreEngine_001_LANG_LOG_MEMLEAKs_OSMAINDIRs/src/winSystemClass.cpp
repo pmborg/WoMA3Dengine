@@ -22,8 +22,6 @@
 
 #include "OSengine.h"
 
-//#include "winSystemClass.h" //#include "main.h" //LPCSTR
-
 #include "mem_leak.h"
 #include "OSmain_dir.h"
 #include "language.h"
@@ -31,7 +29,6 @@
 /////////////////////
 // Windows GLOBALS //
 /////////////////////
-
 
 //----------------------------------------------------------------------------------
 WinSystemClass::WinSystemClass() : SystemClass() 
@@ -71,7 +68,6 @@ WinSystemClass::~WinSystemClass()
 	SystemHandle = NULL;
 }
 
-
 //extern int Res;
 bool WinSystemClass::InitializeSystem()
 //----------------------------------------------------------------------------
@@ -81,14 +77,14 @@ bool WinSystemClass::InitializeSystem()
 	//	ApplicationClass::ApplicationClass()	Run: 2th - User: level
 	//	WinSystemClass::WinSystemClass()		Run: 3nd - This OS: hi-level (Check for another instance)
 
-	MessageBox(NULL, TEXT("Memory leak done on Purpose for this Tutorial!\nCheck Visual Studio Output Console log for more info!"), TEXT("WOMA Tutorial 001:"), MB_ICONWARNING);
+
+	MessageBox(NULL, TEXT("Memory leak done on Purpose for this Tutorial!\nCheck Visual Studio Output Console log for more info!\ndo a double click on windows console at:\nC:\\WoMA3Dengine\\CoreEngine_Tutorials\\CoreEngine_001_LANG_LOG_MEMLEAKs_OSMAINDIRs\\src\\winSystemClass.cpp(81) : {172} normal block at 0x00000238BEE105C0, 4 bytes long."), TEXT("WOMA Tutorial 001:"), MB_ICONWARNING);
 	UINT* p = NEW UINT[1];	
 	//free(p);
 	Publish_Quit_Message();
 
 	return true;				// GREEN LIGHT: to Start Rendering! :)
 }
-
 
 //----------------------------------------------------------------------------
 int WinSystemClass::ApplicationMainLoop()		// [RUN] - MAIN "INFINITE" LOOP!
@@ -121,7 +117,6 @@ void WinSystemClass::Shutdown()
 	
 	ShutdownWindows();				// Shutdown the Main Window.
 }
-
 
 void WinSystemClass::ShutdownWindows()
 //----------------------------------------------------------------------------

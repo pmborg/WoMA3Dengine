@@ -28,17 +28,12 @@
 #include "default_settings_xml.h"
 #include "OSengine.h"
 #include "woma_macros.h"
-
 #include "language.h"
 #include "mem_leak.h"
 #include "OSmain_dir.h"
-
 #include "stateMachine.h"
-
 #include "systemManager.h"
-
 #include "xml_loader.h"
-
 #include "ApplicationClass.h"
 #include "fpsclass.h"
 
@@ -246,8 +241,6 @@ void SystemClass::ProcessOSInput() // This Function will be invoked several time
 		OS_REDRAW_WINDOW;
 	}
 	first_time = false;
-
-
 }
 
 bool SystemClass::SystemCheck()
@@ -335,7 +328,6 @@ bool SystemClass::SystemCheck()
 
 	return true;
 }
-
 
 SystemClass::~SystemClass() { CLASSDELETE(); }
 

@@ -28,13 +28,10 @@
 #include "default_settings_xml.h"
 #include "OSengine.h"
 #include "woma_macros.h"
-
 #include "language.h"
 #include "mem_leak.h"
 #include "OSmain_dir.h"
-
 #include "stateMachine.h"
-
 
 SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 {
@@ -136,7 +133,6 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("-------------------------------------------------------------------------------\n"));
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)WOMA::APP_FULLNAME);
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("\n-------------------------------------------------------------------------------\n"));
-
 }
 
 

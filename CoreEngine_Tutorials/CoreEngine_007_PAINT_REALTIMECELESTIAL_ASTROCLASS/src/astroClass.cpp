@@ -27,7 +27,6 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 #include "platform.h"
-
 #include "astroClass.h"
 
 AstroClass::AstroClass() 

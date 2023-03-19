@@ -20,7 +20,6 @@
 #pragma once
 
 #include "main.h" // TCHAR
-
 #include "winCpuCores.h"
 
 extern void cpuID(unsigned regs[4], unsigned i);

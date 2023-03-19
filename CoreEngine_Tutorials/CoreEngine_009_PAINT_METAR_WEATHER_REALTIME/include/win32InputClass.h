@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------
-// Filename: inputclass.h
+// Filename: win32InputClass.h
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
 // --------------------------------------------------------------------------------------------
@@ -14,7 +14,8 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//
+// PURPOSE: A basic input used in first WOMA LEVELs using OS functions.
+// --------------------------------------------------------------------------------------------#pragma once
 #pragma once
 
 #include "platform.h"
@@ -36,6 +37,5 @@ public:
 
 	bool IsKeyDown(UINT);
 
-//private:
 	bool m_keys[256];
 };

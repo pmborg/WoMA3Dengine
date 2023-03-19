@@ -55,8 +55,4 @@ private:
 	void ShutdownWindows();
 };
 
-/////////////
-// GLOBALS //
-/////////////
 extern WinSystemClass* SystemHandle;
-

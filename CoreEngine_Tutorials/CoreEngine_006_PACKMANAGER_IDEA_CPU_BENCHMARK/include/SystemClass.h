@@ -22,9 +22,7 @@
 #pragma once
 
 #include "main.h"
-
 #include "win32InputClass.h"
-
 #include "TrigonometryMathClass.h"
 #include "systemManager.h"
 #include "fpsClass.h"

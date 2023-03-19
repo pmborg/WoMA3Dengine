@@ -23,15 +23,6 @@
 
 #include "winSystemClass.h"
 
-#if defined USE_SCENE_MANAGER
-	#include "SceneManager.h"
-
-	namespace WOMA
-	{
-		SceneManager* sceneManager;
-	}
-#endif
-
 ApplicationClass::ApplicationClass()
 {
 	CLASSLOADER();
@@ -54,15 +45,7 @@ ApplicationClass::ApplicationClass()
 	autoGenUnderWaterTerrain		= NULL;
 #endif
 
-#if defined SCENE_TERRAIN_QUAD_TREE //67
-	TerrainQuadtree = NULL;
-#endif
-
 	// TERRAIN
-
-//#if defined USE_TITLE_BANNER //26
-//	m_titleModel = NULL;
-//#endif
 
 #if defined USE_LIGHT_RAY // LightModel
 	m_lightRayModel = NULL;

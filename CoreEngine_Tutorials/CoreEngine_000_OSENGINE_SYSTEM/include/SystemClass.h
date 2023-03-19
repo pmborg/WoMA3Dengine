@@ -34,7 +34,7 @@ public:
 
 	void Shutdown();
 
-	WOMA::Settings* AppSettings;
+	WOMA::Settings* AppSettings = NULL;
 
 public:
 

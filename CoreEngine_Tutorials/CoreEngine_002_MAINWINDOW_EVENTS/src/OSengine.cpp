@@ -23,8 +23,8 @@
 
 WinSystemClass* SystemHandle = NULL;
 
-	#include "mem_leak.h"	//NEW()
-	#include "OSmain_dir.h"
+#include "mem_leak.h"	//NEW()
+#include "OSmain_dir.h"
 
 // WINDOWS vs LINUX
 // -------------------------------------------------------------------------------------------------------------------------------------

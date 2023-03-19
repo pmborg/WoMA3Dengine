@@ -46,32 +46,8 @@
 // -------------------------------------------------------------------------------------------------
 
 
-#if defined USE_SCENE_MANAGER
-	#include "SceneManager.h"
-#endif
+#define MAX_TERRAINS 0
 
-#if  defined USE_RASTERTEK_TEXT_FONT
-	#include "ApplicationTextClass.h"
-#endif
-
-#if defined SCENE_MAIN_TOPO_TERRAIN
-	#define MAX_TERRAINS 3
-
-#elif defined SCENE_WATER_TERRAIN
-	#define MAX_TERRAINS 2
-
-#elif defined SCENE_GENERATEDUNDERWATER
-	#define MAX_TERRAINS 1
-#elif defined SCENE_MAIN_TERRAIN
-	#define MAX_TERRAINS 1
-#else
-	#define MAX_TERRAINS 0
-#endif
-
-
-#if defined SCENE_TERRAIN_QUAD_TREE
-#include "TerrainQuadtreeClass.h"
-#endif
 
 #pragma warning( push )
 #pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
@@ -91,25 +67,6 @@
 	}\
 }
 
-/*
-	// DX & OPENGL3
-	#if (defined DX9 || defined DX11 || defined DX12) && defined OPENGL3
-		#define CREATE_MODEL_IF_NOT_EXCEPTION(model, model3D, castShadow, renderShadow) {\
-			if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) { model = NEW GLmodelClass(model3D); IF_NOT_THROW_EXCEPTION (model); } \
-			if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) { model = NEW DirectX::DXmodelClass(model3D, TRIANGLELIST, true, castShadow, renderShadow); IF_NOT_THROW_EXCEPTION (model); } \
-		}
-
-		#define SAFE_SHUTDOWN_MODEL(model) {\
-			if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) if (model) { (model)->Shutdown(); delete ((GLmodelClass*)model); model=NULL; } \
-			if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) if(model) { (model)->Shutdown(); delete ((DirectX::DXmodelClass*)model); model=NULL; } \
-		}\
-		/*\
-		#define CAMERA_RENDER(camera) {\
-			if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) ((GLopenGLclass*)m_Driver)->camera->Render(); \
-			if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) ((DX_CLASS*)m_Driver)->camera->Render(); \
-		}
-	#endif
-*/
 #pragma warning( pop )
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -146,32 +103,6 @@ public:
 
 	virtual bool WOMA_APPLICATION_InitGUI();
 
-#if defined USE_LIGHT_RAY && defined USE_ASTRO_CLASS
-	void CalculateLightRayVertex (float SunDistance);
-#endif
-
-
-
-
-#if defined USE_LIGHT_RAY
-	void initLightRay(WomaDriverClass* m_Driver);
-#endif
-
-#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN //24
-	CTerrain*	autoGenUnderWaterTerrain;
-	void		initUnderWaterDemo(UINT terrainId);
-#endif
-
-#if defined SCENE_MAIN_TOPO_TERRAIN
-	CTerrain*	mainTopoTerrain;
-	void		initMainTopoTerrainDemo(UINT terrainId);
-#endif
-
-#if defined SCENE_MAIN_TERRAIN
-	CTerrain*	mainTerrain;
-	void		initMainTerrainDemo(UINT terrainId);
-#endif
-
 	// SKY
 #if defined USE_SKY2D || ENGINE_LEVEL >= 27
 	std::vector<ModelTextureLightVertexType> sky_vertexdata; //std::vector<ModelTextureVertexType> sky_vertexdata;
@@ -181,21 +112,6 @@ public:
 #if defined USE_SKYSPHERE
 	void	CreateSkyModel(int SKY_SIZE, int sky_gridpoints);
 	void	initSky();
-#endif
-
-#if defined SCENE_WATER_TERRAIN
-	void		initTerrainWaterMeshDemo(UINT terrainId);	
-#endif
-
-
-
-
-#if  DX_ENGINE_LEVEL >= 22 || defined USE_RASTERTEK_TEXT_FONT
-	void	initText();
-#endif
-
-#if  defined USE_RASTERTEK_TEXT_FONT
-	DirectX::ApplicationTextClass* AppTextClass;
 #endif
 
 private:
@@ -213,17 +129,9 @@ public:
 	//---------------------------------------------------------------------
 	InitWorld*		initWorld;    // Get Astro Positions
 
-#if defined USE_LIGHT_RAY // LightModel
-	VirtualModelClass* m_lightRayModel = NULL;
-#endif
-
 	//	-------------------------------------------------------------------------------------------
 	//	WoMA Vertex(s) Arrays:  NOTE: Cant be used to create and Obj more than ONCE!
 	//	-------------------------------------------------------------------------------------------
-
-#if defined USE_SCENE_MANAGER
-	//SceneManager*				m_sceneManager;
-#endif
 
 };
 

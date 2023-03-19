@@ -55,17 +55,17 @@ public:
 
 	void Shutdown();
 
-	WOMA::Settings* AppSettings;
+	WOMA::Settings* AppSettings = NULL;
 
 	resolutionType		resolution;
 	void FrameUpdate();
 
-	InputClass* m_OsInput;
+	InputClass* m_OsInput = NULL;
 	void ProcessOSInput();
 	virtual void ProcessInput() = 0;
 
 	SystemSettings	systemDefinitions;
-	SystemManager*	systemManager;
+	SystemManager*	systemManager = NULL;
 	STRING			userName;
 	STRING			ComputerName;
 	bool			mMaximized;

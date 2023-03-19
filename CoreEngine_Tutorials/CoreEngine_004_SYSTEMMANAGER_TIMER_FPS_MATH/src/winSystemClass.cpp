@@ -21,13 +21,10 @@
 // --------------------------------------------------------------------------------------------
 
 #include "OSengine.h"
-
 #include "mem_leak.h"
 #include "OSmain_dir.h"
 #include "language.h"
-
 #include "stateMachine.h"
-
 #include "woma_exception.h"
 
 /////////////////////
@@ -35,7 +32,6 @@
 /////////////////////
 
 TCHAR MainDeviceName[MAX_STR_LEN];	// Monitor Name
-
 
 //----------------------------------------------------------------------------------
 WinSystemClass::WinSystemClass() : SystemClass() 
@@ -277,10 +273,6 @@ void WinSystemClass::refreshTitle() // Run once per second.
 	STRING clean_title = pstrFPS;
 	clean_title.erase(std::remove(clean_title.begin(), clean_title.end(), '\r'), clean_title.cend());
 	clean_title.erase(std::remove(clean_title.begin(), clean_title.end(), '\n'), clean_title.cend());
-
-	//#if !defined _DEBUG
-	//	StringCchPrintf(pstrFPS, 300, clean_title.c_str());
-	//#endif
 	
 	#if defined(X64) // Set the new "Window Title"
 		PDWORD_PTR dwResult = 0;// In 64 Bits
@@ -693,12 +685,8 @@ bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ voi
 
 	ASSERT(hWnd);
 
-	//#if defined _DEBUG && DX_ENGINE_LEVEL == 19
-	//if (SystemHandle->statusbar)
-	//	DestroyWindow(SystemHandle->statusbar);
 	SystemHandle->statusbar = DoCreateStatusBar(hWnd, 0/*idStatus*/, m_hinstance, 1/*cParts*/);
 	SendMessage(SystemHandle->statusbar, SB_SETTEXT, 0, (LPARAM)DEMO_TITLE);
-	//#endif
 
 	// Save window for Main Monitor
 	m_hWnd = hWnd;
@@ -830,8 +818,6 @@ void WinSystemClass::UNPAUSE()
 		WOMA::game_state = WOMA::previous_game_state;
 	}
 }
-
-
 
 //----------------------------------------------------------------------------
 void WinSystemClass::ProcessFrame()

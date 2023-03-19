@@ -97,13 +97,13 @@ public:
 	//VARS:
 	// --------------------------------------------------------------
 	// SUBSYSTEM:WINDOWS
-	PSTR	Scmdline;
-	int		Cmdshow;
-	DWORD	windowStyle;
+	PSTR	Scmdline=0;
+	int		Cmdshow=0;
+	DWORD	windowStyle=0;
 
-	HBITMAP bmpBackGround;
-	HWND	m_hWnd;
-	HWND	statusbar;
+	HBITMAP bmpBackGround=0;
+	HWND	m_hWnd=0;
+	HWND	statusbar=0;
 	std::vector<WOMA::WindowDataContainer> windowsArray;
 	std::vector<WOMA::WindowDataContainer> allWindowsArray;
 

@@ -19,7 +19,6 @@
 
 #include "platform.h"
 #include "standard_platform.h"
-
 #include "unzip.h"
 #include "zip.h"
 
@@ -64,9 +63,3 @@
 extern BOOL PackDirectory(HZIP hz, const TCHAR* sPath);
 extern void PackDir(STRING dir, STRING packName);
 
-#if CHAP >= 7
-#include "../../System/src/Global.h"
-extern int numZipItems;
-extern int zipIndx;
-extern UINT packCounter, totalPackCounter;
-#endif

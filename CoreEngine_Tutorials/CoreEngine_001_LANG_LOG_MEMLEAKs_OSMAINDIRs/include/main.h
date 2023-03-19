@@ -72,6 +72,5 @@ namespace WOMA
 	extern int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption = APP_NAME, bool yesORno = false);
 	extern bool dirExists(STRING& dirName_in);
 	extern int getTaskBarHeight();
-
 }
 

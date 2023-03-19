@@ -28,11 +28,9 @@
 #include "default_settings_xml.h"
 #include "OSengine.h"
 #include "woma_macros.h"
-
 #include "language.h"
 #include "mem_leak.h"
 #include "OSmain_dir.h"
-
 
 SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 {
@@ -42,7 +40,6 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 	AppSettings = NULL;
 
 }
-
 
 SystemClass::~SystemClass() { CLASSDELETE(); }
 

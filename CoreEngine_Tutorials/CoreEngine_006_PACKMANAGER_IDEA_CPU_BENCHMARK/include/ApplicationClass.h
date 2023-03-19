@@ -44,25 +44,25 @@
 
 
 #if defined USE_SCENE_MANAGER
-	#include "SceneManager.h"
+#include "SceneManager.h"
 #endif
 
 #if  defined USE_RASTERTEK_TEXT_FONT
-	#include "ApplicationTextClass.h"
+#include "ApplicationTextClass.h"
 #endif
 
 #if defined SCENE_MAIN_TOPO_TERRAIN
-	#define MAX_TERRAINS 3
+#define MAX_TERRAINS 3
 
 #elif defined SCENE_WATER_TERRAIN
-	#define MAX_TERRAINS 2
+#define MAX_TERRAINS 2
 
 #elif defined SCENE_GENERATEDUNDERWATER
-	#define MAX_TERRAINS 1
+#define MAX_TERRAINS 1
 #elif defined SCENE_MAIN_TERRAIN
-	#define MAX_TERRAINS 1
+#define MAX_TERRAINS 1
 #else
-	#define MAX_TERRAINS 0
+#define MAX_TERRAINS 0
 #endif
 
 
@@ -88,25 +88,6 @@
 	}\
 }
 
-/*
-	// DX & OPENGL3
-	#if (defined DX9 || defined DX11 || defined DX12) && defined OPENGL3
-		#define CREATE_MODEL_IF_NOT_EXCEPTION(model, model3D, castShadow, renderShadow) {\
-			if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) { model = NEW GLmodelClass(model3D); IF_NOT_THROW_EXCEPTION (model); } \
-			if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) { model = NEW DirectX::DXmodelClass(model3D, TRIANGLELIST, true, castShadow, renderShadow); IF_NOT_THROW_EXCEPTION (model); } \
-		}
-
-		#define SAFE_SHUTDOWN_MODEL(model) {\
-			if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) if (model) { (model)->Shutdown(); delete ((GLmodelClass*)model); model=NULL; } \
-			if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) if(model) { (model)->Shutdown(); delete ((DirectX::DXmodelClass*)model); model=NULL; } \
-		}\
-		/*\
-		#define CAMERA_RENDER(camera) {\
-			if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) ((GLopenGLclass*)m_Driver)->camera->Render(); \
-			if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) ((DX_CLASS*)m_Driver)->camera->Render(); \
-		}
-	#endif
-*/
 #pragma warning( pop )
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -134,9 +115,6 @@ public:
 	void AppPreRender(float fadeLight);					// PRE-RENDER - Shadows
 	void AppRender(UINT monitorWindow, float fadeLight);	// RENDER - 3D
 	void AppPosRender();									// POS-RENDER - 2D: Render 
-
-
-
 
 #if defined USE_LIGHT_RAY
 	void initLightRay(WomaDriverClass* m_Driver);
@@ -171,9 +149,6 @@ public:
 #if defined SCENE_WATER_TERRAIN
 	void		initTerrainWaterMeshDemo(UINT terrainId);	
 #endif
-
-
-
 
 #if  DX_ENGINE_LEVEL >= 22 || defined USE_RASTERTEK_TEXT_FONT
 	void	initText();

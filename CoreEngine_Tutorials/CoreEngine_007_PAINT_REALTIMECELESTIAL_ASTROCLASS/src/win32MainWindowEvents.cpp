@@ -22,9 +22,7 @@
 #include "platform.h"
 #include "stateMachine.h"
 #include "OSmain_dir.h"
-
 #include "winsystemclass.h"
-
 #include "xml_loader.h"
 
 #if defined USE_INTRO_VIDEO_DEMO

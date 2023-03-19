@@ -24,8 +24,6 @@
 
 int		MainWindowPaint(UINT monitor);
 
-//#define LineHeigth 20
-
 // ---------------------------------------------------------------------------------------------
 LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 // ---------------------------------------------------------------------------------------------
@@ -106,9 +104,6 @@ int MainWindowPaint(UINT monitor)
 		scr = 0;
 		break;
 	}
-
-	//if (WOMA::game_state != GAME_SETUP)
-	//	return scr;
 
 	// Paint BackGround Image:
 	// ---------------------------------------------------------------------------------------------

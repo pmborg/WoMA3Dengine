@@ -22,7 +22,6 @@
 #include "OSmain_dir.h"
 #include "mem_leak.h"
 
-//#define LineHeigth 20
 
 // ---------------------------------------------------------------------------------------------
 LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)

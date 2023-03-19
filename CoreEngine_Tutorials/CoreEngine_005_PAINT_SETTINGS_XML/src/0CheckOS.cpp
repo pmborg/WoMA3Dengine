@@ -144,16 +144,16 @@ TCHAR* SystemManager::GetOSversionPlatform()
 		break;
 	case 2:
 		_tcscpy_s(osPlatform, (TCHAR*)TEXT("Windows NT")); /*
-												   Windows NT 3.1 			  -	386 16 MHz
-												   Windows NT 3.51 		  -	386 25 MHz
-												   Windows NT 4.0 			  - 486 33 MHz
-												   Windows 2000 Professional - Pentium 2 300 MHz
-												   Windows XP Professional   -	Pentium MMX / AMD Athlon 350 MHz
-												   Windows Vista			  - CPU de 1 GHz
-												   Windows Server 2008 	  - Dual Core 1.4 GHz
-												   Windows 7 				  - CPU de 1 GHz
-												   Windows 8 e Windows 8.1   -	CPU de 1 GHz
-												   Windows 10 				  - CPU de 1 GHz
+												   Windows NT 3.1 				- 386 16 MHz
+												   Windows NT 3.51 				- 386 25 MHz
+												   Windows NT 4.0 				- 486 33 MHz
+												   Windows 2000 Professional	- Pentium 2 300 MHz
+												   Windows XP Professional		- Pentium MMX / AMD Athlon 350 MHz
+												   Windows Vista				- CPU de 1 GHz
+												   Windows Server 2008 			- Dual Core 1.4 GHz
+												   Windows 7 					- CPU de 1 GHz
+												   Windows 8 e Windows 8.1		- CPU de 1 GHz
+												   Windows 10 					- CPU de 1 GHz
 												   */
 		break;
 	case 3:

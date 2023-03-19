@@ -23,7 +23,6 @@
 // INCLUDES //
 //////////////
 #include "platform.h"
-
 #include <mmsystem.h>
 
 /////////////

@@ -400,7 +400,7 @@ void SystemClass::ProcessPerformanceStats() // Run every frame
 	// Update the system stats: (BEFORE: HandleUserInput)
 	m_Timer.Frame();		// Calculate dT for animations (Measure last frame time)
 	m_Fps.Frame();			// Increase the frame counter, calculate FPS once per second
-	fps = m_Fps.GetFps();	// Get current FPS      (updated by "m_Fps.Frame()" every second)
+	fps = m_Fps.GetFps();	// Get current FPS (updated by "m_Fps.Frame()" every second)
 
 #if defined WINDOWS_PLATFORM && !defined WIN_XP
 	m_Cpu.Frame();			// Collect CPU usage percentage once per second

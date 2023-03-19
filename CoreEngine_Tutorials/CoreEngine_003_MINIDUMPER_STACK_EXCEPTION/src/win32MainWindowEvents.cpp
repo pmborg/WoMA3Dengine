@@ -22,7 +22,6 @@
 #include "platform.h"
 #include "stateMachine.h"
 #include "OSmain_dir.h"
-
 #include "winsystemclass.h"
 
 #if defined USE_INTRO_VIDEO_DEMO

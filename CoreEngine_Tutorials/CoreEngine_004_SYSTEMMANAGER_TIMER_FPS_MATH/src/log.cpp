@@ -20,9 +20,7 @@
 //
 // --------------------------------------------------------------------------------------------
 #include "main.h"
-
 #include <shlwapi.h>
-
 #include "log.h"
 #include "mem_leak.h"
 #include "OSmain_dir.h"
@@ -79,7 +77,6 @@ LogManager::LogManager()
 	debugFile = NULL; // Our "debug file" pointer
 
 	//public:
-	//REPORT_FILE = APPDATA;
 	REPORT_FILE = PUBLIC_DOCUMENTS;
 	REPORT_FILE.append(TEXT("REPORT.txt"));
 
@@ -105,7 +102,6 @@ LogManager::~LogManager()
 
 		if (CLASS_LOAD_N != CLASS_DELETE_N)
 			WOMA_LOGManager_DebugMSG(TEXT("N_CLASS_LOAD != N_CLASS_DELETE\n"));
-			//WomaMessageBox(TEXT("N_CLASS_LOAD != N_CLASS_DELETE"), TEXT("WARNING!"), false);
 
 		if (debugFile)
 		{

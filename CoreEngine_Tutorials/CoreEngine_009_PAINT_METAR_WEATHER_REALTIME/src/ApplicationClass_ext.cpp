@@ -23,15 +23,6 @@
 
 #include "winSystemClass.h"
 
-#if defined USE_SCENE_MANAGER
-	#include "SceneManager.h"
-
-	namespace WOMA
-	{
-		SceneManager* sceneManager;
-	}
-#endif
-
 ApplicationClass::ApplicationClass()
 {
 	CLASSLOADER();
@@ -55,23 +46,7 @@ ApplicationClass::ApplicationClass()
 
 
 
-#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN //24
-	autoGenUnderWaterTerrain		= NULL;
-#endif
-
-#if defined SCENE_TERRAIN_QUAD_TREE //67
-	TerrainQuadtree = NULL;
-#endif
-
 	// TERRAIN
-
-//#if defined USE_TITLE_BANNER //26
-//	m_titleModel = NULL;
-//#endif
-
-#if defined USE_LIGHT_RAY // LightModel
-	m_lightRayModel = NULL;
-#endif
 
 	Start();
 }
@@ -83,9 +58,6 @@ void ApplicationClass::Shutdown()
 {
 	WOMA_LOGManager_DebugMSG ("ApplicationClass::Shutdown()\n");
 
-#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN
-	SAFE_DELETE (autoGenUnderWaterTerrain);
-#endif
 #if defined SCENE_MAIN_TOPO_TERRAIN
 	SAFE_DELETE (mainTopoTerrain);
 #endif
@@ -160,7 +132,4 @@ void ApplicationClass::WOMA_APPLICATION_Shutdown()
 	SAFE_DELETE(weatherClass);
 	SAFE_DELETE(metarClass);
 
-#if defined USE_LIGHT_RAY
-
-#endif
 }

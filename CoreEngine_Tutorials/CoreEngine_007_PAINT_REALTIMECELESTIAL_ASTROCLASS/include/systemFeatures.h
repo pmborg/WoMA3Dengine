@@ -1,13 +1,21 @@
 // --------------------------------------------------------------------------------------------
 // Filename: SystemFeatures.h
 // --------------------------------------------------------------------------------------------
-// ********************************************************************************************
-// World of Middle Age  - 3D Multi-Platform ENGINE 2017
-//-------------------------------------------------------------------------------------------
-// code by : Pedro Borges - pmborg@yahoo.com
-// Downloaded from : http://woma.servegame.com
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// --------------------------------------------------------------------------------------------
+// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
 //
-// ********************************************************************************************
+// This file is part of the WorldOfMiddleAge project.
+//
+// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
+// You may not alter or remove any copyright or other notice from copies of the content.
+// The content contained in this file is provided only for educational and informational purposes.
+// 
+// Downloaded from : https://github.com/pmborg/WoMA3Dengine
+// --------------------------------------------------------------------------------------------
+// PURPOSE:
+// --------------------------------------------------------------------------------------------
 #pragma once
 
 // --------------------------------------------------------------------------------------------
@@ -19,11 +27,11 @@
 class SystemFeatures
 {
 public:
-    SystemFeatures();
-    ~SystemFeatures();
+	SystemFeatures();
+	~SystemFeatures();
 
-    STRING Initialize();
-    STRING displayAllCpuFeactures;
+	STRING Initialize();
+	STRING displayAllCpuFeactures;
 
 
 	// Get processor info:
@@ -42,14 +50,14 @@ public:
 
 	bool hypervisor; //if(hypervisor) virtualization = TRUE
 
-    // Get extra processor info:
+	// Get extra processor info:
 	bool amd_3DNow;
 	bool amd_3DNowExt;
 	bool SVM;		//if(!hypervisor) virtualization = "AMD virtualization (AMD-V)"
 	bool sse4A;
 	//bool sse5;
 
-    // Get processor info:
+	// Get processor info:
 	bool avx2;
 
 

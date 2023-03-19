@@ -21,13 +21,10 @@
 // --------------------------------------------------------------------------------------------
 
 #include "OSengine.h"
-
 #include "mem_leak.h"
 #include "OSmain_dir.h"
 #include "language.h"
-
 #include "stateMachine.h"
-
 #include "woma_exception.h"
 
 /////////////////////
@@ -522,12 +519,10 @@ bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ voi
 
 	ASSERT(hWnd);
 
-	//#if defined _DEBUG && DX_ENGINE_LEVEL == 19
-	//if (SystemHandle->statusbar)
-	//	DestroyWindow(SystemHandle->statusbar);
 	SystemHandle->statusbar = DoCreateStatusBar(hWnd, 0/*idStatus*/, m_hinstance, 1/*cParts*/);
 	SendMessage(SystemHandle->statusbar, SB_SETTEXT, 0, (LPARAM)DEMO_TITLE);
-	//#endif
+	if (AppSettings->FULL_SCREEN)
+		ShowWindow(SystemHandle->statusbar, SW_HIDE);
 
 	// Save window for Main Monitor
 	m_hWnd = hWnd;

@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: systemManager.h
 // --------------------------------------------------------------------------------------------
@@ -24,90 +23,95 @@
 
 #include "main.h"// TCHAR
 
-//#include "ApplicationClass.h"
+#if defined LINUX_PLATFORM || defined ANDROID_PLATFORM
+#include <sys/utsname.h>
+#endif
 
-//#if ENGINE_LEVEL > 1
 #include "timerClass.h"
-//#endif 
+#if CORE_ENGINE_LEVEL >= 4
+#include "ProcessorInfo.h"
+#include "SystemFeatures.h"
+
+#if defined WINDOWS_PLATFORM
+#include "wmiUtilClass.h"
+
+struct DriveList {
+	WCHAR   drive;
+	__int64 freeBytesAvailable;
+};
+
+#endif
+
+#define BUFSIZE 256
 
 extern int GETOS(void);
 
-typedef struct  
+typedef struct
 {
-	TCHAR GraphicCard			[MAX_STR_LEN];
-	TCHAR AdapterDACType		[MAX_STR_LEN];
-	TCHAR AdapterRAM			[MAX_STR_LEN];
-	TCHAR DedicatedVideoMemory	[MAX_STR_LEN];
-	TCHAR DedicatedSystemMemory	[MAX_STR_LEN];
-	TCHAR SharedSystemMemory	[MAX_STR_LEN];
+	TCHAR GraphicCard[MAX_STR_LEN];
+	TCHAR AdapterDACType[MAX_STR_LEN];
+	TCHAR AdapterRAM[MAX_STR_LEN];
+	TCHAR DedicatedVideoMemory[MAX_STR_LEN];
+	TCHAR DedicatedSystemMemory[MAX_STR_LEN];
+	TCHAR SharedSystemMemory[MAX_STR_LEN];
 } GPU;
 
-typedef struct  
+typedef struct
 {
-	TCHAR szCountryNameBuffer	[MAX_STR_LEN]; // Will hold country
+	TCHAR szCountryNameBuffer[MAX_STR_LEN]; // Will hold country
 
-	TCHAR cCurrentPath			[FILENAME_MAX];
+	TCHAR cCurrentPath[FILENAME_MAX];
 
 	// System
-	TCHAR platform				[MAX_STR_LEN];
-	TCHAR characterSet			[MAX_STR_LEN];
-	TCHAR binaryArchitecture	[MAX_STR_LEN];
-	TCHAR binaryCode			[MAX_STR_LEN];
+	TCHAR platform[MAX_STR_LEN];
+	TCHAR characterSet[MAX_STR_LEN];
+	TCHAR binaryArchitecture[MAX_STR_LEN];
+	TCHAR binaryCode[MAX_STR_LEN];
 
 	// OS
-	TCHAR windowsVersion		[MAX_STR_LEN];
-	TCHAR windowsBuildNumber	[MAX_STR_LEN];
-	TCHAR osName				[MAX_STR_LEN];
+#if defined WINDOWS_PLATFORM
+	TCHAR windowsVersion[MAX_STR_LEN];
+	TCHAR windowsBuildNumber[MAX_STR_LEN];
+#else
+	struct utsname ver;
+#endif
+	TCHAR osName[MAX_STR_LEN];
 
 	// Processor
-    TCHAR	processorName			[MAX_STR_LEN];
-    TCHAR	processorId				[MAX_STR_LEN];
-	TCHAR	clockSpeed				[MAX_STR_LEN];
+	TCHAR	processorName[MAX_STR_LEN];
+	TCHAR	processorId[MAX_STR_LEN];
+	TCHAR	clockSpeed[MAX_STR_LEN];
 
-    TCHAR	processorPackageCount	[MAX_STR_LEN];
-    TCHAR	NumCoreProcessors		[MAX_STR_LEN];
-	TCHAR	logicalProcessorCount	[MAX_STR_LEN];
+	TCHAR	processorPackageCount[MAX_STR_LEN];
+	TCHAR	NumCoreProcessors[MAX_STR_LEN];
+	TCHAR	logicalProcessorCount[MAX_STR_LEN];
 
-	TCHAR	ProcessorCacheL1D		[MAX_STR_LEN];
-	TCHAR	ProcessorCacheL1I		[MAX_STR_LEN];
-	TCHAR	ProcessorCacheL2		[MAX_STR_LEN];
-	TCHAR	ProcessorCacheL3		[MAX_STR_LEN];
+	TCHAR	ProcessorCacheL1D[MAX_STR_LEN];
+	TCHAR	ProcessorCacheL1I[MAX_STR_LEN];
+	TCHAR	ProcessorCacheL2[MAX_STR_LEN];
+	TCHAR	ProcessorCacheL3[MAX_STR_LEN];
 
 	// RAM
-	TCHAR totalMemoryCapacity		[MAX_STR_LEN]; // in GB
-	TCHAR freeMemory				[MAX_STR_LEN]; // in GB
+	TCHAR totalMemoryCapacity[MAX_STR_LEN]; // in GB
+	TCHAR freeMemory[MAX_STR_LEN]; // in GB
 
 	// BOARD/CPU:
-	 std::vector<STRING>		cpuFeactures;
-	 STRING systemFeatures;
+	std::vector<STRING>		cpuFeactures;
+	STRING systemFeatures;
 
 	// FreeSpace
-    std::vector<STRING> drives_List;
+	std::vector<STRING> drives_List;
 
 	// BenchMark MathSpeed
-	 STRING benchMarkMathSpeed;
+	STRING benchMarkMathSpeed;
 
 	// OS
-	TCHAR cmdLine	[MAX_STR_LEN];
+	TCHAR cmdLine[MAX_STR_LEN];
 
 	//GPU
 	std::vector<GPU>	GPUINFO;
 
 } SystemSettings;
-
-#include "ProcessorInfo.h"
-#include "SystemFeatures.h"
-
-#include "wmiUtilClass.h"
-
-//#if ENGINE_LEVEL >= 6
-struct DriveList {
-    WCHAR   drive;
-    __int64 freeBytesAvailable;
-};
-//#endif
-
-#define BUFSIZE 256
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: SystemManager
@@ -118,65 +122,53 @@ public:
 	SystemManager();
 	~SystemManager();
 
-	//#if ENGINE_LEVEL >= 3
-	bool CheckOS ();				// Detect Version & System Check
-	//#endif
+	bool CheckOS();				// Detect Version & System Check
 
-	//#if ENGINE_LEVEL >= 4
 	bool checkCPU();
 
 	float CPUSpeedMHz;
-    ProcessorInfo processorInfo;
-	//#endif
+	ProcessorInfo processorInfo;
 
-	//#if ENGINE_LEVEL >= 5 && defined WINDOWS_PLATFORM
 	wmiUtilClass wmiUtil;
-	//#endif
 
-	//#if ENGINE_LEVEL >= 5
 	bool checkRAM();
-	//#endif
 
-	//#if ENGINE_LEVEL >= 6
 	bool checkDiskFreeSpace();
-	//#endif
 
-	//#if ENGINE_LEVEL >= 7
-	bool checkCPUFeatures ();
-	//#endif
+	bool checkCPUFeatures();
 
+#if defined USE_TIMER_CLASS
 	bool checkBenchMarkSpeed(TimerClass* m_Timer);
+#endif
 
-	//#if ENGINE_LEVEL >= 9
-	bool CheckIO ();
-	//#endif
+	bool CheckIO();
 
 	bool UpdateOSifNeeded();		// Check if OS need Updates
 	bool CheckSetup();				// Check if Setup is Installed / Download & Install
 	bool CheckEngineUpdates();		// Check Engine for Updates (Woma Server) / Download & Install
 	bool LaunchEngine();			// Launch WOMA Engine (32bits or 64bits)
 
-	//#if ENGINE_LEVEL >= 7
-    SystemFeatures systemFeatures;
-	//#endif
+	SystemFeatures systemFeatures;
 
 private:
 	//CheckOS:
 	TCHAR* GetOSversionPlatform();
-	bool CheckOSVersion ();
-	bool CheckDXGIVersion (bool* REQUIRES_WINDOWS_VISTA_SP2, bool* REQUIRES_UPDATE_KB971644);
+	bool CheckOSVersion();
+	bool CheckDXGIVersion(bool* REQUIRES_WINDOWS_VISTA_SP2, bool* REQUIRES_UPDATE_KB971644);
 
-	//#if ENGINE_LEVEL >= 4
 	float GetProcessorSpeed();
 	float GetProcessorSpeed4Intel(TCHAR*);
-	//#endif
 
+#if defined WINDOWS_PLATFORM
 	DWORDLONG getAvailSystemMemory();
+#endif
 
-    std::vector<DriveList> drivesList;
-    UINT driveLetter;
+#if defined WINDOWS_PLATFORM
+	std::vector<DriveList> drivesList;
+	UINT driveLetter;
+#endif
 
-// VARS:
+	// VARS:
 public:
 	//CheckOS:
 	TCHAR	pszOS[BUFSIZE];
@@ -187,4 +179,5 @@ private:
 	UINT	DXGI_H, DXGI_L;
 };
 
+#endif
 #endif

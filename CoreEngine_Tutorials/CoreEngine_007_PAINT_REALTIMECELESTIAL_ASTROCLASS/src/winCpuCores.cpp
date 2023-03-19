@@ -24,7 +24,6 @@
 
 #include "WinSystemClass.h"
 #include "winCpuCores.h"
-//#include "SystemPlatform.h"			// Get [SystemHandle] Pointer to System Class: WINDOWS, LINUX & ANDROID
 
 WinCpuCores::WinCpuCores()
 {

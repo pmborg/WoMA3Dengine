@@ -27,9 +27,7 @@
 #define _CRT_SECURE_NO_WARNINGS		// Ignore: warning C4996
 #include "platform.h"
 #include "SystemClass.h"
-
 #include "WomaSetupManager.h"
-
 #include <combaseapi.h>				// VC7: ships with updated headers: CoInitializeEx()
 
 #define WOMA_ENGINE_CLASS TEXT("WoMA3Dengine")
