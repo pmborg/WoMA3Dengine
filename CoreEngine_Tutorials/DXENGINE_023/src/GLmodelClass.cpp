@@ -135,21 +135,25 @@ bool result=false;
 	{
 		// Create the texture object for this model:
 		m_Texture = NEW GLtextureClass;
-		IF_NOT_THROW_EXCEPTION (m_Texture);
+		IF_NOT_THROW_EXCEPTION(m_Texture);
 		meshSRV.push_back(m_Texture);
 
 		// Initialize the texture object:
 		// TODO FOR for all textures
-		
-		result = m_Texture->Initialize(WOMA::LoadFile((TCHAR*)(*textureFile)[0].c_str()), 0, /*wrap*/ Model3D);
-		if(!result)
-			{ WOMA::WomaMessageBox((TCHAR*)(*textureFile)[0].c_str(), TEXT("Texture File not found")); return false; }
-	}
 
-	if (!Model3D)
-	{
-		SpriteTextureWidth = m_Texture->width;
-		SpriteTextureHeight = m_Texture->height;
+		result = m_Texture->Initialize(WOMA::LoadFile((TCHAR*)(*textureFile)[0].c_str()), 0, /*wrap*/ Model3D);
+		if (!result)
+		{
+			WOMA::WomaMessageBox((TCHAR*)(*textureFile)[0].c_str(), TEXT("Texture File not found")); return false;
+		}
+
+		if (!Model3D)
+		{
+			if (ModelShaderType != SHADER_COLOR) {
+				SpriteTextureWidth = m_Texture->width;
+				SpriteTextureHeight = m_Texture->height;
+			}
+		}
 	}
 
 	return true;

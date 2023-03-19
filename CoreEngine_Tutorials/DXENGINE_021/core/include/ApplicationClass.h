@@ -51,14 +51,9 @@
 // -------------------------------------------------------------------------------------------------
 
 
-	#include "virtualModelClass.h"
+#include "virtualModelClass.h"
 
-#if   defined SCENE_WATER_TERRAIN
-	#define MAX_TERRAINS 2
-
-#else
-	#define MAX_TERRAINS 0
-#endif
+#define MAX_TERRAINS 0
 
 
 #pragma warning( push )
@@ -134,22 +129,7 @@ public:
 	bool	Initialize(/*WomaDriverClass*/ void* Driver);
 	virtual bool WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver); // APP_Load
 
-
-
-
-#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN //24
-	CTerrain*	autoGenUnderWaterTerrain;
-	void		initUnderWaterDemo(UINT terrainId);
-#endif
-
 	// SKY
-
-#if defined SCENE_WATER_TERRAIN
-	void		initTerrainWaterMeshDemo(UINT terrainId);	
-#endif
-
-
-
 
 private:
 

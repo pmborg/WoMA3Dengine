@@ -137,15 +137,9 @@ public:
 	std::vector<ModelColorVertexType>* m_LightVertexVector;
 	LightClass* m_Light = NULL;
 
-
-
-
 	void initLightRay(WomaDriverClass* m_Driver);
 
 	// SKY
-
-
-
 
 	void	initText();
 

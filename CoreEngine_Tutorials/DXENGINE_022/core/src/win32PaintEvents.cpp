@@ -32,7 +32,6 @@ void	PaintSplashScreen(HDC hdc);
 
 void PaintMapLocation(HDC hdc);
 
-//#define LineHeigth 20
 
 // ---------------------------------------------------------------------------------------------
 LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
@@ -151,9 +150,6 @@ int MainWindowPaint(UINT monitor)
 		scr = 2;
 		break;
 	}
-
-	//if (WOMA::game_state != GAME_SETUP)
-	//	return scr;
 
 	// Paint BackGround Image:
 	// ---------------------------------------------------------------------------------------------

@@ -23,12 +23,12 @@
 
 WinSystemClass* SystemHandle = NULL;
 
-	#include "mem_leak.h"	//NEW()
-	#include "OSmain_dir.h"
+#include "mem_leak.h"	//NEW()
+#include "OSmain_dir.h"
 
-	#include "womadriverclass.h"
-	#include "GLmathClass.h"
-	#include "GLopenGLclass.h"
+#include "womadriverclass.h"
+#include "GLmathClass.h"
+#include "GLopenGLclass.h"
 
 // WINDOWS vs LINUX
 // -------------------------------------------------------------------------------------------------------------------------------------

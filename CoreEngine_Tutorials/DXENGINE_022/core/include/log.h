@@ -39,7 +39,6 @@ public:
 	virtual void DEBUG_MSG(CHAR* strMsg, ...) = 0;
 };
 
-
 extern ILogManager* logManager;		// Global log manager
 extern void start_log_manager();
 }

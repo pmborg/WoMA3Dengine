@@ -105,7 +105,7 @@ namespace WOMA
 		int		SCREEN_RESOLUTION_HEIGHT; // Note: 0 eq. Auto detect Current Resolution
 
 		// ------------------------------------------------------------------------------------------
-		// TODO: Networking...
+		// Networking...
 		bool			NETWORK_ENABLED;
 		char			SERVER_ADDRESS[16]; //Allocate max string lenght possible: ___.___.___.___ 15+1
 		unsigned short	SERVER_PORT;

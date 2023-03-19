@@ -138,13 +138,11 @@ bool ApplicationClass::Initialize(/*WomaDriverClass*/ void* Driver)
 {
 	ASSERT(Driver);
 
-
-
 	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(SystemHandle->m_Driver));	// <---------- USER LOAD all 3D objects!
 
 	//CALL DEMO APPLICATION //////////////////////////////////////////////////////////////////////////////////////////
 	SystemHandle->demoApplicationClass = NEW DemoApplicationClass;
-	SystemHandle->demoApplicationClass->WOMA_APPLICATION_Initialize3D(SystemHandle->m_Driver);
+	IF_NOT_RETURN_FALSE(SystemHandle->demoApplicationClass->WOMA_APPLICATION_Initialize3D(SystemHandle->m_Driver));
 	SystemHandle->m_Driver->Finalize();
 
 	return true;

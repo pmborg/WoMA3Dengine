@@ -51,24 +51,8 @@
 // -------------------------------------------------------------------------------------------------
 
 
-#if defined SCENE_MAIN_TOPO_TERRAIN
-	#define MAX_TERRAINS 3
+#define MAX_TERRAINS 0
 
-#elif defined SCENE_WATER_TERRAIN
-	#define MAX_TERRAINS 2
-
-#elif defined SCENE_GENERATEDUNDERWATER
-	#define MAX_TERRAINS 1
-#elif defined SCENE_MAIN_TERRAIN
-	#define MAX_TERRAINS 1
-#else
-	#define MAX_TERRAINS 0
-#endif
-
-
-#if defined SCENE_TERRAIN_QUAD_TREE
-#include "TerrainQuadtreeClass.h"
-#endif
 
 #pragma warning( push )
 #pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
@@ -142,24 +126,6 @@ public:
 	void	defineSquarModel(float unit);
 	bool	Initialize(/*WomaDriverClass*/ void* Driver);
 
-
-
-
-#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN //24
-	CTerrain*	autoGenUnderWaterTerrain;
-	void		initUnderWaterDemo(UINT terrainId);
-#endif
-
-#if defined SCENE_MAIN_TOPO_TERRAIN
-	CTerrain*	mainTopoTerrain;
-	void		initMainTopoTerrainDemo(UINT terrainId);
-#endif
-
-#if defined SCENE_MAIN_TERRAIN
-	CTerrain*	mainTerrain;
-	void		initMainTerrainDemo(UINT terrainId);
-#endif
-
 	// SKY
 #if defined USE_SKY2D || ENGINE_LEVEL >= 27
 	std::vector<ModelTextureLightVertexType> sky_vertexdata; //std::vector<ModelTextureVertexType> sky_vertexdata;
@@ -170,13 +136,6 @@ public:
 	void	CreateSkyModel(int SKY_SIZE, int sky_gridpoints);
 	void	initSky();
 #endif
-
-#if defined SCENE_WATER_TERRAIN
-	void		initTerrainWaterMeshDemo(UINT terrainId);	
-#endif
-
-
-
 
 private:
 

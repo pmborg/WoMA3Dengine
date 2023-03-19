@@ -42,7 +42,6 @@ public:
 
 	void Initialize();
 	STRING testMathSpeed(TimerClass* m_Timer);
-	//STRING testMathSpeed();
 
 private:
 

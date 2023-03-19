@@ -342,10 +342,6 @@ void WinSystemClass::refreshTitle() // Run once per second.
 	STRING clean_title = pstrFPS;
 	clean_title.erase(std::remove(clean_title.begin(), clean_title.end(), '\r'), clean_title.cend());
 	clean_title.erase(std::remove(clean_title.begin(), clean_title.end(), '\n'), clean_title.cend());
-
-	//#if !defined _DEBUG
-	//	StringCchPrintf(pstrFPS, 300, clean_title.c_str());
-	//#endif
 	
 	#if defined(X64) // Set the new "Window Title"
 		PDWORD_PTR dwResult = 0;// In 64 Bits
@@ -753,11 +749,6 @@ bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ voi
 	windowsArray[MONITOR_NUM].hWnd = hWnd;
 
 	ShowWindow(hWnd, WOMA::Cmdshow);	// Use from Command line option! NOTE: Don't hardcode:	(default: SW_SHOWDEFAULT) SW_SHOW / SW_SHOWMINIMIZED
-
-	// Only if we are in main Monitor? with task bar?
-	//if (allowResize)
-	//	MoveWindow(hWnd, windowLeft, windowTop, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT, TRUE);	// Adjust to Correct Real/Render size "Depend of the Window Sytle"
-
 	SetForegroundWindow(hWnd);    // Slightly "Higher Priority"
 	SetFocus(hWnd);               // Force "Focus" to our Window
 	UpdateWindow(hWnd);           // 1st Window WIN32/"Paint"  NOW!
@@ -876,8 +867,6 @@ void WinSystemClass::UNPAUSE()
 		WOMA::game_state = WOMA::previous_game_state;
 	}
 }
-
-
 
 //----------------------------------------------------------------------------
 void WinSystemClass::ProcessFrame()

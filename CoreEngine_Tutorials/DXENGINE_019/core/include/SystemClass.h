@@ -61,17 +61,17 @@ public:
 
 	void Shutdown();
 
-	WOMA::Settings* AppSettings;
+	WOMA::Settings* AppSettings = NULL;
 
 	resolutionType		resolution;
 	void FrameUpdate();
 
-	InputClass* m_OsInput;
+	InputClass* m_OsInput = NULL;
 	void ProcessOSInput();
 	virtual void ProcessInput() = 0;
 
 	SystemSettings	systemDefinitions;
-	SystemManager*	systemManager;
+	SystemManager*	systemManager = NULL;
 	STRING			userName;
 	STRING			ComputerName;
 	bool			mMaximized;
@@ -98,13 +98,13 @@ public:
 	WinCpuClass	m_Cpu;
   #endif
 
-	ApplicationClass*		m_Application;
+	ApplicationClass*		m_Application = NULL;
 
 public:
 
 	std::vector<WomaDriverClass*> driverList;
-	WomaDriverClass* m_Driver;
-	WomaDriverClass* m_contextDriver;	// Note: Used only at 20  /*wGLopenGLclass*/
+	WomaDriverClass* m_Driver = NULL;
+	WomaDriverClass* m_contextDriver = NULL;	// Note: Used only at 20  /*wGLopenGLclass*/
   #if defined USE_ASPECT_RATIO
 	float	aspect_r;	//Global Used by: WndProc
   #endif

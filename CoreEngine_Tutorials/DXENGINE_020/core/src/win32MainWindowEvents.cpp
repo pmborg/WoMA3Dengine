@@ -347,12 +347,14 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 				}
 
 				#if defined _DEBUG
+				if (SystemHandle->m_hWnd) {
 					if (SystemHandle->statusbar)
 						DestroyWindow(SystemHandle->statusbar);
 					SystemHandle->statusbar = DoCreateStatusBar(SystemHandle->m_hWnd, 0/*idStatus*/, m_hinstance, 1/*cParts*/);
 					SendMessage(SystemHandle->statusbar, SB_SETTEXT, 0, (LPARAM)DEMO_TITLE);
 					if (AppSettings->FULL_SCREEN)
 						ShowWindow(SystemHandle->statusbar, SW_HIDE);
+				}
 				#endif
 			}
 		}

@@ -58,15 +58,7 @@ ApplicationClass::ApplicationClass()
 
 
 
-#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN //24
-	autoGenUnderWaterTerrain		= NULL;
-#endif
-
 	// TERRAIN
-
-//#if defined USE_TITLE_BANNER //26
-//	m_titleModel = NULL;
-//#endif
 
 	Start();
 }
@@ -77,10 +69,6 @@ ApplicationClass::~ApplicationClass() {CLASSDELETE();}
 void ApplicationClass::Shutdown()
 {
 	WOMA_LOGManager_DebugMSG ("ApplicationClass::Shutdown()\n");
-
-#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN
-	SAFE_DELETE (autoGenUnderWaterTerrain);
-#endif
 
 
 }
@@ -150,12 +138,11 @@ bool ApplicationClass::Initialize(/*WomaDriverClass*/ void* Driver)
 {
 	ASSERT(Driver);
 
-
 	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(SystemHandle->m_Driver));	// <---------- USER LOAD all 3D objects!
+
 	//CALL DEMO APPLICATION //////////////////////////////////////////////////////////////////////////////////////////
 	SystemHandle->demoApplicationClass = NEW DemoApplicationClass;
-	SystemHandle->demoApplicationClass->WOMA_APPLICATION_Initialize3D(SystemHandle->m_Driver);
-
+	IF_NOT_RETURN_FALSE(SystemHandle->demoApplicationClass->WOMA_APPLICATION_Initialize3D(SystemHandle->m_Driver));
 	SystemHandle->m_Driver->Finalize();
 
 	return true;
@@ -181,9 +168,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	//SHADOWMAP //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	//TERRAIN ////////////////////////////////////////////////////////////////////////////////////////////////////////
-#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN	// 24-25: UNDER WATER: Terrain
-	initUnderWaterDemo(0);
-#endif
 
 	return true;
 }

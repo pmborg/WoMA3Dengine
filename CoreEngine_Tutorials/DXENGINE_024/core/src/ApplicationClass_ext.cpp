@@ -54,6 +54,8 @@ ApplicationClass::ApplicationClass()
 	ClearColor[2] = 0.8f;
 	ClearColor[3] = 1.0f;
 
+
+
 	m_Light = NULL;
 
 	// TERRAIN
@@ -107,9 +109,10 @@ bool ApplicationClass::WOMA_APPLICATION_InitGUI()
 		}
 		WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_InitGUI()-InitializeWeatherInfoScreen created\n");
 	}
-
 	return true;
 }
+
+
 
 //-------------------------------------------------------------------------------------------
 bool ApplicationClass::Start()
@@ -136,17 +139,24 @@ bool ApplicationClass::Initialize(/*WomaDriverClass*/ void* Driver)
 {
 	ASSERT(Driver);
 
+	IF_NOT_RETURN_FALSE(SystemHandle->demoApplicationClass->WOMA_APPLICATION_InitializeSprites2D());	// USER LOAD all 2D objects! (2D: WILL BE LOADED ON RESIZE() also)
+
 	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(SystemHandle->m_Driver));	// <---------- USER LOAD all 3D objects!
 
 	//CALL DEMO APPLICATION //////////////////////////////////////////////////////////////////////////////////////////
 	SystemHandle->demoApplicationClass = NEW DemoApplicationClass;
-	SystemHandle->demoApplicationClass->WOMA_APPLICATION_Initialize3D(SystemHandle->m_Driver);
-
+	IF_NOT_RETURN_FALSE(SystemHandle->demoApplicationClass->WOMA_APPLICATION_Initialize3D(SystemHandle->m_Driver));
 	SystemHandle->m_Driver->Finalize();
+
 	return true;
 }
 
+
+
+
 //	-------------------------------------------------------------------------------------------
+
+
 
 // --------------------------------------------------------------------------------------------
 // INIT/LOAD 3D Objects
@@ -159,8 +169,11 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	//LIGHT ////////////////////////////////////////////////////////////////////////////////////////////////////////
 	m_Light = NEW LightClass;	// Create the light object
 	IF_NOT_THROW_EXCEPTION(m_Light);
-	m_Light->SetAmbientColor(0.1f, 0.1f, 0.1f, 1);
-	m_Light->SetDiffuseColor(0.5f, 0.5f, 0.5f, 1.0f);
+	//m_Light->SetAmbientColor(0.2f, 0.2f, 0.2f, 1);
+	//m_Light->SetDiffuseColor(1, 1, 1, 1.0f);
+	//m_Light->SetDirection(-0.25f, -1.0f, -0.25f);
+	m_Light->SetAmbientColor(0.05f, 0.05f, 0.05f, 1);
+	m_Light->SetDiffuseColor(0.3f, 0.3f, 0.3f, 1.0f);
 	m_Light->SetDirection(0, -1.0f, 0);
 
 	//SKY ////////////////////////////////////////////////////////////////////////////////////////////////////////

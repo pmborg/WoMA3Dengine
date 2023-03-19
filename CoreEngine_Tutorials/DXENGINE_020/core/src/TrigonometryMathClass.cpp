@@ -83,18 +83,9 @@ STRING TrigonometryMathClass::testMathSpeed(TimerClass* m_Timer)
 		for (UINT time = 0; time < 10000000; time++)
 		{
 			// Run these functions 10 Million times:
-//#ifdef DEFAULT_MATH_FUNCTIONS
 			t = sqrt((float)time);
 			t = cos((float)(time % 360));
 			t = sin((float)(time % 360));
-//#else
-		/*
-		// These ones are 20x faster...
-		t = FAST_sqrt((float)time);
-		t = FAST_cos((float)(time % 360));
-		t = FAST_sin((float)(time % 360));
-		*/
-//#endif
 		}
 
 		QueryPerformanceCounter((LARGE_INTEGER*)&currentTime1);// Measure current Time
@@ -146,11 +137,6 @@ STRING TrigonometryMathClass::testMathSpeed(TimerClass* m_Timer)
 	WOMA_LOGManager_DebugMSG("FAST_cos (PI): %f\n", FAST_cos(180));
 	WOMA_LOGManager_DebugMSG("FAST_sin (PI): %f\n", FAST_sin(180));
 	#endif
-
-#ifdef NDEBUG 
-    //if (delta2 > 1000)
-	//	WOMA::WomaMessageBox(TEXT("SPEED TEST WARNING: Your CPU may be too slow to run this application!"));
-#endif
 
     return txt;
 }

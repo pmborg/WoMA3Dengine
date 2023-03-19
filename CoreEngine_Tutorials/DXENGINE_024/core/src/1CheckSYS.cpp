@@ -19,7 +19,6 @@
 // --------------------------------------------------------------------------------------------
 
 #include "WinSystemClass.h"
-//#include "SystemPlatform.h"			// Get [SystemHandle] Pointer to System Class: WINDOWS, LINUX & ANDROID
 
 //------------------------------------------------------------------
 // PRIVATE FUNCTIONS:
@@ -139,54 +138,51 @@ bool SystemManager::checkCPU ()
 #if CORE_ENGINE_LEVEL >= 4 defined WINDOWS_PLATFORM
 DWORDLONG SystemManager::getAvailSystemMemory()
 {
-	//do {
-		// GET ullAvailPhys:
-		MEMORYSTATUSEX status;
-		status.dwLength = sizeof(status);
-		GlobalMemoryStatusEx(&status);
-		DWORDLONG PhysMemAvail = status.ullAvailPhys;
-		WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.dwLength                = %10u\n",			status.dwLength);
-		WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.dwMemoryLoad            = %10u%%\n",		status.dwMemoryLoad);
-		WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullTotalPhys            = %10u MBytes\n",	status.ullTotalPhys / MBs);
-		WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullAvailPhys            = %10u MBytes\n",	status.ullAvailPhys / MBs);
-		WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullTotalPageFile        = %10u MBytes\n",	status.ullTotalPageFile / MBs);
-		WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullAvailPageFile        = %10u MBytes\n",	status.ullAvailPageFile / MBs);
-		WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullTotalVirtual         = %10u MBytes\n",	status.ullTotalVirtual / MBs);
-		WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullAvailVirtual         = %10u MBytes\n",	status.ullAvailVirtual / MBs);
-		WOMA_LOGManager_DebugMSG("\n");
+	// GET ullAvailPhys:
+	MEMORYSTATUSEX status;
+	status.dwLength = sizeof(status);
+	GlobalMemoryStatusEx(&status);
+	DWORDLONG PhysMemAvail = status.ullAvailPhys;
+	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.dwLength                = %10u\n",			status.dwLength);
+	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.dwMemoryLoad            = %10u%%\n",		status.dwMemoryLoad);
+	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullTotalPhys            = %10u MBytes\n",	status.ullTotalPhys / MBs);
+	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullAvailPhys            = %10u MBytes\n",	status.ullAvailPhys / MBs);
+	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullTotalPageFile        = %10u MBytes\n",	status.ullTotalPageFile / MBs);
+	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullAvailPageFile        = %10u MBytes\n",	status.ullAvailPageFile / MBs);
+	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullTotalVirtual         = %10u MBytes\n",	status.ullTotalVirtual / MBs);
+	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullAvailVirtual         = %10u MBytes\n",	status.ullAvailVirtual / MBs);
+	WOMA_LOGManager_DebugMSG("\n");
 
-		PERFORMANCE_INFORMATION performanceInformation;
-		BOOL res = GetPerformanceInfo(&performanceInformation, sizeof(performanceInformation));
-		DWORDLONG CachedMem = performanceInformation.SystemCache;
-		WOMA_LOGManager_DebugMSG("PerformanceInfo.CommitTotal         		= %10u MBytes\n",	performanceInformation.CommitTotal * performanceInformation.PageSize / MBs);
-		WOMA_LOGManager_DebugMSG("PerformanceInfo.CommitLimit         		= %10u MBytes\n",	performanceInformation.CommitLimit * performanceInformation.PageSize / MBs);
-		WOMA_LOGManager_DebugMSG("PerformanceInfo.CommitPeak          		= %10u MBytes\n",	performanceInformation.CommitPeak * performanceInformation.PageSize / MBs);
-		WOMA_LOGManager_DebugMSG("PerformanceInfo.PhysicalTotal       		= %10u MBytes\n",	performanceInformation.PhysicalTotal * performanceInformation.PageSize / MBs);
-		WOMA_LOGManager_DebugMSG("PerformanceInfo.PhysicalAvailable   		= %10u MBytes\n",	performanceInformation.PhysicalAvailable * performanceInformation.PageSize / MBs);
-		WOMA_LOGManager_DebugMSG("PerformanceInfo.SystemCache         		= %10u MBytes\n",	performanceInformation.SystemCache * performanceInformation.PageSize / MBs);
-		WOMA_LOGManager_DebugMSG("PerformanceInfo.KernelTotal         		= %10u MBytes\n",	performanceInformation.KernelTotal * performanceInformation.PageSize / MBs);
-		WOMA_LOGManager_DebugMSG("PerformanceInfo.KernelPaged         		= %10u MBytes\n",	performanceInformation.KernelPaged * performanceInformation.PageSize / MBs);
-		WOMA_LOGManager_DebugMSG("PerformanceInfo.KernelNonpaged      		= %10u MBytes\n",	performanceInformation.KernelNonpaged * performanceInformation.PageSize / MBs);
-		WOMA_LOGManager_DebugMSG("PerformanceInfo.PageSize            		= %10u MBytes\n",	performanceInformation.PageSize / 1024);
-		WOMA_LOGManager_DebugMSG("PerformanceInfo.HandleCount         		= %10u\n",			performanceInformation.HandleCount);
-		WOMA_LOGManager_DebugMSG("PerformanceInfo.ProcessCount        		= %10u\n",			performanceInformation.ProcessCount);
-		WOMA_LOGManager_DebugMSG("PerformanceInfo.ThreadCount         		= %10u\n",			performanceInformation.ThreadCount);
-		WOMA_LOGManager_DebugMSG("\n");
+	PERFORMANCE_INFORMATION performanceInformation;
+	BOOL res = GetPerformanceInfo(&performanceInformation, sizeof(performanceInformation));
+	DWORDLONG CachedMem = performanceInformation.SystemCache;
+	WOMA_LOGManager_DebugMSG("PerformanceInfo.CommitTotal         		= %10u MBytes\n",	performanceInformation.CommitTotal * performanceInformation.PageSize / MBs);
+	WOMA_LOGManager_DebugMSG("PerformanceInfo.CommitLimit         		= %10u MBytes\n",	performanceInformation.CommitLimit * performanceInformation.PageSize / MBs);
+	WOMA_LOGManager_DebugMSG("PerformanceInfo.CommitPeak          		= %10u MBytes\n",	performanceInformation.CommitPeak * performanceInformation.PageSize / MBs);
+	WOMA_LOGManager_DebugMSG("PerformanceInfo.PhysicalTotal       		= %10u MBytes\n",	performanceInformation.PhysicalTotal * performanceInformation.PageSize / MBs);
+	WOMA_LOGManager_DebugMSG("PerformanceInfo.PhysicalAvailable   		= %10u MBytes\n",	performanceInformation.PhysicalAvailable * performanceInformation.PageSize / MBs);
+	WOMA_LOGManager_DebugMSG("PerformanceInfo.SystemCache         		= %10u MBytes\n",	performanceInformation.SystemCache * performanceInformation.PageSize / MBs);
+	WOMA_LOGManager_DebugMSG("PerformanceInfo.KernelTotal         		= %10u MBytes\n",	performanceInformation.KernelTotal * performanceInformation.PageSize / MBs);
+	WOMA_LOGManager_DebugMSG("PerformanceInfo.KernelPaged         		= %10u MBytes\n",	performanceInformation.KernelPaged * performanceInformation.PageSize / MBs);
+	WOMA_LOGManager_DebugMSG("PerformanceInfo.KernelNonpaged      		= %10u MBytes\n",	performanceInformation.KernelNonpaged * performanceInformation.PageSize / MBs);
+	WOMA_LOGManager_DebugMSG("PerformanceInfo.PageSize            		= %10u MBytes\n",	performanceInformation.PageSize / 1024);
+	WOMA_LOGManager_DebugMSG("PerformanceInfo.HandleCount         		= %10u\n",			performanceInformation.HandleCount);
+	WOMA_LOGManager_DebugMSG("PerformanceInfo.ProcessCount        		= %10u\n",			performanceInformation.ProcessCount);
+	WOMA_LOGManager_DebugMSG("PerformanceInfo.ThreadCount         		= %10u\n",			performanceInformation.ThreadCount);
+	WOMA_LOGManager_DebugMSG("\n");
 
-		MEMORYSTATUSEX memoryStatus;
-		memoryStatus.dwLength = sizeof(memoryStatus);
-		res = GlobalMemoryStatusEx(&memoryStatus);
-		WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.dwLength                = %10u\n",			memoryStatus.dwLength);
-		WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.dwMemoryLoad            = %10u%%\n",		memoryStatus.dwMemoryLoad);
-		WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullTotalPhys            = %10u MBytes\n",	memoryStatus.ullTotalPhys / MBs);
-		WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullAvailPhys            = %10u MBytes\n",	memoryStatus.ullAvailPhys / MBs);
-		WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullTotalPageFile        = %10u MBytes\n",	memoryStatus.ullTotalPageFile / MBs);
-		WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullAvailPageFile        = %10u MBytes\n",	memoryStatus.ullAvailPageFile / MBs);
-		WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullTotalVirtual         = %10u MBytes\n",	memoryStatus.ullTotalVirtual / MBs);
-		WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullAvailVirtual         = %10u MBytes\n",	memoryStatus.ullAvailVirtual / MBs);
-		WOMA_LOGManager_DebugMSG("\n");
-
-		//Sleep(5000); } while (true);
+	MEMORYSTATUSEX memoryStatus;
+	memoryStatus.dwLength = sizeof(memoryStatus);
+	res = GlobalMemoryStatusEx(&memoryStatus);
+	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.dwLength                = %10u\n",			memoryStatus.dwLength);
+	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.dwMemoryLoad            = %10u%%\n",		memoryStatus.dwMemoryLoad);
+	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullTotalPhys            = %10u MBytes\n",	memoryStatus.ullTotalPhys / MBs);
+	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullAvailPhys            = %10u MBytes\n",	memoryStatus.ullAvailPhys / MBs);
+	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullTotalPageFile        = %10u MBytes\n",	memoryStatus.ullTotalPageFile / MBs);
+	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullAvailPageFile        = %10u MBytes\n",	memoryStatus.ullAvailPageFile / MBs);
+	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullTotalVirtual         = %10u MBytes\n",	memoryStatus.ullTotalVirtual / MBs);
+	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullAvailVirtual         = %10u MBytes\n",	memoryStatus.ullAvailVirtual / MBs);
+	WOMA_LOGManager_DebugMSG("\n");
 
 	// Real "Free Mem" = PhysMemAvail - Cached Memory
     return PhysMemAvail - CachedMem;

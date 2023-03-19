@@ -105,7 +105,7 @@ private:
 	mat4			projectionMatrix;
 	
 #if DX_ENGINE_LEVEL >= 22 // Texturing 
-	GLtextureClass* m_Texture;				// Image loader
+	GLtextureClass* m_Texture = NULL;		// Image loader
 	std::vector<GLtextureClass*> meshSRV;	// meshSRV
 #endif
 };
