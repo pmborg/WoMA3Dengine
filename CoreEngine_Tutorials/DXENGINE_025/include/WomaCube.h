@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // -------------------------------------------------------------------------------------------------------------------------------------
 // Filename: WomaCube.h
 // --------------------------------------------------------------------------------------------
@@ -12,14 +13,11 @@
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
 // 
-// Downloaded from : http://woma.servegame.com
+// Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
 // PURPOSE: interface for a Color and Texture Cube
 // --------------------------------------------------------------------------------------------
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "vertexTypes.h"
 
@@ -33,16 +31,11 @@ public:
 	CCube(int x_0, int y_0, int z_0);
 	virtual ~CCube();
 	void Shutdown();
-
-	void Render(int r);
 	void VertexCubeColor(int c, int i, int f);
 	void VertexCubeTexture (int c, int i, int f);
-
-	//ModelColorVertexType VertexCube1[6*magic*magic][n_faces*n_vertex*magic*magic];
-	//ModelTextureVertexType VertexCube2[6 * magic * magic][n_faces * n_vertex * magic * magic];
-
-	std::vector <ModelColorVertexType> VertexCube1;
-	std::vector <ModelTextureVertexType> VertexCube2;
+	void VertexCubeTextureLight(int c, int i, int f);
+	std::vector <ModelColorVertexType> VertexCubeColorModel;
+	std::vector <ModelTextureVertexType> VertexCubeTextureModel;
+	std::vector <ModelTextureLightVertexType> VertexCubeTextureLightModel;
 	std::vector<UINT> IndexCubeList;
 };
-

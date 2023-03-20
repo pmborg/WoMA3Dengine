@@ -2,17 +2,17 @@
 #include "platform.h"
 #include "dxWinSystemClass.h"
 
-  #if defined DX9sdk
-	#include "Dx9Class.h"
-  #endif
-	#include "Dx11Class.h"
-  #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009 //Use: WIN10SDK
-	#include "Dx12Class.h"
-  #endif
-	#include "womadriverclass.h"	//woma
-	#include "GLmathClass.h"		//woma	
-	#include "GLopenGLclass.h"		//woma
-	#include "wGLopenGLclass.h"		// Windows
+#if defined DX9sdk
+#include "Dx9Class.h"
+#endif
+#include "Dx11Class.h"
+#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009 //Use: WIN10SDK
+#include "Dx12Class.h"
+#endif
+#include "womadriverclass.h"	//woma
+#include "GLmathClass.h"		//woma	
+#include "GLopenGLclass.h"		//woma
+#include "wGLopenGLclass.h"		// Windows
 
 #include "DemoApplicationClass.h"
 
@@ -22,7 +22,7 @@ void DemoApplicationClass::DemoRender()
 	//DEMO-1:
 	if (RENDER_PAGE == 21)
 	{
-		static float rY = 0.0f;
+		float rY = 0.0f;
 		rY = SystemHandle->m_Application->dt * (0.005f / 16.66f);		// MOVIMENT FORMULA!
 
 		// Rotate the world matrix by the rotation value so that the Square will spin:
@@ -58,7 +58,7 @@ void DemoApplicationClass::DemoRender()
 	//DEMO-1
 	if (RENDER_PAGE == 23)
 	{
-		static float rY = 0.0f;
+		float rY = 0.0f;
 		rY = SystemHandle->m_Application->dt * (0.015f / 16.66f);		// MOVIMENT FORMULA!
 		m_3th3DModel1->rotateX(rY);
 		m_3th3DModel1->translation(0, 0, 1);
@@ -70,10 +70,9 @@ void DemoApplicationClass::DemoRender()
 
 	//CUBE TUTORIAL DEMO:
 	//DEMO-1
-	if (RENDER_PAGE == 25)
+	if (RENDER_PAGE == 25 && m_cube1Model)
 	{
-		SystemHandle->m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
-		static float rY = 0.0f;
+		float rY = 0.0f;
 		rY = SystemHandle->m_Application->dt * (0.005f / 16.66f);		// MOVIMENT FORMULA!
 		m_cube1Model->rotateY(rY);
 		m_cube1Model->translation(-2, -0.5f, 1);
@@ -81,27 +80,35 @@ void DemoApplicationClass::DemoRender()
 	}
 
 	//DEMO-2
-	if (RENDER_PAGE == 25)
+	if (RENDER_PAGE == 25 && m_cube2Model)
 	{
-		static float rY = 0.0f;
+		float rY = 0.0f;
 		rY = SystemHandle->m_Application->dt * (0.005f / 16.66f);		// MOVIMENT FORMULA!
 		m_cube2Model->rotateY(rY);
-		m_cube2Model->translation(2, -0.5f, 1);
+		m_cube2Model->translation(1.5f, -0.5f, 1);
 		m_cube2Model->Render(SystemHandle->m_Driver);
 	}
 
-
+	//DEMO-3
+	if (RENDER_PAGE == 25 && m_cube3Model)
+	{
+		SystemHandle->m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
+		float rY = 0.0f;
+		rY = SystemHandle->m_Application->dt * (0.005f / 16.66f);		// MOVIMENT FORMULA!
+		m_cube3Model->rotateY(rY);
+		m_cube3Model->translation(5, -0.5f, 1);
+		m_cube3Model->Render(SystemHandle->m_Driver);
+	}
 
 }
 
 void DemoApplicationClass::DemoPosRender()
 {
-	SystemHandle->m_Driver->SetRasterizerState(CULL_BACK, FILL_SOLID);
-	//SystemHandle->m_Driver->SetRasterizerState(CULL_NONE, FILL_WIRE);
+	SystemHandle->m_Driver->SetRasterizerState(CULL_BACK, FILL_SOLID); //(CULL_NONE, FILL_WIRE);
 
 	SystemHandle->m_Driver->TurnOnAlphaBlending();	// BANNER: Have Transparent Alfa color use it!
 
-	if (RENDER_PAGE >= 24)//OLD26
+	if (RENDER_PAGE >= 24)
 		m_titleModel->RenderSprite(SystemHandle->m_Driver, (SystemHandle->AppSettings->WINDOW_WIDTH - m_titleModel->SpriteTextureWidth) / 2, (SystemHandle->AppSettings->WINDOW_HEIGHT - m_titleModel->SpriteTextureHeight) / 2);
 }
 
@@ -114,16 +121,13 @@ void ApplicationClass::RenderScene(UINT monitorWindow)
 	float dayLightFade = Update(monitorWindow, SystemHandle->driverList[SystemHandle->AppSettings->DRIVER]);
 
 	// 45 Render: SHADOWS	Render one Application Frame, TODO: process these 2 in paralell!?
-#if defined USE_SHADOW_MAP
-	AppPreRender(dayLightFade);
-#endif
 
 	// RENDER: MAIN - 3D, Render one Application Frame
-	if (RENDER_PAGE >= 15) //OLD:20 now 15 to allow FADE BANNERS on INTRO_DEMO
+	if (RENDER_PAGE >= 15)
 		AppRender(monitorWindow, dayLightFade);
 
 	// RENDER: SPRITEs on TOP of 3D - 2D Render one Application Frame. 26 - (Need to be after 3D)
-	if (RENDER_PAGE >= 15) //OLD:20 now 15 to allow FADE BANNERS on INTRO_DEMO
+	if (RENDER_PAGE >= 15)
 		AppPosRender();
 }
 
@@ -192,7 +196,6 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 		}
 	}
 
-	//CAMERA_RENDER(m_Camera);	// ((GLOpenGLClass*)m_Driver)->m_Camera->Render(); || ((DX_CLASS*)m_Driver)->m_Camera->Render();
 	switch (SystemHandle->AppSettings->DRIVER)
 	{
 	#if defined DX9sdk
@@ -245,17 +248,10 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 {
 	SystemHandle->m_Driver->BeginScene(monitorWindow);	// Clear the buffers to begin the scene (glClear|ClearRenderTargetView/ClearDepthStencilView)
 	
-
-	SystemHandle->m_Driver->SetRasterizerState(CULL_BACK, FILL_SOLID);
-	//SystemHandle->m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
+	SystemHandle->m_Driver->SetRasterizerState(CULL_BACK, FILL_SOLID); //(CULL_NONE, FILL_SOLID);
 
 	// DEBUG SPRITE: Shadows
 	// --------------------------------------------------------------------------------------------
-#if defined USE_SHADOW_MAP //&& defined _DEBUG
-	DirectX::DXmodelClass* model = (DirectX::DXmodelClass*)m_2nd3DModel;
-	if (RENDER_PAGE >= 45)
-		model->meshSRV[0] = m_RenderTexture->m_shaderResourceView;
-#endif
 
 	//#############################################################################################################-
 	// RENDER:
@@ -264,16 +260,6 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 
 	// RENDER: SKY
 	// --------------------------------------------------------------------------------------------
-	/*
-		#if defined USE_LIGHT_RAY
-		if (RENDER_PAGE == 23)
-		{
-			CalculateLightRayVertex(SunDistance);											// Calculate Light Source Position
-			m_lightRayModel->UpdateDynamic(SystemHandle->m_Driver, m_LightVertexVector);	// Update LightRay vertex(s)
-			m_lightRayModel->Render(SystemHandle->m_Driver);								// Render LightRay
-		}
-		#endif
-*/
 
 	// RENDER: CLOUDS
 	// --------------------------------------------------------------------------------------------
@@ -282,8 +268,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 	// --------------------------------------------------------------------------------------------
 	// [0] TERRAIN: UNDER WATER!
 	// --------------------------------------------------------------------------------------------
-	SystemHandle->m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
-	//m_Driver->SetRasterizerState(CULL_NONE, FILL_WIRE);
+	SystemHandle->m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID); //(CULL_NONE, FILL_WIRE);
 
 	// [1] WATER:
 	// --------------------------------------------------------------------------------------------
@@ -293,12 +278,11 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 
 	// BASICS: page 21: / 22 / 23
 	// --------------------------------------------------------------------------------------------
-	SystemHandle->m_Driver->SetRasterizerState(CULL_BACK, FILL_SOLID);
-	//SystemHandle->m_Driver->SetRasterizerState(CULL_NONE, FILL_WIRE);
+	SystemHandle->m_Driver->SetRasterizerState(CULL_BACK, FILL_SOLID); //(CULL_NONE, FILL_WIRE);
 
 	SystemHandle->demoApplicationClass->DemoRender();
 
-	if (RENDER_PAGE == 23)
+	if (RENDER_PAGE >= 23)
 	{
 		CalculateLightRayVertex(SunDistance);											// Calculate Light Source Position
 		m_lightRayModel->UpdateDynamic(SystemHandle->m_Driver, m_LightVertexVector);	// Update LightRay vertex(s)

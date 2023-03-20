@@ -4,9 +4,9 @@
 #include "winSystemClass.h"
 #include "mem_leak.h"
 
-		#include "GLmodelClass.h"
+	#include "GLmodelClass.h"
 
-		#include "DXmodelClass.h"
+	#include "DXmodelClass.h"
 
 #include "WomaCube.h"
 
@@ -21,20 +21,15 @@ DemoApplicationClass::DemoApplicationClass()
 	//	-------------------------------------------------------------------------------------------
 	m_1stTriangle3DColorModel = NULL;					// Model2
 
-	//ModelTextureVertexType textureVertex = { 0 };				// Use this "VERTEX" on macro
-	//std::vector<ModelTextureVertexType> My2ndModelVertexVector;	// Declare: the Vector with Vertex "TYPE"
-
 		m_2nd3DModel = NULL;						// Model
 
 };
 
 DemoApplicationClass::~DemoApplicationClass()
 {
-	//Shutdown();
-	CLASSDELETE();
+	Shutdown();
+	//CLASSDELETE();
 };
-
-//DemoApplicationClass* demoApplicationClass;
 
 bool DemoApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 {
@@ -50,7 +45,7 @@ bool DemoApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver
 		initTitleBanner2D();
 
 	if (RENDER_PAGE >= 25)
-		initCubes3D(SystemHandle->driverList[SystemHandle->AppSettings->DRIVER]);
+		IF_NOT_RETURN_FALSE(initCubes3D(SystemHandle->driverList[SystemHandle->AppSettings->DRIVER]));
 
 	return true;
 }
@@ -257,22 +252,29 @@ void DemoApplicationClass::initTitleBanner2D()
 	}
 }
 
-void DemoApplicationClass::initCubes3D(WomaDriverClass* m_Driver)
+bool DemoApplicationClass::initCubes3D(WomaDriverClass* m_Driver)
 {
 	if (RENDER_PAGE >= 25)
 	{
+
 		//DEMO1:
 		CCube cube = CCube(0,0,0);
 		{
 			CREATE_MODEL_IF_NOT_EXCEPTION(m_cube1Model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);	// Alocate the MODEL
-			ASSERT(m_cube1Model->LoadColor(TEXT("m_cube1Model"), m_Driver, SHADER_COLOR, &cube.VertexCube1, &cube.IndexCubeList));
+			ASSERT(m_cube1Model->LoadColor(TEXT("m_cube1Model"), m_Driver, SHADER_COLOR, &cube.VertexCubeColorModel, &cube.IndexCubeList));
 		}
 
 		//DEMO2:
 		{
-			initLoadTexture3D(m_cube2Model, TEXT("engine/data/seafloor.dds"), cube.VertexCube2, cube.IndexCubeList, SHADER_TEXTURE);
+			initLoadTexture3D(m_cube2Model, TEXT("engine/data/seafloor.dds"), cube.VertexCubeTextureModel, cube.IndexCubeList, SHADER_TEXTURE);
+		}
+		//DEMO3:
+		{
+			initLoadTextureLight3D(m_cube3Model, TEXT("engine/data/seafloor.dds"), cube.VertexCubeTextureLightModel, cube.IndexCubeList, SHADER_TEXTURE_LIGHT);
 		}
 	}
+
+	return true;
 }
 
 // INIT/LOAD 2D (SPRITE or TEXT) Objects
@@ -335,33 +337,34 @@ void DemoApplicationClass::Shutdown()
 	//#endif
 	}
 
+	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+	{
+		SAFE_SHUTDOWN_MODELDX(m_3th3DModel1);
+		SAFE_SHUTDOWN_MODELDX(m_3th3DModel2);
+	}
 
-		if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
-		{
-			SAFE_SHUTDOWN_MODELDX(m_3th3DModel1);
-			SAFE_SHUTDOWN_MODELDX(m_3th3DModel2);
-		}
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+	{
+		SAFE_SHUTDOWN_MODELGL3(m_3th3DModel1);
+		SAFE_SHUTDOWN_MODELGL3(m_3th3DModel2);
+	}
 
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
-		{
-			SAFE_SHUTDOWN_MODELGL3(m_3th3DModel1);
-			SAFE_SHUTDOWN_MODELGL3(m_3th3DModel2);
-		}
+	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+	{
+		SAFE_SHUTDOWN_MODELDX(m_cube1Model);
+		SAFE_SHUTDOWN_MODELDX(m_cube2Model);
+		SAFE_SHUTDOWN_MODELDX(m_cube3Model);
+	}
 
-		if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
-		{
-			SAFE_SHUTDOWN_MODELDX(m_cube1Model);
-			SAFE_SHUTDOWN_MODELDX(m_cube2Model);
-		}
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+	{
+		SAFE_SHUTDOWN_MODELGL3(m_cube1Model);
+		SAFE_SHUTDOWN_MODELGL3(m_cube2Model);
+		SAFE_SHUTDOWN_MODELGL3(m_cube3Model);
+	}
 
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
-		{
-			SAFE_SHUTDOWN_MODELGL3(m_cube1Model);
-			SAFE_SHUTDOWN_MODELGL3(m_cube2Model);
-		}
-
-		//2D:
-		WOMA_APPLICATION_Shutdown2D();
+	//2D:
+	WOMA_APPLICATION_Shutdown2D();
 
 }
 
@@ -381,4 +384,3 @@ void DemoApplicationClass::WOMA_APPLICATION_Shutdown2D()
 		}
 
 }
-

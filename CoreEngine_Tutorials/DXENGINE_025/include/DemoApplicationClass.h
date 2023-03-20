@@ -44,7 +44,7 @@ public:
 	void initTextureDemo();
 	void initLightDemo();
 	void	initTitleBanner2D();
-	void initCubes3D(WomaDriverClass* m_Driver);
+	bool initCubes3D(WomaDriverClass* m_Driver);
 
 	//	-------------------------------------------------------------------------------------------
 	//	WoMA Vertex(s) Arrays:  NOTE: Cant be used to create and Obj more than ONCE!
@@ -93,5 +93,6 @@ public:
 
 	VirtualModelClass* m_cube1Model = NULL;
 	VirtualModelClass* m_cube2Model = NULL;
+	VirtualModelClass* m_cube3Model = NULL;
 
 };

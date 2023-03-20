@@ -47,7 +47,6 @@
 	#include <dinput.h>
 
 	#include "DemoApplicationClass.h"
-	//extern DemoApplicationClass* demoApplicationClass;
 
 dxWinSystemClass* DXsystemHandle = NULL;
 

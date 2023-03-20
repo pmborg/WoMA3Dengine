@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // -------------------------------------------------------------------------------------------------------------------------------------
 // Filename: WomaCube.cpp
 // --------------------------------------------------------------------------------------------
@@ -12,7 +13,7 @@
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
 // 
-// Downloaded from : http://woma.servegame.com
+// Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Define a Color and Texture Cube
 // --------------------------------------------------------------------------------------------
@@ -27,8 +28,8 @@
 //////////////////////////////////////////////////////////////////////
 CCube::CCube(int x_0, int y_0, int z_0)
 {
-	const float l = 1;		///*txtSize*/128 / 2;
-	const float y = 1;		//ZZ (D3D)
+	const float l = 1;	///*txtSize*/128 / 2;
+	const float y = 1;	//ZZ (D3D)
 	const float x = 1;	//XX (D3D)
 	const float z = 1;	//YY (D3D)
 	const float X = 1;
@@ -49,30 +50,21 @@ CCube::CCube(int x_0, int y_0, int z_0)
 		{{X - l / x,Y - l / y,Z - l / z},{X + l / x,Y - l / y, Z - l / z},{X - l / x,Y - l / y,Z + l / z},	{X + l / x,Y - l / y,Z + l / z}},	//4 bot
 		{{X - l / x,Y + l / y,Z + l / z},{X + l / x,Y + l / y, Z + l / z},{X - l / x,Y + l / y,Z - l / z},	{X + l / x,Y + l / y,Z - l / z}}	//5 top
 	};
-	/*
-	static VERTEX cube2[n_faces][n_vertex] =
-	{
-		{{X - l / x,Y + l / y,Z - l / z},{X + l / x,Y + l / y, Z - l / z},{X - l / x,Y - l / y,Z - l / z},	{X + l / x,Y - l / y,Z - l / z}},	//0 front
-		{{X + l / x,Y + l / y,Z + l / z},{X - l / x,Y + l / y, Z + l / z},{X + l / x,Y - l / y,Z + l / z},	{X - l / x,Y - l / y,Z + l / z}},	//1 back
-		{{X - l / x,Y + l / y,Z + l / z},{X - l / x,Y + l / y, Z - l / z},{X - l / x,Y - l / y,Z + l / z},	{X - l / x,Y - l / y,Z - l / z}},	//2 left
-		{{X + l / x,Y + l / y,Z - l / z},{X + l / x,Y + l / y, Z + l / z},{X + l / x,Y - l / y,Z - l / z},	{X + l / x,Y - l / y,Z + l / z}},	//3 right
-		{{X - l / x,Y - l / y,Z - l / z},{X + l / x,Y - l / y, Z - l / z},{X - l / x,Y - l / y,Z + l / z},	{X + l / x,Y - l / y,Z + l / z}},	//4 bot
-		{{X - l / x,Y + l / y,Z + l / z},{X + l / x,Y + l / y, Z + l / z},{X - l / x,Y + l / y,Z - l / z},	{X + l / x,Y + l / y,Z - l / z}}	//5 top
-	};
-	*/
+
 	int MAX_OBJ = 6*magic*magic;
 	int vertCounter=0;
+
+	//COLOR:
 	//-----------------------------------------------------------------------------------------
-	//if (magic_ == 1) 
 	{
 	ModelColorVertexType Vertex;
 	int c = 0;
 		for (int f = 0; f < MAX_OBJ; f++) {
 			for (int v = 0; v < n_vertex; v++) {
-				VertexCube1.push_back(Vertex);
-				VertexCube1[c].x= cube[f][v].fX - 1;
-				VertexCube1[c].y= cube[f][v].fY - 1;
-				VertexCube1[c].z= cube[f][v].fZ - 1;
+				VertexCubeColorModel.push_back(Vertex);
+				VertexCubeColorModel[c].x= cube[f][v].fX - 1; //-1 to center middle of cube on 0,0
+				VertexCubeColorModel[c].y= cube[f][v].fY - 1;
+				VertexCubeColorModel[c].z= cube[f][v].fZ - 1;
 				VertexCubeColor(c, f, v);
 				c++;
 			}
@@ -80,17 +72,17 @@ CCube::CCube(int x_0, int y_0, int z_0)
 		}
 	}
 
+	//TEXTURE:
 	//-----------------------------------------------------------------------------------------
-	//if (magic_ == 1) 
 	{
 		ModelTextureVertexType Vertex;
 		int c = 0;
 		for (int f=0;f<MAX_OBJ;f++) {
 			for (int v=0;v<n_vertex;v++) {
-				VertexCube2.push_back(Vertex);
-				VertexCube2[c].x = cube[f][v].fX - 1;
-				VertexCube2[c].y = cube[f][v].fY - 1;
-				VertexCube2[c].z = cube[f][v].fZ - 1;
+				VertexCubeTextureModel.push_back(Vertex);
+				VertexCubeTextureModel[c].x = cube[f][v].fX - 1;
+				VertexCubeTextureModel[c].y = cube[f][v].fY - 1;
+				VertexCubeTextureModel[c].z = cube[f][v].fZ - 1;
 				VertexCubeTexture (c, f, v);
 				c++;
 			}
@@ -98,7 +90,28 @@ CCube::CCube(int x_0, int y_0, int z_0)
 		} 
 	}
 
-	for (int f = 0; f < 6; f++)
+	//LIGHT:
+	//-----------------------------------------------------------------------------------------
+	{
+		ModelTextureLightVertexType Vertex;
+		int c = 0;
+		for (int f = 0; f < MAX_OBJ; f++) {
+			for (int v = 0; v < n_vertex; v++) {
+				VertexCubeTextureLightModel.push_back(Vertex);
+				VertexCubeTextureLightModel[c].x = cube[f][v].fX - 1;
+				VertexCubeTextureLightModel[c].y = cube[f][v].fY - 1;
+				VertexCubeTextureLightModel[c].z = cube[f][v].fZ - 1;
+				VertexCubeTextureLight(c, f, v);
+				c++;
+			}
+			vertCounter++;
+		}
+	}
+
+
+
+	//-----------------------------------------------------------------------------------------
+	for (int f = 0; f < MAX_OBJ; f++)
 	{
 		IndexCubeList.push_back(0 + f * 4); IndexCubeList.push_back(1 + f * 4); IndexCubeList.push_back(3 + f * 4);
 		IndexCubeList.push_back(3 + f * 4); IndexCubeList.push_back(2 + f * 4); IndexCubeList.push_back(0 + f * 4);
@@ -112,68 +125,102 @@ CCube::~CCube()
 
 void CCube::Shutdown()
 {
-/*
-	SAFE_RELEASE( pWallTexture );
-	for (int r=0;r<rec;r++)
-		SAFE_RELEASE( pCubeBuffer[r] );
-	//SAFE_DELETE_ARRAY( pCubeBuffer );
-*/
-}
-
-
-void CCube::Render(int r) 
-{
-/*
-	if (m_pD3DDevice) {
-		m_pD3DDevice->SetTexture(0,pWallTexture);
-		m_pD3DDevice->SetStreamSource(0, pCubeBuffer[r], 0, sizeof(MYD3DVERTEX));
-		m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP,0,2);
-	}
-*/
 }
 
 void CCube::VertexCubeColor(int c, int i, int f)
 {
 	if (i == 0)
-		VertexCube1[c].r = 1;	//.dwColor = 0x00ff0000; //R
+		VertexCubeColorModel[c].r = 1;	//.dwColor = 0x00ff0000; //R
 	else if (i == 1)
-		VertexCube1[c].b = 1;	//.dwColor = 0x000000ff; //B
+		VertexCubeColorModel[c].b = 1;	//.dwColor = 0x000000ff; //B
 	else if (i == 2)
-		VertexCube1[c].g = 1;	//.dwColor = 0x0000ff00; //G
+		VertexCubeColorModel[c].g = 1;	//.dwColor = 0x0000ff00; //G
 	else if (i == 3)
 	{
-		VertexCube1[c].r = 1;	//dwColor = 0x00ffff00; //Y
-		VertexCube1[c].g = 1;
+		VertexCubeColorModel[c].r = 1;	//dwColor = 0x00ffff00; //Y
+		VertexCubeColorModel[c].g = 1;
 	}
 	else if (i == 4)
 	{
-		VertexCube1[c].g = 1;	//.dwColor = 0x0000ffff; //C
-		VertexCube1[c].b = 1;	//.dwColor = 0x0000ffff; //C
+		VertexCubeColorModel[c].g = 1;	//.dwColor = 0x0000ffff; //C
+		VertexCubeColorModel[c].b = 1;	//.dwColor = 0x0000ffff; //C
 	}
 	else
 	{
-		VertexCube1[c].r = 1;	//.dwColor = 0x00ffffff; //W
-		VertexCube1[c].g = 1;
-		VertexCube1[c].b = 1;
+		VertexCubeColorModel[c].r = 1;	//.dwColor = 0x00ffffff; //W
+		VertexCubeColorModel[c].g = 1;
+		VertexCubeColorModel[c].b = 1;
 	}
 }
 
-void CCube::VertexCubeTexture (int c, int i, int f)
+void CCube::VertexCubeTexture (int c, int i, int v)
 {
-	if (f==0) {
-		VertexCube2[c].tu= 0; 
-		VertexCube2[c].tv = 0;
+	if (v==0) {
+		VertexCubeTextureModel[c].tu= 0; 
+		VertexCubeTextureModel[c].tv = 0;
 	}
-	if (f==1) {
-		VertexCube2[c].tu = 1; 
-		VertexCube2[c].tv = 0;
+	if (v==1) {
+		VertexCubeTextureModel[c].tu = 1; 
+		VertexCubeTextureModel[c].tv = 0;
 	}
-	if (f==2) {
-		VertexCube2[c].tu = 0; 
-		VertexCube2[c].tv = 1;
+	if (v==2) {
+		VertexCubeTextureModel[c].tu = 0; 
+		VertexCubeTextureModel[c].tv = 1;
 	}
-	if (f==3) {
-		VertexCube2[c].tu = 1; 
-		VertexCube2[c].tv = 1;
+	if (v==3) {
+		VertexCubeTextureModel[c].tu = 1; 
+		VertexCubeTextureModel[c].tv = 1;
 	}
+}
+
+void CCube::VertexCubeTextureLight(int c, int face, int v)
+{
+	if (v == 0) {
+		VertexCubeTextureLightModel[c].tu = 0;
+		VertexCubeTextureLightModel[c].tv = 0;
+	}
+	if (v == 1) {
+		VertexCubeTextureLightModel[c].tu = 1;
+		VertexCubeTextureLightModel[c].tv = 0;
+	}
+	if (v == 2) {
+		VertexCubeTextureLightModel[c].tu = 0;
+		VertexCubeTextureLightModel[c].tv = 1;
+	}
+	if (v == 3) {
+		VertexCubeTextureLightModel[c].tu = 1;
+		VertexCubeTextureLightModel[c].tv = 1;
+	}
+
+	if (face == 0) {
+		VertexCubeTextureLightModel[c].nx = 0;
+		VertexCubeTextureLightModel[c].ny = 0;
+		VertexCubeTextureLightModel[c].nz = -1;
+	}
+	if (face == 1) {
+		VertexCubeTextureLightModel[c].nx = 1;
+		VertexCubeTextureLightModel[c].ny = 0;
+		VertexCubeTextureLightModel[c].nz = 0;
+	}
+	if (face == 2) {
+		VertexCubeTextureLightModel[c].nx = 0;
+		VertexCubeTextureLightModel[c].ny = 0;
+		VertexCubeTextureLightModel[c].nz = 1;
+	}
+	if (face == 3) {
+		VertexCubeTextureLightModel[c].nx = -1;
+		VertexCubeTextureLightModel[c].ny = 0;
+		VertexCubeTextureLightModel[c].nz = 0;
+	}
+	if (face == 4) {
+		VertexCubeTextureLightModel[c].nx = 0;
+		VertexCubeTextureLightModel[c].ny = -1;
+		VertexCubeTextureLightModel[c].nz = 0;
+	}
+	if (face == 5) {
+		VertexCubeTextureLightModel[c].nx = 0;
+		VertexCubeTextureLightModel[c].ny = 1;
+		VertexCubeTextureLightModel[c].nz = 0;
+	}
+
 }
