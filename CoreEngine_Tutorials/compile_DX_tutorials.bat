@@ -16,3 +16,4 @@ echo on
 @echo off
 echo "Compiled:"
 dir /S /B *.exe | find /v "fxc"
+pause

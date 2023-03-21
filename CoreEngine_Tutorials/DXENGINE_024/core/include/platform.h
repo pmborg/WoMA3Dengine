@@ -60,8 +60,19 @@
 // -------------------------------------------------------------------------------------------
 // CHECK: Intel Intrinsics: SSE, SSE2, AVX, AVX2, AVX-512, etc...
 // -------------------------------------------------------------------------------------------
-// The Intel Intrinsics provide access to many Intel instructions - including Intel� SSE, AVX, AVX-512, and more,
-// without the need to write assembly code: 
+	//x86intrin.h	: x86 instructions
+	//mmintrin.h	: MMX(Pentium MMX!)
+	//mm3dnow.h		: 3dnow!(K6 - 2) (deprecated)
+	//xmmintrin.h	: SSE + MMX(Pentium 3, Athlon XP)
+	//emmintrin.h	: SSE2 + SSE + MMX(Pentiuem 4, Ahtlon 64)
+	//pmmintrin.h	: SSE3 + SSE2 + SSE + MMX(Pentium 4 Prescott, Ahtlon 64 San Diego)
+	//tmmintrin.h	: SSSE3 + SSE3 + SSE2 + SSE + MMX(Core 2, Bulldozer)
+	//popcntintrin.h: POPCNT(Core i7, Phenom subset of SSE4.2 and SSE4A)
+	//ammintrin.h	: SSE4A + SSE3 + SSE2 + SSE + MMX(Phenom)
+	//smmintrin.h	: SSE4_1 + SSSE3 + SSE3 + SSE2 + SSE + MMX(Core i7, Bulldozer)
+	//nmmintrin.h	: SSE4_2 + SSE4_1 + SSSE3 + SSE3 + SSE2 + SSE + MMX(Core i7, Bulldozer)
+	//wmmintrin.h	: AES(Core i7 Westmere, Bulldozer)
+	//immintrin.h	: AVX512, AVX2, AVX, SSE4_2 + SSE4_1 + SSSE3 + SSE3 + SSE2 + SSE + MMX(Core i7 Sandy Bridge, Bulldozer)
 
 #if !defined(_XM_NO_INTRINSICS_) && defined _MSC_VER
 	// -------------------------------------------------------------------------------------------
@@ -72,8 +83,8 @@
 	// ...
 	// -------------------------------------------------------------------------------------------
 	#ifdef __AVX512F__ || defined __AVX512__	//AVX512 (Core i7/i9-7xxxX Skylake-X) (2017)  TARGET CODE: WIN10 64b+AVX512 API:DX12 (Level DX12.x)
-		//To be compiled in: VS2017
-		#include <zmmintrin.h>					// #include <mmintrin.h> + #include <emmintrin.h>
+		//To be compiled in: VS2017-VS2022
+		#include <immintrin.h>
 	#elif defined (__AVX2__)					//AVX2	 (i3/5/7 Haswell)	      = (Q2 2013) TARGET CODE: WIN10 64b+AVX2	API:DX12 (Level DX12.x)
 		#define _XM_AVX2_INTRINSICS_
 		#include <immintrin.h>					//#include <wmmintrin.h>
@@ -84,9 +95,9 @@
 		#include <wmmintrin.h>					//#include <nmmintrin.h>
 	#elif defined (__SSE4A__)					// AMD Only
 		#include <ammintrin.h>					// AMD Only
-	#elif defined (__SSE42__)					//SSE42 (i7 Nehalem)			  = (Nov 2008)
+	#elif defined (__SSE42__)					//SSE42 (for Intel(R) Core(TM) 2 Duo processor)	= (Nov 2008)
 		#include <nmmintrin.h>					//#include <smmintrin.h>
-	#elif defined (__SSE41__)					//SSE41 (Penryn microarchitecture)= (2007/2008)
+	#elif defined (__SSE41__)					//SSE41 (for Intel(R) Core(TM) 2 Duo processor) = (2007/2008)
 		#include <smmintrin.h>					//#include <tmmintrin.h>
 	#elif defined (__SSE3__)					//SSE3 (Pentium 4 Prescott)		  = (April 2005)
 		#include <tmmintrin.h>					//#include <pmmintrin.h>
