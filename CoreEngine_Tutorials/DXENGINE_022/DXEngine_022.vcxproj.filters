@@ -369,9 +369,6 @@
     <ClCompile Include="core\src\xml_settings_saver.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
-    <ClCompile Include="src\DX9\DX9Class.cpp">
-      <Filter>src\dx9</Filter>
-    </ClCompile>
     <ClCompile Include="src\DX11\DX11CapabilitiesClass.cpp">
       <Filter>src\dx11</Filter>
     </ClCompile>

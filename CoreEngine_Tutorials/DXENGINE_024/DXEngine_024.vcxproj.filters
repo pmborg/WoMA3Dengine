@@ -370,9 +370,6 @@
     <ClCompile Include="core\src\xml_settings_saver.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
-    <ClCompile Include="src\DX9\DX9Class.cpp">
-      <Filter>src\dx9</Filter>
-    </ClCompile>
     <ClCompile Include="src\DX11\DX11CapabilitiesClass.cpp">
       <Filter>src\dx11</Filter>
     </ClCompile>
@@ -454,14 +451,14 @@
     <ClCompile Include="..\DXENGINE_021\src\winWomaSetupManager.cpp">
       <Filter>src\utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\lightClass.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Application_LightRay.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\DX11Blending.cpp">
       <Filter>src\dx11</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lightClass.cpp">
+      <Filter>src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Application_LightRay.cpp">
+      <Filter>src\utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

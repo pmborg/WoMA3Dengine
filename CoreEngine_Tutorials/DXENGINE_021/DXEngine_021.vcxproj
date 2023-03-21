@@ -141,7 +141,6 @@
     <ClCompile Include="src\DX11\DX11ViewPort-and-Scissor.cpp" />
     <ClCompile Include="src\DX11\DX11Zbuffer.cpp" />
     <ClCompile Include="src\DX12\DX12Class.cpp" />
-    <ClCompile Include="src\DX9\DX9Class.cpp" />
     <ClCompile Include="src\DXcameraClass.cpp" />
     <ClCompile Include="src\DXmodelClass.cpp" />
     <ClCompile Include="src\DXshaderClass.cpp" />

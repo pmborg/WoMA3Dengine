@@ -30,11 +30,11 @@
     <Filter Include="App">
       <UniqueIdentifier>{d9cc55ce-d0d4-40f3-b9e2-95a245b043fb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\DX9_11_12">
-      <UniqueIdentifier>{45fb8045-21db-45d5-a5e8-a2beca9914e8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\OPENGL">
       <UniqueIdentifier>{90fc141a-752b-484a-9263-fe967f52690c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\DX">
+      <UniqueIdentifier>{45fb8045-21db-45d5-a5e8-a2beca9914e8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -322,9 +322,6 @@
     <ClCompile Include="core\src\xml_settings_saver.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
-    <ClCompile Include="src\DX9\DX9Class.cpp">
-      <Filter>src\dx9</Filter>
-    </ClCompile>
     <ClCompile Include="src\DX11\DX11CapabilitiesClass.cpp">
       <Filter>src\dx11</Filter>
     </ClCompile>
@@ -359,16 +356,16 @@
       <Filter>core\src</Filter>
     </ClCompile>
     <ClCompile Include="src\DXcameraClass.cpp">
-      <Filter>src\DX9_11_12</Filter>
+      <Filter>src\DX</Filter>
     </ClCompile>
     <ClCompile Include="src\DXmodelClass.cpp">
-      <Filter>src\DX9_11_12</Filter>
+      <Filter>src\DX</Filter>
     </ClCompile>
     <ClCompile Include="src\DXshaderClass.cpp">
-      <Filter>src\DX9_11_12</Filter>
+      <Filter>src\DX</Filter>
     </ClCompile>
     <ClCompile Include="src\DXshaderLoader.cpp">
-      <Filter>src\DX9_11_12</Filter>
+      <Filter>src\DX</Filter>
     </ClCompile>
     <ClCompile Include="src\GLcameraClass.cpp">
       <Filter>src\OPENGL</Filter>

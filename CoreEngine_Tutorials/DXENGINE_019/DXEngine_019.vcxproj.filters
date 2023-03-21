@@ -27,14 +27,14 @@
     <Filter Include="src\dx12">
       <UniqueIdentifier>{4a6fae0c-3497-4fed-ae22-85d8a754bdbd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\glx">
-      <UniqueIdentifier>{90fc141a-752b-484a-9263-fe967f52690c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="App">
       <UniqueIdentifier>{87d27199-77e4-4564-b9ef-acde1e83b0e7}</UniqueIdentifier>
     </Filter>
     <Filter Include="include\ThirdParty">
       <UniqueIdentifier>{f41572d4-5022-468a-8628-aaff706f6321}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\OPENGL">
+      <UniqueIdentifier>{90fc141a-752b-484a-9263-fe967f52690c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -361,13 +361,13 @@
       <Filter>src\dx12</Filter>
     </ClCompile>
     <ClCompile Include="src\GLX\GL3w.cpp">
-      <Filter>src\glx</Filter>
+      <Filter>src\OPENGL</Filter>
     </ClCompile>
     <ClCompile Include="src\GLX\GLopenGLclass.cpp">
-      <Filter>src\glx</Filter>
+      <Filter>src\OPENGL</Filter>
     </ClCompile>
     <ClCompile Include="src\GLX\wglopenglclass.cpp">
-      <Filter>src\glx</Filter>
+      <Filter>src\OPENGL</Filter>
     </ClCompile>
     <ClCompile Include="core\src\winWomaSetupManager.cpp">
       <Filter>core\src</Filter>
