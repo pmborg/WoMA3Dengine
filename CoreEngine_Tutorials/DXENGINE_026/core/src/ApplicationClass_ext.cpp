@@ -133,19 +133,21 @@ bool ApplicationClass::Start()
 	return true;
 }
 
+
 //-------------------------------------------------------------------------------------------
 bool ApplicationClass::Initialize(/*WomaDriverClass*/ void* Driver)
 //-------------------------------------------------------------------------------------------
 {
 	ASSERT(Driver);
-
+	SystemHandle->demoApplicationClass = NEW DemoApplicationClass;
+	
 	IF_NOT_RETURN_FALSE(SystemHandle->demoApplicationClass->WOMA_APPLICATION_InitializeSprites2D());	// USER LOAD all 2D objects! (2D: WILL BE LOADED ON RESIZE() also)
 
 	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(SystemHandle->m_Driver));	// <---------- USER LOAD all 3D objects!
 
 	//CALL DEMO APPLICATION //////////////////////////////////////////////////////////////////////////////////////////
-	SystemHandle->demoApplicationClass = NEW DemoApplicationClass;
 	IF_NOT_RETURN_FALSE(SystemHandle->demoApplicationClass->WOMA_APPLICATION_Initialize3D(SystemHandle->m_Driver));
+	
 	SystemHandle->m_Driver->Finalize();
 
 	return true;
