@@ -103,7 +103,7 @@
 #endif
 
 #if DX_ENGINE_LEVEL >= 22
-#define ALLOW_PRINT_SCREEN_SAVE_PNG	// Level:22
+//#define ALLOW_PRINT_SCREEN_SAVE_PNG	// Level:27
 #define USE_IMAGE_BMP
 #define USE_IMAGE_JPG
 #define USE_IMAGE_PNG
@@ -116,7 +116,7 @@
 #define USE_LIGHT_RAY					// ON/OFF - Render light ray (_DEBUG)
 #endif
 
-#if DX_ENGINE_LEVEL >= 24  //old ENGINE_LEVEL=26
+#if DX_ENGINE_LEVEL >= 24
 #define USE_TITLE_BANNER
 #define USE_ALPHA_BLENDING
 #define USE_VIEW2D_SPRITES

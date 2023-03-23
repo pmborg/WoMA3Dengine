@@ -124,7 +124,7 @@
 		static_assert(false, "This Target is not valid for WOMA3D Engine");
 	#elif defined __i386__						//IA-32		(CPU: 386)			  = (Nov 1989) Target: MS-DOS 3.31 16b + DOS/4GW
 		static_assert(false, "This Target is not valid for WOMA3D Engine");
-	#else										//x86 � 286 16-bit				  = (Nov 1987) Target: MS-DOS 3.31 16b
+	#else										//x86 - 286 16-bit				  = (Nov 1987) Target: MS-DOS 3.31 16b
 		static_assert(false, "This Target is not valid for WOMA3D Engine");
 	#endif
 #endif
@@ -161,7 +161,7 @@
 
 
 // -------------------------------------------------------------------------------------------
-//	CHECK for ARM version (INSPIRED)
+//	CHECK for ARM version
 // -------------------------------------------------------------------------------------------
 #if defined(__arm__) || defined(__thumb__) || defined(_ARM) || defined(_M_ARM) || defined(_M_ARM64) || defined(__aarch64__)
 	#define CPU_ARM32	//FOR: ANDROID_PLATFORM
@@ -170,7 +170,7 @@
 #endif
 
 // -------------------------------------------------------------------------------------------
-//	CHECK for LOW/BIG ENDIAN (INSPIRED)
+//	CHECK for LOW/BIG ENDIAN
 // -------------------------------------------------------------------------------------------
 #if defined(__BYTE_ORDER__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 	#define CPU_BIGENDIAN
@@ -296,9 +296,11 @@
 #endif
 
 #if defined WINDOWS_PLATFORM
-	# define WOMA_NEWLINE "\r\n"
+	#define WOMA_NEWLINE "\r\n"
+#elif defined __APPLE__
+	#define WOMA_NEWLINE "\r"
 #else
-	# define WOMA_NEWLINE "\n"
+	#define WOMA_NEWLINE "\n"
 #endif
 
 // -------------------------------------------------------------------------------------------
@@ -441,7 +443,9 @@
 #define LITTLE_ENDIAN 1
 
 //LET USER DECIDE ON: ###core_engine_level.h
+#undef DX9sdk
 #undef DX9
+#undef DX10
 #undef DX11
 #undef DX12
 #undef GLES2
@@ -513,7 +517,6 @@
 #define MAX_STR_LEN 256		//Used by TCHAR Arrays:
 #define CONSOLE_LOG_WIDTH 800
 
-
 // -------------------------------------------------------------------------------------------
 #if defined NDEBUG
 	#define RELEASE // ON/OFF Comercial Version (Check Serials) RELEASE = NDEBUG + "Real" Client Path(s) with Pack(s)
@@ -528,8 +531,6 @@
 // -------------------------------------------------------------------------------------------
 // Define WOMA Project "Settings/Features" that will be COMPILED depending of "ENGINE_LEVEL"
 // -------------------------------------------------------------------------------------------
-//#define RELEASE	//FORCE TO DEBUG A RELEASE bin!
-
 #include "core_engine_level.h"
 
 #if DX_ENGINE_LEVEL >= 19 && CORE_ENGINE_LEVEL == 10	//DX9 DX11+DX10 DX12 OPENGL3
@@ -540,6 +541,10 @@
 	#define WOMA_CONSOLE_APPLICATION
 	#define WomaDriverClass void
 #else
-	#define WOMA_CONSOLE_APPLICATION
-	//#define WOMA_WIN32_APPLICATION
+	#if _DEBUG
+		//#define RELEASE	//FORCE TO DEBUG A RELEASE bin!
+		#define WOMA_CONSOLE_APPLICATION
+	#else
+		#define WOMA_WIN32_APPLICATION
+	#endif
 #endif

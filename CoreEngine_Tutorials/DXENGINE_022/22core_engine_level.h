@@ -102,7 +102,7 @@
 		#endif
 
 		#if DX_ENGINE_LEVEL >= 22
-			//#define ALLOW_PRINT_SCREEN_SAVE_PNG	// Level:22
+			//#define ALLOW_PRINT_SCREEN_SAVE_PNG	// Level:27
 			#define USE_IMAGE_BMP
 			#define USE_IMAGE_JPG
 			#define USE_IMAGE_PNG
