@@ -144,7 +144,7 @@ void ApplicationTextClass::SetFps(int fps)
 		green = 1.0f;	// If fps is between 30 and 60 set the fps color to "yellow."
 
 	// Update the sentence vertex buffer with the new string information.
-	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_FPS], strBuffer, SystemHandle->AppSettings->WINDOW_WIDTH - 120, 20, red, green, blue));
+	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_FPS], strBuffer, SystemHandle->AppSettings->WINDOW_WIDTH - 180, 20, red, green, blue));
 }
 
 //The SetCpu function is similar to the SetFps function. It takes the cpu value and converts it to a string which is then 
@@ -158,10 +158,9 @@ void ApplicationTextClass::SetCpu(int cpu)
     StringCchPrintf (cpuString, sizeof(cpuString), TEXT("Cpu: %d %%"), cpu);
 
 	// Update the sentence vertex buffer with the new string information.
-	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_CPU], cpuString, SystemHandle->AppSettings->WINDOW_WIDTH - 120, 40, 0.0f, 1.0f, 0.0f));
+	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_CPU], cpuString, SystemHandle->AppSettings->WINDOW_WIDTH - 180, 40, 0.0f, 1.0f, 0.0f));
 }
 
-//#if TUTORIAL_PRE_CHAP >= 9
 //02
 void ApplicationTextClass::SetCameraPosition(float posX, float posY, float posZ)
 {
@@ -181,7 +180,6 @@ void ApplicationTextClass::SetCameraRotation(float rotX, float rotY, float rotZ)
 	StringCchPrintf (dataString, sizeof(dataString), TEXT("rX:%5.1f rY:%5.1f"), rotX, rotY);
 	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_ROT], dataString, 10, 40, 0.0f, 1.0f, 0.0f));
 }
-//#endif
 
 void ApplicationTextClass::SetClockTime(UINT h, UINT m)
 {

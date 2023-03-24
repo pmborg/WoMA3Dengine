@@ -255,7 +255,7 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 	AppTextClass->SetFps(SystemHandle->fps);						// Update the FPS "Value" in the text object.
 	AppTextClass->SetCpu(SystemHandle->m_Cpu.GetCpuPercentage());	// Update the CPU usage "Value" in the text object.
 
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 	{
 		AppTextClass->SetCameraPosition(((DirectX::DX11Class*)m_Driver)->m_Camera->m_positionX,
 			((DirectX::DX11Class*)m_Driver)->m_Camera->m_positionY,

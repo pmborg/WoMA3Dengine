@@ -141,7 +141,7 @@ void DemoApplicationClass::initTextureDemo()
 		m_jpg3DModel->rotateX(-3.14f / 2.0f);
 		m_jpg3DModel->translation(0, 7.5, 7);
 
-		// Image Converter: \WoMA3Dengine\ExternalTools\Microsoft_DirectX_SDK_June_2010\Utilities\bin\x86\texconv.exe - ft PNG Earth_Diffuse.bmp
+		// Image Converter: \WoMA3Dengine\ExternalTools\Microsoft_DirectX_SDK_June_2010\Utilities\bin\x86\texconv.exe -ft PNG Earth_Diffuse.bmp
 		initLoadTexture3D(m_png3DModel, TEXT("engine/data/Earth_Diffuse.png"), SquarTextureVertexVector, IndexSquarList, SHADER_TEXTURE);
 		m_png3DModel->rotateX(-3.14f / 2.0f);
 		m_png3DModel->translation(6, 7.5, 7);
@@ -156,7 +156,7 @@ void DemoApplicationClass::initTextureDemo()
 		m_dds3DModel->rotateX(-3.14f / 2.0f);
 		m_dds3DModel->translation(0, 1, 7);
 
-		// Image Converter: \WoMA3Dengine\ExternalTools\Microsoft_DirectX_SDK_June_2010\Utilities\bin\x86\texconv.exe - ft TGA Earth_Diffuse.bmp
+		// Image Converter: \WoMA3Dengine\ExternalTools\Microsoft_DirectX_SDK_June_2010\Utilities\bin\x86\texconv.exe -ft TGA Earth_Diffuse.bmp
 	#if defined SUPPORT_TGA
 		initLoadTexture3D(m_tga3DModel, TEXT("engine/data/Earth_Diffuse.tga"), SquarTextureVertexVector, IndexSquarList, SHADER_TEXTURE);
 		m_tga3DModel->rotateX(-3.14f / 2.0f);

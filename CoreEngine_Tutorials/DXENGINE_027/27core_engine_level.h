@@ -9,8 +9,8 @@
 #if !defined USE_NETWORK
 	#if CORE_ENGINE_LEVEL > 9
 	#if defined _DEBUG 
-		#define USE_FORCE_HOUR	/*24*/ /*18*/ 12
-		#define USE_FORCE_MIN	00
+		//#define USE_FORCE_HOUR	/*24*/ /*18*/ 12
+		//#define USE_FORCE_MIN	00
 	#endif
 	#endif
 #endif

@@ -148,6 +148,8 @@ void textFontClass::BuildVertexArray(void* vertices, TCHAR* sentence, float draw
 	// Initialize the index to the vertex array.
 	index = 0;
 
+	int m_fontHeight = 18;
+
 	// Draw each letter onto a quad.
 	for(i=0; i<numLetters; i++)
 	{
@@ -156,7 +158,7 @@ void textFontClass::BuildVertexArray(void* vertices, TCHAR* sentence, float draw
 		// If the letter is a space then just move over three pixels.
 		if(letter == 0)
 		{
-			drawX = drawX + 3.0f;
+			drawX = drawX + 2.0f;
 		}
 		else
 		{
@@ -165,11 +167,11 @@ void textFontClass::BuildVertexArray(void* vertices, TCHAR* sentence, float draw
 			vertexPtr[index].texture = XMFLOAT2(m_Font[letter].left, 0.0f);
 			index++;
 
-			vertexPtr[index].position = XMFLOAT3((drawX + m_Font[letter].size), (drawY - 16), 0.0f);  // Bottom right.
+			vertexPtr[index].position = XMFLOAT3((drawX + m_Font[letter].size), (drawY - m_fontHeight), 0.0f);  // Bottom right.
 			vertexPtr[index].texture = XMFLOAT2(m_Font[letter].right, 1.0f);
 			index++;
 
-			vertexPtr[index].position = XMFLOAT3(drawX, (drawY - 16), 0.0f);  // Bottom left.
+			vertexPtr[index].position = XMFLOAT3(drawX, (drawY - m_fontHeight), 0.0f);  // Bottom left.
 			vertexPtr[index].texture = XMFLOAT2(m_Font[letter].left, 1.0f);
 			index++;
 
@@ -182,12 +184,12 @@ void textFontClass::BuildVertexArray(void* vertices, TCHAR* sentence, float draw
 			vertexPtr[index].texture = XMFLOAT2(m_Font[letter].right, 0.0f);
 			index++;
 
-			vertexPtr[index].position = XMFLOAT3((drawX + m_Font[letter].size), (drawY - 16), 0.0f);  // Bottom right.
+			vertexPtr[index].position = XMFLOAT3((drawX + m_Font[letter].size), (drawY - m_fontHeight), 0.0f);  // Bottom right.
 			vertexPtr[index].texture = XMFLOAT2(m_Font[letter].right, 1.0f);
 			index++;
 
 			// Update the x location for drawing by the size of the letter and one pixel.
-			drawX = drawX + m_Font[letter].size + 1.0f;
+			drawX = drawX + m_Font[letter].size + 3.0f;
 		}
 	}
 }

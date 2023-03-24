@@ -335,8 +335,8 @@ void WinSystemClass::refreshTitle() // Run once per second.
 	if (!m_Driver)
 		return;
 
-		StringCchPrintf(pstrFPS, 300, TEXT("[%d:%d:%d] dxlvl:%d %s [%s] shader:%s FPS:%d game_state:%d RENDER_PAGE:%d"), 
-			astroClass->hour, astroClass->minute, astroClass->second, DX_ENGINE_LEVEL, WOMA::APP_FULLNAME, m_Driver->driverName,
+		StringCchPrintf(pstrFPS, 300, TEXT("[%d:%d] dxlvl:%d %s [%s] shader:%s FPS:%d game_state:%d RENDER_PAGE:%d"), 
+			astroClass->hour, astroClass->minute, DX_ENGINE_LEVEL, WOMA::APP_FULLNAME, m_Driver->driverName,
 			m_Driver->szShaderModel, SystemHandle->fps, WOMA::game_state, m_Application->RENDER_PAGE);
 
 	STRING clean_title = pstrFPS;
