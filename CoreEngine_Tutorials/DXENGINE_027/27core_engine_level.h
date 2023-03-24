@@ -15,11 +15,6 @@
 	#endif
 #endif
 
-#if defined RELEASE && defined _NOT
-	#define USE_MAIN_THREAD		// ON/OFF (Note: Dont work on openGL, NOTE!!! This is buggy with maximize!!! Dont use for now
-	// Solution? https://msdn.microsoft.com/en-us/library/windows/desktop/ee417025.aspx
-#endif
-
 #if defined _DEBUG
 	//#define VERBOSE_MEMORY_DEBUG			// [ON/OFF]: used (woma_macros.h)
 #endif
@@ -135,10 +130,6 @@
 			#define USE_RASTERTEK_TEXT_FONT		//Allow Legends for all Levels since 20: with "techno" of 28 (Text Fonts)
 		#endif
 
-		//#if DX_ENGINE_LEVEL >= 28
-			//#define USE_DIRECT_INPUT
-			//#define ALLOW_PRINT_SCREEN_SAVE_PNG
-		//#endif
 		//-------------------------------------------------------------------------------------------------------
 		#if defined RELEASE && DX_ENGINE_LEVEL < 20
 		#error "WOMA COMPILATION ERROR: RELEASE bin is not Supported before DX_ENGINE_LEVEL 20"
