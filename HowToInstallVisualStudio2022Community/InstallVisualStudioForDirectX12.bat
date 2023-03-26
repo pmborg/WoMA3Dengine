@@ -1,2 +1,2 @@
 @echo off
-VisualStudioSetup.exe --config \WoMAengine\InstallVisualStudio2022Community\.vsconfig
+VisualStudioSetup.exe --config C:\WoMA3Dengine\HowToInstallVisualStudio2022Community\.vsconfig
