@@ -1347,12 +1347,14 @@ XMMATRIX* DX12Class::GetProjectionMatrix(void* Driver, UINT camera, UINT project
 	ASSERT(FALSE);
 }
 
+#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
 // ----------------------------------------------------------------------------------------------
 ImageLoaderClass* DX12Class::CaptureScreenShot(int screenWidth, int screenHeight)
 // ----------------------------------------------------------------------------------------------
 {
 	return NULL;
 }
+#endif
 
 #ifdef NOT_USED
 // ----------------------------------------------------------------------------------------------

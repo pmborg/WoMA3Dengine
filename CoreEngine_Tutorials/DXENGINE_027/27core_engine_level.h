@@ -126,7 +126,6 @@
 		#endif
 
 		#if DX_ENGINE_LEVEL >= 27
-			#undef OPENGL3						//NOT implemented yet
 			#define USE_RASTERTEK_TEXT_FONT		//Allow Legends for all Levels since 20: with "techno" of 28 (Text Fonts)
 		#endif
 

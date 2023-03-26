@@ -307,10 +307,12 @@ bool GLopenGLclass::Initialize(float* clearColor)
 	return true;
 }
 
+#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
 // ----------------------------------------------------------------------------------------------
 ImageLoaderClass* GLopenGLclass::CaptureScreenShot(int screenWidth, int screenHeight)
 // ----------------------------------------------------------------------------------------------
 {
 	return false;
 }
+#endif
 

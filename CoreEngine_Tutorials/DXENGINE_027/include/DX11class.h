@@ -286,7 +286,9 @@ public:
 	ID3D11BlendState* m_alphaEnableBlendingState;	//m_alphaEnableBlendingState is for turning on alpha blending and 
 	ID3D11BlendState* m_alphaDisableBlendingState;	//m_alphaDisableBlendingState is for turning off alpha blending.
 
+#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
 	ImageLoaderClass* CaptureScreenShot(int screenWidth, int screenHeight);
+#endif
 
 	BOOL Check (int* Hi, int* low);
 	BOOL CheckAPIdriver (UINT USE_THIS_ADAPTER);

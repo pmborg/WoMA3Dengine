@@ -275,6 +275,16 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 			((DirectX::DX12Class*)m_Driver)->m_Camera->m_rotationY,
 			((DirectX::DX12Class*)m_Driver)->m_Camera->m_rotationZ);
 	}
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+	{
+		AppTextClass->SetCameraPosition(((GLopenGLclass*)m_Driver)->m_Camera->m_positionX,
+			((GLopenGLclass*)m_Driver)->m_Camera->m_positionY,
+			((GLopenGLclass*)m_Driver)->m_Camera->m_positionZ);
+
+		AppTextClass->SetCameraRotation(((GLopenGLclass*)m_Driver)->m_Camera->m_rotationX,
+			((GLopenGLclass*)m_Driver)->m_Camera->m_rotationY,
+			((GLopenGLclass*)m_Driver)->m_Camera->m_rotationZ);
+	}
 	AppTextClass->SetClockTime(astroClass->hour, astroClass->minute);
 
 	AppTextClass->SetLightDirection(m_Light->m_lightDirection.x, m_Light->m_lightDirection.y , m_Light->m_lightDirection.z );

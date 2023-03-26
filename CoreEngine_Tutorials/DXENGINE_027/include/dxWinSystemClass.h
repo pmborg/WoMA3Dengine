@@ -52,7 +52,9 @@ public:
 	STRING		XML_WORLD_FILE;
 	World		world;
 
+#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
 	bool SaveScreenshot();
+#endif
 
 	//private:
 	void Shutdown();

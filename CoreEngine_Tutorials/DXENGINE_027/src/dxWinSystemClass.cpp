@@ -293,8 +293,10 @@ void dxWinSystemClass::ProcessFrame()
 	WinSystemClass::ProcessFrame(); // Process Input
 
 	// Process Special: "PRINT SCREEN" key, the "Back-Buffer" have 1 frame rendered, now we can dump it:
+#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
 	if ((WOMA::game_state > GAME_MINIMIZED) && (OS_KEY_DOWN(DIK_SYSRQ + 0x35)))
 		ASSERT(SaveScreenshot());
+#endif
 
 	if (WOMA::game_state == GAME_SETUP)
 	{
@@ -327,6 +329,7 @@ void dxWinSystemClass::ProcessFrame()
 	}
 }
 
+#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
 // Source: HUMUS
 bool dxWinSystemClass::SaveScreenshot()
 {
@@ -367,6 +370,7 @@ bool dxWinSystemClass::SaveScreenshot()
 
 	return result;
 }
+#endif
 
 
 

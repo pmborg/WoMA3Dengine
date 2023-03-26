@@ -41,7 +41,9 @@
 	#include "virtualCameraClass.h"
 
 
+#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
 	#include "ImageLoaderClass.h"
+#endif
 
 // ----------------------------------------------------------------------------------------------
 enum CAMERA_TYPE
@@ -197,7 +199,9 @@ public:
 	virtual void TurnOnAlphaBlending() = 0;
 	virtual void TurnOffAlphaBlending() = 0;
 
+	#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
 	virtual ImageLoaderClass* CaptureScreenShot(int screenWidth, int screenHeight) = 0;
+	#endif
 
 	UINT	ShaderVersionH, ShaderVersionL;	// Basics of Refrash rate / Shaver Version:
 	bool	RenderfirstTime = true;

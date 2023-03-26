@@ -85,7 +85,6 @@ bool textFontClass::Initialize(void* g_driver, TCHAR* fontFilename, TCHAR* textu
 		// Create the texture object for this model:
 		gl_Texture = NEW GLtextureClass;
 		IF_NOT_THROW_EXCEPTION(gl_Texture);
-		//meshSRV.push_back(gl_Texture);
 
 		// Initialize the texture object:
 		bool result = gl_Texture->Initialize(WOMA::LoadFile(textureFilename), 0, false/*Model3D*/);
@@ -101,6 +100,7 @@ bool textFontClass::Initialize(void* g_driver, TCHAR* fontFilename, TCHAR* textu
 
 void textFontClass::Shutdown()
 {
+	SAFE_SHUTDOWN(gl_Texture);
 	ReleaseFontData();	// Release the font data.
 }
 

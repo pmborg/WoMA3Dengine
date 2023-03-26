@@ -1,6 +1,6 @@
 // NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 #include "platform.h"
-
+#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
 #include "dx11Class.h"
 #include "ImageLoaderClass.h"
 #include "mem_leak.h"
@@ -109,3 +109,4 @@ ImageLoaderClass* DX11Class::CaptureScreenShot(int screenWidth, int screenHeight
 }
 }
 
+#endif

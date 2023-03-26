@@ -203,7 +203,7 @@ private:
 
 	// VARS:
 	// ----------------------------------------------------------------------
-	//DX_CLASS* m_driver;
+	
 #if defined DX9sdk
 	DirectX::DX9Class* m_driver9=NULL;
 #endif

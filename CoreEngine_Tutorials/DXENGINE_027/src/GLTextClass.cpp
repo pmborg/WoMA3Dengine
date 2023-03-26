@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: GlTextClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -67,19 +68,7 @@ void GlTextClass::ReleaseSentence(SentenceType** sentence)
 #endif
 			SAFE_DELETE_ARRAY((*sentence)->GLvertices);
 			SAFE_DELETE_ARRAY((*sentence)->indices);
-			// Release the sentence vertex buffer.
-			if ((ID3D11Buffer*)(*sentence)->vertexBuffer)
-			{
-				((ID3D11Buffer*)(*sentence)->vertexBuffer)->Release();
-				(*sentence)->vertexBuffer = 0;
-			}
 
-			// Release the sentence index buffer.
-			if ((ID3D11Buffer*)(*sentence)->indexBuffer)
-			{
-				((ID3D11Buffer*)(*sentence)->indexBuffer)->Release();
-				(*sentence)->indexBuffer = 0;
-			}
 			// Release the sentence.
 			delete* sentence;
 			*sentence = 0;
@@ -116,7 +105,6 @@ bool GlTextClass::Initialize(void* Driver)
 
 bool GlTextClass::InitializeTexture(void* Driver)
 {
-
 	return true;
 }
 
@@ -199,6 +187,8 @@ bool GlTextClass::UpdateSentence(SentenceType* sentence, TCHAR* text, int positi
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	ModelTextureVertexType* verticesPtr;
 
+	positionY += 36;
+
 	if (!sentence)
 	{
 		WomaFatalExceptionW(TEXT("Text: sentece = NULL")); return false;
@@ -252,29 +242,26 @@ bool GlTextClass::UpdateSentence(SentenceType* sentence, TCHAR* text, int positi
 
 void GlTextClass::RenderSentence(SentenceType* sentence)
 {
-	//glUseProgram(m_spriteShader->m_shaderProgram); // m_Shader->SetShader();
 	m_spriteShader->SetShader();
 
 	GLopenGLclass* driver = (GLopenGLclass*)SystemHandle->driverList[SystemHandle->AppSettings->DRIVER];
 
-	mat4 m_worldMatrix = m_worldMatrix.mat4identity();
-	mat4 m_viewMatrix = ((GLcameraClass*)driver->m_Camera)->m_viewMatrix;
-	/*
-	m_viewMatrix = m_viewMatrix;
-	m_viewMatrix.mat4identity();
+	static mat4 m_worldMatrix = m_worldMatrix.mat4identity();
+	static mat4 m_viewMatrix = m_viewMatrix.mat4identity();
 	m_viewMatrix.m[14] = 1;
-	*/
 	mat4 projectionMatrix = driver->m_orthoMatrix;
 
+	m_spriteShader->pixelColor[0] = sentence->red;
+	m_spriteShader->pixelColor[1] = sentence->green;
+	m_spriteShader->pixelColor[2] = sentence->blue;
+	m_spriteShader->pixelColor[3] = 1.0f;
 	m_spriteShader->SetShaderParameters(SHADER_TEXTURE_FONT, &m_worldMatrix, &m_viewMatrix, &projectionMatrix, 0 /*m_Texture->m_textureID*/);
 
-	//void TextureClass::SetTexture(OpenGLClass * OpenGL)
 	/////////////////////////////////////
 	// Step 3: Set shader texture resource(s)
 	glActiveTexture(GL_TEXTURE0 + 0);	// Set the unique texture unit in which to store the data.
 	glBindTexture(GL_TEXTURE_2D, m_Font->gl_Texture->m_textureID);
 
-	//TextClass::RenderBuffers()
 	////////////////////////////
 	// Step 4: Render the model
 	glBindVertexArray(sentence->m_vertexArrayId);				// SetBuffers(driver);

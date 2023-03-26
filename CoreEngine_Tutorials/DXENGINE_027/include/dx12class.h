@@ -170,7 +170,9 @@ public:
     void TurnZBufferOn();
     void TurnZBufferOff();
 
+#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
 	ImageLoaderClass* CaptureScreenShot(int screenWidth, int screenHeight);
+#endif
 
 		std::vector<STRING> allTextureNameArray;
 		std::vector<ID3D11ShaderResourceView*> allTexturePointerArray;
