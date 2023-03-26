@@ -35,7 +35,7 @@ void DemoApplicationClass::initSphere1(float SPHERE_SIZE)
 
 	CREATE_MODEL_IF_NOT_EXCEPTION(m_SphereModel1, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);
 	
-	m_SphereModel1->ModelHASlight = false; // Before Load: Dont Calculate light/shadow for Sky-Dome! 
+	m_SphereModel1->ModelHASlight = true; // Before Load: Dont Calculate light/shadow for Sky-Dome! 
 	ASSERT(m_SphereModel1->LoadLight(TEXT("m_SphereModel"), SystemHandle->m_Driver, SHADER_TEXTURE_LIGHT, &Textures, &Sphere_vertexdata, &Sphere_indexdata));
 
 	m_SphereModel1->PrimitiveTopology = TRIANGLESTRIP;
@@ -50,7 +50,7 @@ void DemoApplicationClass::initSphere2(float SPHERE_SIZE)
 
 	CREATE_MODEL_IF_NOT_EXCEPTION(m_SphereModel2, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);
 
-	m_SphereModel2->ModelHASlight = false; // Before Load: Dont Calculate light/shadow for Sky-Dome! 
+	m_SphereModel2->ModelHASlight = true; // Before Load: Dont Calculate light/shadow for Sky-Dome! 
 	ASSERT(m_SphereModel2->LoadLight(TEXT("m_SphereModel2"), SystemHandle->m_Driver, SHADER_TEXTURE_LIGHT, &Textures, &Sphere_vertexdata, &Sphere_indexdata));
 
 	m_SphereModel2->PrimitiveTopology = TRIANGLESTRIP;

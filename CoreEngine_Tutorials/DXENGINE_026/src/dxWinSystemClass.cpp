@@ -163,10 +163,10 @@ bool dxWinSystemClass::InitializeSystem()
 
 	// MAIN LOADING THREAD:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	SystemClass::LoadAllGraphics();	//ApplicationClass::WOMA_APPLICATION_InitializeSprites2D()
+	SystemClass::LoadAllGraphics();		// Load all main Graphics Objects, that will be rendered
 
-	if (WOMA::game_state >= GAME_STOP) // Something FATAL on loading "mandatory 2D/3D Stuff"?
-		return false;			 // (SAMPLE: misssing 3D/IMAGE/AUDIO file...)
+	if (WOMA::game_state >= GAME_STOP)	// Something FATAL on loading "mandatory 2D/3D Stuff"?
+		return false;					// (SAMPLE: misssing 3D/IMAGE/AUDIO file...)
 
 	if (WOMA::game_state == GAME_LOADING)
 		WOMA::game_state = GAME_RUN;

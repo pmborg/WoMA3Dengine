@@ -486,9 +486,9 @@ bool SystemClass::LoadAllGraphics()
 	if (!m_Application->Initialize(m_Driver))// < ------- Initialize: Load all Application Objects & START TIMER
 		WOMA::game_state = GAME_STOP;
 
-	// Free only here!!! because this will clear screen with: full BLACK...
+	
 #if defined USE_INTRO_VIDEO_DEMO
-	SAFE_DELETE(g_DShowPlayer); //free(g_DShowPlayer);
+	SAFE_DELETE(g_DShowPlayer);
 #endif
 
 	return true;
