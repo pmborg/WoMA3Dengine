@@ -69,20 +69,24 @@ void ApplicationTextClass::Shutdown()
 {
 	if (m_Text) 
 	{
-		for (UINT i = 0; i < _countof(m_sentence); i++) {
-			if (m_sentence[i])
+		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+		{
+			for (UINT i = 0; i < _countof(m_sentence); i++)
 			{
-				// Release the vertex buffer.
-				glBindBuffer(GL_ARRAY_BUFFER, 0);
-				glDeleteBuffers(1, &m_sentence[i]->m_vertexBufferId);
+				if (m_sentence[i])
+				{
+					// Release the vertex buffer.
+					glBindBuffer(GL_ARRAY_BUFFER, 0);
+					glDeleteBuffers(1, &m_sentence[i]->m_vertexBufferId);
 
-				// Release the index buffer.
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-				glDeleteBuffers(1, &m_sentence[i]->m_indexBufferId);
+					// Release the index buffer.
+					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+					glDeleteBuffers(1, &m_sentence[i]->m_indexBufferId);
 
-				// Release the vertex array object.
-				glBindVertexArray(0);
-				glDeleteVertexArrays(1, &m_sentence[i]->m_vertexArrayId);
+					// Release the vertex array object.
+					glBindVertexArray(0);
+					glDeleteVertexArrays(1, &m_sentence[i]->m_vertexArrayId);
+				}
 			}
 		}
 		for (UINT i = 0; i < _countof(m_sentence); i++) {
