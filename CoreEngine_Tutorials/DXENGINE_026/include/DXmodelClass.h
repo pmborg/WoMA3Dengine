@@ -24,6 +24,43 @@
 //////////////
 #include "platform.h"
 
+#define initLoadTexture3D(model, texture, vertexVector, IndexList, shader_type)\
+{\
+	std::vector<STRING> Textures;\
+	Textures.push_back(texture);\
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) {CREATE_MODELGL3_IF_NOT_EXCEPTION(model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);}\
+	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) {CREATE_MODELDX_IF_NOT_EXCEPTION(model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);}\
+	if (shader_type == SHADER_TEXTURE) ASSERT(model->LoadTexture(texture, SystemHandle->m_Driver, shader_type, &Textures, &vertexVector, &IndexList));\
+}
+
+#define initLoadTexture2D(model, texture, vertexVector, IndexList, shader_type)\
+{\
+	std::vector<STRING> Textures; \
+	Textures.push_back(texture); \
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) { CREATE_MODELGL3_IF_NOT_EXCEPTION(model, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }\
+	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) { CREATE_MODELDX_IF_NOT_EXCEPTION(model, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }\
+	if (shader_type == SHADER_TEXTURE) ASSERT(model->LoadTexture(texture, SystemHandle->m_Driver, shader_type, &Textures, &vertexVector, &IndexList)); \
+}
+
+#define initLoadTextureLight3D(model, texture, vertexVector, IndexList, shader_type)\
+{\
+	std::vector<STRING> Textures;\
+	Textures.push_back(texture);\
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) {CREATE_MODELGL3_IF_NOT_EXCEPTION(model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);}\
+	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) {CREATE_MODELDX_IF_NOT_EXCEPTION(model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);}\
+	if (shader_type == SHADER_TEXTURE_LIGHT) ASSERT(model->LoadLight(texture, SystemHandle->m_Driver, shader_type, &Textures, &vertexVector, &IndexList));\
+}
+
+#define initLoadTextureLight2D(model, texture, vertexVector, IndexList, shader_type)\
+{\
+	std::vector<STRING> Textures; \
+	Textures.push_back(texture); \
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) { CREATE_MODELGL3_IF_NOT_EXCEPTION(model, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }\
+	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) { CREATE_MODELDX_IF_NOT_EXCEPTION(model, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }\
+	if (shader_type == SHADER_TEXTURE_LIGHT) ASSERT(model->LoadLight(texture, SystemHandle->m_Driver, shader_type, &Textures, &vertexVector, &IndexList)); \
+}
+
+#if defined DX_ENGINE
 //////////////
 // INCLUDES //
 //////////////
@@ -78,44 +115,6 @@ struct SurfaceMaterial
 	//							TOTAL		 184
 };
 
-
-//#define initLoadTexture3D(model, texture, vertexVector, IndexList, shader_type) model->LoadTexture(texture, SystemHandle->m_Driver, shader_type, &Textures, &vertexVector, &IndexList);
-
-#define initLoadTexture3D(model, texture, vertexVector, IndexList, shader_type)\
-{\
-	std::vector<STRING> Textures;\
-	Textures.push_back(texture);\
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) {CREATE_MODELGL3_IF_NOT_EXCEPTION(model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);}\
-	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) {CREATE_MODELDX_IF_NOT_EXCEPTION(model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);}\
-	if (shader_type == SHADER_TEXTURE) ASSERT(model->LoadTexture(texture, SystemHandle->m_Driver, shader_type, &Textures, &vertexVector, &IndexList));\
-}
-
-#define initLoadTexture2D(model, texture, vertexVector, IndexList, shader_type)\
-{\
-	std::vector<STRING> Textures; \
-	Textures.push_back(texture); \
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) { CREATE_MODELGL3_IF_NOT_EXCEPTION(model, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }\
-	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) { CREATE_MODELDX_IF_NOT_EXCEPTION(model, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }\
-	if (shader_type == SHADER_TEXTURE) ASSERT(model->LoadTexture(texture, SystemHandle->m_Driver, shader_type, &Textures, &vertexVector, &IndexList)); \
-}
-
-#define initLoadTextureLight3D(model, texture, vertexVector, IndexList, shader_type)\
-{\
-	std::vector<STRING> Textures;\
-	Textures.push_back(texture);\
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) {CREATE_MODELGL3_IF_NOT_EXCEPTION(model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);}\
-	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) {CREATE_MODELDX_IF_NOT_EXCEPTION(model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);}\
-	if (shader_type == SHADER_TEXTURE_LIGHT) ASSERT(model->LoadLight(texture, SystemHandle->m_Driver, shader_type, &Textures, &vertexVector, &IndexList));\
-}
-
-#define initLoadTextureLight2D(model, texture, vertexVector, IndexList, shader_type)\
-{\
-	std::vector<STRING> Textures; \
-	Textures.push_back(texture); \
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) { CREATE_MODELGL3_IF_NOT_EXCEPTION(model, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }\
-	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) { CREATE_MODELDX_IF_NOT_EXCEPTION(model, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }\
-	if (shader_type == SHADER_TEXTURE_LIGHT) ASSERT(model->LoadLight(texture, SystemHandle->m_Driver, shader_type, &Textures, &vertexVector, &IndexList)); \
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: DXmodelClass
@@ -244,3 +243,4 @@ private:
 
 }
 
+#endif

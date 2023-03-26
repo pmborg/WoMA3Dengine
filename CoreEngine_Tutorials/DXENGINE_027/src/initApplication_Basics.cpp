@@ -4,9 +4,12 @@
 #include "winSystemClass.h"
 #include "mem_leak.h"
 
+	#include "GLopenGLclass.h"
 	#include "GLmodelClass.h"
 
+//#if defined DX9 || defined DX11 || defined DX12
 	#include "DXmodelClass.h"
+//#endif
 
 #include "WomaCube.h"
 

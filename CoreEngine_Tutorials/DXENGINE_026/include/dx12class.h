@@ -36,7 +36,6 @@
 // INCLUDES //
 //////////////
 
-//#ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers.
 #include <Windows.h>
 
@@ -67,8 +66,7 @@
 
 // DX12 2D:
 
-// DX12 UTILS:
-#include "d3dx12.h"
+#include "d3dx12.h"	// DX12 UTILS:
 
 // Windows STL includes
 #include <stdio.h>

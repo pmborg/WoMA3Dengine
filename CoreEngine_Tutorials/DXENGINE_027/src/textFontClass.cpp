@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: textFontClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -20,6 +19,7 @@
 #pragma once
 
 #include "platform.h"
+//#if defimned USE_RASTERTEK_TEXT_FONT && defined DX_ENGINE
 
 #pragma warning( disable : 4005 )	// Disable warning C4005: '' : macro redefinition
 #include "dxWinSystemClass.h"
@@ -27,15 +27,24 @@
 #include "virtualModelClass.h"
 #include "mem_leak.h"
 
+#if defined DX11
 #include "dx11Class.h"
+#endif
+#if defined DX12
 #include "dx12Class.h"
+#endif
 
 textFontClass::textFontClass()
 {
 	CLASSLOADER();
+#if defined _NOT
+	//public:
+	m_Font = NULL;
+	m_Texture = NULL;
+#endif
 }
 
-textFontClass::~textFontClass() { Shutdown(); CLASSDELETE();}
+textFontClass::~textFontClass() { Shutdown(); CLASSDELETE(); }
 
 bool textFontClass::Initialize(void* g_driver, TCHAR* fontFilename, TCHAR* textureFilename)
 {
@@ -45,6 +54,7 @@ bool textFontClass::Initialize(void* g_driver, TCHAR* fontFilename, TCHAR* textu
 		return false;
 
 	// [PATTERN] Image loader:
+#if defined DX12
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 	{
 		m_driver = (DirectX::DX12Class*)g_driver;
@@ -54,19 +64,37 @@ bool textFontClass::Initialize(void* g_driver, TCHAR* fontFilename, TCHAR* textu
 		if (result)
 			hr = S_OK;
 	}
+#endif
+#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
 	{
 		m_driver11 = (DirectX::DX11Class*)g_driver;
 		LOADTEXTURE(textureFilename, m_Texture11); // Note: Populate hr in case of failor
 	}
+#endif
 #if defined DX9sdk
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 	{
-		hr = D3DXCreateTextureFromFile(((DX_CLASS*)g_driver)->m_device, textureFilename, &m_Texture);
+		hr = D3DXCreateTextureFromFile(((DX_CLASS*)g_driver)->m_device, textureFilename, &m_Texture9);
+		IF_FAILED_RETURN_FALSE(hr);
 	}
 #endif
+#if defined OPENGL3
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+	{
+		// Create the texture object for this model:
+		gl_Texture = NEW GLtextureClass;
+		IF_NOT_THROW_EXCEPTION(gl_Texture);
+		//meshSRV.push_back(gl_Texture);
 
-	IF_FAILED_RETURN_FALSE(hr);
+		// Initialize the texture object:
+		bool result = gl_Texture->Initialize(WOMA::LoadFile(textureFilename), 0, false/*Model3D*/);
+		if (!result)
+		{
+			WOMA::WomaMessageBox(textureFilename, TEXT("Texture File not found")); return false;
+		}
+	}
+#endif	
 
 	return true;
 }
@@ -84,29 +112,29 @@ bool textFontClass::LoadFontData(TCHAR* filename)
 
 	// Create the font spacing buffer.
 	m_Font = NEW FontType[95];
-	IF_NOT_THROW_EXCEPTION (m_Font);
+	IF_NOT_THROW_EXCEPTION(m_Font);
 
 	// Read in the font size and spacing between chars.
 	CHAR file[MAX_STR_LEN] = { 0 }; wtoa(file, filename, 100);
 	fin.open(file);
-	if(fin.fail()){return false;}
+	if (fin.fail()) { return false; }
 
 	// Read in the 95 used ascii characters for text.
-	for(i=0; i<95; i++)
+	for (i = 0; i < 95; i++)
 	{
 		fin.get(temp);
-		while(temp != ' ')
+		while (temp != ' ')
 			fin.get(temp);
 
 		fin.get(temp);
-		while(temp != ' ')
+		while (temp != ' ')
 			fin.get(temp);
 
 		fin >> m_Font[i].left;
 		fin >> m_Font[i].right;
 		fin >> m_Font[i].size;
 	}
-	
+
 	fin.close();	// Close the file.
 
 	return true;
@@ -119,20 +147,24 @@ void textFontClass::ReleaseFontData()
 	SAFE_DELETE_ARRAY(m_Font);
 }
 
+#if defined DX9 || defined DX11
 ID3D11ShaderResourceView* textFontClass::GetTexture11()
 {
 	return m_Texture11;
 }
+#endif
 #if defined DX9sdk
 LPDIRECT3DTEXTURE9 textFontClass::GetTexture()
 {
 	return m_Texture9;
 }
 #endif
+#if defined DX12
 DX12TextureClass* textFontClass::GetTexture()
 {
 	return m_Texture;
 }
+#endif
 void textFontClass::BuildVertexArray(void* vertices, TCHAR* sentence, float drawX, float drawY)
 {
 	VertexType* vertexPtr;
@@ -151,12 +183,12 @@ void textFontClass::BuildVertexArray(void* vertices, TCHAR* sentence, float draw
 	int m_fontHeight = 18;
 
 	// Draw each letter onto a quad.
-	for(i=0; i<numLetters; i++)
+	for (i = 0; i < numLetters; i++)
 	{
 		letter = ((int)sentence[i]) - 32;
 
 		// If the letter is a space then just move over three pixels.
-		if(letter == 0)
+		if (letter == 0)
 		{
 			drawX = drawX + 2.0f;
 		}
@@ -194,3 +226,4 @@ void textFontClass::BuildVertexArray(void* vertices, TCHAR* sentence, float draw
 	}
 }
 
+//#endif

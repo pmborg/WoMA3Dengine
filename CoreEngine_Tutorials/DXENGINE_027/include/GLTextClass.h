@@ -1,6 +1,5 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
-// Filename: ApplicationTextClass.h
+// Filename: GlTextClass.h
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
 // --------------------------------------------------------------------------------------------
@@ -17,51 +16,57 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
+
 #pragma once
 
-#include "main.h"
-#include "VirtualTextClass.h"
+//////////////
+// INCLUDES //
+//////////////
+#include "platform.h"
 
-// Index position in the ARRAY:
-#define TEXT_FPS			0
-#define TEXT_CPU			1
-#define TEXT_POS			2
-#define TEXT_ROT			3
-#define TEXT_TIME			4
-#define TEXT_FADE			5
-#define TEXT_ScreenToShow	6
-#define TEXT_CLOCK			7
-#define TEXT_LIGHT_DIR		8
-#define TEXT_TERRAINRENDERCOUNT 9	// 60
-#define TEXT_LATENCY			10	// 140
+/*
+#include "dx11Class.h"
+#include "dx12Class.h"
+*/
+#include "virtualTextClass.h"
+#include "GLshaderClass.h"
+#include "textFontClass.h"
+// ----------------------------------------
 
-#define N_TEXT_MAX_SENTENCE 11 // LAST+1
+#if TUTORIAL_PRE_CHAP >= 45 //60 // BILLBOARD
+#define TEXT_BILLRENDERCOUNT 7
+#endif
+#if TUTORIAL_PRE_CHAP >= 45 && TUTORIAL_PRE_CHAP < 55// BILLBOARD
+#define N_TEXT_MAX_SENTENCE 8
+#endif
 
-namespace DirectX {
+#if TUTORIAL_PRE_CHAP >= 63 // 83
+#define TEXT_XP 9
+#define TEXT_GOLD 10
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
-// Class name: ApplicationTextClass
+// Class name: GlTextClass
 ////////////////////////////////////////////////////////////////////////////////
-class ApplicationTextClass
+class GlTextClass : public VirtualTextClass
 {
 public:
-	ApplicationTextClass();
-	~ApplicationTextClass();
+	GlTextClass();
+	~GlTextClass();
 
-	bool Initialize(void* Driver);
 	void Shutdown();
-	void Render();
+	bool Initialize(void* g_driver);
+	bool InitializeTexture(void* Driver);
 
-	void SetFps(int);
-	void SetCpu(int);
+	bool UpdateSentence(SentenceType*, TCHAR*, int, int, float, float, float);
+	bool InitializeSentence(SentenceType**, int);
 
-	void SetCameraPosition(float, float, float);
-	void SetCameraRotation(float, float, float);
-	void SetClockTime(UINT, UINT);
-	void SetLightDirection(float rotX, float rotY, float rotZ);
+	void ReleaseSentence(SentenceType**);
+	void RenderSentence(SentenceType*);
 
-	SentenceType*		m_sentence[N_TEXT_MAX_SENTENCE]; //std::vector<SentenceType*>	m_sentence;	
-	VirtualTextClass*	m_Text;
+	GLshaderClass* m_spriteShader = NULL;
+
+	mat4* m_baseViewMatrix = NULL;
+	textFontClass* m_Font = NULL;
 };
 
-}

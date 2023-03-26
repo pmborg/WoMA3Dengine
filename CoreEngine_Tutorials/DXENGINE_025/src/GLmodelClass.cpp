@@ -342,9 +342,6 @@ void GLmodelClass::RenderWithFade(WomaDriverClass* driver, float fadeLight)
 void GLmodelClass::Render(/*GLopenGLclass*/WomaDriverClass* Driver, UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix)
 {
 	GLopenGLclass* driver = (GLopenGLclass*)Driver;
-	//mat4* viewMatrix = NULL;
-	//mat4* projectionMatrix = NULL;
-	// Get the world, view, and projection matrices from the opengl and camera objects:
 	
 	switch (projection)
 	{
@@ -354,7 +351,6 @@ void GLmodelClass::Render(/*GLopenGLclass*/WomaDriverClass* Driver, UINT camera,
 
 		case PROJECTION_ORTHOGRAPH:
 			projectionMatrix = driver->m_orthoMatrix;
-			 //projectionMatrix = &(((GLcameraClass*)driver->m_Camera)->m_viewmatrix2D);
 		break;
 	}
 
@@ -392,7 +388,7 @@ void GLmodelClass::Render(/*GLopenGLclass*/WomaDriverClass* Driver, UINT camera,
 	}
 
 	// Step 4: Render the model
-	glBindVertexArray(m_vertexArrayId);				// SetBuffers(driver);
+	glBindVertexArray(m_vertexArrayId);		// SetBuffers(driver);
 
 	RenderBuffers(driver);
 
@@ -640,6 +636,9 @@ void GLmodelClass::RenderBuffers(/*GLopenGLclass*/void* OpenGL)
 	// Render the vertex buffer using the index buffer:
 	if (PrimitiveTopology == LINELIST)
 		glDrawElements(GL_LINES, m_indexCount, GL_UNSIGNED_INT, 0);
+	else
+	if (PrimitiveTopology == TRIANGLESTRIP)
+		glDrawElements(GL_TRIANGLE_STRIP, m_indexCount, GL_UNSIGNED_INT, 0);
 	else
 		glDrawElements(GL_TRIANGLES, m_indexCount, GL_UNSIGNED_INT, 0);
 }

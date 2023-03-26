@@ -14,7 +14,7 @@
 ///////////////////////
 // MY CLASS INCLUDES //
 ///////////////////////
-#include "DX12Class.h"	//#include "GLopenglclass.h"
+#include "DX12Class.h"
 
 // DX12 includes
 #include <dxgi1_4.h>	// Always 1st!	(Select Driver)
@@ -23,7 +23,6 @@
 #include <DirectXMath.h>// Use Math
 using namespace DirectX;
 
-//#include "../../IMAGING/ImageLoaderClass.h"
 #include "ImageLoaderClass.h"
 
 //////////////
@@ -56,5 +55,4 @@ public:
 	//unsigned int m_textureID;
 	ComPtr<ID3D12Resource> uploadOnlyTexture;	// GPU
 	ComPtr<ID3D12Resource> m_pTexture;			// RAM
-	
 };

@@ -101,7 +101,6 @@ void DemoApplicationClass::DemoRender()
 		m_cube3Model->translation(5, -0.5f, 1);
 		m_cube3Model->Render(SystemHandle->m_Driver);
 	}
-#if defined USE_SPHERE
 	if (RENDER_PAGE == 26 && m_SphereModel1)
 	{
 		SystemHandle->m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
@@ -120,16 +119,15 @@ void DemoApplicationClass::DemoRender()
 		m_SphereModel2->translation(4, 2, 1);
 		m_SphereModel2->Render(SystemHandle->m_Driver);
 	}
-#endif
 }
 
 void DemoApplicationClass::DemoPosRender()
 {
 	SystemHandle->m_Driver->SetRasterizerState(CULL_BACK, FILL_SOLID); //(CULL_NONE, FILL_WIRE);
 
-	SystemHandle->m_Driver->TurnOnAlphaBlending();	// BANNER: Have Transparent Alfa color use it!
+	SystemHandle->m_Driver->TurnOnAlphaBlending();	// BANNER: Have Transparent Alfa color, so use it!
 
-	if (RENDER_PAGE >= 24)
+	if (RENDER_PAGE >= 24 && m_titleModel)
 		m_titleModel->RenderSprite(SystemHandle->m_Driver, (SystemHandle->AppSettings->WINDOW_WIDTH - m_titleModel->SpriteTextureWidth) / 2, (SystemHandle->AppSettings->WINDOW_HEIGHT - m_titleModel->SpriteTextureHeight) / 2);
 }
 
@@ -138,6 +136,8 @@ void DemoApplicationClass::DemoPosRender()
 void ApplicationClass::RenderScene(UINT monitorWindow)
 //-------------------------------------------------------------------------------------------
 {
+	SystemHandle->m_Driver->BeginScene(monitorWindow);	// Clear the buffers to begin the scene (glClear|ClearRenderTargetView/ClearDepthStencilView)
+
 	// Process INPUT & CAMERA Render:
 	float dayLightFade = Update(monitorWindow, SystemHandle->driverList[SystemHandle->AppSettings->DRIVER]);
 
@@ -251,6 +251,9 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 
 	// CAMERA TEXT: Show Debug Info
 
+	// TIME Control: Show Debug Info
+
+
 	// LIGHT: Get fade (real Sun Position): Show Debug Info
 
 	return fadeLight;
@@ -267,8 +270,6 @@ extern float SunDistance;
 
 void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 {
-	SystemHandle->m_Driver->BeginScene(monitorWindow);	// Clear the buffers to begin the scene (glClear|ClearRenderTargetView/ClearDepthStencilView)
-	
 	SystemHandle->m_Driver->SetRasterizerState(CULL_BACK, FILL_SOLID); //(CULL_NONE, FILL_SOLID);
 
 	// DEBUG SPRITE: Shadows
@@ -277,10 +278,9 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 	//#############################################################################################################-
 	// RENDER:
 	//#############################################################################################################
-	SystemHandle->m_Driver->TurnOffAlphaBlending();
-
 	// RENDER: SKY
 	// --------------------------------------------------------------------------------------------
+	SystemHandle->m_Driver->TurnOffAlphaBlending();
 
 	// RENDER: CLOUDS
 	// --------------------------------------------------------------------------------------------
@@ -289,7 +289,6 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 	// --------------------------------------------------------------------------------------------
 	// [0] TERRAIN: UNDER WATER!
 	// --------------------------------------------------------------------------------------------
-	SystemHandle->m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID); //(CULL_NONE, FILL_WIRE);
 
 	// [1] WATER:
 	// --------------------------------------------------------------------------------------------
@@ -303,7 +302,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 
 	SystemHandle->demoApplicationClass->DemoRender();
 
-	if (RENDER_PAGE >= 23 && RENDER_PAGE >= 23)
+	if (RENDER_PAGE >= 23 && RENDER_PAGE < 27)
 	{
 		CalculateLightRayVertex(SunDistance);											// Calculate Light Source Position
 		m_lightRayModel->UpdateDynamic(SystemHandle->m_Driver, m_LightVertexVector);	// Update LightRay vertex(s)

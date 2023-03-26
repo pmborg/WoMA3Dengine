@@ -1186,15 +1186,13 @@ void DX12Class::TurnOffAlphaBlending()
 	g_AlphaBlend = false;
 }
 
-
-
 // -----------------------------------------------------------------
 //These are the new functions for enabling and disabling the Z buffer. To turn Z buffering on we set the original depth stencil. 
 //To turn Z buffering off we set the new depth stencil that has depthEnable set to false. 
 //Generally the best way to use these functions is first do all your 3D rendering, then turn the Z buffer off and do your 
 //2D rendering, and then turn the Z buffer on again.
 
-
+static bool g_Zbuffer = false;
 // ----------------------------------------------------------------------------------------------
 void DX12Class::TurnZBufferOn()
 // ----------------------------------------------------------------------------------------------

@@ -24,6 +24,10 @@
 
 	#include "DX9Class.h" // Driver
 
+#include <d3d11.h>
+#include <DirectXMath.h>// Use Math
+using namespace DirectX;
+
 	#pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
 	#include <d3d11.h>		//#include "DX11Class.h"
 
@@ -32,7 +36,7 @@
 		#pragma warning( disable : 4838 )
 		#include <xnamath.h>	//#include <d3dx10math.h>
 	#else
-		#include <DirectXMath.h>
+		//#include <DirectXMath.h>
 		using namespace DirectX;
 	#endif
 
@@ -40,8 +44,6 @@
 	#include <dxgi1_4.h>	// Always 1st!	(Select Driver)
 	#include <d3d12.h>		// DX12			(Select Device)
 	#include <D3Dcompiler.h>// Use Compiler
-	#include <DirectXMath.h>// Use Math
-
 	//#include "d3dx12.h"
 	using namespace DirectX;
 
@@ -71,7 +73,7 @@ public:
 //	-------------------------------------------------------------------------------------------
 //public:
 //	-------------------------------------------------------------------------------------------
-	XMFLOAT4/*XMVECTOR*/ m_lightDirection;
+	XMFLOAT4 m_lightDirection;
 	XMFLOAT4 m_ambientColor;
     XMFLOAT4 m_diffuseColor;
 

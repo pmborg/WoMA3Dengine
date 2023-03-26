@@ -4,9 +4,12 @@
 #include "winSystemClass.h"
 #include "mem_leak.h"
 
+	#include "GLopenGLclass.h"
 	#include "GLmodelClass.h"
 
+//#if defined DX9 || defined DX11 || defined DX12
 	#include "DXmodelClass.h"
+//#endif
 
 #include "WomaCube.h"
 
@@ -35,16 +38,19 @@ bool DemoApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver
 {
 	//INIT ALL
 	//-----------------------------------------------------------------------------------------------------------------
-	initColorDemo(SystemHandle->driverList[SystemHandle->AppSettings->DRIVER]);
+	if (RENDER_PAGE < 27)
+		initColorDemo(SystemHandle->driverList[SystemHandle->AppSettings->DRIVER]);
 
-	initTextureDemo();
+	if (RENDER_PAGE < 27)
+		initTextureDemo();
 
-	initLightDemo();
+	if (RENDER_PAGE < 27)
+		initLightDemo();
 
 	if (RENDER_PAGE >= 24)
 		initTitleBanner2D();
 
-	if (RENDER_PAGE >= 25)
+	if (RENDER_PAGE >= 25 && RENDER_PAGE < 27)
 		IF_NOT_RETURN_FALSE(initCubes3D(SystemHandle->driverList[SystemHandle->AppSettings->DRIVER]));
 
 	return true;
@@ -132,7 +138,7 @@ void DemoApplicationClass::initTextureDemo()
 		m_jpg3DModel->rotateX(-3.14f / 2.0f);
 		m_jpg3DModel->translation(0, 7.5, 7);
 
-		// Image Converter: \WoMA3Dengine\ExternalTools\Microsoft_DirectX_SDK_June_2010\Utilities\bin\x86\texconv.exe - ft PNG Earth_Diffuse.bmp
+		// Image Converter: \WoMA3Dengine\ExternalTools\Microsoft_DirectX_SDK_June_2010\Utilities\bin\x86\texconv.exe -ft PNG Earth_Diffuse.bmp
 		initLoadTexture3D(m_png3DModel, TEXT("engine/data/Earth_Diffuse.png"), SquarTextureVertexVector, IndexSquarList, SHADER_TEXTURE);
 		m_png3DModel->rotateX(-3.14f / 2.0f);
 		m_png3DModel->translation(6, 7.5, 7);
@@ -147,7 +153,7 @@ void DemoApplicationClass::initTextureDemo()
 		m_dds3DModel->rotateX(-3.14f / 2.0f);
 		m_dds3DModel->translation(0, 1, 7);
 
-		// Image Converter: \WoMA3Dengine\ExternalTools\Microsoft_DirectX_SDK_June_2010\Utilities\bin\x86\texconv.exe - ft TGA Earth_Diffuse.bmp
+		// Image Converter: \WoMA3Dengine\ExternalTools\Microsoft_DirectX_SDK_June_2010\Utilities\bin\x86\texconv.exe -ft TGA Earth_Diffuse.bmp
 	#if defined SUPPORT_TGA
 		initLoadTexture3D(m_tga3DModel, TEXT("engine/data/Earth_Diffuse.tga"), SquarTextureVertexVector, IndexSquarList, SHADER_TEXTURE);
 		m_tga3DModel->rotateX(-3.14f / 2.0f);
@@ -180,7 +186,7 @@ void DemoApplicationClass::initLightDemo()
 // ----------------------------------------------------------------------------
 {
 	//DEMO-1:
-	if (RENDER_PAGE >= 23)
+	if (RENDER_PAGE >= 23 && RENDER_PAGE <= 25)
 	{
 		ModelTextureLightVertexType vertex = { 0 };
 		float X = 2.0f, Y = 1.0f, Z = 0;
@@ -218,7 +224,7 @@ void DemoApplicationClass::initLightDemo()
 
 	//DEMO-2:
 	//--------------------------------------------------------------------------------------------------------------------------
-	if (RENDER_PAGE >= 23)
+	if (RENDER_PAGE >= 23 && RENDER_PAGE <= 25)
 	{
 		// Step 1: Prepare Vertex(s)
 		float X = 1, Y = 1, Z = 1;
@@ -254,7 +260,7 @@ void DemoApplicationClass::initTitleBanner2D()
 
 bool DemoApplicationClass::initCubes3D(WomaDriverClass* m_Driver)
 {
-	if (RENDER_PAGE >= 25)
+	if (RENDER_PAGE == 25)
 	{
 
 		//DEMO1:
@@ -284,12 +290,13 @@ bool DemoApplicationClass::WOMA_APPLICATION_InitializeSprites2D()
 {
 	WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_InitializeSprites2D()\n");
 
+
+
 	return true;
 }
 
 void DemoApplicationClass::Shutdown()
 {
-
 	//3D:
 
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
@@ -314,7 +321,6 @@ void DemoApplicationClass::Shutdown()
 		SAFE_SHUTDOWN_MODELGL3(m_1stTriangleTextureVertexModel);
 	}
 	else
-	//#endif
 	{
 	//#if DX_ENGINE_LEVEL == 21
 		SAFE_SHUTDOWN_MODELDX(m_1stSquar3DColorModel);
@@ -337,6 +343,7 @@ void DemoApplicationClass::Shutdown()
 	//#endif
 	}
 
+
 	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
 	{
 		SAFE_SHUTDOWN_MODELDX(m_3th3DModel1);
@@ -354,6 +361,10 @@ void DemoApplicationClass::Shutdown()
 		SAFE_SHUTDOWN_MODELDX(m_cube1Model);
 		SAFE_SHUTDOWN_MODELDX(m_cube2Model);
 		SAFE_SHUTDOWN_MODELDX(m_cube3Model);
+#if defined USE_SPHERE
+		SAFE_SHUTDOWN_MODELDX(m_SphereModel1);
+		SAFE_SHUTDOWN_MODELDX(m_SphereModel2);
+#endif
 	}
 
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
@@ -361,10 +372,14 @@ void DemoApplicationClass::Shutdown()
 		SAFE_SHUTDOWN_MODELGL3(m_cube1Model);
 		SAFE_SHUTDOWN_MODELGL3(m_cube2Model);
 		SAFE_SHUTDOWN_MODELGL3(m_cube3Model);
+#if defined USE_SPHERE
+		SAFE_SHUTDOWN_MODELGL3(m_SphereModel1);
+		SAFE_SHUTDOWN_MODELGL3(m_SphereModel2);
+#endif
 	}
 
-	//2D:
-	WOMA_APPLICATION_Shutdown2D();
+		//2D:
+		WOMA_APPLICATION_Shutdown2D();
 
 }
 
@@ -383,4 +398,7 @@ void DemoApplicationClass::WOMA_APPLICATION_Shutdown2D()
 			SAFE_SHUTDOWN_MODELGL3(m_titleModel);
 		}
 
+
+
 }
+

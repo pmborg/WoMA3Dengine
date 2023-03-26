@@ -298,7 +298,6 @@ extern float SunDistance;
 
 void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 {
-
 	SystemHandle->m_Driver->SetRasterizerState(CULL_BACK, FILL_SOLID); //(CULL_NONE, FILL_SOLID);
 
 	// DEBUG SPRITE: Shadows
@@ -309,6 +308,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 	//#############################################################################################################
 	// RENDER: SKY
 	// --------------------------------------------------------------------------------------------
+	SystemHandle->m_Driver->TurnOffAlphaBlending();
 
 	// RENDER: CLOUDS
 	// --------------------------------------------------------------------------------------------

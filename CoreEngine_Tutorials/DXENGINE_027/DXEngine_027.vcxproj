@@ -80,6 +80,7 @@
     <ClInclude Include="include\ApplicationTextClass.h" />
     <ClInclude Include="include\d3dx12.h" />
     <ClInclude Include="include\DemoApplicationClass.h" />
+    <ClInclude Include="include\dumpUploader.h" />
     <ClInclude Include="include\DX11class.h" />
     <ClInclude Include="include\dx12class.h" />
     <ClInclude Include="include\DX12Textureclass.h" />
@@ -90,20 +91,32 @@
     <ClInclude Include="include\DXengine.h" />
     <ClInclude Include="include\DXmodelClass.h" />
     <ClInclude Include="include\DXshaderClass.h" />
+    <ClInclude Include="include\DxTextClass.h" />
     <ClInclude Include="include\dxWinSystemClass.h" />
+    <ClInclude Include="include\fileLoader.h" />
     <ClInclude Include="include\GLcameraClass.h" />
     <ClInclude Include="include\GLmodelClass.h" />
     <ClInclude Include="include\GLopenGLclass.h" />
     <ClInclude Include="include\GLshaderClass.h" />
+    <ClInclude Include="include\GLTextClass.h" />
     <ClInclude Include="include\glTextureclass.h" />
     <ClInclude Include="include\ImageLoaderClass.h" />
+    <ClInclude Include="include\language.h" />
+    <ClInclude Include="include\lightClass.h" />
     <ClInclude Include="include\playerClass.h" />
     <ClInclude Include="include\positionClass.h" />
+    <ClInclude Include="include\stackTrace.h" />
+    <ClInclude Include="include\textFontClass.h" />
     <ClInclude Include="include\vertexTypes.h" />
     <ClInclude Include="include\virtualCameraClass.h" />
     <ClInclude Include="include\virtualModelClass.h" />
+    <ClInclude Include="include\virtualTextClass.h" />
     <ClInclude Include="include\wglopenglclass.h" />
+    <ClInclude Include="include\win32InputClass.h" />
+    <ClInclude Include="include\winCpuClass.h" />
+    <ClInclude Include="include\WomaCube.h" />
     <ClInclude Include="include\womadriverclass.h" />
+    <ClInclude Include="include\WomaSphere.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\DXENGINE_021\src\winWomaSetupManager.cpp" />
@@ -170,11 +183,12 @@
     <ClCompile Include="src\DXshaderClass.cpp" />
     <ClCompile Include="src\DXshaderLoader.cpp" />
     <ClCompile Include="src\DxTextClass.cpp" />
-    <ClCompile Include="src\DXtextFontClass.cpp" />
+    <ClCompile Include="src\textFontClass.cpp" />
     <ClCompile Include="src\dxWinSystemClass.cpp" />
     <ClCompile Include="src\GLcameraClass.cpp" />
     <ClCompile Include="src\GLmodelClass.cpp" />
     <ClCompile Include="src\GLshaderClass.cpp" />
+    <ClCompile Include="src\GLTextClass.cpp" />
     <ClCompile Include="src\GLTextureclass.cpp" />
     <ClCompile Include="src\GLX\GL3w.cpp" />
     <ClCompile Include="src\GLX\GLopenGLclass.cpp" />

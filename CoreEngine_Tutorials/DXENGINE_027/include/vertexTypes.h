@@ -60,19 +60,24 @@ struct ModelTextureLightVertexType
 
 struct SentenceType
 {
-	DirectX::DXtextureVertexType* vertices = NULL;
-	unsigned long* indices = NULL;
+	ModelTextureVertexType* GLvertices = NULL;	//OPENGL
+	unsigned int	m_vertexArrayId = NULL;		//OPENGL
+	unsigned int	m_vertexBufferId = NULL;	//OPENGL
+	unsigned int	m_indexBufferId = NULL;		//OPENGL
 
+	unsigned long* indices = NULL;				//DX Common?
+
+#if defined DX_ENGINE
+	DirectX::DXtextureVertexType* vertices = NULL;
+#endif
 	ID3D11Buffer* vertexBuffer = NULL;	//DX11
 	ID3D11Buffer* indexBuffer = NULL;	//DX11
-
 	ID3D12Resource*				vertexBufferUpload = NULL;	//DX12
 	ID3D12Resource*				indexBufferUpload = NULL;	//DX12
 	D3D12_VERTEX_BUFFER_VIEW	m_vertexBufferView;	//DX12
 	D3D12_INDEX_BUFFER_VIEW		m_indexBufferView; 	//DX12
 	ID3D12Resource*				m_vertexBuffer = NULL;		//DX12
 	ID3D12Resource*				m_indexBuffer = NULL; 		//DX12
-
 	int vertexCount=0, indexCount=0, maxLength=0;			//Common
 	float red=-1, green = -1, blue = -1;					//Common
 };

@@ -163,10 +163,10 @@ bool dxWinSystemClass::InitializeSystem()
 
 	// MAIN LOADING THREAD:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	SystemClass::LoadAllGraphics();		// Load all main Graphics Objects, that will be rendered
+	SystemClass::LoadAllGraphics();	// Load all main Graphics Objects, that will be rendered
 
-	if (WOMA::game_state >= GAME_STOP)	// Something FATAL on loading "mandatory 2D/3D Stuff"?
-		return false;					// (SAMPLE: misssing 3D/IMAGE/AUDIO file...)
+	if (WOMA::game_state >= GAME_STOP) // Something FATAL on loading "mandatory 2D/3D Stuff"?
+		return false;			 // (SAMPLE: misssing 3D/IMAGE/AUDIO file...)
 
 	if (WOMA::game_state == GAME_LOADING)
 		WOMA::game_state = GAME_RUN;
@@ -290,7 +290,7 @@ void dxWinSystemClass::UNPAUSE()
 void dxWinSystemClass::ProcessFrame()
 //----------------------------------------------------------------------------
 {
-	WinSystemClass::ProcessFrame();
+	WinSystemClass::ProcessFrame(); // Process Input
 
 	// Process Special: "PRINT SCREEN" key, the "Back-Buffer" have 1 frame rendered, now we can dump it:
 	if ((WOMA::game_state > GAME_MINIMIZED) && (OS_KEY_DOWN(DIK_SYSRQ + 0x35)))
@@ -310,14 +310,15 @@ void dxWinSystemClass::ProcessFrame()
 	if (WOMA::game_state >= GAME_RUN && WOMA::game_state < ENGINE_RESTART)
 	{
 		// For each Monitor: Render one Application Frame
-		for (int i = 0; i < windowsArray.size(); i++)
+		//if (WOMA::game_state >= GAME_SYSTEM_SETTINGS)
+		if (WOMA::game_state > GAME_SETUP)
 		{
-			if (WOMA::game_state >= GAME_SYSTEM_SETTINGS)
+			for (int i = 0; i < windowsArray.size(); i++)
 			{
-				if (m_Application->RENDER_PAGE >= 15)//OLD:20 now 15 to allow FADE BANNERS on INTRO_DEMO
+				if (m_Application->RENDER_PAGE >= 15)	//to allow FADE BANNERS on INTRO_DEMO
 				{
-					m_Application->RenderScene(i);	// SystemHandle->m_Driver->BeginScene(monitorWindow);
-					m_contextDriver->EndScene(i);	// SHOW: Present the FRAME successfully Rendered!
+					m_Application->RenderScene(i);		// SystemHandle->m_Driver->BeginScene(monitorWindow);
+					m_contextDriver->EndScene(i);		// SHOW: Present the FRAME successfully Rendered!
 				}
 			}
 		}

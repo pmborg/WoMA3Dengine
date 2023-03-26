@@ -21,6 +21,7 @@
 #pragma once
 
 #include "platform.h"
+#if defined USE_RASTERTEK_TEXT_FONT && defined DX_ENGINE
 
 #pragma warning( disable : 4706 )	// Disable warning C4706: assignment within conditional expression
 #include "DxTextClass.h"
@@ -35,11 +36,14 @@ namespace DirectX {
 
 		//private:
 		m_Font = NULL;
-		m_spriteShader = NULL;
 		m_baseViewMatrix = NULL;
+
 
 #if defined DX9sdk
 		m_driver9 = NULL;
+#endif
+#if defined DXENGINE
+		m_spriteShader = NULL;
 #endif
 		m_driver11 = NULL;
 		m_deviceContext11 = NULL;
@@ -100,10 +104,11 @@ namespace DirectX {
 			m_driver = (DirectX::DX12Class*)Driver;
 			m_baseViewMatrix = &((DXcameraClass*)m_driver->m_Camera)->m_viewmatrix2D;
 		}
-		// TextClass: PART1
+		// TextClass: Initialize the font object. PART1
 		m_Font = NEW textFontClass;
 		IF_NOT_THROW_EXCEPTION(m_Font); // Create the font object.
-		IF_NOT_RETURN_FALSE(m_Font->Initialize(Driver, TEXT("engine/data/008fontdata.txt"), TEXT("engine/data/008font.png"))); // Initialize the font object.
+		IF_NOT_RETURN_FALSE(m_Font->Initialize(Driver, TEXT("engine/data/008fontdata.txt"), TEXT("engine/data/008font.png")));
+		//IF_NOT_RETURN_FALSE(m_Font->Initialize(Driver, TEXT("engine/data/font01.txt"), TEXT("engine/data/font01.tga")));
 
 		// Create the color shader object:
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
@@ -470,4 +475,6 @@ namespace DirectX {
 		}
 	}
 }
+
+#endif
 

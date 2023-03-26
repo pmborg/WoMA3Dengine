@@ -20,6 +20,7 @@
 
 #include "OSengine.h"
 #include <d3d11.h>
+#if defined DX_ENGINE && DX_ENGINE_LEVEL >= 21
 	#include "DX11Class.h"
 	#include "DXmodelClass.h"
 	#include "mem_leak.h"
@@ -1481,3 +1482,4 @@ void DXmodelClass::translation(float x, float y, float z)
 
 }
 
+#endif

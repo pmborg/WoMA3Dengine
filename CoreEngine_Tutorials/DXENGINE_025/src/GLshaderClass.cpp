@@ -25,7 +25,6 @@
 #include "GLshaderClass.h"
 #include "mem_leak.h"
 #include "OSengine.h"
-//#include "SystemPlatform.h"			// Get [SystemHandle] Pointer to System Class: WINDOWS, LINUX & ANDROID
 
 GLshaderClass::GLshaderClass() {CLASSLOADER();}
 
@@ -50,6 +49,7 @@ bool GLshaderClass::Initialize(SHADER_TYPE shaderType)
 		case SHADER_TEXTURE_LIGHT_RENDERSHADOW:
 		result = InitializeShader(shaderType, TEXT("GLengine/light.vs"), TEXT("GLengine/light.ps") );
 		break;
+		
 
 	}
 
@@ -79,13 +79,6 @@ static void validateShader(GLuint shader, TCHAR* file = 0) {
 	if(isCompiled == GL_FALSE) 
 	{
 		glGetShaderInfoLog(shader, BUFFER_SIZE, &length, buffer); // Ask OpenGL to give us the log associated with the shader
-
-		/*
-		STRINGSTREAM error;
-		error << "Shader " << shader << " (" << (file?file:"") << ") compile error:" << endl; // Output the information
-		if (length > 0) // If we have any information to display
-			WomaMessageBox ((TCHAR*)error.str().c_str(), buffer); // Output the information);
-		*/
 		TCHAR Wbuffer[10*MAX_STR_LEN]; atow(Wbuffer, buffer, 10*MAX_STR_LEN);
 
 		if (length > 0) // If we have any information to display
@@ -122,19 +115,6 @@ bool GLshaderClass::InitializeShader(SHADER_TYPE shaderType, TCHAR* vsFilename, 
 	glCompileShader(m_fragmentShader);
 	validateShader(m_fragmentShader, fsFilename); // Validate the fragment shader
 	SAFE_DELETE (fragmentShaderBuffer);
-
-	/*
-	// Check to see if the vertex shader compiled successfully.
-	glGetShaderiv(m_vertexShader, GL_COMPILE_STATUS, &status);
-	if(status != 1)
-		{ OutputShaderErrorMessage(m_vertexShader, vsFilename); return false; }
-
-	// Check to see if the fragment shader compiled successfully.
-	glGetShaderiv(m_fragmentShader, GL_COMPILE_STATUS, &status);
-	if(status != 1)
-		{ OutputShaderErrorMessage(m_fragmentShader, fsFilename); return false; }
-	*/
-
 	m_shaderProgram = glCreateProgram();				// Create a shader program object.
 	glAttachShader(m_shaderProgram, m_vertexShader);	// Attach a vertex shader to the program
 	glAttachShader(m_shaderProgram, m_fragmentShader);	// Attach the fragment shader to the program
@@ -148,6 +128,7 @@ bool GLshaderClass::InitializeShader(SHADER_TYPE shaderType, TCHAR* vsFilename, 
 		break;
 
 		case SHADER_TEXTURE:
+		case SHADER_TEXTURE_FONT:
 		glBindAttribLocation(m_shaderProgram, 0, "inputPosition");
 		glBindAttribLocation(m_shaderProgram, 1, "inputTexCoord");
 		break;
@@ -299,55 +280,45 @@ bool GLshaderClass::SetShaderParameters(SHADER_TYPE shaderType, mat4* worldMatri
 {
 	UINT location;
 
-	static LightClass* light = SystemHandle->m_Application->m_Light;
-
 	//V2:
 	mat4 WVP = (*worldMatrix) * (*viewMatrix) * (*projectionMatrix);
-
-	//mat4 WVP;
-	//mat4 WVP_ = (*worldMatrix) * (*viewMatrix) * (*projectionMatrix);
-	//MatrixTranspose(&WVP, &WVP_);
-
-	//V3:
-	/*
-	mat4 WVP_ = (*worldMatrix) * (*viewMatrix) * (*projectionMatrix);
-	mat4 WVPT;
-	MatrixTranspose(&WVPT, &WVP_);
-	mat4* WVP = &WVPT;
-	*/
-
 	// Set the world matrix in the vertex shader.
 	location = glGetUniformLocation(m_shaderProgram, "worldMatrix");
 	glUniformMatrix4fv(location, 1, false, (float*)worldMatrix);
-
-	// Set the view matrix in the vertex shader.
-	//location = glGetUniformLocation(m_shaderProgram, "viewMatrix");
-	//glUniformMatrix4fv(location, 1, false, (float*)viewMatrix);
-
-	// Set the projection matrix in the vertex shader.
-	//location = glGetUniformLocation(m_shaderProgram, "projectionMatrix");
-	//glUniformMatrix4fv(location, 1, false, (float*)projectionMatrix);
-
 	//V2:
 	// Set the projection matrix in the vertex shader.
 	location = glGetUniformLocation(m_shaderProgram, "WVP");
+	if (location == -1) { return false; }
 	glUniformMatrix4fv(location, 1, false, (float*)&WVP);
 
-	if (shaderType >= SHADER_TEXTURE) 
+	if (shaderType >= SHADER_TEXTURE)
 	{
 		// Set the texture in the pixel shader to use the data from the first texture unit:
 		location = glGetUniformLocation(m_shaderProgram, "shaderTexture");
+		if (location == -1) { return false; }
 		glUniform1i(location, textureUnit);
+	}
+
+	if (shaderType == SHADER_TEXTURE_FONT)
+	{
+	// Set the font pixel color in the pixel shader.
+	int location = glGetUniformLocation(m_shaderProgram, "pixelColor");
+	if (location == -1){return false;}
+	glUniform4fv(location, 1, pixelColor);
 	}
 
 	if (shaderType >= SHADER_TEXTURE_LIGHT) 
 	{
+		LightClass* light = SystemHandle->m_Application->m_Light;
+
 		// Set the light direction in the pixel shader:
 		location = glGetUniformLocation(m_shaderProgram, "lightDirection");
+		if (location == -1) { return false; }
 		glUniform3fv(location, 1, light->GetDirection());
 
 		// Set the light direction in the pixel shader.
 		location = glGetUniformLocation(m_shaderProgram, "diffuseLightColor");
+		if (location == -1) { return false; }
 		glUniform4fv(location, 1, light->GetDiffuseColor());
 	}
 

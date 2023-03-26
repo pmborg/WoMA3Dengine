@@ -21,6 +21,8 @@
 #include "mem_leak.h"
 #include "ApplicationTextClass.h"
 #include "DxTextClass.h"
+#include "GlTextClass.h"
+#include "GLopenGLclass.h"
 
 namespace DirectX {
 
@@ -37,8 +39,7 @@ bool ApplicationTextClass::Initialize(void* Driver)
 {
 	// TODO GL
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) 
-		return true;
-	//	{ m_Text = NEW GlTextClass(); IF_NOT_THROW_EXCEPTION (m_Text); }
+		{ m_Text = NEW GlTextClass(); IF_NOT_THROW_EXCEPTION (m_Text); }
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
 		{ m_Text = NEW DxTextClass(); IF_NOT_THROW_EXCEPTION (m_Text); }
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12) 
@@ -49,11 +50,10 @@ bool ApplicationTextClass::Initialize(void* Driver)
 	    { WomaFatalExceptionW(TEXT ("Could not initialize the Text Object")); return false; }
 
 	// TextClass: PART2
-	// Avoid a second alocation... [Just make sure that m_sentence have the needed size]
-	for (UINT i = (UINT)_countof(m_sentence); i < N_TEXT_MAX_SENTENCE; i++) //m_sentence.size()
-		m_sentence[i] = NULL; // m_sentence.push_back(NULL);
+	for (UINT i = (UINT)_countof(m_sentence); i < N_TEXT_MAX_SENTENCE; i++) 
+		m_sentence[i] = NULL; 
 
-    for (UINT i = 0; i < (UINT)_countof(m_sentence); i++) //m_sentence.size()
+    for (UINT i = 0; i < (UINT)_countof(m_sentence); i++) 
 		IF_NOT_RETURN_FALSE ( m_Text->InitializeSentence(&m_sentence[i], 60) );
 
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
@@ -68,7 +68,7 @@ void ApplicationTextClass::Shutdown()
 {
 	if (m_Text) 
 	{
-		for (UINT i = 0; i < _countof(m_sentence); i++) //m_sentence.size()
+		for (UINT i = 0; i < _countof(m_sentence); i++) 
 			m_Text->ReleaseSentence(&m_sentence[i]);
 
 		switch (SystemHandle->AppSettings->DRIVER)
@@ -77,7 +77,7 @@ void ApplicationTextClass::Shutdown()
 			if (m_Text)
 			{
 				(m_Text)->Shutdown();
-				delete ((DirectX::DxTextClass*)m_Text);
+				delete ((GlTextClass*)m_Text);
 				m_Text = NULL;
 			}
 			break;
@@ -106,11 +106,28 @@ void ApplicationTextClass::Shutdown()
 			break;
 		}
 	}
+
+	for (UINT i = 0; i < _countof(m_sentence); i++) {
+		if (m_sentence[i]) 
+		{
+			// Release the vertex buffer.
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			glDeleteBuffers(1, &m_sentence[i]->m_vertexBufferId);
+
+			// Release the index buffer.
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+			glDeleteBuffers(1, &m_sentence[i]->m_indexBufferId);
+
+			// Release the vertex array object.
+			glBindVertexArray(0);
+			glDeleteVertexArrays(1, &m_sentence[i]->m_vertexArrayId);
+		}
+	}
 }
 	
 void ApplicationTextClass::Render()		// Render the text user interface elements:
 {
-	for (UINT i = 0; i < _countof(m_sentence); i++) {//m_sentence.size()
+	for (UINT i = 0; i < _countof(m_sentence); i++) {
 		if (m_sentence[i]->red > -1)
 			m_Text->RenderSentence(m_sentence[i]);
 	}
@@ -123,6 +140,7 @@ void ApplicationTextClass::Render()		// Render the text user interface elements:
 //it is the fps speed. After that it is stored in the sentence structure for rendering. 
 //The SetFps function also sets the color of the fps string to green if above 60 fps, yellow if below 60 fps, and 
 //red if below 30 fps.
+
 //00
 void ApplicationTextClass::SetFps(int fps)
 {

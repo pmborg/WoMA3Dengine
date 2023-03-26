@@ -244,6 +244,45 @@
     <ClInclude Include="include\ApplicationTextClass.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="include\dumpUploader.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DxTextClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fileLoader.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GLTextClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\language.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\lightClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stackTrace.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\textFontClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\virtualTextClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\win32InputClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\winCpuClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\WomaCube.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\WomaSphere.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
@@ -475,11 +514,14 @@
     <ClCompile Include="src\DxTextClass.cpp">
       <Filter>src\text</Filter>
     </ClCompile>
-    <ClCompile Include="src\DXtextFontClass.cpp">
+    <ClCompile Include="src\textFontClass.cpp">
       <Filter>src\text</Filter>
     </ClCompile>
     <ClCompile Include="src\ApplicationTextClass.cpp">
       <Filter>src\text</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GLTextClass.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

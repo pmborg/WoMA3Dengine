@@ -95,4 +95,16 @@ public:
 	VirtualModelClass* m_cube2Model = NULL;
 	VirtualModelClass* m_cube3Model = NULL;
 
+#if defined USE_SPHERE
+	std::vector<ModelTextureLightVertexType> Sphere_vertexdata;
+	std::vector<UINT>						 Sphere_indexdata;
+
+	VirtualModelClass*						 m_SphereModel1 = NULL;
+	VirtualModelClass*						 m_SphereModel2 = NULL;
+
+	void	CreateSphereModel(int SPHERE_SIZE, int Sphere_gridpoints);
+	void	initSphere1(float SPHERE_SIZE);
+	void	initSphere2(float SPHERE_SIZE);
+#endif
+
 };

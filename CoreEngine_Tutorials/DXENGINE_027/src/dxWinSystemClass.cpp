@@ -163,7 +163,7 @@ bool dxWinSystemClass::InitializeSystem()
 
 	// MAIN LOADING THREAD:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	SystemClass::LoadAllGraphics();	//ApplicationClass::WOMA_APPLICATION_InitializeSprites2D()
+	SystemClass::LoadAllGraphics();	// Load all main Graphics Objects, that will be rendered
 
 	if (WOMA::game_state >= GAME_STOP) // Something FATAL on loading "mandatory 2D/3D Stuff"?
 		return false;			 // (SAMPLE: misssing 3D/IMAGE/AUDIO file...)
@@ -290,7 +290,7 @@ void dxWinSystemClass::UNPAUSE()
 void dxWinSystemClass::ProcessFrame()
 //----------------------------------------------------------------------------
 {
-	WinSystemClass::ProcessFrame();
+	WinSystemClass::ProcessFrame(); // Process Input
 
 	// Process Special: "PRINT SCREEN" key, the "Back-Buffer" have 1 frame rendered, now we can dump it:
 	if ((WOMA::game_state > GAME_MINIMIZED) && (OS_KEY_DOWN(DIK_SYSRQ + 0x35)))
@@ -310,7 +310,8 @@ void dxWinSystemClass::ProcessFrame()
 	if (WOMA::game_state >= GAME_RUN && WOMA::game_state < ENGINE_RESTART)
 	{
 		// For each Monitor: Render one Application Frame
-		if (WOMA::game_state >= GAME_SYSTEM_SETTINGS)
+		//if (WOMA::game_state >= GAME_SYSTEM_SETTINGS)
+		if (WOMA::game_state > GAME_SETUP)
 		{
 			for (int i = 0; i < windowsArray.size(); i++)
 			{
