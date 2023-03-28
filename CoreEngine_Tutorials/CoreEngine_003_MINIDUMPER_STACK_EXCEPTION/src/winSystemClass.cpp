@@ -21,10 +21,13 @@
 // --------------------------------------------------------------------------------------------
 
 #include "OSengine.h"
+
 #include "mem_leak.h"
 #include "OSmain_dir.h"
 #include "language.h"
+
 #include "stateMachine.h"
+
 #include "woma_exception.h"
 
 /////////////////////
@@ -159,7 +162,6 @@ void WinSystemClass::Shutdown()
 
 	// Destroy Drivers:
 	SystemClass::Shutdown();
-
 	
 	ShutdownWindows();				// Shutdown the Main Window.
 }
@@ -531,11 +533,6 @@ bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ voi
 	windowsArray[MONITOR_NUM].hWnd = hWnd;
 
 	ShowWindow(hWnd, WOMA::Cmdshow);	// Use from Command line option! NOTE: Don't hardcode:	(default: SW_SHOWDEFAULT) SW_SHOW / SW_SHOWMINIMIZED
-
-	// Only if we are in main Monitor? with task bar?
-	//if (allowResize)
-	//	MoveWindow(hWnd, windowLeft, windowTop, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT, TRUE);	// Adjust to Correct Real/Render size "Depend of the Window Sytle"
-
 	SetForegroundWindow(hWnd);    // Slightly "Higher Priority"
 	SetFocus(hWnd);               // Force "Focus" to our Window
 	UpdateWindow(hWnd);           // 1st Window WIN32/"Paint"  NOW!
@@ -654,8 +651,6 @@ void WinSystemClass::UNPAUSE()
 		WOMA::game_state = WOMA::previous_game_state;
 	}
 }
-
-
 
 //----------------------------------------------------------------------------
 void WinSystemClass::ProcessFrame()

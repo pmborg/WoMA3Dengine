@@ -22,6 +22,11 @@
 
 #include "OSengine.h"
 
+/////////////////////
+// Windows GLOBALS //
+/////////////////////
+
+
 //----------------------------------------------------------------------------------
 WinSystemClass::WinSystemClass() : SystemClass() 
 //----------------------------------------------------------------------------------
@@ -104,7 +109,6 @@ void WinSystemClass::Shutdown()
 
 	// Destroy Drivers:
 	SystemClass::Shutdown();
-
 	
 	ShutdownWindows();				// Shutdown the Main Window.
 }
@@ -120,6 +124,4 @@ namespace WOMA
 {
 	extern TCHAR* getCurrentDir();
 }
-
-
 

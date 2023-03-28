@@ -93,8 +93,6 @@ bool WinSystemClass::newDriver()
 	}
 
 	IF_NOT_THROW_EXCEPTION(m_contextDriver);
-	//if (!m_contextDriver)
-	//	return false;
 
 	if (AppSettings->DRIVER == DRIVER_DX11)
 		ASSERT(SystemHandle->windowsArray.size() > 0);
@@ -285,7 +283,31 @@ void WinSystemClass::InitializeSetupScreen(int x, int y)
 	TextToPrint[0].push_back(text);
 
 	// BOARD/CPU Feactures (RIGHT SIDE):
-	text.x = (AppSettings->WINDOW_WIDTH / 5) * 3;
+	if (AppSettings->WINDOW_WIDTH == 0) 
+	{
+		// --------------------------------------------------------------------------------------------
+		DEVMODE devMode = { 0 };
+		DWORD deviceNum = 0;
+		UINT MONITOR_NUM = 0;
+
+		displayDevice.cb = sizeof(DISPLAY_DEVICE);
+		while (EnumDisplayDevices(NULL, deviceNum, &displayDevice, 0))	// Get deviceNum
+		{
+			// Get our Screen name (on THIS monitor)
+			if (EnumDisplaySettings(displayDevice.DeviceName, ENUM_CURRENT_SETTINGS, &devMode))
+			{
+				// Use the Monitor selected by user:
+				if (((deviceNum == AppSettings->UI_MONITOR) && (AppSettings->UseAllMonitors == false)) ||
+					((deviceNum == MONITOR_NUM) && (AppSettings->UseAllMonitors == true)))
+				{
+					text.x = (devMode.dmPelsWidth / 5) * 3;
+					break;
+				}
+			}
+		}
+	}
+	else
+		text.x = (AppSettings->WINDOW_WIDTH / 5) * 3;
 	text.y = 10;
 
 	text.label = TEXT("CPU FEATURES:");
@@ -335,6 +357,7 @@ void WinSystemClass::refreshTitle() // Run once per second.
 	if (!m_Driver)
 		return;
 
+	if (astroClass)
 		StringCchPrintf(pstrFPS, 300, TEXT("[%d:%d] dxlvl:%d %s [%s] shader:%s FPS:%d game_state:%d RENDER_PAGE:%d"), 
 			astroClass->hour, astroClass->minute, DX_ENGINE_LEVEL, WOMA::APP_FULLNAME, m_Driver->driverName,
 			m_Driver->szShaderModel, SystemHandle->fps, WOMA::game_state, m_Application->RENDER_PAGE);
@@ -371,10 +394,11 @@ void WinSystemClass::Shutdown()
 
 	// Destroy Drivers:
 	SystemClass::Shutdown();
-
 	
 	SAFE_SHUTDOWN(womaSetup);
 	
+	SAFE_DELETE(m_contextDriver);
+
 	DeleteObject(bmpWorldMap);
 	DeleteObject(bmpTarget);
 	DeleteObject(bmpBackGround);

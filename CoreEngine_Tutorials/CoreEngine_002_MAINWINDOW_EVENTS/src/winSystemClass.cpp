@@ -149,7 +149,6 @@ void WinSystemClass::Shutdown()
 
 	// Destroy Drivers:
 	SystemClass::Shutdown();
-
 	
 	ShutdownWindows();				// Shutdown the Main Window.
 }

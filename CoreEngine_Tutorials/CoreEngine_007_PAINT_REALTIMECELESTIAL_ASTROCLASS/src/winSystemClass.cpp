@@ -242,7 +242,31 @@ void WinSystemClass::InitializeSetupScreen(int x, int y)
 	TextToPrint[0].push_back(text);
 
 	// BOARD/CPU Feactures (RIGHT SIDE):
-	text.x = (AppSettings->WINDOW_WIDTH / 5) * 3;
+	if (AppSettings->WINDOW_WIDTH == 0) 
+	{
+		// --------------------------------------------------------------------------------------------
+		DEVMODE devMode = { 0 };
+		DWORD deviceNum = 0;
+		UINT MONITOR_NUM = 0;
+
+		displayDevice.cb = sizeof(DISPLAY_DEVICE);
+		while (EnumDisplayDevices(NULL, deviceNum, &displayDevice, 0))	// Get deviceNum
+		{
+			// Get our Screen name (on THIS monitor)
+			if (EnumDisplaySettings(displayDevice.DeviceName, ENUM_CURRENT_SETTINGS, &devMode))
+			{
+				// Use the Monitor selected by user:
+				if (((deviceNum == AppSettings->UI_MONITOR) && (AppSettings->UseAllMonitors == false)) ||
+					((deviceNum == MONITOR_NUM) && (AppSettings->UseAllMonitors == true)))
+				{
+					text.x = (devMode.dmPelsWidth / 5) * 3;
+					break;
+				}
+			}
+		}
+	}
+	else
+		text.x = (AppSettings->WINDOW_WIDTH / 5) * 3;
 	text.y = 10;
 
 	text.label = TEXT("CPU FEATURES:");
@@ -347,7 +371,6 @@ void WinSystemClass::Shutdown()
 
 	// Destroy Drivers:
 	SystemClass::Shutdown();
-
 	
 	SAFE_SHUTDOWN(womaSetup);
 	

@@ -21,10 +21,13 @@
 // --------------------------------------------------------------------------------------------
 
 #include "OSengine.h"
+
 #include "mem_leak.h"
 #include "OSmain_dir.h"
 #include "language.h"
+
 #include "stateMachine.h"
+
 #include "woma_exception.h"
 
 /////////////////////
@@ -32,6 +35,7 @@
 /////////////////////
 
 TCHAR MainDeviceName[MAX_STR_LEN];	// Monitor Name
+
 
 //----------------------------------------------------------------------------------
 WinSystemClass::WinSystemClass() : SystemClass() 
@@ -220,7 +224,31 @@ void WinSystemClass::InitializeSetupScreen(int x, int y)
 	TextToPrint[0].push_back(text);
 
 	// BOARD/CPU Feactures (RIGHT SIDE):
-	text.x = (AppSettings->WINDOW_WIDTH / 5) * 3;
+	if (AppSettings->WINDOW_WIDTH == 0) 
+	{
+		// --------------------------------------------------------------------------------------------
+		DEVMODE devMode = { 0 };
+		DWORD deviceNum = 0;
+		UINT MONITOR_NUM = 0;
+
+		displayDevice.cb = sizeof(DISPLAY_DEVICE);
+		while (EnumDisplayDevices(NULL, deviceNum, &displayDevice, 0))	// Get deviceNum
+		{
+			// Get our Screen name (on THIS monitor)
+			if (EnumDisplaySettings(displayDevice.DeviceName, ENUM_CURRENT_SETTINGS, &devMode))
+			{
+				// Use the Monitor selected by user:
+				if (((deviceNum == AppSettings->UI_MONITOR) && (AppSettings->UseAllMonitors == false)) ||
+					((deviceNum == MONITOR_NUM) && (AppSettings->UseAllMonitors == true)))
+				{
+					text.x = (devMode.dmPelsWidth / 5) * 3;
+					break;
+				}
+			}
+		}
+	}
+	else
+		text.x = (AppSettings->WINDOW_WIDTH / 5) * 3;
 	text.y = 10;
 
 	text.label = TEXT("CPU FEATURES:");
@@ -325,7 +353,6 @@ void WinSystemClass::Shutdown()
 
 	// Destroy Drivers:
 	SystemClass::Shutdown();
-
 	
 	ShutdownWindows();				// Shutdown the Main Window.
 }
@@ -687,6 +714,8 @@ bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ voi
 
 	SystemHandle->statusbar = DoCreateStatusBar(hWnd, 0/*idStatus*/, m_hinstance, 1/*cParts*/);
 	SendMessage(SystemHandle->statusbar, SB_SETTEXT, 0, (LPARAM)DEMO_TITLE);
+	if (AppSettings->FULL_SCREEN)
+		ShowWindow(SystemHandle->statusbar, SW_HIDE);
 
 	// Save window for Main Monitor
 	m_hWnd = hWnd;
@@ -695,11 +724,6 @@ bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ voi
 	windowsArray[MONITOR_NUM].hWnd = hWnd;
 
 	ShowWindow(hWnd, WOMA::Cmdshow);	// Use from Command line option! NOTE: Don't hardcode:	(default: SW_SHOWDEFAULT) SW_SHOW / SW_SHOWMINIMIZED
-
-	// Only if we are in main Monitor? with task bar?
-	//if (allowResize)
-	//	MoveWindow(hWnd, windowLeft, windowTop, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT, TRUE);	// Adjust to Correct Real/Render size "Depend of the Window Sytle"
-
 	SetForegroundWindow(hWnd);    // Slightly "Higher Priority"
 	SetFocus(hWnd);               // Force "Focus" to our Window
 	UpdateWindow(hWnd);           // 1st Window WIN32/"Paint"  NOW!
