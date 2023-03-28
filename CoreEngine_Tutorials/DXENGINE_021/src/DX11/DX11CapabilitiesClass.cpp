@@ -30,7 +30,6 @@
 	#include "DDSTextureLoader.h"
 	#include "WICTextureLoader.h"
 
-	#include "ImageLoaderClass.h"
 	#include "DirectXTex.h"
 
 static size_t GetMaximum3DTextureSize(D3D_FEATURE_LEVEL featureLevel)
