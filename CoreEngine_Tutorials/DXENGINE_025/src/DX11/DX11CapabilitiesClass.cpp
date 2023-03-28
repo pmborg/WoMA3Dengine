@@ -27,8 +27,8 @@
 #if D3D11_SPEC_DATE_YEAR > 2009
 	#include <d3d11_1.h>
 
-	#include "\WoMAengine2014\EXTRA\SDK 8.0\DirectXTK\Inc\DDSTextureLoader.h"
-	#include "\WoMAengine2014\EXTRA\SDK 8.0\DirectXTK\Inc\WICTextureLoader.h"
+	#include "DDSTextureLoader.h"
+	#include "WICTextureLoader.h"
 
 	#include "ImageLoaderClass.h"
 	#include "DirectXTex.h"

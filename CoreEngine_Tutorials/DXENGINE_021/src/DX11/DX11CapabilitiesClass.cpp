@@ -27,6 +27,12 @@
 #if D3D11_SPEC_DATE_YEAR > 2009
 	#include <d3d11_1.h>
 
+	#include "DDSTextureLoader.h"
+	#include "WICTextureLoader.h"
+
+	#include "ImageLoaderClass.h"
+	#include "DirectXTex.h"
+
 static size_t GetMaximum3DTextureSize(D3D_FEATURE_LEVEL featureLevel)
 {
 	switch (featureLevel)
