@@ -19,8 +19,10 @@
 // --------------------------------------------------------------------------------------------
 #pragma once
 
+//#include "dx_engine_level.h"
 #include "main.h"
 
+//#include "main.h" // TCHAR
 // Define the Rendering States for textures:
 #define CULL_FRONT	0
 #define CULL_BACK	1
@@ -29,12 +31,15 @@
 #define FILL_SOLID	0
 #define FILL_WIRE	1
 
+//#if defined DX12 || defined DX11 || defined DX9
 #include <d3d11.h>
 #if (D3D11_SPEC_DATE_YEAR > 2009)
 	#define SUPPORT_TGA
 #endif
+//#endif
 
-#include "virtualCameraClass.h"
+	#include "virtualCameraClass.h"
+
 
 #if defined ALLOW_PRINT_SCREEN_SAVE_PNG
 	#include "ImageLoaderClass.h"
@@ -58,6 +63,7 @@ enum SHADER_TYPE
 	SHADER_AUTO = -1, 
 	SHADER_COLOR,						//21: M3D v1.0	public MAIN (Used by: 21 & Sun Ray & 3D Obj)
 	SHADER_TEXTURE,						//22: M3D v1.1	public MAIN (Used by: 22 & Banner & Sky2D & SplashIntro & UnderWater & Font & 3D Obj)
+	SHADER_TEXTURE_FONT,				//27:
 	SHADER_TEXTURE_LIGHT,				//23: M3D v1.2	public MAIN + Pass2: Shadows (Used by: 23 & Sky3D & Sun & Moon & 3D Obj)
 	SHADER_TEXTURE_LIGHT_RENDERSHADOW,  //45:			public "Render Shadows"
 	SHADER_TEXTURE_LIGHT_CASTSHADOW,	//45:			private "Pass1: Shadows" (add auxiliar Shader)

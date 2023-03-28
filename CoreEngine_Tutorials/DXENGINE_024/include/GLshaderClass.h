@@ -25,6 +25,7 @@
 #include <fstream>
 using namespace std;
 
+#include "GLmathClass.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: GLshaderClass
@@ -32,6 +33,7 @@ using namespace std;
 class GLshaderClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	GLshaderClass();
 	~GLshaderClass();
 
@@ -52,9 +54,49 @@ private:
 
 public:
 	UINT m_shaderProgram;
+
+	// --------------------------------------------------------------------------------------------
+	// Internal Shader VARs to Copy to Buffers: VS/PS
+	// --------------------------------------------------------------------------------------------
+	// BLOCK1:
+	float		pixelColor[4];
+
+	// BLOCK2:
+	BOOL		hasTexture;
+	BOOL		hasLight;
+	BOOL		hasSpecular;
+	BOOL		isFont;
+
+	// BLOCK3:
+	float		ambientColor[4];	// LIGHT: Ka
+	float		diffuseColor[4];	// LIGHT: Kd
+	float		emissiveColor[4];	// LIGHT: Ke
+	//			lightDirection (AUTO)
+
+	// BLOCK4:
+	bool		hasColorMap;		// 66
+	float		lightType;			// Future
+	float		shaderType;			// Future
+	float		shaderTypeParameter;// Future
+
+	// BLOCK5:
+	bool		hasAlfaColor;
+	float		alfaColor;
+	float		fade;			// Fade from 0 to 1
+
+	// BLOCK6:
+	BOOL		hasFog;
+	BOOL		isSky;
+	BOOL		hasAlfaMap;	// 43
+	BOOL		hasNormMap;
+
+	// BLOCK7:
+	// cameraPosition (AUTO)
+	BOOL		castShadow;
+	float		specularColor[3];	// 44:
+	float		nShininess;		// 44:
 };
 
 	#include "lightClass.h"	
-	//extern LightClass* m_Light;
 
 #endif

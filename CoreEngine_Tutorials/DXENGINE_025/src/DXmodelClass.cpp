@@ -70,10 +70,11 @@ namespace DirectX {
 DXmodelClass::DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive, bool computeNormals, bool modelHASshadow, bool modelRENDERshadow)
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	// VARS:
 	// ----------------------------------------------------------------------
-	//DX_CLASS* m_driver;
+	
 #if defined DX9sdk
 	m_driver9 = NULL;
 #endif
@@ -97,9 +98,12 @@ DXmodelClass::DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive, bool comp
 	SpriteTextureWidth	= NULL;
 	SpriteTextureHeight = NULL;
 
+	ModelHASNormals = false;
+	ModelcomputeNormals = computeNormals;
+
 	// Public ----------------------------------------------------------------------
 	
-	//DX_CLASS* m_driver;
+	
 #if defined DX9sdk
 	m_Shader9 = NULL;
 #endif
@@ -310,7 +314,7 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 {
 	bool result = true;
 
-	//DX_CLASS* m_driver;
+	
 #if defined DX9sdk
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
 	{
@@ -591,7 +595,7 @@ void DXmodelClass::Shutdown()
 		meshSRV.clear();
 	}
 		
-	//DX_CLASS* m_driver;
+	
 #if defined DX9sdk
 	SAFE_SHUTDOWN(m_Shader9);
 #endif

@@ -19,21 +19,26 @@
 // --------------------------------------------------------------------------------------------
 
 #include "platform.h"
-
 #include "womadriverclass.h"
 #include "GLmathClass.h"
 #include "GLopenGLclass.h"
 #include "wGLopenGLclass.h"
 #include "GLmathClass.h"
-#include "log.h" //#include "logManager.h"
+#include "log.h"
+
+//#define old_school
+PFNWGLCHOOSEPIXELFORMATARBPROC      wglChoosePixelFormatARB;
+PFNWGLCREATECONTEXTATTRIBSARBPROC   wglCreateContextAttribsARB;
 
 wGLopenGLclass::wGLopenGLclass()
 {
 	CLASS_LOAD_N--; 
 	CLASSLOADER();  //dont count super class!
+	WomaIntegrityCheck = 1234567890;
 
-	m_deviceContext = 0;
+	m_deviceContext = NULL;
 	m_renderingContext1 = NULL;
+	m_renderingContext2 = NULL;
 
 	GLMajorVer = 0;
 	GLMinorVer = 0;
@@ -42,8 +47,8 @@ wGLopenGLclass::wGLopenGLclass()
 	glutInitDisplayMode( GLUT_RIGHT_BUTTON | GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
 	glutInitWindowSize(1, 1);
 	
-	int w = glutCreateWindow("OpenGL2003");
-	HWND wh = FindWindow(NULL, TEXT("OpenGL2003"));
+	int w = glutCreateWindow("OpenGL2023");
+	HWND wh = FindWindow(NULL, TEXT("OpenGL2023"));
 	ShowWindow(wh, SW_HIDE);
 
 	int feedback = gl3wInit(); //Init GL3W
@@ -52,7 +57,7 @@ wGLopenGLclass::wGLopenGLclass()
 		glGetIntegerv(GL_MINOR_VERSION, &GLMinorVer);
 	}
 
-	WOMA_LOGManager_DebugMSG ( "OpenGL %s, GLSL %s\n", glGetString(GL_VERSION), glGetString(GL_SHADING_LANGUAGE_VERSION));
+	WOMA_LOGManager_DebugMSG ( "OpenGL: %s, GLSL: %s\n", glGetString(GL_VERSION), glGetString(GL_SHADING_LANGUAGE_VERSION));
 
 	// Release the temporary window
 	glFinish();
@@ -67,7 +72,6 @@ wGLopenGLclass::~wGLopenGLclass() {
 	CLASSDELETE(); 
 }
 
-// Based: D:\ogre\v2-0\RenderSystems\GL\src\Win32\OgreWin32GLSupport.cpp
 bool wGLopenGLclass::OnInit(int _USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, int screenHeight, UINT depthBits, float screenDepth, float screenNear, 
 						BOOL msaa, bool vsync, BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize)
 {
@@ -82,7 +86,7 @@ bool wGLopenGLclass::OnInit(int _USE_MONITOR, /*HWND*/void* hwnd, int screenWidt
 	m_deviceContext = GetDC((HWND)hwnd);
 	IF_NOT_RETURN_FALSE(m_deviceContext);
 	
-#ifdef old_school
+#if defined old_school
 	float fieldOfView, screenAspect;
 	char *vendorString, *rendererString;
 	int attributeListInt[19];
@@ -129,12 +133,13 @@ bool wGLopenGLclass::OnInit(int _USE_MONITOR, /*HWND*/void* hwnd, int screenWidt
 	attributeListInt[18] = 0;
 	
 	// Query for a pixel format that fits the attributes we want.
-	result = wglChoosePixelFormatARB(m_deviceContext, attributeListInt, NULL, 1, pixelFormat, &formatCount);
+	result = wglChoosePixelFormatARB(m_deviceContext, attributeListInt, NULL, 1, &pixelFormat, &formatCount);
 	if(result != 1)
 	{
 		return false;
 	}
 #else
+
     // assign a simple OpenGL pixel format that everyone supports
     pixelFormatDescriptor.nSize = sizeof(PIXELFORMATDESCRIPTOR);
     //pixelFormatDescriptor.nVersion = 1;
@@ -143,13 +148,34 @@ bool wGLopenGLclass::OnInit(int _USE_MONITOR, /*HWND*/void* hwnd, int screenWidt
     pixelFormatDescriptor.cColorBits = depthBits;	//Default: 24
     pixelFormatDescriptor.cDepthBits = depthBits;	//Default: 24
 	pixelFormatDescriptor.iLayerType = PFD_MAIN_PLANE; // Set the layer of the PFD
-	//pixelFormatDescriptor.cStencilBits = 8;
+	pixelFormatDescriptor.cStencilBits = 8;
 
 	// NOTE: Using useDoubleBuffering="false" is not working!
-	if (g_UseDoubleBuffering)
+	//if (g_UseDoubleBuffering)
 		pixelFormatDescriptor.dwFlags |= PFD_DOUBLEBUFFER;
-	// MODEs LIST more info: https://www.opengl.org/discussion_boards/showthread.php/178106-Pixel-format-and-display-settings
 
+/*
+static PIXELFORMATDESCRIPTOR    pixelFormatDescriptor = {
+	sizeof(PIXELFORMATDESCRIPTOR),  // Size of this structure
+	1,                              // Version of this structure
+	PFD_DRAW_TO_WINDOW |            // Draw to Window (not to bitmap)
+	PFD_SUPPORT_OPENGL |            // Support OpenGL calls in window
+	PFD_DOUBLEBUFFER |              // Double buffered mode
+	PFD_STEREO_DONTCARE,
+	PFD_TYPE_RGBA,                  // RGBA Color mode
+	32,                             // Want the display bit depth
+	0,0,0,0,0,0,                    // Not used to select mode
+	0,0,                            // Not used to select mode
+	0,0,0,0,0,                      // Not used to select mode
+	24,                             // Size of depth buffer
+	8,                              // bit stencil
+	0,                              // Not used to select mode
+	PFD_MAIN_PLANE,                 // Draw in main plane
+	0,                              // Not used to select mode
+	0,0,0
+};
+*/
+	// MODEs LIST more info: https://www.opengl.org/discussion_boards/showthread.php/178106-Pixel-format-and-display-settings
 	pixelFormat = ChoosePixelFormat(m_deviceContext, &pixelFormatDescriptor);
 	if (!pixelFormat) { WomaFatalExceptionW (TEXT("Error on ChoosePixelFormat"));	return false; }
 #endif
@@ -158,15 +184,13 @@ bool wGLopenGLclass::OnInit(int _USE_MONITOR, /*HWND*/void* hwnd, int screenWidt
 	result = SetPixelFormat(m_deviceContext, pixelFormat, &pixelFormatDescriptor);
 	if(result != 1) { WomaFatalExceptionW (TEXT("Error setting SetPixelFormat"));	return false; }
 
-#ifdef old_school
+#if defined old_school
 	// Set the 4.0 version of OpenGL in the attribute list.
-	attributeList[0] = WGL_CONTEXT_MAJOR_VERSION_ARB;
-	attributeList[1] = 4;
-	attributeList[2] = WGL_CONTEXT_MINOR_VERSION_ARB;
-	attributeList[3] = 0;
-
-	// Null terminate the attribute list.
-	attributeList[4] = 0;
+	int attributeList[] = {
+			 //WGL_SAMPLES_ARB,  3,
+			 WGL_CONTEXT_MAJOR_VERSION_ARB,  4,
+			 WGL_CONTEXT_MINOR_VERSION_ARB,  0,
+			 0,0 };
 
 	// Create a OpenGL 4.0 rendering context.
 	m_renderingContext1 = wglCreateContextAttribsARB(m_deviceContext, 0, attributeList);
@@ -201,13 +225,13 @@ bool wGLopenGLclass::OnInit(int _USE_MONITOR, /*HWND*/void* hwnd, int screenWidt
 		{ WomaFatalExceptionW (TEXT("Error setting wglMakeCurrent"));	return false; }
 
 	// Turn on or off the vertical sync depending on the input bool value.
-#ifdef old_school
+	PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
+#if defined old_school
 	if(vsync)
 		result = wglSwapIntervalEXT(1);
 	else
 		result = wglSwapIntervalEXT(0);
 #else
-	PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
 	result = wglSwapIntervalEXT(vsync);	// SET VSYNC
 #endif
 	if(result != 1) // Check if vsync was set correctly.
@@ -226,6 +250,13 @@ void wGLopenGLclass::Shutdown()
 	{
 		wglDeleteContext(m_renderingContext1);
 		m_renderingContext1 = NULL;
+	}
+
+	// Release the rendering context.
+	if (m_renderingContext2)
+	{
+		wglDeleteContext(m_renderingContext2);
+		m_renderingContext2 = NULL;
 	}
 
 	// Release the device context.

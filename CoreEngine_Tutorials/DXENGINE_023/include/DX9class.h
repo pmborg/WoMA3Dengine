@@ -150,7 +150,7 @@ public:
 	bool	bDeviceLost;
 	//UINT	ShaderVersionH, ShaderVersionL;
 
-	DXcameraClass* m_Camera;
+	//DXcameraClass* m_Camera;
 
 	D3DVIEWPORT9 viewport;
 

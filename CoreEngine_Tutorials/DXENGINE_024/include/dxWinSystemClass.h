@@ -31,6 +31,7 @@
 class dxWinSystemClass : public WinSystemClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	dxWinSystemClass(WOMA::Settings* AppSettings);
 	~dxWinSystemClass();
 
@@ -52,11 +53,15 @@ public:
 	STRING		XML_WORLD_FILE;
 	World		world;
 
+	DXcameraClass* m_Camera = NULL;
+
+#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
 	bool SaveScreenshot();
+#endif
 
 	//private:
 	void Shutdown();
 };
 
-
 extern dxWinSystemClass* DXsystemHandle;
+

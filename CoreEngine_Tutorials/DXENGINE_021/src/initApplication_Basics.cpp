@@ -4,15 +4,19 @@
 #include "winSystemClass.h"
 #include "mem_leak.h"
 
-		#include "GLmodelClass.h"
+	#include "GLopenGLclass.h"
+	#include "GLmodelClass.h"
 
-		#include "DXmodelClass.h"
+//#if defined DX9 || defined DX11 || defined DX12
+	#include "DXmodelClass.h"
+//#endif
 
 #include "DemoApplicationClass.h"
 
 DemoApplicationClass::DemoApplicationClass()
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	//	-------------------------------------------------------------------------------------------
 	//	WoMA Vertex(s) Arrays:  NOTE: Cant be used to create and Obj more than ONCE!
@@ -28,13 +32,12 @@ DemoApplicationClass::~DemoApplicationClass()
 	//CLASSDELETE();
 };
 
-//DemoApplicationClass* demoApplicationClass;
-
 bool DemoApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 {
 	//INIT ALL
 	//-----------------------------------------------------------------------------------------------------------------
-	initColorDemo(SystemHandle->driverList[SystemHandle->AppSettings->DRIVER]);
+	if (RENDER_PAGE < 27)
+		initColorDemo(SystemHandle->driverList[SystemHandle->AppSettings->DRIVER]);
 
 	return true;
 }
@@ -101,7 +104,6 @@ void DemoApplicationClass::initColorDemo(WomaDriverClass* m_Driver)
 
 void DemoApplicationClass::Shutdown()
 {
-
 	//3D:
 
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
@@ -113,7 +115,6 @@ void DemoApplicationClass::Shutdown()
 
 	}
 	else
-	//#endif
 	{
 	//#if DX_ENGINE_LEVEL == 21
 		SAFE_SHUTDOWN_MODELDX(m_1stSquar3DColorModel);

@@ -24,6 +24,7 @@
 class DemoApplicationClass : public ApplicationClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	DemoApplicationClass();
 	~DemoApplicationClass();
 
@@ -87,5 +88,17 @@ public:
 	// TERRAIN
 
 	VirtualModelClass* m_titleModel = NULL;
+
+#if defined USE_SPHERE
+	std::vector<ModelTextureLightVertexType> Sphere_vertexdata;
+	std::vector<UINT>						 Sphere_indexdata;
+
+	VirtualModelClass*						 m_SphereModel1 = NULL;
+	VirtualModelClass*						 m_SphereModel2 = NULL;
+
+	void	CreateSphereModel(int SPHERE_SIZE, int Sphere_gridpoints);
+	void	initSphere1(float SPHERE_SIZE);
+	void	initSphere2(float SPHERE_SIZE);
+#endif
 
 };

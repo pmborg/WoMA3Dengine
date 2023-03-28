@@ -26,6 +26,7 @@
 class GLtextureClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	GLtextureClass();
 	~GLtextureClass();
 

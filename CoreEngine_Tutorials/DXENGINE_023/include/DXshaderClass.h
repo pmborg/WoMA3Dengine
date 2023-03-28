@@ -61,7 +61,6 @@
 #include <array>
 #include <wrl.h>
 
-//#include "d3dx12.h"
 using namespace DirectX;
 using namespace Microsoft::WRL;
 #endif
@@ -166,6 +165,7 @@ struct ConstantBufferSkyType
 	// FUNCTIONS:
 	// ---------------------------------------------------------------------
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	DXshaderClass(UINT ShaderVersionH, UINT ShaderVersionL, bool shader_3D);
 	~DXshaderClass();
 	void Shutdown();

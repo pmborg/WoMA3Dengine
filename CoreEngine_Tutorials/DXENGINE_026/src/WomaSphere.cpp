@@ -24,7 +24,6 @@
 #include "DXmodelClass.h"
 #include "DemoApplicationClass.h"
 
-#if defined USE_SPHERE
 void DemoApplicationClass::initSphere1(float SPHERE_SIZE)
 {
 	CreateSphereModel(SPHERE_SIZE, 20);
@@ -122,6 +121,5 @@ void DemoApplicationClass::CreateSphereModel(int SPHERE_SIZE, int Sphere_gridpoi
 		Sphere_vertexdata.push_back(ShaderVertices);
 	}
 }
-#endif
 
 

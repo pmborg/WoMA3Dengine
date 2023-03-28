@@ -77,7 +77,9 @@
 	#endif
 
 #include "main.h"
-
+#if _DEBUG
+#pragma comment(lib, "dxguid.lib")
+#endif
 /////////////
 // LINKING // First thing in the header is to specify the libraries to link when using this object module
 /////////////

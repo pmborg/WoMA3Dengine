@@ -18,12 +18,11 @@
 // PURPOSE: Paint the main window depending of engine state screen page.
 // --------------------------------------------------------------------------------------------
 
-
 #include "OSengine.h"
 #include <d3d11.h>
+#if defined DX_ENGINE && DX_ENGINE_LEVEL >= 21
 	#include "DX11Class.h"
 	#include "DXmodelClass.h"
-
 	#include "mem_leak.h"
 
 	#if   defined DX_ENGINE
@@ -71,10 +70,11 @@ namespace DirectX {
 DXmodelClass::DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive, bool computeNormals, bool modelHASshadow, bool modelRENDERshadow)
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	// VARS:
 	// ----------------------------------------------------------------------
-	//DX_CLASS* m_driver;
+	
 #if defined DX9sdk
 	m_driver9 = NULL;
 #endif
@@ -98,9 +98,12 @@ DXmodelClass::DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive, bool comp
 	SpriteTextureWidth	= NULL;
 	SpriteTextureHeight = NULL;
 
+	ModelHASNormals = false;
+	ModelcomputeNormals = computeNormals;
+
 	// Public ----------------------------------------------------------------------
 	
-	//DX_CLASS* m_driver;
+	
 #if defined DX9sdk
 	m_Shader9 = NULL;
 #endif
@@ -212,10 +215,6 @@ bool DXmodelClass::LoadLight(TCHAR* objectName, void* driver, SHADER_TYPE shader
 
 		ASSERT( (ModelShaderType == SHADER_TEXTURE_LIGHT) || 
 			(ModelShaderType == SHADER_TEXTURE_LIGHT_RENDERSHADOW));
-	/*
-	if (shader_type == SHADER_TEXTURE_LIGHT_INSTANCED)
-		modelTextureLightVertex = model;
-	*/
 	indexModelList = indexList;
 	return InitializeDXbuffers(objectName, textureFile);
 }
@@ -313,7 +312,7 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 {
 	bool result = true;
 
-	//DX_CLASS* m_driver;
+	
 #if defined DX9sdk
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
 	{
@@ -570,7 +569,7 @@ void DXmodelClass::Shutdown()
 		meshSRV.clear();
 	}
 		
-	//DX_CLASS* m_driver;
+	
 #if defined DX9sdk
 	SAFE_SHUTDOWN(m_Shader9);
 #endif
@@ -677,10 +676,9 @@ bool DXmodelClass::InitializeTextureLightBuffers(/*ID3D11Device*/ void* device, 
 		vertices[i].texCoord = D3DXVECTOR2((*modelTextureLightVertex)[i].tu, (*modelTextureLightVertex)[i].tv);
 		vertices[i].normal = D3DXVECTOR3((*modelTextureLightVertex)[i].nx, (*modelTextureLightVertex)[i].ny, (*modelTextureLightVertex)[i].nz);
 	#endif
-
 		CALCULATE_MAX_MIN(vertices[i].position);
 	}
-
+	
 	IF_NOT_RETURN_FALSE (CreateDXbuffers(sizeof (DXtextureLightVertexType), device, indices, vertices));
 
 	// Release the arrays now from RAM, that the vertex and index buffers have been created and loaded to GPU
@@ -699,7 +697,7 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 {
 	sizeofMODELvertex = sizeofMODELvertex_;
 
-	ASSERT(m_vertexCount && vertices && indices && sizeofMODELvertex > 0);
+	ASSERT(m_vertexCount && m_indexCount && vertices && indices && sizeofMODELvertex > 0);
 
 	//DX12:AQUI
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
@@ -734,14 +732,6 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 			nullptr,
 			IID_PPV_ARGS(&vertexBufferUpload)));
 		vertexBufferUpload->SetName(L"Vertex Buffer Upload Resource");
-
-		/*
-		// Copy the triangle data to the vertex buffer.
-		UINT8* pVertexDataBegin;
-		ThrowIfFailed(m_vertexBuffer->Map(0, nullptr, reinterpret_cast<void**>(&pVertexDataBegin)));
-		memcpy(pVertexDataBegin, vertices, vertexBufferSize);  //sizeof(triangleVertices)
-		m_vertexBuffer->Unmap(0, nullptr);
-		*/
 		// EQUIVALENT (upper code): Upload the vertex buffer to the GPU.
 		{
 			D3D12_SUBRESOURCE_DATA vertexData = {};
@@ -783,15 +773,6 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 			nullptr,
 			IID_PPV_ARGS(&indexBufferUpload)));
 		indexBufferUpload->SetName(L"Index Buffer Upload Resource");
-
-		/*
-		// Copy data
-		// Copy the triangle data to the vertex buffer.
-		UINT8* pIndexDataBegin;
-		ThrowIfFailed(m_indexBuffer->Map(0, nullptr, reinterpret_cast<void**>(&pIndexDataBegin)));
-		memcpy(pIndexDataBegin, indices, IndexBufferSize); // sizeof(triangleVertices)
-		m_indexBuffer->Unmap(0, nullptr);
-		*/
 		// EQUIVALENT (upper code): Upload the index buffer to the GPU.
 		{
 			D3D12_SUBRESOURCE_DATA indexData = {};
@@ -878,9 +859,9 @@ void DXmodelClass::SetBuffers(void* deviceContext)
 {
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 	{
-		/*static*/ ID3D11DeviceContext* context = ((ID3D11DeviceContext*)deviceContext);
-		/*static*/ UINT		stride[2];
-		/*static*/ UINT		offset[2] = { 0 };
+		ID3D11DeviceContext* context = ((ID3D11DeviceContext*)deviceContext);
+		UINT				stride[2];
+		UINT				offset[2] = { 0 };
 		ID3D11Buffer*		bufferPointer[2];
 		UINT				numBuffers = 1;	//Can't be static
 
@@ -933,7 +914,6 @@ void DXmodelClass::SetBuffers(void* deviceContext)
 	{
 		// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles:
 		((DirectX::DX12Class*)m_driver)->m_commandList->IASetPrimitiveTopology((D3D12_PRIMITIVE_TOPOLOGY)(PrimitiveTopology)); //D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST
-		//((DirectX::DX12Class*)m_driver)->m_commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); //AQUI
 		((DirectX::DX12Class*)m_driver)->m_commandList->IASetVertexBuffers(0, 1, &m_vertexBufferView);
 		((DirectX::DX12Class*)m_driver)->m_commandList->IASetIndexBuffer(&m_indexBufferView);
 	}
@@ -1070,7 +1050,7 @@ void DXmodelClass::Render(WomaDriverClass* Driver, UINT camera, UINT projection,
 #endif
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 	{
-		/*static*/ ID3D11DeviceContext* pContext = driver11->m_deviceContext;
+		 ID3D11DeviceContext* pContext = driver11->m_deviceContext;
 
 		// Step 1 - Put the "vertex", "index" and "instances"(if exist) buffers on the graphics pipeline to prepare them for drawing:
 		// ----------------------------------------------------------------------------------------
@@ -1307,3 +1287,4 @@ void DXmodelClass::translation(float x, float y, float z)
 
 }
 
+#endif

@@ -31,6 +31,8 @@
 #include "Math3D.h"
 #include "mem_leak.h"
 
+#include "dxWinSystemClass.h"	// SystemHandle
+
 namespace DirectX {
 
 // ----------------------------------------------------------------------------------------------
@@ -39,6 +41,7 @@ DX12Class::DX12Class()
 {
 	// WomaDriverClass / Public: ------------------------------------------------------
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	// SUPER Video Card Info:
 	// ---------------------------------------------------------------------------
@@ -68,7 +71,7 @@ DX12Class::DX12Class()
 
 	BUFFER_COLOR_FORMAT = DXGI_FORMAT_B8G8R8A8_UNORM; // "Loader Image" use this format.
 
-	m_Camera = NULL;
+	//m_Camera = NULL;
 	viewDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	viewDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	viewDesc.Format = BUFFER_COLOR_FORMAT;
@@ -101,12 +104,6 @@ void DX12Class::Shutdown()
 		CloseHandle(m_fenceEvent);
 		m_fenceEvent = nullptr;
 
-		if (m_Camera)
-		{
-			delete ((DirectX::DXcameraClass*)m_Camera); 
-			m_Camera = NULL;	
-		}	
-
 		for (UINT i = 0; i<BufferCount; ++i)
 			m_renderTargets[i].Reset();
 
@@ -119,11 +116,6 @@ void DX12Class::Shutdown()
 		m_commandQueue.Reset();
 
 		//Release the two new blending states.
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
-		{
-			SAFE_RELEASE(m_alphaEnableBlendingState);
-			SAFE_RELEASE(m_alphaDisableBlendingState);
-		}
 
 		// The Last one!
 		ULONG count = m_device->Release();
@@ -582,11 +574,6 @@ HRESULT result = S_OK;
 	if (m_device && m_swapChain) 
 	{
 
-#if DX_ENGINE_LEVEL >= 22 && defined DX11 && _NOT_//NEW
-		//Init Step: 10 - - CreateDepthStencilView / OMSetRenderTargets:
-		IF_NOT_RETURN_FALSE (CreateSetDepthStencilViewDX11device ());
-#endif
-
 		//Init Step: 11 - RSSetViewports: Map Screen clip space coordinates to the render target space:
 		setViewportDevice(screenWidth, screenHeight);
 
@@ -594,7 +581,6 @@ HRESULT result = S_OK;
 		setProjectionMatrixWorldMatrixOrthoMatrix ( screenWidth, screenHeight, screenNear, screenDepth);
 	}
 
-	//SetCamera2D(); //AQUI
 	Initialize3DCamera();
 
 	return true;
@@ -621,7 +607,7 @@ bool DX12Class::initDX12Device (HWND hwnd)
 	HRESULT result = S_OK;
 
 	//
-	// LoadAssets()- PARTE 2
+	// LoadAssets()- PART 2
 	//
 	// Describe and create the command queue.
 	// ==========================================
@@ -660,7 +646,7 @@ bool DX12Class::initDX12Device (HWND hwnd)
 	}
 
 	//
-	// LoadAssets()- PARTE 3
+	// LoadAssets()- PART 3
 	//
 
 
@@ -933,8 +919,6 @@ void DX12Class::EndScene(UINT monitorWindow)
 	if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
 		return;
 
-	//m_currentFrame = m_swapChain->GetCurrentBackBufferIndex();
-
 	MoveToNextFrame();
 }
 
@@ -994,17 +978,29 @@ void DX12Class::getProfile ()
 	D3D12_FEATURE_DATA_SHADER_MODEL shaderModel;
 	shaderModel.HighestShaderModel = D3D_HIGHEST_SHADER_MODEL;
 
-	#ifdef FOR_DX_12_NOTES_21_FEV_2023
-	D3D_SHADER_MODEL_5_1 = 0x51,
-	D3D_SHADER_MODEL_6_0 = 0x60,
-	D3D_SHADER_MODEL_6_1 = 0x61,
-	D3D_SHADER_MODEL_6_2 = 0x62,
-	D3D_SHADER_MODEL_6_3 = 0x63,
-	D3D_SHADER_MODEL_6_4 = 0x64,
-	D3D_SHADER_MODEL_6_5 = 0x65,
-	D3D_SHADER_MODEL_6_6 = 0x66,
-	D3D_SHADER_MODEL_6_7 = 0x67,
-	#endif
+	/*
+	DirectX 		Release Date 		Shader Model 		Shader Profile(s)
+	------------------------------------------------------------------------------------------------------
+	DirectX 8.0 	November 12, 2000 	Shader Model 1.0 	vs_1_1													32bits WIN ME
+	DirectX 9.0 	November 19, 2002 	Shader Model 2.0 	vs_2_0, vs_2_x, ps_2_0, ps_2_x							32bits XP
+	DirectX 9.0c 	August 4, 2004 		Shader Model 3.0 	vs_3_0, ps_3_0											XP-SP2
+	DirectX 10.0 	November 30, 2006 	Shader Model 4.0 	vs_4_0, ps_4_0, gs_4_0									VISTA
+	DirectX 10.1 	February 4, 2008 	Shader Model 4.1 	vs_4_1, ps_4_1, gs_4_1									VISTA-SP1
+	DirectX 11.0 	October 22, 2009 	Shader Model 5.0 	vs_5_0, ps_5_0, gs_5_0, ds_5_0, hs_5_0, cs_5_0			WIN7
+	DirectX 11.1																									WIN8
+	DirectX 11.2																									WIN8.1
+	
+	D3D_SHADER_MODEL_5_1 = 0x51, WINDOWS10 DX12 Augost 21, 2015 Shader Model 5.1 — GCN 1+, Fermi+, DirectX 12 (11_0+) with WDDM 2.0.			
+	D3D_SHADER_MODEL_6_0 = 0x60, WINDOWS10 DX12	                Shader Model 6.0 — GCN 1+, Kepler+, DirectX 12 (11_0+) with WDDM 2.1.           
+	D3D_SHADER_MODEL_6_1 = 0x61, WINDOWS10 DX12	                Shader Model 6.1 — GCN 1+, Kepler+, DirectX 12 (11_0+) with WDDM 2.3.           
+	D3D_SHADER_MODEL_6_2 = 0x62, WINDOWS10 DX12	                Shader Model 6.2 — GCN 1+, Kepler+, DirectX 12 (11_0+) with WDDM 2.4.			
+	D3D_SHADER_MODEL_6_3 = 0x63, WINDOWS10 DX12	                Shader Model 6.3 — GCN 1+, Kepler+, DirectX 12 (11_0+) with WDDM 2.5.			
+	D3D_SHADER_MODEL_6_4 = 0x64, WINDOWS10 DX12	                Shader Model 6.4 — GCN 1+, Kepler+, Skylake+, DirectX 12 (11_0+) with WDDM 2.6.	
+	D3D_SHADER_MODEL_6_5 = 0x65, WINDOWS10 DX12	                Shader Model 6.5 — GCN 1+, Kepler+, Skylake+, DirectX 12 (11_0+) with WDDM 2.7.	
+
+	D3D_SHADER_MODEL_6_6 = 0x66, WINDOWS11 DX12	                Shader Model 6.6 — GCN 4+, Maxwell+, DirectX 12 (11_0+) with WDDM 3.0.			
+	D3D_SHADER_MODEL_6_7 = 0x67, WINDOWS11 DX12	                Shader Model 6.7 — GCN 4+, Maxwell+, DirectX 12 (12_0+) with WDDM 3.1.			
+	*/
 	while (true) 
 	{
 		if (FAILED(m_device->CheckFeatureSupport(D3D12_FEATURE_SHADER_MODEL, &shaderModel, sizeof(shaderModel))))
@@ -1012,7 +1008,6 @@ void DX12Class::getProfile ()
 			ShaderVersionH = shaderModel.HighestShaderModel >> 4;
 			ShaderVersionL = shaderModel.HighestShaderModel & 0xF;
 			WOMA::logManager->DEBUG_MSG(TEXT("Failed to query (shaderModel: %d.%d) for Adapter: 1\n"), ShaderVersionH, ShaderVersionL);
-			//WOMA::WomaMessageBox(TEXT("Failed to query (shaderModel) for Adapter: 1\n"), TEXT("FATAL"), MB_OK);
 			int i = shaderModel.HighestShaderModel;
 			i--;
 			shaderModel.HighestShaderModel = (D3D_SHADER_MODEL)i;
@@ -1071,6 +1066,8 @@ bool DX12Class::createAllRasterizerStates(bool lineAntialiasing)
 }
 
 // REVIEW - Init Step: 5 - Rasterizer State: Set the Viewport for rendering
+// MORE INFO: https://msdn.microsoft.com/en-us/library/windows/desktop/bb205126%28v=vs.85%29.aspx
+
 // ----------------------------------------------------------------------------------------------
 void DX12Class::setViewportDevice(int screenWidth, int screenHeight)
 // ----------------------------------------------------------------------------------------------
@@ -1134,11 +1131,7 @@ void DX12Class::SetRasterizerState(UINT CullMode, UINT fillMode)
 {
 	m_CullMode = CullMode;
 	m_fillMode = fillMode;
-
-	//rasterState = &m_rasterState[CullMode][fillMode];
 }
-
-//10 The Initialize function is what does the entire setup of Direct3D for DirectX 11.
 
 // ----------------------------------------------------------------------------------------------
 bool DX12Class::CreateBlendState()
@@ -1147,6 +1140,7 @@ bool DX12Class::CreateBlendState()
 	return true;
 }
 
+// MORE INTO: http://msdn.microsoft.com/en-us/library/windows/desktop/ff476110%28v=vs.85%29.aspx
 // ----------------------------------------------------------------------------------------------
 bool DX12Class::createSetDepthStencilState (bool depthTestEnabled)
 // ----------------------------------------------------------------------------------------------
@@ -1156,34 +1150,25 @@ bool DX12Class::createSetDepthStencilState (bool depthTestEnabled)
 
 
 
-//The first new function TurnOnAlphaBlending allows us to turn on alpha blending by using the OMSetBlendState function with our 
-//m_alphaEnableBlendingState blending state.
-//static float blendFactor[4] = {0.0f, 0.0f, 0.0f, 0.0f};	// Setup the blend factor.
-//static bool g_AlphaBlend = false;
-
+//The first new function TurnOnAlphaBlending allows us to turn on alpha blending
 // ----------------------------------------------------------------------------------------------
 void DX12Class::TurnOnAlphaBlending()
 // ----------------------------------------------------------------------------------------------
 {
 	if (g_AlphaBlend) return;
 	// Turn on the alpha blending.
-	//m_deviceContext->OMSetBlendState(m_alphaEnableBlendingState, blendFactor, 0xffffffff);
 	g_AlphaBlend = true;
 }
 
-//The second new function TurnOffAlphaBlending allows us to turn off alpha blending by using the OMSetBlendState function with 
-//our m_alphaDisableBlendingState blending state.
+//The second new function TurnOffAlphaBlending allows us to turn off alpha blending 
 // ----------------------------------------------------------------------------------------------
 void DX12Class::TurnOffAlphaBlending()
 // ----------------------------------------------------------------------------------------------
 {
 	if (!g_AlphaBlend) return;
 	// Turn off the alpha blending.
-	//m_deviceContext->OMSetBlendState(m_alphaDisableBlendingState, blendFactor, 0xffffffff);
 	g_AlphaBlend = false;
 }
-
-
 
 // -----------------------------------------------------------------
 //These are the new functions for enabling and disabling the Z buffer. To turn Z buffering on we set the original depth stencil. 
@@ -1244,9 +1229,9 @@ void DX12Class::setProjectionMatrixWorldMatrixOrthoMatrix(int screenWidth, int s
 	// DX11: XMMatrixPerspectiveFovLH
 	m_projectionMatrix = XMMatrixPerspectiveFovLH(fieldOfView, screenAspect, screenNear, screenDepth);    // 3D PROJECTION
 
-																										  // And the final thing we will setup in the Initialize function is an orthographic projection matrix. 
-																										  //This matrix is used for rendering 2D elements like user interfaces on the screen
-																										  // (Create an orthographic projection matrix for 2D rendering)
+	// And the final thing we will setup in the Initialize function is an orthographic projection matrix. 
+	//This matrix is used for rendering 2D elements like user interfaces on the screen
+	// (Create an orthographic projection matrix for 2D rendering)
 
 	m_orthoMatrix = XMMatrixOrthographicLH((float)screenWidth, (float)screenHeight, screenNear, screenDepth);  // 2D PROJECTION
 
@@ -1270,11 +1255,11 @@ void DX12Class::SetCamera2D()
 	DX12m_Camera2D.SetRotation(0, 0, 0);			// NOTE: On 2D This values have always these values!
 	DX12m_Camera2D.SetPosition(0.0f, 0.0f, -1.0f);	// NOTE: On 2D This values have always these values!
 
-												// Calculate: 2D ViewMatrix
+													// Calculate: 2D ViewMatrix
 	DX12m_Camera2D.Render();						// ((OpenGLClass*)m_Driver)->m_Camera->Render(); || ((DX_CLASS*)m_Driver)->m_Camera->Render();
 	DX12m_Camera2D.Set2DViewMatrix();				// Get the view from the camera and 2D objects.
 
-	m_Camera->m_viewmatrix2D = DX12m_Camera2D.m_viewMatrix;
+	DXsystemHandle->m_Camera->m_viewmatrix2D = DX12m_Camera2D.m_viewMatrix;
 }
 
 // TODO: go to Virtual Class?
@@ -1282,23 +1267,22 @@ void DX12Class::SetCamera2D()
 void DX12Class::Initialize3DCamera()
 // ----------------------------------------------------------------------------------------------
 {
+	if (DXsystemHandle->m_Camera) {
 
-	if (!m_Camera) {
-		m_Camera = NEW DirectX::DXcameraClass; // DX Implementation
-		IF_NOT_THROW_EXCEPTION(m_Camera);
+		// SETUP 2D Camera
+		SetCamera2D();
+
+		// SETUP 3D Normal Camera:
+		DXsystemHandle->m_Camera->SetPosition(SystemHandle->AppSettings->INIT_CAMX, SystemHandle->AppSettings->INIT_CAMY,
+			SystemHandle->AppSettings->INIT_CAMZ);
+
+		DXsystemHandle->m_Camera->SetRotation(SystemHandle->AppSettings->INIT_ROTX, SystemHandle->AppSettings->INIT_ROTY,
+			SystemHandle->AppSettings->INIT_ROTZ);
+
+		DXsystemHandle->m_Camera->Render();
 	}
 
-	SetCamera2D();
-
-	// Normal Camera:
-	m_Camera->SetPosition(SystemHandle->AppSettings->INIT_CAMX, SystemHandle->AppSettings->INIT_CAMY,
-		SystemHandle->AppSettings->INIT_CAMZ);
-
-	m_Camera->SetRotation(SystemHandle->AppSettings->INIT_ROTX, SystemHandle->AppSettings->INIT_ROTY,
-		SystemHandle->AppSettings->INIT_ROTZ);
-
-	m_Camera->Render();
-
+	// SETUP 3D Sky Camera:
 }
 
 
@@ -1311,11 +1295,11 @@ XMMATRIX* DX12Class::GetViewMatrix(void* Driver, UINT camera, UINT projection, U
 			default:
 			case PROJECTION_PERSPECTIVE:
 				if (camera == CAMERA_NORMAL)
-					return &m_Camera->m_viewMatrix;		// TODO: Use a global matrix, one per frame
+					return &DXsystemHandle->m_Camera->m_viewMatrix;
 				break;
 
 			case PROJECTION_ORTHOGRAPH:
-				 return &m_Camera->m_viewmatrix2D;		// TODO: Use a global matrix, one per frame
+				 return &DXsystemHandle->m_Camera->m_viewmatrix2D;
 				 break;
 			
 		}
@@ -1325,7 +1309,6 @@ XMMATRIX* DX12Class::GetViewMatrix(void* Driver, UINT camera, UINT projection, U
 	return NULL; //Return ERROR
 }
 
-// TODO: go to Virtual Class?
 XMMATRIX* DX12Class::GetProjectionMatrix(void* Driver, UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix)
 {
 	{
@@ -1345,12 +1328,14 @@ XMMATRIX* DX12Class::GetProjectionMatrix(void* Driver, UINT camera, UINT project
 	ASSERT(FALSE);
 }
 
+#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
 // ----------------------------------------------------------------------------------------------
 ImageLoaderClass* DX12Class::CaptureScreenShot(int screenWidth, int screenHeight)
 // ----------------------------------------------------------------------------------------------
 {
 	return NULL;
 }
+#endif
 
 #ifdef NOT_USED
 // ----------------------------------------------------------------------------------------------
@@ -1363,12 +1348,12 @@ void DX12Class::GetProjectionViewMatrix (UINT camera, UINT projection, XMMATRIX 
 			projectionMatrix = &m_projectionMatrix;	
 
 			if (camera == CAMERA_NORMAL)
-				viewMatrix = &(m_Camera)->m_viewMatrix;		// TODO: Use a global matrix, one per frame
+				viewMatrix = &(m_Camera)->m_viewMatrix;		
 			break;
 
 		case PROJECTION_ORTHOGRAPH:
 			 projectionMatrix = &m_orthoMatrix;
-			 viewMatrix = &(m_Camera)->m_viewmatrix2D;		// TODO: Use a global matrix, one per frame
+			 viewMatrix = &(m_Camera)->m_viewmatrix2D;		
 			break;
 	}
 }

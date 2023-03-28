@@ -56,6 +56,7 @@
 class wGLopenGLclass : public GLopenGLclass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	wGLopenGLclass();
 	~wGLopenGLclass();
 
@@ -70,12 +71,12 @@ public:
 	//void GetVideoCardInfo(char*);
 
 	bool	LoadExtensionList();
-	HDC		m_deviceContext;
-	HGLRC	m_renderingContext1;
-	HGLRC	m_renderingContext2;
+	HDC		m_deviceContext=NULL;
+	HGLRC	m_renderingContext1 = NULL;
+	HGLRC	m_renderingContext2 = NULL;
 
 private:
-	HWND	hWnd;
+	HWND	hWnd = NULL;
 
 public:
 };

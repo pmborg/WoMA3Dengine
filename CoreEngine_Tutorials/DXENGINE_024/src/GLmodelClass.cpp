@@ -26,13 +26,12 @@
 #include "GLmodelClass.h"
 #include "GLshaderClass.h"
 #include "mem_leak.h"
-//#include "SystemPlatform.h"			// Get [SystemHandle] Pointer to System Class: WINDOWS, LINUX & ANDROID
-
 #include "winSystemClass.h"
 
 GLmodelClass::GLmodelClass(bool model3d) 
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	indices = NULL;
 
@@ -89,9 +88,6 @@ void GLmodelClass::UpdateDynamic(void* Driver, std::vector<ModelColorVertexType>
 		vertices[i].g = (*modelColorVertex)[i].g;
 		vertices[i].b = (*modelColorVertex)[i].b;
 		vertices[i].a = (*modelColorVertex)[i].a;
-	//#if _DEBUG
-	//	WOMA_LOGManager_DebugMSG("vertices[i].x=%f vertices[i].y=%f vertices[i].z=%f\n", vertices[i].x, vertices[i].y, vertices[i].z);
-	//#endif
 	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
@@ -135,17 +131,13 @@ bool result=false;
 	{
 		// Create the texture object for this model:
 		m_Texture = NEW GLtextureClass;
-		IF_NOT_THROW_EXCEPTION(m_Texture);
+		IF_NOT_THROW_EXCEPTION (m_Texture);
 		meshSRV.push_back(m_Texture);
 
 		// Initialize the texture object:
-		// TODO FOR for all textures
-
 		result = m_Texture->Initialize(WOMA::LoadFile((TCHAR*)(*textureFile)[0].c_str()), 0, /*wrap*/ Model3D);
-		if (!result)
-		{
-			WOMA::WomaMessageBox((TCHAR*)(*textureFile)[0].c_str(), TEXT("Texture File not found")); return false;
-		}
+		if(!result)
+			{ WOMA::WomaMessageBox((TCHAR*)(*textureFile)[0].c_str(), TEXT("Texture File not found")); return false; }
 
 		if (!Model3D)
 		{
@@ -351,9 +343,6 @@ void GLmodelClass::RenderWithFade(WomaDriverClass* driver, float fadeLight)
 void GLmodelClass::Render(/*GLopenGLclass*/WomaDriverClass* Driver, UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix)
 {
 	GLopenGLclass* driver = (GLopenGLclass*)Driver;
-	//mat4* viewMatrix = NULL;
-	//mat4* projectionMatrix = NULL;
-	// Get the world, view, and projection matrices from the opengl and camera objects:
 	
 	switch (projection)
 	{
@@ -363,7 +352,6 @@ void GLmodelClass::Render(/*GLopenGLclass*/WomaDriverClass* Driver, UINT camera,
 
 		case PROJECTION_ORTHOGRAPH:
 			projectionMatrix = driver->m_orthoMatrix;
-			 //projectionMatrix = &(((GLcameraClass*)driver->m_Camera)->m_viewmatrix2D);
 		break;
 	}
 
@@ -401,16 +389,14 @@ void GLmodelClass::Render(/*GLopenGLclass*/WomaDriverClass* Driver, UINT camera,
 	}
 
 	// Step 4: Render the model
-	glBindVertexArray(m_vertexArrayId);				// SetBuffers(driver);
+	glBindVertexArray(m_vertexArrayId);		// SetBuffers(driver);
 
 	RenderBuffers(driver);
 
-/*
 	//unbind everything
-	glBindVertexArray(0);				// Unbind our Vertex Array Object
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glUseProgram(0);					// shader->unbind(); // Unbind our shader
-*/
+	glBindVertexArray(NULL);				// Unbind our Vertex Array Object
+	glBindTexture(GL_TEXTURE_2D, NULL);
+	glUseProgram(0);						// shader->unbind(); // Unbind our shader
 }
 
 // TODO: ALSO SHARED FROM DX do it on model class!?
@@ -487,19 +473,14 @@ bool GLmodelClass::InitializeColorBuffers(/*GLopenGLclass*/ void* OpenGL)
 bool GLmodelClass::InitializeTextureBuffers(/*GLopenGLclass*/ void* OpenGL)
 {
 	ModelTextureVertexType* vertices;
-	//UINT* indices;
 
 	m_vertexCount = (UINT) (*modelTextureVertex).size();	// Set the number of vertices in the vertex array.
 
-	GetIndices();	//m_indexCount = m_vertexCount;	// Set the number of indices in the index array.
+	GetIndices();
 
 	// Create the vertex array.
 	vertices = NEW ModelTextureVertexType[m_vertexCount];
 	IF_NOT_THROW_EXCEPTION(vertices);
-
-	// Create the index array.
-	//indices = NEW UINT[m_indexCount];
-	//IF_NOT_THROW_EXCEPTION(indices);
 
 	// Load the vertex array with data:
 	for (UINT i = 0; i <m_vertexCount; i++)
@@ -515,9 +496,6 @@ bool GLmodelClass::InitializeTextureBuffers(/*GLopenGLclass*/ void* OpenGL)
 		#if true && _DEBUG
 		WOMA_LOGManager_DebugMSG("vertices: %d %d %d - %f %f \n", vertices[i].x, vertices[i].y, vertices[i].z, vertices[i].tu, vertices[i].tv);
 		#endif
-
-		// Load the index array with data:
-		//indices[i] = i;
 	}
 
 	glGenVertexArrays(1, &m_vertexArrayId);	// Allocate an OpenGL vertex array object.
@@ -540,18 +518,13 @@ bool GLmodelClass::InitializeTextureBuffers(/*GLopenGLclass*/ void* OpenGL)
 bool GLmodelClass::InitializeTextureLightBuffers(/*GLopenGLclass*/ void* OpenGL)
 {
 	ModelTextureLightVertexType* vertices;
-	//UINT* indices;
 
 	m_vertexCount = (UINT) (*modelTextureLightVertex).size();	// Set the number of vertices in the vertex array.
-	GetIndices();	m_indexCount = m_vertexCount;	// Set the number of indices in the index array.
+	GetIndices();
 
 	// Create the vertex array.
 	vertices = NEW ModelTextureLightVertexType[m_vertexCount];
 	IF_NOT_THROW_EXCEPTION(vertices);
-
-	// Create the index array.
-	//indices = NEW UINT[m_indexCount];
-	//IF_NOT_THROW_EXCEPTION(indices);
 
 	// Load the vertex array with data:
 	for (UINT i = 0; i < m_vertexCount; i++)
@@ -567,9 +540,6 @@ bool GLmodelClass::InitializeTextureLightBuffers(/*GLopenGLclass*/ void* OpenGL)
 		vertices[i].nx = (*modelTextureLightVertex)[i].nx;
 		vertices[i].ny = (*modelTextureLightVertex)[i].ny;
 		vertices[i].nz = (*modelTextureLightVertex)[i].nz;
-
-		// Load the index array with data:
-		//indices[i] = i;
 	}
 
 	glGenVertexArrays(1, &m_vertexArrayId);	// Allocate an OpenGL vertex array object.
@@ -667,6 +637,9 @@ void GLmodelClass::RenderBuffers(/*GLopenGLclass*/void* OpenGL)
 	// Render the vertex buffer using the index buffer:
 	if (PrimitiveTopology == LINELIST)
 		glDrawElements(GL_LINES, m_indexCount, GL_UNSIGNED_INT, 0);
+	else
+	if (PrimitiveTopology == TRIANGLESTRIP)
+		glDrawElements(GL_TRIANGLE_STRIP, m_indexCount, GL_UNSIGNED_INT, 0);
 	else
 		glDrawElements(GL_TRIANGLES, m_indexCount, GL_UNSIGNED_INT, 0);
 }

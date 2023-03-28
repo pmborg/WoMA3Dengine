@@ -106,12 +106,13 @@ Rendering 3D with Effects
 // http://openvidia.sourceforge.net/index.php/DirectCompute
 
 #include "platform.h"
+#include "OSmain_dir.h"
 #include <d3d11.h>
 
 #include "win32InputClass.h"
 #include "mem_leak.h"
 
-#include "winsystemclass.h"	// SystemHandle
+#include "dxWinSystemClass.h"	// SystemHandle
 #include "dx11Class.h"
 
 #if D3D11_SPEC_DATE_YEAR == 2009 //defined DX9 
@@ -142,6 +143,7 @@ DX11Class::DX11Class()
 {
 	// WomaDriverClass / Public: ------------------------------------------------------
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	// SUPER: 
 	dx11_force_dx9 = false;
@@ -187,7 +189,6 @@ DX11Class::DX11Class()
 	displayModeList = NULL;
 	// ---------------------------------------------------------
 
-		m_Camera = NULL;
 
 	// Private: ------------------------------------------------------------------------
 	m_depthBuffer = NULL;
@@ -227,16 +228,24 @@ void DX11Class::Shutdown2D()
 void DX11Class::Shutdown()
 //----------------------------------------------------------------------------------------------
 {
+
+
 	if (m_device) 
 	{
-		//SAFE_RELEASE (adapterGraphicCard);
 
 	Shutdown2D();
 
+	//createAllRasterizerStates:
+	for (UINT i = 0; i < 3; i++)
+		for (UINT j = 0; j < 2; j++)
+			SAFE_RELEASE(m_rasterState[i][j]);
+
 	//Release the two new blending states.
 
-		if(m_Camera) 
-			{ delete ((DirectX::DXcameraClass*)m_Camera); m_Camera=NULL; }	//SAFE_DELETE (m_Camera);
+	//#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+	//	if(m_Camera) 
+	//		{ delete ((DirectX::DXcameraClass*)m_Camera); m_Camera=NULL; }	//SAFE_DELETE (m_Camera);
+	//#endif
 
 		// For each Monitor: 
 		// Before shutting down set to windowed mode or when you release the swap chain it will throw an exception.
@@ -262,11 +271,6 @@ void DX11Class::Shutdown()
 		for (int i = 0; i < DX11windowsArray.size(); i++)
 			SAFE_RELEASE(DX11windowsArray[i].m_renderTargetView);		// CreateRenderTargetView
 
-		//createAllRasterizerStates:
-		for (UINT i=0; i<3; i++)
-			for (UINT j=0; j<2; j++)
-				SAFE_RELEASE (m_rasterState[i][j]);
-
 		SAFE_RELEASE (adapterGraphicCard);
 		SAFE_RELEASE (m_deviceContext);
 
@@ -275,6 +279,10 @@ void DX11Class::Shutdown()
 			SAFE_RELEASE(DX11windowsArray[i].m_swapChain);
 
 		// The Last one!
+		#if _DEBUG
+		HRESULT hr = debugDev->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
+		#endif
+
 		ULONG count = m_device->Release();
 		m_device = NULL;
 
@@ -284,6 +292,7 @@ void DX11Class::Shutdown()
 		#endif
 
 		ASSERT (!count);
+		
 	}
 }
 
@@ -313,6 +322,10 @@ BOOL DX11Class::CheckAPIdriver(UINT USE_THIS_ADAPTER_CARD)
 	}
 
 	FreeLibrary(hinstLib);
+#endif
+
+#if _DEBUG
+	HRESULT hr = DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debugDev));
 #endif
 
 	/*******************************************************************
@@ -492,6 +505,7 @@ HRESULT result = S_OK;
 		// --------------------------------------------------
 		setProjectionMatrixWorldMatrixOrthoMatrix ( screenWidth, screenHeight, screenNear, screenDepth);
 	}
+
 #if defined CLIENT_SCENE_TEXT || defined USE_VIEW2D_SPRITES // 26
 	//SetCamera2D(); //AQUI
 	Initialize3DCamera();
@@ -609,7 +623,7 @@ bool DX11Class::Initialize(float* clearColor)
 	return true;
 }
 
-void DX11Class::Finalize() {}
+void DX11Class::Finalize() {} //not used on DX11
 
 // ----------------------------------------------------------------------------------------------
 void DX11Class::BeginScene(UINT monitorWindow)
@@ -698,19 +712,17 @@ void DX11Class::SetCamera2D()
 void DX11Class::Initialize3DCamera()
 // ----------------------------------------------------------------------------------------------
 {
-	if (!m_Camera) {
-		m_Camera = NEW DirectX::DXcameraClass; // DX Implementation
-		IF_NOT_THROW_EXCEPTION (m_Camera);
-	}
+	if (DXsystemHandle->m_Camera) {
 
 	// Normal Camera: ( After: SetCamera2D() )
-	m_Camera->SetPosition(	SystemHandle->AppSettings->INIT_CAMX, SystemHandle->AppSettings->INIT_CAMY, 
+	DXsystemHandle->m_Camera->SetPosition(	SystemHandle->AppSettings->INIT_CAMX, SystemHandle->AppSettings->INIT_CAMY,
 							SystemHandle->AppSettings->INIT_CAMZ);
 
-	m_Camera->SetRotation(	SystemHandle->AppSettings->INIT_ROTX, SystemHandle->AppSettings->INIT_ROTY, 
+	DXsystemHandle->m_Camera->SetRotation(	SystemHandle->AppSettings->INIT_ROTX, SystemHandle->AppSettings->INIT_ROTY,
 							SystemHandle->AppSettings->INIT_ROTZ);
 
-	m_Camera->Render();
+	DXsystemHandle->m_Camera->Render();
+	}
 
 }
 
@@ -723,12 +735,12 @@ XMMATRIX* DX11Class::GetViewMatrix(void* Driver, UINT camera, UINT projection, U
 			default:
 			case PROJECTION_PERSPECTIVE:
 				if (camera == CAMERA_NORMAL)
-					return &m_Camera->m_viewMatrix;		// TODO: Use a global matrix, one per frame
+					return &DXsystemHandle->m_Camera->m_viewMatrix;		// TODO: Use a global matrix, one per frame
 				break;
 
 			#if defined CLIENT_SCENE_TEXT || defined USE_VIEW2D_SPRITES //26
 			case PROJECTION_ORTHOGRAPH:
-				 return &m_Camera->m_viewmatrix2D;		// TODO: Use a global matrix, one per frame
+				 return &DXsystemHandle->m_Camera->m_viewmatrix2D;		// TODO: Use a global matrix, one per frame
 				break;
 			#endif
 		}

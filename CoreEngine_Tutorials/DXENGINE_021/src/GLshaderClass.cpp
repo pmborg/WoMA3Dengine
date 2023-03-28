@@ -25,9 +25,11 @@
 #include "GLshaderClass.h"
 #include "mem_leak.h"
 #include "OSengine.h"
-//#include "SystemPlatform.h"			// Get [SystemHandle] Pointer to System Class: WINDOWS, LINUX & ANDROID
 
-GLshaderClass::GLshaderClass() {CLASSLOADER();}
+GLshaderClass::GLshaderClass() {
+	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
+}
 
 GLshaderClass::~GLshaderClass() {CLASSDELETE();}
 
@@ -41,6 +43,7 @@ bool GLshaderClass::Initialize(SHADER_TYPE shaderType)
 		case SHADER_COLOR:
 		result = InitializeShader(shaderType, TEXT("GLengine/color.vs"), TEXT("GLengine/color.ps") );
 		break;
+
 
 	}
 
@@ -70,13 +73,6 @@ static void validateShader(GLuint shader, TCHAR* file = 0) {
 	if(isCompiled == GL_FALSE) 
 	{
 		glGetShaderInfoLog(shader, BUFFER_SIZE, &length, buffer); // Ask OpenGL to give us the log associated with the shader
-
-		/*
-		STRINGSTREAM error;
-		error << "Shader " << shader << " (" << (file?file:"") << ") compile error:" << endl; // Output the information
-		if (length > 0) // If we have any information to display
-			WomaMessageBox ((TCHAR*)error.str().c_str(), buffer); // Output the information);
-		*/
 		TCHAR Wbuffer[10*MAX_STR_LEN]; atow(Wbuffer, buffer, 10*MAX_STR_LEN);
 
 		if (length > 0) // If we have any information to display
@@ -113,19 +109,6 @@ bool GLshaderClass::InitializeShader(SHADER_TYPE shaderType, TCHAR* vsFilename, 
 	glCompileShader(m_fragmentShader);
 	validateShader(m_fragmentShader, fsFilename); // Validate the fragment shader
 	SAFE_DELETE (fragmentShaderBuffer);
-
-	/*
-	// Check to see if the vertex shader compiled successfully.
-	glGetShaderiv(m_vertexShader, GL_COMPILE_STATUS, &status);
-	if(status != 1)
-		{ OutputShaderErrorMessage(m_vertexShader, vsFilename); return false; }
-
-	// Check to see if the fragment shader compiled successfully.
-	glGetShaderiv(m_fragmentShader, GL_COMPILE_STATUS, &status);
-	if(status != 1)
-		{ OutputShaderErrorMessage(m_fragmentShader, fsFilename); return false; }
-	*/
-
 	m_shaderProgram = glCreateProgram();				// Create a shader program object.
 	glAttachShader(m_shaderProgram, m_vertexShader);	// Attach a vertex shader to the program
 	glAttachShader(m_shaderProgram, m_fragmentShader);	// Attach the fragment shader to the program
@@ -139,6 +122,7 @@ bool GLshaderClass::InitializeShader(SHADER_TYPE shaderType, TCHAR* vsFilename, 
 		break;
 
 		case SHADER_TEXTURE:
+		case SHADER_TEXTURE_FONT:
 		glBindAttribLocation(m_shaderProgram, 0, "inputPosition");
 		glBindAttribLocation(m_shaderProgram, 1, "inputTexCoord");
 		break;
@@ -292,35 +276,22 @@ bool GLshaderClass::SetShaderParameters(SHADER_TYPE shaderType, mat4* worldMatri
 
 	//V2:
 	mat4 WVP = (*worldMatrix) * (*viewMatrix) * (*projectionMatrix);
-
-	//mat4 WVP;
-	//mat4 WVP_ = (*worldMatrix) * (*viewMatrix) * (*projectionMatrix);
-	//MatrixTranspose(&WVP, &WVP_);
-
-	//V3:
-	/*
-	mat4 WVP_ = (*worldMatrix) * (*viewMatrix) * (*projectionMatrix);
-	mat4 WVPT;
-	MatrixTranspose(&WVPT, &WVP_);
-	mat4* WVP = &WVPT;
-	*/
-
 	// Set the world matrix in the vertex shader.
 	location = glGetUniformLocation(m_shaderProgram, "worldMatrix");
 	glUniformMatrix4fv(location, 1, false, (float*)worldMatrix);
-
-	// Set the view matrix in the vertex shader.
-	//location = glGetUniformLocation(m_shaderProgram, "viewMatrix");
-	//glUniformMatrix4fv(location, 1, false, (float*)viewMatrix);
-
-	// Set the projection matrix in the vertex shader.
-	//location = glGetUniformLocation(m_shaderProgram, "projectionMatrix");
-	//glUniformMatrix4fv(location, 1, false, (float*)projectionMatrix);
-
 	//V2:
 	// Set the projection matrix in the vertex shader.
 	location = glGetUniformLocation(m_shaderProgram, "WVP");
+	if (location == -1) { return false; }
 	glUniformMatrix4fv(location, 1, false, (float*)&WVP);
+
+	if (shaderType == SHADER_TEXTURE_FONT)
+	{
+	// Set the font pixel color in the pixel shader.
+	int location = glGetUniformLocation(m_shaderProgram, "pixelColor");
+	if (location == -1){return false;}
+	glUniform4fv(location, 1, pixelColor);
+	}
 
 	return true;
 }

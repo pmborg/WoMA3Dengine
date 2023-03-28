@@ -72,9 +72,9 @@ static const D3D12_INPUT_ELEMENT_DESC colorPolygonLayout[] =
 
 /*struct VSIn
 {
-	float3 position : POSITION;	//21
+	float3 position : POSITION;	 //21
 	float2 texCoords : TEXCOORD; //22
-	float3 normal : NORMAL;	//23
+	float3 normal : NORMAL;		 //23
 };*/
 
 // TERRAINS:
@@ -84,8 +84,8 @@ namespace DirectX {
 	DXshaderClass::DXshaderClass(UINT ShaderVersion_H, UINT ShaderVersion_L, bool shader_3D)
 	{
 		CLASSLOADER();
-
-		//DX_CLASS* m_driver;
+		WomaIntegrityCheck = 1234567890;
+		
 #if defined DX9sdk
 		m_driver9 = ((DirectX::DX9Class*)SystemHandle->m_Driver);
 #endif
@@ -239,7 +239,7 @@ namespace DirectX {
 		std::string vertexHLSL = "";
 		std::string pixelHLSL = "";
 #endif
-
+		//Define Procedure name to invoke on VERTEX and PIXEL SHADERs...
 		switch (shaderType)
 		{
 		case SHADER_COLOR:
@@ -259,6 +259,12 @@ namespace DirectX {
 			psFilename = vsFilename;
 			vertexHLSL.append("MyVertexShader023Light");
 			pixelHLSL.append("MyPixelShader023Light");
+			break;
+		case SHADER_TEXTURE_FONT:
+			vsFilename.append(L"hlsl/027Texture.hlsl");
+			psFilename = vsFilename;
+			vertexHLSL.append("MyVertexShader027Texture");
+			pixelHLSL.append("MyPixelShader027Texture");
 			break;
 		};
 		//AQUI
@@ -470,10 +476,9 @@ namespace DirectX {
 			result = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error);
 			if (FAILED(result))
 			{
+				//TIP: This means that probably the procedure names on HLSL dont match with what was defined above.
 				WOMA::WomaMessageBox("D3D12SerializeRootSignature", "DX12 ERROR:");
 				WOMA_LOGManager_DebugMSGAUTO((char*)error->GetBufferPointer());
-				//OutputDXError(error.Get());
-				//ThrowIfFailed(result);
 				return false;
 			}
 			result = device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&m_rootSignature));
@@ -507,7 +512,7 @@ namespace DirectX {
 			// Enable better shader debugging with the graphics debugging tools.
 			UINT compileFlags = D3DCOMPILE_OPTIMIZATION_LEVEL0 | D3DCOMPILE_SKIP_OPTIMIZATION | D3DCOMPILE_DEBUG;
 	#else
-			UINT compileFlags = D3DCOMPILE_OPTIMIZATION_LEVEL3; // 0;
+			UINT compileFlags = D3DCOMPILE_OPTIMIZATION_LEVEL3;
 	#endif
 
 			ComPtr<ID3DBlob> vertexShader;

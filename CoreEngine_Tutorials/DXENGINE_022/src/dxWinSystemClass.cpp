@@ -53,6 +53,7 @@ dxWinSystemClass::dxWinSystemClass(WOMA::Settings* appSettings) : WinSystemClass
 //----------------------------------------------------------------------------------
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 	WinSystemClass::AppSettings = appSettings;
 	WinSystemClass::mMaximized = WinSystemClass::AppSettings->FULL_SCREEN;
 
@@ -61,6 +62,11 @@ dxWinSystemClass::dxWinSystemClass(WOMA::Settings* appSettings) : WinSystemClass
 	m_contextDriver = NULL;	// Note: Used only at 20
 
 	DXsystemHandle = this;
+
+	if (!m_Camera) {
+		m_Camera = NEW DirectX::DXcameraClass; // DX Implementation
+		//IF_NOT_THROW_EXCEPTION(m_Camera);
+}
 
 }
 
@@ -161,7 +167,7 @@ bool dxWinSystemClass::InitializeSystem()
 
 	// MAIN LOADING THREAD:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	SystemClass::LoadAllGraphics();	//ApplicationClass::WOMA_APPLICATION_InitializeSprites2D()
+	SystemClass::LoadAllGraphics();	// Load all main Graphics Objects, that will be rendered
 
 	if (WOMA::game_state >= GAME_STOP) // Something FATAL on loading "mandatory 2D/3D Stuff"?
 		return false;			 // (SAMPLE: misssing 3D/IMAGE/AUDIO file...)
@@ -210,6 +216,11 @@ void dxWinSystemClass::Shutdown()
 //----------------------------------------------------------------------------------
 {
 	//WinSystemClass::Shutdown();
+
+	if (m_Camera)
+	{
+		delete ((DirectX::DXcameraClass*)m_Camera); m_Camera = NULL;
+	}
 
 #if defined USE_INTRO_VIDEO_DEMO
 	if (g_DShowPlayer) {
@@ -286,11 +297,13 @@ void dxWinSystemClass::UNPAUSE()
 void dxWinSystemClass::ProcessFrame()
 //----------------------------------------------------------------------------
 {
-	WinSystemClass::ProcessFrame();
+	WinSystemClass::ProcessFrame(); // Process Input
 
 	// Process Special: "PRINT SCREEN" key, the "Back-Buffer" have 1 frame rendered, now we can dump it:
+#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
 	if ((WOMA::game_state > GAME_MINIMIZED) && (OS_KEY_DOWN(DIK_SYSRQ + 0x35)))
 		ASSERT(SaveScreenshot());
+#endif
 
 	if (WOMA::game_state == GAME_SETUP)
 	{
@@ -306,14 +319,20 @@ void dxWinSystemClass::ProcessFrame()
 	if (WOMA::game_state >= GAME_RUN && WOMA::game_state < ENGINE_RESTART)
 	{
 		// For each Monitor: Render one Application Frame
-		for (int i = 0; i < windowsArray.size(); i++)
+		//if (WOMA::game_state >= GAME_SYSTEM_SETTINGS)
+		if (WOMA::game_state > GAME_SETUP)
 		{
-			if (WOMA::game_state >= GAME_SYSTEM_SETTINGS)
+			for (int i = 0; i < windowsArray.size(); i++)
 			{
-				if (m_Application->RENDER_PAGE >= 15)//OLD:20 now 15 to allow FADE BANNERS on INTRO_DEMO
+				if (m_Application->RENDER_PAGE >= 15)	//to allow FADE BANNERS on INTRO_DEMO
 				{
-					m_Application->RenderScene(i);	// SystemHandle->m_Driver->BeginScene(monitorWindow);
-					m_contextDriver->EndScene(i);	// SHOW: Present the FRAME successfully Rendered!
+					m_Application->RenderScene(i);		// SystemHandle->m_Driver->BeginScene(monitorWindow);
+
+					// SHOW: Present the FRAME successfully Rendered!
+					if (!m_contextDriver)
+						SystemHandle->driverList[SystemHandle->AppSettings->DRIVER]->EndScene(i);
+					else
+						m_contextDriver->EndScene(i);		
 				}
 			}
 		}
@@ -322,6 +341,7 @@ void dxWinSystemClass::ProcessFrame()
 	}
 }
 
+#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
 // Source: HUMUS
 bool dxWinSystemClass::SaveScreenshot()
 {
@@ -362,6 +382,7 @@ bool dxWinSystemClass::SaveScreenshot()
 
 	return result;
 }
+#endif
 
 
 

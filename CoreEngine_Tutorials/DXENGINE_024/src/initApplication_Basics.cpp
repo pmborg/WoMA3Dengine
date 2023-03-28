@@ -4,23 +4,24 @@
 #include "winSystemClass.h"
 #include "mem_leak.h"
 
-		#include "GLmodelClass.h"
+	#include "GLopenGLclass.h"
+	#include "GLmodelClass.h"
 
-		#include "DXmodelClass.h"
+//#if defined DX9 || defined DX11 || defined DX12
+	#include "DXmodelClass.h"
+//#endif
 
 #include "DemoApplicationClass.h"
 
 DemoApplicationClass::DemoApplicationClass()
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	//	-------------------------------------------------------------------------------------------
 	//	WoMA Vertex(s) Arrays:  NOTE: Cant be used to create and Obj more than ONCE!
 	//	-------------------------------------------------------------------------------------------
 	m_1stTriangle3DColorModel = NULL;					// Model2
-
-	//ModelTextureVertexType textureVertex = { 0 };				// Use this "VERTEX" on macro
-	//std::vector<ModelTextureVertexType> My2ndModelVertexVector;	// Declare: the Vector with Vertex "TYPE"
 
 		m_2nd3DModel = NULL;						// Model
 
@@ -32,17 +33,18 @@ DemoApplicationClass::~DemoApplicationClass()
 	//CLASSDELETE();
 };
 
-//DemoApplicationClass* demoApplicationClass;
-
 bool DemoApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 {
 	//INIT ALL
 	//-----------------------------------------------------------------------------------------------------------------
-	initColorDemo(SystemHandle->driverList[SystemHandle->AppSettings->DRIVER]);
+	if (RENDER_PAGE < 27)
+		initColorDemo(SystemHandle->driverList[SystemHandle->AppSettings->DRIVER]);
 
-	initTextureDemo();
+	if (RENDER_PAGE < 27)
+		initTextureDemo();
 
-	initLightDemo();
+	if (RENDER_PAGE < 27)
+		initLightDemo();
 
 	if (RENDER_PAGE >= 24)
 		initTitleBanner2D();
@@ -132,7 +134,7 @@ void DemoApplicationClass::initTextureDemo()
 		m_jpg3DModel->rotateX(-3.14f / 2.0f);
 		m_jpg3DModel->translation(0, 7.5, 7);
 
-		// Image Converter: \WoMA3Dengine\ExternalTools\Microsoft_DirectX_SDK_June_2010\Utilities\bin\x86\texconv.exe - ft PNG Earth_Diffuse.bmp
+		// Image Converter: \WoMA3Dengine\ExternalTools\Microsoft_DirectX_SDK_June_2010\Utilities\bin\x86\texconv.exe -ft PNG Earth_Diffuse.bmp
 		initLoadTexture3D(m_png3DModel, TEXT("engine/data/Earth_Diffuse.png"), SquarTextureVertexVector, IndexSquarList, SHADER_TEXTURE);
 		m_png3DModel->rotateX(-3.14f / 2.0f);
 		m_png3DModel->translation(6, 7.5, 7);
@@ -147,7 +149,7 @@ void DemoApplicationClass::initTextureDemo()
 		m_dds3DModel->rotateX(-3.14f / 2.0f);
 		m_dds3DModel->translation(0, 1, 7);
 
-		// Image Converter: \WoMA3Dengine\ExternalTools\Microsoft_DirectX_SDK_June_2010\Utilities\bin\x86\texconv.exe - ft TGA Earth_Diffuse.bmp
+		// Image Converter: \WoMA3Dengine\ExternalTools\Microsoft_DirectX_SDK_June_2010\Utilities\bin\x86\texconv.exe -ft TGA Earth_Diffuse.bmp
 	#if defined SUPPORT_TGA
 		initLoadTexture3D(m_tga3DModel, TEXT("engine/data/Earth_Diffuse.tga"), SquarTextureVertexVector, IndexSquarList, SHADER_TEXTURE);
 		m_tga3DModel->rotateX(-3.14f / 2.0f);
@@ -180,7 +182,7 @@ void DemoApplicationClass::initLightDemo()
 // ----------------------------------------------------------------------------
 {
 	//DEMO-1:
-	if (RENDER_PAGE >= 23)
+	if (RENDER_PAGE >= 23 && RENDER_PAGE <= 25)
 	{
 		ModelTextureLightVertexType vertex = { 0 };
 		float X = 2.0f, Y = 1.0f, Z = 0;
@@ -218,7 +220,7 @@ void DemoApplicationClass::initLightDemo()
 
 	//DEMO-2:
 	//--------------------------------------------------------------------------------------------------------------------------
-	if (RENDER_PAGE >= 23)
+	if (RENDER_PAGE >= 23 && RENDER_PAGE <= 25)
 	{
 		// Step 1: Prepare Vertex(s)
 		float X = 1, Y = 1, Z = 1;
@@ -259,12 +261,13 @@ bool DemoApplicationClass::WOMA_APPLICATION_InitializeSprites2D()
 {
 	WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_InitializeSprites2D()\n");
 
+
+
 	return true;
 }
 
 void DemoApplicationClass::Shutdown()
 {
-
 	//3D:
 
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
@@ -289,7 +292,6 @@ void DemoApplicationClass::Shutdown()
 		SAFE_SHUTDOWN_MODELGL3(m_1stTriangleTextureVertexModel);
 	}
 	else
-	//#endif
 	{
 	//#if DX_ENGINE_LEVEL == 21
 		SAFE_SHUTDOWN_MODELDX(m_1stSquar3DColorModel);
@@ -313,17 +315,17 @@ void DemoApplicationClass::Shutdown()
 	}
 
 
-		if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
-		{
-			SAFE_SHUTDOWN_MODELDX(m_3th3DModel1);
-			SAFE_SHUTDOWN_MODELDX(m_3th3DModel2);
-		}
+	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+	{
+		SAFE_SHUTDOWN_MODELDX(m_3th3DModel1);
+		SAFE_SHUTDOWN_MODELDX(m_3th3DModel2);
+	}
 
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
-		{
-			SAFE_SHUTDOWN_MODELGL3(m_3th3DModel1);
-			SAFE_SHUTDOWN_MODELGL3(m_3th3DModel2);
-		}
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+	{
+		SAFE_SHUTDOWN_MODELGL3(m_3th3DModel1);
+		SAFE_SHUTDOWN_MODELGL3(m_3th3DModel2);
+	}
 
 		//2D:
 		WOMA_APPLICATION_Shutdown2D();
@@ -344,6 +346,8 @@ void DemoApplicationClass::WOMA_APPLICATION_Shutdown2D()
 		{
 			SAFE_SHUTDOWN_MODELGL3(m_titleModel);
 		}
+
+
 
 }
 

@@ -76,6 +76,7 @@
 class GLopenGLclass : public WomaDriverClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	GLopenGLclass();
 	~GLopenGLclass();
 	void Shutdown2D();
@@ -112,7 +113,9 @@ public:
 	void GetVideoCardInfo(char*);
 	void BuildOrthoMatrix(mat4* matrix, float screenWidth, float screenHeight, float screenNear, float screenDepth, bool leftHand);
 
+	#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
 	ImageLoaderClass* CaptureScreenShot(int screenWidth, int screenHeight);
+	#endif
 
 public:
 	mat4 m_projectionMatrix;

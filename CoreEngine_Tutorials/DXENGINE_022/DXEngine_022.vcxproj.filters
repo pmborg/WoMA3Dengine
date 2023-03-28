@@ -408,9 +408,6 @@
     <ClCompile Include="src\renderApplication_Basics.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\DX11CaptureScreenShot.cpp">
-      <Filter>src\dx11</Filter>
-    </ClCompile>
     <ClCompile Include="src\DX11LoadTexture.cpp">
       <Filter>src\dx11</Filter>
     </ClCompile>

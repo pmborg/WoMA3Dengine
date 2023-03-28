@@ -175,7 +175,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	m_Light->SetDirection(0, -1.0f, 0);
 
 	//SKY ////////////////////////////////////////////////////////////////////////////////////////////////////////
-	if (RENDER_PAGE == 23)
+	if (RENDER_PAGE >= 23 && RENDER_PAGE < 27)
 	{
 		initLightRay(Driver);
 	}

@@ -21,6 +21,7 @@
 //-------------------+
 // Project Includes: |
 //-------------------+
+//#include "winsystemclass.h"	// SystemHandle
 #include "WomaCube.h"
 
 //////////////////////////////////////////////////////////////////////
@@ -28,8 +29,8 @@
 //////////////////////////////////////////////////////////////////////
 CCube::CCube(int x_0, int y_0, int z_0)
 {
-	const float l = 1;	///*txtSize*/128 / 2;
-	const float y = 1;	//ZZ (D3D)
+	const float l = 1;		///*txtSize*/128 / 2;
+	const float y = 1;		//ZZ (D3D)
 	const float x = 1;	//XX (D3D)
 	const float z = 1;	//YY (D3D)
 	const float X = 1;
@@ -214,12 +215,18 @@ void CCube::VertexCubeTextureLight(int c, int face, int v)
 	}
 	if (face == 4) {
 		VertexCubeTextureLightModel[c].nx = 0;
-		VertexCubeTextureLightModel[c].ny = -1;
+		//if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+			VertexCubeTextureLightModel[c].ny = -1;
+		//else
+		//	VertexCubeTextureLightModel[c].ny = 1;
 		VertexCubeTextureLightModel[c].nz = 0;
 	}
 	if (face == 5) {
 		VertexCubeTextureLightModel[c].nx = 0;
-		VertexCubeTextureLightModel[c].ny = 1;
+		//if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+			VertexCubeTextureLightModel[c].ny = 1;
+		//else
+		//	VertexCubeTextureLightModel[c].ny = -1;
 		VertexCubeTextureLightModel[c].nz = 0;
 	}
 

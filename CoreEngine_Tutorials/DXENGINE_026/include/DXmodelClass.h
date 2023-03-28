@@ -122,6 +122,7 @@ struct SurfaceMaterial
 class DXmodelClass : public VirtualModelClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY = TRIANGLELIST, bool computeNormals = false, bool modelHASshadow = false, bool modelRENDERshadow = false);
 	~DXmodelClass();
 	void Shutdown();
@@ -203,7 +204,7 @@ private:
 
 	// VARS:
 	// ----------------------------------------------------------------------
-	//DX_CLASS* m_driver;
+	
 #if defined DX9sdk
 	DirectX::DX9Class* m_driver9=NULL;
 #endif

@@ -34,6 +34,7 @@
 class GLmodelClass : public VirtualModelClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	GLmodelClass(bool model3D=true);
 	~GLmodelClass();
 	void Shutdown();
@@ -80,23 +81,22 @@ private:
 	std::vector<ModelColorVertexType>* modelColorVertex;
 	bool InitializeColorBuffers(/*GLopenGLclass*/ void* OpenGL);
 	
-
 	void SetBuffers(/*GLopenGLclass*/ void*);
 	void RenderBuffers(/*GLopenGLclass*/ void*);
 
 	std::vector<UINT>* indexModelList;
 
 	bool			Model3D;
-	GLshaderClass*	m_Shader;
-	UINT			m_vertexCount, m_indexCount;
-	unsigned int	m_vertexArrayId, m_vertexBufferId, m_indexBufferId;
+	GLshaderClass*	m_Shader = NULL;
+	UINT			m_vertexCount = NULL, m_indexCount = NULL;
+	unsigned int	m_vertexArrayId = NULL, m_vertexBufferId = NULL, m_indexBufferId = NULL;
 	
 	mat4			m_worldMatrix;
 	mat4			m_viewMatrix;
 	mat4			projectionMatrix;
 	
 #if DX_ENGINE_LEVEL >= 22 // Texturing 
-	GLtextureClass* m_Texture;				// Image loader
+	GLtextureClass* m_Texture=NULL;			// Image loader
 	std::vector<GLtextureClass*> meshSRV;	// meshSRV
 #endif
 };

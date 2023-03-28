@@ -25,7 +25,9 @@
 
 #include "platform.h"
 
-#include "main.h"
+#include <D3D11.h>
+#include <d3d12.h>		// DX12
+#include "DXbasicTypes.h"
 
 //	-------------------------------------------------------------------------------------------
 struct ModelColorVertexType

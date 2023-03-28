@@ -127,5 +127,7 @@ public:
 	float				PosX, PosY, PosZ;
 	float				boundingSphere;
 
+	bool	ModelHASNormals = false;
+	bool	ModelcomputeNormals = false;
 };
 

@@ -134,5 +134,7 @@ public:
 	int		SpriteTextureWidth;		//NOTE: Have to be "int"
 	int		SpriteTextureHeight;	//NOTE: Have to be "int"
 
+	bool	ModelHASNormals = false;
+	bool	ModelcomputeNormals = false;
 };
 

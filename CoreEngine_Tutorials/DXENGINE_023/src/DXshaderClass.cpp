@@ -84,9 +84,9 @@ static const D3D12_INPUT_ELEMENT_DESC texturePolygonLayout[] =
 
 /*struct VSIn
 {
-	float3 position : POSITION;	//21
+	float3 position : POSITION;	 //21
 	float2 texCoords : TEXCOORD; //22
-	float3 normal : NORMAL;	//23
+	float3 normal : NORMAL;		 //23
 };*/
 static const D3D11_INPUT_ELEMENT_DESC lightPolygonLayout11[] =
 {
@@ -110,8 +110,8 @@ namespace DirectX {
 	DXshaderClass::DXshaderClass(UINT ShaderVersion_H, UINT ShaderVersion_L, bool shader_3D)
 	{
 		CLASSLOADER();
-
-		//DX_CLASS* m_driver;
+		WomaIntegrityCheck = 1234567890;
+		
 #if defined DX9sdk
 		m_driver9 = ((DirectX::DX9Class*)SystemHandle->m_Driver);
 #endif
@@ -331,7 +331,8 @@ namespace DirectX {
 			break;
 			//#endif
 
-		case SHADER_TEXTURE:
+		case SHADER_TEXTURE:		//22
+		case SHADER_TEXTURE_FONT:	//27
 #if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009
 			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 			{
@@ -371,7 +372,7 @@ namespace DirectX {
 		std::string vertexHLSL = "";
 		std::string pixelHLSL = "";
 #endif
-
+		//Define Procedure name to invoke on VERTEX and PIXEL SHADERs...
 		switch (shaderType)
 		{
 		case SHADER_COLOR:
@@ -391,6 +392,12 @@ namespace DirectX {
 			psFilename = vsFilename;
 			vertexHLSL.append("MyVertexShader023Light");
 			pixelHLSL.append("MyPixelShader023Light");
+			break;
+		case SHADER_TEXTURE_FONT:
+			vsFilename.append(L"hlsl/027Texture.hlsl");
+			psFilename = vsFilename;
+			vertexHLSL.append("MyVertexShader027Texture");
+			pixelHLSL.append("MyPixelShader027Texture");
 			break;
 		};
 		//AQUI
@@ -542,7 +549,7 @@ namespace DirectX {
 				srvHeapDesc.NumDescriptors = 1; // = Num. InitAsDescriptorTable: D3D12_DESCRIPTOR_RANGE_TYPE_CBV
 				break;
 
-			case SHADER_TEXTURE:
+			case SHADER_TEXTURE:		//22
 			{
 				// | Root Signature		| Shader Registers	|
 				// |0| DescriptorTable  | b0				|
@@ -552,7 +559,7 @@ namespace DirectX {
 				break;
 			}
 
-			//case SHADER_TEXTURE:
+			case SHADER_TEXTURE_FONT:	//27
 			case SHADER_TEXTURE_LIGHT:
 			case SHADER_TEXTURE_LIGHT_RENDERSHADOW:
 			{
@@ -593,6 +600,7 @@ namespace DirectX {
 			{
 			case SHADER_TEXTURE:					// ENGINE_LEVEL 22
 			case SHADER_TEXTURE_LIGHT:				// ENGINE_LEVEL 23
+			case SHADER_TEXTURE_FONT:
 			case SHADER_TEXTURE_LIGHT_RENDERSHADOW:	// ENGINE_LEVEL 45
 				/*
 				sampler.Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
@@ -615,7 +623,6 @@ namespace DirectX {
 				sampler.RegisterSpace = 0;
 				sampler.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 				break;
-
 			}
 
 			switch (shaderType)
@@ -647,7 +654,7 @@ namespace DirectX {
 				break;
 			}
 
-			case SHADER_TEXTURE:
+			case SHADER_TEXTURE:		//22
 			{
 				// | Root Signature		| Shader Registers	|
 				// |0| DescriptorTable  | b0				|
@@ -674,7 +681,7 @@ namespace DirectX {
 				break;
 			}
 
-			//case SHADER_TEXTURE:
+			case SHADER_TEXTURE_FONT:	//27
 			case SHADER_TEXTURE_LIGHT:
 			case SHADER_TEXTURE_LIGHT_RENDERSHADOW:
 			{
@@ -711,10 +718,9 @@ namespace DirectX {
 			result = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error);
 			if (FAILED(result))
 			{
+				//TIP: This means that probably the procedure names on HLSL dont match with what was defined above.
 				WOMA::WomaMessageBox("D3D12SerializeRootSignature", "DX12 ERROR:");
 				WOMA_LOGManager_DebugMSGAUTO((char*)error->GetBufferPointer());
-				//OutputDXError(error.Get());
-				//ThrowIfFailed(result);
 				return false;
 			}
 			result = device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&m_rootSignature));
@@ -748,7 +754,7 @@ namespace DirectX {
 			// Enable better shader debugging with the graphics debugging tools.
 			UINT compileFlags = D3DCOMPILE_OPTIMIZATION_LEVEL0 | D3DCOMPILE_SKIP_OPTIMIZATION | D3DCOMPILE_DEBUG;
 	#else
-			UINT compileFlags = D3DCOMPILE_OPTIMIZATION_LEVEL3; // 0;
+			UINT compileFlags = D3DCOMPILE_OPTIMIZATION_LEVEL3;
 	#endif
 
 			ComPtr<ID3DBlob> vertexShader;
@@ -887,6 +893,7 @@ namespace DirectX {
 				break;
 
 				//case SHADER_TEXTURE:
+				case SHADER_TEXTURE_FONT:
 				case SHADER_TEXTURE_LIGHT:
 				case SHADER_TEXTURE_LIGHT_RENDERSHADOW:
 				{
@@ -1189,7 +1196,7 @@ namespace DirectX {
 #if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009 && DX_ENGINE_LEVEL >= 23
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 		{
-			if (m_shaderType > SHADER_TEXTURE)
+			if (m_shaderType >= SHADER_TEXTURE_FONT)
 			{
 				// Update the constant buffer resource:
 				memcpy(m_pMappedPSConstantBuffer, &mPS_constantBufferData, sizeof(mPS_constantBufferData));
@@ -1302,6 +1309,7 @@ namespace DirectX {
 			}
 			break;
 		//case SHADER_TEXTURE:
+			case SHADER_TEXTURE_FONT:
 			case SHADER_TEXTURE_LIGHT:
 			case SHADER_TEXTURE_LIGHT_RENDERSHADOW:
 			{

@@ -42,6 +42,7 @@ GLmathClass* mathClass;
 GLopenGLclass::GLopenGLclass()
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	mathClass = NULL;
 	_tcscpy_s(driverName, TEXT("GL3+")); // driverName = TEXT ("GL3+");
@@ -52,7 +53,7 @@ GLopenGLclass::GLopenGLclass()
 
 GLopenGLclass::~GLopenGLclass() { Shutdown(); CLASSDELETE(); }
 
-void GLopenGLclass::Finalize() {}
+void GLopenGLclass::Finalize() {} //not used on OPENGL
 
 void GLopenGLclass::Shutdown2D() {}
 
@@ -307,10 +308,12 @@ bool GLopenGLclass::Initialize(float* clearColor)
 	return true;
 }
 
+#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
 // ----------------------------------------------------------------------------------------------
 ImageLoaderClass* GLopenGLclass::CaptureScreenShot(int screenWidth, int screenHeight)
 // ----------------------------------------------------------------------------------------------
 {
 	return false;
 }
+#endif
 

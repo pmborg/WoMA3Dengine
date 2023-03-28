@@ -53,6 +53,7 @@ using namespace DirectX;
 class LightClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	LightClass();
 	~LightClass();
 

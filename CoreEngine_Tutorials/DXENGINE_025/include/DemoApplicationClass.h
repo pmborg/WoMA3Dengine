@@ -26,6 +26,7 @@
 class DemoApplicationClass : public ApplicationClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	DemoApplicationClass();
 	~DemoApplicationClass();
 

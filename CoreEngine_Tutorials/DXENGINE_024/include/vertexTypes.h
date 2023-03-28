@@ -25,7 +25,9 @@
 
 #include "platform.h"
 
-#include "main.h"
+#include <D3D11.h>
+#include <d3d12.h>		// DX12
+#include "DXbasicTypes.h"
 
 //	-------------------------------------------------------------------------------------------
 struct ModelColorVertexType
@@ -58,9 +60,26 @@ struct ModelTextureLightVertexType
 
 struct SentenceType
 {
-	void *vertexBuffer, *indexBuffer;		//ID3D11Buffer*
-	int vertexCount, indexCount, maxLength;
-	float red, green, blue;
+	ModelTextureVertexType* GLvertices = NULL;	//OPENGL
+	unsigned int	m_vertexArrayId = NULL;		//OPENGL
+	unsigned int	m_vertexBufferId = NULL;	//OPENGL
+	unsigned int	m_indexBufferId = NULL;		//OPENGL
+
+	unsigned long* indices = NULL;				//DX Common?
+
+#if defined DX_ENGINE
+	DirectX::DXtextureVertexType* vertices = NULL;
+#endif
+	ID3D11Buffer* vertexBuffer = NULL;	//DX11
+	ID3D11Buffer* indexBuffer = NULL;	//DX11
+	ID3D12Resource*				vertexBufferUpload = NULL;	//DX12
+	ID3D12Resource*				indexBufferUpload = NULL;	//DX12
+	D3D12_VERTEX_BUFFER_VIEW	m_vertexBufferView;	//DX12
+	D3D12_INDEX_BUFFER_VIEW		m_indexBufferView; 	//DX12
+	ID3D12Resource*				m_vertexBuffer = NULL;		//DX12
+	ID3D12Resource*				m_indexBuffer = NULL; 		//DX12
+	int vertexCount=0, indexCount=0, maxLength=0;			//Common
+	float red=-1, green = -1, blue = -1;					//Common
 };
 
 //	-------------------------------------------------------------------------------------------

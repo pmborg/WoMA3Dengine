@@ -42,6 +42,7 @@ GLmathClass* mathClass;
 GLopenGLclass::GLopenGLclass()
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	mathClass = NULL;
 	_tcscpy_s(driverName, TEXT("GL3+")); // driverName = TEXT ("GL3+");
@@ -52,7 +53,7 @@ GLopenGLclass::GLopenGLclass()
 
 GLopenGLclass::~GLopenGLclass() { Shutdown(); CLASSDELETE(); }
 
-void GLopenGLclass::Finalize() {}
+void GLopenGLclass::Finalize() {} //not used on OPENGL
 
 void GLopenGLclass::Shutdown2D() {}
 
@@ -232,17 +233,22 @@ void GLopenGLclass::SetRasterizerState(UINT cullMode, UINT fillMode)
 	if (fillMode == GL_FILL)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	// Enable back face culling.
-	glEnable(GL_CULL_FACE);
+	if (cullMode != CULL_NONE)
+	{
+		// Enable back face culling.
+		glEnable(GL_CULL_FACE);
 
-	if (cullMode == CULL_FRONT)
-		glCullFace(GL_FRONT);
+		if (cullMode == CULL_FRONT)
+			glCullFace(GL_FRONT);
 
-	if (cullMode == CULL_BACK)
-		glCullFace(GL_BACK);
-
-	if (cullMode == CULL_NONE)
+		if (cullMode == CULL_BACK)
+			glCullFace(GL_BACK);
+	}
+	else
+	{
+		glDisable(GL_CULL_FACE);
 		glCullFace(GL_NONE);
+	}
 }
 
 // ------------------------------------------------------------------
@@ -302,10 +308,12 @@ bool GLopenGLclass::Initialize(float* clearColor)
 	return true;
 }
 
+#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
 // ----------------------------------------------------------------------------------------------
 ImageLoaderClass* GLopenGLclass::CaptureScreenShot(int screenWidth, int screenHeight)
 // ----------------------------------------------------------------------------------------------
 {
 	return false;
 }
+#endif
 

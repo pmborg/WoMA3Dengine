@@ -24,61 +24,63 @@
 #define LOAD_IMAGE_24bits 24
 #define LOAD_IMAGE_32bits 32
 
-#ifdef X64
-#if defined(_DEBUG) & !defined(NDEBUG)
-#pragma comment( lib, "TIFF_LIBX64_d.lib" )
-#else
-#pragma comment( lib, "TIFF_LIBX64.lib" )
-#endif
-#else
-#if defined(_DEBUG) & !defined(NDEBUG)
-#pragma comment( lib, "TIFF_LIB_d.lib" )
-#else
-#pragma comment( lib, "TIFF_LIB.lib" )
-#endif
-#endif
+//#if D3D11_SPEC_DATE_YEAR == 2009
+	#ifdef X64
+	#if defined(_DEBUG) & !defined(NDEBUG)
+	#pragma comment( lib, "TIFF_LIBX64_d.lib" )
+	#else
+	#pragma comment( lib, "TIFF_LIBX64.lib" )
+	#endif
+	#else
+	#if defined(_DEBUG) & !defined(NDEBUG)
+	#pragma comment( lib, "TIFF_LIB_d.lib" )
+	#else
+	#pragma comment( lib, "TIFF_LIB.lib" )
+	#endif
+	#endif
 
-#ifdef X64
-#if defined(_DEBUG) & !defined(NDEBUG)
-#pragma comment( lib, "ZLIB_LIBX64_d.lib" )
-#else
-#pragma comment( lib, "ZLIB_LIBX64.lib" )
-#endif
-#else
-#if defined(_DEBUG) & !defined(NDEBUG)
-#pragma comment( lib, "ZLIB_LIB_d.lib" )
-#else
-#pragma comment( lib, "ZLIB_LIB.lib" )
-#endif
-#endif
+	#ifdef X64
+	#if defined(_DEBUG) & !defined(NDEBUG)
+	#pragma comment( lib, "ZLIB_LIBX64_d.lib" )
+	#else
+	#pragma comment( lib, "ZLIB_LIBX64.lib" )
+	#endif
+	#else
+	#if defined(_DEBUG) & !defined(NDEBUG)
+	#pragma comment( lib, "ZLIB_LIB_d.lib" )
+	#else
+	#pragma comment( lib, "ZLIB_LIB.lib" )
+	#endif
+	#endif
 
-#ifdef X64
-#if defined(_DEBUG) & !defined(NDEBUG)
-#pragma comment( lib, "PNG_LIBX64_d.lib" )
-#else
-#pragma comment( lib, "PNG_LIBX64.lib" )
-#endif
-#else
-#if defined(_DEBUG) & !defined(NDEBUG)
-#pragma comment( lib, "PNG_LIB_d.lib" )
-#else
-#pragma comment( lib, "PNG_LIB.lib" )
-#endif
-#endif
+	#ifdef X64
+	#if defined(_DEBUG) & !defined(NDEBUG)
+	#pragma comment( lib, "PNG_LIBX64_d.lib" )
+	#else
+	#pragma comment( lib, "PNG_LIBX64.lib" )
+	#endif
+	#else
+	#if defined(_DEBUG) & !defined(NDEBUG)
+	#pragma comment( lib, "PNG_LIB_d.lib" )
+	#else
+	#pragma comment( lib, "PNG_LIB.lib" )
+	#endif
+	#endif
 
-#ifdef X64
-#if defined(_DEBUG) & !defined(NDEBUG)
-#pragma comment( lib, "JPG_LIBX64_d.lib" )
-#else
-#pragma comment( lib, "JPG_LIBX64.lib" )
-#endif
-#else
-#if defined(_DEBUG) & !defined(NDEBUG)
-#pragma comment( lib, "JPG_LIB_d.lib" )
-#else
-#pragma comment( lib, "JPG_LIB.lib" )
-#endif
-#endif
+	#ifdef X64
+	#if defined(_DEBUG) & !defined(NDEBUG)
+	#pragma comment( lib, "JPG_LIBX64_d.lib" )
+	#else
+	#pragma comment( lib, "JPG_LIBX64.lib" )
+	#endif
+	#else
+	#if defined(_DEBUG) & !defined(NDEBUG)
+	#pragma comment( lib, "JPG_LIB_d.lib" )
+	#else
+	#pragma comment( lib, "JPG_LIB.lib" )
+	#endif
+	#endif
+//#endif
 
 #define ALL_MIPMAPS 127
 
@@ -231,6 +233,7 @@ private:
 	unsigned char* pixels; //image in 32bits pixels
 
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	ImageLoaderClass();
 	ImageLoaderClass(FORMAT fmt, int w, int h, int d, int mipMapCount, int arraysize=1);
 	~ImageLoaderClass();
@@ -263,4 +266,3 @@ public:
 	int nMipMaps;
 	FORMAT format;
 };
-

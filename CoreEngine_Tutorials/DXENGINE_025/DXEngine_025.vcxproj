@@ -152,7 +152,6 @@
     <ClCompile Include="core\src\xml_settings_saver.cpp" />
     <ClCompile Include="src\Application_LightRay.cpp" />
     <ClCompile Include="src\DX11Blending.cpp" />
-    <ClCompile Include="src\DX11CaptureScreenShot.cpp" />
     <ClCompile Include="src\DX11LoadTexture.cpp" />
     <ClCompile Include="src\DX11RasterizerState.cpp" />
     <ClCompile Include="src\DX11\DX11CapabilitiesClass.cpp" />

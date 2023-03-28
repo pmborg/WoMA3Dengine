@@ -36,7 +36,6 @@
 // INCLUDES //
 //////////////
 
-//#ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers.
 #include <Windows.h>
 
@@ -67,8 +66,7 @@
 
 // DX12 2D:
 
-// DX12 UTILS:
-#include "d3dx12.h"
+#include "d3dx12.h"	// DX12 UTILS:
 
 // Windows STL includes
 #include <stdio.h>
@@ -116,6 +114,7 @@ public:
 	static const auto BufferCount = 2;  // "Use Double Buffer"
 //	static const auto BufferCount = 3;  // "Use Tripple Buffer"
 
+	UINT WomaIntegrityCheck = 1234567890;
 	DX12Class();
 	~DX12Class();
 	void Shutdown2D();
@@ -215,7 +214,7 @@ public:
 	
 // ---------------------------------------------------------
 
-	DXcameraClass* m_Camera = NULL;
+	//DXcameraClass* m_Camera = NULL;
 	D3D12_SHADER_RESOURCE_VIEW_DESC viewDesc = {};
 
 

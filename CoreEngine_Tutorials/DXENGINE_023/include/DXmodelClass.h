@@ -24,79 +24,6 @@
 //////////////
 #include "platform.h"
 
-//////////////
-// INCLUDES //
-//////////////
-#if defined DX9sdk
-	#include "DX9Class.h"
-#endif
-
-	#include "dx11Class.h"
-
-/*
-// -------------------------------------------------------------------------------------------
-// Use OLD xnamath from DirectX SDK June2010 or Windows Kit 8?
-// -------------------------------------------------------------------------------------------
-	#pragma warning( disable : 4005 )		// Disable warning C4005: '' : macro redefinition
-	#include <d3d11.h>
-
-#if D3D11_SPEC_DATE_YEAR == 2009		// Use the OLD DirectX_SDK_June2010 ?
-	#pragma warning( disable : 4324 )	// 4324: '': structure was padded due to __declspec(align())
-	#include <xnamath.h>				// #include <d3dx10math.h>
-#else
-	#include <DirectXMath.h>			// Use the NEW DirectX11
-	using namespace DirectX;
-#endif
-*/
-
-#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-	#include "DX12Class.h"	//#include "GLopenGLclass.h"
-
-	// DX12 includes
-	#include <dxgi1_4.h>	// Always 1st!	(Select Driver)
-	#include <d3d12.h>		// DX12			(Select Device)
-	#include <D3Dcompiler.h>// Use Compiler
-	#include <DirectXMath.h>// Use Math
-	using namespace DirectX;
-
-	#include "DX12TextureClass.h"
-#endif
-
-#include "DXshaderClass.h"
-#include "virtualModelClass.h"
-#include "DXbasicTypes.h"
-
-namespace DirectX 
-{
-// --------------------------
-// "OBJ" MATERIAL FORMAT:
-// --------------------------
-struct SurfaceMaterial
-{
-	char matName[100];					//size:100 100xchar
-
-	XMFLOAT4 diffuseColor;				//size:16
-	XMFLOAT4 ambientColor;				//size:16
-	XMFLOAT4 emissiveColor;				//size:16
-
-	int texArrayIndex;					//size:4
-	bool hasTexture;					//size:1
-
-	bool transparent;					//size:1	>= 43
-    ID3D11ShaderResourceView* alfaMap11;//size:8	>= 43
-
-    bool bSpecular;						//size:1	>= 44: NEW SPECULAR + SHININESS:
-    XMFLOAT3 specularColor;				//size:12	>= 44: NEW SPECULAR + SHININESS:
-    int nShininess;						//size:4	//>= 44: NEW SPECULAR + SHININESS:
-
-    bool hasNormMap;					//size:1	>=47: NEW BUMP
-    int normMapTexArrayIndex;			//size:4	>=47: NEW BUMP
-	//							TOTAL		 184
-};
-
-
-//#define initLoadTexture3D(model, texture, vertexVector, IndexList, shader_type) model->LoadTexture(texture, SystemHandle->m_Driver, shader_type, &Textures, &vertexVector, &IndexList);
-
 #define initLoadTexture3D(model, texture, vertexVector, IndexList, shader_type)\
 {\
 	std::vector<STRING> Textures;\
@@ -133,12 +60,69 @@ struct SurfaceMaterial
 	if (shader_type == SHADER_TEXTURE_LIGHT) ASSERT(model->LoadLight(texture, SystemHandle->m_Driver, shader_type, &Textures, &vertexVector, &IndexList)); \
 }
 
+#if defined DX_ENGINE
+//////////////
+// INCLUDES //
+//////////////
+#if defined DX9sdk
+#include "DX9Class.h"
+#endif
+
+#include "dx11Class.h"
+
+#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
+#include "DX12Class.h"	//#include "GLopenGLclass.h"
+
+// DX12 includes
+#include <dxgi1_4.h>	// Always 1st!	(Select Driver)
+#include <d3d12.h>		// DX12			(Select Device)
+#include <D3Dcompiler.h>// Use Compiler
+#include <DirectXMath.h>// Use Math
+using namespace DirectX;
+
+#include "DX12TextureClass.h"
+#endif
+
+#include "DXshaderClass.h"
+#include "virtualModelClass.h"
+#include "DXbasicTypes.h"
+
+namespace DirectX 
+{
+// --------------------------
+// "OBJ" MATERIAL FORMAT:
+// --------------------------
+struct SurfaceMaterial
+{
+	char matName[100];					//size:100 100xchar
+
+	XMFLOAT4 diffuseColor;				//size:16
+	XMFLOAT4 ambientColor;				//size:16
+	XMFLOAT4 emissiveColor;				//size:16
+
+	int texArrayIndex;					//size:4
+	bool hasTexture;					//size:1
+
+	bool transparent;					//size:1	>= 43
+    ID3D11ShaderResourceView* alfaMap11;//size:8	>= 43
+
+    bool bSpecular;						//size:1	>= 44: NEW SPECULAR + SHININESS:
+    XMFLOAT3 specularColor;				//size:12	>= 44: NEW SPECULAR + SHININESS:
+    int nShininess;						//size:4	//>= 44: NEW SPECULAR + SHININESS:
+
+    bool hasNormMap;					//size:1	>=47: NEW BUMP
+    int normMapTexArrayIndex;			//size:4	>=47: NEW BUMP
+	//							TOTAL		 184
+};
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: DXmodelClass
 ////////////////////////////////////////////////////////////////////////////////
 class DXmodelClass : public VirtualModelClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY = TRIANGLELIST, bool computeNormals = false, bool modelHASshadow = false, bool modelRENDERshadow = false);
 	~DXmodelClass();
 	void Shutdown();
@@ -200,17 +184,6 @@ private:
 // ----------------------------------------------------------------------
 
 	DXshaderClass* CreateShader(TCHAR* objectName, SHADER_TYPE ShaderType);
-/*
-#if defined DX9sdk
-	DXshaderClass* CreateShader(TCHAR* objectName, void* g_driver, SHADER_TYPE ShaderType);
-#endif
-#if defined DX11 || defined DX9
-	DX11shaderClass* CreateShader(TCHAR* objectName, void* g_driver, SHADER_TYPE ShaderType);
-#endif
-#ifdef DX12
-	DX12shaderClass* CreateShader(TCHAR* objectName, void* g_driver, SHADER_TYPE ShaderType);
-#endif
-*/
 	bool InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* textureFile=NULL);
 	bool CreateDXbuffers(UINT sizeofMODELvertex, /*ID3D11Device*/ void* device, void* indices, void* vertices);
 	void SetBuffers(void* deviceContext);	//ID3D11DeviceContext
@@ -229,7 +202,7 @@ private:
 
 	// VARS:
 	// ----------------------------------------------------------------------
-	//DX_CLASS* m_driver;
+	
 #if defined DX9sdk
 	DirectX::DX9Class* m_driver9=NULL;
 #endif
@@ -267,3 +240,4 @@ private:
 
 }
 
+#endif

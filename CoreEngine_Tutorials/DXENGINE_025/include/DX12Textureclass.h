@@ -36,6 +36,7 @@ using namespace DirectX;
 class DX12TextureClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	DX12TextureClass();
 	~DX12TextureClass();
 

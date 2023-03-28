@@ -30,6 +30,7 @@
 class WomaSetupManager
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	WomaSetupManager();
 	~WomaSetupManager();
 

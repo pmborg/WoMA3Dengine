@@ -21,17 +21,13 @@
 #pragma once
 
 	#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-		//#include "DX12Class.h"
-		
 		// DX12 includes
 		#include <dxgi1_4.h>	// Always 1st!	(Select Driver)
 		#include <d3d12.h>		// DX12			(Select Device)
 		#include <D3Dcompiler.h>// Use Compiler
 		#include <DirectXMath.h>// Use Math
 
-		//#include "d3dx12.h"
 		using namespace DirectX;
-		//#include "DX12TextureClass.h"
 	#endif
 	
 		//#include "DX11class.h"

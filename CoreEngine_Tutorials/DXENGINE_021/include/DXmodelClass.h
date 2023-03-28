@@ -24,40 +24,25 @@
 //////////////
 #include "platform.h"
 
+#if defined DX_ENGINE
 //////////////
 // INCLUDES //
 //////////////
 #if defined DX9sdk
-	#include "DX9Class.h"
+#include "DX9Class.h"
 #endif
 
-	#include "dx11Class.h"
-
-/*
-// -------------------------------------------------------------------------------------------
-// Use OLD xnamath from DirectX SDK June2010 or Windows Kit 8?
-// -------------------------------------------------------------------------------------------
-	#pragma warning( disable : 4005 )		// Disable warning C4005: '' : macro redefinition
-	#include <d3d11.h>
-
-#if D3D11_SPEC_DATE_YEAR == 2009		// Use the OLD DirectX_SDK_June2010 ?
-	#pragma warning( disable : 4324 )	// 4324: '': structure was padded due to __declspec(align())
-	#include <xnamath.h>				// #include <d3dx10math.h>
-#else
-	#include <DirectXMath.h>			// Use the NEW DirectX11
-	using namespace DirectX;
-#endif
-*/
+#include "dx11Class.h"
 
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-	#include "DX12Class.h"	//#include "GLopenGLclass.h"
+#include "DX12Class.h"	//#include "GLopenGLclass.h"
 
-	// DX12 includes
-	#include <dxgi1_4.h>	// Always 1st!	(Select Driver)
-	#include <d3d12.h>		// DX12			(Select Device)
-	#include <D3Dcompiler.h>// Use Compiler
-	#include <DirectXMath.h>// Use Math
-	using namespace DirectX;
+// DX12 includes
+#include <dxgi1_4.h>	// Always 1st!	(Select Driver)
+#include <d3d12.h>		// DX12			(Select Device)
+#include <D3Dcompiler.h>// Use Compiler
+#include <DirectXMath.h>// Use Math
+using namespace DirectX;
 
 #endif
 
@@ -100,6 +85,7 @@ struct SurfaceMaterial
 class DXmodelClass : public VirtualModelClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY = TRIANGLELIST, bool computeNormals = false, bool modelHASshadow = false, bool modelRENDERshadow = false);
 	~DXmodelClass();
 	void Shutdown();
@@ -152,17 +138,6 @@ private:
 // ----------------------------------------------------------------------
 
 	DXshaderClass* CreateShader(TCHAR* objectName, SHADER_TYPE ShaderType);
-/*
-#if defined DX9sdk
-	DXshaderClass* CreateShader(TCHAR* objectName, void* g_driver, SHADER_TYPE ShaderType);
-#endif
-#if defined DX11 || defined DX9
-	DX11shaderClass* CreateShader(TCHAR* objectName, void* g_driver, SHADER_TYPE ShaderType);
-#endif
-#ifdef DX12
-	DX12shaderClass* CreateShader(TCHAR* objectName, void* g_driver, SHADER_TYPE ShaderType);
-#endif
-*/
 	bool InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* textureFile=NULL);
 	bool CreateDXbuffers(UINT sizeofMODELvertex, /*ID3D11Device*/ void* device, void* indices, void* vertices);
 	void SetBuffers(void* deviceContext);	//ID3D11DeviceContext
@@ -173,7 +148,7 @@ private:
 
 	// VARS:
 	// ----------------------------------------------------------------------
-	//DX_CLASS* m_driver;
+	
 #if defined DX9sdk
 	DirectX::DX9Class* m_driver9=NULL;
 #endif
@@ -211,3 +186,4 @@ private:
 
 }
 
+#endif

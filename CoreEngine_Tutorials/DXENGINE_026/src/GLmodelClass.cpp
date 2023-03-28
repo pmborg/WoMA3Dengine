@@ -31,6 +31,7 @@
 GLmodelClass::GLmodelClass(bool model3d) 
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	indices = NULL;
 

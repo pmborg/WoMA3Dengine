@@ -26,13 +26,12 @@
 #include "GLmodelClass.h"
 #include "GLshaderClass.h"
 #include "mem_leak.h"
-//#include "SystemPlatform.h"			// Get [SystemHandle] Pointer to System Class: WINDOWS, LINUX & ANDROID
-
 #include "winSystemClass.h"
 
 GLmodelClass::GLmodelClass(bool model3d) 
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	indices = NULL;
 
@@ -134,9 +133,6 @@ void GLmodelClass::RenderWithFade(WomaDriverClass* driver, float fadeLight)
 void GLmodelClass::Render(/*GLopenGLclass*/WomaDriverClass* Driver, UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix)
 {
 	GLopenGLclass* driver = (GLopenGLclass*)Driver;
-	//mat4* viewMatrix = NULL;
-	//mat4* projectionMatrix = NULL;
-	// Get the world, view, and projection matrices from the opengl and camera objects:
 	
 	switch (projection)
 	{
@@ -171,16 +167,14 @@ void GLmodelClass::Render(/*GLopenGLclass*/WomaDriverClass* Driver, UINT camera,
 		m_Shader->SetShaderParameters(ModelShaderType, &m_worldMatrix, &m_viewMatrix, &projectionMatrix);
 
 	// Step 4: Render the model
-	glBindVertexArray(m_vertexArrayId);				// SetBuffers(driver);
+	glBindVertexArray(m_vertexArrayId);		// SetBuffers(driver);
 
 	RenderBuffers(driver);
 
-/*
 	//unbind everything
-	glBindVertexArray(0);				// Unbind our Vertex Array Object
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glUseProgram(0);					// shader->unbind(); // Unbind our shader
-*/
+	glBindVertexArray(NULL);				// Unbind our Vertex Array Object
+	glBindTexture(GL_TEXTURE_2D, NULL);
+	glUseProgram(0);						// shader->unbind(); // Unbind our shader
 }
 
 // TODO: ALSO SHARED FROM DX do it on model class!?
@@ -332,6 +326,9 @@ void GLmodelClass::RenderBuffers(/*GLopenGLclass*/void* OpenGL)
 	// Render the vertex buffer using the index buffer:
 	if (PrimitiveTopology == LINELIST)
 		glDrawElements(GL_LINES, m_indexCount, GL_UNSIGNED_INT, 0);
+	else
+	if (PrimitiveTopology == TRIANGLESTRIP)
+		glDrawElements(GL_TRIANGLE_STRIP, m_indexCount, GL_UNSIGNED_INT, 0);
 	else
 		glDrawElements(GL_TRIANGLES, m_indexCount, GL_UNSIGNED_INT, 0);
 }
