@@ -2,21 +2,28 @@
 // --------------------------------------------------------------------------------------------
 // Filename: DxTextClass.h
 // --------------------------------------------------------------------------------------------
-// ********************************************************************************************
-// World of Middle Age  - 3D Multi-Platform ENGINE 2017
-// -------------------------------------------------------------------------------------------
-// code by : Pedro Borges - pmborg@yahoo.com
-// Downloaded from : https://github.com/pmborg/WoMA3Dengine
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// --------------------------------------------------------------------------------------------
+// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
 //
-// ********************************************************************************************
+// This file is part of the WorldOfMiddleAge project.
+//
+// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
+// You may not alter or remove any copyright or other notice from copies of the content.
+// The content contained in this file is provided only for educational and informational purposes.
+// 
+// Downloaded from : https://github.com/pmborg/WoMA3Dengine
+// --------------------------------------------------------------------------------------------
+// PURPOSE:
+// --------------------------------------------------------------------------------------------
 #pragma once
 
 //////////////
 // INCLUDES //
 //////////////
 #include "platform.h"
-
-#if (defined DX11 || defined DX12)	// This is the DX Implementation
+#if defined USE_RASTERTEK_TEXT_FONT && defined DX_ENGINE
 
 #include "dx11Class.h"
 #include "dx12Class.h"
@@ -26,23 +33,6 @@
 #include "textFontClass.h"
 // ----------------------------------------
 
-#if TUTORIAL_PRE_CHAP >= 45 //60 // BILLBOARD
-#define TEXT_BILLRENDERCOUNT 7
-#endif//
-#if TUTORIAL_PRE_CHAP >= 45 && TUTORIAL_PRE_CHAP < 55// BILLBOARD
-#define N_TEXT_MAX_SENTENCE 8
-#endif//
-
-#if TUTORIAL_PRE_CHAP >= 63 // 83
-#define TEXT_XP 9
-#define TEXT_GOLD 10
-#endif//
-
-// Not used yet...
-// ----------------------------------------
-/*
-*/
-
 namespace DirectX {
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -51,6 +41,7 @@ namespace DirectX {
 class DxTextClass : public VirtualTextClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	DxTextClass();
 	~DxTextClass();
 
@@ -64,7 +55,9 @@ public:
 	void ReleaseSentence(SentenceType**);
 	void RenderSentence(SentenceType*);
 
+//#if defined DX_ENGINE
 	DXshaderClass* m_spriteShader = NULL;
+//#endif
 
 #if defined DX9sdk
 	DirectX::DX9Class* m_driver9 = NULL;
@@ -78,16 +71,9 @@ public:
 private:
 	// VARS:
 	// ----------------------------------------------------------------------
-	textFontClass*			m_Font = NULL;
-	XMMATRIX*				m_baseViewMatrix = NULL;
-
-	UINT sizeofMODELvertex = NULL;
-
-#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-
-	PRIMITIVE_TOPOLOGY			PrimitiveTopology;
-#endif
-
+	textFontClass*	m_Font = NULL;
+	XMMATRIX*		m_baseViewMatrix = NULL;
+	UINT			sizeofMODELvertex = NULL;
 };
 
 }

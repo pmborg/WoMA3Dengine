@@ -37,6 +37,7 @@
 class GLmodelClass : public VirtualModelClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	GLmodelClass(bool model3D=true);
 	~GLmodelClass();
 	void Shutdown();

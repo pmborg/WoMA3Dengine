@@ -33,6 +33,7 @@ using namespace std;
 class GLshaderClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	GLshaderClass();
 	~GLshaderClass();
 

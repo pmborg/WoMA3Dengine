@@ -37,11 +37,7 @@
 textFontClass::textFontClass()
 {
 	CLASSLOADER();
-#if defined _NOT
-	//public:
-	m_Font = NULL;
-	m_Texture = NULL;
-#endif
+	WomaIntegrityCheck = 1234567890;
 }
 
 textFontClass::~textFontClass() { Shutdown(); CLASSDELETE(); }
@@ -140,7 +136,6 @@ bool textFontClass::LoadFontData(TCHAR* filename)
 	return true;
 }
 
-
 void textFontClass::ReleaseFontData()
 {
 	// Release the font data array.
@@ -225,5 +220,3 @@ void textFontClass::BuildVertexArray(void* vertices, TCHAR* sentence, float draw
 		}
 	}
 }
-
-//#endif

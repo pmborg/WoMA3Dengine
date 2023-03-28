@@ -26,7 +26,10 @@
 #include "mem_leak.h"
 #include "OSengine.h"
 
-GLshaderClass::GLshaderClass() {CLASSLOADER();}
+GLshaderClass::GLshaderClass() {
+	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
+}
 
 GLshaderClass::~GLshaderClass() {CLASSDELETE();}
 

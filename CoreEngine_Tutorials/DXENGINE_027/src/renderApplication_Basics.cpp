@@ -1,4 +1,23 @@
 // NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
+// --------------------------------------------------------------------------------------------
+// Filename: renderApplication_Basics.cpp
+// --------------------------------------------------------------------------------------------
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// --------------------------------------------------------------------------------------------
+// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+//
+// This file is part of the WorldOfMiddleAge project.
+//
+// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
+// You may not alter or remove any copyright or other notice from copies of the content.
+// The content contained in this file is provided only for educational and informational purposes.
+// 
+// Downloaded from : https://github.com/pmborg/WoMA3Dengine
+// --------------------------------------------------------------------------------------------
+// PURPOSE: 
+// --------------------------------------------------------------------------------------------
+
 #include "platform.h"
 #include "dxWinSystemClass.h"
 
@@ -165,15 +184,13 @@ void ApplicationClass::AppPosRender()
 
 }
 
-
-
 float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 {
 	float fadeLight = 1;
 
 	// GET INPUT for CAMERA: Movement
 
-	// Animate Camera (INTRO_DEMO) before???: HandleUserInput
+	// Animate Camera (INTRO_DEMO)
 
 	// SET CAMERA (for this monitor): Prepare to Take a Shot: Generate the view matrix based on the camera's position.
 	if (SystemHandle->windowsArray.size() == 3)
@@ -181,73 +198,12 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 		// TODO: settings.xml define: LEFT/RIGTH: Monitor
 		// Monitors Index:
 		// | 1 | 0 | 2 |
-
-		switch (SystemHandle->AppSettings->DRIVER)
-		{
-		#if defined DX9sdk
-			case DRIVER_DX9:
-				// Give 90 Degress for all 3 Monitors:
-				if (monitorWindow == 1) ((DirectX::DX9Class*)m_Driver)->m_Camera->m_rotationY -= (90 / 3); //  90:3 = 30deg
-				if (monitorWindow == 0) ((DirectX::DX9Class*)m_Driver)->m_Camera->m_rotationY -= 0;
-				if (monitorWindow == 2) ((DirectX::DX9Class*)m_Driver)->m_Camera->m_rotationY += (90 / 3);	//  90:3 = 30deg
-			break;
-		#endif
-		#if defined DX9 && D3D11_SPEC_DATE_YEAR > 2009
-			case DRIVER_DX9:
-				// Give 90 Degress for all 3 Monitors:
-				if (monitorWindow == 1) ((DirectX::DX11Class*)m_Driver)->m_Camera->m_rotationY -= (90 / 3); //  90:3 = 30deg
-				if (monitorWindow == 0) ((DirectX::DX11Class*)m_Driver)->m_Camera->m_rotationY -= 0;
-				if (monitorWindow == 2) ((DirectX::DX11Class*)m_Driver)->m_Camera->m_rotationY += (90 / 3);	//  90:3 = 30deg
-			break;
-		#endif
-
-			case DRIVER_DX11:
-				// Give 90 Degress for all 3 Monitors:
-				if (monitorWindow == 1) ((DirectX::DX11Class*)m_Driver)->m_Camera->m_rotationY -= (90 / 3); //  90:3 = 30deg
-				if (monitorWindow == 0) ((DirectX::DX11Class*)m_Driver)->m_Camera->m_rotationY -= 0;
-				if (monitorWindow == 2) ((DirectX::DX11Class*)m_Driver)->m_Camera->m_rotationY += (90 / 3);	//  90:3 = 30deg
-			break;
-
-		#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-			case DRIVER_DX12:
-				// Give 90 Degress for all 3 Monitors:
-				if (monitorWindow == 1) ((DirectX::DX12Class*)m_Driver)->m_Camera->m_rotationY -= (90 / 3); //  90:3 = 30deg
-				if (monitorWindow == 0) ((DirectX::DX12Class*)m_Driver)->m_Camera->m_rotationY -= 0;
-				if (monitorWindow == 2) ((DirectX::DX12Class*)m_Driver)->m_Camera->m_rotationY += (90 / 3);	//  90:3 = 30deg
-			break;
-		#endif
-		}
+		if (monitorWindow == 1) DXsystemHandle->m_Camera->m_rotationY -= (90 / 3); //  90:3 = 30deg
+		if (monitorWindow == 0) DXsystemHandle->m_Camera->m_rotationY -= 0;
+		if (monitorWindow == 2) DXsystemHandle->m_Camera->m_rotationY += (90 / 3);	//  90:3 = 30deg
 	}
-
-	switch (SystemHandle->AppSettings->DRIVER)
-	{
-	#if defined DX9sdk
-		case DRIVER_DX9:
-			if (((DirectX::DX9Class*)m_Driver)->m_Camera)
-				((DirectX::DX9Class*)m_Driver)->m_Camera->Render();
-		break;
-	#endif
-	#if defined DX9 && D3D11_SPEC_DATE_YEAR > 2009
-		case DRIVER_DX9:
-			if (((DirectX::DX11Class*)m_Driver)->m_Camera)
-				((DirectX::DX11Class*)m_Driver)->m_Camera->Render();
-		break;
-	#endif
-		case DRIVER_DX11:
-			if (((DirectX::DX11Class*)m_Driver)->m_Camera)
-				((DirectX::DX11Class*)m_Driver)->m_Camera->Render();
-		break;
-	#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-		case DRIVER_DX12:
-			if (((DirectX::DX12Class*)m_Driver)->m_Camera)
-				((DirectX::DX12Class*)m_Driver)->m_Camera->Render();
-		break;
-	#endif
-		case DRIVER_GL3:
-			if (((GLopenGLclass*)m_Driver)->m_Camera)
-				((GLopenGLclass*)m_Driver)->m_Camera->Render();
-		break;
-	}
+		if (DXsystemHandle->m_Camera)
+			DXsystemHandle->m_Camera->Render();
 
 	// CONSTRUCT: FRUSTRUM
 
@@ -255,36 +211,13 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 	AppTextClass->SetFps(SystemHandle->fps);						// Update the FPS "Value" in the text object.
 	AppTextClass->SetCpu(SystemHandle->m_Cpu.GetCpuPercentage());	// Update the CPU usage "Value" in the text object.
 
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
-	{
-		AppTextClass->SetCameraPosition(((DirectX::DX11Class*)m_Driver)->m_Camera->m_positionX,
-			((DirectX::DX11Class*)m_Driver)->m_Camera->m_positionY,
-			((DirectX::DX11Class*)m_Driver)->m_Camera->m_positionZ);
+	AppTextClass->SetCameraPosition(DXsystemHandle->m_Camera->m_positionX,
+		DXsystemHandle->m_Camera->m_positionY,
+		DXsystemHandle->m_Camera->m_positionZ);
 
-		AppTextClass->SetCameraRotation(((DirectX::DX11Class*)m_Driver)->m_Camera->m_rotationX,
-			((DirectX::DX11Class*)m_Driver)->m_Camera->m_rotationY,
-			((DirectX::DX11Class*)m_Driver)->m_Camera->m_rotationZ);
-	}
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
-	{
-		AppTextClass->SetCameraPosition(((DirectX::DX12Class*)m_Driver)->m_Camera->m_positionX,
-			((DirectX::DX12Class*)m_Driver)->m_Camera->m_positionY,
-			((DirectX::DX12Class*)m_Driver)->m_Camera->m_positionZ);
-
-		AppTextClass->SetCameraRotation(((DirectX::DX12Class*)m_Driver)->m_Camera->m_rotationX,
-			((DirectX::DX12Class*)m_Driver)->m_Camera->m_rotationY,
-			((DirectX::DX12Class*)m_Driver)->m_Camera->m_rotationZ);
-	}
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
-	{
-		AppTextClass->SetCameraPosition(((GLopenGLclass*)m_Driver)->m_Camera->m_positionX,
-			((GLopenGLclass*)m_Driver)->m_Camera->m_positionY,
-			((GLopenGLclass*)m_Driver)->m_Camera->m_positionZ);
-
-		AppTextClass->SetCameraRotation(((GLopenGLclass*)m_Driver)->m_Camera->m_rotationX,
-			((GLopenGLclass*)m_Driver)->m_Camera->m_rotationY,
-			((GLopenGLclass*)m_Driver)->m_Camera->m_rotationZ);
-	}
+	AppTextClass->SetCameraRotation(DXsystemHandle->m_Camera->m_rotationX,
+		DXsystemHandle->m_Camera->m_rotationY,
+		DXsystemHandle->m_Camera->m_rotationZ);
 	AppTextClass->SetClockTime(astroClass->hour, astroClass->minute);
 
 	AppTextClass->SetLightDirection(m_Light->m_lightDirection.x, m_Light->m_lightDirection.y , m_Light->m_lightDirection.z );

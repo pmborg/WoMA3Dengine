@@ -114,6 +114,7 @@ public:
 	static const auto BufferCount = 2;  // "Use Double Buffer"
 //	static const auto BufferCount = 3;  // "Use Tripple Buffer"
 
+	UINT WomaIntegrityCheck = 1234567890;
 	DX12Class();
 	~DX12Class();
 	void Shutdown2D();
@@ -213,14 +214,10 @@ public:
 	
 // ---------------------------------------------------------
 
-	DXcameraClass* m_Camera = NULL;
+	//DXcameraClass* m_Camera = NULL;
 	D3D12_SHADER_RESOURCE_VIEW_DESC viewDesc = {};
 
 	bool CreateBlendState();
-
-	//We have two new blending states:
-	ID3D11BlendState* m_alphaEnableBlendingState;	//m_alphaEnableBlendingState is for turning on alpha blending and 
-	ID3D11BlendState* m_alphaDisableBlendingState;	//m_alphaDisableBlendingState is for turning off alpha blending.
 
 
 	// 2D

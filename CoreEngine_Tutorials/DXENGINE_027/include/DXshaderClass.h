@@ -166,6 +166,7 @@ struct ConstantBufferSkyType
 	// FUNCTIONS:
 	// ---------------------------------------------------------------------
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	DXshaderClass(UINT ShaderVersionH, UINT ShaderVersionL, bool shader_3D);
 	~DXshaderClass();
 	void Shutdown();

@@ -30,6 +30,8 @@ namespace DirectX {
 ApplicationTextClass::ApplicationTextClass()
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
+
 	m_Text = NULL;
 }
 
@@ -69,9 +71,9 @@ void ApplicationTextClass::Shutdown()
 {
 	if (m_Text) 
 	{
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) 
 		{
-			for (UINT i = 0; i < _countof(m_sentence); i++)
+			for (UINT i = 0; i < _countof(m_sentence); i++) 
 			{
 				if (m_sentence[i])
 				{
@@ -89,10 +91,11 @@ void ApplicationTextClass::Shutdown()
 				}
 			}
 		}
-		for (UINT i = 0; i < _countof(m_sentence); i++) {
+		for (UINT i = 0; i < _countof(m_sentence); i++)  {
 			m_Text->ReleaseSentence(&m_sentence[i]);
-			SAFE_DELETE(m_sentence[i]);
+			SAFE_DELETE (m_sentence[i]);
 		}
+
 		switch (SystemHandle->AppSettings->DRIVER)
 		{
 		case DRIVER_GL3:

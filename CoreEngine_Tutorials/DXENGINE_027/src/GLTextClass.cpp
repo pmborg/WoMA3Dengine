@@ -37,6 +37,7 @@
 GlTextClass::GlTextClass()
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	//private:
 	m_Font = NULL;

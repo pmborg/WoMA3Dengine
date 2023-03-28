@@ -22,6 +22,7 @@
 DX12TextureClass::DX12TextureClass()
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	//m_textureID = NULL;
 	loaded = false;

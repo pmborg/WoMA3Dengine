@@ -31,6 +31,8 @@
 #include "Math3D.h"
 #include "mem_leak.h"
 
+#include "dxWinSystemClass.h"	// SystemHandle
+
 namespace DirectX {
 
 // ----------------------------------------------------------------------------------------------
@@ -39,6 +41,7 @@ DX12Class::DX12Class()
 {
 	// WomaDriverClass / Public: ------------------------------------------------------
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	// SUPER Video Card Info:
 	// ---------------------------------------------------------------------------
@@ -68,7 +71,7 @@ DX12Class::DX12Class()
 
 	BUFFER_COLOR_FORMAT = DXGI_FORMAT_B8G8R8A8_UNORM; // "Loader Image" use this format.
 
-	m_Camera = NULL;
+	//m_Camera = NULL;
 	viewDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	viewDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	viewDesc.Format = BUFFER_COLOR_FORMAT;
@@ -101,12 +104,6 @@ void DX12Class::Shutdown()
 		CloseHandle(m_fenceEvent);
 		m_fenceEvent = nullptr;
 
-		if (m_Camera)
-		{
-			delete ((DirectX::DXcameraClass*)m_Camera); 
-			m_Camera = NULL;	
-		}	
-
 		for (UINT i = 0; i<BufferCount; ++i)
 			m_renderTargets[i].Reset();
 
@@ -119,11 +116,6 @@ void DX12Class::Shutdown()
 		m_commandQueue.Reset();
 
 		//Release the two new blending states.
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
-		{
-			SAFE_RELEASE(m_alphaEnableBlendingState);
-			SAFE_RELEASE(m_alphaDisableBlendingState);
-		}
 
 		// The Last one!
 		ULONG count = m_device->Release();
@@ -582,11 +574,6 @@ HRESULT result = S_OK;
 	if (m_device && m_swapChain) 
 	{
 
-#if DX_ENGINE_LEVEL >= 22 && defined DX11 && _NOT_//NEW
-		//Init Step: 10 - - CreateDepthStencilView / OMSetRenderTargets:
-		IF_NOT_RETURN_FALSE (CreateSetDepthStencilViewDX11device ());
-#endif
-
 		//Init Step: 11 - RSSetViewports: Map Screen clip space coordinates to the render target space:
 		setViewportDevice(screenWidth, screenHeight);
 
@@ -594,7 +581,6 @@ HRESULT result = S_OK;
 		setProjectionMatrixWorldMatrixOrthoMatrix ( screenWidth, screenHeight, screenNear, screenDepth);
 	}
 
-	//SetCamera2D(); //AQUI
 	Initialize3DCamera();
 
 	return true;
@@ -621,7 +607,7 @@ bool DX12Class::initDX12Device (HWND hwnd)
 	HRESULT result = S_OK;
 
 	//
-	// LoadAssets()- PARTE 2
+	// LoadAssets()- PART 2
 	//
 	// Describe and create the command queue.
 	// ==========================================
@@ -660,7 +646,7 @@ bool DX12Class::initDX12Device (HWND hwnd)
 	}
 
 	//
-	// LoadAssets()- PARTE 3
+	// LoadAssets()- PART 3
 	//
 
 
@@ -1147,8 +1133,6 @@ void DX12Class::SetRasterizerState(UINT CullMode, UINT fillMode)
 	m_fillMode = fillMode;
 }
 
-//10 The Initialize function is what does the entire setup of Direct3D for DirectX 11.
-
 // ----------------------------------------------------------------------------------------------
 bool DX12Class::CreateBlendState()
 // ----------------------------------------------------------------------------------------------
@@ -1275,7 +1259,7 @@ void DX12Class::SetCamera2D()
 	DX12m_Camera2D.Render();						// ((OpenGLClass*)m_Driver)->m_Camera->Render(); || ((DX_CLASS*)m_Driver)->m_Camera->Render();
 	DX12m_Camera2D.Set2DViewMatrix();				// Get the view from the camera and 2D objects.
 
-	m_Camera->m_viewmatrix2D = DX12m_Camera2D.m_viewMatrix;
+	DXsystemHandle->m_Camera->m_viewmatrix2D = DX12m_Camera2D.m_viewMatrix;
 }
 
 // TODO: go to Virtual Class?
@@ -1283,23 +1267,20 @@ void DX12Class::SetCamera2D()
 void DX12Class::Initialize3DCamera()
 // ----------------------------------------------------------------------------------------------
 {
+	if (DXsystemHandle->m_Camera) {
 
-	if (!m_Camera) {
-		m_Camera = NEW DirectX::DXcameraClass; // DX Implementation
-		IF_NOT_THROW_EXCEPTION(m_Camera);
+		// SETUP 2D Camera
+		SetCamera2D();
+
+		// SETUP 3D Normal Camera:
+		DXsystemHandle->m_Camera->SetPosition(SystemHandle->AppSettings->INIT_CAMX, SystemHandle->AppSettings->INIT_CAMY,
+			SystemHandle->AppSettings->INIT_CAMZ);
+
+		DXsystemHandle->m_Camera->SetRotation(SystemHandle->AppSettings->INIT_ROTX, SystemHandle->AppSettings->INIT_ROTY,
+			SystemHandle->AppSettings->INIT_ROTZ);
+
+		DXsystemHandle->m_Camera->Render();
 	}
-
-	// SETUP 2D Camera
-	SetCamera2D();
-
-	// SETUP 3D Normal Camera:
-	m_Camera->SetPosition(SystemHandle->AppSettings->INIT_CAMX, SystemHandle->AppSettings->INIT_CAMY,
-		SystemHandle->AppSettings->INIT_CAMZ);
-
-	m_Camera->SetRotation(SystemHandle->AppSettings->INIT_ROTX, SystemHandle->AppSettings->INIT_ROTY,
-		SystemHandle->AppSettings->INIT_ROTZ);
-
-	m_Camera->Render();
 
 	// SETUP 3D Sky Camera:
 }
@@ -1314,11 +1295,11 @@ XMMATRIX* DX12Class::GetViewMatrix(void* Driver, UINT camera, UINT projection, U
 			default:
 			case PROJECTION_PERSPECTIVE:
 				if (camera == CAMERA_NORMAL)
-					return &m_Camera->m_viewMatrix;		
+					return &DXsystemHandle->m_Camera->m_viewMatrix;
 				break;
 
 			case PROJECTION_ORTHOGRAPH:
-				 return &m_Camera->m_viewmatrix2D;		
+				 return &DXsystemHandle->m_Camera->m_viewmatrix2D;
 				 break;
 			
 		}

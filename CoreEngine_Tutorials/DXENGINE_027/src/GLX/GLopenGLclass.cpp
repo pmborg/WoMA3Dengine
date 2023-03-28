@@ -42,6 +42,7 @@ GLmathClass* mathClass;
 GLopenGLclass::GLopenGLclass()
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	mathClass = NULL;
 	_tcscpy_s(driverName, TEXT("GL3+")); // driverName = TEXT ("GL3+");

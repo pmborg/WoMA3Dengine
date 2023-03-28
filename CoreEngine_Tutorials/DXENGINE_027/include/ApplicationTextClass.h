@@ -45,6 +45,7 @@ namespace DirectX {
 class ApplicationTextClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	ApplicationTextClass();
 	~ApplicationTextClass();
 

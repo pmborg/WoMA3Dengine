@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: GlTextClass.h
 // --------------------------------------------------------------------------------------------
@@ -16,18 +17,12 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-
 #pragma once
 
 //////////////
 // INCLUDES //
 //////////////
 #include "platform.h"
-
-/*
-#include "dx11Class.h"
-#include "dx12Class.h"
-*/
 #include "virtualTextClass.h"
 #include "GLshaderClass.h"
 #include "textFontClass.h"
@@ -51,6 +46,7 @@
 class GlTextClass : public VirtualTextClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	GlTextClass();
 	~GlTextClass();
 

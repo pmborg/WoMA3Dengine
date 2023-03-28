@@ -122,6 +122,7 @@ struct SurfaceMaterial
 class DXmodelClass : public VirtualModelClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY = TRIANGLELIST, bool computeNormals = false, bool modelHASshadow = false, bool modelRENDERshadow = false);
 	~DXmodelClass();
 	void Shutdown();

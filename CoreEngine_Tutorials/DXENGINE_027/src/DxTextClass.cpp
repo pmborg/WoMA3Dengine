@@ -26,13 +26,14 @@
 #pragma warning( disable : 4706 )	// Disable warning C4706: assignment within conditional expression
 #include "DxTextClass.h"
 #include "mem_leak.h"
-#include "WinSystemClass.h"			// Get [SystemHandle] Pointer to System Class: WINDOWS, LINUX & ANDROID
+#include "dxWinSystemClass.h"	// SystemHandle
 
 namespace DirectX {
 
 	DxTextClass::DxTextClass()
 	{
 		CLASSLOADER();
+		WomaIntegrityCheck = 1234567890;
 
 		//private:
 		m_Font = NULL;
@@ -42,7 +43,7 @@ namespace DirectX {
 #if defined DX9sdk
 		m_driver9 = NULL;
 #endif
-#if defined DXENGINE
+#if defined DX_ENGINE
 		m_spriteShader = NULL;
 #endif
 		m_driver11 = NULL;
@@ -98,11 +99,11 @@ namespace DirectX {
 		{
 			m_driver11 = (DirectX::DX11Class*)Driver;
 			m_deviceContext11 = m_driver11->m_deviceContext;
-			m_baseViewMatrix = &((DXcameraClass*)m_driver11->m_Camera)->m_viewmatrix2D;
+			m_baseViewMatrix = &DXsystemHandle->m_Camera->m_viewmatrix2D;
 		}
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12) {
 			m_driver = (DirectX::DX12Class*)Driver;
-			m_baseViewMatrix = &((DXcameraClass*)m_driver->m_Camera)->m_viewmatrix2D;
+			m_baseViewMatrix = &DXsystemHandle->m_Camera->m_viewmatrix2D;
 		}
 		// TextClass: Initialize the font object. PART1
 		m_Font = NEW textFontClass;

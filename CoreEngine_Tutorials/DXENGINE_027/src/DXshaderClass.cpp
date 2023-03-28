@@ -110,8 +110,8 @@ namespace DirectX {
 	DXshaderClass::DXshaderClass(UINT ShaderVersion_H, UINT ShaderVersion_L, bool shader_3D)
 	{
 		CLASSLOADER();
-
-		//DX_CLASS* m_driver;
+		WomaIntegrityCheck = 1234567890;
+		
 #if defined DX9sdk
 		m_driver9 = ((DirectX::DX9Class*)SystemHandle->m_Driver);
 #endif

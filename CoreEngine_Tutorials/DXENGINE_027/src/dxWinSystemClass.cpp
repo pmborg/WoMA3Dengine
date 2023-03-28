@@ -55,6 +55,7 @@ dxWinSystemClass::dxWinSystemClass(WOMA::Settings* appSettings) : WinSystemClass
 //----------------------------------------------------------------------------------
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 	WinSystemClass::AppSettings = appSettings;
 	WinSystemClass::mMaximized = WinSystemClass::AppSettings->FULL_SCREEN;
 
@@ -63,6 +64,11 @@ dxWinSystemClass::dxWinSystemClass(WOMA::Settings* appSettings) : WinSystemClass
 	m_contextDriver = NULL;	// Note: Used only at 20
 
 	DXsystemHandle = this;
+
+	if (!m_Camera) {
+		m_Camera = NEW DirectX::DXcameraClass; // DX Implementation
+		//IF_NOT_THROW_EXCEPTION(m_Camera);
+}
 
 }
 
@@ -213,6 +219,11 @@ void dxWinSystemClass::Shutdown()
 {
 	//WinSystemClass::Shutdown();
 
+	if (m_Camera)
+	{
+		delete ((DirectX::DXcameraClass*)m_Camera); m_Camera = NULL;
+	}
+
 #if defined USE_INTRO_VIDEO_DEMO
 	if (g_DShowPlayer) {
 		g_DShowPlayer->TearDownGraph();
@@ -230,7 +241,8 @@ void dxWinSystemClass::GPH_RESIZE()
 {
 
 	if (m_Driver) {
-		demoApplicationClass->WOMA_APPLICATION_Shutdown2D();
+		if (demoApplicationClass)
+			demoApplicationClass->WOMA_APPLICATION_Shutdown2D();
 
 	switch (AppSettings->DRIVER)
 	{
@@ -320,7 +332,12 @@ void dxWinSystemClass::ProcessFrame()
 				if (m_Application->RENDER_PAGE >= 15)	//to allow FADE BANNERS on INTRO_DEMO
 				{
 					m_Application->RenderScene(i);		// SystemHandle->m_Driver->BeginScene(monitorWindow);
-					m_contextDriver->EndScene(i);		// SHOW: Present the FRAME successfully Rendered!
+
+					// SHOW: Present the FRAME successfully Rendered!
+					if (!m_contextDriver)
+						SystemHandle->driverList[SystemHandle->AppSettings->DRIVER]->EndScene(i);
+					else
+						m_contextDriver->EndScene(i);		
 				}
 			}
 		}
