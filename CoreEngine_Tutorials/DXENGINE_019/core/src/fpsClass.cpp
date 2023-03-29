@@ -14,9 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//
-//   Get the time spent in ms (mili seconds) to render a frame
-//
+// PURPOSE: Get the time spent in ms (mili seconds) to render a frame
 // --------------------------------------------------------------------------------------------
 #include "main.h"
 
@@ -25,6 +23,8 @@
 FpsClass::FpsClass()
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
+
 	//private:
 	m_startTime = NULL;
 	m_fps = m_count = NULL;

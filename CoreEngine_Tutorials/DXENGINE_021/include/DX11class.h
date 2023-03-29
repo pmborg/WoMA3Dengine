@@ -86,6 +86,9 @@
 /////////////
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3d11.lib")
+#if _DEBUG
+#pragma comment(lib, "dxguid.lib")
+#endif
 
 //////////////
 // INCLUDES //

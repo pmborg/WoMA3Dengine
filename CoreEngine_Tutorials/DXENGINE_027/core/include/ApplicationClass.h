@@ -64,8 +64,8 @@
 #pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
 
 	#if defined DX_ENGINE
-		#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow) {\
-			model = NEW DirectX::DXmodelClass(model3D, TRIANGLELIST, false, renderShadow); IF_NOT_THROW_EXCEPTION (model); \
+		#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {\
+			model = NEW DirectX::DXmodelClass(model3D, TRIANGLELIST, false, renderShadow1); IF_NOT_THROW_EXCEPTION (model); \
 		}
 
 		#define SAFE_SHUTDOWN_MODELDX(model) {\
@@ -75,7 +75,7 @@
 		#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow) {}
 	#endif
 
-		#define CREATE_MODELGL3_IF_NOT_EXCEPTION(model, model3D, renderShadow) {\
+		#define CREATE_MODELGL3_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {\
 			model = NEW GLmodelClass(model3D); IF_NOT_THROW_EXCEPTION (model); \
 		}
 
@@ -104,6 +104,7 @@
 class ApplicationClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	ApplicationClass();
 	~ApplicationClass();
 	
@@ -180,6 +181,8 @@ public:
 	std::vector<UINT> IndexTriangleList;						// COLOR-DEMO-2: UINT indexList[6] = {0,1,2};
 
 	float ClearColor[4]={0};
+
+
 
 };
 

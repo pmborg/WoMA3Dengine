@@ -134,10 +134,6 @@ bool dxWinSystemClass::InitSelectedDriver()
 	if (driverList[DRIVER_DX9] && AppSettings->DRIVER == DRIVER_DX9)
 		_tcscpy_s(m_Driver->driverName, sizeof(m_Driver->driverName), TEXT("DX9"));
 #endif
-	//#if defined DX9 && D3D11_SPEC_DATE_YEAR > 2009
-	//if (driverList[DRIVER_DX9] && AppSettings->DRIVER == DRIVER_DX9)
-	//	_tcscpy_s(m_Driver->driverName, sizeof(m_Driver->driverName), TEXT("DX9*"));
-	//#endif
 
 	if (driverList[DRIVER_DX11]) //Driver 11 will give backward compatibility:
 		WOMA_LOGManager_DebugMSGAUTO(TEXT("DX10 Support: %s\n"), SystemHandle->driverList[SystemHandle->AppSettings->DRIVER]->m_sCapabilities.CapDX10_11 ? TEXT("true") : TEXT("false"));	//Allow DX11, scale down to DX10, if needed?		

@@ -31,9 +31,10 @@
 class dxWinSystemClass : public WinSystemClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	dxWinSystemClass(WOMA::Settings* AppSettings);
 	~dxWinSystemClass();
-	
+
 	bool InitSelectedDriver();
 	bool InitializeSystem();
 	int	 ApplicationMainLoop();
@@ -53,9 +54,9 @@ public:
 	bool SaveScreenshot();
 #endif
 
-//private:
+	//private:
 	void Shutdown();
 };
 
-
 extern dxWinSystemClass* DXsystemHandle;
+

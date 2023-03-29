@@ -23,6 +23,8 @@
 FpsClass::FpsClass()
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
+
 	//private:
 	m_startTime = NULL;
 	m_fps = m_count = NULL;

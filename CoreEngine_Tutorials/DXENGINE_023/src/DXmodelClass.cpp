@@ -426,14 +426,14 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 	{
 		HRESULT hr = S_FALSE;
 
-		int meshSRV_size = 0;
+		UINT meshSRV_size = 0;
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
 		{
-			meshSRV_size = meshSRV11.size();
+			meshSRV_size = (UINT) meshSRV11.size();
 		}
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 		{
-			meshSRV_size = meshSRV.size();
+			meshSRV_size = (UINT) meshSRV.size();
 		}
 		if (meshSRV_size > 1)
 			Sleep(1);
@@ -476,7 +476,7 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 				{
 					case DRIVER_DX9:
 					case DRIVER_DX11:
-						LOADTEXTURE(textureFilename, m_Texture11, m_driver11); // NOTE: Populate hr in case of failor
+						LOADTEXTURE(textureFilename, m_Texture11); // NOTE: Populate hr in case of failor
 					break;
 				}
 

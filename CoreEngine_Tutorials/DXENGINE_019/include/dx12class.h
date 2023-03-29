@@ -19,8 +19,6 @@
 // --------------------------------------------------------------------------------------------
 #pragma once
 
-// SAMPLE: https://github.com/GameTechDev/DX12-Multi-Adapter/blob/master/DX12_MASample/Source/DXRenderer.cpp
-
 #include "platform.h"
 #include<D3D11.h> //To populate: D3D11_SPEC_DATE_YEAR
 #if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009
@@ -38,7 +36,6 @@
 // INCLUDES //
 //////////////
 
-//#ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers.
 #include <Windows.h>
 
@@ -69,8 +66,7 @@
 
 // DX12 2D:
 
-// DX12 UTILS:
-#include "d3dx12.h"
+#include "d3dx12.h"	// DX12 UTILS:
 
 // Windows STL includes
 #include <stdio.h>
@@ -116,6 +112,7 @@ public:
 	static const auto BufferCount = 2;  // "Use Double Buffer"
 //	static const auto BufferCount = 3;  // "Use Tripple Buffer"
 
+	UINT WomaIntegrityCheck = 1234567890;
 	DX12Class();
 	~DX12Class();
 	void Shutdown2D();
@@ -183,10 +180,6 @@ public:
 
 	//DXGI_MODE_DESC* displayModeList;
 	
-#if zero
-	ID3D11DepthStencilView* m_depthStencilViewWater;
-#endif
-
 // ---------------------------------------------------------
 
 
@@ -274,20 +267,20 @@ public:
 #endif
 
 	// Synchronization objects:
-	HANDLE				m_swapChainEvent;
+	HANDLE				m_swapChainEvent = NULL;
 	ComPtr<ID3D12Fence> m_renderContextFence;
-	UINT64				m_renderContextFenceValue;
-	HANDLE				m_renderContextFenceEvent;
+	UINT64				m_renderContextFenceValue = NULL;
+	HANDLE				m_renderContextFenceEvent = NULL;
 	UINT64				m_frameFenceValues[BufferCount];
 
-	UINT				m_CullMode, m_fillMode;
-	HANDLE				m_fenceEvent;
+	UINT				m_CullMode= NULL, m_fillMode = NULL;
+	HANDLE				m_fenceEvent = NULL;
 	
 
 	// Asset objects:
 	ComPtr<ID3D12Fence>					m_fence;
 	//UINT64							m_fenceValue;
-	UINT64								m_fenceValues[BufferCount];
+	UINT64								m_fenceValues[BufferCount] = {0};
 	ComPtr<ID3D12GraphicsCommandList>	m_commandList;
 };
 

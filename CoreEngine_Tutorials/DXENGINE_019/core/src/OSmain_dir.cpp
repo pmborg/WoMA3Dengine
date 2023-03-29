@@ -26,7 +26,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "main.h"
 #include "OSmain_dir.h"
-
 #include <algorithm>
 #include <string>
 #include <iostream>

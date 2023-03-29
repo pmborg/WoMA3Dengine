@@ -38,6 +38,7 @@
 class WinCpuClass
 {
 public:
+    UINT WomaIntegrityCheck = 1234567890;
     WinCpuClass();
     ~WinCpuClass();
 

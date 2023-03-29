@@ -31,6 +31,7 @@
 ApplicationClass::ApplicationClass()
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	// ---------------------------------------------------------------------
 	// private:
@@ -170,9 +171,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	//LIGHT ////////////////////////////////////////////////////////////////////////////////////////////////////////
 	m_Light = NEW LightClass;	// Create the light object
 	IF_NOT_THROW_EXCEPTION(m_Light);
-	//m_Light->SetAmbientColor(0.2f, 0.2f, 0.2f, 1);
-	//m_Light->SetDiffuseColor(1, 1, 1, 1.0f);
-	//m_Light->SetDirection(-0.25f, -1.0f, -0.25f);
 	m_Light->SetAmbientColor(0.05f, 0.05f, 0.05f, 1);
 	m_Light->SetDiffuseColor(0.3f, 0.3f, 0.3f, 1.0f);
 	m_Light->SetDirection(0, -1.0f, 0);

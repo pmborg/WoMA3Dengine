@@ -51,6 +51,7 @@
 
 WeatherClass::WeatherClass()
 {
+    WomaIntegrityCheck = 1234567890;
 	CLASSLOADER();
 
     Metar = TEXT("");

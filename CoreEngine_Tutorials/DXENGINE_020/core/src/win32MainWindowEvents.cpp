@@ -211,6 +211,8 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 			WOMA::game_state = GAME_STOP;
 		}
 
+		//SAFE_DELETE(m_contextDriver);
+
 		::PostMessage(hwnd, WM_QUIT, 0, 0);
 		return 0;			
 
@@ -225,10 +227,6 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 
 		KillTimer(hwnd, TIMER_ASTRO);
 
-		if ((m_contextDriver != driverList[DRIVER_DX9]) &&
-			(m_contextDriver != driverList[DRIVER_DX11]) &&
-			(m_contextDriver != driverList[DRIVER_DX12]))
-			SAFE_DELETE(m_contextDriver);
 		return 0;
 
 #if defined USE_INTRO_VIDEO_DEMO
@@ -276,7 +274,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 					else
 						ShowWindow(SystemHandle->statusbar, SW_SHOW);
 
-					return 0;
+					//return 0;
 				}
 			}
 		}

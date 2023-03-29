@@ -46,6 +46,7 @@ void cpuID(unsigned regs[4], unsigned i)
 ProcessorInfo::ProcessorInfo()
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
     processorName[0] = 0;
     processorId[0] = 0;

@@ -112,8 +112,6 @@ bool GlTextClass::InitializeTexture(void* Driver)
 // SIMILAR: DXmodelClass::InitializeColorBuffers
 bool GlTextClass::InitializeSentence(SentenceType** sentence, int maxLength)
 {
-	HRESULT result;
-
 	// Create a new sentence object.
 	*sentence = NEW SentenceType;
 	IF_NOT_THROW_EXCEPTION(*sentence);
@@ -184,9 +182,6 @@ bool GlTextClass::UpdateSentence(SentenceType* sentence, TCHAR* text, int positi
 	int numLetters;
 	ModelTextureVertexType* vertices;
 	float drawX, drawY;
-	HRESULT result;
-	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	ModelTextureVertexType* verticesPtr;
 
 	positionY += 36;
 

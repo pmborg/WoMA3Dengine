@@ -204,7 +204,7 @@ namespace DirectX {
 		//BOOL		hasNormMap;	//repeated in VS
 
 		// BLOCK6:
-		XMFLOAT3	cameraPosition;	//TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		XMFLOAT3	cameraPosition;	//TODO: soon
 		//BOOL		castShadow;		//repeated in VS
 		specularColor = XMFLOAT3(0, 0, 0);
 		nShininess = 0;

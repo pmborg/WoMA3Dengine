@@ -31,6 +31,7 @@
 ApplicationClass::ApplicationClass()
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	// ---------------------------------------------------------------------
 	// private:
@@ -54,11 +55,10 @@ ApplicationClass::ApplicationClass()
 	ClearColor[2] = 0.8f;
 	ClearColor[3] = 1.0f;
 
-
-
 	m_Light = NULL;
 
 	// TERRAIN
+
 
 	m_lightRayModel = NULL;
 
@@ -74,7 +74,6 @@ void ApplicationClass::Shutdown()
 
 	SAFE_DELETE (m_Light);
 
-
 }
 
 
@@ -84,6 +83,8 @@ bool ApplicationClass::WOMA_APPLICATION_InitGUI()
 {
 	SystemHandle->m_scaleX = MIN(1, SystemHandle->AppSettings->WINDOW_WIDTH / 1920.0f);
 	SystemHandle->m_scaleY = MIN(1, SystemHandle->AppSettings->WINDOW_HEIGHT / 1080.0f);
+	if (SystemHandle->m_scaleY > 0.9f)
+		SystemHandle->m_scaleY = 1;
 
 	SystemHandle->fontSizeX = MIN(25, 48 * SystemHandle->m_scaleX);	//To use on win32 window not DX
 	SystemHandle->fontSizeY = MIN(25, 40 * SystemHandle->m_scaleY); //To use on win32 window not DX
@@ -138,18 +139,18 @@ bool ApplicationClass::Initialize(/*WomaDriverClass*/ void* Driver)
 //-------------------------------------------------------------------------------------------
 {
 	ASSERT(Driver);
-
-	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(SystemHandle->m_Driver));	// <---------- USER LOAD all 3D objects!
-
-	//CALL DEMO APPLICATION //////////////////////////////////////////////////////////////////////////////////////////
 	SystemHandle->demoApplicationClass = NEW DemoApplicationClass;
+
+	// USER LOAD main 3D objects!
+	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(SystemHandle->m_Driver));	
+
+	//CALL DEMO APPLICATION:
 	IF_NOT_RETURN_FALSE(SystemHandle->demoApplicationClass->WOMA_APPLICATION_Initialize3D(SystemHandle->m_Driver));
+
 	SystemHandle->m_Driver->Finalize();
 
 	return true;
 }
-
-
 
 
 //	-------------------------------------------------------------------------------------------
@@ -167,15 +168,12 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	//LIGHT ////////////////////////////////////////////////////////////////////////////////////////////////////////
 	m_Light = NEW LightClass;	// Create the light object
 	IF_NOT_THROW_EXCEPTION(m_Light);
-	//m_Light->SetAmbientColor(0.2f, 0.2f, 0.2f, 1);
-	//m_Light->SetDiffuseColor(1, 1, 1, 1.0f);
-	//m_Light->SetDirection(-0.25f, -1.0f, -0.25f);
 	m_Light->SetAmbientColor(0.05f, 0.05f, 0.05f, 1);
 	m_Light->SetDiffuseColor(0.3f, 0.3f, 0.3f, 1.0f);
 	m_Light->SetDirection(0, -1.0f, 0);
 
 	//SKY ////////////////////////////////////////////////////////////////////////////////////////////////////////
-	if (RENDER_PAGE >= 23 && RENDER_PAGE < 27)
+	if (RENDER_PAGE >= 23  && RENDER_PAGE < 27)
 	{
 		initLightRay(Driver);
 	}

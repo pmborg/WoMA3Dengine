@@ -46,7 +46,6 @@
 
 
 #if defined ALLOW_PRINT_SCREEN_SAVE_PNG
-	//#include "../../IMAGING/ImageLoaderClass.h"
 	#include "ImageLoaderClass.h"
 #endif
 
@@ -68,6 +67,7 @@ enum SHADER_TYPE
 	SHADER_AUTO = -1, 
 	SHADER_COLOR,						//21: M3D v1.0	public MAIN (Used by: 21 & Sun Ray & 3D Obj)
 	SHADER_TEXTURE,						//22: M3D v1.1	public MAIN (Used by: 22 & Banner & Sky2D & SplashIntro & UnderWater & Font & 3D Obj)
+	SHADER_TEXTURE_FONT,				//27:
 	SHADER_TEXTURE_LIGHT,				//23: M3D v1.2	public MAIN + Pass2: Shadows (Used by: 23 & Sky3D & Sun & Moon & 3D Obj)
 	SHADER_TEXTURE_LIGHT_RENDERSHADOW,  //45:			public "Render Shadows"
 	SHADER_TEXTURE_LIGHT_CASTSHADOW,	//45:			private "Pass1: Shadows" (add auxiliar Shader)
@@ -196,6 +196,9 @@ public:
 	virtual void EndScene(UINT monitorWindow) = 0;
 	virtual void ClearDepthBuffer() = 0;
 
+#if defined USE_RASTERIZER_STATE
+	virtual void SetRasterizerState(UINT cullMode, UINT fillMode) = 0;
+#endif
 	virtual void TurnZBufferOn() = 0;
 	virtual void TurnZBufferOff() = 0;
 

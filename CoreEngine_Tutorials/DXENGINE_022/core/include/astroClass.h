@@ -28,7 +28,7 @@
 class AstroClass
 {
 public:
-	
+	UINT WomaIntegrityCheck = 1234567890;
 	AstroClass();
 	~AstroClass();
 

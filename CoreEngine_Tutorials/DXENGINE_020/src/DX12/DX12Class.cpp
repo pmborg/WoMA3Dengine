@@ -486,6 +486,10 @@ bool DX12Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, i
 	Resize(screenWidth, screenHeight, screenNear, screenDepth, fullscreen, depthBits);		//Init Step: 7 (Include: 8,9,10,11,12) // Get Projection Matrix!
 
 	//Init Step: 6 - Cull Back / Front:
+#if defined USE_RASTERIZER_STATE
+	IF_NOT_RETURN_FALSE(createAllRasterizerStates(false)); // Only applies: if doing "line drawing" and "MultisampleEnable" is false.
+	SetRasterizerState(CULL_NONE, FILL_SOLID);	//Set Default
+#endif
 
 	// Create the command list.
 	ThrowIfFailed(m_device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_commandAllocator.Get(), nullptr, IID_PPV_ARGS(&m_commandList)));
@@ -950,6 +954,46 @@ void DX12Class::getProfile ()
 }
 
 //Init Step: 4
+#if defined USE_RASTERIZER_STATE
+// ----------------------------------------------------------------------------------------------
+bool DX12Class::createAllRasterizerStates(bool lineAntialiasing)
+// ----------------------------------------------------------------------------------------------
+{
+	for (UINT cullMode = 0; cullMode < 3; cullMode++)			//0..2
+	{
+		for (UINT fillMode = 0; fillMode < 2; fillMode++)		//0..1
+		{
+			if (cullMode == CULL_FRONT)
+				m_rasterState[cullMode][fillMode].CullMode = D3D12_CULL_MODE_FRONT;
+			if (cullMode == CULL_BACK)
+				m_rasterState[cullMode][fillMode].CullMode = D3D12_CULL_MODE_BACK;
+			if (cullMode == CULL_NONE)
+				m_rasterState[cullMode][fillMode].CullMode = D3D12_CULL_MODE_NONE;
+
+			if (fillMode == FILL_SOLID)
+				m_rasterState[cullMode][fillMode].FillMode = D3D12_FILL_MODE_SOLID;
+			if (fillMode == FILL_WIRE)
+				m_rasterState[cullMode][fillMode].FillMode = D3D12_FILL_MODE_WIREFRAME;
+
+			m_rasterState[cullMode][fillMode].FrontCounterClockwise = FALSE;
+			m_rasterState[cullMode][fillMode].DepthBias = D3D12_DEFAULT_DEPTH_BIAS;
+			m_rasterState[cullMode][fillMode].DepthBiasClamp = D3D12_DEFAULT_DEPTH_BIAS_CLAMP;
+			m_rasterState[cullMode][fillMode].SlopeScaledDepthBias = D3D12_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
+
+			m_rasterState[cullMode][fillMode].DepthClipEnable = TRUE;	// Enable clipping based on distance: http://technet.microsoft.com/de-de/subscriptions/ff476198%28v=vs.85%29.aspx
+
+			m_rasterState[cullMode][fillMode].MultisampleEnable = (SystemHandle->AppSettings->MSAA_ENABLED) ? true : false;	// Enable/Disable multisample antialiasing.
+			m_rasterState[cullMode][fillMode].AntialiasedLineEnable = (SystemHandle->AppSettings->MSAA_ENABLED) ? false : true;
+			//rasterizerState[cullMode][fillMode].AntialiasedLineEnable = FALSE; //lineAntialiasing;				// Enable line antialiasing; only applies if doing line drawing and MultisampleEnable is false.
+
+			m_rasterState[cullMode][fillMode].ForcedSampleCount = 0;
+			m_rasterState[cullMode][fillMode].ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
+		}
+	}
+
+    return true;
+}
+#endif
 
 // REVIEW - Init Step: 5 - Rasterizer State: Set the Viewport for rendering
 // ----------------------------------------------------------------------------------------------
@@ -1009,6 +1053,17 @@ void DX12Class::SetBackBufferRenderTarget()
 // ----------------------------------------------------------------------------------------------
 {
 }
+#if defined USE_RASTERIZER_STATE
+// ----------------------------------------------------------------------------------------------
+void DX12Class::SetRasterizerState(UINT CullMode, UINT fillMode) 
+// ----------------------------------------------------------------------------------------------
+{
+	m_CullMode = CullMode;
+	m_fillMode = fillMode;
+
+	//rasterState = &m_rasterState[CullMode][fillMode];
+}
+#endif
 
 // ----------------------------------------------------------------------------------------------
 bool DX12Class::createSetDepthStencilState (bool depthTestEnabled)
@@ -1050,7 +1105,6 @@ void DX12Class::SetCamera2D()
 {
 }
 
-// TODO: go to Virtual Class?
 // ----------------------------------------------------------------------------------------------
 void DX12Class::Initialize3DCamera()
 // ----------------------------------------------------------------------------------------------

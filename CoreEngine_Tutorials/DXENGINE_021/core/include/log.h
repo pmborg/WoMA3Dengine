@@ -29,6 +29,7 @@ namespace WOMA
 class ILogManager
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	static ILogManager* CreateInstance();
 	static void ShutdownInstance();
 
@@ -38,7 +39,6 @@ public:
 
 	virtual void DEBUG_MSG(CHAR* strMsg, ...) = 0;
 };
-
 
 extern ILogManager* logManager;		// Global log manager
 extern void start_log_manager();

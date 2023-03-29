@@ -26,6 +26,7 @@
 SystemManager::SystemManager()
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	CPUSpeedMHz = 0;
 

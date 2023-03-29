@@ -64,6 +64,7 @@ mat4 operator * (const mat4 &mat1, const mat4 &mat2);
 class GLmathClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	GLmathClass();
 	~GLmathClass();
 

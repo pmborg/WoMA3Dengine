@@ -44,6 +44,7 @@ private:
 	static LONG WINAPI TopLevelFilter( struct _EXCEPTION_POINTERS *pExceptionInfo );
 
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	MiniDumper();
 	~MiniDumper();
 };

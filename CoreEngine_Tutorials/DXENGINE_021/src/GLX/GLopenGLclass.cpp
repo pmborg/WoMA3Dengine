@@ -186,7 +186,7 @@ void GLopenGLclass::Initialize3DCamera()
 // ------------------------------------------------------------------
 {
 
-	m_Camera->SetPosition(	SystemHandle->AppSettings->INIT_CAMX, SystemHandle->AppSettings->INIT_CAMY+0.35, 
+	m_Camera->SetPosition(	SystemHandle->AppSettings->INIT_CAMX, SystemHandle->AppSettings->INIT_CAMY+0.35f, 
 							SystemHandle->AppSettings->INIT_CAMZ);
 
 	m_Camera->SetRotation(	SystemHandle->AppSettings->INIT_ROTX, SystemHandle->AppSettings->INIT_ROTY, 

@@ -97,6 +97,11 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 	SystemHandle->m_Driver->BeginScene(monitorWindow);	// Clear the buffers to begin the scene (glClear|ClearRenderTargetView/ClearDepthStencilView)
 	
 
+#if defined USE_RASTERIZER_STATE
+	SystemHandle->m_Driver->SetRasterizerState(CULL_BACK, FILL_SOLID);
+	//SystemHandle->m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
+#endif
+
 	// DEBUG SPRITE: Shadows
 	// --------------------------------------------------------------------------------------------
 #if defined USE_SHADOW_MAP //&& defined _DEBUG
@@ -141,6 +146,10 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 	// --------------------------------------------------------------------------------------------
 	// [0] TERRAIN: UNDER WATER!
 	// --------------------------------------------------------------------------------------------
+#if defined USE_RASTERIZER_STATE
+	SystemHandle->m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
+	//m_Driver->SetRasterizerState(CULL_NONE, FILL_WIRE);
+#endif
 
 #if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN || defined SCENE_MAIN_TERRAIN
 	if (RENDER_PAGE >= 24)
@@ -174,6 +183,10 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 
 	// BASICS: page 21: / 22 / 23
 	// --------------------------------------------------------------------------------------------
+#if defined USE_RASTERIZER_STATE
+	SystemHandle->m_Driver->SetRasterizerState(CULL_BACK, FILL_SOLID);
+	//SystemHandle->m_Driver->SetRasterizerState(CULL_NONE, FILL_WIRE);
+#endif
 
 	// 3D STATIC OBJECTS
 	// --------------------------------------------------------------------------------------------

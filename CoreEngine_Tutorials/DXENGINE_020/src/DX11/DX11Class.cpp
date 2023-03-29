@@ -196,6 +196,10 @@ DX11Class::DX11Class()
 	m_depthStencilState = NULL;
 	m_depthDisabledStencilState = NULL;
 
+#if defined USE_RASTERIZER_STATE
+	ZeroMemory( &m_rasterState, sizeof(m_rasterState) );
+#endif
+
 	//Init Step: 1 - Check Driver for DX9 and DX10 and DX12(=false) on DX11 API
 	ASSERT (CheckAPIdriver(/* Use Graph Card 1 */ USE_THIS_GRAPHIC_CARD_ADAPTER));
 
@@ -260,6 +264,13 @@ void DX11Class::Shutdown()
 		// For each Monitor: 
 		for (int i = 0; i < DX11windowsArray.size(); i++)
 			SAFE_RELEASE(DX11windowsArray[i].m_renderTargetView);		// CreateRenderTargetView
+
+		#if defined USE_RASTERIZER_STATE
+		//createAllRasterizerStates:
+		for (UINT i=0; i<3; i++)
+			for (UINT j=0; j<2; j++)
+				SAFE_RELEASE (m_rasterState[i][j]);
+		#endif
 
 		SAFE_RELEASE (adapterGraphicCard);
 		SAFE_RELEASE (m_deviceContext);
@@ -373,6 +384,8 @@ if (dx11_force_dx9)
 	/******************************************************************/
 	// Check Math Library:
 	/******************************************************************/
+	if (!XMVerifyCPUSupport())
+		MessageBox(NULL, TEXT("WARNING: Failed to verify DirectX Math library support."), TEXT("Error"), MB_OK);
 
 	/******************************************************************/
 	// Check DX Driver Multithread
@@ -411,6 +424,12 @@ bool DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, i
 	//Init Step: 7 (Include: 8,9,10,11,12)
 	// Creates a render target view and depth stencil surface/view per swapchain
 	IF_NOT_RETURN_FALSE (Resize (screenWidth, screenHeight, screenNear, screenDepth, fullscreen, depthBits));
+
+#if defined USE_RASTERIZER_STATE
+	//Init Step: 8 - Cull Back / Front:
+	IF_NOT_RETURN_FALSE ( createRasterizerStates (/*lineAntialiasing*/ false)); // Only applies: if doing "line drawing" and "MultisampleEnable" is false.
+	SetRasterizerState (CULL_NONE, FILL_SOLID);	//Set Default
+#endif
 
   #if defined USE_FRUSTRUM
 	frustum = NEW DXfrustumClass;	// Create Frustum

@@ -28,6 +28,8 @@
 ImageLoaderClass::ImageLoaderClass() 
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
+
 	//private:
 	pixels = NULL;
 
@@ -121,8 +123,6 @@ unsigned char* Convert32to24bits(unsigned char* src, UINT imageSize24bits)
 ////////////////////////////////////////////////////////////////////////////////
 // TIF
 ///////////////////////////////////////////////////////////////////////////////
-//#include "../../IMAGING/TIFF_LIB/include/tiffio.h"
-//#include "/WoMA3Dengine/_LIBS/tiff-3.8.2-src/libtiff/tiffio.h"
 #include "tiffio.h"
 
 unsigned char* ImageLoaderClass::loadTIF (TCHAR* filename, UINT* width, UINT* height, UINT* imageSize, UINT loadimagebits)

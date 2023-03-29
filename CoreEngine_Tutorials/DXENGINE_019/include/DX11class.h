@@ -24,7 +24,7 @@
 //SELECT DXGI DX11 version:
 	#include<D3D11.h>
 	#if defined WIN6x
-		#define DXGI1_0	// DX10: Target For: Vista (for drivers WDDM 1.0 specification)
+		#define DXGI1_3	// DX10: Target For: Vista (for drivers WDDM 1.0 specification)
 	#elif D3D11_SPEC_DATE_YEAR == 2009
 		#define DXGI1_1				//SDK: C:\WoMAengine2014\Microsoft_DirectX_SDK_June_2010
 			// WINDOWS VISTA (SP2):
@@ -83,6 +83,9 @@
 /////////////
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3d11.lib")
+#if _DEBUG
+#pragma comment(lib, "dxguid.lib")
+#endif
 
 //////////////
 // INCLUDES //
@@ -196,8 +199,8 @@ WDDM 2.0->Windows 10				Display Drivers or Creates a DXGI 1.4
 	#pragma warning( disable : 4838 )
 	#include <DirectXMath.h> //#include <xnamath.h>				//#include <d3dx10math.h>
 	#include <d3dx11tex.h>
-	#pragma comment(lib, "\\WoMA3Dengine\\ExternalTools\\Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\d3dx11.lib")	// DONT NEED THIS AT WIN8 SDK BUT NEED WITH OLD JUN 2010 SDK
-	#pragma comment(lib, "\\WoMA3Dengine\\ExternalTools\\Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\d3dx10.lib")	// DONT NEED THIS AT WIN8 SDK BUT NEED WITH OLD JUN 2010 SDK
+	#pragma comment(lib, "/WoMA3Dengine/ThirdParty/Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\d3dx11.lib")	// DONT NEED THIS AT WIN8 SDK BUT NEED WITH OLD JUN 2010 SDK
+	#pragma comment(lib, "/WoMA3Dengine/ThirdParty/Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\d3dx10.lib")	// DONT NEED THIS AT WIN8 SDK BUT NEED WITH OLD JUN 2010 SDK
 #else
 	#include <DirectXMath.h> 
 	using namespace DirectX;
@@ -239,8 +242,13 @@ struct DXTextLine
 class DX11Class : public WomaDriverClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	DX11Class();
 	~DX11Class();
+
+#if _DEBUG
+	IDXGIDebug* debugDev;
+#endif
 
 	bool dx11_force_dx9;
 	void Initialize3DCamera();
@@ -287,9 +295,9 @@ public:
 	DXGI_FORMAT BUFFER_DEPTH_FORMAT;
 
 	// For each DX11 Adapter:
-	IDXGIAdapter1* adapterGraphicCard;
-	ID3D11Device* m_device;
-	ID3D11DeviceContext* m_deviceContext;
+	IDXGIAdapter1* adapterGraphicCard = NULL;
+	ID3D11Device* m_device = NULL;
+	ID3D11DeviceContext* m_deviceContext = NULL;
 
 	// For each DX11 Monitor:
 	struct DXwindowDataContainer
@@ -313,10 +321,10 @@ public:
 	// Aux. Used by all monitors:
 	// Used in: resolutionType resolution;
 	// SystemHandle->windowsArray.push_back(screen);
-	DXGI_MODE_DESC* displayModeList;
+	DXGI_MODE_DESC* displayModeList = NULL;
 	
 #if zero
-	ID3D11DepthStencilView* m_depthStencilViewWater;
+	ID3D11DepthStencilView* m_depthStencilViewWater = NULL;
 #endif
 
 // ---------------------------------------------------------
@@ -341,10 +349,11 @@ private:
 
 	// ---------------------------------------------------------
 	// ---------------------------------------------------------
-
-	ID3D11Texture2D*		 m_depthBuffer;
-	ID3D11DepthStencilState* m_depthStencilState;
-	ID3D11DepthStencilState* m_depthDisabledStencilState;
+	BYTE dummybuff1[128] = { 0 };
+	ID3D11Texture2D*		 m_depthBuffer=NULL;
+	ID3D11DepthStencilState* m_depthStencilState = NULL;
+	ID3D11DepthStencilState* m_depthDisabledStencilState = NULL;
+	BYTE dummybuff2[128] = { 0 };
 
 public:
 

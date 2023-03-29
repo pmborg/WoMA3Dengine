@@ -106,12 +106,13 @@ Rendering 3D with Effects
 // http://openvidia.sourceforge.net/index.php/DirectCompute
 
 #include "platform.h"
+#include "OSmain_dir.h"
 #include <d3d11.h>
 
 #include "win32InputClass.h"
 #include "mem_leak.h"
 
-#include "winsystemclass.h"	// SystemHandle
+#include "dxWinSystemClass.h"	// SystemHandle
 #include "dx11Class.h"
 
 #if D3D11_SPEC_DATE_YEAR == 2009 //defined DX9 
@@ -140,6 +141,7 @@ DX11Class::DX11Class()
 {
 	// WomaDriverClass / Public: ------------------------------------------------------
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	// SUPER: 
 	dx11_force_dx9 = false;
@@ -185,6 +187,7 @@ DX11Class::DX11Class()
 	displayModeList = NULL;
 	// ---------------------------------------------------------
 
+
 	#if defined USE_FRUSTRUM
 		frustum				= NULL;
 	#endif
@@ -225,9 +228,10 @@ void DX11Class::Shutdown2D()
 void DX11Class::Shutdown()
 //----------------------------------------------------------------------------------------------
 {
+
+
 	if (m_device) 
 	{
-		//SAFE_RELEASE (adapterGraphicCard);
 
 	Shutdown2D();
 
@@ -236,6 +240,11 @@ void DX11Class::Shutdown()
 	#if defined USE_FRUSTRUM // 21
 		SAFE_DELETE(frustum);
 	#endif
+
+	//#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+	//	if(m_Camera) 
+	//		{ delete ((DirectX::DXcameraClass*)m_Camera); m_Camera=NULL; }	//SAFE_DELETE (m_Camera);
+	//#endif
 
 		// For each Monitor: 
 		// Before shutting down set to windowed mode or when you release the swap chain it will throw an exception.
@@ -269,6 +278,10 @@ void DX11Class::Shutdown()
 			SAFE_RELEASE(DX11windowsArray[i].m_swapChain);
 
 		// The Last one!
+		#if _DEBUG
+		HRESULT hr = debugDev->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
+		#endif
+
 		ULONG count = m_device->Release();
 		m_device = NULL;
 
@@ -278,6 +291,7 @@ void DX11Class::Shutdown()
 		#endif
 
 		ASSERT (!count);
+		
 	}
 }
 
@@ -307,6 +321,10 @@ BOOL DX11Class::CheckAPIdriver(UINT USE_THIS_ADAPTER_CARD)
 	}
 
 	FreeLibrary(hinstLib);
+#endif
+
+#if _DEBUG
+	HRESULT hr = DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debugDev));
 #endif
 
 	/*******************************************************************
@@ -482,6 +500,7 @@ HRESULT result = S_OK;
 		// #Generate new "ProjectionMatrix" and "OrthoMatrix"
 		// --------------------------------------------------
 	}
+
 #if defined CLIENT_SCENE_TEXT || defined USE_VIEW2D_SPRITES // 26
 	//SetCamera2D(); //AQUI
 	Initialize3DCamera();
@@ -599,7 +618,7 @@ bool DX11Class::Initialize(float* clearColor)
 	return true;
 }
 
-void DX11Class::Finalize() {}
+void DX11Class::Finalize() {} //not used on DX11
 
 // ----------------------------------------------------------------------------------------------
 void DX11Class::BeginScene(UINT monitorWindow)
@@ -644,7 +663,6 @@ void DX11Class::Initialize3DCamera()
 // ----------------------------------------------------------------------------------------------
 {
 
-	// Normal Camera: ( After: SetCamera2D() )
 
 }
 

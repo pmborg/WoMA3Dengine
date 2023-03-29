@@ -91,6 +91,7 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 {
 	// STARTING POINT of WOMA ENGINE!
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	AppSettings = NULL;
 
@@ -259,11 +260,21 @@ void SystemClass::ProcessOSInput() // This Function will be invoked several time
 		WOMA::game_state = GAME_SETUP;
 		OS_REDRAW_WINDOW;
 		// Toggle the full screen/window mode
+
 		if (SystemHandle->AppSettings->FULL_SCREEN)
 		{
-			//SystemHandle->AppSettings->FULL_SCREEN = false;
+			//if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+			SystemHandle->AppSettings->FULL_SCREEN = false;
 			CHAR str[MAX_STR_LEN] = { 0 }; wtoa(str, (TCHAR*)SystemHandle->XML_SETTINGS_FILE.c_str(), MAX_STR_LEN); // wchar ==> char
 			saveConfigSettings(str);
+			/*
+			// activate the window
+			SetActiveWindow(SystemHandle->m_hWnd);
+			ushort action = (ushort)WM_SYSKEYDOWN; //ALT
+			ushort key = (ushort)0xd; //ENTER
+			uint lparam = (0x01 << 28);
+			SendMessage(SystemHandle->m_hWnd, action, key, lparam);
+			*/
 			WOMA::previous_game_state = WOMA::game_state;
 			WOMA::game_state = ENGINE_RESTART;
 		}
@@ -403,22 +414,27 @@ void SystemClass::Shutdown()
 
 	if (driverList[DRIVER_GL3]) {
 		delete ((wGLopenGLclass*)driverList[DRIVER_GL3]);
+		driverList[DRIVER_GL3] = NULL;
 	}
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 	if (driverList[DRIVER_DX12]) {
 		delete ((DirectX::DX12Class*)driverList[DRIVER_DX12]);
+		driverList[DRIVER_DX12] = NULL;
 	}
 #endif
 	if (driverList[DRIVER_DX11]) {
 		delete ((DirectX::DX11Class*)driverList[DRIVER_DX11]);
+		driverList[DRIVER_DX11] = NULL;
 	}
 #if defined DX9 && D3D11_SPEC_DATE_YEAR > 2009
 	if (driverList[DRIVER_DX9]) {
 		delete ((DirectX::DX11Class*)driverList[DRIVER_DX9]);
+		driverList[DRIVER_DX9] = NULL;
 	}
 #elif defined DX9sdk
 	if (driverList[DRIVER_DX9]) {
 		delete ((DirectX::DX9Class*)driverList[DRIVER_DX9]);
+		driverList[DRIVER_DX9] = NULL;
 	}
 #endif
 
@@ -483,7 +499,6 @@ bool SystemClass::LoadAllGraphics()
 	if (!m_Application->Initialize(m_Driver))// < ------- Initialize: Load all Application Objects & START TIMER
 		WOMA::game_state = GAME_STOP;
 
-	
 #if defined USE_INTRO_VIDEO_DEMO
 	SAFE_DELETE(g_DShowPlayer);
 #endif
@@ -510,7 +525,8 @@ bool SystemClass::InitializeDrivers(int screenWidth, int screenHeight, float scr
 	{
 		// [0] DX11 (10)
 	case DRIVER_DX11:
-		m_contextDriver = m_Driver = driverList[DRIVER_DX11];
+		//m_contextDriver = m_Driver = driverList[DRIVER_DX11];
+		m_Driver = driverList[DRIVER_DX11];
 		break;
 
 		// [1] GL3+
@@ -521,15 +537,17 @@ bool SystemClass::InitializeDrivers(int screenWidth, int screenHeight, float scr
 
 		// [2] DX 9
 	case DRIVER_DX9:
-		m_contextDriver = m_Driver = driverList[DRIVER_DX9];
+		//m_contextDriver = m_Driver = driverList[DRIVER_DX9];
+		m_Driver = driverList[DRIVER_DX9];
 		break;
 
 		// [3] DX 12
-#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009 //Use: WIN10SDK
+	#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009 //Use: WIN10SDK
 	case DRIVER_DX12:
-		m_contextDriver = m_Driver = driverList[DRIVER_DX12]; // m_contextDriver; // Re-Use the same driver ( Context Driver )
+		//m_contextDriver = m_Driver = driverList[DRIVER_DX12];
+		m_Driver = driverList[DRIVER_DX12];
 		break;
-#endif
+	#endif
 	}
 
 	if (!m_Driver) {
@@ -598,8 +616,6 @@ void SystemClass::LoadAllDrivers()
 #endif
 
 	WomaDriverClass* m_GLcontextDriver = NULL;
-
-
-
 }
+
 

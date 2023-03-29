@@ -22,6 +22,7 @@
 class WeatherClass
 {
 public:
+    UINT WomaIntegrityCheck = 1234567890;
     WeatherClass();
     ~WeatherClass();
 

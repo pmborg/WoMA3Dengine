@@ -25,6 +25,7 @@
 SystemFeatures::SystemFeatures()
 {
 	CLASSLOADER();
+    WomaIntegrityCheck = 1234567890;
 
     displayAllCpuFeactures = TEXT("");
 }

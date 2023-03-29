@@ -27,6 +27,7 @@
 class SystemFeatures
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
     SystemFeatures();
     ~SystemFeatures();
 

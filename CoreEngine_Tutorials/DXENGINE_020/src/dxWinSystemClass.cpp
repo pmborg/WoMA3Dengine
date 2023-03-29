@@ -41,6 +41,8 @@
 	#include "GLopenGLclass.h"		//woma
 	#include "wGLopenGLclass.h"		// Windows
 
+	#include "xml_loader.h"
+
 dxWinSystemClass* DXsystemHandle = NULL;
 
 //----------------------------------------------------------------------------------
@@ -48,6 +50,7 @@ dxWinSystemClass::dxWinSystemClass(WOMA::Settings* appSettings) : WinSystemClass
 //----------------------------------------------------------------------------------
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 	WinSystemClass::AppSettings = appSettings;
 	WinSystemClass::mMaximized = WinSystemClass::AppSettings->FULL_SCREEN;
 
@@ -56,7 +59,6 @@ dxWinSystemClass::dxWinSystemClass(WOMA::Settings* appSettings) : WinSystemClass
 	m_contextDriver = NULL;	// Note: Used only at 20
 
 	DXsystemHandle = this;
-
 }
 
 dxWinSystemClass::~dxWinSystemClass()
@@ -123,10 +125,6 @@ bool dxWinSystemClass::InitSelectedDriver()
 	if (driverList[DRIVER_DX9] && AppSettings->DRIVER == DRIVER_DX9)
 		_tcscpy_s(m_Driver->driverName, sizeof(m_Driver->driverName), TEXT("DX9"));
 #endif
-	//#if defined DX9 && D3D11_SPEC_DATE_YEAR > 2009
-	//if (driverList[DRIVER_DX9] && AppSettings->DRIVER == DRIVER_DX9)
-	//	_tcscpy_s(m_Driver->driverName, sizeof(m_Driver->driverName), TEXT("DX9*"));
-	//#endif
 
 	if (driverList[DRIVER_DX11]) //Driver 11 will give backward compatibility:
 		WOMA_LOGManager_DebugMSGAUTO(TEXT("DX10 Support: %s\n"), SystemHandle->driverList[SystemHandle->AppSettings->DRIVER]->m_sCapabilities.CapDX10_11 ? TEXT("true") : TEXT("false"));	//Allow DX11, scale down to DX10, if needed?		
@@ -156,7 +154,7 @@ bool dxWinSystemClass::InitializeSystem()
 
 	// MAIN LOADING THREAD:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	SystemClass::LoadAllGraphics();	//ApplicationClass::WOMA_APPLICATION_InitializeSprites2D()
+	SystemClass::LoadAllGraphics();	// Load all main Graphics Objects, that will be rendered
 
 	if (WOMA::game_state >= GAME_STOP) // Something FATAL on loading "mandatory 2D/3D Stuff"?
 		return false;			 // (SAMPLE: misssing 3D/IMAGE/AUDIO file...)
@@ -281,7 +279,7 @@ void dxWinSystemClass::UNPAUSE()
 void dxWinSystemClass::ProcessFrame()
 //----------------------------------------------------------------------------
 {
-	WinSystemClass::ProcessFrame();
+	WinSystemClass::ProcessFrame(); // Process Input
 
 	// Process Special: "PRINT SCREEN" key, the "Back-Buffer" have 1 frame rendered, now we can dump it:
 #if defined ALLOW_PRINT_SCREEN_SAVE_PNG
@@ -303,14 +301,20 @@ void dxWinSystemClass::ProcessFrame()
 	if (WOMA::game_state >= GAME_RUN && WOMA::game_state < ENGINE_RESTART)
 	{
 		// For each Monitor: Render one Application Frame
-		for (int i = 0; i < windowsArray.size(); i++)
+		//if (WOMA::game_state >= GAME_SYSTEM_SETTINGS)
+		if (WOMA::game_state > GAME_SETUP)
 		{
-			if (WOMA::game_state >= GAME_SYSTEM_SETTINGS)
+			for (int i = 0; i < windowsArray.size(); i++)
 			{
-				if (m_Application->RENDER_PAGE >= 15)//OLD:20 now 15 to allow FADE BANNERS on INTRO_DEMO
+				if (m_Application->RENDER_PAGE >= 15)	//to allow FADE BANNERS on INTRO_DEMO
 				{
-					m_Application->RenderScene(i);	// SystemHandle->m_Driver->BeginScene(monitorWindow);
-					m_contextDriver->EndScene(i);	// SHOW: Present the FRAME successfully Rendered!
+					m_Application->RenderScene(i);		// SystemHandle->m_Driver->BeginScene(monitorWindow);
+
+					// SHOW: Present the FRAME successfully Rendered!
+					if (!m_contextDriver)
+						SystemHandle->driverList[SystemHandle->AppSettings->DRIVER]->EndScene(i);
+					else
+						m_contextDriver->EndScene(i);		
 				}
 			}
 		}

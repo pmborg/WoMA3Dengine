@@ -1,5 +1,5 @@
 // NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
-// --------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------
 // Filename: timerClass.cpp
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
@@ -30,6 +30,7 @@
 TimerClass::TimerClass()
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	//public:
 	currentTime = m_startEngineTime = NULL;

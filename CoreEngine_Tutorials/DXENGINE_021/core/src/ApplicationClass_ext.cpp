@@ -23,14 +23,15 @@
 
 #include "winSystemClass.h"
 
-		#include "DXmodelClass.h"
-		#include "GLmodelClass.h"
+#include "DXmodelClass.h"
+#include "GLmodelClass.h"
 
-	#include "DemoApplicationClass.h"
+#include "DemoApplicationClass.h"
 
 ApplicationClass::ApplicationClass()
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	// ---------------------------------------------------------------------
 	// private:
@@ -49,16 +50,13 @@ ApplicationClass::ApplicationClass()
 	weatherClass = NULL;
 	metarClass = NULL;
 
-	//m_Driver = NULL;
-	
 	ClearColor[0] = 0.5f;
 	ClearColor[1] = 0.6f;
 	ClearColor[2] = 0.8f;
 	ClearColor[3] = 1.0f;
 
-
-
 	// TERRAIN
+
 
 	Start();
 }
@@ -70,7 +68,6 @@ void ApplicationClass::Shutdown()
 {
 	WOMA_LOGManager_DebugMSG ("ApplicationClass::Shutdown()\n");
 
-
 }
 
 
@@ -80,33 +77,32 @@ bool ApplicationClass::WOMA_APPLICATION_InitGUI()
 {
 	SystemHandle->m_scaleX = MIN(1, SystemHandle->AppSettings->WINDOW_WIDTH / 1920.0f);
 	SystemHandle->m_scaleY = MIN(1, SystemHandle->AppSettings->WINDOW_HEIGHT / 1080.0f);
+	if (SystemHandle->m_scaleY > 0.9f)
+		SystemHandle->m_scaleY = 1;
 
 	SystemHandle->fontSizeX = MIN(25, 48 * SystemHandle->m_scaleX);	//To use on win32 window not DX
 	SystemHandle->fontSizeY = MIN(25, 40 * SystemHandle->m_scaleY); //To use on win32 window not DX
 
-	//if (SystemHandle->m_Driver != NULL && initWorld == NULL)
+	WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_InitGUI()\n");
+
+	if (!initWorld)
 	{
-		WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_InitGUI()\n");
+		initWorld = NEW InitWorld;
+		WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_InitGUI()-initWorld created\n");
+	}
 
-		if (!initWorld)
+	if (astroClass) {
+		InitializeCelestialInfoScreen(10, 10);
+		WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_InitGUI()-InitializeCelestialInfoScreen created\n");
+	}
+
+	if (astroClass)
+	{
+		if (!InitializeWeatherInfoScreen(10, 10))
 		{
-			initWorld = NEW InitWorld;
-			WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_InitGUI()-initWorld created\n");
+			WOMA::WomaMessageBox(TEXT("InitializeWeatherInfoScreen"), TEXT("Error: "));
 		}
-
-		if (astroClass) {
-			InitializeCelestialInfoScreen(10, 10);
-			WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_InitGUI()-InitializeCelestialInfoScreen created\n");
-		}
-
-		if (astroClass)
-		{
-			if (!InitializeWeatherInfoScreen(10, 10))
-			{
-				WOMA::WomaMessageBox(TEXT("InitializeWeatherInfoScreen"), TEXT("Error: "));
-			}
-			WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_InitGUI()-InitializeWeatherInfoScreen created\n");
-		}
+		WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_InitGUI()-InitializeWeatherInfoScreen created\n");
 	}
 	return true;
 }
@@ -137,18 +133,18 @@ bool ApplicationClass::Initialize(/*WomaDriverClass*/ void* Driver)
 //-------------------------------------------------------------------------------------------
 {
 	ASSERT(Driver);
-
-	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(SystemHandle->m_Driver));	// <---------- USER LOAD all 3D objects!
-
-	//CALL DEMO APPLICATION //////////////////////////////////////////////////////////////////////////////////////////
 	SystemHandle->demoApplicationClass = NEW DemoApplicationClass;
+
+	// USER LOAD main 3D objects!
+	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(SystemHandle->m_Driver));	
+
+	//CALL DEMO APPLICATION:
 	IF_NOT_RETURN_FALSE(SystemHandle->demoApplicationClass->WOMA_APPLICATION_Initialize3D(SystemHandle->m_Driver));
+
 	SystemHandle->m_Driver->Finalize();
 
 	return true;
 }
-
-
 
 
 //	-------------------------------------------------------------------------------------------

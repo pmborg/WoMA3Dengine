@@ -61,15 +61,19 @@
 #pragma warning( push )
 #pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
 
-		#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow) {\
-			model = NEW DirectX::DXmodelClass(model3D, TRIANGLELIST, false, renderShadow); IF_NOT_THROW_EXCEPTION (model); \
+	#if defined DX_ENGINE
+		#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {\
+			model = NEW DirectX::DXmodelClass(model3D, TRIANGLELIST, false, renderShadow1); IF_NOT_THROW_EXCEPTION (model); \
 		}
 
 		#define SAFE_SHUTDOWN_MODELDX(model) {\
 			if(model) { (model)->Shutdown(); delete ((DirectX::DXmodelClass*)model); model=NULL; } \
 		}
+	#else
+		#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow) {}
+	#endif
 
-		#define CREATE_MODELGL3_IF_NOT_EXCEPTION(model, model3D, renderShadow) {\
+		#define CREATE_MODELGL3_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {\
 			model = NEW GLmodelClass(model3D); IF_NOT_THROW_EXCEPTION (model); \
 		}
 
@@ -98,6 +102,7 @@
 class ApplicationClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	ApplicationClass();
 	~ApplicationClass();
 	
@@ -137,17 +142,9 @@ public:
 	std::vector<ModelColorVertexType>* m_LightVertexVector;
 	LightClass* m_Light = NULL;
 
-
-
-
 	void initLightRay(WomaDriverClass* m_Driver);
 
 	// SKY
-
-
-
-
-	void	initText();
 
 private:
 	void	Render_SKY_SUN_MOON(float);				//30
@@ -157,16 +154,16 @@ private:
 private:
 
 public:
-	UINT	RENDER_PAGE;
-	float	dt;	// Delta time
+	UINT	RENDER_PAGE=0;
+	float	dt=0;	// Delta time
 
 	//---------------------------------------------------------------------
 	//TO SAFE DELETE: void ApplicationClass::WOMA_APPLICATION_Shutdown()
 	//---------------------------------------------------------------------
-	InitWorld*		initWorld;    // Get Astro Positions
+	InitWorld*		initWorld = NULL;    // Get Astro Positions
 
-	WeatherClass*	weatherClass;
-	MetarClass*		metarClass;
+	WeatherClass*	weatherClass = NULL;
+	MetarClass*		metarClass = NULL;
 
 	VirtualModelClass* m_lightRayModel = NULL;
 
@@ -177,7 +174,9 @@ public:
 	std::vector<UINT> IndexSquarList;							// COLOR-DEMO-1: UINT indexList[6] = {0,1,2, 0,3,1};
 	std::vector<UINT> IndexTriangleList;						// COLOR-DEMO-2: UINT indexList[6] = {0,1,2};
 
-	float ClearColor[4];
+	float ClearColor[4]={0};
+
+
 
 };
 

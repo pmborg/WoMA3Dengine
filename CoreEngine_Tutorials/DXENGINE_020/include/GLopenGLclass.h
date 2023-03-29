@@ -74,6 +74,7 @@
 class GLopenGLclass : public WomaDriverClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	GLopenGLclass();
 	~GLopenGLclass();
 	void Shutdown2D();
@@ -100,7 +101,7 @@ public:
 
 	void SetRasterizerState(UINT cullMode, UINT fillMode);
 
-	#if defined INTRO_DEMO /*37*/ || defined USE_DXDRIVER_FONTS
+	#if defined INTRO_DEMO || defined USE_DXDRIVER_FONTS
 	void addText(int Xpos, int Ypos, TCHAR* text, float R, float G, float B);
 	void RenderDriverText();
 	#endif

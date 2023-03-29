@@ -14,7 +14,8 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//
+// PURPOSE: A basic input used in first WOMA LEVELs using OS functions.
+// --------------------------------------------------------------------------------------------#pragma once
 #pragma once
 
 #include "platform.h"
@@ -26,6 +27,7 @@
 class InputClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	InputClass();
 	~InputClass();
 
@@ -36,6 +38,5 @@ public:
 
 	bool IsKeyDown(UINT);
 
-//private:
 	bool m_keys[256];
 };
