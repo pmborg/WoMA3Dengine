@@ -19,9 +19,10 @@
 // --------------------------------------------------------------------------------------------
 #pragma once
 
-#if defined CORE_ENGINE_LEVEL 4 //#if ENGINE_LEVEL >= 5
+#if defined CORE_ENGINE_LEVEL 4
 
-#include "main.h" //"../Global.h"
+#include "main.h"
+
 #include <comdef.h>
 #include <wbemidl.h>
 #pragma comment(lib, "wbemuuid.lib")
@@ -31,6 +32,7 @@ class wmiUtilClass
 //	-------------------------------------------------------------------------------------------
 public:
 //	-------------------------------------------------------------------------------------------
+    UINT WomaIntegrityCheck = 1234567890;
     wmiUtilClass();
     ~wmiUtilClass();
 

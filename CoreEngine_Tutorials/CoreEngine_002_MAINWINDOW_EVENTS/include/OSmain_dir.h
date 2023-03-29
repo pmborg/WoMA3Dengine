@@ -64,4 +64,5 @@ namespace WOMA
 	extern bool isXP();
 
 	extern void setup_OSmain_dirs();
+
 }

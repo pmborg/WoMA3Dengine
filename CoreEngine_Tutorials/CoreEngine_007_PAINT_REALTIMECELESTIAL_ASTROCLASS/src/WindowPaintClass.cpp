@@ -20,6 +20,7 @@
 
 #include "WinSystemClass.h"
 #include "mem_leak.h"
+
 #include "WindowPaintClass.h"
 
 //	-------------------------------------------------------------------------------------------

@@ -26,5 +26,5 @@
 namespace WOMA
 {
 	extern STRING	lastfile;
-	extern TCHAR* LoadFile(TCHAR* filename);
+	extern TCHAR*	LoadFile(TCHAR* filename);
 }

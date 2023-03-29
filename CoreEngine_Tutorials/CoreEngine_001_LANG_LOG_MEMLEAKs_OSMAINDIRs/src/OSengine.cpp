@@ -42,7 +42,7 @@ namespace WOMA
 
 	TCHAR strConsoleTitle[MAX_STR_LEN] = { 0 };
 
-	TCHAR   APP_NAME[MAX_STR_LEN];              // "Aplication Name"
+	TCHAR   APP_NAME[MAX_STR_LEN] = { 0 };;              // "Aplication Name"
 
 }
 

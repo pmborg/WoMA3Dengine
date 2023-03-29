@@ -39,7 +39,14 @@ bool saveConfigSettings (char* file) // Note: Have to be char
 //*********************************************************************************************/
 {
 	// TUTORIAL: https://www.cs.cmu.edu/~preethi/src/tinyxml/docs/tutorial0.html
+
+	//static TiXmlDocument doc( file );
+	//static TiXmlDocument doc( "new.xml" );
 	TiXmlDocument doc;
+
+	//Optional:
+	//TiXmlDeclaration* decl = NEW TiXmlDeclaration("1.0", "", "");
+	//doc.LinkEndChild(decl);
 
 	std::string str = { 0 };
 	CHAR stri[MAX_STR_LEN]  = { 0 };

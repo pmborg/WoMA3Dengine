@@ -96,8 +96,13 @@ extern const wchar_t* GetWC(const char* c);
 #define LEVELHIGHLIGHT(level) {WOMA::ENGINE_LEVEL_USED = level; if (CORE_ENGINE_LEVEL == level) {HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, BACKGROUND_INTENSITY|FOREGROUND_BLUE | FOREGROUND_INTENSITY);}}
 #define LEVELNORMAL() { HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE|FOREGROUND_GREEN|FOREGROUND_RED);}
 
+#if _DEBUG //defined CLASS_DEBUG
 #define CLASSLOADER() { HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN); WOMA_LOGManager_DebugMSG((CHAR*) "[CLASS_LOAD %d] %s\n", CLASS_LOAD_N++, __FUNCTION__); SetConsoleTextAttribute(hConsole, FOREGROUND_RED + FOREGROUND_GREEN + FOREGROUND_BLUE); }
 #define CLASSDELETE() { HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_RED); WOMA_LOGManager_DebugMSG((CHAR*) "[CLASS_DELETE %d] %s\n", CLASS_DELETE_N++, __FUNCTION__); SetConsoleTextAttribute(hConsole, FOREGROUND_RED+FOREGROUND_GREEN+FOREGROUND_BLUE); }
+#else
+	#define CLASSLOADER() {}
+	#define CLASSDELETE() {}
+#endif
 
 // Basic OS low level MACROS:
 // --------------------------------------------------------------------------------------------

@@ -27,7 +27,9 @@
 #define _CRT_SECURE_NO_WARNINGS		// Ignore: warning C4996
 #include "platform.h"
 #include "SystemClass.h"
+
 #include "WomaSetupManager.h"
+
 #include <combaseapi.h>				// VC7: ships with updated headers: CoInitializeEx()
 
 #define WOMA_ENGINE_CLASS TEXT("WoMA3Dengine")
@@ -71,6 +73,7 @@ extern LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM 
 class WinSystemClass : public SystemClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	WinSystemClass();
 	WinSystemClass(WOMA::Settings* AppSettings);
 	void WinSystemClass_init();
@@ -97,13 +100,13 @@ public:
 	//VARS:
 	// --------------------------------------------------------------
 	// SUBSYSTEM:WINDOWS
-	PSTR	Scmdline;
-	int		Cmdshow;
-	DWORD	windowStyle;
+	PSTR	Scmdline=0;
+	int		Cmdshow=0;
+	DWORD	windowStyle=0;
 
-	HBITMAP bmpBackGround;
-	HWND	m_hWnd;
-	HWND	statusbar;
+	HBITMAP bmpBackGround=0;
+	HWND	m_hWnd=0;
+	HWND	statusbar=0;
 	std::vector<WOMA::WindowDataContainer> windowsArray;
 	std::vector<WOMA::WindowDataContainer> allWindowsArray;
 
@@ -131,6 +134,8 @@ public:
 	void InitializeSetupScreen(int x, int y);
 
 	WomaSetupManager* womaSetup;
+
+
 
 private:
 	void ShutdownWindows();

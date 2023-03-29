@@ -32,16 +32,16 @@
 
 #pragma comment(lib, "psapi.lib")
 
-class stack_trace
-{
-public:
+class stack_trace  
+{  
+public:  
     stack_trace(CONTEXT* context, size_t skip);
-
+  
     std::string to_string();
-
-private:
-    static const size_t max_frame_ptrs = 16;
-    DWORD64 m_frame_ptrs[max_frame_ptrs];
-};
+  
+private:  
+    static const size_t max_frame_ptrs = 16;  
+    DWORD64 m_frame_ptrs[max_frame_ptrs];  
+};  
 
 #endif

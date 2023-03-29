@@ -75,6 +75,7 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 {
 	// STARTING POINT of WOMA ENGINE!
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	AppSettings = NULL;
 
@@ -227,11 +228,21 @@ void SystemClass::ProcessOSInput() // This Function will be invoked several time
 		WOMA::game_state = GAME_SETUP;
 		OS_REDRAW_WINDOW;
 		// Toggle the full screen/window mode
+
 		if (SystemHandle->AppSettings->FULL_SCREEN)
 		{
-			//SystemHandle->AppSettings->FULL_SCREEN = false;
+			//if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+			SystemHandle->AppSettings->FULL_SCREEN = false;
 			CHAR str[MAX_STR_LEN] = { 0 }; wtoa(str, (TCHAR*)SystemHandle->XML_SETTINGS_FILE.c_str(), MAX_STR_LEN); // wchar ==> char
 			saveConfigSettings(str);
+			/*
+			// activate the window
+			SetActiveWindow(SystemHandle->m_hWnd);
+			ushort action = (ushort)WM_SYSKEYDOWN; //ALT
+			ushort key = (ushort)0xd; //ENTER
+			uint lparam = (0x01 << 28);
+			SendMessage(SystemHandle->m_hWnd, action, key, lparam);
+			*/
 			WOMA::previous_game_state = WOMA::game_state;
 			WOMA::game_state = ENGINE_RESTART;
 		}
@@ -412,4 +423,5 @@ void SystemClass::ProcessPerformanceStats() // Run every frame
 	cpu = m_Cpu.GetCpuPercentage(); // Get current CPU use  (updated by "m_Cpu.Frame()" every second)
 #endif
 }
+
 

@@ -28,8 +28,14 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "xml_loader.h"
-#include "winsystemclass.h"			// Are we a Windows Instance?
+
+	#include "winsystemclass.h"			// Are we a Windows Instance?
+
 #include "xml_loader.h"
+
+#if TUTORIAL_PRE_CHAP >= 72
+#include "../sound/soundClass.h" // To include SOUND3D
+#endif
 
 // --------------------------------------------------------------------------------------------
 // Globals:
@@ -61,6 +67,16 @@ bool initAppicationSettings(TCHAR* filename) //Note: Have to be char
 		SystemHandle->AppSettings->AllowResize = (strcmp (GenSettings.allowResize, "true") == 0) ?  true : false;
 		SystemHandle->AppSettings->VSYNC_ENABLED = (strcmp(GenSettings.vsync, "true") == 0) ? true : false;
 		SystemHandle->AppSettings->BITSPERPEL = atoi(GenSettings.bitsPerPixel);
+
+	#if defined USE_SOUND_MANAGER
+	    SystemHandle->AppSettings->SOUND_ENABLED = (strcmp (GenSettings.soundEffectsEnabled, "true") == 0) ?  true : false;
+	#endif//
+
+	#if TUTORIAL_PRE_CHAP >= 60 // 80
+	    strcpy_s (g_PLAYER_NAME, GenSettings.playerName);
+	    g_FACTION = (strcmp (GenSettings.faction, "1") == 0) ?  true : false;
+	    g_MESH_TYPE = (BYTE) atoi (GenSettings.meshType);
+	#endif
 
     } else 
         return false;
@@ -100,6 +116,36 @@ bool loadConfigSettings (TCHAR* file_) // Note: Have to be char
 			strcpy (GenSettings.bitsPerPixel, element->Attribute("bitsPerPixel"));
 		}
 
+		//CAMERA:
+
+		//FOG:
+
+		//SOUND:
+	#if defined USE_SOUND_MANAGER
+		/*<sound>*/TiXmlElement* child_sound = root->FirstChildElement( "sound" );
+		if ( child_sound )
+		{
+			/*Element*/TiXmlElement* element = child_sound->ToElement();
+			#if defined USE_SOUND_MANAGER
+			strcpy (GenSettings.soundEffectsEnabled, element->Attribute("effects"));
+			#endif
+		}
+	#endif
+
+		// PLAYER DEFINITIONS:
+	#if TUTORIAL_PRE_CHAP >= 60 // 80
+		/*<player>*/TiXmlElement* child_player = root->FirstChildElement( "player" );
+		if ( child_player )
+		{
+			/*Element*/TiXmlElement* element = child_player->ToElement();
+			strcpy (GenSettings.playerName, element->Attribute("name"));
+			strcpy (GenSettings.faction, element->Attribute("faction"));
+			strcpy (GenSettings.meshType, element->Attribute("meshType"));
+		}
+	#endif
+
+		// SERVER NETWORK SETTINGS:
+		//}
 	} else
         return false; // File not found for parsing error...
 

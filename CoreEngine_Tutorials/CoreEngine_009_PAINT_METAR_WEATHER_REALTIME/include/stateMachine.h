@@ -1,7 +1,6 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: stateMachine.h
-// -------------------------------------------------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
 // --------------------------------------------------------------------------------------------
 // Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
 //
@@ -14,6 +13,8 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
+// PURPOSE: Define the diferent states/pages on the engine
+// --------------------------------------------------------------------------------------------
 #pragma once
 
 // Globals GAME STATE: [NO RENDEING]
@@ -25,20 +26,20 @@
 
 // [RENDERING]
 //-----------------------------------------------------------------------------
-	#define GAME_SYSTEM_SETTINGS 11 // OLD:ENGINE LEVEL 10
-	#define GAME_CELESTIAL_INFO	 12 // OLD:ENGINE LEVEL 11 
-	#define GAME_SHOW_POSITION   13 // OLD:ENGINE LEVEL 12
-	#define GAME_WEATHER_INFO    14 // OLD:ENGINE LEVEL 13
-	#define GAME_SETUP           15 // "System Setup"
+#define GAME_SYSTEM_SETTINGS 11
+#define GAME_CELESTIAL_INFO	 12
+#define GAME_SHOW_POSITION   13
+#define GAME_WEATHER_INFO    14
 
-// Engine Running: RENDER!!!
-#define GAME_MENU			 	 45
-#define GAME_RUN             	 50 // the game is in the:    "Running Mode"
+#define GAME_SETUP           15 
+
+// Engine Running: RENDER
+#define GAME_MENU			 45
+#define GAME_RUN             50	// the game is in the:    "Running Mode"
 
 // GAME STATE: [NO RENDEING]
 //-----------------------------------------------------------------------------
 #define GAME_LAUNCHER        60					// the game is in the:    "Running Mode"
 #define ENGINE_RESTART       100				// the game is in the:    "Re-start" the "SystemClass"
 #define GAME_STOP            ENGINE_RESTART+1	// the game is in the:    "Stop Threads and Free Resources Mode": This the correct mode to: Stop the "Application"
-#define GAME_EXIT            ENGINE_RESTART+2   // the game is in the:    "Exit Mode (Only SystemClass should use this), After all Threads Have Completed
-//-----------------------------------------------------------------------------
+#define GAME_EXIT            ENGINE_RESTART+2	// the game is in the:    "Exit Mode (Only SystemClass should use this), After all Threads Have Completed

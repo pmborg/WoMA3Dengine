@@ -73,6 +73,7 @@ extern LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM 
 class WinSystemClass : public SystemClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	WinSystemClass();
 	WinSystemClass(WOMA::Settings* AppSettings);
 	void WinSystemClass_init();
@@ -133,6 +134,8 @@ public:
 	void InitializeSetupScreen(int x, int y);
 
 	WomaSetupManager* womaSetup;
+
+
 
 private:
 	void ShutdownWindows();

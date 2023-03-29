@@ -42,6 +42,7 @@ extern HWND DoCreateStatusBar(HWND hwndParent, int idStatus, HINSTANCE hinst, in
 class WinSystemClass : public SystemClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	WinSystemClass();
 	WinSystemClass(WOMA::Settings* AppSettings);
 	void WinSystemClass_init();
@@ -51,8 +52,14 @@ public:
 	bool InitializeSystem();
 	int	 ApplicationMainLoop();
 
+
+
 private:
 	void ShutdownWindows();
 };
 
+/////////////
+// GLOBALS //
+/////////////
 extern WinSystemClass* SystemHandle;
+

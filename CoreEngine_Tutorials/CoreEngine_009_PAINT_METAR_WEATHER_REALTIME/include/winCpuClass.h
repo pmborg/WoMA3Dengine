@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: winCpuClass.h
 // --------------------------------------------------------------------------------------------
@@ -18,7 +17,7 @@
 #pragma once
 
 #include "platform.h"
-#if CORE_ENGINE_LEVEL >= 6 && defined WINDOWS_PLATFORM && !defined WIN_XP //&& ENGINE_LEVEL >= 19
+#if CORE_ENGINE_LEVEL >= 6 && defined WINDOWS_PLATFORM && !defined WIN_XP
 
 //We use the pdh library to query the cpu usage.
 
@@ -26,7 +25,6 @@
 // LINKING //
 /////////////
 #pragma comment(lib, "pdh.lib")
-
 
 //////////////
 // INCLUDES //
@@ -39,8 +37,13 @@
 class WinCpuClass
 {
 public:
+    UINT WomaIntegrityCheck = 1234567890;
     WinCpuClass();
     ~WinCpuClass();
+
+	#if defined USE_LOADING_THREADS //ENGINE_LEVEL >= 25
+    void SetProcessorAffinity(int cpuNumber);
+	#endif
 
     void Initialize();
     void Shutdown();

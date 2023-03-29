@@ -30,6 +30,7 @@ using namespace std;	//endl
 wmiUtilClass::wmiUtilClass() 
 {
 	CLASSLOADER();
+    WomaIntegrityCheck = 1234567890;
 
 	//public:
 	description = L"";

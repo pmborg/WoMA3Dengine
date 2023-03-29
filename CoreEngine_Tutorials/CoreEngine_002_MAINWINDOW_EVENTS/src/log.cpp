@@ -20,7 +20,9 @@
 //
 // --------------------------------------------------------------------------------------------
 #include "main.h"
+
 #include <shlwapi.h>
+
 #include "log.h"
 #include "mem_leak.h"
 #include "OSmain_dir.h"
@@ -113,6 +115,7 @@ LogManager::~LogManager()
 			debugFile = NULL;
 		}
 	}
+
 }
 
 TCHAR* LogManager::getLogFileName()

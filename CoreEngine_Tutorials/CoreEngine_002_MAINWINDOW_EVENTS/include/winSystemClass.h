@@ -71,6 +71,7 @@ extern LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM 
 class WinSystemClass : public SystemClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	WinSystemClass();
 	WinSystemClass(WOMA::Settings* AppSettings);
 	void WinSystemClass_init();
@@ -117,6 +118,8 @@ public:
 	// --------------------------------------------------------------
 	HINSTANCE m_hinstance;
 	bool mResizing;
+
+
 
 private:
 	void ShutdownWindows();

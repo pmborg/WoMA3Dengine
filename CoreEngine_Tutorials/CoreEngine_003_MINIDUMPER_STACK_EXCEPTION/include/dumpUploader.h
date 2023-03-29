@@ -22,7 +22,7 @@
 
 #include "main.h"
 
-namespace WOMA
+namespace WOMA 
 {
 	extern int dumpUploader(STRING file);
 }

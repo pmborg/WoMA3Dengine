@@ -45,9 +45,9 @@ namespace WOMA
 	TCHAR   APP_COMPANY_NAME[] = TEXT("Pmborg");			// "Company" Directory Name: 1st lvl
 	TCHAR   APP_PROJECT_NAME[] = TEXT("WoMA3Dengine");	// "Project" Directory Name: 2nd lvl
 
-	TCHAR   APP_NAME[MAX_STR_LEN];              // "Aplication Name"
+	TCHAR   APP_NAME[MAX_STR_LEN] = { 0 };;              // "Aplication Name"
 
-	TCHAR   APP_FULLNAME[MAX_STR_LEN];          // "Aplication FullName"
+	TCHAR   APP_FULLNAME[MAX_STR_LEN] = { 0 };          // "Aplication FullName"
 
 	TCHAR   APP_SETTINGS_FILE[] = TEXT("settings.xml");     // SETUP/Configuration file name
 }

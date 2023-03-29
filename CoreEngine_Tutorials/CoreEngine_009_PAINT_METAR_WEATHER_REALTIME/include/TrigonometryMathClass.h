@@ -37,6 +37,7 @@ extern float tableSin[360*100], tableCos[360*100];
 class TrigonometryMathClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	TrigonometryMathClass();
 	~TrigonometryMathClass();
 

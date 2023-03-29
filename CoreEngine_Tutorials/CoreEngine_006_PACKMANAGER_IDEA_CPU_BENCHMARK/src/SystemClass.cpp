@@ -28,12 +28,17 @@
 #include "default_settings_xml.h"
 #include "OSengine.h"
 #include "woma_macros.h"
+
 #include "language.h"
 #include "mem_leak.h"
 #include "OSmain_dir.h"
+
 #include "stateMachine.h"
+
 #include "systemManager.h"
+
 #include "xml_loader.h"
+
 #include "ApplicationClass.h"
 #include "fpsclass.h"
 
@@ -70,6 +75,7 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 {
 	// STARTING POINT of WOMA ENGINE!
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	AppSettings = NULL;
 
@@ -214,11 +220,21 @@ void SystemClass::ProcessOSInput() // This Function will be invoked several time
 		WOMA::game_state = GAME_SETUP;
 		OS_REDRAW_WINDOW;
 		// Toggle the full screen/window mode
+
 		if (SystemHandle->AppSettings->FULL_SCREEN)
 		{
-			//SystemHandle->AppSettings->FULL_SCREEN = false;
+			//if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+			SystemHandle->AppSettings->FULL_SCREEN = false;
 			CHAR str[MAX_STR_LEN] = { 0 }; wtoa(str, (TCHAR*)SystemHandle->XML_SETTINGS_FILE.c_str(), MAX_STR_LEN); // wchar ==> char
 			saveConfigSettings(str);
+			/*
+			// activate the window
+			SetActiveWindow(SystemHandle->m_hWnd);
+			ushort action = (ushort)WM_SYSKEYDOWN; //ALT
+			ushort key = (ushort)0xd; //ENTER
+			uint lparam = (0x01 << 28);
+			SendMessage(SystemHandle->m_hWnd, action, key, lparam);
+			*/
 			WOMA::previous_game_state = WOMA::game_state;
 			WOMA::game_state = ENGINE_RESTART;
 		}
@@ -241,6 +257,8 @@ void SystemClass::ProcessOSInput() // This Function will be invoked several time
 		OS_REDRAW_WINDOW;
 	}
 	first_time = false;
+
+
 }
 
 bool SystemClass::SystemCheck()
@@ -329,6 +347,7 @@ bool SystemClass::SystemCheck()
 	return true;
 }
 
+
 SystemClass::~SystemClass() { CLASSDELETE(); }
 
 void SystemClass::Shutdown()
@@ -384,7 +403,7 @@ void SystemClass::ProcessPerformanceStats() // Run every frame
 	// Update the system stats: (BEFORE: HandleUserInput)
 	m_Timer.Frame();		// Calculate dT for animations (Measure last frame time)
 	m_Fps.Frame();			// Increase the frame counter, calculate FPS once per second
-	fps = m_Fps.GetFps();	// Get current FPS      (updated by "m_Fps.Frame()" every second)
+	fps = m_Fps.GetFps();	// Get current FPS (updated by "m_Fps.Frame()" every second)
 
 #if defined WINDOWS_PLATFORM && !defined WIN_XP
 	m_Cpu.Frame();			// Collect CPU usage percentage once per second
@@ -396,4 +415,5 @@ void SystemClass::ProcessPerformanceStats() // Run every frame
 	cpu = m_Cpu.GetCpuPercentage(); // Get current CPU use  (updated by "m_Cpu.Frame()" every second)
 #endif
 }
+
 

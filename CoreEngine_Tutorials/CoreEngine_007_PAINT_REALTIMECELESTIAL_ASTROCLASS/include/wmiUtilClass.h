@@ -21,7 +21,8 @@
 
 #if defined CORE_ENGINE_LEVEL 4
 
-#include "main.h" 
+#include "main.h"
+
 #include <comdef.h>
 #include <wbemidl.h>
 #pragma comment(lib, "wbemuuid.lib")
@@ -31,6 +32,7 @@ class wmiUtilClass
 //	-------------------------------------------------------------------------------------------
 public:
 //	-------------------------------------------------------------------------------------------
+    UINT WomaIntegrityCheck = 1234567890;
     wmiUtilClass();
     ~wmiUtilClass();
 

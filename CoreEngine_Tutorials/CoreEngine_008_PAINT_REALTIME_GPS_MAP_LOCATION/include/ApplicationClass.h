@@ -52,6 +52,18 @@
 #pragma warning( push )
 #pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
 
+	#if defined DX_ENGINE
+		#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {\
+			model = NEW DirectX::DXmodelClass(model3D, TRIANGLELIST, false, renderShadow1); IF_NOT_THROW_EXCEPTION (model); \
+		}
+
+		#define SAFE_SHUTDOWN_MODELDX(model) {\
+			if(model) { (model)->Shutdown(); delete ((DirectX::DXmodelClass*)model); model=NULL; } \
+		}
+	#else
+		#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow) {}
+	#endif
+
 		#define CREATE_MODELGL3_IF_NOT_EXCEPTION(model, model3D, renderShadow) {}
 
 
@@ -75,6 +87,7 @@
 class ApplicationClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	ApplicationClass();
 	~ApplicationClass();
 	
@@ -121,17 +134,19 @@ private:
 private:
 
 public:
-	UINT	RENDER_PAGE;
-	float	dt;	// Delta time
+	UINT	RENDER_PAGE=0;
+	float	dt=0;	// Delta time
 
 	//---------------------------------------------------------------------
 	//TO SAFE DELETE: void ApplicationClass::WOMA_APPLICATION_Shutdown()
 	//---------------------------------------------------------------------
-	InitWorld*		initWorld;    // Get Astro Positions
+	InitWorld*		initWorld = NULL;    // Get Astro Positions
 
 	//	-------------------------------------------------------------------------------------------
 	//	WoMA Vertex(s) Arrays:  NOTE: Cant be used to create and Obj more than ONCE!
 	//	-------------------------------------------------------------------------------------------
+
+
 
 };
 

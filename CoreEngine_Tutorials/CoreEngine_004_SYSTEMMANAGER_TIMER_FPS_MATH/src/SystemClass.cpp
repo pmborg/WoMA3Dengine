@@ -70,6 +70,7 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 {
 	// STARTING POINT of WOMA ENGINE!
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	AppSettings = NULL;
 
@@ -334,4 +335,5 @@ void SystemClass::ProcessPerformanceStats() // Run every frame
 
 }
 #endif
+
 

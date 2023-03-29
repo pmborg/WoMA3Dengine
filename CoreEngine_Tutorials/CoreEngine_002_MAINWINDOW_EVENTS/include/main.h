@@ -77,5 +77,6 @@ namespace WOMA
 	extern TCHAR	APP_ICO[];					// "Icon" for this aplication
 	extern TCHAR	APP_FULLNAME[MAX_STR_LEN];	// "Aplication FullName"
 	extern bool fileExists(STRING Filename);
+
 }
 

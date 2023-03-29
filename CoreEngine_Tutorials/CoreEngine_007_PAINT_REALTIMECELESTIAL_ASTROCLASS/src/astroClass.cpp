@@ -27,10 +27,12 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 #include "platform.h"
+
 #include "astroClass.h"
 
 AstroClass::AstroClass() 
 {
+    WomaIntegrityCheck = 1234567890;
 	CLASSLOADER();
 
 	//public:

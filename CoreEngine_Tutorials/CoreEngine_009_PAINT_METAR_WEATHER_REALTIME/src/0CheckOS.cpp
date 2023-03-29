@@ -26,6 +26,7 @@
 SystemManager::SystemManager()
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	//CheckOS:
 	ZeroMemory(&pszOS, sizeof(pszOS));

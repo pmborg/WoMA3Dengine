@@ -108,6 +108,7 @@ typedef struct
 class SystemManager
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	SystemManager();
 	~SystemManager();
 

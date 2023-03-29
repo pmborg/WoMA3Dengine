@@ -78,4 +78,4 @@ using namespace std;//endl
 	public:
 	woma_exception(const std::string &arg, const char *file, const char *function, int line);
 	~woma_exception() throw();
-};
+	};

@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // ----------------------------------------------------------------------------------------------
 // Filename: timerClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -24,12 +23,14 @@
 //0,001		[ thousandth ] 	millisecond [ ms ]
 
 #include "platform.h"
+#if defined USE_TIMER_CLASS
 
 #include "timerClass.h"
 
 TimerClass::TimerClass()
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	//public:
 	currentTime = m_startEngineTime = NULL;
@@ -93,3 +94,4 @@ float TimerClass::GetTime()
 	return m_frameTime;
 }
 
+#endif

@@ -37,12 +37,13 @@
 class WinCpuClass
 {
 public:
+    UINT WomaIntegrityCheck = 1234567890;
     WinCpuClass();
     ~WinCpuClass();
 
-#if defined USE_LOADING_THREADS //ENGINE_LEVEL >= 25
+	#if defined USE_LOADING_THREADS //ENGINE_LEVEL >= 25
     void SetProcessorAffinity(int cpuNumber);
-#endif
+	#endif
 
     void Initialize();
     void Shutdown();
@@ -53,12 +54,12 @@ private:
     bool m_canReadCpu;
     PDH_HQUERY m_queryHandle;
     HCOUNTER m_counterHandle;
-    long m_cpuUsage;
+	long m_cpuUsage;
 
-#ifdef X64
-    ULONGLONG m_lastSampleTime;
-#else
+	#ifdef X64
+	ULONGLONG m_lastSampleTime;
+	#else
     unsigned long m_lastSampleTime;
-#endif
+	#endif
 };
 #endif

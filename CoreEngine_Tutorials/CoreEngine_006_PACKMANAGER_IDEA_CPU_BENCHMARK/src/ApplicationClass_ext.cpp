@@ -26,6 +26,7 @@
 ApplicationClass::ApplicationClass()
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	// ---------------------------------------------------------------------
 	// private:
@@ -39,13 +40,12 @@ ApplicationClass::ApplicationClass()
 	// public:
 	dt = 0.0f;	// Delta time
 
-
-
 #if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN //24
 	autoGenUnderWaterTerrain		= NULL;
 #endif
 
 	// TERRAIN
+
 
 #if defined USE_LIGHT_RAY // LightModel
 	m_lightRayModel = NULL;
@@ -71,7 +71,9 @@ void ApplicationClass::Shutdown()
 	//SAFE_DELETE(mainTerrain);
 #endif
 
-
+#if defined USE_RASTERTEK_TEXT_FONT //27
+	SAFE_SHUTDOWN(AppTextClass);
+#endif
 }
 
 

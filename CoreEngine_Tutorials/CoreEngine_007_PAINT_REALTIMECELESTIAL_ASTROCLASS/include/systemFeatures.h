@@ -27,11 +27,12 @@
 class SystemFeatures
 {
 public:
-	SystemFeatures();
-	~SystemFeatures();
+	UINT WomaIntegrityCheck = 1234567890;
+    SystemFeatures();
+    ~SystemFeatures();
 
-	STRING Initialize();
-	STRING displayAllCpuFeactures;
+    STRING Initialize();
+    STRING displayAllCpuFeactures;
 
 
 	// Get processor info:
@@ -50,14 +51,14 @@ public:
 
 	bool hypervisor; //if(hypervisor) virtualization = TRUE
 
-	// Get extra processor info:
+    // Get extra processor info:
 	bool amd_3DNow;
 	bool amd_3DNowExt;
 	bool SVM;		//if(!hypervisor) virtualization = "AMD virtualization (AMD-V)"
 	bool sse4A;
 	//bool sse5;
 
-	// Get processor info:
+    // Get processor info:
 	bool avx2;
 
 

@@ -53,6 +53,7 @@ typedef struct {
 class SystemClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	SystemClass();
 	~SystemClass();
 

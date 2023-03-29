@@ -22,6 +22,7 @@
 GLmathClass::GLmathClass()
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 }
 
 GLmathClass::~GLmathClass() {CLASSDELETE();}

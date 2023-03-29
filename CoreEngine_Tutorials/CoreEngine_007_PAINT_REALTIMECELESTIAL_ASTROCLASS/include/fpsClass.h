@@ -23,6 +23,7 @@
 // INCLUDES //
 //////////////
 #include "platform.h"
+
 #include <mmsystem.h>
 
 /////////////
@@ -36,6 +37,7 @@
 class FpsClass
 {
 public:
+	UINT WomaIntegrityCheck = 1234567890;
 	FpsClass();
 	~FpsClass();
 

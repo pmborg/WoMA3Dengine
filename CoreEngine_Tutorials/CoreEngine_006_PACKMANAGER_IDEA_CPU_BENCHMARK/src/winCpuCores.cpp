@@ -24,10 +24,12 @@
 
 #include "WinSystemClass.h"
 #include "winCpuCores.h"
+//#include "SystemPlatform.h"			// Get [SystemHandle] Pointer to System Class: WINDOWS, LINUX & ANDROID
 
 WinCpuCores::WinCpuCores()
 {
 	CLASSLOADER();
+    WomaIntegrityCheck = 1234567890;
 
 	numaNodeCount = NULL;
 	processorPackageCount = NULL;
@@ -43,6 +45,8 @@ WinCpuCores::WinCpuCores()
 	processorL1CacheInstSize = NULL;
 	processorL2CacheSize = NULL;
 	processorL3CacheSize = NULL;
+
+	//GetProcessorInformation();
 }
 
 WinCpuCores::~WinCpuCores() {CLASSDELETE();}
