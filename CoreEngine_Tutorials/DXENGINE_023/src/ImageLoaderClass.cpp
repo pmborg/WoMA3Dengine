@@ -123,6 +123,8 @@ unsigned char* Convert32to24bits(unsigned char* src, UINT imageSize24bits)
 ////////////////////////////////////////////////////////////////////////////////
 // TIF
 ///////////////////////////////////////////////////////////////////////////////
+//#include "../../IMAGING/TIFF_LIB/include/tiffio.h"
+//#include "/WoMA3Dengine/_LIBS/tiff-3.8.2-src/libtiff/tiffio.h"
 #include "tiffio.h"
 
 unsigned char* ImageLoaderClass::loadTIF (TCHAR* filename, UINT* width, UINT* height, UINT* imageSize, UINT loadimagebits)
@@ -198,7 +200,7 @@ unsigned char* ImageLoaderClass::loadTIF (TCHAR* filename, UINT* width, UINT* he
 // JPEG LIB: D:\projects\SoftPixelEngine(v.3.2)\SoftPixelEngine\repository\sources\Plugins\jpeglib
 // http://osdn.jp/projects/sfnet_softpixelengine/downloads/SoftPixel%20Engine%20SDK/SoftPixelEngine%28v.3.2%29.zip/
 
-#include "/WoMAengine2023/_EXTERNAL_/IMAGING/JPG_LIB/include/jpeglib.h"
+#include "jpeglib.h"
 
 unsigned char* ImageLoaderClass::loadJPEG(TCHAR* filename, UINT* width, UINT* height, UINT* imageSize, UINT loadimagebits)
 {
@@ -310,10 +312,10 @@ int png_sig_cmp(png_bytep sig, png_size_t start, png_size_t num_to_check)
 // http://www.humus.name/3D/Framework3.zip
 
 #define PNG_STDIO_SUPPORTED
-#include "/WoMAengine2023/_EXTERNAL_/IMAGING/ZLIB_LIB/include/zconf.h"
-#include "/WoMAengine2023/_EXTERNAL_/IMAGING/ZLIB_LIB/include/zlib.h"
-#include "/WoMAengine2023/_EXTERNAL_/IMAGING/PNG_LIB/include/pngconf.h"
-#include "/WoMAengine2023/_EXTERNAL_/IMAGING/PNG_LIB/include/png.h"
+#include "zconf.h"
+#include "zlib.h"
+#include "pngconf.h"
+#include "png.h"
 
 void user_write_data(png_structp png_ptr, png_bytep data, png_size_t length){
 	fwrite(data, length, 1, (FILE *) png_get_io_ptr(png_ptr));
