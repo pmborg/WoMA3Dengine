@@ -416,7 +416,7 @@ void SystemClass::Shutdown()
 	SAFE_DELETE(systemManager);
 
 	if (driverList[DRIVER_GL3]) {
-		delete ((wGLopenGLclass*)driverList[DRIVER_GL3]);
+		delete ((GLopenGLclass*)driverList[DRIVER_GL3]);
 		driverList[DRIVER_GL3] = NULL;
 	}
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009

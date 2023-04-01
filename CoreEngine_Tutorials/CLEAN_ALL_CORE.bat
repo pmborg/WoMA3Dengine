@@ -1,3 +1,6 @@
+del /S /F /Q ENGINE_*.txt 2> nul
+del /S /F /Q DXENGINE_*.txt 2> nul
+
 cd CoreEngine_000_OSENGINE_SYSTEM
 call CLEAN_ALL.bat
 cd ..
