@@ -13,8 +13,11 @@ Moon Azimuth<br>
 <b>[F4]</b> Get real time weather info (when network option is: ON)<br>
 <b>[F5]</b> Game Rendering page (defaultt page)<br>
 <b>[F6]</b> SETUP<br>
-
-DX12 DX11 DX9 OPENGL (press [F6] to change the driver)
+Try to Change the driver on the fly without the need of close and open the Application.<br>
+- DX12<br>
+- DX11<br>
+- DX9<br>
+- OPENGL<br>
 
 <h2>CORE ENGINE TUTORIALS LIST</h2>
 
