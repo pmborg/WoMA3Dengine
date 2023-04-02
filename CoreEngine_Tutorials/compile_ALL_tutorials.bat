@@ -30,10 +30,11 @@ del /S /F /Q DXENGINE_*.txt 2> nul
 "%devenv%" DXENGINE_025/DXENGINE_025.sln /project DXENGINE_025 /Build "Debug|x64" /out DXENGINE_025.txt
 "%devenv%" DXENGINE_026/DXENGINE_026.sln /project DXENGINE_026 /Build "Debug|x64" /out DXENGINE_026.txt
 "%devenv%" DXENGINE_027/DXENGINE_027.sln /project DXENGINE_027 /Build "Debug|x64" /out DXENGINE_027.txt
+"%devenv%" DXENGINE_028/DXENGINE_028.sln /project DXENGINE_028 /Build "Debug|x64" /out DXENGINE_028.txt
 @echo off
 echo "Compiled:"
 dir /S /B *.exe | find /v "fxc"
-echo "How to Run one demo?"
+echo "How to Run one demo using DEBUG build ?"
 echo "Execute (example):"
 echo "cd C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_019"
 echo "x64\Debug\CoreEngine_019.exe"
