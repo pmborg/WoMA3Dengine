@@ -227,8 +227,17 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 		if (monitorWindow == 0) DXsystemHandle->m_Camera->m_rotationY -= 0;
 		if (monitorWindow == 2) DXsystemHandle->m_Camera->m_rotationY += (90 / 3);	//  90:3 = 30deg
 	}
+	if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+	{
 		if (DXsystemHandle->m_Camera)
 			DXsystemHandle->m_Camera->Render();
+	}
+	else
+	{
+		GLopenGLclass* driver = (GLopenGLclass*)DXsystemHandle->driverList[SystemHandle->AppSettings->DRIVER];
+		if (driver->gl_Camera)
+			driver->gl_Camera->Render();
+	}
 
 	if (RENDER_PAGE >= 28) 
 	{
