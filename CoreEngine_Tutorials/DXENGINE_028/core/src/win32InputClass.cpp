@@ -38,11 +38,18 @@ void InputClass::Initialize()
 	for(int i=0; i<256; i++)
 		m_keys[i] = false;
 }
-
+#include "minwindef.h"
 void InputClass::KeyDown(unsigned int lparam, unsigned int wparam)
 {
-	unsigned int key = (lparam >> 16) & 0xFF;
+	WORD vkCode = LOWORD(wparam);                                 // virtual-key code
+	WORD keyFlags = HIWORD(lparam);
+	WORD scanCode = LOBYTE(keyFlags);                             // scan code
+	BOOL isExtendedKey = (keyFlags & KF_EXTENDED) == KF_EXTENDED; // extended-key flag, 1 if scancode has 0xE0 prefix
 
+	unsigned int key = (lparam >> 16) & 0xFF;
+	if (isExtendedKey)
+		key += 0x80;
+	//printf("DOWN: lparam, wparam: %#08x, %#08x\n", lparam, wparam);
 	DXsystemHandle->m_Input->m_keyboardState[key] = 0x80;
 	m_keys[key] = true;
 }
@@ -50,8 +57,15 @@ void InputClass::KeyDown(unsigned int lparam, unsigned int wparam)
 
 void InputClass::KeyUp(unsigned int lparam, unsigned int wparam)
 {
-	unsigned int key = (lparam >> 16) & 0xFF;
+	WORD vkCode = LOWORD(wparam);                                 // virtual-key code
+	WORD keyFlags = HIWORD(lparam);
+	WORD scanCode = LOBYTE(keyFlags);                             // scan code
+	BOOL isExtendedKey = (keyFlags & KF_EXTENDED) == KF_EXTENDED; // extended-key flag, 1 if scancode has 0xE0 prefix
 
+	unsigned int key = (lparam >> 16) & 0xFF;
+	if (isExtendedKey)
+		key += 0x80;
+	//printf("UP: lparam, wparam: %#08x, %#08x\n", lparam, wparam);
 	DXsystemHandle->m_Input->m_keyboardState[key] = 0;
 	m_keys[key] = false;
 }

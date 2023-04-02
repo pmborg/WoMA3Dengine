@@ -1,5 +1,13 @@
 # WoMA3Dengine
 
+<h2>Movement Keys: (at level28)</h2> <br>
+  - Left:		 arrow or a<br>
+	 - Right:	 arrow or d<br>
+	 - Up:		   arrow or w<br>
+	 - Down:		 arrow or s<br>
+	 - Look Up:		   pg. Up<br>
+	 - Look Down:		 pg. Down<br>
+  
 <h2>Keys / Hints:</h2> <br>
 <b>[F1]</b> System Info<br>
 <b>[F2]</b> Celestial Info<br>
@@ -104,6 +112,7 @@ Add third party image readers:<br>
 <hr>
 
 - <b>DX28: Sky dome with a sky sphere</b><br>
+  Adding the fixed camera Sky<br>
   Adding Direct input for DX Drivers<br>
   Allow snapshot file dump using "print screen" key, in any image format
  <hr>
