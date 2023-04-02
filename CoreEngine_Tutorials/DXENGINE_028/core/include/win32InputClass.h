@@ -32,7 +32,8 @@ public:
 	~InputClass();
 
 	void Initialize();
-
+	void KeyDown(UINT, UINT);
+	void KeyUp(UINT, UINT);
 	void KeyDown(UINT);
 	void KeyUp(UINT);
 
