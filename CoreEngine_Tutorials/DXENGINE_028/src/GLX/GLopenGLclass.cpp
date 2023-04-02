@@ -49,6 +49,7 @@ GLopenGLclass::GLopenGLclass()
 	_tcscpy_s(szShaderModel, TEXT(""));
 	
 	gl_Camera = NULL;
+	gl_CameraSKY = NULL;
 }
 
 GLopenGLclass::~GLopenGLclass() { 
@@ -65,7 +66,7 @@ void GLopenGLclass::Shutdown()
 	SAFE_DELETE(mathClass);
 
 	if(gl_Camera) { delete ((GLcameraClass*)gl_Camera); gl_Camera=NULL; }	//Cant use: SAFE_DELETE (m_Camera);
-
+	if (gl_CameraSKY) { delete ((GLcameraClass*)gl_CameraSKY); gl_CameraSKY = NULL; }	//Cant use: SAFE_DELETE (m_Camera);
 	Shutdown2D();
 }
 
