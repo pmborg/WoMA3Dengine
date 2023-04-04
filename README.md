@@ -67,7 +67,7 @@ Loading files from engine.pck on RELEASE BUILD (explained later in an advanced c
 - <b>009 RealTimeWeather</b><br>
 
 <hr>
-<h2>3D - BASIC TUTORIALS SERIES</h2>
+<h2>3D - BASIC TUTORIAL SERIES</h2>
 
 - <b>DX19: The Main window</b><br>
  Add Render Engine for Windows only, with these drivers:<br>
@@ -125,7 +125,7 @@ Add third party image readers:<br>
   Add the installer of INTRO DEMO OF BASIC TUTORIAL SERIES<br>
  <hr>
  
- <h2>3D - INTERMEDIATE TUTORIALS SERIES</h2>
+ <h2>3D - INTERMEDIATE TUTORIAL SERIES</h2>
  
  ...<br>
  ...<br>
