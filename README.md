@@ -66,8 +66,8 @@ Loading files from engine.pck on RELEASE BUILD (explained later in an advanced c
 
 - <b>009 RealTimeWeather</b><br>
 
-
-<h2>3D TUTORIALS LIST</h2>
+<hr>
+<h2>3D - BASIC TUTORIALS SERIES</h2>
 
 - <b>DX19: The Main window</b><br>
  Add Render Engine for Windows only, with these drivers:<br>
@@ -117,6 +117,15 @@ Add third party image readers:<br>
   Allow snapshot file dump using "print screen" key, in any image format
  <hr>
  
+- <b>DX29: INTRO DEMO OF BASIC TUTORIAL SERIES</b><br>
+  Adding the Sound Manager<br>
+  Adding Play background Music<br>
+  Adding MPG Player<br>
+  Generate the first RELEASE BUILD<br>
+  Add the installer of INTRO DEMO OF BASIC TUTORIAL SERIES<br>
+ <hr>
+ 
+ <h2>3D - INTERMEDIATE TUTORIALS SERIES</h2>
  
  ...<br>
  ...<br>
