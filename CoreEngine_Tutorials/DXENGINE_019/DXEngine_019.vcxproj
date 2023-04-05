@@ -41,6 +41,7 @@
     <ClInclude Include="..\..\ThirdParty\GL3Plus\GL\glxext.h" />
     <ClInclude Include="..\..\ThirdParty\GL3Plus\GL\glxtokens-backup.h" />
     <ClInclude Include="..\..\ThirdParty\GL3Plus\GL\wglext.h" />
+    <ClInclude Include="19core_engine_level.h" />
     <ClInclude Include="core\include\ApplicationClass.h" />
     <ClInclude Include="core\include\astroClass.h" />
     <ClInclude Include="core\include\default_settings_xml.h" />
@@ -151,6 +152,9 @@
     <ClCompile Include="src\GLX\GLopenGLclass.cpp" />
     <ClCompile Include="src\GLX\wglopenglclass.cpp" />
     <ClCompile Include="src\renderApplication_Basics.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="settings.xml" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

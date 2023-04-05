@@ -179,6 +179,9 @@
     <ClCompile Include="src\lightClass.cpp" />
     <ClCompile Include="src\renderApplication_Basics.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Xml Include="settings.xml" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

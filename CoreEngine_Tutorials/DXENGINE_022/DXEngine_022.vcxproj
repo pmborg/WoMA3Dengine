@@ -35,6 +35,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="22core_engine_level.h" />
     <ClInclude Include="core\include\ApplicationClass.h" />
     <ClInclude Include="core\include\astroClass.h" />
     <ClInclude Include="core\include\default_settings_xml.h" />
@@ -174,6 +175,9 @@
     <ClCompile Include="src\ImageLoaderClass.cpp" />
     <ClCompile Include="src\initApplication_Basics.cpp" />
     <ClCompile Include="src\renderApplication_Basics.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="settings.xml" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

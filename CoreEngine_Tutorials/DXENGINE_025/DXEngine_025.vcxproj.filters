@@ -461,4 +461,7 @@
       <Filter>src\utils</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Xml Include="settings.xml" />
+  </ItemGroup>
 </Project>

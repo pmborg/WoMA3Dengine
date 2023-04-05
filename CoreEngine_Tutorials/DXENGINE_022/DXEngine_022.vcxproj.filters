@@ -237,6 +237,7 @@
     <ClInclude Include="include\virtualModelClass.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="22core_engine_level.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
@@ -447,5 +448,8 @@
     <ClCompile Include="..\DXENGINE_021\src\winWomaSetupManager.cpp">
       <Filter>src\utils</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="settings.xml" />
   </ItemGroup>
 </Project>

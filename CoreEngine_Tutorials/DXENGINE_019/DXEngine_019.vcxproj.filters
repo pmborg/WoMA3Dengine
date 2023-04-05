@@ -207,6 +207,7 @@
     <ClInclude Include="..\..\ThirdParty\GL3Plus\GL\glxtokens-backup.h">
       <Filter>include\ThirdParty</Filter>
     </ClInclude>
+    <ClInclude Include="19core_engine_level.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
@@ -378,5 +379,8 @@
     <ClCompile Include="src\renderApplication_Basics.cpp">
       <Filter>App</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="settings.xml" />
   </ItemGroup>
 </Project>

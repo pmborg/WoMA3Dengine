@@ -186,6 +186,7 @@
     <ClInclude Include="include\womadriverclass.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="20core_engine_level.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
@@ -357,5 +358,8 @@
     <ClCompile Include="src\renderApplication_Basics.cpp">
       <Filter>App</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="settings.xml" />
   </ItemGroup>
 </Project>

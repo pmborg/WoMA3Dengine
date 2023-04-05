@@ -203,6 +203,9 @@
     <ClCompile Include="src\WomaCube.cpp" />
     <ClCompile Include="src\WomaSphere.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Xml Include="settings.xml" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
