@@ -1,0 +1,8 @@
+http://os4depot.net/index.php?function=showfile&file=development/library/audio/freealut.lha
+
+Version:
+#define ALUT_API_MAJOR_VERSION                 1
+#define ALUT_API_MINOR_VERSION                 1
+
+Version: 	1.1.0
+Date: 	08 Apr 09 

@@ -1,6 +1,13 @@
 del /S /F /Q ENGINE_*.txt 2> nul
 del /S /F /Q DXENGINE_*.txt 2> nul
 
+cd ../ThirdParty/DirectXTK
+del /S /F /Q x64 2> nul
+del /S /F /Q Bin 2> nul
+rmdir /S /Q x64 2> nul
+rmdir /S /Q Bin 2> nul
+cd ..
+
 cd CoreEngine_000_OSENGINE_SYSTEM
 call CLEAN_ALL.bat
 cd ..
@@ -61,7 +68,6 @@ cd..
 cd DXENGINE_028
 call CLEAN_ALL.bat
 cd..
-cd ../ThirdParty/DirectXTK
-del /S /F /Q x64 2> nul
-rmdir /S /Q x64 2> nul
-cd ..
+cd DXENGINE_029
+call CLEAN_ALL.bat
+cd..

@@ -1,0 +1,4 @@
+License 	
+Proprietary since v1.1, 
+LGPL before v1.1, 
+BSD in early versions[2] Retrieved November 10, 2012

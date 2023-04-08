@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{20ebb3b2-14f9-4323-8f2d-f0ac10591331}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\AL">
+      <UniqueIdentifier>{685edcb9-42b8-4c98-95cd-b8022899b637}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{38ad5073-6147-49e7-8e42-04f45ac6884b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Include\alAuxEffectSlot.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\alBuffer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\alEffect.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\alError.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\alFilter.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\alListener.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\alMain.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\alMidi.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\alSource.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\alThunk.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\alu.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\bs2b.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\sample_cvt.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\align.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\atomic.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\bool.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\config.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\rwlock.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\static_assert.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\threads.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\uintmap.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\AL\al.h">
+      <Filter>include\AL</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\AL\alc.h">
+      <Filter>include\AL</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\AL\alext.h">
+      <Filter>include\AL</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\AL\efx.h">
+      <Filter>include\AL</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\AL\efx-creative.h">
+      <Filter>include\AL</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\AL\efx-presets.h">
+      <Filter>include\AL</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="OpenAL32\alAuxEffectSlot.c" />
+    <ClCompile Include="OpenAL32\alBuffer.c" />
+    <ClCompile Include="OpenAL32\alEffect.c" />
+    <ClCompile Include="OpenAL32\alError.c" />
+    <ClCompile Include="OpenAL32\alExtension.c" />
+    <ClCompile Include="OpenAL32\alFilter.c" />
+    <ClCompile Include="OpenAL32\alFontsound.c" />
+    <ClCompile Include="OpenAL32\alListener.c" />
+    <ClCompile Include="OpenAL32\alMidi.c" />
+    <ClCompile Include="OpenAL32\alPreset.c" />
+    <ClCompile Include="OpenAL32\alSoundfont.c" />
+    <ClCompile Include="OpenAL32\alSource.c" />
+    <ClCompile Include="OpenAL32\alState.c" />
+    <ClCompile Include="OpenAL32\alThunk.c" />
+    <ClCompile Include="OpenAL32\sample_cvt.c" />
+    <ClCompile Include="Alc\ALc.c" />
+    <ClCompile Include="Alc\ALu.c" />
+    <ClCompile Include="Alc\alcConfig.c" />
+    <ClCompile Include="Alc\alcRing.c" />
+    <ClCompile Include="Alc\bs2b.c" />
+    <ClCompile Include="Alc\effects\autowah.c" />
+    <ClCompile Include="Alc\effects\chorus.c" />
+    <ClCompile Include="Alc\effects\compressor.c" />
+    <ClCompile Include="Alc\effects\dedicated.c" />
+    <ClCompile Include="Alc\effects\distortion.c" />
+    <ClCompile Include="Alc\effects\echo.c" />
+    <ClCompile Include="Alc\effects\equalizer.c" />
+    <ClCompile Include="Alc\effects\flanger.c" />
+    <ClCompile Include="Alc\effects\modulator.c" />
+    <ClCompile Include="Alc\effects\null.c" />
+    <ClCompile Include="Alc\effects\reverb.c" />
+    <ClCompile Include="Alc\helpers.c" />
+    <ClCompile Include="Alc\hrtf.c" />
+    <ClCompile Include="Alc\panning.c" />
+    <ClCompile Include="Alc\mixer.c" />
+    <ClCompile Include="Alc\mixer_c.c" />
+    <ClCompile Include="Alc\mixer_sse.c" />
+    <ClCompile Include="Alc\mixer_sse2.c" />
+    <ClCompile Include="Alc\mixer_sse41.c" />
+    <ClCompile Include="Alc\midi\base.c" />
+    <ClCompile Include="Alc\midi\sf2load.c" />
+    <ClCompile Include="Alc\midi\dummy.c" />
+    <ClCompile Include="Alc\midi\fluidsynth.c" />
+    <ClCompile Include="Alc\midi\soft.c" />
+    <ClCompile Include="Alc\backends\base.c" />
+    <ClCompile Include="Alc\backends\loopback.c" />
+    <ClCompile Include="Alc\backends\null.c" />
+    <ClCompile Include="Alc\backends\winmm.c" />
+    <ClCompile Include="Alc\backends\dsound.c" />
+    <ClCompile Include="Alc\backends\mmdevapi.c" />
+    <ClCompile Include="Alc\backends\wave.c" />
+    <ClCompile Include="common\atomic.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\rwlock.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\threads.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\uintmap.c">
+      <Filter>common</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
