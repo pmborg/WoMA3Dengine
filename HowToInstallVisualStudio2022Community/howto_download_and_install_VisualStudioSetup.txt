@@ -1,7 +1,9 @@
+//HOW TO DOWNLOAD AND INSTALL VISUAL STUDIO SETUP:
+
 //Step-1: DOWNLOAD Visual Studio 2022 Community Version:
 https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&channel=Release&version=VS2022&source=VSLandingPage&passive=false&cid=2030
 
 //And copy VisualStudioSetup.exe file to this directory: C:\WoMA3Dengine\InstallVisualStudio2022Community
 
-//Step-2:  and then Run
+//Step-2:  and then Run (at directory: C:\WoMA3Dengine\InstallVisualStudio2022Community)
 InstallVisualStudioForDirectX12.bat

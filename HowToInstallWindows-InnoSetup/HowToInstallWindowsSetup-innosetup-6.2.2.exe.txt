@@ -1,0 +1,9 @@
+//How To Install Windows Setup-innosetup-6.2.2.exe
+
+download it from here:
+https://jrsoftware.org/download.php/is.exe
+
+and install it.
+
+main link for more info:
+https://jrsoftware.org/isinfo.php

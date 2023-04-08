@@ -203,7 +203,7 @@
     <IncludePath>include;$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>include;$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Include_;../../../_LIBS/Microsoft_DirectX_SDK_June_2010/Include_;$(DXSDK_DIR)/Include_;../include/utils;../WomaEngine/include;../include;../ALUT_LIB/include/AL;../OpenAL32_LIB/Alc;../OGG_LIB/include;../OpenAL32_LIB/Include/AL;../VORBIS_LIB/include;../JPG_LIB/include;../ZLIB_LIB/include;../PNG_LIB/include;../ultimateTCP_IP\src;../../../_LIBS/freeglut/include;../../../_LIBS/GL3Plus;$(UniversalCRT_IncludePath)__;$(UniversalCRT_LibraryPath_x64)__;include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);$(WindowsSdkDir)include;$(FrameworkSDKDir)\include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_SSE2|x64'">
     <IncludePath>include;$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>

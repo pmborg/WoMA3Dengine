@@ -17,14 +17,6 @@
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="lvl062_w10|Win32">
-      <Configuration>lvl062_w10</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="lvl062_w10|x64">
-      <Configuration>lvl062_w10</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Release_SSE2|Win32">
       <Configuration>Release_SSE2</Configuration>
       <Platform>Win32</Platform>
@@ -150,12 +142,6 @@
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lvl062_w10|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v143</PlatformToolset>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_SSE2|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -166,12 +152,6 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v143</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lvl062_w10|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_SSE2|x64'" Label="Configuration">
@@ -215,16 +195,10 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='lvl062_w10|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_SSE2|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='lvl062_w10|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_SSE2|x64'" Label="PropertySheets">
@@ -246,16 +220,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ExecutablePath>$(DXSDK_DIR)Utilities\Bin\x86;$(ExecutablePath);$(VSInstallDir)Common7/Tools</ExecutablePath>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lvl062_w10|Win32'">
-    <ExecutablePath>$(DXSDK_DIR)Utilities\Bin\x86;$(ExecutablePath);$(VSInstallDir)Common7/Tools</ExecutablePath>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_SSE2|Win32'">
     <ExecutablePath>$(DXSDK_DIR)Utilities\Bin\x86;$(ExecutablePath);$(VSInstallDir)Common7/Tools</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <ExecutablePath>$(DXSDK_DIR)Utilities\Bin\x64;$(ExecutablePath);$(VSInstallDir)Common7/Tools</ExecutablePath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lvl062_w10|x64'">
     <ExecutablePath>$(DXSDK_DIR)Utilities\Bin\x64;$(ExecutablePath);$(VSInstallDir)Common7/Tools</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_SSE2|x64'">
@@ -264,16 +232,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Include_;../../../_LIBS/Microsoft_DirectX_SDK_June_2010/Include_;$(DXSDK_DIR)/Include_;../include/utils;../WomaEngine/include;../include;../ALUT_LIB/include/AL;../OpenAL32_LIB/Alc;../OGG_LIB/include;../OpenAL32_LIB/Include/AL;../VORBIS_LIB/include;../JPG_LIB/include;../ZLIB_LIB/include;../PNG_LIB/include;../ultimateTCP_IP\src;../../../_LIBS/freeglut/include;../../../_LIBS/GL3Plus;$(UniversalCRT_IncludePath);$(UniversalCRT_LibraryPath_x64);include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);$(WindowsSdkDir)include;$(FrameworkSDKDir)\include</IncludePath>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lvl062_w10|Win32'">
-    <IncludePath>C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Include_;../../../_LIBS/Microsoft_DirectX_SDK_June_2010/Include_;$(DXSDK_DIR)/Include_;../include/utils;../WomaEngine/include;../include;../ALUT_LIB/include/AL;../OpenAL32_LIB/Alc;../OGG_LIB/include;../OpenAL32_LIB/Include/AL;../VORBIS_LIB/include;../JPG_LIB/include;../ZLIB_LIB/include;../PNG_LIB/include;../ultimateTCP_IP\src;../../../_LIBS/freeglut/include;../../../_LIBS/GL3Plus;$(UniversalCRT_IncludePath);$(UniversalCRT_LibraryPath_x64);include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);$(WindowsSdkDir)include;$(FrameworkSDKDir)\include</IncludePath>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_SSE2|Win32'">
     <IncludePath>C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Include_;../../../_LIBS/Microsoft_DirectX_SDK_June_2010/Include_;$(DXSDK_DIR)/Include_;../include/utils;../WomaEngine/include;../include;../ALUT_LIB/include/AL;../OpenAL32_LIB/Alc;../OGG_LIB/include;../OpenAL32_LIB/Include/AL;../VORBIS_LIB/include;../JPG_LIB/include;../ZLIB_LIB/include;../PNG_LIB/include;../ultimateTCP_IP\src;../../../_LIBS/freeglut/include;../../../_LIBS/GL3Plus;$(UniversalCRT_IncludePath);$(UniversalCRT_LibraryPath_x64);include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);$(WindowsSdkDir)include;$(FrameworkSDKDir)\include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Include_;../../../_LIBS/Microsoft_DirectX_SDK_June_2010/Include_;$(DXSDK_DIR)/Include_;../include/utils;../WomaEngine/include;../include;../ALUT_LIB/include/AL;../OpenAL32_LIB/Alc;../OGG_LIB/include;../OpenAL32_LIB/Include/AL;../VORBIS_LIB/include;../JPG_LIB/include;../ZLIB_LIB/include;../PNG_LIB/include;../ultimateTCP_IP\src;../../../_LIBS/freeglut/include;../../../_LIBS/GL3Plus;$(UniversalCRT_IncludePath);$(UniversalCRT_LibraryPath_x64);include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);$(WindowsSdkDir)include;$(FrameworkSDKDir)\include</IncludePath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lvl062_w10|x64'">
     <IncludePath>C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Include_;../../../_LIBS/Microsoft_DirectX_SDK_June_2010/Include_;$(DXSDK_DIR)/Include_;../include/utils;../WomaEngine/include;../include;../ALUT_LIB/include/AL;../OpenAL32_LIB/Alc;../OGG_LIB/include;../OpenAL32_LIB/Include/AL;../VORBIS_LIB/include;../JPG_LIB/include;../ZLIB_LIB/include;../PNG_LIB/include;../ultimateTCP_IP\src;../../../_LIBS/freeglut/include;../../../_LIBS/GL3Plus;$(UniversalCRT_IncludePath);$(UniversalCRT_LibraryPath_x64);include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);$(WindowsSdkDir)include;$(FrameworkSDKDir)\include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_SSE2|x64'">
@@ -286,13 +248,6 @@
     <LibraryWPath>$(DXSDK_DIR)Lib\x86;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSDK_LibraryPath_x86);$(DXSDK_DIR)Lib\x86;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib</LibraryWPath>
     <TargetName>$(ProjectName)_d</TargetName>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lvl062_w10|Win32'">
-    <LibraryPath>$(LibraryPath);$(DXSDK_DIR)Lib\x86;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib;</LibraryPath>
-    <IntDir>../Output/$(ProjectName)/$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)/Libs/$(Platform)\$(Configuration)\</OutDir>
-    <LibraryWPath>$(DXSDK_DIR)Lib\x86;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSDK_LibraryPath_x86);$(DXSDK_DIR)Lib\x86;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib</LibraryWPath>
-    <TargetName>$(ProjectName)_d</TargetName>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_SSE2|Win32'">
     <LibraryPath>$(LibraryPath);$(DXSDK_DIR)Lib\x86;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib;</LibraryPath>
     <IntDir>../Output/$(ProjectName)/$(Platform)\$(Configuration)\</IntDir>
@@ -301,12 +256,6 @@
     <TargetName>$(ProjectName)_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>$(DXSDK_DIR)Lib\x64;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)/Libs/$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>../Output/$(ProjectName)/$(Platform)\$(Configuration)\</IntDir>
-    <TargetName>$(ProjectName)X64_d</TargetName>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lvl062_w10|x64'">
     <LibraryPath>$(DXSDK_DIR)Lib\x64;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)/Libs/$(Platform)\$(Configuration)\</OutDir>
     <IntDir>../Output/$(ProjectName)/$(Platform)\$(Configuration)\</IntDir>
@@ -382,22 +331,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='lvl062_w10|Win32'">
-    <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <WarningLevel>TurnOffAllWarnings</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;ALUT_BUILD_LIBRARY;AL_LIBTYPE_STATIC;ALUT_API=extern;ALC_API=extern;AL_API=extern;_WINDOWS;_DEBUG;AL_BUILD_LIBRARY;AL_ALEXT_PROTOTYPES;_LARGEFILE_SOURCE;_LARGE_FILES;restrict=;inline=__inline;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;strcasecmp=_stricmp;strncasecmp=_strnicmp;snprintf=_snprintf;isfinite=_finite;isnan=_isnan;CMAKE_INTDIR="Debug";OpenAL32_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <BrowseInformation>true</BrowseInformation>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
-    </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_SSE2|Win32'">
     <ClCompile>
       <PrecompiledHeader>
@@ -415,33 +348,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <WarningLevel>TurnOffAllWarnings</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>X64;_WINDOWS;_DEBUG;_TIMESPEC_DEFINED;%(PreprocessorDefinitions);ALUT_BUILD_LIBRARY;AL_LIBTYPE_STATIC;ALUT_API=extern;ALC_API=extern;AL_API=extern;AL_BUILD_LIBRARY;AL_ALEXT_PROTOTYPES;_LARGEFILE_SOURCE;_LARGE_FILES;restrict=;inline=__inline;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;strcasecmp=_stricmp;strncasecmp=_strnicmp;isfinite=_finite;isnan=_isnan;CMAKE_INTDIR="Debug";OpenAL32_EXPORTS</PreprocessorDefinitions>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
-      <BrowseInformation>true</BrowseInformation>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <CompileAs>CompileAsC</CompileAs>
-      <OmitFramePointers>false</OmitFramePointers>
-      <SDLCheck>
-      </SDLCheck>
-    </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
-    <Bscmake>
-      <PreserveSbr>true</PreserveSbr>
-    </Bscmake>
-    <Lib>
-      <TargetMachine>MachineX64</TargetMachine>
-      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
-    </Lib>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='lvl062_w10|x64'">
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
