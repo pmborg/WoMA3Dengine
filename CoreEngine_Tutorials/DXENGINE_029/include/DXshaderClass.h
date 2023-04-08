@@ -218,7 +218,7 @@ public:
 	ComPtr<ID3D12PipelineState>		m_pipelineState[2][3][2][MAXNUM_PIPELINE_STATES] = {0};
 	
 	UINT m_CbvSrvDescriptorSize;
-	ComPtr<ID3D12DescriptorHeap>	mSrvDescriptorHeap = NULL;			// for Descriptor buffer(s)
+	ComPtr<ID3D12DescriptorHeap>	DX12mSrvDescriptorHeap = NULL;			// for Descriptor buffer(s)
 
 	// First Constant Buffer
 	VSconstantBufferType	mVS_constantBufferData = {};
@@ -262,7 +262,7 @@ public:
 		BOOL		hasTexture;
 		BOOL		hasLight;
 		BOOL		hasSpecular;
-		BOOL		isFont;
+		BOOL		isFontShader;
 
 		// BLOCK3:
 		XMFLOAT4	ambientColor;	// LIGHT: Ka
@@ -279,7 +279,7 @@ public:
 		// BLOCK5:
 		bool		hasAlfaColor;
 		float		alfaColor;
-		float		fade;			// Fade from 0 to 1
+		float		PSfade;			// Fade from 0 to 1
 		float		frameTime;		// For animations
 
 		// BLOCK6:

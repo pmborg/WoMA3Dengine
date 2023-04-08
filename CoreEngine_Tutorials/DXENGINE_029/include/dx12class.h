@@ -210,7 +210,7 @@ public:
 	
 // ---------------------------------------------------------
 
-	D3D12_SHADER_RESOURCE_VIEW_DESC viewDesc = {};
+	D3D12_SHADER_RESOURCE_VIEW_DESC DX12viewDesc = {};
 
 	bool CreateBlendState();
 

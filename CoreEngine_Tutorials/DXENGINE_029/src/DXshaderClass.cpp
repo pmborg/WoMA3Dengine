@@ -38,7 +38,6 @@
 #pragma comment(lib, "d3dcompiler.lib")
 #endif
 
-//#include "SystemPlatform.h"			// Get [SystemHandle] Pointer to System Class: WINDOWS, LINUX & ANDROID
 #include "WinSystemClass.h"
 
 shaderTree* shaderManager = NULL;
@@ -144,7 +143,6 @@ namespace DirectX {
 		texture11 = NULL;
 		texture11_2 = NULL;
 
-
 		m_sampleStateClamp11 = NULL;
 
 		// VERTEX CBUFFER:
@@ -183,7 +181,7 @@ namespace DirectX {
 		hasTexture = false;
 		//hasLight = false;		//repeated in VS
 		//hasSpecular = false;	//repeated in VS
-		isFont = false;
+		isFontShader = false;
 
 		// BLOCK3:
 		//XMFLOAT4	ambientColor;	// LIGHT: Ka //repeated in VS
@@ -200,7 +198,7 @@ namespace DirectX {
 		// BLOCK5:
 		hasAlfaColor = false;
 		alfaColor = 1;
-		fade = 1;	// Time since Beg.
+		PSfade = true;	// Time since Beg.
 		frameTime = 0;	//29: Fadeout / Fadein
 
 		// BLOCK6:
@@ -489,7 +487,6 @@ namespace DirectX {
 			}
 #endif
 
-
 			// Create the vertex shader from the buffer: (LOAD & COMPILE EXTERNAL FILE)
 			result = device11->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &m_vertexShader11);
 			if (FAILED(result))
@@ -501,7 +498,6 @@ namespace DirectX {
 			if (FAILED(result))
 				WOMA::WomaMessageBox(TEXT("ERROR"), TEXT("pixelShaderBuffer:"));
 			IF_FAILED_RETURN_FALSE(result);
-
 
 			// Create the vertex input layout.
 #if !defined USE_PRECOMPILED_SHADERS
@@ -531,7 +527,6 @@ namespace DirectX {
 			}
 			// GS
 #endif
-
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -582,9 +577,8 @@ namespace DirectX {
 			srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 			srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 
-
 			// IF Failed ?: | Root Signature		| Shader Registers	|   ---> dont match with HLSL code:
-			result = device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&mSrvDescriptorHeap));
+			result = device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&DX12mSrvDescriptorHeap));
 			if (FAILED(result))
 			{
 				WOMA::WomaMessageBox(TEXT("CreateDescriptorHeap"), TEXT("DX12 ERROR:"));
@@ -592,7 +586,7 @@ namespace DirectX {
 			}
 
 #ifdef _DEBUG
-			mSrvDescriptorHeap->SetName(L"VERTEX Constant Buffer View Descriptor Heap");
+			DX12mSrvDescriptorHeap->SetName(L"Constant Buffer(s) View Descriptor Heap");
 #endif
 
 			m_CbvSrvDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
@@ -928,7 +922,7 @@ namespace DirectX {
 					cbvDesc[0].SizeInBytes = c_alignedVSConstantBufferSize; 	// CB size is required to be 256-byte aligned.
 
 					// CBV
-					CD3DX12_CPU_DESCRIPTOR_HANDLE cbvHandle0(mSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), 0, 0);
+					CD3DX12_CPU_DESCRIPTOR_HANDLE cbvHandle0(DX12mSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), 0, 0);
 					device->CreateConstantBufferView(&cbvDesc[0], cbvHandle0);
 				}
 				break;
@@ -969,14 +963,14 @@ namespace DirectX {
 					cbvDesc[0].BufferLocation = mVS_constantBuffer->GetGPUVirtualAddress();
 					cbvDesc[0].SizeInBytes = c_alignedVSConstantBufferSize; 	// CB size is required to be 256-byte aligned.
 
-					CD3DX12_CPU_DESCRIPTOR_HANDLE cbvHandle0(mSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), 0, 0); // C0 at: 0
+					CD3DX12_CPU_DESCRIPTOR_HANDLE cbvHandle0(DX12mSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), 0, 0); // C0 at: 0
 					device->CreateConstantBufferView(&cbvDesc[0], cbvHandle0);
 
 					//[2]
 					cbvDesc[1].BufferLocation = mPS_constantBuffer->GetGPUVirtualAddress();
 					cbvDesc[1].SizeInBytes = c_alignedPSConstantBufferSize; 	// CB size is required to be 256-byte aligned.
 
-					CD3DX12_CPU_DESCRIPTOR_HANDLE cbvHandle2(mSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), m_CbvSrvDescriptorSize, 2); // C1 at: 2
+					CD3DX12_CPU_DESCRIPTOR_HANDLE cbvHandle2(DX12mSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), m_CbvSrvDescriptorSize, 2); // C1 at: 2
 					device->CreateConstantBufferView(&cbvDesc[1], cbvHandle2);
 
 					break;
@@ -1202,7 +1196,7 @@ namespace DirectX {
 		dataPSptr->hasTexture = hasTexture; // NO? use pixelColor
 		dataPSptr->hasLight = hasLight;
 		dataPSptr->hasSpecular = hasSpecular;
-		dataPSptr->isFont = isFont;
+		dataPSptr->isFont = isFontShader;
 
 		// BLOCK3:
 		if (hasLight)
@@ -1234,7 +1228,7 @@ namespace DirectX {
 		// BLOCK5:
 		dataPSptr->hasAlfaColor = hasAlfaColor;
 		dataPSptr->alfaColor = alfaColor;
-		dataPSptr->fade = fade;	// BASE TEXTURE!
+		dataPSptr->fade = PSfade;	// BASE TEXTURE!
 		dataPSptr->frameTime = frameTime;		// dT
 
 		// BLOCK6:
@@ -1337,28 +1331,28 @@ namespace DirectX {
 			{
 			case SHADER_COLOR:
 			{
-				ID3D12DescriptorHeap* ppHeaps[] = { mSrvDescriptorHeap.Get() };
+				ID3D12DescriptorHeap* ppHeaps[] = { DX12mSrvDescriptorHeap.Get() };
 				driver->m_commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 				// SHADER_COLOR:
 				// | Root Signature		| Shader Registers	|
 				// |0| DescriptorTable  | b0				|
 
 				// CBV
-				auto offSet = mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
+				auto offSet = DX12mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
 				driver->m_commandList->SetGraphicsRootDescriptorTable(0, offSet); //C0 Set "Constant Buffer View" 
 			}
 			break;
 
 			case SHADER_TEXTURE:
 			{
-				ID3D12DescriptorHeap* ppHeaps[] = { mSrvDescriptorHeap.Get() };
+				ID3D12DescriptorHeap* ppHeaps[] = { DX12mSrvDescriptorHeap.Get() };
 				driver->m_commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 				// | Root Signature		| Shader Registers	|
 				// |1| DescriptorTable  | b0				|
 				// |0| DescriptorTable  | t0				|
 
 				// CBV
-				auto offSet = mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
+				auto offSet = DX12mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
 				driver->m_commandList->SetGraphicsRootDescriptorTable(0, offSet);	//C0 Set "Constant Buffer View" 
 
 				// SRV:
@@ -1366,12 +1360,13 @@ namespace DirectX {
 				driver->m_commandList->SetGraphicsRootDescriptorTable(1, offSet);	//T0 Set Texture
 			}
 			break;
+
 		//case SHADER_TEXTURE:
 			case SHADER_TEXTURE_FONT:
 			case SHADER_TEXTURE_LIGHT:
 			case SHADER_TEXTURE_LIGHT_RENDERSHADOW:
 			{
-				ID3D12DescriptorHeap* ppHeaps[] = { mSrvDescriptorHeap.Get() };
+				ID3D12DescriptorHeap* ppHeaps[] = { DX12mSrvDescriptorHeap.Get() };
 				driver->m_commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 
 				// | Root Signature		| Shader Registers	|
@@ -1380,7 +1375,7 @@ namespace DirectX {
 				// |2| DescriptorTable  | b1				|
 
 				// CBV
-				auto offSet = mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
+				auto offSet = DX12mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
 				driver->m_commandList->SetGraphicsRootDescriptorTable(0, offSet);	//C0 Set "Constant Buffer View" 
 
 				// SRV:

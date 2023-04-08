@@ -254,7 +254,6 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 	case WM_KEYDOWN:
 		{
 			// If a key is pressed send it to the input object so it can record that state.
-			
 			SystemHandle->m_OsInput->KeyDown((UINT)lparam, (UINT)wparam);
 			return 0;
 		}
@@ -263,7 +262,6 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 	case WM_KEYUP:
 	{
 		// If a key is released then send it to the input object so it can unset the state for that key.
-		unsigned int key = lparam >> 16;
 		SystemHandle->m_OsInput->KeyUp((UINT)lparam, (UINT)wparam);
 		return 0;
 	}

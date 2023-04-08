@@ -128,7 +128,7 @@ namespace DirectX {
 		}
 
 		// Used "Color" and no default "Texture" so load it:
-		m_spriteShader->isFont = true;
+		m_spriteShader->isFontShader = true;
 		m_spriteShader->hasTexture = false; // Will use Pixel Color
 
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
@@ -154,8 +154,8 @@ namespace DirectX {
 			// |1| DescriptorTable  | t0				|<-- HERE
 			// |2| DescriptorTable  | b1				|
 
-			CD3DX12_CPU_DESCRIPTOR_HANDLE cbvHandle1(m_spriteShader->mSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), m_spriteShader->m_CbvSrvDescriptorSize, 1); // T0 at: 1
-			m_driver->m_device->CreateShaderResourceView(m_spriteShader->texture->m_pTexture.Get(), &m_driver->viewDesc, cbvHandle1);
+			CD3DX12_CPU_DESCRIPTOR_HANDLE cbvHandle1(m_spriteShader->DX12mSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), m_spriteShader->m_CbvSrvDescriptorSize, 1); // T0 at: 1
+			m_driver->m_device->CreateShaderResourceView(m_spriteShader->texture->m_pTexture.Get(), &m_driver->DX12viewDesc, cbvHandle1);
 		}
 		return true;
 	}

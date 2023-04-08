@@ -215,7 +215,7 @@ private:
 #endif
 
 	UINT sizeofMODELvertex;
-	float m_fade = 1;
+	float model_fade = 1;
 
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 	// App resources.

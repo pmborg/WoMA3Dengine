@@ -72,11 +72,11 @@ DX12Class::DX12Class()
 	BUFFER_COLOR_FORMAT = DXGI_FORMAT_B8G8R8A8_UNORM; // "Loader Image" use this format.
 
 	//m_Camera = NULL;
-	viewDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	viewDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	viewDesc.Format = BUFFER_COLOR_FORMAT;
-	viewDesc.Texture2D.MipLevels = 1;
-	viewDesc.Texture2D.MostDetailedMip = 0;
+	DX12viewDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	DX12viewDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	DX12viewDesc.Format = BUFFER_COLOR_FORMAT;
+	DX12viewDesc.Texture2D.MipLevels = 1;
+	DX12viewDesc.Texture2D.MostDetailedMip = 0;
 	DXsystemHandle->m_CameraSKY = NULL;
 
 	// Clear the previous window size specific content.

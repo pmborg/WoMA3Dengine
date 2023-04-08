@@ -270,7 +270,7 @@ void dxWinSystemClass::ProcessFrame()
 			}
 		}
 
-		m_Driver->RenderfirstTime = false;	// NOTE: (After) FrameRender()
+		m_Driver->RenderfirstTime = false;
 	}
 }
 
@@ -433,8 +433,16 @@ bool dxWinSystemClass::SaveScreenshot()
 
 	if (snapshot_counter++ >= 100)
 		snapshot_counter = 1;
-
-	//HRESULT hr = SaveWICTextureToFile(Driver->m_deviceContext, Driver->DX11windowsArray[0].m_backBuffer, GUID_ContainerFormatJpeg, path.c_str());		//op1
+	/*
+	GUID_ContainerFormatBmp
+	GUID_ContainerFormatPng
+	GUID_ContainerFormatIco
+	GUID_ContainerFormatJpeg
+	GUID_ContainerFormatTiff
+	GUID_ContainerFormatGif
+	GUID_ContainerFormatWmp
+	GUID_ContainerFormatDds
+	*/
 	HRESULT hr = DirectX::SaveWICTextureToFile(Driver->m_deviceContext, Driver->DX11windowsArray[0].m_backBuffer, GUID_ContainerFormatPng, path.c_str());		//op2
 	if (hr == S_OK)
 		return true;

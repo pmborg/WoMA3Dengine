@@ -271,8 +271,8 @@ bool ApplicationClass::Initialize(/*WomaDriverClass*/ void* Driver)
 
 	m_NextPosition = NEW PositionClass(/*ID*/-1);
 
-	initText(SystemHandle->driverList[SystemHandle->AppSettings->DRIVER]);
 	initIntroDemo();
+	initText(SystemHandle->driverList[SystemHandle->AppSettings->DRIVER]);
 
 	// USER LOAD main 3D objects (Light, LigthRay...)
 	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(SystemHandle->m_Driver));	

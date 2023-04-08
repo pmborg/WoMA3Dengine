@@ -341,6 +341,8 @@ void ApplicationClass::initIntroDemo()
 		VirtualModelClass* m_spriteModel = NULL;
 		initLoadTexture2D(m_spriteModel, (TCHAR*)INTRO_TEXT[i].c_str(), TitleVertexVector, emptyIndexList, SHADER_TEXTURE_FONT);
 		m_screenShots.push_back(m_spriteModel);
+
 	}
+
 }
 

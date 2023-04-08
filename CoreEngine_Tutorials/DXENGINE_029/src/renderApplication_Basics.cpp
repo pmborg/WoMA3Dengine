@@ -196,13 +196,12 @@ void ApplicationClass::RenderSprites()
   {
 	  VirtualModelClass* screenShot = m_screenShots[SpriteScreenToShow];
 
-	  screenShot->RenderSprite(m_Driver, (SystemHandle->AppSettings->WINDOW_WIDTH - screenShot->SpriteTextureWidth) / 2,
-		  SystemHandle->AppSettings->WINDOW_HEIGHT / 2 - screenShot->SpriteTextureHeight * 2 + (SystemHandle->AppSettings->WINDOW_HEIGHT - screenShot->SpriteTextureHeight) / 2, 1, fadeIntro);
+	  screenShot->RenderSprite(m_Driver, 
+		  (SystemHandle->AppSettings->WINDOW_WIDTH - screenShot->SpriteTextureWidth) / 2,
+		  SystemHandle->AppSettings->WINDOW_HEIGHT / 2 - screenShot->SpriteTextureHeight * 2 + (SystemHandle->AppSettings->WINDOW_HEIGHT - screenShot->SpriteTextureHeight) / 2, 
+		  1, fadeIntro);
   }
-	if (RENDER_PAGE >= 24 && m_titleModel) 
-	{
-		m_titleModel->RenderSprite(DXsystemHandle->m_Driver, (SystemHandle->AppSettings->WINDOW_WIDTH - m_titleModel->SpriteTextureWidth) / 2, (SystemHandle->AppSettings->WINDOW_HEIGHT - m_titleModel->SpriteTextureHeight) / 2);
-	}
+
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -240,8 +239,10 @@ void ApplicationClass::AppPosRender()
 	m_Driver->ClearDepthBuffer();		
 	m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
 	
-	// BANNERs and Sprites - On Top of 3D Rendered:
-	RenderSprites();	
+	if (RENDER_PAGE >= 24 && m_titleModel)
+	{
+		m_titleModel->RenderSprite(DXsystemHandle->m_Driver, (SystemHandle->AppSettings->WINDOW_WIDTH - m_titleModel->SpriteTextureWidth) / 2, (SystemHandle->AppSettings->WINDOW_HEIGHT - m_titleModel->SpriteTextureHeight) / 2);
+	}
 
 	// Render all Rastertek TEXT:
 #if _DEBUG
@@ -254,6 +255,8 @@ void ApplicationClass::AppPosRender()
 	// Render Native TEXT:
 
 	m_Driver->TurnOffAlphaBlending();
+	// BANNERs and Sprites - On Top of 3D Rendered:
+	RenderSprites();
 }
 
 float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)

@@ -470,19 +470,19 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 					// |1| DescriptorTable  | t0				|<-- HERE
 					// |2| DescriptorTable  | b1				|
 
-					CD3DX12_CPU_DESCRIPTOR_HANDLE cbvHandle1(m_Shader->mSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), m_Shader->m_CbvSrvDescriptorSize, 1); // T0 at: 1
-					m_driver->m_device->CreateShaderResourceView(m_Texture->m_pTexture.Get(), &m_driver->viewDesc, cbvHandle1);
+					CD3DX12_CPU_DESCRIPTOR_HANDLE cbvHandle1(m_Shader->DX12mSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), m_Shader->m_CbvSrvDescriptorSize, 1); // T0 at: 1
+					m_driver->m_device->CreateShaderResourceView(m_Texture->m_pTexture.Get(), &m_driver->DX12viewDesc, cbvHandle1);
 					hr = S_OK;
 				}
 			}
 	
-				switch (SystemHandle->AppSettings->DRIVER)
-				{
-					case DRIVER_DX9:
-					case DRIVER_DX11:
-						LOADTEXTURE(textureFilename, m_Texture11); // NOTE: Populate hr in case of failor
-					break;
-				}
+			switch (SystemHandle->AppSettings->DRIVER)
+			{
+				case DRIVER_DX9:
+				case DRIVER_DX11:
+					LOADTEXTURE(textureFilename, m_Texture11); // NOTE: Populate hr in case of failor
+				break;
+			}
 
 			#if defined DX9sdk
 				//LPDIRECT3DTEXTURE9 m_Texture
@@ -1139,7 +1139,7 @@ HRESULT result;
 bool DXmodelClass::RenderSprite(void* Driver, int positionX, int positionY, float scale, float fade)
 // ----------------------------------------------------------------------------------------
 {	
-	m_fade = fade;
+	model_fade = fade;
 
 	// Re-build the dynamic vertex buffer for rendering to possibly a different location on the screen.
 	switch (SystemHandle->AppSettings->DRIVER)
@@ -1190,10 +1190,10 @@ bool DXmodelClass::RenderSprite(void* Driver, int positionX, int positionY, floa
 void DXmodelClass::RenderWithFade(WomaDriverClass* Driver, float fadeLight)
 {
 			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
-				m_Shader11->fade = fadeLight;
+				m_Shader11->PSfade = fadeLight;
 			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 			{
-				m_Shader->fade = fadeLight;
+				m_Shader->PSfade = fadeLight;
 			}
 		Render(Driver);
 }
@@ -1203,21 +1203,21 @@ void DXmodelClass::RenderSky(WomaDriverClass* driver, UINT camera, float fadeLig
 	#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 	{
-		m_Shader->fade = fadeLight;
+		m_Shader->PSfade = fadeLight;
 		m_Shader->isSky = true;
 		Render(m_driver, CAMERA_SKY, PROJECTION_PERSPECTIVE);
 	}
 #endif
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 	{
-		m_Shader11->fade = fadeLight;
+		m_Shader11->PSfade = fadeLight;
 		m_Shader11->isSky = true;
 		Render(m_driver11, CAMERA_SKY, PROJECTION_PERSPECTIVE);
 	}
 #if defined DX9sdk
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 	{
-		m_Shader->fade = fadeLight;
+		m_Shader->PSfade = fadeLight;
 		m_Shader->isSky = true;
 		Render(m_driver9, CAMERA_SKY, PROJECTION_PERSPECTIVE);
 	}
@@ -1270,6 +1270,7 @@ void DXmodelClass::Render(WomaDriverClass* Driver, UINT camera, UINT projection,
 		XMMATRIX* projectionMatrix = driver->GetProjectionMatrix(Driver, camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
 		XMMATRIX* viewMatrix = driver->GetViewMatrix(Driver, camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
 
+			m_Shader->PSfade = model_fade;
 			m_Shader->Render(driver->m_device, m_indexCount, &m_worldMatrix, viewMatrix, projectionMatrix);	// Single Material (Optimized)
 	}
 #endif
@@ -1293,7 +1294,7 @@ void DXmodelClass::Render(WomaDriverClass* Driver, UINT camera, UINT projection,
 				for (UINT i = 0; i < meshSRV11.size(); i++)
 					pContext->PSSetShaderResources(i, 1, &meshSRV11[i]);	// Set shader texture resource(s) in the "Pixel Shader", only!
 			// 21/22
-			m_Shader11->fade = m_fade;
+			m_Shader11->PSfade = model_fade;
 			m_Shader11->Render(pContext, m_indexCount, &m_worldMatrix, viewMatrix, projectionMatrix);	// Single Material (Optimized)
 		}
 	}
