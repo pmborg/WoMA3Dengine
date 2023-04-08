@@ -1,4 +1,8 @@
 # WoMA3Dengine
+<hr>
+<h1>WoMA3Dengine at Level 29 INTRO DEMO</h1>
+
+[![WoMA3Dengine at Level 29 INTRO DEMO](https://i.imgur.com/q3AMNrr.png)](https://www.youtube.com/watch?v=tdMsRX_lQ5A)
 
 <h2>Movement Keys: (at level28)</h2> <br>
   - Left:		 arrow or a<br>
@@ -120,7 +124,6 @@ Add third party image readers:<br>
 - <b>DX29: INTRO DEMO OF BASIC TUTORIAL SERIES</b><br>
   Adding the Sound Manager<br>
   Adding Play background Music<br>
-  Adding MPG Player<br>
   Generate the first RELEASE BUILD<br>
   Add the installer of INTRO DEMO OF BASIC TUTORIAL SERIES<br>
  <hr>
