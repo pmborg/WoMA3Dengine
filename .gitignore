@@ -1,8 +1,8 @@
 ThirdParty/.vs/
 ThirdParty/Output/
 ThirdParty/x64/
-woma.pack
-woma.pck
+_woma.pack
+_woma.pck
 DXENGINE_*.txt
 REPORT.txt
 ENGINE_*.txt

@@ -1,4 +1,30 @@
 @echo off
+
+REM EXPECTED OUTPUT:
+REM
+REM C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_000_OSENGINE_SYSTEM\x64\Debug\CoreEngine_000.exe
+REM C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_001_LANG_LOG_MEMLEAKs_OSMAINDIRs\x64\Debug\CoreEngine_001.exe
+REM C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_002_MAINWINDOW_EVENTS\x64\Debug\CoreEngine_002.exe
+REM C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_003_MINIDUMPER_STACK_EXCEPTION\x64\Debug\CoreEngine_003.exe
+REM C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH\x64\Debug\CoreEngine_004.exe
+REM C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_005_PAINT_SETTINGS_XML\x64\Debug\CoreEngine_005.exe
+REM C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_006_PACKMANAGER_IDEA_CPU_BENCHMARK\x64\Debug\CoreEngine_006.exe
+REM C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_007_PAINT_REALTIMECELESTIAL_ASTROCLASS\x64\Debug\CoreEngine_007.exe
+REM C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_008_PAINT_REALTIME_GPS_MAP_LOCATION\x64\Debug\CoreEngine_008.exe
+REM C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_009_PAINT_METAR_WEATHER_REALTIME\x64\Debug\CoreEngine_009.exe
+REM C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_019\x64\Debug\CoreEngine_019.exe
+REM C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_020\x64\Debug\CoreEngine_020.exe
+REM C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_021\x64\Debug\CoreEngine_021.exe
+REM C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_022\x64\Debug\CoreEngine_022.exe
+REM C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_023\x64\Debug\CoreEngine_023.exe
+REM C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_024\x64\Debug\CoreEngine_024.exe
+REM C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_025\x64\Debug\CoreEngine_025.exe
+REM C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_026\x64\Debug\CoreEngine_026.exe
+REM C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_027\x64\Debug\CoreEngine_027.exe
+REM C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_028\x64\Debug\CoreEngine_028.exe
+REM C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\x64\Debug\CoreEngine_029_d.exe
+REM C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\x64\Release\CoreEngine_029.exe
+
 for /f "usebackq tokens=1* delims=: " %%i in (`"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest`) do (
   if /i "%%i"=="productPath" set devenv=%%j
 )
@@ -32,6 +58,7 @@ del /S /F /Q DXENGINE_*.txt 2> nul
 "%devenv%" DXENGINE_027/DXENGINE_027.sln /project DXENGINE_027 /Build "Debug|x64" /out DXENGINE_027.txt
 "%devenv%" DXENGINE_028/DXENGINE_028.sln /project DXENGINE_028 /Build "Debug|x64" /out DXENGINE_028.txt
 "%devenv%" DXENGINE_029/DXENGINE_029.sln /project DXENGINE_029 /Build "Debug|x64" /out DXENGINE_029.txt
+"%devenv%" DXENGINE_029/DXENGINE_029.sln /project DXENGINE_029 /Build "Release|x64" /out DXENGINE_029.txt
 @echo off
 echo "Compiled:"
 dir /S /B *.exe | find /v "fxc"
