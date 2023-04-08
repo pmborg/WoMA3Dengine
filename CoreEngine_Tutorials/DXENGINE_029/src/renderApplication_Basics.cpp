@@ -239,9 +239,10 @@ void ApplicationClass::AppPosRender()
 	m_Driver->ClearDepthBuffer();		
 	m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
 	
-	if (RENDER_PAGE >= 24 && m_titleModel)
+	//if (RENDER_PAGE >= 24 && m_titleModel)
 	{
-		m_titleModel->RenderSprite(DXsystemHandle->m_Driver, (SystemHandle->AppSettings->WINDOW_WIDTH - m_titleModel->SpriteTextureWidth) / 2, (SystemHandle->AppSettings->WINDOW_HEIGHT - m_titleModel->SpriteTextureHeight) / 2);
+		m_titleModel->RenderSprite(DXsystemHandle->m_Driver, (SystemHandle->AppSettings->WINDOW_WIDTH - m_titleModel->SpriteTextureWidth) / 2, 
+			(SystemHandle->AppSettings->WINDOW_HEIGHT - m_titleModel->SpriteTextureHeight) / 2);
 	}
 
 	// Render all Rastertek TEXT:

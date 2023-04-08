@@ -167,6 +167,5 @@ float4 MyPixelShader022Texture(PSIn input) : SV_TARGET
 {
 	// Sample the pixel color from the texture using the sampler at this texture coordinate location:
 	float4 color = shaderTexture.Sample(SampleType, input.texCoords);
-	//color.rgb*=fade;
 	return color;
 }

@@ -81,6 +81,7 @@ private:
 	//float scale2D;
 
 	float	m_xTexture = 1.0f;
+	float model_fade = 1;
 
 	void SetOpenGLBuffers(UINT sizeofMODELvertex, UINT* indices);
 	UINT* indices;

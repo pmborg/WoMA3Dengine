@@ -223,10 +223,16 @@ SamplerState SampleType: register(s0);
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
-float4 PSlightFunc2(float3 Normal)
+float4 PSlightFunc1(float3 Normal)
 ////////////////////////////////////////////////////////////////////////////////
 {
 	return saturate(dot(Normal, -lightDirection));							// Calculate the amount of light on this pixel
+}
+////////////////////////////////////////////////////////////////////////////////
+float4 PSlightFunc2(float3 Normal)
+////////////////////////////////////////////////////////////////////////////////
+{
+	return saturate(dot(Normal, lightDirection));							// Calculate the amount of light on this pixel
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -276,9 +282,12 @@ float4 MyPixelShader023Light(PSIn input) : SV_TARGET
 	}
 
 	// 23 & 43: LIGHT
-	if (hasLight) 
+	//if (hasLight) 
 	{
-		lightIntensity = PSlightFunc2(input.normal);
+		if (lightType == 1)	
+			lightIntensity = PSlightFunc1(input.normal);
+		else
+			lightIntensity = PSlightFunc2(input.normal);
 
 		if (hasTexture) {
 			textureColor = textureColor * saturate(emissiveColor + ambientColor + lightIntensity);	

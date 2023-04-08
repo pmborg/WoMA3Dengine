@@ -225,10 +225,14 @@ void GLmodelClass::Shutdown()
 
 	bool GLmodelClass::RenderSprite(void* Driver , int positionX, int positionY, float scale, float fade)
 	{
+		model_fade = fade;
+
 		if (!UpdateBuffersRotY(Driver, positionX, positionY))
 			return false;
 
 		m_worldMatrix.mat4identity();
+
+		//scale2D = scale;
 		if (scale != 1) {
 			m_worldMatrix.m[4 * 0 + 0] = scale;
 			m_worldMatrix.m[4 * 1 + 1] = scale;
@@ -238,7 +242,6 @@ void GLmodelClass::Shutdown()
 		float Ypos = (SystemHandle->AppSettings->WINDOW_HEIGHT-45-32) / 2 - m_worldMatrix.m[10] * SpriteTextureHeight / 2;
 		m_worldMatrix.m[13] = Ypos;
 
-		//scale2D = scale;
 		Render((WomaDriverClass*)Driver, CAMERA_NORMAL, PROJECTION_ORTHOGRAPH);
 
 		return true;
@@ -344,7 +347,7 @@ void GLmodelClass::RenderWithFade(WomaDriverClass* driver, float fadeLight)
 }
 void GLmodelClass::RenderSky(WomaDriverClass* driver, UINT camera, float fadeLight)
 {
-	m_Shader->fade = fadeLight;
+	m_Shader->PSfade = fadeLight;
 	m_Shader->isSky = true;
 	RenderWithFade(driver, fadeLight);
 }
@@ -385,7 +388,14 @@ void GLmodelClass::Render(/*GLopenGLclass*/WomaDriverClass* Driver, UINT camera,
 			break;
 	}
 
-	glUseProgram(m_Shader->m_shaderProgram); // m_Shader->SetShader();
+	m_Shader->SetShader(); //glUseProgram(m_Shader->m_shaderProgram); // 
+
+	m_Shader->PSfade = model_fade;
+
+	if (RENDER_PAGE >= 26)
+		m_Shader->lightType = 2;
+	else
+		m_Shader->lightType = 1;
 
 	// Set the color shader as the current shader program and set the matrices that it will use for rendering:
 	if (ModelShaderType == SHADER_COLOR)

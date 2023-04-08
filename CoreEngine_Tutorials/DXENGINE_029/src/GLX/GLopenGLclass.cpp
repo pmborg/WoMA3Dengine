@@ -181,7 +181,6 @@ void GLopenGLclass::TurnOffAlphaBlending()
 	glDisable (GL_BLEND);
 }
 
-//static bool g_Zbuffer = false;
 // -----------------------------------------------------------------
 void GLopenGLclass::TurnZBufferOn()
 {
@@ -203,10 +202,12 @@ void GLopenGLclass::Initialize3DCamera()
 {
 	SetCamera2D();
 
-	gl_Camera->SetPosition(	SystemHandle->AppSettings->INIT_CAMX, SystemHandle->AppSettings->INIT_CAMY+0.35f,
+	gl_Camera->SetPosition(	SystemHandle->AppSettings->INIT_CAMX, 
+							SystemHandle->AppSettings->INIT_CAMY+0.35f,
 							SystemHandle->AppSettings->INIT_CAMZ);
 
-	gl_Camera->SetRotation(	SystemHandle->AppSettings->INIT_ROTX, SystemHandle->AppSettings->INIT_ROTY,
+	gl_Camera->SetRotation(	SystemHandle->AppSettings->INIT_ROTX, 
+							SystemHandle->AppSettings->INIT_ROTY,
 							SystemHandle->AppSettings->INIT_ROTZ);
 
 	gl_Camera->Render();
@@ -218,8 +219,9 @@ void GLopenGLclass::Initialize3DCamera()
 	}
 
 	gl_CameraSKY->SetPosition(0.0f, 0.0f, 0.0f);
-	gl_CameraSKY->SetRotation(SystemHandle->AppSettings->INIT_ROTX, SystemHandle->AppSettings->INIT_ROTY,
-		SystemHandle->AppSettings->INIT_ROTZ);
+	gl_CameraSKY->SetRotation(	SystemHandle->AppSettings->INIT_ROTX, 
+								SystemHandle->AppSettings->INIT_ROTY,
+								SystemHandle->AppSettings->INIT_ROTZ);
 
 	gl_CameraSKY->Render();
 }
@@ -317,7 +319,6 @@ bool GLopenGLclass::Initialize(float* clearColor)
 	float screenAspect = (float)SystemHandle->AppSettings->WINDOW_WIDTH / (float)SystemHandle->AppSettings->WINDOW_HEIGHT;
 
 	// Build the perspective projection matrix.
-	//mathClass->BuildPerspectiveFovLHMatrix(m_projectionMatrix, fieldOfView, screenAspect, SystemHandle->AppSettings->SCREEN_NEAR, SystemHandle->AppSettings->SCREEN_DEPTH);
 	m_projectionMatrix = 
 		mathClass->BuildPerspectiveFovLHMatrix(fieldOfView, screenAspect, SystemHandle->AppSettings->SCREEN_NEAR, SystemHandle->AppSettings->SCREEN_DEPTH);
 

@@ -12,6 +12,7 @@
 uniform sampler2D shaderTexture;
 uniform vec3 lightDirection;
 uniform vec4 diffuseLightColor;
+uniform int lightType;
 
 /////////////////////
 // INPUT VARIABLES //
@@ -44,8 +45,10 @@ void main(void)
 	// Sample the pixel color from the texture using the sampler at this texture coordinate location.
 	textureColor = texture(shaderTexture, texCoord);
 
-	//lightIntensity = clamp(dot(normal, -lightDirection), 0.0f, 1.0f);
-	lightIntensity = clamp(dot(normal, lightDirection), 0.0f, 1.0f);
+	if (lightType == 1)	
+		lightIntensity = clamp(dot(normal, -lightDirection), 0.0f, 1.0f);
+	else
+		lightIntensity = clamp(dot(normal, lightDirection), 0.0f, 1.0f);
 
     //if (hasLight)
 	{

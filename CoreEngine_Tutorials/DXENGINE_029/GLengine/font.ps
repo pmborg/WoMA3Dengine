@@ -21,31 +21,32 @@ out vec4 outputColor;
 ///////////////////////
 uniform sampler2D shaderTexture;
 uniform vec4 pixelColor;
-
+uniform float PSfade;
+uniform int isFont;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Pixel Shader
 ////////////////////////////////////////////////////////////////////////////////
 void main(void)
 {
-    vec4 color;
-
-
 	// Sample the pixel color from the texture using the sampler at this texture coordinate location.
-	color = texture(shaderTexture, texCoord);
+	vec4 color = texture(shaderTexture, texCoord);
 
-	// If the color is black on the texture then treat this pixel as transparent.
-    if(color.r == 0.0f)
+    if (isFont > 0)
     {
-        color.a = 0.0f;
+	    // If the color is black on the texture then treat this pixel as transparent.
+        if(color.r == 0.0f)
+        {
+            color.a = 0.0f;
+        }
+	    // If the color is other than black on the texture then this is a pixel in the font so draw it using the font pixel color.
+        else
+        {
+            color.a = 1.0f;
+            color = color * pixelColor;
+        }
     }
-	// If the color is other than black on the texture then this is a pixel in the font so draw it using the font pixel color.
-    else
-    {
-        color.a = 1.0f;
-        color = color * pixelColor;
-    }
+	color.rgb*=PSfade;
 
-	//outputColor.rgb*=fade;
 	outputColor = color;
 }
