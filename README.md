@@ -124,7 +124,6 @@ Add third party image readers:<br>
 - <b>DX29: INTRO DEMO OF BASIC TUTORIAL SERIES</b><br>
   Adding the Sound Manager<br>
   Adding Play background Music<br>
-  Adding MPG Player<br>
   Generate the first RELEASE BUILD<br>
   Add the installer of INTRO DEMO OF BASIC TUTORIAL SERIES<br>
  <hr>
