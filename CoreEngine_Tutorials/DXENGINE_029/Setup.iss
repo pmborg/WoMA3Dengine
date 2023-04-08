@@ -5,7 +5,7 @@
 #define MyAppVersion "1.0"
 #define MyAppPublisher "Pedro Borges"
 #define MyAppURL "https://localhost"
-#define MyAppExeName "dxEngine_029.exe"
+#define MyAppExeName "CoreEngine_029.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -22,7 +22,7 @@ DefaultDirName={autopf}\{#MyAppName}
 DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
-OutputBaseFilename=WoMAsetup021
+OutputBaseFilename=WoMAsetup029
 SetupIconFile=C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\WoMA.ico
 Compression=lzma
 SolidCompression=yes
@@ -45,9 +45,9 @@ Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\hlsl\*"; DestDir: "{a
 Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\GLengine\*"; DestDir: "{app}\GLengine"; Flags: ignoreversion
 Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\my.ip"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\present.weather"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\WoMAengine2023\woma.pck"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\WoMAengine2023\windows.pck"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\WoMAengine2014\woma_developer\SAMPLES\Sample020_StartEngine\GeoLite2-City.mmdb"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\WoMA3Dengine\woma.pck"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\WoMA3Dengine\windows.pck"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\GeoLite2-City.mmdb"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
