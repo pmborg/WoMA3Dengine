@@ -549,7 +549,7 @@
 	#define WomaDriverClass void
 #else
 	#if _DEBUG
-		#define RELEASE	//FORCE TO DEBUG A RELEASE bin!
+		//#define RELEASE	//FORCE TO DEBUG A RELEASE bin!
 		#define WOMA_CONSOLE_APPLICATION
 	#else
 		#define WOMA_WIN32_APPLICATION
