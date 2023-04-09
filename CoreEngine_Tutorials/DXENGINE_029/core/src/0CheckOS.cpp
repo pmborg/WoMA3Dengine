@@ -69,11 +69,11 @@ bool SystemManager::CheckOS()
 	// Check Bits Architecture: 32Bits+SSE2 vs 64Bits+AVX
 	//------------------------------------------------------------------
 
-	#ifdef X64
-	#define _BITS_ 64
-	#else
-	#define _BITS_ 32
-	#endif
+#ifdef X64
+#define _BITS_ 64
+#else
+#define _BITS_ 32
+#endif
 
 	StringCchPrintf(SystemHandle->systemDefinitions.binaryArchitecture, MAX_STR_LEN, TEXT("Binary Architecture: %d bits"), _BITS_);
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.binaryArchitecture);

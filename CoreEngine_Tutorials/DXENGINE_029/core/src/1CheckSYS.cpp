@@ -106,6 +106,11 @@ bool SystemManager::checkCPU ()
 {
 	processorInfo.cpuCores.GetProcessorInformation();
 
+	#ifdef RELEASE
+    if (processorInfo.cpuCores.processorCoreCount <= 1)
+        WOMA::WomaMessageBox(TEXT("CPU CORE WARNING: Your Processor just have 1 core, this application will run very slow!\n"));
+	#endif
+
     // Get CPU Speed:
     CHAR speed[MAX_STR_LEN] = { 0 };
     wtoa(speed, processorInfo.processorName, MAX_STR_LEN); // wchar ==> char
@@ -128,6 +133,11 @@ bool SystemManager::checkCPU ()
 	WOMA_LOGManager_DebugMSGAUTO( TEXT("CPU Page Size: %i\n"), SI.dwPageSize);
 
 	CPUSpeedMHz = GetProcessorSpeed();
+
+#ifdef RELEASE
+    if (CPUSpeedMHz < 2)
+        WOMA::WomaMessageBox(TEXT("CPU WARNING: Your Processor is slow (< 2GHz), this application will run very slow also!\n"));
+#endif
 
 	StringCchPrintf(SystemHandle->systemDefinitions.clockSpeed, MAX_STR_LEN, TEXT("CPU Base Clock Speed: %02.2f GHz"), (float) CPUSpeedMHz/1000);
 	WOMA_LOGManager_DebugMSGAUTO (TEXT("%s\n"), SystemHandle->systemDefinitions.clockSpeed);

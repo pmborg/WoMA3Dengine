@@ -231,7 +231,9 @@ BOOL DX12Class::CheckAPIdriver(UINT USE_THIS_ADAPTER)
 	else
 		m_sCapabilities.CapDX12_1 = true;
 
+#ifndef RELEASE
 	//m_device->SetStablePowerState(TRUE);	// Prevent the GPU from overclocking or underclocking to get consistent timings
+#endif
 
 	// USE DXGI 1.2 API: Are we Rendering in Stereo for 3D Monitors?
 	m_sCapabilities.inStereoAdapterMode = dxgiFactory->IsWindowedStereoEnabled();

@@ -139,6 +139,9 @@ bool initAppicationSettings(TCHAR* filename) //Note: Have to be char
 		SystemHandle->AppSettings->Anisotropic = (strcmp (GenSettings.Anisotropic, "true") == 0) ?  true : false;
 		SystemHandle->AppSettings->AnisotropicLevel = atoi (GenSettings.AnisotropicLevel);
 
+	#if defined USE_PLAY_MUSIC
+	    SystemHandle->AppSettings->MUSIC_ENABLED = (strcmp (GenSettings.musicEnabled, "true") == 0) ?  true : false;
+	#endif//
 	#if defined USE_SOUND_MANAGER
 	    SystemHandle->AppSettings->SOUND_ENABLED = (strcmp (GenSettings.soundEffectsEnabled, "true") == 0) ?  true : false;
 	#endif//
@@ -265,6 +268,9 @@ bool loadConfigSettings (TCHAR* file_) // Note: Have to be char
 		if ( child_sound )
 		{
 			/*Element*/TiXmlElement* element = child_sound->ToElement();
+			#if	defined USE_PLAY_MUSIC
+			strcpy (GenSettings.musicEnabled, element->Attribute("music"));
+			#endif
 			#if defined USE_SOUND_MANAGER
 			strcpy (GenSettings.soundEffectsEnabled, element->Attribute("effects"));
 			#endif

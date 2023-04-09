@@ -158,9 +158,23 @@ bool WinSystemClass::InitializeSystem()
 	//	ApplicationClass::ApplicationClass()	Run: 2th - User: level
 	//	WinSystemClass::WinSystemClass()		Run: 3nd - This OS: hi-level (Check for another instance)
 
+#if CORE_ENGINE_LEVEL >= 7 && defined RELEASE
+	InitPackLibs();	// LOAD NOW: Urgent Resources: windows.pck
+#endif
+
 	if (WOMA::game_state == GAME_STOP)				// Signal to STOP, before start?
 		return false;								// Probably another instance is already running!
 
+#ifdef RELEASE
+	// PURPOSE: Registers the Window Application Class, but first check if we are running!
+	if (FindWindow(WOMA_ENGINE_CLASS, NULL))
+	{
+		WOMA::WomaMessageBox((TCHAR*)TEXT("Another Process is already Running..."), (TCHAR*)TEXT("FATAL ERROR:"));
+		Publish_Quit_Message();
+		return false;
+	}
+	else
+#endif
 	{
 		if (!MyRegisterClass(m_hinstance)) {// Try to Register WOMA Engine WINDOW CLASS
 			Publish_Quit_Message();

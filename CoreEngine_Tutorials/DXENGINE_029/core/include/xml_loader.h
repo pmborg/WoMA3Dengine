@@ -110,6 +110,9 @@ typedef struct {
 
 	// Sound Settings:
 	// --------------------------------------------------------------------------------------------
+	#if defined USE_PLAY_MUSIC
+		char musicEnabled[10];
+	#endif
 	#if defined USE_SOUND_MANAGER
 		char soundEffectsEnabled[10];
 	#endif

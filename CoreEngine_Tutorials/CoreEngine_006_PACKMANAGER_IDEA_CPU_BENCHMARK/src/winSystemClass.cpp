@@ -45,6 +45,8 @@ WinSystemClass::WinSystemClass() : SystemClass()
 //----------------------------------------------------------------------------------
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567829;
+
 	//public:
 	SystemHandle = this;
 	WinSystemClass_init();
@@ -75,8 +77,6 @@ void WinSystemClass::WinSystemClass_init()
 		mMaximized = SystemHandle->AppSettings->FULL_SCREEN;
 	//WOMA::previous_game_state = WOMA::game_state;
 	WOMA::game_state = WOMA::previous_game_state;
-
-	bmpBackGround = NULL;
 	m_hWnd = NULL;
 	statusbar = NULL;
 #if defined USE_ASPECT_RATIO
@@ -109,8 +109,6 @@ WinSystemClass::~WinSystemClass()
 	SystemHandle = NULL;
 }
 
-
-//extern int Res;
 bool WinSystemClass::InitializeSystem()
 //----------------------------------------------------------------------------
 {
@@ -140,10 +138,19 @@ bool WinSystemClass::InitializeSystem()
 
 	StartTimer();	// START-TIMERS: ("Window Title" refresh & Real-Time Weather refresh)
 
-	PackDir(TEXT("\\WoMA3Dengine"), TEXT("woma.pack"));
+	//FILE1: windows.pack (zip)
+	PackDir(TEXT("\\WoMA3Dengine\\windows_engine"), TEXT("windows.pack"));
+	//Test1:
+	IF_NOT_THROW_EXCEPTION(EncodeIDEA("\\WoMA3Dengine\\windows.pack", ENCODE));	// windows.pack (zip) --> windows.pck (encoded)
+	WOMA::WomaMessageBox(TEXT("This diretory: \\WoMA3Dengine\\windows_engine\nwas packed(zip) into: \\WoMA3Dengine\\windows.pack\nand then Encoded into: \\WoMA3Dengine\\windows.pck\nPress OK, to close app."), TEXT("Tutorial: 006"));
+
+	// 
+	//FILE2: woma.pack (zip)
+	PackDir(TEXT("\\WoMA3Dengine\\woma_engine"), TEXT("woma.pack"));
 	//Test1:
 	IF_NOT_THROW_EXCEPTION(EncodeIDEA("\\WoMA3Dengine\\woma.pack", ENCODE));	// windows.pack (zip) --> windows.pck (encoded)
-	WOMA::WomaMessageBox(TEXT("This diretory: \\WoMA3Dengine\nwas packed(zip) into: \\WoMA3Dengine\\woma.pack\nand then Encoded into: \\WoMA3Dengine\\woma.pck\nPress OK, to close app."), TEXT("Tutorial: 006")); //false=button OK only
+	WOMA::WomaMessageBox(TEXT("This diretory: \\WoMA3Dengine\\woma_engine\nwas packed(zip) into: \\WoMA3Dengine\\woma.pack\nand then Encoded into: \\WoMA3Dengine\\woma.pck\nPress OK, to close app."), TEXT("Tutorial: 006"));
+
 	return false;
 
 	if (WOMA::game_state == GAME_LOADING)

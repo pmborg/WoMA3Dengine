@@ -4,7 +4,7 @@
 #define MyAppName "WoMA3Dengine"
 #define MyAppVersion "1.0"
 #define MyAppPublisher "Pedro Borges"
-#define MyAppURL "https://localhost"
+#define MyAppURL "https://github.com/pmborg/WoMA3Dengine"
 #define MyAppExeName "CoreEngine_029.exe"
 
 [Setup]
@@ -45,8 +45,8 @@ Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\hlsl\*"; DestDir: "{a
 Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\GLengine\*"; DestDir: "{app}\GLengine"; Flags: ignoreversion
 Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\my.ip"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\present.weather"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\WoMA3Dengine\woma.pck"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\WoMA3Dengine\windows.pck"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\WoMA3Dengine\woma_engine\woma.pck"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\WoMA3Dengine\windows_engine\windows.pck"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\GeoLite2-City.mmdb"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 

@@ -91,6 +91,9 @@ bool SystemManager::LaunchEngine ()
 		WOMA::WomaMessageBox(TEXT("WARNING: Could not get exit code from WoMA"));
 
 	// Delete TEMP files:
+	#ifdef RELEASE
+		WOMA::DeleteDirectory(WOMA::womaTempPATH.c_str());
+	#endif
 
 	return true;
 }

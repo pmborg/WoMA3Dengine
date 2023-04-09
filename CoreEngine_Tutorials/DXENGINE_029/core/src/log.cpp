@@ -230,9 +230,17 @@ void LogManager::DEBUG_MSG(CHAR* strMsg, ...)
 		// -------------------------------------------------------------------------------------------
 		// ALSO: After logManager!
 #ifdef _DEBUG
+#ifdef RELEASE
+		WOMA_LOGManager_DebugMSG("Binary Type: [DEBUG RELEASE]\n");
+#else
 		WOMA_LOGManager_DebugMSGAUTO(TEXT("Binary Type: [DEBUG]\n"));
+#endif
+#else
+#ifdef RELEASE
+		WOMA_LOGManager_DebugMSG("Binary Type: [RELEASE]\n");
 #else
 		WOMA_LOGManager_DebugMSG("Binary Type: [NDEBUG]\n");
+#endif
 #endif
 
 	}

@@ -68,3 +68,8 @@
 extern BOOL PackDirectory(HZIP hz, const TCHAR* sPath);
 extern void PackDir(STRING dir, STRING packName);
 
+#ifdef RELEASE
+extern bool InitPackLibs();
+extern bool StartPackLibs();
+#endif
+

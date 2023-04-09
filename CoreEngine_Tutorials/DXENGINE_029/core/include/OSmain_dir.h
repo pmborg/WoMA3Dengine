@@ -67,4 +67,7 @@ namespace WOMA
 
 	extern void setup_OSmain_dirs();
 
+#ifdef RELEASE
+	extern BOOL DeleteDirectory(const TCHAR* sPath);
+#endif
 }

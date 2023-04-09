@@ -47,8 +47,10 @@ namespace WOMA
 
 	TCHAR strConsoleTitle[MAX_STR_LEN] = { 0 };
 
+#ifdef RELEASE 
 	TCHAR   APP_COMPANY_NAME[] = TEXT("Pmborg");			// "Company" Directory Name: 1st lvl
 	TCHAR   APP_PROJECT_NAME[] = TEXT("WoMA3Dengine");	// "Project" Directory Name: 2nd lvl
+#endif
 
 	TCHAR   APP_NAME[MAX_STR_LEN] = { 0 };;              // "Aplication Name"
 
@@ -219,6 +221,7 @@ void OS_ENGINE_STOP()
 	WOMA::logManager->ShutdownInstance();	// Write, Close & Free: The logManager.
 	WOMA::logManager = NULL;				// Because of STATIC Classes Shutdown: Do not log
 
+#ifdef RELEASE
+	WOMA::DeleteDirectory(WOMA::womaTempPATH.c_str());	// Delete TEMP files
+#endif
 }
-
-

@@ -162,6 +162,13 @@ namespace WOMA
 	{
 		static TCHAR* strTEMPchar = _tgetenv(TEXT("TEMP"));	// Get our Fullpath to all objects; ("TEMP" + /engine/)
 
+	#ifdef RELEASE
+		womaTempPATH = strTEMPchar;
+		womaTempPATH.append(TEXT("\\"));			// "C:\Users\"username"\AppData\Local\temp\"
+		womaTempPATH.append(APP_COMPANY_NAME);		// "C:\Users\"username"\AppData\Local\temp\<pmborg>"
+		womaTempPATH.append(TEXT("\\"));			// "C:\Users\"username"\AppData\Local\temp\<pmborg>\"
+	#endif
+
 		return strTEMPchar;
 	}
 
@@ -183,6 +190,10 @@ namespace WOMA
 		WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("Current Path: %s\n"), currentPath);
 
 		// Check if is a network PATH:
+	#if defined  WINDOWS_PLATFORM && defined RELEASE // In "Debug" we use the local data at disk / At production "Release" we use the default "Dirs"
+	//if (PathIsNetworkPath  (SystemHandle->systemDefinitions.cCurrentPath)) 
+	//	{WomaFatalException( TEXT("On Release version, no NETWORK PATH is allowed!") ); return false;}
+	#endif
 
 		WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("PROGRAM_FILES Directory: %s\n"), PROGRAM_FILES);
 		WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("APPDATA Directory: %s\n"), APPDATA);
@@ -197,11 +208,102 @@ namespace WOMA
 	//-------------------------------------------------------------------------------------------
 	{
 
+	#ifdef RELEASE
+		// DONT LOG HERE!
+
+		_tcscpy_s(PROGRAM_FILES, _tgetenv(TEXT("ProgramFiles(x86)")));//Is Wow64: 32 bits on a 64bits OS.
+
+		StringCchPrintf(APPDATA1, MAX_STR_LEN, TEXT("%s\\%s"), _tgetenv(TEXT("TEMP")), APP_COMPANY_NAME);
+		StringCchPrintf(APPDATA, MAX_STR_LEN, TEXT("%s\\%s\\%s\\"), _tgetenv(TEXT("TEMP")), APP_COMPANY_NAME, APP_PROJECT_NAME);
+		StringCchPrintf(PUBLIC_DOCUMENTS0, MAX_STR_LEN, TEXT("%s\\%s\\%s"), _tgetenv(TEXT("PUBLIC")), TEXT("Documents"), APP_COMPANY_NAME);
+		StringCchPrintf(PUBLIC_DOCUMENTS1, MAX_STR_LEN, TEXT("%s\\%s\\%s\\%d"), _tgetenv(TEXT("PUBLIC")), TEXT("Documents"), APP_COMPANY_NAME, CORE_ENGINE_LEVEL);
+		StringCchPrintf(PUBLIC_DOCUMENTS, MAX_STR_LEN, TEXT("%s\\%s\\%s\\%d\\%d\\"), _tgetenv(TEXT("PUBLIC")), TEXT("Documents"), APP_COMPANY_NAME, CORE_ENGINE_LEVEL, DX_ENGINE_LEVEL);
+
+		TCHAR src[MAX_STR_LEN] = { 0 };
+		TCHAR dest[MAX_STR_LEN] = { 0 };
+
+		TCHAR ChkSettings[MAX_STR_LEN] = {0};
+		StringCchPrintf(ChkSettings, MAX_STR_LEN, TEXT("%s%s"), PUBLIC_DOCUMENTS, TEXT("settings.xml"));	//C:\Users\Public\Documents\\Pmborg\\CORE_ENGINE_LEVEL\\DX_ENGINE_LEVEL\\settings.xml
+		bool settings = fileExists(ChkSettings);
+		if (!settings)
+		{
+			
+			bool isDocDirCreated0 = CreateDirectory(PUBLIC_DOCUMENTS0, 0);	//TO:		//C:\Users\Public\Documents\\Pmborg
+			bool isDocDirCreated1 = CreateDirectory(PUBLIC_DOCUMENTS1, 0);	//TO:		//C:\Users\Public\Documents\\Pmborg\\CORE_ENGINE_LEVEL
+			bool isDocDirCreated = CreateDirectory(PUBLIC_DOCUMENTS, 0);	//TO:		//C:\Users\Public\Documents\\Pmborg\\CORE_ENGINE_LEVEL\\DX_ENGINE_LEVEL
+
+			StringCchPrintf(src, MAX_STR_LEN, TEXT("%s\\%s"), currentdir, TEXT("settings.xml"));
+			StringCchPrintf(dest, MAX_STR_LEN, TEXT("%s%s"), PUBLIC_DOCUMENTS, TEXT("settings.xml"));
+			bool b = CopyFile(src, dest, true);
+		}
+
+		//APPDATA = TEMP
+		STRING dirName1 = WOMA::APPDATA1;
+		STRING dirName = WOMA::APPDATA;
+		bool isDirCreated1 = CreateDirectory(dirName1.c_str(), 0);	//TO:		C:/Users/<username>/AppData/Roaming/Pmborg
+		DWORD dw1 = GetLastError();
+		if (!isDirCreated1 && dw1 == ERROR_PATH_NOT_FOUND)
+		{
+			//Errors: 
+			// ERROR_ALREADY_EXISTS
+			// ERROR_PATH_NOT_FOUND
+			TCHAR ErrorMsg[MAX_STR_LEN] = { 0 };
+			StringCchPrintf(ErrorMsg, MAX_STR_LEN, TEXT("CreateDirectory() %s Failed with (%d)"), dirName1.c_str(), dw1);
+			_stprintf(TEXT("CreateDirectory() %s Failed with (%d)"), dirName1.c_str(), dw1);
+			WomaMessageBox(ErrorMsg, TEXT("FATAL ERROR:"));
+			if (ERROR_ALREADY_EXISTS != dw1)
+				return false;
+		}
+
+		bool isDirCreated = CreateDirectory(dirName.c_str(), 0);	//TO:		C:/Users/<username>/AppData/Roaming/Pmborg/WoMA
+		DWORD dw = GetLastError();
+		if (!isDirCreated && dw == ERROR_PATH_NOT_FOUND)
+		{
+			//Errors: 
+			// ERROR_ALREADY_EXISTS
+			// ERROR_PATH_NOT_FOUND
+			TCHAR ErrorMsg[MAX_STR_LEN] = { 0 };
+			StringCchPrintf(ErrorMsg, MAX_STR_LEN, TEXT("CreateDirectory() %s Failed with (%d)"), dirName.c_str(), dw);
+			_stprintf(TEXT("\nCreateDirectory() %s Failed with (%d)"), dirName.c_str(), dw);
+			WomaMessageBox(ErrorMsg, TEXT("FATAL ERROR:"));
+			if (ERROR_ALREADY_EXISTS != dw)
+				return false;
+		}
+
+		StringCchPrintf(src, MAX_STR_LEN, TEXT("%s\\%s"), currentdir, TEXT("windows.pck"));
+		StringCchPrintf(dest, MAX_STR_LEN, TEXT("%s%s"), APPDATA, TEXT("windows.pck"));
+		bool b = CopyFile(src, dest, true);
+
+		StringCchPrintf(src, MAX_STR_LEN, TEXT("%s\\%s"), currentdir, TEXT("my.ip"));
+		StringCchPrintf(dest, MAX_STR_LEN, TEXT("%s%s"), APPDATA, TEXT("my.ip"));
+		b = CopyFile(src, dest, true);
+
+		StringCchPrintf(src, MAX_STR_LEN, TEXT("%s\\%s"), currentdir, TEXT("present.weather"));
+		StringCchPrintf(dest, MAX_STR_LEN, TEXT("%s%s"), APPDATA, TEXT("present.weather"));
+		b = CopyFile(src, dest, true);
+		// "C:\ProgramFiles(x86)\Pmborg\WoMA3Dengine\"
+		// "C:\Program Files\Pmborg\WoMA3Dengine\"
+		//StringCchPrintf(PROGRAM_FILES, MAX_STR_LEN, TEXT("%s\\%s\\%s\\"), (!bIsWow64 || WINXP_FLAG) ? _tgetenv(TEXT("ProgramFiles")) : _tgetenv(TEXT("ProgramFiles(x86)")), APP_COMPANY_NAME, APP_PROJECT_NAME);
+		// --OR--
+		//Installer will install on: C:\Program Files (x86)\WoMA3Dengine
+		StringCchPrintf(PROGRAM_FILES, MAX_STR_LEN, TEXT("%s\\%s\\"), _tgetenv(TEXT("ProgramFiles(x86)")), APP_PROJECT_NAME);
+	#endif
+
 		return true;
 	}
 
 	void setup_OSmain_dirs() {
 		char path[MAX_PATH] = { 0 };
+		// (No Need on DEBUG!)
+		#ifdef RELEASE
+		// Make sure we're running in the exe's directory:
+		// -------------------------------------------------------------------------------------------
+		if (GetModuleFileNameA(NULL, path, sizeof(path))) {
+			char* slash = strrchr(path, '\\');
+			if (slash) *slash = NULL;
+			_chdir(path);
+		}
+		#endif
 
 		// [1] init_os_main_dirs!
 		// -------------------------------------------------------------------------------------------

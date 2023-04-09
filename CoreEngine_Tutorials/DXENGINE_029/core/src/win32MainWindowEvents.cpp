@@ -219,24 +219,30 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 	// MainWindow Close: in Task Bar OR Window [X] (top right corner), etc...
 
 	case WM_CLOSE:	// During the shutdown process of the device, the WM_CLOSE message is broadcasted to the applications.
+		#ifdef RELEASE
+		if (MessageBox(hwnd, TEXT("Really quit?"), WOMA::APP_NAME, MB_YESNO) == IDYES)
+		#endif
 		{
 			WOMA::game_state = GAME_STOP;
 		}
+		#ifdef RELEASE
+		else 
+		{
+			return 0;	// Canceled Close. Do nothing.
+		}
+		#endif
 
 		::PostMessage(hwnd, WM_QUIT, 0, 0);
 		return 0;			
 
 	case WM_QUIT:
-		//if (audio) {}
 		ASSERT(SystemHandle);
 		WOMA::game_state = GAME_STOP;
 		break;
 
 	case WM_DESTROY:	// The main application Window will be destroyed
 		KillTimer(hwnd, TIMER_TITLE);
-
 		KillTimer(hwnd, TIMER_ASTRO);
-
 		return 0;
 
 #if defined USE_INTRO_VIDEO_DEMO
@@ -357,7 +363,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 	// -----------------------------------------------------------------------------
 	// TIMERS:
 	// -----------------------------------------------------------------------------
-	case WM_TIMER: // Once per second:
+	case WM_TIMER:
 		if (WOMA::game_state < GAME_STOP)
 		{
 			switch (wparam)
@@ -368,7 +374,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 				return 0;
 
 			case TIMER_ASTRO:
-				if (SystemHandle->m_Application) //SAFER: In shutdown/exception timer might be running...
+				if (SystemHandle->m_Application) //NOTE: In shutdown/exception timer might be running...
 				{
 					SystemHandle->m_Application->initWorld->Frame(); // Recalculate astros every minute...
 					#if defined USE_ASTRO_CLASS && defined USE_REAL_SUNLIGHT_DIRECTION //#if ENGINE_LEVEL >= 33

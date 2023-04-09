@@ -57,7 +57,7 @@ del /S /F /Q DXENGINE_*.txt 2> nul
 "%devenv%" DXENGINE_026/DXENGINE_026.sln /project DXENGINE_026 /Build "Debug|x64" /out DXENGINE_026.txt
 "%devenv%" DXENGINE_027/DXENGINE_027.sln /project DXENGINE_027 /Build "Debug|x64" /out DXENGINE_027.txt
 "%devenv%" DXENGINE_028/DXENGINE_028.sln /project DXENGINE_028 /Build "Debug|x64" /out DXENGINE_028.txt
-"%devenv%" DXENGINE_029/DXENGINE_029.sln /project DXENGINE_029 /Build "Debug|x64" /out DXENGINE_029.txt
+"%devenv%" DXENGINE_029/DXENGINE_029.sln /project DXENGINE_029 /Build "Debug|x64" /out DXENGINE_029_d.txt
 "%devenv%" DXENGINE_029/DXENGINE_029.sln /project DXENGINE_029 /Build "Release|x64" /out DXENGINE_029.txt
 @echo off
 echo "Compiled:"

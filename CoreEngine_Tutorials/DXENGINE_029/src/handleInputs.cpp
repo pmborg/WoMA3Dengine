@@ -45,9 +45,11 @@ UINT KeyRun =	  { DIK_LSHIFT };
 UINT KeyLookUp	= {DIK_PGUP};
 UINT KeyLookDown= {DIK_PGDN};
 
+#if !defined RELEASE
 	UINT KeyGodMode	= {DIK_F11};
 	UINT KeyFlyUp	= {DIK_R};
 	UINT KeyFlyDown	= {DIK_F};
+#endif
 
 //The ProcessInput function is where we deal with the changes that have happened in the input devices since the last frame. 
 //For this tutorial we will just do a simple mouse location update similar to how Windows keeps track of where the mouse cursor is. 
@@ -79,10 +81,12 @@ void DXInputClass::ProcessInput()
 	m_ourPlayer->p_player.IsPgUpPressed		= (m_keyboardState[KeyLookUp] & 0x80) ? true:false;				//Look UP
 	m_ourPlayer->p_player.IsPgDownPressed	= (m_keyboardState[KeyLookDown] & 0x80) ? true : false;			//Look DOWN
 
+	#if !defined RELEASE
 	m_ourPlayer->p_player.IsGodModePressed	= (m_keyboardState[KeyGodMode] & 0x80) ? true:false;
 
 	m_ourPlayer->p_player.Is1Pressed = (m_keyboardState[KeyFlyUp] & 0x80) ? true : false;
 	m_ourPlayer->p_player.IsQPressed = (m_keyboardState[KeyFlyDown] & 0x80) ? true : false;
+	#endif
     
 	//COMPOUND DEBUG:
 
