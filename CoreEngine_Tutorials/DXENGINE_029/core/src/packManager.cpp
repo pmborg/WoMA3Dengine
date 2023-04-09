@@ -154,10 +154,9 @@ int wildcmp(const char *wild, const char *string)
 
 bool InitPackLib(char* packfilename)				// Need to be CHAR!
 {	
-	char File_Pak[256] = {0};						// Need to be CHAR!
+	char File_Pak[MAX_STR_LEN] = {0};						// Need to be CHAR!
 
-	CHAR A_APPDATA[MAX_STR_LEN]={ 0 };			
-	wtoa(A_APPDATA, WOMA::APPDATA, MAX_STR_LEN);
+	wtoa(File_Pak, WOMA::APPDATA, MAX_STR_LEN);
 
 	strcat (File_Pak, packfilename);				// Need to be CHAR!
 

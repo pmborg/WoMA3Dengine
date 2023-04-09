@@ -43,8 +43,6 @@ Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\settings.xml"; DestDi
 Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\WoMA.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\hlsl\*"; DestDir: "{app}\hlsl"; Flags: ignoreversion
 Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\GLengine\*"; DestDir: "{app}\GLengine"; Flags: ignoreversion
-Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\my.ip"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\present.weather"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\WoMA3Dengine\woma_engine\woma.pck"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\WoMA3Dengine\windows_engine\windows.pck"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\GeoLite2-City.mmdb"; DestDir: "{app}"; Flags: ignoreversion
