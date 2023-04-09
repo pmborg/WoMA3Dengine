@@ -159,9 +159,6 @@ bool InitPackLib(char* packfilename)				// Need to be CHAR!
 	CHAR A_APPDATA[MAX_STR_LEN]={ 0 };			
 	wtoa(A_APPDATA, WOMA::APPDATA, MAX_STR_LEN);
 
-#ifdef RELEASE
-	strcpy (File_Pak, A_APPDATA);					// Need to be CHAR!
-#endif
 	strcat (File_Pak, packfilename);				// Need to be CHAR!
 
 	// Uncode Pack: Make sure that you RUN LEVEL 16 First!
@@ -243,6 +240,8 @@ bool InitPackLibs()
 
 	IF_NOT_RETURN_FALSE (InitPackLib("windows.pck"));	// Need to be CHAR!
 
+	IF_NOT_RETURN_FALSE(InitPackLib("woma.pck"));		// Need to be CHAR!
+
 	return true;
 }
 
@@ -250,7 +249,7 @@ bool StartPackLibs()
 {
 	WOMA_LOGManager_DebugMSGAUTO (TEXT("CreateThread: Initialize LoadPacks ThreadFunction\n"));
 
-		IF_NOT_RETURN_FALSE (InitPackLib("engine.pck"));	// Need to be CHAR!
+		IF_NOT_RETURN_FALSE (InitPackLib("woma.pck"));	// Need to be CHAR!
 
     // We need to repaint at this point:
   #ifdef _DEBUG

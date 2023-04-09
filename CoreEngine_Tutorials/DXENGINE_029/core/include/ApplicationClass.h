@@ -52,6 +52,7 @@
 // -------------------------------------------------------------------------------------------------
 extern UINT RENDER_PAGE;
 extern bool FORCE_RENDER_ALL;
+
 extern int SpriteScreenToShow;
 extern std::vector<VirtualModelClass*> m_screenShots;
 extern float fadeIntro;

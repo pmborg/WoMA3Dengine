@@ -38,7 +38,11 @@
 #endif
 
 // [WIN]: Check Windows, if we are compiling in 64bits:
-#if defined(_WIN64) && !defined X64
+#if defined(_WIN64) || defined(__x86_64__) || defined(_M_X64)
+	#define X64	//CPU: 64bits!
+#endif
+
+#if (defined(__arm64__) && defined(__APPLE__)) || defined(__aarch64__)
 	#define X64	//CPU: 64bits!
 #endif
 
@@ -545,7 +549,7 @@
 	#define WomaDriverClass void
 #else
 	#if _DEBUG
-		//#define RELEASE	//FORCE TO DEBUG A RELEASE bin!
+		#define RELEASE	//FORCE TO DEBUG A RELEASE bin!
 		#define WOMA_CONSOLE_APPLICATION
 	#else
 		#define WOMA_WIN32_APPLICATION

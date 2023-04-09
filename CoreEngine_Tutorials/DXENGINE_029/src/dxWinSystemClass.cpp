@@ -243,7 +243,7 @@ int dxWinSystemClass::ApplicationMainLoop()		// [RUN] - MAIN "INFINITE" LOOP!
 void dxWinSystemClass::ProcessFrame()
 //----------------------------------------------------------------------------
 {
-	WomaDriverClass* driver = (GLopenGLclass*)SystemHandle->driverList[SystemHandle->AppSettings->DRIVER];
+	WomaDriverClass* driver = SystemHandle->driverList[SystemHandle->AppSettings->DRIVER];
 
 	WinSystemClass::ProcessFrame(); // Process Input
 
@@ -325,6 +325,7 @@ void dxWinSystemClass::GPH_RESIZE()
 					SystemHandle->AppSettings->SCREEN_NEAR, SystemHandle->AppSettings->SCREEN_DEPTH,
 					SystemHandle->AppSettings->FULL_SCREEN, SystemHandle->AppSettings->BITSPERPEL);
 	#endif
+		case DRIVER_DX9:
 		case DRIVER_DX11:
 			((DirectX::DX11Class*)m_Driver)->Resize(SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT,
 				SystemHandle->AppSettings->SCREEN_NEAR, SystemHandle->AppSettings->SCREEN_DEPTH,
@@ -367,7 +368,7 @@ void dxWinSystemClass::PAUSE()
 {
 	if (SystemHandle->AppSettings->MUSIC_ENABLED)
 		if (audio) 
-			audio->pause(MusicSourceID);	//AQUI: MEM LEEK HOW COME?!
+			audio->pause(MusicSourceID);	
 }
 
 void dxWinSystemClass::UNPAUSE()

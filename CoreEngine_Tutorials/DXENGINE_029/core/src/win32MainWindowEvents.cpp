@@ -125,7 +125,11 @@ void WinSystemClass::StartTimer()
 	// Dont Update on: FullScreen or Full-windowed
 	if ((!AppSettings->FULL_SCREEN) && (windowStyle != 0x96080000)) 
 	{
+		#if defined RELEASE //INTRO_DEMO
 		SetTimer(m_hWnd, TIMER_TITLE, 100 / KEYB_TIMES_PER_SECOND, NULL);	// 100ms = 10 x per second!
+		#else
+		SetTimer(m_hWnd, TIMER_TITLE, 1000 / KEYB_TIMES_PER_SECOND, NULL);	// 1000ms = 1 second!
+		#endif
 		
 	}
 
@@ -236,13 +240,16 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 		return 0;			
 
 	case WM_QUIT:
+
 		ASSERT(SystemHandle);
 		WOMA::game_state = GAME_STOP;
 		break;
 
 	case WM_DESTROY:	// The main application Window will be destroyed
 		KillTimer(hwnd, TIMER_TITLE);
+
 		KillTimer(hwnd, TIMER_ASTRO);
+
 		return 0;
 
 #if defined USE_INTRO_VIDEO_DEMO
@@ -363,7 +370,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 	// -----------------------------------------------------------------------------
 	// TIMERS:
 	// -----------------------------------------------------------------------------
-	case WM_TIMER:
+	case WM_TIMER: // Once per second:
 		if (WOMA::game_state < GAME_STOP)
 		{
 			switch (wparam)
@@ -374,7 +381,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 				return 0;
 
 			case TIMER_ASTRO:
-				if (SystemHandle->m_Application) //NOTE: In shutdown/exception timer might be running...
+				if (SystemHandle->m_Application) //SAFER: In shutdown/exception timer might be running...
 				{
 					SystemHandle->m_Application->initWorld->Frame(); // Recalculate astros every minute...
 					#if defined USE_ASTRO_CLASS && defined USE_REAL_SUNLIGHT_DIRECTION //#if ENGINE_LEVEL >= 33

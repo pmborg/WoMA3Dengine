@@ -53,19 +53,19 @@ bool textFontClass::Initialize(void* g_driver, TCHAR* fontFilename, TCHAR* textu
 		m_driver = (DirectX::DX12Class*)g_driver;
 		m_Texture = NEW DX12TextureClass;
 		IF_NOT_THROW_EXCEPTION(m_Texture);
-		bool result = m_Texture->Initialize(g_driver, textureFilename, 0, /*wrap*/ false);	// Initialize the texture object:
+		bool result = m_Texture->Initialize(g_driver, WOMA::LoadFile(textureFilename), 0, /*wrap*/ false);	// Initialize the texture object:
 		if (result)
 			hr = S_OK;
 	}
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
 	{
 		m_driver11 = (DirectX::DX11Class*)g_driver;
-		LOADTEXTURE(textureFilename, m_Texture11); // Note: Populate hr in case of failor
+		LOADTEXTURE(WOMA::LoadFile(textureFilename), m_Texture11); // Note: Populate hr in case of failor
 	}
 #if defined DX9sdk
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 	{
-		hr = D3DXCreateTextureFromFile(((DX_CLASS*)g_driver)->m_device, textureFilename, &m_Texture9);
+		hr = D3DXCreateTextureFromFile(((DX_CLASS*)g_driver)->m_device, WOMA::LoadFile(textureFilename), &m_Texture9);
 		IF_FAILED_RETURN_FALSE(hr);
 	}
 #endif
