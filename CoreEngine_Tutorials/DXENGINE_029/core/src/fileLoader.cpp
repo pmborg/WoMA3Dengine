@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: fileLoader.cpp
 // --------------------------------------------------------------------------------------------
@@ -29,19 +28,25 @@ namespace WOMA
 	STRING lastfile;
 	STRING file;
 
-TCHAR* LoadFile(TCHAR* filename)
-{
-	static TCHAR file_[MAX_STR_LEN*2];
-	ZeroMemory(&file_, sizeof(file));
+	TCHAR* LoadFile(TCHAR* filename)
+	{
+		static TCHAR file_[MAX_STR_LEN * 2];
+		ZeroMemory(&file_, sizeof(file));
 
-	if (filename[0]!='.')
-		StringCchPrintf(file_, sizeof(file_), TEXT("%s%s"), TEXT("./"), filename);
-	else
-		_tcscpy_s(file_, sizeof(file_),  filename);
-	file = file_;
-	lastfile = file;
-	return (TCHAR*)&file_;
+#ifdef RELEASE
+		file = WOMA::APPDATA; // WOMA::womaTempPATH;
+		file.append(filename);
+		lastfile = file;
+		return (TCHAR*)file.c_str();
+#else
+		if (filename[0] != '.')
+			StringCchPrintf(file_, sizeof(file_), TEXT("%s%s"), TEXT("./"), filename);
+		else
+			_tcscpy_s(file_, sizeof(file_), filename);
+		file = file_;
+		lastfile = file;
+		return (TCHAR*)&file_;
+#endif
+	}
+
 }
-
-}//WOMA
-
