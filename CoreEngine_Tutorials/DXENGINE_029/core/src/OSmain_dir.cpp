@@ -240,7 +240,7 @@ namespace WOMA
 		//APPDATA = TEMP
 		STRING dirName1 = WOMA::APPDATA1;
 		STRING dirName = WOMA::APPDATA;
-		bool isDirCreated1 = CreateDirectory(dirName1.c_str(), 0);	//TO:		C:/Users/<username>/AppData/Roaming/Pmborg
+		bool isDirCreated1 = CreateDirectory(dirName1.c_str(), 0);	//TO:		dirName1 = "\\Temp\\Pmborg"
 		DWORD dw1 = GetLastError();
 		if (!isDirCreated1 && dw1 == ERROR_PATH_NOT_FOUND)
 		{
@@ -255,7 +255,7 @@ namespace WOMA
 				return false;
 		}
 
-		bool isDirCreated = CreateDirectory(dirName.c_str(), 0);	//TO:		C:/Users/<username>/AppData/Roaming/Pmborg/WoMA
+		bool isDirCreated = CreateDirectory(dirName.c_str(), 0);	//TO:		dirName = "\\Temp\\Pmborg\\WoMA3Dengine\\"
 		DWORD dw = GetLastError();
 		if (!isDirCreated && dw == ERROR_PATH_NOT_FOUND)
 		{
@@ -276,14 +276,6 @@ namespace WOMA
 
 		StringCchPrintf(src, MAX_STR_LEN, TEXT("%s\\%s"), currentdir, TEXT("woma.pck"));
 		StringCchPrintf(dest, MAX_STR_LEN, TEXT("%s%s"), APPDATA, TEXT("woma.pck"));
-		b = CopyFile(src, dest, true);
-
-		StringCchPrintf(src, MAX_STR_LEN, TEXT("%s\\%s"), currentdir, TEXT("my.ip"));
-		StringCchPrintf(dest, MAX_STR_LEN, TEXT("%s%s"), APPDATA, TEXT("my.ip"));
-		b = CopyFile(src, dest, true);
-
-		StringCchPrintf(src, MAX_STR_LEN, TEXT("%s\\%s"), currentdir, TEXT("present.weather"));
-		StringCchPrintf(dest, MAX_STR_LEN, TEXT("%s%s"), APPDATA, TEXT("present.weather"));
 		b = CopyFile(src, dest, true);
 		// "C:\ProgramFiles(x86)\Pmborg\WoMA3Dengine\"
 		// "C:\Program Files\Pmborg\WoMA3Dengine\"

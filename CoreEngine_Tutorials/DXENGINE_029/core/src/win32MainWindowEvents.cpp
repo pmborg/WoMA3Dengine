@@ -240,7 +240,6 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 		return 0;			
 
 	case WM_QUIT:
-
 		ASSERT(SystemHandle);
 		WOMA::game_state = GAME_STOP;
 		break;

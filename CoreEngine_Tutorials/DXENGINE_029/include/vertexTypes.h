@@ -192,7 +192,7 @@ struct SentenceType
 //
 // Used by: SPRITES: Sun, Moon, initIntroDemo (square titles), 2D Sky, Title Banner
 //
-#define CREATE_VERTEXVECTOR_SQUAR_MODEL(model, X,Z,Y){\
+#define CREATE_VERTEXVECTOR_SQUAD_MODEL(model, X,Z,Y){\
 	/* v1 Left Top: */\
 	vertex.x =-X;\
 	vertex.z = Z;\

@@ -4,7 +4,6 @@ for /f "usebackq tokens=1* delims=: " %%i in (`"C:\Program Files (x86)\Microsoft
 )
 echo "Using Visual Studio: %devenv%"
 REM -------------------------
-echo "Compiling: Debug|x64"
 echo on
 
 del /S /F /Q ENGINE_*.txt 2> nul

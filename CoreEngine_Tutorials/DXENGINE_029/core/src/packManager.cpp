@@ -15,7 +15,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-// Extract used packs to: "C:\Users\<user>\AppData\Local\Temp\<temp dir>"
+// Extract used packs to: "%TEMP%<temp dir>"
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234567829;
 
@@ -154,11 +154,11 @@ int wildcmp(const char *wild, const char *string)
 
 bool InitPackLib(char* packfilename)				// Need to be CHAR!
 {	
-	char File_Pak[MAX_STR_LEN] = {0};						// Need to be CHAR!
+	char File_Pak[MAX_STR_LEN] = { 0 };						// Need to be CHAR!
 
 	wtoa(File_Pak, WOMA::APPDATA, MAX_STR_LEN);
 
-	strcat (File_Pak, packfilename);				// Need to be CHAR!
+	strcat(File_Pak, packfilename);				// Need to be CHAR!
 
 	// Uncode Pack: Make sure that you RUN LEVEL 16 First!
 	int res = EncodeIDEA(File_Pak, DECODE);			// engine.pck (encoded) --> engine.pack (decoded)

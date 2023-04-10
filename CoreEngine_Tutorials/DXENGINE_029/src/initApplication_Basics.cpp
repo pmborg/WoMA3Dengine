@@ -171,7 +171,7 @@ void ApplicationClass::initLightDemo()
 			CREATE_VERTEXVECTOR_SQUAR_MODEL_OPTIMIZED(My3thModelVertexVector1, X, Y, Z);	// Step 1: Setup all vertices positions: X, Y, Z
 		}
 		else {
-			CREATE_VERTEXVECTOR_SQUAR_MODEL(My3thModelVertexVector1, X, Y, Z);
+			CREATE_VERTEXVECTOR_SQUAD_MODEL(My3thModelVertexVector1, X, Y, Z);
 		}
 		MAP_XZtoUV(My3thModelVertexVector1, X, Y, Z);								// Step 2: ADD TEXTURING: Auto-Map textures to all vertices: tu, tv			
 
@@ -219,7 +219,7 @@ void ApplicationClass::initTitleBanner2D()
 		// Step 1: Prepare Vertex(s)
 		std::vector<ModelTextureVertexType> TitleVertexVector;				// 1 Declare: the Vector with Vertex "TYPE"
 		ModelTextureVertexType vertex = { 0 };								// 2 Use this "VERTEX" on macro
-		CREATE_VERTEXVECTOR_SQUAR_MODEL(TitleVertexVector, 0, 0, 0);		// 3 Initialize Vertex ARRAY at world center at first
+		CREATE_VERTEXVECTOR_SQUAD_MODEL(TitleVertexVector, 0, 0, 0);		// 3 Initialize Vertex ARRAY at world center at first
 		std::vector<UINT> emptyIndexList;
 		initLoadTexture2D(m_titleModel, TEXT("engine/data/WOMA_ENGINE.png"), TitleVertexVector, emptyIndexList, SHADER_TEXTURE);
 	}
@@ -336,7 +336,7 @@ void ApplicationClass::initIntroDemo()
 		// Step 1: Prepare Vertex(s)
 		std::vector<ModelTextureVertexType> TitleVertexVector;				// 1 Declare: the Vector with Vertex "TYPE"
 		ModelTextureVertexType vertex = { 0 };								// 2 Use this "VERTEX" on macro
-		CREATE_VERTEXVECTOR_SQUAR_MODEL(TitleVertexVector, 0, 0, 0);		// 3 Initialize Vertex ARRAY at world center at first
+		CREATE_VERTEXVECTOR_SQUAD_MODEL(TitleVertexVector, 0, 0, 0);		// 3 Initialize Vertex ARRAY at world center at first
 		std::vector<UINT> emptyIndexList;
 		VirtualModelClass* m_spriteModel = NULL;
 		initLoadTexture2D(m_spriteModel, (TCHAR*)INTRO_TEXT[i].c_str(), TitleVertexVector, emptyIndexList, SHADER_TEXTURE_FONT);
