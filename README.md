@@ -205,18 +205,18 @@ Add third party image readers:<br>
 		- <b>M3D v1.2+</b><br>
 {034}	OBJ Loader "Specular+Shininess"<br>
 		- <b>M3D v1.3</b><br>
+{035}	Convert OBJ to M3D
+	- Convert "obj" to "<b>m3d</b>" WoMA 3D format, which will allow a super fast loading time<br>
 
 <hr>
 
 So in resume... now all of that in a simple xml instead of the C++ demo code is possible? Let's find out...<hr>
 
-- <b>DX30: Convert OBJ format to M3D - The COLOR shader, object loader</b><br> 
+- <b>DX30: WORLD.XML: load OBJ 3D file format, using COLOR shader</b><br> 
 	- SceneManager and SceneNode<br> 
 	- QuadTree and Frustum<br> 
 	- <b>World</b> and <b>Objects</b>: Loading objects as a descriptor:	<b>World.xml</b><br>
 	- Load <b>obj</b> format<br>
-	- Convert "obj" to "<b>m3d</b>" WoMA 3D format, which will allow a super fast loading time<br>
- 
  
  ...<br>
  ...<br>
