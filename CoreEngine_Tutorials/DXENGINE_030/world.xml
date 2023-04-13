@@ -1,0 +1,9 @@
+<woma>
+  <world hVisibility="128" seaLevel="0" size="512" patchSize="64" skyDayTexture="" skyNightTexture=""/>
+
+  <object fromPage="30" toPage="39" depend="0" scale="1" posX="0" translateY="1" posZ="4"  rotX="" rotY="" rotZ="" 
+          shader="0" filename="engine/data/scene30/squareColor.obj"/>
+
+  <object fromPage="30" toPage="39" depend="0" scale="1" posX="0" translateY="3.5" posZ="1"  rotX="" rotY="" rotZ=""
+          shader="0" filename="engine/data/scene30/triangleColor.obj"/>
+</woma>

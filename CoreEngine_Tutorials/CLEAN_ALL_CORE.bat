@@ -71,3 +71,6 @@ cd..
 cd DXENGINE_029
 call CLEAN_ALL.bat
 cd..
+cd DXENGINE_030
+call CLEAN_ALL.bat
+cd..
