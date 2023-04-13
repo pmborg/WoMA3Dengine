@@ -5,12 +5,14 @@
 [![WoMA3Dengine at Level 29 INTRO DEMO](https://i.imgur.com/q3AMNrr.png)](https://www.youtube.com/watch?v=tdMsRX_lQ5A)
 
 <h2>Movement Keys: (at level28)</h2> <br>
-  - Left:		 arrow or a<br>
-	 - Right:	 arrow or d<br>
-	 - Up:		   arrow or w<br>
-	 - Down:		 arrow or s<br>
-	 - Look Up:		   pg. Up<br>
-	 - Look Down:		 pg. Down<br>
+  - <b>Left:		</b> arrow or a<br>
+  - <b>Right:	 	</b>	arrow or d<br>
+  - <b>Front:		</b> arrow or w<br>
+  - <b>Back:		</b> arrow or s<br>
+  - <b>Look Up:		</b> pg. Up<br>
+  - <b>Look Down:	</b>	pg. Down<br>
+  - <b>Go Up: 		</b>	R<br>
+  - <b>Go Down: 	</b>	F<br>
   
 <h2>Keys / Hints:</h2> <br>
 <b>[F1]</b> System Info<br>
