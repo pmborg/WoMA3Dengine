@@ -39,7 +39,7 @@ procedure RunOtherInstaller;
 var
   ResultCode: Integer;
 begin
-  if not Exec(ExpandConstant('C:\WoMA3Dengine\HowToInstallVisualStudio2022Community\VC_redist.x64.exe'), '', '', SW_SHOWNORMAL,
+  if not Exec(ExpandConstant('{app}\VC_redist.x64.exe'), '', '', SW_SHOWNORMAL,
     ewWaitUntilTerminated, ResultCode)
   then
     MsgBox('VC_redist.x64.exe installer failed to run!' + #13#10 +
@@ -58,7 +58,7 @@ Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\GLengine\*"; DestDir:
 Source: "C:\WoMA3Dengine\woma_engine\woma.pck"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\WoMA3Dengine\windows_engine\windows.pck"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\GeoLite2-City.mmdb"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\WoMA3Dengine\HowToInstallVisualStudio2022Community\VC_redist.x64.exe"; DestDir: "{app}"; AfterInstall: RunOtherInstaller
+Source: "output\VC_redist.x64.exe"; DestDir: "{app}"; AfterInstall: RunOtherInstaller
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

@@ -479,6 +479,9 @@
     <PostBuildEvent>
       <Command>copy C:\WoMA3Dengine\ThirdParty\freeglut\bin\x64\freeglut.dll $(Platform)\$(Configuration)</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>copy C:\WoMA3Dengine\HowToInstallVisualStudio2022Community\VC_redist.x64.exe output</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='WRelease|x64'">
     <ClCompile>
