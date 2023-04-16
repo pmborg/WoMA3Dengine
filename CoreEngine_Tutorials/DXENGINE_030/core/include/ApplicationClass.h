@@ -49,12 +49,12 @@
 #include "WomaDriverClass.h"
 
 #include "virtualModelClass.h"
+extern std::vector<VirtualModelClass*> m_screenShots;
 // -------------------------------------------------------------------------------------------------
 extern UINT RENDER_PAGE;
 extern bool FORCE_RENDER_ALL;
 
 extern int SpriteScreenToShow;
-extern std::vector<VirtualModelClass*> m_screenShots;
 extern float fadeIntro;
 extern UINT g_NetID;
 
@@ -115,7 +115,7 @@ extern UINT g_NetID;
 class ApplicationClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567830;
+	UINT WomaIntegrityCheck = 1234567831;
 	ApplicationClass();
 	~ApplicationClass();
 	

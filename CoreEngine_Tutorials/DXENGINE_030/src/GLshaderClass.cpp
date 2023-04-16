@@ -28,7 +28,7 @@
 
 GLshaderClass::GLshaderClass() {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567830;
+	WomaIntegrityCheck = 1234567831;
 }
 
 GLshaderClass::~GLshaderClass() {CLASSDELETE();}

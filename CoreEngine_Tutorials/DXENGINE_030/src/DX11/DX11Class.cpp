@@ -145,7 +145,7 @@ DX11Class::DX11Class()
 {
 	// WomaDriverClass / Public: ------------------------------------------------------
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567830;
+	WomaIntegrityCheck = 1234567831;
 
 	// SUPER: 
 	dx11_force_dx9 = false;

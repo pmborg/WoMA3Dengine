@@ -295,6 +295,21 @@
     <ClInclude Include="include\DXinputclass.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="include\DXfrustumClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\modelClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\QuadTree.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SceneManager.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SceneNode.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
@@ -529,9 +544,6 @@
     <ClCompile Include="src\ApplicationTextClass.cpp">
       <Filter>src\text</Filter>
     </ClCompile>
-    <ClCompile Include="src\GLTextClass.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\DXinputClass.cpp">
       <Filter>src\dinput</Filter>
     </ClCompile>
@@ -559,8 +571,11 @@
     <ClCompile Include="src\DXfrustumClass.cpp">
       <Filter>src\dx11</Filter>
     </ClCompile>
-    <ClCompile Include="src\DXobjModel.cpp">
-      <Filter>src\dx11</Filter>
+    <ClCompile Include="src\GLTextClass.cpp">
+      <Filter>src\OPENGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ModelClass.cpp">
+      <Filter>src\SceneManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

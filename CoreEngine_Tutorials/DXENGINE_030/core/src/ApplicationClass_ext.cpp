@@ -45,7 +45,7 @@ UINT g_NetID = 0;
 ApplicationClass::ApplicationClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567830;
+	WomaIntegrityCheck = 1234567831;
 
 	// ---------------------------------------------------------------------
 	// private:

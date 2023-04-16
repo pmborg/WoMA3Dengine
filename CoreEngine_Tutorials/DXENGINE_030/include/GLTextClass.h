@@ -48,7 +48,7 @@
 class GlTextClass : public VirtualTextClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567830;
+	UINT WomaIntegrityCheck = 1234567831;
 	GlTextClass();
 	~GlTextClass();
 

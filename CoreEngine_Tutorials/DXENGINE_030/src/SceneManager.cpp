@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: SceneManager.cpp
 // --------------------------------------------------------------------------------------------
@@ -14,7 +15,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567830;
+//WomaIntegrityCheck = 1234567831;
 
 // PURPOSE: The AudioClass is the Interface Audio to Client EXE 
 //			 No need to Link audio LIBs on client EXE

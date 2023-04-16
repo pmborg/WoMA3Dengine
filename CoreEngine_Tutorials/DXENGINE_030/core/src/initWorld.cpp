@@ -107,7 +107,7 @@ AstroClass* astroClass = NULL;
 InitWorld::InitWorld ()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567830;
+	WomaIntegrityCheck = 1234567831;
 
 	//public:
     LatDir = TEXT("N");
@@ -249,7 +249,7 @@ STRING		szFileName = wLOCAL_APPDATA + TEXT("my.ip");
 	STRING str;
     IFSTREAM fileIn(szFileName.c_str());
 	if (!fileIn) 
-		{ WOMA::WomaMessageBox(TEXT("MyIp File not found, (use: #define USE_NETWORK) at main.h"), (TCHAR*)szFileName.c_str()); return TEXT(""); }
+		{ WOMA::WomaMessageBox(TEXT("MyIp File not found, (use: #define USE_NETWORK) at core_engine_level.h"), (TCHAR*)szFileName.c_str()); return TEXT(""); }
 
 	getline(fileIn, str);
 	WOMA_LOGManager_DebugMSG("IP: %s\n", str.c_str()); // Note: Dont use DEBUG_MSG yet...

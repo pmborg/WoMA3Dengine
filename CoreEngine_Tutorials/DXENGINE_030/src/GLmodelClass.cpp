@@ -20,6 +20,7 @@
 
 #include "platform.h"
 
+#include "ModelClass.h"
 #include "womadriverclass.h"
 #include "GLmathClass.h"
 #include "GLopenGLclass.h"
@@ -31,16 +32,37 @@
 GLmodelClass::GLmodelClass(bool model3d) 
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567830;
-
-	indices = NULL;
+	WomaIntegrityCheck = 1234567831;
 
 	// SUPER: ----------------------------------------------------------------------
 	m_ObjId = 0;
-	ModelShaderType			= SHADER_AUTO;
+	ModelShaderType = SHADER_AUTO;
 
 	Model3D = model3d;
+	ModelHASfog = false;
+	ModelHASlight = true; // Have to be true!
+	ModelHASColorMap = false;
+
+	PosX = PosY = PosZ = 0;
+
+	SpriteTextureWidth = NULL;
+	SpriteTextureHeight = NULL;
+
+	ModelHASNormals = false;
+
 	m_Shader = NULL;
+
+	//meshSRV
+	//minVertex = XMFLOAT3(FLT_MAX, FLT_MAX, FLT_MAX);
+	//maxVertex = XMFLOAT3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+
+	//objectCenterOffset = XMFLOAT4(0, 0, 0, 0);
+	boundingSphere = false;
+
+	m_vertexCount = m_indexCount = NULL;
+	indices = NULL;
+
+	m_xTexture = 1.0f;
 
 	// Initialize the world/model matrix to the identity matrix:
 	m_worldMatrix = m_worldMatrix.mat4identity();  //Identity();
@@ -196,6 +218,16 @@ bool GLmodelClass::LoadLight(TCHAR* objectName, void* driver, SHADER_TYPE shader
 
 bool GLmodelClass::LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow, bool renderShadow, UINT instanceCount)
 {
+
+	const TCHAR* extension = _tcsrchr(filename.c_str(), '.');
+
+	if (_tcsicmp(extension, TEXT(".obj")) == 0)
+	{
+		bool b = modelClass.LoadOBJ(this, shader_type, g_driver, filename, castShadow, renderShadow, instanceCount);
+		if (b)
+			modelClass.CreateObject(this, (TCHAR*)filename.c_str(), g_driver, shader_type /*SHADER_AUTO*/, filename, castShadow, renderShadow); // Auto Detect Shader Type
+	}
+
 	return true;
 }
 
@@ -394,9 +426,7 @@ void GLmodelClass::Render(/*GLopenGLclass*/WomaDriverClass* Driver, UINT camera,
 	}
 
 	m_Shader->SetShader(); //glUseProgram(m_Shader->m_shaderProgram); // 
-
 	m_Shader->PSfade = model_fade;
-
 	if (RENDER_PAGE >= 26)
 		m_Shader->lightType = 2;
 	else

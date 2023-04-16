@@ -68,7 +68,7 @@ struct VertexType
 class textFontClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567830;
+	UINT WomaIntegrityCheck = 1234567831;
 	textFontClass();
 	~textFontClass();
 

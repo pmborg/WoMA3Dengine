@@ -34,7 +34,7 @@ wGLopenGLclass::wGLopenGLclass()
 {
 	CLASS_LOAD_N--; 
 	CLASSLOADER();  //dont count super class!
-	WomaIntegrityCheck = 1234567830;
+	WomaIntegrityCheck = 1234567831;
 
 	m_deviceContext = NULL;
 	m_renderingContext1 = NULL;

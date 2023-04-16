@@ -27,7 +27,7 @@
 WomaSetupManager::WomaSetupManager() 
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567830;
+	WomaIntegrityCheck = 1234567831;
 
 	m_setupWnd = NULL;
 }

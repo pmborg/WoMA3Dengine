@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: DXfrustumClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -14,7 +15,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567830;
+//WomaIntegrityCheck = 1234567831;
 
 #include "platform.h"
 #if DX_ENGINE_LEVEL >= 30 && (defined DX_ENGINE)
@@ -24,28 +25,7 @@
 
 #include "DXfrustumclass.h"
 #include "OSengine.h"		// Get [SystemHandle] Pointer to System Class: WINDOWS, LINUX & ANDROID
-
-#if D3D11_SPEC_DATE_YEAR > 2009
-#define _11 r[0].m128_f32[0]
-#define _12 r[0].m128_f32[1]
-#define _13 r[0].m128_f32[2]
-#define _14 r[0].m128_f32[3]
-
-#define _21 r[1].m128_f32[0]
-#define _22 r[1].m128_f32[1]
-#define _23 r[1].m128_f32[2]
-#define _24 r[1].m128_f32[3]
-
-#define _31 r[2].m128_f32[0]
-#define _32 r[2].m128_f32[1]
-#define _33 r[2].m128_f32[2]
-#define _34 r[2].m128_f32[3]
-
-#define _41 r[3].m128_f32[0]
-#define _42 r[3].m128_f32[1]
-#define _43 r[3].m128_f32[2]
-#define _44 r[3].m128_f32[3]
-#endif
+#include "DXmodelClass.h"
 
 DXfrustumClass::DXfrustumClass()
 {

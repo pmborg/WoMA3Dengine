@@ -89,6 +89,7 @@
     <ClInclude Include="include\DXcameraClass.h" />
     <ClInclude Include="include\DXdrivers.h" />
     <ClInclude Include="include\DXengine.h" />
+    <ClInclude Include="include\DXfrustumClass.h" />
     <ClInclude Include="include\DXinputclass.h" />
     <ClInclude Include="include\DXmodelClass.h" />
     <ClInclude Include="include\DXshaderClass.h" />
@@ -104,8 +105,12 @@
     <ClInclude Include="include\ImageLoaderClass.h" />
     <ClInclude Include="include\language.h" />
     <ClInclude Include="include\lightClass.h" />
+    <ClInclude Include="include\modelClass.h" />
     <ClInclude Include="include\playerClass.h" />
     <ClInclude Include="include\positionClass.h" />
+    <ClInclude Include="include\QuadTree.h" />
+    <ClInclude Include="include\SceneManager.h" />
+    <ClInclude Include="include\SceneNode.h" />
     <ClInclude Include="include\stackTrace.h" />
     <ClInclude Include="include\textFontClass.h" />
     <ClInclude Include="include\vertexTypes.h" />
@@ -183,11 +188,11 @@
     <ClCompile Include="src\DXfrustumClass.cpp" />
     <ClCompile Include="src\DXinputClass.cpp" />
     <ClCompile Include="src\DXmodelClass.cpp" />
-    <ClCompile Include="src\DXobjModel.cpp" />
     <ClCompile Include="src\DXshaderClass.cpp" />
     <ClCompile Include="src\DXshaderLoader.cpp" />
     <ClCompile Include="src\DxTextClass.cpp" />
     <ClCompile Include="src\handleInputs.cpp" />
+    <ClCompile Include="src\ModelClass.cpp" />
     <ClCompile Include="src\playerClass.cpp" />
     <ClCompile Include="src\positionClass.cpp" />
     <ClCompile Include="src\QuadTree.cpp" />

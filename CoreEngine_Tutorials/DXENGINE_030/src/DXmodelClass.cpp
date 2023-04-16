@@ -20,16 +20,17 @@
 
 #include "OSengine.h"
 #include <d3d11.h>
+#include "ModelClass.h"
 #if defined DX_ENGINE && DX_ENGINE_LEVEL >= 21
-	#include "DX11Class.h"
-	#include "DXmodelClass.h"
-	#include "mem_leak.h"
+#include "DX11Class.h"
+#include "DXmodelClass.h"
+#include "mem_leak.h"
 
-	#if   defined DX_ENGINE
-		#include "DXengine.h"
-	#endif
+#if   defined DX_ENGINE
+#include "DXengine.h"
+#endif
 
-	#include "fileLoader.h"
+#include "fileLoader.h"
 
 namespace DirectX {
 
@@ -48,7 +49,7 @@ namespace DirectX {
 DXmodelClass::DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive, bool computeNormals, bool modelHASshadow, bool modelRENDERshadow)
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567830;
+	WomaIntegrityCheck = 1234567831;
 
 	// VARS:
 	// ----------------------------------------------------------------------
@@ -111,30 +112,7 @@ DXmodelClass::DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive, bool comp
 
 	m_xTexture = 1.0f;
 
-	meshMatLib = TEXT("");
 
-	//Temp variables to store into vectors
-	meshMaterialsTemp	= TEXT("");
-	vertPosIndexTemp	= NULL;
-    vertNormIndexTemp	= NULL;
-	vertTCIndexTemp		= NULL;
-
-	checkChar = NULL;
-	face = TEXT("");
-	vIndex			= NULL;	//Keep track of our vertex index count
-    triangleCount	= NULL;	//Total Triangles
-	meshTriangles	= NULL;
-	// ----------------------------------------------------------------------
-	fileNameOnly = TEXT("");
-
-	//Make sure we have a default if no tex coords or normals are defined
-	hasTexCoord = false;	//ch07
-	hasNorm = false;		//ch12
-	hasRenderShadow = false;
-	hasNormMap = false;		//ch51
-
-	hasTransparent = false;
-	meshSubsets = NULL;
 
 }
 
@@ -315,6 +293,8 @@ HRESULT DXmodelClass::LoadTextureImage(TCHAR* textureFilename)
 {
 	HRESULT hr = S_FALSE;
 
+//#if  DX_ENGINE_LEVEL >= 22 // Texturing 
+
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 	{
 		m_Texture = NEW DX12TextureClass;
@@ -333,7 +313,8 @@ HRESULT DXmodelClass::LoadTextureImage(TCHAR* textureFilename)
 			// |1| DescriptorTable  | t0				|<-- HERE
 			// |2| DescriptorTable  | b1				|
 
-			CD3DX12_CPU_DESCRIPTOR_HANDLE cbvHandle1(m_Shader->DX12mSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), m_Shader->m_CbvSrvDescriptorSize, 1); // T0 at: 1
+			//Prepare Teture to be uploaded from CPU/MEMORY ------> gpu
+			CD3DX12_CPU_DESCRIPTOR_HANDLE cbvHandle1(m_Shader->DX12mSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), m_Shader->m_CbvSrvDescriptorSize, 1); // 0 is CBV, so we start textures at 1
 			m_driver->m_device->CreateShaderResourceView(m_Texture->m_pTexture.Get(), &m_driver->DX12viewDesc, cbvHandle1);
 			hr = S_OK;
 		}
@@ -343,7 +324,7 @@ HRESULT DXmodelClass::LoadTextureImage(TCHAR* textureFilename)
 	{
 	case DRIVER_DX9:
 	case DRIVER_DX11:
-		LOADTEXTURE(textureFilename, m_Texture11); // NOTE: Populate hr in case of failor
+		LOADTEXTURE(textureFilename, m_Texture11); // SET: m_Texture11 with image, NOTE: Populate hr in case of failor
 		break;
 	}
 
@@ -375,7 +356,7 @@ HRESULT DXmodelClass::LoadTextureImage(TCHAR* textureFilename)
 
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 		case DRIVER_DX12:
-			meshSRV.push_back(m_Texture);	// Image Converter: *.png to *.dds: \WoMAengine2014\_LIBS\Microsoft_DirectX_SDK_June_2010\Utilities\bin\x64\texconv.exe -ft DDS *.png
+			meshSRV.push_back(NULL/*m_Texture*/);	// Image Converter: *.png to *.dds: \WoMAengine2014\_LIBS\Microsoft_DirectX_SDK_June_2010\Utilities\bin\x64\texconv.exe -ft DDS *.png
 			break;
 #endif
 		}
@@ -392,7 +373,7 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 
 	
 #if defined DX9sdk
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 	{
 		m_Shader9 = CreateShader(objectName, ModelShaderType);
 		ASSERT(m_Shader9);
@@ -494,8 +475,6 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 
 	// Load Texture (Manually)
 	// ----------------------------------------------------------------------------------------------
-
-
 	if (ModelShaderType >= SHADER_TEXTURE)
 	{
 		HRESULT hr = S_FALSE;
@@ -510,7 +489,7 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 			meshSRV_size = (UINT) meshSRV.size();
 		}
 		if (meshSRV_size > 1)
-			Sleep(1);
+			Sleep(1);	//1ms
 
 		// Create the texture object for this model:
 		if (meshSRV_size == 0)
@@ -523,6 +502,20 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 			LoadTextureImage(textureFilename);
 			}
 		}
+
+		// DX12: Load all textures:
+		/*
+		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12) 
+		{
+			UINT m_srvDescriptorSize = m_driver->m_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+			CD3DX12_CPU_DESCRIPTOR_HANDLE cpuHandle(m_Shader->DX12mSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+			for (size_t i = 0; i < meshSRV_size; i++)
+			{
+				m_driver->m_device->CreateShaderResourceView(meshSRV[i]->m_pTexture.Get(), &m_driver->DX12viewDesc, cpuHandle); //Load 1 texture
+				cpuHandle.Offset(m_srvDescriptorSize); //cpuHandle = cpuHandle + m_srvDescriptorSize
+			}
+		}
+		*/
 
 			if (!Model3D)	// SPRITE? Get Size...
 			{
@@ -567,7 +560,6 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 	}
 	return true;
 }
-
 
 void DXmodelClass::Shutdown()
 {
@@ -954,9 +946,8 @@ void DXmodelClass::SetBuffers(void* deviceContext)
 void DXmodelClass::UpdateDynamic(void* Driver, std::vector<ModelColorVertexType>* lightVertexVector)
 {
 	ID3D11DeviceContext* deviceContext11 = NULL;
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11) {
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 		deviceContext11 = m_driver11->m_deviceContext;
-	}
 
 	static float m_previousPosX = -10000;
 	static float m_previousPosY = -10000;
@@ -992,7 +983,8 @@ void DXmodelClass::UpdateDynamic(void* Driver, std::vector<ModelColorVertexType>
 		vertices[i].color	 = XMFLOAT4((*modelColorVertex)[i].r, (*modelColorVertex)[i].g, (*modelColorVertex)[i].b, (*modelColorVertex)[i].a);
 	}
 
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11) {
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+	{
 		//Now copy the contents of the vertex array into the vertex buffer using the Map and memcpy functions:
 		result = deviceContext11->Map(m_vertexBuffer11, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);// Lock the vertex buffer so it can be written to.
 		if (FAILED(result)) throw woma_exception("deviceContext->Map!", __FILE__, __FUNCTION__, __LINE__);
@@ -1275,7 +1267,6 @@ void DXmodelClass::Render(WomaDriverClass* Driver, UINT camera, UINT projection,
 		// ----------------------------------------------------------------------------------------
 		XMMATRIX* projectionMatrix = driver->GetProjectionMatrix(Driver, camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
 		XMMATRIX* viewMatrix = driver->GetViewMatrix(Driver, camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
-
 		m_Shader->PSfade = model_fade;
 			m_Shader->Render(driver->m_device, m_indexCount, &m_worldMatrix, viewMatrix, projectionMatrix);	// Single Material (Optimized)
 	}
@@ -1299,7 +1290,6 @@ void DXmodelClass::Render(WomaDriverClass* Driver, UINT camera, UINT projection,
 			if (ModelShaderType >= SHADER_TEXTURE)
 				for (UINT i = 0; i < meshSRV11.size(); i++)
 					pContext->PSSetShaderResources(i, 1, &meshSRV11[i]);	// Set shader texture resource(s) in the "Pixel Shader", only!
-			// 21/22
 			m_Shader11->PSfade = model_fade;
 			m_Shader11->Render(pContext, m_indexCount, &m_worldMatrix, viewMatrix, projectionMatrix);	// Single Material (Optimized)
 		}
@@ -1517,6 +1507,27 @@ void DXmodelClass::translation(float x, float y, float z)
 		//#endif
 	#endif
 }
+
+
+
+
+bool DXmodelClass::LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow, bool renderShadow, UINT instanceCount)
+{
+
+	const TCHAR* extension = _tcsrchr(filename.c_str(), '.');
+
+	if (_tcsicmp(extension, TEXT(".obj")) == 0)
+	{
+		ModelClass modelClass;
+		bool b = modelClass.LoadOBJ(this, shader_type, g_driver, filename, castShadow, renderShadow, instanceCount);
+		if (b)
+			modelClass.CreateObject(this, (TCHAR*)filename.c_str(), g_driver, shader_type /*SHADER_AUTO*/, filename, castShadow, renderShadow); // Auto Detect Shader Type
+	}
+
+	return true;
+}
+
+
 
 }
 

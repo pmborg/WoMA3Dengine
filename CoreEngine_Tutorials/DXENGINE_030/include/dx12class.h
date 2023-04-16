@@ -114,7 +114,7 @@ public:
 	static const auto BufferCount = 2;  // "Use Double Buffer"
 //	static const auto BufferCount = 3;  // "Use Tripple Buffer"
 
-	UINT WomaIntegrityCheck = 1234567830;
+	UINT WomaIntegrityCheck = 1234567831;
 	DX12Class();
 	~DX12Class();
 	void Shutdown2D();

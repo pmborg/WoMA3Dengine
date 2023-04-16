@@ -22,7 +22,7 @@
 //  - Init: APPDATA "C:\Users\"username"\AppData\Local\Pmborg\Woma2017\"
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567830;
+//WomaIntegrityCheck = 1234567831;
 
 #define _CRT_SECURE_NO_WARNINGS
 #include "main.h"

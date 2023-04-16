@@ -30,7 +30,7 @@
 LightClass::LightClass() 
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567830;
+	WomaIntegrityCheck = 1234567831;
 
 #ifdef DX9sdk
 	ZeroMemory( &light, sizeof( D3DLIGHT9 ) );

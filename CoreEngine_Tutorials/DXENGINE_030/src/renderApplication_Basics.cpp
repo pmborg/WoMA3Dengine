@@ -17,7 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567830;
+//WomaIntegrityCheck = 1234567831;
 
 #include "platform.h"
 #include "dxWinSystemClass.h"
@@ -314,12 +314,30 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 			&((DX11Class*)m_Driver)->m_projectionMatrix,
 			&DXsystemHandle->m_Camera->m_viewMatrix);
 
-#if defined OPENGL3 && defined NOT_IMPLEMENTED
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) {
+
+		mat4 glPrjMatrix = ((GLopenGLclass*)m_Driver)->m_projectionMatrix;
+		XMMATRIX m_projectionMatrix = XMMatrixSet
+		(
+			glPrjMatrix.m[0], glPrjMatrix.m[1], glPrjMatrix.m[2], glPrjMatrix.m[3],
+			glPrjMatrix.m[4], glPrjMatrix.m[5], glPrjMatrix.m[6], glPrjMatrix.m[7],
+			glPrjMatrix.m[8], glPrjMatrix.m[9], glPrjMatrix.m[10], glPrjMatrix.m[11],
+			glPrjMatrix.m[12], glPrjMatrix.m[13], glPrjMatrix.m[14], glPrjMatrix.m[15]
+		);
+
+		mat4 glvMatrix = ((GLopenGLclass*)m_Driver)->gl_Camera->m_viewMatrix;
+		XMMATRIX m_viewMatrix = XMMatrixSet
+		(
+			glvMatrix.m[0], glvMatrix.m[1], glvMatrix.m[2], glvMatrix.m[3],
+			glvMatrix.m[4], glvMatrix.m[5], glvMatrix.m[6], glvMatrix.m[7],
+			glvMatrix.m[8], glvMatrix.m[9], glvMatrix.m[10], glvMatrix.m[11],
+			glvMatrix.m[12], glvMatrix.m[13], glvMatrix.m[14], glvMatrix.m[15]
+		);
+
 		m_Driver->frustum->ConstructFrustum(SystemHandle->AppSettings->SCREEN_DEPTH / 2.5f,
-			&((GLopenGLclass*)m_Driver)->m_projectionMatrix,
-			&DXsystemHandle->m_Camera->m_viewMatrix);
-#endif
+			&m_projectionMatrix,
+			&m_viewMatrix);
+	}
 
 	// CAMERA TEXT: Show Debug Info
 	AppTextClass->SetFps(SystemHandle->fps);						// Update the FPS "Value" in the text object.
@@ -372,8 +390,8 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 	// 3D STATIC OBJECTS
 	// --------------------------------------------------------------------------------------------
 #if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
-	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
-		SceneManager::GetInstance()->Render();	// Version 2: Using SceneManager
+	//if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+	SceneManager::GetInstance()->Render();	// Version 2: Using SceneManager
 #endif
 
 	// 3D WATER

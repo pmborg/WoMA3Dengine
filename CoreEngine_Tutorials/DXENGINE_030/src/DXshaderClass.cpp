@@ -111,7 +111,7 @@ namespace DirectX {
 	DXshaderClass::DXshaderClass(UINT ShaderVersion_H, UINT ShaderVersion_L, bool shader_3D)
 	{
 		CLASSLOADER();
-		WomaIntegrityCheck = 1234567830;
+		WomaIntegrityCheck = 1234567831;
 		
 #if defined DX9sdk
 		m_driver9 = ((DirectX::DX9Class*)SystemHandle->m_Driver);
@@ -555,8 +555,7 @@ namespace DirectX {
 				// | Root Signature		| Shader Registers	|
 				// |0| DescriptorTable  | b0				|
 				// |1| DescriptorTable  | t0				|
-
-				srvHeapDesc.NumDescriptors = 2; // = Num. InitAsDescriptorTable: D3D12_DESCRIPTOR_RANGE_TYPE_CBV + D3D12_DESCRIPTOR_RANGE_TYPE_SRV
+				srvHeapDesc.NumDescriptors = 2; 
 				break;
 			}
 
@@ -568,7 +567,7 @@ namespace DirectX {
 				// |0| DescriptorTable  | b0				|
 				// |1| DescriptorTable  | t0				|
 				// |2| DescriptorTable  | b1				|
-				srvHeapDesc.NumDescriptors = 3; // = Num. InitAsDescriptorTable: D3D12_DESCRIPTOR_RANGE_TYPE_CBV + D3D12_DESCRIPTOR_RANGE_TYPE_SRV + D3D12_DESCRIPTOR_RANGE_TYPE_CBV
+				srvHeapDesc.NumDescriptors = 3;
 				break;
 			}
 			}
@@ -1263,7 +1262,7 @@ namespace DirectX {
 	}
 
 
-	void DXshaderClass::RenderShader(/*ID3D11DeviceContext*/ void* Device_Context, int indexCount, int start)
+	void DXshaderClass::RenderShader(/*ID3D11DeviceContext*/ void* Device_Context, int texture_index, int indexCount, int start)
 	{
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 		{
@@ -1352,9 +1351,9 @@ namespace DirectX {
 				// CBV
 				auto offSet = DX12mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
 				driver->m_commandList->SetGraphicsRootDescriptorTable(0, offSet);	//C0 Set "Constant Buffer View" 
+				offSet.ptr += m_CbvSrvDescriptorSize;
 
 				// SRV:
-				offSet.ptr += m_CbvSrvDescriptorSize;
 				driver->m_commandList->SetGraphicsRootDescriptorTable(1, offSet);	//T0 Set Texture
 			}
 			break;
@@ -1397,7 +1396,7 @@ namespace DirectX {
 		ASSERT(indexCount > 0);
 
 		SetShaderParameters(Device_Context, worldMatrix, viewMatrix, projectionMatrix);	// Set the shader parameters that it will use for rendering
-		RenderShader(Device_Context, indexCount);										// Now render the prepared buffers with the shader
+		RenderShader(Device_Context, /*texture_index*/ 0, indexCount);										// Now render the prepared buffers with the shader
 	}
 
 } // DirectX

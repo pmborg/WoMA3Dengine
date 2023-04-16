@@ -42,7 +42,7 @@ GLmathClass* mathClass;
 GLopenGLclass::GLopenGLclass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567830;
+	WomaIntegrityCheck = 1234567831;
 
 	mathClass = NULL;
 	_tcscpy_s(driverName, TEXT("GL3+")); // driverName = TEXT ("GL3+");
@@ -68,6 +68,8 @@ void GLopenGLclass::Shutdown()
 	if(gl_Camera) { delete ((GLcameraClass*)gl_Camera); gl_Camera=NULL; }	//Cant use: SAFE_DELETE (m_Camera);
 	if (gl_CameraSKY) { delete ((GLcameraClass*)gl_CameraSKY); gl_CameraSKY = NULL; }	//Cant use: SAFE_DELETE (m_Camera);
 	Shutdown2D();
+
+	SAFE_DELETE (frustum);
 }
 
 #if zero
@@ -151,6 +153,8 @@ bool GLopenGLclass::OnInit(int _USE_MONITOR, /*HWND*/void* hwnd, int screenWidth
 								BOOL msaa, bool vsync, BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize)  { 
 
 	BuildOrthoMatrix(&m_orthoMatrix, (float)screenWidth, (float)screenHeight, screenNear, screenDepth, true /*leftHand*/);
+
+	frustum = NEW DXfrustumClass;	// Create Frustum
 
 	return true; 
 }

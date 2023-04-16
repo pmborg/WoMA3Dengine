@@ -253,7 +253,7 @@ struct DXTextLine
 class DX11Class : public WomaDriverClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567830;
+	UINT WomaIntegrityCheck = 1234567831;
 	DX11Class();
 	~DX11Class();
 

@@ -29,7 +29,7 @@ const int n_faces = 6;
 class CCube
 {
 public:
-	UINT WomaIntegrityCheck = 1234567830;
+	UINT WomaIntegrityCheck = 1234567831;
 	CCube(int x_0, int y_0, int z_0);
 	virtual ~CCube();
 	void Shutdown();

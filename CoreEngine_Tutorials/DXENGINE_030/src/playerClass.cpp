@@ -26,7 +26,7 @@
 PlayerClass::PlayerClass(UINT id)
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567830;
+	WomaIntegrityCheck = 1234567831;
 
 	//public:
 	ZeroMemory(&p_player, sizeof(p_player));

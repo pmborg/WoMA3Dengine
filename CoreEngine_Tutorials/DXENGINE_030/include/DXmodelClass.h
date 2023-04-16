@@ -106,39 +106,15 @@ using namespace DirectX;
 
 
 
-
-
 #include "DXshaderClass.h"
 #include "virtualModelClass.h"
 #include "DXbasicTypes.h"
 
+#include "modelClass.h"
+
+
 namespace DirectX 
 {
-// --------------------------
-// "OBJ" MATERIAL FORMAT:
-// --------------------------
-struct SurfaceMaterial
-{
-	char matName[100];					//size:100 100xchar
-
-	XMFLOAT4 diffuseColor;				//size:16
-	XMFLOAT4 ambientColor;				//size:16
-	XMFLOAT4 emissiveColor;				//size:16
-
-	int texArrayIndex;					//size:4
-	bool hasTexture;					//size:1
-
-	bool transparent;					//size:1	>= 43
-    ID3D11ShaderResourceView* alfaMap11;//size:8	>= 43
-
-    bool bSpecular;						//size:1	>= 44: NEW SPECULAR + SHININESS:
-    XMFLOAT3 specularColor;				//size:12	>= 44: NEW SPECULAR + SHININESS:
-    int nShininess;						//size:4	//>= 44: NEW SPECULAR + SHININESS:
-
-    bool hasNormMap;					//size:1	>=47: NEW BUMP
-    int normMapTexArrayIndex;			//size:4	>=47: NEW BUMP
-	//							TOTAL		 184
-};
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -147,7 +123,8 @@ struct SurfaceMaterial
 class DXmodelClass : public VirtualModelClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567830;
+	UINT WomaIntegrityCheck = 1234567831;
+
 	DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY = TRIANGLELIST, bool computeNormals = false, bool modelHASshadow = false, bool modelRENDERshadow = false);
 	~DXmodelClass();
 	void Shutdown();
@@ -175,8 +152,8 @@ public:
 	bool LoadLight(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureLightVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0);
 
 	// MODEL LOAD:
-	bool LoadModel		(TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow = false, bool renderShadow=false, UINT instanceCount=0);
-	bool CreateObject	(TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow = false, bool renderShadow=false);
+	OBJ3D obj3d;
+	bool LoadModel	(TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow = false, bool renderShadow=false, UINT instanceCount=0);
 
 	STRING MODEL_NAME=TEXT("");
 
@@ -217,11 +194,12 @@ public:
 	XMFLOAT3 minVertex = XMFLOAT3(0, 0, 0);
 	XMFLOAT3 maxVertex = XMFLOAT3(0, 0, 0);
 
+	//std::vector <CD3DX12_CPU_DESCRIPTOR_HANDLE> cbvHandle;
+	HRESULT LoadTextureImage(TCHAR* textureFilename);
+
 // ----------------------------------------------------------------------
 private:
 // ----------------------------------------------------------------------
-
-	bool LoadOBJ	(SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow=false, bool renderShadow=false, UINT instanceCount=0);
 
 	DXshaderClass* CreateShader(TCHAR* objectName, SHADER_TYPE ShaderType);
 	bool InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* textureFile=NULL);
@@ -233,7 +211,6 @@ private:
 	std::vector<ModelColorVertexType>* modelColorVertex;				// MODEL!
 	std::vector<ModelColorVertexType> modelColorVertex_;				// LOAD M3D
 	bool InitializeColorBuffers(void* g_driver, void* indices);
-	HRESULT LoadTextureImage(TCHAR* textureFilename);
 	std::vector<ModelTextureVertexType>* modelTextureVertex;			// MODEL!
 	std::vector<ModelTextureVertexType> modelTextureVertex_;			// LOAD M3D
 	bool InitializeTextureBuffers(void* g_driver, void* indices);
@@ -253,6 +230,7 @@ private:
 #endif
 
 	UINT sizeofMODELvertex;
+
 	float model_fade = 1;
 
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
@@ -279,51 +257,6 @@ private:
 	std::vector<UINT>* indexModelList;
 
 	float	m_xTexture=0;
-
-	STRING	meshMatLib;		//String to hold our obj material library filename
-	std::vector<STRING>		meshMaterials;
-
-	//Arrays to store our model's information
-	std::vector<XMFLOAT3>	vertPos;		//40
-	std::vector<XMFLOAT2>	vertTexCoord;	//41
-	std::vector<XMFLOAT3>	vertNorm;		//42
-	
-	//Vertex definition indices
-	std::vector<int> vertPosIndex;	//vertPos Indexs
-	std::vector<int> vertTCIndex;	//vertTexCoord Indexs
-	std::vector<int> vertNormIndex;	//vertNorm Indexs
-
-	//Temp variables to store into vectors
-	STRING	meshMaterialsTemp;
-	int		vertPosIndexTemp = 0;
-    int		vertNormIndexTemp = 0;
-	int		vertTCIndexTemp = 0;
-
-	TCHAR	checkChar;		//The variable we will use to store one char from file at a time
-	STRING	face;			//Holds the string containing our face vertices
-	int		vIndex=0;			//Keep track of our vertex index count
-    UINT	triangleCount = 0;	//Total Triangles
-	UINT	meshTriangles = 0;
-	// -------------------------------------------------------------------
-	STRING fileNameOnly;
-
-	//Make sure we have a default if no tex coords or normals are defined
-	bool hasTexCoord=false;			//ch07
-	bool hasNorm = false;			//ch12
-	bool hasRenderShadow = false;	//ch45
-	bool hasNormMap = false;		//ch51
-	bool hasTransparent = false;	// has transparent sub-meshes?
-
-	UINT meshSubsets = 0;		// Num. of sub-meshes
-
-    std::vector<UINT> indices32;	// DX >= 9.2
-    std::vector<WORD> indices16;	// DX >= 9.0 Shader 2.0
-
-	std::vector<int> meshSubsetIndexStart;	// Start Index of each subset
-	std::vector<int> subsetMaterialArray;	// Index of material to use in each subset
-
-	std::vector<SurfaceMaterial> material;
-	std::vector<STRING> textureNameArray;	// filename of all textures loaded
 
 };
 

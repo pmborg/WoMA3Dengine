@@ -148,7 +148,7 @@
 		#endif
 
 		#if DX_ENGINE_LEVEL >= 30
-			#undef OPENGL3
+			//#undef OPENGL3
 			#undef USE_SOUND_MANAGER
 			#undef USE_PLAY_MUSIC
 			#undef INTRO_DEMO

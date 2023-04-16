@@ -17,7 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567830;
+//WomaIntegrityCheck = 1234567831;
 #include "WinSystemClass.h"
 
 //------------------------------------------------------------------
@@ -425,6 +425,9 @@ bool CheckDEVICEinfo()
 bool SystemManager::CheckIO ()
 {
 	CheckDEVICEinfo();
+	
+	//MORE INFO: https://msdn.microsoft.com/en-us/library/windows/desktop/ms724336%28v=vs.85%29.aspx
+
 	STRING KeyboardStrDescription[] = { TEXT("none"),
 		TEXT("IBM PC/XT or compatible (83-key) keyboard"),	//	1	
 		TEXT("Olivetti \"ICO\" (102-key) keyboard"),		//	2	
@@ -443,6 +446,8 @@ bool SystemManager::CheckIO ()
 	int numberoffunctionkeys =  GetKeyboardType(2);
 	WOMA_LOGManager_DebugMSG ("Keyboard - Number of function keys: %d\n", numberoffunctionkeys);
 	//----------------------------------------------------------------------------
+	//MORE INFO: https://msdn.microsoft.com/en-us/library/ee825488%28v=cs.20%29.aspx
+
 	TCHAR pwszKLID[KL_NAMELENGTH];
 	BOOL b = GetKeyboardLayoutName(pwszKLID);
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("Keyboard - Layout: %s\n"), pwszKLID);

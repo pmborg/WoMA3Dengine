@@ -28,7 +28,7 @@ using namespace std;	//endl
 wmiUtilClass::wmiUtilClass() 
 {
 	CLASSLOADER();
-    WomaIntegrityCheck = 1234567830;
+    WomaIntegrityCheck = 1234567831;
 
 	//public:
 	description = L"";

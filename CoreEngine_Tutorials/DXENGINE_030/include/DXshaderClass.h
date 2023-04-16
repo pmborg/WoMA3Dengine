@@ -167,7 +167,7 @@ struct ConstantBufferSkyType
 	// FUNCTIONS:
 	// ---------------------------------------------------------------------
 public:
-	UINT WomaIntegrityCheck = 1234567830;
+	UINT WomaIntegrityCheck = 1234567831;
 	DXshaderClass(UINT ShaderVersionH, UINT ShaderVersionL, bool shader_3D);
 	~DXshaderClass();
 	void Shutdown();
@@ -178,7 +178,7 @@ public:
 								XMMATRIX* worldMatrix, XMMATRIX* viewMatrix, XMMATRIX* projectionMatrix,
 								XMMATRIX* lightViewMatrix=NULL, XMMATRIX* ShadowProjectionMatrix=NULL);
 
-	void RenderShader(/*ID3D11DeviceContext*/ void*, int, int start = 0);
+	void RenderShader(/*ID3D11DeviceContext*/ void*, int texture_index, int, int start = 0);
 
 private:
 	bool InitializeShader(SHADER_TYPE shaderType, /*ID3D11Device*/ void*, HWND, PRIMITIVE_TOPOLOGY PrimitiveTopology);

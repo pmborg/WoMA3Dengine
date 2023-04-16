@@ -17,7 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567830;
+//WomaIntegrityCheck = 1234567831;
 
 #include "ApplicationClass.h"
 #include "dxWinSystemClass.h"
@@ -64,7 +64,7 @@ void ApplicationClass::initSky(float SPHERE_SIZE)
 {
 
 	if (Sphere_vertexdata.size() == 0)
-		CreateSphereModel((int)SPHERE_SIZE, 20);
+		CreateSphereModel((int)SPHERE_SIZE, 30);
 
 	std::vector<STRING> Textures;
 

@@ -31,13 +31,15 @@
 #include "fileLoader.h"
 #include "glTextureclass.h"
 
+#include "modelClass.h"
+
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: GLmodelClass
 ////////////////////////////////////////////////////////////////////////////////
 class GLmodelClass : public VirtualModelClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567830;
+	UINT WomaIntegrityCheck = 1234567831;
 	GLmodelClass(bool model3D=true);
 	~GLmodelClass();
 	void Shutdown();
@@ -51,6 +53,7 @@ public:
 	bool LoadColor(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<ModelColorVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0);
 	bool LoadTexture(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0);
 	bool LoadLight(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureLightVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0);
+	ModelClass modelClass;
 
 #if defined USE_VIEW2D_SPRITES		// Sprites
 	bool RenderSprite(void* Driver, int positionX, int positionY, float scale=1.0f, float fade = 1.0f);
@@ -61,6 +64,7 @@ public:
 	void UpdateDynamic(void* Driver, std::vector<ModelColorVertexType>* lightVertexVector);
 #endif
 
+	OBJ3D obj3d;
 	bool LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow = false, bool renderShadow=false, UINT instanceCount=0);
 
 	STRING MODEL_NAME;
@@ -80,13 +84,8 @@ public:
 	int GetIndexCount();
 private:
 	GLmathClass	mathClass;
-	//float scale2D;
-
-	float	m_xTexture = 1.0f;
-	float model_fade = 1;
 
 	void SetOpenGLBuffers(UINT sizeofMODELvertex, UINT* indices);
-	UINT* indices;
 	void GetIndices();
 
 	std::vector<ModelColorVertexType>* modelColorVertex;
@@ -99,8 +98,12 @@ private:
 	void SetBuffers(/*GLopenGLclass*/ void*);
 	void RenderBuffers(/*GLopenGLclass*/ void*);
 
-	std::vector<UINT>* indexModelList;
+	//float scale2D;
+	float	m_xTexture = 1.0f;
+	float	model_fade = 1;
 
+	std::vector<UINT>* indexModelList;
+	UINT* indices;
 	bool			Model3D;
 	GLshaderClass*	m_Shader = NULL;
 	UINT			m_vertexCount = NULL, m_indexCount = NULL;

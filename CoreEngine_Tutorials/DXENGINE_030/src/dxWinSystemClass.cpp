@@ -63,7 +63,7 @@ dxWinSystemClass::dxWinSystemClass(WOMA::Settings* appSettings) : WinSystemClass
 //----------------------------------------------------------------------------------
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567830;
+	WomaIntegrityCheck = 1234567831;
 	WinSystemClass::AppSettings = appSettings;
 	WinSystemClass::mMaximized = WinSystemClass::AppSettings->FULL_SCREEN;
 
@@ -488,7 +488,6 @@ bool dxWinSystemClass::StartSoundManager()
 	return true;
 }
 #endif
-
 void dxWinSystemClass::ApplicationInitSceneManager()
 //----------------------------------------------------------------------------
 {

@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: QuadTree.cpp
 // --------------------------------------------------------------------------------------------
@@ -14,7 +15,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567830;
+//WomaIntegrityCheck = 1234567831;
 
 #include "platform.h"
 
@@ -157,7 +158,7 @@ void QuadTree::RenderNode(NodeType* node)
 {
 	// Check to see if the node can be viewed, height doesn't matter in a quad tree.
 	//result = frustum->CheckCube(node->positionX, 0.0f, node->positionZ, node->width/2);   // More accurated but slower
-	bool result = frustum->CheckSphere(node->positionX, 0.0f, node->positionZ, (node->width/2)*1.4142135623730950488016887242097f );   // Faster: node->width/2
+	bool result = frustum->CheckSphere(node->positionX, 0.0f, node->positionZ, (node->width/2)*1.4142135623730950488016887242097f );   // Faster
 	if (!result) return;
 
 	// If it can be seen then check all four child nodes to see if they can also be seen.
@@ -179,43 +180,24 @@ void QuadTree::RenderNode(NodeType* node)
 	{
 		VirtualModelClass* model = node->sceneNodes[i]->nodeState.model;
 
-		UINT posX = SystemHandle->xml_loader.theWorld[model->m_ObjId].posX;
-		UINT posY = SystemHandle->xml_loader.theWorld[model->m_ObjId].translateY;
-		UINT posZ = SystemHandle->xml_loader.theWorld[model->m_ObjId].posZ;
-
 		UINT scale = SystemHandle->xml_loader.theWorld[model->m_ObjId].scale;
 		if (scale == 0) 
 			scale = 1;
 
 		((DXmodelClass*)model)->m_worldMatrix = XMMatrixIdentity();
 		float rx = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotX;
-		if (rx == -1000) {
-			float rX = 0.0f;
-			rX = SystemHandle->m_Application->dt * (0.005f / 16.66f);	// MOVIMENT FORMULA!
-			model->rotateX(rX);
-		}
-		else
-			model->rotateX(rx);
+		model->rotateX(rx);
 
 		float ry = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotY;
-		if (ry == -1000) {
-			float rY = 0.0f;
-			rY = SystemHandle->m_Application->dt * (0.005f / 16.66f);	// MOVIMENT FORMULA!
-			model->rotateY(rY);
-		}
-		else
-			model->rotateY(ry);
+		model->rotateY(ry);
 
 		float rz = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotZ;
-		if (rz == -1000) {
-			float rZ = 0.0f;
-			rZ = SystemHandle->m_Application->dt * (0.005f / 16.66f);	// MOVIMENT FORMULA!
-			model->rotateZ(rZ);
-		}
-		else
-			model->rotateZ(rz);
+		model->rotateZ(rz);
 
-		model->translation(posX, posY, posZ);
+		model->translation(	SystemHandle->xml_loader.theWorld[model->m_ObjId].posX,
+							SystemHandle->xml_loader.theWorld[model->m_ObjId].translateY,
+							SystemHandle->xml_loader.theWorld[model->m_ObjId].posZ);
+
 		model->scale(scale, scale, scale);
 
 		model->Render(driver);
