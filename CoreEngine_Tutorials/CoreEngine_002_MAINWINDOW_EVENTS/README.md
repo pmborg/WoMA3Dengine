@@ -4,4 +4,4 @@
 	- Main Window Paint events<br>
 	- OS INPUT manager<br>
 	
-![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/CoreEngine_002_MAINWINDOW_EVENTS.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/CoreEngine_002_MAINWINDOW_EVENTS.png)	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_002_MAINWINDOW_EVENTS.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_002_MAINWINDOW_EVENTS.png)	
