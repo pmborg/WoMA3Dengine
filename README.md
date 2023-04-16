@@ -205,8 +205,6 @@ Add third party image readers:<br>
 		- <b>M3D v1.2+</b><br>
 {034}	OBJ Loader "Specular+Shininess"<br>
 		- <b>M3D v1.3</b><br>
-{035}	Convert OBJ to M3D
-	- Convert "obj" to "<b>m3d</b>" WoMA 3D format, which will allow a super fast loading time<br>
 
 <hr>
 
