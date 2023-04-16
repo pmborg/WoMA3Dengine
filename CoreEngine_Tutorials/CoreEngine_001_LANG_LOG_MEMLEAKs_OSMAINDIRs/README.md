@@ -4,4 +4,4 @@
 	- Memory leak detector level 1 <br>
 	- OS manager for main OS directories (DEBUG/RELEASE)<br>
 	
-![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/CoreEngine_001_LANG_LOG_MEMLEAK_OSMAINDIRs.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/CoreEngine_001_LANG_LOG_MEMLEAK_OSMAINDIRs.png)	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_001_LANG_LOG_MEMLEAK_OSMAINDIRs.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_001_LANG_LOG_MEMLEAK_OSMAINDIRs.png)	
