@@ -12,3 +12,5 @@ present.weather
 x64
 ThirdParty/DirectXTK/Bin/Desktop_2013/x64/Release/
 WoMAsetup*.exe
+redist/
+redist_d/
