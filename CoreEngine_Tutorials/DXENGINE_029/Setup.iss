@@ -34,6 +34,18 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
+[Code]
+procedure RunOtherInstaller;
+var
+  ResultCode: Integer;
+begin
+  if not Exec(ExpandConstant('C:\WoMA3Dengine\HowToInstallVisualStudio2022Community\VC_redist.x64.exe'), '', '', SW_SHOWNORMAL,
+    ewWaitUntilTerminated, ResultCode)
+  then
+    MsgBox('VC_redist.x64.exe installer failed to run!' + #13#10 +
+      SysErrorMessage(ResultCode), mbError, MB_OK);
+end;
+
 [Files]
 Source: "C:\Windows\System32\ucrtbased.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\ucrt\ucrtbased.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -46,6 +58,7 @@ Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\GLengine\*"; DestDir:
 Source: "C:\WoMA3Dengine\woma_engine\woma.pck"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\WoMA3Dengine\windows_engine\windows.pck"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\GeoLite2-City.mmdb"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\WoMA3Dengine\HowToInstallVisualStudio2022Community\VC_redist.x64.exe"; DestDir: "{app}"; AfterInstall: RunOtherInstaller
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
