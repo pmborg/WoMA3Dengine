@@ -100,7 +100,7 @@ Try to Change the driver on the fly without the need of close and open the Appli
 	- Moon Phase (based of realime date)<br>
 	- Calculate Moon Distance<br>
 	- Calculate moon Elevation, taking into account atmospheric refraction<br>
-calculate Moon Ecliptic Latitude, Ecliptic Longitude and Azimuth<br>
+	- Calculate Moon Ecliptic Latitude, Ecliptic Longitude and Azimuth<br>
 
 (later will be used to re-create more real astro positions)
 
