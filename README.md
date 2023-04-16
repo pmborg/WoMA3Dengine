@@ -218,6 +218,12 @@ So in resume... now all of that in a simple xml instead of the C++ demo code is 
 	- <b>World</b> and <b>Objects</b>: Loading objects as a descriptor:	<b>World.xml</b><br>
 	- Load <b>obj</b> format<br>
  
+ - <b>DX31: WORLD.XML: load OBJ 3D file format, with MULTIPLE TEXTURES, using TEXTURE shader</b><br> 
+	- Loading Multiple Textures in one object
+	
+- <b>DX32: WORLD.XML: load OBJ 3D file format, the first advanced object, using LIGHT shader</b><br> 
+	- Loading more complex objects with light, the: OLD HOUSE.
+	
  ...<br>
  ...<br>
 - <b>DX 160 Full Demo (to be added later?)<br>
