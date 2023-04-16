@@ -28,10 +28,10 @@ Moon Azimuth<br>
 <b>[F5]</b> Game Rendering page (defaultt page)<br>
 <b>[F6]</b> SETUP<br>
 Try to Change the driver on the fly without the need of close and open the Application.<br>
-- DX12<br>
-- DX11<br>
-- DX9<br>
-- OPENGL<br>
+- DirectX 12<br>
+- DirectX 11<br>
+- DirectX 9<br>
+- OPENGL 4<br>
 
 <h2>CORE ENGINE TUTORIALS LIST</h2>
 
