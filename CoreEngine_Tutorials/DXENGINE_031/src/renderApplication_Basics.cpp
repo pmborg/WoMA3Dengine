@@ -231,7 +231,7 @@ void ApplicationClass::AppPosRender()
 	m_Driver->ClearDepthBuffer();		
 	m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
 	
-	//if (RENDER_PAGE >= 24 && m_titleModel)
+	if (RENDER_PAGE >= 24 && m_titleModel)
 	{
 		m_titleModel->RenderSprite(DXsystemHandle->m_Driver, (SystemHandle->AppSettings->WINDOW_WIDTH - m_titleModel->SpriteTextureWidth) / 2, 
 			(SystemHandle->AppSettings->WINDOW_HEIGHT - m_titleModel->SpriteTextureHeight) / 2);
@@ -377,7 +377,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 	// --------------------------------------------------------------------------------------------
 	m_Driver->SetRasterizerState(CULL_BACK, FILL_SOLID); //(CULL_NONE, FILL_WIRE);
 
-	if (RENDER_PAGE >= 23 && RENDER_PAGE < 27)
+	if ((RENDER_PAGE >= 23 && RENDER_PAGE < 27) || RENDER_PAGE >= 32)
 	{
 		CalculateLightRayVertex(SunDistance);							// Calculate Light Source Position
 		m_lightRayModel->UpdateDynamic(m_Driver, m_LightVertexVector);	// Update LightRay vertex(s)
@@ -389,6 +389,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 
 	// 3D STATIC OBJECTS
 	// --------------------------------------------------------------------------------------------
+	m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID); //(CULL_NONE, FILL_WIRE);
 #if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
 	//if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
 	SceneManager::GetInstance()->Render();	// Version 2: Using SceneManager

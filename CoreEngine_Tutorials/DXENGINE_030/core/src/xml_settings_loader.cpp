@@ -211,6 +211,8 @@ bool XMLloader::loadWorld (TCHAR* file_) // Note: Have to be char
 				object3d.rotX = atof(element->Attribute("rotX"));
 				object3d.rotY = atof(element->Attribute("rotY"));
 				object3d.rotZ = atof(element->Attribute("rotZ"));
+
+				object3d.shader = atoi(element->Attribute("shader"));
 				strcpy(object3d.filename, element->Attribute("filename"));
 
 				theWorld.push_back(object3d); // add a new object to our list

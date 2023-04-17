@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: modelClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -790,9 +791,11 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 									{
 										fileNamePath = MathLibPath + fileNamePath;	// TO Support TEMP:
 										fileNamePath = WOMA::LoadFile ((TCHAR*)fileNamePath.c_str());
-											obj3d.textureNameArray.push_back(fileNamePath.c_str());
-											obj3d.material[matCount - 1].texArrayIndex = matCount - 1;//obj3d.meshSRV.size();
-											obj3d.material[matCount-1].hasTexture = true;
+
+										obj3d.material[matCount - 1].texArrayIndex = obj3d.textureNameArray.size();  //matCount - 1;
+										obj3d.material[matCount-1].hasTexture = true;
+
+										obj3d.textureNameArray.push_back(fileNamePath.c_str());
 									}	
 								}
 							}

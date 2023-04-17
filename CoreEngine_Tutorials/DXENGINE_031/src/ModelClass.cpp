@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: modelClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -111,18 +112,6 @@ ModelClass::~ModelClass()
 bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow, bool renderShadow, UINT instanceCount)
 // --------------------------------------------------------------------------------------------
 {	HRESULT hr = 0;
-
-	TCHAR	checkChar;			//The variable we will use to store one char from file at a time
-	STRING	face;				//Holds the string containing our face vertices
-	int		vIndex = 0;			//Keep track of our vertex index count
-
-	//Temp variables to store into vectors
-	STRING	meshMaterialsTemp;
-	int		vertPosIndexTemp = 0;
-	int		vertNormIndexTemp = 0;
-	int		vertTCIndexTemp = 0;
-
-	STRING	meshMatLib;		//String to hold our obj material library filename
 
 	//---------------------------------------------------------------------
 	WOMA_LOGManager_DebugMSG( TEXT("Loading: %s\n"), (TCHAR*)(filename+TEXT(" ")).c_str() );
@@ -802,9 +791,11 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 									{
 										fileNamePath = MathLibPath + fileNamePath;	// TO Support TEMP:
 										fileNamePath = WOMA::LoadFile ((TCHAR*)fileNamePath.c_str());
-											obj3d.textureNameArray.push_back(fileNamePath.c_str());
-											obj3d.material[matCount - 1].texArrayIndex = matCount - 1;//obj3d.meshSRV.size();
-											obj3d.material[matCount-1].hasTexture = true;
+
+										obj3d.material[matCount - 1].texArrayIndex = obj3d.textureNameArray.size();  //matCount - 1;
+										obj3d.material[matCount-1].hasTexture = true;
+
+										obj3d.textureNameArray.push_back(fileNamePath.c_str());
 									}	
 								}
 							}
@@ -936,8 +927,8 @@ bool ModelClass::CreateObject(/*DXmodelClass*/ void* XmodelClass, TCHAR* objectN
 	////////////////////////////////////////////////////////////////////
 		//SHADER_TEXTURE_LIGHT
 		//SHADER_TEXTURE_LIGHT_RENDERSHADOW
-			// SHADER_TEXTURE
-			if (obj3d.hasTexCoord) //22: TEXTURE:
+			// SHADER_TEXTURE - 31
+			if (obj3d.hasTexCoord)
 			{
 				std::vector<ModelTextureVertexType> modelTextureVertex;
 				ModelTextureVertexType tempVert;
@@ -953,14 +944,13 @@ bool ModelClass::CreateObject(/*DXmodelClass*/ void* XmodelClass, TCHAR* objectN
 					modelTextureVertex.push_back(tempVert);
 				}
 
-				//ShaderType = SHADER_TEXTURE;
 				if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
 					((DXmodelClass*)XmodelClass)->LoadTexture((TCHAR*)filename.c_str(), g_driver, /*shader_type*/ SHADER_TEXTURE, &obj3d.textureNameArray, &modelTextureVertex, &obj3d.indices32);
 				else
 					((GLmodelClass*)XmodelClass)->LoadTexture((TCHAR*)filename.c_str(), g_driver, /*shader_type*/ SHADER_TEXTURE, &obj3d.textureNameArray, &modelTextureVertex, &obj3d.indices32);
 			}
 			else
-			// SHADER_COLOR - 21: COLOR
+			// SHADER_COLOR - 30
 			{
 				std::vector<ModelColorVertexType> modelColorVertex(obj3d.vertPos.size());
 				ModelColorVertexType tempVert;
@@ -986,7 +976,6 @@ bool ModelClass::CreateObject(/*DXmodelClass*/ void* XmodelClass, TCHAR* objectN
 					}
 				}
 
-				//ShaderType = SHADER_COLOR;
 				if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
 					((DXmodelClass*)XmodelClass)->LoadColor((TCHAR*)filename.c_str(), g_driver, /*shader_type*/ SHADER_COLOR, &modelColorVertex, &obj3d.indices32);
 				else
