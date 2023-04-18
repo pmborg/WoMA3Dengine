@@ -1,4 +1,4 @@
-- <b>DX32: WORLD.XML: load OBJ 3D file format, the first advanced object, using LIGHT shader</b><br> 
-	- Loading more complex objects with light, the: OLD HOUSE.
+- <b>DX33: WORLD.XML: load OBJ 3D file format, the compond, using transparent textures ALFA MAP and ALFA COLOR</b><br> 
+	- Loading now OBJ with alfa color and alfamap
 	
-![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_032.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_032.png)	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_033.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_033.png)	
