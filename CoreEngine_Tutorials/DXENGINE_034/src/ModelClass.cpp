@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: modelClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -37,9 +38,9 @@ GEOMETRY
 #		- comment
 mtllib	- material library filename
 
-v		- vert position		(30)
-vt		- vert tex coords	(31)
-vn		- vert normal		(32)
+v		- vert position		(30) COLOR shader
+vt		- vert tex coords	(31) TEXTURE shader
+vn		- vert normal		(32) LIGHT shader
 
 f		- defines the faces	(poligons) 1 poligon of 3...6 vert OR 1 triangle 3 vert
 g		- defines a group	(Subset)
@@ -48,8 +49,8 @@ usemtl	- which material to use
 MATERIAL
 --------
 #		- comment
-Ka		- Ambient Color			(32)
-Kd		- diffuse color			(32)
+Ka		- Ambient Color			(32) LIGHT shader
+Kd		- diffuse color			(32) LIGHT shader
 Ke		- emissive color factors (self-ilumination)
 
 *Ni		- optical_density	
@@ -58,22 +59,22 @@ Ke		- emissive color factors (self-ilumination)
 		A value of "1.0" means that light does not bend as it passes through an object. (neutral)
 		The optical density of the surface: This is also known as "index of refraction". Glass is about 1.5 (default)
 
-Tr		- Check for transparency (alpha value)	(33)
-d		- for transparency (1 - alpha value)	(33)
+Tr		- Check for transparency (alpha value)	(33) ALFA MAP and ALFA COLOR
+d		- for transparency (1 - alpha value)	(33) ALFA MAP and ALFA COLOR
 
 map_Kd	- Diffuse map	(31)
 map_d	- Alpha map     (33)
 
-map_bump- Bump map		(37)
+illum	- Illumination					(34 SPECULAR + SHININESS) CH51 if ( illumination == 2 ) hasSpecular = true
+Ks		- Specular Color 				(34 SPECULAR + SHININESS) CH51
+Ns		- Shininess (Specular Power)	(34 SPECULAR + SHININESS) CH51
 
-illum	- Illumination "NEW"	(44 SPECULAR + SHININESS) CH51 if ( illumination == 2 ) hasSpecular = true
-Ks		- Specular Color "NEW"	(44 SPECULAR + SHININESS) CH51
-Ns		- Shininess (Specular Power) "NEW"		(44 SPECULAR + SHININESS) CH51
+map_bump - Bump map						(35) The BUMP MAP
 
 newmtl	- Declare new material
 
 // ----------------------------
-// NOT INCLUDED:
+// NOT INCLUDED FOR NOW:
 // ----------------------------
 illum	x
 
