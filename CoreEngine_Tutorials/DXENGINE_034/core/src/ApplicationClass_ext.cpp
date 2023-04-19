@@ -333,27 +333,30 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	//LIGHT ////////////////////////////////////////////////////////////////////////////////////////////////////////
 	m_Light = NEW LightClass;	// Create the light object
 	IF_NOT_THROW_EXCEPTION(m_Light);
-	m_Light->SetAmbientColor(0.5f, 0.5f, 0.5f, 1);
-	m_Light->SetDiffuseColor(1, 1, 1, 1.0f);
-	//m_Light->SetDirection(-0.15f, -1.0f, -0.45f);
-	m_Light->SetDirection(-0.535041273, -0.634380400, 0.557935774);
-	/*
-	if (RENDER_PAGE < 30) {
-		m_Light->SetAmbientColor(0.05f, 0.05f, 0.05f, 1);
-		m_Light->SetDiffuseColor(0.3f, 0.3f, 0.3f, 1.0f);
-		m_Light->SetDirection(0, -1.0f, 0);
-	} else {
-		if (RENDER_PAGE >= 32) {
-			m_Light->SetAmbientColor(0.4f, 0.4f, 0.4f, 1);
-			m_Light->SetDiffuseColor(0.4f, 0.4f, 0.4f, 1.0f);
-			m_Light->SetDirection(0, -1.0f, 0);
-		} else {
-			m_Light->SetAmbientColor(0.9f, 0.9f, 0.9f, 1);
-			m_Light->SetDiffuseColor(0.5f, 0.5f, 0.5f, 1.0f);
+	if (RENDER_PAGE >= 34) {
+		m_Light->SetAmbientColor(0.5f, 0.5f, 0.5f, 1);
+		m_Light->SetDiffuseColor(1, 1, 1, 1.0f);
+		m_Light->SetDirection(-0.535041273, -0.634380400, 0.557935774);
+	}
+	else {
+		if (RENDER_PAGE < 30) {
+			m_Light->SetAmbientColor(0.05f, 0.05f, 0.05f, 1);
+			m_Light->SetDiffuseColor(0.3f, 0.3f, 0.3f, 1.0f);
 			m_Light->SetDirection(0, -1.0f, 0);
 		}
+		else {
+			if (RENDER_PAGE >= 32) {
+				m_Light->SetAmbientColor(0.4f, 0.4f, 0.4f, 1);
+				m_Light->SetDiffuseColor(0.4f, 0.4f, 0.4f, 1.0f);
+				m_Light->SetDirection(0, -1.0f, 0);
+			}
+			else {
+				m_Light->SetAmbientColor(0.9f, 0.9f, 0.9f, 1);
+				m_Light->SetDiffuseColor(0.5f, 0.5f, 0.5f, 1.0f);
+				m_Light->SetDirection(0, -1.0f, 0);
+			}
+		}
 	}
-	*/
 
 	//SKY ////////////////////////////////////////////////////////////////////////////////////////////////////////
 	initLightRay(Driver);
