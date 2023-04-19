@@ -1,0 +1,5 @@
+<woma>
+  <world hVisibility="128" seaLevel="0" size="512" patchSize="64" skyDayTexture="" skyNightTexture=""/>
+  <object fromPage="34" toPage="34" depend="0" scale="2" posX="-3" posZ="-6" translateY="-34.5" 
+          rotX="" rotY="-0.75f" rotZ="" shader="2" filename="engine/data/scene30/Elementalsit.obj"/>
+</woma>

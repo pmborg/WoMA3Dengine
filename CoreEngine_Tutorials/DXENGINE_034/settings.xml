@@ -1,0 +1,8 @@
+<generalsettings>
+    <screen uiMonitor="0" fullScreen="false" posX="0" posY="0" width="0" height="0" allowResize="true" vsync="true" bitsPerPixel="32" />
+    <driver name="DX12" UseAllMonitors="false" useDoubleBuffering="true" msaa="true" />
+    <camera screenNear="0.1" screenDepth="2048">
+        <initPos x="17" y="3.7" z="2.2" />
+        <initRot x="11" y="250" z="0" />
+    </camera>
+</generalsettings>
