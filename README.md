@@ -222,10 +222,20 @@ So in resume... now all of that in a simple xml instead of the C++ demo code is 
 - <b>DX32: WORLD.XML: load OBJ 3D file format, the first advanced object, using LIGHT shader</b><br> 
 	- Loading more complex objects with light, the: OLD HOUSE.
 	
- ...<br>
- ...<br>
-- <b>DX 160 Full Demo (to be added later?)<br>
+- <b>DX33: WORLD.XML: load OBJ 3D file format, the compond, using transparent textures ALFA MAP and ALFA COLOR</b><br> 
+	- Loading now OBJ with alfa color and alfamap
+	
+- <b>DX34: WORLD.XML: load OBJ 3D file format, with SPECULAR and SHININESS</b><br> 
+	- Loading now OBJ with SPECULAR and SHININESS
 
+
+	
+	
+	
+	
+ ...<br>
+ ...<br>
+- <b>DX 160 Full Demo (to be added later, maybe?)<br>
 
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/1.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/1.png)
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/2.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/2.png)
