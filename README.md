@@ -206,7 +206,7 @@ Add third party image readers:<br>
 - <b>DX32: WORLD.XML: load OBJ 3D file format, the first advanced object, using LIGHT shader</b><br> 
 	- Loading more complex objects with light, the: OLD HOUSE.
 	
-- <b>DX33: WORLD.XML: load OBJ 3D file format, the compond, using transparent textures ALFA MAP and ALFA COLOR</b><br> 
+- <b>DX33: WORLD.XML: load OBJ 3D file format, using transparent textures ALFA MAP and ALFA COLOR</b><br> 
 	- Loading now OBJ with alfa color and alfamap
 	
 - <b>DX34: WORLD.XML: load OBJ 3D file format, with SPECULAR and SHININESS</b><br> 
