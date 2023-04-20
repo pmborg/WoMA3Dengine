@@ -35,7 +35,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="33core_engine_level.h" />
+    <ClInclude Include="34core_engine_level.h" />
     <ClInclude Include="core\include\ApplicationClass.h" />
     <ClInclude Include="core\include\astroClass.h" />
     <ClInclude Include="core\include\default_settings_xml.h" />

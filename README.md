@@ -194,22 +194,6 @@ Add third party image readers:<br>
  <hr>
  <h2>3D - INTERMEDIATE TUTORIAL SERIES</h2>
 
-<b>M3D base versions:</b><br>
-{030}	OBJ Loader "Color"<br>
-		- <b>M3D v1.0</b><br>
-{031}	OBJ Loader "Texture"<br>
-		- <b>M3D v1.1</b><br>
-{032}	OBJ Loader "Diffuse Light + Ambient Light"<br>
-		- <b>M3D v1.2</b><br>
-{033}	OBJ Loader "Diffuse Light"+"Ambient Light"+"Transparent" -> Load Advanced: COMPONDv1.0 with glass<br>
-		- <b>M3D v1.2+</b><br>
-{034}	OBJ Loader "Specular+Shininess"<br>
-		- <b>M3D v1.3</b><br>
-
-<hr>
-
-So in resume... now all of that in a simple xml instead of the C++ demo code is possible? Let's find out...<hr>
-
 - <b>DX30: WORLD.XML: load OBJ 3D file format, using COLOR shader</b><br> 
 	- SceneManager and SceneNode<br> 
 	- QuadTree and Frustum<br> 
@@ -228,7 +212,9 @@ So in resume... now all of that in a simple xml instead of the C++ demo code is 
 - <b>DX34: WORLD.XML: load OBJ 3D file format, with SPECULAR and SHININESS</b><br> 
 	- Loading now OBJ with SPECULAR and SHININESS
 
-
+- <b>DX35: WORLD.XML: load OBJ 3D file format, with BUMP MAP</b><br> 
+	- Loading now OBJ with BUMP MAP texture
+<hr>
 	
 	
 	

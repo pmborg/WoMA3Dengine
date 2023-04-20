@@ -309,7 +309,7 @@
     <ClInclude Include="include\SceneNode.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="33core_engine_level.h" />
+    <ClInclude Include="34core_engine_level.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
