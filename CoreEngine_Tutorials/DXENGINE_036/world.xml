@@ -1,0 +1,6 @@
+<woma>
+  <world hVisibility="128" seaLevel="0" size="512" patchSize="64" skyDayTexture="" skyNightTexture=""/>
+  <object fromPage="36" toPage="36" depend="0" scale="0.004f" posX="0" translateY="0.2" posZ="0" rotX="" rotY="" rotZ="" shader="" filename="engine/data/Chess/branco-bispo.obj"/>
+  <object fromPage="36" toPage="36" depend="0" scale="1.15" posX="-0.55f" translateY="0" posZ="0.5f" rotX="" rotY="" rotZ="" shader="6" filename="engine/data/Chess/Chess.obj"/>
+
+</woma>

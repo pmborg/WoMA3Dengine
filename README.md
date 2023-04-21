@@ -214,6 +214,12 @@ Add third party image readers:<br>
 
 - <b>DX35: WORLD.XML: load OBJ 3D file format, with BUMP MAP</b><br> 
 	- Loading now OBJ with BUMP MAP texture
+
+- <b>DX36: WORLD.XML: load OBJ 3D file format, render a SHADOW MAP</b><br> 
+	- Loading now OBJ with SHADOW MAP using render to texture
+	
+ ...<br>
+ ...<br>
 <hr>
 	
 	
