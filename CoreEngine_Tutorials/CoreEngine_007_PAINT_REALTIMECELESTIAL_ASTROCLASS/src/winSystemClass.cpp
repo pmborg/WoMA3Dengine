@@ -45,6 +45,8 @@ WinSystemClass::WinSystemClass() : SystemClass()
 //----------------------------------------------------------------------------------
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567831;
+
 	//public:
 	SystemHandle = this;
 	WinSystemClass_init();
@@ -75,8 +77,6 @@ void WinSystemClass::WinSystemClass_init()
 		mMaximized = SystemHandle->AppSettings->FULL_SCREEN;
 	//WOMA::previous_game_state = WOMA::game_state;
 	WOMA::game_state = WOMA::previous_game_state;
-
-	bmpBackGround = NULL;
 	m_hWnd = NULL;
 	statusbar = NULL;
 #if defined USE_ASPECT_RATIO
@@ -109,8 +109,6 @@ WinSystemClass::~WinSystemClass()
 	SystemHandle = NULL;
 }
 
-
-//extern int Res;
 bool WinSystemClass::InitializeSystem()
 //----------------------------------------------------------------------------
 {
@@ -129,12 +127,13 @@ bool WinSystemClass::InitializeSystem()
 		}
 	}
 
-	IF_NOT_RETURN_FALSE(SystemClass::LoadXmlSettings());	// XML: Load Application Settings: "settings.xml", pickup "Driver" to Use.
+	IF_NOT_RETURN_FALSE(LoadXmlSettings());	// XML: Load Application Settings: "settings.xml", pickup "Driver" to Use.
 
 	IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 
-	InitializeSetupScreen(10, 10);					//SETUP SCREEN: F1,F2,F3,F4
 
 	IF_NOT_RETURN_FALSE(ApplicationInitMainWindow());		// CREATE: The/all "MainWindow(s) + INIT DX/GL "rendering-device"
+
+	InitializeSetupScreen(10, 10);		//SETUP SCREEN: F1,F2,F3,F4
 
 	IF_NOT_RETURN_FALSE(InitOsInput());						// INIT-INPUT Devices, NOTE: After "Create MainWindow(s)"
 
@@ -868,5 +867,16 @@ void WinSystemClass::ProcessFrame()
 //----------------------------------------------------------------------------
 {
 	SystemClass::FrameUpdate();	// Process Input
+
+	if (WOMA::game_state == GAME_SETUP)
+	{
+		// Init WOMA Setup:
+		if (!SystemHandle->womaSetup)
+		{
+			SystemHandle->womaSetup = NEW WomaSetupManager;
+			SystemHandle->womaSetup->Initialize(NULL);
+			OS_REDRAW_WINDOW;
+		}
+	}
 }
 

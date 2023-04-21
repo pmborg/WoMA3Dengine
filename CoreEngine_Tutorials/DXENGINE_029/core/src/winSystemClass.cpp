@@ -58,7 +58,7 @@ WinSystemClass::WinSystemClass() : SystemClass()
 //----------------------------------------------------------------------------------
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567829;
+	WomaIntegrityCheck = 1234567831;
 
 	//public:
 	SystemHandle = this;
@@ -182,15 +182,16 @@ bool WinSystemClass::InitializeSystem()
 		}
 	}
 
-	IF_NOT_RETURN_FALSE(SystemClass::LoadXmlSettings());	// XML: Load Application Settings: "settings.xml", pickup "Driver" to Use.
+	IF_NOT_RETURN_FALSE(LoadXmlSettings());	// XML: Load Application Settings: "settings.xml", pickup "Driver" to Use.
 
 	IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 
-	InitializeSetupScreen(10, 10);					//SETUP SCREEN: F1,F2,F3,F4
 
 	if (AppSettings->DRIVER == DRIVER_GL3)
 		IF_NOT_RETURN_FALSE(newDriver());
 
 	IF_NOT_RETURN_FALSE(ApplicationInitMainWindow());		// CREATE: The/all "MainWindow(s) + INIT DX/GL "rendering-device"
+
+	InitializeSetupScreen(10, 10);		//SETUP SCREEN: F1,F2,F3,F4
 
 	IF_NOT_RETURN_FALSE(InitOsInput());						// INIT-INPUT Devices, NOTE: After "Create MainWindow(s)"
 

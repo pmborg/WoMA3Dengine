@@ -58,7 +58,7 @@ WinSystemClass::WinSystemClass() : SystemClass()
 //----------------------------------------------------------------------------------
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567891;
+	WomaIntegrityCheck = 1234567831;
 
 	//public:
 	SystemHandle = this;
@@ -115,8 +115,6 @@ void WinSystemClass::WinSystemClass_init()
 		mMaximized = SystemHandle->AppSettings->FULL_SCREEN;
 	//WOMA::previous_game_state = WOMA::game_state;
 	WOMA::game_state = WOMA::previous_game_state;
-
-	bmpBackGround = NULL;
 	m_hWnd = NULL;
 	statusbar = NULL;
 #if defined USE_ASPECT_RATIO
@@ -152,8 +150,6 @@ WinSystemClass::~WinSystemClass()
 	SystemHandle = NULL;
 }
 
-
-//extern int Res;
 bool WinSystemClass::InitializeSystem()
 //----------------------------------------------------------------------------
 {
@@ -172,15 +168,16 @@ bool WinSystemClass::InitializeSystem()
 		}
 	}
 
-	IF_NOT_RETURN_FALSE(SystemClass::LoadXmlSettings());	// XML: Load Application Settings: "settings.xml", pickup "Driver" to Use.
+	IF_NOT_RETURN_FALSE(LoadXmlSettings());	// XML: Load Application Settings: "settings.xml", pickup "Driver" to Use.
 
 	IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 
-	InitializeSetupScreen(10, 10);					//SETUP SCREEN: F1,F2,F3,F4
 
 	if (AppSettings->DRIVER == DRIVER_GL3)
 		IF_NOT_RETURN_FALSE(newDriver());
 
 	IF_NOT_RETURN_FALSE(ApplicationInitMainWindow());		// CREATE: The/all "MainWindow(s) + INIT DX/GL "rendering-device"
+
+	InitializeSetupScreen(10, 10);		//SETUP SCREEN: F1,F2,F3,F4
 
 	IF_NOT_RETURN_FALSE(InitOsInput());						// INIT-INPUT Devices, NOTE: After "Create MainWindow(s)"
 
@@ -369,9 +366,9 @@ void WinSystemClass::refreshTitle() // Run once per second.
 		return;
 
 	if (astroClass)
-		StringCchPrintf(pstrFPS, 300, TEXT("[%d:%d] dxlvl:%d %s [%s] shader:%s FPS:%d game_state:%d RENDER_PAGE:%d"), 
+		StringCchPrintf(pstrFPS, 300, TEXT("[%d:%d] dxlvl:%d %s [%s] shader:%s FPS:%d game_state:%d RENDER_PAGE: %d"), 
 			astroClass->hour, astroClass->minute, DX_ENGINE_LEVEL, WOMA::APP_FULLNAME, m_Driver->driverName,
-			m_Driver->szShaderModel, SystemHandle->fps, WOMA::game_state, m_Application->RENDER_PAGE);
+			m_Driver->szShaderModel, SystemHandle->fps, WOMA::game_state, RENDER_PAGE);
 
 	STRING clean_title = pstrFPS;
 	clean_title.erase(std::remove(clean_title.begin(), clean_title.end(), '\r'), clean_title.cend());
@@ -412,7 +409,6 @@ void WinSystemClass::Shutdown()
 
 	DeleteObject(bmpWorldMap);
 	DeleteObject(bmpTarget);
-	DeleteObject(bmpBackGround);
 
 	ShutdownWindows();				// Shutdown the Main Window.
 }
@@ -557,8 +553,8 @@ bool WinSystemClass::InitOsInput()
 	WOMA_LOGManager_DebugMSG("INIT OS ADVANCED DIRECT INPUT\n");
 	WOMA_LOGManager_DebugMSG("===============================================================================\n");
 
-	m_Application->g_NetID = (UINT)0; // Just Us on the world? So WE will be the index: zero...
-	m_Application->SetPlayerPosition(m_Application->g_NetID);	// Step 6: SetPlayerPosition
+	g_NetID = (UINT)0; // Just Us on the world? So WE will be the index: zero...
+	m_Application->SetPlayerPosition(g_NetID);	// Step 6: SetPlayerPosition
 	DXsystemHandle->m_Input = (DXInputClass*)&SystemHandle->m_InputManager;
 
 	return true;
@@ -917,7 +913,6 @@ void WinSystemClass::ProcessFrame()
 //----------------------------------------------------------------------------
 {
 	SystemClass::FrameUpdate();	// Process Input
-
 
 	if (WOMA::game_state == GAME_SETUP)
 	{

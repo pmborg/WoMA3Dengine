@@ -32,6 +32,8 @@ WinSystemClass::WinSystemClass() : SystemClass()
 //----------------------------------------------------------------------------------
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567831;
+
 	//public:
 	SystemHandle = this;
 	WinSystemClass_init();
@@ -65,8 +67,6 @@ WinSystemClass::~WinSystemClass()
 	SystemHandle = NULL;
 }
 
-
-//extern int Res;
 bool WinSystemClass::InitializeSystem()
 //----------------------------------------------------------------------------
 {
