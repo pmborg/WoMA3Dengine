@@ -1,9 +1,7 @@
 # WoMA3Dengine (DX11, DX12, OPENGL, DX9) Advanced Tutorials
 <hr>
 <h1>WoMA3Dengine at Level 29 INTRO DEMO</h1>
-<!--
-[![WoMA3Dengine at Level 29 INTRO DEMO](https://i.imgur.com/q3AMNrr.png)](https://www.youtube.com/watch?v=tdMsRX_lQ5A)
--->
+
 <h2>Movement Keys: (at level28)</h2> <br>
   - <b>Left:		</b> arrow or a<br>
   - <b>Right:	 	</b>	arrow or d<br>
@@ -33,6 +31,7 @@ Try to Change the driver on the fly without the need of close and open the Appli
 - DirectX 9<br>
 - OPENGL 4<br>
 
+- <b>DX 160 Full Demo (to be added later, maybe?)<br>
 
 <hr>
 <h2>3D - INTERMEDIATE TUTORIAL SERIES</h2>
@@ -296,9 +295,8 @@ Add third party image readers:<br>
 <hr>
 <h2>3D - BASIC TUTORIAL SERIES</h2>
 
-- <b>DX 160 Full Demo (to be added later, maybe?)<br>
 
-<!--
+
 <h2>HTTP WOMA 3D ENGINE TUTORIAL LIST</h2>
 
 
@@ -307,4 +305,7 @@ Add third party image readers:<br>
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/3.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/3.png)
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/4.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/4.png)
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/5.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/5.png)
--->
+
+
+
+[![WoMA3Dengine at Level 29 INTRO DEMO](https://i.imgur.com/q3AMNrr.png)](https://www.youtube.com/watch?v=tdMsRX_lQ5A)
