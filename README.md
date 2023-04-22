@@ -1,4 +1,4 @@
-# WoMA3Dengine DX11 DX12 OPENGL DX9 Advanced Tutorials
+# WoMA3Dengine (DX11, DX12, OPENGL, DX9) Advanced Tutorials
 <hr>
 <h1>WoMA3Dengine at Level 29 INTRO DEMO</h1>
 
