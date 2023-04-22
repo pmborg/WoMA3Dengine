@@ -41,9 +41,6 @@ Try to Change the driver on the fly without the need of close and open the Appli
 
  ...<br>
  ...<br>
-<hr>
- ...<br>
- ...<br>
 
 <hr>
 
