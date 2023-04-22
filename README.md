@@ -102,6 +102,8 @@ Try to Change the driver on the fly without the need of close and open the Appli
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_030.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_030.png)	
 
+<h2>INTERMEDIATE 3D ENGINE TUTORIAL LIST</h2>
+
 - <b>DX29: INTRO DEMO OF BASIC TUTORIAL SERIES</b><br>
 	-  Adding the Sound Manager<br>
 	-  Adding Play background Music<br>
@@ -199,7 +201,7 @@ Add third party image readers:<br>
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_019.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_019.png)	
 
-<h2>CORE ENGINE TUTORIAL LIST</h2>
+<h2>BASIC 3D ENGINE TUTORIAL LIST</h2>
 
 <hr>
 
@@ -288,10 +290,10 @@ Add third party image readers:<br>
  LinuxSystemClass<br>
  AndroidSystemClass<br>
 	
-![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_000_OSENGINE_SYSTEM.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_000_OSENGINE_SYSTEM.png)	
+[https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_000_OSENGINE_SYSTEM.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_000_OSENGINE_SYSTEM.png)	
 
 <hr>
-<h2>3D - BASIC TUTORIAL SERIES</h2>
+<h2>3D - CORE TUTORIAL SERIES</h2>
 
 
 <br>
