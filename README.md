@@ -33,7 +33,7 @@ Try to Change the driver on the fly without the need of close and open the Appli
 - DirectX 9<br>
 - OPENGL 4<br>
 
-<h2>CORE ENGINE TUTORIALS LIST</h2>
+<h2>CORE ENGINE TUTORIAL LIST</h2>
 
 <hr>
 
@@ -45,7 +45,9 @@ Try to Change the driver on the fly without the need of close and open the Appli
  XboxSystemClass<br>
  LinuxSystemClass<br>
  AndroidSystemClass<br>
- ...<br>
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_000_OSENGINE_SYSTEM.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_000_OSENGINE_SYSTEM.png)	
+
 
 <hr>
 
@@ -54,6 +56,9 @@ Try to Change the driver on the fly without the need of close and open the Appli
 	- Log manager, will log on: <b>REPORT.txt</b>, on Visual Studio Console and on Console Window<br>
 	- Memory leak detector level 1 <br>
 	- OS manager for main OS directories (DEBUG/RELEASE)<br>
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_001_LANG_LOG_MEMLEAK_OSMAINDIRs.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_001_LANG_LOG_MEMLEAK_OSMAINDIRs.png)	
+
 
 <hr>
 
@@ -62,6 +67,9 @@ Try to Change the driver on the fly without the need of close and open the Appli
 	- Handle the OS Windows events<br>
 	- Main Window Paint events<br>
 	- OS INPUT manager<br>
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_002_MAINWINDOW_EVENTS.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_002_MAINWINDOW_EVENTS.png)	
+
 
 <hr>
 
@@ -69,6 +77,9 @@ Try to Change the driver on the fly without the need of close and open the Appli
 	- Exception Stack trace viewer in detail for an _DEBUG build<br>
 	- Exception Stack trace viewer and create  the respective Mini Dump report<br>
 	- Option to Upload the report for an FTP site.<br>
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_003_MINIDUMPER_STACK_EXCEPTION.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_003_MINIDUMPER_STACK_EXCEPTION.png)	
+
 
 <hr>
 
@@ -76,12 +87,18 @@ Try to Change the driver on the fly without the need of close and open the Appli
 	- Adding the first version of SystemManager viewer<br>
 	- Adding Precision Timer<br>
 	- Add FPS (Frame per second) calculation<br>
+	
+![https://github.com/pmborg/WoMA3Dengine/blob/main/Image_Tutorial_Snapshot/CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH.png](https://github.com/pmborg/WoMA3Dengine/blob/main/Image_Tutorial_Snapshot/CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH.png)	
+
 
 <hr>
 
 - <b>005 The System settings (settings.xml)</b><br>
 	- Adding the OS Paint events<br>
 	- Allow Load/Save Game System Settigns in the <b>settings.xml</b> file.<br>
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_005_PAINT_SETTINGS_XML.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_005_PAINT_SETTINGS_XML.png)	
+
 
 <hr>
 
@@ -90,6 +107,9 @@ Try to Change the driver on the fly without the need of close and open the Appli
 	- Cypher the file with IDEA and call it: <b>engine.pck</b><br>
 	- Add the first Math libs for DX and OPENGL<br>
 	- Add a simple CPU benchmark, to measure the performance improvement<br>
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_006_PACKMANAGER_IDEA_CPU_BENCHMARK.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_006_PACKMANAGER_IDEA_CPU_BENCHMARK.png)	
+
 
 <hr>
 
@@ -100,17 +120,23 @@ Try to Change the driver on the fly without the need of close and open the Appli
 	- Moon Phase (based of realime date)<br>
 	- Calculate Moon Distance<br>
 	- Calculate moon Elevation, taking into account atmospheric refraction<br>
-	- Calculate Moon Ecliptic Latitude, Ecliptic Longitude and Azimuth<br>
-
-(later will be used to re-create more real astro positions)
+	- calculate Moon Ecliptic Latitude, Ecliptic Longitude and Azimuth<br>
+	
+(later will be used to re-create more real astro positions)<br>
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_007_PAINT_REALTIMECELESTIAL_ASTROCLASS.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_007_PAINT_REALTIMECELESTIAL_ASTROCLASS.png)	
 
 <hr>
 
 - <b>008 RealTimeMapGPSPosition</b><br>
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_008_PAINT_REALTIME_GPS_MAP_LOCATION.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_008_PAINT_REALTIME_GPS_MAP_LOCATION.png)	
 
 <hr>
 
 - <b>009 Get current RealTime Weather using the aviation METAR</b><br>
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_009_PAINT_METAR_WEATHER_REALTIME.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_009_PAINT_METAR_WEATHER_REALTIME.png)	
 
 <hr>
 <h2>3D - BASIC TUTORIAL SERIES</h2>
@@ -124,17 +150,22 @@ Try to Change the driver on the fly without the need of close and open the Appli
 	- DX11<br>
 	- OPENGL3/4<br>
 	- DX12<br>
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_019.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_019.png)	
 
 <hr>
-
 - <b>DX20: Resize Main window</b><br>
  Allow alt enter swap
  And allow user to change the window size
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_020.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_020.png)	
 
 <hr>
 
 - <b>DX21: The COLOR Shader</b><br>
  Introduction to the: Rasterizer State
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_021.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_021.png)	
 
 <hr>
 
@@ -146,26 +177,42 @@ Add third party image readers:<br>
 	- TIFF<br>
 	- DDS<br>
 	- TGA<br>
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_022.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_022.png)	
+
 
 <hr>
 
-- <b>DX23: The directional LIGHT Shader with environment color</b>
+- <b>DX23: The directional LIGHT Shader with environment color</b>	
+
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_023.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_023.png)	
+
 
 <hr>
 
 - <b>DX24: The 2D Rendering (Sprite)</b>
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_024.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_024.png)	
 
 <hr>
 
 - <b>DX25: The CUBEs (COLOR, TEXTURE and LIGHT Shaders)</b>
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_025.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_025.png)	
+
 
 <hr>
 
 - <b>DX26: The Spheres (COLOR, TEXTURE and LIGHT Shaders)</b>
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_026.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_026.png)	
+
 
 <hr>
 
 - <b>DX27: The Rastertek text font</b>
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_027.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_027.png)	
 
 <hr>
 
@@ -182,6 +229,8 @@ Add third party image readers:<br>
 			- Gif
 			- Wmp
 			- Dds
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_028.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_028.png)	
 
 <hr>
 
@@ -190,6 +239,8 @@ Add third party image readers:<br>
 	-  Adding Play background Music<br>
 	-  Generate the first RELEASE BUILD<br>
 	-  Add the installer of INTRO DEMO OF BASIC TUTORIAL SERIES<br>
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_029_VIDEO_DEMO.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_029_VIDEO_DEMO.png)	
   
  <hr>
  <h2>3D - INTERMEDIATE TUTORIAL SERIES</h2>
@@ -199,25 +250,49 @@ Add third party image readers:<br>
 	- QuadTree and Frustum<br> 
 	- <b>World</b> and <b>Objects</b>: Loading objects as a descriptor:	<b>World.xml</b><br>
 	- Load <b>obj</b> format<br>
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_030.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_030.png)	
  
  - <b>DX31: WORLD.XML: load OBJ 3D file format, with MULTIPLE TEXTURES, using TEXTURE shader</b><br> 
 	- Loading Multiple Textures in one object
 	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_031.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_031.png)	
+
+	
 - <b>DX32: WORLD.XML: load OBJ 3D file format, the first advanced object, using LIGHT shader</b><br> 
 	- Loading more complex objects with light, the: OLD HOUSE.
 	
-- <b>DX33: WORLD.XML: load OBJ 3D file format, using transparent textures ALFA MAP and ALFA COLOR</b><br> 
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_032.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_032.png)	
+
+	
+- <b>DX33: WORLD.XML: load OBJ 3D file format, the compond, using transparent textures ALFA MAP and ALFA COLOR</b><br> 
 	- Loading now OBJ with alfa color and alfamap
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_033.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_033.png)	
+
 	
 - <b>DX34: WORLD.XML: load OBJ 3D file format, with SPECULAR and SHININESS</b><br> 
 	- Loading now OBJ with SPECULAR and SHININESS
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_034.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_034.png)	
+
 
 - <b>DX35: WORLD.XML: load OBJ 3D file format, with BUMP MAP</b><br> 
 	- Loading now OBJ with BUMP MAP texture
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_035.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_035.png)	
+
 
 - <b>DX36: WORLD.XML: load OBJ 3D file format, render a SHADOW MAP</b><br> 
-	- Loading now OBJ with SHADOW MAP using render to texture
+	- Loading now OBJ with SHADOW MAP,  using render to texture
 	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_036.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_036.png)	
+
+- <b>DX37: WORLD.XML: load OBJ 3D file format, render chess board pieces</b><br> 
+	- Adding MAIN THREAD and the LOADER THREAD
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_037.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_037.png)	
+
  ...<br>
  ...<br>
 <hr>
@@ -228,6 +303,10 @@ Add third party image readers:<br>
  ...<br>
  ...<br>
 - <b>DX 160 Full Demo (to be added later, maybe?)<br>
+
+
+<h2>HTTP WOMA 3D ENGINE TUTORIAL LIST</h2>
+
 
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/1.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/1.png)
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/2.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/2.png)

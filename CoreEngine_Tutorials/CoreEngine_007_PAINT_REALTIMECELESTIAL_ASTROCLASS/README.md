@@ -7,4 +7,6 @@
 	- Calculate moon Elevation, taking into account atmospheric refraction<br>
 	- calculate Moon Ecliptic Latitude, Ecliptic Longitude and Azimuth<br>
 	
+(later will be used to re-create more real astro positions)<br>
+
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_007_PAINT_REALTIMECELESTIAL_ASTROCLASS.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_007_PAINT_REALTIMECELESTIAL_ASTROCLASS.png)	

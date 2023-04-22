@@ -1,0 +1,34 @@
+<woma>
+  <world hVisibility="128" seaLevel="0" size="512" patchSize="64" skyDayTexture="" skyNightTexture=""/>
+  <object fromPage="37" toPage="37" depend="0" scale="1.15"   posX="-0.55f" translateY="-0.2" posZ="0.5f" rotX="" rotY="" rotZ="" shader="6" filename="engine/data/Chess/Chess.obj"/>
+  
+  <object fromPage="37" toPage="37" depend="0" scale="0.004f" posX=" 1"  translateY="0.2" posZ="4" rotX="" rotY="" rotZ="" shader="" filename="engine/data/Chess/branco-bispo.obj"/>
+  <object fromPage="37" toPage="37" depend="0" scale="0.004f" posX=" 0" translateY="0.2" posZ= "4" rotX="" rotY="" rotZ="" shader="" filename="engine/data/Chess/branco-cavalo.obj"/>
+  <object fromPage="37" toPage="37" depend="0" scale="0.004f" posX="-1"  translateY="0.2" posZ="4" rotX="" rotY="" rotZ="" shader="" filename="engine/data/Chess/branco-peao.obj"/>
+  <object fromPage="37" toPage="37" depend="0" scale="0.004f" posX="-2" translateY="0.2" posZ= "4" rotX="" rotY="" rotZ="" shader="" filename="engine/data/Chess/branco-rainha.obj"/>
+  <object fromPage="37" toPage="37" depend="0" scale="0.004f" posX="-3"  translateY="0.2" posZ="4" rotX="" rotY="" rotZ="" shader="" filename="engine/data/Chess/branco-rei.obj"/>
+  <object fromPage="37" toPage="37" depend="0" scale="0.004f" posX="-4" translateY="0.2" posZ= "4" rotX="" rotY="" rotZ="" shader="" filename="engine/data/Chess/branco-torre.obj"/>
+  
+  <object fromPage="37" toPage="37" depend="0" scale="0.004f" posX=" 1"  translateY="0.2" posZ="-3" rotX="" rotY="" rotZ="" shader="" filename="engine/data/Chess/preto-bispo.obj"/>
+  <object fromPage="37" toPage="37" depend="0" scale="0.004f" posX=" 0" translateY="0.2" posZ= "-3" rotX="" rotY="" rotZ="" shader="" filename="engine/data/Chess/preto-cavalo.obj"/>
+  <object fromPage="37" toPage="37" depend="0" scale="0.004f" posX="-1"  translateY="0.2" posZ="-3" rotX="" rotY="" rotZ="" shader="" filename="engine/data/Chess/preto-peao.obj"/>
+  <object fromPage="37" toPage="37" depend="0" scale="0.004f" posX="-2" translateY="0.2" posZ= "-3" rotX="" rotY="" rotZ="" shader="" filename="engine/data/Chess/preto-rainha.obj"/>
+  <object fromPage="37" toPage="37" depend="0" scale="0.004f" posX="-3"  translateY="0.2" posZ="-3" rotX="" rotY="" rotZ="" shader="" filename="engine/data/Chess/preto-rei.obj"/>
+  <object fromPage="37" toPage="37" depend="0" scale="0.004f" posX="-4" translateY="0.2" posZ= "-3" rotX="" rotY="" rotZ="" shader="" filename="engine/data/Chess/preto-torre.obj"/>
+</woma>                                                             
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
