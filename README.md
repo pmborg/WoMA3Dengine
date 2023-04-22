@@ -225,7 +225,7 @@ Add third party image readers:<br>
 	- Calculate moon Elevation, taking into account atmospheric refraction<br>
 	- calculate Moon Ecliptic Latitude, Ecliptic Longitude and Azimuth<br>
 	
-(later will be used to re-create more real astro positions)<br>
+(later will be used to re-create more realistic astro positions)<br>
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_007_PAINT_REALTIMECELESTIAL_ASTROCLASS.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_007_PAINT_REALTIMECELESTIAL_ASTROCLASS.png)	
 
@@ -290,7 +290,7 @@ Add third party image readers:<br>
  LinuxSystemClass<br>
  AndroidSystemClass<br>
 	
-[https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_000_OSENGINE_SYSTEM.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_000_OSENGINE_SYSTEM.png)	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_000_OSENGINE_SYSTEM.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_000_OSENGINE_SYSTEM.png)	
 
 <hr>
 <h2>3D - CORE TUTORIAL SERIES</h2>
@@ -300,12 +300,19 @@ Add third party image readers:<br>
 <h2>HTTP WOMA 3D ENGINE TUTORIAL LIST</h2>
 
 <br>
+	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/1.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/1.png)
+	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/2.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/2.png)
+	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/3.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/3.png)
+	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/4.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/4.png)
+	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/5.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/5.png)
 
 <br>
 
-[![WoMA3Dengine at Level 29 INTRO DEMO](https://i.imgur.com/q3AMNrr.png)](https://www.youtube.com/watch?v=tdMsRX_lQ5A)
+<b>VIDEO:</b>
+	
+![WoMA3Dengine at Level 29 INTRO DEMO](https://i.imgur.com/q3AMNrr.png)
