@@ -23,7 +23,7 @@ echo on
 "%devenv%" CoreEngine_009_PAINT_METAR_WEATHER_REALTIME\CoreEngine_009.sln /project CoreEngine_009 /Build "Debug|x64" /out ENGINE_009_d.txt
 
 for /D %%f in (DXENGINE_*) do (
-echo "%devenv%" %%f/%%f.sln /project %%f /Build "Debug|x64" /out %%f_d.txt 
+"%devenv%" %%f/%%f.sln /project %%f /Build "Debug|x64" /out %%f_d.txt 
 )
  
 @echo off
