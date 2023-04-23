@@ -35,6 +35,8 @@
 extern void CALLBACK OnGraphEvent(HWND hwnd, long evCode, LONG_PTR param1, LONG_PTR param2);
 #endif
 
+extern bool threadInitializeLoaderAlive;
+
 #pragma comment( lib, "comctl32.lib" )
 
 // Description: 
@@ -236,7 +238,9 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 		}
 		#endif
 
-		Sleep(1000);
+		WOMA_LOGManager_DebugMSG("[WM_CLOSE] EVENT!\n");
+		while (threadInitializeLoaderAlive)
+			Sleep(1000); //give Loading Threads time to react on: CLOSE EVENT.
 		::PostMessage(hwnd, WM_QUIT, 0, 0);
 		return 0;			
 

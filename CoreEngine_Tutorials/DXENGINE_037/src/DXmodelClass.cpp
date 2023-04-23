@@ -365,7 +365,6 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 {
 	bool result = true;
 
-	
 #if defined DX9sdk
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 	{
