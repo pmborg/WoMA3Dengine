@@ -467,7 +467,7 @@ void InitializeObjectsLoaderThreadFunction() // InitializeThread
 		//case 4:
 		//case 8:
 	default:
-		SystemHandle->m_Cpu.SetProcessorAffinity(1);  // Use CPU N�1 for loader threads!
+		SystemHandle->m_Cpu.SetProcessorAffinity(1);  // Use CPU N.1 for loader threads!
 		break;
 	}
 
@@ -478,7 +478,10 @@ void InitializeObjectsLoaderThreadFunction() // InitializeThread
 		WOMA::previous_game_state = GAME_RUN;
 
 	threadInitializeLoaderAlive = false;
-	WOMA::num_running_THREADS--;
+	WOMA::num_running_THREADS--; //InitializeObjectsLoaderThreadFunction
+#if defined _DEBUG
+	WOMA_LOGManager_DebugMSG("WOMA::num_running_THREADS: %d %s %s %d\n", WOMA::num_running_THREADS, __FILE__, __FUNCTION__, __LINE__);
+#endif
 
 	// WE ARE DONE:
 	if (WOMA::game_state == GAME_LOADING)
@@ -495,8 +498,8 @@ unsigned long threadMainId = 0;
 void mainThreadFunction()
 //----------------------------------------------------------------------------
 {
-	SetThreadIdealProcessor(GetCurrentThread(), 1);		// Set the ideal processor for MAIN Thread
-	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
+	//SetThreadIdealProcessor(GetCurrentThread(), 1);		// Set the ideal processor for MAIN Thread
+	//SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
 
 	do
 	{	// Active?
@@ -505,9 +508,12 @@ void mainThreadFunction()
 		else
 			Sleep(50); //we are minized or in background, slow down CPU & GPU.
 	}
-	while (WOMA::game_state < GAME_STOP || WOMA::game_state != ENGINE_RESTART);
+	while (WOMA::game_state < GAME_STOP && WOMA::game_state != ENGINE_RESTART);
 
-	WOMA::num_running_THREADS--;
+	WOMA::num_running_THREADS--; //mainThreadFunction
+#if defined _DEBUG
+	WOMA_LOGManager_DebugMSG("WOMA::num_running_THREADS: %d %s %s %d\n", WOMA::num_running_THREADS, __FILE__, __FUNCTION__, __LINE__);
+#endif
 	threadMainAlive = false;
 }
 
@@ -524,6 +530,9 @@ int dxWinSystemClass::ApplicationMainLoop()		// [RUN] - MAIN "INFINITE" LOOP!
 	//MAIN THREAD RELEASE BUILD LOOP:
 	//RELEASE:
 	WOMA::num_running_THREADS++;
+#if defined _DEBUG
+	WOMA_LOGManager_DebugMSG("WOMA::num_running_THREADS: %d %s %s %d\n", WOMA::num_running_THREADS, __FILE__, __FUNCTION__, __LINE__);
+#endif
 	threadMainHandle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)mainThreadFunction, (void*)this, 0, &threadMainId);
 	ASSERT(threadMainHandle);
 
@@ -535,6 +544,14 @@ int dxWinSystemClass::ApplicationMainLoop()		// [RUN] - MAIN "INFINITE" LOOP!
 			DispatchMessage(&msg);			// Process Msg:  (INVOKE: WinSystemClass::MessageHandler)
 		}
 	} while (msg.message != WM_QUIT);
+
+	while (WOMA::num_running_THREADS > 0) //Discount this one
+	{
+	#if defined _DEBUG
+		WOMA_LOGManager_DebugMSG("WOMA::num_running_THREADS: %d %s %s %d\n", WOMA::num_running_THREADS, __FILE__, __FUNCTION__, __LINE__);
+	#endif
+		Sleep(500);
+	}
 
 	ASSERT(WOMA::game_state == GAME_STOP);
 

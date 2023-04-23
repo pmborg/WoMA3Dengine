@@ -226,7 +226,7 @@ private:
 #endif
 	DirectX::DX11Class* m_driver11 = NULL;
 
-	UINT sizeofMODELvertex;
+	UINT sizeofMODELvertex=0;
 
 	float model_fade = 1;
 

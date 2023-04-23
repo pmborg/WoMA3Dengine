@@ -370,13 +370,13 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 	{
 		m_Shader9 = CreateShader(objectName, ModelShaderType);
-		ASSERT(m_Shader9);
+		IF_NOT_RETURN_FALSE(m_Shader9);
 	}
 #endif
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 	{
 		m_Shader11 = CreateShader(objectName, ModelShaderType);
-		ASSERT(m_Shader11);
+		IF_NOT_RETURN_FALSE(m_Shader11);
 	}
 
 	if (ModelCastShadow)

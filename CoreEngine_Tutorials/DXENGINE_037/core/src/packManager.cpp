@@ -263,7 +263,10 @@ bool StartPackLibs()
 	}
 
 	threadLoadPacksAlive = false;
-	WOMA::num_running_THREADS--;
+	WOMA::num_running_THREADS--; //StartPackLibs
+	#if defined _DEBUG
+	WOMA_LOGManager_DebugMSG("WOMA::num_running_THREADS: %d %s %s %d\n", WOMA::num_running_THREADS, __FILE__, __FUNCTION__, __LINE__);
+	#endif
 
 	return true;
 }

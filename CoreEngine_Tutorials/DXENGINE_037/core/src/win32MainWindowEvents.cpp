@@ -236,6 +236,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 		}
 		#endif
 
+		Sleep(1000);
 		::PostMessage(hwnd, WM_QUIT, 0, 0);
 		return 0;			
 

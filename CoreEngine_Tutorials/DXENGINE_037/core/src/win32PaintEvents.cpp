@@ -196,7 +196,11 @@ int MainWindowPaint(UINT monitor)
 	{
 		TCHAR printOnLoading[MAX_STR_LEN] = { 0 };
 		if (WOMA::num_loading_objects < SystemHandle->xml_loader.theWorld.size())
-			StringCchPrintf(printOnLoading, MAX_STR_LEN, TEXT("Loading: %d/%d %s"), WOMA::num_loading_objects, SystemHandle->xml_loader.theWorld.size(), SystemHandle->xml_loader.theWorld[WOMA::num_loading_objects-1].filename);
+	#if defined SAVEM3D
+			StringCchPrintf(printOnLoading, MAX_STR_LEN, TEXT("Loading OBJ -> Saving M3D: [%d/%d] %s"), WOMA::num_loading_objects, SystemHandle->xml_loader.theWorld.size(), SystemHandle->xml_loader.theWorld[WOMA::num_loading_objects-1].filename);
+	#else
+			StringCchPrintf(printOnLoading, MAX_STR_LEN, TEXT("Loading OBJ: [%d/%d] %s"), WOMA::num_loading_objects, SystemHandle->xml_loader.theWorld.size(), SystemHandle->xml_loader.theWorld[WOMA::num_loading_objects - 1].filename);
+	#endif
 
 		Woma_Label TextToPrintOnLoading;
 		TextToPrintOnLoading.label = printOnLoading;

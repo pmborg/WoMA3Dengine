@@ -20,6 +20,8 @@
 #include "main.h"
 #include "ApplicationClass.h"
 #include "mem_leak.h"
+#include "OSmain_dir.h"
+
 #pragma warning(push)
 #pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
 
@@ -313,13 +315,17 @@ bool ApplicationClass::Initialize(WomaDriverClass* Driver)
 	ASSERT(Driver);
 
 	m_NextPosition = NEW PositionClass(/*ID*/-1);
+	if (WOMA::game_state == GAME_STOP) return false;
 
 	initText(Driver);
+	if (WOMA::game_state == GAME_STOP) return false;
 
 	//(Light, LigthRay...) and SCENE MANAGER: QuadTree object Loader/Render
 	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(Driver));	
+	if (WOMA::game_state == GAME_STOP) return false;
 
 	IF_NOT_RETURN_FALSE(DEMO_WOMA_APPLICATION_Initialize3D(Driver));//SKY + DEMO APPLICATION:21..26 + 28..29
+	if (WOMA::game_state == GAME_STOP) return false;
 
 	Driver->Finalize();
 
@@ -423,9 +429,11 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 			}
 		}
 	}
+	if (WOMA::game_state == GAME_STOP) return false;
 
 	//SKY ////////////////////////////////////////////////////////////////////////////////////////////////////////
 	initLightRay(Driver);
+	if (WOMA::game_state == GAME_STOP) return false;
 
 	//OBJECTS ////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Load 3D Objects: convert XML "objects" -- Load OBJ or M3D --> VirtualModelClass:
@@ -461,7 +469,10 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 		sceneManager->addModel(sceneManager->RootNode, objModel[i]);	// Add node to nodesList: RootNode
 
 		WOMA::num_loading_objects++;
-		RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);  // Invoke: Window PAINT before end.
+
+		if (WOMA::game_state == GAME_STOP) return false;
+		else
+			RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);  // Invoke: Window PAINT before end.
 	}
 
 #if DX_ENGINE_LEVEL >= 37 && defined ALLOW_CBIND_PROGRESS_BAR

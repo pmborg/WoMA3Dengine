@@ -1151,13 +1151,6 @@ bool ModelClass::CreateObject(/*DXmodelClass*/ void* XmodelClass, TCHAR* objectN
 // --------------------------------------------------------------------------------------------
 // Post Read Actions:
 // --------------------------------------------------------------------------------------------
-#if defined (SAVEM3D) || defined(STANDALONE)
-#if defined(STANDALONE)
-	fileNameOnly = fullname;
-#endif
-
-	fileNameOnly.replace(fileNameOnly.size() - 3, 3, TEXT("M3D"));
-#endif
 
 	///////////////////////// COMPUTE NORMALS //////////////////////////
 	// If computeNormals was set to true then we will create our own
