@@ -42,7 +42,7 @@ namespace WOMA
 SceneManager* sceneManager;
 }
 
-
+#include <inttypes.h>
 
 UINT RENDER_PAGE=0;
 bool FORCE_RENDER_ALL = false;
@@ -324,6 +324,12 @@ bool ApplicationClass::Initialize(WomaDriverClass* Driver)
 	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(Driver));	
 	if (WOMA::game_state == GAME_STOP) return false;
 
+#if defined SAVEM3D
+	WOMA::WomaMessageBox(TEXT("Conversion from OBJ to M3D, ended."), TEXT("SAVEM3D"));
+	Publish_Quit_Message();
+	return false;
+#endif
+
 	IF_NOT_RETURN_FALSE(DEMO_WOMA_APPLICATION_Initialize3D(Driver));//SKY + DEMO APPLICATION:21..26 + 28..29
 	if (WOMA::game_state == GAME_STOP) return false;
 
@@ -435,6 +441,11 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	initLightRay(Driver);
 	if (WOMA::game_state == GAME_STOP) return false;
 
+	SystemHandle->ProcessPerformanceStats();
+	INT64 passedTotalTime1 = (INT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
+	WOMA_LOGManager_DebugMSGAUTO("Time to reach OBJ load: %" PRId64 "\n", passedTotalTime1);
+	//WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("passedTotalTime1: %ld\n", (long)passedTotalTime1));
+
 	//OBJECTS ////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Load 3D Objects: convert XML "objects" -- Load OBJ or M3D --> VirtualModelClass:
 	for (int i = 0; i < SystemHandle->xml_loader.theWorld.size(); i++)
@@ -474,6 +485,11 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 		sceneManager->addModel(sceneManager->RootNode, objModel[i]);	// Add node to nodesList: RootNode
 		WOMA::num_loading_objects++;
 	}
+
+	SystemHandle->ProcessPerformanceStats();
+	INT64 passedTotalTime2 = (INT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
+	WOMA_LOGManager_DebugMSGAUTO("Time spent on OBJ(s) load: %" PRId64 "\n", passedTotalTime2);
+	//WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("passedTotalTime2: %ld\n", (long)passedTotalTime2));
 
 #if DX_ENGINE_LEVEL >= 37 && defined ALLOW_CBIND_PROGRESS_BAR
 	SendMessage(bindBar->hwndPrgBar, PBM_SETRANGE, 0, (LPARAM)MAKELPARAM(0, 100));

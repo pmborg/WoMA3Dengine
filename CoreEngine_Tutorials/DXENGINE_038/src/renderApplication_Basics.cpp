@@ -408,6 +408,7 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 	{
 		// [0] Process INPUT, CAMERA, INTRO animation etc...
 		float dayLightFade = Update(monitorWindow, driver);
+		if (dayLightFade == -100) return;
 
 #if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
 		SceneManager::GetInstance()->opacModelList.clear();			//Reset list of opac objects

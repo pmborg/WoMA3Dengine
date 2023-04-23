@@ -512,11 +512,6 @@ bool SystemClass::LoadAllGraphics()
 	SAFE_DELETE(g_DShowPlayer);
 #endif
 
-#if defined SAVEM3D
-	WOMA::WomaMessageBox(TEXT("Conversion from OBJ to M3D, ended."), TEXT("SAVEM3D"));
-	return false;
-#endif
-
 	return true;
 }
 

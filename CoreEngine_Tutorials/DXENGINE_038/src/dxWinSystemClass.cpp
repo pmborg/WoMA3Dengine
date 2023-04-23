@@ -176,7 +176,7 @@ bool dxWinSystemClass::InitializeSystem()
 
 	ApplicationInitSceneManager();	// INIT QUAD TREE
 
-	//RELEASE BUILD: UNLEASH THREADs
+	//UNLEASH THREAD(s)
 	IF_NOT_RETURN_FALSE(ApplicationMandatoryLoad()); // START-THREAD LOAD-ALL: "mandatory 2D/3D Stuff", before "start rendering":
 	
 	//SOUND MANAGER: Music and sound effects
@@ -427,7 +427,7 @@ bool dxWinSystemClass::StartSoundManager()
 		
 			MusicSourceID = audio->addSoundSource(MusicID, LOOPING);			// Add Sound to player
 			audio->play(MusicSourceID);											// Play it, now.
-			}
+		}
 	}
   #endif
 #endif
