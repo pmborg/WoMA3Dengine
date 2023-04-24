@@ -102,4 +102,16 @@ public:
 
 	bool LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow = false, bool renderShadow = false, UINT instanceCount = 0);
 	bool CreateObject(/*DXmodelClass*/ void* dxmodelClass, TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow, bool renderShadow);
+
+	TCHAR	checkChar;			//The variable we will use to store one char from file at a time
+	STRING	face;				//Holds the string containing our face vertices
+	int		vIndex = 0;			//Keep track of our vertex index count
+
+	//Temp variables to store into vectors
+	STRING	meshMaterialsTemp;
+	int		vertPosIndexTemp = 0;
+	int		vertNormIndexTemp = 0;
+	int		vertTCIndexTemp = 0;
+
+	STRING	meshMatLib;		//String to hold our obj material library filename
 };
