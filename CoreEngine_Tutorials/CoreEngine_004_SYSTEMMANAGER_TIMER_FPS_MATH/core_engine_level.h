@@ -18,7 +18,7 @@
 // --------------------------------------------------------------------------------------------
 #define DX_ENGINE_LEVEL 0
 #define CORE_ENGINE_LEVEL 4
-#define DEMO_TITLE TEXT("From now on: PRESS [F1] for: [SYSTEM MANAGER DISPLAY] and added FPS(title bar)")
+#define DEMO_TITLE TEXT("From now on: PRESS [F1] for: [SYSTEM MANAGER DISPLAY] ,added FPS(title bar), press [ESC] to close window")
 //------------------------------------------------------------------------------------------------------------
 #if defined _DEBUG
 	//#define VERBOSE_MEMORY_DEBUG			// [ON/OFF]: used (woma_macros.h)

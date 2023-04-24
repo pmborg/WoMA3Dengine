@@ -29,19 +29,19 @@
 
 #include <d3d11.h>
 
-  #if defined DX9sdk
-	#include "Dx9Class.h"
-  #endif
-	#include "Dx11Class.h"
-  #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009 //Use: WIN10SDK
-	#include "Dx12Class.h"
-  #endif
-	#include "womadriverclass.h"	//woma
-	#include "GLmathClass.h"		//woma	
-	#include "GLopenGLclass.h"		//woma
-	#include "wGLopenGLclass.h"		// Windows
+#if defined DX9sdk
+#include "Dx9Class.h"
+#endif
+#include "Dx11Class.h"
+#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009 //Use: WIN10SDK
+#include "Dx12Class.h"
+#endif
+#include "womadriverclass.h"	//woma
+#include "GLmathClass.h"		//woma	
+#include "GLopenGLclass.h"		//woma
+#include "wGLopenGLclass.h"		// Windows
 
-	#include "xml_loader.h"
+#include "xml_loader.h"
 
 dxWinSystemClass* DXsystemHandle = NULL;
 

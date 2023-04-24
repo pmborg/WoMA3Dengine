@@ -22,6 +22,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "maxminddb_LIB", "..\..\Thir
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GeoLite2PP_LIB", "..\..\ThirdParty\GeoLite2PP_LIB\GeoLite2PP_LIB.vcxproj", "{C2ECE45C-3C70-42C5-BDE1-E06DDAF7D7AE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LIBS", "LIBS", "{6BEF3D22-AA25-4749-B3F5-A9ED509855A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -133,6 +135,13 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{08803CF9-A189-40A9-BD69-F4B8A9CF7FB1} = {6BEF3D22-AA25-4749-B3F5-A9ED509855A3}
+		{8701029E-A496-403A-91DF-C7E7FACF0D88} = {6BEF3D22-AA25-4749-B3F5-A9ED509855A3}
+		{0BDF6BA9-3A46-4E8A-B996-12F51D2FB632} = {6BEF3D22-AA25-4749-B3F5-A9ED509855A3}
+		{2CEB20A8-A257-442A-B2A9-81D21CAC9AA1} = {6BEF3D22-AA25-4749-B3F5-A9ED509855A3}
+		{C2ECE45C-3C70-42C5-BDE1-E06DDAF7D7AE} = {6BEF3D22-AA25-4749-B3F5-A9ED509855A3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B8B724A0-66C1-48C5-8922-6D1DD079A612}

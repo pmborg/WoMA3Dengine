@@ -22,5 +22,5 @@
 
 //-------------------------------------------------------------------------------------------------------
 #if defined RELEASE && DX_ENGINE_LEVEL < 20
-#error "WOMA COMPILATION ERROR: RELEASE bin is not Supported before DX_ENGINE_LEVEL 20"
+#error "WOMA COMPILATION ERROR: RELEASE bin is not Supported before DX_ENGINE_LEVEL 29"
 #endif

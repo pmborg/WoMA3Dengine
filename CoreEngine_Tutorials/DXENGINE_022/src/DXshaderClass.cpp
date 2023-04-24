@@ -650,18 +650,24 @@ namespace DirectX {
 			if (FAILED(result))
 			{
 				//TIP: This means that probably the procedure names on HLSL dont match with what was defined above.
-				WOMA::WomaMessageBox("D3D12SerializeRootSignature", "DX12 ERROR:");
+				WOMA::WomaMessageBox(TEXT("D3D12SerializeRootSignature"), TEXT("DX12 ERROR:"));
 				WOMA_LOGManager_DebugMSGAUTO((char*)error->GetBufferPointer());
 				return false;
 			}
 			result = device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&m_rootSignature));
 			if (FAILED(result))
 			{
-				WOMA::WomaMessageBox("CreateRootSignature", "DX12 ERROR:");
+				WOMA::WomaMessageBox(TEXT("CreateRootSignature"), TEXT("DX12 ERROR:"));
 				char* compileErrors = (char*)(error->GetBufferPointer());
-				WOMA::WomaMessageBox(compileErrors, "DX12 ERROR: CreateRootSignature");
+#if defined UNICODE
+				TCHAR WcompileErrors[MAX_STR_LEN] = { 0 };	atow(WcompileErrors, compileErrors, MAX_STR_LEN);
+				WOMA::WomaMessageBox(WcompileErrors, TEXT("DX12 ERROR: CreateRootSignature"));
+#else
+				WOMA::WomaMessageBox(compileErrors, TEXT("DX12 ERROR: CreateRootSignature"));
+#endif
 				ThrowIfFailed(result);
 			}
+
 
 			if (!(polygonLayout && numElements && m_rootSignature))
 			{

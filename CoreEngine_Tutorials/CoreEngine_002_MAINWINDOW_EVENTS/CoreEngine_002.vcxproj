@@ -159,31 +159,31 @@
     <TargetName>CoreEngine_002</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;\WoMAengine2023\SOURCE_CODE\CoreEngine_000_OSENGINE_SYSTEM\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include</IncludePath>
     <TargetName>CoreEngine_000</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;\WoMAengine2023\SOURCE_CODE\CoreEngine_000_OSENGINE_SYSTEM\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include</IncludePath>
     <TargetName>CoreEngine_000</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WRelease|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;\WoMAengine2023\SOURCE_CODE\CoreEngine_000_OSENGINE_SYSTEM\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include</IncludePath>
     <TargetName>CoreEngine_000</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;\WoMAengine2023\SOURCE_CODE\CoreEngine_000_OSENGINE_SYSTEM\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include</IncludePath>
     <TargetName>CoreEngine_000</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WDebug|Win32'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;\WoMAengine2023\SOURCE_CODE\CoreEngine_000_OSENGINE_SYSTEM\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include</IncludePath>
     <TargetName>CoreEngine_000</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;\WoMAengine2023\SOURCE_CODE\CoreEngine_000_OSENGINE_SYSTEM\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include</IncludePath>
     <TargetName>CoreEngine_000</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WRelease|Win32'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;\WoMAengine2023\SOURCE_CODE\CoreEngine_000_OSENGINE_SYSTEM\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include</IncludePath>
     <TargetName>CoreEngine_000</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

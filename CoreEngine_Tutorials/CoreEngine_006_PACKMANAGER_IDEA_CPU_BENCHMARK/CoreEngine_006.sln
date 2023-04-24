@@ -16,6 +16,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TinyXML_LIB", "..\..\ThirdP
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZipUtils_LIB", "..\..\ThirdParty\ZipUtils_LIB\ZipUtils_LIB.vcxproj", "{0BDF6BA9-3A46-4E8A-B996-12F51D2FB632}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LIBS", "LIBS", "{3E8006F1-A4B0-4CED-92D6-61BF4C04437C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -95,6 +97,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8701029E-A496-403A-91DF-C7E7FACF0D88} = {3E8006F1-A4B0-4CED-92D6-61BF4C04437C}
+		{08803CF9-A189-40A9-BD69-F4B8A9CF7FB1} = {3E8006F1-A4B0-4CED-92D6-61BF4C04437C}
+		{0BDF6BA9-3A46-4E8A-B996-12F51D2FB632} = {3E8006F1-A4B0-4CED-92D6-61BF4C04437C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CD422141-D0A4-41C1-A62A-CF2D10C9353D}

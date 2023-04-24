@@ -51,7 +51,7 @@
 /////////////////////
 
 TCHAR MainDeviceName[MAX_STR_LEN];	// Monitor Name
-
+UINT RENDER_PAGE=DX_ENGINE_LEVEL;
 
 //----------------------------------------------------------------------------------
 WinSystemClass::WinSystemClass() : SystemClass() 
