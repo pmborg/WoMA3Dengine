@@ -20,6 +20,7 @@
 //WomaIntegrityCheck = 1234567831;
 
 #pragma once
+#pragma warning( disable : 5208 ) // warning C5208: unnamed class used in typedef name cannot declare members other than non-static data members, member enumerations, or member classes
 
 #define _CRT_SECURE_NO_WARNINGS
 #include "platform.h"
