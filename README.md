@@ -44,6 +44,14 @@ Try to Change the driver on the fly without the need of close and open the Appli
 
 <hr>
 
+- <b>DX40: WORLD.XML: load M3D and use INSTANCES to clone objects using GPU</b><br> 
+	- This is a very power tool with less do more, using instances to clone objects into difrent positions
+	- 040LightInstance.hlsl is equivalent to 023Light.hlsl but with instances
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_040.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_040.png)	
+
+<hr>
+
 - <b>DX39: WORLD.XML: load M3D (the Woma 3D file format) files up to 30x faster than OBJ files in DX LEVEl38</b><br> 
 	- Loading the generated files (in DX38) ".M3D" Woma3DFormat. in 0.5 seconds vs 13.5 seconds using the ".OBJ" 3D file format
 	

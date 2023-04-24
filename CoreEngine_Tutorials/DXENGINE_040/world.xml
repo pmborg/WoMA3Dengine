@@ -1,0 +1,28 @@
+<woma>
+  <world hVisibility="128" seaLevel="0" size="512" patchSize="64" skyDayTexture="" skyNightTexture=""/>
+
+  <!--object fromPage="30" toPage="30" depend="0" scale="1" posX="0" translateY="1" posZ="4"  rotX="" rotY="" rotZ="" shader="" filename="engine/data/scene30/squareColor.m3d"/>
+  <object fromPage="30" toPage="30" depend="0" scale="1" posX="0" translateY="3.5" posZ="1"  rotX="" rotY="" rotZ="" shader="" filename="engine/data/scene30/triangleColor.m3d"/>
+  <object fromPage="31" toPage="31" depend="0" scale="10" posX="0" posZ="8" translateY="0" rotX="" rotY="" rotZ="" shader="" filename="engine/data/scene30/squareTexture.m3d"/>
+  <object fromPage="31" toPage="31" depend="0" scale="10" posX="0" posZ="8" translateY="0" rotX="" rotY="" rotZ="" shader="" filename="engine/data/scene30/squareGrass.m3d"/>
+  <object fromPage="32" toPage="32" depend="0" scale="0.04" posX="0" posZ="8" translateY="0" rotX="" rotY="" rotZ="" shader="" filename="engine/data/scene30/Model_D0902B14.m3d"/>
+  <object fromPage="33" toPage="33" depend="0" scale="0.2" posX="0" posZ="2" translateY="2" rotX="" rotY="" rotZ="" shader="" filename="engine/data/scene30/spaceCompound.m3d"/>
+  <object fromPage="34" toPage="34" depend="0" scale="2" posX="-3" posZ="-6" translateY="-34.5" rotX="" rotY="-0.75f" rotZ="" shader="" filename="engine/data/scene30/Elementalsit.m3d"/>
+  <object fromPage="35" toPage="35" depend="0" scale="1" posX="0" posZ="0" translateY="" rotX="" rotY="" rotZ="" shader="" filename="engine/data/scene30/squareBump.m3d"/-->
+
+  <object fromPage="38" toPage="38" depend="0" scale="1.15"   posX="-0.55f" translateY="-0.2" posZ="0.5f" rotX="" rotY="" rotZ="" shader="6" filename="engine/data/Chess/Chess.m3d"/>
+
+  <object fromPage="38" toPage="38" depend="0" scale="0.004f" posX=" 1"  translateY="0.2" posZ="4" rotX="" rotY="" rotZ="" shader="" filename="engine/data/Chess/branco-bispo.m3d"/>
+  <object fromPage="38" toPage="38" depend="0" scale="0.004f" posX=" 0" translateY="0.2" posZ= "4" rotX="" rotY="" rotZ="" shader="" filename="engine/data/Chess/branco-cavalo.m3d"/>
+  <object fromPage="38" toPage="38" depend="0" scale="0.004f" posX="-1"  translateY="0.2" posZ="4" rotX="" rotY="" rotZ="" shader="" filename="engine/data/Chess/branco-peao.m3d"/>
+  <object fromPage="38" toPage="38" depend="0" scale="0.004f" posX="-2" translateY="0.2" posZ= "4" rotX="" rotY="" rotZ="" shader="" filename="engine/data/Chess/branco-rainha.m3d"/>
+  <object fromPage="38" toPage="38" depend="0" scale="0.004f" posX="-3"  translateY="0.2" posZ="4" rotX="" rotY="" rotZ="" shader="" filename="engine/data/Chess/branco-rei.m3d"/>
+  <object fromPage="38" toPage="38" depend="0" scale="0.004f" posX="-4" translateY="0.2" posZ= "4" rotX="" rotY="" rotZ="" shader="" filename="engine/data/Chess/branco-torre.m3d"/>
+
+  <object fromPage="38" toPage="38" depend="0" scale="0.004f" posX=" 1"  translateY="0.2" posZ="-3" rotX="" rotY="" rotZ="" shader="" filename="engine/data/Chess/preto-bispo.m3d"/>
+  <object fromPage="38" toPage="38" depend="0" scale="0.004f" posX=" 0" translateY="0.2" posZ= "-3" rotX="" rotY="" rotZ="" shader="" filename="engine/data/Chess/preto-cavalo.m3d"/>
+  <object fromPage="38" toPage="38" depend="0" scale="0.004f" posX="-1"  translateY="0.2" posZ="-3" rotX="" rotY="" rotZ="" shader="" filename="engine/data/Chess/preto-peao.m3d"/>
+  <object fromPage="38" toPage="38" depend="0" scale="0.004f" posX="-2" translateY="0.2" posZ= "-3" rotX="" rotY="" rotZ="" shader="" filename="engine/data/Chess/preto-rainha.m3d"/>
+  <object fromPage="38" toPage="38" depend="0" scale="0.004f" posX="-3"  translateY="0.2" posZ="-3" rotX="" rotY="" rotZ="" shader="" filename="engine/data/Chess/preto-rei.m3d"/>
+  <object fromPage="38" toPage="38" depend="0" scale="0.004f" posX="-4" translateY="0.2" posZ= "-3" rotX="" rotY="" rotZ="" shader="" filename="engine/data/Chess/preto-torre.m3d"/>
+</woma>
