@@ -1,0 +1,10 @@
+<generalsettings>
+  <screen uiMonitor="0" fullScreen="false" posX="0" posY="0" width="0" height="0" allowResize="true" vsync="true" bitsPerPixel="32" />
+  <driver name="DX11" UseAllMonitors="false" useDoubleBuffering="true" msaa="false" />
+  <camera screenNear="0.1" screenDepth="2048">
+    <initPos x="-0.5" y="7" z="-12" />
+    <initRot x="25" y="" z="0" />
+  </camera>
+  <sound music="false" effects="false" />
+  <texture maxTexture="1024" bilinear="false" trilinear="false" Anisotropic="false" AnisotropicLevel="16" />
+</generalsettings>

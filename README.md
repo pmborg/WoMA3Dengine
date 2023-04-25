@@ -38,9 +38,16 @@ Try to Change the driver on the fly without the need of close and open the Appli
 <h2>3D - INTERMEDIATE TUTORIAL SERIES</h2>
 <hr>
 
+ ...<br>
+ ...<br>
+ 
+<hr>
 
- ...<br>
- ...<br>
+- <b>DX41: WORLD.XML: load M3D and use SHADOW INSTANCES</b><br> 
+	- This is a join of DX40 with DX39 now all together.
+	- 041ShadowMapInstance.hlsl is equivalent to 036ShadowMap.hlsl but with instances.
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_041.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_041.png)	
 
 <hr>
 
