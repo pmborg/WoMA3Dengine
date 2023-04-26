@@ -1,0 +1,523 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="WDebug|Win32">
+      <Configuration>WDebug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="WDebug|x64">
+      <Configuration>WDebug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="WRelease|Win32">
+      <Configuration>WRelease</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="WRelease|x64">
+      <Configuration>WRelease</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="42core_engine_level.h" />
+    <ClInclude Include="core\include\ApplicationClass.h" />
+    <ClInclude Include="core\include\astroClass.h" />
+    <ClInclude Include="core\include\default_settings_xml.h" />
+    <ClInclude Include="core\include\dumpUploader.h" />
+    <ClInclude Include="core\include\fileLoader.h" />
+    <ClInclude Include="core\include\fpsClass.h" />
+    <ClInclude Include="core\include\GLmathClass.h" />
+    <ClInclude Include="core\include\idea.h" />
+    <ClInclude Include="core\include\initWorld.h" />
+    <ClInclude Include="core\include\language.h" />
+    <ClInclude Include="core\include\log.h" />
+    <ClInclude Include="core\include\main.h" />
+    <ClInclude Include="core\include\Math3D.h" />
+    <ClInclude Include="core\include\mem_leak.h" />
+    <ClInclude Include="core\include\metarClass.h" />
+    <ClInclude Include="core\include\minidumperClass.h" />
+    <ClInclude Include="core\include\OSengine.h" />
+    <ClInclude Include="core\include\OSmain_dir.h" />
+    <ClInclude Include="core\include\packManager.h" />
+    <ClInclude Include="core\include\platform.h" />
+    <ClInclude Include="core\include\processorInfo.h" />
+    <ClInclude Include="core\include\stackTrace.h" />
+    <ClInclude Include="core\include\standard_platform.h" />
+    <ClInclude Include="core\include\stateMachine.h" />
+    <ClInclude Include="core\include\SystemClass.h" />
+    <ClInclude Include="core\include\systemFeatures.h" />
+    <ClInclude Include="core\include\systemManager.h" />
+    <ClInclude Include="core\include\timerClass.h" />
+    <ClInclude Include="core\include\TrigonometryMathClass.h" />
+    <ClInclude Include="core\include\weatherClass.h" />
+    <ClInclude Include="core\include\win32InputClass.h" />
+    <ClInclude Include="core\include\winCpuClass.h" />
+    <ClInclude Include="core\include\winCpuCores.h" />
+    <ClInclude Include="core\include\WindowPaintClass.h" />
+    <ClInclude Include="core\include\winSystemClass.h" />
+    <ClInclude Include="core\include\wmiUtilClass.h" />
+    <ClInclude Include="core\include\WomaSetupManager.h" />
+    <ClInclude Include="core\include\woma_exception.h" />
+    <ClInclude Include="core\include\woma_macros.h" />
+    <ClInclude Include="core\include\xml_loader.h" />
+    <ClInclude Include="core_engine_level.h" />
+    <ClInclude Include="include\ApplicationTextClass.h" />
+    <ClInclude Include="include\AudioClass.h" />
+    <ClInclude Include="include\d3dx12.h" />
+    <ClInclude Include="include\DemoApplicationClass.h" />
+    <ClInclude Include="include\DX11class.h" />
+    <ClInclude Include="include\dx12class.h" />
+    <ClInclude Include="include\DX12Textureclass.h" />
+    <ClInclude Include="include\DX9class.h" />
+    <ClInclude Include="include\DXbasicTypes.h" />
+    <ClInclude Include="include\DXcameraClass.h" />
+    <ClInclude Include="include\DXdrivers.h" />
+    <ClInclude Include="include\DXengine.h" />
+    <ClInclude Include="include\DXfrustumClass.h" />
+    <ClInclude Include="include\DXinputclass.h" />
+    <ClInclude Include="include\DXmodelClass.h" />
+    <ClInclude Include="include\DXrenderTextureClass.h" />
+    <ClInclude Include="include\DXshaderClass.h" />
+    <ClInclude Include="include\DxTextClass.h" />
+    <ClInclude Include="include\dxWinSystemClass.h" />
+    <ClInclude Include="include\fileLoader.h" />
+    <ClInclude Include="include\GLcameraClass.h" />
+    <ClInclude Include="include\GLmodelClass.h" />
+    <ClInclude Include="include\GLopenGLclass.h" />
+    <ClInclude Include="include\GLshaderClass.h" />
+    <ClInclude Include="include\GLTextClass.h" />
+    <ClInclude Include="include\glTextureclass.h" />
+    <ClInclude Include="include\ImageLoaderClass.h" />
+    <ClInclude Include="include\language.h" />
+    <ClInclude Include="include\lightClass.h" />
+    <ClInclude Include="include\m3d.h" />
+    <ClInclude Include="include\modelClass.h" />
+    <ClInclude Include="include\playerClass.h" />
+    <ClInclude Include="include\positionClass.h" />
+    <ClInclude Include="include\QuadTree.h" />
+    <ClInclude Include="include\SceneManager.h" />
+    <ClInclude Include="include\SceneNode.h" />
+    <ClInclude Include="include\stackTrace.h" />
+    <ClInclude Include="include\textFontClass.h" />
+    <ClInclude Include="include\vertexTypes.h" />
+    <ClInclude Include="include\virtualCameraClass.h" />
+    <ClInclude Include="include\virtualModelClass.h" />
+    <ClInclude Include="include\virtualTextClass.h" />
+    <ClInclude Include="include\wglopenglclass.h" />
+    <ClInclude Include="include\win32InputClass.h" />
+    <ClInclude Include="include\winCpuClass.h" />
+    <ClInclude Include="include\WomaCube.h" />
+    <ClInclude Include="include\womadriverclass.h" />
+    <ClInclude Include="include\WomaSphere.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\DXENGINE_021\src\winWomaSetupManager.cpp" />
+    <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="core\src\0CheckOS.cpp" />
+    <ClCompile Include="core\src\1CheckSYS.cpp" />
+    <ClCompile Include="core\src\2UpdateOSifNeeded.cpp" />
+    <ClCompile Include="core\src\3CheckSetup.cpp" />
+    <ClCompile Include="core\src\4CheckEngineUpdates.cpp" />
+    <ClCompile Include="core\src\5LaunchEngine.cpp" />
+    <ClCompile Include="core\src\6OperatingSystem.cpp" />
+    <ClCompile Include="core\src\7ProcessorInfo.cpp" />
+    <ClCompile Include="core\src\8SystemFeatures.cpp" />
+    <ClCompile Include="core\src\ApplicationClass_ext.cpp" />
+    <ClCompile Include="core\src\astroClass.cpp" />
+    <ClCompile Include="core\src\default_settings_xml.cpp" />
+    <ClCompile Include="core\src\dumpUploader.cpp" />
+    <ClCompile Include="core\src\fileLoader.cpp" />
+    <ClCompile Include="core\src\fpsClass.cpp" />
+    <ClCompile Include="core\src\GLmathClass.cpp" />
+    <ClCompile Include="core\src\idea.cpp" />
+    <ClCompile Include="core\src\initWorld.cpp" />
+    <ClCompile Include="core\src\language.cpp" />
+    <ClCompile Include="core\src\log.cpp" />
+    <ClCompile Include="core\src\Math3D.cpp" />
+    <ClCompile Include="core\src\mem_leak.cpp" />
+    <ClCompile Include="core\src\MetarClass.cpp" />
+    <ClCompile Include="core\src\minidumperClass.cpp" />
+    <ClCompile Include="core\src\OSengine.cpp" />
+    <ClCompile Include="core\src\OSmain_dir.cpp" />
+    <ClCompile Include="core\src\packManager.cpp" />
+    <ClCompile Include="core\src\stackTrace.cpp" />
+    <ClCompile Include="core\src\SystemClass.cpp" />
+    <ClCompile Include="core\src\TimerClass.cpp" />
+    <ClCompile Include="core\src\TrigonometryMathClass.cpp" />
+    <ClCompile Include="core\src\WeatherClass.cpp" />
+    <ClCompile Include="core\src\win32InputClass.cpp" />
+    <ClCompile Include="core\src\win32MainWindowEvents.cpp" />
+    <ClCompile Include="core\src\win32PaintEvents.cpp" />
+    <ClCompile Include="core\src\winCpuClass.cpp" />
+    <ClCompile Include="core\src\winCpuCores.cpp" />
+    <ClCompile Include="core\src\WindowPaintClass.cpp" />
+    <ClCompile Include="core\src\winSystemClass.cpp" />
+    <ClCompile Include="core\src\winWMIutilClass.cpp" />
+    <ClCompile Include="core\src\woma_exception.cpp" />
+    <ClCompile Include="core\src\xml_settings_loader.cpp" />
+    <ClCompile Include="core\src\xml_settings_saver.cpp" />
+    <ClCompile Include="src\ApplicationTextClass.cpp" />
+    <ClCompile Include="src\Application_LightRay.cpp" />
+    <ClCompile Include="src\AudioClass.cpp" />
+    <ClCompile Include="src\DX11Blending.cpp" />
+    <ClCompile Include="src\DX11LoadTexture.cpp" />
+    <ClCompile Include="src\DX11RasterizerState.cpp" />
+    <ClCompile Include="src\DX11\DX11CapabilitiesClass.cpp" />
+    <ClCompile Include="src\DX11\DX11Class.cpp" />
+    <ClCompile Include="src\DX11\DX11CreateDevice-and-SwapChain.cpp" />
+    <ClCompile Include="src\DX11\DX11GetModesList.cpp" />
+    <ClCompile Include="src\DX11\DX11ViewPort-and-Scissor.cpp" />
+    <ClCompile Include="src\DX11\DX11Zbuffer.cpp" />
+    <ClCompile Include="src\DX12Textureclass.cpp" />
+    <ClCompile Include="src\DX12\DX12Class.cpp" />
+    <ClCompile Include="src\DXcameraClass.cpp" />
+    <ClCompile Include="src\DXfrustumClass.cpp" />
+    <ClCompile Include="src\DXinputClass.cpp" />
+    <ClCompile Include="src\DXmodelClass.cpp" />
+    <ClCompile Include="src\DXrenderTextureClass.cpp" />
+    <ClCompile Include="src\DXshaderClass.cpp" />
+    <ClCompile Include="src\DXshaderLoader.cpp" />
+    <ClCompile Include="src\DxTextClass.cpp" />
+    <ClCompile Include="src\handleInputs.cpp" />
+    <ClCompile Include="src\m3d.cpp" />
+    <ClCompile Include="src\ModelClass.cpp" />
+    <ClCompile Include="src\playerClass.cpp" />
+    <ClCompile Include="src\positionClass.cpp" />
+    <ClCompile Include="src\QuadTree.cpp" />
+    <ClCompile Include="src\SceneManager.cpp" />
+    <ClCompile Include="src\SceneNode.cpp" />
+    <ClCompile Include="src\textFontClass.cpp" />
+    <ClCompile Include="src\dxWinSystemClass.cpp" />
+    <ClCompile Include="src\GLcameraClass.cpp" />
+    <ClCompile Include="src\GLmodelClass.cpp" />
+    <ClCompile Include="src\GLshaderClass.cpp" />
+    <ClCompile Include="src\GLTextClass.cpp" />
+    <ClCompile Include="src\GLTextureclass.cpp" />
+    <ClCompile Include="src\GLX\GL3w.cpp" />
+    <ClCompile Include="src\GLX\GLopenGLclass.cpp" />
+    <ClCompile Include="src\GLX\wglopenglclass.cpp" />
+    <ClCompile Include="src\ImageLoaderClass.cpp" />
+    <ClCompile Include="src\initApplication_Basics.cpp" />
+    <ClCompile Include="src\lightClass.cpp" />
+    <ClCompile Include="src\renderApplication_Basics.cpp" />
+    <ClCompile Include="src\WomaCube.cpp" />
+    <ClCompile Include="src\WomaSphere.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="settings.xml" />
+    <Xml Include="world.xml" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{5B8B243D-9A25-4A82-A8E4-D4904E658B6E}</ProjectGuid>
+    <RootNamespace>CoreEngine</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>DXEngine_042</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WDebug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WRelease|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WRelease|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='WDebug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='WRelease|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='WRelease|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;core\include;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\ZipUtils_LIB\include;..\..\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib;..\..\ThirdParty\maxminddb_LIB\libmaxminddb-main\include;..\..\ThirdParty\GL3Plus;..\..\ThirdParty\freeglut\include;..\..\ThirdParty\tiff-3.8.2-src;..\..\ThirdParty\DirectXTex\DirectXTex-jan2023\DirectXTex;..\..\ThirdParty/DirectXTK\Inc;..\..\ThirdParty/TIFF_LIB\include;..\..\ThirdParty/JPG_LIB/include/;..\..\ThirdParty/ZLIB_LIB/include/;..\..\ThirdParty/PNG_LIB/include/;..\..\ThirdParty\AUDIO\OpenAL32_LIB\Include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\Include\AL;..\..\ThirdParty\AUDIO\VORBIS_LIB\include;..\..\ThirdParty\AUDIO\VORBISFILE_LIB\include;..\..\ThirdParty\AUDIO\OGG_LIB\include;..\..\ThirdParty\AUDIO\ALUT_LIB\include</IncludePath>
+    <TargetName>CoreEngine_042_d</TargetName>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);..\..\ThirdParty\freeglut\lib\x64;Libs/$(Platform)/$(Configuration);..\..\ThirdParty/DirectXTK\Bin\Desktop_2013\x64\Debug;Libs;.</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;core\include;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\ZipUtils_LIB\include;..\..\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib;..\..\ThirdParty\maxminddb_LIB\libmaxminddb-main\include;..\..\ThirdParty\GL3Plus;..\..\ThirdParty\freeglut\include;..\..\ThirdParty\tiff-3.8.2-src;..\..\ThirdParty\DirectXTex\DirectXTex-jan2023\DirectXTex;..\..\ThirdParty/DirectXTK\Inc;..\..\ThirdParty/TIFF_LIB\include;..\..\ThirdParty/JPG_LIB/include/;..\..\ThirdParty/ZLIB_LIB/include/;..\..\ThirdParty/PNG_LIB/include/;..\..\ThirdParty\AUDIO\OpenAL32_LIB\Include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\Include\AL;..\..\ThirdParty\AUDIO\VORBIS_LIB\include;..\..\ThirdParty\AUDIO\VORBISFILE_LIB\include;..\..\ThirdParty\AUDIO\OGG_LIB\include;..\..\ThirdParty\AUDIO\ALUT_LIB\include</IncludePath>
+    <TargetName>CoreEngine_042</TargetName>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);..\..\ThirdParty\freeglut\lib\x64;Libs/$(Platform)/$(Configuration);..\..\ThirdParty/DirectXTK\Bin\Desktop_2013\x64\Debug;Libs;.</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;core\include;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\ZipUtils_LIB\include;..\..\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib;..\..\ThirdParty\maxminddb_LIB\libmaxminddb-main\include;..\..\ThirdParty\GL3Plus;..\..\ThirdParty\freeglut\include;..\..\ThirdParty\tiff-3.8.2-src;..\..\ThirdParty\DirectXTex\DirectXTex-jan2023\DirectXTex;..\..\ThirdParty/DirectXTK\Inc;..\..\ThirdParty/TIFF_LIB\include;..\..\ThirdParty/JPG_LIB/include/;..\..\ThirdParty/ZLIB_LIB/include/;..\..\ThirdParty/PNG_LIB/include/;..\..\ThirdParty\AUDIO\OpenAL32_LIB\Include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\Include\AL;..\..\ThirdParty\AUDIO\VORBIS_LIB\include;..\..\ThirdParty\AUDIO\VORBISFILE_LIB\include;..\..\ThirdParty\AUDIO\OGG_LIB\include;..\..\ThirdParty\AUDIO\ALUT_LIB\include</IncludePath>
+    <TargetName>CoreEngine_042</TargetName>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);..\..\ThirdParty\freeglut\lib\x64;Libs/$(Platform)/$(Configuration);..\..\ThirdParty/DirectXTK\Bin\Desktop_2013\x64\Debug;Libs;.</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WRelease|x64'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;core\include;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\ZipUtils_LIB\include;..\..\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib;..\..\ThirdParty\maxminddb_LIB\libmaxminddb-main\include;..\..\ThirdParty\GL3Plus;..\..\ThirdParty\freeglut\include;..\..\ThirdParty\tiff-3.8.2-src;..\..\ThirdParty\DirectXTex\DirectXTex-jan2023\DirectXTex;..\..\ThirdParty/DirectXTK\Inc;..\..\ThirdParty/TIFF_LIB\include;..\..\ThirdParty/JPG_LIB/include/;..\..\ThirdParty/ZLIB_LIB/include/;..\..\ThirdParty/PNG_LIB/include/;..\..\ThirdParty\AUDIO\OpenAL32_LIB\Include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\Include\AL;..\..\ThirdParty\AUDIO\VORBIS_LIB\include;..\..\ThirdParty\AUDIO\VORBISFILE_LIB\include;..\..\ThirdParty\AUDIO\OGG_LIB\include;..\..\ThirdParty\AUDIO\ALUT_LIB\include</IncludePath>
+    <TargetName>CoreEngine_042</TargetName>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);..\..\ThirdParty\freeglut\lib\x64;Libs/$(Platform)/$(Configuration);..\..\ThirdParty/DirectXTK\Bin\Desktop_2013\x64\Debug;Libs;.</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;core\include;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\ZipUtils_LIB\include;..\..\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib;..\..\ThirdParty\maxminddb_LIB\libmaxminddb-main\include;..\..\ThirdParty\GL3Plus;..\..\ThirdParty\freeglut\include;..\..\ThirdParty\tiff-3.8.2-src;..\..\ThirdParty\DirectXTex\DirectXTex-jan2023\DirectXTex;..\..\ThirdParty/DirectXTK\Inc;..\..\ThirdParty/TIFF_LIB\include;..\..\ThirdParty/JPG_LIB/include/;..\..\ThirdParty/ZLIB_LIB/include/;..\..\ThirdParty/PNG_LIB/include/;..\..\ThirdParty\AUDIO\OpenAL32_LIB\Include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\Include\AL;..\..\ThirdParty\AUDIO\VORBIS_LIB\include;..\..\ThirdParty\AUDIO\VORBISFILE_LIB\include;..\..\ThirdParty\AUDIO\OGG_LIB\include;..\..\ThirdParty\AUDIO\ALUT_LIB\include</IncludePath>
+    <TargetName>CoreEngine_042</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WDebug|Win32'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;core\include;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\ZipUtils_LIB\include;..\..\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib;..\..\ThirdParty\maxminddb_LIB\libmaxminddb-main\include;..\..\ThirdParty\GL3Plus;..\..\ThirdParty\freeglut\include;..\..\ThirdParty\tiff-3.8.2-src;..\..\ThirdParty\DirectXTex\DirectXTex-jan2023\DirectXTex;..\..\ThirdParty/DirectXTK\Inc;..\..\ThirdParty/TIFF_LIB\include;..\..\ThirdParty/JPG_LIB/include/;..\..\ThirdParty/ZLIB_LIB/include/;..\..\ThirdParty/PNG_LIB/include/;..\..\ThirdParty\AUDIO\OpenAL32_LIB\Include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\Include\AL;..\..\ThirdParty\AUDIO\VORBIS_LIB\include;..\..\ThirdParty\AUDIO\VORBISFILE_LIB\include;..\..\ThirdParty\AUDIO\OGG_LIB\include;..\..\ThirdParty\AUDIO\ALUT_LIB\include</IncludePath>
+    <TargetName>CoreEngine_042</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;core\include;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\ZipUtils_LIB\include;..\..\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib;..\..\ThirdParty\maxminddb_LIB\libmaxminddb-main\include;..\..\ThirdParty\GL3Plus;..\..\ThirdParty\freeglut\include;..\..\ThirdParty\tiff-3.8.2-src;..\..\ThirdParty\DirectXTex\DirectXTex-jan2023\DirectXTex;..\..\ThirdParty/DirectXTK\Inc;..\..\ThirdParty/TIFF_LIB\include;..\..\ThirdParty/JPG_LIB/include/;..\..\ThirdParty/ZLIB_LIB/include/;..\..\ThirdParty/PNG_LIB/include/;..\..\ThirdParty\AUDIO\OpenAL32_LIB\Include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\Include\AL;..\..\ThirdParty\AUDIO\VORBIS_LIB\include;..\..\ThirdParty\AUDIO\VORBISFILE_LIB\include;..\..\ThirdParty\AUDIO\OGG_LIB\include;..\..\ThirdParty\AUDIO\ALUT_LIB\include</IncludePath>
+    <TargetName>CoreEngine_042</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WRelease|Win32'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;core\include;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\ZipUtils_LIB\include;..\..\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib;..\..\ThirdParty\maxminddb_LIB\libmaxminddb-main\include;..\..\ThirdParty\GL3Plus;..\..\ThirdParty\freeglut\include;..\..\ThirdParty\tiff-3.8.2-src;..\..\ThirdParty\DirectXTex\DirectXTex-jan2023\DirectXTex;..\..\ThirdParty/DirectXTK\Inc;..\..\ThirdParty/TIFF_LIB\include;..\..\ThirdParty/JPG_LIB/include/;..\..\ThirdParty/ZLIB_LIB/include/;..\..\ThirdParty/PNG_LIB/include/;..\..\ThirdParty\AUDIO\OpenAL32_LIB\Include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\Include\AL;..\..\ThirdParty\AUDIO\VORBIS_LIB\include;..\..\ThirdParty\AUDIO\VORBISFILE_LIB\include;..\..\ThirdParty\AUDIO\OGG_LIB\include;..\..\ThirdParty\AUDIO\ALUT_LIB\include</IncludePath>
+    <TargetName>CoreEngine_042</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>
+      </ConformanceMode>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+      <IntrinsicFunctions>yes</IntrinsicFunctions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy C:\WoMA3Dengine\ThirdParty\freeglut\bin\freeglut.dll $(Platform)\$(Configuration)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='WDebug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>
+      </ConformanceMode>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
+      <IntrinsicFunctions>yes</IntrinsicFunctions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>yes</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>
+      </ConformanceMode>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='WRelease|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>yes</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>
+      </ConformanceMode>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);ALUT_BUILD_LIBRARY;ALUT_API=extern</PreprocessorDefinitions>
+      <ConformanceMode>
+      </ConformanceMode>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <IntrinsicFunctions>yes</IntrinsicFunctions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);winmm.lib</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy C:\WoMA3Dengine\ThirdParty\freeglut\bin\x64\freeglut.dll $(Platform)\$(Configuration)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>
+      </ConformanceMode>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
+      <IntrinsicFunctions>yes</IntrinsicFunctions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>yes</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions);;ALUT_BUILD_LIBRARY;ALUT_API=extern</PreprocessorDefinitions>
+      <ConformanceMode>
+      </ConformanceMode>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);winmm.lib</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy C:\WoMA3Dengine\ThirdParty\freeglut\bin\x64\freeglut.dll $(Platform)\$(Configuration)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='WRelease|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>yes</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>
+      </ConformanceMode>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
