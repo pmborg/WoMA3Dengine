@@ -1,0 +1,167 @@
+If you are wondering... no it cant be done on VS2022 unfortunately.
+Or pass days or weeks to discover that Microsoft removed some features needed in recent updates, after pre-release.
+
+
+If you have Visual Studio2019 installed just un-install it, is my recommendation.
+...Even before think to install Visual Studio...
+
+#[0] Some steps will depend of this:
+Clone it or / Download https://github.com/pmborg/WoMA3Dengine/archive/refs/heads/main.zip and unzip in order to have it at:
+C:\WoMA3Dengine\
+
+
+#PRE-REQUIREMENT STEPS:
+-----------------------------------------------------------------------------------------------
+#[1] Open Power Shell as Administrator: (%SystemRoot%\system32\WindowsPowerShell\v1.0\powershell.exe)
+#just to check current state, RUN:
+Get-WindowsOptionalFeature -FeatureName HypervisorPlatform -Online
+
+#OUTPUT FOR HYPER-V INSTALLED: (so go to STEP[2])
+FeatureName      : HypervisorPlatform
+DisplayName      : Windows Hypervisor Platform
+Description      : Enables virtualization software to run on the Windows hypervisor
+RestartRequired  : Possible
+State            : Enabled		<--------------
+CustomProperties :
+
+#OUTPUT FOR HYPER-V NOT INSTALLED: (so do the next 2 commands:)
+FeatureName      : HypervisorPlatform
+DisplayName      : Windows Hypervisor Platform
+Description      : Enables virtualization software to run on the Windows hypervisor
+RestartRequired  : Possible
+State            : Disabled		<--------------
+CustomProperties :
+
+#To enable the features needed, RUN these two commands:
+Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All
+	[Y] Yes  [N] No  [?] Help (default is "Y"): N  									(when asked say N)
+	
+Enable-WindowsOptionalFeature -Online -FeatureName HypervisorPlatform -All
+[Y] Yes  [N] No  [?] Help (default is "Y"): N  										(when asked say N)
+#reboot now...
+
+[click on power button] to reboot, where you should see... (update and restart) option.
+
+-----------------------------------------------------------------------------------------------
+(take the opurtunity of the reboot to check this on BIOS:
+#[2] (Without this why visual studio can't connect with Android Emulators and hang, waiting for it...)
+	Setup virtual processor mode in BIOS
+	- Activate for Intel Processors: vt-x:     enable
+		https://www.asus.com/support/FAQ/1043786/
+	
+	- Activate for AMD Processors:   SVM Mode: enable
+		https://ourcodeworld.com/articles/read/1283/how-to-enable-amd-virtualization-on-the-aorus-x570-motherboard
+
+(These two links above are just samples...)
+
+-----------------------------------------------------------------------------------------------
+(this is to allow Android compilation in Visual Studio 2019):
+#[3] I dont care if you have another or another(s) versions of java (11,17,18) JDK, just install this one, dont need to remove the others: 
+	DOWNLOAD AND INSTALL: jdk1.8.0_25
+	https://www.oracle.com/java/technologies/downloads/#license-lightbox
+
+-----------------------------------------------------------------------------------------------
+#[4] After the instalation:
+	#Setup Enviroment Variables:
+	JAVA_HOME=C:\Program Files\Java\jdk1.8.0_25
+	#Add this line on PATH
+	PATH=C:\Program Files\Java\jdk1.8.0_25\bin;...
+	
+	(... more will come later, but lets do it for the correct order...)
+
+#On a CMD Window type these two commands:
+echo %JAVA_HOME%
+java -version
+
+#Should See:
+Microsoft Windows [Version 10.0.19045.2846]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\pmborg>echo %JAVA_HOME%
+C:\Program Files\Java\jdk1.8.0_25
+
+C:\Users\pmborg>java -version
+java version "1.8.0_25"
+Java(TM) SE Runtime Environment (build 1.8.0_25-b18)
+Java HotSpot(TM) 64-Bit Server VM (build 25.25-b02, mixed mode)
+
+-----------------------------------------------------------------------------------------------
+#[5] Download: VS2019 Community:
+https://my.visualstudio.com/Downloads?q=visual%20studio%202019&wt.mc_id=o~msft~vscom~older-downloads
+
+Something like: vs_community__0729f4f97f2a4ae0a25a30028a90c6f0.exe
+
+#copy vs_community__0729f4f97f2a4ae0a25a30028a90c6f0.exe to "C:\WoMA3Dengine\HowToInstallVisualStudio2019CrossPlatformDevelopmentEnvironment"\vs_community.exe
+copy "vs_community.exe" "C:\WoMA3Dengine\HowToInstallVisualStudio2019CrossPlatformDevelopmentEnvironment"
+
+-----------------------------------------------------------------------------------------------
+#[6] Install: VS2019 Community: with development environment for Linux (OpenGL) / Android(OpenGL ES) and Windows(DirectX 11/12)
+
+#and run at directory: C:\WoMA3Dengine\HowToInstallVisualStudio2019CrossPlatformDevelopmentEnvironment
+#this command:
+InstallVisualStudio2019CrossPlatformDevelopmentEnvironment.bat
+
+-----------------------------------------------------------------------------------------------
+#[7] Start VS2019 for the first time:
+
+TOOLS / OPTIONS / CROSS Platform / C++
+
+#7.1
+TOOLS / ANDROID / Android SDK Manager
+SDK need repair: Repair... Accept
+need SDK...
+	click here to install..
+	
+(open again)
+TOOLS / ANDROID / Android SDK Manager
+
+#7.2
+[X] Install Intel x86 Emulator
+
+-----------------------------------------------------------------------------------------------
+#[8.1] Create a Android Emulator
+TOOLS / ANDROID / Device Manager
+Create as image show...
+CLOSE
+
+-----------------------------------------------------------------------------------------------
+#[9.1] Setup Environment:
+SET PATH=
+C:\Program Files\Java\jdk1.8.0_25\bin
+C:\Program Files (x86)\Android\android-sdk\platform-tools\
+C:\Microsoft\AndroidSDK\25\tools
+C:\Microsoft\AndroidSDK\25\tools\bin
+C:\Microsoft\AndroidSDK\25\platform-tools
+%USERPROFILE%\AppData\Local\Microsoft\WindowsApps
+...
+
+#[9.2]
+ANDROID_HOME=C:\Microsoft\AndroidSDK\25
+
+#[9.3]
+#Install Android Studio (android-studio-2022.2.1.18-windows.exe):
+https://developer.android.com/studio
+Install and Run for the first time "Android Studio"
+
+#[9.4] Install Mobile development with .NET
+#[9.5] Install Android 7.1 Platform 25
+#[9.6] Google USB Driver
+#[9.7] Define Android SDK and JDK path.
+
+
+
+	
+-----------------------------------------------------------------------------------------------
+#[10.0]
+TOOLS / ANDROID / Device Manager
+	Start Emulator
+	Power on
+	
+#[10.1] Create a test program:
+10.1 Create New Project
+10.2
+10.3 
+
+Press F5...
+magic will happen...!
+
