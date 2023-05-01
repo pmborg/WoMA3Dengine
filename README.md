@@ -1,3 +1,8 @@
+Adding Android Development Environment from scratch in VS 2019.
+
+<a href="https://github.com/pmborg/WoMA3Dengine/blob/main/HowToInstallVisualStudio2019CrossPlatformDevelopmentEnvironment/howto_download_and_install_VisualStudio2019CrossPlatformSetupEnvironment.txt">https://github.com/pmborg/WoMA3Dengine/blob/main/HowToInstallVisualStudio2019CrossPlatformDevelopmentEnvironment/howto_download_and_install_VisualStudio2019CrossPlatformSetupEnvironment.txt</a>
+
+
 # WoMA3Dengine (DX11, DX12, OPENGL, DX9) Advanced Tutorials
 <hr>
 <h1>WoMA3Dengine at Level 29 INTRO DEMO</h1>
