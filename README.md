@@ -1,4 +1,4 @@
-Adding Android Development Environment from scratch in VS 2019.
+<b>Adding Android Development Environment from scratch in VS 2019:</b>
 
 <a href="https://github.com/pmborg/WoMA3Dengine/blob/main/HowToInstallVisualStudio2019CrossPlatformDevelopmentEnvironment/howto_download_and_install_VisualStudio2019CrossPlatformSetupEnvironment.txt">https://github.com/pmborg/WoMA3Dengine/blob/main/HowToInstallVisualStudio2019CrossPlatformDevelopmentEnvironment/howto_download_and_install_VisualStudio2019CrossPlatformSetupEnvironment.txt</a>
 
