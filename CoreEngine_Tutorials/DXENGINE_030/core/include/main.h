@@ -59,7 +59,6 @@ namespace WOMA
 {
 	extern Settings settings;				// Main Settings: settings.h
 	extern UINT		ENGINE_LEVEL_USED;
-
 	// SUBSYSTEM:WINDOWS
 	extern PSTR		Scmdline;
 	extern int		Cmdshow;
@@ -69,16 +68,8 @@ namespace WOMA
 
 	extern TCHAR strConsoleTitle[MAX_STR_LEN];
 
-#ifdef RELEASE
-	extern UINT		num_running_THREADS;
-#endif
 	extern TCHAR	APP_COMPANY_NAME[];	// "Company" Directory Name: 1st lvl
 	extern TCHAR	APP_PROJECT_NAME[];	// "Project" Directory Name: 2nd lvl
-
-#ifdef RELEASE 
-	extern TCHAR	APP_COMPANY_NAME[];	// "Company" Directory Name: 1st lvl
-	extern TCHAR	APP_PROJECT_NAME[];	// "Project" Directory Name: 2nd lvl
-#endif
 
 	extern TCHAR	APP_NAME[MAX_STR_LEN];	// "Aplication Name"
 

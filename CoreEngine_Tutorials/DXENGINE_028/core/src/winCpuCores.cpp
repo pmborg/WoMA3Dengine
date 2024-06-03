@@ -24,12 +24,11 @@
 
 #include "WinSystemClass.h"
 #include "winCpuCores.h"
-//#include "SystemPlatform.h"			// Get [SystemHandle] Pointer to System Class: WINDOWS, LINUX & ANDROID
 
 WinCpuCores::WinCpuCores()
 {
 	CLASSLOADER();
-    WomaIntegrityCheck = 1234567891;
+    WomaIntegrityCheck = 1234567831;
 
 	numaNodeCount = NULL;
 	processorPackageCount = NULL;

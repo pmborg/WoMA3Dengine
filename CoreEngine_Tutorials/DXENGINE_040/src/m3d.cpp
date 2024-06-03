@@ -70,8 +70,13 @@ namespace DirectX
 
 		MyObject3D M3D;
 		//------------------------------------------------------------------------------------------------------------------
-		if (ModelShaderType == SHADER_TEXTURE_LIGHT_RENDERSHADOW) // No special case for: SHADER_TEXTURE_LIGHT_RENDERSHADOW
+		if (ModelShaderType == SHADER_TEXTURE_LIGHT_RENDERSHADOW ||
+			ModelShaderType == SHADER_TEXTURE_LIGHT_INSTANCED ||
+			ModelShaderType == SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED)
 			ModelShaderType = SHADER_TEXTURE_LIGHT;
+
+		if (ModelShaderType == SHADER_NORMAL_BUMP_INSTANCED)
+			ModelShaderType = SHADER_NORMAL_BUMP;
 
 		float version = 1.0f + (float)(ModelShaderType-1) / 10;
 		if (ModelShaderType >= SHADER_TEXTURE_FONT)
@@ -207,7 +212,7 @@ namespace DirectX
 		MyObject3D M3D = MyObject3D();
 		fstream obj3dfile;
 
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("Loading: %s\n"), (TCHAR*)(filename + TEXT(" ")).c_str());
+		WOMA_LOGManager_DebugMSG(TEXT("M3D Loading: %s with shader: [%d]\n"), (TCHAR*)(filename + TEXT(" ")).c_str(), shader_type);
 		obj3dfile.open(WOMA::LoadFile((TCHAR*)filename.c_str()), fstream::in | fstream::binary);
 		if (!obj3dfile)
 		{

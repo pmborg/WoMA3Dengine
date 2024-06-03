@@ -1,8 +1,9 @@
 <generalsettings>
-    <screen uiMonitor="0" fullScreen="false" posX="0" posY="0" width="0" height="0" allowResize="true" vsync="true" bitsPerPixel="32" />
-    <driver name="GL3+" UseAllMonitors="false" useDoubleBuffering="true" msaa="false" />
+    <screen uiMonitor="0" fullScreen="false" posX="0" posY="0" width="0" height="0" allowResize="true" vsync="false" bitsPerPixel="32" />
+    <driver name="DX11" UseAllMonitors="false" useDoubleBuffering="true" msaa="true" />
     <camera screenNear="0.1" screenDepth="2048">
         <initPos x="0" y="2" z="-10" />
         <initRot x="0" y="0" z="0" />
     </camera>
+	<texture bilinear="true" trilinear="false" Anisotropic="false" AnisotropicLevel="16" maxTexture="1024"/>
 </generalsettings>

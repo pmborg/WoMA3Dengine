@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: win32InputClass.h
 // --------------------------------------------------------------------------------------------
@@ -15,7 +16,7 @@
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
 // PURPOSE: A basic input used in first WOMA LEVELs using OS functions.
-// --------------------------------------------------------------------------------------------#pragma once
+// --------------------------------------------------------------------------------------------
 #pragma once
 
 #include "platform.h"
@@ -27,7 +28,7 @@
 class InputClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567891;
+	UINT WomaIntegrityCheck = 1234567831;
 	InputClass();
 	~InputClass();
 

@@ -17,7 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567829;
+//WomaIntegrityCheck = 1234567831;
 
 #include "platform.h"
 #include "dxWinSystemClass.h"
@@ -53,17 +53,19 @@ void ApplicationClass::DemoRender()
 
 	//COLOR TUTORIAL DEMO:
 	// --------------------------------------------------------------------------------------------
-	//DEMO-1: Squar
+	//DEMO-1: Square
 	if (RENDER_PAGE == 21 || FORCE_RENDER_ALL)
 	{
 		m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID); // Render the Inside of Sphere
 		float rY = 0.0f;
 		rY = dt * (0.005f / 16.66f);	// MOVIMENT FORMULA!
 
+	#if defined ROTATE_SQUARE
 		// Rotate the world matrix by the rotation value so that the Square will spin:
-		m_1stSquar3DColorModel->translation(0, 0, 0);
-		m_1stSquar3DColorModel->rotateY(rY);
-		m_1stSquar3DColorModel->Render(m_Driver);
+		m_1stSquare3DColorModel->translation(0, 0, 0);
+		m_1stSquare3DColorModel->rotateY(rY);
+	#endif
+		m_1stSquare3DColorModel->Render(m_Driver);
 	}
 
 	//DEMO-2: Triangle
@@ -204,30 +206,7 @@ void ApplicationClass::RenderSprites()
 
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////
-//-------------------------------------------------------------------------------------------
-void ApplicationClass::RenderScene(UINT monitorWindow)
-//-------------------------------------------------------------------------------------------
-{
-	if (RENDER_PAGE < 15)
-	{
-		Update(monitorWindow, SystemHandle->driverList[SystemHandle->AppSettings->DRIVER]);
-		return;
-	} 
-	else
-	{
-		// [0] Process INPUT, CAMERA, INTRO animation etc...
-		float dayLightFade = Update(monitorWindow, SystemHandle->driverList[SystemHandle->AppSettings->DRIVER]);
-
-		// [1] Render: SHADOWS	Render one Application Frame
-	
-		// [2] RENDER: MAIN - 3D, Render one Application Frame
-		AppRender(monitorWindow, dayLightFade);
-		
-		// [3] RENDER: SPRITEs on TOP of 3D - 2D Render one Application Frame. (Need to be after 3D)
-		AppPosRender();
-	}
-}
+// PRE-RENDER - Shadows
 
 //#############################################################################################################
 // POS-RENDER - 2D: Render TRANSPARENT Parts of 3D OBJs (like: glass window, etc...)
@@ -238,25 +217,20 @@ void ApplicationClass::AppPosRender()
 	m_Driver->TurnOnAlphaBlending();
 	m_Driver->ClearDepthBuffer();		
 	m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
-	
-	//if (RENDER_PAGE >= 24 && m_titleModel)
+
+	if (RENDER_PAGE >= 24 && m_titleModel)
 	{
 		m_titleModel->RenderSprite(DXsystemHandle->m_Driver, (SystemHandle->AppSettings->WINDOW_WIDTH - m_titleModel->SpriteTextureWidth) / 2, 
 			(SystemHandle->AppSettings->WINDOW_HEIGHT - m_titleModel->SpriteTextureHeight) / 2);
 	}
 
 	// Render all Rastertek TEXT:
-#if _DEBUG
-	if (RENDER_PAGE >= 27|| FORCE_LOAD_ALL)
-#else
-	if (RENDER_PAGE >= 27)
-#endif
 		AppTextClass->Render(); 
 
 	// Render Native TEXT:
 
 	m_Driver->TurnOffAlphaBlending();
-	// BANNERs and Sprites - On Top of 3D Rendered:
+	// (Title) BANNER(s) and SPRITE(s) - On Top of 3D Rendered stuff
 	RenderSprites();
 }
 
@@ -282,7 +256,6 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 	AppTextClass->SetScreenToShow(SpriteScreenToShow, RENDER_PAGE);
 	if (RENDER_PAGE <= 20)
 		AppTextClass->SetFade(fadeIntro);
-
 
 	// Animate Camera (INTRO_DEMO)
 	DXsystemHandle->m_player[g_NetID]->p_player.IsDownPressed = true;
@@ -343,6 +316,10 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 	AppTextClass->SetCameraRotation(m_Position[g_NetID]->m_rotationX,
 		m_Position[g_NetID]->m_rotationY,
 		m_Position[g_NetID]->m_rotationZ);
+
+
+	if (!astroClass)
+		SystemHandle->m_Application->WOMA_APPLICATION_InitGUI();
 	AppTextClass->SetClockTime(astroClass->hour, astroClass->minute);
 
 	AppTextClass->SetLightDirection(m_Light->m_lightDirection.x, m_Light->m_lightDirection.y , m_Light->m_lightDirection.z );
@@ -353,47 +330,8 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 }
 
 
-//#############################################################################################################
-// RENDER - 3D
-//#############################################################################################################
-
-void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
-{
-	WomaDriverClass* m_Driver = DXsystemHandle->m_Driver;
-	// BASICS: page 21: / 22 / 23
-	// --------------------------------------------------------------------------------------------
-	m_Driver->SetRasterizerState(CULL_BACK, FILL_SOLID); //(CULL_NONE, FILL_WIRE);
-
-	if (RENDER_PAGE >= 23 && RENDER_PAGE < 27)
-	{
-		CalculateLightRayVertex(SunDistance);							// Calculate Light Source Position
-		m_lightRayModel->UpdateDynamic(m_Driver, m_LightVertexVector);	// Update LightRay vertex(s)
-		m_lightRayModel->Render(m_Driver);								// Render LightRay
-	}
-
-	if (RENDER_PAGE >= 21)
-		DemoRender();
-
-	// 3D STATIC OBJECTS
-	// --------------------------------------------------------------------------------------------
-
-	// 3D WATER
-	// --------------------------------------------------------------------------------------------
-	// ...
-
-	// BEFORE 2D: Render TRANSPARENT Parts of 3D OBJs (like: glass window, etc...)
-	// --------------------------------------------------------------------------------------------
-
-	// 3D MESH OBJECTS
-	// ...
-	//THE "OTHER" NETWORK PLAYERS
-}
-
-
-//#define fadeSpeed 0.0005f
-  #define fadeSpeed 0.00025f
-
 // INTRO
+#define fadeSpeed 0.00025f
 float ApplicationClass::WOMA_APPLICATION_IntroRender(INT64 passedTotalTime)
 {
 	static bool FadeIn = true;
@@ -488,4 +426,96 @@ float ApplicationClass::WOMA_APPLICATION_DemoRender(INT64 passedTotalTime)
 	}
 
 	return fade;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+//-------------------------------------------------------------------------------------------
+void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
+//-------------------------------------------------------------------------------------------
+{
+	if (RENDER_PAGE < 15)
+	{
+		Update(monitorWindow, driver);
+		return;
+	}
+	else
+	{
+		// [0] Process INPUT, CAMERA, INTRO animation etc...
+		float dayLightFade = Update(monitorWindow, driver);
+		if (dayLightFade == -100) return;
+
+		// [1] Render: SHADOWS - Render one Application Frame (Need to be before 3D)
+
+		// [2] Render: MAIN - 3D, Render one Application Frame
+		AppRender(monitorWindow, dayLightFade);
+
+		// [3] Render: MAIN - 2D (SPRITEs on TOP of 3D) Render one Application Frame. (Need to be after 3D)
+		AppPosRender();
+	}
+}
+
+//#############################################################################################################
+// RENDER - 3D
+//#############################################################################################################
+
+void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
+{
+	WomaDriverClass* m_Driver = DXsystemHandle->m_Driver;
+	// BASICS: page 21: / 22 / 23
+	// --------------------------------------------------------------------------------------------
+	m_Driver->SetRasterizerState(CULL_BACK, FILL_SOLID); //(CULL_NONE, FILL_WIRE);
+
+	if ((RENDER_PAGE >= 23 && RENDER_PAGE < 27) || RENDER_PAGE >= 32)
+	{
+		CalculateLightRayVertex(SunDistance);							// Calculate Light Source Position
+		m_lightRayModel->UpdateDynamic(m_Driver, m_LightVertexVector);	// Update LightRay vertex(s)
+		m_lightRayModel->Render(m_Driver);								// Render LightRay
+	}
+
+	// DEBUG SPRITE: Shadows
+	// --------------------------------------------------------------------------------------------
+
+	if (RENDER_PAGE >= 21)
+		DemoRender();
+
+	//#############################################################################################################-
+	// RENDER:
+	//#############################################################################################################
+
+#if defined USE_SKYSPHERE && defined USE_SUN && defined USE_MOON
+	if (RENDER_PAGE >= 28)				//30: SKY
+		Render_SKY_SUN_MOON(fadeLight); //34: SUN_MOON
+#endif
+
+	// RENDER: CLOUDS
+	// --------------------------------------------------------------------------------------------
+	// ...
+
+	// --------------------------------------------------------------------------------------------
+	// [0] TERRAIN: UNDER WATER!
+	// --------------------------------------------------------------------------------------------
+
+	// [1] WATER:
+	// --------------------------------------------------------------------------------------------
+
+	// [2] Render MAIN Terrain Here
+	// --------------------------------------------------------------------------------------------
+
+	m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
+
+	// 3D STATIC OPAC OBJECTS
+	// --------------------------------------------------------------------------------------------
+
+	// 3D MESH OBJECTS
+	// ...
+
+	//THE "OTHER" NETWORK PLAYERS
+
+	// 3D WATER
+	// --------------------------------------------------------------------------------------------
+	// ...
+
+	// BEFORE 2D: Render TRANSPARENT Parts of 3D OBJs (like: glass window, etc...)
+	// --------------------------------------------------------------------------------------------
 }

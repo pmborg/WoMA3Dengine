@@ -20,6 +20,7 @@
 
 #include "platform.h"
 #include <d3d11.h>
+#if (defined DX_ENGINE) && (defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 || defined USE_VIEW2D_SPRITES)
 
 #include "DXcameraClass.h"
 
@@ -30,7 +31,7 @@ namespace DirectX
 DXcameraClass::DXcameraClass(UINT camera_type)
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567891;
+	WomaIntegrityCheck = 1234567831;
 
 	//public:
 	m_positionX = m_positionY = m_positionZ = 0.0f;
@@ -160,4 +161,6 @@ void DXcameraClass::Set2DViewMatrix()
 }
 
 }
+
+#endif
 

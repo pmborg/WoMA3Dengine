@@ -15,8 +15,10 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-// PURPOSE:
+// PURPOSE: Client Application will ping Server for new updates
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567829;
+//WomaIntegrityCheck = 1234567831;
+
+//Get automatic client updated: after level: 100
 
 #include "platform.h"

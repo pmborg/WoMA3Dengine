@@ -65,7 +65,7 @@ public:
 	void SetDiffuseColor(float, float, float, float);
 	void SetDirection(float, float, float);
 
-#ifdef zero
+#if defined RENDER_OBJ_WITH_SPECULAR_SHININESS
 	void SetSpecularColor(float, float, float, float);
 	void SetSpecularPower(float);
 #endif
@@ -89,7 +89,7 @@ public:
 //	-------------------------------------------------------------------------------------------
 private:
 //	-------------------------------------------------------------------------------------------
-#ifdef zero
+#if defined RENDER_OBJ_WITH_SPECULAR_SHININESS
 	XMFLOAT4 GetSpecularColor();
 	float GetSpecularPower();
 

@@ -23,7 +23,7 @@
 FpsClass::FpsClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567891;
+	WomaIntegrityCheck = 1234567831;
 
 	//private:
 	m_startTime = NULL;

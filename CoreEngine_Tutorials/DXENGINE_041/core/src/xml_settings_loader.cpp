@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: xml_settings_loader.cpp
 // --------------------------------------------------------------------------------------------
@@ -84,8 +85,10 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 		SystemHandle->AppSettings->BITSPERPEL = atoi(GenSettings.bitsPerPixel);
 
 			SystemHandle->AppSettings->DRIVER = (strcmp(GenSettings.driverName, "DX9") == 0) ? DRIVER_DX9 : -1;
+		#if defined OPENGL3 //defined WIN6x || defined WIN10 || defined LINUX_PLATFORM
 			if (SystemHandle->AppSettings->DRIVER < 0)
 				SystemHandle->AppSettings->DRIVER = (strcmp (GenSettings.driverName, "GL3+") == 0) ? DRIVER_GL3: -1;
+		#endif
 			if (SystemHandle->AppSettings->DRIVER < 0)
 				SystemHandle->AppSettings->DRIVER = (strcmp(GenSettings.driverName, "DX11") == 0) ? DRIVER_DX11 : -1;
 
@@ -96,8 +99,10 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 
 			if (SystemHandle->AppSettings->DRIVER == -1)
 				SystemHandle->AppSettings->DRIVER = DRIVER_DX11;
+	#if defined OPENGL3
 			if (SystemHandle->AppSettings->DRIVER == -1)
 				SystemHandle->AppSettings->DRIVER = DRIVER_GL3;
+	#endif
 			if (SystemHandle->AppSettings->DRIVER == -1)
 				SystemHandle->AppSettings->DRIVER = DRIVER_DX9;
 	#if defined DX9sdk		// Pure DX9
@@ -155,7 +160,7 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 	#if defined USE_PLAY_MUSIC
 	    SystemHandle->AppSettings->MUSIC_ENABLED = (strcmp (GenSettings.musicEnabled, "true") == 0) ?  true : false;
 	#endif//
-	#if defined USE_SOUND_MANAGER
+	#if DX_ENGINE_LEVEL >= 29 && defined USE_SOUND_MANAGER
 	    SystemHandle->AppSettings->SOUND_ENABLED = (strcmp (GenSettings.soundEffectsEnabled, "true") == 0) ?  true : false;
 	#endif//
 
@@ -212,8 +217,10 @@ bool XMLloader::loadWorld (TCHAR* file_) // Note: Have to be char
 				object3d.shader = atoi(element->Attribute("shader"));
 				strcpy(object3d.filename, element->Attribute("filename"));
 				object3d.instances = atoi(element->Attribute("instances"));
+#if DX_ENGINE_LEVEL >= 41 && defined USE_SHADOW_INSTANCES
 				object3d.castShadow = atoi(element->Attribute("castShadow"));
 				object3d.renderShadows = atoi(element->Attribute("renderShadows"));
+#endif
 				theWorld.push_back(object3d); // add a new object to our list
 				element = element->NextSiblingElement();
 			} while (element != NULL);
@@ -309,7 +316,7 @@ bool XMLloader::loadConfigSettings (TCHAR* file_) // Note: Have to be char
 		//FOG:
 
 		//SOUND:
-	#if defined USE_SOUND_MANAGER
+	#if DX_ENGINE_LEVEL >= 29 && defined USE_SOUND_MANAGER
 		/*<sound>*/TiXmlElement* child_sound = root->FirstChildElement( "sound" );
 		if ( child_sound )
 		{
@@ -317,7 +324,7 @@ bool XMLloader::loadConfigSettings (TCHAR* file_) // Note: Have to be char
 			#if	defined USE_PLAY_MUSIC
 			strcpy (GenSettings.musicEnabled, element->Attribute("music"));
 			#endif
-			#if defined USE_SOUND_MANAGER
+			#if DX_ENGINE_LEVEL >= 29 && defined USE_SOUND_MANAGER
 			strcpy (GenSettings.soundEffectsEnabled, element->Attribute("effects"));
 			#endif
 		}

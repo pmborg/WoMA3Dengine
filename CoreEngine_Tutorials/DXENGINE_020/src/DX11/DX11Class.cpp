@@ -106,12 +106,13 @@ Rendering 3D with Effects
 // http://openvidia.sourceforge.net/index.php/DirectCompute
 
 #include "platform.h"
+#include "OSmain_dir.h"
 #include <d3d11.h>
 
 #include "win32InputClass.h"
 #include "mem_leak.h"
 
-#include "winsystemclass.h"	// SystemHandle
+#include "dxWinSystemClass.h"	// SystemHandle
 #include "dx11Class.h"
 
 #if D3D11_SPEC_DATE_YEAR == 2009 //defined DX9 
@@ -130,6 +131,7 @@ void LOAD_TEXTURES(std::vector<TCHAR*> file, std::vector<ID3D11ShaderResourceVie
 
 DX11Class::~DX11Class() // Used for Static Classes
 {
+	//_tprintf(TEXT("driverName: %s "), driverName);
 	Shutdown();
 	CLASSDELETE();
 }
@@ -140,6 +142,7 @@ DX11Class::DX11Class()
 {
 	// WomaDriverClass / Public: ------------------------------------------------------
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567831;
 
 	// SUPER: 
 	dx11_force_dx9 = false;
@@ -184,6 +187,7 @@ DX11Class::DX11Class()
 
 	displayModeList = NULL;
 	// ---------------------------------------------------------
+
 
 	#if defined USE_FRUSTRUM
 		frustum				= NULL;
@@ -231,13 +235,18 @@ void DX11Class::Shutdown()
 {
 	if (m_device) 
 	{
-		//SAFE_RELEASE (adapterGraphicCard);
-
 	Shutdown2D();
+
+#if defined USE_RASTERIZER_STATE
+	//createAllRasterizerStates:
+	for (UINT i = 0; i < 3; i++)
+		for (UINT j = 0; j < 2; j++)
+			SAFE_RELEASE(m_rasterState[i][j]);
+#endif
 
 	//Release the two new blending states.
 
-	#if defined USE_FRUSTRUM // 21
+	#if defined USE_FRUSTRUM
 		SAFE_DELETE(frustum);
 	#endif
 
@@ -265,13 +274,6 @@ void DX11Class::Shutdown()
 		for (int i = 0; i < DX11windowsArray.size(); i++)
 			SAFE_RELEASE(DX11windowsArray[i].m_renderTargetView);		// CreateRenderTargetView
 
-		#if defined USE_RASTERIZER_STATE
-		//createAllRasterizerStates:
-		for (UINT i=0; i<3; i++)
-			for (UINT j=0; j<2; j++)
-				SAFE_RELEASE (m_rasterState[i][j]);
-		#endif
-
 		SAFE_RELEASE (adapterGraphicCard);
 		SAFE_RELEASE (m_deviceContext);
 
@@ -280,6 +282,10 @@ void DX11Class::Shutdown()
 			SAFE_RELEASE(DX11windowsArray[i].m_swapChain);
 
 		// The Last one!
+		#if _DEBUG
+		HRESULT hr = debugDev->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
+		#endif
+
 		ULONG count = m_device->Release();
 		m_device = NULL;
 
@@ -289,6 +295,7 @@ void DX11Class::Shutdown()
 		#endif
 
 		ASSERT (!count);
+		
 	}
 }
 
@@ -320,6 +327,10 @@ BOOL DX11Class::CheckAPIdriver(UINT USE_THIS_ADAPTER_CARD)
 	FreeLibrary(hinstLib);
 #endif
 
+#if _DEBUG
+	HRESULT hr = DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debugDev));
+#endif
+
 	/*******************************************************************
 	// Check for DX9, Load DX 9 DLL if is installed...
 	/******************************************************************/
@@ -341,10 +352,7 @@ if (dx11_force_dx9)
 	/******************************************************************/
 
 	if (!LoadLibrary(TEXT("dxgi.dll"))) // NOTE: Windows XP Can't do this (SO WINDOWS XP NOT SUPPORTED!)
-	{
-		WOMA::WomaMessageBox(TEXT("dxgi.dll"), TEXT("Error, Could not load: ")); 
-		return FALSE;
-	}
+		{ WOMA::WomaMessageBox(TEXT("dxgi.dll"), TEXT("Error, Could not load: ")); return FALSE; }
 
 	/******************************************************************/
 	// Create a DirectX 10/11 graphics interface factory.
@@ -501,8 +509,8 @@ HRESULT result = S_OK;
 		// #Generate new "ProjectionMatrix" and "OrthoMatrix"
 		// --------------------------------------------------
 	}
-#if defined CLIENT_SCENE_TEXT || defined USE_VIEW2D_SPRITES // 26
-	//SetCamera2D(); //AQUI
+
+#if defined CLIENT_SCENE_TEXT || defined USE_VIEW2D_SPRITES
 	Initialize3DCamera();
 #endif
 
@@ -618,7 +626,7 @@ bool DX11Class::Initialize(float* clearColor)
 	return true;
 }
 
-void DX11Class::Finalize() {}
+void DX11Class::Finalize() {} //not used on DX11
 
 // ----------------------------------------------------------------------------------------------
 void DX11Class::BeginScene(UINT monitorWindow)
@@ -638,17 +646,7 @@ void DX11Class::EndScene(UINT monitorWindow)
 	// <PRINT THE 3D SCENE TO SCREEN> to Swap Chain (wait from VSYNC refresh rate, if it is the case)
 	DX11windowsArray[monitorWindow].m_swapChain->Present(m_VSYNC_ENABLED, 0);
 
-	#if defined USE_SHADOW_MAP
 	//RESET ShaderResources! to avoid HLSL WARNINGS: Resource being set to OM RenderTarget slot 0 is still bound on input!
-	// 
-	//WHY 3? Because: 045LightRenderShadow.hlsl use 3 registers:
-	//Texture2D shaderTexture : register(t0);			// 21:
-	//Texture2D AlfaMapTexture : register(t1);			// 43: AlfaMap
-	//Texture2D ShadowMapTextureTexture : register(t2);	// 45: ShadowMap
-	//
-	ID3D11ShaderResourceView* const pSRV[3] = { NULL };
-	g_deviceContext->PSSetShaderResources(0, 3, pSRV);
-	#endif
 }
 
 
@@ -662,8 +660,6 @@ void DX11Class::SetCamera2D()
 void DX11Class::Initialize3DCamera()
 // ----------------------------------------------------------------------------------------------
 {
-
-	// Normal Camera: ( After: SetCamera2D() )
 
 }
 

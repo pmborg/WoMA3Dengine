@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: m3d.cpp
 // --------------------------------------------------------------------------------------------
@@ -211,7 +212,7 @@ namespace DirectX
 		MyObject3D M3D = MyObject3D();
 		fstream obj3dfile;
 
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("Loading: %s\n"), (TCHAR*)(filename + TEXT(" ")).c_str());
+		WOMA_LOGManager_DebugMSG(TEXT("M3D Loading: %s with shader: [%d]\n"), (TCHAR*)(filename + TEXT(" ")).c_str(), shader_type);
 		obj3dfile.open(WOMA::LoadFile((TCHAR*)filename.c_str()), fstream::in | fstream::binary);
 		if (!obj3dfile)
 		{

@@ -34,7 +34,7 @@
 class GLmodelClass : public VirtualModelClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567890;
+	UINT WomaIntegrityCheck = 1234567831;
 	GLmodelClass(bool model3D=true);
 	~GLmodelClass();
 	void Shutdown();
@@ -47,8 +47,8 @@ public:
 	bool LoadColor(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<ModelColorVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0);
 
 #if defined USE_VIEW2D_SPRITES		// Sprites
-	bool RenderSprite(void* Driver /*ID3D11DeviceContext* deviceContext*/, int positionX, int positionY, float scale=1.0f);
-	bool UpdateBuffersRotY(void* Driver /*ID3D11DeviceContext* deviceContext*/, int positionX, int positionY);
+	bool RenderSprite(void* Driver, int positionX, int positionY, float scale=1.0f, float fade = 1.0f);
+	bool UpdateBuffersRotY(void* Driver, int positionX, int positionY);
 #endif
 
 #if defined USE_LIGHT_RAY// || (defined USE_VIEW2D_SPRITES && defined _DEBUG)	// Sun Ray
@@ -72,10 +72,8 @@ public:
 	int GetIndexCount();
 private:
 	GLmathClass	mathClass;
-	//float scale2D;
 
 	void SetOpenGLBuffers(UINT sizeofMODELvertex, UINT* indices);
-	UINT* indices;
 	void GetIndices();
 
 	std::vector<ModelColorVertexType>* modelColorVertex;
@@ -85,7 +83,7 @@ private:
 	void RenderBuffers(/*GLopenGLclass*/ void*);
 
 	std::vector<UINT>* indexModelList;
-
+	UINT* indices;
 	bool			Model3D;
 	GLshaderClass*	m_Shader = NULL;
 	UINT			m_vertexCount = NULL, m_indexCount = NULL;

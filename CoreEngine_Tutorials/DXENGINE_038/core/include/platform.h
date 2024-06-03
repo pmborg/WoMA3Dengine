@@ -537,7 +537,6 @@
 // -------------------------------------------------------------------------------------------
 // Define WOMA Project "Settings/Features" that will be COMPILED depending of "ENGINE_LEVEL"
 // -------------------------------------------------------------------------------------------
-#define FORCE_LOAD_ALL false
 #include "core_engine_level.h"
 
 #if DX_ENGINE_LEVEL >= 19 && CORE_ENGINE_LEVEL == 10	//DX9 DX11+DX10 DX12 OPENGL3

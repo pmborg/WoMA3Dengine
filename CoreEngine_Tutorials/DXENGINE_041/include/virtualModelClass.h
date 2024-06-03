@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: virtualModelClass.h
 // --------------------------------------------------------------------------------------------
@@ -97,7 +98,7 @@ public:
 	// ----------------------------------------------------------------------
 	UINT WomaIntegrityCheck = 1234567831;
 
-	UINT				m_ObjId=0;
+	INT					m_ObjId=-1;
 	SHADER_TYPE			ModelShaderType;
 
 	bool				Model3D=false;

@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: initApplication_Basics.cpp
 // --------------------------------------------------------------------------------------------
@@ -25,8 +26,10 @@
 #pragma warning(push)
 #pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
 
+#ifdef OPENGL3
 #include "GLopenGLclass.h"
 #include "GLmodelClass.h"
+#endif
 
 #if defined DX_ENGINE
 #include "DXmodelClass.h"
@@ -41,30 +44,30 @@ bool ApplicationClass::DEMO_WOMA_APPLICATION_Initialize3D(WomaDriverClass* Drive
 
 	//INIT ALL
 	//-----------------------------------------------------------------------------------------------------------------
-	if (RENDER_PAGE < 27 || FORCE_LOAD_ALL)
+	if (RENDER_PAGE < 27 || FORCE_RENDER_ALL || RENDER_PAGE == 42)
 		initColorDemo(SystemHandle->driverList[SystemHandle->AppSettings->DRIVER]);
 
-	if (RENDER_PAGE < 27 || FORCE_LOAD_ALL)
+	if (RENDER_PAGE < 27 || FORCE_RENDER_ALL)
 		initTextureDemo();
 
 		initShadowTextureDemo();
 
-	if (RENDER_PAGE < 27 || FORCE_LOAD_ALL)
+	if (RENDER_PAGE < 27 || FORCE_RENDER_ALL)
 		initLightDemo();
 
-	if (RENDER_PAGE >= 24 || FORCE_LOAD_ALL)
+	if (RENDER_PAGE >= 24 || FORCE_RENDER_ALL)
 		initTitleBanner2D();
 
-	if ((RENDER_PAGE >= 25 && RENDER_PAGE < 27) || FORCE_LOAD_ALL)
+	if ((RENDER_PAGE >= 25 && RENDER_PAGE < 27) || FORCE_RENDER_ALL)
 		IF_NOT_RETURN_FALSE(initCubes3D(SystemHandle->driverList[SystemHandle->AppSettings->DRIVER]));
 
-	if (((RENDER_PAGE >= 25 && RENDER_PAGE < 27) || RENDER_PAGE < 28) || FORCE_LOAD_ALL)
+	if (((RENDER_PAGE >= 25 && RENDER_PAGE < 27) || RENDER_PAGE < 28) || FORCE_RENDER_ALL)
 	{
 		initSphere1(3);
 		initSphere2(3);
 	}
 
-	if (RENDER_PAGE >= 28 || FORCE_LOAD_ALL)
+	if (RENDER_PAGE >= 28 || FORCE_RENDER_ALL)
 		initSky(3);
 	return true;
 }
@@ -73,36 +76,36 @@ bool ApplicationClass::DEMO_WOMA_APPLICATION_Initialize3D(WomaDriverClass* Drive
 void ApplicationClass::initColorDemo(WomaDriverClass* m_Driver)
 // ----------------------------------------------------------------------------
 {
-	//if (RENDER_PAGE == 21 || FORCE_LOAD_ALL)
+	if (RENDER_PAGE == 21 || FORCE_RENDER_ALL)
 	{
 		//DEMO-1:
 		// Step 1: Prepare Vertex(s)
 		float X = 4, Y = 4, Z = 0;
 		ModelColorVertexType vertex = {0};
-		CREATE_VERTEXVECTOR_SQUAD_MODEL_OPTIMIZED(SquarColorVertexVector, X,Y,Z);	// Step 1: Populate SquarColorVertexVector with, all vertices positions: X, Y, Z
+		CREATE_VERTEXVECTOR_SQUAD_MODEL_OPTIMIZED(SquareColorVertexVector, X,Y,Z);	// Step 1: Populate SquareColorVertexVector with, all vertices positions: X, Y, Z
 
 		float color;
 		float Start = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/1));	// Float between 0..1
 		float End = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/1));		// Float between 0..1
 
-		for (UINT i = 0; i < SquarColorVertexVector.size(); i++)	// Step 2: Add a color to all vertices
+		for (UINT i = 0; i < SquareColorVertexVector.size(); i++)	// Step 2: Add a color to all vertices
 		{															
 			if ( i == 0 || i == 3 /*|| i == 4*/ )					//  |\            \|
 				color = End;										//  1  v0		  1  v0 v3
 			else                                                    // -1  v2 v1	 -1     v1
 				color = Start;										//  x: -1  1	  x: -1  1
 
-			SquarColorVertexVector[i].r = color;// Red
-			SquarColorVertexVector[i].g = color;// Green
-			SquarColorVertexVector[i].b = 0.6f;	// Blue
+			SquareColorVertexVector[i].r = color;// Red
+			SquareColorVertexVector[i].g = color;// Green
+			SquareColorVertexVector[i].b = 0.6f;	// Blue
 		}
 
-		CREATE_MODEL_IF_NOT_EXCEPTION(m_1stSquar3DColorModel, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);	// Alocate the MODEL
-		ASSERT (m_1stSquar3DColorModel->LoadColor(TEXT("m_1stSquar3DColorModel"), m_Driver, SHADER_COLOR, &SquarColorVertexVector, &IndexSquarList));	// LOAD the Model //UINT IndexSquarList[] = {0,1,2, 0,3,1};
-		m_1stSquar3DColorModel->translation(0,-1,4); //move UP:4 and towards camera: 1
+		CREATE_MODEL_IF_NOT_EXCEPTION(m_1stSquare3DColorModel, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);	// Alocate the MODEL
+		ASSERT (m_1stSquare3DColorModel->LoadColor(TEXT("m_1stSquare3DColorModel"), m_Driver, SHADER_COLOR, &SquareColorVertexVector, &IndexSquarList));	// LOAD the Model //UINT IndexSquarList[] = {0,1,2, 0,3,1};
+		m_1stSquare3DColorModel->translation(0,-1,4); //move UP:4 and towards camera: 1
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	//if (RENDER_PAGE >= 21 || FORCE_LOAD_ALL)
+	if (RENDER_PAGE >= 21 || FORCE_RENDER_ALL)
 	{
 		//DEMO-2:
 		// Step 1: Prepare Vertex(s)
@@ -126,48 +129,48 @@ void ApplicationClass::initColorDemo(WomaDriverClass* m_Driver)
 void ApplicationClass::initTextureDemo()
 // ----------------------------------------------------------------------------
 {
-	//if (RENDER_PAGE == 22 || FORCE_LOAD_ALL)
+	//if (RENDER_PAGE == 22 || FORCE_RENDER_ALL)
 	{
 		//DEMO-1:
 		ModelTextureVertexType vertex = { 0 };
 		float X = 2.5f, Y = 1.5f, Z = 0;
-		CREATE_VERTEXVECTOR_SQUAD_MODEL_OPTIMIZED(SquarTextureVertexVector, X, Y, Z);	// Step 1: Setup all vertices positions: X, Y, Z
-		MAP_XZtoUV(SquarTextureVertexVector, X, Y, Z);				// Step 2: ADD TEXTURING: Auto-Map textures to all vertices: tu, tv
+		CREATE_VERTEXVECTOR_SQUAD_MODEL_OPTIMIZED(SquareTextureVertexVector, X, Y, Z);	// Step 1: Setup all vertices positions: X, Y, Z
+		MAP_XZtoUV(SquareTextureVertexVector, X, Y, Z);				// Step 2: ADD TEXTURING: Auto-Map textures to all vertices: tu, tv
 
 		//ORIGNAL IMAGE:
-		initLoadTexture3D(m_bmp3DModel, TEXT("engine/data/Earth_Diffuse.bmp"), SquarTextureVertexVector, IndexSquarList, SHADER_TEXTURE);
+		initLoadTexture3D(m_bmp3DModel, TEXT("engine/data/Earth_Diffuse.bmp"), SquareTextureVertexVector, IndexSquarList, SHADER_TEXTURE);
 		m_bmp3DModel->rotateX(-3.14f / 2.0f);
 		m_bmp3DModel->translation(-6, 7.5, 7);
 
 		// Image Converter: \WoMA3Dengine\ExternalTools\Microsoft_DirectX_SDK_June_2010\Utilities\bin\x86\texconv.exe -ft JPG Earth_Diffuse.bmp
-		initLoadTexture3D(m_jpg3DModel, TEXT("engine/data/Earth_Diffuse.jpg"), SquarTextureVertexVector, IndexSquarList, SHADER_TEXTURE); // Color: OPENGL
+		initLoadTexture3D(m_jpg3DModel, TEXT("engine/data/Earth_Diffuse.jpg"), SquareTextureVertexVector, IndexSquarList, SHADER_TEXTURE); // Color: OPENGL
 		m_jpg3DModel->rotateX(-3.14f / 2.0f);
 		m_jpg3DModel->translation(0, 7.5, 7);
 
 		// Image Converter: \WoMA3Dengine\ExternalTools\Microsoft_DirectX_SDK_June_2010\Utilities\bin\x86\texconv.exe -ft PNG Earth_Diffuse.bmp
-		initLoadTexture3D(m_png3DModel, TEXT("engine/data/Earth_Diffuse.png"), SquarTextureVertexVector, IndexSquarList, SHADER_TEXTURE);
+		initLoadTexture3D(m_png3DModel, TEXT("engine/data/Earth_Diffuse.png"), SquareTextureVertexVector, IndexSquarList, SHADER_TEXTURE);
 		m_png3DModel->rotateX(-3.14f / 2.0f);
 		m_png3DModel->translation(6, 7.5, 7);
 
 		// Image Converter USED: %windir%\system32\mspaint.exe
-		initLoadTexture3D(m_tif3DModel, TEXT("engine/data/Earth_Diffuse.tif"), SquarTextureVertexVector, IndexSquarList, SHADER_TEXTURE); // Inverted+Color: OPENGL
+		initLoadTexture3D(m_tif3DModel, TEXT("engine/data/Earth_Diffuse.tif"), SquareTextureVertexVector, IndexSquarList, SHADER_TEXTURE); // Inverted+Color: OPENGL
 		m_tif3DModel->rotateX(-3.14f / 2.0f);
 		m_tif3DModel->translation(-6, 1, 7);
 
 		// Image Converter USED: \WoMA3Dengine\ExternalTools\Microsoft_DirectX_SDK_June_2010\Utilities\bin\x64\DxTex.exe
-		initLoadTexture3D(m_dds3DModel, TEXT("engine/data/Earth_Diffuse.dds"), SquarTextureVertexVector, IndexSquarList, SHADER_TEXTURE); // Color: OPENGL
+		initLoadTexture3D(m_dds3DModel, TEXT("engine/data/Earth_Diffuse.dds"), SquareTextureVertexVector, IndexSquarList, SHADER_TEXTURE); // Color: OPENGL
 		m_dds3DModel->rotateX(-3.14f / 2.0f);
 		m_dds3DModel->translation(0, 1, 7);
 
 		// Image Converter: \WoMA3Dengine\ExternalTools\Microsoft_DirectX_SDK_June_2010\Utilities\bin\x86\texconv.exe -ft TGA Earth_Diffuse.bmp
 	#if defined SUPPORT_TGA
-		initLoadTexture3D(m_tga3DModel, TEXT("engine/data/Earth_Diffuse.tga"), SquarTextureVertexVector, IndexSquarList, SHADER_TEXTURE);
+		initLoadTexture3D(m_tga3DModel, TEXT("engine/data/Earth_Diffuse.tga"), SquareTextureVertexVector, IndexSquarList, SHADER_TEXTURE);
 		m_tga3DModel->rotateX(-3.14f / 2.0f);
 		m_tga3DModel->translation(6, 1, 7);
 	#endif
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	//if (RENDER_PAGE >= 22 || FORCE_LOAD_ALL)
+	//if (RENDER_PAGE >= 22 || FORCE_RENDER_ALL)
 	{
 		//DEMO-2:
 		// Step 1: Prepare Vertex(s)
@@ -186,7 +189,7 @@ void ApplicationClass::initLightDemo()
 // ----------------------------------------------------------------------------
 {
 	//DEMO-1:
-	//if ((RENDER_PAGE >= 23 && RENDER_PAGE <= 25) || FORCE_LOAD_ALL)
+	//if ((RENDER_PAGE >= 23 && RENDER_PAGE <= 25) || FORCE_RENDER_ALL)
 	{
 		ModelTextureLightVertexType vertex = { 0 };
 		float X = 2.0f, Y = 1.0f, Z = 0;
@@ -224,7 +227,7 @@ void ApplicationClass::initLightDemo()
 
 	//DEMO-2:
 	//--------------------------------------------------------------------------------------------------------------------------
-	//if ((RENDER_PAGE >= 23 && RENDER_PAGE <= 25) || FORCE_LOAD_ALL)
+	//if ((RENDER_PAGE >= 23 && RENDER_PAGE <= 25) || FORCE_RENDER_ALL)
 	{
 		// Step 1: Prepare Vertex(s)
 		float X = 1, Y = 1, Z = 1;
@@ -238,7 +241,7 @@ void ApplicationClass::initLightDemo()
 
 void ApplicationClass::initTitleBanner2D()
 {
-	//if (RENDER_PAGE >= 24 || FORCE_LOAD_ALL)
+	//if (RENDER_PAGE >= 24 || FORCE_RENDER_ALL)
 	{
 		// Step 1: Prepare Vertex(s)
 		std::vector<ModelTextureVertexType> TitleVertexVector;				// 1 Declare: the Vector with Vertex "TYPE"
@@ -252,7 +255,7 @@ void ApplicationClass::initTitleBanner2D()
 
 bool ApplicationClass::initCubes3D(WomaDriverClass* m_Driver)
 {
-	//if (RENDER_PAGE == 25 || FORCE_LOAD_ALL)
+	//if (RENDER_PAGE == 25 || FORCE_RENDER_ALL)
 	{
 
 		//DEMO1:
@@ -298,10 +301,12 @@ void ApplicationClass::DEMO_WOMA_APPLICATION_Shutdown2D()
 			SAFE_SHUTDOWN_MODELDX(m_titleModel);
 		}
 	#endif
+	#if defined OPENGL3
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
 		{
 			SAFE_SHUTDOWN_MODELGL3(m_titleModel);
 		}
+	#endif
 
 
 
@@ -314,9 +319,11 @@ void ApplicationClass::initText(WomaDriverClass* m_Driver)
 
 	switch (SystemHandle->AppSettings->DRIVER)
 	{
+#ifdef OPENGL3
 	case DRIVER_GL3:
 		ASSERT(AppTextClass->Initialize((GLopenGLclass*)m_Driver));
 		break;
+#endif
 
 	case DRIVER_DX9:
 	case DRIVER_DX11:
@@ -335,9 +342,9 @@ void ApplicationClass::initShadowTextureDemo()
 {
 	ModelTextureVertexType vertex = { 0 };
 	float X = 4.0f, Y = 2.0f, Z = 0;
-	CREATE_VERTEXVECTOR_SQUAD_MODEL_OPTIMIZED(SquarTextureVertexVector, X, Y, Z);				// Step 1: Setup all vertices positions: X, Y, Z
-	MAP_XZtoUV(SquarTextureVertexVector, X, Y, Z);												// Step 2: ADD TEXTURING: Auto-Map textures to all vertices: tu, tv
-	initLoadTexture3D(m_2nd3DModel, TEXT("engine/data/Earth_Diffuse.bmp"), SquarTextureVertexVector, IndexSquarList, SHADER_TEXTURE);
+	CREATE_VERTEXVECTOR_SQUAD_MODEL_OPTIMIZED(SquareTextureVertexVector, X, Y, Z);				// Step 1: Setup all vertices positions: X, Y, Z
+	MAP_XZtoUV(SquareTextureVertexVector, X, Y, Z);												// Step 2: ADD TEXTURING: Auto-Map textures to all vertices: tu, tv
+	initLoadTexture3D(m_2nd3DModel, TEXT("engine/data/Earth_Diffuse.bmp"), SquareTextureVertexVector, IndexSquarList, SHADER_TEXTURE);
 
 	m_2nd3DModel->rotateX(-3.14f / 2.0f);
 	m_2nd3DModel->translation(0, 2.5f, 5);
@@ -346,6 +353,7 @@ void ApplicationClass::initShadowTextureDemo()
 // ----------------------------------------------------------------------------
 // WOMA_APPLICATION_FrameUpdateInstancesPositions
 // ----------------------------------------------------------------------------
+#if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES // Normal Bump + Instancing 
 //CHESS BOARD OBJ       0
 
 #define WHITE_BISHOP	1  //BISPO_BRANCO
@@ -365,7 +373,16 @@ void ApplicationClass::initShadowTextureDemo()
 void ApplicationClass::WOMA_APPLICATION_FrameUpdateInstancesPositions(UINT m_ObjId, int m_instanceCount, InstanceType* instances_)
 {
 	InstanceType* instances = instances_;
+	/*
+	instances[0].position.x = -7;
+	instances[0].position.z = 0;
+	instances[0].position.y = 0;
 
+	instances[1].position.x = +7;
+	instances[1].position.z = 0;
+	instances[1].position.y = 0;
+	*/
+	
 	for (int i = 0; i < m_instanceCount; i++)
 	{
 		switch (m_ObjId)
@@ -435,6 +452,11 @@ void ApplicationClass::WOMA_APPLICATION_FrameUpdateInstancesPositions(UINT m_Obj
 		instances[i].position.z = instances[i].position.z + (float)2;
 		instances[i].position.x = instances[i].position.x - (float)1;
 	}
+
 }
+#endif
+
+
+//0 UNDERWATER
 
 #pragma warning(pop)

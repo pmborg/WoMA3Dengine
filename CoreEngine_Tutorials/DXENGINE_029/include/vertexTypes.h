@@ -21,7 +21,7 @@
 //		DXshaderClass.h
 //
 // ----------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567829;
+//WomaIntegrityCheck = 1234567831;
 
 #pragma once
 
@@ -237,7 +237,7 @@ struct SentenceType
 //
 // Used by Demo: 21: Color, 22: Texture, 23 Light (with Index: indexList[6] = {0,1,2, 0,3,1};)
 //
-#define CREATE_VERTEXVECTOR_SQUAR_MODEL_OPTIMIZED(model, X,Z,Y){\
+#define CREATE_VERTEXVECTOR_SQUAD_MODEL_OPTIMIZED(model, X,Z,Y){\
 	/* v1 Left Top: */\
 	vertex.x =-X;\
 	vertex.z = Z;\

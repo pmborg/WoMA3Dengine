@@ -70,12 +70,11 @@ TCHAR* getUserName()
 	return userName;
 }
 
-
 SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 {
 	// STARTING POINT of WOMA ENGINE!
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567890;
+	WomaIntegrityCheck = 1234567831;
 
 	AppSettings = NULL;
 
@@ -115,7 +114,7 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 #if defined WIN_XP
 		TEXT("WinXP")
 #elif defined WIN10
-		TEXT("Win10")
+		TEXT("Win10/11")
 #else
 		TEXT("Windows")
 #endif
@@ -199,8 +198,7 @@ void SystemClass::ProcessOSInput() // This Function will be invoked several time
 //-----------------------------------------------------------------------------------------
 {
 
-	static bool first_time =
-		true;
+		static bool first_time = true;
 
 	// Process Special: "ESC" key is beeing pressed ?
 	if ((WOMA::game_state > GAME_MINIMIZED) && (OS_KEY_DOWN(DIK_ESCAPE + 0x35)))
@@ -247,18 +245,9 @@ void SystemClass::ProcessOSInput() // This Function will be invoked several time
 
 		if (SystemHandle->AppSettings->FULL_SCREEN)
 		{
-			//if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 			SystemHandle->AppSettings->FULL_SCREEN = false;
 			CHAR str[MAX_STR_LEN] = { 0 }; wtoa(str, (TCHAR*)SystemHandle->XML_SETTINGS_FILE.c_str(), MAX_STR_LEN); // wchar ==> char
-			saveConfigSettings(str);
-			/*
-			// activate the window
-			SetActiveWindow(SystemHandle->m_hWnd);
-			ushort action = (ushort)WM_SYSKEYDOWN; //ALT
-			ushort key = (ushort)0xd; //ENTER
-			uint lparam = (0x01 << 28);
-			SendMessage(SystemHandle->m_hWnd, action, key, lparam);
-			*/
+			SystemHandle->xml_loader.saveConfigSettings(str);
 			WOMA::previous_game_state = WOMA::game_state;
 			WOMA::game_state = ENGINE_RESTART;
 		}
@@ -392,9 +381,7 @@ void SystemClass::Shutdown()
 
 void SystemClass::FrameUpdate()
 {
-
-	ProcessOSInput();
-
+	ProcessOSInput();			// ProcessFrame: Process Special: Function Keys F1 to F6
 	ProcessPerformanceStats();	// ProcessPerformanceStats: m_Timer.Frame(); m_Fps.Frame(); m_Cpu.Frame();
 }
 
@@ -410,27 +397,28 @@ bool SystemClass::LoadXmlSettings()
 	XML_SETTINGS_FILE.append(WOMA::APP_SETTINGS_FILE);
 
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("XML_SETTINGS_FILE: %s\n"), XML_SETTINGS_FILE.c_str());
-	if (!initAppicationSettings((TCHAR*)XML_SETTINGS_FILE.c_str()))
+	if (!SystemHandle->xml_loader.initAppicationSettings((TCHAR*)XML_SETTINGS_FILE.c_str()))
 	{
 		STRING err = TEXT("File not found/Invalid: "); err += XML_SETTINGS_FILE;
 		WOMA::WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "));
 		return false;
 	}
 
+	// Load and Parse XML [world.xml] the Configuration file
+	//----------------------------------------------------------------------------
+
 	return true;
 }
 
 void SystemClass::ProcessPerformanceStats() // Run every frame
 {
-	//if (!m_Application) return;
-
 	// Update the system stats: (BEFORE: HandleUserInput)
 	m_Timer.Frame();		// Calculate dT for animations (Measure last frame time)
 	m_Fps.Frame();			// Increase the frame counter, calculate FPS once per second
 	fps = m_Fps.GetFps();	// Get current FPS (updated by "m_Fps.Frame()" every second)
 
 #if defined WINDOWS_PLATFORM && !defined WIN_XP
-	m_Cpu.Frame();			// Collect CPU usage percentage once per second
+	m_Cpu.Frame();			// Collect CPU usage percentage, once per second!
 
 	m_Application->dt = m_Timer.GetTime();		// Calculate dT for animations & camera movements (in Mili Seconds)
 #endif

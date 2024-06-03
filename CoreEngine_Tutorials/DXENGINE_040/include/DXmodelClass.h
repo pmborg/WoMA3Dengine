@@ -183,6 +183,11 @@ public:
 	//std::vector <CD3DX12_CPU_DESCRIPTOR_HANDLE> cbvHandle;
 	HRESULT LoadTextureImage(TCHAR* textureFilename);
 
+#if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES // Instancing 
+	UINT			m_instanceCount = 0;
+	ID3D11Buffer* m_instanceBuffer = NULL;
+#endif
+
 // ----------------------------------------------------------------------
 private:
 // ----------------------------------------------------------------------
@@ -248,8 +253,7 @@ private:
 
 	float	m_xTexture=0;
 
-	UINT			m_instanceCount = 0;
-	ID3D11Buffer*	m_instanceBuffer = NULL;
+
 
 };
 

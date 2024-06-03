@@ -17,7 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Get full filename inside diretory or woma.pck files depending DEBUG or RELEASE build
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567891;
+//WomaIntegrityCheck = 1234567831;
 
 #include "main.h"
 
@@ -43,5 +43,4 @@ TCHAR* LoadFile(TCHAR* filename)
 	return (TCHAR*)&file_;
 }
 
-}//WOMA
-
+}

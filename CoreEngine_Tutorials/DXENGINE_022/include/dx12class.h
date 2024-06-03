@@ -114,7 +114,7 @@ public:
 	static const auto BufferCount = 2;  // "Use Double Buffer"
 //	static const auto BufferCount = 3;  // "Use Tripple Buffer"
 
-	UINT WomaIntegrityCheck = 1234567890;
+	UINT WomaIntegrityCheck = 1234567831;
 	DX12Class();
 	~DX12Class();
 	void Shutdown2D();
@@ -154,11 +154,8 @@ public:
 
 	bool getModesList(int g_USE_MONITOR, int screenWidth, int screenHeight, BOOL fullscreen, UINT* numerator, UINT* denominator);
 
-//#if ZERO && defined USE_RASTERIZER_STATE
 	void SetRasterizerState(UINT cullMode, UINT fillMode);
 	D3D12_RASTERIZER_DESC m_rasterState[3][2];
-	//D3D12_RASTERIZER_DESC* rasterState;
-//#endif
 
 	// 3D
 	XMMATRIX m_projectionMatrix;
@@ -170,10 +167,6 @@ public:
     //We now have two new function in the DX12Class for turning the Z buffer on and off when rendering 2D images:
     void TurnZBufferOn();
     void TurnZBufferOff();
-
-#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
-	ImageLoaderClass* CaptureScreenShot(int screenWidth, int screenHeight);
-#endif
 
 		std::vector<STRING> allTextureNameArray;
 		std::vector<ID3D11ShaderResourceView*> allTexturePointerArray;
@@ -214,8 +207,7 @@ public:
 	
 // ---------------------------------------------------------
 
-	//DXcameraClass* m_Camera = NULL;
-	D3D12_SHADER_RESOURCE_VIEW_DESC viewDesc = {};
+	D3D12_SHADER_RESOURCE_VIEW_DESC DX12viewDesc = {};
 
 
 ////////////////////////////////////////////////////////////////////////////////

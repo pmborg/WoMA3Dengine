@@ -28,7 +28,7 @@
 
 GLshaderClass::GLshaderClass() {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567829;
+	WomaIntegrityCheck = 1234567831;
 }
 
 GLshaderClass::~GLshaderClass() {CLASSDELETE();}
@@ -282,7 +282,6 @@ void GLshaderClass::ShutdownShader()
 }
 
 
-//bool GLshaderClass::SetShaderParameters(SHADER_TYPE shaderType, float* worldMatrix, float* viewMatrix, float* projectionMatrix, int textureUnit)
 bool GLshaderClass::SetShaderParameters(SHADER_TYPE shaderType, mat4* worldMatrix, mat4* viewMatrix, mat4* projectionMatrix, int textureUnit)
 {
 	INT location;

@@ -17,7 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Work as Input Manager, using inputClass as a Direct Driver
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567891;
+//WomaIntegrityCheck = 1234567831;
 
 #include "platform.h"
 
@@ -61,7 +61,7 @@ UINT KeyLookDown= {DIK_PGDN};
 void DXInputClass::ProcessInput()
 {
 	// Update the location of the mouse cursor based on the change of the mouse location during the frame.
-	#define m_ourPlayer DXsystemHandle->m_player[SystemHandle->m_Application->g_NetID]
+	#define m_ourPlayer DXsystemHandle->m_player[g_NetID]
 
 	// Process Keyboard STATE: (CHECK)
 	// =======================

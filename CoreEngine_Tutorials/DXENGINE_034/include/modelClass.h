@@ -90,6 +90,8 @@ typedef struct
 
 	//---------------------------------------------------------------------
 	UINT m_vertexCount = 0, m_indexCount = 0;			//virtualModelClass.h
+	bool	ModelHASNormals = false;
+
 } OBJ3D;
 
 ////////////////////////////////////////////////////////////////////////////////

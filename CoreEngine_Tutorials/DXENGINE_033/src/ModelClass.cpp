@@ -21,12 +21,12 @@
 
 #include "platform.h"
 
-#pragma warning( disable : 4267 ) // Disable warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
 #include "womadriverclass.h"
 #include "modelClass.h"
 #include "DXmodelClass.h"
 #include "GLmodelClass.h"
 #include "DXshaderClass.h"
+#include "DX11Class.h"
 #include "fileLoader.h"
 #include "OSmain_dir.h"
 #include "dxWinSystemClass.h"
@@ -38,9 +38,9 @@ GEOMETRY
 #		- comment
 mtllib	- material library filename
 
-v		- vert position		(30)
-vt		- vert tex coords	(31)
-vn		- vert normal		(32)
+v		- vert position		(30) COLOR shader
+vt		- vert tex coords	(31) TEXTURE shader
+vn		- vert normal		(32) LIGHT shader
 
 f		- defines the faces	(poligons) 1 poligon of 3...6 vert OR 1 triangle 3 vert
 g		- defines a group	(Subset)
@@ -49,8 +49,8 @@ usemtl	- which material to use
 MATERIAL
 --------
 #		- comment
-Ka		- Ambient Color			(32)
-Kd		- diffuse color			(32)
+Ka		- Ambient Color			(32) LIGHT shader
+Kd		- diffuse color			(32) LIGHT shader
 Ke		- emissive color factors (self-ilumination)
 
 *Ni		- optical_density	
@@ -59,22 +59,22 @@ Ke		- emissive color factors (self-ilumination)
 		A value of "1.0" means that light does not bend as it passes through an object. (neutral)
 		The optical density of the surface: This is also known as "index of refraction". Glass is about 1.5 (default)
 
-Tr		- Check for transparency (alpha value)	(33)
-d		- for transparency (1 - alpha value)	(33)
+Tr		- Check for transparency (alpha value)	(33) ALFA MAP and ALFA COLOR
+d		- for transparency (1 - alpha value)	(33) ALFA MAP and ALFA COLOR
 
 map_Kd	- Diffuse map	(31)
 map_d	- Alpha map     (33)
 
-map_bump- Bump map		(37)
+illum	- Illumination					(34 SPECULAR + SHININESS) CH51 if ( illumination == 2 ) hasSpecular = true
+Ks		- Specular Color 				(34 SPECULAR + SHININESS) CH51
+Ns		- Shininess (Specular Power)	(34 SPECULAR + SHININESS) CH51
 
-illum	- Illumination "NEW"	(44 SPECULAR + SHININESS) CH51 if ( illumination == 2 ) hasSpecular = true
-Ks		- Specular Color "NEW"	(44 SPECULAR + SHININESS) CH51
-Ns		- Shininess (Specular Power) "NEW"		(44 SPECULAR + SHININESS) CH51
+map_bump - Bump map						(35) The BUMP MAP
 
 newmtl	- Declare new material
 
 // ----------------------------
-// NOT INCLUDED:
+// NOT INCLUDED FOR NOW:
 // ----------------------------
 illum	x
 
@@ -115,7 +115,7 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 {	HRESULT hr = 0;
 
 	//---------------------------------------------------------------------
-	WOMA_LOGManager_DebugMSG( TEXT("Loading: %s\n"), (TCHAR*)(filename+TEXT(" ")).c_str() );
+	WOMA_LOGManager_DebugMSG( TEXT("OBJ Loading: %s with shader: [%d]\n"), (TCHAR*)(filename+TEXT(" ")).c_str(), shader_type);
 	obj3d.fileNameOnly=filename;
 
 	// Add full path:
@@ -128,7 +128,7 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 	// ---------------------
 	IFSTREAM fileIn ((TCHAR*)newfilename.c_str());
 	if (!fileIn) 
-		{ WomaFatalException("Error opening OBJ file"); return false; }
+		{ WOMA::WomaMessageBox((TCHAR*)newfilename.c_str(), TEXT("Error, Could not load: ")); return FALSE; }
 
 	obj3d.m_vertexCount = 0;		//totalVerts
 	TCHAR lastToken = 0;
@@ -177,7 +177,7 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 
 					obj3d.hasTexCoord = true;	//We know the model uses texture coords
 				}
-				//42
+				//99
 				//Since we compute the normals later, we don't need to check for normals
 				//In the file, but i'll do it here anyway
 				if(checkChar == 'n')				//vn - vert normal
@@ -620,9 +620,9 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 	// ---------------------
 	{
 	STRING temp = MathLibPath;
-	int indexCh = temp.find_last_of('\\');
+	int indexCh = (int)temp.find_last_of('\\');
 	if (indexCh == -1)
-		indexCh = temp.find_last_of('/');
+		indexCh = (int)temp.find_last_of('/');
 	indexCh++;
 	STRING path = MathLibPath;
 	path = path.substr(0, indexCh);
@@ -651,10 +651,18 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 			obj3d.material[0].alfaMap11 = NULL;
 		obj3d.material[0].transparent = false;
 
+		// SPECULAR + SHININESS
+		#if defined RENDER_OBJ_WITH_SPECULAR_SHININESS
+			obj3d.material[0].specularColor = XMFLOAT3(0.0f, 0.0f, 0.0f);
+			obj3d.material[0].bSpecular = false;
+			obj3d.material[0].nShininess = 0;
+        #endif
+
+		//BUMP
+
 		obj3d.textureNameArray.push_back(TEXT("none"));
-		obj3d.material[0 /*matCount-1*/].texArrayIndex = 0; // obj3d.meshSRV.size();
-		//obj3d.meshSRV.push_back(NULL);
-		obj3d.material[0 /*matCount-1*/].hasTexture = true;
+		obj3d.material[0].texArrayIndex = 0;
+		obj3d.material[0].hasTexture = true;
 
 		//SKIP_MATERIALS = true;
 		goto SKIP;
@@ -673,7 +681,7 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 	//fileMtl.open(fullname.c_str());
 #endif
 
-	int matCount = obj3d.material.size();	//total materials
+	int matCount = (int)obj3d.material.size();	//total materials
 
 	//kdset - If our diffuse color was not set, we can use the ambient color (which is usually the same)
 	//If the diffuse color WAS set, then we don't need to set our diffuse color to ambient
@@ -736,7 +744,48 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 					break;
 				}
 
-				// Ks - Specular Color "NEW"
+				// Ks - Specular Color
+			#if defined RENDER_OBJ_WITH_SPECULAR_SHININESS
+				if(checkChar == 's')	{
+					checkChar = fileMtl.get();	//remove space
+					fileMtl >> obj3d.material[matCount-1].specularColor.x;//r
+					fileMtl >> obj3d.material[matCount-1].specularColor.y;//g
+					fileMtl >> obj3d.material[matCount-1].specularColor.z;//b
+
+					if (obj3d.material[matCount-1].specularColor.x + obj3d.material[matCount-1].specularColor.y + obj3d.material[matCount-1].specularColor.z == 0)
+						obj3d.material[matCount-1].bSpecular = false;
+					break;
+				}
+
+			case 'N':	//Ns - Shininess
+				checkChar = fileMtl.get();
+				if(checkChar == 's')	{
+					fileMtl >> obj3d.material[matCount-1].nShininess;
+				}
+				break;
+
+			case 'i':
+				checkChar = fileMtl.get();
+				if(checkChar == 'l')
+				{
+					checkChar = fileMtl.get();
+					if(checkChar == 'l')
+					{
+						checkChar = fileMtl.get();
+						if(checkChar == 'u')
+						{
+							checkChar = fileMtl.get();
+							if(checkChar == 'm')
+							{
+								checkChar = fileMtl.get();
+								int illumination;
+								fileMtl >> illumination;
+								obj3d.material[matCount-1].bSpecular = ( illumination == 2 );
+							}
+						}
+					}
+				}
+			#endif
 			
 			//ALFA MAP/COLOR:
 			case 'T': // Tr: Check for transparency
@@ -827,12 +876,12 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 									//if the texture is not already loaded, load it now
 									if(!alreadyLoaded)
 									{
+										ID3D11ShaderResourceView* tempMeshSRV = NULL;
 										fileNamePath = MathLibPath + fileNamePath;	// TO Support TEMP:
 										fileNamePath = WOMA::LoadFile ((TCHAR*)fileNamePath.c_str());
-
+										
 										obj3d.material[matCount - 1].texArrayIndex = obj3d.textureNameArray.size();  //matCount - 1;
-										obj3d.material[matCount-1].hasTexture = true;
-
+										obj3d.material[matCount - 1].hasTexture = true;
 										obj3d.textureNameArray.push_back(fileNamePath.c_str());
 									}	
 								}
@@ -880,20 +929,16 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
                             #if !defined(STANDALONE)
 							  if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9) 
 							  {
+								//[TEMMPLATE] LOAD TEXTURE DX11:
 								#define m_driver11 ((DirectX::DX11Class*)SystemHandle->driverList[SystemHandle->AppSettings->DRIVER])
-								hr = m_driver11->LOADTEXTURE_DX11_WIN_SDK8(m_driver11->m_device, (TCHAR*)fileNamePath.c_str(), &tempMeshSRV);
-                                if (SUCCEEDED(hr))
-                                {
-									obj3d.material[matCount - 1].alfaMap11 = tempMeshSRV;
-                                } else {
-                                    return false;
-                                }
+								LOADTEXTURE((TCHAR*)fileNamePath.c_str(), tempMeshSRV);
+								obj3d.material[matCount - 1].alfaMap11 = tempMeshSRV;
 							  }
 
                             #endif
 							}
 
-                            ///NEW
+                            ///BUMP:
                             ///NEW
 						}
 					}
@@ -943,6 +988,11 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 										obj3d.material[matCount].transparent = false;
 
 										// SPECULAR + SHININESS
+									#if defined RENDER_OBJ_WITH_SPECULAR_SHININESS
+										obj3d.material[matCount].bSpecular = false;
+										obj3d.material[matCount].specularColor = XMFLOAT3(0.0f, 0.0f, 0.0f);
+										obj3d.material[matCount].nShininess = 0;
+                                    #endif
 
 										//BUMP
 
@@ -1014,18 +1064,12 @@ bool ModelClass::CreateObject(/*DXmodelClass*/ void* XmodelClass, TCHAR* objectN
 // --------------------------------------------------------------------------------------------
 // Post Read Actions:
 // --------------------------------------------------------------------------------------------
-#if defined (SAVEM3D) || defined(STANDALONE)
-#if defined(STANDALONE)
-	fileNameOnly = fullname;
-#endif
-
-	fileNameOnly.replace(fileNameOnly.size() - 3, 3, TEXT("M3D"));
-#endif
 
 	///////////////////////// COMPUTE NORMALS //////////////////////////
 	// If computeNormals was set to true then we will create our own
 	// normals, if it was set to false we will use the obj files normals
 	////////////////////////////////////////////////////////////////////
+	//SHADER_NORMAL_BUMP?
 		//SHADER_TEXTURE_LIGHT
 		//SHADER_TEXTURE_LIGHT_RENDERSHADOW
 		if (obj3d.hasNorm || shader_type == SHADER_TEXTURE_LIGHT)
@@ -1050,9 +1094,12 @@ bool ModelClass::CreateObject(/*DXmodelClass*/ void* XmodelClass, TCHAR* objectN
 
 				modelTextureLightVertex.push_back(tempVert);
 			}
-			
+
+			if (shader_type == 0)
+				shader_type = (renderShadow) ? SHADER_TEXTURE_LIGHT_RENDERSHADOW : SHADER_TEXTURE_LIGHT;
+
 			if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
-				((DXmodelClass*)XmodelClass)->LoadLight((TCHAR*)filename.c_str(), g_driver, /*shader_type*/(renderShadow) ? SHADER_TEXTURE_LIGHT_RENDERSHADOW : SHADER_TEXTURE_LIGHT, &obj3d.textureNameArray, &modelTextureLightVertex, &obj3d.indices32);
+				((DXmodelClass*)XmodelClass)->LoadLight((TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, &modelTextureLightVertex, &obj3d.indices32);
 			else
 				((GLmodelClass*)XmodelClass)->LoadLight((TCHAR*)filename.c_str(), g_driver, /*shader_type*/(renderShadow) ? SHADER_TEXTURE_LIGHT_RENDERSHADOW : SHADER_TEXTURE_LIGHT, & obj3d.textureNameArray, & modelTextureLightVertex, & obj3d.indices32);
 		}
@@ -1074,8 +1121,11 @@ bool ModelClass::CreateObject(/*DXmodelClass*/ void* XmodelClass, TCHAR* objectN
 					modelTextureVertex.push_back(tempVert);
 				}
 
+				if (shader_type == 0)
+					shader_type = SHADER_TEXTURE;
+
 				if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
-					((DXmodelClass*)XmodelClass)->LoadTexture((TCHAR*)filename.c_str(), g_driver, /*shader_type*/ SHADER_TEXTURE, &obj3d.textureNameArray, &modelTextureVertex, &obj3d.indices32);
+					((DXmodelClass*)XmodelClass)->LoadTexture((TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, &modelTextureVertex, &obj3d.indices32);
 				else
 					((GLmodelClass*)XmodelClass)->LoadTexture((TCHAR*)filename.c_str(), g_driver, /*shader_type*/ SHADER_TEXTURE, &obj3d.textureNameArray, &modelTextureVertex, &obj3d.indices32);
 			}
@@ -1106,8 +1156,11 @@ bool ModelClass::CreateObject(/*DXmodelClass*/ void* XmodelClass, TCHAR* objectN
 					}
 				}
 
+				if (shader_type == 0)
+					shader_type = SHADER_COLOR;
+
 				if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
-					((DXmodelClass*)XmodelClass)->LoadColor((TCHAR*)filename.c_str(), g_driver, /*shader_type*/ SHADER_COLOR, &modelColorVertex, &obj3d.indices32);
+					((DXmodelClass*)XmodelClass)->LoadColor((TCHAR*)filename.c_str(), g_driver, shader_type, &modelColorVertex, &obj3d.indices32);
 				else
 					((GLmodelClass*)XmodelClass)->LoadColor((TCHAR*)filename.c_str(), g_driver, /*shader_type*/ SHADER_COLOR, &modelColorVertex, &obj3d.indices32);
 			}

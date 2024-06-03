@@ -50,7 +50,15 @@ bool textFontClass::Initialize(void* g_driver, TCHAR* fontFilename, TCHAR* textu
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
 	{
 		m_driver11 = (DirectX::DX11Class*)g_driver;
-		LOADTEXTURE(WOMA::LoadFile(textureFilename), m_Texture11); // Note: Populate hr in case of failor
+		//[TEMMPLATE] LOAD TEXTURE DX11:
+		#define m_driver11 ((DirectX::DX11Class*)m_driver11)
+		LOADTEXTURE(textureFilename, m_Texture11);
+		if (SUCCEEDED(hr)) {
+			meshSRV11.push_back(m_Texture11);
+		}
+		else {
+			return S_FALSE;
+		}
 	}
 #if defined DX9sdk
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
@@ -78,6 +86,8 @@ bool textFontClass::Initialize(void* g_driver, TCHAR* fontFilename, TCHAR* textu
 
 void textFontClass::Shutdown()
 {
+	meshSRV11.clear();
+
 	SAFE_SHUTDOWN(gl_Texture);
 	ReleaseFontData();	// Release the font data.
 }

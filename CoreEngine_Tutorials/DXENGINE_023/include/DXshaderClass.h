@@ -25,6 +25,8 @@
 //////////////
 #include "platform.h"
 
+//#if (defined DX_ENGINE)
+
 #include "DXbasicTypes.h"
 #include "womadriverclass.h"
 #include "virtualModelClass.h"
@@ -87,6 +89,8 @@ private:
 	{
 		// BLOCK: VS1
 		XMMATRIX world;           // [64]: world
+		XMMATRIX view;
+		XMMATRIX projection;
 		XMMATRIX WV;              // [64]: world * view 
 		XMMATRIX WVP;             // [64]: world * view * projection matrix
 
@@ -98,19 +102,26 @@ private:
 
 		// 23 BLOCK: VS3
 		XMFLOAT4/*XMVECTOR*/	VSlightDirection;	// LIGHT (XMVECTOR = XMFLOAT4)
-		//float		VSPad1;
 		XMFLOAT4	VSambientColor;		// LIGHT: Ka
 		XMFLOAT4	VSdiffuseColor;		// LIGHT: Kd
 		XMFLOAT4	VSemissiveColor;	// LIGHT: Ke
 
 		// 31 BLOCK: VS4
-		float		VSfogStart;			// FOG: Future
-		float		VSfogEnd;			// FOG: Future
+		float		VSfogStart;			
+		float		VSfogEnd;			
 		BOOL		VShasShadowMap; 
-		float		VSpad2;
+		BOOL		VS_USE_WVP;
 
-		// 45 BLOCK: VS5
+		// 36 BLOCK: VS5
 		XMMATRIX ViewToLightProj;
+
+//#if DX_ENGINE_LEVEL >= 42
+		// 42 BLOCK: VS6
+		float		VSrotX;
+		float		VSrotY;
+		float		VSrotZ;
+		float		VS6PAD;
+//#endif
 	};
 
 	// PIXEL CBUFFER:
@@ -133,9 +144,9 @@ private:
 
 		// BLOCK4:
 		BOOL		hasColorMap;		// 66
-		float		lightType;			// Future
-		float		shaderType;			// Future
-		float		shaderTypeParameter;// Future
+		float		lightType;			// 29
+		float		shaderType;			
+		float		shaderTypeParameter;
 
 		// BLOCK5:
 		BOOL		hasAlfaColor;
@@ -150,7 +161,7 @@ private:
 		BOOL		hasNormMap;
 	
 		// BLOCK7:
-		XMFLOAT3	cameraPosition;	// NOT USED!
+		XMFLOAT3	cameraPosition;
 		BOOL		castShadow;
 		XMFLOAT3	specularColor;
 		float		nShininess;
@@ -165,18 +176,18 @@ struct ConstantBufferSkyType
 	// FUNCTIONS:
 	// ---------------------------------------------------------------------
 public:
-	UINT WomaIntegrityCheck = 1234567890;
+	UINT WomaIntegrityCheck = 1234567831;
 	DXshaderClass(UINT ShaderVersionH, UINT ShaderVersionL, bool shader_3D);
 	~DXshaderClass();
 	void Shutdown();
 
-	bool Initialize(TCHAR* objectName, SHADER_TYPE shaderType, /*ID3D11Device*/ void*, HWND, PRIMITIVE_TOPOLOGY PrimitiveTopology, bool useGS = false);
-	void Render(/*ID3D11DeviceContext*/ void*, int, XMMATRIX*, XMMATRIX*, XMMATRIX*);
-	void SetShaderParameters(	/*ID3D11DeviceContext*/ void* deviceContext, 
+	bool Initialize(INT m_ObjId, TCHAR* objectName, SHADER_TYPE shaderType, /*ID3D11Device*/ void*, HWND, PRIMITIVE_TOPOLOGY PrimitiveTopology, bool useGS = false);
+	void Render(UINT pass,/*ID3D11DeviceContext*/ void*, int, XMMATRIX*, XMMATRIX*, XMMATRIX*);
+	void SetShaderParameters(UINT pass, /*ID3D11DeviceContext*/ void* deviceContext,
 								XMMATRIX* worldMatrix, XMMATRIX* viewMatrix, XMMATRIX* projectionMatrix,
 								XMMATRIX* lightViewMatrix=NULL, XMMATRIX* ShadowProjectionMatrix=NULL);
 
-	void RenderShader(/*ID3D11DeviceContext*/ void*, int, int start = 0);
+	void RenderShader(UINT pass, /*ID3D11DeviceContext*/ void*, int texture_index, int, int start = 0);
 
 private:
 	bool InitializeShader(SHADER_TYPE shaderType, /*ID3D11Device*/ void*, HWND, PRIMITIVE_TOPOLOGY PrimitiveTopology);
@@ -187,6 +198,7 @@ private:
 	// VARS:
 	// ----------------------------------------------------------------------
 	STRING MODEL_NAME;
+	INT    m_ObjId = 0;
 
 #if defined DX9sdk
 	DirectX::DX9Class* m_driver9=NULL;
@@ -216,7 +228,7 @@ public:
 	ComPtr<ID3D12PipelineState>		m_pipelineState[2][3][2][MAXNUM_PIPELINE_STATES] = {0};
 	
 	UINT m_CbvSrvDescriptorSize;
-	ComPtr<ID3D12DescriptorHeap>	mSrvDescriptorHeap = NULL;			// for Descriptor buffer(s)
+	ComPtr<ID3D12DescriptorHeap>	DX12mSrvDescriptorHeap = NULL;			// for Descriptor buffer(s)
 
 	// First Constant Buffer
 	VSconstantBufferType	mVS_constantBufferData = {};
@@ -235,6 +247,8 @@ public:
 
 	SHADER_TYPE		m_shaderType;
 	bool			shader2D;
+
+	bool VS_USE_WVP = false; //by default use already multiplied matrix*matrix*matrix
 
 			ID3D11Buffer*		m_PixelShaderBuffer11 = NULL;
 			ID3D11SamplerState* m_sampleState11 = NULL;	// Resource: "Textures" States
@@ -255,10 +269,10 @@ public:
 		XMFLOAT4	pixelColor;		
 
 		// BLOCK2:
-		BOOL		hasTexture;
-		BOOL		hasLight;
-		BOOL		hasSpecular;
-		BOOL		isFont;
+		BOOL		hasTexture = false;
+		BOOL		hasLight = false;
+		BOOL		hasSpecular = false;
+		BOOL		isFontShader = false;
 
 		// BLOCK3:
 		XMFLOAT4	ambientColor;	// LIGHT: Ka
@@ -267,31 +281,33 @@ public:
 		//			lightDirection (AUTO)
 
 		// BLOCK4:
-		bool		hasColorMap;		// 66
-		float		lightType;			// Future
-		float		shaderType;			// Future
-		float		shaderTypeParameter;// Future
+		bool		hasColorMap;			// 66
+		float		lightType = 0;			// Light Type
+		float		shaderType = 0;			// Future
+		float		shaderTypeParameter = 0;// Future
 
 		// BLOCK5:
-		bool		hasAlfaColor;
-		float		alfaColor;
-		float		fade;			// Fade from 0 to 1
+		bool		hasAlfaColor = 0;
+		float		alfaColor = 0;
+		float		PSfade = 0;			// Fade from 0 to 1
 
 		// BLOCK6:
-		BOOL		hasFog;
-		BOOL		isSky;
-		BOOL		hasAlfaMap;	// 43
-		BOOL		hasNormMap;
+		BOOL		hasFog=false;
+		BOOL		isSky = false;
+		BOOL		hasAlfaMap = false;	// 43
+		BOOL		hasNormMap = false;
 
 		// BLOCK7:
 		// cameraPosition (AUTO)
 		BOOL		castShadow;
 		XMFLOAT3	specularColor;	// 44:
-		float		nShininess;		// 44:
+		float		nShininess = 0;		// 44:
 
 		// --------------------------------------------------------------------------------------------
 		// Internal Shader VARs to Copy to Buffers: VS
 		// --------------------------------------------------------------------------------------------
+		float		fogStart;
+		float		fogEnd;
 
 		//Sky: 1
 
@@ -302,5 +318,4 @@ public:
 
 }
 
-	#include "lightClass.h"	//extern LightClass* m_Light;
-
+	#include "lightClass.h"

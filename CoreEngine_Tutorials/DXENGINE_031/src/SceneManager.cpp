@@ -146,7 +146,7 @@ void SceneManager::Render()
 	quadTree.RenderNode(quadTree.m_QuadRootNode);
 }
 
-//-512,-512, 512, 512
+//Default Original World Size: -512,-512, 512, 512
 void SceneManager::CreateRootNode(UINT worldSizeDiameter, float* color)
 {
 	//         |

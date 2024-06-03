@@ -17,9 +17,11 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567831;
 
 #include "platform.h"
 #include "dxWinSystemClass.h"
+#include "ApplicationClass.h"
 
 #if defined DX9sdk
 #include "Dx9Class.h"
@@ -33,137 +35,169 @@
 #include "GLopenGLclass.h"		//woma
 #include "wGLopenGLclass.h"		// Windows
 
-#include "DemoApplicationClass.h"
+#include "OSmain_dir.h"
 
-void DemoApplicationClass::DemoRender()
+void ApplicationClass::DemoRender()
 {
-//COLOR TUTORIAL DEMO:
-	//DEMO-1:
-	if (RENDER_PAGE == 21)
-	{
-		float rY = 0.0f;
-		rY = SystemHandle->m_Application->dt * (0.005f / 16.66f);		// MOVIMENT FORMULA!
+	WomaDriverClass* m_Driver = DXsystemHandle->m_Driver;
 
+	// RENDER: SKY SKY Sphere:
+	// --------------------------------------------------------------------------------------------
+
+	//COLOR TUTORIAL DEMO:
+	// --------------------------------------------------------------------------------------------
+	//DEMO-1: Square
+	if (RENDER_PAGE == 21 || FORCE_RENDER_ALL)
+	{
+		m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID); // Render the Inside of Sphere
+		float rY = 0.0f;
+		rY = dt * (0.005f / 16.66f);	// MOVIMENT FORMULA!
+
+	#if defined ROTATE_SQUARE
 		// Rotate the world matrix by the rotation value so that the Square will spin:
-		m_1stSquar3DColorModel->translation(0, 0, 0);
-		m_1stSquar3DColorModel->rotateY(rY);
-		m_1stSquar3DColorModel->Render(SystemHandle->m_Driver);
+		m_1stSquare3DColorModel->translation(0, 0, 0);
+		m_1stSquare3DColorModel->rotateY(rY);
+	#endif
+		m_1stSquare3DColorModel->Render(m_Driver);
 	}
 
-	//DEMO-2:
-	if (RENDER_PAGE <= 25)
-		m_1stTriangle3DColorModel->Render(SystemHandle->m_Driver);
-
-//TEXTURE TUTORIAL DEMO:
-	//DEMO-1:
-	if (RENDER_PAGE == 22)
+	//DEMO-2: Triangle
+	if (RENDER_PAGE <= 25 || FORCE_RENDER_ALL)
 	{
-		m_bmp3DModel->Render(SystemHandle->m_Driver);
-		m_jpg3DModel->Render(SystemHandle->m_Driver);
-		m_png3DModel->Render(SystemHandle->m_Driver);
-		m_tif3DModel->Render(SystemHandle->m_Driver);
-		m_dds3DModel->Render(SystemHandle->m_Driver);
+		if (RENDER_PAGE == 21)
+			m_1stTriangle3DColorModel->translation(0, 3.5, 1);
+		else
+			m_1stTriangle3DColorModel->translation(-7, 5.5, 1);
+
+		m_1stTriangle3DColorModel->Render(m_Driver);
+	}
+
+	//TEXTURE TUTORIAL DEMO:
+	// --------------------------------------------------------------------------------------------
+	//DEMO-1:
+	if (RENDER_PAGE == 22 || FORCE_RENDER_ALL)
+	{
+		m_bmp3DModel->Render(m_Driver);
+		m_jpg3DModel->Render(m_Driver);
+		m_png3DModel->Render(m_Driver);
+		m_tif3DModel->Render(m_Driver);
+		m_dds3DModel->Render(m_Driver);
 	#if defined SUPPORT_TGA
-		m_tga3DModel->Render(SystemHandle->m_Driver);
+		m_tga3DModel->Render(m_Driver);
 	#endif
 	}
 
 	//DEMO-2:
-	if (RENDER_PAGE >= 22 && RENDER_PAGE <= 25)
+	if ((RENDER_PAGE >= 22 && RENDER_PAGE <= 25) || FORCE_RENDER_ALL)
 	{
-		m_1stTriangleTextureVertexModel->Render(SystemHandle->m_Driver);
+
+		if (RENDER_PAGE == 22)
+			m_1stTriangleTextureVertexModel->translation(0, 4, 1);
+		else
+			m_1stTriangleTextureVertexModel->translation(-7, 3.5, 1);
+
+		m_1stTriangleTextureVertexModel->Render(m_Driver);
 	}
 
-//LIGHT TUTORIAL DEMO:
+	//LIGHT TUTORIAL DEMO:
+	// --------------------------------------------------------------------------------------------
 	//DEMO-1
-	if (RENDER_PAGE == 23)
+	if (RENDER_PAGE == 23 || FORCE_RENDER_ALL)
 	{
 		float rY = 0.0f;
-		rY = SystemHandle->m_Application->dt * (0.015f / 16.66f);		// MOVIMENT FORMULA!
+		rY = dt * (0.015f / 16.66f);		// MOVIMENT FORMULA!
 		m_3th3DModel1->rotateX(rY);
 		m_3th3DModel1->translation(0, 0, 1);
-		m_3th3DModel1->Render(SystemHandle->m_Driver);
+		m_3th3DModel1->Render(m_Driver);
 	}
 
 	//DEMO-2
-	if (RENDER_PAGE <= 25)
-		m_3th3DModel2->Render(SystemHandle->m_Driver);
+	if ((RENDER_PAGE >= 23 && RENDER_PAGE <= 25) || FORCE_RENDER_ALL)
+	{
+		if (RENDER_PAGE == 23)
+		{
+			m_3th3DModel2->translation(0, 4.75f, 1);
+			m_3th3DModel2->scale(1.75f, 1.75f, 1.75f);
+		}
+		else {
+			m_3th3DModel2->translation(-7, 1.5f, 1);
+			m_3th3DModel2->scale(1, 1, 1);
+		}
+
+		m_3th3DModel2->Render(m_Driver);
+	}
 
 	//CUBE TUTORIAL DEMO:
-#if defined USE_SPHERE
-	if (RENDER_PAGE == 26 && m_SphereModel1)
-	{
-		SystemHandle->m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
-		float rY = 0.0f;
-		rY = SystemHandle->m_Application->dt * (0.005f / 16.66f);		// MOVIMENT FORMULA!
-		m_SphereModel1->rotateY(rY);
-		m_SphereModel1->translation(-4, 2, 1);
-		m_SphereModel1->Render(SystemHandle->m_Driver);
-	}
-	if (RENDER_PAGE == 26 && m_SphereModel2)
-	{
-		SystemHandle->m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
-		float rY = 0.0f;
-		rY = SystemHandle->m_Application->dt * (0.005f / 16.66f);		// MOVIMENT FORMULA!
-		m_SphereModel2->rotateY(rY);
-		m_SphereModel2->translation(4, 2, 1);
-		m_SphereModel2->Render(SystemHandle->m_Driver);
-	}
-#endif
+	// --------------------------------------------------------------------------------------------
+
+	// SPHEREs
+	// --------------------------------------------------------------------------------------------
+
 }
 
-void DemoApplicationClass::DemoPosRender()
+void ApplicationClass::RenderSprites()
 {
-	SystemHandle->m_Driver->SetRasterizerState(CULL_BACK, FILL_SOLID); //(CULL_NONE, FILL_WIRE);
+  WomaDriverClass* m_Driver = DXsystemHandle->m_Driver;
 
-	SystemHandle->m_Driver->TurnOnAlphaBlending();	// BANNER: Have Transparent Alfa color, so use it!
-
-	if (RENDER_PAGE >= 24 && m_titleModel)
-		m_titleModel->RenderSprite(SystemHandle->m_Driver, (SystemHandle->AppSettings->WINDOW_WIDTH - m_titleModel->SpriteTextureWidth) / 2, (SystemHandle->AppSettings->WINDOW_HEIGHT - m_titleModel->SpriteTextureHeight) / 2);
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////
-//-------------------------------------------------------------------------------------------
-void ApplicationClass::RenderScene(UINT monitorWindow)
-//-------------------------------------------------------------------------------------------
-{
-	SystemHandle->m_Driver->BeginScene(monitorWindow);	// Clear the buffers to begin the scene (glClear|ClearRenderTargetView/ClearDepthStencilView)
-
-	// Process INPUT & CAMERA Render:
-	float dayLightFade = Update(monitorWindow, SystemHandle->driverList[SystemHandle->AppSettings->DRIVER]);
-
-	// 45 Render: SHADOWS	Render one Application Frame, TODO: process these 2 in paralell!?
+// PRE-RENDER - Shadows
 #if defined USE_SHADOW_MAP
-	AppPreRender(dayLightFade);
-#endif
+void ApplicationClass::AppPreRender(UINT monitorWindow, WomaDriverClass* Driver, float fadeLight)
+{
+	// TODO: List all objects in front of camera with SHADOW!!!!!!!!!!!
 
-	// RENDER: MAIN - 3D, Render one Application Frame
-	if (RENDER_PAGE >= 15)
-		AppRender(monitorWindow, dayLightFade);
+	//RENDER TO TEXTURE:
+	if (fadeLight > 0.1f) {
+		m_RenderTexture->SetRenderTarget(/*Context*/Driver);							// Set the render target to be the render to texture.
+		m_RenderTexture->ClearRenderTarget(/*Context*/Driver, 1.0f, 1.0f, 1.0f, 1.0f);	// Clear the render to texture!
 
-	// RENDER: SPRITEs on TOP of 3D - 2D Render one Application Frame. 26 - (Need to be after 3D)
-	if (RENDER_PAGE >= 15)
-		AppPosRender();
+		// Get the view and orthographic matrices from the light object.
+		lightViewMatrix = &(m_Light->m_viewMatrix);
+		ShadowProjectionMatrix = &(m_Light->m_orthoMatrix);
+
+		// 3D STATIC OBJECTS SHADOWS: RENDER/PROCESS SHADOWS!
+		// --------------------------------------------------------------------------------------------
+	}
+
+	//RENDER TO SCREEN:
+	((DirectX::DX11Class*)Driver)->SetBackBufferRenderTarget(monitorWindow);
 }
+#endif
 
 //#############################################################################################################
 // POS-RENDER - 2D: Render TRANSPARENT Parts of 3D OBJs (like: glass window, etc...)
 //#############################################################################################################
 void ApplicationClass::AppPosRender()
 {
-	SystemHandle->m_Driver->ClearDepthBuffer();		// BANNER: On Top of 3D Rendered
+	WomaDriverClass* m_Driver = DXsystemHandle->m_Driver;
+	m_Driver->TurnOnAlphaBlending();
+	m_Driver->ClearDepthBuffer();		
+	m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
 
-	SystemHandle->demoApplicationClass->DemoPosRender();
+	if (RENDER_PAGE >= 24 && m_titleModel)
+	{
+		m_titleModel->RenderSprite(DXsystemHandle->m_Driver, (SystemHandle->AppSettings->WINDOW_WIDTH - m_titleModel->SpriteTextureWidth) / 2, 
+			(SystemHandle->AppSettings->WINDOW_HEIGHT - m_titleModel->SpriteTextureHeight) / 2);
+	}
 
+	// Render all Rastertek TEXT:
+
+	// Render Native TEXT:
+
+	m_Driver->TurnOffAlphaBlending();
+	// (Title) BANNER(s) and SPRITE(s) - On Top of 3D Rendered stuff
+	RenderSprites();
 }
 
 float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 {
 	float fadeLight = 1;
 
-	// GET INPUT for CAMERA: Movement
+	// TIME Control: Show Debug Info
+	INT64 passedTotalTime = (INT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
 
-	// Animate Camera (INTRO_DEMO)
+	// GET INPUT for CAMERA: Movement
 
 	// SET CAMERA (for this monitor): Prepare to Take a Shot: Generate the view matrix based on the camera's position.
 	if (SystemHandle->windowsArray.size() == 3)
@@ -175,15 +209,21 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 		if (monitorWindow == 0) DXsystemHandle->m_Camera->m_rotationY -= 0;
 		if (monitorWindow == 2) DXsystemHandle->m_Camera->m_rotationY += (90 / 3);	//  90:3 = 30deg
 	}
+	if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+	{
 		if (DXsystemHandle->m_Camera)
 			DXsystemHandle->m_Camera->Render();
+	}
+	else
+	{
+		GLopenGLclass* driver = (GLopenGLclass*)DXsystemHandle->driverList[SystemHandle->AppSettings->DRIVER];
+		if (driver->gl_Camera)
+			driver->gl_Camera->Render();
+	}
 
 	// CONSTRUCT: FRUSTRUM
 
 	// CAMERA TEXT: Show Debug Info
-
-	// TIME Control: Show Debug Info
-
 
 	// LIGHT: Get fade (real Sun Position): Show Debug Info
 
@@ -191,32 +231,62 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 }
 
 
-extern float SunDistance;
+// INTRO
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+//-------------------------------------------------------------------------------------------
+void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
+//-------------------------------------------------------------------------------------------
+{
+	if (RENDER_PAGE < 15)
+	{
+		Update(monitorWindow, driver);
+		return;
+	}
+	else
+	{
+		// [0] Process INPUT, CAMERA, INTRO animation etc...
+		float dayLightFade = Update(monitorWindow, driver);
+		if (dayLightFade == -100) return;
+
+		// [1] Render: SHADOWS - Render one Application Frame (Need to be before 3D)
+
+		// [2] Render: MAIN - 3D, Render one Application Frame
+		AppRender(monitorWindow, dayLightFade);
+
+		// [3] Render: MAIN - 2D (SPRITEs on TOP of 3D) Render one Application Frame. (Need to be after 3D)
+		AppPosRender();
+	}
+}
 
 //#############################################################################################################
 // RENDER - 3D
 //#############################################################################################################
-//#define ClearColor SceneManager::GetInstance()->RootNode->nodeState.ClearColor
-//#define ClearColor SystemHandle->m_Application->ClearColor
 
 void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 {
-	SystemHandle->m_Driver->SetRasterizerState(CULL_BACK, FILL_SOLID); //(CULL_NONE, FILL_SOLID);
+	WomaDriverClass* m_Driver = DXsystemHandle->m_Driver;
+	// BASICS: page 21: / 22 / 23
+	// --------------------------------------------------------------------------------------------
+	m_Driver->SetRasterizerState(CULL_BACK, FILL_SOLID); //(CULL_NONE, FILL_WIRE);
+
+	if ((RENDER_PAGE >= 23 && RENDER_PAGE < 27) || RENDER_PAGE >= 32)
+	{
+		CalculateLightRayVertex(SunDistance);							// Calculate Light Source Position
+		m_lightRayModel->UpdateDynamic(m_Driver, m_LightVertexVector);	// Update LightRay vertex(s)
+		m_lightRayModel->Render(m_Driver);								// Render LightRay
+	}
 
 	// DEBUG SPRITE: Shadows
 	// --------------------------------------------------------------------------------------------
-#if defined USE_SHADOW_MAP //&& defined _DEBUG
-	DirectX::DXmodelClass* model = (DirectX::DXmodelClass*)m_2nd3DModel;
-	if (RENDER_PAGE >= 45)
-		model->meshSRV[0] = m_RenderTexture->m_shaderResourceView;
-#endif
+
+	if (RENDER_PAGE >= 21)
+		DemoRender();
 
 	//#############################################################################################################-
 	// RENDER:
 	//#############################################################################################################
-	// RENDER: SKY
-	// --------------------------------------------------------------------------------------------
-	SystemHandle->m_Driver->TurnOffAlphaBlending();
 
 	// RENDER: CLOUDS
 	// --------------------------------------------------------------------------------------------
@@ -232,21 +302,15 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 	// [2] Render MAIN Terrain Here
 	// --------------------------------------------------------------------------------------------
 
-	// BASICS: page 21: / 22 / 23
+	m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
+
+	// 3D STATIC OPAC OBJECTS
 	// --------------------------------------------------------------------------------------------
-	SystemHandle->m_Driver->SetRasterizerState(CULL_BACK, FILL_SOLID); //(CULL_NONE, FILL_WIRE);
 
-	SystemHandle->demoApplicationClass->DemoRender();
+	// 3D MESH OBJECTS
+	// ...
 
-	if (RENDER_PAGE >= 23 && RENDER_PAGE < 27)
-	{
-		CalculateLightRayVertex(SunDistance);											// Calculate Light Source Position
-		m_lightRayModel->UpdateDynamic(SystemHandle->m_Driver, m_LightVertexVector);	// Update LightRay vertex(s)
-		m_lightRayModel->Render(SystemHandle->m_Driver);								// Render LightRay
-	}
-
-	// 3D STATIC OBJECTS
-	// --------------------------------------------------------------------------------------------
+	//THE "OTHER" NETWORK PLAYERS
 
 	// 3D WATER
 	// --------------------------------------------------------------------------------------------
@@ -254,8 +318,4 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 
 	// BEFORE 2D: Render TRANSPARENT Parts of 3D OBJs (like: glass window, etc...)
 	// --------------------------------------------------------------------------------------------
-
-	// 3D MESH OBJECTS
-	// ...
-	// TODO procedure
 }

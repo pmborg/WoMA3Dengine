@@ -20,13 +20,21 @@
 #include "main.h"
 #include "ApplicationClass.h"
 #include "mem_leak.h"
+#include "OSmain_dir.h"
+
+#pragma warning(push)
+#pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
 
 #include "winSystemClass.h"
+
+#include <inttypes.h>
+
+bool FORCE_RENDER_ALL = false;
 
 ApplicationClass::ApplicationClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567890;
+	WomaIntegrityCheck = 1234567831;
 
 	// ---------------------------------------------------------------------
 	// private:
@@ -48,15 +56,32 @@ ApplicationClass::ApplicationClass()
 	// TERRAIN
 
 
+
+	//	-------------------------------------------------------------------------------------------
+	//	WoMA Vertex(s) Arrays:  NOTE: Cant be used to create and Obj more than ONCE!
+	//	-------------------------------------------------------------------------------------------
+
 	Start();
 }
 
-ApplicationClass::~ApplicationClass() {CLASSDELETE();}
+ApplicationClass::~ApplicationClass() {
+	Shutdown();
+	CLASSDELETE();
+}
 
 //	-------------------------------------------------------------------------------------------
 void ApplicationClass::Shutdown()
 {
 	WOMA_LOGManager_DebugMSG ("ApplicationClass::Shutdown()\n");
+
+	//3D:
+
+
+	//2D:
+#if defined INTRO_DEMO || defined USE_VIEW2D_SPRITES
+	DEMO_WOMA_APPLICATION_Shutdown2D();
+#endif
+
 
 #if defined SCENE_MAIN_TOPO_TERRAIN
 	SAFE_DELETE (mainTopoTerrain);
@@ -70,18 +95,31 @@ void ApplicationClass::Shutdown()
 #endif
 }
 
+//-----------------------------------------------------------------------------------------
+void ApplicationClass::WOMA_APPLICATION_Shutdown()
+//-----------------------------------------------------------------------------------------
+{
+	WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_Shutdown()\n");
+
+	SAFE_DELETE(initWorld);
+
+	SAFE_DELETE(weatherClass);
+	SAFE_DELETE(metarClass);
+
+}
 
 //-----------------------------------------------------------------------------------------
 bool ApplicationClass::WOMA_APPLICATION_InitGUI()
 //-----------------------------------------------------------------------------------------
 {
+	//Used by windows: CreateFont()
 	SystemHandle->m_scaleX = MIN(1, SystemHandle->AppSettings->WINDOW_WIDTH / 1920.0f);
 	SystemHandle->m_scaleY = MIN(1, SystemHandle->AppSettings->WINDOW_HEIGHT / 1080.0f);
 	if (SystemHandle->m_scaleY > 0.9f)
 		SystemHandle->m_scaleY = 1;
 
-	SystemHandle->fontSizeX = MIN(25, 48 * SystemHandle->m_scaleX);	//To use on win32 window not DX
-	SystemHandle->fontSizeY = MIN(25, 40 * SystemHandle->m_scaleY); //To use on win32 window not DX
+	SystemHandle->fontSizeX = MIN(30, 48 * SystemHandle->m_scaleX);	//To use on win32 window not DX
+	SystemHandle->fontSizeY = MIN(30, 40 * SystemHandle->m_scaleY); //To use on win32 window not DX
 
 	WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_InitGUI()\n");
 
@@ -104,6 +142,7 @@ bool ApplicationClass::WOMA_APPLICATION_InitGUI()
 		}
 		WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_InitGUI()-InitializeWeatherInfoScreen created\n");
 	}
+
 	return true;
 }
 
@@ -122,16 +161,4 @@ bool ApplicationClass::Start()
 }
 
 
-
-//-----------------------------------------------------------------------------------------
-void ApplicationClass::WOMA_APPLICATION_Shutdown()
-//-----------------------------------------------------------------------------------------
-{
-	WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_Shutdown()\n");
-
-	SAFE_DELETE(initWorld);
-
-	SAFE_DELETE(weatherClass);
-	SAFE_DELETE(metarClass);
-
-}
+#pragma warning(pop)

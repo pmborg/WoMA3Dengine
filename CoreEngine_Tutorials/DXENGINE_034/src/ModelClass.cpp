@@ -21,12 +21,12 @@
 
 #include "platform.h"
 
-#pragma warning( disable : 4267 ) // Disable warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
 #include "womadriverclass.h"
 #include "modelClass.h"
 #include "DXmodelClass.h"
 #include "GLmodelClass.h"
 #include "DXshaderClass.h"
+#include "DX11Class.h"
 #include "fileLoader.h"
 #include "OSmain_dir.h"
 #include "dxWinSystemClass.h"
@@ -115,7 +115,7 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 {	HRESULT hr = 0;
 
 	//---------------------------------------------------------------------
-	WOMA_LOGManager_DebugMSG( TEXT("Loading: %s\n"), (TCHAR*)(filename+TEXT(" ")).c_str() );
+	WOMA_LOGManager_DebugMSG( TEXT("OBJ Loading: %s with shader: [%d]\n"), (TCHAR*)(filename+TEXT(" ")).c_str(), shader_type);
 	obj3d.fileNameOnly=filename;
 
 	// Add full path:
@@ -128,7 +128,7 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 	// ---------------------
 	IFSTREAM fileIn ((TCHAR*)newfilename.c_str());
 	if (!fileIn) 
-		{ WomaFatalException("Error opening OBJ file"); return false; }
+		{ WOMA::WomaMessageBox((TCHAR*)newfilename.c_str(), TEXT("Error, Could not load: ")); return FALSE; }
 
 	obj3d.m_vertexCount = 0;		//totalVerts
 	TCHAR lastToken = 0;
@@ -177,7 +177,7 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 
 					obj3d.hasTexCoord = true;	//We know the model uses texture coords
 				}
-				//42
+				//99
 				//Since we compute the normals later, we don't need to check for normals
 				//In the file, but i'll do it here anyway
 				if(checkChar == 'n')				//vn - vert normal
@@ -620,9 +620,9 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 	// ---------------------
 	{
 	STRING temp = MathLibPath;
-	int indexCh = temp.find_last_of('\\');
+	int indexCh = (int)temp.find_last_of('\\');
 	if (indexCh == -1)
-		indexCh = temp.find_last_of('/');
+		indexCh = (int)temp.find_last_of('/');
 	indexCh++;
 	STRING path = MathLibPath;
 	path = path.substr(0, indexCh);
@@ -659,11 +659,12 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
         #endif
 
 		//BUMP
+			obj3d.material[0].hasNormMap = false;
+			obj3d.material[0].normMapTexArrayIndex = 0;
 
 		obj3d.textureNameArray.push_back(TEXT("none"));
-		obj3d.material[0 /*matCount-1*/].texArrayIndex = 0; // obj3d.meshSRV.size();
-		//obj3d.meshSRV.push_back(NULL);
-		obj3d.material[0 /*matCount-1*/].hasTexture = true;
+		obj3d.material[0].texArrayIndex = 0;
+		obj3d.material[0].hasTexture = true;
 
 		//SKIP_MATERIALS = true;
 		goto SKIP;
@@ -682,7 +683,7 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 	//fileMtl.open(fullname.c_str());
 #endif
 
-	int matCount = obj3d.material.size();	//total materials
+	int matCount = (int)obj3d.material.size();	//total materials
 
 	//kdset - If our diffuse color was not set, we can use the ambient color (which is usually the same)
 	//If the diffuse color WAS set, then we don't need to set our diffuse color to ambient
@@ -877,13 +878,28 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 									//if the texture is not already loaded, load it now
 									if(!alreadyLoaded)
 									{
+										ID3D11ShaderResourceView* tempMeshSRV = NULL;
 										fileNamePath = MathLibPath + fileNamePath;	// TO Support TEMP:
 										fileNamePath = WOMA::LoadFile ((TCHAR*)fileNamePath.c_str());
+										
+										hr = S_OK;
+										#if !defined(STANDALONE)
+											//[TEMMPLATE] LOAD TEXTURE DX11:
+											#define m_driver11 ((DirectX::DX11Class*)SystemHandle->driverList[SystemHandle->AppSettings->DRIVER])
+											LOADTEXTURE(fileNamePath.c_str(), tempMeshSRV);
+										#endif
 
-										obj3d.material[matCount - 1].texArrayIndex = obj3d.textureNameArray.size();  //matCount - 1;
-										obj3d.material[matCount-1].hasTexture = true;
+										if(SUCCEEDED(hr))
+										{
+											obj3d.material[matCount-1].texArrayIndex = (int)((DXmodelClass*)dxmodelClass)->meshSRV11.size();
+											obj3d.material[matCount-1].hasTexture = true;
 
-										obj3d.textureNameArray.push_back(fileNamePath.c_str());
+											obj3d.textureNameArray.push_back(fileNamePath.c_str());
+											((DXmodelClass*)dxmodelClass)->meshSRV11.push_back(tempMeshSRV);
+										} else {
+											return false;
+										}
+										
 									}	
 								}
 							}
@@ -930,20 +946,84 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
                             #if !defined(STANDALONE)
 							  if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9) 
 							  {
+								//[TEMMPLATE] LOAD TEXTURE DX11:
 								#define m_driver11 ((DirectX::DX11Class*)SystemHandle->driverList[SystemHandle->AppSettings->DRIVER])
-								hr = m_driver11->LOADTEXTURE_DX11_WIN_SDK8(m_driver11->m_device, (TCHAR*)fileNamePath.c_str(), &tempMeshSRV);
-                                if (SUCCEEDED(hr))
-                                {
-									obj3d.material[matCount - 1].alfaMap11 = tempMeshSRV;
-                                } else {
-                                    return false;
-                                }
+								LOADTEXTURE((TCHAR*)fileNamePath.c_str(), tempMeshSRV);
+								obj3d.material[matCount - 1].alfaMap11 = tempMeshSRV;
 							  }
 
                             #endif
 							}
 
-                            ///NEW
+                            ///BUMP:
+                            //map_bump - bump map (we're usinga normal map though)
+                            else if (checkChar == 'b')
+                            {
+                                checkChar = fileMtl.get();
+                                if (checkChar == 'u')
+                                {
+                                    checkChar = fileMtl.get();
+                                    if (checkChar == 'm')
+                                    {
+                                        checkChar = fileMtl.get();
+                                        if (checkChar == 'p')
+                                        {
+                                            STRING fileNamePath;
+
+                                            fileMtl.get();	//Remove whitespace between map_bump and file
+
+                                            //Get the file path - We read the pathname char by char since
+                                            //pathnames can sometimes contain spaces, so we will read until
+                                            //we find the file extension
+                                            bool texFilePathEnd = false;
+                                            while (!texFilePathEnd)
+                                            {
+                                                checkChar = fileMtl.get();
+
+                                                fileNamePath += checkChar;
+
+                                                if (checkChar == '.')
+                                                {
+                                                    for (int i = 0; i < 3; ++i)
+                                                        fileNamePath += fileMtl.get();
+
+                                                    texFilePathEnd = true;
+                                                }
+                                            }
+
+                                            //check if this texture has already been loaded
+                                            bool alreadyLoaded = false;
+                                            for (UINT i = 0; i < obj3d.textureNameArray.size(); ++i)
+                                            {
+                                                if (fileNamePath == obj3d.textureNameArray[i])
+                                                {
+                                                    alreadyLoaded = true;
+													obj3d.material[matCount - 1].normMapTexArrayIndex = i;
+													obj3d.material[matCount - 1].hasNormMap = true;
+													obj3d.ModelHASNormals = true;
+                                                }
+                                            }
+
+                                            //if the texture is not already loaded, load it now
+                                            if (!alreadyLoaded)
+                                            {
+                                                ID3D11ShaderResourceView* tempMeshSRV=NULL;
+                                                fileNamePath = MathLibPath + fileNamePath;	// TO Support TEMP:
+                                                fileNamePath = WOMA::LoadFile((TCHAR*) fileNamePath.c_str());
+
+												//[TEMMPLATE] LOAD TEXTURE DX11:
+												#define m_driver11 ((DirectX::DX11Class*)SystemHandle->driverList[SystemHandle->AppSettings->DRIVER])
+												LOADTEXTURE(fileNamePath.c_str(), tempMeshSRV);
+												obj3d.textureNameArray.push_back(fileNamePath.c_str());
+												obj3d.material[matCount - 1].normMapTexArrayIndex = (int)((DXmodelClass*)dxmodelClass)->meshSRV11.size();
+												((DXmodelClass*)dxmodelClass)->meshSRV11.push_back(tempMeshSRV);
+												obj3d.material[matCount - 1].hasNormMap = true;
+												obj3d.ModelHASNormals = true;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                             ///NEW
 						}
 					}
@@ -1000,6 +1080,8 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
                                     #endif
 
 										//BUMP
+										obj3d.material[matCount].hasNormMap = false;
+										obj3d.material[matCount].normMapTexArrayIndex = 0;
 
 										matCount++;
 										kdset = false;
@@ -1069,18 +1151,12 @@ bool ModelClass::CreateObject(/*DXmodelClass*/ void* XmodelClass, TCHAR* objectN
 // --------------------------------------------------------------------------------------------
 // Post Read Actions:
 // --------------------------------------------------------------------------------------------
-#if defined (SAVEM3D) || defined(STANDALONE)
-#if defined(STANDALONE)
-	fileNameOnly = fullname;
-#endif
-
-	fileNameOnly.replace(fileNameOnly.size() - 3, 3, TEXT("M3D"));
-#endif
 
 	///////////////////////// COMPUTE NORMALS //////////////////////////
 	// If computeNormals was set to true then we will create our own
 	// normals, if it was set to false we will use the obj files normals
 	////////////////////////////////////////////////////////////////////
+	//SHADER_NORMAL_BUMP?
 		//SHADER_TEXTURE_LIGHT
 		//SHADER_TEXTURE_LIGHT_RENDERSHADOW
 		if (obj3d.hasNorm || shader_type == SHADER_TEXTURE_LIGHT)
@@ -1105,9 +1181,12 @@ bool ModelClass::CreateObject(/*DXmodelClass*/ void* XmodelClass, TCHAR* objectN
 
 				modelTextureLightVertex.push_back(tempVert);
 			}
-			
+
+			if (shader_type == 0)
+				shader_type = (renderShadow) ? SHADER_TEXTURE_LIGHT_RENDERSHADOW : SHADER_TEXTURE_LIGHT;
+
 			if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
-				((DXmodelClass*)XmodelClass)->LoadLight((TCHAR*)filename.c_str(), g_driver, /*shader_type*/(renderShadow) ? SHADER_TEXTURE_LIGHT_RENDERSHADOW : SHADER_TEXTURE_LIGHT, &obj3d.textureNameArray, &modelTextureLightVertex, &obj3d.indices32);
+				((DXmodelClass*)XmodelClass)->LoadLight((TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, &modelTextureLightVertex, &obj3d.indices32);
 			else
 				((GLmodelClass*)XmodelClass)->LoadLight((TCHAR*)filename.c_str(), g_driver, /*shader_type*/(renderShadow) ? SHADER_TEXTURE_LIGHT_RENDERSHADOW : SHADER_TEXTURE_LIGHT, & obj3d.textureNameArray, & modelTextureLightVertex, & obj3d.indices32);
 		}
@@ -1129,8 +1208,11 @@ bool ModelClass::CreateObject(/*DXmodelClass*/ void* XmodelClass, TCHAR* objectN
 					modelTextureVertex.push_back(tempVert);
 				}
 
+				if (shader_type == 0)
+					shader_type = SHADER_TEXTURE;
+
 				if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
-					((DXmodelClass*)XmodelClass)->LoadTexture((TCHAR*)filename.c_str(), g_driver, /*shader_type*/ SHADER_TEXTURE, &obj3d.textureNameArray, &modelTextureVertex, &obj3d.indices32);
+					((DXmodelClass*)XmodelClass)->LoadTexture((TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, &modelTextureVertex, &obj3d.indices32);
 				else
 					((GLmodelClass*)XmodelClass)->LoadTexture((TCHAR*)filename.c_str(), g_driver, /*shader_type*/ SHADER_TEXTURE, &obj3d.textureNameArray, &modelTextureVertex, &obj3d.indices32);
 			}
@@ -1161,8 +1243,11 @@ bool ModelClass::CreateObject(/*DXmodelClass*/ void* XmodelClass, TCHAR* objectN
 					}
 				}
 
+				if (shader_type == 0)
+					shader_type = SHADER_COLOR;
+
 				if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
-					((DXmodelClass*)XmodelClass)->LoadColor((TCHAR*)filename.c_str(), g_driver, /*shader_type*/ SHADER_COLOR, &modelColorVertex, &obj3d.indices32);
+					((DXmodelClass*)XmodelClass)->LoadColor((TCHAR*)filename.c_str(), g_driver, shader_type, &modelColorVertex, &obj3d.indices32);
 				else
 					((GLmodelClass*)XmodelClass)->LoadColor((TCHAR*)filename.c_str(), g_driver, /*shader_type*/ SHADER_COLOR, &modelColorVertex, &obj3d.indices32);
 			}

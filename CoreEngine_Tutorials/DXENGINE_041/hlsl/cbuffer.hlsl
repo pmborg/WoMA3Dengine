@@ -8,6 +8,8 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
 {
 	// BLOCK: VS1
 	matrix	worldMatrix;	//worldMatrix
+	matrix	view;			//view
+	matrix	projection;		//projection
 	matrix  WV;				//worldMatrix+viewMatrix
 	matrix  WVP;			//worldMatrix+viewMatrix+projectionMatrix
 
@@ -28,7 +30,7 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
 	float	VSfogStart;
 	float	VSfogEnd;
 	bool	VShasShadowMap;
-	float	VSpad2;
+	bool	VS_USE_WVP;
 
 	// 45 BLOCK: VS5
 	matrix	ViewToLightProj;

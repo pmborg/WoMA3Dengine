@@ -44,6 +44,13 @@ extern shaderTree shaderManager_41[];
 extern shaderTree shaderManager_50[];
 extern shaderTree shaderManager_51[];
 
+#ifndef DEG2RAD
+	#define DEG2RAD(x)  ((float)(x) * (PI/180.0f))
+#endif
+#ifndef RAD2DEG
+	#define RAD2DEG(x)  ((float)(x) * (180.0f/PI))
+#endif
+
 // 21 Vertex: SHADER_COLOR: v + Kd
 /*struct VSIn
 {
@@ -242,9 +249,10 @@ namespace DirectX {
 	}
 #endif
 
-	bool DXshaderClass::Initialize(TCHAR* objectName, SHADER_TYPE shaderType, /*ID3D11Device*/ void* device, HWND hwnd, PRIMITIVE_TOPOLOGY PrimitiveTopology, bool useGS)
+	bool DXshaderClass::Initialize(INT Id, TCHAR* objectName, SHADER_TYPE shaderType, /*ID3D11Device*/ void* device, HWND hwnd, PRIMITIVE_TOPOLOGY PrimitiveTopology, bool useGS)
 	{
 		bool result = false;
+		m_ObjId = Id;
 		m_shaderType = shaderType;
 		bUseGS = useGS;
 		MODEL_NAME = objectName;
@@ -359,19 +367,21 @@ namespace DirectX {
 			numElements = sizeof(shadowMapPolygonLayout11) / sizeof(shadowMapPolygonLayout11[0]);	// Get a count of the elements in the layout.			
 			break;
 
-
-		case SHADER_TEXTURE_LIGHT_INSTANCED:
+#if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES // Normal Bump + Instancing 
+		case SHADER_TEXTURE_LIGHT_INSTANCED:			//40
+		case SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED: //41
 			polygonLayout11 = &lightInstancedPolygonLayout11[0];
 			numElements = sizeof(lightInstancedPolygonLayout11) / sizeof(lightInstancedPolygonLayout11[0]);
 			break;
+#endif
+#if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES //40: Aux. Shader (render in texture), but using Instances
 		case SHADER_TEXTURE_LIGHT_CASTSHADOW_INSTANCED:
 			polygonLayout11 = &shadowMapInstancedPolygonLayout11[0];
 			numElements = sizeof(shadowMapInstancedPolygonLayout11) / sizeof(shadowMapInstancedPolygonLayout11[0]);
 			break;
-		case SHADER_NORMAL_BUMP_INSTANCED:
-			polygonLayout11 = &lightNormalInstancedPolygonLayout11[0];
-			numElements = sizeof(lightNormalInstancedPolygonLayout11) / sizeof(lightNormalInstancedPolygonLayout11[0]);
-			break;
+#endif
+		default:
+			throw woma_exception("WRONG SHADER!", __FILE__, __FUNCTION__, __LINE__);
 		}
 
 		std::wstring vsFilename = L"";
@@ -416,32 +426,34 @@ namespace DirectX {
 			vertexHLSL.append("MyVertexShader035TextureBump");
 			pixelHLSL.append("MyPixelShader035TextureBump");
 			break;
-		case SHADER_TEXTURE_LIGHT_RENDERSHADOW:			//36:			public "Render Shadows"
+		case SHADER_TEXTURE_LIGHT_RENDERSHADOW:			//36:			Draw Shadows
 			vsFilename.append(L"hlsl/036LightRenderShadow.hlsl");
 			psFilename = vsFilename;
 			vertexHLSL.append("MyVertexShader036LightRenderShadow");
 			pixelHLSL.append("MyPixelShader036LightRenderShadow");
 			break;
-		case SHADER_TEXTURE_LIGHT_CASTSHADOW:			//36:	
+		case SHADER_TEXTURE_LIGHT_CASTSHADOW:			//36:			Aux. Shader (render in texture)
 			vsFilename.append(L"hlsl/036ShadowMap.hlsl");
 			psFilename = vsFilename;
 			vertexHLSL.append("MyVertexShader036ShadowMap");
 			pixelHLSL.append("MyPixelShader036ShadowMap");
 			break;
-		case SHADER_TEXTURE_LIGHT_INSTANCED:			//public   40: INSTANCED 23 light with Instances    
+#if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES
+		case SHADER_TEXTURE_LIGHT_INSTANCED:			//40: INSTANCED like 23 light, but using Instances
 			vsFilename.append(L"hlsl/040LightInstance.hlsl");
 			psFilename = vsFilename;
 			vertexHLSL.append("MyVertexShader040LightInstance");
 			pixelHLSL.append("MyPixelShader040LightInstance");
 			break;
-		case SHADER_TEXTURE_LIGHT_CASTSHADOW_INSTANCED:	//private  40: INSTANCED 36 shadows with Instances  
-			break;
-		case SHADER_NORMAL_BUMP_INSTANCED:				//private  40: INSTANCED 35 bump with Instances ... 
-			break;
+#endif
 		default:
 			WomaFatalExceptionW(TEXT("This Shader type is not supported yet!"));
 			break;
 		};
+
+#if _DEBUG
+		WOMA_LOGManager_DebugMSG(L"vertexHLSL [%s]\n", vsFilename.c_str());
+#endif
 
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 		{
@@ -677,7 +689,7 @@ namespace DirectX {
 		HRESULT result;
 		ID3D11DeviceContext* deviceContext11 = ((ID3D11DeviceContext*)Device_Context);
 
-		VSconstantBufferType* dataVSptr = NULL;	// Reset Pointer, only once:
+		VSconstantBufferType* dataVSptr = NULL;				// Reset Pointer, only once:
 
 		D3D11_MAPPED_SUBRESOURCE mappedResource = { 0 };
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
@@ -695,19 +707,20 @@ namespace DirectX {
 		// BOTH: DX11 and DX12
 		//
 
-	//#if !defined USE_PRECOMPILED_SHADERS // ORIGINAL CODE: rastertek
-	//	dataVSptr->world = XMMatrixTranspose (*worldMatrix);		// Copy the matrices into the constant buffer.
-	//	dataVSptr->view = XMMatrixTranspose (*viewMatrix);		
-	//	dataVSptr->projection = XMMatrixTranspose (*projectionMatrix);
-	//#else
-		// Copy the matrices into the Constant buffer:
-		XMMATRIX WV = (*worldMatrix) * (*viewMatrix);
+		// Copy the matrices into the constant buffer.
 		dataVSptr->world = XMMatrixTranspose(*worldMatrix);
-		dataVSptr->WV = XMMatrixTranspose(WV);						// Pre compute WV to reuse in all Vertices
-		dataVSptr->WVP = XMMatrixTranspose(WV * (*projectionMatrix));	// Pre compute WVP to reuse in all Vertices
-		//#endif
 
-	// BLOCK: VS2
+		if (VS_USE_WVP) {
+			XMMATRIX WV = (*worldMatrix) * (*viewMatrix);
+			dataVSptr->WV = XMMatrixTranspose(WV);							// Pre compute WV to reuse in all Vertices
+			dataVSptr->WVP = XMMatrixTranspose(WV * (*projectionMatrix));	// Pre compute WVP to reuse in all Vertices
+		}
+		else {
+			dataVSptr->view = XMMatrixTranspose(*viewMatrix);
+			dataVSptr->projection = XMMatrixTranspose(*projectionMatrix);
+		}
+
+		// BLOCK: VS2
 		dataVSptr->VShasLight = hasLight;
 		dataVSptr->VShasSpecular = hasSpecular;
 		dataVSptr->VShasNormMap = hasNormMap; //BUMPMAP
@@ -733,9 +746,11 @@ namespace DirectX {
 
 		// BLOCK: VS4
 
-		// BLOCK: VS6
 		dataVSptr->VShasShadowMap = castShadow;
 
+		dataVSptr->VS_USE_WVP = VS_USE_WVP;
+
+		// BLOCK: VS5
 		if (!lightViewMatrix && !ShadowProjectionMatrix)
 			castShadow = false;
 
@@ -790,8 +805,9 @@ namespace DirectX {
 
 		// BLOCK4:
 		dataPSptr->hasColorMap = hasColorMap;
-		if (RENDER_PAGE >= 26)
+		if (RENDER_PAGE >= 26) {
 			dataPSptr->lightType = 2;
+		}
 		else
 			dataPSptr->lightType = lightType;
 
@@ -862,9 +878,11 @@ namespace DirectX {
 				deviceContext->GSSetShader(NULL, NULL, 0);
 			}
 
+#if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES // Normal Bump + Instancing 
 			if (m_instanceCount > 0)
 				deviceContext->DrawIndexedInstanced(indexCount, m_instanceCount, start, 0, 0);	// Use: Instancing
 			else
+#endif
 				deviceContext->DrawIndexed(indexCount, start, 0);	// Render Indexed mesh
 		}
 

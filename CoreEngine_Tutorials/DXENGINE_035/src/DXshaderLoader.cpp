@@ -84,14 +84,14 @@ shader 5.1 win10 - DX12
 #include "../../SAMPLES/DXengine/023LightVs_51.h" 
 #include "../../SAMPLES/DXengine/023LightPs_51.h"
 
-#include "../../SAMPLES/DXengine/047TextureLightNormalVs_40.h" 
-#include "../../SAMPLES/DXengine/047TextureLightNormalPs_40.h"
-#include "../../SAMPLES/DXengine/047TextureLightNormalVs_41.h" 
-#include "../../SAMPLES/DXengine/047TextureLightNormalPs_41.h"
-#include "../../SAMPLES/DXengine/047TextureLightNormalVs_50.h" 
-#include "../../SAMPLES/DXengine/047TextureLightNormalPs_50.h"
-#include "../../SAMPLES/DXengine/047TextureLightNormalVs_51.h" 
-#include "../../SAMPLES/DXengine/047TextureLightNormalPs_51.h"
+#include "../../SAMPLES/DXengine/035TextureLightNormalVs_40.h" 
+#include "../../SAMPLES/DXengine/035TextureLightNormalPs_40.h"
+#include "../../SAMPLES/DXengine/035TextureLightNormalVs_41.h" 
+#include "../../SAMPLES/DXengine/035TextureLightNormalPs_41.h"
+#include "../../SAMPLES/DXengine/035TextureLightNormalVs_50.h" 
+#include "../../SAMPLES/DXengine/035TextureLightNormalPs_50.h"
+#include "../../SAMPLES/DXengine/035TextureLightNormalVs_51.h" 
+#include "../../SAMPLES/DXengine/035TextureLightNormalPs_51.h"
 
 shaderTree shaderManager_40[] =
 {
@@ -116,6 +116,10 @@ shaderTree shaderManager_41[] =
 	/* 02 */,{ (void*)MyVertexShader023Light_41,NULL,(void*)MyPixelShader023Light_41, sizeof(MyVertexShader023Light_41),0,sizeof(MyPixelShader023Light_41) }
 
 	/* 05 */,{ (void*)MyVertexShader047TextureLightNormal_41,NULL,(void*)MyPixelShader047TextureLightNormal_41, sizeof(MyVertexShader047TextureLightNormal_41),0,sizeof(MyPixelShader047TextureLightNormal_41) }
+
+#if DX_ENGINE_LEVEL >= 40  ShadowMap + Instancing 
+	/* 07 */,{ (void*)MyVertexShader051ShadowMapInstance_41,NULL,(void*)MyPixelShader051ShadowMapInstance_41, sizeof(MyVertexShader051ShadowMapInstance_41),0,sizeof(MyPixelShader051ShadowMapInstance_41) }
+#endif
 
 };
 

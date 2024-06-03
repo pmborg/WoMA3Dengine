@@ -44,6 +44,13 @@ extern shaderTree shaderManager_41[];
 extern shaderTree shaderManager_50[];
 extern shaderTree shaderManager_51[];
 
+#ifndef DEG2RAD
+	#define DEG2RAD(x)  ((float)(x) * (PI/180.0f))
+#endif
+#ifndef RAD2DEG
+	#define RAD2DEG(x)  ((float)(x) * (180.0f/PI))
+#endif
+
 // 21 Vertex: SHADER_COLOR: v + Kd
 /*struct VSIn
 {
@@ -219,9 +226,10 @@ namespace DirectX {
 	}
 #endif
 
-	bool DXshaderClass::Initialize(TCHAR* objectName, SHADER_TYPE shaderType, /*ID3D11Device*/ void* device, HWND hwnd, PRIMITIVE_TOPOLOGY PrimitiveTopology, bool useGS)
+	bool DXshaderClass::Initialize(INT Id, TCHAR* objectName, SHADER_TYPE shaderType, /*ID3D11Device*/ void* device, HWND hwnd, PRIMITIVE_TOPOLOGY PrimitiveTopology, bool useGS)
 	{
 		bool result = false;
+		m_ObjId = Id;
 		m_shaderType = shaderType;
 		bUseGS = useGS;
 		MODEL_NAME = objectName;
@@ -336,7 +344,8 @@ namespace DirectX {
 			numElements = sizeof(shadowMapPolygonLayout11) / sizeof(shadowMapPolygonLayout11[0]);	// Get a count of the elements in the layout.			
 			break;
 
-
+		default:
+			throw woma_exception("WRONG SHADER!", __FILE__, __FUNCTION__, __LINE__);
 		}
 
 		std::wstring vsFilename = L"";
@@ -381,19 +390,26 @@ namespace DirectX {
 			vertexHLSL.append("MyVertexShader035TextureBump");
 			pixelHLSL.append("MyPixelShader035TextureBump");
 			break;
-		case SHADER_TEXTURE_LIGHT_RENDERSHADOW:			//36:			public "Render Shadows"
+		case SHADER_TEXTURE_LIGHT_RENDERSHADOW:			//36:			Draw Shadows
 			vsFilename.append(L"hlsl/036LightRenderShadow.hlsl");
 			psFilename = vsFilename;
 			vertexHLSL.append("MyVertexShader036LightRenderShadow");
 			pixelHLSL.append("MyPixelShader036LightRenderShadow");
 			break;
-		case SHADER_TEXTURE_LIGHT_CASTSHADOW:			//36:	
+		case SHADER_TEXTURE_LIGHT_CASTSHADOW:			//36:			Aux. Shader (render in texture)
 			vsFilename.append(L"hlsl/036ShadowMap.hlsl");
 			psFilename = vsFilename;
 			vertexHLSL.append("MyVertexShader036ShadowMap");
 			pixelHLSL.append("MyPixelShader036ShadowMap");
 			break;
+		default:
+			WomaFatalExceptionW(TEXT("This Shader type is not supported yet!"));
+			break;
 		};
+
+#if _DEBUG
+		WOMA_LOGManager_DebugMSG(L"vertexHLSL [%s]\n", vsFilename.c_str());
+#endif
 
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 		{
@@ -480,14 +496,12 @@ namespace DirectX {
 			// Create the vertex shader from the buffer: (LOAD & COMPILE EXTERNAL FILE)
 			result = device11->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &m_vertexShader11);
 			if (FAILED(result))
-				WOMA::WomaMessageBox(TEXT("ERROR"), TEXT("CreateVertexShader:"));
-			IF_FAILED_RETURN_FALSE(result);
+				{ WOMA::WomaMessageBox(TEXT("ERROR"), TEXT("CreateVertexShader:")); return false; }
 
 			// Create the pixel shader from the buffer: (LOAD & COMPILE EXTERNAL FILE)
 			result = device11->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &m_pixelShader11);
 			if (FAILED(result))
-				WOMA::WomaMessageBox(TEXT("ERROR"), TEXT("pixelShaderBuffer:"));
-			IF_FAILED_RETURN_FALSE(result);
+				{ WOMA::WomaMessageBox(TEXT("ERROR"), TEXT("pixelShaderBuffer:")); return false; }
 
 			// Create the vertex input layout.
 #if !defined USE_PRECOMPILED_SHADERS
@@ -501,7 +515,7 @@ namespace DirectX {
 			SAFE_RELEASE(vertexShaderBuffer);
 			SAFE_RELEASE(pixelShaderBuffer);
 #else
-	// Create the Vertex Shader from the buffer: (GET CODE ON "EXE")
+			// Create the Vertex Shader from the buffer: (GET CODE ON "EXE")
 			result = device11->CreateVertexShader(shaderManager[shaderType].blobVS, shaderManager[shaderType].sizeVS, NULL, &m_vertexShader);
 			if (FAILED(result)) { WomaFatalExceptionW(TEXT("Error: CreateVertexShader")); return false; }
 
@@ -551,9 +565,6 @@ namespace DirectX {
 
 			/*
 			--------------------------------------------------------------------------------------------
-			Source:
-			http://msdn.microsoft.com/en-us/library/dn642451.aspx
-
 			1    Point filtering (least expensive, worst visual quality)    D3D11_FILTER_MIN_MAG_MIP_POINT;
 			2    Bilinear filtering                                         D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
 			3    Trilinear filtering                                        D3D11_FILTER_MIN_MAG_MIP_LINEAR;
@@ -634,7 +645,7 @@ namespace DirectX {
 		HRESULT result;
 		ID3D11DeviceContext* deviceContext11 = ((ID3D11DeviceContext*)Device_Context);
 
-		VSconstantBufferType* dataVSptr = NULL;	// Reset Pointer, only once:
+		VSconstantBufferType* dataVSptr = NULL;				// Reset Pointer, only once:
 
 		D3D11_MAPPED_SUBRESOURCE mappedResource = { 0 };
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
@@ -652,19 +663,20 @@ namespace DirectX {
 		// BOTH: DX11 and DX12
 		//
 
-	//#if !defined USE_PRECOMPILED_SHADERS // ORIGINAL CODE: rastertek
-	//	dataVSptr->world = XMMatrixTranspose (*worldMatrix);		// Copy the matrices into the constant buffer.
-	//	dataVSptr->view = XMMatrixTranspose (*viewMatrix);		
-	//	dataVSptr->projection = XMMatrixTranspose (*projectionMatrix);
-	//#else
-		// Copy the matrices into the Constant buffer:
-		XMMATRIX WV = (*worldMatrix) * (*viewMatrix);
+		// Copy the matrices into the constant buffer.
 		dataVSptr->world = XMMatrixTranspose(*worldMatrix);
-		dataVSptr->WV = XMMatrixTranspose(WV);						// Pre compute WV to reuse in all Vertices
-		dataVSptr->WVP = XMMatrixTranspose(WV * (*projectionMatrix));	// Pre compute WVP to reuse in all Vertices
-		//#endif
 
-	// BLOCK: VS2
+		if (VS_USE_WVP) {
+			XMMATRIX WV = (*worldMatrix) * (*viewMatrix);
+			dataVSptr->WV = XMMatrixTranspose(WV);							// Pre compute WV to reuse in all Vertices
+			dataVSptr->WVP = XMMatrixTranspose(WV * (*projectionMatrix));	// Pre compute WVP to reuse in all Vertices
+		}
+		else {
+			dataVSptr->view = XMMatrixTranspose(*viewMatrix);
+			dataVSptr->projection = XMMatrixTranspose(*projectionMatrix);
+		}
+
+		// BLOCK: VS2
 		dataVSptr->VShasLight = hasLight;
 		dataVSptr->VShasSpecular = hasSpecular;
 		dataVSptr->VShasNormMap = hasNormMap; //BUMPMAP
@@ -690,9 +702,11 @@ namespace DirectX {
 
 		// BLOCK: VS4
 
-		// BLOCK: VS6
 		dataVSptr->VShasShadowMap = castShadow;
 
+		dataVSptr->VS_USE_WVP = VS_USE_WVP;
+
+		// BLOCK: VS5
 		if (!lightViewMatrix && !ShadowProjectionMatrix)
 			castShadow = false;
 
@@ -747,8 +761,9 @@ namespace DirectX {
 
 		// BLOCK4:
 		dataPSptr->hasColorMap = hasColorMap;
-		if (RENDER_PAGE >= 26)
+		if (RENDER_PAGE >= 26) {
 			dataPSptr->lightType = 2;
+		}
 		else
 			dataPSptr->lightType = lightType;
 

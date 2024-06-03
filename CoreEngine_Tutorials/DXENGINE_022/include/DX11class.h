@@ -204,9 +204,13 @@ WDDM 2.0->Windows 10				Display Drivers or Creates a DXGI 1.4
 #else
 	#include <DirectXMath.h> 
 	using namespace DirectX;
+	    //COMPILE: C:\WoMA3Dengine\ThirdParty\DirectXTex\DirectXTex-jan2023\DirectXTex_Desktop_2022_Win10.sln
 		#if _DEBUG
 		#pragma comment(lib, "Libs/x64/Debug/DirectX11TK.lib")
 		#pragma comment(lib, "/WoMA3Dengine/ThirdParty/DirectXTex/DirectXTex-jan2023/DirectXTex/Bin/Desktop_2022_Win10/x64/Debug/DirectXTex.lib")
+		#else
+		#pragma comment(lib, "/WoMA3Dengine/ThirdParty/DirectXTK/Bin/Desktop_2013/x64/Release/DirectXTK.lib")
+		#pragma comment(lib, "/WoMA3Dengine/ThirdParty/DirectXTex/DirectXTex-jan2023/DirectXTex/Bin/Desktop_2022_Win10/x64/Release/DirectXTex.lib")
 		#endif
 #endif
 
@@ -223,20 +227,14 @@ WDDM 2.0->Windows 10				Display Drivers or Creates a DXGI 1.4
 
 
 extern ID3D11DeviceContext* g_deviceContext; // Also to Comunicate with DXUT
-
-	#include "DXcameraClass.h"
-
 	#if D3D11_SPEC_DATE_YEAR == 2009
 		#define LOADTEXTURE(file, pointer) { hr = ((DX_CLASS*)g_driver)->CreateShaderResourceViewFromFileMANAGED(((DX_CLASS*)g_driver)->m_device, (TCHAR*)file, &(((DX_CLASS*)g_driver)->loadInfo), NULL, &pointer, NULL, false); }
 	#endif
 	#if D3D11_SPEC_DATE_YEAR > 2009
-		//#define LOADTEXTURE(file, pointer) { hr = ((DX_CLASS*)g_driver)->LOADTEXTURE_DX11_WIN_SDK8 ( ((DX_CLASS*)g_driver)->m_device, (TCHAR*)file, &pointer ); }
-		#define LOADTEXTURE(file, pointer) { hr = m_driver11->LOADTEXTURE_DX11_WIN_SDK8(m_driver11->m_device, (TCHAR*)file, &pointer); }
+		#define LOADTEXTURE(file, pointer) { hr = m_driver11->LOADTEXTURE_DX11_WIN_SDK8(m_driver11->m_device, (TCHAR*)file, &pointer);}
 	#endif
 
 #define	MaxTextSizes 24
-
-//extern UINT g_MSAA_X;
 
 namespace DirectX {
 
@@ -256,7 +254,7 @@ struct DXTextLine
 class DX11Class : public WomaDriverClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567890;
+	UINT WomaIntegrityCheck = 1234567831;
 	DX11Class();
 	~DX11Class();
 
@@ -283,10 +281,6 @@ public:
 	//We now have two new function in the DX11Class for turning the Z buffer on and off when rendering 2D images:
 	void TurnZBufferOn();
 	void TurnZBufferOff();
-
-#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
-	ImageLoaderClass* CaptureScreenShot(int screenWidth, int screenHeight);
-#endif
 
 	BOOL Check (int* Hi, int* low);
 	BOOL CheckAPIdriver (UINT USE_THIS_ADAPTER);

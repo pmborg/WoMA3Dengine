@@ -23,7 +23,7 @@
 class InitWorld
 {
 public:
-    UINT WomaIntegrityCheck = 1234567829;
+    UINT WomaIntegrityCheck = 1234567831;
 	InitWorld();
 	~InitWorld();
 

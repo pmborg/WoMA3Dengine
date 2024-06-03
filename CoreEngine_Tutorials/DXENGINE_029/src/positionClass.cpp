@@ -32,7 +32,7 @@
 PositionClass::PositionClass(UINT id)
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567829;
+	WomaIntegrityCheck = 1234567831;
 
 	m_positionX = SystemHandle->AppSettings->INIT_CAMX;
 	m_positionY = SystemHandle->AppSettings->INIT_CAMY;

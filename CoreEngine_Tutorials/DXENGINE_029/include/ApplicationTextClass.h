@@ -45,7 +45,7 @@ namespace DirectX {
 class ApplicationTextClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567829;
+	UINT WomaIntegrityCheck = 1234567831;
 	ApplicationTextClass();
 	~ApplicationTextClass();
 
@@ -65,8 +65,8 @@ public:
 		void SetFade(float fade);
 		void SetScreenToShow(UINT screenToShow, UINT render_page);
 
-	SentenceType*		m_sentence[N_TEXT_MAX_SENTENCE]; //std::vector<SentenceType*>	m_sentence;	
-	VirtualTextClass*	m_Text;
+	SentenceType* m_sentence[N_TEXT_MAX_SENTENCE] = { 0 }; //std::vector<SentenceType*>	m_sentence;	
+	VirtualTextClass*	m_Text = NULL;
 };
 
 }

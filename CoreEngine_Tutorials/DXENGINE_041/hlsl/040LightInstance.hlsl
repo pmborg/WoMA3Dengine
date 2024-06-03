@@ -8,7 +8,6 @@
 *	Downloaded from : http://woma.servegame.com
 *
 **********************************************************************************************/
-#define DESKTOP_GL 1
 
 #define PS_USE_LIGHT		 //23
 #define PS_USE_ALFA_TEXTURE	 //33
@@ -40,19 +39,7 @@ struct PSIn
 	float3 normal			: NORMAL;				// 23 & 47: LIGHT+BUMP
 	float3 viewDirection	: TEXCOORD1;			// 44 Specular: SHADER_TEXTURE_LIGHT_INSTANCED
 	float4 cameraPosition	: WS;					// FOG & SPECULAR
-	
-	//float3 originalPosition	: ORIGINAL_POSITION;	// SKY
-	//float  fogFactor			: FOG;					// FOG
-	//float4 lightViewPosition	: LIGHT_VIEW_POSITION;	// SHADOWS : SHADER_TEXTURE_LIGHT_CASTSHADOW_INSTANCED
-	//float3 tangent			: TANGENT;				// BUMP   : SHADER_NORMAL_BUMP_INSTANCED
 };
-
-////////////////
-// CBUFFERS
-////////////////
-#include "cbuffer.hlsl"
-
-#include "light.hlsl"
 
 /////////////
 // GLOBALS //
@@ -65,6 +52,12 @@ Texture2D AlfaMapTexture;			//: register(t1);	// 43: AlfaMap
 
 SamplerState SampleType;		//: register(s0);		// 3D (default) WRAP
 //SamplerState SampleTypeClamp;	//: register(s1);
+
+////////////////
+// CBUFFERS
+////////////////
+#include "cbuffer.hlsl"
+#include "light.hlsl"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
@@ -86,7 +79,15 @@ PSIn MyVertexShader040LightInstance(VSIn input, uint instanceID : SV_InstanceID)
 	input.position.z += input.instancePosition.z * (1/worldMatrix._m22);
 
 	//21: POSITION: Calculate the position of the vertex against the world, view, and projection matrices
-	output.position = mul(float4(input.position,1), WVP);	// Calculate the position of the vertex against the world, view, and projection matrices:
+if (VS_USE_WVP) {
+	output.position = mul(float4(input.position, 1), WVP);	// Calculate the position of the vertex against the world, view, and projection matrices
+} else {
+	float4 position = float4(input.position, 1);
+	position = mul(position, worldMatrix);
+	position = mul(position, view);			//viewMatrix
+	position = mul(position, projection);	//projectionMatrix
+	output.position = position;
+}
 
 	//22: TEXTURE: Store the texture coordinates for the pixel shader:
 	output.texCoords = input.texCoords;
@@ -130,10 +131,10 @@ float4 MyPixelShader040LightInstance(PSIn input) : SV_TARGET
 	// 23: LIGHT
 	if (hasLight) 
 	{
-		if (lightType == 1)	
+		//if (lightType == 1)	
 			lightIntensity = PSlightFunc1(input.normal);
-		else
-			lightIntensity = PSlightFunc2(input.normal);
+		//else
+		//	lightIntensity = PSlightFunc2(input.normal);
 
 		if (hasTexture) {
 			textureColor = textureColor * saturate(emissiveColor + ambientColor + lightIntensity);	

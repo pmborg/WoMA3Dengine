@@ -22,6 +22,8 @@
 //
 // --------------------------------------------------------------------------------------------
 #pragma once
+#if !defined _PLATFORM_H_
+#define _PLATFORM_H_
 
 #pragma warning( disable : 4005 )	// Disable warning C4005: '' : macro redefinition
 #pragma warning( disable : 4067 )	// Disable warning C4067: unexpected tokens following preprocessor directive - expected a newline
@@ -36,7 +38,11 @@
 #endif
 
 // [WIN]: Check Windows, if we are compiling in 64bits:
-#if defined(_WIN64) && !defined X64
+#if defined(_WIN64) || defined(__x86_64__) || defined(_M_X64)
+	#define X64	//CPU: 64bits!
+#endif
+
+#if (defined(__arm64__) && defined(__APPLE__)) || defined(__aarch64__)
 	#define X64	//CPU: 64bits!
 #endif
 
@@ -139,12 +145,12 @@
 #if defined _MSC_VER
   #ifdef X64
 	#if defined SSE2_ONLY
-		// Make sure that AVX Instruction is Used (Fast Code!)
+		// Make sure that AVX Instruction is Used (Faster Code!)
 		#if defined __AVX__ || defined __AVX2__
 			static_assert(false, "AVX1/2 should be disabled!");
 		#endif
 	#else
-		// Make sure that AVX Instruction is Used (Fast Code!)
+		// Make sure that AVX Instruction is Used (Faster Code!)
 		#if !defined __AVX2__
 			static_assert(false, "AVX2 should be enabled!");
 		#endif
@@ -534,7 +540,7 @@
 #include "core_engine_level.h"
 
 #if DX_ENGINE_LEVEL >= 19 && CORE_ENGINE_LEVEL == 10	//DX9 DX11+DX10 DX12 OPENGL3
-	#define USE_THIS_GRAPHIC_CARD_ADAPTER 0
+	extern int USE_THIS_GRAPHIC_CARD_ADAPTER;
 #endif
 
 #if CORE_ENGINE_LEVEL < 10	//AFTER: #include "core_engine_level.h"
@@ -547,4 +553,6 @@
 	#else
 		#define WOMA_WIN32_APPLICATION
 	#endif
+#endif
+
 #endif

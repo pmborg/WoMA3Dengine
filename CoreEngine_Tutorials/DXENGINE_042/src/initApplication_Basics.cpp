@@ -26,8 +26,10 @@
 #pragma warning(push)
 #pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
 
+#ifdef OPENGL3
 #include "GLopenGLclass.h"
 #include "GLmodelClass.h"
+#endif
 
 #if defined DX_ENGINE
 #include "DXmodelClass.h"
@@ -299,10 +301,12 @@ void ApplicationClass::DEMO_WOMA_APPLICATION_Shutdown2D()
 			SAFE_SHUTDOWN_MODELDX(m_titleModel);
 		}
 	#endif
+	#if defined OPENGL3
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
 		{
 			SAFE_SHUTDOWN_MODELGL3(m_titleModel);
 		}
+	#endif
 
 
 
@@ -315,9 +319,11 @@ void ApplicationClass::initText(WomaDriverClass* m_Driver)
 
 	switch (SystemHandle->AppSettings->DRIVER)
 	{
+#ifdef OPENGL3
 	case DRIVER_GL3:
 		ASSERT(AppTextClass->Initialize((GLopenGLclass*)m_Driver));
 		break;
+#endif
 
 	case DRIVER_DX9:
 	case DRIVER_DX11:
@@ -449,5 +455,8 @@ void ApplicationClass::WOMA_APPLICATION_FrameUpdateInstancesPositions(UINT m_Obj
 
 }
 #endif
+
+
+//0 UNDERWATER
 
 #pragma warning(pop)

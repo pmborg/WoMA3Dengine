@@ -33,7 +33,7 @@ using namespace std;
 class GLshaderClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567890;
+	UINT WomaIntegrityCheck = 1234567831;
 	GLshaderClass();
 	~GLshaderClass();
 
@@ -65,7 +65,7 @@ public:
 	BOOL		hasTexture;
 	BOOL		hasLight;
 	BOOL		hasSpecular;
-	BOOL		isFont;
+	int			isFont;
 
 	// BLOCK3:
 	float		ambientColor[4];	// LIGHT: Ka
@@ -75,14 +75,14 @@ public:
 
 	// BLOCK4:
 	bool		hasColorMap;		// 66
-	float		lightType;			// Future
+	int			lightType;			// Future
 	float		shaderType;			// Future
 	float		shaderTypeParameter;// Future
 
 	// BLOCK5:
 	bool		hasAlfaColor;
 	float		alfaColor;
-	float		fade;			// Fade from 0 to 1
+	float		PSfade=1;			// Fade from 0 to 1
 
 	// BLOCK6:
 	BOOL		hasFog;

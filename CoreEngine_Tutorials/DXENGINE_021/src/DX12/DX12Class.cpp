@@ -41,7 +41,7 @@ DX12Class::DX12Class()
 {
 	// WomaDriverClass / Public: ------------------------------------------------------
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567890;
+	WomaIntegrityCheck = 1234567831;
 
 	// SUPER Video Card Info:
 	// ---------------------------------------------------------------------------
@@ -426,7 +426,7 @@ bool DX12Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, i
 	BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize)
 	//----------------------------------------------------------------------------------------------
 {
-	//mEnable4xMsaa = msaa;
+
 	m_VSYNC_ENABLED = vsync;
 
 	WOMA::logManager->DEBUG_MSG(TEXT("-------------------------\n"));
@@ -1204,15 +1204,6 @@ XMMATRIX* DX12Class::GetProjectionMatrix(void* Driver, UINT camera, UINT project
 
 	ASSERT(FALSE);
 }
-
-#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
-// ----------------------------------------------------------------------------------------------
-ImageLoaderClass* DX12Class::CaptureScreenShot(int screenWidth, int screenHeight)
-// ----------------------------------------------------------------------------------------------
-{
-	return NULL;
-}
-#endif
 
 #ifdef NOT_USED
 // ----------------------------------------------------------------------------------------------

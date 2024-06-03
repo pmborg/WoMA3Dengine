@@ -15,10 +15,10 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//
 // PURPOSE: Output - LOG INFO and FATAL ERRORs to "report".txt file
-//
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567831;
+
 #include "main.h"
 
 #include <shlwapi.h>
@@ -167,15 +167,15 @@ void LogManager::DEBUG_MSG(WCHAR* strMsg, ...)
 
 	// OUTPUT: OS CONSOLE & FILE ".txt":
 #if defined(UNICODE)
-//	if (ON)
-//		OutputDebugStringReportW( WstrBuffer );
 	CHAR strBuffer[MAXBUFF] = { 0 };
 	WideCharToMultiByte(CP_ACP, 0, WstrBuffer, -1, strBuffer, MAXBUFF, NULL, NULL); //Note: Cant use: wtoa
 #endif
-	//#else
 	if (ON)
 		OutputDebugStringReport(strBuffer);
 
+#ifdef _DEBUG
+	fflush(debugFile);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------
@@ -203,38 +203,41 @@ void LogManager::DEBUG_MSG(CHAR* strMsg, ...)
 	// OUTPUT: OS CONSOLE & FILE ".txt":
 	if (ON)
 		OutputDebugStringReport(strBuffer);
+
+#ifdef _DEBUG
+	fflush(debugFile);
+#endif
 }
 
 
+int endian()
+{
+	short int word = 0x0001;
+	char* byte = (char*)&word;
+	return (byte[0] ? LITTLE_ENDIAN : BIG_ENDIAN);
+}
 
-	int endian()
-	{
-		short int word = 0x0001;
-		char* byte = (char*)&word;
-		return (byte[0] ? LITTLE_ENDIAN : BIG_ENDIAN);
-	}
+void start_log_manager()
+{
+	// [2]  LogManager::CreateInstance (After init_os_main_dirs)!
+	// -------------------------------------------------------------------------------------------
+	logManager = ILogManager::CreateInstance();
+	WOMA_LOGManager_DebugMSGAUTO(TEXT("LogManager Started\n"));
 
-	void start_log_manager()
-	{
-		// [2]  LogManager::CreateInstance (After init_os_main_dirs)!
-		// -------------------------------------------------------------------------------------------
-		logManager = ILogManager::CreateInstance();
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("LogManager Started\n"));
+	// [3]  PRINT Log Dirs: (After init_os_main_dirs & After logManager)
+	// -------------------------------------------------------------------------------------------
+	WOMA_LOGManager_DebugMSGAUTO(TEXT("Init: logDirs()\n"));
+	logDirs();
 
-		// [3]  PRINT Log Dirs: (After init_os_main_dirs & After logManager)
-		// -------------------------------------------------------------------------------------------
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("Init: logDirs()\n"));
-		logDirs();
-
-		// [5] Log Binary Type:
-		// -------------------------------------------------------------------------------------------
-		// ALSO: After logManager!
+	// [5] Log Binary Type:
+	// -------------------------------------------------------------------------------------------
+	// ALSO: After logManager!
 #ifdef _DEBUG
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("Binary Type: [DEBUG]\n"));
+	WOMA_LOGManager_DebugMSGAUTO(TEXT("Binary Type: [DEBUG]\n"));
 #else
-		WOMA_LOGManager_DebugMSG("Binary Type: [NDEBUG]\n");
+	WOMA_LOGManager_DebugMSG("Binary Type: [NDEBUG]\n");
 #endif
 
-	}
+}
 
 }

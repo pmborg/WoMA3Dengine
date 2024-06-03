@@ -1,8 +1,6 @@
 <woma>
   <world hVisibility="128" seaLevel="0" size="512" patchSize="64" skyDayTexture="" skyNightTexture=""/>
-  <object fromPage="32" toPage="32" depend="0" scale="10" posX="0" posZ="8" translateY="0" 
-          rotX="" rotY="" rotZ="" shader="2" filename="engine/data/scene30/squareGrass.obj"/>
+  <object fromPage="31" toPage="31" depend="0" scale="10" posX="0" posZ="8" translateY="0" rotX="" rotY="" rotZ="" shader="" filename="engine/data/scene30/squareGrass.obj"/>
   
-  <object fromPage="32" toPage="32" depend="0" scale="0.04" posX="0" posZ="8" translateY="0" 
-          rotX="" rotY="" rotZ="" shader="2" filename="engine/data/scene30/Model_D0902B14.obj"/>
+  <object fromPage="32" toPage="32" depend="0" scale="0.04" posX="0" posZ="8" translateY="0" rotX="" rotY="" rotZ="" shader="" filename="engine/data/scene30/Model_D0902B14.obj"/>
 </woma>

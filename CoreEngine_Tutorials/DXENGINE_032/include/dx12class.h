@@ -154,11 +154,8 @@ public:
 
 	bool getModesList(int g_USE_MONITOR, int screenWidth, int screenHeight, BOOL fullscreen, UINT* numerator, UINT* denominator);
 
-//#if ZERO && defined USE_RASTERIZER_STATE
 	void SetRasterizerState(UINT cullMode, UINT fillMode);
 	D3D12_RASTERIZER_DESC m_rasterState[3][2];
-	//D3D12_RASTERIZER_DESC* rasterState;
-//#endif
 
 	// 3D
 	XMMATRIX m_projectionMatrix;

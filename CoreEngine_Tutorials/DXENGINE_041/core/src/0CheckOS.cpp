@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: 0CheckOS.cpp
 // --------------------------------------------------------------------------------------------
@@ -21,6 +22,8 @@
 #include "OSmain_dir.h"		//#include "OsDirectories.h"
 #include "systemManager.h"
 #include "mem_leak.h"
+#include <atlstr.h>
+#include <map>
 
 SystemManager::SystemManager()
 {
@@ -43,6 +46,7 @@ SystemManager::~SystemManager() { CLASSDELETE(); }
 
 char osName[1024 * 4];
 
+
 // PUBLIC FUNCTIONS:
 //------------------------------------------------------------------
 bool SystemManager::CheckOS()
@@ -50,7 +54,7 @@ bool SystemManager::CheckOS()
 {
 	// Check Platform: WINDOWS / LINUX / ANDROID
 	//------------------------------------------------------------------
-	StringCchPrintf(SystemHandle->systemDefinitions.platform, MAX_STR_LEN, TEXT("Platform: %s"), GetOSversionPlatform());
+	StringCchPrintf(SystemHandle->systemDefinitions.platform, MAX_STR_LEN, TEXT("Platform: %s - %s"), GetOSversionPlatform(), GetOsVersion());
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("%s\n"), SystemHandle->systemDefinitions.platform);
 
 	// String Character Set: UNICODE / ANSI
@@ -88,19 +92,44 @@ bool SystemManager::CheckOS()
 	StringCchPrintf(SystemHandle->systemDefinitions.binaryCode, MAX_STR_LEN, TEXT("Binary Code: %s"), _BINARY_CODE_);
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.binaryCode);
 
-	// Check OS Version
-	//------------------------------------------------------------------
-	IF_NOT_RETURN_FALSE(CheckOSVersion());
+
 
   //#if !defined WIN10
-	StringCchPrintf(SystemHandle->systemDefinitions.windowsVersion, MAX_STR_LEN, TEXT("Windows Version: %d.%d"), MajorVersion, MinorVersion);
+	StringCchPrintf(SystemHandle->systemDefinitions.windowsVersion, MAX_STR_LEN, TEXT("Windows Internal Version: %d.%d.%d"), MajorVersion, MinorVersion, BuildVersion);
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.windowsVersion);
 
-	StringCchPrintf(SystemHandle->systemDefinitions.windowsBuildNumber, MAX_STR_LEN, TEXT("Windows Build Number: %d"), BuildVersion);
-	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.windowsBuildNumber);
+	std::map<CString, CString> mapWindowsVersions
+	{
+		{ L"22631", L"23H2" }, //Windows11
+		{ L"22621", L"22H2" }, //Windows11
+		{ L"22000", L"21H2" }, //Windows11  (Original  version)
+		{ L"19044", L"21H2" },
+		{ L"19043", L"21H1" },
+		{ L"19042", L"20H2" },
+		{ L"19041", L"2004" },
+		{ L"18363", L"1909" },
+		{ L"18362", L"1903" },
+		{ L"17763", L"1809" },
+		{ L"17134", L"1803" },
+		{ L"16299", L"1709" },
+		{ L"15063", L"1703" },
+		{ L"14393", L"1607" },
+		{ L"10586", L"1511" },
+		{ L"10240", L"1507" }  //Windows10 (Original  version)
+	};
+
+	TCHAR v[MAX_STR_LEN] = { 0 };
+	_itoa(BuildVersion, v, 10);
+	STRING verstr = mapWindowsVersions[v];
+
+	StringCchPrintf(SystemHandle->systemDefinitions.windowsBuildVersion, MAX_STR_LEN, TEXT("Windows Version: %s"), verstr.c_str());
+	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.windowsBuildVersion);
+
+
+
   //#endif
 
-	StringCchPrintf(SystemHandle->systemDefinitions.osName, MAX_STR_LEN, TEXT("Current OS: %s"), pszOS);
+	StringCchPrintf(SystemHandle->systemDefinitions.osName, MAX_STR_LEN, TEXT("Current OS name: %s"), pszOS);
 
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.osName);
 
@@ -180,7 +209,7 @@ TCHAR* SystemManager::GetOSversionPlatform()
 #include <windows.h>
 #pragma comment(lib, "Version.lib" )
 
-TCHAR* GetOsVersion()
+TCHAR* SystemManager::GetOsVersion()
 {
 	TCHAR path[200] = TEXT("C:\\Windows\\System32\\kernel32.dll");
 	DWORD dwDummy;
@@ -307,18 +336,23 @@ bool SystemManager::CheckOSVersion()
 	//WOMA_LOGManager_DebugMSG( TEXT("Windows Build Number: %d\n"), osinfo.dwBuildNumber );
 	BuildVersion = osinfo.dwBuildNumber;
 
+	BYTE b1 = HIBYTE(_WIN32_WINNT_WINTHRESHOLD);
+	BYTE b2 = LOBYTE(_WIN32_WINNT_WINTHRESHOLD);
 
-	/*
 	if (IsWindowsServer())
 	{
-		printf("Server\n");
+		//printf("Server\n");
+		WOMA_LOGManager_DebugMSG(TEXT("Windows Server WINNT version: %d.%d\n"), b1, b2);
 	}
 	else
 	{
-		printf("Client\n");
+		//printf("Client\n");
+		WOMA_LOGManager_DebugMSG(TEXT("Windows WINNT version: %d.%d\n"), b1, b2);
 	}
-	*/
 
+	return true;
+
+	/*
 	//IsWindows10OrGreater is never detected...:
 	if (IsWindows10OrGreater())
 	{
@@ -368,7 +402,7 @@ bool SystemManager::CheckOSVersion()
 	{
 		WOMA_LOGManager_DebugMSG("XPOrGreater\n"); return true;
 	}
-
+	*/
 	return false;
 }
 

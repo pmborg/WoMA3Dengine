@@ -17,13 +17,14 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Paint the main window depending of engine state screen page.
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567831;
 
 #include "OSengine.h"
 #include "mem_leak.h"
 
-	float SunDistance = 512;
-
+#if (defined DX_ENGINE)
 	#include "DXmodelClass.h"
+#endif
 
 	#include "GLmodelClass.h"
 
@@ -37,7 +38,7 @@
 	}
 #endif
 
-void ApplicationClass::CalculateLightRayVertex (float SunDistance)
+void ApplicationClass::CalculateLightRayVertex (float localSunDistance)
 {
 	ModelColorVertexType vertex = {0};
 	MyLightVertexVector.clear(); // Clean Vector
@@ -67,9 +68,9 @@ void ApplicationClass::CalculateLightRayVertex (float SunDistance)
 		const float* light = SystemHandle->m_Application->m_Light->GetDirection();
 
 		// [2]  SRC
-		vertex.x = MyLightVertexVector[0].x - light[0] * SunDistance; //x
-		vertex.y = MyLightVertexVector[0].y - light[1] * SunDistance; //y
-		vertex.z = MyLightVertexVector[0].z - light[2] * SunDistance; //z
+		vertex.x = MyLightVertexVector[0].x - light[0] * localSunDistance; //x
+		vertex.y = MyLightVertexVector[0].y - light[1] * localSunDistance; //y
+		vertex.z = MyLightVertexVector[0].z - light[2] * localSunDistance; //z
 	#endif
 
 	MyLightVertexVector.push_back(vertex);

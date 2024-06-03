@@ -17,9 +17,10 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567829;
+//WomaIntegrityCheck = 1234567831;
 
 #pragma once
+#pragma warning( disable : 5208 ) // warning C5208: unnamed class used in typedef name cannot declare members other than non-static data members, member enumerations, or member classes
 
 #define _CRT_SECURE_NO_WARNINGS
 #include "platform.h"
@@ -45,8 +46,7 @@ using namespace std;
 	#if defined(_DEBUG) & !defined(NDEBUG)
 		#pragma comment( lib, "x64/WDebug/TinyXML_LIBX64_d.lib" )	//DEBUG
 	#elif !defined _DEBUG && defined NDEBUG
-		//#pragma comment( lib, "x64/WRelease/TinyXML_LIBX64.lib" )	//RELEASE
-		#pragma comment( lib, "x64/Release/TinyXML_LIBX64.lib" )	//RELEASE
+		#pragma comment( lib, "x64/WRelease/TinyXML_LIBX64.lib" )	//RELEASE
 	#else
 		#pragma comment( lib, "x64/WRelease/TinyXML_LIBX64.lib" )	//DBGREL
 	#endif
@@ -82,13 +82,8 @@ using namespace std;
 #include "main.h"
 #include <vector>
 
-// --------------------------------------------------------------------------------------------
-extern bool saveConfigSettings (char* file); //Note: Have to be char
-extern bool loadConfigSettings (TCHAR* file); //Note: Have to be char
-extern bool initAppicationSettings(TCHAR* filename); //Note: Have to be char
 
 // -------------------------------------------------------------------------------------------
-
 //<generalsettings>
 typedef struct {
 
@@ -113,7 +108,7 @@ typedef struct {
 	#if defined USE_PLAY_MUSIC
 		char musicEnabled[10];
 	#endif
-	#if defined USE_SOUND_MANAGER
+	#if DX_ENGINE_LEVEL >= 29 && defined USE_SOUND_MANAGER
 		char soundEffectsEnabled[10];
 	#endif
 
@@ -125,17 +120,29 @@ typedef struct {
 
 } generalsettings;
 
-extern generalsettings GenSettings;
 
 // -------------------------------------------------------------------------------------------
 
-typedef struct {
+class XMLloader
+{
+public:
+	XMLloader();
+	~XMLloader();
 
-	// World Settings:
 	// --------------------------------------------------------------------------------------------
-    char hVisibility[10], seaLevel[10], size[10], patchSize[10], skyTexture[10];
+	bool saveConfigSettings(char* file); //Note: Have to be char
+	bool loadConfigSettings(TCHAR* file); //Note: Have to be char
+	bool initAppicationSettings(TCHAR* filename); //Note: Have to be char
 
-} worldsettings;
+	// --------------------------------------------------------------------------------------------
+	// Globals:
+	// --------------------------------------------------------------------------------------------
+	generalsettings GenSettings;
 
-extern worldsettings worldSettings;
+	TiXmlElement* child_screen = NULL;
+	TiXmlElement* child_world = NULL;
+	TiXmlElement* child_object = NULL;
+
+
+};
 

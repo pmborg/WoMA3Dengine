@@ -106,5 +106,6 @@ public:
 	LPDIRECT3DTEXTURE9 m_Texture9 = NULL;
 #endif
 	DX12TextureClass* m_Texture = NULL;
+	std::vector<ID3D11ShaderResourceView*> meshSRV11;	// vector with all pointer(s) to textures loaded
 };
 

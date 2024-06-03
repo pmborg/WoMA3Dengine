@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: dxWinSystemClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -34,10 +35,12 @@ int USE_THIS_GRAPHIC_CARD_ADAPTER = 0;
 	#include "Dx9Class.h"
   #endif
 	#include "Dx11Class.h"
+  #if defined OPENGL3
 	#include "womadriverclass.h"	//woma
 	#include "GLmathClass.h"		//woma	
 	#include "GLopenGLclass.h"		//woma
 	#include "wGLopenGLclass.h"		// Windows
+  #endif
 
 	#include "xml_loader.h"
 
@@ -107,6 +110,7 @@ bool dxWinSystemClass::InitSelectedDriver()
 			AppSettings->SCREEN_DEPTH, AppSettings->SCREEN_NEAR, AppSettings->MSAA_ENABLED, AppSettings->VSYNC_ENABLED,
 			AppSettings->FULL_SCREEN, AppSettings->UseDoubleBuffering, AppSettings->AllowResize));
 		break;
+#if defined OPENGL3 //[1]
 	case DRIVER_GL3:
 		ASSERT(((GLopenGLclass*)(driverList[DRIVER_GL3]))->OnInit(AppSettings->UI_MONITOR, m_hWnd, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT, 24 /*BufferDeep*/,
 			AppSettings->SCREEN_DEPTH, AppSettings->SCREEN_NEAR, AppSettings->MSAA_ENABLED, AppSettings->VSYNC_ENABLED,
@@ -115,6 +119,7 @@ bool dxWinSystemClass::InitSelectedDriver()
 			AppSettings->SCREEN_DEPTH, AppSettings->SCREEN_NEAR, AppSettings->MSAA_ENABLED, AppSettings->VSYNC_ENABLED,
 			AppSettings->FULL_SCREEN, AppSettings->UseDoubleBuffering, AppSettings->AllowResize));
 		break;
+#endif
 #if defined DX9sdk //[2]
 	case DRIVER_DX9:
 		ASSERT(((DirectX::DX9Class*)(driverList[DRIVER_DX9]))->OnInit(AppSettings->UI_MONITOR, m_hWnd, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT, 24 /*BufferDeep*/,
@@ -178,7 +183,7 @@ bool dxWinSystemClass::InitializeSystem()
 	IF_NOT_RETURN_FALSE(ApplicationMandatoryLoad()); // START-THREAD LOAD-ALL: "mandatory 2D/3D Stuff", before "start rendering":
 	
 	//SOUND MANAGER: Music and sound effects
-#if defined USE_SOUND_MANAGER	// START-AUDIO: Start Background Music (NOTE: After the INIT "rendering-device")
+#if DX_ENGINE_LEVEL >= 29 && defined USE_SOUND_MANAGER	// START-AUDIO: Start Background Music (NOTE: After the INIT "rendering-device")
 	IF_NOT_RETURN_FALSE(StartSoundManager());
 #endif
 
@@ -268,7 +273,7 @@ void dxWinSystemClass::Shutdown()
 
 	SAFE_SHUTDOWN(WOMA::sceneManager);
 
-#if defined USE_PLAY_MUSIC || defined USE_SOUND_MANAGER
+#if DX_ENGINE_LEVEL >= 29 && (defined USE_SOUND_MANAGER || defined USE_PLAY_MUSIC)
 	SAFE_SHUTDOWN(audio);
 #endif
 
@@ -407,11 +412,11 @@ bool dxWinSystemClass::SaveScreenshot()
 }
 #endif
 
-#if defined USE_SOUND_MANAGER || defined USE_PLAY_MUSIC
+#if DX_ENGINE_LEVEL >= 29 && (defined USE_SOUND_MANAGER || defined USE_PLAY_MUSIC)
 bool dxWinSystemClass::StartSoundManager()
 //----------------------------------------------------------------------------
 {
-#if defined USE_PLAY_MUSIC || defined USE_SOUND_MANAGER
+#if DX_ENGINE_LEVEL >= 29 && (defined USE_SOUND_MANAGER || defined USE_PLAY_MUSIC)
 	audio = NEW AudioClass;
   #if defined USE_PLAY_MUSIC || defined INTRO_DEMO
 	if (SystemHandle->AppSettings->MUSIC_ENABLED)

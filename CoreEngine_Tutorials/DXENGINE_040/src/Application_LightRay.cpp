@@ -22,7 +22,7 @@
 #include "OSengine.h"
 #include "mem_leak.h"
 
-#if defined USE_SKY_DOME && defined DXENGINE_LEVEL >= 28
+#if defined USE_SKY_DOME && DX_ENGINE_LEVEL >= 28 && defined DXENGINE_LEVEL >= 28
 	#include "SKY_30.h"					// Get SunDistance
 #endif
 
@@ -30,7 +30,9 @@
 	#include "DXmodelClass.h"
 #endif
 
+#ifdef OPENGL3
 	#include "GLmodelClass.h"
+#endif
 
 //------------------------------------------------------------------------------------------
 #if defined USE_ASTRO_CLASS && defined USE_REAL_SUNLIGHT_DIRECTION //#if ENGINE_LEVEL >= 33
@@ -93,10 +95,12 @@ void ApplicationClass::initLightRay(WomaDriverClass* m_Driver)
 		MyLightVertexVector.push_back(vertex);
 
 		// Step 2: Create a model: NEW GLmodelClass; || NEW DXmodelClass;
+	#if defined OPENGL3
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
 		{ 
 			CREATE_MODELGL3_IF_NOT_EXCEPTION(m_lightRayModel,  /*Fake*/I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);	// Alocate the MODEL
 		} else
+	#endif
 		{
 			CREATE_MODELDX_IF_NOT_EXCEPTION(m_lightRayModel,  /*Fake*/I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);	// Alocate the MODEL
 		}

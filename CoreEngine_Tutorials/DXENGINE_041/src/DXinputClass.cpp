@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: DXinputClass.cpp
 // ----------------------------------------------------------------------------------------------
@@ -23,7 +24,9 @@
 #include "DXinputClass.h"
 #include "OSengine.h"
 
+#if defined OPENGL21 || defined OPENGL3
 #include "GLopenGLclass.h"
+#endif
 
 DXInputClass::DXInputClass()
 {

@@ -22,10 +22,13 @@
 
 #include "OSengine.h"
 
+#if defined WINDOWS_PLATFORM
+
 /////////////////////
 // Windows GLOBALS //
 /////////////////////
 
+UINT RENDER_PAGE;
 
 //----------------------------------------------------------------------------------
 WinSystemClass::WinSystemClass() : SystemClass() 
@@ -81,6 +84,8 @@ bool WinSystemClass::InitializeSystem()
 	return true;				// GREEN LIGHT: to Start Rendering! :)
 }
 
+
+#endif
 
 //----------------------------------------------------------------------------
 int WinSystemClass::ApplicationMainLoop()		// [RUN] - MAIN "INFINITE" LOOP!

@@ -1,5 +1,6 @@
 // NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 // Filename: win32MainWindowEvents.cpp
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
@@ -16,8 +17,9 @@
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
-//
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567831;
+
 #pragma warning( disable : 4312 ) // warning C4312: 'type cast': conversion from 'int' to 'HMENU' of greater size
 #include "platform.h"
 #include "stateMachine.h"
@@ -109,8 +111,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 	// Note: break;		--> Means call windows default handler also!
 	// Note: return 0;	--> Means Done!
 
-	bool bReremoteDesktop;
-	static int wmId, wmEvent;
+	int wmId=0, wmEvent = 0;
 
 	switch (umsg)
 	{
@@ -140,9 +141,8 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 		return 0;			
 
 	case WM_QUIT:
-		//if (audio) {}
 		ASSERT(SystemHandle);
-		WOMA::game_state = GAME_STOP;
+		ASSERT(WOMA::game_state == GAME_STOP);
 		break;
 
 	case WM_DESTROY:	// The main application Window will be destroyed

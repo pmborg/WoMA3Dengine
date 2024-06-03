@@ -131,6 +131,7 @@ void LOAD_TEXTURES(std::vector<TCHAR*> file, std::vector<ID3D11ShaderResourceVie
 
 DX11Class::~DX11Class() // Used for Static Classes
 {
+	//_tprintf(TEXT("driverName: %s "), driverName);
 	Shutdown();
 	CLASSDELETE();
 }
@@ -141,7 +142,7 @@ DX11Class::DX11Class()
 {
 	// WomaDriverClass / Public: ------------------------------------------------------
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567890;
+	WomaIntegrityCheck = 1234567831;
 
 	// SUPER: 
 	dx11_force_dx9 = false;
@@ -228,23 +229,15 @@ void DX11Class::Shutdown2D()
 void DX11Class::Shutdown()
 //----------------------------------------------------------------------------------------------
 {
-
-
 	if (m_device) 
 	{
-
 	Shutdown2D();
 
 	//Release the two new blending states.
 
-	#if defined USE_FRUSTRUM // 21
+	#if defined USE_FRUSTRUM
 		SAFE_DELETE(frustum);
 	#endif
-
-	//#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
-	//	if(m_Camera) 
-	//		{ delete ((DirectX::DXcameraClass*)m_Camera); m_Camera=NULL; }	//SAFE_DELETE (m_Camera);
-	//#endif
 
 		// For each Monitor: 
 		// Before shutting down set to windowed mode or when you release the swap chain it will throw an exception.
@@ -348,10 +341,7 @@ if (dx11_force_dx9)
 	/******************************************************************/
 
 	if (!LoadLibrary(TEXT("dxgi.dll"))) // NOTE: Windows XP Can't do this (SO WINDOWS XP NOT SUPPORTED!)
-	{
-		WOMA::WomaMessageBox(TEXT("dxgi.dll"), TEXT("Error, Could not load: ")); 
-		return FALSE;
-	}
+		{ WOMA::WomaMessageBox(TEXT("dxgi.dll"), TEXT("Error, Could not load: ")); return FALSE; }
 
 	/******************************************************************/
 	// Create a DirectX 10/11 graphics interface factory.
@@ -501,8 +491,7 @@ HRESULT result = S_OK;
 		// --------------------------------------------------
 	}
 
-#if defined CLIENT_SCENE_TEXT || defined USE_VIEW2D_SPRITES // 26
-	//SetCamera2D(); //AQUI
+#if defined CLIENT_SCENE_TEXT || defined USE_VIEW2D_SPRITES
 	Initialize3DCamera();
 #endif
 
@@ -638,17 +627,7 @@ void DX11Class::EndScene(UINT monitorWindow)
 	// <PRINT THE 3D SCENE TO SCREEN> to Swap Chain (wait from VSYNC refresh rate, if it is the case)
 	DX11windowsArray[monitorWindow].m_swapChain->Present(m_VSYNC_ENABLED, 0);
 
-	#if defined USE_SHADOW_MAP
 	//RESET ShaderResources! to avoid HLSL WARNINGS: Resource being set to OM RenderTarget slot 0 is still bound on input!
-	// 
-	//WHY 3? Because: 045LightRenderShadow.hlsl use 3 registers:
-	//Texture2D shaderTexture : register(t0);			// 21:
-	//Texture2D AlfaMapTexture : register(t1);			// 43: AlfaMap
-	//Texture2D ShadowMapTextureTexture : register(t2);	// 45: ShadowMap
-	//
-	ID3D11ShaderResourceView* const pSRV[3] = { NULL };
-	g_deviceContext->PSSetShaderResources(0, 3, pSRV);
-	#endif
 }
 
 
@@ -662,7 +641,6 @@ void DX11Class::SetCamera2D()
 void DX11Class::Initialize3DCamera()
 // ----------------------------------------------------------------------------------------------
 {
-
 
 }
 

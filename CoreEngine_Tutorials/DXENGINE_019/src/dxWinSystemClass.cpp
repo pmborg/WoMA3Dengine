@@ -20,12 +20,14 @@
 #pragma once
 
 #include "platform.h"
+int USE_THIS_GRAPHIC_CARD_ADAPTER = 0;
 
 #include "dxWinSystemClass.h"
 #include "womadriverclass.h"
 #include "mem_leak.h"
 #include "packManager.h"
 #include "OSmain_dir.h"
+#include "fileLoader.h"
 
 #include <d3d11.h>
 
@@ -41,6 +43,12 @@
 	#include "GLopenGLclass.h"		//woma
 	#include "wGLopenGLclass.h"		// Windows
 
+#if defined ALLOW_PRINT_SCREEN_SAVE_PNG && defined DX11
+#include <wincodec.h>
+#include "ScreenGrab.h"
+#include "DirectXHelpers.h"
+#endif
+
 dxWinSystemClass* DXsystemHandle = NULL;
 
 //----------------------------------------------------------------------------------
@@ -48,7 +56,7 @@ dxWinSystemClass::dxWinSystemClass(WOMA::Settings* appSettings) : WinSystemClass
 //----------------------------------------------------------------------------------
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567890;
+	WomaIntegrityCheck = 1234567831;
 	WinSystemClass::AppSettings = appSettings;
 	WinSystemClass::mMaximized = WinSystemClass::AppSettings->FULL_SCREEN;
 
@@ -140,23 +148,37 @@ bool dxWinSystemClass::InitSelectedDriver()
 	else
 		WOMA_LOGManager_DebugMSGAUTO(TEXT("DX12 Support: false\n"));
 #endif
+
+	return true;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////
+// 1
+///////////////////////////////////////////////////////////////////////////////////////
 bool dxWinSystemClass::InitializeSystem()
 {
-	WinSystemClass::InitializeSystem();
-	
-	LoadAllDrivers();					// LOAD ALL DRIVERS: Populate the List of ALL Graphics Drivers (DX9, DX11, DX12, OpenGL...)
+	WinSystemClass::InitializeSystem();	//ClassRegister/LoadXmlSettings/InitializeSetupScreen/ApplicationInitMainWindow/InitOsInput/StartTimer
+
+	LoadAllDrivers();					// LOAD ALL DRIVERS: (DX9, DX11, DX12, OpenGL)
 
 	if (!InitSelectedDriver())
 		return false;
 
-	// MAIN LOADING THREAD:
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	SystemClass::LoadAllGraphics();	// Load all main Graphics Objects, that will be rendered
+	//SINGLE THREAD SCENE MANAGER: QuadTree object Loader/Render
+	IF_NOT_RETURN_FALSE(SystemClass::LoadAllGraphics());	// Load all main Graphics, that will be rendered
+	
+	//SOUND MANAGER: Music and sound effects
 
-	if (WOMA::game_state >= GAME_STOP) // Something FATAL on loading "mandatory 2D/3D Stuff"?
-		return false;			 // (SAMPLE: misssing 3D/IMAGE/AUDIO file...)
+	//INTRO MOVIE: mpg player
+#if defined USE_INTRO_VIDEO_DEMO	// START-VIDEO: Start DEMO INTRO (MP4): (Give Time to Unpack/Load Resources)
+	g_DShowPlayer = NEW DShowPlayer(m_hWnd);
+	IF_FAILED_RETURN_FALSE(PlayIntroMovie(WOMA::LoadFile(TEXT("engine/data/Logo.mp4"))));	// VIDEO DEMO
+#endif
+
+	//START LOADING THREADS: For detailed objects in the QuadTree
+
+	if (WOMA::game_state >= GAME_STOP)	// Something FATAL on loading "mandatory 2D/3D Stuff"?
+		return false;					// (SAMPLE: misssing 3D/IMAGE/AUDIO file...)
 
 	if (WOMA::game_state == GAME_LOADING)
 		WOMA::game_state = GAME_RUN;
@@ -164,36 +186,45 @@ bool dxWinSystemClass::InitializeSystem()
 	return true;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////
+// 3
+///////////////////////////////////////////////////////////////////////////////////////
 //----------------------------------------------------------------------------
-int dxWinSystemClass::ApplicationMainLoop()		// [RUN] - MAIN "INFINITE" LOOP!
+void dxWinSystemClass::ProcessFrame()
 //----------------------------------------------------------------------------
 {
-	MSG msg = { 0 };						// Reset msg
+	WomaDriverClass* driver = SystemHandle->driverList[SystemHandle->AppSettings->DRIVER];
 
-	//DEBUG:
-	do
+	WinSystemClass::ProcessFrame(); // Process Input, Timer and FPS
+
+	if ((WOMA::game_state >= GAME_RUN && WOMA::game_state < ENGINE_RESTART) && (WOMA::game_state > GAME_SETUP))
 	{
-		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))	// There is any OS messages to handle?
+		// For each Monitor: Render one Application Frame
+		for (int mon = 0; mon < windowsArray.size(); mon++)
 		{
-			TranslateMessage(&msg); // TranslateMessage produces WM_CHAR messages only for keys that are mapped to ASCII characters by the keyboard driver.
-			DispatchMessage(&msg);  // Process Msg:  (INVOKE: WinSystemClass::MessageHandler)
-		}
-		else
-		{	// Active?
-			if (WOMA::game_state > GAME_MINIMIZED && WOMA::game_state <= GAME_RUN)
-				ProcessFrame();			// <----- Render ONE: Application Frame
-			else {
-				if (WOMA::game_state == ENGINE_RESTART)
-					return ENGINE_RESTART;
+			if (RENDER_PAGE < 15)							//OS CORE FRAME ONLY!
+				m_Application->Update(mon, driver);
+			else
+			{
+				driver->BeginScene(mon);					//RESET FRAME
+
+				m_Application->RenderScene(mon, driver);	//RENDER FRAME
+
+				if (!m_contextDriver)						//PRESENT FRAME
+					driver->EndScene(mon);					//[DX]
 				else
-					Sleep(50);
+					m_contextDriver->EndScene(mon);			//[OPENGL]
 			}
 		}
-	} while (msg.message != WM_QUIT);
 
-	ASSERT(WOMA::game_state == GAME_STOP);
+		m_Driver->RenderfirstTime = false;
+	}
 
-	return (int)msg.wParam;
+	// Process Special: "PRINT SCREEN" key, the "Back-Buffer" have 1 frame rendered, so now we can dump it:
+#if defined ALLOW_PRINT_SCREEN_SAVE_PNG && defined DX11
+	if ((WOMA::game_state > GAME_MINIMIZED) && (OS_KEY_DOWN(DIK_SYSRQ + 0x35)))
+		ASSERT(SaveScreenshot());
+#endif
 }
 
 //PRIVATE:
@@ -209,8 +240,6 @@ void dxWinSystemClass::Shutdown()
 		SAFE_DELETE(g_DShowPlayer);
 	}
 #endif
-
-
 
 	// WinSystemClass Shutdown:
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("WinSystemClass::Shutdown()\n"));
@@ -229,6 +258,7 @@ void dxWinSystemClass::GPH_RESIZE()
 					SystemHandle->AppSettings->SCREEN_NEAR, SystemHandle->AppSettings->SCREEN_DEPTH,
 					SystemHandle->AppSettings->FULL_SCREEN, SystemHandle->AppSettings->BITSPERPEL);
 	#endif
+		case DRIVER_DX9:
 		case DRIVER_DX11:
 			((DirectX::DX11Class*)m_Driver)->Resize(SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT,
 				SystemHandle->AppSettings->SCREEN_NEAR, SystemHandle->AppSettings->SCREEN_DEPTH,
@@ -250,15 +280,6 @@ void dxWinSystemClass::ProcessOSInput() // This Function will be invoked several
 {
 	womaSetup->Initialize(m_Driver);
 }
-
-bool dxWinSystemClass::LoadXmlSettings()
-{
-	// Load and Parse XML [world.xml] the Configuration file
-//----------------------------------------------------------------------------
-
-	return true;
-}
-
 bool dxWinSystemClass::ApplicationInitMainWindow()
 {
 
@@ -274,96 +295,117 @@ void dxWinSystemClass::UNPAUSE()
 {
 }
 
-//----------------------------------------------------------------------------
-void dxWinSystemClass::ProcessFrame()
-//----------------------------------------------------------------------------
-{
-	WinSystemClass::ProcessFrame(); // Process Input
 
-	// Process Special: "PRINT SCREEN" key, the "Back-Buffer" have 1 frame rendered, now we can dump it:
-#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
-	if ((WOMA::game_state > GAME_MINIMIZED) && (OS_KEY_DOWN(DIK_SYSRQ + 0x35)))
-		ASSERT(SaveScreenshot());
-#endif
-
-	if (WOMA::game_state == GAME_SETUP)
-	{
-		// Init WOMA Setup:
-		if (!SystemHandle->womaSetup)
-		{
-			SystemHandle->womaSetup = NEW WomaSetupManager;
-			SystemHandle->womaSetup->Initialize(NULL);
-			OS_REDRAW_WINDOW;
-		}
-	}
-
-	if (WOMA::game_state >= GAME_RUN && WOMA::game_state < ENGINE_RESTART)
-	{
-		// For each Monitor: Render one Application Frame
-		//if (WOMA::game_state >= GAME_SYSTEM_SETTINGS)
-		if (WOMA::game_state > GAME_SETUP)
-		{
-			for (int i = 0; i < windowsArray.size(); i++)
-			{
-				if (m_Application->RENDER_PAGE >= 15)	//to allow FADE BANNERS on INTRO_DEMO
-				{
-					m_Application->RenderScene(i);		// SystemHandle->m_Driver->BeginScene(monitorWindow);
-
-					// SHOW: Present the FRAME successfully Rendered!
-					if (!m_contextDriver)
-						SystemHandle->driverList[SystemHandle->AppSettings->DRIVER]->EndScene(i);
-					else
-						m_contextDriver->EndScene(i);		
-				}
-			}
-		}
-
-		m_Driver->RenderfirstTime = false;	// NOTE: (After) FrameRender()
-	}
-}
-
-#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
-// Source: HUMUS
+#if defined ALLOW_PRINT_SCREEN_SAVE_PNG && defined DX11
 bool dxWinSystemClass::SaveScreenshot()
 {
-	TCHAR path[MAX_STR_LEN];
+	bool result = false;
+	WCHAR path_desktop[MAX_STR_LEN] = {0};
+	DirectX::DX11Class* Driver = (DirectX::DX11Class*)DXsystemHandle->driverList[SystemHandle->AppSettings->DRIVER];
+
+	#if defined _NOTES
+	#define CSIDL_DESKTOP                   0x0000         // <desktop>
+	#define CSIDL_INTERNET                  0x0001         // Internet Explorer (icon on desktop)
+	#define CSIDL_PROGRAMS                  0x0002         // Start Menu\Programs
+	#define CSIDL_CONTROLS                  0x0003         // My Computer\Control Panel
+	#define CSIDL_PRINTERS                  0x0004         // My Computer\Printers
+	#define CSIDL_PERSONAL                  0x0005         // My Documents
+	#define CSIDL_FAVORITES                 0x0006         // <user name>\Favorites
+	#define CSIDL_STARTUP                   0x0007         // Start Menu\Programs\Startup
+	#define CSIDL_RECENT                    0x0008         // <user name>\Recent
+	#define CSIDL_SENDTO                    0x0009         // <user name>\SendTo
+	#define CSIDL_BITBUCKET                 0x000a         // <desktop>\Recycle Bin
+	#define CSIDL_STARTMENU                 0x000b         // <user name>\Start Menu
+	#define CSIDL_MYDOCUMENTS               CSIDL_PERSONAL //  Personal was just a silly name for My Documents
+	#define CSIDL_MYMUSIC                   0x000d         // "My Music" folder
+	#define CSIDL_MYVIDEO                   0x000e         // "My Videos" folder
+	#define CSIDL_DESKTOPDIRECTORY          0x0010         // <user name>\Desktop
+	#define CSIDL_DRIVES                    0x0011         // My Computer
+	#define CSIDL_NETWORK                   0x0012         // Network Neighborhood (My Network Places)
+	#define CSIDL_NETHOOD                   0x0013         // <user name>\nethood
+	#define CSIDL_FONTS                     0x0014         // windows\fonts
+	#define CSIDL_TEMPLATES                 0x0015		   
+	#define CSIDL_COMMON_STARTMENU          0x0016         // All Users\Start Menu
+	#define CSIDL_COMMON_PROGRAMS           0X0017         // All Users\Start Menu\Programs
+	#define CSIDL_COMMON_STARTUP            0x0018         // All Users\Startup
+	#define CSIDL_COMMON_DESKTOPDIRECTORY   0x0019         // All Users\Desktop
+	#define CSIDL_APPDATA                   0x001a         // <user name>\Application Data
+	#define CSIDL_PRINTHOOD                 0x001b         // <user name>\PrintHood
+	#endif
 
 	// STEP 1: Get Automatic Filename
 #if defined(_WIN32)
-	SHGetSpecialFolderPath(NULL, path, CSIDL_DESKTOPDIRECTORY, FALSE);
+	SHGetSpecialFolderPathW(NULL, path_desktop, CSIDL_DESKTOPDIRECTORY, FALSE);
 #elif defined(LINUX_PLATFORM) || defined(__APPLE__)
 	strcpy(path, getenv("HOME"));
 	strcat(path, "/Desktop");
 #endif
 
-	//FILE *file;
-	size_t pos = strlen(path);
-
-	strcpy_s(path + pos, MAX_STR_LEN, TEXT("/Screenshot00.png"));
-	pos += 11;
+	std::wstring path= path_desktop;
+	size_t pos = path.length();
+	//path.append(L"/Screenshot00.jpg");	//op1
+	path.append(L"/Screenshot00.png");		//op2
 
 	static int snapshot_counter = 1;
-	path[pos] = '0' + (snapshot_counter / 10);
-	path[pos + 1] = '0' + (snapshot_counter % 10);
+	path[pos+11] = '0' + (snapshot_counter / 10);
+	path[pos + 12] = '0' + (snapshot_counter % 10);
 
 	if (snapshot_counter++ >= 100)
 		snapshot_counter = 1;
-
-	// STEP 2: Capture Image from Current Driver
-	ImageLoaderClass* img = NULL;
-	img = m_Driver->CaptureScreenShot(AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT);
-
-	// STEP 3: Save to File
-	bool result = false;
-
-	if (img)
-		result = img->savePNG(path);
-
-	SAFE_DELETE(img);
+	/*
+	GUID_ContainerFormatBmp
+	GUID_ContainerFormatPng				//op2
+	GUID_ContainerFormatIco
+	GUID_ContainerFormatJpeg			//op1
+	GUID_ContainerFormatTiff
+	GUID_ContainerFormatGif
+	GUID_ContainerFormatWmp
+	GUID_ContainerFormatDds
+	*/
+	HRESULT hr = DirectX::SaveWICTextureToFile(Driver->m_deviceContext, Driver->DX11windowsArray[0].m_backBuffer, GUID_ContainerFormatPng, path.c_str());		//op2
+	if (hr == S_OK)
+		return true;
 
 	return result;
 }
 #endif
 
+
+
+///////////////////////////////////////////////////////////////////////////////////////
+// 2
+///////////////////////////////////////////////////////////////////////////////////////
+//----------------------------------------------------------------------------
+int dxWinSystemClass::ApplicationMainLoop()		// [RUN] - MAIN "INFINITE" LOOP!
+//----------------------------------------------------------------------------
+{
+	MSG msg = { 0 };						// Reset msg
+
+	//MAIN THREAD RELEASE BUILD LOOP:
+	//MAIN DEBUG BUILD LOOP:
+	do
+	{
+		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))	// There is any OS messages to handle?
+		{
+			TranslateMessage(&msg); // TranslateMessage produces WM_CHAR messages only for keys that are mapped to ASCII characters by the keyboard driver.
+			DispatchMessage(&msg);  // Process Msg:  (INVOKE: WinSystemClass::MessageHandler)
+		}
+		else
+		{	// Active?
+			if (WOMA::game_state > GAME_MINIMIZED && WOMA::game_state <= GAME_RUN)
+				ProcessFrame();// Render ONE: Application Frame
+			else {
+				if (WOMA::game_state == ENGINE_RESTART)
+					return ENGINE_RESTART;
+				else
+					Sleep(50); //we are minized or in background, slow down CPU & GPU.
+			}
+		}
+	} while (msg.message != WM_QUIT);
+
+	ASSERT(WOMA::game_state == GAME_STOP);
+
+	return (int)msg.wParam;
+}
 
 

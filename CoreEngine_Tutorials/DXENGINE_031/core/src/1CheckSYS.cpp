@@ -403,17 +403,6 @@ bool CheckDEVICEinfo()
 				WOMA_LOGManager_DebugMSG ("-------------------------------------------------------------------------------\n");
 			}
 		}
-		/*
-		if(rdi.dwType == RIM_TYPEHID)
-		{
-			WOMA_LOGManager_DebugMSGAUTO (TEXT( "Vendor Id: %x\n"), rdi.hid.dwVendorId);
-			WOMA_LOGManager_DebugMSGAUTO (TEXT( "Product Id: %x\n"), rdi.hid.dwProductId);
-			WOMA_LOGManager_DebugMSGAUTO (TEXT( "Version No: %d\n"), rdi.hid.dwVersionNumber);
-			WOMA_LOGManager_DebugMSGAUTO (TEXT( "Usage for the device: %d\n"), rdi.hid.usUsage);
-			WOMA_LOGManager_DebugMSGAUTO (TEXT( "Usage Page for the device: %d\n"), rdi.hid.usUsagePage);
-			WOMA_LOGManager_DebugMSGAUTO (TEXT( "**************************\n"));
-		}
-		*/
 	}
 
 	free(pRawInputDeviceList);
@@ -446,8 +435,6 @@ bool SystemManager::CheckIO ()
 	int numberoffunctionkeys =  GetKeyboardType(2);
 	WOMA_LOGManager_DebugMSG ("Keyboard - Number of function keys: %d\n", numberoffunctionkeys);
 	//----------------------------------------------------------------------------
-	//MORE INFO: https://msdn.microsoft.com/en-us/library/ee825488%28v=cs.20%29.aspx
-
 	TCHAR pwszKLID[KL_NAMELENGTH];
 	BOOL b = GetKeyboardLayoutName(pwszKLID);
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("Keyboard - Layout: %s\n"), pwszKLID);

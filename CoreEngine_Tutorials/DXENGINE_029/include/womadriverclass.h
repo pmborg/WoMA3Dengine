@@ -17,7 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567829;
+//WomaIntegrityCheck = 1234567831;
 
 #pragma once
 
@@ -56,20 +56,22 @@ enum PROJECTION_TYPE
 
 enum SHADER_TYPE
 {
-	SHADER_AUTO = -1, 
+	SHADER_AUTO = 0, 
 	SHADER_COLOR,						//21: M3D v1.0	public MAIN (Used by: 21 & Sun Ray & 3D Obj)
 	SHADER_TEXTURE,						//22: M3D v1.1	public MAIN (Used by: 22 & Banner & Sky2D & SplashIntro & UnderWater & Font & 3D Obj)
 
 	SHADER_TEXTURE_FONT,				//27: fade: using alfa color
 	SHADER_TEXTURE_LIGHT,				//23: M3D v1.2	public MAIN + Pass2: Shadows (Used by: 23 & Sky3D & Sun & Moon & 3D Obj)
-	SHADER_TEXTURE_LIGHT_RENDERSHADOW,  //45:			public "Render Shadows"
-	SHADER_TEXTURE_LIGHT_CASTSHADOW,	//45:			private "Pass1: Shadows" (add auxiliar Shader)
-	SHADER_NORMAL_BUMP,					//47: M3D v1.5	public MAIN (Used by: 47 & 3D Obj)
+	SHADER_NORMAL_BUMP,					//35: M3D v1.3	public MAIN (Used by: 47 & 3D Obj)
+
+	SHADER_TEXTURE_LIGHT_RENDERSHADOW,  //36: Draw Shadows
+	SHADER_TEXTURE_LIGHT_CASTSHADOW,	//36: Aux. Shader (render in texture)
 
 	// Have to be last:
-	SHADER_TEXTURE_LIGHT_INSTANCED,				//public   51: INST 23 light with Instances    (pass2) 
-	SHADER_TEXTURE_LIGHT_CASTSHADOW_INSTANCED,	//private  51: INST 45 shadows with Instances  (pass1) 
-	SHADER_NORMAL_BUMP_INSTANCED,				//private  51: INST 47 bump with Instances ... check: 051LightInstance.hlsl
+	SHADER_TEXTURE_LIGHT_INSTANCED,				//40: INSTANCED like 23 light, but using Instances
+	SHADER_TEXTURE_LIGHT_CASTSHADOW_INSTANCED,	//41: Aux. Shader (render in texture), but using Instances (used on 41,42)
+	SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED,	//41: INSTANCED like 36 shadow, but using Instances
+	SHADER_NORMAL_BUMP_INSTANCED,				//99: INSTANCED like 35 bump, but using Instances
 
 	// TERRAINS:
 	SHADER_Double_Color_Terrain,
@@ -78,6 +80,9 @@ enum SHADER_TYPE
 	SHADER_Double_Color_Slop_Detail_TexMapping_Terrain,
 	SHADER_Double_Color_Slop_Detail_TexMappingDouble_Terrain,
 	SHADER_Double_Color_Slop_Detail_TexMappingDouble_Bump_Terrain,
+
+	SHADER_SKYTEXTURE,		//90:
+	SHADER_REALSKYTEXTURE,	//91:
 };
 
 
@@ -91,19 +96,19 @@ struct Capabilities
 
 	STRING SHADER_TYPE_NAME;
 
-	BOOL   inStereoAdapterMode;
+	BOOL   inStereoAdapterMode=false;
 
 	size_t nTotalAvailableGPUMemory;		//< Total available GPU memory in kilobytes, 0 if it was not possible to determine this value, this value may not match your graphics card specification (e.g. "512 MiB" may get you "480 MiB" in here)
-	UINT   SelectedDriverType;
+	UINT   SelectedDriverType = 0;
 	bool   USE_DXDRIVER_FONTSBoolean;
 
 	bool   DXGI10;
 	bool   DXGI11;
 	bool   DXGI12;
 
-	BOOL   MSAA_SUPPORTBoolean;		// MSAA Available?
-	UINT   MSAAmultiSampleCount;	// HW: Max.Available
-	UINT   MSAAquality;				// HW: Max.Available
+	BOOL   MSAA_SUPPORTBoolean;			// MSAA Available?
+	UINT   MSAAmultiSampleCount = 0;	// HW: Max.Available
+	UINT   MSAAquality = 0;				// HW: Max.Available
 
 	// ----------------------------------------------------------------------------
 
@@ -113,22 +118,22 @@ struct Capabilities
 	bool   framebufferMultisampleBoolean;
 	bool   shaderTextureLODBoolean;
 
-	size_t MaximumSimultaneousRenderTargets;
+	size_t MaximumSimultaneousRenderTargets = 0;
 
-	size_t max2DTextureSize;
-	size_t maxArrayTextureLayers;
+	size_t max2DTextureSize = 0;
+	size_t maxArrayTextureLayers = 0;
 
-	size_t max3DTextureSize;
-	size_t maxCubeMapTextureSize;
+	size_t max3DTextureSize = 0;
+	size_t maxCubeMapTextureSize = 0;
 
-	size_t maxViewportWidth;
-	size_t maxViewportHeight;
+	size_t maxViewportWidth = 0;
+	size_t maxViewportHeight = 0;
 
-	size_t maxElementsIndices;
-	size_t maxElementsVertices;
+	size_t maxElementsIndices = 0;
+	size_t maxElementsVertices = 0;
 
-	size_t maxVertexAttributes;
-	size_t MaximumConstantBufferSize;
+	size_t maxVertexAttributes = 0;
+	size_t MaximumConstantBufferSize = 0;
 
 	// ----------------------------------------------------------------------------
 	// https://en.wikipedia.org/wiki/Feature_levels_in_Direct3D#Support_matrix
@@ -156,8 +161,8 @@ struct Capabilities
 	BOOL multiAdapterSupport;
 
 	// Check [3] D3D12_FEATURE_DATA_FEATURE_LEVELS
-	UINT featureLevelsHI;
-	UINT featureLevelsLO;
+	UINT featureLevelsHI = 0;
+	UINT featureLevelsLO = 0;
 
 	// Check[4] D3D12_FEATURE_DATA_FORMAT_SUPPORT
 	bool Formats[115] = { 0 };
@@ -191,7 +196,7 @@ public:
 	virtual void TurnOnAlphaBlending() = 0;
 	virtual void TurnOffAlphaBlending() = 0;
 
-	UINT	ShaderVersionH, ShaderVersionL;	// Basics of Refrash rate / Shaver Version:
+	UINT	ShaderVersionH = 0, ShaderVersionL = 0;	// Basics of Refrash rate / Shaver Version:
 	bool	RenderfirstTime = true;
 
 	// Video Card Capabilities:
@@ -210,25 +215,25 @@ public:
 	// ------------------
 	
 	TCHAR	m_videoCardDescription[MAX_STR_LEN];	//STRING m_videoCardDescription; 
-	int		m_videoCardMemory;
+	int		m_videoCardMemory = 0;
 	TCHAR	adapterDesc_Description[MAX_STR_LEN];	// Note: have to be wstring
-	UINT	ufreededicatedVideoMem;
+	UINT	ufreededicatedVideoMem = 0;
 
 	// List of resoltions availabel to Use
 	// ----------------------------------------------------------------------------
-	UINT numerator, denominator;
-	UINT MonitorNumber;					// Total number of Monitors
-	UINT numModes;						// Number ResolutionModes
+	UINT numerator, denominator = 0;
+	UINT MonitorNumber = 0;					// Total number of Monitors
+	UINT numModes = 0;						// Number ResolutionModes
 
 	BOOL	m_VSYNC_ENABLED;
 	float	ClearColor[4];
 
 	// MSAA Used:
 	// ----------------------------------------------------------------------------
-	UINT	ReqMSAAmultiSampleCount;	// Req. to Use
-	UINT	ReqMSAAquality;				// Req. to Use
+	UINT	ReqMSAAmultiSampleCount = 0;	// Req. to Use
+	UINT	ReqMSAAquality=0;				// Req. to Use
 
 };
 
-#define msaaSamples (ReqMSAAquality - 1)	// MSAA:
+#define msaaSamples (ReqMSAAquality - 1)	// MSAA
 

@@ -25,7 +25,7 @@
 InputClass::InputClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567891;
+	WomaIntegrityCheck = 1234567831;
 
 	ZeroMemory (&m_keys, sizeof(m_keys));
 }
@@ -38,6 +38,7 @@ void InputClass::Initialize()
 	for(int i=0; i<256; i++)
 		m_keys[i] = false;
 }
+
 #include "minwindef.h"
 void InputClass::KeyDown(unsigned int lparam, unsigned int wparam)
 {

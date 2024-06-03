@@ -15,7 +15,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Define the diferent states/pages on the engine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567891;
+//WomaIntegrityCheck = 1234567831;
 
 #pragma once
 
@@ -33,7 +33,7 @@
 #define GAME_SHOW_POSITION   13
 #define GAME_WEATHER_INFO    14
 
-#define GAME_SETUP           15 
+#define GAME_SETUP           15
 
 // Engine Running: RENDER
 #define GAME_MENU			 45

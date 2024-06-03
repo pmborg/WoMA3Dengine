@@ -27,7 +27,7 @@
 class SystemFeatures
 {
 public:
-	UINT WomaIntegrityCheck = 1234567891;
+	UINT WomaIntegrityCheck = 1234567831;
     SystemFeatures();
     ~SystemFeatures();
 
@@ -56,7 +56,7 @@ public:
 	bool amd_3DNowExt;
 	bool SVM;		//if(!hypervisor) virtualization = "AMD virtualization (AMD-V)"
 	bool sse4A;
-	//bool sse5;
+	bool sse5;
 
     // Get processor info:
 	bool avx2;

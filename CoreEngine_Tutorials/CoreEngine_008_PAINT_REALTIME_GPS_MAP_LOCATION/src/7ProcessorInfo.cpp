@@ -17,6 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567831;
 
 #include "WinSystemClass.h"
 #include "OSmain_dir.h"
@@ -46,7 +47,7 @@ void cpuID(unsigned regs[4], unsigned i)
 ProcessorInfo::ProcessorInfo()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567890;
+	WomaIntegrityCheck = 1234567831;
 
     processorName[0] = 0;
     processorId[0] = 0;

@@ -28,7 +28,7 @@ extern void cpuID(unsigned regs[4], unsigned i);
 class ProcessorInfo
 {
 public:
-    UINT WomaIntegrityCheck = 1234567829;
+    UINT WomaIntegrityCheck = 1234567831;
     ProcessorInfo();
     ~ProcessorInfo();
 

@@ -238,6 +238,9 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="25core_engine_level.h" />
+    <ClInclude Include="include\WomaCube.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />

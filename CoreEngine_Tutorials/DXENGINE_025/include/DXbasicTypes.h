@@ -17,6 +17,8 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // ----------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567831;
+
 #pragma once
 
 #include "platform.h"
@@ -24,6 +26,8 @@
 #include "standard_platform.h"
 #include <DirectXMath.h>// Use Math
 #include <fstream>
+
+//#if defined DX_ENGINE
 using namespace std;
 
 typedef struct
@@ -65,8 +69,10 @@ namespace DirectX {
 	DXtextureVertexType(float x, float y, float z, 
 						float u, float v)
 						: position(x,y,z), texCoord(u, v){}
+//#if defined DX11 || defined DX12 || defined DX9
 		XMFLOAT3 position;
 	    XMFLOAT2 texCoord;
+//#endif
 #if defined DX9sdk
 		D3DXVECTOR3 position;
 	    D3DXVECTOR2 texCoord;
@@ -88,9 +94,11 @@ namespace DirectX {
 								float u, float v,
 								float nx, float ny, float nz)
 								: position(x,y,z), texCoord(u, v), normal(nx, ny, nz){}
+//#if defined DX11 || defined DX12 || defined DX9
 		XMFLOAT3 position;
 	    XMFLOAT2 texCoord;
 		XMFLOAT3 normal;
+//#endif
 #if defined DX9sdk
 		D3DXVECTOR3 position;
 	    D3DXVECTOR2 texCoord;
@@ -103,7 +111,7 @@ namespace DirectX {
 		#define CUSTOMFVF_XYZ_LIGHT_DX9 (D3DFVF_XYZ | D3DFVF_TEX1 | D3DFVF_NORMAL)
 	#endif
 
-	// 45: Shadow
+	// 36: Shadow
 	// -------------------------------------------------------------------------------------------
 	struct DXShadowMapVertexType
 	{
@@ -115,7 +123,7 @@ namespace DirectX {
 		XMFLOAT3 position;
 	};
 	
-	// 47: NormalBump
+	// 35: NormalBump
 	// -------------------------------------------------------------------------------------------
 	struct DXNormalBumpVertexType
 	{

@@ -17,8 +17,11 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: MAIN PURPOSE: Work as a DirectX Driver API/Interface
 // ----------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567831;
 
 #pragma once
+
+#if (defined DX_ENGINE)
 
 	#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 		// DX12 includes
@@ -53,4 +56,6 @@
 	#if defined DX9sdk
 		#include "DX9Class.h"
 	#endif
+
+#endif
 

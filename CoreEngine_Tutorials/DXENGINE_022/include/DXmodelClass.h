@@ -24,6 +24,42 @@
 //////////////
 #include "platform.h"
 
+#include "dx11Class.h"
+#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
+#include "DX12Class.h"	//#include "GLopenGLclass.h"
+
+// DX12 includes
+#include <dxgi1_4.h>	// Always 1st!	(Select Driver)
+#include <d3d12.h>		// DX12			(Select Device)
+#include <D3Dcompiler.h>// Use Compiler
+#include <DirectXMath.h>// Use Math
+using namespace DirectX;
+
+#include "DX12TextureClass.h"
+#endif
+
+#if D3D11_SPEC_DATE_YEAR > 2009
+#define _11 r[0].m128_f32[0]
+#define _12 r[0].m128_f32[1]
+#define _13 r[0].m128_f32[2]
+#define _14 r[0].m128_f32[3]
+
+#define _21 r[1].m128_f32[0]
+#define _22 r[1].m128_f32[1]
+#define _23 r[1].m128_f32[2]
+#define _24 r[1].m128_f32[3]
+
+#define _31 r[2].m128_f32[0]
+#define _32 r[2].m128_f32[1]
+#define _33 r[2].m128_f32[2]
+#define _34 r[2].m128_f32[3]
+
+#define _41 r[3].m128_f32[0]
+#define _42 r[3].m128_f32[1]
+#define _43 r[3].m128_f32[2]
+#define _44 r[3].m128_f32[3]
+#endif
+
 #define initLoadTexture3D(model, texture, vertexVector, IndexList, shader_type)\
 {\
 	std::vector<STRING> Textures;\
@@ -39,7 +75,7 @@
 	Textures.push_back(texture); \
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) { CREATE_MODELGL3_IF_NOT_EXCEPTION(model, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }\
 	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) { CREATE_MODELDX_IF_NOT_EXCEPTION(model, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }\
-	if (shader_type == SHADER_TEXTURE) ASSERT(model->LoadTexture(texture, SystemHandle->m_Driver, shader_type, &Textures, &vertexVector, &IndexList)); \
+	ASSERT(model->LoadTexture(texture, SystemHandle->m_Driver, shader_type, &Textures, &vertexVector, &IndexList)); \
 }
 
 #if defined DX_ENGINE
@@ -50,52 +86,15 @@
 #include "DX9Class.h"
 #endif
 
-#include "dx11Class.h"
 
-#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-#include "DX12Class.h"	//#include "GLopenGLclass.h"
-
-// DX12 includes
-#include <dxgi1_4.h>	// Always 1st!	(Select Driver)
-#include <d3d12.h>		// DX12			(Select Device)
-#include <D3Dcompiler.h>// Use Compiler
-#include <DirectXMath.h>// Use Math
-using namespace DirectX;
-
-#include "DX12TextureClass.h"
-#endif
 
 #include "DXshaderClass.h"
 #include "virtualModelClass.h"
 #include "DXbasicTypes.h"
 
+
 namespace DirectX 
 {
-// --------------------------
-// "OBJ" MATERIAL FORMAT:
-// --------------------------
-struct SurfaceMaterial
-{
-	char matName[100];					//size:100 100xchar
-
-	XMFLOAT4 diffuseColor;				//size:16
-	XMFLOAT4 ambientColor;				//size:16
-	XMFLOAT4 emissiveColor;				//size:16
-
-	int texArrayIndex;					//size:4
-	bool hasTexture;					//size:1
-
-	bool transparent;					//size:1	>= 43
-    ID3D11ShaderResourceView* alfaMap11;//size:8	>= 43
-
-    bool bSpecular;						//size:1	>= 44: NEW SPECULAR + SHININESS:
-    XMFLOAT3 specularColor;				//size:12	>= 44: NEW SPECULAR + SHININESS:
-    int nShininess;						//size:4	//>= 44: NEW SPECULAR + SHININESS:
-
-    bool hasNormMap;					//size:1	>=47: NEW BUMP
-    int normMapTexArrayIndex;			//size:4	>=47: NEW BUMP
-	//							TOTAL		 184
-};
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -104,7 +103,8 @@ struct SurfaceMaterial
 class DXmodelClass : public VirtualModelClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567890;
+	UINT WomaIntegrityCheck = 1234567831;
+
 	DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY = TRIANGLELIST, bool computeNormals = false, bool modelHASshadow = false, bool modelRENDERshadow = false);
 	~DXmodelClass();
 	void Shutdown();
@@ -117,6 +117,14 @@ public:
 
 	// BASIC LOAD:
 	bool LoadColor(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<ModelColorVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0);
+	
+		// [PATTERN] Image loader:
+		ID3D11ShaderResourceView* m_Texture11 = NULL;
+	#if defined DX9sdk
+		LPDIRECT3DTEXTURE9 m_Texture9 = NULL;
+	#endif
+		DX12TextureClass* m_Texture = NULL;
+	
 	bool LoadTexture(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0);
 
 	// MODEL LOAD:
@@ -142,7 +150,7 @@ public:
 	#endif
 		std::vector<ID3D11ShaderResourceView*> meshSRV11;	// vector with all pointer(s) to textures loaded
 	#ifdef DX9sdk
-		std::vector<IDirect3DBaseTexture9*> meshSRV;	// vector with all pointer(s) to textures loaded
+		std::vector<IDirect3DBaseTexture9*> meshSRV9;	// vector with all pointer(s) to textures loaded
 	#endif
 
 // DX Specific:
@@ -156,13 +164,20 @@ public:
 	XMMATRIX		m_worldMatrix;
 #endif
 
-	XMFLOAT4 objectCenterOffset;
-	XMFLOAT3 minVertex;
-	XMFLOAT3 maxVertex;
+	XMFLOAT4 objectCenterOffset = XMFLOAT4(0, 0, 0, 0);
+	XMFLOAT3 minVertex = XMFLOAT3(0, 0, 0);
+	XMFLOAT3 maxVertex = XMFLOAT3(0, 0, 0);
+
+	//std::vector <CD3DX12_CPU_DESCRIPTOR_HANDLE> cbvHandle;
+	HRESULT LoadTextureImage(TCHAR* textureFilename);
 
 // ----------------------------------------------------------------------
 private:
 // ----------------------------------------------------------------------
+
+#if defined LOADM3D //ENGINE_LEVEL >= 50
+	bool LoadM3D	(SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow=false, bool renderShadow=false, UINT instanceCount=0);
+#endif
 
 	DXshaderClass* CreateShader(TCHAR* objectName, SHADER_TYPE ShaderType);
 	bool InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* textureFile=NULL);
@@ -176,6 +191,8 @@ private:
 	std::vector<ModelTextureVertexType> modelTextureVertex_;			// LOAD M3D
 	bool InitializeTextureBuffers(void* g_driver, void* indices);
 
+
+
 	// VARS:
 	// ----------------------------------------------------------------------
 	
@@ -187,7 +204,7 @@ private:
 	DirectX::DX12Class* m_driver = NULL;
 #endif
 
-	UINT sizeofMODELvertex;
+	UINT sizeofMODELvertex=0;
 
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 	// App resources.
@@ -211,6 +228,8 @@ private:
 #endif
 
 	std::vector<UINT>* indexModelList;
+
+
 
 };
 

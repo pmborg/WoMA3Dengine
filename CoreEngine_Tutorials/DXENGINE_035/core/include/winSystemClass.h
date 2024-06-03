@@ -30,11 +30,11 @@
 
 #include "WomaSetupManager.h"
 
-#include <combaseapi.h>				// VC7: ships with updated headers: CoInitializeEx()
-
 #define WOMA_ENGINE_CLASS TEXT("WoMA3Dengine")
 
 extern HWND DoCreateStatusBar(HWND hwndParent, int idStatus, HINSTANCE hinst, int cParts);
+
+#include <combaseapi.h>				// VC7: ships with updated headers: CoInitializeEx()
 
 struct ScreenArrayInfo
 {

@@ -34,7 +34,7 @@ wGLopenGLclass::wGLopenGLclass()
 {
 	CLASS_LOAD_N--; 
 	CLASSLOADER();  //dont count super class!
-	WomaIntegrityCheck = 1234567890;
+	WomaIntegrityCheck = 1234567831;
 
 	m_deviceContext = NULL;
 	m_renderingContext1 = NULL;
@@ -69,7 +69,8 @@ wGLopenGLclass::wGLopenGLclass()
 }
 
 wGLopenGLclass::~wGLopenGLclass() { 
-	CLASSDELETE(); 
+	Shutdown();
+	CLASSDELETE();
 }
 
 bool wGLopenGLclass::OnInit(int _USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, int screenHeight, UINT depthBits, float screenDepth, float screenNear, 

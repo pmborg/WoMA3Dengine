@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: WeatherClass.h
 // --------------------------------------------------------------------------------------------
@@ -35,7 +36,5 @@ private:
 public:
     STRING	Metar;
 
-
 };
-
 

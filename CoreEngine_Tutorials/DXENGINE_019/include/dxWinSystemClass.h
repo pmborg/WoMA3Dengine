@@ -23,7 +23,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "WinSystemClass.h"
-#include "DX11Class.h"
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: WinSystemClass
@@ -31,7 +31,7 @@
 class dxWinSystemClass : public WinSystemClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567890;
+	UINT WomaIntegrityCheck = 1234567831;
 	dxWinSystemClass(WOMA::Settings* AppSettings);
 	~dxWinSystemClass();
 
@@ -42,7 +42,7 @@ public:
 
 	void ProcessOSInput();
 
-	bool LoadXmlSettings();
+	bool LoadWorldXmlSettings();
 
 	bool ApplicationInitMainWindow();
 
@@ -50,7 +50,7 @@ public:
 	void UNPAUSE();
 	void GPH_RESIZE();
 
-#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
+#if defined ALLOW_PRINT_SCREEN_SAVE_PNG && defined DX11
 	bool SaveScreenshot();
 #endif
 

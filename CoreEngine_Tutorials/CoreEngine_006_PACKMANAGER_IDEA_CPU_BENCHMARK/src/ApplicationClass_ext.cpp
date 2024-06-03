@@ -20,13 +20,21 @@
 #include "main.h"
 #include "ApplicationClass.h"
 #include "mem_leak.h"
+#include "OSmain_dir.h"
+
+#pragma warning(push)
+#pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
 
 #include "winSystemClass.h"
+
+#include <inttypes.h>
+
+bool FORCE_RENDER_ALL = false;
 
 ApplicationClass::ApplicationClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567890;
+	WomaIntegrityCheck = 1234567831;
 
 	// ---------------------------------------------------------------------
 	// private:
@@ -46,20 +54,37 @@ ApplicationClass::ApplicationClass()
 
 	// TERRAIN
 
-
 #if defined USE_LIGHT_RAY // LightModel
 	m_lightRayModel = NULL;
 #endif
 
+
+
+	//	-------------------------------------------------------------------------------------------
+	//	WoMA Vertex(s) Arrays:  NOTE: Cant be used to create and Obj more than ONCE!
+	//	-------------------------------------------------------------------------------------------
+
 	Start();
 }
 
-ApplicationClass::~ApplicationClass() {CLASSDELETE();}
+ApplicationClass::~ApplicationClass() {
+	Shutdown();
+	CLASSDELETE();
+}
 
 //	-------------------------------------------------------------------------------------------
 void ApplicationClass::Shutdown()
 {
 	WOMA_LOGManager_DebugMSG ("ApplicationClass::Shutdown()\n");
+
+	//3D:
+
+
+	//2D:
+#if defined INTRO_DEMO || defined USE_VIEW2D_SPRITES
+	DEMO_WOMA_APPLICATION_Shutdown2D();
+#endif
+
 
 #if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN
 	SAFE_DELETE (autoGenUnderWaterTerrain);
@@ -73,6 +98,21 @@ void ApplicationClass::Shutdown()
 
 #if defined USE_RASTERTEK_TEXT_FONT //27
 	SAFE_SHUTDOWN(AppTextClass);
+#endif
+}
+
+//-----------------------------------------------------------------------------------------
+void ApplicationClass::WOMA_APPLICATION_Shutdown()
+//-----------------------------------------------------------------------------------------
+{
+	WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_Shutdown()\n");
+
+#if defined USE_LIGHT_RAY
+#if (defined DX_ENGINE)
+	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+		SAFE_SHUTDOWN_MODELDX(m_lightRayModel);
+#endif
+
 #endif
 }
 
@@ -91,14 +131,4 @@ bool ApplicationClass::Start()
 }
 
 
-
-//-----------------------------------------------------------------------------------------
-void ApplicationClass::WOMA_APPLICATION_Shutdown()
-//-----------------------------------------------------------------------------------------
-{
-	WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_Shutdown()\n");
-
-#if defined USE_LIGHT_RAY
-
-#endif
-}
+#pragma warning(pop)

@@ -15,9 +15,9 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-// Extract used packs to: "%TEMP%<temp dir>"
+// Extract used packs to: "C:\Users\<user>\AppData\Local\Temp\<temp dir>"
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567829;
+//WomaIntegrityCheck = 1234567831;
 
 #define _CRT_SECURE_NO_WARNINGS
 #include "main.h"

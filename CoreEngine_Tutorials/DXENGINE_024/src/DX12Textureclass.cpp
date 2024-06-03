@@ -22,7 +22,7 @@
 DX12TextureClass::DX12TextureClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567890;
+	WomaIntegrityCheck = 1234567831;
 
 	//m_textureID = NULL;
 	loaded = false;
@@ -152,7 +152,7 @@ void DX12TextureClass::AddTexture (void* g_driver, unsigned char* image32b, int 
 	// Copy data to the intermediate upload heap and then schedule a copy 
 	// from the upload heap to the Texture2D.
 	D3D12_SUBRESOURCE_DATA textureData = {};
-	textureData.pData = image32b;
+	textureData.pData = image32b;				//	IMAGE!
 	textureData.RowPitch = width * (depth / 8); // TexturePixelSize;
 	textureData.SlicePitch = textureData.RowPitch * height;
 

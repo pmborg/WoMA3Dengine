@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: SceneManager.h
 // --------------------------------------------------------------------------------------------
@@ -14,7 +15,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567830;
+//WomaIntegrityCheck = 1234567831;
 #pragma once
 
 #include "WomaDriverClass.h"
@@ -38,7 +39,9 @@ public:
 
 	SceneNode* RootNode;
 
-//private:
+	std::vector<VirtualModelClass*> opacModelList;
+
+	//private:
 	QuadTree quadTree;
 };
 

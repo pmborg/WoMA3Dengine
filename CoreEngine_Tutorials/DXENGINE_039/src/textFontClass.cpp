@@ -67,6 +67,7 @@ bool textFontClass::Initialize(void* g_driver, TCHAR* fontFilename, TCHAR* textu
 		IF_FAILED_RETURN_FALSE(hr);
 	}
 #endif
+#if defined OPENGL3
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
 	{
 		// Create the texture object for this model:
@@ -80,6 +81,7 @@ bool textFontClass::Initialize(void* g_driver, TCHAR* fontFilename, TCHAR* textu
 			WOMA::WomaMessageBox(textureFilename, TEXT("Texture File not found")); return false;
 		}
 	}
+#endif	
 
 	return true;
 }
@@ -88,7 +90,9 @@ void textFontClass::Shutdown()
 {
 	meshSRV11.clear();
 
+#if defined OPENGL3
 	SAFE_SHUTDOWN(gl_Texture);
+#endif
 	ReleaseFontData();	// Release the font data.
 }
 

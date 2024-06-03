@@ -17,6 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567831;
 
 #include "WinSystemClass.h"
 #include "SystemFeatures.h"
@@ -25,7 +26,7 @@
 SystemFeatures::SystemFeatures()
 {
 	CLASSLOADER();
-    WomaIntegrityCheck = 1234567890;
+    WomaIntegrityCheck = 1234567831;
 
     displayAllCpuFeactures = TEXT("");
 }
@@ -235,13 +236,7 @@ STRING SystemFeatures::Initialize()
     // --------------------------------------------------------------------------------------------
     int CPUInfo[4] = { -1 };
 
-//#FOR INTEL ONLY!
-//#if _MSC_VER >= 1800 // Just for VISUAL STUDIO 2013
-//    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("Virtualization is enabled: %s (in the firmware)"), IsProcessorFeaturePresent(PF_VIRT_FIRMWARE_ENABLED) ? TEXT("true") : TEXT("false"));
-//	SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
-//#endif
-
-	//#define SHOW_AMD_ONLY
+	#define SHOW_AMD_ONLY
 
 	// INFO: http://en.wikipedia.org/wiki/CPUID
 

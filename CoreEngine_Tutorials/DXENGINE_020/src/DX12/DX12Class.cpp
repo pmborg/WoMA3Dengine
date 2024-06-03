@@ -28,6 +28,8 @@
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009 && DX_ENGINE_LEVEL >= 19		// Initializing Engine && defined DX11
 #include "winsystemclass.h"	// SystemHandle
 
+#include "dxWinSystemClass.h"	// SystemHandle
+
 namespace DirectX {
 
 // ----------------------------------------------------------------------------------------------
@@ -36,6 +38,7 @@ DX12Class::DX12Class()
 {
 	// WomaDriverClass / Public: ------------------------------------------------------
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567831;
 
 	// SUPER Video Card Info:
 	// ---------------------------------------------------------------------------
@@ -66,7 +69,10 @@ DX12Class::DX12Class()
 	BUFFER_COLOR_FORMAT = DXGI_FORMAT_B8G8R8A8_UNORM; // "Loader Image" use this format.
 
 #if DX_ENGINE_LEVEL >= 21 || defined CLIENT_SCENE_TEXT //21
-	m_Camera = NULL;
+	//m_Camera = NULL;
+#endif
+#if defined USE_FRUSTRUM
+	frustum = NULL;
 #endif
 
 #ifdef USING_THREADS
@@ -119,6 +125,10 @@ void DX12Class::Shutdown()
 
 		for (UINT i = 0; i<BufferCount; ++i)
 			m_renderTargets[i].Reset();
+
+#if defined USE_FRUSTRUM
+		SAFE_DELETE(frustum);
+#endif
 
 		m_swapChain.Reset();
 		m_fence.Reset();
@@ -444,7 +454,7 @@ bool DX12Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, i
 	BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize)
 	//----------------------------------------------------------------------------------------------
 {
-	//mEnable4xMsaa = msaa;
+
 	m_VSYNC_ENABLED = vsync;
 
 	WOMA::logManager->DEBUG_MSG(TEXT("-------------------------\n"));
@@ -489,6 +499,10 @@ bool DX12Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, i
 #if defined USE_RASTERIZER_STATE
 	IF_NOT_RETURN_FALSE(createAllRasterizerStates(false)); // Only applies: if doing "line drawing" and "MultisampleEnable" is false.
 	SetRasterizerState(CULL_NONE, FILL_SOLID);	//Set Default
+#endif
+
+#if defined USE_FRUSTRUM
+	frustum = NEW DXfrustumClass;	// Create Frustum
 #endif
 
 	// Create the command list.
@@ -584,7 +598,6 @@ HRESULT result = S_OK;
 	}
 
 #if defined CLIENT_SCENE_TEXT || defined USE_VIEW2D_SPRITES // 26
-	//SetCamera2D(); //AQUI
 	Initialize3DCamera();
 #endif
 
@@ -612,7 +625,7 @@ bool DX12Class::initDX12Device (HWND hwnd)
 	HRESULT result = S_OK;
 
 	//
-	// LoadAssets()- PARTE 2
+	// LoadAssets()- PART 2
 	//
 	// Describe and create the command queue.
 	// ==========================================
@@ -641,7 +654,7 @@ bool DX12Class::initDX12Device (HWND hwnd)
 	}
 
 	//
-	// LoadAssets()- PARTE 3
+	// LoadAssets()- PART 3
 	//
 
 
@@ -856,8 +869,6 @@ void DX12Class::EndScene(UINT monitorWindow)
 	if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
 		return;
 
-	//m_currentFrame = m_swapChain->GetCurrentBackBufferIndex();
-
 	MoveToNextFrame();
 }
 
@@ -917,17 +928,29 @@ void DX12Class::getProfile ()
 	D3D12_FEATURE_DATA_SHADER_MODEL shaderModel;
 	shaderModel.HighestShaderModel = D3D_HIGHEST_SHADER_MODEL;
 
-	#ifdef FOR_DX_12_NOTES_21_FEV_2023
-	D3D_SHADER_MODEL_5_1 = 0x51,
-	D3D_SHADER_MODEL_6_0 = 0x60,
-	D3D_SHADER_MODEL_6_1 = 0x61,
-	D3D_SHADER_MODEL_6_2 = 0x62,
-	D3D_SHADER_MODEL_6_3 = 0x63,
-	D3D_SHADER_MODEL_6_4 = 0x64,
-	D3D_SHADER_MODEL_6_5 = 0x65,
-	D3D_SHADER_MODEL_6_6 = 0x66,
-	D3D_SHADER_MODEL_6_7 = 0x67,
-	#endif
+	/*
+	DirectX 		Release Date 		Shader Model 		Shader Profile(s)
+	------------------------------------------------------------------------------------------------------
+	DirectX 8.0 	November 12, 2000 	Shader Model 1.0 	vs_1_1													32bits WIN ME
+	DirectX 9.0 	November 19, 2002 	Shader Model 2.0 	vs_2_0, vs_2_x, ps_2_0, ps_2_x							32bits XP
+	DirectX 9.0c 	August 4, 2004 		Shader Model 3.0 	vs_3_0, ps_3_0											XP-SP2
+	DirectX 10.0 	November 30, 2006 	Shader Model 4.0 	vs_4_0, ps_4_0, gs_4_0									VISTA
+	DirectX 10.1 	February 4, 2008 	Shader Model 4.1 	vs_4_1, ps_4_1, gs_4_1									VISTA-SP1
+	DirectX 11.0 	October 22, 2009 	Shader Model 5.0 	vs_5_0, ps_5_0, gs_5_0, ds_5_0, hs_5_0, cs_5_0			WIN7
+	DirectX 11.1																									WIN8
+	DirectX 11.2																									WIN8.1
+	
+	D3D_SHADER_MODEL_5_1 = 0x51, WINDOWS10 DX12 Augost 21, 2015 Shader Model 5.1 — GCN 1+, Fermi+, DirectX 12 (11_0+) with WDDM 2.0.			
+	D3D_SHADER_MODEL_6_0 = 0x60, WINDOWS10 DX12	                Shader Model 6.0 — GCN 1+, Kepler+, DirectX 12 (11_0+) with WDDM 2.1.           
+	D3D_SHADER_MODEL_6_1 = 0x61, WINDOWS10 DX12	                Shader Model 6.1 — GCN 1+, Kepler+, DirectX 12 (11_0+) with WDDM 2.3.           
+	D3D_SHADER_MODEL_6_2 = 0x62, WINDOWS10 DX12	                Shader Model 6.2 — GCN 1+, Kepler+, DirectX 12 (11_0+) with WDDM 2.4.			
+	D3D_SHADER_MODEL_6_3 = 0x63, WINDOWS10 DX12	                Shader Model 6.3 — GCN 1+, Kepler+, DirectX 12 (11_0+) with WDDM 2.5.			
+	D3D_SHADER_MODEL_6_4 = 0x64, WINDOWS10 DX12	                Shader Model 6.4 — GCN 1+, Kepler+, Skylake+, DirectX 12 (11_0+) with WDDM 2.6.	
+	D3D_SHADER_MODEL_6_5 = 0x65, WINDOWS10 DX12	                Shader Model 6.5 — GCN 1+, Kepler+, Skylake+, DirectX 12 (11_0+) with WDDM 2.7.	
+
+	D3D_SHADER_MODEL_6_6 = 0x66, WINDOWS11 DX12	                Shader Model 6.6 — GCN 4+, Maxwell+, DirectX 12 (11_0+) with WDDM 3.0.			
+	D3D_SHADER_MODEL_6_7 = 0x67, WINDOWS11 DX12	                Shader Model 6.7 — GCN 4+, Maxwell+, DirectX 12 (12_0+) with WDDM 3.1.			
+	*/
 	while (true) 
 	{
 		if (FAILED(m_device->CheckFeatureSupport(D3D12_FEATURE_SHADER_MODEL, &shaderModel, sizeof(shaderModel))))
@@ -935,7 +958,6 @@ void DX12Class::getProfile ()
 			ShaderVersionH = shaderModel.HighestShaderModel >> 4;
 			ShaderVersionL = shaderModel.HighestShaderModel & 0xF;
 			WOMA::logManager->DEBUG_MSG(TEXT("Failed to query (shaderModel: %d.%d) for Adapter: 1\n"), ShaderVersionH, ShaderVersionL);
-			//WOMA::WomaMessageBox(TEXT("Failed to query (shaderModel) for Adapter: 1\n"), TEXT("FATAL"), MB_OK);
 			int i = shaderModel.HighestShaderModel;
 			i--;
 			shaderModel.HighestShaderModel = (D3D_SHADER_MODEL)i;
@@ -996,6 +1018,8 @@ bool DX12Class::createAllRasterizerStates(bool lineAntialiasing)
 #endif
 
 // REVIEW - Init Step: 5 - Rasterizer State: Set the Viewport for rendering
+// MORE INFO: https://msdn.microsoft.com/en-us/library/windows/desktop/bb205126%28v=vs.85%29.aspx
+
 // ----------------------------------------------------------------------------------------------
 void DX12Class::setViewportDevice(int screenWidth, int screenHeight)
 // ----------------------------------------------------------------------------------------------
@@ -1060,11 +1084,10 @@ void DX12Class::SetRasterizerState(UINT CullMode, UINT fillMode)
 {
 	m_CullMode = CullMode;
 	m_fillMode = fillMode;
-
-	//rasterState = &m_rasterState[CullMode][fillMode];
 }
 #endif
 
+// MORE INTO: http://msdn.microsoft.com/en-us/library/windows/desktop/ff476110%28v=vs.85%29.aspx
 // ----------------------------------------------------------------------------------------------
 bool DX12Class::createSetDepthStencilState (bool depthTestEnabled)
 // ----------------------------------------------------------------------------------------------
@@ -1105,13 +1128,13 @@ void DX12Class::SetCamera2D()
 {
 }
 
+// TODO: go to Virtual Class?
 // ----------------------------------------------------------------------------------------------
 void DX12Class::Initialize3DCamera()
 // ----------------------------------------------------------------------------------------------
 {
 
-	// Normal Camera:
-
+	// SETUP 3D Sky Camera:
 }
 
 

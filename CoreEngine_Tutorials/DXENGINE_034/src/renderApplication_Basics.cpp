@@ -34,6 +34,8 @@
 
 #include "OSmain_dir.h"
 
+#include "DXmodelClass.h"
+
 void ApplicationClass::DemoRender()
 {
 	WomaDriverClass* m_Driver = DXsystemHandle->m_Driver;
@@ -50,7 +52,7 @@ void ApplicationClass::DemoRender()
 
 	//COLOR TUTORIAL DEMO:
 	// --------------------------------------------------------------------------------------------
-	//DEMO-1: Squar
+	//DEMO-1: Square
 	if (RENDER_PAGE == 21 || FORCE_RENDER_ALL)
 	{
 		m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID); // Render the Inside of Sphere
@@ -59,10 +61,10 @@ void ApplicationClass::DemoRender()
 
 	#if defined ROTATE_SQUARE
 		// Rotate the world matrix by the rotation value so that the Square will spin:
-		m_1stSquar3DColorModel->translation(0, 0, 0);
-		m_1stSquar3DColorModel->rotateY(rY);
+		m_1stSquare3DColorModel->translation(0, 0, 0);
+		m_1stSquare3DColorModel->rotateY(rY);
 	#endif
-		m_1stSquar3DColorModel->Render(m_Driver);
+		m_1stSquare3DColorModel->Render(m_Driver);
 	}
 
 	//DEMO-2: Triangle
@@ -193,29 +195,34 @@ void ApplicationClass::RenderSprites()
 
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////
-//-------------------------------------------------------------------------------------------
-void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
-//-------------------------------------------------------------------------------------------
-{
-	if (RENDER_PAGE < 15)
-	{
-		Update(monitorWindow, driver);
-		return;
-	} 
-	else
-	{
-		// [0] Process INPUT, CAMERA, INTRO animation etc...
-		float dayLightFade = Update(monitorWindow, driver);
+// PRE-RENDER - Shadows
 
-		// [1] Render: SHADOWS	Render one Application Frame (Need to be before 3D)
-	
-		// [2] RENDER: MAIN - 3D, Render one Application Frame
-		AppRender(monitorWindow, dayLightFade);
-		
-		// [3] RENDER: SPRITEs on TOP of 3D - 2D Render one Application Frame. (Need to be after 3D)
-		AppPosRender();
+void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, UINT modelID, UINT pass)
+{
+	VirtualModelClass* model = objModel[modelID];
+	((DXmodelClass*)model)->m_worldMatrix = XMMatrixIdentity();
+
+	{
+		float rx = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotX;
+		model->rotateX(rx);
+
+		float ry = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotY;
+		model->rotateY(ry);
+
+		float rz = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotZ;
+		model->rotateZ(rz);
 	}
+
+	model->translation(0, 0, 0);
+
+	float scale = SystemHandle->xml_loader.theWorld[model->m_ObjId].scale;
+	model->scale(scale, scale, scale);
+	
+	model->translation(	SystemHandle->xml_loader.theWorld[model->m_ObjId].posX,
+						SystemHandle->xml_loader.theWorld[model->m_ObjId].translateY,
+						SystemHandle->xml_loader.theWorld[model->m_ObjId].posZ);
+
+	model->Render(driver, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass);// Pass 2 (Shadow));
 }
 
 //#############################################################################################################
@@ -227,20 +234,15 @@ void ApplicationClass::AppPosRender()
 	m_Driver->TurnOnAlphaBlending();
 	m_Driver->ClearDepthBuffer();		
 	m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
-	
+
 	if (RENDER_PAGE >= 24 && m_titleModel)
 	{
-
 		m_titleModel->RenderSprite(DXsystemHandle->m_Driver, (SystemHandle->AppSettings->WINDOW_WIDTH - m_titleModel->SpriteTextureWidth) / 2, 
 			(SystemHandle->AppSettings->WINDOW_HEIGHT - m_titleModel->SpriteTextureHeight) / 2);
 	}
 
 	// Render all Rastertek TEXT:
-#if _DEBUG
-	if (RENDER_PAGE >= 27|| FORCE_LOAD_ALL)
-#else
 	if (RENDER_PAGE >= 27)
-#endif
 		AppTextClass->Render(); 
 
 	// Render Native TEXT:
@@ -255,6 +257,7 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 	float fadeLight = 1;
 
 	// TIME Control: Show Debug Info
+	INT64 passedTotalTime = (INT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
 
 	// GET INPUT for CAMERA: Movement
 	HandleUserInput(dt);
@@ -348,6 +351,8 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 								 (UINT)SystemHandle->xml_loader.theWorld.size());
 
 
+	if (!astroClass)
+		SystemHandle->m_Application->WOMA_APPLICATION_InitGUI();
 	AppTextClass->SetClockTime(astroClass->hour, astroClass->minute);
 
 	AppTextClass->SetLightDirection(m_Light->m_lightDirection.x, m_Light->m_lightDirection.y , m_Light->m_lightDirection.z );
@@ -357,6 +362,40 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 	return fadeLight;
 }
 
+
+// INTRO
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+//-------------------------------------------------------------------------------------------
+void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
+//-------------------------------------------------------------------------------------------
+{
+	if (RENDER_PAGE < 15)
+	{
+		Update(monitorWindow, driver);
+		return;
+	}
+	else
+	{
+		// [0] Process INPUT, CAMERA, INTRO animation etc...
+		float dayLightFade = Update(monitorWindow, driver);
+		if (dayLightFade == -100) return;
+
+#if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
+		SceneManager::GetInstance()->opacModelList.clear();			//Reset list of opac objects
+		SceneManager::GetInstance()->Render();						//Process and Create Lists of objects to render
+#endif
+
+		// [1] Render: SHADOWS - Render one Application Frame (Need to be before 3D)
+
+		// [2] Render: MAIN - 3D, Render one Application Frame
+		AppRender(monitorWindow, dayLightFade);
+
+		// [3] Render: MAIN - 2D (SPRITEs on TOP of 3D) Render one Application Frame. (Need to be after 3D)
+		AppPosRender();
+	}
+}
 
 //#############################################################################################################
 // RENDER - 3D
@@ -376,17 +415,48 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 		m_lightRayModel->Render(m_Driver);								// Render LightRay
 	}
 
+	// DEBUG SPRITE: Shadows
+	// --------------------------------------------------------------------------------------------
+
 	if (RENDER_PAGE >= 21)
 		DemoRender();
 
-	// 3D STATIC OBJECTS
-	// --------------------------------------------------------------------------------------------
-	m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
-#if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
-	SceneManager::GetInstance()->transparentModelList.clear();	//Reset list of transparent objects
-	SceneManager::GetInstance()->Render();						//Render opac obj. and list the transparent objects
+	//#############################################################################################################-
+	// RENDER:
+	//#############################################################################################################
+	m_Driver->TurnOffAlphaBlending();
+
+#if defined USE_SKYSPHERE && defined USE_SUN && defined USE_MOON
+	if (RENDER_PAGE >= 28)				//30: SKY
+		Render_SKY_SUN_MOON(fadeLight); //34: SUN_MOON
 #endif
 
+	// RENDER: CLOUDS
+	// --------------------------------------------------------------------------------------------
+	// ...
+
+	// --------------------------------------------------------------------------------------------
+	// [0] TERRAIN: UNDER WATER!
+	// --------------------------------------------------------------------------------------------
+
+	// [1] WATER:
+	// --------------------------------------------------------------------------------------------
+
+	// [2] Render MAIN Terrain Here
+	// --------------------------------------------------------------------------------------------
+
+	m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
+
+	// 3D STATIC OPAC OBJECTS
+	// --------------------------------------------------------------------------------------------
+#if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
+	// OPAC Parts:
+	for (UINT id = 0; id < SceneManager::GetInstance()->opacModelList.size(); id++)
+	{
+		RenderModel(monitorWindow, m_Driver, id, PASS_OPAC); //objModel[id]->Render(m_Driver, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_OPAC);
+	}
+#endif
+	m_Driver->TurnOnAlphaBlending();
 
 	// 3D MESH OBJECTS
 	// ...
@@ -402,8 +472,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 	m_Driver->TurnOnAlphaBlending();
 
 	// TRANSPARENT Parts:
-	for (size_t id = 0; id < SceneManager::GetInstance()->transparentModelList.size(); id++)
+	//for (UINT id = 0; id < SceneManager::GetInstance()->transparentModelList.size(); id++)
+	for (UINT id = 0; id < SceneManager::GetInstance()->opacModelList.size(); id++)
 		objModel[id]->Render(m_Driver, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_TRANSPARENT);
 }
-
-// INTRO

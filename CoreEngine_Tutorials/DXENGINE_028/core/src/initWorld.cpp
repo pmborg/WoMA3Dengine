@@ -33,8 +33,8 @@
 			#pragma comment( lib, "x64/WDebug/maxminddb_LIBX64_d.lib" )		//DEBUG
 			#pragma comment( lib, "x64/WDebug/GeoLite2PP_LIBX64_d.lib" )	//DEBUG
 		#elif !defined _DEBUG && defined NDEBUG
-			#pragma comment( lib, "x64/WRelease/maxminddb_LIBX64.lib" )		//RELEASE
-			#pragma comment( lib, "x64/WRelease/GeoLite2PP_LIBX64.lib" )	//RELEASE
+			#pragma comment( lib, "x64/Release/maxminddb_LIBX64.lib" )		//RELEASE
+			#pragma comment( lib, "x64/Release/GeoLite2PP_LIBX64.lib" )	//RELEASE
 		#else
 			#pragma comment( lib, "x64/WRelease/maxminddb_LIBX64.lib" )		//DBGREL
 			#pragma comment( lib, "x64/WRelease/GeoLite2PP_LIBX64.lib" )	//DBGREL
@@ -107,7 +107,7 @@ AstroClass* astroClass = NULL;
 InitWorld::InitWorld ()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567891;
+	WomaIntegrityCheck = 1234567831;
 
 	//public:
     LatDir = TEXT("N");
@@ -149,7 +149,9 @@ InitWorld::InitWorld ()
 	bool gotLocation = false;
 
 	if (ip.length() > 0) {
+#ifdef NDEBUG
 		gotLocation = getMyLocation(&latitude, &longitude, ip);
+#endif
 		WOMA_LOGManager_DebugMSGAUTO(TEXT("gotLocation: true\n"));
 	}
 	if (!gotLocation || latitude==0 || longitude==0) 
@@ -246,14 +248,18 @@ STRING		szFileName = wLOCAL_APPDATA + TEXT("my.ip");
 		return TEXT("");
 	}
 
-	STRING str;
+	STRING str="127.0.0.1";
+
+#ifdef NDEBUG
+	
     IFSTREAM fileIn(szFileName.c_str());
 	if (!fileIn) 
-		{ WOMA::WomaMessageBox(TEXT("MyIp File not found, (use: #define USE_NETWORK) at main.h"), (TCHAR*)szFileName.c_str()); return TEXT(""); }
+		{ WOMA::WomaMessageBox(TEXT("MyIp File not found, (use: #define USE_NETWORK) at core_engine_level.h"), (TCHAR*)szFileName.c_str()); return TEXT(""); }
 
 	getline(fileIn, str);
 	WOMA_LOGManager_DebugMSG("IP: %s\n", str.c_str()); // Note: Dont use DEBUG_MSG yet...
 	fileIn.close();	// Close the file.
+#endif
 
 	return str;
 }
@@ -313,7 +319,7 @@ bool InitWorld::getMyLocation(double* latitude, double* longitude, STRING ip)
 	WOMA::logManager->DEBUG_MSG(L"\n");				// Add ENTER to finish the
 #else
 	WOMA::logManager->DEBUG_MSG((CHAR*)json.c_str());	//std::cout << json << std::endl;
-	WOMA::logManager->DEBUG_MSG("\n");				// Add ENTER to finish the
+	WOMA::logManager->DEBUG_MSG("\n");					// Add ENTER to finish the
 #endif
 	return true;
 }

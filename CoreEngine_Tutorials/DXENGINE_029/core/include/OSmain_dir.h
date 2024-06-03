@@ -22,7 +22,7 @@
 //  - Init: APPDATA "C:\Users\"username"\AppData\Local\Pmborg\Woma2017\"
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567829;
+//WomaIntegrityCheck = 1234567831;
 
 #pragma once
 

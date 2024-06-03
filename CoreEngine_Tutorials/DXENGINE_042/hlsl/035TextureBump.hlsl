@@ -151,10 +151,10 @@ float4 MyPixelShader035TextureBump(PSIn input) : SV_TARGET
 		}
 	#endif
 	
-		if (lightType == 1)	
+		//if (lightType == 1)	
 			lightIntensity = PSlightFunc1(input.normal);
-		else
-			lightIntensity = PSlightFunc2(input.normal);
+		//else
+		//	lightIntensity = PSlightFunc2(input.normal);
 
 		if (hasTexture) {
 			textureColor = textureColor * saturate(emissiveColor + ambientColor + lightIntensity);	

@@ -30,11 +30,11 @@
 
 #include "WomaSetupManager.h"
 
-#include <combaseapi.h>				// VC7: ships with updated headers: CoInitializeEx()
-
 #define WOMA_ENGINE_CLASS TEXT("WoMA3Dengine")
 
 extern HWND DoCreateStatusBar(HWND hwndParent, int idStatus, HINSTANCE hinst, int cParts);
+
+#include <combaseapi.h>				// VC7: ships with updated headers: CoInitializeEx()
 
 struct ScreenArrayInfo
 {
@@ -71,7 +71,7 @@ extern LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM 
 class WinSystemClass : public SystemClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567829;
+	UINT WomaIntegrityCheck = 1234567831;
 	WinSystemClass();
 	WinSystemClass(WOMA::Settings* AppSettings);
 	void WinSystemClass_init();
@@ -102,6 +102,7 @@ public:
 	PSTR	Scmdline=0;
 	int		Cmdshow=0;
 	DWORD	windowStyle=0;
+	bool	bReremoteDesktop = false;
 
 	HWND	m_hWnd=0;
 	HWND	statusbar=0;
@@ -135,8 +136,6 @@ public:
 
 	HBITMAP bmpWorldMap;
 	HBITMAP bmpTarget;
-
-
 
 private:
 	void ShutdownWindows();

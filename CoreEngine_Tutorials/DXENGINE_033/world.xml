@@ -1,5 +1,4 @@
 <woma>
   <world hVisibility="128" seaLevel="0" size="512" patchSize="64" skyDayTexture="" skyNightTexture=""/>
-  <object fromPage="33" toPage="33" depend="0" scale="0.2" posX="0" posZ="2" translateY="2" 
-          rotX="" rotY="" rotZ="" shader="2" filename="engine/data/scene30/spaceCompound.obj"/>
+  <object fromPage="33" toPage="33" depend="0" scale="0.2" posX="0" posZ="2" translateY="2" rotX="" rotY="" rotZ="" shader="" filename="engine/data/scene30/spaceCompound.obj"/>
 </woma>

@@ -233,6 +233,10 @@ bool GLmodelClass::LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shad
 		if (b)
 			modelClass.CreateObject(this, (TCHAR*)filename.c_str(), g_driver, shader_type /*SHADER_AUTO*/, filename, castShadow, renderShadow); // Auto Detect Shader Type
 	}
+#if defined LOADM3D //ENGINE_LEVEL >= 50
+	if (_tcsicmp(extension, TEXT(".M3D")) == 0)
+		return LoadM3D(shader_type, g_driver, filename, castShadow, renderShadow, instanceCount);
+#endif
 
 	return true;
 }

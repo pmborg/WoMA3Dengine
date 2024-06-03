@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: textFontClass.h
 // --------------------------------------------------------------------------------------------
@@ -76,7 +77,9 @@ public:
 #if defined DX9sdk
 	LPDIRECT3DTEXTURE9 GetTexture();
 #endif
+#if defined OPENGL3
 	GLtextureClass* gl_Texture = NULL;
+#endif
 	void BuildVertexArray(void*, TCHAR*, float, float);
 
 private:

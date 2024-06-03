@@ -376,10 +376,7 @@ if (dx11_force_dx9)
 	/******************************************************************/
 
 	if (!LoadLibrary(TEXT("dxgi.dll"))) // NOTE: Windows XP Can't do this (SO WINDOWS XP NOT SUPPORTED!)
-	{
-		WOMA::WomaMessageBox(TEXT("dxgi.dll"), TEXT("Error, Could not load: ")); 
-		return FALSE;
-	}
+		{ WOMA::WomaMessageBox(TEXT("dxgi.dll"), TEXT("Error, Could not load: ")); return FALSE; }
 
 	/******************************************************************/
 	// Create a DirectX 10/11 graphics interface factory.
@@ -676,6 +673,7 @@ void DX11Class::EndScene(UINT monitorWindow)
 	// <PRINT THE 3D SCENE TO SCREEN> to Swap Chain (wait from VSYNC refresh rate, if it is the case)
 	DX11windowsArray[monitorWindow].m_swapChain->Present(m_VSYNC_ENABLED, 0);
 
+	//RESET ShaderResources! to avoid HLSL WARNINGS: Resource being set to OM RenderTarget slot 0 is still bound on input!
 }
 
 

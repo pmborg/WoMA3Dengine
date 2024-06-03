@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: renderApplication_Basics.cpp
 // --------------------------------------------------------------------------------------------
@@ -26,10 +27,12 @@
 #include "Dx9Class.h"
 #endif
 #include "Dx11Class.h"
+#if defined OPENGL3
 #include "womadriverclass.h"	//woma
 #include "GLmathClass.h"		//woma	
 #include "GLopenGLclass.h"		//woma
 #include "wGLopenGLclass.h"		// Windows
+#endif
 
 #include "OSmain_dir.h"
 
@@ -51,7 +54,7 @@ void ApplicationClass::DemoRender()
 
 	//COLOR TUTORIAL DEMO:
 	// --------------------------------------------------------------------------------------------
-	//DEMO-1: Squar
+	//DEMO-1: Square
 	if (RENDER_PAGE == 21 || FORCE_RENDER_ALL)
 	{
 		m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID); // Render the Inside of Sphere
@@ -60,10 +63,10 @@ void ApplicationClass::DemoRender()
 
 	#if defined ROTATE_SQUARE
 		// Rotate the world matrix by the rotation value so that the Square will spin:
-		m_1stSquar3DColorModel->translation(0, 0, 0);
-		m_1stSquar3DColorModel->rotateY(rY);
+		m_1stSquare3DColorModel->translation(0, 0, 0);
+		m_1stSquare3DColorModel->rotateY(rY);
 	#endif
-		m_1stSquar3DColorModel->Render(m_Driver);
+		m_1stSquare3DColorModel->Render(m_Driver);
 	}
 
 	//DEMO-2: Triangle
@@ -233,22 +236,28 @@ void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, 
 	VirtualModelClass* model = objModel[modelID];
 	((DXmodelClass*)model)->m_worldMatrix = XMMatrixIdentity();
 
-	float rx = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotX;
+#if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES // Instancing
+	if (((DXmodelClass*)model)->m_instanceCount == 0) 
+#endif
+	{
+		float rx = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotX;
 		model->rotateX(rx);
 
-	float ry = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotY;
+		float ry = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotY;
 		model->rotateY(ry);
 
-	float rz = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotZ;
-		model->translation(0, 0, 0);
+		float rz = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotZ;
+		model->rotateZ(rz);
+	}
+
+	model->translation(0, 0, 0);
+
 	float scale = SystemHandle->xml_loader.theWorld[model->m_ObjId].scale;
 	model->scale(scale, scale, scale);
-
-	model->rotateZ(rz);
-
-	model->translation(SystemHandle->xml_loader.theWorld[model->m_ObjId].posX,
-		SystemHandle->xml_loader.theWorld[model->m_ObjId].translateY,
-		SystemHandle->xml_loader.theWorld[model->m_ObjId].posZ);
+	
+	model->translation(	SystemHandle->xml_loader.theWorld[model->m_ObjId].posX,
+						SystemHandle->xml_loader.theWorld[model->m_ObjId].translateY,
+						SystemHandle->xml_loader.theWorld[model->m_ObjId].posZ);
 
 	model->Render(driver, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass, lightViewMatrix, ShadowProjectionMatrix);// Pass 2 (Shadow));
 }
@@ -270,11 +279,7 @@ void ApplicationClass::AppPosRender()
 	}
 
 	// Render all Rastertek TEXT:
-#if _DEBUG
-	if (RENDER_PAGE >= 27|| FORCE_LOAD_ALL)
-#else
 	if (RENDER_PAGE >= 27)
-#endif
 		AppTextClass->Render(); 
 
 	// Render Native TEXT:
@@ -289,6 +294,7 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 	float fadeLight = 1;
 
 	// TIME Control: Show Debug Info
+	INT64 passedTotalTime = (INT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
 
 	// GET INPUT for CAMERA: Movement
 	HandleUserInput(dt);
@@ -308,12 +314,14 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 		if (DXsystemHandle->m_Camera)
 			DXsystemHandle->m_Camera->Render();
 	}
+#if defined OPENGL3
 	else
 	{
 		GLopenGLclass* driver = (GLopenGLclass*)DXsystemHandle->driverList[SystemHandle->AppSettings->DRIVER];
 		if (driver->gl_Camera)
 			driver->gl_Camera->Render();
 	}
+#endif
 
 	if (RENDER_PAGE >= 28) 
 	{
@@ -323,6 +331,7 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 			DXsystemHandle->m_CameraSKY->m_rotationY = DXsystemHandle->m_Camera->m_rotationY;
 			DXsystemHandle->m_CameraSKY->Render();
 		}
+	#if defined OPENGL3
 		else
 		{
 			GLopenGLclass* driver = (GLopenGLclass*)DXsystemHandle->driverList[SystemHandle->AppSettings->DRIVER];
@@ -331,6 +340,7 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 			driver->gl_CameraSKY->m_rotationY = driver->gl_Camera->m_rotationY;
 			driver->gl_CameraSKY->Render();
 		}
+	#endif
 	}
 
 	// CONSTRUCT: FRUSTRUM
@@ -340,6 +350,7 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 			&((DX11Class*)m_Driver)->m_projectionMatrix,
 			&DXsystemHandle->m_Camera->m_viewMatrix);
 
+#if defined OPENGL3
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) {
 
 		mat4 glPrjMatrix = ((GLopenGLclass*)m_Driver)->m_projectionMatrix;
@@ -364,6 +375,7 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 			&m_projectionMatrix,
 			&m_viewMatrix);
 	}
+#endif
 
 	// CAMERA TEXT: Show Debug Info
 	AppTextClass->SetFps(SystemHandle->fps);						// Update the FPS "Value" in the text object.
@@ -382,6 +394,8 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 								 (UINT)SystemHandle->xml_loader.theWorld.size());
 
 
+	if (!astroClass)
+		SystemHandle->m_Application->WOMA_APPLICATION_InitGUI();
 	AppTextClass->SetClockTime(astroClass->hour, astroClass->minute);
 
 	AppTextClass->SetLightDirection(m_Light->m_lightDirection.x, m_Light->m_lightDirection.y , m_Light->m_lightDirection.z );

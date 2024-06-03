@@ -29,7 +29,7 @@
 DXInputClass::DXInputClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567829;
+	WomaIntegrityCheck = 1234567831;
 
 	// NOTE: rgbButtons holds the state of four of the mouse buttons. 
 	// 0 is for the left button

@@ -46,10 +46,12 @@
 #include "Dx9Class.h"
 #endif
 #include "Dx11Class.h"
+#if defined OPENGL3
 #include "womadriverclass.h"	//woma
 #include "GLmathClass.h"		//woma	
 #include "GLopenGLclass.h"		//woma
 #include "wGLopenGLclass.h"		// Windows
+#endif
 
 TCHAR* getComputerName()
 {
@@ -84,7 +86,6 @@ TCHAR* getUserName()
 #endif
 
 #include "Math3D.h"
-
 
 SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 {
@@ -130,7 +131,7 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 #if defined WIN_XP
 		TEXT("WinXP")
 #elif defined WIN10
-		TEXT("Win10")
+		TEXT("Win10/11")
 #else
 		TEXT("Windows")
 #endif
@@ -407,11 +408,13 @@ void SystemClass::Shutdown()
 
 	SAFE_DELETE(systemManager);
 
+#ifdef OPENGL3
 	if (driverList[DRIVER_GL3]) {
 		//delete ((wGLopenGLclass*)driverList[DRIVER_GL3]);
 		delete ((GLopenGLclass*)driverList[DRIVER_GL3]);
 		driverList[DRIVER_GL3] = NULL;
 	}
+#endif
 	if (driverList[DRIVER_DX11]) {
 		delete ((DirectX::DX11Class*)driverList[DRIVER_DX11]);
 		driverList[DRIVER_DX11] = NULL;
@@ -473,8 +476,8 @@ bool SystemClass::LoadXmlSettings()
 
 	for (size_t i = 0; i < SystemHandle->xml_loader.theWorld.size(); i++)
 	{
-		SHADER_TYPE shader = (SHADER_TYPE)SystemHandle->xml_loader.theWorld[0].shader;
-		SystemHandle->xml_loader.theWorld[0].WOMA_object = WOMA_OBJECT(shader, castShadows_false, renderShadows_false, modelHASlight_true, obj_instances_0);
+		SHADER_TYPE shader = (SHADER_TYPE)SystemHandle->xml_loader.theWorld[i].shader;
+		SystemHandle->xml_loader.theWorld[i].WOMA_object = WOMA_OBJECT(shader, castShadows_false, renderShadows_false, modelHASlight_true, 0/*no instances*/);
 	}
 
 	return true;
@@ -539,10 +542,12 @@ bool SystemClass::InitializeDrivers(int screenWidth, int screenHeight, float scr
 		break;
 
 		// [1] GL3+
+	#ifdef OPENGL3
 	case DRIVER_GL3:
 		m_Driver = driverList[DRIVER_GL3]; // NEW GLopenGLclass;
 		//m_contextDriver is another one on OPENGL
 		break;
+	#endif
 
 		// [2] DX 9
 	case DRIVER_DX9:
@@ -583,8 +588,12 @@ void SystemClass::LoadAllDrivers()
 	// -------------------------------------------------------------------------------------------
 	// [1] GL3+
 	// -------------------------------------------------------------------------------------------
+#if defined OPENGL3 //Driver
 	WOMA_LOGManager_DebugMSG("LoadDriver[1]: GLopenGLclass\n");
 	driverList.push_back((WomaDriverClass*)NEW GLopenGLclass);
+#else
+	driverList.push_back(NULL);
+#endif
 
 	// -------------------------------------------------------------------------------------------
 	// [2] DX 9 (or DX11 with Downgrade: DX9)
@@ -609,7 +618,9 @@ void SystemClass::LoadAllDrivers()
 	// -------------------------------------------------------------------------------------------
 	driverList.push_back(NULL);
 
+#if defined OPENGL3
 	WomaDriverClass* m_GLcontextDriver = NULL;
+#endif
 }
 
 

@@ -85,7 +85,6 @@ TCHAR* getUserName()
 
 #include "Math3D.h"
 
-
 SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 {
 	// STARTING POINT of WOMA ENGINE!
@@ -130,7 +129,7 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 #if defined WIN_XP
 		TEXT("WinXP")
 #elif defined WIN10
-		TEXT("Win10")
+		TEXT("Win10/11")
 #else
 		TEXT("Windows")
 #endif
@@ -473,8 +472,8 @@ bool SystemClass::LoadXmlSettings()
 
 	for (size_t i = 0; i < SystemHandle->xml_loader.theWorld.size(); i++)
 	{
-		SHADER_TYPE shader = (SHADER_TYPE)SystemHandle->xml_loader.theWorld[0].shader;
-		SystemHandle->xml_loader.theWorld[0].WOMA_object = WOMA_OBJECT(shader, castShadows_false, renderShadows_false, modelHASlight_true, obj_instances_0);
+		SHADER_TYPE shader = (SHADER_TYPE)SystemHandle->xml_loader.theWorld[i].shader;
+		SystemHandle->xml_loader.theWorld[i].WOMA_object = WOMA_OBJECT(shader, castShadows_false, renderShadows_false, modelHASlight_true, 0/*no instances*/);
 	}
 
 	return true;

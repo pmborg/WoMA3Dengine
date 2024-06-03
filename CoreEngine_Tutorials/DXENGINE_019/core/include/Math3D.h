@@ -17,6 +17,8 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567831;
+
 #pragma once
 
 #include "platform.h"
@@ -30,8 +32,11 @@ extern float FAST_sqrt(float x);
 struct vec3
 {
 	float x, y, z;
-
-	vec3(){}
+	vec3(){
+		x = 0;
+		y = 0;
+		z = 0;
+	}
 	vec3(const float ix, const float iy, const float iz){
 		x = ix;
 		y = iy;

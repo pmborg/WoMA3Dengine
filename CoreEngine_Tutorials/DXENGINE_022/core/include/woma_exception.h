@@ -17,6 +17,7 @@
 // --------------------------------------------------------------------------------------------
 //
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567831;
 #pragma once
 
 // --------------------------------------------------------------------------------------------
@@ -37,7 +38,8 @@ using namespace std;//endl
 		#if defined(_DEBUG) & !defined(NDEBUG)
 			#pragma comment( lib, "x64/WDebug/UltimateTCPIP_LIBX64_d.lib" )		//DEBUG
 		#elif !defined _DEBUG && defined NDEBUG
-			#pragma comment( lib, "x64/WRelease/UltimateTCPIP_LIBX64.lib" )		//RELEASE
+			//#pragma comment( lib, "x64/WRelease/UltimateTCPIP_LIBX64.lib" )		//RELEASE
+			#pragma comment( lib, "x64/Release/UltimateTCPIP_LIBX64.lib" )		//RELEASE
 		#else
 			#pragma comment( lib, "x64/WDebug/UltimateTCPIP_LIBX64_d.lib" )		//DBGREL
 		#endif

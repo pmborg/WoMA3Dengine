@@ -1,0 +1,118 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 05.09.2013 12:29:37
+
+newmtl facade
+	Ns 9.999999
+	Ni 1.500000
+	d 1.000000
+	Tr 0.000000
+	Tf 1.000000 1.000000 1.000000 
+	illum 2
+	Ka 0.000000 0.000000 0.000000
+	Kd 0.588235 0.588235 0.588235
+	Ks 0.000000 0.000000 0.000000
+	Ke 0.000000 0.000000 0.000000
+	map_Ka DSC_6435 Stuebing01.jpg
+	map_Kd DSC_6435 Stuebing01.jpg
+	map_Ks DSC_6435 Stuebing01.jpg
+	map_bump DSC_6435 Stuebing01.jpg
+	bump DSC_6435 Stuebing01.jpg
+
+newmtl dach_klein02
+	Ns 9.999999
+	Ni 1.500000
+	d 1.000000
+	Tr 0.000000
+	Tf 1.000000 1.000000 1.000000 
+	illum 2
+	Ka 0.000000 0.000000 0.000000
+	Kd 0.588235 0.588235 0.588235
+	Ks 0.000000 0.000000 0.000000
+	Ke 0.000000 0.000000 0.000000
+	map_Ka V:\TEXTURES\Dächer\DSC_6252_dunkler tileable.jpg
+	map_Kd V:\TEXTURES\Dächer\DSC_6252_dunkler tileable.jpg
+	map_Ks V:\TEXTURES\Dächer\DSC_6252_dunkler tileable.jpg
+	map_bump V:\TEXTURES\Dächer\DSC_6252_dunkler tileable.jpg
+	bump V:\TEXTURES\Dächer\DSC_6252_dunkler tileable.jpg
+
+newmtl concrete01
+	Ns 9.999999
+	Ni 1.500000
+	d 1.000000
+	Tr 0.000000
+	Tf 1.000000 1.000000 1.000000 
+	illum 2
+	Ka 0.000000 0.000000 0.000000
+	Kd 0.901961 0.901961 0.901961
+	Ks 0.000000 0.000000 0.000000
+	Ke 0.000000 0.000000 0.000000
+	map_Ka DSC_9202.jpg
+	map_Kd DSC_9202.jpg
+
+newmtl tuer
+	Ns 9.999999
+	Ni 1.500000
+	d 1.000000
+	Tr 0.000000
+	Tf 1.000000 1.000000 1.000000 
+	illum 2
+	Ka 0.000000 0.000000 0.000000
+	Kd 0.588235 0.588235 0.588235
+	Ks 0.000000 0.000000 0.000000
+	Ke 0.000000 0.000000 0.000000
+	map_Ka DSC_9366 EINZELTUER.jpg
+	map_Kd DSC_9366 EINZELTUER.jpg
+	map_bump DSC_9366 EINZELTUER bump.jpg
+	bump DSC_9366 EINZELTUER bump.jpg
+
+newmtl wood02
+	Ns 9.999999
+	Ni 1.500000
+	d 1.000000
+	Tr 0.000000
+	Tf 1.000000 1.000000 1.000000 
+	illum 2
+	Ka 0.000000 0.000000 0.000000
+	Kd 0.588235 0.588235 0.588235
+	Ks 0.000000 0.000000 0.000000
+	Ke 0.000000 0.000000 0.000000
+	map_Ka DSC_6435 Stuebing02.jpg
+	map_Kd DSC_6435 Stuebing02.jpg
+	map_Ks DSC_6435 Stuebing02.jpg
+	map_bump DSC_6435 Stuebing02.jpg
+	bump DSC_6435 Stuebing02.jpg
+
+newmtl stone_wall_02
+	Ns 9.999999
+	Ni 1.500000
+	d 1.000000
+	Tr 0.000000
+	Tf 1.000000 1.000000 1.000000 
+	illum 2
+	Ka 0.000000 0.000000 0.000000
+	Kd 0.901961 0.901961 0.901961
+	Ks 0.045000 0.045000 0.045000
+	Ke 0.000000 0.000000 0.000000
+	map_Ka stone wall02 Stuebing.jpg
+	map_Kd stone wall02 Stuebing.jpg
+	map_Ks stone wall02 Stuebing.jpg
+	map_bump stone wall02 Stuebing.jpg
+	bump stone wall02 Stuebing.jpg
+
+newmtl window
+	Ns 9.999999
+	Ni 1.500000
+	d 1.000000
+	Tr 0.000000
+	Tf 1.000000 1.000000 1.000000 
+	illum 2
+	Ka 0.000000 0.000000 0.000000
+	Kd 0.588235 0.588235 0.588235
+	Ks 0.000000 0.000000 0.000000
+	Ke 0.000000 0.000000 0.000000
+	map_Ka fenster medium.jpg
+	map_Kd fenster medium.jpg
+	map_Ks fenster medium.jpg
+	map_bump fenster medium.jpg
+	bump fenster medium.jpg
+	map_refl Map__26_Mask.tga

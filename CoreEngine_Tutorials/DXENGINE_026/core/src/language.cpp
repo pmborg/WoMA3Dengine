@@ -15,10 +15,9 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//
 // PURPOSE: Get User Language
-//
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567831;
 
 #include "main.h"
 #include "WinSystemClass.h"

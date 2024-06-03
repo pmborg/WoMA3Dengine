@@ -17,6 +17,8 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567831;
+
 #include "platform.h"
 #include <d3d11.h>
 #pragma warning( disable : 4324 )	// 4324: '': structure was padded due to __declspec(align())
@@ -26,11 +28,6 @@
 
 #if D3D11_SPEC_DATE_YEAR > 2009
 	#include <d3d11_1.h>
-
-	#include "DDSTextureLoader.h"
-	#include "WICTextureLoader.h"
-
-	#include "DirectXTex.h"
 
 static size_t GetMaximum3DTextureSize(D3D_FEATURE_LEVEL featureLevel)
 {

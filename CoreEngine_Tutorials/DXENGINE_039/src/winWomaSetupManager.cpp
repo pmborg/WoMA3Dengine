@@ -63,9 +63,6 @@ bool WomaSetupManager::Initialize(void* Driver)
 {
 	static int yPos_initial = 250;
 	int xPos = 20, yPos = yPos_initial;
-#if defined _NOT
-	m_driver = (DX_CLASS*)Driver;
-#endif
 
 	m_setupWnd = SystemHandle->m_hWnd;
 	HWND windownTOP = m_setupWnd;

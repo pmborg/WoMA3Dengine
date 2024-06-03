@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: AudioClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -19,7 +20,7 @@
 // --------------------------------------------------------------------------------------------
 
 #include "platform.h"
-#if defined USE_SOUND_MANAGER || defined USE_PLAY_MUSIC
+#if DX_ENGINE_LEVEL >= 29 && (defined USE_SOUND_MANAGER || defined USE_PLAY_MUSIC)
 #include "AudioClass.h"
 #include "log.h"
 #include "mem_leak.h"

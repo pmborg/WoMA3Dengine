@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: GLmodelClass.h
 // --------------------------------------------------------------------------------------------
@@ -23,6 +24,7 @@
 //////////////
 #include "platform.h"
 
+#ifdef OPENGL3
 #include "virtualModelClass.h"
 #include "GLshaderClass.h"
 #include "GLmathClass.h"
@@ -55,14 +57,10 @@ public:
 	ModelClass modelClass;
 	bool LoadBump(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelNormalBumpVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount = 0);
 
-#if defined USE_VIEW2D_SPRITES		// Sprites
 	bool RenderSprite(void* Driver, int positionX, int positionY, float scale=1.0f, float fade = 1.0f);
 	bool UpdateBuffersRotY(void* Driver, int positionX, int positionY);
-#endif
 
-#if defined USE_LIGHT_RAY// || (defined USE_VIEW2D_SPRITES && defined _DEBUG)	// Sun Ray
 	void UpdateDynamic(void* Driver, std::vector<ModelColorVertexType>* lightVertexVector);
-#endif
 
 	OBJ3D obj3d;
 	bool LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow = false, bool renderShadow=false, UINT instanceCount=0);
@@ -113,9 +111,8 @@ private:
 	mat4			m_viewMatrix;
 	mat4			projectionMatrix;
 	
-#if DX_ENGINE_LEVEL >= 22 // Texturing 
 	GLtextureClass* m_Texture=NULL;			// Image loader
 	std::vector<GLtextureClass*> meshSRV;	// meshSRV
-#endif
 };
 
+#endif

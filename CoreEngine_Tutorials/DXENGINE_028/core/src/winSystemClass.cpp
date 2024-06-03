@@ -51,8 +51,8 @@
 /////////////////////
 
 TCHAR MainDeviceName[MAX_STR_LEN];	// Monitor Name
+
 UINT RENDER_PAGE = DX_ENGINE_LEVEL;
-UINT g_NetID = 0;
 
 //----------------------------------------------------------------------------------
 WinSystemClass::WinSystemClass() : SystemClass() 
@@ -184,8 +184,6 @@ bool WinSystemClass::InitializeSystem()
 
 	StartTimer();	// START-TIMERS: ("Window Title" refresh & Real-Time Weather refresh)
 
-	IF_NOT_RETURN_FALSE(m_Application->WOMA_APPLICATION_InitGUI());	// INIT WINDOWS GUI - (non 3D) Main Window Screens
-
 	return true;				// GREEN LIGHT: to Start Rendering! :)
 }
 
@@ -226,7 +224,7 @@ void WinSystemClass::InitializeSetupScreen(int x, int y)
 	text.y += (int)LINE_SPACE; text.label = systemDefinitions.windowsVersion;
 	TextToPrint[0].push_back(text);
 
-	text.y += (int)LINE; text.label = systemDefinitions.windowsBuildNumber;
+	text.y += (int)LINE; text.label = systemDefinitions.windowsBuildVersion;
 	TextToPrint[0].push_back(text);
 
 	text.y += (int)LINE; text.label = systemDefinitions.osName;
@@ -482,8 +480,11 @@ bool WinSystemClass::MyRegisterClass(HINSTANCE hInstance)
 	// ALLOW WIN32 SYSTEM PAINT: (Causes the entire window to redraw if a movement or a size adjustment changes the height of the client area: CS_HREDRAW | CS_VREDRAW)
 	wcex.style = (AppSettings->DRIVER == DRIVER_GL3) ? CS_OWNDC : CS_HREDRAW | CS_VREDRAW; // NOTE: CS_OWNDC is need by OPEN GL: https://www.opengl.org/wiki/Platform_specifics:_Windows
 
+#if DX_CORE_ENGINE_LEVEL < 37
 	wcex.hbrBackground = GetSysColorBrush(COLOR_3DFACE);									//wcex.hbrBackground	= (HBRUSH)GetStockObject(WHITE_BRUSH);	//TO USE THIS COLOR
-
+#else
+	wcex.hbrBackground	= (HBRUSH)GetStockObject(BLACK_BRUSH);	//TO USE THIS COLOR
+#endif
 	wcex.lpszClassName  = WOMA_ENGINE_CLASS;
 
 	wcex.lpfnWndProc	= WndProc;

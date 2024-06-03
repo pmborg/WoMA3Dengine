@@ -30,6 +30,7 @@
 #include "fpsClass.h"
 #define N_SCREEN_TEXT 4			// N. of total dif. Screens
 
+
 struct resolutionType
 {
 	UINT Width;
@@ -50,7 +51,7 @@ typedef struct {
 class SystemClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567890;
+	UINT WomaIntegrityCheck = 1234567831;
 	SystemClass();
 	~SystemClass();
 
@@ -72,6 +73,11 @@ public:
 	bool			mMaximized;
 
 	bool SystemCheck();
+
+	DWORD lastButtons = 0;
+	DWORD lastXpos = 0, lastYpos = 0, lastZpos = 0;
+	DWORD lastRpos = 0, lastUpos = 0, lastVpos = 0;
+	JOYINFOEX joyInfo;
 
 #if CORE_ENGINE_LEVEL >= 4 && defined USE_TIMER_CLASS
   #if !defined WIN_XP
@@ -95,5 +101,3 @@ public:
 public:
 
 };
-
-

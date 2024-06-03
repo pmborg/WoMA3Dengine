@@ -62,7 +62,7 @@ DXmodelClass::DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive, bool comp
 	m_driver11 = NULL;
 
 	// SUPER: ----------------------------------------------------------------------
-	m_ObjId = 0;
+	m_ObjId = -1;
 	ModelShaderType	= SHADER_AUTO;
 
 	Model3D			= model3d;
@@ -194,8 +194,10 @@ bool DXmodelClass::LoadLight(TCHAR* objectName, void* driver, SHADER_TYPE shader
 
 		modelTextureLightVertex = model;
 
-		ASSERT( (ModelShaderType == SHADER_TEXTURE_LIGHT) || 
-			(ModelShaderType == SHADER_TEXTURE_LIGHT_RENDERSHADOW));
+		ASSERT( (ModelShaderType == SHADER_TEXTURE_LIGHT) ||						// 4
+				(ModelShaderType == SHADER_TEXTURE_LIGHT_RENDERSHADOW) ||			// 6
+				(ModelShaderType == SHADER_TEXTURE_LIGHT_INSTANCED) ||				// 8
+				(ModelShaderType == SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED) );	//10
 	indexModelList = indexList;
 	return InitializeDXbuffers(objectName, textureFile);
 }
@@ -230,7 +232,7 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 		// Create the SHADER object.
 		shader = NEW DXshaderClass(m_driver9->ShaderVersionH, m_driver9->ShaderVersionL, Model3D);
 		IF_NOT_THROW_EXCEPTION(shader);
-		result = shader->Initialize(objectName, ShaderType, ((DirectX::DX9Class*)m_driver9)->m_device, SystemHandle->m_hWnd, PrimitiveTopology);
+		result = shader->Initialize(m_ObjId, objectName, ShaderType, ((DirectX::DX9Class*)m_driver9)->m_device, SystemHandle->m_hWnd, PrimitiveTopology);
 	break;
   #endif
   #if defined DX9 && D3D11_SPEC_DATE_YEAR > 2009
@@ -238,7 +240,7 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 		// Create the SHADER object.
 		shader = NEW DXshaderClass(m_driver11->ShaderVersionH, m_driver11->ShaderVersionL, Model3D);
 		IF_NOT_THROW_EXCEPTION(shader);
-		result = shader->Initialize(objectName, ShaderType, ((DirectX::DX11Class*)m_driver11)->m_device, SystemHandle->m_hWnd, PrimitiveTopology);
+		result = shader->Initialize(m_ObjId, objectName, ShaderType, ((DirectX::DX11Class*)m_driver11)->m_device, SystemHandle->m_hWnd, PrimitiveTopology);
 	break;
   #endif
 
@@ -246,14 +248,12 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 		// Create the SHADER object.
 		shader = NEW DXshaderClass(m_driver11->ShaderVersionH, m_driver11->ShaderVersionL, Model3D);
 		IF_NOT_THROW_EXCEPTION(shader);
-		result = shader->Initialize(objectName, ShaderType, ((DirectX::DX11Class*)m_driver11)->m_device, SystemHandle->m_hWnd, PrimitiveTopology);
+		result = shader->Initialize(m_ObjId, objectName, ShaderType, ((DirectX::DX11Class*)m_driver11)->m_device, SystemHandle->m_hWnd, PrimitiveTopology);
 	break;
 
 	}
 	if (!result)
-	{
-		WomaFatalExceptionW(TEXT("Could not initialize the Shader, error in HLSL code!")); return false;
-	}
+		{ WomaFatalExceptionW(TEXT("Could not initialize the Shader, error in HLSL code!")); return false; }
 
 	// GET: m_vertexCount
 	switch (ShaderType) 
@@ -406,7 +406,7 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 
 			indices = NEW UINT[m_indexCount];		// Create the index array: DX10/11
 			IF_NOT_THROW_EXCEPTION(indices);
-			// cloneArrayIndices()
+
 			for (UINT i = 0; i < m_indexCount; i++)
 				indices[i] = indexModelList->at(i);	// Load the index array with data:
 	}
@@ -443,27 +443,28 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 		}
 	break;
 
-	case SHADER_TEXTURE_LIGHT:				//23
-	case SHADER_TEXTURE_LIGHT_RENDERSHADOW: //36
-	case SHADER_TEXTURE_LIGHT_INSTANCED:	//51
+	case SHADER_TEXTURE_LIGHT:						//23: LIGHT 
+	case SHADER_TEXTURE_LIGHT_RENDERSHADOW:			//36: Draw Shadows
+	case SHADER_TEXTURE_LIGHT_INSTANCED:			//40: INSTANCED like 23 light, but using Instances
+	case SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED: //41
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
 		{
 			result = InitializeTextureLightBuffers(m_driver11->m_device, indices); break;
 		}
 
-	case SHADER_TEXTURE_LIGHT_CASTSHADOW:			//36
-	case SHADER_TEXTURE_LIGHT_CASTSHADOW_INSTANCED: //51
+	case SHADER_TEXTURE_LIGHT_CASTSHADOW:			//36: Aux. Shader (render in texture)
+	case SHADER_TEXTURE_LIGHT_CASTSHADOW_INSTANCED: //40: Aux. Shader (render in texture), but using Instances
 		result = InitializeShadowMapBuffers(m_driver11->m_device, indices); break;
 
-	case SHADER_NORMAL_BUMP:			//47
-	case SHADER_NORMAL_BUMP_INSTANCED:  //51
+	case SHADER_NORMAL_BUMP:			//35
+	case SHADER_NORMAL_BUMP_INSTANCED:  //99
 			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
 			{
 				result = InitializeTextureNormalBumpBuffers(m_driver11->m_device, indices); break;
 			}
 		
 	default:
-		result = false;
+		throw woma_exception("WRONG SHADER!", __FILE__, __FUNCTION__, __LINE__);
 	}
 
 	IF_NOT_RETURN_FALSE(result);
@@ -517,7 +518,9 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 			}
 	}
 
+
 	SAFE_DELETE_ARRAY (indices);
+
 	if (Model3D) 
 	{
 		// Compute distance between maxVertex and minVertex
@@ -621,7 +624,7 @@ bool DXmodelClass::InitializeTextureBuffers(/*ID3D11Device*/ void* device, void*
 			vertices[i].texCoord = D3DXVECTOR2((*modelTextureVertex)[i].tu, (*modelTextureVertex)[i].tv);
 		#endif
 
-#if _DEBUG
+#if _DEBUG && false
 		WOMA_LOGManager_DebugMSG("vertices: %d %d %d - %f %f \n", 
 			vertices[i].position.x, vertices[i].position.y, vertices[i].position.z, vertices[i].texCoord.x, vertices[i].texCoord.y);
 #endif
@@ -826,17 +829,18 @@ void DXmodelClass::SetBuffers(void* deviceContext)
 		case SHADER_TEXTURE_FONT:
 			stride[0] = sizeof(DXtextureVertexType); break;
 
-		case SHADER_TEXTURE_LIGHT:					//23
-		case SHADER_TEXTURE_LIGHT_RENDERSHADOW:		//36
-		case SHADER_TEXTURE_LIGHT_INSTANCED:		//51
+		case SHADER_TEXTURE_LIGHT:						//23
+		case SHADER_TEXTURE_LIGHT_RENDERSHADOW:			//36
+		case SHADER_TEXTURE_LIGHT_INSTANCED:			//40
+		case SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED: //41
 			stride[0] = sizeof(DXtextureLightVertexType); break;
 
 		case SHADER_TEXTURE_LIGHT_CASTSHADOW:			//36
-		case SHADER_TEXTURE_LIGHT_CASTSHADOW_INSTANCED: //51
+		case SHADER_TEXTURE_LIGHT_CASTSHADOW_INSTANCED: //40
 			stride[0] = sizeof(DXShadowMapVertexType); break;
 
-		case SHADER_NORMAL_BUMP:					//35
-		case SHADER_NORMAL_BUMP_INSTANCED:			//51
+		case SHADER_NORMAL_BUMP:						//35
+		case SHADER_NORMAL_BUMP_INSTANCED:				//99
 			stride[0] = sizeof(DXNormalBumpVertexType); break;
 
 		default:
@@ -1209,26 +1213,6 @@ void DXmodelClass::Render(WomaDriverClass* Driver, UINT camera, UINT projection,
 		driver9 = (DX9Class*)Driver;
 #endif
 
-#if defined _NOT DX_ENGINE_LEVEL >= 33
-	//	--------------------------------------------------------------------------------------------------------------
-	// Turn on/off transparency (depending on the case)
-	//	--------------------------------------------------------------------------------------------------------------
-	if (pass == PASS_TRANSPARENT)
-	{
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
-			driver11->TurnOnAlphaBlending();
-		else if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
-			driver->TurnOnAlphaBlending();
-	}	//Draw our model's "transparent" subsets
-	else
-	{
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
-			driver11->TurnOffAlphaBlending();
-		else if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
-			driver->TurnOffAlphaBlending();
-	}	//Draw our model's "NON-transparent" subsets
-#endif
-
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 	{
 		 ID3D11DeviceContext* pContext = driver11->m_deviceContext;
@@ -1328,31 +1312,13 @@ void DXmodelClass::Render(WomaDriverClass* Driver, UINT camera, UINT projection,
 			d3ddev->SetStreamSource(0, vertexBuffer, 0, sizeof(CUSTOMVERTEX_XYZ_LIGHT_DX9));
 			d3ddev->SetFVF(CUSTOMFVF_XYZ_LIGHT_DX9);	// Type of Vertice: LIGHT
 
-			/*
-						// Set up a material. The material here just has the diffuse and ambient
-						// colors set to yellow. Note that only one material can be used at a time.
-						D3DMATERIAL9 mtrl;
-						ZeroMemory( &mtrl, sizeof( D3DMATERIAL9 ) );
-						mtrl.Diffuse.r = mtrl.Ambient.r = 1.0f;
-						mtrl.Diffuse.g = mtrl.Ambient.g = 1.0f;
-						mtrl.Diffuse.b = mtrl.Ambient.b = 0.0f;
-						mtrl.Diffuse.a = mtrl.Ambient.a = 1.0f;
-						((DX_CLASS*)SystemHandle->m_Application->m_Driver)->m_device->SetMaterial( &mtrl );
-			*/
-
-			//((DX_CLASS*)SystemHandle->m_Application->m_Driver)->m_device->SetLight( 0, &SystemHandle->m_Application->m_Light->light );
 			((DX_CLASS*)SystemHandle->m_Application->m_Driver)->m_device->LightEnable(0, TRUE);
 			((DX_CLASS*)SystemHandle->m_Application->m_Driver)->m_device->SetRenderState(D3DRS_LIGHTING, TRUE);
-			/*
-			((DX_CLASS*)SystemHandle->m_Application->m_Driver)->m_device->SetRenderState( D3DRS_AMBIENT, 0x00202020 );
-
-		((DX_CLASS*)SystemHandle->m_Application->m_Driver)->m_device->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
-		((DX_CLASS*)SystemHandle->m_Application->m_Driver)->m_device->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-		((DX_CLASS*)SystemHandle->m_Application->m_Driver)->m_device->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-		((DX_CLASS*)SystemHandle->m_Application->m_Driver)->m_device->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
-		*/
 			break;
+		default:
+			throw woma_exception("WRONG SHADER!", __FILE__, __FUNCTION__, __LINE__);
 		}
+
 		if (ModelShaderType >= SHADER_TEXTURE)
 			for (UINT i = 0; i < meshSRV.size(); i++)
 				d3ddev->SetTexture(i, meshSRV[i]);
@@ -1485,7 +1451,7 @@ bool DXmodelClass::LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shad
 		if (b)
 			modelClass.CreateObject(this, (TCHAR*)filename.c_str(), g_driver, shader_type /*SHADER_AUTO*/, filename, castShadow, renderShadow); // Auto Detect Shader Type
 	}
-#if defined LOADM3D //ENGINE_LEVEL >= 50
+#if defined LOADM3D
 	if (_tcsicmp(extension, TEXT(".M3D")) == 0)
 		return LoadM3D(shader_type, g_driver, filename, castShadow, renderShadow, instanceCount);
 #endif

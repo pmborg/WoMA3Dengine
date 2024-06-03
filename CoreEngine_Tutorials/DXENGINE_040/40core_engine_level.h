@@ -139,7 +139,6 @@
 			#define USE_SOUND_MANAGER	// 29-SOUND: Sound Manager/"ogg" Loader
 			#define USE_PLAY_MUSIC		// 29-MUSIC: "ogg" Loader
 			#define INTRO_DEMO			// 29-Close the Intro / Demo of what was learned so far.
-			#define FORCE_LOAD_ALL		true
 		#endif
 
 		#if DX_ENGINE_LEVEL >= 30
@@ -147,7 +146,6 @@
 			#undef USE_SOUND_MANAGER
 			#undef USE_PLAY_MUSIC
 			#undef INTRO_DEMO
-			#define FORCE_LOAD_ALL		false
 			#define USE_SCENE_MANAGER	//30-
 			#define USE_FRUSTRUM		//30-
 		#endif
@@ -191,6 +189,10 @@
 		#if DX_ENGINE_LEVEL >= 39	//39-
 			#undef SAVEM3D
 			#define LOADM3D
+		#endif
+
+		#if DX_ENGINE_LEVEL >= 40	//40-
+			#define USE_INSTANCES
 		#endif
 
 		#if defined _NOT //ADDED ON C:\WoMAengine2023\DXEngine_037 BUT NOT USED

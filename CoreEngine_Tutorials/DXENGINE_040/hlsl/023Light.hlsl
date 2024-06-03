@@ -8,16 +8,11 @@
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
-#define DESKTOP_GL 1
 
 #define PS_USE_LIGHT		 //23
 #define PS_USE_ALFA_TEXTURE	 //33
 #define PS_USE_ALFACOLOR 	 //33
 #define PS_USE_SPECULAR		 //34
-
-//#define PS_USE_BUMP             
-//#define PS_USE_FADE
-//#define PS_USE_SKY
 
 //////////////
 // TYPEDEFS //
@@ -37,21 +32,11 @@ struct PSIn
 	float4 position				: SV_POSITION;			// 21
 	float2 texCoords			: TEXCOORD;				// 22
 	float3 normal				: NORMAL;				// 23 LIGHT
+#if defined PS_USE_SPECULAR
 	float3 viewDirection		: TEXCOORD1;			// 34 Specular
 	float4 cameraPosition		: WS;					// 34 Specular
-
-	//float3 originalPosition	: ORIGINAL_POSITION;	// SKY
-	//float  fogFactor			: FOG;					// FOG
-	//float4 lightViewPosition	: LIGHT_VIEW_POSITION;	// SHADOWS : SHADER_TEXTURE_LIGHT_CASTSHADOW_INSTANCED
-	//float3 tangent			: TANGENT;				// BUMP   : SHADER_NORMAL_BUMP_INSTANCED
+#endif
 };
-
-////////////////
-// CBUFFERS
-////////////////
-#include "cbuffer.hlsl"
-
-#include "light.hlsl"
 
 
 /////////////
@@ -75,6 +60,11 @@ SamplerState SampleType;
 SamplerState SampleType: register(s0);
 #endif
 
+////////////////
+// CBUFFERS
+////////////////
+#include "cbuffer.hlsl"
+#include "light.hlsl"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
@@ -84,8 +74,15 @@ PSIn MyVertexShader023Light(VSIn input)
 	PSIn output;
 	float4 cameraPosition;
 
-	//21: POSITION: Calculate the position of the vertex against the world, view, and projection matrices
+if (VS_USE_WVP) {
 	output.position = mul(float4(input.position, 1), WVP);	// Calculate the position of the vertex against the world, view, and projection matrices
+} else {
+	float4 position = float4(input.position, 1);
+	position = mul(position, worldMatrix);
+	position = mul(position, view);			//viewMatrix
+	position = mul(position, projection);	//projectionMatrix
+	output.position = position;
+}
 
 	//22: TEXTURE: Store the texture coordinates for the pixel shader:
 	output.texCoords = input.texCoords;
@@ -125,11 +122,11 @@ float4 MyPixelShader023Light(PSIn input) : SV_TARGET
 		textureColor = shaderTexture.Sample(SampleType, input.texCoords);
 
 	// 23: LIGHT
-	if (hasLight) 
+	//if (hasLight) 
 	{
-		if (lightType == 1)	
-			lightIntensity = PSlightFunc1(input.normal);
-		else
+		//if (lightType == 1)	
+		//	lightIntensity = PSlightFunc1(input.normal);
+		//else
 			lightIntensity = PSlightFunc2(input.normal);
 
 		if (hasTexture) {
@@ -158,13 +155,16 @@ float4 MyPixelShader023Light(PSIn input) : SV_TARGET
 			float4 color = ambientColor;
 			
 			color += (diffuseColor * lightIntensity);
+		
 			color = saturate(color);
+			//return color;
 			float3 Reflection = normalize(2 * lightIntensity * input.normal + lightDirection);
 			float  fPhoneValue = saturate(dot(Reflection, input.viewDirection));	// (R.V)
 			float4 specular = pow(fPhoneValue, nShininess);							// Ls = (R.V)^alfa (alfa Determine the amount of specular light based on the reflection vector, viewing direction, and specular power.)
 
 			color = color * textureColor;
 			textureColor = saturate(textureColor + specular);		// specular = Ls (contribution of the light source) * Ks (specular component of the material)
+			//return specular;
 		}
 	}
 

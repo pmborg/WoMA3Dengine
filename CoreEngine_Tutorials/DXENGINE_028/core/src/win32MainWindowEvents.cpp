@@ -1,5 +1,6 @@
 // NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 // Filename: win32MainWindowEvents.cpp
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
@@ -17,7 +18,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567891;
+//WomaIntegrityCheck = 1234567831;
 
 #pragma warning( disable : 4312 ) // warning C4312: 'type cast': conversion from 'int' to 'HMENU' of greater size
 #include "platform.h"
@@ -122,10 +123,13 @@ void WinSystemClass::StartTimer()
 	// Start Timer for Window Title
 	#define KEYB_TIMES_PER_SECOND 1
 
-	if ((!AppSettings->FULL_SCREEN) && (windowStyle != 0x96080000))			// Dont Update on: FullScreen or Full-windowed
+	// Dont Update on: FullScreen or Full-windowed
+	if ((!AppSettings->FULL_SCREEN) && (windowStyle != 0x96080000)) 
+	{
 		SetTimer(m_hWnd, TIMER_TITLE, 1000 / KEYB_TIMES_PER_SECOND, NULL);	// 1000ms = 1 second!
+		
+	}
 
-	SetTimer(m_hWnd, TIMER_ASTRO, 60 * 1000 / KEYB_TIMES_PER_SECOND, NULL);	// 1000ms = 1 second!
 }
 
 //----------------------------------------------------------------------------
@@ -135,8 +139,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 	// Note: break;		--> Means call windows default handler also!
 	// Note: return 0;	--> Means Done!
 
-	bool bReremoteDesktop;
-	static int wmId, wmEvent;
+	int wmId=0, wmEvent = 0;
 
 	switch (umsg)
 	{
@@ -173,7 +176,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 						int		previous_DRIVER = SystemHandle->AppSettings->DRIVER;
 						SystemHandle->AppSettings->DRIVER = (int)(SendMessage(womaSetup->hWndComboBox[7], CB_GETCURSEL, NULL, NULL));
 						CHAR str[MAX_STR_LEN] = { 0 }; wtoa(str, (TCHAR*)SystemHandle->XML_SETTINGS_FILE.c_str(), MAX_STR_LEN); // wchar ==> char
-						saveConfigSettings(str);
+						SystemHandle->xml_loader.saveConfigSettings(str);
 
 						SystemHandle->AppSettings->DRIVER = previous_DRIVER;
 
@@ -217,15 +220,12 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 			WOMA::game_state = GAME_STOP;
 		}
 
-		//SAFE_DELETE(m_contextDriver);
-
 		::PostMessage(hwnd, WM_QUIT, 0, 0);
 		return 0;			
 
 	case WM_QUIT:
-		//if (audio) {}
 		ASSERT(SystemHandle);
-		WOMA::game_state = GAME_STOP;
+		ASSERT(WOMA::game_state == GAME_STOP);
 		break;
 
 	case WM_DESTROY:	// The main application Window will be destroyed
@@ -250,8 +250,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 	case WM_KEYDOWN:
 		{
 			// If a key is pressed send it to the input object so it can record that state.
-			
-			SystemHandle->m_OsInput->KeyDown(lparam, wparam);
+			SystemHandle->m_OsInput->KeyDown((UINT)lparam, (UINT)wparam);
 			return 0;
 		}
 
@@ -259,8 +258,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 	case WM_KEYUP:
 	{
 		// If a key is released then send it to the input object so it can unset the state for that key.
-		unsigned int key = lparam >> 16;
-		SystemHandle->m_OsInput->KeyUp(lparam, wparam);
+		SystemHandle->m_OsInput->KeyUp((UINT)lparam, (UINT)wparam);
 		return 0;
 	}
 

@@ -17,9 +17,11 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567831;
 
 #include "platform.h"
 #include "dxWinSystemClass.h"
+#include "ApplicationClass.h"
 
 #if defined DX9sdk
 #include "Dx9Class.h"
@@ -33,64 +35,104 @@
 #include "GLopenGLclass.h"		//woma
 #include "wGLopenGLclass.h"		// Windows
 
-/////////////////////////////////////////////////////////////////////////////////////////////
-//-------------------------------------------------------------------------------------------
-void ApplicationClass::RenderScene(UINT monitorWindow)
-//-------------------------------------------------------------------------------------------
-{
-	SystemHandle->m_Driver->BeginScene(monitorWindow);	// Clear the buffers to begin the scene (glClear|ClearRenderTargetView/ClearDepthStencilView)
+#include "OSmain_dir.h"
 
-	// Process INPUT & CAMERA Render:
-	float dayLightFade = Update(monitorWindow, SystemHandle->driverList[SystemHandle->AppSettings->DRIVER]);
-
-	// 45 Render: SHADOWS	Render one Application Frame, TODO: process these 2 in paralell!?
+// PRE-RENDER - Shadows
 #if defined USE_SHADOW_MAP
-	AppPreRender(dayLightFade);
-#endif
+void ApplicationClass::AppPreRender(UINT monitorWindow, WomaDriverClass* Driver, float fadeLight)
+{
+	// TODO: List all objects in front of camera with SHADOW!!!!!!!!!!!
 
-	// RENDER: MAIN - 3D, Render one Application Frame
-	if (RENDER_PAGE >= 15)
-		AppRender(monitorWindow, dayLightFade);
+	//RENDER TO TEXTURE:
+	if (fadeLight > 0.1f) {
+		m_RenderTexture->SetRenderTarget(/*Context*/Driver);							// Set the render target to be the render to texture.
+		m_RenderTexture->ClearRenderTarget(/*Context*/Driver, 1.0f, 1.0f, 1.0f, 1.0f);	// Clear the render to texture!
 
-	// RENDER: SPRITEs on TOP of 3D - 2D Render one Application Frame. 26 - (Need to be after 3D)
+		// Get the view and orthographic matrices from the light object.
+		lightViewMatrix = &(m_Light->m_viewMatrix);
+		ShadowProjectionMatrix = &(m_Light->m_orthoMatrix);
+
+		// 3D STATIC OBJECTS SHADOWS: RENDER/PROCESS SHADOWS!
+		// --------------------------------------------------------------------------------------------
+	}
+
+	//RENDER TO SCREEN:
+	((DirectX::DX11Class*)Driver)->SetBackBufferRenderTarget(monitorWindow);
 }
+#endif
 
 float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 {
 	float fadeLight = 1;
 
+	// TIME Control: Show Debug Info
+	INT64 passedTotalTime = (INT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
+
 	// GET INPUT for CAMERA: Movement
 
-	// Animate Camera (INTRO_DEMO)
-
 	// SET CAMERA (for this monitor): Prepare to Take a Shot: Generate the view matrix based on the camera's position.
+
+#if defined USE_SKYSPHERE	// [2] CAMERA SKY: Update & Prepare to Take a Shot
+	if (RENDER_PAGE >= 28) 
+	{
+		if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+		{
+			DXsystemHandle->m_CameraSKY->m_rotationX = DXsystemHandle->m_Camera->m_rotationX;
+			DXsystemHandle->m_CameraSKY->m_rotationY = DXsystemHandle->m_Camera->m_rotationY;
+			DXsystemHandle->m_CameraSKY->Render();
+		}
+		else
+		{
+			GLopenGLclass* driver = (GLopenGLclass*)DXsystemHandle->driverList[SystemHandle->AppSettings->DRIVER];
+
+			driver->gl_CameraSKY->m_rotationX = driver->gl_Camera->m_rotationX;
+			driver->gl_CameraSKY->m_rotationY = driver->gl_Camera->m_rotationY;
+			driver->gl_CameraSKY->Render();
+		}
+	}
+#endif
 
 	// CONSTRUCT: FRUSTRUM
 #if defined USE_FRUSTRUM
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
-		((DX_CLASS*)m_Driver)->frustum->ConstructFrustum(SystemHandle->AppSettings->SCREEN_DEPTH / 2.5f,
-			&((DX_CLASS*)m_Driver)->m_projectionMatrix,
-			&((DX_CLASS*)m_Driver)->m_Camera->m_viewMatrix);
+		m_Driver->frustum->ConstructFrustum(SystemHandle->AppSettings->SCREEN_DEPTH / 2.5f,
+			&((DX12Class*)m_Driver)->m_projectionMatrix,
+			&DXsystemHandle->m_Camera->m_viewMatrix);
 #endif
 
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
-		((DX_CLASS*)m_Driver)->frustum->ConstructFrustum(SystemHandle->AppSettings->SCREEN_DEPTH / 2.5f,
-			&((DX_CLASS*)m_Driver)->m_projectionMatrix,
-			&((DX_CLASS*)m_Driver)->m_Camera->m_viewMatrix);
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+		m_Driver->frustum->ConstructFrustum(SystemHandle->AppSettings->SCREEN_DEPTH / 2.5f,
+			&((DX11Class*)m_Driver)->m_projectionMatrix,
+			&DXsystemHandle->m_Camera->m_viewMatrix);
 
-#if defined OPENGL3 && defined NOT_IMPLEMENTED
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
-		((GLOpenGLClass*)m_Driver)->frustum->ConstructFrustum(SystemHandle->AppSettings->SCREEN_DEPTH / 2.5f,
-			&((GLOpenGLClass*)m_Driver)->m_projectionMatrix,
-			&((GLOpenGLClass*)m_Driver)->m_Camera->m_viewMatrix);
-#endif
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) {
+
+		mat4 glPrjMatrix = ((GLopenGLclass*)m_Driver)->m_projectionMatrix;
+		XMMATRIX m_projectionMatrix = XMMatrixSet
+		(
+			glPrjMatrix.m[0], glPrjMatrix.m[1], glPrjMatrix.m[2], glPrjMatrix.m[3],
+			glPrjMatrix.m[4], glPrjMatrix.m[5], glPrjMatrix.m[6], glPrjMatrix.m[7],
+			glPrjMatrix.m[8], glPrjMatrix.m[9], glPrjMatrix.m[10], glPrjMatrix.m[11],
+			glPrjMatrix.m[12], glPrjMatrix.m[13], glPrjMatrix.m[14], glPrjMatrix.m[15]
+		);
+
+		mat4 glvMatrix = ((GLopenGLclass*)m_Driver)->gl_Camera->m_viewMatrix;
+		XMMATRIX m_viewMatrix = XMMatrixSet
+		(
+			glvMatrix.m[0], glvMatrix.m[1], glvMatrix.m[2], glvMatrix.m[3],
+			glvMatrix.m[4], glvMatrix.m[5], glvMatrix.m[6], glvMatrix.m[7],
+			glvMatrix.m[8], glvMatrix.m[9], glvMatrix.m[10], glvMatrix.m[11],
+			glvMatrix.m[12], glvMatrix.m[13], glvMatrix.m[14], glvMatrix.m[15]
+		);
+
+		m_Driver->frustum->ConstructFrustum(SystemHandle->AppSettings->SCREEN_DEPTH / 2.5f,
+			&m_projectionMatrix,
+			&m_viewMatrix);
+	}
 #endif
 
 	// CAMERA TEXT: Show Debug Info
-
-	// TIME Control: Show Debug Info
-
 
 	// LIGHT: Get fade (real Sun Position): Show Debug Info
 
@@ -98,36 +140,61 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 }
 
 
-extern float SunDistance;
+// INTRO
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+//-------------------------------------------------------------------------------------------
+void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
+//-------------------------------------------------------------------------------------------
+{
+	if (RENDER_PAGE < 15)
+	{
+		Update(monitorWindow, driver);
+		return;
+	}
+	else
+	{
+		// [0] Process INPUT, CAMERA, INTRO animation etc...
+		float dayLightFade = Update(monitorWindow, driver);
+		if (dayLightFade == -100) return;
+
+		// [1] Render: SHADOWS - Render one Application Frame (Need to be before 3D)
+
+		// [2] Render: MAIN - 3D, Render one Application Frame
+		AppRender(monitorWindow, dayLightFade);
+
+		// [3] Render: MAIN - 2D (SPRITEs on TOP of 3D) Render one Application Frame. (Need to be after 3D)
+	}
+}
 
 //#############################################################################################################
 // RENDER - 3D
 //#############################################################################################################
-//#define ClearColor SceneManager::GetInstance()->RootNode->nodeState.ClearColor
-//#define ClearColor SystemHandle->m_Application->ClearColor
 
 void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 {
+	WomaDriverClass* m_Driver = DXsystemHandle->m_Driver;
+	// BASICS: page 21: / 22 / 23
+	// --------------------------------------------------------------------------------------------
 
 	// DEBUG SPRITE: Shadows
 	// --------------------------------------------------------------------------------------------
-#if defined USE_SHADOW_MAP //&& defined _DEBUG
-	DirectX::DXmodelClass* model = (DirectX::DXmodelClass*)m_2nd3DModel;
-	if (RENDER_PAGE >= 45)
-		model->meshSRV[0] = m_RenderTexture->m_shaderResourceView;
-#endif
 
 	//#############################################################################################################-
 	// RENDER:
 	//#############################################################################################################
-	// RENDER: SKY
-	// --------------------------------------------------------------------------------------------
+
+#if defined USE_SKYSPHERE && defined USE_SUN && defined USE_MOON
+	if (RENDER_PAGE >= 28)				//30: SKY
+		Render_SKY_SUN_MOON(fadeLight); //34: SUN_MOON
+#endif
+
 #if defined USE_SKY2D
 	if (RENDER_PAGE >= 27 && RENDER_PAGE < 30) // At: 27 | 28 | 29
 		m_Sky2DModel->RenderSprite(m_Driver, (SystemHandle->AppSettings->WINDOW_WIDTH - m_Sky2DModel->SpriteTextureWidth) / 2,
 			(SystemHandle->AppSettings->WINDOW_HEIGHT - m_Sky2DModel->SpriteTextureHeight) / 2);
 	m_Driver->ClearDepthBuffer(); // Need to Be Right after: m_Sky2DModel->RenderSprite 
-#else
 #endif
 
 	// RENDER: CLOUDS
@@ -144,11 +211,13 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 	// [2] Render MAIN Terrain Here
 	// --------------------------------------------------------------------------------------------
 
-	// BASICS: page 21: / 22 / 23
+	// 3D STATIC OPAC OBJECTS
 	// --------------------------------------------------------------------------------------------
 
-	// 3D STATIC OBJECTS
-	// --------------------------------------------------------------------------------------------
+	// 3D MESH OBJECTS
+	// ...
+
+	//THE "OTHER" NETWORK PLAYERS
 
 	// 3D WATER
 	// --------------------------------------------------------------------------------------------
@@ -156,8 +225,4 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 
 	// BEFORE 2D: Render TRANSPARENT Parts of 3D OBJs (like: glass window, etc...)
 	// --------------------------------------------------------------------------------------------
-
-	// 3D MESH OBJECTS
-	// ...
-	// TODO procedure
 }

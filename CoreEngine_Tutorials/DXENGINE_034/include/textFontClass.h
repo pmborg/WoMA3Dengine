@@ -99,5 +99,6 @@ public:
 #if defined DX9sdk
 	LPDIRECT3DTEXTURE9 m_Texture9 = NULL;
 #endif
+	std::vector<ID3D11ShaderResourceView*> meshSRV11;	// vector with all pointer(s) to textures loaded
 };
 

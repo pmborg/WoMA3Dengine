@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // ----------------------------------------------------------------------------------------------
 // Filename: openglclass.cpp
 // --------------------------------------------------------------------------------------------
@@ -28,6 +29,7 @@ WomaDriverClass
 */
 
 #include "platform.h"
+#if defined OPENGL3 && DX_ENGINE_LEVEL >= 19
 #include "mem_leak.h"
 #include "stateMachine.h"
 #include "womadriverclass.h"
@@ -327,3 +329,4 @@ bool GLopenGLclass::Initialize(float* clearColor)
 	return true;
 }
 
+#endif

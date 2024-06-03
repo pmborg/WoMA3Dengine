@@ -30,21 +30,13 @@
 #include "fpsClass.h"
 #define N_SCREEN_TEXT 4			// N. of total dif. Screens
 
+#include "xml_loader.h"
+
 #include "ApplicationClass.h"
 #include "winCpuClass.h"
 
 #include "WomaDriverClass.h"
-#include "DemoApplicationClass.h"
 
-typedef struct {
-
-	int			hVisibility;
-	int			seaLevel;
-	int			size;
-	int			patchSize;
-	std::string	skyTexture;	//Note: have to be char!
-
-} World;
 
 struct resolutionType
 {
@@ -60,13 +52,22 @@ typedef struct {
 	int y;
 } Woma_Label;
 
+typedef struct {
+	int			hVisibility;
+	int			seaLevel;
+	int			size;
+	int			patchSize;
+	std::string	skyDayTexture;		//Note: have to be char!
+	std::string	skyNightTexture;	//Note: have to be char!
+} World;
+
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: SystemClass
 ////////////////////////////////////////////////////////////////////////////////
 class SystemClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567890;
+	UINT WomaIntegrityCheck = 1234567831;
 	SystemClass();
 	~SystemClass();
 
@@ -89,8 +90,13 @@ public:
 
 	bool SystemCheck();
 
-	STRING			XML_SETTINGS_FILE;	// Note: Have to be "char" (No STRING)
+	DWORD lastButtons = 0;
+	DWORD lastXpos = 0, lastYpos = 0, lastZpos = 0;
+	DWORD lastRpos = 0, lastUpos = 0, lastVpos = 0;
+	JOYINFOEX joyInfo;
 
+	XMLloader		xml_loader;
+	STRING			XML_SETTINGS_FILE;	// Note: Have to be "char" (No STRING)
 	bool LoadXmlSettings();
 
   #if !defined WIN_XP
@@ -124,8 +130,6 @@ public:
 	bool InitializeDrivers(int screenWidth, int screenHeight, float screenNear, float screenDepth, BOOL vsync, BOOL fullscreen, float* clarColor);
 	bool LoadAllGraphics();
 
-	DemoApplicationClass* demoApplicationClass=NULL;
-
+	STRING		XML_WORLD_FILE;
+	World		world;
 };
-
-

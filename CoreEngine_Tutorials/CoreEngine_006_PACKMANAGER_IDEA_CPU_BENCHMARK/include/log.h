@@ -17,6 +17,7 @@
 // --------------------------------------------------------------------------------------------
 //
 // --------------------------------------------------------------------------------------------
+
 #pragma once
 
 #include "main.h" // TCHAR
@@ -29,7 +30,7 @@ namespace WOMA
 class ILogManager
 {
 public:
-	UINT WomaIntegrityCheck = 1234567890;
+	UINT WomaIntegrityCheck = 1234567831;
 	static ILogManager* CreateInstance();
 	static void ShutdownInstance();
 

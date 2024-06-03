@@ -159,8 +159,6 @@ shaderTree shaderManager_40[] =
 
 	/* 07 */,{ (void*)MyVertexShader051ShadowMapInstance_40,NULL,(void*)MyPixelShader051ShadowMapInstance_40, sizeof(MyVertexShader051ShadowMapInstance_40),0,sizeof(MyPixelShader051ShadowMapInstance_40) }
 
-	/* 08 */,{ (void*)MyVertexShader051TextureLightNormalInstance_40,NULL,(void*)MyPixelShader051TextureLightNormalInstance_40, sizeof(MyVertexShader051TextureLightNormalInstance_40),0,sizeof(MyPixelShader051TextureLightNormalInstance_40) }
-
 };
 
 shaderTree shaderManager_41[] =

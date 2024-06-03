@@ -22,7 +22,7 @@
 //  - Init: APPDATA "C:\Users\"username"\AppData\Local\Pmborg\Woma2017\"
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567891;
+//WomaIntegrityCheck = 1234567831;
 
 #pragma once
 
@@ -56,8 +56,8 @@ namespace WOMA
 	extern TCHAR* getTemp();
 	extern TCHAR* getHome();
 	extern bool logDirs(BOOL WINXP_FLAG = FALSE, BOOL bIsWow64 = FALSE);
-	//extern bool init_os_main_dirs(BOOL WINXP_FLAG = FALSE, BOOL bIsWow64 = FALSE, CHAR* currentdir = NULL);
 	extern bool init_os_main_dirs(TCHAR* currentdir = NULL);
+	//extern bool init_os_main_dirs(BOOL WINXP_FLAG = FALSE, BOOL bIsWow64 = FALSE, CHAR* currentdir = NULL);
 
 	// Defined: in win32Plat.cpp
 	extern BOOL bIsWow64;

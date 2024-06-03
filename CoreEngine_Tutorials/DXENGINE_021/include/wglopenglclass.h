@@ -39,7 +39,11 @@
 // OpenGL 4.0: It was designed to target hardware capable of supporting Direct3D 11.
 
 // GLUT - OpenGL Utility Toolkit: Its the DXSDK for OPENGL
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
 #include <GL/glut.h>	// Used for Check():	http://freeglut.sourceforge.net/index.php#download
+#endif
 
 // Windows loader for all Extensions:
 #include <GL/wglext.h>				// Ver 4.3, download from : http://www.opengl.org/registry/
@@ -56,7 +60,7 @@
 class wGLopenGLclass : public GLopenGLclass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567890;
+	UINT WomaIntegrityCheck = 1234567831;
 	wGLopenGLclass();
 	~wGLopenGLclass();
 

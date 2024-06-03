@@ -17,11 +17,17 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: START and STOP WorldOfMiddleAge 3D ENGINE
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567831;
 
 #include "main.h"
 #include "OSengine.h"
 
 WinSystemClass* SystemHandle = NULL;
+
+
+// Global Public:
+UINT CLASS_LOAD_N = 1;
+UINT CLASS_DELETE_N = 1;
 
 // WINDOWS vs LINUX
 // -------------------------------------------------------------------------------------------------------------------------------------
@@ -30,23 +36,16 @@ WinSystemClass* SystemHandle = NULL;
 // -------------------------------------------------------------------------------------------------------------------------------------
 namespace WOMA
 {
+#if defined WINDOWS_PLATFORM
 	// SUBSYSTEM:WINDOWS
 	PSTR    Scmdline = { 0 };
 	int     Cmdshow = SW_SHOWDEFAULT;           //Useful when using: WOMA_CONSOLE_APPLICATION
+#endif
 	// SUBSYSTEM:CONSOLE
 	int     ARGc = 0;
 	CHAR**	ARGv = { 0 };
 
 	TCHAR strConsoleTitle[MAX_STR_LEN] = { 0 };
-
-}
-
-// Global Public:
-UINT CLASS_LOAD_N = 1;
-UINT CLASS_DELETE_N = 1;
-
-namespace WOMA
-{
 
 int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption, bool yesORno)
 //----------------------------------------------------------------------------------
@@ -60,7 +59,9 @@ int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption, bool yesORno)
 	{ HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED); }
 
 	int res = 0;
+#if defined WINDOWS_PLATFORM
 		res = MessageBox(NULL, lpText, lpCaption, (yesORno) ? MB_YESNO : MB_OK);
+#endif
 
 	return res;
 }
@@ -82,12 +83,14 @@ int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption, bool yesORno)
 	STRING BINARY = TEXT("DBGREL");		//_DEBUG;NDEBUG
 #endif
 
+#if defined WINDOWS_PLATFORM
 	int getTaskBarHeight()
 	{
 		RECT rect;
 		HWND taskBar = FindWindow(TEXT("Shell_traywnd"), NULL);
 		return (taskBar && GetWindowRect(taskBar, &rect)) ? (rect.bottom - rect.top) : 0;
 	}
+#endif
 
 #if defined WINDOWS_PLATFORM && defined WOMA_CONSOLE_APPLICATION 
 	// "Console Window": Set handler:
@@ -121,6 +124,7 @@ void DefineConsoleTitle()
 
 	StringCchPrintf(WOMA::strConsoleTitle, sizeof(WOMA::strConsoleTitle), TEXT("WOMA ENGINE Level: %d - %s [%s] %s\n"), CORE_ENGINE_LEVEL, charSet, WOMA::BINARY.c_str(), cpu_type);
 
+#if defined WINDOWS_PLATFORM 
 #if defined WOMA_CONSOLE_APPLICATION 
 	// "Console Window": Set handler:
 	SetConsoleCtrlHandler(WOMA::console_ctrl_handler, TRUE);
@@ -152,12 +156,13 @@ void DefineConsoleTitle()
 
 	LEVELNORMAL();
 	OutputDebugString(TEXT("\n"));
+#endif
 
 }
 
 void START_OS_SYSTEM_KERNEL(int argc, char* argv[])
 {
-
+	
 	DefineConsoleTitle();
 
 	// Save Command Line Arguments to use later on
@@ -179,7 +184,8 @@ void START_OS_SYSTEM_KERNEL(int argc, char* argv[])
 
 void OS_ENGINE_STOP()
 {
+#if defined WINDOWS_PLATFORM
 	CoUninitialize();
+#endif
 
 }
-

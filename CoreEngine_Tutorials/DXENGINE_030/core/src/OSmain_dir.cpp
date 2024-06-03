@@ -40,8 +40,8 @@ namespace WOMA
 {
 	// State Vars:
 	//---------------------------------------------------
-	int					game_state;
-	int					previous_game_state;
+	int					game_state=0;
+	int					previous_game_state=0;
 
 	// Directory Vars:
 	//---------------------------------------------------

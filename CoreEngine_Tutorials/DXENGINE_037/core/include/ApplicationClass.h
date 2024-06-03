@@ -59,11 +59,9 @@
 #include "virtualModelClass.h"
 extern std::vector<VirtualModelClass*> m_screenShots;
 // -------------------------------------------------------------------------------------------------
+
 extern UINT RENDER_PAGE;
 extern bool FORCE_RENDER_ALL;
-
-extern int SpriteScreenToShow;
-extern float fadeIntro;
 extern UINT g_NetID;
 
 #include "PositionClass.h"
@@ -146,7 +144,6 @@ public:
 
 	void RenderScene(UINT monitorWindow, WomaDriverClass* driver);
 	void RenderModel(UINT monitorWindow, WomaDriverClass* driver, UINT modelID, UINT pass);
-
 	float Update(UINT monitorWindow, WomaDriverClass* m_Driver);					// PROCESS User Update
 	void AppPreRender(UINT monitorWindow, WomaDriverClass* Driver, float fadeLight);					// PRE-RENDER - Shadows
 	void AppRender(UINT monitorWindow, float fadeLight);	// RENDER - 3D
@@ -155,7 +152,6 @@ public:
 	virtual bool WOMA_APPLICATION_InitGUI();
 
 	// 3D
-	void	defineSquarModel(float unit);
 	bool	Initialize(WomaDriverClass* Driver);
 	virtual bool WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver); // APP_Load
 
@@ -228,10 +224,6 @@ public:
 
 	//SceneManager*				m_sceneManager=NULL;
 
-
-// --------------------------------------------------------------------------------------------
-// PURPOSE: 
-// --------------------------------------------------------------------------------------------
 public:
 	void DemoRender();
 	void RenderSprites();
@@ -253,8 +245,8 @@ public:
 	//	WoMA Vertex(s) Arrays:  NOTE: Cant be used to create and Obj more than ONCE!
 	//	-------------------------------------------------------------------------------------------
 	//DEMO-1:
-	std::vector<ModelColorVertexType> SquarColorVertexVector;	// COLOR-DEMO-1: CREATE_VERTEXVECTOR_SQUAD_MODEL_OPTIMIZED
-	VirtualModelClass* m_1stSquar3DColorModel = NULL;			// COLOR-DEMO-1: CREATE_MODELDX_IF_NOT_EXCEPTION
+	std::vector<ModelColorVertexType> SquareColorVertexVector;	// COLOR-DEMO-1: CREATE_VERTEXVECTOR_SQUAD_MODEL_OPTIMIZED
+	VirtualModelClass* m_1stSquare3DColorModel = NULL;			// COLOR-DEMO-1: CREATE_MODELDX_IF_NOT_EXCEPTION
 
 	//DEMO-2:
 	std::vector<ModelColorVertexType> TriangleColorVertexVector;// COLOR-DEMO-2: CREATE_VERTEXVECTOR_TRIANGLE_MODEL_OPTIMIZED
@@ -263,7 +255,7 @@ public:
 	ModelTextureVertexType textureVertex = { 0 };					// Use this "VERTEX" on macro
 
 	//DEMO-1:
-	std::vector<ModelTextureVertexType> SquarTextureVertexVector;	// TEXTURE-DEMO-1: CREATE_VERTEXVECTOR_SQUAD_MODEL_OPTIMIZED
+	std::vector<ModelTextureVertexType> SquareTextureVertexVector;	// TEXTURE-DEMO-1: CREATE_VERTEXVECTOR_SQUAD_MODEL_OPTIMIZED
 
 	VirtualModelClass* m_2nd3DModel = NULL;						// Model
 
@@ -290,8 +282,6 @@ public:
 	VirtualModelClass* m_1stTriangleLightVertexModel = NULL;			// TEXTURE-DEMO-2: initLoadTexture()
 	VirtualModelClass* m_3th3DModel2 = NULL;							// Model
 
-	// TERRAIN
-
 	VirtualModelClass* m_titleModel = NULL;
 
 	VirtualModelClass* m_cube1Model = NULL;
@@ -310,18 +300,7 @@ public:
 	VirtualModelClass* m_SkyModel = NULL;
 	void	initSky(float SPHERE_SIZE);
 
-
-
-
-
-
-
-
-
-
-
-
-
+	// TERRAIN
 
 
 };

@@ -29,12 +29,11 @@
 #include "OSengine.h"
 #include "woma_macros.h"
 
-
 SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 {
 	// STARTING POINT of WOMA ENGINE!
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567890;
+	WomaIntegrityCheck = 1234567831;
 
 	AppSettings = NULL;
 

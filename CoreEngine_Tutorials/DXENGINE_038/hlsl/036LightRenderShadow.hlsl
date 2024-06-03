@@ -8,14 +8,16 @@
 *   Downloaded from : http://woma.servegame.com
 *
 **********************************************************************************************/
-#define DESKTOP_GL 1
 
 #define PS_USE_LIGHT            //23
 #define PS_USE_ALFA_TEXTURE     //33
 #define PS_USE_ALFACOLOR        //33
 #define PS_USE_SPECULAR         //34
-//#define PS_USE_BUMP               //35
 #define PS_USE_SHADOWMAP_TEXTURE//36
+
+//#define PS_USE_BUMP             
+//#define PS_USE_FADE
+//#define PS_USE_SKY
 
 //////////////
 // TYPEDEFS //
@@ -37,19 +39,9 @@ struct PSIn
     float3 normal           : NORMAL;               // 23 LIGHT
     float3 viewDirection    : TEXCOORD1;            // 34 SPECULAR
     float4 cameraPosition   : WS;                   // 34 SPECULAR
-    //float3 tangent            : TANGENT;          // 35 BUMP
+    //float3 tangent        : TANGENT;          	// 35 BUMP
     float4 lightViewPosition: LIGHT_VIEW_POSITION;  // 36 SHADOWS
-    
-    //float3 originalPosition   : ORIGINAL_POSITION;// 30 SKY
-    //float  fogFactor      : FOG;                  // 31 FOG
 };
-
-////////////////
-// CBUFFERS
-////////////////
-#include "cbuffer.hlsl"
-
-#include "light.hlsl"
 
 /////////////
 // GLOBALS //
@@ -60,7 +52,7 @@ struct PSIn
 Texture2D shaderTexture;            // 21:
 Texture2D AlfaMapTexture;           // 33: AlfaMap
 Texture2D ShadowMapTextureTexture;  // 36: ShadowMap
-//Texture2D TangentMapTexture;      // 35: TangentMap NEW!!
+//Texture2D TangentMapTexture;      // 35: TangentMap
 #endif
 #if DXAPI12 == 1
 Texture2D shaderTexture             : register(t0); // 21:
@@ -78,35 +70,13 @@ SamplerState SampleType;
 SamplerState SampleType: register(s0);
 #endif
 
-#if defined PS_USE_SHADOWMAP_TEXTURE // 26: SHADOWS
-////////////////////////////////////////////////////////////////////////////////
-float4 HasShadows(float4 lightViewPosition)
-////////////////////////////////////////////////////////////////////////////////
-{
-    float2  projectTexCoord;        //45
-    float   bias = 5.0f / 256.0f;   //45: Set the bias value for fixing the floating point precision issues.
+////////////////
+// CBUFFERS
+////////////////
+#include "cbuffer.hlsl"
+#include "light.hlsl"
+#include "shadows.hlsl"
 
-    // Calculate the projected texture coordinates
-    projectTexCoord.x = lightViewPosition.x / lightViewPosition.w / 2.0f + 0.5f;
-    projectTexCoord.y = -lightViewPosition.y / lightViewPosition.w / 2.0f + 0.5f;
-
-    float depthValue = ShadowMapTextureTexture.Sample(SampleType, projectTexCoord).r;
-
-    // is on a shadow?
-    if (depthValue > 0)
-    {
-        // Calculate the depth of the pixel
-        float lightDepthValue = lightViewPosition.z / lightViewPosition.w;
-
-        // Compare the depth of the shadow map value and the depth of the light to determine whether to shadow or to light this pixel
-        // If the light is in front of the object then light the pixel, if not then shadow this pixel since an object (occluder) is casting a shadow on it
-        if (lightDepthValue > (depthValue + bias))
-            return float4 (0.55f, 0.55f, 0.55f, 1); //On Shadow: return 55% of light
-    }
-
-    return 1; //Not on Shadow: return 100% of light
-}
-#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
@@ -118,12 +88,15 @@ PSIn MyVertexShader036LightRenderShadow(VSIn input)
     //output.originalPosition = input.position;
 
     //21: COMMON
-    //----- 4 Lines in 1 -----
-    //input.position.w = 1.0f;
-    //posWorld = mul(input.position, worldMatrix);
-    //PosView = mul(posWorld, viewMatrix);
-    //Position = mul(PosView, projectionMatrix);
-    output.position = mul(float4(input.position, 1), WVP);  // Calculate the position of the vertex against the world, view, and projection matrices
+if (VS_USE_WVP) {
+	output.position = mul(float4(input.position, 1), WVP);	// Calculate the position of the vertex against the world, view, and projection matrices
+} else {
+	float4 position = float4(input.position, 1);
+	position = mul(position, worldMatrix);
+	position = mul(position, view);			//viewMatrix
+	position = mul(position, projection);	//projectionMatrix
+	output.position = position;
+}
 
     //22: TEXTURE: Store the texture coordinates for the pixel shader:
     output.texCoords = input.texCoords;
@@ -184,10 +157,10 @@ float4 MyPixelShader036LightRenderShadow(PSIn input) : SV_TARGET
 {
     float4  textureColor = pixelColor;    // SET PIXEL COLOR
     float   lightIntensity = 0;
+#if defined PS_USE_FOG
     //float4    fogColor = float4(87.0f / 256.0f, 87 / 256.0f, 87.0f / 256.0f, 1.0f);
+#endif
 
-    //#METHOD:1 - 023Light.hlsl --> #METHOD:2 - 
-/*
 #if defined PS_USE_SKY
     // 30: SKY
     if (isSky)
@@ -196,7 +169,7 @@ float4 MyPixelShader036LightRenderShadow(PSIn input) : SV_TARGET
         else
             return Sky(input.cameraPosition.y, input.originalPosition.y, input.texCoords);
 #endif
-*/
+
 #if defined PS_USE_FOG
     // 100% FOG: Need to be after sky (No fog on Sky) ;)
     if (hasFog && input.fogFactor == 0)
@@ -225,10 +198,18 @@ float4 MyPixelShader036LightRenderShadow(PSIn input) : SV_TARGET
         }
     #endif
     
+	#if defined PS_USE_SHADOWMAP_TEXTURE//36
         if (lightType == 1) 
             lightIntensity = PSlightFunc1(input.normal);
         else
             lightIntensity = PSlightFunc2(input.normal);
+	#else
+        if (lightType == 1) 
+            lightIntensity = PSlightFunc2(input.normal);
+        else
+            lightIntensity = PSlightFunc1(input.normal);
+	#endif
+
 
         if (hasTexture) {
             textureColor = textureColor * saturate(emissiveColor + ambientColor + lightIntensity);  

@@ -162,28 +162,30 @@ bool dxWinSystemClass::InitSelectedDriver()
 ///////////////////////////////////////////////////////////////////////////////////////
 bool dxWinSystemClass::InitializeSystem()
 {
-	//ClassRegister/LoadXmlSettings/InitializeSetupScreen/ApplicationInitMainWindow/InitOsInput/StartTimer
-	WinSystemClass::InitializeSystem();
+	WinSystemClass::InitializeSystem();	//ClassRegister/LoadXmlSettings/InitializeSetupScreen/ApplicationInitMainWindow/InitOsInput/StartTimer
 
-	LoadAllDrivers();				// LOAD ALL DRIVERS: Populate the List of ALL Graphics Drivers (DX9, DX11, DX12, OpenGL...)
+	LoadAllDrivers();					// LOAD ALL DRIVERS: (DX9, DX11, DX12, OpenGL)
 
 	if (!InitSelectedDriver())
 		return false;
 
-	ApplicationInitSceneManager();	//INIT QUAD TREE
+	ApplicationInitSceneManager();		// INIT QUAD TREE
 
-	// MAIN LOADING THREAD:
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//SCENE MANAGER: QuadTree object Loader/Render
-	SystemClass::LoadAllGraphics();	// Load all main Graphics, that will be rendered
-
-	//INTRO MOVIE: mpg player
-	//START LODING THREADS: For detail objects in the tree
+	//SINGLE THREAD SCENE MANAGER: QuadTree object Loader/Render
+	IF_NOT_RETURN_FALSE(SystemClass::LoadAllGraphics());	// Load all main Graphics, that will be rendered
+	
 	//SOUND MANAGER: Music and sound effects
-
-#if defined USE_SOUND_MANAGER	// START-AUDIO: Start Background Music (NOTE: After the INIT "rendering-device")
+#if DX_ENGINE_LEVEL >= 29 && defined USE_SOUND_MANAGER	// START-AUDIO: Start Background Music (NOTE: After the INIT "rendering-device")
 	IF_NOT_RETURN_FALSE(StartSoundManager());
 #endif
+
+	//INTRO MOVIE: mpg player
+#if defined USE_INTRO_VIDEO_DEMO	// START-VIDEO: Start DEMO INTRO (MP4): (Give Time to Unpack/Load Resources)
+	g_DShowPlayer = NEW DShowPlayer(m_hWnd);
+	IF_FAILED_RETURN_FALSE(PlayIntroMovie(WOMA::LoadFile(TEXT("engine/data/Logo.mp4"))));	// VIDEO DEMO
+#endif
+
+	//START LOADING THREADS: For detailed objects in the QuadTree
 
 	if (WOMA::game_state >= GAME_STOP)	// Something FATAL on loading "mandatory 2D/3D Stuff"?
 		return false;					// (SAMPLE: misssing 3D/IMAGE/AUDIO file...)
@@ -192,41 +194,6 @@ bool dxWinSystemClass::InitializeSystem()
 		WOMA::game_state = GAME_RUN;
 
 	return true;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-// 2
-///////////////////////////////////////////////////////////////////////////////////////
-//----------------------------------------------------------------------------
-int dxWinSystemClass::ApplicationMainLoop()		// [RUN] - MAIN "INFINITE" LOOP!
-//----------------------------------------------------------------------------
-{
-	MSG msg = { 0 };						// Reset msg
-
-	//DEBUG:
-	do
-	{
-		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))	// There is any OS messages to handle?
-		{
-			TranslateMessage(&msg); // TranslateMessage produces WM_CHAR messages only for keys that are mapped to ASCII characters by the keyboard driver.
-			DispatchMessage(&msg);  // Process Msg:  (INVOKE: WinSystemClass::MessageHandler)
-		}
-		else
-		{	// Active?
-			if (WOMA::game_state > GAME_MINIMIZED && WOMA::game_state <= GAME_RUN)
-				ProcessFrame();// Render ONE: Application Frame
-			else {
-				if (WOMA::game_state == ENGINE_RESTART)
-					return ENGINE_RESTART;
-				else
-					Sleep(50); //we are minized or in background, slow down CPU & GPU.
-			}
-		}
-	} while (msg.message != WM_QUIT);
-
-	ASSERT(WOMA::game_state == GAME_STOP);
-
-	return (int)msg.wParam;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -251,7 +218,7 @@ void dxWinSystemClass::ProcessFrame()
 			{
 				driver->BeginScene(mon);					//RESET FRAME
 
-				m_Application->RenderScene(mon);			//RENDER FRAME
+				m_Application->RenderScene(mon, driver);	//RENDER FRAME
 
 				if (!m_contextDriver)						//PRESENT FRAME
 					driver->EndScene(mon);					//[DX]
@@ -301,7 +268,7 @@ void dxWinSystemClass::Shutdown()
 
 	SAFE_SHUTDOWN(WOMA::sceneManager);
 
-#if defined USE_PLAY_MUSIC || defined USE_SOUND_MANAGER
+#if DX_ENGINE_LEVEL >= 29 && (defined USE_SOUND_MANAGER || defined USE_PLAY_MUSIC)
 	SAFE_SHUTDOWN(audio);
 #endif
 
@@ -374,33 +341,33 @@ bool dxWinSystemClass::SaveScreenshot()
 	DirectX::DX11Class* Driver = (DirectX::DX11Class*)DXsystemHandle->driverList[SystemHandle->AppSettings->DRIVER];
 
 	#if defined _NOTES
-	#define CSIDL_DESKTOP                   0x0000        // <desktop>
-	#define CSIDL_INTERNET                  0x0001        // Internet Explorer (icon on desktop)
-	#define CSIDL_PROGRAMS                  0x0002        // Start Menu\Programs
-	#define CSIDL_CONTROLS                  0x0003        // My Computer\Control Panel
-	#define CSIDL_PRINTERS                  0x0004        // My Computer\Printers
-	#define CSIDL_PERSONAL                  0x0005        // My Documents
-	#define CSIDL_FAVORITES                 0x0006        // <user name>\Favorites
-	#define CSIDL_STARTUP                   0x0007        // Start Menu\Programs\Startup
-	#define CSIDL_RECENT                    0x0008        // <user name>\Recent
-	#define CSIDL_SENDTO                    0x0009        // <user name>\SendTo
-	#define CSIDL_BITBUCKET                 0x000a        // <desktop>\Recycle Bin
-	#define CSIDL_STARTMENU                 0x000b        // <user name>\Start Menu
+	#define CSIDL_DESKTOP                   0x0000         // <desktop>
+	#define CSIDL_INTERNET                  0x0001         // Internet Explorer (icon on desktop)
+	#define CSIDL_PROGRAMS                  0x0002         // Start Menu\Programs
+	#define CSIDL_CONTROLS                  0x0003         // My Computer\Control Panel
+	#define CSIDL_PRINTERS                  0x0004         // My Computer\Printers
+	#define CSIDL_PERSONAL                  0x0005         // My Documents
+	#define CSIDL_FAVORITES                 0x0006         // <user name>\Favorites
+	#define CSIDL_STARTUP                   0x0007         // Start Menu\Programs\Startup
+	#define CSIDL_RECENT                    0x0008         // <user name>\Recent
+	#define CSIDL_SENDTO                    0x0009         // <user name>\SendTo
+	#define CSIDL_BITBUCKET                 0x000a         // <desktop>\Recycle Bin
+	#define CSIDL_STARTMENU                 0x000b         // <user name>\Start Menu
 	#define CSIDL_MYDOCUMENTS               CSIDL_PERSONAL //  Personal was just a silly name for My Documents
-	#define CSIDL_MYMUSIC                   0x000d        // "My Music" folder
-	#define CSIDL_MYVIDEO                   0x000e        // "My Videos" folder
-	#define CSIDL_DESKTOPDIRECTORY          0x0010        // <user name>\Desktop
-	#define CSIDL_DRIVES                    0x0011        // My Computer
-	#define CSIDL_NETWORK                   0x0012        // Network Neighborhood (My Network Places)
-	#define CSIDL_NETHOOD                   0x0013        // <user name>\nethood
-	#define CSIDL_FONTS                     0x0014        // windows\fonts
-	#define CSIDL_TEMPLATES                 0x0015
-	#define CSIDL_COMMON_STARTMENU          0x0016        // All Users\Start Menu
-	#define CSIDL_COMMON_PROGRAMS           0X0017        // All Users\Start Menu\Programs
-	#define CSIDL_COMMON_STARTUP            0x0018        // All Users\Startup
-	#define CSIDL_COMMON_DESKTOPDIRECTORY   0x0019        // All Users\Desktop
-	#define CSIDL_APPDATA                   0x001a        // <user name>\Application Data
-	#define CSIDL_PRINTHOOD                 0x001b        // <user name>\PrintHood
+	#define CSIDL_MYMUSIC                   0x000d         // "My Music" folder
+	#define CSIDL_MYVIDEO                   0x000e         // "My Videos" folder
+	#define CSIDL_DESKTOPDIRECTORY          0x0010         // <user name>\Desktop
+	#define CSIDL_DRIVES                    0x0011         // My Computer
+	#define CSIDL_NETWORK                   0x0012         // Network Neighborhood (My Network Places)
+	#define CSIDL_NETHOOD                   0x0013         // <user name>\nethood
+	#define CSIDL_FONTS                     0x0014         // windows\fonts
+	#define CSIDL_TEMPLATES                 0x0015		   
+	#define CSIDL_COMMON_STARTMENU          0x0016         // All Users\Start Menu
+	#define CSIDL_COMMON_PROGRAMS           0X0017         // All Users\Start Menu\Programs
+	#define CSIDL_COMMON_STARTUP            0x0018         // All Users\Startup
+	#define CSIDL_COMMON_DESKTOPDIRECTORY   0x0019         // All Users\Desktop
+	#define CSIDL_APPDATA                   0x001a         // <user name>\Application Data
+	#define CSIDL_PRINTHOOD                 0x001b         // <user name>\PrintHood
 	#endif
 
 	// STEP 1: Get Automatic Filename
@@ -424,9 +391,9 @@ bool dxWinSystemClass::SaveScreenshot()
 		snapshot_counter = 1;
 	/*
 	GUID_ContainerFormatBmp
-	GUID_ContainerFormatPng
+	GUID_ContainerFormatPng				//op2
 	GUID_ContainerFormatIco
-	GUID_ContainerFormatJpeg
+	GUID_ContainerFormatJpeg			//op1
 	GUID_ContainerFormatTiff
 	GUID_ContainerFormatGif
 	GUID_ContainerFormatWmp
@@ -440,11 +407,11 @@ bool dxWinSystemClass::SaveScreenshot()
 }
 #endif
 
-#if defined USE_SOUND_MANAGER || defined USE_PLAY_MUSIC
+#if DX_ENGINE_LEVEL >= 29 && (defined USE_SOUND_MANAGER || defined USE_PLAY_MUSIC)
 bool dxWinSystemClass::StartSoundManager()
 //----------------------------------------------------------------------------
 {
-#if defined USE_PLAY_MUSIC || defined USE_SOUND_MANAGER
+#if DX_ENGINE_LEVEL >= 29 && (defined USE_SOUND_MANAGER || defined USE_PLAY_MUSIC)
 	audio = NEW AudioClass;
   #if defined USE_PLAY_MUSIC || defined INTRO_DEMO
 	if (SystemHandle->AppSettings->MUSIC_ENABLED)
@@ -458,7 +425,7 @@ bool dxWinSystemClass::StartSoundManager()
 		
 			MusicSourceID = audio->addSoundSource(MusicID, LOOPING);			// Add Sound to player
 			audio->play(MusicSourceID);											// Play it, now.
-			}
+		}
 	}
   #endif
 #endif
@@ -482,5 +449,42 @@ void dxWinSystemClass::ApplicationInitSceneManager()
 	SceneManager::GetInstance()->quadTree.Initialize(SceneManager::GetInstance()->RootNode);
 }
 
+
+
+///////////////////////////////////////////////////////////////////////////////////////
+// 2
+///////////////////////////////////////////////////////////////////////////////////////
+//----------------------------------------------------------------------------
+int dxWinSystemClass::ApplicationMainLoop()		// [RUN] - MAIN "INFINITE" LOOP!
+//----------------------------------------------------------------------------
+{
+	MSG msg = { 0 };						// Reset msg
+
+	//MAIN THREAD RELEASE BUILD LOOP:
+	//MAIN DEBUG BUILD LOOP:
+	do
+	{
+		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))	// There is any OS messages to handle?
+		{
+			TranslateMessage(&msg); // TranslateMessage produces WM_CHAR messages only for keys that are mapped to ASCII characters by the keyboard driver.
+			DispatchMessage(&msg);  // Process Msg:  (INVOKE: WinSystemClass::MessageHandler)
+		}
+		else
+		{	// Active?
+			if (WOMA::game_state > GAME_MINIMIZED && WOMA::game_state <= GAME_RUN)
+				ProcessFrame();// Render ONE: Application Frame
+			else {
+				if (WOMA::game_state == ENGINE_RESTART)
+					return ENGINE_RESTART;
+				else
+					Sleep(50); //we are minized or in background, slow down CPU & GPU.
+			}
+		}
+	} while (msg.message != WM_QUIT);
+
+	ASSERT(WOMA::game_state == GAME_STOP);
+
+	return (int)msg.wParam;
+}
 
 

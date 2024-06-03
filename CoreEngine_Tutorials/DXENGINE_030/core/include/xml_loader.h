@@ -20,6 +20,7 @@
 //WomaIntegrityCheck = 1234567831;
 
 #pragma once
+#pragma warning( disable : 5208 ) // warning C5208: unnamed class used in typedef name cannot declare members other than non-static data members, member enumerations, or member classes
 
 #define _CRT_SECURE_NO_WARNINGS
 #include "platform.h"
@@ -109,7 +110,7 @@ typedef struct {
 	#if defined USE_PLAY_MUSIC
 		char musicEnabled[10];
 	#endif
-	#if defined USE_SOUND_MANAGER
+	#if DX_ENGINE_LEVEL >= 29 && defined USE_SOUND_MANAGER
 		char soundEffectsEnabled[10];
 	#endif
 
@@ -151,10 +152,10 @@ struct WOMA_OBJECT
 
 //<world>
 typedef struct {
-	int fromPage, toPage, depend;
-	float scale, posX, posZ, translateY;
-	float rotX, rotY, rotZ;
-	int shader;
+	int fromPage, toPage, depend = 0;
+	float scale = 1, posX = 0, posZ = 0, translateY = 0;
+	float rotX = 0, rotY = 0, rotZ = 0;
+	int shader = 0;
 	char filename[256];
 	WOMA_OBJECT WOMA_object;
 } obj3d;

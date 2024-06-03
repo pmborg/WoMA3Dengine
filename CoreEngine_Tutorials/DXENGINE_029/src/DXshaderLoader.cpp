@@ -17,7 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Inject HLSL code on main EXE file
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567829;
+//WomaIntegrityCheck = 1234567831;
 
 #include "platform.h"
 
@@ -103,6 +103,10 @@ shaderTree shaderManager_41[] =
 	/* 01 */,{ (void*)MyVertexShader022Texture_41, NULL /*(void*)MyGeometryShader022Texture_41*/, (void*)MyPixelShader022Texture_41, sizeof(MyVertexShader022Texture_41), 0 /*sizeof (MyGeometryShader022Texture_41)*/, sizeof(MyPixelShader022Texture_41) }
 
 	/* 02 */,{ (void*)MyVertexShader023Light_41,NULL,(void*)MyPixelShader023Light_41, sizeof(MyVertexShader023Light_41),0,sizeof(MyPixelShader023Light_41) }
+
+#if DX_ENGINE_LEVEL >= 40  ShadowMap + Instancing 
+	/* 07 */,{ (void*)MyVertexShader051ShadowMapInstance_41,NULL,(void*)MyPixelShader051ShadowMapInstance_41, sizeof(MyVertexShader051ShadowMapInstance_41),0,sizeof(MyPixelShader051ShadowMapInstance_41) }
+#endif
 
 };
 

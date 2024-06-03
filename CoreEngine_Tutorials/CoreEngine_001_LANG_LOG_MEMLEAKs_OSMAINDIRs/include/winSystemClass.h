@@ -28,13 +28,13 @@
 #include "platform.h"
 #include "SystemClass.h"
 
-#include <combaseapi.h>				// VC7: ships with updated headers: CoInitializeEx()
-
 #define WOMA_ENGINE_CLASS TEXT("WoMA3Dengine")
 
 #define m_contextDriver NULL
 
 extern HWND DoCreateStatusBar(HWND hwndParent, int idStatus, HINSTANCE hinst, int cParts);
+
+#include <combaseapi.h>				// VC7: ships with updated headers: CoInitializeEx()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: WinSystemClass
@@ -42,7 +42,7 @@ extern HWND DoCreateStatusBar(HWND hwndParent, int idStatus, HINSTANCE hinst, in
 class WinSystemClass : public SystemClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567890;
+	UINT WomaIntegrityCheck = 1234567831;
 	WinSystemClass();
 	WinSystemClass(WOMA::Settings* AppSettings);
 	void WinSystemClass_init();
@@ -51,8 +51,6 @@ public:
 
 	bool InitializeSystem();
 	int	 ApplicationMainLoop();
-
-
 
 private:
 	void ShutdownWindows();

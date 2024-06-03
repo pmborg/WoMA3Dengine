@@ -32,7 +32,7 @@
 
 AstroClass::AstroClass() 
 {
-    WomaIntegrityCheck = 1234567891;
+    WomaIntegrityCheck = 1234567831;
 	CLASSLOADER();
 
 	//public:

@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: handleInputs.cpp
 // --------------------------------------------------------------------------------------------
@@ -204,6 +205,7 @@ bool ApplicationClass::HandleUserInput(float frameTime)
 		DXsystemHandle->m_Camera->m_rotationY =m_Position[g_NetID]->m_rotationY;
 		DXsystemHandle->m_Camera->m_rotationX =m_Position[g_NetID]->m_rotationX;
 	}
+#if defined OPENGL3
 	else
 	{
 		GLopenGLclass* driver = (GLopenGLclass*) DXsystemHandle->driverList[SystemHandle->AppSettings->DRIVER];
@@ -215,6 +217,7 @@ bool ApplicationClass::HandleUserInput(float frameTime)
 		driver->gl_Camera->m_rotationY = m_Position[g_NetID]->m_rotationY;
 		driver->gl_Camera->m_rotationX = m_Position[g_NetID]->m_rotationX;
 	}
+#endif
 
     return true;
 }

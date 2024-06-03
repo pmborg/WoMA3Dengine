@@ -187,6 +187,10 @@ public:
 private:
 // ----------------------------------------------------------------------
 
+#if defined LOADM3D //ENGINE_LEVEL >= 50
+	bool LoadM3D	(SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow=false, bool renderShadow=false, UINT instanceCount=0);
+#endif
+
 	DXshaderClass* CreateShader(TCHAR* objectName, SHADER_TYPE ShaderType);
 	bool InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* textureFile=NULL);
 	bool CreateDXbuffers(UINT sizeofMODELvertex, /*ID3D11Device*/ void* device, void* indices, void* vertices);
@@ -226,7 +230,7 @@ private:
 #endif
 	DirectX::DX11Class* m_driver11 = NULL;
 
-	UINT sizeofMODELvertex;
+	UINT sizeofMODELvertex=0;
 
 	float model_fade = 1;
 
@@ -241,6 +245,8 @@ private:
 	std::vector<UINT>* indexModelList;
 
 	float	m_xTexture=0;
+
+
 
 };
 

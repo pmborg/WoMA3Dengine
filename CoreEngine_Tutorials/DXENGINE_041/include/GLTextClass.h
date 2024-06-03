@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: GlTextClass.h
 // --------------------------------------------------------------------------------------------
@@ -24,6 +25,7 @@
 //////////////
 #include "platform.h"
 
+#if defined OPENGL3
 #include "virtualTextClass.h"
 #include "GLshaderClass.h"
 #include "textFontClass.h"
@@ -67,3 +69,4 @@ public:
 	textFontClass* m_Font = NULL;
 };
 
+#endif

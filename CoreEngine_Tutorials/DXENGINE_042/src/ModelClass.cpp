@@ -1145,8 +1145,10 @@ bool ModelClass::CreateObject(/*DXmodelClass*/ void* XmodelClass, TCHAR* objectN
 	//Move data to advanced model types:
 	if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
 		((DXmodelClass*)XmodelClass)->obj3d = obj3d;
+	#if defined	OPENGL3
 	else
 		((GLmodelClass*)XmodelClass)->obj3d = obj3d;
+	#endif
 
 // --------------------------------------------------------------------------------------------
 // Post Read Actions:
@@ -1313,8 +1315,10 @@ bool ModelClass::CreateObject(/*DXmodelClass*/ void* XmodelClass, TCHAR* objectN
 
 		if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
 			((DXmodelClass*)XmodelClass)->LoadBump((TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, &vertices, &obj3d.indices32);
+	#if defined	OPENGL3
 		else
 			((GLmodelClass*)XmodelClass)->LoadBump((TCHAR*)filename.c_str(), g_driver, /*shader_type*/SHADER_NORMAL_BUMP, &obj3d.textureNameArray, &vertices, &obj3d.indices32);
+	#endif
 
 	}
 	else
@@ -1348,8 +1352,10 @@ bool ModelClass::CreateObject(/*DXmodelClass*/ void* XmodelClass, TCHAR* objectN
 
 			if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
 				((DXmodelClass*)XmodelClass)->LoadLight((TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, &modelTextureLightVertex, &obj3d.indices32);
+		#if defined	OPENGL3
 			else
 				((GLmodelClass*)XmodelClass)->LoadLight((TCHAR*)filename.c_str(), g_driver, /*shader_type*/(renderShadow) ? SHADER_TEXTURE_LIGHT_RENDERSHADOW : SHADER_TEXTURE_LIGHT, & obj3d.textureNameArray, & modelTextureLightVertex, & obj3d.indices32);
+		#endif
 		}
 		else
 			// SHADER_TEXTURE - 31
@@ -1374,8 +1380,10 @@ bool ModelClass::CreateObject(/*DXmodelClass*/ void* XmodelClass, TCHAR* objectN
 
 				if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
 					((DXmodelClass*)XmodelClass)->LoadTexture((TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, &modelTextureVertex, &obj3d.indices32);
+				#if defined	OPENGL3
 				else
 					((GLmodelClass*)XmodelClass)->LoadTexture((TCHAR*)filename.c_str(), g_driver, /*shader_type*/ SHADER_TEXTURE, &obj3d.textureNameArray, &modelTextureVertex, &obj3d.indices32);
+				#endif
 			}
 			else
 			// SHADER_COLOR - 30
@@ -1409,8 +1417,10 @@ bool ModelClass::CreateObject(/*DXmodelClass*/ void* XmodelClass, TCHAR* objectN
 
 				if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
 					((DXmodelClass*)XmodelClass)->LoadColor((TCHAR*)filename.c_str(), g_driver, shader_type, &modelColorVertex, &obj3d.indices32);
+			#if defined	OPENGL3
 				else
 					((GLmodelClass*)XmodelClass)->LoadColor((TCHAR*)filename.c_str(), g_driver, /*shader_type*/ SHADER_COLOR, &modelColorVertex, &obj3d.indices32);
+			#endif
 			}
 	// VERTICES/INDEXES DONE
 

@@ -18,7 +18,7 @@
 // PURPOSE: Define the structure of default settings when settings.xml file is missing.
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567891;
+//WomaIntegrityCheck = 1234567831;
 
 #pragma once
 

@@ -23,10 +23,9 @@
 /*
 WomaDriverClass
 	GLopenGLclass
-		eGLopenGLclass.cpp EGL OpenGL "WINDOWS"
-		glxOpenGLClass.cpp GLX OpenGL "LINUX"
-
-		OpenGL ES 2.0 --> API Android 2.2++
+		eGLopenGLclass.cpp EGL	OpenGL "WINDOWS"
+		glxOpenGLClass.cpp GLX	OpenGL "LINUX"
+		glesOpenGLClass.cpp		OpenGL ES 2.0 --> API "Android 2.2++"
 */
 
 #include "platform.h"
@@ -42,16 +41,19 @@ GLmathClass* mathClass;
 GLopenGLclass::GLopenGLclass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567890;
+	WomaIntegrityCheck = 1234567831;
 
 	mathClass = NULL;
 	_tcscpy_s(driverName, TEXT("GL3+")); // driverName = TEXT ("GL3+");
 	_tcscpy_s(szShaderModel, TEXT(""));
 	
-	m_Camera = NULL;
+	gl_Camera = NULL;
 }
 
-GLopenGLclass::~GLopenGLclass() { Shutdown(); CLASSDELETE(); }
+GLopenGLclass::~GLopenGLclass() { 
+	Shutdown(); 
+	CLASSDELETE(); 
+}
 
 void GLopenGLclass::Finalize() {} //not used on OPENGL
 
@@ -61,9 +63,9 @@ void GLopenGLclass::Shutdown()
 {
 	SAFE_DELETE(mathClass);
 
-	if(m_Camera) { delete ((GLcameraClass*)m_Camera); m_Camera=NULL; }	//Cant use: SAFE_DELETE (m_Camera);
-
+	if(gl_Camera) { delete ((GLcameraClass*)gl_Camera); gl_Camera=NULL; }	//Cant use: SAFE_DELETE (m_Camera);
 	Shutdown2D();
+
 }
 
 #if zero
@@ -165,7 +167,6 @@ void GLopenGLclass::ClearDepthBuffer()
 
 void GLopenGLclass::EndScene(UINT monitorWindow){} // Not implemented in MAIN DRIVER only in context Driver.
 
-//static bool g_Zbuffer = false;
 // -----------------------------------------------------------------
 void GLopenGLclass::TurnZBufferOn()
 {
@@ -186,13 +187,17 @@ void GLopenGLclass::Initialize3DCamera()
 // ------------------------------------------------------------------
 {
 
-	m_Camera->SetPosition(	SystemHandle->AppSettings->INIT_CAMX, SystemHandle->AppSettings->INIT_CAMY+0.35f, 
+	gl_Camera->SetPosition(	SystemHandle->AppSettings->INIT_CAMX, 
+							SystemHandle->AppSettings->INIT_CAMY+0.35f,
 							SystemHandle->AppSettings->INIT_CAMZ);
 
-	m_Camera->SetRotation(	SystemHandle->AppSettings->INIT_ROTX, SystemHandle->AppSettings->INIT_ROTY, 
+	gl_Camera->SetRotation(	SystemHandle->AppSettings->INIT_ROTX, 
+							SystemHandle->AppSettings->INIT_ROTY,
 							SystemHandle->AppSettings->INIT_ROTZ);
 
-	m_Camera->Render();
+	gl_Camera->Render();
+
+	// SETUP 3D Sky Camera:
 }
 
 void GLopenGLclass::SetCamera2D()
@@ -253,10 +258,10 @@ bool GLopenGLclass::Initialize(float* clearColor)
 	ClearColor[2] = *clearColor++;
 	ClearColor[3] = *clearColor++;
 
-	if (!m_Camera) 
+	if (!gl_Camera)
 	{
-		m_Camera = NEW GLcameraClass; // GL Implementation
-		IF_NOT_THROW_EXCEPTION (m_Camera);
+		gl_Camera = NEW GLcameraClass; // GL Implementation
+		IF_NOT_THROW_EXCEPTION (gl_Camera);
 	}
 
 	Initialize3DCamera();
@@ -288,19 +293,9 @@ bool GLopenGLclass::Initialize(float* clearColor)
 	float screenAspect = (float)SystemHandle->AppSettings->WINDOW_WIDTH / (float)SystemHandle->AppSettings->WINDOW_HEIGHT;
 
 	// Build the perspective projection matrix.
-	//mathClass->BuildPerspectiveFovLHMatrix(m_projectionMatrix, fieldOfView, screenAspect, SystemHandle->AppSettings->SCREEN_NEAR, SystemHandle->AppSettings->SCREEN_DEPTH);
 	m_projectionMatrix = 
 		mathClass->BuildPerspectiveFovLHMatrix(fieldOfView, screenAspect, SystemHandle->AppSettings->SCREEN_NEAR, SystemHandle->AppSettings->SCREEN_DEPTH);
 
 	return true;
 }
-
-#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
-// ----------------------------------------------------------------------------------------------
-ImageLoaderClass* GLopenGLclass::CaptureScreenShot(int screenWidth, int screenHeight)
-// ----------------------------------------------------------------------------------------------
-{
-	return false;
-}
-#endif
 

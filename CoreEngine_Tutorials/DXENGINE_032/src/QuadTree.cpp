@@ -116,21 +116,21 @@ void QuadTree::CreateTreeNode(NodeType* node, float positionX, float positionZ, 
 	}
 }
 
-bool checkIfPointIsInsideSquare (float p_x, float p_z, float squar_left, float squar_right, float squar_top, float squar_bottom)
+bool checkIfPointIsInsideSquare (float p_x, float p_z, float square_left, float square_right, float square_top, float square_bottom)
 {
-	return  ((p_x >= squar_left && p_x <= squar_right) && (p_z >= squar_bottom && p_z <= squar_top));
+	return  ((p_x >= square_left && p_x <= square_right) && (p_z >= square_bottom && p_z <= square_top));
 }
 
 void QuadTree::AddSceneNode(NodeType* quadNode, SceneNode* node)
 {
 	// Check if the SceneNode (point) is inside a Quad:
-	float squar_left	= quadNode->positionX - quadNode->width/2+1;
-	float squar_right	= quadNode->positionX + quadNode->width/2+1;
-	float squar_top		= quadNode->positionZ + quadNode->width/2+1;
-	float squar_bottom	= quadNode->positionZ - quadNode->width/2+1;
+	float square_left	= quadNode->positionX - quadNode->width/2+1;
+	float square_right	= quadNode->positionX + quadNode->width/2+1;
+	float square_top	= quadNode->positionZ + quadNode->width/2+1;
+	float square_bottom	= quadNode->positionZ - quadNode->width/2+1;
 
 	bool result = checkIfPointIsInsideSquare (node->positionX, node->positionZ, 
-										squar_left, squar_right, squar_top, squar_bottom);
+										square_left, square_right, square_top, square_bottom);
 	if (!result) return;
 
 	// If it can be seen then check all four child nodes to see if they can also be seen.
@@ -175,32 +175,12 @@ void QuadTree::RenderNode(NodeType* node)
 	// If there were any children nodes then there is no need to continue as parent nodes won't contain any triangles to render.
 	if (count != 0) return;
 
-	// Render All objects on this Node: (this quad is in front of camera)
+	// Not really Render! But List All Models/objects to render, on this Node: (this quad is in front of camera)
 	for (int i = 0; i < node->sceneNodes.size(); i++)
 	{
 		VirtualModelClass* model = node->sceneNodes[i]->nodeState.model;
 
-		float scale = SystemHandle->xml_loader.theWorld[model->m_ObjId].scale;
-		if (scale == 0) 
-			scale = 1;
-
-		((DXmodelClass*)model)->m_worldMatrix = XMMatrixIdentity();
-		float rx = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotX;
-		model->rotateX(rx);
-
-		float ry = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotY;
-		model->rotateY(ry);
-
-		float rz = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotZ;
-		model->rotateZ(rz);
-
-		model->translation(	SystemHandle->xml_loader.theWorld[model->m_ObjId].posX,
-							SystemHandle->xml_loader.theWorld[model->m_ObjId].translateY,
-							SystemHandle->xml_loader.theWorld[model->m_ObjId].posZ);
-
-		model->scale(scale, scale, scale);
-
-		model->Render(driver);
+		SceneManager::GetInstance()->opacModelList.push_back(model);
 
 	#ifdef _DEBUG
 		totalRendered++;

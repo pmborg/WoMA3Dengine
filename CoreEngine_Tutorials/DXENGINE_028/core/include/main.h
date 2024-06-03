@@ -25,7 +25,7 @@
 // 	DEFINE minidumperClass
 // 	DEFINE logManager
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567891;
+//WomaIntegrityCheck = 1234567831;
 
 #pragma once
 
@@ -59,7 +59,6 @@ namespace WOMA
 {
 	extern Settings settings;				// Main Settings: settings.h
 	extern UINT		ENGINE_LEVEL_USED;
-
 	// SUBSYSTEM:WINDOWS
 	extern PSTR		Scmdline;
 	extern int		Cmdshow;

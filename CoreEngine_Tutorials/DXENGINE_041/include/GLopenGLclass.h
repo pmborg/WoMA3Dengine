@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: GLopenGLclass.h
 // --------------------------------------------------------------------------------------------
@@ -22,6 +23,7 @@
 #define GLopenGLclass_h_
 
 #include "platform.h"
+#if defined OPENGL3 && DX_ENGINE_LEVEL >= 19
 
 //////////////
 // INCLUDES //
@@ -130,4 +132,5 @@ private:
 	char m_videoCardDescription[128];
 };
 
+#endif
 #endif

@@ -8,7 +8,6 @@
 *	Downloaded from : http://woma.servegame.com
 *
 **********************************************************************************************/
-#define DESKTOP_GL 1
 
 //////////////
 // TYPEDEFS //
@@ -40,7 +39,15 @@ PSIn MyVertexShader036ShadowMap(VSIn input)
 {
     PSIn output;
 
-	output.position = mul(float4 (input.position,1), WVP);		// POSITION of the vertex against the world, view, and projection matrices:
+if (VS_USE_WVP) {
+	output.position = mul(float4(input.position, 1), WVP);	// Calculate the position of the vertex against the world, view, and projection matrices
+} else {
+	float4 position = float4(input.position, 1);
+	position = mul(position, worldMatrix);
+	position = mul(position, view);			//viewMatrix
+	position = mul(position, projection);	//projectionMatrix
+	output.position = position;
+}
 	output.fDepth = output.position.z / output.position.w;		// Store the position value in a second input value for depth value calculations.
 
 	return output;

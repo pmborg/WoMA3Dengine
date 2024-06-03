@@ -30,7 +30,7 @@ Weather weather;
 MetarClass::MetarClass()
 {
     CLASSLOADER();
-    WomaIntegrityCheck = 1234567829;
+    WomaIntegrityCheck = 1234567831;
 }
 
 MetarClass::~MetarClass() { CLASSDELETE(); }

@@ -21,7 +21,7 @@
 //  - Debug use local: "settings".xml
 //  - Release use:     C:\Users\<user>\AppData\Local\Pmborg\Woma2017\"settings".xml (WOMA::APPDATA)
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567829;
+//WomaIntegrityCheck = 1234567831;
  
 // --------------------------------------------------------------------------------------------
 // Includes:
@@ -34,17 +34,16 @@
 
 #include "xml_loader.h"
 
-// --------------------------------------------------------------------------------------------
-// Globals:
-// --------------------------------------------------------------------------------------------
-generalsettings GenSettings;
+XMLloader::XMLloader()
+{
+}
 
-	TiXmlElement* child_screen = NULL;
-
-	worldsettings worldSettings;
+XMLloader::~XMLloader()
+{
+}
 
 // -------------------------------------------------------------------------------------------
-bool initAppicationSettings(TCHAR* filename) //Note: Have to be char
+bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 // -------------------------------------------------------------------------------------------
 {
 	if (loadConfigSettings (filename))  // <--- PARSE XML FILE
@@ -142,7 +141,7 @@ bool initAppicationSettings(TCHAR* filename) //Note: Have to be char
 	#if defined USE_PLAY_MUSIC
 	    SystemHandle->AppSettings->MUSIC_ENABLED = (strcmp (GenSettings.musicEnabled, "true") == 0) ?  true : false;
 	#endif//
-	#if defined USE_SOUND_MANAGER
+	#if DX_ENGINE_LEVEL >= 29 && defined USE_SOUND_MANAGER
 	    SystemHandle->AppSettings->SOUND_ENABLED = (strcmp (GenSettings.soundEffectsEnabled, "true") == 0) ?  true : false;
 	#endif//
 
@@ -152,40 +151,15 @@ bool initAppicationSettings(TCHAR* filename) //Note: Have to be char
     return true;
 }
 
-// -------------------------------------------------------------------------------------------
-bool loadWorld (TCHAR* file_) // Note: Have to be char
-// -------------------------------------------------------------------------------------------
-{
-	CHAR file[MAX_STR_LEN] = { 0 }; wtoa(file, file_, MAX_STR_LEN); // tchar ==> char
-
-	static TiXmlDocument doc( file );
-
-	doc.LoadFile();
-
-	/*<woma>*/TiXmlElement* root = doc.FirstChildElement( "woma" );
-	if ( root )
-	{
-		if ( child_screen = root->FirstChildElement( "world" ) ) {
-			strcpy (worldSettings.hVisibility, child_screen->ToElement()->Attribute("hVisibility"));
-			strcpy (worldSettings.seaLevel, child_screen->ToElement()->Attribute("seaLevel"));
-			strcpy (worldSettings.size, child_screen->ToElement()->Attribute("size"));
-			strcpy (worldSettings.patchSize, child_screen->ToElement()->Attribute("patchSize"));
-			strcpy (worldSettings.skyTexture, child_screen->ToElement()->Attribute("skyTexture"));
-		}
-	} else
-		return false;
-
-	return true;
-}
 
 // -------------------------------------------------------------------------------------------
-bool loadConfigSettings (TCHAR* file_) // Note: Have to be char
+bool XMLloader::loadConfigSettings (TCHAR* file_) // Note: Have to be char
 // -------------------------------------------------------------------------------------------
 {
 	CHAR file[MAX_STR_LEN] = {0}; 
 	wtoa(file, file_, MAX_STR_LEN); // tchar ==> char
 
-	static TiXmlDocument doc( file );
+	/*static*/ TiXmlDocument doc( file );
 	doc.LoadFile();
 
 	/*<scene>*/TiXmlElement* root = doc.FirstChildElement( "generalsettings" );
@@ -263,7 +237,7 @@ bool loadConfigSettings (TCHAR* file_) // Note: Have to be char
 		//FOG:
 
 		//SOUND:
-	#if defined USE_SOUND_MANAGER
+	#if DX_ENGINE_LEVEL >= 29 && defined USE_SOUND_MANAGER
 		/*<sound>*/TiXmlElement* child_sound = root->FirstChildElement( "sound" );
 		if ( child_sound )
 		{
@@ -271,7 +245,7 @@ bool loadConfigSettings (TCHAR* file_) // Note: Have to be char
 			#if	defined USE_PLAY_MUSIC
 			strcpy (GenSettings.musicEnabled, element->Attribute("music"));
 			#endif
-			#if defined USE_SOUND_MANAGER
+			#if DX_ENGINE_LEVEL >= 29 && defined USE_SOUND_MANAGER
 			strcpy (GenSettings.soundEffectsEnabled, element->Attribute("effects"));
 			#endif
 		}

@@ -2,13 +2,21 @@
 // --------------------------------------------------------------------------------------------
 // Filename: lightClass.h
 // --------------------------------------------------------------------------------------------
-//*********************************************************************************************
-//	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2017
-//	-------------------------------------------------------------------------------------------
-//	code by : Pedro Borges - pmborg@yahoo.com
-//	Downloaded from : https://github.com/pmborg/WoMA3Dengine
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// --------------------------------------------------------------------------------------------
+// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
 //
-//*********************************************************************************************
+// This file is part of the WorldOfMiddleAge project.
+//
+// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
+// You may not alter or remove any copyright or other notice from copies of the content.
+// The content contained in this file is provided only for educational and informational purposes.
+// 
+// Downloaded from : https://github.com/pmborg/WoMA3Dengine
+// --------------------------------------------------------------------------------------------
+// PURPOSE: 
+// --------------------------------------------------------------------------------------------
 
 #ifndef _LIGHTCLASS_H_
 #define _LIGHTCLASS_H_
@@ -22,7 +30,9 @@
 #pragma warning( disable : 4324 ) // 4324: '': structure was padded due to __declspec(align())
 #pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
 
+#if defined DX9sdk
 	#include "DX9Class.h" // Driver
+#endif
 
 #include <d3d11.h>
 #include <DirectXMath.h>// Use Math
@@ -53,7 +63,7 @@ using namespace DirectX;
 class LightClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567890;
+	UINT WomaIntegrityCheck = 1234567831;
 	LightClass();
 	~LightClass();
 
@@ -62,7 +72,7 @@ public:
 	void SetDiffuseColor(float, float, float, float);
 	void SetDirection(float, float, float);
 
-#ifdef zero
+#if defined RENDER_OBJ_WITH_SPECULAR_SHININESS
 	void SetSpecularColor(float, float, float, float);
 	void SetSpecularPower(float);
 #endif
@@ -86,7 +96,7 @@ public:
 //	-------------------------------------------------------------------------------------------
 private:
 //	-------------------------------------------------------------------------------------------
-#ifdef zero
+#if defined RENDER_OBJ_WITH_SPECULAR_SHININESS
 	XMFLOAT4 GetSpecularColor();
 	float GetSpecularPower();
 

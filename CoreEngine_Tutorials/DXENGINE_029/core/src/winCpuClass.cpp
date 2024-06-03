@@ -34,7 +34,7 @@
 WinCpuClass::WinCpuClass()
 {
 	CLASSLOADER();
-    WomaIntegrityCheck = 1234567829;
+    WomaIntegrityCheck = 1234567831;
 
 	//private:
     m_canReadCpu=false;
@@ -60,7 +60,7 @@ WinCpuClass::~WinCpuClass() { Shutdown(); CLASSDELETE(); }
 void WinCpuClass::Initialize()
 {
     PDH_STATUS status;
-    CONST TCHAR* COUNTER_PATH = TEXT("\\Processor(_Total)\\% processor time");                //C:\Windows\system32>typeperf -q Processor
+    CONST TCHAR* COUNTER_PATH = TEXT("\\Processor(_Total)\\% processor time");            //C:\Windows\system32>typeperf -q Processor
     //CONST PWSTR COUNTER_PATH_PT = L"\\processador(_Total)\\% de tempo do processador";  //C:\Windows\system32>typeperf -q processador
 
     // Initialize the flag indicating whether this object can read the system cpu usage or not.

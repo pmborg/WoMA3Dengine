@@ -30,7 +30,7 @@ using namespace std;	//endl
 wmiUtilClass::wmiUtilClass() 
 {
 	CLASSLOADER();
-    WomaIntegrityCheck = 1234567890;
+    WomaIntegrityCheck = 1234567831;
 
 	//public:
 	description = L"";
@@ -44,7 +44,13 @@ wmiUtilClass::wmiUtilClass()
     pServices = NULL;
     
 	#if DX_ENGINE_LEVEL >= 20 // Initializing Engine
-    GetVideoControllerInfoFromWMI();
+    try {
+        GetVideoControllerInfoFromWMI();
+    }
+    catch (...) 
+    {
+        WOMA_LOGManager_DebugMSGAUTO(TEXT("ERROR ON: GetVideoControllerInfoFromWMI()"));
+    }
 	#endif
 }
 
@@ -345,7 +351,7 @@ bool wmiUtilClass::GetVideoControllerInfoFromWMI()
         return false;
     }
 
-    // http://msdn.microsoft.com/en-us/library/aa394512%28v=vs.85%29.aspx
+    // MORE INFO: http://msdn.microsoft.com/en-us/library/aa394512%28v=vs.85%29.aspx
     VARIANT varProp;
 
     //QUERY: Win32_VideoController
@@ -366,11 +372,10 @@ bool wmiUtilClass::GetVideoControllerInfoFromWMI()
 		else
 			AdapterRAM = 0;
 
-		hr = pClassObj->Get(L"AdapterDACType", 0, &varProp, NULL, NULL);
-		AdapterDACType = varProp.bstrVal;
+        // NOTE: In some old computers generate an exception:
+		//hr = pClassObj->Get(L"AdapterDACType", 0, &varProp, NULL, NULL);
+		//AdapterDACType = varProp.bstrVal;
 	}
-    //pClassObj->Get(L"DriverDate", 0, &varProp, NULL, NULL);
-    //pClassObj->Get(L"DriverVersion", 0, &varProp, NULL, NULL);
 
     SAFE_RELEASE(pClassObj);
 
@@ -409,7 +414,6 @@ STRING wmiUtilClass::GetMonitorDescriptonFromWMI(DWORD iMonitor)
     while (pEnumerator != NULL)
     {
         ULONG uReturn = 0;
-        //const HRESULT hRes = ;
         if (pEnumerator->Next(WBEM_INFINITE, 1, &pClassObj, &uReturn) == 0)
             break;  // Done (pClassObj remains NULL).
 

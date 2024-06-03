@@ -246,6 +246,8 @@ private:
 
 	float	m_xTexture=0;
 
+
+
 };
 
 }

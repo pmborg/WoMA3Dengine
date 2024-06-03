@@ -17,11 +17,10 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Allow us to send a Customized Exception with Debug Info including:
 //  Filename, Function and Line
-//
+// 
+//  NOTE: If a constructor throws an Exception ===> the object's destructor do not run. !!!
 // --------------------------------------------------------------------------------------------
-//
-// !!! NOTE: If a constructor throws an Exception ===> the object's destructor do not run. !!!
-
+//WomaIntegrityCheck = 1234567831;
 
 #include "main.h"
 #include "mem_leak.h"

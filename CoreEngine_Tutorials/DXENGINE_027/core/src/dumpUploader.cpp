@@ -15,10 +15,9 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-// 
 // PURPOSE: Upload the "file".dmp and "report".txt to Woma Server (woma.servegame.com) via FTP
-//
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567831;
 
 #include "WinSystemClass.h"
 #include "OSmain_dir.h"

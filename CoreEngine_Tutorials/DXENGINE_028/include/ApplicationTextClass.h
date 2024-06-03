@@ -45,7 +45,7 @@ namespace DirectX {
 class ApplicationTextClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567891;
+	UINT WomaIntegrityCheck = 1234567831;
 	ApplicationTextClass();
 	~ApplicationTextClass();
 
@@ -61,8 +61,8 @@ public:
 	void SetClockTime(UINT, UINT);
 	void SetLightDirection(float rotX, float rotY, float rotZ);
 
-	SentenceType*		m_sentence[N_TEXT_MAX_SENTENCE]; //std::vector<SentenceType*>	m_sentence;	
-	VirtualTextClass*	m_Text;
+	SentenceType* m_sentence[N_TEXT_MAX_SENTENCE] = { 0 }; //std::vector<SentenceType*>	m_sentence;	
+	VirtualTextClass*	m_Text = NULL;
 };
 
 }

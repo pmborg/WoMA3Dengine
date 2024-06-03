@@ -1,5 +1,6 @@
 // NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 // Filename: win32MainWindowEvents.cpp
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
@@ -17,7 +18,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567829;
+//WomaIntegrityCheck = 1234567831;
 
 #pragma warning( disable : 4312 ) // warning C4312: 'type cast': conversion from 'int' to 'HMENU' of greater size
 #include "platform.h"
@@ -133,9 +134,9 @@ void WinSystemClass::StartTimer()
 		
 	}
 
-  //#if CORE_ENGINE_LEVEL >= 7 && defined USE_ASTRO_CLASS
-  //SetTimer(m_hWnd, TIMER_ASTRO, 120 * 1000 / KEYB_TIMES_PER_SECOND, NULL);	// every 2 mins
-  //#endif
+  #if CORE_ENGINE_LEVEL >= 7 && defined USE_ASTRO_CLASS && defined RELEASE
+  SetTimer(m_hWnd, TIMER_ASTRO, 120 * 1000 / KEYB_TIMES_PER_SECOND, NULL);	// every 2 mins
+  #endif
 }
 
 //----------------------------------------------------------------------------
@@ -145,8 +146,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 	// Note: break;		--> Means call windows default handler also!
 	// Note: return 0;	--> Means Done!
 
-	bool bReremoteDesktop;
-	static int wmId, wmEvent;
+	int wmId=0, wmEvent = 0;
 
 	switch (umsg)
 	{
@@ -183,7 +183,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 						int		previous_DRIVER = SystemHandle->AppSettings->DRIVER;
 						SystemHandle->AppSettings->DRIVER = (int)(SendMessage(womaSetup->hWndComboBox[7], CB_GETCURSEL, NULL, NULL));
 						CHAR str[MAX_STR_LEN] = { 0 }; wtoa(str, (TCHAR*)SystemHandle->XML_SETTINGS_FILE.c_str(), MAX_STR_LEN); // wchar ==> char
-						saveConfigSettings(str);
+						SystemHandle->xml_loader.saveConfigSettings(str);
 
 						SystemHandle->AppSettings->DRIVER = previous_DRIVER;
 
@@ -232,7 +232,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 		#ifdef RELEASE
 		else 
 		{
-			return 0;	// Canceled Close. Do nothing.
+			return 0;	// Cancel Close, do nothing.
 		}
 		#endif
 
@@ -241,7 +241,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 
 	case WM_QUIT:
 		ASSERT(SystemHandle);
-		WOMA::game_state = GAME_STOP;
+		ASSERT(WOMA::game_state == GAME_STOP);
 		break;
 
 	case WM_DESTROY:	// The main application Window will be destroyed

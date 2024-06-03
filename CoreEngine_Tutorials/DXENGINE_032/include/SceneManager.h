@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: SceneManager.h
 // --------------------------------------------------------------------------------------------
@@ -38,7 +39,9 @@ public:
 
 	SceneNode* RootNode;
 
-//private:
+	std::vector<VirtualModelClass*> opacModelList;
+
+	//private:
 	QuadTree quadTree;
 };
 

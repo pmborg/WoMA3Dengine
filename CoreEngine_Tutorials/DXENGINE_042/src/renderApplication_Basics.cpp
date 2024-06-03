@@ -27,10 +27,12 @@
 #include "Dx9Class.h"
 #endif
 #include "Dx11Class.h"
+#if defined OPENGL3
 #include "womadriverclass.h"	//woma
 #include "GLmathClass.h"		//woma	
 #include "GLopenGLclass.h"		//woma
 #include "wGLopenGLclass.h"		// Windows
+#endif
 
 #include "OSmain_dir.h"
 
@@ -187,7 +189,7 @@ void ApplicationClass::DemoRender()
 		m_SphereModel2->Render(m_Driver);
 	}
 
-	if (RENDER_PAGE == 36 || RENDER_PAGE == 41) // Debug Shadow
+	if (RENDER_PAGE == 36 || RENDER_PAGE == 41 || RENDER_PAGE == 42) // Debug Shadow
 		m_2nd3DModel->Render(m_Driver);
 }
 
@@ -234,7 +236,9 @@ void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, 
 	VirtualModelClass* model = objModel[modelID];
 	((DXmodelClass*)model)->m_worldMatrix = XMMatrixIdentity();
 
+#if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES // Instancing
 	if (((DXmodelClass*)model)->m_instanceCount == 0) 
+#endif
 	{
 		float rx = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotX;
 		model->rotateX(rx);
@@ -251,9 +255,9 @@ void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, 
 	float scale = SystemHandle->xml_loader.theWorld[model->m_ObjId].scale;
 	model->scale(scale, scale, scale);
 	
-	model->translation(SystemHandle->xml_loader.theWorld[model->m_ObjId].posX,
-		SystemHandle->xml_loader.theWorld[model->m_ObjId].translateY,
-		SystemHandle->xml_loader.theWorld[model->m_ObjId].posZ);
+	model->translation(	SystemHandle->xml_loader.theWorld[model->m_ObjId].posX,
+						SystemHandle->xml_loader.theWorld[model->m_ObjId].translateY,
+						SystemHandle->xml_loader.theWorld[model->m_ObjId].posZ);
 
 	model->Render(driver, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass, lightViewMatrix, ShadowProjectionMatrix);// Pass 2 (Shadow));
 }
@@ -310,12 +314,14 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 		if (DXsystemHandle->m_Camera)
 			DXsystemHandle->m_Camera->Render();
 	}
+#if defined OPENGL3
 	else
 	{
 		GLopenGLclass* driver = (GLopenGLclass*)DXsystemHandle->driverList[SystemHandle->AppSettings->DRIVER];
 		if (driver->gl_Camera)
 			driver->gl_Camera->Render();
 	}
+#endif
 
 	if (RENDER_PAGE >= 28) 
 	{
@@ -325,6 +331,7 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 			DXsystemHandle->m_CameraSKY->m_rotationY = DXsystemHandle->m_Camera->m_rotationY;
 			DXsystemHandle->m_CameraSKY->Render();
 		}
+	#if defined OPENGL3
 		else
 		{
 			GLopenGLclass* driver = (GLopenGLclass*)DXsystemHandle->driverList[SystemHandle->AppSettings->DRIVER];
@@ -333,6 +340,7 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 			driver->gl_CameraSKY->m_rotationY = driver->gl_Camera->m_rotationY;
 			driver->gl_CameraSKY->Render();
 		}
+	#endif
 	}
 
 	// CONSTRUCT: FRUSTRUM
@@ -342,6 +350,7 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 			&((DX11Class*)m_Driver)->m_projectionMatrix,
 			&DXsystemHandle->m_Camera->m_viewMatrix);
 
+#if defined OPENGL3
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) {
 
 		mat4 glPrjMatrix = ((GLopenGLclass*)m_Driver)->m_projectionMatrix;
@@ -366,6 +375,7 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 			&m_projectionMatrix,
 			&m_viewMatrix);
 	}
+#endif
 
 	// CAMERA TEXT: Show Debug Info
 	AppTextClass->SetFps(SystemHandle->fps);						// Update the FPS "Value" in the text object.
@@ -384,6 +394,8 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 								 (UINT)SystemHandle->xml_loader.theWorld.size());
 
 
+	if (!astroClass)
+		SystemHandle->m_Application->WOMA_APPLICATION_InitGUI();
 	AppTextClass->SetClockTime(astroClass->hour, astroClass->minute);
 
 	AppTextClass->SetLightDirection(m_Light->m_lightDirection.x, m_Light->m_lightDirection.y , m_Light->m_lightDirection.z );
@@ -444,11 +456,8 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 	if ((RENDER_PAGE >= 23 && RENDER_PAGE < 27) || RENDER_PAGE >= 32)
 	{
 		CalculateLightRayVertex(SunDistance);							// Calculate Light Source Position
-		if (RENDER_PAGE < 42)
-		{
 		m_lightRayModel->UpdateDynamic(m_Driver, m_LightVertexVector);	// Update LightRay vertex(s)
 		m_lightRayModel->Render(m_Driver);								// Render LightRay
-		}
 	}
 
 	// DEBUG SPRITE: Shadows

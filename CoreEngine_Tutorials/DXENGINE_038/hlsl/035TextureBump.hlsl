@@ -8,7 +8,6 @@
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
-#define DESKTOP_GL 1
 
 #define PS_USE_LIGHT		 //23
 #define PS_USE_ALFA_TEXTURE	 //33
@@ -35,22 +34,12 @@ struct PSIn
 	float4 position				: SV_POSITION;			// 21
 	float2 texCoords			: TEXCOORD;				// 22
 	float3 normal				: NORMAL;				// 23 LIGHT
-	float3 viewDirection		: TEXCOORD1;			// 34 SPECULAR
-	float4 cameraPosition		: WS;					// 34 SPECULAR
+	float3 viewDirection		: TEXCOORD1;			// 34 Specular
+	float4 cameraPosition		: WS;					// 34 Specular
 	float3 tangent				: TANGENT;				// 35 BUMP
-
-	//float3 originalPosition	: ORIGINAL_POSITION;	// 40 SKY
-	//float  fogFactor			: FOG;					// 41 FOG
-	//float4 lightViewPosition	: LIGHT_VIEW_POSITION;	// 35 & 51 SHADOWS : SHADER_TEXTURE_LIGHT_CASTSHADOW_INSTANCED
-	
 };
 
-////////////////
-// CBUFFERS
-////////////////
-#include "cbuffer.hlsl"
 
-#include "light.hlsl"
 
 /////////////
 // GLOBALS //
@@ -75,7 +64,11 @@ SamplerState SampleType;
 SamplerState SampleType: register(s0);
 #endif
 
-
+////////////////
+// CBUFFERS
+////////////////
+#include "cbuffer.hlsl"
+#include "light.hlsl"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
@@ -85,13 +78,16 @@ PSIn MyVertexShader035TextureBump(VSIn input)
 	PSIn output;
 	float4 cameraPosition;
 
-	//21: COMMON
-	//----- 4 Lines in 1 -----
-	//input.position.w = 1.0f;
-	//posWorld = mul(input.position, worldMatrix);
-	//PosView = mul(posWorld, viewMatrix);
-	//Position = mul(PosView, projectionMatrix);
+	//21: POSITION: Calculate the position of the vertex against the world, view, and projection matrices
+if (VS_USE_WVP) {
 	output.position = mul(float4(input.position, 1), WVP);	// Calculate the position of the vertex against the world, view, and projection matrices
+} else {
+	float4 position = float4(input.position, 1);
+	position = mul(position, worldMatrix);
+	position = mul(position, view);			//viewMatrix
+	position = mul(position, projection);	//projectionMatrix
+	output.position = position;
+}
 
 	//22: TEXTURE: Store the texture coordinates for the pixel shader:
 	output.texCoords = input.texCoords;
@@ -101,17 +97,12 @@ PSIn MyVertexShader035TextureBump(VSIn input)
 
 	//23: LIGHT: NORMAL
 	if (VShasLight || VShasSpecular) 
-	{
-		//----- 2 Lines in 1 -----
-		//normal = mul(input.normal, (float3x3)worldMatrix);
-		//normal = normalize(output.normal);
 		output.normal = normalize(mul(input.normal, (float3x3)worldMatrix));// Calculate the normal vector against the world matrix only
-	}
 	
 	//34: SPECULAR
 #if defined PS_USE_SPECULAR
 	
-	//output.cameraPosition = cameraPosition;
+	output.cameraPosition = cameraPosition;
 
 	if (VShasSpecular)	// If enabled on material, calculate the Specular LIGHT
 	{

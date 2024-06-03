@@ -115,7 +115,7 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 {	HRESULT hr = 0;
 
 	//---------------------------------------------------------------------
-	WOMA_LOGManager_DebugMSG( TEXT("Loading: %s\n"), (TCHAR*)(filename+TEXT(" ")).c_str() );
+	WOMA_LOGManager_DebugMSG( TEXT("OBJ Loading: %s with shader: [%d]\n"), (TCHAR*)(filename+TEXT(" ")).c_str(), shader_type);
 	obj3d.fileNameOnly=filename;
 
 	// Add full path:
@@ -177,7 +177,7 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 
 					obj3d.hasTexCoord = true;	//We know the model uses texture coords
 				}
-				//42
+				//99
 				//Since we compute the normals later, we don't need to check for normals
 				//In the file, but i'll do it here anyway
 				if(checkChar == 'n')				//vn - vert normal
@@ -1151,13 +1151,6 @@ bool ModelClass::CreateObject(/*DXmodelClass*/ void* XmodelClass, TCHAR* objectN
 // --------------------------------------------------------------------------------------------
 // Post Read Actions:
 // --------------------------------------------------------------------------------------------
-#if defined (SAVEM3D) || defined(STANDALONE)
-#if defined(STANDALONE)
-	fileNameOnly = fullname;
-#endif
-
-	fileNameOnly.replace(fileNameOnly.size() - 3, 3, TEXT("M3D"));
-#endif
 
 	///////////////////////// COMPUTE NORMALS //////////////////////////
 	// If computeNormals was set to true then we will create our own
@@ -1315,8 +1308,11 @@ bool ModelClass::CreateObject(/*DXmodelClass*/ void* XmodelClass, TCHAR* objectN
 			facesUsing = 0;
 		}
 
+		if (shader_type == 0)
+			shader_type = SHADER_NORMAL_BUMP;
+
 		if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
-			((DXmodelClass*)XmodelClass)->LoadBump((TCHAR*)filename.c_str(), g_driver, /*shader_type*/SHADER_NORMAL_BUMP, &obj3d.textureNameArray, &vertices, &obj3d.indices32);
+			((DXmodelClass*)XmodelClass)->LoadBump((TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, &vertices, &obj3d.indices32);
 		else
 			((GLmodelClass*)XmodelClass)->LoadBump((TCHAR*)filename.c_str(), g_driver, /*shader_type*/SHADER_NORMAL_BUMP, &obj3d.textureNameArray, &vertices, &obj3d.indices32);
 
@@ -1346,9 +1342,12 @@ bool ModelClass::CreateObject(/*DXmodelClass*/ void* XmodelClass, TCHAR* objectN
 
 				modelTextureLightVertex.push_back(tempVert);
 			}
-			
+
+			if (shader_type == 0)
+				shader_type = (renderShadow) ? SHADER_TEXTURE_LIGHT_RENDERSHADOW : SHADER_TEXTURE_LIGHT;
+
 			if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
-				((DXmodelClass*)XmodelClass)->LoadLight((TCHAR*)filename.c_str(), g_driver, /*shader_type*/(renderShadow) ? SHADER_TEXTURE_LIGHT_RENDERSHADOW : SHADER_TEXTURE_LIGHT, &obj3d.textureNameArray, &modelTextureLightVertex, &obj3d.indices32);
+				((DXmodelClass*)XmodelClass)->LoadLight((TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, &modelTextureLightVertex, &obj3d.indices32);
 			else
 				((GLmodelClass*)XmodelClass)->LoadLight((TCHAR*)filename.c_str(), g_driver, /*shader_type*/(renderShadow) ? SHADER_TEXTURE_LIGHT_RENDERSHADOW : SHADER_TEXTURE_LIGHT, & obj3d.textureNameArray, & modelTextureLightVertex, & obj3d.indices32);
 		}
@@ -1370,8 +1369,11 @@ bool ModelClass::CreateObject(/*DXmodelClass*/ void* XmodelClass, TCHAR* objectN
 					modelTextureVertex.push_back(tempVert);
 				}
 
+				if (shader_type == 0)
+					shader_type = SHADER_TEXTURE;
+
 				if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
-					((DXmodelClass*)XmodelClass)->LoadTexture((TCHAR*)filename.c_str(), g_driver, /*shader_type*/ SHADER_TEXTURE, &obj3d.textureNameArray, &modelTextureVertex, &obj3d.indices32);
+					((DXmodelClass*)XmodelClass)->LoadTexture((TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, &modelTextureVertex, &obj3d.indices32);
 				else
 					((GLmodelClass*)XmodelClass)->LoadTexture((TCHAR*)filename.c_str(), g_driver, /*shader_type*/ SHADER_TEXTURE, &obj3d.textureNameArray, &modelTextureVertex, &obj3d.indices32);
 			}
@@ -1402,8 +1404,11 @@ bool ModelClass::CreateObject(/*DXmodelClass*/ void* XmodelClass, TCHAR* objectN
 					}
 				}
 
+				if (shader_type == 0)
+					shader_type = SHADER_COLOR;
+
 				if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
-					((DXmodelClass*)XmodelClass)->LoadColor((TCHAR*)filename.c_str(), g_driver, /*shader_type*/ SHADER_COLOR, &modelColorVertex, &obj3d.indices32);
+					((DXmodelClass*)XmodelClass)->LoadColor((TCHAR*)filename.c_str(), g_driver, shader_type, &modelColorVertex, &obj3d.indices32);
 				else
 					((GLmodelClass*)XmodelClass)->LoadColor((TCHAR*)filename.c_str(), g_driver, /*shader_type*/ SHADER_COLOR, &modelColorVertex, &obj3d.indices32);
 			}

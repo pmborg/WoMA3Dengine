@@ -72,7 +72,7 @@ extern Weather weather;
 class MetarClass
 {
 public:
-    UINT WomaIntegrityCheck = 1234567829;
+    UINT WomaIntegrityCheck = 1234567831;
 	MetarClass();
 	~MetarClass();
 

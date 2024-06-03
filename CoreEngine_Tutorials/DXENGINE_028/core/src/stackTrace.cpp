@@ -18,7 +18,7 @@
 // http://social.msdn.microsoft.com/Forums/vstudio/en-US/f93a211a-9c95-42f0-8581-50314457b729/generating-the-stack-traces-in-the-c-code
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567891;
+//WomaIntegrityCheck = 1234567831;
 
 #include "platform.h"
 

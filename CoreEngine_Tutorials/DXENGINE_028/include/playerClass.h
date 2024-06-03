@@ -67,7 +67,9 @@ typedef struct
 {	
 	// Current Position:
 	// --------------------------------------------------------------------------------
+	#if defined DX_ENGINE
 	XMMATRIX	m_world;	// World Matrix: our position in the 3D world space
+	#endif
     bool online;			// Network State
 
     // ids:
@@ -111,7 +113,7 @@ typedef struct
 class PlayerClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567891;
+	UINT WomaIntegrityCheck = 1234567831;
 	PlayerClass(UINT id);
 	~PlayerClass();
 

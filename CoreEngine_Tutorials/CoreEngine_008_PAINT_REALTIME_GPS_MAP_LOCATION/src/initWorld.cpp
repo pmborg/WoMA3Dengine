@@ -1,7 +1,7 @@
 // NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: initWorld.cpp
-// --------------------------------------------------------------------------------------------
+//// --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
 // --------------------------------------------------------------------------------------------
 // Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
@@ -24,7 +24,7 @@
 
 #include "platform.h"
 
-#include <GeoLite2PP.hpp>
+#include <\WoMA3Dengine\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib\GeoLite2PP.hpp>
 #pragma comment(lib, "Ws2_32.lib")	//undefined reference to imp_getaddrinfo
 
 #if UNICODE
@@ -107,6 +107,7 @@ AstroClass* astroClass = NULL;
 InitWorld::InitWorld ()
 {
 	CLASSLOADER();
+	WomaIntegrityCheck = 1234567890;
 
 	//public:
     LatDir = TEXT("N");

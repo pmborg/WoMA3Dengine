@@ -30,7 +30,7 @@
 TimerClass::TimerClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567829;
+	WomaIntegrityCheck = 1234567831;
 
 	//public:
 	currentTime = m_startEngineTime = NULL;

@@ -20,6 +20,7 @@
 #pragma once
 
 #include "platform.h"
+#include <d3d11.h>
 
 #if defined DX9sdk
 	//////////////
@@ -90,7 +91,7 @@ namespace DirectX
 class DXcameraClass : public VirtualCameraClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567890;
+	UINT WomaIntegrityCheck = 1234567831;
 	DXcameraClass(UINT camera_type = 0);
 	~DXcameraClass();
 

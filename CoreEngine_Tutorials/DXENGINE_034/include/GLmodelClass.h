@@ -54,6 +54,7 @@ public:
 	bool LoadTexture(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0);
 	bool LoadLight(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureLightVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0);
 	ModelClass modelClass;
+	bool LoadBump(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelNormalBumpVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount = 0);
 
 #if defined USE_VIEW2D_SPRITES		// Sprites
 	bool RenderSprite(void* Driver, int positionX, int positionY, float scale=1.0f, float fade = 1.0f);

@@ -249,7 +249,7 @@ namespace DirectX {
 	}
 #endif
 
-	bool DXshaderClass::Initialize(UINT Id, TCHAR* objectName, SHADER_TYPE shaderType, /*ID3D11Device*/ void* device, HWND hwnd, PRIMITIVE_TOPOLOGY PrimitiveTopology, bool useGS)
+	bool DXshaderClass::Initialize(INT Id, TCHAR* objectName, SHADER_TYPE shaderType, /*ID3D11Device*/ void* device, HWND hwnd, PRIMITIVE_TOPOLOGY PrimitiveTopology, bool useGS)
 	{
 		bool result = false;
 		m_ObjId = Id;

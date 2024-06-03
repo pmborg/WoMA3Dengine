@@ -30,7 +30,9 @@
 #if (defined DX_ENGINE)
 #include "DXmodelClass.h"
 #endif
+#ifdef OPENGL3
 #include "GLmodelClass.h"
+#endif
 
 #include "dxWinSystemClass.h"
 
@@ -44,8 +46,8 @@ SceneManager* sceneManager;
 
 #include <inttypes.h>
 
-UINT RENDER_PAGE=0;
 bool FORCE_RENDER_ALL = false;
+
 UINT g_NetID = 0;
 
 ApplicationClass::ApplicationClass()
@@ -123,9 +125,10 @@ void ApplicationClass::Shutdown()
 
 	//3D:
 
+#if defined OPENGL3
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
 	{
-		SAFE_SHUTDOWN_MODELGL3(m_1stSquar3DColorModel);			//DEMO1:
+		SAFE_SHUTDOWN_MODELGL3(m_1stSquare3DColorModel);			//DEMO1:
 		SAFE_SHUTDOWN_MODELGL3(m_1stTriangle3DColorModel);		//DEMO2:
 		SAFE_SHUTDOWN_MODELGL3(m_2nd3DModel);
 		SAFE_SHUTDOWN_MODELGL3(m_bmp3DModel);		//DEMO1:
@@ -140,9 +143,10 @@ void ApplicationClass::Shutdown()
 		SAFE_SHUTDOWN_MODELGL3(m_1stTriangleTextureVertexModel);
 	}
 	else
+#endif
 	{
 #if (defined DX_ENGINE)
-		SAFE_SHUTDOWN_MODELDX(m_1stSquar3DColorModel);
+		SAFE_SHUTDOWN_MODELDX(m_1stSquare3DColorModel);
 		SAFE_SHUTDOWN_MODELDX(m_1stTriangle3DColorModel);
 		SAFE_SHUTDOWN_MODELDX(m_2nd3DModel);
 		SAFE_SHUTDOWN_MODELDX(m_bmp3DModel);	//DEMO1:
@@ -168,11 +172,13 @@ void ApplicationClass::Shutdown()
 	}
 #endif
 
+#if defined OPENGL3
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
 	{
 		SAFE_SHUTDOWN_MODELGL3(m_3th3DModel1);
 		SAFE_SHUTDOWN_MODELGL3(m_3th3DModel2);
 	}
+#endif
 
 #if (defined DX_ENGINE)
 	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
@@ -186,6 +192,7 @@ void ApplicationClass::Shutdown()
 	}
 #endif
 
+#if defined OPENGL3
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
 	{
 		SAFE_SHUTDOWN_MODELGL3(m_cube1Model);
@@ -195,16 +202,19 @@ void ApplicationClass::Shutdown()
 		SAFE_SHUTDOWN_MODELGL3(m_SphereModel2);
 		SAFE_SHUTDOWN_MODELGL3(m_SkyModel);
 	}
+#endif
 
 	//2D:
 	DEMO_WOMA_APPLICATION_Shutdown2D();
 
 
 	for (int i = 0; i < objModel.size(); i++) {
+#if defined OPENGL3
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) {
 			SAFE_SHUTDOWN_MODELGL3(objModel[i]);
 		} 
 		else 
+#endif
 		{
 			SAFE_SHUTDOWN_MODELDX(objModel[i]);
 		}
@@ -244,21 +254,24 @@ void ApplicationClass::WOMA_APPLICATION_Shutdown()
 		SAFE_SHUTDOWN_MODELDX(m_lightRayModel);
 #endif
 
+#if defined OPENGL3
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
 		SAFE_SHUTDOWN_MODELGL3(m_lightRayModel);
+#endif
 }
 
 //-----------------------------------------------------------------------------------------
 bool ApplicationClass::WOMA_APPLICATION_InitGUI()
 //-----------------------------------------------------------------------------------------
 {
+	//Used by windows: CreateFont()
 	SystemHandle->m_scaleX = MIN(1, SystemHandle->AppSettings->WINDOW_WIDTH / 1920.0f);
 	SystemHandle->m_scaleY = MIN(1, SystemHandle->AppSettings->WINDOW_HEIGHT / 1080.0f);
 	if (SystemHandle->m_scaleY > 0.9f)
 		SystemHandle->m_scaleY = 1;
 
-	SystemHandle->fontSizeX = MIN(25, 48 * SystemHandle->m_scaleX);	//To use on win32 window not DX
-	SystemHandle->fontSizeY = MIN(25, 40 * SystemHandle->m_scaleY); //To use on win32 window not DX
+	SystemHandle->fontSizeX = MIN(30, 48 * SystemHandle->m_scaleX);	//To use on win32 window not DX
+	SystemHandle->fontSizeY = MIN(30, 40 * SystemHandle->m_scaleY); //To use on win32 window not DX
 
 	WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_InitGUI()\n");
 
@@ -324,11 +337,7 @@ bool ApplicationClass::Initialize(WomaDriverClass* Driver)
 	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(Driver));	
 	if (WOMA::game_state == GAME_STOP) return false;
 
-#if defined SAVEM3D
-	WOMA::WomaMessageBox(TEXT("Conversion from OBJ to M3D, ended."), TEXT("SAVEM3D"));
-	Publish_Quit_Message();
-	return false;
-#endif
+
 
 	IF_NOT_RETURN_FALSE(DEMO_WOMA_APPLICATION_Initialize3D(Driver));//SKY + DEMO APPLICATION:21..26 + 28..29
 	if (WOMA::game_state == GAME_STOP) return false;
@@ -455,19 +464,19 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 
 		objModel[i]->m_ObjId = i; //SYNC-ID: objModel[i] with: xml_loader.theWorld[i]
 
-		if ((SHADER_TYPE)SystemHandle->xml_loader.theWorld[i].shader != SHADER_TEXTURE_LIGHT_RENDERSHADOW) {
-			SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows = true;
-			SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows = false;
-			objModel[i]->ModelCastShadow = true;
-			objModel[i]->ModelRenderShadow = false;
-		}
-		else
-		{
-			SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows = true;
-			SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows = true;
-			objModel[i]->ModelCastShadow = true;
-			objModel[i]->ModelRenderShadow = true;
-		}
+			if ((SHADER_TYPE)SystemHandle->xml_loader.theWorld[i].shader != SHADER_TEXTURE_LIGHT_RENDERSHADOW) {
+				SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows = true;
+				SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows = false;
+				objModel[i]->ModelCastShadow = true;
+				objModel[i]->ModelRenderShadow = false;
+			}
+			else
+			{
+				SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows = true;
+				SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows = true;
+				objModel[i]->ModelCastShadow = true;
+				objModel[i]->ModelRenderShadow = true;
+			}
 
 		if (!(objModel[i]->LoadModel(SystemHandle->xml_loader.theWorld[i].filename, Driver, (SHADER_TYPE)SystemHandle->xml_loader.theWorld[i].shader,
 			SystemHandle->xml_loader.theWorld[i].filename, 
@@ -509,6 +518,12 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	IF_NOT_RETURN_FALSE(m_RenderTexture->Initialize(Driver, SHADOWMAP_WIDTH, SHADOWMAP_HEIGHT, SystemHandle->AppSettings->SCREEN_DEPTH, SystemHandle->AppSettings->SCREEN_NEAR));
 
 	//TERRAIN ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#if defined SAVEM3D
+	WOMA::WomaMessageBox(TEXT("Conversion from OBJ to M3D, ended."), TEXT("SAVEM3D"));
+	Publish_Quit_Message();
+	return false;
+#endif
 
 	return true;
 }

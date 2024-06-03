@@ -1,13 +1,22 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: ImageLoaderClass.h
 // --------------------------------------------------------------------------------------------
-// ********************************************************************************************
-// DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2017
-// -------------------------------------------------------------------------------------------
-// code by : Pedro Borges - pmborg@yahoo.com
-// Downloaded from : http://woma.servegame.com
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// --------------------------------------------------------------------------------------------
+// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
 //
-// ********************************************************************************************
+// This file is part of the WorldOfMiddleAge project.
+//
+// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
+// You may not alter or remove any copyright or other notice from copies of the content.
+// The content contained in this file is provided only for educational and informational purposes.
+// 
+// Downloaded from : https://github.com/pmborg/WoMA3Dengine
+// --------------------------------------------------------------------------------------------
+// PURPOSE: 
+// --------------------------------------------------------------------------------------------
 
 #pragma once
 
@@ -23,6 +32,7 @@
 
 #define LOAD_IMAGE_24bits 24
 #define LOAD_IMAGE_32bits 32
+
 
 #ifdef X64
 #if defined(_DEBUG) & !defined(NDEBUG)
@@ -164,7 +174,7 @@ enum FORMAT {
 };
 
 inline int getChannelCount(const FORMAT format){
-	/*static*/ const int chCount[] = {
+const int chCount[] = {
 		0,
 		1, 2, 3, 4,       //  8-bit unsigned
 		1, 2, 3, 4,       // 16-bit unsigned
@@ -182,8 +192,6 @@ inline int getChannelCount(const FORMAT format){
 	};
 	return chCount[format];
 }
-
-// HUMUS:
 // Define some sized types
 typedef unsigned char uint8;
 typedef   signed char  int8;
@@ -231,7 +239,7 @@ private:
 	unsigned char* pixels; //image in 32bits pixels
 
 public:
-	UINT WomaIntegrityCheck = 1234567890;
+	UINT WomaIntegrityCheck = 1234567831;
 	ImageLoaderClass();
 	ImageLoaderClass(FORMAT fmt, int w, int h, int d, int mipMapCount, int arraysize=1);
 	~ImageLoaderClass();
@@ -255,7 +263,6 @@ public:
 
 	bool savePNG(TCHAR *fileName);
 
-public:
 	unsigned int m_textureID;	//OPENGL3 //3.3+
 
 	//DDS
@@ -264,4 +271,3 @@ public:
 	int nMipMaps;
 	FORMAT format;
 };
-

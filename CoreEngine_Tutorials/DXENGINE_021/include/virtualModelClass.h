@@ -17,6 +17,8 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: MAIN PURPOSE:
 // ----------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567831;
+
 #pragma once
 
 #include "platform.h"
@@ -40,52 +42,26 @@ D3D11_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST
 // USAGE: D3D_PRIMITIVE_TOPOLOGY_LINELIST + PrimitiveTopology
 */
 
-typedef
+
 enum PRIMITIVE_TOPOLOGY
 {
-	//https://msdn.microsoft.com/en-us/library/windows/desktop/bb205124(v=vs.85).aspx
+	//MORE INFO: https://msdn.microsoft.com/en-us/library/windows/desktop/bb205124(v=vs.85).aspx
 	NONNE = 0,
 	POINTLIST,
 	LINELIST,		// Sun Ray														2 Vertex = 1 LINE  --> DrawPrimitive( D3DPT_LINELIST, 0, 1 );
 	LINESTRIP,		// ...not used...												6 Vertex = 5 LINEs --> DrawPrimitive( D3DPT_LINESTRIP, 0, 5 );
 	TRIANGLELIST,	// DxModel default Defined in (CREATE_MODEL_IF_NOT_EXCEPTION)   1 Triang. = 3 Vert.--> DrawPrimitive( D3DPT_TRIANGLELIST, 0, 1 );
-	TRIANGLESTRIP,	// Used on Optimized Sky Mesh: Sky/Sun/Moon Terrain:Level25		4 Triang. = 6 Vert.--> DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, 4 );
-					//LINELIST_ADJ,
-					//LINESTRIP_ADJ,
-					//TRIANGLELIST_ADJ,
-					//TRIANGLESTRIP_ADJ,
+	TRIANGLESTRIP,	// Used on Optimized Sky Mesh: Sky/Sun/Moon Terrain          	4 Triang. = 6 Vert.--> DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, 4 );
+					// LINELIST_ADJ,
+					// LINESTRIP_ADJ,
+					// TRIANGLELIST_ADJ,
+					// TRIANGLESTRIP_ADJ,
 };
-
-
-/*
-#if defined DX9
-	#include "DX9Class.h"
-#endif
-
-#if defined DX11
-	// -------------------------------------------------------------------------------------------
-	// Use OLD xnamath from DirectX SDK June2010 or Windows Kit 8?
-	// -------------------------------------------------------------------------------------------
-	#pragma warning( disable : 4005 )		// Disable warning C4005: '' : macro redefinition
-	#include <d3d11.h>
-
-#if D3D11_SPEC_DATE_YEAR == 2009		// Use the OLD DirectX_SDK_June2010 ?
-	#pragma warning( disable : 4324 )	// 4324: '': structure was padded due to __declspec(align())
-	#include <xnamath.h>				// #include <d3dx10math.h>
-#else
-	#include <DirectXMath.h>			// Use the NEW DirectX11
-	using namespace DirectX;
-#endif
-#endif
-*/
 
 #include "main.h"
 #include "womadriverclass.h"
 #include "vertexTypes.h"
 #include "GLmathClass.h"
-
-
-//NOTE: vector<int>    bd_ss_ = std::vector<int>()
 
 ////////////////////////////////////////////////////////////////////////////////	
 // Class name: virtualModelClass
@@ -111,21 +87,23 @@ public:
 
 	//VARS:
 	// ----------------------------------------------------------------------
-	UINT				m_ObjId;
+	UINT WomaIntegrityCheck = 1234567831;
+
+	INT					m_ObjId=-1;
 	SHADER_TYPE			ModelShaderType;
 
-	bool				Model3D;
-	bool				ModelHASfog;
-	bool				ModelHASlight;
-	bool				ModelHASAlfaColor;
-	bool				ModelHASColorMap;
-	float				ModelAlfaColor;
+	bool				Model3D=false;
+	bool				ModelHASfog = false;
+	bool				ModelHASlight = false;
+	bool				ModelHASAlfaColor = false;
+	bool				ModelHASColorMap = false;
+	float				ModelAlfaColor=0;
 	PRIMITIVE_TOPOLOGY  PrimitiveTopology;
 
-	UINT				m_vertexCount, m_indexCount;
+	UINT				m_vertexCount=0, m_indexCount = 0;
 
-	float				PosX, PosY, PosZ;
-	float				boundingSphere;
+	float				PosX=0, PosY=0, PosZ=0;
+	float				boundingSphere=0;
 
 	bool	ModelHASNormals = false;
 	bool	ModelcomputeNormals = false;

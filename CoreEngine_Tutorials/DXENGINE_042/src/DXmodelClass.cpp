@@ -62,7 +62,7 @@ DXmodelClass::DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive, bool comp
 	m_driver11 = NULL;
 
 	// SUPER: ----------------------------------------------------------------------
-	m_ObjId = 0;
+	m_ObjId = -1;
 	ModelShaderType	= SHADER_AUTO;
 
 	Model3D			= model3d;
@@ -664,7 +664,7 @@ bool DXmodelClass::InitializeTextureBuffers(/*ID3D11Device*/ void* device, void*
 			vertices[i].texCoord = D3DXVECTOR2((*modelTextureVertex)[i].tu, (*modelTextureVertex)[i].tv);
 		#endif
 
-#if _DEBUG
+#if _DEBUG && false
 		WOMA_LOGManager_DebugMSG("vertices: %d %d %d - %f %f \n", 
 			vertices[i].position.x, vertices[i].position.y, vertices[i].position.z, vertices[i].texCoord.x, vertices[i].texCoord.y);
 #endif
@@ -1301,26 +1301,6 @@ void DXmodelClass::Render(WomaDriverClass* Driver, UINT camera, UINT projection,
 #if defined DX9sdk
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 		driver9 = (DX9Class*)Driver;
-#endif
-
-#if defined _NOT DX_ENGINE_LEVEL >= 33
-	//	--------------------------------------------------------------------------------------------------------------
-	// Turn on/off transparency (depending on the case)
-	//	--------------------------------------------------------------------------------------------------------------
-	if (pass == PASS_TRANSPARENT)
-	{
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
-			driver11->TurnOnAlphaBlending();
-		else if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
-			driver->TurnOnAlphaBlending();
-	}	//Draw our model's "transparent" subsets
-	else
-	{
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
-			driver11->TurnOffAlphaBlending();
-		else if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
-			driver->TurnOffAlphaBlending();
-	}	//Draw our model's "NON-transparent" subsets
 #endif
 
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)

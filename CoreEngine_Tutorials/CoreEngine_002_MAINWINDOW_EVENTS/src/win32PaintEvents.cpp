@@ -17,7 +17,9 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Paint the main window depending of engine state screen page.
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567831;
 
+#include "main.h"
 #include "WinSystemClass.h"
 #include "OSmain_dir.h"
 #include "mem_leak.h"
@@ -34,6 +36,13 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 
 		break;
 	}
+
+#ifdef _EXTRA_DEBUG
+	default:
+	{
+		WOMA::logManager->DEBUG_MSG(TEXT("Msg: %04X \n"), umessage);
+	}
+#endif
 
 	}
 	return SystemHandle->MessageHandler(hwnd, umessage, wparam, lparam);

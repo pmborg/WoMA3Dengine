@@ -37,7 +37,7 @@
 GlTextClass::GlTextClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567829;
+	WomaIntegrityCheck = 1234567831;
 
 	//private:
 	m_Font = NULL;
@@ -85,7 +85,7 @@ bool GlTextClass::Initialize(void* Driver)
 	// TextClass: Initialize the font object. PART1
 	m_Font = NEW textFontClass;
 	IF_NOT_THROW_EXCEPTION(m_Font); // Create the font object.
-	IF_NOT_RETURN_FALSE(m_Font->Initialize(Driver, WOMA::LoadFile(TEXT("engine/data/008fontdata.txt")), WOMA::LoadFile(TEXT("engine/data/008font.png"))));
+	IF_NOT_RETURN_FALSE(m_Font->Initialize(Driver, TEXT("engine/data/008fontdata.txt"), TEXT("engine/data/008font.png")));
 
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
 		m_spriteShader = NEW GLshaderClass;

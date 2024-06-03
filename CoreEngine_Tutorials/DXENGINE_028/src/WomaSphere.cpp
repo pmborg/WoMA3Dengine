@@ -17,18 +17,21 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567891;
+//WomaIntegrityCheck = 1234567831;
 
+#include "ApplicationClass.h"
 #include "dxWinSystemClass.h"
 #include "mem_leak.h"
 #include "GLmodelClass.h"
 #include "DXmodelClass.h"
-#include "DemoApplicationClass.h"
+#pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
 
-void DemoApplicationClass::initSphere1(float SPHERE_SIZE)
+	#define SPHERE_GRIDPOINTS 20
+
+void ApplicationClass::initSphere1(float SPHERE_SIZE)
 {
 	if (Sphere_vertexdata.size() == 0)
-		CreateSphereModel((int)SPHERE_SIZE, 20);
+		CreateSphereModel((int)SPHERE_SIZE, SPHERE_GRIDPOINTS);	//(UINT SPHERE_SIZE, int Sphere_gridpoints)
 
 	std::vector<STRING> Textures;
 
@@ -37,14 +40,14 @@ void DemoApplicationClass::initSphere1(float SPHERE_SIZE)
 
 	CREATE_MODEL_IF_NOT_EXCEPTION(m_SphereModel1, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);
 	
-	m_SphereModel1->ModelHASlight = false; // Before Load: Dont Calculate light/shadow for Sky-Dome! 
+	//m_SphereModel1->ModelHASlight = false; // Before Load: Dont Calculate light/shadow for Sky-Dome! 
 	ASSERT(m_SphereModel1->LoadLight(TEXT("m_SphereModel"), SystemHandle->m_Driver, SHADER_TEXTURE_LIGHT, &Textures, &Sphere_vertexdata, &Sphere_indexdata));
 	m_SphereModel1->PrimitiveTopology = TRIANGLESTRIP;
 }
-void DemoApplicationClass::initSphere2(float SPHERE_SIZE)
+void ApplicationClass::initSphere2(float SPHERE_SIZE)
 {
 	if (Sphere_vertexdata.size() == 0)
-		CreateSphereModel((int)SPHERE_SIZE, 20);
+		CreateSphereModel((int)SPHERE_SIZE, SPHERE_GRIDPOINTS);	//(UINT SPHERE_SIZE, int Sphere_gridpoints)
 
 	std::vector<STRING> Textures;
 
@@ -53,18 +56,18 @@ void DemoApplicationClass::initSphere2(float SPHERE_SIZE)
 
 	CREATE_MODEL_IF_NOT_EXCEPTION(m_SphereModel2, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);
 
-	m_SphereModel2->ModelHASlight = false; // Before Load: Dont Calculate light/shadow for Sky-Dome! 
+	//m_SphereModel2->ModelHASlight = false; // Before Load: Dont Calculate light/shadow for Sky-Dome! 
 	ASSERT(m_SphereModel2->LoadLight(TEXT("m_SphereModel2"), SystemHandle->m_Driver, SHADER_TEXTURE_LIGHT, &Textures, &Sphere_vertexdata, &Sphere_indexdata));
 	m_SphereModel2->PrimitiveTopology = TRIANGLESTRIP;
 }
 
 // ----------------------------------------------------------------------------
-void DemoApplicationClass::initSky(float SPHERE_SIZE)
+void ApplicationClass::initSky(float SPHERE_SIZE)
 // ----------------------------------------------------------------------------
 {
 
 	if (Sphere_vertexdata.size() == 0)
-		CreateSphereModel((int)SPHERE_SIZE, 20);
+		CreateSphereModel((int)SPHERE_SIZE, 30);
 
 	std::vector<STRING> Textures;
 
@@ -77,7 +80,7 @@ void DemoApplicationClass::initSky(float SPHERE_SIZE)
 }
 
 // ----------------------------------------------------------------------------
-void DemoApplicationClass::CreateSphereModel(UINT SPHERE_SIZE, int Sphere_gridpoints)
+void ApplicationClass::CreateSphereModel(UINT SPHERE_SIZE, int Sphere_gridpoints)
 // ----------------------------------------------------------------------------
 {
 	UINT nVertices = Sphere_gridpoints * (Sphere_gridpoints + 2) * 2;

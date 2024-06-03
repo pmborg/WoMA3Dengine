@@ -41,7 +41,7 @@ DX12Class::DX12Class()
 {
 	// WomaDriverClass / Public: ------------------------------------------------------
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567829;
+	WomaIntegrityCheck = 1234567831;
 
 	// SUPER Video Card Info:
 	// ---------------------------------------------------------------------------
@@ -436,7 +436,7 @@ bool DX12Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, i
 	BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize)
 	//----------------------------------------------------------------------------------------------
 {
-	//mEnable4xMsaa = msaa;
+
 	m_VSYNC_ENABLED = vsync;
 
 	WOMA::logManager->DEBUG_MSG(TEXT("-------------------------\n"));
@@ -486,7 +486,6 @@ bool DX12Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, i
 	//Init Step: 13 Create and Set the depth stencil state: With the created depth stencil state we can now set it so that it takes effect:
 	IF_NOT_RETURN_FALSE ( createSetDepthStencilState (true) );	// Zbuffer on state
 	IF_NOT_RETURN_FALSE ( createSetDepthStencilState (false) );	// Zbuffer off state
-	//TurnZBufferOn();
 
 	//Init Step: 14 - Transparency: To render text on top of 3D
 	IF_NOT_RETURN_FALSE(CreateBlendState());

@@ -30,7 +30,7 @@
 LightClass::LightClass() 
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567829;
+	WomaIntegrityCheck = 1234567831;
 
 #ifdef DX9sdk
 	ZeroMemory( &light, sizeof( D3DLIGHT9 ) );
@@ -73,6 +73,29 @@ void LightClass::SetDirection(float x, float y, float z)
 	D3DXVec3Normalize( ( D3DXVECTOR3* )&light.Direction, &vecDir );
 #endif
 }
+
+
+#if defined RENDER_OBJ_WITH_SPECULAR_SHININESS
+void LightClass::SetSpecularColor(float red, float green, float blue, float alpha)
+{
+	m_specularColor = XMFLOAT4(red, green, blue, alpha);
+}
+
+void LightClass::SetSpecularPower(float power)
+{
+	m_specularPower = power;
+}
+
+XMFLOAT4 LightClass::GetSpecularColor()
+{
+	return m_specularColor;
+}
+
+float LightClass::GetSpecularPower()
+{
+	return m_specularPower;
+}
+#endif
 
 
 const float* LightClass::GetAmbientColor()

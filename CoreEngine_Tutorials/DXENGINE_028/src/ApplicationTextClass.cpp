@@ -30,7 +30,7 @@ namespace DirectX {
 ApplicationTextClass::ApplicationTextClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567891;
+	WomaIntegrityCheck = 1234567831;
 
 	m_Text = NULL;
 }

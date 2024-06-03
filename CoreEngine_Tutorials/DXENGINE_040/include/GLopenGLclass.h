@@ -23,6 +23,7 @@
 #define GLopenGLclass_h_
 
 #include "platform.h"
+#if defined OPENGL3 && DX_ENGINE_LEVEL >= 19
 
 //////////////
 // INCLUDES //
@@ -131,4 +132,5 @@ private:
 	char m_videoCardDescription[128];
 };
 
+#endif
 #endif

@@ -22,9 +22,10 @@
 #pragma warning( disable : 4065 )	// warning C4065: switch statement contains 'default' but no 'case' labels
 #define _CRT_SECURE_NO_WARNINGS
 
-#include "DX11Class.h"
+#include "DXcameraClass.h"
+
 #include "WinSystemClass.h"
-#include "DemoApplicationClass.h"
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: WinSystemClass
@@ -32,7 +33,7 @@
 class dxWinSystemClass : public WinSystemClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567891;
+	UINT WomaIntegrityCheck = 1234567831;
 	dxWinSystemClass(WOMA::Settings* AppSettings);
 	~dxWinSystemClass();
 
@@ -43,16 +44,13 @@ public:
 
 	void ProcessOSInput();
 
-	bool LoadXmlSettings();
+	bool LoadWorldXmlSettings();
 
 	bool ApplicationInitMainWindow();
 
 	void PAUSE();
 	void UNPAUSE();
 	void GPH_RESIZE();
-
-	STRING		XML_WORLD_FILE;
-	World		world;
 
 	DXcameraClass* m_Camera = NULL;
 	DXcameraClass* m_CameraSKY = NULL;

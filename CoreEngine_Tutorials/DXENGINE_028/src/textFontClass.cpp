@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: textFontClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -19,7 +20,7 @@
 #pragma once
 
 #include "platform.h"
-//#if defimned USE_RASTERTEK_TEXT_FONT && defined DX_ENGINE
+#if defined USE_RASTERTEK_TEXT_FONT && defined DX_ENGINE
 
 #pragma warning( disable : 4005 )	// Disable warning C4005: '' : macro redefinition
 #include "dxWinSystemClass.h"
@@ -33,7 +34,7 @@
 textFontClass::textFontClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567891;
+	WomaIntegrityCheck = 1234567831;
 
 }
 
@@ -52,19 +53,27 @@ bool textFontClass::Initialize(void* g_driver, TCHAR* fontFilename, TCHAR* textu
 		m_driver = (DirectX::DX12Class*)g_driver;
 		m_Texture = NEW DX12TextureClass;
 		IF_NOT_THROW_EXCEPTION(m_Texture);
-		bool result = m_Texture->Initialize(g_driver, textureFilename, 0, /*wrap*/ false);	// Initialize the texture object:
+		bool result = m_Texture->Initialize(g_driver, WOMA::LoadFile(textureFilename), 0, /*wrap*/ false);	// Initialize the texture object:
 		if (result)
 			hr = S_OK;
 	}
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
 	{
 		m_driver11 = (DirectX::DX11Class*)g_driver;
-		LOADTEXTURE(textureFilename, m_Texture11); // Note: Populate hr in case of failor
+		//[TEMMPLATE] LOAD TEXTURE DX11:
+		#define m_driver11 ((DirectX::DX11Class*)m_driver11)
+		LOADTEXTURE(textureFilename, m_Texture11);
+		if (SUCCEEDED(hr)) {
+			meshSRV11.push_back(m_Texture11);
+		}
+		else {
+			return S_FALSE;
+		}
 	}
 #if defined DX9sdk
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 	{
-		hr = D3DXCreateTextureFromFile(((DX_CLASS*)g_driver)->m_device, textureFilename, &m_Texture9);
+		hr = D3DXCreateTextureFromFile(((DX_CLASS*)g_driver)->m_device, WOMA::LoadFile(textureFilename), &m_Texture9);
 		IF_FAILED_RETURN_FALSE(hr);
 	}
 #endif
@@ -87,6 +96,8 @@ bool textFontClass::Initialize(void* g_driver, TCHAR* fontFilename, TCHAR* textu
 
 void textFontClass::Shutdown()
 {
+	meshSRV11.clear();
+
 	SAFE_SHUTDOWN(gl_Texture);
 	ReleaseFontData();	// Release the font data.
 }
@@ -209,4 +220,4 @@ void textFontClass::BuildVertexArray(void* vertices, TCHAR* sentence, float draw
 	}
 }
 
-//#endif
+#endif

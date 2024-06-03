@@ -21,34 +21,12 @@
 #include "OSengine.h"
 #include <d3d11.h>
 #if defined DX_ENGINE && DX_ENGINE_LEVEL >= 21
-	#include "DX11Class.h"
-	#include "DXmodelClass.h"
-	#include "mem_leak.h"
+#include "DX11Class.h"
+#include "DXmodelClass.h"
+#include "mem_leak.h"
 
-	#if   defined DX_ENGINE
-		#include "DXengine.h"
-	#endif
-
-#if D3D11_SPEC_DATE_YEAR > 2009
-	#define _11 r[0].m128_f32[0]
-	#define _12 r[0].m128_f32[1]
-	#define _13 r[0].m128_f32[2]
-	#define _14 r[0].m128_f32[3]
-
-	#define _21 r[1].m128_f32[0]
-	#define _22 r[1].m128_f32[1]
-	#define _23 r[1].m128_f32[2]
-	#define _24 r[1].m128_f32[3]
-
-	#define _31 r[2].m128_f32[0]
-	#define _32 r[2].m128_f32[1]
-	#define _33 r[2].m128_f32[2]
-	#define _34 r[2].m128_f32[3]
-
-	#define _41 r[3].m128_f32[0]
-	#define _42 r[3].m128_f32[1]
-	#define _43 r[3].m128_f32[2]
-	#define _44 r[3].m128_f32[3]
+#if   defined DX_ENGINE
+#include "DXengine.h"
 #endif
 
 namespace DirectX {
@@ -68,7 +46,7 @@ namespace DirectX {
 DXmodelClass::DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive, bool computeNormals, bool modelHASshadow, bool modelRENDERshadow)
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567890;
+	WomaIntegrityCheck = 1234567831;
 
 	// VARS:
 	// ----------------------------------------------------------------------
@@ -82,7 +60,7 @@ DXmodelClass::DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive, bool comp
 #endif
 
 	// SUPER: ----------------------------------------------------------------------
-	m_ObjId = 0;
+	m_ObjId = -1;
 	ModelShaderType	= SHADER_AUTO;
 
 	Model3D			= model3d;
@@ -125,6 +103,8 @@ DXmodelClass::DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive, bool comp
 	m_vertexCount	= m_indexCount	= NULL;
 	
 	Identity();
+
+
 
 }
 
@@ -190,7 +170,7 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 		// Create the SHADER object.
 		shader = NEW DXshaderClass(m_driver9->ShaderVersionH, m_driver9->ShaderVersionL, Model3D);
 		IF_NOT_THROW_EXCEPTION(shader);
-		result = shader->Initialize(objectName, ShaderType, ((DirectX::DX9Class*)m_driver9)->m_device, SystemHandle->m_hWnd, PrimitiveTopology);
+		result = shader->Initialize(m_ObjId, objectName, ShaderType, ((DirectX::DX9Class*)m_driver9)->m_device, SystemHandle->m_hWnd, PrimitiveTopology);
 	break;
   #endif
   #if defined DX9 && D3D11_SPEC_DATE_YEAR > 2009
@@ -198,7 +178,7 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 		// Create the SHADER object.
 		shader = NEW DXshaderClass(m_driver11->ShaderVersionH, m_driver11->ShaderVersionL, Model3D);
 		IF_NOT_THROW_EXCEPTION(shader);
-		result = shader->Initialize(objectName, ShaderType, ((DirectX::DX11Class*)m_driver11)->m_device, SystemHandle->m_hWnd, PrimitiveTopology);
+		result = shader->Initialize(m_ObjId, objectName, ShaderType, ((DirectX::DX11Class*)m_driver11)->m_device, SystemHandle->m_hWnd, PrimitiveTopology);
 	break;
   #endif
 
@@ -206,7 +186,7 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 		// Create the SHADER object.
 		shader = NEW DXshaderClass(m_driver11->ShaderVersionH, m_driver11->ShaderVersionL, Model3D);
 		IF_NOT_THROW_EXCEPTION(shader);
-		result = shader->Initialize(objectName, ShaderType, ((DirectX::DX11Class*)m_driver11)->m_device, SystemHandle->m_hWnd, PrimitiveTopology);
+		result = shader->Initialize(m_ObjId, objectName, ShaderType, ((DirectX::DX11Class*)m_driver11)->m_device, SystemHandle->m_hWnd, PrimitiveTopology);
 	break;
 
   #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
@@ -214,14 +194,12 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 		// Create the SHADER object.
 		shader = NEW DXshaderClass(m_driver->ShaderVersionH, m_driver->ShaderVersionL, Model3D);
 		IF_NOT_THROW_EXCEPTION(shader);
-		result = shader->Initialize(objectName, ShaderType, ((DirectX::DX12Class*)m_driver)->m_device, SystemHandle->m_hWnd, PrimitiveTopology);
+		result = shader->Initialize(m_ObjId, objectName, ShaderType, ((DirectX::DX12Class*)m_driver)->m_device, SystemHandle->m_hWnd, PrimitiveTopology);
 	break;
   #endif
 	}
 	if (!result)
-	{
-		WomaFatalExceptionW(TEXT("Could not initialize the Shader")); return false;
-	}
+		{ WomaFatalExceptionW(TEXT("Could not initialize the Shader, error in HLSL code!")); return false; }
 
 	// GET: m_vertexCount
 	switch (ShaderType) 
@@ -249,30 +227,28 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 	return shader;
 }
 
-
 // COMMON SHADER FUNCTION: LOAD VERTEX+INDEX DATA ON GRPHX. CARD
 // --------------------------------------------------------------------------------------------
 bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* textureFile)
 {
 	bool result = true;
 
-	
 #if defined DX9sdk
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 	{
 		m_Shader9 = CreateShader(objectName, ModelShaderType);
-		ASSERT(m_Shader9);
+		IF_NOT_RETURN_FALSE(m_Shader9);
 	}
 #endif
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 	{
 		m_Shader11 = CreateShader(objectName, ModelShaderType);
-		ASSERT(m_Shader11);
+		IF_NOT_RETURN_FALSE(m_Shader11);
 	}
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 	{
 		m_Shader = CreateShader(objectName, ModelShaderType);
-		ASSERT(m_Shader);
+		IF_NOT_RETURN_FALSE(m_Shader);
 	}
 
 	// Create TEMP INDEX buffer to copy to GRPHX. CARD
@@ -293,7 +269,7 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 
 			indices = NEW UINT[m_indexCount];		// Create the index array: DX10/11
 			IF_NOT_THROW_EXCEPTION(indices);
-			// cloneArrayIndices()
+
 			for (UINT i = 0; i < m_indexCount; i++)
 				indices[i] = indexModelList->at(i);	// Load the index array with data:
 	}
@@ -329,7 +305,7 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 	break;
 	
 	default:
-		result = false;
+		throw woma_exception("WRONG SHADER!", __FILE__, __FUNCTION__, __LINE__);
 	}
 
 	IF_NOT_RETURN_FALSE(result);
@@ -337,32 +313,29 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 	// Load Texture (Manually)
 	// ----------------------------------------------------------------------------------------------
 
+
 	SAFE_DELETE_ARRAY (indices);
 
-	// Compute distance between maxVertex and minVertex
-	float distX = (maxVertex.x - minVertex.x) / 2.0f;
-	float distY = (maxVertex.y - minVertex.y) / 2.0f;
-	float distZ = (maxVertex.z - minVertex.z) / 2.0f;	
+	if (Model3D) 
+	{
+		// Compute distance between maxVertex and minVertex
+		float distX = (maxVertex.x - minVertex.x) / 2.0f;
+		float distY = (maxVertex.y - minVertex.y) / 2.0f;
+		float distZ = (maxVertex.z - minVertex.z) / 2.0f;	
 
-	// Now store the distance between (0, 0, 0) in model space to the models real center
-    objectCenterOffset = XMFLOAT4(maxVertex.x - distX, maxVertex.y - distY, maxVertex.z - distZ, 0.0f);
+		// Now store the distance between (0, 0, 0) in model space to the models real center
+		objectCenterOffset = XMFLOAT4(maxVertex.x - distX, maxVertex.y - distY, maxVertex.z - distZ, 0.0f);
 
-	// Compute bounding sphere (distance between min and max bounding box vertices)
-	boundingSphere = XMVectorGetX(XMVector3Length(XMVectorSet(distX, distY, distZ, 0.0f)));	
+		// Compute bounding sphere (distance between min and max bounding box vertices)
+		boundingSphere = XMVectorGetX(XMVector3Length(XMVectorSet(distX, distY, distZ, 0.0f)));	
 
+	}
 	return true;
 }
-
 
 void DXmodelClass::Shutdown()
 {
 	WOMA_LOGManager_DebugMSG("DXmodelClass() DESTROYING: %s\n", MODEL_NAME.c_str());
-
-	// Shutdown the vertex and index buffers.
-//#if defined DX12
-//	free(m_indexBuffer);	// Release the index buffer.
-//	free(m_vertexBuffer);	// Release the vertex buffer.
-//#endif
 
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 	{
@@ -431,7 +404,7 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 
 	ASSERT(m_vertexCount && m_indexCount && vertices && indices && sizeofMODELvertex > 0);
 
-	//DX12:AQUI
+	//DX12
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 	{
@@ -605,19 +578,21 @@ void DXmodelClass::SetBuffers(void* deviceContext)
 		case SHADER_COLOR:
 			stride[0] = sizeof(DXcolorVertexType); break;
 		case SHADER_TEXTURE:
+		case SHADER_TEXTURE_FONT:
 			stride[0] = sizeof(DXtextureVertexType); break;
 
-		case SHADER_TEXTURE_LIGHT:					//23
-		case SHADER_TEXTURE_LIGHT_RENDERSHADOW:		//45
-		case SHADER_TEXTURE_LIGHT_INSTANCED:		//51
+		case SHADER_TEXTURE_LIGHT:						//23
+		case SHADER_TEXTURE_LIGHT_RENDERSHADOW:			//36
+		case SHADER_TEXTURE_LIGHT_INSTANCED:			//40
+		case SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED: //41
 			stride[0] = sizeof(DXtextureLightVertexType); break;
 
-		case SHADER_TEXTURE_LIGHT_CASTSHADOW:			//45
-		case SHADER_TEXTURE_LIGHT_CASTSHADOW_INSTANCED: //51
+		case SHADER_TEXTURE_LIGHT_CASTSHADOW:			//36
+		case SHADER_TEXTURE_LIGHT_CASTSHADOW_INSTANCED: //40
 			stride[0] = sizeof(DXShadowMapVertexType); break;
 
-		case SHADER_NORMAL_BUMP:
-		case SHADER_NORMAL_BUMP_INSTANCED:			//51
+		case SHADER_NORMAL_BUMP:						//35
+		case SHADER_NORMAL_BUMP_INSTANCED:				//99
 			stride[0] = sizeof(DXNormalBumpVertexType); break;
 
 		default:
@@ -684,12 +659,6 @@ void DXmodelClass::Render(WomaDriverClass* Driver, UINT camera, UINT projection,
 		driver9 = (DX9Class*)Driver;
 #endif
 
-	//	--------------------------------------------------------------------------------------------------------------
-	// Turn on/off transparency (depending on the case)
-	//	--------------------------------------------------------------------------------------------------------------
-#ifdef NOTUSED
-#endif
-
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 	{
@@ -701,8 +670,7 @@ void DXmodelClass::Render(WomaDriverClass* Driver, UINT camera, UINT projection,
 		// ----------------------------------------------------------------------------------------
 		XMMATRIX* projectionMatrix = driver->GetProjectionMatrix(Driver, camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
 		XMMATRIX* viewMatrix = driver->GetViewMatrix(Driver, camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
-
-			m_Shader->Render(driver->m_device, m_indexCount, &m_worldMatrix, viewMatrix, projectionMatrix);	// Single Material (Optimized)
+			m_Shader->Render(pass, driver->m_device, m_indexCount, &m_worldMatrix, viewMatrix, projectionMatrix);	// Single Material (Optimized)
 	}
 #endif
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
@@ -719,10 +687,9 @@ void DXmodelClass::Render(WomaDriverClass* Driver, UINT camera, UINT projection,
 		XMMATRIX* viewMatrix = driver11->GetViewMatrix(Driver, camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
 
 		{
-			// Step 3: Render Simple Mesh:
+			// Step 3: Render Simple Mesh: (Basic Tutorials)
 			// ----------------------------------------------------------------------------------------
-			// 21/22
-			m_Shader11->Render(pContext, m_indexCount, &m_worldMatrix, viewMatrix, projectionMatrix);	// Single Material (Optimized)
+			m_Shader11->Render(pass, pContext, m_indexCount, &m_worldMatrix, viewMatrix, projectionMatrix);	// Single Material (Optimized)
 		}
 	}
 #if defined DX9sdk
@@ -783,6 +750,8 @@ void DXmodelClass::Render(WomaDriverClass* Driver, UINT camera, UINT projection,
 			((DirectX::DX9Class*)SystemHandle->m_Driver)->m_device->SetRenderState(D3DRS_LIGHTING, FALSE);
 			break;
 
+		default:
+			throw woma_exception("WRONG SHADER!", __FILE__, __FUNCTION__, __LINE__);
 		}
 
 #define PrimType D3DPT_TRIANGLESTRIP //D3DPT_TRIANGLELIST
@@ -898,6 +867,9 @@ void DXmodelClass::translation(float x, float y, float z)
 		//#endif
 	#endif
 }
+
+
+
 
 }
 

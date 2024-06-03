@@ -111,7 +111,7 @@ namespace DirectX {
 		#define CUSTOMFVF_XYZ_LIGHT_DX9 (D3DFVF_XYZ | D3DFVF_TEX1 | D3DFVF_NORMAL)
 	#endif
 
-	// 45: Shadow
+	// 36: Shadow
 	// -------------------------------------------------------------------------------------------
 	struct DXShadowMapVertexType
 	{
@@ -123,7 +123,7 @@ namespace DirectX {
 		XMFLOAT3 position;
 	};
 	
-	// 47: NormalBump
+	// 35: NormalBump
 	// -------------------------------------------------------------------------------------------
 	struct DXNormalBumpVertexType
 	{

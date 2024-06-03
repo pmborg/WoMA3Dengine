@@ -36,7 +36,7 @@
 class TimerClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567829;
+	UINT WomaIntegrityCheck = 1234567831;
 	TimerClass();
 	~TimerClass();
 
@@ -46,12 +46,12 @@ public:
 	float GetTime();
 
 public:
-	INT64 currentTime, m_startEngineTime;
-	float m_ticksPerMs; //Used at: lvl 34
-	float m_ticksPerUs;
+	INT64 currentTime=0, m_startEngineTime = 0;
+	float m_ticksPerMs = 0;
+	float m_ticksPerUs = 0;
 
 private:
-	INT64 m_frequency;
-	INT64 m_startTime;
-	float m_frameTime;
+	INT64 m_frequency = 0;
+	INT64 m_startTime = 0;
+	float m_frameTime = 0;
 };

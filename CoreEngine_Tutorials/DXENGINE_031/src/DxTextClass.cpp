@@ -108,7 +108,8 @@ namespace DirectX {
 		// TextClass: Initialize the font object. PART1
 		m_Font = NEW textFontClass;
 		IF_NOT_THROW_EXCEPTION(m_Font); // Create the font object.
-		IF_NOT_RETURN_FALSE(m_Font->Initialize(Driver, TEXT("engine/data/008fontdata.txt"), TEXT("engine/data/008font.png")));
+		IF_NOT_RETURN_FALSE(m_Font->Initialize(Driver, TEXT("engine/data/008fontdata.txt"), TEXT("engine/data/008font.png"))); 
+		//IF_NOT_RETURN_FALSE(m_Font->Initialize(Driver, TEXT("engine/data/008fontdata.txt"), TEXT("engine/data/font.dds")));
 
 		// Create the color shader object:
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
@@ -118,9 +119,9 @@ namespace DirectX {
 		IF_NOT_THROW_EXCEPTION(m_spriteShader);
 
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
-			result = m_spriteShader->Initialize(TEXT("Dx11TextClass"), SHADER_TEXTURE_FONT, m_driver11->m_device, SystemHandle->m_hWnd, TRIANGLELIST);
+			result = m_spriteShader->Initialize(-1, TEXT("Dx11TextClass"), SHADER_TEXTURE_FONT, m_driver11->m_device, SystemHandle->m_hWnd, TRIANGLELIST);
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
-			result = m_spriteShader->Initialize(TEXT("Dx12TextClass"), SHADER_TEXTURE_FONT, m_driver->m_device, SystemHandle->m_hWnd, TRIANGLELIST);
+			result = m_spriteShader->Initialize(-1,TEXT("Dx12TextClass"), SHADER_TEXTURE_FONT, m_driver->m_device, SystemHandle->m_hWnd, TRIANGLELIST);
 		if (!result)
 		{
 			WomaFatalExceptionW(TEXT("Could not initialize the Shader: check HLSL file and the error in code")); return false;
@@ -185,7 +186,6 @@ namespace DirectX {
 		// Initialize the sentence buffers to null.
 		(*sentence)->vertexBuffer = NULL;
 		(*sentence)->indexBuffer = NULL;
-
 		// Set the maximum length of the sentence.
 		(*sentence)->maxLength = maxLength;
 
@@ -452,7 +452,7 @@ namespace DirectX {
 			m_spriteShader->pixelColor = XMFLOAT4(sentence->red, sentence->green, sentence->blue, 1.0f);
 
 			// Render the text using the font shader.
-			m_spriteShader->Render((DirectX::DX12Class*)m_driver->m_device, sentence->indexCount, &worldMatrix, m_baseViewMatrix, orthoMatrix);
+			m_spriteShader->Render(/*pass*/NULL, (DirectX::DX12Class*)m_driver->m_device, sentence->indexCount, &worldMatrix, m_baseViewMatrix, orthoMatrix);
 		}
 #endif
 
@@ -471,7 +471,7 @@ namespace DirectX {
 			m_deviceContext11->PSSetShaderResources(0, 1, &m_Font->m_Texture11);
 
 			// Render the text using the font shader.
-			m_spriteShader->Render(m_deviceContext11, sentence->indexCount, &worldMatrix, m_baseViewMatrix, orthoMatrix);
+			m_spriteShader->Render(/*pass*/NULL, m_deviceContext11, sentence->indexCount, &worldMatrix, m_baseViewMatrix, orthoMatrix);
 		}
 	}
 }

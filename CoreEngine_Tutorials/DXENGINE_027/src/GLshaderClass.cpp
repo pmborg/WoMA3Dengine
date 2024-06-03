@@ -28,7 +28,7 @@
 
 GLshaderClass::GLshaderClass() {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567890;
+	WomaIntegrityCheck = 1234567831;
 }
 
 GLshaderClass::~GLshaderClass() {CLASSDELETE();}
@@ -54,9 +54,9 @@ bool GLshaderClass::Initialize(SHADER_TYPE shaderType)
 		break;
 		
 		case SHADER_TEXTURE_FONT:
-		result = InitializeShader(shaderType, TEXT("GLengine/font.vs"), TEXT("GLengine/font.ps") );
+		
+		result = InitializeShader(shaderType, TEXT("GLengine/font.vs"), TEXT("GLengine/font.ps"));
 		break;
-
 
 	}
 
@@ -282,36 +282,48 @@ void GLshaderClass::ShutdownShader()
 }
 
 
-//bool GLshaderClass::SetShaderParameters(SHADER_TYPE shaderType, float* worldMatrix, float* viewMatrix, float* projectionMatrix, int textureUnit)
 bool GLshaderClass::SetShaderParameters(SHADER_TYPE shaderType, mat4* worldMatrix, mat4* viewMatrix, mat4* projectionMatrix, int textureUnit)
 {
-	UINT location;
+	INT location;
 
 	//V2:
 	mat4 WVP = (*worldMatrix) * (*viewMatrix) * (*projectionMatrix);
 	// Set the world matrix in the vertex shader.
 	location = glGetUniformLocation(m_shaderProgram, "worldMatrix");
+	//ASSERT(location != -1);
 	glUniformMatrix4fv(location, 1, false, (float*)worldMatrix);
+	
 	//V2:
 	// Set the projection matrix in the vertex shader.
 	location = glGetUniformLocation(m_shaderProgram, "WVP");
-	if (location == -1) { return false; }
+	//ASSERT(location != -1);
 	glUniformMatrix4fv(location, 1, false, (float*)&WVP);
 
 	if (shaderType >= SHADER_TEXTURE)
 	{
 		// Set the texture in the pixel shader to use the data from the first texture unit:
 		location = glGetUniformLocation(m_shaderProgram, "shaderTexture");
-		if (location == -1) { return false; }
+		//ASSERT(location != -1);
 		glUniform1i(location, textureUnit);
 	}
 
+	//Send Shader Parameters:
 	if (shaderType == SHADER_TEXTURE_FONT)
 	{
-	// Set the font pixel color in the pixel shader.
-	int location = glGetUniformLocation(m_shaderProgram, "pixelColor");
-	if (location == -1){return false;}
-	glUniform4fv(location, 1, pixelColor);
+		// Set the font pixel color in the pixel shader.
+		location = glGetUniformLocation(m_shaderProgram, "pixelColor");
+		//ASSERT(location != -1);
+		glUniform4fv(location, 1, pixelColor);
+
+		// Set the fade
+		location = glGetUniformLocation(m_shaderProgram, "PSfade");
+		//ASSERT(location != -1);
+		glUniform1fv(location, 1, &PSfade);
+
+		// Set the isFont
+		location = glGetUniformLocation(m_shaderProgram, "isFont");
+		//ASSERT(location != -1);
+		glUniform1iv(location, 1,  &isFont);
 	}
 
 	if (shaderType >= SHADER_TEXTURE_LIGHT) 
@@ -320,13 +332,18 @@ bool GLshaderClass::SetShaderParameters(SHADER_TYPE shaderType, mat4* worldMatri
 
 		// Set the light direction in the pixel shader:
 		location = glGetUniformLocation(m_shaderProgram, "lightDirection");
-		if (location == -1) { return false; }
+		//ASSERT(location != -1);
 		glUniform3fv(location, 1, light->GetDirection());
 
 		// Set the light direction in the pixel shader.
 		location = glGetUniformLocation(m_shaderProgram, "diffuseLightColor");
-		if (location == -1) { return false; }
+		//ASSERT(location != -1);
 		glUniform4fv(location, 1, light->GetDiffuseColor());
+
+		// Set the light direction in the pixel shader.
+		location = glGetUniformLocation(m_shaderProgram, "lightType");
+		//ASSERT(location != -1);
+		glUniform1iv(location, 1, &lightType);
 	}
 
 	return true;

@@ -59,11 +59,9 @@
 #include "virtualModelClass.h"
 extern std::vector<VirtualModelClass*> m_screenShots;
 // -------------------------------------------------------------------------------------------------
+
 extern UINT RENDER_PAGE;
 extern bool FORCE_RENDER_ALL;
-
-extern int SpriteScreenToShow;
-extern float fadeIntro;
 extern UINT g_NetID;
 
 struct InstanceType
@@ -100,6 +98,7 @@ struct InstanceType
 		#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow) {}
 	#endif
 
+	#if defined OPENGL3
 		#define CREATE_MODELGL3_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {\
 			model = NEW GLmodelClass(model3D); IF_NOT_THROW_EXCEPTION (model); \
 		}
@@ -107,6 +106,9 @@ struct InstanceType
 		#define SAFE_SHUTDOWN_MODELGL3(model) {\
 			if (model) { (model)->Shutdown(); delete ((GLmodelClass*)model); model=NULL; } \
 		}
+	#else
+		#define CREATE_MODELGL3_IF_NOT_EXCEPTION(model, model3D, renderShadow) {}
+	#endif
 
 
 #define CREATE_MODEL_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2)\
@@ -233,10 +235,6 @@ public:
 
 	//SceneManager*				m_sceneManager=NULL;
 
-
-// --------------------------------------------------------------------------------------------
-// PURPOSE: 
-// --------------------------------------------------------------------------------------------
 public:
 	void DemoRender();
 	void RenderSprites();
@@ -295,8 +293,6 @@ public:
 	VirtualModelClass* m_1stTriangleLightVertexModel = NULL;			// TEXTURE-DEMO-2: initLoadTexture()
 	VirtualModelClass* m_3th3DModel2 = NULL;							// Model
 
-	// TERRAIN
-
 	VirtualModelClass* m_titleModel = NULL;
 
 	VirtualModelClass* m_cube1Model = NULL;
@@ -314,6 +310,8 @@ public:
 
 	VirtualModelClass* m_SkyModel = NULL;
 	void	initSky(float SPHERE_SIZE);
+
+	// TERRAIN
 
 
 };

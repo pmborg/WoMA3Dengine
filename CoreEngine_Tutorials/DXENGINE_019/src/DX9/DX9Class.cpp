@@ -35,7 +35,7 @@ DX9Class::~DX9Class() {
 DX9Class::DX9Class() 
 {
 	CLASSLOADER();
-
+	WomaIntegrityCheck = 1234567890;
 	// SUPER: 
 	// Video Card Info:
 	// ---------------------------------------------------------------------------
@@ -77,19 +77,14 @@ DX9Class::DX9Class()
 	#if defined CLIENT_SCENE_TEXT || DX_ENGINE_LEVEL >= 21
 		m_Camera = NULL;
 	#endif
-	#if ENGINE_LEVEL >= 24
-		frustum				= NULL;
-	#endif
-	#if ENGINE_LEVEL >= 30
-		m_CameraSKY = NULL;
-	#endif
 
 	#if defined USE_DRIVER_FONTS
 		g_pFont = NULL;
 	#endif
 }
 
-void DX9Class::Finalize(void){}
+void DX9Class::Finalize(void){} //not used on DX9
+
 
 //----------------------------------------------------------------------------------------------
 bool DX9Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, int screenHeight,
@@ -203,10 +198,6 @@ bool DX9Class::Resize(int screenWidth, int screenHeight, float screenNear, float
 
 	RenderfirstTime = true;	 // Used to render Once the "Mini-Map" and Sprites
 
-#if TUTORIAL_PRE_CHAP >= 26
-	RenderMapfirstTime = true;  // First time in main map != first time terrain render or mini mao render
-#endif
-
 	//#if defined INTRO_DEMO || defined CLIENT_SCENE_TEXT // 26
 	//SetCamera2D();
 	//#endif
@@ -312,18 +303,6 @@ void DX9Class::Initialize3DCamera()
 
 	// Normal Camera:
 
-#if ENGINE_LEVEL >= 30	// Sky Camera:
-	if (!m_CameraSKY) {
-		m_CameraSKY = NEW DXcameraClass; // DX Implementation
-		IF_NOT_THROW_EXCEPTION (m_CameraSKY);
-	}
-
-	m_CameraSKY->SetPosition(0.0f, 0.0f, 0.0f);
-	m_CameraSKY->SetRotation(	SystemHandle->AppSettings->INIT_ROTX, SystemHandle->AppSettings->INIT_ROTY, 
-								SystemHandle->AppSettings->INIT_ROTZ);
-
-	m_CameraSKY->Render();
-#endif
 }
 
 
@@ -752,10 +731,6 @@ void DX9Class::Shutdown2D()
 void DX9Class::Shutdown()
 // ----------------------------------------------------------------------------------------------
 {
-	#if ENGINE_LEVEL >= 30
-		if(m_CameraSKY) 
-			{ delete ((DirectX::DXcameraClass*)m_CameraSKY); m_CameraSKY=NULL; }
-	#endif
 
 	SAFE_RELEASE(m_device);
 
@@ -784,11 +759,6 @@ void DX9Class::BeginScene(UINT monitorWindow)
 
 // ---------------------------------------------------------
 
-
-#if TUTORIAL_PRE_CHAP >= 15
-void GetProjectionMiniMapMatrix(XMMATRIX&){}
-void GetProjectionMapMatrix(XMMATRIX& projectionMapMatrix){}
-#endif
 
 /*
 void DX9Class::setRasterStateCullFront(UINT fillMode){}

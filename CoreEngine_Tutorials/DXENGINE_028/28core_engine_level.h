@@ -15,10 +15,7 @@
 	#endif
 #endif
 
-#if defined RELEASE && defined _NOT
-	#define USE_MAIN_THREAD		// ON/OFF (Note: Dont work on openGL, NOTE!!! This is buggy with maximize!!! Dont use for now
-	// Solution? https://msdn.microsoft.com/en-us/library/windows/desktop/ee417025.aspx
-#endif
+//#define USE_MAIN_THREAD		// ON/OFF (Note: Dont work on openGL, NOTE!!! This is buggy with maximize!!! Dont use for now
 
 #if defined _DEBUG
 	//#define VERBOSE_MEMORY_DEBUG			// [ON/OFF]: used (woma_macros.h)
@@ -147,7 +144,7 @@
 
 		#if defined (DX9) || defined (DX11) | defined (DX12)
 			#define DX_ENGINE
-			#define FORCE_RENDER_ALL true
+			//#define FORCE_RENDER_ALL true
 		#endif
 	#endif
 

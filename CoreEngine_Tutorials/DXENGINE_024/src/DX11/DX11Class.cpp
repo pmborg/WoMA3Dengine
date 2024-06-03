@@ -112,14 +112,15 @@ Rendering 3D with Effects
 #include "win32InputClass.h"
 #include "mem_leak.h"
 
+#include "Math3D.h"
+#include "DXcameraClass.h"
+
 #include "dxWinSystemClass.h"	// SystemHandle
 #include "dx11Class.h"
 
 #if D3D11_SPEC_DATE_YEAR == 2009 //defined DX9 
 #include <D3dx9core.h>		//D3DX_SDK_VERSION (Checks for the existance of the correct D3DX library version)
 #endif
-
-#include "Math3D.h"
 
 // ----------------------------------------------------------------------------------------------
 // Gloabals:
@@ -133,6 +134,7 @@ void LOAD_TEXTURES(std::vector<TCHAR*> file, std::vector<ID3D11ShaderResourceVie
 
 DX11Class::~DX11Class() // Used for Static Classes
 {
+	//_tprintf(TEXT("driverName: %s "), driverName);
 	Shutdown();
 	CLASSDELETE();
 }
@@ -143,7 +145,7 @@ DX11Class::DX11Class()
 {
 	// WomaDriverClass / Public: ------------------------------------------------------
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567890;
+	WomaIntegrityCheck = 1234567831;
 
 	// SUPER: 
 	dx11_force_dx9 = false;
@@ -232,11 +234,8 @@ void DX11Class::Shutdown2D()
 void DX11Class::Shutdown()
 //----------------------------------------------------------------------------------------------
 {
-
-
 	if (m_device) 
 	{
-
 	Shutdown2D();
 
 	//createAllRasterizerStates:
@@ -252,11 +251,6 @@ void DX11Class::Shutdown()
 
 		for (UINT i=0; i < allTextureNameArray.size(); i++)
 			SAFE_RELEASE (allTexturePointerArray[i]);	// Free All Textures from our Texture manager
-
-	//#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
-	//	if(m_Camera) 
-	//		{ delete ((DirectX::DXcameraClass*)m_Camera); m_Camera=NULL; }	//SAFE_DELETE (m_Camera);
-	//#endif
 
 		// For each Monitor: 
 		// Before shutting down set to windowed mode or when you release the swap chain it will throw an exception.
@@ -360,10 +354,7 @@ if (dx11_force_dx9)
 	/******************************************************************/
 
 	if (!LoadLibrary(TEXT("dxgi.dll"))) // NOTE: Windows XP Can't do this (SO WINDOWS XP NOT SUPPORTED!)
-	{
-		WOMA::WomaMessageBox(TEXT("dxgi.dll"), TEXT("Error, Could not load: ")); 
-		return FALSE;
-	}
+		{ WOMA::WomaMessageBox(TEXT("dxgi.dll"), TEXT("Error, Could not load: ")); return FALSE; }
 
 	/******************************************************************/
 	// Create a DirectX 10/11 graphics interface factory.
@@ -452,7 +443,6 @@ bool DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, i
 	//Init Step: 13 Create and Set the depth stencil state: With the created depth stencil state we can now set it so that it takes effect:
 	IF_NOT_RETURN_FALSE ( createSetDepthStencilState (true) );	// Zbuffer on state
 	IF_NOT_RETURN_FALSE ( createSetDepthStencilState (false) );	// Zbuffer off state
-	//TurnZBufferOn();
 
 	//Init Step: 14 - Transparency: To render text on top of 3D
 	IF_NOT_RETURN_FALSE(CreateBlendState());
@@ -525,7 +515,6 @@ HRESULT result = S_OK;
 		setProjectionMatrixWorldMatrixOrthoMatrix ( screenWidth, screenHeight, screenNear, screenDepth);
 	}
 
-	//SetCamera2D(); //AQUI
 	Initialize3DCamera();
 
 	return true;
@@ -660,17 +649,7 @@ void DX11Class::EndScene(UINT monitorWindow)
 	// <PRINT THE 3D SCENE TO SCREEN> to Swap Chain (wait from VSYNC refresh rate, if it is the case)
 	DX11windowsArray[monitorWindow].m_swapChain->Present(m_VSYNC_ENABLED, 0);
 
-	#if defined USE_SHADOW_MAP
 	//RESET ShaderResources! to avoid HLSL WARNINGS: Resource being set to OM RenderTarget slot 0 is still bound on input!
-	// 
-	//WHY 3? Because: 045LightRenderShadow.hlsl use 3 registers:
-	//Texture2D shaderTexture : register(t0);			// 21:
-	//Texture2D AlfaMapTexture : register(t1);			// 43: AlfaMap
-	//Texture2D ShadowMapTextureTexture : register(t2);	// 45: ShadowMap
-	//
-	ID3D11ShaderResourceView* const pSRV[3] = { NULL };
-	g_deviceContext->PSSetShaderResources(0, 3, pSRV);
-	#endif
 }
 
 
@@ -705,16 +684,14 @@ void DX11Class::setProjectionMatrixWorldMatrixOrthoMatrix (int screenWidth, int 
 	screenAspect = (float)screenWidth / (float)screenHeight;
 
 	// Create the projection matrix for "3D" rendering.
-	//D3DXMatrixPerspectiveFovLH(&m_projectionMatrix, fieldOfView, screenAspect, screenNear, screenDepth);		// 3D PROJECTION
 	m_projectionMatrix = XMMatrixPerspectiveFovLH( fieldOfView, screenAspect, screenNear, screenDepth);			// 3D PROJECTION
 
 	// And the final thing we will setup in the Initialize function is an orthographic projection matrix. 
 	//This matrix is used for rendering 2D elements like user interfaces on the screen
 	// (Create an orthographic projection matrix for 2D rendering)
-
-    //D3DXMatrixOrthoLH(&m_orthoMatrix, (float) screenWidth, (float) screenHeight, screenNear, screenDepth);	// 2D PROJECTION
 	m_orthoMatrix = XMMatrixOrthographicLH ((float) screenWidth, (float) screenHeight, screenNear, screenDepth);// 2D PROJECTION
 
+	// MINI-MAP:
 }
 
 // ----------------------------------------------------------------------------------------------
@@ -746,7 +723,8 @@ void DX11Class::SetCamera2D()
 void DX11Class::Initialize3DCamera()
 // ----------------------------------------------------------------------------------------------
 {
-	if (DXsystemHandle->m_Camera) {
+	if (DXsystemHandle->m_Camera) 
+	{
 
 	SetCamera2D();
 

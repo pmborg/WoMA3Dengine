@@ -26,7 +26,7 @@
 
 #include "WinSystemClass.h"
 
-#if defined USE_SOUND_MANAGER || defined USE_PLAY_MUSIC
+#if DX_ENGINE_LEVEL >= 29 && defined USE_SOUND_MANAGER || defined USE_PLAY_MUSIC
 #include "AudioClass.h"
 #endif
 
@@ -84,7 +84,7 @@ public:
 	DXInputClass* m_Input = NULL;
 	std::vector<PlayerClass*>	m_player;
 
-#if defined USE_SOUND_MANAGER || defined USE_PLAY_MUSIC
+#if DX_ENGINE_LEVEL >= 29 && (defined USE_SOUND_MANAGER || defined USE_PLAY_MUSIC)
 	AudioClass* audio=NULL;
 	bool StartSoundManager();
 #endif

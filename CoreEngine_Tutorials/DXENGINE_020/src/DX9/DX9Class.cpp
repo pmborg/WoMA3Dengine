@@ -35,7 +35,7 @@ DX9Class::~DX9Class() {
 DX9Class::DX9Class() 
 {
 	CLASSLOADER();
-
+	WomaIntegrityCheck = 1234567831;
 	// SUPER: 
 	// Video Card Info:
 	// ---------------------------------------------------------------------------
@@ -77,13 +77,20 @@ DX9Class::DX9Class()
 	#if defined CLIENT_SCENE_TEXT || DX_ENGINE_LEVEL >= 21
 		m_Camera = NULL;
 	#endif
+	#if DX_ENGINE_LEVEL >= 50 //#if ENGINE_LEVEL >= 24
+		frustum				= NULL;
+	#endif
+	#if defined USE_SKY_DOME && DX_ENGINE_LEVEL >= 28
+		m_CameraSKY = NULL;
+	#endif
 
 	#if defined USE_DRIVER_FONTS
 		g_pFont = NULL;
 	#endif
 }
 
-void DX9Class::Finalize(void){}
+void DX9Class::Finalize(void){} //not used on DX9
+
 
 //----------------------------------------------------------------------------------------------
 bool DX9Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, int screenHeight,
@@ -114,6 +121,9 @@ bool DX9Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, in
 	getProfile(g_USE_MONITOR);
 
 	//Init Step: 6 Before Resize!
+  #if DX_ENGINE_LEVEL >= 21 
+		Initialize3DCamera();
+  #endif
 
 	//Init Step: 7 (Include: 8,9,10,11,12)
 	//Resize (screenWidth, screenHeight, screenNear, screenDepth);
@@ -193,9 +203,16 @@ bool DX9Class::Resize(int screenWidth, int screenHeight, float screenNear, float
 		setViewportDevice(screenWidth, screenHeight);
 
 		//Init Step: 12 - Set ProjectionMatrix (CH06) and OrthoMatrix (CH07)
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader // #if TUTORIAL_PRE_CHAP >= 6
+		setProjectionMatrixWorldMatrixOrthoMatrix(screenWidth, screenHeight, screenNear, screenDepth);
+#endif
 	}
 
 	RenderfirstTime = true;	 // Used to render Once the "Mini-Map" and Sprites
+
+#if TUTORIAL_PRE_CHAP >= 26
+	RenderMapfirstTime = true;  // First time in main map != first time terrain render or mini mao render
+#endif
 
 	//#if defined INTRO_DEMO || defined CLIENT_SCENE_TEXT // 26
 	//SetCamera2D();
@@ -295,13 +312,40 @@ void DX9Class::getProfile( UINT g_USE_MONITOR )
 void DX9Class::Initialize3DCamera()
 // ----------------------------------------------------------------------------------------------
 {
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+	if (!m_Camera) {
+		m_Camera = NEW DirectX::DXcameraClass; // DX Implementation
+		IF_NOT_THROW_EXCEPTION (m_Camera);
+	}
+#endif
 
 #if defined USE_VIEW2D // 26
 	SetCamera2D();
 #endif
 
 	// Normal Camera:
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+	m_Camera->SetPosition(	SystemHandle->AppSettings->INIT_CAMX, SystemHandle->AppSettings->INIT_CAMY, 
+							SystemHandle->AppSettings->INIT_CAMZ);
 
+	m_Camera->SetRotation(	SystemHandle->AppSettings->INIT_ROTX, SystemHandle->AppSettings->INIT_ROTY, 
+							SystemHandle->AppSettings->INIT_ROTZ);
+
+	m_Camera->Render();
+#endif
+
+#if defined USE_SKY_DOME && DX_ENGINE_LEVEL >= 28	// Sky Camera:
+	if (!m_CameraSKY) {
+		m_CameraSKY = NEW DXcameraClass; // DX Implementation
+		IF_NOT_THROW_EXCEPTION (m_CameraSKY);
+	}
+
+	m_CameraSKY->SetPosition(0.0f, 0.0f, 0.0f);
+	m_CameraSKY->SetRotation(	SystemHandle->AppSettings->INIT_ROTX, SystemHandle->AppSettings->INIT_ROTY, 
+								SystemHandle->AppSettings->INIT_ROTZ);
+
+	m_CameraSKY->Render();
+#endif
 }
 
 
@@ -730,11 +774,46 @@ void DX9Class::Shutdown2D()
 void DX9Class::Shutdown()
 // ----------------------------------------------------------------------------------------------
 {
+	#if defined USE_SKY_DOME && DX_ENGINE_LEVEL >= 28
+		if(m_CameraSKY) { 
+			delete ((DirectX::DXcameraClass*)m_CameraSKY); 
+			m_CameraSKY=NULL; 
+		}
+	#endif
+
+	#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+		if(m_Camera) { 
+			delete ((DirectX::DXcameraClass*)m_Camera); 
+			m_Camera=NULL; 
+		}	//SAFE_DELETE (m_Camera);
+	#endif
 
 	SAFE_RELEASE(m_device);
 
 	SAFE_RELEASE(m_D3D9);
 }
+
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21
+// ----------------------------------------------------------------------------------------------
+void DX9Class::setProjectionMatrixWorldMatrixOrthoMatrix (int screenWidth, int screenHeight, float screenNear, float screenDepth)
+// ----------------------------------------------------------------------------------------------
+{
+	float fieldOfView, screenAspect;
+
+	ASSERT (screenWidth > 0);
+	ASSERT (screenHeight > 0);
+	ASSERT (screenNear > 0);
+	ASSERT (screenDepth > 0);
+
+	// Create the projection matrix:
+	fieldOfView = (float)PI / 4.0f; // Or... fieldOfView = (90 / 2) * 0,0174532925f; (which is equal) for 45 degrees...
+	screenAspect = (float)screenWidth / (float)screenHeight;
+
+	D3DXMATRIX matProj;
+    D3DXMatrixPerspectiveFovLH( &matProj, fieldOfView, screenAspect, screenNear, screenDepth );
+    m_device->SetTransform( D3DTS_PROJECTION, &matProj );
+}
+#endif
 
 
 #define CleanColor D3DCOLOR_XRGB((int)(ClearColor[0]*255), (int)(ClearColor[1]*255), (int)(ClearColor[2]*255))
@@ -757,7 +836,20 @@ void DX9Class::BeginScene(UINT monitorWindow)
 }
 
 // ---------------------------------------------------------
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+// ----------------------------------------------------------------------------------------------
+void DX9Class::GetProjectionMatrix(XMMATRIX& projectionMatrix)
+// ----------------------------------------------------------------------------------------------
+{
+	projectionMatrix = m_projectionMatrix;
+}
+#endif
 
+
+#if TUTORIAL_PRE_CHAP >= 15
+void GetProjectionMiniMapMatrix(XMMATRIX&){}
+void GetProjectionMapMatrix(XMMATRIX& projectionMapMatrix){}
+#endif
 
 /*
 void DX9Class::setRasterStateCullFront(UINT fillMode){}

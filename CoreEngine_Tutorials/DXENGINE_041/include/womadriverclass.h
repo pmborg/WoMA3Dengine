@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: womadriverclass.h
 // --------------------------------------------------------------------------------------------
@@ -76,7 +77,7 @@ enum SHADER_TYPE
 	SHADER_TEXTURE_LIGHT_INSTANCED,				//40: INSTANCED like 23 light, but using Instances
 	SHADER_TEXTURE_LIGHT_CASTSHADOW_INSTANCED,	//41: Aux. Shader (render in texture), but using Instances (used on 41,42)
 	SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED,	//41: INSTANCED like 36 shadow, but using Instances
-	SHADER_NORMAL_BUMP_INSTANCED,				//42: INSTANCED like 35 bump, but using Instances
+	SHADER_NORMAL_BUMP_INSTANCED,				//99: INSTANCED like 35 bump, but using Instances
 
 	// TERRAINS:
 	SHADER_Double_Color_Terrain,

@@ -15,10 +15,10 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//
 // PURPOSE: DEFINE COMMON WorldOfMiddleAge 3D ENGINE MACROS
-//
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567831;
+
 #pragma once
 
 // --------------------------------------------------------------------------------------------
@@ -37,11 +37,17 @@
 
 // int to TCHAR*
 // --------------------------------------------------------------------------------------------
+#if defined WINDOWS_PLATFORM
 	#ifdef UNICODE
 		#define ItoA _itow
 	#else
 		#define ItoA _itoa
 	#endif
+#endif
+
+#if !defined WINDOWS_PLATFORM
+	extern bool PLATFORM_INIT_GTK2();
+#endif
 
 // Save all aplication entry command line parameter:
 // --------------------------------------------------------------------------------------------
@@ -59,7 +65,9 @@
 
 // Global Statments - WOMA Checks
 // --------------------------------------------------------------------------------------------
+#if defined WINDOWS_PLATFORM
 	#define IF_FAILED_RETURN_FALSE(x)	{ if( FAILED(x) ) { return false; } }		// Used with "HRESULT" IF FAILED
+#endif
 
 #define IF_NOT_RETURN_FALSE(x)			{ if( (!(x)) ) { return false; } }			// Used with "bool" IF NOT
 
@@ -85,7 +93,11 @@ extern const wchar_t* GetWC(const char* c);
 	#ifdef UNICODE
 		#define WomaFatalExceptionW( wmsg ) { CHAR msg[MAX_STR_LEN]={ 0 }; wtoa(msg, wmsg, MAX_STR_LEN); throw exception(msg); } // TODO: String convert
 	#endif
+	#if defined WINDOWS_PLATFORM
 		#define WomaFatalException(msg) throw exception(msg)
+	#else
+		#define WomaFatalException(msg) throw
+	#endif
 
 	#if defined UNICODE
 		#define WOMA_LOGManager_DebugMSGAUTO wprintf	//TCHAR
@@ -108,9 +120,14 @@ extern const wchar_t* GetWC(const char* c);
 
 // Basic OS low level MACROS:
 // --------------------------------------------------------------------------------------------
+#if defined WINDOWS_PLATFORM
 	#define OS_REDRAW_WINDOW RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE| RDW_ERASE);  // Invoke: Window PAINT
 
 		#define OS_KEY_DOWN(key) SystemHandle->m_OsInput->IsKeyDown(key)
+#else
+	#define OS_REDRAW_WINDOW {}
+	#define OS_KEY_DOWN(key) true
+#endif
 
 // Global MEM HANDLERS - WOMA Macros:
 // --------------------------------------------------------------------------------------------

@@ -17,18 +17,21 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567829;
+//WomaIntegrityCheck = 1234567831;
 
 #include "ApplicationClass.h"
 #include "dxWinSystemClass.h"
 #include "mem_leak.h"
 #include "GLmodelClass.h"
 #include "DXmodelClass.h"
+#pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
+
+	#define SPHERE_GRIDPOINTS 20
 
 void ApplicationClass::initSphere1(float SPHERE_SIZE)
 {
 	if (Sphere_vertexdata.size() == 0)
-		CreateSphereModel((int)SPHERE_SIZE, 20);
+		CreateSphereModel((int)SPHERE_SIZE, SPHERE_GRIDPOINTS);	//(UINT SPHERE_SIZE, int Sphere_gridpoints)
 
 	std::vector<STRING> Textures;
 
@@ -44,7 +47,7 @@ void ApplicationClass::initSphere1(float SPHERE_SIZE)
 void ApplicationClass::initSphere2(float SPHERE_SIZE)
 {
 	if (Sphere_vertexdata.size() == 0)
-		CreateSphereModel((int)SPHERE_SIZE, 20);
+		CreateSphereModel((int)SPHERE_SIZE, SPHERE_GRIDPOINTS);	//(UINT SPHERE_SIZE, int Sphere_gridpoints)
 
 	std::vector<STRING> Textures;
 
@@ -64,7 +67,7 @@ void ApplicationClass::initSky(float SPHERE_SIZE)
 {
 
 	if (Sphere_vertexdata.size() == 0)
-		CreateSphereModel((int)SPHERE_SIZE, 20);
+		CreateSphereModel((int)SPHERE_SIZE, 30);
 
 	std::vector<STRING> Textures;
 

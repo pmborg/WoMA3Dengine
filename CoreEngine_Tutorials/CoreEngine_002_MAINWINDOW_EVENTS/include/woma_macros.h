@@ -15,10 +15,10 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//
 // PURPOSE: DEFINE COMMON WorldOfMiddleAge 3D ENGINE MACROS
-//
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567831;
+
 #pragma once
 
 #include "stateMachine.h"

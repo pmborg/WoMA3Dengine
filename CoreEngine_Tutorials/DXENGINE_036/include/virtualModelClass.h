@@ -42,16 +42,16 @@ D3D11_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST
 // USAGE: D3D_PRIMITIVE_TOPOLOGY_LINELIST + PrimitiveTopology
 */
 
-typedef
+
 enum PRIMITIVE_TOPOLOGY
 {
-	//https://msdn.microsoft.com/en-us/library/windows/desktop/bb205124(v=vs.85).aspx
+	//MORE INFO: https://msdn.microsoft.com/en-us/library/windows/desktop/bb205124(v=vs.85).aspx
 	NONNE = 0,
 	POINTLIST,
 	LINELIST,		// Sun Ray														2 Vertex = 1 LINE  --> DrawPrimitive( D3DPT_LINELIST, 0, 1 );
 	LINESTRIP,		// ...not used...												6 Vertex = 5 LINEs --> DrawPrimitive( D3DPT_LINESTRIP, 0, 5 );
 	TRIANGLELIST,	// DxModel default Defined in (CREATE_MODEL_IF_NOT_EXCEPTION)   1 Triang. = 3 Vert.--> DrawPrimitive( D3DPT_TRIANGLELIST, 0, 1 );
-	TRIANGLESTRIP,	// Used on Optimized Sky Mesh: Sky/Sun/Moon Terrain:Level25		4 Triang. = 6 Vert.--> DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, 4 );
+	TRIANGLESTRIP,	// Used on Optimized Sky Mesh: Sky/Sun/Moon Terrain          	4 Triang. = 6 Vert.--> DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, 4 );
 					// LINELIST_ADJ,
 					// LINESTRIP_ADJ,
 					// TRIANGLELIST_ADJ,
@@ -98,7 +98,7 @@ public:
 	// ----------------------------------------------------------------------
 	UINT WomaIntegrityCheck = 1234567831;
 
-	UINT				m_ObjId=0;
+	INT					m_ObjId=-1;
 	SHADER_TYPE			ModelShaderType;
 
 	bool				Model3D=false;

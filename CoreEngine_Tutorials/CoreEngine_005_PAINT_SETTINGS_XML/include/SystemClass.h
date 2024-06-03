@@ -30,6 +30,9 @@
 #include "fpsClass.h"
 #define N_SCREEN_TEXT 4			// N. of total dif. Screens
 
+#include "xml_loader.h"
+
+
 struct resolutionType
 {
 	UINT Width;
@@ -50,7 +53,7 @@ typedef struct {
 class SystemClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567890;
+	UINT WomaIntegrityCheck = 1234567831;
 	SystemClass();
 	~SystemClass();
 
@@ -73,8 +76,13 @@ public:
 
 	bool SystemCheck();
 
-	STRING			XML_SETTINGS_FILE;	// Note: Have to be "char" (No STRING)
+	DWORD lastButtons = 0;
+	DWORD lastXpos = 0, lastYpos = 0, lastZpos = 0;
+	DWORD lastRpos = 0, lastUpos = 0, lastVpos = 0;
+	JOYINFOEX joyInfo;
 
+	XMLloader		xml_loader;
+	STRING			XML_SETTINGS_FILE;	// Note: Have to be "char" (No STRING)
 	bool LoadXmlSettings();
 
   #if !defined WIN_XP
@@ -93,5 +101,3 @@ public:
 public:
 
 };
-
-

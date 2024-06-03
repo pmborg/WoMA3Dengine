@@ -197,7 +197,7 @@ bool WeatherClass::GetPresentWeather(TCHAR* ICAO)
     IFSTREAM fileIn(WOMA::LoadFile (szFileName));
 	if (!fileIn)
 	{
-#if RELEASE
+#ifdef RELEASE
 		STRING err = TEXT("File not found: "); err += szFileName;
 		WOMA::WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "));
 		WomaFatalExceptionW((TCHAR*)err.c_str());

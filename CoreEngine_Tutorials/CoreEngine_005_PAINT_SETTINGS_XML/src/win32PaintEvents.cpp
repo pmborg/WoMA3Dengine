@@ -17,7 +17,9 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Paint the main window depending of engine state screen page.
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567831;
 
+#include "main.h"
 #include "WinSystemClass.h"
 #include "OSmain_dir.h"
 #include "mem_leak.h"
@@ -38,7 +40,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 	}
 
 	case WM_PAINT:
-#if defined _DEBUG
+	#if defined _DEBUG
 		if (SystemHandle->m_hWnd) {
 			if (SystemHandle->statusbar)
 				DestroyWindow(SystemHandle->statusbar);
@@ -47,12 +49,19 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 			if (SystemHandle->AppSettings->FULL_SCREEN)
 				ShowWindow(SystemHandle->statusbar, SW_HIDE);
 		}
-#endif
+	#endif
 	{
 		for (UINT i = 0; i < SystemHandle->windowsArray.size(); i++)
 			MainWindowPaint(i);
 		break;
 	}
+
+#ifdef _EXTRA_DEBUG
+	default:
+	{
+		WOMA::logManager->DEBUG_MSG(TEXT("Msg: %04X \n"), umessage);
+	}
+#endif
 
 	}
 	return SystemHandle->MessageHandler(hwnd, umessage, wparam, lparam);
@@ -159,6 +168,7 @@ int MainWindowPaint(UINT monitor)
 	}
 
 	DeleteDC(hdcMem);
+
 // ---------------------------------------------------------------------------------------------
 	EndPaint(SystemHandle->m_hWnd, &ps);
 

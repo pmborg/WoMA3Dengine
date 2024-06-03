@@ -68,15 +68,16 @@ enum SHADER_TYPE
 
 	SHADER_TEXTURE_FONT,				//27: fade: using alfa color
 	SHADER_TEXTURE_LIGHT,				//23: M3D v1.2	public MAIN + Pass2: Shadows (Used by: 23 & Sky3D & Sun & Moon & 3D Obj)
-	SHADER_NORMAL_BUMP,					//35: M3D v1.5	public MAIN (Used by: 47 & 3D Obj)
+	SHADER_NORMAL_BUMP,					//35: M3D v1.3	public MAIN (Used by: 47 & 3D Obj)
 
-	SHADER_TEXTURE_LIGHT_RENDERSHADOW,  //36:			public "Render Shadows"
-	SHADER_TEXTURE_LIGHT_CASTSHADOW,	//36:			private "Pass1: Shadows" (add auxiliar Shader)
+	SHADER_TEXTURE_LIGHT_RENDERSHADOW,  //36: Draw Shadows
+	SHADER_TEXTURE_LIGHT_CASTSHADOW,	//36: Aux. Shader (render in texture)
 
 	// Have to be last:
-	SHADER_TEXTURE_LIGHT_INSTANCED,				//public   40: INSTANCED 23 light with Instances    
-	SHADER_TEXTURE_LIGHT_CASTSHADOW_INSTANCED,	//private  40: INSTANCED 36 shadows with Instances  
-	SHADER_NORMAL_BUMP_INSTANCED,				//private  40: INSTANCED 35 bump with Instances ... 
+	SHADER_TEXTURE_LIGHT_INSTANCED,				//40: INSTANCED like 23 light, but using Instances
+	SHADER_TEXTURE_LIGHT_CASTSHADOW_INSTANCED,	//41: Aux. Shader (render in texture), but using Instances (used on 41,42)
+	SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED,	//41: INSTANCED like 36 shadow, but using Instances
+	SHADER_NORMAL_BUMP_INSTANCED,				//99: INSTANCED like 35 bump, but using Instances
 
 	// TERRAINS:
 	SHADER_Double_Color_Terrain,

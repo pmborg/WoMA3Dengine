@@ -29,7 +29,7 @@
 class PositionClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567891;
+	UINT WomaIntegrityCheck = 1234567831;
 	PositionClass(UINT id);
 	~PositionClass();
 

@@ -20,6 +20,8 @@
 #include "main.h"
 #include "ApplicationClass.h"
 #include "mem_leak.h"
+#include "OSmain_dir.h"
+
 #pragma warning(push)
 #pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
 
@@ -40,8 +42,10 @@ namespace WOMA
 SceneManager* sceneManager;
 }
 
-UINT RENDER_PAGE=0;
+#include <inttypes.h>
+
 bool FORCE_RENDER_ALL = false;
+
 UINT g_NetID = 0;
 
 ApplicationClass::ApplicationClass()
@@ -121,7 +125,7 @@ void ApplicationClass::Shutdown()
 
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
 	{
-		SAFE_SHUTDOWN_MODELGL3(m_1stSquar3DColorModel);			//DEMO1:
+		SAFE_SHUTDOWN_MODELGL3(m_1stSquare3DColorModel);			//DEMO1:
 		SAFE_SHUTDOWN_MODELGL3(m_1stTriangle3DColorModel);		//DEMO2:
 		SAFE_SHUTDOWN_MODELGL3(m_2nd3DModel);
 		SAFE_SHUTDOWN_MODELGL3(m_bmp3DModel);		//DEMO1:
@@ -138,7 +142,7 @@ void ApplicationClass::Shutdown()
 	else
 	{
 #if (defined DX_ENGINE)
-		SAFE_SHUTDOWN_MODELDX(m_1stSquar3DColorModel);
+		SAFE_SHUTDOWN_MODELDX(m_1stSquare3DColorModel);
 		SAFE_SHUTDOWN_MODELDX(m_1stTriangle3DColorModel);
 		SAFE_SHUTDOWN_MODELDX(m_2nd3DModel);
 		SAFE_SHUTDOWN_MODELDX(m_bmp3DModel);	//DEMO1:
@@ -208,6 +212,7 @@ void ApplicationClass::Shutdown()
 
 	SAFE_SHUTDOWN(m_RenderTexture);
 
+
 	for (UINT i = 0; i <m_Position.size(); i++) {
 		SAFE_DELETE(m_Position[i]);
 	}
@@ -243,13 +248,14 @@ void ApplicationClass::WOMA_APPLICATION_Shutdown()
 bool ApplicationClass::WOMA_APPLICATION_InitGUI()
 //-----------------------------------------------------------------------------------------
 {
+	//Used by windows: CreateFont()
 	SystemHandle->m_scaleX = MIN(1, SystemHandle->AppSettings->WINDOW_WIDTH / 1920.0f);
 	SystemHandle->m_scaleY = MIN(1, SystemHandle->AppSettings->WINDOW_HEIGHT / 1080.0f);
 	if (SystemHandle->m_scaleY > 0.9f)
 		SystemHandle->m_scaleY = 1;
 
-	SystemHandle->fontSizeX = MIN(25, 48 * SystemHandle->m_scaleX);	//To use on win32 window not DX
-	SystemHandle->fontSizeY = MIN(25, 40 * SystemHandle->m_scaleY); //To use on win32 window not DX
+	SystemHandle->fontSizeX = MIN(30, 48 * SystemHandle->m_scaleX);	//To use on win32 window not DX
+	SystemHandle->fontSizeY = MIN(30, 40 * SystemHandle->m_scaleY); //To use on win32 window not DX
 
 	WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_InitGUI()\n");
 
@@ -306,13 +312,19 @@ bool ApplicationClass::Initialize(WomaDriverClass* Driver)
 	ASSERT(Driver);
 
 	m_NextPosition = NEW PositionClass(/*ID*/-1);
+	if (WOMA::game_state == GAME_STOP) return false;
 
 	initText(Driver);
+	if (WOMA::game_state == GAME_STOP) return false;
 
 	//(Light, LigthRay...) and SCENE MANAGER: QuadTree object Loader/Render
 	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(Driver));	
+	if (WOMA::game_state == GAME_STOP) return false;
+
+
 
 	IF_NOT_RETURN_FALSE(DEMO_WOMA_APPLICATION_Initialize3D(Driver));//SKY + DEMO APPLICATION:21..26 + 28..29
+	if (WOMA::game_state == GAME_STOP) return false;
 
 	Driver->Finalize();
 
@@ -381,9 +393,16 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 			}
 		}
 	}
+	if (WOMA::game_state == GAME_STOP) return false;
 
 	//SKY ////////////////////////////////////////////////////////////////////////////////////////////////////////
 	initLightRay(Driver);
+	if (WOMA::game_state == GAME_STOP) return false;
+
+	SystemHandle->ProcessPerformanceStats();
+	INT64 passedTotalTime1 = (INT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
+	WOMA_LOGManager_DebugMSGAUTO("Time to reach OBJ load: %" PRId64 "\n", passedTotalTime1);
+	//WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("passedTotalTime1: %ld\n", (long)passedTotalTime1));
 
 	//OBJECTS ////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Load 3D Objects: convert XML "objects" -- Load OBJ or M3D --> VirtualModelClass:
@@ -394,19 +413,19 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 
 		objModel[i]->m_ObjId = i; //SYNC-ID: objModel[i] with: xml_loader.theWorld[i]
 
-		if ((SHADER_TYPE)SystemHandle->xml_loader.theWorld[i].shader != SHADER_TEXTURE_LIGHT_RENDERSHADOW) {
-			SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows = true;
-			SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows = false;
-			objModel[i]->ModelCastShadow = true;
-			objModel[i]->ModelRenderShadow = false;
-		}
-		else
-		{
-			SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows = true;
-			SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows = true;
-			objModel[i]->ModelCastShadow = true;
-			objModel[i]->ModelRenderShadow = true;
-		}
+			if ((SHADER_TYPE)SystemHandle->xml_loader.theWorld[i].shader != SHADER_TEXTURE_LIGHT_RENDERSHADOW) {
+				SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows = true;
+				SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows = false;
+				objModel[i]->ModelCastShadow = true;
+				objModel[i]->ModelRenderShadow = false;
+			}
+			else
+			{
+				SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows = true;
+				SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows = true;
+				objModel[i]->ModelCastShadow = true;
+				objModel[i]->ModelRenderShadow = true;
+			}
 
 		if (!(objModel[i]->LoadModel(SystemHandle->xml_loader.theWorld[i].filename, Driver, (SHADER_TYPE)SystemHandle->xml_loader.theWorld[i].shader,
 			SystemHandle->xml_loader.theWorld[i].filename, 
@@ -416,8 +435,18 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 			WOMA::WomaMessageBox(SystemHandle->xml_loader.theWorld[i].filename, TEXT("Error Loading: "), FALSE); return false;
 		}
 
+		if (WOMA::game_state == GAME_STOP) 
+			return false;
+		else
+			RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);  // Invoke: Window PAINT before end.
+
 		sceneManager->addModel(sceneManager->RootNode, objModel[i]);	// Add node to nodesList: RootNode
 	}
+
+	SystemHandle->ProcessPerformanceStats();
+	INT64 passedTotalTime2 = (INT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
+	WOMA_LOGManager_DebugMSGAUTO("Time spent on OBJ(s) load: %" PRId64 "\n", passedTotalTime2);
+	//WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("passedTotalTime2: %ld\n", (long)passedTotalTime2));
 
 	//SHADOWMAP //////////////////////////////////////////////////////////////////////////////////////////////////////
 	m_Light->GenerateOrthoMatrix(15, 15, 20, 0.1f); // Control Zoom in Shadow Map here! 15, 15
@@ -432,6 +461,12 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	IF_NOT_RETURN_FALSE(m_RenderTexture->Initialize(Driver, SHADOWMAP_WIDTH, SHADOWMAP_HEIGHT, SystemHandle->AppSettings->SCREEN_DEPTH, SystemHandle->AppSettings->SCREEN_NEAR));
 
 	//TERRAIN ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#if defined SAVEM3D
+	WOMA::WomaMessageBox(TEXT("Conversion from OBJ to M3D, ended."), TEXT("SAVEM3D"));
+	Publish_Quit_Message();
+	return false;
+#endif
 
 	return true;
 }

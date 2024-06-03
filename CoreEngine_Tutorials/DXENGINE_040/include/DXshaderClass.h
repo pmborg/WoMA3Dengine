@@ -35,10 +35,12 @@
 	#include "Dx9Class.h"
   #endif
 	#include "Dx11Class.h"
+  #if defined OPENGL3
 	#include "womadriverclass.h"	//woma
 	#include "GLmathClass.h"		//woma	
 	#include "GLopenGLclass.h"		//woma
 	#include "wGLopenGLclass.h"		// Windows
+  #endif
 
 #include <fstream>
 using namespace std;
@@ -63,6 +65,8 @@ private:
 	{
 		// BLOCK: VS1
 		XMMATRIX world;           // [64]: world
+		XMMATRIX view;
+		XMMATRIX projection;
 		XMMATRIX WV;              // [64]: world * view 
 		XMMATRIX WVP;             // [64]: world * view * projection matrix
 
@@ -82,10 +86,18 @@ private:
 		float		VSfogStart;			
 		float		VSfogEnd;			
 		BOOL		VShasShadowMap; 
-		float		VSpad2;
+		BOOL		VS_USE_WVP;
 
 		// 36 BLOCK: VS5
 		XMMATRIX ViewToLightProj;
+
+//#if DX_ENGINE_LEVEL >= 42
+		// 42 BLOCK: VS6
+		float		VSrotX;
+		float		VSrotY;
+		float		VSrotZ;
+		float		VS6PAD;
+//#endif
 	};
 
 	// PIXEL CBUFFER:
@@ -145,7 +157,7 @@ public:
 	~DXshaderClass();
 	void Shutdown();
 
-	bool Initialize(TCHAR* objectName, SHADER_TYPE shaderType, /*ID3D11Device*/ void*, HWND, PRIMITIVE_TOPOLOGY PrimitiveTopology, bool useGS = false);
+	bool Initialize(INT m_ObjId, TCHAR* objectName, SHADER_TYPE shaderType, /*ID3D11Device*/ void*, HWND, PRIMITIVE_TOPOLOGY PrimitiveTopology, bool useGS = false);
 	void Render(UINT pass,/*ID3D11DeviceContext*/ void*, int, XMMATRIX*, XMMATRIX*, XMMATRIX*);
 	void SetShaderParameters(UINT pass, /*ID3D11DeviceContext*/ void* deviceContext,
 								XMMATRIX* worldMatrix, XMMATRIX* viewMatrix, XMMATRIX* projectionMatrix,
@@ -162,6 +174,7 @@ private:
 	// VARS:
 	// ----------------------------------------------------------------------
 	STRING MODEL_NAME;
+	INT    m_ObjId = 0;
 
 #if defined DX9sdk
 	DirectX::DX9Class* m_driver9=NULL;
@@ -185,6 +198,8 @@ public:
 
 	SHADER_TYPE		m_shaderType;
 	bool			shader2D;
+
+	bool VS_USE_WVP = false; //by default use already multiplied matrix*matrix*matrix
 
 			ID3D11Buffer*		m_PixelShaderBuffer11 = NULL;
 			ID3D11SamplerState* m_sampleState11 = NULL;	// Resource: "Textures" States
@@ -245,7 +260,9 @@ public:
 		float		fogStart;
 		float		fogEnd;
 
+		#if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES // Normal Bump + Instancing 
 		UINT		m_instanceCount=0;
+		#endif
 
 		//Sky: 1
 

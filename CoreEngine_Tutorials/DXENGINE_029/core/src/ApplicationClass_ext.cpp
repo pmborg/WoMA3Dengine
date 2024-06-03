@@ -20,6 +20,10 @@
 #include "main.h"
 #include "ApplicationClass.h"
 #include "mem_leak.h"
+#include "OSmain_dir.h"
+
+#pragma warning(push)
+#pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
 
 #include "winSystemClass.h"
 
@@ -30,23 +34,25 @@
 
 #include "dxWinSystemClass.h"
 
-UINT RENDER_PAGE=0;
-bool FORCE_RENDER_ALL = false;
+#include <inttypes.h>
+
+bool FORCE_RENDER_ALL = true;
+
+UINT g_NetID = 0;
+
 int SpriteScreenToShow = -5;
 std::vector<VirtualModelClass*> m_screenShots;
 float fadeIntro=1;
-UINT g_NetID = 0;
 
 ApplicationClass::ApplicationClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567829;
+	WomaIntegrityCheck = 1234567831;
 
 	// ---------------------------------------------------------------------
 	// private:
 
 	RENDER_PAGE = 10;
-	//RENDER_PAGE = 15; SpriteScreenToShow = 0;
 
 	g_NetID = NULL;
 	m_NextPosition = NULL;
@@ -80,6 +86,15 @@ ApplicationClass::ApplicationClass()
 
 	m_2nd3DModel = NULL;						// Model
 
+	m_bmp3DModel = NULL;						// Model
+	m_jpg3DModel = NULL;						// Model
+	m_png3DModel = NULL;						// Model
+	m_tif3DModel = NULL;						// Model
+	m_dds3DModel = NULL;						// Model
+#if defined SUPPORT_TGA
+	m_tga3DModel = NULL;						// Model
+#endif
+
 	m_SkyModel = NULL;
 
 	Start();
@@ -99,7 +114,7 @@ void ApplicationClass::Shutdown()
 
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
 	{
-		SAFE_SHUTDOWN_MODELGL3(m_1stSquar3DColorModel);			//DEMO1:
+		SAFE_SHUTDOWN_MODELGL3(m_1stSquare3DColorModel);			//DEMO1:
 		SAFE_SHUTDOWN_MODELGL3(m_1stTriangle3DColorModel);		//DEMO2:
 		SAFE_SHUTDOWN_MODELGL3(m_2nd3DModel);
 		SAFE_SHUTDOWN_MODELGL3(m_bmp3DModel);		//DEMO1:
@@ -116,7 +131,7 @@ void ApplicationClass::Shutdown()
 	else
 	{
 #if (defined DX_ENGINE)
-		SAFE_SHUTDOWN_MODELDX(m_1stSquar3DColorModel);
+		SAFE_SHUTDOWN_MODELDX(m_1stSquare3DColorModel);
 		SAFE_SHUTDOWN_MODELDX(m_1stTriangle3DColorModel);
 		SAFE_SHUTDOWN_MODELDX(m_2nd3DModel);
 		SAFE_SHUTDOWN_MODELDX(m_bmp3DModel);	//DEMO1:
@@ -174,29 +189,11 @@ void ApplicationClass::Shutdown()
 	DEMO_WOMA_APPLICATION_Shutdown2D();
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 	for (UINT i = 0; i <m_Position.size(); i++) {
 		SAFE_DELETE(m_Position[i]);
 	}
 
 	SAFE_DELETE (m_NextPosition);
-
-	//for (UINT i = 0; i < HowManyPlayers; i++) 
-	//{
-	//	SAFE_DELETE(m_Position[i]);
-	//}
 
 	SAFE_DELETE (m_Light);
 
@@ -204,16 +201,37 @@ void ApplicationClass::Shutdown()
 }
 
 //-----------------------------------------------------------------------------------------
+void ApplicationClass::WOMA_APPLICATION_Shutdown()
+//-----------------------------------------------------------------------------------------
+{
+	WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_Shutdown()\n");
+
+	SAFE_DELETE(initWorld);
+
+	SAFE_DELETE(weatherClass);
+	SAFE_DELETE(metarClass);
+
+#if (defined DX_ENGINE)
+	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+		SAFE_SHUTDOWN_MODELDX(m_lightRayModel);
+#endif
+
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+		SAFE_SHUTDOWN_MODELGL3(m_lightRayModel);
+}
+
+//-----------------------------------------------------------------------------------------
 bool ApplicationClass::WOMA_APPLICATION_InitGUI()
 //-----------------------------------------------------------------------------------------
 {
+	//Used by windows: CreateFont()
 	SystemHandle->m_scaleX = MIN(1, SystemHandle->AppSettings->WINDOW_WIDTH / 1920.0f);
 	SystemHandle->m_scaleY = MIN(1, SystemHandle->AppSettings->WINDOW_HEIGHT / 1080.0f);
 	if (SystemHandle->m_scaleY > 0.9f)
 		SystemHandle->m_scaleY = 1;
 
-	SystemHandle->fontSizeX = MIN(25, 48 * SystemHandle->m_scaleX);	//To use on win32 window not DX
-	SystemHandle->fontSizeY = MIN(25, 40 * SystemHandle->m_scaleY); //To use on win32 window not DX
+	SystemHandle->fontSizeX = MIN(30, 48 * SystemHandle->m_scaleX);	//To use on win32 window not DX
+	SystemHandle->fontSizeY = MIN(30, 40 * SystemHandle->m_scaleY); //To use on win32 window not DX
 
 	WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_InitGUI()\n");
 
@@ -264,23 +282,30 @@ bool ApplicationClass::Start()
 }
 
 //-------------------------------------------------------------------------------------------
-bool ApplicationClass::Initialize(/*WomaDriverClass*/ void* Driver)
+bool ApplicationClass::Initialize(WomaDriverClass* Driver)
 //-------------------------------------------------------------------------------------------
 {
 	ASSERT(Driver);
 
 	m_NextPosition = NEW PositionClass(/*ID*/-1);
+	if (WOMA::game_state == GAME_STOP) return false;
 
 	initIntroDemo();
-	initText(SystemHandle->driverList[SystemHandle->AppSettings->DRIVER]);
+	if (WOMA::game_state == GAME_STOP) return false;
 
-	// USER LOAD main 3D objects (Light, LigthRay...)
-	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(SystemHandle->m_Driver));	
+	initText(Driver);
+	if (WOMA::game_state == GAME_STOP) return false;
 
-	//CALL DEMO APPLICATION:21..26+28
-	IF_NOT_RETURN_FALSE(DEMO_WOMA_APPLICATION_Initialize3D(SystemHandle->m_Driver));
+	//(Light, LigthRay...) and SCENE MANAGER: QuadTree object Loader/Render
+	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(Driver));	
+	if (WOMA::game_state == GAME_STOP) return false;
 
-	SystemHandle->m_Driver->Finalize();
+
+
+	IF_NOT_RETURN_FALSE(DEMO_WOMA_APPLICATION_Initialize3D(Driver));//SKY + DEMO APPLICATION:21..26 + 28..29
+	if (WOMA::game_state == GAME_STOP) return false;
+
+	Driver->Finalize();
 
 	return true;
 }
@@ -313,7 +338,6 @@ void ApplicationClass::SetPlayerPosition(UINT netID)
 }
 
 
-
 // --------------------------------------------------------------------------------------------
 // INIT/LOAD 3D Objects
 // --------------------------------------------------------------------------------------------
@@ -325,36 +349,55 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	//LIGHT ////////////////////////////////////////////////////////////////////////////////////////////////////////
 	m_Light = NEW LightClass;	// Create the light object
 	IF_NOT_THROW_EXCEPTION(m_Light);
-	m_Light->SetAmbientColor(0.05f, 0.05f, 0.05f, 1);
-	m_Light->SetDiffuseColor(0.3f, 0.3f, 0.3f, 1.0f);
-	m_Light->SetDirection(0, -1.0f, 0);
+	if (RENDER_PAGE >= 34) {
+		m_Light->SetAmbientColor(0.5f, 0.5f, 0.5f, 1);
+		m_Light->SetDiffuseColor(1, 1, 1, 1.0f);
+		m_Light->SetDirection(-0.535041273f, -0.634380400f, 0.557935774f);
+	} else {
+		if (RENDER_PAGE < 30) {
+			m_Light->SetAmbientColor(0.05f, 0.05f, 0.05f, 1);
+			m_Light->SetDiffuseColor(0.3f, 0.3f, 0.3f, 1.0f);
+			m_Light->SetDirection(0, -1.0f, 0);
+		} else {
+			if (RENDER_PAGE >= 32) {
+				m_Light->SetAmbientColor(0.4f, 0.4f, 0.4f, 1);
+				m_Light->SetDiffuseColor(0.4f, 0.4f, 0.4f, 1.0f);
+				m_Light->SetDirection(0, -1.0f, 0);
+			} else {
+				m_Light->SetAmbientColor(0.9f, 0.9f, 0.9f, 1);
+				m_Light->SetDiffuseColor(0.5f, 0.5f, 0.5f, 1.0f);
+				m_Light->SetDirection(0, -1.0f, 0);
+			}
+		}
+	}
+	if (WOMA::game_state == GAME_STOP) return false;
 
 	//SKY ////////////////////////////////////////////////////////////////////////////////////////////////////////
 	initLightRay(Driver);
+	if (WOMA::game_state == GAME_STOP) return false;
+
+	SystemHandle->ProcessPerformanceStats();
+	INT64 passedTotalTime1 = (INT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
+	WOMA_LOGManager_DebugMSGAUTO("Time to reach OBJ load: %" PRId64 "\n", passedTotalTime1);
+	//WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("passedTotalTime1: %ld\n", (long)passedTotalTime1));
+
+	SystemHandle->ProcessPerformanceStats();
+	INT64 passedTotalTime2 = (INT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
+	WOMA_LOGManager_DebugMSGAUTO("Time spent on OBJ(s) load: %" PRId64 "\n", passedTotalTime2);
+	//WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("passedTotalTime2: %ld\n", (long)passedTotalTime2));
 
 	//SHADOWMAP //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	//TERRAIN ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#if defined SAVEM3D
+	WOMA::WomaMessageBox(TEXT("Conversion from OBJ to M3D, ended."), TEXT("SAVEM3D"));
+	Publish_Quit_Message();
+	return false;
+#endif
+
 	return true;
 }
 
-//-----------------------------------------------------------------------------------------
-void ApplicationClass::WOMA_APPLICATION_Shutdown()
-//-----------------------------------------------------------------------------------------
-{
-	WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_Shutdown()\n");
 
-	SAFE_DELETE(initWorld);
-
-	SAFE_DELETE(weatherClass);
-	SAFE_DELETE(metarClass);
-
-#if (defined DX_ENGINE)
-	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
-		SAFE_SHUTDOWN_MODELDX(m_lightRayModel);
-#endif
-
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
-		SAFE_SHUTDOWN_MODELGL3(m_lightRayModel);
-}
+#pragma warning(pop)

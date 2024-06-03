@@ -30,7 +30,7 @@ namespace WOMA
 class ILogManager
 {
 public:
-	UINT WomaIntegrityCheck = 1234567891;
+	UINT WomaIntegrityCheck = 1234567831;
 	static ILogManager* CreateInstance();
 	static void ShutdownInstance();
 

@@ -312,12 +312,10 @@
     <ClInclude Include="include\DXrenderTextureClass.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="38core_engine_level.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
     <ClInclude Include="include\m3d.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="38core_engine_level.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />

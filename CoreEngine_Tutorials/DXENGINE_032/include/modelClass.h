@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: ModelClass.h
 // --------------------------------------------------------------------------------------------
@@ -18,6 +19,9 @@
 // ----------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234567831;
 
+#pragma warning(push)
+#pragma warning(disable : 5208) //warning C5208: unnamed class used in typedef name cannot declare members other than non-static data members, member enumerations, or member classes
+
 #pragma once
 #include "womadriverclass.h"
 #include "DX12TextureClass.h"
@@ -33,19 +37,20 @@ typedef struct
 	XMFLOAT4 ambientColor;				//size:16
 	XMFLOAT4 emissiveColor;				//size:16
 
-	int texArrayIndex;					//size:4
+	int texArrayIndex=NULL;				//size:4
 	bool hasTexture;					//size:1
 
-	bool transparent;					//size:1	>= 43
-	ID3D11ShaderResourceView* alfaMap11;//size:8	>= 43
+	bool transparent;							//size:1	>= 33
+	ID3D11ShaderResourceView* alfaMap11=NULL;	//size:8	>= 33	DX11 & DX9(apidx11)
+	DX12TextureClass* alfaMap = NULL;			//size:8	>= 33	DX12
 
-	bool bSpecular;						//size:1	>= 44: NEW SPECULAR + SHININESS:
-	XMFLOAT3 specularColor;				//size:12	>= 44: NEW SPECULAR + SHININESS:
-	int nShininess;						//size:4	//>= 44: NEW SPECULAR + SHININESS:
+	bool bSpecular;						//size:1	>= 34: NEW SPECULAR + SHININESS:
+	XMFLOAT3 specularColor;				//size:12	>= 34: NEW SPECULAR + SHININESS:
+	int nShininess=NULL;				//size:4	>= 34: NEW SPECULAR + SHININESS:
 
-	bool hasNormMap;					//size:1	>=47: NEW BUMP
-	int normMapTexArrayIndex;			//size:4	>=47: NEW BUMP
-	//							TOTAL		 184
+	bool hasNormMap;					//size:1	>= 37: NEW BUMP
+	int normMapTexArrayIndex=NULL;		//size:4	>= 37: NEW BUMP
+										//TOTAL		 192
 } SurfaceMaterial;
 
 typedef struct
@@ -62,14 +67,14 @@ typedef struct
 
 	std::vector<STRING>		meshMaterials;
 
-	std::vector<XMFLOAT3>	vertPos;		//40
-	std::vector<XMFLOAT2>	vertTexCoord;	//41
-	std::vector<XMFLOAT3>	vertNorm;		//42
+	std::vector<XMFLOAT3>	vertPos;		//30
+	std::vector<XMFLOAT2>	vertTexCoord;	//31
+	std::vector<XMFLOAT3>	vertNorm;		//32
 
 	//Make sure we have a default if no tex coords or normals are defined
 	bool hasTexCoord = false;				//ch07
 	bool hasNorm = false;					//ch12
-	bool hasRenderShadow = false;	//ch45
+	bool hasRenderShadow = false;	//ch35
 	bool hasNormMap = false;		//ch51
 	bool hasTransparent = false;	// has transparent sub-meshes?
 
@@ -86,6 +91,7 @@ typedef struct
 
 	//---------------------------------------------------------------------
 	UINT m_vertexCount = 0, m_indexCount = 0;			//virtualModelClass.h
+
 } OBJ3D;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -103,7 +109,6 @@ public:
 	bool LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow = false, bool renderShadow = false, UINT instanceCount = 0);
 	bool CreateObject(/*DXmodelClass*/ void* dxmodelClass, TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow, bool renderShadow);
 
-
 	TCHAR	checkChar;			//The variable we will use to store one char from file at a time
 	STRING	face;				//Holds the string containing our face vertices
 	int		vIndex = 0;			//Keep track of our vertex index count
@@ -116,3 +121,5 @@ public:
 
 	STRING	meshMatLib;		//String to hold our obj material library filename
 };
+
+#pragma warning(pop)

@@ -6,5 +6,5 @@
     <initRot x="25" y="" z="0" />
   </camera>
   <sound music="false" effects="false" />
-  <texture maxTexture="1024" bilinear="false" trilinear="false" Anisotropic="false" AnisotropicLevel="16" />
+	<texture bilinear="true" trilinear="false" Anisotropic="false" AnisotropicLevel="16" maxTexture="1024"/>
 </generalsettings>

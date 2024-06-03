@@ -36,7 +36,5 @@ private:
 public:
     STRING	Metar;
 
-
 };
-
 

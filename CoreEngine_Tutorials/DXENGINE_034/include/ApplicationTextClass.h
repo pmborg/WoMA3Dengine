@@ -63,8 +63,8 @@ public:
 
     void SetRenderCount(int terrainCount, int compoundCount, UINT totalCompoundLoaded);
 
-	SentenceType*		m_sentence[N_TEXT_MAX_SENTENCE]; //std::vector<SentenceType*>	m_sentence;	
-	VirtualTextClass*	m_Text;
+	SentenceType* m_sentence[N_TEXT_MAX_SENTENCE] = { 0 }; //std::vector<SentenceType*>	m_sentence;	
+	VirtualTextClass*	m_Text = NULL;
 };
 
 }

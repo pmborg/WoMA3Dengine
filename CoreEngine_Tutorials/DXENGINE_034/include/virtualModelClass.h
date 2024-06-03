@@ -42,16 +42,16 @@ D3D11_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST
 // USAGE: D3D_PRIMITIVE_TOPOLOGY_LINELIST + PrimitiveTopology
 */
 
-typedef
+
 enum PRIMITIVE_TOPOLOGY
 {
-	//https://msdn.microsoft.com/en-us/library/windows/desktop/bb205124(v=vs.85).aspx
+	//MORE INFO: https://msdn.microsoft.com/en-us/library/windows/desktop/bb205124(v=vs.85).aspx
 	NONNE = 0,
 	POINTLIST,
 	LINELIST,		// Sun Ray														2 Vertex = 1 LINE  --> DrawPrimitive( D3DPT_LINELIST, 0, 1 );
 	LINESTRIP,		// ...not used...												6 Vertex = 5 LINEs --> DrawPrimitive( D3DPT_LINESTRIP, 0, 5 );
 	TRIANGLELIST,	// DxModel default Defined in (CREATE_MODEL_IF_NOT_EXCEPTION)   1 Triang. = 3 Vert.--> DrawPrimitive( D3DPT_TRIANGLELIST, 0, 1 );
-	TRIANGLESTRIP,	// Used on Optimized Sky Mesh: Sky/Sun/Moon Terrain:Level25		4 Triang. = 6 Vert.--> DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, 4 );
+	TRIANGLESTRIP,	// Used on Optimized Sky Mesh: Sky/Sun/Moon Terrain          	4 Triang. = 6 Vert.--> DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, 4 );
 					// LINELIST_ADJ,
 					// LINESTRIP_ADJ,
 					// TRIANGLELIST_ADJ,
@@ -97,24 +97,24 @@ public:
 	// ----------------------------------------------------------------------
 	UINT WomaIntegrityCheck = 1234567831;
 
-	UINT				m_ObjId;
+	INT					m_ObjId=-1;
 	SHADER_TYPE			ModelShaderType;
 
-	bool				Model3D;
-	bool				ModelHASfog;
-	bool				ModelHASlight;
-	bool				ModelHASAlfaColor;
-	bool				ModelHASColorMap;
-	float				ModelAlfaColor;
+	bool				Model3D=false;
+	bool				ModelHASfog = false;
+	bool				ModelHASlight = false;
+	bool				ModelHASAlfaColor = false;
+	bool				ModelHASColorMap = false;
+	float				ModelAlfaColor=0;
 	PRIMITIVE_TOPOLOGY  PrimitiveTopology;
 
-	UINT				m_vertexCount, m_indexCount;
+	UINT				m_vertexCount=0, m_indexCount = 0;
 
-	float				PosX, PosY, PosZ;
-	float				boundingSphere;
+	float				PosX=0, PosY=0, PosZ=0;
+	float				boundingSphere=0;
 
-	int		SpriteTextureWidth;		//NOTE: Have to be "int"
-	int		SpriteTextureHeight;	//NOTE: Have to be "int"
+	int		SpriteTextureWidth=0;	//NOTE: Have to be "int"
+	int		SpriteTextureHeight=0;	//NOTE: Have to be "int"
 
 	bool	ModelHASNormals = false;
 	bool	ModelcomputeNormals = false;

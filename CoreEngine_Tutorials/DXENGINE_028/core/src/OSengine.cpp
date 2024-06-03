@@ -17,7 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: START and STOP WorldOfMiddleAge 3D ENGINE
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567891;
+//WomaIntegrityCheck = 1234567831;
 
 #include "main.h"
 #include "OSengine.h"
@@ -30,6 +30,11 @@ WinSystemClass* SystemHandle = NULL;
 #include "womadriverclass.h"
 #include "GLmathClass.h"
 #include "GLopenGLclass.h"
+
+
+// Global Public:
+UINT CLASS_LOAD_N = 1;
+UINT CLASS_DELETE_N = 1;
 
 // WINDOWS vs LINUX
 // -------------------------------------------------------------------------------------------------------------------------------------
@@ -47,22 +52,15 @@ namespace WOMA
 
 	TCHAR strConsoleTitle[MAX_STR_LEN] = { 0 };
 
-	TCHAR   APP_COMPANY_NAME[] = TEXT("Pmborg");			// "Company" Directory Name: 1st lvl
+	TCHAR   APP_COMPANY_NAME[] = TEXT("Pmborg");		// "Company" Directory Name: 1st lvl
 	TCHAR   APP_PROJECT_NAME[] = TEXT("WoMA3Dengine");	// "Project" Directory Name: 2nd lvl
 
-	TCHAR   APP_NAME[MAX_STR_LEN] = { 0 };;              // "Aplication Name"
+	TCHAR   APP_NAME[MAX_STR_LEN] = { 0 };              // "Aplication Name"
 
 	TCHAR   APP_FULLNAME[MAX_STR_LEN] = { 0 };          // "Aplication FullName"
 
-	TCHAR   APP_SETTINGS_FILE[] = TEXT("settings.xml");     // SETUP/Configuration file name
-}
+	TCHAR   APP_SETTINGS_FILE[] = TEXT("settings.xml"); // SETUP/Configuration file name
 
-// Global Public:
-UINT CLASS_LOAD_N = 1;
-UINT CLASS_DELETE_N = 1;
-
-namespace WOMA
-{
 	TCHAR	APP_ICO[] = TEXT("WoMA.ico");			// "Define" Main Window: Icon 
 
 	MiniDumper* miniDumper = NULL;
@@ -178,10 +176,11 @@ void DefineConsoleTitle()
 
 void START_OS_SYSTEM_KERNEL(int argc, char* argv[])
 {
+	
 	WOMA::setup_OSmain_dirs();				//1 Keep this order!
 	WOMA::activate_mem_leak_detection();	//2
 	WOMA::start_log_manager();				//3
-
+	
 	DefineConsoleTitle();
 
 	// Save Command Line Arguments to use later on
@@ -219,4 +218,3 @@ void OS_ENGINE_STOP()
 	WOMA::logManager = NULL;				// Because of STATIC Classes Shutdown: Do not log
 
 }
-

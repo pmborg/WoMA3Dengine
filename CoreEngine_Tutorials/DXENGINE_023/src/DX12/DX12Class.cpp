@@ -41,7 +41,7 @@ DX12Class::DX12Class()
 {
 	// WomaDriverClass / Public: ------------------------------------------------------
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567890;
+	WomaIntegrityCheck = 1234567831;
 
 	// SUPER Video Card Info:
 	// ---------------------------------------------------------------------------
@@ -72,11 +72,11 @@ DX12Class::DX12Class()
 	BUFFER_COLOR_FORMAT = DXGI_FORMAT_B8G8R8A8_UNORM; // "Loader Image" use this format.
 
 	//m_Camera = NULL;
-	viewDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	viewDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	viewDesc.Format = BUFFER_COLOR_FORMAT;
-	viewDesc.Texture2D.MipLevels = 1;
-	viewDesc.Texture2D.MostDetailedMip = 0;
+	DX12viewDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	DX12viewDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	DX12viewDesc.Format = BUFFER_COLOR_FORMAT;
+	DX12viewDesc.Texture2D.MipLevels = 1;
+	DX12viewDesc.Texture2D.MostDetailedMip = 0;
 
 	// Clear the previous window size specific content.
 	for (UINT n = 0; n < BufferCount; n++)
@@ -431,7 +431,7 @@ bool DX12Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, i
 	BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize)
 	//----------------------------------------------------------------------------------------------
 {
-	//mEnable4xMsaa = msaa;
+
 	m_VSYNC_ENABLED = vsync;
 
 	WOMA::logManager->DEBUG_MSG(TEXT("-------------------------\n"));
@@ -1221,15 +1221,6 @@ XMMATRIX* DX12Class::GetProjectionMatrix(void* Driver, UINT camera, UINT project
 
 	ASSERT(FALSE);
 }
-
-#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
-// ----------------------------------------------------------------------------------------------
-ImageLoaderClass* DX12Class::CaptureScreenShot(int screenWidth, int screenHeight)
-// ----------------------------------------------------------------------------------------------
-{
-	return NULL;
-}
-#endif
 
 #ifdef NOT_USED
 // ----------------------------------------------------------------------------------------------

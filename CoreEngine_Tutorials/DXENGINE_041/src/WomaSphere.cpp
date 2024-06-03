@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: WomaSphere.cpp
 // --------------------------------------------------------------------------------------------
@@ -25,10 +26,12 @@
 #include "DXmodelClass.h"
 #pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
 
+	#define SPHERE_GRIDPOINTS 20
+
 void ApplicationClass::initSphere1(float SPHERE_SIZE)
 {
 	if (Sphere_vertexdata.size() == 0)
-		CreateSphereModel((int)SPHERE_SIZE, 20);
+		CreateSphereModel((int)SPHERE_SIZE, SPHERE_GRIDPOINTS);	//(UINT SPHERE_SIZE, int Sphere_gridpoints)
 
 	std::vector<STRING> Textures;
 
@@ -44,7 +47,7 @@ void ApplicationClass::initSphere1(float SPHERE_SIZE)
 void ApplicationClass::initSphere2(float SPHERE_SIZE)
 {
 	if (Sphere_vertexdata.size() == 0)
-		CreateSphereModel((int)SPHERE_SIZE, 20);
+		CreateSphereModel((int)SPHERE_SIZE, SPHERE_GRIDPOINTS);	//(UINT SPHERE_SIZE, int Sphere_gridpoints)
 
 	std::vector<STRING> Textures;
 

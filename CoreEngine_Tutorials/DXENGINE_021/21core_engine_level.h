@@ -15,10 +15,7 @@
 	#endif
 #endif
 
-#if defined RELEASE && defined _NOT
-	#define USE_MAIN_THREAD		// ON/OFF (Note: Dont work on openGL, NOTE!!! This is buggy with maximize!!! Dont use for now
-	// Solution? https://msdn.microsoft.com/en-us/library/windows/desktop/ee417025.aspx
-#endif
+//#define USE_MAIN_THREAD		// ON/OFF (Note: Dont work on openGL, NOTE!!! This is buggy with maximize!!! Dont use for now
 
 #if defined _DEBUG
 	//#define VERBOSE_MEMORY_DEBUG			// [ON/OFF]: used (woma_macros.h)
@@ -35,7 +32,7 @@
 	#endif
 
 	#if CORE_ENGINE_LEVEL >= 3
-		#define USE_PROCESS_OS_KEYS	//2
+		#define USE_PROCESS_OS_KEYS		//2
 		#define USE_MINIDUMPER		//3
 		#define USE_WOMA_EXCEPTION	//3
 	#endif
@@ -79,15 +76,14 @@
 
 	//-------------------------------------------------------------------------------------------------------
 	#if CORE_ENGINE_LEVEL == 10
-		#define DX_ENGINE			//Turn on: #include "DXengine.h"
 
 		#if DX_ENGINE_LEVEL >= 19	//DX9 DX11+DX10 DX12 OPENGL3
-			//#define DX9sdk		//(ORIGINAL DX9SDK 2002) not fully recovered/implemented yet
+			//#define DX9sdk	//(ORIGINAL DX9SDK) not fully recovered/implemented
 
-			#define DX9				//Using DX11 API
+			#define DX9			//Using DX11 API
 			#define DX11
 			#define OPENGL3
-			#define DX12			//(defined DX12 && D3D11_SPEC_DATE_YEAR > 2009)		
+			#define DX12		//(defined DX12 && D3D11_SPEC_DATE_YEAR > 2009)		
 		#endif
 
 		#if DX_ENGINE_LEVEL >= 20
@@ -96,15 +92,19 @@
 			#define USE_ALTENTER_SWAP_FULLSCREEN_WINDOWMODE		
 		#endif
 
-		#if DX_ENGINE_LEVEL >= 21 && DX_ENGINE_LEVEL <= 23
-			#define ROTATE_SQUAR
-			#define USE_RASTERIZER_STATE		//Mandatory for DX12
+		#if DX_ENGINE_LEVEL >= 21 && DX_ENGINE_LEVEL <= 23  && !defined GOTO_BASICS
+			#define ROTATE_SQUARE
+			#define USE_RASTERIZER_STATE //Mandatory for DX12
 			//#define USE_PRECOMPILED_SHADERS	// [ON/OFF] ON: Merge Shader's Code on .EXE / OFF: Compile in run-time
 		#endif
 
 		//-------------------------------------------------------------------------------------------------------
-		#if defined RELEASE && DX_ENGINE_LEVEL < 20
-		#error "WOMA COMPILATION ERROR: RELEASE bin is not Supported before DX_ENGINE_LEVEL 20"
+		#if defined RELEASE && DX_ENGINE_LEVEL < 29
+		#error "WOMA COMPILATION ERROR: RELEASE bin is not Supported before DX_ENGINE_LEVEL 29"
+		#endif
+
+		#if defined (DX9) || defined (DX11) | defined (DX12)
+		#define DX_ENGINE
 		#endif
 	#endif
 	

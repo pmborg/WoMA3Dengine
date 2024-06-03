@@ -22,8 +22,10 @@
 #include "platform.h"
 #include <d3d11.h>
 
+#if defined OPENGL21 || defined OPENGL3 //|| defined OPENGL40 
 	#include "GLmathClass.h"
 	#include "GLopenGLclass.h"
+#endif
 
 #include "womadriverclass.h"
 

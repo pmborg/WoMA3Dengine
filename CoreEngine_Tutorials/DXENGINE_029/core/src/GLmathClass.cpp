@@ -22,12 +22,12 @@
 GLmathClass::GLmathClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567829;
+	WomaIntegrityCheck = 1234567831;
 }
 
 GLmathClass::~GLmathClass() {CLASSDELETE();}
 
-// Rastertek:
+// Function Source: Rastertek
 mat4 GLmathClass::BuildPerspectiveFovLHMatrix(float fieldOfView, float screenAspect, float screenNear, float screenDepth)
 {
 	return mat4(
@@ -37,7 +37,7 @@ mat4 GLmathClass::BuildPerspectiveFovLHMatrix(float fieldOfView, float screenAsp
 		0, 0, (-screenNear * screenDepth) / (screenDepth - screenNear), 0);
 }
 
-// SOURCE: Humus
+// Function Source: Humus
 mat4 GLmathClass::rotateX(const float angle)
 {
 	float cosA = cosf(-angle), sinA = sinf(-angle);

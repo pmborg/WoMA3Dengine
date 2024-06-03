@@ -23,6 +23,7 @@
 
 #include "main.h"
 
+
 struct resolutionType
 {
 	UINT Width;
@@ -37,7 +38,7 @@ struct resolutionType
 class SystemClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567890;
+	UINT WomaIntegrityCheck = 1234567831;
 	SystemClass();
 	~SystemClass();
 
@@ -51,5 +52,3 @@ public:
 public:
 
 };
-
-

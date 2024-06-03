@@ -23,10 +23,9 @@
 /*
 WomaDriverClass
 	GLopenGLclass
-		eGLopenGLclass.cpp EGL OpenGL "WINDOWS"
-		glxOpenGLClass.cpp GLX OpenGL "LINUX"
-
-		OpenGL ES 2.0 --> API Android 2.2++
+		eGLopenGLclass.cpp EGL	OpenGL "WINDOWS"
+		glxOpenGLClass.cpp GLX	OpenGL "LINUX"
+		glesOpenGLClass.cpp		OpenGL ES 2.0 --> API "Android 2.2++"
 */
 
 #include "platform.h"

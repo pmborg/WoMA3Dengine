@@ -101,7 +101,8 @@ namespace DirectX {
 		// TextClass: Initialize the font object. PART1
 		m_Font = NEW textFontClass;
 		IF_NOT_THROW_EXCEPTION(m_Font); // Create the font object.
-		IF_NOT_RETURN_FALSE(m_Font->Initialize(Driver, TEXT("engine/data/008fontdata.txt"), TEXT("engine/data/008font.png")));
+		IF_NOT_RETURN_FALSE(m_Font->Initialize(Driver, TEXT("engine/data/008fontdata.txt"), TEXT("engine/data/008font.png"))); 
+		//IF_NOT_RETURN_FALSE(m_Font->Initialize(Driver, TEXT("engine/data/008fontdata.txt"), TEXT("engine/data/font.dds")));
 
 		// Create the color shader object:
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)

@@ -77,10 +77,12 @@ struct ModelShadowMapVertexType
 
 struct SentenceType
 {
+#if defined OPENGL3
 	ModelTextureVertexType* GLvertices = NULL;	//OPENGL
 	unsigned int	m_vertexArrayId = NULL;		//OPENGL
 	unsigned int	m_vertexBufferId = NULL;	//OPENGL
 	unsigned int	m_indexBufferId = NULL;		//OPENGL
+#endif
 
 	unsigned long* indices = NULL;				//DX Common?
 

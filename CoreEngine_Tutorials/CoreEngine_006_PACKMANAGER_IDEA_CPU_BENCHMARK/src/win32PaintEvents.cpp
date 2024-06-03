@@ -17,7 +17,9 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Paint the main window depending of engine state screen page.
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567831;
 
+#include "main.h"
 #include "WinSystemClass.h"
 #include "OSmain_dir.h"
 #include "mem_leak.h"
@@ -38,7 +40,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 	}
 
 	case WM_PAINT:
-#if defined _DEBUG
+	#if defined _DEBUG
 		if (SystemHandle->m_hWnd) {
 			if (SystemHandle->statusbar)
 				DestroyWindow(SystemHandle->statusbar);
@@ -47,12 +49,19 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 			if (SystemHandle->AppSettings->FULL_SCREEN)
 				ShowWindow(SystemHandle->statusbar, SW_HIDE);
 		}
-#endif
+	#endif
 	{
 		for (UINT i = 0; i < SystemHandle->windowsArray.size(); i++)
 			MainWindowPaint(i);
 		break;
 	}
+
+#ifdef _EXTRA_DEBUG
+	default:
+	{
+		WOMA::logManager->DEBUG_MSG(TEXT("Msg: %04X \n"), umessage);
+	}
+#endif
 
 	}
 	return SystemHandle->MessageHandler(hwnd, umessage, wparam, lparam);
@@ -142,9 +151,32 @@ int MainWindowPaint(UINT monitor)
 
 	PaintSetup(hdc, hdcMem, font_title, font, scr);
 
+#if defined USE_LOADING_THREADS
+	if (WOMA::game_state == GAME_LOADING)
+	{
+		TCHAR printOnLoading[MAX_STR_LEN] = { 0 };
+		if (WOMA::num_loading_objects < SystemHandle->xml_loader.theWorld.size())
+	#if defined SAVEM3D
+			StringCchPrintf(printOnLoading, MAX_STR_LEN, TEXT("Loading OBJ -> Saving M3D: [%d/%d] %s"), WOMA::num_loading_objects, SystemHandle->xml_loader.theWorld.size(), SystemHandle->xml_loader.theWorld[WOMA::num_loading_objects-1].filename);
+	#else
+			StringCchPrintf(printOnLoading, MAX_STR_LEN, TEXT("Loading OBJ: [%d/%d] %s"), WOMA::num_loading_objects, SystemHandle->xml_loader.theWorld.size(), SystemHandle->xml_loader.theWorld[WOMA::num_loading_objects - 1].filename);
+	#endif
+
+		Woma_Label TextToPrintOnLoading;
+		TextToPrintOnLoading.label = printOnLoading;
+		TextToPrintOnLoading.x = 25;
+		TextToPrintOnLoading.y = 25;
+
+		TextOut(hdcMem, TextToPrintOnLoading.x, TextToPrintOnLoading.y,
+			TextToPrintOnLoading.label.c_str(), (int)_tcslen(TextToPrintOnLoading.label.c_str()));
+		BitBlt(hdc, 0, 0, SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT, hdcMem, 0, 0, SRCPAINT);
+	}
+#endif
+
 	// Restore the old bitmap
 	SelectObject(hdcMem, hbmOld);
 	DeleteDC(hdcMem);
+
 // ---------------------------------------------------------------------------------------------
 	EndPaint(SystemHandle->m_hWnd, &ps);
 

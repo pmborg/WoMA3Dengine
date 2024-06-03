@@ -35,10 +35,12 @@
 	#include "Dx9Class.h"
   #endif
 	#include "Dx11Class.h"
+  #if defined OPENGL3
 	#include "womadriverclass.h"	//woma
 	#include "GLmathClass.h"		//woma	
 	#include "GLopenGLclass.h"		//woma
 	#include "wGLopenGLclass.h"		// Windows
+  #endif
 
 #include <fstream>
 using namespace std;
@@ -63,6 +65,8 @@ private:
 	{
 		// BLOCK: VS1
 		XMMATRIX world;           // [64]: world
+		XMMATRIX view;
+		XMMATRIX projection;
 		XMMATRIX WV;              // [64]: world * view 
 		XMMATRIX WVP;             // [64]: world * view * projection matrix
 
@@ -82,10 +86,18 @@ private:
 		float		VSfogStart;			
 		float		VSfogEnd;			
 		BOOL		VShasShadowMap; 
-		float		VSpad2;
+		BOOL		VS_USE_WVP;
 
 		// 36 BLOCK: VS5
 		XMMATRIX ViewToLightProj;
+
+//#if DX_ENGINE_LEVEL >= 42
+		// 42 BLOCK: VS6
+		float		VSrotX;
+		float		VSrotY;
+		float		VSrotZ;
+		float		VS6PAD;
+//#endif
 	};
 
 	// PIXEL CBUFFER:
@@ -145,7 +157,7 @@ public:
 	~DXshaderClass();
 	void Shutdown();
 
-	bool Initialize(TCHAR* objectName, SHADER_TYPE shaderType, /*ID3D11Device*/ void*, HWND, PRIMITIVE_TOPOLOGY PrimitiveTopology, bool useGS = false);
+	bool Initialize(INT m_ObjId, TCHAR* objectName, SHADER_TYPE shaderType, /*ID3D11Device*/ void*, HWND, PRIMITIVE_TOPOLOGY PrimitiveTopology, bool useGS = false);
 	void Render(UINT pass,/*ID3D11DeviceContext*/ void*, int, XMMATRIX*, XMMATRIX*, XMMATRIX*);
 	void SetShaderParameters(UINT pass, /*ID3D11DeviceContext*/ void* deviceContext,
 								XMMATRIX* worldMatrix, XMMATRIX* viewMatrix, XMMATRIX* projectionMatrix,
@@ -162,6 +174,7 @@ private:
 	// VARS:
 	// ----------------------------------------------------------------------
 	STRING MODEL_NAME;
+	INT    m_ObjId = 0;
 
 #if defined DX9sdk
 	DirectX::DX9Class* m_driver9=NULL;
@@ -186,6 +199,8 @@ public:
 	SHADER_TYPE		m_shaderType;
 	bool			shader2D;
 
+	bool VS_USE_WVP = false; //by default use already multiplied matrix*matrix*matrix
+
 			ID3D11Buffer*		m_PixelShaderBuffer11 = NULL;
 			ID3D11SamplerState* m_sampleState11 = NULL;	// Resource: "Textures" States
 
@@ -205,10 +220,10 @@ public:
 		XMFLOAT4	pixelColor;		
 
 		// BLOCK2:
-		BOOL		hasTexture;
-		BOOL		hasLight;
-		BOOL		hasSpecular;
-		BOOL		isFontShader;
+		BOOL		hasTexture = false;
+		BOOL		hasLight = false;
+		BOOL		hasSpecular = false;
+		BOOL		isFontShader = false;
 
 		// BLOCK3:
 		XMFLOAT4	ambientColor;	// LIGHT: Ka
@@ -217,27 +232,27 @@ public:
 		//			lightDirection (AUTO)
 
 		// BLOCK4:
-		bool		hasColorMap;		// 66
-		float		lightType;			// Future
-		float		shaderType;			// Future
-		float		shaderTypeParameter;// Future
+		bool		hasColorMap;			// 66
+		float		lightType = 0;			// Light Type
+		float		shaderType = 0;			// Future
+		float		shaderTypeParameter = 0;// Future
 
 		// BLOCK5:
-		bool		hasAlfaColor;
-		float		alfaColor;
-		float		PSfade;			// Fade from 0 to 1
+		bool		hasAlfaColor = 0;
+		float		alfaColor = 0;
+		float		PSfade = 0;			// Fade from 0 to 1
 
 		// BLOCK6:
-		BOOL		hasFog;
-		BOOL		isSky;
-		BOOL		hasAlfaMap;	// 43
-		BOOL		hasNormMap;
+		BOOL		hasFog=false;
+		BOOL		isSky = false;
+		BOOL		hasAlfaMap = false;	// 43
+		BOOL		hasNormMap = false;
 
 		// BLOCK7:
 		// cameraPosition (AUTO)
 		BOOL		castShadow;
 		XMFLOAT3	specularColor;	// 44:
-		float		nShininess;		// 44:
+		float		nShininess = 0;		// 44:
 
 		// --------------------------------------------------------------------------------------------
 		// Internal Shader VARs to Copy to Buffers: VS

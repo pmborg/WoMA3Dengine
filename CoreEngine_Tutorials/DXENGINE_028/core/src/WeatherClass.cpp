@@ -51,7 +51,7 @@
 
 WeatherClass::WeatherClass()
 {
-    WomaIntegrityCheck = 1234567891;
+    WomaIntegrityCheck = 1234567831;
 	CLASSLOADER();
 
     Metar = TEXT("");
@@ -197,10 +197,7 @@ bool WeatherClass::GetPresentWeather(TCHAR* ICAO)
     IFSTREAM fileIn(WOMA::LoadFile (szFileName));
 	if (!fileIn)
 	{
-		STRING err = TEXT("File not found: "); err += szFileName;
-		WOMA::WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "));
-		WomaFatalExceptionW((TCHAR*)err.c_str());
-		return false;
+        return true;
 	}
 
     int i = 0; // String Index

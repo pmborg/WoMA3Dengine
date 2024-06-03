@@ -21,8 +21,9 @@
 //  - Debug use local: "file".xml
 //  - Release use:     C:\Users\<user>\AppData\Local\Pmborg\Woma2014\"file".xml (WOMA::APPDATA)
 //
-//*********************************************************************************************
-
+// --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567831;
+// 
 // --------------------------------------------------------------------------------------------
 // Includes:
 // --------------------------------------------------------------------------------------------
@@ -34,8 +35,10 @@
 
 #include "winsystemclass.h"		// Are we a Windows Instance?
 
+#include "xml_loader.h"
+
 //*********************************************************************************************/
-bool saveConfigSettings (char* file) // Note: Have to be char
+bool XMLloader::saveConfigSettings (char* file) // Note: Have to be char
 //*********************************************************************************************/
 {
 	// TUTORIAL: https://www.cs.cmu.edu/~preethi/src/tinyxml/docs/tutorial0.html
@@ -119,6 +122,20 @@ bool saveConfigSettings (char* file) // Note: Have to be char
 			str = (SystemHandle->AppSettings->MSAA_ENABLED) ? "true" : "false";
 			child_driver->SetAttribute("msaa", str.c_str());
 		}
+
+#if definef USE_SOUND_MANAGER || defined USE_PLAY_MUSIC
+		///*<sound>*/TiXmlElement* child_sound = root->FirstChildElement( "sound" );
+		TiXmlElement* child_sound = NEW TiXmlElement("sound");
+		root->LinkEndChild(child_sound);
+		if ( child_sound )
+		{
+			str = (SystemHandle->AppSettings->MUSIC_ENABLED) ? "true" : "false";
+			child_sound->SetAttribute("music", str.c_str());
+
+			str = (SystemHandle->AppSettings->SOUND_ENABLED) ? "true" : "false";
+			child_sound->SetAttribute("effects", str.c_str());
+		}
+#endif
 
 	}
 	else

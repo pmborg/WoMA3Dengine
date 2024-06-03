@@ -112,7 +112,7 @@ typedef struct {
 	#if defined USE_PLAY_MUSIC
 		char musicEnabled[10];
 	#endif
-	#if defined USE_SOUND_MANAGER
+	#if DX_ENGINE_LEVEL >= 29 && defined USE_SOUND_MANAGER
 		char soundEffectsEnabled[10];
 	#endif
 
@@ -154,14 +154,14 @@ struct WOMA_OBJECT
 
 //<world>
 typedef struct {
-	int id = 0;
+	int id = 0;					//40
 	int fromPage, toPage, depend = 0;
 	float scale = 1, posX = 0, posZ = 0, translateY = 0;
 	float rotX = 0, rotY = 0, rotZ = 0;
 	int shader = 0;
 	char filename[256];
 	WOMA_OBJECT WOMA_object;
-	int instances = 0;
+	int instances = 0;			//40
 } obj3d;
 
 class XMLloader

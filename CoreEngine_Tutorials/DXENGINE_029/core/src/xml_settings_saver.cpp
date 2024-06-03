@@ -22,7 +22,7 @@
 //  - Release use:     C:\Users\<user>\AppData\Local\Pmborg\Woma2014\"file".xml (WOMA::APPDATA)
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567829;
+//WomaIntegrityCheck = 1234567831;
 // 
 // --------------------------------------------------------------------------------------------
 // Includes:
@@ -35,8 +35,10 @@
 
 #include "winsystemclass.h"		// Are we a Windows Instance?
 
+#include "xml_loader.h"
+
 //*********************************************************************************************/
-bool saveConfigSettings (char* file) // Note: Have to be char
+bool XMLloader::saveConfigSettings (char* file) // Note: Have to be char
 //*********************************************************************************************/
 {
 	// TUTORIAL: https://www.cs.cmu.edu/~preethi/src/tinyxml/docs/tutorial0.html

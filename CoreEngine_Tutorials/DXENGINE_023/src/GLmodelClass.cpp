@@ -31,16 +31,35 @@
 GLmodelClass::GLmodelClass(bool model3d) 
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567890;
-
-	indices = NULL;
+	WomaIntegrityCheck = 1234567831;
 
 	// SUPER: ----------------------------------------------------------------------
 	m_ObjId = 0;
-	ModelShaderType			= SHADER_AUTO;
+	ModelShaderType = SHADER_AUTO;
 
 	Model3D = model3d;
+	ModelHASfog = false;
+	ModelHASlight = true; // Have to be true!
+	ModelHASColorMap = false;
+
+	PosX = PosY = PosZ = 0;
+
+	SpriteTextureWidth = NULL;
+	SpriteTextureHeight = NULL;
+
+	ModelHASNormals = false;
+
 	m_Shader = NULL;
+
+	//meshSRV
+	//minVertex = XMFLOAT3(FLT_MAX, FLT_MAX, FLT_MAX);
+	//maxVertex = XMFLOAT3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+
+	//objectCenterOffset = XMFLOAT4(0, 0, 0, 0);
+	boundingSphere = false;
+
+	m_vertexCount = m_indexCount = NULL;
+	indices = NULL;
 
 	// Initialize the world/model matrix to the identity matrix:
 	m_worldMatrix = m_worldMatrix.mat4identity();  //Identity();
@@ -107,6 +126,7 @@ bool result=false;
 		result = InitializeColorBuffers(NULL);
 		break;
 	case SHADER_TEXTURE:
+	case SHADER_TEXTURE_FONT:
 		result = InitializeTextureBuffers(NULL);
 		break;
 	case SHADER_TEXTURE_LIGHT:
@@ -173,6 +193,8 @@ bool GLmodelClass::LoadTexture(TCHAR* objectName, void* driver, SHADER_TYPE shad
 	else
 		ModelShaderType = shader_type;
 
+	ASSERT(ModelShaderType == SHADER_TEXTURE || ModelShaderType == SHADER_TEXTURE_FONT);
+
 	modelTextureVertex = model;
 	indexModelList = indexList;
 	return InitializeVertexIndexBuffers(textureFile);
@@ -226,7 +248,6 @@ void GLmodelClass::RenderWithFade(WomaDriverClass* driver, float fadeLight)
 	//m_Shader->fade = fadeLight;
 	Render(driver);
 }
-
 void GLmodelClass::Render(/*GLopenGLclass*/WomaDriverClass* Driver, UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix)
 {
 	GLopenGLclass* driver = (GLopenGLclass*)Driver;
@@ -244,20 +265,25 @@ void GLmodelClass::Render(/*GLopenGLclass*/WomaDriverClass* Driver, UINT camera,
 		case CAMERA_NORMAL:
 			if (projection == PROJECTION_PERSPECTIVE)
 			{
-				m_viewMatrix = ((GLcameraClass*)driver->m_Camera)->m_viewMatrix;
+				//PROJECTION_PERSPECTIVE
+				m_viewMatrix = ((GLcameraClass*)driver->gl_Camera)->m_viewMatrix;
 			}
 			else
-			{
+			{	
+				//PROJECTION_ORTHOGRAPH:
 				m_viewMatrix = m_viewMatrix;
 				m_viewMatrix.mat4identity();
 				m_viewMatrix.m[14] = 1;
 			}
-			
 			break;
 
 	}
 
-	glUseProgram(m_Shader->m_shaderProgram); // m_Shader->SetShader();
+	m_Shader->SetShader(); //glUseProgram(m_Shader->m_shaderProgram); // 
+	if (RENDER_PAGE >= 26)
+		m_Shader->lightType = 2;
+	else
+		m_Shader->lightType = 1;
 
 	// Set the color shader as the current shader program and set the matrices that it will use for rendering:
 	if (ModelShaderType == SHADER_COLOR)
@@ -377,7 +403,7 @@ bool GLmodelClass::InitializeTextureBuffers(/*GLopenGLclass*/ void* OpenGL)
 		vertices[i].tu = (*modelTextureVertex)[i].tu;
 		vertices[i].tv = (*modelTextureVertex)[i].tv;
 
-		#if true && _DEBUG
+		#if _DEBUG
 		WOMA_LOGManager_DebugMSG("vertices: %d %d %d - %f %f \n", vertices[i].x, vertices[i].y, vertices[i].z, vertices[i].tu, vertices[i].tv);
 		#endif
 	}
@@ -454,6 +480,7 @@ void GLmodelClass::SetOpenGLBuffers(UINT sizeofMODELvertex, UINT* indices)
 		break;
 
 		case SHADER_TEXTURE:				// 0: Vertex position.
+		case SHADER_TEXTURE_FONT:				
 			glEnableVertexAttribArray(1);	// 1: Texture coordinates.
 		break;
 
@@ -485,6 +512,7 @@ void GLmodelClass::SetOpenGLBuffers(UINT sizeofMODELvertex, UINT* indices)
 		break;
 
 		case SHADER_TEXTURE: // TEXTURE
+		case SHADER_TEXTURE_FONT: // TEXTURE
 		//glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
 		glVertexAttribPointer(1, 2, GL_FLOAT, false, sizeofMODELvertex, (unsigned char*)NULL + (3 * sizeof(float)));
 		break;

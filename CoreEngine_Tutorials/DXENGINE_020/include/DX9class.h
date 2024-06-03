@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: DX9Class.h
 // --------------------------------------------------------------------------------------------
@@ -23,6 +22,7 @@
 
 #include "platform.h"
 
+#if defined DX9
 //#include<D3D11.h>
 #if defined DX9sdk
 #include "DX9Class.h"
@@ -51,6 +51,10 @@
 #pragma comment(lib, "dxerr.lib")
 
 #include "womadriverclass.h"
+
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader1 // Color Shader
+	#include "DXcameraClass.h"
+#endif
 
 typedef IDirect3D9* (WINAPI* LPDIRECT3DCREATE9)(UINT);
 typedef IDirect3D9Ex* (WINAPI* LPDIRECT3DCREATE9EX)(UINT);
@@ -101,8 +105,33 @@ public:
 	bool Resize(int screenWidth, int screenHeight, float screenNear, float screenDepth, BOOL fullscreen, UINT depthBits);
 	void SetCamera2D();
 
+#if defined INTRO_DEMO || defined USE_ALPHA_BLENDING
+	void TurnOnAlphaBlending();
+	void TurnOffAlphaBlending();
+#endif
+
 	XMMATRIX* GetViewMatrix(void* Driver, UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix);
 	XMMATRIX* GetProjectionMatrix(void* Driver, UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix);
+
+#if defined USE_DX10DRIVER_FONTS //defined INTRO_DEMO || ENGINE_LEVEL >= 29	// FONT v2
+	void InitD2DScreenTexture();
+	void addText(int Xpos, int Ypos, TCHAR* text, int Width, int Height, float R, float G, float B);
+	void RenderDriverText();
+#endif
+
+#if TUTORIAL_PRE_CHAP >= 15
+    void GetProjectionMiniMapMatrix(XMMATRIX&);
+    void GetProjectionMapMatrix(XMMATRIX& projectionMapMatrix);
+#endif
+
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+	// 3D
+	XMMATRIX m_projectionMatrix;
+	void GetProjectionMatrix(XMMATRIX&);
+
+    //We need to setup our ProjectionMatrix (21) and OrthoMatrix (CH07)
+	void setProjectionMatrixWorldMatrixOrthoMatrix (int screenWidth, int screenHeight,float screenNear, float screenDepth);
+#endif
 
 	HRESULT RenderD3D9();
 
@@ -119,6 +148,10 @@ private:
 	bool CreateRenderTargetView(int screenWidth, int screenHeight);
 	bool createSetDepthStencilState(bool depthEnable);
 	bool createSetDepthStencilView();
+
+#if defined INTRO_DEMO || defined USE_ALPHA_BLENDING
+	bool CreateBlendState();
+#endif
 
 public:
 
@@ -143,13 +176,21 @@ public:
 	bool	bDeviceLost;
 	//UINT	ShaderVersionH, ShaderVersionL;
 
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+	//DXcameraClass* m_Camera;
+#endif
+
 	D3DVIEWPORT9 viewport;
 
 private:
 	LPD3DXFONT	m_D3D9Font;
 
+#if defined USE_DX10DRIVER_FONTS
+	ID3DXFont*	g_pFont;
+#endif
 };
 
 }
 
+#endif
 #endif

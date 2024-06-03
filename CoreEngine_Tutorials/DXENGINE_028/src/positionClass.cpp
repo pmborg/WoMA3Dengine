@@ -25,19 +25,14 @@
 #pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
 #include "positionClass.h"
 #include "TrigonometryMathClass.h" //sim, cos table
-
 #include <mmsystem.h> //timeGetTime
 
-// --------------------------------------------------------------------------------------------
-// Globals:
-// --------------------------------------------------------------------------------------------
-//extern int MOUSE_x, MOUSE_y;
 
 //The class constructor initializes all the position, rotation, frame time, and speed variables to zero.
 PositionClass::PositionClass(UINT id)
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567891;
+	WomaIntegrityCheck = 1234567831;
 
 	m_positionX = SystemHandle->AppSettings->INIT_CAMX;
 	m_positionY = SystemHandle->AppSettings->INIT_CAMY;
@@ -155,6 +150,7 @@ void PositionClass::MoveBackward(bool keydown, bool ctrl, bool mouseWhell, bool 
 	{
 		m_backwardSpeed += m_frameTime * 0.0005f;
 		float maxSpeed = ctrl ? 0.04f : 0.004f; // MAX SPEED
+
 		if (water)
 			maxSpeed/=3;
 

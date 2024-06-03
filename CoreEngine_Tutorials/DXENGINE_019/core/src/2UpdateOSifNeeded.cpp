@@ -17,6 +17,10 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567831;
+
+// Windows Vista update (KB 971644) add support for DXGI 1.1
+// Check whether we need this option
 
 #include "main.h"
 #include "systemManager.h"

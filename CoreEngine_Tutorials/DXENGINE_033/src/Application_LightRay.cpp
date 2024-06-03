@@ -22,7 +22,7 @@
 #include "OSengine.h"
 #include "mem_leak.h"
 
-#if defined USE_SKY_DOME && defined DXENGINE_LEVEL >= 28
+#if defined USE_SKY_DOME && DX_ENGINE_LEVEL >= 28 && defined DXENGINE_LEVEL >= 28
 	#include "SKY_30.h"					// Get SunDistance
 #endif
 

@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: ApplicationTextClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -17,6 +18,7 @@
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
 #include "OSengine.h"
+#if (defined OPENGL3 || defined DX_ENGINE || defined INTRO_DEMO) && defined USE_RASTERTEK_TEXT_FONT
 
 #include "mem_leak.h"
 #include "ApplicationTextClass.h"
@@ -40,8 +42,10 @@ ApplicationTextClass::~ApplicationTextClass() { CLASSDELETE();}
 bool ApplicationTextClass::Initialize(void* Driver)
 {
 	// TODO GL
+	#ifdef OPENGL3
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) 
 		{ m_Text = NEW GlTextClass(); IF_NOT_THROW_EXCEPTION (m_Text); }
+	#endif
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
 		{ m_Text = NEW DxTextClass(); IF_NOT_THROW_EXCEPTION (m_Text); }
 
@@ -63,6 +67,7 @@ void ApplicationTextClass::Shutdown()
 {
 	if (m_Text) 
 	{
+#if defined OPENGL3 && defined USE_RASTERTEK_TEXT_FONT
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) 
 		{
 			for (UINT i = 0; i < _countof(m_sentence); i++) 
@@ -83,6 +88,7 @@ void ApplicationTextClass::Shutdown()
 				}
 			}
 		}
+#endif
 		for (UINT i = 0; i < _countof(m_sentence); i++)  {
 			m_Text->ReleaseSentence(&m_sentence[i]);
 			SAFE_DELETE (m_sentence[i]);
@@ -90,6 +96,7 @@ void ApplicationTextClass::Shutdown()
 
 		switch (SystemHandle->AppSettings->DRIVER)
 		{
+		#ifdef OPENGL3
 		case DRIVER_GL3:
 			if (m_Text)
 			{
@@ -98,6 +105,7 @@ void ApplicationTextClass::Shutdown()
 				m_Text = NULL;
 			}
 			break;
+		#endif
 
 		case DRIVER_DX9:
 		case DRIVER_DX11:
@@ -244,3 +252,4 @@ void ApplicationTextClass::SetLoboRenderCount(int count)
 
 }
 
+#endif

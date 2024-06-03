@@ -23,10 +23,9 @@
 /*
 WomaDriverClass
 	GLopenGLclass
-		eGLopenGLclass.cpp EGL OpenGL "WINDOWS"
-		glxOpenGLClass.cpp GLX OpenGL "LINUX"
-
-		OpenGL ES 2.0 --> API Android 2.2++
+		eGLopenGLclass.cpp EGL	OpenGL "WINDOWS"
+		glxOpenGLClass.cpp GLX	OpenGL "LINUX"
+		glesOpenGLClass.cpp		OpenGL ES 2.0 --> API "Android 2.2++"
 */
 
 #include "platform.h"
@@ -42,7 +41,7 @@ GLmathClass* mathClass;
 GLopenGLclass::GLopenGLclass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567829;
+	WomaIntegrityCheck = 1234567831;
 
 	mathClass = NULL;
 	_tcscpy_s(driverName, TEXT("GL3+")); // driverName = TEXT ("GL3+");
@@ -68,6 +67,7 @@ void GLopenGLclass::Shutdown()
 	if(gl_Camera) { delete ((GLcameraClass*)gl_Camera); gl_Camera=NULL; }	//Cant use: SAFE_DELETE (m_Camera);
 	if (gl_CameraSKY) { delete ((GLcameraClass*)gl_CameraSKY); gl_CameraSKY = NULL; }	//Cant use: SAFE_DELETE (m_Camera);
 	Shutdown2D();
+
 }
 
 #if zero

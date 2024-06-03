@@ -49,7 +49,7 @@ float tableSin[360*100], tableCos[360*100];
 TrigonometryMathClass::TrigonometryMathClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567890;
+	WomaIntegrityCheck = 1234567831;
 
 	Initialize();
 }

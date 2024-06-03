@@ -88,12 +88,11 @@ TCHAR* getUserName()
 
 #include "Math3D.h"
 
-
 SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 {
 	// STARTING POINT of WOMA ENGINE!
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567891;
+	WomaIntegrityCheck = 1234567831;
 
 	AppSettings = NULL;
 
@@ -133,7 +132,7 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 #if defined WIN_XP
 		TEXT("WinXP")
 #elif defined WIN10
-		TEXT("Win10")
+		TEXT("Win10/11")
 #else
 		TEXT("Windows")
 #endif
@@ -217,8 +216,7 @@ void SystemClass::ProcessOSInput() // This Function will be invoked several time
 //-----------------------------------------------------------------------------------------
 {
 
-	static bool first_time =
-		false;
+		static bool first_time = false;
 
 	// Process Special: "ESC" key is beeing pressed ?
 	if ((WOMA::game_state > GAME_MINIMIZED) && (OS_KEY_DOWN(DIK_ESCAPE + 0x35)))
@@ -267,7 +265,7 @@ void SystemClass::ProcessOSInput() // This Function will be invoked several time
 		{
 			SystemHandle->AppSettings->FULL_SCREEN = false;
 			CHAR str[MAX_STR_LEN] = { 0 }; wtoa(str, (TCHAR*)SystemHandle->XML_SETTINGS_FILE.c_str(), MAX_STR_LEN); // wchar ==> char
-			saveConfigSettings(str);
+			SystemHandle->xml_loader.saveConfigSettings(str);
 			WOMA::previous_game_state = WOMA::game_state;
 			WOMA::game_state = ENGINE_RESTART;
 		}
@@ -405,7 +403,6 @@ void SystemClass::Shutdown()
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("-------------------------------------------------------------------------------\n"));
 	SAFE_DELETE(m_OsInput);
 
-	SAFE_SHUTDOWN(demoApplicationClass); //external
 	if (m_Application)
 		m_Application->WOMA_APPLICATION_Shutdown();
 	SAFE_SHUTDOWN(m_Application);					// Release ALL graphics object.
@@ -464,27 +461,28 @@ bool SystemClass::LoadXmlSettings()
 	XML_SETTINGS_FILE.append(WOMA::APP_SETTINGS_FILE);
 
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("XML_SETTINGS_FILE: %s\n"), XML_SETTINGS_FILE.c_str());
-	if (!initAppicationSettings((TCHAR*)XML_SETTINGS_FILE.c_str()))
+	if (!SystemHandle->xml_loader.initAppicationSettings((TCHAR*)XML_SETTINGS_FILE.c_str()))
 	{
 		STRING err = TEXT("File not found/Invalid: "); err += XML_SETTINGS_FILE;
 		WOMA::WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "));
 		return false;
 	}
 
+	// Load and Parse XML [world.xml] the Configuration file
+	//----------------------------------------------------------------------------
+
 	return true;
 }
 
 void SystemClass::ProcessPerformanceStats() // Run every frame
 {
-	//if (!m_Application) return;
-
 	// Update the system stats: (BEFORE: HandleUserInput)
 	m_Timer.Frame();		// Calculate dT for animations (Measure last frame time)
 	m_Fps.Frame();			// Increase the frame counter, calculate FPS once per second
 	fps = m_Fps.GetFps();	// Get current FPS (updated by "m_Fps.Frame()" every second)
 
 #if defined WINDOWS_PLATFORM && !defined WIN_XP
-	m_Cpu.Frame();			// Collect CPU usage percentage once per second
+	m_Cpu.Frame();			// Collect CPU usage percentage, once per second!
 
 	m_Application->dt = m_Timer.GetTime();		// Calculate dT for animations & camera movements (in Mili Seconds)
 #endif
@@ -497,11 +495,12 @@ void SystemClass::ProcessPerformanceStats() // Run every frame
 bool SystemClass::LoadAllGraphics()
 {
 
-	// LOAD ALL INITIAL 3D OBJECTS, that will be rendered@ 1st Frame!
-	//---------------------------------------------------------------
-	if (!m_Application->Initialize(m_Driver))// < ------- Initialize: Load all Application Objects & START TIMER
+	// LOAD ALL INITIAL 3D OBJECTS, that will be rendered@ 1st Frame & START TIMER
+	//----------------------------------------------------------------------------
+	if (!m_Application->Initialize(m_Driver))
 		WOMA::game_state = GAME_STOP;
 
+	//Shutdown VIDEO PLAYER:
 #if defined USE_INTRO_VIDEO_DEMO
 	SAFE_DELETE(g_DShowPlayer);
 #endif
@@ -675,11 +674,6 @@ void SystemClass::InitJoyStick()
 
 void SystemClass::joyStickFrame()
 {
-	static DWORD lastButtons = 0;
-	static DWORD lastXpos = 0, lastYpos = 0, lastZpos = 0;
-	static DWORD lastRpos = 0, lastUpos = 0, lastVpos = 0;
-
-	JOYINFOEX joyInfo;
 	joyInfo.dwSize = sizeof(joyInfo);
 	joyInfo.dwFlags = joyFlags;
 

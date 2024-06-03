@@ -37,7 +37,7 @@
 class GLmodelClass : public VirtualModelClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567829;
+	UINT WomaIntegrityCheck = 1234567831;
 	GLmodelClass(bool model3D=true);
 	~GLmodelClass();
 	void Shutdown();
@@ -78,13 +78,8 @@ public:
 	int GetIndexCount();
 private:
 	GLmathClass	mathClass;
-	//float scale2D;
-
-	float	m_xTexture = 1.0f;
-	float model_fade = 1;
 
 	void SetOpenGLBuffers(UINT sizeofMODELvertex, UINT* indices);
-	UINT* indices;
 	void GetIndices();
 
 	std::vector<ModelColorVertexType>* modelColorVertex;
@@ -97,8 +92,12 @@ private:
 	void SetBuffers(/*GLopenGLclass*/ void*);
 	void RenderBuffers(/*GLopenGLclass*/ void*);
 
-	std::vector<UINT>* indexModelList;
+	//float scale2D;
+	float	m_xTexture = 1.0f;
+	float	model_fade = 1;
 
+	std::vector<UINT>* indexModelList;
+	UINT* indices;
 	bool			Model3D;
 	GLshaderClass*	m_Shader = NULL;
 	UINT			m_vertexCount = NULL, m_indexCount = NULL;

@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: main.h
 // --------------------------------------------------------------------------------------------
@@ -58,7 +59,6 @@ namespace WOMA
 {
 	extern Settings settings;				// Main Settings: settings.h
 	extern UINT		ENGINE_LEVEL_USED;
-
 	// SUBSYSTEM:WINDOWS
 	extern PSTR		Scmdline;
 	extern int		Cmdshow;

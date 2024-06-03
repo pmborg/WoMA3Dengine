@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: GLmodelClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -18,6 +19,7 @@
 // --------------------------------------------------------------------------------------------
 
 #include "platform.h"
+#if defined OPENGL3 && DX_ENGINE_LEVEL >= 21
 #include "womadriverclass.h"
 #include "GLmathClass.h"
 #include "GLopenGLclass.h"
@@ -348,3 +350,4 @@ bool GLshaderClass::SetShaderParameters(SHADER_TYPE shaderType, mat4* worldMatri
 	return true;
 }
 
+#endif

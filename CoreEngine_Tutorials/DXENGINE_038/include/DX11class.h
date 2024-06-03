@@ -204,6 +204,7 @@ WDDM 2.0->Windows 10				Display Drivers or Creates a DXGI 1.4
 #else
 	#include <DirectXMath.h> 
 	using namespace DirectX;
+	    //COMPILE: C:\WoMA3Dengine\ThirdParty\DirectXTex\DirectXTex-jan2023\DirectXTex_Desktop_2022_Win10.sln
 		#if _DEBUG
 		#pragma comment(lib, "Libs/x64/Debug/DirectX11TK.lib")
 		#pragma comment(lib, "/WoMA3Dengine/ThirdParty/DirectXTex/DirectXTex-jan2023/DirectXTex/Bin/Desktop_2022_Win10/x64/Debug/DirectXTex.lib")

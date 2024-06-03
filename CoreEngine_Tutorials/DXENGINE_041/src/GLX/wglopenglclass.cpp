@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: wGLopenGLclass.cpp
 // --------------------------------------------------------------------------------------------
@@ -18,6 +19,7 @@
 // --------------------------------------------------------------------------------------------
 
 #include "platform.h"
+#if defined OPENGL3 && defined WINDOWS_PLATFORM && DX_ENGINE_LEVEL >= 19  // Initializing Engine && defined WINDOWS_PLATFORM
 #include "womadriverclass.h"
 #include "GLmathClass.h"
 #include "GLopenGLclass.h"
@@ -273,3 +275,4 @@ void wGLopenGLclass::EndScene(UINT monitorWindow)
 	ASSERT ( SwapBuffers(m_deviceContext) );
 }
 
+#endif

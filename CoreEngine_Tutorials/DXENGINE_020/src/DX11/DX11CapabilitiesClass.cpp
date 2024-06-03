@@ -15,10 +15,10 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//
 // PURPOSE: 
-//
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567831;
+
 #include "platform.h"
 #include <d3d11.h>
 #pragma warning( disable : 4324 )	// 4324: '': structure was padded due to __declspec(align())

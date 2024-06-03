@@ -1,5 +1,4 @@
 <woma>
   <world hVisibility="128" seaLevel="0" size="512" patchSize="64" skyDayTexture="" skyNightTexture=""/>
-  <object fromPage="35" toPage="35" depend="0" scale="1" posX="0" posZ="0" translateY="" 
-          rotX="" rotY="" rotZ="" shader="" filename="engine/data/scene30/squareBump.obj"/>
+  <object fromPage="35" toPage="35" depend="0" scale="1" posX="0" posZ="0" translateY="" rotX="" rotY="" rotZ="" shader="" filename="engine/data/scene30/squareBump.obj"/>
 </woma>

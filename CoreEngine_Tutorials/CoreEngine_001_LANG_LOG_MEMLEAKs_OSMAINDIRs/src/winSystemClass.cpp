@@ -30,6 +30,7 @@
 // Windows GLOBALS //
 /////////////////////
 
+UINT RENDER_PAGE;
 
 //----------------------------------------------------------------------------------
 WinSystemClass::WinSystemClass() : SystemClass() 

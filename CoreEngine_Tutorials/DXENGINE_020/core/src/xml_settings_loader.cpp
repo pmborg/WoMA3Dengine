@@ -21,7 +21,8 @@
 //  - Debug use local: "settings".xml
 //  - Release use:     C:\Users\<user>\AppData\Local\Pmborg\Woma2017\"settings".xml (WOMA::APPDATA)
 // --------------------------------------------------------------------------------------------
-
+//WomaIntegrityCheck = 1234567831;
+ 
 // --------------------------------------------------------------------------------------------
 // Includes:
 // --------------------------------------------------------------------------------------------
@@ -33,15 +34,16 @@
 
 #include "xml_loader.h"
 
-// --------------------------------------------------------------------------------------------
-// Globals:
-// --------------------------------------------------------------------------------------------
-generalsettings GenSettings;
+XMLloader::XMLloader()
+{
+}
 
-	TiXmlElement* child_screen = NULL;
+XMLloader::~XMLloader()
+{
+}
 
 // -------------------------------------------------------------------------------------------
-bool initAppicationSettings(TCHAR* filename) //Note: Have to be char
+bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 // -------------------------------------------------------------------------------------------
 {
 	if (loadConfigSettings (filename))  // <--- PARSE XML FILE
@@ -118,24 +120,21 @@ bool initAppicationSettings(TCHAR* filename) //Note: Have to be char
 		    SystemHandle->AppSettings->MSAA_X = 8;
 	    }
 
-	#if defined USE_SOUND_MANAGER
-	    SystemHandle->AppSettings->SOUND_ENABLED = (strcmp (GenSettings.soundEffectsEnabled, "true") == 0) ?  true : false;
-	#endif//
-
     } else 
         return false;
 
     return true;
 }
 
+
 // -------------------------------------------------------------------------------------------
-bool loadConfigSettings (TCHAR* file_) // Note: Have to be char
+bool XMLloader::loadConfigSettings (TCHAR* file_) // Note: Have to be char
 // -------------------------------------------------------------------------------------------
 {
 	CHAR file[MAX_STR_LEN] = {0}; 
 	wtoa(file, file_, MAX_STR_LEN); // tchar ==> char
 
-	static TiXmlDocument doc( file );
+	/*static*/ TiXmlDocument doc( file );
 	doc.LoadFile();
 
 	/*<scene>*/TiXmlElement* root = doc.FirstChildElement( "generalsettings" );
@@ -176,16 +175,6 @@ bool loadConfigSettings (TCHAR* file_) // Note: Have to be char
 		//FOG:
 
 		//SOUND:
-	#if defined USE_SOUND_MANAGER
-		/*<sound>*/TiXmlElement* child_sound = root->FirstChildElement( "sound" );
-		if ( child_sound )
-		{
-			/*Element*/TiXmlElement* element = child_sound->ToElement();
-			#if defined USE_SOUND_MANAGER
-			strcpy (GenSettings.soundEffectsEnabled, element->Attribute("effects"));
-			#endif
-		}
-	#endif
 
 		// PLAYER DEFINITIONS:
 

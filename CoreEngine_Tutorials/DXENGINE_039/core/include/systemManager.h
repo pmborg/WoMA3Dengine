@@ -63,7 +63,7 @@ typedef struct
 
 	// OS
 	TCHAR windowsVersion		[MAX_STR_LEN];
-	TCHAR windowsBuildNumber	[MAX_STR_LEN];
+	TCHAR windowsBuildVersion   [MAX_STR_LEN];
 	TCHAR osName				[MAX_STR_LEN];
 
 	// Processor
@@ -141,6 +141,7 @@ public:
 private:
 	//CheckOS:
 	TCHAR* GetOSversionPlatform();
+	TCHAR* GetOsVersion();
 	bool CheckOSVersion ();
 	bool CheckDXGIVersion (bool* REQUIRES_WINDOWS_VISTA_SP2, bool* REQUIRES_UPDATE_KB971644);
 

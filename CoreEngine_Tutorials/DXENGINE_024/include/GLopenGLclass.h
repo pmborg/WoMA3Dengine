@@ -61,7 +61,11 @@
 // gl3w.h its for >= GL3.3 ~DX10	It was designed to target hardware capable of supporting Direct3D 11.
 
 // GLUT - OpenGL Utility Toolkit: Its the DXSDK for OPENGL
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
 #include <GL/glut.h>	// Used for Check():	http://freeglut.sourceforge.net/index.php#download
+#endif
 
 // Windows context loader for all Extensions:
 #include <GL/wglext.h>				// Ver 4.3, download from : http://www.opengl.org/registry/
@@ -76,7 +80,7 @@
 class GLopenGLclass : public WomaDriverClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567890;
+	UINT WomaIntegrityCheck = 1234567831;
 	GLopenGLclass();
 	~GLopenGLclass();
 	void Shutdown2D();
@@ -107,19 +111,10 @@ public:
 	void TurnOnAlphaBlending();
 	void TurnOffAlphaBlending();
 
-	#if defined INTRO_DEMO || defined USE_DXDRIVER_FONTS
-	void addText(int Xpos, int Ypos, TCHAR* text, float R, float G, float B);
-	void RenderDriverText();
-	#endif
-
 	void GetWorldMatrix(float*);
 	void GetProjectionMatrix(float*);
 	void GetVideoCardInfo(char*);
 	void BuildOrthoMatrix(mat4* matrix, float screenWidth, float screenHeight, float screenNear, float screenDepth, bool leftHand);
-
-	#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
-	ImageLoaderClass* CaptureScreenShot(int screenWidth, int screenHeight);
-	#endif
 
 public:
 	mat4 m_projectionMatrix;
@@ -127,7 +122,7 @@ public:
 
 	int GLMajorVer, GLMinorVer;
 
-	GLcameraClass* m_Camera;
+	GLcameraClass* gl_Camera = NULL;
 
 private:
 	HDC m_deviceContext;

@@ -17,6 +17,8 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
+#pragma warning ( push )
+#pragma warning ( disable : 4101 ) //warning C4101 : 'cameraPosition' : unreferenced local variable
 
 #include "OSengine.h"
 #include <d3d11.h>
@@ -36,7 +38,6 @@
 #pragma comment(lib, "d3dcompiler.lib")
 #endif
 
-//#include "SystemPlatform.h"			// Get [SystemHandle] Pointer to System Class: WINDOWS, LINUX & ANDROID
 #include "WinSystemClass.h"
 
 shaderTree* shaderManager = NULL;
@@ -45,6 +46,13 @@ extern shaderTree shaderManager_40[];
 extern shaderTree shaderManager_41[];
 extern shaderTree shaderManager_50[];
 extern shaderTree shaderManager_51[];
+
+#ifndef DEG2RAD
+	#define DEG2RAD(x)  ((float)(x) * (PI/180.0f))
+#endif
+#ifndef RAD2DEG
+	#define RAD2DEG(x)  ((float)(x) * (180.0f/PI))
+#endif
 
 // 21 Vertex: SHADER_COLOR: v + Kd
 /*struct VSIn
@@ -57,7 +65,7 @@ static const D3D11_INPUT_ELEMENT_DESC colorPolygonLayout11[] =
 	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,	0, 0,							 D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
-#if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009  && D3D11_SPEC_DATE_YEAR > 2009
+#if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009
 static const D3D12_INPUT_ELEMENT_DESC colorPolygonLayout[] =
 {
 	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,		0, 0,							 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
@@ -96,7 +104,7 @@ namespace DirectX {
 	DXshaderClass::DXshaderClass(UINT ShaderVersion_H, UINT ShaderVersion_L, bool shader_3D)
 	{
 		CLASSLOADER();
-		WomaIntegrityCheck = 1234567890;
+		WomaIntegrityCheck = 1234567831;
 		
 #if defined DX9sdk
 		m_driver9 = ((DirectX::DX9Class*)SystemHandle->m_Driver);
@@ -128,7 +136,6 @@ namespace DirectX {
 		texture11 = NULL;
 		texture11_2 = NULL;
 
-
 		// VERTEX CBUFFER:
 		// --------------------------------------------------------------------------------------------
 		// BLOCK: VS1
@@ -144,14 +151,15 @@ namespace DirectX {
 
 		// BLOCK: VS3
 		//lightDirection;	// Not Initialixed
-
 		ambientColor = XMFLOAT4(0, 0, 0, 0);;	// LIGHT: Ka
 		diffuseColor = XMFLOAT4(1, 1, 1, 0);;	// LIGHT: Kd
 		emissiveColor = XMFLOAT4(0, 0, 0, 0);;	// LIGHT: Ke
 
 		// BLOCK4:
+		fogStart = 0;
+		fogEnd = 0;
 		castShadow = false;
-		//VSpad1	// Not Initialixed
+		//VSpad2
 
 		// PIXEL CBUFFER:
 		// --------------------------------------------------------------------------------------------
@@ -164,7 +172,7 @@ namespace DirectX {
 		hasTexture = false;
 		//hasLight = false;		//repeated in VS
 		//hasSpecular = false;	//repeated in VS
-		isFont = false;
+		isFontShader = false;
 
 		// BLOCK3:
 		//XMFLOAT4	ambientColor;	// LIGHT: Ka //repeated in VS
@@ -174,14 +182,14 @@ namespace DirectX {
 
 		// BLOCK4:
 		hasColorMap = false;		// 66
-		lightType = 0;				// Future
+		lightType = 1;				// 29
 		shaderType = 0;				// Future
 		shaderTypeParameter = 0;	// Future
 
 		// BLOCK5:
 		hasAlfaColor = false;
 		alfaColor = 1;
-		fade = 1;	// Time since Beg.
+		PSfade = true;	// Time since Beg.
 
 		// BLOCK6:
 		//BOOL		hasFog;		//repeated in VS
@@ -217,9 +225,10 @@ namespace DirectX {
 	}
 #endif
 
-	bool DXshaderClass::Initialize(TCHAR* objectName, SHADER_TYPE shaderType, /*ID3D11Device*/ void* device, HWND hwnd, PRIMITIVE_TOPOLOGY PrimitiveTopology, bool useGS)
+	bool DXshaderClass::Initialize(INT Id, TCHAR* objectName, SHADER_TYPE shaderType, /*ID3D11Device*/ void* device, HWND hwnd, PRIMITIVE_TOPOLOGY PrimitiveTopology, bool useGS)
 	{
 		bool result = false;
+		m_ObjId = Id;
 		m_shaderType = shaderType;
 		bUseGS = useGS;
 		MODEL_NAME = objectName;
@@ -333,6 +342,8 @@ namespace DirectX {
 			}
 			break;
 
+		default:
+			throw woma_exception("WRONG SHADER!", __FILE__, __FUNCTION__, __LINE__);
 		}
 
 		std::wstring vsFilename = L"";
@@ -359,20 +370,15 @@ namespace DirectX {
 			vertexHLSL.append("MyVertexShader022Texture");
 			pixelHLSL.append("MyPixelShader022Texture");
 			break;
-		case SHADER_TEXTURE_LIGHT:
-			vsFilename.append(L"hlsl/023Light.hlsl");
-			psFilename = vsFilename;
-			vertexHLSL.append("MyVertexShader023Light");
-			pixelHLSL.append("MyPixelShader023Light");
-			break;
-		case SHADER_TEXTURE_FONT:
-			vsFilename.append(L"hlsl/027Texture.hlsl");
-			psFilename = vsFilename;
-			vertexHLSL.append("MyVertexShader027Texture");
-			pixelHLSL.append("MyPixelShader027Texture");
+		default:
+			WomaFatalExceptionW(TEXT("This Shader type is not supported yet!"));
 			break;
 		};
-		//AQUI
+
+#if _DEBUG
+		WOMA_LOGManager_DebugMSG(L"vertexHLSL [%s]\n", vsFilename.c_str());
+#endif
+
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 		{
 			// GET SHADER CODE:
@@ -435,16 +441,17 @@ namespace DirectX {
 #else
 			vertVer.append(SystemHandle->driverList[SystemHandle->AppSettings->DRIVER]->ShaderModel);  //TEXT("vs_5_0")
 #endif
-			result = D3DCompileFromFile(vsFilename.c_str(), defines/*NULL*/, D3D_COMPILE_STANDARD_FILE_INCLUDE, vertexHLSL.c_str(), vertVer.c_str(), compileFlags, 0, &vertexShaderBuffer, &errorMessage);
+			result = D3DCompileFromFile(vsFilename.c_str(), defines/*NULL*/, D3D_COMPILE_STANDARD_FILE_INCLUDE, vertexHLSL.c_str(), "vs_5_0"/*vertVer.c_str()*/, compileFlags, 0, &vertexShaderBuffer, &errorMessage);
 			if (FAILED(result))
 			{
-				WOMA::WomaMessageBox((TCHAR*)errorMessage->GetBufferPointer(), TEXT("SHADER Error description :"));
-				if (errorMessage)
+				if (errorMessage) {
+					WOMA::WomaMessageBox((TCHAR*)errorMessage->GetBufferPointer(), TEXT("SHADER Error description :"));
 					WOMA_LOGManager_DebugMSG("SHADER Error description:\n%s", (LPCSTR)errorMessage->GetBufferPointer());
+				}
 				return false;
 			}
 			vertVer[0] = 'p';  //TEXT("ps_5_0")
-			result = D3DCompileFromFile(vsFilename.c_str(), defines/*NULL*/, D3D_COMPILE_STANDARD_FILE_INCLUDE, pixelHLSL.c_str(), vertVer.c_str(), compileFlags, 0, &pixelShaderBuffer, &errorMessage);
+			result = D3DCompileFromFile(vsFilename.c_str(), defines/*NULL*/, D3D_COMPILE_STANDARD_FILE_INCLUDE, pixelHLSL.c_str(), "ps_5_0"/*vertVer.c_str()*/, compileFlags, 0, &pixelShaderBuffer, &errorMessage);
 			if (FAILED(result))
 			{
 				WOMA::WomaMessageBox((TCHAR*)errorMessage->GetBufferPointer(), TEXT("SHADER Error description :"));
@@ -454,19 +461,15 @@ namespace DirectX {
 			}
 #endif
 
-
 			// Create the vertex shader from the buffer: (LOAD & COMPILE EXTERNAL FILE)
 			result = device11->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &m_vertexShader11);
 			if (FAILED(result))
-				WOMA::WomaMessageBox(TEXT("ERROR"), TEXT("CreateVertexShader:"));
-			IF_FAILED_RETURN_FALSE(result);
+				{ WOMA::WomaMessageBox(TEXT("ERROR"), TEXT("CreateVertexShader:")); return false; }
 
 			// Create the pixel shader from the buffer: (LOAD & COMPILE EXTERNAL FILE)
 			result = device11->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &m_pixelShader11);
 			if (FAILED(result))
-				WOMA::WomaMessageBox(TEXT("ERROR"), TEXT("pixelShaderBuffer:"));
-			IF_FAILED_RETURN_FALSE(result);
-
+				{ WOMA::WomaMessageBox(TEXT("ERROR"), TEXT("pixelShaderBuffer:")); return false; }
 
 			// Create the vertex input layout.
 #if !defined USE_PRECOMPILED_SHADERS
@@ -480,7 +483,7 @@ namespace DirectX {
 			SAFE_RELEASE(vertexShaderBuffer);
 			SAFE_RELEASE(pixelShaderBuffer);
 #else
-	// Create the Vertex Shader from the buffer: (GET CODE ON "EXE")
+			// Create the Vertex Shader from the buffer: (GET CODE ON "EXE")
 			result = device11->CreateVertexShader(shaderManager[shaderType].blobVS, shaderManager[shaderType].sizeVS, NULL, &m_vertexShader);
 			if (FAILED(result)) { WomaFatalExceptionW(TEXT("Error: CreateVertexShader")); return false; }
 
@@ -496,7 +499,6 @@ namespace DirectX {
 			}
 			// GS
 #endif
-
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -526,19 +528,19 @@ namespace DirectX {
 				// | Root Signature		| Shader Registers	|
 				// |0| DescriptorTable  | b0				|
 				// |1| DescriptorTable  | t0				|
-
-				srvHeapDesc.NumDescriptors = 2; // = Num. InitAsDescriptorTable: D3D12_DESCRIPTOR_RANGE_TYPE_CBV + D3D12_DESCRIPTOR_RANGE_TYPE_SRV
+				srvHeapDesc.NumDescriptors = 2; 
 				break;
 			}
-
+ 
+			default:
+				throw woma_exception("WRONG SHADER!", __FILE__, __FUNCTION__, __LINE__);
 			}
 
 			srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 			srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 
-
 			// IF Failed ?: | Root Signature		| Shader Registers	|   ---> dont match with HLSL code:
-			result = device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&mSrvDescriptorHeap));
+			result = device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&DX12mSrvDescriptorHeap));
 			if (FAILED(result))
 			{
 				WOMA::WomaMessageBox(TEXT("CreateDescriptorHeap"), TEXT("DX12 ERROR:"));
@@ -546,7 +548,7 @@ namespace DirectX {
 			}
 
 #ifdef _DEBUG
-			mSrvDescriptorHeap->SetName(L"VERTEX Constant Buffer View Descriptor Heap");
+			DX12mSrvDescriptorHeap->SetName(L"Constant Buffer(s) View Descriptor Heap");
 #endif
 
 			m_CbvSrvDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
@@ -559,21 +561,23 @@ namespace DirectX {
 
 			switch (shaderType)
 			{
+			case SHADER_COLOR:
+				break;
 			case SHADER_TEXTURE:					// ENGINE_LEVEL 22
 			case SHADER_TEXTURE_LIGHT:				// ENGINE_LEVEL 23
 			case SHADER_TEXTURE_FONT:
 			case SHADER_TEXTURE_LIGHT_RENDERSHADOW:	// ENGINE_LEVEL 45
-				/*
+			#if defined TEX_MODE_BORDER
 				sampler.Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
 				sampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
 				sampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
 				sampler.AddressW = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
-				*/
+			#else
 				sampler.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
 				sampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 				sampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 				sampler.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-
+			#endif
 				sampler.MipLODBias = 0;
 				sampler.MaxAnisotropy = 0;
 				sampler.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
@@ -584,6 +588,9 @@ namespace DirectX {
 				sampler.RegisterSpace = 0;
 				sampler.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 				break;
+
+			default:
+				throw woma_exception("WRONG SHADER!", __FILE__, __FUNCTION__, __LINE__);
 			}
 
 			switch (shaderType)
@@ -642,18 +649,12 @@ namespace DirectX {
 				break;
 			}
 
+			default:
+				throw woma_exception("WRONG SHADER!", __FILE__, __FUNCTION__, __LINE__);
 			}
 
 			ComPtr<ID3DBlob> error;
 			ComPtr<ID3DBlob> signature;
-			result = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error);
-			if (FAILED(result))
-			{
-				//TIP: This means that probably the procedure names on HLSL dont match with what was defined above.
-				WOMA::WomaMessageBox(TEXT("D3D12SerializeRootSignature"), TEXT("DX12 ERROR:"));
-				WOMA_LOGManager_DebugMSGAUTO((char*)error->GetBufferPointer());
-				return false;
-			}
 			result = device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&m_rootSignature));
 			if (FAILED(result))
 			{
@@ -667,7 +668,6 @@ namespace DirectX {
 #endif
 				ThrowIfFailed(result);
 			}
-
 
 			if (!(polygonLayout && numElements && m_rootSignature))
 			{
@@ -824,11 +824,13 @@ namespace DirectX {
 					cbvDesc[0].SizeInBytes = c_alignedVSConstantBufferSize; 	// CB size is required to be 256-byte aligned.
 
 					// CBV
-					CD3DX12_CPU_DESCRIPTOR_HANDLE cbvHandle0(mSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), 0, 0);
+					CD3DX12_CPU_DESCRIPTOR_HANDLE cbvHandle0(DX12mSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), 0, 0);
 					device->CreateConstantBufferView(&cbvDesc[0], cbvHandle0);
 				}
 				break;
 
+				default:
+					throw woma_exception("WRONG SHADER!", __FILE__, __FUNCTION__, __LINE__);
 				}
 
 			}
@@ -863,9 +865,6 @@ namespace DirectX {
 
 			/*
 			--------------------------------------------------------------------------------------------
-			Source:
-			http://msdn.microsoft.com/en-us/library/dn642451.aspx
-
 			1    Point filtering (least expensive, worst visual quality)    D3D11_FILTER_MIN_MAG_MIP_POINT;
 			2    Bilinear filtering                                         D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
 			3    Trilinear filtering                                        D3D11_FILTER_MIN_MAG_MIP_LINEAR;
@@ -929,7 +928,7 @@ namespace DirectX {
 	}
 
 	// ----------------------------------------------------------------------------------------
-	void DXshaderClass::SetShaderParameters(/*ID3D11DeviceContext*/ void* Device_Context,
+	void DXshaderClass::SetShaderParameters(UINT pass, /*ID3D11DeviceContext*/ void* Device_Context,
 		XMMATRIX* worldMatrix, XMMATRIX* viewMatrix, XMMATRIX* projectionMatrix,
 		XMMATRIX* lightViewMatrix, XMMATRIX* ShadowProjectionMatrix)
 		// ----------------------------------------------------------------------------------------
@@ -937,7 +936,7 @@ namespace DirectX {
 		HRESULT result;
 		ID3D11DeviceContext* deviceContext11 = ((ID3D11DeviceContext*)Device_Context);
 
-		VSconstantBufferType* dataVSptr = NULL;	// Reset Pointer, only once:
+		VSconstantBufferType* dataVSptr = NULL;				// Reset Pointer, only once:
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 			dataVSptr = &mVS_constantBufferData;	// Pointer to Static Buffer
@@ -958,28 +957,32 @@ namespace DirectX {
 		// BOTH: DX11 and DX12
 		//
 
-	//#if !defined USE_PRECOMPILED_SHADERS // ORIGINAL CODE: rastertek
-	//	dataVSptr->world = XMMatrixTranspose (*worldMatrix);		// Copy the matrices into the constant buffer.
-	//	dataVSptr->view = XMMatrixTranspose (*viewMatrix);		
-	//	dataVSptr->projection = XMMatrixTranspose (*projectionMatrix);
-	//#else
-		// Copy the matrices into the Constant buffer:
-		XMMATRIX WV = (*worldMatrix) * (*viewMatrix);
+		// Copy the matrices into the constant buffer.
 		dataVSptr->world = XMMatrixTranspose(*worldMatrix);
-		dataVSptr->WV = XMMatrixTranspose(WV);						// Pre compute WV to reuse in all Vertices
-		dataVSptr->WVP = XMMatrixTranspose(WV * (*projectionMatrix));	// Pre compute WVP to reuse in all Vertices
-		//#endif
 
-	// BLOCK: VS2
+		if (VS_USE_WVP) {
+			XMMATRIX WV = (*worldMatrix) * (*viewMatrix);
+			dataVSptr->WV = XMMatrixTranspose(WV);							// Pre compute WV to reuse in all Vertices
+			dataVSptr->WVP = XMMatrixTranspose(WV * (*projectionMatrix));	// Pre compute WVP to reuse in all Vertices
+		}
+		else {
+			dataVSptr->view = XMMatrixTranspose(*viewMatrix);
+			dataVSptr->projection = XMMatrixTranspose(*projectionMatrix);
+		}
+
+		// BLOCK: VS2
 		dataVSptr->VShasLight = hasLight;
 		dataVSptr->VShasSpecular = hasSpecular;
-		dataVSptr->VShasNormMap = hasNormMap;
+		dataVSptr->VShasNormMap = hasNormMap; //BUMPMAP
 		dataVSptr->VShasFog = hasFog;
 
 		// BLOCK: VS4
 
-		// BLOCK: VS6
 		dataVSptr->VShasShadowMap = castShadow;
+
+		dataVSptr->VS_USE_WVP = VS_USE_WVP;
+
+		// BLOCK: VS5
 
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
@@ -989,7 +992,6 @@ namespace DirectX {
 			memcpy(m_pMappedVSConstantBuffer, &mVS_constantBufferData, sizeof(mVS_constantBufferData));
 		}
 #endif
-
 
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 		{
@@ -1021,18 +1023,23 @@ namespace DirectX {
 		dataPSptr->hasTexture = hasTexture; // NO? use pixelColor
 		dataPSptr->hasLight = hasLight;
 		dataPSptr->hasSpecular = hasSpecular;
-		dataPSptr->isFont = isFont;
+		dataPSptr->isFont = isFontShader;
 
 		// BLOCK4:
 		dataPSptr->hasColorMap = hasColorMap;
-		dataPSptr->lightType = lightType;
+		if (RENDER_PAGE >= 26) {
+			dataPSptr->lightType = 2;
+		}
+		else
+			dataPSptr->lightType = lightType;
+
 		dataPSptr->shaderType = shaderType;
 		dataPSptr->shaderTypeParameter = shaderTypeParameter;
 
 		// BLOCK5:
 		dataPSptr->hasAlfaColor = hasAlfaColor;
 		dataPSptr->alfaColor = alfaColor;
-		dataPSptr->fade = fade;	// BASE TEXTURE!
+		dataPSptr->fade = PSfade;	// BASE TEXTURE!
 
 		// BLOCK6:
 		dataPSptr->hasFog = hasFog;
@@ -1043,6 +1050,13 @@ namespace DirectX {
 		// BLOCK7:
 		// cameraPosition	// NOT USED!
 		dataPSptr->castShadow = castShadow;
+#if defined RENDER_OBJ_WITH_SPECULAR_SHININESS // Shininess + Specular
+		if (hasSpecular)
+		{
+			dataPSptr->specularColor = specularColor;
+			dataPSptr->nShininess = nShininess;
+		}
+#endif
 
 		// ----------------------------------------------------------------------------
 
@@ -1051,14 +1065,10 @@ namespace DirectX {
 			deviceContext11->Unmap(m_PixelShaderBuffer11, 0);	// Unlock the constant buffer.
 			deviceContext11->PSSetConstantBuffers(0, 1, &m_PixelShaderBuffer11);
 		}
-
-		// GEOMETRY Shader
-		//if (bUseGS)
-		//    deviceContext->GSSetConstantBuffers(0, 1, /*m_shaderParametersBuffer*/ &m_shaderParametersVertexBuffer);    // Set PIPE: VS => GS => PS
 	}
 
 
-	void DXshaderClass::RenderShader(/*ID3D11DeviceContext*/ void* Device_Context, int indexCount, int start)
+	void DXshaderClass::RenderShader(UINT pass, /*ID3D11DeviceContext*/ void* Device_Context, int texture_index, int indexCount, int start)
 	{
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 		{
@@ -1073,10 +1083,13 @@ namespace DirectX {
 			deviceContext->PSSetShader(m_pixelShader11, NULL, 0);			// Set the pixel code that will be used to process pixels
 
 			// GS
-			if (bUseGS)
+			if (bUseGS) {
+				// [VS] -> HS -> DS -> [GS] -> [PS]
+				// Set PIPE: VS => GS -> PS
+				deviceContext->HSSetShader(NULL, NULL, 0);
+				deviceContext->DSSetShader(NULL, NULL, 0);
 				deviceContext->GSSetShader(m_geometryShader11, NULL, 0);
-			else
-			{
+			} else {
 				// [VS] -> HS -> DS -> GS -> [PS]
 				// Set PIPE: VS => PS
 				deviceContext->HSSetShader(NULL, NULL, 0);
@@ -1090,10 +1103,8 @@ namespace DirectX {
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 		{
-#define driver m_driver
-
 			// Set necessary state:
-			driver->m_commandList->SetGraphicsRootSignature(m_rootSignature.Get());
+			m_driver->m_commandList->SetGraphicsRootSignature(m_rootSignature.Get());
 
 			/*
 			// For Debug:
@@ -1108,62 +1119,66 @@ namespace DirectX {
 			TRANSPARENT_PIPELINE_STATES 1
 			*/
 			{
-				UINT cullMode = driver->m_CullMode;
-				UINT fillMode = driver->m_fillMode;
+				UINT cullMode = m_driver->m_CullMode;
+				UINT fillMode = m_driver->m_fillMode;
 
 				BOOL alphaBlend = SOLID_PIPELINE_STATES;
-				BOOL zBuffer = driver->g_Zbuffer;
+				BOOL zBuffer = m_driver->g_Zbuffer;
 
-				driver->m_commandList->SetPipelineState(m_pipelineState[zBuffer][cullMode][fillMode][alphaBlend].Get());
+				m_driver->m_commandList->SetPipelineState(m_pipelineState[zBuffer][cullMode][fillMode][alphaBlend].Get());
 			}
 
 			switch (m_shaderType)
 			{
 			case SHADER_COLOR:
 			{
-				ID3D12DescriptorHeap* ppHeaps[] = { mSrvDescriptorHeap.Get() };
-				driver->m_commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
+				ID3D12DescriptorHeap* ppHeaps[] = { DX12mSrvDescriptorHeap.Get() };
+				m_driver->m_commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 				// SHADER_COLOR:
 				// | Root Signature		| Shader Registers	|
 				// |0| DescriptorTable  | b0				|
 
 				// CBV
-				auto offSet = mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
-				driver->m_commandList->SetGraphicsRootDescriptorTable(0, offSet); //C0 Set "Constant Buffer View" 
+				auto offSet = DX12mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
+				m_driver->m_commandList->SetGraphicsRootDescriptorTable(0, offSet); //C0 Set "Constant Buffer View" 
 			}
 			break;
 
 			case SHADER_TEXTURE:
 			{
-				ID3D12DescriptorHeap* ppHeaps[] = { mSrvDescriptorHeap.Get() };
-				driver->m_commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
+				ID3D12DescriptorHeap* ppHeaps[] = { DX12mSrvDescriptorHeap.Get() };
+				m_driver->m_commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 				// | Root Signature		| Shader Registers	|
 				// |1| DescriptorTable  | b0				|
 				// |0| DescriptorTable  | t0				|
 
 				// CBV
-				auto offSet = mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
-				driver->m_commandList->SetGraphicsRootDescriptorTable(0, offSet);	//C0 Set "Constant Buffer View" 
+				auto offSet = DX12mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
+				m_driver->m_commandList->SetGraphicsRootDescriptorTable(0, offSet);	//C0 Set "Constant Buffer View" 
+				offSet.ptr += m_CbvSrvDescriptorSize;
 
 				// SRV:
-				offSet.ptr += m_CbvSrvDescriptorSize;
-				driver->m_commandList->SetGraphicsRootDescriptorTable(1, offSet);	//T0 Set Texture
+				m_driver->m_commandList->SetGraphicsRootDescriptorTable(1, offSet);	//T0 Set Texture
 			}
 			break;
+
+			default:
+				throw woma_exception("WRONG SHADER!", __FILE__, __FUNCTION__, __LINE__);
 			}
 
-			driver->m_commandList->DrawIndexedInstanced(indexCount, 1, start, 0, 0);	// Render Indexed mesh
+			m_driver->m_commandList->DrawIndexedInstanced(indexCount, 1, start, 0, 0);	// Render Indexed mesh
 		}
 #endif
 	}
 
-	void DXshaderClass::Render(/*ID3D11DeviceContext*/ void* Device_Context, int indexCount, XMMATRIX* worldMatrix, XMMATRIX* viewMatrix, XMMATRIX* projectionMatrix)
+	void DXshaderClass::Render(UINT pass,/*ID3D11DeviceContext*/ void* Device_Context, int indexCount, XMMATRIX* worldMatrix, XMMATRIX* viewMatrix, XMMATRIX* projectionMatrix)
 	{
 		ASSERT(indexCount > 0);
 
-		SetShaderParameters(Device_Context, worldMatrix, viewMatrix, projectionMatrix);	// Set the shader parameters that it will use for rendering
-		RenderShader(Device_Context, indexCount);										// Now render the prepared buffers with the shader
+		SetShaderParameters(pass, Device_Context, worldMatrix, viewMatrix, projectionMatrix);	// Set the shader parameters that it will use for rendering
+		RenderShader(pass, Device_Context, /*texture_index*/ 0, indexCount);		// Now render the prepared buffers with the shader
 	}
 
 } // DirectX
 
+#pragma warning ( pop )

@@ -35,10 +35,12 @@
 	#include "Dx9Class.h"
   #endif
 	#include "Dx11Class.h"
+  #if defined OPENGL3
 	#include "womadriverclass.h"	//woma
 	#include "GLmathClass.h"		//woma	
 	#include "GLopenGLclass.h"		//woma
 	#include "wGLopenGLclass.h"		// Windows
+  #endif
 
 #include <fstream>
 using namespace std;
@@ -155,7 +157,7 @@ public:
 	~DXshaderClass();
 	void Shutdown();
 
-	bool Initialize(UINT m_ObjId, TCHAR* objectName, SHADER_TYPE shaderType, /*ID3D11Device*/ void*, HWND, PRIMITIVE_TOPOLOGY PrimitiveTopology, bool useGS = false);
+	bool Initialize(INT m_ObjId, TCHAR* objectName, SHADER_TYPE shaderType, /*ID3D11Device*/ void*, HWND, PRIMITIVE_TOPOLOGY PrimitiveTopology, bool useGS = false);
 	void Render(UINT pass,/*ID3D11DeviceContext*/ void*, int, XMMATRIX*, XMMATRIX*, XMMATRIX*);
 	void SetShaderParameters(UINT pass, /*ID3D11DeviceContext*/ void* deviceContext,
 								XMMATRIX* worldMatrix, XMMATRIX* viewMatrix, XMMATRIX* projectionMatrix,

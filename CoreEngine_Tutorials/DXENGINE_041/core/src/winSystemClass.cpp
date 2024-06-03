@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: winSystemclass.cpp
 // --------------------------------------------------------------------------------------------
@@ -40,10 +41,12 @@
 
 #include "WomaDriverClass.h"
 #include "dxWinSystemClass.h"
+#if defined OPENGL3
 #include "womadriverclass.h"	//woma
 #include "GLmathClass.h"		//woma	
 #include "GLopenGLclass.h"		//woma
 #include "wGLopenGLclass.h"		// Windows
+#endif
 
 /////////////////////
 // Windows GLOBALS //
@@ -89,8 +92,12 @@ bool WinSystemClass::newDriver()
 		break;
 
 	case DRIVER_GL3:
+	#ifdef OPENGL3
 		m_contextDriver = NEW wGLopenGLclass;		// Create the OpenGL object for windows
 		
+	#else
+		WOMA::WomaMessageBox(TEXT("The selected driver GL3 is not available at this build"), TEXT("FATAL"), MB_OK);
+	#endif
 		break;
 	}
 
@@ -186,8 +193,10 @@ bool WinSystemClass::InitializeSystem()
 
 	IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 
 
+#if CORE_ENGINE_LEVEL >= 10 && defined OPENGL3	//Create NEW CONTEXT Class: m_contextDriver
 	if (AppSettings->DRIVER == DRIVER_GL3)
 		IF_NOT_RETURN_FALSE(newDriver());
+#endif
 
 	IF_NOT_RETURN_FALSE(ApplicationInitMainWindow());		// CREATE: The/all "MainWindow(s) + INIT DX/GL "rendering-device"
 
@@ -239,7 +248,7 @@ void WinSystemClass::InitializeSetupScreen(int x, int y)
 	text.y += (int)LINE_SPACE; text.label = systemDefinitions.windowsVersion;
 	TextToPrint[0].push_back(text);
 
-	text.y += (int)LINE; text.label = systemDefinitions.windowsBuildNumber;
+	text.y += (int)LINE; text.label = systemDefinitions.windowsBuildVersion;
 	TextToPrint[0].push_back(text);
 
 	text.y += (int)LINE; text.label = systemDefinitions.osName;

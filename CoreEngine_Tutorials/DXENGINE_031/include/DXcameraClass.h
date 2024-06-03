@@ -20,6 +20,7 @@
 #pragma once
 
 #include "platform.h"
+#include <d3d11.h>
 
 #if defined DX9sdk
 	//////////////

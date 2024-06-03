@@ -159,7 +159,7 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 	#if defined USE_PLAY_MUSIC
 	    SystemHandle->AppSettings->MUSIC_ENABLED = (strcmp (GenSettings.musicEnabled, "true") == 0) ?  true : false;
 	#endif//
-	#if defined USE_SOUND_MANAGER
+	#if DX_ENGINE_LEVEL >= 29 && defined USE_SOUND_MANAGER
 	    SystemHandle->AppSettings->SOUND_ENABLED = (strcmp (GenSettings.soundEffectsEnabled, "true") == 0) ?  true : false;
 	#endif//
 
@@ -203,18 +203,17 @@ bool XMLloader::loadWorld (TCHAR* file_) // Note: Have to be char
 				object3d.toPage = atoi(element->Attribute("toPage"));
 				object3d.depend = atoi(element->Attribute("depend"));
 
-				object3d.scale = atof(element->Attribute("scale"));
-				object3d.posX = atof(element->Attribute("posX"));
-				object3d.posZ = atof(element->Attribute("posZ"));
-				object3d.translateY = atof(element->Attribute("translateY"));
+				object3d.scale = (float)atof(element->Attribute("scale"));
+				object3d.posX = (float)atof(element->Attribute("posX"));
+				object3d.posZ = (float)atof(element->Attribute("posZ"));
+				object3d.translateY = (float)atof(element->Attribute("translateY"));
 
-				object3d.rotX = atof(element->Attribute("rotX"));
-				object3d.rotY = atof(element->Attribute("rotY"));
-				object3d.rotZ = atof(element->Attribute("rotZ"));
+				object3d.rotX = (float)atof(element->Attribute("rotX"));
+				object3d.rotY = (float)atof(element->Attribute("rotY"));
+				object3d.rotZ = (float)atof(element->Attribute("rotZ"));
 
 				object3d.shader = atoi(element->Attribute("shader"));
 				strcpy(object3d.filename, element->Attribute("filename"));
-
 				theWorld.push_back(object3d); // add a new object to our list
 				element = element->NextSiblingElement();
 			} while (element != NULL);
@@ -310,7 +309,7 @@ bool XMLloader::loadConfigSettings (TCHAR* file_) // Note: Have to be char
 		//FOG:
 
 		//SOUND:
-	#if defined USE_SOUND_MANAGER
+	#if DX_ENGINE_LEVEL >= 29 && defined USE_SOUND_MANAGER
 		/*<sound>*/TiXmlElement* child_sound = root->FirstChildElement( "sound" );
 		if ( child_sound )
 		{
@@ -318,7 +317,7 @@ bool XMLloader::loadConfigSettings (TCHAR* file_) // Note: Have to be char
 			#if	defined USE_PLAY_MUSIC
 			strcpy (GenSettings.musicEnabled, element->Attribute("music"));
 			#endif
-			#if defined USE_SOUND_MANAGER
+			#if DX_ENGINE_LEVEL >= 29 && defined USE_SOUND_MANAGER
 			strcpy (GenSettings.soundEffectsEnabled, element->Attribute("effects"));
 			#endif
 		}

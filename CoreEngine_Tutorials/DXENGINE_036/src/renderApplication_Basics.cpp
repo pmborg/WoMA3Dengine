@@ -52,7 +52,7 @@ void ApplicationClass::DemoRender()
 
 	//COLOR TUTORIAL DEMO:
 	// --------------------------------------------------------------------------------------------
-	//DEMO-1: Squar
+	//DEMO-1: Square
 	if (RENDER_PAGE == 21 || FORCE_RENDER_ALL)
 	{
 		m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID); // Render the Inside of Sphere
@@ -61,10 +61,10 @@ void ApplicationClass::DemoRender()
 
 	#if defined ROTATE_SQUARE
 		// Rotate the world matrix by the rotation value so that the Square will spin:
-		m_1stSquar3DColorModel->translation(0, 0, 0);
-		m_1stSquar3DColorModel->rotateY(rY);
+		m_1stSquare3DColorModel->translation(0, 0, 0);
+		m_1stSquare3DColorModel->rotateY(rY);
 	#endif
-		m_1stSquar3DColorModel->Render(m_Driver);
+		m_1stSquare3DColorModel->Render(m_Driver);
 	}
 
 	//DEMO-2: Triangle
@@ -187,7 +187,7 @@ void ApplicationClass::DemoRender()
 		m_SphereModel2->Render(m_Driver);
 	}
 
-	if (RENDER_PAGE == 36 || RENDER_PAGE == 50 || RENDER_PAGE == 51) // Debug Shadow
+	if (RENDER_PAGE == 36 || RENDER_PAGE == 41 || RENDER_PAGE == 42) // Debug Shadow
 		m_2nd3DModel->Render(m_Driver);
 }
 
@@ -217,8 +217,10 @@ void ApplicationClass::AppPreRender(UINT monitorWindow, WomaDriverClass* Driver,
 		// OPAC Parts:
 		for (UINT id = 0; id < SceneManager::GetInstance()->opacModelList.size(); id++)
 		{
-			if (objModel[id]->ModelShaderType != SHADER_TEXTURE_LIGHT_RENDERSHADOW) //if (objModel[id]->ModelCastShadow)
-				RenderModel(monitorWindow, Driver, id, (UINT)PASS_SHADOWS);			//objModel[id]->Render(Driver, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_SHADOWS);
+			if (objModel[id]->ModelShaderType != SHADER_TEXTURE_LIGHT_RENDERSHADOW &&
+				objModel[id]->ModelShaderType != SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED &&
+				objModel[id]->ModelShaderType != SHADER_NORMAL_BUMP_INSTANCED)
+				RenderModel(monitorWindow, Driver, id, (UINT)PASS_SHADOWS);
 		}
 #endif
 	}
@@ -231,26 +233,29 @@ void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, 
 {
 	VirtualModelClass* model = objModel[modelID];
 	((DXmodelClass*)model)->m_worldMatrix = XMMatrixIdentity();
-	float rx = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotX;
+
+	{
+		float rx = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotX;
 		model->rotateX(rx);
 
-	float ry = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotY;
+		float ry = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotY;
 		model->rotateY(ry);
 
-	float rz = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotZ;
-		model->translation(0, 0, 0);
+		float rz = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotZ;
+		model->rotateZ(rz);
+	}
+
+	model->translation(0, 0, 0);
+
 	float scale = SystemHandle->xml_loader.theWorld[model->m_ObjId].scale;
 	model->scale(scale, scale, scale);
-
-	model->rotateZ(rz);
-
-	model->translation(SystemHandle->xml_loader.theWorld[model->m_ObjId].posX,
-		SystemHandle->xml_loader.theWorld[model->m_ObjId].translateY,
-		SystemHandle->xml_loader.theWorld[model->m_ObjId].posZ);
+	
+	model->translation(	SystemHandle->xml_loader.theWorld[model->m_ObjId].posX,
+						SystemHandle->xml_loader.theWorld[model->m_ObjId].translateY,
+						SystemHandle->xml_loader.theWorld[model->m_ObjId].posZ);
 
 	model->Render(driver, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass, lightViewMatrix, ShadowProjectionMatrix);// Pass 2 (Shadow));
 }
-
 
 //#############################################################################################################
 // POS-RENDER - 2D: Render TRANSPARENT Parts of 3D OBJs (like: glass window, etc...)
@@ -269,11 +274,7 @@ void ApplicationClass::AppPosRender()
 	}
 
 	// Render all Rastertek TEXT:
-#if _DEBUG
-	if (RENDER_PAGE >= 27|| FORCE_LOAD_ALL)
-#else
 	if (RENDER_PAGE >= 27)
-#endif
 		AppTextClass->Render(); 
 
 	// Render Native TEXT:
@@ -288,6 +289,7 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 	float fadeLight = 1;
 
 	// TIME Control: Show Debug Info
+	INT64 passedTotalTime = (INT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
 
 	// GET INPUT for CAMERA: Movement
 	HandleUserInput(dt);
@@ -381,6 +383,8 @@ float ApplicationClass::Update(UINT monitorWindow, WomaDriverClass* m_Driver)
 								 (UINT)SystemHandle->xml_loader.theWorld.size());
 
 
+	if (!astroClass)
+		SystemHandle->m_Application->WOMA_APPLICATION_InitGUI();
 	AppTextClass->SetClockTime(astroClass->hour, astroClass->minute);
 
 	AppTextClass->SetLightDirection(m_Light->m_lightDirection.x, m_Light->m_lightDirection.y , m_Light->m_lightDirection.z );
@@ -408,12 +412,10 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 	{
 		// [0] Process INPUT, CAMERA, INTRO animation etc...
 		float dayLightFade = Update(monitorWindow, driver);
+		if (dayLightFade == -100) return;
 
 #if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
 		SceneManager::GetInstance()->opacModelList.clear();			//Reset list of opac objects
-		//#if DX_ENGINE_LEVEL >= 33
-		  //SceneManager::GetInstance()->transparentModelList.clear();	//Reset list of transparent objects
-		//#endif
 		SceneManager::GetInstance()->shadowModelList.clear();		//Reset list of cast shadow objects
 		SceneManager::GetInstance()->Render();						//Process and Create Lists of objects to render
 #endif
@@ -421,10 +423,10 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 		// [1] Render: SHADOWS - Render one Application Frame (Need to be before 3D)
 		AppPreRender(monitorWindow, driver, dayLightFade);
 
-		// [2] RENDER: MAIN - 3D, Render one Application Frame
+		// [2] Render: MAIN - 3D, Render one Application Frame
 		AppRender(monitorWindow, dayLightFade);
 
-		// [3] RENDER: MAIN - 2D (SPRITEs on TOP of 3D) Render one Application Frame. (Need to be after 3D)
+		// [3] Render: MAIN - 2D (SPRITEs on TOP of 3D) Render one Application Frame. (Need to be after 3D)
 		AppPosRender();
 	}
 }
@@ -461,7 +463,6 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 	//#############################################################################################################
 	m_Driver->TurnOffAlphaBlending();
 
-
 #if defined USE_SKYSPHERE && defined USE_SUN && defined USE_MOON
 	if (RENDER_PAGE >= 28)				//30: SKY
 		Render_SKY_SUN_MOON(fadeLight); //34: SUN_MOON
@@ -492,11 +493,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 		RenderModel(monitorWindow, m_Driver, id, PASS_OPAC); //objModel[id]->Render(m_Driver, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_OPAC);
 	}
 #endif
-
 	m_Driver->TurnOnAlphaBlending();
-
-	// 3D STATIC TRANSPARENT OBJECTS
-	// --------------------------------------------------------------------------------------------
 
 	// 3D MESH OBJECTS
 	// ...

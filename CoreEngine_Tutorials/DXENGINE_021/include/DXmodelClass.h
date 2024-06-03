@@ -24,16 +24,7 @@
 //////////////
 #include "platform.h"
 
-#if defined DX_ENGINE
-//////////////
-// INCLUDES //
-//////////////
-#if defined DX9sdk
-#include "DX9Class.h"
-#endif
-
 #include "dx11Class.h"
-
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 #include "DX12Class.h"	//#include "GLopenGLclass.h"
 
@@ -46,37 +37,45 @@ using namespace DirectX;
 
 #endif
 
+#if D3D11_SPEC_DATE_YEAR > 2009
+#define _11 r[0].m128_f32[0]
+#define _12 r[0].m128_f32[1]
+#define _13 r[0].m128_f32[2]
+#define _14 r[0].m128_f32[3]
+
+#define _21 r[1].m128_f32[0]
+#define _22 r[1].m128_f32[1]
+#define _23 r[1].m128_f32[2]
+#define _24 r[1].m128_f32[3]
+
+#define _31 r[2].m128_f32[0]
+#define _32 r[2].m128_f32[1]
+#define _33 r[2].m128_f32[2]
+#define _34 r[2].m128_f32[3]
+
+#define _41 r[3].m128_f32[0]
+#define _42 r[3].m128_f32[1]
+#define _43 r[3].m128_f32[2]
+#define _44 r[3].m128_f32[3]
+#endif
+
+#if defined DX_ENGINE
+//////////////
+// INCLUDES //
+//////////////
+#if defined DX9sdk
+#include "DX9Class.h"
+#endif
+
+
+
 #include "DXshaderClass.h"
 #include "virtualModelClass.h"
 #include "DXbasicTypes.h"
 
+
 namespace DirectX 
 {
-// --------------------------
-// "OBJ" MATERIAL FORMAT:
-// --------------------------
-struct SurfaceMaterial
-{
-	char matName[100];					//size:100 100xchar
-
-	XMFLOAT4 diffuseColor;				//size:16
-	XMFLOAT4 ambientColor;				//size:16
-	XMFLOAT4 emissiveColor;				//size:16
-
-	int texArrayIndex;					//size:4
-	bool hasTexture;					//size:1
-
-	bool transparent;					//size:1	>= 43
-    ID3D11ShaderResourceView* alfaMap11;//size:8	>= 43
-
-    bool bSpecular;						//size:1	>= 44: NEW SPECULAR + SHININESS:
-    XMFLOAT3 specularColor;				//size:12	>= 44: NEW SPECULAR + SHININESS:
-    int nShininess;						//size:4	//>= 44: NEW SPECULAR + SHININESS:
-
-    bool hasNormMap;					//size:1	>=47: NEW BUMP
-    int normMapTexArrayIndex;			//size:4	>=47: NEW BUMP
-	//							TOTAL		 184
-};
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -85,7 +84,8 @@ struct SurfaceMaterial
 class DXmodelClass : public VirtualModelClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567890;
+	UINT WomaIntegrityCheck = 1234567831;
+
 	DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY = TRIANGLELIST, bool computeNormals = false, bool modelHASshadow = false, bool modelRENDERshadow = false);
 	~DXmodelClass();
 	void Shutdown();
@@ -129,13 +129,17 @@ public:
 	XMMATRIX		m_worldMatrix;
 #endif
 
-	XMFLOAT4 objectCenterOffset;
-	XMFLOAT3 minVertex;
-	XMFLOAT3 maxVertex;
+	XMFLOAT4 objectCenterOffset = XMFLOAT4(0, 0, 0, 0);
+	XMFLOAT3 minVertex = XMFLOAT3(0, 0, 0);
+	XMFLOAT3 maxVertex = XMFLOAT3(0, 0, 0);
 
 // ----------------------------------------------------------------------
 private:
 // ----------------------------------------------------------------------
+
+#if defined LOADM3D //ENGINE_LEVEL >= 50
+	bool LoadM3D	(SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow=false, bool renderShadow=false, UINT instanceCount=0);
+#endif
 
 	DXshaderClass* CreateShader(TCHAR* objectName, SHADER_TYPE ShaderType);
 	bool InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* textureFile=NULL);
@@ -145,6 +149,8 @@ private:
 	std::vector<ModelColorVertexType>* modelColorVertex;				// MODEL!
 	std::vector<ModelColorVertexType> modelColorVertex_;				// LOAD M3D
 	bool InitializeColorBuffers(void* g_driver, void* indices);
+
+
 
 	// VARS:
 	// ----------------------------------------------------------------------
@@ -157,7 +163,7 @@ private:
 	DirectX::DX12Class* m_driver = NULL;
 #endif
 
-	UINT sizeofMODELvertex;
+	UINT sizeofMODELvertex=0;
 
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 	// App resources.
@@ -181,6 +187,8 @@ private:
 #endif
 
 	std::vector<UINT>* indexModelList;
+
+
 
 };
 

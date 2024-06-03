@@ -96,14 +96,17 @@ public:
 	VirtualModelClass* m_cube2Model = NULL;
 	VirtualModelClass* m_cube3Model = NULL;
 
-	std::vector<ModelTextureLightVertexType> Sphere_vertexdata;
-	std::vector<UINT>						 Sphere_indexdata;
+	std::vector<ModelTextureLightVertexType> Sphere_vertexdata; //CreateSphereModel()
+	std::vector<UINT>						 Sphere_indexdata;	//CreateSphereModel()
+	void	CreateSphereModel(int SPHERE_SIZE, int Sphere_gridpoints);
 
 	VirtualModelClass*						 m_SphereModel1 = NULL;
 	VirtualModelClass*						 m_SphereModel2 = NULL;
-
-	void	CreateSphereModel(int SPHERE_SIZE, int Sphere_gridpoints);
 	void	initSphere1(float SPHERE_SIZE);
 	void	initSphere2(float SPHERE_SIZE);
+
+#if defined USE_SKY_DOME
+	VirtualModelClass* m_SkyModel = NULL;
+#endif
 
 };

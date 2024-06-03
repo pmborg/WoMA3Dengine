@@ -62,7 +62,7 @@ MiniDumper::MiniDumper()
 	SetUnhandledExceptionFilter( TopLevelFilter );
 
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567891;
+	WomaIntegrityCheck = 1234567831;
 }
 
 MiniDumper::~MiniDumper() {CLASSDELETE();}

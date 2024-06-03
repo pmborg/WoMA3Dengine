@@ -48,6 +48,7 @@
 
 // -------------------------------------------------------------------------------------------------
 
+extern UINT RENDER_PAGE;
 
 #if  defined USE_RASTERTEK_TEXT_FONT
 #include "ApplicationTextClass.h"
@@ -64,7 +65,6 @@
 #else
 #define MAX_TERRAINS 0
 #endif
-
 
 #pragma warning( push )
 #pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
@@ -104,7 +104,7 @@
 class ApplicationClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567890;
+	UINT WomaIntegrityCheck = 1234567831;
 	ApplicationClass();
 	~ApplicationClass();
 	
@@ -124,12 +124,12 @@ public:
 	void Calc3DSunMoonPosition();
 	#endif
 
-	void RenderScene(UINT monitorWindow);
-
+	void RenderScene(UINT monitorWindow, WomaDriverClass* driver);
 	float Update(UINT monitorWindow, WomaDriverClass* m_Driver);					// PROCESS User Update
-	void AppPreRender(float fadeLight);					// PRE-RENDER - Shadows
 	void AppRender(UINT monitorWindow, float fadeLight);	// RENDER - 3D
+#if DX_ENGINE_LEVEL >= 24 || defined USE_VIEW2D_SPRITES
 	void AppPosRender();									// POS-RENDER - 2D: Render 
+#endif
 
 	virtual bool WOMA_APPLICATION_InitGUI();
 
@@ -149,11 +149,6 @@ public:
 	std::vector<UINT>						 sky_indexdata;
 #endif
 
-#if defined USE_SKYSPHERE
-	void	CreateSkyModel(int SKY_SIZE, int sky_gridpoints);
-	void	initSky();
-#endif
-
 #if defined SCENE_WATER_TERRAIN
 	void		initTerrainWaterMeshDemo(UINT terrainId);	
 #endif
@@ -168,12 +163,14 @@ public:
 
 private:
 
+
+
 //VARS:
 // ---------------------------------------------------------------------
 private:
 
+
 public:
-	UINT	RENDER_PAGE=0;
 	float	dt=0;	// Delta time
 
 	//---------------------------------------------------------------------
@@ -188,8 +185,31 @@ public:
 	//	WoMA Vertex(s) Arrays:  NOTE: Cant be used to create and Obj more than ONCE!
 	//	-------------------------------------------------------------------------------------------
 
+public:
+	void DemoRender();
+	void RenderSprites();
+
+	//3D
+	bool DEMO_WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver); // APP_Load
+
+	// 2D
+#if defined INTRO_DEMO || defined USE_VIEW2D_SPRITES
+	bool DEMO_WOMA_APPLICATION_InitializeSprites2D();
+	void DEMO_WOMA_APPLICATION_Shutdown2D();
+#endif
+
+#if defined USE_TITLE_BANNER	//24
+	void	initTitleBanner2D();
+#endif
+
+#if defined USE_TITLE_BANNER //24
+	VirtualModelClass* m_titleModel = NULL;
+#endif
+
+	// TERRAIN
 
 
 };
 
 #endif
+

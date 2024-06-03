@@ -36,6 +36,7 @@
 
 TCHAR MainDeviceName[MAX_STR_LEN];	// Monitor Name
 
+UINT RENDER_PAGE;
 
 //----------------------------------------------------------------------------------
 WinSystemClass::WinSystemClass() : SystemClass() 
@@ -234,8 +235,11 @@ bool WinSystemClass::MyRegisterClass(HINSTANCE hInstance)
 	// ALLOW WIN32 SYSTEM PAINT: (Causes the entire window to redraw if a movement or a size adjustment changes the height of the client area: CS_HREDRAW | CS_VREDRAW)
 	wcex.style = (AppSettings->DRIVER == DRIVER_GL3) ? CS_OWNDC : CS_HREDRAW | CS_VREDRAW; // NOTE: CS_OWNDC is need by OPEN GL: https://www.opengl.org/wiki/Platform_specifics:_Windows
 
+#if DX_CORE_ENGINE_LEVEL < 37
 	wcex.hbrBackground = GetSysColorBrush(COLOR_3DFACE);									//wcex.hbrBackground	= (HBRUSH)GetStockObject(WHITE_BRUSH);	//TO USE THIS COLOR
-
+#else
+	wcex.hbrBackground	= (HBRUSH)GetStockObject(BLACK_BRUSH);	//TO USE THIS COLOR
+#endif
 	wcex.lpszClassName  = WOMA_ENGINE_CLASS;
 
 	wcex.lpfnWndProc	= WndProc;

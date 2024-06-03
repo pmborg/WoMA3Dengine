@@ -39,7 +39,7 @@ struct PSIn
 #if DXAPI11 == 1
 cbuffer VSShaderParametersBuffer// SYNC: DXshaderClass.h
 #endif
-#ifdef  DXAPI12 //#if DXAPI12 == 1
+#if DXAPI12 == 1
 cbuffer VSShaderParametersBuffer : register(b0)
 #endif
 {

@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: winCpuClass.h
 // --------------------------------------------------------------------------------------------
@@ -41,9 +42,7 @@ public:
     WinCpuClass();
     ~WinCpuClass();
 
-	#if defined USE_LOADING_THREADS //ENGINE_LEVEL >= 25
     void SetProcessorAffinity(int cpuNumber);
-	#endif
 
     void Initialize();
     void Shutdown();

@@ -202,6 +202,7 @@ void START_OS_SYSTEM_KERNEL(int argc, char* argv[])
 	// -------------------------------------------------------------------------------------------
 	WOMA::miniDumper = NEW MiniDumper();	// NOTE: After logManager!
 
+#if defined OPENGL3 && CORE_ENGINE_LEVEL >= 10
 	// [6-1] Start LINUX Platform GUI: Settings
 	// -------------------------------------------------------------------------------------------
 	// ALSO: After logManager!
@@ -209,6 +210,7 @@ void START_OS_SYSTEM_KERNEL(int argc, char* argv[])
 	// [7] Start LINUX Platform: "OpenGL" (LoadExtensions)
 	// -------------------------------------------------------------------------------------------
 	glutInit(&WOMA::ARGc, WOMA::ARGv);
+#endif
 }
 
 void OS_ENGINE_STOP()

@@ -80,7 +80,7 @@
 class GLopenGLclass : public WomaDriverClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567891;
+	UINT WomaIntegrityCheck = 1234567831;
 	GLopenGLclass();
 	~GLopenGLclass();
 	void Shutdown2D();
@@ -110,11 +110,6 @@ public:
 	//We have two new functions for turning on and off alpha blending:
 	void TurnOnAlphaBlending();
 	void TurnOffAlphaBlending();
-
-	#if defined INTRO_DEMO || defined USE_DXDRIVER_FONTS
-	void addText(int Xpos, int Ypos, TCHAR* text, float R, float G, float B);
-	void RenderDriverText();
-	#endif
 
 	void GetWorldMatrix(float*);
 	void GetProjectionMatrix(float*);

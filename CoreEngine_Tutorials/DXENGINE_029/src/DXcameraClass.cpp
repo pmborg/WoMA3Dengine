@@ -31,7 +31,7 @@ namespace DirectX
 DXcameraClass::DXcameraClass(UINT camera_type)
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567829;
+	WomaIntegrityCheck = 1234567831;
 
 	//public:
 	m_positionX = m_positionY = m_positionZ = 0.0f;

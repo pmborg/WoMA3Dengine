@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: ImageLoaderClass.h
 // --------------------------------------------------------------------------------------------
@@ -173,7 +174,7 @@ enum FORMAT {
 };
 
 inline int getChannelCount(const FORMAT format){
-	/*static*/ const int chCount[] = {
+const int chCount[] = {
 		0,
 		1, 2, 3, 4,       //  8-bit unsigned
 		1, 2, 3, 4,       // 16-bit unsigned
@@ -191,8 +192,6 @@ inline int getChannelCount(const FORMAT format){
 	};
 	return chCount[format];
 }
-
-// HUMUS:
 // Define some sized types
 typedef unsigned char uint8;
 typedef   signed char  int8;
@@ -240,7 +239,7 @@ private:
 	unsigned char* pixels; //image in 32bits pixels
 
 public:
-	UINT WomaIntegrityCheck = 1234567829;
+	UINT WomaIntegrityCheck = 1234567831;
 	ImageLoaderClass();
 	ImageLoaderClass(FORMAT fmt, int w, int h, int d, int mipMapCount, int arraysize=1);
 	~ImageLoaderClass();
@@ -264,7 +263,6 @@ public:
 
 	bool savePNG(TCHAR *fileName);
 
-public:
 	unsigned int m_textureID;	//OPENGL3 //3.3+
 
 	//DDS

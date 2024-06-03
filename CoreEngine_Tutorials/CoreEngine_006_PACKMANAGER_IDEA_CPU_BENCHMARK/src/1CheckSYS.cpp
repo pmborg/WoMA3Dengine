@@ -17,7 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-
+//WomaIntegrityCheck = 1234567831;
 #include "WinSystemClass.h"
 
 //------------------------------------------------------------------
@@ -135,7 +135,6 @@ bool SystemManager::checkCPU ()
     return true;
 }
 
-#if CORE_ENGINE_LEVEL >= 4 defined WINDOWS_PLATFORM
 DWORDLONG SystemManager::getAvailSystemMemory()
 {
 	// GET ullAvailPhys:
@@ -187,7 +186,6 @@ DWORDLONG SystemManager::getAvailSystemMemory()
 	// Real "Free Mem" = PhysMemAvail - Cached Memory
     return PhysMemAvail - CachedMem;
 }
-#endif
 
 bool SystemManager::checkRAM ()
 {
@@ -417,14 +415,17 @@ bool CheckDEVICEinfo()
 bool SystemManager::CheckIO ()
 {
 	CheckDEVICEinfo();
+	
+	//MORE INFO: https://msdn.microsoft.com/en-us/library/windows/desktop/ms724336%28v=vs.85%29.aspx
+
 	STRING KeyboardStrDescription[] = { TEXT("none"),
 		TEXT("IBM PC/XT or compatible (83-key) keyboard"),	//	1	
-		TEXT("Olivetti \"ICO\" (102-key) keyboard"),			//	2	
+		TEXT("Olivetti \"ICO\" (102-key) keyboard"),		//	2	
 		TEXT("IBM PC/AT (84-key) or similar keyboard"),		//	3	
-		TEXT("IBM enhanced (101- or 102-key) keyboard"),		//	4	
-		TEXT("Nokia 1050 and similar keyboards"),				//	5	
-		TEXT("Nokia 9140 and similar keyboards"),				//	6	
-		TEXT("Laptop Keyboard / Japanese Keyboard"),			//	7
+		TEXT("IBM enhanced (101- or 102-key) keyboard"),	//	4	
+		TEXT("Nokia 1050 and similar keyboards"),			//	5	
+		TEXT("Nokia 9140 and similar keyboards"),			//	6	
+		TEXT("Laptop Keyboard / Japanese Keyboard"),		//	7
 	};
 
 

@@ -18,7 +18,7 @@
 // PURPOSE: SET DEFAULT: "Aplication Settings" (they will be overwritten by "settings.xml" in run-time)
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567891;
+//WomaIntegrityCheck = 1234567831;
 // 
 // --------------------------------------------------------------------------------------------
 // Includes:

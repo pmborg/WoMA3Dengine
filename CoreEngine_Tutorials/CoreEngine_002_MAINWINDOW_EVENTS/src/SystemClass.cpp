@@ -35,12 +35,11 @@
 
 #include "stateMachine.h"
 
-
 SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 {
 	// STARTING POINT of WOMA ENGINE!
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567890;
+	WomaIntegrityCheck = 1234567831;
 
 	AppSettings = NULL;
 
@@ -80,7 +79,7 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 #if defined WIN_XP
 		TEXT("WinXP")
 #elif defined WIN10
-		TEXT("Win10")
+		TEXT("Win10/11")
 #else
 		TEXT("Windows")
 #endif
@@ -154,7 +153,6 @@ void SystemClass::Shutdown()
 
 void SystemClass::FrameUpdate()
 {
-
 }
 
 

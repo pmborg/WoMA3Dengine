@@ -23,7 +23,7 @@
 GLtextureClass::GLtextureClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567890;
+	WomaIntegrityCheck = 1234567831;
 
 	m_textureID = NULL;
 	loaded = false;
@@ -85,7 +85,7 @@ bool GLtextureClass::loadImage(TCHAR *fileName, bool wrap)
 		pixels = ImageLoader.loadDDS(fileName, &width, &height, &imageSize, LOAD_IMAGE_32bits);
 	}
 	else {
-		WomaFatalException (TEXT("IMAGE: Format not supported!"));
+		WomaFatalException ("IMAGE: Format not supported!");
 		return false;
 	}
 

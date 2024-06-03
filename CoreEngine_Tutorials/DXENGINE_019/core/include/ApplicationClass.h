@@ -50,9 +50,9 @@
 
 // -------------------------------------------------------------------------------------------------
 
+extern UINT RENDER_PAGE;
 
 #define MAX_TERRAINS 0
-
 
 #pragma warning( push )
 #pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
@@ -98,7 +98,7 @@
 class ApplicationClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567890;
+	UINT WomaIntegrityCheck = 1234567831;
 	ApplicationClass();
 	~ApplicationClass();
 	
@@ -118,18 +118,14 @@ public:
 	void Calc3DSunMoonPosition();
 	#endif
 
-	void RenderScene(UINT monitorWindow);
-
+	void RenderScene(UINT monitorWindow, WomaDriverClass* driver);
 	float Update(UINT monitorWindow, WomaDriverClass* m_Driver);					// PROCESS User Update
-	void AppPreRender(float fadeLight);					// PRE-RENDER - Shadows
 	void AppRender(UINT monitorWindow, float fadeLight);	// RENDER - 3D
-	void AppPosRender();									// POS-RENDER - 2D: Render 
 
 	virtual bool WOMA_APPLICATION_InitGUI();
 
 	// 3D
-	void	defineSquarModel(float unit);
-	bool	Initialize(/*WomaDriverClass*/ void* Driver);
+	bool	Initialize(WomaDriverClass* Driver);
 
 	// SKY
 #if defined USE_SKY2D || ENGINE_LEVEL >= 27
@@ -137,19 +133,16 @@ public:
 	std::vector<UINT>						 sky_indexdata;
 #endif
 
-#if defined USE_SKYSPHERE
-	void	CreateSkyModel(int SKY_SIZE, int sky_gridpoints);
-	void	initSky();
-#endif
-
 private:
+
+
 
 //VARS:
 // ---------------------------------------------------------------------
 private:
 
+
 public:
-	UINT	RENDER_PAGE=0;
 	float	dt=0;	// Delta time
 
 	//---------------------------------------------------------------------
@@ -166,8 +159,19 @@ public:
 
 	float ClearColor[4]={0};
 
+public:
+	void DemoRender();
+	void RenderSprites();
+
+	//3D
+	bool DEMO_WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver); // APP_Load
+
+	// 2D
+
+	// TERRAIN
 
 
 };
 
 #endif
+

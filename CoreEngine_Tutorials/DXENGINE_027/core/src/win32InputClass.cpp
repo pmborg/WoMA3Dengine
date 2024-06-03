@@ -20,11 +20,12 @@
 #include "main.h"
 
 #include "win32InputClass.h"
+#include "dxWinSystemClass.h"
 
 InputClass::InputClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567890;
+	WomaIntegrityCheck = 1234567831;
 
 	ZeroMemory (&m_keys, sizeof(m_keys));
 }
@@ -37,7 +38,6 @@ void InputClass::Initialize()
 	for(int i=0; i<256; i++)
 		m_keys[i] = false;
 }
-
 
 void InputClass::KeyDown(unsigned int input)
 {

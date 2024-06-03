@@ -38,7 +38,7 @@ DX12Class::DX12Class()
 {
 	// WomaDriverClass / Public: ------------------------------------------------------
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567890;
+	WomaIntegrityCheck = 1234567831;
 
 	// SUPER Video Card Info:
 	// ---------------------------------------------------------------------------
@@ -70,6 +70,9 @@ DX12Class::DX12Class()
 
 #if DX_ENGINE_LEVEL >= 21 || defined CLIENT_SCENE_TEXT //21
 	//m_Camera = NULL;
+#endif
+#if defined USE_FRUSTRUM
+	frustum = NULL;
 #endif
 
 #ifdef USING_THREADS
@@ -122,6 +125,10 @@ void DX12Class::Shutdown()
 
 		for (UINT i = 0; i<BufferCount; ++i)
 			m_renderTargets[i].Reset();
+
+#if defined USE_FRUSTRUM
+		SAFE_DELETE(frustum);
+#endif
 
 		m_swapChain.Reset();
 		m_fence.Reset();
@@ -447,7 +454,7 @@ bool DX12Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, i
 	BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize)
 	//----------------------------------------------------------------------------------------------
 {
-	//mEnable4xMsaa = msaa;
+
 	m_VSYNC_ENABLED = vsync;
 
 	WOMA::logManager->DEBUG_MSG(TEXT("-------------------------\n"));
@@ -489,6 +496,10 @@ bool DX12Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, i
 	Resize(screenWidth, screenHeight, screenNear, screenDepth, fullscreen, depthBits);		//Init Step: 7 (Include: 8,9,10,11,12) // Get Projection Matrix!
 
 	//Init Step: 6 - Cull Back / Front:
+
+#if defined USE_FRUSTRUM
+	frustum = NEW DXfrustumClass;	// Create Frustum
+#endif
 
 	// Create the command list.
 	ThrowIfFailed(m_device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_commandAllocator.Get(), nullptr, IID_PPV_ARGS(&m_commandList)));
@@ -1064,15 +1075,14 @@ void DX12Class::SetCamera2D()
 {
 }
 
+// TODO: go to Virtual Class?
 // ----------------------------------------------------------------------------------------------
 void DX12Class::Initialize3DCamera()
 // ----------------------------------------------------------------------------------------------
 {
 
-	// Normal Camera:
-
+	// SETUP 3D Sky Camera:
 }
-
 
 
 // TODO: go to Virtual Class?

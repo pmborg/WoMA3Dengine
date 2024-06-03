@@ -15,6 +15,8 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Define the diferent states/pages on the engine
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567831;
+
 #pragma once
 
 // Globals GAME STATE: [NO RENDEING]
@@ -28,7 +30,7 @@
 //-----------------------------------------------------------------------------
 #define GAME_SYSTEM_SETTINGS 11
 
-#define GAME_SETUP           15 
+#define GAME_SETUP           15
 
 // Engine Running: RENDER
 #define GAME_MENU			 45

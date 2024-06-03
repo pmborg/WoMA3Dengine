@@ -173,6 +173,9 @@ void LogManager::DEBUG_MSG(WCHAR* strMsg, ...)
 	if (ON)
 		OutputDebugStringReport(strBuffer);
 
+#ifdef _DEBUG
+	fflush(debugFile);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------
@@ -200,44 +203,49 @@ void LogManager::DEBUG_MSG(CHAR* strMsg, ...)
 	// OUTPUT: OS CONSOLE & FILE ".txt":
 	if (ON)
 		OutputDebugStringReport(strBuffer);
+
+#ifdef _DEBUG
+	fflush(debugFile);
+#endif
 }
 
-	int endian()
-	{
-		short int word = 0x0001;
-		char* byte = (char*)&word;
-		return (byte[0] ? LITTLE_ENDIAN : BIG_ENDIAN);
-	}
 
-	void start_log_manager()
-	{
-		// [2]  LogManager::CreateInstance (After init_os_main_dirs)!
-		// -------------------------------------------------------------------------------------------
-		logManager = ILogManager::CreateInstance();
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("LogManager Started\n"));
+int endian()
+{
+	short int word = 0x0001;
+	char* byte = (char*)&word;
+	return (byte[0] ? LITTLE_ENDIAN : BIG_ENDIAN);
+}
 
-		// [3]  PRINT Log Dirs: (After init_os_main_dirs & After logManager)
-		// -------------------------------------------------------------------------------------------
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("Init: logDirs()\n"));
-		logDirs();
+void start_log_manager()
+{
+	// [2]  LogManager::CreateInstance (After init_os_main_dirs)!
+	// -------------------------------------------------------------------------------------------
+	logManager = ILogManager::CreateInstance();
+	WOMA_LOGManager_DebugMSGAUTO(TEXT("LogManager Started\n"));
 
-		// [5] Log Binary Type:
-		// -------------------------------------------------------------------------------------------
-		// ALSO: After logManager!
+	// [3]  PRINT Log Dirs: (After init_os_main_dirs & After logManager)
+	// -------------------------------------------------------------------------------------------
+	WOMA_LOGManager_DebugMSGAUTO(TEXT("Init: logDirs()\n"));
+	logDirs();
+
+	// [5] Log Binary Type:
+	// -------------------------------------------------------------------------------------------
+	// ALSO: After logManager!
 #ifdef _DEBUG
 #ifdef RELEASE
-		WOMA_LOGManager_DebugMSG("Binary Type: [DEBUG RELEASE]\n");
+	WOMA_LOGManager_DebugMSG("Binary Type: [DEBUG RELEASE]\n");
 #else
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("Binary Type: [DEBUG]\n"));
+	WOMA_LOGManager_DebugMSGAUTO(TEXT("Binary Type: [DEBUG]\n"));
 #endif
 #else
 #ifdef RELEASE
-		WOMA_LOGManager_DebugMSG("Binary Type: [RELEASE]\n");
+	WOMA_LOGManager_DebugMSG("Binary Type: [RELEASE]\n");
 #else
-		WOMA_LOGManager_DebugMSG("Binary Type: [NDEBUG]\n");
+	WOMA_LOGManager_DebugMSG("Binary Type: [NDEBUG]\n");
 #endif
 #endif
 
-	}
+}
 
 }

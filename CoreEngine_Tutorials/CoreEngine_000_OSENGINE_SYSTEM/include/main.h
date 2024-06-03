@@ -25,6 +25,8 @@
 // 	DEFINE minidumperClass
 // 	DEFINE logManager
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567831;
+
 #pragma once
 
 #define WOMAAUTHOR_ID		"Pedro Borges (pmborg@yahoo.com)"						// WoMA Engine: Author
@@ -56,15 +58,19 @@ namespace WOMA
 {
 	extern Settings settings;				// Main Settings: settings.h
 	extern UINT		ENGINE_LEVEL_USED;
-
+#if defined WINDOWS_PLATFORM
 	// SUBSYSTEM:WINDOWS
 	extern PSTR		Scmdline;
 	extern int		Cmdshow;
+#endif
 	// SUBSYSTEM:CONSOLE
 	extern int		ARGc;
 	extern CHAR**	ARGv;
 
 	extern TCHAR strConsoleTitle[MAX_STR_LEN];
+
+	extern TCHAR	APP_COMPANY_NAME[];	// "Company" Directory Name: 1st lvl
+	extern TCHAR	APP_PROJECT_NAME[];	// "Project" Directory Name: 2nd lvl
 
 }
 

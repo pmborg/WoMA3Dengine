@@ -15,27 +15,30 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//
 // PURPOSE: 
-//
 // --------------------------------------------------------------------------------------------
 
 #include "platform.h"
-
 #include "womadriverclass.h"
 #include "GLmathClass.h"
 #include "GLopenGLclass.h"
 #include "wGLopenGLclass.h"
 #include "GLmathClass.h"
-#include "log.h" //#include "logManager.h"
+#include "log.h"
+
+//#define old_school
+PFNWGLCHOOSEPIXELFORMATARBPROC      wglChoosePixelFormatARB;
+PFNWGLCREATECONTEXTATTRIBSARBPROC   wglCreateContextAttribsARB;
 
 wGLopenGLclass::wGLopenGLclass()
 {
 	CLASS_LOAD_N--; 
 	CLASSLOADER();  //dont count super class!
+	WomaIntegrityCheck = 1234567831;
 
-	m_deviceContext = 0;
+	m_deviceContext = NULL;
 	m_renderingContext1 = NULL;
+	m_renderingContext2 = NULL;
 
 	GLMajorVer = 0;
 	GLMinorVer = 0;
@@ -44,8 +47,8 @@ wGLopenGLclass::wGLopenGLclass()
 	glutInitDisplayMode( GLUT_RIGHT_BUTTON | GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
 	glutInitWindowSize(1, 1);
 	
-	int w = glutCreateWindow("OpenGL2003");
-	HWND wh = FindWindow(NULL, TEXT("OpenGL2003"));
+	int w = glutCreateWindow("OpenGL2023");
+	HWND wh = FindWindow(NULL, TEXT("OpenGL2023"));
 	ShowWindow(wh, SW_HIDE);
 
 	int feedback = gl3wInit(); //Init GL3W
@@ -54,7 +57,7 @@ wGLopenGLclass::wGLopenGLclass()
 		glGetIntegerv(GL_MINOR_VERSION, &GLMinorVer);
 	}
 
-	WOMA_LOGManager_DebugMSG ( "OpenGL %s, GLSL %s\n", glGetString(GL_VERSION), glGetString(GL_SHADING_LANGUAGE_VERSION));
+	WOMA_LOGManager_DebugMSG ( "OpenGL: %s, GLSL: %s\n", glGetString(GL_VERSION), glGetString(GL_SHADING_LANGUAGE_VERSION));
 
 	// Release the temporary window
 	glFinish();
@@ -66,10 +69,10 @@ wGLopenGLclass::wGLopenGLclass()
 }
 
 wGLopenGLclass::~wGLopenGLclass() { 
-	CLASSDELETE(); 
+	Shutdown();
+	CLASSDELETE();
 }
 
-// Based: D:\ogre\v2-0\RenderSystems\GL\src\Win32\OgreWin32GLSupport.cpp
 bool wGLopenGLclass::OnInit(int _USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, int screenHeight, UINT depthBits, float screenDepth, float screenNear, 
 						BOOL msaa, bool vsync, BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize)
 {
@@ -84,7 +87,7 @@ bool wGLopenGLclass::OnInit(int _USE_MONITOR, /*HWND*/void* hwnd, int screenWidt
 	m_deviceContext = GetDC((HWND)hwnd);
 	IF_NOT_RETURN_FALSE(m_deviceContext);
 	
-#ifdef old_school
+#if defined old_school
 	float fieldOfView, screenAspect;
 	char *vendorString, *rendererString;
 	int attributeListInt[19];
@@ -131,12 +134,13 @@ bool wGLopenGLclass::OnInit(int _USE_MONITOR, /*HWND*/void* hwnd, int screenWidt
 	attributeListInt[18] = 0;
 	
 	// Query for a pixel format that fits the attributes we want.
-	result = wglChoosePixelFormatARB(m_deviceContext, attributeListInt, NULL, 1, pixelFormat, &formatCount);
+	result = wglChoosePixelFormatARB(m_deviceContext, attributeListInt, NULL, 1, &pixelFormat, &formatCount);
 	if(result != 1)
 	{
 		return false;
 	}
 #else
+
     // assign a simple OpenGL pixel format that everyone supports
     pixelFormatDescriptor.nSize = sizeof(PIXELFORMATDESCRIPTOR);
     //pixelFormatDescriptor.nVersion = 1;
@@ -145,256 +149,34 @@ bool wGLopenGLclass::OnInit(int _USE_MONITOR, /*HWND*/void* hwnd, int screenWidt
     pixelFormatDescriptor.cColorBits = depthBits;	//Default: 24
     pixelFormatDescriptor.cDepthBits = depthBits;	//Default: 24
 	pixelFormatDescriptor.iLayerType = PFD_MAIN_PLANE; // Set the layer of the PFD
-	//pixelFormatDescriptor.cStencilBits = 8;
+	pixelFormatDescriptor.cStencilBits = 8;
 
 	// NOTE: Using useDoubleBuffering="false" is not working!
-	if (g_UseDoubleBuffering)
+	//if (g_UseDoubleBuffering)
 		pixelFormatDescriptor.dwFlags |= PFD_DOUBLEBUFFER;
 
 /*
-pixelFormat = (32bpp video mode)
-
-Number of formats: 134
-	1 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=OpenGL
-	2 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=OpenGL
-	3 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=OpenGL
-	4 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=OpenGL
-	5 Colors=32 ARGB=0 8 8 8 Depth=0 Stencil=0 Aux=4 Flags=OpenGL
-	6 Colors=32 ARGB=8 8 8 8 Depth=0 Stencil=0 Aux=4 Flags=OpenGL
-	7 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=OpenGL DoubleBuffer
-	8 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=OpenGL DoubleBuffer
-	9 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=OpenGL DoubleBuffer
-	10 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=OpenGL DoubleBuffer
-	11 Colors=32 ARGB=0 8 8 8 Depth=0 Stencil=0 Aux=4 Flags=OpenGL DoubleBuffer
-	12 Colors=32 ARGB=8 8 8 8 Depth=0 Stencil=0 Aux=4 Flags=OpenGL DoubleBuffer
-	13 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=OpenGL DoubleBuffer
-	14 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=OpenGL DoubleBuffer
-	15 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=OpenGL DoubleBuffer
-	16 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=OpenGL DoubleBuffer
-	17 Colors=32 ARGB=0 8 8 8 Depth=0 Stencil=0 Aux=4 Flags=OpenGL DoubleBuffer
-	18 Colors=32 ARGB=8 8 8 8 Depth=0 Stencil=0 Aux=4 Flags=OpenGL DoubleBuffer
-	19 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	20 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	21 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	22 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	23 Colors=32 ARGB=0 8 8 8 Depth=0 Stencil=0 Aux=4 Flags=DoubleBuffer
-	24 Colors=32 ARGB=8 8 8 8 Depth=0 Stencil=0 Aux=4 Flags=DoubleBuffer
-	25 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	26 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	27 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	28 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	29 Colors=32 ARGB=0 8 8 8 Depth=0 Stencil=0 Aux=4 Flags=DoubleBuffer
-	30 Colors=32 ARGB=8 8 8 8 Depth=0 Stencil=0 Aux=4 Flags=DoubleBuffer
-	31 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	32 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	33 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	34 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	35 Colors=32 ARGB=0 8 8 8 Depth=0 Stencil=0 Aux=4 Flags=DoubleBuffer
-	36 Colors=32 ARGB=8 8 8 8 Depth=0 Stencil=0 Aux=4 Flags=DoubleBuffer
-	37 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	38 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	39 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	40 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	41 Colors=32 ARGB=0 8 8 8 Depth=0 Stencil=0 Aux=4 Flags=DoubleBuffer
-	42 Colors=32 ARGB=8 8 8 8 Depth=0 Stencil=0 Aux=4 Flags=DoubleBuffer
-	43 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	44 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	45 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	46 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	47 Colors=32 ARGB=0 8 8 8 Depth=0 Stencil=0 Aux=4 Flags=DoubleBuffer
-	48 Colors=32 ARGB=8 8 8 8 Depth=0 Stencil=0 Aux=4 Flags=DoubleBuffer
-	49 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	50 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	51 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	52 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	53 Colors=32 ARGB=0 8 8 8 Depth=0 Stencil=0 Aux=4 Flags=DoubleBuffer
-	54 Colors=32 ARGB=8 8 8 8 Depth=0 Stencil=0 Aux=4 Flags=DoubleBuffer
-	55 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	56 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	57 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	58 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	59 Colors=32 ARGB=0 8 8 8 Depth=0 Stencil=0 Aux=4 Flags=DoubleBuffer
-	60 Colors=32 ARGB=8 8 8 8 Depth=0 Stencil=0 Aux=4 Flags=DoubleBuffer
-	61 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	62 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	63 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	64 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	65 Colors=32 ARGB=0 8 8 8 Depth=0 Stencil=0 Aux=4 Flags=DoubleBuffer
-	66 Colors=32 ARGB=8 8 8 8 Depth=0 Stencil=0 Aux=4 Flags=DoubleBuffer
-	67 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	68 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	69 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	70 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	71 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	72 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	73 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	74 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	75 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	76 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	77 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	78 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	79 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	80 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	81 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	82 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	83 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	84 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	85 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	86 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	87 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	88 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	89 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	90 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	91 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	92 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	93 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	94 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	95 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	96 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	97 Colors=32 ARGB=0 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	98 Colors=32 ARGB=8 8 8 8 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	99 Colors=32 ARGB=0 8 8 8 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	100 Colors=32 ARGB=0 8 8 8 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-	101 Colors=32 ARGB=0 8 8 8 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic DoubleBuffer
-	102 Colors=32 ARGB=0 8 8 8 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic DoubleBuffer
-	103 Colors=32 ARGB=8 8 8 8 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	104 Colors=32 ARGB=8 8 8 8 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-	105 Colors=32 ARGB=8 8 8 8 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic DoubleBuffer
-	106 Colors=32 ARGB=8 8 8 8 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic DoubleBuffer
-	107 Colors=32 ARGB=0 8 8 8 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	108 Colors=32 ARGB=0 8 8 8 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-	109 Colors=32 ARGB=0 8 8 8 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic DoubleBuffer
-	110 Colors=32 ARGB=0 8 8 8 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic DoubleBuffer
-	111 Colors=24 ARGB=0 8 8 8 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	112 Colors=24 ARGB=0 8 8 8 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-	113 Colors=24 ARGB=8 8 8 8 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	114 Colors=24 ARGB=8 8 8 8 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-	115 Colors=24 ARGB=0 8 8 8 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	116 Colors=24 ARGB=0 8 8 8 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-	117 Colors=16 ARGB=0 5 5 5 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	118 Colors=16 ARGB=0 5 5 5 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-	119 Colors=16 ARGB=8 5 5 5 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	120 Colors=16 ARGB=8 5 5 5 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-	121 Colors=16 ARGB=0 5 5 5 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	122 Colors=16 ARGB=0 5 5 5 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-	123 Colors=8 ARGB=0 3 3 2 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	124 Colors=8 ARGB=0 3 3 2 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-	125 Colors=8 ARGB=8 3 3 2 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	126 Colors=8 ARGB=8 3 3 2 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-	127 Colors=8 ARGB=0 3 3 2 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	128 Colors=8 ARGB=0 3 3 2 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-	129 Colors=4 ARGB=0 1 1 1 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	130 Colors=4 ARGB=0 1 1 1 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-	131 Colors=4 ARGB=8 1 1 1 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	132 Colors=4 ARGB=8 1 1 1 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-	133 Colors=4 ARGB=0 1 1 1 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	134 Colors=4 ARGB=0 1 1 1 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
+static PIXELFORMATDESCRIPTOR    pixelFormatDescriptor = {
+	sizeof(PIXELFORMATDESCRIPTOR),  // Size of this structure
+	1,                              // Version of this structure
+	PFD_DRAW_TO_WINDOW |            // Draw to Window (not to bitmap)
+	PFD_SUPPORT_OPENGL |            // Support OpenGL calls in window
+	PFD_DOUBLEBUFFER |              // Double buffered mode
+	PFD_STEREO_DONTCARE,
+	PFD_TYPE_RGBA,                  // RGBA Color mode
+	32,                             // Want the display bit depth
+	0,0,0,0,0,0,                    // Not used to select mode
+	0,0,                            // Not used to select mode
+	0,0,0,0,0,                      // Not used to select mode
+	24,                             // Size of depth buffer
+	8,                              // bit stencil
+	0,                              // Not used to select mode
+	PFD_MAIN_PLANE,                 // Draw in main plane
+	0,                              // Not used to select mode
+	0,0,0
+};
 */
-
-/*
-pixelFormat = (16bpp video mode)
-
-Number of formats: 96
-	1 Colors=16 ARGB=0 5 6 5 Depth=16 Stencil=0 Aux=4 Flags=OpenGL
-	2 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=0 Aux=4 Flags=OpenGL
-	3 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=8 Aux=4 Flags=OpenGL
-	4 Colors=16 ARGB=0 5 6 5 Depth=0 Stencil=0 Aux=4 Flags=OpenGL
-	5 Colors=16 ARGB=0 5 6 5 Depth=16 Stencil=0 Aux=4 Flags=OpenGL DoubleBuffer
-	6 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=0 Aux=4 Flags=OpenGL DoubleBuffer
-	7 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=8 Aux=4 Flags=OpenGL DoubleBuffer
-	8 Colors=16 ARGB=0 5 6 5 Depth=0 Stencil=0 Aux=4 Flags=OpenGL DoubleBuffer
-	9 Colors=16 ARGB=0 5 6 5 Depth=16 Stencil=0 Aux=4 Flags=OpenGL DoubleBuffer
-	10 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=0 Aux=4 Flags=OpenGL DoubleBuffer
-	11 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=8 Aux=4 Flags=OpenGL DoubleBuffer
-	12 Colors=16 ARGB=0 5 6 5 Depth=0 Stencil=0 Aux=4 Flags=OpenGL DoubleBuffer
-	13 Colors=16 ARGB=0 5 6 5 Depth=16 Stencil=0 Aux=4 Flags=DoubleBuffer
-	14 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	15 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	16 Colors=16 ARGB=0 5 6 5 Depth=0 Stencil=0 Aux=4 Flags=DoubleBuffer
-	17 Colors=16 ARGB=0 5 6 5 Depth=16 Stencil=0 Aux=4 Flags=DoubleBuffer
-	18 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	19 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	20 Colors=16 ARGB=0 5 6 5 Depth=0 Stencil=0 Aux=4 Flags=DoubleBuffer
-	21 Colors=16 ARGB=0 5 6 5 Depth=16 Stencil=0 Aux=4 Flags=DoubleBuffer
-	22 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	23 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	24 Colors=16 ARGB=0 5 6 5 Depth=0 Stencil=0 Aux=4 Flags=DoubleBuffer
-	25 Colors=16 ARGB=0 5 6 5 Depth=16 Stencil=0 Aux=4 Flags=DoubleBuffer
-	26 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	27 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	28 Colors=16 ARGB=0 5 6 5 Depth=0 Stencil=0 Aux=4 Flags=DoubleBuffer
-	29 Colors=16 ARGB=0 5 6 5 Depth=16 Stencil=0 Aux=4 Flags=DoubleBuffer
-	30 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	31 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	32 Colors=16 ARGB=0 5 6 5 Depth=0 Stencil=0 Aux=4 Flags=DoubleBuffer
-	33 Colors=16 ARGB=0 5 6 5 Depth=16 Stencil=0 Aux=4 Flags=DoubleBuffer
-	34 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	35 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	36 Colors=16 ARGB=0 5 6 5 Depth=0 Stencil=0 Aux=4 Flags=DoubleBuffer
-	37 Colors=16 ARGB=0 5 6 5 Depth=16 Stencil=0 Aux=4 Flags=DoubleBuffer
-	38 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	39 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	40 Colors=16 ARGB=0 5 6 5 Depth=0 Stencil=0 Aux=4 Flags=DoubleBuffer
-	41 Colors=16 ARGB=0 5 6 5 Depth=16 Stencil=0 Aux=4 Flags=DoubleBuffer
-	42 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	43 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	44 Colors=16 ARGB=0 5 6 5 Depth=0 Stencil=0 Aux=4 Flags=DoubleBuffer
-	45 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	46 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	47 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	48 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	49 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	50 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	51 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	52 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	53 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	54 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	55 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	56 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	57 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	58 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	59 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=0 Aux=4 Flags=DoubleBuffer
-	60 Colors=16 ARGB=0 5 6 5 Depth=24 Stencil=8 Aux=4 Flags=DoubleBuffer
-	61 Colors=16 ARGB=0 5 6 5 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	62 Colors=16 ARGB=0 5 6 5 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-	63 Colors=16 ARGB=0 5 6 5 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic DoubleBuffer
-	64 Colors=16 ARGB=0 5 6 5 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic DoubleBuffer
-	65 Colors=16 ARGB=8 5 6 5 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	66 Colors=16 ARGB=8 5 6 5 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-	67 Colors=16 ARGB=8 5 6 5 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic DoubleBuffer
-	68 Colors=16 ARGB=8 5 6 5 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic DoubleBuffer
-	69 Colors=16 ARGB=0 5 6 5 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	70 Colors=16 ARGB=0 5 6 5 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-	71 Colors=16 ARGB=0 5 6 5 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic DoubleBuffer
-	72 Colors=16 ARGB=0 5 6 5 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic DoubleBuffer
-	73 Colors=24 ARGB=0 8 8 8 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	74 Colors=24 ARGB=0 8 8 8 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-	75 Colors=24 ARGB=8 8 8 8 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	76 Colors=24 ARGB=8 8 8 8 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-	77 Colors=24 ARGB=0 8 8 8 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	78 Colors=24 ARGB=0 8 8 8 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-	79 Colors=32 ARGB=0 8 8 8 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	80 Colors=32 ARGB=0 8 8 8 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-	81 Colors=32 ARGB=8 8 8 8 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	82 Colors=32 ARGB=8 8 8 8 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-	83 Colors=32 ARGB=0 8 8 8 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	84 Colors=32 ARGB=0 8 8 8 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-	85 Colors=8 ARGB=0 3 3 2 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	86 Colors=8 ARGB=0 3 3 2 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-	87 Colors=8 ARGB=8 3 3 2 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	88 Colors=8 ARGB=8 3 3 2 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-	89 Colors=8 ARGB=0 3 3 2 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	90 Colors=8 ARGB=0 3 3 2 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-	91 Colors=4 ARGB=0 1 1 1 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	92 Colors=4 ARGB=0 1 1 1 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-	93 Colors=4 ARGB=8 1 1 1 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	94 Colors=4 ARGB=8 1 1 1 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-	95 Colors=4 ARGB=0 1 1 1 Depth=32 Stencil=8 Aux=0 Flags=OpenGL Generic
-	96 Colors=4 ARGB=0 1 1 1 Depth=16 Stencil=8 Aux=0 Flags=OpenGL Generic
-*/
-
 	// MODEs LIST more info: https://www.opengl.org/discussion_boards/showthread.php/178106-Pixel-format-and-display-settings
-
 	pixelFormat = ChoosePixelFormat(m_deviceContext, &pixelFormatDescriptor);
 	if (!pixelFormat) { WomaFatalExceptionW (TEXT("Error on ChoosePixelFormat"));	return false; }
 #endif
@@ -403,15 +185,13 @@ Number of formats: 96
 	result = SetPixelFormat(m_deviceContext, pixelFormat, &pixelFormatDescriptor);
 	if(result != 1) { WomaFatalExceptionW (TEXT("Error setting SetPixelFormat"));	return false; }
 
-#ifdef old_school
+#if defined old_school
 	// Set the 4.0 version of OpenGL in the attribute list.
-	attributeList[0] = WGL_CONTEXT_MAJOR_VERSION_ARB;
-	attributeList[1] = 4;
-	attributeList[2] = WGL_CONTEXT_MINOR_VERSION_ARB;
-	attributeList[3] = 0;
-
-	// Null terminate the attribute list.
-	attributeList[4] = 0;
+	int attributeList[] = {
+			 //WGL_SAMPLES_ARB,  3,
+			 WGL_CONTEXT_MAJOR_VERSION_ARB,  4,
+			 WGL_CONTEXT_MINOR_VERSION_ARB,  0,
+			 0,0 };
 
 	// Create a OpenGL 4.0 rendering context.
 	m_renderingContext1 = wglCreateContextAttribsARB(m_deviceContext, 0, attributeList);
@@ -446,13 +226,13 @@ Number of formats: 96
 		{ WomaFatalExceptionW (TEXT("Error setting wglMakeCurrent"));	return false; }
 
 	// Turn on or off the vertical sync depending on the input bool value.
-#ifdef old_school
+	PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
+#if defined old_school
 	if(vsync)
 		result = wglSwapIntervalEXT(1);
 	else
 		result = wglSwapIntervalEXT(0);
 #else
-	PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
 	result = wglSwapIntervalEXT(vsync);	// SET VSYNC
 #endif
 	if(result != 1) // Check if vsync was set correctly.
@@ -471,6 +251,13 @@ void wGLopenGLclass::Shutdown()
 	{
 		wglDeleteContext(m_renderingContext1);
 		m_renderingContext1 = NULL;
+	}
+
+	// Release the rendering context.
+	if (m_renderingContext2)
+	{
+		wglDeleteContext(m_renderingContext2);
+		m_renderingContext2 = NULL;
 	}
 
 	// Release the device context.

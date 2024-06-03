@@ -36,7 +36,7 @@ using namespace DirectX;
 class DX12TextureClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567891;
+	UINT WomaIntegrityCheck = 1234567831;
 	DX12TextureClass();
 	~DX12TextureClass();
 
@@ -53,7 +53,7 @@ private:
 public:
 	int width = 0; 
 	int height = 0;
-	//unsigned int m_textureID;
-	ComPtr<ID3D12Resource> uploadOnlyTexture;	// GPU
-	ComPtr<ID3D12Resource> m_pTexture;			// RAM
+
+	ComPtr<ID3D12Resource> uploadOnlyTexture;	// Buuffer on RAM to upload to GPU
+	ComPtr<ID3D12Resource> m_pTexture;			// Resource on GPU
 };

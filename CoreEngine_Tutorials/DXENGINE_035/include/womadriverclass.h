@@ -62,21 +62,22 @@ enum PROJECTION_TYPE
 
 enum SHADER_TYPE
 {
-	SHADER_AUTO = -1, 
+	SHADER_AUTO = 0, 
 	SHADER_COLOR,						//21: M3D v1.0	public MAIN (Used by: 21 & Sun Ray & 3D Obj)
 	SHADER_TEXTURE,						//22: M3D v1.1	public MAIN (Used by: 22 & Banner & Sky2D & SplashIntro & UnderWater & Font & 3D Obj)
 
 	SHADER_TEXTURE_FONT,				//27: fade: using alfa color
 	SHADER_TEXTURE_LIGHT,				//23: M3D v1.2	public MAIN + Pass2: Shadows (Used by: 23 & Sky3D & Sun & Moon & 3D Obj)
-	SHADER_NORMAL_BUMP,					//35: M3D v1.5	public MAIN (Used by: 47 & 3D Obj)
+	SHADER_NORMAL_BUMP,					//35: M3D v1.3	public MAIN (Used by: 47 & 3D Obj)
 
-	SHADER_TEXTURE_LIGHT_RENDERSHADOW,  //45:			public "Render Shadows"
-	SHADER_TEXTURE_LIGHT_CASTSHADOW,	//45:			private "Pass1: Shadows" (add auxiliar Shader)
+	SHADER_TEXTURE_LIGHT_RENDERSHADOW,  //36: Draw Shadows
+	SHADER_TEXTURE_LIGHT_CASTSHADOW,	//36: Aux. Shader (render in texture)
 
 	// Have to be last:
-	SHADER_TEXTURE_LIGHT_INSTANCED,				//public   51: INST 23 light with Instances    (pass2) 
-	SHADER_TEXTURE_LIGHT_CASTSHADOW_INSTANCED,	//private  51: INST 45 shadows with Instances  (pass1) 
-	SHADER_NORMAL_BUMP_INSTANCED,				//private  51: INST 47 bump with Instances ... check: 051LightInstance.hlsl
+	SHADER_TEXTURE_LIGHT_INSTANCED,				//40: INSTANCED like 23 light, but using Instances
+	SHADER_TEXTURE_LIGHT_CASTSHADOW_INSTANCED,	//41: Aux. Shader (render in texture), but using Instances (used on 41,42)
+	SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED,	//41: INSTANCED like 36 shadow, but using Instances
+	SHADER_NORMAL_BUMP_INSTANCED,				//99: INSTANCED like 35 bump, but using Instances
 
 	// TERRAINS:
 	SHADER_Double_Color_Terrain,
@@ -85,6 +86,9 @@ enum SHADER_TYPE
 	SHADER_Double_Color_Slop_Detail_TexMapping_Terrain,
 	SHADER_Double_Color_Slop_Detail_TexMappingDouble_Terrain,
 	SHADER_Double_Color_Slop_Detail_TexMappingDouble_Bump_Terrain,
+
+	SHADER_SKYTEXTURE,		//90:
+	SHADER_REALSKYTEXTURE,	//91:
 };
 
 

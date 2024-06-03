@@ -42,6 +42,7 @@
 
 // -------------------------------------------------------------------------------------------------
 
+extern UINT RENDER_PAGE;
 
 #if  defined USE_RASTERTEK_TEXT_FONT
 #include "ApplicationTextClass.h"
@@ -60,7 +61,6 @@
 #else
 #define MAX_TERRAINS 0
 #endif
-
 
 #pragma warning( push )
 #pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
@@ -100,7 +100,7 @@
 class ApplicationClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567890;
+	UINT WomaIntegrityCheck = 1234567831;
 	ApplicationClass();
 	~ApplicationClass();
 	
@@ -114,12 +114,12 @@ public:
 	bool Start();
 	void WOMA_APPLICATION_Shutdown();
 
-	void RenderScene(UINT monitorWindow);
-
+	void RenderScene(UINT monitorWindow, WomaDriverClass* driver);
 	float Update(UINT monitorWindow, WomaDriverClass* m_Driver);					// PROCESS User Update
-	void AppPreRender(float fadeLight);					// PRE-RENDER - Shadows
 	void AppRender(UINT monitorWindow, float fadeLight);	// RENDER - 3D
+#if DX_ENGINE_LEVEL >= 24 || defined USE_VIEW2D_SPRITES
 	void AppPosRender();									// POS-RENDER - 2D: Render 
+#endif
 
 #if defined USE_LIGHT_RAY
 	void initLightRay(WomaDriverClass* m_Driver);
@@ -127,7 +127,7 @@ public:
 
 #if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN //24
 	CTerrain*	autoGenUnderWaterTerrain;
-	void		initUnderWaterDemo(UINT terrainId);
+	void		initUnderWaterDemo(void* m_Driver, UINT terrainId);
 #endif
 
 #if defined SCENE_MAIN_TOPO_TERRAIN
@@ -146,11 +146,6 @@ public:
 	std::vector<UINT>						 sky_indexdata;
 #endif
 
-#if defined USE_SKYSPHERE
-	void	CreateSkyModel(int SKY_SIZE, int sky_gridpoints);
-	void	initSky();
-#endif
-
 #if defined SCENE_WATER_TERRAIN
 	void		initTerrainWaterMeshDemo(UINT terrainId);	
 #endif
@@ -165,12 +160,14 @@ public:
 
 private:
 
+
+
 //VARS:
 // ---------------------------------------------------------------------
 private:
 
+
 public:
-	UINT	RENDER_PAGE=0;
 	float	dt=0;	// Delta time
 
 	//---------------------------------------------------------------------
@@ -185,8 +182,36 @@ public:
 	//	WoMA Vertex(s) Arrays:  NOTE: Cant be used to create and Obj more than ONCE!
 	//	-------------------------------------------------------------------------------------------
 
+public:
+	void DemoRender();
+	void RenderSprites();
+
+	//3D
+	bool DEMO_WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver); // APP_Load
+
+	// 2D
+#if defined INTRO_DEMO || defined USE_VIEW2D_SPRITES
+	bool DEMO_WOMA_APPLICATION_InitializeSprites2D();
+	void DEMO_WOMA_APPLICATION_Shutdown2D();
+#endif
+
+#if defined USE_TITLE_BANNER	//24
+	void	initTitleBanner2D();
+#endif
+
+#if defined USE_TITLE_BANNER //24
+	VirtualModelClass* m_titleModel = NULL;
+#endif
+
+	// TERRAIN
+#if defined SCENE_GENERATEDUNDERWATER //#if (ENGINE_LEVEL == 14 || ENGINE_LEVEL >= 24) && MAX_TERRAINS >= 1
+	ModelTextureVertexType vertex = { 0 };										// Use this "VERTEX" on macro
+	std::vector<ModelTextureVertexType> modelVertexVector[MAX_TERRAINS];		// Declare: the Vector with Vertex "TYPE"
+
+#endif
 
 
 };
 
 #endif
+

@@ -77,9 +77,6 @@
 	#endif
 
 #include "main.h"
-#if _DEBUG
-#pragma comment(lib, "dxguid.lib")
-#endif
 
 /////////////
 // LINKING // First thing in the header is to specify the libraries to link when using this object module
@@ -223,11 +220,7 @@ WDDM 2.0->Windows 10				Display Drivers or Creates a DXGI 1.4
 
 extern ID3D11DeviceContext* g_deviceContext; // Also to Comunicate with DXUT
 
-	#include "DXcameraClass.h"
-
 #define	MaxTextSizes 24
-
-//extern UINT g_MSAA_X;
 
 namespace DirectX {
 
@@ -247,7 +240,7 @@ struct DXTextLine
 class DX11Class : public WomaDriverClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567890;
+	UINT WomaIntegrityCheck = 1234567831;
 	DX11Class();
 	~DX11Class();
 
@@ -274,10 +267,6 @@ public:
 	//We now have two new function in the DX11Class for turning the Z buffer on and off when rendering 2D images:
 	void TurnZBufferOn();
 	void TurnZBufferOff();
-
-#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
-	ImageLoaderClass* CaptureScreenShot(int screenWidth, int screenHeight);
-#endif
 
 	BOOL Check (int* Hi, int* low);
 	BOOL CheckAPIdriver (UINT USE_THIS_ADAPTER);

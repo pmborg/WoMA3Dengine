@@ -13,7 +13,7 @@
 // --------------------------------------------------------------------------------------------
 
 #include "platform.h"
-
+#if defined OPENGL3
 #include "womadriverclass.h"
 #include "GLmathClass.h"
 #include "GLopenGLclass.h"
@@ -128,7 +128,7 @@ void GLtextureClass::AddTexture(unsigned char* image32b, int width, int height, 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glGenerateMipmap(GL_TEXTURE_2D);		// Generate mipmaps for the texture.
 }
-
+#endif
 
 
 

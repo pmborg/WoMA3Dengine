@@ -15,7 +15,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567891;
+//WomaIntegrityCheck = 1234567831;
 
 #pragma once
 
@@ -30,7 +30,9 @@
 	#if defined(_DEBUG) & !defined(NDEBUG)
 		#pragma comment( lib, "x64/WDebug/ZipUtils_LIBX64_d.lib" )		//DEBUG
 	#elif !defined _DEBUG && defined NDEBUG
-		#pragma comment( lib, "x64/WRelease/ZipUtils_LIBX64.lib" )		//RELEASE
+		//#pragma comment( lib, "x64/WRelease/ZipUtils_LIBX64.lib" )		//RELEASE
+		#pragma comment( lib, "x64/Release/ZipUtils_LIBX64.lib" )		//RELEASE: C:\WoMAengine2023\x64\Release\ZipUtils_LIBX64.lib
+                                          
 	#else
 		#pragma comment( lib, "x64/WRelease/ZipUtils_LIBX64.lib" )		//DBGREL
 	#endif

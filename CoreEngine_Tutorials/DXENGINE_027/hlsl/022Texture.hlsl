@@ -13,8 +13,6 @@
 // TYPEDEFS //
 //////////////
 
-//#define WITHOUT_CONSTANT_BUFFER
-
 // VERTEX:
 struct VSIn
 {
@@ -27,43 +25,16 @@ struct PSIn
 {
     float4	position:		SV_POSITION;
     float2	texCoords:		TEXCOORD0;
-	//float3	originalPosition	: ORIGINAL_POSITION;	// 30 SKY
-	//float	fogFactor:		FOG;						// 31 FOG
-	//float4  cameraPosition: WS;
-};
-
-////////////////
-// VERTEX BUFFER
-////////////////
-//CBV-srvHeapDesc	|0| DescriptorTable  | b0				|
-cbuffer VSShaderParametersBuffer// SYNC: DXshaderClass.h
-{
-	// BLOCK: VS1
-	matrix	worldMatrix;	//worldMatrix
-	matrix  WV;				//worldMatrix+viewMatrix
-	matrix  WVP;			//worldMatrix+viewMatrix+projectionMatrix
-};
-
-///////////////
-// PIXEL BUFFER
-///////////////
-//CBV-srvHeapDesc	|1| DescriptorTable  | t0				|
-cbuffer PSShaderParametersBuffer// SYNC: DXshaderClass.h
-{
-	// BLOCK1:
-	float4	pixelColor;
-
-	// BLOCK2:
-	bool	hasTexture;		// No? Use pixelColor, then.
-	bool    hasLight;		// Future Load Obj. Engine Level
-	bool	hasSpecular;	// Future Load Obj. Engine Level
-	bool	isFont;			// Future Load Obj. Engine Level
 };
 
 //Set on: DXmodelClass::RenderSubMesh
 Texture2D shaderTexture:	register(t0);	//DX12: SRV
 SamplerState SampleType;	//3D (default) WRAP
 
+////////////////
+// CBUFFERS
+////////////////
+#include "cbuffer.hlsl"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
@@ -72,53 +43,20 @@ PSIn MyVertexShader022Texture(VSIn input)
 {
     PSIn output;
 
-#if defined WITHOUT_CONSTANT_BUFFER
-	matrix WVPMatrix = {
-		1.24942219f, 0.000000001f, 0.000000002f, 0.000000003f,	// row 1
-		0.000000006f, 2.35672379f, 0.523716450f, -0.523716271f,	// row 2
-		0.000000007f, -0.216972843f, 0.976377785f, 8.14494896f,	// row 3
-		0.000000008f, -0.216930464f, 0.976187050f, 8.24335766f,	// row 4
-	};
-
-	output.position = mul(float4(input.position, 1), transpose(WVPMatrix));	// Calculate the position of the vertex against the world, view, and projection matrices
-#else
+if (VS_USE_WVP) {
 	output.position = mul(float4(input.position, 1), WVP);	// Calculate the position of the vertex against the world, view, and projection matrices
-#endif
+} else {
+	float4 position = float4(input.position, 1);
+	position = mul(position, worldMatrix);
+	position = mul(position, view);			//viewMatrix
+	position = mul(position, projection);	//projectionMatrix
+	output.position = position;
+}
 
     output.texCoords = input.texCoords;						// TEXTURE: Store the texture coordinates for the pixel shader:
 
     return output;
 }
-
-/*
-////////////////////////////////////////////////////////////////////////////////
-// Geometry Shader
-////////////////////////////////////////////////////////////////////////////////
-// This geometry shader discards triangles based on the x component 
-// of their geometric normal. GSIn contains world-space positions 
-// in addition to ordinary vs output. 
-[MaxVertexCount(3)]
-void MyGeometryShader022Texture (triangle PSIn input[3], inout TriangleStream<PSIn> output)
-{
-    //take the cross product of the input triangle edges in world space:
-    //V1 float3 xProd = cross((input[2].wsPos - input[0].wsPos), (input[2].wsPos - input[0].wsPos));
- 
-    //then, if the x component of the input triangle is positive, 
-    //discard the current triangle altogether by simply not
-    //outputting it to the rasterizer:
-    //V1if (xProd.x > 0.0f)
-	if (input[0].cameraPosition.z > 1.0f)
-        //return;
-    //else
-    {
-        //we now output the triangles that didn't face:
-        for (int i = 0; i < 3; i++)
-        {
-            output.Append(input[i]); 
-        }
-    }
-}
-*/
 
 float4 MyPixelShader022Texture(PSIn input) : SV_TARGET
 {

@@ -15,10 +15,9 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//
 // PURPOSE: 
-//
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567831;
 
 #include "main.h"
 #include <d3d11.h>
@@ -262,20 +261,6 @@ namespace DirectX {
 			swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 		else
 			swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-#endif
-
-#if defined _NOT && def DX_11_2_NOT_IMPLEMENTED
-		// TODO:
-		// 11.2
-		// swapChainDesc.Stereo =	false; //No 3D
-		// swapChainDesc.Scaling =	DXGI_SCALING_NONE;
-		// swapChainDesc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
-		// swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL; // All Windows Store apps must use this SwapEffect.
-
-		// To correctly create the swap chain, we must use the IDXGIFactory that was
-		// used to create the device.  If we tried to use a different IDXGIFactory instance
-		// (by calling CreateDXGIFactory), we get an error: "IDXGIFactory::CreateSwapChain: 
-		// This function is being called with a device from a different IDXGIFactory."
 #endif
 
 		IDXGIDevice* pDXGIDevice = NULL;

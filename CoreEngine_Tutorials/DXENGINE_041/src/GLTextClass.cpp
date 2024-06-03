@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: GlTextClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -20,6 +21,7 @@
 #pragma once
 
 #include "platform.h"
+#if defined OPENGL3 && defined USE_RASTERTEK_TEXT_FONT
 
 #pragma warning( disable : 4706 )	// Disable warning C4706: assignment within conditional expression
 #include "mem_leak.h"
@@ -66,7 +68,9 @@ void GlTextClass::ReleaseSentence(SentenceType** sentence)
 #if defined DX_ENGINE
 			SAFE_DELETE_ARRAY((*sentence)->vertices);
 #endif
+#if defined OPENGL3
 			SAFE_DELETE_ARRAY((*sentence)->GLvertices);
+#endif
 			SAFE_DELETE_ARRAY((*sentence)->indices);
 
 			// Release the sentence.
@@ -86,11 +90,15 @@ bool GlTextClass::Initialize(void* Driver)
 	IF_NOT_THROW_EXCEPTION(m_Font); // Create the font object.
 	IF_NOT_RETURN_FALSE(m_Font->Initialize(Driver, TEXT("engine/data/008fontdata.txt"), TEXT("engine/data/008font.png")));
 
+#if defined OPENGL3
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
 		m_spriteShader = NEW GLshaderClass;
+#endif
 	IF_NOT_THROW_EXCEPTION(m_spriteShader);
 
+#if defined OPENGL3
 	result = m_spriteShader->Initialize(SHADER_TEXTURE_FONT);
+#endif
 	if (!result)
 	{
 		WomaFatalExceptionW(TEXT("Could not initialize the Shader: check HLSL/GLSL file and the error in code")); return false;
@@ -237,6 +245,7 @@ bool GlTextClass::UpdateSentence(SentenceType* sentence, TCHAR* text, int positi
 
 void GlTextClass::RenderSentence(SentenceType* sentence)
 {
+#if defined OPENGL3
 	m_spriteShader->SetShader();
 
 	GLopenGLclass* driver = (GLopenGLclass*)SystemHandle->driverList[SystemHandle->AppSettings->DRIVER];
@@ -268,6 +277,8 @@ void GlTextClass::RenderSentence(SentenceType* sentence)
 	glBindVertexArray(NULL);				// Unbind our Vertex Array Object
 	glBindTexture(GL_TEXTURE_2D, NULL);
 	glUseProgram(0);						// shader->unbind(); // Unbind our shader
+#endif
 }
 
 
+#endif

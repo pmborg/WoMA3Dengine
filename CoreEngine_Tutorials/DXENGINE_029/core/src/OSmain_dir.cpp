@@ -22,7 +22,7 @@
 //  - Init: APPDATA "C:\Users\"username"\AppData\Local\Pmborg\Woma2017\"
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567829;
+//WomaIntegrityCheck = 1234567831;
 
 #define _CRT_SECURE_NO_WARNINGS
 #include "main.h"
@@ -40,8 +40,8 @@ namespace WOMA
 {
 	// State Vars:
 	//---------------------------------------------------
-	int					game_state;
-	int					previous_game_state;
+	int					game_state=0;
+	int					previous_game_state=0;
 
 	// Directory Vars:
 	//---------------------------------------------------
@@ -364,5 +364,4 @@ namespace WOMA
 			return false;
 	}
 
-}// namespace
-
+}

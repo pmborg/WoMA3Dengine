@@ -143,6 +143,10 @@ shaderTree shaderManager_41[] =
 
 	/* 05 */,{ (void*)MyVertexShader047TextureLightNormal_41,NULL,(void*)MyPixelShader047TextureLightNormal_41, sizeof(MyVertexShader047TextureLightNormal_41),0,sizeof(MyPixelShader047TextureLightNormal_41) }
 
+#if DX_ENGINE_LEVEL >= 40  ShadowMap + Instancing 
+	/* 07 */,{ (void*)MyVertexShader051ShadowMapInstance_41,NULL,(void*)MyPixelShader051ShadowMapInstance_41, sizeof(MyVertexShader051ShadowMapInstance_41),0,sizeof(MyPixelShader051ShadowMapInstance_41) }
+#endif
+
 };
 
 shaderTree shaderManager_50[] =

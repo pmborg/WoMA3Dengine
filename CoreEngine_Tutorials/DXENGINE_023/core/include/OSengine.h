@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: OSengine.h
 // --------------------------------------------------------------------------------------------
@@ -21,55 +22,18 @@
 //   LINUX_PLATFORM
 //   ANDROID_PLATFORM
 // --------------------------------------------------------------------------------------------
-#pragma once
+//WomaIntegrityCheck = 1234567831;
 
-#if defined _NOT //NOTES
-                  ----------------  ---------                       ----------------
-                  |              |  |       |                       |              |
-                  |  SYSTEM MEM  |  | AUDIO |                       |  VIDEO MEM   |
-                  |              |  |       |                       |              |
-                  ----------------  ---------                       ----------------
-                                 |  |                                      |
- ----------                 -------------  DX/DXGI                    -------------
- |HD-Drive| --------------> |           |  ------------------------ > |           |
- ----------                 |    CPU    |  dshow(VIDEO)               |    GPU    |
- ----------                 |           |  ------------------------ > |           |
- |NETWORK | --------------> -------------                             -------------
- ----------                 |    |      |                                   |
-                  ----------  -------   ----------                    -------------
-                  |Keyboard|  |Mouse|   |JoyStick|                    |           |
-                  ----------  -------   ----------                    |  MONITOR  |
-                                                                      |           |
-                                                                      -------------
-#endif
+#pragma once
 
 #include "main.h"
 extern int Command;
 
-#if defined WINDOWS_PLATFORM
-#if CORE_ENGINE_LEVEL < 10
-#include "winsystemclass.h"			
-#define SYSTEM WinSystemClass	        // Are we a Basic Windows Instance?
-#else
 #include "dxwinsystemclass.h"		
 #define SYSTEM dxWinSystemClass         // Are we a DX Instance?
-#endif
-#endif
 
-#ifdef LINUX_PLATFORM
-#include "linuxsystemclass.h"		    
-#define SYSTEM LinuxSystemClass         // Are we a Linux Instance?
-#endif
-
-#ifdef ANDROID_PLATFORM
-#include "androidsystemclass.h"		    
-#define SYSTEM AndroidSystemClass       // Are we a Android Instance?
-#endif
-
-#if defined WINDOWS_PLATFORM
 #include <Shellapi.h>	// CommandLineToArgv()
 #include <comdef.h>		// CoInitializeEx()
-#endif
 
 void OS_ENGINE_START(int argc, char* argv[]);
 void OS_ENGINE_START(LPSTR pScmdline, int iCmdshow);

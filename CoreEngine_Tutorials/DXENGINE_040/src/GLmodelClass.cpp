@@ -20,6 +20,7 @@
 
 #include "platform.h"
 
+#if (defined OPENGL3 || defined OPENGL40) && DX_ENGINE_LEVEL >= 21
 #include "ModelClass.h"
 #include "womadriverclass.h"
 #include "GLmathClass.h"
@@ -32,7 +33,7 @@
 GLmodelClass::GLmodelClass(bool model3d) 
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567831;
+	WomaIntegrityCheck = 1234567832;
 
 	// SUPER: ----------------------------------------------------------------------
 	m_ObjId = 0;
@@ -224,9 +225,10 @@ bool GLmodelClass::LoadBump(TCHAR* objectName, void* driver, SHADER_TYPE shader_
 
 bool GLmodelClass::LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow, bool renderShadow, UINT instanceCount)
 {
-#if defined _NOT 
+#if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES // Normal Bump + Instancing 
 	m_instanceCount = instanceCount;
 #endif
+
 	const TCHAR* extension = _tcsrchr(filename.c_str(), '.');
 
 	if (_tcsicmp(extension, TEXT(".obj")) == 0)
@@ -235,7 +237,7 @@ bool GLmodelClass::LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shad
 		if (b)
 			modelClass.CreateObject(this, (TCHAR*)filename.c_str(), g_driver, shader_type /*SHADER_AUTO*/, filename, castShadow, renderShadow); // Auto Detect Shader Type
 	}
-#if defined _NOT LOADM3D
+#if defined LOADM3D //ENGINE_LEVEL >= 50
 	if (_tcsicmp(extension, TEXT(".M3D")) == 0)
 		return LoadM3D(shader_type, g_driver, filename, castShadow, renderShadow, instanceCount);
 #endif
@@ -753,3 +755,4 @@ void GLmodelClass::translation(float x, float y, float z)
 	m_worldMatrix.m[4*3+1] = y;
 	m_worldMatrix.m[4*3+2] = z;
 }
+#endif

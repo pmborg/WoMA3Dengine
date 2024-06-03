@@ -59,6 +59,15 @@ struct ModelTextureLightVertexType
 	float nx, ny, nz;
 };
 
+//	-------------------------------------------------------------------------------------------
+struct ModelNormalBumpVertexType
+{
+	float x, y, z;
+	float tu, tv;
+	float nx, ny, nz;
+	float tx, ty, tz;
+};
+
 
 struct SentenceType
 {

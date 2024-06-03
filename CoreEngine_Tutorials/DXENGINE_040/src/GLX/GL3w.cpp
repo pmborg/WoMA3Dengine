@@ -15,6 +15,7 @@
 // 
 
 #include "platform.h"
+#if defined OPENGL3
 //-----------------------------------------------------------------------------
 #include <GL/gl3w.h>
 
@@ -1356,3 +1357,4 @@ static void load_procs(void)
 	gl3wTextureStorage3DMultisampleEXT = (PFNGLTEXTURESTORAGE3DMULTISAMPLEEXTPROC) get_proc("glTextureStorage3DMultisampleEXT");
 }
 //-----------------------------------------------------------------------------
+#endif

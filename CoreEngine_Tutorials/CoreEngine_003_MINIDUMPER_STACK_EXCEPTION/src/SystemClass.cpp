@@ -35,12 +35,11 @@
 
 #include "stateMachine.h"
 
-
 SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 {
 	// STARTING POINT of WOMA ENGINE!
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567890;
+	WomaIntegrityCheck = 1234567831;
 
 	AppSettings = NULL;
 
@@ -80,7 +79,7 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 #if defined WIN_XP
 		TEXT("WinXP")
 #elif defined WIN10
-		TEXT("Win10")
+		TEXT("Win10/11")
 #else
 		TEXT("Windows")
 #endif
@@ -153,8 +152,7 @@ void SystemClass::ProcessOSInput() // This Function will be invoked several time
 //-----------------------------------------------------------------------------------------
 {
 
-	static bool first_time =
-		true;
+		static bool first_time = true;
 
 	// Process Special: "ESC" key is beeing pressed ?
 	if ((WOMA::game_state > GAME_MINIMIZED) && (OS_KEY_DOWN(DIK_ESCAPE + 0x35)))
@@ -186,9 +184,7 @@ void SystemClass::Shutdown()
 
 void SystemClass::FrameUpdate()
 {
-
-	ProcessOSInput();
-
+	ProcessOSInput();			// ProcessFrame: Process Special: Function Keys F1 to F6
 }
 
 

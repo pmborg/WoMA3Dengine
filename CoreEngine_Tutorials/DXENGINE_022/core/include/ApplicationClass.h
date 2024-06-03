@@ -48,13 +48,14 @@
 
 #include "WomaDriverClass.h"
 
+#include "virtualModelClass.h"
+extern std::vector<VirtualModelClass*> m_screenShots;
 // -------------------------------------------------------------------------------------------------
 
-
-#include "virtualModelClass.h"
+extern UINT RENDER_PAGE;
+extern bool FORCE_RENDER_ALL;
 
 #define MAX_TERRAINS 0
-
 
 #pragma warning( push )
 #pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
@@ -100,7 +101,7 @@
 class ApplicationClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567890;
+	UINT WomaIntegrityCheck = 1234567831;
 	ApplicationClass();
 	~ApplicationClass();
 	
@@ -120,30 +121,28 @@ public:
 	void Calc3DSunMoonPosition();
 	#endif
 
-	void RenderScene(UINT monitorWindow);
-
+	void RenderScene(UINT monitorWindow, WomaDriverClass* driver);
 	float Update(UINT monitorWindow, WomaDriverClass* m_Driver);					// PROCESS User Update
-	void AppPreRender(float fadeLight);					// PRE-RENDER - Shadows
 	void AppRender(UINT monitorWindow, float fadeLight);	// RENDER - 3D
-	void AppPosRender();									// POS-RENDER - 2D: Render 
 
 	virtual bool WOMA_APPLICATION_InitGUI();
 
 	// 3D
-	void	defineSquarModel(float unit);
-	bool	Initialize(/*WomaDriverClass*/ void* Driver);
+	bool	Initialize(WomaDriverClass* Driver);
 	virtual bool WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver); // APP_Load
 
 	// SKY
 
 private:
 
+
+
 //VARS:
 // ---------------------------------------------------------------------
 private:
 
+
 public:
-	UINT	RENDER_PAGE=0;
 	float	dt=0;	// Delta time
 
 	//---------------------------------------------------------------------
@@ -163,8 +162,53 @@ public:
 
 	float ClearColor[4]={0};
 
+public:
+	void DemoRender();
+	void RenderSprites();
+
+	//3D
+	bool DEMO_WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver); // APP_Load
+
+	// 2D
+
+	void initColorDemo(WomaDriverClass* Driver);
+	void initTextureDemo();
+
+	//	-------------------------------------------------------------------------------------------
+	//	WoMA Vertex(s) Arrays:  NOTE: Cant be used to create and Obj more than ONCE!
+	//	-------------------------------------------------------------------------------------------
+	//DEMO-1:
+	std::vector<ModelColorVertexType> SquareColorVertexVector;	// COLOR-DEMO-1: CREATE_VERTEXVECTOR_SQUAD_MODEL_OPTIMIZED
+	VirtualModelClass* m_1stSquare3DColorModel = NULL;			// COLOR-DEMO-1: CREATE_MODELDX_IF_NOT_EXCEPTION
+
+	//DEMO-2:
+	std::vector<ModelColorVertexType> TriangleColorVertexVector;// COLOR-DEMO-2: CREATE_VERTEXVECTOR_TRIANGLE_MODEL_OPTIMIZED
+	VirtualModelClass* m_1stTriangle3DColorModel = NULL;		// COLOR-DEMO-2: CREATE_MODELDX_IF_NOT_EXCEPTION
+
+	ModelTextureVertexType textureVertex = { 0 };					// Use this "VERTEX" on macro
+
+	//DEMO-1:
+	std::vector<ModelTextureVertexType> SquareTextureVertexVector;	// TEXTURE-DEMO-1: CREATE_VERTEXVECTOR_SQUAD_MODEL_OPTIMIZED
+
+	VirtualModelClass* m_2nd3DModel = NULL;						// Model
+
+	VirtualModelClass* m_bmp3DModel = NULL;						// Model
+	VirtualModelClass* m_jpg3DModel = NULL;						// Model
+	VirtualModelClass* m_png3DModel = NULL;						// Model
+	VirtualModelClass* m_tif3DModel = NULL;						// Model
+	VirtualModelClass* m_dds3DModel = NULL;						// Model
+#if defined SUPPORT_TGA
+	VirtualModelClass* m_tga3DModel = NULL;						// Model
+#endif
+
+	//DEMO-2:
+	std::vector<ModelTextureVertexType> TriangleTextureVertexVector;	// TEXTURE-DEMO-2: CREATE_VERTEXVECTOR_TRIANGLE_MODEL_OPTIMIZED
+	VirtualModelClass* m_1stTriangleTextureVertexModel = NULL;			// TEXTURE-DEMO-2: initLoadTexture()
+
+	// TERRAIN
 
 
 };
 
 #endif
+

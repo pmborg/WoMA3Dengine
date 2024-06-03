@@ -52,6 +52,7 @@
 
 TCHAR MainDeviceName[MAX_STR_LEN];	// Monitor Name
 
+UINT RENDER_PAGE = DX_ENGINE_LEVEL;
 
 //----------------------------------------------------------------------------------
 WinSystemClass::WinSystemClass() : SystemClass() 
@@ -239,7 +240,7 @@ void WinSystemClass::InitializeSetupScreen(int x, int y)
 	text.y += (int)LINE_SPACE; text.label = systemDefinitions.windowsVersion;
 	TextToPrint[0].push_back(text);
 
-	text.y += (int)LINE; text.label = systemDefinitions.windowsBuildNumber;
+	text.y += (int)LINE; text.label = systemDefinitions.windowsBuildVersion;
 	TextToPrint[0].push_back(text);
 
 	text.y += (int)LINE; text.label = systemDefinitions.osName;

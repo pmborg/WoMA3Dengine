@@ -19,6 +19,7 @@
 // --------------------------------------------------------------------------------------------
 #pragma once
 
+#include "main.h"
 #include "vertexTypes.h"
 
 const int magic = 1;
@@ -28,11 +29,12 @@ const int n_faces = 6;
 class CCube
 {
 public:
+	UINT WomaIntegrityCheck = 1234567831;
 	CCube(int x_0, int y_0, int z_0);
 	virtual ~CCube();
 	void Shutdown();
 	void VertexCubeColor(int c, int i, int f);
-	void VertexCubeTexture (int c, int i, int f);
+	void VertexCubeTexture(int c, int i, int f);
 	void VertexCubeTextureLight(int c, int i, int f);
 	std::vector <ModelColorVertexType> VertexCubeColorModel;
 	std::vector <ModelTextureVertexType> VertexCubeTextureModel;

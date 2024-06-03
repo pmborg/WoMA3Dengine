@@ -23,11 +23,13 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "DXcameraClass.h"
+
 #include "WinSystemClass.h"
 
-#if defined USE_SOUND_MANAGER || defined USE_PLAY_MUSIC
+#if DX_ENGINE_LEVEL >= 29 && defined USE_SOUND_MANAGER || defined USE_PLAY_MUSIC
 #include "AudioClass.h"
 #endif
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: WinSystemClass
@@ -35,7 +37,7 @@
 class dxWinSystemClass : public WinSystemClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567829;
+	UINT WomaIntegrityCheck = 1234567831;
 	dxWinSystemClass(WOMA::Settings* AppSettings);
 	~dxWinSystemClass();
 
@@ -46,16 +48,13 @@ public:
 
 	void ProcessOSInput();
 
-	bool LoadXmlSettings();
+	bool LoadWorldXmlSettings();
 
 	bool ApplicationInitMainWindow();
 
 	void PAUSE();
 	void UNPAUSE();
 	void GPH_RESIZE();
-
-	STRING		XML_WORLD_FILE;
-	World		world;
 
 	DXcameraClass* m_Camera = NULL;
 	DXcameraClass* m_CameraSKY = NULL;
@@ -67,13 +66,12 @@ public:
 	DXInputClass* m_Input = NULL;
 	std::vector<PlayerClass*>	m_player;
 
-#if defined USE_SOUND_MANAGER || defined USE_PLAY_MUSIC
+#if DX_ENGINE_LEVEL >= 29 && (defined USE_SOUND_MANAGER || defined USE_PLAY_MUSIC)
 	AudioClass* audio=NULL;
 	bool StartSoundManager();
 #endif
 	SoundID MusicID=NULL;
 	SoundSourceID MusicSourceID = NULL;
-
 
 	//private:
 	void Shutdown();

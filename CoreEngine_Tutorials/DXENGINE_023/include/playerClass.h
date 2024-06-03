@@ -24,7 +24,9 @@
 ///////////////////////////////
 #include "main.h"
 
+#if defined DX9sdk
 	#include "DX9Class.h"
+#endif
 
 // -------------------------------------------------------------------------------------------
 // Use OLD xnamath from DirectX SDK June2010 or Windows Kit 8?
@@ -65,7 +67,9 @@ typedef struct
 {	
 	// Current Position:
 	// --------------------------------------------------------------------------------
+	#if defined DX_ENGINE
 	XMMATRIX	m_world;	// World Matrix: our position in the 3D world space
+	#endif
     bool online;			// Network State
 
     // ids:
@@ -103,7 +107,7 @@ typedef struct
 class PlayerClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567890;
+	UINT WomaIntegrityCheck = 1234567831;
 	PlayerClass(UINT id);
 	~PlayerClass();
 

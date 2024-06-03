@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: GLmodelClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -19,6 +20,7 @@
 
 #include "platform.h"
 
+#if (defined OPENGL3 || defined OPENGL40) && DX_ENGINE_LEVEL >= 21
 #include "ModelClass.h"
 #include "womadriverclass.h"
 #include "GLmathClass.h"
@@ -28,10 +30,10 @@
 #include "mem_leak.h"
 #include "winSystemClass.h"
 
-GLmodelClass::GLmodelClass(bool model3d)
+GLmodelClass::GLmodelClass(bool model3d) 
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567831;
+	WomaIntegrityCheck = 1234567832;
 
 	// SUPER: ----------------------------------------------------------------------
 	m_ObjId = 0;
@@ -68,7 +70,7 @@ GLmodelClass::GLmodelClass(bool model3d)
 	m_viewMatrix = m_viewMatrix.mat4identity();
 }
 
-GLmodelClass::~GLmodelClass() {
+GLmodelClass::~GLmodelClass(){
 	CLASSDELETE();
 }
 
@@ -116,13 +118,13 @@ void GLmodelClass::UpdateDynamic(void* Driver, std::vector<ModelColorVertexType>
 	SAFE_DELETE_ARRAY(vertices);
 };
 
-bool GLmodelClass::InitializeVertexIndexBuffers(std::vector <STRING>* textureFile = NULL)
+bool GLmodelClass::InitializeVertexIndexBuffers(std::vector <STRING>* textureFile = NULL) 
 {
-	bool result = false;
+bool result=false;
 
 	// Initialize the vertex and index buffer that hold the geometry for the triangles:
 // ------------------------------------------------------------------------------------------------
-	switch (ModelShaderType)
+	switch (ModelShaderType) 
 	{
 	case SHADER_COLOR:
 		result = InitializeColorBuffers(NULL);
@@ -141,13 +143,11 @@ bool GLmodelClass::InitializeVertexIndexBuffers(std::vector <STRING>* textureFil
 	// Create the shader to this object:
 	// ------------------------------------------------------------------------------------------------
 	m_Shader = NEW GLshaderClass;
-	IF_NOT_THROW_EXCEPTION(m_Shader);
+	IF_NOT_THROW_EXCEPTION (m_Shader);
 
 	result = m_Shader->Initialize(ModelShaderType);
-	if (!result)
-	{
-		WomaFatalExceptionW(TEXT("Could not initialize the shader object.")); return false;
-	}
+	if(!result)
+		{ WomaFatalExceptionW(TEXT("Could not initialize the shader object.")); return false; }
 
 	// Load Texture (manually)
 	// ------------------------------------------------------------------------------------------------
@@ -155,15 +155,13 @@ bool GLmodelClass::InitializeVertexIndexBuffers(std::vector <STRING>* textureFil
 	{
 		// Create the texture object for this model:
 		m_Texture = NEW GLtextureClass;
-		IF_NOT_THROW_EXCEPTION(m_Texture);
+		IF_NOT_THROW_EXCEPTION (m_Texture);
 		meshSRV.push_back(m_Texture);
 
 		// Initialize the texture object:
 		result = m_Texture->Initialize(WOMA::LoadFile((TCHAR*)(*textureFile)[0].c_str()), 0, /*wrap*/ Model3D);
-		if (!result)
-		{
-			WOMA::WomaMessageBox((TCHAR*)(*textureFile)[0].c_str(), TEXT("Texture File not found")); return false;
-		}
+		if(!result)
+			{ WOMA::WomaMessageBox((TCHAR*)(*textureFile)[0].c_str(), TEXT("Texture File not found")); return false; }
 
 		if (!Model3D)
 		{
@@ -178,7 +176,7 @@ bool GLmodelClass::InitializeVertexIndexBuffers(std::vector <STRING>* textureFil
 }
 
 // -------------------	// COLOR
-bool GLmodelClass::LoadColor(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<ModelColorVertexType>* model, std::vector<UINT>* indexList, UINT instanceCount)
+bool GLmodelClass::LoadColor(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<ModelColorVertexType> *model, std::vector<UINT>* indexList, UINT instanceCount)
 {
 	MODEL_NAME = objectName;
 	if (shader_type == SHADER_AUTO)
@@ -191,7 +189,7 @@ bool GLmodelClass::LoadColor(TCHAR* objectName, void* driver, SHADER_TYPE shader
 	return InitializeVertexIndexBuffers();
 }
 
-bool GLmodelClass::LoadTexture(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<ModelTextureVertexType>* model, std::vector<UINT>* indexList, UINT instanceCount)
+bool GLmodelClass::LoadTexture(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureVertexType> *model, std::vector<UINT>* indexList, UINT instanceCount)
 {
 	MODEL_NAME = objectName;
 	if (shader_type == SHADER_AUTO)
@@ -206,7 +204,7 @@ bool GLmodelClass::LoadTexture(TCHAR* objectName, void* driver, SHADER_TYPE shad
 	return InitializeVertexIndexBuffers(textureFile);
 }
 
-bool GLmodelClass::LoadLight(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<ModelTextureLightVertexType>* model, std::vector<UINT>* indexList, UINT instanceCount)
+bool GLmodelClass::LoadLight(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureLightVertexType> *model, std::vector<UINT>* indexList, UINT instanceCount)
 {
 	MODEL_NAME = objectName;
 	if (shader_type == SHADER_AUTO)
@@ -218,7 +216,7 @@ bool GLmodelClass::LoadLight(TCHAR* objectName, void* driver, SHADER_TYPE shader
 	indexModelList = indexList;
 	return InitializeVertexIndexBuffers(textureFile);
 }
-bool GLmodelClass::LoadBump(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<ModelNormalBumpVertexType>* model, std::vector<UINT>* indexList, UINT instanceCount)
+bool GLmodelClass::LoadBump(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelNormalBumpVertexType> *model, std::vector<UINT>* indexList, UINT instanceCount)
 {
 	///TODO
 	indexModelList = indexList;
@@ -227,9 +225,10 @@ bool GLmodelClass::LoadBump(TCHAR* objectName, void* driver, SHADER_TYPE shader_
 
 bool GLmodelClass::LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow, bool renderShadow, UINT instanceCount)
 {
-#if defined _NOT 
+#if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES // Normal Bump + Instancing 
 	m_instanceCount = instanceCount;
 #endif
+
 	const TCHAR* extension = _tcsrchr(filename.c_str(), '.');
 
 	if (_tcsicmp(extension, TEXT(".obj")) == 0)
@@ -238,7 +237,7 @@ bool GLmodelClass::LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shad
 		if (b)
 			modelClass.CreateObject(this, (TCHAR*)filename.c_str(), g_driver, shader_type /*SHADER_AUTO*/, filename, castShadow, renderShadow); // Auto Detect Shader Type
 	}
-#if defined _NOT LOADM3D
+#if defined LOADM3D //ENGINE_LEVEL >= 50
 	if (_tcsicmp(extension, TEXT(".M3D")) == 0)
 		return LoadM3D(shader_type, g_driver, filename, castShadow, renderShadow, instanceCount);
 #endif
@@ -272,124 +271,124 @@ void GLmodelClass::Shutdown()
 	glBindVertexArray(0);
 	glDeleteVertexArrays(1, &m_vertexArrayId);
 
-	SAFE_SHUTDOWN(m_Shader);
+	SAFE_SHUTDOWN (m_Shader);
 }
 
-bool GLmodelClass::RenderSprite(void* Driver, int positionX, int positionY, float scale, float fade)
-{
-	model_fade = fade;
+	bool GLmodelClass::RenderSprite(void* Driver , int positionX, int positionY, float scale, float fade)
+	{
+		model_fade = fade;
 
-	if (!UpdateBuffersRotY(Driver, positionX, positionY))
-		return false;
+		if (!UpdateBuffersRotY(Driver, positionX, positionY))
+			return false;
 
-	m_worldMatrix.mat4identity();
+		m_worldMatrix.mat4identity();
 
-	//scale2D = scale;
-	if (scale != 1) {
-		m_worldMatrix.m[4 * 0 + 0] = scale;
-		m_worldMatrix.m[4 * 1 + 1] = scale;
-		m_worldMatrix.m[4 * 2 + 2] = scale;
+		//scale2D = scale;
+		if (scale != 1) {
+			m_worldMatrix.m[4 * 0 + 0] = scale;
+			m_worldMatrix.m[4 * 1 + 1] = scale;
+			m_worldMatrix.m[4 * 2 + 2] = scale;
+		}
+
+		float Ypos = (SystemHandle->AppSettings->WINDOW_HEIGHT-45-32) / 2 - m_worldMatrix.m[10] * SpriteTextureHeight / 2;
+		m_worldMatrix.m[13] = Ypos;
+
+		Render((WomaDriverClass*)Driver, CAMERA_NORMAL, PROJECTION_ORTHOGRAPH);
+
+		return true;
 	}
 
-	float Ypos = (SystemHandle->AppSettings->WINDOW_HEIGHT - 45 - 32) / 2 - m_worldMatrix.m[10] * SpriteTextureHeight / 2;
-	m_worldMatrix.m[13] = Ypos;
+	bool GLmodelClass::UpdateBuffersRotY(void* Driver, int positionX, int positionY)
+	{
+		static int m_previousPosX = -10000;
+		static int m_previousPosY = -10000;
+		static bool RenderfirstTime = ((WomaDriverClass*)Driver)->RenderfirstTime;
 
-	Render((WomaDriverClass*)Driver, CAMERA_NORMAL, PROJECTION_ORTHOGRAPH);
+		float left, right, top, bottom;
+		ModelTextureVertexType* vertices;
 
-	return true;
-}
+		if (((positionX == m_previousPosX) && (positionY == m_previousPosY)) && !RenderfirstTime)
+			return true;
 
-bool GLmodelClass::UpdateBuffersRotY(void* Driver, int positionX, int positionY)
-{
-	static int m_previousPosX = -10000;
-	static int m_previousPosY = -10000;
-	static bool RenderfirstTime = ((WomaDriverClass*)Driver)->RenderfirstTime;
+		// If it has changed then update the position it is being rendered to.
+		m_previousPosX = positionX;
+		m_previousPosY = positionY;
 
-	float left, right, top, bottom;
-	ModelTextureVertexType* vertices;
+		//The four sides of the image need to be calculated. See the diagram at the top of the tutorial for a complete explaination.
+		left = (float)((SystemHandle->AppSettings->WINDOW_WIDTH / 2) * -1) + (float)positionX;	// Calculate the screen coordinates of the left side of the bitmap.
+		right = left + (float)SpriteTextureWidth;												// Calculate the screen coordinates of the right side of the bitmap.
+		top = (float)(SystemHandle->AppSettings->WINDOW_HEIGHT / 2) - (float)positionY;			// Calculate the screen coordinates of the top of the bitmap.
+		bottom = top - (float)SpriteTextureHeight;												// Calculate the screen coordinates of the bottom of the bitmap.
 
-	if (((positionX == m_previousPosX) && (positionY == m_previousPosY)) && !RenderfirstTime)
-		return true;
+		//Now that the coordinates are calculated create a temporary vertex array and fill it with the new six vertex points.
+		vertices = NEW ModelTextureVertexType[m_vertexCount];
+		IF_NOT_THROW_EXCEPTION(vertices);
 
-	// If it has changed then update the position it is being rendered to.
-	m_previousPosX = positionX;
-	m_previousPosY = positionY;
-
-	//The four sides of the image need to be calculated. See the diagram at the top of the tutorial for a complete explaination.
-	left = (float)((SystemHandle->AppSettings->WINDOW_WIDTH / 2) * -1) + (float)positionX;	// Calculate the screen coordinates of the left side of the bitmap.
-	right = left + (float)SpriteTextureWidth;												// Calculate the screen coordinates of the right side of the bitmap.
-	top = (float)(SystemHandle->AppSettings->WINDOW_HEIGHT / 2) - (float)positionY;			// Calculate the screen coordinates of the top of the bitmap.
-	bottom = top - (float)SpriteTextureHeight;												// Calculate the screen coordinates of the bottom of the bitmap.
-
-	//Now that the coordinates are calculated create a temporary vertex array and fill it with the new six vertex points.
-	vertices = NEW ModelTextureVertexType[m_vertexCount];
-	IF_NOT_THROW_EXCEPTION(vertices);
-
-	// Load the vertex array with data:
-/*
-	------
-	|t1 / |
-	|  /  |
-	| / t2|
-	|/----|
-*/
-// First triangle (t1):
-// --------------------
-	vertices[0].x = left;
-	vertices[0].y = top;
-	vertices[0].z = 0;
-	vertices[0].tu = 0;
-	vertices[0].tv = 0;
-
-	vertices[1].x = right;
-	vertices[1].y = bottom;
-	vertices[1].z = 0;
-	vertices[1].tu = m_xTexture;
-	vertices[1].tv = 1;
-
-	vertices[2].x = left;
-	vertices[2].y = bottom;
-	vertices[2].z = 0;
-	vertices[2].tu = 0;
-	vertices[2].tv = 1;
-
-	// Second triangle (t2)
+		// Load the vertex array with data:
+	/*
+		------
+		|t1 / |
+		|  /  |
+		| / t2|
+		|/----|
+	*/
+	// First triangle (t1):
 	// --------------------
-	vertices[3].x = left;
-	vertices[3].y = top;
-	vertices[3].z = 0;
-	vertices[3].tu = 0;
-	vertices[3].tv = 0;
+		vertices[0].x = left;
+		vertices[0].y = top;
+		vertices[0].z = 0;
+		vertices[0].tu = 0;
+		vertices[0].tv = 0;
 
-	vertices[4].x = right;
-	vertices[4].y = top;
-	vertices[4].z = 0;
-	vertices[4].tu = m_xTexture;
-	vertices[4].tv = 0;
+		vertices[1].x = right;
+		vertices[1].y = bottom;
+		vertices[1].z = 0;
+		vertices[1].tu = m_xTexture;
+		vertices[1].tv = 1;
 
-	vertices[5].x = right;
-	vertices[5].y = bottom;
-	vertices[5].z = 0;
-	vertices[5].tu = m_xTexture;
-	vertices[5].tv = 1;
+		vertices[2].x = left;
+		vertices[2].y = bottom;
+		vertices[2].z = 0;
+		vertices[2].tu = 0;
+		vertices[2].tv = 1;
 
-	// Bind the vertex buffer.
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
+		// Second triangle (t2)
+		// --------------------
+		vertices[3].x = left;
+		vertices[3].y = top;
+		vertices[3].z = 0;
+		vertices[3].tu = 0;
+		vertices[3].tv = 0;
 
-	// Get a pointer to the buffer's actual location in memory.
-	void* dataPtr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+		vertices[4].x = right;
+		vertices[4].y = top;
+		vertices[4].z = 0;
+		vertices[4].tu = m_xTexture;
+		vertices[4].tv = 0;
 
-	// Copy the vertex data into memory.
-	memcpy(dataPtr, vertices, m_vertexCount * sizeof(ModelColorVertexType));
+		vertices[5].x = right;
+		vertices[5].y = bottom;
+		vertices[5].z = 0;
+		vertices[5].tu = m_xTexture;
+		vertices[5].tv = 1;
 
-	// Unlock the vertex buffer.
-	glUnmapBuffer(GL_ARRAY_BUFFER);
+			// Bind the vertex buffer.
+		glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
+
+		// Get a pointer to the buffer's actual location in memory.
+		void* dataPtr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+
+		// Copy the vertex data into memory.
+		memcpy(dataPtr, vertices, m_vertexCount * sizeof(ModelColorVertexType));
+
+		// Unlock the vertex buffer.
+		glUnmapBuffer(GL_ARRAY_BUFFER);
 
 
-	SAFE_DELETE_ARRAY(vertices);				// Release the vertex array as it is no longer needed.
+		SAFE_DELETE_ARRAY(vertices);				// Release the vertex array as it is no longer needed.
 
-	return true;
-}
+		return true;
+	}
 
 
 void GLmodelClass::RenderWithFade(WomaDriverClass* driver, float fadeLight)
@@ -406,38 +405,38 @@ void GLmodelClass::RenderSky(WomaDriverClass* driver, UINT camera, float fadeLig
 void GLmodelClass::Render(/*GLopenGLclass*/WomaDriverClass* Driver, UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix)
 {
 	GLopenGLclass* driver = (GLopenGLclass*)Driver;
-
+	
 	switch (projection)
 	{
-	case PROJECTION_PERSPECTIVE:
-		projectionMatrix = (driver->m_projectionMatrix);
-		break;
+		case PROJECTION_PERSPECTIVE:
+			 projectionMatrix = (driver->m_projectionMatrix);
+			break;
 
-	case PROJECTION_ORTHOGRAPH:
-		projectionMatrix = driver->m_orthoMatrix;
+		case PROJECTION_ORTHOGRAPH:
+			projectionMatrix = driver->m_orthoMatrix;
 		break;
 	}
 
 	switch (camera)
 	{
-	case CAMERA_NORMAL:
-		if (projection == PROJECTION_PERSPECTIVE)
-		{
-			//PROJECTION_PERSPECTIVE
-			m_viewMatrix = ((GLcameraClass*)driver->gl_Camera)->m_viewMatrix;
-		}
-		else
-		{
-			//PROJECTION_ORTHOGRAPH:
-			m_viewMatrix = m_viewMatrix;
-			m_viewMatrix.mat4identity();
-			m_viewMatrix.m[14] = 1;
-		}
-		break;
+		case CAMERA_NORMAL:
+			if (projection == PROJECTION_PERSPECTIVE)
+			{
+				//PROJECTION_PERSPECTIVE
+				m_viewMatrix = ((GLcameraClass*)driver->gl_Camera)->m_viewMatrix;
+			}
+			else
+			{	
+				//PROJECTION_ORTHOGRAPH:
+				m_viewMatrix = m_viewMatrix;
+				m_viewMatrix.mat4identity();
+				m_viewMatrix.m[14] = 1;
+			}
+			break;
 
-	case CAMERA_SKY:
-		m_viewMatrix = ((GLcameraClass*)driver->gl_CameraSKY)->m_viewMatrix;
-		break;
+		case CAMERA_SKY:
+			m_viewMatrix = ((GLcameraClass*)driver->gl_CameraSKY)->m_viewMatrix;
+			break;
 	}
 
 	m_Shader->SetShader(); //glUseProgram(m_Shader->m_shaderProgram); // 
@@ -451,7 +450,7 @@ void GLmodelClass::Render(/*GLopenGLclass*/WomaDriverClass* Driver, UINT camera,
 	if (ModelShaderType == SHADER_COLOR)
 		m_Shader->SetShaderParameters(ModelShaderType, &m_worldMatrix, &m_viewMatrix, &projectionMatrix);
 
-	else
+	else 
 	{
 		m_Shader->SetShaderParameters(ModelShaderType, &m_worldMatrix, &m_viewMatrix, &projectionMatrix, 0 /*m_Texture->m_textureID*/);
 
@@ -474,7 +473,7 @@ void GLmodelClass::Render(/*GLopenGLclass*/WomaDriverClass* Driver, UINT camera,
 // TODO: ALSO SHARED FROM DX do it on model class!?
 void GLmodelClass::GetIndices()
 {
-	if (indexModelList == NULL || indexModelList->size() == 0) // BASIC object, without index? One index per vertice?
+	if ( indexModelList == NULL || indexModelList->size() == 0) // BASIC object, without index? One index per vertice?
 	{
 		m_indexCount = m_vertexCount;			// Set the number of indices in the index array.
 		indices = NEW UINT[m_indexCount];		// Create the index array.
@@ -484,11 +483,10 @@ void GLmodelClass::GetIndices()
 		for (UINT i = 0; i < m_indexCount; i++)
 			indices[i] = i;						// Load the index array with data:
 
-	}
-	else {
+	} else {
 		m_indexCount = (UINT)indexModelList->size();
 		indices = NEW UINT[m_indexCount];		// Create the index array.
-		IF_NOT_THROW_EXCEPTION(indices);
+		IF_NOT_THROW_EXCEPTION (indices);
 
 		// cloneArrayIndices()
 		for (UINT i = 0; i < m_indexCount; i++)
@@ -502,7 +500,7 @@ bool GLmodelClass::InitializeColorBuffers(/*GLopenGLclass*/ void* OpenGL)
 	ModelColorVertexType* vertices;
 	//UINT*	indices = NULL;
 
-	m_vertexCount = (UINT)(*modelColorVertex).size();	// Set the number of vertices in the vertex array.
+	m_vertexCount = (UINT) (*modelColorVertex).size();	// Set the number of vertices in the vertex array.
 
 	GetIndices();
 
@@ -522,9 +520,9 @@ bool GLmodelClass::InitializeColorBuffers(/*GLopenGLclass*/ void* OpenGL)
 		vertices[i].g = (*modelColorVertex)[i].g;
 		vertices[i].b = (*modelColorVertex)[i].b;
 		vertices[i].a = (*modelColorVertex)[i].a;
-#if _DEBUG
+	#if _DEBUG
 		WOMA_LOGManager_DebugMSG("vertices[i].x=%f vertices[i].y=%f vertices[i].z=%f\n", vertices[i].x, vertices[i].y, vertices[i].z);
-#endif
+	#endif
 	}
 
 	glGenVertexArrays(1, &m_vertexArrayId);	// Allocate an OpenGL vertex array object.
@@ -534,11 +532,11 @@ bool GLmodelClass::InitializeColorBuffers(/*GLopenGLclass*/ void* OpenGL)
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
 	glBufferData(GL_ARRAY_BUFFER, m_vertexCount * sizeof(ModelColorVertexType), vertices, GL_STATIC_DRAW);	// Bind the vertex buffer and load the vertex (position and color) data into the vertex buffer.
 
-	SetOpenGLBuffers(sizeof(ModelColorVertexType), indices);
+	SetOpenGLBuffers(sizeof (ModelColorVertexType), indices);
 
 	// Now that the buffers have been loaded we can release the array data.
-	SAFE_DELETE_ARRAY(vertices);
-	SAFE_DELETE_ARRAY(indices);
+	SAFE_DELETE_ARRAY (vertices);
+	SAFE_DELETE_ARRAY (indices);
 
 	return true;
 }
@@ -547,7 +545,7 @@ bool GLmodelClass::InitializeTextureBuffers(/*GLopenGLclass*/ void* OpenGL)
 {
 	ModelTextureVertexType* vertices;
 
-	m_vertexCount = (UINT)(*modelTextureVertex).size();	// Set the number of vertices in the vertex array.
+	m_vertexCount = (UINT) (*modelTextureVertex).size();	// Set the number of vertices in the vertex array.
 
 	GetIndices();
 
@@ -556,7 +554,7 @@ bool GLmodelClass::InitializeTextureBuffers(/*GLopenGLclass*/ void* OpenGL)
 	IF_NOT_THROW_EXCEPTION(vertices);
 
 	// Load the vertex array with data:
-	for (UINT i = 0; i < m_vertexCount; i++)
+	for (UINT i = 0; i <m_vertexCount; i++)
 	{
 		// Load the vertex array with data:
 		vertices[i].x = (*modelTextureVertex)[i].x;
@@ -566,9 +564,9 @@ bool GLmodelClass::InitializeTextureBuffers(/*GLopenGLclass*/ void* OpenGL)
 		vertices[i].tu = (*modelTextureVertex)[i].tu;
 		vertices[i].tv = (*modelTextureVertex)[i].tv;
 
-#if _DEBUG
+		#if _DEBUG
 		WOMA_LOGManager_DebugMSG("vertices: %d %d %d - %f %f \n", vertices[i].x, vertices[i].y, vertices[i].z, vertices[i].tu, vertices[i].tv);
-#endif
+		#endif
 	}
 
 	glGenVertexArrays(1, &m_vertexArrayId);	// Allocate an OpenGL vertex array object.
@@ -579,11 +577,11 @@ bool GLmodelClass::InitializeTextureBuffers(/*GLopenGLclass*/ void* OpenGL)
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
 	glBufferData(GL_ARRAY_BUFFER, m_vertexCount * sizeof(ModelTextureVertexType), vertices, GL_STATIC_DRAW);
 
-	SetOpenGLBuffers(sizeof(ModelTextureVertexType), indices);
+	SetOpenGLBuffers(sizeof (ModelTextureVertexType), indices);
 
 	// Now that the buffers have been loaded we can release the array data.
-	SAFE_DELETE_ARRAY(vertices);
-	SAFE_DELETE_ARRAY(indices);
+	SAFE_DELETE_ARRAY (vertices);
+	SAFE_DELETE_ARRAY (indices);
 
 	return true;
 }
@@ -592,7 +590,7 @@ bool GLmodelClass::InitializeTextureLightBuffers(/*GLopenGLclass*/ void* OpenGL)
 {
 	ModelTextureLightVertexType* vertices;
 
-	m_vertexCount = (UINT)(*modelTextureLightVertex).size();	// Set the number of vertices in the vertex array.
+	m_vertexCount = (UINT) (*modelTextureLightVertex).size();	// Set the number of vertices in the vertex array.
 	GetIndices();
 
 	// Create the vertex array.
@@ -623,11 +621,11 @@ bool GLmodelClass::InitializeTextureLightBuffers(/*GLopenGLclass*/ void* OpenGL)
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
 	glBufferData(GL_ARRAY_BUFFER, m_vertexCount * sizeof(ModelTextureLightVertexType), vertices, GL_STATIC_DRAW);
 
-	SetOpenGLBuffers(sizeof(ModelTextureLightVertexType), indices);
+	SetOpenGLBuffers(sizeof (ModelTextureLightVertexType), indices);
 
 	// Now that the buffers have been loaded we can release the array data.
-	SAFE_DELETE_ARRAY(vertices);
-	SAFE_DELETE_ARRAY(indices);
+	SAFE_DELETE_ARRAY (vertices);
+	SAFE_DELETE_ARRAY (indices);
 
 	return true;
 }
@@ -638,19 +636,19 @@ void GLmodelClass::SetOpenGLBuffers(UINT sizeofMODELvertex, UINT* indices)
 
 	switch (ModelShaderType)
 	{
-	case SHADER_COLOR:					// 0: Vertex position.
-		glEnableVertexAttribArray(1);	// 1: Vertex color.	
+		case SHADER_COLOR:					// 0: Vertex position.
+			glEnableVertexAttribArray(1);	// 1: Vertex color.	
 		break;
 
-	case SHADER_TEXTURE:				// 0: Vertex position.
-	case SHADER_TEXTURE_FONT:
-		glEnableVertexAttribArray(1);	// 1: Texture coordinates.
+		case SHADER_TEXTURE:				// 0: Vertex position.
+		case SHADER_TEXTURE_FONT:				
+			glEnableVertexAttribArray(1);	// 1: Texture coordinates.
 		break;
 
-	case SHADER_TEXTURE_LIGHT:
-	case SHADER_TEXTURE_LIGHT_RENDERSHADOW:	// 0: Vertex position.
-		glEnableVertexAttribArray(1);		// 1: Texture coordinates.
-		glEnableVertexAttribArray(2);		// 2: Normals.
+		case SHADER_TEXTURE_LIGHT:				
+		case SHADER_TEXTURE_LIGHT_RENDERSHADOW:	// 0: Vertex position.
+			glEnableVertexAttribArray(1);		// 1: Texture coordinates.
+			glEnableVertexAttribArray(2);		// 2: Normals.
 		break;
 	}
 
@@ -658,30 +656,30 @@ void GLmodelClass::SetOpenGLBuffers(UINT sizeofMODELvertex, UINT* indices)
 	// ----------------------------------------------------------------------------------------
 	// void glVertexAttribPointer( 	
 	// GLuint index,
-	// GLint size,
-	// GLenum type,
-	// GLboolean normalized, !!! Check this ONE !!!
-	// GLsizei stride,
-	// const GLvoid * pointer);
+  	// GLint size,
+  	// GLenum type,
+  	// GLboolean normalized, !!! Check this ONE !!!
+  	// GLsizei stride,
+  	// const GLvoid * pointer);
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
 	glVertexAttribPointer(0, sizeof(GLint), GL_FLOAT, false, sizeofMODELvertex, 0);	// POSITION
 
 	switch (ModelShaderType)
 	{
-	case SHADER_COLOR: // COLOR
+		case SHADER_COLOR: // COLOR
 		//glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
 		glVertexAttribPointer(1, 3, GL_FLOAT, false, sizeofMODELvertex, (unsigned char*)NULL + (3 * sizeof(float)));
 		break;
 
-	case SHADER_TEXTURE: // TEXTURE
-	case SHADER_TEXTURE_FONT: // TEXTURE
+		case SHADER_TEXTURE: // TEXTURE
+		case SHADER_TEXTURE_FONT: // TEXTURE
 		//glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
 		glVertexAttribPointer(1, 2, GL_FLOAT, false, sizeofMODELvertex, (unsigned char*)NULL + (3 * sizeof(float)));
 		break;
 
-	case SHADER_TEXTURE_LIGHT: // TEXTURE + LIGHT
-	case SHADER_TEXTURE_LIGHT_RENDERSHADOW:
+		case SHADER_TEXTURE_LIGHT: // TEXTURE + LIGHT
+		case SHADER_TEXTURE_LIGHT_RENDERSHADOW:
 		//glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
 		glVertexAttribPointer(1, 2, GL_FLOAT, false, sizeofMODELvertex, (unsigned char*)NULL + (3 * sizeof(float)));
 
@@ -695,7 +693,7 @@ void GLmodelClass::SetOpenGLBuffers(UINT sizeofMODELvertex, UINT* indices)
 
 	// Bind the index buffer and load the index data into it:
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferId);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indexCount * sizeof(UINT), indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indexCount*sizeof(UINT), indices, GL_STATIC_DRAW);
 }
 
 
@@ -707,53 +705,54 @@ void GLmodelClass::SetBuffers(/*GLopenGLclass*/void* OpenGL)
 
 void GLmodelClass::RenderBuffers(/*GLopenGLclass*/void* OpenGL)
 {
-	ASSERT(m_indexCount > 0);
+	ASSERT (m_indexCount > 0);
 
 	// Render the vertex buffer using the index buffer:
 	if (PrimitiveTopology == LINELIST)
 		glDrawElements(GL_LINES, m_indexCount, GL_UNSIGNED_INT, 0);
 	else
-		if (PrimitiveTopology == TRIANGLESTRIP)
-			glDrawElements(GL_TRIANGLE_STRIP, m_indexCount, GL_UNSIGNED_INT, 0);
-		else
-			glDrawElements(GL_TRIANGLES, m_indexCount, GL_UNSIGNED_INT, 0);
+	if (PrimitiveTopology == TRIANGLESTRIP)
+		glDrawElements(GL_TRIANGLE_STRIP, m_indexCount, GL_UNSIGNED_INT, 0);
+	else
+		glDrawElements(GL_TRIANGLES, m_indexCount, GL_UNSIGNED_INT, 0);
 }
 
 
 void GLmodelClass::Identity()
 {
-	m_worldMatrix = m_worldMatrix.mat4identity();
+	m_worldMatrix =	m_worldMatrix.mat4identity();
 }
 
-void GLmodelClass::multiply(void* m) // in radians!!
+void GLmodelClass::multiply (void* m) // in radians!!
 {
 	m_worldMatrix = m_worldMatrix * *(mat4*)m;;
 }
 
-void GLmodelClass::rotateX(float rZrad) // in radians!!
+void GLmodelClass::rotateX (float rZrad) // in radians!!
 {
-	mat4 m = mathClass.rotateX(rZrad);
-	m_worldMatrix = m_worldMatrix * m;
+    mat4 m = mathClass.rotateX (rZrad);
+    m_worldMatrix = m_worldMatrix * m;
 }
-void GLmodelClass::rotateY(float rZrad) // in radians!!
+void GLmodelClass::rotateY (float rZrad) // in radians!!
 {
-	mat4 m = mathClass.rotateY(-rZrad);	//OPEN GL ROTATE Z in oposite direction of DX
-	m_worldMatrix = m_worldMatrix * m;
+    mat4 m = mathClass.rotateY (-rZrad);	//OPEN GL ROTATE Z in oposite direction of DX
+    m_worldMatrix = m_worldMatrix * m;
 }
-void GLmodelClass::rotateZ(float rZrad) // in radians!!
+void GLmodelClass::rotateZ (float rZrad) // in radians!!
 {
-	mat4 m = mathClass.rotateZ(rZrad);
-	m_worldMatrix = m_worldMatrix * m;
+    mat4 m = mathClass.rotateZ (rZrad);
+    m_worldMatrix = m_worldMatrix * m;
 }
 void GLmodelClass::scale(float x, float y, float z)
 {
-	m_worldMatrix.m[4 * 0 + 0] = x;
-	m_worldMatrix.m[4 * 1 + 1] = y;
-	m_worldMatrix.m[4 * 2 + 2] = z;
+	m_worldMatrix.m[4*0+0] = x;
+	m_worldMatrix.m[4*1+1] = y;
+	m_worldMatrix.m[4*2+2] = z;
 }
 void GLmodelClass::translation(float x, float y, float z)
 {
-	m_worldMatrix.m[4 * 3 + 0] = x;
-	m_worldMatrix.m[4 * 3 + 1] = y;
-	m_worldMatrix.m[4 * 3 + 2] = z;
+	m_worldMatrix.m[4*3+0] = x;
+	m_worldMatrix.m[4*3+1] = y;
+	m_worldMatrix.m[4*3+2] = z;
 }
+#endif
