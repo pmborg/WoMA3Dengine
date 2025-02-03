@@ -14,3 +14,7 @@ ThirdParty/DirectXTK/Bin/Desktop_2013/x64/Release/
 WoMAsetup*.exe
 redist/
 redist_d/
+CoreEngine_Tutorials/CoreEngine_000_OSENGINE_SYSTEM/Android1/Android1.NativeActivity/ARM64/**
+CoreEngine_Tutorials/CoreEngine_000_OSENGINE_SYSTEM/LinuxWoma/engine/**
+CoreEngine_Tutorials/CoreEngine_000_OSENGINE_SYSTEM/Android1/Android1.Packaging/ARM/
+CoreEngine_Tutorials/CoreEngine_000_OSENGINE_SYSTEM/Android1/Android1.Packaging/ARM64/

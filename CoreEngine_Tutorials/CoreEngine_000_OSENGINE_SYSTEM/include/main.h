@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: main.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -25,7 +25,7 @@
 // 	DEFINE minidumperClass
 // 	DEFINE logManager
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
+//WomaIntegrityCheck = 1234567311;
 
 #pragma once
 
@@ -36,6 +36,7 @@
 // DEFINE PLATFORM: Defaults
 // -----------------------------------------------------------------------------------------
 #pragma warning( disable : 4838 )
+#pragma warning( disable : 5208 )	// 
 #define _CRT_SECURE_NO_WARNINGS		// Ignore: warning C4996
 #include "platform.h"				// WOMA PLATFORM	- (Check OS: WINDOWS / LINUX / ANDROID)
 #include "standard_platform.h"		// WOMA INCLUDES	- Standard Platform: INCLUDES
@@ -52,25 +53,4 @@
 extern UINT CLASS_LOAD_N;
 extern UINT CLASS_DELETE_N;
 
-#define ENGINE_RESTART 100
-
-namespace WOMA
-{
-	extern Settings settings;				// Main Settings: settings.h
-	extern UINT		ENGINE_LEVEL_USED;
-#if defined WINDOWS_PLATFORM
-	// SUBSYSTEM:WINDOWS
-	extern PSTR		Scmdline;
-	extern int		Cmdshow;
-#endif
-	// SUBSYSTEM:CONSOLE
-	extern int		ARGc;
-	extern CHAR**	ARGv;
-
-	extern TCHAR strConsoleTitle[MAX_STR_LEN];
-
-	extern TCHAR	APP_COMPANY_NAME[];	// "Company" Directory Name: 1st lvl
-	extern TCHAR	APP_PROJECT_NAME[];	// "Project" Directory Name: 2nd lvl
-
-}
 

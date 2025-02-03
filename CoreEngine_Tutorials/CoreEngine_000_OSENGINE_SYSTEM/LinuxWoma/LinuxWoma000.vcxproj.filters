@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="..\include\default_settings_xml.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\main.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\OSengine.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\platform.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\standard_platform.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\SystemClass.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\woma_macros.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\level.h" />
+    <ClInclude Include="..\..\tech-level.h" />
+    <ClInclude Include="..\linux\include\linuxsystemclass.h">
+      <Filter>LINUX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\linux\include\linux.h">
+      <Filter>LINUX</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Include">
+      <UniqueIdentifier>{3df6ae54-fc8d-4ae8-95e3-a2940b2712f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{ed8fd78e-610c-49a7-ab4d-650990e49f1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LINUX">
+      <UniqueIdentifier>{0d5421f2-7f3d-426e-bb19-40ef91570fb8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\default_settings_xml.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\OSengine.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\SystemClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\main.cpp" />
+    <ClCompile Include="..\linux\src\linuxsystemclass.cpp">
+      <Filter>LINUX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\linux\src\linux.cpp">
+      <Filter>LINUX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\linux\src\main_linux.cpp">
+      <Filter>LINUX</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

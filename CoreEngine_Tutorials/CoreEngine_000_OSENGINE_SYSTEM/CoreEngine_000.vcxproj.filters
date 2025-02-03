@@ -17,9 +17,6 @@
     <ClInclude Include="include\OSengine.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\platform.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="include\standard_platform.h">
       <Filter>include</Filter>
     </ClInclude>
@@ -35,7 +32,7 @@
     <ClInclude Include="include\main.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="core_engine_level.h" />
+    <ClInclude Include="include\platform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\default_settings_xml.cpp">

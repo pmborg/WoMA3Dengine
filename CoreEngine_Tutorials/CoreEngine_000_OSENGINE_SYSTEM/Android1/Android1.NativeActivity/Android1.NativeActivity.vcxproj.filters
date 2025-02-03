@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="Android.h">
+      <Filter>Core000</Filter>
+    </ClInclude>
+    <ClInclude Include="android_native_app_glue.h">
+      <Filter>Core000</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Core000</Filter>
+    </ClInclude>
+    <ClInclude Include="defs.h">
+      <Filter>Core000</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\WoMA3Dengine\CoreEngine_Tutorials\tech-level.h" />
+    <ClInclude Include="C:\WoMA3Dengine\CoreEngine_Tutorials\woma_engine_assets.h" />
+    <ClInclude Include="AndroidNewSystemClass.h">
+      <Filter>Core000</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_000_OSENGINE_SYSTEM\include\default_settings_xml.h">
+      <Filter>Core000</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_000_OSENGINE_SYSTEM\include\OSengine.h">
+      <Filter>Core000</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_000_OSENGINE_SYSTEM\include\platform.h">
+      <Filter>Core000</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_000_OSENGINE_SYSTEM\include\standard_platform.h">
+      <Filter>Core000</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_000_OSENGINE_SYSTEM\include\SystemClass.h">
+      <Filter>Core000</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_000_OSENGINE_SYSTEM\include\woma_macros.h">
+      <Filter>Core000</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Android.cpp">
+      <Filter>Core000</Filter>
+    </ClCompile>
+    <ClCompile Include="android_native_app_glue.c">
+      <Filter>Core000</Filter>
+    </ClCompile>
+    <ClCompile Include="AndroidMain.cpp" />
+    <ClCompile Include="AndroidNewSystemClass.c">
+      <Filter>Core000</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\default_settings_xml.cpp">
+      <Filter>Core000</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\OSengine.cpp">
+      <Filter>Core000</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\SystemClass.cpp">
+      <Filter>Core000</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Core000">
+      <UniqueIdentifier>{e633cc3b-76ac-4c54-be8d-9dde4875b309}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
