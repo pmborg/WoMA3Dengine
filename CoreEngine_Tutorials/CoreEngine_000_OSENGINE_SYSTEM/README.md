@@ -3,8 +3,8 @@
  default settings<br>
  SystemClass (common for all platforms)<br>
  <b>WinSystemClass (for Windows)</b><br>
- <b>LinuxSystemClass<br> (for Linux)</b><br>
- <b>AndroidSystemClass<br> (for Android)</b><br>
+ <b>LinuxSystemClass (for Linux)</b><br>
+ <b>AndroidSystemClass (for Android)</b><br>
  XboxSystemClass<br>
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_000_OSENGINE_SYSTEM.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_000_OSENGINE_SYSTEM.png)	
