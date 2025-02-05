@@ -33,29 +33,29 @@
 // Enable MS WINDOWS run-time memory leaks check, on DEBUG builds:
 // ------------------------------------------------------------------------------------------------
 #if defined  WINDOWS_PLATFORM
-#include <new.h>
+	#include <new.h>
 
-#if defined _DEBUG
-#define _CRTDBG_MAP_ALLOC
-#include <cstdlib>
-#endif
+  #if defined _DEBUG
+	#define _CRTDBG_MAP_ALLOC
+	#include <cstdlib>
+  #endif
 
-#define HEAPALLOC(x) HeapAlloc(GetProcessHeap(), 0, (x))
-#define HEAPFREE(x) HeapFree(GetProcessHeap(), 0, (x))
+	#define HEAPALLOC(x) HeapAlloc(GetProcessHeap(), 0, (x))
+	#define HEAPFREE(x) HeapFree(GetProcessHeap(), 0, (x))
 
-namespace WOMA
-{
+	namespace WOMA
+	{
 	extern void* woma_malloc(size_t size, const char* file, int line, const char* func);
 	extern void activate_mem_leak_detection();
-}
+	}
 #endif
 
 #if (defined(_DEBUG) && !defined(NDEBUG)) && defined WINDOWS_PLATFORM
 #include <crtdbg.h>
-#define NEW new( _NORMAL_BLOCK, __FILE__, __LINE__ ) // Note: Use "NEW" instead of "new", to trace memory leaks!
-#define MALLOC(X)  woma_malloc( X, __FILE__, __LINE__, __FUNCTION__)
+	#define NEW new( _NORMAL_BLOCK, __FILE__, __LINE__ ) // Note: Use "NEW" instead of "new", to trace memory leaks!
+	#define MALLOC(X)  woma_malloc( X, __FILE__, __LINE__, __FUNCTION__)
 #else
-#define NEW new
-#define MALLOC malloc
+	#define NEW new
+	#define MALLOC malloc
 #endif
 

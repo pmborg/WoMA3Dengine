@@ -48,45 +48,45 @@ namespace WOMA
 		// Enable run-time memory leaks check for all "new" memory allocations
 		// -------------------------------------------------------------------------------------------
 #if defined _DEBUG
-#if defined WINDOWS_PLATFORM 
+	#if defined WINDOWS_PLATFORM 
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF		// ON: Enable debug heap allocations and use of memory block type identifiers
 			| _CRTDBG_LEAK_CHECK_DF);			// ON: Perform automatic leak checking at program exit through a call to _CrtDumpMemoryLeaks
 		_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
 
 		_CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDERR);
-#if false && defined _DEBUG
+	  #if false && defined _DEBUG
 		HANDLE hWarnLogFile = CreateFile("Warnlog.txt", GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 		_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
 		_CrtSetReportFile(_CRT_WARN, hWarnLogFile);
-#endif
+	  #endif
 		_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
-#if false && defined _DEBUG
+	  #if false && defined _DEBUG
 		HANDLE hAssertLogFile = CreateFile("Assertlog.txt", GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 		_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
 		_CrtSetReportFile(_CRT_ASSERT, hAssertLogFile);
-#endif
-#endif
+	  #endif
+	#endif
 #endif
 
 		// START MEMORY MANAGER - To Handle: "out of Memory: Exceptions"
 		// -------------------------------------------------------------------------------------------
-#if defined WINDOWS_PLATFORM
+	#if defined WINDOWS_PLATFORM
 		_set_new_handler(handle_out_of_memory);		// Set the a handler for "new" out of Memory
 		_set_new_mode(1);							// Sets the new handler mode for "malloc" also!
-#endif
+	#endif
 	}
 
 
 #if defined _DEBUG
-	void* woma_malloc(size_t size, const char* file, int line, const char* func)
-	{
-		void* p = malloc(size); // Replace by NEW!
+void* woma_malloc(size_t size, const char* file, int line, const char* func)
+{
+	void* p = malloc(size); // Replace by NEW!
 
-		CHAR fullText[256] = { 0 };
-		StringCchPrintfA(fullText, 256, "[malloc] %s:%i, %s(), Size:[%li]\n", file, line, func, (int)size);
-		OutputDebugStringA(fullText);
+	CHAR fullText[256] = { 0 };
+	StringCchPrintfA(fullText, 256, "[malloc] %s:%i, %s(), Size:[%li]\n", file, line, func, (int)size);
+	OutputDebugStringA(fullText);
 
-		return p;
-	}
+	return p;
+}
 #endif
 }

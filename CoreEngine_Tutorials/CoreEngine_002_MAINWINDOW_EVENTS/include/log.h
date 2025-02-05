@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: log.h
 // --------------------------------------------------------------------------------------------
@@ -21,6 +20,7 @@
 #pragma once
 
 #include "platform.h"
+#if defined USE_LOG_MANAGER
 
 #if NOTES
 // INTERFACE LIKE: http://stackoverflow.com/questions/17554515/hiding-private-members-of-c-library
@@ -50,3 +50,4 @@ extern ILogManager* logManager;		// Global log manager
 extern void start_log_manager();
 extern std::string android_temp_folder(struct android_app* app);
 }
+#endif

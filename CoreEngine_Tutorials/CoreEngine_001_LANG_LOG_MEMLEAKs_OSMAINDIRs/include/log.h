@@ -27,27 +27,27 @@
 #endif
 namespace WOMA
 {
-	////////////////////////////////////////////////////////////////////////////////
-	// Class name: LogManager
-	////////////////////////////////////////////////////////////////////////////////
-	class ILogManager
-	{
-	public:
-		UINT WomaIntegrityCheck = 1234567311;
-		static ILogManager* CreateInstance();
-		static void ShutdownInstance();
+////////////////////////////////////////////////////////////////////////////////
+// Class name: LogManager
+////////////////////////////////////////////////////////////////////////////////
+class ILogManager
+{
+public:
+	UINT WomaIntegrityCheck = 1234567311;
+	static ILogManager* CreateInstance();
+	static void ShutdownInstance();
 
-		virtual TCHAR* getLogFileName() = 0;
+	virtual TCHAR* getLogFileName() = 0;
 
 #if defined WINDOWS_PLATFORM
-		virtual void DEBUG_MSG(WCHAR* strMsg, ...) = 0;
+	virtual void DEBUG_MSG(WCHAR* strMsg, ...) = 0;
 #endif
 
-		virtual void DEBUG_MSG(CHAR* strMsg, ...) = 0;
-	};
+	virtual void DEBUG_MSG(CHAR* strMsg, ...) = 0;
+};
 
-	extern ILogManager* logManager;		// Global log manager
-	extern void start_log_manager();
-	extern std::string android_temp_folder(struct android_app* app);
+extern ILogManager* logManager;		// Global log manager
+extern void start_log_manager();
+extern std::string android_temp_folder(struct android_app* app);
 }
 #endif

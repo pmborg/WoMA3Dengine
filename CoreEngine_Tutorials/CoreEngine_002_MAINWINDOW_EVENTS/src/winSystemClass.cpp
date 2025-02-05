@@ -460,7 +460,6 @@ bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ voi
 			//		 Remove "sizing border" & ~WS_THICKFRAME 
 
 			windowStyle = WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
-
 			// Allow full-Screen on a Windowed:
 			if ((AppSettings->WINDOW_WIDTH == AppSettings->SCREEN_RESOLUTION_WIDTH) && (AppSettings->WINDOW_HEIGHT == AppSettings->SCREEN_RESOLUTION_HEIGHT))
 				windowStyle = windowStyle & (~WS_CAPTION);

@@ -178,7 +178,7 @@ extern void ShowFPS();
 #define MB_OK 0
 #endif
 
-	extern int WomaMessageBox(TCHAR* lpText);
+extern int WomaMessageBox(TCHAR* lpText);
 extern int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption);
 extern int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption, bool yesORno);
 
