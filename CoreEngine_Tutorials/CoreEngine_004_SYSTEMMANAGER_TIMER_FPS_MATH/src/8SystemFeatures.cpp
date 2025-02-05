@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: 8SystemFeatures.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,7 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
+//WomaIntegrityCheck = 1234567311;
 
 #include "WinSystemClass.h"
 #include "SystemFeatures.h"
@@ -26,7 +26,7 @@
 SystemFeatures::SystemFeatures()
 {
 	CLASSLOADER();
-    WomaIntegrityCheck = 1234567831;
+    WomaIntegrityCheck = 1234567311;
 
     displayAllCpuFeactures = TEXT("");
 }
@@ -275,6 +275,56 @@ STRING SystemFeatures::Initialize()
     // Get processor Extended Features:
     //cpuID((unsigned*)CPUInfo, 7);			// EAX=7
     avx2 = InstructionSet::AVX2(); // ((EBX & 1 << 5) || false);
+    avx512 = InstructionSet::AVX512F();
+
+    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("MMX:  %s"), (mmx) ? TEXT("true") : TEXT("false"));
+    SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
+
+    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("MMX Ext.:  %s"), (mmxExt) ? TEXT("true") : TEXT("false"));
+    SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
+
+#ifdef SHOW_AMD_ONLY
+    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("3D Now:  %s  (AMD only)"), (amd_3DNow) ? TEXT("true") : TEXT("false"));
+    SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
+    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("3D nowExt:  %s  (AMD only)"), (amd_3DNowExt) ? TEXT("true") : TEXT("false"));
+    SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
+#endif
+
+    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("SSE:  %s"), (sse) ? TEXT("true") : TEXT("false"));
+    SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
+    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("SSE2:  %s"), (sse2) ? TEXT("true") : TEXT("false"));
+    SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
+    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("SSE3:  %s"), (sse3) ? TEXT("true") : TEXT("false"));
+    SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
+    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("SSSE3:  %s"), (ssse3) ? TEXT("true") : TEXT("false"));
+    SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
+
+    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("SSE41Extensions Set:  %s"), (sse41) ? TEXT("true") : TEXT("false")); //bSSE41
+    SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
+    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("SSE42Extensions Set:  %s"), (sse42) ? TEXT("true") : TEXT("false")); //bSSE42
+    SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
+
+#ifdef SHOW_AMD_ONLY
+    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("SSE4A:  %s  (AMD only)"), (sse4A) ? TEXT("true") : TEXT("false")); //bSSE4A
+    SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
+
+    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("SSE5:  %s  (AMD only)"), (sse5) ? TEXT("true") : TEXT("false")); //bSSE5
+    SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
+#endif
+
+    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("AVX: %s"), (avx) ? TEXT("true") : TEXT("false")); //bMultithreading 
+	SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
+
+    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("AVX2: %s"), (avx2) ? TEXT("true") : TEXT("false")); //bMultithreading 
+	SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
+
+    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("AVX512: %s"), (avx512) ? TEXT("true") : TEXT("false")); //bMultithreading 
+    SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
+
+    for (UINT i = 0; i < SystemHandle->systemDefinitions.cpuFeactures.size(); i++) {
+        displayAllCpuFeactures += SystemHandle->systemDefinitions.cpuFeactures[i];	// append all wstring(s) into "displayAllCpuFeactures"
+		displayAllCpuFeactures += TEXT("\n");
+	}
 
     bool virtualization = hypervisor || VMX || SVM;
     StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("virtualization: %s"), (virtualization) ? TEXT("true") : TEXT("false"));
@@ -287,53 +337,7 @@ STRING SystemFeatures::Initialize()
     SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
 
     StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("Hyper-threading: %s"), (htt) ? TEXT("true") : TEXT("false")); //bMultithreading 
-	SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
-
-    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("MMX Instruction Set:  %s"), (mmx) ? TEXT("true") : TEXT("false"));
     SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
-
-    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("MMX Ext. Instruction Set:  %s"), (mmxExt) ? TEXT("true") : TEXT("false"));
-    SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
-
-#ifdef SHOW_AMD_ONLY
-    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("3D Now Instruction Set:  %s  (AMD only)"), (amd_3DNow) ? TEXT("true") : TEXT("false"));
-    SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
-    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("3D nowExt Instruction Set:  %s  (AMD only)"), (amd_3DNowExt) ? TEXT("true") : TEXT("false"));
-    SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
-#endif
-
-    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("SSE Instruction Set:  %s"), (sse) ? TEXT("true") : TEXT("false"));
-    SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
-    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("SSE2 Instruction Set:  %s"), (sse2) ? TEXT("true") : TEXT("false"));
-    SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
-    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("SSE3 Instruction Set:  %s"), (sse3) ? TEXT("true") : TEXT("false"));
-    SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
-    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("SSSE3 Instruction Set:  %s"), (ssse3) ? TEXT("true") : TEXT("false"));
-    SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
-
-    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("SSE41Extensions Set:  %s"), (sse41) ? TEXT("true") : TEXT("false")); //bSSE41
-    SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
-    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("SSE42Extensions Set:  %s"), (sse42) ? TEXT("true") : TEXT("false")); //bSSE42
-    SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
-
-#ifdef SHOW_AMD_ONLY
-    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("SSE4A Instruction Set:  %s  (AMD only)"), (sse4A) ? TEXT("true") : TEXT("false")); //bSSE4A
-    SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
-
-    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("SSE5 Instruction Set:  %s  (AMD only)"), (sse5) ? TEXT("true") : TEXT("false")); //bSSE5
-    SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
-#endif
-
-    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("AVX Instruction Set: %s"), (avx) ? TEXT("true") : TEXT("false")); //bMultithreading 
-	SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
-
-    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("AVX2 Instruction Set: %s"), (avx2) ? TEXT("true") : TEXT("false")); //bMultithreading 
-	SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
-
-    for (UINT i = 0; i < SystemHandle->systemDefinitions.cpuFeactures.size(); i++) {
-        displayAllCpuFeactures += SystemHandle->systemDefinitions.cpuFeactures[i];	// append all wstring(s) into "displayAllCpuFeactures"
-		displayAllCpuFeactures += TEXT("\n");
-	}
 
     WOMA_LOGManager_DebugMSGAUTO(TEXT("CUP FEATURES:\n%s"), displayAllCpuFeactures.c_str());
 

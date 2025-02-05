@@ -1,10 +1,10 @@
 // NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
-// Filename: 6OperatingSystem.cpp
+// Filename: OperatingSystem.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,7 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
+//WomaIntegrityCheck = 1234567311;
 
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -47,6 +47,7 @@ int GETOS(void)
     IEnumWbemClassObject* pEnum = NULL;
     HRESULT hres;
     int ret = 0;
+
     // Obtain the initial locator to WMI 
     hres = CoCreateInstance(
         CLSID_WbemLocator,             
@@ -63,12 +64,11 @@ int GETOS(void)
     }
 
     // Connect to WMI through the IWbemLocator::ConnectServer method...
-
-
     // First, prompt for the user name and password for the remote computer
     
     bool useToken = false;
     bool useNTLM = true;
+
     // Connect to the remote root\cimv2 namespace and obtain pointer pSvc to make IWbemServices calls.
     hres = pLoc->ConnectServer(
         _bstr_t(L"ROOT\\CIMV2"),
@@ -89,6 +89,7 @@ int GETOS(void)
         EXIT(1);
     }
     cout << "Connected to ROOT\\CIMV2 WMI namespace" << endl;
+
     // Set security levels on a WMI connection
     hres = CoSetProxyBlanket(
        pSvc,                        // Indicates the proxy to set
@@ -150,15 +151,13 @@ int GETOS(void)
         //CoUninitialize();
         EXIT(1);
     }
+
     // Get the data from the OS query
 
     ULONG uReturn = 0;
 
     while (pEnum)
     {
-        // DEBUG:
-        //cout << "beginning of loop..." << endl;
-
         // Get the result of the query
         HRESULT hr = pEnum->Next(WBEM_INFINITE, 1, &pclsObj, &uReturn);  
 
@@ -175,18 +174,20 @@ int GETOS(void)
 
 		{
 			//
-			if (SUCCEEDED(pclsObj->Get(L"Name", 0, &vtProp, 0, 0)))
-				WOMA_LOGManager_DebugMSGW(L"OS Name: %s\n", vtProp.bstrVal);
+            if (SUCCEEDED(pclsObj->Get(L"Name", 0, &vtProp, 0, 0)))
+            {
+                std::wstring result = vtProp.bstrVal;
+                size_t pos = result.find('|');
+                result = result.substr(0, pos);
 
-			std::wstring result = vtProp.bstrVal;
-			size_t pos = result.find('|');
-			result = result.substr(0, pos);
-
+                WOMA_LOGManager_DebugMSGW(L"OS Name: %s\n", result.c_str());
+            
 		#if defined UNICODE
 			wcscpy_s(SystemHandle->systemManager->pszOS, BUFSIZE, result.c_str());
 		#else
 			WideCharToMultiByte(CP_ACP, 0, result.c_str(), -1, SystemHandle->systemManager->pszOS, BUFSIZE, NULL, NULL);  // "WCHAR" to "char" converter:
 		#endif		
+            }
 
 			//
 			if (SUCCEEDED(pclsObj->Get(L"version", 0, &vtProp, 0, 0)))
@@ -200,6 +201,7 @@ int GETOS(void)
 
 			SystemHandle->systemManager->BuildVersion = _wtoi(vtProp.bstrVal);
 		}
+
 		if (SUCCEEDED(pclsObj->Get(L"Manufacturer", 0, &vtProp, 0, 0)))
 			WOMA_LOGManager_DebugMSGW(L"Manufacturer: %s\n", vtProp.bstrVal);
 

@@ -26,7 +26,7 @@ extern int android_APPLICATION_MAIN_LOOP();
 AndroidNewSystemClass::AndroidNewSystemClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567847;
+	WomaIntegrityCheck = 1234567311;
 }
 
 AndroidNewSystemClass::~AndroidNewSystemClass() { CLASSDELETE(); }

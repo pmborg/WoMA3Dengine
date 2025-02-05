@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: woma_exception.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -20,10 +20,9 @@
 // 
 //  NOTE: If a constructor throws an Exception ===> the object's destructor do not run. !!!
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
+//WomaIntegrityCheck = 1234567311;
 
-#include "main.h"
-#include "mem_leak.h"
+#include "OSengine.h"
 #include "log.h"
 
 #include "stackTrace.h"
@@ -41,7 +40,6 @@ woma_exception::woma_exception(const std::string &arg, const char *file, const c
 			CHAR str[MAX_STR_LEN] = { 0 }; wtoa(str, WOMA::APP_FULLNAME, MAX_STR_LEN); // wchar ==> char
 			MessageBoxA(NULL, sttrace->to_string().c_str(), str, 0);
 		}
-
 }
 
 woma_exception::~woma_exception() throw() 

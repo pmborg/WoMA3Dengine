@@ -3,9 +3,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: win32MainWindowEvents.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -18,14 +18,17 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
+//WomaIntegrityCheck = 1234567311;
 
 #pragma warning( disable : 4312 ) // warning C4312: 'type cast': conversion from 'int' to 'HMENU' of greater size
-#include "platform.h"
 #include "stateMachine.h"
 #include "OSmain_dir.h"
 
+#if defined WINDOWS_PLATFORM
 #include "winsystemclass.h"
+
+#if CORE_ENGINE_LEVEL >= 2 && defined USE_STATUSBAR
+#include "dxWinSystemClass.h"
 
 #if defined USE_INTRO_VIDEO_DEMO
 extern void CALLBACK OnGraphEvent(HWND hwnd, long evCode, LONG_PTR param1, LONG_PTR param2);
@@ -56,7 +59,7 @@ HWND DoCreateStatusBar(HWND hwndParent, int idStatus, HINSTANCE hinst, int cPart
 	// Ensure that the common control DLL is loaded.
 	InitCommonControls();
 
-	DWORD windowStyle = ((SystemHandle->AppSettings->AllowResize) && (DX_ENGINE_LEVEL >= 20)) ?
+	DWORD windowStyle = ((SystemHandle->AppSettings->AllowResize) && (LEVEL >= 20)) ?
 		SBARS_SIZEGRIP |        // includes a sizing grip
 		WS_CHILD | WS_VISIBLE	// creates a visible child window
 		:
@@ -103,6 +106,7 @@ HWND DoCreateStatusBar(HWND hwndParent, int idStatus, HINSTANCE hinst, int cPart
 
 	return hwndStatus;
 }
+#endif
 
 	#define TIMER_TITLE 0
 
@@ -121,14 +125,18 @@ void WinSystemClass::StartTimer()
 	// Dont Update on: FullScreen or Full-windowed
 	if ((!AppSettings->FULL_SCREEN) && (windowStyle != 0x96080000)) 
 	{
-		SetTimer(m_hWnd, TIMER_TITLE, 1000 / KEYB_TIMES_PER_SECOND, NULL);	// 1000ms = 1 second!
+		SetTimer(m_hWnd, TIMER_TITLE, 2000 / KEYB_TIMES_PER_SECOND, NULL);	// 2000ms = 2 seconds! (1000ms = 1 second!)
 		
 	}
 
 }
 
+//extern void ImGuiShutdown();
+//extern bool ImGuiDONE;  // Main loop
+
+#if CORE_ENGINE_LEVEL >= 2 && defined WINDOWS_PLATFORM	
 //----------------------------------------------------------------------------
-LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
+LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lparam)
 //----------------------------------------------------------------------------
 {
 	// Note: break;		--> Means call windows default handler also!
@@ -145,8 +153,10 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 		break;
 
 	case WM_KILLFOCUS:
+	#if !defined _DEBUG
 		if (WOMA::game_state >= GAME_RUN  && WOMA::game_state < ENGINE_RESTART )
 			PAUSE();
+	#endif
 		break;
 
 	// ----------------------------------------------------------------------------
@@ -154,14 +164,21 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 	// ----------------------------------------------------------------------------
 	// Check if the window is being closed: (i.e.) 
 	// MainWindow Close: in Task Bar OR Window [X] (top right corner), etc...
+/*
+	case WM_CLOSE:
+		//KillTimer(hwnd, TIMER_TITLE);
+		WOMA::main_loop_state = -1; 
+		//::PostMessage(hwnd, WM_QUIT, 0, 0);
+		break;// return 0;	// Cancel Close, do nothing.
+*/
 
 	case WM_CLOSE:	// During the shutdown process of the device, the WM_CLOSE message is broadcasted to the applications.
-		{
-			WOMA::game_state = GAME_STOP;
-		}
 
-		::PostMessage(hwnd, WM_QUIT, 0, 0);
-		return 0;			
+		WOMA::main_loop_state = -1;
+		WOMA::game_state = GAME_STOP;
+		//::PostMessage(hwnd, WM_QUIT, 0, 0);
+		break;
+
 
 	case WM_QUIT:
 		ASSERT(SystemHandle);
@@ -169,7 +186,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 		break;
 
 	case WM_DESTROY:	// The main application Window will be destroyed
-		KillTimer(hwnd, TIMER_TITLE);
+		//PostQuitMessage(0); //AQUI
 
 		return 0;
 
@@ -187,7 +204,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 	case WM_KEYDOWN:
 	{
 		// If a key is pressed send it to the input object so it can record that state.
-		SystemHandle->m_OsInput->KeyDown((unsigned int)wparam);
+		SystemHandle->m_OsInput->KeyDown((unsigned int)wParam);
 		return 0; //break;
 	}
 
@@ -195,7 +212,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 	case WM_KEYUP:
 	{
 		// If a key is released then send it to the input object so it can unset the state for that key.
-		SystemHandle->m_OsInput->KeyUp((unsigned int)wparam);
+		SystemHandle->m_OsInput->KeyUp((unsigned int)wParam);
 		return 0; //break;
 	}
 
@@ -213,7 +230,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 	// -----------------------------------------------------------------------------
 	case WM_POWERBROADCAST:
 	{
-		switch (wparam)
+		switch (wParam)
 		{
 			// Reject Querys do Suspend or Standby:
 		case PBT_APMQUERYSUSPEND:
@@ -244,7 +261,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 	// POWER: Prevent a powersave mode of monitor or the screensaver
 	case WM_SYSCOMMAND:
 	{
-		if ((wparam & 0xFFF0) == SC_SCREENSAVE || (wparam & 0xFFF0) == SC_MONITORPOWER)
+		if ((wParam & 0xFFF0) == SC_SCREENSAVE || (wParam & 0xFFF0) == SC_MONITORPOWER)
 			return 0;
 	}
 
@@ -255,7 +272,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 	case WM_TIMER: // Once per second:
 		if (WOMA::game_state < GAME_STOP)
 		{
-			switch (wparam)
+			switch (wParam)
 			{
 			case TIMER_TITLE:
 				if (!SystemHandle->AppSettings->FULL_SCREEN)
@@ -267,6 +284,8 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 
 	}
 
-	return DefWindowProc(hwnd, umsg, wparam, lparam);
+	return DefWindowProc(hwnd, umsg, wParam, lparam);
 }
+#endif
 
+#endif

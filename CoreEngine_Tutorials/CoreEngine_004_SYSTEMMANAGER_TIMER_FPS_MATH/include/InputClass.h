@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
-// Filename: WindowPaintClass.h
+// Filename: InputClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2024 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -14,20 +14,32 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-// PURPOSE:
+// PURPOSE: A basic input used in first WOMA LEVELs using OS functions.
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
-
 #pragma once
 
-#include "main.h"
-
+#include "standard_platform.h"
+#if defined WINDOWS_PLATFORM
 ////////////////////////////////////////////////////////////////////////////////
-// Class name: WindowPaintClass
+// Class name: InputClass
 ////////////////////////////////////////////////////////////////////////////////
-class WindowPaintClass
+class InputClass
 {
 public:
-	WindowPaintClass();
-	~WindowPaintClass();
+	UINT WomaIntegrityCheck = 1234567847;
+	InputClass();
+	~InputClass();
+
+	void Initialize();
+#if defined USE_DIRECT_INPUT
+	void KeyDown(UINT, UINT);
+	void KeyUp(UINT, UINT);
+#endif
+	void KeyDown(UINT);
+	void KeyUp(UINT);
+
+	bool IsKeyDown(UINT);
+	//private:
+	bool m_keys[256];
 };
+#endif

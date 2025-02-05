@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: 2UpdateOSifNeeded.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,12 +17,12 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
+//WomaIntegrityCheck = 1234567311;
 
 // Windows Vista update (KB 971644) add support for DXGI 1.1
 // Check whether we need this option
 
-#include "main.h"
+#include "OSengine.h"
 #include "systemManager.h"
 
 //------------------------------------------------------------------
@@ -42,14 +42,14 @@ bool SystemManager::UpdateOSifNeeded ()
 		// Check update for: SP2?
 		if (REQUIRES_WINDOWS_VISTA_SP2) 
 		#ifdef X64
-			{WOMA::WomaMessageBox (TEXT("DOWNLOAD LINK Windows Vista - SP2:\n http://www.microsoft.com/en-US/download/details.aspx?id=718 \n"), TEXT("FATAL ERROR: Windows Vista - Service Pack 2, is needed")); return false;}
+			{WomaMessageBox (TEXT("DOWNLOAD LINK Windows Vista - SP2:\n http://www.microsoft.com/en-US/download/details.aspx?id=718 \n"), TEXT("FATAL ERROR: Windows Vista - Service Pack 2, is needed"), false); return false;}
 		#else
-			{WOMA::WomaMessageBox (TEXT("DOWNLOAD LINK Windows Vista - SP2:\n http://www.microsoft.com/en-US/download/details.aspx?id=15278 \n"), TEXT("FATAL ERROR: Windows Vista - Service Pack 2, is needed")); return false;}
+			{WomaMessageBox (TEXT("DOWNLOAD LINK Windows Vista - SP2:\n http://www.microsoft.com/en-US/download/details.aspx?id=15278 \n"), TEXT("FATAL ERROR: Windows Vista - Service Pack 2, is needed"), false); return false;}
 		#endif
 			
 		// Check update for: DX 11 (support)?
 		if (REQUIRES_UPDATE_KB971644)
-			{WOMA::WomaMessageBox (TEXT("WARNING: Windows Vista Need This Update: KB971644\n"), TEXT("FATAL ERROR: Windows Vista")); return false;}
+			{WomaMessageBox (TEXT("WARNING: Windows Vista Need This Update: KB971644\n"), TEXT("FATAL ERROR: Windows Vista"), false); return false;}
 	}
 	
 	return true;

@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: winCpuCores.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -19,8 +19,8 @@
 // --------------------------------------------------------------------------------------------
 //	Original Source Code:
 //	http://msdn.microsoft.com/en-us/library/windows/desktop/ms683194%28v=vs.85%29.aspx
-//
 // --------------------------------------------------------------------------------------------
+//#define GENERATE //(Airports List)
 
 #include "WinSystemClass.h"
 #include "winCpuCores.h"
@@ -28,7 +28,7 @@
 WinCpuCores::WinCpuCores()
 {
 	CLASSLOADER();
-    WomaIntegrityCheck = 1234567831;
+    WomaIntegrityCheck = 1234567311;
 
 	numaNodeCount = NULL;
 	processorPackageCount = NULL;

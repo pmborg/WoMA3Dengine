@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: 0CheckOS.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,18 +17,19 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567311;
 
 #include "OSengine.h"
 #include "OSmain_dir.h"		//#include "OsDirectories.h"
 #include "systemManager.h"
-#include "mem_leak.h"
-#include <atlstr.h>
+
 #include <map>
+#include <atlstr.h>
 
 SystemManager::SystemManager()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567831;
+	WomaIntegrityCheck = 1234567311;
 
 	//CheckOS:
 	ZeroMemory(&pszOS, sizeof(pszOS));
@@ -88,18 +89,17 @@ bool SystemManager::CheckOS()
 	StringCchPrintf(SystemHandle->systemDefinitions.binaryCode, MAX_STR_LEN, TEXT("Binary Code: %s"), _BINARY_CODE_);
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.binaryCode);
 
-
-
   //#if !defined WIN10
-	StringCchPrintf(SystemHandle->systemDefinitions.windowsVersion, MAX_STR_LEN, TEXT("Windows Internal Version: %d.%d.%d"), MajorVersion, MinorVersion, BuildVersion);
+	StringCchPrintf(SystemHandle->systemDefinitions.windowsVersion, MAX_STR_LEN, TEXT("Windows Version: %d.%d.%d"), MajorVersion, MinorVersion, BuildVersion);
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.windowsVersion);
 
 	std::map<CString, CString> mapWindowsVersions
 	{
+		{ L"26100", L"24H2" }, //Windows11
 		{ L"22631", L"23H2" }, //Windows11
 		{ L"22621", L"22H2" }, //Windows11
 		{ L"22000", L"21H2" }, //Windows11  (Original  version)
-		{ L"19044", L"21H2" },
+		{ L"19044", L"21H2" }, //Windows10
 		{ L"19043", L"21H1" },
 		{ L"19042", L"20H2" },
 		{ L"19041", L"2004" },
@@ -115,17 +115,14 @@ bool SystemManager::CheckOS()
 	};
 
 	TCHAR v[MAX_STR_LEN] = { 0 };
-	_itoa(BuildVersion, v, 10);
+	//_itoa(BuildVersion, v, 10);	//Bug on ANDROID
 	STRING verstr = mapWindowsVersions[v];
 
 	StringCchPrintf(SystemHandle->systemDefinitions.windowsBuildVersion, MAX_STR_LEN, TEXT("Windows Version: %s"), verstr.c_str());
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.windowsBuildVersion);
-
-
-
   //#endif
 
-	StringCchPrintf(SystemHandle->systemDefinitions.osName, MAX_STR_LEN, TEXT("Current OS name: %s"), pszOS);
+	StringCchPrintf(SystemHandle->systemDefinitions.osName, MAX_STR_LEN, TEXT("OS name: %s"), pszOS);
 
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.osName);
 
@@ -244,6 +241,7 @@ TCHAR* SystemManager::GetOsVersion()
 	{
 		return TEXT("Windows Vista or Windows Server 2008\n");
 	}
+#if LEGACY_OS_SUPPORTED
 	else if (HIWORD(dwProductVersionMS) == 5 && LOWORD(dwProductVersionMS) == 2)
 	{
 		return TEXT("Windows Server 2003\n");
@@ -256,20 +254,21 @@ TCHAR* SystemManager::GetOsVersion()
 	{
 		return TEXT("Windows 2000\n");
 	}
-	//else if (lpFfi->dwFileVersionMS == 4 && lpFfi->dwFileVersionLS == 90)
-	//{
-	//    return TEXT("Windows  Me\n");
-	//}
-	//else if (lpFfi->dwFileVersionMS == 4 && lpFfi->dwFileVersionLS == 10)
-	//{
-	//    return TEXT("Windows  98\n");
-	//}
-	//else if (lpFfi->dwFileVersionMS == 4 && lpFfi->dwFileVersionLS == 0)
-	//{
-	//    return TEXT("Windows  95\n");
-	//}
+	else if (lpFfi->dwFileVersionMS == 4 && lpFfi->dwFileVersionLS == 90)
+	{
+	    return TEXT("Windows  Me\n");
+	}
+	else if (lpFfi->dwFileVersionMS == 4 && lpFfi->dwFileVersionLS == 10)
+	{
+	    return TEXT("Windows  98\n");
+	}
+	else if (lpFfi->dwFileVersionMS == 4 && lpFfi->dwFileVersionLS == 0)
+	{
+	    return TEXT("Windows  95\n");
+	}
+#endif
 
-	return TEXT("Windows Unknown\n");
+	return TEXT("Windows version unknown!\n");
 }
 
 bool SystemManager::CheckOSVersion()

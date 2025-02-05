@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: Math3D.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,12 +17,11 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
+//WomaIntegrityCheck = 1234567311;
 
 #pragma once
 
 #include "platform.h"
-
 extern float FAST_sqrt(float x);
 
 #ifndef PI
@@ -47,4 +46,6 @@ struct vec3
 vec3 operator + (const vec3 &u, const vec3 &v);
 vec3 operator + (const vec3 &v, const float s);
 vec3 operator + (const float s, const vec3 &v);
+
+	extern vec3 vector3dNormalize(const vec3& vec);									// dont copy vectors!
 

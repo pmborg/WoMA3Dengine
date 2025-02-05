@@ -53,7 +53,7 @@
     <ClInclude Include="include\systemManager.h" />
     <ClInclude Include="include\timerClass.h" />
     <ClInclude Include="include\TrigonometryMathClass.h" />
-    <ClInclude Include="include\win32InputClass.h" />
+    <ClInclude Include="include\InputClass.h" />
     <ClInclude Include="include\winCpuCores.h" />
     <ClInclude Include="include\WindowPaintClass.h" />
     <ClInclude Include="include\winSystemClass.h" />
@@ -73,7 +73,6 @@
     <ClCompile Include="src\3CheckSetup.cpp" />
     <ClCompile Include="src\4CheckEngineUpdates.cpp" />
     <ClCompile Include="src\5LaunchEngine.cpp" />
-    <ClCompile Include="src\6OperatingSystem.cpp" />
     <ClCompile Include="src\7ProcessorInfo.cpp" />
     <ClCompile Include="src\8SystemFeatures.cpp" />
     <ClCompile Include="src\default_settings_xml.cpp" />
@@ -82,6 +81,7 @@
     <ClCompile Include="src\fpsClass.cpp" />
     <ClCompile Include="src\Math3D.cpp" />
     <ClCompile Include="src\minidumperClass.cpp" />
+    <ClCompile Include="src\OperatingSystem.cpp" />
     <ClCompile Include="src\OSengine.cpp" />
     <ClCompile Include="src\stackTrace.cpp" />
     <ClCompile Include="src\SystemClass.cpp" />
@@ -310,7 +310,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);DEMO_LEVEL=4</PreprocessorDefinitions>
       <ConformanceMode>
       </ConformanceMode>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>

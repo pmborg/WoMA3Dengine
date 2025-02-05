@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------------------------------------
 // Filename: timerClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,31 +17,42 @@
 // PURPOSE:  Measure the time passed between two TimerClass::Frame() Invocations. 
 //  i.e. Allow to calc FPS (number of Frames Processed per Second)
 // ----------------------------------------------------------------------------------------------
-
+//WomaIntegrityCheck = 1234567311;
+// 
 //NOTES:
 //0,000 001 [ millionth ] 	microsecond [ µs ]
 //0,001		[ thousandth ] 	millisecond [ ms ]
 
 #include "platform.h"
+
 #if defined USE_TIMER_CLASS
+#if defined ANDROID_PLATFORM
+#include <sys/time.h>
+#endif
 
 #include "timerClass.h"
+
+#if !defined LINUX_PLATFORM
+extern double timeGetTime(void);
+#endif
 
 TimerClass::TimerClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567831;
+	WomaIntegrityCheck = 1234567311;
 
 	//public:
 	currentTime = m_startEngineTime = NULL;
-
-	//private:
-	m_frequency = NULL;
 	m_startTime = NULL;
 	m_frameTime = NULL;
 
+#if !defined ANDROID_PLATFORM
+	//private:
+	m_frequency = NULL;
+
 	m_ticksPerMs = NULL;
 	m_ticksPerUs = NULL;
+#endif
 
 	Initialize();
 }
@@ -55,17 +66,20 @@ TimerClass::~TimerClass() {CLASSDELETE();}
 bool TimerClass::Initialize()
 {
 	// Check to see if this system supports high performance timers.
+#if !defined ANDROID_PLATFORM
 	QueryPerformanceFrequency((LARGE_INTEGER*)&m_frequency);
 	if(m_frequency == 0)
-	{
 		return false;
-	}
 
 	// Find out how many times the frequency counter ticks every millisecond.
 	m_ticksPerMs = (float)(m_frequency / 1000);		//millisecond (ms)
 	m_ticksPerUs = (float)(m_frequency / 1000000);	//microsecond (μs)
 
 	QueryPerformanceCounter((LARGE_INTEGER*)&m_startTime);
+#else
+	//::gettimeofday(&m_startTime, NULL);
+	m_startTime  = (currentTime - m_startTime);
+#endif
 	m_startEngineTime = m_startTime;
 
 	return true;
@@ -77,20 +91,37 @@ bool TimerClass::Initialize()
 //synchronization. We then store the current time as the start of the next frame.
 void TimerClass::Frame()
 {
+#if !defined ANDROID_PLATFORM
 	float timeDifference;
+#else
+	double timeDifference;
+#endif
 
+#if !defined ANDROID_PLATFORM
 	QueryPerformanceCounter((LARGE_INTEGER*)& currentTime);
-
 	timeDifference = (float)(currentTime - m_startTime);
+#else
+	//::gettimeofday(&currentTime, NULL);
+	//timersub(&currentTime, &m_startTime, &timeDifference);
+	currentTime = timeGetTime();
+	timeDifference = (currentTime - m_startTime);
+#endif
 
 	m_frameTime = timeDifference / m_ticksPerMs; //delta time in Mili Seconds since last time here...
-
 	m_startTime = currentTime;					 //Save current time for next frame
 }
 
 //GetTime returns the most recent frame time that was calculated.
-float TimerClass::GetTime()
+double TimerClass::GetTime()
 {
+	/*
+#if defined LINUX_PLATFORM || defined ANDROID_PLATFORM 
+	Sleep(1000*1000);	//1 segundo = 1000*1000us
+#elif defined WINDOWS_PLATFORM
+	Sleep(1000);		//1 segundo = 1000ms
+#endif
+	_tprintf("GetTime(): %f\n", m_frameTime);
+	*/
 	return m_frameTime;
 }
 

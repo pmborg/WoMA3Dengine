@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: wmiUtilClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,8 +16,9 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567311;
 
-#include "platform.h"
+#include "OSengine.h"
 #if CORE_ENGINE_LEVEL >= 4
 
 #include "wmiUtilClass.h"
@@ -30,7 +31,7 @@ using namespace std;	//endl
 wmiUtilClass::wmiUtilClass() 
 {
 	CLASSLOADER();
-    WomaIntegrityCheck = 1234567831;
+    WomaIntegrityCheck = 1234567311;
 
 	//public:
 	description = L"";
@@ -148,7 +149,7 @@ bool wmiUtilClass::GetCpuTemperature()
 
     if (!pServices) 
         if (!initWMI(TEXT("ROOT\\WMI"))) // cimv2
-			{ WOMA::WomaMessageBox(TEXT("WARNING: GetCpuTemperature, failed!")); return false; }
+			{ WomaMessageBox(TEXT("WARNING: GetCpuTemperature, failed!"), TEXT("Error"), false); return false; }
 
 	//WriteConsoleOutput(TEXT(""));
 
@@ -168,7 +169,7 @@ bool wmiUtilClass::GetCpuTemperature()
         SAFE_RELEASE(pServices);
         SAFE_RELEASE(pLocator);
         CoUninitialize();
-        WOMA::WomaMessageBox(TEXT("WARNING: GetCpuTemperature, failed!")); 
+        WomaMessageBox(TEXT("WARNING: GetCpuTemperature, failed!"), "WARNING", false);
 		return false;
     }
 
@@ -227,7 +228,7 @@ bool wmiUtilClass::GetTotalPhysicalMemory()
 {
     if (!pServices) 
         if (!initWMI(TEXT("ROOT\\CIMV2"))) 
-			{ WOMA::WomaMessageBox(TEXT("WARNING: GetTotalPhysicalMemory, failed!")); return false; }
+			{ WomaMessageBox(TEXT("WARNING: GetTotalPhysicalMemory, failed!"), "WARNING", false); return false; }
 
     // Request WMI data.
     IEnumWbemClassObject* pEnumerator = NULL;
@@ -241,7 +242,7 @@ bool wmiUtilClass::GetTotalPhysicalMemory()
         SAFE_RELEASE(pServices);
         SAFE_RELEASE(pLocator);
         CoUninitialize();
-        WOMA::WomaMessageBox(TEXT("WARNING: GetTotalPhysicalMemory, failed!")); 
+        WomaMessageBox(TEXT("WARNING: GetTotalPhysicalMemory, failed!"), "WARNING", false);
 		return false;
     }
 
@@ -281,7 +282,7 @@ bool wmiUtilClass::GetSystemInfo()
 {
     if (!pServices) 
         if (!initWMI(TEXT("ROOT\\CIMV2"))) 
-			{ WOMA::WomaMessageBox(TEXT("WARNING: GetTotalPhysicalMemory, failed!")); return false; }
+			{ WomaMessageBox(TEXT("WARNING: GetTotalPhysicalMemory, failed!"), "WARNING", false); return false; }
 
     // Request WMI data.
     IEnumWbemClassObject* pEnumerator = NULL;
@@ -295,7 +296,7 @@ bool wmiUtilClass::GetSystemInfo()
         SAFE_RELEASE(pServices);
         SAFE_RELEASE(pLocator);
         CoUninitialize();
-        WOMA::WomaMessageBox(TEXT("WARNING: GetSystemInfo, failed!")); 
+        WomaMessageBox(TEXT("WARNING: GetSystemInfo, failed!"), "WARNING", false);
 		return false;
     }
 
@@ -327,8 +328,6 @@ bool wmiUtilClass::GetSystemInfo()
     return true;
 }
 //#endif
-
-
 
 //#ifdef TUTORIAL_PRE_CHAP// >= 5
 //	-------------------------------------------------------------------------------------------
@@ -366,12 +365,13 @@ bool wmiUtilClass::GetVideoControllerInfoFromWMI()
 		hr = pClassObj->Get(L"Description", 0, &varProp, NULL, NULL);
 		description = varProp.bstrVal;
 
+        /*
 		hr = pClassObj->Get(L"AdapterRAM", 0, &varProp, NULL, NULL);
 		if (varProp.intVal > 0)
 			AdapterRAM = varProp.intVal / (MBs);
 		else
 			AdapterRAM = 0;
-
+        */
         // NOTE: In some old computers generate an exception:
 		//hr = pClassObj->Get(L"AdapterDACType", 0, &varProp, NULL, NULL);
 		//AdapterDACType = varProp.bstrVal;
