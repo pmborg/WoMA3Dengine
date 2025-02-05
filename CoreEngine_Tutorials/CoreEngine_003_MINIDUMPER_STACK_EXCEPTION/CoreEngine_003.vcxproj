@@ -35,6 +35,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\tech-level.h" />
+    <ClInclude Include="..\woma_engine_assets.h" />
     <ClInclude Include="include\default_settings_xml.h" />
     <ClInclude Include="include\dumpUploader.h" />
     <ClInclude Include="include\fileLoader.h" />
@@ -46,11 +48,10 @@
     <ClInclude Include="include\standard_platform.h" />
     <ClInclude Include="include\stateMachine.h" />
     <ClInclude Include="include\SystemClass.h" />
-    <ClInclude Include="include\win32InputClass.h" />
+    <ClInclude Include="include\WindowPaintClass.h" />
     <ClInclude Include="include\winSystemClass.h" />
     <ClInclude Include="include\woma_exception.h" />
     <ClInclude Include="include\woma_macros.h" />
-    <ClInclude Include="core_engine_level.h" />
     <ClInclude Include="include\language.h" />
     <ClInclude Include="include\log.h" />
     <ClInclude Include="include\mem_leak.h" />
@@ -64,7 +65,6 @@
     <ClCompile Include="src\OSengine.cpp" />
     <ClCompile Include="src\stackTrace.cpp" />
     <ClCompile Include="src\SystemClass.cpp" />
-    <ClCompile Include="src\win32InputClass.cpp" />
     <ClCompile Include="src\win32MainWindowEvents.cpp" />
     <ClCompile Include="src\win32PaintEvents.cpp" />
     <ClCompile Include="src\winSystemClass.cpp" />
@@ -284,7 +284,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);DEMO_LEVEL=3</PreprocessorDefinitions>
       <ConformanceMode>
       </ConformanceMode>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>

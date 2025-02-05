@@ -9,116 +9,138 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
+    <Filter Include="include\000">
+      <UniqueIdentifier>{7f33de27-7106-4440-a911-be9c533287d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\001">
+      <UniqueIdentifier>{569d5462-b59a-4034-8101-5013c48513ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\002">
+      <UniqueIdentifier>{e24aa090-7e25-417a-a9e9-7ce4f7f489fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\000">
+      <UniqueIdentifier>{fbe9dc76-cfae-473f-9c0f-bf4e6fc267ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\001">
+      <UniqueIdentifier>{208da8f9-96e3-4c13-b949-e17a11a8f68e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\002">
+      <UniqueIdentifier>{da611380-31fc-43b5-98ad-9db998e89ab1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\003">
+      <UniqueIdentifier>{37f51537-33e7-4cf6-81dc-c73311364ce5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\003">
+      <UniqueIdentifier>{7ed6235f-65cf-48fd-acb4-d88c1e6d0e0d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\language.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\log.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\mem_leak.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\OSmain_dir.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\platform.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\standard_platform.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="include\default_settings_xml.h">
-      <Filter>include</Filter>
+      <Filter>include\000</Filter>
     </ClInclude>
     <ClInclude Include="include\main.h">
-      <Filter>include</Filter>
+      <Filter>include\000</Filter>
     </ClInclude>
     <ClInclude Include="include\OSengine.h">
-      <Filter>include</Filter>
+      <Filter>include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="include\platform.h">
+      <Filter>include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="include\standard_platform.h">
+      <Filter>include\000</Filter>
     </ClInclude>
     <ClInclude Include="include\SystemClass.h">
-      <Filter>include</Filter>
+      <Filter>include\000</Filter>
     </ClInclude>
     <ClInclude Include="include\winSystemClass.h">
-      <Filter>include</Filter>
+      <Filter>include\000</Filter>
     </ClInclude>
     <ClInclude Include="include\woma_macros.h">
-      <Filter>include</Filter>
+      <Filter>include\000</Filter>
     </ClInclude>
-    <ClInclude Include="core_engine_level.h" />
+    <ClInclude Include="include\language.h">
+      <Filter>include\001</Filter>
+    </ClInclude>
+    <ClInclude Include="include\log.h">
+      <Filter>include\001</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mem_leak.h">
+      <Filter>include\001</Filter>
+    </ClInclude>
+    <ClInclude Include="include\OSmain_dir.h">
+      <Filter>include\001</Filter>
+    </ClInclude>
     <ClInclude Include="include\stateMachine.h">
-      <Filter>include</Filter>
+      <Filter>include\002</Filter>
     </ClInclude>
-    <ClInclude Include="include\win32InputClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\dumpUploader.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\fileLoader.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\minidumperClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\stackTrace.h">
-      <Filter>include</Filter>
+    <ClInclude Include="include\WindowPaintClass.h">
+      <Filter>include\002</Filter>
     </ClInclude>
     <ClInclude Include="include\woma_exception.h">
-      <Filter>include</Filter>
+      <Filter>include\003</Filter>
     </ClInclude>
+    <ClInclude Include="include\dumpUploader.h">
+      <Filter>include\003</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fileLoader.h">
+      <Filter>include\003</Filter>
+    </ClInclude>
+    <ClInclude Include="include\minidumperClass.h">
+      <Filter>include\003</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stackTrace.h">
+      <Filter>include\003</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tech-level.h" />
+    <ClInclude Include="..\woma_engine_assets.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
-    <ClCompile Include="src\language.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\log.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\mem_leak.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\OSmain_dir.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\default_settings_xml.cpp">
-      <Filter>src</Filter>
+      <Filter>src\000</Filter>
     </ClCompile>
     <ClCompile Include="src\OSengine.cpp">
-      <Filter>src</Filter>
+      <Filter>src\000</Filter>
     </ClCompile>
     <ClCompile Include="src\SystemClass.cpp">
-      <Filter>src</Filter>
+      <Filter>src\000</Filter>
     </ClCompile>
     <ClCompile Include="src\winSystemClass.cpp">
-      <Filter>src</Filter>
+      <Filter>src\000</Filter>
     </ClCompile>
-    <ClCompile Include="src\win32InputClass.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="src\language.cpp">
+      <Filter>src\001</Filter>
     </ClCompile>
-    <ClCompile Include="src\win32MainWindowEvents.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="src\log.cpp">
+      <Filter>src\001</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mem_leak.cpp">
+      <Filter>src\001</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OSmain_dir.cpp">
+      <Filter>src\001</Filter>
     </ClCompile>
     <ClCompile Include="src\win32PaintEvents.cpp">
-      <Filter>src</Filter>
+      <Filter>src\002</Filter>
+    </ClCompile>
+    <ClCompile Include="src\win32MainWindowEvents.cpp">
+      <Filter>src\002</Filter>
     </ClCompile>
     <ClCompile Include="src\dumpUploader.cpp">
-      <Filter>src</Filter>
+      <Filter>src\003</Filter>
     </ClCompile>
     <ClCompile Include="src\fileLoader.cpp">
-      <Filter>src</Filter>
+      <Filter>src\003</Filter>
     </ClCompile>
     <ClCompile Include="src\minidumperClass.cpp">
-      <Filter>src</Filter>
+      <Filter>src\003</Filter>
     </ClCompile>
     <ClCompile Include="src\stackTrace.cpp">
-      <Filter>src</Filter>
+      <Filter>src\003</Filter>
     </ClCompile>
     <ClCompile Include="src\woma_exception.cpp">
-      <Filter>src</Filter>
+      <Filter>src\003</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

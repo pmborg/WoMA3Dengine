@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: dumpUploader.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,8 +17,9 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Upload the "file".dmp and "report".txt to Woma Server (woma.servegame.com) via FTP
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
+//WomaIntegrityCheck = 1234567311;
 
+#include "platform.h"
 #include "WinSystemClass.h"
 #include "OSmain_dir.h"
 
@@ -56,7 +57,7 @@ int dumpUploader(STRING file)
 	TCHAR pass[256] = TEXT("woma");
 	TCHAR account[256];
 
-	Publish_Quit_Message();			// FATAL, non expected error!
+	WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP; //Publish_Quit_Message();
 
 	STRING REPORT_FILE = WOMA::logManager->getLogFileName();
 	SAFE_DELETE (WOMA::logManager);	// Write, Close and Free the "Log" file (after free MiniDumper)

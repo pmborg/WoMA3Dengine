@@ -1,10 +1,9 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // -------------------------------------------------------------------------------------------------------------------------------------
 // Filename: standard_platform.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,11 +16,20 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: DEFINE OS SPECIFIC HEADERS
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
+//WomaIntegrityCheck = 1234567311;
 
 #pragma once
+
 #include "platform.h"
 
+#if defined LINUX_PLATFORM
+#include "linux.h"
+#endif
+#if defined ANDROID_PLATFORM
+#include "defs.h"
+#endif
+
+#if defined WINDOWS_PLATFORM
 // Include: MS WINDOWS SPECIFIC HEADERS
 // ------------------------------------------------------------------------------------------------
 #define WIN32_LEAN_AND_MEAN			// Exclude APIs such as Cryptography, DDE, RPC, Shell, and "Windows Sockets"!
@@ -30,7 +38,7 @@
 #pragma warning( disable : 4098 )	// warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
 #pragma warning( disable : 4297 )	// warning C4297: 'WinMain' : function assumed not to throw an exception but do (ONCE WE USE MINI DUMPER WE DONT NEED THIS!)
 #pragma warning( disable : 4091 )	// warning C4091 : 'typedef ' : ignored on left of '' when no variable is declared
-#pragma warning( disable : 4995 )	//warning C4995: 'gets': name was marked as #pragma deprecated
+#pragma warning( disable : 4995 )	// warning C4995: 'gets': name was marked as #pragma deprecated
 
 // NOTE: Have to be on this order (1,2,3)!
 #include <windows.h>// 1: Windows-specific header file for the C/C++ programming language which contains declarations for all of the functions in the Windows API
@@ -43,6 +51,19 @@
 #include <CommCtrl.h>
 #include <io.h>			//_taccess()
 // NOTE: Out of Memory raise exception: std::bad_alloc at memory location
+
+#else // LINUX_PLATFORM || ANDROID_PLATFORM
+
+// Include: LINUX SPECIFIC HEADERS
+// ------------------------------------------------------------------------------------------------
+#include <stdlib.h>
+#include <stdio.h>
+
+#include <string.h>
+#include <ctype.h>
+#include <sys/time.h>
+#include <stddef.h>
+#endif
 
 // -------------------------------------------------------------------------------------------
 // Include: COMMON c++ Libs:
@@ -58,6 +79,7 @@ using namespace std;
 // WOMA DEFINE: Strings and Files I/O
 // --------------------------------------------------------------------------------------------
 #ifdef UNICODE
+#define ISTRINGSTREAM	std::wistringstream
 #define OSTRINGSTREAM	std::wostringstream
 #define STRINGSTREAM	std::wstringstream
 #define STRING			std::wstring
@@ -65,6 +87,7 @@ using namespace std;
 #define OFSTREAM		std::wofstream
 #define FSTREAM			std::wfstream
 #else
+#define ISTRINGSTREAM	std::istringstream
 #define OSTRINGSTREAM	std::ostringstream
 #define STRINGSTREAM	std::stringstream	// Use this way: (TCHAR*)ss.str().c_str()
 #define STRING			std::string			// String str.c_str()
