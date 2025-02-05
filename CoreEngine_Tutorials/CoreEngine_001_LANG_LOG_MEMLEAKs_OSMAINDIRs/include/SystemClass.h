@@ -24,6 +24,10 @@
 #include "main.h" 
 #include "default_settings_xml.h"
 
+#if (defined LINUX_PLATFORM) || (defined ANDROID_PLATFORM)
+#include <sys/utsname.h>
+#endif
+
 struct resolutionType
 {
 	UINT Width;
@@ -55,8 +59,12 @@ typedef struct
 	TCHAR binaryCode[MAX_STR_LEN] = {};
 
 	// OS
+#if defined WINDOWS_PLATFORM	
 	TCHAR windowsVersion[MAX_STR_LEN] = {};
 	TCHAR windowsBuildVersion[MAX_STR_LEN] = {};
+#else
+	struct utsname ver;
+#endif
 	TCHAR osName[MAX_STR_LEN] = {};
 
 	// Processor

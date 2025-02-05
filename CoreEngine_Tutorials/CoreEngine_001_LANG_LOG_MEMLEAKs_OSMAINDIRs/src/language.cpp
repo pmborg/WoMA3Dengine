@@ -28,8 +28,7 @@
 #include <string>
 
 extern "C" JNIEXPORT jstring JNICALL
-MainActivity_getSystemLanguage(JNIEnv* env, jobject /* this */) 
-{
+Java_com_example_yourapplication_MainActivity_getSystemLanguage(JNIEnv* env, jobject /* this */) {
 	// Call the Java method using JNI
 	jclass localeClass = env->FindClass("java/util/Locale");
 	jmethodID getDefaultMethod = env->GetStaticMethodID(localeClass, "getDefault", "()Ljava/util/Locale;");
@@ -49,7 +48,7 @@ namespace WOMA
 	// Get language as string
 	bool GetLangStringFromLangId(DWORD dwLangID_i)
 	{
-	#if defined WINDOWS_PLATFORM && !defined ANDROID_PLATFORM 
+#if defined WINDOWS_PLATFORM && !defined ANDROID_PLATFORM 
 		const int MAX_LANG_LEN = 50;
 
 		// Prepare LCID
@@ -82,7 +81,7 @@ namespace WOMA
 		TCHAR str_lang[MAX_STR_LEN]; // Will hold country
 		StringCchPrintf(str_lang, sizeof(str_lang), TEXT("Language: %s, %s\n"), szLangBuffer, szCountryBuffer);
 		WOMA_LOGManager_DebugMSGAUTO(str_lang);
-	#endif
+#endif
 
 		// Return execution status
 		return true;

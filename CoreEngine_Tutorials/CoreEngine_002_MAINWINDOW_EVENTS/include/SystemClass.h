@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: systemclass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -15,14 +15,18 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//
 // PURPOSE: Export APIs for systemclass.cpp which is the common OS API
-//
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567311;
 #pragma once
+#ifndef __SYSTEMCLASS_H__
 
-#include "main.h"
+#include "main.h" 
+#include "default_settings_xml.h"
 
+#if (defined LINUX_PLATFORM) || (defined ANDROID_PLATFORM)
+#include <sys/utsname.h>
+#endif
 
 struct resolutionType
 {
@@ -32,23 +36,104 @@ struct resolutionType
 	UINT RefreshRate_Denominator;
 };
 
+typedef struct
+{
+	TCHAR GraphicCard[MAX_STR_LEN] = {};
+	//TCHAR AdapterDACType[MAX_STR_LEN] = {};
+	//TCHAR AdapterRAM[MAX_STR_LEN] = {};
+	TCHAR DedicatedVideoMemory[MAX_STR_LEN] = {};
+	TCHAR DedicatedSystemMemory[MAX_STR_LEN] = {};
+	TCHAR SharedSystemMemory[MAX_STR_LEN] = {};
+} GPU;
+
+typedef struct
+{
+	TCHAR szCountryNameBuffer[MAX_STR_LEN] = {}; // Will hold country
+
+	TCHAR cCurrentPath[FILENAME_MAX] = {};
+
+	// System
+	TCHAR platform[MAX_STR_LEN] = {};
+	TCHAR characterSet[MAX_STR_LEN] = {};
+	TCHAR binaryArchitecture[MAX_STR_LEN] = {};
+	TCHAR binaryCode[MAX_STR_LEN] = {};
+
+	// OS
+#if defined WINDOWS_PLATFORM	
+	TCHAR windowsVersion[MAX_STR_LEN] = {};
+	TCHAR windowsBuildVersion[MAX_STR_LEN] = {};
+#else
+	struct utsname ver;
+#endif
+	TCHAR osName[MAX_STR_LEN] = {};
+
+	// Processor
+	TCHAR	processorName[MAX_STR_LEN] = {};
+	TCHAR	processorId[MAX_STR_LEN] = {};
+	TCHAR	clockSpeed[MAX_STR_LEN] = {};
+
+	TCHAR	processorPackageCount[MAX_STR_LEN] = {};
+	TCHAR	NumCoreProcessors[MAX_STR_LEN] = {};
+	TCHAR	logicalProcessorCount[MAX_STR_LEN] = {};
+
+	TCHAR	ProcessorCacheL1D[MAX_STR_LEN] = {};
+	TCHAR	ProcessorCacheL1I[MAX_STR_LEN] = {};
+	TCHAR	ProcessorCacheL2[MAX_STR_LEN] = {};
+	TCHAR	ProcessorCacheL3[MAX_STR_LEN] = {};
+
+	// RAM
+	TCHAR totalMemoryCapacity[MAX_STR_LEN] = {}; // in GB
+	TCHAR freeMemory[MAX_STR_LEN] = {}; // in GB
+
+	// BOARD/CPU:
+	std::vector<STRING>				cpuFeactures;// = {};
+	STRING							systemFeatures;
+
+	// FreeSpace
+	std::vector<STRING>				drives_List; // = {};
+
+	// BenchMark MathSpeed
+	STRING							benchMarkMathSpeed1;
+	STRING							benchMarkMathSpeed2;
+
+	// OS
+	TCHAR cmdLine[MAX_STR_LEN] = {};
+
+	//GPU
+	std::vector<GPU>				GPUINFO;
+
+} SystemSettings;
+
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: SystemClass
 ////////////////////////////////////////////////////////////////////////////////
 class SystemClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567831;
+	UINT WomaIntegrityCheck = 1234567311;
 	SystemClass();
 	~SystemClass();
 
 	void Shutdown();
-
 	WOMA::Settings* AppSettings = NULL;
+
+	bool			mMaximized;
+	SystemSettings	systemDefinitions;
+	
+	STRING			userName;
+	STRING			ComputerName;
 
 	resolutionType		resolution;
 	void FrameUpdate();
 
+#if CORE_ENGINE_LEVEL >= 2 && defined WINDOWS_PLATFORM	
+	DISPLAY_DEVICE displayDevice;
+#endif
+
 public:
 
 };
+
+extern bool InitSelectedDriver();
+extern bool newDriver();
+#endif

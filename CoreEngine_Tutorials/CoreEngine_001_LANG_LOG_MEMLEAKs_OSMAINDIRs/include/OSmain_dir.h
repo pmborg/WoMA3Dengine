@@ -59,10 +59,12 @@ namespace WOMA
 	//extern bool init_os_main_dirs(BOOL WINXP_FLAG = FALSE, BOOL bIsWow64 = FALSE, CHAR* currentdir = NULL);
 
 	// Defined: in win32Plat.cpp
+#if defined WINDOWS_PLATFORM
 	extern BOOL bIsWow64;
 	extern bool is64();
 	extern BOOL isWow64();
 	extern bool isXP();
+#endif
 
 	extern void setup_OSmain_dirs();
 

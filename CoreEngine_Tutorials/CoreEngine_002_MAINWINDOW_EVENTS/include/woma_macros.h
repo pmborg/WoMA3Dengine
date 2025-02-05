@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: woma_macros.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,12 +17,10 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: DEFINE COMMON WorldOfMiddleAge 3D ENGINE MACROS
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
+//WomaIntegrityCheck = 1234567311;
 
 #pragma once
-
-#include "stateMachine.h"
-
+#ifndef __WOMA_MACROS_H__
 // --------------------------------------------------------------------------------------------
 // ENGINE MACROS
 // --------------------------------------------------------------------------------------------
@@ -39,20 +37,29 @@
 
 // int to TCHAR*
 // --------------------------------------------------------------------------------------------
+/*
+#if defined WINDOWS_PLATFORM
 	#ifdef UNICODE
-		#define ItoA _itow
+		#define ItoA _itow		//Bug on ANDROID
 	#else
-		#define ItoA _itoa
+		#define ItoA _itoa		//Bug on ANDROID
 	#endif
+#endif
+*/
+
+#if defined LINUX_PLATFORM
+	extern bool PLATFORM_INIT_GTK2();
+#endif
 
 // Save all aplication entry command line parameter:
 // --------------------------------------------------------------------------------------------
-#if !defined WOMA_WIN32_APPLICATION
+#if !defined WOMA_WIN32_APPLICATION && !defined ANDROID_PLATFORM
 	#define SYSTEM_SAVE_ARGS() { \
 		ARGc = argc; \
 		ARGv = argv; \
 	}
-#else
+#endif
+#if defined WINDOWS_PLATFORM
 	#define SYSTEM_SAVE_ARGS() { \
 		Scmdline = pScmdline; \
 		Cmdshow =  iCmdshow; \
@@ -61,7 +68,9 @@
 
 // Global Statments - WOMA Checks
 // --------------------------------------------------------------------------------------------
+#if defined WINDOWS_PLATFORM
 	#define IF_FAILED_RETURN_FALSE(x)	{ if( FAILED(x) ) { return false; } }		// Used with "HRESULT" IF FAILED
+#endif
 
 #define IF_NOT_RETURN_FALSE(x)			{ if( (!(x)) ) { return false; } }			// Used with "bool" IF NOT
 
@@ -75,7 +84,11 @@
 	#define IF_NOT_THROW_EXCEPTION(x) ASSERT(x)
 #endif
 
-#define ASSERT(x) { if (!(x)) WomaFatalException("Assert failed!"); }
+#if defined ANDROID_PLATFORM
+	#define ASSERT(x) { if (!(x)) _tprintf("ASSERT FAILED: FILE: %s LINE: %s - %s()\n", __FILE__, __LINE__, __func__); }
+#else
+	#define ASSERT(x) { if (!(x)) WomaFatalException("Assert failed!"); }
+#endif
 
 #define ThrowIfFailed(hr)\
 {\
@@ -87,7 +100,16 @@ extern const wchar_t* GetWC(const char* c);
 	#ifdef UNICODE
 		#define WomaFatalExceptionW( wmsg ) { CHAR msg[MAX_STR_LEN]={ 0 }; wtoa(msg, wmsg, MAX_STR_LEN); throw exception(msg); } // TODO: String convert
 	#endif
+	#if defined WINDOWS_PLATFORM
 		#define WomaFatalException(msg) throw exception(msg)
+		#define WomaFatalExceptionW ( wmsg )  throw exception( wmsg)
+	#endif
+	#if defined LINUX_PLATFORM
+		#define WomaFatalException(msg) throw (msg)
+	#endif
+	#if defined ANDROID_PLATFORM
+		#define WomaFatalException(msg) return false
+	#endif
 
 	#define WOMA_LOGManager_DebugMSGAUTO if (WOMA::logManager) WOMA::logManager->DEBUG_MSG
 	#define WOMA_LOGManager_DebugMSG	 if (WOMA::logManager) WOMA::logManager->DEBUG_MSG
@@ -95,12 +117,17 @@ extern const wchar_t* GetWC(const char* c);
 
 // Class Loaders - for automatic class load log
 // --------------------------------------------------------------------------------------------
+#if defined WINDOWS_PLATFORM
 #define LEVELHIGHLIGHT(level) {WOMA::ENGINE_LEVEL_USED = level; if (CORE_ENGINE_LEVEL == level) {HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, BACKGROUND_INTENSITY|FOREGROUND_BLUE | FOREGROUND_INTENSITY);}}
 #define LEVELNORMAL() { HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE|FOREGROUND_GREEN|FOREGROUND_RED);}
+#else
+#define LEVELHIGHLIGHT(level) {}
+#define LEVELNORMAL() {}
+#endif
 
-#if _DEBUG //defined CLASS_DEBUG
-#define CLASSLOADER() { HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN); WOMA_LOGManager_DebugMSG((CHAR*) "[CLASS_LOAD %d] %s\n", CLASS_LOAD_N++, __FUNCTION__); SetConsoleTextAttribute(hConsole, FOREGROUND_RED + FOREGROUND_GREEN + FOREGROUND_BLUE); }
-#define CLASSDELETE() { HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_RED); WOMA_LOGManager_DebugMSG((CHAR*) "[CLASS_DELETE %d] %s\n", CLASS_DELETE_N++, __FUNCTION__); SetConsoleTextAttribute(hConsole, FOREGROUND_RED+FOREGROUND_GREEN+FOREGROUND_BLUE); }
+#if _DEBUG && defined WINDOWS_PLATFORM //defined CLASS_DEBUG
+	#define CLASSLOADER() { HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN); WOMA_LOGManager_DebugMSG((CHAR*) "[CLASS_LOAD %d] %s\n", CLASS_LOAD_N++, __FUNCTION__); SetConsoleTextAttribute(hConsole, FOREGROUND_RED + FOREGROUND_GREEN + FOREGROUND_BLUE); }
+	#define CLASSDELETE() { HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_RED); WOMA_LOGManager_DebugMSG((CHAR*) "[CLASS_DELETE %d] %s\n", CLASS_DELETE_N++, __FUNCTION__); SetConsoleTextAttribute(hConsole, FOREGROUND_RED+FOREGROUND_GREEN+FOREGROUND_BLUE); }
 #else
 	#define CLASSLOADER() {}
 	#define CLASSDELETE() {}
@@ -108,9 +135,14 @@ extern const wchar_t* GetWC(const char* c);
 
 // Basic OS low level MACROS:
 // --------------------------------------------------------------------------------------------
+#if defined WINDOWS_PLATFORM
 	#define OS_REDRAW_WINDOW RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE| RDW_ERASE);  // Invoke: Window PAINT
 
 		#define OS_KEY_DOWN(key) SystemHandle->m_OsInput->IsKeyDown(key)
+#else
+	#define OS_REDRAW_WINDOW {}
+	#define OS_KEY_DOWN(key) true
+#endif
 
 // Global MEM HANDLERS - WOMA Macros:
 // --------------------------------------------------------------------------------------------
@@ -156,8 +188,17 @@ extern const wchar_t* GetWC(const char* c);
 // Global GAME STOP!
 // --------------------------------------------------------------------------------------------
 
+#if defined WINDOWS_PLATFORM
 	#define Publish_Quit_Message(){ \
 		for (int i = 0; i < SystemHandle->windowsArray.size(); i++)\
 			::PostMessage(SystemHandle->m_hWnd, WM_CLOSE, 0, 0); /*NOTE: dont use PostQuitMessage(WM_QUIT) on mutiple threads!*/\
+		WOMA::main_loop_state = -1; \
 		WOMA::game_state = GAME_STOP; \
 	} 
+#else
+	#define Publish_Quit_Message(){ \
+		WOMA::main_loop_state = -1; /*WOMA::game_state = GAME_STOP;*/ \
+	} 
+#endif
+
+#endif

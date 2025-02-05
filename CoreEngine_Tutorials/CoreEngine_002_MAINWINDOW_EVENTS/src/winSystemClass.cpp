@@ -1,10 +1,10 @@
 // NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
-// Filename: winSystemclass.cpp
+// Filename: winSystemClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -15,14 +15,15 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//
 // PURPOSE: Define APIs for winSystemClass.cpp which is the WINDOWS OS API
-//
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567311;
 
 #include "OSengine.h"
+#if defined DX_ENGINE
+#include "DXengine.h"
+#endif
 
-#include "mem_leak.h"
 #include "OSmain_dir.h"
 #include "language.h"
 
@@ -34,14 +35,12 @@
 
 TCHAR MainDeviceName[MAX_STR_LEN];	// Monitor Name
 
-UINT RENDER_PAGE;
-
 //----------------------------------------------------------------------------------
 WinSystemClass::WinSystemClass() : SystemClass() 
 //----------------------------------------------------------------------------------
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567831;
+	WomaIntegrityCheck = 1234567311;
 
 	//public:
 	SystemHandle = this;
@@ -60,6 +59,16 @@ WinSystemClass::WinSystemClass(WOMA::Settings* appSettings): SystemClass() //	Sy
 	WinSystemClass_init();
 }
 
+//----------------------------------------------------------------------------
+void WinSystemClass::ProcessFrame()
+//----------------------------------------------------------------------------
+{
+	SystemClass::FrameUpdate();	// Process: (INPUT + PerformanceStats) Only!
+	if (WOMA::game_state == ENGINE_RESTART)
+		return;
+
+}
+
 void WinSystemClass::WinSystemClass_init()
 {
 // --------------------------------------------------------------
@@ -68,9 +77,11 @@ void WinSystemClass::WinSystemClass_init()
 
 	m_hinstance = NULL;
 
+#if CORE_ENGINE_LEVEL >= 2 && defined WINDOWS_PLATFORM
 	// Get the instance of this application.
 	m_hinstance = GetModuleHandle(NULL);
 	ASSERT(m_hinstance);
+#endif
 }
 
 WinSystemClass::~WinSystemClass()
@@ -81,37 +92,37 @@ WinSystemClass::~WinSystemClass()
 	SystemHandle = NULL;
 }
 
-bool WinSystemClass::InitializeSystem()
+// WINDOWS/LINUX
+extern int InitImGui(HWND hwnd = NULL);
+
+bool WinSystemClass::APPLICATION_CORE_SYSTEM()
+{
+	WOMA_LOGManager_DebugMSG("WinSystemClass::APPLICATION_INIT_SYSTEM()\n");
+
+	return true;
+}
+
+bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 //----------------------------------------------------------------------------
 {
 	//  NOTE: Constructors run, First!
-	//  SystemClass::SystemClass()				Run: 1st - OS common: low level
-	//	ApplicationClass::ApplicationClass()	Run: 2th - User: level
-	//	WinSystemClass::WinSystemClass()		Run: 3nd - This OS: hi-level (Check for another instance)
+	//  SystemClass::SystemClass()				Run: 1st - OS common    - WOMA::APP_NAME
+	//	ApplicationClass::ApplicationClass()	Run: 2nd - User: level  - ApplicationClass::Start()
+	//	WinSystemClass::WinSystemClass()		Run: 3th - Start Timers - WinSystemClass::WinSystemClass_init();
 
-	if (WOMA::game_state == GAME_STOP)				// Signal to STOP, before start?
-		return false;								// Probably another instance is already running!
-
-	{
-		if (!MyRegisterClass(m_hinstance)) {// Try to Register WOMA Engine WINDOW CLASS
-			Publish_Quit_Message();
-			return false;
-		}
-	}
+	IF_NOT_RETURN_FALSE(APPLICATION_CORE_SYSTEM()); // MyRegisterClass()
 
 	IF_NOT_RETURN_FALSE(ApplicationInitMainWindow());		// CREATE: The/all "MainWindow(s) + INIT DX/GL "rendering-device"
 
-	if (WOMA::game_state == GAME_LOADING)
-		WOMA::game_state = GAME_MENU;	// All ready from "mandatory 3D Stuff" Loader
-
-	MessageBox(m_hWnd, TEXT("Welcome to our first: Main Window\nclick OK and then click on CLOSE icon, to exit..."), TEXT("WOMA Tutorial: 002"), MB_OK);
-
-	return true;				// GREEN LIGHT: to Start Rendering! :)
+// ########################################### LOAD DRIVERS ###########################################
+	
+ // ################################################# INIT DRIVERS ###################################
+	
+	return true;						// GREEN LIGHT: to Start Rendering! :)
 }
 
-
 //----------------------------------------------------------------------------
-int WinSystemClass::ApplicationMainLoop()		// [RUN] - MAIN "INFINITE" LOOP!
+int WinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 //----------------------------------------------------------------------------
 {
 	MSG msg = { 0 };						// Reset msg
@@ -135,9 +146,7 @@ int WinSystemClass::ApplicationMainLoop()		// [RUN] - MAIN "INFINITE" LOOP!
 					Sleep(50);
 			}
 		}
-	} while (msg.message != WM_QUIT);
-
-	ASSERT(WOMA::game_state == GAME_STOP);
+	} while (msg.message != WM_QUIT && WOMA::main_loop_state >= 0);
 
 	return S_OK;
 }
@@ -182,8 +191,10 @@ void WinSystemClass::ShutdownWindows()
 				lpBuffer,									// OUT: Put the message here
 				sizeof(lpBuffer) - 1,						// OUT: Number of bytes to store the message
 				NULL);
-
-		WOMA::WomaMessageBox(lpBuffer, (TCHAR*)TEXT("Error: UnregisterClass"));
+		#if false_for_now
+		if (Command != ENGINE_RESTART)
+			WomaMessageBox(lpBuffer, (TCHAR*)TEXT("Error: UnregisterClass"), false);
+		#endif
 	}
 
 	m_hinstance = NULL;
@@ -202,36 +213,17 @@ namespace WOMA
 }
 
 // --------------------------------------------------------------------------------------------
-// PURPOSE: Registers the Window Application Class.
+// [*] Register the Window Class.
 // --------------------------------------------------------------------------------------------
 bool WinSystemClass::MyRegisterClass(HINSTANCE hInstance)
 {
 	WNDCLASSEX wcex = { 0 };
 	wcex.cbSize = sizeof(WNDCLASSEX);
 
-	IF_NOT_RETURN_FALSE(WOMA::getCurrentDir());
-	bool gotIconFile = true;
-	if (!WOMA::fileExists(WOMA::APP_ICO))
-	{
-		STRING err = TEXT("File not found: "); err += WOMA::APP_ICO;
-		//DONT USE WOMA::WomaMessageBox!
-		MessageBox(NULL, err.c_str(), TEXT("WARNING: MyRegisterClass()"), MB_ICONWARNING);
-		gotIconFile = false;
-	}
-
 	// ALLOW WIN32 SYSTEM PAINT: (Causes the entire window to redraw if a movement or a size adjustment changes the height of the client area: CS_HREDRAW | CS_VREDRAW)
 	wcex.style = (AppSettings->DRIVER == DRIVER_GL3) ? CS_OWNDC : CS_HREDRAW | CS_VREDRAW; // NOTE: CS_OWNDC is need by OPEN GL: https://www.opengl.org/wiki/Platform_specifics:_Windows
-
-#if DX_CORE_ENGINE_LEVEL < 37
-	wcex.hbrBackground = GetSysColorBrush(COLOR_3DFACE);									//wcex.hbrBackground	= (HBRUSH)GetStockObject(WHITE_BRUSH);	//TO USE THIS COLOR
-#else
-	wcex.hbrBackground	= (HBRUSH)GetStockObject(BLACK_BRUSH);	//TO USE THIS COLOR
-#endif
-	wcex.lpszClassName  = WOMA_ENGINE_CLASS;
-
-	wcex.lpfnWndProc	= WndProc;
-	wcex.hInstance		= hInstance;
-	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW); //IDC_CROSS
+	wcex.lpfnWndProc = WndProc;
+	wcex.hInstance = hInstance;
 
 	//
 	// To Use External Icon: "*.png" -> "*.ico" Converter: http://converticon.com/
@@ -239,10 +231,29 @@ bool WinSystemClass::MyRegisterClass(HINSTANCE hInstance)
 	//
 	// More info WNDCLASSEX: https://msdn.microsoft.com/en-us/library/windows/desktop/ms633577%28v=vs.85%29.aspx
 	//
+	IF_NOT_RETURN_FALSE(WOMA::getCurrentDir());
+	bool gotIconFile = true;
+	if (!WOMA::fileExists(WOMA::APP_ICO))
+	{
+		STRING err = TEXT("File not found: "); err += WOMA::APP_ICO;
+		//DONT USE WomaMessageBox!
+		MessageBox(NULL, err.c_str(), TEXT("WARNING: MyRegisterClass()"), MB_ICONWARNING);
+		gotIconFile = false;
+	}
+
 	if (gotIconFile) {
 		wcex.hIcon = (HICON)LoadImage(hInstance, WOMA::APP_ICO, IMAGE_ICON, ::GetSystemMetrics(SM_CXICON), ::GetSystemMetrics(SM_CYICON), LR_LOADFROMFILE);
 		wcex.hIconSm = (HICON)LoadImage(hInstance, WOMA::APP_ICO, IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), LR_LOADFROMFILE);
 	}
+
+	wcex.hCursor = LoadCursor(NULL, IDC_ARROW); //IDC_CROSS
+
+	//wcex.hbrBackground = GetSysColorBrush(COLOR_3DFACE);			//TO USE THIS COLOR: GRAY
+	//wcex.hbrBackground	= (HBRUSH)GetStockObject(WHITE_BRUSH);	//TO USE THIS COLOR: WHITE
+	wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);		//TO USE THIS COLOR: BLACK
+	wcex.lpszClassName  = WOMA_ENGINE_CLASS;
+	wcex.cbSize = sizeof(WNDCLASSEX);
+
 
 	IF_NOT_RETURN_FALSE (RegisterClassEx(&wcex));
 
@@ -269,7 +280,6 @@ HWND WinSystemClass::WomaCreateWindowEx(DWORD dwExStyle, TCHAR* lpClassName, TCH
 						NULL, error, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&lpMsgBuf, 0, NULL);
 
 		LPVOID lpDisplayBuf = (LPVOID)LocalAlloc(	LMEM_ZEROINIT, (lstrlen((LPCTSTR)lpMsgBuf) + 40) * sizeof(TCHAR)); 
-
 		if (lpDisplayBuf)
 		{
 			StringCchPrintf((LPTSTR)lpDisplayBuf, LocalSize(lpDisplayBuf) / sizeof(TCHAR), TEXT("CreateWindowEx Error (%d): %s"), error, lpMsgBuf);
@@ -281,8 +291,7 @@ HWND WinSystemClass::WomaCreateWindowEx(DWORD dwExStyle, TCHAR* lpClassName, TCH
 }
 
 bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ void* 
-										/*OpenGL*/ driver, int& width, int& height, 
-										bool allowResize)
+										/*OpenGL*/ driver, int& width, int& height)
 //----------------------------------------------------------------------------
 {
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("---------------------------------\n"));
@@ -290,7 +299,7 @@ bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ voi
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("---------------------------------\n"));
 
 	if (AppSettings->FULL_SCREEN)
-		allowResize = true;					// Force: "Allow" User to resize to FullScreen.
+		AppSettings->AllowResize = true;					// Force: "Allow" User to resize to FullScreen.
 
 	// --------------------------------------------------------------------------------------------
 	// PURPOSE: Check all Monitors available
@@ -309,6 +318,12 @@ bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ voi
 	// Current_Screen_WIDTH
 	// Current_Screen_HEIGHT
 	// AppSettings->BITSPERPEL
+
+	if (windowsArray.size() == 0)
+	{
+		WOMA::WindowDataContainer screen;
+		SystemHandle->windowsArray.push_back(screen);
+	}
 
 	displayDevice.cb = sizeof(DISPLAY_DEVICE);
 	while (EnumDisplayDevices(NULL, deviceNum, &displayDevice, 0))	// Get deviceNum
@@ -330,6 +345,12 @@ bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ voi
 				WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("[Using this Monitor!]\n")); //WCHAR
 				_tcscpy_s(DeviceNameToUseOnFullScreen, 32, displayDevice.DeviceName);
 
+				//AppSettings->WINDOW_Xpos	windowsArray[MONITOR_NUM].width		AppSettings->BITSPERPEL
+				//AppSettings->WINDOW_Ypos	windowsArray[MONITOR_NUM].height
+				//Mon0: 3840  -4			= 1920 1080							32
+				//Mon1: 0      0			= 3840 2160							32
+				//Mon2: -1920 16			= 1920 1080							32
+
 				//Translate xpos to Multi-Screen Position virtual position:
 				AppSettings->WINDOW_Xpos = devMode.dmPosition.x + AppSettings->WINDOW_Xpos;
 				AppSettings->WINDOW_Ypos = devMode.dmPosition.y + AppSettings->WINDOW_Ypos;
@@ -347,9 +368,9 @@ bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ voi
 
 			if (((deviceNum == MONITOR_NUM) && (AppSettings->UseAllMonitors == true)) || (AppSettings->UseAllMonitors == false))
 			{
-				WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("X0, Y0: %d %d\n"), devMode.dmPosition.x, devMode.dmPosition.y);			// Get X0, Y0 position (of THIS monitor):
-				WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("Current Resolution: %d %d\n"), devMode.dmPelsWidth, devMode.dmPelsHeight);// Current Resolution (on THIS monitor):
-				WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("Bits Supported: %d\n\n"), devMode.dmBitsPerPel);							// Get num. bits per pixel Supported (on THIS monitor):
+				WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("X0, Y0 = %d, %d\n"), devMode.dmPosition.x, devMode.dmPosition.y);			// Get X0, Y0 position (of THIS monitor):
+				WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("Current Resolution: %d x %d\n"), devMode.dmPelsWidth, devMode.dmPelsHeight);// Current Resolution (on THIS monitor):
+				WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("Bits Supported: %d Bits\n\n"), devMode.dmBitsPerPel);							// Get num. bits per pixel Supported (on THIS monitor):
 			}
 		}
 		else
@@ -409,19 +430,22 @@ bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ voi
 		AppSettings->SCREEN_RESOLUTION_HEIGHT = Current_Screen_HEIGHT;	//GetSystemMetrics(SM_CYSCREEN);
 	}
 
-	// Define Window Style:
 	// -------------------------------------------------------------------------------------------
 	if (AppSettings->FULL_SCREEN)
 		windowStyle = WS_POPUP | WS_VISIBLE;		// FULLSCREEN
 	else
 	{
-		if (allowResize)
+		if (AppSettings->AllowResize)
 		{
 			// This Style is needed to allow Lancher to have the browser refreshed:
-			windowStyle = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS & ~WS_THICKFRAME;		// Normal WINDOW "Classic" (-[]X)
+			//if (AppSettings->WINDOW_WIDTH == 1920)
+			//	windowStyle = WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP; //Means: NO TOP BAR!
+			//else
+				windowStyle = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS & ~WS_THICKFRAME;		// Normal WINDOW "Classic" (-[]X)
+
 			// Define Window Size and Position:
-			// -------------------------------------------------------------------------------------------
 			RECT R = { 0, 0, width, height };
+			// [*] Define Window Style:
 			AdjustWindowRect(&R, windowStyle, false);	// Compute "window rectangle dimensions" based on "requested client area" dimensions, fot this "style"!
 
 			// Determine the real / resolution of the Window on this "style":
@@ -435,20 +459,26 @@ bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ voi
 			//		 [X]					WS_SYSMENU
 			//		 Remove "sizing border" & ~WS_THICKFRAME 
 
-			windowStyle = WS_OVERLAPPED | WS_POPUP | WS_VISIBLE | WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_CLIPCHILDREN | WS_CLIPSIBLINGS & ~WS_THICKFRAME;
-			//windowStyle = WS_OVERLAPPED;
+			windowStyle = WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
 
 			// Allow full-Screen on a Windowed:
 			if ((AppSettings->WINDOW_WIDTH == AppSettings->SCREEN_RESOLUTION_WIDTH) && (AppSettings->WINDOW_HEIGHT == AppSettings->SCREEN_RESOLUTION_HEIGHT))
 				windowStyle = windowStyle & (~WS_CAPTION);
+
+			// Define Window Size and Position:
+			RECT R = { 0, 0, width, height };
+			// [*] Define Window Style:
+			AdjustWindowRect(&R, windowStyle, false);
 		}
 	}
-#if defined USE_ASPECT_RATIO
-	if (allowResize)
+
+	#if defined USE_ASPECT_RATIO
+	if (AppSettings->AllowResize)
 		aspect_r = (float)AppSettings->WINDOW_WIDTH / (float)AppSettings->WINDOW_HEIGHT;// Aspect Ratio: To keep it, on "Resize Window"
-#endif
+	#endif
+
 	// In Full-Screen, select the Window Position of that MONITOR:
-	int windowLeft, windowTop;
+	int windowLeft=0, windowTop=0;
 	if (AppSettings->FULL_SCREEN)
 	{
 		windowLeft = AppSettings->WINDOW_Xpos;
@@ -465,11 +495,7 @@ bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ voi
 	if ((AppSettings->WINDOW_WIDTH == 0) && (AppSettings->WINDOW_HEIGHT == 0))
 		WomaFatalException("FATAL ERROR: Monitor Settings Invalid");
 
-	if (windowsArray.size() == 0)
-	{
-		WOMA::WindowDataContainer screen;
-		SystemHandle->windowsArray.push_back(screen);
-	}
+
 
 	// ------------------------------------------------------------------------------------------
 	// Create: WIN OS Main Window 
@@ -480,13 +506,14 @@ bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ voi
 		nullptr, nullptr, m_hinstance, nullptr);
 #else
 	int TaskBarHeigth = 0;
-#if defined _DEBUG
+#if defined _DEBUG && defined USE_STATUSBAR
 	TaskBarHeigth = WOMA::getTaskBarHeight();
-#endif
 	if (!AppSettings->FULL_SCREEN)
 		AppSettings->WINDOW_HEIGHT = AppSettings->WINDOW_HEIGHT - TaskBarHeigth - 32/*statusBarHeigth*/;
+#endif
 
-	HWND hWnd = WomaCreateWindowEx(dwExStyle, (TCHAR*)WOMA_ENGINE_CLASS, WOMA::APP_FULLNAME, windowStyle,
+	// [*] Create the window and return the handle to it:
+	HWND hWnd = WomaCreateWindowEx(dwExStyle, (TCHAR*)WOMA_ENGINE_CLASS, "Loading...", windowStyle,
 		windowLeft, windowTop,
 		AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT,
 		NULL,	// We have no parent window
@@ -496,29 +523,45 @@ bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ voi
 #endif
 
 	ASSERT(hWnd);
-
+#if defined USE_STATUSBAR
 	SystemHandle->statusbar = DoCreateStatusBar(hWnd, 0/*idStatus*/, m_hinstance, 1/*cParts*/);
 	SendMessage(SystemHandle->statusbar, SB_SETTEXT, 0, (LPARAM)DEMO_TITLE);
-	if (AppSettings->FULL_SCREEN)
-		ShowWindow(SystemHandle->statusbar, SW_HIDE);
-
+#endif
 	// Save window for Main Monitor
 	m_hWnd = hWnd;
 
 	// WindowDataContainer
 	windowsArray[MONITOR_NUM].hWnd = hWnd;
 
-	ShowWindow(hWnd, WOMA::Cmdshow);	// Use from Command line option! NOTE: Don't hardcode:	(default: SW_SHOWDEFAULT) SW_SHOW / SW_SHOWMINIMIZED
-	SetForegroundWindow(hWnd);    // Slightly "Higher Priority"
-	SetFocus(hWnd);               // Force "Focus" to our Window
-	UpdateWindow(hWnd);           // 1st Window WIN32/"Paint"  NOW!
-
-	// Save window properties
-	GetWindowRect(hWnd, &m_rcWindowBounds);	//{top=0 bottom=1057 left=1920	right=3840}
-	GetClientRect(hWnd, &m_rcWindowClient);	//{top=0 bottom=1018 left=0		right=1904}	
+	ShowWindow(windowLeft, windowTop);
 
 	return true;
 }
+
+bool WinSystemClass::ShowWindow(int windowLeft, int windowTop) {
+	//1
+#if defined USE_STATUSBAR
+	if (AppSettings->FULL_SCREEN)
+		::ShowWindow(SystemHandle->statusbar, SW_HIDE);
+#endif
+	if (!AppSettings->FULL_SCREEN)
+		::ShowWindow(m_hWnd, WOMA::Cmdshow);	// Use from Command line option! NOTE: Don't hardcode:	(default: SW_SHOWDEFAULT) SW_SHOW / SW_SHOWMINIMIZED
+
+	//2
+	SetForegroundWindow(m_hWnd);    // Slightly "Higher Priority"
+	SetFocus(m_hWnd);               // Force "Focus" to our Window
+	UpdateWindow(m_hWnd);           // 1st Window WIN32/"Paint"  NOW!
+
+	//Useful if not "fullscreen" or "fullscreen windowed":
+	//MoveWindow(m_hWnd, windowLeft, windowTop, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT, TRUE);	// Adjust to Correct Real/Render size "Depend of the Window Sytle"
+
+	// Save window properties
+	GetWindowRect(m_hWnd, &m_rcWindowBounds);	//{top=0 bottom=1057 left=1920	right=3840}
+	GetClientRect(m_hWnd, &m_rcWindowClient);	//{top=0 bottom=1018 left=0		right=1904}	
+
+	return true;
+}
+
 BOOL CALLBACK MyInfoEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonitor, LPARAM dwData)
 {
 	MONITORINFOEX iMonitor;
@@ -582,11 +625,27 @@ BOOL CALLBACK MyInfoEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonit
 bool WinSystemClass::ApplicationInitMainWindow()
 //----------------------------------------------------------------------------
 {
+#if true //defined RELEASE
+	// PURPOSE: Registers the Window Application Class, but first check if we are running!
+	if (FindWindow(WOMA_ENGINE_CLASS, NULL))
+	{
+		WomaMessageBox((TCHAR*)TEXT("Another Process is already Running..."), (TCHAR*)TEXT("FATAL ERROR:"));
+		WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP; //Publish_Quit_Message();
+		return false;
+	}
+	else
+#endif
+	{
+		if (!MyRegisterClass(m_hinstance)) {// Try to Register WOMA Engine WINDOW CLASS
+			WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP; //Publish_Quit_Message();
+			return false;
+		}
+	}
 
+	//Populate Monitor List: (for Game Setup)
 	info.Array = (ScreenArrayInfo*)&monitorArray;
 	info.Count = 0;
 	info.MaxCount = 15;
-
 	EnumDisplayMonitors(NULL, NULL, &MyInfoEnumProc, reinterpret_cast<LPARAM>(&info));
 
 	/*******************************************************************
@@ -596,13 +655,13 @@ bool WinSystemClass::ApplicationInitMainWindow()
 	if (AppSettings->UseAllMonitors == false) // Are we using a specific Monitor?
 	{
 		//0 (FIXED) Means the Select Monitor: can be 0, 1 ,2...
-		IF_NOT_RETURN_FALSE(CreateMainWindow(0, m_contextDriver, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT, (DX_ENGINE_LEVEL >= 20) ? AppSettings->AllowResize : false));
+		IF_NOT_RETURN_FALSE(CreateMainWindow(0 /*Just one monitor?*/, g_contextDriver, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT));
 	}
-	else // (AppSettings->UseAllMonitors == true) Means Render in All Monitors
+	else
 	{
 		// For each Monitor:
 		for (int i = 0; i < windowsArray.size(); ++i)
-			IF_NOT_RETURN_FALSE(CreateMainWindow(i, m_contextDriver, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT, (DX_ENGINE_LEVEL >= 20) ? AppSettings->AllowResize : false));
+			IF_NOT_RETURN_FALSE(CreateMainWindow(i /* use all these monitors*/, g_contextDriver, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT));
 	}
 #endif
 
@@ -626,13 +685,5 @@ void WinSystemClass::UNPAUSE()
 	{
 		WOMA::game_state = WOMA::previous_game_state;
 	}
-}
-
-//----------------------------------------------------------------------------
-void WinSystemClass::ProcessFrame()
-//----------------------------------------------------------------------------
-{
-	SystemClass::FrameUpdate();	// Process Input
-
 }
 

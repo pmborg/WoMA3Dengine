@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: OSmain_dir.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -20,13 +20,12 @@
 //  - Check if PATH if NETWORK PATH (Release)
 //  - Init: PROGRAM_FILES "C:\ProgramFiles(x86)\Pmborg\Woma2017\"
 //  - Init: APPDATA "C:\Users\"username"\AppData\Local\Pmborg\Woma2017\"
-//
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
+//WomaIntegrityCheck = 1234567311;
 
 #pragma once
 
-#include "main.h"
+#include "standard_platform.h"
 
 // [ON DEBUG] APPDATA & PROGRAM_FILES are defined here:
 #define INITPATH TEXT("./")
@@ -60,10 +59,12 @@ namespace WOMA
 	//extern bool init_os_main_dirs(BOOL WINXP_FLAG = FALSE, BOOL bIsWow64 = FALSE, CHAR* currentdir = NULL);
 
 	// Defined: in win32Plat.cpp
+#if defined WINDOWS_PLATFORM
 	extern BOOL bIsWow64;
 	extern bool is64();
 	extern BOOL isWow64();
 	extern bool isXP();
+#endif
 
 	extern void setup_OSmain_dirs();
 

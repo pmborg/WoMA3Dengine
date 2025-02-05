@@ -28,7 +28,6 @@
 #include <sys/utsname.h>
 #endif
 
-//#if CORE_ENGINE_LEVEL >= 2
 struct resolutionType
 {
 	UINT Width;
@@ -36,7 +35,6 @@ struct resolutionType
 	UINT RefreshRate_Numerator;
 	UINT RefreshRate_Denominator;
 };
-//#endif
 
 typedef struct
 {

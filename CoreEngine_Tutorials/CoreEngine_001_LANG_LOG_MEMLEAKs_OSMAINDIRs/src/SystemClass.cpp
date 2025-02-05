@@ -28,7 +28,9 @@
 #include "default_settings_xml.h"
 #include "woma_macros.h"
 
+#if defined WINDOWS_PLATFORM
 #include "language.h"
+#endif
 
 #define GET_NAME(NAME) #NAME
 #define GET_VERSION(VERSION) GET_NAME(VERSION)
@@ -59,4 +61,7 @@ void SystemClass::Shutdown()
 
 	AppSettings = NULL;				// Pointer to Static object, no need to free.
 }
+#if defined ANDROID_PLATFORM
+extern android_app* app;
+#endif
 

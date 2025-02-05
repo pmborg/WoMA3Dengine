@@ -42,6 +42,10 @@
     <ClInclude Include="..\include\OSmain_dir.h">
       <Filter>Include\001</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\winSystemClass.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\woma_engine_assets.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Include">

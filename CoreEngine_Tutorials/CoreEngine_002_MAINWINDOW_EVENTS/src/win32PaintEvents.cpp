@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: win32PaintEvents.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,12 +17,14 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Paint the main window depending of engine state screen page.
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
+//WomaIntegrityCheck = 1234567311;
 
-#include "main.h"
+#include "OSengine.h"
 #include "WinSystemClass.h"
 #include "OSmain_dir.h"
-#include "mem_leak.h"
+
+
+#if CORE_ENGINE_LEVEL >= 2 && defined WINDOWS_PLATFORM 
 
 
 // ---------------------------------------------------------------------------------------------
@@ -48,3 +50,4 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 	return SystemHandle->MessageHandler(hwnd, umessage, wparam, lparam);
 }
 
+#endif

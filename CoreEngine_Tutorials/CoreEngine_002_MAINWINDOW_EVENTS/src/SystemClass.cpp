@@ -1,10 +1,10 @@
 // NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
-// Filename: Systemclass.cpp
+// Filename: SystemClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -15,31 +15,38 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//
 // PURPOSE: Define APIs for systemclass.cpp which is the common OS API
-//
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567311;
+
 #define _CRT_SECURE_NO_WARNINGS
 #pragma warning( disable : 4477 )
 #pragma warning( disable : 4838 )
 
 #include "SystemClass.h"
-#include "winSystemClass.h"
+#include "OSengine.h" //#include "WinSystemClass.h"
 #include "default_settings_xml.h"
-#include "OSengine.h"
 #include "woma_macros.h"
 
-#include "language.h"
-#include "mem_leak.h"
 #include "OSmain_dir.h"
+
+#if defined WINDOWS_PLATFORM
+#include "language.h"
+#endif
 
 #include "stateMachine.h"
 
+#define GET_NAME(NAME) #NAME
+#define GET_VERSION(VERSION) GET_NAME(VERSION)
+
+//----------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------
 SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 {
 	// STARTING POINT of WOMA ENGINE!
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567831;
+	WomaIntegrityCheck = 1234567311;
 
 	AppSettings = NULL;
 
@@ -59,6 +66,8 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 	StringCchPrintf(COMPILER, MAX_STR_LEN, TEXT("Intel C++  %d.%02d"), __INTEL_COMPILER / 100, __INTEL_COMPILER % 100);
 #elif defined  (_MSC_VER)
 	StringCchPrintf(COMPILER, MAX_STR_LEN, TEXT("Visual C++ %d.%02d"), _MSC_VER / 100, _MSC_VER % 100);
+#elif defined  (ANDROID_PLATFORM)
+	StringCchPrintf(COMPILER, MAX_STR_LEN, TEXT("TODO %s.%s"), GET_VERSION(__GNUC__), GET_VERSION(__GNUC_MINOR__));
 #elif defined  (__GNUC__)
 	StringCchPrintf(COMPILER, MAX_STR_LEN, TEXT("GCC %s.%s.%s"), GET_VERSION(__GNUC__), GET_VERSION(__GNUC_MINOR__), GET_VERSION(__GNUC_PATCHLEVEL__));
 #endif	
@@ -66,10 +75,12 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 	// APP_NAME with Binary Info:
 	// -------------------------------------------------------------------------------------------
 	TCHAR Wbuffer[MAX_STR_LEN] = { 0 };
+#if defined WINDOWS_PLATFORM
 	atow(Wbuffer, VER_PRODUCTVERSION_STR, MAX_STR_LEN); /*VER_PRODUCTVERSION_STRING_FOUR_PARTS*/
+#endif
 
 	StringCchPrintf(WOMA::APP_NAME, MAX_STR_LEN,
-		TEXT("%s v%c%c%c%c.%c%c.%c%c COMPILED:%s OS:%s %s BUILD:%s BIN:%dbit %s CHAR:%s coreLvl:0000"),
+		TEXT("%s v%c%c%c%c.%c%c.%c%c BIN:%s OS:%s %s BUILD:%s BIN:%dbit %s CHAR:%s Lvl: %d"),
 		WOMA::APP_PROJECT_NAME,
 		BUILD_YEAR_CH0, BUILD_YEAR_CH1, BUILD_YEAR_CH2, BUILD_YEAR_CH3,
 		BUILD_MONTH_CH0, BUILD_MONTH_CH1, BUILD_DAY_CH0, BUILD_DAY_CH1,
@@ -79,17 +90,53 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 #if defined WIN_XP
 		TEXT("WinXP")
 #elif defined WIN10
-		TEXT("Win10/11")
-#else
+		TEXT("Win10/11") //SystemHandle->systemManager->pszOS
+#elif WINVER == _WIN32_WINNT_WIN7
+		TEXT("WIN7")
+#elif defined WINDOWS_PLATFORM
 		TEXT("Windows")
+#elif defined CYGWIN_PLATFORM
+		TEXT("Cygwin")
+#elif defined LINUX_PLATFORM
+		TEXT("Linux")
+#elif defined ANDROID_PLATFORM
+	#if defined(__ARM_ARCH_2__)
+			TEXT("Android-ARM2")
+	#elif defined(__ARM_ARCH_3__) || defined(__ARM_ARCH_3M__)
+			TEXT("Android-ARM3")
+	#elif defined(__ARM_ARCH_4T__) || defined(__TARGET_ARM_4T)
+			TEXT("Android-ARM4T")
+	#elif defined(__ARM_ARCH_5_) || defined(__ARM_ARCH_5E_)
+			TEXT("Android-ARM5"
+	#elif defined(__ARM_ARCH_6T2_) || defined(__ARM_ARCH_6T2_)
+			TEXT("Android-ARM6T2")
+	#elif defined(__ARM_ARCH_6__) || defined(__ARM_ARCH_6J__) || defined(__ARM_ARCH_6K__) || defined(__ARM_ARCH_6Z__) || defined(__ARM_ARCH_6ZK__)
+			TEXT("Android-ARM6")
+	#elif defined(__ARM_ARCH_7__) || defined(__ARM_ARCH_7A__) || defined(__ARM_ARCH_7R__) || defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7S__)
+			TEXT("Android-ARM7")
+	#elif defined(__ARM_ARCH_7A__) || defined(__ARM_ARCH_7R__) || defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7S__)
+			TEXT("Android-ARM7A")
+	#elif defined(__ARM_ARCH_7R__) || defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7S__)
+			TEXT("Android-ARM7R")
+	#elif defined(__ARM_ARCH_7M__)
+			TEXT("Android-ARM7M")
+	#elif defined(__ARM_ARCH_7S__)
+			TEXT("Android-ARM7S")
+	#elif defined(__aarch64__) || defined(_M_ARM64)
+			TEXT("Android-ARM64")
+	#endif
 #endif
 		,
+#if defined WINDOWS_PLATFORM
 		// https://en.wikipedia.org/wiki/Ver_(command)
 		//VER_PRODUCTBUILD
 		Wbuffer
+#else
+		TEXT("")
+#endif
 		,
 		//3
-#ifdef _DEBUG
+#if defined _DEBUG || defined DEBUG
 		TEXT("Debug")
 #else
 		TEXT("Release")
@@ -103,18 +150,24 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 #endif
 		,
 		//5
-#ifdef __AVX2__
-		TEXT("AVX2")	/*64bits*/
-#elif defined ( __AVX__ )
-		TEXT("AVX")	/*64bits*/
-#elif (defined(_M_AMD64) || defined(_M_X64))
-		TEXT("SSE2")	/*64bits*/
-#elif _M_IX86_FP == 2
-		TEXT("SSE2")	/*32bits*/
-#elif _M_IX86_FP == 1
-		TEXT("SSE")	/*32bits*/
+#if defined WINDOWS_PLATFORM
+	#ifdef __AVX512F__
+			TEXT("AVX512")	/*64bits*/
+	#elif __AVX2__
+			TEXT("AVX2")	/*64bits*/
+	#elif defined ( __AVX__ )
+			TEXT("AVX")		/*64bits*/
+	#elif (defined(_M_AMD64) || defined(_M_X64))
+			TEXT("SSE2")	/*64bits*/
+	#elif _M_IX86_FP == 2
+			TEXT("SSE2")	/*32bits*/
+	#elif _M_IX86_FP == 1
+			TEXT("SSE")		/*32bits*/
+	#else
+			TEXT("IA32")	/*32bits*/
+	#endif
 #else
-		TEXT("IA32")	/*32bits*/
+		TEXT("")
 #endif
 		,
 		//6
@@ -123,21 +176,24 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 #else
 		TEXT("Ansi")
 #endif
-		//,
+		,
+		LEVEL
 		//TEXT(__DATE__)
 	);
-
-	// Get ENGINE LEVEL
-	ItoA(CORE_ENGINE_LEVEL, (WOMA::APP_NAME + (int)((STRING)WOMA::APP_NAME).find(TEXT("0000"))), 10); /* Base: Decimal Numbers (base 10) Set the number of "Engine Level" on title*/\
-
-		// Log Title:
-		StringCchPrintf(WOMA::APP_FULLNAME, sizeof(WOMA::APP_FULLNAME), TEXT("%s"), WOMA::APP_NAME);
+	
+	// Log Title:
+	StringCchPrintf(WOMA::APP_FULLNAME, sizeof(WOMA::APP_FULLNAME), TEXT("%s"), WOMA::APP_NAME);
 
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("-------------------------------------------------------------------------------\n"));
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)WOMA::APP_FULLNAME);
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("\n-------------------------------------------------------------------------------\n"));
 
+	// Reset Vars:
+	// -------------------------------------------------------------------------------------------
+
+
 }
+
 
 
 SystemClass::~SystemClass() { CLASSDELETE(); }
@@ -151,8 +207,6 @@ void SystemClass::Shutdown()
 	AppSettings = NULL;				// Pointer to Static object, no need to free.
 }
 
-void SystemClass::FrameUpdate()
-{
-}
-
-
+#if defined ANDROID_PLATFORM
+extern android_app* app;
+#endif

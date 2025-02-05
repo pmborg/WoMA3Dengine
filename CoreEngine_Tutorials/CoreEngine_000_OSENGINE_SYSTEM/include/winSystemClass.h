@@ -52,7 +52,6 @@ public:
 	~WinSystemClass();
 	void Shutdown();
 
-	//bool InitSelectedDriver();
 	bool APPLICATION_CORE_SYSTEM();
 	bool APPLICATION_INIT_SYSTEM();
 	int	 APPLICATION_MAIN_LOOP();

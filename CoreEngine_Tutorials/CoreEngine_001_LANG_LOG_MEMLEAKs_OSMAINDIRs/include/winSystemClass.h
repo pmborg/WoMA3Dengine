@@ -26,6 +26,7 @@
 //////////////
 //#define _CRT_SECURE_NO_WARNINGS		// Ignore: warning C4996
 #include "SystemClass.h"
+#if defined WINDOWS_PLATFORM
 
 #define WOMA_ENGINE_CLASS TEXT("WoMA3Dengine")
 
@@ -33,6 +34,7 @@
 
 extern HWND DoCreateStatusBar(HWND hwndParent, int idStatus, HINSTANCE hinst, int cParts);
 
+#if defined WINDOWS_PLATFORM
 #include <combaseapi.h>				// VC7: ships with updated headers: CoInitializeEx()
 
 #define check(A)							{}
@@ -65,3 +67,6 @@ private:
 /////////////
 extern WinSystemClass* SystemHandle;
 
+#endif
+
+#endif

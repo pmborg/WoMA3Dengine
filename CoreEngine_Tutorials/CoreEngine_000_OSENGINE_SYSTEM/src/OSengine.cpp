@@ -29,7 +29,7 @@
 #if defined ANDROID_PLATFORM 
 #if !defined NewWomaEngine
 	AndroidSystemClass* SystemHandle = NULL;
-	#else
+#else
 	AndroidNewSystemClass* SystemHandle = NULL;
 	#endif
 #endif
@@ -38,8 +38,6 @@
 	LinuxSystemClass* SystemHandle = NULL;
 
 	extern MyWin Win;
-
-	//#include "linux.h"
 	#include <gtk/gtk.h>		//libgtk4
 	#if RUN_ASMAIN
 	#include <GL/freeglut.h>
