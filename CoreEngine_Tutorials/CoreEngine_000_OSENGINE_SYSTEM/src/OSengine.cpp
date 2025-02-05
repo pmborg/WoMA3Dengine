@@ -28,6 +28,7 @@
 
 #if defined ANDROID_PLATFORM 
 #if !defined NewWomaEngine
+	AndroidSystemClass* SystemHandle = NULL;
 	#else
 	AndroidNewSystemClass* SystemHandle = NULL;
 	#endif
@@ -368,35 +369,7 @@ void APPLICATION_STOP()
 #endif
 }
 
-#if defined ANDROID_PLATFORM  && !defined NewWomaEngine
-#include <android/asset_manager.h>
-
-//file.cpp
-#define g_pAssetManager engine.app->activity->assetManager
-
-bool File::open(const char* path, const char* mode) {
-	if (strchr(mode, 'w')) {
-		_File = fopen(path, mode);
-		return true;
-	}
-	_A = AAssetManager_open(g_pAssetManager, path, 0);
-	if (_A) {
-		_File = funopen(_A,
-			androidRead,
-			androidWrite,
-			androidSeek,
-			androidClose);
-	}
-	if (_File != nullptr) {
-		return true;
-	}
-
-	return false;
-}
-
-#endif
-
-#if defined ANDROID_PLATFORM//  && _NOTNOW
+#if defined ANDROID_PLATFORM
 int m_main_music_id = 0;
 JNIEnv* jni=NULL;
 
@@ -544,7 +517,7 @@ int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption, bool yesORno)
 		res = MessageBox(NULL, lpText, lpCaption, (yesORno) ? MB_YESNO : MB_OK);
 #endif
 
-#if defined ANDROID_PLATFORM//  && _NOTNOW
+#if defined ANDROID_PLATFORM
 	ShowAlert(lpCaption);
 #endif
 

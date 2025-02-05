@@ -545,7 +545,10 @@ static_assert(false, "WIN6x: X64 or WIN32, have to be selected");
 #define CONSOLE_LOG_WIDTH	900
 #define MAXBUFF				5*KBs
 
-#define GAME_LOADING		0 // the game is in the:    "Initialization / Load Mode"
+#define GAME_LOADING		0					// the game is in the:    "Initialization / Load Mode"
+#define ENGINE_RESTART      100					// the game is in the:    "Re-start" the "SystemClass"
+#define GAME_STOP           ENGINE_RESTART+1	// the game is in the:    "Stop Threads and Free Resources Mode": This the correct mode to: Stop the "Application"
+#define GAME_EXIT           ENGINE_RESTART+2	// the game is in the:    "Exit Mode (Only SystemClass should use this), After all Threads Have Completed
 
 // -------------------------------------------------------------------------------------------
 #if defined NDEBUG
@@ -561,14 +564,18 @@ static_assert(false, "WIN6x: X64 or WIN32, have to be selected");
 // -------------------------------------------------------------------------------------------
 // Define WOMA Project "Settings/Features" that will be COMPILED depending of "ENGINE_LEVEL"
 // -------------------------------------------------------------------------------------------
-#include "../../woma_engine_assets.h"			//LINUX
+#if defined MAINENGINE
+	#include "C:/WoMAengine2023/woma_engine_assets.h"	// MAIN ENGINE: WINDOWS / ANDROID / LINUX
+#else
+	#include "../../woma_engine_assets.h"				// PUBLIC DEMOS: WINDOWS / ANDROID / LINUX
+#endif
 
-#if DX_ENGINE_LEVEL < 19	//AFTER: #include "core_engine_level.h"
+#if CORE_ENGINE_LEVEL < 10
 	#define WOMA_CONSOLE_APPLICATION
 	#define WomaDriverClass void
 #else
 #if _DEBUG
-	//#define RELEASE					//TO FORCE TO DEBUG A RELEASE bin!
+	//#define RELEASE					// TO FORCE the DEBUG of a RELEASE bin!
 	#define WOMA_CONSOLE_APPLICATION
 #else
 	#if defined _MSC_VER

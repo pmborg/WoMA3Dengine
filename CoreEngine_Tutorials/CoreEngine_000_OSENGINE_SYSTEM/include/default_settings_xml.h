@@ -45,7 +45,7 @@ namespace WOMA
 
 	typedef struct {
 
-	#if defined WINDOWS_PLATFORM	
+	#if defined WINDOWS_PLATFORM
 		LANGID	id;
 	#endif
 		int		Endian;

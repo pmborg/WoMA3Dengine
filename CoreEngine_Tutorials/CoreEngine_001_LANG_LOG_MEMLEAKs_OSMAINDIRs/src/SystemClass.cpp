@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: Systemclass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -15,33 +15,41 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//
 // PURPOSE: Define APIs for systemclass.cpp which is the common OS API
-//
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567311;
+
 #define _CRT_SECURE_NO_WARNINGS
 #pragma warning( disable : 4477 )
 #pragma warning( disable : 4838 )
 
 #include "SystemClass.h"
-#include "winSystemClass.h"
+#include "OSengine.h" //#include "WinSystemClass.h"
 #include "default_settings_xml.h"
-#include "OSengine.h"
 #include "woma_macros.h"
 
 #include "language.h"
-#include "mem_leak.h"
-#include "OSmain_dir.h"
 
+#define GET_NAME(NAME) #NAME
+#define GET_VERSION(VERSION) GET_NAME(VERSION)
+
+//----------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------
 SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 {
 	// STARTING POINT of WOMA ENGINE!
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567831;
+	WomaIntegrityCheck = 1234567311;
 
 	AppSettings = NULL;
 
+	// Reset Vars:
+	// -------------------------------------------------------------------------------------------
+
+
 }
+
 
 
 SystemClass::~SystemClass() { CLASSDELETE(); }
@@ -51,5 +59,4 @@ void SystemClass::Shutdown()
 
 	AppSettings = NULL;				// Pointer to Static object, no need to free.
 }
-
 

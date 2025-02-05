@@ -9,71 +9,84 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
+    <Filter Include="include\000">
+      <UniqueIdentifier>{ae9faa2d-ce6d-4ada-b7ed-01f75a7d8fb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\000">
+      <UniqueIdentifier>{20fb32d9-ee03-4c63-84aa-b025f2b75e86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\001">
+      <UniqueIdentifier>{d4675374-a16a-428e-aaaf-e38c77b471b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\001">
+      <UniqueIdentifier>{5c3e6e66-5974-4846-8f6b-6c257b23d36a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\language.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\log.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\mem_leak.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\OSmain_dir.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\platform.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="include\standard_platform.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\default_settings_xml.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\main.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\OSengine.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SystemClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\winSystemClass.h">
-      <Filter>include</Filter>
+      <Filter>include\000</Filter>
     </ClInclude>
     <ClInclude Include="include\woma_macros.h">
-      <Filter>include</Filter>
+      <Filter>include\000</Filter>
     </ClInclude>
-    <ClInclude Include="core_engine_level.h" />
+    <ClInclude Include="include\main.h">
+      <Filter>include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="include\OSengine.h">
+      <Filter>include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="include\default_settings_xml.h">
+      <Filter>include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SystemClass.h">
+      <Filter>include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="include\winSystemClass.h">
+      <Filter>include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="include\language.h">
+      <Filter>include\001</Filter>
+    </ClInclude>
+    <ClInclude Include="include\log.h">
+      <Filter>include\001</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mem_leak.h">
+      <Filter>include\001</Filter>
+    </ClInclude>
+    <ClInclude Include="include\OSmain_dir.h">
+      <Filter>include\001</Filter>
+    </ClInclude>
+    <ClInclude Include="include\platform.h">
+      <Filter>include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tech-level.h" />
+    <ClInclude Include="..\woma_engine_assets.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
-    <ClCompile Include="src\language.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\log.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\mem_leak.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\OSmain_dir.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="src\OSengine.cpp">
+      <Filter>src\000</Filter>
     </ClCompile>
     <ClCompile Include="src\default_settings_xml.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\OSengine.cpp">
-      <Filter>src</Filter>
+      <Filter>src\000</Filter>
     </ClCompile>
     <ClCompile Include="src\SystemClass.cpp">
-      <Filter>src</Filter>
+      <Filter>src\000</Filter>
     </ClCompile>
     <ClCompile Include="src\winSystemClass.cpp">
-      <Filter>src</Filter>
+      <Filter>src\000</Filter>
+    </ClCompile>
+    <ClCompile Include="src\language.cpp">
+      <Filter>src\001</Filter>
+    </ClCompile>
+    <ClCompile Include="src\log.cpp">
+      <Filter>src\001</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mem_leak.cpp">
+      <Filter>src\001</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OSmain_dir.cpp">
+      <Filter>src\001</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

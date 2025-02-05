@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: winSystemclass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -15,14 +15,15 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//
 // PURPOSE: Define APIs for winSystemClass.cpp which is the WINDOWS OS API
-//
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567311;
 
 #include "OSengine.h"
+#if defined DX_ENGINE
+#include "DXengine.h"
+#endif
 
-#include "mem_leak.h"
 #include "OSmain_dir.h"
 #include "language.h"
 
@@ -30,14 +31,12 @@
 // Windows GLOBALS //
 /////////////////////
 
-UINT RENDER_PAGE;
-
 //----------------------------------------------------------------------------------
 WinSystemClass::WinSystemClass() : SystemClass() 
 //----------------------------------------------------------------------------------
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567831;
+	WomaIntegrityCheck = 1234567311;
 
 	//public:
 	SystemHandle = this;
@@ -72,25 +71,41 @@ WinSystemClass::~WinSystemClass()
 	SystemHandle = NULL;
 }
 
-bool WinSystemClass::InitializeSystem()
+// WINDOWS/LINUX
+extern int InitImGui(HWND hwnd = NULL);
+
+bool WinSystemClass::APPLICATION_CORE_SYSTEM()
+{
+	WOMA_LOGManager_DebugMSG("WinSystemClass::APPLICATION_INIT_SYSTEM()\n");
+
+	int yes = WomaMessageBox(TEXT("Memory leak done on Purpose for this Tutorial!\nCheck Visual Studio Output Console log for more info!\ndo a double click on windows console."), TEXT("WOMA Tutorial 001:"), true);
+	if (yes == IDYES)
+		UINT* p = NEW UINT[1];
+	//free(p);
+	return false;
+
+	return true;
+}
+
+bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 //----------------------------------------------------------------------------
 {
 	//  NOTE: Constructors run, First!
-	//  SystemClass::SystemClass()				Run: 1st - OS common: low level
-	//	ApplicationClass::ApplicationClass()	Run: 2th - User: level
-	//	WinSystemClass::WinSystemClass()		Run: 3nd - This OS: hi-level (Check for another instance)
+	//  SystemClass::SystemClass()				Run: 1st - OS common    - WOMA::APP_NAME
+	//	ApplicationClass::ApplicationClass()	Run: 2nd - User: level  - ApplicationClass::Start()
+	//	WinSystemClass::WinSystemClass()		Run: 3th - Start Timers - WinSystemClass::WinSystemClass_init();
 
-	MessageBox(NULL, TEXT("Memory leak done on Purpose for this Tutorial!\nCheck Visual Studio Output Console log for more info!\ndo a double click on windows console at:\nC:\\WoMA3Dengine\\CoreEngine_Tutorials\\CoreEngine_001_LANG_LOG_MEMLEAKs_OSMAINDIRs\\src\\winSystemClass.cpp(81) : {172} normal block at 0x00000238BEE105C0, 4 bytes long."), TEXT("WOMA Tutorial 001:"), MB_ICONWARNING);
-	UINT* p = NEW UINT[1];	
-	//free(p);
-	Publish_Quit_Message();
+	IF_NOT_RETURN_FALSE(APPLICATION_CORE_SYSTEM()); // MyRegisterClass()
 
-	return true;				// GREEN LIGHT: to Start Rendering! :)
+// ########################################### LOAD DRIVERS ###########################################
+	
+ // ################################################# INIT DRIVERS ###################################
+	
+	return true;						// GREEN LIGHT: to Start Rendering! :)
 }
 
-
 //----------------------------------------------------------------------------
-int WinSystemClass::ApplicationMainLoop()		// [RUN] - MAIN "INFINITE" LOOP!
+int WinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 //----------------------------------------------------------------------------
 {
 	MSG msg = { 0 };						// Reset msg
@@ -103,7 +118,7 @@ int WinSystemClass::ApplicationMainLoop()		// [RUN] - MAIN "INFINITE" LOOP!
 			TranslateMessage(&msg); // TranslateMessage produces WM_CHAR messages only for keys that are mapped to ASCII characters by the keyboard driver.
 			DispatchMessage(&msg);  // Process Msg:  (INVOKE: WinSystemClass::MessageHandler)
 		}
-	} while (msg.message != WM_QUIT);
+	} while (msg.message != WM_QUIT && WOMA::main_loop_state >= 0);
 
 	return S_OK;
 }
@@ -124,7 +139,6 @@ void WinSystemClass::Shutdown()
 void WinSystemClass::ShutdownWindows()
 //----------------------------------------------------------------------------
 {
-
 }
 
 namespace WOMA

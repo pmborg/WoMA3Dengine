@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="..\..\include\main.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\OSengine.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\platform.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\standard_platform.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\SystemClass.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="Android.h">
+      <Filter>Core000\Android</Filter>
+    </ClInclude>
+    <ClInclude Include="android_native_app_glue.h">
+      <Filter>Core000\Android</Filter>
+    </ClInclude>
+    <ClInclude Include="AndroidNewSystemClass.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\language.h">
+      <Filter>Include\001</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\log.h">
+      <Filter>Include\001</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\mem_leak.h">
+      <Filter>Include\001</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\OSmain_dir.h">
+      <Filter>Include\001</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\WoMA3Dengine\CoreEngine_Tutorials\tech-level.h" />
+    <ClInclude Include="C:\WoMA3Dengine\CoreEngine_Tutorials\woma_engine_assets.h" />
+    <ClInclude Include="..\..\include\woma_macros.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\default_settings_xml.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="defs.h">
+      <Filter>Core000\Android</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Core000\Android</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\default_settings_xml.cpp">
+      <Filter>src\000</Filter>
+    </ClCompile>
+    <ClCompile Include="AndroidMain.cpp">
+      <Filter>Core000\Android</Filter>
+    </ClCompile>
+    <ClCompile Include="Android.cpp">
+      <Filter>Core000\Android</Filter>
+    </ClCompile>
+    <ClCompile Include="android_native_app_glue.c">
+      <Filter>Core000\Android</Filter>
+    </ClCompile>
+    <ClCompile Include="AndroidNewSystemClass.c">
+      <Filter>src\000</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\OSengine.cpp">
+      <Filter>src\000</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\SystemClass.cpp">
+      <Filter>src\000</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\main.cpp" />
+    <ClCompile Include="..\..\src\language.cpp">
+      <Filter>src\001</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\log.cpp">
+      <Filter>src\001</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mem_leak.cpp">
+      <Filter>src\001</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\OSmain_dir.cpp">
+      <Filter>src\001</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Core000">
+      <UniqueIdentifier>{e633cc3b-76ac-4c54-be8d-9dde4875b309}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include">
+      <UniqueIdentifier>{96784a1c-7167-46d1-8734-e3951184c49e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{d47b1b32-a8ed-4271-bbbe-229356ca2079}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\000">
+      <UniqueIdentifier>{01af13a6-22e0-4a22-baa9-913e2bed5eef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\000">
+      <UniqueIdentifier>{2ef6cdd4-c276-4f82-ac0e-daf486ad40cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\001">
+      <UniqueIdentifier>{53e80eff-58f3-4e7c-ad23-130051f14eef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\001">
+      <UniqueIdentifier>{d8aab481-6754-4356-af7a-c3b7832db9e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core000\Android">
+      <UniqueIdentifier>{90a27ce0-2065-4548-a678-eff3c8faf5c3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

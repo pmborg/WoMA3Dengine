@@ -25,54 +25,23 @@
 //WomaIntegrityCheck = 1234567311;
 
 #if NOTES
-#-------------------------------------------------------------------------
-#THIRDPARTY:
-#-------------------------------------------------------------------------
-AUDIO
-| ALUT_LIB|
-|OGG_LIB|
-|OpenAL32_LIB|
-|VORBISFILE_LIB|
-|VORBIS_LIB |
-
-IMAGES
-| JPG_LIB|
-|TIFF_LIB || tiff - 3.8.2 - src|
-|PNG_LIB|
-|ZLIB_LIB |
-
-OPENGL
-| freeglut|
-|GL3Plus |
-
-IP - GEO - LOCATION
-| GeoLite2PP_LIB|
-|maxminddb_LIB |
-
-COMUNICATION
-| ultimateTCP_IP_LIB |
-
-XML
-| TinyXML_LIB |
-
-(D3D11_SPEC_DATE_YEAR > 2009)
-| DirectXTex | (DX11)
-DX11LoadTexture.cpp
-// TGA:
-DirectX::ScratchImage
-DirectX::LoadFromTGAFile
-DirectX::CreateShaderResourceView
-
-| DirectXTK | (DX11)
-ALLOW_PRINT_SCREEN_SAVE_PNG
-SaveWICTextureToFile
-DX11LoadTexture.cpp
-// DDS:
-DirectX::CreateDDSTextureFromFile
-// BMP, JPG, PNG, TIF -> Use: DirectXTK.lib
-DirectX::CreateWICTextureFromFile
-
-ZipUtils_LIB
+                  ----------------  ---------                       ----------------
+                  |              |  |       |                       |              |
+                  |  SYSTEM MEM  |  | AUDIO |                       |  VIDEO MEM   |
+                  |              |  |       |                       |              |
+                  ----------------  ---------                       ----------------
+                                 |  |                                      |
+ ----------                 -------------  DX/DXGI                    -------------
+ |HD-Drive| --------------> |           |  ------------------------ > |           |
+ ----------                 |    CPU    |  dshow(VIDEO)               |    GPU    |
+ ----------                 |           |  ------------------------ > |           |
+ |NETWORK | --------------> -------------                             -------------
+ ----------                 |    |      |                                   |
+                  ----------  -------   ----------                    -------------
+                  |Keyboard|  |Mouse|   |JoyStick|                    |           |
+                  ----------  -------   ----------                    |  MONITOR  |
+                                                                      |           |
+                                                                      -------------
 #endif
 
 #if NOTES
@@ -176,9 +145,13 @@ ZipUtils_LIB
 	#pragma warning(pop) // _UCRT_DISABLED_WARNINGS
 #endif
 
-#if defined ANDROID_PLATFORM && defined NewWomaEngine
-	#include "Android.h"
+#if defined ANDROID_PLATFORM
 	#define WOMAOS "ANDROID"
+
+	#if defined NewWomaEngine
+		#include "Android.h"
+		#define WOMAOS "ANDROID"
+	#endif
 #endif
 
 #if defined LINUX_PLATFORM

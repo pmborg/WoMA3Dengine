@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: language.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,19 +17,39 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Get User Language
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
+//WomaIntegrityCheck = 1234567311;
 
-#include "main.h"
-#include "WinSystemClass.h"
+#include "OSengine.h"
 #include "OSmain_dir.h"
 #include "language.h"
-#include "mem_leak.h"
+
+#if defined ANDROID_PLATFORM
+#include <jni.h>
+#include <string>
+
+extern "C" JNIEXPORT jstring JNICALL
+MainActivity_getSystemLanguage(JNIEnv* env, jobject /* this */) 
+{
+	// Call the Java method using JNI
+	jclass localeClass = env->FindClass("java/util/Locale");
+	jmethodID getDefaultMethod = env->GetStaticMethodID(localeClass, "getDefault", "()Ljava/util/Locale;");
+	jobject localeObject = env->CallStaticObjectMethod(localeClass, getDefaultMethod);
+
+	// Get the 'getLanguage' method from Locale class
+	jmethodID getLanguageMethod = env->GetMethodID(localeClass, "getLanguage", "()Ljava/lang/String;");
+	jstring language = (jstring)env->CallObjectMethod(localeObject, getLanguageMethod);
+
+	// Return the language
+	return language;
+}
+#endif
 
 namespace WOMA
 {
 	// Get language as string
 	bool GetLangStringFromLangId(DWORD dwLangID_i)
 	{
+	#if defined WINDOWS_PLATFORM && !defined ANDROID_PLATFORM 
 		const int MAX_LANG_LEN = 50;
 
 		// Prepare LCID
@@ -62,6 +82,7 @@ namespace WOMA
 		TCHAR str_lang[MAX_STR_LEN]; // Will hold country
 		StringCchPrintf(str_lang, sizeof(str_lang), TEXT("Language: %s, %s\n"), szLangBuffer, szCountryBuffer);
 		WOMA_LOGManager_DebugMSGAUTO(str_lang);
+	#endif
 
 		// Return execution status
 		return true;

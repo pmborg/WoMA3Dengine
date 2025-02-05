@@ -1,10 +1,9 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: log.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,30 +16,38 @@
 // --------------------------------------------------------------------------------------------
 //
 // --------------------------------------------------------------------------------------------
-
+//WomaIntegrityCheck = 1234567311;
 #pragma once
 
-#include "main.h" // TCHAR
+#include "platform.h"
+#if defined USE_LOG_MANAGER
 
+#if NOTES
+// INTERFACE LIKE: http://stackoverflow.com/questions/17554515/hiding-private-members-of-c-library
+#endif
 namespace WOMA
 {
-////////////////////////////////////////////////////////////////////////////////
-// Class name: LogManager
-////////////////////////////////////////////////////////////////////////////////
-class ILogManager
-{
-public:
-	UINT WomaIntegrityCheck = 1234567831;
-	static ILogManager* CreateInstance();
-	static void ShutdownInstance();
+	////////////////////////////////////////////////////////////////////////////////
+	// Class name: LogManager
+	////////////////////////////////////////////////////////////////////////////////
+	class ILogManager
+	{
+	public:
+		UINT WomaIntegrityCheck = 1234567311;
+		static ILogManager* CreateInstance();
+		static void ShutdownInstance();
 
-	virtual TCHAR* getLogFileName() = 0;
+		virtual TCHAR* getLogFileName() = 0;
 
-	virtual void DEBUG_MSG(WCHAR* strMsg, ...) = 0;
+#if defined WINDOWS_PLATFORM
+		virtual void DEBUG_MSG(WCHAR* strMsg, ...) = 0;
+#endif
 
-	virtual void DEBUG_MSG(CHAR* strMsg, ...) = 0;
-};
+		virtual void DEBUG_MSG(CHAR* strMsg, ...) = 0;
+	};
 
-extern ILogManager* logManager;		// Global log manager
-extern void start_log_manager();
+	extern ILogManager* logManager;		// Global log manager
+	extern void start_log_manager();
+	extern std::string android_temp_folder(struct android_app* app);
 }
+#endif
