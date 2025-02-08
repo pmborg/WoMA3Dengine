@@ -64,7 +64,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{8F64AC40-D97B-4D55-BB2B-7ADC3EB617FA}</ProjectGuid>
+    <ProjectGuid>{0C187CEB-4EE8-48D1-B1BA-41DF7362F42B}</ProjectGuid>
     <RootNamespace>CoreEngine</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>CoreEngine_001</ProjectName>

@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{7ac67ac1-fda5-4981-9649-7ec7e1e08c2d}</ProjectGuid>
+    <ProjectGuid>{7EC63F23-F336-4A80-9089-1DF523A6D3E7}</ProjectGuid>
     <Keyword>Linux</Keyword>
     <RootNamespace>LinuxWoma</RootNamespace>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
