@@ -20,9 +20,8 @@
 //WomaIntegrityCheck = 1234567311;
 #pragma once
 
-#if defined CORE_ENGINE_LEVEL 4
-
 #include "main.h"
+#if defined CORE_ENGINE_LEVEL >= 4
 
 #include <comdef.h>
 #include <wbemidl.h>

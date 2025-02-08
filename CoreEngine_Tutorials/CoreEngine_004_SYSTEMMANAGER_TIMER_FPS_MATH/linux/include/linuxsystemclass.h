@@ -1,5 +1,6 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
-// Filename: fpsClass.h
+// Filename: LinuxSystemClass.h
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
@@ -14,38 +15,55 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-// PURPOSE:
-// --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
 #pragma once
 
-//////////////
-// INCLUDES //
-//////////////
+#ifndef __LINUXSYSTEMCLASS_H__
 
-#include "main.h"
+//#include "platform.h"
+#include "SystemClass.h"
 
-#if defined WINDOWS_PLATFORM
-#include <mmsystem.h>
-#pragma comment(lib, "winmm.lib")
-#endif
+#ifdef LINUX_PLATFORM
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <sys/time.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-// Class name: FpsClass
+// Class name: LinuxSystemClass
 ////////////////////////////////////////////////////////////////////////////////
-class FpsClass
+class LinuxSystemClass : public SystemClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567311;
-	FpsClass();
-	~FpsClass();
+	//LinuxSystemClass();				//NEW
+	LinuxSystemClass(WOMA::Settings* appSettings);
+	~LinuxSystemClass();
+	void Shutdown();
 
-	void Initialize();
-	void Frame();
-	int GetFps();
+	int	 APPLICATION_MAIN_LOOP();
+
+	void ProcessFrame();
+
+	bool APPLICATION_CORE_SYSTEM();
+	bool APPLICATION_INIT_SYSTEM(); //bool ApplicationInit();
+
+	void* m_hWnd = NULL;
+
+	int xbutton_x = -1, xbutton_y = -1;
+	int xbutton = 0;
 
 private:
-	unsigned long m_startTime;
-	int m_fps, m_count;
+	bool mResizing;
+#if CORE_ENGINE_LEVEL >= 2
+	bool ApplicationInitMainWindow(/*glxOpenGLClass*/ void* OpenGL);
+#endif
 };
 
+/////////////
+// GLOBALS //
+/////////////
+extern LinuxSystemClass* SystemHandle;
+
+#endif
+#endif

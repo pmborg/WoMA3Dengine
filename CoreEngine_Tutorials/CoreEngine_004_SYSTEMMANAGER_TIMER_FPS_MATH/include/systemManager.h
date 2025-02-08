@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: systemManager.h
 // --------------------------------------------------------------------------------------------
@@ -27,20 +26,29 @@
 
 #include "platform.h"// TCHAR
 
+#if defined LINUX_PLATFORM || defined ANDROID_PLATFORM
+#include <sys/utsname.h>
+#endif
+
 #include "timerClass.h"
+#if CORE_ENGINE_LEVEL >= 4
 #include "ProcessorInfo.h"
 #include "SystemFeatures.h"
 
+#if defined WINDOWS_PLATFORM
 #include "wmiUtilClass.h"
 
 struct DriveList {
 	WCHAR   drive = 0;
 	__int64 freeBytesAvailable = 0;
 };
+#endif
 
 #define BUFSIZE 256
 
+#if CORE_ENGINE_LEVEL >= 4 && defined WINDOWS_PLATFORM
 extern int GETOS(void);
+#endif
 
 
 
@@ -54,43 +62,55 @@ public:
 	SystemManager();
 	~SystemManager();
 
-	bool CheckOS ();				// Detect Version & System Check
+#if defined USE_SYSTEM_CHECK
+	bool CheckOS();				// Detect Version & System Check
 	bool checkCPU();
 	bool checkRAM();
 	bool checkDiskFreeSpace();
+#endif
 
 	float CPUSpeedMHz;
-    ProcessorInfo processorInfo;
+	ProcessorInfo processorInfo;
 
+#if defined WINDOWS_PLATFORM
 	wmiUtilClass wmiUtil;
-	bool checkCPUFeatures ();
+	bool checkCPUFeatures();
+#endif
 
+#if defined USE_TIMER_CLASS
 	bool checkBenchMarkSpeed(TimerClass* m_Timer);
+#endif
 
-	bool CheckIO ();
+	bool CheckIO();
 
+#if defined WINDOWS_PLATFORM
 	bool UpdateOSifNeeded();		// Check if OS need Updates
 	bool CheckSetup();				// Check if Setup is Installed / Download & Install
 	bool CheckEngineUpdates();		// Check Engine for Updates (Woma Server) / Download & Install
 	bool LaunchEngine();			// Launch WOMA Engine (32bits or 64bits)
 
-    SystemFeatures systemFeatures;
+	SystemFeatures systemFeatures;
+#endif
 
 private:
 	//CheckOS:
 	TCHAR* GetOSversionPlatform();
-	bool CheckOSVersion ();
-	bool CheckDXGIVersion (bool* REQUIRES_WINDOWS_VISTA_SP2, bool* REQUIRES_UPDATE_KB971644);
+#if defined USE_SYSTEM_CHECK
+	bool CheckOSVersion();
+#endif
+	bool CheckDXGIVersion(bool* REQUIRES_WINDOWS_VISTA_SP2, bool* REQUIRES_UPDATE_KB971644);
 
 	float GetProcessorSpeed();
 	float GetProcessorSpeed4Intel(TCHAR*);
 
+#if defined WINDOWS_PLATFORM
 	TCHAR* GetOsVersion();
 	DWORDLONG getAvailSystemMemory();
-    std::vector<DriveList> drivesList;
-    UINT driveLetter;
+	std::vector<DriveList> drivesList;
+	UINT driveLetter;
+#endif
 
-// VARS:
+	// VARS:
 public:
 	//CheckOS:
 	TCHAR	pszOS[BUFSIZE];
@@ -101,4 +121,5 @@ private:
 	UINT	DXGI_H, DXGI_L;
 };
 
+#endif
 #endif

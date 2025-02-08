@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7ac67ac1-fda5-4981-9649-7ec7e1e08c2d}</ProjectGuid>
+    <Keyword>Linux</Keyword>
+    <RootNamespace>LinuxWoma</RootNamespace>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <ApplicationType>Linux</ApplicationType>
+    <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
+    <TargetLinuxPlatform>Generic</TargetLinuxPlatform>
+    <LinuxProjectType>{D51BCBC9-82E9-4017-911E-C93873C4EA2B}</LinuxProjectType>
+    <ProjectName>LinuxWoma004</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <RemoteCopyIncludeDirectories>C:\WoMAengine2023\Android-WomaEngine\Android2\Android2.NativeActivity\GLengine</RemoteCopyIncludeDirectories>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH\include;C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH\linux\include;C:\WoMA3Dengine\CoreEngine_Tutorials\;/usr/include/atk-1.0/;/usr/lib/x86_64-linux-gnu/graphene-1.0/include/;/usr/include/graphene-1.0;/usr/include/gdk-pixbuf-2.0/;/usr/include/harfbuzz/;/usr/include/pango-1.0;/usr/include/cairo/;/usr/lib/x86_64-linux-gnu/glib-2.0/include/;/usr/include;/usr/include/glib-2.0;/usr/include/gtk-3.0__;/usr/include/gtk-2.0;/usr/lib/x86_64-linux-gnu/gtk-2.0/include/;c:\womaengine2023_\SOURCE_CODE\CoreEngine_005_PAINT_SETTINGS_XML\include;c:\womaengine2023_\SOURCE_CODE\CoreEngine_006_PACKMANAGER_IDEA_CPU_BENCHMARK\include;c:\womaengine2023_\SOURCE_CODE\CoreEngine_007_PAINT_REALTIMECELESTIAL_ASTROCLASS\include;c:\womaengine2023_\SOURCE_CODE\CoreEngine_009_PAINT_METAR_WEATHER_REALTIME\include;c:\womaengine2023_\_EXTERNAL_\imgui\backends;c:\womaengine2023_\_EXTERNAL_\imgui;c:\womaengine2023_\DXEngine_019\include;c:\womaengine2023_\DXEngine_021\include;c:\womaengine2023_\DXEngine_022\include;c:\womaengine2023_\DXEngine_023\include;c:\womaengine2023_\DXEngine_025\include;c:\womaengine2023_\DXEngine_027\include;c:\womaengine2023_\DXEngine_028\include;c:\womaengine2023_\_EXTERNAL_\IMAGING\JPG_LIB\include;c:\womaengine2023_\_EXTERNAL_\IMAGING\PNG_LIB\include;c:\womaengine2023_\ExternalTools\TinyXML_LIB\include___;c:\womaengine2023_\ExternalTools\TinyXML_LIB.v2\tinyxml2-10.0.0;c:\womaengine2023_\gl4linuxtut14_src\Engine;c:\womaengine2023_\LinuxWoma\LinuxWoma;c:\womaengine2023_\ExternalTools\geolite2++-0.0.1-2561-Source\src-lib;c:\womaengine2023_\ExternalTools\libmaxminddb-main\include;$(IncludePath)</IncludePath>
+    <SourcePath>
+    </SourcePath>
+    <AdditionalSourcesToCopyMapping>C:\WoMAengine2023_\Android-WomaEngine\Android2\Android2.NativeActivity\GLengine</AdditionalSourcesToCopyMapping>
+  </PropertyGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\level.h" />
+    <ClInclude Include="..\..\tech-level.h" />
+    <ClInclude Include="..\..\woma_engine_assets.h" />
+    <ClInclude Include="..\include\default_settings_xml.h" />
+    <ClInclude Include="..\include\fileLoader.h" />
+    <ClInclude Include="..\include\fpsClass.h" />
+    <ClInclude Include="..\include\InputClass.h" />
+    <ClInclude Include="..\include\language.h" />
+    <ClInclude Include="..\include\log.h" />
+    <ClInclude Include="..\include\main.h" />
+    <ClInclude Include="..\include\Math3D.h" />
+    <ClInclude Include="..\include\mem_leak.h" />
+    <ClInclude Include="..\include\OSengine.h" />
+    <ClInclude Include="..\include\OSmain_dir.h" />
+    <ClInclude Include="..\include\platform.h" />
+    <ClInclude Include="..\include\ProcessorInfo.h" />
+    <ClInclude Include="..\include\Rinputclass.h" />
+    <ClInclude Include="..\include\standard_platform.h" />
+    <ClInclude Include="..\include\stateMachine.h" />
+    <ClInclude Include="..\include\SystemClass.h" />
+    <ClInclude Include="..\include\SystemFeatures.h" />
+    <ClInclude Include="..\include\systemManager.h" />
+    <ClInclude Include="..\include\timerClass.h" />
+    <ClInclude Include="..\include\TrigonometryMathClass.h" />
+    <ClInclude Include="..\include\winCpuCores.h" />
+    <ClInclude Include="..\include\wmiUtilClass.h" />
+    <ClInclude Include="..\include\woma_macros.h" />
+    <ClInclude Include="..\linux\include\linuxsystemclass.h" />
+    <ClInclude Include="..\linux\include\linux.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\main.cpp" />
+    <ClCompile Include="..\linux\src\linux.cpp" />
+    <ClCompile Include="..\linux\src\linuxsystemclass.cpp" />
+    <ClCompile Include="..\linux\src\main_linux.cpp" />
+    <ClCompile Include="..\src\0CheckOS.cpp" />
+    <ClCompile Include="..\src\1CheckSYS.cpp" />
+    <ClCompile Include="..\src\3CheckSetup.cpp" />
+    <ClCompile Include="..\src\4CheckEngineUpdates.cpp" />
+    <ClCompile Include="..\src\5LaunchEngine.cpp" />
+    <ClCompile Include="..\src\7ProcessorInfo.cpp" />
+    <ClCompile Include="..\src\default_settings_xml.cpp" />
+    <ClCompile Include="..\src\fileLoader.cpp" />
+    <ClCompile Include="..\src\fpsClass.cpp" />
+    <ClCompile Include="..\src\language.cpp" />
+    <ClCompile Include="..\src\log.cpp" />
+    <ClCompile Include="..\src\Math3D.cpp" />
+    <ClCompile Include="..\src\mem_leak.cpp" />
+    <ClCompile Include="..\src\OSengine.cpp" />
+    <ClCompile Include="..\src\OSmain_dir.cpp" />
+    <ClCompile Include="..\src\Rinputclass.cpp" />
+    <ClCompile Include="..\src\SystemClass.cpp" />
+    <ClCompile Include="..\src\TimerClass.cpp" />
+    <ClCompile Include="..\src\TrigonometryMathClass.cpp" />
+  </ItemGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <PreprocessorDefinitions>DEBUG;DEMO_LEVEL=4</PreprocessorDefinitions>
+      <CppLanguageStandard>c++11</CppLanguageStandard>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>Xrandr;EGL;m;z;GL;GLU;X11;gtk-x11-2.0;gdk-x11-2.0;pangocairo-1.0;atk-1.0;cairo;gdk_pixbuf-2.0;gio-2.0;pangoft2-1.0;pango-1.0;gobject-2.0;glib-2.0;harfbuzz;fontconfig;freetype;glfw;glut;curl</LibraryDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

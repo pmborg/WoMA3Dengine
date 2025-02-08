@@ -146,11 +146,12 @@ public:
 	bool InitOsInput();
 
 #if defined WINDOWS_PLATFORM
+	virtual void GetInputs() = 0;
 	InputClass* m_OsInput = NULL;
 #else
 	RInputClass* m_OsInput = NULL;
 #endif
-	virtual void GetInputs() = 0;
+	
 	void ProcessOSInput();
 
 #if CORE_ENGINE_LEVEL >= 2 && defined WINDOWS_PLATFORM	

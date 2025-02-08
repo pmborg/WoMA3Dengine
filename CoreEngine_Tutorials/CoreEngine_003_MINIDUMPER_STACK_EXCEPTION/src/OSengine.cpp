@@ -389,7 +389,7 @@ void APPLICATION_STOP()
 	WOMA::logManager->ShutdownInstance();	// Write, Close & Free: The logManager.
 	WOMA::logManager = NULL;				// Because of STATIC Classes Shutdown: Do not log
 
-#if defined ANDROID_PLATFORM //&& _NOTNOW
+#if defined ANDROID_PLATFORM
 	engine.has_focus_ = false;
 	terminate();
 #endif
@@ -718,8 +718,7 @@ bool download(const std::string url, const std::string file)
 }
 #endif
 
-//https://github.com/dhaniram-kshirsagar/android-ndk-curl/blob/master/app/src/main/cpp/jni-curl-lib.cpp
-#if defined ANDROID_PLATFORM  && _NOTNOW
+#if defined ANDROID_PLATFORM  && defined _NOTUSED
 bool download(const std::string url, const std::string filename)
 {
 	DownloadFiles(url.c_str(), filename.c_str());

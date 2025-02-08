@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // ----------------------------------------------------------------------------------------------
 // Filename: ProcessorInfo.h
 // --------------------------------------------------------------------------------------------
@@ -23,21 +22,28 @@
 #include "platform.h"	// TCHAR
 #include "main.h"		// TCHAR
 
+#if defined WINDOWS_PLATFORM
 #include "winCpuCores.h"
+#endif
 
 extern void cpuID(unsigned regs[4], unsigned i);
 
 class ProcessorInfo
 {
 public:
-    UINT WomaIntegrityCheck = 1234567311;
-    ProcessorInfo();
-    ~ProcessorInfo();
+	UINT WomaIntegrityCheck = 1234567311;
+	ProcessorInfo();
+	~ProcessorInfo();
 
+#if defined WINDOWS_PLATFORM
 	WinCpuCores cpuCores;
+#else
+	int iNumCoreProcessors;
+	int ilogicalProcessorCount;
+#endif
 
-    TCHAR processorName[MAX_PATH];
-    TCHAR processorId[MAX_PATH];
+	TCHAR processorName[MAX_PATH];
+	TCHAR processorId[MAX_PATH];
 
 private:
 

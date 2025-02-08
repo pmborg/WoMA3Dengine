@@ -75,7 +75,7 @@ static_assert(false, "At least one X86 or X64 need to be defined!");
 /* Windows, both 32-bit and 64-bit */
 #if defined(_WIN32) || defined(WIN32) || defined(_WIN64) || defined(WIN64) || \
     defined(__WIN32__) || defined(__TOS_WIN__) || defined(__WINDOWS__)
-#define WINDOWS_PLATFORM
+	#define WINDOWS_PLATFORM
 #endif
 
 #if defined(_WIN32) /*MSVC*/ || defined (__WINDOWS__) /*Watcom C/C++*/ || defined (__WIN32__) /*BORLANDC ++*/
@@ -109,7 +109,8 @@ static_assert(false, "At least one X86 or X64 need to be defined!");
 #define BSD_PLATFORM		//BUILD_FOR_BSD
 #error "WOMA COMPILATION ERROR: This platform is not Supported yet."
 #elif defined(__linux__) || defined(__unix__) || defined(__unix) || defined(__LP64__) || defined(_LP64)
-#define LINUX_PLATFORM		//BUILD_FOR_LINUX
+	#define LINUX_PLATFORM		//BUILD_FOR_LINUX
+	#undef WINDOWS_PLATFORM
 #endif
 
 #if defined __APPLE__

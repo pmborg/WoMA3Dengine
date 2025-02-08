@@ -24,11 +24,11 @@ rmdir /S /Q WRelease 2> nul
 del /S /F /Q x64 2> nul
 rmdir /S /Q x64 2> nul
 
-del /S /F /Q LinuxWoma\bin> nul
+del /S /F /Q LinuxWoma\bin > nul
 rmdir /S /Q LinuxWoma\bin 2> nul
 
-del /S /F /Q LinuxWoma\obj> nul
+del /S /F /Q LinuxWoma\obj > nul
 rmdir /S /Q LinuxWoma\obj 2> nul
 
-del /S /F /Q CoreEngine_000> nul
+del /S /F /Q CoreEngine_000 > nul
 rmdir /S /Q CoreEngine_000 2> nul

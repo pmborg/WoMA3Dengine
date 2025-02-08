@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: winCpuCores.h
 // --------------------------------------------------------------------------------------------
@@ -22,13 +21,14 @@
 #pragma once
 
 #include "platform.h"
+#if defined WINDOWS_PLATFORM
 #include <malloc.h>
 
 //--------------------------------------------------------------------------------------
 // Helper functions for querying information about the processors in the current
 // system.  ( Copied from the doc page for GetLogicalProcessorInformation() )
 //--------------------------------------------------------------------------------------
-typedef BOOL(WINAPI *LPFN_GLPI)(PSYSTEM_LOGICAL_PROCESSOR_INFORMATION, PDWORD);
+typedef BOOL(WINAPI* LPFN_GLPI)(PSYSTEM_LOGICAL_PROCESSOR_INFORMATION, PDWORD);
 
 class WinCpuCores
 {
@@ -41,16 +41,16 @@ public:
 	DWORD processorPackageCount;
 	DWORD processorCoreCount;
 	DWORD logicalProcessorCount;
-	
-    DWORD processorL1CacheDataCount;
-	DWORD processorL1CacheInstCount;
-    DWORD processorL2CacheCount;
-    DWORD processorL3CacheCount;	
 
-    DWORD processorL1CacheDataSize;
+	DWORD processorL1CacheDataCount;
+	DWORD processorL1CacheInstCount;
+	DWORD processorL2CacheCount;
+	DWORD processorL3CacheCount;
+
+	DWORD processorL1CacheDataSize;
 	DWORD processorL1CacheInstSize;
-    DWORD processorL2CacheSize;
-    DWORD processorL3CacheSize;	
+	DWORD processorL2CacheSize;
+	DWORD processorL3CacheSize;
 
 	void GetProcessorInformation();
 
@@ -58,3 +58,4 @@ private:
 	DWORD CountBits(ULONG_PTR bitMask);
 };
 
+#endif
