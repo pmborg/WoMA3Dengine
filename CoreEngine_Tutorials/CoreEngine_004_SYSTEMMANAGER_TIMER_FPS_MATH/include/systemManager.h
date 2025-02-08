@@ -62,26 +62,26 @@ public:
 	SystemManager();
 	~SystemManager();
 
-#if defined USE_SYSTEM_CHECK
-	bool CheckOS();				// Detect Version & System Check
+	#if defined USE_SYSTEM_CHECK
+	bool CheckOS ();				// Detect Version & System Check
 	bool checkCPU();
 	bool checkRAM();
 	bool checkDiskFreeSpace();
-#endif
+	#endif
 
 	float CPUSpeedMHz;
-	ProcessorInfo processorInfo;
+    ProcessorInfo processorInfo;
 
 #if defined WINDOWS_PLATFORM
 	wmiUtilClass wmiUtil;
-	bool checkCPUFeatures();
+	bool checkCPUFeatures ();
 #endif
 
-#if defined USE_TIMER_CLASS
+	#if defined USE_TIMER_CLASS
 	bool checkBenchMarkSpeed(TimerClass* m_Timer);
-#endif
+	#endif
 
-	bool CheckIO();
+	bool CheckIO ();
 
 #if defined WINDOWS_PLATFORM
 	bool UpdateOSifNeeded();		// Check if OS need Updates
@@ -89,28 +89,28 @@ public:
 	bool CheckEngineUpdates();		// Check Engine for Updates (Woma Server) / Download & Install
 	bool LaunchEngine();			// Launch WOMA Engine (32bits or 64bits)
 
-	SystemFeatures systemFeatures;
+    SystemFeatures systemFeatures;
 #endif
 
 private:
 	//CheckOS:
 	TCHAR* GetOSversionPlatform();
-#if defined USE_SYSTEM_CHECK
-	bool CheckOSVersion();
-#endif
-	bool CheckDXGIVersion(bool* REQUIRES_WINDOWS_VISTA_SP2, bool* REQUIRES_UPDATE_KB971644);
+	#if defined USE_SYSTEM_CHECK
+	bool CheckOSVersion ();
+	#endif
+	bool CheckDXGIVersion (bool* REQUIRES_WINDOWS_VISTA_SP2, bool* REQUIRES_UPDATE_KB971644);
 
 	float GetProcessorSpeed();
 	float GetProcessorSpeed4Intel(TCHAR*);
 
-#if defined WINDOWS_PLATFORM
+	#if defined WINDOWS_PLATFORM
 	TCHAR* GetOsVersion();
 	DWORDLONG getAvailSystemMemory();
-	std::vector<DriveList> drivesList;
-	UINT driveLetter;
-#endif
+    std::vector<DriveList> drivesList;
+    UINT driveLetter;
+	#endif
 
-	// VARS:
+// VARS:
 public:
 	//CheckOS:
 	TCHAR	pszOS[BUFSIZE];

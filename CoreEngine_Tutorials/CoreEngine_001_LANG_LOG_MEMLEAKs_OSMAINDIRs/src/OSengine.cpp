@@ -52,8 +52,6 @@
 	RApplicationClass* r_Application;
 #endif
 
-
-
 TCHAR* DEMO_NAME[] =
 {
 //{"07:Loading a files from engine.pck and Press[F2] for RealTime Celestial Positions of Sun and Moon accordingly with user Location"},
@@ -268,7 +266,7 @@ void DefineConsoleTitle()
 	#define charSet TEXT("MultiByte")
 #endif
 
-	StringCchPrintf(WOMA::strConsoleTitle, sizeof(WOMA::strConsoleTitle), TEXT("%s ENGINE Level: %d - %s [%s] %s\n"), WOMAOS, (int)DEMO_LEVEL, charSet, WOMA::BINARY.c_str(), cpu_type);
+	StringCchPrintf(WOMA::strConsoleTitle, sizeof(WOMA::strConsoleTitle), TEXT("%s ENGINE Level: %d - %s [%s] %s\n"), WOMAOS, (int)CORE_ENGINE_LEVEL, charSet, WOMA::BINARY.c_str(), cpu_type);
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("------------------------------------------------------------------------------------------\n"));
 	WOMA_LOGManager_DebugMSGAUTO(WOMA::strConsoleTitle);
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("------------------------------------------------------------------------------------------\n"));
@@ -301,7 +299,11 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 	srand(27); // to have always the same random numbers... the true Random is: "srand(time(0));"
 
 #if defined WINDOWS_PLATFORM
+	#if defined _NOTUSED
+		setpriority(PRIO_PROCESS, 0, 20);	// Be nice to other processes, helps reduce mouse lag
+	#else
 		SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
+	#endif
 
 	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 	if (FAILED(hr)) WomaFatalException("CoInitializeEx Failed!");
@@ -455,9 +457,6 @@ void ShowAlert(const char* message)
 }
 
 void finish_activity(UINT res) {
-	// HOW TO FINISH:
-	//https://github.com/firebase/quickstart-cpp/blob/main/storage/testapp/src/android/android_main.cc
-
 	JNIEnv* jni = NULL;
 	if (!jni)
 		engine.app->activity->vm->AttachCurrentThread(&jni, NULL);
@@ -473,21 +472,17 @@ void finish_activity(UINT res) {
 
 void DownloadFiles(const char* url, const char* file)
 {
-	//JNIEnv* jni;
-
 	//JAVA: public void DownloadFiles(final String file)
 	{
 		if (!jni)
 			engine.app->activity->vm->AttachCurrentThread(&jni, NULL);
 		jclass clazz = jni->GetObjectClass(engine.app->activity->clazz);
 
-		//jmethodID methodID = jni->GetMethodID(clazz, "DownloadFiles", "(Ljava/lang/String;)V");
 		jmethodID methodID = jni->GetMethodID(clazz, "DownloadFiles", "(Ljava/lang/String;Ljava/lang/String;)V");
 
 		jstring jurl = jni->NewStringUTF(url);
 		jstring jfile = jni->NewStringUTF(file);
 		jni->CallVoidMethod(engine.app->activity->clazz, methodID, jurl, jfile);
-		//jni->CallVoidMethod(engine_state.app->activity->clazz, methodID, jurl);
 		jni->DeleteLocalRef(jurl);
 		jni->DeleteLocalRef(jfile);
 		//engine_state.app->activity->vm->DetachCurrentThread();
@@ -667,7 +662,6 @@ bool download(const std::string url, const std::string file)
 	{
 		fp = fopen(file.c_str(), "wb");
 		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-		//curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
 
 		// Perform a file transfer synchronously.
@@ -687,10 +681,3 @@ bool download(const std::string url, const std::string file)
 }
 #endif
 
-#if defined ANDROID_PLATFORM  && _NOTUSED
-bool download(const std::string url, const std::string filename)
-{
-	DownloadFiles(url.c_str(), filename.c_str());
-	return true;
-}
-#endif

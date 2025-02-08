@@ -24,79 +24,79 @@
 //WomaIntegrityCheck = 1234567311;
 
 #if NOTES
-----------------  -------- - ----------------
-|              |  |       |                       |              |
-|  SYSTEM MEM  |  | AUDIO |                       |  VIDEO MEM   |
-|              |  |       |                       |              |
-----------------  -------- - ----------------
-|  |                                      |
-----------                 ------------ - DX / DXGI------------ -
-| HD - Drive | -------------- > |           |  ------------------------ > |           |
----------- | CPU | dshow(VIDEO) | GPU |
-----------                 |           |  ------------------------ > |           |
-|NETWORK | -------------- > ------------ - ------------ -
-----------                 |    |      |                                   |
-----------  ------ - ----------                    ------------ -
-| Keyboard|  |Mouse|   |JoyStick|                    |           |
-----------  ------ - ---------- | MONITOR  |
-|           |
------------- -
+                  ----------------  ---------                       ----------------
+                  |              |  |       |                       |              |
+                  |  SYSTEM MEM  |  | AUDIO |                       |  VIDEO MEM   |
+                  |              |  |       |                       |              |
+                  ----------------  ---------                       ----------------
+                                 |  |                                      |
+ ----------                 -------------  DX/DXGI                    -------------
+ |HD-Drive| --------------> |           |  ------------------------ > |           |
+ ----------                 |    CPU    |  dshow(VIDEO)               |    GPU    |
+ ----------                 |           |  ------------------------ > |           |
+ |NETWORK | --------------> -------------                             -------------
+ ----------                 |    |      |                                   |
+                  ----------  -------   ----------                    -------------
+                  |Keyboard|  |Mouse|   |JoyStick|                    |           |
+                  ----------  -------   ----------                    |  MONITOR  |
+                                                                      |           |
+                                                                      -------------
 #endif
 
 #if NOTES
 #-------------------------------------------------------------------------
 #THIRDPARTY:
 #-------------------------------------------------------------------------
-AUDIO
-| ALUT_LIB|
-|OGG_LIB|
-|OpenAL32_LIB|
-|VORBISFILE_LIB|
-|VORBIS_LIB |
+	AUDIO
+		|ALUT_LIB|
+		|OGG_LIB|
+		|OpenAL32_LIB|
+		|VORBISFILE_LIB|
+		|VORBIS_LIB|
 
-IMAGES
-| JPG_LIB|
-|TIFF_LIB || tiff - 3.8.2 - src|
-|PNG_LIB|
-|ZLIB_LIB |
+	IMAGES
+		|JPG_LIB|
+		|TIFF_LIB||tiff-3.8.2-src|
+		|PNG_LIB|
+		|ZLIB_LIB|
 
-OPENGL
-| freeglut|
-|GL3Plus |
+	OPENGL
+		|freeglut|
+		|GL3Plus|
 
-IP - GEO - LOCATION
-| GeoLite2PP_LIB|
-|maxminddb_LIB |
+	IP-GEO-LOCATION
+		|GeoLite2PP_LIB|
+		|maxminddb_LIB|
 
-COMUNICATION
-| ultimateTCP_IP_LIB |
+	COMUNICATION
+		|ultimateTCP_IP_LIB|
 
-XML
-| TinyXML_LIB |
+	XML
+		|TinyXML_LIB|
 
-(D3D11_SPEC_DATE_YEAR > 2009)
-| DirectXTex | (DX11)
-DX11LoadTexture.cpp
-// TGA:
-DirectX::ScratchImage
-DirectX::LoadFromTGAFile
-DirectX::CreateShaderResourceView
+	(D3D11_SPEC_DATE_YEAR > 2009)
+		|DirectXTex|(DX11)
+			DX11LoadTexture.cpp
+				// TGA:
+				DirectX::ScratchImage
+				DirectX::LoadFromTGAFile
+				DirectX::CreateShaderResourceView
 
-| DirectXTK | (DX11)
-ALLOW_PRINT_SCREEN_SAVE_PNG
-SaveWICTextureToFile
-DX11LoadTexture.cpp
-// DDS:
-DirectX::CreateDDSTextureFromFile
-// BMP, JPG, PNG, TIF -> Use: DirectXTK.lib
-DirectX::CreateWICTextureFromFile
+		|DirectXTK|(DX11)
+			ALLOW_PRINT_SCREEN_SAVE_PNG
+				SaveWICTextureToFile    
+			DX11LoadTexture.cpp
+				// DDS:
+				DirectX::CreateDDSTextureFromFile
+				// BMP, JPG, PNG, TIF -> Use: DirectXTK.lib
+				DirectX::CreateWICTextureFromFile
 
-ZipUtils_LIB
+	ZipUtils_LIB
 #endif
 
 #pragma once
 #include "platform.h"
-
+		
 #if CORE_ENGINE_LEVEL < 2
 #define ENGINE_RESTART 100
 #else
@@ -105,44 +105,44 @@ ZipUtils_LIB
 
 #if !defined NewWomaEngine
 #if defined WINDOWS_PLATFORM
-#if CORE_ENGINE_LEVEL < 10 || !defined DX_ENGINE
-#include "winsystemclass.h"
-#define SYSTEM WinSystemClass	        // Are we a Basic Windows Instance?
-#else
+	#if CORE_ENGINE_LEVEL < 10 || !defined DX_ENGINE
+	#include "winsystemclass.h"
+	#define SYSTEM WinSystemClass	        // Are we a Basic Windows Instance?
+	#else
 
-#if defined DX_ENGINE
-#include "dxwinsystemclass.h"
-#define SYSTEM dxWinSystemClass         // Are we a DX Instance?
-#endif
-#endif
+	#if defined DX_ENGINE
+	#include "dxwinsystemclass.h"
+	#define SYSTEM dxWinSystemClass         // Are we a DX Instance?
+	#endif
+	#endif
 #endif
 
 #ifdef LINUX_PLATFORM
-#include "linuxsystemclass.h"
-#define SYSTEM LinuxSystemClass         // Are we a Linux Instance?
-	extern LinuxSystemClass * SystemHandle;
+	#include "linuxsystemclass.h"
+	#define SYSTEM LinuxSystemClass         // Are we a Linux Instance?
+	extern LinuxSystemClass* SystemHandle;
 #endif
 
 #ifdef ANDROID_PLATFORM
-#include "androidsystemclass.h"
-#define SYSTEM AndroidSystemClass       // Are we a Android Instance?
-extern AndroidSystemClass* SystemHandle;
+	#include "androidsystemclass.h"
+	#define SYSTEM AndroidSystemClass       // Are we a Android Instance?
+	extern AndroidSystemClass* SystemHandle;
 
-#include "AndroidEngine.h"
-void process_events(struct womaengine* engine, struct android_app* app);
+	#include "AndroidEngine.h"
+	void process_events(struct womaengine* engine, struct android_app* app);
 #endif
 #else
-#include "AndroidNewSystemClass.h"
-#define SYSTEM AndroidNewSystemClass       // Are we a Android Instance?
+	#include "AndroidNewSystemClass.h"
+	#define SYSTEM AndroidNewSystemClass       // Are we a Android Instance?
 	extern AndroidNewSystemClass* SystemHandle;
 #endif
 
 #if defined WINDOWS_PLATFORM
-#define WOMAOS "WINDOWS"
+	#define WOMAOS "WINDOWS"
 
-#pragma warning(push)
-#pragma warning(disable : 6387)
-#define COMMANDLINE_TO_ARGC_ARGV() {                \
+	#pragma warning(push)
+	#pragma warning(disable : 6387)
+	#define COMMANDLINE_TO_ARGC_ARGV() {                \
 		WOMA::Scmdline = lpCmdLine;                     \
 		WOMA::Cmdshow = nShowCmd;                       \
 		std::string segment;                            \
@@ -153,26 +153,26 @@ void process_events(struct womaengine* engine, struct android_app* app);
 		while (std::getline(test, segment, ' '))        \
 		strcpy(argv[argc++], segment.c_str());          \
 	}
-#pragma warning(pop) // _UCRT_DISABLED_WARNINGS
+	#pragma warning(pop) // _UCRT_DISABLED_WARNINGS
 #endif
 
 #if defined ANDROID_PLATFORM
-#define WOMAOS "ANDROID"
+	#define WOMAOS "ANDROID"
 
-#if defined NewWomaEngine
-#include "Android.h"
-#define WOMAOS "ANDROID"
-#endif
+	#if defined NewWomaEngine
+		#include "Android.h"
+		#define WOMAOS "ANDROID"
+	#endif
 #endif
 
 #if defined LINUX_PLATFORM
-#define WOMAOS "LINUX"
+	#define WOMAOS "LINUX"
 #endif
 
 extern UINT RENDER_PAGE;
 
 #if CORE_ENGINE_LEVEL >= 1
-#include "mem_leak.h"
+	#include "mem_leak.h"
 #endif
 
 extern int APPLICATION_MAIN(int argc, char* argv[]);
@@ -182,9 +182,9 @@ extern void APPLICATION_STARTUP(int argc, char* argv[], int Command);
 extern void ShowFPS();
 
 #if defined NewWomaEngine
-extern struct engine engine;
+	extern struct engine engine;
 #else
-extern struct womaengine engine;
+	extern struct womaengine engine;
 #endif
 
 #if !defined MB_OK
@@ -218,7 +218,7 @@ namespace WOMA
 	// SUBSYSTEM:CONSOLE
 	extern BOOL		UseWarpDevice;
 	extern int		ARGc;
-	extern CHAR** ARGv;
+	extern CHAR**	ARGv;
 
 	extern TCHAR strConsoleTitle[MAX_STR_LEN];
 #if defined USE_LOG_MANAGER //1
@@ -243,9 +243,9 @@ namespace WOMA
 	extern TCHAR	APP_FULLNAME[MAX_STR_LEN];	// "Aplication FullName"
 	extern bool		fileExists(STRING Filename);
 
-#if defined WINDOWS_PLATFORM
+	#if defined WINDOWS_PLATFORM
 	extern TCHAR	APP_ICO[];					// "Icon" for this aplication
-#endif
+	#endif
 #endif
 
 #if defined USE_MINIDUMPER	//3
@@ -329,8 +329,7 @@ struct File {
 	File()
 		: _File(nullptr)
 		, _A(nullptr)
-	{
-	}
+	{}
 	bool open(const char* path, const char* mode);
 	void close() {
 		fclose(_File);

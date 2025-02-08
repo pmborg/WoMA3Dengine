@@ -1,10 +1,10 @@
 // NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
-// Filename: Math3D.h
+// Filename: win32InputClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2024 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -15,39 +15,46 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-// PURPOSE:
+// PURPOSE: A basic input used in first WOMA LEVELs using OS functions.
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+#include "main.h"
 
-#pragma once
+#include "win32InputClass.h"
 
-#include "platform.h"
-#if defined USE_TIMER_CLASS
-extern float FAST_sqrt(float x);
-#endif
-
-#ifndef PI
-	#define PI 3.14159265358979323846f
-#endif
-
-struct vec3
+InputClass::InputClass()
 {
-	float x, y, z;
-	vec3(){
-		x = 0;
-		y = 0;
-		z = 0;
-	}
-	vec3(const float ix, const float iy, const float iz){
-		x = ix;
-		y = iy;
-		z = iz;
-	}
-};
+	CLASSLOADER();
+	WomaIntegrityCheck = 1234567847;
 
-vec3 operator + (const vec3 &u, const vec3 &v);
-vec3 operator + (const vec3 &v, const float s);
-vec3 operator + (const float s, const vec3 &v);
+	ZeroMemory (&m_keys, sizeof(m_keys));
+}
 
-	extern vec3 vector3dNormalize(const vec3& vec);									// dont copy vectors!
+InputClass::~InputClass() {CLASSDELETE();}
+
+void InputClass::Initialize()
+{
+	// Initialize all the keys to being released and not pressed.
+	for(int i=0; i<256; i++)
+		m_keys[i] = false;
+}
+
+void InputClass::KeyDown(unsigned int input)
+{
+	// If a key is pressed then save that state in the key array.
+	m_keys[input] = true;
+}
+
+
+void InputClass::KeyUp(unsigned int input)
+{
+	// If a key is released then clear that state in the key array.
+	m_keys[input] = false;
+}
+
+
+bool InputClass::IsKeyDown(unsigned int key)
+{
+	// Return what state the key is in (pressed/not pressed).
+	return m_keys[key];
+}
 

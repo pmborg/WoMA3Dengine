@@ -28,7 +28,7 @@
 // Helper functions for querying information about the processors in the current
 // system.  ( Copied from the doc page for GetLogicalProcessorInformation() )
 //--------------------------------------------------------------------------------------
-typedef BOOL(WINAPI* LPFN_GLPI)(PSYSTEM_LOGICAL_PROCESSOR_INFORMATION, PDWORD);
+typedef BOOL(WINAPI *LPFN_GLPI)(PSYSTEM_LOGICAL_PROCESSOR_INFORMATION, PDWORD);
 
 class WinCpuCores
 {
@@ -41,16 +41,16 @@ public:
 	DWORD processorPackageCount;
 	DWORD processorCoreCount;
 	DWORD logicalProcessorCount;
-
-	DWORD processorL1CacheDataCount;
+	
+    DWORD processorL1CacheDataCount;
 	DWORD processorL1CacheInstCount;
-	DWORD processorL2CacheCount;
-	DWORD processorL3CacheCount;
+    DWORD processorL2CacheCount;
+    DWORD processorL3CacheCount;	
 
-	DWORD processorL1CacheDataSize;
+    DWORD processorL1CacheDataSize;
 	DWORD processorL1CacheInstSize;
-	DWORD processorL2CacheSize;
-	DWORD processorL3CacheSize;
+    DWORD processorL2CacheSize;
+    DWORD processorL3CacheSize;	
 
 	void GetProcessorInformation();
 

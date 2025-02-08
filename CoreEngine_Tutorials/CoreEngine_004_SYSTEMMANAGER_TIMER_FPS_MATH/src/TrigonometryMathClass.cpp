@@ -22,6 +22,7 @@
 //WomaIntegrityCheck = 1234567311;
 
 #include "platform.h"
+#if defined USE_TIMER_CLASS
 
 #pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
 #include "main.h"
@@ -134,3 +135,4 @@ void TrigonometryMathClass::testMathSpeed(TimerClass* m_Timer, double &delta1, d
 
 }
 
+#endif

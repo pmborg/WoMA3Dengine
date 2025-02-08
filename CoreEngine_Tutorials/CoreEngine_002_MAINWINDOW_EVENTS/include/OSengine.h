@@ -23,6 +23,7 @@
 //   ANDROID_PLATFORM
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234567311;
+#pragma once
 
 #if NOTES
                   ----------------  ---------                       ----------------
@@ -95,7 +96,6 @@
 	ZipUtils_LIB
 #endif
 
-#pragma once
 #include "platform.h"
 		
 #include "stateMachine.h"

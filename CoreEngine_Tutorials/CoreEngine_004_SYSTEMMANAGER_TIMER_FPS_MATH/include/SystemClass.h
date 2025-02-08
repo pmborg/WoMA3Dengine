@@ -1,6 +1,6 @@
 // NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
-// Filename: systemclass.h
+// Filename: SystemClass.h
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
@@ -151,7 +151,6 @@ public:
 #else
 	RInputClass* m_OsInput = NULL;
 #endif
-	
 	void ProcessOSInput();
 
 #if CORE_ENGINE_LEVEL >= 2 && defined WINDOWS_PLATFORM	

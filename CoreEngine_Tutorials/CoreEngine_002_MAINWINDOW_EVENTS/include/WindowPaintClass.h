@@ -1,9 +1,9 @@
-// ----------------------------------------------------------------------------------------------
-// Filename: ProcessorInfo.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// Filename: WindowPaintClass.h
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// --------------------------------------------------------------------------------------------
+// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,36 +16,18 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567831;
+
 #pragma once
 
-#include "platform.h"	// TCHAR
-#include "main.h"		// TCHAR
+#include "main.h"
 
-#if defined WINDOWS_PLATFORM
-#include "winCpuCores.h"
-#endif
-
-extern void cpuID(unsigned regs[4], unsigned i);
-
-class ProcessorInfo
+////////////////////////////////////////////////////////////////////////////////
+// Class name: WindowPaintClass
+////////////////////////////////////////////////////////////////////////////////
+class WindowPaintClass
 {
 public:
-    UINT WomaIntegrityCheck = 1234567311;
-    ProcessorInfo();
-    ~ProcessorInfo();
-
-#if defined WINDOWS_PLATFORM
-	WinCpuCores cpuCores;
-#else
-	int iNumCoreProcessors;
-	int ilogicalProcessorCount;
-#endif
-
-    TCHAR processorName[MAX_PATH];
-    TCHAR processorId[MAX_PATH];
-
-private:
-
+	WindowPaintClass();
+	~WindowPaintClass();
 };
-

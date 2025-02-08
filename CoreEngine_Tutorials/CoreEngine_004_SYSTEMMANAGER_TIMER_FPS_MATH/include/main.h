@@ -46,10 +46,13 @@
 // -------------------------------------------------------------------------------------------
 // Include: COMMON TRASNVERSAL WoMA Util Libs:
 // -------------------------------------------------------------------------------------------
-#if defined WINDOWS_PLATFORM
+#if defined USE_MINIDUMPER && defined WINDOWS_PLATFORM
 #include "minidumperClass.h"
+#endif
+#if defined USE_WOMA_EXCEPTION && defined WINDOWS_PLATFORM
 #include "woma_exception.h"
 #endif
+
 #include "log.h"
 
 //	-------------------------------------------------------------------------------------------
