@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\WoMAengine2023\ExternalTools\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\WoMAengine2023\ExternalTools\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\WoMAengine2023\ExternalTools\TinyXML_LIB.v2\tinyxml2-10.0.0\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{BFFAE010-83F4-3E7E-B7ED-39F75619D0E5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{8B14C96A-24E6-374B-A7FE-DEE455A90EC2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

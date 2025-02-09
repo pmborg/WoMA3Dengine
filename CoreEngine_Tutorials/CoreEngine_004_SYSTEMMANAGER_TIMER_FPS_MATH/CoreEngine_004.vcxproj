@@ -195,7 +195,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;../../ThirdParty/ultimateTCP_IP_LIB/inc</IncludePath>
     <TargetName>CoreEngine_004</TargetName>
-    <LibraryPath>$(LibraryPath);\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH</LibraryPath>
+    <LibraryPath>$(LibraryPath);\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH;\WoMA3Dengine\CoreEngine_Tutorials</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;../../ThirdParty/ultimateTCP_IP_LIB/inc</IncludePath>
