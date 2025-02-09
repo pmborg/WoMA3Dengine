@@ -1,0 +1,217 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="..\..\level.h" />
+    <ClInclude Include="..\..\tech-level.h" />
+    <ClInclude Include="..\linux\include\linux.h">
+      <Filter>LINUX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\linux\include\linuxsystemclass.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\default_settings_xml.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\main.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\OSengine.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\platform.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\standard_platform.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\SystemClass.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\woma_macros.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\language.h">
+      <Filter>Include\001</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\log.h">
+      <Filter>Include\001</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\mem_leak.h">
+      <Filter>Include\001</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\OSmain_dir.h">
+      <Filter>Include\001</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\stateMachine.h">
+      <Filter>Include\002</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\woma_engine_assets.h" />
+    <ClInclude Include="..\include\fpsClass.h">
+      <Filter>Include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\InputClass.h">
+      <Filter>Include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Math3D.h">
+      <Filter>Include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ProcessorInfo.h">
+      <Filter>Include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\SystemFeatures.h">
+      <Filter>Include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\systemManager.h">
+      <Filter>Include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\timerClass.h">
+      <Filter>Include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\TrigonometryMathClass.h">
+      <Filter>Include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\winCpuCores.h">
+      <Filter>Include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\wmiUtilClass.h">
+      <Filter>Include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\fileLoader.h">
+      <Filter>Include\003</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Rinputclass.h">
+      <Filter>Include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\WomaSetupManager.h">
+      <Filter>Include\005</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\xml_loader.h">
+      <Filter>Include\005</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\woma_exception.h">
+      <Filter>Include\003</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\win32InputClass.h">
+      <Filter>Include\002</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.h">
+      <Filter>tinyxml2</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Include">
+      <UniqueIdentifier>{3df6ae54-fc8d-4ae8-95e3-a2940b2712f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{ed8fd78e-610c-49a7-ab4d-650990e49f1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LINUX">
+      <UniqueIdentifier>{0d5421f2-7f3d-426e-bb19-40ef91570fb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LINUX\000">
+      <UniqueIdentifier>{e80f3ac4-029b-4532-8cf3-86e9a317e194}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\000">
+      <UniqueIdentifier>{116e7ec4-ee33-4f5b-85f0-de7d0d0e1e8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\001">
+      <UniqueIdentifier>{e5ab8ec5-bed4-4774-beae-a9b272c9cace}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LINUX\001">
+      <UniqueIdentifier>{a0676484-3c98-4c6e-a82e-de63229974e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\002">
+      <UniqueIdentifier>{b25e12bd-93eb-42fd-a801-1efb673ff65f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LINUX\002">
+      <UniqueIdentifier>{55dc7418-4ff4-44df-a4d4-68b24db7c115}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\004">
+      <UniqueIdentifier>{3e6d98a0-4bb9-43cf-b9cd-1b367635a39d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\003">
+      <UniqueIdentifier>{5d692865-8b05-43b7-a122-87c6618bed55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LINUX\003">
+      <UniqueIdentifier>{326a1cc4-99fc-41ba-8826-a630b5c54870}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LINUX\004">
+      <UniqueIdentifier>{39084a85-1d96-4bef-935e-b8c2380b273e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\005">
+      <UniqueIdentifier>{349f1569-1b5d-4acc-afff-30dc983ccf46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tinyxml2">
+      <UniqueIdentifier>{768c8509-03c9-4252-bba6-6722d244f965}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\main.cpp" />
+    <ClCompile Include="..\linux\src\linux.cpp">
+      <Filter>LINUX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\linux\src\main_linux.cpp">
+      <Filter>LINUX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\linux\src\linuxsystemclass.cpp">
+      <Filter>LINUX\000</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\default_settings_xml.cpp">
+      <Filter>LINUX\000</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\OSengine.cpp">
+      <Filter>LINUX\000</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\SystemClass.cpp">
+      <Filter>LINUX\000</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\language.cpp">
+      <Filter>LINUX\001</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\log.cpp">
+      <Filter>LINUX\001</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mem_leak.cpp">
+      <Filter>LINUX\001</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\OSmain_dir.cpp">
+      <Filter>LINUX\001</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\fileLoader.cpp">
+      <Filter>LINUX\003</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\0CheckOS.cpp">
+      <Filter>LINUX\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\1CheckSYS.cpp">
+      <Filter>LINUX\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\3CheckSetup.cpp">
+      <Filter>LINUX\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\4CheckEngineUpdates.cpp">
+      <Filter>LINUX\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\5LaunchEngine.cpp">
+      <Filter>LINUX\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\7ProcessorInfo.cpp">
+      <Filter>LINUX\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\fpsClass.cpp">
+      <Filter>LINUX\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Math3D.cpp">
+      <Filter>LINUX\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\TimerClass.cpp">
+      <Filter>LINUX\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\TrigonometryMathClass.cpp">
+      <Filter>LINUX\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Rinputclass.cpp">
+      <Filter>LINUX\004</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

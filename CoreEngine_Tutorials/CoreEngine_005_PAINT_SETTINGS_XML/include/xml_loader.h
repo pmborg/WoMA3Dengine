@@ -27,7 +27,7 @@
 #include "platform.h"
 
 #include "tinyxml2.h"
-#pragma comment( lib, "C:\\WoMAengine2023\\x64\\Debug\\TinyXMLv2_LIBX64_d.lib" )
+#pragma comment( lib, "TinyXMLv2_LIBX64_d.lib" )
 
 #ifdef TIXML_USE_STL
 #include <iostream>
