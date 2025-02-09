@@ -206,7 +206,7 @@ namespace WOMA
 #define fatal false
 #endif
 
-	//extern TCHAR	APP_FULLNAME[MAX_STR_LEN];
+	extern TCHAR	APP_FULLNAME[MAX_STR_LEN];
 
 // --------------------------------------------------------------------------------------------
 // GLOBAL - MACROS:

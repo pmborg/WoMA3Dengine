@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: WomaSetupManager.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,6 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567311;
 #pragma once
 
 #include "platform.h"
@@ -30,7 +31,7 @@
 class WomaSetupManager
 {
 public:
-	UINT WomaIntegrityCheck = 1234567831;
+	UINT WomaIntegrityCheck = 1234567311;
 	WomaSetupManager();
 	~WomaSetupManager();
 

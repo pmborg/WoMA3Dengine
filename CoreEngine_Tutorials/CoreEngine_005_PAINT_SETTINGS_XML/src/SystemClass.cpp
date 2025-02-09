@@ -1,10 +1,10 @@
 // NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
-// Filename: Systemclass.cpp
+// Filename: SystemClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -15,63 +15,44 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//
 // PURPOSE: Define APIs for systemclass.cpp which is the common OS API
-//
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567311;
+
 #define _CRT_SECURE_NO_WARNINGS
 #pragma warning( disable : 4477 )
 #pragma warning( disable : 4838 )
 
 #include "SystemClass.h"
-#include "winSystemClass.h"
+#include "OSengine.h" //#include "WinSystemClass.h"
 #include "default_settings_xml.h"
-#include "OSengine.h"
 #include "woma_macros.h"
 
-#include "language.h"
-#include "mem_leak.h"
 #include "OSmain_dir.h"
+
+#if defined WINDOWS_PLATFORM
+#include "language.h"
+#endif
 
 #include "stateMachine.h"
 
 #include "systemManager.h"
 
+#if CORE_ENGINE_LEVEL >= 5 && defined WINDOWS_PLATFORM && defined USE_TINYXML_LOADER
 #include "xml_loader.h"
+#endif
 
-TCHAR* getComputerName()
-{
-	static TCHAR buf[MAX_STR_LEN];
-	DWORD dwCompNameLen = MAX_STR_LEN;
+#define GET_NAME(NAME) #NAME
+#define GET_VERSION(VERSION) GET_NAME(VERSION)
 
-	if (GetComputerName(buf, &dwCompNameLen))
-		return buf;
-	else
-		return TEXT("");
-}
+//----------------------------------------------------------------------------
 
-TCHAR* getUserName()
-{
-	static TCHAR userName[256];
-
-	//v1
-	_tcscpy_s(userName, _tgetenv(TEXT("USERNAME")));
-
-	//v2
-	if (_tcslen(userName) == 0)
-	{
-		DWORD Size = sizeof(userName);
-		GetUserName(userName, &Size);
-	}
-
-	return userName;
-}
-
+//----------------------------------------------------------------------------
 SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 {
 	// STARTING POINT of WOMA ENGINE!
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567831;
+	WomaIntegrityCheck = 1234567311;
 
 	AppSettings = NULL;
 
@@ -91,6 +72,8 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 	StringCchPrintf(COMPILER, MAX_STR_LEN, TEXT("Intel C++  %d.%02d"), __INTEL_COMPILER / 100, __INTEL_COMPILER % 100);
 #elif defined  (_MSC_VER)
 	StringCchPrintf(COMPILER, MAX_STR_LEN, TEXT("Visual C++ %d.%02d"), _MSC_VER / 100, _MSC_VER % 100);
+#elif defined  (ANDROID_PLATFORM)
+	StringCchPrintf(COMPILER, MAX_STR_LEN, TEXT("TODO %s.%s"), GET_VERSION(__GNUC__), GET_VERSION(__GNUC_MINOR__));
 #elif defined  (__GNUC__)
 	StringCchPrintf(COMPILER, MAX_STR_LEN, TEXT("GCC %s.%s.%s"), GET_VERSION(__GNUC__), GET_VERSION(__GNUC_MINOR__), GET_VERSION(__GNUC_PATCHLEVEL__));
 #endif	
@@ -98,10 +81,12 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 	// APP_NAME with Binary Info:
 	// -------------------------------------------------------------------------------------------
 	TCHAR Wbuffer[MAX_STR_LEN] = { 0 };
+#if defined WINDOWS_PLATFORM
 	atow(Wbuffer, VER_PRODUCTVERSION_STR, MAX_STR_LEN); /*VER_PRODUCTVERSION_STRING_FOUR_PARTS*/
+#endif
 
 	StringCchPrintf(WOMA::APP_NAME, MAX_STR_LEN,
-		TEXT("%s v%c%c%c%c.%c%c.%c%c COMPILED:%s OS:%s %s BUILD:%s BIN:%dbit %s CHAR:%s coreLvl:0000"),
+		TEXT("%s v%c%c%c%c.%c%c.%c%c BIN:%s OS:%s %s BUILD:%s BIN:%dbit %s CHAR:%s Lvl: %d"),
 		WOMA::APP_PROJECT_NAME,
 		BUILD_YEAR_CH0, BUILD_YEAR_CH1, BUILD_YEAR_CH2, BUILD_YEAR_CH3,
 		BUILD_MONTH_CH0, BUILD_MONTH_CH1, BUILD_DAY_CH0, BUILD_DAY_CH1,
@@ -111,17 +96,53 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 #if defined WIN_XP
 		TEXT("WinXP")
 #elif defined WIN10
-		TEXT("Win10/11")
-#else
+		TEXT("Win10/11") //SystemHandle->systemManager->pszOS
+#elif WINVER == _WIN32_WINNT_WIN7
+		TEXT("WIN7")
+#elif defined WINDOWS_PLATFORM
 		TEXT("Windows")
+#elif defined CYGWIN_PLATFORM
+		TEXT("Cygwin")
+#elif defined LINUX_PLATFORM
+		TEXT("Linux")
+#elif defined ANDROID_PLATFORM
+	#if defined(__ARM_ARCH_2__)
+			TEXT("Android-ARM2")
+	#elif defined(__ARM_ARCH_3__) || defined(__ARM_ARCH_3M__)
+			TEXT("Android-ARM3")
+	#elif defined(__ARM_ARCH_4T__) || defined(__TARGET_ARM_4T)
+			TEXT("Android-ARM4T")
+	#elif defined(__ARM_ARCH_5_) || defined(__ARM_ARCH_5E_)
+			TEXT("Android-ARM5"
+	#elif defined(__ARM_ARCH_6T2_) || defined(__ARM_ARCH_6T2_)
+			TEXT("Android-ARM6T2")
+	#elif defined(__ARM_ARCH_6__) || defined(__ARM_ARCH_6J__) || defined(__ARM_ARCH_6K__) || defined(__ARM_ARCH_6Z__) || defined(__ARM_ARCH_6ZK__)
+			TEXT("Android-ARM6")
+	#elif defined(__ARM_ARCH_7__) || defined(__ARM_ARCH_7A__) || defined(__ARM_ARCH_7R__) || defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7S__)
+			TEXT("Android-ARM7")
+	#elif defined(__ARM_ARCH_7A__) || defined(__ARM_ARCH_7R__) || defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7S__)
+			TEXT("Android-ARM7A")
+	#elif defined(__ARM_ARCH_7R__) || defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7S__)
+			TEXT("Android-ARM7R")
+	#elif defined(__ARM_ARCH_7M__)
+			TEXT("Android-ARM7M")
+	#elif defined(__ARM_ARCH_7S__)
+			TEXT("Android-ARM7S")
+	#elif defined(__aarch64__) || defined(_M_ARM64)
+			TEXT("Android-ARM64")
+	#endif
 #endif
 		,
+#if defined WINDOWS_PLATFORM
 		// https://en.wikipedia.org/wiki/Ver_(command)
 		//VER_PRODUCTBUILD
 		Wbuffer
+#else
+		TEXT("")
+#endif
 		,
 		//3
-#ifdef _DEBUG
+#if defined _DEBUG || defined DEBUG
 		TEXT("Debug")
 #else
 		TEXT("Release")
@@ -135,18 +156,24 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 #endif
 		,
 		//5
-#ifdef __AVX2__
-		TEXT("AVX2")	/*64bits*/
-#elif defined ( __AVX__ )
-		TEXT("AVX")	/*64bits*/
-#elif (defined(_M_AMD64) || defined(_M_X64))
-		TEXT("SSE2")	/*64bits*/
-#elif _M_IX86_FP == 2
-		TEXT("SSE2")	/*32bits*/
-#elif _M_IX86_FP == 1
-		TEXT("SSE")	/*32bits*/
+#if defined WINDOWS_PLATFORM
+	#ifdef __AVX512F__
+			TEXT("AVX512")	/*64bits*/
+	#elif __AVX2__
+			TEXT("AVX2")	/*64bits*/
+	#elif defined ( __AVX__ )
+			TEXT("AVX")		/*64bits*/
+	#elif (defined(_M_AMD64) || defined(_M_X64))
+			TEXT("SSE2")	/*64bits*/
+	#elif _M_IX86_FP == 2
+			TEXT("SSE2")	/*32bits*/
+	#elif _M_IX86_FP == 1
+			TEXT("SSE")		/*32bits*/
+	#else
+			TEXT("IA32")	/*32bits*/
+	#endif
 #else
-		TEXT("IA32")	/*32bits*/
+		TEXT("")
 #endif
 		,
 		//6
@@ -155,15 +182,13 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 #else
 		TEXT("Ansi")
 #endif
-		//,
+		,
+		LEVEL
 		//TEXT(__DATE__)
 	);
-
-	// Get ENGINE LEVEL
-	ItoA(CORE_ENGINE_LEVEL, (WOMA::APP_NAME + (int)((STRING)WOMA::APP_NAME).find(TEXT("0000"))), 10); /* Base: Decimal Numbers (base 10) Set the number of "Engine Level" on title*/\
-
-		// Log Title:
-		StringCchPrintf(WOMA::APP_FULLNAME, sizeof(WOMA::APP_FULLNAME), TEXT("%s"), WOMA::APP_NAME);
+	
+	// Log Title:
+	StringCchPrintf(WOMA::APP_FULLNAME, sizeof(WOMA::APP_FULLNAME), TEXT("%s"), WOMA::APP_NAME);
 
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("-------------------------------------------------------------------------------\n"));
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)WOMA::APP_FULLNAME);
@@ -173,16 +198,232 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 	// -------------------------------------------------------------------------------------------
 	m_OsInput = NULL;
 
+
+#if defined WINDOWS_PLATFORM
 	WOMA::filename = GetCommandLine();
+#else
+	WOMA::filename = TEXT("");
+#endif
 
 	systemManager = NULL;
 	userName = TEXT("");
 	ComputerName = TEXT("");
 	fps = NULL;
 	cpu = NULL;
-
 	XML_SETTINGS_FILE = TEXT("");
 
+}
+
+
+void SystemClass::InitializeSystemScreen(int x, int y)
+//-----------------------------------------------------------------------------------------
+{
+	WOMA::logManager->DEBUG_MSG("InitializeSystemScreen...\n");
+	//v1
+	//float LINE = 24;
+	//float LINE_SPACE=45;
+	//v2
+	float LINE = 22;
+	float LINE_SPACE = 40;
+	if (fontSizeY > 0) {
+		LINE = MIN(LINE, 2 * fontSizeY);
+		LINE_SPACE = MIN(LINE_SPACE, 3 * fontSizeY);
+	}
+
+	// Make sure that is Reset!
+	while (!TextToPrint[0].empty())
+		TextToPrint[0].pop_back();
+
+	// ----------------------------------
+	// Language
+	Woma_Label text = { systemDefinitions.szCountryNameBuffer, x, y };
+	TextToPrint[0].push_back(text);
+
+	// Username
+	TCHAR szScratch[128] = { 0 };
+	StringCchPrintf(szScratch, sizeof(szScratch), TEXT("User Name: %s"), userName.c_str());
+	text.y += (int)LINE;
+	text.label = szScratch;
+	TextToPrint[0].push_back(text);
+
+	// Computer name
+	StringCchPrintf(szScratch, sizeof(szScratch), TEXT("Computer Name: %s"), ComputerName.c_str());
+	text.y += (int)LINE;
+	text.label = szScratch;
+	TextToPrint[0].push_back(text);
+
+	// ----------------------------------
+	// OS
+	text.y += (int)LINE_SPACE; text.label = systemDefinitions.osName;
+	TextToPrint[0].push_back(text);
+
+#ifdef WINDOWS_PLATFORM
+	text.y += (int)LINE; text.label = systemDefinitions.windowsVersion;
+	TextToPrint[0].push_back(text);
+
+	text.y += (int)LINE; text.label = systemDefinitions.windowsBuildVersion;
+	TextToPrint[0].push_back(text);
+#endif
+
+	// ----------------------------------
+	// System:
+	text.y += (int)LINE_SPACE; text.label = systemDefinitions.platform;
+	TextToPrint[0].push_back(text);
+
+	text.y += (int)LINE; text.label = systemDefinitions.characterSet;
+	TextToPrint[0].push_back(text);
+
+	text.y += (int)LINE; text.label = systemDefinitions.binaryArchitecture;
+	TextToPrint[0].push_back(text);
+
+	text.y += (int)LINE; text.label = systemDefinitions.binaryCode;
+	TextToPrint[0].push_back(text);
+
+	// ----------------------------------
+	// Processor
+	text.y += (int)LINE_SPACE; text.label = systemDefinitions.processorPackageCount;
+	TextToPrint[0].push_back(text);
+
+	text.y += (int)LINE; text.label = systemDefinitions.NumCoreProcessors;
+	TextToPrint[0].push_back(text);
+
+	text.y += (int)LINE; text.label = systemDefinitions.logicalProcessorCount;
+	TextToPrint[0].push_back(text);
+
+	text.y += (int)LINE; text.label = systemDefinitions.clockSpeed;
+	TextToPrint[0].push_back(text);
+
+	text.y += (int)LINE; text.label = systemDefinitions.processorName;
+	TextToPrint[0].push_back(text);
+
+	text.y += (int)LINE; text.label = systemDefinitions.processorId;
+	TextToPrint[0].push_back(text);
+
+	int HALF;
+	// ----------------------------------
+	// NEW PAGE
+	// ----------------------------------
+	// BOARD/CPU Feactures (RIGHT SIDE):
+#if defined WINDOWS_PLATFORM
+	if (AppSettings->WINDOW_WIDTH == 0)
+	{
+		// --------------------------------------------------------------------------------------------
+		DEVMODE devMode = { 0 };
+		DWORD deviceNum = 0;
+		UINT MONITOR_NUM = 0;
+
+		displayDevice.cb = sizeof(DISPLAY_DEVICE);
+		while (EnumDisplayDevices(NULL, deviceNum, &displayDevice, 0))	// Get deviceNum
+		{
+			// Get our Screen name (on THIS monitor)
+			if (EnumDisplaySettings(displayDevice.DeviceName, ENUM_CURRENT_SETTINGS, &devMode))
+			{
+				// Use the Monitor selected by user:
+				if (((deviceNum == AppSettings->UI_MONITOR) && (AppSettings->UseAllMonitors == false)) ||
+					((deviceNum == MONITOR_NUM) && (AppSettings->UseAllMonitors == true)))
+				{
+					HALF = (devMode.dmPelsWidth / 5) * 3;
+					break;
+				}
+			}
+		}
+	}
+	else
+#endif
+		HALF = (AppSettings->WINDOW_WIDTH / 5) * 3;
+
+	// ----------------------------------
+	// CPU FEATURES:
+	text.y += (int)LINE_SPACE;
+	int initial_y = text.y;
+	text.label = TEXT("CPU FEATURES:");
+	TextToPrint[0].push_back(text);
+
+	for (UINT i = 0; i < systemDefinitions.cpuFeactures.size(); i++)
+	{
+		if (i == 10)
+		{
+			text.y = initial_y;
+			text.x = HALF;
+		}
+		text.y += (int)LINE;
+		text.label = systemDefinitions.cpuFeactures[i];
+		TextToPrint[0].push_back(text);
+	}
+
+#if defined DX_ENGINE
+	// GPU:
+	text.x = x;
+	for (UINT i = 0; i < systemDefinitions.GPUINFO.size(); i++)
+	{
+		text.y += (int)LINE_SPACE;
+		text.label = systemDefinitions.GPUINFO[i].GraphicCard;
+		TextToPrint[0].push_back(text);
+		/*
+		if (i + 1 < systemDefinitions.GPUINFO.size())
+		{
+			text.y += (int)LINE; text.label = systemDefinitions.GPUINFO[i].AdapterDACType;
+			TextToPrint[0].push_back(text);
+			text.y += (int)LINE; text.label = systemDefinitions.GPUINFO[i].AdapterRAM;
+			TextToPrint[0].push_back(text);
+		}
+		*/
+		text.y += (int)LINE; text.label = systemDefinitions.GPUINFO[i].DedicatedVideoMemory;
+		TextToPrint[0].push_back(text);
+		text.y += (int)LINE; text.label = systemDefinitions.GPUINFO[i].DedicatedSystemMemory;
+		TextToPrint[0].push_back(text);
+		text.y += (int)LINE; text.label = systemDefinitions.GPUINFO[i].SharedSystemMemory;
+		TextToPrint[0].push_back(text);
+	}
+
+	text.x = HALF;
+	text.y = 10;
+	// ----------------------------------
+	// RAM
+	text.label = systemDefinitions.totalMemoryCapacity;
+	TextToPrint[0].push_back(text);
+	text.y += (int)LINE; text.label = systemDefinitions.freeMemory;
+	TextToPrint[0].push_back(text);
+
+	// BenchMark MathSpeed
+	text.y += (int)LINE; text.label = systemDefinitions.benchMarkMathSpeed1;
+	TextToPrint[0].push_back(text);
+	text.y += (int)LINE; text.label = systemDefinitions.benchMarkMathSpeed2;
+	TextToPrint[0].push_back(text);
+
+	// FreeSpace:
+	text.y += (int)LINE_SPACE; text.label = TEXT("DISK FREE:");
+	TextToPrint[0].push_back(text);
+
+	for (UINT driveLetter = 0; driveLetter < systemDefinitions.drives_List.size(); driveLetter++)
+	{
+		text.y += (int)LINE; text.label = systemDefinitions.drives_List[driveLetter];
+		TextToPrint[0].push_back(text);
+	}
+
+#endif
+	//WOMA::logManager->DEBUG_MSG(" done\n");
+}
+
+
+
+//-----------------------------------------------------------------------------
+void SystemClass::refreshTitle() // Run once per second.
+{
+
+	StringCchPrintf(pstrFPS, 300, TEXT("FPS:%d %s "), SystemHandle->fps, WOMA::APP_FULLNAME);
+
+#if defined WINDOWS_PLATFORM && !defined ANDROID_PLATFORM
+#if defined(X64) // Set the new "Window Title"
+	PDWORD_PTR dwResult = 0;// In 64 Bits
+	for (int i = 0; i < SystemHandle->windowsArray.size(); i++)
+		SendMessageTimeout(SystemHandle->windowsArray[i].hWnd, WM_SETTEXT, 0, (LPARAM)pstrFPS, SMTO_ABORTIFHUNG, 1000, dwResult);
+#else				
+	DWORD dwResult = 0;		// In 32 Bits
+	for (int i = 0; i < SystemHandle->windowsArray.size(); i++)
+		SendMessageTimeout(SystemHandle->windowsArray[i].hWnd, WM_SETTEXT, 0, (LPARAM)pstrFPS, SMTO_ABORTIFHUNG, 1000, &dwResult);
+#endif
+#endif
 }
 
 	#ifndef DIK_ESCAPE					// Will be defined @ ENGINE_LEVEL >= 24
@@ -193,22 +434,38 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 void SystemClass::ProcessOSInput() // This Function will be invoked several times per second
 //-----------------------------------------------------------------------------------------
 {
+	//LEVEL 4 System
+	//LEVEL 5 Setup
+	//LEVEL 7 Astro
+	//LEVEL 8 Map
+	//LEVEL 9 Weather
 
-		static bool first_time = true;
+	static bool first_time = true;
 
-	// Process Special: "ESC" key is beeing pressed ?
-	if ((WOMA::game_state > GAME_MINIMIZED) && (OS_KEY_DOWN(DIK_ESCAPE + 0x35)))
-		Publish_Quit_Message();			// -> EXIT APPLICATION
-	// Windows OS way... for keys (until direct input)!
+#if defined WINDOWS_PLATFORM
+
+	// "ESC": DX Process Special: key is beeing pressed ? -> EXIT APPLICATION
+
+	// "ESC" OS Process Special: key is beeing pressed ? -> EXIT APPLICATION
 	if (m_OsInput->IsKeyDown(VK_ESCAPE) && WOMA::game_state == GAME_RUN)		// CHECK: if the user pressed 'escape' and wants to exit the application.
-		Publish_Quit_Message();
+	{
+		WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP; //Publish_Quit_Message();
+		return;
+	}
+
 	if (m_OsInput->IsKeyDown(VK_ESCAPE) && WOMA::game_state >= GAME_SYSTEM_SETTINGS && WOMA::game_state <= GAME_SETUP) {		// CHECK: if the user pressed 'escape' and wants to exit the application.
-		WOMA::game_state = GAME_MENU;
+		//WOMA::game_state = GAME_MENU;
 		SAFE_SHUTDOWN(SystemHandle->womaSetup);
 		m_OsInput->m_keys[VK_ESCAPE] = false;
 		WOMA::game_state = GAME_RUN;
 	}
 
+	//F4
+
+	//F3
+	//F2
+
+	//F6
 	if (first_time || (OS_KEY_DOWN(VK_F6) && WOMA::game_state != GAME_SETUP))
 	{
 		WOMA::game_state = GAME_SETUP;
@@ -220,6 +477,8 @@ void SystemClass::ProcessOSInput() // This Function will be invoked several time
 			SystemHandle->AppSettings->FULL_SCREEN = false;
 			CHAR str[MAX_STR_LEN] = { 0 }; wtoa(str, (TCHAR*)SystemHandle->XML_SETTINGS_FILE.c_str(), MAX_STR_LEN); // wchar ==> char
 			SystemHandle->xml_loader.saveConfigSettings(str);
+
+			RENDER_PAGE = 5;
 			WOMA::previous_game_state = WOMA::game_state;
 			WOMA::game_state = ENGINE_RESTART;
 		}
@@ -227,33 +486,50 @@ void SystemClass::ProcessOSInput() // This Function will be invoked several time
 
 	first_time = false;
 
+	//F1
 #if CORE_ENGINE_LEVEL >= 4 && defined GAME_SYSTEM_SETTINGS
 	if (first_time || (OS_KEY_DOWN(VK_F1) && WOMA::game_state != GAME_SYSTEM_SETTINGS)) {
 		if (SystemHandle->womaSetup)
 			SAFE_SHUTDOWN(SystemHandle->womaSetup);
-		WOMA::game_state = GAME_SYSTEM_SETTINGS;
+		if (AppSettings->DRIVER == DRIVER_DX12 && !first_time)
+		{
+			WOMA::previous_game_state = GAME_SYSTEM_SETTINGS; //match*
+			WOMA::game_state = ENGINE_RESTART;
+			return;
+		}
+		RENDER_PAGE = 4;
+		WOMA::game_state = GAME_SYSTEM_SETTINGS; //match*
+		OS_REDRAW_WINDOW;
 		OS_REDRAW_WINDOW;
 	}
 	first_time = false;
 #endif
 
+	//F5
 	if (first_time || (OS_KEY_DOWN(VK_F5) && WOMA::game_state != GAME_RUN)) {
-		WOMA::game_state = GAME_RUN;
-		OS_REDRAW_WINDOW;
+		if (SystemHandle->womaSetup)
+			SAFE_SHUTDOWN(SystemHandle->womaSetup);
+		if (OS_KEY_DOWN(VK_F5)) {
+			RENDER_PAGE = LEVEL;
+			WOMA::game_state = GAME_RUN;
+			OS_REDRAW_WINDOW;
+		}
 	}
 	first_time = false;
 
-
+#endif
 }
 
 bool SystemClass::SystemCheck()
 {
 	// [8] Get User Language/Country:
 	// -------------------------------------------------------------------------------------------
+#if defined WINDOWS_PLATFORM
 	WOMA::settings.id = GetUserDefaultUILanguage();
 
 	//TODO: Use this later on:
 	WOMA::GetLangStringFromLangId(WOMA::settings.id);
+#endif
 
 	// [10] Check Endian = LITTLE_ENDIAN or BIG_ENDIAN  (Used in some libs)
 	// -------------------------------------------------------------------------------------------
@@ -282,7 +558,9 @@ bool SystemClass::SystemCheck()
 	systemManager = NEW SystemManager();
 	IF_NOT_THROW_EXCEPTION(systemManager);
 
+#if CORE_ENGINE_LEVEL >= 4 && defined WINDOWS_PLATFORM
 	GETOS();
+#endif
 
 	// [2] CheckOS: Detect OS Version & DO System Check: DONE
 	//----------------------------------------------------------------------------
@@ -315,8 +593,10 @@ bool SystemClass::SystemCheck()
 	WOMA_LOGManager_DebugMSG("-------------------------------------------------------------------------------\n");
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("ENGINE_LEVEL: %d [Function Loader] systemManager->checkCPUFeatures()\n"), WOMA::ENGINE_LEVEL_USED);
 
+#if defined WINDOWS_PLATFORM
 	IF_NOT_RETURN_FALSE(systemManager->checkCPUFeatures());
 	//LEVELNORMAL();
+#endif
 
 	if (Command == 0) {
 	}
@@ -341,20 +621,81 @@ void SystemClass::Shutdown()
 
 	AppSettings = NULL;				// Pointer to Static object, no need to free.
 }
+#if defined ANDROID_PLATFORM
+extern android_app* app;
+#endif
 
 void SystemClass::FrameUpdate()
 {
-	ProcessOSInput();			// ProcessFrame: Process Special: Function Keys F1 to F6
-	ProcessPerformanceStats();	// ProcessPerformanceStats: m_Timer.Frame(); m_Fps.Frame(); m_Cpu.Frame();
+
+#if defined LINUX_PLATFORM
+if (WOMA::game_state == GAME_RUN)
+{
+	/*
+	int err = XGrabPointer(Win.display, Win.window,
+							True, ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
+							GrabModeAsync, GrabModeAsync,
+							Win.window, None, CurrentTime);
+
+	processXEvents(wm_protocols, wm_delete_window);
+	XUngrabPointer(Win.display, CurrentTime);
+
+	#define mousex event.xbutton.x_root 
+	#define mousey event.xbutton.y_root
+	//if (event.xbutton.button == Button1)
+	//	_tprintf("mousex: %d mouseY: %d\n", (mousex) - WOMA::settings.WINDOW_Xpos, (mousey) -WOMA::settings.WINDOW_Ypos);
+	
+	if ((mousex < 100 && mousey < 100) && (mousex > 0 && mousey > 0))
+	{
+		RENDER_PAGE = 25;
+		WOMA::previous_game_state = GAME_IMGUI;
+		WOMA::game_state = ENGINE_RESTART;
+		return;
+	}
+	*/
+}
+#endif
+
+#if defined ANDROID_PLATFORM && !defined NewWomaEngine
+	if (WOMA::game_state == GAME_RUN)
+	{
+		struct womaengine* engine = (struct womaengine*)app->userData;
+
+		#define mousex engine->state.x
+		#define mousey engine->state.y
+		//_tprintf("mousex: %d mouseY: %d\n", mousex, mousey);
+		if ((mousex < 100 && mousey < 100) && (mousex > 0 && mousey > 0))
+		{
+			RENDER_PAGE = 25;
+			WOMA::previous_game_state = GAME_IMGUI;
+			WOMA::game_state = ENGINE_RESTART;
+			return;
+		}
+	}
+#endif
+
+	#if defined USE_PROCESS_OS_KEYS && defined WINDOWS_PLATFORM
+		ProcessOSInput();							// READ+PROCESS-OS-INPUT: Process Special: Function Keys |ESC and F1 to F6|
+		if (WOMA::game_state == ENGINE_RESTART)
+			return;
+	#endif
+	
+		ProcessPerformanceStats();					// ProcessPerformanceStats-FPS: m_Timer.Frame(); m_Fps.Frame(); m_Cpu.Frame();
+}
+
+bool SystemClass::InitOsInput()
+{
+	return true;
 }
 
 bool SystemClass::LoadXmlSettings()
 {
+//#if CORE_ENGINE_LEVEL >= 5
 	WOMA_LOGManager_DebugMSG("===============================================================================\n");
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("LOAD XML SETTINGS\n"));
 	WOMA_LOGManager_DebugMSG("===============================================================================\n");
 
-	// Load and Parse XML [settings.xml] the Configuration file
+	// Load and Parse XML FILE:"settings.xml" the Configuration file
 	//----------------------------------------------------------------------------
 	XML_SETTINGS_FILE = WOMA::PUBLIC_DOCUMENTS;
 	XML_SETTINGS_FILE.append(WOMA::APP_SETTINGS_FILE);
@@ -362,13 +703,18 @@ bool SystemClass::LoadXmlSettings()
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("XML_SETTINGS_FILE: %s\n"), XML_SETTINGS_FILE.c_str());
 	if (!SystemHandle->xml_loader.initAppicationSettings((TCHAR*)XML_SETTINGS_FILE.c_str()))
 	{
-		STRING err = TEXT("File not found/Invalid: "); err += XML_SETTINGS_FILE;
-		WOMA::WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "));
+		STRING err = TEXT("LoadXmlSettings::Settings File not found/Invalid: "); err += XML_SETTINGS_FILE;
+		WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "), false);
 		return false;
 	}
+//#endif
 
-	// Load and Parse XML [world.xml] the Configuration file
+	// Load and Parse XML FILE:"world.xml" the Configuration file
 	//----------------------------------------------------------------------------
+
+	SystemHandle->LandScape = (SystemHandle->AppSettings->WINDOW_WIDTH >= SystemHandle->AppSettings->WINDOW_HEIGHT) ? true : false;
+
+	//FORCE LANDSCAPE
 
 	return true;
 }
@@ -381,5 +727,4 @@ void SystemClass::ProcessPerformanceStats() // Run every frame
 	fps = m_Fps.GetFps();	// Get current FPS (updated by "m_Fps.Frame()" every second)
 
 }
-
 

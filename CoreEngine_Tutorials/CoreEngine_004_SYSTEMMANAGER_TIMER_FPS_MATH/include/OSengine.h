@@ -106,7 +106,7 @@
 #if !defined NewWomaEngine
 #if defined WINDOWS_PLATFORM
 	#if CORE_ENGINE_LEVEL < 10 || !defined DX_ENGINE
-	#include "winsystemclass.h"
+	#include "winSystemClass.h"
 	#define SYSTEM WinSystemClass	        // Are we a Basic Windows Instance?
 	#else
 

@@ -20,7 +20,7 @@
 //WomaIntegrityCheck = 1234567311;
 
 #include "platform.h"
-#include "WinSystemClass.h"
+#include "OSengine.h"
 #include "OSmain_dir.h"
 
 #ifdef UNICODE

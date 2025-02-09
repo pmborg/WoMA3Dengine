@@ -102,7 +102,7 @@
 
 #if !defined NewWomaEngine
 #if defined WINDOWS_PLATFORM
-	#include "winsystemclass.h"
+	#include "winSystemClass.h"
 	#define SYSTEM WinSystemClass	        // Are we a Basic Windows Instance?
 #endif
 

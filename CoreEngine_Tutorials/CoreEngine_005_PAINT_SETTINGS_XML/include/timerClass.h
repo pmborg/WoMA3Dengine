@@ -2,9 +2,9 @@
 // ----------------------------------------------------------------------------------------------
 // Filename: timerClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,6 +17,8 @@
 // --------------------------------------------------------------------------------------------
 //
 // ----------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567311;
+
 #pragma once
 
 //The TimerClass is a high precision timer that measures the exact time between frames of execution. 
@@ -36,22 +38,25 @@
 class TimerClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567831;
+	UINT WomaIntegrityCheck = 1234567311;
 	TimerClass();
 	~TimerClass();
 
 	bool Initialize();
 	void Frame();
-
-	float GetTime();
+	double GetTime();
 
 public:
-	INT64 currentTime=0, m_startEngineTime = 0;
-	float m_ticksPerMs = 0;
+	float m_ticksPerMs = 1;
+
+	UINT64 currentTime=0, m_startEngineTime = 0;
 	float m_ticksPerUs = 0;
 
 private:
 	INT64 m_frequency = 0;
+
+	double m_frameTime = 0;
+
 	INT64 m_startTime = 0;
-	float m_frameTime = 0;
+	
 };

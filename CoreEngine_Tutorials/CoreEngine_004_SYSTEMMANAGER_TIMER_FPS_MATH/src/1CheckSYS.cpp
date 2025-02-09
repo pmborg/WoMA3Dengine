@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: 1CheckSYS.cpp
 // --------------------------------------------------------------------------------------------
@@ -19,16 +20,12 @@
 //WomaIntegrityCheck = 1234567311;
 
 #include "OSengine.h"
-#if CORE_ENGINE_LEVEL >= 4
 
 //------------------------------------------------------------------
 // PRIVATE FUNCTIONS:
 //------------------------------------------------------------------
 #if defined WINDOWS_PLATFORM
 #include <psapi.h>					// PPERFORMANCE_INFORMATION
-#if defined NOTES
-// MORE INFO: http://stackoverflow.com/questions/8351944/finding-out-the-cpu-clock-frequency-per-core-per-processor
-#endif
 float SystemManager::GetProcessorSpeed()
 {
     LARGE_INTEGER qwWait, qwStart, qwCurrent;
@@ -108,17 +105,11 @@ float SystemManager::GetProcessorSpeed4Intel(TCHAR* family_name) {
 //------------------------------------------------------------------
 // PUBLIC FUNCTIONS:
 //------------------------------------------------------------------
-#if defined USE_SYSTEM_CHECK
 bool SystemManager::checkCPU ()
 {
 #if defined WINDOWS_PLATFORM
 	processorInfo.cpuCores.GetProcessorInformation();
 #endif
-
-	#if defined RELEASE && !defined ANDROID_PLATFORM
-    if (processorInfo.cpuCores.processorCoreCount <= 1)
-        WomaMessageBox(TEXT("CPU CORE WARNING: Your Processor just have 1 core, this application will run very slow!\n"));
-	#endif
 
     // Get CPU Speed:
     CHAR speed[MAX_STR_LEN] = { 0 };
@@ -162,17 +153,11 @@ bool SystemManager::checkCPU ()
     CPUSpeedMHz = (float) atof(Token.c_str()); //clockSpeed in GHz
 #endif
 
-#if defined RELEASE && !defined ANDROID_PLATFORM
-    if (CPUSpeedMHz < 2)
-        WomaMessageBox(TEXT("CPU WARNING: Your Processor is slow (< 2GHz), this application will run very slow also!\n"));
-#endif
-
 	StringCchPrintf(SystemHandle->systemDefinitions.clockSpeed, MAX_STR_LEN, TEXT("CPU Base Clock Speed: %02.2f GHz"), (float) CPUSpeedMHz/1000);
 	WOMA_LOGManager_DebugMSGAUTO (TEXT("%s\n"), SystemHandle->systemDefinitions.clockSpeed);
 
     return true;
 }
-#endif
 
 #if CORE_ENGINE_LEVEL >= 4 && defined WINDOWS_PLATFORM
 DWORDLONG SystemManager::getAvailSystemMemory()
@@ -228,7 +213,6 @@ DWORDLONG SystemManager::getAvailSystemMemory()
 }
 #endif
 
-#if defined USE_SYSTEM_CHECK
 bool SystemManager::checkRAM ()
 {
 #ifdef X64
@@ -385,7 +369,6 @@ bool SystemManager::checkDiskFreeSpace ()
 
     return true;
 }
-#endif
 
 #if CORE_ENGINE_LEVEL >= 4 && defined WINDOWS_PLATFORM
 bool SystemManager::checkCPUFeatures ()
@@ -396,13 +379,9 @@ bool SystemManager::checkCPUFeatures ()
 }
 #endif
 
-#if CORE_ENGINE_LEVEL >= 4
 bool CheckDEVICEinfo() 
 {
 #if defined WINDOWS_PLATFORM
-#if defined NOTES
-	// MORE INFO: http://www.cplusplus.com/forum/windows/95700/
-#endif
 	// get mouse speed
 	int mouseSpeed;
 	mouseSpeed = 0;
@@ -483,17 +462,6 @@ bool CheckDEVICEinfo()
 				WOMA_LOGManager_DebugMSG ("-------------------------------------------------------------------------------\n");
 			}
 		}
-		#if defined _NOTUSED
-		if(rdi.dwType == RIM_TYPEHID)
-		{
-			WOMA_LOGManager_DebugMSGAUTO (TEXT( "Vendor Id: %x\n"), rdi.hid.dwVendorId);
-			WOMA_LOGManager_DebugMSGAUTO (TEXT( "Product Id: %x\n"), rdi.hid.dwProductId);
-			WOMA_LOGManager_DebugMSGAUTO (TEXT( "Version No: %d\n"), rdi.hid.dwVersionNumber);
-			WOMA_LOGManager_DebugMSGAUTO (TEXT( "Usage for the device: %d\n"), rdi.hid.usUsage);
-			WOMA_LOGManager_DebugMSGAUTO (TEXT( "Usage Page for the device: %d\n"), rdi.hid.usUsagePage);
-			WOMA_LOGManager_DebugMSGAUTO (TEXT( "**************************\n"));
-		}
-		#endif
 	}
 
 	free(pRawInputDeviceList);
@@ -528,9 +496,6 @@ bool SystemManager::CheckIO ()
 	int numberoffunctionkeys =  GetKeyboardType(2);
 	WOMA_LOGManager_DebugMSG ("Keyboard - Number of function keys: %d\n", numberoffunctionkeys);
 	//----------------------------------------------------------------------------
-	#if defined NOTES
-	//MORE INFO: https://msdn.microsoft.com/en-us/library/ee825488%28v=cs.20%29.aspx
-	#endif
 	TCHAR pwszKLID[KL_NAMELENGTH];
 	BOOL b = GetKeyboardLayoutName(pwszKLID);
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("Keyboard - Layout: %s\n"), pwszKLID);
@@ -542,7 +507,6 @@ bool SystemManager::CheckIO ()
 
 	return true;
 }
-#endif
 
 #if defined USE_TIMER_CLASS && CORE_ENGINE_LEVEL >= 4
 bool SystemManager::checkBenchMarkSpeed(TimerClass* m_Timer)
@@ -565,4 +529,3 @@ bool SystemManager::checkBenchMarkSpeed(TimerClass* m_Timer)
 }
 #endif
 
-#endif

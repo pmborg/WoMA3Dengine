@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: 0CheckOS.cpp
 // --------------------------------------------------------------------------------------------
@@ -19,7 +20,6 @@
 //WomaIntegrityCheck = 1234567311;
 
 #include "OSengine.h"
-#if CORE_ENGINE_LEVEL >= 4
 #include "OSmain_dir.h"		//#include "OsDirectories.h"
 #include "systemManager.h"
 
@@ -33,11 +33,9 @@ SystemManager::SystemManager()
 	CLASSLOADER();
 	WomaIntegrityCheck = 1234567311;
 
-#if DX_ENGINE_LEVEL >= 4
 	CPUSpeedMHz = 0;
-#endif
 
-#if DX_ENGINE_LEVEL >= 4 && defined WINDOWS_PLATFORM
+#if CORE_ENGINE_LEVEL >= 4 && defined WINDOWS_PLATFORM
 	driveLetter = 0;
 #endif
 
@@ -55,14 +53,14 @@ char osName[1024 * 4];
 #if defined LINUX_PLATFORM
 char* OS_name()
 {
-	FILE* fp = NULL;
+	FILE *fp = NULL;
 	fp = popen("/bin/bash -c set | grep 'OSTYPE=' | awk -F= '{print $2}'", "r");
-	fread(osName, 1, sizeof(osName) - 1, fp);
+	fread(osName, 1, sizeof(osName)-1, fp);
 	fclose(fp);
 
 	for (int i = 0; osName[i] != 0; i++)
-		if (osName[i] == 10)
-			osName[i] = 0;
+	if (osName[i] == 10)
+		osName[i] = 0;
 
 	return osName;
 }
@@ -71,22 +69,22 @@ char* OS_name()
 #if defined ANDROID_PLATFORM
 char* OS_name()
 {
-	FILE* fp = NULL;
+	FILE *fp = NULL;
 	fp = popen("/bin/sh -c set | grep 'OSTYPE=' | awk -F= '{print $2}'", "r");
-	fread(osName, 1, sizeof(osName) - 1, fp);
+	fread(osName, 1, sizeof(osName)-1, fp);
 	fclose(fp);
 
 	for (int i = 0; osName[i] != 0; i++)
-		if (osName[i] == 10)
-			osName[i] = 0;
+	if (osName[i] == 10)
+		osName[i] = 0;
 
 	return osName;
 }
 #endif
 
+
 // PUBLIC FUNCTIONS:
 //------------------------------------------------------------------
-#if defined USE_SYSTEM_CHECK
 bool SystemManager::CheckOS()
 //------------------------------------------------------------------
 {
@@ -107,7 +105,7 @@ bool SystemManager::CheckOS()
 #else
 		TEXT("ANSI")
 #endif
-	);
+		);
 
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("%s\n"), SystemHandle->systemDefinitions.characterSet);
 
@@ -125,26 +123,21 @@ bool SystemManager::CheckOS()
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.binaryArchitecture);
 
 #ifdef WIN10
-#define _BINARY_CODE_ TEXT("Windows 10 Code")
+	#define _BINARY_CODE_ TEXT("Windows 10 Code")
 #elif defined WIN6x
-#define _BINARY_CODE_ TEXT("Windows Vista Code")
+	#define _BINARY_CODE_ TEXT("Windows Vista Code")
 #elif defined WIN_XP
-#define _BINARY_CODE_ TEXT("Windows XP Code")
+	#define _BINARY_CODE_ TEXT("Windows XP Code")
 #elif defined LINUX_PLATFORM
-#define _BINARY_CODE_ TEXT("Linux Code")
+	#define _BINARY_CODE_ TEXT("Linux Code")
 #elif defined ANDROID_PLATFORM
-#define _BINARY_CODE_ TEXT("Android Code")
+	#define _BINARY_CODE_ TEXT("Android Code")
 #endif
 
 	StringCchPrintf(SystemHandle->systemDefinitions.binaryCode, MAX_STR_LEN, TEXT("Binary Code: %s"), _BINARY_CODE_);
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.binaryCode);
 
-#if /*defined WIN10 &&*/ ENGINE_LEVEL >= 10 //&& defined _DEBUG
-	GETOS(); // Fix Win10 Crapy Info
-#endif
-
 #if defined WINDOWS_PLATFORM
-	//#if !defined WIN10
 	StringCchPrintf(SystemHandle->systemDefinitions.windowsVersion, MAX_STR_LEN, TEXT("Windows Version: %d.%d.%d"), MajorVersion, MinorVersion, BuildVersion);
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.windowsVersion);
 
@@ -175,7 +168,6 @@ bool SystemManager::CheckOS()
 
 	StringCchPrintf(SystemHandle->systemDefinitions.windowsBuildVersion, MAX_STR_LEN, TEXT("Windows Version: %s"), verstr.c_str());
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.windowsBuildVersion);
-	//#endif
 #else
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("sysname: %s\n"), SystemHandle->systemDefinitions.ver.sysname);
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("nodename: %s\n"), SystemHandle->systemDefinitions.ver.nodename);
@@ -216,7 +208,6 @@ bool SystemManager::CheckOS()
 
 	return true;
 }
-#endif
 
 //------------------------------------------------------------------
 // PRIVATE FUNCTIONS:
@@ -305,7 +296,7 @@ TCHAR* SystemManager::GetOsVersion()
 
 	if (!bVer || uLen == 0)
 		return NULL;
-
+	
 	DWORD dwProductVersionMS = lpFfi->dwProductVersionMS;
 	SAFE_DELETE(lpVersionInfo);
 
@@ -344,15 +335,15 @@ TCHAR* SystemManager::GetOsVersion()
 	}
 	else if (lpFfi->dwFileVersionMS == 4 && lpFfi->dwFileVersionLS == 90)
 	{
-		return TEXT("Windows  Me\n");
+	    return TEXT("Windows  Me\n");
 	}
 	else if (lpFfi->dwFileVersionMS == 4 && lpFfi->dwFileVersionLS == 10)
 	{
-		return TEXT("Windows  98\n");
+	    return TEXT("Windows  98\n");
 	}
 	else if (lpFfi->dwFileVersionMS == 4 && lpFfi->dwFileVersionLS == 0)
 	{
-		return TEXT("Windows  95\n");
+	    return TEXT("Windows  95\n");
 	}
 #endif
 
@@ -491,7 +482,6 @@ bool SystemManager::CheckOSVersion()
 	return false;
 }
 #else // LINUX || ANDROID
-#if defined USE_SYSTEM_CHECK
 #include <sys/utsname.h>
 bool SystemManager::CheckOSVersion()
 {
@@ -500,15 +490,14 @@ bool SystemManager::CheckOSVersion()
 	return true;
 }
 #endif
-#endif
 
 
 #if defined WINDOWS_PLATFORM
 
-typedef void (WINAPI* PGNSI)(LPSYSTEM_INFO);
-typedef BOOL(WINAPI* PGPI)(DWORD, DWORD, DWORD, DWORD, PDWORD);
+typedef void (WINAPI *PGNSI)(LPSYSTEM_INFO);
+typedef BOOL(WINAPI *PGPI)(DWORD, DWORD, DWORD, DWORD, PDWORD);
 
-bool SystemManager::CheckDXGIVersion(bool* REQUIRES_WINDOWS_VISTA_SP2, bool* REQUIRES_UPDATE_KB971644)
+bool SystemManager::CheckDXGIVersion(bool *REQUIRES_WINDOWS_VISTA_SP2, bool *REQUIRES_UPDATE_KB971644)
 //------------------------------------------------------------------
 {
 	*REQUIRES_WINDOWS_VISTA_SP2 = false;
@@ -529,19 +518,6 @@ bool SystemManager::CheckDXGIVersion(bool* REQUIRES_WINDOWS_VISTA_SP2, bool* REQ
 		DXGI_H = 1; DXGI_L = 1;
 		return true;
 	}
-#if defined _NOTUSED
-	// (WINDOWS < 6.0)?
-	if (MajorVersion < 6)
-	{
-		// Windows XP, Windows Server 2003, and earlier versions of OS do not support Direct3D 11!
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("WARNING: Windows XP, Windows Server 2003, and earlier versions of OS do not support Direct3D 10 or 11!\n"));
-#if defined DX9
-		return true;
-#else
-		return false; // Make it Fatal
-#endif
-	}
-#endif
 	// (WINDOWS = 6.0 with more than SP2) => Should only get here for Windows Vista or Windows Server 2008 SP2 (6.0.6002)
 	if (BuildVersion > 6002)
 	{
@@ -596,4 +572,3 @@ bool SystemManager::CheckDXGIVersion(bool* REQUIRES_WINDOWS_VISTA_SP2, bool* REQ
 
 #pragma warning( pop )
 
-#endif

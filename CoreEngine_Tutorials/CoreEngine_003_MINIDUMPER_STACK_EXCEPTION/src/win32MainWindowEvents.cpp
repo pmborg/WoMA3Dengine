@@ -25,7 +25,7 @@
 #include "OSmain_dir.h"
 
 #if defined WINDOWS_PLATFORM
-#include "winsystemclass.h"
+#include "OSengine.h"
 
 #if CORE_ENGINE_LEVEL >= 2 && defined USE_STATUSBAR
 #include "dxWinSystemClass.h"

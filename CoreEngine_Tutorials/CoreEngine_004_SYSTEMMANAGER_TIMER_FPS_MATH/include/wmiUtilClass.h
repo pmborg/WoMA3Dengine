@@ -31,12 +31,12 @@
 
 class wmiUtilClass
 {
-	//	-------------------------------------------------------------------------------------------
+//	-------------------------------------------------------------------------------------------
 public:
-	//	-------------------------------------------------------------------------------------------
-	UINT WomaIntegrityCheck = 1234567311;
-	wmiUtilClass();
-	~wmiUtilClass();
+//	-------------------------------------------------------------------------------------------
+    UINT WomaIntegrityCheck = 1234567311;
+    wmiUtilClass();
+    ~wmiUtilClass();
 
 	bool GetCpuTemperature();
 	bool GetTotalPhysicalMemory();
@@ -44,21 +44,21 @@ public:
 	STRING GetMonitorDescription(HMONITOR hMonitor);
 
 	// DATA:
-	std::wstring description;	// NO STRING
-	int AdapterRAM;
-	std::wstring AdapterDACType;// NO STRING
+    std::wstring description;	// NO STRING
+    int AdapterRAM;
+    std::wstring AdapterDACType;// NO STRING
 
 	float totalMemoryCapacity; // in GB
 
-	//	-------------------------------------------------------------------------------------------
+//	-------------------------------------------------------------------------------------------
 private:
-	//	-------------------------------------------------------------------------------------------
-	bool initWMI(STRING);
-	bool GetVideoControllerInfoFromWMI();
-	STRING GetMonitorDescriptonFromWMI(DWORD iMonitor);
+//	-------------------------------------------------------------------------------------------
+    bool initWMI(STRING);
+    bool GetVideoControllerInfoFromWMI();
+    STRING GetMonitorDescriptonFromWMI(DWORD iMonitor);
 
-	IWbemLocator* pLocator;
-	IWbemServices* pServices;
+	IWbemLocator *pLocator;
+    IWbemServices *pServices;
 };
 
 #endif

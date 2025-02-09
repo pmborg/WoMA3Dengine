@@ -1,10 +1,9 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: fpsClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,19 +16,19 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567311;
 #pragma once
 
 //////////////
 // INCLUDES //
 //////////////
-#include "platform.h"
 
+#include "main.h"
+
+#if defined WINDOWS_PLATFORM
 #include <mmsystem.h>
-
-/////////////
-// LINKING //
-/////////////
 #pragma comment(lib, "winmm.lib")
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: FpsClass
@@ -37,7 +36,7 @@
 class FpsClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567831;
+	UINT WomaIntegrityCheck = 1234567311;
 	FpsClass();
 	~FpsClass();
 
@@ -46,7 +45,7 @@ public:
 	int GetFps();
 
 private:
-	unsigned long m_startTime; // PRIVATE: HERE TO DEBUG
+	unsigned long m_startTime;
 	int m_fps, m_count;
 };
 

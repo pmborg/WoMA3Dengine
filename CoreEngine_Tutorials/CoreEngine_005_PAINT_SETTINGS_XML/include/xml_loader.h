@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: xml_loader.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,13 +17,17 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
+//WomaIntegrityCheck = 1234567311;
 
 #pragma once
 #pragma warning( disable : 5208 ) // warning C5208: unnamed class used in typedef name cannot declare members other than non-static data members, member enumerations, or member classes
 
-#define _CRT_SECURE_NO_WARNINGS
+// Convert from tyni v1 to v2: https://phabricator.mitk.org/T27985
+
 #include "platform.h"
+
+#include "tinyxml2.h"
+#pragma comment( lib, "C:\\WoMAengine2023\\x64\\Debug\\TinyXMLv2_LIBX64_d.lib" )
 
 #ifdef TIXML_USE_STL
 #include <iostream>
@@ -38,9 +42,8 @@ using namespace std;
 	_CrtMemState startMemState;
 	_CrtMemState endMemState;
 #endif
-
-#include "tinyxml.h"
-
+	
+/*
 #if UNICODE
 #ifdef X64
 	#if defined(_DEBUG) & !defined(NDEBUG)
@@ -78,6 +81,7 @@ using namespace std;
 	#endif
 #endif
 #endif
+*/
 
 #include "main.h"
 #include <vector>
@@ -93,7 +97,7 @@ typedef struct {
 
 	// Driver Settings:
 	// --------------------------------------------------------------------------------------------
-	char driverName[10], UseAllMonitors[10], useDoubleBuffering[10], vsync[10], msaa[10];
+	char driverName[10], UseAllMonitors[10], useDoubleBuffering[10], vsync[10];// , msaa[10];
 
 	// Map Settings:
 	// --------------------------------------------------------------------------------------------
@@ -134,10 +138,9 @@ public:
 	// --------------------------------------------------------------------------------------------
 	generalsettings GenSettings;
 
-	TiXmlElement* child_screen = NULL;
-	TiXmlElement* child_world = NULL;
-	TiXmlElement* child_object = NULL;
-
+	/*TiXmlElement*/ tinyxml2::XMLDocument* child_screen = NULL;
+	/*TiXmlElement*/ tinyxml2::XMLElement* child_world = NULL;
+	/*TiXmlElement*/ tinyxml2::XMLNode* child_object = NULL;
 
 };
 

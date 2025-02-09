@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: 8SystemFeatures.cpp
 // --------------------------------------------------------------------------------------------
@@ -19,7 +20,6 @@
 //WomaIntegrityCheck = 1234567311;
 
 #include "WinSystemClass.h"
-#if CORE_ENGINE_LEVEL >= 4
 #include "SystemFeatures.h"
 #include "ProcessorInfo.h"
 
@@ -234,10 +234,6 @@ STRING SystemFeatures::Initialize()
     // --------------------------------------------------------------------------------------------
     // Collect CPU feactures:
     // --------------------------------------------------------------------------------------------
-#if defined NOTES
-    // Check more HW info here :
-	// https://msdn.microsoft.com/en-us/library/hskdteyh.aspx
-#endif
 	#if defined WINDOWS_PLATFORM
     int CPUInfo[4] = { -1 };
 	#else
@@ -352,4 +348,3 @@ STRING SystemFeatures::Initialize()
     return displayAllCpuFeactures;
 }
 
-#endif

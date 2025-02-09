@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: winWomaSetupManager.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,18 +16,17 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567311;
 
-#include "WinSystemClass.h"
+#include "OSengine.h"
 #if defined CLIENT_SCENE_SETUP
-
-#include "main.h"
 #include "StateMachine.h"
 #include "WomaSetupManager.h"
 
 WomaSetupManager::WomaSetupManager() 
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567831;
+	WomaIntegrityCheck = 1234567311;
 
 	m_setupWnd = NULL;
 }
@@ -61,11 +60,8 @@ void WomaSetupManager::Shutdown()
 
 bool WomaSetupManager::Initialize(void* Driver)
 {
-	static int yPos_initial = 250;
+	static int yPos_initial = 100;// 250;
 	int xPos = 20, yPos = yPos_initial;
-#if defined _NOT
-	m_driver = (DX_CLASS*)Driver;
-#endif
 
 	m_setupWnd = SystemHandle->m_hWnd;
 	HWND windownTOP = m_setupWnd;
@@ -92,7 +88,9 @@ bool WomaSetupManager::Initialize(void* Driver)
 	else
 		SendMessage(hWndComboBox[0], CB_SETCURSEL, 0, NULL); //Default Value
 	// ---------------------------------------------------------------------------------------------
-
+	#if !defined USE_ALTENTER_SWAP_FULLSCREEN_WINDOWMODE
+	EnableWindow(hWndComboBox[0], false);
+	#endif
 	yPos += 30;
 
 	// 1 "UI Monitor:": ComboBox (lvl:5)
@@ -104,6 +102,9 @@ bool WomaSetupManager::Initialize(void* Driver)
 	hWndComboBox.push_back(NULL);
 	hWndComboBox[1] = CreateWindow(TEXT("COMBOBOX"), TEXT("UI Monitor"), Style,
 									xPos + 150, yPos, 200, 80, windownTOP, HMENU(201), SystemHandle->m_hinstance, NULL);
+
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+		EnableWindow(hWndComboBox[1], false);
 
 	TCHAR str[50];
 	for (int mon = 0; mon < SystemHandle->info.Count; mon++)
@@ -127,7 +128,7 @@ bool WomaSetupManager::Initialize(void* Driver)
 		hWndTitleLabelperMonitor.push_back(NULL);
 
 		TCHAR MONITOR[25] = { 0 };
-#if CORE_ENGINE_LEVEL >= 10
+	#if CORE_ENGINE_LEVEL >= 10
 		//Convert HW monitor list to windows orderder list:
 		{
 		int deviceIndex;
@@ -138,9 +139,9 @@ bool WomaSetupManager::Initialize(void* Driver)
 
 		StringCchPrintf(MONITOR, sizeof(MONITOR), TEXT("Resolution Mon: %d"), deviceIndex);
 		}
-#else
+	#else
 		StringCchPrintf(MONITOR, sizeof(MONITOR), TEXT("Resolution Mon: %d"), mon);
-#endif
+	#endif
 		hWndTitleLabelperMonitor[mon] = CreateWindow(TEXT("STATIC"), MONITOR, WS_CHILD | WS_VISIBLE | SS_LEFT | WS_BORDER,
 			xPos, yPos, 130, 20, windownTOP, HMENU((HMENU)(UINT_PTR)(mon * 100 + 1010)), SystemHandle->m_hinstance, NULL); //Note: https://stackoverflow.com/questions/3569859/questions-regarding-warning-c4312-type-cast
 
@@ -201,10 +202,13 @@ bool WomaSetupManager::Initialize(void* Driver)
 			SendMessage(hWndComboBoxperMonitor[mon], CB_SETCURSEL, 0, NULL); //Default Value
 		}
 #endif
-#if !defined DX_ENGINE
+//#if !defined DX_ENGINE
+		if (!SystemHandle->AppSettings->FULL_SCREEN)
+		{
 		EnableWindow(hWndTitleLabelperMonitor[mon], false);
 		EnableWindow(hWndComboBoxperMonitor[mon], false);
-#endif
+		}
+//#endif
 	  }
 	}
 //#endif
@@ -227,10 +231,10 @@ bool WomaSetupManager::Initialize(void* Driver)
 	StringCchPrintf(str, sizeof(str), TEXT("Disabled" ));
 	SendMessage(hWndComboBox[2], CB_ADDSTRING, 0, reinterpret_cast<LPARAM>(str));
 	SendMessage(hWndComboBox[2], CB_SETCURSEL, 0, NULL); //Default Value
-//#if CORE_ENGINE_LEVEL < 10
+
 	EnableWindow(hWndTitleLabel[2], false);
 	EnableWindow(hWndComboBox[2], false);
-//#endif
+
 	//if (!m_driver->mEnable4xMsaa) 
 	//	EnableWindow(hWndComboBox[2], FALSE); // Disable Options if mEnable4xMsaa is false.
 	// ---------------------------------------------------------------------------------------------
@@ -252,10 +256,10 @@ bool WomaSetupManager::Initialize(void* Driver)
 	SendMessage(hWndComboBox[3], CB_ADDSTRING, 3, reinterpret_cast<LPARAM>(TEXT("Low")));
 
 	SendMessage(hWndComboBox[3], CB_SETCURSEL, 0, NULL); //Default Value
-//#if CORE_ENGINE_LEVEL < 10
+
 	EnableWindow(hWndTitleLabel[3], false);
 	EnableWindow(hWndComboBox[3], false);
-//#endif 
+
 	// ---------------------------------------------------------------------------------------------
 	yPos += 30;
 
@@ -273,10 +277,10 @@ bool WomaSetupManager::Initialize(void* Driver)
 	SendMessage(hWndComboBox[4], CB_ADDSTRING, 1, reinterpret_cast<LPARAM>(TEXT("Good")));
 	SendMessage(hWndComboBox[4], CB_ADDSTRING, 2, reinterpret_cast<LPARAM>(TEXT("Fair")));
 	SendMessage(hWndComboBox[4], CB_ADDSTRING, 3, reinterpret_cast<LPARAM>(TEXT("Low")));
-//#if CORE_ENGINE_LEVEL < 10
+
 	EnableWindow(hWndTitleLabel[4], false);
 	EnableWindow(hWndComboBox[4], false);
-//#endif
+
 	// ---------------------------------------------------------------------------------------------
 
 	yPos += 30;
@@ -361,8 +365,8 @@ bool WomaSetupManager::Initialize(void* Driver)
 
 
 	// ---------------------------------------------------------------------------------------------
-	xPos = 500; yPos = yPos_initial;
-
+	//xPos = 500; yPos = yPos_initial;
+	yPos += 30;
 	// B1 "Monitor Vsync:": CheckBox (lvl10)
 	// ---------------------------------------------------------------------------------------------
 	hWndTitleLabel.push_back(NULL);
@@ -383,7 +387,7 @@ bool WomaSetupManager::Initialize(void* Driver)
 	EnableWindow(hWndCheckBox[0], false);
 #endif
 	// ---------------------------------------------------------------------------------------------
-	yPos += 30;
+	yPos += 30*2;
 
 	// B2 "Network:": CheckBox
 	// ---------------------------------------------------------------------------------------------
@@ -421,18 +425,18 @@ bool WomaSetupManager::Initialize(void* Driver)
 	// ---------------------------------------------------------------------------------------------
 	hWndTitleLabel.push_back(NULL);
 	//11
-	hWndTitleLabel[hWndTitleLabelIdx++] = CreateWindow(TEXT("STATIC"), TEXT("Background Music:"),  WS_CHILD | WS_VISIBLE | SS_LEFT | WS_BORDER,
+	hWndTitleLabel[hWndTitleLabelIdx++] = CreateWindow(TEXT("STATIC"), TEXT("Music:"),  WS_CHILD | WS_VISIBLE | SS_LEFT | WS_BORDER,
 									xPos, yPos, 130, 20, windownTOP, HMENU(110), SystemHandle->m_hinstance, NULL);
 
 	hWndCheckBox.push_back(NULL);
-	hWndCheckBox[3] = CreateWindow(TEXT("BUTTON"), TEXT("Background Music"), WS_VISIBLE | WS_CHILD | BS_AUTOCHECKBOX,
+	hWndCheckBox[3] = CreateWindow(TEXT("BUTTON"), TEXT("Music"), WS_VISIBLE | WS_CHILD | BS_AUTOCHECKBOX,
 						 xPos + 150, yPos+4, 12, 12, windownTOP, HMENU(303), SystemHandle->m_hinstance, NULL);
-	EnableWindow(hWndTitleLabel[10], false);
+	EnableWindow(hWndTitleLabel[11], false);
 	EnableWindow(hWndCheckBox[3], false);
 
-	yPos += 30*4;
+	yPos += 30*2;
 	// ---------------------------------------------------------------------------------------------
-	// Button START:
+	// Button ON / CANCEL:
 	// ---------------------------------------------------------------------------------------------
 	m_hBtnOK = CreateWindow(TEXT("BUTTON"), TEXT("OK"), WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON | WS_TABSTOP,
 								xPos, yPos, 80, 20, windownTOP, (HMENU) ButtonStart, SystemHandle->m_hinstance, NULL);

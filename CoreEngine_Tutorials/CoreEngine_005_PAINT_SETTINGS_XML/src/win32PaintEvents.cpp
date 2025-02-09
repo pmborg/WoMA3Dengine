@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: win32PaintEvents.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,14 +17,17 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Paint the main window depending of engine state screen page.
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
+//WomaIntegrityCheck = 1234567311;
 
-#include "main.h"
-#include "WinSystemClass.h"
+#include "OSengine.h"
 #include "OSmain_dir.h"
-#include "mem_leak.h"
 
+
+#if CORE_ENGINE_LEVEL >= 2 && defined WINDOWS_PLATFORM 
+
+#if CORE_ENGINE_LEVEL >= 4 && defined USE_USER_SETUP
 int		MainWindowPaint(UINT monitor);
+#endif
 
 
 // ---------------------------------------------------------------------------------------------
@@ -39,8 +42,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 		break;
 	}
 
+#if CORE_ENGINE_LEVEL >= 4 && defined USE_USER_SETUP
 	case WM_PAINT:
-	#if defined _DEBUG
+	#if defined USE_STATUSBAR //#if defined _DEBUG
 		if (SystemHandle->m_hWnd) {
 			if (SystemHandle->statusbar)
 				DestroyWindow(SystemHandle->statusbar);
@@ -55,6 +59,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 			MainWindowPaint(i);
 		break;
 	}
+#endif
 
 #ifdef _EXTRA_DEBUG
 	default:
@@ -67,23 +72,30 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 	return SystemHandle->MessageHandler(hwnd, umessage, wparam, lparam);
 }
 
+#if CORE_ENGINE_LEVEL >= 4 && defined USE_USER_SETUP
 void PaintSetup(HDC hdc, HDC hdcMem, HFONT font_title, HFONT font, int scr) 
 {
 	// Paint all text Fonts:
 	// ---------------------------------------------------------------------------------------------
-	if (WOMA::game_state == GAME_SETUP) {
+	if (WOMA::game_state == GAME_SETUP) 
+	{
 		SelectObject(hdcMem, font_title);		//Select the Font to Render
 
 		const TCHAR SETUP[] = TEXT("S E T U P");
-		TextOut(hdcMem, 50, 50, SETUP, (int)_tcslen(SETUP));
+		TextOut(hdcMem, 25, 25, SETUP, (int)_tcslen(SETUP));
+
 		BitBlt(hdc, 0, 0, SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT, hdcMem, 0, 0, SRCCOPY);
-	}
-	else {
-		SelectObject(hdcMem, font);		//Select the Font to Render
+	} else {
+		HGDIOBJ obj = SelectObject(hdcMem, font);		//Select the Font to Render
 
 		if (scr >= 0)
 		{
 			int TextToPrintSize = (int)SystemHandle->TextToPrint[scr].size();
+
+			if (TextToPrintSize == 0)
+				SystemHandle->InitializeSystemScreen(10, 10);		// SETUP SCREEN: F1,F2,F3,F4,F5,F6
+
+			TextToPrintSize = (int)SystemHandle->TextToPrint[scr].size();
 			for (size_t i = 0; i < TextToPrintSize; i++)
 			{
 				TextOut(hdcMem, SystemHandle->TextToPrint[scr][i].x, SystemHandle->TextToPrint[scr][i].y,
@@ -103,9 +115,10 @@ int MainWindowPaint(UINT monitor)
 	// DWORD iQuality, DWORD iPitchAndFamily, _In_opt_ LPCSTR pszFaceName);
 
 	/*due RESIZE: cant be static!!!*/
-	HFONT font = CreateFont((int)SystemHandle->fontSizeX, 0, 0, 0, (int)SystemHandle->fontSizeY, FALSE,
-		FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-		ANTIALIASED_QUALITY, DEFAULT_PITCH, TEXT("Calibri"));
+	HFONT font = CreateFont((int)SystemHandle->fontSizeX, 0, 0, 0, 
+							(int)SystemHandle->fontSizeY, FALSE,
+							FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+							ANTIALIASED_QUALITY, DEFAULT_PITCH, TEXT("Calibri"));
 
 	HFONT font_title = CreateFont(50, 0, 0, 0, 50, FALSE,
 		FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
@@ -125,6 +138,8 @@ int MainWindowPaint(UINT monitor)
 		break;
 	}
 
+#if defined  (WINDOWS_PLATFORM)
+
 	// Paint BackGround Image:
 	// ---------------------------------------------------------------------------------------------
 
@@ -138,6 +153,9 @@ int MainWindowPaint(UINT monitor)
 				if (!SystemHandle->womaSetup->m_setupWnd)
 					SystemHandle->womaSetup->Initialize(NULL);
 
+	//#if defined ALLOW_LOADING_SPLASH
+	//		PaintSplashScreen(hdc); // Loading Splash Screen.
+	//#endif
 			break;
 	}//switch
 
@@ -159,7 +177,8 @@ int MainWindowPaint(UINT monitor)
 	{
 		// Paint all text:
 		// ---------------------------------------------------------------------------------------------
-		for (size_t i = 0; i < SystemHandle->TextToPrint[0].size(); i++)
+		int size = (int)SystemHandle->TextToPrint[0].size();
+		for (size_t i = 0; i < size; i++)
 		{
 			TextOut(hdcMem, SystemHandle->TextToPrint[0][i].x, SystemHandle->TextToPrint[0][i].y,
 				SystemHandle->TextToPrint[0][i].label.c_str(), (int)_tcslen(SystemHandle->TextToPrint[0][i].label.c_str()));
@@ -171,7 +190,11 @@ int MainWindowPaint(UINT monitor)
 
 // ---------------------------------------------------------------------------------------------
 	EndPaint(SystemHandle->m_hWnd, &ps);
+#endif
 
 	return scr;
 }
 
+#endif
+
+#endif

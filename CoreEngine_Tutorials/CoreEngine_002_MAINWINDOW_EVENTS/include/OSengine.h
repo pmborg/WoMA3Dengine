@@ -23,7 +23,6 @@
 //   ANDROID_PLATFORM
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234567311;
-#pragma once
 
 #if NOTES
                   ----------------  ---------                       ----------------
@@ -96,13 +95,14 @@
 	ZipUtils_LIB
 #endif
 
+#pragma once
 #include "platform.h"
 		
 #include "stateMachine.h"
 
 #if !defined NewWomaEngine
 #if defined WINDOWS_PLATFORM
-	#include "winsystemclass.h"
+	#include "winSystemClass.h"
 	#define SYSTEM WinSystemClass	        // Are we a Basic Windows Instance?
 #endif
 
