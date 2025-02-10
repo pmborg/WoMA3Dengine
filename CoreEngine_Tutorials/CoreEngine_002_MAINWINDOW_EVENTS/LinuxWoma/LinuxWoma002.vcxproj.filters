@@ -57,22 +57,22 @@
     <Filter Include="LINUX">
       <UniqueIdentifier>{0d5421f2-7f3d-426e-bb19-40ef91570fb8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LINUX\000">
-      <UniqueIdentifier>{e80f3ac4-029b-4532-8cf3-86e9a317e194}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Include\000">
       <UniqueIdentifier>{116e7ec4-ee33-4f5b-85f0-de7d0d0e1e8e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Include\001">
       <UniqueIdentifier>{e5ab8ec5-bed4-4774-beae-a9b272c9cace}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LINUX\001">
-      <UniqueIdentifier>{a0676484-3c98-4c6e-a82e-de63229974e5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Include\002">
       <UniqueIdentifier>{b25e12bd-93eb-42fd-a801-1efb673ff65f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LINUX\002">
+    <Filter Include="src\000">
+      <UniqueIdentifier>{e80f3ac4-029b-4532-8cf3-86e9a317e194}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\001">
+      <UniqueIdentifier>{a0676484-3c98-4c6e-a82e-de63229974e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\002">
       <UniqueIdentifier>{55dc7418-4ff4-44df-a4d4-68b24db7c115}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -85,28 +85,28 @@
       <Filter>LINUX</Filter>
     </ClCompile>
     <ClCompile Include="..\linux\src\linuxsystemclass.cpp">
-      <Filter>LINUX\000</Filter>
+      <Filter>src\000</Filter>
     </ClCompile>
     <ClCompile Include="..\src\default_settings_xml.cpp">
-      <Filter>LINUX\000</Filter>
+      <Filter>src\000</Filter>
     </ClCompile>
     <ClCompile Include="..\src\OSengine.cpp">
-      <Filter>LINUX\000</Filter>
+      <Filter>src\000</Filter>
     </ClCompile>
     <ClCompile Include="..\src\SystemClass.cpp">
-      <Filter>LINUX\000</Filter>
+      <Filter>src\000</Filter>
     </ClCompile>
     <ClCompile Include="..\src\language.cpp">
-      <Filter>LINUX\001</Filter>
+      <Filter>src\001</Filter>
     </ClCompile>
     <ClCompile Include="..\src\log.cpp">
-      <Filter>LINUX\001</Filter>
+      <Filter>src\001</Filter>
     </ClCompile>
     <ClCompile Include="..\src\mem_leak.cpp">
-      <Filter>LINUX\001</Filter>
+      <Filter>src\001</Filter>
     </ClCompile>
     <ClCompile Include="..\src\OSmain_dir.cpp">
-      <Filter>LINUX\001</Filter>
+      <Filter>src\001</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

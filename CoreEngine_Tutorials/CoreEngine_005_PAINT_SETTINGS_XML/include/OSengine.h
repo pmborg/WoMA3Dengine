@@ -342,11 +342,16 @@ struct File {
 		androidSeek(_A, offset, SEEK_CUR);
 	}
 };
+#endif
 
+#if defined LINUX_PLATFORM
+void ItoA(int value, char* dest, int _Radix);
 #endif
 
 #if defined ANDROID_PLATFORM
 extern STRING LOAD_ASSET_SAVE_TO_CACHE(TCHAR* XMLFILE);
+int woma_atoi(TCHAR* _String);
+void woma_itoa(char** _String, int in, int system);
 #endif
 
 #endif

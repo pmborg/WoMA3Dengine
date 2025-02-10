@@ -24,16 +24,8 @@
 //WomaIntegrityCheck = 1234567311;
  
 #define _CRT_SECURE_NO_WARNINGS
-//#include "xml_loader.h"
 #include "OSengine.h"
 
-/*
-#if CORE_ENGINE_LEVEL < 10
-	#include "winsystemclass.h"			// Are we a Windows Instance?
-#else
-	#include "dxwinsystemclass.h"			// Are we a Windows Instance?
-#endif
-*/
 #include "xml_loader.h"
 
 XMLloader::XMLloader()
@@ -44,45 +36,6 @@ XMLloader::~XMLloader()
 {
 }
 
-int OPENGL_defaultMonitor()
-{
-	// Check if we have a monitor
-	int default_mon = 0;
-
-	// Iterate over all displays and check if we have a valid one.
-	//  If the device ID contains the string default_monitor no monitor is attached.
-	DISPLAY_DEVICE dd;
-	dd.cb = sizeof(dd);
-	int deviceIndex = 0;
-	while (EnumDisplayDevices(0, deviceIndex, &dd, 0))
-	{
-		STRING deviceName = dd.DeviceName;
-		int monitorIndex = 0;
-		while (EnumDisplayDevices(deviceName.c_str(), monitorIndex, &dd, 0))
-		{
-			size_t len = _tcslen(dd.DeviceID);
-			for (size_t i = 0; i < len; ++i)
-				dd.DeviceID[i] = _totlower(dd.DeviceID[i]);
-			printf("%s\n", dd.DeviceID);
-			//monitor\aci24ac\{4d36e96e-e325-11ce-bfc1-08002be10318}\0002   --> System > Display: 1 (default)
-			//monitor\dela198\{4d36e96e-e325-11ce-bfc1-08002be10318}\0003   --> System > Display: 2
-			//monitor\aus24a1\{4d36e96e-e325-11ce-bfc1-08002be10318}\0001   --> System > Display: 3
-
-			STRING deviceID = dd.DeviceID;
-			int i = (int)deviceID.find_last_of('\\');
-			STRING ID = deviceID.substr(i + 1, 4);
-			int id = std::stoi(ID) - 1; //"-1" Convert from 1, 2, 3 to 0, 1, 2... Default of the above sample is now: 1
-			if (monitorIndex == 0) {
-				return id;
-			}
-
-			++monitorIndex;
-		}
-		++deviceIndex;
-	}
-
-	return default_mon;
-}
 
 // -------------------------------------------------------------------------------------------
 bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char

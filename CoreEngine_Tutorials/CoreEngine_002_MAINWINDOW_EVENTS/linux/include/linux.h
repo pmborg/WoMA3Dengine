@@ -16,9 +16,6 @@
 // --------------------------------------------------------------------------------------------
 #pragma once
 
-// MORE INFO IF NEEDED:
-// "D:\WoMAengine2014\EXTRA\DX12 Samples\CRYENGINE-release-5.4\CRYENGINE-release\Code\CryEngine\CryCommon\CryCore\Platform"
-
 #ifndef __LINUX_H__
 
 //#include "platform.h"
@@ -41,28 +38,25 @@
 #include <string.h>
 #include <stdarg.h>
 
-//Compatibility layer for some MSVC symbols Used:
-//#include "windef.h"
+typedef void				VOID;
+typedef int					INT;
+typedef unsigned int		UINT;
+typedef unsigned short		WORD;
+typedef unsigned int		DWORD;
+typedef unsigned long		ULONG;
+typedef unsigned char		BYTE;
+typedef long				LONG;
+typedef short				SHORT;
+typedef unsigned short		USHORT;
+typedef char				CHAR;
+typedef unsigned char		UCHAR;
 
-typedef void            VOID;
-typedef int             INT;
-typedef unsigned int    UINT;
-typedef unsigned short  WORD;
-typedef unsigned int    DWORD;
-typedef unsigned long   ULONG;
-typedef unsigned char   BYTE;
-typedef long            LONG;
-typedef short           SHORT;
-typedef unsigned short  USHORT;
-typedef char            CHAR;
-typedef unsigned char   UCHAR;
-
-typedef unsigned short  WCHAR;
-typedef int             WIN_BOOL;
-typedef double          DATE;
-typedef double          DOUBLE;
-typedef long long       LONGLONG;
-typedef unsigned long long   ULONGLONG;
+typedef unsigned short		WCHAR;
+typedef int					WIN_BOOL;
+typedef double				DATE;
+typedef double				DOUBLE;
+typedef long long			LONGLONG;
+typedef unsigned long long  ULONGLONG;
 #define HWND UINT
 
 // PLATFORM_LINUX:
@@ -227,7 +221,7 @@ extern bool download(const std::string url, const std::string file_path);
 
 extern void strcpy_s(char *strDestination, const char *strSource);
 extern void strcpy_s(char *strDestination, UINT numberOfElements, const char *strSource);
-extern void ItoA (int value, char* dest, int _Radix=10);
+//extern void ItoA (int value, char* dest, int _Radix=10);
 
 extern bool QueryPerformanceFrequency(LARGE_INTEGER *frequency);
 extern bool QueryPerformanceCounter(LARGE_INTEGER *performance_count);

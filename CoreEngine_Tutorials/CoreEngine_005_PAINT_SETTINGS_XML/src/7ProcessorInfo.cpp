@@ -25,7 +25,7 @@
 // --------------------------------------------------------------------------------------------
 // Includes:
 // --------------------------------------------------------------------------------------------
-#include "ProcessorInfo.h"
+#include "processorInfo.h"
 void cpuID(unsigned regs[4], unsigned i) 
 {
 #if defined WINDOWS_PLATFORM

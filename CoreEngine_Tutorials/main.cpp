@@ -65,7 +65,6 @@
 
 #include "OSengine.h"
 
-
 int Command = 0;
 
 #if defined WINDOWS_PLATFORM && !defined ANDROID_PLATFORM
