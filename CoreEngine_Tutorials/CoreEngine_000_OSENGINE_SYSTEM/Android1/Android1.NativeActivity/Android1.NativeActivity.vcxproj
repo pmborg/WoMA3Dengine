@@ -42,7 +42,7 @@
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
     <ApplicationType>Android</ApplicationType>
     <ApplicationTypeRevision>3.0</ApplicationTypeRevision>
-    <ProjectName>Android1.NativeActivity</ProjectName>
+    <ProjectName>Android000.NativeActivity</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -224,6 +224,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\main.h" />
     <ClInclude Include="C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_000_OSENGINE_SYSTEM\include\default_settings_xml.h" />
     <ClInclude Include="C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_000_OSENGINE_SYSTEM\include\SystemClass.h" />
     <ClInclude Include="AndroidNewSystemClass.h" />

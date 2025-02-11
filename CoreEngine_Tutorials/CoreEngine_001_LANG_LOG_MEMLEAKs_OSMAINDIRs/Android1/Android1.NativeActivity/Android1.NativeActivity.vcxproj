@@ -35,14 +35,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{418A0855-A6DE-4E98-969D-1E98D1A76066}</ProjectGuid>
+    <ProjectGuid>{EF51F0D5-F792-448D-97D8-58CE24D52E0E}</ProjectGuid>
     <Keyword>Android</Keyword>
     <RootNamespace>Android1</RootNamespace>
     <DefaultLanguage>en-US</DefaultLanguage>
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
     <ApplicationType>Android</ApplicationType>
     <ApplicationTypeRevision>3.0</ApplicationTypeRevision>
-    <ProjectName>Android1.NativeActivity</ProjectName>
+    <ProjectName>Android001.NativeActivity</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">

@@ -21,6 +21,9 @@
     <Filter Include="src\001">
       <UniqueIdentifier>{5c3e6e66-5974-4846-8f6b-6c257b23d36a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="WINDOWS">
+      <UniqueIdentifier>{4bf149af-698d-4540-ab08-c2cb6b6f8385}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\standard_platform.h">
@@ -41,9 +44,6 @@
     <ClInclude Include="include\SystemClass.h">
       <Filter>include\000</Filter>
     </ClInclude>
-    <ClInclude Include="include\winSystemClass.h">
-      <Filter>include\000</Filter>
-    </ClInclude>
     <ClInclude Include="include\language.h">
       <Filter>include\001</Filter>
     </ClInclude>
@@ -61,6 +61,9 @@
     </ClInclude>
     <ClInclude Include="..\tech-level.h" />
     <ClInclude Include="..\woma_engine_assets.h" />
+    <ClInclude Include="include\winSystemClass.h">
+      <Filter>WINDOWS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
@@ -71,9 +74,6 @@
       <Filter>src\000</Filter>
     </ClCompile>
     <ClCompile Include="src\SystemClass.cpp">
-      <Filter>src\000</Filter>
-    </ClCompile>
-    <ClCompile Include="src\winSystemClass.cpp">
       <Filter>src\000</Filter>
     </ClCompile>
     <ClCompile Include="src\language.cpp">
@@ -87,6 +87,9 @@
     </ClCompile>
     <ClCompile Include="src\OSmain_dir.cpp">
       <Filter>src\001</Filter>
+    </ClCompile>
+    <ClCompile Include="src\winSystemClass.cpp">
+      <Filter>WINDOWS</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

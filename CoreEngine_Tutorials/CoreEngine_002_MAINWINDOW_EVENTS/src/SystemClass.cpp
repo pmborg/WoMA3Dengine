@@ -23,18 +23,18 @@
 #pragma warning( disable : 4477 )
 #pragma warning( disable : 4838 )
 
-#include "SystemClass.h"
-#include "OSengine.h" //#include "WinSystemClass.h"
-#include "default_settings_xml.h"
-#include "woma_macros.h"
+#include "OSengine.h"
+//#include "SystemClass.h"
+//#include "default_settings_xml.h"
+//#include "woma_macros.h"
 
-#include "OSmain_dir.h"
+//#include "OSmain_dir.h"
 
 #if defined WINDOWS_PLATFORM
-#include "language.h"
+//#include "language.h"
 #endif
 
-#include "stateMachine.h"
+//#include "stateMachine.h"
 
 #define GET_NAME(NAME) #NAME
 #define GET_VERSION(VERSION) GET_NAME(VERSION)
@@ -209,55 +209,3 @@ void SystemClass::Shutdown()
 #if defined ANDROID_PLATFORM
 extern android_app* app;
 #endif
-
-void SystemClass::FrameUpdate()
-{
-
-#if defined LINUX_PLATFORM
-if (WOMA::game_state == GAME_RUN)
-{
-	/*
-	int err = XGrabPointer(Win.display, Win.window,
-							True, ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
-							GrabModeAsync, GrabModeAsync,
-							Win.window, None, CurrentTime);
-
-	processXEvents(wm_protocols, wm_delete_window);
-	XUngrabPointer(Win.display, CurrentTime);
-
-	#define mousex event.xbutton.x_root 
-	#define mousey event.xbutton.y_root
-	//if (event.xbutton.button == Button1)
-	//	_tprintf("mousex: %d mouseY: %d\n", (mousex) - WOMA::settings.WINDOW_Xpos, (mousey) -WOMA::settings.WINDOW_Ypos);
-	
-	if ((mousex < 100 && mousey < 100) && (mousex > 0 && mousey > 0))
-	{
-		RENDER_PAGE = 25;
-		WOMA::previous_game_state = GAME_IMGUI;
-		WOMA::game_state = ENGINE_RESTART;
-		return;
-	}
-	*/
-}
-#endif
-
-#if defined ANDROID_PLATFORM && !defined NewWomaEngine
-	if (WOMA::game_state == GAME_RUN)
-	{
-		struct womaengine* engine = (struct womaengine*)app->userData;
-
-		#define mousex engine->state.x
-		#define mousey engine->state.y
-		//_tprintf("mousex: %d mouseY: %d\n", mousex, mousey);
-		if ((mousex < 100 && mousey < 100) && (mousex > 0 && mousey > 0))
-		{
-			RENDER_PAGE = 25;
-			WOMA::previous_game_state = GAME_IMGUI;
-			WOMA::game_state = ENGINE_RESTART;
-			return;
-		}
-	}
-#endif
-
-}
-

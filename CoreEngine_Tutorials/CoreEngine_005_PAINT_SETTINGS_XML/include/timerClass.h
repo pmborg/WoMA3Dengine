@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // ----------------------------------------------------------------------------------------------
 // Filename: timerClass.h
 // --------------------------------------------------------------------------------------------
@@ -32,6 +31,7 @@
 //////////////
 #include "main.h" // INT64
 
+#if defined  USE_TIMER_CLASS
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: TimerClass
 ////////////////////////////////////////////////////////////////////////////////
@@ -49,14 +49,25 @@ public:
 public:
 	float m_ticksPerMs = 1;
 
-	UINT64 currentTime=0, m_startEngineTime = 0;
+#if !defined ANDROID_PLATFORM
+	UINT64 currentTime = 0, m_startEngineTime = 0;
 	float m_ticksPerUs = 0;
+#else
+	double currentTime, m_startEngineTime;
+#endif
 
 private:
+#if !defined ANDROID_PLATFORM
 	INT64 m_frequency = 0;
+#endif
 
 	double m_frameTime = 0;
 
+#if !defined ANDROID_PLATFORM
 	INT64 m_startTime = 0;
-	
+#else
+	double  m_startTime;
+#endif
+
 };
+#endif

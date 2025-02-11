@@ -39,6 +39,9 @@
     <Filter Include="src\004">
       <UniqueIdentifier>{f01ff116-8e68-4f6b-9313-eca52141b7ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="WINDOWS">
+      <UniqueIdentifier>{38d3c4c4-89ec-471a-9c0b-e29cffe973bf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core_engine_level.h" />
@@ -58,9 +61,6 @@
       <Filter>include\000</Filter>
     </ClInclude>
     <ClInclude Include="include\SystemClass.h">
-      <Filter>include\000</Filter>
-    </ClInclude>
-    <ClInclude Include="include\winSystemClass.h">
       <Filter>include\000</Filter>
     </ClInclude>
     <ClInclude Include="include\woma_macros.h">
@@ -128,6 +128,9 @@
     </ClInclude>
     <ClInclude Include="include\wmiUtilClass.h">
       <Filter>include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="include\winSystemClass.h">
+      <Filter>WINDOWS</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

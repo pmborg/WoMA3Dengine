@@ -27,6 +27,9 @@
     <Filter Include="src\002">
       <UniqueIdentifier>{1b2078c6-4a75-4d8c-899a-2586b4137517}</UniqueIdentifier>
     </Filter>
+    <Filter Include="WINDOWS">
+      <UniqueIdentifier>{c4cc2364-ca5d-47ca-8c28-c4497e318d94}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\standard_platform.h">
@@ -45,9 +48,6 @@
       <Filter>include\000</Filter>
     </ClInclude>
     <ClInclude Include="include\SystemClass.h">
-      <Filter>include\000</Filter>
-    </ClInclude>
-    <ClInclude Include="include\winSystemClass.h">
       <Filter>include\000</Filter>
     </ClInclude>
     <ClInclude Include="include\language.h">
@@ -73,6 +73,9 @@
     <ClInclude Include="include\WindowPaintClass.h">
       <Filter>include\002</Filter>
     </ClInclude>
+    <ClInclude Include="include\winSystemClass.h">
+      <Filter>WINDOWS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
@@ -83,9 +86,6 @@
       <Filter>src\000</Filter>
     </ClCompile>
     <ClCompile Include="src\SystemClass.cpp">
-      <Filter>src\000</Filter>
-    </ClCompile>
-    <ClCompile Include="src\winSystemClass.cpp">
       <Filter>src\000</Filter>
     </ClCompile>
     <ClCompile Include="src\language.cpp">
@@ -105,6 +105,9 @@
     </ClCompile>
     <ClCompile Include="src\win32PaintEvents.cpp">
       <Filter>src\002</Filter>
+    </ClCompile>
+    <ClCompile Include="src\winSystemClass.cpp">
+      <Filter>WINDOWS</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

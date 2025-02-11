@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.35425.106
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35707.178 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Android1", "Android1", "{104D7E8B-A013-4238-BFB2-8F4D251A6CC7}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Android1.NativeActivity", "Android1\Android1.NativeActivity\Android1.NativeActivity.vcxproj", "{418A0855-A6DE-4E98-969D-1E98D1A76066}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Android001.NativeActivity", "Android1\Android1.NativeActivity\Android1.NativeActivity.vcxproj", "{EF51F0D5-F792-448D-97D8-58CE24D52E0E}"
 EndProject
-Project("{39E2626F-3545-4960-A6E8-258AD8476CE5}") = "Android1.Packaging", "Android1\Android1.Packaging\Android1.Packaging.androidproj", "{C92AA3B0-F865-43B5-9873-4B2F3EB65B14}"
+Project("{39E2626F-3545-4960-A6E8-258AD8476CE5}") = "Android001.Packaging", "Android1\Android1.Packaging\Android001.Packaging.androidproj", "{C92AA3B0-F865-43B5-9873-4B2F3EB65B14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,22 +21,22 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{418A0855-A6DE-4E98-969D-1E98D1A76066}.Debug|ARM.ActiveCfg = Debug|ARM
-		{418A0855-A6DE-4E98-969D-1E98D1A76066}.Debug|ARM.Build.0 = Debug|ARM
-		{418A0855-A6DE-4E98-969D-1E98D1A76066}.Debug|ARM64.ActiveCfg = Debug|ARM64
-		{418A0855-A6DE-4E98-969D-1E98D1A76066}.Debug|ARM64.Build.0 = Debug|ARM64
-		{418A0855-A6DE-4E98-969D-1E98D1A76066}.Debug|x64.ActiveCfg = Debug|x64
-		{418A0855-A6DE-4E98-969D-1E98D1A76066}.Debug|x64.Build.0 = Debug|x64
-		{418A0855-A6DE-4E98-969D-1E98D1A76066}.Debug|x86.ActiveCfg = Debug|x86
-		{418A0855-A6DE-4E98-969D-1E98D1A76066}.Debug|x86.Build.0 = Debug|x86
-		{418A0855-A6DE-4E98-969D-1E98D1A76066}.Release|ARM.ActiveCfg = Release|ARM
-		{418A0855-A6DE-4E98-969D-1E98D1A76066}.Release|ARM.Build.0 = Release|ARM
-		{418A0855-A6DE-4E98-969D-1E98D1A76066}.Release|ARM64.ActiveCfg = Release|ARM64
-		{418A0855-A6DE-4E98-969D-1E98D1A76066}.Release|ARM64.Build.0 = Release|ARM64
-		{418A0855-A6DE-4E98-969D-1E98D1A76066}.Release|x64.ActiveCfg = Release|x64
-		{418A0855-A6DE-4E98-969D-1E98D1A76066}.Release|x64.Build.0 = Release|x64
-		{418A0855-A6DE-4E98-969D-1E98D1A76066}.Release|x86.ActiveCfg = Release|x86
-		{418A0855-A6DE-4E98-969D-1E98D1A76066}.Release|x86.Build.0 = Release|x86
+		{EF51F0D5-F792-448D-97D8-58CE24D52E0E}.Debug|ARM.ActiveCfg = Debug|ARM
+		{EF51F0D5-F792-448D-97D8-58CE24D52E0E}.Debug|ARM.Build.0 = Debug|ARM
+		{EF51F0D5-F792-448D-97D8-58CE24D52E0E}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{EF51F0D5-F792-448D-97D8-58CE24D52E0E}.Debug|ARM64.Build.0 = Debug|ARM64
+		{EF51F0D5-F792-448D-97D8-58CE24D52E0E}.Debug|x64.ActiveCfg = Debug|x64
+		{EF51F0D5-F792-448D-97D8-58CE24D52E0E}.Debug|x64.Build.0 = Debug|x64
+		{EF51F0D5-F792-448D-97D8-58CE24D52E0E}.Debug|x86.ActiveCfg = Debug|x86
+		{EF51F0D5-F792-448D-97D8-58CE24D52E0E}.Debug|x86.Build.0 = Debug|x86
+		{EF51F0D5-F792-448D-97D8-58CE24D52E0E}.Release|ARM.ActiveCfg = Release|ARM
+		{EF51F0D5-F792-448D-97D8-58CE24D52E0E}.Release|ARM.Build.0 = Release|ARM
+		{EF51F0D5-F792-448D-97D8-58CE24D52E0E}.Release|ARM64.ActiveCfg = Release|ARM64
+		{EF51F0D5-F792-448D-97D8-58CE24D52E0E}.Release|ARM64.Build.0 = Release|ARM64
+		{EF51F0D5-F792-448D-97D8-58CE24D52E0E}.Release|x64.ActiveCfg = Release|x64
+		{EF51F0D5-F792-448D-97D8-58CE24D52E0E}.Release|x64.Build.0 = Release|x64
+		{EF51F0D5-F792-448D-97D8-58CE24D52E0E}.Release|x86.ActiveCfg = Release|x86
+		{EF51F0D5-F792-448D-97D8-58CE24D52E0E}.Release|x86.Build.0 = Release|x86
 		{C92AA3B0-F865-43B5-9873-4B2F3EB65B14}.Debug|ARM.ActiveCfg = Debug|ARM
 		{C92AA3B0-F865-43B5-9873-4B2F3EB65B14}.Debug|ARM.Build.0 = Debug|ARM
 		{C92AA3B0-F865-43B5-9873-4B2F3EB65B14}.Debug|ARM.Deploy.0 = Debug|ARM
@@ -66,7 +66,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{418A0855-A6DE-4E98-969D-1E98D1A76066} = {104D7E8B-A013-4238-BFB2-8F4D251A6CC7}
+		{EF51F0D5-F792-448D-97D8-58CE24D52E0E} = {104D7E8B-A013-4238-BFB2-8F4D251A6CC7}
 		{C92AA3B0-F865-43B5-9873-4B2F3EB65B14} = {104D7E8B-A013-4238-BFB2-8F4D251A6CC7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

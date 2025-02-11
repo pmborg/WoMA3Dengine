@@ -574,7 +574,6 @@ bool SystemClass::SystemCheck()
 	}
 
 	WOMA_LOGManager_DebugMSG("\n");
-	//#endif
 
 	return true;
 }

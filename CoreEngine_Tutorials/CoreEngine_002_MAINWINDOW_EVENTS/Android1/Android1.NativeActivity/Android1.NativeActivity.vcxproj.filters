@@ -16,15 +16,6 @@
     <ClInclude Include="..\..\include\SystemClass.h">
       <Filter>Include\000</Filter>
     </ClInclude>
-    <ClInclude Include="Android.h">
-      <Filter>Core000\Android</Filter>
-    </ClInclude>
-    <ClInclude Include="android_native_app_glue.h">
-      <Filter>Core000\Android</Filter>
-    </ClInclude>
-    <ClInclude Include="AndroidNewSystemClass.h">
-      <Filter>Include\000</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\language.h">
       <Filter>Include\001</Filter>
     </ClInclude>
@@ -45,28 +36,28 @@
     <ClInclude Include="..\..\include\default_settings_xml.h">
       <Filter>Include\000</Filter>
     </ClInclude>
-    <ClInclude Include="defs.h">
-      <Filter>Core000\Android</Filter>
-    </ClInclude>
-    <ClInclude Include="pch.h">
-      <Filter>Core000\Android</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\stateMachine.h">
       <Filter>Include\002</Filter>
+    </ClInclude>
+    <ClInclude Include="Android.h">
+      <Filter>ANDROID</Filter>
+    </ClInclude>
+    <ClInclude Include="android_native_app_glue.h">
+      <Filter>ANDROID</Filter>
+    </ClInclude>
+    <ClInclude Include="defs.h">
+      <Filter>ANDROID</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>ANDROID</Filter>
+    </ClInclude>
+    <ClInclude Include="AndroidNewSystemClass.h">
+      <Filter>ANDROID</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\default_settings_xml.cpp">
       <Filter>src\000</Filter>
-    </ClCompile>
-    <ClCompile Include="AndroidMain.cpp">
-      <Filter>Core000\Android</Filter>
-    </ClCompile>
-    <ClCompile Include="Android.cpp">
-      <Filter>Core000\Android</Filter>
-    </ClCompile>
-    <ClCompile Include="android_native_app_glue.c">
-      <Filter>Core000\Android</Filter>
     </ClCompile>
     <ClCompile Include="AndroidNewSystemClass.c">
       <Filter>src\000</Filter>
@@ -90,11 +81,17 @@
     <ClCompile Include="..\..\src\OSmain_dir.cpp">
       <Filter>src\001</Filter>
     </ClCompile>
+    <ClCompile Include="Android.cpp">
+      <Filter>ANDROID</Filter>
+    </ClCompile>
+    <ClCompile Include="android_native_app_glue.c">
+      <Filter>ANDROID</Filter>
+    </ClCompile>
+    <ClCompile Include="AndroidMain.cpp">
+      <Filter>ANDROID</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Core000">
-      <UniqueIdentifier>{e633cc3b-76ac-4c54-be8d-9dde4875b309}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Include">
       <UniqueIdentifier>{96784a1c-7167-46d1-8734-e3951184c49e}</UniqueIdentifier>
     </Filter>
@@ -113,11 +110,11 @@
     <Filter Include="Include\001">
       <UniqueIdentifier>{d8aab481-6754-4356-af7a-c3b7832db9e3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Core000\Android">
-      <UniqueIdentifier>{90a27ce0-2065-4548-a678-eff3c8faf5c3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Include\002">
       <UniqueIdentifier>{8ec0566f-0609-41e2-a70e-b8eeb31d244d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ANDROID">
+      <UniqueIdentifier>{d73f08b8-6b16-4b7b-a90f-775695f9355c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

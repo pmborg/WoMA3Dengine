@@ -1,0 +1,225 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="..\..\include\main.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\OSengine.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\platform.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\standard_platform.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\SystemClass.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="Android.h">
+      <Filter>ANDROID</Filter>
+    </ClInclude>
+    <ClInclude Include="android_native_app_glue.h">
+      <Filter>ANDROID</Filter>
+    </ClInclude>
+    <ClInclude Include="AndroidNewSystemClass.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\language.h">
+      <Filter>Include\001</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\log.h">
+      <Filter>Include\001</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\mem_leak.h">
+      <Filter>Include\001</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\OSmain_dir.h">
+      <Filter>Include\001</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\WoMA3Dengine\CoreEngine_Tutorials\tech-level.h" />
+    <ClInclude Include="C:\WoMA3Dengine\CoreEngine_Tutorials\woma_engine_assets.h" />
+    <ClInclude Include="..\..\include\woma_macros.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\default_settings_xml.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="defs.h">
+      <Filter>ANDROID</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>ANDROID</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\stateMachine.h">
+      <Filter>Include\002</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\dumpUploader.h">
+      <Filter>Include\003</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\fileLoader.h">
+      <Filter>Include\003</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\minidumperClass.h">
+      <Filter>Include\003</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\stackTrace.h">
+      <Filter>Include\003</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\woma_exception.h">
+      <Filter>Include\003</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\fpsClass.h">
+      <Filter>Include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\InputClass.h">
+      <Filter>Include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Math3D.h">
+      <Filter>Include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\processorInfo.h">
+      <Filter>Include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\systemFeatures.h">
+      <Filter>Include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\systemManager.h">
+      <Filter>Include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\timerClass.h">
+      <Filter>Include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\TrigonometryMathClass.h">
+      <Filter>Include\004</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\default_settings_xml.cpp">
+      <Filter>src\000</Filter>
+    </ClCompile>
+    <ClCompile Include="AndroidMain.cpp">
+      <Filter>ANDROID</Filter>
+    </ClCompile>
+    <ClCompile Include="Android.cpp">
+      <Filter>ANDROID</Filter>
+    </ClCompile>
+    <ClCompile Include="android_native_app_glue.c">
+      <Filter>ANDROID</Filter>
+    </ClCompile>
+    <ClCompile Include="AndroidNewSystemClass.c">
+      <Filter>src\000</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\OSengine.cpp">
+      <Filter>src\000</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\SystemClass.cpp">
+      <Filter>src\000</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\main.cpp" />
+    <ClCompile Include="..\..\src\language.cpp">
+      <Filter>src\001</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\log.cpp">
+      <Filter>src\001</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mem_leak.cpp">
+      <Filter>src\001</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\OSmain_dir.cpp">
+      <Filter>src\001</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dumpUploader.cpp">
+      <Filter>src\003</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\fileLoader.cpp">
+      <Filter>src\003</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\minidumperClass.cpp">
+      <Filter>src\003</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\stackTrace.cpp">
+      <Filter>src\003</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\woma_exception.cpp">
+      <Filter>src\003</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\0CheckOS.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\1CheckSYS.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\2UpdateOSifNeeded.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\3CheckSetup.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\4CheckEngineUpdates.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\5LaunchEngine.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\7ProcessorInfo.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\8SystemFeatures.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\fpsClass.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Math3D.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\OperatingSystem.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\TimerClass.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Include">
+      <UniqueIdentifier>{96784a1c-7167-46d1-8734-e3951184c49e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{d47b1b32-a8ed-4271-bbbe-229356ca2079}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\000">
+      <UniqueIdentifier>{01af13a6-22e0-4a22-baa9-913e2bed5eef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\000">
+      <UniqueIdentifier>{2ef6cdd4-c276-4f82-ac0e-daf486ad40cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\001">
+      <UniqueIdentifier>{53e80eff-58f3-4e7c-ad23-130051f14eef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\001">
+      <UniqueIdentifier>{d8aab481-6754-4356-af7a-c3b7832db9e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\002">
+      <UniqueIdentifier>{8ec0566f-0609-41e2-a70e-b8eeb31d244d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\003">
+      <UniqueIdentifier>{60b1da52-3e15-47cd-9dbc-d3c12d195b24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\004">
+      <UniqueIdentifier>{3e560f3b-a40d-49eb-a6d0-c60d3946dea2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\002">
+      <UniqueIdentifier>{04acdf7d-f8d5-44ee-8ae0-2e3c642421dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\003">
+      <UniqueIdentifier>{9625b64b-c4fa-4a10-8027-f31deaf10916}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\004">
+      <UniqueIdentifier>{fe608ed7-539b-4aae-950a-5fc941fb2e73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ANDROID">
+      <UniqueIdentifier>{90a27ce0-2065-4548-a678-eff3c8faf5c3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

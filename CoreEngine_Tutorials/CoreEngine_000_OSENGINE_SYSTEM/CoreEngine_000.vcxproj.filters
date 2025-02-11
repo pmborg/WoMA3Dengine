@@ -9,6 +9,9 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
+    <Filter Include="WINDOWS">
+      <UniqueIdentifier>{fbcee068-ac62-4aa5-a426-fa52c0996d90}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\default_settings_xml.h">
@@ -23,16 +26,18 @@
     <ClInclude Include="include\SystemClass.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\winSystemClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="include\woma_macros.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\main.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\platform.h" />
+    <ClInclude Include="include\winSystemClass.h">
+      <Filter>WINDOWS</Filter>
+    </ClInclude>
+    <ClInclude Include="include\platform.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\default_settings_xml.cpp">
@@ -44,9 +49,9 @@
     <ClCompile Include="src\SystemClass.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\winSystemClass.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="src\winSystemClass.cpp">
+      <Filter>WINDOWS</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

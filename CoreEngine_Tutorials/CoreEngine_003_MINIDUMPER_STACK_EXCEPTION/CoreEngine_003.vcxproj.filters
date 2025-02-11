@@ -33,6 +33,9 @@
     <Filter Include="src\003">
       <UniqueIdentifier>{7ed6235f-65cf-48fd-acb4-d88c1e6d0e0d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="WINDOWS">
+      <UniqueIdentifier>{84a01617-e69a-4572-8e47-46607862aa64}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\default_settings_xml.h">
