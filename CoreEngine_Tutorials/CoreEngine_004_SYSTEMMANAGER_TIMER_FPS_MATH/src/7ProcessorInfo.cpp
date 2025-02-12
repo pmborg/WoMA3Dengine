@@ -19,7 +19,8 @@
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234567311;
 
-#include "OSengine.h" //#include "WinSystemClass.h"
+#include "OSengine.h"
+#include "log.h"
 #include "OSmain_dir.h"
 #include "standard_platform.h"
 // --------------------------------------------------------------------------------------------

@@ -27,7 +27,7 @@
 #include "platform.h"
 
 #include "tinyxml2.h"
-#pragma comment( lib, "TinyXMLv2_LIBX64_d.lib" )
+#pragma comment( lib, "C:\\WoMAengine2023\\x64\\Debug\\TinyXMLv2_LIBX64_d.lib" )
 
 #ifdef TIXML_USE_STL
 #include <iostream>
@@ -101,7 +101,7 @@ typedef struct {
 
 	// Map Settings:
 	// --------------------------------------------------------------------------------------------
-	#if TUTORIAL_PRE_CHAP >= 15
+	#if PRE_CHAP >= 15
 	char minimapEnabled[10];
 	#endif
 
@@ -110,7 +110,7 @@ typedef struct {
 
 	// Player Settings:
 	// --------------------------------------------------------------------------------------------
-	#if TUTORIAL_PRE_CHAP >= 60 //80
+	#if PRE_CHAP >= 60 //80
 		char playerName[16], faction[10], meshType[16];
 	#endif
 

@@ -123,6 +123,9 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	IF_NOT_RETURN_FALSE(APPLICATION_CORE_SYSTEM()); // MyRegisterClass()
 
 	IF_NOT_RETURN_FALSE(ApplicationInitMainWindow());		// CREATE: The/all "MainWindow(s) + INIT DX/GL "rendering-device"
+#if defined USE_TIMER_CLASS									// WINDOWS AFTER: ApplicationInitMainWindow()
+	StartTimer();											// START-TIMERS: ("Window Title" refresh & Real-Time Weather refresh)
+#endif
 
 // ########################################### LOAD DRIVERS ###########################################
 	

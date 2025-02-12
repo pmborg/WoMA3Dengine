@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: OSengine.h
 // --------------------------------------------------------------------------------------------
@@ -98,12 +97,24 @@
 #pragma once
 #include "platform.h"
 		
+#if CORE_ENGINE_LEVEL < 2
 #define ENGINE_RESTART 100
+#else
+#include "stateMachine.h"
+#endif
 
 #if !defined NewWomaEngine
 #if defined WINDOWS_PLATFORM
+	#if CORE_ENGINE_LEVEL < 10 || !defined DX_ENGINE
 	#include "winSystemClass.h"
 	#define SYSTEM WinSystemClass	        // Are we a Basic Windows Instance?
+	#else
+
+	#if defined DX_ENGINE
+	#include "dxwinsystemclass.h"
+	#define SYSTEM dxWinSystemClass         // Are we a DX Instance?
+	#endif
+	#endif
 #endif
 
 #ifdef LINUX_PLATFORM
@@ -160,7 +171,9 @@
 
 extern UINT RENDER_PAGE;
 
+#if CORE_ENGINE_LEVEL >= 1
 	#include "mem_leak.h"
+#endif
 
 extern int APPLICATION_MAIN(int argc, char* argv[]);
 extern void APPLICATION_STOP();
@@ -178,7 +191,13 @@ extern void ShowFPS();
 #define MB_OK 0
 #endif
 
+#if CORE_ENGINE_LEVEL >= 2
+extern int WomaMessageBox(TCHAR* lpText);
+extern int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption);
 extern int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption, bool yesORno);
+#else
+extern int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption, bool yesORno);
+#endif
 
 namespace WOMA
 {
@@ -202,8 +221,10 @@ namespace WOMA
 	extern CHAR**	ARGv;
 
 	extern TCHAR strConsoleTitle[MAX_STR_LEN];
+#if defined USE_LOG_MANAGER //1
 	extern bool dirExists(STRING& dirName_in);
 	extern int getTaskBarHeight();
+#endif
 
 #if defined USE_LOADING_THREADS || defined USE_MAIN_THREAD //extern
 	extern UINT		num_running_THREADS;
@@ -212,8 +233,37 @@ namespace WOMA
 	extern UINT		num_loading_objects;
 #endif
 
+#if CORE_ENGINE_LEVEL >= 1
 	extern TCHAR	APP_NAME[MAX_STR_LEN];	// "Aplication Name"
+	namespace WOMA
+	{
+		extern int endian();
+	}
+#endif
 
+#if CORE_ENGINE_LEVEL >= 2
+	extern TCHAR	APP_COMPANY_NAME[];	// "Company" Directory Name: 1st lvl
+	extern TCHAR	APP_PROJECT_NAME[];	// "Project" Directory Name: 2nd lvl
+	extern TCHAR	APP_FULLNAME[MAX_STR_LEN];	// "Aplication FullName"
+	extern bool		fileExists(STRING Filename);
+
+	#if defined WINDOWS_PLATFORM
+	extern TCHAR	APP_ICO[];					// "Icon" for this aplication
+	#endif
+#endif
+
+#if defined USE_MINIDUMPER	//3
+	extern MiniDumper* miniDumper;
+#endif
+
+#if CORE_ENGINE_LEVEL >= 4
+	// Defined at: main_settings.cpp
+	extern STRING	filename;			// CMD line: filename
+#endif
+
+#if defined USE_TINYXML_LOADER //#if CORE_ENGINE_LEVEL >= 5
+	extern TCHAR	APP_SETTINGS_FILE[];
+#endif
 }
 
 
@@ -222,10 +272,16 @@ extern int Command;
 
 extern TCHAR* DEMO_NAME[];
 
-namespace WOMA
-{
-	extern int endian();
-}
+#if CORE_ENGINE_LEVEL >= 4
+TCHAR* getComputerName();
+TCHAR* getUserName();
+#endif
+
+#if CORE_ENGINE_LEVEL >= 10
+#define m_Driver  driverList[SystemHandle->AppSettings->DRIVER]
+extern std::vector<WomaDriverClass*> driverList;
+extern WomaDriverClass* g_contextDriver;
+#endif
 
 #if defined WINDOWS_PLATFORM
 #define gettid() 0
@@ -235,6 +291,10 @@ namespace WOMA
 #define FCLOSE(A) file.close()
 #else
 #define FCLOSE(A) fclose(A)
+#endif
+
+#if CORE_ENGINE_LEVEL >= 10 && CORE_ENGINE_LEVEL == 10	//DX9 DX11+DX10 DX12 OPENGL3
+//extern int USE_THIS_GRAPHIC_CARD_ADAPTER;
 #endif
 
 #if defined ANDROID_PLATFORM
@@ -281,11 +341,16 @@ struct File {
 		androidSeek(_A, offset, SEEK_CUR);
 	}
 };
+#endif
 
+#if defined LINUX_PLATFORM
+void ItoA(int value, char* dest, int _Radix);
 #endif
 
 #if defined ANDROID_PLATFORM
 extern STRING LOAD_ASSET_SAVE_TO_CACHE(TCHAR* XMLFILE);
+int woma_atoi(TCHAR* _String);
+void woma_itoa(char** _String, int in, int system);
 #endif
 
 #endif

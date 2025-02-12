@@ -24,17 +24,18 @@
 #pragma warning( disable : 4838 )
 
 #include "OSengine.h"
-//#include "SystemClass.h"
-//#include "default_settings_xml.h"
-//#include "woma_macros.h"
+#include "log.h"
+#include "SystemClass.h"
+#include "default_settings_xml.h"
+#include "woma_macros.h"
 
-//#include "OSmain_dir.h"
+#include "OSmain_dir.h"
 
 #if defined WINDOWS_PLATFORM
-//#include "language.h"
+#include "language.h"
 #endif
 
-//#include "stateMachine.h"
+#include "stateMachine.h"
 
 #define GET_NAME(NAME) #NAME
 #define GET_VERSION(VERSION) GET_NAME(VERSION)
@@ -192,6 +193,11 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 	// -------------------------------------------------------------------------------------------
 
 
+#if defined USE_TIMER_CLASS
+	fps = NULL;
+	cpu = NULL;
+#endif
+
 }
 
 
@@ -209,3 +215,4 @@ void SystemClass::Shutdown()
 #if defined ANDROID_PLATFORM
 extern android_app* app;
 #endif
+

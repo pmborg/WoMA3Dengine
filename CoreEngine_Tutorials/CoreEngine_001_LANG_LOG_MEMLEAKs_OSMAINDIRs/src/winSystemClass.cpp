@@ -97,6 +97,10 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 
 	IF_NOT_RETURN_FALSE(APPLICATION_CORE_SYSTEM()); // MyRegisterClass()
 
+#if defined USE_TIMER_CLASS									// WINDOWS AFTER: ApplicationInitMainWindow()
+	StartTimer();											// START-TIMERS: ("Window Title" refresh & Real-Time Weather refresh)
+#endif
+
 // ########################################### LOAD DRIVERS ###########################################
 	
  // ################################################# INIT DRIVERS ###################################

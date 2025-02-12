@@ -36,11 +36,13 @@ struct resolutionType
 	UINT RefreshRate_Denominator;
 };
 
+#if defined USE_PROCESS_OS_KEYS
 	#if defined WINDOWS_PLATFORM
 	#include "InputClass.h"
 	#else
 	#include "Rinputclass.h"
 	#endif
+#endif
 
 #include "fpsClass.h"
 #include "TrigonometryMathClass.h"
@@ -52,6 +54,10 @@ typedef struct {
 	int x;
 	int y;
 } Woma_Label;
+
+#if defined USE_TINYXML_LOADER
+#include "xml_loader.h"
+#endif
 
 typedef struct
 {
@@ -143,8 +149,11 @@ public:
 	resolutionType		resolution;
 	void FrameUpdate();
 
+#if CORE_ENGINE_LEVEL >= 2 && (defined USE_PROCESS_OS_KEYS || defined INTRO_DEMO)
 	bool InitOsInput();
+#endif
 
+#if defined USE_PROCESS_OS_KEYS
 #if defined WINDOWS_PLATFORM
 	virtual void GetInputs() = 0;
 	InputClass* m_OsInput = NULL;
@@ -152,6 +161,7 @@ public:
 	RInputClass* m_OsInput = NULL;
 #endif
 	void ProcessOSInput();
+#endif
 
 #if CORE_ENGINE_LEVEL >= 2 && defined WINDOWS_PLATFORM	
 	DISPLAY_DEVICE displayDevice;
@@ -163,8 +173,11 @@ public:
 	bool LandScape = false;
 	void refreshTitle();
 
+	#if defined USE_SYSTEM_CHECK
 	void InitializeSystemScreen(int x, int y);
+	#endif
 
+#if defined USE_SYSTEM_CHECK
 	SystemManager*	systemManager = NULL;
 	bool			SystemCheck();
 
@@ -174,6 +187,7 @@ public:
 	#if defined WINDOWS_PLATFORM	
 	JOYINFOEX joyInfo;
 	#endif
+#endif
 
 		int			fps;
 		UINT		TotalVertexCounter;
@@ -197,6 +211,12 @@ public:
 		TrigonometryMathClass	m_math;	// Init Math Class
 		#endif
 	//#endif
+
+#if defined USE_TINYXML_LOADER //5
+	XMLloader		xml_loader;
+	STRING			XML_SETTINGS_FILE;	// Note: Have to be "char" (No STRING)
+	bool			LoadXmlSettings();
+#endif
 
 public:
 

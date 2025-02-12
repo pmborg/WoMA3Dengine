@@ -32,8 +32,8 @@
 
 #include "timerClass.h"
 #if CORE_ENGINE_LEVEL >= 4
-#include "processorInfo.h"
-#include "systemFeatures.h"
+#include "ProcessorInfo.h"
+#include "SystemFeatures.h"
 
 #if defined WINDOWS_PLATFORM
 #include "wmiUtilClass.h"

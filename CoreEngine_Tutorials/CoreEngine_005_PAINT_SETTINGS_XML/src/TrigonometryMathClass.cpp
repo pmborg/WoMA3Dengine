@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: TrigonometryMathClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -22,6 +21,7 @@
 //WomaIntegrityCheck = 1234567311;
 
 #include "platform.h"
+#if defined USE_TIMER_CLASS
 
 #pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
 #include "main.h"
@@ -29,10 +29,17 @@
 #include "Math3D.h"
 #include "TrigonometryMathClass.h" //sim, cos table
 
+#if defined ANDROID_PLATFORM
+#include "math.h"
+#endif
+
 #define SQRT_MAGIC_F 0x5f3759df
 
 float FAST_sqrt(float x)
 {
+#if CORE_ENGINE_LEVEL >= 60
+	return sqrt(x);
+#else
 	const float xhalf = 0.5f*x;
 
 	union // get bits for floating value
@@ -43,6 +50,7 @@ float FAST_sqrt(float x)
 	u.x = x;
 	u.i = SQRT_MAGIC_F - (u.i >> 1);		// gives initial guess y0
 	return x*u.x*(1.5f - xhalf*u.x*u.x);	// Newton step, repeating increases accuracy
+#endif
 }
 
 float tableSin[360*100], tableCos[360*100];
@@ -77,11 +85,19 @@ void TrigonometryMathClass::testMathSpeed(TimerClass* m_Timer, double &delta1, d
     // --------------------------------------------------------------------------------------------
 
 {
+#if !defined ANDROID_PLATFORM
 	INT64 currentTime=0, currentTime1=0, currentTime2=0;
+#else
+	struct timeval currentTime, currentTime1, currentTime2;
+#endif
 
 	{
 		static float t = 0;
+#if !defined ANDROID_PLATFORM
 		QueryPerformanceCounter((LARGE_INTEGER*)&currentTime); // Measure the initial Time
+#else
+		::gettimeofday(&currentTime, NULL);
+#endif
 		for (UINT time = 0; time < 10000000; time++)
 		{
 			// Run these functions 10 Million times:
@@ -89,17 +105,29 @@ void TrigonometryMathClass::testMathSpeed(TimerClass* m_Timer, double &delta1, d
 			t = cos((float)(time % 360));
 			t = sin((float)(time % 360));
 		}
+#if !defined ANDROID_PLATFORM
 		QueryPerformanceCounter((LARGE_INTEGER*)&currentTime1);// Measure current Time
+#else
+		::gettimeofday(&currentTime1, NULL);
+#endif
 	}
 
+#if !defined ANDROID_PLATFORM
 	ASSERT(m_Timer->m_ticksPerUs > 0);
 	delta1 = ((((double)currentTime1 - (double)currentTime) / (double)m_Timer->m_ticksPerUs) / (double)1000.0f);
+#else
+
+#endif
 
 	//--------------------------------------------------------------------------------------
 	{
 		static float t = 0;
 
+#if !defined ANDROID_PLATFORM
 		QueryPerformanceCounter((LARGE_INTEGER*)&currentTime); // Measure the initial Time
+#else
+		::gettimeofday(&currentTime, NULL);
+#endif
 		for (UINT time = 0; time < 10000000; time++)
 		{
 			// Run these functions 10 Million times:
@@ -115,11 +143,19 @@ void TrigonometryMathClass::testMathSpeed(TimerClass* m_Timer, double &delta1, d
 		#endif
 		}
 
+#if !defined ANDROID_PLATFORM
 		QueryPerformanceCounter((LARGE_INTEGER*)&currentTime2);// Measure current Time
+#else
+		::gettimeofday(&currentTime2, NULL);
+#endif
 	}
 
+#if !defined ANDROID_PLATFORM
     ASSERT (m_Timer->m_ticksPerUs > 0);
 	delta2 = ((((double)currentTime2 - (double)currentTime) / (double)m_Timer->m_ticksPerUs) / (double)1000.0f);
+#else
+
+#endif
 
 	// SAMPLE:
 	#if defined NDEBUG
@@ -132,5 +168,10 @@ void TrigonometryMathClass::testMathSpeed(TimerClass* m_Timer, double &delta1, d
 	WOMA_LOGManager_DebugMSG("FAST_sin (PI): %f\n", FAST_sin(180));
 	#endif
 
+#if defined _NOTUSED // NDEBUG 
+    //if (delta2 > 1000)
+	//	WomaMessageBox(TEXT("SPEED TEST WARNING: Your CPU may be too slow to run this application!"));
+#endif
 }
 
+#endif

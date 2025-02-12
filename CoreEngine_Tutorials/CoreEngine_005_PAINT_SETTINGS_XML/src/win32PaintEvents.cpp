@@ -92,9 +92,6 @@ void PaintSetup(HDC hdc, HDC hdcMem, HFONT font_title, HFONT font, int scr)
 		{
 			int TextToPrintSize = (int)SystemHandle->TextToPrint[scr].size();
 
-			if (TextToPrintSize == 0)
-				SystemHandle->InitializeSystemScreen(10, 10);		// SETUP SCREEN: F1,F2,F3,F4,F5,F6
-
 			TextToPrintSize = (int)SystemHandle->TextToPrint[scr].size();
 			for (size_t i = 0; i < TextToPrintSize; i++)
 			{

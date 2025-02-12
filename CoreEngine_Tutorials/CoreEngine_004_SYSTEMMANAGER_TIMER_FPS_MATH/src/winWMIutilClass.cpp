@@ -327,9 +327,7 @@ bool wmiUtilClass::GetSystemInfo()
 
     return true;
 }
-//#endif
 
-//#ifdef TUTORIAL_PRE_CHAP// >= 5
 //	-------------------------------------------------------------------------------------------
 bool wmiUtilClass::GetVideoControllerInfoFromWMI()
 {

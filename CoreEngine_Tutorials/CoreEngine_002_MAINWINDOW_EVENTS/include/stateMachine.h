@@ -39,7 +39,7 @@
 
 #define GAME_RUN             50	// F5: the game is in the:    "Running Mode"
 
-#if TUTORIAL_PRE_CHAP >= 91
+#if PRE_CHAP >= 91
 #define GAME_LAUNCHER        60					// the game is in the:    "Running Mode"
 #define GAME_LOGINMENU       23 // the game is in the:    "Login Menu Mode"
 #define GAME_SETTINGSMENU    24 // the game is in the:    "Settings Menu Mode"
@@ -50,7 +50,7 @@
 #define GAME_CREATECHAR      29 // the game is in the:    "Create a Character"
 #endif
 
-//#if CORE_ENGINE_LEVEL >= 62 //TUTORIAL_PRE_CHAP >= 26 (G:\DRIVE_MY_SOURCE_CODE\WorldOfMiddleAge\WoMA_PartII)
+//#if CORE_ENGINE_LEVEL >= 62 //PRE_CHAP >= 26 (G:\DRIVE_MY_SOURCE_CODE\WorldOfMiddleAge\WoMA_PartII)
 #define GAME_MAP             80 // the game is in the:    "Running Mode + Map Mode"
 //#endif
 

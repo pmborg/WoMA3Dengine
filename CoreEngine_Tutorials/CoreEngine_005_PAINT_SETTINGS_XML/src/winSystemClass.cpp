@@ -89,7 +89,6 @@ void WinSystemClass::WinSystemClass_init()
 // --------------------------------------------------------------
 
 	m_hinstance = NULL;
-	m_OsInput = NULL;
 	windowStyle = NULL;
 	if (SystemHandle->AppSettings)
 		mMaximized = SystemHandle->AppSettings->FULL_SCREEN;
@@ -145,25 +144,16 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 
 	IF_NOT_RETURN_FALSE(APPLICATION_CORE_SYSTEM()); // MyRegisterClass()
 
-	IF_NOT_RETURN_FALSE(LoadXmlSettings());	// XML: Load Application Settings: "settings.xml", pickup "Driver" to Use.
-	IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());		// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 
 	IF_NOT_RETURN_FALSE(ApplicationInitMainWindow());		// CREATE: The/all "MainWindow(s) + INIT DX/GL "rendering-device"
-	IF_NOT_RETURN_FALSE(InitOsInput());						// INIT-INPUT Devices, NOTE: AFTER: ApplicationInitMainWindow()
 	StartTimer();											// START-TIMERS: ("Window Title" refresh & Real-Time Weather refresh)
 
 // ########################################### LOAD DRIVERS ###########################################
 	
-	InitializeSystemScreen(10, 10); // SETUP SCREEN: F1,F2,F3,F4,F5,F6 (RUNNING NOW ON: PaintSetup())
-
  // ################################################# INIT DRIVERS ###################################
 	
 	return true;						// GREEN LIGHT: to Start Rendering! :)
 }
 
-//----------------------------------------------------------------------------------------------------------
-void WinSystemClass::GetInputs()
-{
-}
 //----------------------------------------------------------------------------
 int WinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 //----------------------------------------------------------------------------
@@ -333,23 +323,6 @@ HWND WinSystemClass::WomaCreateWindowEx(DWORD dwExStyle, TCHAR* lpClassName, TCH
 	}
 
 	return hwnd;
-}
-
-bool WinSystemClass::InitOsInput()
-//----------------------------------------------------------------------------
-{
-	SystemClass::InitOsInput();
-
-	// INIT OS Keyboard (WIN32: This object will be used to handle reading the input from the user)
-	WOMA_LOGManager_DebugMSG("===============================================================================\n");
-	WOMA_LOGManager_DebugMSG("INIT OS BASIC INPUT\n");
-
-	m_OsInput = NEW InputClass;
-	IF_NOT_THROW_EXCEPTION(m_OsInput);
-
-	m_OsInput->Initialize();
-
-	return true;
 }
 
 bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ void* 

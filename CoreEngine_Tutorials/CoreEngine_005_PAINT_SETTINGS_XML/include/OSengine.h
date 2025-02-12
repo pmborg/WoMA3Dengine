@@ -235,6 +235,10 @@ namespace WOMA
 
 #if CORE_ENGINE_LEVEL >= 1
 	extern TCHAR	APP_NAME[MAX_STR_LEN];	// "Aplication Name"
+	namespace WOMA
+	{
+		extern int endian();
+	}
 #endif
 
 #if CORE_ENGINE_LEVEL >= 2
@@ -278,11 +282,6 @@ TCHAR* getUserName();
 extern std::vector<WomaDriverClass*> driverList;
 extern WomaDriverClass* g_contextDriver;
 #endif
-
-namespace WOMA
-{
-	extern int endian();
-}
 
 #if defined WINDOWS_PLATFORM
 #define gettid() 0

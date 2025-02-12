@@ -164,8 +164,6 @@ namespace WOMA
 	int		game_state = GAME_LOADING;
 	int		previous_game_state = GAME_LOADING;
 
-	ILogManager* logManager = NULL;	// Global Log Manager
-
 	UINT ENGINE_LEVEL_USED = 0;
 	int  main_loop_state = 0;
 
@@ -337,7 +335,6 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 	WOMA::setup_OSmain_dirs();				//1 Keep this order!
 	WOMA::activate_mem_leak_detection();	//2
 #endif
-	WOMA::start_log_manager();				//3
 	DefineConsoleTitle();
 
 	// Save Command Line Arguments to use later on
@@ -374,9 +371,6 @@ void APPLICATION_STOP()
 #if defined WINDOWS_PLATFORM
 	CoUninitialize();
 #endif
-
-	WOMA::logManager->ShutdownInstance();	// Write, Close & Free: The logManager.
-	WOMA::logManager = NULL;				// Because of STATIC Classes Shutdown: Do not log
 
 #if defined ANDROID_PLATFORM
 	engine.has_focus_ = false;
@@ -611,32 +605,6 @@ int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption)
 	return WomaMessageBox(lpText, lpCaption, false);
 }
 
-#if defined ANDROID_PLATFORM && defined USE_LOG_MANAGER
-STRING LOAD_ASSET_SAVE_TO_CACHE (TCHAR* XMLFILE) 
-{
-	//LOAD FROM: C:\WoMAengine2023\Android-WomaEngine\Android2\Android2.Packaging\ARM64\Debug\Package\assets
-	AAssetManager* manager = engine.app->activity->assetManager;
-	AAsset* thisxmlFile = AAssetManager_open(manager, XMLFILE, AASSET_MODE_BUFFER);
-	const char* fileBuffer = (char*)AAsset_getBuffer(thisxmlFile);
-	off_t fileSize = AAsset_getLength(thisxmlFile);
-
-	//SAVE TO: /data/user/0/com.woma/cache/
-	FILE* saveXmlFile = NULL;
-	STRING XML_FILE = WOMA::android_temp_folder(engine.app);
-	XML_FILE.append(TEXT("/"));
-	XML_FILE.append(XMLFILE);
-	UINT errno_t = _tfopen_s(&saveXmlFile, XML_FILE.c_str(), TEXT("w"));
-	fwrite(fileBuffer, sizeof(char), fileSize, saveXmlFile);
-#if DEBUG
-	__android_log_print(ANDROID_LOG_ERROR, "[WOMA]", fileBuffer);
-#endif
-	AAsset_close(thisxmlFile);
-	fclose(saveXmlFile);
-
-	return XML_FILE;
-}
-#endif
-
 #if defined LINUX_PLATFORM //|| defined ANDROID_PLATFORM
 #include <curl/curl.h>
 #include <curl/easy.h>
@@ -678,6 +646,34 @@ bool download(const std::string url, const std::string file)
 	{
 		return false;
 	}
+}
+#endif
+
+#if defined LINUX_PLATFORM
+// ---------------------------------------------------------------------------
+void ItoA(int value, char* dest, int _Radix)
+{
+	static std::string str;
+	std::stringstream ss; //int x = 23;
+
+	ss << value;
+	str = ss.str();
+	strcpy(dest, str.c_str());
+}
+#endif
+
+#if defined ANDROID_PLATFORM
+// Used by ANDROID: To be compatible with WINDOWS / LINUX / ANDROID:
+int woma_atoi(TCHAR* _String)
+{
+	static int out;
+	_stscanf(_String, TEXT("%d"), &out); //swscanf
+}
+
+void woma_itoa(char** _String, int in, int system)
+{
+	StringCchPrintf(*_String, MAX_STR_LEN, TEXT("%d"), in);
+
 }
 #endif
 

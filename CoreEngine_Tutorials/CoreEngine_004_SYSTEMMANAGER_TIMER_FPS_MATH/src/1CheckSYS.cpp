@@ -20,12 +20,16 @@
 //WomaIntegrityCheck = 1234567311;
 
 #include "OSengine.h"
+#include "log.h"
 
 //------------------------------------------------------------------
 // PRIVATE FUNCTIONS:
 //------------------------------------------------------------------
 #if defined WINDOWS_PLATFORM
 #include <psapi.h>					// PPERFORMANCE_INFORMATION
+//
+// MORE INFO: http://stackoverflow.com/questions/8351944/finding-out-the-cpu-clock-frequency-per-core-per-processor
+//
 float SystemManager::GetProcessorSpeed()
 {
     LARGE_INTEGER qwWait, qwStart, qwCurrent;
@@ -105,11 +109,17 @@ float SystemManager::GetProcessorSpeed4Intel(TCHAR* family_name) {
 //------------------------------------------------------------------
 // PUBLIC FUNCTIONS:
 //------------------------------------------------------------------
+#if defined USE_SYSTEM_CHECK
 bool SystemManager::checkCPU ()
 {
 #if defined WINDOWS_PLATFORM
 	processorInfo.cpuCores.GetProcessorInformation();
 #endif
+
+	#if defined RELEASE && !defined ANDROID_PLATFORM
+    if (processorInfo.cpuCores.processorCoreCount <= 1)
+        WomaMessageBox(TEXT("CPU CORE WARNING: Your Processor just have 1 core, this application will run very slow!\n"));
+	#endif
 
     // Get CPU Speed:
     CHAR speed[MAX_STR_LEN] = { 0 };
@@ -153,11 +163,17 @@ bool SystemManager::checkCPU ()
     CPUSpeedMHz = (float) atof(Token.c_str()); //clockSpeed in GHz
 #endif
 
+#if defined RELEASE && !defined ANDROID_PLATFORM
+    if (CPUSpeedMHz < 2)
+        WomaMessageBox(TEXT("CPU WARNING: Your Processor is slow (< 2GHz), this application will run very slow also!\n"));
+#endif
+
 	StringCchPrintf(SystemHandle->systemDefinitions.clockSpeed, MAX_STR_LEN, TEXT("CPU Base Clock Speed: %02.2f GHz"), (float) CPUSpeedMHz/1000);
 	WOMA_LOGManager_DebugMSGAUTO (TEXT("%s\n"), SystemHandle->systemDefinitions.clockSpeed);
 
     return true;
 }
+#endif
 
 #if CORE_ENGINE_LEVEL >= 4 && defined WINDOWS_PLATFORM
 DWORDLONG SystemManager::getAvailSystemMemory()
@@ -213,6 +229,7 @@ DWORDLONG SystemManager::getAvailSystemMemory()
 }
 #endif
 
+#if defined USE_SYSTEM_CHECK
 bool SystemManager::checkRAM ()
 {
 #ifdef X64
@@ -369,6 +386,7 @@ bool SystemManager::checkDiskFreeSpace ()
 
     return true;
 }
+#endif
 
 #if CORE_ENGINE_LEVEL >= 4 && defined WINDOWS_PLATFORM
 bool SystemManager::checkCPUFeatures ()

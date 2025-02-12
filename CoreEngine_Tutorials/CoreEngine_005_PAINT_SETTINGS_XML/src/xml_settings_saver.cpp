@@ -35,6 +35,7 @@ bool XMLloader::saveConfigSettings (char* file) // Note: Have to be char
 {
 	// TUTORIALv1: https://www.cs.cmu.edu/~preethi/src/tinyxml/docs/tutorial0.html
 
+#if defined WINDOWS_PLATFORM && defined USE_TINYXML_LOADER
 	/*TiXmlElement*/ tinyxml2::XMLDocument doc;
 
 	//Optional:
@@ -122,6 +123,7 @@ bool XMLloader::saveConfigSettings (char* file) // Note: Have to be char
 		return false;
 
 	doc.SaveFile(file);
+#endif
 
 	return true;
 }

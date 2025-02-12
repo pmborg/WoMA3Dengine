@@ -19,6 +19,7 @@
 
 #include "AndroidNewSystemClass.h"
 #include "OSengine.h"
+#include "log.h"
 extern bool android_APPLICATION_INIT_SYSTEM();
 extern int android_APPLICATION_MAIN_LOOP();
 

@@ -30,6 +30,10 @@
 #include "Math3D.h"
 #include "TrigonometryMathClass.h" //sim, cos table
 
+#if defined ANDROID_PLATFORM
+#include "math.h"
+#endif
+
 #define SQRT_MAGIC_F 0x5f3759df
 
 float FAST_sqrt(float x)
@@ -78,11 +82,19 @@ void TrigonometryMathClass::testMathSpeed(TimerClass* m_Timer, double &delta1, d
     // --------------------------------------------------------------------------------------------
 
 {
+#if !defined ANDROID_PLATFORM
 	INT64 currentTime=0, currentTime1=0, currentTime2=0;
+#else
+	struct timeval currentTime, currentTime1, currentTime2;
+#endif
 
 	{
 		static float t = 0;
+#if !defined ANDROID_PLATFORM
 		QueryPerformanceCounter((LARGE_INTEGER*)&currentTime); // Measure the initial Time
+#else
+		::gettimeofday(&currentTime, NULL);
+#endif
 		for (UINT time = 0; time < 10000000; time++)
 		{
 			// Run these functions 10 Million times:
@@ -90,17 +102,29 @@ void TrigonometryMathClass::testMathSpeed(TimerClass* m_Timer, double &delta1, d
 			t = cos((float)(time % 360));
 			t = sin((float)(time % 360));
 		}
+#if !defined ANDROID_PLATFORM
 		QueryPerformanceCounter((LARGE_INTEGER*)&currentTime1);// Measure current Time
+#else
+		::gettimeofday(&currentTime1, NULL);
+#endif
 	}
 
+#if !defined ANDROID_PLATFORM
 	ASSERT(m_Timer->m_ticksPerUs > 0);
 	delta1 = ((((double)currentTime1 - (double)currentTime) / (double)m_Timer->m_ticksPerUs) / (double)1000.0f);
+#else
+
+#endif
 
 	//--------------------------------------------------------------------------------------
 	{
 		static float t = 0;
 
+#if !defined ANDROID_PLATFORM
 		QueryPerformanceCounter((LARGE_INTEGER*)&currentTime); // Measure the initial Time
+#else
+		::gettimeofday(&currentTime, NULL);
+#endif
 		for (UINT time = 0; time < 10000000; time++)
 		{
 			// Run these functions 10 Million times:
@@ -116,11 +140,19 @@ void TrigonometryMathClass::testMathSpeed(TimerClass* m_Timer, double &delta1, d
 		#endif
 		}
 
+#if !defined ANDROID_PLATFORM
 		QueryPerformanceCounter((LARGE_INTEGER*)&currentTime2);// Measure current Time
+#else
+		::gettimeofday(&currentTime2, NULL);
+#endif
 	}
 
+#if !defined ANDROID_PLATFORM
     ASSERT (m_Timer->m_ticksPerUs > 0);
 	delta2 = ((((double)currentTime2 - (double)currentTime) / (double)m_Timer->m_ticksPerUs) / (double)1000.0f);
+#else
+
+#endif
 
 	// SAMPLE:
 	#if defined NDEBUG

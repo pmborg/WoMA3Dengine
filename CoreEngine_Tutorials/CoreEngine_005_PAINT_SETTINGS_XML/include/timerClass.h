@@ -50,7 +50,7 @@ public:
 	float m_ticksPerMs = 1;
 
 #if !defined ANDROID_PLATFORM
-	UINT64 currentTime = 0, m_startEngineTime = 0;
+	UINT64 currentTime=0, m_startEngineTime = 0;
 	float m_ticksPerUs = 0;
 #else
 	double currentTime, m_startEngineTime;
@@ -68,6 +68,6 @@ private:
 #else
 	double  m_startTime;
 #endif
-
+	
 };
 #endif

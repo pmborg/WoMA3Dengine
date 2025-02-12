@@ -23,8 +23,9 @@
 #pragma warning( disable : 4477 )
 #pragma warning( disable : 4838 )
 
+#include "OSengine.h"
+
 #include "SystemClass.h"
-#include "OSengine.h" //#include "WinSystemClass.h"
 #include "default_settings_xml.h"
 #include "woma_macros.h"
 

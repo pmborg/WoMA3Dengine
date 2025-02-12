@@ -19,13 +19,14 @@
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234567311;
 
-#include "OSengine.h" //#include "WinSystemClass.h"
+#include "OSengine.h"
+#include "log.h"
 #include "OSmain_dir.h"
 #include "standard_platform.h"
 // --------------------------------------------------------------------------------------------
 // Includes:
 // --------------------------------------------------------------------------------------------
-#include "processorInfo.h"
+#include "ProcessorInfo.h"
 void cpuID(unsigned regs[4], unsigned i) 
 {
 #if defined WINDOWS_PLATFORM

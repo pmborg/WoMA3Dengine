@@ -26,6 +26,12 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "OSengine.h"
 
+#if defined ANDROID_PLATFORM
+#include "AndroidEngine.h"
+#include <android\asset_manager.h>
+#endif
+
+#if defined USE_TINYXML_LOADER
 #include "xml_loader.h"
 
 XMLloader::XMLloader()
@@ -36,6 +42,47 @@ XMLloader::~XMLloader()
 {
 }
 
+#if defined WINDOWS_PLATFORM
+int OPENGL_defaultMonitor()
+{
+	// Check if we have a monitor
+	int default_mon = 0;
+
+	// Iterate over all displays and check if we have a valid one.
+	//  If the device ID contains the string default_monitor no monitor is attached.
+	DISPLAY_DEVICE dd;
+	dd.cb = sizeof(dd);
+	int deviceIndex = 0;
+	while (EnumDisplayDevices(0, deviceIndex, &dd, 0))
+	{
+		STRING deviceName = dd.DeviceName;
+		int monitorIndex = 0;
+		while (EnumDisplayDevices(deviceName.c_str(), monitorIndex, &dd, 0))
+		{
+			size_t len = _tcslen(dd.DeviceID);
+			for (size_t i = 0; i < len; ++i)
+				dd.DeviceID[i] = _totlower(dd.DeviceID[i]);
+			printf("%s\n", dd.DeviceID);
+			//monitor\aci24ac\{4d36e96e-e325-11ce-bfc1-08002be10318}\0002   --> System > Display: 1 (default)
+			//monitor\dela198\{4d36e96e-e325-11ce-bfc1-08002be10318}\0003   --> System > Display: 2
+			//monitor\aus24a1\{4d36e96e-e325-11ce-bfc1-08002be10318}\0001   --> System > Display: 3
+
+			STRING deviceID = dd.DeviceID;
+			int i = (int)deviceID.find_last_of('\\');
+			STRING ID = deviceID.substr(i + 1, 4);
+			int id = std::stoi(ID) - 1; //"-1" Convert from 1, 2, 3 to 0, 1, 2... Default of the above sample is now: 1
+			if (monitorIndex == 0) {
+				return id;
+			}
+
+			++monitorIndex;
+		}
+		++deviceIndex;
+	}
+
+	return default_mon;
+}
+#endif
 
 // -------------------------------------------------------------------------------------------
 bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
@@ -75,7 +122,7 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 		SystemHandle->AppSettings->VSYNC_ENABLED = (strcmp(GenSettings.vsync, "true") == 0) ? true : false;
 		SystemHandle->AppSettings->BITSPERPEL = atoi(GenSettings.bitsPerPixel);
 
-	#if TUTORIAL_PRE_CHAP >= 60 // 80
+	#if PRE_CHAP >= 60 // 80
 	    strcpy_s (g_PLAYER_NAME, GenSettings.playerName);
 	    g_FACTION = (strcmp (GenSettings.faction, "1") == 0) ?  true : false;
 	    g_MESH_TYPE = (BYTE) atoi (GenSettings.meshType);
@@ -96,7 +143,34 @@ bool XMLloader::loadConfigSettings (TCHAR* file_) // Note: Have to be char
 	wtoa(XMLFILE, file_, MAX_STR_LEN); // tchar ==> char
 	tinyxml2::XMLDocument doc;
 
+#if defined ANDROID_PLATFORM
+	//STRING XML_FILE = LOAD_ASSET_SAVE_TO_CACHE(XMLFILE);
+
+	//LOAD FROM: C:\WoMAengine2023\Android-WomaEngine\Android2\Android2.Packaging\ARM64\Debug\Package\assets
+	AAssetManager* manager = engine_state.app->activity->assetManager;
+	AAsset* thisxmlFile = AAssetManager_open(manager, XMLFILE, AASSET_MODE_BUFFER);
+	const char* fileBuffer = (char*)AAsset_getBuffer(thisxmlFile);
+	off_t fileSize = AAsset_getLength(thisxmlFile);
+
+	//SAVE TO: /data/user/0/com.woma/cache/
+	FILE* saveXmlFile = NULL;
+	STRING XML_FILE = WOMA::android_temp_folder(engine_state.app);
+	XML_FILE.append(TEXT("/"));
+	XML_FILE.append(XMLFILE);
+	_tprintf("FILE: %s", XML_FILE.c_str());
+
+	UINT errno_t = _tfopen_s(&saveXmlFile, XML_FILE.c_str(), TEXT("w"));
+	fwrite(fileBuffer, sizeof(char), fileSize, saveXmlFile);
+#if DEBUG
+	__android_log_print(ANDROID_LOG_ERROR, "[WOMA]", fileBuffer);
+#endif
+	AAsset_close(thisxmlFile);
+	fclose(saveXmlFile);
+
+	doc.LoadFile(XML_FILE.c_str());
+#else
 	doc.LoadFile(XMLFILE);
+#endif
 
 	auto root = doc.FirstChildElement(GENERALSETTINGS); //auto root = doc.FirstChildElement( "generalsettings" );
 	ASSERT(root);
@@ -126,7 +200,7 @@ bool XMLloader::loadConfigSettings (TCHAR* file_) // Note: Have to be char
 		//SOUND:
 
 		// PLAYER DEFINITIONS:
-	#if TUTORIAL_PRE_CHAP >= 60 // 80
+	#if PRE_CHAP >= 60
 		/*<player>*//*TiXmlElement*/ tinyxml2::XMLElement* child_player = root->FirstChildElement( "player" );
 		if ( child_player )
 		{
@@ -142,8 +216,9 @@ bool XMLloader::loadConfigSettings (TCHAR* file_) // Note: Have to be char
 		// SERVER NETWORK SETTINGS:
 		//}
 	} else
-        return false; // File not found for parsing error...
+        return false; // File not found or parsing error...
 
 	return true;
 }
 
+#endif

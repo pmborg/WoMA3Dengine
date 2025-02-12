@@ -253,21 +253,6 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 	//----------------------------------------------------------------------------
 	// With Direct Input (USE_DIRECT_INPUT) This Messages are not invoked anymore:
 	//----------------------------------------------------------------------------
-		// Check if a key has been pressed on the keyboard.
-	case WM_KEYDOWN:
-	{
-		// If a key is pressed send it to the input object so it can record that state.
-		SystemHandle->m_OsInput->KeyDown((unsigned int)wParam);
-		return 0; //break;
-	}
-
-	// Check if a key has been released on the keyboard.
-	case WM_KEYUP:
-	{
-		// If a key is released then send it to the input object so it can unset the state for that key.
-		SystemHandle->m_OsInput->KeyUp((unsigned int)wParam);
-		return 0; //break;
-	}
 
 	// -----------------------------------------------------------------------------
 	// REMOTE-DESKTOP: Update flag for "Remote" desktop connect/disconnect

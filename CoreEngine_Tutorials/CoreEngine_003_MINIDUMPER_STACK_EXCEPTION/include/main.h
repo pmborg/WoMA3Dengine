@@ -46,14 +46,6 @@
 // -------------------------------------------------------------------------------------------
 // Include: COMMON TRASNVERSAL WoMA Util Libs:
 // -------------------------------------------------------------------------------------------
-#if defined USE_MINIDUMPER && defined WINDOWS_PLATFORM
-#include "minidumperClass.h"
-#endif
-#if defined USE_WOMA_EXCEPTION && defined WINDOWS_PLATFORM
-#include "woma_exception.h"
-#endif
-
-#include "log.h"
 
 //	-------------------------------------------------------------------------------------------
 // Global WOMA RUN-TIME SETTINGS:

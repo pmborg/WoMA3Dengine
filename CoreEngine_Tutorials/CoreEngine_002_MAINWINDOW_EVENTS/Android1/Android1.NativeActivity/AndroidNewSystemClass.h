@@ -19,6 +19,7 @@
 
 #pragma once
 
+#ifndef __ANDROIDNEWSYSTEMCLASS_H__
 #include "SystemClass.h"
 
 class AndroidNewSystemClass : public SystemClass
@@ -32,3 +33,5 @@ public:
 	bool APPLICATION_INIT_SYSTEM();
 	int APPLICATION_MAIN_LOOP();
 };
+
+#endif

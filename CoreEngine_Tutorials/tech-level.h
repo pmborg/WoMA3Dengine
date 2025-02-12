@@ -41,8 +41,8 @@
 
 //------------------------------------------------------------------------------------------------------------
 
-#if CORE_ENGINE_LEVEL >= 1 //&& !defined WOMAENGINE_BASIC
-	#define USE_LOG_MANAGER			//1
+#if CORE_ENGINE_LEVEL >= 1 && !defined ANDROID_PLATFORM
+#define USE_LOG_MANAGER			//1
 #endif
 
 #if CORE_ENGINE_LEVEL >= 2 && !defined WOMAENGINE_BASIC
@@ -60,13 +60,13 @@
 	#define USE_USER_SETUP
 	#if !defined ANDROID_PLATFORM
 		#define USE_PROCESS_OS_KEYS	//4 - NOTE: Madatory at 4
-	#endif
-	#if defined WINDOWS_PLATFORM || defined LINUX_PLATFORM
+	//#endif
+	//#if defined WINDOWS_PLATFORM || defined LINUX_PLATFORM
 		#define USE_SYSTEM_CHECK	//4
 	#endif
   	#define USE_CHECK_IO			//4
 	#define USE_TIMER_CLASS			//4
-	#endif
+#endif
 
 #if CORE_ENGINE_LEVEL >= 5 //&& defined WINDOWS_PLATFORM  && !defined WOMAENGINE_BASIC
 	#if !defined ANDROID_PLATFORM
@@ -423,19 +423,19 @@
 		#define SCENE_SLOPE_MAP_TEXTURE //55 use 4 textures
 	#endif
 
-	#if DX_ENGINE_LEVEL >= 56 // 56 ~ G:\DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64	#if TUTORIAL_CHAP >= 19 // TERRAIN
+	#if DX_ENGINE_LEVEL >= 56 // 56 ~ 	#if TUTORIAL_CHAP >= 19 // TERRAIN
 		#define USE_TERRAIN_TUTORIAL_CHAP_19 //TODO
 	#endif
-	#if DX_ENGINE_LEVEL >= 57 // 57 ~ G:\DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64	#if TUTORIAL_CHAP >= 21 // TERRAIN
+	#if DX_ENGINE_LEVEL >= 57 // 57 ~ 	#if TUTORIAL_CHAP >= 21 // TERRAIN
 		#define USE_TERRAIN_TUTORIAL_CHAP_21 //TODO
 	#endif
-	#if DX_ENGINE_LEVEL >= 58 // 58 ~ G:\DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64	#if TUTORIAL_CHAP >= 22 // TERRAIN
+	#if DX_ENGINE_LEVEL >= 58 // 58 ~ 	#if TUTORIAL_CHAP >= 22 // TERRAIN
 		#define USE_TERRAIN_TUTORIAL_CHAP_22 //TODO
 	#endif
-	#if DX_ENGINE_LEVEL >= 59 // 59 ~ G:\DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64	#if TUTORIAL_CHAP >= 23 // TERRAIN
+	#if DX_ENGINE_LEVEL >= 59 // 59 ~ 	#if TUTORIAL_CHAP >= 23 // TERRAIN
 		#define USE_TERRAIN_TUTORIAL_CHAP_22 //TODO
 	#endif
-	#if DX_ENGINE_LEVEL >= 60 // 60 ~ G:\DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64	#if TUTORIAL_CHAP >= 24 // TERRAIN
+	#if DX_ENGINE_LEVEL >= 60 // 60 ~ 	#if TUTORIAL_CHAP >= 24 // TERRAIN
 		#define USE_TERRAIN_TUTORIAL_CHAP_24 //ontop: SCENE_SLOPE_MAP_TEXTURE
 		#undef SCENE_TERRAIN_COLLISION
 	#endif
@@ -484,6 +484,7 @@
 
 	#if DX_ENGINE_LEVEL >= 80 //Render objects loaded by threads.
 	#endif
+
 
 	//#define USE_MULTI_MONITOR
 

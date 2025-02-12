@@ -348,7 +348,7 @@
 #endif
 
 //------------------------------------------------------------------------------------------------------------------
-//BASED ON: G:\DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64
+//BASED ON: 
 #if DX_ENGINE_LEVEL >= 56 //TUTORIAL_CHAP 19 - TERRAIN Texture Mapping ........................ 019terrain_fog_slope_detail_mapping.hlsl
 	//TODO!!half done
 #endif

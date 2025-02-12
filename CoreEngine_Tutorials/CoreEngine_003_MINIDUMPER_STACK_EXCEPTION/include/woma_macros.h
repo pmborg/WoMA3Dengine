@@ -98,16 +98,34 @@
 extern const wchar_t* GetWC(const char* c);
 
 	#ifdef UNICODE
-		#define WomaFatalExceptionW( wmsg ) { CHAR msg[MAX_STR_LEN]={ 0 }; wtoa(msg, wmsg, MAX_STR_LEN); throw woma_exception(msg, __FILE__, __FUNCTION__, __LINE__); } // TODO: String convert
-		#define WomaFatalException( msg ) { throw woma_exception(msg, __FILE__, __FUNCTION__, __LINE__); } // TODO: String convert
-	#else
-		#define WomaFatalExceptionW( msg ) throw woma_exception(msg, __FILE__, __FUNCTION__, __LINE__);
-		#define WomaFatalException( msg ) throw woma_exception(msg, __FILE__, __FUNCTION__, __LINE__);
+		#define WomaFatalExceptionW( wmsg ) { CHAR msg[MAX_STR_LEN]={ 0 }; wtoa(msg, wmsg, MAX_STR_LEN); throw exception(msg); } // TODO: String convert
+	#endif
+	#if defined WINDOWS_PLATFORM
+		#define WomaFatalException(msg) throw exception(msg)
+		#define WomaFatalExceptionW ( wmsg )  throw exception( wmsg)
+	#endif
+	#if defined LINUX_PLATFORM
+		#define WomaFatalException(msg) throw (msg)
+	#endif
+	#if defined ANDROID_PLATFORM
+		#define WomaFatalException(msg) return false
 	#endif
 
-	#define WOMA_LOGManager_DebugMSGAUTO if (WOMA::logManager) WOMA::logManager->DEBUG_MSG
-	#define WOMA_LOGManager_DebugMSG	 if (WOMA::logManager) WOMA::logManager->DEBUG_MSG
-	#define WOMA_LOGManager_DebugMSGW	 if (WOMA::logManager) WOMA::logManager->DEBUG_MSG
+	#if defined ANDROID_PLATFORM
+	#define WOMA_LOGManager_DebugMSG			_tprintf
+	#else
+	#define WOMA_LOGManager_DebugMSG			printf	//CHAR
+	#endif
+
+	#if defined UNICODE
+		#define WOMA_LOGManager_DebugMSGAUTO	wprintf	//TCHAR
+	#else
+		#define WOMA_LOGManager_DebugMSGAUTO	WOMA_LOGManager_DebugMSG	//TCHAR
+	#endif
+
+	#if defined WINDOWS_PLATFORM
+	  #define WOMA_LOGManager_DebugMSGW			wprintf	//WCHAR
+	#endif
 
 // Class Loaders - for automatic class load log
 // --------------------------------------------------------------------------------------------

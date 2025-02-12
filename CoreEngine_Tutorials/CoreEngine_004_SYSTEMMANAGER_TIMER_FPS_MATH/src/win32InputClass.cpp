@@ -32,15 +32,15 @@ InputClass::InputClass()
 	CLASSLOADER();
 	WomaIntegrityCheck = 1234567311;
 
-	ZeroMemory(&m_keys, sizeof(m_keys));
+	ZeroMemory (&m_keys, sizeof(m_keys));
 }
 
-InputClass::~InputClass() { CLASSDELETE(); }
+InputClass::~InputClass() {CLASSDELETE();}
 
 void InputClass::Initialize()
 {
 	// Initialize all the keys to being released and not pressed.
-	for (int i = 0; i < 256; i++)
+	for(int i=0; i<256; i++)
 		m_keys[i] = false;
 }
 

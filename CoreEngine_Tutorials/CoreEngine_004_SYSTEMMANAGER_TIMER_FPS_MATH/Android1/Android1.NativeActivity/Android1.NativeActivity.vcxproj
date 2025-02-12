@@ -130,7 +130,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PublicIncludeDirectories>
     </PublicIncludeDirectories>
-    <IncludePath>.;..;../..;$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include;C:\WoMA3Dengine_\CoreEngine_Tutorials\CoreEngine_000_OSENGINE_SYSTEM\include;C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_001_LANG_LOG_MEMLEAKs_OSMAINDIRs\include;C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_002_MAINWINDOW_EVENTS\include;C:\WoMAengine2023_\SOURCE_CODE\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH\include;C:\WoMAengine2023_\SOURCE_CODE\CoreEngine_006_PACKMANAGER_IDEA_CPU_BENCHMARK\include</IncludePath>
+    <IncludePath>.;..;../..;$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include;C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH\include;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
@@ -224,6 +224,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.h" />
     <ClInclude Include="..\..\include\default_settings_xml.h" />
     <ClInclude Include="..\..\include\dumpUploader.h" />
     <ClInclude Include="..\..\include\fileLoader.h" />
@@ -258,30 +259,25 @@
     <ClInclude Include="android_native_app_glue.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.cpp" />
+    <ClCompile Include="..\..\..\CoreEngine_005_PAINT_SETTINGS_XML\src\TrigonometryMathClass.cpp" />
     <ClCompile Include="..\..\..\main.cpp" />
     <ClCompile Include="..\..\src\0CheckOS.cpp" />
     <ClCompile Include="..\..\src\1CheckSYS.cpp" />
-    <ClCompile Include="..\..\src\2UpdateOSifNeeded.cpp" />
     <ClCompile Include="..\..\src\3CheckSetup.cpp" />
     <ClCompile Include="..\..\src\4CheckEngineUpdates.cpp" />
     <ClCompile Include="..\..\src\5LaunchEngine.cpp" />
     <ClCompile Include="..\..\src\7ProcessorInfo.cpp" />
-    <ClCompile Include="..\..\src\8SystemFeatures.cpp" />
     <ClCompile Include="..\..\src\default_settings_xml.cpp" />
-    <ClCompile Include="..\..\src\dumpUploader.cpp" />
     <ClCompile Include="..\..\src\fileLoader.cpp" />
     <ClCompile Include="..\..\src\fpsClass.cpp" />
     <ClCompile Include="..\..\src\language.cpp" />
     <ClCompile Include="..\..\src\log.cpp" />
     <ClCompile Include="..\..\src\Math3D.cpp" />
     <ClCompile Include="..\..\src\mem_leak.cpp" />
-    <ClCompile Include="..\..\src\minidumperClass.cpp" />
-    <ClCompile Include="..\..\src\OperatingSystem.cpp" />
     <ClCompile Include="..\..\src\OSmain_dir.cpp" />
-    <ClCompile Include="..\..\src\stackTrace.cpp" />
     <ClCompile Include="..\..\src\SystemClass.cpp" />
     <ClCompile Include="..\..\src\TimerClass.cpp" />
-    <ClCompile Include="..\..\src\woma_exception.cpp" />
     <ClCompile Include="AndroidNewSystemClass.c" />
     <ClCompile Include="..\..\src\OSengine.cpp" />
     <ClCompile Include="Android.cpp" />

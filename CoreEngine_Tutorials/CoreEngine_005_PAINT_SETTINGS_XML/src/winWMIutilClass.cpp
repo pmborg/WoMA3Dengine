@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: wmiUtilClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -19,11 +20,8 @@
 //WomaIntegrityCheck = 1234567311;
 
 #include "OSengine.h"
-#if CORE_ENGINE_LEVEL >= 4
 
 #include "wmiUtilClass.h"
-
-#if defined WINDOWS_PLATFORM
 
 using namespace std;	//endl
 #include <sstream>		//wstring
@@ -44,15 +42,6 @@ wmiUtilClass::wmiUtilClass()
     pLocator = NULL;
     pServices = NULL;
     
-	#if DX_ENGINE_LEVEL >= 20 // Initializing Engine
-    try {
-        GetVideoControllerInfoFromWMI();
-    }
-    catch (...) 
-    {
-        WOMA_LOGManager_DebugMSGAUTO(TEXT("ERROR ON: GetVideoControllerInfoFromWMI()"));
-    }
-	#endif
 }
 
 wmiUtilClass::~wmiUtilClass() 
@@ -327,9 +316,7 @@ bool wmiUtilClass::GetSystemInfo()
 
     return true;
 }
-//#endif
 
-//#ifdef TUTORIAL_PRE_CHAP// >= 5
 //	-------------------------------------------------------------------------------------------
 bool wmiUtilClass::GetVideoControllerInfoFromWMI()
 {
@@ -483,6 +470,3 @@ STRING wmiUtilClass::GetMonitorDescription(HMONITOR hMonitor)
 // GET MONITOR NAME.
 //	-------------------------------------------------------------------------------------------
 
-#endif
-
-#endif

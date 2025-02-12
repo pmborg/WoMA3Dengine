@@ -23,8 +23,9 @@
 #pragma warning( disable : 4477 )
 #pragma warning( disable : 4838 )
 
+#include "OSengine.h"
+#include "log.h"
 #include "SystemClass.h"
-#include "OSengine.h" //#include "WinSystemClass.h"
 #include "default_settings_xml.h"
 #include "woma_macros.h"
 
@@ -35,8 +36,6 @@
 #endif
 
 #include "stateMachine.h"
-
-#include "systemManager.h"
 
 #define GET_NAME(NAME) #NAME
 #define GET_VERSION(VERSION) GET_NAME(VERSION)
@@ -192,7 +191,6 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 
 	// Reset Vars:
 	// -------------------------------------------------------------------------------------------
-	m_OsInput = NULL;
 
 
 #if defined WINDOWS_PLATFORM
@@ -201,205 +199,11 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 	WOMA::filename = TEXT("");
 #endif
 
-	systemManager = NULL;
-	userName = TEXT("");
-	ComputerName = TEXT("");
 #if defined USE_TIMER_CLASS
 	fps = NULL;
 	cpu = NULL;
 #endif
 
-}
-
-
-void SystemClass::InitializeSystemScreen(int x, int y)
-//-----------------------------------------------------------------------------------------
-{
-	WOMA::logManager->DEBUG_MSG("InitializeSystemScreen...\n");
-	//v1
-	//float LINE = 24;
-	//float LINE_SPACE=45;
-	//v2
-	float LINE = 22;
-	float LINE_SPACE = 40;
-	if (fontSizeY > 0) {
-		LINE = MIN(LINE, 2 * fontSizeY);
-		LINE_SPACE = MIN(LINE_SPACE, 3 * fontSizeY);
-	}
-
-	// Make sure that is Reset!
-	while (!TextToPrint[0].empty())
-		TextToPrint[0].pop_back();
-
-	// ----------------------------------
-	// Language
-	Woma_Label text = { systemDefinitions.szCountryNameBuffer, x, y };
-	TextToPrint[0].push_back(text);
-
-	// Username
-	TCHAR szScratch[128] = { 0 };
-	StringCchPrintf(szScratch, sizeof(szScratch), TEXT("User Name: %s"), userName.c_str());
-	text.y += (int)LINE;
-	text.label = szScratch;
-	TextToPrint[0].push_back(text);
-
-	// Computer name
-	StringCchPrintf(szScratch, sizeof(szScratch), TEXT("Computer Name: %s"), ComputerName.c_str());
-	text.y += (int)LINE;
-	text.label = szScratch;
-	TextToPrint[0].push_back(text);
-
-	// ----------------------------------
-	// OS
-	text.y += (int)LINE_SPACE; text.label = systemDefinitions.osName;
-	TextToPrint[0].push_back(text);
-
-#ifdef WINDOWS_PLATFORM
-	text.y += (int)LINE; text.label = systemDefinitions.windowsVersion;
-	TextToPrint[0].push_back(text);
-
-	text.y += (int)LINE; text.label = systemDefinitions.windowsBuildVersion;
-	TextToPrint[0].push_back(text);
-#endif
-
-	// ----------------------------------
-	// System:
-	text.y += (int)LINE_SPACE; text.label = systemDefinitions.platform;
-	TextToPrint[0].push_back(text);
-
-	text.y += (int)LINE; text.label = systemDefinitions.characterSet;
-	TextToPrint[0].push_back(text);
-
-	text.y += (int)LINE; text.label = systemDefinitions.binaryArchitecture;
-	TextToPrint[0].push_back(text);
-
-	text.y += (int)LINE; text.label = systemDefinitions.binaryCode;
-	TextToPrint[0].push_back(text);
-
-	// ----------------------------------
-	// Processor
-	text.y += (int)LINE_SPACE; text.label = systemDefinitions.processorPackageCount;
-	TextToPrint[0].push_back(text);
-
-	text.y += (int)LINE; text.label = systemDefinitions.NumCoreProcessors;
-	TextToPrint[0].push_back(text);
-
-	text.y += (int)LINE; text.label = systemDefinitions.logicalProcessorCount;
-	TextToPrint[0].push_back(text);
-
-	text.y += (int)LINE; text.label = systemDefinitions.clockSpeed;
-	TextToPrint[0].push_back(text);
-
-	text.y += (int)LINE; text.label = systemDefinitions.processorName;
-	TextToPrint[0].push_back(text);
-
-	text.y += (int)LINE; text.label = systemDefinitions.processorId;
-	TextToPrint[0].push_back(text);
-
-	int HALF;
-	// ----------------------------------
-	// NEW PAGE
-	// ----------------------------------
-	// BOARD/CPU Feactures (RIGHT SIDE):
-#if defined WINDOWS_PLATFORM
-	if (AppSettings->WINDOW_WIDTH == 0)
-	{
-		// --------------------------------------------------------------------------------------------
-		DEVMODE devMode = { 0 };
-		DWORD deviceNum = 0;
-		UINT MONITOR_NUM = 0;
-
-		displayDevice.cb = sizeof(DISPLAY_DEVICE);
-		while (EnumDisplayDevices(NULL, deviceNum, &displayDevice, 0))	// Get deviceNum
-		{
-			// Get our Screen name (on THIS monitor)
-			if (EnumDisplaySettings(displayDevice.DeviceName, ENUM_CURRENT_SETTINGS, &devMode))
-			{
-				// Use the Monitor selected by user:
-				if (((deviceNum == AppSettings->UI_MONITOR) && (AppSettings->UseAllMonitors == false)) ||
-					((deviceNum == MONITOR_NUM) && (AppSettings->UseAllMonitors == true)))
-				{
-					HALF = (devMode.dmPelsWidth / 5) * 3;
-					break;
-				}
-			}
-		}
-	}
-	else
-#endif
-		HALF = (AppSettings->WINDOW_WIDTH / 5) * 3;
-
-	// ----------------------------------
-	// CPU FEATURES:
-	text.y += (int)LINE_SPACE;
-	int initial_y = text.y;
-	text.label = TEXT("CPU FEATURES:");
-	TextToPrint[0].push_back(text);
-
-	for (UINT i = 0; i < systemDefinitions.cpuFeactures.size(); i++)
-	{
-		if (i == 10)
-		{
-			text.y = initial_y;
-			text.x = HALF;
-		}
-		text.y += (int)LINE;
-		text.label = systemDefinitions.cpuFeactures[i];
-		TextToPrint[0].push_back(text);
-	}
-
-#if defined DX_ENGINE
-	// GPU:
-	text.x = x;
-	for (UINT i = 0; i < systemDefinitions.GPUINFO.size(); i++)
-	{
-		text.y += (int)LINE_SPACE;
-		text.label = systemDefinitions.GPUINFO[i].GraphicCard;
-		TextToPrint[0].push_back(text);
-		/*
-		if (i + 1 < systemDefinitions.GPUINFO.size())
-		{
-			text.y += (int)LINE; text.label = systemDefinitions.GPUINFO[i].AdapterDACType;
-			TextToPrint[0].push_back(text);
-			text.y += (int)LINE; text.label = systemDefinitions.GPUINFO[i].AdapterRAM;
-			TextToPrint[0].push_back(text);
-		}
-		*/
-		text.y += (int)LINE; text.label = systemDefinitions.GPUINFO[i].DedicatedVideoMemory;
-		TextToPrint[0].push_back(text);
-		text.y += (int)LINE; text.label = systemDefinitions.GPUINFO[i].DedicatedSystemMemory;
-		TextToPrint[0].push_back(text);
-		text.y += (int)LINE; text.label = systemDefinitions.GPUINFO[i].SharedSystemMemory;
-		TextToPrint[0].push_back(text);
-	}
-
-	text.x = HALF;
-	text.y = 10;
-	// ----------------------------------
-	// RAM
-	text.label = systemDefinitions.totalMemoryCapacity;
-	TextToPrint[0].push_back(text);
-	text.y += (int)LINE; text.label = systemDefinitions.freeMemory;
-	TextToPrint[0].push_back(text);
-
-	// BenchMark MathSpeed
-	text.y += (int)LINE; text.label = systemDefinitions.benchMarkMathSpeed1;
-	TextToPrint[0].push_back(text);
-	text.y += (int)LINE; text.label = systemDefinitions.benchMarkMathSpeed2;
-	TextToPrint[0].push_back(text);
-
-	// FreeSpace:
-	text.y += (int)LINE_SPACE; text.label = TEXT("DISK FREE:");
-	TextToPrint[0].push_back(text);
-
-	for (UINT driveLetter = 0; driveLetter < systemDefinitions.drives_List.size(); driveLetter++)
-	{
-		text.y += (int)LINE; text.label = systemDefinitions.drives_List[driveLetter];
-		TextToPrint[0].push_back(text);
-	}
-
-#endif
-	//WOMA::logManager->DEBUG_MSG(" done\n");
 }
 
 
@@ -423,161 +227,6 @@ void SystemClass::refreshTitle() // Run once per second.
 #endif
 }
 
-	#ifndef DIK_ESCAPE					// Will be defined @ ENGINE_LEVEL >= 24
-	#define DIK_ESCAPE 0x01
-	#endif
-
-//-----------------------------------------------------------------------------------------
-void SystemClass::ProcessOSInput() // This Function will be invoked several times per second
-//-----------------------------------------------------------------------------------------
-{
-	//LEVEL 4 System
-	//LEVEL 5 Setup
-	//LEVEL 7 Astro
-	//LEVEL 8 Map
-	//LEVEL 9 Weather
-
-	static bool first_time = true;
-
-#if defined WINDOWS_PLATFORM
-
-	// "ESC": DX Process Special: key is beeing pressed ? -> EXIT APPLICATION
-
-	// "ESC" OS Process Special: key is beeing pressed ? -> EXIT APPLICATION
-	if (m_OsInput->IsKeyDown(VK_ESCAPE) && WOMA::game_state == GAME_RUN)		// CHECK: if the user pressed 'escape' and wants to exit the application.
-	{
-		WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP; //Publish_Quit_Message();
-		return;
-	}
-
-	if (m_OsInput->IsKeyDown(VK_ESCAPE) && WOMA::game_state >= GAME_SYSTEM_SETTINGS && WOMA::game_state <= GAME_SETUP) {		// CHECK: if the user pressed 'escape' and wants to exit the application.
-		//WOMA::game_state = GAME_MENU;
-		m_OsInput->m_keys[VK_ESCAPE] = false;
-		WOMA::game_state = GAME_RUN;
-	}
-
-	//F4
-
-	//F3
-	//F2
-
-	//F6
-
-	//F1
-#if CORE_ENGINE_LEVEL >= 4 && defined GAME_SYSTEM_SETTINGS
-	if (first_time || (OS_KEY_DOWN(VK_F1) && WOMA::game_state != GAME_SYSTEM_SETTINGS)) {
-		if (AppSettings->DRIVER == DRIVER_DX12 && !first_time)
-		{
-			WOMA::previous_game_state = GAME_SYSTEM_SETTINGS; //match*
-			WOMA::game_state = ENGINE_RESTART;
-			return;
-		}
-		RENDER_PAGE = 4;
-		WOMA::game_state = GAME_SYSTEM_SETTINGS; //match*
-		OS_REDRAW_WINDOW;
-		OS_REDRAW_WINDOW;
-	}
-	first_time = false;
-#endif
-
-	//F5
-
-#endif
-}
-
-bool SystemClass::SystemCheck()
-{
-	// [8] Get User Language/Country:
-	// -------------------------------------------------------------------------------------------
-#if defined WINDOWS_PLATFORM
-	WOMA::settings.id = GetUserDefaultUILanguage();
-
-	//TODO: Use this later on:
-	WOMA::GetLangStringFromLangId(WOMA::settings.id);
-#endif
-
-	// [10] Check Endian = LITTLE_ENDIAN or BIG_ENDIAN  (Used in some libs)
-	// -------------------------------------------------------------------------------------------
-	WOMA::settings.Endian = WOMA::endian();
-	if (WOMA::settings.Endian == LITTLE_ENDIAN)
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("The machine is Little Endian\n"));	//8008, 8080, 8085, 8086, ...
-	else
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("The machine is Big Endian\n"));		//Motorola 68000
-
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("\n"));
-
-	LEVELHIGHLIGHT(4);
-	// INIT SYSTEM SETTINGS:
-	WOMA_LOGManager_DebugMSG("------------------------------------SYSTEM CHECK SETTINGS: --------------------------------\n");
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("ENGINE_LEVEL: %d [Function Loader] get_current_dir()\n"), WOMA::ENGINE_LEVEL_USED);
-
-	userName = getUserName(); // Note: Save for later use!
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("User Name: %s\n"), userName.c_str());
-
-	ComputerName = getComputerName();
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("Computer Name: %s\n"), ComputerName.c_str());
-
-	IF_NOT_RETURN_FALSE(WOMA::getCurrentDir());
-	//LEVELNORMAL();
-
-	systemManager = NEW SystemManager();
-	IF_NOT_THROW_EXCEPTION(systemManager);
-
-#if CORE_ENGINE_LEVEL >= 4 && defined WINDOWS_PLATFORM
-	GETOS();
-#endif
-
-	// [2] CheckOS: Detect OS Version & DO System Check: DONE
-	//----------------------------------------------------------------------------
-	//LEVELHIGHLIGHT(4);
-	WOMA_LOGManager_DebugMSG("-------------------------------------------------------------------------------\n");
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("ENGINE_LEVEL: %d [Function Loader] systemManager->CheckOS()\n"), WOMA::ENGINE_LEVEL_USED);
-	IF_NOT_RETURN_FALSE(systemManager->CheckOS()); // Mandatory line for all ENGINE_LEVELs
-
-	//LEVELNORMAL();
-
-	//LEVELHIGHLIGHT(4);
-	WOMA_LOGManager_DebugMSG("-------------------------------------------------------------------------------\n");
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("ENGINE_LEVEL: %d [Function Loader] systemManager->checkCPU()\n"), WOMA::ENGINE_LEVEL_USED);
-	IF_NOT_RETURN_FALSE(systemManager->checkCPU());
-	//LEVELNORMAL();
-
-	//LEVELHIGHLIGHT(5);
-	WOMA_LOGManager_DebugMSG("-------------------------------------------------------------------------------\n");
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("ENGINE_LEVEL: %d [Function Loader] systemManager->checkRAM()\n"), WOMA::ENGINE_LEVEL_USED);
-	IF_NOT_RETURN_FALSE(systemManager->checkRAM());
-	//LEVELNORMAL();
-
-	//LEVELHIGHLIGHT(6);
-	WOMA_LOGManager_DebugMSG("-------------------------------------------------------------------------------\n");
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("ENGINE_LEVEL: %d [Function Loader] systemManager->checkDiskFreeSpace()\n"), WOMA::ENGINE_LEVEL_USED);
-	IF_NOT_RETURN_FALSE(systemManager->checkDiskFreeSpace());
-	//LEVELNORMAL();
-
-	//LEVELHIGHLIGHT(7);
-	WOMA_LOGManager_DebugMSG("-------------------------------------------------------------------------------\n");
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("ENGINE_LEVEL: %d [Function Loader] systemManager->checkCPUFeatures()\n"), WOMA::ENGINE_LEVEL_USED);
-
-#if defined WINDOWS_PLATFORM
-	IF_NOT_RETURN_FALSE(systemManager->checkCPUFeatures());
-	//LEVELNORMAL();
-#endif
-
-	if (Command == 0) {
-#if ((defined USE_TIMER_CLASS && CORE_ENGINE_LEVEL >= 6) || (defined RELEASE || defined INTRO_DEMO) || CORE_ENGINE_LEVEL == 4) && defined WINDOWS_PLATFORM
-		//LEVELHIGHLIGHT(8);
-		WOMA_LOGManager_DebugMSG("-------------------------------------------------------------------------------\n");
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("ENGINE_LEVEL: %d [Function Loader] systemManager->checkBenchMarkSpeed()\n"), WOMA::ENGINE_LEVEL_USED);
-		IF_NOT_RETURN_FALSE(systemManager->checkBenchMarkSpeed(&m_Timer));
-		//LEVELNORMAL();
-#endif
-	}
-
-	WOMA_LOGManager_DebugMSG("\n");
-
-	return true;
-}
-
 
 SystemClass::~SystemClass() { CLASSDELETE(); }
 
@@ -586,9 +235,6 @@ void SystemClass::Shutdown()
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("-------------------------------------------------------------------------------\n"));
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("SystemClass::Shutdown()\n"));
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("-------------------------------------------------------------------------------\n"));
-	SAFE_DELETE(m_OsInput);
-
-	SAFE_DELETE(systemManager);
 
 	AppSettings = NULL;				// Pointer to Static object, no need to free.
 }
@@ -645,20 +291,9 @@ if (WOMA::game_state == GAME_RUN)
 	}
 #endif
 
-	#if defined USE_PROCESS_OS_KEYS && defined WINDOWS_PLATFORM
-		ProcessOSInput();							// READ+PROCESS-OS-INPUT: Process Special: Function Keys |ESC and F1 to F6|
-		if (WOMA::game_state == ENGINE_RESTART)
-			return;
-	#endif
-	
 	#if CORE_ENGINE_LEVEL >= 4 && defined USE_TIMER_CLASS
 		ProcessPerformanceStats();					// ProcessPerformanceStats-FPS: m_Timer.Frame(); m_Fps.Frame(); m_Cpu.Frame();
 	#endif
-}
-
-bool SystemClass::InitOsInput()
-{
-	return true;
 }
 
 #if CORE_ENGINE_LEVEL >= 4 && defined USE_TIMER_CLASS

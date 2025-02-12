@@ -111,9 +111,21 @@ extern const wchar_t* GetWC(const char* c);
 		#define WomaFatalException(msg) return false
 	#endif
 
-	#define WOMA_LOGManager_DebugMSGAUTO if (WOMA::logManager) WOMA::logManager->DEBUG_MSG
-	#define WOMA_LOGManager_DebugMSG	 if (WOMA::logManager) WOMA::logManager->DEBUG_MSG
-	#define WOMA_LOGManager_DebugMSGW	 if (WOMA::logManager) WOMA::logManager->DEBUG_MSG
+	#if defined ANDROID_PLATFORM
+	#define WOMA_LOGManager_DebugMSG			_tprintf
+	#else
+	#define WOMA_LOGManager_DebugMSG			printf	//CHAR
+	#endif
+
+	#if defined UNICODE
+		#define WOMA_LOGManager_DebugMSGAUTO	wprintf	//TCHAR
+	#else
+		#define WOMA_LOGManager_DebugMSGAUTO	WOMA_LOGManager_DebugMSG	//TCHAR
+	#endif
+
+	#if defined WINDOWS_PLATFORM
+	  #define WOMA_LOGManager_DebugMSGW			wprintf	//WCHAR
+	#endif
 
 // Class Loaders - for automatic class load log
 // --------------------------------------------------------------------------------------------

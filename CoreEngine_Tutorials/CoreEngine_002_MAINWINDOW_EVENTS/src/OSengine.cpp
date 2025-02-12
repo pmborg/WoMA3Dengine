@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: OSengine.cpp
 // --------------------------------------------------------------------------------------------
@@ -22,129 +23,121 @@
 #include <inttypes.h>
 
 #if defined WINDOWS_PLATFORM
-WinSystemClass* SystemHandle = NULL;
+	WinSystemClass* SystemHandle = NULL;
 #endif
 
 #if defined ANDROID_PLATFORM 
 #if !defined NewWomaEngine
-AndroidSystemClass* SystemHandle = NULL;
+	AndroidSystemClass* SystemHandle = NULL;
 #else
-AndroidNewSystemClass* SystemHandle = NULL;
-#endif
+	AndroidNewSystemClass* SystemHandle = NULL;
+	#endif
 #endif
 
 #if defined LINUX_PLATFORM
-LinuxSystemClass* SystemHandle = NULL;
+	LinuxSystemClass* SystemHandle = NULL;
 
-extern MyWin Win;
-#include <gtk/gtk.h>		//libgtk4
-#if RUN_ASMAIN
-#include <GL/freeglut.h>
-#endif
+	extern MyWin Win;
+	#include <gtk/gtk.h>		//libgtk4
+	#if RUN_ASMAIN
+	#include <GL/freeglut.h>
+	#endif
 #endif
 
-#if CORE_ENGINE_LEVEL >= 1
 #include "OSmain_dir.h"
 #include "log.h"
-#endif
 
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
 #include "Rapplicationclass.h"
-RApplicationClass* r_Application;
-#endif
-
-#if CORE_ENGINE_LEVEL >= 10 && !defined NewWomaEngine
-#include "WomaDriverClass.h"
-#include "GLmathClass.h"
-#include "GLopenGLclass.h"
+	RApplicationClass* r_Application;
 #endif
 
 TCHAR* DEMO_NAME[] =
 {
-	//{"07:Loading a files from engine.pck and Press[F2] for RealTime Celestial Positions of Sun and Moon accordingly with user Location"},
-	//{"08 : From now on : PRESS[F3] for : [REAL TIME MAP] user location."},
-	//{"09 : From now on : PRESS[F4] for : [REAL Wheather] at user location."},
-	//{"19 : PRESS[F6] for SETUP and change Driver : OPENGL, DX9, DX11, DX12 : Initiate the 3D Graphic Drivers and attache the swapchain to mainwindow."},
-	//{"20 : OPENGL, DX9, DX11, DX12 : Allow mainwindow resizing."},
-	{"TUTORIAL 21: The Basic triangle and squar using vertexes with indexes.HLSL - The COLOR shader"},
-	{"TUTORIAL 22: Loading and Rendering Textures.HLSL - The TEXTURE shader"},
-	{"TUTORIAL 23: Adding the first light, 'Diffuse Lighting'.HLSL - The LIGHT shader"},
-	{"TUTORIAL 24: Adding Orthogonal Projection - Used on 2D Orthogonal Sprites"},
-	{"TUTORIAL 25: DX10DRIVER_FONTS"},
-	{"TUTORIAL 26: The first 3D objects: the CUBEs and SPHEREs - COLOR Shader, TEXTURE Shader and LIGHT Shader"},
-	{"TUTORIAL 27: The rastertek fonts on DX9, DX11, DX12 and OPENGL"},
-	{"TUTORIAL 28: The DX direct input, the Sky Camera and the Sphere Skydome"},
-	{"TUTORIAL 29: This DEMO: Use music (ogg loader) and the sound effects"},
-	{"TUTORIAL 30: WORLD.XML: load OBJ 3D file format, using COLOR shader"},
-	{"TUTORIAL 31: WORLD.XML: load OBJ 3D file format, with MULTIPLE TEXTURES, using TEXTURE shader"},
-	{"TUTORIAL 32: WORLD.XML: load OBJ 3D file format, the first advanced object, using LIGHT shader"},
-	{"TUTORIAL 33: WORLD.XML: load OBJ 3D file format, the compond, using transparent textures ALFA MAP and ALFA COLOR"},
-	{"TUTORIAL 34: WORLD.XML: load OBJ 3D file format, with SPECULAR and SHININESS"},
-	{"TUTORIAL 35: WORLD.XML: load OBJ 3D file format, with BUMP MAP"},
-	{"TUTORIAL 36: WORLD.XML: load OBJ 3D file format, render a SHADOW MAP"},
-	{"TUTORIAL 37: WORLD.XML: load OBJ 3D file format, render chess board pieces, adding MAIN THREAD and the LOADER THREAD"},
-	{"TUTORIAL 38: WORLD.XML: load OBJ 3D file format, save to W3D Woma 3D fast file FORMAT"},
-	{"TUTORIAL 39: WORLD.XML: load W3D(the Woma 3D file format) files up to 30x faster than OBJ files in DX LEVEl38"},
-	{"TUTORIAL 40: WORLD.XML: load W3D and use INSTANCES to clone objects using GPU"},
-	{"TUTORIAL 41: WORLD.XML: load W3D and use SHADOW INSTANCES"},
-	{"TUTORIAL 42: WORLD.XML: load W3D and use SHADOW INSTANCES with ROTATION per instance"},
-	{"43"},
-	{"44"},
-	{"45"},
-	{"46"},
-	{"47"},
-	{"48"},
-	{"49: TERRAIN: Generate under water terrain. ModelTextureVertexType"},
-	{"50: TERRAIN: the under water terrain. ModelTextureVertexType"},
-	{"51: TERRAIN: Add fog ModelTextureVertexType"},
-	{"52: TERRAIN: Use Light Shader + Add Normals + Add Index(s) ModelTextureVertexType"},
-	{"53: TERRAIN: Add extra color terrain(extra Green in this example) ModelTextureVertexType"},
-	{"54: TERRAIN: Add Water waves ModelTextureVertexType"},
-	{"55: TERRAIN: 256x256 with Slope Texture Shader[0]ModelTextureVertexType"},
-	{"56: TERRAIN: 256x256 Terrain Texture Multi Layers "},
-	{"57: "},
-	{"58: "},
-	{"59: "},
-	{"60: "},
-	{"61: "},
-	{DEMO_TITLE},//62
-	{DEMO_TITLE},//63
-	{DEMO_TITLE},//64
-	{DEMO_TITLE},//65
-	{DEMO_TITLE},//66
-	{DEMO_TITLE},//67
-	{DEMO_TITLE},//68
-	{DEMO_TITLE},//69
-	{DEMO_TITLE},//70
-	{DEMO_TITLE},//71
-	{DEMO_TITLE},//72
-	{DEMO_TITLE},//73
-	{DEMO_TITLE},//74
-	{DEMO_TITLE},//75
-	{DEMO_TITLE},//76
-	{DEMO_TITLE},//77
-	{DEMO_TITLE},//78
-	{DEMO_TITLE},//79
-	{DEMO_TITLE},//80
-	{DEMO_TITLE},//81
-	{DEMO_TITLE},//82
-	{DEMO_TITLE},//83
-	{DEMO_TITLE},//84
-	{DEMO_TITLE},//85
-	{DEMO_TITLE},//86
-	{DEMO_TITLE},//87
-	{DEMO_TITLE},//88
-	{DEMO_TITLE},//89
-	{DEMO_TITLE},//90
-	{DEMO_TITLE},//91
-	{DEMO_TITLE},//92
-	{DEMO_TITLE},//93
-	{DEMO_TITLE},//94
-	{DEMO_TITLE},//95
-	{DEMO_TITLE},//96
-	{DEMO_TITLE},//97
-	{DEMO_TITLE},//98
-	{DEMO_TITLE},//99
+//{"07:Loading a files from engine.pck and Press[F2] for RealTime Celestial Positions of Sun and Moon accordingly with user Location"},
+//{"08 : From now on : PRESS[F3] for : [REAL TIME MAP] user location."},
+//{"09 : From now on : PRESS[F4] for : [REAL Wheather] at user location."},
+//{"19 : PRESS[F6] for SETUP and change Driver : OPENGL, DX9, DX11, DX12 : Initiate the 3D Graphic Drivers and attache the swapchain to mainwindow."},
+//{"20 : OPENGL, DX9, DX11, DX12 : Allow mainwindow resizing."},
+{"TUTORIAL 21: The Basic triangle and squar using vertexes with indexes.HLSL - The COLOR shader"},
+{"TUTORIAL 22: Loading and Rendering Textures.HLSL - The TEXTURE shader"},
+{"TUTORIAL 23: Adding the first light, 'Diffuse Lighting'.HLSL - The LIGHT shader"},
+{"TUTORIAL 24: Adding Orthogonal Projection - Used on 2D Orthogonal Sprites"},
+{"TUTORIAL 25: DX10DRIVER_FONTS"},
+{"TUTORIAL 26: The first 3D objects: the CUBEs and SPHEREs - COLOR Shader, TEXTURE Shader and LIGHT Shader"},
+{"TUTORIAL 27: The rastertek fonts on DX9, DX11, DX12 and OPENGL"},
+{"TUTORIAL 28: The DX direct input, the Sky Camera and the Sphere Skydome"},
+{"TUTORIAL 29: This DEMO: Use music (ogg loader) and the sound effects"},
+{"TUTORIAL 30: WORLD.XML: load OBJ 3D file format, using COLOR shader"},
+{"TUTORIAL 31: WORLD.XML: load OBJ 3D file format, with MULTIPLE TEXTURES, using TEXTURE shader"},
+{"TUTORIAL 32: WORLD.XML: load OBJ 3D file format, the first advanced object, using LIGHT shader"},
+{"TUTORIAL 33: WORLD.XML: load OBJ 3D file format, the compond, using transparent textures ALFA MAP and ALFA COLOR"},
+{"TUTORIAL 34: WORLD.XML: load OBJ 3D file format, with SPECULAR and SHININESS"},
+{"TUTORIAL 35: WORLD.XML: load OBJ 3D file format, with BUMP MAP"},
+{"TUTORIAL 36: WORLD.XML: load OBJ 3D file format, render a SHADOW MAP"},
+{"TUTORIAL 37: WORLD.XML: load OBJ 3D file format, render chess board pieces, adding MAIN THREAD and the LOADER THREAD"},
+{"TUTORIAL 38: WORLD.XML: load OBJ 3D file format, save to W3D Woma 3D fast file FORMAT"},
+{"TUTORIAL 39: WORLD.XML: load W3D(the Woma 3D file format) files up to 30x faster than OBJ files in DX LEVEl38"},
+{"TUTORIAL 40: WORLD.XML: load W3D and use INSTANCES to clone objects using GPU"},
+{"TUTORIAL 41: WORLD.XML: load W3D and use SHADOW INSTANCES"},
+{"TUTORIAL 42: WORLD.XML: load W3D and use SHADOW INSTANCES with ROTATION per instance"},
+{"43"},
+{"44"},
+{"45"},
+{"46"},
+{"47"},
+{"48"},
+{"49: TERRAIN: Generate under water terrain. ModelTextureVertexType"},
+{"50: TERRAIN: the under water terrain. ModelTextureVertexType"},
+{"51: TERRAIN: Add fog ModelTextureVertexType"},
+{"52: TERRAIN: Use Light Shader + Add Normals + Add Index(s) ModelTextureVertexType"},
+{"53: TERRAIN: Add extra color terrain(extra Green in this example) ModelTextureVertexType"},
+{"54: TERRAIN: Add Water waves ModelTextureVertexType"},
+{"55: TERRAIN: 256x256 with Slope Texture Shader[0]ModelTextureVertexType"},
+{"56: TERRAIN: 256x256 Terrain Texture Multi Layers "},
+{"57: "},
+{"58: "},
+{"59: "},
+{"60: "},
+{"61: "},
+{DEMO_TITLE},//62
+{DEMO_TITLE},//63
+{DEMO_TITLE},//64
+{DEMO_TITLE},//65
+{DEMO_TITLE},//66
+{DEMO_TITLE},//67
+{DEMO_TITLE},//68
+{DEMO_TITLE},//69
+{DEMO_TITLE},//70
+{DEMO_TITLE},//71
+{DEMO_TITLE},//72
+{DEMO_TITLE},//73
+{DEMO_TITLE},//74
+{DEMO_TITLE},//75
+{DEMO_TITLE},//76
+{DEMO_TITLE},//77
+{DEMO_TITLE},//78
+{DEMO_TITLE},//79
+{DEMO_TITLE},//80
+{DEMO_TITLE},//81
+{DEMO_TITLE},//82
+{DEMO_TITLE},//83
+{DEMO_TITLE},//84
+{DEMO_TITLE},//85
+{DEMO_TITLE},//86
+{DEMO_TITLE},//87
+{DEMO_TITLE},//88
+{DEMO_TITLE},//89
+{DEMO_TITLE},//90
+{DEMO_TITLE},//91
+{DEMO_TITLE},//92
+{DEMO_TITLE},//93
+{DEMO_TITLE},//94
+{DEMO_TITLE},//95
+{DEMO_TITLE},//96
+{DEMO_TITLE},//97
+{DEMO_TITLE},//98
+{DEMO_TITLE},//99
 };
 
 // Global Public:
@@ -171,10 +164,6 @@ namespace WOMA
 	int		game_state = GAME_LOADING;
 	int		previous_game_state = GAME_LOADING;
 
-#if defined USE_LOG_MANAGER
-	ILogManager* logManager = NULL;	// Global Log Manager
-#endif
-
 	UINT ENGINE_LEVEL_USED = 0;
 	int  main_loop_state = 0;
 
@@ -185,7 +174,7 @@ namespace WOMA
 	// SUBSYSTEM:CONSOLE
 	BOOL	UseWarpDevice = FALSE;
 	int     ARGc = 0;
-	CHAR** ARGv = { 0 };
+	CHAR**	ARGv = { 0 };
 
 	TCHAR	strConsoleTitle[MAX_STR_LEN] = { 0 };
 
@@ -196,30 +185,18 @@ namespace WOMA
 	UINT	num_loading_objects = 1;
 #endif
 
-#if CORE_ENGINE_LEVEL >= 1
 	TCHAR   APP_NAME[MAX_STR_LEN] = { 0 };              // "Aplication Name"
-#endif
 
-#if CORE_ENGINE_LEVEL >= 2
 	TCHAR   APP_COMPANY_NAME[] = COMPANY_DIRECTORY;		// "Company" Directory Name: 1st lvl
 	TCHAR   APP_PROJECT_NAME[] = PROJECT_DIRECTORY;		// "Project" Directory Name: 2nd lvl
 	TCHAR   APP_FULLNAME[MAX_STR_LEN] = { 0 };          // "Aplication FullName"
 
-#if defined WINDOWS_PLATFORM
+	#if defined WINDOWS_PLATFORM
 	TCHAR	APP_ICO[] = ICON_FILE;			// "Define" Main Window: Icon 
-#endif
-#endif
-
-#if CORE_ENGINE_LEVEL >= 5 && defined USE_TINYXML_LOADER 
-	TCHAR   APP_SETTINGS_FILE[] = SETTINGS_FILE; // SETUP/Configuration file name
-#endif
-
-#if defined USE_MINIDUMPER
-	MiniDumper* miniDumper = NULL;
-#endif
+	#endif
 
 #if defined NOTES
-	// More Info MessageBox: http://msdn.microsoft.com/en-us/library/windows/desktop/ms645505%28v=vs.85%29.aspx
+// More Info MessageBox: http://msdn.microsoft.com/en-us/library/windows/desktop/ms645505%28v=vs.85%29.aspx
 #endif
 
 // LINUX:
@@ -229,9 +206,9 @@ namespace WOMA
 
 	extern TCHAR	APP_FULLNAME[MAX_STR_LEN];
 
-	// --------------------------------------------------------------------------------------------
-	// GLOBAL - MACROS:
-	// --------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
+// GLOBAL - MACROS:
+// --------------------------------------------------------------------------------------------
 #if !defined(_DEBUG) && defined(NDEBUG) // Get String of the Build Type: Debug / Release
 #define BUILD "RELEASE"
 #else
@@ -260,7 +237,7 @@ namespace WOMA
 	static BOOL WINAPI console_ctrl_handler(DWORD dwCtrlType)
 	{
 		//if (SystemHandle)
-		::PostMessage(NULL, WM_QUIT, 0, 0); // NOTE: (SystemHandle->m_hWnd) CANT be used!
+			::PostMessage(NULL, WM_QUIT, 0, 0); // NOTE: (SystemHandle->m_hWnd) CANT be used!
 		return TRUE;
 	}
 #endif
@@ -276,30 +253,26 @@ namespace WOMA
 	}
 }
 
-void DefineConsoleTitle()
+void DefineConsoleTitle() 
 {
 	// -------------------------------------------------------------------------------------------
 	// SETUP: "Console Window":
 	// -------------------------------------------------------------------------------------------
 	TCHAR cpu_type[256] = { 0 };
 #if defined CPU_X86
-#define cpu_type TEXT("32 bits")
+	#define cpu_type TEXT("32 bits")
 #elif defined X64
-#define cpu_type TEXT("64 bits")
+	#define cpu_type TEXT("64 bits")
 #endif
 
 	TCHAR charSet[256] = { 0 };
 #if defined UNICODE
-#define charSet TEXT("UNICODE")
+	#define charSet TEXT("UNICODE")
 #else
-#define charSet TEXT("MultiByte")
+	#define charSet TEXT("MultiByte")
 #endif
 
-#if DX_ENGINE_LEVEL < 19
 	StringCchPrintf(WOMA::strConsoleTitle, sizeof(WOMA::strConsoleTitle), TEXT("%s ENGINE Level: %d - %s [%s] %s\n"), WOMAOS, (int)CORE_ENGINE_LEVEL, charSet, WOMA::BINARY.c_str(), cpu_type);
-#else
-	StringCchPrintf(WOMA::strConsoleTitle, sizeof(WOMA::strConsoleTitle), TEXT("DXENGINE Level: %d - %s [%s] %s\n"), DX_ENGINE_LEVEL, charSet, WOMA::BINARY.c_str(), cpu_type);
-#endif
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("------------------------------------------------------------------------------------------\n"));
 	WOMA_LOGManager_DebugMSGAUTO(WOMA::strConsoleTitle);
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("------------------------------------------------------------------------------------------\n"));
@@ -332,11 +305,11 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 	srand(27); // to have always the same random numbers... the true Random is: "srand(time(0));"
 
 #if defined WINDOWS_PLATFORM
-#if defined _NOTUSED
-	setpriority(PRIO_PROCESS, 0, 20);	// Be nice to other processes, helps reduce mouse lag
-#else
-	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
-#endif
+	#if defined _NOTUSED
+		setpriority(PRIO_PROCESS, 0, 20);	// Be nice to other processes, helps reduce mouse lag
+	#else
+		SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
+	#endif
 
 	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 	if (FAILED(hr)) WomaFatalException("CoInitializeEx Failed!");
@@ -370,9 +343,6 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 	WOMA::setup_OSmain_dirs();				//1 Keep this order!
 	WOMA::activate_mem_leak_detection();	//2
 #endif
-#if defined USE_LOG_MANAGER
-	WOMA::start_log_manager();				//3
-#endif
 	DefineConsoleTitle();
 
 	// Save Command Line Arguments to use later on
@@ -383,9 +353,6 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 
 	// [4] Set A Top level "Exception handler" for all Exceptions. Catch, Dump & Send Report WOMA ENGINE HOME using FTP!
 	// -------------------------------------------------------------------------------------------
-#if defined USE_MINIDUMPER 
-	WOMA::miniDumper = NEW MiniDumper();	// NOTE: After logManager!
-#endif
 
 #ifdef LINUX_PLATFORM 
 	// [6-1] Start LINUX Platform GUI: Settings
@@ -401,21 +368,6 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 		WOMA_LOGManager_DebugMSGAUTO(TEXT("Could not initialize GTK2!")); // Note: Dont use DEBUG_MSG yet...
 #endif
 
-#if (defined OPENGL3 || defined OPENGL4) && CORE_ENGINE_LEVEL >= 10
-	// [7] Start LINUX Platform: "OpenGL" (LoadExtensions)
-	// -------------------------------------------------------------------------------------------
-#if defined WINDOWS_PLATFORM || (defined LINUX_PLATFORM && RUN_ASMAIN)
-//NOTE: (Standard Xlib "-display") options. Also it may support the "-geometry"
-// 
-//-display DISPLAY
-//	Specify the X server to connect to.If not specified, the value of the DISPLAY environment variable is used.
-//
-//-geometry W x H + X + Y
-//	Determines where window's should be created on the screen. The parameter following -geometry should be formatted as a standard X geometry specification. The effect of using this option is to change the GLUT initial size and initial position the same as if glutInitWindowSize or glutInitWindowPosition were called directly. 
-//
-	glutInit(&WOMA::ARGc, WOMA::ARGv);
-#endif
-#endif
 }
 
 void APPLICATION_STOP()
@@ -428,91 +380,11 @@ void APPLICATION_STOP()
 	CoUninitialize();
 #endif
 
-#if defined USE_MINIDUMPER
-	SAFE_DELETE(WOMA::miniDumper);		// Free Top level Exception handler & Mini-Dumper.
-#endif
-
-#if defined USE_LOG_MANAGER
-	WOMA::logManager->ShutdownInstance();	// Write, Close & Free: The logManager.
-	WOMA::logManager = NULL;				// Because of STATIC Classes Shutdown: Do not log
-#endif
-
-#if CORE_ENGINE_LEVEL >= 4 && defined WINDOWS_PLATFORM
-#ifdef RELEASE
-	WOMA::DeleteDirectory(WOMA::womaTempPATH.c_str());	// Delete TEMP files
-#endif
-#endif
-
 #if defined ANDROID_PLATFORM
 	engine.has_focus_ = false;
 	terminate();
 #endif
 }
-
-#if CORE_ENGINE_LEVEL >= 4
-TCHAR* getComputerName()
-{
-	static TCHAR buf[MAX_STR_LEN];
-	DWORD dwCompNameLen = MAX_STR_LEN;
-
-#if defined WINDOWS_PLATFORM
-	if (GetComputerName(buf, &dwCompNameLen))
-		return buf;
-	else
-#endif
-		return TEXT("127.0.0.1");
-}
-
-
-TCHAR* getUserName()
-{
-#if defined WINDOWS_PLATFORM
-	static TCHAR userName[MAX_STR_LEN];
-	//v1
-	_tcscpy_s(userName, _tgetenv(TEXT("USERNAME")));
-
-	//v2
-	if (_tcslen(userName) == 0)
-	{
-		DWORD Size = sizeof(userName);
-		GetUserName(userName, &Size);
-	}
-#endif
-
-#if defined LINUX_PLATFORM
-	static TCHAR userName[MAX_STR_LEN];
-	FILE* fp = NULL;
-	fp = popen("/bin/bash -c set | grep 'USER=' | awk -F= '{print $2}'", "r");
-	fread(userName, 1, sizeof(userName) - 1, fp);
-	fclose(fp);
-
-	for (int i = 0; userName[i] != 0; i++)
-		if (userName[i] == 10)
-			userName[i] = ' ';
-#endif
-
-#if defined ANDROID_PLATFORM
-	FILE* fp = NULL;
-	fp = popen("/bin/sh -c set | grep 'USER'", "r");
-	//fp = popen("/bin/sh -c set", "r");
-
-	char* userName = NULL;
-	size_t len = 0;
-	while ((getline(&userName, &len, fp)) != -1) {
-		_tprintf("%s\n", userName);
-	}
-
-	fclose(fp);
-
-	for (int i = 0; userName[i] != 0; i++)
-		if (userName[i] == 10)
-			userName[i] = ' ';
-#endif
-
-	return userName;
-}
-
-#endif
 
 #if CORE_ENGINE_LEVEL >= 1 && defined ANDROID_PLATFORM  && !defined NewWomaEngine
 #include <android/asset_manager.h>
@@ -544,7 +416,7 @@ bool File::open(const char* path, const char* mode) {
 
 #if defined ANDROID_PLATFORM
 int m_main_music_id = 0;
-JNIEnv* jni = NULL;
+JNIEnv* jni=NULL;
 
 void ShowFPS()
 {
@@ -680,11 +552,9 @@ int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption, bool yesORno)
 	WOMA_LOGManager_DebugMSGAUTO(fullMsg);
 	{ HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED); }
 
-#if CORE_ENGINE_LEVEL >= 2
 	if (SystemHandle)
 		res = MessageBox(SystemHandle->m_hWnd, lpText, lpCaption, (yesORno) ? MB_YESNO : MB_OK);
 	else
-#endif
 		res = MessageBox(NULL, lpText, lpCaption, (yesORno) ? MB_YESNO : MB_OK);
 #endif
 
@@ -695,11 +565,7 @@ int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption, bool yesORno)
 	return res;
 }
 #else//LINUX
-#if CORE_ENGINE_LEVEL >= 2
 int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption = WOMA::APP_FULLNAME, bool yesORno = false)
-#else
-int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption = "WOMA3D", bool yesORno = false)
-#endif
 {
 	// MORE INFO: http://stackoverflow.com/questions/263/gtk-implementation-of-messagebox
 	char text[MAX_STR_LEN]; wtoa(text, lpText, MAX_STR_LEN); //w to a
@@ -749,32 +615,6 @@ int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption)
 {
 	return WomaMessageBox(lpText, lpCaption, false);
 }
-
-#if defined ANDROID_PLATFORM && defined USE_LOG_MANAGER
-STRING LOAD_ASSET_SAVE_TO_CACHE(TCHAR* XMLFILE)
-{
-	//LOAD FROM: C:\WoMAengine2023\Android-WomaEngine\Android2\Android2.Packaging\ARM64\Debug\Package\assets
-	AAssetManager* manager = engine.app->activity->assetManager;
-	AAsset* thisxmlFile = AAssetManager_open(manager, XMLFILE, AASSET_MODE_BUFFER);
-	const char* fileBuffer = (char*)AAsset_getBuffer(thisxmlFile);
-	off_t fileSize = AAsset_getLength(thisxmlFile);
-
-	//SAVE TO: /data/user/0/com.woma/cache/
-	FILE* saveXmlFile = NULL;
-	STRING XML_FILE = WOMA::android_temp_folder(engine.app);
-	XML_FILE.append(TEXT("/"));
-	XML_FILE.append(XMLFILE);
-	UINT errno_t = _tfopen_s(&saveXmlFile, XML_FILE.c_str(), TEXT("w"));
-	fwrite(fileBuffer, sizeof(char), fileSize, saveXmlFile);
-#if DEBUG
-	__android_log_print(ANDROID_LOG_ERROR, "[WOMA]", fileBuffer);
-#endif
-	AAsset_close(thisxmlFile);
-	fclose(saveXmlFile);
-
-	return XML_FILE;
-}
-#endif
 
 #if defined LINUX_PLATFORM //|| defined ANDROID_PLATFORM
 #include <curl/curl.h>
@@ -848,13 +688,3 @@ void woma_itoa(char** _String, int in, int system)
 }
 #endif
 
-#if defined _NOT
-//https://github.com/dhaniram-kshirsagar/android-ndk-curl/blob/master/app/src/main/cpp/jni-curl-lib.cpp
-#if defined ANDROID_PLATFORM  && _NOTNOW
-bool download(const std::string url, const std::string filename)
-{
-	DownloadFiles(url.c_str(), filename.c_str());
-	return true;
-}
-#endif
-#endif

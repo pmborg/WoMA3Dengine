@@ -88,8 +88,6 @@ public:
 	int	 APPLICATION_MAIN_LOOP();
 
 	HWND	m_hWnd = 0;
-    void GetInputs();
-	bool InitOsInput();
 	bool ApplicationInitMainWindow();
 	bool MyRegisterClass(HINSTANCE hInstance);
 	HWND WomaCreateWindowEx(DWORD dwExStyle, TCHAR* lpClassName, TCHAR* lpWindowName, DWORD dwStyle,

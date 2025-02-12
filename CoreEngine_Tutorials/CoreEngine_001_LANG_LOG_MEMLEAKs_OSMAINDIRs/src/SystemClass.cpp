@@ -23,8 +23,9 @@
 #pragma warning( disable : 4477 )
 #pragma warning( disable : 4838 )
 
+#include "OSengine.h"
+#include "log.h"
 #include "SystemClass.h"
-#include "OSengine.h" //#include "WinSystemClass.h"
 #include "default_settings_xml.h"
 #include "woma_macros.h"
 
@@ -49,6 +50,11 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 	// Reset Vars:
 	// -------------------------------------------------------------------------------------------
 
+
+#if defined USE_TIMER_CLASS
+	fps = NULL;
+	cpu = NULL;
+#endif
 
 }
 

@@ -612,3 +612,31 @@ bool download(const std::string url, const std::string file)
 }
 #endif
 
+#if defined LINUX_PLATFORM
+// ---------------------------------------------------------------------------
+void ItoA(int value, char* dest, int _Radix)
+{
+	static std::string str;
+	std::stringstream ss; //int x = 23;
+
+	ss << value;
+	str = ss.str();
+	strcpy(dest, str.c_str());
+}
+#endif
+
+#if defined ANDROID_PLATFORM
+// Used by ANDROID: To be compatible with WINDOWS / LINUX / ANDROID:
+int woma_atoi(TCHAR* _String)
+{
+	static int out;
+	_stscanf(_String, TEXT("%d"), &out); //swscanf
+}
+
+void woma_itoa(char** _String, int in, int system)
+{
+	StringCchPrintf(*_String, MAX_STR_LEN, TEXT("%d"), in);
+
+}
+#endif
+

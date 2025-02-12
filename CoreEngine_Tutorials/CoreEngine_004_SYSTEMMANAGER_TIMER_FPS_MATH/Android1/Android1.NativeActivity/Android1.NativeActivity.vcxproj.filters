@@ -93,6 +93,9 @@
     <ClInclude Include="..\..\include\TrigonometryMathClass.h">
       <Filter>Include\004</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.h">
+      <Filter>LIB_tinyxml2</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\default_settings_xml.cpp">
@@ -129,28 +132,13 @@
     <ClCompile Include="..\..\src\OSmain_dir.cpp">
       <Filter>src\001</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dumpUploader.cpp">
-      <Filter>src\003</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\fileLoader.cpp">
-      <Filter>src\003</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\minidumperClass.cpp">
-      <Filter>src\003</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\stackTrace.cpp">
-      <Filter>src\003</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\woma_exception.cpp">
       <Filter>src\003</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\0CheckOS.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\1CheckSYS.cpp">
-      <Filter>src\004</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\2UpdateOSifNeeded.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\3CheckSetup.cpp">
@@ -165,20 +153,20 @@
     <ClCompile Include="..\..\src\7ProcessorInfo.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\8SystemFeatures.cpp">
-      <Filter>src\004</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\fpsClass.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\Math3D.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\OperatingSystem.cpp">
-      <Filter>src\004</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\TimerClass.cpp">
       <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.cpp">
+      <Filter>LIB_tinyxml2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\CoreEngine_005_PAINT_SETTINGS_XML\src\TrigonometryMathClass.cpp">
+      <Filter>Include\004</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -220,6 +208,9 @@
     </Filter>
     <Filter Include="ANDROID">
       <UniqueIdentifier>{90a27ce0-2065-4548-a678-eff3c8faf5c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LIB_tinyxml2">
+      <UniqueIdentifier>{ad18ab4e-0d42-4cee-ad46-d15700a9ba86}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

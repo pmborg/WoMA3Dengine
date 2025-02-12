@@ -80,34 +80,35 @@ static_assert(false, "At least one X86 or X64 need to be defined!");
 
 #if defined(_WIN32) /*MSVC*/ || defined (__WINDOWS__) /*Watcom C/C++*/ || defined (__WIN32__) /*BORLANDC ++*/
 #if defined _XBOX_ONE
-#define XBOX_ONE_PLATFORM	//BUILD_FOR_XBOX_ONE
-#error "WOMA COMPILATION ERROR: This platform is not Supported yet."
+	#define XBOX_ONE_PLATFORM	//BUILD_FOR_XBOX_ONE
+	#error "WOMA COMPILATION ERROR: This platform is not Supported yet."
 #elif defined _XBOX
 #if _XBOX_VER >= 200
-#define XENON_PLATFORM	//BUILD_FOR_XBOX360 (XENON)
-#error "WOMA COMPILATION ERROR: This platform is not Supported yet."
+	#define XENON_PLATFORM	//BUILD_FOR_XBOX360 (XENON)
+	#error "WOMA COMPILATION ERROR: This platform is not Supported yet."
 #else
-#define XBOX_PLATFORM	//BUILD_FOR_XBOX
-#error "WOMA COMPILATION ERROR: This platform is not Supported yet."
+	#define XBOX_PLATFORM	//BUILD_FOR_XBOX
+	#error "WOMA COMPILATION ERROR: This platform is not Supported yet."
 #endif	
 #endif
 #elif defined(ANDROID) || defined(__ANDROID__)
-#define ANDROID_PLATFORM	//BUILD_FOR_ANDROID
+	#define ANDROID_PLATFORM	//BUILD_FOR_ANDROID
+	#undef WINDOWS_PLATFORM
 #elif defined(_PS3) || defined(__PS3__) 
-#define PS3_PLATFORM		//BUILD_FOR_PS3
-#error "WOMA COMPILATION ERROR: This platform is not Supported yet."
+	#define PS3_PLATFORM		//BUILD_FOR_PS3
+	#error "WOMA COMPILATION ERROR: This platform is not Supported yet."
 #elif defined(_PS4) || defined(__PS4__) 
-#define PS4_PLATFORM		//BUILD_FOR_PS4
-#error "WOMA COMPILATION ERROR: This platform is not Supported yet."
+	#define PS4_PLATFORM		//BUILD_FOR_PS4
+	#error "WOMA COMPILATION ERROR: This platform is not Supported yet."
 #elif defined(_PS5) || defined(__PS5__) 
-#define PS5_PLATFORM		//BUILD_FOR_PS5
-#error "WOMA COMPILATION ERROR: This platform is not Supported yet."
+	#define PS5_PLATFORM		//BUILD_FOR_PS5
+	#error "WOMA COMPILATION ERROR: This platform is not Supported yet."
 #elif defined(__CYGWIN__) || defined(__CYGWIN32__)
-#define CYGWIN_PLATFORM		// BUILD_FOR_CYGWIN
-#define LINUX_PLATFORM		// Note: Using until now same as LINUX
+	#define CYGWIN_PLATFORM		// BUILD_FOR_CYGWIN
+	#define LINUX_PLATFORM		// Note: Using until now same as LINUX
 #elif defined(__OpenBSD__) || defined(__NetBSD__) || defined(__FreeBSD__)
-#define BSD_PLATFORM		//BUILD_FOR_BSD
-#error "WOMA COMPILATION ERROR: This platform is not Supported yet."
+	#define BSD_PLATFORM		//BUILD_FOR_BSD
+	#error "WOMA COMPILATION ERROR: This platform is not Supported yet."
 #elif defined(__linux__) || defined(__unix__) || defined(__unix) || defined(__LP64__) || defined(_LP64)
 	#define LINUX_PLATFORM		//BUILD_FOR_LINUX
 	#undef WINDOWS_PLATFORM
@@ -116,11 +117,11 @@ static_assert(false, "At least one X86 or X64 need to be defined!");
 #if defined __APPLE__
 #include "TargetConditionals.h"
 #if defined TARGET_OS_IPHONE || defined TARGET_IPHONE_SIMULATOR
-#define OS_IPHONE_PLATFORM	//BUILD_FOR_IOS
-#error "WOMA COMPILATION ERROR: This platform is not Supported yet."
+	#define OS_IPHONE_PLATFORM	//BUILD_FOR_IOS
+	#error "WOMA COMPILATION ERROR: This platform is not Supported yet."
 #elif defined(__MACH__) || defined(__DARWIN__)
-#define OSX_PLATFORM		//BUILD_FOR_MAC
-#error "WOMA COMPILATION ERROR: This platform is not Supported yet."
+	#define OSX_PLATFORM		//BUILD_FOR_MAC
+	#error "WOMA COMPILATION ERROR: This platform is not Supported yet."
 #endif
 #endif
 
@@ -132,10 +133,10 @@ static_assert(false, "At least one X86 or X64 need to be defined!");
 #if (defined CPU_X86 || defined X64) && defined WINDOWS_PLATFORM
 #if defined X64
 #ifndef DISABLE_BIN_COMPILE_MESSAGE_FOR_WINDOWS_PLATFORM_X64
-#pragma message( "TARGET: CPU_X64 on WINDOWS_PLATFORM" )  
+	#pragma message( "TARGET: CPU_X64 on WINDOWS_PLATFORM" )  
 #endif
 #else
-#pragma message("TARGET: CPU_x86 on WINDOWS_PLATFORM")  
+	#pragma message("TARGET: CPU_x86 on WINDOWS_PLATFORM")  
 #endif
 #endif
 
@@ -143,33 +144,33 @@ static_assert(false, "At least one X86 or X64 need to be defined!");
 #if (defined CPU_X86 || defined X64) && defined LINUX_PLATFORM
 #if defined X64
 #ifndef DISABLE_BIN_COMPILE_MESSAGE_FOR_WINDOWS_PLATFORM_X64
-#pragma message ("TARGET: CPU_X64 on LINUX_PLATFORM")
+	#pragma message ("TARGET: CPU_X64 on LINUX_PLATFORM")
 #endif
 #else
-#pragma message ("TARGET: CPU_x86 on LINUX_PLATFORM")
+	#pragma message ("TARGET: CPU_x86 on LINUX_PLATFORM")
 #endif
 #endif
 
 // LOG ANDROID:
 #if (defined CPU_X86 && defined X64) && defined ANDROID_PLATFORM
 #if defined X64
-#pragma message ("TARGET: CPU_X64 on ANDROID_PLATFORM")
+	#pragma message ("TARGET: CPU_X64 on ANDROID_PLATFORM")
 #else
-#pragma message ("TARGET: CPU_x86 on ANDROID_PLATFORM")
+	#pragma message ("TARGET: CPU_x86 on ANDROID_PLATFORM")
 #endif
 #endif
 
 #if defined CPU_ARM32 && defined ANDROID_PLATFORM
-#pragma message ("TARGET: CPU_ARM32 on ANDROID_PLATFORM")
+	#pragma message ("TARGET: CPU_ARM32 on ANDROID_PLATFORM")
 #endif
 
 #if defined CPU_ARM64 && defined ANDROID_PLATFORM
-#pragma message ("TARGET: CPU_ARM64 on ANDROID_PLATFORM")
+	#pragma message ("TARGET: CPU_ARM64 on ANDROID_PLATFORM")
 #endif
 
 // ASSERT one valid PLATFORM Selected:
 #if (!defined (WINDOWS_PLATFORM)) && (!defined (LINUX_PLATFORM)) && (!defined (ANDROID_PLATFORM))
-#error "WOMA COMPILATION ERROR: Only 1, target Platform can be select to COMPILE!"
+	#error "WOMA COMPILATION ERROR: Only 1, target Platform can be select to COMPILE!"
 #endif
 
 // -------------------------------------------------------------------------------------------
