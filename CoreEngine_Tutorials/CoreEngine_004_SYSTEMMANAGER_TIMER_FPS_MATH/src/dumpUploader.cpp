@@ -20,7 +20,7 @@
 //WomaIntegrityCheck = 1234567311;
 
 #include "platform.h"
-#include "OSengine.h"
+#include "WinSystemClass.h"
 #include "OSmain_dir.h"
 
 #ifdef UNICODE
@@ -33,9 +33,7 @@
 #include "ftp_c.h"
 
 #include "stateMachine.h"
-#if defined USE_LOG_MANAGER
 #include "log.h"
-#endif
 
 using namespace std;	//endl
 #include <sstream>		//wstring
@@ -61,12 +59,8 @@ int dumpUploader(STRING file)
 
 	WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP; //Publish_Quit_Message();
 
-	#if defined USE_LOG_MANAGER
 	STRING REPORT_FILE = WOMA::logManager->getLogFileName();
 	SAFE_DELETE (WOMA::logManager);	// Write, Close and Free the "Log" file (after free MiniDumper)
-	#else
-	STRING REPORT_FILE = TEXT("Report.log");
-	#endif
 
 	//CONNECT:
 	if (_tcslen(addr) > 0)

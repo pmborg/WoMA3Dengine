@@ -46,6 +46,15 @@
 // -------------------------------------------------------------------------------------------
 // Include: COMMON TRASNVERSAL WoMA Util Libs:
 // -------------------------------------------------------------------------------------------
+#if defined USE_MINIDUMPER
+#include "minidumperClass.h"
+#endif
+#if defined USE_WOMA_EXCEPTION
+#include "woma_exception.h"
+#endif
+#if defined USE_LOG_MANAGER
+#include "log.h"
+#endif
 
 //	-------------------------------------------------------------------------------------------
 // Global WOMA RUN-TIME SETTINGS:

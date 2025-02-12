@@ -20,16 +20,12 @@
 //WomaIntegrityCheck = 1234567311;
 
 #include "OSengine.h"
-#include "log.h"
 
 //------------------------------------------------------------------
 // PRIVATE FUNCTIONS:
 //------------------------------------------------------------------
 #if defined WINDOWS_PLATFORM
 #include <psapi.h>					// PPERFORMANCE_INFORMATION
-//
-// MORE INFO: http://stackoverflow.com/questions/8351944/finding-out-the-cpu-clock-frequency-per-core-per-processor
-//
 float SystemManager::GetProcessorSpeed()
 {
     LARGE_INTEGER qwWait, qwStart, qwCurrent;
@@ -109,6 +105,71 @@ float SystemManager::GetProcessorSpeed4Intel(TCHAR* family_name) {
 //------------------------------------------------------------------
 // PUBLIC FUNCTIONS:
 //------------------------------------------------------------------
+#if defined USE_SYSTEM_CHECK
+bool SystemManager::checkCPU ()
+{
+#if defined WINDOWS_PLATFORM
+	processorInfo.cpuCores.GetProcessorInformation();
+#endif
+
+	#if defined RELEASE && !defined ANDROID_PLATFORM
+    if (processorInfo.cpuCores.processorCoreCount <= 1)
+        WomaMessageBox(TEXT("CPU CORE WARNING: Your Processor just have 1 core, this application will run very slow!\n"));
+	#endif
+
+    // Get CPU Speed:
+    CHAR speed[MAX_STR_LEN] = { 0 };
+    wtoa(speed, processorInfo.processorName, MAX_STR_LEN); // wchar ==> char
+	
+    StringCchPrintf(SystemHandle->systemDefinitions.processorName, MAX_STR_LEN, TEXT("Processor Name: %s"), processorInfo.processorName);
+    StringCchPrintf(SystemHandle->systemDefinitions.processorId, MAX_STR_LEN, TEXT("ID: %s"), processorInfo.processorId);
+	WOMA_LOGManager_DebugMSGAUTO (TEXT("%s\n"), SystemHandle->systemDefinitions.processorName);
+	WOMA_LOGManager_DebugMSGAUTO (TEXT("%s\n"), SystemHandle->systemDefinitions.processorId);
+
+#if defined WINDOWS_PLATFORM
+	ASSERT(processorInfo.cpuCores.processorCoreCount);
+	ASSERT(processorInfo.cpuCores.logicalProcessorCount);
+
+	StringCchPrintf(SystemHandle->systemDefinitions.processorPackageCount, MAX_STR_LEN, TEXT("Number Processor(s): %d"), processorInfo.cpuCores.processorPackageCount);		// Slot
+	StringCchPrintf(SystemHandle->systemDefinitions.NumCoreProcessors, MAX_STR_LEN, TEXT("Number Core(s): %d"), processorInfo.cpuCores.processorCoreCount);					// Cores
+	StringCchPrintf(SystemHandle->systemDefinitions.logicalProcessorCount, MAX_STR_LEN, TEXT("Logical Processor(s): %d"), processorInfo.cpuCores.logicalProcessorCount);	// Threads
+
+	// Get CPU: Page Size
+	SYSTEM_INFO SI;
+	GetSystemInfo(&SI);
+	WOMA_LOGManager_DebugMSGAUTO( TEXT("CPU Page Size: %i\n"), SI.dwPageSize);
+
+	CPUSpeedMHz = GetProcessorSpeed();
+#endif
+
+#ifdef LINUX_PLATFORM
+    char* token;
+    int i = 0;
+    std::string Token;
+    for (token = strtok(speed, " "); token != 0; token = strtok(NULL, " "), i++)
+    {
+        Token = token;
+        int i = (int)Token.find("GHz");
+        if (i >= 0) {
+            i = (int)Token.find_first_of("GHz");
+            Token[i] = 0;
+        }
+    }
+
+    CPUSpeedMHz = (float) atof(Token.c_str()); //clockSpeed in GHz
+#endif
+
+#if defined RELEASE && !defined ANDROID_PLATFORM
+    if (CPUSpeedMHz < 2)
+        WomaMessageBox(TEXT("CPU WARNING: Your Processor is slow (< 2GHz), this application will run very slow also!\n"));
+#endif
+
+	StringCchPrintf(SystemHandle->systemDefinitions.clockSpeed, MAX_STR_LEN, TEXT("CPU Base Clock Speed: %02.2f GHz"), (float) CPUSpeedMHz/1000);
+	WOMA_LOGManager_DebugMSGAUTO (TEXT("%s\n"), SystemHandle->systemDefinitions.clockSpeed);
+
+    return true;
+}
+#endif
 
 #if CORE_ENGINE_LEVEL >= 4 && defined WINDOWS_PLATFORM
 DWORDLONG SystemManager::getAvailSystemMemory()
@@ -161,6 +222,165 @@ DWORDLONG SystemManager::getAvailSystemMemory()
 
 	// Real "Free Mem" = PhysMemAvail - Cached Memory
     return PhysMemAvail - CachedMem;
+}
+#endif
+
+#if defined USE_SYSTEM_CHECK
+bool SystemManager::checkRAM ()
+{
+#ifdef X64
+	#define MIN_RAM 4
+#else
+	#define MIN_RAM 2
+#endif
+
+#if defined WINDOWS_PLATFORM
+	
+	wmiUtil.GetTotalPhysicalMemory();
+    if (wmiUtil.totalMemoryCapacity < MIN_RAM) 
+	{
+		TCHAR str[MAX_STR_LEN];
+		StringCchPrintf(str, MAX_STR_LEN, TEXT("RAM WARNING: Your RAM memory is very low (< %dGB), this application might not run!\n"), MIN_RAM);
+        WomaMessageBox(str, "Error", false);
+	}
+
+	StringCchPrintf(SystemHandle->systemDefinitions.totalMemoryCapacity, MAX_STR_LEN, TEXT("Total RAM: %d GB\n"), (UINT) wmiUtil.totalMemoryCapacity);
+#else
+	//#include <unistd.h>
+
+    long pages = sysconf(_SC_PHYS_PAGES);
+    long page_size = sysconf(_SC_PAGE_SIZE);
+    size_t getTotalSystemMemory = pages * page_size;
+	StringCchPrintf(SystemHandle->systemDefinitions.totalMemoryCapacity, MAX_STR_LEN, TEXT("Total Memory RAM: %d GB\n"), UINT((float)getTotalSystemMemory / ((float)(GBs))));
+#endif
+
+	WOMA_LOGManager_DebugMSGAUTO (TEXT("%s\n"), SystemHandle->systemDefinitions.totalMemoryCapacity);
+
+#if defined WINDOWS_PLATFORM
+	// Get Free Mem:
+	DWORDLONG availSystemMemory = getAvailSystemMemory(); // in MBs
+	StringCchPrintf(SystemHandle->systemDefinitions.freeMemory, MAX_STR_LEN, TEXT ("Memory Free: %d MBs\n"), (UINT) ((float)availSystemMemory / (float)MBs) );
+	WOMA_LOGManager_DebugMSGAUTO (TEXT ("%s"), SystemHandle->systemDefinitions.freeMemory); // Already include: \n
+#endif
+
+	return true;
+}
+
+
+#if !defined WINDOWS_PLATFORM
+char diskSpace[1024*4];
+
+char* diskFree()
+{
+        FILE * fp;
+        fp = popen("/bin/df -h","r");
+        fread(diskSpace, 1, sizeof(diskSpace)-1, fp);
+        fclose(fp);
+		return diskSpace;
+}
+#endif
+
+bool SystemManager::checkDiskFreeSpace ()
+{
+	WOMA_LOGManager_DebugMSGAUTO (TEXT("Disk Free:\n") );
+
+#if defined WINDOWS_PLATFORM
+  // Get list of all Drives: [C:\ D:\ ...]
+    DWORD mydrives = MAX_STR_LEN; // buffer length
+    TCHAR lpBuffer[MAX_STR_LEN];  // buffer for drive string storage
+    
+    DWORD test = GetLogicalDriveStrings(mydrives, lpBuffer);
+    if (test <= 0)
+        { WomaFatalException("Getting Logical Drives!"); }
+
+    // Get a list of all drives with free space: drivesList
+    DriveList drive;
+    BOOL success;
+    TCHAR* cpBuffer = lpBuffer;
+    __int64 lpFreeBytesAvailable, lpTotalNumberOfBytes, lpTotalNumberOfFreeBytes = 0;
+
+    while (cpBuffer[0]) 
+	{
+        TCHAR* pszDrive = cpBuffer;
+
+		UINT unittype = GetDriveType(pszDrive);
+		switch (unittype)
+		{
+			case DRIVE_UNKNOWN:
+				WOMA_LOGManager_DebugMSG("Drive %s of unknown type\n", pszDrive);
+			break;
+			case DRIVE_NO_ROOT_DIR:
+				WOMA_LOGManager_DebugMSG("Drive %s is invalid\n", pszDrive);
+			break;
+			case DRIVE_REMOVABLE:
+				WOMA_LOGManager_DebugMSG("Drive %s is a removable drive\n", pszDrive);
+			break;
+			case DRIVE_FIXED: //3
+				WOMA_LOGManager_DebugMSG("Drive %s is a hard disk\n", pszDrive);
+			break;
+			case DRIVE_REMOTE:
+				WOMA_LOGManager_DebugMSG("Drive %s is a network drive\n", pszDrive);
+			break;
+			case DRIVE_CDROM: //5
+				WOMA_LOGManager_DebugMSG("Drive %s is a CD-ROM drive\n", pszDrive);
+			break;
+			case DRIVE_RAMDISK:
+				WOMA_LOGManager_DebugMSG("Drive %s is a RAM disk\n", pszDrive);
+			break;
+			default:
+				WOMA_LOGManager_DebugMSG("Drive %s has an unknown %u drive type\n", pszDrive, unittype);
+		}
+
+		if (unittype != DRIVE_CDROM)
+		{
+			success = GetDiskFreeSpaceEx( pszDrive,
+										(PULARGE_INTEGER)&lpFreeBytesAvailable,
+										(PULARGE_INTEGER)&lpTotalNumberOfBytes,
+										(PULARGE_INTEGER)&lpTotalNumberOfFreeBytes);
+
+			drive.drive = cpBuffer[0];
+			drive.freeBytesAvailable = (success) ? lpFreeBytesAvailable : 0; 
+
+			if (drive.freeBytesAvailable > 0)   //0 Means: CD-W, DVD-W, BD-W, etc...
+				drivesList.push_back(drive);
+		}
+
+        cpBuffer+=4;
+    } 
+
+    // Check a drive that have at least: 512 MB
+    for (driveLetter = 0; driveLetter < drivesList.size(); driveLetter++) {
+        if (drivesList[driveLetter].freeBytesAvailable >= 512 * MBs)
+            break;
+    }
+
+    if (driveLetter == drivesList.size())
+        WomaMessageBox(TEXT("WARNING: You dont have 512MB of free disk space to Install Woma on all drives!"), "WARNING", false); //Change Drive...
+
+	
+	// SAVE SCAN RESULTS:
+	TCHAR temp [MAX_STR_LEN];
+    for (UINT driveLetter = 0; driveLetter < drivesList.size(); driveLetter++) 
+	{
+		StringCchPrintf(temp, MAX_STR_LEN, TEXT("%c: %02.1f GB"), drivesList[driveLetter].drive , (float) drivesList[driveLetter].freeBytesAvailable / ((float)GBs));
+		SystemHandle->systemDefinitions.drives_List.push_back(temp);
+		WOMA_LOGManager_DebugMSGAUTO (TEXT("%s\n"), temp);
+    }
+	
+#else
+	STRING diskFreeAllDisks = diskFree();
+	char* token;
+    int i = 0;
+  #if !defined ANDROID_PLATFORM
+	for (token = strtok((char*)diskFreeAllDisks.c_str(), "\n"); token != 0; token = strtok(NULL, "\n"), i++)
+    {
+		SystemHandle->systemDefinitions.drives_List.push_back(token);
+		WOMA_LOGManager_DebugMSGAUTO (TEXT("%s\n"), token);
+	}
+  #endif
+#endif
+
+    return true;
 }
 #endif
 
@@ -302,7 +522,7 @@ bool SystemManager::CheckIO ()
 	return true;
 }
 
-#if defined USE_TIMER_CLASS && CORE_ENGINE_LEVEL >= 4
+#if defined USE_TIMER_CLASS// && CORE_ENGINE_LEVEL >= 4
 bool SystemManager::checkBenchMarkSpeed(TimerClass* m_Timer)
 {
 	double delta1 = 0;

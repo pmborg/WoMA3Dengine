@@ -160,24 +160,24 @@ namespace WOMA
 
 	//-------------------------------------------------------------------------------------------
 	TCHAR* getCurrentDir()
-		//-------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------------------------
 	{
-#if defined WINDOWS_PLATFORM
+	#if defined WINDOWS_PLATFORM
 		if (!GetCurrentDirectory(MAX_STR_LEN, cCurrentPath))
 			return (TCHAR*)TEXT("");
 
 		//WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("CurrentPath: %s\n"), cCurrentPath);
-#else // Linux / Android
+	#else // Linux / Android
 		char* CurrentPath;
 
 		CurrentPath = getcwd(NULL, 0); // or _getcwd
 		if (CurrentPath == NULL)
 			return TEXT("");
 
-#if defined USE_SYSTEM_CHECK & !defined NewWomaEngine
+		#if defined USE_SYSTEM_CHECK & !defined NewWomaEngine
 		strcpy_s(SystemHandle->systemDefinitions.cCurrentPath, FILENAME_MAX, CurrentPath);
-#endif
-#endif
+		#endif
+	#endif
 
 		return cCurrentPath;
 	}
@@ -188,24 +188,24 @@ namespace WOMA
 	{
 		static TCHAR* strTEMPchar = TEXT("");
 
-#if defined  WINDOWS_PLATFORM
+	#if defined  WINDOWS_PLATFORM
 		strTEMPchar = _tgetenv(TEXT("TEMP"));	// Get our Fullpath to all objects; ("TEMP" + /engine/)
-#endif
+	#endif
 
 		return strTEMPchar;
 	}
 
 	//-------------------------------------------------------------------------------------------
 	TCHAR* getHome()
-		//-------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------------------------
 	{
 		static TCHAR* strHOMEchar = TEXT("");
 
-#if defined  WINDOWS_PLATFORM
+	#if defined  WINDOWS_PLATFORM
 		strHOMEchar = _tgetenv(TEXT("USERPROFILE"));
-#elif defined LINUX_PLATFORM // Linux
+	#elif defined LINUX_PLATFORM // Linux
 		strHOMEchar = _tgetenv(TEXT("HOME"));
-#endif
+	#endif
 
 		return strHOMEchar;
 	}
@@ -214,7 +214,7 @@ namespace WOMA
 	//WINDOWS:	C:\WoMAengine2023\DXEngine_055
 	//-------------------------------------------------------------------------------------------
 	bool logDirs(BOOL WINXP_FLAG, BOOL bIsWow64)
-		//-------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------------------------
 	{
 		TCHAR currentPath[MAX_STR_LEN] = { 0 };
 #if defined  WINDOWS_PLATFORM
@@ -243,15 +243,15 @@ namespace WOMA
 
 	//-------------------------------------------------------------------------------------------
 	bool init_os_main_dirs(TCHAR* currentdir)
-		//-------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------------------------
 	{
 
-#if CORE_ENGINE_LEVEL >= 2 && defined LINUX_PLATFORM
+	#if CORE_ENGINE_LEVEL >= 2 && defined LINUX_PLATFORM
 		// "C:\Program Files\Pmborg\Woma2017\" ==> "/opt/Pmborg/Woma2017"
 		// "C:\Users\"username"\AppData\Local\Pmborg\Woma2017\" ==> ~/.pmborg/Woma2017
 		StringCchPrintf(PROGRAM_FILES, MAX_STR_LEN, TEXT("/opt/%s/%s/"), APP_COMPANY_NAME, APP_PROJECT_NAME);
 		StringCchPrintf(APPDATA, MAX_STR_LEN, TEXT("~/.%s/%s/"), APP_COMPANY_NAME, APP_PROJECT_NAME);
-#endif
+	#endif
 
 		return true;
 	}
@@ -267,34 +267,34 @@ namespace WOMA
 		// [1] init_os_main_dirs!
 		// -------------------------------------------------------------------------------------------
 		_tprintf(TEXT("Init: init_os_main_dirs()\n"));
-#if defined WINDOWS_PLATFORM
-#if defined UNICODE
-		TCHAR WDirbuffer[MAX_STR_LEN] = { 0 };
-		atow(WDirbuffer, path, MAX_STR_LEN);
-		init_os_main_dirs(WDirbuffer);
-#else
-		init_os_main_dirs(path);
-#endif
-#else
-		//Populate: PROGRAM_FILES & APPDATA
-		init_os_main_dirs();
-#endif
+		#if defined WINDOWS_PLATFORM
+			#if defined UNICODE
+				TCHAR WDirbuffer[MAX_STR_LEN] = { 0 };
+				atow(WDirbuffer, path, MAX_STR_LEN);
+				init_os_main_dirs(WDirbuffer);
+			#else
+				init_os_main_dirs(path);
+			#endif
+		#else
+			//Populate: PROGRAM_FILES & APPDATA
+			init_os_main_dirs();
+		#endif
 	}
 	BOOL bIsWow64;
 
 	bool is64()
-		//------------------------------------------------------------------
+	//------------------------------------------------------------------
 	{
-#ifdef X64
+	#ifdef X64
 		return true;
-#else
+	#else
 		return false;
-#endif
+	#endif
 	}
 
-#if defined WINDOWS_PLATFORM
+	#if defined WINDOWS_PLATFORM
 	BOOL isWow64()
-		//------------------------------------------------------------------
+	//------------------------------------------------------------------
 	{
 		typedef BOOL(WINAPI* LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
 		static LPFN_ISWOW64PROCESS fnIsWow64Process = NULL;
@@ -313,18 +313,18 @@ namespace WOMA
 
 		return bIsWow64;
 	}
-#else
+	#else
 	BOOL isWow64()
 	{
 		return FALSE;
 	}
-#endif
+	#endif
 
-#pragma warning( disable : 4996 ) // Disable warning C4996:
+	#pragma warning( disable : 4996 ) // Disable warning C4996:
 	bool isXP()
-		//------------------------------------------------------------------
+	//------------------------------------------------------------------
 	{
-#if defined WINDOWS_PLATFORM && _MSC_VER < 1900
+	#if defined WINDOWS_PLATFORM && _MSC_VER < 1900
 		// OS Version check tells us most of what we need to know
 		OSVERSIONINFOEX osinfo;
 		osinfo.dwOSVersionInfoSize = sizeof(osinfo);
@@ -334,7 +334,7 @@ namespace WOMA
 		if (osinfo.dwMajorVersion < 6)
 			return true;
 		else
-#endif
+	#endif
 
 			return false;
 	}

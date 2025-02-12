@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: win32InputClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2024
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2024 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -18,7 +18,7 @@
 // --------------------------------------------------------------------------------------------
 #pragma once
 
-#include "platform.h"
+//#include "platform.h"
 #include "standard_platform.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -27,7 +27,7 @@
 class InputClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567831;
+	UINT WomaIntegrityCheck = 1234567847;
 	InputClass();
 	~InputClass();
 

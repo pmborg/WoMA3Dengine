@@ -28,7 +28,9 @@
 #include "SystemClass.h"
 #if defined WINDOWS_PLATFORM
 
+#if defined CLIENT_SCENE_SETUP
 #include "WomaSetupManager.h"
+#endif
 
 #define WOMA_ENGINE_CLASS TEXT("WoMA3Dengine")
 
@@ -88,6 +90,10 @@ public:
 	int	 APPLICATION_MAIN_LOOP();
 
 	HWND	m_hWnd = 0;
+	#if defined USE_PROCESS_OS_KEYS //CORE_ENGINE_LEVEL >= 3
+    void GetInputs();
+	bool InitOsInput();
+	#endif
 	bool ApplicationInitMainWindow();
 	bool MyRegisterClass(HINSTANCE hInstance);
 	HWND WomaCreateWindowEx(DWORD dwExStyle, TCHAR* lpClassName, TCHAR* lpWindowName, DWORD dwStyle,
@@ -131,7 +137,9 @@ public:
 
 	void StartTimer();
 
+#if CORE_ENGINE_LEVEL >= 5 && defined CLIENT_SCENE_SETUP
 	WomaSetupManager* womaSetup;
+#endif
 
 private:
 	void ShutdownWindows();

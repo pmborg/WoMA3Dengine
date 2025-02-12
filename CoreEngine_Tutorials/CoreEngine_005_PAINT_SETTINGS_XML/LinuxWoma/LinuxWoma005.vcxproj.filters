@@ -94,7 +94,6 @@
     <ClInclude Include="..\include\win32InputClass.h">
       <Filter>Include\002</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.h" />
     <ClInclude Include="..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.h">
       <Filter>Include\LIB_TINYXML2\include</Filter>
     </ClInclude>
@@ -232,7 +231,6 @@
     <ClCompile Include="..\src\xml_settings_saver.cpp">
       <Filter>src\005</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\\tinyxml2.cpp" />
     <ClCompile Include="..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.cpp">
       <Filter>src\LIB_TINYXML2\src</Filter>
     </ClCompile>

@@ -146,8 +146,9 @@ public:
 	STRING			userName;
 	STRING			ComputerName;
 
-	resolutionType		resolution;
 	void FrameUpdate();
+
+	resolutionType		resolution;
 
 #if CORE_ENGINE_LEVEL >= 2 && (defined USE_PROCESS_OS_KEYS || defined INTRO_DEMO)
 	bool InitOsInput();
@@ -193,17 +194,23 @@ public:
 		UINT		TotalVertexCounter;
 		TCHAR		pstrFPS[300];
 	//#if !defined NewWomaEngine
+		#if defined USE_TIMER_CLASS
 		#if !defined WIN_XP
 
+		#if defined USE_TIMER_CLASS// && !defined NewWomaEngine
 			TimerClass	m_Timer;
+		#endif
 			int			cpu;
 		#endif
+		#if defined USE_TIMER_CLASS// && !defined NewWomaEngine
 			FpsClass	m_Fps;
+		#endif
 
 		std::vector<Woma_Label> TextToPrint[N_SCREEN_TEXT];
 		void ProcessPerformanceStats();
 
 		TrigonometryMathClass	m_math;	// Init Math Class
+		#endif
 	//#endif
 
 #if defined USE_TINYXML_LOADER //5

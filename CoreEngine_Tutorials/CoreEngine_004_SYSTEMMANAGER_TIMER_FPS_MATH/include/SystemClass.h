@@ -146,8 +146,9 @@ public:
 	STRING			userName;
 	STRING			ComputerName;
 
-	resolutionType		resolution;
 	void FrameUpdate();
+
+	resolutionType		resolution;
 
 #if CORE_ENGINE_LEVEL >= 2 && (defined USE_PROCESS_OS_KEYS || defined INTRO_DEMO)
 	bool InitOsInput();

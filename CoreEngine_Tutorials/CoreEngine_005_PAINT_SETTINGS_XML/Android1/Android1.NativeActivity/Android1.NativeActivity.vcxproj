@@ -254,8 +254,8 @@
     <ClInclude Include="..\..\include\woma_macros.h" />
     <ClInclude Include="..\..\include\xml_loader.h" />
     <ClInclude Include="AndroidNewSystemClass.h" />
-    <ClInclude Include="C:\WoMA3Dengine\CoreEngine_Tutorials\tech-level.h" />
-    <ClInclude Include="C:\WoMA3Dengine\CoreEngine_Tutorials\woma_engine_assets.h" />
+    <ClInclude Include="..\..\..\tech-level.h" />
+    <ClInclude Include="..\..\..\woma_engine_assets.h" />
     <ClInclude Include="Android.h" />
     <ClInclude Include="defs.h" />
     <ClInclude Include="pch.h" />

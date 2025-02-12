@@ -130,7 +130,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PublicIncludeDirectories>
     </PublicIncludeDirectories>
-    <IncludePath>.;..;../..;$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include;C:\WoMA3Dengine_\CoreEngine_Tutorials\CoreEngine_000_OSENGINE_SYSTEM\include;C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_001_LANG_LOG_MEMLEAKs_OSMAINDIRs\include;C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_002_MAINWINDOW_EVENTS\include;C:\WoMAengine2023_\SOURCE_CODE\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH\include;C:\WoMAengine2023_\SOURCE_CODE\CoreEngine_006_PACKMANAGER_IDEA_CPU_BENCHMARK\include</IncludePath>
+    <IncludePath>.;..;../..;$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include;C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_002_MAINWINDOW_EVENTS\include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
@@ -237,8 +237,8 @@
     <ClInclude Include="..\..\include\SystemClass.h" />
     <ClInclude Include="..\..\include\woma_macros.h" />
     <ClInclude Include="AndroidNewSystemClass.h" />
-    <ClInclude Include="C:\WoMA3Dengine\CoreEngine_Tutorials\tech-level.h" />
-    <ClInclude Include="C:\WoMA3Dengine\CoreEngine_Tutorials\woma_engine_assets.h" />
+    <ClInclude Include="..\..\..\tech-level.h" />
+    <ClInclude Include="..\..\..\woma_engine_assets.h" />
     <ClInclude Include="Android.h" />
     <ClInclude Include="defs.h" />
     <ClInclude Include="pch.h" />

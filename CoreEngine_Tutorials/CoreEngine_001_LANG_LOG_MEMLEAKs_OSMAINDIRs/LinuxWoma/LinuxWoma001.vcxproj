@@ -75,7 +75,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
-      <PreprocessorDefinitions>DEBUG;DEMO_LEVEL=1</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DEBUG;DEMO_LEVEL=1;MAINENGINE_LINUX</PreprocessorDefinitions>
       <CppLanguageStandard>c++11</CppLanguageStandard>
     </ClCompile>
     <Link>

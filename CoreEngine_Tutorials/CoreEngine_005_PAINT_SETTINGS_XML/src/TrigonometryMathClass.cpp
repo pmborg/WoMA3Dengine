@@ -168,7 +168,7 @@ void TrigonometryMathClass::testMathSpeed(TimerClass* m_Timer, double &delta1, d
 	WOMA_LOGManager_DebugMSG("FAST_sin (PI): %f\n", FAST_sin(180));
 	#endif
 
-#if defined _NOTUSED // NDEBUG 
+#if defined _NOT // NDEBUG 
     //if (delta2 > 1000)
 	//	WomaMessageBox(TEXT("SPEED TEST WARNING: Your CPU may be too slow to run this application!"));
 #endif

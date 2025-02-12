@@ -22,7 +22,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "WinSystemClass.h"
-#if CORE_ENGINE_LEVEL >= 4 && defined USE_SYSTEM_CHECK
 
 #define _WIN32_DCOM
 using namespace std;
@@ -236,4 +235,3 @@ out:
     return ret;
 }
 
-#endif

@@ -24,13 +24,20 @@
 //WomaIntegrityCheck = 1234567311;
  
 #define _CRT_SECURE_NO_WARNINGS
+//#include "xml_loader.h"
 #include "OSengine.h"
 
 #if defined ANDROID_PLATFORM
 #include "AndroidEngine.h"
 #include <android\asset_manager.h>
 #endif
-
+/*
+#if CORE_ENGINE_LEVEL < 10
+	#include "winsystemclass.h"			// Are we a Windows Instance?
+#else
+	#include "dxwinsystemclass.h"			// Are we a Windows Instance?
+#endif
+*/
 #if defined USE_TINYXML_LOADER
 #include "xml_loader.h"
 
@@ -122,7 +129,7 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 		SystemHandle->AppSettings->VSYNC_ENABLED = (strcmp(GenSettings.vsync, "true") == 0) ? true : false;
 		SystemHandle->AppSettings->BITSPERPEL = atoi(GenSettings.bitsPerPixel);
 
-	#if PRE_CHAP >= 60 // 80
+	#if TUTORIAL_PRE_CHAP >= 60 // 80
 	    strcpy_s (g_PLAYER_NAME, GenSettings.playerName);
 	    g_FACTION = (strcmp (GenSettings.faction, "1") == 0) ?  true : false;
 	    g_MESH_TYPE = (BYTE) atoi (GenSettings.meshType);
@@ -200,7 +207,7 @@ bool XMLloader::loadConfigSettings (TCHAR* file_) // Note: Have to be char
 		//SOUND:
 
 		// PLAYER DEFINITIONS:
-	#if PRE_CHAP >= 60
+	#if TUTORIAL_PRE_CHAP >= 60 // 80
 		/*<player>*//*TiXmlElement*/ tinyxml2::XMLElement* child_player = root->FirstChildElement( "player" );
 		if ( child_player )
 		{
@@ -216,7 +223,7 @@ bool XMLloader::loadConfigSettings (TCHAR* file_) // Note: Have to be char
 		// SERVER NETWORK SETTINGS:
 		//}
 	} else
-        return false; // File not found or parsing error...
+        return false; // File not found for parsing error...
 
 	return true;
 }

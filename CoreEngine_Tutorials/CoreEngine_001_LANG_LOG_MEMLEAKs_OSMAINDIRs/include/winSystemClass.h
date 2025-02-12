@@ -28,6 +28,10 @@
 #include "SystemClass.h"
 #if defined WINDOWS_PLATFORM
 
+#if defined CLIENT_SCENE_SETUP
+#include "WomaSetupManager.h"
+#endif
+
 #define WOMA_ENGINE_CLASS TEXT("WoMA3Dengine")
 
 #define g_contextDriver NULL

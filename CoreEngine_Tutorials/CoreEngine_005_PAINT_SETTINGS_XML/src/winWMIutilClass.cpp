@@ -23,6 +23,8 @@
 
 #include "wmiUtilClass.h"
 
+#if defined WINDOWS_PLATFORM
+
 using namespace std;	//endl
 #include <sstream>		//wstring
 
@@ -316,7 +318,9 @@ bool wmiUtilClass::GetSystemInfo()
 
     return true;
 }
+//#endif
 
+//#ifdef TUTORIAL_PRE_CHAP// >= 5
 //	-------------------------------------------------------------------------------------------
 bool wmiUtilClass::GetVideoControllerInfoFromWMI()
 {
@@ -469,4 +473,6 @@ STRING wmiUtilClass::GetMonitorDescription(HMONITOR hMonitor)
 }
 // GET MONITOR NAME.
 //	-------------------------------------------------------------------------------------------
+
+#endif
 

@@ -20,16 +20,12 @@
 //WomaIntegrityCheck = 1234567311;
 
 #include "OSengine.h"
-#include "log.h"
 
 //------------------------------------------------------------------
 // PRIVATE FUNCTIONS:
 //------------------------------------------------------------------
 #if defined WINDOWS_PLATFORM
 #include <psapi.h>					// PPERFORMANCE_INFORMATION
-//
-// MORE INFO: http://stackoverflow.com/questions/8351944/finding-out-the-cpu-clock-frequency-per-core-per-processor
-//
 float SystemManager::GetProcessorSpeed()
 {
     LARGE_INTEGER qwWait, qwStart, qwCurrent;
@@ -526,7 +522,7 @@ bool SystemManager::CheckIO ()
 	return true;
 }
 
-#if defined USE_TIMER_CLASS && CORE_ENGINE_LEVEL >= 4
+#if defined USE_TIMER_CLASS// && CORE_ENGINE_LEVEL >= 4
 bool SystemManager::checkBenchMarkSpeed(TimerClass* m_Timer)
 {
 	double delta1 = 0;

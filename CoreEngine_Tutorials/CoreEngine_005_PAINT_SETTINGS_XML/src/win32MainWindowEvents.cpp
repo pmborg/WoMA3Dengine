@@ -25,7 +25,7 @@
 #include "OSmain_dir.h"
 
 #if defined WINDOWS_PLATFORM
-#include "OSengine.h"
+#include "winsystemclass.h"
 
 #include "xml_loader.h"
 
@@ -148,6 +148,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 
 	switch (umsg)
 	{
+	#if CORE_ENGINE_LEVEL >= 5 && defined CLIENT_SCENE_SETUP
 	case WM_COMMAND: // Process WoMA Start Button
 		wmId = LOWORD(wParam);
 		wmEvent = HIWORD(wParam);
@@ -181,7 +182,9 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 						int		previous_DRIVER = SystemHandle->AppSettings->DRIVER;
 						SystemHandle->AppSettings->DRIVER = (int)(SendMessage(womaSetup->hWndComboBox[7], CB_GETCURSEL, NULL, NULL));
 						CHAR str[MAX_STR_LEN] = { 0 }; wtoa(str, (TCHAR*)SystemHandle->XML_SETTINGS_FILE.c_str(), MAX_STR_LEN); // wchar ==> char
+						#if defined CLIENT_SCENE_SETUP //#if CORE_ENGINE_LEVEL > 9
 						SystemHandle->xml_loader.saveConfigSettings(str);
+						#endif
 						SystemHandle->AppSettings->DRIVER = previous_DRIVER;
 
 						WOMA::game_state = GAME_SETUP;
@@ -199,6 +202,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 			}
 		}
 		break;
+	#endif
 
 	case WM_SETFOCUS:
 		if (WOMA::game_state == GAME_PAUSED)
@@ -253,6 +257,23 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 	//----------------------------------------------------------------------------
 	// With Direct Input (USE_DIRECT_INPUT) This Messages are not invoked anymore:
 	//----------------------------------------------------------------------------
+#if defined USE_PROCESS_OS_KEYS //CORE_ENGINE_LEVEL >= 3
+		// Check if a key has been pressed on the keyboard.
+	case WM_KEYDOWN:
+	{
+		// If a key is pressed send it to the input object so it can record that state.
+		SystemHandle->m_OsInput->KeyDown((unsigned int)wParam);
+		return 0; //break;
+	}
+
+	// Check if a key has been released on the keyboard.
+	case WM_KEYUP:
+	{
+		// If a key is released then send it to the input object so it can unset the state for that key.
+		SystemHandle->m_OsInput->KeyUp((unsigned int)wParam);
+		return 0; //break;
+	}
+#endif
 
 	// -----------------------------------------------------------------------------
 	// REMOTE-DESKTOP: Update flag for "Remote" desktop connect/disconnect

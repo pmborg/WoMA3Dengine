@@ -52,6 +52,8 @@
 	RApplicationClass* r_Application;
 #endif
 
+
+
 TCHAR* DEMO_NAME[] =
 {
 //{"07:Loading a files from engine.pck and Press[F2] for RealTime Celestial Positions of Sun and Moon accordingly with user Location"},
@@ -199,6 +201,10 @@ namespace WOMA
 	TCHAR	APP_ICO[] = ICON_FILE;			// "Define" Main Window: Icon 
 	#endif
 
+#if defined USE_TINYXML_LOADER //#if CORE_ENGINE_LEVEL >= 5
+	TCHAR   APP_SETTINGS_FILE[] = SETTINGS_FILE; // SETUP/Configuration file name
+#endif
+
 #if defined USE_MINIDUMPER
 	MiniDumper* miniDumper = NULL;
 #endif
@@ -313,11 +319,7 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 	srand(27); // to have always the same random numbers... the true Random is: "srand(time(0));"
 
 #if defined WINDOWS_PLATFORM
-	#if defined _NOTUSED
-		setpriority(PRIO_PROCESS, 0, 20);	// Be nice to other processes, helps reduce mouse lag
-	#else
 		SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
-	#endif
 
 	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 	if (FAILED(hr)) WomaFatalException("CoInitializeEx Failed!");
@@ -409,7 +411,7 @@ void APPLICATION_STOP()
 #endif
 #endif
 
-#if defined ANDROID_PLATFORM
+#if defined ANDROID_PLATFORM //&& _NOTNOW
 	engine.has_focus_ = false;
 	terminate();
 #endif
@@ -476,6 +478,21 @@ TCHAR* getUserName()
 
 	return userName;
 }
+
+#if defined LINUX_PLATFORM && CORE_ENGINE_LEVEL >= 2   //  BIG BUG HERE!!! Dont work on ANDROID!
+// ---------------------------------------------------------------------------
+/*
+void ItoA(int value, char* dest, int _Radix)
+{
+	STRING str;
+	STRINGSTREAM ss;		//THIS LINE CRASH ON ANDROID!!
+
+	ss << value;
+	str = ss.str();
+	strcpy(dest, str.c_str());
+}
+*/
+#endif
 
 #if CORE_ENGINE_LEVEL >= 1 && defined ANDROID_PLATFORM  && !defined NewWomaEngine
 #include <android/asset_manager.h>
@@ -550,6 +567,9 @@ void ShowAlert(const char* message)
 }
 
 void finish_activity(UINT res) {
+	// HOW TO FINISH:
+	//https://github.com/firebase/quickstart-cpp/blob/main/storage/testapp/src/android/android_main.cc
+
 	JNIEnv* jni = NULL;
 	if (!jni)
 		engine.app->activity->vm->AttachCurrentThread(&jni, NULL);
@@ -565,17 +585,21 @@ void finish_activity(UINT res) {
 
 void DownloadFiles(const char* url, const char* file)
 {
+	//JNIEnv* jni;
+
 	//JAVA: public void DownloadFiles(final String file)
 	{
 		if (!jni)
 			engine.app->activity->vm->AttachCurrentThread(&jni, NULL);
 		jclass clazz = jni->GetObjectClass(engine.app->activity->clazz);
 
+		//jmethodID methodID = jni->GetMethodID(clazz, "DownloadFiles", "(Ljava/lang/String;)V");
 		jmethodID methodID = jni->GetMethodID(clazz, "DownloadFiles", "(Ljava/lang/String;Ljava/lang/String;)V");
 
 		jstring jurl = jni->NewStringUTF(url);
 		jstring jfile = jni->NewStringUTF(file);
 		jni->CallVoidMethod(engine.app->activity->clazz, methodID, jurl, jfile);
+		//jni->CallVoidMethod(engine_state.app->activity->clazz, methodID, jurl);
 		jni->DeleteLocalRef(jurl);
 		jni->DeleteLocalRef(jfile);
 		//engine_state.app->activity->vm->DetachCurrentThread();
@@ -758,6 +782,7 @@ bool download(const std::string url, const std::string file)
 	{
 		fp = fopen(file.c_str(), "wb");
 		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+		//curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
 
 		// Perform a file transfer synchronously.
@@ -777,31 +802,11 @@ bool download(const std::string url, const std::string file)
 }
 #endif
 
-#if defined LINUX_PLATFORM
-// ---------------------------------------------------------------------------
-void ItoA(int value, char* dest, int _Radix)
+//https://github.com/dhaniram-kshirsagar/android-ndk-curl/blob/master/app/src/main/cpp/jni-curl-lib.cpp
+#if defined ANDROID_PLATFORM  && _NOTNOW
+bool download(const std::string url, const std::string filename)
 {
-	static std::string str;
-	std::stringstream ss; //int x = 23;
-
-	ss << value;
-	str = ss.str();
-	strcpy(dest, str.c_str());
+	DownloadFiles(url.c_str(), filename.c_str());
+	return true;
 }
 #endif
-
-#if defined ANDROID_PLATFORM
-// Used by ANDROID: To be compatible with WINDOWS / LINUX / ANDROID:
-int woma_atoi(TCHAR* _String)
-{
-	static int out;
-	_stscanf(_String, TEXT("%d"), &out); //swscanf
-}
-
-void woma_itoa(char** _String, int in, int system)
-{
-	StringCchPrintf(*_String, MAX_STR_LEN, TEXT("%d"), in);
-
-}
-#endif
-

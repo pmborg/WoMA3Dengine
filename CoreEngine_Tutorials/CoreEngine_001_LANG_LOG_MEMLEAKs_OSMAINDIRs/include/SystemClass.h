@@ -36,6 +36,18 @@ struct resolutionType
 	UINT RefreshRate_Denominator;
 };
 
+#if defined USE_PROCESS_OS_KEYS
+	#if defined WINDOWS_PLATFORM
+	#include "InputClass.h"
+	#else
+	#include "Rinputclass.h"
+	#endif
+#endif
+
+#if defined USE_TINYXML_LOADER
+#include "xml_loader.h"
+#endif
+
 typedef struct
 {
 	TCHAR GraphicCard[MAX_STR_LEN] = {};
@@ -122,6 +134,36 @@ public:
 	
 	STRING			userName;
 	STRING			ComputerName;
+
+	void FrameUpdate();
+
+#if defined USE_PROCESS_OS_KEYS
+#if defined WINDOWS_PLATFORM
+	virtual void GetInputs() = 0;
+	InputClass* m_OsInput = NULL;
+#else
+	RInputClass* m_OsInput = NULL;
+#endif
+	void ProcessOSInput();
+#endif
+
+#if defined USE_SYSTEM_CHECK
+	SystemManager*	systemManager = NULL;
+	bool			SystemCheck();
+
+	DWORD lastButtons = 0;
+	DWORD lastXpos = 0, lastYpos = 0, lastZpos = 0;
+	DWORD lastRpos = 0, lastUpos = 0, lastVpos = 0;
+	#if defined WINDOWS_PLATFORM	
+	JOYINFOEX joyInfo;
+	#endif
+#endif
+
+#if defined USE_TINYXML_LOADER //5
+	XMLloader		xml_loader;
+	STRING			XML_SETTINGS_FILE;	// Note: Have to be "char" (No STRING)
+	bool			LoadXmlSettings();
+#endif
 
 public:
 

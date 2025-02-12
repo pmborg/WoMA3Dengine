@@ -43,6 +43,7 @@ public:
 	~TrigonometryMathClass();
 
 	void Initialize();
+	//STRING testMathSpeed(TimerClass* m_Timer);
 	void testMathSpeed(TimerClass* m_Timer, double& delta1, double& delta2);
 
 private:

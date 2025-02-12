@@ -19,8 +19,7 @@
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234567311;
 
-#include "OSengine.h"
-#include "log.h"
+#include "OSengine.h" //#include "WinSystemClass.h"
 #include "OSmain_dir.h"
 #include "standard_platform.h"
 // --------------------------------------------------------------------------------------------
@@ -29,6 +28,19 @@
 #include "ProcessorInfo.h"
 void cpuID(unsigned regs[4], unsigned i) 
 {
+/*
+ __asm 
+  {
+     mov    esi, regs
+     mov    eax, i
+     xor    ecx, ecx  
+     cpuid  
+     mov    dword ptr [esi +  0], eax
+     mov    dword ptr [esi +  4], ebx  
+     mov    dword ptr [esi +  8], ecx  
+     mov    dword ptr [esi + 12], edx  
+  }
+*/
 #if defined WINDOWS_PLATFORM
   //__cpuid((int *)regs, (int)i);
 

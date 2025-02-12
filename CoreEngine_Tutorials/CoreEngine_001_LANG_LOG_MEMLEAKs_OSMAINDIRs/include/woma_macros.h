@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: woma_macros.h
 // --------------------------------------------------------------------------------------------
@@ -97,6 +96,15 @@
 
 extern const wchar_t* GetWC(const char* c);
 
+#if defined USE_WOMA_EXCEPTION
+	#ifdef UNICODE
+		#define WomaFatalExceptionW( wmsg ) { CHAR msg[MAX_STR_LEN]={ 0 }; wtoa(msg, wmsg, MAX_STR_LEN); throw woma_exception(msg, __FILE__, __FUNCTION__, __LINE__); } // TODO: String convert
+		#define WomaFatalException( msg ) { throw woma_exception(msg, __FILE__, __FUNCTION__, __LINE__); } // TODO: String convert
+	#else
+		#define WomaFatalExceptionW( msg ) throw woma_exception(msg, __FILE__, __FUNCTION__, __LINE__);
+		#define WomaFatalException( msg ) throw woma_exception(msg, __FILE__, __FUNCTION__, __LINE__);
+	#endif
+#else
 	#ifdef UNICODE
 		#define WomaFatalExceptionW( wmsg ) { CHAR msg[MAX_STR_LEN]={ 0 }; wtoa(msg, wmsg, MAX_STR_LEN); throw exception(msg); } // TODO: String convert
 	#endif
@@ -110,7 +118,13 @@ extern const wchar_t* GetWC(const char* c);
 	#if defined ANDROID_PLATFORM
 		#define WomaFatalException(msg) return false
 	#endif
+#endif
 
+#if defined USE_LOG_MANAGER
+	#define WOMA_LOGManager_DebugMSGAUTO if (WOMA::logManager) WOMA::logManager->DEBUG_MSG
+	#define WOMA_LOGManager_DebugMSG	 if (WOMA::logManager) WOMA::logManager->DEBUG_MSG
+	#define WOMA_LOGManager_DebugMSGW	 if (WOMA::logManager) WOMA::logManager->DEBUG_MSG
+#else
 	#if defined ANDROID_PLATFORM
 	#define WOMA_LOGManager_DebugMSG			_tprintf
 	#else
@@ -126,6 +140,7 @@ extern const wchar_t* GetWC(const char* c);
 	#if defined WINDOWS_PLATFORM
 	  #define WOMA_LOGManager_DebugMSGW			wprintf	//WCHAR
 	#endif
+#endif
 
 // Class Loaders - for automatic class load log
 // --------------------------------------------------------------------------------------------
@@ -150,7 +165,11 @@ extern const wchar_t* GetWC(const char* c);
 #if defined WINDOWS_PLATFORM
 	#define OS_REDRAW_WINDOW RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE| RDW_ERASE);  // Invoke: Window PAINT
 
+	#if defined USE_DIRECT_INPUT
+		#define OS_KEY_DOWN(key) (DXsystemHandle->m_Input->m_keyboardState[key-(0x35)]!=0)
+	#else
 		#define OS_KEY_DOWN(key) SystemHandle->m_OsInput->IsKeyDown(key)
+	#endif
 #else
 	#define OS_REDRAW_WINDOW {}
 	#define OS_KEY_DOWN(key) true
@@ -199,6 +218,22 @@ extern const wchar_t* GetWC(const char* c);
 
 // Global GAME STOP!
 // --------------------------------------------------------------------------------------------
+#if CORE_ENGINE_LEVEL >= 2
+
+#if defined WINDOWS_PLATFORM
+	#define Publish_Quit_Message(){ \
+		for (int i = 0; i < SystemHandle->windowsArray.size(); i++)\
+			::PostMessage(SystemHandle->m_hWnd, WM_CLOSE, 0, 0); /*NOTE: dont use PostQuitMessage(WM_QUIT) on mutiple threads!*/\
+		WOMA::main_loop_state = -1; \
+		WOMA::game_state = GAME_STOP; \
+	} 
+#else
+	#define Publish_Quit_Message(){ \
+		WOMA::main_loop_state = -1; /*WOMA::game_state = GAME_STOP;*/ \
+	} 
+#endif
+#else
 	#define Publish_Quit_Message(){ return false; }
+#endif
 
 #endif

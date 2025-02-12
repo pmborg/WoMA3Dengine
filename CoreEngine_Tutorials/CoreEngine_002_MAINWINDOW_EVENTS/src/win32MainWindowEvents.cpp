@@ -25,7 +25,7 @@
 #include "OSmain_dir.h"
 
 #if defined WINDOWS_PLATFORM
-#include "OSengine.h"
+#include "winsystemclass.h"
 
 #if CORE_ENGINE_LEVEL >= 2 && defined USE_STATUSBAR
 #include "dxWinSystemClass.h"
@@ -176,6 +176,23 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 	//----------------------------------------------------------------------------
 	// With Direct Input (USE_DIRECT_INPUT) This Messages are not invoked anymore:
 	//----------------------------------------------------------------------------
+#if defined USE_PROCESS_OS_KEYS //CORE_ENGINE_LEVEL >= 3
+		// Check if a key has been pressed on the keyboard.
+	case WM_KEYDOWN:
+	{
+		// If a key is pressed send it to the input object so it can record that state.
+		SystemHandle->m_OsInput->KeyDown((unsigned int)wParam);
+		return 0; //break;
+	}
+
+	// Check if a key has been released on the keyboard.
+	case WM_KEYUP:
+	{
+		// If a key is released then send it to the input object so it can unset the state for that key.
+		SystemHandle->m_OsInput->KeyUp((unsigned int)wParam);
+		return 0; //break;
+	}
+#endif
 
 	// -----------------------------------------------------------------------------
 	// REMOTE-DESKTOP: Update flag for "Remote" desktop connect/disconnect

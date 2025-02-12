@@ -83,12 +83,12 @@ public:
 
 	bool CheckIO ();
 
-#if defined WINDOWS_PLATFORM
 	bool UpdateOSifNeeded();		// Check if OS need Updates
 	bool CheckSetup();				// Check if Setup is Installed / Download & Install
 	bool CheckEngineUpdates();		// Check Engine for Updates (Woma Server) / Download & Install
 	bool LaunchEngine();			// Launch WOMA Engine (32bits or 64bits)
 
+#if defined WINDOWS_PLATFORM
     SystemFeatures systemFeatures;
 #endif
 

@@ -25,13 +25,21 @@
 #include "OSengine.h"
 #include "log.h"
 
+#if defined USE_WOMA_EXCEPTION
+
+#if defined WINDOWS_PLATFORM
 #include "stackTrace.h"
 stack_trace* sttrace;
 
 woma_exception::woma_exception(const std::string &arg, const char *file, const char *function, int line) : std::runtime_error(arg) 
+#else
+woma_exception::woma_exception(const std::string &arg, const char *file, const char *function, int line) : exception() 
+#endif
 {
+	#if defined USE_WOMA_EXCEPTION
 		std::string msg;
 
+		#if defined WINDOWS_PLATFORM
 		//Show extra runtime "Call Stack" frame Debug info on a "woma_exception":
 		sttrace = NEW stack_trace(NULL, 0);
 		
@@ -40,9 +48,12 @@ woma_exception::woma_exception(const std::string &arg, const char *file, const c
 			CHAR str[MAX_STR_LEN] = { 0 }; wtoa(str, WOMA::APP_FULLNAME, MAX_STR_LEN); // wchar ==> char
 			MessageBoxA(NULL, sttrace->to_string().c_str(), str, 0);
 		}
+		#endif
+	#endif
 }
 
 woma_exception::~woma_exception() throw() 
 {
 }
 
+#endif

@@ -52,6 +52,8 @@
 	RApplicationClass* r_Application;
 #endif
 
+
+
 TCHAR* DEMO_NAME[] =
 {
 //{"07:Loading a files from engine.pck and Press[F2] for RealTime Celestial Positions of Sun and Moon accordingly with user Location"},
@@ -164,6 +166,10 @@ namespace WOMA
 	int		game_state = GAME_LOADING;
 	int		previous_game_state = GAME_LOADING;
 
+#if defined USE_LOG_MANAGER
+	ILogManager* logManager = NULL;	// Global Log Manager
+#endif
+
 	UINT ENGINE_LEVEL_USED = 0;
 	int  main_loop_state = 0;
 
@@ -186,6 +192,14 @@ namespace WOMA
 #endif
 
 	TCHAR   APP_NAME[MAX_STR_LEN] = { 0 };              // "Aplication Name"
+
+#if defined USE_TINYXML_LOADER //#if CORE_ENGINE_LEVEL >= 5
+	TCHAR   APP_SETTINGS_FILE[] = SETTINGS_FILE; // SETUP/Configuration file name
+#endif
+
+#if defined USE_MINIDUMPER
+	MiniDumper* miniDumper = NULL;
+#endif
 
 #if defined NOTES
 // More Info MessageBox: http://msdn.microsoft.com/en-us/library/windows/desktop/ms645505%28v=vs.85%29.aspx
@@ -297,11 +311,7 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 	srand(27); // to have always the same random numbers... the true Random is: "srand(time(0));"
 
 #if defined WINDOWS_PLATFORM
-	#if defined _NOTUSED
-		setpriority(PRIO_PROCESS, 0, 20);	// Be nice to other processes, helps reduce mouse lag
-	#else
 		SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
-	#endif
 
 	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 	if (FAILED(hr)) WomaFatalException("CoInitializeEx Failed!");
@@ -335,6 +345,9 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 	WOMA::setup_OSmain_dirs();				//1 Keep this order!
 	WOMA::activate_mem_leak_detection();	//2
 #endif
+	#if defined USE_LOG_MANAGER
+	WOMA::start_log_manager();				//3
+	#endif
 	DefineConsoleTitle();
 
 	// Save Command Line Arguments to use later on
@@ -345,6 +358,9 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 
 	// [4] Set A Top level "Exception handler" for all Exceptions. Catch, Dump & Send Report WOMA ENGINE HOME using FTP!
 	// -------------------------------------------------------------------------------------------
+#if defined USE_MINIDUMPER 
+	WOMA::miniDumper = NEW MiniDumper();	// NOTE: After logManager!
+#endif
 
 #ifdef LINUX_PLATFORM 
 	// [6-1] Start LINUX Platform GUI: Settings
@@ -372,7 +388,16 @@ void APPLICATION_STOP()
 	CoUninitialize();
 #endif
 
-#if defined ANDROID_PLATFORM
+#if defined USE_MINIDUMPER
+	SAFE_DELETE(WOMA::miniDumper);		// Free Top level Exception handler & Mini-Dumper.
+#endif
+
+#if defined USE_LOG_MANAGER
+	WOMA::logManager->ShutdownInstance();	// Write, Close & Free: The logManager.
+	WOMA::logManager = NULL;				// Because of STATIC Classes Shutdown: Do not log
+#endif
+
+#if defined ANDROID_PLATFORM //&& _NOTNOW
 	engine.has_focus_ = false;
 	terminate();
 #endif
@@ -451,6 +476,9 @@ void ShowAlert(const char* message)
 }
 
 void finish_activity(UINT res) {
+	// HOW TO FINISH:
+	//https://github.com/firebase/quickstart-cpp/blob/main/storage/testapp/src/android/android_main.cc
+
 	JNIEnv* jni = NULL;
 	if (!jni)
 		engine.app->activity->vm->AttachCurrentThread(&jni, NULL);
@@ -466,17 +494,21 @@ void finish_activity(UINT res) {
 
 void DownloadFiles(const char* url, const char* file)
 {
+	//JNIEnv* jni;
+
 	//JAVA: public void DownloadFiles(final String file)
 	{
 		if (!jni)
 			engine.app->activity->vm->AttachCurrentThread(&jni, NULL);
 		jclass clazz = jni->GetObjectClass(engine.app->activity->clazz);
 
+		//jmethodID methodID = jni->GetMethodID(clazz, "DownloadFiles", "(Ljava/lang/String;)V");
 		jmethodID methodID = jni->GetMethodID(clazz, "DownloadFiles", "(Ljava/lang/String;Ljava/lang/String;)V");
 
 		jstring jurl = jni->NewStringUTF(url);
 		jstring jfile = jni->NewStringUTF(file);
 		jni->CallVoidMethod(engine.app->activity->clazz, methodID, jurl, jfile);
+		//jni->CallVoidMethod(engine_state.app->activity->clazz, methodID, jurl);
 		jni->DeleteLocalRef(jurl);
 		jni->DeleteLocalRef(jfile);
 		//engine_state.app->activity->vm->DetachCurrentThread();
@@ -605,6 +637,32 @@ int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption)
 	return WomaMessageBox(lpText, lpCaption, false);
 }
 
+#if defined ANDROID_PLATFORM && defined USE_LOG_MANAGER
+STRING LOAD_ASSET_SAVE_TO_CACHE (TCHAR* XMLFILE) 
+{
+	//LOAD FROM: C:\WoMAengine2023\Android-WomaEngine\Android2\Android2.Packaging\ARM64\Debug\Package\assets
+	AAssetManager* manager = engine.app->activity->assetManager;
+	AAsset* thisxmlFile = AAssetManager_open(manager, XMLFILE, AASSET_MODE_BUFFER);
+	const char* fileBuffer = (char*)AAsset_getBuffer(thisxmlFile);
+	off_t fileSize = AAsset_getLength(thisxmlFile);
+
+	//SAVE TO: /data/user/0/com.woma/cache/
+	FILE* saveXmlFile = NULL;
+	STRING XML_FILE = WOMA::android_temp_folder(engine.app);
+	XML_FILE.append(TEXT("/"));
+	XML_FILE.append(XMLFILE);
+	UINT errno_t = _tfopen_s(&saveXmlFile, XML_FILE.c_str(), TEXT("w"));
+	fwrite(fileBuffer, sizeof(char), fileSize, saveXmlFile);
+#if DEBUG
+	__android_log_print(ANDROID_LOG_ERROR, "[WOMA]", fileBuffer);
+#endif
+	AAsset_close(thisxmlFile);
+	fclose(saveXmlFile);
+
+	return XML_FILE;
+}
+#endif
+
 #if defined LINUX_PLATFORM //|| defined ANDROID_PLATFORM
 #include <curl/curl.h>
 #include <curl/easy.h>
@@ -630,6 +688,7 @@ bool download(const std::string url, const std::string file)
 	{
 		fp = fopen(file.c_str(), "wb");
 		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+		//curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
 
 		// Perform a file transfer synchronously.
@@ -649,31 +708,11 @@ bool download(const std::string url, const std::string file)
 }
 #endif
 
-#if defined LINUX_PLATFORM
-// ---------------------------------------------------------------------------
-void ItoA(int value, char* dest, int _Radix)
+//https://github.com/dhaniram-kshirsagar/android-ndk-curl/blob/master/app/src/main/cpp/jni-curl-lib.cpp
+#if defined ANDROID_PLATFORM  && _NOTNOW
+bool download(const std::string url, const std::string filename)
 {
-	static std::string str;
-	std::stringstream ss; //int x = 23;
-
-	ss << value;
-	str = ss.str();
-	strcpy(dest, str.c_str());
+	DownloadFiles(url.c_str(), filename.c_str());
+	return true;
 }
 #endif
-
-#if defined ANDROID_PLATFORM
-// Used by ANDROID: To be compatible with WINDOWS / LINUX / ANDROID:
-int woma_atoi(TCHAR* _String)
-{
-	static int out;
-	_stscanf(_String, TEXT("%d"), &out); //swscanf
-}
-
-void woma_itoa(char** _String, int in, int system)
-{
-	StringCchPrintf(*_String, MAX_STR_LEN, TEXT("%d"), in);
-
-}
-#endif
-

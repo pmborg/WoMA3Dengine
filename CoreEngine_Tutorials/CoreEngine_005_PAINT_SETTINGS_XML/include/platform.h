@@ -566,10 +566,10 @@ static_assert(false, "WIN6x: X64 or WIN32, have to be selected");
 // -------------------------------------------------------------------------------------------
 // Define WOMA Project "Settings/Features" that will be COMPILED depending of "ENGINE_LEVEL"
 // -------------------------------------------------------------------------------------------
-#if MAINENGINE == true
-	#include "C:/WoMAengine2023/woma_engine_assets.h"	// MAIN ENGINE: WINDOWS / ANDROID / LINUX
-#else
+#if MAINENGINE_LINUX
 	#include "../../woma_engine_assets.h"				// PUBLIC DEMOS: WINDOWS / ANDROID / LINUX
+#else
+	#include "C:\WoMAengine2023\woma_engine_assets.h"
 #endif
 
 #if CORE_ENGINE_LEVEL < 10

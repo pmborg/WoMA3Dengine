@@ -69,6 +69,7 @@ void WinSystemClass::ProcessFrame()
 	if (WOMA::game_state == ENGINE_RESTART)
 		return;
 
+#if CORE_ENGINE_LEVEL >= 5 && defined CLIENT_SCENE_SETUP
 	if (WOMA::game_state == GAME_SETUP)
 	{
 		// F6: Init WOMA Setup:
@@ -79,6 +80,7 @@ void WinSystemClass::ProcessFrame()
 			OS_REDRAW_WINDOW;
 		}
 	}
+#endif
 
 }
 
@@ -89,6 +91,9 @@ void WinSystemClass::WinSystemClass_init()
 // --------------------------------------------------------------
 
 	m_hinstance = NULL;
+#if defined USE_PROCESS_OS_KEYS //CORE_ENGINE_LEVEL >= 3
+	m_OsInput = NULL;
+#endif
 	windowStyle = NULL;
 	if (SystemHandle->AppSettings)
 		mMaximized = SystemHandle->AppSettings->FULL_SCREEN;
@@ -104,7 +109,9 @@ void WinSystemClass::WinSystemClass_init()
 
 	memset(&displayDevice, 0, sizeof(displayDevice));
 
+#if CORE_ENGINE_LEVEL >= 5 && defined CLIENT_SCENE_SETUP
 	womaSetup = NULL;
+#endif
 
 #if CORE_ENGINE_LEVEL >= 2 && defined WINDOWS_PLATFORM
 	// Get the instance of this application.
@@ -144,16 +151,37 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 
 	IF_NOT_RETURN_FALSE(APPLICATION_CORE_SYSTEM()); // MyRegisterClass()
 
+#if defined USE_TINYXML_LOADER // Must be before: ApplicationInitMainWindow()
+	IF_NOT_RETURN_FALSE(LoadXmlSettings());	// XML: Load Application Settings: "settings.xml", pickup "Driver" to Use.
+#endif
+#if defined USE_SYSTEM_CHECK // BEFORE: ApplicationInitMainWindow()
+	IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());		// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 
+#endif
 	IF_NOT_RETURN_FALSE(ApplicationInitMainWindow());		// CREATE: The/all "MainWindow(s) + INIT DX/GL "rendering-device"
+#if defined USE_PROCESS_OS_KEYS
+	IF_NOT_RETURN_FALSE(InitOsInput());						// INIT-INPUT Devices, NOTE: AFTER: ApplicationInitMainWindow()
+#endif
+#if defined USE_TIMER_CLASS									// WINDOWS AFTER: ApplicationInitMainWindow()
 	StartTimer();											// START-TIMERS: ("Window Title" refresh & Real-Time Weather refresh)
+#endif
 
 // ########################################### LOAD DRIVERS ###########################################
 	
+#if CORE_ENGINE_LEVEL < 10 && defined USE_SYSTEM_CHECK // BEFORE need to be: ApplicationInitMainWindow() & AFTER need to be: InitSelectedDriver()
+	InitializeSystemScreen(10, 10); // SETUP SCREEN: F1,F2,F3,F4,F5,F6 (RUNNING NOW ON: PaintSetup())
+#endif
+
  // ################################################# INIT DRIVERS ###################################
 	
 	return true;						// GREEN LIGHT: to Start Rendering! :)
 }
 
+#if defined USE_PROCESS_OS_KEYS //CORE_ENGINE_LEVEL >= 3
+//----------------------------------------------------------------------------------------------------------
+void WinSystemClass::GetInputs()
+{
+}
+#endif
 //----------------------------------------------------------------------------
 int WinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 //----------------------------------------------------------------------------
@@ -193,7 +221,9 @@ void WinSystemClass::Shutdown()
 	// Destroy Drivers:
 	SystemClass::Shutdown();
 	
+#if defined CLIENT_SCENE_SETUP
 	SAFE_SHUTDOWN(womaSetup);
+#endif
 	
 	ShutdownWindows();				// Shutdown the Main Window.
 }
@@ -324,6 +354,25 @@ HWND WinSystemClass::WomaCreateWindowEx(DWORD dwExStyle, TCHAR* lpClassName, TCH
 
 	return hwnd;
 }
+
+#if defined USE_PROCESS_OS_KEYS //CORE_ENGINE_LEVEL >= 3
+bool WinSystemClass::InitOsInput()
+//----------------------------------------------------------------------------
+{
+	SystemClass::InitOsInput();
+
+	// INIT OS Keyboard (WIN32: This object will be used to handle reading the input from the user)
+	WOMA_LOGManager_DebugMSG("===============================================================================\n");
+	WOMA_LOGManager_DebugMSG("INIT OS BASIC INPUT\n");
+
+	m_OsInput = NEW InputClass;
+	IF_NOT_THROW_EXCEPTION(m_OsInput);
+
+	m_OsInput->Initialize();
+
+	return true;
+}
+#endif
 
 bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ void* 
 										/*OpenGL*/ driver, int& width, int& height)

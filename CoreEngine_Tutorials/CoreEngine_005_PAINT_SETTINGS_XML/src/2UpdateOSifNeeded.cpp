@@ -33,6 +33,8 @@ bool SystemManager::UpdateOSifNeeded ()
 	// Windows Vista update (KB 971644) add support for DXGI 1.1
 	// Check whether we need this option
 
+	#if defined WINDOWS_PLATFORM	
+	
 	bool REQUIRES_UPDATE_KB971644 = false;
 	bool REQUIRES_WINDOWS_VISTA_SP2 = false;
 
@@ -52,6 +54,8 @@ bool SystemManager::UpdateOSifNeeded ()
 			{WomaMessageBox (TEXT("WARNING: Windows Vista Need This Update: KB971644\n"), TEXT("FATAL ERROR: Windows Vista"), false); return false;}
 	}
 	
+	#endif
+
 	return true;
 }
 

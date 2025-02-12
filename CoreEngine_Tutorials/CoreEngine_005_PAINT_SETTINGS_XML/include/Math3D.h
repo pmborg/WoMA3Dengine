@@ -22,7 +22,9 @@
 #pragma once
 
 #include "platform.h"
+#if defined USE_TIMER_CLASS
 extern float FAST_sqrt(float x);
+#endif
 
 #ifndef PI
 	#define PI 3.14159265358979323846f

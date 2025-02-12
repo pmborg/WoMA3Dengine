@@ -30,6 +30,9 @@
 #if defined USE_IDEA_PACK
 #include "packManager.h"
 #endif
+#if defined USE_TINYXML_LOADER
+#include "xml_loader.h"
+#endif
 
 	#define g_contextDriver NULL
 
@@ -77,6 +80,10 @@ LinuxSystemClass::LinuxSystemClass(WOMA::Settings* appSettings) : SystemClass()
 
 	//public:
 	mResizing = false;
+
+#if defined CLIENT_SCENE_SETUP
+	womaSetup = NULL;
+#endif
 
 	// --------------------------------------------------------------
 	// Init:
@@ -145,11 +152,26 @@ bool LinuxSystemClass::APPLICATION_INIT_SYSTEM() // ApplicationInit()
 
 	IF_NOT_RETURN_FALSE(APPLICATION_CORE_SYSTEM());
 
+#if defined USE_TINYXML_LOADER // Must be before: ApplicationInitMainWindow()
+	IF_NOT_RETURN_FALSE(SystemClass::LoadXmlSettings());		// XML: Load Application Settings: "settings.xml", pickup "Driver" to Use.
+#endif
+
+#if defined USE_PROCESS_OS_KEYS
+	IF_NOT_RETURN_FALSE(InitOsInput());			// INIT-INPUT Devices, NOTE: After "Create MainWindow(s)"
+#endif
+
 	// Step 2: Create Context Driver
 	//----------------------------------------------------------------------------
 
 	return result;
 }
+
+#if defined USE_PROCESS_OS_KEYS
+void LinuxSystemClass::ProcessInput()
+{
+
+}
+#endif
 
 
 // Frame() --> ProcessFrame();

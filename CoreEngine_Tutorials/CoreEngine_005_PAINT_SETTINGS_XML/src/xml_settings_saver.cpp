@@ -27,6 +27,7 @@
 #pragma warning(disable: 4244)
 
 #include "OSengine.h"
+#if defined CLIENT_SCENE_SETUP //#if CORE_ENGINE_LEVEL > 9
 #include "xml_loader.h"
 
 //*********************************************************************************************/
@@ -127,3 +128,4 @@ bool XMLloader::saveConfigSettings (char* file) // Note: Have to be char
 
 	return true;
 }
+#endif

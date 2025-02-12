@@ -20,6 +20,7 @@
 //WomaIntegrityCheck = 1234567311;
 
 #include "platform.h"
+#if defined WINDOWS_PLATFORM
 #include "main.h"
 // --------------------------------------------------------------------------------------------
 // Auxiliar Class: sym_handler
@@ -189,3 +190,4 @@ std::string stack_trace::to_string()
     return ss.str();  
 }  
 
+#endif

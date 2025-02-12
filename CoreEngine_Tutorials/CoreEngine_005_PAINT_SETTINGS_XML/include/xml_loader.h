@@ -25,6 +25,7 @@
 // Convert from tyni v1 to v2: https://phabricator.mitk.org/T27985
 
 #include "platform.h"
+#if defined USE_TINYXML_LOADER
 
 #include "tinyxml2.h"
 #pragma comment( lib, "C:\\WoMAengine2023\\x64\\Debug\\TinyXMLv2_LIBX64_d.lib" )
@@ -101,7 +102,7 @@ typedef struct {
 
 	// Map Settings:
 	// --------------------------------------------------------------------------------------------
-	#if PRE_CHAP >= 15
+	#if TUTORIAL_PRE_CHAP >= 15
 	char minimapEnabled[10];
 	#endif
 
@@ -110,7 +111,7 @@ typedef struct {
 
 	// Player Settings:
 	// --------------------------------------------------------------------------------------------
-	#if PRE_CHAP >= 60 //80
+	#if TUTORIAL_PRE_CHAP >= 60 //80
 		char playerName[16], faction[10], meshType[16];
 	#endif
 
@@ -144,3 +145,4 @@ public:
 
 };
 
+#endif

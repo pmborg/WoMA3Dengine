@@ -20,6 +20,7 @@
 //WomaIntegrityCheck = 1234567311;
 
 #include "OSengine.h"
+#include "WinSystemClass.h"
 #include "OSmain_dir.h"
 
 
@@ -92,6 +93,11 @@ void PaintSetup(HDC hdc, HDC hdcMem, HFONT font_title, HFONT font, int scr)
 		{
 			int TextToPrintSize = (int)SystemHandle->TextToPrint[scr].size();
 
+			#if CORE_ENGINE_LEVEL >= 4 && defined USE_SYSTEM_CHECK // BEFORE need to be: ApplicationInitMainWindow() & AFTER need to be: InitSelectedDriver()
+			if (TextToPrintSize == 0)
+				SystemHandle->InitializeSystemScreen(10, 10);		// SETUP SCREEN: F1,F2,F3,F4,F5,F6
+			#endif
+
 			TextToPrintSize = (int)SystemHandle->TextToPrint[scr].size();
 			for (size_t i = 0; i < TextToPrintSize; i++)
 			{
@@ -144,6 +150,14 @@ int MainWindowPaint(UINT monitor)
 	{
 
 		case GAME_SETUP:			//F6
+	#if defined CLIENT_SCENE_SETUP
+		if (!SystemHandle->womaSetup)
+			//
+				SystemHandle->womaSetup = NEW WomaSetupManager;
+				if (!SystemHandle->womaSetup->m_setupWnd)
+					SystemHandle->womaSetup->Initialize(NULL);
+
+	#endif
 
 	//#if defined ALLOW_LOADING_SPLASH
 	//		PaintSplashScreen(hdc); // Loading Splash Screen.
