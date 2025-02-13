@@ -55,7 +55,7 @@
     <ClInclude Include="..\include\Math3D.h">
       <Filter>Include\004</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\ProcessorInfo.h">
+    <ClInclude Include="..\include\processorInfo.h">
       <Filter>Include\004</Filter>
     </ClInclude>
     <ClInclude Include="..\include\SystemFeatures.h">
@@ -207,7 +207,7 @@
     <ClCompile Include="..\src\5LaunchEngine.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\7ProcessorInfo.cpp">
+    <ClCompile Include="..\src\7PprocessorInfo.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
     <ClCompile Include="..\src\fpsClass.cpp">

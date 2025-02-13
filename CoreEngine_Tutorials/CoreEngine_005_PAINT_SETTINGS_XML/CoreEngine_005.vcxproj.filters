@@ -171,9 +171,6 @@
     <ClCompile Include="src\5LaunchEngine.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
-    <ClCompile Include="src\7ProcessorInfo.cpp">
-      <Filter>src\004</Filter>
-    </ClCompile>
     <ClCompile Include="src\xml_settings_loader.cpp">
       <Filter>src\005</Filter>
     </ClCompile>
@@ -229,6 +226,9 @@
       <Filter>src\004</Filter>
     </ClCompile>
     <ClCompile Include="src\OperatingSystem.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="src\7PprocessorInfo.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
   </ItemGroup>

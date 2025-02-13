@@ -186,7 +186,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <CompileAs>CompileAsCpp</CompileAs>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
-      <PreprocessorDefinitions>__ANDROID_API__=$(AndroidAPILevelNumber);%(PreprocessorDefinitions);NewWomaEngine;DEMO_LEVEL=5</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__ANDROID_API__=$(AndroidAPILevelNumber);%(PreprocessorDefinitions);NewWomaEngine;DEMO_LEVEL=5;MAINENGINE_LINUX</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <LibraryDependencies>%(LibraryDependencies);GLESv1_CM;EGL;m</LibraryDependencies>
@@ -269,7 +269,7 @@
     <ClCompile Include="..\..\src\3CheckSetup.cpp" />
     <ClCompile Include="..\..\src\4CheckEngineUpdates.cpp" />
     <ClCompile Include="..\..\src\5LaunchEngine.cpp" />
-    <ClCompile Include="..\..\src\7ProcessorInfo.cpp" />
+    <ClCompile Include="..\..\src\7PprocessorInfo.cpp" />
     <ClCompile Include="..\..\src\default_settings_xml.cpp" />
     <ClCompile Include="..\..\src\fileLoader.cpp" />
     <ClCompile Include="..\..\src\fpsClass.cpp" />

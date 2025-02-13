@@ -32,7 +32,7 @@
 
 #include "timerClass.h"
 #if CORE_ENGINE_LEVEL >= 4
-#include "ProcessorInfo.h"
+#include "processorInfo.h"
 #include "SystemFeatures.h"
 
 #if defined WINDOWS_PLATFORM

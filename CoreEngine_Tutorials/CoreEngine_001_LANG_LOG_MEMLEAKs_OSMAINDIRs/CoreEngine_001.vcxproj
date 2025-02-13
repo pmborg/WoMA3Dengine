@@ -35,8 +35,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\tech-level.h" />
-    <ClInclude Include="..\woma_engine_assets.h" />
+    <ClInclude Include="..\..\level.h" />
+    <ClInclude Include="..\..\tech-level.h" />
+    <ClInclude Include="..\..\woma_engine_assets.h" />
     <ClInclude Include="include\default_settings_xml.h" />
     <ClInclude Include="include\main.h" />
     <ClInclude Include="include\OSengine.h" />
@@ -153,35 +154,35 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;../CoreEngine_000_OSENGINE_SYSTEM\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;</IncludePath>
     <TargetName>CoreEngine_001</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;../CoreEngine_000_OSENGINE_SYSTEM\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;</IncludePath>
     <TargetName>CoreEngine_000</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;../CoreEngine_000_OSENGINE_SYSTEM\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;</IncludePath>
     <TargetName>CoreEngine_000</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WRelease|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;../CoreEngine_000_OSENGINE_SYSTEM\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;</IncludePath>
     <TargetName>CoreEngine_000</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;../CoreEngine_000_OSENGINE_SYSTEM\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;</IncludePath>
     <TargetName>CoreEngine_000</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WDebug|Win32'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;../CoreEngine_000_OSENGINE_SYSTEM\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;</IncludePath>
     <TargetName>CoreEngine_000</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;../CoreEngine_000_OSENGINE_SYSTEM\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;</IncludePath>
     <TargetName>CoreEngine_000</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WRelease|Win32'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;../CoreEngine_000_OSENGINE_SYSTEM\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;</IncludePath>
     <TargetName>CoreEngine_000</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -262,7 +263,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);DEMO_LEVEL=1</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);DEMO_LEVEL=1;MAINENGINE_LINUX</PreprocessorDefinitions>
       <ConformanceMode>
       </ConformanceMode>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>

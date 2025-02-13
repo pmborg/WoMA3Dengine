@@ -200,37 +200,37 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;../../ThirdParty/ultimateTCP_IP_LIB/inc</IncludePath>
     <TargetName>CoreEngine_000</TargetName>
-    <LibraryPath>$(LibraryPath);\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_003_MINIDUMPER_STACK_EXCEPTION</LibraryPath>
+    <LibraryPath>$(LibraryPath);\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;../../ThirdParty/ultimateTCP_IP_LIB/inc</IncludePath>
     <TargetName>CoreEngine_000</TargetName>
-    <LibraryPath>$(LibraryPath);\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_003_MINIDUMPER_STACK_EXCEPTION</LibraryPath>
+    <LibraryPath>$(LibraryPath);\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WRelease|x64'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;../../ThirdParty/ultimateTCP_IP_LIB/inc</IncludePath>
     <TargetName>CoreEngine_000</TargetName>
-    <LibraryPath>$(LibraryPath);\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_003_MINIDUMPER_STACK_EXCEPTION</LibraryPath>
+    <LibraryPath>$(LibraryPath);\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;../../ThirdParty/ultimateTCP_IP_LIB/inc</IncludePath>
     <TargetName>CoreEngine_000</TargetName>
-    <LibraryPath>$(LibraryPath);\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_003_MINIDUMPER_STACK_EXCEPTION</LibraryPath>
+    <LibraryPath>$(LibraryPath);\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WDebug|Win32'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;../../ThirdParty/ultimateTCP_IP_LIB/inc</IncludePath>
     <TargetName>CoreEngine_000</TargetName>
-    <LibraryPath>$(LibraryPath);\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_003_MINIDUMPER_STACK_EXCEPTION</LibraryPath>
+    <LibraryPath>$(LibraryPath);\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;../../ThirdParty/ultimateTCP_IP_LIB/inc</IncludePath>
     <TargetName>CoreEngine_000</TargetName>
-    <LibraryPath>$(LibraryPath);\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_003_MINIDUMPER_STACK_EXCEPTION</LibraryPath>
+    <LibraryPath>$(LibraryPath);\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WRelease|Win32'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;../../ThirdParty/ultimateTCP_IP_LIB/inc</IncludePath>
     <TargetName>CoreEngine_000</TargetName>
-    <LibraryPath>$(LibraryPath);\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_003_MINIDUMPER_STACK_EXCEPTION</LibraryPath>
+    <LibraryPath>$(LibraryPath);\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -310,7 +310,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);DEMO_LEVEL=4</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);DEMO_LEVEL=4;MAINENGINE_LINUX</PreprocessorDefinitions>
       <ConformanceMode>
       </ConformanceMode>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>

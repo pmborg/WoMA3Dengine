@@ -55,7 +55,7 @@
     <ClInclude Include="..\include\Math3D.h">
       <Filter>Include\004</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\ProcessorInfo.h">
+    <ClInclude Include="..\include\processorInfo.h">
       <Filter>Include\004</Filter>
     </ClInclude>
     <ClInclude Include="..\include\SystemFeatures.h">

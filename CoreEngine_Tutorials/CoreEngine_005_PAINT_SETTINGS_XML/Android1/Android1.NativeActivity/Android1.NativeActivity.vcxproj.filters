@@ -37,8 +37,6 @@
     <ClInclude Include="..\..\include\OSmain_dir.h">
       <Filter>Include\001</Filter>
     </ClInclude>
-    <ClInclude Include="C:\WoMA3Dengine\CoreEngine_Tutorials\tech-level.h" />
-    <ClInclude Include="C:\WoMA3Dengine\CoreEngine_Tutorials\woma_engine_assets.h" />
     <ClInclude Include="..\..\include\woma_macros.h">
       <Filter>Include\000</Filter>
     </ClInclude>
@@ -105,6 +103,8 @@
     <ClInclude Include="..\..\include\AndroidEngine.h">
       <Filter>src\005</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\tech-level.h" />
+    <ClInclude Include="..\..\..\woma_engine_assets.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\default_settings_xml.cpp">
@@ -153,9 +153,6 @@
     <ClCompile Include="..\..\src\5LaunchEngine.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\7ProcessorInfo.cpp">
-      <Filter>src\004</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\fpsClass.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
@@ -188,6 +185,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.cpp">
       <Filter>LIB_tinyxml2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\7PprocessorInfo.cpp">
+      <Filter>src\004</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

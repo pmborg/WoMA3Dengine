@@ -35,7 +35,7 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_005_PAINT_SETTINGS_XML\include;C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_005_PAINT_SETTINGS_XML\linux\include;C:\WoMA3Dengine\CoreEngine_Tutorials\;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;/usr/include/atk-1.0/;/usr/lib/x86_64-linux-gnu/graphene-1.0/include/;/usr/include/graphene-1.0;/usr/include/gdk-pixbuf-2.0/;/usr/include/harfbuzz/;/usr/include/pango-1.0;/usr/include/cairo/;/usr/lib/x86_64-linux-gnu/glib-2.0/include/;/usr/include;/usr/include/glib-2.0;/usr/include/gtk-3.0__;/usr/include/gtk-2.0;/usr/lib/x86_64-linux-gnu/gtk-2.0/include/;C:\WoMAengine2023__\_EXTERNAL_\IMAGING\JPG_LIB\include;C:\WoMAengine2023__\_EXTERNAL_\IMAGING\PNG_LIB\include;C:\WoMAengine2023__\ExternalTools\TinyXML_LIB\include___;C:\WoMAengine2023__\ExternalTools\TinyXML_LIB.v2\tinyxml2-10.0.0;C:\WoMAengine2023__\gl4linuxtut14_src\Engine;C:\WoMAengine2023__\LinuxWoma\LinuxWoma;C:\WoMAengine2023__\ExternalTools\geolite2++-0.0.1-2561-Source\src-lib;C:\WoMAengine2023__\ExternalTools\libmaxminddb-main\include;$(IncludePath)</IncludePath>
+    <IncludePath>../..;..;.;../include;C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_005_PAINT_SETTINGS_XML\include;C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_005_PAINT_SETTINGS_XML\linux\include;C:\WoMA3Dengine\CoreEngine_Tutorials\;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;/usr/include/atk-1.0/;/usr/lib/x86_64-linux-gnu/graphene-1.0/include/;/usr/include/graphene-1.0;/usr/include/gdk-pixbuf-2.0/;/usr/include/harfbuzz/;/usr/include/pango-1.0;/usr/include/cairo/;/usr/lib/x86_64-linux-gnu/glib-2.0/include/;/usr/include;/usr/include/glib-2.0;/usr/include/gtk-3.0__;/usr/include/gtk-2.0;/usr/lib/x86_64-linux-gnu/gtk-2.0/include/;C:\WoMAengine2023__\_EXTERNAL_\IMAGING\JPG_LIB\include;C:\WoMAengine2023__\_EXTERNAL_\IMAGING\PNG_LIB\include;C:\WoMAengine2023__\ExternalTools\TinyXML_LIB\include___;C:\WoMAengine2023__\ExternalTools\TinyXML_LIB.v2\tinyxml2-10.0.0;C:\WoMAengine2023__\gl4linuxtut14_src\Engine;C:\WoMAengine2023__\LinuxWoma\LinuxWoma;C:\WoMAengine2023__\ExternalTools\geolite2++-0.0.1-2561-Source\src-lib;C:\WoMAengine2023__\ExternalTools\libmaxminddb-main\include;$(IncludePath)</IncludePath>
     <SourcePath>
     </SourcePath>
     <AdditionalSourcesToCopyMapping>C:\WoMAengine2023__\Android-WomaEngine\Android2\Android2.NativeActivity\GLengine</AdditionalSourcesToCopyMapping>
@@ -57,7 +57,7 @@
     <ClInclude Include="..\include\OSengine.h" />
     <ClInclude Include="..\include\OSmain_dir.h" />
     <ClInclude Include="..\include\platform.h" />
-    <ClInclude Include="..\include\ProcessorInfo.h" />
+    <ClInclude Include="..\include\processorInfo.h" />
     <ClInclude Include="..\include\Rinputclass.h" />
     <ClInclude Include="..\include\standard_platform.h" />
     <ClInclude Include="..\include\stateMachine.h" />
@@ -87,7 +87,7 @@
     <ClCompile Include="..\src\3CheckSetup.cpp" />
     <ClCompile Include="..\src\4CheckEngineUpdates.cpp" />
     <ClCompile Include="..\src\5LaunchEngine.cpp" />
-    <ClCompile Include="..\src\7ProcessorInfo.cpp" />
+    <ClCompile Include="..\src\7PprocessorInfo.cpp" />
     <ClCompile Include="..\src\default_settings_xml.cpp" />
     <ClCompile Include="..\src\fileLoader.cpp" />
     <ClCompile Include="..\src\fpsClass.cpp" />

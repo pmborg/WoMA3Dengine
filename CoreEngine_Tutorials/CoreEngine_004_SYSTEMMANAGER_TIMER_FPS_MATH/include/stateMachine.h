@@ -38,7 +38,9 @@
 
 #define GAME_IMGUI			 25 
 
+#ifndef GAME_RUN
 #define GAME_RUN             50	// F5: the game is in the:    "Running Mode"
+#endif
 
 #if TUTORIAL_PRE_CHAP >= 91
 #define GAME_LAUNCHER        60					// the game is in the:    "Running Mode"

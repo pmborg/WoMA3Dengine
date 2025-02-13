@@ -548,6 +548,7 @@ static_assert(false, "WIN6x: X64 or WIN32, have to be selected");
 #define MAXBUFF				5*KBs
 
 #define GAME_LOADING		0					// the game is in the:    "Initialization / Load Mode"
+#define GAME_RUN            50					// F5: the game is in the:    "Running Mode"
 #define ENGINE_RESTART      100					// the game is in the:    "Re-start" the "SystemClass"
 #define GAME_STOP           ENGINE_RESTART+1	// the game is in the:    "Stop Threads and Free Resources Mode": This the correct mode to: Stop the "Application"
 #define GAME_EXIT           ENGINE_RESTART+2	// the game is in the:    "Exit Mode (Only SystemClass should use this), After all Threads Have Completed
