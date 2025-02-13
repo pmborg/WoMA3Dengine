@@ -75,7 +75,7 @@
     <ClCompile Include="src\3CheckSetup.cpp" />
     <ClCompile Include="src\4CheckEngineUpdates.cpp" />
     <ClCompile Include="src\5LaunchEngine.cpp" />
-    <ClCompile Include="src\7PprocessorInfo.cpp" />
+    <ClCompile Include="src\7ProcessorInfo.cpp" />
     <ClCompile Include="src\8SystemFeatures.cpp" />
     <ClCompile Include="src\default_settings_xml.cpp" />
     <ClCompile Include="src\dumpUploader.cpp" />

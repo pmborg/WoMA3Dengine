@@ -228,7 +228,7 @@
     <ClCompile Include="src\OperatingSystem.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
-    <ClCompile Include="src\7PprocessorInfo.cpp">
+    <ClCompile Include="src\7ProcessorInfo.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
   </ItemGroup>
