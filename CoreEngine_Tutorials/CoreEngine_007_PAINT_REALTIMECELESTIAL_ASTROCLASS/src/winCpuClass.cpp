@@ -1,16 +1,22 @@
 // --------------------------------------------------------------------------------------------
-// Filename: cpuClass.cpp
+// Filename: winCpuClass.cpp
 // --------------------------------------------------------------------------------------------
-// ********************************************************************************************
-// World of Middle Age  - 3D Multi-Platform ENGINE 2017
-//---------------------------------------------------------------------------------
-// code by : Pedro Borges - pmborg@yahoo.com
-// Downloaded from : http://woma.servegame.com
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// --------------------------------------------------------------------------------------------
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
+// This file is part of the WorldOfMiddleAge project.
+//
+// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
+// You may not alter or remove any copyright or other notice from copies of the content.
+// The content contained in this file is provided only for educational and informational purposes.
+// 
+// Downloaded from : https://github.com/pmborg/WoMA3Dengine
+// --------------------------------------------------------------------------------------------
 //   Get processor benchmark info
 //   Allocate logical processors to different threads
-//
-// ********************************************************************************************
+// --------------------------------------------------------------------------------------------
 #include "main.h"
 
 #if CORE_ENGINE_LEVEL >= 6 && !defined WIN_XP // Initializing Engine
@@ -27,6 +33,7 @@
 WinCpuClass::WinCpuClass()
 {
 	CLASSLOADER();
+    WomaIntegrityCheck = 1234567142;
 
 	//private:
     m_canReadCpu=false;
@@ -52,7 +59,7 @@ WinCpuClass::~WinCpuClass() { Shutdown(); CLASSDELETE(); }
 void WinCpuClass::Initialize()
 {
     PDH_STATUS status;
-    CONST TCHAR* COUNTER_PATH = TEXT("\\Processor(_Total)\\% processor time");                //C:\Windows\system32>typeperf -q Processor
+    CONST TCHAR* COUNTER_PATH = TEXT("\\Processor(_Total)\\% processor time");            //C:\Windows\system32>typeperf -q Processor
     //CONST PWSTR COUNTER_PATH_PT = L"\\processador(_Total)\\% de tempo do processador";  //C:\Windows\system32>typeperf -q processador
 
     // Initialize the flag indicating whether this object can read the system cpu usage or not.
@@ -118,7 +125,7 @@ int WinCpuClass::GetCpuPercentage()
 
 #endif
 
-#if defined USE_LOADING_THREADS //ENGINE_LEVEL >= 25
+#if defined USE_LOADING_THREADS || defined USE_MAIN_THREAD
 // MultiThreading:
 // http://msdn.microsoft.com/en-us/library/windows/desktop/ff476884%28v=vs.85%29.aspx
 //

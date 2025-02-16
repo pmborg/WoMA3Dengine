@@ -1,10 +1,10 @@
 // NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
-// Filename: OsDirectories.cpp
+// Filename: OSmain_dir.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -20,9 +20,16 @@
 //  - Check if PATH if NETWORK PATH (Release)
 //  - Init: PROGRAM_FILES "C:\ProgramFiles(x86)\Pmborg\Woma2017\"
 //  - Init: APPDATA "C:\Users\"username"\AppData\Local\Pmborg\Woma2017\"
-//
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
+//WomaIntegrityCheck = 1234567142;
+
+#include "platform.h"
+
+#include "OSengine.h" //#include "WinSystemClass.h"
+
+#if defined ANDROID_PLATFORM && !defined NewWomaEngine
+#include "AndroidSystemClass.h"
+#endif
 
 #define _CRT_SECURE_NO_WARNINGS
 #include "main.h"
@@ -36,12 +43,18 @@
 #include <unistd.h>
 #endif
 
+#if !defined WINDOWS_PLATFORM
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <stdio.h>				// define: FILENAME_MAX
+#endif
+
 namespace WOMA
 {
 	// State Vars:
 	//---------------------------------------------------
-	int					game_state=0;
-	int					previous_game_state=0;
+	//int					game_state=0;
+	//int					previous_game_state=0;
 
 	// Directory Vars:
 	//---------------------------------------------------
@@ -55,6 +68,7 @@ namespace WOMA
 	TCHAR cCurrentPath[FILENAME_MAX]; //Use now: APPDATA
 	STRING womaTempPATH;
 
+#if defined WINDOWS_PLATFORM
 	bool fileExists(STRING Filename)
 	{
 		return _taccess(Filename.c_str(), 0) == 0;
@@ -142,16 +156,28 @@ namespace WOMA
 
 		return RemoveDirectory(sPath); // remove the empty directory
 	}
-
+#endif
 
 	//-------------------------------------------------------------------------------------------
 	TCHAR* getCurrentDir()
 	//-------------------------------------------------------------------------------------------
 	{
+	#if defined WINDOWS_PLATFORM
 		if (!GetCurrentDirectory(MAX_STR_LEN, cCurrentPath))
 			return (TCHAR*)TEXT("");
 
-		WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("CurrentPath: %s\n"), cCurrentPath);
+		//WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("CurrentPath: %s\n"), cCurrentPath);
+	#else // Linux / Android
+		char* CurrentPath;
+
+		CurrentPath = getcwd(NULL, 0); // or _getcwd
+		if (CurrentPath == NULL)
+			return TEXT("");
+
+		#if defined USE_SYSTEM_CHECK & !defined NewWomaEngine
+		strcpy_s(SystemHandle->systemDefinitions.cCurrentPath, FILENAME_MAX, CurrentPath);
+		#endif
+	#endif
 
 		return cCurrentPath;
 	}
@@ -160,7 +186,11 @@ namespace WOMA
 	TCHAR* getTemp()
 		//-------------------------------------------------------------------------------------------
 	{
-		static TCHAR* strTEMPchar = _tgetenv(TEXT("TEMP"));	// Get our Fullpath to all objects; ("TEMP" + /engine/)
+		static TCHAR* strTEMPchar = TEXT("");
+
+	#if defined  WINDOWS_PLATFORM
+		strTEMPchar = _tgetenv(TEXT("TEMP"));	// Get our Fullpath to all objects; ("TEMP" + /engine/)
+	#endif
 
 		return strTEMPchar;
 	}
@@ -169,25 +199,44 @@ namespace WOMA
 	TCHAR* getHome()
 	//-------------------------------------------------------------------------------------------
 	{
-		static TCHAR* strHOMEchar = _tgetenv(TEXT("USERPROFILE"));
+		static TCHAR* strHOMEchar = TEXT("");
+
+	#if defined  WINDOWS_PLATFORM
+		strHOMEchar = _tgetenv(TEXT("USERPROFILE"));
+	#elif defined LINUX_PLATFORM // Linux
+		strHOMEchar = _tgetenv(TEXT("HOME"));
+	#endif
 
 		return strHOMEchar;
 	}
 
+	//LINUX:	/home/pedro/projects/LinuxWoma/bin/x64/Debug
+	//WINDOWS:	C:\WoMAengine2023\DXEngine_055
 	//-------------------------------------------------------------------------------------------
 	bool logDirs(BOOL WINXP_FLAG, BOOL bIsWow64)
 	//-------------------------------------------------------------------------------------------
 	{
 		TCHAR currentPath[MAX_STR_LEN] = { 0 };
+#if defined  WINDOWS_PLATFORM
 		GetCurrentDirectory(MAX_STR_LEN, currentPath);
-		WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("Current Path: %s\n"), currentPath);
+#else
+		//char cwd[MAX_STR_LEN] = {0};
+		char* res = getcwd(currentPath, sizeof(currentPath));
+		if (!res) {
+			perror("getcwd() error");
+			return 1;
+		}
+#endif
 
-		// Check if is a network PATH:
+		WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("Current Directory: %s\n"), currentPath);
+
+		char* Temp = getTemp();
+		char* Home = getHome();
 
 		WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("PROGRAM_FILES Directory: %s\n"), PROGRAM_FILES);
 		WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("APPDATA Directory: %s\n"), APPDATA);
-		WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("TEMP Directory: %s\n"), getTemp());
-		WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("HOME Directory: %s\n"), getHome());
+		WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("TEMP Directory: %s\n"), Temp);
+		WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("HOME Directory: %s\n"), Home);
 
 		return true;
 	}
@@ -197,6 +246,13 @@ namespace WOMA
 	//-------------------------------------------------------------------------------------------
 	{
 
+	#if CORE_ENGINE_LEVEL >= 2 && defined LINUX_PLATFORM
+		// "C:\Program Files\Pmborg\Woma2017\" ==> "/opt/Pmborg/Woma2017"
+		// "C:\Users\"username"\AppData\Local\Pmborg\Woma2017\" ==> ~/.pmborg/Woma2017
+		StringCchPrintf(PROGRAM_FILES, MAX_STR_LEN, TEXT("/opt/%s/%s/"), APP_COMPANY_NAME, APP_PROJECT_NAME);
+		StringCchPrintf(APPDATA, MAX_STR_LEN, TEXT("~/.%s/%s/"), APP_COMPANY_NAME, APP_PROJECT_NAME);
+	#endif
+
 		return true;
 	}
 
@@ -204,9 +260,14 @@ namespace WOMA
 		char path[MAX_PATH] = { 0 };
 		// (No Need on DEBUG!)
 
+		//#if defined LINUX_PLATFORM
+		//chdir("..");
+		//#endif
+
 		// [1] init_os_main_dirs!
 		// -------------------------------------------------------------------------------------------
 		_tprintf(TEXT("Init: init_os_main_dirs()\n"));
+		#if defined WINDOWS_PLATFORM
 			#if defined UNICODE
 				TCHAR WDirbuffer[MAX_STR_LEN] = { 0 };
 				atow(WDirbuffer, path, MAX_STR_LEN);
@@ -214,6 +275,10 @@ namespace WOMA
 			#else
 				init_os_main_dirs(path);
 			#endif
+		#else
+			//Populate: PROGRAM_FILES & APPDATA
+			init_os_main_dirs();
+		#endif
 	}
 	BOOL bIsWow64;
 
@@ -227,6 +292,7 @@ namespace WOMA
 	#endif
 	}
 
+	#if defined WINDOWS_PLATFORM
 	BOOL isWow64()
 	//------------------------------------------------------------------
 	{
@@ -247,6 +313,12 @@ namespace WOMA
 
 		return bIsWow64;
 	}
+	#else
+	BOOL isWow64()
+	{
+		return FALSE;
+	}
+	#endif
 
 	#pragma warning( disable : 4996 ) // Disable warning C4996:
 	bool isXP()

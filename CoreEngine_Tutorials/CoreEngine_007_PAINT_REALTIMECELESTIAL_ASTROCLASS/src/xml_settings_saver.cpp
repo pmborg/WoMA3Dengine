@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: xml_settings_saver.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -22,30 +22,22 @@
 //  - Release use:     C:\Users\<user>\AppData\Local\Pmborg\Woma2014\"file".xml (WOMA::APPDATA)
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
-// 
-// --------------------------------------------------------------------------------------------
-// Includes:
-// --------------------------------------------------------------------------------------------
-#define _CRT_SECURE_NO_WARNINGS	// Ignore: warning C4996
+//WomaIntegrityCheck = 1234567142;
+
 #pragma warning(disable: 4244)
-#include "platform.h"
-#include "xml_loader.h"
-#include "mem_leak.h"
 
-#include "winsystemclass.h"		// Are we a Windows Instance?
-
+#include "OSengine.h"
+#if defined CLIENT_SCENE_SETUP //#if CORE_ENGINE_LEVEL > 9
 #include "xml_loader.h"
 
 //*********************************************************************************************/
 bool XMLloader::saveConfigSettings (char* file) // Note: Have to be char
 //*********************************************************************************************/
 {
-	// TUTORIAL: https://www.cs.cmu.edu/~preethi/src/tinyxml/docs/tutorial0.html
+	// TUTORIALv1: https://www.cs.cmu.edu/~preethi/src/tinyxml/docs/tutorial0.html
 
-	//static TiXmlDocument doc( file );
-	//static TiXmlDocument doc( "new.xml" );
-	TiXmlDocument doc;
+#if defined WINDOWS_PLATFORM && defined USE_TINYXML_LOADER
+	/*TiXmlElement*/ tinyxml2::XMLDocument doc;
 
 	//Optional:
 	//TiXmlDeclaration* decl = NEW TiXmlDeclaration("1.0", "", "");
@@ -55,12 +47,12 @@ bool XMLloader::saveConfigSettings (char* file) // Note: Have to be char
 	CHAR stri[MAX_STR_LEN]  = { 0 };
 
 	// SAVE Settings:
-	TiXmlElement* root = NEW TiXmlElement( "generalsettings" );
+	auto* root = doc.NewElement( "generalsettings" );
 	doc.LinkEndChild(root);
 	if ( root )
 	{
-		///*<screen>*/TiXmlElement* child_screen = root->FirstChildElement( "screen" );
-		TiXmlElement* child_screen = NEW TiXmlElement("screen");
+		//TiXmlElement* child_screen = root->FirstChildElement( "screen" );
+		tinyxml2::XMLElement* child_screen = root->InsertNewChildElement("screen");
 		root->LinkEndChild(child_screen);
 		if ( child_screen )
 		{
@@ -92,9 +84,30 @@ bool XMLloader::saveConfigSettings (char* file) // Note: Have to be char
 			child_screen->SetAttribute("bitsPerPixel", stri);
 		}
 
-#if definef USE_SOUND_MANAGER || defined USE_PLAY_MUSIC
-		///*<sound>*/TiXmlElement* child_sound = root->FirstChildElement( "sound" );
-		TiXmlElement* child_sound = NEW TiXmlElement("sound");
+		///*<texture>*/tinyxml2::XMLElement* child_texture = root->FirstChildElement("texture");
+		tinyxml2::XMLElement* child_texture = root->InsertNewChildElement("texture");
+		root->LinkEndChild(child_texture);
+		if (child_texture)
+		{
+			_itoa(SystemHandle->AppSettings->MaxTextureSize, stri, 10);
+			child_texture->SetAttribute("maxTexture", stri);
+
+			str = (SystemHandle->AppSettings->MSAA_bilinear) ? "true" : "false";
+			child_texture->SetAttribute("bilinear", str.c_str());
+
+			str = (SystemHandle->AppSettings->MSAA_trilinear) ? "true" : "false";
+			child_texture->SetAttribute("trilinear", str.c_str());
+
+			str = (SystemHandle->AppSettings->MSAA_Anisotropic) ? "true" : "false";
+			child_texture->SetAttribute("Anisotropic", str.c_str());
+
+			_itoa(SystemHandle->AppSettings->MSAA_AnisotropicLevel, stri, 10);
+			child_texture->SetAttribute("AnisotropicLevel", stri);
+		}
+
+#if defined USE_WIN32_SOUND_MANAGER || defined USE_WIN32_PLAY_MUSIC
+		///*<sound>*/tinyxml2::XMLElement* child_sound = root->FirstChildElement( "sound" );
+		tinyxml2::XMLElement* child_sound = root->InsertNewChildElement("sound");
 		root->LinkEndChild(child_sound);
 		if ( child_sound )
 		{
@@ -111,6 +124,8 @@ bool XMLloader::saveConfigSettings (char* file) // Note: Have to be char
 		return false;
 
 	doc.SaveFile(file);
+#endif
 
 	return true;
 }
+#endif

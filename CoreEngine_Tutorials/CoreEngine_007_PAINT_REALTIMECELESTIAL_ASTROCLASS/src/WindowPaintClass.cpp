@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: WindowPaintClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,107 +17,31 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
+//WomaIntegrityCheck = 1234567142;
 
-#include "WinSystemClass.h"
-#include "mem_leak.h"
-
+#include "OSengine.h"
 #include "WindowPaintClass.h"
 
 //	-------------------------------------------------------------------------------------------
+#if CORE_ENGINE_LEVEL >= 7 && defined USE_ASTRO_CLASS
 	#include "initWorld.h"
 	#include "astroClass.h"
+#endif
 
+#if defined ALLOW_LOADING_SPLASH && defined WINDOWS_PLATFORM
 	#include "fileLoader.h"
 	HBITMAP bmpExercising = NULL;
+#endif
 
 #define initWorld SystemHandle->m_Application->initWorld
 
-void InitializeCelestialInfoScreen(int x, int y)
-//-----------------------------------------------------------------------------------------
-{
-	WOMA::logManager->DEBUG_MSG ("InitializeCelestialInfoScreen...");
-
-	TCHAR str[50];
-
-	float LINE = MIN (25, 2 * SystemHandle->fontSizeY);
-	float LINE_SPACE = MIN (35, 3 * SystemHandle->fontSizeY);
-
-	if (initWorld) // Needed because paint is called before create initWorld
-	{
-		// Make sure that is Reset!
-		while (!SystemHandle->TextToPrint[1].empty())
-			SystemHandle->TextToPrint[1].pop_back();
-
-		// CelestialInfo:
-		STRING infomode = TEXT("online");
-
-		StringCchPrintf(str, sizeof(str), TEXT("CELESTIAL INFO: %s"), infomode.c_str());
-		Woma_Label text = { str, x, y };
-		SystemHandle->TextToPrint[1].push_back(text);
-
-		text.y += (int)LINE;
-		StringCchPrintf(str, sizeof(str), TEXT("Latitude: %f"), initWorld->latitude);
-		text.label = str;
-		SystemHandle->TextToPrint[1].push_back(text);
-
-		text.y += (int)LINE;
-		StringCchPrintf(str, sizeof(str), TEXT("Longitude: %f"), initWorld->longitude);
-		text.label = str;
-		SystemHandle->TextToPrint[1].push_back(text);
-
-		// Static Sun Values:
-		// ------------------
-		text.y += 30;
-		StringCchPrintf(str, sizeof(str), TEXT("Sunrise: %d:%d"), (UINT)initWorld->h_sunrise, (UINT)initWorld->m_sunrise);
-		text.label = str;
-		SystemHandle->TextToPrint[1].push_back(text);
-
-		text.y += (int)LINE;
-		StringCchPrintf(str, sizeof(str), TEXT("Sunset: %d:%d"), (UINT)initWorld->h_sunset, (UINT)initWorld->m_sunset);
-		text.label = str;
-		SystemHandle->TextToPrint[1].push_back(text);
-
-		// Static Moon Values:
-		// -------------------
-		text.y += 30;
-		StringCchPrintf(str, sizeof(str), TEXT("Moon Distance: %f (km)"), initWorld->moonDistance);
-		text.label = str;
-		SystemHandle->TextToPrint[1].push_back(text);
-
-		text.y += (int)LINE;
-		StringCchPrintf(str, sizeof(str), TEXT("Moon Scale: %f / 1.0"), initWorld->moonScale);
-		text.label = str;
-		SystemHandle->TextToPrint[1].push_back(text);
-
-		// Dynamic Sun Values:
-		// -------------------
-		text.y += 30;
-		StringCchPrintf(str, sizeof(str), TEXT("Sun Geometric Elevation: %f"), initWorld->geometricElevation);
-		text.label = str;
-		SystemHandle->TextToPrint[1].push_back(text);
-
-		text.y += (int)LINE;
-		StringCchPrintf(str, sizeof(str), TEXT("Moon Elevation: %f (with refraction)"), (initWorld->geometricMoonElevation > -5) ? initWorld->moonElevation : NULL);
-		text.label = str;
-		SystemHandle->TextToPrint[1].push_back(text);
-
-		text.y += (int)LINE;
-		StringCchPrintf(str, sizeof(str), TEXT("Moon Azimuth: %f"), initWorld->MoonAz);
-		text.label = str;
-		SystemHandle->TextToPrint[1].push_back(text);
-
-		WOMA::logManager->DEBUG_MSG(" done\n");
-	}
-}
 
 
-
-
+#if defined ALLOW_LOADING_SPLASH && defined WINDOWS_PLATFORM
 void PaintSplashScreen(HDC hdc)
 {
     if (!bmpExercising) {
-        bmpExercising = (HBITMAP)::LoadImage(NULL, WOMA::LoadFile(TEXT("engine/data/logotipo_small_backgroundV2.bmp")), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+        bmpExercising = (HBITMAP)::LoadImage(NULL, WOMA::LoadFile(BACKGROUND_IMAGE), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
         if (!bmpExercising)	//Might happend that unpack of Temp dir didnt happend yet: (so this is not an error...)
 		{ 
 			STRING err = TEXT("BMP File not found: "); 
@@ -136,21 +60,14 @@ void PaintSplashScreen(HDC hdc)
 
     // COPY: the bits from the memory DC into the current dc
     //BitBlt(hdc, (SystemHandle->AppSettings->WINDOW_WIDTH -bm.bmWidth)/2, (SystemHandle->AppSettings->WINDOW_HEIGHT -bm.bmHeight)/2, bm.bmWidth, bm.bmHeight, hdcMem, 0, 0, SRCCOPY);
+	// 
     // SCALE: Stretch the bits from the memory DC into the current dc
     StretchBlt(	hdc, 0, 0, SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT, hdcMem, 0, 0, bm.bmWidth, bm.bmHeight, SRCAND | SRCCOPY);
-	//printf("%d %d\n", SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT);
-    // ---------------------------------------------------------------------------------------------
 
+	// ---------------------------------------------------------------------------------------------
     // Restore the old bitmap
-    SelectObject(hdcMem, hbmOld);
+	HGDIOBJ obj = SelectObject(hdcMem, hbmOld);
     DeleteDC(hdcMem);
 
-	#if TUTORIAL_PRE_CHAP >= 7 // totalPackCounter --- 100%
-	TCHAR str[100];			   // packCounter  --- X
-	if (totalPackCounter > 0) 
-	{
-		StringCchPrintf(str, sizeof(str), TEXT("Loading: %d %%"), packCounter * 100 / totalPackCounter);
-		TextOut(hdc, 10, yPos, str, (int) _tcslen(str)); yPos += LineHeigth;
-	}
-	#endif
 }
+#endif
