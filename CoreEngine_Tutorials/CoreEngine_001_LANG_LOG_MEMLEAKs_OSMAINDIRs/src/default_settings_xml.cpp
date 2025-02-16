@@ -17,7 +17,7 @@
 // PURPOSE: SET DEFAULT: "Aplication Settings" (they will be overwritten by "settings.xml" in run-time)
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
 
 #define _CRT_SECURE_NO_WARNINGS
 #include "OSengine.h"

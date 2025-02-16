@@ -17,9 +17,10 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Define APIs for winSystemClass.cpp which is the WINDOWS OS API
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
 
 #include "OSengine.h"
+#include "mem_leak.h"
 #if defined DX_ENGINE
 #include "DXengine.h"
 #endif
@@ -36,7 +37,7 @@ WinSystemClass::WinSystemClass() : SystemClass()
 //----------------------------------------------------------------------------------
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567311;
+	WomaIntegrityCheck = 1234567142;
 
 	//public:
 	SystemHandle = this;
@@ -129,6 +130,19 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 //----------------------------------------------------------------------------------------------------------
 void WinSystemClass::GetInputs()
 {
+#if defined USE_DIRECT_INPUT						// Read the User Input
+	if (DXsystemHandle->m_Input->m_mouse && DXsystemHandle->m_Input->m_keyboard)	// Make Sure that we have aquired the FOCUS and INPUT:
+	{
+		ASSERT(DXsystemHandle->m_Input->Frame()); // Update "Keyboard State": Process the changes in the Mouse and Keyboard.
+	}
+	else
+		DXsystemHandle->m_Input->Initialize(SystemHandle->m_hinstance); //re-gain input if necessary.
+
+	#if defined USE_JOY && defined USE_DIRECT_INPUT
+	if (joyFlags)
+		SystemHandle->joyStickFrame();		// Update "JOY State"
+	#endif
+#endif
 }
 #endif
 //----------------------------------------------------------------------------
@@ -192,7 +206,32 @@ bool WinSystemClass::InitOsInput()
 
 	m_OsInput->Initialize();
 
+#if defined USE_DIRECT_INPUT
+	// Set the Player Position Init Player Class
+	WOMA_LOGManager_DebugMSG("===============================================================================\n");
+	WOMA_LOGManager_DebugMSG("INIT OS ADVANCED DIRECT INPUT\n");
+	WOMA_LOGManager_DebugMSG("===============================================================================\n");
+
+
+	DXsystemHandle->m_Input = (DXInputClass*)&SystemHandle->m_InputManager;
+#endif
+
 	return true;
+}
+#endif
+
+#if defined USE_ALLOW_MAINWINDOW_RESIZE //CORE_ENGINE_LEVEL >= 10 // Initializing Engine
+void WinSystemClass::ONRESIZE()
+{
+	if (SystemHandle) {
+		WOMA_LOGManager_DebugMSG("ONRESIZE()\n");
+		if (SystemHandle->m_Application)
+			SystemHandle->m_Application->WOMA_APPLICATION_InitGUI();
+		#if defined DX_ENGINE //OPENGL TODO
+		if (DXsystemHandle)
+			DXsystemHandle->GPH_RESIZE();
+		#endif
+	}
 }
 #endif
 

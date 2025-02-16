@@ -15,7 +15,7 @@
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
 
 #pragma once
 
@@ -32,3 +32,7 @@ public:
 	bool APPLICATION_INIT_SYSTEM();
 	int APPLICATION_MAIN_LOOP();
 };
+
+//#if defined WINDOWS_PLATFORM && !defined ANDROID_PLATFORM
+//&& !defined NewWomaEngine
+
