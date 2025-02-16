@@ -15,7 +15,7 @@
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
 // 
 // DEFINE ENGINE LEVEL:
 // C:\[WoMAengine]\woma_engine_assets.h
@@ -59,9 +59,8 @@
 // --------------------------------------------------------------------------------------------
 // SETUP ENV: C:\[WoMAengine]\Android-howto\howto.txt
 // --------------------------------------------------------------------------------------------
-// PURPOSE: Entry point of all WoMA ENGINE Applications OS: WINDOWS
+// PURPOSE: Entry point of all WoMA ENGINE Applications OS: WINDOWS / LINUX / ANDROID
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
 
 #include "OSengine.h"
 
@@ -108,6 +107,7 @@ void ParseCommandLineArgs(int argc, char* argv[])
 	}
 }
 
+// Entry point of all WoMA ENGINE Applications all "main's" call this this one (used by: WINDOWS / LINUX / ANDROID)
 // -------------------------------------------------------------------------------------------------------------------------------------
 int APPLICATION_MAIN(int argc, char* argv[])
 // -------------------------------------------------------------------------------------------------------------------------------------

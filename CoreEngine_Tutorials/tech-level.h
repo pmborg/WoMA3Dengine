@@ -331,7 +331,7 @@
 		//#define USE_MAIN_THREAD		// ON/OFF (Note: Dont work on openGL, NOTE!!! This is buggy with maximize!!! Dont use for now
 		//#define USE_LOADING_THREADS	//Use Thread to load Graphics (Bug! will launch multiple!?)
 
-		#if defined _NOT //ADDED ON C:\WoMAengine2023\DXEngine_037 BUT NOT USED
+		#if defined _NOT //ADDED ON C:\WoMAengine2023\DXEngine_037 BUT NOT USED ON DEBUG
 		#define ALLOW_CBIND_PROGRESS_BAR	//Display Progress Bar
 		#endif
 	#endif
