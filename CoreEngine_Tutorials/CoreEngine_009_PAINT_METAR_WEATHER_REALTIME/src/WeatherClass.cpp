@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: WeatherClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,15 +16,11 @@
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
 //   Get the nearest airport, based on our IP.
-//
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567142;
 
-//#define GENERATE //(Airports List)
-
-
-#define _CRT_SECURE_NO_WARNINGS
-#include "platform.h"
-
+#include "OSengine.h"
+#if CORE_ENGINE_LEVEL >= 9 && defined USE_METARCLASS //ENGINE_LEVEL >= 13
 #include "main.h"
 #pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
 #include "weatherClass.h"
@@ -32,10 +28,12 @@
 #include "TrigonometryMathClass.h"	//sim, cos table
 #include "fileLoader.h"
 #include "log.h"
-
+extern bool download(const std::string url, const std::string file);
 // Internet:
+#if defined USE_NETWORK && defined WINDOWS_PLATFORM
 #include <urlmon.h>
 #pragma comment( lib, "urlmon.lib" )
+#endif
 
 #include <vector>
 
@@ -51,7 +49,7 @@
 
 WeatherClass::WeatherClass()
 {
-    WomaIntegrityCheck = 1234567831;
+    WomaIntegrityCheck = 1234567142;
 	CLASSLOADER();
 
     Metar = TEXT("");
@@ -78,8 +76,11 @@ void WeatherClass::Initialize()
     //1,"Goroka","Goroka","Papua New Guinea","GKA","AYGA",-6.081689,145.391881,5282,10,"U"
     //1638,"Lisboa","Lisbon","Portugal","LIS","LPPT",38.781311,-9.135919,374,0,"E"
     IFSTREAM fileIn(WOMA::LoadFile(DATAFILE));    //Open file for Read : cpp
-	if (!fileIn) 
-		{ WOMA::WomaMessageBox(DATAFILE, TEXT("File not found")); } //Warning only!
+	if (!fileIn) {
+        char TextMsg[MAX_STR_LEN];
+        sprintf(TextMsg, "WARNING: WeatherClass::File not found: %s", DATAFILE);
+        WomaMessageBox(DATAFILE, TextMsg);
+    } //Warning only!
 
     STRING line;
 
@@ -152,7 +153,7 @@ TCHAR* WeatherClass::findClosestAirport(float latitude, float longitude)
     }
 
     if (GoodIndx >= airportVec.size()) {
-		WomaFatalException("Airports file not found!");
+        _tprintf("Airports file not found!");
 		return TEXT("");
 	}
 
@@ -182,16 +183,34 @@ bool WeatherClass::GetPresentWeather(TCHAR* ICAO)
     IFSTREAM	fin;
     TCHAR		szFileName[80] = TEXT("present.weather");
 
+#ifdef USE_NETWORK
     DeleteFile(WOMA::LoadFile (szFileName));
 
     TCHAR downloadFilename[100] = { 0 };
-    StringCchPrintf(downloadFilename, sizeof(downloadFilename), _T("http://%s=%s"), _T("www.allmetsat.com/pt/metar-taf/portugal-espanha.php?icao"), ICAO);
+    //https://metar.vatsim.net/metar.php?id=LPPT
+    //StringCchPrintf(downloadFilename, sizeof(downloadFilename), TEXT("http://%s=%s"), TEXT("www.allmetsat.com/pt/metar-taf/portugal-espanha.php?icao"), ICAO);
+    //...
+    //<b>METAR:< / b> LPPT 011430Z 32009KT 280V360 9999 FEW022 BKN029 24 / 17 Q1018
+    //...
 
+    StringCchPrintf(downloadFilename, sizeof(downloadFilename), TEXT("https://%s=%s"), TEXT("metar.vatsim.net/metar.php?id"), ICAO);
+    //LPPT 011400Z 32008KT 290V360 9999 FEW022 BKN026 23/17 Q1019
+
+    WOMA_LOGManager_DebugMSG("URL: %s", downloadFilename);
+
+#if defined WINDOWS_PLATFORM
     HRESULT hr = URLDownloadToFile(NULL, downloadFilename, WOMA::LoadFile (szFileName), 0, NULL);
-    if (hr != S_OK) {
-        WomaFatalException("Could not comunicate with whatismyipaddress.com Server!");
+    if (hr != S_OK) 
+#else
+    if (!URLDownloadToFile(NULL, downloadFilename, WOMA::LoadFile(szFileName), 0, NULL))
+#endif
+    {
+        WOMA_LOGManager_DebugMSG("Could not comunicate with %s.com Server!", downloadFilename);
         return false;
     }
+#else
+    UNREFERENCED_PARAMETER(ICAO);
+#endif
 
     STRING line;
     IFSTREAM fileIn(WOMA::LoadFile (szFileName));
@@ -203,13 +222,16 @@ bool WeatherClass::GetPresentWeather(TCHAR* ICAO)
     int i = 0; // String Index
     while (!fileIn.eof()) {
         getline(fileIn, line);
-        i = (int) line.find(TEXT("METAR:")); //look for "METAR:" at html file
+        //i = (int) line.find(TEXT("METAR:")); //look for "METAR:" at html file
+        i = (int)line.find(ICAO); //look for "METAR:" at html file
+        WOMA_LOGManager_DebugMSG("%s\n", line.c_str());
         if (i > 1)
             break;
     }
 
     fileIn.close();
-
+    Metar = line;
+    /*
     if (i > 1) {
 		// Extract METAR MSG from html line:
 		int end = (int) line.find(TEXT("<br><b>short"));
@@ -217,7 +239,9 @@ bool WeatherClass::GetPresentWeather(TCHAR* ICAO)
 		end = (int) Metar.find(TEXT("<br>"));
 		Metar = Metar.substr(0, end);
 	}
-
+    */
     return true;
 }
+
+#endif//
 

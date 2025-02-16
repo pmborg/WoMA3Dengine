@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: WindowPaintClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,100 +17,27 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
+//WomaIntegrityCheck = 1234567142;
 
-#include "WinSystemClass.h"
-#include "mem_leak.h"
-
+#include "OSengine.h"
 #include "WindowPaintClass.h"
 
 //	-------------------------------------------------------------------------------------------
+#if CORE_ENGINE_LEVEL >= 7 && defined USE_ASTRO_CLASS
 	#include "initWorld.h"
 	#include "astroClass.h"
+#endif
 
+#if defined ALLOW_LOADING_SPLASH && defined WINDOWS_PLATFORM
 	#include "fileLoader.h"
 	HBITMAP bmpExercising = NULL;
+#endif
 
 #define initWorld SystemHandle->m_Application->initWorld
 
-void InitializeCelestialInfoScreen(int x, int y)
-//-----------------------------------------------------------------------------------------
-{
-	WOMA::logManager->DEBUG_MSG ("InitializeCelestialInfoScreen...");
 
-	TCHAR str[50];
 
-	float LINE = MIN (25, 2 * SystemHandle->fontSizeY);
-	float LINE_SPACE = MIN (35, 3 * SystemHandle->fontSizeY);
-
-	if (initWorld) // Needed because paint is called before create initWorld
-	{
-		// Make sure that is Reset!
-		while (!SystemHandle->TextToPrint[1].empty())
-			SystemHandle->TextToPrint[1].pop_back();
-
-		// CelestialInfo:
-		STRING infomode = TEXT("online");
-
-		StringCchPrintf(str, sizeof(str), TEXT("CELESTIAL INFO: %s"), infomode.c_str());
-		Woma_Label text = { str, x, y };
-		SystemHandle->TextToPrint[1].push_back(text);
-
-		text.y += (int)LINE;
-		StringCchPrintf(str, sizeof(str), TEXT("Latitude: %f"), initWorld->latitude);
-		text.label = str;
-		SystemHandle->TextToPrint[1].push_back(text);
-
-		text.y += (int)LINE;
-		StringCchPrintf(str, sizeof(str), TEXT("Longitude: %f"), initWorld->longitude);
-		text.label = str;
-		SystemHandle->TextToPrint[1].push_back(text);
-
-		// Static Sun Values:
-		// ------------------
-		text.y += 30;
-		StringCchPrintf(str, sizeof(str), TEXT("Sunrise: %d:%d"), (UINT)initWorld->h_sunrise, (UINT)initWorld->m_sunrise);
-		text.label = str;
-		SystemHandle->TextToPrint[1].push_back(text);
-
-		text.y += (int)LINE;
-		StringCchPrintf(str, sizeof(str), TEXT("Sunset: %d:%d"), (UINT)initWorld->h_sunset, (UINT)initWorld->m_sunset);
-		text.label = str;
-		SystemHandle->TextToPrint[1].push_back(text);
-
-		// Static Moon Values:
-		// -------------------
-		text.y += 30;
-		StringCchPrintf(str, sizeof(str), TEXT("Moon Distance: %f (km)"), initWorld->moonDistance);
-		text.label = str;
-		SystemHandle->TextToPrint[1].push_back(text);
-
-		text.y += (int)LINE;
-		StringCchPrintf(str, sizeof(str), TEXT("Moon Scale: %f / 1.0"), initWorld->moonScale);
-		text.label = str;
-		SystemHandle->TextToPrint[1].push_back(text);
-
-		// Dynamic Sun Values:
-		// -------------------
-		text.y += 30;
-		StringCchPrintf(str, sizeof(str), TEXT("Sun Geometric Elevation: %f"), initWorld->geometricElevation);
-		text.label = str;
-		SystemHandle->TextToPrint[1].push_back(text);
-
-		text.y += (int)LINE;
-		StringCchPrintf(str, sizeof(str), TEXT("Moon Elevation: %f (with refraction)"), (initWorld->geometricMoonElevation > -5) ? initWorld->moonElevation : NULL);
-		text.label = str;
-		SystemHandle->TextToPrint[1].push_back(text);
-
-		text.y += (int)LINE;
-		StringCchPrintf(str, sizeof(str), TEXT("Moon Azimuth: %f"), initWorld->MoonAz);
-		text.label = str;
-		SystemHandle->TextToPrint[1].push_back(text);
-
-		WOMA::logManager->DEBUG_MSG(" done\n");
-	}
-}
-
+#if CORE_ENGINE_LEVEL >= 8 && defined USE_GPS_MAP
 // ---------------------------------------------------------------------------------------------
 void PaintMapLocation(HDC hdc)
 // ---------------------------------------------------------------------------------------------
@@ -119,6 +46,7 @@ void PaintMapLocation(HDC hdc)
 	HDC hdcMem = CreateCompatibleDC(hdc);								// Create a memory device compatible with the above DC variable
 	HGDIOBJ hbmOld = SelectObject(hdcMem, SystemHandle->bmpWorldMap);	// Get old and Select the new bitmap
 
+	#if defined USE_ASTRO_CLASS
 	if (initWorld) // Needed because paint is called before create initWorld
 	{
 		GetObject(SystemHandle->bmpWorldMap, sizeof(bm), &bm);
@@ -148,142 +76,32 @@ void PaintMapLocation(HDC hdc)
 		else
 			TargetX += (longi * (SystemHandle->AppSettings->WINDOW_WIDTH / 360));
 
+		double lat = initWorld->latitude;
+		if (lat > 180) lat -= 360;
+
 		// Transform actual Latitude in Screen Coords.
 		if (initWorld->LatDir == TEXT("N"))
-			TargetY -= (long)((initWorld->latitude * (SystemHandle->AppSettings->WINDOW_HEIGHT / 2)) / 90);
+			TargetY -= (long)((lat * (SystemHandle->AppSettings->WINDOW_HEIGHT / 2)) / 90);
 		else
-			TargetY += (long)((initWorld->latitude * (SystemHandle->AppSettings->WINDOW_HEIGHT / 2)) / 90);
+			TargetY += (long)((lat * (SystemHandle->AppSettings->WINDOW_HEIGHT / 2)) / 90);
 
 		BitBlt(hdc, TargetX, TargetY, target.bmWidth, target.bmHeight, hdcMem, 0, 0, SRCPAINT);
 	}
+	#endif
 
 	// Restore the old bitmap
 	SelectObject(hdcMem, hbmOld);
 	DeleteDC(hdcMem);
 }
-
-bool InitializeWeatherInfoScreen(int x, int y)
-//-----------------------------------------------------------------------------------------
-{
-	#if defined TRUE // WINDOWS_PLATFORM
-
-	TCHAR str[MAX_STR_LEN];
-	#define initWorld SystemHandle->m_Application->initWorld
-	#define weatherClass SystemHandle->m_Application->weatherClass
-	#define metarClass SystemHandle->m_Application->metarClass
-
-	float LINE = MIN (25, 2 * SystemHandle->fontSizeY);
-	float LINE_SPACE = MIN (35, 3 * SystemHandle->fontSizeY);
-
-	// Make sure that is Reset!
-	while (!SystemHandle->TextToPrint[2].empty())
-		SystemHandle->TextToPrint[2].pop_back();
-
-	// Get nearest airport (based in IP):
-	if (!weatherClass)
-		weatherClass = NEW WeatherClass(); 
-	IF_NOT_THROW_EXCEPTION(weatherClass);
-
-    TCHAR* ICAO = weatherClass->findClosestAirport((float) initWorld->latitude, (float) initWorld->longitude);
-    IF_NOT_RETURN_FALSE ( weatherClass->GetPresentWeather(ICAO) );
-
-	// Proccess Weather Data from METAR in the ICAO Aeroport:
-	if (!metarClass)
-		metarClass = NEW MetarClass(); 
-	IF_NOT_THROW_EXCEPTION(metarClass);
-	metarClass->Initialize(weatherClass->Metar);
-	
-	WOMA::logManager->DEBUG_MSG ("InitializeWeatherInfoScreen...");
-
-	OS_REDRAW_WINDOW;
-
-    if (weatherClass) 
-    {
-        StringCchPrintf(str, sizeof(str), TEXT("METAR: %s"), weatherClass->Metar.c_str());
-		Woma_Label text = { str, x, y };
-        SystemHandle->TextToPrint[2].push_back(text);
-
-        if (weather.day_of_month > 0) {
-            StringCchPrintf(str, sizeof(str), TEXT("Last Observation: %02d/%02d %02d:%02d"), weather.day_of_month, astroClass->month, weather.hour, weather.minute);
-			text.y +=(int)LINE; 
-			text.label = str;
-            SystemHandle->TextToPrint[2].push_back(text);
-        }
-		
-        if (weather.wind_available) {
-            StringCchPrintf(str, sizeof(str), TEXT("Wind: %d %d km/h"), weather.wind_bearing, weather.windKMh);
-			text.y +=(int)LINE; 
-            text.label = str;
-            SystemHandle->TextToPrint[2].push_back(text);
-        }
-
-        if (weather.visibility_available) {
-            if (weather.visibility >= 9999) 
-			{
-				//sprintf (str, TEXT("%s"), TEXT("Visibility: more than 10km"));
-                StringCchPrintf(str, sizeof(str), TEXT("%s"), TEXT("Visibility: more than 10km"));
-			} else {
-				
-                StringCchPrintf(str, sizeof(str), TEXT("Visibility: %d m"), weather.visibility);
-			}
-
-			text.y +=(int)LINE;
-            text.label = str;
-            SystemHandle->TextToPrint[2].push_back(text);
-        }
-		
-        if (weather.temperatures_available) {
-            StringCchPrintf(str, sizeof(str), TEXT("Temperature: %d C"), weather.temperature);
-			text.y +=(int)LINE;
-            text.label = str;
-            SystemHandle->TextToPrint[2].push_back(text);
-
-            StringCchPrintf(str, sizeof(str), TEXT("Relative Humidity: %d %%"), weather.relative_humidity);
-            text.y +=(int)LINE;
-            text.label = str;
-            SystemHandle->TextToPrint[2].push_back(text);
-        }
-
-        if (weather.clouds_available) {
-            StringCchPrintf(str, sizeof(str), TEXT("Sky cloud coverage: %d %%"), (int) (weather.cloud_coverage*100.0f));
-            text.y +=(int)LINE;
-            text.label = str;
-            SystemHandle->TextToPrint[2].push_back(text);
-
-            StringCchPrintf(str, sizeof(str), TEXT("Cloud layer start at: %d ft"), weather.cloud_layer);
-            text.y +=(int)LINE;
-            text.label = str;
-            SystemHandle->TextToPrint[2].push_back(text);
-        }
-
-        if (weather.rain_available) {
-            StringCchPrintf(str, sizeof(str), TEXT("Rain Intensity: %d %%"), (int) (weather.rain*100.0f));
-            text.y +=(int)LINE;
-            text.label = str;
-            SystemHandle->TextToPrint[2].push_back(text);
-        }
-
-        if (weather.snow_available) {
-            StringCchPrintf(str, sizeof(str), TEXT("Snow size: %d mm"), (int) weather.snow_size);
-            text.y +=(int)LINE;
-            text.label = str;
-            SystemHandle->TextToPrint[2].push_back(text);
-        }
-    }
-
-	WOMA::logManager->DEBUG_MSG (" done\n");
-	#endif
-
-	return true;
-}
+#endif
 
 
 
-
+#if defined ALLOW_LOADING_SPLASH && defined WINDOWS_PLATFORM
 void PaintSplashScreen(HDC hdc)
 {
     if (!bmpExercising) {
-        bmpExercising = (HBITMAP)::LoadImage(NULL, WOMA::LoadFile(TEXT("engine/data/logotipo_small_backgroundV2.bmp")), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+        bmpExercising = (HBITMAP)::LoadImage(NULL, WOMA::LoadFile(BACKGROUND_IMAGE), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
         if (!bmpExercising)	//Might happend that unpack of Temp dir didnt happend yet: (so this is not an error...)
 		{ 
 			STRING err = TEXT("BMP File not found: "); 
@@ -302,21 +120,14 @@ void PaintSplashScreen(HDC hdc)
 
     // COPY: the bits from the memory DC into the current dc
     //BitBlt(hdc, (SystemHandle->AppSettings->WINDOW_WIDTH -bm.bmWidth)/2, (SystemHandle->AppSettings->WINDOW_HEIGHT -bm.bmHeight)/2, bm.bmWidth, bm.bmHeight, hdcMem, 0, 0, SRCCOPY);
+	// 
     // SCALE: Stretch the bits from the memory DC into the current dc
     StretchBlt(	hdc, 0, 0, SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT, hdcMem, 0, 0, bm.bmWidth, bm.bmHeight, SRCAND | SRCCOPY);
-	//printf("%d %d\n", SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT);
-    // ---------------------------------------------------------------------------------------------
 
+	// ---------------------------------------------------------------------------------------------
     // Restore the old bitmap
-    SelectObject(hdcMem, hbmOld);
+	HGDIOBJ obj = SelectObject(hdcMem, hbmOld);
     DeleteDC(hdcMem);
 
-	#if TUTORIAL_PRE_CHAP >= 7 // totalPackCounter --- 100%
-	TCHAR str[100];			   // packCounter  --- X
-	if (totalPackCounter > 0) 
-	{
-		StringCchPrintf(str, sizeof(str), TEXT("Loading: %d %%"), packCounter * 100 / totalPackCounter);
-		TextOut(hdc, 10, yPos, str, (int) _tcslen(str)); yPos += LineHeigth;
-	}
-	#endif
 }
+#endif

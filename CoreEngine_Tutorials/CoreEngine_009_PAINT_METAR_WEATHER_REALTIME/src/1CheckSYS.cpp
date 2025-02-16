@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: 1CheckSYS.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,12 +17,14 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
-#include "WinSystemClass.h"
+//WomaIntegrityCheck = 1234567142;
+
+#include "OSengine.h"
 
 //------------------------------------------------------------------
 // PRIVATE FUNCTIONS:
 //------------------------------------------------------------------
+#if defined WINDOWS_PLATFORM
 #include <psapi.h>					// PPERFORMANCE_INFORMATION
 float SystemManager::GetProcessorSpeed()
 {
@@ -45,7 +47,7 @@ float SystemManager::GetProcessorSpeed()
 		} while(qwCurrent.QuadPart - qwStart.QuadPart < qwWait.QuadPart);
 
 		float AMD = ((__rdtsc() - Start) << 5) / 1000000.0f; // CPUSpeedMHz
-		WOMA_LOGManager_DebugMSGW(TEXT("--%s FAMILY --\n"), FAMILY_NAME.c_str());
+		WOMA_LOGManager_DebugMSG(TEXT("--%s FAMILY --\n"), FAMILY_NAME.c_str());
 		WOMA_LOGManager_DebugMSGAUTO("Processor Base Frequency:  %f.0 MHz\n", AMD);
 		return AMD;
 	} else
@@ -85,7 +87,7 @@ float SystemManager::GetProcessorSpeed4Intel(TCHAR* family_name) {
 		//cpuInfo[2] = 0x00000064; //=  100 MHz
 
 		//printf("EAX: 0x%08x EBX: 0x%08x ECX: %08x\r\n", cpuInfo[0], cpuInfo[1], cpuInfo[2]);
-		WOMA_LOGManager_DebugMSGW(TEXT("--%s FAMILY --\n"), family_name);
+		WOMA_LOGManager_DebugMSG(TEXT("--%s FAMILY --\n"), family_name);
 		WOMA_LOGManager_DebugMSGAUTO("Processor Base Frequency:  %04d MHz\n", cpuInfo[0]);
 		WOMA_LOGManager_DebugMSGAUTO("Maximum Frequency:         %04d MHz\n", cpuInfo[1]);
 		WOMA_LOGManager_DebugMSGAUTO("Bus (Reference) Frequency: %04d MHz\n", cpuInfo[2]);
@@ -96,25 +98,35 @@ float SystemManager::GetProcessorSpeed4Intel(TCHAR* family_name) {
 		return 0;
 	}
 }
+#endif
 
 
 
 //------------------------------------------------------------------
 // PUBLIC FUNCTIONS:
 //------------------------------------------------------------------
+#if defined USE_SYSTEM_CHECK
 bool SystemManager::checkCPU ()
 {
+#if defined WINDOWS_PLATFORM
 	processorInfo.cpuCores.GetProcessorInformation();
+#endif
+
+	#if defined RELEASE && !defined ANDROID_PLATFORM
+    if (processorInfo.cpuCores.processorCoreCount <= 1)
+        WomaMessageBox(TEXT("CPU CORE WARNING: Your Processor just have 1 core, this application will run very slow!\n"));
+	#endif
 
     // Get CPU Speed:
     CHAR speed[MAX_STR_LEN] = { 0 };
     wtoa(speed, processorInfo.processorName, MAX_STR_LEN); // wchar ==> char
 	
     StringCchPrintf(SystemHandle->systemDefinitions.processorName, MAX_STR_LEN, TEXT("Processor Name: %s"), processorInfo.processorName);
-    StringCchPrintf(SystemHandle->systemDefinitions.processorId, MAX_STR_LEN, TEXT("Processor ID: %s"), processorInfo.processorId);
+    StringCchPrintf(SystemHandle->systemDefinitions.processorId, MAX_STR_LEN, TEXT("ID: %s"), processorInfo.processorId);
 	WOMA_LOGManager_DebugMSGAUTO (TEXT("%s\n"), SystemHandle->systemDefinitions.processorName);
 	WOMA_LOGManager_DebugMSGAUTO (TEXT("%s\n"), SystemHandle->systemDefinitions.processorId);
 
+#if defined WINDOWS_PLATFORM
 	ASSERT(processorInfo.cpuCores.processorCoreCount);
 	ASSERT(processorInfo.cpuCores.logicalProcessorCount);
 
@@ -128,13 +140,38 @@ bool SystemManager::checkCPU ()
 	WOMA_LOGManager_DebugMSGAUTO( TEXT("CPU Page Size: %i\n"), SI.dwPageSize);
 
 	CPUSpeedMHz = GetProcessorSpeed();
+#endif
+
+#ifdef LINUX_PLATFORM
+    char* token;
+    int i = 0;
+    std::string Token;
+    for (token = strtok(speed, " "); token != 0; token = strtok(NULL, " "), i++)
+    {
+        Token = token;
+        int i = (int)Token.find("GHz");
+        if (i >= 0) {
+            i = (int)Token.find_first_of("GHz");
+            Token[i] = 0;
+        }
+    }
+
+    CPUSpeedMHz = (float) atof(Token.c_str()); //clockSpeed in GHz
+#endif
+
+#if defined RELEASE && !defined ANDROID_PLATFORM
+    if (CPUSpeedMHz < 2)
+        WomaMessageBox(TEXT("CPU WARNING: Your Processor is slow (< 2GHz), this application will run very slow also!\n"));
+#endif
 
 	StringCchPrintf(SystemHandle->systemDefinitions.clockSpeed, MAX_STR_LEN, TEXT("CPU Base Clock Speed: %02.2f GHz"), (float) CPUSpeedMHz/1000);
 	WOMA_LOGManager_DebugMSGAUTO (TEXT("%s\n"), SystemHandle->systemDefinitions.clockSpeed);
 
     return true;
 }
+#endif
 
+#if CORE_ENGINE_LEVEL >= 4 && defined WINDOWS_PLATFORM
 DWORDLONG SystemManager::getAvailSystemMemory()
 {
 	// GET ullAvailPhys:
@@ -143,7 +180,7 @@ DWORDLONG SystemManager::getAvailSystemMemory()
 	GlobalMemoryStatusEx(&status);
 	DWORDLONG PhysMemAvail = status.ullAvailPhys;
 	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.dwLength                = %10u\n",			status.dwLength);
-	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.dwMemoryLoad            = %10u%%\n",		status.dwMemoryLoad);
+	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.dwMemoryLoad            = %10u%%\n",		    status.dwMemoryLoad);
 	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullTotalPhys            = %10u MBytes\n",	status.ullTotalPhys / MBs);
 	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullAvailPhys            = %10u MBytes\n",	status.ullAvailPhys / MBs);
 	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullTotalPageFile        = %10u MBytes\n",	status.ullTotalPageFile / MBs);
@@ -155,16 +192,16 @@ DWORDLONG SystemManager::getAvailSystemMemory()
 	PERFORMANCE_INFORMATION performanceInformation;
 	BOOL res = GetPerformanceInfo(&performanceInformation, sizeof(performanceInformation));
 	DWORDLONG CachedMem = performanceInformation.SystemCache;
-	WOMA_LOGManager_DebugMSG("PerformanceInfo.CommitTotal         		= %10u MBytes\n",	performanceInformation.CommitTotal * performanceInformation.PageSize / MBs);
-	WOMA_LOGManager_DebugMSG("PerformanceInfo.CommitLimit         		= %10u MBytes\n",	performanceInformation.CommitLimit * performanceInformation.PageSize / MBs);
-	WOMA_LOGManager_DebugMSG("PerformanceInfo.CommitPeak          		= %10u MBytes\n",	performanceInformation.CommitPeak * performanceInformation.PageSize / MBs);
-	WOMA_LOGManager_DebugMSG("PerformanceInfo.PhysicalTotal       		= %10u MBytes\n",	performanceInformation.PhysicalTotal * performanceInformation.PageSize / MBs);
-	WOMA_LOGManager_DebugMSG("PerformanceInfo.PhysicalAvailable   		= %10u MBytes\n",	performanceInformation.PhysicalAvailable * performanceInformation.PageSize / MBs);
-	WOMA_LOGManager_DebugMSG("PerformanceInfo.SystemCache         		= %10u MBytes\n",	performanceInformation.SystemCache * performanceInformation.PageSize / MBs);
-	WOMA_LOGManager_DebugMSG("PerformanceInfo.KernelTotal         		= %10u MBytes\n",	performanceInformation.KernelTotal * performanceInformation.PageSize / MBs);
-	WOMA_LOGManager_DebugMSG("PerformanceInfo.KernelPaged         		= %10u MBytes\n",	performanceInformation.KernelPaged * performanceInformation.PageSize / MBs);
-	WOMA_LOGManager_DebugMSG("PerformanceInfo.KernelNonpaged      		= %10u MBytes\n",	performanceInformation.KernelNonpaged * performanceInformation.PageSize / MBs);
-	WOMA_LOGManager_DebugMSG("PerformanceInfo.PageSize            		= %10u MBytes\n",	performanceInformation.PageSize / 1024);
+	WOMA_LOGManager_DebugMSG("PerformanceInfo.CommitTotal         		= %10u MBytes\n",	(unsigned int)(performanceInformation.CommitTotal * performanceInformation.PageSize / MBs));
+	WOMA_LOGManager_DebugMSG("PerformanceInfo.CommitLimit         		= %10u MBytes\n",	(unsigned int)(performanceInformation.CommitLimit * performanceInformation.PageSize / MBs));
+	WOMA_LOGManager_DebugMSG("PerformanceInfo.CommitPeak          		= %10u MBytes\n",	(unsigned int)(performanceInformation.CommitPeak * performanceInformation.PageSize / MBs));
+	WOMA_LOGManager_DebugMSG("PerformanceInfo.PhysicalTotal       		= %10u MBytes\n",	(unsigned int)(performanceInformation.PhysicalTotal * performanceInformation.PageSize / MBs));
+	WOMA_LOGManager_DebugMSG("PerformanceInfo.PhysicalAvailable   		= %10u MBytes\n",	(unsigned int)(performanceInformation.PhysicalAvailable * performanceInformation.PageSize / MBs));
+	WOMA_LOGManager_DebugMSG("PerformanceInfo.SystemCache         		= %10u MBytes\n",	(unsigned int)(performanceInformation.SystemCache * performanceInformation.PageSize / MBs));
+	WOMA_LOGManager_DebugMSG("PerformanceInfo.KernelTotal         		= %10u MBytes\n",	(unsigned int)(performanceInformation.KernelTotal * performanceInformation.PageSize / MBs));
+	WOMA_LOGManager_DebugMSG("PerformanceInfo.KernelPaged         		= %10u MBytes\n",	(unsigned int)(performanceInformation.KernelPaged * performanceInformation.PageSize / MBs));
+	WOMA_LOGManager_DebugMSG("PerformanceInfo.KernelNonpaged      		= %10u MBytes\n",	(unsigned int)(performanceInformation.KernelNonpaged * performanceInformation.PageSize / MBs));
+	WOMA_LOGManager_DebugMSG("PerformanceInfo.PageSize            		= %10u MBytes\n",	(unsigned int)(performanceInformation.PageSize / 1024));
 	WOMA_LOGManager_DebugMSG("PerformanceInfo.HandleCount         		= %10u\n",			performanceInformation.HandleCount);
 	WOMA_LOGManager_DebugMSG("PerformanceInfo.ProcessCount        		= %10u\n",			performanceInformation.ProcessCount);
 	WOMA_LOGManager_DebugMSG("PerformanceInfo.ThreadCount         		= %10u\n",			performanceInformation.ThreadCount);
@@ -174,19 +211,21 @@ DWORDLONG SystemManager::getAvailSystemMemory()
 	memoryStatus.dwLength = sizeof(memoryStatus);
 	res = GlobalMemoryStatusEx(&memoryStatus);
 	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.dwLength                = %10u\n",			memoryStatus.dwLength);
-	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.dwMemoryLoad            = %10u%%\n",		memoryStatus.dwMemoryLoad);
-	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullTotalPhys            = %10u MBytes\n",	memoryStatus.ullTotalPhys / MBs);
-	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullAvailPhys            = %10u MBytes\n",	memoryStatus.ullAvailPhys / MBs);
-	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullTotalPageFile        = %10u MBytes\n",	memoryStatus.ullTotalPageFile / MBs);
-	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullAvailPageFile        = %10u MBytes\n",	memoryStatus.ullAvailPageFile / MBs);
-	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullTotalVirtual         = %10u MBytes\n",	memoryStatus.ullTotalVirtual / MBs);
-	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullAvailVirtual         = %10u MBytes\n",	memoryStatus.ullAvailVirtual / MBs);
+	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.dwMemoryLoad            = %10u%%\n",		    memoryStatus.dwMemoryLoad);
+	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullTotalPhys            = %10u MBytes\n",	(unsigned int)(memoryStatus.ullTotalPhys / MBs));
+	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullAvailPhys            = %10u MBytes\n",	(unsigned int)(memoryStatus.ullAvailPhys / MBs));
+	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullTotalPageFile        = %10u MBytes\n",	(unsigned int)(memoryStatus.ullTotalPageFile / MBs));
+	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullAvailPageFile        = %10u MBytes\n",	(unsigned int)(memoryStatus.ullAvailPageFile / MBs));
+	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullTotalVirtual         = %10u MBytes\n",	(unsigned int)(memoryStatus.ullTotalVirtual / MBs));
+	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullAvailVirtual         = %10u MBytes\n",	(unsigned int)(memoryStatus.ullAvailVirtual / MBs));
 	WOMA_LOGManager_DebugMSG("\n");
 
 	// Real "Free Mem" = PhysMemAvail - Cached Memory
     return PhysMemAvail - CachedMem;
 }
+#endif
 
+#if defined USE_SYSTEM_CHECK
 bool SystemManager::checkRAM ()
 {
 #ifdef X64
@@ -195,30 +234,57 @@ bool SystemManager::checkRAM ()
 	#define MIN_RAM 2
 #endif
 
+#if defined WINDOWS_PLATFORM
+	
 	wmiUtil.GetTotalPhysicalMemory();
     if (wmiUtil.totalMemoryCapacity < MIN_RAM) 
 	{
 		TCHAR str[MAX_STR_LEN];
 		StringCchPrintf(str, MAX_STR_LEN, TEXT("RAM WARNING: Your RAM memory is very low (< %dGB), this application might not run!\n"), MIN_RAM);
-        WOMA::WomaMessageBox(str);
+        WomaMessageBox(str, "Error", false);
 	}
 
-	StringCchPrintf(SystemHandle->systemDefinitions.totalMemoryCapacity, MAX_STR_LEN, TEXT("Total Memory RAM: %d GB\n"), (UINT) wmiUtil.totalMemoryCapacity);
+	StringCchPrintf(SystemHandle->systemDefinitions.totalMemoryCapacity, MAX_STR_LEN, TEXT("Total RAM: %d GB\n"), (UINT) wmiUtil.totalMemoryCapacity);
+#else
+	//#include <unistd.h>
+
+    long pages = sysconf(_SC_PHYS_PAGES);
+    long page_size = sysconf(_SC_PAGE_SIZE);
+    size_t getTotalSystemMemory = pages * page_size;
+	StringCchPrintf(SystemHandle->systemDefinitions.totalMemoryCapacity, MAX_STR_LEN, TEXT("Total Memory RAM: %d GB\n"), UINT((float)getTotalSystemMemory / ((float)(GBs))));
+#endif
 
 	WOMA_LOGManager_DebugMSGAUTO (TEXT("%s\n"), SystemHandle->systemDefinitions.totalMemoryCapacity);
 
+#if defined WINDOWS_PLATFORM
 	// Get Free Mem:
 	DWORDLONG availSystemMemory = getAvailSystemMemory(); // in MBs
-	StringCchPrintf(SystemHandle->systemDefinitions.freeMemory, MAX_STR_LEN, TEXT ("Avail System Memory: %d MBs free\n"), (UINT) ((float)availSystemMemory / (float)MBs) );
+	StringCchPrintf(SystemHandle->systemDefinitions.freeMemory, MAX_STR_LEN, TEXT ("Memory Free: %d MBs\n"), (UINT) ((float)availSystemMemory / (float)MBs) );
 	WOMA_LOGManager_DebugMSGAUTO (TEXT ("%s"), SystemHandle->systemDefinitions.freeMemory); // Already include: \n
+#endif
 
 	return true;
 }
+
+
+#if !defined WINDOWS_PLATFORM
+char diskSpace[1024*4];
+
+char* diskFree()
+{
+        FILE * fp;
+        fp = popen("/bin/df -h","r");
+        fread(diskSpace, 1, sizeof(diskSpace)-1, fp);
+        fclose(fp);
+		return diskSpace;
+}
+#endif
 
 bool SystemManager::checkDiskFreeSpace ()
 {
 	WOMA_LOGManager_DebugMSGAUTO (TEXT("Disk Free:\n") );
 
+#if defined WINDOWS_PLATFORM
   // Get list of all Drives: [C:\ D:\ ...]
     DWORD mydrives = MAX_STR_LEN; // buffer length
     TCHAR lpBuffer[MAX_STR_LEN];  // buffer for drive string storage
@@ -289,7 +355,7 @@ bool SystemManager::checkDiskFreeSpace ()
     }
 
     if (driveLetter == drivesList.size())
-        WOMA::WomaMessageBox(TEXT("WARNING: You dont have 512MB of free disk space to Install Woma on all drives!")); //Change Drive...
+        WomaMessageBox(TEXT("WARNING: You dont have 512MB of free disk space to Install Woma on all drives!"), "WARNING", false); //Change Drive...
 
 	
 	// SAVE SCAN RESULTS:
@@ -301,18 +367,35 @@ bool SystemManager::checkDiskFreeSpace ()
 		WOMA_LOGManager_DebugMSGAUTO (TEXT("%s\n"), temp);
     }
 	
+#else
+	STRING diskFreeAllDisks = diskFree();
+	char* token;
+    int i = 0;
+  #if !defined ANDROID_PLATFORM
+	for (token = strtok((char*)diskFreeAllDisks.c_str(), "\n"); token != 0; token = strtok(NULL, "\n"), i++)
+    {
+		SystemHandle->systemDefinitions.drives_List.push_back(token);
+		WOMA_LOGManager_DebugMSGAUTO (TEXT("%s\n"), token);
+	}
+  #endif
+#endif
+
     return true;
 }
+#endif
 
+#if CORE_ENGINE_LEVEL >= 4 && defined WINDOWS_PLATFORM
 bool SystemManager::checkCPUFeatures ()
 {
     SystemHandle->systemDefinitions.systemFeatures = systemFeatures.Initialize();
 
 	return true;
 }
+#endif
 
 bool CheckDEVICEinfo() 
 {
+#if defined WINDOWS_PLATFORM
 	// get mouse speed
 	int mouseSpeed;
 	mouseSpeed = 0;
@@ -396,6 +479,7 @@ bool CheckDEVICEinfo()
 	}
 
 	free(pRawInputDeviceList);
+#endif
 
 	return true;
 }
@@ -403,6 +487,7 @@ bool CheckDEVICEinfo()
 
 bool SystemManager::CheckIO ()
 {
+#if defined WINDOWS_PLATFORM
 	CheckDEVICEinfo();
 	
 	//MORE INFO: https://msdn.microsoft.com/en-us/library/windows/desktop/ms724336%28v=vs.85%29.aspx
@@ -432,15 +517,29 @@ bool SystemManager::CheckIO ()
 
 	HKL lpList[1];
 	int r = GetKeyboardLayoutList(1, lpList);
+#endif
 
 	return true;
 }
 
+#if defined USE_TIMER_CLASS// && CORE_ENGINE_LEVEL >= 4
 bool SystemManager::checkBenchMarkSpeed(TimerClass* m_Timer)
 {
-	SystemHandle->systemDefinitions.benchMarkMathSpeed = SystemHandle->m_math.testMathSpeed(m_Timer);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("%s\n"), SystemHandle->systemDefinitions.benchMarkMathSpeed.c_str());
+	double delta1 = 0;
+	double delta2 = 0;
+	SystemHandle->m_math.testMathSpeed(m_Timer, delta1, delta2);
+
+	TCHAR txt[MAX_STR_LEN] = {};
+	StringCchPrintf(txt, MAX_STR_LEN, TEXT("Default MATH lib: %.1f ms\n"), delta1);				//Benchmark1 to Run 100M (sqrt/sin/cos)
+	WOMA_LOGManager_DebugMSG(txt);
+	SystemHandle->systemDefinitions.benchMarkMathSpeed1 = txt;
+
+	TCHAR txt2[MAX_STR_LEN] = {};
+	StringCchPrintf(txt2, MAX_STR_LEN, TEXT("WOMA MATH lib: %.1f ms\n"), delta2);				//Benchmark2 to Run 100M (sqrt/sin/cos)
+	WOMA_LOGManager_DebugMSG(txt2);
+	SystemHandle->systemDefinitions.benchMarkMathSpeed2 = txt2;
 
 	return true;
 }
+#endif
 

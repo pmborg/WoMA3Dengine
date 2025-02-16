@@ -1,10 +1,10 @@
 // NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: initWorld.cpp
-//// --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// --------------------------------------------------------------------------------------------
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -20,21 +20,22 @@
 //  - Get data from AstroClass
 //
 // --------------------------------------------------------------------------------------------
-#define _CRT_SECURE_NO_WARNINGS
+//WomaIntegrityCheck = 1234567142;
 
-#include "platform.h"
-
-#include <\WoMA3Dengine\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib\GeoLite2PP.hpp>
+#include "OSengine.h"
+#include "mem_leak.h"
+#if defined USE_ASTRO_CLASS
+#include <GeoLite2PP.hpp>
 #pragma comment(lib, "Ws2_32.lib")	//undefined reference to imp_getaddrinfo
-
+extern bool download(const std::string url, const std::string file_path);
 #if UNICODE
 	#ifdef X64
 		#if defined(_DEBUG) & !defined(NDEBUG)
 			#pragma comment( lib, "x64/WDebug/maxminddb_LIBX64_d.lib" )		//DEBUG
 			#pragma comment( lib, "x64/WDebug/GeoLite2PP_LIBX64_d.lib" )	//DEBUG
 		#elif !defined _DEBUG && defined NDEBUG
-			#pragma comment( lib, "x64/WRelease/maxminddb_LIBX64.lib" )		//RELEASE
-			#pragma comment( lib, "x64/WRelease/GeoLite2PP_LIBX64.lib" )	//RELEASE
+			#pragma comment( lib, "x64/Release/maxminddb_LIBX64.lib" )		//RELEASE
+			#pragma comment( lib, "x64/Release/GeoLite2PP_LIBX64.lib" )	//RELEASE
 		#else
 			#pragma comment( lib, "x64/WRelease/maxminddb_LIBX64.lib" )		//DBGREL
 			#pragma comment( lib, "x64/WRelease/GeoLite2PP_LIBX64.lib" )	//DBGREL
@@ -77,26 +78,29 @@
 	#endif
 #endif
 
-
 #include "astroClass.h"
 #include "initWorld.h"
 #include "OSmain_dir.h"		//#include "OsDirectories.h"
 #include "log.h"			//#include "logManager.h"
-#include "mem_leak.h"
-
+//#include <urlmon.h>
+#include <iostream>
+#include <fstream>
+#include <stdio.h>
+#include <stdlib.h>
 
 // Internet:
-	#include <urlmon.h>
-	#pragma comment( lib, "urlmon.lib" )
-
+#ifdef USE_NETWORK
 	#if defined WINDOWS_PLATFORM //getMyIp
-		#include <winsock2.h>
-		#include <iphlpapi.h>
-		#include <stdio.h>
-		#include <stdlib.h>
+		#include <urlmon.h>
+		#pragma comment( lib, "urlmon.lib" )
+#include <winsock2.h>
+#include <iphlpapi.h>
 		// Link with Iphlpapi.lib
 		#pragma comment(lib, "IPHLPAPI.lib")
 	#endif
+#endif
+
+
 
 // --------------------------------------------------------------------------------------------
 // Globals:
@@ -107,7 +111,7 @@ AstroClass* astroClass = NULL;
 InitWorld::InitWorld ()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567890;
+	WomaIntegrityCheck = 1234567142;
 
 	//public:
     LatDir = TEXT("N");
@@ -149,9 +153,12 @@ InitWorld::InitWorld ()
 	bool gotLocation = false;
 
 	if (ip.length() > 0) {
+#if defined NDEBUG || CORE_ENGINE_LEVEL == 8
 		gotLocation = getMyLocation(&latitude, &longitude, ip);
+#endif
 		WOMA_LOGManager_DebugMSGAUTO(TEXT("gotLocation: true\n"));
 	}
+	gotLocation = false;//
 	if (!gotLocation || latitude==0 || longitude==0) 
 	{							// Default: Lisbon Location:
 		latitude  = 38.7167;	// Latitude:	38.7167  (38° 43′ 0.12″ N)
@@ -204,11 +211,12 @@ InitWorld::InitWorld ()
     if (longitude > 360) longitude -= 360;
 
 	astroClass->Initialize(latitude, longitude);	
-	Frame();
+	Calculate();
 }
 
-void InitWorld::Frame() 
+void InitWorld::Calculate() 
 {
+	ASSERT(astroClass);
 	astroClass->updateTime ();
 	astroClass->AstroCalculations (latitude, longitude);
 
@@ -228,32 +236,46 @@ InitWorld::~InitWorld() {SAFE_DELETE(astroClass); CLASSDELETE();}
 #define WORKING_BUFFER_SIZE 15000
 #define MAX_TRIES 3
 
-#define MALLOC(x) HeapAlloc(GetProcessHeap(), 0, (x))
-#define FREE(x) HeapFree(GetProcessHeap(), 0, (x))
+//#define MALLOC(x) HeapAlloc(GetProcessHeap(), 0, (x))
+//#define FREE(x) HeapFree(GetProcessHeap(), 0, (x))
 
 STRING InitWorld::getMyIp() 
 {
 IFSTREAM	fin;
 STRING		wLOCAL_APPDATA = WOMA::APPDATA;
-STRING		szFileName = wLOCAL_APPDATA + TEXT("my.ip");
+STRING		szFileName = wLOCAL_APPDATA + TEXT("myip.txt");
 
+#define EXTERNAL_IP TEXT("https://myexternalip.com/raw")
+//#define EXTERNAL_IP TEXT("https://myexternalip.com")
+
+#ifdef USE_NETWORK
 	DeleteFile(szFileName.c_str());
-
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("Download: http://myexternalip.com/raw\n")); // Note: Dont use DEBUG_MSG yet...
-	HRESULT hr = URLDownloadToFile(NULL, TEXT("http://myexternalip.com/raw"), szFileName.c_str(), 0, NULL);
-	if (hr != S_OK) {
-		WomaFatalException("Could not comunicate with whatismyipaddress.com Server!");
+	//URLDownloadToFileA(LPUNKNOWN, _In_ LPCSTR, _In_opt_ LPCSTR, DWORD, _In_opt_ LPBINDSTATUSCALLBACK);
+	WOMA_LOGManager_DebugMSGAUTO(TEXT("Download: %s\n"), EXTERNAL_IP); // Note: Dont use DEBUG_MSG yet...
+#if defined WINDOWS_PLATFORM
+	HRESULT hr = URLDownloadToFile(NULL, EXTERNAL_IP, szFileName.c_str(), 0, NULL);
+	if (hr != S_OK) 
+#else
+	if(!URLDownloadToFile(NULL, EXTERNAL_IP, szFileName.c_str(), 0, NULL))
+#endif
+	{
+		_tprintf("Could not comunicate with whatismyipaddress.com Server!");
 		return TEXT("");
 	}
+#endif
 
-	STRING str;
+	STRING str="127.0.0.1";
+
+#if defined NDEBUG || CORE_ENGINE_LEVEL == 8 || defined ANDROID_PLATFORM
+	
     IFSTREAM fileIn(szFileName.c_str());
 	if (!fileIn) 
-		{ WOMA::WomaMessageBox(TEXT("MyIp File not found, (use: #define USE_NETWORK) at main.h"), (TCHAR*)szFileName.c_str()); return TEXT(""); }
+		{ WomaMessageBox(TEXT("MyIp File not found, (use: #define USE_NETWORK) at core_engine_level.h"), (TCHAR*)szFileName.c_str()); return TEXT(""); }
 
 	getline(fileIn, str);
 	WOMA_LOGManager_DebugMSG("IP: %s\n", str.c_str()); // Note: Dont use DEBUG_MSG yet...
 	fileIn.close();	// Close the file.
+#endif
 
 	return str;
 }
@@ -313,8 +335,208 @@ bool InitWorld::getMyLocation(double* latitude, double* longitude, STRING ip)
 	WOMA::logManager->DEBUG_MSG(L"\n");				// Add ENTER to finish the
 #else
 	WOMA::logManager->DEBUG_MSG((CHAR*)json.c_str());	//std::cout << json << std::endl;
-	WOMA::logManager->DEBUG_MSG("\n");				// Add ENTER to finish the
+	WOMA::logManager->DEBUG_MSG("\n");					// Add ENTER to finish the
 #endif
 	return true;
 }
 
+#endif
+
+#define initWorld SystemHandle->m_Application->initWorld
+
+#if CORE_ENGINE_LEVEL >= 7 && defined USE_ASTRO_CLASS
+void InitializeCelestialInfoScreen(int x, int y)
+//-----------------------------------------------------------------------------------------
+{
+	WOMA::logManager->DEBUG_MSG("InitializeCelestialInfoScreen...");
+
+	TCHAR str[50];
+
+	float LINE = MIN(25, 2 * SystemHandle->fontSizeY);
+	float LINE_SPACE = MIN(35, 3 * SystemHandle->fontSizeY);
+
+	if (initWorld) // Needed because paint is called before create initWorld
+	{
+		// Make sure that is Reset!
+		while (!SystemHandle->TextToPrint[1].empty())
+			SystemHandle->TextToPrint[1].pop_back();
+
+		// CelestialInfo:
+#ifdef USE_NETWORK //at: main.h
+		STRING infomode = TEXT("online");
+#else
+		STRING infomode = TEXT("offline");
+#endif
+
+		StringCchPrintf(str, sizeof(str), TEXT("CELESTIAL INFO: %s"), infomode.c_str());
+		Woma_Label text = { str, x, y };
+		SystemHandle->TextToPrint[1].push_back(text);
+
+		text.y += (int)LINE;
+		StringCchPrintf(str, sizeof(str), TEXT("Latitude: %f"), initWorld->latitude);
+		text.label = str;
+		SystemHandle->TextToPrint[1].push_back(text);
+
+		text.y += (int)LINE;
+		StringCchPrintf(str, sizeof(str), TEXT("Longitude: %f"), initWorld->longitude);
+		text.label = str;
+		SystemHandle->TextToPrint[1].push_back(text);
+
+		// Static Sun Values:
+		// ------------------
+		text.y += 30;
+		StringCchPrintf(str, sizeof(str), TEXT("Sunrise: %d:%d"), (UINT)initWorld->h_sunrise, (UINT)initWorld->m_sunrise);
+		text.label = str;
+		SystemHandle->TextToPrint[1].push_back(text);
+
+		text.y += (int)LINE;
+		StringCchPrintf(str, sizeof(str), TEXT("Sunset: %d:%d"), (UINT)initWorld->h_sunset, (UINT)initWorld->m_sunset);
+		text.label = str;
+		SystemHandle->TextToPrint[1].push_back(text);
+
+		// Static Moon Values:
+		// -------------------
+		text.y += 30;
+		StringCchPrintf(str, sizeof(str), TEXT("Moon Distance: %f (km)"), initWorld->moonDistance);
+		text.label = str;
+		SystemHandle->TextToPrint[1].push_back(text);
+
+		text.y += (int)LINE;
+		StringCchPrintf(str, sizeof(str), TEXT("Moon Scale: %f / 1.0"), initWorld->moonScale);
+		text.label = str;
+		SystemHandle->TextToPrint[1].push_back(text);
+
+		// Dynamic Sun Values:
+		// -------------------
+		text.y += 30;
+		StringCchPrintf(str, sizeof(str), TEXT("Sun Geometric Elevation: %f"), initWorld->geometricElevation);
+		text.label = str;
+		SystemHandle->TextToPrint[1].push_back(text);
+
+		text.y += (int)LINE;
+		StringCchPrintf(str, sizeof(str), TEXT("Moon Elevation: %f (with refraction)"), (initWorld->geometricMoonElevation > -5) ? initWorld->moonElevation : NULL);
+		text.label = str;
+		SystemHandle->TextToPrint[1].push_back(text);
+
+		text.y += (int)LINE;
+		StringCchPrintf(str, sizeof(str), TEXT("Moon Azimuth: %f"), initWorld->MoonAz);
+		text.label = str;
+		SystemHandle->TextToPrint[1].push_back(text);
+
+		WOMA::logManager->DEBUG_MSG(" done\n");
+	}
+}
+#endif
+
+#if CORE_ENGINE_LEVEL >= 9 && defined USE_METARCLASS && defined USE_ASTRO_CLASS
+bool InitializeWeatherInfoScreen(int x, int y)
+//-----------------------------------------------------------------------------------------
+{
+	TCHAR str[MAX_STR_LEN];
+#define initWorld SystemHandle->m_Application->initWorld
+#define weatherClass SystemHandle->m_Application->weatherClass
+#define metarClass SystemHandle->m_Application->metarClass
+
+	float LINE = MIN(25, 2 * SystemHandle->fontSizeY);
+	float LINE_SPACE = MIN(35, 3 * SystemHandle->fontSizeY);
+
+	// Make sure that is Reset!
+	while (!SystemHandle->TextToPrint[2].empty())
+		SystemHandle->TextToPrint[2].pop_back();
+
+	// Get nearest airport (based in IP):
+	if (!weatherClass)
+		weatherClass = NEW WeatherClass();
+	IF_NOT_THROW_EXCEPTION(weatherClass);
+
+	TCHAR* ICAO = weatherClass->findClosestAirport((float)initWorld->latitude, (float)initWorld->longitude);
+	IF_NOT_RETURN_FALSE(weatherClass->GetPresentWeather(ICAO));
+
+	// Proccess Weather Data from METAR in the ICAO Aeroport:
+	if (!metarClass)
+		metarClass = NEW MetarClass();
+	IF_NOT_THROW_EXCEPTION(metarClass);
+	metarClass->Initialize(weatherClass->Metar);
+
+	WOMA::logManager->DEBUG_MSG("InitializeWeatherInfoScreen...");
+	if (weatherClass)
+	{
+		StringCchPrintf(str, sizeof(str), TEXT("METAR: %s"), weatherClass->Metar.c_str());
+		Woma_Label text = { str, x, y };
+		SystemHandle->TextToPrint[2].push_back(text);
+
+		if (weather.day_of_month > 0) {
+			StringCchPrintf(str, sizeof(str), TEXT("Last Observation: %02d/%02d %02d:%02d"), weather.day_of_month, astroClass->month, weather.hour, weather.minute);
+			text.y += (int)LINE;
+			text.label = str;
+			SystemHandle->TextToPrint[2].push_back(text);
+		}
+
+		if (weather.wind_available) {
+			StringCchPrintf(str, sizeof(str), TEXT("Wind: %d %d km/h"), weather.wind_bearing, weather.windKMh);
+			text.y += (int)LINE;
+			text.label = str;
+			SystemHandle->TextToPrint[2].push_back(text);
+		}
+
+		if (weather.visibility_available) {
+			if (weather.visibility >= 9999)
+			{
+				//sprintf (str, TEXT("%s"), TEXT("Visibility: more than 10km"));
+				StringCchPrintf(str, sizeof(str), TEXT("%s"), TEXT("Visibility: more than 10km"));
+			}
+			else {
+
+				StringCchPrintf(str, sizeof(str), TEXT("Visibility: %d m"), weather.visibility);
+			}
+
+			text.y += (int)LINE;
+			text.label = str;
+			SystemHandle->TextToPrint[2].push_back(text);
+		}
+
+		if (weather.temperatures_available) {
+			StringCchPrintf(str, sizeof(str), TEXT("Temperature: %d C"), weather.temperature);
+			text.y += (int)LINE;
+			text.label = str;
+			SystemHandle->TextToPrint[2].push_back(text);
+
+			StringCchPrintf(str, sizeof(str), TEXT("Relative Humidity: %d"), weather.relative_humidity);
+			text.y += (int)LINE;
+			text.label = str;
+			SystemHandle->TextToPrint[2].push_back(text);
+		}
+
+		if (weather.clouds_available) {
+			StringCchPrintf(str, sizeof(str), TEXT("Sky cloud coverage: %d"), (int)(weather.cloud_coverage * 100.0f));
+			text.y += (int)LINE;
+			text.label = str;
+			SystemHandle->TextToPrint[2].push_back(text);
+
+			StringCchPrintf(str, sizeof(str), TEXT("Cloud layer start at: %d ft"), weather.cloud_layer);
+			text.y += (int)LINE;
+			text.label = str;
+			SystemHandle->TextToPrint[2].push_back(text);
+		}
+
+		if (weather.rain_available) {
+			StringCchPrintf(str, sizeof(str), TEXT("Rain Intensity: %d"), (int)(weather.rain * 100.0f));
+			text.y += (int)LINE;
+			text.label = str;
+			SystemHandle->TextToPrint[2].push_back(text);
+		}
+
+		if (weather.snow_available) {
+			StringCchPrintf(str, sizeof(str), TEXT("Snow size: %d mm"), (int)weather.snow_size);
+			text.y += (int)LINE;
+			text.label = str;
+			SystemHandle->TextToPrint[2].push_back(text);
+		}
+	}
+
+	WOMA::logManager->DEBUG_MSG(" done\n");
+	OS_REDRAW_WINDOW;
+
+	return true;
+}
+#endif

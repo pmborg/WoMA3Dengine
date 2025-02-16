@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: stackTrace.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,12 +16,11 @@
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // Original Source Code:
 // http://social.msdn.microsoft.com/Forums/vstudio/en-US/f93a211a-9c95-42f0-8581-50314457b729/generating-the-stack-traces-in-the-c-code
-//
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
+//WomaIntegrityCheck = 1234567142;
 
 #include "platform.h"
-
+#if defined WINDOWS_PLATFORM
 #include "main.h"
 // --------------------------------------------------------------------------------------------
 // Auxiliar Class: sym_handler
@@ -84,7 +83,7 @@ public:
                 #if NDEBUG // This always faild on DEBUG:
 				DWORD err = GetLastError();
                 WOMA_LOGManager_DebugMSGAUTO(TEXT ("ERROR: %d:\n"), err);
-                WOMA::WomaMessageBox(NULL, TEXT("ERROR: SymFromAddr(GetCurrentProcess(), addr, &displacement64, symbol)"));
+                WomaMessageBox(NULL, TEXT("ERROR: SymFromAddr(GetCurrentProcess(), addr, &displacement64, symbol)"));
                 #endif
 			}
         }  
@@ -191,3 +190,4 @@ std::string stack_trace::to_string()
     return ss.str();  
 }  
 
+#endif

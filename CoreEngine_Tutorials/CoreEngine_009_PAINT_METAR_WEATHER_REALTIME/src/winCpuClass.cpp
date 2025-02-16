@@ -1,10 +1,9 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: winCpuClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -34,7 +33,7 @@
 WinCpuClass::WinCpuClass()
 {
 	CLASSLOADER();
-    WomaIntegrityCheck = 1234567890;
+    WomaIntegrityCheck = 1234567142;
 
 	//private:
     m_canReadCpu=false;
@@ -60,7 +59,7 @@ WinCpuClass::~WinCpuClass() { Shutdown(); CLASSDELETE(); }
 void WinCpuClass::Initialize()
 {
     PDH_STATUS status;
-    CONST TCHAR* COUNTER_PATH = TEXT("\\Processor(_Total)\\% processor time");                //C:\Windows\system32>typeperf -q Processor
+    CONST TCHAR* COUNTER_PATH = TEXT("\\Processor(_Total)\\% processor time");            //C:\Windows\system32>typeperf -q Processor
     //CONST PWSTR COUNTER_PATH_PT = L"\\processador(_Total)\\% de tempo do processador";  //C:\Windows\system32>typeperf -q processador
 
     // Initialize the flag indicating whether this object can read the system cpu usage or not.
@@ -126,3 +125,54 @@ int WinCpuClass::GetCpuPercentage()
 
 #endif
 
+#if defined USE_LOADING_THREADS || defined USE_MAIN_THREAD
+// MultiThreading:
+// http://msdn.microsoft.com/en-us/library/windows/desktop/ff476884%28v=vs.85%29.aspx
+//
+
+int getCpuNumberFromMask(DWORD_PTR dwAffinityMask)
+{
+    int id = 0;
+
+    while ((dwAffinityMask & 1) == 0) {
+        dwAffinityMask /= 2;
+        id++;
+    }
+
+    return id;
+}
+
+void WinCpuClass::SetProcessorAffinity(int cpuNumber)
+{
+    // Assign the current thread to one processor. This ensures that timing
+    // code runs on only one processor.
+
+    DWORD_PTR dwProcessAffinityMask = 0;
+    DWORD_PTR dwSystemAffinityMask = 0;
+    HANDLE hCurrentProcess = GetCurrentProcess();
+
+    // A thread affinity mask is a bit vector in which each bit represents a logical processor that a thread is allowed to run on:
+    if (!GetProcessAffinityMask(hCurrentProcess, &dwProcessAffinityMask, &dwSystemAffinityMask))
+        return;
+
+    if (dwProcessAffinityMask)
+    {
+        // Set this as the processor that our thread must always run against.
+        // This must be a subset of the process affinity mask.
+
+        HANDLE hCurrentThread = GetCurrentThread();
+        if (hCurrentThread != INVALID_HANDLE_VALUE)
+        {
+            DWORD_PTR dwAffinityMask = (DWORD_PTR) pow(2.0, cpuNumber);
+            SetThreadAffinityMask(hCurrentThread, dwAffinityMask);
+            CloseHandle(hCurrentThread);
+        }
+
+		WOMA_LOGManager_DebugMSGAUTO(TEXT("Set CPU/Core: %d\n"), cpuNumber);
+    }
+
+    //while (true) {} //To test Thread Alocation...
+
+    CloseHandle(hCurrentProcess);
+}
+#endif

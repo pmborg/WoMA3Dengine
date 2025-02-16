@@ -1,10 +1,9 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
-// Filename: settings.h
+// Filename: default_settings_xml.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,18 +15,21 @@
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Define the structure of default settings when settings.xml file is missing.
-//
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
+//WomaIntegrityCheck = 1234567142;
 
 #pragma once
+#ifndef __DEFAULTSETTINGS_XML_H__
 
+#include "platform.h"
 #include "standard_platform.h"
 
+#if defined WINDOWS_PLATFORM
 #include <objbase.h>
 #include <io.h>
 #include <Shellapi.h>	// CommandLineToArgv()
 #include <Wincon.h>		// SetConsoleTitle()
+#endif
 
 //NOTE: Sync With: SystemClass::LoadAllDrivers() (keep this order)
 enum WomaDriver {	DRIVER_DX11=0,	// DRIVER_DX11  = DX10 or DX10.1 or DX11
@@ -39,39 +41,43 @@ enum WomaDriver {	DRIVER_DX11=0,	// DRIVER_DX11  = DX10 or DX10.1 or DX11
 //NOTE: The defaults settings, are beeing populated on: "main_settings.cpp" (SYNC)
 namespace WOMA
 {
+	extern int				main_loop_state;
+
 	typedef struct {
 
+	#if defined WINDOWS_PLATFORM
 		LANGID	id;
+	#endif
 		int		Endian;
 
 		// driver
 		// -------------------------------------------------------------------------------------------
 		int		DRIVER;
 		int		UI_MONITOR;
+		// -------------------------------------------------------------------------------------------
 		bool	UseAllMonitors;
 		bool	UseDoubleBuffering;
 		bool 	VSYNC_ENABLED;
 
-		bool	MSAA_ENABLED;
-		int		MSAA_X;
-
 		// Texture
 		// ------------------------------------------------------------------------------------------
 		UINT	MaxTextureSize;
-		bool	bilinear;
-		bool	trilinear;
-		bool	Anisotropic;
-		int		AnisotropicLevel;
+		// -------------------------------------------------------------------------------------------
+		bool	MSAA_bilinear;			//rasterDesc.AntialiasedLineEnable = true;
+		bool	MSAA_trilinear;			//rasterDesc.AntialiasedLineEnable = true;
+		bool	MSAA_Anisotropic;		//rasterDesc.MultisampleEnable = true;
+		int		MSAA_AnisotropicLevel;	//4,8,16
 
 		// screen
 		// -------------------------------------------------------------------------------------------
 		bool	FULL_SCREEN;
 		bool	AllowResize;
-
+		// -------------------------------------------------------------------------------------------
 		int		WINDOW_Xpos;	//NOTE: Have to be "int" not UINT due other / used later on window position Calculations
 		int		WINDOW_Ypos;
 		int		WINDOW_Xpos_ori;
 		int		WINDOW_Ypos_ori;
+		// -------------------------------------------------------------------------------------------
 		int		WINDOW_WIDTH;	//NOTE: Have to be "int" not UINT due other / used later on window position Calculations
 		int		WINDOW_HEIGHT;
 		int		WINDOW_WIDTH_ori;
@@ -115,3 +121,4 @@ namespace WOMA
 	} Settings;
 }
 
+#endif

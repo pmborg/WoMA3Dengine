@@ -1,10 +1,9 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: dumpUploader.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,8 +16,10 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Upload the "file".dmp and "report".txt to Woma Server (woma.servegame.com) via FTP
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
+//WomaIntegrityCheck = 1234567142;
 
+#include "platform.h"
+#if defined USE_MINIDUMPER && defined WINDOWS_PLATFORM
 #include "WinSystemClass.h"
 #include "OSmain_dir.h"
 
@@ -32,7 +33,9 @@
 #include "ftp_c.h"
 
 #include "stateMachine.h"
+#if defined USE_LOG_MANAGER
 #include "log.h"
+#endif
 
 using namespace std;	//endl
 #include <sstream>		//wstring
@@ -56,10 +59,14 @@ int dumpUploader(STRING file)
 	TCHAR pass[256] = TEXT("woma");
 	TCHAR account[256];
 
-	Publish_Quit_Message();			// FATAL, non expected error!
+	WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP; //Publish_Quit_Message();
 
+	#if defined USE_LOG_MANAGER
 	STRING REPORT_FILE = WOMA::logManager->getLogFileName();
 	SAFE_DELETE (WOMA::logManager);	// Write, Close and Free the "Log" file (after free MiniDumper)
+	#else
+	STRING REPORT_FILE = TEXT("Report.log");
+	#endif
 
 	//CONNECT:
 	if (_tcslen(addr) > 0)
@@ -122,3 +129,4 @@ int dumpUploader(STRING file)
 }
 
 } // WOMA
+#endif
