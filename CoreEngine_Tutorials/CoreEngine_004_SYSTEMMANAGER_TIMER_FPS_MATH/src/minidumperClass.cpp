@@ -33,7 +33,8 @@ Copyright (C) 2002  Andy Pennell
 // --------------------------------------------------------------------------------------------
 
 #include "OSengine.h"
-
+#if defined USE_MINIDUMPER
+#include "mem_leak.h"
 #include "minidumperClass.h"
 #include "log.h"
 
@@ -79,7 +80,7 @@ MiniDumper::MiniDumper()
 	//AddVectoredExceptionHandler(1, VectoredExceptionHandler);
 
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567311;
+	WomaIntegrityCheck = 1234567142;
 }
 
 MiniDumper::~MiniDumper() {CLASSDELETE();}
@@ -206,3 +207,4 @@ LONG MiniDumper::TopLevelFilter( struct _EXCEPTION_POINTERS *pExceptionInfo )
 	return EXCEPTION_CONTINUE_SEARCH; //return retval;
 }
 
+#endif

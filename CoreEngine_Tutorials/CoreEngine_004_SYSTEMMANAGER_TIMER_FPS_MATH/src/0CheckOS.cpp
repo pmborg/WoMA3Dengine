@@ -17,12 +17,12 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
 
 #include "OSengine.h"
 #include "OSmain_dir.h"		//#include "OsDirectories.h"
 #include "systemManager.h"
-
+#include "mem_leak.h"
 #include <map>
 #if defined WINDOWS_PLATFORM
 #include <atlstr.h>
@@ -31,7 +31,7 @@
 SystemManager::SystemManager()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567311;
+	WomaIntegrityCheck = 1234567142;
 
 	//CheckOS:
 	ZeroMemory(&pszOS, sizeof(pszOS));

@@ -17,7 +17,7 @@
 // PURPOSE: Handle properlly all Out of Memory Exceptions
 //			Enable run-time memory leaks check for all "new" memory allocations
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
 
 #include "OSengine.h"
 #include "mem_leak.h"

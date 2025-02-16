@@ -44,7 +44,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="core_engine_level.h" />
     <ClInclude Include="include\default_settings_xml.h">
       <Filter>include\000</Filter>
     </ClInclude>
@@ -190,9 +189,6 @@
       <Filter>src\004</Filter>
     </ClCompile>
     <ClCompile Include="src\2UpdateOSifNeeded.cpp">
-      <Filter>src\004</Filter>
-    </ClCompile>
-    <ClCompile Include="src\3CheckSetup.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
     <ClCompile Include="src\4CheckEngineUpdates.cpp">

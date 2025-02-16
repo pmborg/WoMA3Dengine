@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: OperatingSystem.cpp
 // --------------------------------------------------------------------------------------------
@@ -17,11 +16,13 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
 
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "WinSystemClass.h"
+#if CORE_ENGINE_LEVEL >= 4 && defined USE_SYSTEM_CHECK
+#if !defined LINUX_PLATFORM
 
 #define _WIN32_DCOM
 using namespace std;
@@ -235,3 +236,5 @@ out:
     return ret;
 }
 
+#endif
+#endif

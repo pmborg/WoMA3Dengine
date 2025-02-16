@@ -21,7 +21,7 @@
 //		NO GLOBAL VARIABLE(s)
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
 #pragma once
 
 #if !defined _PLATFORM_H_

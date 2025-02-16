@@ -60,7 +60,6 @@
     <ClInclude Include="include\wmiUtilClass.h" />
     <ClInclude Include="include\woma_exception.h" />
     <ClInclude Include="include\woma_macros.h" />
-    <ClInclude Include="core_engine_level.h" />
     <ClInclude Include="include\language.h" />
     <ClInclude Include="include\log.h" />
     <ClInclude Include="include\mem_leak.h" />
@@ -70,7 +69,6 @@
     <ClCompile Include="src\0CheckOS.cpp" />
     <ClCompile Include="src\1CheckSYS.cpp" />
     <ClCompile Include="src\2UpdateOSifNeeded.cpp" />
-    <ClCompile Include="src\3CheckSetup.cpp" />
     <ClCompile Include="src\4CheckEngineUpdates.cpp" />
     <ClCompile Include="src\5LaunchEngine.cpp" />
     <ClCompile Include="src\7ProcessorInfo.cpp" />
