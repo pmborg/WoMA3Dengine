@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
 
 #include "OSengine.h"
 #if defined CLIENT_SCENE_SETUP
@@ -26,7 +26,7 @@
 WomaSetupManager::WomaSetupManager() 
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567311;
+	WomaIntegrityCheck = 1234567142;
 
 	m_setupWnd = NULL;
 }

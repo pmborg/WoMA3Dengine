@@ -24,12 +24,18 @@
 #include "OSengine.h" //#include "linuxsystemclass.h"
 #if defined LINUX_PLATFORM
 #include <gtk/gtkmain.h>
+#include "OSmain_dir.h"
 
 #define ENGINE_LEVEL DX_ENGINE_LEVEL
 
 #if defined USE_IDEA_PACK
 #include "packManager.h"
 #endif
+#if defined USE_TINYXML_LOADER
+#include "xml_loader.h"
+#endif
+
+#include "fileLoader.h"
 
 	#define g_contextDriver NULL
 
@@ -50,6 +56,8 @@ extern void mainLoop();
 ///////////////////
 // Linux GLOBALS //
 ///////////////////
+
+XFontStruct* fontinfo = NULL;
 
 //----------------------------------------------------------------------------
 
@@ -77,6 +85,10 @@ LinuxSystemClass::LinuxSystemClass(WOMA::Settings* appSettings) : SystemClass()
 
 	//public:
 	mResizing = false;
+
+#if defined CLIENT_SCENE_SETUP
+	womaSetup = NULL;
+#endif
 
 	// --------------------------------------------------------------
 	// Init:
@@ -128,17 +140,9 @@ extern int InitImGui(HWND hwnd_ = NULL);
 
 bool LinuxSystemClass::APPLICATION_CORE_SYSTEM()
 {
-#if CORE_ENGINE_LEVEL == 0
-	WomaMessageBox(WOMA::strConsoleTitle, TEXT("WOMA Hello World!"), MB_OK);
-	return false;
-#endif
-#if CORE_ENGINE_LEVEL == 1// WINDOWS Memory leak done on Purpose! (To test: Memory leak catch system)
-	int yes = WomaMessageBox(WOMA::strConsoleTitle, TEXT("Memory leak done on Purpose for this Tutorial!\nCheck Visual Studio Output Console log for more info!\ndo a double click on windows console."), TEXT("WOMA Tutorial 001:"));
-	if (yes)
-		UINT* p = NEW UINT[1];
-	//free(p);
-	return false;
-#endif
+
+	if (WOMA::game_state == GAME_LOADING)
+		WOMA::game_state = GAME_MENU;	// All ready from "mandatory 3D Stuff" Loader
 
 	return true;
 }
@@ -154,9 +158,21 @@ bool LinuxSystemClass::APPLICATION_INIT_SYSTEM() // ApplicationInit()
 
 	IF_NOT_RETURN_FALSE(APPLICATION_CORE_SYSTEM());
 
-#if CORE_ENGINE_LEVEL >= 2
+#if defined USE_TINYXML_LOADER // Must be before: ApplicationInitMainWindow()
+	IF_NOT_RETURN_FALSE(SystemClass::LoadXmlSettings());		// XML: Load Application Settings: "settings.xml", pickup "Driver" to Use.
+#endif
+
+#if CORE_ENGINE_LEVEL >= 4 && defined USE_SYSTEM_CHECK	// BEFORE: ApplicationInitMainWindow()
+	IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());		// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 
+#endif
+
 	// WINDOWS with CONTEXT:
 	IF_NOT_RETURN_FALSE(ApplicationInitMainWindow(g_contextDriver));	// Create the window the application will be using and also initialize OpenGL.
+
+	InitializeSystemScreen(10, 10);			// SETUP SCREEN: F1,F2,F3,F4
+
+#if defined USE_PROCESS_OS_KEYS
+	IF_NOT_RETURN_FALSE(InitOsInput());			// INIT-INPUT Devices, NOTE: After "Create MainWindow(s)"
 #endif
 
 	// Step 2: Create Context Driver
@@ -165,16 +181,24 @@ bool LinuxSystemClass::APPLICATION_INIT_SYSTEM() // ApplicationInit()
 	return result;
 }
 
+#if defined USE_PROCESS_OS_KEYS
+void LinuxSystemClass::ProcessInput()
+{
+
+}
+#endif
+
 
 // Frame() --> ProcessFrame();
 void LinuxSystemClass::ProcessFrame() // EQUAL: BOTH OS?
 //----------------------------------------------------------------------------
 {
+	SystemClass::FrameUpdate();	// Process: (INPUT + PerformanceStats) Only!
 
 }
 
 extern bool createWindow();
-#if CORE_ENGINE_LEVEL >= 2
+
 //----------------------------------------------------------------------------
 // Source: http://www.opengl.org/discussion_boards/archive/index.php/t-177999.html
 // D:\WoMAengine2014\woma_developer\SAMPLES\Sample020_StartEngine\Src\original_sample_code.cxx
@@ -187,6 +211,6 @@ bool LinuxSystemClass::ApplicationInitMainWindow(void* OpenGL)
 
 	return true;
 }
-#endif
+
 #endif
 

@@ -17,17 +17,26 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Paint the main window depending of engine state screen page.
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
 
 #include "OSengine.h"
 #include "WinSystemClass.h"
 #include "OSmain_dir.h"
-
+#include "mem_leak.h"
+#include "stateMachine.h"
 
 #if CORE_ENGINE_LEVEL >= 2 && defined WINDOWS_PLATFORM 
 
+#if defined ALLOW_LOADING_SPLASH && defined WINDOWS_PLATFORM  //ENGINE_LEVEL >= 10 && 
+#include "fileLoader.h"
+#endif
+
 #if CORE_ENGINE_LEVEL >= 4 && defined USE_USER_SETUP
 int		MainWindowPaint(UINT monitor);
+#endif
+
+#if defined ALLOW_LOADING_SPLASH
+void	PaintSplashScreen(HDC hdc);
 #endif
 
 
@@ -139,12 +148,26 @@ int MainWindowPaint(UINT monitor)
 	case GAME_SYSTEM_SETTINGS:
 		scr = 0;
 		break;
+#if defined USE_ASTRO_CLASS
+	case GAME_CELESTIAL_INFO:
+		scr = 1;
+		break;
+#endif
+#if defined USE_METARCLASS
+	case GAME_WEATHER_INFO:
+		scr = 2;
+		break;
+#endif
 	}
 
 #if defined  (WINDOWS_PLATFORM)
 
 	// Paint BackGround Image:
 	// ---------------------------------------------------------------------------------------------
+	#if defined ALLOW_LOADING_SPLASH
+	if (WOMA::game_state <= GAME_MENU)
+		PaintSplashScreen(hdc); // (Loading Splash Screen) Default Background
+	#endif
 
 	switch (WOMA::game_state)
 	{
@@ -159,9 +182,6 @@ int MainWindowPaint(UINT monitor)
 
 	#endif
 
-	//#if defined ALLOW_LOADING_SPLASH
-	//		PaintSplashScreen(hdc); // Loading Splash Screen.
-	//#endif
 			break;
 	}//switch
 

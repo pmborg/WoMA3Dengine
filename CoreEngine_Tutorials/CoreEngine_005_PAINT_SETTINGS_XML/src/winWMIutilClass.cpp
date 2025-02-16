@@ -17,7 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
 
 #include "OSengine.h"
 
@@ -31,7 +31,7 @@ using namespace std;	//endl
 wmiUtilClass::wmiUtilClass() 
 {
 	CLASSLOADER();
-    WomaIntegrityCheck = 1234567311;
+    WomaIntegrityCheck = 1234567142;
 
 	//public:
 	description = L"";

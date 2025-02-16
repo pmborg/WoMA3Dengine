@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
 #pragma once
 
 #include "main.h"
@@ -25,7 +25,7 @@
 class SystemFeatures
 {
 public:
-	UINT WomaIntegrityCheck = 1234567311;
+	UINT WomaIntegrityCheck = 1234567142;
     SystemFeatures();
     ~SystemFeatures();
 

@@ -21,7 +21,7 @@
 //  - Debug use local: "settings".xml
 //  - Release use:     C:\Users\<user>\AppData\Local\Pmborg\Woma2017\"settings".xml (WOMA::APPDATA)
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
  
 #define _CRT_SECURE_NO_WARNINGS
 //#include "xml_loader.h"
@@ -111,7 +111,11 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 	{
 		// Process DATA imported from XML:
 		SystemHandle->AppSettings->UI_MONITOR = atoi(GenSettings.uiMonitor);
+		#if defined USE_ALTENTER_SWAP_FULLSCREEN_WINDOWMODE
+		SystemHandle->AppSettings->FULL_SCREEN = (strcmp (GenSettings.screenFullScreen, "true") == 0) ?  true : false;
+		#else
 		SystemHandle->AppSettings->FULL_SCREEN = false;
+		#endif
 		SystemHandle->AppSettings->WINDOW_Xpos = atoi(GenSettings.posX);
 		SystemHandle->AppSettings->WINDOW_Xpos_ori = SystemHandle->AppSettings->WINDOW_Xpos;
 		SystemHandle->AppSettings->WINDOW_Ypos = atoi(GenSettings.posY);

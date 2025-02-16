@@ -47,6 +47,9 @@ public:
 
 	bool APPLICATION_CORE_SYSTEM();
 	bool APPLICATION_INIT_SYSTEM(); //bool ApplicationInit();
+#if CORE_ENGINE_LEVEL >= 3 && defined USE_PROCESS_OS_KEYS
+	void ProcessInput();
+#endif
 
 	void* m_hWnd = NULL;
 
@@ -55,9 +58,9 @@ public:
 
 private:
 	bool mResizing;
-#if CORE_ENGINE_LEVEL >= 2
+
 	bool ApplicationInitMainWindow(/*glxOpenGLClass*/ void* OpenGL);
-#endif
+
 };
 
 /////////////

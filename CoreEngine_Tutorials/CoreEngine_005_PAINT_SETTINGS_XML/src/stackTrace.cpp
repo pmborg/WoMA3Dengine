@@ -17,7 +17,7 @@
 // Original Source Code:
 // http://social.msdn.microsoft.com/Forums/vstudio/en-US/f93a211a-9c95-42f0-8581-50314457b729/generating-the-stack-traces-in-the-c-code
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
 
 #include "platform.h"
 #if defined WINDOWS_PLATFORM

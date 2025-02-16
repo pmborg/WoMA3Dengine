@@ -15,7 +15,7 @@
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
 
 #include "AndroidNewSystemClass.h"
 #include "OSengine.h"
@@ -26,7 +26,7 @@ extern int android_APPLICATION_MAIN_LOOP();
 AndroidNewSystemClass::AndroidNewSystemClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567311;
+	WomaIntegrityCheck = 1234567142;
 }
 
 AndroidNewSystemClass::~AndroidNewSystemClass() { CLASSDELETE(); }

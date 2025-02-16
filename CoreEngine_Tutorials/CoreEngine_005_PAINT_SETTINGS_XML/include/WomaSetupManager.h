@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: WomaSetupManager.h
 // --------------------------------------------------------------------------------------------
@@ -17,10 +16,11 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
 #pragma once
 
 #include "platform.h"
+#if defined CLIENT_SCENE_SETUP && defined WINDOWS_PLATFORM
 
 #define ButtonSetup		0
 #define ButtonStart		1
@@ -31,7 +31,7 @@
 class WomaSetupManager
 {
 public:
-	UINT WomaIntegrityCheck = 1234567311;
+	UINT WomaIntegrityCheck = 1234567142;
 	WomaSetupManager();
 	~WomaSetupManager();
 
@@ -51,3 +51,4 @@ public:
 	std::vector<HWND> hWndComboBoxperMonitor;	// hWndComboBox[
 };
 
+#endif

@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: TrigonometryMathClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -18,7 +19,7 @@
 //  Use pre-calculated data to speed-up until 20x, trivial trigonometry Math Calculations.
 //  Precision 2 decimal numbers, i.e. sin(0.12)
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
 
 #include "platform.h"
 #if defined USE_TIMER_CLASS
@@ -37,9 +38,6 @@
 
 float FAST_sqrt(float x)
 {
-#if CORE_ENGINE_LEVEL >= 60
-	return sqrt(x);
-#else
 	const float xhalf = 0.5f*x;
 
 	union // get bits for floating value
@@ -50,7 +48,6 @@ float FAST_sqrt(float x)
 	u.x = x;
 	u.i = SQRT_MAGIC_F - (u.i >> 1);		// gives initial guess y0
 	return x*u.x*(1.5f - xhalf*u.x*u.x);	// Newton step, repeating increases accuracy
-#endif
 }
 
 float tableSin[360*100], tableCos[360*100];
@@ -58,7 +55,7 @@ float tableSin[360*100], tableCos[360*100];
 TrigonometryMathClass::TrigonometryMathClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567311;
+	WomaIntegrityCheck = 1234567142;
 
 	Initialize();
 }
@@ -168,10 +165,6 @@ void TrigonometryMathClass::testMathSpeed(TimerClass* m_Timer, double &delta1, d
 	WOMA_LOGManager_DebugMSG("FAST_sin (PI): %f\n", FAST_sin(180));
 	#endif
 
-#if defined _NOT // NDEBUG 
-    //if (delta2 > 1000)
-	//	WomaMessageBox(TEXT("SPEED TEST WARNING: Your CPU may be too slow to run this application!"));
-#endif
 }
 
 #endif

@@ -17,7 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
 
 #include "OSengine.h" //#include "WinSystemClass.h"
 #include "OSmain_dir.h"
@@ -120,7 +120,7 @@ char* processorSetting(char* setting)
 ProcessorInfo::ProcessorInfo()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567311;
+	WomaIntegrityCheck = 1234567142;
 
     processorName[0] = 0;
     processorId[0] = 0;

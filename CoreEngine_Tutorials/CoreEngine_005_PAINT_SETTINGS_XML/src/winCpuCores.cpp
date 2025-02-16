@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: winCpuCores.cpp
 // --------------------------------------------------------------------------------------------
@@ -23,12 +22,13 @@
 //#define GENERATE //(Airports List)
 
 #include "WinSystemClass.h"
+#if defined WINDOWS_PLATFORM
 #include "winCpuCores.h"
 
 WinCpuCores::WinCpuCores()
 {
 	CLASSLOADER();
-    WomaIntegrityCheck = 1234567311;
+    WomaIntegrityCheck = 1234567142;
 
 	numaNodeCount = NULL;
 	processorPackageCount = NULL;
@@ -194,3 +194,4 @@ void WinCpuCores::GetProcessorInformation()
 }
 
 
+#endif

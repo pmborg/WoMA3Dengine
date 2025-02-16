@@ -17,12 +17,12 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Output - LOG INFO and FATAL ERRORs to "report".txt file
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
 
 #include "main.h"
 #if defined USE_LOG_MANAGER
 #include "OSengine.h"
-
+#include "mem_leak.h"
 #if defined WINDOWS_PLATFORM
 #include <shlwapi.h>
 #endif
@@ -264,7 +264,11 @@ void start_log_manager()
 	// [3]  PRINT Log Dirs: (After init_os_main_dirs & After logManager)
 	// -------------------------------------------------------------------------------------------
 	//WOMA_LOGManager_DebugMSGAUTO(TEXT("Init: logDirs()\n"));
+#if defined WINDOWS_PLATFORM && ENGINE_LEVEL >= 3
+	logDirs(isXP(), isWow64());
+#else
 	logDirs();
+#endif
 
 	// [5] Log Binary Type:
 	// -------------------------------------------------------------------------------------------
