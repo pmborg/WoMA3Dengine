@@ -1,10 +1,9 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: astroClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -24,15 +23,15 @@
 //   - Calculate "Moon Distance": (ans the aparent Size correction: "Moon Scale")
 //
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567142;
 
-#define _CRT_SECURE_NO_WARNINGS
 #include "platform.h"
-
+#if defined USE_ASTRO_CLASS
 #include "astroClass.h"
 
 AstroClass::AstroClass() 
 {
-    WomaIntegrityCheck = 1234567831;
+    WomaIntegrityCheck = 1234567142;
 	CLASSLOADER();
 
 	//public:
@@ -135,6 +134,7 @@ void AstroClass::updateTime()
 	month = m_LocalTime->tm_mon + 1;
 	year = 1900 + m_LocalTime->tm_year;
 
+#if defined (WINDOWS_PLATFORM)
     TIME_ZONE_INFORMATION TimeZoneInfo;
     DWORD rcd = GetTimeZoneInformation(&TimeZoneInfo);
 
@@ -143,6 +143,9 @@ void AstroClass::updateTime()
 
 	// Get TimeZone on GMT
 	offset = -(double(UTC_adjustment) / 60);
+#else
+	// TODO...
+#endif
 
 	eqTime = equationTime();									// Calculate: equationTime: need (offset)
     time_offset = eqTime - (4 * longitude) - (60 * offset);		// Calculate: time_offset: need (eqTime and offset)
@@ -651,3 +654,4 @@ double AstroClass::AstroCalculations(double SiteLat, double SiteLon)
     return moonElevation;
 }
 
+#endif

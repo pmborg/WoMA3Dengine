@@ -59,7 +59,6 @@
     <ClInclude Include="include\systemManager.h" />
     <ClInclude Include="include\timerClass.h" />
     <ClInclude Include="include\TrigonometryMathClass.h" />
-    <ClInclude Include="include\win32InputClass.h" />
     <ClInclude Include="include\winCpuClass.h" />
     <ClInclude Include="include\winCpuCores.h" />
     <ClInclude Include="include\WindowPaintClass.h" />
@@ -68,7 +67,6 @@
     <ClInclude Include="include\WomaSetupManager.h" />
     <ClInclude Include="include\woma_exception.h" />
     <ClInclude Include="include\woma_macros.h" />
-    <ClInclude Include="core_engine_level.h" />
     <ClInclude Include="include\language.h" />
     <ClInclude Include="include\log.h" />
     <ClInclude Include="include\mem_leak.h" />
@@ -79,13 +77,11 @@
     <ClCompile Include="src\0CheckOS.cpp" />
     <ClCompile Include="src\1CheckSYS.cpp" />
     <ClCompile Include="src\2UpdateOSifNeeded.cpp" />
-    <ClCompile Include="src\3CheckSetup.cpp" />
     <ClCompile Include="src\4CheckEngineUpdates.cpp" />
     <ClCompile Include="src\5LaunchEngine.cpp" />
-    <ClCompile Include="src\6OperatingSystem.cpp" />
     <ClCompile Include="src\7ProcessorInfo.cpp" />
     <ClCompile Include="src\8SystemFeatures.cpp" />
-    <ClCompile Include="src\ApplicationClass_ext.cpp" />
+    <ClCompile Include="src\ApplicationClass.cpp" />
     <ClCompile Include="src\astroClass.cpp" />
     <ClCompile Include="src\default_settings_xml.cpp" />
     <ClCompile Include="src\dumpUploader.cpp" />
@@ -96,6 +92,7 @@
     <ClCompile Include="src\initWorld.cpp" />
     <ClCompile Include="src\Math3D.cpp" />
     <ClCompile Include="src\minidumperClass.cpp" />
+    <ClCompile Include="src\OperatingSystem.cpp" />
     <ClCompile Include="src\OSengine.cpp" />
     <ClCompile Include="src\packManager.cpp" />
     <ClCompile Include="src\stackTrace.cpp" />
@@ -123,7 +120,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{AB55C3A1-46C2-460F-8AF9-DE4CC9B34E9E}</ProjectGuid>
+    <ProjectGuid>{3DC7F076-77DA-40B5-AD6B-C25988CBD456}</ProjectGuid>
     <RootNamespace>CoreEngine</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>CoreEngine_008</ProjectName>
@@ -212,9 +209,9 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\ZipUtils_LIB\include;..\..\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib;..\..\ThirdParty\maxminddb_LIB\libmaxminddb-main\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;..\..\ThirdParty\ZipUtils_LIB\include;..\..\ThirdParty\maxminddb_LIB\libmaxminddb-main\include;..\..\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib</IncludePath>
     <TargetName>CoreEngine_008</TargetName>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_008_PAINT_REALTIME_GPS_MAP_LOCATION\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_007_PAINT_REALTIMECELESTIAL_ASTROCLASS;C:\WoMA3Dengine\CoreEngine_Tutorials;C:\WoMA3Dengine\CoreEngine_Tutorials\x64\Debug</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\ZipUtils_LIB\include;..\..\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib;..\..\ThirdParty\maxminddb_LIB\libmaxminddb-main\include</IncludePath>
@@ -329,7 +326,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);DEMO_LEVEL=8;MAINENGINE_LINUX</PreprocessorDefinitions>
       <ConformanceMode>
       </ConformanceMode>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>

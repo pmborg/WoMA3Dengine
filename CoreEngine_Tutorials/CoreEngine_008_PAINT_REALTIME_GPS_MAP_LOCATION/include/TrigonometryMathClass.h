@@ -1,10 +1,9 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: TrigonometryMathClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,10 +16,12 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567142;
+
 #pragma once
 
 #include "platform.h"
-
+#if defined USE_TIMER_CLASS
 #include "timerClass.h" // To benchMark
 
 using namespace std;	// endl
@@ -37,13 +38,19 @@ extern float tableSin[360*100], tableCos[360*100];
 class TrigonometryMathClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567831;
+	UINT WomaIntegrityCheck = 1234567142;
 	TrigonometryMathClass();
 	~TrigonometryMathClass();
 
 	void Initialize();
-	STRING testMathSpeed(TimerClass* m_Timer);
+	//STRING testMathSpeed(TimerClass* m_Timer);
+	void testMathSpeed(TimerClass* m_Timer, double& delta1, double& delta2);
 
 private:
 
 };
+#else
+	#define FAST_sin(x) sin(x)
+	#define FAST_cos(x) cos(x)
+	#define FAST_sqrt(x) sqrt(x)
+#endif

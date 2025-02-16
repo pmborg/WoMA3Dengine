@@ -47,11 +47,7 @@
     <ClInclude Include="include\woma_macros.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="core_engine_level.h" />
     <ClInclude Include="include\stateMachine.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\win32InputClass.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\dumpUploader.h">
@@ -186,16 +182,10 @@
     <ClCompile Include="src\2UpdateOSifNeeded.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\3CheckSetup.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\4CheckEngineUpdates.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\5LaunchEngine.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\6OperatingSystem.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\7ProcessorInfo.cpp">
@@ -231,9 +221,6 @@
     <ClCompile Include="src\xml_settings_saver.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\ApplicationClass_ext.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\GLmathClass.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -253,6 +240,12 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\winWomaSetupManager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ApplicationClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OperatingSystem.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

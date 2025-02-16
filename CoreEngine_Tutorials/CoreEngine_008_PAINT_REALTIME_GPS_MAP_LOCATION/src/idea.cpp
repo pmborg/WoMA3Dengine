@@ -1,9 +1,9 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 #pragma warning( disable : 4018 ) // warning C4018: '<' : signed/unsigned mismatch
 #pragma warning( disable : 5033 ) // warning C5033: 'register' is no longer a supported storage class
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "platform.h"
+#if defined USE_IDEA_PACK
 /*IDEA.C   v2.2
 	c source code for IDEA block cipher. IDEA (International Data
 	Encryption Algorithm), formerly known as IPES (Improved Proposed
@@ -408,3 +408,4 @@ int EncodeIDEA(char* filename, int whatTOdo)
 	return TRUE;
 }
 
+#endif
