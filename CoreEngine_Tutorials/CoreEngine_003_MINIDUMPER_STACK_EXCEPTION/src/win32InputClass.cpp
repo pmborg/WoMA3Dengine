@@ -30,7 +30,7 @@
 InputClass::InputClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567311;
+	WomaIntegrityCheck = 1234567142;
 
 	ZeroMemory (&m_keys, sizeof(m_keys));
 }

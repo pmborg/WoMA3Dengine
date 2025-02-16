@@ -18,7 +18,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
 
 #pragma warning( disable : 4312 ) // warning C4312: 'type cast': conversion from 'int' to 'HMENU' of greater size
 #include "stateMachine.h"
@@ -136,6 +136,13 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 	#endif
 		break;
 
+#if defined USE_DIRECT_INPUT
+		// SOURCE: http://stackoverflow.com/questions/21799069/mouse-wheel-only-can-scroll-either-up-or-down
+	case WM_MOUSEWHEEL:
+		SystemHandle->m_InputManager.mouseWheelIn(wParam);
+		return 0;
+#endif
+
 	// ----------------------------------------------------------------------------
 	// WM_CLOSE -> WM_QUIT -> WM_DESTROY 
 	// ----------------------------------------------------------------------------
@@ -177,6 +184,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 	// With Direct Input (USE_DIRECT_INPUT) This Messages are not invoked anymore:
 	//----------------------------------------------------------------------------
 #if defined USE_PROCESS_OS_KEYS //CORE_ENGINE_LEVEL >= 3
+  #if !defined USE_DIRECT_INPUT	//USE OS INPUT:
 		// Check if a key has been pressed on the keyboard.
 	case WM_KEYDOWN:
 	{
@@ -192,6 +200,197 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 		SystemHandle->m_OsInput->KeyUp((unsigned int)wParam);
 		return 0; //break;
 	}
+  #elif defined USE_DIRECT_INPUT	//USE DX INPUT:
+
+	// Check if a key has been pressed on the keyboard.
+	case WM_KEYDOWN:
+		{
+			// If a key is pressed send it to the input object so it can record that state.
+			if (SystemHandle->m_OsInput)
+				SystemHandle->m_OsInput->KeyDown((UINT)lparam, (UINT)wParam);
+			return 0;
+		}
+
+		// Check if a key has been released on the keyboard.
+	case WM_KEYUP:
+	{
+		// If a key is released then send it to the input object so it can unset the state for that key.
+		if (SystemHandle->m_OsInput)
+			SystemHandle->m_OsInput->KeyUp((UINT)lparam, (UINT)wParam);
+		return 0;
+	}
+
+	// ON Activate windows: Activate our Direct Keyborad System
+	// -----------------------------------------------------------------------------
+	case WM_ACTIVATEAPP:
+	{
+		if (!(int)wParam == 0)
+			if (SystemHandle)
+				SystemHandle->m_InputManager.Initialize(SystemHandle->m_hinstance);	//hWnd and hInst are just the global
+
+		return 0;
+	}
+  #endif
+#endif
+
+#if defined USE_ALLOW_MAINWINDOW_RESIZE
+	// -----------------------------------------------------------------------------
+	// RE-SIZE: is sent when the user resizes the window.  
+	// -----------------------------------------------------------------------------
+
+	case WM_SIZE:
+	{
+		// Use windows settings!
+		// Save the new client area dimensions.
+		//g_ScreenWidth = LOWORD(lparam);
+		//g_ScreenHeight = HIWORD(lparam);
+
+		// Save the new Real/Client area dimensions (because Window Frame)
+		if (SystemHandle)
+		{
+			// -[][X]
+			if (wParam == SIZE_MINIMIZED) // -
+			{
+				mMaximized = false;
+				WOMA::game_state = GAME_MINIMIZED;
+
+			}
+			else if (wParam == SIZE_MAXIMIZED)	// [] (go from default to maximize!)
+			{
+				SystemHandle->AppSettings->WINDOW_WIDTH = LOWORD(lparam);	// New Usefull Size
+				SystemHandle->AppSettings->WINDOW_HEIGHT = HIWORD(lparam);	// New Usefull Size
+				mMaximized = true;
+				if (WOMA::game_state == GAME_MINIMIZED)
+					UNPAUSE();	//Restore State
+			#if defined USE_STATUSBAR
+				if (SystemHandle->statusbar)
+					DestroyWindow(SystemHandle->statusbar);
+			#endif
+				if (SystemHandle->m_hWnd) 
+					{ ONRESIZE(); }
+			}
+			else if (wParam == SIZE_RESTORED)	// Restore
+			{
+				// Restoring from minimized state?
+				if (WOMA::game_state == GAME_MINIMIZED)
+				{
+					UNPAUSE();	//Restore State
+					if (SystemHandle->m_hWnd) 
+						{ ONRESIZE(); }
+				}
+
+				// Restoring default, from maximized state?
+				else if (mMaximized)
+				{
+					mMaximized = false;
+				#if defined USE_STATUSBAR
+					if (SystemHandle->statusbar)
+						DestroyWindow(SystemHandle->statusbar);
+				#endif
+					if (SystemHandle->m_hWnd) 
+						{ ONRESIZE(); }
+				}
+				else if (mResizing)
+				{
+					// If user is dragging the resize bars, we do not resize 
+					// the buffers here because as the user continuously 
+					// drags the resize bars, a stream of WM_SIZE messages are
+					// sent to the window, and it would be pointless (and slow)
+					// to resize for each WM_SIZE message received from dragging
+					// the resize bars.  So instead, we reset after the user is 
+					// done resizing the window and releases the resize bars, which 
+					// sends a WM_EXITSIZEMOVE message.
+
+					//mResizing = true;
+				}
+				else // API call such as SetWindowPos or mSwapChain->SetFullscreenState.
+				{
+					SystemHandle->AppSettings->WINDOW_WIDTH = LOWORD(lparam);	// New Usefull Size
+					SystemHandle->AppSettings->WINDOW_HEIGHT = HIWORD(lparam);	// New Usefull Size
+					if (SystemHandle->m_hWnd) 
+						{ ONRESIZE(); }
+				}
+
+				#if defined USE_STATUSBAR //#if defined _DEBUG
+					if (SystemHandle->m_hWnd) {
+						if (SystemHandle->statusbar)
+							DestroyWindow(SystemHandle->statusbar);
+						//DoCreateStatusBar(SystemHandle->m_hWnd, 0 idStatus, m_hinstance, 1 cParts);
+						SystemHandle->statusbar = DoCreateStatusBar(SystemHandle->m_hWnd, 0, m_hinstance, 1);
+						SendMessage(SystemHandle->statusbar, SB_SETTEXT, 0, (LPARAM)DEMO_TITLE);
+						if (AppSettings->FULL_SCREEN)
+							::ShowWindow(SystemHandle->statusbar, SW_HIDE);
+					}
+				#endif
+			}
+		}
+
+		return 0;
+	}
+
+	#if defined USE_ASPECT_RATIO
+	// Keep "Aspect Ratio" on Window Resize
+	case WM_SIZING:
+	{
+		LPRECT r = LPRECT(lparam);
+
+		switch (wparam)
+		{
+		case WMSZ_LEFT:
+		case WMSZ_BOTTOMLEFT:
+		case WMSZ_BOTTOMRIGHT:
+		case WMSZ_RIGHT:
+			r->bottom = r->top + (LONG)((float)(r->right - r->left) / SystemHandle->aspect_r);
+			break;
+
+		case WMSZ_TOPRIGHT:
+		case WMSZ_TOP:
+		case WMSZ_BOTTOM:
+			r->right = r->left + (LONG)((float)(r->bottom - r->top)*SystemHandle->aspect_r);
+			break;
+
+		case WMSZ_TOPLEFT:r->left = r->right - (LONG)((float)(r->bottom - r->top)*SystemHandle->aspect_r);
+			break;
+		}
+		return true;
+	}
+	#endif
+
+	// -----------------------------------------------------------------------------
+	// MIN-SIZE: Catch this message so to prevent the window from becoming too small.
+	// -----------------------------------------------------------------------------
+
+	// -----------------------------------------------------------------------------
+	// MOVE: The mainwindow is being dragged...
+	// -----------------------------------------------------------------------------
+	case WM_MOVE:
+	{
+		SystemHandle->AppSettings->WINDOW_Xpos = (int)(short)LOWORD(lparam); //NOTE: (int)(short) --> Allow to receive negative numbers
+		SystemHandle->AppSettings->WINDOW_Ypos = (int)(short)HIWORD(lparam);
+		break;
+	}
+	// WM_EXITSIZEMOVE is sent when the user "drag" to resize window:
+	case WM_ENTERSIZEMOVE:
+	{
+		mResizing = true;
+		PAUSE();
+
+		return 0;
+	}
+
+	// WM_EXITSIZEMOVE is sent when the user "releases" the resize bars:
+	// Here we reset everything based on the new window dimensions.
+	case WM_EXITSIZEMOVE:
+	{
+		UNPAUSE();		// Restore State: "Green" Light to Render Again (after: return 0)
+		if (mResizing)
+			if (SystemHandle->m_hWnd) 
+				{ ONRESIZE(); } // Do the Window, "Buffers" & Textures Re-size
+
+		mResizing = false;
+		return 0;
+	}
+
 #endif
 
 	// -----------------------------------------------------------------------------

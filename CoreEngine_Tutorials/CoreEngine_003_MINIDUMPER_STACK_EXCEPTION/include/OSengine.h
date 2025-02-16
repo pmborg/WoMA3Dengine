@@ -21,7 +21,7 @@
 //   LINUX_PLATFORM
 //   ANDROID_PLATFORM
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
 
 #if NOTES
                   ----------------  ---------                       ----------------
@@ -172,7 +172,7 @@
 extern UINT RENDER_PAGE;
 
 #if CORE_ENGINE_LEVEL >= 1
-	#include "mem_leak.h"
+	//#include "mem_leak.h"
 #endif
 
 extern int APPLICATION_MAIN(int argc, char* argv[]);
@@ -257,7 +257,7 @@ namespace WOMA
 	extern STRING	filename;			// CMD line: filename
 #endif
 
-#if defined USE_TINYXML_LOADER //#if CORE_ENGINE_LEVEL >= 5
+#if defined USE_TINYXML_LOADER
 	extern TCHAR	APP_SETTINGS_FILE[];
 #endif
 }

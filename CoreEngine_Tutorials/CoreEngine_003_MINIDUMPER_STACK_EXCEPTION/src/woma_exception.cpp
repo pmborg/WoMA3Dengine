@@ -20,11 +20,11 @@
 // 
 //  NOTE: If a constructor throws an Exception ===> the object's destructor do not run. !!!
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
 
 #include "OSengine.h"
 #include "log.h"
-
+#include "mem_leak.h"
 #if defined USE_WOMA_EXCEPTION
 
 #if defined WINDOWS_PLATFORM

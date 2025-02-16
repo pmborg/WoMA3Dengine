@@ -17,7 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Export APIs for systemclass.cpp which is the common OS API
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
 #pragma once
 #ifndef __SYSTEMCLASS_H__
 
@@ -122,7 +122,7 @@ typedef struct
 class SystemClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567311;
+	UINT WomaIntegrityCheck = 1234567142;
 	SystemClass();
 	~SystemClass();
 
@@ -177,6 +177,32 @@ public:
 
 public:
 
+#if defined USE_DIRECT_INPUT
+	#if defined USE_JOY && defined USE_DIRECT_INPUT
+	bool onJoystickButton(int button, bool pressed);
+	void onJoystickAxis(int axis, float value);
+	void InitJoyStick();
+	void joyStickFrame();
+	#endif
+
+	#if defined DX_ENGINE
+	DXInputClass				m_InputManager;
+	bool						useJoystick = false;
+	float						xScale = 0, xBias = 0;
+	float						yScale = 0, yBias = 0;
+	float 						zScale = 0, zBias = 0;
+	float 						rScale = 0, rBias = 0;
+	float 						uScale = 0, uBias = 0;
+	float 						vScale = 0, vBias = 0;
+
+	DWORD						joyFlags = 0;
+	JOYCAPS						joyCaps = { 0 };
+	#endif
+#endif
+
+#if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
+	std::vector<PlayerClass*>	m_player;
+#endif
 };
 
 extern bool InitSelectedDriver();
