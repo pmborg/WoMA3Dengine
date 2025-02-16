@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: main.h
 // --------------------------------------------------------------------------------------------
@@ -25,7 +24,7 @@
 // 	DEFINE minidumperClass
 // 	DEFINE logManager
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
 
 #pragma once
 
@@ -46,6 +45,15 @@
 // -------------------------------------------------------------------------------------------
 // Include: COMMON TRASNVERSAL WoMA Util Libs:
 // -------------------------------------------------------------------------------------------
+#if defined USE_MINIDUMPER
+#include "minidumperClass.h"
+#endif
+#if defined USE_WOMA_EXCEPTION
+#include "woma_exception.h"
+#endif
+#if defined USE_LOG_MANAGER
+#include "log.h"
+#endif
 
 //	-------------------------------------------------------------------------------------------
 // Global WOMA RUN-TIME SETTINGS:
@@ -54,3 +62,10 @@ extern UINT CLASS_LOAD_N;
 extern UINT CLASS_DELETE_N;
 
 
+#if defined USE_ASTRO_CLASS
+extern void InitializeCelestialInfoScreen(int x, int y);
+#endif
+
+#if defined USE_METARCLASS
+extern bool InitializeWeatherInfoScreen(int x, int y);
+#endif

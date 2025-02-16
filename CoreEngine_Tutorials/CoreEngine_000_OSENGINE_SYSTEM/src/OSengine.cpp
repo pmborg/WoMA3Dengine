@@ -17,7 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: START and STOP WorldOfMiddleAge 3D ENGINE
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
 
 #include "OSengine.h"
 #include <inttypes.h>
@@ -163,6 +163,10 @@ namespace WOMA
 	int		game_state = GAME_LOADING;
 	int		previous_game_state = GAME_LOADING;
 
+#if defined USE_LOG_MANAGER
+	ILogManager* logManager = NULL;	// Global Log Manager
+#endif
+
 	UINT ENGINE_LEVEL_USED = 0;
 	int  main_loop_state = 0;
 
@@ -182,6 +186,14 @@ namespace WOMA
 #endif
 #if defined USE_LOADING_THREADS || DX_ENGINE_LEVEL >= 37
 	UINT	num_loading_objects = 1;
+#endif
+
+#if defined USE_TINYXML_LOADER
+	TCHAR   APP_SETTINGS_FILE[] = SETTINGS_FILE; // SETUP/Configuration file name
+#endif
+
+#if defined USE_MINIDUMPER
+	MiniDumper* miniDumper = NULL;
 #endif
 
 #if defined NOTES
@@ -324,6 +336,9 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 	//------------------------------------------------------
 #endif
 
+	#if defined USE_LOG_MANAGER
+	WOMA::start_log_manager();				//3
+	#endif
 	DefineConsoleTitle();
 
 	// Save Command Line Arguments to use later on
@@ -334,6 +349,9 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 
 	// [4] Set A Top level "Exception handler" for all Exceptions. Catch, Dump & Send Report WOMA ENGINE HOME using FTP!
 	// -------------------------------------------------------------------------------------------
+#if defined USE_MINIDUMPER 
+	WOMA::miniDumper = NEW MiniDumper();	// NOTE: After logManager!
+#endif
 
 #ifdef LINUX_PLATFORM 
 	// [6-1] Start LINUX Platform GUI: Settings
@@ -361,7 +379,16 @@ void APPLICATION_STOP()
 	CoUninitialize();
 #endif
 
-#if defined ANDROID_PLATFORM //&& _NOTNOW
+#if defined USE_MINIDUMPER
+	SAFE_DELETE(WOMA::miniDumper);		// Free Top level Exception handler & Mini-Dumper.
+#endif
+
+#if defined USE_LOG_MANAGER
+	WOMA::logManager->ShutdownInstance();	// Write, Close & Free: The logManager.
+	WOMA::logManager = NULL;				// Because of STATIC Classes Shutdown: Do not log
+#endif
+
+#if defined ANDROID_PLATFORM
 	engine.has_focus_ = false;
 	terminate();
 #endif
@@ -573,6 +600,32 @@ int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption)
 	return WomaMessageBox(lpText, lpCaption, false);
 }
 
+#if defined ANDROID_PLATFORM && defined USE_LOG_MANAGER
+STRING LOAD_ASSET_SAVE_TO_CACHE (TCHAR* XMLFILE) 
+{
+	//LOAD FROM: C:\WoMAengine2023\Android-WomaEngine\Android2\Android2.Packaging\ARM64\Debug\Package\assets
+	AAssetManager* manager = engine.app->activity->assetManager;
+	AAsset* thisxmlFile = AAssetManager_open(manager, XMLFILE, AASSET_MODE_BUFFER);
+	const char* fileBuffer = (char*)AAsset_getBuffer(thisxmlFile);
+	off_t fileSize = AAsset_getLength(thisxmlFile);
+
+	//SAVE TO: /data/user/0/com.woma/cache/
+	FILE* saveXmlFile = NULL;
+	STRING XML_FILE = WOMA::android_temp_folder(engine.app);
+	XML_FILE.append(TEXT("/"));
+	XML_FILE.append(XMLFILE);
+	UINT errno_t = _tfopen_s(&saveXmlFile, XML_FILE.c_str(), TEXT("w"));
+	fwrite(fileBuffer, sizeof(char), fileSize, saveXmlFile);
+#if DEBUG
+	__android_log_print(ANDROID_LOG_ERROR, "[WOMA]", fileBuffer);
+#endif
+	AAsset_close(thisxmlFile);
+	fclose(saveXmlFile);
+
+	return XML_FILE;
+}
+#endif
+
 #if defined LINUX_PLATFORM //|| defined ANDROID_PLATFORM
 #include <curl/curl.h>
 #include <curl/easy.h>
@@ -618,11 +671,3 @@ bool download(const std::string url, const std::string file)
 }
 #endif
 
-//https://github.com/dhaniram-kshirsagar/android-ndk-curl/blob/master/app/src/main/cpp/jni-curl-lib.cpp
-#if defined ANDROID_PLATFORM  && _NOTNOW
-bool download(const std::string url, const std::string filename)
-{
-	DownloadFiles(url.c_str(), filename.c_str());
-	return true;
-}
-#endif

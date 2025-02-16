@@ -17,7 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Define APIs for winSystemClass.cpp which is the WINDOWS OS API
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
 
 #include "OSengine.h"
 #if defined DX_ENGINE
@@ -33,7 +33,7 @@ WinSystemClass::WinSystemClass() : SystemClass()
 //----------------------------------------------------------------------------------
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567311;
+	WomaIntegrityCheck = 1234567142;
 
 	//public:
 	SystemHandle = this;
@@ -57,6 +57,10 @@ void WinSystemClass::WinSystemClass_init()
 // --------------------------------------------------------------
 // Init Vars:
 // --------------------------------------------------------------
+
+#if defined USE_PROCESS_OS_KEYS //CORE_ENGINE_LEVEL >= 3
+	m_OsInput = NULL;
+#endif
 
 }
 
@@ -91,17 +95,49 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 
 	IF_NOT_RETURN_FALSE(APPLICATION_CORE_SYSTEM()); // MyRegisterClass()
 
+#if defined USE_TINYXML_LOADER // Must be before: ApplicationInitMainWindow()
+	IF_NOT_RETURN_FALSE(LoadXmlSettings());	// XML: Load Application Settings: "settings.xml", pickup "Driver" to Use.
+#endif
+#if defined USE_SYSTEM_CHECK // BEFORE: ApplicationInitMainWindow()
+	IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());		// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 
+#endif
+#if defined USE_PROCESS_OS_KEYS
+	IF_NOT_RETURN_FALSE(InitOsInput());						// INIT-INPUT Devices, NOTE: AFTER: ApplicationInitMainWindow()
+#endif
 #if defined USE_TIMER_CLASS									// WINDOWS AFTER: ApplicationInitMainWindow()
 	StartTimer();											// START-TIMERS: ("Window Title" refresh & Real-Time Weather refresh)
 #endif
 
 // ########################################### LOAD DRIVERS ###########################################
 	
+#if CORE_ENGINE_LEVEL < 10 && defined USE_SYSTEM_CHECK // BEFORE need to be: ApplicationInitMainWindow() & AFTER need to be: InitSelectedDriver()
+	InitializeSystemScreen(10, 10); // SETUP SCREEN: F1,F2,F3,F4,F5,F6 (RUNNING NOW ON: PaintSetup())
+#endif
+
  // ################################################# INIT DRIVERS ###################################
 	
 	return true;						// GREEN LIGHT: to Start Rendering! :)
 }
 
+#if defined USE_PROCESS_OS_KEYS //CORE_ENGINE_LEVEL >= 3
+//----------------------------------------------------------------------------------------------------------
+void WinSystemClass::GetInputs()
+{
+#if defined USE_DIRECT_INPUT						// Read the User Input
+	if (DXsystemHandle->m_Input->m_mouse && DXsystemHandle->m_Input->m_keyboard)	// Make Sure that we have aquired the FOCUS and INPUT:
+	{
+		ASSERT(DXsystemHandle->m_Input->Frame()); // Update "Keyboard State": Process the changes in the Mouse and Keyboard.
+	}
+	else
+		DXsystemHandle->m_Input->Initialize(SystemHandle->m_hinstance); //re-gain input if necessary.
+
+	#if defined USE_JOY && defined USE_DIRECT_INPUT
+	if (joyFlags)
+		SystemHandle->joyStickFrame();		// Update "JOY State"
+	#endif
+#endif
+}
+#endif
 //----------------------------------------------------------------------------
 int WinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 //----------------------------------------------------------------------------
@@ -130,6 +166,10 @@ void WinSystemClass::Shutdown()
 	// Destroy Drivers:
 	SystemClass::Shutdown();
 	
+#if defined CLIENT_SCENE_SETUP
+	SAFE_SHUTDOWN(womaSetup);
+#endif
+	
 	ShutdownWindows();				// Shutdown the Main Window.
 }
 
@@ -143,4 +183,48 @@ namespace WOMA
 {
 	extern TCHAR* getCurrentDir();
 }
+
+#if defined USE_PROCESS_OS_KEYS //CORE_ENGINE_LEVEL >= 3
+bool WinSystemClass::InitOsInput()
+//----------------------------------------------------------------------------
+{
+	SystemClass::InitOsInput();
+
+	// INIT OS Keyboard (WIN32: This object will be used to handle reading the input from the user)
+	WOMA_LOGManager_DebugMSG("===============================================================================\n");
+	WOMA_LOGManager_DebugMSG("INIT OS BASIC INPUT\n");
+
+	m_OsInput = NEW InputClass;
+	IF_NOT_THROW_EXCEPTION(m_OsInput);
+
+	m_OsInput->Initialize();
+
+#if defined USE_DIRECT_INPUT
+	// Set the Player Position Init Player Class
+	WOMA_LOGManager_DebugMSG("===============================================================================\n");
+	WOMA_LOGManager_DebugMSG("INIT OS ADVANCED DIRECT INPUT\n");
+	WOMA_LOGManager_DebugMSG("===============================================================================\n");
+
+
+	DXsystemHandle->m_Input = (DXInputClass*)&SystemHandle->m_InputManager;
+#endif
+
+	return true;
+}
+#endif
+
+#if defined USE_ALLOW_MAINWINDOW_RESIZE //CORE_ENGINE_LEVEL >= 10 // Initializing Engine
+void WinSystemClass::ONRESIZE()
+{
+	if (SystemHandle) {
+		WOMA_LOGManager_DebugMSG("ONRESIZE()\n");
+		if (SystemHandle->m_Application)
+			SystemHandle->m_Application->WOMA_APPLICATION_InitGUI();
+		#if defined DX_ENGINE //OPENGL TODO
+		if (DXsystemHandle)
+			DXsystemHandle->GPH_RESIZE();
+		#endif
+	}
+}
+#endif
 
