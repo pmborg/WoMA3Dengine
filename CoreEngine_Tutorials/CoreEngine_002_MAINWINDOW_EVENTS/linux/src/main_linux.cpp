@@ -10,6 +10,7 @@
 
 #include "linux.h"
 #include "OSengine.h"
+#include "OSmain_dir.h"
 
 #include <string.h>
 #include <ctype.h>
@@ -37,7 +38,7 @@ GLXFBConfig main_chooseFBConfig(Display* display, int screen);
 void linux_window_title()
 {
 }
-#if CORE_ENGINE_LEVEL >= 1
+
 bool createWindow()
 {
 	//----------------------------------------------------------------------------
@@ -136,7 +137,7 @@ bool createWindow()
 	Window win = Win.window = XCreateWindow(display, root_win,
 		WOMA::settings.WINDOW_Xpos, WOMA::settings.WINDOW_Ypos,
 		Win.width,
-		Win.height,
+		Win.height, 
 		0,
 		visinfo->depth, InputOutput,
 		visinfo->visual, mask, &winAttr);
@@ -147,10 +148,6 @@ bool createWindow()
 
 	// [7]  Set the name of the window.
 	linux_window_title();
-
-#if defined DX_ENGINE_LEVEL >= 4
-	XStoreName(Win.display, win, SystemHandle->SystemClass::pstrFPS);
-#endif
 
 	int state;
 	XGetInputFocus(display, &root_win, &state);
@@ -196,72 +193,18 @@ bool createWindow()
 		XFlush(display);
 	}
 
-#if CORE_ENGINE_LEVEL >= 10
-	// [9] Create an OpenGL rendering context.
-	GLXContext context = glXCreateContext(display, visinfo, NULL, 1);
-	if (!context)
-		return false;
-	Win.context = context;
-
-	// [10] Attach the OpenGL rendering context to the newly created window.
-	if (!glXMakeCurrent(display, win, context)) {
-		WOMA_LOGManager_DebugMSG("glXMakeCurrent failed.\n");
-		return false;
-	}
-
-	// [11] Check that OpenGL 4.0 is supported at a minimum: Got Ver: 4.2
-	int majorVersion;
-	glGetIntegerv(GL_MAJOR_VERSION, &majorVersion);
-	if (majorVersion < 4)
-		return false;
-
-	int minorVersion;
-	glGetIntegerv(GL_MINOR_VERSION, &minorVersion);
-	//if (majorVersion < 4)
-	//	return false;
-
-	// [12]  Confirm that we have a direct rendering context.
-	if (!glXIsDirect(display, glXGetCurrentContext())) {
-		WOMA_LOGManager_DebugMSG("Indirect GLX rendering context obtained\n");
-		return false;
-	}
-
-	check("CHECK: createWindow()");
-
-	//----------------------------------------------------------------------------
-	WOMA_LOGManager_DebugMSG("Window Size = %d x %d\n", SystemHandle->AppSettings->WINDOW_WIDTH/*screenWidth*/, SystemHandle->AppSettings->WINDOW_HEIGHT/*screenHeight*/);
-	WOMA_LOGManager_DebugMSG("Window Samples = %d\n", NUM_SAMPLES);
-
-
-	// Get the current drawable so we can modify the vertical sync swapping.
-	GLXDrawable drawable = glXGetCurrentDrawable();
-
-	// Turn on or off the vertical sync depending on the input bool value.
-	/*
-	if (SystemHandle->AppSettings->VSYNC_ENABLED)
-	{
-		glXSwapIntervalEXT(display, drawable, 1);
-	}
-	else
-	{
-		glXSwapIntervalEXT(display, drawable, 0);
-	}
-	*/
-	glXSwapIntervalEXT(display, drawable, SystemHandle->AppSettings->VSYNC_ENABLED);
-#endif
-
 	return true;
 }
 
 //-----------------------------------------------------------------------------
 /// check() - Check for GL errors, and report any queued
 
-void check(const char hdr[])
+void check( const char hdr[] )
 {
 	int err;
 
-	while ((err = glGetError()) != GL_NO_ERROR)
-		fprintf(stderr, "OpenGL Error at %s: %s\n", hdr, gluErrorString(err));
+	while ( ( err = glGetError() ) != GL_NO_ERROR )
+		fprintf( stderr, "OpenGL Error at %s: %s\n", hdr, gluErrorString(err) );
 }
 
 //void GLopenGLclass::BeginScene(UINT monitorWindow)
@@ -273,29 +216,29 @@ void displayCB()
 
 // linuxsystemclass.cpp
 //----------------------------------------------------------------------------
-void keyboardCB(KeySym sym, unsigned char key, int x, int y,
-	bool& setting_change)
+void keyboardCB( KeySym sym, unsigned char key, int x, int y,
+				bool &setting_change )
 {
-	switch (tolower(key))
+	switch ( tolower( key ) )
 	{
 	case 27:
 		// ESCape - We're done!
-		exit(0);
+		exit (0);
 		break;
 
 	case 'k':
-		WOMA_LOGManager_DebugMSG("You hit the 'k' key\n");
+		WOMA_LOGManager_DebugMSG( "You hit the 'k' key\n" );
 		break;
 
 	case 0:
-		switch (sym)
+		switch ( sym )
 		{
-		case XK_Left:
-			WOMA_LOGManager_DebugMSG("You hit the Left Arrow key\n");
+		case XK_Left :
+			WOMA_LOGManager_DebugMSG( "You hit the Left Arrow key\n" );
 			break;
 
-		case XK_Right:
-			WOMA_LOGManager_DebugMSG("You hit the Right Arrow key\n");
+		case XK_Right :
+			WOMA_LOGManager_DebugMSG( "You hit the Right Arrow key\n" );
 			break;
 		}
 		break;
@@ -305,13 +248,13 @@ void keyboardCB(KeySym sym, unsigned char key, int x, int y,
 
 // NOT Used
 //----------------------------------------------------------------------------
-void reshapeCB(int width, int height)
+void reshapeCB( int width, int height )
 {
 	Win.width = SystemHandle->AppSettings->WINDOW_WIDTH = width;
 	Win.height = SystemHandle->AppSettings->WINDOW_HEIGHT = height;
 }
 
-GLXFBConfig main_chooseFBConfig(Display* display, int screen)
+GLXFBConfig main_chooseFBConfig(Display *display, int screen)
 {
 	// Default template
 	static const int Visual_attribs[] =
@@ -338,7 +281,7 @@ GLXFBConfig main_chooseFBConfig(Display* display, int screen)
 	GLXFBConfig ret = 0;
 
 	int fbcount;
-	GLXFBConfig* fbc = glXChooseFBConfig(display, screen, attribs, &fbcount);
+	GLXFBConfig *fbc = glXChooseFBConfig(display, screen, attribs, &fbcount);
 	if (fbc)
 	{
 		if (fbcount >= 1)
@@ -353,19 +296,19 @@ GLXFBConfig main_chooseFBConfig(Display* display, int screen)
 
 //----------------------------------------------------------------------------
 
-void processXEvents(Atom wm_protocols, Atom wm_delete_window)
+void processXEvents( Atom wm_protocols, Atom wm_delete_window )
 {
 	bool setting_change = false;
 	XEvent event;
 
-	while (XEventsQueued(Win.display, QueuedAfterFlush))
+	while ( XEventsQueued( Win.display, QueuedAfterFlush ) )
 	{
 		XNextEvent(Win.display, &event);
 
 		if (event.xany.window != Win.window)
 			continue;
 
-		switch (event.type)
+		switch ( event.type )
 		{
 		case MotionNotify:
 		{
@@ -374,7 +317,7 @@ void processXEvents(Atom wm_protocols, Atom wm_delete_window)
 			//std::cout << "Mouse X:" << x << ", Y: " << y << "\n";
 			break;
 		}
-#if LEVEL >= 10
+	#if LEVEL >= 10
 		case ButtonPress:
 		{
 			int xpos = (event.xbutton.x_root) - WOMA::settings.WINDOW_Xpos;
@@ -394,45 +337,43 @@ void processXEvents(Atom wm_protocols, Atom wm_delete_window)
 			}
 			break;
 		}
-#endif
+	#endif
 		case MapNotify:
-		{
-			Win.ready = true;
-			break;
-		}
-		case ConfigureNotify:
-		{
-			XConfigureEvent& cevent = event.xconfigure;
-			reshapeCB(cevent.width, cevent.height);
-			break;
-		}
-		case KeyPress:
-		{
-			char chr;
-			KeySym symbol;
-			XComposeStatus status;
-
-			XLookupString(&event.xkey, &chr, 1, &symbol, &status);
-
-			keyboardCB(symbol, chr, event.xkey.x, event.xkey.y,
-				setting_change);
-			break;
-		}
-		case ClientMessage:
-		{
-			if (event.xclient.message_type == wm_protocols &&
-				Atom(event.xclient.data.l[0]) == wm_delete_window)
 			{
-				//printf( "Received WM_DELETE_WINDOW\n" );
-				exit(0);
+				Win.ready = true;
+				break;
 			}
-			break;
-		}
+		case ConfigureNotify:
+			{
+				XConfigureEvent &cevent = event.xconfigure;
+				reshapeCB( cevent.width, cevent.height );
+				break;
+			}
+		case KeyPress:
+			{
+				char chr;
+				KeySym symbol;
+				XComposeStatus status;
+
+				XLookupString( &event.xkey, &chr, 1, &symbol, &status );
+
+				keyboardCB( symbol, chr, event.xkey.x, event.xkey.y,
+					setting_change );
+				break;
+			}
+		case ClientMessage:
+			{
+				if ( event.xclient.message_type == wm_protocols &&
+					Atom( event.xclient.data.l[0] ) == wm_delete_window )
+				{
+					//printf( "Received WM_DELETE_WINDOW\n" );
+					exit(0);
+				}
+				break;
+			}
 		}
 	}
 }
-
-#endif
 
 //----------------------------------------------------------------------------
 Atom wm_protocols;
@@ -454,20 +395,21 @@ void mainLoop()
 
 	while (WOMA::game_state != ENGINE_RESTART)
 	{
-	#if CORE_ENGINE_LEVEL >= 2 // PROCESS EVENTS:
+
 		{
 			// Update frame rate
-			static timeval last_xcheck = { 0,0 };
+			static timeval last_xcheck = {0,0};
 			struct timeval now;
-			gettimeofday(&now, 0);
+			gettimeofday( &now, 0 );
 			// Check X events every 1/10 second
-			if (elapsedMsec(last_xcheck, now) > 100)
+			if ( elapsedMsec( last_xcheck, now ) > 100 )
 			{
-				processXEvents(wm_protocols, wm_delete_window);
+				processXEvents( wm_protocols, wm_delete_window );
 				last_xcheck = now;
 			}
 		}
-	#endif
+
+
 	
 	}
 }

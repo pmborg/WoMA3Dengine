@@ -55,9 +55,9 @@ public:
 
 private:
 	bool mResizing;
-#if CORE_ENGINE_LEVEL >= 2
+
 	bool ApplicationInitMainWindow(/*glxOpenGLClass*/ void* OpenGL);
-#endif
+
 };
 
 /////////////

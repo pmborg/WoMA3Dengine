@@ -17,12 +17,12 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Output - LOG INFO and FATAL ERRORs to "report".txt file
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
 
 #include "main.h"
 #if defined USE_LOG_MANAGER
 #include "OSengine.h"
-
+#include "mem_leak.h"
 #if defined WINDOWS_PLATFORM
 #include <shlwapi.h>
 #endif

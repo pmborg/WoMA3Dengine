@@ -15,11 +15,10 @@
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
 
 #pragma once
 
-#ifndef __ANDROIDNEWSYSTEMCLASS_H__
 #include "SystemClass.h"
 
 class AndroidNewSystemClass : public SystemClass
@@ -34,4 +33,6 @@ public:
 	int APPLICATION_MAIN_LOOP();
 };
 
-#endif
+//#if defined WINDOWS_PLATFORM && !defined ANDROID_PLATFORM
+//&& !defined NewWomaEngine
+

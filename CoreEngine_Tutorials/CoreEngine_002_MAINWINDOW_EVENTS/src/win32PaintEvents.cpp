@@ -17,14 +17,23 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Paint the main window depending of engine state screen page.
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567142;
 
 #include "OSengine.h"
 #include "WinSystemClass.h"
 #include "OSmain_dir.h"
-
+#include "mem_leak.h"
+#include "stateMachine.h"
 
 #if CORE_ENGINE_LEVEL >= 2 && defined WINDOWS_PLATFORM 
+
+#if defined ALLOW_LOADING_SPLASH && defined WINDOWS_PLATFORM  //ENGINE_LEVEL >= 10 && 
+#include "fileLoader.h"
+#endif
+
+#if defined ALLOW_LOADING_SPLASH
+void	PaintSplashScreen(HDC hdc);
+#endif
 
 
 // ---------------------------------------------------------------------------------------------
