@@ -91,9 +91,6 @@
     <ClInclude Include="..\include\woma_exception.h">
       <Filter>Include\003</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\win32InputClass.h">
-      <Filter>Include\002</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.h">
       <Filter>Include\LIB_TINYXML2\include</Filter>
     </ClInclude>
@@ -198,16 +195,10 @@
     <ClCompile Include="..\src\1CheckSYS.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\3CheckSetup.cpp">
-      <Filter>src\004</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\4CheckEngineUpdates.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
     <ClCompile Include="..\src\5LaunchEngine.cpp">
-      <Filter>src\004</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\7PprocessorInfo.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
     <ClCompile Include="..\src\fpsClass.cpp">

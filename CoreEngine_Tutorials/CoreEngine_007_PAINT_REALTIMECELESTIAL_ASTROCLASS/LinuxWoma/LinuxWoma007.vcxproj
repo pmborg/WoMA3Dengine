@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{7ac67ac1-fda5-4981-9649-7ec7e1e08c2d}</ProjectGuid>
+    <ProjectGuid>{2397914C-D132-4627-A933-62BD3669E240}</ProjectGuid>
     <Keyword>Linux</Keyword>
     <RootNamespace>LinuxWoma</RootNamespace>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
@@ -19,12 +19,12 @@
     <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
     <TargetLinuxPlatform>Generic</TargetLinuxPlatform>
     <LinuxProjectType>{D51BCBC9-82E9-4017-911E-C93873C4EA2B}</LinuxProjectType>
-    <ProjectName>LinuxWoma004</ProjectName>
+    <ProjectName>LinuxWoma007</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-    <RemoteCopyIncludeDirectories>C:\WoMAengine2023\Android-WomaEngine\Android2\Android2.NativeActivity\GLengine</RemoteCopyIncludeDirectories>
+    <RemoteCopyIncludeDirectories>C:\WoMAengine2023_\Android-WomaEngine\Android2\Android2.NativeActivity\GLengine</RemoteCopyIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -35,15 +35,17 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>../..;..;.;C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH\include;C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH\linux\include;C:\WoMA3Dengine\CoreEngine_Tutorials\;/usr/include/atk-1.0/;/usr/lib/x86_64-linux-gnu/graphene-1.0/include/;/usr/include/graphene-1.0;/usr/include/gdk-pixbuf-2.0/;/usr/include/harfbuzz/;/usr/include/pango-1.0;/usr/include/cairo/;/usr/lib/x86_64-linux-gnu/glib-2.0/include/;/usr/include;/usr/include/glib-2.0;/usr/include/gtk-3.0__;/usr/include/gtk-2.0;/usr/lib/x86_64-linux-gnu/gtk-2.0/include/;c:\womaengine2023_\SOURCE_CODE\CoreEngine_005_PAINT_SETTINGS_XML\include;c:\womaengine2023_\SOURCE_CODE\CoreEngine_006_PACKMANAGER_IDEA_CPU_BENCHMARK\include;c:\womaengine2023_\SOURCE_CODE\CoreEngine_007_PAINT_REALTIMECELESTIAL_ASTROCLASS\include;c:\womaengine2023_\SOURCE_CODE\CoreEngine_009_PAINT_METAR_WEATHER_REALTIME\include;c:\womaengine2023_\_EXTERNAL_\imgui\backends;c:\womaengine2023_\_EXTERNAL_\imgui;c:\womaengine2023_\DXEngine_019\include;c:\womaengine2023_\DXEngine_021\include;c:\womaengine2023_\DXEngine_022\include;c:\womaengine2023_\DXEngine_023\include;c:\womaengine2023_\DXEngine_025\include;c:\womaengine2023_\DXEngine_027\include;c:\womaengine2023_\DXEngine_028\include;c:\womaengine2023_\_EXTERNAL_\IMAGING\JPG_LIB\include;c:\womaengine2023_\_EXTERNAL_\IMAGING\PNG_LIB\include;c:\womaengine2023_\ExternalTools\TinyXML_LIB\include___;c:\womaengine2023_\ExternalTools\TinyXML_LIB.v2\tinyxml2-10.0.0;c:\womaengine2023_\gl4linuxtut14_src\Engine;c:\womaengine2023_\LinuxWoma\LinuxWoma;c:\womaengine2023_\ExternalTools\geolite2++-0.0.1-2561-Source\src-lib;c:\womaengine2023_\ExternalTools\libmaxminddb-main\include;$(IncludePath)</IncludePath>
+    <IncludePath>../..;..;.;../include;..\linux\include;C:\WoMA3Dengine\CoreEngine_Tutorials\;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;/usr/include/atk-1.0/;/usr/lib/x86_64-linux-gnu/graphene-1.0/include/;/usr/include/graphene-1.0;/usr/include/gdk-pixbuf-2.0/;/usr/include/harfbuzz/;/usr/include/pango-1.0;/usr/include/cairo/;/usr/lib/x86_64-linux-gnu/glib-2.0/include/;/usr/include;/usr/include/glib-2.0;/usr/include/gtk-3.0__;/usr/include/gtk-2.0;/usr/lib/x86_64-linux-gnu/gtk-2.0/include/;$(IncludePath)</IncludePath>
     <SourcePath>
     </SourcePath>
-    <AdditionalSourcesToCopyMapping>C:\WoMAengine2023_\Android-WomaEngine\Android2\Android2.NativeActivity\GLengine</AdditionalSourcesToCopyMapping>
+    <AdditionalSourcesToCopyMapping>C:\WoMAengine2023__\Android-WomaEngine\Android2\Android2.NativeActivity\GLengine</AdditionalSourcesToCopyMapping>
   </PropertyGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.h" />
     <ClInclude Include="..\..\level.h" />
     <ClInclude Include="..\..\tech-level.h" />
     <ClInclude Include="..\..\woma_engine_assets.h" />
+    <ClInclude Include="..\include\ApplicationClass.h" />
     <ClInclude Include="..\include\default_settings_xml.h" />
     <ClInclude Include="..\include\fileLoader.h" />
     <ClInclude Include="..\include\fpsClass.h" />
@@ -57,7 +59,6 @@
     <ClInclude Include="..\include\OSmain_dir.h" />
     <ClInclude Include="..\include\platform.h" />
     <ClInclude Include="..\include\processorInfo.h" />
-    <ClInclude Include="..\linux\include\Rinputclass.h" />
     <ClInclude Include="..\include\standard_platform.h" />
     <ClInclude Include="..\include\stateMachine.h" />
     <ClInclude Include="..\include\SystemClass.h" />
@@ -67,21 +68,27 @@
     <ClInclude Include="..\include\TrigonometryMathClass.h" />
     <ClInclude Include="..\include\winCpuCores.h" />
     <ClInclude Include="..\include\wmiUtilClass.h" />
+    <ClInclude Include="..\include\WomaSetupManager.h" />
+    <ClInclude Include="..\include\woma_exception.h" />
     <ClInclude Include="..\include\woma_macros.h" />
+    <ClInclude Include="..\include\xml_loader.h" />
     <ClInclude Include="..\linux\include\linuxsystemclass.h" />
     <ClInclude Include="..\linux\include\linux.h" />
+    <ClInclude Include="..\linux\include\Rinputclass.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\CoreEngine_006_PACKMANAGER_IDEA_CPU_BENCHMARK\linux\src\Rinputclass.cpp" />
+    <ClCompile Include="..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.cpp" />
     <ClCompile Include="..\..\main.cpp" />
     <ClCompile Include="..\linux\src\linux.cpp" />
     <ClCompile Include="..\linux\src\linuxsystemclass.cpp" />
     <ClCompile Include="..\linux\src\main_linux.cpp" />
+    <ClCompile Include="..\linux\src\Rinputclass.cpp" />
     <ClCompile Include="..\src\0CheckOS.cpp" />
     <ClCompile Include="..\src\1CheckSYS.cpp" />
     <ClCompile Include="..\src\4CheckEngineUpdates.cpp" />
     <ClCompile Include="..\src\5LaunchEngine.cpp" />
     <ClCompile Include="..\src\7ProcessorInfo.cpp" />
+    <ClCompile Include="..\src\ApplicationClass.cpp" />
     <ClCompile Include="..\src\default_settings_xml.cpp" />
     <ClCompile Include="..\src\fileLoader.cpp" />
     <ClCompile Include="..\src\fpsClass.cpp" />
@@ -94,11 +101,13 @@
     <ClCompile Include="..\src\SystemClass.cpp" />
     <ClCompile Include="..\src\TimerClass.cpp" />
     <ClCompile Include="..\src\TrigonometryMathClass.cpp" />
+    <ClCompile Include="..\src\xml_settings_loader.cpp" />
+    <ClCompile Include="..\src\xml_settings_saver.cpp" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
-      <PreprocessorDefinitions>DEBUG;DEMO_LEVEL=4;MAINENGINE_LINUX</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DEBUG;DEMO_LEVEL=5;MAINENGINE_LINUX</PreprocessorDefinitions>
       <CppLanguageStandard>c++11</CppLanguageStandard>
     </ClCompile>
     <Link>

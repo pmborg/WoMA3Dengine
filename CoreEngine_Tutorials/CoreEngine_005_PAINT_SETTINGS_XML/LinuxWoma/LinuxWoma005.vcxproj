@@ -58,7 +58,7 @@
     <ClInclude Include="..\include\OSmain_dir.h" />
     <ClInclude Include="..\include\platform.h" />
     <ClInclude Include="..\include\processorInfo.h" />
-    <ClInclude Include="..\include\Rinputclass.h" />
+    <ClInclude Include="..\linux\include\Rinputclass.h" />
     <ClInclude Include="..\include\standard_platform.h" />
     <ClInclude Include="..\include\stateMachine.h" />
     <ClInclude Include="..\include\SystemClass.h" />
@@ -66,7 +66,6 @@
     <ClInclude Include="..\include\systemManager.h" />
     <ClInclude Include="..\include\timerClass.h" />
     <ClInclude Include="..\include\TrigonometryMathClass.h" />
-    <ClInclude Include="..\include\win32InputClass.h" />
     <ClInclude Include="..\include\winCpuCores.h" />
     <ClInclude Include="..\include\wmiUtilClass.h" />
     <ClInclude Include="..\include\WomaSetupManager.h" />
@@ -78,16 +77,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.cpp" />
+    <ClCompile Include="..\..\CoreEngine_006_PACKMANAGER_IDEA_CPU_BENCHMARK\linux\src\Rinputclass.cpp" />
+    <ClCompile Include="..\..\CoreEngine_006_PACKMANAGER_IDEA_CPU_BENCHMARK\src\7ProcessorInfo.cpp" />
     <ClCompile Include="..\..\main.cpp" />
     <ClCompile Include="..\linux\src\linux.cpp" />
     <ClCompile Include="..\linux\src\linuxsystemclass.cpp" />
     <ClCompile Include="..\linux\src\main_linux.cpp" />
     <ClCompile Include="..\src\0CheckOS.cpp" />
     <ClCompile Include="..\src\1CheckSYS.cpp" />
-    <ClCompile Include="..\src\3CheckSetup.cpp" />
     <ClCompile Include="..\src\4CheckEngineUpdates.cpp" />
     <ClCompile Include="..\src\5LaunchEngine.cpp" />
-    <ClCompile Include="..\src\7PprocessorInfo.cpp" />
     <ClCompile Include="..\src\default_settings_xml.cpp" />
     <ClCompile Include="..\src\fileLoader.cpp" />
     <ClCompile Include="..\src\fpsClass.cpp" />
@@ -97,7 +96,6 @@
     <ClCompile Include="..\src\mem_leak.cpp" />
     <ClCompile Include="..\src\OSengine.cpp" />
     <ClCompile Include="..\src\OSmain_dir.cpp" />
-    <ClCompile Include="..\src\Rinputclass.cpp" />
     <ClCompile Include="..\src\SystemClass.cpp" />
     <ClCompile Include="..\src\TimerClass.cpp" />
     <ClCompile Include="..\src\TrigonometryMathClass.cpp" />
