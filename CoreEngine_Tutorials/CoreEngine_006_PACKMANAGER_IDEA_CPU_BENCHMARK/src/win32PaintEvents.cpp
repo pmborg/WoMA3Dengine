@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: win32PaintEvents.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,14 +17,27 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Paint the main window depending of engine state screen page.
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
+//WomaIntegrityCheck = 1234567142;
 
-#include "main.h"
+#include "OSengine.h"
 #include "WinSystemClass.h"
 #include "OSmain_dir.h"
 #include "mem_leak.h"
+#include "stateMachine.h"
 
+#if CORE_ENGINE_LEVEL >= 2 && defined WINDOWS_PLATFORM 
+
+#if defined ALLOW_LOADING_SPLASH && defined WINDOWS_PLATFORM  //ENGINE_LEVEL >= 10 && 
+#include "fileLoader.h"
+#endif
+
+#if CORE_ENGINE_LEVEL >= 4 && defined USE_USER_SETUP
 int		MainWindowPaint(UINT monitor);
+#endif
+
+#if defined ALLOW_LOADING_SPLASH
+void	PaintSplashScreen(HDC hdc);
+#endif
 
 
 // ---------------------------------------------------------------------------------------------
@@ -39,8 +52,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 		break;
 	}
 
+#if CORE_ENGINE_LEVEL >= 4 && defined USE_USER_SETUP
 	case WM_PAINT:
-	#if defined _DEBUG
+	#if defined USE_STATUSBAR //#if defined _DEBUG
 		if (SystemHandle->m_hWnd) {
 			if (SystemHandle->statusbar)
 				DestroyWindow(SystemHandle->statusbar);
@@ -55,6 +69,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 			MainWindowPaint(i);
 		break;
 	}
+#endif
 
 #ifdef _EXTRA_DEBUG
 	default:
@@ -67,23 +82,32 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 	return SystemHandle->MessageHandler(hwnd, umessage, wparam, lparam);
 }
 
+#if CORE_ENGINE_LEVEL >= 4 && defined USE_USER_SETUP
 void PaintSetup(HDC hdc, HDC hdcMem, HFONT font_title, HFONT font, int scr) 
 {
 	// Paint all text Fonts:
 	// ---------------------------------------------------------------------------------------------
-	if (WOMA::game_state == GAME_SETUP) {
+	if (WOMA::game_state == GAME_SETUP) 
+	{
 		SelectObject(hdcMem, font_title);		//Select the Font to Render
 
 		const TCHAR SETUP[] = TEXT("S E T U P");
-		TextOut(hdcMem, 50, 50, SETUP, (int)_tcslen(SETUP));
+		TextOut(hdcMem, 25, 25, SETUP, (int)_tcslen(SETUP));
+
 		BitBlt(hdc, 0, 0, SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT, hdcMem, 0, 0, SRCPAINT);
-	}
-	else {
-		SelectObject(hdcMem, font);		//Select the Font to Render
+	} else {
+		HGDIOBJ obj = SelectObject(hdcMem, font);		//Select the Font to Render
 
 		if (scr >= 0)
 		{
 			int TextToPrintSize = (int)SystemHandle->TextToPrint[scr].size();
+
+			#if CORE_ENGINE_LEVEL >= 4 && defined USE_SYSTEM_CHECK // BEFORE need to be: ApplicationInitMainWindow() & AFTER need to be: InitSelectedDriver()
+			if (TextToPrintSize == 0)
+				SystemHandle->InitializeSystemScreen(10, 10);		// SETUP SCREEN: F1,F2,F3,F4,F5,F6
+			#endif
+
+			TextToPrintSize = (int)SystemHandle->TextToPrint[scr].size();
 			for (size_t i = 0; i < TextToPrintSize; i++)
 			{
 				TextOut(hdcMem, SystemHandle->TextToPrint[scr][i].x, SystemHandle->TextToPrint[scr][i].y,
@@ -103,9 +127,10 @@ int MainWindowPaint(UINT monitor)
 	// DWORD iQuality, DWORD iPitchAndFamily, _In_opt_ LPCSTR pszFaceName);
 
 	/*due RESIZE: cant be static!!!*/
-	HFONT font = CreateFont((int)SystemHandle->fontSizeX, 0, 0, 0, (int)SystemHandle->fontSizeY, FALSE,
-		FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-		ANTIALIASED_QUALITY, DEFAULT_PITCH, TEXT("Calibri"));
+	HFONT font = CreateFont((int)SystemHandle->fontSizeX, 0, 0, 0, 
+							(int)SystemHandle->fontSizeY, FALSE,
+							FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+							ANTIALIASED_QUALITY, DEFAULT_PITCH, TEXT("Calibri"));
 
 	HFONT font_title = CreateFont(50, 0, 0, 0, 50, FALSE,
 		FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
@@ -123,20 +148,39 @@ int MainWindowPaint(UINT monitor)
 	case GAME_SYSTEM_SETTINGS:
 		scr = 0;
 		break;
+#if defined USE_ASTRO_CLASS
+	case GAME_CELESTIAL_INFO:
+		scr = 1;
+		break;
+#endif
+#if defined USE_METARCLASS
+	case GAME_WEATHER_INFO:
+		scr = 2;
+		break;
+#endif
 	}
+
+#if defined  (WINDOWS_PLATFORM)
 
 	// Paint BackGround Image:
 	// ---------------------------------------------------------------------------------------------
+	#if defined ALLOW_LOADING_SPLASH
+	if (WOMA::game_state <= GAME_MENU)
+		PaintSplashScreen(hdc); // (Loading Splash Screen) Default Background
+	#endif
 
 	switch (WOMA::game_state)
 	{
 
 		case GAME_SETUP:			//F6
+	#if defined CLIENT_SCENE_SETUP
 		if (!SystemHandle->womaSetup)
 			//
 				SystemHandle->womaSetup = NEW WomaSetupManager;
 				if (!SystemHandle->womaSetup->m_setupWnd)
 					SystemHandle->womaSetup->Initialize(NULL);
+
+	#endif
 
 			break;
 	}//switch
@@ -151,13 +195,13 @@ int MainWindowPaint(UINT monitor)
 
 	PaintSetup(hdc, hdcMem, font_title, font, scr);
 
-#if defined USE_LOADING_THREADS
+#if defined USE_LOADING_THREADS || DX_ENGINE_LEVEL >= 37
 	if (WOMA::game_state == GAME_LOADING)
 	{
 		TCHAR printOnLoading[MAX_STR_LEN] = { 0 };
 		if (WOMA::num_loading_objects < SystemHandle->xml_loader.theWorld.size())
-	#if defined SAVEM3D
-			StringCchPrintf(printOnLoading, MAX_STR_LEN, TEXT("Loading OBJ -> Saving M3D: [%d/%d] %s"), WOMA::num_loading_objects, SystemHandle->xml_loader.theWorld.size(), SystemHandle->xml_loader.theWorld[WOMA::num_loading_objects-1].filename);
+	#if defined SAVEW3D
+			StringCchPrintf(printOnLoading, MAX_STR_LEN, TEXT("Loading OBJ -> Saving W3D: [%d/%d] %s"), WOMA::num_loading_objects, SystemHandle->xml_loader.theWorld.size(), SystemHandle->xml_loader.theWorld[WOMA::num_loading_objects-1].filename);
 	#else
 			StringCchPrintf(printOnLoading, MAX_STR_LEN, TEXT("Loading OBJ: [%d/%d] %s"), WOMA::num_loading_objects, SystemHandle->xml_loader.theWorld.size(), SystemHandle->xml_loader.theWorld[WOMA::num_loading_objects - 1].filename);
 	#endif
@@ -179,7 +223,11 @@ int MainWindowPaint(UINT monitor)
 
 // ---------------------------------------------------------------------------------------------
 	EndPaint(SystemHandle->m_hWnd, &ps);
+#endif
 
 	return scr;
 }
 
+#endif
+
+#endif

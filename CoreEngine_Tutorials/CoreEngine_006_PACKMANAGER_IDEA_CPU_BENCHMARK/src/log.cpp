@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: log.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,18 +17,24 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Output - LOG INFO and FATAL ERRORs to "report".txt file
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
+//WomaIntegrityCheck = 1234567142;
 
 #include "main.h"
-
+#if defined USE_LOG_MANAGER
+#include "OSengine.h"
+#include "mem_leak.h"
+#if defined WINDOWS_PLATFORM
 #include <shlwapi.h>
+#endif
+
+#if defined ANDROID_PLATFORM && !defined NewWomaEngine
+#include "AndroidEngine.h"
+#endif
 
 #include "log.h"
-#include "mem_leak.h"
+
 #include "OSmain_dir.h"
 #include "language.h"
-
-#define MAXBUFF 5*KBs
 
 namespace WOMA
 {
@@ -44,13 +50,14 @@ public:
 	FILE* debugFile;	// WOMA "debug file" pointer
 	bool ON;			// Log is ON
 
-public:
 	LogManager();
 	~LogManager();
 
 	TCHAR* getLogFileName();
 
+#if defined WINDOWS_PLATFORM
 	void DEBUG_MSG(WCHAR* strMsg, ...);
+#endif
 
 	void DEBUG_MSG(CHAR* strMsg, ...);
 };
@@ -70,7 +77,28 @@ void ILogManager::ShutdownInstance()
 	if (logManager)
 		delete ((LogManager*)logManager);
 }
+#if defined ANDROID_PLATFORM
+std::string android_temp_folder(struct android_app* app) 
+{
+	JNIEnv* env;
+	app->activity->vm->AttachCurrentThread(&env, NULL);
 
+	jclass activityClass = env->FindClass("android/app/NativeActivity");
+	jmethodID getCacheDir = env->GetMethodID(activityClass, "getCacheDir", "()Ljava/io/File;");
+	jobject cache_dir = env->CallObjectMethod(app->activity->clazz, getCacheDir);
+
+	jclass fileClass = env->FindClass("java/io/File");
+	jmethodID getPath = env->GetMethodID(fileClass, "getPath", "()Ljava/lang/String;");
+	jstring path_string = (jstring)env->CallObjectMethod(cache_dir, getPath);
+
+	const char* path_chars = env->GetStringUTFChars(path_string, NULL);
+	std::string temp_folder(path_chars);
+
+	env->ReleaseStringUTFChars(path_string, path_chars);
+	app->activity->vm->DetachCurrentThread();
+	return temp_folder;
+}
+#endif
 //-------------------------------------------------------------------------------------------
 LogManager::LogManager()
 //-------------------------------------------------------------------------------------------
@@ -79,15 +107,23 @@ LogManager::LogManager()
 	debugFile = NULL; // Our "debug file" pointer
 
 	//public:
+#if defined ANDROID_PLATFORM
+	REPORT_FILE = android_temp_folder(engine.app);
+	REPORT_FILE.append(FILE_REPORT_LOG);
+#else
 	REPORT_FILE = PUBLIC_DOCUMENTS;
-	REPORT_FILE.append(TEXT("REPORT.txt"));
+	REPORT_FILE.append(FILE_REPORT_LOG);
+#endif
 
 	// OPEN FILE:
 	UINT errno_t = _tfopen_s(&debugFile, REPORT_FILE.c_str(), TEXT("w"));
 	if (errno_t != 0) {
 		// This means that the file is locked by another Woma APP instance, dont abort because of that!
 		//CANT USE WomaMessageBox:
+		WOMA_LOGManager_DebugMSG(TEXT("[ERROR] WARNING! - LOG MANGER - Cant Open for Write: %s\n"), REPORT_FILE.c_str());
+		#if defined WINDOWS_PLATFORM
 		MessageBox(NULL, REPORT_FILE.c_str(), TEXT("WARNING! - LOG MANGER - Cant Open for Write"), MB_ICONWARNING);
+		#endif
 		ON = false;
 	}
 	else
@@ -139,10 +175,11 @@ void LogManager::OutputDebugStringReportW(WCHAR* x)
 void LogManager::OutputDebugStringReport(char* x)
 //------------------------------------------------------------------
 {
-	printf("%s", x);									//NOTE: Cant Use here: _tprintf
+	_tprintf("%s", x);									//NOTE: Cant Use here: _tprintf
 	fwrite(x, sizeof(char), strlen(x), debugFile);	//NOTE: Cant Use here: _tcslen
 }
 
+#if defined WINDOWS_PLATFORM
 //-------------------------------------------------------------------------------------------
 void LogManager::DEBUG_MSG(WCHAR* strMsg, ...)
 //-------------------------------------------------------------------------------------------
@@ -157,12 +194,14 @@ void LogManager::DEBUG_MSG(WCHAR* strMsg, ...)
 	va_end(args);
 
 	// OUTPUT: messages on Dev Studio Console (Windows)
+#if defined WINDOWS_PLATFORM
 #ifdef UNICODE
 	OutputDebugString(WstrBuffer);	// Input is Wchar
 #else
 	CHAR strBuffer[MAXBUFF] = { 0 };
 	WideCharToMultiByte(CP_ACP, 0, WstrBuffer, -1, strBuffer, MAXBUFF, NULL, NULL); //Note: Cant use: wtoa
 	OutputDebugString(strBuffer);	// Input is char
+#endif
 #endif
 
 	// OUTPUT: OS CONSOLE & FILE ".txt":
@@ -177,6 +216,7 @@ void LogManager::DEBUG_MSG(WCHAR* strMsg, ...)
 	fflush(debugFile);
 #endif
 }
+#endif
 
 //-------------------------------------------------------------------------------------------
 void LogManager::DEBUG_MSG(CHAR* strMsg, ...)
@@ -192,12 +232,14 @@ void LogManager::DEBUG_MSG(CHAR* strMsg, ...)
 	va_end(args);
 
 	// OUTPUT: IN VISUAL STUDIO CONSOLE:
+#if defined WINDOWS_PLATFORM
 #ifdef UNICODE
 	WCHAR WstrBuffer[MAXBUFF] = { 0 };
-	atow(WstrBuffer, strBuffer, MAXBUFF);	 // char ==> wchar
-	OutputDebugString(WstrBuffer);		// Input is Wchar
+	atow(WstrBuffer, strBuffer, MAXBUFF);	// char ==> wchar
+	OutputDebugString(WstrBuffer);			// Input is Wchar
 #else
-	OutputDebugString(strBuffer);	// Input is Wchar
+	OutputDebugString(strBuffer);			// Input is Wchar
+#endif
 #endif
 
 	// OUTPUT: OS CONSOLE & FILE ".txt":
@@ -209,35 +251,44 @@ void LogManager::DEBUG_MSG(CHAR* strMsg, ...)
 #endif
 }
 
-
-int endian()
-{
-	short int word = 0x0001;
-	char* byte = (char*)&word;
-	return (byte[0] ? LITTLE_ENDIAN : BIG_ENDIAN);
-}
-
 void start_log_manager()
 {
 	// [2]  LogManager::CreateInstance (After init_os_main_dirs)!
 	// -------------------------------------------------------------------------------------------
+#if defined USE_LOG_MANAGER
 	logManager = ILogManager::CreateInstance();
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("LogManager Started\n"));
+#endif
+	WOMA_LOGManager_DebugMSGAUTO(TEXT("LOGMANAGER STARTED\n"));
+	WOMA_LOGManager_DebugMSGAUTO(TEXT("------------------------------------------------------------------------------------------\n"));
 
 	// [3]  PRINT Log Dirs: (After init_os_main_dirs & After logManager)
 	// -------------------------------------------------------------------------------------------
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("Init: logDirs()\n"));
+	//WOMA_LOGManager_DebugMSGAUTO(TEXT("Init: logDirs()\n"));
+#if defined WINDOWS_PLATFORM && ENGINE_LEVEL >= 3
+	logDirs(isXP(), isWow64());
+#else
 	logDirs();
+#endif
 
 	// [5] Log Binary Type:
 	// -------------------------------------------------------------------------------------------
 	// ALSO: After logManager!
-#ifdef _DEBUG
+#if defined _DEBUG || defined DEBUG
+#ifdef RELEASE
+	WOMA_LOGManager_DebugMSG("Binary Type: [DEBUG RELEASE]\n");
+#else
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("Binary Type: [DEBUG]\n"));
+#endif
+#else
+#ifdef RELEASE
+	WOMA_LOGManager_DebugMSG("Binary Type: [RELEASE]\n");
 #else
 	WOMA_LOGManager_DebugMSG("Binary Type: [NDEBUG]\n");
+#endif
 #endif
 
 }
 
-}
+}//namespace
+
+#endif

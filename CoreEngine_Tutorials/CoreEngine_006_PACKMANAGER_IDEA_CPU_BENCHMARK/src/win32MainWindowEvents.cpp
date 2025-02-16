@@ -3,9 +3,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: win32MainWindowEvents.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -18,16 +18,19 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
+//WomaIntegrityCheck = 1234567142;
 
 #pragma warning( disable : 4312 ) // warning C4312: 'type cast': conversion from 'int' to 'HMENU' of greater size
-#include "platform.h"
 #include "stateMachine.h"
 #include "OSmain_dir.h"
 
+#if defined WINDOWS_PLATFORM
 #include "winsystemclass.h"
 
 #include "xml_loader.h"
+
+#if CORE_ENGINE_LEVEL >= 2 && defined USE_STATUSBAR
+#include "dxWinSystemClass.h"
 
 #if defined USE_INTRO_VIDEO_DEMO
 extern void CALLBACK OnGraphEvent(HWND hwnd, long evCode, LONG_PTR param1, LONG_PTR param2);
@@ -58,7 +61,7 @@ HWND DoCreateStatusBar(HWND hwndParent, int idStatus, HINSTANCE hinst, int cPart
 	// Ensure that the common control DLL is loaded.
 	InitCommonControls();
 
-	DWORD windowStyle = ((SystemHandle->AppSettings->AllowResize) && (DX_ENGINE_LEVEL >= 20)) ?
+	DWORD windowStyle = ((SystemHandle->AppSettings->AllowResize) && (LEVEL >= 20)) ?
 		SBARS_SIZEGRIP |        // includes a sizing grip
 		WS_CHILD | WS_VISIBLE	// creates a visible child window
 		:
@@ -105,6 +108,7 @@ HWND DoCreateStatusBar(HWND hwndParent, int idStatus, HINSTANCE hinst, int cPart
 
 	return hwndStatus;
 }
+#endif
 
 	#define TIMER_TITLE 0
 
@@ -123,14 +127,18 @@ void WinSystemClass::StartTimer()
 	// Dont Update on: FullScreen or Full-windowed
 	if ((!AppSettings->FULL_SCREEN) && (windowStyle != 0x96080000)) 
 	{
-		SetTimer(m_hWnd, TIMER_TITLE, 1000 / KEYB_TIMES_PER_SECOND, NULL);	// 1000ms = 1 second!
+		SetTimer(m_hWnd, TIMER_TITLE, 2000 / KEYB_TIMES_PER_SECOND, NULL);	// 2000ms = 2 seconds! (1000ms = 1 second!)
 		
 	}
 
 }
 
+//extern void ImGuiShutdown();
+//extern bool ImGuiDONE;  // Main loop
+
+#if CORE_ENGINE_LEVEL >= 2 && defined WINDOWS_PLATFORM	
 //----------------------------------------------------------------------------
-LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
+LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lparam)
 //----------------------------------------------------------------------------
 {
 	// Note: break;		--> Means call windows default handler also!
@@ -140,9 +148,10 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 
 	switch (umsg)
 	{
+	#if CORE_ENGINE_LEVEL >= 5 && defined CLIENT_SCENE_SETUP
 	case WM_COMMAND: // Process WoMA Start Button
-		wmId = LOWORD(wparam);
-		wmEvent = HIWORD(wparam);
+		wmId = LOWORD(wParam);
+		wmEvent = HIWORD(wParam);
 
 		// Parse the menu selections:
 		switch (wmId)
@@ -154,7 +163,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 					//BUTTON: OK
 					if (HWND(lparam) == womaSetup->m_hBtnOK)
 					{
-						WOMA::game_state = GAME_MENU;
+						//WOMA::game_state = GAME_SETUP; // GAME_MENU;
 
 						//GET FULL_SCREEN COMBOBOX: "Display Mode"
 						int index = (int)SendMessage(womaSetup->hWndComboBox[0], CB_GETCURSEL, NULL, NULL);
@@ -173,10 +182,13 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 						int		previous_DRIVER = SystemHandle->AppSettings->DRIVER;
 						SystemHandle->AppSettings->DRIVER = (int)(SendMessage(womaSetup->hWndComboBox[7], CB_GETCURSEL, NULL, NULL));
 						CHAR str[MAX_STR_LEN] = { 0 }; wtoa(str, (TCHAR*)SystemHandle->XML_SETTINGS_FILE.c_str(), MAX_STR_LEN); // wchar ==> char
+						#if defined CLIENT_SCENE_SETUP //#if CORE_ENGINE_LEVEL > 9
 						SystemHandle->xml_loader.saveConfigSettings(str);
-
+						#endif
 						SystemHandle->AppSettings->DRIVER = previous_DRIVER;
 
+						WOMA::game_state = GAME_SETUP;
+						WOMA::previous_game_state = WOMA::game_state;
 						WOMA::game_state = ENGINE_RESTART;
 					}
 
@@ -190,6 +202,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 			}
 		}
 		break;
+	#endif
 
 	case WM_SETFOCUS:
 		if (WOMA::game_state == GAME_PAUSED)
@@ -197,23 +210,39 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 		break;
 
 	case WM_KILLFOCUS:
+	#if !defined _DEBUG
 		if (WOMA::game_state >= GAME_RUN  && WOMA::game_state < ENGINE_RESTART )
 			PAUSE();
+	#endif
 		break;
+
+#if defined USE_DIRECT_INPUT
+		// SOURCE: http://stackoverflow.com/questions/21799069/mouse-wheel-only-can-scroll-either-up-or-down
+	case WM_MOUSEWHEEL:
+		SystemHandle->m_InputManager.mouseWheelIn(wParam);
+		return 0;
+#endif
 
 	// ----------------------------------------------------------------------------
 	// WM_CLOSE -> WM_QUIT -> WM_DESTROY 
 	// ----------------------------------------------------------------------------
 	// Check if the window is being closed: (i.e.) 
 	// MainWindow Close: in Task Bar OR Window [X] (top right corner), etc...
+/*
+	case WM_CLOSE:
+		//KillTimer(hwnd, TIMER_TITLE);
+		WOMA::main_loop_state = -1; 
+		//::PostMessage(hwnd, WM_QUIT, 0, 0);
+		break;// return 0;	// Cancel Close, do nothing.
+*/
 
 	case WM_CLOSE:	// During the shutdown process of the device, the WM_CLOSE message is broadcasted to the applications.
-		{
-			WOMA::game_state = GAME_STOP;
-		}
 
-		::PostMessage(hwnd, WM_QUIT, 0, 0);
-		return 0;			
+		WOMA::main_loop_state = -1;
+		WOMA::game_state = GAME_STOP;
+		//::PostMessage(hwnd, WM_QUIT, 0, 0);
+		break;
+
 
 	case WM_QUIT:
 		ASSERT(SystemHandle);
@@ -221,7 +250,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 		break;
 
 	case WM_DESTROY:	// The main application Window will be destroyed
-		KillTimer(hwnd, TIMER_TITLE);
+		//PostQuitMessage(0); //AQUI
 
 		return 0;
 
@@ -235,11 +264,13 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 	//----------------------------------------------------------------------------
 	// With Direct Input (USE_DIRECT_INPUT) This Messages are not invoked anymore:
 	//----------------------------------------------------------------------------
+#if defined USE_PROCESS_OS_KEYS //CORE_ENGINE_LEVEL >= 3
+  #if !defined USE_DIRECT_INPUT	//USE OS INPUT:
 		// Check if a key has been pressed on the keyboard.
 	case WM_KEYDOWN:
 	{
 		// If a key is pressed send it to the input object so it can record that state.
-		SystemHandle->m_OsInput->KeyDown((unsigned int)wparam);
+		SystemHandle->m_OsInput->KeyDown((unsigned int)wParam);
 		return 0; //break;
 	}
 
@@ -247,9 +278,201 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 	case WM_KEYUP:
 	{
 		// If a key is released then send it to the input object so it can unset the state for that key.
-		SystemHandle->m_OsInput->KeyUp((unsigned int)wparam);
+		SystemHandle->m_OsInput->KeyUp((unsigned int)wParam);
 		return 0; //break;
 	}
+  #elif defined USE_DIRECT_INPUT	//USE DX INPUT:
+
+	// Check if a key has been pressed on the keyboard.
+	case WM_KEYDOWN:
+		{
+			// If a key is pressed send it to the input object so it can record that state.
+			if (SystemHandle->m_OsInput)
+				SystemHandle->m_OsInput->KeyDown((UINT)lparam, (UINT)wParam);
+			return 0;
+		}
+
+		// Check if a key has been released on the keyboard.
+	case WM_KEYUP:
+	{
+		// If a key is released then send it to the input object so it can unset the state for that key.
+		if (SystemHandle->m_OsInput)
+			SystemHandle->m_OsInput->KeyUp((UINT)lparam, (UINT)wParam);
+		return 0;
+	}
+
+	// ON Activate windows: Activate our Direct Keyborad System
+	// -----------------------------------------------------------------------------
+	case WM_ACTIVATEAPP:
+	{
+		if (!(int)wParam == 0)
+			if (SystemHandle)
+				SystemHandle->m_InputManager.Initialize(SystemHandle->m_hinstance);	//hWnd and hInst are just the global
+
+		return 0;
+	}
+  #endif
+#endif
+
+#if defined USE_ALLOW_MAINWINDOW_RESIZE
+	// -----------------------------------------------------------------------------
+	// RE-SIZE: is sent when the user resizes the window.  
+	// -----------------------------------------------------------------------------
+
+	case WM_SIZE:
+	{
+		// Use windows settings!
+		// Save the new client area dimensions.
+		//g_ScreenWidth = LOWORD(lparam);
+		//g_ScreenHeight = HIWORD(lparam);
+
+		// Save the new Real/Client area dimensions (because Window Frame)
+		if (SystemHandle)
+		{
+			// -[][X]
+			if (wParam == SIZE_MINIMIZED) // -
+			{
+				mMaximized = false;
+				WOMA::game_state = GAME_MINIMIZED;
+
+			}
+			else if (wParam == SIZE_MAXIMIZED)	// [] (go from default to maximize!)
+			{
+				SystemHandle->AppSettings->WINDOW_WIDTH = LOWORD(lparam);	// New Usefull Size
+				SystemHandle->AppSettings->WINDOW_HEIGHT = HIWORD(lparam);	// New Usefull Size
+				mMaximized = true;
+				if (WOMA::game_state == GAME_MINIMIZED)
+					UNPAUSE();	//Restore State
+			#if defined USE_STATUSBAR
+				if (SystemHandle->statusbar)
+					DestroyWindow(SystemHandle->statusbar);
+			#endif
+				if (SystemHandle->m_hWnd) 
+					{ ONRESIZE(); }
+			}
+			else if (wParam == SIZE_RESTORED)	// Restore
+			{
+				// Restoring from minimized state?
+				if (WOMA::game_state == GAME_MINIMIZED)
+				{
+					UNPAUSE();	//Restore State
+					if (SystemHandle->m_hWnd) 
+						{ ONRESIZE(); }
+				}
+
+				// Restoring default, from maximized state?
+				else if (mMaximized)
+				{
+					mMaximized = false;
+				#if defined USE_STATUSBAR
+					if (SystemHandle->statusbar)
+						DestroyWindow(SystemHandle->statusbar);
+				#endif
+					if (SystemHandle->m_hWnd) 
+						{ ONRESIZE(); }
+				}
+				else if (mResizing)
+				{
+					// If user is dragging the resize bars, we do not resize 
+					// the buffers here because as the user continuously 
+					// drags the resize bars, a stream of WM_SIZE messages are
+					// sent to the window, and it would be pointless (and slow)
+					// to resize for each WM_SIZE message received from dragging
+					// the resize bars.  So instead, we reset after the user is 
+					// done resizing the window and releases the resize bars, which 
+					// sends a WM_EXITSIZEMOVE message.
+
+					//mResizing = true;
+				}
+				else // API call such as SetWindowPos or mSwapChain->SetFullscreenState.
+				{
+					SystemHandle->AppSettings->WINDOW_WIDTH = LOWORD(lparam);	// New Usefull Size
+					SystemHandle->AppSettings->WINDOW_HEIGHT = HIWORD(lparam);	// New Usefull Size
+					if (SystemHandle->m_hWnd) 
+						{ ONRESIZE(); }
+				}
+
+				#if defined USE_STATUSBAR //#if defined _DEBUG
+					if (SystemHandle->m_hWnd) {
+						if (SystemHandle->statusbar)
+							DestroyWindow(SystemHandle->statusbar);
+						//DoCreateStatusBar(SystemHandle->m_hWnd, 0 idStatus, m_hinstance, 1 cParts);
+						SystemHandle->statusbar = DoCreateStatusBar(SystemHandle->m_hWnd, 0, m_hinstance, 1);
+						SendMessage(SystemHandle->statusbar, SB_SETTEXT, 0, (LPARAM)DEMO_TITLE);
+						if (AppSettings->FULL_SCREEN)
+							::ShowWindow(SystemHandle->statusbar, SW_HIDE);
+					}
+				#endif
+			}
+		}
+
+		return 0;
+	}
+
+	#if defined USE_ASPECT_RATIO
+	// Keep "Aspect Ratio" on Window Resize
+	case WM_SIZING:
+	{
+		LPRECT r = LPRECT(lparam);
+
+		switch (wparam)
+		{
+		case WMSZ_LEFT:
+		case WMSZ_BOTTOMLEFT:
+		case WMSZ_BOTTOMRIGHT:
+		case WMSZ_RIGHT:
+			r->bottom = r->top + (LONG)((float)(r->right - r->left) / SystemHandle->aspect_r);
+			break;
+
+		case WMSZ_TOPRIGHT:
+		case WMSZ_TOP:
+		case WMSZ_BOTTOM:
+			r->right = r->left + (LONG)((float)(r->bottom - r->top)*SystemHandle->aspect_r);
+			break;
+
+		case WMSZ_TOPLEFT:r->left = r->right - (LONG)((float)(r->bottom - r->top)*SystemHandle->aspect_r);
+			break;
+		}
+		return true;
+	}
+	#endif
+
+	// -----------------------------------------------------------------------------
+	// MIN-SIZE: Catch this message so to prevent the window from becoming too small.
+	// -----------------------------------------------------------------------------
+
+	// -----------------------------------------------------------------------------
+	// MOVE: The mainwindow is being dragged...
+	// -----------------------------------------------------------------------------
+	case WM_MOVE:
+	{
+		SystemHandle->AppSettings->WINDOW_Xpos = (int)(short)LOWORD(lparam); //NOTE: (int)(short) --> Allow to receive negative numbers
+		SystemHandle->AppSettings->WINDOW_Ypos = (int)(short)HIWORD(lparam);
+		break;
+	}
+	// WM_EXITSIZEMOVE is sent when the user "drag" to resize window:
+	case WM_ENTERSIZEMOVE:
+	{
+		mResizing = true;
+		PAUSE();
+
+		return 0;
+	}
+
+	// WM_EXITSIZEMOVE is sent when the user "releases" the resize bars:
+	// Here we reset everything based on the new window dimensions.
+	case WM_EXITSIZEMOVE:
+	{
+		UNPAUSE();		// Restore State: "Green" Light to Render Again (after: return 0)
+		if (mResizing)
+			if (SystemHandle->m_hWnd) 
+				{ ONRESIZE(); } // Do the Window, "Buffers" & Textures Re-size
+
+		mResizing = false;
+		return 0;
+	}
+
+#endif
 
 	// -----------------------------------------------------------------------------
 	// REMOTE-DESKTOP: Update flag for "Remote" desktop connect/disconnect
@@ -265,7 +488,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 	// -----------------------------------------------------------------------------
 	case WM_POWERBROADCAST:
 	{
-		switch (wparam)
+		switch (wParam)
 		{
 			// Reject Querys do Suspend or Standby:
 		case PBT_APMQUERYSUSPEND:
@@ -296,7 +519,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 	// POWER: Prevent a powersave mode of monitor or the screensaver
 	case WM_SYSCOMMAND:
 	{
-		if ((wparam & 0xFFF0) == SC_SCREENSAVE || (wparam & 0xFFF0) == SC_MONITORPOWER)
+		if ((wParam & 0xFFF0) == SC_SCREENSAVE || (wParam & 0xFFF0) == SC_MONITORPOWER)
 			return 0;
 	}
 
@@ -307,7 +530,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 	case WM_TIMER: // Once per second:
 		if (WOMA::game_state < GAME_STOP)
 		{
-			switch (wparam)
+			switch (wParam)
 			{
 			case TIMER_TITLE:
 				if (!SystemHandle->AppSettings->FULL_SCREEN)
@@ -319,6 +542,8 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 
 	}
 
-	return DefWindowProc(hwnd, umsg, wparam, lparam);
+	return DefWindowProc(hwnd, umsg, wParam, lparam);
 }
+#endif
 
+#endif

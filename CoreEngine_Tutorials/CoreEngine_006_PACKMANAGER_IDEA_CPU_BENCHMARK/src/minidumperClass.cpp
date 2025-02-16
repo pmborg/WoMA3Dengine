@@ -33,10 +33,11 @@ Copyright (C) 2002  Andy Pennell
 // --------------------------------------------------------------------------------------------
 
 #include "OSengine.h"
-
+#if defined USE_MINIDUMPER
+#include "mem_leak.h"
 #include "minidumperClass.h"
 #include "log.h"
-#include "mem_leak.h"
+
 #include "dumpUploader.h"
 #include "fileLoader.h"
 #include "OSmain_dir.h"
@@ -56,13 +57,30 @@ Copyright (C) 2002  Andy Pennell
 #include "stackTrace.h"
 
 HMODULE hDll = NULL;
+#pragma warning(disable: 4102)
+
+LONG WINAPI VectoredExceptionHandler(PEXCEPTION_POINTERS pExceptionInfo)
+{
+	std::ofstream f;
+	f.open("VectoredExceptionHandler.txt", std::ios::out | std::ios::trunc);
+	f << std::hex << pExceptionInfo->ExceptionRecord->ExceptionCode << std::endl;
+	f.close();
+
+	if (3221225477 == pExceptionInfo->ExceptionRecord->ExceptionCode)
+		WomaMessageBox(TEXT("WOMA Need to restart!"), WOMA::strConsoleTitle, MB_OK);
+
+	exit(ENGINE_RESTART);
+
+	//return EXCEPTION_CONTINUE_SEARCH;
+}
 
 MiniDumper::MiniDumper()
 {
 	SetUnhandledExceptionFilter( TopLevelFilter );
+	//AddVectoredExceptionHandler(1, VectoredExceptionHandler);
 
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567831;
+	WomaIntegrityCheck = 1234567142;
 }
 
 MiniDumper::~MiniDumper() {CLASSDELETE();}
@@ -186,6 +204,7 @@ LONG MiniDumper::TopLevelFilter( struct _EXCEPTION_POINTERS *pExceptionInfo )
         ::MessageBox(NULL, TEXT("WARNING: Error Sending the report!"), WOMA::APP_FULLNAME, MB_OK);
     }
 
-	return retval;
+	return EXCEPTION_CONTINUE_SEARCH; //return retval;
 }
 
+#endif

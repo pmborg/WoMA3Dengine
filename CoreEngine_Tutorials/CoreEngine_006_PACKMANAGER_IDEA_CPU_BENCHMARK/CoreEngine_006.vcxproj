@@ -57,7 +57,6 @@
     <ClInclude Include="include\systemManager.h" />
     <ClInclude Include="include\timerClass.h" />
     <ClInclude Include="include\TrigonometryMathClass.h" />
-    <ClInclude Include="include\win32InputClass.h" />
     <ClInclude Include="include\winCpuClass.h" />
     <ClInclude Include="include\winCpuCores.h" />
     <ClInclude Include="include\WindowPaintClass.h" />
@@ -66,7 +65,6 @@
     <ClInclude Include="include\WomaSetupManager.h" />
     <ClInclude Include="include\woma_exception.h" />
     <ClInclude Include="include\woma_macros.h" />
-    <ClInclude Include="core_engine_level.h" />
     <ClInclude Include="include\language.h" />
     <ClInclude Include="include\log.h" />
     <ClInclude Include="include\mem_leak.h" />
@@ -77,13 +75,11 @@
     <ClCompile Include="src\0CheckOS.cpp" />
     <ClCompile Include="src\1CheckSYS.cpp" />
     <ClCompile Include="src\2UpdateOSifNeeded.cpp" />
-    <ClCompile Include="src\3CheckSetup.cpp" />
     <ClCompile Include="src\4CheckEngineUpdates.cpp" />
     <ClCompile Include="src\5LaunchEngine.cpp" />
-    <ClCompile Include="src\6OperatingSystem.cpp" />
     <ClCompile Include="src\7ProcessorInfo.cpp" />
     <ClCompile Include="src\8SystemFeatures.cpp" />
-    <ClCompile Include="src\ApplicationClass_ext.cpp" />
+    <ClCompile Include="src\ApplicationClass.cpp" />
     <ClCompile Include="src\default_settings_xml.cpp" />
     <ClCompile Include="src\dumpUploader.cpp" />
     <ClCompile Include="src\fileLoader.cpp" />
@@ -92,6 +88,7 @@
     <ClCompile Include="src\idea.cpp" />
     <ClCompile Include="src\Math3D.cpp" />
     <ClCompile Include="src\minidumperClass.cpp" />
+    <ClCompile Include="src\OperatingSystem.cpp" />
     <ClCompile Include="src\OSengine.cpp" />
     <ClCompile Include="src\packManager.cpp" />
     <ClCompile Include="src\stackTrace.cpp" />
@@ -208,9 +205,9 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\ZipUtils_LIB\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;..\..\ThirdParty\ZipUtils_LIB\include</IncludePath>
     <TargetName>CoreEngine_006</TargetName>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_006_PACKMANAGER_IDEA_CPU_BENCHMARK\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_006_PACKMANAGER_IDEA_CPU_BENCHMARK\;C:\WoMA3Dengine\CoreEngine_Tutorials;C:\WoMA3Dengine\CoreEngine_Tutorials\x64\Debug</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\ZipUtils_LIB\include</IncludePath>
@@ -325,7 +322,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);DEMO_LEVEL=6;MAINENGINE_LINUX</PreprocessorDefinitions>
       <ConformanceMode>
       </ConformanceMode>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>

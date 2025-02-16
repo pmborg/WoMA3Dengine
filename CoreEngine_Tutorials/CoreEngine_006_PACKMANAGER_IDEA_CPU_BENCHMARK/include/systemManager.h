@@ -1,10 +1,9 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: systemManager.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,90 +16,41 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567142;
+
 #pragma once
+#pragma warning( disable : 5208 ) // warning C5208: unnamed class used in typedef name cannot declare members other than non-static data members, member enumerations, or member classes
 
 #ifndef systemManager_h_
 #define systemManager_h_
 
-#include "main.h"// TCHAR
+#include "platform.h"// TCHAR
+
+#if defined LINUX_PLATFORM || defined ANDROID_PLATFORM
+#include <sys/utsname.h>
+#endif
 
 #include "timerClass.h"
-#include "ProcessorInfo.h"
+#if CORE_ENGINE_LEVEL >= 4
+#include "processorInfo.h"
 #include "SystemFeatures.h"
 
+#if defined WINDOWS_PLATFORM
 #include "wmiUtilClass.h"
 
 struct DriveList {
-	WCHAR   drive;
-	__int64 freeBytesAvailable;
+	WCHAR   drive = 0;
+	__int64 freeBytesAvailable = 0;
 };
+#endif
 
 #define BUFSIZE 256
 
+#if CORE_ENGINE_LEVEL >= 4 && defined WINDOWS_PLATFORM
 extern int GETOS(void);
+#endif
 
-typedef struct  
-{
-	TCHAR GraphicCard			[MAX_STR_LEN];
-	TCHAR AdapterDACType		[MAX_STR_LEN];
-	TCHAR AdapterRAM			[MAX_STR_LEN];
-	TCHAR DedicatedVideoMemory	[MAX_STR_LEN];
-	TCHAR DedicatedSystemMemory	[MAX_STR_LEN];
-	TCHAR SharedSystemMemory	[MAX_STR_LEN];
-} GPU;
 
-typedef struct  
-{
-	TCHAR szCountryNameBuffer	[MAX_STR_LEN]; // Will hold country
-
-	TCHAR cCurrentPath			[FILENAME_MAX];
-
-	// System
-	TCHAR platform				[MAX_STR_LEN];
-	TCHAR characterSet			[MAX_STR_LEN];
-	TCHAR binaryArchitecture	[MAX_STR_LEN];
-	TCHAR binaryCode			[MAX_STR_LEN];
-
-	// OS
-	TCHAR windowsVersion		[MAX_STR_LEN];
-	TCHAR windowsBuildVersion   [MAX_STR_LEN];
-	TCHAR osName				[MAX_STR_LEN];
-
-	// Processor
-    TCHAR	processorName			[MAX_STR_LEN];
-    TCHAR	processorId				[MAX_STR_LEN];
-	TCHAR	clockSpeed				[MAX_STR_LEN];
-
-    TCHAR	processorPackageCount	[MAX_STR_LEN];
-    TCHAR	NumCoreProcessors		[MAX_STR_LEN];
-	TCHAR	logicalProcessorCount	[MAX_STR_LEN];
-
-	TCHAR	ProcessorCacheL1D		[MAX_STR_LEN];
-	TCHAR	ProcessorCacheL1I		[MAX_STR_LEN];
-	TCHAR	ProcessorCacheL2		[MAX_STR_LEN];
-	TCHAR	ProcessorCacheL3		[MAX_STR_LEN];
-
-	// RAM
-	TCHAR totalMemoryCapacity		[MAX_STR_LEN]; // in GB
-	TCHAR freeMemory				[MAX_STR_LEN]; // in GB
-
-	// BOARD/CPU:
-	 std::vector<STRING>		cpuFeactures;
-	 STRING systemFeatures;
-
-	// FreeSpace
-    std::vector<STRING> drives_List;
-
-	// BenchMark MathSpeed
-	 STRING benchMarkMathSpeed;
-
-	// OS
-	TCHAR cmdLine	[MAX_STR_LEN];
-
-	//GPU
-	std::vector<GPU>	GPUINFO;
-
-} SystemSettings;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: SystemManager
@@ -108,26 +58,28 @@ typedef struct
 class SystemManager
 {
 public:
-	UINT WomaIntegrityCheck = 1234567831;
+	UINT WomaIntegrityCheck = 1234567142;
 	SystemManager();
 	~SystemManager();
 
+	#if defined USE_SYSTEM_CHECK
 	bool CheckOS ();				// Detect Version & System Check
-
 	bool checkCPU();
+	bool checkRAM();
+	bool checkDiskFreeSpace();
+	#endif
 
 	float CPUSpeedMHz;
     ProcessorInfo processorInfo;
 
+#if defined WINDOWS_PLATFORM
 	wmiUtilClass wmiUtil;
-
-	bool checkRAM();
-
-	bool checkDiskFreeSpace();
-
 	bool checkCPUFeatures ();
+#endif
 
+	#if defined USE_TIMER_CLASS
 	bool checkBenchMarkSpeed(TimerClass* m_Timer);
+	#endif
 
 	bool CheckIO ();
 
@@ -136,22 +88,27 @@ public:
 	bool CheckEngineUpdates();		// Check Engine for Updates (Woma Server) / Download & Install
 	bool LaunchEngine();			// Launch WOMA Engine (32bits or 64bits)
 
+#if defined WINDOWS_PLATFORM
     SystemFeatures systemFeatures;
+#endif
 
 private:
 	//CheckOS:
 	TCHAR* GetOSversionPlatform();
-	TCHAR* GetOsVersion();
+	#if defined USE_SYSTEM_CHECK
 	bool CheckOSVersion ();
+	#endif
 	bool CheckDXGIVersion (bool* REQUIRES_WINDOWS_VISTA_SP2, bool* REQUIRES_UPDATE_KB971644);
 
 	float GetProcessorSpeed();
 	float GetProcessorSpeed4Intel(TCHAR*);
 
+	#if defined WINDOWS_PLATFORM
+	TCHAR* GetOsVersion();
 	DWORDLONG getAvailSystemMemory();
-
     std::vector<DriveList> drivesList;
     UINT driveLetter;
+	#endif
 
 // VARS:
 public:
@@ -164,4 +121,5 @@ private:
 	UINT	DXGI_H, DXGI_L;
 };
 
+#endif
 #endif

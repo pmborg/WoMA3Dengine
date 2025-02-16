@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: TrigonometryMathClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -18,15 +18,21 @@
 // PURPOSE: 
 //  Use pre-calculated data to speed-up until 20x, trivial trigonometry Math Calculations.
 //  Precision 2 decimal numbers, i.e. sin(0.12)
-//
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567142;
+
 #include "platform.h"
+#if defined USE_TIMER_CLASS
 
 #pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
 #include "main.h"
 
 #include "Math3D.h"
 #include "TrigonometryMathClass.h" //sim, cos table
+
+#if defined ANDROID_PLATFORM
+#include "math.h"
+#endif
 
 #define SQRT_MAGIC_F 0x5f3759df
 
@@ -49,7 +55,7 @@ float tableSin[360*100], tableCos[360*100];
 TrigonometryMathClass::TrigonometryMathClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567831;
+	WomaIntegrityCheck = 1234567142;
 
 	Initialize();
 }
@@ -58,10 +64,12 @@ TrigonometryMathClass::~TrigonometryMathClass() {CLASSDELETE();}
 
 void TrigonometryMathClass::Initialize()
 {
+	printf("TrigonometryMathClass::Initialize() - START\n");
 	for (UINT deg=0;deg<360*100;deg++) {
 		tableSin[deg] = sin (((float)deg / 100.0f) * 0.0174532925f); //0.0174532925f (PI / 180.0f): Convert degrees to radians.
 		tableCos[deg] = cos (((float)deg / 100.0f) * 0.0174532925f); //0.0174532925f (PI / 180.0f): Convert degrees to radians.
 	}
+	printf("TrigonometryMathClass::Initialize() - END\n");
 }
 
 // --------------------------------------------------------------------------------------------
@@ -70,17 +78,23 @@ void TrigonometryMathClass::Initialize()
 
 //#define DEFAULT_MATH_FUNCTIONS   // (UN-COMMENT) to test with Normal Math Functions
 
-STRING TrigonometryMathClass::testMathSpeed(TimerClass* m_Timer)
+void TrigonometryMathClass::testMathSpeed(TimerClass* m_Timer, double &delta1, double &delta2)
     // --------------------------------------------------------------------------------------------
 
 {
-	double delta1 = 0;
-	double delta2 = 0;
+#if !defined ANDROID_PLATFORM
 	INT64 currentTime=0, currentTime1=0, currentTime2=0;
+#else
+	struct timeval currentTime, currentTime1, currentTime2;
+#endif
+
 	{
 		static float t = 0;
-
+#if !defined ANDROID_PLATFORM
 		QueryPerformanceCounter((LARGE_INTEGER*)&currentTime); // Measure the initial Time
+#else
+		::gettimeofday(&currentTime, NULL);
+#endif
 		for (UINT time = 0; time < 10000000; time++)
 		{
 			// Run these functions 10 Million times:
@@ -88,17 +102,29 @@ STRING TrigonometryMathClass::testMathSpeed(TimerClass* m_Timer)
 			t = cos((float)(time % 360));
 			t = sin((float)(time % 360));
 		}
-
+#if !defined ANDROID_PLATFORM
 		QueryPerformanceCounter((LARGE_INTEGER*)&currentTime1);// Measure current Time
+#else
+		::gettimeofday(&currentTime1, NULL);
+#endif
 	}
+
+#if !defined ANDROID_PLATFORM
 	ASSERT(m_Timer->m_ticksPerUs > 0);
 	delta1 = ((((double)currentTime1 - (double)currentTime) / (double)m_Timer->m_ticksPerUs) / (double)1000.0f);
+#else
+
+#endif
 
 	//--------------------------------------------------------------------------------------
 	{
 		static float t = 0;
 
+#if !defined ANDROID_PLATFORM
 		QueryPerformanceCounter((LARGE_INTEGER*)&currentTime); // Measure the initial Time
+#else
+		::gettimeofday(&currentTime, NULL);
+#endif
 		for (UINT time = 0; time < 10000000; time++)
 		{
 			// Run these functions 10 Million times:
@@ -114,19 +140,19 @@ STRING TrigonometryMathClass::testMathSpeed(TimerClass* m_Timer)
 		#endif
 		}
 
+#if !defined ANDROID_PLATFORM
 		QueryPerformanceCounter((LARGE_INTEGER*)&currentTime2);// Measure current Time
+#else
+		::gettimeofday(&currentTime2, NULL);
+#endif
 	}
+
+#if !defined ANDROID_PLATFORM
     ASSERT (m_Timer->m_ticksPerUs > 0);
-    delta2 = ((((double) currentTime2 - (double) currentTime) / (double)m_Timer->m_ticksPerUs) / (double)1000.0f);
+	delta2 = ((((double)currentTime2 - (double)currentTime) / (double)m_Timer->m_ticksPerUs) / (double)1000.0f);
+#else
 
-    TCHAR txt[MAX_STR_LEN];
-	StringCchPrintf(txt, MAX_STR_LEN, TEXT("-----------------------------------------------------------\n"));
-    StringCchPrintf(txt, MAX_STR_LEN, TEXT("Benchmark1 (default MATH) to Run 100M (sqrt/sin/cos): %f ms\n"), delta1);
-	WOMA_LOGManager_DebugMSG(txt);
-
-	StringCchPrintf(txt, MAX_STR_LEN, TEXT("Benchmark2 (WOMA MATH) to Run 100M (sqrt/sin/cos): %f ms\n"), delta2);
-	WOMA_LOGManager_DebugMSG(txt);
-	StringCchPrintf(txt, MAX_STR_LEN, TEXT("-----------------------------------------------------------\n"));
+#endif
 
 	// SAMPLE:
 	#if defined NDEBUG
@@ -139,6 +165,6 @@ STRING TrigonometryMathClass::testMathSpeed(TimerClass* m_Timer)
 	WOMA_LOGManager_DebugMSG("FAST_sin (PI): %f\n", FAST_sin(180));
 	#endif
 
-    return txt;
 }
 
+#endif

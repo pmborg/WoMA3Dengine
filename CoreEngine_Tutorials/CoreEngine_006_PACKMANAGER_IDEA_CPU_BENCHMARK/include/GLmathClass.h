@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: GLmathClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -15,14 +15,16 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567142;
 #pragma once
 
 #include "platform.h"
+#include "math.h"				 
 
 struct vec4 {
 	float x, y, z, w;
 
-	vec4(){}
+	vec4() { x = 0; y = 0; z = 0; w = 0; }
 	vec4(const float ix, const float iy, const float iz, const float iw){
 		x = ix;
 		y = iy;
@@ -64,7 +66,7 @@ mat4 operator * (const mat4 &mat1, const mat4 &mat2);
 class GLmathClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567831;
+	UINT WomaIntegrityCheck = 1234567142;
 	GLmathClass();
 	~GLmathClass();
 
