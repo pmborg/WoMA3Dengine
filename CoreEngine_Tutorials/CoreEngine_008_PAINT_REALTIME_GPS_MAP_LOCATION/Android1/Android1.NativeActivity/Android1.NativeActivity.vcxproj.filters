@@ -1,0 +1,243 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="..\..\include\main.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\OSengine.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\platform.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\standard_platform.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\SystemClass.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="Android.h">
+      <Filter>ANDROID</Filter>
+    </ClInclude>
+    <ClInclude Include="android_native_app_glue.h">
+      <Filter>ANDROID</Filter>
+    </ClInclude>
+    <ClInclude Include="AndroidNewSystemClass.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\language.h">
+      <Filter>Include\001</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\log.h">
+      <Filter>Include\001</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\mem_leak.h">
+      <Filter>Include\001</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\OSmain_dir.h">
+      <Filter>Include\001</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\woma_macros.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\default_settings_xml.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="defs.h">
+      <Filter>ANDROID</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>ANDROID</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\stateMachine.h">
+      <Filter>Include\002</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\dumpUploader.h">
+      <Filter>Include\003</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\fileLoader.h">
+      <Filter>Include\003</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\minidumperClass.h">
+      <Filter>Include\003</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\stackTrace.h">
+      <Filter>Include\003</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\woma_exception.h">
+      <Filter>Include\003</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\fpsClass.h">
+      <Filter>Include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\InputClass.h">
+      <Filter>Include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Math3D.h">
+      <Filter>Include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\processorInfo.h">
+      <Filter>Include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\systemFeatures.h">
+      <Filter>Include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\systemManager.h">
+      <Filter>Include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\timerClass.h">
+      <Filter>Include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\TrigonometryMathClass.h">
+      <Filter>Include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\WomaSetupManager.h">
+      <Filter>Include\005</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xml_loader.h">
+      <Filter>Include\005</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.h">
+      <Filter>LIB_tinyxml2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\AndroidEngine.h">
+      <Filter>src\005</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\tech-level.h" />
+    <ClInclude Include="..\..\..\woma_engine_assets.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\default_settings_xml.cpp">
+      <Filter>src\000</Filter>
+    </ClCompile>
+    <ClCompile Include="AndroidMain.cpp">
+      <Filter>ANDROID</Filter>
+    </ClCompile>
+    <ClCompile Include="Android.cpp">
+      <Filter>ANDROID</Filter>
+    </ClCompile>
+    <ClCompile Include="android_native_app_glue.c">
+      <Filter>ANDROID</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\OSengine.cpp">
+      <Filter>src\000</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\SystemClass.cpp">
+      <Filter>src\000</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\main.cpp" />
+    <ClCompile Include="..\..\src\language.cpp">
+      <Filter>src\001</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\log.cpp">
+      <Filter>src\001</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mem_leak.cpp">
+      <Filter>src\001</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\OSmain_dir.cpp">
+      <Filter>src\001</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\0CheckOS.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\1CheckSYS.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\3CheckSetup.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\4CheckEngineUpdates.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\5LaunchEngine.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\fpsClass.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Math3D.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\TimerClass.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\TrigonometryMathClass.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\fileLoader.cpp">
+      <Filter>src\003</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Rinputclass.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WindowPaintClass.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="AndroidNewSystemClass.c">
+      <Filter>ANDROID</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\xml_settings_loader.cpp">
+      <Filter>src\005</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\xml_settings_saver.cpp">
+      <Filter>src\005</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.cpp">
+      <Filter>LIB_tinyxml2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\7PprocessorInfo.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Include">
+      <UniqueIdentifier>{96784a1c-7167-46d1-8734-e3951184c49e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{d47b1b32-a8ed-4271-bbbe-229356ca2079}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\000">
+      <UniqueIdentifier>{01af13a6-22e0-4a22-baa9-913e2bed5eef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\000">
+      <UniqueIdentifier>{2ef6cdd4-c276-4f82-ac0e-daf486ad40cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\001">
+      <UniqueIdentifier>{53e80eff-58f3-4e7c-ad23-130051f14eef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\001">
+      <UniqueIdentifier>{d8aab481-6754-4356-af7a-c3b7832db9e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\002">
+      <UniqueIdentifier>{8ec0566f-0609-41e2-a70e-b8eeb31d244d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\003">
+      <UniqueIdentifier>{dc58d815-0c22-4868-bcc1-00c41fd423f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\004">
+      <UniqueIdentifier>{6f8ef3d2-2df0-4934-b3c4-915f268a943d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\005">
+      <UniqueIdentifier>{150a963e-6857-43ff-b7bd-43b6aeb6a636}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\002">
+      <UniqueIdentifier>{fec47c69-f3d2-4334-b2a6-694a69a0e98e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\004">
+      <UniqueIdentifier>{2b72d79f-d580-47cf-8064-e6840c0bdd93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\005">
+      <UniqueIdentifier>{7a3b9c93-8105-403a-9ebb-b8251a525a05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ANDROID">
+      <UniqueIdentifier>{90a27ce0-2065-4548-a678-eff3c8faf5c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\003">
+      <UniqueIdentifier>{51f52800-770c-43d9-90b4-dfc233463a10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LIB_tinyxml2">
+      <UniqueIdentifier>{a57acc30-61fd-45e7-8a78-a7aaf0d34193}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
