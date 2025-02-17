@@ -19,6 +19,9 @@
 
 #include "AndroidNewSystemClass.h"
 #include "OSengine.h"
+#if CORE_ENGINE_LEVEL >= 1
+	#include "mem_leak.h"
+#endif
 extern bool android_APPLICATION_INIT_SYSTEM();
 extern int android_APPLICATION_MAIN_LOOP();
 
@@ -44,9 +47,11 @@ AndroidNewSystemClass::AndroidNewSystemClass(WOMA::Settings* appSettings) : Syst
 bool AndroidNewSystemClass::APPLICATION_CORE_SYSTEM()
 {
 	WOMA_LOGManager_DebugMSG("AndroidNewSystemClass::APPLICATION_INIT_SYSTEM()\n");
-
+#if CORE_ENGINE_LEVEL == 1
 	UINT* p = NEW UINT[1];
 	//free(p);
+#endif
+
 	return false;
 }
 

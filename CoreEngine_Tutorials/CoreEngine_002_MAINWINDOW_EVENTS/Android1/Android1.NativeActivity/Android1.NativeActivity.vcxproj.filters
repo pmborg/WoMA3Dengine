@@ -88,7 +88,7 @@
       <Filter>ANDROID</Filter>
     </ClCompile>
     <ClCompile Include="AndroidMain.cpp">
-      <Filter>ANDROID</Filter>
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

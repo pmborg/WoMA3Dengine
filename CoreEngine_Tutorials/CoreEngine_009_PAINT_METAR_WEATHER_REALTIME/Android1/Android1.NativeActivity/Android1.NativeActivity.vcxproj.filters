@@ -110,9 +110,6 @@
     <ClCompile Include="..\..\src\default_settings_xml.cpp">
       <Filter>src\000</Filter>
     </ClCompile>
-    <ClCompile Include="AndroidMain.cpp">
-      <Filter>ANDROID</Filter>
-    </ClCompile>
     <ClCompile Include="Android.cpp">
       <Filter>ANDROID</Filter>
     </ClCompile>
@@ -144,9 +141,6 @@
     <ClCompile Include="..\..\src\1CheckSYS.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\3CheckSetup.cpp">
-      <Filter>src\004</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\4CheckEngineUpdates.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
@@ -168,9 +162,6 @@
     <ClCompile Include="..\..\src\fileLoader.cpp">
       <Filter>src\003</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\Rinputclass.cpp">
-      <Filter>src\004</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\WindowPaintClass.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
@@ -187,6 +178,12 @@
       <Filter>LIB_tinyxml2</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\7PprocessorInfo.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="AndroidMain.cpp">
+      <Filter>ANDROID</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\7ProcessorInfo.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
   </ItemGroup>

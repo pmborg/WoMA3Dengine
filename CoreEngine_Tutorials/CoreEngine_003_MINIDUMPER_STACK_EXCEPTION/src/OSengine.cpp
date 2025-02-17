@@ -735,3 +735,28 @@ bool download(const std::string url, const std::string file)
 }
 #endif
 
+// ---------------------------------------------------------------------------
+#ifdef ANDROID_PLATFORM
+#include <android/log.h>
+
+//WOMA_LOGManager_DebugMSG
+void LogInfo(const char* sTag, const char* fmt, ...)
+{
+	va_list ap;
+	va_start(ap, fmt);
+	__android_log_vprint(ANDROID_LOG_INFO, sTag, fmt, ap);
+	va_end(ap);
+}
+
+#define  LOG_TAG    "testjni"
+#define  MY_LOG(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
+
+namespace WOMA
+{
+	int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption, /*bool fatal,*/ bool yesORno = false)
+	{
+		MY_LOG("%s", lpText);
+	}
+}
+#endif
+

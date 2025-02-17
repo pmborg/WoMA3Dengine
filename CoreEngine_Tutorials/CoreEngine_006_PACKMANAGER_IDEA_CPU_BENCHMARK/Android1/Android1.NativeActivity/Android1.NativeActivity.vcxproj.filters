@@ -100,18 +100,12 @@
     <ClInclude Include="..\..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.h">
       <Filter>LIB_tinyxml2</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\AndroidEngine.h">
-      <Filter>src\005</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\tech-level.h" />
     <ClInclude Include="..\..\..\woma_engine_assets.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\default_settings_xml.cpp">
       <Filter>src\000</Filter>
-    </ClCompile>
-    <ClCompile Include="AndroidMain.cpp">
-      <Filter>ANDROID</Filter>
     </ClCompile>
     <ClCompile Include="Android.cpp">
       <Filter>ANDROID</Filter>
@@ -144,9 +138,6 @@
     <ClCompile Include="..\..\src\1CheckSYS.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\3CheckSetup.cpp">
-      <Filter>src\004</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\4CheckEngineUpdates.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
@@ -168,9 +159,6 @@
     <ClCompile Include="..\..\src\fileLoader.cpp">
       <Filter>src\003</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\Rinputclass.cpp">
-      <Filter>src\004</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\WindowPaintClass.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
@@ -186,7 +174,22 @@
     <ClCompile Include="..\..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.cpp">
       <Filter>LIB_tinyxml2</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\7PprocessorInfo.cpp">
+    <ClCompile Include="AndroidMain.cpp">
+      <Filter>ANDROID</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\7ProcessorInfo.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\GLmathClass.cpp">
+      <Filter>src\006</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\idea.cpp">
+      <Filter>src\006</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\packManager.cpp">
+      <Filter>src\006</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ApplicationClass.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
   </ItemGroup>
@@ -238,6 +241,9 @@
     </Filter>
     <Filter Include="LIB_tinyxml2">
       <UniqueIdentifier>{a57acc30-61fd-45e7-8a78-a7aaf0d34193}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\006">
+      <UniqueIdentifier>{9ecf948b-c43d-4fb8-bdbb-0842bb651760}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -130,7 +130,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PublicIncludeDirectories>
     </PublicIncludeDirectories>
-    <IncludePath>.;$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include;C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_000_OSENGINE_SYSTEM\include;C:\WoMAengine2023_\SOURCE_CODE\CoreEngine_000_OSENGINE_SYSTEM\include;C:\WoMAengine2023_\SOURCE_CODE\CoreEngine_001_LANG_LOG_MEMLEAK_OSMAINDIRs\include;C:\WoMAengine2023_\SOURCE_CODE\CoreEngine_002_MAINWINDOW_EVENTS\include;C:\WoMAengine2023_\SOURCE_CODE\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH\include;C:\WoMAengine2023_\SOURCE_CODE\CoreEngine_006_PACKMANAGER_IDEA_CPU_BENCHMARK\include</IncludePath>
+    <IncludePath>.;..;../..;../../include;$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
@@ -243,11 +243,11 @@
     <ClCompile Include="..\..\..\main.cpp" />
     <ClCompile Include="..\..\src\default_settings_xml.cpp" />
     <ClCompile Include="..\..\src\SystemClass.cpp" />
+    <ClCompile Include="AndroidMain.cpp" />
     <ClCompile Include="AndroidNewSystemClass.c" />
     <ClCompile Include="..\..\src\OSengine.cpp" />
     <ClCompile Include="Android.cpp" />
     <ClCompile Include="android_native_app_glue.c" />
-    <ClCompile Include="AndroidMain.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

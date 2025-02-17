@@ -49,21 +49,20 @@ namespace WOMA
 	#else
 		DRIVER_DX11,
 	#endif
-		0,			// USE MONITOR
+		0,			// USE: UI_MONITOR
 		// -------------------------------------------------------------------------------------------
 		false,		// UseAllMonitors
 		true,		// Use Double Buffering?
-		true,		// Start in VSYNC?		(TRUE: Benchmark | FALSE: Smooth)
-
+		true,		// Start in VSYNC?		(TRUE: Smooth:60FPS | FALSE: To Benchmark)
 
 		//	Texture
 		// -------------------------------------------------------------------------------------------
-		1024,	// maxTexture Resolution Size
+		1024,	// maxTexture Resolution Default Size: 512 / 1024 / 1920 / 3,840
 		// -------------------------------------------------------------------------------------------
 		false,	// bilinear
 		false,	// trilinear
 		false,	// Anisotropic;
-		4,		// AnisotropicLevel
+		4,		// AnisotropicLevel: 4,8,16 (if == true)
 
 		// screen
 		// -------------------------------------------------------------------------------------------
@@ -89,24 +88,24 @@ namespace WOMA
 		1024,	// WIN_HEIGHT	Note: On Fullscreen WIN_HEIGHT = SCREEN_RESOLUTION_HEIGHT
 		1280,	// WIN_WIDTH_ori	
 		1024,	// WIN_HEIGHT_ori	
-	#else //LINUX:
+	#else //LINUX: (or load from XML like WINDOWS)
 		1920, //550,	// WIN_WIDTH	Note: On Fullscreen WIN_WIDTH = SCREEN_RESOLUTION_WIDTH
 		1080, //940,	// WIN_HEIGHT	Note: On Fullscreen WIN_HEIGHT = SCREEN_RESOLUTION_HEIGHT
 		1920, //550,	// WIN_WIDTH_ori	
 		1080, //940,	// WIN_HEIGHT_ori	
 	#endif
-		32,		// BITSPERPEL	16,24,32?
+		32,		// BITSPERPEL	16, 24(RGB), 32(RGBA)
 
 		// -------------------------------------------------------------------------------------------
 		//  Camera:
 		0.1f,	// SCR_NEAR
-		512.0f, // SCR_DEPTH	(Depend of Computer Performance)
+		512.0f, // SCR_DEPTH	(Depend of Computer Performance: 512 / 1024 / 2048)
 
 		0,		// INIT_CAMX;
 		2,		// INIT_CAMY;
 	#if defined ANDROID_PLATFORM
 		-29,	// INIT_CAMZ;
-	#else
+	#else //LINUX: (or load from XML like WINDOWS)
 		- 28,	// INIT_CAMZ;
 	#endif
 
@@ -121,8 +120,8 @@ namespace WOMA
 
 	// ------------------------------------------------------------------------------------------
 		// SOUND
-		true,	// Bk Music...
-		true,	// Sounding...
+		true,	// Background Music...
+		true,	// Sound: Effects...
 
 	// ------------------------------------------------------------------------------------------
 		0,		// 800 SCREEN_RESOLUTION_WIDTH NOTE: 0 = Auto Detect

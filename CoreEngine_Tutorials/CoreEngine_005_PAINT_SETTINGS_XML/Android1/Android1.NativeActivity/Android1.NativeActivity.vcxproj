@@ -130,7 +130,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PublicIncludeDirectories>
     </PublicIncludeDirectories>
-    <IncludePath>.;..;../..;$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include;C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_005_PAINT_SETTINGS_XML\include;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0</IncludePath>
+    <IncludePath>.;..;../..;../../include;$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
@@ -225,7 +225,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.h" />
-    <ClInclude Include="..\..\include\AndroidEngine.h" />
     <ClInclude Include="..\..\include\default_settings_xml.h" />
     <ClInclude Include="..\..\include\dumpUploader.h" />
     <ClInclude Include="..\..\include\fileLoader.h" />
@@ -266,10 +265,9 @@
     <ClCompile Include="..\..\..\main.cpp" />
     <ClCompile Include="..\..\src\0CheckOS.cpp" />
     <ClCompile Include="..\..\src\1CheckSYS.cpp" />
-    <ClCompile Include="..\..\src\3CheckSetup.cpp" />
     <ClCompile Include="..\..\src\4CheckEngineUpdates.cpp" />
     <ClCompile Include="..\..\src\5LaunchEngine.cpp" />
-    <ClCompile Include="..\..\src\7PprocessorInfo.cpp" />
+    <ClCompile Include="..\..\src\7ProcessorInfo.cpp" />
     <ClCompile Include="..\..\src\default_settings_xml.cpp" />
     <ClCompile Include="..\..\src\fileLoader.cpp" />
     <ClCompile Include="..\..\src\fpsClass.cpp" />
@@ -285,11 +283,11 @@
     <ClCompile Include="..\..\src\WindowPaintClass.cpp" />
     <ClCompile Include="..\..\src\xml_settings_loader.cpp" />
     <ClCompile Include="..\..\src\xml_settings_saver.cpp" />
+    <ClCompile Include="AndroidMain.cpp" />
     <ClCompile Include="AndroidNewSystemClass.c" />
     <ClCompile Include="..\..\src\OSengine.cpp" />
     <ClCompile Include="Android.cpp" />
     <ClCompile Include="android_native_app_glue.c" />
-    <ClCompile Include="AndroidMain.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

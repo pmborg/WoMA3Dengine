@@ -42,9 +42,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\main.cpp" />
-    <ClCompile Include="AndroidMain.cpp">
-      <Filter>ANDROID</Filter>
-    </ClCompile>
     <ClCompile Include="android_native_app_glue.c">
       <Filter>ANDROID</Filter>
     </ClCompile>
@@ -61,6 +58,9 @@
       <Filter>Core000\src</Filter>
     </ClCompile>
     <ClCompile Include="AndroidNewSystemClass.c">
+      <Filter>ANDROID</Filter>
+    </ClCompile>
+    <ClCompile Include="AndroidMain.cpp">
       <Filter>ANDROID</Filter>
     </ClCompile>
   </ItemGroup>

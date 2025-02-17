@@ -24,21 +24,15 @@
 //WomaIntegrityCheck = 1234567142;
  
 #define _CRT_SECURE_NO_WARNINGS
-//#include "xml_loader.h"
+
 #include "OSengine.h"
 
+#if defined USE_TINYXML_LOADER
 #if defined ANDROID_PLATFORM
 #include "AndroidEngine.h"
 #include <android\asset_manager.h>
 #endif
-/*
-#if CORE_ENGINE_LEVEL < 10
-	#include "winsystemclass.h"			// Are we a Windows Instance?
-#else
-	#include "dxwinsystemclass.h"			// Are we a Windows Instance?
-#endif
-*/
-#if defined USE_TINYXML_LOADER
+
 #include "xml_loader.h"
 
 XMLloader::XMLloader()
