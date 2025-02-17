@@ -91,10 +91,15 @@
     <ClInclude Include="..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.h">
       <Filter>Include\LIB_TINYXML2\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\linux\include\Rinputclass.h">
-      <Filter>Include</Filter>
+    <ClInclude Include="..\include\ApplicationClass.h">
+      <Filter>Include\004</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\ApplicationClass.h" />
+    <ClInclude Include="..\linux\include\Rinputclass.h">
+      <Filter>Include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\GLmathClass.h">
+      <Filter>Include\006</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Include">
@@ -153,6 +158,18 @@
     </Filter>
     <Filter Include="Include\LIB_TINYXML2\include">
       <UniqueIdentifier>{735ab209-75fb-46b9-918d-76e7dd798e37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\006">
+      <UniqueIdentifier>{66618457-9e36-4814-ba77-c429dc102802}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\007">
+      <UniqueIdentifier>{c99ce6d3-a0d5-4349-98ad-99d27aab9b48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\008">
+      <UniqueIdentifier>{d84b1f6a-29af-46c3-9171-5ebd5cfe417a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\006">
+      <UniqueIdentifier>{556024cf-5651-4cd3-bb54-c13863353dbb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -223,12 +240,29 @@
     <ClCompile Include="..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.cpp">
       <Filter>src\LIB_TINYXML2\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\linux\src\Rinputclass.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\7ProcessorInfo.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\ApplicationClass.cpp" />
+    <ClCompile Include="..\src\GLmathClass.cpp">
+      <Filter>src\006</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\idea.cpp">
+      <Filter>src\006</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\packManager.cpp">
+      <Filter>src\006</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\astroClass.cpp">
+      <Filter>src\007</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\initWorld.cpp">
+      <Filter>src\007</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ApplicationClass.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\linux\src\Rinputclass.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

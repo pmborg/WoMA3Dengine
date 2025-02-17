@@ -218,14 +218,14 @@
     <ClCompile Include="src\winWMIutilClass.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
-    <ClCompile Include="src\winWomaSetupManager.cpp">
-      <Filter>src\004</Filter>
-    </ClCompile>
     <ClCompile Include="src\OperatingSystem.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
     <ClCompile Include="src\7ProcessorInfo.cpp">
       <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="src\winWomaSetupManager.cpp">
+      <Filter>src\005</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

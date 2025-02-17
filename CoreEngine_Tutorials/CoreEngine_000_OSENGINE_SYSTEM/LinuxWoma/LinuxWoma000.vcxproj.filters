@@ -1,34 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="..\include\default_settings_xml.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\main.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\OSengine.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\platform.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\standard_platform.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\SystemClass.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\woma_macros.h">
-      <Filter>Include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\level.h" />
     <ClInclude Include="..\..\tech-level.h" />
-    <ClInclude Include="..\linux\include\linuxsystemclass.h">
-      <Filter>LINUX</Filter>
-    </ClInclude>
     <ClInclude Include="..\linux\include\linux.h">
       <Filter>LINUX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\woma_engine_assets.h" />
+    <ClInclude Include="..\include\default_settings_xml.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\linux\include\linuxsystemclass.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\main.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\OSengine.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\platform.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\standard_platform.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\SystemClass.h">
+      <Filter>Include\000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\woma_macros.h">
+      <Filter>Include\000</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -41,26 +42,32 @@
     <Filter Include="LINUX">
       <UniqueIdentifier>{0d5421f2-7f3d-426e-bb19-40ef91570fb8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\000">
+      <UniqueIdentifier>{e88685fc-cb00-4fab-b1eb-824f2043bc91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\000">
+      <UniqueIdentifier>{ceb61736-5601-45b1-8fb8-0460db89275e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\default_settings_xml.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\OSengine.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\SystemClass.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\main.cpp" />
-    <ClCompile Include="..\linux\src\linuxsystemclass.cpp">
-      <Filter>LINUX</Filter>
-    </ClCompile>
     <ClCompile Include="..\linux\src\linux.cpp">
       <Filter>LINUX</Filter>
     </ClCompile>
     <ClCompile Include="..\linux\src\main_linux.cpp">
       <Filter>LINUX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\default_settings_xml.cpp">
+      <Filter>src\000</Filter>
+    </ClCompile>
+    <ClCompile Include="..\linux\src\linuxsystemclass.cpp">
+      <Filter>src\000</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\OSengine.cpp">
+      <Filter>src\000</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\SystemClass.cpp">
+      <Filter>src\000</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

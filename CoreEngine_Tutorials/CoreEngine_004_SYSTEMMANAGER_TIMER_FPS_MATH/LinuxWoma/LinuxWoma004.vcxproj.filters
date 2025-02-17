@@ -79,9 +79,7 @@
     <ClInclude Include="..\include\fileLoader.h">
       <Filter>Include\003</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\Rinputclass.h">
-      <Filter>Include\004</Filter>
-    </ClInclude>
+    <ClInclude Include="..\linux\include\Rinputclass.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Include">
@@ -186,8 +184,6 @@
     <ClCompile Include="..\src\TrigonometryMathClass.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Rinputclass.cpp">
-      <Filter>src\004</Filter>
-    </ClCompile>
+    <ClCompile Include="..\..\CoreEngine_006_PACKMANAGER_IDEA_CPU_BENCHMARK\linux\src\Rinputclass.cpp" />
   </ItemGroup>
 </Project>

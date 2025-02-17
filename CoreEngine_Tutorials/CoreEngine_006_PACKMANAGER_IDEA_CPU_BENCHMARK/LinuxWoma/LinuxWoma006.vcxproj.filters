@@ -79,9 +79,6 @@
     <ClInclude Include="..\include\fileLoader.h">
       <Filter>Include\003</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\Rinputclass.h">
-      <Filter>Include\004</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\WomaSetupManager.h">
       <Filter>Include\005</Filter>
     </ClInclude>
@@ -94,8 +91,14 @@
     <ClInclude Include="..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.h">
       <Filter>Include\LIB_TINYXML2\include</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\GLmathClass.h">
+      <Filter>Include\006</Filter>
+    </ClInclude>
     <ClInclude Include="..\linux\include\Rinputclass.h">
-      <Filter>Include</Filter>
+      <Filter>Include\004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ApplicationClass.h">
+      <Filter>Include\004</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -155,6 +158,12 @@
     </Filter>
     <Filter Include="Include\LIB_TINYXML2\include">
       <UniqueIdentifier>{735ab209-75fb-46b9-918d-76e7dd798e37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\006">
+      <UniqueIdentifier>{5a06c444-e698-4a27-8b8d-52c2fcc44a4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\006">
+      <UniqueIdentifier>{9e23158b-2942-49cc-993c-00cea2ece1dc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -229,6 +238,18 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\src\7ProcessorInfo.cpp">
+      <Filter>src\004</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\GLmathClass.cpp">
+      <Filter>src\006</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\idea.cpp">
+      <Filter>src\006</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\packManager.cpp">
+      <Filter>src\006</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ApplicationClass.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
   </ItemGroup>
