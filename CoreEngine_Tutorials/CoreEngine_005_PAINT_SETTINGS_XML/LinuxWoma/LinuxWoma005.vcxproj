@@ -57,7 +57,7 @@
     <ClInclude Include="..\include\OSengine.h" />
     <ClInclude Include="..\include\OSmain_dir.h" />
     <ClInclude Include="..\include\platform.h" />
-    <ClInclude Include="..\include\processorInfo.h" />
+    <ClInclude Include="..\include\ProcessorInfo.h" />
     <ClInclude Include="..\linux\include\Rinputclass.h" />
     <ClInclude Include="..\include\standard_platform.h" />
     <ClInclude Include="..\include\stateMachine.h" />
