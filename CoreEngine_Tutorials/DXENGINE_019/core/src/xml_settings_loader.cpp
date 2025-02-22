@@ -26,6 +26,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "OSengine.h"
+#include "OSmain_dir.h"
 
 #if defined USE_TINYXML_LOADER
 #if defined ANDROID_PLATFORM
@@ -231,7 +232,20 @@ bool XMLloader::loadConfigSettings (TCHAR* file_) // Note: Have to be char
 
 	doc.LoadFile(XML_FILE.c_str());
 #else
-	doc.LoadFile(XMLFILE);
+	STRING dir = WOMA::getCurrentDir();
+	tinyxml2::XMLError error = doc.LoadFile(XMLFILE);
+	if (error == tinyxml2::XML_ERROR_FILE_NOT_FOUND)
+	{
+	#if MAINENGINE
+		STRING file = "../../../DXEngine_0";
+	#else
+		STRING file = "../../../CoreEngine_Tutorials/DXENGINE_0";
+	#endif
+		file.append(std::to_string(DX_ENGINE_LEVEL));
+		file.append("/");
+		file.append(XMLFILE);
+		doc.LoadFile(file.c_str());
+	}
 #endif
 
 	auto root = doc.FirstChildElement(GENERALSETTINGS); //auto root = doc.FirstChildElement( "generalsettings" );
@@ -263,7 +277,11 @@ bool XMLloader::loadConfigSettings (TCHAR* file_) // Note: Have to be char
 		if ( child_driver )
 		{
 			/*Element*//*TiXmlElement*/ tinyxml2::XMLElement* element = child_driver->ToElement();
-			strcpy (GenSettings.driverName, element->Attribute("name"));
+			#if defined LINUX_PLATFORM
+				strcpy(GenSettings.driverName, TEXT("GL3+"));
+			#else
+				strcpy(GenSettings.driverName, element->Attribute("name"));
+			#endif
 			strcpy(GenSettings.UseAllMonitors, element->Attribute("UseAllMonitors"));
 			strcpy (GenSettings.useDoubleBuffering, element->Attribute("useDoubleBuffering"));
 		}

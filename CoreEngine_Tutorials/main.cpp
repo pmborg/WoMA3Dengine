@@ -66,7 +66,7 @@
 
 int Command = 0;
 
-#if defined WINDOWS_PLATFORM && !defined ANDROID_PLATFORM
+#if defined WINDOWS_PLATFORM
 // -------------------------------------------------------------------------------------------------------------------------------------
 // SUBSYSTEM:WINDOWS                                    //FOR: WOMA_WIN32_APPLICATION (WINDOWS)
 // -------------------------------------------------------------------------------------------------------------------------------------
@@ -85,7 +85,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 }
 #endif
 
-#if !defined WOMA_WIN32_APPLICATION && !defined ANDROID_PLATFORM
+#if !defined WOMA_WIN32_APPLICATION
 // -------------------------------------------------------------------------------------------------------------------------------------
 // SUBSYSTEM:CONSOLE                                    // FOR: WOMA_CONSOLE_APPLICATION (LINUX, or WINDOWS-Console)
 // -------------------------------------------------------------------------------------------------------------------------------------

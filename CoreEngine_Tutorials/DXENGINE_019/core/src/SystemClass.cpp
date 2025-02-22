@@ -480,8 +480,9 @@ void SystemClass::InitializeSystemScreen(int x, int y)
 //-----------------------------------------------------------------------------
 void SystemClass::refreshTitle() // Run once per second.
 {
-
 #if CORE_ENGINE_LEVEL >= 10 && !defined NewWomaEngine
+	if (driverList.size() == 0)
+		return;
 	if (!m_Driver)
 		return;
 #endif

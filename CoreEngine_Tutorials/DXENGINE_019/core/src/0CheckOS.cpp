@@ -141,8 +141,6 @@ bool SystemManager::CheckOS()
 	StringCchPrintf(SystemHandle->systemDefinitions.binaryCode, MAX_STR_LEN, TEXT("Binary Code: %s"), _BINARY_CODE_);
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.binaryCode);
 
-	GETOS(); // Fix Win10 Crapy Info
-
 #if defined WINDOWS_PLATFORM
   //#if !defined WIN10
 	StringCchPrintf(SystemHandle->systemDefinitions.windowsVersion, MAX_STR_LEN, TEXT("Windows Version: %d.%d.%d"), MajorVersion, MinorVersion, BuildVersion);
