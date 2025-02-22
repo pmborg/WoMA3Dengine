@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567142;
+//WomaIntegrityCheck = 1234567222;
 
 #pragma once
 
@@ -33,7 +33,7 @@ typedef BOOL(WINAPI *LPFN_GLPI)(PSYSTEM_LOGICAL_PROCESSOR_INFORMATION, PDWORD);
 class WinCpuCores
 {
 public:
-	UINT WomaIntegrityCheck = 1234567142;
+	UINT WomaIntegrityCheck = 1234567222;
 	WinCpuCores();
 	~WinCpuCores();
 

@@ -17,7 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Export APIs for systemclass.cpp which is the common OS API
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567142;
+//WomaIntegrityCheck = 1234567222;
 #pragma once
 #ifndef __SYSTEMCLASS_H__
 
@@ -122,7 +122,7 @@ typedef struct
 class SystemClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567142;
+	UINT WomaIntegrityCheck = 1234567222;
 	SystemClass();
 	~SystemClass();
 

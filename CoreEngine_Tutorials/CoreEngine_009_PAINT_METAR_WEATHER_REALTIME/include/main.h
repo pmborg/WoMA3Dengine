@@ -24,7 +24,7 @@
 // 	DEFINE minidumperClass
 // 	DEFINE logManager
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567142;
+//WomaIntegrityCheck = 1234567222;
 
 #pragma once
 

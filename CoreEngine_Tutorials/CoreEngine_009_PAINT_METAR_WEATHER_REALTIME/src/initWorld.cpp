@@ -20,7 +20,7 @@
 //  - Get data from AstroClass
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567142;
+//WomaIntegrityCheck = 1234567222;
 
 #include "OSengine.h"
 #include "mem_leak.h"
@@ -111,7 +111,7 @@ AstroClass* astroClass = NULL;
 InitWorld::InitWorld ()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567142;
+	WomaIntegrityCheck = 1234567222;
 
 	//public:
     LatDir = TEXT("N");

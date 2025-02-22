@@ -26,7 +26,7 @@
 class InputClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567142;
+	UINT WomaIntegrityCheck = 1234567222;
 	InputClass();
 	~InputClass();
 

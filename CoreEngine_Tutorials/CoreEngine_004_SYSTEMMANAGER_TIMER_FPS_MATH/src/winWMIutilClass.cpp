@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567142;
+//WomaIntegrityCheck = 1234567222;
 
 #include "OSengine.h"
 #if CORE_ENGINE_LEVEL >= 4
@@ -31,7 +31,7 @@ using namespace std;	//endl
 wmiUtilClass::wmiUtilClass() 
 {
 	CLASSLOADER();
-    WomaIntegrityCheck = 1234567142;
+    WomaIntegrityCheck = 1234567222;
 
 	//public:
 	description = L"";

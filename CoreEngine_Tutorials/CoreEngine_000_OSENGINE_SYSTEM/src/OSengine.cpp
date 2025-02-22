@@ -17,7 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: START and STOP WorldOfMiddleAge 3D ENGINE
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567142;
+//WomaIntegrityCheck = 1234567222;
 
 #include "OSengine.h"
 #include <inttypes.h>

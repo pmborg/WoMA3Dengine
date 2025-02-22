@@ -17,7 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 25+
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567142;
+//WomaIntegrityCheck = 1234567222;
 
 #include "platform.h"
 #include "OSengine.h"
@@ -52,7 +52,7 @@ UINT g_NetID = 0;
 ApplicationClass::ApplicationClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567142;
+	WomaIntegrityCheck = 1234567222;
 
 	// ---------------------------------------------------------------------
 	// private:
@@ -167,9 +167,9 @@ void ApplicationClass::Shutdown()
 
 	#if TUTORIAL_CHAP >= 70 && defined (SOUND3D)
 		SAFE_SHUTDOWN(compound[i].sound);
-	#endif//
+	#endif
 	//}
-#endif//
+#endif
 
 }
 

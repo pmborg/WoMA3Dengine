@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567142;
+//WomaIntegrityCheck = 1234567222;
 
 #pragma once
 #pragma warning( disable : 5208 ) // warning C5208: unnamed class used in typedef name cannot declare members other than non-static data members, member enumerations, or member classes
@@ -32,7 +32,7 @@
 
 #include "timerClass.h"
 #if CORE_ENGINE_LEVEL >= 4
-#include "processorInfo.h"
+#include "ProcessorInfo.h"
 #include "SystemFeatures.h"
 
 #if defined WINDOWS_PLATFORM
@@ -58,7 +58,7 @@ extern int GETOS(void);
 class SystemManager
 {
 public:
-	UINT WomaIntegrityCheck = 1234567142;
+	UINT WomaIntegrityCheck = 1234567222;
 	SystemManager();
 	~SystemManager();
 

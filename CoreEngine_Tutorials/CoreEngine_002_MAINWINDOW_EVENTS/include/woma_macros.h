@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: DEFINE COMMON WorldOfMiddleAge 3D ENGINE MACROS
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567142;
+//WomaIntegrityCheck = 1234567222;
 
 #pragma once
 #ifndef __WOMA_MACROS_H__

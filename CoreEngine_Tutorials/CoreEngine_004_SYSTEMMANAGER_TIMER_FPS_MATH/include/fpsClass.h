@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567142;
+//WomaIntegrityCheck = 1234567222;
 #pragma once
 
 //////////////
@@ -36,7 +36,7 @@
 class FpsClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567142;
+	UINT WomaIntegrityCheck = 1234567222;
 	FpsClass();
 	~FpsClass();
 

@@ -21,7 +21,7 @@
 //  - Debug use local: "settings".xml
 //  - Release use:     C:\Users\<user>\AppData\Local\Pmborg\Woma2017\"settings".xml (WOMA::APPDATA)
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567142;
+//WomaIntegrityCheck = 1234567222;
  
 #define _CRT_SECURE_NO_WARNINGS
 

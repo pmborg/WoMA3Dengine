@@ -21,7 +21,7 @@
 //		NO GLOBAL VARIABLE(s)
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567142;
+//WomaIntegrityCheck = 1234567222;
 #pragma once
 
 #if !defined _PLATFORM_H_
@@ -383,7 +383,7 @@ static_assert(false, "This code is for a LOWENDIAN CPU");
 // STEP2:	On Project General Settings select: toolset: v140 or better...
 //			On Project General Settings select: target platform: 10.0.xxxxx.0
 #endif
-#endif//WINDOWS_PLATFORM
+#endif
 
 #if defined _USING_V110_SDK71_	// 32 bits WINXP SDK + SSE2, VS2010 or VS2012 (update4) For Windows XP (Sample: v110_xp/v120_xp/v140_xp)" XP Toolset is used? (Compile for DX9)
 	// DX9sdk can be selected	// (Use DX-APIs: for DX9) for Windows XP Builds
@@ -588,7 +588,7 @@ static_assert(false, "WIN6x: X64 or WIN32, have to be selected");
 #endif
 
 #if defined WOMA_CONSOLE_APPLICATION
-#define _CONSOLE
+	#define _CONSOLE
 #endif
 
 #endif

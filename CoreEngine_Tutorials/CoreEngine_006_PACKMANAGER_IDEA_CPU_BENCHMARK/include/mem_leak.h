@@ -25,7 +25,7 @@
 // on failure, Throws bad_alloc exception    On failure, returns NULL
 // size is calculated by compiler			size is calculated manually
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567142;
+//WomaIntegrityCheck = 1234567222;
 
 #pragma once
 #include "platform.h"

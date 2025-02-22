@@ -15,7 +15,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567142;
+//WomaIntegrityCheck = 1234567222;
 
 #ifndef _ApplicationClass_H_
 #define _ApplicationClass_H_
@@ -59,15 +59,6 @@
 #else
 #define MAX_CLIENTS 1
 #endif
-
-/*
-#if DX_ENGINE_LEVEL >= 56
-struct compoundTreeLoadOrder {
-	UINT compoundTreeId;
-	UINT order;
-};
-#endif
-*/
 
 // -------------------------------------------------------------------------------------------------
 
@@ -187,7 +178,7 @@ extern UINT g_NetID;
 class ApplicationClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567142;
+	UINT WomaIntegrityCheck = 1234567222;
 	ApplicationClass();
 	~ApplicationClass();
 	
@@ -235,11 +226,6 @@ public:
 	//void		initUnderWaterDemo(void* m_Driver, UINT terrainId);
 #endif
 
-//#if defined SCENE_MAIN_TOPO_TERRAIN
-	//CTerrain*	mainTerrain;
-	//void		initMainTopoTerrainDemo(void* m_Driver, UINT terrainId);
-//#endif
-
 #if defined SCENE_MAIN_TERRAIN
 	CTerrain*	mainTerrain;
 	//void		initMainTerrainDemo(UINT terrainId);
@@ -260,7 +246,7 @@ public:
 #endif
 
 #if  defined USE_RASTERTEK_TEXT_FONT
-	bool	initText(/*WomaDriverClass* m_Driver*/);
+	bool	initText();
 	DirectX::ApplicationTextClass* AppTextClass = NULL;
 #endif
 
@@ -346,7 +332,7 @@ public:
 	void	initStatic2D();
 #endif
 #if defined USE_CUBE // Cubes
-	bool initCubes3D(/*WomaDriverClass* m_Driver*/);
+	bool initCubes3D();
 #endif
 
 

@@ -17,7 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567142;
+//WomaIntegrityCheck = 1234567222;
 
 #include "OSengine.h"
 #include "OSmain_dir.h"		//#include "OsDirectories.h"
@@ -31,7 +31,7 @@
 SystemManager::SystemManager()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567142;
+	WomaIntegrityCheck = 1234567222;
 
 	//CheckOS:
 	ZeroMemory(&pszOS, sizeof(pszOS));

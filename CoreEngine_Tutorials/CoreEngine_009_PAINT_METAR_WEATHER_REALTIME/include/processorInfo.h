@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567142;
+//WomaIntegrityCheck = 1234567222;
 #pragma once
 
 #include "platform.h"	// TCHAR
@@ -31,7 +31,7 @@ extern void cpuID(unsigned regs[4], unsigned i);
 class ProcessorInfo
 {
 public:
-    UINT WomaIntegrityCheck = 1234567142;
+    UINT WomaIntegrityCheck = 1234567222;
     ProcessorInfo();
     ~ProcessorInfo();
 

@@ -15,7 +15,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567142;
+//WomaIntegrityCheck = 1234567222;
 #pragma once
 
 #include "platform.h"
@@ -66,7 +66,7 @@ mat4 operator * (const mat4 &mat1, const mat4 &mat2);
 class GLmathClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567142;
+	UINT WomaIntegrityCheck = 1234567222;
 	GLmathClass();
 	~GLmathClass();
 

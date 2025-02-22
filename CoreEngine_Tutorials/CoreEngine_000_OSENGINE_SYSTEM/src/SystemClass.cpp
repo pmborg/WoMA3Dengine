@@ -17,7 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Define APIs for systemclass.cpp which is the common OS API
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567142;
+//WomaIntegrityCheck = 1234567222;
 
 #define _CRT_SECURE_NO_WARNINGS
 #pragma warning( disable : 4477 )
@@ -38,7 +38,7 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 {
 	// STARTING POINT of WOMA ENGINE!
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567142;
+	WomaIntegrityCheck = 1234567222;
 
 	AppSettings = NULL;
 
@@ -173,6 +173,15 @@ bool SystemClass::SystemCheck()
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("ENGINE_LEVEL: %d [Function Loader] systemManager->CheckOS()\n"), WOMA::ENGINE_LEVEL_USED);
 	IF_NOT_RETURN_FALSE(systemManager->CheckOS()); // Mandatory line for all ENGINE_LEVELs
 
+#if defined DX11 && !defined WIN10
+	// FOR WINDOWS VISTA:
+	WOMA_LOGManager_DebugMSG("-------------------------------------------------------------------------------\n");
+	WOMA_LOGManager_DebugMSGAUTO(TEXT("[Function Loader] systemManager->UpdateOSifNeeded()\n"));
+	IF_NOT_RETURN_FALSE(systemManager->UpdateOSifNeeded());	// TODO: UpdateOSifNeeded: Check if OS need Updates: DONE
+
+	WOMA_LOGManager_DebugMSGAUTO(TEXT("[Function Loader] systemManager->CheckSetup()\n"));
+	IF_NOT_RETURN_FALSE(systemManager->CheckSetup());		// TODO: CheckSetup: Check if "Setup.exe" is Installed or needed / Download & Install: DONE
+#endif // NOTE: WINDOWS10/DX12: Dont need this checks
 	//LEVELNORMAL();
 
 	//LEVELHIGHLIGHT(4);
