@@ -38,7 +38,27 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="core_engine_level.h" />
+    <ClInclude Include="..\..\ThirdParty\GL3Plus\GL\gl3w.h">
+      <Filter>include\ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GL3Plus\GL\glcorearb.h">
+      <Filter>include\ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GL3Plus\GL\glext.h">
+      <Filter>include\ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GL3Plus\GL\wglext.h">
+      <Filter>include\ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GL3Plus\GL\glxext.h">
+      <Filter>include\ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\GL3Plus\GL\glxtokens-backup.h">
+      <Filter>include\ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="..\level.h" />
+    <ClInclude Include="..\tech-level.h" />
+    <ClInclude Include="..\woma_engine_assets.h" />
     <ClInclude Include="core\include\ApplicationClass.h">
       <Filter>core\include</Filter>
     </ClInclude>
@@ -96,6 +116,9 @@
     <ClInclude Include="core\include\packManager.h">
       <Filter>core\include</Filter>
     </ClInclude>
+    <ClInclude Include="core\include\platform.h">
+      <Filter>core\include</Filter>
+    </ClInclude>
     <ClInclude Include="core\include\processorInfo.h">
       <Filter>core\include</Filter>
     </ClInclude>
@@ -126,9 +149,6 @@
     <ClInclude Include="core\include\weatherClass.h">
       <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="core\include\win32InputClass.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
     <ClInclude Include="core\include\winCpuClass.h">
       <Filter>core\include</Filter>
     </ClInclude>
@@ -156,61 +176,38 @@
     <ClInclude Include="core\include\xml_loader.h">
       <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="core\include\platform.h">
+    <ClInclude Include="core\include\d3dx12.h">
       <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\DemoApplicationClass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\DemoApplicationClass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\DX9class.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\DX11class.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\DX11class.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\dx12class.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\dx12class.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\DX9class.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\DXengine.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\DXengine.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\dxWinSystemClass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\dxWinSystemClass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\GLopenGLclass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\GLopenGLclass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\wglopenglclass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\wglopenglclass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\womadriverclass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\womadriverclass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\d3dx12.h">
-      <Filter>include\ThirdParty</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\GL3Plus\GL\gl3w.h">
-      <Filter>include\ThirdParty</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\GL3Plus\GL\glcorearb.h">
-      <Filter>include\ThirdParty</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\GL3Plus\GL\glext.h">
-      <Filter>include\ThirdParty</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\GL3Plus\GL\wglext.h">
-      <Filter>include\ThirdParty</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\GL3Plus\GL\glxext.h">
-      <Filter>include\ThirdParty</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\GL3Plus\GL\glxtokens-backup.h">
-      <Filter>include\ThirdParty</Filter>
-    </ClInclude>
-    <ClInclude Include="19core_engine_level.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\main.cpp" />
     <ClCompile Include="core\src\0CheckOS.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
@@ -220,25 +217,16 @@
     <ClCompile Include="core\src\2UpdateOSifNeeded.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\3CheckSetup.cpp">
-      <Filter>core\src</Filter>
-    </ClCompile>
     <ClCompile Include="core\src\4CheckEngineUpdates.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
     <ClCompile Include="core\src\5LaunchEngine.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\6OperatingSystem.cpp">
-      <Filter>core\src</Filter>
-    </ClCompile>
     <ClCompile Include="core\src\7ProcessorInfo.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
     <ClCompile Include="core\src\8SystemFeatures.cpp">
-      <Filter>core\src</Filter>
-    </ClCompile>
-    <ClCompile Include="core\src\ApplicationClass_ext.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
     <ClCompile Include="core\src\astroClass.cpp">
@@ -269,6 +257,9 @@
       <Filter>core\src</Filter>
     </ClCompile>
     <ClCompile Include="core\src\log.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\main.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
     <ClCompile Include="core\src\Math3D.cpp">
@@ -331,6 +322,9 @@
     <ClCompile Include="core\src\winWMIutilClass.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
+    <ClCompile Include="core\src\winWomaSetupManager.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
     <ClCompile Include="core\src\woma_exception.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
@@ -340,44 +334,44 @@
     <ClCompile Include="core\src\xml_settings_saver.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
-    <ClCompile Include="src\DX11\DX11CapabilitiesClass.cpp">
+    <ClCompile Include="core\src\DX11\DX11CapabilitiesClass.cpp">
       <Filter>src\dx11</Filter>
     </ClCompile>
-    <ClCompile Include="src\DX11\DX11Class.cpp">
-      <Filter>src\dx11</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DX11\DX11CreateDevice-and-SwapChain.cpp">
-      <Filter>src\dx11</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DX11\DX11GetModesList.cpp">
-      <Filter>src\dx11</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DX11\DX11ViewPort-and-Scissor.cpp">
-      <Filter>src\dx11</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DX11\DX11Zbuffer.cpp">
-      <Filter>src\dx11</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DX12\DX12Class.cpp">
-      <Filter>src\dx12</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GLX\GL3w.cpp">
-      <Filter>src\OPENGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GLX\GLopenGLclass.cpp">
-      <Filter>src\OPENGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GLX\wglopenglclass.cpp">
-      <Filter>src\OPENGL</Filter>
-    </ClCompile>
-    <ClCompile Include="core\src\winWomaSetupManager.cpp">
+    <ClCompile Include="core\src\DX11\DX11Class.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
-    <ClCompile Include="src\dxWinSystemClass.cpp">
-      <Filter>App</Filter>
+    <ClCompile Include="core\src\DX11\DX11CreateDevice-and-SwapChain.cpp">
+      <Filter>core\src</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderApplication_Basics.cpp">
-      <Filter>App</Filter>
+    <ClCompile Include="core\src\DX11\DX11GetModesList.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\DX11\DX11ViewPort-and-Scissor.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\DX11\DX11Zbuffer.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\DX12\DX12Class.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\dxWinSystemClass.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\GLX\GL3w.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\GLX\GLopenGLclass.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\renderApplication_Basics.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\ApplicationClass.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\GLX\wglopenglclass.cpp">
+      <Filter>core\src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

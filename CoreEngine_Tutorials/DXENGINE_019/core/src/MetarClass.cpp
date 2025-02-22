@@ -1,10 +1,9 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: MetarClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -22,6 +21,11 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "platform.h"
 
+#if defined ANDROID_PLATFORM
+#include "defs.h"
+#endif
+
+#if CORE_ENGINE_LEVEL >= 9 && defined USE_METARCLASS //ENGINE_LEVEL >= 13
 #include "metarClass.h"
 #include <math.h>	/* exp */
 
@@ -30,7 +34,7 @@ Weather weather;
 MetarClass::MetarClass()
 {
     CLASSLOADER();
-    WomaIntegrityCheck = 1234567831;
+    WomaIntegrityCheck = 1234567142;
 }
 
 MetarClass::~MetarClass() { CLASSDELETE(); }
@@ -709,3 +713,4 @@ bool MetarClass::Initialize(STRING Metar)
 }
 
 
+#endif

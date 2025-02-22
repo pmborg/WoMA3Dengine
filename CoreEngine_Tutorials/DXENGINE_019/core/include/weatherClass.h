@@ -1,10 +1,9 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: WeatherClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -15,14 +14,16 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567142;
 #pragma once
 
 #include "main.h" // TCHAR
+#if defined USE_METARCLASS
 
 class WeatherClass
 {
 public:
-    UINT WomaIntegrityCheck = 1234567831;
+    UINT WomaIntegrityCheck = 1234567142;
     WeatherClass();
     ~WeatherClass();
 
@@ -38,3 +39,4 @@ public:
 
 };
 
+#endif
