@@ -2,6 +2,8 @@
 
 <a href="https://github.com/pmborg/WoMA3Dengine/blob/main/HowToInstallVisualStudio2019CrossPlatformDevelopmentEnvironment/howto_download_and_install_VisualStudio2019CrossPlatformSetupEnvironment.txt">https://github.com/pmborg/WoMA3Dengine/blob/main/HowToInstallVisualStudio2019CrossPlatformDevelopmentEnvironment/howto_download_and_install_VisualStudio2019CrossPlatformSetupEnvironment.txt</a>
 
+- <b>DX63: WORLD.XML: TERRAIN 4k: (multi layer) 512x512 MINI MAP 3D Navegation
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_063.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_063.png)	 
 
 # WoMA3Dengine (DX11, DX12, OPENGL, DX9) Advanced Tutorials
 <hr>
