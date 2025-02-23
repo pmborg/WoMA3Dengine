@@ -135,7 +135,7 @@ public class MyActivity extends NativeActivity
 {
 Toast toast;
 
-public native String getSystemLanguage();
+//public native String getSystemLanguage();
 
     protected void onCreate(Bundle savedInstanceState) {                                                                                                                                  
         Log.w("[WOMA]Java", "JAVA:onCreate()");
@@ -144,8 +144,8 @@ public native String getSystemLanguage();
         toast = Toast.makeText(MyActivity.this, "message", Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER  , 0, 0);
 
-        String language = getSystemLanguage();
-        Log.w("System Language", language); // This will log the system language
+        //String language = getSystemLanguage();
+        //Log.w("System Language", language); // This will log the system language
     }       
 
     // ShowAlert

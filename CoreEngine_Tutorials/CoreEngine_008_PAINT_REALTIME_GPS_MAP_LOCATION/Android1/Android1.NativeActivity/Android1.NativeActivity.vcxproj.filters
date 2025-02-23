@@ -100,9 +100,6 @@
     <ClInclude Include="..\..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.h">
       <Filter>LIB_tinyxml2</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\AndroidEngine.h">
-      <Filter>src\005</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\tech-level.h" />
     <ClInclude Include="..\..\..\woma_engine_assets.h" />
   </ItemGroup>
@@ -183,6 +180,7 @@
     <ClCompile Include="..\..\src\7ProcessorInfo.cpp">
       <Filter>src\004</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\ApplicationClass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Include">

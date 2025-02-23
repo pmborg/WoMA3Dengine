@@ -131,6 +131,7 @@
     <PublicIncludeDirectories>
     </PublicIncludeDirectories>
     <IncludePath>.;..;../..;../../include;$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0</IncludePath>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\004\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
