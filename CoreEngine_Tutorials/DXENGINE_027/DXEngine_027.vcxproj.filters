@@ -41,7 +41,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="core_engine_level.h" />
     <ClInclude Include="core\include\ApplicationClass.h">
       <Filter>core\include</Filter>
     </ClInclude>
@@ -162,126 +161,107 @@
     <ClInclude Include="core\include\platform.h">
       <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\d3dx12.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\ApplicationTextClass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\DemoApplicationClass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\d3dx12.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\DX9class.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\DemoApplicationClass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\DX11class.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\DX11class.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\dx12class.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\dx12class.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\DXengine.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\DX12Textureclass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\dxWinSystemClass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\DX9class.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\GLopenGLclass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\DXbasicTypes.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\wglopenglclass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\DXcameraClass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\womadriverclass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\DXdrivers.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\DX12Textureclass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\DXengine.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\DXbasicTypes.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\DXmodelClass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\DXcameraClass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\DXshaderClass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\DXdrivers.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\DxTextClass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\DXmodelClass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\dxWinSystemClass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\DXshaderClass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\GLcameraClass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\GLcameraClass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\GLmodelClass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\GLmodelClass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\GLopenGLclass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\GLshaderClass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\GLshaderClass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\glTextureclass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\GLTextClass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\ImageLoaderClass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\glTextureclass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\playerClass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\ImageLoaderClass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\positionClass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\lightClass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\vertexTypes.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\playerClass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\virtualCameraClass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\positionClass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\virtualModelClass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\textFontClass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="27core_engine_level.h" />
-    <ClInclude Include="include\ApplicationTextClass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\vertexTypes.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\dumpUploader.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\virtualCameraClass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\DxTextClass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\virtualModelClass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\fileLoader.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\virtualTextClass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\GLTextClass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\wglopenglclass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\language.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\WomaCube.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\lightClass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\womadriverclass.h">
+      <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\stackTrace.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\textFontClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\virtualTextClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\win32InputClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\winCpuClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\WomaCube.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\WomaSphere.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\WomaSphere.h">
+      <Filter>core\include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -304,16 +284,10 @@
     <ClCompile Include="core\src\5LaunchEngine.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\6OperatingSystem.cpp">
-      <Filter>core\src</Filter>
-    </ClCompile>
     <ClCompile Include="core\src\7ProcessorInfo.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
     <ClCompile Include="core\src\8SystemFeatures.cpp">
-      <Filter>core\src</Filter>
-    </ClCompile>
-    <ClCompile Include="core\src\ApplicationClass_ext.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
     <ClCompile Include="core\src\astroClass.cpp">
@@ -490,9 +464,6 @@
     <ClCompile Include="src\ImageLoaderClass.cpp">
       <Filter>src\utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\DXENGINE_021\src\winWomaSetupManager.cpp">
-      <Filter>src\utils</Filter>
-    </ClCompile>
     <ClCompile Include="src\DX11Blending.cpp">
       <Filter>src\dx11</Filter>
     </ClCompile>
@@ -519,6 +490,12 @@
     </ClCompile>
     <ClCompile Include="src\GLTextClass.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\winWomaSetupManager.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\ApplicationClass.cpp">
+      <Filter>core\src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: xml_settings_saver.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -22,30 +22,22 @@
 //  - Release use:     C:\Users\<user>\AppData\Local\Pmborg\Woma2014\"file".xml (WOMA::APPDATA)
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
-// 
-// --------------------------------------------------------------------------------------------
-// Includes:
-// --------------------------------------------------------------------------------------------
-#define _CRT_SECURE_NO_WARNINGS	// Ignore: warning C4996
+//WomaIntegrityCheck = 1234567222;
+
 #pragma warning(disable: 4244)
-#include "platform.h"
-#include "xml_loader.h"
-#include "mem_leak.h"
 
-#include "winsystemclass.h"		// Are we a Windows Instance?
-
+#include "OSengine.h"
+#if defined CLIENT_SCENE_SETUP //#if CORE_ENGINE_LEVEL > 9
 #include "xml_loader.h"
 
 //*********************************************************************************************/
 bool XMLloader::saveConfigSettings (char* file) // Note: Have to be char
 //*********************************************************************************************/
 {
-	// TUTORIAL: https://www.cs.cmu.edu/~preethi/src/tinyxml/docs/tutorial0.html
+	// TUTORIALv1: https://www.cs.cmu.edu/~preethi/src/tinyxml/docs/tutorial0.html
 
-	//static TiXmlDocument doc( file );
-	//static TiXmlDocument doc( "new.xml" );
-	TiXmlDocument doc;
+#if defined WINDOWS_PLATFORM && defined USE_TINYXML_LOADER
+	/*TiXmlElement*/ tinyxml2::XMLDocument doc;
 
 	//Optional:
 	//TiXmlDeclaration* decl = NEW TiXmlDeclaration("1.0", "", "");
@@ -55,12 +47,12 @@ bool XMLloader::saveConfigSettings (char* file) // Note: Have to be char
 	CHAR stri[MAX_STR_LEN]  = { 0 };
 
 	// SAVE Settings:
-	TiXmlElement* root = NEW TiXmlElement( "generalsettings" );
+	auto* root = doc.NewElement( "generalsettings" );
 	doc.LinkEndChild(root);
 	if ( root )
 	{
-		///*<screen>*/TiXmlElement* child_screen = root->FirstChildElement( "screen" );
-		TiXmlElement* child_screen = NEW TiXmlElement("screen");
+		//TiXmlElement* child_screen = root->FirstChildElement( "screen" );
+		tinyxml2::XMLElement* child_screen = root->InsertNewChildElement("screen");
 		root->LinkEndChild(child_screen);
 		if ( child_screen )
 		{
@@ -92,8 +84,10 @@ bool XMLloader::saveConfigSettings (char* file) // Note: Have to be char
 			child_screen->SetAttribute("bitsPerPixel", stri);
 		}
 
-		///*<driver>*/TiXmlElement* child_driver = root->FirstChildElement( "driver" );
-		TiXmlElement* child_driver = NEW TiXmlElement("driver");
+		///*<driver>*/tinyxml2::XMLElement* child_driver = root->FirstChildElement( "driver" );
+		//tinyxml2::XMLElement* child_driver = NEW tinyxml2::XMLElement("driver");
+		tinyxml2::XMLElement* child_driver = root->InsertNewChildElement("driver");
+
 		root->LinkEndChild(child_driver);
 		if (child_driver)
 		{
@@ -117,14 +111,11 @@ bool XMLloader::saveConfigSettings (char* file) // Note: Have to be char
 
 			str = (SystemHandle->AppSettings->UseDoubleBuffering) ? "true" : "false";
 			child_driver->SetAttribute("useDoubleBuffering", str.c_str());
-
-			//TODO Need to expand....
-			str = (SystemHandle->AppSettings->MSAA_ENABLED) ? "true" : "false";
-			child_driver->SetAttribute("msaa", str.c_str());
 		}
 
-		///*<camera>*/TiXmlElement* child_camera = root->FirstChildElement("camera");
-		TiXmlElement* child_camera = NEW TiXmlElement("camera");
+		///*<camera>*/tinyxml2::XMLElement* child_camera = root->FirstChildElement("camera");
+		//tinyxml2::XMLElement* child_camera = NEW tinyxml2::XMLElement("camera");
+		tinyxml2::XMLElement* child_camera = root->InsertNewChildElement("camera");
 		root->LinkEndChild(child_camera);
 		if (child_camera)
 		{
@@ -137,8 +128,9 @@ bool XMLloader::saveConfigSettings (char* file) // Note: Have to be char
 			_itoa(SystemHandle->AppSettings->SCREEN_DEPTH, stri, 10);
 			child_camera->SetAttribute("screenDepth", stri);
 
-			///*<initPos>*/TiXmlElement* child_initPos = child_camera->FirstChildElement("initPos");
-			TiXmlElement* child_initPos = NEW TiXmlElement("initPos");
+			///*<initPos>*/tinyxml2::XMLElement* child_initPos = child_camera->FirstChildElement("initPos");
+			//tinyxml2::XMLElement* child_initPos = NEW tinyxml2::XMLElement("initPos");
+			tinyxml2::XMLElement* child_initPos = root->InsertNewChildElement("initPos");
 			child_camera->LinkEndChild(child_initPos);
 			if (child_initPos)
 			{
@@ -152,8 +144,8 @@ bool XMLloader::saveConfigSettings (char* file) // Note: Have to be char
 				child_initPos->SetAttribute("z", stri);
 			}
 
-			///*<initRot>*/TiXmlElement* child_initRot = child_camera->FirstChildElement("initRot");
-			TiXmlElement* child_initRot = NEW TiXmlElement("initRot");
+			///*<initRot>*/tinyxml2::XMLElement* child_initRot = child_camera->FirstChildElement("initRot");
+			tinyxml2::XMLElement* child_initRot = root->InsertNewChildElement("initRot");
 			child_camera->LinkEndChild(child_initRot);
 			if (child_initRot)
 			{
@@ -168,9 +160,30 @@ bool XMLloader::saveConfigSettings (char* file) // Note: Have to be char
 			}
 		}
 
-#if definef USE_SOUND_MANAGER || defined USE_PLAY_MUSIC
-		///*<sound>*/TiXmlElement* child_sound = root->FirstChildElement( "sound" );
-		TiXmlElement* child_sound = NEW TiXmlElement("sound");
+		///*<texture>*/tinyxml2::XMLElement* child_texture = root->FirstChildElement("texture");
+		tinyxml2::XMLElement* child_texture = root->InsertNewChildElement("texture");
+		root->LinkEndChild(child_texture);
+		if (child_texture)
+		{
+			_itoa(SystemHandle->AppSettings->MaxTextureSize, stri, 10);
+			child_texture->SetAttribute("maxTexture", stri);
+
+			str = (SystemHandle->AppSettings->MSAA_bilinear) ? "true" : "false";
+			child_texture->SetAttribute("bilinear", str.c_str());
+
+			str = (SystemHandle->AppSettings->MSAA_trilinear) ? "true" : "false";
+			child_texture->SetAttribute("trilinear", str.c_str());
+
+			str = (SystemHandle->AppSettings->MSAA_Anisotropic) ? "true" : "false";
+			child_texture->SetAttribute("Anisotropic", str.c_str());
+
+			_itoa(SystemHandle->AppSettings->MSAA_AnisotropicLevel, stri, 10);
+			child_texture->SetAttribute("AnisotropicLevel", stri);
+		}
+
+#if defined USE_WIN32_SOUND_MANAGER || defined USE_WIN32_PLAY_MUSIC
+		///*<sound>*/tinyxml2::XMLElement* child_sound = root->FirstChildElement( "sound" );
+		tinyxml2::XMLElement* child_sound = root->InsertNewChildElement("sound");
 		root->LinkEndChild(child_sound);
 		if ( child_sound )
 		{
@@ -187,6 +200,8 @@ bool XMLloader::saveConfigSettings (char* file) // Note: Have to be char
 		return false;
 
 	doc.SaveFile(file);
+#endif
 
 	return true;
 }
+#endif

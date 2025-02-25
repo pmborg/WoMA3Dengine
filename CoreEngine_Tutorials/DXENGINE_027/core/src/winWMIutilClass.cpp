@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: wmiUtilClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,10 +17,13 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567222;
 
-#include "platform.h"
+#include "OSengine.h"
 
 #include "wmiUtilClass.h"
+
+#if defined WINDOWS_PLATFORM
 
 using namespace std;	//endl
 #include <sstream>		//wstring
@@ -28,7 +31,7 @@ using namespace std;	//endl
 wmiUtilClass::wmiUtilClass() 
 {
 	CLASSLOADER();
-    WomaIntegrityCheck = 1234567890;
+    WomaIntegrityCheck = 1234567222;
 
 	//public:
 	description = L"";
@@ -41,7 +44,13 @@ wmiUtilClass::wmiUtilClass()
     pLocator = NULL;
     pServices = NULL;
     
-    GetVideoControllerInfoFromWMI();
+    try {
+        GetVideoControllerInfoFromWMI();
+    }
+    catch (...) 
+    {
+        WOMA_LOGManager_DebugMSGAUTO(TEXT("ERROR ON: GetVideoControllerInfoFromWMI()"));
+    }
 }
 
 wmiUtilClass::~wmiUtilClass() 
@@ -138,7 +147,7 @@ bool wmiUtilClass::GetCpuTemperature()
 
     if (!pServices) 
         if (!initWMI(TEXT("ROOT\\WMI"))) // cimv2
-			{ WOMA::WomaMessageBox(TEXT("WARNING: GetCpuTemperature, failed!")); return false; }
+			{ WomaMessageBox(TEXT("WARNING: GetCpuTemperature, failed!"), TEXT("Error"), false); return false; }
 
 	//WriteConsoleOutput(TEXT(""));
 
@@ -158,7 +167,7 @@ bool wmiUtilClass::GetCpuTemperature()
         SAFE_RELEASE(pServices);
         SAFE_RELEASE(pLocator);
         CoUninitialize();
-        WOMA::WomaMessageBox(TEXT("WARNING: GetCpuTemperature, failed!")); 
+        WomaMessageBox(TEXT("WARNING: GetCpuTemperature, failed!"), "WARNING", false);
 		return false;
     }
 
@@ -217,7 +226,7 @@ bool wmiUtilClass::GetTotalPhysicalMemory()
 {
     if (!pServices) 
         if (!initWMI(TEXT("ROOT\\CIMV2"))) 
-			{ WOMA::WomaMessageBox(TEXT("WARNING: GetTotalPhysicalMemory, failed!")); return false; }
+			{ WomaMessageBox(TEXT("WARNING: GetTotalPhysicalMemory, failed!"), "WARNING", false); return false; }
 
     // Request WMI data.
     IEnumWbemClassObject* pEnumerator = NULL;
@@ -231,7 +240,7 @@ bool wmiUtilClass::GetTotalPhysicalMemory()
         SAFE_RELEASE(pServices);
         SAFE_RELEASE(pLocator);
         CoUninitialize();
-        WOMA::WomaMessageBox(TEXT("WARNING: GetTotalPhysicalMemory, failed!")); 
+        WomaMessageBox(TEXT("WARNING: GetTotalPhysicalMemory, failed!"), "WARNING", false);
 		return false;
     }
 
@@ -271,7 +280,7 @@ bool wmiUtilClass::GetSystemInfo()
 {
     if (!pServices) 
         if (!initWMI(TEXT("ROOT\\CIMV2"))) 
-			{ WOMA::WomaMessageBox(TEXT("WARNING: GetTotalPhysicalMemory, failed!")); return false; }
+			{ WomaMessageBox(TEXT("WARNING: GetTotalPhysicalMemory, failed!"), "WARNING", false); return false; }
 
     // Request WMI data.
     IEnumWbemClassObject* pEnumerator = NULL;
@@ -285,7 +294,7 @@ bool wmiUtilClass::GetSystemInfo()
         SAFE_RELEASE(pServices);
         SAFE_RELEASE(pLocator);
         CoUninitialize();
-        WOMA::WomaMessageBox(TEXT("WARNING: GetSystemInfo, failed!")); 
+        WomaMessageBox(TEXT("WARNING: GetSystemInfo, failed!"), "WARNING", false);
 		return false;
     }
 
@@ -318,8 +327,6 @@ bool wmiUtilClass::GetSystemInfo()
 }
 //#endif
 
-
-
 //#ifdef TUTORIAL_PRE_CHAP// >= 5
 //	-------------------------------------------------------------------------------------------
 bool wmiUtilClass::GetVideoControllerInfoFromWMI()
@@ -341,7 +348,7 @@ bool wmiUtilClass::GetVideoControllerInfoFromWMI()
         return false;
     }
 
-    // http://msdn.microsoft.com/en-us/library/aa394512%28v=vs.85%29.aspx
+    // MORE INFO: http://msdn.microsoft.com/en-us/library/aa394512%28v=vs.85%29.aspx
     VARIANT varProp;
 
     //QUERY: Win32_VideoController
@@ -356,17 +363,17 @@ bool wmiUtilClass::GetVideoControllerInfoFromWMI()
 		hr = pClassObj->Get(L"Description", 0, &varProp, NULL, NULL);
 		description = varProp.bstrVal;
 
+        /*
 		hr = pClassObj->Get(L"AdapterRAM", 0, &varProp, NULL, NULL);
 		if (varProp.intVal > 0)
 			AdapterRAM = varProp.intVal / (MBs);
 		else
 			AdapterRAM = 0;
-
-		hr = pClassObj->Get(L"AdapterDACType", 0, &varProp, NULL, NULL);
-		AdapterDACType = varProp.bstrVal;
+        */
+        // NOTE: In some old computers generate an exception:
+		//hr = pClassObj->Get(L"AdapterDACType", 0, &varProp, NULL, NULL);
+		//AdapterDACType = varProp.bstrVal;
 	}
-    //pClassObj->Get(L"DriverDate", 0, &varProp, NULL, NULL);
-    //pClassObj->Get(L"DriverVersion", 0, &varProp, NULL, NULL);
 
     SAFE_RELEASE(pClassObj);
 
@@ -405,7 +412,6 @@ STRING wmiUtilClass::GetMonitorDescriptonFromWMI(DWORD iMonitor)
     while (pEnumerator != NULL)
     {
         ULONG uReturn = 0;
-        //const HRESULT hRes = ;
         if (pEnumerator->Next(WBEM_INFINITE, 1, &pClassObj, &uReturn) == 0)
             break;  // Done (pClassObj remains NULL).
 
@@ -474,4 +480,6 @@ STRING wmiUtilClass::GetMonitorDescription(HMONITOR hMonitor)
 }
 // GET MONITOR NAME.
 //	-------------------------------------------------------------------------------------------
+
+#endif
 

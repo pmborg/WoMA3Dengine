@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: renderApplication_Basics.cpp
 // --------------------------------------------------------------------------------------------
@@ -88,14 +87,16 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 {
 	SystemHandle->TotalVertexCounter = 0;
+	#if LEVEL >= 10 && LEVEL <= 21
 	{
-#define cor driverList[SystemHandle->AppSettings->DRIVER]->driver_ClearColor
+		#define cor driverList[SystemHandle->AppSettings->DRIVER]->driver_ClearColor
 		cor[2] += ((float)dt / 10000);
 		cor[2] = cor[2] + 0.001f;
 		if (cor[2] >= 1)
 			cor[2] = 0;
-#undef cor
+		#undef cor
 	}
+	#endif
 
 	// RENDER: SKY Sphere:
 	// --------------------------------------------------------------------------------------------

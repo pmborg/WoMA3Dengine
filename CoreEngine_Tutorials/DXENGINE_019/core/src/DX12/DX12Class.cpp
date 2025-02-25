@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // ----------------------------------------------------------------------------------------------
 // Filename: DX12Class.cpp
 // --------------------------------------------------------------------------------------------
@@ -786,7 +785,7 @@ bool DX12Class::initDX12Device (HWND hwnd)
 
 	// [*] createSwapChain()
 	// ----------------------------------------------------------------------------------------------
-//#define oldway_
+#define oldway_
 #if defined oldway_
 	IF_NOT_RETURN_FALSE(createSwapChainDX12device(hwnd, SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT, SystemHandle->AppSettings->VSYNC_ENABLED,
 		SystemHandle->AppSettings->FULL_SCREEN, SystemHandle->AppSettings->UseDoubleBuffering, SystemHandle->AppSettings->AllowResize,

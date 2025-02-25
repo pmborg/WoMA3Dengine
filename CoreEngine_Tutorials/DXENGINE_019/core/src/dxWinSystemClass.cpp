@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: dxWinSystemClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -20,8 +19,8 @@
 
 #include "OSengine.h"
 #if defined DX_ENGINE
-//int USE_THIS_GRAPHIC_CARD_ADAPTER = 0;
 
+#include "mem_leak.h"
 #if defined WINDOWS_PLATFORM
 #include "dxWinSystemClass.h"
 #include "WomaDriverClass.h"

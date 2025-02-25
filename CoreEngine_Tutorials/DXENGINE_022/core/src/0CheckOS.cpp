@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: 0CheckOS.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,22 +17,27 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567222;
 
 #include "OSengine.h"
 #include "OSmain_dir.h"		//#include "OsDirectories.h"
 #include "systemManager.h"
 #include "mem_leak.h"
-#include <atlstr.h>
 #include <map>
+#if defined WINDOWS_PLATFORM
+#include <atlstr.h>
+#endif
 
 SystemManager::SystemManager()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567831;
+	WomaIntegrityCheck = 1234567222;
 
 	CPUSpeedMHz = 0;
 
+#if DX_ENGINE_LEVEL >= 4 && defined WINDOWS_PLATFORM
 	driveLetter = 0;
+#endif
 
 	//CheckOS:
 	ZeroMemory(&pszOS, sizeof(pszOS));
@@ -45,17 +50,53 @@ SystemManager::SystemManager()
 SystemManager::~SystemManager() { CLASSDELETE(); }
 
 char osName[1024 * 4];
+#if defined LINUX_PLATFORM
+char* OS_name()
+{
+	FILE *fp = NULL;
+	fp = popen("/bin/bash -c set | grep 'OSTYPE=' | awk -F= '{print $2}'", "r");
+	fread(osName, 1, sizeof(osName)-1, fp);
+	fclose(fp);
+
+	for (int i = 0; osName[i] != 0; i++)
+	if (osName[i] == 10)
+		osName[i] = 0;
+
+	return osName;
+}
+#endif
+
+#if defined ANDROID_PLATFORM
+char* OS_name()
+{
+	FILE *fp = NULL;
+	fp = popen("/bin/sh -c set | grep 'OSTYPE=' | awk -F= '{print $2}'", "r");
+	fread(osName, 1, sizeof(osName)-1, fp);
+	fclose(fp);
+
+	for (int i = 0; osName[i] != 0; i++)
+	if (osName[i] == 10)
+		osName[i] = 0;
+
+	return osName;
+}
+#endif
 
 
 // PUBLIC FUNCTIONS:
 //------------------------------------------------------------------
+#if defined USE_SYSTEM_CHECK
 bool SystemManager::CheckOS()
 //------------------------------------------------------------------
 {
 	// Check Platform: WINDOWS / LINUX / ANDROID
 	//------------------------------------------------------------------
+#if defined WINDOWS_PLATFORM
 	StringCchPrintf(SystemHandle->systemDefinitions.platform, MAX_STR_LEN, TEXT("Platform: %s - %s"), GetOSversionPlatform(), GetOsVersion());
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("%s\n"), SystemHandle->systemDefinitions.platform);
+#else
+	IF_NOT_RETURN_FALSE(CheckOSVersion());
+#endif
 
 	// String Character Set: UNICODE / ANSI
 	//------------------------------------------------------------------	
@@ -72,10 +113,14 @@ bool SystemManager::CheckOS()
 	// Check Bits Architecture: 32Bits+SSE2 vs 64Bits+AVX
 	//------------------------------------------------------------------
 
+#if defined WINDOWS_PLATFORM
 #ifdef X64
 #define _BITS_ 64
 #else
 #define _BITS_ 32
+#endif
+#else // LINUX || ANDROID
+#define _BITS_ __WORDSIZE
 #endif
 
 	StringCchPrintf(SystemHandle->systemDefinitions.binaryArchitecture, MAX_STR_LEN, TEXT("Binary Architecture: %d bits"), _BITS_);
@@ -87,23 +132,27 @@ bool SystemManager::CheckOS()
 	#define _BINARY_CODE_ TEXT("Windows Vista Code")
 #elif defined WIN_XP
 	#define _BINARY_CODE_ TEXT("Windows XP Code")
+#elif defined LINUX_PLATFORM
+	#define _BINARY_CODE_ TEXT("Linux Code")
+#elif defined ANDROID_PLATFORM
+	#define _BINARY_CODE_ TEXT("Android Code")
 #endif
 
 	StringCchPrintf(SystemHandle->systemDefinitions.binaryCode, MAX_STR_LEN, TEXT("Binary Code: %s"), _BINARY_CODE_);
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.binaryCode);
 
-
-
+#if defined WINDOWS_PLATFORM
   //#if !defined WIN10
-	StringCchPrintf(SystemHandle->systemDefinitions.windowsVersion, MAX_STR_LEN, TEXT("Windows Internal Version: %d.%d.%d"), MajorVersion, MinorVersion, BuildVersion);
+	StringCchPrintf(SystemHandle->systemDefinitions.windowsVersion, MAX_STR_LEN, TEXT("Windows Version: %d.%d.%d"), MajorVersion, MinorVersion, BuildVersion);
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.windowsVersion);
 
 	std::map<CString, CString> mapWindowsVersions
 	{
+		{ L"26100", L"24H2" }, //Windows11
 		{ L"22631", L"23H2" }, //Windows11
 		{ L"22621", L"22H2" }, //Windows11
 		{ L"22000", L"21H2" }, //Windows11  (Original  version)
-		{ L"19044", L"21H2" },
+		{ L"19044", L"21H2" }, //Windows10
 		{ L"19043", L"21H1" },
 		{ L"19042", L"20H2" },
 		{ L"19041", L"2004" },
@@ -119,31 +168,53 @@ bool SystemManager::CheckOS()
 	};
 
 	TCHAR v[MAX_STR_LEN] = { 0 };
-	_itoa(BuildVersion, v, 10);
+	//_itoa(BuildVersion, v, 10);	//Bug on ANDROID
 	STRING verstr = mapWindowsVersions[v];
 
 	StringCchPrintf(SystemHandle->systemDefinitions.windowsBuildVersion, MAX_STR_LEN, TEXT("Windows Version: %s"), verstr.c_str());
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.windowsBuildVersion);
-
-
-
   //#endif
+#else
+	WOMA_LOGManager_DebugMSGAUTO(TEXT("sysname: %s\n"), SystemHandle->systemDefinitions.ver.sysname);
+	WOMA_LOGManager_DebugMSGAUTO(TEXT("nodename: %s\n"), SystemHandle->systemDefinitions.ver.nodename);
+	WOMA_LOGManager_DebugMSGAUTO(TEXT("release: %s\n"), SystemHandle->systemDefinitions.ver.release);
+	WOMA_LOGManager_DebugMSGAUTO(TEXT("version: %s\n"), SystemHandle->systemDefinitions.ver.version);
+	WOMA_LOGManager_DebugMSGAUTO(TEXT("machine: %s\n"), SystemHandle->systemDefinitions.ver.machine);
+#endif
 
-	StringCchPrintf(SystemHandle->systemDefinitions.osName, MAX_STR_LEN, TEXT("Current OS name: %s"), pszOS);
+#if defined WINDOWS_PLATFORM
+	StringCchPrintf(SystemHandle->systemDefinitions.osName, MAX_STR_LEN, TEXT("OS name: %s"), pszOS);
+#else
+	StringCchPrintf(SystemHandle->systemDefinitions.osName, MAX_STR_LEN, TEXT("OS name: %s"), OS_name());
+#endif
 
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.osName);
 
 	// Command LINE:
 	//------------------------------------------------------------------
+#if defined WINDOWS_PLATFORM
 	if (WOMA::Scmdline)
 		StringCchPrintf(SystemHandle->systemDefinitions.cmdLine, MAX_STR_LEN, TEXT("CMD LINE: %s %s"), WOMA::filename.c_str(), WOMA::Scmdline);
 	else
 		StringCchPrintf(SystemHandle->systemDefinitions.cmdLine, MAX_STR_LEN, TEXT("CMD LINE: %s"), WOMA::filename.c_str());
 
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.cmdLine);
+#else // LINUX || ANDROID
+	// Remember argv[0] is the "Program fileName":
+	STRING CMD_LINE = TEXT("CMD LINE:");
+	for (UINT i = 0; i < WOMA::ARGc; ++i) {
+		if (i < WOMA::ARGc) {
+			CMD_LINE += TEXT(" ");
+			CMD_LINE += WOMA::ARGv[i];
+		}
+	}
+	WOMA_LOGManager_DebugMSG("%s", CMD_LINE.c_str());
+	WOMA_LOGManager_DebugMSG("\n");
+#endif
 
 	return true;
 }
+#endif
 
 //------------------------------------------------------------------
 // PRIVATE FUNCTIONS:
@@ -153,6 +224,7 @@ bool SystemManager::CheckOS()
 TCHAR* SystemManager::GetOSversionPlatform()
 //------------------------------------------------------------------
 {
+#if defined WINDOWS_PLATFORM
 	// GET OS Version and Platform name:
 	OSVERSIONINFO osvi;
 	ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
@@ -199,7 +271,14 @@ TCHAR* SystemManager::GetOSversionPlatform()
 	}
 
 	return osPlatform;
+#elif defined LINUX_PLATFORM
+	return TEXT("LINUX");
+#elif defined ANDROID_PLATFORM	
+	return TEXT("ANDROID");
+#endif
 }
+
+#if defined WINDOWS_PLATFORM
 
 #ifdef WIN10
 #include <VersionHelpers.h> // IsWindows10OrGreater
@@ -248,6 +327,7 @@ TCHAR* SystemManager::GetOsVersion()
 	{
 		return TEXT("Windows Vista or Windows Server 2008\n");
 	}
+#if LEGACY_OS_SUPPORTED
 	else if (HIWORD(dwProductVersionMS) == 5 && LOWORD(dwProductVersionMS) == 2)
 	{
 		return TEXT("Windows Server 2003\n");
@@ -260,22 +340,25 @@ TCHAR* SystemManager::GetOsVersion()
 	{
 		return TEXT("Windows 2000\n");
 	}
-	//else if (lpFfi->dwFileVersionMS == 4 && lpFfi->dwFileVersionLS == 90)
-	//{
-	//    return TEXT("Windows  Me\n");
-	//}
-	//else if (lpFfi->dwFileVersionMS == 4 && lpFfi->dwFileVersionLS == 10)
-	//{
-	//    return TEXT("Windows  98\n");
-	//}
-	//else if (lpFfi->dwFileVersionMS == 4 && lpFfi->dwFileVersionLS == 0)
-	//{
-	//    return TEXT("Windows  95\n");
-	//}
+	else if (lpFfi->dwFileVersionMS == 4 && lpFfi->dwFileVersionLS == 90)
+	{
+	    return TEXT("Windows  Me\n");
+	}
+	else if (lpFfi->dwFileVersionMS == 4 && lpFfi->dwFileVersionLS == 10)
+	{
+	    return TEXT("Windows  98\n");
+	}
+	else if (lpFfi->dwFileVersionMS == 4 && lpFfi->dwFileVersionLS == 0)
+	{
+	    return TEXT("Windows  95\n");
+	}
+#endif
 
-	return TEXT("Windows Unknown\n");
+	return TEXT("Windows version unknown!\n");
 }
+#endif
 
+#if defined USE_SYSTEM_CHECK && defined WINDOWS_PLATFORM
 bool SystemManager::CheckOSVersion()
 //------------------------------------------------------------------
 {
@@ -405,7 +488,20 @@ bool SystemManager::CheckOSVersion()
 	*/
 	return false;
 }
+#else // LINUX || ANDROID
+#if defined USE_SYSTEM_CHECK
+#include <sys/utsname.h>
+bool SystemManager::CheckOSVersion()
+{
+	//struct utsname ver;
+	uname(&SystemHandle->systemDefinitions.ver);
+	return true;
+}
+#endif
+#endif
 
+
+#if defined WINDOWS_PLATFORM
 
 typedef void (WINAPI *PGNSI)(LPSYSTEM_INFO);
 typedef BOOL(WINAPI *PGPI)(DWORD, DWORD, DWORD, DWORD, PDWORD);
@@ -481,6 +577,7 @@ bool SystemManager::CheckDXGIVersion(bool *REQUIRES_WINDOWS_VISTA_SP2, bool *REQ
 
 	return true;
 }
+#endif
 
 #pragma warning( pop )
 

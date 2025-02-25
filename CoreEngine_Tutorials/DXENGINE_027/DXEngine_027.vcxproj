@@ -35,7 +35,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="27core_engine_level.h" />
     <ClInclude Include="core\include\ApplicationClass.h" />
     <ClInclude Include="core\include\astroClass.h" />
     <ClInclude Include="core\include\default_settings_xml.h" />
@@ -67,7 +66,6 @@
     <ClInclude Include="core\include\TrigonometryMathClass.h" />
     <ClInclude Include="core\include\weatherClass.h" />
     <ClInclude Include="core\include\win32InputClass.h" />
-    <ClInclude Include="core\include\winCpuClass.h" />
     <ClInclude Include="core\include\winCpuCores.h" />
     <ClInclude Include="core\include\WindowPaintClass.h" />
     <ClInclude Include="core\include\winSystemClass.h" />
@@ -76,50 +74,45 @@
     <ClInclude Include="core\include\woma_exception.h" />
     <ClInclude Include="core\include\woma_macros.h" />
     <ClInclude Include="core\include\xml_loader.h" />
-    <ClInclude Include="core_engine_level.h" />
-    <ClInclude Include="include\ApplicationTextClass.h" />
-    <ClInclude Include="include\d3dx12.h" />
-    <ClInclude Include="include\DemoApplicationClass.h" />
-    <ClInclude Include="include\dumpUploader.h" />
-    <ClInclude Include="include\DX11class.h" />
-    <ClInclude Include="include\dx12class.h" />
-    <ClInclude Include="include\DX12Textureclass.h" />
-    <ClInclude Include="include\DX9class.h" />
-    <ClInclude Include="include\DXbasicTypes.h" />
-    <ClInclude Include="include\DXcameraClass.h" />
-    <ClInclude Include="include\DXdrivers.h" />
-    <ClInclude Include="include\DXengine.h" />
-    <ClInclude Include="include\DXmodelClass.h" />
-    <ClInclude Include="include\DXshaderClass.h" />
-    <ClInclude Include="include\DxTextClass.h" />
-    <ClInclude Include="include\dxWinSystemClass.h" />
-    <ClInclude Include="include\fileLoader.h" />
-    <ClInclude Include="include\GLcameraClass.h" />
-    <ClInclude Include="include\GLmodelClass.h" />
-    <ClInclude Include="include\GLopenGLclass.h" />
-    <ClInclude Include="include\GLshaderClass.h" />
-    <ClInclude Include="include\GLTextClass.h" />
-    <ClInclude Include="include\glTextureclass.h" />
-    <ClInclude Include="include\ImageLoaderClass.h" />
-    <ClInclude Include="include\language.h" />
-    <ClInclude Include="include\lightClass.h" />
-    <ClInclude Include="include\playerClass.h" />
-    <ClInclude Include="include\positionClass.h" />
-    <ClInclude Include="include\stackTrace.h" />
-    <ClInclude Include="include\textFontClass.h" />
-    <ClInclude Include="include\vertexTypes.h" />
-    <ClInclude Include="include\virtualCameraClass.h" />
-    <ClInclude Include="include\virtualModelClass.h" />
-    <ClInclude Include="include\virtualTextClass.h" />
-    <ClInclude Include="include\wglopenglclass.h" />
-    <ClInclude Include="include\win32InputClass.h" />
-    <ClInclude Include="include\winCpuClass.h" />
-    <ClInclude Include="include\WomaCube.h" />
-    <ClInclude Include="include\womadriverclass.h" />
-    <ClInclude Include="include\WomaSphere.h" />
+    <ClInclude Include="core\include\ApplicationTextClass.h" />
+    <ClInclude Include="core\include\d3dx12.h" />
+    <ClInclude Include="core\include\DemoApplicationClass.h" />
+    <ClInclude Include="core\include\DX11class.h" />
+    <ClInclude Include="core\include\dx12class.h" />
+    <ClInclude Include="core\include\DX12Textureclass.h" />
+    <ClInclude Include="core\include\DX9class.h" />
+    <ClInclude Include="core\include\DXbasicTypes.h" />
+    <ClInclude Include="core\include\DXcameraClass.h" />
+    <ClInclude Include="core\include\DXdrivers.h" />
+    <ClInclude Include="core\include\DXengine.h" />
+    <ClInclude Include="core\include\DXmodelClass.h" />
+    <ClInclude Include="core\include\DXshaderClass.h" />
+    <ClInclude Include="core\include\DxTextClass.h" />
+    <ClInclude Include="core\include\dxWinSystemClass.h" />
+    <ClInclude Include="core\include\GLcameraClass.h" />
+    <ClInclude Include="core\include\GLmodelClass.h" />
+    <ClInclude Include="core\include\GLopenGLclass.h" />
+    <ClInclude Include="core\include\GLshaderClass.h" />
+    <ClInclude Include="core\include\GLTextClass.h" />
+    <ClInclude Include="core\include\glTextureclass.h" />
+    <ClInclude Include="core\include\ImageLoaderClass.h" />
+    <ClInclude Include="core\include\lightClass.h" />
+    <ClInclude Include="core\include\playerClass.h" />
+    <ClInclude Include="core\include\positionClass.h" />
+    <ClInclude Include="core\include\textFontClass.h" />
+    <ClInclude Include="core\include\vertexTypes.h" />
+    <ClInclude Include="core\include\virtualCameraClass.h" />
+    <ClInclude Include="core\include\virtualModelClass.h" />
+    <ClInclude Include="core\include\virtualTextClass.h" />
+    <ClInclude Include="core\include\wglopenglclass.h" />
+    <ClInclude Include="core\include\winCpuClass.h" />
+    <ClInclude Include="core\include\WomaCube.h" />
+    <ClInclude Include="core\include\womadriverclass.h" />
+    <ClInclude Include="core\include\WomaSphere.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\DXENGINE_021\src\winWomaSetupManager.cpp" />
+    <ClCompile Include="core\src\ApplicationClass.cpp" />
+    <ClCompile Include="core\src\winWomaSetupManager.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="core\src\0CheckOS.cpp" />
     <ClCompile Include="core\src\1CheckSYS.cpp" />
@@ -127,10 +120,8 @@
     <ClCompile Include="core\src\3CheckSetup.cpp" />
     <ClCompile Include="core\src\4CheckEngineUpdates.cpp" />
     <ClCompile Include="core\src\5LaunchEngine.cpp" />
-    <ClCompile Include="core\src\6OperatingSystem.cpp" />
     <ClCompile Include="core\src\7ProcessorInfo.cpp" />
     <ClCompile Include="core\src\8SystemFeatures.cpp" />
-    <ClCompile Include="core\src\ApplicationClass_ext.cpp" />
     <ClCompile Include="core\src\astroClass.cpp" />
     <ClCompile Include="core\src\default_settings_xml.cpp" />
     <ClCompile Include="core\src\dumpUploader.cpp" />
@@ -205,7 +196,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{5B8B243D-9A25-4A82-A8E4-D4904E658B6E}</ProjectGuid>
+    <ProjectGuid>{68D9BE5B-847C-485C-B397-CF07A2B0A346}</ProjectGuid>
     <RootNamespace>CoreEngine</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>DXEngine_027</ProjectName>
@@ -294,9 +285,9 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;core\include;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\ZipUtils_LIB\include;..\..\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib;..\..\ThirdParty\maxminddb_LIB\libmaxminddb-main\include;..\..\ThirdParty\GL3Plus;..\..\ThirdParty\freeglut\include;..\..\ThirdParty\tiff-3.8.2-src;..\..\ThirdParty\DirectXTex\DirectXTex-jan2023\DirectXTex;..\..\ThirdParty/DirectXTK\Inc;..\..\ThirdParty/TIFF_LIB\include;..\..\ThirdParty/JPG_LIB/include/;..\..\ThirdParty/ZLIB_LIB/include/;..\..\ThirdParty/PNG_LIB/include/</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;core\include;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\ZipUtils_LIB\include;..\..\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib;..\..\ThirdParty\maxminddb_LIB\libmaxminddb-main\include;..\..\ThirdParty\GL3Plus;..\..\ThirdParty\freeglut\include;..\..\ThirdParty\tiff-3.8.2-src;..\..\ThirdParty\DirectXTex\DirectXTex-jan2023\DirectXTex;..\..\ThirdParty/DirectXTK\Inc;..\..\ThirdParty/TIFF_LIB\include;..\..\ThirdParty/JPG_LIB/include/;..\..\ThirdParty/ZLIB_LIB/include/;..\..\ThirdParty/PNG_LIB/include/;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0</IncludePath>
     <TargetName>CoreEngine_027</TargetName>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_022;..\..\ThirdParty\freeglut\lib\x64;Libs/$(Platform)/$(Configuration);..\..\ThirdParty/DirectXTK\Bin\Desktop_2013\x64\Debug;.</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);.;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_027;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_027\x64\Debug;C:\WoMA3Dengine\CoreEngine_Tutorials\;..\..\ThirdParty\freeglut\lib\x64;Libs/$(Platform)/$(Configuration);..\..\ThirdParty/DirectXTK\Bin\Desktop_2013\x64\Debug;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;C:\WoMA3Dengine\CoreEngine_Tutorials\x64\Debug;C:\WoMA3Dengine\CoreEngine_Tutorials\Libs\x64\Debug\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;core\include;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\ZipUtils_LIB\include;..\..\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib;..\..\ThirdParty\maxminddb_LIB\libmaxminddb-main\include;..\..\ThirdParty\GL3Plus;..\..\ThirdParty\freeglut\include;..\..\ThirdParty\tiff-3.8.2-src;..\..\ThirdParty\DirectXTex\DirectXTex-jan2023\DirectXTex;..\..\ThirdParty/DirectXTK\Inc;..\..\ThirdParty/TIFF_LIB\include;..\..\ThirdParty/JPG_LIB/include/;..\..\ThirdParty/ZLIB_LIB/include/;..\..\ThirdParty/PNG_LIB/include/</IncludePath>
@@ -412,7 +403,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);DEMO_LEVEL=27;MAINENGINE_LINUX</PreprocessorDefinitions>
       <ConformanceMode>
       </ConformanceMode>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>

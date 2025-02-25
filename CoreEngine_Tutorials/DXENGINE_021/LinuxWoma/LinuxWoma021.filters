@@ -1,0 +1,945 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\main.cpp" />
+    <ClCompile Include="..\..\SOURCE_CODE\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH\src\0CheckOS.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SOURCE_CODE\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH\src\1CheckSYS.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SOURCE_CODE\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH\src\7ProcessorInfo.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SOURCE_CODE\CoreEngine_006_PACKMANAGER_IDEA_CPU_BENCHMARK\src\ApplicationClass_ext.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SOURCE_CODE\CoreEngine_000_OSENGINE_SYSTEM\src\default_settings_xml.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SOURCE_CODE\CoreEngine_003_MINIDUMPER_STACK_EXCEPTION\src\fileLoader.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SOURCE_CODE\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH\src\fpsClass.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DXEngine_021\src\GLcameraClass.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DXEngine_021\src\GLmodelClass.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DXEngine_019\src\GLX\GLopenGLclass.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DXEngine_021\src\GLshaderClass.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DXEngine_022\src\GLTextureClass.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DXEngine_022\src\ImageLoaderClass.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DXEngine_021\src\initApplication_Basics.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SOURCE_CODE\CoreEngine_000_OSENGINE_SYSTEM\src\OSengine.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SOURCE_CODE\CoreEngine_001_LANG_LOG_MEMLEAK_OSMAINDIRs\src\OSmain_dir.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DXEngine_019\src\renderApplication_Basics.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SOURCE_CODE\CoreEngine_000_OSENGINE_SYSTEM\src\SystemClass.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SOURCE_CODE\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH\src\TimerClass.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SOURCE_CODE\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH\src\TrigonometryMathClass.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jaricom.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jcapimin.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jcapistd.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jcarith.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jccoefct.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jccolor.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jcdctmgr.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jchuff.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jcinit.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jcmainct.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jcmarker.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jcmaster.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jcomapi.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jcparam.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jcprepct.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jcsample.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jctrans.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jdapimin.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jdapistd.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jdarith.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jdatadst.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jdatasrc.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jdcoefct.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jdcolor.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jddctmgr.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jdhuff.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jdinput.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jdmainct.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jdmarker.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jdmaster.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jdmerge.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jdpostct.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jdsample.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jdtrans.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jerror.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jfdctflt.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jfdctfst.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jfdctint.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jidctflt.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jidctfst.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jidctint.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jutils.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jmemmgr.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jmemnobs.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jquant1.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\src\jquant2.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\PNG_LIB\src\png.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\PNG_LIB\src\pngerror.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\PNG_LIB\src\pngget.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\PNG_LIB\src\pngmem.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\PNG_LIB\src\pngpread.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\PNG_LIB\src\pngread.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\PNG_LIB\src\pngrio.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\PNG_LIB\src\pngrtran.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\PNG_LIB\src\pngrutil.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\PNG_LIB\src\pngset.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\PNG_LIB\src\pngtrans.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\PNG_LIB\src\pngwio.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\PNG_LIB\src\pngwrite.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\PNG_LIB\src\pngwtran.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\IMAGING\PNG_LIB\src\pngwutil.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="glxOpenGLclass.cpp">
+      <Filter>src-LINUX\src</Filter>
+    </ClCompile>
+    <ClCompile Include="linux.cpp">
+      <Filter>src-LINUX\src</Filter>
+    </ClCompile>
+    <ClCompile Include="linuxsystemclass.cpp">
+      <Filter>src-LINUX\src</Filter>
+    </ClCompile>
+    <ClCompile Include="main_linux.cpp">
+      <Filter>src-LINUX\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SOURCE_CODE\CoreEngine_006_PACKMANAGER_IDEA_CPU_BENCHMARK\src\GLmathClass.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SOURCE_CODE\CoreEngine_001_LANG_LOG_MEMLEAK_OSMAINDIRs\src\log.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SOURCE_CODE\CoreEngine_007_PAINT_REALTIMECELESTIAL_ASTROCLASS\src\astroClass.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SOURCE_CODE\CoreEngine_007_PAINT_REALTIMECELESTIAL_ASTROCLASS\src\initWorld.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DXEngine_023\src\lightClass.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SOURCE_CODE\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH\src\Math3D.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DXEngine_023\src\Application_LightRay.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DXEngine_025\src\WomaCube.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DXEngine_024\src\ApplicationTextClass.cpp">
+      <Filter>src-WOMA\include\DXEngine_027</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DXEngine_027\src\GlTextClass.cpp">
+      <Filter>src-WOMA\include\DXEngine_027</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WoMAengine2023\gl4linuxtut14_src\Engine\Rapplicationclass.cpp">
+      <Filter>Rastertek</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WoMAengine2023\gl4linuxtut14_src\Engine\Rcameraclass.cpp">
+      <Filter>Rastertek</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WoMAengine2023\gl4linuxtut14_src\Engine\Rfontclass.cpp">
+      <Filter>Rastertek</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WoMAengine2023\gl4linuxtut14_src\Engine\Rfontshaderclass.cpp">
+      <Filter>Rastertek</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WoMAengine2023\gl4linuxtut14_src\Engine\Rinputclass.cpp">
+      <Filter>Rastertek</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WoMAengine2023\gl4linuxtut14_src\Engine\Ropenglclass.cpp">
+      <Filter>Rastertek</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WoMAengine2023\gl4linuxtut14_src\Engine\Rtextclass.cpp">
+      <Filter>Rastertek</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WoMAengine2023\gl4linuxtut14_src\Engine\Rtextureclass.cpp">
+      <Filter>Rastertek</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DXEngine_028\src\DX11CaptureScreenShot.cpp">
+      <Filter>src-WOMA\include\DXEngine_028</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DXEngine_028\src\handleInputs.cpp">
+      <Filter>src-WOMA\include\DXEngine_028</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DXEngine_028\src\positionClass.cpp">
+      <Filter>src-WOMA\include\DXEngine_028</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ExternalTools\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.cpp">
+      <Filter>LIB_TINY\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SOURCE_CODE\CoreEngine_005_PAINT_SETTINGS_XML\src\xml_settings_loader.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SOURCE_CODE\CoreEngine_005_PAINT_SETTINGS_XML\src\xml_settings_saver.cpp">
+      <Filter>src-WOMA\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DXEngine_026\src\WomaSphere.cpp">
+      <Filter>src-WOMA\include\DXEngine_026</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DXEngine_024\src\textFontClass.cpp">
+      <Filter>src-WOMA\include\DXEngine_024</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DXEngine_055\src\10\mainImGui.cpp" />
+    <ClCompile Include="..\..\_EXTERNAL_\imgui\imgui.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\imgui\imgui_demo.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\imgui\imgui_draw.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\imgui\imgui_tables.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\imgui\imgui_widgets.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\imgui\backends\imgui_impl_glfw.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\imgui\backends\imgui_impl_opengl3.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\imgui\backends\imgui_impl_glut.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\_EXTERNAL_\imgui\backends\imgui_impl_opengl2.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DXEngine_028\src\playerClass.cpp">
+      <Filter>src-WOMA\include\DXEngine_028</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ExternalTools\geolite2++-0.0.1-2561-Source\src-lib\GeoLite2PP.cpp">
+      <Filter>GeoLite2PP_LIB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ExternalTools\libmaxminddb-main\src\data-pool.c">
+      <Filter>maxminddb_LIB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ExternalTools\libmaxminddb-main\src\maxminddb.c">
+      <Filter>maxminddb_LIB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ExternalTools\geolite2++-0.0.1-2561-Source\src-lib\GeoLite2PP_error_category.cpp">
+      <Filter>GeoLite2PP_LIB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SOURCE_CODE\CoreEngine_009_PAINT_METAR_WEATHER_REALTIME\src\MetarClass.cpp">
+      <Filter>src-WOMA</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SOURCE_CODE\CoreEngine_009_PAINT_METAR_WEATHER_REALTIME\src\WeatherClass.cpp">
+      <Filter>src-WOMA</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\SOURCE_CODE\CoreEngine_006_PACKMANAGER_IDEA_CPU_BENCHMARK\include\ApplicationClass.h">
+      <Filter>src-WOMA\include\CoreEngine_006</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SOURCE_CODE\CoreEngine_000_OSENGINE_SYSTEM\include\default_settings_xml.h">
+      <Filter>src-WOMA\include\CoreEngine_000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SOURCE_CODE\CoreEngine_003_MINIDUMPER_STACK_EXCEPTION\include\fileLoader.h">
+      <Filter>src-WOMA\include\CoreEngine_003</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SOURCE_CODE\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH\include\fpsClass.h">
+      <Filter>src-WOMA\include\CoreEngine_004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SOURCE_CODE\CoreEngine_006_PACKMANAGER_IDEA_CPU_BENCHMARK\include\GLmathClass.h">
+      <Filter>src-WOMA\include\CoreEngine_006</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SOURCE_CODE\CoreEngine_002_MAINWINDOW_EVENTS\include\InputClass.h">
+      <Filter>src-WOMA\include\CoreEngine_002</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SOURCE_CODE\CoreEngine_001_LANG_LOG_MEMLEAK_OSMAINDIRs\include\language.h">
+      <Filter>src-WOMA\include\CoreEngine_001</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SOURCE_CODE\CoreEngine_000_OSENGINE_SYSTEM\include\main.h">
+      <Filter>src-WOMA\include\CoreEngine_000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SOURCE_CODE\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH\include\Math3D.h">
+      <Filter>src-WOMA\include\CoreEngine_004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SOURCE_CODE\CoreEngine_001_LANG_LOG_MEMLEAK_OSMAINDIRs\include\mem_leak.h">
+      <Filter>src-WOMA\include\CoreEngine_001</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SOURCE_CODE\CoreEngine_000_OSENGINE_SYSTEM\include\OSengine.h">
+      <Filter>src-WOMA\include\CoreEngine_000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SOURCE_CODE\CoreEngine_001_LANG_LOG_MEMLEAK_OSMAINDIRs\include\OSmain_dir.h">
+      <Filter>src-WOMA\include\CoreEngine_001</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SOURCE_CODE\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH\include\ProcessorInfo.h">
+      <Filter>src-WOMA\include\CoreEngine_004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SOURCE_CODE\CoreEngine_000_OSENGINE_SYSTEM\include\standard_platform.h">
+      <Filter>src-WOMA\include\CoreEngine_000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SOURCE_CODE\CoreEngine_002_MAINWINDOW_EVENTS\include\stateMachine.h">
+      <Filter>src-WOMA\include\CoreEngine_002</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SOURCE_CODE\CoreEngine_000_OSENGINE_SYSTEM\include\SystemClass.h">
+      <Filter>src-WOMA\include\CoreEngine_000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SOURCE_CODE\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH\include\SystemFeatures.h">
+      <Filter>src-WOMA\include\CoreEngine_004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SOURCE_CODE\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH\include\systemManager.h">
+      <Filter>src-WOMA\include\CoreEngine_004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SOURCE_CODE\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH\include\timerClass.h">
+      <Filter>src-WOMA\include\CoreEngine_004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SOURCE_CODE\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH\include\TrigonometryMathClass.h">
+      <Filter>src-WOMA\include\CoreEngine_004</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DXEngine_021\include\vertexTypes.h">
+      <Filter>src-WOMA\include\DXEngine_021</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DXEngine_021\include\virtualCameraClass.h">
+      <Filter>src-WOMA\include\DXEngine_021</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DXEngine_021\include\virtualModelClass.h">
+      <Filter>src-WOMA\include\DXEngine_021</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SOURCE_CODE\CoreEngine_000_OSENGINE_SYSTEM\include\woma_macros.h">
+      <Filter>src-WOMA\include\CoreEngine_000</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DXEngine_019\include\WomaDriverClass.h">
+      <Filter>src-WOMA\include\DXEngine_019</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DXEngine_021\include\GLmodelClass.h">
+      <Filter>src-WOMA\include\DXEngine_021</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DXEngine_021\include\GLshaderClass.h">
+      <Filter>src-WOMA\include\DXEngine_021</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DXEngine_022\include\GLTextureClass.h">
+      <Filter>src-WOMA\include\DXEngine_022</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DXEngine_022\include\ImageLoaderClass.h">
+      <Filter>src-WOMA\include\DXEngine_022</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DXEngine_019\include\GLopenGLclass.h">
+      <Filter>src-WOMA\include\DXEngine_019</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DXEngine_021\include\GLcameraClass.h">
+      <Filter>src-WOMA\include\DXEngine_021</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SOURCE_CODE\CoreEngine_001_LANG_LOG_MEMLEAK_OSMAINDIRs\include\log.h">
+      <Filter>src-WOMA\include\CoreEngine_001</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\include\jconfig.h">
+      <Filter>LIB_JPG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\include\jdct.h">
+      <Filter>LIB_JPG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\include\jerror.h">
+      <Filter>LIB_JPG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\include\jinclude.h">
+      <Filter>LIB_JPG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\include\jmemsys.h">
+      <Filter>LIB_JPG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\include\jmorecfg.h">
+      <Filter>LIB_JPG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\include\jpegint.h">
+      <Filter>LIB_JPG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\include\jpeglib.h">
+      <Filter>LIB_JPG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_EXTERNAL_\IMAGING\JPG_LIB\include\jversion.h">
+      <Filter>LIB_JPG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_EXTERNAL_\IMAGING\PNG_LIB\include\png.h">
+      <Filter>LIB_PNG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_EXTERNAL_\IMAGING\PNG_LIB\include\pnglibconf.h">
+      <Filter>LIB_PNG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_EXTERNAL_\IMAGING\PNG_LIB\include\pngpriv.h">
+      <Filter>LIB_PNG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_EXTERNAL_\IMAGING\PNG_LIB\include\pngconf.h">
+      <Filter>LIB_PNG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_EXTERNAL_\IMAGING\PNG_LIB\include\pngstruct.h">
+      <Filter>LIB_PNG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_EXTERNAL_\IMAGING\PNG_LIB\include\pngdebug.h">
+      <Filter>LIB_PNG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_EXTERNAL_\IMAGING\PNG_LIB\include\pnginfo.h">
+      <Filter>LIB_PNG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="windef.h">
+      <Filter>src-LINUX\include</Filter>
+    </ClInclude>
+    <ClInclude Include="linux.h">
+      <Filter>src-LINUX\include</Filter>
+    </ClInclude>
+    <ClInclude Include="linuxsystemclass.h">
+      <Filter>src-LINUX\include</Filter>
+    </ClInclude>
+    <ClInclude Include="glxOpenGLclass.h">
+      <Filter>src-LINUX\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\woma_engine_assets.h" />
+    <ClInclude Include="..\..\tech-level.h" />
+    <ClInclude Include="core_engine_level.h" />
+    <ClInclude Include="..\..\SOURCE_CODE\CoreEngine_007_PAINT_REALTIMECELESTIAL_ASTROCLASS\include\astroClass.h">
+      <Filter>src-WOMA\include\CoreEngine_007</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SOURCE_CODE\CoreEngine_007_PAINT_REALTIMECELESTIAL_ASTROCLASS\include\initWorld.h">
+      <Filter>src-WOMA\include\CoreEngine_007</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DXEngine_023\include\lightClass.h">
+      <Filter>src-WOMA\include\DXEngine_023</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DXEngine_025\include\WomaCube.h">
+      <Filter>src-WOMA\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DXEngine_027\include\ApplicationTextClass.h">
+      <Filter>src-WOMA\include\DXEngine_027</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DXEngine_027\include\GlTextClass.h">
+      <Filter>src-WOMA\include\DXEngine_027</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DXEngine_027\include\textFontClass.h">
+      <Filter>src-WOMA\include\DXEngine_027</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DXEngine_027\include\virtualTextClass.h">
+      <Filter>src-WOMA\include\DXEngine_027</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\WoMAengine2023\gl4linuxtut14_src\Engine\Rapplicationclass.h">
+      <Filter>Rastertek\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gl4linuxtut14_src\Engine\RCameraClass.h">
+      <Filter>Rastertek\include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\WoMAengine2023\gl4linuxtut14_src\Engine\Rfontclass.h">
+      <Filter>Rastertek\include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\WoMAengine2023\gl4linuxtut14_src\Engine\Rfontshaderclass.h">
+      <Filter>Rastertek\include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\WoMAengine2023\gl4linuxtut14_src\Engine\Rinputclass.h">
+      <Filter>Rastertek\include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\WoMAengine2023\gl4linuxtut14_src\Engine\Ropenglclass.h">
+      <Filter>Rastertek\include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\WoMAengine2023\gl4linuxtut14_src\Engine\Rtextclass.h">
+      <Filter>Rastertek\include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\WoMAengine2023\gl4linuxtut14_src\Engine\Rtextureclass.h">
+      <Filter>Rastertek\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DXEngine_028\include\DXinputclass.h">
+      <Filter>src-WOMA\include\DXEngine_028</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DXEngine_028\include\SKY_30.h">
+      <Filter>src-WOMA\include\DXEngine_028</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DXEngine_021\include\positionClass.h">
+      <Filter>src-WOMA\include\DXEngine_028</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SOURCE_CODE\CoreEngine_000_OSENGINE_SYSTEM\include\platform.h" />
+    <ClInclude Include="..\..\ExternalTools\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.h">
+      <Filter>LIB_TINY\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SOURCE_CODE\CoreEngine_005_PAINT_SETTINGS_XML\include\xml_loader.h">
+      <Filter>src-WOMA\include\CoreEngine_005</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_EXTERNAL_\imgui\imconfig.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_EXTERNAL_\imgui\imgui.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_EXTERNAL_\imgui\imgui_internal.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_EXTERNAL_\imgui\imstb_rectpack.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_EXTERNAL_\imgui\imstb_textedit.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_EXTERNAL_\imgui\imstb_truetype.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_EXTERNAL_\imgui\backends\imgui_impl_glfw.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_EXTERNAL_\imgui\backends\imgui_impl_opengl3.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_EXTERNAL_\imgui\backends\imgui_impl_opengl3_loader.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_EXTERNAL_\imgui\backends\imgui_impl_glut.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\_EXTERNAL_\imgui\backends\imgui_impl_opengl2.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DXEngine_021\include\playerClass.h">
+      <Filter>src-WOMA\include\DXEngine_028</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ExternalTools\geolite2++-0.0.1-2561-Source\src-lib\GeoLite2PP.hpp">
+      <Filter>GeoLite2PP_LIB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ExternalTools\libmaxminddb-main\src\data-pool.h">
+      <Filter>maxminddb_LIB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ExternalTools\libmaxminddb-main\src\maxminddb-compat-util.h">
+      <Filter>maxminddb_LIB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ExternalTools\libmaxminddb-main\include\maxminddb.h">
+      <Filter>maxminddb_LIB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ExternalTools\libmaxminddb-main\include\maxminddb_config.h">
+      <Filter>maxminddb_LIB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ExternalTools\geolite2++-0.0.1-2561-Source\src-lib\GeoLite2PP_error_category.hpp">
+      <Filter>GeoLite2PP_LIB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ExternalTools\geolite2++-0.0.1-2561-Source\src-lib\GeoLite2PP_version.hpp">
+      <Filter>GeoLite2PP_LIB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SOURCE_CODE\CoreEngine_009_PAINT_METAR_WEATHER_REALTIME\include\metarClass.h">
+      <Filter>src-WOMA</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SOURCE_CODE\CoreEngine_009_PAINT_METAR_WEATHER_REALTIME\include\weatherClass.h">
+      <Filter>src-WOMA</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{8cb830b9-5dfb-4887-bf6d-2287e0b8ed74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GLengine-Android">
+      <UniqueIdentifier>{a2c0fb92-7386-4283-a15d-7c5128def6b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-LINUX">
+      <UniqueIdentifier>{ee9a6840-b0c8-44ce-8309-8104435b6c93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-LINUX\include">
+      <UniqueIdentifier>{2eb4fb7f-cc82-44b5-b029-e93c34ae1662}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-LINUX\src">
+      <UniqueIdentifier>{9a5d0a53-8ef0-4ffb-adb9-7d80cd6e1477}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-WOMA">
+      <UniqueIdentifier>{b2c47f31-cb29-469a-9179-20493de2d7c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-WOMA\include">
+      <UniqueIdentifier>{594a9663-ca73-4474-b61a-6fc4a59ee051}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-WOMA\include\CoreEngine_006">
+      <UniqueIdentifier>{59daa6a9-c15f-4d1f-81fe-d5135597497f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-WOMA\include\CoreEngine_000">
+      <UniqueIdentifier>{1dfb4499-642f-49a9-968f-7f8181abf5a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-WOMA\include\CoreEngine_003">
+      <UniqueIdentifier>{011af4dc-62c4-4275-b923-dd18c212e70a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-WOMA\include\CoreEngine_004">
+      <UniqueIdentifier>{41322bdb-b346-4a43-a779-5001fe50e6c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-WOMA\include\CoreEngine_002">
+      <UniqueIdentifier>{46886a82-1cc4-4821-8015-b6b9314564c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-WOMA\include\CoreEngine_001">
+      <UniqueIdentifier>{3aaf559a-9e29-4129-b87e-061ecb385d78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-WOMA\include\DXEngine_021">
+      <UniqueIdentifier>{670e31b9-cc07-494c-bf5e-eb4b7e1202c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-WOMA\include\DXEngine_019">
+      <UniqueIdentifier>{9d6fddaa-d7bf-45e1-906d-0d8e62387db9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-WOMA\include\DXEngine_022">
+      <UniqueIdentifier>{7b6265ff-de19-4000-b531-de4ff3e25f7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-WOMA\src">
+      <UniqueIdentifier>{bd2ccbc8-976e-4af9-83d8-f35543a16d25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-WOMA\include\DXEngine_023">
+      <UniqueIdentifier>{72d93582-2c4e-4e8b-87fc-1ef75d9b3a07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-WOMA\include\CoreEngine_007">
+      <UniqueIdentifier>{1674dbc8-ba38-41ac-94aa-5b9512e4e7b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GLengine-Linux">
+      <UniqueIdentifier>{d3981208-4714-4f83-8096-13c391008974}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GLengine-Windows">
+      <UniqueIdentifier>{fd279205-35f1-4bb5-916a-92a6296a7a6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-WOMA\include\DXEngine_027">
+      <UniqueIdentifier>{8887a0f0-8d7b-4b74-9ec7-eec87997a551}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rastertek">
+      <UniqueIdentifier>{d4d7f030-26d8-419c-9478-6b0e6125e70b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rastertek\include">
+      <UniqueIdentifier>{e0ca5917-a159-4011-91a4-22a7d62f24f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-WOMA\include\DXEngine_028">
+      <UniqueIdentifier>{2671379c-a62d-4359-a688-43d0fe21d310}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HLSL-windows">
+      <UniqueIdentifier>{84d43509-cf84-4b47-bd20-e47b8fbea4c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LIB_PNG">
+      <UniqueIdentifier>{597fb56e-8c32-41a3-80a9-e3277cd85423}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LIB_PNG\include">
+      <UniqueIdentifier>{0deebe5e-31ff-440e-ac07-d44bbe1a31db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LIB_PNG\src">
+      <UniqueIdentifier>{5cb2f2d4-424b-4f1f-9c8b-52bd6085fa46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LIB_JPG">
+      <UniqueIdentifier>{844625e3-97f4-4f76-ad3a-58dc2064e4f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LIB_JPG\include">
+      <UniqueIdentifier>{40a84423-e878-4697-a0f9-d7e87c4e2395}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LIB_JPG\src">
+      <UniqueIdentifier>{9bd43dae-2661-495e-b631-3bd4cafb99e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LIB_TINY">
+      <UniqueIdentifier>{219fe44c-aa4c-4567-b79f-8b8e4105fb9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LIB_TINY\include">
+      <UniqueIdentifier>{9bff2d72-95e4-495a-8468-b28a7f29b76b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LIB_TINY\src">
+      <UniqueIdentifier>{17fc9c0d-68a7-472c-9e24-23d7afe6b3ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-WOMA\include\CoreEngine_010">
+      <UniqueIdentifier>{c82d537e-071b-4f0b-abe5-569957adde2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-WOMA\include\DXEngine_026">
+      <UniqueIdentifier>{26418e72-0208-433a-9a87-fc9333a790e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-WOMA\include\DXEngine_024">
+      <UniqueIdentifier>{f39a010d-0159-45d5-b517-c37280ef2d52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-WOMA\include\CoreEngine_005">
+      <UniqueIdentifier>{fff6c4ec-7e14-43fe-9f1e-bc0bc035966f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui">
+      <UniqueIdentifier>{91f88739-bf77-4029-835c-db47e7939743}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="_NOTES_">
+      <UniqueIdentifier>{5d844830-5f89-45c2-b9df-7892992717b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GeoLite2PP_LIB">
+      <UniqueIdentifier>{2ae6fcc3-a4d6-448a-9ae1-608d5f7517dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="maxminddb_LIB">
+      <UniqueIdentifier>{34f0bebc-27ef-4b93-a101-f7e5c903e6df}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Android-WomaEngine\Android2\Android2.Packaging\ARM64\Debug\Package\assets\GLengine\color.ps">
+      <Filter>GLengine-Android</Filter>
+    </None>
+    <None Include="..\..\Android-WomaEngine\Android2\Android2.Packaging\ARM64\Debug\Package\assets\GLengine\color.vs">
+      <Filter>GLengine-Android</Filter>
+    </None>
+    <None Include="..\..\Android-WomaEngine\Android2\Android2.Packaging\ARM64\Debug\Package\assets\GLengine\font.ps">
+      <Filter>GLengine-Android</Filter>
+    </None>
+    <None Include="..\..\Android-WomaEngine\Android2\Android2.Packaging\ARM64\Debug\Package\assets\GLengine\font.vs">
+      <Filter>GLengine-Android</Filter>
+    </None>
+    <None Include="..\..\Android-WomaEngine\Android2\Android2.Packaging\ARM64\Debug\Package\assets\GLengine\Light.ps">
+      <Filter>GLengine-Android</Filter>
+    </None>
+    <None Include="..\..\Android-WomaEngine\Android2\Android2.Packaging\ARM64\Debug\Package\assets\GLengine\Light.vs">
+      <Filter>GLengine-Android</Filter>
+    </None>
+    <None Include="..\..\Android-WomaEngine\Android2\Android2.Packaging\ARM64\Debug\Package\assets\GLengine\texture.ps">
+      <Filter>GLengine-Android</Filter>
+    </None>
+    <None Include="..\..\Android-WomaEngine\Android2\Android2.Packaging\ARM64\Debug\Package\assets\GLengine\texture.vs">
+      <Filter>GLengine-Android</Filter>
+    </None>
+    <None Include="\\wsl.localhost\Ubuntu\home\pedro\projects\LinuxWoma\bin\x64\Debug\GLengine\color.ps">
+      <Filter>GLengine-Linux</Filter>
+    </None>
+    <None Include="\\wsl.localhost\Ubuntu\home\pedro\projects\LinuxWoma\bin\x64\Debug\GLengine\color.vs">
+      <Filter>GLengine-Linux</Filter>
+    </None>
+    <None Include="\\wsl.localhost\Ubuntu\home\pedro\projects\LinuxWoma\bin\x64\Debug\GLengine\Light.ps">
+      <Filter>GLengine-Linux</Filter>
+    </None>
+    <None Include="\\wsl.localhost\Ubuntu\home\pedro\projects\LinuxWoma\bin\x64\Debug\GLengine\Light.vs">
+      <Filter>GLengine-Linux</Filter>
+    </None>
+    <None Include="\\wsl.localhost\Ubuntu\home\pedro\projects\LinuxWoma\bin\x64\Debug\GLengine\texture.ps">
+      <Filter>GLengine-Linux</Filter>
+    </None>
+    <None Include="\\wsl.localhost\Ubuntu\home\pedro\projects\LinuxWoma\bin\x64\Debug\GLengine\texture.vs">
+      <Filter>GLengine-Linux</Filter>
+    </None>
+    <None Include="..\..\DXEngine_055\GLengine\color.ps">
+      <Filter>GLengine-Windows</Filter>
+    </None>
+    <None Include="..\..\DXEngine_055\GLengine\color.vs">
+      <Filter>GLengine-Windows</Filter>
+    </None>
+    <None Include="..\..\DXEngine_055\GLengine\font.ps">
+      <Filter>GLengine-Windows</Filter>
+    </None>
+    <None Include="..\..\DXEngine_055\GLengine\font.vs">
+      <Filter>GLengine-Windows</Filter>
+    </None>
+    <None Include="..\..\DXEngine_055\GLengine\Light.ps">
+      <Filter>GLengine-Windows</Filter>
+    </None>
+    <None Include="..\..\DXEngine_055\GLengine\Light.vs">
+      <Filter>GLengine-Windows</Filter>
+    </None>
+    <None Include="..\..\DXEngine_055\GLengine\texture.ps">
+      <Filter>GLengine-Windows</Filter>
+    </None>
+    <None Include="..\..\DXEngine_055\GLengine\texture.vs">
+      <Filter>GLengine-Windows</Filter>
+    </None>
+    <None Include="\\wsl.localhost\Ubuntu\home\pedro\projects\LinuxWoma\bin\x64\Debug\GLengine\font.ps">
+      <Filter>GLengine-Linux</Filter>
+    </None>
+    <None Include="\\wsl.localhost\Ubuntu\home\pedro\projects\LinuxWoma\bin\x64\Debug\GLengine\font.vs">
+      <Filter>GLengine-Linux</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\..\DXEngine_055\hlsl\021Color.hlsl">
+      <Filter>HLSL-windows</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\DXEngine_055\hlsl\022Texture.hlsl">
+      <Filter>HLSL-windows</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\DXEngine_055\hlsl\023Light.hlsl">
+      <Filter>HLSL-windows</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\DXEngine_055\hlsl\027Texture.hlsl">
+      <Filter>HLSL-windows</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\DXEngine_055\hlsl\035TextureBump.hlsl">
+      <Filter>HLSL-windows</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\DXEngine_055\hlsl\036LightRenderShadow.hlsl">
+      <Filter>HLSL-windows</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\DXEngine_055\hlsl\036ShadowMap.hlsl">
+      <Filter>HLSL-windows</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\DXEngine_055\hlsl\040LightInstance.hlsl">
+      <Filter>HLSL-windows</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\DXEngine_055\hlsl\041ShadowMapInstance.hlsl">
+      <Filter>HLSL-windows</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\DXEngine_055\hlsl\053Double_Color_Terrain.hlsl">
+      <Filter>HLSL-windows</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\DXEngine_055\hlsl\054Texture.hlsl">
+      <Filter>HLSL-windows</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\DXEngine_055\hlsl\055Slope_Texture_Terrain.hlsl">
+      <Filter>HLSL-windows</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\DXEngine_055\hlsl\cbuffer.hlsl">
+      <Filter>HLSL-windows</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\DXEngine_055\hlsl\light.hlsl">
+      <Filter>HLSL-windows</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\DXEngine_055\hlsl\rotation.hlsl">
+      <Filter>HLSL-windows</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\DXEngine_055\hlsl\shadows.hlsl">
+      <Filter>HLSL-windows</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\DOCs\FCX_compiler_versions.txt">
+      <Filter>_NOTES_</Filter>
+    </Text>
+    <Text Include="..\..\DOCs\notes.txt">
+      <Filter>_NOTES_</Filter>
+    </Text>
+    <Text Include="..\..\DOCs\parts.txt">
+      <Filter>_NOTES_</Filter>
+    </Text>
+    <Text Include="..\..\DOCs\Visual Studio versions history.txt">
+      <Filter>_NOTES_</Filter>
+    </Text>
+  </ItemGroup>
+</Project>

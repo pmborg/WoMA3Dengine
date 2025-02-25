@@ -1,10 +1,9 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: packManager.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,19 +16,22 @@
 // --------------------------------------------------------------------------------------------
 // Extract used packs to: "C:\Users\<user>\AppData\Local\Temp\<temp dir>"
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
+//WomaIntegrityCheck = 1234567222;
 
 #define _CRT_SECURE_NO_WARNINGS
 #include "main.h"
 
+#if defined WINDOWS_PLATFORM
 #include "stateMachine.h"
 #include "systemManager.h" // isXP & isWow64
 #include "packManager.h"
 #include "OSmain_dir.h"
 #include "winSystemClass.h"
 
+#if defined USE_IDEA_PACK
 #include "idea.h"
 extern int EncodeIDEA(char* filename, int whatTOdo);
+#endif
 
 namespace WOMA
 {
@@ -188,7 +190,7 @@ bool InitPackLib(char* packfilename)				// Need to be CHAR!
 			CHAR psz[MAX_STR_LEN] = {0};
 			wtoa(psz, ze.name, 100);
 			#ifdef ZIP_MEM
-				if (wildcmp("*.M3D", psz) || 
+				if (wildcmp("*.obj", psz) || 
 					wildcmp("*.wav", psz) ||
 					wildcmp("*.mp3", psz) ||
 					wildcmp("*.md5*", psz) ||
@@ -211,13 +213,17 @@ bool InitPackLib(char* packfilename)				// Need to be CHAR!
 	
 		CloseZip(hz);
 		if (numZipItems == 0)
-			{WomaFatalExceptionW(TEXT("Could not open the pack file"));return false;}
+			{WomaFatalExceptionW(TEXT("Could not open the pack file")); /*return false;*/}
+
+		#if defined ALLOW_CBIND_PROGRESS_BAR
+        //RedrawWindow(g_hwnd, NULL, NULL, RDW_UPDATENOW|RDW_INVALIDATE/*|RDW_ERASE*/);// Invoke: Window PAINT
+		#endif
 
 	} else {
 		//Run Launcher, before run the app. once data files are missing:
 		static TCHAR str[MAX_STR_LEN];
 		StringCchPrintf(str, sizeof(str), TEXT("File: %s, please Run \"Woma Launcher\" first, in order to run Woma."), packfilename);
-		WOMA::WomaMessageBox(str, TEXT("File Pack not Found!"), MB_OK); 
+		WomaMessageBox(str, TEXT("File Pack not Found!"), MB_OK); 
 		return false;
 	}
 
@@ -239,16 +245,39 @@ bool InitPackLibs()
 
 	IF_NOT_RETURN_FALSE (InitPackLib("windows.pck"));	// Need to be CHAR!
 
+#if !defined USE_MAIN_THREAD
 	IF_NOT_RETURN_FALSE(InitPackLib("woma.pck"));		// Need to be CHAR!
+#endif
 
 	return true;
 }
 
 bool StartPackLibs() 
 {
+#if defined USE_MAIN_THREAD
+	threadLoadPacksAlive = true;
+#endif
 	WOMA_LOGManager_DebugMSGAUTO (TEXT("CreateThread: Initialize LoadPacks ThreadFunction\n"));
 
+	#if DX_ENGINE_LEVEL >= 20
 		IF_NOT_RETURN_FALSE (InitPackLib("woma.pck"));	// Need to be CHAR!
+	#endif
+
+  #if TUTORIAL_PRE_CHAP >= 11
+    IF_NOT_RETURN_FALSE(InitPackLib(L"Terrain.pack"));
+
+    #ifdef CHECK_COMPOUND_COLISION
+	IF_NOT_RETURN_FALSE(InitPackLib(L"ALLData.pack"));
+    #endif
+  #endif
+
+  #if TUTORIAL_PRE_CHAP >= 30
+	IF_NOT_RETURN_FALSE(InitPackLib(L"Clouds.pack"));
+  #endif
+
+  #if TUTORIAL_PRE_CHAP >= 55
+	IF_NOT_RETURN_FALSE(InitPackLib(L"Mesh.pack"));
+  #endif
 
     // We need to repaint at this point:
   #ifdef _DEBUG
@@ -263,11 +292,20 @@ bool StartPackLibs()
 	fs.close();
 	}
 
+#if defined USE_MAIN_THREAD
+	threadLoadPacksAlive = false;
+	WOMA::num_running_THREADS--; //StartPackLibs
+	#if defined _DEBUG
+	WOMA_LOGManager_DebugMSG("WOMA::num_running_THREADS: %d %s %s %d\n", WOMA::num_running_THREADS, __FILE__, __FUNCTION__, __LINE__);
+	#endif
+#endif
+
 	return true;
 }
 
 #endif
 
+#if CORE_ENGINE_LEVEL >= 6 // ZIP PACK: engine dir
 void PackDir(STRING dir, STRING packName)
 {
 	int res = _tchdir(dir.c_str()); //_chdir
@@ -277,4 +315,6 @@ void PackDir(STRING dir, STRING packName)
 	IF_NOT_THROW_EXCEPTION(b);
 	CloseZip(hz);
 }
+#endif
 
+#endif

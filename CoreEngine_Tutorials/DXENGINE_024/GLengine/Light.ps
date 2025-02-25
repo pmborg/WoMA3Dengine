@@ -47,10 +47,8 @@ void main(void)
 	lightIntensity = clamp(dot(normal, -lightDirection), 0.0f, 1.0f);
 	
 	// Determine the final amount of diffuse color based on the diffuse color combined with the light intensity.
-	//outputColor =  clamp((diffuseLightColor * lightIntensity), 0.0f, 1.0f);
     //if (hasLight)
 	{
-        #line 51
         //if (hasTexture)
 		{
             outputColor = (textureColor * xll_saturate_vf4(((emissiveColor + ambientColor) + lightIntensity)));

@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // ----------------------------------------------------------------------------------------------
 // Filename: DX11Class.cpp
 // --------------------------------------------------------------------------------------------
@@ -106,6 +105,7 @@ Rendering 3D with Effects
 // http://openvidia.sourceforge.net/index.php/DirectCompute
 
 #include "OSengine.h"
+#include "mem_leak.h"
 #if defined DX_ENGINE
 #include "OSmain_dir.h"
 #include <d3d11.h>

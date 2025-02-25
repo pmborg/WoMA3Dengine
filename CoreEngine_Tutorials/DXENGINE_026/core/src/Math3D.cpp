@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: Math3D.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,9 +17,8 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
+//WomaIntegrityCheck = 1234567222;
 
-#include "platform.h"
 #include "Math3D.h"
 #include "TrigonometryMathClass.h"
 
@@ -74,7 +73,7 @@ vec3 vector3dNormalize(const vec3 &vec)	//D3DXVec3Normalize
     return result;
 }
 
-	#include "VirtualModelClass.h" // dont move this ! (before V1 V2 V3)
+	#include "virtualModelClass.h" // dont move this ! (before V1 V2 V3)
 
 // (V2 - V1) X (V3 - V1), where X is the cross product of the 2 vectors
 #define V1 0
