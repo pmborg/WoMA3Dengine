@@ -104,6 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core\src\ApplicationClass.cpp" />
+    <ClCompile Include="core\src\OperatingSystem.cpp" />
     <ClCompile Include="core\src\winWomaSetupManager.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="core\src\0CheckOS.cpp" />

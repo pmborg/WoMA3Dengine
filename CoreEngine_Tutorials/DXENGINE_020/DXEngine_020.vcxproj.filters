@@ -353,6 +353,9 @@
     <ClCompile Include="core\src\renderApplication_Basics.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
+    <ClCompile Include="core\src\OperatingSystem.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="settings.xml" />

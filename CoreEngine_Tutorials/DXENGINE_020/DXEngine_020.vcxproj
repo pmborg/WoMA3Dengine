@@ -111,6 +111,7 @@
     <ClCompile Include="core\src\mem_leak.cpp" />
     <ClCompile Include="core\src\MetarClass.cpp" />
     <ClCompile Include="core\src\minidumperClass.cpp" />
+    <ClCompile Include="core\src\OperatingSystem.cpp" />
     <ClCompile Include="core\src\OSengine.cpp" />
     <ClCompile Include="core\src\OSmain_dir.cpp" />
     <ClCompile Include="core\src\packManager.cpp" />
