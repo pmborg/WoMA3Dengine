@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\WoMA3Dengine\ThirdParty\freeglut-3.6.0\X64LIB\CMakeFiles\bce2ea97b088180d15df74330d0d9ec4\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{720E39CC-A6ED-3ED8-9B9B-C372508109AD}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -7,34 +7,181 @@
 *	code by : Pedro Borges - pmborg@yahoo.com
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
+    DXshaderClass::InitializeShader(...)
+    ...
+		vsFilename.append(L"hlsl/022Texture.hlsl");
+		psFilename = vsFilename;
+		vertexHLSL.append("MyVertexShader022Texture");
+		pixelHLSL.append("MyPixelShader022Texture");
+     ...
 **********************************************************************************************/
+
+#if (!defined DXAPI11 && !defined DXAPI11)
+    #define DXAPI11 1
+#endif
 
 //////////////
 // TYPEDEFS //
 //////////////
+//#define     PS_USE_BilinearInterpolation
+//#define     PS_USE_TrilinearInterpolation
 
-// VERTEX:
+//#define   PS_USE_FOG           //51
+//#define   PS_USE_ALFACOLOR
+//#define   PS_USE_FADE
+
+// VERTEX: need to match: 
+// [DXshaderClass.cpp] texturePolygonLayout11 / texturePolygonLayout
 struct VSIn
 {
-    float3 position:	POSITION;
-    float2 texCoords:	TEXCOORD0; //22
+    float3 position : POSITION;
+    float2 texCoords : TEXCOORD; //TEXCOORD0
 };
 
 // PIXEL:
 struct PSIn
 {
-    float4	position:		SV_POSITION;
-    float2	texCoords:		TEXCOORD0;
+    float4 position : SV_POSITION;
+    float2 texCoords : TEXCOORD; //TEXCOORD0
+#if defined PS_USE_FOG
+    float fogFactor : FOG; // 51 FOG
+#endif	
 };
 
-//Set on: DXmodelClass::RenderSubMesh
-Texture2D shaderTexture:	register(t0);	//DX12: SRV
-SamplerState SampleType;	//3D (default) WRAP
 
 ////////////////
 // CBUFFERS
 ////////////////
-#include "cbuffer.hlsl"
+////////////////
+// CBUFFERS
+////////////////
+// SYNC: DXshaderClass.h -- DX12: CBV
+//#if DXAPI11 == 1
+//cbuffer VSShaderParametersBuffer	//DX11
+//#endif
+//#if DXAPI12 == 1
+cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: Descriptor: 0
+//#endif
+{
+    // VERTEX: need to match: 
+    // [DXshaderClass.h] VSconstantBufferType
+
+    // BLOCK: VS1
+    matrix worldMatrix; //worldMatrix
+    matrix view;        //view
+    matrix projection;  //projection
+    matrix WV;          //worldMatrix+viewMatrix
+    matrix WVP;         //worldMatrix+viewMatrix+projectionMatrix
+
+    // 23 BLOCK: VS2
+    bool VShasLight;
+    bool VShasSpecular;
+    bool VShasNormMap;
+    bool VShasFog;
+
+    // 23 BLOCK: VS3
+    float3 VSlightDirection;// LIGHT
+    float VSlightPAD;       // 3+1=XMFLOAT4
+    float4 VSambientColor;  // LIGHT
+    float4 VSdiffuseColor;  // LIGHT
+    float4 VSemissiveColor; // LIGHT: Ke
+
+    // 31 BLOCK: VS4
+    float VSfogStart;
+    float VSfogEnd;
+    bool VShasShadowMap;
+    bool VS_USE_WVP;
+
+    // 45 BLOCK: VS5
+    matrix ViewToLightProj;
+    matrix WorldInverseTranspose;   // WorldInverseTranspose
+    float4 vEye;                    // camera position		
+
+    // 42 BLOCK: VS6
+    float VSrotX;
+    float VSrotY;
+    float VSrotZ;
+    float time;
+
+    // 42 BLOCK: VS7
+    float VSshaderType;
+    float vsPAD2;
+    float vsPAD3;
+    float vsPAD4;
+};
+
+
+///////////////
+// PIXEL BUFFER
+///////////////
+//Note: on DX11 dont use: register()
+/*
+// SYNC: DXshaderClass.h -- DX12: CBV
+#if DXAPI11 == 1
+cbuffer PSShaderParametersBuffer	//DX11
+#endif
+#if DXAPI12 == 1
+cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: Descriptor: 1
+#endif
+{
+    // VERTEX: need to match: 
+    // [DXshaderClass.h] PSconstantBufferType
+
+    // BLOCK1:
+    float4 pixelColor;
+
+    // BLOCK2:
+    bool hasTexture; // No? Use pixelColor, then.
+    bool hasLight; // Future Load Obj. Engine Level
+    bool hasSpecular; // Future Load Obj. Engine Level
+    bool isFont; // Future Load Obj. Engine Level
+
+    // BLOCK3:
+    float4 ambientColor; // LIGHT: Ka
+    float4 diffuseColor; // LIGHT: Kd
+    float4 emissiveColor; // LIGHT: Ke 
+    float4 lightDirection; // LIGHT
+
+    // BLOCK4:
+    bool hasColorMap; // 66
+    float lightType; // Future
+    float PSshaderType; // Future
+    float shaderTypeParameter; // Future
+
+    // BLOCK5:
+    bool hasAlfaColor;
+    float alfaColor;
+    float fade; // Fade from 0 to 1
+    float frameTime; // For animations
+
+    // BLOCK6:
+    bool hasFog;
+    bool isSky;
+    bool hasAlfaMap;
+    bool hasNormMap;
+
+    // BLOCK7:
+    float3 cameraPosition; // Future
+    bool castShadow;
+    float3 specularColor;
+    float nShininess;
+};
+*/
+
+//Set on: DXmodelClass::RenderSubMesh
+//#if DXAPI11 == 1
+//Texture2D shaderTexture;
+//#endif
+//#if DXAPI12 == 1
+Texture2D shaderTexture:	register(t0);
+//#endif
+
+//#if DXAPI11 == 1
+//SamplerState SampleType;
+//#endif
+//#if DXAPI12 == 1
+SamplerState SampleType: register(s0);
+//#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
@@ -42,6 +189,9 @@ SamplerState SampleType;	//3D (default) WRAP
 PSIn MyVertexShader022Texture(VSIn input)
 {
     PSIn output;
+#if defined PS_USE_FOG
+    float4 cameraPosition;
+#endif
 
 if (VS_USE_WVP) {
 	output.position = mul(float4(input.position, 1), WVP);	// Calculate the position of the vertex against the world, view, and projection matrices
@@ -55,13 +205,123 @@ if (VS_USE_WVP) {
 
     output.texCoords = input.texCoords;						// TEXTURE: Store the texture coordinates for the pixel shader:
 
+    //51:
+#if defined PS_USE_FOG
+    cameraPosition = mul(float4(input.position, 1), WV);
+    if (VShasFog)
+        output.fogFactor = saturate((VSfogEnd - cameraPosition.z) / (VSfogEnd - VSfogStart)); // Calculate linear fog.  
+#endif
+	
     return output;
 }
+
+float2 functiongetTextureWidth(Texture2D tex)
+{
+    uint width_texels;
+    uint height_texels;
+    tex.GetDimensions(width_texels, height_texels);
+    return float2(width_texels, height_texels);
+}
+
+// Bilinear interpolation function for a 2D texture
+//14372 FPS
+float4 BilinearInterpolation(Texture2D tex, float2 texCoords)
+{
+    float2 texSize = functiongetTextureWidth(tex);
+    
+    // Calculate the integer and fractional parts of the texture coordinates
+    float2 texelSize = 1.0f / texSize; // Size of each texel
+    float2 baseCoords = texCoords * texSize; // Scale texCoords to the texture size
+    float2 fcoords = frac(baseCoords); // Fractional part (for interpolation)
+    int2 icoords = int2(floor(baseCoords)); // Integer part (for sampling texels)
+
+    // Fetch four surrounding texels
+    float4 topLeft = tex.Load(int3(icoords.x, icoords.y, 0));
+    float4 topRight = tex.Load(int3(icoords.x + 1, icoords.y, 0));
+    float4 bottomLeft = tex.Load(int3(icoords.x, icoords.y + 1, 0));
+    float4 bottomRight = tex.Load(int3(icoords.x + 1, icoords.y + 1, 0));
+
+    // Perform bilinear interpolation
+    float4 top = lerp(topLeft, topRight, fcoords.x); // Interpolate top row
+    float4 bottom = lerp(bottomLeft, bottomRight, fcoords.x); // Interpolate bottom row
+    return lerp(top, bottom, fcoords.y); // Interpolate between the top and bottom rows
+}
+
+// Trilinear interpolation function for a 2D texture with mipmaps
+//14673 FPS
+float4 TrilinearInterpolation(Texture2D tex, float2 texCoords, float mipLevel)
+{
+    float2 texSize = functiongetTextureWidth(tex);
+    
+    // Calculate the integer and fractional parts of the texture coordinates
+    float2 texelSize = 1.0f / texSize; // Size of each texel
+    float2 baseCoords = texCoords * texSize; // Scale texCoords to the texture size
+    float2 fcoords = frac(baseCoords); // Fractional part (for interpolation)
+    int2 icoords = int2(floor(baseCoords)); // Integer part (for sampling texels)
+
+    // Clamp mipLevel between 0 and max mip level
+    mipLevel = clamp(mipLevel, 0.0f, functiongetTextureWidth(tex).x); // Assuming square texture for simplicity
+
+    // Fetch the texels from the texture at two different mipmap levels
+    // Mipmap level is chosen based on mipLevel
+    float4 texel00 = tex.SampleLevel(SampleType, texCoords, mipLevel);
+    float4 texel01 = tex.SampleLevel(SampleType, texCoords, mipLevel + 1.0f);
+    
+    // Perform bilinear interpolation for each of the two levels
+    float4 top = lerp(texel00, texel01, fcoords.x);
+    float4 bottom = lerp(texel00, texel01, fcoords.y);
+    
+    // Perform the final interpolation between the two levels
+    return lerp(top, bottom, mipLevel);
+}
+
+float4 GetShaderTexture(Texture2D tex, float2 texCoords, uint mipLevel)
+{
+#if defined PS_USE_BilinearInterpolation
+        return BilinearInterpolation(tex, texCoords);
+#elif defined PS_USE_TrilinearInterpolation
+        return TrilinearInterpolation(tex, texCoords, mipLevel);
+#else
+    return tex.Sample(SampleType, texCoords);
+#endif  
+}
+
 
 float4 MyPixelShader022Texture(PSIn input) : SV_TARGET
 {
 	// Sample the pixel color from the texture using the sampler at this texture coordinate location:
-	float4 color = shaderTexture.Sample(SampleType, input.texCoords);
+    float4 textureColor = GetShaderTexture(shaderTexture, input.texCoords, 0);
+    
+#if defined PS_USE_FOG
+    float4 fogColor = float4(87.0f / 256.0f, 87 / 256.0f, 87.0f / 256.0f, 1.0f);
+#endif
+    
+#if defined PS_USE_FADE
+     textureColor.rgb *= fade;
+#endif
+    
+#if defined PS_USE_ALFACOLOR	// 33: Alfa Color
+	if (hasAlfaColor)
+        textureColor.a = alfaColor;
+#endif
 
-	return color;
+#if defined PS_USE_FOG
+    if (hasFog)
+    {
+        float4 fog4 = 0;
+        if (isSky)
+        {
+            fog4.r = 0.9;
+        }
+        else
+        {
+            fog4.r = (1.0 - input.fogFactor);
+        }
+        fog4.g = fog4.r;
+        fog4.b = fog4.r;
+        textureColor.rgb = lerp(textureColor.rgb, fogColor.rgb, fog4.rgb);
+    }
+#endif
+    
+    return textureColor;
 }

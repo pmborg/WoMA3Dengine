@@ -88,3 +88,34 @@ cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: D
 	float3	specularColor;
 	float	nShininess;
 };
+fuck
+float2 functiongetTextureWidth(Texture2D tex)
+{
+    uint width_texels;
+    uint height_texels;
+    tex.GetDimensions(width_texels, height_texels);
+    return float2(width_texels, height_texels);
+}
+
+// Bilinear interpolation function for a 2D texture
+float4 BilinearInterpolation(Texture2D tex, float2 texCoords)
+{
+    float2 texSize = functiongetTextureWidth(tex);
+    
+    // Calculate the integer and fractional parts of the texture coordinates
+    float2 texelSize = 1.0f / texSize; // Size of each texel
+    float2 baseCoords = texCoords * texSize; // Scale texCoords to the texture size
+    float2 fcoords = frac(baseCoords); // Fractional part (for interpolation)
+    int2 icoords = int2(floor(baseCoords)); // Integer part (for sampling texels)
+
+    // Fetch four surrounding texels
+    float4 topLeft = tex.Load(int3(icoords.x, icoords.y, 0));
+    float4 topRight = tex.Load(int3(icoords.x + 1, icoords.y, 0));
+    float4 bottomLeft = tex.Load(int3(icoords.x, icoords.y + 1, 0));
+    float4 bottomRight = tex.Load(int3(icoords.x + 1, icoords.y + 1, 0));
+
+    // Perform bilinear interpolation
+    float4 top = lerp(topLeft, topRight, fcoords.x); // Interpolate top row
+    float4 bottom = lerp(bottomLeft, bottomRight, fcoords.x); // Interpolate bottom row
+    return lerp(top, bottom, fcoords.y); // Interpolate between the top and bottom rows
+}
