@@ -30,6 +30,7 @@
 
 #include <GL/gl3w.h>				// Source: Generated (Windows / Apple / Linux)
 #pragma comment(lib, "opengl32.lib")// GL3W lib dependency: Interface to Windows
+#pragma comment(lib, "freeglut.lib")
 
 // NOTE:
 // glew.h its for >= GL2.1 & < GL3.3 ~DX9

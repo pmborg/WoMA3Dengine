@@ -797,6 +797,26 @@ bool DX12Class::initDX12Device (HWND hwnd)
 	// LoadAssets()- PART 3
 	//
 
+	if (SystemHandle->AppSettings->MSAA_Anisotropic == false) //Setup defaults!
+	{
+		MSAA_QUALITY = 0;
+		MSAA_COUNT = 1;
+	}
+
+	// Log It!
+	if (SystemHandle->AppSettings->MSAA_Anisotropic) {
+		WOMA_LOGManager_DebugMSGAUTO(TEXT("MSSA is Enabled with %d Samples\n"), MSAA_COUNT);
+	}
+	else
+	{
+		if (SystemHandle->AppSettings->MSAA_bilinear)
+			WOMA_LOGManager_DebugMSGAUTO(TEXT("Antialise: bilinear\n"));
+		else if (SystemHandle->AppSettings->MSAA_trilinear)
+			WOMA_LOGManager_DebugMSGAUTO(TEXT("Antialise: trilinear\n"));
+		else
+			WOMA_LOGManager_DebugMSGAUTO(TEXT("Antialise: off\n"));
+	}
+
 	// [*] createSwapChain()
 	// ----------------------------------------------------------------------------------------------
 #define oldway_
@@ -842,25 +862,7 @@ bool DX12Class::initDX12Device (HWND hwnd)
 	//FILE: bool DXshaderClass::InitializeShader
 	//D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
 
-	if (SystemHandle->AppSettings->MSAA_Anisotropic == false) //Setup defaults!
-	{
-		MSAA_QUALITY = 0;
-		MSAA_COUNT = 1;
-	}
 
-	// Log It!
-	if (SystemHandle->AppSettings->MSAA_Anisotropic) {
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("MSSA is Enabled with %d Samples\n"), MSAA_COUNT);
-	}
-	else
-	{
-		if (SystemHandle->AppSettings->MSAA_bilinear)
-			WOMA_LOGManager_DebugMSGAUTO(TEXT("Antialise: bilinear\n"));
-		else if (SystemHandle->AppSettings->MSAA_trilinear)
-			WOMA_LOGManager_DebugMSGAUTO(TEXT("Antialise: trilinear\n"));
-		else
-			WOMA_LOGManager_DebugMSGAUTO(TEXT("Antialise: off\n"));
-	}
 
 	return true;
 }

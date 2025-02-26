@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: xml_settings_loader.cpp
 // --------------------------------------------------------------------------------------------
@@ -28,6 +27,13 @@
 #include "OSengine.h"
 #include "OSmain_dir.h"
 
+#if defined _NOT
+#if TUTORIAL_PRE_CHAP >= 72
+#include "../sound/soundClass.h" // To include SOUND3D
+#endif
+camera cam;
+#endif
+
 #if defined USE_TINYXML_LOADER
 #if defined ANDROID_PLATFORM
 #include "AndroidEngine.h"
@@ -44,58 +50,88 @@ XMLloader::~XMLloader()
 {
 }
 
+#if DX_ENGINE_LEVEL >= 20 // Initializing Engine: <world hVisibility="128" seaLevel="0" size="512" patchSize="256" skyTexture="">
 // -------------------------------------------------------------------------------------------
 bool XMLloader::InitWorldLoader(TCHAR* filename) //Note: Have to be char
 // -------------------------------------------------------------------------------------------
 {
 	if (loadWorld (filename))  // <--- PARSE XML FILE
 	{
+	#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader	// INITIAL CAMERA POSITION:
+		SystemHandle->AppSettings->SCREEN_NEAR = (float)atof(GenSettings.screenNear);
+		SystemHandle->AppSettings->SCREEN_DEPTH = (float)atof(GenSettings.screenDepth);
+
+		SystemHandle->AppSettings->INIT_CAMX = (float)atof(GenSettings.initPosX);
+		SystemHandle->AppSettings->INIT_CAMY = (float)atof(GenSettings.initPosY);
+		SystemHandle->AppSettings->INIT_CAMZ = (float)atof(GenSettings.initPosZ);
+
+		SystemHandle->AppSettings->INIT_ROTX = (float)atof(GenSettings.initRotX);
+		SystemHandle->AppSettings->INIT_ROTY = (float)atof(GenSettings.initRotY);
+		SystemHandle->AppSettings->INIT_ROTZ = (float)atof(GenSettings.initRotZ);
+	#endif
+	#if DX_ENGINE_LEVEL >= 30
+		SystemHandle->world.hVisibility = atoi(worldSettings.hVisibility);
+		SystemHandle->world.seaLevel = atoi(worldSettings.seaLevel);
+		SystemHandle->world.size = atoi(worldSettings.size);
+		SystemHandle->world.patchSize = atoi(worldSettings.patchSize);
+		SystemHandle->world.skySize = atoi(worldSettings.skySize);
+
+		SystemHandle->world.clearColorR = (float)atoi(worldSettings.clearColorR);
+		SystemHandle->world.clearColorG = (float)atoi(worldSettings.clearColorG);
+		SystemHandle->world.clearColorB = (float)atoi(worldSettings.clearColorB);
+
+		SystemHandle->world.water = worldSettings.water;
+		SystemHandle->world.waterTexture = worldSettings.waterTexture;
+		SystemHandle->world.mainTexture = worldSettings.mainTexture;
+		SystemHandle->world.skyDayTexture = worldSettings.skyDayTexture;
+		SystemHandle->world.skyNightTexture = worldSettings.skyNightTexture;
+	#endif
+	#if DX_ENGINE_LEVEL >= 31 //FOG:
+		SystemHandle->AppSettings->START_FOG = (float)atoi(GenSettings.fogStart);
+		SystemHandle->AppSettings->END_FOG = (float)atoi(GenSettings.fogEnd); //SCREEN_DEPTH = END_FOG;
+	#endif
 	} else
 		return false;
 
 	return true;
 }
+#endif
 
 #if defined WINDOWS_PLATFORM
-int OPENGL_defaultMonitor()
-{
-	// Check if we have a monitor
-	int default_mon = 0;
-
-	// Iterate over all displays and check if we have a valid one.
-	//  If the device ID contains the string default_monitor no monitor is attached.
+int OPENGL_defaultMonitor() {
+	// Retrieve the primary monitor information
 	DISPLAY_DEVICE dd;
+	ZeroMemory(&dd, sizeof(dd));
 	dd.cb = sizeof(dd);
-	int deviceIndex = 0;
-	while (EnumDisplayDevices(0, deviceIndex, &dd, 0))
-	{
-		STRING deviceName = dd.DeviceName;
-		int monitorIndex = 0;
-		while (EnumDisplayDevices(deviceName.c_str(), monitorIndex, &dd, 0))
-		{
-			size_t len = _tcslen(dd.DeviceID);
-			for (size_t i = 0; i < len; ++i)
-				dd.DeviceID[i] = _totlower(dd.DeviceID[i]);
-			printf("%s\n", dd.DeviceID);
-			//monitor\aci24ac\{4d36e96e-e325-11ce-bfc1-08002be10318}\0002   --> System > Display: 1 (default)
-			//monitor\dela198\{4d36e96e-e325-11ce-bfc1-08002be10318}\0003   --> System > Display: 2
-			//monitor\aus24a1\{4d36e96e-e325-11ce-bfc1-08002be10318}\0001   --> System > Display: 3
 
-			STRING deviceID = dd.DeviceID;
-			int i = (int)deviceID.find_last_of('\\');
-			STRING ID = deviceID.substr(i + 1, 4);
-			int id = std::stoi(ID) - 1; //"-1" Convert from 1, 2, 3 to 0, 1, 2... Default of the above sample is now: 1
-			if (monitorIndex == 0) {
-				return id;
+	// Enumerate display devices to get the default (primary) monitor
+	int monitorIndex = -1;
+	for (int i = 0; EnumDisplayDevices(NULL, i, &dd, 0); ++i) {
+		if (dd.StateFlags & DISPLAY_DEVICE_ACTIVE) {
+			// Check if the current display device is the primary monitor
+			DEVMODE devmode;
+			ZeroMemory(&devmode, sizeof(devmode));
+			devmode.dmSize = sizeof(devmode);
+			if (EnumDisplaySettings(dd.DeviceName, ENUM_CURRENT_SETTINGS, &devmode)) {
+				if (devmode.dmPosition.x == 0 && devmode.dmPosition.y == 0) {
+					monitorIndex = i; // Primary monitor found
+					break;
+				}
 			}
-
-			++monitorIndex;
 		}
-		++deviceIndex;
 	}
 
-	return default_mon;
+	// Output the result
+	if (monitorIndex != -1) {
+		std::cout << "Default monitor index: " << monitorIndex << std::endl;
+	}
+	else {
+		std::cout << "Primary monitor not found!" << std::endl;
+	}
+
+	return monitorIndex;
 }
+
 #endif
 
 // -------------------------------------------------------------------------------------------
@@ -123,10 +159,12 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 		#else
 		SystemHandle->AppSettings->FULL_SCREEN = false;
 		#endif
+	#if CORE_ENGINE_LEVEL < 28 // Moved to WORLD
 		SystemHandle->AppSettings->WINDOW_Xpos = atoi(GenSettings.posX);
 		SystemHandle->AppSettings->WINDOW_Xpos_ori = SystemHandle->AppSettings->WINDOW_Xpos;
 		SystemHandle->AppSettings->WINDOW_Ypos = atoi(GenSettings.posY);
 		SystemHandle->AppSettings->WINDOW_Ypos_ori = SystemHandle->AppSettings->WINDOW_Ypos;
+	#endif
 		SystemHandle->AppSettings->WINDOW_WIDTH = atoi(GenSettings.screenWidth);
 		SystemHandle->AppSettings->WINDOW_WIDTH_ori = SystemHandle->AppSettings->WINDOW_WIDTH;
 		SystemHandle->AppSettings->WINDOW_HEIGHT = atoi(GenSettings.screenHeight);
@@ -140,6 +178,7 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 		SystemHandle->AppSettings->VSYNC_ENABLED = (strcmp(GenSettings.vsync, "true") == 0) ? true : false;
 		SystemHandle->AppSettings->BITSPERPEL = atoi(GenSettings.bitsPerPixel);
 
+	#if CORE_ENGINE_LEVEL >= 10 // Initializing Engine
 		#if defined DX9
 			SystemHandle->AppSettings->DRIVER = (strcmp(GenSettings.driverName, "DX9") == 0) ? DRIVER_DX9 : -1;
 	    #endif
@@ -157,12 +196,13 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 		#endif
 
 		//NOTE: OPENGL Only work wiht main monitor, so force it!:
-		//if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
 		{
-		//	SystemHandle->AppSettings->UI_MONITOR = OPENGL_defaultMonitor();
+			SystemHandle->AppSettings->UI_MONITOR = OPENGL_defaultMonitor();
 		}
 
 	//	------------------------------------------------------------------------------------------------------
+#if CORE_ENGINE_LEVEL >= 10 // Initializing Engine
 	//	------------------------------------------------------------------------------------------------------
 	if (SystemHandle->AppSettings->DRIVER < 0) 
 	{
@@ -192,15 +232,42 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 				SystemHandle->AppSettings->DRIVER = DRIVER_DX9;
 	#endif
 	}
+#endif
 
 		//	------------------------------------------------------------------------------------------------------
 		SystemHandle->AppSettings->UseAllMonitors = (strcmp(GenSettings.UseAllMonitors, "true") == 0) ? true : false;
 		SystemHandle->AppSettings->UseDoubleBuffering = (strcmp(GenSettings.useDoubleBuffering, "true") == 0) ? true : false;
+	#endif
+
+	#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 22 // Texturing	
+        SystemHandle->AppSettings->MaxTextureSize = atoi(GenSettings.MaxTextureSize);
+
+		//MSAA_ENABLED = MSAA_point if (MSAA_bilinear = MSAA_trilinear = MSAA_Anisotropic = false)
+		//SystemHandle->AppSettings->MSAA_ENABLED = (strcmp(GenSettings.msaa, "true") == 0) ? true : false;
+		SystemHandle->AppSettings->MSAA_bilinear = (strcmp (GenSettings.Bilinear, "true") == 0) ?  true : false;
+		SystemHandle->AppSettings->MSAA_trilinear	= (strcmp (GenSettings.Trilinear, "true") == 0) ?  true : false;
+
+		SystemHandle->AppSettings->MSAA_Anisotropic = (strcmp (GenSettings.Anisotropic, "true") == 0) ?  true : false;
+		SystemHandle->AppSettings->MSAA_AnisotropicLevel = atoi (GenSettings.AnisotropicLevel);			// 0 = Auto detect MAX
+	#endif
+
+	#if DX_ENGINE_LEVEL >= 29 //&& defined USE_WIN32_PLAY_MUSIC
+	    SystemHandle->AppSettings->MUSIC_ENABLED = (strcmp (GenSettings.musicEnabled, "true") == 0) ?  true : false;
+	#endif
+	#if DX_ENGINE_LEVEL >= 29 //&& defined USE_WIN32_SOUND_MANAGER
+	    SystemHandle->AppSettings->SOUND_ENABLED = (strcmp (GenSettings.soundEffectsEnabled, "true") == 0) ?  true : false;
+	#endif
 
 	#if TUTORIAL_PRE_CHAP >= 60 // 80
 	    strcpy_s (g_PLAYER_NAME, GenSettings.playerName);
 	    g_FACTION = (strcmp (GenSettings.faction, "1") == 0) ?  true : false;
 	    g_MESH_TYPE = (BYTE) atoi (GenSettings.meshType);
+	#endif
+
+	#if ENGINE_LEVEL >= 140 // #if TUTORIAL_PRE_CHAP >= 90
+	    SystemHandle->AppSettings->NETWORK_ENABLED = (strcmp (GenSettings.networkEnabled, "true") == 0) ?  true : false;
+	    strcpy_s (SystemHandle->AppSettings->SERVER_ADDRESS, sizeof(SystemHandle->AppSettings->SERVER_ADDRESS), GenSettings.networkServerIP);
+	    SystemHandle->AppSettings->SERVER_PORT = (unsigned short) atoi (GenSettings.networkPort);
 	#endif
 
     } else 
@@ -210,6 +277,7 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 }
 
 
+#if DX_ENGINE_LEVEL >= 20 // Initializing Engine
 // -------------------------------------------------------------------------------------------
 bool XMLloader::loadWorld (TCHAR* file_) // Note: Have to be char
 // -------------------------------------------------------------------------------------------
@@ -252,13 +320,111 @@ bool XMLloader::loadWorld (TCHAR* file_) // Note: Have to be char
 	if ( root )
 	{
 		//CAMERA:
+	#if DX_ENGINE_LEVEL >= 21 // Color Shader
+		/*<camera>*//*TiXmlElement*/ tinyxml2::XMLElement* element_camera = root->FirstChildElement("camera");
+		////////////
+		if (element_camera)
+		{
+			strcpy(GenSettings.screenNear, element_camera->Attribute("screenNear"));
+			strcpy(GenSettings.screenDepth, element_camera->Attribute("screenDepth"));
 
+			/*<initPos>*//*TiXmlElement*/ tinyxml2::XMLElement* child_initPos = element_camera->FirstChildElement("initPos");
+			if (child_initPos)
+			{
+				/*Element*//*TiXmlElement*/ tinyxml2::XMLElement* element = child_initPos->ToElement();
+				strcpy(GenSettings.initPosX, element->Attribute("x"));
+				strcpy(GenSettings.initPosY, element->Attribute("y"));
+				strcpy(GenSettings.initPosZ, element->Attribute("z"));
+			}
+			/*<initRot>*//*TiXmlElement*/ tinyxml2::XMLElement* child_initRot = element_camera->FirstChildElement("initRot");
+			if (child_initPos)
+			{
+				/*Element*//*TiXmlElement*/ tinyxml2::XMLElement* element = child_initRot->ToElement();
+				strcpy(GenSettings.initRotX, element->Attribute("x"));
+				strcpy(GenSettings.initRotY, element->Attribute("y"));
+				strcpy(GenSettings.initRotZ, element->Attribute("z"));
+			}
+		}
+	#endif
+
+	#if DX_ENGINE_LEVEL >= 30 // Initializing Engine
+		child_world = root->FirstChildElement("world");
+		if (child_world) 
+		{
+			strcpy(worldSettings.hVisibility, child_world->ToElement()->Attribute("hVisibility"));
+			strcpy(worldSettings.seaLevel, child_world->ToElement()->Attribute("seaLevel"));
+			strcpy(worldSettings.size, child_world->ToElement()->Attribute("size"));
+			strcpy(worldSettings.patchSize, child_world->ToElement()->Attribute("patchSize"));
+		#if DX_ENGINE_LEVEL >= 60
+			strcpy(worldSettings.skySize, child_world->ToElement()->Attribute("skySize"));
+		#endif
+		#if DX_ENGINE_LEVEL >= 62
+			strcpy(worldSettings.clearColorR, child_world->ToElement()->Attribute("clearColorR"));
+			strcpy(worldSettings.clearColorG, child_world->ToElement()->Attribute("clearColorG"));
+			strcpy(worldSettings.clearColorB, child_world->ToElement()->Attribute("clearColorB"));
+		#endif
+		#if DX_ENGINE_LEVEL >= 54
+				strcpy(worldSettings.water, child_world->ToElement()->Attribute("water"));
+				strcpy(worldSettings.waterTexture, child_world->ToElement()->Attribute("waterTexture"));
+		#endif
+		#if DX_ENGINE_LEVEL >= 49
+			strcpy(worldSettings.mainTexture, child_world->ToElement()->Attribute("mainTexture"));
+		#endif
+			strcpy(worldSettings.skyDayTexture, child_world->ToElement()->Attribute("skyDayTexture"));
+			strcpy(worldSettings.skyNightTexture, child_world->ToElement()->Attribute("skyNightTexture"));
+		}
+		/*<object>*//*TiXmlElement*/ tinyxml2::XMLElement* child_object = root->FirstChildElement("object");
+		if (child_object)
+		{
+			/*Element*//*TiXmlElement*/ tinyxml2::XMLElement* element = child_object->ToElement();
+
+			do {
+	#if DX_ENGINE_LEVEL >= 40
+				object3d.id = atoi(element->Attribute("id"));
+	#endif
+				object3d.fromPage = atoi(element->Attribute("fromPage"));
+				object3d.toPage = atoi(element->Attribute("toPage"));
+				object3d.depend = atoi(element->Attribute("depend"));
+
+				object3d.scale = (float)atof(element->Attribute("scale"));
+				object3d.posX = (float)atof(element->Attribute("posX"));
+				object3d.posZ = (float)atof(element->Attribute("posZ"));
+				object3d.translateY = (float)atof(element->Attribute("translateY"));
+
+				object3d.rotX = (float)atof(element->Attribute("rotX"));
+				object3d.rotY = (float)atof(element->Attribute("rotY"));
+				object3d.rotZ = (float)atof(element->Attribute("rotZ"));
+
+				object3d.shader = atoi(element->Attribute("shader"));
+				strcpy(object3d.filename, element->Attribute("filename"));
+	#if DX_ENGINE_LEVEL >= 40
+				object3d.instances = atoi(element->Attribute("instances"));
+	#endif
+	#if DX_ENGINE_LEVEL >= 41 && defined USE_SHADOW_INSTANCES
+				object3d.castShadow = atoi(element->Attribute("castShadow"));
+				object3d.renderShadows = atoi(element->Attribute("renderShadows"));
+	#endif
+				theWorld.push_back(object3d); // add a new object to our list
+				element = element->NextSiblingElement();
+			} while (element != NULL);
+		}
+	#endif
 		//FOG:
+	#if DX_ENGINE_LEVEL >= 31
+		/*<fog>*//*TiXmlElement*/ tinyxml2::XMLElement* child_fog = root->FirstChildElement("fog");
+		if (child_fog)
+		{
+			/*Element*//*TiXmlElement*/ tinyxml2::XMLElement* element = child_fog->ToElement();
+			strcpy(GenSettings.fogStart, element->Attribute("start"));
+			strcpy(GenSettings.fogEnd, element->Attribute("end"));
+		}
+	#endif
 	} else
 		return false;
 
 	return true;
 }
+#endif
 
 
 // -------------------------------------------------------------------------------------------
@@ -336,6 +502,7 @@ bool XMLloader::loadConfigSettings (TCHAR* file_) // Note: Have to be char
 		else
 			return false;
 
+	#if CORE_ENGINE_LEVEL >= 10 // Initializing Engine
 		/*<driver>*//*TiXmlElement*/ tinyxml2::XMLElement* child_driver = root->FirstChildElement( "driver" );
 		if ( child_driver )
 		{
@@ -350,8 +517,41 @@ bool XMLloader::loadConfigSettings (TCHAR* file_) // Note: Have to be char
 		}
 		else
 			return false;
+	#endif
+
+	#if DX_ENGINE_LEVEL >= 22 // Texturing
+		//TEXTURE:
+		/*<texture>*//*TiXmlElement*/ tinyxml2::XMLElement* child_texture = root->FirstChildElement( "texture" );
+		if ( child_texture )
+		{
+			/*Element*//*TiXmlElement*/ tinyxml2::XMLElement* element = child_texture->ToElement();
+			//strcpy(GenSettings.msaa, element->Attribute("msaa"));
+			strcpy(GenSettings.Bilinear, element->Attribute("bilinear"));
+			strcpy(GenSettings.Trilinear, element->Attribute("trilinear"));
+			strcpy(GenSettings.Anisotropic, element->Attribute("Anisotropic"));
+			strcpy(GenSettings.AnisotropicLevel, element->Attribute("AnisotropicLevel"));
+			strcpy(GenSettings.MaxTextureSize, element->Attribute("maxTexture"));
+		}
+		else
+			return false;
+	#endif
 
 		//SOUND:
+	#if DX_ENGINE_LEVEL >= 29 //&& defined USE_WIN32_SOUND_MANAGER
+		/*<sound>*//*TiXmlElement*/ tinyxml2::XMLElement* child_sound = root->FirstChildElement( "sound" );
+		if ( child_sound )
+		{
+			/*Element*//*TiXmlElement*/ tinyxml2::XMLElement* element = child_sound->ToElement();
+			#if	defined USE_WIN32_PLAY_MUSIC
+			strcpy (GenSettings.musicEnabled, element->Attribute("music"));
+			#endif
+			#if DX_ENGINE_LEVEL >= 29 && defined USE_WIN32_SOUND_MANAGER
+			strcpy (GenSettings.soundEffectsEnabled, element->Attribute("effects"));
+			#endif
+		}
+		else
+			return false;
+	#endif
 
 		// PLAYER DEFINITIONS:
 	#if TUTORIAL_PRE_CHAP >= 60 // 80
@@ -368,6 +568,18 @@ bool XMLloader::loadConfigSettings (TCHAR* file_) // Note: Have to be char
 	#endif
 
 		// SERVER NETWORK SETTINGS:
+	#if ENGINE_LEVEL >= 140 // #if TUTORIAL_PRE_CHAP >= 90
+		/*<network>*//*TiXmlElement*/ tinyxml2::XMLElement* child_network = root->FirstChildElement( "network" );
+		if ( child_network )
+		{
+			/*Element*//*TiXmlElement*/ tinyxml2::XMLElement* element = child_network->ToElement();
+			strcpy (GenSettings.networkEnabled, element->Attribute("enabled"));
+			strcpy (GenSettings.networkServerIP, element->Attribute("serverIP"));
+			strcpy (GenSettings.networkPort, element->Attribute("serverPort"));
+		}
+		else
+			return false;
+	#endif
 		//}
 	} else
         return false; // File not found for parsing error...
