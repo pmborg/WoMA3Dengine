@@ -21,3 +21,4 @@ CoreEngine_Tutorials/CoreEngine_000_OSENGINE_SYSTEM/Android1/Android1.Packaging/
 CoreEngine_Tutorials/CoreEngine_000_OSENGINE_SYSTEM/Android1/Android1.Packaging/ARM64/
 report.txt
 /ThirdParty/freeglut-3.6.0/X64LIB/freeglut_static.dir
+/ThirdParty/freeglut-3.6.0/X64LIB/lib
