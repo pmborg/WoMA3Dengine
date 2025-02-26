@@ -103,7 +103,7 @@
 
 #if CORE_ENGINE_LEVEL >= 9 && defined WINDOWS_PLATFORM //&& !defined WOMAENGINE_BASIC
 	#define USE_METARCLASS	//CoreEngine_009 (PAINT RealTimeWeather) TODO: Android read asset file
-	#if CORE_ENGINE_LEVEL == 9
+	#if CORE_ENGINE_LEVEL >= 9
 		#define USE_NETWORK
 	#endif
 	//#define GENERATE //(Airports List)
@@ -139,9 +139,9 @@
 	#endif
 
 	#if LEVEL >= 19 && !defined WOMAENGINE_BASIC
-	#if _DEBUG
-		#undef USE_SYSTEM_CHECK // Just to make it faster in DEBUG
-	#endif
+	//#if _DEBUG
+	//	#undef USE_SYSTEM_CHECK // Just to make it faster in DEBUG
+	//#endif
 		#if defined WINDOWS_PLATFORM
 		#define CLIENT_SCENE_SETUP
 		#endif

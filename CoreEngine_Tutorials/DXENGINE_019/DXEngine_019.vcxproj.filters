@@ -373,6 +373,9 @@
     <ClCompile Include="core\src\GLX\wglopenglclass.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
+    <ClCompile Include="core\src\OperatingSystem.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="settings.xml" />
