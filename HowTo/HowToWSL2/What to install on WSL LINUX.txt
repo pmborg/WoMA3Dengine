@@ -1,0 +1,115 @@
+##############################################
+# What to install on WSL LINUX
+##############################################
+#POWER SHELL
+PS C:\Users\pedro> wsl -l
+PS C:\Users\pedro> wsl --unregister Ubuntu
+PS C:\Users\pedro> wsl --install
+#WSL (env. to run remote debug USER: pedro/basico)
+
+PS C:\Users\pedro> wsl -v
+WSL version: 2.2.4.0
+Kernel version: 5.15.153.1-2
+WSLg version: 1.0.61
+MSRDC version: 1.2.5326
+Direct3D version: 1.611.1-81528511
+DXCore version: 10.0.26091.1-240325-1447.ge-release
+Windows version: 10.0.22631.4037
+
+
+#Update instalation sites:
+sudo apt update
+
+#Enable SSH
+sudo apt install -y openssh-server
+sudo service ssh start
+sudo systemctl enable ssh
+
+#Update git:
+sudo apt-get purge runit
+sudo apt-get purge git-all
+sudo apt-get purge git
+sudo apt-get autoremove
+sudo apt update
+sudo apt install -y git
+sudo apt-get install git-lfs
+git lfs install
+
+sudo apt install -y g++
+sudo apt install -y g++ gdb make ninja-build rsync zip
+sudo apt install -y libx11-dev
+sudo apt install -y apt-file
+sudo apt-file update
+#sudo apt-file search "gl.h"
+sudo apt install -y mingw-w64-common
+sudo apt install -y wine
+
+sudo apt-mark hold acpid acpi-support
+sudo apt install -y ubuntu-gnome-desktop
+
+sudo apt install curl
+sudo apt install dos2unix
+#RESET PROXY:
+echo | sudo tee /etc/apt/apt.conf
+
+sudo apt-get  install nfs-common autofs cifs-utils
+sudo apt install gdebi-core
+sudo apt-get  upgrade cmake make g++ libx11-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev libxrandr-dev libxext-dev libxcursor-dev libxinerama-dev libxi-dev
+sudo apt install mesa-utils
+
+sudo apt-get  update
+sudo apt-get  upgrade
+
+pedro@DESKTOP-E220Q1G:~$ glxinfo | grep "OpenGL version"
+OpenGL version string: 4.2 (Compatibility Profile) Mesa 23.2.1-1ubuntu3.1~22.04.2
+
+#Upgrade gtk:
+sudo apt-get  upgrade gtk+3.0
+
+sudo apt-get  install build-essential libgtk-3-dev
+sudo apt-get  install libpciaccess-dev
+sudo apt-get  install build-essential checkinstall
+sudo apt-get  autoremove
+sudo apt-get  install xserver-xorg-dev libxext-dev libxinerama-dev libxrandr-dev libxi-dev libudev-dev
+sudo apt install plocate
+
+sudo ln -sf /mnt/c /c
+sudo apt install libgtk2.0-dev libglib2.0-dev
+sudo apt-get  install -y build-essential gnome-devel
+sudo apt-get  install freeglut3-dev
+sudo apt-get  install libglfw3 libglfw3-dev
+sudo apt-get  install build-essential libgl1-mesa-dev libglu1-mesa-dev xorg-dev 
+sudo apt-get  install g++-multilib
+sudo apt install apt-transport-https && sudo apt update
+apt list --upgradable
+
+pedro@DESKTOP-E220Q1G:/usr$ dpkg -l libgtk* | grep -e '^i' | grep -e 'libgtk-*[0-9]'
+ii  libgtk-3-0:amd64           3.24.33-1ubuntu2.2        amd64        GTK graphical user interface library
+ii  libgtk-3-bin               3.24.33-1ubuntu2.2        amd64        programs for the GTK graphical user interface library
+ii  libgtk-3-common            3.24.33-1ubuntu2.2        all          common files for the GTK graphical user interface library
+ii  libgtk-3-dev:amd64         3.24.33-1ubuntu2.2        amd64        development files for the GTK library
+ii  libgtk-3-doc               3.24.33-1ubuntu2.2        all          documentation for the GTK graphical user interface library
+ii  libgtk-4-common            4.6.9+ds-0ubuntu0.22.04.2 all          common files for the GTK graphical user interface library
+ii  libgtk-4-doc               4.6.9+ds-0ubuntu0.22.04.2 all          documentation for the GTK graphical user interface library
+ii  libgtk2.0-0:amd64          2.24.33-2ubuntu2.1        amd64        GTK graphical user interface library - old version
+ii  libgtk2.0-bin              2.24.33-2ubuntu2.1        amd64        programs for the GTK graphical user interface library
+ii  libgtk2.0-common           2.24.33-2ubuntu2.1        all          common files for the GTK graphical user interface library
+ii  libgtk2.0-dev:amd64        2.24.33-2ubuntu2.1        amd64        development files for the GTK library
+ii  libgtk3-perl               0.038-1                   all          Perl bindings for the GTK+ graphical user interface library
+ii  libgtk3.0-cil              2.99.3-4build1            amd64        CLI binding for the GTK+ 3.0 toolkit
+ii  libgtk3.0-cil-dev          2.99.3-4build1            amd64        CLI binding for the GTK+ toolkit 3.0
+
+#if needed: 
+sudo apt remove -y libgtk-4-1
+sudo apt remove -y libgtk-3-0
+
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt install net-tools
+
+#Device protection in Windows Security
+	Windows Security
+		Device Security
+			Core Isolation 
+				Details
+					Off
