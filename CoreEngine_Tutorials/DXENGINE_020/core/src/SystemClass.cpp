@@ -73,6 +73,9 @@
 #include <D3dx9core.h>		//D3DX_SDK_VERSION (Checks for the existance of the correct D3DX library version)
 #endif
 
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21
+#include "Math3D.h"
+#endif
 #endif
 
 #define GET_NAME(NAME) #NAME
@@ -990,10 +993,17 @@ bool SystemClass::LoadXmlSettings()
 
 	//FORCE LANDSCAPE
 
+	#ifdef INTRO_DEMO
+		SystemHandle->m_Application->ClearColor[0] = 0;
+		SystemHandle->m_Application->ClearColor[1] = 0;
+		SystemHandle->m_Application->ClearColor[2] = 0;
+		SystemHandle->m_Application->ClearColor[3] = 1;
+	#else
 		SystemHandle->m_Application->ClearColor[0] = 0.5f;
 		SystemHandle->m_Application->ClearColor[1] = 0.6f;
 		SystemHandle->m_Application->ClearColor[2] = 0.8f;
 		SystemHandle->m_Application->ClearColor[3] = 1.0f;
+	#endif
 
 	return true;
 }

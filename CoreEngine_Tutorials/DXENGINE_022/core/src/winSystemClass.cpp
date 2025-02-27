@@ -105,7 +105,11 @@ void WinSystemClass::ProcessFrame()
 	{
 		m_Application->dayLightFade = m_Application->Update();					//OS CORE ONLY!  F1, F2, ...
 
+		#if defined INTRO_DEMO
+		if (RENDER_PAGE < 15) 
+		#else
 		if (RENDER_PAGE < 10)
+		#endif
 			return;
 
 		// For each Monitor: Render one Application Frame

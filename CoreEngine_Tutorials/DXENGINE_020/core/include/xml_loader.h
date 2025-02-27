@@ -106,6 +106,15 @@ typedef struct {
 	char minimapEnabled[10];
 	#endif
 
+	#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+		char initPosX[10], initPosY[10], initPosZ[10];
+		char initRotX[10], initRotY[10], initRotZ[10];
+	#endif
+
+	#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 22 // Texturing
+		char MaxTextureSize[10], Bilinear[10], Trilinear[10], Anisotropic[10], AnisotropicLevel[10];
+	#endif
+
 	// Sound Settings:
 	// --------------------------------------------------------------------------------------------
 

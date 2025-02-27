@@ -51,6 +51,9 @@ public:
 	bool InitializeVertexIndexBuffers(std::vector <STRING>* textureFile);
 
 	bool LoadColor(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<ModelColorVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0);
+#if DX_ENGINE_LEVEL >= 22 || defined INTRO_DEMO
+	bool LoadTexture(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0);
+#endif
 
 #if defined USE_VIEW2D_SPRITES		// Sprites
 	bool RenderSprite( int positionX, int positionY, float scale=1.0f, float fade = 1.0f);
@@ -88,6 +91,10 @@ private:
 
 	std::vector<ModelColorVertexType>* modelColorVertex;
 	bool InitializeColorBuffers(/*GLopenGLclass*/ void* OpenGL);
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 22
+	std::vector<ModelTextureVertexType>* modelTextureVertex;
+	bool InitializeTextureBuffers(/*GLopenGLclass*/ void* OpenGL);
+#endif
 	
 	void SetBuffers(/*GLopenGLclass*/ void*);
 	void RenderBuffers(/*GLopenGLclass*/ void*);

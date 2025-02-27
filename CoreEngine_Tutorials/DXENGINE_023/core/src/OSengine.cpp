@@ -59,8 +59,6 @@
 	#include "GLopenGLclass.h"
 #endif
 
-
-
 TCHAR* DEMO_NAME[] =
 {
 //{"07:Loading a files from engine.pck and Press[F2] for RealTime Celestial Positions of Sun and Moon accordingly with user Location"},
@@ -90,12 +88,12 @@ TCHAR* DEMO_NAME[] =
 {"TUTORIAL 40: WORLD.XML: load W3D and use INSTANCES to clone objects using GPU"},
 {"TUTORIAL 41: WORLD.XML: load W3D and use SHADOW INSTANCES"},
 {"TUTORIAL 42: WORLD.XML: load W3D and use SHADOW INSTANCES with ROTATION per instance"},
-{"43"},
-{"44"},
-{"45"},
-{"46"},
-{"47"},
-{"48"},
+{"43"}, //Reserved future demo 
+{"44"}, //Reserved future demo 
+{"45"}, //Reserved future demo 
+{"46"}, //Reserved future demo 
+{"47"}, //Reserved future demo 
+{"48"}, //Reserved future demo 
 {"49: TERRAIN: Generate under water terrain. ModelTextureVertexType"},
 {"50: TERRAIN: the under water terrain. ModelTextureVertexType"},
 {"51: TERRAIN: Add fog ModelTextureVertexType"},
@@ -104,14 +102,14 @@ TCHAR* DEMO_NAME[] =
 {"54: TERRAIN: Add Water waves ModelTextureVertexType"},
 {"55: TERRAIN: 256x256 with Slope Texture Shader[0]ModelTextureVertexType"},
 {"56: TERRAIN: 256x256 Terrain Texture Multi Layers "},
-{"57: "},
-{"58: "},
-{"59: "},
-{"60: "},
-{"61: "},
-{DEMO_TITLE},//62
-{DEMO_TITLE},//63
-{DEMO_TITLE},//64
+{"57: "},    //Reserved future demo 
+{"58: "},    //Reserved future demo 
+{"59: "},    //Reserved future demo 
+{DEMO_TITLE},//60 - USE_TERRAIN_TUTORIAL_CHAP_24 
+{DEMO_TITLE},//61 - USE_TERRAIN_512
+{DEMO_TITLE},//62 - USE_MAIN_MAP
+{DEMO_TITLE},//63 - USE_MINI_MAP
+{DEMO_TITLE},//64 - LOADMD5 & FBX (Animated Characters)
 {DEMO_TITLE},//65
 {DEMO_TITLE},//66
 {DEMO_TITLE},//67
@@ -147,6 +145,7 @@ TCHAR* DEMO_NAME[] =
 {DEMO_TITLE},//97
 {DEMO_TITLE},//98
 {DEMO_TITLE},//99
+{DEMO_TITLE},//100 This DEMO: ADVANCED PRESENTATION DEMO (Animated water, characters, grass and buildings, etc...)
 };
 
 // Global Public:

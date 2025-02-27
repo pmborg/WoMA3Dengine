@@ -53,6 +53,9 @@ GLopenGLclass::GLopenGLclass()
 	_tcscpy_s(driverName, TEXT("GL3+")); // driverName = TEXT ("GL3+");
 	_tcscpy_s(szShaderModel, TEXT(""));
 	
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21
+	gl_Camera = NULL;
+#endif
 }
 
 GLopenGLclass::~GLopenGLclass() { 
@@ -68,6 +71,9 @@ void GLopenGLclass::Shutdown()
 {
 	SAFE_DELETE(mathClass);
 
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+	if(gl_Camera) { delete ((GLcameraClass*)gl_Camera); gl_Camera=NULL; }	//Cant use: SAFE_DELETE (m_Camera);
+#endif
 	Shutdown2D();
 
 #if defined USE_FRUSTRUM
@@ -254,6 +260,18 @@ void GLopenGLclass::Initialize3DCamera()
 	SetCamera2D();
 #endif
 
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+	gl_Camera->SetPosition(	SystemHandle->AppSettings->INIT_CAMX, 
+							SystemHandle->AppSettings->INIT_CAMY+0.35f,
+							SystemHandle->AppSettings->INIT_CAMZ);
+
+	gl_Camera->SetRotation(	SystemHandle->AppSettings->INIT_ROTX, 
+							SystemHandle->AppSettings->INIT_ROTY,
+							SystemHandle->AppSettings->INIT_ROTZ);
+
+	gl_Camera->CalculateViewMatrix();
+#endif
+
 	// SETUP 3D Sky Camera:
 }
 
@@ -320,6 +338,16 @@ bool GLopenGLclass::Initialize(float* clearColor)
 	driver_ClearColor[1] = *clearColor++;
 	driver_ClearColor[2] = *clearColor++;
 	driver_ClearColor[3] = *clearColor++;
+
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+	if (!gl_Camera)
+	{
+		gl_Camera = NEW GLcameraClass; // GL Implementation
+		IF_NOT_THROW_EXCEPTION (gl_Camera);
+	}
+
+	Initialize3DCamera();
+#endif
 
 	// Init OpenGL:
 #if !defined ANDROID_PLATFORM

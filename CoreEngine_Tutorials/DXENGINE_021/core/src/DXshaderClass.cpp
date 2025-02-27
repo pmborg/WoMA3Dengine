@@ -202,6 +202,9 @@ namespace DirectX {
 		hasAlfaColor = false;
 		alfaColor = 1;
 		PSfade = true;	// Time since Beg.
+#if defined INTRO_DEMO
+		frameTime = 0;	//29: Fadeout / Fadein
+#endif
 
 		// BLOCK6:
 		//BOOL		hasFog;		//repeated in VS

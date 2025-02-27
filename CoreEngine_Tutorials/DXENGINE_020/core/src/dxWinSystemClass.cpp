@@ -165,6 +165,13 @@ void dxWinSystemClass::Shutdown()
 {
 	//WinSystemClass::Shutdown();
 
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21
+	if (m_Camera)
+	{
+		delete ((DirectX::DXcameraClass*)m_Camera); 
+		m_Camera = NULL;
+	}
+#endif
 #if defined USE_DIRECT_INPUT
 	for (UINT i = 0; i < HowManyPlayers; i++)
 	{

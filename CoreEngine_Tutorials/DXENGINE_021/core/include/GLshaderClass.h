@@ -84,6 +84,9 @@ public:
 	bool		hasAlfaColor;
 	float		alfaColor;
 	float		PSfade=1;			// Fade from 0 to 1
+#if defined INTRO_DEMO
+	float		frameTime;			// For animations
+#endif
 
 	// BLOCK6:
 	BOOL		hasFog;

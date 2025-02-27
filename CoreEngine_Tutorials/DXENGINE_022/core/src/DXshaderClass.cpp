@@ -215,6 +215,9 @@ namespace DirectX {
 		hasAlfaColor = false;
 		alfaColor = 1;
 		PSfade = true;	// Time since Beg.
+#if defined INTRO_DEMO
+		frameTime = 0;	//29: Fadeout / Fadein
+#endif
 
 		// BLOCK6:
 		//BOOL		hasFog;		//repeated in VS
@@ -1192,6 +1195,9 @@ namespace DirectX {
 		dataPSptr->hasAlfaColor = hasAlfaColor;
 		dataPSptr->alfaColor = alfaColor;
 		dataPSptr->fade = PSfade;	// BASE TEXTURE!
+#if defined INTRO_DEMO
+		dataPSptr->frameTime = frameTime;		// dT
+#endif
 
 		// BLOCK6:
 		dataPSptr->hasFog = hasFog;

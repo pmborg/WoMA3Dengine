@@ -114,6 +114,11 @@ Rendering 3D with Effects
 
 #include "InputClass.h"
 
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21
+#include "Math3D.h"
+#include "DXcameraClass.h"
+#endif
+
 #include "dxWinSystemClass.h"	// SystemHandle
 #include "dx11Class.h"
 
@@ -360,6 +365,13 @@ void DX11Class::Shutdown()
 	#if defined INTRO_DEMO || defined USE_ALPHA_BLENDING
 		SAFE_RELEASE (m_alphaEnableBlendingState);
 		SAFE_RELEASE (m_alphaDisableBlendingState);
+	#endif
+
+	#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 22
+		WOMA_LOGManager_DebugMSGAUTO (TEXT("Number of Textures: %d\n"), allTextureNameArray.size());
+
+		for (UINT i=0; i < allTextureNameArray.size(); i++)
+			SAFE_RELEASE (allTexturePointerArray[i]);	// Free All Textures from our Texture manager
 	#endif
 
 	#if defined USE_FRUSTRUM
@@ -627,6 +639,9 @@ HRESULT result = S_OK;
 		// OMSetRenderTargets: NOTE: Need to be After [1], [2] and [3]
 		// #Generate new "ProjectionMatrix" and "OrthoMatrix"
 		// --------------------------------------------------
+	#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+		setProjectionMatrixWorldMatrixOrthoMatrix ( screenWidth, screenHeight, screenNear, screenDepth);
+	#endif
 	}
 
 
@@ -802,6 +817,53 @@ void DX11Class::EndScene(UINT monitorWindow)
 }
 
 
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+// ----------------------------------------------------------------------------------------------
+void DX11Class::GetProjectionMatrix(XMMATRIX& projectionMatrix)
+// ----------------------------------------------------------------------------------------------
+{
+	projectionMatrix = m_projectionMatrix;
+}
+#endif
+
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader //TUTORIAL_PRE_CHAP >= 6
+// ----------------------------------------------------------------------------------------------
+void DX11Class::setProjectionMatrixWorldMatrixOrthoMatrix (int screenWidth, int screenHeight,float screenNear, float screenDepth)
+// ----------------------------------------------------------------------------------------------
+{
+	float fieldOfView, screenAspect;
+
+	ASSERT(screenWidth * screenHeight);
+	ASSERT(screenNear > 0);
+	ASSERT(screenDepth > screenNear);
+
+	/*******************************************************************
+	* Set up: m_projectionMatrix and m_orthoMatrix
+	*******************************************************************/
+	// The projection matrix is used to translate the 3D scene into the 2D viewport space that we previously created. 
+	// We will need to keep a copy of this matrix so that we can pass it to our shaders that will be used to render our scenes. 
+
+	// Create the projection matrix:
+	UINT num_monitors = (UINT)SystemHandle->windowsArray.size();
+
+	fieldOfView =	(float)(PI / 4.0f) / // Or... 90deg => fieldOfView = (90 / 2) * 0,0174532925f;
+					num_monitors;		 // 90: 3(num "Impar" monitors)
+	screenAspect = (float)screenWidth / (float)screenHeight;
+
+	// Create the projection matrix for "3D" rendering.
+	m_projectionMatrix = XMMatrixPerspectiveFovLH( fieldOfView, screenAspect, screenNear, screenDepth);			// 3D PROJECTION
+
+#if defined CLIENT_SCENE_TEXT || defined USE_VIEW2D_SPRITES
+	// And the final thing we will setup in the Initialize function is an orthographic projection matrix. 
+	//This matrix is used for rendering 2D elements like user interfaces on the screen
+	// (Create an orthographic projection matrix for 2D rendering)
+	m_orthoMatrix = XMMatrixOrthographicLH ((float) screenWidth, (float) screenHeight, screenNear, screenDepth);// 2D PROJECTION
+#endif
+
+	// MINI-MAP:
+}
+#endif
+
 #if defined INTRO_DEMO || defined USE_VIEW2D_SPRITES
 // ----------------------------------------------------------------------------------------------
 void DX11Class::GetOrthoMatrix(XMMATRIX& orthoMatrix)
@@ -844,6 +906,15 @@ void DX11Class::Initialize3DCamera()
 #endif
 
 	// Normal Camera: ( After: SetCamera2D() )
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+	DXsystemHandle->m_Camera->SetPosition(	SystemHandle->AppSettings->INIT_CAMX, SystemHandle->AppSettings->INIT_CAMY,
+							SystemHandle->AppSettings->INIT_CAMZ);
+
+	DXsystemHandle->m_Camera->SetRotation(	SystemHandle->AppSettings->INIT_ROTX, SystemHandle->AppSettings->INIT_ROTY,
+							SystemHandle->AppSettings->INIT_ROTZ);
+
+	DXsystemHandle->m_Camera->CalculateViewMatrix();
+#endif
 	}
 #endif
 

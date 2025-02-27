@@ -313,6 +313,9 @@ public:
 		bool		hasAlfaColor = 0;
 		float		alfaColor = 0;
 		float		PSfade = 0;			// Fade from 0 to 1
+		#if defined INTRO_DEMO
+		float		frameTime = 0;		// For animations
+		#endif
 
 		// BLOCK6:
 		BOOL		hasFog=false;

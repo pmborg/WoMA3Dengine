@@ -24,7 +24,7 @@
 #if DX_ENGINE_LEVEL >= 29 && (defined USE_WIN32_SOUND_MANAGER || defined USE_WIN32_PLAY_MUSIC)
 #include "AudioClass.h"
 #include "log.h"
-
+#include "mem_leak.h"
 
 //
 // Private Part

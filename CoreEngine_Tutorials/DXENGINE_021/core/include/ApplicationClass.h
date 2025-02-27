@@ -79,6 +79,11 @@ extern bool FORCE_RENDER_ALL;
 extern UINT g_NetID;
 #endif
 
+#if defined INTRO_DEMO && CORE_ENGINE_LEVEL >= 10 //29
+extern int SpriteScreenToShow;
+extern float fadeIntro;
+#endif
+
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 #include "positionClass.h"
 #include "playerClass.h"
@@ -286,6 +291,10 @@ public:
 	float scaleY = 0;
 	float rescale = 0;
 
+#ifdef INTRO_DEMO
+	void	initIntroDemo();
+#endif
+
 private:
 
 //VARS:
@@ -371,6 +380,12 @@ public:
 #endif
 #if defined USE_CUBE // Cubes
 	bool initCubes3D();
+#endif
+
+#if defined INTRO_DEMO // VIDEO+INTRO+DEMO
+	float	WOMA_APPLICATION_DemoRender(UINT64 passedTotalTime);
+	float	WOMA_APPLICATION_IntroRender(UINT64 passedTotalTime);
+
 #endif
 
 	//	-------------------------------------------------------------------------------------------

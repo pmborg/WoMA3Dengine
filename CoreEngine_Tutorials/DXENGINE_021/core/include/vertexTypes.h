@@ -69,6 +69,23 @@ union Vector2 {
 };
 #pragma pack(pop)
 
+#if defined INTRO_DEMO || ENGINE_LEVEL == 14 || DX_ENGINE_LEVEL >= 22 // Texturing
+#pragma pack(push, 1)
+struct ModelTextureVertexType
+{
+	ModelTextureVertexType() { x = 0; y = 0; z = 0; tu = 0; tv = 0; }
+	ModelTextureVertexType(Vector3 inPosition, Vector2 inUV) 
+	{
+		x = inPosition.x; y = inPosition.y; z = inPosition.z;
+		tu = inUV.u;
+		tv = inUV.v;
+	}
+	float x, y, z;
+	float tu, tv;
+};
+#pragma pack(pop)
+#endif
+
 //AQUI!
 
 #if  DX_ENGINE_LEVEL >= 22 || defined USE_VIEW2D_SPRITES

@@ -50,6 +50,8 @@ extern RApplicationClass* r_Application;
 void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 //-------------------------------------------------------------------------------------------
 {
+	// [1] Process INPUT, CAMERA & Animations:
+	// --------------------------------------------------------------------------------------------
 
 	// [2] SceneManager: Process and Create Lists of objects to render from WORLD.XML
 	// --------------------------------------------------------------------------------------------
@@ -218,8 +220,13 @@ void ApplicationClass::AppPosRender()
 	// RENDER RASTERTEK V1 FONT:
 	// -------------------------
 #if defined USE_RASTERTEK_TEXT_FONT
+#if !defined INTRO_DEMO //|DEMO|
 	if (RENDER_PAGE >= 27)
 		AppTextClass->Render();
+#else
+	if (RENDER_PAGE == 27)
+		AppTextClass->Render();
+#endif
 #endif
 
 	// RENDER RASTERTEK V2 FONT:
@@ -237,11 +244,16 @@ void ApplicationClass::AppPosRender()
 #if defined USE_ALPHA_BLENDING
 	m_Driver->TurnOffAlphaBlending(); // Re assume default
 #endif
+#if defined INTRO_DEMO //RenderDemoIntroSprites
+	RenderDemoIntroSprites();
+#endif
 
 	// RENDER NATIVE TEXT:
 	// -------------------
 #if defined USE_DX10DRIVER_FONTS
+#if !defined INTRO_DEMO //|DEMO Force NATIVE TEXT|
 	if ((RENDER_PAGE >= 22) && (m_Driver->m_sCapabilities.USE_DXDRIVER_FONTSBoolean) && (SystemHandle->AppSettings->DRIVER == DRIVER_DX11))
+#endif
 	{
 		if (RENDER_PAGE >= 21)
 			((DirectX::DX11Class*)m_Driver)->addText(10, SystemHandle->AppSettings->WINDOW_HEIGHT - 120, DEMO_NAME[RENDER_PAGE - 21], 1, 1, 1);
@@ -269,6 +281,33 @@ float ApplicationClass::Update()
 		return -100;
 #endif
 	}
+#endif
+
+#if defined INTRO_DEMO //|DEMO  (RENDER_PAGE < 15)|
+	// 5 INTRO DEBUG TEXT: Show time, etc..
+	if (RENDER_PAGE < 21) {
+		if (m_Driver->RenderfirstTime) {
+			TCHAR tmp[MAX_STR_LEN]; _stprintf(tmp, "WOMA_APPLICATION_IntroRender(%ju)\n", passedTotalTime); OutputDebugString(tmp);
+		}
+		fadeIntro = WOMA_APPLICATION_IntroRender(passedTotalTime);
+	}
+	else
+		fadeIntro = 1;
+
+	if (m_Driver->RenderfirstTime) {
+		TCHAR tmp[MAX_STR_LEN]; _stprintf(tmp, "WOMA_APPLICATION_DemoRender(%ju)\n", passedTotalTime); OutputDebugString(tmp);
+	}
+	WOMA_APPLICATION_DemoRender(passedTotalTime);
+
+	//#if !defined INTRO_DEMO
+	if (RENDER_PAGE < 15)
+		return 0;
+	//#endif
+
+#if defined USE_DIRECT_INPUT && defined INTRO_DEMO
+	// Animate Camera (INTRO_DEMO)
+	SystemHandle->m_player[g_NetID]->p_player.IsDownPressed = true;
+#endif
 #endif
 
 #if defined CHECK_COMPOUND_COLISION
@@ -506,6 +545,112 @@ return fadeLight;
 }
 
 // INTRO
+#if defined INTRO_DEMO //DEMO fade speed
+#define fadeSpeed 0.00025f
+float ApplicationClass::WOMA_APPLICATION_IntroRender(UINT64 passedTotalTime)
+{
+	static bool FadeIn = true;
+	static float fade = 0.01f;
+
+	if (FadeIn)
+		fade = fade + fadeSpeed * (float)dt;
+	else
+		fade = fade - fadeSpeed * (float)dt;
+
+	if (fade >= 1)		// Fade until Max? Now go Down
+	{
+		fade = 1;
+		FadeIn = !FadeIn;
+	}
+
+	if (fade <= 0)		// Fade until Min? Now go Up
+	{
+		fade = 0;
+		FadeIn = !FadeIn;
+		SpriteScreenToShow++;
+		WOMA_LOGManager_DebugMSG("SpriteScreenToShow: %d\n", SpriteScreenToShow);
+	}
+
+	return fade;
+}
+
+
+float ApplicationClass::WOMA_APPLICATION_DemoRender(UINT64 passedTotalTime)
+{
+	static bool FadeIn = true;
+	static float fade = 0;
+	//if (m_Driver->RenderfirstTime)
+	//	WOMA_LOGManager_DebugMSG("fade: %d\n", fade);
+	if (fade == 0)
+	{
+		if (RENDER_PAGE == GAME_SYSTEM_SETTINGS)
+		{
+			WOMA::game_state = GAME_SYSTEM_SETTINGS; OS_REDRAW_WINDOW;
+		}
+
+		if (RENDER_PAGE == GAME_CELESTIAL_INFO)
+		{
+			WOMA::game_state = GAME_CELESTIAL_INFO; OS_REDRAW_WINDOW;
+		}
+
+		if (RENDER_PAGE == GAME_SHOW_POSITION)
+		{
+			WOMA::game_state = GAME_SHOW_POSITION; OS_REDRAW_WINDOW;
+		}
+
+		if (RENDER_PAGE == GAME_WEATHER_INFO)
+		{
+			WOMA::game_state = GAME_WEATHER_INFO; OS_REDRAW_WINDOW;
+		}
+
+		if (RENDER_PAGE >= 15) {
+			WOMA::game_state = GAME_RUN;
+		}
+	}
+	//if (m_Driver->RenderfirstTime)
+	//	WOMA_LOGManager_DebugMSG("WOMA::game_state: %d\n", WOMA::game_state);
+	//if (m_Driver->RenderfirstTime)
+	//	WOMA_LOGManager_DebugMSG("RENDER_PAGE: %d\n", RENDER_PAGE);
+	if (FadeIn)
+		fade = fade + fadeSpeed * (float)dt;
+	else
+		fade = fade - fadeSpeed * (float)dt;
+
+	if (fade >= 1)		// Fade until Max? Now go Down
+	{
+		fade = 1;
+		FadeIn = !FadeIn;
+	}
+
+	if (fade <= 0)		// Fade until Min? Now go Up
+	{
+		fade = 0;
+		FadeIn = !FadeIn;
+		if (RENDER_PAGE < DX_ENGINE_LEVEL) {
+			RENDER_PAGE++;
+			WOMA_LOGManager_DebugMSG("RENDER_PAGE: %d\n", RENDER_PAGE);
+#if defined USE_DIRECT_INPUT && defined INTRO_DEMO
+			m_Position[g_NetID]->m_positionX = SystemHandle->AppSettings->INIT_CAMX;
+			m_Position[g_NetID]->m_positionY = SystemHandle->AppSettings->INIT_CAMY;
+			m_Position[g_NetID]->m_positionZ = SystemHandle->AppSettings->INIT_CAMZ;
+#endif
+			if (RENDER_PAGE == 28)
+				FORCE_RENDER_ALL = true;
+			else
+				FORCE_RENDER_ALL = false;
+		}
+		else {
+			WOMA_LOGManager_DebugMSG("STOP: WOMA_APPLICATION_DemoRender ()\n");
+			WOMA::main_loop_state = -1;		//WINDOWS
+			WOMA::game_state = GAME_STOP;	//LINUX
+		}
+
+	}
+	//if (m_Driver->RenderfirstTime)
+	//	WOMA_LOGManager_DebugMSG("END: WOMA_APPLICATION_DemoRender ()\n");
+	return fade;
+}
+#endif
 
 static float rY = 0.0f;
 
@@ -518,7 +663,11 @@ void ApplicationClass::DemoRender()
 	// --------------------------------------------------------------------------------------------
 #if defined SCENE_COLOR //DEMO-1: Square
 
+#if defined INTRO_DEMO //force page 21
+	if (RENDER_PAGE == 21 || FORCE_RENDER_ALL)
+#else
 	if (RENDER_PAGE == 21 || RENDER_PAGE == 22 || RENDER_PAGE == 23 || RENDER_PAGE == 24 || FORCE_RENDER_ALL)
+#endif
 	{
 #if defined USE_RASTERIZER_STATE
 		m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID); // Render the Inside of Sphere
@@ -545,6 +694,9 @@ void ApplicationClass::DemoRender()
 #if !defined  NO_SCENE_IMAGE_LOAD
 	//DEMO-1:
 	//if (RENDER_PAGE == 22 || RENDER_PAGE == 28 || FORCE_RENDER_ALL)
+#if defined INTRO_DEMO //DEMO Img formats
+	if (RENDER_PAGE == 22 || FORCE_RENDER_ALL)
+#endif
 	{
 		//Line1:
 #if defined USE_IMAGE_BMP
@@ -574,6 +726,9 @@ void ApplicationClass::DemoRender()
 
 	//DEMO-2: Triangle!!
 	//if ((RENDER_PAGE >= 22 && RENDER_PAGE < 24) || FORCE_RENDER_ALL)
+#if defined INTRO_DEMO //force page 22
+	if (RENDER_PAGE == 22 || FORCE_RENDER_ALL)
+#endif
 	{
 		m_1stTriangleTextureVertexModel->translation(0, 6.5, -5); //=22
 		m_1stTriangleTextureVertexModel->Render();
@@ -583,20 +738,12 @@ void ApplicationClass::DemoRender()
 	//LIGHT TUTORIAL DEMO:
 	// --------------------------------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 23 && defined SCENE_TEXTURE_LIGHT
-/*
-	//DEMO-1
-	if (RENDER_PAGE == 23 || FORCE_RENDER_ALL)
-	{
-		float rY = 0.0f;
-		rY = dt * (0.015f / 16.66f);		// MOVIMENT FORMULA!
-		m_3th3DModel1->rotateX(rY);
-		m_3th3DModel1->translation(0, 0, 1);
-		m_3th3DModel1->Render();
-	}
-*/
 
-//DEMO-2
-//if ((RENDER_PAGE >= 23 && RENDER_PAGE < 24) || FORCE_RENDER_ALL)
+	//DEMO-2
+	//if ((RENDER_PAGE >= 23 && RENDER_PAGE < 24) || FORCE_RENDER_ALL)
+#if defined INTRO_DEMO //force page 23
+	if (RENDER_PAGE == 23 || FORCE_RENDER_ALL)
+#endif
 	{
 		{
 			m_3th3DModel2->translation(0, 4.75f, 1);
@@ -613,12 +760,14 @@ void ApplicationClass::DemoRender()
 #if defined USE_CUBE	
 	//DEMO-1
 	//if ((RENDER_PAGE == 25 && m_cube1Model) || FORCE_RENDER_ALL)
+#if defined INTRO_DEMO //DEMO25 or 26
+	if (RENDER_PAGE == 26 || FORCE_RENDER_ALL)
+#else
 	if (RENDER_PAGE < 30)
+#endif
 	{
 		static float rY = 0.0f;
 		rY = (float)dt * (0.005f / 16.66f);		// MOVIMENT FORMULA!
-		//m_cube1Model->Identity();
-		//m_cube1Model->scale(1.25f, 1.25f, 1.25f);
 		m_cube1Model->rotateY(rY);
 		m_cube1Model->translation(-3.5, Y_pos, 1);
 		m_cube1Model->Render();
@@ -626,7 +775,11 @@ void ApplicationClass::DemoRender()
 
 	//DEMO-2
 	//if ((RENDER_PAGE == 25 && m_cube2Model) || FORCE_RENDER_ALL)
+#if defined INTRO_DEMO //DEMO25 or 26
+	if (RENDER_PAGE == 26 || FORCE_RENDER_ALL)
+#else
 	if (RENDER_PAGE < 30)
+#endif
 	{
 		float rY = 0.0f;
 		rY = (float)dt * (0.005f / 16.66f);		// MOVIMENT FORMULA!
@@ -637,7 +790,11 @@ void ApplicationClass::DemoRender()
 
 	//DEMO-3
 	//if ((RENDER_PAGE == 25 && m_cube3Model) || FORCE_RENDER_ALL)
+#if defined INTRO_DEMO
+	if (RENDER_PAGE == 26 || FORCE_RENDER_ALL)
+#else
 	if (RENDER_PAGE < 30)
+#endif
 	{
 		m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
 		float rY = 0.0f;
@@ -645,7 +802,6 @@ void ApplicationClass::DemoRender()
 		m_cube3Model->rotateY(rY);
 		m_cube3Model->translation(3.5, Y_pos, 1);
 		m_cube3Model->Render();
-		//m_cube3Model->Render( CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_OPAC, &(m_Light->m_viewMatrix));
 	}
 #endif
 
@@ -653,7 +809,11 @@ void ApplicationClass::DemoRender()
 	// --------------------------------------------------------------------------------------------
 #if defined USE_SPHERE && DX_ENGINE_LEVEL >= 26
 	if ((RENDER_PAGE == 26 || RENDER_PAGE == 28) && m_SphereModel1)
+#if defined INTRO_DEMO
+		if (RENDER_PAGE == 26 || FORCE_RENDER_ALL)
+#else
 		if (RENDER_PAGE < 30)
+#endif
 		{
 			m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
 			float rY = 0.0f;
@@ -664,7 +824,11 @@ void ApplicationClass::DemoRender()
 		}
 
 	if ((RENDER_PAGE == 26 || RENDER_PAGE == 28) && m_SphereModel1)
+#if defined INTRO_DEMO
+		if (RENDER_PAGE == 26 || FORCE_RENDER_ALL)
+#else
 		if (RENDER_PAGE < 30)
+#endif
 		{
 			m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
 			float rY = 0.0f;
@@ -676,6 +840,21 @@ void ApplicationClass::DemoRender()
 #endif
 
 }
+
+#if DX_ENGINE_LEVEL >= 21 && defined INTRO_DEMO	//29  DEMO SPRITE TEXT
+void ApplicationClass::RenderDemoIntroSprites()
+{
+	if (RENDER_PAGE < 21 && (SpriteScreenToShow >= 0 && SpriteScreenToShow < m_screenShots.size()))
+	{   //AQUI-1
+		VirtualModelClass* screenShot = m_screenShots[SpriteScreenToShow];
+		//ModelShaderType = SHADER_TEXTURE_FONT(3)/
+
+		screenShot->RenderSprite((SystemHandle->AppSettings->WINDOW_WIDTH - screenShot->SpriteTextureWidth) / 2,
+			SystemHandle->AppSettings->WINDOW_HEIGHT / 2,
+			1, fadeIntro);
+	}
+}
+#endif
 
 
 #if defined CHECK_COMPOUND_COLISION //DX_ENGINE_LEVEL >= 56

@@ -53,6 +53,10 @@
 
 #include "WomaDriverClass.h"
 
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader1 // Color Shader
+	#include "DXcameraClass.h"
+#endif
+
 typedef IDirect3D9* (WINAPI* LPDIRECT3DCREATE9)(UINT);
 typedef IDirect3D9Ex* (WINAPI* LPDIRECT3DCREATE9EX)(UINT);
 
@@ -116,6 +120,15 @@ public:
 	void RenderDriverText();
 #endif
 
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+	// 3D
+	XMMATRIX m_projectionMatrix;
+	void GetProjectionMatrix(XMMATRIX&);
+
+    //We need to setup our ProjectionMatrix (21) and OrthoMatrix (CH07)
+	void setProjectionMatrixWorldMatrixOrthoMatrix (int screenWidth, int screenHeight,float screenNear, float screenDepth);
+#endif
+
 	HRESULT RenderD3D9();
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -158,6 +171,10 @@ public:
 
 	bool	bDeviceLost;
 	//UINT	ShaderVersionH, ShaderVersionL;
+
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+	//DXcameraClass* m_Camera;
+#endif
 
 	D3DVIEWPORT9 viewport;
 

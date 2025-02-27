@@ -993,14 +993,27 @@ bool SystemClass::LoadXmlSettings()
 		return false;
 	}
 
+	#if DX_ENGINE_LEVEL == 29 && defined INTRO_DEMO // Force Full Screen
+	SystemHandle->AppSettings->WINDOW_WIDTH = SystemHandle->AppSettings->WINDOW_HEIGHT = 0;
+	SystemHandle->AppSettings->INIT_CAMZ = -20;
+	SystemHandle->AppSettings->NETWORK_ENABLED = true;
+	#endif
+
 	SystemHandle->LandScape = (SystemHandle->AppSettings->WINDOW_WIDTH >= SystemHandle->AppSettings->WINDOW_HEIGHT) ? true : false;
 
 	//FORCE LANDSCAPE
 
+	#ifdef INTRO_DEMO
+		SystemHandle->m_Application->ClearColor[0] = 0;
+		SystemHandle->m_Application->ClearColor[1] = 0;
+		SystemHandle->m_Application->ClearColor[2] = 0;
+		SystemHandle->m_Application->ClearColor[3] = 1;
+	#else
 		SystemHandle->m_Application->ClearColor[0] = 0.5f;
 		SystemHandle->m_Application->ClearColor[1] = 0.6f;
 		SystemHandle->m_Application->ClearColor[2] = 0.8f;
 		SystemHandle->m_Application->ClearColor[3] = 1.0f;
+	#endif
 
 	return true;
 }

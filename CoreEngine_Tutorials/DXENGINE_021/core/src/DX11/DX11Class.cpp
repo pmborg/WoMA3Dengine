@@ -365,6 +365,13 @@ void DX11Class::Shutdown()
 		SAFE_RELEASE (m_alphaDisableBlendingState);
 	#endif
 
+	#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 22
+		WOMA_LOGManager_DebugMSGAUTO (TEXT("Number of Textures: %d\n"), allTextureNameArray.size());
+
+		for (UINT i=0; i < allTextureNameArray.size(); i++)
+			SAFE_RELEASE (allTexturePointerArray[i]);	// Free All Textures from our Texture manager
+	#endif
+
 	#if defined USE_FRUSTRUM
 		SAFE_DELETE(frustum);
 	#endif

@@ -154,6 +154,10 @@ void PositionClass::MoveBackward(bool keydown, bool ctrl, bool mouseWhell, bool 
 		m_backwardSpeed += m_frameTime * 0.0005f;
 		float maxSpeed = ctrl ? 0.04f : 0.004f; // MAX SPEED
 
+#if defined INTRO_DEMO
+		maxSpeed /= 8; // MAX SPEED for INTRO_DEMO
+#endif
+
 		if (water)
 			maxSpeed/=3;
 

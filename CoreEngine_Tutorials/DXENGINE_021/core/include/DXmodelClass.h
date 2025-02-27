@@ -110,6 +110,21 @@ public:
 
 	// BASIC LOAD:
 	bool LoadColor(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<ModelColorVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0);
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 22
+	
+		// [PATTERN] Image loader:
+	#if defined DX11 || defined DX9
+		ID3D11ShaderResourceView* m_Texture11 = NULL;
+	#endif
+	#if defined DX9sdk
+		LPDIRECT3DTEXTURE9 m_Texture9 = NULL;
+	#endif
+	#if defined DX12
+		DX12TextureClass* m_Texture = NULL;
+	#endif
+	
+	bool LoadTexture(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0);
+#endif
 
 	// MODEL LOAD:
 

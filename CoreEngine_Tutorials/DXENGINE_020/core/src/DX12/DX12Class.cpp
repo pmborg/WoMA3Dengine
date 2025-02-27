@@ -33,6 +33,11 @@
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009 && CORE_ENGINE_LEVEL >= 10		// Initializing Engine && defined DX11
 #include "winsystemclass.h"	// SystemHandle
 
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21
+#include "Math3D.h"
+
+#endif
+
 #include "dxWinSystemClass.h"	// SystemHandle
 
 namespace DirectX {
@@ -722,6 +727,9 @@ HRESULT result = S_OK;
 		setViewportDevice(screenWidth, screenHeight);
 
         //Init Step: 12 - Set ProjectionMatrix (CH06) and OrthoMatrix (CH07)
+	#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader // #if TUTORIAL_PRE_CHAP >= 6
+		setProjectionMatrixWorldMatrixOrthoMatrix ( screenWidth, screenHeight, screenNear, screenDepth);
+	#endif
 	}
 
 #if defined CLIENT_SCENE_TEXT || defined USE_VIEW2D_SPRITES // 26
@@ -1654,7 +1662,55 @@ void DX12Class::RenderDriverText(int Xpos, int Ypos, WCHAR* wprintText, int Widt
 }
 #endif
 
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+// ----------------------------------------------------------------------------------------------
+void DX12Class::GetProjectionMatrix(XMMATRIX& projectionMatrix)
+// ----------------------------------------------------------------------------------------------
+{
+	projectionMatrix = m_projectionMatrix;
+}
+#endif
+
 // TODO: 
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader //TUTORIAL_PRE_CHAP >= 6
+// ----------------------------------------------------------------------------------------------
+void DX12Class::setProjectionMatrixWorldMatrixOrthoMatrix(int screenWidth, int screenHeight, float screenNear, float screenDepth)
+// ----------------------------------------------------------------------------------------------
+{
+	float fieldOfView, screenAspect;
+
+	ASSERT(screenWidth * screenHeight);
+	ASSERT(screenNear > 0);
+	ASSERT(screenDepth > screenNear);
+
+	/*******************************************************************
+	* Set up: m_projectionMatrix and m_orthoMatrix
+	*******************************************************************/
+	// The projection matrix is used to translate the 3D scene into the 2D viewport space that we previously created. 
+	// We will need to keep a copy of this matrix so that we can pass it to our shaders that will be used to render our scenes. 
+
+	// Create the projection matrix:
+	UINT num_monitors = (UINT)SystemHandle->windowsArray.size();
+
+	// Create the projection matrix:
+	fieldOfView = (float)(PI / 4.0f) /				// Or... 90deg => fieldOfView = (90 / 2) * 0,0174532925f;
+		num_monitors;	// 90: 3(num "Impar" monitors)
+	screenAspect = (float)screenWidth / (float)screenHeight;
+
+	// Create the projection matrix for "3D" rendering:
+	// DX11: XMMatrixPerspectiveFovLH
+	m_projectionMatrix = XMMatrixPerspectiveFovLH(fieldOfView, screenAspect, screenNear, screenDepth);    // 3D PROJECTION
+
+#if defined CLIENT_SCENE_TEXT || defined USE_VIEW2D_SPRITES // 26
+	// And the final thing we will setup in the Initialize function is an orthographic projection matrix. 
+	//This matrix is used for rendering 2D elements like user interfaces on the screen
+	// (Create an orthographic projection matrix for 2D rendering)
+
+	m_orthoMatrix = XMMatrixOrthographicLH((float)screenWidth, (float)screenHeight, screenNear, screenDepth);  // 2D PROJECTION
+#endif
+
+}
+#endif
 
 #if defined INTRO_DEMO || defined USE_VIEW2D_SPRITES
 // ----------------------------------------------------------------------------------------------
@@ -1699,6 +1755,15 @@ void DX12Class::Initialize3DCamera()
 	#endif
 
 		// SETUP 3D Normal Camera:
+	#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+		DXsystemHandle->m_Camera->SetPosition(SystemHandle->AppSettings->INIT_CAMX, SystemHandle->AppSettings->INIT_CAMY,
+			SystemHandle->AppSettings->INIT_CAMZ);
+
+		DXsystemHandle->m_Camera->SetRotation(SystemHandle->AppSettings->INIT_ROTX, SystemHandle->AppSettings->INIT_ROTY,
+			SystemHandle->AppSettings->INIT_ROTZ);
+
+		DXsystemHandle->m_Camera->CalculateViewMatrix();
+	#endif
 	}
 #endif
 

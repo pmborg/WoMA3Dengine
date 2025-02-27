@@ -23,6 +23,7 @@
 #include "OSengine.h"
 #include "Math3D.h"
 #include "mem_leak.h"
+#include <cinttypes>
 
 #pragma warning(push)
 #pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
@@ -341,6 +342,28 @@ void ApplicationClass::DEMO_WOMA_APPLICATION_Shutdown2D()
 	#endif
 
 
+#if defined INTRO_DEMO //29
+	for (int i = 0; i < m_screenShots.size(); i++) {
+		if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+		{
+			#if defined DX_ENGINE
+			SAFE_SHUTDOWN_MODELDX(m_screenShots[i]);
+			#endif
+		} 
+		else
+		#if (defined OPENGL3 || defined OPENGL4)
+		{
+			SAFE_SHUTDOWN_MODELGL3(m_screenShots[i]);
+		}
+		#else
+		{
+		}
+		#endif
+	}
+
+	while (!m_screenShots.empty())
+		m_screenShots.pop_back();
+#endif
 }
 
 #ifdef USE_RASTERTEK_TEXT_FONT
@@ -385,6 +408,70 @@ bool ApplicationClass::initText()
 	return true;
 }
 
+#endif
+
+#ifdef INTRO_DEMO
+void ApplicationClass::initIntroDemo()
+{
+	std::vector<STRING> INTRO_TEXT;
+
+	INTRO_TEXT.push_back(DEMO1_BANNER1_TEXTURE);
+	INTRO_TEXT.push_back(DEMO1_BANNER2_TEXTURE);
+	INTRO_TEXT.push_back(DEMO1_BANNER3_TEXTURE);
+	INTRO_TEXT.push_back(DEMO1_BANNER4_TEXTURE);
+	INTRO_TEXT.push_back(DEMO1_BANNER5_TEXTURE);
+	INTRO_TEXT.push_back(DEMO1_BANNER6_TEXTURE);
+
+	//1way
+	for (int i = 0; i < INTRO_TEXT.size(); i++)
+	{
+		// Step 1: Prepare Vertex(s)
+		std::vector<ModelTextureVertexType> SpriteVertexVector;				// 1 Declare: the Vector with Vertex "TYPE"
+		ModelTextureVertexType vertex = { };								// 2 Use this "VERTEX" on macro
+		CREATE_VERTEXVECTOR_SQUAD_MODEL(SpriteVertexVector, 0, 0, 0);		// 3 Initialize Vertex ARRAY at world center at first
+		std::vector<UINT> emptyIndexList;
+		VirtualModelClass* m_spriteModel = NULL;
+		initModelwithTexture2D(m_spriteModel, (TCHAR*)INTRO_TEXT[i].c_str(), SpriteVertexVector, emptyIndexList, SHADER_TEXTURE_FONT);
+
+		switch (SystemHandle->AppSettings->DRIVER)
+		{
+		#if defined DX9sdk
+		case DRIVER_DX9:
+			((DirectX::DXmodelClass*)m_spriteModel)->m_Shader9->isFontShader = false;
+			break;
+		#endif
+		#if defined DX9 && D3D11_SPEC_DATE_YEAR > 2009
+		case DRIVER_DX9:
+			((DirectX::DXmodelClass*)m_spriteModel)->m_Shader11->isFontShader = false;
+			break;
+		#endif
+
+		#if defined DX11
+		case DRIVER_DX11:
+			((DirectX::DXmodelClass*)m_spriteModel)->m_Shader11->isFontShader = false;
+			break;
+		#endif
+
+		#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
+		case DRIVER_DX12:
+			((DirectX::DXmodelClass*)m_spriteModel)->m_Shader->isFontShader = false;
+			break;
+		#endif
+		#if (defined OPENGL3 || defined OPENGL4)
+		case DRIVER_GL3:
+			((GLmodelClass*)m_spriteModel)->m_Shader->isFont = false;
+			break;
+		#endif
+		}
+		
+		m_screenShots.push_back(m_spriteModel);
+
+#if defined DX12
+
+#endif
+	}
+
+}
 #endif
 
 // ----------------------------------------------------------------------------

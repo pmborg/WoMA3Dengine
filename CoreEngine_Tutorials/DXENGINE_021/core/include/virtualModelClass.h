@@ -74,6 +74,9 @@ public:
 	virtual void Render(UINT camera = 0, UINT projection = 0, UINT pass = 0, void* lightViewMatrix = NULL, void* ShadowProjectionMatrix = NULL) = 0;
 
 	virtual bool LoadColor(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<ModelColorVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0) = 0;
+#if DX_ENGINE_LEVEL >= 22 || defined INTRO_DEMO
+	virtual bool LoadTexture(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0) = 0;
+#endif
 
 #if defined USE_VIEW2D_SPRITES // Sprites
 	virtual bool RenderSprite(int positionX, int positionY, float scale = 1.0f, float fade = 1.0f) = 0;
