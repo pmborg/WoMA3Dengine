@@ -25,7 +25,7 @@
 
 #pragma warning( disable : 4706 )	// Disable warning C4706: assignment within conditional expression
 #include "OSengine.h"
-
+#include "mem_leak.h"
 #include "GlTextClass.h"
 #include "WomaDriverClass.h"
 #include "GLmathClass.h"

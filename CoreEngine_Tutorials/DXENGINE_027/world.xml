@@ -1,0 +1,10 @@
+<woma>
+  <!-- ENGINE LVL 25-->
+  <camera screenNear="0.1f" screenDepth="2048" >
+    <initPos x="0.25f" y="2" z="-28" />
+    <initRot x="0" y="0" z="0" />
+  </camera>
+
+  <!-- ENGINE LVL 31-->
+  <fog start="32" end="256"/>
+</woma>

@@ -27,7 +27,7 @@
 #include <d3d12.h>
 #include <dxcore.h>
 #include "dx12Class.h"
-
+#include "mem_leak.h"
 #include "C:/WoMA3Dengine/ThirdParty/DirectXTex/DirectXTex-jan2023/DirectXTex/d3dx12.h"
 
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009 && CORE_ENGINE_LEVEL >= 10		// Initializing Engine && defined DX11

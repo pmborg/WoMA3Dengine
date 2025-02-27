@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: ApplicationTextClass.h
 // --------------------------------------------------------------------------------------------
@@ -17,6 +16,8 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567222;
+
 #pragma once
 
 #include "main.h"
@@ -61,6 +62,44 @@ public:
 #if defined EXTRA_INFO
 	void SetClockTime(UINT, UINT);
 	void SetLightDirection(float rotX, float rotY, float rotZ);
+	#endif
+
+	#if defined INTRO_DEMO
+		void SetTime(INT64 dt);
+		void SetFade(float fade);
+		void SetScreenToShow(UINT screenToShow, UINT render_page);
+	#endif//
+
+    #if TUTORIAL_PRE_CHAP >= 12
+    void SetCompoundPosition(WCHAR *file, float dist, UINT, float, float, float, float scale);
+    #endif
+
+	#if DX_ENGINE_LEVEL >= 30
+    void SetRenderCount(int terrainCount, int compoundCount, UINT totalCompoundLoaded);
+	#endif//
+
+	#if TUTORIAL_PRE_CHAP >= 14
+	void SetLoboRenderCount(int count);
+	#endif//
+
+	#if TUTORIAL_PRE_CHAP >= 45
+	void SetBillRenderCount(int count);
+	#endif//
+
+	#if TUTORIAL_PRE_CHAP >= 63
+	void SetXP(UINT XP, UINT maxXP, float percent);
+	void SetGold(float gold);
+	#endif//
+
+	#if TUTORIAL_PRE_CHAP >= 90
+	void SetLatency(int latency);
+	#endif//
+
+	#if TUTORIAL_PRE_CHAP >= 200
+	//TextClass now has a new function for setting the data to print out.
+	void SetVideoCardInfo(char*, int);
+	void SetMousePosition(int mouseX, int mouseY, LONG mouseMovement);
+	void SetVideoCardInfo (DXGI_ADAPTER_DESC* adapterDesc);
 	#endif
 
 	SentenceType* m_sentence[N_TEXT_MAX_SENTENCE] = { 0 }; //std::vector<SentenceType*>	m_sentence;	

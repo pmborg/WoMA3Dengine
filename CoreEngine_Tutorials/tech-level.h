@@ -224,7 +224,7 @@
 
 	#if DX_ENGINE_LEVEL >= 25 //WINDOWS ONLY
 		#if defined DX_ENGINE
-			#if !defined _DEBUG
+			#if !defined _DEBUG || !defined MAINENGINE
 			#define USE_DX10DRIVER_FONTS
 			#endif
 			#define USE_ALPHA_BLENDING

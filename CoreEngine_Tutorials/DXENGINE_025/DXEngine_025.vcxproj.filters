@@ -458,6 +458,12 @@
     <ClCompile Include="core\src\ApplicationClass.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
+    <ClCompile Include="core\src\Dx11DriverFonts.cpp">
+      <Filter>src\dx11</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\OperatingSystem.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="settings.xml" />

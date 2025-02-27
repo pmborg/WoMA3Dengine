@@ -447,7 +447,7 @@
       <Filter>core\src</Filter>
     </ClCompile>
     <ClCompile Include="core\src\OperatingSystem.cpp">
-      <Filter>src</Filter>
+      <Filter>core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
