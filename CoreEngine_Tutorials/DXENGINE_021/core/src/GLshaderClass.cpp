@@ -31,6 +31,7 @@
 #include "GLshaderClass.h"
 
 #include "OSengine.h"
+#include "OSmain_dir.h"
 #include "mem_leak.h"
 
 
@@ -223,9 +224,21 @@ char* GLshaderClass::LoadShaderSourceFile(char* filename)
 	fin.open(filename);
 
 	// If it could not open the file then exit.
-	if(fin.fail())
+	if (fin.fail())
 	{
-		return 0;
+#if defined LINUX_PLATFORM
+		STRING dir = WOMA::getCurrentDir();
+		STRING file = dir;
+		file.append("/../../../CoreEngine_Tutorials/DXENGINE_0");
+		file.append(std::to_string(DX_ENGINE_LEVEL));
+		file.append("/");
+		file.append(filename);
+		fin.open(file);
+		if (fin.fail())
+#endif
+		{
+			return 0;
+		}
 	}
 
 	// Initialize the size of the file.
@@ -257,6 +270,22 @@ char* GLshaderClass::LoadShaderSourceFile(char* filename)
 #if !defined ANDROID_PLATFORM
 	// Open the shader source file again.
 	fin.open(filename);
+
+	// If it could not open the file then exit.
+	if (fin.fail())
+	{
+#if defined LINUX_PLATFORM
+		STRING file = "../../../CoreEngine_Tutorials/DXENGINE_0";
+		file.append(std::to_string(DX_ENGINE_LEVEL));
+		file.append("/");
+		file.append(filename);
+		fin.open(file);
+		if (fin.fail())
+#endif
+		{
+			return 0;
+		}
+	}
 
 	// Read the shader text file into the buffer as a block.
 	fin.read(buffer, fileSize);

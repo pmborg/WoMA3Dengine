@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: GLopenGLclass.h
 // --------------------------------------------------------------------------------------------
@@ -78,6 +79,10 @@
 #include <GLES3/gl32.h>
 #endif
 
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+	#include "GLcameraClass.h"
+#endif
+
 #include "WomaDriverClass.h"	//woma
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -133,6 +138,10 @@ public:
 	mat4 m_orthoMatrix;
 
 	int GLMajorVer, GLMinorVer;
+
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+	GLcameraClass* gl_Camera = NULL;
+#endif
 
 private:
 #if defined WINDOWS_PLATFORM

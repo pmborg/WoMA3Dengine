@@ -60,6 +60,11 @@
 #define MAX_CLIENTS 1
 #endif
 
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+#include "virtualModelClass.h"
+extern std::vector<VirtualModelClass*> m_screenShots;
+#endif
+
 // -------------------------------------------------------------------------------------------------
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
@@ -93,6 +98,10 @@ extern UINT g_NetID;
 #endif
 #if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX
 	#define MAX_TERRAINS 4
+#endif
+
+#if defined SCENE_TERRAIN_QUAD_TREE
+#include "TerrainQuadtreeClass.h"
 #endif
 
 #if defined (SCENE_COMPOUND)
@@ -206,7 +215,7 @@ public:
 	void AppPosRender();																// POS-RENDER - 2D: Render 
 #endif
 
-#if (defined USE_LIGHT_RAY) //&& defined USE_ASTRO_CLASS
+#if defined USE_LIGHT_RAY
 	void CalculateLightRayVertex (float SunDistance);
 #endif
 
@@ -258,6 +267,10 @@ public:
 	float scaleY = 0;
 	float rescale = 0;
 
+#ifdef INTRO_DEMO
+	void	initIntroDemo();
+#endif
+
 private:
 
 //VARS:
@@ -301,7 +314,7 @@ public:
 	InitWorld*		initWorld = NULL;    // Get Astro Positions
 #endif
 
-#if defined USE_LIGHT_RAY // LightModel
+#if defined USE_LIGHT_RAY
 	VirtualModelClass* m_lightRayModel = NULL;
 #endif
 
@@ -335,6 +348,12 @@ public:
 	bool initCubes3D();
 #endif
 
+#if defined INTRO_DEMO // VIDEO+INTRO+DEMO
+	float	WOMA_APPLICATION_DemoRender(UINT64 passedTotalTime);
+	float	WOMA_APPLICATION_IntroRender(UINT64 passedTotalTime);
+
+#endif
+
 
 
 #if defined USE_IMGUI
@@ -345,6 +364,10 @@ public:
 	VirtualModelClass* m_cube1Model = NULL;
 	VirtualModelClass* m_cube2Model = NULL;
 	VirtualModelClass* m_cube3Model = NULL;
+#endif
+
+#if defined SCENE_TERRAIN_QUAD_TREE //67
+	TerrainQuadtreeClass* TerrainQuadtree;
 #endif
 
 

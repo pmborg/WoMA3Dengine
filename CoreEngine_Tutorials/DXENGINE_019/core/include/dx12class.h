@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // ----------------------------------------------------------------------------------------------
 // Filename: DX12Class.h
 // --------------------------------------------------------------------------------------------
@@ -116,6 +117,10 @@ using namespace DirectX;
 
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009 // DXGI1_2 
 
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader1 // Color Shader
+	#include "DXcameraClass.h"
+#endif
+
 using namespace DirectX;
 using namespace std;
 using namespace Microsoft::WRL;
@@ -173,6 +178,15 @@ public:
 
 	void SetRasterizerState(UINT cullMode, UINT fillMode);
 	D3D12_RASTERIZER_DESC m_rasterState[3][2];
+
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+	// 3D
+	XMMATRIX m_projectionMatrix;
+	void GetProjectionMatrix(XMMATRIX&);
+
+    //We need to setup our ProjectionMatrix (21) and OrthoMatrix (CH07)
+	void setProjectionMatrixWorldMatrixOrthoMatrix (int screenWidth, int screenHeight,float screenNear, float screenDepth);
+#endif
 
     //We now have two new function in the DX12Class for turning the Z buffer on and off when rendering 2D images:
     void TurnZBufferOn();

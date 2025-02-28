@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: dxWinSystemClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -164,6 +165,13 @@ void dxWinSystemClass::Shutdown()
 {
 	//WinSystemClass::Shutdown();
 
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21
+	if (m_Camera)
+	{
+		delete ((DirectX::DXcameraClass*)m_Camera); 
+		m_Camera = NULL;
+	}
+#endif
 #if defined USE_DIRECT_INPUT
 	for (UINT i = 0; i < HowManyPlayers; i++)
 	{
@@ -187,6 +195,9 @@ void dxWinSystemClass::Shutdown()
 
 void dxWinSystemClass::GPH_RESIZE()
 {
+	if (!SystemHandle->m_Application)
+		return;
+
 	// Used for OS: ...
 	//Recalculated AT WOMA_APPLICATION_InitGUI()
 	//SystemHandle->m_scaleX = MIN(1, SystemHandle->AppSettings->WINDOW_WIDTH / 1920.0f);

@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: log.cpp
 // --------------------------------------------------------------------------------------------
@@ -22,7 +21,9 @@
 #include "main.h"
 #if defined USE_LOG_MANAGER
 #include "OSengine.h"
+#if CORE_ENGINE_LEVEL >= 1
 #include "mem_leak.h"
+#endif
 #if defined WINDOWS_PLATFORM
 #include <shlwapi.h>
 #endif
@@ -264,15 +265,27 @@ void start_log_manager()
 	// [3]  PRINT Log Dirs: (After init_os_main_dirs & After logManager)
 	// -------------------------------------------------------------------------------------------
 	//WOMA_LOGManager_DebugMSGAUTO(TEXT("Init: logDirs()\n"));
+#if defined WINDOWS_PLATFORM && ENGINE_LEVEL >= 3
+	logDirs(isXP(), isWow64());
+#else
 	logDirs();
+#endif
 
 	// [5] Log Binary Type:
 	// -------------------------------------------------------------------------------------------
 	// ALSO: After logManager!
 #if defined _DEBUG || defined DEBUG
+#ifdef RELEASE
+	WOMA_LOGManager_DebugMSG("Binary Type: [DEBUG RELEASE]\n");
+#else
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("Binary Type: [DEBUG]\n"));
+#endif
+#else
+#ifdef RELEASE
+	WOMA_LOGManager_DebugMSG("Binary Type: [RELEASE]\n");
 #else
 	WOMA_LOGManager_DebugMSG("Binary Type: [NDEBUG]\n");
+#endif
 #endif
 
 }

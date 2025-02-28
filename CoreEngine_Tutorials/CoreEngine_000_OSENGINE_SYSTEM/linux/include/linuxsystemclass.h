@@ -15,6 +15,8 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567222;
+
 #pragma once
 
 #ifndef __LINUXSYSTEMCLASS_H__

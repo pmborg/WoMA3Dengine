@@ -105,7 +105,11 @@ void WinSystemClass::ProcessFrame()
 	{
 		m_Application->dayLightFade = m_Application->Update();					//OS CORE ONLY!  F1, F2, ...
 
+		#if defined INTRO_DEMO
+		if (RENDER_PAGE < 15) 
+		#else
 		if (RENDER_PAGE < 10)
+		#endif
 			return;
 
 		// For each Monitor: Render one Application Frame
@@ -838,16 +842,6 @@ BOOL CALLBACK MyInfoEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonit
 bool WinSystemClass::ApplicationInitMainWindow()
 //----------------------------------------------------------------------------
 {
-#if true //defined RELEASE
-	// PURPOSE: Registers the Window Application Class, but first check if we are running!
-	if (FindWindow(WOMA_ENGINE_CLASS, NULL))
-	{
-		WomaMessageBox((TCHAR*)TEXT("Another Process is already Running..."), (TCHAR*)TEXT("FATAL ERROR:"));
-		WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP; //Publish_Quit_Message();
-		return false;
-	}
-	else
-#endif
 	{
 		if (!MyRegisterClass(m_hinstance)) {// Try to Register WOMA Engine WINDOW CLASS
 			WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP; //Publish_Quit_Message();

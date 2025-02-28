@@ -95,6 +95,40 @@ int main(int argc, char* argv[])
 }
 #endif
 
+#if defined ANDROID_PLATFORM && !defined NewWomaEngine
+android_app* app;
+struct womaengine engine = { 0 };
+
+#if defined WOMAENGINE
+void android_main(android_app* state)
+{
+	//GLenum err;
+	app = state;
+
+	//app_dummy();
+
+	_tprintf("[%d]: android_main()\n", gettid());
+	app->userData = &engine;
+	app->onAppCmd = engine_handle_cmd;
+	app->onInputEvent = engine_handle_input;
+	engine.app = app;
+	init_engine(app, &engine);
+
+	//MANDATORY: Wait for window creation:
+	while (!engine.has_focus_)
+		process_events(&engine, app);
+
+	int argc = 0;
+	char* argv[0];
+	APPLICATION_MAIN(argc, argv);
+
+	engine.has_focus_ = false;
+	terminate();
+}
+#endif
+
+#endif
+
 void ParseCommandLineArgs(int argc, char* argv[])
 {
 	for (int i = 1; i < argc; ++i)

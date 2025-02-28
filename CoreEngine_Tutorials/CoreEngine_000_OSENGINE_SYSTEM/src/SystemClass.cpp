@@ -212,6 +212,13 @@ bool SystemClass::SystemCheck()
 #endif
 
 	if (Command == 0) {
+#if ((defined USE_TIMER_CLASS && CORE_ENGINE_LEVEL >= 6) || (defined RELEASE || defined INTRO_DEMO) || CORE_ENGINE_LEVEL == 4) && defined WINDOWS_PLATFORM
+		//LEVELHIGHLIGHT(8);
+		WOMA_LOGManager_DebugMSG("-------------------------------------------------------------------------------\n");
+		WOMA_LOGManager_DebugMSGAUTO(TEXT("ENGINE_LEVEL: %d [Function Loader] systemManager->checkBenchMarkSpeed()\n"), WOMA::ENGINE_LEVEL_USED);
+		IF_NOT_RETURN_FALSE(systemManager->checkBenchMarkSpeed(&m_Timer));
+		//LEVELNORMAL();
+#endif
 	}
 
 #if defined USE_CHECK_IO

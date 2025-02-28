@@ -179,7 +179,7 @@ namespace WOMA
 		#endif
 	#endif
 
-		return cCurrentPath;
+		return SystemHandle->systemDefinitions.cCurrentPath;
 	}
 
 	//-------------------------------------------------------------------------------------------

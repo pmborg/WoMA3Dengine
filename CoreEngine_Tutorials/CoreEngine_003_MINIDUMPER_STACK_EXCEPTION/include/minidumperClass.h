@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // ----------------------------------------------------------------------------------------------
 // Filename: minidumperClass.h
 // --------------------------------------------------------------------------------------------
@@ -16,7 +17,7 @@
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // PURPOSE: Intercept a Fatal Exception and get the "file".dmp
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567142;
+//WomaIntegrityCheck = 1234567222;
 #pragma once
 
 ///////////////////////////////
@@ -24,7 +25,6 @@
 ///////////////////////////////
 
 #include "platform.h"
-#if defined USE_MINIDUMPER && defined WINDOWS_PLATFORM
 
 #include <dbghelp.h>	// VC7: ships with updated headers
 #include <assert.h>		// For UniCode
@@ -44,9 +44,8 @@ private:
 	static LONG WINAPI TopLevelFilter( struct _EXCEPTION_POINTERS *pExceptionInfo );
 
 public:
-	UINT WomaIntegrityCheck = 1234567142;
+	UINT WomaIntegrityCheck = 1234567222;
 	MiniDumper();
 	~MiniDumper();
 };
 
-#endif

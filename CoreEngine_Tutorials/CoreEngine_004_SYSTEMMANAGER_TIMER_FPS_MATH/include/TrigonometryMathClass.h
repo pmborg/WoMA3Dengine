@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: TrigonometryMathClass.h
 // --------------------------------------------------------------------------------------------
@@ -16,12 +17,11 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567142;
+//WomaIntegrityCheck = 1234567222;
 
 #pragma once
 
 #include "platform.h"
-#if defined USE_TIMER_CLASS
 #include "timerClass.h" // To benchMark
 
 using namespace std;	// endl
@@ -38,7 +38,7 @@ extern float tableSin[360*100], tableCos[360*100];
 class TrigonometryMathClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567142;
+	UINT WomaIntegrityCheck = 1234567222;
 	TrigonometryMathClass();
 	~TrigonometryMathClass();
 
@@ -49,8 +49,3 @@ public:
 private:
 
 };
-#else
-	#define FAST_sin(x) sin(x)
-	#define FAST_cos(x) cos(x)
-	#define FAST_sqrt(x) sqrt(x)
-#endif

@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: DX11createDevice-and-SwapChain.cpp
 // --------------------------------------------------------------------------------------------
@@ -16,7 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567222;
+//WomaIntegrityCheck = 1234567311;
 
 #include "OSengine.h"
 #if defined DX_ENGINE
@@ -35,10 +36,8 @@ struct
 DriverTypes[] =
 {
 	{ D3D_DRIVER_TYPE_HARDWARE,	 TEXT("hardware")},
-	#if !defined USE_DX10DRIVER_FONTS
 	{ D3D_DRIVER_TYPE_WARP,	   TEXT("emulator")},
 	{ D3D_DRIVER_TYPE_REFERENCE, TEXT("software")},
-	#endif
 };
 
 UINT numElements = sizeof(DriverTypes) / sizeof(DriverTypes[0]);

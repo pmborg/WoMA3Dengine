@@ -127,11 +127,6 @@
     <AntProjectPropertiesFile Include="project.properties" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Android1.NativeActivity\Android1.NativeActivity.vcxproj">
-      <Project>{6c37d4a1-5248-4ab6-9026-54e272bbf06b}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <JavaCompile Include="src\com\Android1\MyActivity.java" />
   </ItemGroup>
   <Import Project="$(AndroidTargetsPath)\Android.targets" />

@@ -24,7 +24,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-    <RemoteCopyIncludeDirectories>C:\WoMAengine2023_\Android-WomaEngine\Android2\Android2.NativeActivity\GLengine</RemoteCopyIncludeDirectories>
+    <RemoteCopyIncludeDirectories>C:\WoMAengine2023\DXEngine_021\GLengine</RemoteCopyIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -35,10 +35,10 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>../..;..;.;../core/include;../linux/include;../core/include/GLX;C:\WoMA3Dengine\CoreEngine_Tutorials\;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;/usr/include/atk-1.0/;/usr/lib/x86_64-linux-gnu/graphene-1.0/include/;/usr/include/graphene-1.0;/usr/include/gdk-pixbuf-2.0/;/usr/include/harfbuzz/;/usr/include/pango-1.0;/usr/include/cairo/;/usr/lib/x86_64-linux-gnu/glib-2.0/include/;/usr/include;/usr/include/glib-2.0;/usr/include/gtk-3.0__;/usr/include/gtk-2.0;/usr/lib/x86_64-linux-gnu/gtk-2.0/include/;$(IncludePath)</IncludePath>
+    <IncludePath>~/projects/LinuxWoma021/CoreEngine_Tutorials/DXENGINE_021/core/linux/include/;../..;..;.;../core/include;../linux/include;../core/include/GLX;C:\WoMA3Dengine\CoreEngine_Tutorials\;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;/usr/include/atk-1.0/;/usr/lib/x86_64-linux-gnu/graphene-1.0/include/;/usr/include/graphene-1.0;/usr/include/gdk-pixbuf-2.0/;/usr/include/harfbuzz/;/usr/include/pango-1.0;/usr/include/cairo/;/usr/lib/x86_64-linux-gnu/glib-2.0/include/;/usr/include;/usr/include/glib-2.0;/usr/include/gtk-3.0__;/usr/include/gtk-2.0;/usr/lib/x86_64-linux-gnu/gtk-2.0/include/;$(IncludePath)</IncludePath>
     <SourcePath>
     </SourcePath>
-    <AdditionalSourcesToCopyMapping>C:\WoMAengine2023__\Android-WomaEngine\Android2\Android2.NativeActivity\GLengine</AdditionalSourcesToCopyMapping>
+    <AdditionalSourcesToCopyMapping>C:\WoMAengine2023\DXEngine_021\GLengine</AdditionalSourcesToCopyMapping>
   </PropertyGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.h" />
@@ -49,8 +49,11 @@
     <ClInclude Include="..\core\include\default_settings_xml.h" />
     <ClInclude Include="..\core\include\fileLoader.h" />
     <ClInclude Include="..\core\include\fpsClass.h" />
+    <ClInclude Include="..\core\include\GLcameraClass.h" />
     <ClInclude Include="..\core\include\GLmathClass.h" />
+    <ClInclude Include="..\core\include\GLmodelClass.h" />
     <ClInclude Include="..\core\include\GLopenGLclass.h" />
+    <ClInclude Include="..\core\include\GLshaderClass.h" />
     <ClInclude Include="..\core\include\glxOpenGLclass.h" />
     <ClInclude Include="..\core\include\InputClass.h" />
     <ClInclude Include="..\core\include\language.h" />
@@ -70,6 +73,9 @@
     <ClInclude Include="..\core\include\systemManager.h" />
     <ClInclude Include="..\core\include\timerClass.h" />
     <ClInclude Include="..\core\include\TrigonometryMathClass.h" />
+    <ClInclude Include="..\core\include\vertexTypes.h" />
+    <ClInclude Include="..\core\include\virtualCameraClass.h" />
+    <ClInclude Include="..\core\include\virtualModelClass.h" />
     <ClInclude Include="..\core\include\weatherClass.h" />
     <ClInclude Include="..\core\include\winCpuCores.h" />
     <ClInclude Include="..\core\include\wmiUtilClass.h" />
@@ -85,6 +91,9 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.cpp" />
     <ClCompile Include="..\..\main.cpp" />
+    <ClCompile Include="..\core\src\GLcameraClass.cpp" />
+    <ClCompile Include="..\core\src\GLmodelClass.cpp" />
+    <ClCompile Include="..\core\src\GLshaderClass.cpp" />
     <ClCompile Include="..\core\src\GLX\GLopenGLclass.cpp" />
     <ClCompile Include="..\core\linux\src\linux.cpp" />
     <ClCompile Include="..\core\linux\src\linuxsystemclass.cpp" />
@@ -103,6 +112,7 @@
     <ClCompile Include="..\core\src\GLmathClass.cpp" />
     <ClCompile Include="..\core\src\GLX\glxOpenGLclass.cpp" />
     <ClCompile Include="..\core\src\idea.cpp" />
+    <ClCompile Include="..\core\src\initApplication_Basics.cpp" />
     <ClCompile Include="..\core\src\initWorld.cpp" />
     <ClCompile Include="..\core\src\language.cpp" />
     <ClCompile Include="..\core\src\log.cpp" />
@@ -122,11 +132,20 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\settings.xml" />
+    <Xml Include="..\world.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\GLengine\color.ps" />
+    <None Include="..\GLengine\color.vs" />
+    <None Include="..\GLengine\Light.ps" />
+    <None Include="..\GLengine\Light.vs" />
+    <None Include="..\GLengine\texture.ps" />
+    <None Include="..\GLengine\texture.vs" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
-      <PreprocessorDefinitions>DEBUG;DEMO_LEVEL=19;MAINENGINE_LINUX</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DEBUG;DEMO_LEVEL=21;MAINENGINE_LINUX</PreprocessorDefinitions>
       <CppLanguageStandard>c++11</CppLanguageStandard>
     </ClCompile>
     <Link>

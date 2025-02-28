@@ -15,7 +15,8 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-
+//WomaIntegrityCheck = 1234567222;
+// 
 // Eclipse Installation of C++ development for cygwin
 // http://www.badprog.com/c-eclipse-installation-of-c-c-development-tools-cdt-and-cygwin-for-windows
 

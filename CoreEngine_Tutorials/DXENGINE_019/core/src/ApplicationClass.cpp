@@ -43,10 +43,20 @@ void CompoundReadFunction(WomaDriverClass* Driver);
 
 #include <inttypes.h>
 
+#if defined INTRO_DEMO
+bool FORCE_RENDER_ALL = true;
+#else
 bool FORCE_RENDER_ALL = false;
+#endif
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 UINT g_NetID = 0;
+#endif
+
+#if defined INTRO_DEMO
+int SpriteScreenToShow;
+std::vector<VirtualModelClass*> m_screenShots;
+float fadeIntro=1;
 #endif
 
 ApplicationClass::ApplicationClass()
@@ -57,10 +67,24 @@ ApplicationClass::ApplicationClass()
 	// ---------------------------------------------------------------------
 	// private:
 
+#if defined INTRO_DEMO	// VIDEO+INTRO+DEMO
+#if defined WINDOWS_PLATFORM
+	RENDER_PAGE = 10;	// INTRO_DEMO START!!!
+	SpriteScreenToShow = -5;
+	//RENDER_PAGE = 15;	// FOR DEBUG ONLY| INTRO START ON:
+	//SpriteScreenToShow = 0;
+#else
+	//RENDER_PAGE = 10;	// INTRO_DEMO START!!!
+	//SpriteScreenToShow = -5;
+	RENDER_PAGE = 15;	// FOR DEBUG ONLY| INTRO START ON:
+	SpriteScreenToShow = 0;
+#endif
+#else
 		RENDER_PAGE = DX_ENGINE_LEVEL;
   #if _DEBUG
 	WOMA_LOGManager_DebugMSG("RENDER_PAGE: %d\n", RENDER_PAGE);
   #endif
+#endif
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 	g_NetID = NULL;
@@ -85,9 +109,13 @@ ApplicationClass::ApplicationClass()
 	//autoGenUnderWaterTerrain		= NULL;
 #endif
 
+#if defined SCENE_TERRAIN_QUAD_TREE
+	TerrainQuadtree = NULL;
+#endif
+
 	// TERRAIN
 
-#if defined USE_LIGHT_RAY // LightModel
+#if defined USE_LIGHT_RAY
 	m_lightRayModel = NULL;
 #endif
 
@@ -141,6 +169,10 @@ void ApplicationClass::Shutdown()
 	DEMO_WOMA_APPLICATION_Shutdown2D();
 #endif
 
+
+#if defined SCENE_TERRAIN_QUAD_TREE
+	SAFE_SHUTDOWN(TerrainQuadtree);
+#endif
 
 #if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN
 	//SAFE_DELETE (autoGenUnderWaterTerrain);
@@ -335,6 +367,10 @@ bool ApplicationClass::Initialize(WomaDriverClass* Driver)
 #if defined USE_DIRECT_INPUT
 	m_NextPosition = NEW PositionClass(/*ID*/-1);
 	if (WOMA::game_state == GAME_STOP) return false;
+#endif
+
+#if defined INTRO_DEMO //29
+	initIntroDemo();
 #endif
 
 	// 3D:

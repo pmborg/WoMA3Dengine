@@ -35,7 +35,7 @@ DX9Class::~DX9Class() {
 DX9Class::DX9Class() 
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567222;
+	WomaIntegrityCheck = 1234567311;
 	// SUPER: 
 	// Video Card Info:
 	// ---------------------------------------------------------------------------
@@ -140,7 +140,7 @@ bool DX9Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, in
 
 	//Init Step: 14 - Transparency: To render text on top of 3D
 	IF_NOT_RETURN_FALSE(CreateBlendState());
-#endif
+#endif//
 
 	return true;
 }

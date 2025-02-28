@@ -15,7 +15,8 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-
+//WomaIntegrityCheck = 1234567222;
+// 
 // Eclipse Installation of C++ development for cygwin
 // http://www.badprog.com/c-eclipse-installation-of-c-c-development-tools-cdt-and-cygwin-for-windows
 
@@ -280,9 +281,15 @@ void LinuxSystemClass::ProcessFrame() // EQUAL: BOTH OS?
 	#define mon 0
 	//WomaDriverClass* driver = SystemHandle->driverList[SystemHandle->AppSettings->DRIVER];
 
+	#if !defined INTRO_DEMO
 	if ((WOMA::game_state >= GAME_RUN && WOMA::game_state < ENGINE_RESTART) || (WOMA::game_state == GAME_SETUP))
+	#endif
 	{
+	#if defined INTRO_DEMO
+		if (RENDER_PAGE < 15) 
+	#else
 		if (RENDER_PAGE < 10) 
+	#endif
 			m_Application->Update();					//OS CORE ONLY!  F1, F2, ...
 		else
 		{

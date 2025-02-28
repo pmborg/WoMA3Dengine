@@ -97,15 +97,18 @@ bool XMLloader::InitWorldLoader(TCHAR* filename) //Note: Have to be char
 }
 #endif
 
+
+int OPENGL_defaultMonitor() 
+{
+	int monitorIndex = 0;
 #if defined WINDOWS_PLATFORM
-int OPENGL_defaultMonitor() {
 	// Retrieve the primary monitor information
 	DISPLAY_DEVICE dd;
 	ZeroMemory(&dd, sizeof(dd));
 	dd.cb = sizeof(dd);
 
 	// Enumerate display devices to get the default (primary) monitor
-	int monitorIndex = -1;
+	monitorIndex = -1;
 	for (int i = 0; EnumDisplayDevices(NULL, i, &dd, 0); ++i) {
 		if (dd.StateFlags & DISPLAY_DEVICE_ACTIVE) {
 			// Check if the current display device is the primary monitor
@@ -128,11 +131,11 @@ int OPENGL_defaultMonitor() {
 	else {
 		std::cout << "Primary monitor not found!" << std::endl;
 	}
-
+#endif
 	return monitorIndex;
 }
 
-#endif
+
 
 // -------------------------------------------------------------------------------------------
 bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
@@ -313,7 +316,20 @@ bool XMLloader::loadWorld (TCHAR* file_) // Note: Have to be char
 
 	doc.LoadFile(XML_FILE.c_str());
 #else
-	doc.LoadFile(XMLFILE);
+	STRING dir = WOMA::getCurrentDir();
+	tinyxml2::XMLError error = doc.LoadFile(XMLFILE);
+	if (error == tinyxml2::XML_ERROR_FILE_NOT_FOUND)
+	{
+	#if MAINENGINE
+		STRING file = "../../../DXEngine_0";
+	#else
+		STRING file = "../../../CoreEngine_Tutorials/DXENGINE_0";
+	#endif
+		file.append(std::to_string(DX_ENGINE_LEVEL));
+		file.append("/");
+		file.append(XMLFILE);
+		doc.LoadFile(file.c_str());
+	}
 #endif
 
 	auto root = doc.FirstChildElement( "woma" );
@@ -461,16 +477,21 @@ bool XMLloader::loadConfigSettings (TCHAR* file_) // Note: Have to be char
 
 	doc.LoadFile(XML_FILE.c_str());
 #else
+	//Current: /home/pedro/projects/LinuxWoma/bin/x64/Debug
+	//	~/projects/LinuxWoma/LinuxWoma/LinuxWoma/settings.xml
+	//	~/projects/LinuxWoma/LinuxWoma/LinuxWoma/world.xml
+	//	~/projects/LinuxWoma/DXEngine_021/world.xml
+
 	STRING dir = WOMA::getCurrentDir();
 	tinyxml2::XMLError error = doc.LoadFile(XMLFILE);
 	if (error == tinyxml2::XML_ERROR_FILE_NOT_FOUND)
 	{
 	#if MAINENGINE
-		STRING file = "../../../DXEngine_0";
+		STRING file = "/home/pedro/projects/LinuxWoma/LinuxWoma/LinuxWoma";
 	#else
 		STRING file = "../../../CoreEngine_Tutorials/DXENGINE_0";
-	#endif
 		file.append(std::to_string(DX_ENGINE_LEVEL));
+	#endif
 		file.append("/");
 		file.append(XMLFILE);
 		doc.LoadFile(file.c_str());

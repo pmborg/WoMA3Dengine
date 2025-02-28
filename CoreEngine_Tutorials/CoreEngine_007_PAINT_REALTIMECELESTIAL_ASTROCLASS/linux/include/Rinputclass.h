@@ -5,7 +5,7 @@
 #define _INPUTCLASS_H_
 
 #include "platform.h"
-//#if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2) 
+
 /////////////
 // DEFINES //
 /////////////
@@ -33,4 +33,3 @@ public:
 };
 
 #endif
-//#endif

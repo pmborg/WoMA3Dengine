@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // ----------------------------------------------------------------------------------------------
 // Filename: DX11Class.h
 // --------------------------------------------------------------------------------------------
@@ -326,6 +327,15 @@ public:
 
 	XMMATRIX* GetViewMatrix( UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix);
 	XMMATRIX* GetProjectionMatrix( UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix);
+
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+	// 3D
+	XMMATRIX m_projectionMatrix = {};
+	void GetProjectionMatrix(XMMATRIX&);
+
+    //We need to setup our ProjectionMatrix (21) and OrthoMatrix (CH07)
+	void setProjectionMatrixWorldMatrixOrthoMatrix (int screenWidth, int screenHeight,float screenNear, float screenDepth);
+#endif
 
 	// Public: ------------------------------------------------------------------------
 	// VARS:

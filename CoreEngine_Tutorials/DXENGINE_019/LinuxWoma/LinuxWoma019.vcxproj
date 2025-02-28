@@ -73,7 +73,7 @@
     <ClInclude Include="..\core\include\weatherClass.h" />
     <ClInclude Include="..\core\include\winCpuCores.h" />
     <ClInclude Include="..\core\include\wmiUtilClass.h" />
-    <ClInclude Include="..\core\include\womadriverclass.h" />
+    <ClInclude Include="..\core\include\WomaDriverClass.h" />
     <ClInclude Include="..\core\include\WomaSetupManager.h" />
     <ClInclude Include="..\core\include\woma_exception.h" />
     <ClInclude Include="..\core\include\woma_macros.h" />

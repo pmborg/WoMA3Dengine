@@ -39,3 +39,10 @@ vec3 operator + (const float s, const vec3 &v){
 }
 
 
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21
+// (V2 - V1) X (V3 - V1), where X is the cross product of the 2 vectors
+#define V1 0
+#define V2 1
+#define V3 2
+
+#endif

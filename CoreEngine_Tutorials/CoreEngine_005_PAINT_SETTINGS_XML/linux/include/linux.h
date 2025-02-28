@@ -14,6 +14,8 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567222;
+
 #pragma once
 
 // MORE INFO IF NEEDED:

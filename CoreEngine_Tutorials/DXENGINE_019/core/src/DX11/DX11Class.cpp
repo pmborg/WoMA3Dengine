@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // ----------------------------------------------------------------------------------------------
 // Filename: DX11Class.cpp
 // --------------------------------------------------------------------------------------------
@@ -112,6 +113,11 @@ Rendering 3D with Effects
 #if defined DX11 || defined DX9
 
 #include "InputClass.h"
+
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21
+#include "Math3D.h"
+#include "DXcameraClass.h"
+#endif
 
 #include "dxWinSystemClass.h"	// SystemHandle
 #include "dx11Class.h"
@@ -256,10 +262,6 @@ DX11Class::DX11Class()
 		loadInfo.pSrcInfo = NULL;  
 	#endif
 
-	#if TUTORIAL_PRE_CHAP >= 30
-	m_alphaBlendState2 = 0;
-	#endif
-
 	//Init Step: 1 - Check Driver for DX9 and DX10 and DX12(=false) on DX11 API
 	ASSERT (CheckAPIdriver(/* Use Graph Card 1 */ USE_THIS_GRAPHIC_CARD_ADAPTER));
 
@@ -365,6 +367,13 @@ void DX11Class::Shutdown()
 		SAFE_RELEASE (m_alphaDisableBlendingState);
 	#endif
 
+	#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 22
+		WOMA_LOGManager_DebugMSGAUTO (TEXT("Number of Textures: %d\n"), allTextureNameArray.size());
+
+		for (UINT i=0; i < allTextureNameArray.size(); i++)
+			SAFE_RELEASE (allTexturePointerArray[i]);	// Free All Textures from our Texture manager
+	#endif
+
 	#if defined USE_FRUSTRUM
 		SAFE_DELETE(frustum);
 	#endif
@@ -372,10 +381,6 @@ void DX11Class::Shutdown()
 		// createSetDepthStencilState() - Here we release the new depth stencil during the Shutdown function.
 		SAFE_RELEASE (m_depthDisabledStencilState);
 		SAFE_RELEASE (m_depthStencilState);
-
-		#if TUTORIAL_PRE_CHAP >= 30
-			SAFE_RELEASE (m_alphaBlendState2);
-		#endif
 
 		SAFE_RELEASE (adapterGraphicCard);
 		SAFE_RELEASE (m_deviceContext);
@@ -632,6 +637,9 @@ HRESULT result = S_OK;
 		// OMSetRenderTargets: NOTE: Need to be After [1], [2] and [3]
 		// #Generate new "ProjectionMatrix" and "OrthoMatrix"
 		// --------------------------------------------------
+	#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+		setProjectionMatrixWorldMatrixOrthoMatrix ( screenWidth, screenHeight, screenNear, screenDepth);
+	#endif
 	}
 
 
@@ -807,26 +815,50 @@ void DX11Class::EndScene(UINT monitorWindow)
 }
 
 
-#if TUTORIAL_PRE_CHAP >= 30
-//This is the new function for enabling the additive blend state.
-void DX11Class::EnableSecondBlendState()
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+// ----------------------------------------------------------------------------------------------
+void DX11Class::GetProjectionMatrix(XMMATRIX& projectionMatrix)
+// ----------------------------------------------------------------------------------------------
 {
-	static float blendFactor[4] = {0.0f, 0.0f, 0.0f, 0.0f};	// Setup the blend factor.
-	
-	// Turn on the alpha blending.
-	m_deviceContext->OMSetBlendState(m_alphaBlendState2, blendFactor, 0xffffffff);
+	projectionMatrix = m_projectionMatrix;
 }
 #endif
 
-#if TUTORIAL_PRE_CHAP >= 15
-void DX11Class::GetProjectionMiniMapMatrix(XMMATRIX& projectionMiniMapMatrix)
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader //TUTORIAL_PRE_CHAP >= 6
+// ----------------------------------------------------------------------------------------------
+void DX11Class::setProjectionMatrixWorldMatrixOrthoMatrix (int screenWidth, int screenHeight,float screenNear, float screenDepth)
+// ----------------------------------------------------------------------------------------------
 {
-	projectionMiniMapMatrix = m_projectionMiniMapMatrix;
-}
+	float fieldOfView, screenAspect;
 
-void DX11Class::GetProjectionMapMatrix(XMMATRIX& projectionMapMatrix)
-{
-	projectionMapMatrix = m_projectionMapMatrix;
+	ASSERT(screenWidth * screenHeight);
+	ASSERT(screenNear > 0);
+	ASSERT(screenDepth > screenNear);
+
+	/*******************************************************************
+	* Set up: m_projectionMatrix and m_orthoMatrix
+	*******************************************************************/
+	// The projection matrix is used to translate the 3D scene into the 2D viewport space that we previously created. 
+	// We will need to keep a copy of this matrix so that we can pass it to our shaders that will be used to render our scenes. 
+
+	// Create the projection matrix:
+	UINT num_monitors = (UINT)SystemHandle->windowsArray.size();
+
+	fieldOfView =	(float)(PI / 4.0f) / // Or... 90deg => fieldOfView = (90 / 2) * 0,0174532925f;
+					num_monitors;		 // 90: 3(num "Impar" monitors)
+	screenAspect = (float)screenWidth / (float)screenHeight;
+
+	// Create the projection matrix for "3D" rendering.
+	m_projectionMatrix = XMMatrixPerspectiveFovLH( fieldOfView, screenAspect, screenNear, screenDepth);			// 3D PROJECTION
+
+#if defined CLIENT_SCENE_TEXT || defined USE_VIEW2D_SPRITES
+	// And the final thing we will setup in the Initialize function is an orthographic projection matrix. 
+	//This matrix is used for rendering 2D elements like user interfaces on the screen
+	// (Create an orthographic projection matrix for 2D rendering)
+	m_orthoMatrix = XMMatrixOrthographicLH ((float) screenWidth, (float) screenHeight, screenNear, screenDepth);// 2D PROJECTION
+#endif
+
+	// MINI-MAP:
 }
 #endif
 
@@ -872,6 +904,15 @@ void DX11Class::Initialize3DCamera()
 #endif
 
 	// Normal Camera: ( After: SetCamera2D() )
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+	DXsystemHandle->m_Camera->SetPosition(	SystemHandle->AppSettings->INIT_CAMX, SystemHandle->AppSettings->INIT_CAMY,
+							SystemHandle->AppSettings->INIT_CAMZ);
+
+	DXsystemHandle->m_Camera->SetRotation(	SystemHandle->AppSettings->INIT_ROTX, SystemHandle->AppSettings->INIT_ROTY,
+							SystemHandle->AppSettings->INIT_ROTZ);
+
+	DXsystemHandle->m_Camera->CalculateViewMatrix();
+#endif
 	}
 #endif
 
