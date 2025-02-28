@@ -218,12 +218,31 @@ Add third party image readers:<br>
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_022.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_022.png)	
 
 <hr>
-
 - <b>DX21: The COLOR Shader</b><br>
  Introduction to the: Rasterizer State
-	
-![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_021.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_021.png)	
+<table>
+<tr>
+<td>WINDOWS:</td>
+<td>LINUX:</td>
+<td>ANDROID:</td>
+</tr>
+<td>
 
+<tr>
+<td>
+
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_021.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_021.png)	
+</td>
+<td>
+
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/LINUXEngine_021.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/LINUXEngine_021.png)	
+</td>
+<td>
+
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/ANDROIDEngine_021.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/ANDROIDEngine_021.png)	
+</td>
+
+</tr></table>
 <hr>
 - <b>DX20: Resize Main window</b><br>
  Allow alt enter swap
