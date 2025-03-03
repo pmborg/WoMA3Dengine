@@ -113,6 +113,12 @@
     <ClInclude Include="..\core\linux\include\linuxsystemclass.h" />
     <ClInclude Include="..\core\linux\include\linux.h" />
     <ClInclude Include="..\core\linux\include\Rinputclass.h" />
+    <ClInclude Include="..\core\include\GLcameraClass.h" />
+    <ClInclude Include="..\core\include\GLmodelClass.h" />
+    <ClInclude Include="..\core\include\GLshaderClass.h" />
+    <ClInclude Include="..\core\include\vertexTypes.h" />
+    <ClInclude Include="..\core\include\virtualCameraClass.h" />
+    <ClInclude Include="..\core\include\virtualModelClass.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Include">
@@ -289,8 +295,21 @@
     <ClCompile Include="..\core\linux\src\Rinputclass.cpp" />
     <ClCompile Include="..\core\src\GLX\glxOpenGLclass.cpp" />
     <ClCompile Include="..\core\src\renderApplication_Basics.cpp" />
+    <ClCompile Include="..\core\src\GLcameraClass.cpp" />
+    <ClCompile Include="..\core\src\GLmodelClass.cpp" />
+    <ClCompile Include="..\core\src\GLshaderClass.cpp" />
+    <ClCompile Include="..\core\src\initApplication_Basics.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\settings.xml" />
+    <Xml Include="..\world.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\GLengine\color.ps" />
+    <None Include="..\GLengine\color.vs" />
+    <None Include="..\GLengine\Light.ps" />
+    <None Include="..\GLengine\Light.vs" />
+    <None Include="..\GLengine\texture.ps" />
+    <None Include="..\GLengine\texture.vs" />
   </ItemGroup>
 </Project>
