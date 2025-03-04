@@ -35,7 +35,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{F54F7FC3-F010-41B4-BD4A-4DB5C98C8CC0}</ProjectGuid>
+    <ProjectGuid>{8E5E758C-8678-4580-A8D0-4678600AA948}</ProjectGuid>
     <Keyword>Android</Keyword>
     <RootNamespace>Android1</RootNamespace>
     <DefaultLanguage>en-US</DefaultLanguage>
@@ -130,7 +130,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PublicIncludeDirectories>
     </PublicIncludeDirectories>
-    <IncludePath>.;..;../..;../../include;$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;C:\WoMA3Dengine;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_021\core\include;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_021\core\Android1\Android1.NativeActivity</IncludePath>
+    <IncludePath>$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include;.;..;../..;../../include;$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include__;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;C:\WoMA3Dengine;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_022\core\include;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_022\core\Android1\Android1.NativeActivity;C:\WoMA3Dengine\ThirdParty\JPG_LIB\include;C:\WoMA3Dengine\ThirdParty\PNG_LIB\include</IncludePath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\021\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
@@ -187,7 +187,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <CompileAs>CompileAsCpp</CompileAs>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
-      <PreprocessorDefinitions>__ANDROID_API__=$(AndroidAPILevelNumber);%(PreprocessorDefinitions);DEMO_LEVEL=22;MAINENGINE_LINUX</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__ANDROID_API__=$(AndroidAPILevelNumber);%(PreprocessorDefinitions);DEMO_LEVEL=22;MAINENGINE_LINUX;GL_KHR_debug</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <LibraryDependencies>%(LibraryDependencies);GLESv1_CM;GLESv3;EGL;m;z</LibraryDependencies>
@@ -225,6 +225,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\ThirdParty\JPG_LIB\include\jconfig.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\JPG_LIB\include\jdct.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\JPG_LIB\include\jerror.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\JPG_LIB\include\jinclude.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\JPG_LIB\include\jmemsys.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\JPG_LIB\include\jmorecfg.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\JPG_LIB\include\jpegint.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\JPG_LIB\include\jpeglib.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\JPG_LIB\include\jversion.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\PNG_LIB\include\png.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\PNG_LIB\include\pngconf.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\PNG_LIB\include\pngdebug.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\PNG_LIB\include\pnginfo.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\PNG_LIB\include\pnglibconf.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\PNG_LIB\include\pngpriv.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\PNG_LIB\include\pngstruct.h" />
     <ClInclude Include="..\..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.h" />
     <ClInclude Include="..\..\..\level.h" />
     <ClInclude Include="..\..\core\Android1\Android1.NativeActivity\androidsystemclass.h" />
@@ -263,6 +279,67 @@
     <ClInclude Include="android_native_app_glue.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jaricom.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcapimin.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcapistd.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcarith.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jccoefct.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jccolor.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcdctmgr.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jchuff.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcinit.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcmainct.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcmarker.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcmaster.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcomapi.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcparam.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcprepct.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcsample.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jctrans.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdapimin.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdapistd.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdarith.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdatadst.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdatasrc.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdcoefct.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdcolor.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jddctmgr.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdhuff.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdinput.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdmainct.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdmarker.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdmaster.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdmerge.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdpostct.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdsample.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdtrans.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jerror.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jfdctflt.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jfdctfst.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jfdctint.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jidctflt.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jidctfst.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jidctint.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jmemmgr.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jmemnobs.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jquant1.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jquant2.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jutils.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\png.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngerror.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngget.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngmem.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngpread.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngread.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngrio.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngrtran.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngrutil.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngset.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngtrans.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngwio.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngwrite.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngwtran.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngwutil.c" />
     <ClCompile Include="..\..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.cpp" />
     <ClCompile Include="..\..\..\main.cpp" />
     <ClCompile Include="..\..\core\Android1\Android1.NativeActivity\AndroidEngine.cpp" />
@@ -281,7 +358,9 @@
     <ClCompile Include="..\..\core\src\GLmathClass.cpp" />
     <ClCompile Include="..\..\core\src\GLmodelClass.cpp" />
     <ClCompile Include="..\..\core\src\GLshaderClass.cpp" />
+    <ClCompile Include="..\..\core\src\GLTextureclass.cpp" />
     <ClCompile Include="..\..\core\src\GLX\GLopenGLclass.cpp" />
+    <ClCompile Include="..\..\core\src\ImageLoaderClass.cpp" />
     <ClCompile Include="..\..\core\src\initApplication_Basics.cpp" />
     <ClCompile Include="..\..\core\src\language.cpp" />
     <ClCompile Include="..\..\core\src\log.cpp" />

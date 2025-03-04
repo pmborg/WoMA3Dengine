@@ -138,6 +138,7 @@ extern int InitImGui(HWND hwnd_ = NULL);
 
 bool LinuxSystemClass::APPLICATION_CORE_SYSTEM()
 {
+
 	if (WOMA::game_state == GAME_LOADING)
 		WOMA::game_state = GAME_MENU;	// All ready from "mandatory 3D Stuff" Loader
 

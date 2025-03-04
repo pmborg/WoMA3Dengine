@@ -31,7 +31,7 @@ extern void ImGui_Stop();
 
 
 // Process the next main command.
-void engine_handle_cmd(struct android_app* app, int32_t cmd)
+void engine_handle_cmd(struct android_app* app, int32_t cmd) 
 {
 	struct womaengine* engine = (struct womaengine*)app->userData;
 	//RUN ORDER:
@@ -43,75 +43,75 @@ void engine_handle_cmd(struct android_app* app, int32_t cmd)
 	//case APP_CMD_SAVE_STATE
 	//case APP_CMD_STOP
 
-	switch (cmd)
+	switch (cmd) 
 	{
 		//START:1
-	case APP_CMD_INIT_WINDOW:
-		LOGE("case APP_CMD_INIT_WINDOW");
-		//TO_CLONE:
-		//pApp->userData = new Renderer(pApp);
+		case APP_CMD_INIT_WINDOW:
+			LOGE("case APP_CMD_INIT_WINDOW");
+			//TO_CLONE:
+			//pApp->userData = new Renderer(pApp);
 
-		// The window is being shown, get it ready.
-		if (engine->app->window != NULL)
-		{
-			engine_init_display(engine);
-			updateRenderArea(engine);
-#if CORE_ENGINE_LEVEL >= 10 && defined USE_IMGUI && !RUN_ASMAIN
-			ImGui_Init(app);
-#endif
-			//engine->has_focus_ = true;
-			//engine_render(engine);
-		}
-		break;
+			// The window is being shown, get it ready.
+			if (engine->app->window != NULL) 
+			{
+				engine_init_display(engine);
+				updateRenderArea(engine);
+			#if CORE_ENGINE_LEVEL >= 10 && defined USE_IMGUI && !RUN_ASMAIN
+				ImGui_Init(app);
+			#endif
+				//engine->has_focus_ = true;
+				//engine_render(engine);
+			}
+			break;
 		//START:2
-	case APP_CMD_GAINED_FOCUS:
-		// When our app gains focus, we start monitoring the accelerometer.
-		LOGE("case APP_CMD_GAINED_FOCUS");
+		case APP_CMD_GAINED_FOCUS:
+			// When our app gains focus, we start monitoring the accelerometer.
+			LOGE("case APP_CMD_GAINED_FOCUS");
 
-		if (engine->accelerometerSensor != NULL) {
-			ASensorEventQueue_enableSensor(engine->sensorEventQueue, engine->accelerometerSensor);
-			// We'd like to get 60 events per second (in us).
-			ASensorEventQueue_setEventRate(engine->sensorEventQueue, engine->accelerometerSensor, (1000L / 60) * 1000);
-		}
-		engine->has_focus_ = true;
-		break;
+			if (engine->accelerometerSensor != NULL) {
+				ASensorEventQueue_enableSensor(engine->sensorEventQueue, engine->accelerometerSensor);
+				// We'd like to get 60 events per second (in us).
+				ASensorEventQueue_setEventRate(engine->sensorEventQueue, engine->accelerometerSensor, (1000L / 60) * 1000);
+			}
+			engine->has_focus_ = true;
+			break;
 
 		//STOP:1
-	case APP_CMD_LOST_FOCUS:
-		// When our app loses focus, we stop monitoring the accelerometer.
-		// This is to avoid consuming battery while not being used.
-		LOGE("case APP_CMD_LOST_FOCUS");
+		case APP_CMD_LOST_FOCUS:
+			// When our app loses focus, we stop monitoring the accelerometer.
+			// This is to avoid consuming battery while not being used.
+			LOGE("case APP_CMD_LOST_FOCUS");
 
-		if (engine->accelerometerSensor != NULL) {
-			ASensorEventQueue_disableSensor(engine->sensorEventQueue, engine->accelerometerSensor);
-		}
-		// Also stop animating.
-		engine->has_focus_ = false;
-		updateRenderArea(engine);
-		//engine_render(engine);
-		break;
+			if (engine->accelerometerSensor != NULL) {
+				ASensorEventQueue_disableSensor(engine->sensorEventQueue, engine->accelerometerSensor);
+			}
+			// Also stop animating.
+			engine->has_focus_ = false;
+			updateRenderArea(engine);
+			//engine_render(engine);
+			break;
 		//STOP:2
-	case APP_CMD_TERM_WINDOW:
-		// The window is being hidden or closed, clean it up.
-		LOGE("case APP_CMD_TERM_WINDOW");
-#if CORE_ENGINE_LEVEL >= 10 && defined USE_IMGUI && !RUN_ASMAIN
-		ImGui_Stop();
-#endif
-		engine_term_display(engine);
-		engine->has_focus_ = false;
-		break;
+		case APP_CMD_TERM_WINDOW:
+			// The window is being hidden or closed, clean it up.
+			LOGE("case APP_CMD_TERM_WINDOW");
+		#if CORE_ENGINE_LEVEL >= 10 && defined USE_IMGUI && !RUN_ASMAIN
+			ImGui_Stop();
+		#endif
+			engine_term_display(engine);
+			engine->has_focus_ = false;
+			break;
 		//STOP:3
-	case APP_CMD_SAVE_STATE:
-		// The system has asked us to save our current state.  Do so.
-		LOGE("case APP_CMD_SAVE_STATE");
-		//engine->app->savedState = malloc(sizeof(struct saved_state));
-		//*((struct saved_state*)engine->app->savedState) = engine->state;
-		//engine->app->savedStateSize = sizeof(struct saved_state);
-		break;
+		case APP_CMD_SAVE_STATE:
+			// The system has asked us to save our current state.  Do so.
+			LOGE("case APP_CMD_SAVE_STATE");
+			//engine->app->savedState = malloc(sizeof(struct saved_state));
+			//*((struct saved_state*)engine->app->savedState) = engine->state;
+			//engine->app->savedStateSize = sizeof(struct saved_state);
+			break;
 		//STOP:4
-	case APP_CMD_STOP:
-		LOGE("case APP_CMD_STOP");
-		break;
+		case APP_CMD_STOP:
+			LOGE("case APP_CMD_STOP");
+			break;
 	}
 }
 

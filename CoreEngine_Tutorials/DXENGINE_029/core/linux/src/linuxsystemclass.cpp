@@ -176,6 +176,14 @@ extern int InitImGui(HWND hwnd_ = NULL);
 bool LinuxSystemClass::APPLICATION_CORE_SYSTEM()
 {
 
+#if defined LINUX_PLATFORM && DX_ENGINE_LEVEL >= 22
+	STRING dir = WOMA::getCurrentDir();
+	STRING newdir = dir;
+	newdir.append("/../../../CoreEngine_Tutorials/DXENGINE_0");
+	newdir.append(std::to_string(DX_ENGINE_LEVEL));
+	int res = chdir(newdir.c_str());
+#endif
+
 	return true;
 }
 

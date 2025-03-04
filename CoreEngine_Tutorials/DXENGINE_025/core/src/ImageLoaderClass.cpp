@@ -307,7 +307,7 @@ unsigned char* ImageLoaderClass::loadJPEG(TCHAR* filename, UINT* width, UINT* he
 		}
 	}
 
-#if defined LINUX_PLATFORM
+#if defined LINUX_PLATFORM || defined ANDROID_PLATFORM
 	* imageSize = (*width) * (*height) * 4;
 	pixels = fixTOGBRA(pixels, *imageSize, false, true); //32 bits image!
 #endif
@@ -539,7 +539,7 @@ unsigned char* ImageLoaderClass::loadPNG(TCHAR* filename, UINT* width, UINT* hei
 		}
 	}
 
-#if defined LINUX_PLATFORM
+#if defined LINUX_PLATFORM || defined ANDROID_PLATFORM
 	*imageSize = (*width) * (*height) * 4;
 	pixels = fixTOGBRA(pixels, *imageSize, false, true); //32 bits image!
 #endif
@@ -809,7 +809,7 @@ unsigned char* ImageLoaderClass::loadBMP(TCHAR* filename, UINT* width, UINT* hei
 		}
 	}
 
-#if defined LINUX_PLATFORM
+#if defined LINUX_PLATFORM || defined ANDROID_PLATFORM 
 	* imageSize = (*width) * (*height) * 4;
 	pixels = fixTOGBRA(pixels, *imageSize, false, true); //32 bits image!
 #endif
@@ -928,7 +928,7 @@ unsigned char* ImageLoaderClass::loadTGA(TCHAR* filename, UINT* width, UINT* hei
 		}
 	}
 
-#if defined LINUX_PLATFORM
+#if defined LINUX_PLATFORM || defined ANDROID_PLATFORM
 	bottomUpImage = pixels;
 	* imageSize = (*width) * (*height) * 4;
 	pixels = fixTOGBRA(bottomUpImage, *imageSize, false, true); //32 bits image!

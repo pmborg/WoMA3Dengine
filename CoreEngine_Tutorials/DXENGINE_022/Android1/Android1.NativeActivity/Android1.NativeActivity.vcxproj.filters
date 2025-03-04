@@ -19,90 +19,138 @@
     <ClInclude Include="..\..\core\Android1\Android1.NativeActivity\androidsystemclass.h">
       <Filter>Include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\core\include\default_settings_xml.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\core\include\dumpUploader.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\core\include\fileLoader.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\core\include\fpsClass.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\core\include\InputClass.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\core\include\language.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\core\include\log.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\core\include\main.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\core\include\Math3D.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\core\include\mem_leak.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\core\include\minidumperClass.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\core\include\OSengine.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\core\include\OSmain_dir.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\core\include\platform.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\core\include\processorInfo.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\core\include\stackTrace.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\core\include\standard_platform.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\core\include\stateMachine.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\core\include\SystemClass.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\core\include\systemFeatures.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\core\include\systemManager.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\core\include\timerClass.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\core\include\TrigonometryMathClass.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\core\include\woma_exception.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\core\include\woma_macros.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\core\include\WomaSetupManager.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\core\include\xml_loader.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\tech-level.h" />
     <ClInclude Include="..\..\..\woma_engine_assets.h" />
     <ClInclude Include="..\..\..\level.h" />
+    <ClInclude Include="..\..\core\include\default_settings_xml.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\fileLoader.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\fpsClass.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\InputClass.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\language.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\log.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\main.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\Math3D.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\mem_leak.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\minidumperClass.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\OSengine.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\OSmain_dir.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\platform.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\processorInfo.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\stackTrace.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\standard_platform.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\stateMachine.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\SystemClass.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\systemFeatures.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\systemManager.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\timerClass.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\TrigonometryMathClass.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\woma_exception.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\woma_macros.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\WomaSetupManager.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\xml_loader.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\dumpUploader.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ThirdParty\JPG_LIB\include\jconfig.h">
+      <Filter>JPG_LIB\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ThirdParty\JPG_LIB\include\jdct.h">
+      <Filter>JPG_LIB\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ThirdParty\JPG_LIB\include\jerror.h">
+      <Filter>JPG_LIB\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ThirdParty\JPG_LIB\include\jinclude.h">
+      <Filter>JPG_LIB\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ThirdParty\JPG_LIB\include\jmemsys.h">
+      <Filter>JPG_LIB\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ThirdParty\JPG_LIB\include\jmorecfg.h">
+      <Filter>JPG_LIB\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ThirdParty\JPG_LIB\include\jpegint.h">
+      <Filter>JPG_LIB\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ThirdParty\JPG_LIB\include\jpeglib.h">
+      <Filter>JPG_LIB\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ThirdParty\JPG_LIB\include\jversion.h">
+      <Filter>JPG_LIB\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ThirdParty\PNG_LIB\include\png.h">
+      <Filter>PNG_LIB\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ThirdParty\PNG_LIB\include\pngconf.h">
+      <Filter>PNG_LIB\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ThirdParty\PNG_LIB\include\pngdebug.h">
+      <Filter>PNG_LIB\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ThirdParty\PNG_LIB\include\pnginfo.h">
+      <Filter>PNG_LIB\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ThirdParty\PNG_LIB\include\pnglibconf.h">
+      <Filter>PNG_LIB\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ThirdParty\PNG_LIB\include\pngpriv.h">
+      <Filter>PNG_LIB\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ThirdParty\PNG_LIB\include\pngstruct.h">
+      <Filter>PNG_LIB\include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="android_native_app_glue.c">
@@ -156,9 +204,6 @@
     <ClCompile Include="..\..\core\src\default_settings_xml.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\core\src\fileLoader.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\core\src\fpsClass.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -205,6 +250,198 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\main.cpp" />
+    <ClCompile Include="..\..\core\src\GLTextureclass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\core\src\ImageLoaderClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\core\src\fileLoader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jaricom.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcapimin.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcapistd.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcarith.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jccoefct.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jccolor.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcdctmgr.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jchuff.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcinit.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcmainct.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcmarker.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcmaster.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcomapi.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcparam.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcprepct.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcsample.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jctrans.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdapimin.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdapistd.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdarith.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdatadst.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdatasrc.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdcoefct.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdcolor.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jddctmgr.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdhuff.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdinput.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdmainct.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdmarker.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdmaster.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdmerge.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdpostct.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdsample.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdtrans.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jerror.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jfdctflt.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jfdctfst.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jfdctint.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jidctflt.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jidctfst.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jidctint.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jmemmgr.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jmemnobs.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jquant1.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jquant2.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jutils.c">
+      <Filter>JPG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\png.c">
+      <Filter>PNG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngerror.c">
+      <Filter>PNG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngget.c">
+      <Filter>PNG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngmem.c">
+      <Filter>PNG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngpread.c">
+      <Filter>PNG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngread.c">
+      <Filter>PNG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngrio.c">
+      <Filter>PNG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngrtran.c">
+      <Filter>PNG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngrutil.c">
+      <Filter>PNG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngset.c">
+      <Filter>PNG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngtrans.c">
+      <Filter>PNG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngwio.c">
+      <Filter>PNG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngwrite.c">
+      <Filter>PNG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngwtran.c">
+      <Filter>PNG_LIB\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngwutil.c">
+      <Filter>PNG_LIB\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Include">
@@ -254,6 +491,24 @@
     </Filter>
     <Filter Include="LIB_tinyxml2">
       <UniqueIdentifier>{a57acc30-61fd-45e7-8a78-a7aaf0d34193}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JPG_LIB">
+      <UniqueIdentifier>{637abf10-cf88-4d21-9f7d-ba698db628ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JPG_LIB\include">
+      <UniqueIdentifier>{6afa557d-8b24-43e9-b5b0-eaa7cb4c166b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JPG_LIB\src">
+      <UniqueIdentifier>{9f803c99-a605-49b7-b084-17dc6ecc9ccc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PNG_LIB">
+      <UniqueIdentifier>{3297e0c5-7659-4658-b050-98d919cdd6bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PNG_LIB\include">
+      <UniqueIdentifier>{2711f2a3-b9e3-449f-9194-519231a6dbf5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PNG_LIB\src">
+      <UniqueIdentifier>{a429a3c5-9929-4647-88c5-906174ee1a19}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

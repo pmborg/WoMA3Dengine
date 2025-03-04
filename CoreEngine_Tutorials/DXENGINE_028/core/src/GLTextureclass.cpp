@@ -151,18 +151,18 @@ void GLtextureClass::AddTexture(unsigned char* image32b, int width, int height, 
 	// Create the texture
 
 	GLenum  err;
-	glActiveTexture(GL_TEXTURE0);
+	//glActiveTexture(GL_TEXTURE0);
 
 	glGenTextures(1, &m_textureID);				// Generate an ID for the texture.
-	//err = glGetError(); if (err != GL_NO_ERROR) {_tprintf("glGenTextures err: %04x", err);}
+	err = glGetError(); if (err != GL_NO_ERROR) {_tprintf("glGenTextures err: %04x", err);}
 	glBindTexture(GL_TEXTURE_2D, m_textureID);	// Bind the texture as a 2D texture.
-	//err = glGetError(); if (err != GL_NO_ERROR) {_tprintf("glBindTexture err: %04x", err);}
+	err = glGetError(); if (err != GL_NO_ERROR) {_tprintf("glBindTexture err: %04x", err);}
 
 	//32bits
-#if !defined LINUX_PLATFORM
+#if defined WINDOWS_PLATFORM
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, image32b); // Load/Copy the image data into the texture unit: WINDOWS/ANDROID
 #else
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image32b);	// LINUX
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image32b);	// LINUX & ANDROID
 #endif 
 
 	// Set the texture color to either wrap around or clamp to the edge.
@@ -187,7 +187,9 @@ void GLtextureClass::AddTexture(unsigned char* image32b, int width, int height, 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
 	glGenerateMipmap(GL_TEXTURE_2D);		// Generate mipmaps for the texture.
-	err = glGetError(); if (err != GL_NO_ERROR) { _tprintf("ERROR! glGenerateMipmap err: %04x", err); }
+	err = glGetError(); 
+	if (err != GL_NO_ERROR) 
+		{ _tprintf("ERROR! glGenerateMipmap err: %04x", err); }
 }
 
 #endif
