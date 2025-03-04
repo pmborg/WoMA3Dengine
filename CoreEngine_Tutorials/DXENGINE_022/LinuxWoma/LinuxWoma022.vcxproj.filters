@@ -526,9 +526,6 @@
     <None Include="..\GLengine\texture.vs">
       <Filter>HLSL</Filter>
     </None>
-    <None Include="..\engine\data\basics\seafloor.dds_">
-      <Filter>engine\basics</Filter>
-    </None>
     <None Include="..\engine\data\airports.metar">
       <Filter>engine</Filter>
     </None>

@@ -57,7 +57,7 @@
     <ClInclude Include="..\core\include\GLmodelClass.h" />
     <ClInclude Include="..\core\include\GLopenGLclass.h" />
     <ClInclude Include="..\core\include\GLshaderClass.h" />
-    <ClInclude Include="..\core\include\glTextureclass.h" />
+    <ClInclude Include="..\core\include\GLTextureClass.h" />
     <ClInclude Include="..\core\include\glxOpenGLclass.h" />
     <ClInclude Include="..\core\include\ImageLoaderClass.h" />
     <ClInclude Include="..\core\include\InputClass.h" />
@@ -218,11 +218,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\engine\data\airports.metar" />
-    <None Include="..\engine\data\basics\seafloor.dds_" />
     <None Include="..\GLengine\color.ps" />
     <None Include="..\GLengine\color.vs" />
-    <None Include="..\GLengine\Light.ps" />
-    <None Include="..\GLengine\Light.vs" />
+    <None Include="..\GLengine\light.ps" />
+    <None Include="..\GLengine\light.vs" />
     <None Include="..\GLengine\texture.ps" />
     <None Include="..\GLengine\texture.vs" />
   </ItemGroup>

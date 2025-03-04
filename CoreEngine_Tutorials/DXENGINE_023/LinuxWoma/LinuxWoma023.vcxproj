@@ -36,7 +36,7 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>/usr/include/atk-1.0/;/usr/lib/x86_64-linux-gnu/graphene-1.0/include/;/usr/include/graphene-1.0;/usr/include/gdk-pixbuf-2.0/;/usr/include/harfbuzz/;/usr/include/pango-1.0;/usr/include/cairo/;/usr/lib/x86_64-linux-gnu/glib-2.0/include/;/usr/include;/usr/include/libpng16;/usr/include/glib-2.0;/usr/include/gtk-3.0__;/usr/include/gtk-2.0;/usr/lib/x86_64-linux-gnu/gtk-2.0/include/;C:\WoMA3Dengine\ThirdParty\PNG_LIB\include;../core/include;../linux/include;../core/include/GLX;C:\WoMA3Dengine\CoreEngine_Tutorials\;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;~/projects/LinuxWoma023/ThirdParty/PNG_LIB/include;~/projects/LinuxWoma023/CoreEngine_Tutorials/DXENGINE_022/core/linux/include/;~/projects/LinuxWoma023/ThirdParty/JPG_LIB/include;../..;..;.;$(IncludePath)</IncludePath>
+    <IncludePath>/usr/include/atk-1.0/;/usr/lib/x86_64-linux-gnu/graphene-1.0/include/;/usr/include/graphene-1.0;/usr/include/gdk-pixbuf-2.0/;/usr/include/harfbuzz/;/usr/include/pango-1.0;/usr/include/cairo/;/usr/lib/x86_64-linux-gnu/glib-2.0/include/;/usr/include;/usr/include/libpng16;/usr/include/glib-2.0;/usr/include/gtk-3.0__;/usr/include/gtk-2.0;/usr/lib/x86_64-linux-gnu/gtk-2.0/include/;C:\WoMA3Dengine\ThirdParty\PNG_LIB\include;../core/include;../linux/include;../core/include/GLX;C:\WoMA3Dengine\CoreEngine_Tutorials\;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;~/projects/LinuxWoma023/ThirdParty/PNG_LIB/include;~/projects/LinuxWoma023/CoreEngine_Tutorials/DXENGINE_022/core/linux/include;~/projects/LinuxWoma023/ThirdParty/JPG_LIB/include;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_023\core\linux\include;../..;..;.;$(IncludePath)</IncludePath>
     <SourcePath>
     </SourcePath>
     <AdditionalSourcesToCopyMapping>C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_022\GLengine:=~/projects/LinuxWoma022/bin/x64/Debug/GLengine;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_022\engine:=~/projects/LinuxWoma022/bin/x64/Debug/engine</AdditionalSourcesToCopyMapping>
@@ -57,11 +57,12 @@
     <ClInclude Include="..\core\include\GLmodelClass.h" />
     <ClInclude Include="..\core\include\GLopenGLclass.h" />
     <ClInclude Include="..\core\include\GLshaderClass.h" />
-    <ClInclude Include="..\core\include\glTextureclass.h" />
+    <ClInclude Include="..\core\include\GLTextureClass.h" />
     <ClInclude Include="..\core\include\glxOpenGLclass.h" />
     <ClInclude Include="..\core\include\ImageLoaderClass.h" />
     <ClInclude Include="..\core\include\InputClass.h" />
     <ClInclude Include="..\core\include\language.h" />
+    <ClInclude Include="..\core\include\lightClass.h" />
     <ClInclude Include="..\core\include\log.h" />
     <ClInclude Include="..\core\include\main.h" />
     <ClInclude Include="..\core\include\Math3D.h" />
@@ -96,6 +97,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.cpp" />
     <ClCompile Include="..\..\main.cpp" />
+    <ClCompile Include="..\core\src\Application_LightRay.cpp" />
     <ClCompile Include="..\core\src\GLcameraClass.cpp" />
     <ClCompile Include="..\core\src\GLmodelClass.cpp" />
     <ClCompile Include="..\core\src\GLshaderClass.cpp" />
@@ -122,6 +124,7 @@
     <ClCompile Include="..\core\src\initApplication_Basics.cpp" />
     <ClCompile Include="..\core\src\initWorld.cpp" />
     <ClCompile Include="..\core\src\language.cpp" />
+    <ClCompile Include="..\core\src\lightClass.cpp" />
     <ClCompile Include="..\core\src\log.cpp" />
     <ClCompile Include="..\core\src\Math3D.cpp" />
     <ClCompile Include="..\core\src\mem_leak.cpp" />
@@ -218,11 +221,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\engine\data\airports.metar" />
-    <None Include="..\engine\data\basics\seafloor.dds_" />
     <None Include="..\GLengine\color.ps" />
     <None Include="..\GLengine\color.vs" />
-    <None Include="..\GLengine\Light.ps" />
-    <None Include="..\GLengine\Light.vs" />
+    <None Include="..\GLengine\light.ps" />
+    <None Include="..\GLengine\light.vs" />
     <None Include="..\GLengine\texture.ps" />
     <None Include="..\GLengine\texture.vs" />
   </ItemGroup>
@@ -234,7 +236,6 @@
     <Image Include="..\engine\data\basics\Earth_Diffuse.tga" />
     <Image Include="..\engine\data\basics\Earth_Diffuse.TIF" />
     <Image Include="..\engine\data\basics\logotipo_small_backgroundV2.bmp" />
-    <Image Include="..\engine\data\basics\seafloor.bmp" />
     <Image Include="..\engine\data\basics\seafloor.png" />
     <Image Include="..\engine\data\basics\target.bmp" />
     <Image Include="..\engine\data\original\Earth_Diffuse.bmp" />

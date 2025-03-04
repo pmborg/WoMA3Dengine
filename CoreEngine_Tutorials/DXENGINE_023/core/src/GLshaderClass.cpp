@@ -233,6 +233,7 @@ char* GLshaderClass::LoadShaderSourceFile(char* filename)
 	fin.open(filename);
 
 	// If it could not open the file then exit.
+	STRING dir = WOMA::getCurrentDir();
 	if (fin.fail())
 	{
 #if defined LINUX_PLATFORM

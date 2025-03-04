@@ -198,7 +198,29 @@ Try to Change the driver on the fly without the need of close and open the Appli
 
 - <b>DX23: The directional LIGHT Shader with environment color</b>	
 
+<table>
+<tr>
+<td>WINDOWS:</td>
+<td>LINUX:</td>
+<td>ANDROID:</td>
+</tr>
+<td>
+
+<tr>
+<td>
+
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_023.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_023.png)	
+</td>
+<td>
+
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/LINUXEngine_023.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/LINUXEngine_023.png)	
+</td>
+<td>
+
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/ANDROIDEngine_023.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/ANDROIDEngine_023.png)	
+</td>
+
+</tr></table>
 
 <hr>
 
