@@ -204,14 +204,13 @@ Try to Change the driver on the fly without the need of close and open the Appli
 
 - <b>DX22: The TEXTURE Shader</b><br>
 Add third party image readers:<br>
-	- BMP<br>
-	- JPG<br>
-	- PNG<br>
-	- TIFF<br>
-	- DDS<br>
-	- TGA<br>
-	
-
+	- BMP (WINDOWS, LINUX and ANDROID)<br>
+	- JPG (WINDOWS, LINUX and ANDROID)<br>
+	- PNG (WINDOWS, LINUX and ANDROID)<br>
+	- TIFF (WINDOWS, LINUX and ANDROID)<br>
+	- DDS (WINDOWS)<br>
+	- TGA (WINDOWS)<br>
+ 
 <table>
 <tr>
 <td>WINDOWS:</td>
