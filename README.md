@@ -211,7 +211,30 @@ Add third party image readers:<br>
 	- DDS<br>
 	- TGA<br>
 	
+
+<table>
+<tr>
+<td>WINDOWS:</td>
+<td>LINUX:</td>
+<td>ANDROID:</td>
+</tr>
+<td>
+
+<tr>
+<td>
+
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_022.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_022.png)	
+</td>
+<td>
+
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/LINUXEngine_022.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/LINUXEngine_022.png)	
+</td>
+<td>
+
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/ANDROIDEngine_022.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/ANDROIDEngine_022.png)	
+</td>
+
+</tr></table>
 
 <hr>
 - <b>DX21: The COLOR Shader</b><br>
