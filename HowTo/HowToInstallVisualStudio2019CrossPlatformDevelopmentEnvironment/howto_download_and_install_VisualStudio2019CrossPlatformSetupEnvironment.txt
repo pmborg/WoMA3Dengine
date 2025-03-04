@@ -152,11 +152,12 @@ Install and Run for the first time "Android Studio"
 
 	
 -----------------------------------------------------------------------------------------------
-#[10.0]
+#[10.0] (VS 2017! or 2019! and dont install updates, that will remove ANDROID env.)
 TOOLS / ANDROID / Device Manager
 	Start Emulator
 	Power on
-	
+
+The code and test can run (VS 2017 or 2019 or 2022)
 #[10.1] Create a test program:
 10.1 Create New Project
 10.2
