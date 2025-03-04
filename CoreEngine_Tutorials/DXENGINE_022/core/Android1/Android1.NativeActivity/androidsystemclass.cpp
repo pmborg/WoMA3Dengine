@@ -170,6 +170,27 @@ bool AndroidSystemClass::APPLICATION_INIT_SYSTEM()
   #endif
 #endif
 
+#if CORE_ENGINE_LEVEL >= 10
+#ifdef INTRO_DEMO
+	SystemHandle->m_Application->ClearColor[0] = 0;
+	SystemHandle->m_Application->ClearColor[1] = 0;
+	SystemHandle->m_Application->ClearColor[2] = 0;
+	SystemHandle->m_Application->ClearColor[3] = 1;
+#else
+#if DX_ENGINE_LEVEL >= 62
+	SystemHandle->m_Application->ClearColor[0] = SystemHandle->world.clearColorR;
+	SystemHandle->m_Application->ClearColor[1] = SystemHandle->world.clearColorG;
+	SystemHandle->m_Application->ClearColor[2] = SystemHandle->world.clearColorB;
+	SystemHandle->m_Application->ClearColor[3] = 1.0f;
+#else
+	SystemHandle->m_Application->ClearColor[0] = 0.5f;
+	SystemHandle->m_Application->ClearColor[1] = 0.6f;
+	SystemHandle->m_Application->ClearColor[2] = 0.8f;
+	SystemHandle->m_Application->ClearColor[3] = 1.0f;
+#endif
+#endif
+#endif
+
 	// SYSTEM-CHECK:
 #if CORE_ENGINE_LEVEL >= 4 && defined USE_SYSTEM_CHECK	// BEFORE: ApplicationInitMainWindow()
 	IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());		// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 

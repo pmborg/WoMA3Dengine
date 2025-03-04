@@ -170,52 +170,144 @@
     <ClCompile Include="..\..\..\ThirdParty\PNG_LIB\src\pngwutil.c">
       <Filter>LIB_PNG\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jaricom.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcapimin.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcapistd.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcarith.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jccoefct.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jccolor.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcdctmgr.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jchuff.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcinit.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcmainct.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcmarker.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcmaster.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcomapi.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcparam.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcprepct.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcsample.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jctrans.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdapimin.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdapistd.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdarith.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdatadst.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdatasrc.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdcoefct.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdcolor.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jddctmgr.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdhuff.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdinput.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdmainct.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdmarker.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdmaster.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdmerge.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdpostct.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdsample.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdtrans.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jerror.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jfdctflt.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jfdctfst.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jfdctint.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jidctflt.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jidctfst.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jidctint.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jmemmgr.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jmemnobs.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jquant1.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jquant2.c" />
-    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jutils.c" />
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jaricom.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcapimin.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcapistd.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcarith.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jccoefct.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jccolor.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcdctmgr.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jchuff.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcinit.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcmainct.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcmarker.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcmaster.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcomapi.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcparam.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcprepct.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcsample.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jctrans.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdapimin.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdapistd.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdarith.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdatadst.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdatasrc.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdcoefct.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdcolor.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jddctmgr.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdhuff.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdinput.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdmainct.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdmarker.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdmaster.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdmerge.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdpostct.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdsample.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdtrans.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jerror.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jfdctflt.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jfdctfst.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jfdctint.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jidctflt.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jidctfst.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jidctint.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jmemmgr.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jmemnobs.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jquant1.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jquant2.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jutils.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\core\include\default_settings_xml.h">
@@ -380,22 +472,40 @@
     <ClInclude Include="..\core\include\xml_loader.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\ThirdParty\JPG_LIB\include\jconfig.h" />
-    <ClInclude Include="..\..\..\ThirdParty\JPG_LIB\include\jdct.h" />
-    <ClInclude Include="..\..\..\ThirdParty\JPG_LIB\include\jerror.h" />
-    <ClInclude Include="..\..\..\ThirdParty\JPG_LIB\include\jinclude.h" />
-    <ClInclude Include="..\..\..\ThirdParty\JPG_LIB\include\jmemsys.h" />
-    <ClInclude Include="..\..\..\ThirdParty\JPG_LIB\include\jmorecfg.h" />
-    <ClInclude Include="..\..\..\ThirdParty\JPG_LIB\include\jpegint.h" />
-    <ClInclude Include="..\..\..\ThirdParty\JPG_LIB\include\jpeglib.h" />
-    <ClInclude Include="..\..\..\ThirdParty\JPG_LIB\include\jversion.h" />
-    <ClInclude Include="..\..\..\ThirdParty\PNG_LIB\include\png.h" />
+    <ClInclude Include="..\..\..\ThirdParty\JPG_LIB\include\jconfig.h">
+      <Filter>LIB_JPG\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\JPG_LIB\include\jdct.h">
+      <Filter>LIB_JPG\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\JPG_LIB\include\jerror.h">
+      <Filter>LIB_JPG\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\JPG_LIB\include\jinclude.h">
+      <Filter>LIB_JPG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\JPG_LIB\include\jmemsys.h">
+      <Filter>LIB_JPG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\JPG_LIB\include\jmorecfg.h">
+      <Filter>LIB_JPG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\JPG_LIB\include\jpegint.h">
+      <Filter>LIB_JPG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\JPG_LIB\include\jpeglib.h">
+      <Filter>LIB_JPG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\JPG_LIB\include\jversion.h">
+      <Filter>LIB_JPG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\PNG_LIB\include\png.h">
+      <Filter>LIB_PNG\include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\world.xml" />
-    <Xml Include="..\settings.xml">
-      <Filter>include</Filter>
-    </Xml>
+    <Xml Include="..\settings.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\GLengine\color.ps">
@@ -450,6 +560,15 @@
     </Filter>
     <Filter Include="engine\basics">
       <UniqueIdentifier>{46871269-5ff9-48f7-a5f3-c51bd0b2805a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LIB_JPG">
+      <UniqueIdentifier>{a40f930f-8735-4b8f-907a-aea418f94895}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LIB_JPG\src">
+      <UniqueIdentifier>{dba47dc7-57d2-4358-a8cb-98fd73763e75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LIB_JPG\include">
+      <UniqueIdentifier>{09a50c61-2454-482b-aa6c-b7692f1b68d1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -993,18 +993,6 @@ bool SystemClass::LoadXmlSettings()
 
 	//FORCE LANDSCAPE
 
-	#ifdef INTRO_DEMO
-		SystemHandle->m_Application->ClearColor[0] = 0;
-		SystemHandle->m_Application->ClearColor[1] = 0;
-		SystemHandle->m_Application->ClearColor[2] = 0;
-		SystemHandle->m_Application->ClearColor[3] = 1;
-	#else
-		SystemHandle->m_Application->ClearColor[0] = 0.5f;
-		SystemHandle->m_Application->ClearColor[1] = 0.6f;
-		SystemHandle->m_Application->ClearColor[2] = 0.8f;
-		SystemHandle->m_Application->ClearColor[3] = 1.0f;
-	#endif
-
 	return true;
 }
 #endif
