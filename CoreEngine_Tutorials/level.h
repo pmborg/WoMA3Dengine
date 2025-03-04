@@ -146,6 +146,7 @@
 
 #if LEVEL < 10
 	#define CORE_ENGINE_LEVEL LEVEL
+	#define DX_ENGINE_LEVEL 0
 #else
 	#define CORE_ENGINE_LEVEL 10
 	#if LEVEL < 19
