@@ -401,18 +401,6 @@ Add third party image readers:<br>
 <h2>HTTP WOMA 3D ENGINE TUTORIAL LIST</h2>
 
 <br>
-	
-![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/1.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/1.png)
-	
-![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/2.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/2.png)
-	
-![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/3.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/3.png)
-	
-![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/4.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/4.png)
-	
-![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/5.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/thumbs/5.png)
-
-<br>
 
 <b>VIDEO:</b>
 	
