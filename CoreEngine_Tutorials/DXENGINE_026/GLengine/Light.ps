@@ -44,14 +44,14 @@ void main(void)
 	// Sample the pixel color from the texture using the sampler at this texture coordinate location.
 	textureColor = texture(shaderTexture, texCoord);
 
-	//lightIntensity = clamp(dot(normal, -lightDirection), 0.0f, 1.0f);
-	lightIntensity = clamp(dot(normal, lightDirection), 0.0f, 1.0f);
-
+	lightIntensity = clamp(dot(normal, -lightDirection), 0.0f, 1.0f);
+	
+	// Determine the final amount of diffuse color based on the diffuse color combined with the light intensity.
     //if (hasLight)
 	{
         //if (hasTexture)
 		{
-            outputColor = (xll_saturate_vf4(((emissiveColor + ambientColor) + lightIntensity)));
+            outputColor = (textureColor * xll_saturate_vf4(((emissiveColor + ambientColor) + lightIntensity)));
         }
         //else{
         //    outputColor = (textureColor * xll_saturate_vf4(((emissiveColor + ambientColor) + (lightIntensity * diffuseColor))));

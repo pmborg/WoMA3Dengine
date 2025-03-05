@@ -180,7 +180,29 @@ Try to Change the driver on the fly without the need of close and open the Appli
 
 - <b>DX26: The Spheres (COLOR, TEXTURE and LIGHT Shaders)</b>
 	
+<table>
+<tr>
+<td>WINDOWS:</td>
+<td>LINUX:</td>
+<td>ANDROID:</td>
+</tr>
+<td>
+
+<tr>
+<td>
+
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_026.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_026.png)	
+</td>
+<td>
+
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/LINUXEngine_026.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/LINUXEngine_026.png)	
+</td>
+<td>
+
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/ANDROIDEngine_026.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/ANDROIDEngine_026.png)	
+</td>
+
+</tr></table>
 
 <hr>
 
@@ -193,7 +215,29 @@ Try to Change the driver on the fly without the need of close and open the Appli
 
 - <b>DX24: The 2D Rendering (Sprite)</b>
 	
+<table>
+<tr>
+<td>WINDOWS:</td>
+<td>LINUX:</td>
+<td>ANDROID:</td>
+</tr>
+<td>
+
+<tr>
+<td>
+
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_024.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_024.png)	
+</td>
+<td>
+
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/LINUXEngine_024.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/LINUXEngine_024.png)	
+</td>
+<td>
+
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/ANDROIDEngine_024.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/ANDROIDEngine_024.png)	
+</td>
+
+</tr></table>
 
 <hr>
 

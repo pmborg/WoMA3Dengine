@@ -109,7 +109,8 @@ LinuxSystemClass::~LinuxSystemClass()
 	SystemHandle = NULL;
 	CLASSDELETE();
 #if LEVEL >= 2
-	XClearWindow(Win.display, Win.window);
+	if (Win.display && Win.window)
+		XClearWindow(Win.display, Win.window);
 #endif
 	gtk_main_quit(); // /usr/include/gtk-3.0/gtk/gtkmain.h
 }

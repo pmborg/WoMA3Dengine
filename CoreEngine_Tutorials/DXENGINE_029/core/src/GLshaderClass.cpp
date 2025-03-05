@@ -178,47 +178,6 @@ bool GLshaderClass::InitializeShader(SHADER_TYPE shaderType, TCHAR* vsFilename, 
 		OutputLinkerErrorMessage(m_shaderProgram);
 		return false;
 	}
-/*
-	// Bind the shader input variables.
-	switch (shaderType)
-	{
-		case SHADER_COLOR:
-		glBindAttribLocation(m_shaderProgram, 0, "inputPosition");
-		err = glGetError(); if (err != GL_NO_ERROR) { _tprintf("ERROR! SHADER_COLOR glBindAttribLocation err: %04x", err); }
-		glBindAttribLocation(m_shaderProgram, 1, "inputColor");
-		err = glGetError(); if (err != GL_NO_ERROR) { _tprintf("ERROR! SHADER_COLOR glBindAttribLocation err: %04x", err); }
-		break;
-
-		case SHADER_TEXTURE:
-		case SHADER_TEXTURE_FONT:
-		glBindAttribLocation(m_shaderProgram, 0, "inputPosition");
-		err = glGetError(); if (err != GL_NO_ERROR) { _tprintf("ERROR! SHADER_TEXTURE glBindAttribLocation err: %04x", err); }
-		glBindAttribLocation(m_shaderProgram, 1, "inputTexCoord");
-		err = glGetError(); if (err != GL_NO_ERROR) { _tprintf("ERROR! SHADER_TEXTURE glBindAttribLocation err: %04x", err); }
-		break;
-
-		#if ENGINE_LEVEL >= 66
-		case SHADER_Double_Color_Terrain:								//66
-		case SHADER_Slope_Texture_Terrain:
-		//SHADER_Terrain_Texture_DEMO21,
-		//SHADER_Terrain_Texture_DEMO22,
-		//SHADER_Terrain_Texture_DEMO23,
-		//SHADER_Terrain_Texture_DEMO60,
-		#endif
-		#if DX_ENGINE_LEVEL >= 23
-		case SHADER_TEXTURE_LIGHT:
-		case SHADER_TEXTURE_LIGHT_RENDERSHADOW:
-		glBindAttribLocation(m_shaderProgram, 0, "inputPosition");
-		glBindAttribLocation(m_shaderProgram, 1, "inputTexCoord");
-		glBindAttribLocation(m_shaderProgram, 2, "inputNormal");
-		break;
-		#endif
-
-		default:
-			return false;
-	}
-*/
-
 
 
 	return true;

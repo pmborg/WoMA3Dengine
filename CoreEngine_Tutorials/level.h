@@ -47,7 +47,9 @@
 							//#define     PS_USE_TrilinearInterpolation
 	//#define LEVEL 23	// For all Platforms LIGHT
 	//#define LEVEL 24	// For all Platforms 2D Rendering(Orthognoal Projection) 
-	//#define LEVEL 25	// For all Platforms IMGUI! (doing... setup...)
+#if defined WINDOWS_PLATFORM 
+	//#define LEVEL 25	// WINDOWS DX10 FONT DRIVER.
+#endif
 	//#define LEVEL 26	// For all Platforms CUBEs and SPHEREs
 	//#define LEVEL 27	// For all Platforms TEXT FONT
 	//#define LEVEL 28	// For all Platforms SKY + SKY_CAMERA + "print screen"
@@ -62,7 +64,7 @@
 	//#define LEVEL 32 // WORLD.XML: load OBJ 3D file format, the first advanced object, using LIGHT shader
 	//#define LEVEL 33 // WORLD.XML: load OBJ 3D file format, the "compond", using transparent textures ALFA MAP and ALFA COLOR
 	//#define LEVEL 34 // WORLD.XML: load OBJ 3D file format, with SPECULAR and SHININESS
-	//#define LEVEL 35 // BUG!!!				//WORLD.XML: load OBJ 3D file format, with BUMP MAP
+	//#define LEVEL 35 // WORLD.XML: load OBJ 3D file format, with BUMP MAP
 	//#define LEVEL 36 // WORLD.XML: load OBJ 3D file format, render a SHADOW MAP
 	//#define LEVEL 37 // WORLD.XML: load OBJ 3D file format, render chess board pieces + MAIN THREAD + LOADER THREAD
 	//#define LEVEL 38 // WORLD.XML: load OBJ 3D file format, save to W3D Woma 3D fast file FORMAT
@@ -122,10 +124,8 @@
 	//#define LEVEL 62	// TUTORIAL_CHAP 26  TERRAIN MAIN MAP : ..............................
 	#define LEVEL 63	// TUTORIAL_CHAP 27  TERRAIN MINI MAP 3D Navegation : ...............
 
-	//#define LEVEL 64 // Terrain : 256x256 SCENE_COMPOUND: (world.xml only)
-	//#define LEVEL 65 // Terrain : 256x256 CHECK_COMPOUND_COLISION
-
-	//#define LEVEL 70	// ASSIMP
+	#define LEVEL 64	// MD5		(Animated + Character using HLSL)
+	//#define LEVEL 70	// ASSIMP	(Animated + Character using HLSL)
 
 
 

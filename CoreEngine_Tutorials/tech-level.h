@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------
 // Filename: tech-level.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2024
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
 // Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567311;
+//WomaIntegrityCheck = 1234567222;
 
 #pragma once
 
@@ -41,7 +41,7 @@
 
 //------------------------------------------------------------------------------------------------------------
 
-#if CORE_ENGINE_LEVEL >= 1 && !defined ANDROID_PLATFORM
+#if CORE_ENGINE_LEVEL >= 1
 #define USE_LOG_MANAGER			//1
 #endif
 
@@ -49,14 +49,14 @@
 	//
 #endif
 
-#if CORE_ENGINE_LEVEL >= 3 //&& !defined WOMAENGINE_BASIC
+#if CORE_ENGINE_LEVEL >= 3
 	#if defined WINDOWS_PLATFORM
 	#define USE_WOMA_EXCEPTION		//3
 	#define USE_MINIDUMPER			//3
 	#endif
 #endif
 
-#if CORE_ENGINE_LEVEL >= 4 //&& !defined WOMAENGINE_BASIC
+#if CORE_ENGINE_LEVEL >= 4
 	#define USE_USER_SETUP
 	#if !defined ANDROID_PLATFORM
 		#define USE_PROCESS_OS_KEYS	//4 - NOTE: Madatory at 4
@@ -68,7 +68,7 @@
 	#define USE_TIMER_CLASS			//4
 #endif
 
-#if CORE_ENGINE_LEVEL >= 5 //&& defined WINDOWS_PLATFORM  && !defined WOMAENGINE_BASIC
+#if CORE_ENGINE_LEVEL >= 5
 	#if !defined ANDROID_PLATFORM
 	#define USE_TINYXML_LOADER
 	#endif
@@ -77,13 +77,13 @@
 	#endif
 #endif
 
-#if CORE_ENGINE_LEVEL >= 6 && defined WINDOWS_PLATFORM  //&& !defined WOMAENGINE_BASIC
+#if CORE_ENGINE_LEVEL >= 6 && defined WINDOWS_PLATFORM
 	#define USE_TIMER			//6 Calculate FPS & dT for animations
 	#define USE_IDEA_PACK		//6
 	
 #endif
 
-#if CORE_ENGINE_LEVEL >= 7 && defined WINDOWS_PLATFORM  //&& !defined WOMAENGINE_BASIC
+#if CORE_ENGINE_LEVEL >= 7 && defined WINDOWS_PLATFORM
 	#define USE_ASTRO_CLASS     //CoreEngine_007 (PAINT RealTimeCelestial)		
 	#if CORE_ENGINE_LEVEL == 7 || DX_ENGINE_LEVEL == 25 || DX_ENGINE_LEVEL == 29
 	#define USE_NETWORK
@@ -94,23 +94,25 @@
 	#endif
 #endif
 
-#if CORE_ENGINE_LEVEL >= 8 && defined WINDOWS_PLATFORM //&& !defined WOMAENGINE_BASIC
+#if CORE_ENGINE_LEVEL >= 8 && defined WINDOWS_PLATFORM
 	#define USE_GPS_MAP			//CoreEngine_008 (PAINT RealTimeMapGPSPosition)	
 	#if CORE_ENGINE_LEVEL == 8
 		#define USE_NETWORK
 	#endif
 #endif
 
-#if CORE_ENGINE_LEVEL >= 9 && defined WINDOWS_PLATFORM //&& !defined WOMAENGINE_BASIC
+#if CORE_ENGINE_LEVEL >= 9 && defined WINDOWS_PLATFORM
 	#define USE_METARCLASS	//CoreEngine_009 (PAINT RealTimeWeather) TODO: Android read asset file
 	#if CORE_ENGINE_LEVEL >= 9
-		#define USE_NETWORK
+		#if !defined MAINENGINE
+			#define USE_NETWORK
+		#endif
 	#endif
 	//#define GENERATE //(Airports List)
 #endif
 
 //-------------------------------------------------------------------------------------------------------
-#if CORE_ENGINE_LEVEL == 10
+#if CORE_ENGINE_LEVEL >= 10
 //-------------------------------------------------------------------------------------------------------
 	#if defined _MSC_VER	//DX9 DX11+DX10 DX12 OPENGL3
 		//#define DX9sdk		//(ORIGINAL DX9SDK) not fully recovered/implemented
@@ -131,6 +133,7 @@
 		//#define DX12_DXGI_API 5	//IDXGIFactory5
 		//#define DX12_DXGI_API 6	//IDXGIFactory6
 	#endif
+	  
 //--------------------------------------------------------------------------------------------------------
 //WINDOWS_PLATFORM + LINUX_PLATFORM + ANDROID_PLATFORM
 //--------------------------------------------------------------------------------------------------------
@@ -223,10 +226,11 @@
 	#endif
 
 	#if DX_ENGINE_LEVEL >= 25 //WINDOWS ONLY
+		#if DX_ENGINE_LEVEL == 25
+			#undef SCENE_TEXTURE_LIGHT
+		#endif
 		#if defined DX_ENGINE
-			#if !defined _DEBUG || !defined MAINENGINE
 			#define USE_DX10DRIVER_FONTS
-			#endif
 			#define USE_ALPHA_BLENDING
 		#endif
 	#endif
@@ -330,10 +334,6 @@
 		//#define USE_MAIN_THREAD		//MAIN LOOP is a THREAD
 		//#define USE_MAIN_THREAD		// ON/OFF (Note: Dont work on openGL, NOTE!!! This is buggy with maximize!!! Dont use for now
 		//#define USE_LOADING_THREADS	//Use Thread to load Graphics (Bug! will launch multiple!?)
-
-		#if defined _NOT //ADDED ON C:\WoMAengine2023\DXEngine_037 BUT NOT USED ON DEBUG
-		#define ALLOW_CBIND_PROGRESS_BAR	//Display Progress Bar
-		#endif
 	#endif
 
 	#if DX_ENGINE_LEVEL >= 38	//38-
@@ -454,16 +454,18 @@
 		//#undef USE_STATUSBAR //DEBUG!
 	#endif
 	#if DX_ENGINE_LEVEL >= 64
-		#define LOADMD5
+		#define LOADMD5		// LOADMD5 & FBX (Animated Characters)
+		#define USE_ASSIMP	// LOADMD5 & FBX (Animated Characters)
 	#endif
-
-	// 
 	//--------------------------------------------------------------------------------------------------------------------------
-	#if DX_ENGINE_LEVEL >= 70 
+	#if DX_ENGINE_LEVEL >= 70
+		#define USE_ASSIMP_CHARACTERS
+	#endif
+	#if DX_ENGINE_LEVEL >= 75
 		#define SCENE_COMPOUND	//TUTORIAL_CHAP >= 55
 	#endif
 
-	#if DX_ENGINE_LEVEL >= 71 //Check Compound Colision
+	#if DX_ENGINE_LEVEL >= 76 //Check Compound Colision
 		#define CHECK_COMPOUND_COLISION	//TUTORIAL_CHAP >= 96
 	#endif
 
@@ -475,14 +477,14 @@
 			#undef USE_LIGHT_RAY
 		#endif
 
-		#define USE_IMGUI
+		#define USE_IMGUI	// ASSIMP (Animated + Character using HLSL)
 
 		#if !defined ANDROID_PLATFORM
 		#define RUN_ASMAIN true //#define RUN_ASMAIN false //true
 		#endif
 	#endif
 
-	#if DX_ENGINE_LEVEL >= 80 //Render objects loaded by threads.
+	#if DX_ENGINE_LEVEL >= 100 //Render objects loaded by threads.
 	#endif
 
 

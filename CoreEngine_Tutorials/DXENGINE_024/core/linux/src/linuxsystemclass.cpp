@@ -136,7 +136,8 @@ LinuxSystemClass::~LinuxSystemClass()
 	SystemHandle = NULL;
 	CLASSDELETE();
 #if LEVEL >= 2
-	XClearWindow(Win.display, Win.window);
+	if (Win.display && Win.window)
+		XClearWindow(Win.display, Win.window);
 #endif
 	gtk_main_quit(); // /usr/include/gtk-3.0/gtk/gtkmain.h
 }
@@ -176,7 +177,7 @@ extern int InitImGui(HWND hwnd_ = NULL);
 bool LinuxSystemClass::APPLICATION_CORE_SYSTEM()
 {
 
-#if defined LINUX_PLATFORM && DX_ENGINE_LEVEL >= 22
+#if defined LINUX_PLATFORM && !defined MAINENGINE && DX_ENGINE_LEVEL >= 22
 	STRING dir = WOMA::getCurrentDir();
 	STRING newdir = dir;
 	newdir.append("/../../../CoreEngine_Tutorials/DXENGINE_0");
