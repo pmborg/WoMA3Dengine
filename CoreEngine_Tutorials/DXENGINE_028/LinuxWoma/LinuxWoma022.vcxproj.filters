@@ -1,0 +1,609 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\core\src\0CheckOS.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\1CheckSYS.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\4CheckEngineUpdates.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\5LaunchEngine.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\7ProcessorInfo.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\ApplicationClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\astroClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\default_settings_xml.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\fileLoader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\fpsClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\GLcameraClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\GLmathClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\GLmodelClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\GLX\GLopenGLclass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\GLshaderClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\GLTextureclass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\GLX\glxOpenGLclass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\idea.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\ImageLoaderClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\initApplication_Basics.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\initWorld.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\language.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\packManager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\linux\src\linux.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\log.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\linux\src\main_linux.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\Math3D.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\mem_leak.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\MetarClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\OSengine.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\OSmain_dir.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\SystemClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\renderApplication_Basics.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\linux\src\Rinputclass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\TimerClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\TrigonometryMathClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\WeatherClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\xml_settings_loader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\xml_settings_saver.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\linux\src\linuxsystemclass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\main.cpp" />
+    <ClCompile Include="..\..\..\ThirdParty\PNG_LIB\src\png.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\PNG_LIB\src\pngerror.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\PNG_LIB\src\pngget.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\PNG_LIB\src\pngmem.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\PNG_LIB\src\pngpread.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\PNG_LIB\src\pngread.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\PNG_LIB\src\pngrio.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\PNG_LIB\src\pngrtran.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\PNG_LIB\src\pngrutil.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\PNG_LIB\src\pngset.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\PNG_LIB\src\pngtrans.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\PNG_LIB\src\pngwio.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\PNG_LIB\src\pngwrite.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\PNG_LIB\src\pngwtran.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\PNG_LIB\src\pngwutil.c">
+      <Filter>LIB_PNG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jaricom.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcapimin.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcapistd.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcarith.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jccoefct.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jccolor.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcdctmgr.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jchuff.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcinit.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcmainct.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcmarker.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcmaster.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcomapi.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcparam.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcprepct.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jcsample.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jctrans.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdapimin.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdapistd.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdarith.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdatadst.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdatasrc.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdcoefct.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdcolor.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jddctmgr.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdhuff.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdinput.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdmainct.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdmarker.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdmaster.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdmerge.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdpostct.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdsample.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jdtrans.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jerror.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jfdctflt.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jfdctfst.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jfdctint.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jidctflt.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jidctfst.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jidctint.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jmemmgr.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jmemnobs.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jquant1.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jquant2.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jutils.c">
+      <Filter>LIB_JPG\src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\core\include\default_settings_xml.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\fileLoader.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\fpsClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\GLcameraClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\GLmathClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\GLmodelClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\GLopenGLclass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\GLshaderClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\glTextureclass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\glxOpenGLclass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\ImageLoaderClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\InputClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\ApplicationClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\language.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\level.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\linux\include\linux.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\linux\include\linuxsystemclass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\log.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\main.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\Math3D.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\mem_leak.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\metarClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\OSengine.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\OSmain_dir.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\PNG_LIB\include\pngconf.h">
+      <Filter>LIB_PNG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\PNG_LIB\include\pngdebug.h">
+      <Filter>LIB_PNG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\PNG_LIB\include\pnginfo.h">
+      <Filter>LIB_PNG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\PNG_LIB\include\pnglibconf.h">
+      <Filter>LIB_PNG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\PNG_LIB\include\pngpriv.h">
+      <Filter>LIB_PNG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\PNG_LIB\include\pngstruct.h">
+      <Filter>LIB_PNG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\WomaSetupManager.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\TrigonometryMathClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\vertexTypes.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\virtualCameraClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\virtualModelClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\weatherClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\winCpuCores.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\wmiUtilClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\woma_engine_assets.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\woma_exception.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\woma_macros.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\womadriverclass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\platform.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\ProcessorInfo.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\linux\include\Rinputclass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\standard_platform.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\stateMachine.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\SystemClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\SystemFeatures.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\systemManager.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tech-level.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\timerClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\xml_loader.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\JPG_LIB\include\jconfig.h">
+      <Filter>LIB_JPG\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\JPG_LIB\include\jdct.h">
+      <Filter>LIB_JPG\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\JPG_LIB\include\jerror.h">
+      <Filter>LIB_JPG\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\JPG_LIB\include\jinclude.h">
+      <Filter>LIB_JPG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\JPG_LIB\include\jmemsys.h">
+      <Filter>LIB_JPG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\JPG_LIB\include\jmorecfg.h">
+      <Filter>LIB_JPG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\JPG_LIB\include\jpegint.h">
+      <Filter>LIB_JPG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\JPG_LIB\include\jpeglib.h">
+      <Filter>LIB_JPG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\JPG_LIB\include\jversion.h">
+      <Filter>LIB_JPG\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\PNG_LIB\include\png.h">
+      <Filter>LIB_PNG\include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\world.xml" />
+    <Xml Include="..\settings.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\GLengine\color.ps">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="..\GLengine\color.vs">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="..\GLengine\Light.ps">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="..\GLengine\Light.vs">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="..\GLengine\texture.ps">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="..\GLengine\texture.vs">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="..\engine\data\basics\seafloor.dds_">
+      <Filter>engine\basics</Filter>
+    </None>
+    <None Include="..\engine\data\airports.metar">
+      <Filter>engine</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{f511b79a-e3e2-4c48-a5a9-94083ac58c89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{4808edef-0751-4c90-bb9c-781fbc1adee8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HLSL">
+      <UniqueIdentifier>{e9ef0a29-2324-4ed8-93a8-bd6586854bde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LIB_PNG">
+      <UniqueIdentifier>{29c4f4e1-0174-4645-9818-639a43864da1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LIB_PNG\include">
+      <UniqueIdentifier>{ce6260ac-d16b-4b78-a2d4-1448f306c9a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LIB_PNG\src">
+      <UniqueIdentifier>{ac87d8af-30a5-4573-a5f1-42463419be49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine">
+      <UniqueIdentifier>{4823488f-d09e-46c9-b32b-43649401684c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\original">
+      <UniqueIdentifier>{56453104-6f97-45d7-a0f8-c58c4af8790a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\basics">
+      <UniqueIdentifier>{46871269-5ff9-48f7-a5f3-c51bd0b2805a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LIB_JPG">
+      <UniqueIdentifier>{a40f930f-8735-4b8f-907a-aea418f94895}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LIB_JPG\src">
+      <UniqueIdentifier>{dba47dc7-57d2-4358-a8cb-98fd73763e75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LIB_JPG\include">
+      <UniqueIdentifier>{09a50c61-2454-482b-aa6c-b7692f1b68d1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\engine\data\original\Earth_Diffuse.bmp">
+      <Filter>engine\original</Filter>
+    </Image>
+    <Image Include="..\engine\data\basics\Earth_Diffuse.bmp">
+      <Filter>engine\basics</Filter>
+    </Image>
+    <Image Include="..\engine\data\basics\Earth_Diffuse.DDS">
+      <Filter>engine\basics</Filter>
+    </Image>
+    <Image Include="..\engine\data\basics\Earth_Diffuse.jpg">
+      <Filter>engine\basics</Filter>
+    </Image>
+    <Image Include="..\engine\data\basics\Earth_Diffuse.png">
+      <Filter>engine\basics</Filter>
+    </Image>
+    <Image Include="..\engine\data\basics\Earth_Diffuse.tga">
+      <Filter>engine\basics</Filter>
+    </Image>
+    <Image Include="..\engine\data\basics\Earth_Diffuse.TIF">
+      <Filter>engine\basics</Filter>
+    </Image>
+    <Image Include="..\engine\data\basics\logotipo_small_backgroundV2.bmp">
+      <Filter>engine\basics</Filter>
+    </Image>
+    <Image Include="..\engine\data\basics\seafloor.bmp">
+      <Filter>engine\basics</Filter>
+    </Image>
+    <Image Include="..\engine\data\basics\seafloor.png">
+      <Filter>engine\basics</Filter>
+    </Image>
+    <Image Include="..\engine\data\basics\target.bmp">
+      <Filter>engine\basics</Filter>
+    </Image>
+  </ItemGroup>
+</Project>

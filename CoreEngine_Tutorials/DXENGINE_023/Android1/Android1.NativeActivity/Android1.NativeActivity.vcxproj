@@ -131,7 +131,7 @@
     <PublicIncludeDirectories>
     </PublicIncludeDirectories>
     <IncludePath>$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include;.;..;../..;../../include;$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include__;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;C:\WoMA3Dengine;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_023\core\include;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_023\core\Android1\Android1.NativeActivity;C:\WoMA3Dengine\ThirdParty\JPG_LIB\include;C:\WoMA3Dengine\ThirdParty\PNG_LIB\include</IncludePath>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\021\</OutDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\023\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">

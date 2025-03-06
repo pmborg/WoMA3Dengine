@@ -167,7 +167,29 @@ Try to Change the driver on the fly without the need of close and open the Appli
 			- Wmp
 			- Dds
 	
+<table>
+<tr>
+<td>WINDOWS:</td>
+<td>LINUX:</td>
+<td>ANDROID:</td>
+</tr>
+<td>
+
+<tr>
+<td>
+
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_028.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_028.png)	
+</td>
+<td>
+
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/LINUXEngine_028.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/LINUXEngine_028.png)	
+</td>
+<td>
+
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/ANDROIDEngine_028.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/ANDROIDEngine_028.png)	
+</td>
+
+</tr></table>
 
 <hr>
 

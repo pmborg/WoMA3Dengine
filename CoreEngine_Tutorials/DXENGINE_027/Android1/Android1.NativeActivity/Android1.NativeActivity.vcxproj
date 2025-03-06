@@ -35,7 +35,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{CE06998C-2BBD-43A5-B7D3-3503B29C4217}</ProjectGuid>
+    <ProjectGuid>{B21BF679-DA25-40BB-9271-838AE6B389FC}</ProjectGuid>
     <Keyword>Android</Keyword>
     <RootNamespace>Android1</RootNamespace>
     <DefaultLanguage>en-US</DefaultLanguage>

@@ -1,0 +1,315 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.h">
+      <Filter>Include\LIB_TINYXML2\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\womadriverclass.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\GLopenGLclass.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\ApplicationClass.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\default_settings_xml.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\fileLoader.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\fpsClass.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\GLmathClass.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\InputClass.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\language.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\level.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\log.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\main.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\Math3D.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\mem_leak.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\metarClass.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\OSengine.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\OSmain_dir.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\platform.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\ProcessorInfo.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\standard_platform.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\stateMachine.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\SystemClass.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\SystemFeatures.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\systemManager.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tech-level.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\timerClass.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\TrigonometryMathClass.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\weatherClass.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\winCpuCores.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\wmiUtilClass.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\woma_engine_assets.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\woma_exception.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\woma_macros.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\WomaSetupManager.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\xml_loader.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\glxOpenGLclass.h" />
+    <ClInclude Include="..\core\linux\include\linuxsystemclass.h" />
+    <ClInclude Include="..\core\linux\include\linux.h" />
+    <ClInclude Include="..\core\linux\include\Rinputclass.h" />
+    <ClInclude Include="..\core\include\GLcameraClass.h" />
+    <ClInclude Include="..\core\include\GLmodelClass.h" />
+    <ClInclude Include="..\core\include\GLshaderClass.h" />
+    <ClInclude Include="..\core\include\vertexTypes.h" />
+    <ClInclude Include="..\core\include\virtualCameraClass.h" />
+    <ClInclude Include="..\core\include\virtualModelClass.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Include">
+      <UniqueIdentifier>{3df6ae54-fc8d-4ae8-95e3-a2940b2712f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{ed8fd78e-610c-49a7-ab4d-650990e49f1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LINUX">
+      <UniqueIdentifier>{0d5421f2-7f3d-426e-bb19-40ef91570fb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\000">
+      <UniqueIdentifier>{116e7ec4-ee33-4f5b-85f0-de7d0d0e1e8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\001">
+      <UniqueIdentifier>{e5ab8ec5-bed4-4774-beae-a9b272c9cace}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\002">
+      <UniqueIdentifier>{b25e12bd-93eb-42fd-a801-1efb673ff65f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\004">
+      <UniqueIdentifier>{3e6d98a0-4bb9-43cf-b9cd-1b367635a39d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\003">
+      <UniqueIdentifier>{5d692865-8b05-43b7-a122-87c6618bed55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\005">
+      <UniqueIdentifier>{349f1569-1b5d-4acc-afff-30dc983ccf46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\000">
+      <UniqueIdentifier>{e80f3ac4-029b-4532-8cf3-86e9a317e194}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\001">
+      <UniqueIdentifier>{a0676484-3c98-4c6e-a82e-de63229974e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\002">
+      <UniqueIdentifier>{55dc7418-4ff4-44df-a4d4-68b24db7c115}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\003">
+      <UniqueIdentifier>{326a1cc4-99fc-41ba-8826-a630b5c54870}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\004">
+      <UniqueIdentifier>{39084a85-1d96-4bef-935e-b8c2380b273e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\005">
+      <UniqueIdentifier>{00a05d01-f4f0-457c-98ed-6bd54f900ed5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\LIB_TINYXML2">
+      <UniqueIdentifier>{2f58f376-d535-47d7-921f-a9e4e1e1835f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\LIB_TINYXML2\src">
+      <UniqueIdentifier>{a10f2529-d3c3-4961-9555-444c3b68fb19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\LIB_TINYXML2">
+      <UniqueIdentifier>{a2723e90-5726-4ac1-b02a-ffac4eaa9475}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\LIB_TINYXML2\include">
+      <UniqueIdentifier>{735ab209-75fb-46b9-918d-76e7dd798e37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\006">
+      <UniqueIdentifier>{7c4d158e-fd3e-4f44-bc64-7edcce63d6f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\007">
+      <UniqueIdentifier>{7c354a78-5768-42c9-8d26-05fa24bd7e97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\008">
+      <UniqueIdentifier>{c8ced023-0c54-4547-9ef8-fd73f7950a4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\009">
+      <UniqueIdentifier>{b37c7104-a618-4144-a844-203709361f99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\006">
+      <UniqueIdentifier>{fd075353-b65a-4e4a-b10d-ed7d52e20f51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\009">
+      <UniqueIdentifier>{8116466b-abb9-48e7-a224-0fe087c2d7bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\019">
+      <UniqueIdentifier>{0015efdb-25bf-4aca-aa2c-5b2f9e4c330e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\main.cpp" />
+    <ClCompile Include="..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.cpp">
+      <Filter>src\LIB_TINYXML2\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\GLX\GLopenGLclass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\0CheckOS.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\1CheckSYS.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\4CheckEngineUpdates.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\5LaunchEngine.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\7ProcessorInfo.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\ApplicationClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\astroClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\default_settings_xml.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\fileLoader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\fpsClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\GLmathClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\idea.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\initWorld.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\language.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\log.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\Math3D.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\mem_leak.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\MetarClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\OSengine.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\OSmain_dir.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\packManager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\SystemClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\TimerClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\TrigonometryMathClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\WeatherClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\xml_settings_loader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\xml_settings_saver.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\linux\src\linux.cpp" />
+    <ClCompile Include="..\core\linux\src\linuxsystemclass.cpp" />
+    <ClCompile Include="..\core\linux\src\main_linux.cpp" />
+    <ClCompile Include="..\core\linux\src\Rinputclass.cpp" />
+    <ClCompile Include="..\core\src\GLX\glxOpenGLclass.cpp" />
+    <ClCompile Include="..\core\src\renderApplication_Basics.cpp" />
+    <ClCompile Include="..\core\src\GLcameraClass.cpp" />
+    <ClCompile Include="..\core\src\GLmodelClass.cpp" />
+    <ClCompile Include="..\core\src\GLshaderClass.cpp" />
+    <ClCompile Include="..\core\src\initApplication_Basics.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\settings.xml" />
+    <Xml Include="..\world.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\GLengine\color.ps" />
+    <None Include="..\GLengine\color.vs" />
+    <None Include="..\GLengine\Light.ps" />
+    <None Include="..\GLengine\Light.vs" />
+    <None Include="..\GLengine\texture.ps" />
+    <None Include="..\GLengine\texture.vs" />
+  </ItemGroup>
+</Project>

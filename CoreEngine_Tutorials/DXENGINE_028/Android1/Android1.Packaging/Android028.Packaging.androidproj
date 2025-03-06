@@ -38,7 +38,7 @@
     <RootNamespace>Android1</RootNamespace>
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
     <ProjectVersion>1.0</ProjectVersion>
-    <ProjectGuid>f9163a8d-f09e-4262-8ea0-64287b6f9422</ProjectGuid>
+    <ProjectGuid>304067e1-31da-4a70-8acc-7d3dc572f8c2</ProjectGuid>
   </PropertyGroup>
   <Import Project="$(AndroidTargetsPath)\Android.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
