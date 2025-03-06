@@ -308,6 +308,18 @@
     <ClCompile Include="..\..\..\ThirdParty\JPG_LIB\src\jutils.c">
       <Filter>LIB_JPG\src</Filter>
     </ClCompile>
+    <ClCompile Include="..\core\src\Application_LightRay.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\lightClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\WomaCube.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\WomaSphere.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\core\include\default_settings_xml.h">
@@ -502,6 +514,12 @@
     <ClInclude Include="..\..\..\ThirdParty\PNG_LIB\include\png.h">
       <Filter>LIB_PNG\include</Filter>
     </ClInclude>
+    <ClInclude Include="..\core\include\lightClass.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\WomaCube.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\world.xml" />
@@ -593,14 +611,23 @@
     <Image Include="..\engine\data\basics\logotipo_small_backgroundV2.bmp">
       <Filter>engine\basics</Filter>
     </Image>
-    <Image Include="..\engine\data\basics\seafloor.bmp">
-      <Filter>engine\basics</Filter>
-    </Image>
     <Image Include="..\engine\data\basics\seafloor.png">
       <Filter>engine\basics</Filter>
     </Image>
     <Image Include="..\engine\data\basics\target.bmp">
       <Filter>engine\basics</Filter>
+    </Image>
+    <Image Include="..\engine\data\sky\NEW_SKY_DOME.jpg">
+      <Filter>engine</Filter>
+    </Image>
+    <Image Include="..\engine\data\sky\NEW_SKY_NIGHT.jpg">
+      <Filter>engine</Filter>
+    </Image>
+    <Image Include="..\engine\data\TITLE\WOMA_ENGINE.png">
+      <Filter>engine</Filter>
+    </Image>
+    <Image Include="..\engine\data\TITLE\WOMA_ENGINE-BIG.png">
+      <Filter>engine</Filter>
     </Image>
   </ItemGroup>
 </Project>

@@ -1,0 +1,404 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|ARM">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM">
+      <Configuration>Release</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|ARM64">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM64">
+      <Configuration>Release</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x86">
+      <Configuration>Debug</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x86">
+      <Configuration>Release</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{9F783B00-482D-4046-87F3-57C1B177E4C5}</ProjectGuid>
+    <Keyword>Android</Keyword>
+    <RootNamespace>Android1</RootNamespace>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <ApplicationType>Android</ApplicationType>
+    <ApplicationTypeRevision>3.0</ApplicationTypeRevision>
+    <ProjectName>Android028.NativeActivity</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Clang_5_0</PlatformToolset>
+    <AndroidAPILevel>android-26</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Clang_5_0</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Clang_5_0</PlatformToolset>
+    <AndroidAPILevel>android-27</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Clang_5_0</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Clang_5_0</PlatformToolset>
+    <AndroidAPILevel>android-27</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Clang_5_0</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Clang_5_0</PlatformToolset>
+    <AndroidAPILevel>android-27</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Clang_5_0</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+    <IncludePath>.;$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include;C:\WoMAengine2023\SOURCE_CODE\CoreEngine_000_OSENGINE_SYSTEM\include;C:\WoMAengine2023\SOURCE_CODE\CoreEngine_001_LANG_LOG_MEMLEAK_OSMAINDIRs\include;C:\WoMAengine2023\SOURCE_CODE\CoreEngine_002_MAINWINDOW_EVENTS\include;C:\WoMAengine2023\SOURCE_CODE\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH\include;C:\WoMAengine2023\SOURCE_CODE\CoreEngine_006_PACKMANAGER_IDEA_CPU_BENCHMARK\include</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <IncludePath>.;$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include;C:\WoMAengine2023\SOURCE_CODE\CoreEngine_000_OSENGINE_SYSTEM\include;C:\WoMAengine2023\SOURCE_CODE\CoreEngine_001_LANG_LOG_MEMLEAK_OSMAINDIRs\include;C:\WoMAengine2023\SOURCE_CODE\CoreEngine_002_MAINWINDOW_EVENTS\include;C:\WoMAengine2023\SOURCE_CODE\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH\include;C:\WoMAengine2023\SOURCE_CODE\CoreEngine_006_PACKMANAGER_IDEA_CPU_BENCHMARK\include</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PublicIncludeDirectories>
+    </PublicIncludeDirectories>
+    <IncludePath>$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include;.;..;../..;../../include;$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include__;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;C:\WoMA3Dengine;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_028\core\include;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_028\core\Android1\Android1.NativeActivity;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_028\core\linux\include;C:\WoMA3Dengine\ThirdParty\JPG_LIB\include;C:\WoMA3Dengine\ThirdParty\PNG_LIB\include</IncludePath>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\028\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <IncludePath>.;$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include;C:\WoMAengine2023\SOURCE_CODE\CoreEngine_000_OSENGINE_SYSTEM\include;C:\WoMAengine2023\SOURCE_CODE\CoreEngine_001_LANG_LOG_MEMLEAK_OSMAINDIRs\include;C:\WoMAengine2023\SOURCE_CODE\CoreEngine_002_MAINWINDOW_EVENTS\include;C:\WoMAengine2023\SOURCE_CODE\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH\include;C:\WoMAengine2023\SOURCE_CODE\CoreEngine_006_PACKMANAGER_IDEA_CPU_BENCHMARK\include</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <PreprocessorDefinitions>__ANDROID_API__=$(AndroidAPILevelNumber);%(PreprocessorDefinitions);NewWomaEngine</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>%(LibraryDependencies);GLESv1_CM;EGL;m</LibraryDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>%(LibraryDependencies);GLESv1_CM;EGL;</LibraryDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <PreprocessorDefinitions>__ANDROID_API__=$(AndroidAPILevelNumber);%(PreprocessorDefinitions);NewWomaEngine</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>%(LibraryDependencies);GLESv1_CM;EGL;m</LibraryDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>%(LibraryDependencies);GLESv1_CM;EGL;</LibraryDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <PreprocessorDefinitions>__ANDROID_API__=$(AndroidAPILevelNumber);%(PreprocessorDefinitions);DEMO_LEVEL=28;MAINENGINE_LINUX;GL_KHR_debug</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>%(LibraryDependencies);GLESv1_CM;GLESv3;EGL;m;z</LibraryDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>%(LibraryDependencies);GLESv1_CM;EGL;</LibraryDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <PreprocessorDefinitions>__ANDROID_API__=$(AndroidAPILevelNumber);%(PreprocessorDefinitions);NewWomaEngine</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>%(LibraryDependencies);GLESv1_CM;EGL;m</LibraryDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>%(LibraryDependencies);GLESv1_CM;EGL;</LibraryDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\ThirdParty\JPG_LIB\include\jconfig.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\JPG_LIB\include\jdct.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\JPG_LIB\include\jerror.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\JPG_LIB\include\jinclude.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\JPG_LIB\include\jmemsys.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\JPG_LIB\include\jmorecfg.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\JPG_LIB\include\jpegint.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\JPG_LIB\include\jpeglib.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\JPG_LIB\include\jversion.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\PNG_LIB\include\png.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\PNG_LIB\include\pngconf.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\PNG_LIB\include\pngdebug.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\PNG_LIB\include\pnginfo.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\PNG_LIB\include\pnglibconf.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\PNG_LIB\include\pngpriv.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\PNG_LIB\include\pngstruct.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.h" />
+    <ClInclude Include="..\..\..\level.h" />
+    <ClInclude Include="..\..\core\Android1\Android1.NativeActivity\androidsystemclass.h" />
+    <ClInclude Include="..\..\core\include\default_settings_xml.h" />
+    <ClInclude Include="..\..\core\include\dumpUploader.h" />
+    <ClInclude Include="..\..\core\include\fileLoader.h" />
+    <ClInclude Include="..\..\core\include\fpsClass.h" />
+    <ClInclude Include="..\..\core\include\InputClass.h" />
+    <ClInclude Include="..\..\core\include\language.h" />
+    <ClInclude Include="..\..\core\include\lightClass.h" />
+    <ClInclude Include="..\..\core\include\log.h" />
+    <ClInclude Include="..\..\core\include\main.h" />
+    <ClInclude Include="..\..\core\include\Math3D.h" />
+    <ClInclude Include="..\..\core\include\mem_leak.h" />
+    <ClInclude Include="..\..\core\include\minidumperClass.h" />
+    <ClInclude Include="..\..\core\include\OSengine.h" />
+    <ClInclude Include="..\..\core\include\OSmain_dir.h" />
+    <ClInclude Include="..\..\core\include\platform.h" />
+    <ClInclude Include="..\..\core\include\processorInfo.h" />
+    <ClInclude Include="..\..\core\include\Rapplicationclass.h" />
+    <ClInclude Include="..\..\core\include\RCameraClass.h" />
+    <ClInclude Include="..\..\core\include\Rfontclass.h" />
+    <ClInclude Include="..\..\core\include\Rfontshaderclass.h" />
+    <ClInclude Include="..\..\core\include\Ropenglclass.h" />
+    <ClInclude Include="..\..\core\include\Rtextclass.h" />
+    <ClInclude Include="..\..\core\include\Rtextureclass.h" />
+    <ClInclude Include="..\..\core\include\stackTrace.h" />
+    <ClInclude Include="..\..\core\include\standard_platform.h" />
+    <ClInclude Include="..\..\core\include\stateMachine.h" />
+    <ClInclude Include="..\..\core\include\SystemClass.h" />
+    <ClInclude Include="..\..\core\include\systemFeatures.h" />
+    <ClInclude Include="..\..\core\include\systemManager.h" />
+    <ClInclude Include="..\..\core\include\timerClass.h" />
+    <ClInclude Include="..\..\core\include\TrigonometryMathClass.h" />
+    <ClInclude Include="..\..\core\include\WomaSetupManager.h" />
+    <ClInclude Include="..\..\core\include\woma_exception.h" />
+    <ClInclude Include="..\..\core\include\woma_macros.h" />
+    <ClInclude Include="..\..\core\include\xml_loader.h" />
+    <ClInclude Include="..\..\core\linux\include\Rinputclass.h" />
+    <ClInclude Include="AndroidNewSystemClass.h" />
+    <ClInclude Include="..\..\..\tech-level.h" />
+    <ClInclude Include="..\..\..\woma_engine_assets.h" />
+    <ClInclude Include="defs.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="android_native_app_glue.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jaricom.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcapimin.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcapistd.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcarith.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jccoefct.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jccolor.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcdctmgr.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jchuff.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcinit.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcmainct.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcmarker.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcmaster.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcomapi.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcparam.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcprepct.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jcsample.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jctrans.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdapimin.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdapistd.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdarith.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdatadst.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdatasrc.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdcoefct.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdcolor.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jddctmgr.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdhuff.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdinput.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdmainct.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdmarker.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdmaster.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdmerge.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdpostct.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdsample.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jdtrans.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jerror.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jfdctflt.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jfdctfst.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jfdctint.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jidctflt.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jidctfst.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jidctint.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jmemmgr.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jmemnobs.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jquant1.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jquant2.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\JPG_LIB\src\jutils.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\png.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngerror.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngget.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngmem.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngpread.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngread.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngrio.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngrtran.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngrutil.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngset.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngtrans.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngwio.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngwrite.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngwtran.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\PNG_LIB\src\pngwutil.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.cpp" />
+    <ClCompile Include="..\..\..\main.cpp" />
+    <ClCompile Include="..\..\core\Android1\Android1.NativeActivity\AndroidEngine.cpp" />
+    <ClCompile Include="..\..\core\Android1\Android1.NativeActivity\androidsystemclass.cpp" />
+    <ClCompile Include="..\..\core\Android1\Android1.NativeActivity\main-android.cpp" />
+    <ClCompile Include="..\..\core\linux\src\Rinputclass.cpp" />
+    <ClCompile Include="..\..\core\src\0CheckOS.cpp" />
+    <ClCompile Include="..\..\core\src\1CheckSYS.cpp" />
+    <ClCompile Include="..\..\core\src\4CheckEngineUpdates.cpp" />
+    <ClCompile Include="..\..\core\src\5LaunchEngine.cpp" />
+    <ClCompile Include="..\..\core\src\7ProcessorInfo.cpp" />
+    <ClCompile Include="..\..\core\src\ApplicationClass.cpp" />
+    <ClCompile Include="..\..\core\src\Application_LightRay.cpp" />
+    <ClCompile Include="..\..\core\src\default_settings_xml.cpp" />
+    <ClCompile Include="..\..\core\src\fileLoader.cpp" />
+    <ClCompile Include="..\..\core\src\fpsClass.cpp" />
+    <ClCompile Include="..\..\core\src\GLcameraClass.cpp" />
+    <ClCompile Include="..\..\core\src\GLmathClass.cpp" />
+    <ClCompile Include="..\..\core\src\GLmodelClass.cpp" />
+    <ClCompile Include="..\..\core\src\GLshaderClass.cpp" />
+    <ClCompile Include="..\..\core\src\GLTextureclass.cpp" />
+    <ClCompile Include="..\..\core\src\GLX\GLopenGLclass.cpp" />
+    <ClCompile Include="..\..\core\src\ImageLoaderClass.cpp" />
+    <ClCompile Include="..\..\core\src\initApplication_Basics.cpp" />
+    <ClCompile Include="..\..\core\src\language.cpp" />
+    <ClCompile Include="..\..\core\src\lightClass.cpp" />
+    <ClCompile Include="..\..\core\src\log.cpp" />
+    <ClCompile Include="..\..\core\src\Math3D.cpp" />
+    <ClCompile Include="..\..\core\src\mem_leak.cpp" />
+    <ClCompile Include="..\..\core\src\OSmain_dir.cpp" />
+    <ClCompile Include="..\..\core\src\Rapplicationclass.cpp" />
+    <ClCompile Include="..\..\core\src\RCameraClass.cpp" />
+    <ClCompile Include="..\..\core\src\renderApplication_Basics.cpp" />
+    <ClCompile Include="..\..\core\src\Rfontclass.cpp" />
+    <ClCompile Include="..\..\core\src\Rfontshaderclass.cpp" />
+    <ClCompile Include="..\..\core\src\Ropenglclass.cpp" />
+    <ClCompile Include="..\..\core\src\Rtextclass.cpp" />
+    <ClCompile Include="..\..\core\src\Rtextureclass.cpp" />
+    <ClCompile Include="..\..\core\src\SystemClass.cpp" />
+    <ClCompile Include="..\..\core\src\TimerClass.cpp" />
+    <ClCompile Include="..\..\core\src\TrigonometryMathClass.cpp" />
+    <ClCompile Include="..\..\core\src\WindowPaintClass.cpp" />
+    <ClCompile Include="..\..\core\src\WomaCube.cpp" />
+    <ClCompile Include="..\..\core\src\WomaSphere.cpp" />
+    <ClCompile Include="..\..\core\src\xml_settings_loader.cpp" />
+    <ClCompile Include="..\..\core\src\xml_settings_saver.cpp" />
+    <ClCompile Include="..\..\core\src\OSengine.cpp" />
+    <ClCompile Include="android_native_app_glue.c" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

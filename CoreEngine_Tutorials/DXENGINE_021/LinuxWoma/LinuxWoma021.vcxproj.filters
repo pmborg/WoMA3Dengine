@@ -109,16 +109,36 @@
     <ClInclude Include="..\core\include\xml_loader.h">
       <Filter>Include</Filter>
     </ClInclude>
-    <ClInclude Include="..\core\include\glxOpenGLclass.h" />
-    <ClInclude Include="..\core\linux\include\linuxsystemclass.h" />
-    <ClInclude Include="..\core\linux\include\linux.h" />
-    <ClInclude Include="..\core\linux\include\Rinputclass.h" />
-    <ClInclude Include="..\core\include\GLcameraClass.h" />
-    <ClInclude Include="..\core\include\GLmodelClass.h" />
-    <ClInclude Include="..\core\include\GLshaderClass.h" />
-    <ClInclude Include="..\core\include\vertexTypes.h" />
-    <ClInclude Include="..\core\include\virtualCameraClass.h" />
-    <ClInclude Include="..\core\include\virtualModelClass.h" />
+    <ClInclude Include="..\core\include\GLcameraClass.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\GLmodelClass.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\GLshaderClass.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\glxOpenGLclass.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\linux\include\linux.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\linux\include\linuxsystemclass.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\linux\include\Rinputclass.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\vertexTypes.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\virtualCameraClass.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\virtualModelClass.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Include">
@@ -198,6 +218,12 @@
     </Filter>
     <Filter Include="src\019">
       <UniqueIdentifier>{0015efdb-25bf-4aca-aa2c-5b2f9e4c330e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine">
+      <UniqueIdentifier>{ecd0b0a8-cc87-4325-b920-43f531019eb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GLSL-LINUX">
+      <UniqueIdentifier>{41566561-da25-40b9-a0ed-c8a029692d5d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -289,27 +315,59 @@
     <ClCompile Include="..\core\src\xml_settings_saver.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\core\linux\src\linux.cpp" />
-    <ClCompile Include="..\core\linux\src\linuxsystemclass.cpp" />
-    <ClCompile Include="..\core\linux\src\main_linux.cpp" />
-    <ClCompile Include="..\core\linux\src\Rinputclass.cpp" />
-    <ClCompile Include="..\core\src\GLX\glxOpenGLclass.cpp" />
-    <ClCompile Include="..\core\src\renderApplication_Basics.cpp" />
-    <ClCompile Include="..\core\src\GLcameraClass.cpp" />
-    <ClCompile Include="..\core\src\GLmodelClass.cpp" />
-    <ClCompile Include="..\core\src\GLshaderClass.cpp" />
-    <ClCompile Include="..\core\src\initApplication_Basics.cpp" />
+    <ClCompile Include="..\core\src\GLcameraClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\GLmodelClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\GLshaderClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\GLX\glxOpenGLclass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\initApplication_Basics.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\linux\src\linux.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\linux\src\linuxsystemclass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\linux\src\main_linux.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\renderApplication_Basics.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\linux\src\Rinputclass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\settings.xml" />
     <Xml Include="..\world.xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\GLengine\color.ps" />
-    <None Include="..\GLengine\color.vs" />
-    <None Include="..\GLengine\Light.ps" />
-    <None Include="..\GLengine\Light.vs" />
-    <None Include="..\GLengine\texture.ps" />
-    <None Include="..\GLengine\texture.vs" />
+    <None Include="..\GLengine\texture.ps">
+      <Filter>GLSL-LINUX</Filter>
+    </None>
+    <None Include="..\GLengine\texture.vs">
+      <Filter>GLSL-LINUX</Filter>
+    </None>
+    <None Include="..\GLengine\light.vs">
+      <Filter>GLSL-LINUX</Filter>
+    </None>
+    <None Include="..\GLengine\light.ps">
+      <Filter>GLSL-LINUX</Filter>
+    </None>
+    <None Include="..\GLengine\color.vs">
+      <Filter>GLSL-LINUX</Filter>
+    </None>
+    <None Include="..\GLengine\color.ps">
+      <Filter>GLSL-LINUX</Filter>
+    </None>
   </ItemGroup>
 </Project>
