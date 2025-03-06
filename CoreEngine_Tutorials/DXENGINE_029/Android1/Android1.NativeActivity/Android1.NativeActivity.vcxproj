@@ -35,14 +35,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{9F783B00-482D-4046-87F3-57C1B177E4C5}</ProjectGuid>
+    <ProjectGuid>{EB85F8E6-7C76-4846-9776-3F76C8B71086}</ProjectGuid>
     <Keyword>Android</Keyword>
     <RootNamespace>Android1</RootNamespace>
     <DefaultLanguage>en-US</DefaultLanguage>
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
     <ApplicationType>Android</ApplicationType>
     <ApplicationTypeRevision>3.0</ApplicationTypeRevision>
-    <ProjectName>Android028.NativeActivity</ProjectName>
+    <ProjectName>Android029.NativeActivity</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -130,8 +130,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PublicIncludeDirectories>
     </PublicIncludeDirectories>
-    <IncludePath>$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include;.;..;../..;../../include;$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include__;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;C:\WoMA3Dengine;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_028\core\include;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_028\core\Android1\Android1.NativeActivity;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_028\core\linux\include;C:\WoMA3Dengine\ThirdParty\JPG_LIB\include;C:\WoMA3Dengine\ThirdParty\PNG_LIB\include</IncludePath>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\028\</OutDir>
+    <IncludePath>$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include;.;..;../..;../../include;$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include__;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;C:\WoMA3Dengine;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\core\include;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\core\Android1\Android1.NativeActivity;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\core\linux\include;C:\WoMA3Dengine\ThirdParty\JPG_LIB\include;C:\WoMA3Dengine\ThirdParty\PNG_LIB\include</IncludePath>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\029\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">

@@ -36,10 +36,10 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>/usr/include/atk-1.0/;/usr/lib/x86_64-linux-gnu/graphene-1.0/include/;/usr/include/graphene-1.0;/usr/include/gdk-pixbuf-2.0/;/usr/include/harfbuzz/;/usr/include/pango-1.0;/usr/include/cairo/;/usr/lib/x86_64-linux-gnu/glib-2.0/include/;/usr/include;/usr/include/libpng16;/usr/include/glib-2.0;/usr/include/gtk-3.0__;/usr/include/gtk-2.0;/usr/lib/x86_64-linux-gnu/gtk-2.0/include/;C:\WoMA3Dengine\ThirdParty\PNG_LIB\include;../core/include;../linux/include;../core/include/GLX;C:\WoMA3Dengine\CoreEngine_Tutorials\;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;~/projects/LinuxWoma028/ThirdParty/PNG_LIB/include;~/projects/LinuxWoma028/CoreEngine_Tutorials/DXENGINE_028/core/linux/include;~/projects/LinuxWoma028/ThirdParty/JPG_LIB/include;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_028\core\linux\include;../..;..;.;$(IncludePath)</IncludePath>
+    <IncludePath>/usr/include/atk-1.0/;/usr/lib/x86_64-linux-gnu/graphene-1.0/include/;/usr/include/graphene-1.0;/usr/include/gdk-pixbuf-2.0/;/usr/include/harfbuzz/;/usr/include/pango-1.0;/usr/include/cairo/;/usr/lib/x86_64-linux-gnu/glib-2.0/include/;/usr/include;/usr/include/libpng16;/usr/include/glib-2.0;/usr/include/gtk-3.0__;/usr/include/gtk-2.0;/usr/lib/x86_64-linux-gnu/gtk-2.0/include/;C:\WoMA3Dengine\ThirdParty\PNG_LIB\include;../core/include;../linux/include;../core/include/GLX;C:\WoMA3Dengine\CoreEngine_Tutorials\;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;~/projects/LinuxWoma029/ThirdParty/PNG_LIB/include;~/projects/LinuxWoma029/CoreEngine_Tutorials/DXENGINE_029/core/linux/include;~/projects/LinuxWoma029/ThirdParty/JPG_LIB/include;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\core\linux\include;../..;..;.;$(IncludePath)</IncludePath>
     <SourcePath>
     </SourcePath>
-    <AdditionalSourcesToCopyMapping>C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_028\GLengine:=~/projects/LinuxWoma028/CoreEngine_Tutorials/DXENGINE_028/GLengine;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_028\engine:=~/projects/LinuxWoma028/CoreEngine_Tutorials/DXENGINE_028/engine</AdditionalSourcesToCopyMapping>
+    <AdditionalSourcesToCopyMapping>C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\GLengine:=~/projects/LinuxWoma029/CoreEngine_Tutorials/DXENGINE_029/GLengine;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\engine:=~/projects/LinuxWoma029/CoreEngine_Tutorials/DXENGINE_029/engine</AdditionalSourcesToCopyMapping>
   </PropertyGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\ThirdParty\PNG_LIB\include\pngdebug.h" />
@@ -250,6 +250,12 @@
     <None Include="..\GLengine\texture.vs" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\engine\data\banners\TEXT1_WoMA_Muti_Platform_Engine.png" />
+    <Image Include="..\engine\data\banners\TEXT2_is_a_Pmborg_Production.png" />
+    <Image Include="..\engine\data\banners\TEXT3_WoMA_Code_By.png" />
+    <Image Include="..\engine\data\banners\TEXT4_Pedro_Borges.png" />
+    <Image Include="..\engine\data\banners\TEXT5_Music_By.png" />
+    <Image Include="..\engine\data\banners\TEXT6_Deceased_Superior_Technician.png" />
     <Image Include="..\engine\data\basics\Earth_Diffuse.bmp" />
     <Image Include="..\engine\data\basics\Earth_Diffuse.DDS" />
     <Image Include="..\engine\data\basics\Earth_Diffuse.jpg" />
@@ -278,7 +284,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
-      <PreprocessorDefinitions>DEBUG;DEMO_LEVEL=28;MAINENGINE_LINUX</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DEBUG;DEMO_LEVEL=29;MAINENGINE_LINUX</PreprocessorDefinitions>
       <CppLanguageStandard>c++11</CppLanguageStandard>
     </ClCompile>
     <Link>

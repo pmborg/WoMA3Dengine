@@ -569,22 +569,22 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\GLengine\color.ps">
-      <Filter>HLSL</Filter>
+      <Filter>GLSL-LINUX</Filter>
     </None>
     <None Include="..\GLengine\color.vs">
-      <Filter>HLSL</Filter>
+      <Filter>GLSL-LINUX</Filter>
     </None>
     <None Include="..\GLengine\Light.ps">
-      <Filter>HLSL</Filter>
+      <Filter>GLSL-LINUX</Filter>
     </None>
     <None Include="..\GLengine\Light.vs">
-      <Filter>HLSL</Filter>
+      <Filter>GLSL-LINUX</Filter>
     </None>
     <None Include="..\GLengine\texture.ps">
-      <Filter>HLSL</Filter>
+      <Filter>GLSL-LINUX</Filter>
     </None>
     <None Include="..\GLengine\texture.vs">
-      <Filter>HLSL</Filter>
+      <Filter>GLSL-LINUX</Filter>
     </None>
     <None Include="..\engine\data\airports.metar">
       <Filter>engine</Filter>
@@ -593,10 +593,10 @@
       <Filter>engine</Filter>
     </None>
     <None Include="..\GLengine\font.ps">
-      <Filter>engine</Filter>
+      <Filter>GLSL-LINUX</Filter>
     </None>
     <None Include="..\GLengine\font.vs">
-      <Filter>engine</Filter>
+      <Filter>GLSL-LINUX</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -605,9 +605,6 @@
     </Filter>
     <Filter Include="src">
       <UniqueIdentifier>{4808edef-0751-4c90-bb9c-781fbc1adee8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="HLSL">
-      <UniqueIdentifier>{e9ef0a29-2324-4ed8-93a8-bd6586854bde}</UniqueIdentifier>
     </Filter>
     <Filter Include="LIB_PNG">
       <UniqueIdentifier>{29c4f4e1-0174-4645-9818-639a43864da1}</UniqueIdentifier>
@@ -635,6 +632,9 @@
     </Filter>
     <Filter Include="LIB_JPG\include">
       <UniqueIdentifier>{09a50c61-2454-482b-aa6c-b7692f1b68d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GLSL-LINUX">
+      <UniqueIdentifier>{e9ef0a29-2324-4ed8-93a8-bd6586854bde}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

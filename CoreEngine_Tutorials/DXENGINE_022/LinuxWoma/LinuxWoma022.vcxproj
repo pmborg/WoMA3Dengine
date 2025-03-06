@@ -220,8 +220,6 @@
     <None Include="..\engine\data\airports.metar" />
     <None Include="..\GLengine\color.ps" />
     <None Include="..\GLengine\color.vs" />
-    <None Include="..\GLengine\light.ps" />
-    <None Include="..\GLengine\light.vs" />
     <None Include="..\GLengine\texture.ps" />
     <None Include="..\GLengine\texture.vs" />
   </ItemGroup>

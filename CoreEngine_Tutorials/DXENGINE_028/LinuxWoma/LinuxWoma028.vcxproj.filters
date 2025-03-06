@@ -596,10 +596,10 @@
       <Filter>engine</Filter>
     </None>
     <None Include="..\GLengine\font.ps">
-      <Filter>engine</Filter>
+      <Filter>GLSL-LINUX</Filter>
     </None>
     <None Include="..\GLengine\font.vs">
-      <Filter>engine</Filter>
+      <Filter>GLSL-LINUX</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

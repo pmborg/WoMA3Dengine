@@ -596,10 +596,10 @@
       <Filter>engine</Filter>
     </None>
     <None Include="..\GLengine\font.ps">
-      <Filter>engine</Filter>
+      <Filter>GLSL-LINUX</Filter>
     </None>
     <None Include="..\GLengine\font.vs">
-      <Filter>engine</Filter>
+      <Filter>GLSL-LINUX</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -693,6 +693,24 @@
       <Filter>engine</Filter>
     </Image>
     <Image Include="..\engine\data\TITLE\WOMA_ENGINE-BIG.png">
+      <Filter>engine</Filter>
+    </Image>
+    <Image Include="..\engine\data\banners\TEXT1_WoMA_Muti_Platform_Engine.png">
+      <Filter>engine</Filter>
+    </Image>
+    <Image Include="..\engine\data\banners\TEXT2_is_a_Pmborg_Production.png">
+      <Filter>engine</Filter>
+    </Image>
+    <Image Include="..\engine\data\banners\TEXT3_WoMA_Code_By.png">
+      <Filter>engine</Filter>
+    </Image>
+    <Image Include="..\engine\data\banners\TEXT4_Pedro_Borges.png">
+      <Filter>engine</Filter>
+    </Image>
+    <Image Include="..\engine\data\banners\TEXT5_Music_By.png">
+      <Filter>engine</Filter>
+    </Image>
+    <Image Include="..\engine\data\banners\TEXT6_Deceased_Superior_Technician.png">
       <Filter>engine</Filter>
     </Image>
   </ItemGroup>

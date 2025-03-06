@@ -74,9 +74,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 {
 	int argc = 0;
 	char* argv[MAX_PARAMS] = { NULL };
-	COMMANDLINE_TO_ARGC_ARGV();             // POPULATE: argc & argv
+	COMMANDLINE_TO_ARGC_ARGV();					// POPULATE: argc & argv
 
-	Command = APPLICATION_MAIN(argc, argv); // ENTRY POINT!
+	Command = APPLICATION_MAIN(argc, argv);		// ENTRY-POINT: WINDOWS RELEASE!
 
 	for (int i = 0; i < MAX_PARAMS; i++)
 		SAFE_DELETE(WOMA::ARGv[i]);
@@ -87,11 +87,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 #if !defined WOMA_WIN32_APPLICATION
 // -------------------------------------------------------------------------------------------------------------------------------------
-// SUBSYSTEM:CONSOLE                                    // FOR: WOMA_CONSOLE_APPLICATION (LINUX, or WINDOWS-Console)
+// SUBSYSTEM:CONSOLE							// FOR: WOMA_CONSOLE_APPLICATION (LINUX, or WINDOWS-Console)
 // -------------------------------------------------------------------------------------------------------------------------------------
 int main(int argc, char* argv[])
 {
-	return APPLICATION_MAIN(argc, argv);                // ENTRY POINT!
+	return APPLICATION_MAIN(argc, argv);		// ENTRY-POINT: WINDOWS DEBUG or LINUX!
 }
 #endif
 
@@ -100,12 +100,9 @@ android_app* app;
 struct womaengine engine = { 0 };
 
 #if defined WOMAENGINE
-void android_main(android_app* state)
+void android_main(android_app* state)			// ENTRY-POINT: ANDROID:
 {
-	//GLenum err;
 	app = state;
-
-	//app_dummy();
 
 	_tprintf("[%d]: android_main()\n", gettid());
 	app->userData = &engine;
@@ -114,7 +111,7 @@ void android_main(android_app* state)
 	engine.app = app;
 	init_engine(app, &engine);
 
-	//MANDATORY: Wait for window creation:
+	//MANDATORY: Wait for JAVA window creation:
 	while (!engine.has_focus_)
 		process_events(&engine, app);
 
@@ -123,7 +120,6 @@ void android_main(android_app* state)
 	APPLICATION_MAIN(argc, argv);
 
 	engine.has_focus_ = false;
-	//terminate();
 }
 #endif
 
