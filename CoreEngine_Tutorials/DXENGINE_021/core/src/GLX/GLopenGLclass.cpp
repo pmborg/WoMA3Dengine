@@ -312,10 +312,6 @@ void GLopenGLclass::SetRasterizerState(UINT cullMode, UINT fillMode)
 		glDisable(GL_CULL_FACE);
 		glCullFace(GL_NONE);
 	}
-
-#if defined DEBUG
-	//check("CHECK: SetRasterizerState()");
-#endif
 }
 
 // ------------------------------------------------------------------
@@ -354,24 +350,16 @@ bool GLopenGLclass::Initialize(float* clearColor)
 	glColorMask(1, 1, 1, 1);
 	glDepthMask(GL_TRUE);
 	#if defined LINUX_PLATFORM
-	glClearDepth(1.0f);	// Set the depth buffer to be entirely cleared to 1.0 values.
+	glClearDepth(1.0f);		// LINUX: Set the depth buffer to be entirely cleared to 1.0 values.
 	#else
-	glClearDepthf(1.0f);	// Set the depth buffer to be entirely cleared to 1.0 values.
+	glClearDepthf(1.0f);	// ANDROID/WINDOWS: Set the depth buffer to be entirely cleared to 1.0 values.
 	#endif
 	glDepthFunc(GL_LESS);
 	#endif
 
 	TurnZBufferOn();
 
-/*
-	// Enable back face culling.
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-*/
-
-	//#if ENGINE_LEVEL >=26
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	//#endif
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); //#if ENGINE_LEVEL >=26
 
 	// Set the field of view and screen aspect ratio.
 	float fieldOfView = 3.14159265358979323846f / 4.0f;

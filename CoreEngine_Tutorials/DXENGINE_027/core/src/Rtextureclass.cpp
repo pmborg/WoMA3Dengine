@@ -1,6 +1,22 @@
-////////////////////////////////////////////////////////////////////////////////
-// Filename: RTextureClass.cpp
-////////////////////////////////////////////////////////////////////////////////
+// --------------------------------------------------------------------------------------------
+// Filename: Rtextureclass.cpp
+// --------------------------------------------------------------------------------------------
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// --------------------------------------------------------------------------------------------
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+//
+// This file is part of the WorldOfMiddleAge project.
+//
+// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
+// You may not alter or remove any copyright or other notice from copies of the content.
+// The content contained in this file is provided only for educational and informational purposes.
+// 
+// Downloaded from : https://github.com/pmborg/WoMA3Dengine
+// --------------------------------------------------------------------------------------------
+// ORIGINAL: Rastertek Tutorial 14: Font Engine : https://www.rastertek.com/gl4linuxtut14.html
+// --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567222;
 
 #include "platform.h"
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
@@ -12,16 +28,9 @@ RTextureClass::RTextureClass()
     m_loaded = false;
 }
 
-/*
-RTextureClass::RTextureClass(const RTextureClass& other)
-{
-}
-*/
-
 RTextureClass::~RTextureClass()
 {
 }
-
 
 bool RTextureClass::Initialize(OpenGLClass* OpenGL, char* filename, unsigned int textureUnit, bool wrap)
 {
@@ -63,7 +72,7 @@ bool RTextureClass::LoadTarga32Bit(OpenGLClass* OpenGL, char* filename, bool wra
     unsigned long imageSize;
     int index;
 
-#if !true
+#if _NOT
     //UINT width, height;
     TargaHeader targaFileHeader;
     FILE* filePtr;
@@ -122,28 +131,6 @@ bool RTextureClass::LoadTarga32Bit(OpenGLClass* OpenGL, char* filename, bool wra
     imageSize = ImageSize;
 #endif
 
-/*
-    // Allocate memory for the targa destination data.
-    unsigned char* targaData = new unsigned char[imageSize];
-
-    // Initialize the index into the targa destination data array.
-    index = 0;
-
-    // Now copy the targa image data into the targa destination array in the correct order since the targa format is not stored in the RGBA order.
-    for(int j=0; j<m_height; j++)
-    {
-        for(int i=0; i<m_width; i++)
-        {
-            targaData[index + 0] = targaImage[index + 2];  // Red.
-            targaData[index + 1] = targaImage[index + 1];  // Green.
-            targaData[index + 2] = targaImage[index + 0];  // Blue
-            targaData[index + 3] = targaImage[index + 3];  // Alpha
-
-            // Increment the indexes into the targa data.
-            index += 4;
-        }
-    }
-    */
     // Set the unique texture unit in which to store the data.
     glActiveTexture(GL_TEXTURE0);
 
@@ -154,9 +141,7 @@ bool RTextureClass::LoadTarga32Bit(OpenGLClass* OpenGL, char* filename, bool wra
     glBindTexture(GL_TEXTURE_2D, m_textureID);
 
     // Load the image data into the texture unit.
-    //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, targaImage/*targaData*/);
-
-#if !defined LINUX_PLATFORM
+#if defined WINDOWS_PLATFORM
     glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA, m_width, m_height, 0, GL_BGRA, GL_UNSIGNED_BYTE, targaImage); // Load/Copy the image data into the texture unit: WINDOWS/ANDROID
 #else
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, targaImage);	// LINUX
@@ -188,11 +173,7 @@ bool RTextureClass::LoadTarga32Bit(OpenGLClass* OpenGL, char* filename, bool wra
     // Release the targa image data now that it was copied into the destination array.
     delete[] targaImage;
     targaImage = 0;
-    /*
-    // Release the targa image data.
-    delete [] targaData;
-    targaData = 0;
-    */
+
     return true;
 }
 

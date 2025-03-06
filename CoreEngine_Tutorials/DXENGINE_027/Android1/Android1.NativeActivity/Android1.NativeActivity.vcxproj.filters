@@ -154,6 +154,30 @@
     <ClInclude Include="..\..\core\include\lightClass.h">
       <Filter>Include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\core\include\Rapplicationclass.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\RCameraClass.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\Rtextclass.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\Rtextureclass.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\linux\include\Rinputclass.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\Rfontclass.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\Rfontshaderclass.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\Ropenglclass.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="android_native_app_glue.c">
@@ -455,6 +479,30 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\..\core\src\WomaCube.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\core\src\Rapplicationclass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\core\src\RCameraClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\core\src\Rtextureclass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\core\src\Rtextclass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\core\linux\src\Rinputclass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\core\src\Ropenglclass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\core\src\Rfontclass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\core\src\Rfontshaderclass.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

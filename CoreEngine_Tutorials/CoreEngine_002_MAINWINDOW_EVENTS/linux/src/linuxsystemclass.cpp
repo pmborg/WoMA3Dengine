@@ -199,7 +199,7 @@ bool LinuxSystemClass::ApplicationInitMainWindow(void* OpenGL)
 {
 	bool res = createWindow();
 
-	return true;
+	return res;
 }
 
 #endif

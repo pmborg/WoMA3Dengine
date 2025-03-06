@@ -1,6 +1,23 @@
-///////////////////////////////////////////////////////////////////////////////
-// Filename: RFontClass.cpp
-///////////////////////////////////////////////////////////////////////////////
+// --------------------------------------------------------------------------------------------
+// Filename: Rfontclass.h
+// --------------------------------------------------------------------------------------------
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// --------------------------------------------------------------------------------------------
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+//
+// This file is part of the WorldOfMiddleAge project.
+//
+// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
+// You may not alter or remove any copyright or other notice from copies of the content.
+// The content contained in this file is provided only for educational and informational purposes.
+// 
+// Downloaded from : https://github.com/pmborg/WoMA3Dengine
+// --------------------------------------------------------------------------------------------
+// ORIGINAL: Rastertek Tutorial 14: Font Engine : https://www.rastertek.com/gl4linuxtut14.html
+// --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567222;
+
 #include "platform.h"
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
 #include "OSengine.h"
@@ -59,8 +76,8 @@ bool RFontClass::Initialize(OpenGLClass* OpenGL, int fontChoice)
         }		
         case 2:
         {
-            strcpy(fontFilename, "data/fonts/008fontdata2.txt");
-            strcpy(fontTextureFilename, "data/fonts/008font2.tga");
+            strcpy(fontFilename, "engine/data/fonts/008fontdata2.txt");
+            strcpy(fontTextureFilename, "engine/data/fonts/008font2.tga");
             m_fontHeight = 32.0f;
             m_spaceSize = 3;
             break;
@@ -106,86 +123,7 @@ void RFontClass::Shutdown()
 
 	return;
 }
-/*
-class asset_streambuf : public std::streambuf
-{
-public:
-	asset_streambuf(AAssetManager* manager, const std::string& filename)
-		: manager(manager)
-	{
-		asset = AAssetManager_open(manager, filename.c_str(), AASSET_MODE_STREAMING);
-		buffer.resize(1024);
 
-		setg(0, 0, 0);
-		setp(&buffer.front(), &buffer.front() + buffer.size());
-	}
-
-	virtual ~asset_streambuf()
-	{
-		sync();
-		AAsset_close(asset);
-	}
-
-	std::streambuf::int_type underflow() override
-	{
-		auto bufferPtr = &buffer.front();
-		auto counter = AAsset_read(asset, bufferPtr, buffer.size());
-
-		if (counter == 0)
-			return traits_type::eof();
-		if (counter < 0) //error, what to do now?
-			return traits_type::eof();
-
-		setg(bufferPtr, bufferPtr, bufferPtr + counter);
-
-		return traits_type::to_int_type(*gptr());
-	}
-
-	std::streambuf::int_type overflow(std::streambuf::int_type value) override
-	{
-		return traits_type::eof();
-	};
-
-	int sync() override
-	{
-		std::streambuf::int_type result = overflow(traits_type::eof());
-
-		return traits_type::eq_int_type(result, traits_type::eof()) ? -1 : 0;
-	}
-
-private:
-	AAssetManager* manager;
-	AAsset* asset;
-	std::vector<char> buffer;
-};
-
-
-class assetistream : public std::istream
-{
-public:
-	assetistream(AAssetManager* manager, const std::string& file)
-		: std::istream(new asset_streambuf(manager, file))
-	{
-	}
-	assetistream(const std::string& file)
-		: std::istream(new asset_streambuf(manager, file))
-	{
-	}
-
-	virtual ~assetistream()
-	{
-		delete rdbuf();
-	}
-
-	static void setAssetManager(AAssetManager* m)
-	{
-		manager = m;
-	}
-
-private:
-	static AAssetManager* manager;
-};
-*/
 #if defined ANDROID_PLATFORM
 class asset_streambuf : public std::streambuf {
 public:
@@ -209,9 +147,6 @@ void read_feature(std::istream& feature_file, float* features) {
 	feature_file.read((char*)features, sizeof(float));
 }
 
-//#include <fstream>
-//#include <C:/WoMAengine2023/strtk.hpp>   // http://www.partow.net/programming/strtk
-
 bool RFontClass::LoadFontData(char* filename)
 {
 	// Create the font spacing buffer.
@@ -223,6 +158,7 @@ bool RFontClass::LoadFontData(char* filename)
 	char temp;
 
 	// Read in the font size and spacing between chars.
+	WOMA_LOGManager_DebugMSGAUTO(TEXT("LoadFontData: %s\n"), filename);
 	fin.open(filename);
 	if(fin.fail())
 	{

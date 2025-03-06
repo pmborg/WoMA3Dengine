@@ -316,17 +316,19 @@ bool XMLloader::loadWorld (TCHAR* file_) // Note: Have to be char
 
 	doc.LoadFile(XML_FILE.c_str());
 #else
+	//WORLD.XML
 	STRING dir = WOMA::getCurrentDir();
 	tinyxml2::XMLError error = doc.LoadFile(XMLFILE);
 	if (error == tinyxml2::XML_ERROR_FILE_NOT_FOUND)
 	{
 	#if MAINENGINE
-		STRING file = "../../../DXEngine_0";
+		//STRING file = "../../../DXEngine_0";
+		STRING file = "/home/pedro/projects/LinuxWoma/DXEngine_055/";
 	#else
 		STRING file = "../../../CoreEngine_Tutorials/DXENGINE_0";
-	#endif
 		file.append(std::to_string(DX_ENGINE_LEVEL));
 		file.append("/");
+	#endif
 		file.append(XMLFILE);
 		doc.LoadFile(file.c_str());
 	}
@@ -477,17 +479,22 @@ bool XMLloader::loadConfigSettings (TCHAR* file_) // Note: Have to be char
 
 	doc.LoadFile(XML_FILE.c_str());
 #else
+#if _NOT
 	//Current: /home/pedro/projects/LinuxWoma/bin/x64/Debug
 	//	~/projects/LinuxWoma/LinuxWoma/LinuxWoma/settings.xml
 	//	~/projects/LinuxWoma/LinuxWoma/LinuxWoma/world.xml
 	//	~/projects/LinuxWoma/DXEngine_021/world.xml
 
+	//DEMOS:      dir = "/home/pedro/projects/LinuxWoma027/CoreEngine_Tutorials/DXENGINE_027"
+	//MAINENGINE: dir = "/home/pedro/projects/LinuxWoma/bin/x64/Debug"
+#endif
+	//SETTINGS.XML
 	STRING dir = WOMA::getCurrentDir();
 	tinyxml2::XMLError error = doc.LoadFile(XMLFILE);
 	if (error == tinyxml2::XML_ERROR_FILE_NOT_FOUND)
 	{
 	#if MAINENGINE
-		STRING file = "/home/pedro/projects/LinuxWoma/LinuxWoma/LinuxWoma";
+		STRING file = "/home/pedro/projects/LinuxWoma/DXEngine_055/";
 	#else
 		STRING file = "../../../CoreEngine_Tutorials/DXENGINE_0";
 		file.append(std::to_string(DX_ENGINE_LEVEL));

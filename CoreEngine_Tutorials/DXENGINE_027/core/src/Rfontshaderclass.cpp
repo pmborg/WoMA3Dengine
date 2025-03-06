@@ -1,13 +1,43 @@
-////////////////////////////////////////////////////////////////////////////////
-// Filename: RFontShaderClass.cpp
-////////////////////////////////////////////////////////////////////////////////
+// --------------------------------------------------------------------------------------------
+// Filename: Rfontshaderclass.cpp
+// --------------------------------------------------------------------------------------------
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// --------------------------------------------------------------------------------------------
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+//
+// This file is part of the WorldOfMiddleAge project.
+//
+// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
+// You may not alter or remove any copyright or other notice from copies of the content.
+// The content contained in this file is provided only for educational and informational purposes.
+// 
+// Downloaded from : https://github.com/pmborg/WoMA3Dengine
+// --------------------------------------------------------------------------------------------
+// ORIGINAL: Rastertek Tutorial 14: Font Engine : https://www.rastertek.com/gl4linuxtut14.html
+// --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567222;
+
 #include "platform.h"
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
-#include "Rfontshaderclass.h"
+#if defined ANDROID_PLATFORM
+#include "AndroidEngine.h"
+#include <android\asset_manager.h>
+#endif
+
+#include "WomaDriverClass.h"
+#include "GLmathClass.h"
+#include "GLopenGLclass.h"
+#include "GLshaderClass.h"
+
+#include "OSengine.h"
+#include "OSmain_dir.h"
 #include "mem_leak.h"
 #include "standard_platform.h"
 #include "log.h"
 #include "woma_macros.h"
+
+#include "Rfontshaderclass.h"
 
 RFontShaderClass::RFontShaderClass()
 {
@@ -70,6 +100,8 @@ bool RFontShaderClass::InitializeShader(char* vsFilename, char* fsFilename)
     const char* fragmentShaderBuffer;
     int status;
 
+	WOMA_LOGManager_DebugMSGAUTO(TEXT("RFontShaderClass::InitializeShader: %s\n"), vsFilename);
+	WOMA_LOGManager_DebugMSGAUTO(TEXT("RFontShaderClass::InitializeShader: %s\n"), fsFilename);
 
     // Load the vertex shader source file into a text buffer.
     vertexShaderBuffer = LoadShaderSourceFile(vsFilename);
@@ -238,6 +270,7 @@ void RFontShaderClass::OutputShaderErrorMessage(unsigned int shaderId, char* sha
 
     // Get the size of the string containing the information log for the failed shader compilation message.
     glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &logSize);
+
     //WOMA_LOGManager_DebugMSG (TEXT("logSize: %d\n"), logSize);
     WOMA_LOGManager_DebugMSG(TEXT("FILE: %s\n"), shaderFilename);
 
@@ -269,52 +302,6 @@ void RFontShaderClass::OutputLinkerErrorMessage(unsigned int programId)
     std::vector<char> ProgramErrorMessage(max(InfoLogLength, int(1)));
     glGetProgramInfoLog(m_shaderProgram, InfoLogLength, NULL, &ProgramErrorMessage[0]);
     _tprintf("%s\n", &ProgramErrorMessage[0]);
-
-    /*
-    long count;
-    FILE* filePtr;
-    int logSize, error;
-    char* infoLog;
-
-    // Get the size of the string containing the information log for the failed shader compilation message.
-    glGetProgramiv(programId, GL_INFO_LOG_LENGTH, &logSize);
-
-    // Increment the size by one to handle also the null terminator.
-    logSize++;
-
-    // Create a char buffer to hold the info log.
-    infoLog = new char[logSize];
-
-    // Now retrieve the info log.
-    glGetProgramInfoLog(programId, logSize, NULL, infoLog);
-
-    // Open a file to write the error message to.
-    filePtr = fopen("linker-error.txt", "w");
-	if(filePtr == NULL)
-	{
-        cout << "Error opening linker error message output file." << endl;
-		return;
-	}
-
-    // Write out the error message.
-    count = fwrite(infoLog, sizeof(char), logSize, filePtr);
-    if(count != logSize)
-	{
-        cout << "Error writing linker error message output file." << endl;
-		return;
-	}
-
-    // Close the file.
-    error = fclose(filePtr);
-    if(error != 0)
-	{
-        cout << "Error closing linker error message output file." << endl;
-		return;
-	}
-
-    // Pop a message up on the screen to notify the user to check the text file for linker errors.
-    cout << "Error linking shader program.  Check linker-error.txt for message." << endl;
-    */
 
     return;
 }
@@ -372,17 +359,7 @@ bool RFontShaderClass::SetShaderParameters(float* worldMatrix, float* viewMatrix
         return false;
     }
     glUniform4fv(location, 1, pixelColor);
-    /*
-    // Set the fade
-    location = glGetUniformLocation(m_shaderProgram, "PSfade");
-    //ASSERT(location != -1);
-    glUniform1fv(location, 1, &PSfade);
 
-    // Set the isFont
-    location = glGetUniformLocation(m_shaderProgram, "isFont");
-    //ASSERT(location != -1);
-    glUniform1iv(location, 1, &isFont);
-    */
     return true;
 }
 #endif

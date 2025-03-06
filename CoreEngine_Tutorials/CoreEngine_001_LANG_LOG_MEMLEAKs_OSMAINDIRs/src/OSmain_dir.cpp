@@ -209,9 +209,6 @@ namespace WOMA
 
 		return strHOMEchar;
 	}
-
-	//LINUX:	/home/pedro/projects/LinuxWoma/bin/x64/Debug
-	//WINDOWS:	C:\WoMAengine2023\DXEngine_055
 	//-------------------------------------------------------------------------------------------
 	bool logDirs(BOOL WINXP_FLAG, BOOL bIsWow64)
 	//-------------------------------------------------------------------------------------------

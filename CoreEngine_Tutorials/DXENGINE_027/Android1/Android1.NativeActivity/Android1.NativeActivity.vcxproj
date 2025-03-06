@@ -42,7 +42,7 @@
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
     <ApplicationType>Android</ApplicationType>
     <ApplicationTypeRevision>3.0</ApplicationTypeRevision>
-    <ProjectName>Android026.NativeActivity</ProjectName>
+    <ProjectName>Android027.NativeActivity</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -130,7 +130,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PublicIncludeDirectories>
     </PublicIncludeDirectories>
-    <IncludePath>$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include;.;..;../..;../../include;$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include__;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;C:\WoMA3Dengine;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_026\core\include;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_026\core\Android1\Android1.NativeActivity;C:\WoMA3Dengine\ThirdParty\JPG_LIB\include;C:\WoMA3Dengine\ThirdParty\PNG_LIB\include</IncludePath>
+    <IncludePath>$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include;.;..;../..;../../include;$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include__;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;C:\WoMA3Dengine;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_027\core\include;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_027\core\Android1\Android1.NativeActivity;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_027\core\linux\include;C:\WoMA3Dengine\ThirdParty\JPG_LIB\include;C:\WoMA3Dengine\ThirdParty\PNG_LIB\include</IncludePath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\021\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
@@ -187,7 +187,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <CompileAs>CompileAsCpp</CompileAs>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
-      <PreprocessorDefinitions>__ANDROID_API__=$(AndroidAPILevelNumber);%(PreprocessorDefinitions);DEMO_LEVEL=26;MAINENGINE_LINUX;GL_KHR_debug</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__ANDROID_API__=$(AndroidAPILevelNumber);%(PreprocessorDefinitions);DEMO_LEVEL=27;MAINENGINE_LINUX;GL_KHR_debug</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <LibraryDependencies>%(LibraryDependencies);GLESv1_CM;GLESv3;EGL;m;z</LibraryDependencies>
@@ -260,6 +260,13 @@
     <ClInclude Include="..\..\core\include\OSmain_dir.h" />
     <ClInclude Include="..\..\core\include\platform.h" />
     <ClInclude Include="..\..\core\include\processorInfo.h" />
+    <ClInclude Include="..\..\core\include\Rapplicationclass.h" />
+    <ClInclude Include="..\..\core\include\RCameraClass.h" />
+    <ClInclude Include="..\..\core\include\Rfontclass.h" />
+    <ClInclude Include="..\..\core\include\Rfontshaderclass.h" />
+    <ClInclude Include="..\..\core\include\Ropenglclass.h" />
+    <ClInclude Include="..\..\core\include\Rtextclass.h" />
+    <ClInclude Include="..\..\core\include\Rtextureclass.h" />
     <ClInclude Include="..\..\core\include\stackTrace.h" />
     <ClInclude Include="..\..\core\include\standard_platform.h" />
     <ClInclude Include="..\..\core\include\stateMachine.h" />
@@ -272,6 +279,7 @@
     <ClInclude Include="..\..\core\include\woma_exception.h" />
     <ClInclude Include="..\..\core\include\woma_macros.h" />
     <ClInclude Include="..\..\core\include\xml_loader.h" />
+    <ClInclude Include="..\..\core\linux\include\Rinputclass.h" />
     <ClInclude Include="AndroidNewSystemClass.h" />
     <ClInclude Include="..\..\..\tech-level.h" />
     <ClInclude Include="..\..\..\woma_engine_assets.h" />
@@ -346,6 +354,7 @@
     <ClCompile Include="..\..\core\Android1\Android1.NativeActivity\AndroidEngine.cpp" />
     <ClCompile Include="..\..\core\Android1\Android1.NativeActivity\androidsystemclass.cpp" />
     <ClCompile Include="..\..\core\Android1\Android1.NativeActivity\main-android.cpp" />
+    <ClCompile Include="..\..\core\linux\src\Rinputclass.cpp" />
     <ClCompile Include="..\..\core\src\0CheckOS.cpp" />
     <ClCompile Include="..\..\core\src\1CheckSYS.cpp" />
     <ClCompile Include="..\..\core\src\4CheckEngineUpdates.cpp" />
@@ -370,7 +379,14 @@
     <ClCompile Include="..\..\core\src\Math3D.cpp" />
     <ClCompile Include="..\..\core\src\mem_leak.cpp" />
     <ClCompile Include="..\..\core\src\OSmain_dir.cpp" />
+    <ClCompile Include="..\..\core\src\Rapplicationclass.cpp" />
+    <ClCompile Include="..\..\core\src\RCameraClass.cpp" />
     <ClCompile Include="..\..\core\src\renderApplication_Basics.cpp" />
+    <ClCompile Include="..\..\core\src\Rfontclass.cpp" />
+    <ClCompile Include="..\..\core\src\Rfontshaderclass.cpp" />
+    <ClCompile Include="..\..\core\src\Ropenglclass.cpp" />
+    <ClCompile Include="..\..\core\src\Rtextclass.cpp" />
+    <ClCompile Include="..\..\core\src\Rtextureclass.cpp" />
     <ClCompile Include="..\..\core\src\SystemClass.cpp" />
     <ClCompile Include="..\..\core\src\TimerClass.cpp" />
     <ClCompile Include="..\..\core\src\TrigonometryMathClass.cpp" />

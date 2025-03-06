@@ -1,6 +1,23 @@
-///////////////////////////////////////////////////////////////////////////////
-// Filename: RTextClass.cpp
-///////////////////////////////////////////////////////////////////////////////
+// --------------------------------------------------------------------------------------------
+// Filename: Rtextclass.cpp
+// --------------------------------------------------------------------------------------------
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// --------------------------------------------------------------------------------------------
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+//
+// This file is part of the WorldOfMiddleAge project.
+//
+// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
+// You may not alter or remove any copyright or other notice from copies of the content.
+// The content contained in this file is provided only for educational and informational purposes.
+// 
+// Downloaded from : https://github.com/pmborg/WoMA3Dengine
+// --------------------------------------------------------------------------------------------
+// ORIGINAL: Rastertek Tutorial 14: Font Engine : https://www.rastertek.com/gl4linuxtut14.html
+// --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567222;
+
 #include "platform.h"
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
 #include "Rtextclass.h"
@@ -207,16 +224,6 @@ bool RTextClass::UpdateText(RFontClass* Font, char* text, int positionX, int pos
 	// Bind the vertex buffer.
     glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
 	glBufferData(GL_ARRAY_BUFFER, m_vertexCount * sizeof(VertexType), vertices, GL_STATIC_DRAW);	// Bind the vertex
-/*
-    // Get a pointer to the buffer's actual location in memory.
-    dataPtr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-
-    // Copy the vertex data into memory.
-    memcpy(dataPtr, vertices, m_vertexCount * sizeof(VertexType));
-
-    // Unlock the vertex buffer.
-    glUnmapBuffer(GL_ARRAY_BUFFER);
-*/
 
 	// Release the vertex array as it is no longer needed.
 	delete [] vertices;

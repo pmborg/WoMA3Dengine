@@ -1,6 +1,23 @@
-////////////////////////////////////////////////////////////////////////////////
-// Filename: RApplicationClass.cpp
-////////////////////////////////////////////////////////////////////////////////
+// --------------------------------------------------------------------------------------------
+// Filename: Rapplicationclass.cpp
+// --------------------------------------------------------------------------------------------
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// --------------------------------------------------------------------------------------------
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+//
+// This file is part of the WorldOfMiddleAge project.
+//
+// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
+// You may not alter or remove any copyright or other notice from copies of the content.
+// The content contained in this file is provided only for educational and informational purposes.
+// 
+// Downloaded from : https://github.com/pmborg/WoMA3Dengine
+// --------------------------------------------------------------------------------------------
+// ORIGINAL: Rastertek Tutorial 14: Font Engine : https://www.rastertek.com/gl4linuxtut14.html
+// --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567222;
+
 #include "platform.h"
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
 #include "Rapplicationclass.h"
@@ -24,13 +41,13 @@ RApplicationClass::RApplicationClass()
 RApplicationClass::~RApplicationClass()
 {
 }
-#if !defined ANDROID_PLATFORM
-bool RApplicationClass::Initialize(/*Display* display, Window win,*/ int screenWidth, int screenHeight)
+
+bool RApplicationClass::Initialize(int screenWidth, int screenHeight)
 {
     // Create and initialize the OpenGL object.
     m_OpenGL = new OpenGLClass;
 	_tprintf("m_OpenGL->Initialize()\n");
-    IF_NOT_RETURN_FALSE (m_OpenGL->Initialize(/*display, win,*/ screenWidth, screenHeight, SCREEN_NEAR, SCREEN_DEPTH, VSYNC_ENABLED));
+    IF_NOT_RETURN_FALSE (m_OpenGL->Initialize(screenWidth, screenHeight, SCREEN_NEAR, SCREEN_DEPTH, VSYNC_ENABLED));
 
     // Create and initialize the camera object.
     m_Camera = new RCameraClass;
@@ -46,44 +63,12 @@ bool RApplicationClass::Initialize(/*Display* display, Window win,*/ int screenW
 
     // Create and initialize the font object.
     m_Font = new RFontClass;
-	_tprintf("m_Font->Initialize(m_OpenGL, 1)\n");
+	_tprintf("m_Font->Initialize(m_OpenGL, 0)\n");
     IF_NOT_RETURN_FALSE(m_Font->Initialize(m_OpenGL, 0));
-
 
     return true;
 }
-#else
-bool RApplicationClass::Initialize(int screenWidth, int screenHeight)
-{
-    // Create and initialize the OpenGL object.
-    m_OpenGL = new OpenGLClass;
-    _tprintf("m_OpenGL->Initialize()\n");
-#if !defined ANDROID_PLATFORM
-    IF_NOT_RETURN_FALSE(m_OpenGL->Initialize(display, win, screenWidth, screenHeight, SCREEN_NEAR, SCREEN_DEPTH, VSYNC_ENABLED));
-#else
-    IF_NOT_RETURN_FALSE(m_OpenGL->Initialize(screenWidth, screenHeight, SCREEN_NEAR, SCREEN_DEPTH, VSYNC_ENABLED));
-#endif
-    // Create and initialize the camera object.
-    m_Camera = new RCameraClass;
-    _tprintf("new RCameraClass\n");
-    m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
-    m_Camera->Render();
 
-    // Create and initialize the font shader object.
-    m_FontShader = new RFontShaderClass;
-
-    _tprintf("m_FontShader->Initialize(m_OpenGL)\n");
-    IF_NOT_RETURN_FALSE(m_FontShader->Initialize(m_OpenGL));
-
-    // Create and initialize the font object.
-    m_Font = new RFontClass;
-    _tprintf("m_Font->Initialize(m_OpenGL, 1)\n");
-    IF_NOT_RETURN_FALSE(m_Font->Initialize(m_OpenGL, 0));
-
-
-    return true;
-}
-#endif
 void RApplicationClass::Shutdown()
 {
     SAFE_SHUTDOWN(m_Font);
@@ -124,11 +109,11 @@ bool RApplicationClass::Render()
     //m_OpenGL->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
     // Get the world, view, and ortho matrices from the opengl and camera objects.
-    m_OpenGL->GetWorldMatrix(worldMatrix);
-    m_Camera->GetViewMatrix(viewMatrix);
-    m_OpenGL->GetOrthoMatrix(orthoMatrix);
+    m_OpenGL->GetWorldMatrix(worldMatrix);	//W
+    m_Camera->GetViewMatrix(viewMatrix);	//V
+    m_OpenGL->GetOrthoMatrix(orthoMatrix);	//P
 
-#if future
+#if _NOT
 	switch (projection)
 	{
 		case PROJECTION_PERSPECTIVE:
@@ -167,10 +152,6 @@ bool RApplicationClass::Render()
 	}
 #endif
 
-    // Disable the Z buffer and enable alpha blending for 2D rendering.
-    //m_OpenGL->TurnZBufferOff();
-    //m_OpenGL->EnableAlphaBlending();
-
     // Get the color to render the text as.
 	m_TextString1->GetPixelColor(pixelColor);
 
@@ -183,14 +164,7 @@ bool RApplicationClass::Render()
     // Render the first text string using the font shader.
     m_TextString1->Render();
 
-    // Enable the Z buffer and disable alpha blending now that 2D rendering is complete.
-    //m_OpenGL->TurnZBufferOn();
-    //m_OpenGL->DisableAlphaBlending();
-
     SAFE_SHUTDOWN(m_TextString1);
-
-    // Present the rendered scene to the screen.
-    //m_OpenGL->EndScene();
 
     return true;
 }

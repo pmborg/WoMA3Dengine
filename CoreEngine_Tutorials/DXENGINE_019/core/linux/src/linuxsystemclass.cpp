@@ -242,11 +242,6 @@ bool LinuxSystemClass::APPLICATION_INIT_SYSTEM() // ApplicationInit()
 	g_contextDriver = NEW glxOpenGLClass;
 	IF_NOT_THROW_EXCEPTION (g_contextDriver);
 
-	// START-TIMERS: ("Window Title" refresh & Real-Time Weather refresh)
-	//StartTimer();
-
-	// START-THREAD LOAD-BACKGROUND: (in "background") load not mandatory 3D Stuff (detail objects, nearby terrains, etc...)
-
 	//----------------------------------------------------------------------------
 	LoadAllDrivers();					// LOAD ALL DRIVERS: (DX9, DX11, DX12, OpenGL)
 
@@ -292,8 +287,6 @@ void LinuxSystemClass::ProcessFrame() // EQUAL: BOTH OS?
 	SystemClass::FrameUpdate();	// Process: (INPUT + PerformanceStats) Only!
 
 	#define mon 0
-	//WomaDriverClass* driver = SystemHandle->driverList[SystemHandle->AppSettings->DRIVER];
-
 	#if !defined INTRO_DEMO
 	if ((WOMA::game_state >= GAME_RUN && WOMA::game_state < ENGINE_RESTART) || (WOMA::game_state == GAME_SETUP))
 	#endif
@@ -335,7 +328,7 @@ bool LinuxSystemClass::ApplicationInitMainWindow(void* OpenGL)
 {
 	bool res = createWindow();
 
-	return true;
+	return res;
 }
 
 #endif

@@ -389,7 +389,7 @@ void APPLICATION_STOP()
 
 #if defined ANDROID_PLATFORM
 	engine.has_focus_ = false;
-	terminate();
+	//terminate();
 #endif
 }
 

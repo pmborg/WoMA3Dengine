@@ -190,6 +190,7 @@ char* GLshaderClass::LoadShaderSourceFile(char* filename)
 
 	// Open the shader source file.
 	fin.open(filename);
+	WOMA_LOGManager_DebugMSGAUTO(TEXT("LoadShaderSourceFile: %s\n"), filename);
 
 	// If it could not open the file then exit.
 	if (fin.fail())
@@ -201,6 +202,7 @@ char* GLshaderClass::LoadShaderSourceFile(char* filename)
 		file.append(std::to_string(DX_ENGINE_LEVEL));
 		file.append("/");
 		file.append(filename);
+		WOMA_LOGManager_DebugMSGAUTO(TEXT("LoadShaderSourceFile: %s\n"), file);
 		fin.open(file);
 		if (fin.fail())
 #endif
@@ -238,6 +240,7 @@ char* GLshaderClass::LoadShaderSourceFile(char* filename)
 #if !defined ANDROID_PLATFORM
 	// Open the shader source file again.
 	fin.open(filename);
+	WOMA_LOGManager_DebugMSGAUTO(TEXT("LoadShaderSourceFile: %s\n"), filename);
 
 	// If it could not open the file then exit.
 	if (fin.fail())
@@ -248,6 +251,7 @@ char* GLshaderClass::LoadShaderSourceFile(char* filename)
 		file.append("/");
 		file.append(filename);
 		fin.open(file);
+		WOMA_LOGManager_DebugMSGAUTO(TEXT("LoadShaderSourceFile: %s\n"), file);
 		if (fin.fail())
 #endif
 		{

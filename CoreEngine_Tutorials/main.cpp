@@ -123,7 +123,7 @@ void android_main(android_app* state)
 	APPLICATION_MAIN(argc, argv);
 
 	engine.has_focus_ = false;
-	terminate();
+	//terminate();
 }
 #endif
 

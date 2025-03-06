@@ -39,7 +39,7 @@
     <IncludePath>/usr/include/atk-1.0/;/usr/lib/x86_64-linux-gnu/graphene-1.0/include/;/usr/include/graphene-1.0;/usr/include/gdk-pixbuf-2.0/;/usr/include/harfbuzz/;/usr/include/pango-1.0;/usr/include/cairo/;/usr/lib/x86_64-linux-gnu/glib-2.0/include/;/usr/include;/usr/include/libpng16;/usr/include/glib-2.0;/usr/include/gtk-3.0__;/usr/include/gtk-2.0;/usr/lib/x86_64-linux-gnu/gtk-2.0/include/;C:\WoMA3Dengine\ThirdParty\PNG_LIB\include;../core/include;../linux/include;../core/include/GLX;C:\WoMA3Dengine\CoreEngine_Tutorials\;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;~/projects/LinuxWoma027/ThirdParty/PNG_LIB/include;~/projects/LinuxWoma027/CoreEngine_Tutorials/DXENGINE_027/core/linux/include;~/projects/LinuxWoma027/ThirdParty/JPG_LIB/include;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_027\core\linux\include;../..;..;.;$(IncludePath)</IncludePath>
     <SourcePath>
     </SourcePath>
-    <AdditionalSourcesToCopyMapping>C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_027\GLengine:=~/projects/LinuxWoma027/CoreEngine_Tutorials/DXENGINE_026/GLengine;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_027\engine:=~/projects/LinuxWoma027/CoreEngine_Tutorials/DXENGINE_026/engine</AdditionalSourcesToCopyMapping>
+    <AdditionalSourcesToCopyMapping>C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_027\GLengine:=~/projects/LinuxWoma027/CoreEngine_Tutorials/DXENGINE_027/GLengine;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_027\engine:=~/projects/LinuxWoma027/CoreEngine_Tutorials/DXENGINE_027/engine</AdditionalSourcesToCopyMapping>
   </PropertyGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\ThirdParty\PNG_LIB\include\pngdebug.h" />
@@ -73,7 +73,7 @@
     <ClInclude Include="..\core\include\platform.h" />
     <ClInclude Include="..\core\include\ProcessorInfo.h" />
     <ClInclude Include="..\core\include\Rapplicationclass.h" />
-    <ClInclude Include="..\core\include\Rcameraclass.h" />
+    <ClInclude Include="..\core\include\RCameraClass.h" />
     <ClInclude Include="..\core\include\Rfontclass.h" />
     <ClInclude Include="..\core\include\Rfontshaderclass.h" />
     <ClInclude Include="..\core\include\Ropenglclass.h" />
@@ -141,7 +141,7 @@
     <ClCompile Include="..\core\src\OSmain_dir.cpp" />
     <ClCompile Include="..\core\src\packManager.cpp" />
     <ClCompile Include="..\core\src\Rapplicationclass.cpp" />
-    <ClCompile Include="..\core\src\Rcameraclass.cpp" />
+    <ClCompile Include="..\core\src\RCameraClass.cpp" />
     <ClCompile Include="..\core\src\renderApplication_Basics.cpp" />
     <ClCompile Include="..\core\src\Rfontclass.cpp" />
     <ClCompile Include="..\core\src\Rfontshaderclass.cpp" />
@@ -238,8 +238,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\engine\data\airports.metar" />
+    <None Include="..\engine\data\fonts\008font.png_debug" />
     <None Include="..\GLengine\color.ps" />
     <None Include="..\GLengine\color.vs" />
+    <None Include="..\GLengine\font.ps" />
+    <None Include="..\GLengine\font.vs" />
     <None Include="..\GLengine\light.ps" />
     <None Include="..\GLengine\light.vs" />
     <None Include="..\GLengine\texture.ps" />
@@ -255,11 +258,21 @@
     <Image Include="..\engine\data\basics\logotipo_small_backgroundV2.bmp" />
     <Image Include="..\engine\data\basics\seafloor.png" />
     <Image Include="..\engine\data\basics\target.bmp" />
+    <Image Include="..\engine\data\fonts\008font.png" />
+    <Image Include="..\engine\data\fonts\008font.tga" />
+    <Image Include="..\engine\data\fonts\008font2.tga" />
+    <Image Include="..\engine\data\fonts\font01.tga" />
     <Image Include="..\engine\data\original\Earth_Diffuse.bmp" />
     <Image Include="..\engine\data\sky\NEW_SKY_DOME.jpg" />
     <Image Include="..\engine\data\sky\NEW_SKY_NIGHT.jpg" />
     <Image Include="..\engine\data\TITLE\WOMA_ENGINE-BIG.png" />
     <Image Include="..\engine\data\TITLE\WOMA_ENGINE.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\engine\data\fonts\008fontdata.txt" />
+    <Text Include="..\engine\data\fonts\008fontdata2.txt" />
+    <Text Include="..\engine\data\fonts\008fontdata_windows.txt" />
+    <Text Include="..\engine\data\fonts\font01.txt" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
