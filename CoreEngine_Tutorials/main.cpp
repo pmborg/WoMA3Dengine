@@ -100,7 +100,7 @@ android_app* app;
 struct womaengine engine = { 0 };
 
 #if defined WOMAENGINE
-void android_main(android_app* state)			// ENTRY-POINT: ANDROID:
+void android_main(android_app* state)			// ENTRY-POINT: ANDROID
 {
 	app = state;
 

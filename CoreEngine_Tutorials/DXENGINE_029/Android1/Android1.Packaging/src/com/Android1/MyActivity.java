@@ -1,11 +1,31 @@
+// --------------------------------------------------------------------------------------------
+// Filename: MyActivity.java
+// --------------------------------------------------------------------------------------------
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// --------------------------------------------------------------------------------------------
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+//
+// This file is part of the WorldOfMiddleAge project.
+//
+// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
+// You may not alter or remove any copyright or other notice from copies of the content.
+// The content contained in this file is provided only for educational and informational purposes.
+// 
+// Downloaded from : https://github.com/pmborg/WoMA3Dengine
+// --------------------------------------------------------------------------------------------
+// PURPOSE: 
+// --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567222;
+
 // https://www.tutorialspoint.com/android/android_hello_world_example.htm
 
 // https://github.com/codepath/android_hello_world
-// C:\Users\pedro\Downloads\android_hello_world-master\android_hello_world-master
+// ...\Downloads\android_hello_world-master\android_hello_world-master
 
 // Android 8.1 	            27 	    Oreo_MR1
-// Android 8.0 	 NDK        26 	    Oreo 	
-// Android 7.1 	 PACKAGING  25 	    Nougat_MR1
+// Android 8.0 	 NDK        26 	    Oreo 		<----c++ on this demo
+// Android 7.1 	 PACKAGING  25 	    Nougat_MR1	<----java on this demo
 // Android 7.0 	            24 	    Nougat 	
 // Android 6.0 	            23 	    MARSHMALLOW 	
 // Android 5.1 	            22 	    LOLLIPOP_MR1 	
@@ -130,31 +150,117 @@ import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 //import com.woma.R;
 
-//https://www.cnblogs.com/MMLoveMeMM/articles/3610386.html  
+//AUDIO SAMPLE: https://www.cnblogs.com/MMLoveMeMM/articles/3610386.html  
 public class MyActivity extends NativeActivity
 {
 Toast toast;
 
-//public native String getSystemLanguage();
-
     protected void onCreate(Bundle savedInstanceState) {                                                                                                                                  
-        Log.w("[WOMA]Java", "JAVA:onCreate()");
+        //Log.w("[WOMA]", "JAVA:onCreate()");
         super.onCreate(savedInstanceState);    
 
         toast = Toast.makeText(MyActivity.this, "message", Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER  , 0, 0);
-
-        //String language = getSystemLanguage();
-        //Log.w("System Language", language); // This will log the system language
     }       
+
+    // AUDIO:
+    //--------------------------------------------------------
+    private AudioKit[] aKit = new AudioKit[10];
+    int idx=0;
+
+    public int playAudio(final String audioFile) { 
+        if (idx>=10)
+            idx=0;
+        aKit[idx] = new AudioKit();
+        Log.w("[WOMA]", "MyActivity::playAudio(): "+audioFile);
+        Runnable r = new PlayThread(audioFile, idx);
+        new Thread(r).start();
+
+        return idx++;
+    }
+	
+    public void stopAudio(int idx_) { 
+        //Log.w("[WOMA]", "MyActivity::stopAudio()");
+        aKit[idx_].stopAudio();
+        aKit[idx_]=null;
+    }
+
+    //--------------------------------------------------------
+    private class PlayThread implements Runnable {
+    final String m_audioFile;
+    int m_idx=0;
+
+        public PlayThread(final String audioFile_, int idx_) {
+           m_audioFile = audioFile_;
+           m_idx = idx_;
+        }
+
+        @Override
+        public void run() {
+            aKit[m_idx].playAudio(m_audioFile);
+        }
+    }
+
+    // updateFPS:
+    //--------------------------------------------------------
+	public void updateFPS(final float fFPS)
+    {
+        //Log.w("[WOMA]", "FPS: "+fFPS);
+    }
 
     // ShowAlert
     //--------------------------------------------------------
     public void ShowAlert(final String message)
     {
-        Log.w("[WOMA]Java", "Toast showAlert(): "+message);
-
+        //Log.w("[WOMA]", "Toast showAlert(): "+message);
         toast.setText(message);
         toast.show();
+    }
+
+    // DownloadFiles
+    //--------------------------------------------------------
+    public void DownloadFiles(final String url, final String f)
+    {
+        Log.w("[WOMA]1", "JAVA: DownloadFiles()");
+        Log.w("[WOMA]2", url);
+        Log.w("[WOMA]3", f);
+
+        try {
+            URL u = new URL(url);
+            URLConnection urlConnection = u.openConnection();
+            urlConnection.setConnectTimeout(1000);
+            urlConnection.setReadTimeout(1000);
+
+            BufferedReader breader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            StringBuilder stringBuilder = new StringBuilder();
+
+            Log.w("[WOMA]", "JAVA: 4");
+            String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+            String pathDir = baseDir + "/Android/data/com.woma/files/"+ f;
+            File file = new File(pathDir);
+            FileWriter fileReader = new FileWriter(file); // A stream that connects to the text file
+            BufferedWriter bufferedWriter = new BufferedWriter(fileReader); // Connect the FileWriter to the BufferedWriter
+
+            String line;
+            while((line = breader.readLine()) != null) {
+                stringBuilder.append(line);
+                Log.w("[WOMA]:line", line);
+                bufferedWriter.write(line);
+            }
+
+            bufferedWriter.flush();
+            bufferedWriter.close();
+
+            Log.w("[WOMA]", "JAVA: 5");
+
+        } catch (MalformedURLException mue) {
+            Log.e("[WOMA]SYNC getUpdate", "malformed url error", mue);
+        } catch (IOException ioe) {
+            Log.e("[WOMA]SYNC getUpdate", "io error", ioe);
+        } catch (SecurityException se) {
+            Log.e("[WOMA]SYNC getUpdate", "security error", se);
+        }
+
+         Log.w("[WOMA]", "DownloadFiles:END");
     }
 } 

@@ -187,7 +187,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <CompileAs>CompileAsCpp</CompileAs>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
-      <PreprocessorDefinitions>__ANDROID_API__=$(AndroidAPILevelNumber);%(PreprocessorDefinitions);DEMO_LEVEL=28;MAINENGINE_LINUX;GL_KHR_debug</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__ANDROID_API__=$(AndroidAPILevelNumber);%(PreprocessorDefinitions);DEMO_LEVEL=29;MAINENGINE_LINUX;GL_KHR_debug</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <LibraryDependencies>%(LibraryDependencies);GLESv1_CM;GLESv3;EGL;m;z</LibraryDependencies>
