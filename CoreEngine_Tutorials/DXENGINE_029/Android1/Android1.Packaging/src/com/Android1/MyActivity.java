@@ -18,10 +18,11 @@
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234567222;
 
+
 // https://www.tutorialspoint.com/android/android_hello_world_example.htm
 
 // https://github.com/codepath/android_hello_world
-// ...\Downloads\android_hello_world-master\android_hello_world-master
+// ...\android_hello_world-master\android_hello_world-master
 
 // Android 8.1 	            27 	    Oreo_MR1
 // Android 8.0 	 NDK        26 	    Oreo 		<----c++ on this demo
@@ -119,7 +120,7 @@
 //      6 	Build.gradle
 //      This is an auto generated file which contains compileSdkVersion, buildToolsVersion, applicationId, minSdkVersion, targetSdkVersion, versionCode and versionName
 
-package com.Android1;
+package com.woma;
 
 //LIBS: C:\WoMAengine2023\Android-WomaEngine\Android2\Android2.Packaging\jars
 import android.util.Log;
@@ -149,6 +150,15 @@ import java.io.FileWriter;
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 //import com.woma.R;
+import android.app.NativeActivity;
+import android.os.Bundle;
+import android.util.Log;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.io.BufferedOutputStream;
 
 //AUDIO SAMPLE: https://www.cnblogs.com/MMLoveMeMM/articles/3610386.html  
 public class MyActivity extends NativeActivity
@@ -173,8 +183,8 @@ Toast toast;
             idx=0;
         aKit[idx] = new AudioKit();
         Log.w("[WOMA]", "MyActivity::playAudio(): "+audioFile);
-        Runnable r = new PlayThread(audioFile, idx);
-        new Thread(r).start();
+		Thread t = new Thread(new PlayThread(audioFile, idx), "play");
+		t.start();
 
         return idx++;
     }
@@ -219,48 +229,46 @@ Toast toast;
 
     // DownloadFiles
     //--------------------------------------------------------
-    public void DownloadFiles(final String url, final String f)
-    {
-        Log.w("[WOMA]1", "JAVA: DownloadFiles()");
-        Log.w("[WOMA]2", url);
-        Log.w("[WOMA]3", f);
+	public void DownloadFiles(String urlStr, String file) {
+        Log.w("[WOMA]1", "JAVA: DownloadFilesv2()");
+        Log.w("[WOMA]2", urlStr);
+        Log.w("[WOMA]3", file);
 
-        try {
-            URL u = new URL(url);
-            URLConnection urlConnection = u.openConnection();
-            urlConnection.setConnectTimeout(1000);
-            urlConnection.setReadTimeout(1000);
+		//String baseDir = "/storage/emulated/0";
+        String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+		Log.w("[WOMA]", "baseDir: "+baseDir);
+        String filePath = baseDir + "/Android/data/com.woma/files/"+ file;
+		Log.w("[WOMA]", "filePath: "+filePath);
 
-            BufferedReader breader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-            StringBuilder stringBuilder = new StringBuilder();
+       try{
+            java.io.BufferedInputStream in = new java.io.BufferedInputStream(new java.net.URL(urlStr).openStream());
+            java.io.FileOutputStream fos = new java.io.FileOutputStream(filePath);
+            java.io.BufferedOutputStream bout = new BufferedOutputStream(fos,1024);
+            byte[] data = new byte[1024];
+                int x=0;
+                while((x=in.read(data,0,1024))>=0){
+                    bout.write(data,0,x);               
+                }
+            fos.flush();
+            bout.flush();
+            fos.close();
+            bout.close();
+            in.close();
 
-            Log.w("[WOMA]", "JAVA: 4");
-            String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
-            String pathDir = baseDir + "/Android/data/com.woma/files/"+ f;
-            File file = new File(pathDir);
-            FileWriter fileReader = new FileWriter(file); // A stream that connects to the text file
-            BufferedWriter bufferedWriter = new BufferedWriter(fileReader); // Connect the FileWriter to the BufferedWriter
-
-            String line;
-            while((line = breader.readLine()) != null) {
-                stringBuilder.append(line);
-                Log.w("[WOMA]:line", line);
-                bufferedWriter.write(line);
-            }
-
-            bufferedWriter.flush();
-            bufferedWriter.close();
-
-            Log.w("[WOMA]", "JAVA: 5");
-
-        } catch (MalformedURLException mue) {
-            Log.e("[WOMA]SYNC getUpdate", "malformed url error", mue);
-        } catch (IOException ioe) {
-            Log.e("[WOMA]SYNC getUpdate", "io error", ioe);
-        } catch (SecurityException se) {
-            Log.e("[WOMA]SYNC getUpdate", "security error", se);
+        }catch (Exception e){
+             Log.e("Download Error", "Error downloading the WAV file", e);
         }
 
-         Log.w("[WOMA]", "DownloadFiles:END");
+		File f = new File(filePath);
+		if(f.exists()){
+			Log.w("[WOMA]", "The file " + f.getName() + " exists!");
+		}else{
+			Log.w("[WOMA]", "The file no longer exists!");
+		}
+		Log.w("[WOMA]", "file.length()="+f.length());
+
+		//playAudio(filePath);
+
+		Log.w("[WOMA]", "DownloadFilesv2:END");
     }
 } 
