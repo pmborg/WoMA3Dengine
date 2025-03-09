@@ -193,7 +193,6 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 		break;
 
 	case WM_DESTROY:	// The main application Window will be destroyed
-		//PostQuitMessage(0); //AQUI
 
 		return 0;
 

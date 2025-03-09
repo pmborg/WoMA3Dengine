@@ -299,6 +299,9 @@ extern int InitImGui(HWND hwnd_ = NULL);
 extern void ImGui_Stop();
 int AndroidSystemClass::APPLICATION_MAIN_LOOP()
 {
+	WomaMessageBox(WOMA::strConsoleTitle, DEMO_TITLE, MB_OK);
+	Sleep(3000);	//wait 3 seconds
+
 #if !defined NewWomaEngine
     while (WOMA::game_state < GAME_STOP)
     {

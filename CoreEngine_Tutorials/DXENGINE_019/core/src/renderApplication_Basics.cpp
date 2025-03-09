@@ -251,15 +251,15 @@ void ApplicationClass::AppPosRender()
 	// RENDER NATIVE TEXT:
 	// -------------------
 #if defined USE_DX10DRIVER_FONTS
-#if !defined INTRO_DEMO //|DEMO Force NATIVE TEXT|
+	#if !defined INTRO_DEMO //|DEMO Force NATIVE TEXT|
 	if ((RENDER_PAGE >= 22) && (m_Driver->m_sCapabilities.USE_DXDRIVER_FONTSBoolean) && (SystemHandle->AppSettings->DRIVER == DRIVER_DX11))
-#endif
+	#endif
 	{
 		if (RENDER_PAGE >= 21)
 			((DirectX::DX11Class*)m_Driver)->addText(10, SystemHandle->AppSettings->WINDOW_HEIGHT - 120, DEMO_NAME[RENDER_PAGE - 21], 1, 1, 1);
 	}
 
-	//m_Driver->ClearDepthBuffer();		// BANNER: On Top of 3D Rendered
+	//m_Driver->ClearDepthBuffer();		// Force BANNER: On Top of 3D Rendered
 	m_Driver->RenderDriverText();
 #endif
 
@@ -564,6 +564,13 @@ float ApplicationClass::WOMA_APPLICATION_DemoRender(UINT64 passedTotalTime)
 
 	if (fade == 0)
 	{
+#if defined ANDROID_PLATFORM
+		if (RENDER_PAGE >= 21)
+		{
+			ShowAlert(DEMO_NAME[RENDER_PAGE - 21]);
+			Sleep(750);
+		}
+#endif 
 		if (RENDER_PAGE == GAME_SYSTEM_SETTINGS)
 		{
 			WOMA::game_state = GAME_SYSTEM_SETTINGS; OS_REDRAW_WINDOW;

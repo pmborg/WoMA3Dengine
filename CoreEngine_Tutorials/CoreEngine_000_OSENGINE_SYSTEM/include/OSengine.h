@@ -130,6 +130,7 @@
 
 	#include "AndroidEngine.h"
 	void process_events(struct womaengine* engine, struct android_app* app);
+	void ShowAlert(const char* message);
 #endif
 #else
 	#include "AndroidNewSystemClass.h"

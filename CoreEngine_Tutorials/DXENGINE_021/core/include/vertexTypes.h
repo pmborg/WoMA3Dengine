@@ -86,8 +86,6 @@ struct ModelTextureVertexType
 #pragma pack(pop)
 #endif
 
-//AQUI!
-
 #if  DX_ENGINE_LEVEL >= 22 || defined USE_VIEW2D_SPRITES
 struct SentenceType
 {

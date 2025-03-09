@@ -257,7 +257,6 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 		break;
 
 	case WM_DESTROY:	// The main application Window will be destroyed
-		//PostQuitMessage(0); //AQUI
 
 	#if CORE_ENGINE_LEVEL >= 7 && defined USE_ASTRO_CLASS
 		KillTimer(hwnd, TIMER_ASTRO);

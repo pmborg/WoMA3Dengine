@@ -94,8 +94,6 @@ struct ModelTextureLightVertexType
 };
 #pragma pack(pop)
 
-//AQUI!
-
 struct SentenceType
 {
 #if (defined OPENGL3 || defined OPENGL4)

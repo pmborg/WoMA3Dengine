@@ -556,7 +556,7 @@ bool DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, i
 		//printf("retry on: createSwapChainDX11device()\n");
 		//IF_NOT_RETURN_FALSE(createSwapChainDX11device((HWND)hwnd, screenWidth, screenHeight, vsync, fullscreen, g_UseDoubleBuffering, g_AllowResize, numerator, denominator));
 	}
-	//return 0;//AQUI
+
 	//Init Step: 5 - Get Best Shader of this Graphic Card: dx10,dx10.1,dx11,etc... OUTPUT: ShaderModel
 	getProfile (g_USE_MONITOR);					
 

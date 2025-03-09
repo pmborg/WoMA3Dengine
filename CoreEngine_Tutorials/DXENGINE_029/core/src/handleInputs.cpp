@@ -338,7 +338,6 @@ bool ApplicationClass::HandleUserInput(double frameTime)
     if (!g_GOD_MODE)
     {
         float nx = 0.0f, nz = 0.0f;
-												  //AQUI
 		nextHeight = mainTerrain->getTerrainHeight(TERRAIN_ID, m_NextPosition->m_positionX, m_NextPosition->m_positionZ);
 
         if	((m_NextPosition->m_positionZ < mainTerrain->m_terrainHeight-1) && 

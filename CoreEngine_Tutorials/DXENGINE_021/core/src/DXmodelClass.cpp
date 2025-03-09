@@ -457,8 +457,6 @@ bool DXmodelClass::InitializeColorBuffers(/*ID3D11Device*/ void* device, void* i
 }
 
 
-//AQUI!
-
 // ----------------------------------------------------------------------------------------
 bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ void* Driver_Device, void* indices, void* vertices)
 // ----------------------------------------------------------------------------------------
