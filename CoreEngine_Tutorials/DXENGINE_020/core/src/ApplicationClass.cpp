@@ -68,17 +68,13 @@ ApplicationClass::ApplicationClass()
 	// private:
 
 #if defined INTRO_DEMO	// VIDEO+INTRO+DEMO
-#if defined WINDOWS_PLATFORM
-	RENDER_PAGE = 10;	// INTRO_DEMO START!!!
-	SpriteScreenToShow = -5;
-	//RENDER_PAGE = 15;	// FOR DEBUG ONLY| INTRO START ON:
-	//SpriteScreenToShow = 0;
-#else
-	//RENDER_PAGE = 10;	// INTRO_DEMO START!!!
-	//SpriteScreenToShow = -5;
-	RENDER_PAGE = 15;	// FOR DEBUG ONLY| INTRO START ON:
-	SpriteScreenToShow = 0;
-#endif
+	#if defined WINDOWS_PLATFORM
+		RENDER_PAGE = 10;	// INTRO_DEMO START!!!
+		SpriteScreenToShow = -5;
+	#else
+		RENDER_PAGE = 15;	// FOR DEBUG ONLY| INTRO START ON:
+		SpriteScreenToShow = 0;
+	#endif
 #else
 		RENDER_PAGE = DX_ENGINE_LEVEL;
   #if _DEBUG

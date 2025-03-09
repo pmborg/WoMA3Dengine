@@ -85,6 +85,7 @@ void WinSystemClass::ProcessFrame()
 //----------------------------------------------------------------------------
 {
 	SystemClass::FrameUpdate();	// Process: (INPUT + PerformanceStats) Only!
+
 	if (WOMA::game_state == ENGINE_RESTART)
 		return;
 

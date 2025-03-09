@@ -452,6 +452,7 @@ void ApplicationClass::initIntroDemo()
 			((DirectX::DXmodelClass*)m_spriteModel)->m_Shader9->isFontShader = false;
 			break;
 		#endif
+
 		#if defined DX9 && D3D11_SPEC_DATE_YEAR > 2009
 		case DRIVER_DX9:
 			((DirectX::DXmodelClass*)m_spriteModel)->m_Shader11->isFontShader = false;
@@ -469,6 +470,7 @@ void ApplicationClass::initIntroDemo()
 			((DirectX::DXmodelClass*)m_spriteModel)->m_Shader->isFontShader = false;
 			break;
 		#endif
+
 		#if (defined OPENGL3 || defined OPENGL4)
 		case DRIVER_GL3:
 			((GLmodelClass*)m_spriteModel)->m_Shader->isFont = false;

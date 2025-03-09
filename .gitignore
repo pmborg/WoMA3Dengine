@@ -23,3 +23,6 @@ CoreEngine_Tutorials/CoreEngine_000_OSENGINE_SYSTEM/Android1/Android1.Packaging/
 report.txt
 /ThirdParty/freeglut-3.6.0/X64LIB/freeglut_static.dir
 /ThirdParty/freeglut-3.6.0/X64LIB/lib
+**/Android1.NativeActivity/_*.h
+**/Android1.NativeActivity/_*.cpp
+ThirdParty/DirectXTex

@@ -316,8 +316,6 @@ void DefineConsoleTitle()
 
 void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 {
-	srand(27); // to have always the same random numbers... the true Random is: "srand(time(0));"
-
 #if defined WINDOWS_PLATFORM
 		SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
 
@@ -411,21 +409,6 @@ void APPLICATION_STOP()
 #endif
 }
 
-#if defined LINUX_PLATFORM && CORE_ENGINE_LEVEL >= 2   //  BIG BUG HERE!!! Dont work on ANDROID!
-// ---------------------------------------------------------------------------
-/*
-void ItoA(int value, char* dest, int _Radix)
-{
-	STRING str;
-	STRINGSTREAM ss;		//THIS LINE CRASH ON ANDROID!!
-
-	ss << value;
-	str = ss.str();
-	strcpy(dest, str.c_str());
-}
-*/
-#endif
-
 #if CORE_ENGINE_LEVEL >= 1 && defined ANDROID_PLATFORM  && !defined NewWomaEngine
 #include <android/asset_manager.h>
 
@@ -458,12 +441,11 @@ bool File::open(const char* path, const char* mode) {
 int m_main_music_id = 0;
 JNIEnv* jni=NULL;
 
-void ShowFPS()
+void ShowFPS(float fFPS)
 {
-	//FILE: C:\WoMAengine2023\Android-WomaEngine\Android2\Android2.Packaging\src\com\woma\MyActivity.java
+	//FILE: ...\Android-WomaEngine\Android2\Android2.Packaging\src\com\woma\MyActivity.java
 	//JAVA: public void updateFPS(final float fFPS)
 	{
-		float fFPS = 0;
 		if (!jni)
 			engine.app->activity->vm->AttachCurrentThread(&jni, NULL);
 		jclass clazz = jni->GetObjectClass(engine.app->activity->clazz);
@@ -478,8 +460,6 @@ void ShowFPS()
 
 void ShowAlert(const char* message)
 {
-	//JNIEnv* jni;
-
 	//JAVA: public void ShowAlert(final String message)
 	{
 		if (!jni)
@@ -499,8 +479,6 @@ void ShowAlert(const char* message)
 }
 
 void finish_activity(UINT res) {
-	// HOW TO FINISH:
-	//https://github.com/firebase/quickstart-cpp/blob/main/storage/testapp/src/android/android_main.cc
 
 	JNIEnv* jni = NULL;
 	if (!jni)
@@ -517,21 +495,17 @@ void finish_activity(UINT res) {
 
 void DownloadFiles(const char* url, const char* file)
 {
-	//JNIEnv* jni;
-
 	//JAVA: public void DownloadFiles(final String file)
 	{
 		if (!jni)
 			engine.app->activity->vm->AttachCurrentThread(&jni, NULL);
 		jclass clazz = jni->GetObjectClass(engine.app->activity->clazz);
-
-		//jmethodID methodID = jni->GetMethodID(clazz, "DownloadFiles", "(Ljava/lang/String;)V");
 		jmethodID methodID = jni->GetMethodID(clazz, "DownloadFiles", "(Ljava/lang/String;Ljava/lang/String;)V");
 
 		jstring jurl = jni->NewStringUTF(url);
 		jstring jfile = jni->NewStringUTF(file);
 		jni->CallVoidMethod(engine.app->activity->clazz, methodID, jurl, jfile);
-		//jni->CallVoidMethod(engine_state.app->activity->clazz, methodID, jurl);
+		//_tprintf("DownloadFiles(%s, %s)\n", jurl, jfile);
 		jni->DeleteLocalRef(jurl);
 		jni->DeleteLocalRef(jfile);
 		//engine_state.app->activity->vm->DetachCurrentThread();
@@ -541,7 +515,6 @@ void DownloadFiles(const char* url, const char* file)
 
 int playAudio(const char* audioFile)
 {
-	//JNIEnv* jni;
 	jint id;
 
 	//JAVA: public void playAudio(final String audioFile)
@@ -556,9 +529,8 @@ int playAudio(const char* audioFile)
 		// Strings passed to the function need to be converted to a java string object
 		jstring jaudioFile = jni->NewStringUTF(audioFile);
 		id = jni->CallIntMethod(engine.app->activity->clazz, methodID, jaudioFile);
-		//_tprintf("[%d]: playAudio()\n", id);
+		_tprintf("[%d]: playAudio()\n", id);
 		jni->DeleteLocalRef(jaudioFile);
-
 		//engine_state.app->activity->vm->DetachCurrentThread();
 	}
 
@@ -567,8 +539,6 @@ int playAudio(const char* audioFile)
 
 void stopAudio(const int audioFileIdx)
 {
-	//JNIEnv* jni;
-
 	//JAVA: public void stopAudio(final Integer audioFileIdx)
 	{
 		if (!jni)

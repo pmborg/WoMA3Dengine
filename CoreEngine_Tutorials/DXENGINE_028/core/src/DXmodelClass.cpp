@@ -439,7 +439,7 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 			m_Shader11->hasAlfaColor = ModelHASAlfaColor;			//IMPORTANT LEVEL 62!
 			m_Shader11->alfaColor = ModelAlfaColor;					//IMPORTANT LEVEL 62!
 			m_Shader11->hasFog = ModelHASfog;						//IMPORTANT LEVEL 62!
-			m_Shader11->hasFog = ModelHASfog;						//IMPORTANT LEVEL 62!
+			//m_Shader11->hasFog = ModelHASfog;						//IMPORTANT LEVEL 62!
 			//m_Shader11->shaderTypeParameter = shaderTypeParameter;	//IMPORTANT LEVEL 62!
 	}
 #endif
@@ -758,7 +758,7 @@ bool DXmodelClass::InitializeTextureBuffers(/*ID3D11Device*/ void* device, void*
 
 	// Load the "DX vertex" array with "WoMA vertex" data:
 	// ----------------------------------------------------------------------------------------
-	if (Model3D) //AQUIHOJE
+	if (Model3D)
 	{
 		for (UINT i = 0; i < m_vertexCount; i++)
 		{

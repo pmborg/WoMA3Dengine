@@ -171,15 +171,12 @@
 
 extern UINT RENDER_PAGE;
 
-#if CORE_ENGINE_LEVEL >= 1
-	//#include "mem_leak.h"
-#endif
-
 extern int APPLICATION_MAIN(int argc, char* argv[]);
 extern void APPLICATION_STOP();
 extern void APPLICATION_STARTUP(int argc, char* argv[], int Command);
 
-extern void ShowFPS();
+extern void ShowFPS(float fFPS);
+extern int audio(std::string filename);
 
 #if defined NewWomaEngine
 	extern struct engine engine;
@@ -303,6 +300,7 @@ namespace WOMA
 extern int m_main_music_id;
 extern int playAudio(const char* message);
 extern void stopAudio(const int audioFileIdx);
+void DownloadFiles(const char* url, const char* file);
 #endif
 
 static int androidRead(void* cookie, char* buf, int size) {

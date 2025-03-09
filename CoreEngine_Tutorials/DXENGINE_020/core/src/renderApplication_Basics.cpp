@@ -269,6 +269,7 @@ void ApplicationClass::AppPosRender()
 float ApplicationClass::Update()
 {
 	float fadeLight = 1;
+
 #if defined USE_TIMER_CLASS
 	// TIME Control: Show Debug Info
 	UINT64 passedTotalTime = (UINT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
@@ -300,10 +301,8 @@ float ApplicationClass::Update()
 	}
 	WOMA_APPLICATION_DemoRender(passedTotalTime);
 
-	//#if !defined INTRO_DEMO
 	if (RENDER_PAGE < 15)
 		return 0;
-	//#endif
 
 #if defined USE_DIRECT_INPUT && defined INTRO_DEMO
 	// Animate Camera (INTRO_DEMO)
@@ -562,8 +561,7 @@ float ApplicationClass::WOMA_APPLICATION_DemoRender(UINT64 passedTotalTime)
 {
 	static bool FadeIn = true;
 	static float fade = 0;
-	//if (m_Driver->RenderfirstTime)
-	//	WOMA_LOGManager_DebugMSG("fade: %d\n", fade);
+
 	if (fade == 0)
 	{
 		if (RENDER_PAGE == GAME_SYSTEM_SETTINGS)
@@ -590,10 +588,7 @@ float ApplicationClass::WOMA_APPLICATION_DemoRender(UINT64 passedTotalTime)
 			WOMA::game_state = GAME_RUN;
 		}
 	}
-	//if (m_Driver->RenderfirstTime)
-	//	WOMA_LOGManager_DebugMSG("WOMA::game_state: %d\n", WOMA::game_state);
-	//if (m_Driver->RenderfirstTime)
-	//	WOMA_LOGManager_DebugMSG("RENDER_PAGE: %d\n", RENDER_PAGE);
+
 	if (FadeIn)
 		fade = fade + fadeSpeed * (float)dt;
 	else
@@ -612,6 +607,9 @@ float ApplicationClass::WOMA_APPLICATION_DemoRender(UINT64 passedTotalTime)
 		if (RENDER_PAGE < DX_ENGINE_LEVEL) {
 			RENDER_PAGE++;
 			WOMA_LOGManager_DebugMSG("RENDER_PAGE: %d\n", RENDER_PAGE);
+#if defined ANDROID_PLATFORM
+			ShowFPS(RENDER_PAGE);
+#endif
 #if defined USE_DIRECT_INPUT && defined INTRO_DEMO
 			m_Position[g_NetID]->m_positionX = SystemHandle->AppSettings->INIT_CAMX;
 			m_Position[g_NetID]->m_positionY = SystemHandle->AppSettings->INIT_CAMY;
@@ -629,8 +627,7 @@ float ApplicationClass::WOMA_APPLICATION_DemoRender(UINT64 passedTotalTime)
 		}
 
 	}
-	//if (m_Driver->RenderfirstTime)
-	//	WOMA_LOGManager_DebugMSG("END: WOMA_APPLICATION_DemoRender ()\n");
+
 	return fade;
 }
 #endif

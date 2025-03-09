@@ -282,7 +282,9 @@ DX12:
 	//D3D_FEATURE_LEVEL feacture_level = D3D_FEATURE_LEVEL_12_1;					// Target DX 12.1
 
 	D3D_FEATURE_LEVEL featureLevels[] = {
+	#if defined USE_DX11_3
 		D3D_FEATURE_LEVEL_12_2,
+    #endif
 		D3D_FEATURE_LEVEL_12_1,
 		D3D_FEATURE_LEVEL_12_0,
 		D3D_FEATURE_LEVEL_11_1,
@@ -412,8 +414,11 @@ DX12:
 		//features.Init(m_device);
 		//D3D_FEATURE_LEVEL MaxFeatureLevel = features.MaxSupportedFeatureLevel();
 
-		D3D_FEATURE_LEVEL featureLevels[] = {	D3D_FEATURE_LEVEL_12_2, // check D3D 12.2 support 
+		D3D_FEATURE_LEVEL featureLevels[] = {	
+											#if defined USE_DX11_3
+												D3D_FEATURE_LEVEL_12_2, // check D3D 12.2 support 
 												D3D_FEATURE_LEVEL_12_1, // check D3D 12.1 support 
+											#endif
 												D3D_FEATURE_LEVEL_12_0, // check D3D 12 support 
 												D3D_FEATURE_LEVEL_11_1, // check D3D 11.1 support 
 												D3D_FEATURE_LEVEL_11_0, // check D3D 11 support 
@@ -1164,7 +1169,7 @@ void DX12Class::getProfile ()
 	// NOTE: DX12 = 5.1 (min.)
 
 	D3D12_FEATURE_DATA_SHADER_MODEL shaderModel;
-#if _MSC_VER > 1916
+#if _MSC_VER > 1929
 	shaderModel.HighestShaderModel = D3D_HIGHEST_SHADER_MODEL;
 #else
 	shaderModel.HighestShaderModel = D3D_SHADER_MODEL_5_1;

@@ -36,6 +36,9 @@
     <Filter Include="src\DX">
       <UniqueIdentifier>{45fb8045-21db-45d5-a5e8-a2beca9914e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="HLSL">
+      <UniqueIdentifier>{20e47aaa-9db9-4017-9e94-0a5bd21bfe7b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\include\ApplicationClass.h">
@@ -390,5 +393,13 @@
   <ItemGroup>
     <Xml Include="settings.xml" />
     <Xml Include="world.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="hlsl\021Color.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="hlsl\cbuffer.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
