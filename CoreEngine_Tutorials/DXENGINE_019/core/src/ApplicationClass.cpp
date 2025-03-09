@@ -72,7 +72,7 @@ ApplicationClass::ApplicationClass()
 		RENDER_PAGE = 10;	// INTRO_DEMO START!!!
 		SpriteScreenToShow = -5;
 	#else
-		RENDER_PAGE = 15;	// FOR DEBUG ONLY| INTRO START ON:
+		RENDER_PAGE = 20;	// FOR DEBUG ONLY| INTRO START ON:
 		SpriteScreenToShow = 0;
 	#endif
 #else

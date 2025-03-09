@@ -164,6 +164,7 @@ import java.io.BufferedOutputStream;
 public class MyActivity extends NativeActivity
 {
 Toast toast;
+int RENDER_PAGE;
 
     protected void onCreate(Bundle savedInstanceState) {                                                                                                                                  
         //Log.w("[WOMA]", "JAVA:onCreate()");
@@ -190,7 +191,7 @@ Toast toast;
     }
 	
     public void stopAudio(int idx_) { 
-        //Log.w("[WOMA]", "MyActivity::stopAudio()");
+        Log.w("[WOMA]", "MyActivity::stopAudio()");
         aKit[idx_].stopAudio();
         aKit[idx_]=null;
     }
@@ -208,6 +209,10 @@ Toast toast;
         @Override
         public void run() {
             aKit[m_idx].playAudio(m_audioFile);
+			if (RENDER_PAGE <= 29)
+				aKit[m_idx].playAudio(m_audioFile);
+			else
+				aKit[m_idx].stopAudio();
         }
     }
 
@@ -215,14 +220,16 @@ Toast toast;
     //--------------------------------------------------------
 	public void updateFPS(final float fFPS)
     {
-        //Log.w("[WOMA]", "FPS: "+fFPS);
+		RENDER_PAGE = (int)fFPS;
+        //Log.w("[WOMA]", "RENDER_PAGE: "+fFPS);
     }
 
     // ShowAlert
     //--------------------------------------------------------
     public void ShowAlert(final String message)
     {
-        //Log.w("[WOMA]", "Toast showAlert(): "+message);
+        Log.w("[WOMA]", "Toast showAlert(): "+message);
+
         toast.setText(message);
         toast.show();
     }

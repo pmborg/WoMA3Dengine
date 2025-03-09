@@ -45,6 +45,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+//This PC\A52 de Pedro\Armazenamento interno\Android\data\com.woma\files
 //Classe para executar o audio:
 public class AudioKit 
 {
@@ -155,8 +156,8 @@ public class AudioKit
 			e.printStackTrace();
 		}
         
-		Log.w("[WOMA]", "stopAudio();");
-        stopAudio();
+		//Log.w("[WOMA]", "stopAudio();");
+        //stopAudio();
 		//is.close();
      }
 

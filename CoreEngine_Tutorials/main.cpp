@@ -105,10 +105,10 @@ void android_main(android_app* state)			// ENTRY-POINT: ANDROID
 	app = state;
 
 	_tprintf("[%d]: android_main()\n", gettid());
-	app->userData = &engine;
-	app->onAppCmd = engine_handle_cmd;
-	app->onInputEvent = engine_handle_input;
-	engine.app = app;
+	state->userData = &engine;
+	state->onAppCmd = engine_handle_cmd;
+	state->onInputEvent = engine_handle_input;
+	engine.app = state;
 	init_engine(app, &engine);
 
 	//MANDATORY: Wait for JAVA window creation:

@@ -759,14 +759,13 @@ void ApplicationClass::DemoRender()
 #if DX_ENGINE_LEVEL >= 21 && defined INTRO_DEMO	//29  DEMO SPRITE TEXT
 void ApplicationClass::RenderDemoIntroSprites()
 {
+	//USING: ModelShaderType = SHADER_TEXTURE_FONT(3)/
 	if (RENDER_PAGE < 21 && (SpriteScreenToShow >= 0 && SpriteScreenToShow < m_screenShots.size()))
 	{
 		VirtualModelClass* screenShot = m_screenShots[SpriteScreenToShow];
-		//ModelShaderType = SHADER_TEXTURE_FONT(3)/
 
-		screenShot->RenderSprite((SystemHandle->AppSettings->WINDOW_WIDTH - screenShot->SpriteTextureWidth) / 2,
-			SystemHandle->AppSettings->WINDOW_HEIGHT / 2,
-			1, fadeIntro);
+		//WINDOWS:
+		screenShot->RenderSprite((SystemHandle->AppSettings->WINDOW_WIDTH - screenShot->SpriteTextureWidth) / 2, SystemHandle->AppSettings->WINDOW_HEIGHT / 2, 1, fadeIntro);
 	}
 }
 #endif
