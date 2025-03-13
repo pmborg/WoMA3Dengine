@@ -72,56 +72,6 @@ bool RTextureClass::LoadTarga32Bit(OpenGLClass* OpenGL, char* filename, bool wra
     unsigned long imageSize;
     int index;
 
-#if _NOT
-    //UINT width, height;
-    TargaHeader targaFileHeader;
-    FILE* filePtr;
-    int bpp, error;// , i, j;
-    unsigned long count;
-
-    // Open the targa file for reading in binary.
-    filePtr = fopen(filename, "rb");
-    if(filePtr == NULL)
-        { return false; }
-
-    // Read in the file header.
-    count = fread(&targaFileHeader, sizeof(TargaHeader), 1, filePtr);
-    if(count != 1)
-    {
-        return false;
-    }
-
-    // Get the important information from the header.
-    m_width = (int)targaFileHeader.width;
-    m_height = (int)targaFileHeader.height;
-    bpp = (int)targaFileHeader.bpp;
-
-    // Check that it is 32 bit and not 24 bit.
-    if(bpp != 32)
-    {
-        return false;
-    }
-
-    // Calculate the size of the 32 bit image data.
-    imageSize = m_width * m_height * 4;
-
-    // Allocate memory for the targa image data.
-    targaImage = new unsigned char[imageSize];
-
-    // Read in the targa image data.
-    count = fread(targaImage, 1, imageSize, filePtr);
-    if(count != imageSize)
-    {
-        return false;
-    }
-
-    // Close the file.
-    error = fclose(filePtr);
-    if(error != 0)
-    {
-        return false;
-    }
-#else
     //int index, i, j;
     ImageLoaderClass ImageLoader;
     UINT Width, Height, ImageSize;
@@ -129,7 +79,6 @@ bool RTextureClass::LoadTarga32Bit(OpenGLClass* OpenGL, char* filename, bool wra
     m_width = Width;
     m_height = Height;
     imageSize = ImageSize;
-#endif
 
     // Set the unique texture unit in which to store the data.
     glActiveTexture(GL_TEXTURE0);

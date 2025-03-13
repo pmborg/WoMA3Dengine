@@ -395,6 +395,10 @@ void mainLoop()
 
 	while (WOMA::game_state != ENGINE_RESTART)
 	{
+		if (WOMA::main_loop_state < 0) {
+			WOMA::game_state = GAME_STOP;
+			break;
+		}
 
 		{
 			// Update frame rate
@@ -409,8 +413,6 @@ void mainLoop()
 			}
 		}
 
-
-	
 	}
 }
 

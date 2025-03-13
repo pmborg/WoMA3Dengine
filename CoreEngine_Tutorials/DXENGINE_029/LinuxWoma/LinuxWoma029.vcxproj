@@ -24,8 +24,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-    <RemoteCopyIncludeDirectories>
-    </RemoteCopyIncludeDirectories>
+    <RemoteCopyIncludeDirectories>C:\WoMAengine2023\DXEngine_029\GLengine</RemoteCopyIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -36,10 +35,10 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>/usr/include/atk-1.0/;/usr/lib/x86_64-linux-gnu/graphene-1.0/include/;/usr/include/graphene-1.0;/usr/include/gdk-pixbuf-2.0/;/usr/include/harfbuzz/;/usr/include/pango-1.0;/usr/include/cairo/;/usr/lib/x86_64-linux-gnu/glib-2.0/include/;/usr/include;/usr/include/libpng16;/usr/include/glib-2.0;/usr/include/gtk-3.0__;/usr/include/gtk-2.0;/usr/lib/x86_64-linux-gnu/gtk-2.0/include/;C:\WoMA3Dengine\ThirdParty\PNG_LIB\include;../core/include;../linux/include;../core/include/GLX;C:\WoMA3Dengine\CoreEngine_Tutorials\;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;~/projects/LinuxWoma029/ThirdParty/PNG_LIB/include;~/projects/LinuxWoma029/CoreEngine_Tutorials/DXENGINE_029/core/linux/include;~/projects/LinuxWoma029/ThirdParty/JPG_LIB/include;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\core\linux\include;../..;..;.;$(IncludePath)</IncludePath>
+    <IncludePath>~/projects/LinuxWoma029/;/usr/include/atk-1.0/;/usr/lib/x86_64-linux-gnu/graphene-1.0/include/;/usr/include/graphene-1.0;/usr/include/gdk-pixbuf-2.0/;/usr/include/harfbuzz/;/usr/include/pango-1.0;/usr/include/cairo/;/usr/lib/x86_64-linux-gnu/glib-2.0/include/;/usr/include;/usr/include/libpng16;/usr/include/glib-2.0;/usr/include/gtk-3.0__;/usr/include/gtk-2.0;/usr/lib/x86_64-linux-gnu/gtk-2.0/include/;C:\WoMA3Dengine\ThirdParty\PNG_LIB\include;C:\WoMA3Dengine\ThirdParty\JPG_LIB\include;~/projects/LinuxWoma029/WoMA3Dengine/CoreEngine_Tutorials/;~/projects/LinuxWoma029/CoreEngine_Tutorials/;~/projects/LinuxWoma029/WoMA3Dengine/CoreEngine_Tutorials/DXENGINE_029/LinuxWoma;../core/include;../linux/include;../core/include/GLX;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;~/projects/LinuxWoma029/ThirdParty/TinyXML_LIB.v2/tinyxml2-10.0.0;~/projects/LinuxWoma029/ThirdParty/PNG_LIB/include;~/projects/LinuxWoma029/CoreEngine_Tutorials/DXENGINE_029/core/linux/include;~/projects/LinuxWoma029/ThirdParty/JPG_LIB/include;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\core\linux\include;~/projects/LinuxWoma029/CoreEngine_Tutorials/DXENGINE_029/core/include;~/projects/LinuxWoma029/CoreEngine_Tutorials/DXENGINE_029/LinuxWoma;~/projects/LinuxWoma029/WoMA3Dengine/ThirdParty/JPG_LIB/include;$(IncludePath)</IncludePath>
     <SourcePath>
     </SourcePath>
-    <AdditionalSourcesToCopyMapping>C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\GLengine:=~/projects/LinuxWoma029/CoreEngine_Tutorials/DXENGINE_029/GLengine;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\engine:=~/projects/LinuxWoma029/CoreEngine_Tutorials/DXENGINE_029/engine</AdditionalSourcesToCopyMapping>
+    <AdditionalSourcesToCopyMapping>C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\GLengine\color.ps:=~/projects/LinuxWoma029/bin/x64/Debug/GLengine/color.ps;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\GLengine\color.vs:=~/projects/LinuxWoma029/bin/x64/Debug/GLengine/color.vs;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\GLengine\font.ps:=~/projects/LinuxWoma029/bin/x64/Debug/GLengine/font.ps;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\GLengine\font.vs:=~/projects/LinuxWoma029/bin/x64/Debug/GLengine/font.vs;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\GLengine\light.ps:=~/projects/LinuxWoma029/bin/x64/Debug/GLengine/light.ps;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\GLengine\light.vs:=~/projects/LinuxWoma029/bin/x64/Debug/GLengine/light.vs;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\GLengine\texture.ps:=~/projects/LinuxWoma029/bin/x64/Debug/GLengine/texture.ps;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\GLengine\texture.vs:=~/projects/LinuxWoma029/bin/x64/Debug/GLengine/texture.vs;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\engine:=~/projects/LinuxWoma029/CoreEngine_Tutorials/DXENGINE_029/engine;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\settings.xml:=~/projects/LinuxWoma029/CoreEngine_Tutorials/DXENGINE_029/settings.xml;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\world_29.xml:=~/projects/LinuxWoma029/CoreEngine_Tutorials/DXENGINE_029/world_29.xml</AdditionalSourcesToCopyMapping>
   </PropertyGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\ThirdParty\PNG_LIB\include\pngdebug.h" />
@@ -91,21 +90,23 @@
     <ClInclude Include="..\core\include\virtualCameraClass.h" />
     <ClInclude Include="..\core\include\virtualModelClass.h" />
     <ClInclude Include="..\core\include\weatherClass.h" />
-    <ClInclude Include="..\core\include\winCpuCores.h" />
-    <ClInclude Include="..\core\include\wmiUtilClass.h" />
     <ClInclude Include="..\core\include\WomaCube.h" />
     <ClInclude Include="..\core\include\womadriverclass.h" />
-    <ClInclude Include="..\core\include\WomaSetupManager.h" />
     <ClInclude Include="..\core\include\woma_exception.h" />
     <ClInclude Include="..\core\include\woma_macros.h" />
     <ClInclude Include="..\core\include\xml_loader.h" />
     <ClInclude Include="..\core\linux\include\linuxsystemclass.h" />
     <ClInclude Include="..\core\linux\include\linux.h" />
+    <ClInclude Include="..\core\linux\include\openalclass.h" />
     <ClInclude Include="..\core\linux\include\Rinputclass.h" />
+    <ClInclude Include="..\core\linux\include\soundclass.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\WoMAengine2023\SOURCE_CODE_HTML\DXENGINE_029\core\linux\src\linuxaudio.cpp" />
     <ClCompile Include="..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.cpp" />
     <ClCompile Include="..\..\main.cpp" />
+    <ClCompile Include="..\core\linux\src\openalclass.cpp" />
+    <ClCompile Include="..\core\linux\src\soundclass.cpp" />
     <ClCompile Include="..\core\src\Application_LightRay.cpp" />
     <ClCompile Include="..\core\src\GLcameraClass.cpp" />
     <ClCompile Include="..\core\src\GLmodelClass.cpp" />
@@ -281,6 +282,9 @@
     <Text Include="..\engine\data\fonts\008fontdata_windows.txt" />
     <Text Include="..\engine\data\fonts\font01.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Media Include="..\engine\audio\DST-Aircord.wav" />
+  </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
@@ -288,7 +292,7 @@
       <CppLanguageStandard>c++11</CppLanguageStandard>
     </ClCompile>
     <Link>
-      <LibraryDependencies>Xrandr;EGL;m;z;GL;GLU;X11;gtk-x11-2.0;gdk-x11-2.0;pangocairo-1.0;atk-1.0;cairo;gdk_pixbuf-2.0;gio-2.0;pangoft2-1.0;pango-1.0;gobject-2.0;glib-2.0;harfbuzz;fontconfig;freetype;glfw;glut;curl</LibraryDependencies>
+      <LibraryDependencies>openal;asound;Xrandr;EGL;m;z;GL;GLU;X11;gtk-x11-2.0;gdk-x11-2.0;pangocairo-1.0;atk-1.0;cairo;gdk_pixbuf-2.0;gio-2.0;pangoft2-1.0;pango-1.0;gobject-2.0;glib-2.0;harfbuzz;fontconfig;freetype;glfw;glut;curl</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -22,6 +22,7 @@
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
 #include "OSengine.h"
 #include "Rfontclass.h"
+#include "OSmain_dir.h"
 
 RFontClass::RFontClass()
 {
@@ -162,7 +163,19 @@ bool RFontClass::LoadFontData(char* filename)
 	fin.open(filename);
 	if(fin.fail())
 	{
-		return false;
+		STRING dir = WOMA::getCurrentDir();
+		//	dir = "	~/projects/LinuxWoma029/CoreEngine_Tutorials/DXENGINE_029"
+		//			~/projects/LinuxWoma029/WoMA3Dengine/CoreEngine_Tutorials/DXENGINE_029/engine/data/fonts/font01.txt
+
+		dir.append("/../../WoMA3Dengine/CoreEngine_Tutorials/DXENGINE_0");
+		dir.append(std::to_string(DX_ENGINE_LEVEL));
+		dir.append("/");
+		dir.append(filename);
+		fin.open(dir);
+		if (fin.fail())
+		{
+			return false;
+		}
 	}
 
 	// Read in the 95 used ascii characters for text.

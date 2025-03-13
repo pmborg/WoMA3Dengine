@@ -38,9 +38,6 @@
 
 #if LEVEL == 1
 	#define DEMO_TITLE TEXT("01: Write report.txt file")
-	//#if !defined WINDOWS_PLATFORM
-	//static_assert(false, "This Chap is for windows only!");
-	//#endif
 #endif
 #if LEVEL == 2
 	#define DEMO_TITLE TEXT("02: Adding the MAIN WINDOW! (basic static version)")
@@ -56,12 +53,21 @@
 	#define MIN_WIN32_FONT_Y 25
 #endif
 #if LEVEL == 5
+  #if defined LINUX_PLATFORM
+	#define DEMO_ROOT_DIR TEXT("/projects/LinuxWoma005/CoreEngine_Tutorials/CoreEngine_005_PAINT_SETTINGS_XML")
+  #endif
 #if !defined DEMO_LEVEL
+  #if defined LINUX_PLATFORM
+  #else
 	#define SETTINGS_FILE		TEXT("settings_005.xml")
+  #endif
 #endif
 	#define DEMO_TITLE TEXT("05: From now on: PRESS [F6] for: [GAME SETUP] and added FILE: C:\\Users\\Public\\Documents\\<user>\\<core-level>\\<dx-level>\\settings.xml")
 #endif
 #if LEVEL == 6
+  #if defined LINUX_PLATFORM
+	#define DEMO_ROOT_DIR TEXT("/projects/LinuxWoma006/CoreEngine_Tutorials/CoreEngine_006_PACKMANAGER_IDEA_CPU_BENCHMARK")
+  #endif
 #if !defined DEMO_LEVEL
 	#define SETTINGS_FILE		TEXT("settings_006.xml")
 #endif
@@ -71,6 +77,9 @@
 	#endif
 #endif
 #if LEVEL == 7
+  #if defined LINUX_PLATFORM
+	#define DEMO_ROOT_DIR TEXT("/projects/LinuxWoma007/CoreEngine_Tutorials/CoreEngine_007_PAINT_REALTIMECELESTIAL_ASTROCLASS")
+  #endif
 #if !defined DEMO_LEVEL
 	#define SETTINGS_FILE		TEXT("settings_007.xml")
 #endif
@@ -78,6 +87,9 @@
 	#define BACKGROUND_IMAGE TEXT("engine/data/basics/logotipo_small_backgroundV2.bmp")
 #endif
 #if LEVEL >= 8
+  #if defined LINUX_PLATFORM
+	#define DEMO_ROOT_DIR TEXT("/projects/LinuxWoma008/CoreEngine_Tutorials/CoreEngine_008_PAINT_REALTIME_GPS_MAP_LOCATION")
+  #endif
 	#if LEVEL == 8
 #if !defined DEMO_LEVEL
 	#define SETTINGS_FILE		TEXT("settings_008.xml")
@@ -89,6 +101,9 @@
 	#define WORLD_IP_TARGET_IMAGE TEXT("engine/data/original/Earth_Diffuse.bmp")
 #endif
 #if LEVEL == 9 //saveConfigSettings
+  #if defined LINUX_PLATFORM
+	#define DEMO_ROOT_DIR TEXT("/projects/LinuxWoma009/CoreEngine_Tutorials/CoreEngine_009_PAINT_METAR_WEATHER_REALTIME")
+  #endif
 #if !defined DEMO_LEVEL
 	#define SETTINGS_FILE		TEXT("settings_009.xml")
 #endif
@@ -216,23 +231,42 @@
 #endif
 #if LEVEL >= 29
 	#if LEVEL == 29
-#if !defined DEMO_LEVEL
-	#define SETTINGS_FILE		TEXT("settings_029.xml")
-#endif
+	#if (!defined DEMO_LEVEL) || LEVEL == 29
+		#if defined LINUX_PLATFORM //AQUI
+			#define SETTINGS_FILE		TEXT("settings.xml")
+		#else
+			#define SETTINGS_FILE		TEXT("settings_029.xml")
+		#endif
+	#endif
+
 	#define DEMO_TITLE TEXT("DEMO: The music and the sound effects")
 	#define WORLD_XML TEXT("world_29.xml")
 	#endif
-	#define DEMO1_BANNER1_TEXTURE TEXT("engine/data/banners/TEXT1_WoMA_Muti_Platform_Engine.png")
+
+	#if defined WINDOWS_PLATFORM
+		#define DEMO1_BANNER1_TEXTURE TEXT("engine/data/banners/TEXT1_WoMA_Muti_Platform_Engine_.png")
+	#else
+		#define DEMO1_BANNER1_TEXTURE TEXT("engine/data/banners/TEXT1_WoMA_Muti_Platform_Engine.png")
+	#endif
+
 	#define DEMO1_BANNER2_TEXTURE TEXT("engine/data/banners/TEXT2_is_a_Pmborg_Production.png")
 	#define DEMO1_BANNER3_TEXTURE TEXT("engine/data/banners/TEXT3_WoMA_Code_By.png")
 	#define DEMO1_BANNER4_TEXTURE TEXT("engine/data/banners/TEXT4_Pedro_Borges.png")
 	#define DEMO1_BANNER5_TEXTURE TEXT("engine/data/banners/TEXT5_Music_By.png")
-	#define DEMO1_BANNER6_TEXTURE TEXT("engine/data/banners/TEXT6_Deceased_Superior_Technician.png")
 	#if defined WINDOWS_PLATFORM
-	#define AUDIO_FILE "engine/audio/DST-Aircord.ogg"
+		#define DEMO1_BANNER6_TEXTURE TEXT("engine/data/banners/TEXT6_Deceased_Superior_Technician_.png")
+	#else
+		#define DEMO1_BANNER6_TEXTURE TEXT("engine/data/banners/TEXT6_Deceased_Superior_Technician.png")
+	#endif
+	#if defined WINDOWS_PLATFORM
+		#define AUDIO_FILE "engine/audio/DST-Aircord.ogg"
+	#endif
+	#if defined LINUX_PLATFORM
+		#define AUDIO_FILE "engine/audio/DST-Aircord.wav"
 	#endif
 	#if defined ANDROID_PLATFORM
-	#define AUDIO_FILE "DST-Aircord.wav"
+		#define AUDIO_FILE TEXT("DST-Aircord.wav")
+		#define AUDIO_LINK TEXT("https://github.com/pmborg/WoMA3Dengine/raw/refs/heads/main/CoreEngine_Tutorials/DXENGINE_029/engine/audio/DST-Aircord.wav")
 	#endif
 #endif
 

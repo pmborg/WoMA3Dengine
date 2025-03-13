@@ -836,7 +836,6 @@ bool SystemClass::InitOsInput()
 #if defined USE_TINYXML_LOADER //5
 bool SystemClass::LoadXmlSettings()
 {
-//#if CORE_ENGINE_LEVEL >= 5
 	WOMA_LOGManager_DebugMSG("===============================================================================\n");
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("LOAD XML SETTINGS\n"));
 	WOMA_LOGManager_DebugMSG("===============================================================================\n");
@@ -853,7 +852,6 @@ bool SystemClass::LoadXmlSettings()
 		WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "), false);
 		return false;
 	}
-//#endif
 
 	// Load and Parse XML FILE:"world.xml" the Configuration file
 	//----------------------------------------------------------------------------
@@ -889,7 +887,6 @@ void SystemClass::ProcessPerformanceStats() // Run every frame
 #endif
 
 #if defined USE_JOY && defined USE_DIRECT_INPUT
-
 
 void SystemClass::InitJoyStick()
 {

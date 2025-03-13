@@ -27,13 +27,6 @@
 #include "OSengine.h"
 #include "OSmain_dir.h"
 
-#if defined _NOT
-#if TUTORIAL_PRE_CHAP >= 72
-#include "../sound/soundClass.h" // To include SOUND3D
-#endif
-camera cam;
-#endif
-
 #if defined USE_TINYXML_LOADER
 #if defined ANDROID_PLATFORM
 #include "AndroidEngine.h"
@@ -202,6 +195,11 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
 		{
 			SystemHandle->AppSettings->UI_MONITOR = OPENGL_defaultMonitor();
+			SystemHandle->AppSettings->FULL_SCREEN = false;
+			if (SystemHandle->AppSettings->WINDOW_WIDTH == 0)
+				SystemHandle->AppSettings->WINDOW_WIDTH = 1920;
+			if (SystemHandle->AppSettings->WINDOW_HEIGHT == 0)
+				SystemHandle->AppSettings->WINDOW_HEIGHT = 1080;
 		}
 
 	//	------------------------------------------------------------------------------------------------------
@@ -322,13 +320,17 @@ bool XMLloader::loadWorld (TCHAR* file_) // Note: Have to be char
 	if (error == tinyxml2::XML_ERROR_FILE_NOT_FOUND)
 	{
 	#if MAINENGINE
-		//STRING file = "../../../DXEngine_0";
-		STRING file = "/home/pedro/projects/LinuxWoma/DXEngine_055/";
+		STRING file = "~/projects/LinuxWoma/DXEngine_055/";
 	#else
-		STRING file = "../../../CoreEngine_Tutorials/DXENGINE_0";
-		file.append(std::to_string(DX_ENGINE_LEVEL));
-		file.append("/");
+#if defined LINUX_PLATFORM && CORE_ENGINE_LEVEL < 10
+			STRING file = WOMA::Home;
+			file.append(DEMO_ROOT_DIR);
+		#else
+			STRING file = "../../../CoreEngine_Tutorials/DXENGINE_0";
+			file.append(std::to_string(DX_ENGINE_LEVEL));
+		#endif
 	#endif
+		file.append("/");
 		file.append(XMLFILE);
 		doc.LoadFile(file.c_str());
 	}
@@ -479,25 +481,21 @@ bool XMLloader::loadConfigSettings (TCHAR* file_) // Note: Have to be char
 
 	doc.LoadFile(XML_FILE.c_str());
 #else
-#if _NOT
-	//Current: /home/pedro/projects/LinuxWoma/bin/x64/Debug
-	//	~/projects/LinuxWoma/LinuxWoma/LinuxWoma/settings.xml
-	//	~/projects/LinuxWoma/LinuxWoma/LinuxWoma/world.xml
-	//	~/projects/LinuxWoma/DXEngine_021/world.xml
-
-	//DEMOS:      dir = "/home/pedro/projects/LinuxWoma027/CoreEngine_Tutorials/DXENGINE_027"
-	//MAINENGINE: dir = "/home/pedro/projects/LinuxWoma/bin/x64/Debug"
-#endif
 	//SETTINGS.XML
 	STRING dir = WOMA::getCurrentDir();
 	tinyxml2::XMLError error = doc.LoadFile(XMLFILE);
 	if (error == tinyxml2::XML_ERROR_FILE_NOT_FOUND)
 	{
 	#if MAINENGINE
-		STRING file = "/home/pedro/projects/LinuxWoma/DXEngine_055/";
+		STRING file = "~/projects/LinuxWoma/DXEngine_055/";
 	#else
-		STRING file = "../../../CoreEngine_Tutorials/DXENGINE_0";
-		file.append(std::to_string(DX_ENGINE_LEVEL));
+		#if defined LINUX_PLATFORM && CORE_ENGINE_LEVEL < 10
+			STRING file = WOMA::Home;
+			file.append(DEMO_ROOT_DIR);
+		#else
+			STRING file = "../../../CoreEngine_Tutorials/DXENGINE_0";
+			file.append(std::to_string(DX_ENGINE_LEVEL));
+		#endif
 	#endif
 		file.append("/");
 		file.append(XMLFILE);
@@ -565,7 +563,7 @@ bool XMLloader::loadConfigSettings (TCHAR* file_) // Note: Have to be char
 	#endif
 
 		//SOUND:
-	#if DX_ENGINE_LEVEL >= 29 //&& defined USE_WIN32_SOUND_MANAGER
+	#if DX_ENGINE_LEVEL >= 29
 		/*<sound>*//*TiXmlElement*/ tinyxml2::XMLElement* child_sound = root->FirstChildElement( "sound" );
 		if ( child_sound )
 		{

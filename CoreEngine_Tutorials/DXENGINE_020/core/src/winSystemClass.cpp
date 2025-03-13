@@ -102,7 +102,6 @@ void WinSystemClass::ProcessFrame()
 	}
 #endif
 
-	//NOTE: WomaDriverClass* driver = driverList[SystemHandle->AppSettings->DRIVER];
 	{
 		m_Application->dayLightFade = m_Application->Update();					//OS CORE ONLY!  F1, F2, ...
 

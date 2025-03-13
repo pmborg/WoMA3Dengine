@@ -113,3 +113,14 @@ sudo apt install net-tools
 			Core Isolation 
 				Details
 					Off
+
+sudo apt-get install libsdl2-dev
+sudo apt install pulseaudio
+
+.bashrc
+export PULSE_SERVER=tcp:127.0.0.1
+
+cat /etc/environment
+set PULSE_SERVER=localhost
+
+

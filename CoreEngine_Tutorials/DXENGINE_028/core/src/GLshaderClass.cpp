@@ -64,7 +64,6 @@ bool GLshaderClass::Initialize(SHADER_TYPE shaderType)
 		break;
 		
 		case SHADER_TEXTURE_FONT:
-		
 		result = InitializeShader(shaderType, TEXT("GLengine/font.vs"), TEXT("GLengine/font.ps"));
 		break;
 

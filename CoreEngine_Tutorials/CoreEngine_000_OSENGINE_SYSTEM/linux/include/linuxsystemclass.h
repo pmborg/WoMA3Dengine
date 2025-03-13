@@ -1,6 +1,6 @@
 // NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
-// Filename: LinuxSystemClass.h
+// Filename: linuxsystemclass.h
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
@@ -58,6 +58,7 @@ public:
 private:
 	bool mResizing;
 
+public:
 };
 
 /////////////

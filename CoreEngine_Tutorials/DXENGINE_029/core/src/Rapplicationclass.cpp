@@ -113,45 +113,6 @@ bool RApplicationClass::Render()
     m_Camera->GetViewMatrix(viewMatrix);	//V
     m_OpenGL->GetOrthoMatrix(orthoMatrix);	//P
 
-#if _NOT
-	switch (projection)
-	{
-		case PROJECTION_PERSPECTIVE:
-			 projectionMatrix = (driver->m_projectionMatrix);
-			break;
-
-		#if defined INTRO_DEMO || defined USE_VIEW2D_SPRITES
-		case PROJECTION_ORTHOGRAPH:
-			projectionMatrix = driver->m_orthoMatrix;
-		break;
-		#endif
-	}
-
-	switch (camera)
-	{
-		case CAMERA_NORMAL:
-			if (projection == PROJECTION_PERSPECTIVE)
-			{
-				//PROJECTION_PERSPECTIVE
-				m_viewMatrix = ((GLcameraClass*)driver->gl_Camera)->m_viewMatrix;
-			}
-			else
-			{	
-				//PROJECTION_ORTHOGRAPH:
-				m_viewMatrix = m_viewMatrix;
-				m_viewMatrix.mat4identity();
-				m_viewMatrix.m[14] = 1;
-			}
-			break;
-
-		#if defined USE_SKY_DOME && DX_ENGINE_LEVEL >= 28
-		case CAMERA_SKY:
-			m_viewMatrix = ((GLcameraClass*)driver->gl_CameraSKY)->m_viewMatrix;
-			break;
-		#endif
-	}
-#endif
-
     // Get the color to render the text as.
 	m_TextString1->GetPixelColor(pixelColor);
 

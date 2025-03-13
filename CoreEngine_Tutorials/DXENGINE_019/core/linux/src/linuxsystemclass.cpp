@@ -161,7 +161,8 @@ void LinuxSystemClass::Shutdown()
 
 #if defined _DEBUG && defined WOMA_CONSOLE_APPLICATION
 	//printf ("\npress ENTER to close, console window..."); getchar();
-#endif	
+#endif
+
 }
 
 int LinuxSystemClass::APPLICATION_MAIN_LOOP()
@@ -281,38 +282,41 @@ void LinuxSystemClass::ProcessInput()
 
 
 // Frame() --> ProcessFrame();
-void LinuxSystemClass::ProcessFrame() // EQUAL: BOTH OS?
-//----------------------------------------------------------------------------
+void LinuxSystemClass::ProcessFrame() // EQUAL to: WinSystemClass::ProcessFrame()
+//-------------------------------------------------------------------------------
 {
 	SystemClass::FrameUpdate();	// Process: (INPUT + PerformanceStats) Only!
 
+	if (WOMA::game_state == ENGINE_RESTART)
+		return;
+
 	#define mon 0
+
 	#if !defined INTRO_DEMO
 	if ((WOMA::game_state >= GAME_RUN && WOMA::game_state < ENGINE_RESTART) || (WOMA::game_state == GAME_SETUP))
 	#endif
 	{
+		m_Application->dayLightFade = m_Application->Update(); //OS CORE ONLY!  F1, F2, ...
+
 	#if defined INTRO_DEMO
-		if (RENDER_PAGE < 15) 
+		if (RENDER_PAGE < 15)
 	#else
-		if (RENDER_PAGE < 10) 
+		if (RENDER_PAGE < 10)
 	#endif
-			m_Application->Update();					//OS CORE ONLY!  F1, F2, ...
-		else
+			return;
+
 		{
-			m_Driver->BeginScene(mon);					//RESET FRAME: glClear
+		m_Driver->BeginScene(mon);					//RESET FRAME: glClear
 
-			m_Application->RenderScene(mon, m_Driver);	//RENDER ONE FRAME: 100% is done here!
+		m_Application->RenderScene(mon, m_Driver);	//RENDER ONE FRAME: 100% is done here!
 
-			if (!g_contextDriver)						//PRESENT FRAME
-				m_Driver->EndScene(mon);				//[DX]
-			else
-				g_contextDriver->EndScene(mon);			//[OPENGL/linux]: glXSwapBuffers( Win.display, Win.window);
+		if (!g_contextDriver)						//PRESENT FRAME
+			m_Driver->EndScene(mon);				//[DX]
+		else
+			g_contextDriver->EndScene(mon);			//[OPENGL/linux]: glXSwapBuffers( Win.display, Win.window);
 		}
 
-		if (m_Driver->RenderfirstTime) {
-			WOMA_LOGManager_DebugMSG("END:  LinuxSystemClass::ProcessFrame()\n");
-			m_Driver->RenderfirstTime = false;
-		}
+		m_Driver->RenderfirstTime = false;
 	}
 }
 

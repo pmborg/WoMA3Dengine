@@ -67,6 +67,8 @@ namespace WOMA
 	TCHAR APPDATA[MAX_STR_LEN];
 	TCHAR cCurrentPath[FILENAME_MAX]; //Use now: APPDATA
 	STRING womaTempPATH;
+	char* Temp;
+	char* Home;
 
 #if defined WINDOWS_PLATFORM
 	bool fileExists(STRING Filename)
@@ -227,8 +229,8 @@ namespace WOMA
 
 		WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("Current Directory: %s\n"), currentPath);
 
-		char* Temp = getTemp();
-		char* Home = getHome();
+		Temp = getTemp();
+		Home = getHome();
 
 		WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("PROGRAM_FILES Directory: %s\n"), PROGRAM_FILES);
 		WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("APPDATA Directory: %s\n"), APPDATA);

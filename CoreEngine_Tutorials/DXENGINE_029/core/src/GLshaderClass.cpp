@@ -64,7 +64,6 @@ bool GLshaderClass::Initialize(SHADER_TYPE shaderType)
 		break;
 		
 		case SHADER_TEXTURE_FONT:
-		
 		result = InitializeShader(shaderType, TEXT("GLengine/font.vs"), TEXT("GLengine/font.ps"));
 		break;
 
@@ -212,7 +211,23 @@ char* GLshaderClass::LoadShaderSourceFile(char* filename)
 		if (fin.fail())
 #endif
 		{
-			return 0;
+			if (fin.fail())
+			{
+			#if defined LINUX_PLATFORM
+				STRING dir = WOMA::Home;
+				STRING file = dir;
+				file.append("/projects/LinuxWoma0");
+				file.append(std::to_string(DX_ENGINE_LEVEL));
+				file.append("/bin/x64/Debug/");
+				file.append(filename);
+				WOMA_LOGManager_DebugMSGAUTO(TEXT("LoadShaderSourceFile: %s\n"), file);
+				fin.open(file);
+				if (fin.fail())
+			#endif
+				{
+					return 0;
+				}
+			}
 		}
 	}
 
@@ -260,7 +275,20 @@ char* GLshaderClass::LoadShaderSourceFile(char* filename)
 		if (fin.fail())
 #endif
 		{
-			return 0;
+		#if defined LINUX_PLATFORM
+			STRING dir = WOMA::Home;
+			STRING file = dir;
+			file.append("/projects/LinuxWoma0");
+			file.append(std::to_string(DX_ENGINE_LEVEL));
+			file.append("/bin/x64/Debug/");
+			file.append(filename);
+			WOMA_LOGManager_DebugMSGAUTO(TEXT("LoadShaderSourceFile: %s\n"), file);
+			fin.open(file);
+			if (fin.fail())
+		#endif
+			{
+				return 0;
+			}
 		}
 	}
 

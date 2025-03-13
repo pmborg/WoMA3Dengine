@@ -122,7 +122,8 @@ void LinuxSystemClass::Shutdown()
 
 #if defined _DEBUG && defined WOMA_CONSOLE_APPLICATION
 	//printf ("\npress ENTER to close, console window..."); getchar();
-#endif	
+#endif
+
 }
 
 int LinuxSystemClass::APPLICATION_MAIN_LOOP()
@@ -177,8 +178,8 @@ void LinuxSystemClass::ProcessInput()
 
 
 // Frame() --> ProcessFrame();
-void LinuxSystemClass::ProcessFrame() // EQUAL: BOTH OS?
-//----------------------------------------------------------------------------
+void LinuxSystemClass::ProcessFrame() // EQUAL to: WinSystemClass::ProcessFrame()
+//-------------------------------------------------------------------------------
 {
 
 }

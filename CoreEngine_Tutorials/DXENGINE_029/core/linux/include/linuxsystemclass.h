@@ -1,6 +1,6 @@
 // NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
-// Filename: LinuxSystemClass.h
+// Filename: linuxsystemclass.h
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
@@ -41,6 +41,16 @@
 	#include <GL/glu.h>
 	#include <GL/glx.h>
 
+	//#include <iostream>
+	//#include <fstream>
+	//#include <cstdint>
+	//#include <string>
+	//#include <unistd.h>
+	#include "woma_macros.h"
+
+	#include "openalclass.h"
+	#include "soundclass.h"
+
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: LinuxSystemClass
 ////////////////////////////////////////////////////////////////////////////////
@@ -72,6 +82,8 @@ private:
 
 	bool ApplicationInitMainWindow(/*glxOpenGLClass*/ void* OpenGL);
 
+public:
+	OpenALClass* m_OpenAL;
 };
 
 /////////////

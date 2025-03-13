@@ -963,7 +963,6 @@ bool SystemClass::InitOsInput()
 #if defined USE_TINYXML_LOADER //5
 bool SystemClass::LoadXmlSettings()
 {
-//#if CORE_ENGINE_LEVEL >= 5
 	WOMA_LOGManager_DebugMSG("===============================================================================\n");
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("LOAD XML SETTINGS\n"));
 	WOMA_LOGManager_DebugMSG("===============================================================================\n");
@@ -980,7 +979,6 @@ bool SystemClass::LoadXmlSettings()
 		WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "), false);
 		return false;
 	}
-//#endif
 
 	// Load and Parse XML FILE:"world.xml" the Configuration file
 	//----------------------------------------------------------------------------
@@ -993,11 +991,13 @@ bool SystemClass::LoadXmlSettings()
 		return false;
 	}
 
-	#if DX_ENGINE_LEVEL == 29 && defined INTRO_DEMO // Force Full Screen
-	SystemHandle->AppSettings->WINDOW_WIDTH = SystemHandle->AppSettings->WINDOW_HEIGHT = 0;
+#if DX_ENGINE_LEVEL == 29 && defined INTRO_DEMO // Force Full Screen
+	#if defined WINDOWS_PLATFORM
+		SystemHandle->AppSettings->WINDOW_WIDTH = SystemHandle->AppSettings->WINDOW_HEIGHT = 0;
+	#endif
 	SystemHandle->AppSettings->INIT_CAMZ = -20;
 	SystemHandle->AppSettings->NETWORK_ENABLED = true;
-	#endif
+#endif
 
 	SystemHandle->LandScape = (SystemHandle->AppSettings->WINDOW_WIDTH >= SystemHandle->AppSettings->WINDOW_HEIGHT) ? true : false;
 
@@ -1124,7 +1124,6 @@ void SystemClass::LoadAllDrivers()
 } //LoadAllDrivers()
 
 #if defined USE_JOY && defined USE_DIRECT_INPUT
-
 
 void SystemClass::InitJoyStick()
 {

@@ -25,6 +25,7 @@
 
 #include "OSengine.h"
 #include "ImageLoaderClass.h"
+#include "OSmain_dir.h"
 ImageLoaderClass::ImageLoaderClass()
 {
 	CLASSLOADER();
@@ -250,9 +251,20 @@ unsigned char* ImageLoaderClass::loadJPEG(TCHAR* filename, UINT* width, UINT* he
 	FILE *file;
 	if ((file = _tfopen(filename, TEXT("rb"))) == NULL)
 	{
-		STRING err = TEXT("File not found: "); err += filename;
-		WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "), /*Fatal*/TRUE);
-		//WomaFatalExceptionW((TCHAR*)err.c_str());
+	#if defined LINUX_PLATFORM
+		STRING dir = WOMA::Home;
+		dir.append("/projects/LinuxWoma0");
+		dir.append(std::to_string(DX_ENGINE_LEVEL));
+		dir.append("/WoMA3Dengine/CoreEngine_Tutorials/DXENGINE_0");
+		dir.append(std::to_string(DX_ENGINE_LEVEL));
+		dir.append("/");
+		dir.append(filename);
+		if ((file = fopen(dir.c_str(), TEXT("rb"))) == NULL)
+	#endif
+		{
+			STRING err = TEXT("File not found: "); err += dir;
+			WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "), /*Fatal*/TRUE);
+		}
 	}
 	jpeg_stdio_src(&cinfo, file);
 #endif
@@ -407,9 +419,20 @@ unsigned char* ImageLoaderClass::loadPNG(TCHAR* filename, UINT* width, UINT* hei
 
 #endif
 	{
-		STRING err = TEXT("File not found: "); err += filename;
-		WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "), /*Fatal*/TRUE);
-		//WomaFatalExceptionW((TCHAR*)err.c_str());
+	#if defined LINUX_PLATFORM
+		STRING dir = WOMA::Home;
+		dir.append("/projects/LinuxWoma0");
+		dir.append(std::to_string(DX_ENGINE_LEVEL));
+		dir.append("/WoMA3Dengine/CoreEngine_Tutorials/DXENGINE_0");
+		dir.append(std::to_string(DX_ENGINE_LEVEL));
+		dir.append("/");
+		dir.append(filename);
+		if ((file = fopen(dir.c_str(), TEXT("rb"))) == NULL)
+	#endif
+		{
+			STRING err = TEXT("File not found: "); err += dir;
+			WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "), /*Fatal*/TRUE);
+		}
 	}
 
 	// first check the eight byte PNG signature
@@ -607,9 +630,20 @@ unsigned char* ImageLoaderClass::loadBMP(TCHAR* filename, UINT* width, UINT* hei
 	if ((file = fopen(filename, TEXT("rb"))) == NULL)
 #endif
 	{
-		STRING err = TEXT("File not found: "); err += filename;
-		WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "), /*Fatal*/TRUE);
-		//WomaFatalExceptionW((TCHAR*)err.c_str());
+	#if defined LINUX_PLATFORM
+		STRING dir = WOMA::Home;
+		dir.append("/projects/LinuxWoma0");
+		dir.append(std::to_string(DX_ENGINE_LEVEL));
+		dir.append("/WoMA3Dengine/CoreEngine_Tutorials/DXENGINE_0");
+		dir.append(std::to_string(DX_ENGINE_LEVEL));
+		dir.append("/");
+		dir.append(filename);
+		if ((file = fopen(dir.c_str(), TEXT("rb"))) == NULL)
+	#endif
+		{
+			STRING err = TEXT("File not found: "); err += dir;
+			WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "), /*Fatal*/TRUE);
+		}
 	}
 
 	/*
@@ -849,9 +883,20 @@ unsigned char* ImageLoaderClass::loadTGA(TCHAR* filename, UINT* width, UINT* hei
 	if (error != 0)
 #endif
 	{
-		STRING err = TEXT("File not found: "); err += filename;
-		WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "), /*Fatal*/TRUE);
-		//WomaFatalExceptionW((TCHAR*)err.c_str());
+	#if defined LINUX_PLATFORM
+		STRING dir = WOMA::Home;
+		dir.append("/projects/LinuxWoma0");
+		dir.append(std::to_string(DX_ENGINE_LEVEL));
+		dir.append("/WoMA3Dengine/CoreEngine_Tutorials/DXENGINE_0");
+		dir.append(std::to_string(DX_ENGINE_LEVEL));
+		dir.append("/");
+		dir.append(filename);
+		if ((file = fopen(dir.c_str(), TEXT("rb"))) == NULL)
+	#endif
+		{
+			STRING err = TEXT("File not found: "); err += dir;
+			WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "), /*Fatal*/TRUE);
+		}
 	}
 
 	// Read in the file header.

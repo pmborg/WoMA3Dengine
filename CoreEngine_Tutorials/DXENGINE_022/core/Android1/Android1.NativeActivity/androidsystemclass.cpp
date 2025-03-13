@@ -139,8 +139,8 @@ bool AndroidSystemClass::APPLICATION_INIT_SYSTEM()
     WOMA_LOGManager_DebugMSG ("AndroidSystemClass::APPLICATION_INIT_SYSTEM()\n");
 
 #if defined USE_ANDROID_SOUND
-	DownloadFiles("https://github.com/pmborg/WoMA3Dengine/raw/refs/heads/main/CoreEngine_Tutorials/DXENGINE_029/engine/audio/DST-Aircord.wav", "DST-Aircord.wav");
-	m_main_music_id = playAudio("DST-Aircord.wav");
+	DownloadFiles(AUDIO_LINK, AUDIO_FILE);
+	m_main_music_id = playAudio(AUDIO_FILE);
 #endif
 
 #if defined ANDROID_PLATFORM && !defined NewWomaEngine

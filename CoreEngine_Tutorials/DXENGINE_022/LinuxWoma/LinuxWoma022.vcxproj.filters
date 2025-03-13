@@ -514,12 +514,6 @@
     <None Include="..\GLengine\color.vs">
       <Filter>GLSL-LINUX</Filter>
     </None>
-    <None Include="..\GLengine\Light.ps">
-      <Filter>GLSL-LINUX</Filter>
-    </None>
-    <None Include="..\GLengine\Light.vs">
-      <Filter>GLSL-LINUX</Filter>
-    </None>
     <None Include="..\GLengine\texture.ps">
       <Filter>GLSL-LINUX</Filter>
     </None>

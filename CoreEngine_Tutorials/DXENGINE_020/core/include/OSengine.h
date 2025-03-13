@@ -177,7 +177,6 @@ extern void APPLICATION_STOP();
 extern void APPLICATION_STARTUP(int argc, char* argv[], int Command);
 
 extern void ShowFPS(float fFPS);
-extern int audio(std::string filename);
 
 #if defined NewWomaEngine
 	extern struct engine engine;
