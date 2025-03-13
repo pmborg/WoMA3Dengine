@@ -164,9 +164,6 @@ bool RFontClass::LoadFontData(char* filename)
 	if(fin.fail())
 	{
 		STRING dir = WOMA::getCurrentDir();
-		//	dir = "	~/projects/LinuxWoma029/CoreEngine_Tutorials/DXENGINE_029"
-		//			~/projects/LinuxWoma029/WoMA3Dengine/CoreEngine_Tutorials/DXENGINE_029/engine/data/fonts/font01.txt
-
 		dir.append("/../../WoMA3Dengine/CoreEngine_Tutorials/DXENGINE_0");
 		dir.append(std::to_string(DX_ENGINE_LEVEL));
 		dir.append("/");
