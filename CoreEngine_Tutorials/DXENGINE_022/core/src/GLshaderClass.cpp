@@ -19,6 +19,7 @@
 // --------------------------------------------------------------------------------------------
 
 #include "platform.h"
+#pragma warning( disable : 4477 )
 #if (defined OPENGL3 || defined OPENGL4) && DX_ENGINE_LEVEL >= 21
 #if defined ANDROID_PLATFORM
 #include "AndroidEngine.h"
@@ -45,7 +46,7 @@ GLshaderClass::~GLshaderClass() {CLASSDELETE();}
 bool GLshaderClass::Initialize(SHADER_TYPE shaderType)
 {
 	bool result = false;
-	_tprintf("GLshaderClass::Initialize (shaderType:%d)\n", shaderType);
+	_tprintf(TEXT("GLshaderClass::Initialize (shaderType:%d)\n"), shaderType);
 
 	// Initialize the vertex and pixel shaders.
 	switch (shaderType)
@@ -108,7 +109,7 @@ bool GLshaderClass::InitializeShader(SHADER_TYPE shaderType, TCHAR* vsFilename, 
 	const char* fragmentShaderBuffer = NULL;
 	GLenum  err;
 
-	_tprintf("[%d]: InitializeShader(VS:%s PS:%s)\n", gettid(), vsFilename, fsFilename);
+	_tprintf(TEXT("[%d]: InitializeShader(VS:%s PS:%s)\n"), gettid(), vsFilename, fsFilename);
 
 	// Load the vertex shader source file into a text buffer.
 	CHAR AvsFilename[MAX_STR_LEN] = { 0 }; wtoa(AvsFilename, vsFilename, MAX_STR_LEN);
@@ -148,17 +149,17 @@ bool GLshaderClass::InitializeShader(SHADER_TYPE shaderType, TCHAR* vsFilename, 
 #endif
 
 	m_shaderProgram = glCreateProgram();				// Create a shader program object.
-	err = glGetError(); if (err != GL_NO_ERROR) { _tprintf("ERROR! glCreateProgram err: %04x", err); }
+	err = glGetError(); if (err != GL_NO_ERROR) { _tprintf(TEXT("ERROR! glCreateProgram err: %04x"), err); }
 	ASSERT(m_shaderProgram);
 
 	glAttachShader(m_shaderProgram, m_vertexShader);	// Attach a vertex shader to the program
-	err = glGetError(); if (err != GL_NO_ERROR) { _tprintf("ERROR! glAttachShader m_vertexShader: %d", err); }
+	err = glGetError(); if (err != GL_NO_ERROR) { _tprintf(TEXT("ERROR! glAttachShader m_vertexShader: %d"), err); }
 
 	glAttachShader(m_shaderProgram, m_fragmentShader);	// Attach the fragment shader to the program
-	err = glGetError(); if (err != GL_NO_ERROR) { _tprintf("ERROR! glAttachShader m_fragmentShader: %d", err); }
+	err = glGetError(); if (err != GL_NO_ERROR) { _tprintf(TEXT("ERROR! glAttachShader m_fragmentShader: %d"), err); }
 
 	glLinkProgram(m_shaderProgram);	// Link the shader program.
-	err = glGetError(); if (err != GL_NO_ERROR) { _tprintf("ERROR! glLinkProgram err: %04x", err); }
+	err = glGetError(); if (err != GL_NO_ERROR) { _tprintf(TEXT("ERROR! glLinkProgram err: %04x"), err); }
 
 	// Check the program
 	GLint Result = GL_FALSE;
@@ -202,7 +203,20 @@ char* GLshaderClass::LoadShaderSourceFile(char* filename)
 		if (fin.fail())
 #endif
 		{
-			return 0;
+		#if defined LINUX_PLATFORM
+			STRING dir = WOMA::Home;
+			STRING file = dir;
+			file.append("/projects/LinuxWoma0");
+			file.append(std::to_string(DX_ENGINE_LEVEL));
+			file.append("/bin/x64/Debug/");
+			file.append(filename);
+			WOMA_LOGManager_DebugMSGAUTO(TEXT("LoadShaderSourceFile: %s\n"), file);
+			fin.open(file);
+			if (fin.fail())
+		#endif
+			{
+				return 0;
+			}
 		}
 	}
 
@@ -250,7 +264,20 @@ char* GLshaderClass::LoadShaderSourceFile(char* filename)
 		if (fin.fail())
 #endif
 		{
-			return 0;
+		#if defined LINUX_PLATFORM
+			STRING dir = WOMA::Home;
+			STRING file = dir;
+			file.append("/projects/LinuxWoma0");
+			file.append(std::to_string(DX_ENGINE_LEVEL));
+			file.append("/bin/x64/Debug/");
+			file.append(filename);
+			WOMA_LOGManager_DebugMSGAUTO(TEXT("LoadShaderSourceFile: %s\n"), file);
+			fin.open(file);
+			if (fin.fail())
+		#endif
+			{
+				return 0;
+			}
 		}
 	}
 
@@ -273,6 +300,12 @@ char* GLshaderClass::LoadShaderSourceFile(char* filename)
 	return buffer;
 }
 
+#if defined UNICODE
+void GLshaderClass::OutputShaderErrorMessage(UINT shaderId, WCHAR* shaderFilename) {
+	CHAR file[MAX_STR_LEN] = { 0 }; wtoa(file, shaderFilename, MAX_STR_LEN); // wchar ==> char
+	OutputShaderErrorMessage(shaderId, file);
+}
+#endif
 
 void GLshaderClass::OutputShaderErrorMessage(UINT shaderId, char* shaderFilename)
 {
@@ -282,7 +315,6 @@ void GLshaderClass::OutputShaderErrorMessage(UINT shaderId, char* shaderFilename
 
 	// Get the size of the string containing the information log for the failed shader compilation message.
 	glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &logSize);
-	//WOMA_LOGManager_DebugMSG (TEXT("logSize: %d\n"), logSize);
 	WOMA_LOGManager_DebugMSG(TEXT("FILE: %s\n"), shaderFilename);
 
 	if (logSize > 0) {
@@ -312,7 +344,7 @@ void GLshaderClass::OutputLinkerErrorMessage(UINT m_shaderProgram)
 	glGetProgramiv(m_shaderProgram, GL_INFO_LOG_LENGTH, &InfoLogLength);
 	std::vector<char> ProgramErrorMessage(max(InfoLogLength, int(1)));
 	glGetProgramInfoLog(m_shaderProgram, InfoLogLength, NULL, &ProgramErrorMessage[0]);
-	_tprintf("%s\n", &ProgramErrorMessage[0]);
+	_tprintf(TEXT("%s\n"), &ProgramErrorMessage[0]);
 }
 
 

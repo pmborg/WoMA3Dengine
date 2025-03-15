@@ -161,7 +161,7 @@ bool RFontClass::LoadFontData(char* filename)
 	// Read in the font size and spacing between chars.
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("LoadFontData: %s\n"), filename);
 	fin.open(filename);
-	if(fin.fail())
+	if (fin.fail())
 	{
 		STRING dir = WOMA::getCurrentDir();
 		dir.append("/../../WoMA3Dengine/CoreEngine_Tutorials/DXENGINE_0");

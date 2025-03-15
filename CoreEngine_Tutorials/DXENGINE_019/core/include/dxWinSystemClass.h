@@ -20,15 +20,31 @@
 #pragma once
 
 #include "platform.h"
+
 #if defined DX_ENGINE
+
 #include "WinSystemClass.h"
-#pragma warning( disable : 4065 )	// warning C4065: switch statement contains 'default' but no 'case' labels
-#define _CRT_SECURE_NO_WARNINGS
 
 #if DX_ENGINE_LEVEL >= 29 && defined USE_WIN32_SOUND_MANAGER || defined USE_WIN32_PLAY_MUSIC
 #include "AudioClass.h"
 #endif
 
+// Used to Print Labels (on win WM_PAINT):
+// --------------------------------------------------------------------------------------------
+#include "ApplicationClass.h"
+
+#if defined USE_INTRO_VIDEO_DEMO
+#include <dshow.h>
+#include "../../WomaUtils/include/playback.h"
+#endif
+
+extern PSTR Scmdline;
+
+#ifdef INTRO_DEMO
+extern WCHAR* DEMO_Legends[];
+#endif
+
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: WinSystemClass
@@ -78,9 +94,6 @@ public:
 #endif
 
 
-
-
-
 	//private:
 	void Shutdown();
 };
@@ -88,4 +101,3 @@ public:
 extern dxWinSystemClass* DXsystemHandle;
 
 
-#endif

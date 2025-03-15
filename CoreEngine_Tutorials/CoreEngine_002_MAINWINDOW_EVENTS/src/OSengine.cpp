@@ -19,7 +19,9 @@
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234567222;
 
+#include "platform.h"
 #include "OSengine.h"
+
 #include <inttypes.h>
 
 #if defined WINDOWS_PLATFORM
@@ -60,45 +62,45 @@ TCHAR* DEMO_NAME[] =
 //{"09 : From now on : PRESS[F4] for : [REAL Wheather] at user location."},
 //{"19 : PRESS[F6] for SETUP and change Driver : OPENGL, DX9, DX11, DX12 : Initiate the 3D Graphic Drivers and attache the swapchain to mainwindow."},
 //{"20 : OPENGL, DX9, DX11, DX12 : Allow mainwindow resizing."},
-{"TUTORIAL 21: The Basic triangle and squar using vertexes with indexes. The COLOR shader"},
-{"TUTORIAL 22: Loading and Rendering Textures - The TEXTURE shader"},
-{"TUTORIAL 23: Adding the first light, 'Diffuse Lighting'. - The LIGHT shader"},
-{"TUTORIAL 24: Adding Orthogonal Projection - Used on 2D Orthogonal Sprites"},
-{"TUTORIAL 25: DX10DRIVER_FONTS (Windows Only!)"},
-{"TUTORIAL 26: The first 3D objects: the CUBEs and SPHEREs - COLOR Shader, TEXTURE Shader and LIGHT Shader"},
-{"TUTORIAL 27: The rastertek fonts on DX9, DX11, DX12 and OPENGL"},
-{"TUTORIAL 28: The DX direct input, the Sky Camera and the Sphere Skydome"},
-{"TUTORIAL 29: This DEMO: Use music (ogg loader for Windows and wav loader for Android) and the sound effects"},
-{"TUTORIAL 30: WORLD.XML: load OBJ 3D file format, using COLOR shader"},
-{"TUTORIAL 31: WORLD.XML: load OBJ 3D file format, with MULTIPLE TEXTURES, using TEXTURE shader"},
-{"TUTORIAL 32: WORLD.XML: load OBJ 3D file format, the first advanced object, using LIGHT shader"},
-{"TUTORIAL 33: WORLD.XML: load OBJ 3D file format, the compond, using transparent textures ALFA MAP and ALFA COLOR"},
-{"TUTORIAL 34: WORLD.XML: load OBJ 3D file format, with SPECULAR and SHININESS"},
-{"TUTORIAL 35: WORLD.XML: load OBJ 3D file format, with BUMP MAP"},
-{"TUTORIAL 36: WORLD.XML: load OBJ 3D file format, render a SHADOW MAP"},
-{"TUTORIAL 37: WORLD.XML: load OBJ 3D file format, render chess board pieces, adding MAIN THREAD and the LOADER THREAD"},
-{"TUTORIAL 38: WORLD.XML: load OBJ 3D file format, save to W3D Woma 3D fast file FORMAT"},
-{"TUTORIAL 39: WORLD.XML: load W3D(the Woma 3D file format) files up to 30x faster than OBJ files in DX LEVEl38"},
-{"TUTORIAL 40: WORLD.XML: load W3D and use INSTANCES to clone objects using GPU"},
-{"TUTORIAL 41: WORLD.XML: load W3D and use SHADOW INSTANCES"},
-{"TUTORIAL 42: WORLD.XML: load W3D and use SHADOW INSTANCES with ROTATION per instance"},
-{"43"}, //Reserved future demo 
-{"44"}, //Reserved future demo 
-{"45"}, //Reserved future demo 
-{"46"}, //Reserved future demo 
-{"47"}, //Reserved future demo 
-{"48"}, //Reserved future demo 
-{"49: TERRAIN: Generate under water terrain. ModelTextureVertexType"},
-{"50: TERRAIN: the under water terrain. ModelTextureVertexType"},
-{"51: TERRAIN: Add fog ModelTextureVertexType"},
-{"52: TERRAIN: Use Light Shader + Add Normals + Add Index(s) ModelTextureVertexType"},
-{"53: TERRAIN: Add extra color terrain(extra Green in this example) ModelTextureVertexType"},
-{"54: TERRAIN: Add Water waves ModelTextureVertexType"},
-{"55: TERRAIN: 256x256 with Slope Texture Shader[0]ModelTextureVertexType"},
-{"56: TERRAIN: 256x256 Terrain Texture Multi Layers "},
-{"57: "},    //Reserved future demo 
-{"58: "},    //Reserved future demo 
-{"59: "},    //Reserved future demo 
+{TEXT("TUTORIAL 21: The Basic triangle and squar using vertexes with indexes. The COLOR shader")},
+{TEXT("TUTORIAL 22: Loading and Rendering Textures - The TEXTURE shader")},
+{TEXT("TUTORIAL 23: Adding the first light, 'Diffuse Lighting'. - The LIGHT shader")},
+{TEXT("TUTORIAL 24: Adding Orthogonal Projection - Used on 2D Orthogonal Sprites")},
+{TEXT("TUTORIAL 25: DX10DRIVER_FONTS (Windows Only!)")},
+{TEXT("TUTORIAL 26: The first 3D objects: the CUBEs and SPHEREs - COLOR Shader, TEXTURE Shader and LIGHT Shader")},
+{TEXT("TUTORIAL 27: The rastertek fonts on DX9, DX11, DX12 and OPENGL")},
+{TEXT("TUTORIAL 28: The DX direct input, the Sky Camera and the Sphere Skydome")},
+{TEXT("TUTORIAL 29: This DEMO: Use music (ogg loader for Windows and wav loader for Android) and the sound effects")},
+{TEXT("TUTORIAL 30: WORLD.XML: load OBJ 3D file format, using COLOR shader")},
+{TEXT("TUTORIAL 31: WORLD.XML: load OBJ 3D file format, with MULTIPLE TEXTURES, using TEXTURE shader")},
+{TEXT("TUTORIAL 32: WORLD.XML: load OBJ 3D file format, the first advanced object, using LIGHT shader")},
+{TEXT("TUTORIAL 33: WORLD.XML: load OBJ 3D file format, the compond, using transparent textures ALFA MAP and ALFA COLOR")},
+{TEXT("TUTORIAL 34: WORLD.XML: load OBJ 3D file format, with SPECULAR and SHININESS")},
+{TEXT("TUTORIAL 35: WORLD.XML: load OBJ 3D file format, with BUMP MAP")},
+{TEXT("TUTORIAL 36: WORLD.XML: load OBJ 3D file format, render a SHADOW MAP")},
+{TEXT("TUTORIAL 37: WORLD.XML: load OBJ 3D file format, render chess board pieces, adding MAIN THREAD and the LOADER THREAD")},
+{TEXT("TUTORIAL 38: WORLD.XML: load OBJ 3D file format, save to W3D Woma 3D fast file FORMAT")},
+{TEXT("TUTORIAL 39: WORLD.XML: load W3D(the Woma 3D file format) files up to 30x faster than OBJ files in DX LEVEl38")},
+{TEXT("TUTORIAL 40: WORLD.XML: load W3D and use INSTANCES to clone objects using GPU")},
+{TEXT("TUTORIAL 41: WORLD.XML: load W3D and use SHADOW INSTANCES")},
+{TEXT("TUTORIAL 42: WORLD.XML: load W3D and use SHADOW INSTANCES with ROTATION per instance")},
+{TEXT("43")}, //Reserved future demo 
+{TEXT("44")}, //Reserved future demo 
+{TEXT("45")}, //Reserved future demo 
+{TEXT("46")}, //Reserved future demo 
+{TEXT("47")}, //Reserved future demo 
+{TEXT("48")}, //Reserved future demo 
+{TEXT("49: TERRAIN: Generate under water terrain. ModelTextureVertexType")},
+{TEXT("50: TERRAIN: the under water terrain. ModelTextureVertexType")},
+{TEXT("51: TERRAIN: Add fog ModelTextureVertexType")},
+{TEXT("52: TERRAIN: Use Light Shader + Add Normals + Add Index(s) ModelTextureVertexType")},
+{TEXT("53: TERRAIN: Add extra color terrain(extra Green in this example) ModelTextureVertexType")},
+{TEXT("54: TERRAIN: Add Water waves ModelTextureVertexType")},
+{TEXT("55: TERRAIN: 256x256 with Slope Texture Shader[0]ModelTextureVertexType")},
+{TEXT("56: TERRAIN: 256x256 Terrain Texture Multi Layers ")},
+{TEXT("57: ")},    //Reserved future demo 
+{TEXT("58: ")},    //Reserved future demo 
+{TEXT("59: ")},    //Reserved future demo 
 {DEMO_TITLE},//60 - USE_TERRAIN_TUTORIAL_CHAP_24 
 {DEMO_TITLE},//61 - USE_TERRAIN_512
 {DEMO_TITLE},//62 - USE_MAIN_MAP
@@ -149,7 +151,7 @@ UINT CLASS_DELETE_N = 1;
 #if CORE_ENGINE_LEVEL >= 10 & !defined NewWomaEngine
 UINT RENDER_PAGE = DX_ENGINE_LEVEL;
 std::vector<WomaDriverClass*> driverList;
-WomaDriverClass* g_contextDriver = NULL;	// Note: Used only at 20  /*wGLopenGLclass*/
+WomaDriverClass* g_contextDriver = NULL;	// Note: Used only at 20  wGLopenGLclass
 #else
 UINT RENDER_PAGE;
 #endif
@@ -262,8 +264,8 @@ namespace WOMA
 	int endian()
 	{
 		short int word = 0x0001;
-		char* byte = (char*)&word;
-		return (byte[0] ? LITTLE_ENDIAN : BIG_ENDIAN);
+		CHAR* byte_ = (CHAR*)&word;
+		return (byte_[0] ? LITTLE_ENDIAN : BIG_ENDIAN);
 	}
 }
 
@@ -722,7 +724,7 @@ void LogInfo(const char* sTag, const char* fmt, ...)
 
 namespace WOMA
 {
-	int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption, /*bool fatal,*/ bool yesORno = false)
+	int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption, bool yesORno = false)
 	{
 		MY_LOG("%s", lpText);
 	}

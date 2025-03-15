@@ -24,9 +24,11 @@
 //////////////
 // INCLUDES //
 //////////////
-//#define _CRT_SECURE_NO_WARNINGS		// Ignore: warning C4996
-#include "SystemClass.h"
+
+#include "platform.h"
+
 #if defined WINDOWS_PLATFORM
+#include "SystemClass.h"
 
 #if defined CLIENT_SCENE_SETUP
 #include "WomaSetupManager.h"

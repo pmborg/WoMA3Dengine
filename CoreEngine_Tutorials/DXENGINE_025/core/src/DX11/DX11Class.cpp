@@ -454,7 +454,7 @@ if (dx11_force_dx9)
 	else
 		if (g_ALLOW_DX9x)
 		{
-			WomaFatalException(TEXT("FATAL ERROR: DX9 Device, not supported. Could not load d3d9.dll"));
+			WomaFatalException( "FATAL ERROR: DX9 Device, not supported. Could not load d3d9.dll");
 			return FALSE;
 		}
 }//#endif

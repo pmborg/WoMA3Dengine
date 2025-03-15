@@ -137,7 +137,7 @@ struct Capabilities
 	bool CapDX12 = false;
 	//bool CapDX12_1 = false;
 
-	STRING SHADER_TYPE_NAME="";
+	STRING SHADER_TYPE_NAME=TEXT("");
 
 	BOOL   inStereoAdapterMode=false;
 
@@ -272,7 +272,7 @@ public:
 	TCHAR szShaderModel[MAX_STR_LEN];	// STRING szShaderModel; // "x.y"
 	// ------------------
 	
-	TCHAR	m_videoCardDescription[MAX_STR_LEN];	//STRING m_videoCardDescription; 
+	CHAR	m_videoCardDescription[128];	//NEED TO BE CHAR
 	int		m_videoCardMemory = 0;
 	TCHAR	adapterDesc_Description[MAX_STR_LEN];	// Note: have to be wstring
 	UINT	ufreededicatedVideoMem = 0;

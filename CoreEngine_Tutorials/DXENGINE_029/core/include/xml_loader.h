@@ -28,7 +28,6 @@
 #if defined USE_TINYXML_LOADER
 
 #include "tinyxml2.h"
-#pragma comment( lib, "TinyXMLv2_LIBX64_d.lib" )
 
 #ifdef TIXML_USE_STL
 #include <iostream>
@@ -44,45 +43,45 @@ using namespace std;
 	_CrtMemState endMemState;
 #endif
 	
-/*
+
 #if UNICODE
 #ifdef X64
 	#if defined(_DEBUG) & !defined(NDEBUG)
-		#pragma comment( lib, "x64/WDebug/TinyXML_LIBX64_d.lib" )	//DEBUG
+		#pragma comment( lib, "x64/WDebug/TinyXMLv2_LIBX64_d.lib" )	//DEBUG
 	#elif !defined _DEBUG && defined NDEBUG
-		#pragma comment( lib, "x64/WRelease/TinyXML_LIBX64.lib" )	//RELEASE
+		#pragma comment( lib, "x64/WRelease/TinyXMLv2_LIBX64.lib" )	//RELEASE
 	#else
-		#pragma comment( lib, "x64/WRelease/TinyXML_LIBX64.lib" )	//DBGREL
+		#pragma comment( lib, "x64/WRelease/TinyXMLv2_LIBX64.lib" )	//DBGREL
 	#endif
 #else
 	#if defined(_DEBUG) & !defined(NDEBUG)
-		#pragma comment( lib, "Win32/WDebug/TinyXML_LIB_d.lib" )	//DEBUG
+		#pragma comment( lib, "Win32/WDebug/TinyXMLv2_LIB_d.lib" )	//DEBUG
 	#elif !defined _DEBUG && defined NDEBUG
-		#pragma comment( lib, "Win32/WRelease/TinyXML_LIB.lib" )	//RELEASE
+		#pragma comment( lib, "Win32/WRelease/TinyXMLv2_LIB.lib" )	//RELEASE
 	#else
-		#pragma comment( lib, "Win32/WRelease/TinyXML_LIB.lib" )	//DBGREL
+		#pragma comment( lib, "Win32/WRelease/TinyXMLv2_LIB.lib" )	//DBGREL
 	#endif
 #endif
 #else
 #ifdef X64
 	#if defined(_DEBUG) & !defined(NDEBUG)
-		#pragma comment( lib, "x64/Debug/TinyXML_LIBX64_d.lib" )	//DEBUG
+		#pragma comment( lib, "x64/Debug/TinyXMLv2_LIBX64_d.lib" )	//DEBUG
 	#elif !defined _DEBUG && defined NDEBUG
-		#pragma comment( lib, "x64/Release/TinyXML_LIBX64.lib" )	//RELEASE
+		#pragma comment( lib, "x64/Release/TinyXMLv2_LIBX64.lib" )	//RELEASE
 	#else
-		#pragma comment( lib, "x64/Release/TinyXML_LIBX64.lib" )	//DBGREL
+		#pragma comment( lib, "x64/Release/TinyXMLv2_LIBX64.lib" )	//DBGREL
 	#endif
 #else
 	#if defined(_DEBUG) & !defined(NDEBUG)
-		#pragma comment( lib, "Win32/Debug/TinyXML_LIB_d.lib" )		//DEBUG
+		#pragma comment( lib, "Win32/Debug/TinyXMLv2_LIB_d.lib" )		//DEBUG
 	#elif !defined _DEBUG && defined NDEBUG
-		#pragma comment( lib, "Win32/Release/TinyXML_LIB.lib" )		//RELEASE
+		#pragma comment( lib, "Win32/Release/TinyXMLv2_LIB.lib" )		//RELEASE
 	#else
-		#pragma comment( lib, "Win32/Release/TinyXML_LIB.lib" )		//DBGREL
+		#pragma comment( lib, "Win32/Release/TinyXMLv2_LIB.lib" )		//DBGREL
 	#endif
 #endif
 #endif
-*/
+
 
 #include "main.h"
 #include <vector>

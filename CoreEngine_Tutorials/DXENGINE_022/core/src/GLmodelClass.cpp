@@ -20,7 +20,7 @@
 //WomaIntegrityCheck = 1234567222;
 
 #include "platform.h"
-
+#pragma warning( disable : 4473 )
 #if (defined OPENGL3 || defined OPENGL4) && DX_ENGINE_LEVEL >= 21
 #include "OSengine.h"
 #include "mem_leak.h"
@@ -161,7 +161,7 @@ bool result=false;
 
 	result = m_Shader->Initialize(ModelShaderType);
 	if(!result)
-		{ WomaFatalException(TEXT("Could not initialize the shader object.")); /*return false;*/ }
+		{ WomaFatalException(("Could not initialize the shader object.")); /*return false;*/ }
 
 	// Load Texture (manually)
 	// ------------------------------------------------------------------------------------------------
@@ -199,8 +199,8 @@ bool result=false;
 // -------------------	// COLOR
 bool GLmodelClass::LoadColor(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<ModelColorVertexType> *model, std::vector<UINT>* indexList, UINT instanceCount)
 {
-	_tprintf("--------------------------------------------------------------\n");
-	_tprintf("[%d]: LOADCOLOR(): %s\n", gettid(), objectName);
+	_tprintf(TEXT("--------------------------------------------------------------\n"));
+	_tprintf(TEXT("[%d]: LOADCOLOR(): %s\n"), gettid(), objectName);
 
 	MODEL_NAME = objectName;
 	if (shader_type == SHADER_AUTO)
@@ -216,8 +216,8 @@ bool GLmodelClass::LoadColor(TCHAR* objectName, void* driver, SHADER_TYPE shader
 
 bool GLmodelClass::LoadTexture(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureVertexType> *model, std::vector<UINT>* indexList, UINT instanceCount)
 {
-	_tprintf("--------------------------------------------------------------\n");
-	_tprintf("[%d]: LOADTEXTURE(): %s\n", gettid(), objectName);
+	_tprintf(TEXT("--------------------------------------------------------------\n"));
+	_tprintf(TEXT("[%d]: LOADTEXTURE(): %s\n"), gettid(), objectName);
 
 	MODEL_NAME = objectName;
 	if (shader_type == SHADER_AUTO)
@@ -671,7 +671,7 @@ bool GLmodelClass::InitializeColorBuffers(/*GLopenGLclass*/ void* OpenGL)
 	}
 
 #if (defined _DEBUG || defined  DEBUG) //&& defined ANDROID_PLATFORM
-	_tprintf("[%d]: InitializeColorBuffers::glGenVertexArrays()\n", gettid());
+	_tprintf(TEXT("[%d]: InitializeColorBuffers::glGenVertexArrays()\n"), gettid());
 #endif
 	glGenVertexArrays(1, &m_vertexArrayId);	// Allocate an OpenGL vertex array object.
 	glBindVertexArray(m_vertexArrayId);		// Bind the vertex array object to store all the buffers and vertex attributes we create here.
@@ -719,23 +719,23 @@ bool GLmodelClass::InitializeTextureBuffers(/*GLopenGLclass*/ void* OpenGL)
 	}
 
 #if (defined _DEBUG || defined  DEBUG) //&& defined ANDROID_PLATFORM
-	_tprintf("[%d]: InitializeTextureBuffers::glGenVertexArrays()\n", gettid());
+	_tprintf(TEXT("[%d]: InitializeTextureBuffers::glGenVertexArrays()\n"), gettid());
 #endif
 	glGenVertexArrays(1, &m_vertexArrayId);	// Allocate an OpenGL vertex array object.
-	err = glGetError(); if (err != GL_NO_ERROR) { _tprintf("ERROR! glGenVertexArrays err: %04x", err); }
+	err = glGetError(); if (err != GL_NO_ERROR) { _tprintf(TEXT("ERROR! glGenVertexArrays err: %04x"), err); }
 
 	glBindVertexArray(m_vertexArrayId);		// Bind the vertex array object to store all the buffers and vertex attributes we create here.
-	err = glGetError(); if (err != GL_NO_ERROR) { _tprintf("ERROR! glBindVertexArray err: %04x", err); }
+	err = glGetError(); if (err != GL_NO_ERROR) { _tprintf(TEXT("ERROR! glBindVertexArray err: %04x"), err); }
 
 	glGenBuffers(1, &m_vertexBufferId);		// Generate an ID for the vertex buffer.
-	err = glGetError(); if (err != GL_NO_ERROR) { _tprintf("ERROR! glGenBuffers err: %04x", err); }
+	err = glGetError(); if (err != GL_NO_ERROR) { _tprintf(TEXT("ERROR! glGenBuffers err: %04x"), err); }
 
 	// Bind the vertex buffer and load the vertex (position and color) data into the vertex buffer.
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
 	glBufferData(GL_ARRAY_BUFFER, m_vertexCount * sizeof(ModelTextureVertexType), vertices, GL_STATIC_DRAW);
 
 	SetOpenGLBuffers(sizeof (ModelTextureVertexType), indices);
-	err = glGetError(); if (err != GL_NO_ERROR) { _tprintf("ERROR! SetOpenGLBuffers err: %04x", err); }
+	err = glGetError(); if (err != GL_NO_ERROR) { _tprintf(TEXT("ERROR! SetOpenGLBuffers err: %04x"), err); }
 
 	// Now that the buffers have been loaded we can release the array data.
 	SAFE_DELETE_ARRAY (vertices);

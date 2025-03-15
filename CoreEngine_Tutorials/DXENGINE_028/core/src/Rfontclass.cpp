@@ -22,6 +22,7 @@
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
 #include "OSengine.h"
 #include "Rfontclass.h"
+#include "OSmain_dir.h"
 
 RFontClass::RFontClass()
 {
@@ -160,9 +161,18 @@ bool RFontClass::LoadFontData(char* filename)
 	// Read in the font size and spacing between chars.
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("LoadFontData: %s\n"), filename);
 	fin.open(filename);
-	if(fin.fail())
+	if (fin.fail())
 	{
-		return false;
+		STRING dir = WOMA::getCurrentDir();
+		dir.append("/../../WoMA3Dengine/CoreEngine_Tutorials/DXENGINE_0");
+		dir.append(std::to_string(DX_ENGINE_LEVEL));
+		dir.append("/");
+		dir.append(filename);
+		fin.open(dir);
+		if (fin.fail())
+		{
+			return false;
+		}
 	}
 
 	// Read in the 95 used ascii characters for text.

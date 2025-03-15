@@ -142,7 +142,7 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 	catch (const std::exception& e)
 	{
 		fprintf(stderr, "main()::Threw an exception: %s\n", e.what());
-		WomaMessageBox("loadConfigSettings()::Threw an exception!", TEXT("FATAL ERROR"), MB_OK);
+		WomaMessageBox(TEXT("loadConfigSettings()::Threw an exception!"), TEXT("FATAL ERROR"), MB_OK);
 		return EXIT_FAILURE;
 	}
 
@@ -320,13 +320,15 @@ bool XMLloader::loadWorld (TCHAR* file_) // Note: Have to be char
 	if (error == tinyxml2::XML_ERROR_FILE_NOT_FOUND)
 	{
 	#if MAINENGINE
-		STRING file = "~/projects/LinuxWoma/DXEngine_055/";
+		CHAR home[MAX_STR_LEN] = { 0 }; wtoa(home, WOMA::Home, MAX_STR_LEN); // wchar ==> char
+		std::string file = home;
+		file.append("/projects/LinuxWoma/DXEngine_055/"); //need to be: std::string
 	#else
 #if defined LINUX_PLATFORM && CORE_ENGINE_LEVEL < 10
 			STRING file = WOMA::Home;
 			file.append(DEMO_ROOT_DIR);
 		#else
-			STRING file = "../../../CoreEngine_Tutorials/DXENGINE_0";
+			std::string file = "../../../CoreEngine_Tutorials/DXENGINE_0"; //CHAR
 			file.append(std::to_string(DX_ENGINE_LEVEL));
 		#endif
 	#endif
@@ -487,13 +489,15 @@ bool XMLloader::loadConfigSettings (TCHAR* file_) // Note: Have to be char
 	if (error == tinyxml2::XML_ERROR_FILE_NOT_FOUND)
 	{
 	#if MAINENGINE
-		STRING file = "~/projects/LinuxWoma/DXEngine_055/";
+		CHAR home[MAX_STR_LEN] = { 0 }; wtoa(home, WOMA::Home, MAX_STR_LEN); // wchar ==> char
+		std::string file = home;
+		file.append("/projects/LinuxWoma/DXEngine_055/"); //need to be: std::string
 	#else
 		#if defined LINUX_PLATFORM && CORE_ENGINE_LEVEL < 10
 			STRING file = WOMA::Home;
 			file.append(DEMO_ROOT_DIR);
 		#else
-			STRING file = "../../../CoreEngine_Tutorials/DXENGINE_0";
+			std::string file = "../../../CoreEngine_Tutorials/DXENGINE_0"; //CHAR
 			file.append(std::to_string(DX_ENGINE_LEVEL));
 		#endif
 	#endif

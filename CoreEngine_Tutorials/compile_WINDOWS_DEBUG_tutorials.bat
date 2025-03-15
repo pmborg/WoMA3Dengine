@@ -22,6 +22,7 @@ echo on
 "%devenv%" CoreEngine_008_PAINT_REALTIME_GPS_MAP_LOCATION\CoreEngine_008.sln /project CoreEngine_008 /Build "Debug|x64" /out ENGINE_008_d.txt
 "%devenv%" CoreEngine_009_PAINT_METAR_WEATHER_REALTIME\CoreEngine_009.sln /project CoreEngine_009 /Build "Debug|x64" /out ENGINE_009_d.txt
 
+REM FROM 19:
 for /D %%f in (DXENGINE_*) do (
 "%devenv%" %%f/%%f.sln /project %%f /Build "Debug|x64" /out %%f_d.txt 
 )

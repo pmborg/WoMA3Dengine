@@ -77,13 +77,13 @@ bool DX11Class::createSetDepthStencilState (bool depthTestEnabled)
 	{
 		// Create the state using the device.
 		result = m_device11->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState);		// true
-		if(FAILED(result)){WomaFatalException(TEXT("Error: CreateDepthStencilState")); /*return false;*/}
+		if(FAILED(result)){WomaFatalException(("Error: CreateDepthStencilState")); /*return false;*/}
 
 	} else {
 		// With the description filled out we can now create a depth stencil state:
 		// (Create the depth stencil state)
 		result = m_device11->CreateDepthStencilState(&depthStencilDesc, &m_depthDisabledStencilState);// false
-		if(FAILED(result)){WomaFatalException(TEXT("Error: CreateDepthStencilState")); /*return false;*/}
+		if(FAILED(result)){WomaFatalException(("Error: CreateDepthStencilState")); /*return false;*/}
 	}
 
 	return true;

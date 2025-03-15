@@ -51,7 +51,7 @@ textFontClass::~textFontClass() { Shutdown(); CLASSDELETE();}
 bool textFontClass::Initialize(void* g_driver, TCHAR* fontFilename, TCHAR* textureFilename)
 {
 	HRESULT hr = S_FALSE;
-	_tprintf("textFontClass::Initialize ()\n");
+	_tprintf(TEXT("textFontClass::Initialize ()\n"));
 
 	if (!LoadFontData(WOMA::LoadFile(fontFilename)))				// Load in the text file containing the font data.
 		return false;
@@ -129,7 +129,7 @@ bool textFontClass::LoadFontData(TCHAR* filename)
 	int i;
 	char temp;
 
-	_tprintf("textFontClass::LoadFontData(%s)\n", filename);
+	_tprintf(TEXT("textFontClass::LoadFontData(%s)\n"), filename);
 
 	// Create the font spacing buffer.
 	m_Font = NEW FontType[95];
@@ -151,14 +151,14 @@ bool textFontClass::LoadFontData(TCHAR* filename)
 
 		//ignore 2nd column
 		fin.get(temp);
-		_tprintf("%c ", temp);
+		printf("%c ", temp);
 		while(temp != ' ')
 			fin.get(temp);
 
 		fin >> m_Font[i].left;
 		fin >> m_Font[i].right;
 		fin >> m_Font[i].size;
-		_tprintf("L: %f R: %f S: %i \n", m_Font[i].left, m_Font[i].right, m_Font[i].size);
+		printf("L: %f R: %f S: %i \n", m_Font[i].left, m_Font[i].right, m_Font[i].size);
 	}
 	
 	fin.close();	// Close the file.
@@ -198,7 +198,7 @@ void textFontClass::BuildVertexArray(void* vertices, TCHAR* sentence, float draw
 	//WomaDriverClass* m_Driver = /*SystemHandle->*/driverList[SystemHandle->AppSettings->DRIVER];
 
 	if (m_Driver->RenderfirstTime)
-		_tprintf("[%d]: BuildVertexArray(%s, drawX: %f, drawY: %f)\n", gettid(), sentence, drawX, drawY);
+		_tprintf(TEXT("[%d]: BuildVertexArray(%s, drawX: %f, drawY: %f)\n"), gettid(), sentence, drawX, drawY);
 
 	// Coerce the input vertices into a VertexType structure.
 	vertexPtr = (VertexType*)vertices;

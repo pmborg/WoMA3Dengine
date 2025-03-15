@@ -47,6 +47,9 @@ private:
 	bool InitializeShader(SHADER_TYPE shaderType, TCHAR*, TCHAR*);
 	char* LoadShaderSourceFile(char*);
 	void OutputShaderErrorMessage(UINT, char*);
+#if defined UNICODE
+	void OutputShaderErrorMessage(UINT, WCHAR*);
+#endif
 	void OutputLinkerErrorMessage(UINT);
 	void ShutdownShader();
 

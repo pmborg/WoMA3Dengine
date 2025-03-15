@@ -376,7 +376,7 @@ bool ApplicationTextClass::Initialize(void* Driver)
 	// Initialize the Text object:
 	if (!m_Text->Initialize(Driver))
 	{
-		WomaFatalException(TEXT("Could not initialize the Text Object")); /*return false;*/
+		WomaFatalException(("Could not initialize the Text Object")); /*return false;*/
 	}
 
 	// TextClass: PART2

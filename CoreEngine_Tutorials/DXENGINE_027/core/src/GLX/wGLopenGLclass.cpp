@@ -83,7 +83,7 @@ bool wGLopenGLclass::OnInit(int _USE_MONITOR, /*HWND*/void* hwnd, int screenWidt
 	PIXELFORMATDESCRIPTOR pixelFormatDescriptor = {0}; // memset(&pixelFormatDescriptor, 0, sizeof(PIXELFORMATDESCRIPTOR));
 
 	if (!hwnd)
-		{ WomaFatalException (TEXT("HWND: NULL"));	/*return false;*/ }
+		{ WomaFatalException (("HWND: NULL"));	/*return false;*/ }
 
 	// Get the device context for "this" window.
 	m_deviceContext = GetDC((HWND)hwnd);
@@ -180,12 +180,12 @@ static PIXELFORMATDESCRIPTOR    pixelFormatDescriptor = {
 */
 	// MODEs LIST more info: https://www.opengl.org/discussion_boards/showthread.php/178106-Pixel-format-and-display-settings
 	pixelFormat = ChoosePixelFormat(m_deviceContext, &pixelFormatDescriptor);
-	if (!pixelFormat) { WomaFatalException (TEXT("Error on ChoosePixelFormat")); /*return false;*/ }
+	if (!pixelFormat) { WomaFatalException (("Error on ChoosePixelFormat")); /*return false;*/ }
 #endif
 
 	// If the video card/display can handle our desired pixel format then we set it as the current one.
 	result = SetPixelFormat(m_deviceContext, pixelFormat, &pixelFormatDescriptor);
-	if(result != 1) { WomaFatalException (TEXT("Error setting SetPixelFormat")); /*return false;*/ }
+	if(result != 1) { WomaFatalException (("Error setting SetPixelFormat")); /*return false;*/ }
 
 #if defined old_school
 	// Set the 4.0 version of OpenGL in the attribute list.
@@ -203,7 +203,7 @@ static PIXELFORMATDESCRIPTOR    pixelFormatDescriptor = {
 	}
 #else
 	m_renderingContext1 = wglCreateContext(m_deviceContext);
-	if (!m_renderingContext1) { WomaFatalException(TEXT("Error wglCreateContext")); /*return false;*/ }
+	if (!m_renderingContext1) { WomaFatalException(("Error wglCreateContext")); /*return false;*/ }
 
     if (!gl3wIsSupported(3, 3))  
 		{WomaMessageBox(TEXT("Warning: OpenGL 3.3 not supported!\n"), TEXT("WARNING")); }
@@ -213,7 +213,7 @@ static PIXELFORMATDESCRIPTOR    pixelFormatDescriptor = {
 	// -----------------------------------
 	result = wglMakeCurrent(m_deviceContext, m_renderingContext1);
 	if(result != 1)
-		{ WomaFatalException (TEXT("Error setting wglMakeCurrent")); /*return false;*/ }
+		{ WomaFatalException (("Error setting wglMakeCurrent")); /*return false;*/ }
 
 	// the default context is created with maximum version
 	// use GL3 query type, as it is the only consumer
@@ -231,7 +231,7 @@ static PIXELFORMATDESCRIPTOR    pixelFormatDescriptor = {
 #else
 	result = wglSwapIntervalEXT(vsync);	// SET VSYNC
 	if (result != 1) 
-	{ WomaFatalException(TEXT("Error on wglSwapIntervalEXT")); /*return false;*/ }
+	{ WomaFatalException(("Error on wglSwapIntervalEXT")); /*return false;*/ }
 #endif
 
 	//Check HW:
@@ -247,15 +247,15 @@ static PIXELFORMATDESCRIPTOR    pixelFormatDescriptor = {
 	// check for pixel format and multisampling support
 	if (_wglGetExtensionsStringARB)
 	{
-		ISTRINGSTREAM wglexts(_wglGetExtensionsStringARB(m_deviceContext));
-		STRING ext;
+		std::istringstream wglexts(_wglGetExtensionsStringARB(m_deviceContext));
+		std::string ext;
 		while (wglexts >> ext)
 		{
-			if (ext == "WGL_ARB_pixel_format")
+			if (ext == ("WGL_ARB_pixel_format"))
 				HasPixelFormatARB = true;
-			else if (ext == "WGL_ARB_multisample")
+			else if (ext == ("WGL_ARB_multisample"))
 				HasMultisample = true;
-			else if (ext == "WGL_EXT_framebuffer_sRGB")
+			else if (ext == ("WGL_EXT_framebuffer_sRGB"))
 				HasHardwareGamma = true;
 		}
 	}

@@ -28,15 +28,23 @@
 #include <unistd.h>
 
 #include "woma_macros.h"
-
 #include "openalclass.h"
 #include "soundclass.h"
+#include "OSmain_dir.h"
 
 SoundClass* linux_play_wav(std::string filename)
 {
 	bool result = true;
-	std::string fullfilename="~/projects/LinuxWoma029/CoreEngine_Tutorials/DXENGINE_029/";
+
+	//std::string fullfilename="~/projects/LinuxWoma029/CoreEngine_Tutorials/DXENGINE_029/";
+	STRING fullfilename = WOMA::Home;
+	fullfilename.append("/projects/LinuxWoma0");
+	fullfilename.append(std::to_string(DX_ENGINE_LEVEL));
+	fullfilename.append("/WoMA3Dengine/CoreEngine_Tutorials/DXENGINE_0");
+	fullfilename.append(std::to_string(DX_ENGINE_LEVEL));
+	fullfilename.append("/");
 	fullfilename.append(filename);
+
 	SoundClass* sound;
 
 	// Create and initialize the OpenAL object.

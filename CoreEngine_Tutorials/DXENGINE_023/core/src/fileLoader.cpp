@@ -20,9 +20,9 @@
 //WomaIntegrityCheck = 1234567222;
 
 #include "main.h"
-
 #include "fileLoader.h"
 #include "OSmain_dir.h" //#include "OsDirectories.h"
+#pragma warning( disable : 6386 )
 
 namespace WOMA
 {
@@ -37,7 +37,11 @@ TCHAR* LoadFile(TCHAR* filename)
 	if (filename[0]!='.') {
 		StringCchPrintf(file_, sizeof(file_), TEXT("%s%s"), TEXT("./"), filename);
 	} else {
-		strcpy_s(file_, sizeof(file_),  filename);
+#if defined UNICODE
+		_tcscpy_s(file_, sizeof(file_),  filename);
+#else
+		strcpy_s(file_, sizeof(file_), filename);
+#endif
 	}
 	file = file_;
 	lastfile = file;

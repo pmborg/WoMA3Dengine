@@ -655,7 +655,7 @@ bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ voi
 #endif
 
 	// [*] Create the window and return the handle to it:
-	HWND hWnd = WomaCreateWindowEx(dwExStyle, (TCHAR*)WOMA_ENGINE_CLASS, "Loading...", windowStyle,
+	HWND hWnd = WomaCreateWindowEx(dwExStyle, (TCHAR*)WOMA_ENGINE_CLASS, TEXT("Loading..."), windowStyle,
 		windowLeft, windowTop,
 		AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT,
 		NULL,	// We have no parent window

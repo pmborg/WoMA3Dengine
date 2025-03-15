@@ -251,8 +251,8 @@ unsigned char* ImageLoaderClass::loadJPEG(TCHAR* filename, UINT* width, UINT* he
 	FILE *file;
 	if ((file = _tfopen(filename, TEXT("rb"))) == NULL)
 	{
-	#if defined LINUX_PLATFORM
 		STRING dir = WOMA::Home;
+	#if defined LINUX_PLATFORM
 		dir.append("/projects/LinuxWoma0");
 		dir.append(std::to_string(DX_ENGINE_LEVEL));
 		dir.append("/WoMA3Dengine/CoreEngine_Tutorials/DXENGINE_0");
@@ -278,8 +278,7 @@ unsigned char* ImageLoaderClass::loadJPEG(TCHAR* filename, UINT* width, UINT* he
 	{
 	case 1:
 		//format = FORMAT_I8;
-		WomaMessageBox("FORMAT_I8: Error reading file!", "Error: ", /*Fatal*/TRUE);
-		//woma_exception("FORMAT_I8: Error reading file!", __FILE__, __FUNCTION__, __LINE__);
+		WomaMessageBox(TEXT("FORMAT_I8: Error reading file!"), TEXT("Error: "), /*Fatal*/TRUE);
 		break;
 	case 3:
 		FORMAT_RGB8 = true;
@@ -415,12 +414,12 @@ unsigned char* ImageLoaderClass::loadPNG(TCHAR* filename, UINT* width, UINT* hei
 	// open the PNG input file
 	if (!file.open(filename, TEXT("rb")))
 #else
-	if ((file = fopen(filename, TEXT("rb"))) == NULL)
+	if ((file = _tfopen(filename, TEXT("rb"))) == NULL)
 
 #endif
 	{
-	#if defined LINUX_PLATFORM
 		STRING dir = WOMA::Home;
+	#if defined LINUX_PLATFORM
 		dir.append("/projects/LinuxWoma0");
 		dir.append(std::to_string(DX_ENGINE_LEVEL));
 		dir.append("/WoMA3Dengine/CoreEngine_Tutorials/DXENGINE_0");
@@ -449,7 +448,7 @@ unsigned char* ImageLoaderClass::loadPNG(TCHAR* filename, UINT* width, UINT* hei
 	if (!png_check_sig(pbSig, sizeof(pbSig)))
 	{
 		FCLOSE(file);
-		WomaMessageBox("PNG file has incorrect magic number", TEXT("Error: "), /*Fatal*/TRUE);
+		WomaMessageBox(TEXT("PNG file has incorrect magic number"), TEXT("Error: "), /*Fatal*/TRUE);
 		//throw woma_exception("PNG file has incorrect magic number", __FILE__, __FUNCTION__, __LINE__);
 		return 0;
 	}
@@ -457,14 +456,14 @@ unsigned char* ImageLoaderClass::loadPNG(TCHAR* filename, UINT* width, UINT* hei
 	// create the two png(-info) structures
 	if ((png_ptr = png_create_read_struct_2(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL, NULL, malloc_fn, free_fn)) == NULL) {
 		FCLOSE(file);
-		WomaMessageBox(filename, "Error reading file!", /*Fatal*/TRUE);
+		WomaMessageBox(filename, TEXT("Error reading file!"), /*Fatal*/TRUE);
 		//throw woma_exception("Error reading file!", __FILE__, __FUNCTION__, __LINE__);
 	}
 
 	if ((info_ptr = png_create_info_struct(png_ptr)) == NULL) {
 		png_destroy_read_struct(&png_ptr, NULL, NULL);
 		FCLOSE(file);
-		WomaMessageBox(filename, "Error reading file!", /*Fatal*/TRUE);
+		WomaMessageBox(filename, TEXT("Error reading file!"), /*Fatal*/TRUE);
 		//throw woma_exception("Error reading file!", __FILE__, __FUNCTION__, __LINE__);
 	}
 
@@ -514,12 +513,8 @@ unsigned char* ImageLoaderClass::loadPNG(TCHAR* filename, UINT* width, UINT* hei
 	FCLOSE(file);
 
 	if (colorType == PNG_COLOR_TYPE_PALETTE) {
-		WomaMessageBox("ERROR LOADING: Image, Palettes not supported!", TEXT("Error: "), /*Fatal*/TRUE);
-		//throw woma_exception ("ERROR LOADING: Image, Palettes not supported!", __FILE__, __FUNCTION__, __LINE__);
+		WomaMessageBox(TEXT("ERROR LOADING: Image, Palettes not supported!"), TEXT("Error: "), /*Fatal*/TRUE);
 	}
-
-
-
 
 	// Added by me:
 	if (bitDepth == 8)
@@ -627,11 +622,11 @@ unsigned char* ImageLoaderClass::loadBMP(TCHAR* filename, UINT* width, UINT* hei
 	// open the BMP input file
 	if (!file.open(filename, TEXT("rb")))
 #else
-	if ((file = fopen(filename, TEXT("rb"))) == NULL)
+	if ((file = _tfopen(filename, TEXT("rb"))) == NULL)
 #endif
 	{
-	#if defined LINUX_PLATFORM
 		STRING dir = WOMA::Home;
+	#if defined LINUX_PLATFORM
 		dir.append("/projects/LinuxWoma0");
 		dir.append(std::to_string(DX_ENGINE_LEVEL));
 		dir.append("/WoMA3Dengine/CoreEngine_Tutorials/DXENGINE_0");
@@ -669,14 +664,12 @@ unsigned char* ImageLoaderClass::loadBMP(TCHAR* filename, UINT* width, UINT* hei
 	if (count != 1)
 	#endif
 	{
-		WomaMessageBox(filename, "Error reading file!", /*Fatal*/TRUE);
-		//throw woma_exception("Error reading file!", __FILE__, __FUNCTION__, __LINE__);
+		WomaMessageBox(filename, TEXT("Error reading file!"), /*Fatal*/TRUE);
 	}
 
 	//[3] Check Signature:
 	if (bitmapFileHeader.bfType != 0x4d42) {	// "BM"
-		WomaMessageBox(filename, "Error reading file!", /*Fatal*/TRUE);
-		//throw woma_exception("Error reading file!", __FILE__, __FUNCTION__, __LINE__);
+		WomaMessageBox(filename, TEXT("Error reading file!"), /*Fatal*/TRUE);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -718,14 +711,12 @@ unsigned char* ImageLoaderClass::loadBMP(TCHAR* filename, UINT* width, UINT* hei
 	if (count != 1)
 	#endif
 	{
-		WomaMessageBox(filename, "Error reading file!", /*Fatal*/TRUE);
-		//throw woma_exception("Error reading file!", __FILE__, __FUNCTION__, __LINE__);
+		WomaMessageBox(filename, TEXT("Error reading file!"), /*Fatal*/TRUE);
 	}
 
 	//[5] 1, 4 and 8 not supported:
 	if (bitmapInfoHeader.biBitCount < 24) {
-		WomaMessageBox(filename, "Error reading file!", /*Fatal*/TRUE);
-		//throw woma_exception("Error reading file!", __FILE__, __FUNCTION__, __LINE__);
+		WomaMessageBox(filename, TEXT("Error reading file!"), /*Fatal*/TRUE);
 	}
 
 	//Store the size of the terrain so we can use these values for building the vertex and index buffers as well as rendering the terrain.
@@ -757,8 +748,7 @@ unsigned char* ImageLoaderClass::loadBMP(TCHAR* filename, UINT* width, UINT* hei
 	count = (UINT)fread(bottomUpImage, 1, (*imageSize), file);
 	if (count != (*imageSize))
 	{
-		WomaMessageBox(filename, "Error reading file!", /*Fatal*/TRUE);
-		//throw woma_exception("Error reading file!", __FILE__, __FUNCTION__, __LINE__);
+		WomaMessageBox(filename, TEXT("Error reading file!"), /*Fatal*/TRUE);
 	}
 #endif
 
@@ -770,8 +760,7 @@ unsigned char* ImageLoaderClass::loadBMP(TCHAR* filename, UINT* width, UINT* hei
 		error = fclose(file);
 
 	if (error != 0) {
-		WomaMessageBox(filename, "Error reading file!", /*Fatal*/TRUE);
-		//throw woma_exception("Error reading file!", __FILE__, __FUNCTION__, __LINE__);
+		WomaMessageBox(filename, TEXT("Error reading file!"), /*Fatal*/TRUE);
 	}
 #endif
 	// Invert the BMP Image
@@ -883,8 +872,8 @@ unsigned char* ImageLoaderClass::loadTGA(TCHAR* filename, UINT* width, UINT* hei
 	if (error != 0)
 #endif
 	{
-	#if defined LINUX_PLATFORM
 		STRING dir = WOMA::Home;
+	#if defined LINUX_PLATFORM
 		dir.append("/projects/LinuxWoma0");
 		dir.append(std::to_string(DX_ENGINE_LEVEL));
 		dir.append("/WoMA3Dengine/CoreEngine_Tutorials/DXENGINE_0");
@@ -908,8 +897,7 @@ unsigned char* ImageLoaderClass::loadTGA(TCHAR* filename, UINT* width, UINT* hei
 	if (count != 1) 
 #endif
 	{
-		WomaMessageBox("ImageLoaderClass::File not found!", TEXT("Error: "), /*Fatal*/TRUE);
-		//throw woma_exception("File not found!", __FILE__, __FUNCTION__, __LINE__);
+		WomaMessageBox(TEXT("ImageLoaderClass::File not found!"), TEXT("Error: "), /*Fatal*/TRUE);
 	}
 
 	bool isCompressed = (targaFileHeader.data1[2] == 10);	// Note:  2 => DeCompressed
@@ -943,8 +931,7 @@ unsigned char* ImageLoaderClass::loadTGA(TCHAR* filename, UINT* width, UINT* hei
 #else
 	error = fclose(file);
 	if (error != 0) {
-		WomaMessageBox(filename, "Error reading file!", /*Fatal*/TRUE);
-		//throw woma_exception("Error reading file!", __FILE__, __FUNCTION__, __LINE__);
+		WomaMessageBox(filename, TEXT("Error reading file!"), /*Fatal*/TRUE);
 	}
 #endif
 

@@ -20,7 +20,7 @@
 //WomaIntegrityCheck = 1234567222;
 
 #include "platform.h"
-
+#pragma warning( disable : 4473 )
 #if (defined OPENGL3 || defined OPENGL4) && DX_ENGINE_LEVEL >= 21
 #include "OSengine.h"
 #include "mem_leak.h"
@@ -157,7 +157,7 @@ bool result=false;
 
 	result = m_Shader->Initialize(ModelShaderType);
 	if(!result)
-		{ WomaFatalException(TEXT("Could not initialize the shader object.")); /*return false;*/ }
+		{ WomaFatalException(("Could not initialize the shader object.")); /*return false;*/ }
 
 	// Load Texture (manually)
 	// ------------------------------------------------------------------------------------------------
@@ -168,8 +168,8 @@ bool result=false;
 // -------------------	// COLOR
 bool GLmodelClass::LoadColor(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<ModelColorVertexType> *model, std::vector<UINT>* indexList, UINT instanceCount)
 {
-	_tprintf("--------------------------------------------------------------\n");
-	_tprintf("[%d]: LOADCOLOR(): %s\n", gettid(), objectName);
+	_tprintf(TEXT("--------------------------------------------------------------\n"));
+	_tprintf(TEXT("[%d]: LOADCOLOR(): %s\n"), gettid(), objectName);
 
 	MODEL_NAME = objectName;
 	if (shader_type == SHADER_AUTO)
@@ -603,7 +603,7 @@ bool GLmodelClass::InitializeColorBuffers(/*GLopenGLclass*/ void* OpenGL)
 	}
 
 #if (defined _DEBUG || defined  DEBUG) //&& defined ANDROID_PLATFORM
-	_tprintf("[%d]: InitializeColorBuffers::glGenVertexArrays()\n", gettid());
+	_tprintf(TEXT("[%d]: InitializeColorBuffers::glGenVertexArrays()\n"), gettid());
 #endif
 	glGenVertexArrays(1, &m_vertexArrayId);	// Allocate an OpenGL vertex array object.
 	glBindVertexArray(m_vertexArrayId);		// Bind the vertex array object to store all the buffers and vertex attributes we create here.

@@ -49,8 +49,8 @@ namespace WOMA
 	extern TCHAR APPDATA1[MAX_STR_LEN];
 	extern TCHAR APPDATA[MAX_STR_LEN];
 	extern STRING womaTempPATH; //Use now: APPDATA
-	extern char* Temp;
-	extern char* Home;
+	extern TCHAR* Temp;
+	extern TCHAR* Home;
 
 	// Functions:
 	extern TCHAR* getCurrentDir();

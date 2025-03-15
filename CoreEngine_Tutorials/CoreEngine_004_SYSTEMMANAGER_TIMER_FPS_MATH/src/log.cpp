@@ -176,7 +176,7 @@ void LogManager::OutputDebugStringReportW(WCHAR* x)
 void LogManager::OutputDebugStringReport(char* x)
 //------------------------------------------------------------------
 {
-	_tprintf("%s", x);									//NOTE: Cant Use here: _tprintf
+	printf("%s", x);								//NOTE: Cant Use here: _tprintf
 	fwrite(x, sizeof(char), strlen(x), debugFile);	//NOTE: Cant Use here: _tcslen
 }
 

@@ -241,7 +241,7 @@ bool SystemManager::checkRAM ()
 	{
 		TCHAR str[MAX_STR_LEN];
 		StringCchPrintf(str, MAX_STR_LEN, TEXT("RAM WARNING: Your RAM memory is very low (< %dGB), this application might not run!\n"), MIN_RAM);
-        WomaMessageBox(str, "Error", false);
+        WomaMessageBox(str, TEXT("Error"), false);
 	}
 
 	StringCchPrintf(SystemHandle->systemDefinitions.totalMemoryCapacity, MAX_STR_LEN, TEXT("Total RAM: %d GB\n"), (UINT) wmiUtil.totalMemoryCapacity);
@@ -355,7 +355,7 @@ bool SystemManager::checkDiskFreeSpace ()
     }
 
     if (driveLetter == drivesList.size())
-        WomaMessageBox(TEXT("WARNING: You dont have 512MB of free disk space to Install Woma on all drives!"), "WARNING", false); //Change Drive...
+        WomaMessageBox(TEXT("WARNING: You dont have 512MB of free disk space to Install Woma on all drives!"), TEXT("WARNING"), false); //Change Drive...
 
 	
 	// SAVE SCAN RESULTS:

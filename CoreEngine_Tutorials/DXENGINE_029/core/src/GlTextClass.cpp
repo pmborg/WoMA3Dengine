@@ -84,7 +84,7 @@ bool GlTextClass::Initialize(void* Driver)
 {
 	bool result=false;
 
-	_tprintf("GlTextClass::Initialize ()\n");
+	_tprintf(TEXT("GlTextClass::Initialize ()\n"));
 
 	// TextClass: Initialize the font object. PART1
 	m_Font = NEW textFontClass;
@@ -102,7 +102,7 @@ bool GlTextClass::Initialize(void* Driver)
 #endif
 	if (!result)
 	{
-		WomaFatalException(TEXT("Could not initialize the Shader: check HLSL/GLSL file and the error in code")); //return false;
+		WomaFatalException(("Could not initialize the Shader: check HLSL/GLSL file and the error in code")); //return false;
 	}
 
 	// Used "Color" and no default "Texture" so load it:
@@ -120,7 +120,7 @@ bool GlTextClass::InitializeTexture(void* Driver)
 // SIMILAR: DXmodelClass::InitializeColorBuffers
 bool GlTextClass::InitializeSentence(SentenceType** sentence, int maxLength)
 {
-	_tprintf("GlTextClass::InitializeSentence()\n");
+	_tprintf(TEXT("GlTextClass::InitializeSentence()\n"));
 
 	// Create a new sentence object.
 	*sentence = NEW SentenceType;
@@ -198,7 +198,7 @@ bool GlTextClass::UpdateSentence(SentenceType* sentence, TCHAR* text, int positi
 
 	if (!sentence)
 	{
-		WomaFatalException(TEXT("Text: sentece = NULL")); //return false;
+		WomaFatalException(("Text: sentece = NULL")); //return false;
 	}
 
 	// Store the color of the sentence.
@@ -212,7 +212,7 @@ bool GlTextClass::UpdateSentence(SentenceType* sentence, TCHAR* text, int positi
 	// Check for possible buffer overflow.
 	if (numLetters > sentence->maxLength)
 	{
-		WomaFatalException(TEXT("Text Size Fatal Error")); //return false;
+		WomaFatalException(("Text Size Fatal Error")); //return false;
 	}
 
 	// Create the vertex array.

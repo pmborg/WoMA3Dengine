@@ -160,7 +160,7 @@ bool wmiUtilClass::GetCpuTemperature()
         SAFE_RELEASE(pServices);
         SAFE_RELEASE(pLocator);
         CoUninitialize();
-        WomaMessageBox(TEXT("WARNING: GetCpuTemperature, failed!"), "WARNING", false);
+        WomaMessageBox(TEXT("WARNING: GetCpuTemperature, failed!"), TEXT("WARNING"), false);
 		return false;
     }
 
@@ -219,7 +219,7 @@ bool wmiUtilClass::GetTotalPhysicalMemory()
 {
     if (!pServices) 
         if (!initWMI(TEXT("ROOT\\CIMV2"))) 
-			{ WomaMessageBox(TEXT("WARNING: GetTotalPhysicalMemory, failed!"), "WARNING", false); return false; }
+			{ WomaMessageBox(TEXT("WARNING: GetTotalPhysicalMemory, failed!"), TEXT("WARNING"), false); return false; }
 
     // Request WMI data.
     IEnumWbemClassObject* pEnumerator = NULL;
@@ -233,7 +233,7 @@ bool wmiUtilClass::GetTotalPhysicalMemory()
         SAFE_RELEASE(pServices);
         SAFE_RELEASE(pLocator);
         CoUninitialize();
-        WomaMessageBox(TEXT("WARNING: GetTotalPhysicalMemory, failed!"), "WARNING", false);
+        WomaMessageBox(TEXT("WARNING: GetTotalPhysicalMemory, failed!"), TEXT("WARNING"), false);
 		return false;
     }
 
@@ -273,7 +273,7 @@ bool wmiUtilClass::GetSystemInfo()
 {
     if (!pServices) 
         if (!initWMI(TEXT("ROOT\\CIMV2"))) 
-			{ WomaMessageBox(TEXT("WARNING: GetTotalPhysicalMemory, failed!"), "WARNING", false); return false; }
+			{ WomaMessageBox(TEXT("WARNING: GetTotalPhysicalMemory, failed!"), TEXT("WARNING"), false); return false; }
 
     // Request WMI data.
     IEnumWbemClassObject* pEnumerator = NULL;
@@ -287,7 +287,7 @@ bool wmiUtilClass::GetSystemInfo()
         SAFE_RELEASE(pServices);
         SAFE_RELEASE(pLocator);
         CoUninitialize();
-        WomaMessageBox(TEXT("WARNING: GetSystemInfo, failed!"), "WARNING", false);
+        WomaMessageBox(TEXT("WARNING: GetSystemInfo, failed!"), TEXT("WARNING"), false);
 		return false;
     }
 

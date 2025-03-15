@@ -139,7 +139,7 @@
 #endif
 
 #if defined WINDOWS_PLATFORM
-	#define WOMAOS "WINDOWS"
+	#define WOMAOS TEXT("WINDOWS")
 
 	#pragma warning(push)
 	#pragma warning(disable : 6387)
@@ -150,7 +150,7 @@
 		std::stringstream test(lpCmdLine);              \
 		for (int i = 0; i < MAX_PARAMS; i++)            \
 			argv[i] = (char*)malloc(MAX_STR_LEN);       \
-		GetModuleFileName(NULL, argv[argc++], MAX_PATH);\
+		GetModuleFileNameA(NULL, argv[argc++], MAX_PATH);\
 		while (std::getline(test, segment, ' '))        \
 		strcpy(argv[argc++], segment.c_str());          \
 	}
@@ -158,11 +158,11 @@
 #endif
 
 #if defined ANDROID_PLATFORM
-	#define WOMAOS "ANDROID"
+	#define WOMAOS TEXT("ANDROID")
 
 	#if defined NewWomaEngine
 		#include "Android.h"
-		#define WOMAOS "ANDROID"
+		#define WOMAOS TEXT("ANDROID")
 	#endif
 #endif
 

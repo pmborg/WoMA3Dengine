@@ -24,9 +24,11 @@
 //////////////
 // INCLUDES //
 //////////////
-//#define _CRT_SECURE_NO_WARNINGS		// Ignore: warning C4996
-#include "SystemClass.h"
+
+#include "platform.h"
+
 #if defined WINDOWS_PLATFORM
+#include "SystemClass.h"
 
 #if defined CLIENT_SCENE_SETUP
 #include "WomaSetupManager.h"
@@ -53,7 +55,7 @@ namespace WOMA
 	struct WindowDataContainer
 	{
 		// 1
-		STRING MonitorName="";
+		STRING MonitorName=TEXT("");
 		CHAR deviceName[MAX_STR_LEN] = {};
 		UINT deviceIndex=0;
 		// 2
@@ -96,7 +98,7 @@ public:
 	bool MyRegisterClass(HINSTANCE hInstance);
 	HWND WomaCreateWindowEx(DWORD dwExStyle, TCHAR* lpClassName, TCHAR* lpWindowName, DWORD dwStyle,
 		int X, int Y, int nWidth, int nHeight, HWND hWndParent, HMENU hMenu, HINSTANCE hInstance, LPVOID lpParam);
-	bool CreateMainWindow(UINT USE_MONITOR_, /*WomaDriverClass*/ void*, int&, int&); /*wGLopenGLclass*/
+	bool CreateMainWindow(UINT USE_MONITOR_, void*, int&, int&); //wGLopenGLclass
 	bool ShowWindow(int windowLeft, int windowTop);
 	LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
 	void ProcessFrame();

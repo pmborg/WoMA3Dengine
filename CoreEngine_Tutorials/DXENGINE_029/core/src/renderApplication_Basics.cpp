@@ -275,7 +275,7 @@ float ApplicationClass::Update()
 
 	if (m_Driver->RenderfirstTime)
 	{
-		TCHAR tmp[MAX_STR_LEN]; _stprintf(tmp, "PASSED TOTAL TIME TO LOAD: %ju ms\n", passedTotalTime); OutputDebugString(tmp);
+		TCHAR tmp[MAX_STR_LEN]; _stprintf(tmp, TEXT("PASSED TOTAL TIME TO LOAD: %ju ms\n"), passedTotalTime); OutputDebugString(tmp);
 #if defined SAVEW3D
 		WomaMessageBox(TEXT("Conversion from OBJ to W3D, ended."), TEXT("SAVEW3D"));
 		WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP;
@@ -288,7 +288,7 @@ float ApplicationClass::Update()
 	// 5 INTRO DEBUG TEXT: Show time, etc..
 	if (RENDER_PAGE < 21) {
 		if (m_Driver->RenderfirstTime) {
-			TCHAR tmp[MAX_STR_LEN]; _stprintf(tmp, "WOMA_APPLICATION_IntroRender(%ju)\n", passedTotalTime); OutputDebugString(tmp);
+			TCHAR tmp[MAX_STR_LEN]; _stprintf(tmp, TEXT("WOMA_APPLICATION_IntroRender(%ju)\n"), passedTotalTime); OutputDebugString(tmp);
 		}
 		fadeIntro = WOMA_APPLICATION_IntroRender(passedTotalTime);
 	}
@@ -296,7 +296,7 @@ float ApplicationClass::Update()
 		fadeIntro = 1;
 
 	if (m_Driver->RenderfirstTime) {
-		TCHAR tmp[MAX_STR_LEN]; _stprintf(tmp, "WOMA_APPLICATION_DemoRender(%ju)\n", passedTotalTime); OutputDebugString(tmp);
+		TCHAR tmp[MAX_STR_LEN]; _stprintf(tmp, TEXT("WOMA_APPLICATION_DemoRender(%ju)\n"), passedTotalTime); OutputDebugString(tmp);
 	}
 	WOMA_APPLICATION_DemoRender(passedTotalTime);
 

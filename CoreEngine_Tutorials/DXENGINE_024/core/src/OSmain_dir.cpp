@@ -67,8 +67,8 @@ namespace WOMA
 	TCHAR APPDATA[MAX_STR_LEN];
 	TCHAR cCurrentPath[FILENAME_MAX]; //Use now: APPDATA
 	STRING womaTempPATH;
-	char* Temp;
-	char* Home;
+	TCHAR* Temp;
+	TCHAR* Home;
 
 #if defined WINDOWS_PLATFORM
 	bool fileExists(STRING Filename)

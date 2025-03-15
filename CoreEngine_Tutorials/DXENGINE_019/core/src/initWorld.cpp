@@ -259,12 +259,12 @@ STRING		szFileName = wLOCAL_APPDATA + TEXT("myip.txt");
 	if(!URLDownloadToFile(NULL, EXTERNAL_IP, szFileName.c_str(), 0, NULL))
 #endif
 	{
-		_tprintf("Could not comunicate with whatismyipaddress.com Server!");
+		_tprintf(TEXT("Could not comunicate with whatismyipaddress.com Server!"));
 		return TEXT("");
 	}
 #endif
 
-	STRING str="127.0.0.1";
+	STRING str=TEXT("127.0.0.1");
 
 #if defined NDEBUG || CORE_ENGINE_LEVEL == 8 || defined ANDROID_PLATFORM
 	

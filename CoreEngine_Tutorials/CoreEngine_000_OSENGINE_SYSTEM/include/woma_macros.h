@@ -39,9 +39,9 @@
 /*
 #if defined WINDOWS_PLATFORM
 	#ifdef UNICODE
-		#define ItoA _itow		//Bug on ANDROID
+		#define ItoA _itow		//Bug on ANDROID APIv25
 	#else
-		#define ItoA _itoa		//Bug on ANDROID
+		#define ItoA _itoa		//Bug on ANDROID APIv25
 	#endif
 #endif
 */

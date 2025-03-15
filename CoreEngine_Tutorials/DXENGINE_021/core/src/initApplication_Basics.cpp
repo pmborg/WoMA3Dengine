@@ -217,7 +217,7 @@ void ApplicationClass::DEMO_WOMA_APPLICATION_Shutdown2D()
 
 bool ApplicationClass::initText()
 {
-	_tprintf("[%d]: initText()\n", gettid());
+	_tprintf(TEXT("[%d]: initText()\n"), gettid());
 
 	AppTextClass = NEW DirectX::ApplicationTextClass();
 	IF_NOT_THROW_EXCEPTION(AppTextClass);
@@ -333,8 +333,8 @@ void ApplicationClass::initIntroDemo()
 bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)	//WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_Initialize3D()\n");
 // --------------------------------------------------------------------------------------------
 {
-	_tprintf("----------------------------------------------------------------------------------------\n");
-	_tprintf("[%d]: WOMA_APPLICATION_Initialize3D()\n", gettid());
+	_tprintf(TEXT("----------------------------------------------------------------------------------------\n"));
+	_tprintf(TEXT("[%d]: WOMA_APPLICATION_Initialize3D()\n"), gettid());
 
 	//ASTRO ////////////////////////////////////////////////////////////////////////////////////////////////////////
 #if defined USE_ASTRO_CLASS

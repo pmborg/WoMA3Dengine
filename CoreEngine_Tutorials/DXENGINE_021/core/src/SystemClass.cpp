@@ -913,7 +913,7 @@ if (WOMA::game_state == GAME_RUN)
 }
 #endif
 
-#if defined ANDROID_PLATFORM && !defined NewWomaEngine
+#if defined ANDROID_PLATFORM && !defined NewWomaEngine && defined USE_IMGUI
 	if (WOMA::game_state == GAME_RUN)
 	{
 		struct womaengine* engine = (struct womaengine*)app->userData;

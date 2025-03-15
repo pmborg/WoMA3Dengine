@@ -728,7 +728,7 @@ namespace DirectX {
 			result = D3D12SerializeRootSignature(&rootSignatureDesc, driver->featureData.HighestVersion, &signature, &error);
 			if (FAILED(result))
 			{
-				WomaMessageBox("D3D12SerializeRootSignature", "DX12 ERROR:");
+				WomaMessageBox(TEXT("D3D12SerializeRootSignature"), TEXT("DX12 ERROR:"));
 				WOMA_LOGManager_DebugMSGAUTO((char*)error->GetBufferPointer());
 				//OutputDXError(error.Get());
 				//ThrowIfFailed(result);
@@ -793,7 +793,7 @@ namespace DirectX {
 			STRING vertVer = TEXT("vs_");
 			vertVer.append(/*SystemHandle->*/driverList[SystemHandle->AppSettings->DRIVER]->szShaderModel);  //TEXT("vs_5_0")
 			vertVer[4] = '_';  //TEXT("vs_5_0")
-			result = D3DCompileFromFile(vsFilename.c_str(), defines/*nullptr*/, nullptr, vertexHLSL.c_str(), TEXT("vs_5_0")/*vertVer.c_str()*/, compileFlags, 0, &vertexShader, &errorMessage);
+			result = D3DCompileFromFile(vsFilename.c_str(), defines/*nullptr*/, nullptr, vertexHLSL.c_str(), ("vs_5_0")/*vertVer.c_str()*/, compileFlags, 0, &vertexShader, &errorMessage);
 			if (FAILED(result))
 			{
 				if (errorMessage)
@@ -802,7 +802,7 @@ namespace DirectX {
 			}
 
 			vertVer[0] = 'p';  //TEXT("ps_5_0")
-			result = D3DCompileFromFile(psFilename.c_str(), defines/*nullptr*/, nullptr, pixelHLSL.c_str(), TEXT("ps_5_0")/*vertVer.c_str()*/, compileFlags, 0, &pixelShader, &errorMessage);
+			result = D3DCompileFromFile(psFilename.c_str(), defines/*nullptr*/, nullptr, pixelHLSL.c_str(), ("ps_5_0")/*vertVer.c_str()*/, compileFlags, 0, &pixelShader, &errorMessage);
 			if (FAILED(result))
 			{
 				if (errorMessage)

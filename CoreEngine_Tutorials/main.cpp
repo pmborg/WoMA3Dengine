@@ -127,6 +127,20 @@ void android_main(android_app* state)			// ENTRY-POINT: ANDROID
 
 void ParseCommandLineArgs(int argc, char* argv[])
 {
+#if defined UNICODE
+	for (int i = 1; i < argc; ++i)
+	{
+		CHAR* parameter = argv[i];
+		TCHAR* wparameter = NULL;
+		atow(wparameter, parameter, (int)_tcslen(wparameter)); //VER_PRODUCTVERSION_STRING_FOUR_PARTS
+
+		if (_tcsnicmp(wparameter, TEXT("-warp"), _tcslen(wparameter)) == 0 ||
+			_tcsnicmp(wparameter, TEXT("/warp"), _tcslen(wparameter)) == 0)
+		{
+			WOMA::UseWarpDevice = true;
+		}
+	}
+#else
 	for (int i = 1; i < argc; ++i)
 	{
 		if (_tcsnicmp(argv[i], "-warp", _tcslen(argv[i])) == 0 ||
@@ -135,6 +149,7 @@ void ParseCommandLineArgs(int argc, char* argv[])
 			WOMA::UseWarpDevice = true;
 		}
 	}
+#endif
 }
 
 // Entry point of all WoMA ENGINE Applications all "main's" call this this one (used by: WINDOWS / LINUX / ANDROID)

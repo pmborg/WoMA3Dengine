@@ -389,112 +389,118 @@
     <ClCompile Include="core\src\xml_settings_saver.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
-    <ClCompile Include="src\DX11\DX11CapabilitiesClass.cpp">
-      <Filter>src\dx11</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DX11\DX11Class.cpp">
-      <Filter>src\dx11</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DX11\DX11CreateDevice-and-SwapChain.cpp">
-      <Filter>src\dx11</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DX11\DX11GetModesList.cpp">
-      <Filter>src\dx11</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DX11\DX11ViewPort-and-Scissor.cpp">
-      <Filter>src\dx11</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DX11\DX11Zbuffer.cpp">
-      <Filter>src\dx11</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DX12\DX12Class.cpp">
-      <Filter>src\dx12</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GLX\GL3w.cpp">
-      <Filter>src\OPENGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GLX\GLopenGLclass.cpp">
-      <Filter>src\OPENGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GLX\wglopenglclass.cpp">
-      <Filter>src\OPENGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\dxWinSystemClass.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\initApplication_Basics.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\renderApplication_Basics.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DX11LoadTexture.cpp">
-      <Filter>src\dx11</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DX11RasterizerState.cpp">
-      <Filter>src\dx11</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DX12Textureclass.cpp">
-      <Filter>src\dx12</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GLcameraClass.cpp">
-      <Filter>src\OPENGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GLmodelClass.cpp">
-      <Filter>src\OPENGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GLshaderClass.cpp">
-      <Filter>src\OPENGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GLTextureclass.cpp">
-      <Filter>src\OPENGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DXshaderLoader.cpp">
-      <Filter>src\DX</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DXcameraClass.cpp">
-      <Filter>src\DX</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DXmodelClass.cpp">
-      <Filter>src\DX</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DXshaderClass.cpp">
-      <Filter>src\DX</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ImageLoaderClass.cpp">
-      <Filter>src\utils</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DX11Blending.cpp">
-      <Filter>src\dx11</Filter>
-    </ClCompile>
-    <ClCompile Include="src\lightClass.cpp">
-      <Filter>src\utils</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Application_LightRay.cpp">
-      <Filter>src\utils</Filter>
-    </ClCompile>
-    <ClCompile Include="src\WomaCube.cpp">
-      <Filter>src\utils</Filter>
-    </ClCompile>
-    <ClCompile Include="src\WomaSphere.cpp">
-      <Filter>src\utils</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DxTextClass.cpp">
-      <Filter>src\text</Filter>
-    </ClCompile>
-    <ClCompile Include="src\textFontClass.cpp">
-      <Filter>src\text</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ApplicationTextClass.cpp">
-      <Filter>src\text</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GLTextClass.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="core\src\winWomaSetupManager.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
     <ClCompile Include="core\src\ApplicationClass.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\Dx11DriverFonts.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\OperatingSystem.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\ApplicationTextClass.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\Application_LightRay.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\DX11Blending.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\DX11LoadTexture.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\DX11RasterizerState.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\DX11\DX11CapabilitiesClass.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\DX11\DX11Class.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\DX11\DX11CreateDevice-and-SwapChain.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\DX11\DX11GetModesList.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\DX11\DX11ViewPort-and-Scissor.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\DX11\DX11Zbuffer.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\DX12Textureclass.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\DX12\DX12Class.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\DXcameraClass.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\DXmodelClass.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\DXshaderClass.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\DXshaderLoader.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\DxTextClass.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\textFontClass.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\dxWinSystemClass.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\GLcameraClass.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\GLmodelClass.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\GLshaderClass.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\GLTextClass.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\GLTextureclass.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\GLX\GL3w.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\GLX\GLopenGLclass.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\GLX\wglopenglclass.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\ImageLoaderClass.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\initApplication_Basics.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\lightClass.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\renderApplication_Basics.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\WomaCube.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\WomaSphere.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
   </ItemGroup>

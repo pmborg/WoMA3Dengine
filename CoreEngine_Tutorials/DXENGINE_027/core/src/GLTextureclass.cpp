@@ -70,7 +70,7 @@ bool GLtextureClass::loadImage(TCHAR *fileName, bool wrap)
 	UINT imageSize;
 	int decodeResult=0;
 
-	_tprintf("[%d]: GLtextureClass::loadImage(%s)\n", gettid(), fileName);
+	_tprintf(TEXT("[%d]: GLtextureClass::loadImage(%s)\n"), gettid(), fileName);
 
 #if defined ANDROID_PLATFORM_
 	//C:\WoMAengine2023\Android-WomaEngine\Android2\Android2.Packaging\ARM64\Debug\Package\assets\engine\data
@@ -154,9 +154,9 @@ void GLtextureClass::AddTexture(unsigned char* image32b, int width, int height, 
 	//glActiveTexture(GL_TEXTURE0);
 
 	glGenTextures(1, &m_textureID);				// Generate an ID for the texture.
-	err = glGetError(); if (err != GL_NO_ERROR) {_tprintf("glGenTextures err: %04x", err);}
+	err = glGetError(); if (err != GL_NO_ERROR) {_tprintf(TEXT("glGenTextures err: %04x"), err);}
 	glBindTexture(GL_TEXTURE_2D, m_textureID);	// Bind the texture as a 2D texture.
-	err = glGetError(); if (err != GL_NO_ERROR) {_tprintf("glBindTexture err: %04x", err);}
+	err = glGetError(); if (err != GL_NO_ERROR) {_tprintf(TEXT("glBindTexture err: %04x"), err);}
 
 	//32bits
 #if defined WINDOWS_PLATFORM
@@ -189,7 +189,7 @@ void GLtextureClass::AddTexture(unsigned char* image32b, int width, int height, 
 	glGenerateMipmap(GL_TEXTURE_2D);		// Generate mipmaps for the texture.
 	err = glGetError(); 
 	if (err != GL_NO_ERROR) 
-		{ _tprintf("ERROR! glGenerateMipmap err: %04x", err); }
+		{ _tprintf(TEXT("ERROR! glGenerateMipmap err: %04x"), err); }
 }
 
 #endif

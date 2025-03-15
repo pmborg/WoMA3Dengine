@@ -77,8 +77,8 @@ void WeatherClass::Initialize()
     //1638,"Lisboa","Lisbon","Portugal","LIS","LPPT",38.781311,-9.135919,374,0,"E"
     IFSTREAM fileIn(WOMA::LoadFile(DATAFILE));    //Open file for Read : cpp
 	if (!fileIn) {
-        char TextMsg[MAX_STR_LEN];
-        sprintf(TextMsg, "WARNING: WeatherClass::File not found: %s", DATAFILE);
+        TCHAR TextMsg[MAX_STR_LEN];
+		StringCchPrintf(TextMsg, sizeof(TextMsg), TEXT("WARNING: WeatherClass::File not found: %s"), DATAFILE);
         WomaMessageBox(DATAFILE, TextMsg);
     } //Warning only!
 
@@ -153,7 +153,7 @@ TCHAR* WeatherClass::findClosestAirport(float latitude, float longitude)
     }
 
     if (GoodIndx >= airportVec.size()) {
-        _tprintf("Airports file not found!");
+        _tprintf(TEXT("Airports file not found!"));
 		return TEXT("");
 	}
 

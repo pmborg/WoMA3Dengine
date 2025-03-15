@@ -59,10 +59,17 @@
     <ClInclude Include="include\platform.h">
       <Filter>include\000</Filter>
     </ClInclude>
-    <ClInclude Include="..\tech-level.h" />
-    <ClInclude Include="..\woma_engine_assets.h" />
     <ClInclude Include="include\winSystemClass.h">
       <Filter>WINDOWS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\level.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tech-level.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\woma_engine_assets.h">
+      <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
