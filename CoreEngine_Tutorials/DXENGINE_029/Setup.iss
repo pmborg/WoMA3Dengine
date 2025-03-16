@@ -51,7 +51,8 @@ Source: "C:\Windows\System32\ucrtbased.dll"; DestDir: "{app}"; Flags: ignorevers
 Source: "C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x64\ucrt\ucrtbased.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\x64\Release\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\freeglut.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\settings.xml"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\settings_029.xml"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\world_29.xml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\WoMA.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\hlsl\*"; DestDir: "{app}\hlsl"; Flags: ignoreversion
 Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\GLengine\*"; DestDir: "{app}\GLengine"; Flags: ignoreversion

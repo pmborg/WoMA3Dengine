@@ -1,3 +1,8 @@
+(OPEN THIS TXT in Notepad++ with c++ syntax highlight)
+------
+LINUX:
+------
+
 ##############################################
 # What to install on WSL LINUX
 ##############################################
@@ -114,13 +119,35 @@ sudo apt install net-tools
 				Details
 					Off
 
-sudo apt-get install libsdl2-dev
-sudo apt install pulseaudio
 
-.bashrc
-export PULSE_SERVER=tcp:127.0.0.1
+------------------------------------------------------------------------------------------------------------------------------------
+# For LINUX audio DEMO029:
+sudo apt install pulseaudio libsdl2-dev alsa-utils snd-hda-intel sox libsox-fmt-all vlc-bin ffmpeg libopenal-dev libasound2-dev libasound2-plugins
 
-cat /etc/environment
+vi /etc/environment
+...
 set PULSE_SERVER=localhost
+
+vi ~/.asoundrc
+pcm.default pulse
+ctl.default pulse
+
+vi ~/.bashrc
+...
+export HOST_IP="$(ip route |awk '/^default/{print $3}')"
+export PULSE_SERVER="tcp:$HOST_IP"
+
+#START-SOUND-WSL2toWINDOWS:
+C:\WoMA3Dengine\ThirdParty\pulse\bin\pulseaudio.exe
+
+#START-WSL:
+	Windows Subsystem for Linux
+	
+cat /etc/issue
+Ubuntu 22.04.5 LTS \n \l
+
+#MORE:
+	https://www.reddit.com/r/bashonubuntuonwindows/comments/hrn1lz/wsl_sound_through_pulseaudio_solved/?rdt=50845
+	https://www.linuxuprising.com/2021/03/how-to-get-sound-pulseaudio-to-work-on.html
 
 

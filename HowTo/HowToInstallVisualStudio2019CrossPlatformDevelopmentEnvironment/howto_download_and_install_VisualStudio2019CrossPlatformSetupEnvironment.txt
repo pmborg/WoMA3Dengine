@@ -1,6 +1,11 @@
+(OPEN THIS TXT in Notepad++ with c++ syntax highlight)
+--------
+ANDROID:
+--------
+The development can be done using VS2022, but the Android Device to run the Android emulator need to come from VS2019 or VS2017
+
 If you are wondering... no it cant be done on VS2022 unfortunately.
 Or pass days or weeks to discover that Microsoft removed some features needed in recent updates, after pre-release.
-
 
 If you have Visual Studio2019 installed just un-install it, is my recommendation.
 ...Even before think to install Visual Studio...

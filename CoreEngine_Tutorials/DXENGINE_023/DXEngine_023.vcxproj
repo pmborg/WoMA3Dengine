@@ -461,7 +461,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>yes</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);DEMO_LEVEL=23;MAINENGINE_LINUX;FREEGLUT_STATIC</PreprocessorDefinitions>
       <ConformanceMode>
       </ConformanceMode>
       <DebugInformationFormat>None</DebugInformationFormat>
