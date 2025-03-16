@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "WoMA3Dengine029"
-#define MyAppVersion "1.0"
+#define MyAppVersion "2.0"
 #define MyAppPublisher "Pedro Borges"
 #define MyAppURL "https://github.com/pmborg/WoMA3Dengine"
 #define MyAppExeName "CoreEngine_029.exe"
@@ -48,9 +48,9 @@ end;
 
 [Files]
 Source: "C:\Windows\System32\ucrtbased.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\ucrt\ucrtbased.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\x64\Release\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\x64\Release\freeglut.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x64\ucrt\ucrtbased.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\x64\Release\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\freeglut.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\settings.xml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\WoMA.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_029\hlsl\*"; DestDir: "{app}\hlsl"; Flags: ignoreversion

@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: OSmain_dir.cpp
 // --------------------------------------------------------------------------------------------
@@ -25,14 +24,12 @@
 
 #include "platform.h"
 
-#include "OSengine.h" //#include "WinSystemClass.h"
-
 #if defined ANDROID_PLATFORM && !defined NewWomaEngine
 #include "AndroidSystemClass.h"
 #endif
 
 #define _CRT_SECURE_NO_WARNINGS
-#include "main.h"
+#include "OSengine.h" //#include "WinSystemClass.h"
 #include "OSmain_dir.h"
 #include <algorithm>
 #include <string>
@@ -167,8 +164,6 @@ namespace WOMA
 	#if defined WINDOWS_PLATFORM
 		if (!GetCurrentDirectory(MAX_STR_LEN, cCurrentPath))
 			return (TCHAR*)TEXT("");
-
-		//WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("CurrentPath: %s\n"), cCurrentPath);
 	#else // Linux / Android
 		char* CurrentPath;
 
@@ -186,12 +181,19 @@ namespace WOMA
 
 	//-------------------------------------------------------------------------------------------
 	TCHAR* getTemp()
-		//-------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------------------------
 	{
 		static TCHAR* strTEMPchar = TEXT("");
 
 	#if defined  WINDOWS_PLATFORM
 		strTEMPchar = _tgetenv(TEXT("TEMP"));	// Get our Fullpath to all objects; ("TEMP" + /engine/)
+	#endif
+
+	#ifdef RELEASE
+		womaTempPATH = strTEMPchar;
+		womaTempPATH.append(TEXT("\\"));			// "C:\Users\"username"\AppData\Local\temp\"
+		womaTempPATH.append(APP_COMPANY_NAME);		// "C:\Users\"username"\AppData\Local\temp\<pmborg>"
+		womaTempPATH.append(TEXT("\\"));			// "C:\Users\"username"\AppData\Local\temp\<pmborg>\"
 	#endif
 
 		return strTEMPchar;
@@ -211,6 +213,10 @@ namespace WOMA
 
 		return strHOMEchar;
 	}
+#if NOTES
+	//LINUX:	/home/pedro/projects/LinuxWoma/bin/x64/Debug
+	//WINDOWS:	C:\WoMAengine2023\DXEngine_055
+#endif
 	//-------------------------------------------------------------------------------------------
 	bool logDirs(BOOL WINXP_FLAG, BOOL bIsWow64)
 	//-------------------------------------------------------------------------------------------
@@ -229,6 +235,11 @@ namespace WOMA
 
 		WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("Current Directory: %s\n"), currentPath);
 
+#if NOTES //defined  WINDOWS_PLATFORM && defined RELEASE // In "Debug" we use the local data at disk / At production "Release" we use the default "Dirs"
+	// Check if is a network PATH:
+	//if (PathIsNetworkPath  (SystemHandle->systemDefinitions.cCurrentPath)) 
+	//	{WomaFatalException( TEXT("On Release version, no NETWORK PATH is allowed!") ); return false;}
+#endif
 		Temp = getTemp();
 		Home = getHome();
 
@@ -245,6 +256,114 @@ namespace WOMA
 	//-------------------------------------------------------------------------------------------
 	{
 
+	#if defined RELEASE && !defined ANDROID_PLATFORM
+		// DONT LOG HERE!
+
+	#if defined WINDOWS_PLATFORM
+#if _NOT
+		// "C:\Users\"username"\AppData\Local\Pmborg\WoMA3Dengine\"
+		//StringCchPrintf(APPDATA, MAX_STR_LEN, TEXT("%s\\%s\\%s\\"), _tgetenv(TEXT("APPDATA")), APP_COMPANY_NAME, APP_PROJECT_NAME);
+		//if (!bIsWow64 || WINXP_FLAG)
+		//	_tcscpy_s(PROGRAM_FILES, _tgetenv(TEXT("ProgramFiles")));	//is Not Wow64
+		//else
+#endif
+		_tcscpy_s(PROGRAM_FILES, _tgetenv(TEXT("ProgramFiles(x86)")));//Is Wow64: 32 bits on a 64bits OS.
+
+		StringCchPrintf(APPDATA1, MAX_STR_LEN, TEXT("%s\\%s"), _tgetenv(TEXT("TEMP")), APP_COMPANY_NAME);
+		StringCchPrintf(APPDATA, MAX_STR_LEN, TEXT("%s\\%s\\%s\\"), _tgetenv(TEXT("TEMP")), APP_COMPANY_NAME, APP_PROJECT_NAME);
+		StringCchPrintf(PUBLIC_DOCUMENTS0, MAX_STR_LEN, TEXT("%s\\%s\\%s"), _tgetenv(TEXT("PUBLIC")), TEXT("Documents"), APP_COMPANY_NAME);
+		StringCchPrintf(PUBLIC_DOCUMENTS1, MAX_STR_LEN, TEXT("%s\\%s\\%s\\%d"), _tgetenv(TEXT("PUBLIC")), TEXT("Documents"), APP_COMPANY_NAME, CORE_ENGINE_LEVEL);
+	#if CORE_ENGINE_LEVEL >= 10
+		StringCchPrintf(PUBLIC_DOCUMENTS, MAX_STR_LEN, TEXT("%s\\%s\\%s\\%d\\%d\\"), _tgetenv(TEXT("PUBLIC")), TEXT("Documents"), APP_COMPANY_NAME, CORE_ENGINE_LEVEL, DX_ENGINE_LEVEL);
+	#else
+		StringCchPrintf(PUBLIC_DOCUMENTS, MAX_STR_LEN, TEXT("%s\\%s\\%s\\%d\\"), _tgetenv(TEXT("PUBLIC")), TEXT("Documents"), APP_COMPANY_NAME, CORE_ENGINE_LEVEL);
+	#endif
+
+		TCHAR src[MAX_STR_LEN] = { 0 };
+		TCHAR dest[MAX_STR_LEN] = { 0 };
+
+		TCHAR ChkSettings[MAX_STR_LEN] = {0};
+		StringCchPrintf(ChkSettings, MAX_STR_LEN, TEXT("%s%s"), PUBLIC_DOCUMENTS, TEXT("settings.xml"));	//C:\Users\Public\Documents\\Pmborg\\CORE_ENGINE_LEVEL\\DX_ENGINE_LEVEL\\settings.xml
+		bool settings = fileExists(ChkSettings);
+		if (!settings)
+		{
+			bool isDocDirCreated0 = CreateDirectory(PUBLIC_DOCUMENTS0, 0);	//TO:		//C:\Users\Public\Documents\\Pmborg
+			bool isDocDirCreated1 = CreateDirectory(PUBLIC_DOCUMENTS1, 0);	//TO:		//C:\Users\Public\Documents\\Pmborg\\CORE_ENGINE_LEVEL
+			bool isDocDirCreated = CreateDirectory(PUBLIC_DOCUMENTS, 0);	//TO:		//C:\Users\Public\Documents\\Pmborg\\CORE_ENGINE_LEVEL\\DX_ENGINE_LEVEL
+
+			StringCchPrintf(src, MAX_STR_LEN, TEXT("%s\\%s"), currentdir, TEXT("settings.xml"));
+			StringCchPrintf(dest, MAX_STR_LEN, TEXT("%s%s"), PUBLIC_DOCUMENTS, TEXT("settings.xml"));
+			bool b = CopyFile(src, dest, true);
+		}
+
+		//APPDATA = TEMP
+		STRING dirName1 = WOMA::APPDATA1;
+#if _NOT
+		char r1; //PATH string replacement()
+		std::map<char, char> rs1 = { {'\\', '/'} };	//CONVERT:	C:\\Users\\<username>\\AppData\\Roaming\\Pmborg
+		std::replace_if(dirName1.begin(), dirName1.end(), [&](char c) { return r1 = rs1[c]; }, r1);
+#endif
+		STRING dirName = WOMA::APPDATA;
+#if _NOT
+		char r; //PATH string replacement()
+		std::map<char, char> rs = { {'\\', '/'} };	//CONVERT:	C:\\Users\\<username>\\AppData\\Roaming\\Pmborg\\WoMA
+		std::replace_if(dirName.begin(), dirName.end(), [&](char c) { return r = rs[c]; }, r);
+#endif
+		bool isDirCreated1 = CreateDirectory(dirName1.c_str(), 0);	//TO:		dirName1 = "\\Temp\\Pmborg"
+		DWORD dw1 = GetLastError();
+		if (!isDirCreated1 && dw1 == ERROR_PATH_NOT_FOUND)
+		{
+			//Errors: 
+			// ERROR_ALREADY_EXISTS
+			// ERROR_PATH_NOT_FOUND
+			TCHAR ErrorMsg[MAX_STR_LEN] = { 0 };
+			StringCchPrintf(ErrorMsg, MAX_STR_LEN, TEXT("CreateDirectory() %s Failed with (%d)"), dirName1.c_str(), dw1);
+			_stprintf(TEXT("CreateDirectory() %s Failed with (%d)"), dirName1.c_str(), dw1);
+			WomaMessageBox(ErrorMsg, TEXT("FATAL ERROR:"));
+			if (ERROR_ALREADY_EXISTS != dw1)
+				return false;
+		}
+
+		bool isDirCreated = CreateDirectory(dirName.c_str(), 0);	//TO:		dirName = "\\Temp\\Pmborg\\WoMA3Dengine\\"
+		DWORD dw = GetLastError();
+		if (!isDirCreated && dw == ERROR_PATH_NOT_FOUND)
+		{
+			//Errors: 
+			// ERROR_ALREADY_EXISTS
+			// ERROR_PATH_NOT_FOUND
+			TCHAR ErrorMsg[MAX_STR_LEN] = { 0 };
+			StringCchPrintf(ErrorMsg, MAX_STR_LEN, TEXT("CreateDirectory() %s Failed with (%d)"), dirName.c_str(), dw);
+			_stprintf(TEXT("\nCreateDirectory() %s Failed with (%d)"), dirName.c_str(), dw);
+			WomaMessageBox(ErrorMsg, TEXT("FATAL ERROR:"));
+			if (ERROR_ALREADY_EXISTS != dw)
+				return false;
+		}
+
+		StringCchPrintf(src, MAX_STR_LEN, TEXT("%s\\%s"), currentdir, TEXT("windows.pck"));
+		StringCchPrintf(dest, MAX_STR_LEN, TEXT("%s%s"), APPDATA, TEXT("windows.pck"));
+		bool b = CopyFile(src, dest, true);
+
+		StringCchPrintf(src, MAX_STR_LEN, TEXT("%s\\%s"), currentdir, TEXT("woma.pck"));
+		StringCchPrintf(dest, MAX_STR_LEN, TEXT("%s%s"), APPDATA, TEXT("woma.pck"));
+		b = CopyFile(src, dest, true);
+#if _NOT
+		StringCchPrintf(src, MAX_STR_LEN, TEXT("%s\\%s"), currentdir, TEXT("my.ip"));
+		StringCchPrintf(dest, MAX_STR_LEN, TEXT("%s%s"), APPDATA, TEXT("my.ip"));
+		b = CopyFile(src, dest, true);
+
+		StringCchPrintf(src, MAX_STR_LEN, TEXT("%s\\%s"), currentdir, TEXT("present.weather"));
+		StringCchPrintf(dest, MAX_STR_LEN, TEXT("%s%s"), APPDATA, TEXT("present.weather"));
+		b = CopyFile(src, dest, true);
+#endif
+#endif
+		// "C:\ProgramFiles(x86)\Pmborg\WoMA3Dengine\"
+		// "C:\Program Files\Pmborg\WoMA3Dengine\"
+		//StringCchPrintf(PROGRAM_FILES, MAX_STR_LEN, TEXT("%s\\%s\\%s\\"), (!bIsWow64 || WINXP_FLAG) ? _tgetenv(TEXT("ProgramFiles")) : _tgetenv(TEXT("ProgramFiles(x86)")), APP_COMPANY_NAME, APP_PROJECT_NAME);
+		// --OR--
+		//Installer will install on: C:\Program Files (x86)\WoMA3Dengine
+		StringCchPrintf(PROGRAM_FILES, MAX_STR_LEN, TEXT("%s\\%s\\"), _tgetenv(TEXT("ProgramFiles(x86)")), APP_PROJECT_NAME);
+	#endif
+
 	#if CORE_ENGINE_LEVEL >= 2 && defined LINUX_PLATFORM
 		// "C:\Program Files\Pmborg\Woma2017\" ==> "/opt/Pmborg/Woma2017"
 		// "C:\Users\"username"\AppData\Local\Pmborg\Woma2017\" ==> ~/.pmborg/Woma2017
@@ -258,10 +377,23 @@ namespace WOMA
 	void setup_OSmain_dirs() {
 		char path[MAX_PATH] = { 0 };
 		// (No Need on DEBUG!)
-
-		//#if defined LINUX_PLATFORM
-		//chdir("..");
-		//#endif
+		#ifdef RELEASE
+		// Make sure we're running in the exe's directory:
+		// -------------------------------------------------------------------------------------------
+		#if defined WINDOWS_PLATFORM
+		if (GetModuleFileNameA(NULL, path, sizeof(path))) {
+			char* slash = strrchr(path, '\\');
+			if (slash) *slash = NULL;
+			_chdir(path);
+		}
+		#else
+		if (realpath("/proc/self/exe", path)) {
+			char* slash = strrchr(path, '/');
+			if (slash) *slash = NULL;
+			chdir(path);
+		}
+		#endif
+		#endif
 
 		// [1] init_os_main_dirs!
 		// -------------------------------------------------------------------------------------------

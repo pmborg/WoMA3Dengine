@@ -19,7 +19,7 @@
 //WomaIntegrityCheck = 1234567222;
 
 #define _CRT_SECURE_NO_WARNINGS
-#include "main.h"
+#include "OSengine.h"
 
 #if defined WINDOWS_PLATFORM
 #include "stateMachine.h"

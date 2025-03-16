@@ -21,7 +21,7 @@
 
 #include "platform.h"
 #if defined WINDOWS_PLATFORM
-#include "main.h"
+#include "OSengine.h"
 // --------------------------------------------------------------------------------------------
 // Auxiliar Class: sym_handler
 // --------------------------------------------------------------------------------------------
@@ -80,7 +80,7 @@ public:
 					ss << tmp;  
                 }  
             } else {
-                #if NDEBUG // This always faild on DEBUG:
+                #if NDEBUG // This always fail on DEBUG:
 				DWORD err = GetLastError();
                 WOMA_LOGManager_DebugMSGAUTO(TEXT ("ERROR: %d:\n"), err);
                 WomaMessageBox(NULL, TEXT("ERROR: SymFromAddr(GetCurrentProcess(), addr, &displacement64, symbol)"));

@@ -869,7 +869,7 @@ namespace DirectX {
 		}
 #endif
 
-		WOMA_LOGManager_DebugMSG(L"DONE: INIT SHADER MODEL %s - Use HLSL [%s]\n", WMODEL_NAME, vsFilename.c_str());
+		//WOMA_LOGManager_DebugMSG(L"DONE: INIT SHADER MODEL %s - Use HLSL [%s]\n", WMODEL_NAME, vsFilename.c_str());
 		return true;
 	}
 
