@@ -142,7 +142,7 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 	catch (const std::exception& e)
 	{
 		fprintf(stderr, "main()::Threw an exception: %s\n", e.what());
-		WomaMessageBox(TEXT("loadConfigSettings()::Threw an exception!"), TEXT("FATAL ERROR"), MB_OK);
+		WomaMessageBox(TEXT("XMLloader::initAppicationSettings exception!"), TEXT("FATAL ERROR"), MB_OK);
 		return EXIT_FAILURE;
 	}
 
@@ -324,7 +324,7 @@ bool XMLloader::loadWorld (TCHAR* file_) // Note: Have to be char
 		std::string file = home;
 		file.append("/projects/LinuxWoma/DXEngine_055/"); //need to be: std::string
 	#else
-#if defined LINUX_PLATFORM && CORE_ENGINE_LEVEL < 10
+		#if defined LINUX_PLATFORM && CORE_ENGINE_LEVEL < 10
 			STRING file = WOMA::Home;
 			file.append(DEMO_ROOT_DIR);
 		#else
@@ -334,7 +334,11 @@ bool XMLloader::loadWorld (TCHAR* file_) // Note: Have to be char
 	#endif
 		file.append("/");
 		file.append(XMLFILE);
-		doc.LoadFile(file.c_str());
+		#if defined RELEASE
+			doc.LoadFile(XMLFILE);
+		#else
+			doc.LoadFile(file.c_str());
+		#endif
 	}
 #endif
 
@@ -503,7 +507,11 @@ bool XMLloader::loadConfigSettings (TCHAR* file_) // Note: Have to be char
 	#endif
 		file.append("/");
 		file.append(XMLFILE);
-		doc.LoadFile(file.c_str());
+		#if defined RELEASE
+			doc.LoadFile(XMLFILE);
+		#else
+			doc.LoadFile(file.c_str());
+		#endif
 	}
 #endif
 

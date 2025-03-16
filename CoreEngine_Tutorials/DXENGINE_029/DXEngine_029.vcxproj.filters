@@ -270,6 +270,7 @@
     <ClInclude Include="core\include\WomaSphere.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
@@ -531,5 +532,11 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="settings.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DXEngine_029.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="WoMA.ico" />
   </ItemGroup>
 </Project>

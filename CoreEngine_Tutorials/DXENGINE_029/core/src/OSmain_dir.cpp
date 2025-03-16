@@ -23,14 +23,13 @@
 //WomaIntegrityCheck = 1234567222;
 
 #include "platform.h"
-#include "OSengine.h" //#include "WinSystemClass.h"
 
 #if defined ANDROID_PLATFORM && !defined NewWomaEngine
 #include "AndroidSystemClass.h"
 #endif
 
 #define _CRT_SECURE_NO_WARNINGS
-#include "main.h"
+#include "OSengine.h" //#include "WinSystemClass.h"
 #include "OSmain_dir.h"
 #include <algorithm>
 #include <string>
@@ -268,12 +267,22 @@ namespace WOMA
 		//	_tcscpy_s(PROGRAM_FILES, _tgetenv(TEXT("ProgramFiles")));	//is Not Wow64
 		//else
 #endif
+		//PROGRAM_FILES =  "C:\\Program Files (x86)"
 		_tcscpy_s(PROGRAM_FILES, _tgetenv(TEXT("ProgramFiles(x86)")));//Is Wow64: 32 bits on a 64bits OS.
 
+		//APPDATA1 =  "C:\\Users\\[____]\\AppData\\Local\\Temp\\Pmborg"
 		StringCchPrintf(APPDATA1, MAX_STR_LEN, TEXT("%s\\%s"), _tgetenv(TEXT("TEMP")), APP_COMPANY_NAME);
+
+		//APPDATA =  "C:\\Users\\[____]\\AppData\\Local\\Temp\\Pmborg\\WoMA3Dengine\\"
 		StringCchPrintf(APPDATA, MAX_STR_LEN, TEXT("%s\\%s\\%s\\"), _tgetenv(TEXT("TEMP")), APP_COMPANY_NAME, APP_PROJECT_NAME);
+
+		//PUBLIC_DOCUMENTS0 =  "C:\\Users\\Public\\Documents\\Pmborg"
 		StringCchPrintf(PUBLIC_DOCUMENTS0, MAX_STR_LEN, TEXT("%s\\%s\\%s"), _tgetenv(TEXT("PUBLIC")), TEXT("Documents"), APP_COMPANY_NAME);
+
+		//PUBLIC_DOCUMENTS1 =  "C:\\Users\\Public\\Documents\\Pmborg\\29"
 		StringCchPrintf(PUBLIC_DOCUMENTS1, MAX_STR_LEN, TEXT("%s\\%s\\%s\\%d"), _tgetenv(TEXT("PUBLIC")), TEXT("Documents"), APP_COMPANY_NAME, CORE_ENGINE_LEVEL);
+
+		//PUBLIC_DOCUMENTS =  "C:\\Users\\Public\\Documents\\Pmborg\\29\\29\\"
 	#if CORE_ENGINE_LEVEL >= 10
 		StringCchPrintf(PUBLIC_DOCUMENTS, MAX_STR_LEN, TEXT("%s\\%s\\%s\\%d\\%d\\"), _tgetenv(TEXT("PUBLIC")), TEXT("Documents"), APP_COMPANY_NAME, CORE_ENGINE_LEVEL, DX_ENGINE_LEVEL);
 	#else
@@ -284,7 +293,8 @@ namespace WOMA
 		TCHAR dest[MAX_STR_LEN] = { 0 };
 
 		TCHAR ChkSettings[MAX_STR_LEN] = {0};
-		StringCchPrintf(ChkSettings, MAX_STR_LEN, TEXT("%s%s"), PUBLIC_DOCUMENTS, TEXT("settings.xml"));	//C:\Users\Public\Documents\\Pmborg\\CORE_ENGINE_LEVEL\\DX_ENGINE_LEVEL\\settings.xml
+																											//ChkSettings= "C:\\Users\\Public\\Documents\\Pmborg\\29\\29\\settings.xml"
+		StringCchPrintf(ChkSettings, MAX_STR_LEN, TEXT("%s%s"), PUBLIC_DOCUMENTS, TEXT("settings.xml"));	//				C:\\Users\\Public\\Documents\\Pmborg\\CORE_ENGINE_LEVEL\\DX_ENGINE_LEVEL\\settings.xml
 		bool settings = fileExists(ChkSettings);
 		if (!settings)
 		{
@@ -294,6 +304,8 @@ namespace WOMA
 
 			StringCchPrintf(src, MAX_STR_LEN, TEXT("%s\\%s"), currentdir, TEXT("settings.xml"));
 			StringCchPrintf(dest, MAX_STR_LEN, TEXT("%s%s"), PUBLIC_DOCUMENTS, TEXT("settings.xml"));
+			//src =  "C:\\Program Files (x86)\\WoMAengine2023\\settings.xml"
+			//dest = "C:\\Users\\Public\\Documents\\Pmborg\\29\\29\\settings.xml"
 			bool b = CopyFile(src, dest, true);
 		}
 
@@ -310,6 +322,7 @@ namespace WOMA
 		std::map<char, char> rs = { {'\\', '/'} };	//CONVERT:	C:\\Users\\<username>\\AppData\\Roaming\\Pmborg\\WoMA
 		std::replace_if(dirName.begin(), dirName.end(), [&](char c) { return r = rs[c]; }, r);
 #endif
+		//dirName1 = "C:\\Users\\[____]\\AppData\\Local\\Temp\\Pmborg"
 		bool isDirCreated1 = CreateDirectory(dirName1.c_str(), 0);	//TO:		dirName1 = "\\Temp\\Pmborg"
 		DWORD dw1 = GetLastError();
 		if (!isDirCreated1 && dw1 == ERROR_PATH_NOT_FOUND)
@@ -342,6 +355,8 @@ namespace WOMA
 
 		StringCchPrintf(src, MAX_STR_LEN, TEXT("%s\\%s"), currentdir, TEXT("windows.pck"));
 		StringCchPrintf(dest, MAX_STR_LEN, TEXT("%s%s"), APPDATA, TEXT("windows.pck"));
+		//src =  "C:\\Program Files (x86)\\WoMAengine2023\\windows.pck"
+		//dest = "C:\\Users\\pedro\\AppData\\Local\\Temp\\Pmborg\\WoMA3Dengine\\windows.pck"
 		bool b = CopyFile(src, dest, true);
 
 		StringCchPrintf(src, MAX_STR_LEN, TEXT("%s\\%s"), currentdir, TEXT("woma.pck"));
@@ -379,21 +394,21 @@ namespace WOMA
 		char path[MAX_PATH] = { 0 };
 		// (No Need on DEBUG!)
 		#ifdef RELEASE
-		// Make sure we're running in the exe's directory:
-		// -------------------------------------------------------------------------------------------
-		#if defined WINDOWS_PLATFORM
-		if (GetModuleFileNameA(NULL, path, sizeof(path))) {
-			char* slash = strrchr(path, '\\');
-			if (slash) *slash = NULL;
-			_chdir(path);
-		}
-		#else
-		if (realpath("/proc/self/exe", path)) {
-			char* slash = strrchr(path, '/');
-			if (slash) *slash = NULL;
-			chdir(path);
-		}
-		#endif
+			// Make sure we're running in the exe's directory:
+			// -------------------------------------------------------------------------------------------
+			#if defined WINDOWS_PLATFORM
+				if (GetModuleFileNameA(NULL, path, sizeof(path))) {
+					char* slash = strrchr(path, '\\');	//	\dxEngine_029_d.exe
+					if (slash) *slash = NULL;
+					_chdir(path);						//	cd "C:\Program Files (x86)\WoMAengine2023"
+				}
+			#else
+				if (realpath("/proc/self/exe", path)) {
+					char* slash = strrchr(path, '/');
+					if (slash) *slash = NULL;
+					chdir(path);
+				}
+			#endif
 		#endif
 
 		// [1] init_os_main_dirs!

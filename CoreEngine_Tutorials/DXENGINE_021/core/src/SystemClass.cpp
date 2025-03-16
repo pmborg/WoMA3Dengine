@@ -984,7 +984,7 @@ bool SystemClass::LoadXmlSettings()
 
 	// Load and Parse XML FILE:"world.xml" the Configuration file
 	//----------------------------------------------------------------------------
-	XML_WORLD_FILE = WOMA::APPDATA;
+	XML_WORLD_FILE = WOMA::PUBLIC_DOCUMENTS;
 	XML_WORLD_FILE += WORLD_XML;
 	if (!SystemHandle->xml_loader.InitWorldLoader((TCHAR*)XML_WORLD_FILE.c_str()))
 	{

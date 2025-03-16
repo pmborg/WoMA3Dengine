@@ -113,6 +113,7 @@
     <ClInclude Include="core\include\WomaCube.h" />
     <ClInclude Include="core\include\womadriverclass.h" />
     <ClInclude Include="core\include\WomaSphere.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core\src\ApplicationClass.cpp" />
@@ -204,6 +205,12 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="settings.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DXEngine_029.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="WoMA.ico" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -461,7 +468,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>yes</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);ALUT_BUILD_LIBRARY;ALUT_API=extern;DEMO_LEVEL=29;MAINENGINE_LINUX;FREEGLUT_STATIC</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);ALUT_BUILD_LIBRARY;ALUT_API=extern;DEMO_LEVEL=29;MAINENGINE_LINUX;FREEGLUT_STATIC;RELEASE</PreprocessorDefinitions>
       <ConformanceMode>
       </ConformanceMode>
       <DebugInformationFormat>None</DebugInformationFormat>

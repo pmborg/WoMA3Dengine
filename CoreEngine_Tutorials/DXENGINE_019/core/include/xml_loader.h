@@ -64,7 +64,7 @@ using namespace std;
 #endif
 #else
 #ifdef X64
-	#if defined(_DEBUG) & !defined(NDEBUG)
+	#if defined(_DEBUG)// && !defined(NDEBUG)
 		#pragma comment( lib, "x64/Debug/TinyXMLv2_LIBX64_d.lib" )	//DEBUG
 	#elif !defined _DEBUG && defined NDEBUG
 		#pragma comment( lib, "x64/Release/TinyXMLv2_LIBX64.lib" )	//RELEASE

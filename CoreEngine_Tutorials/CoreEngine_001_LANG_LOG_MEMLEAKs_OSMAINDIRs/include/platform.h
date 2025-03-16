@@ -24,6 +24,71 @@
 //WomaIntegrityCheck = 1234567222;
 #pragma once
 
+#if NOTES
+--------------------------------------------------------------------------------------------
+Product name				| Codename		| Internal | Release date		| Support Ends |
+--------------------------------------------------------------------------------------------
+Visual Studio 	            N / A 	        4.0 	    1995 - 04				ENDED
+Visual Studio 97 	    	Boston 	        5.0 	    1997 - 02				ENDED			32bits | C++ | It included Visual J++ 1.1
+Visual Studio 6.0 	    	Aspen 	        6.0 	    1998 - 06				ENDED			FORM VISUAL | It included Visual J++ 1.1
+Visual Studio.NET(2002)		Rainier 		7.0 	    2002 - 02 - 13			ENDED
+Visual Studio.NET 2003		Everett 		7.1 	    2003 - 04 - 24			ENDED			Windows NT 4.0 SP6a, Windows 2000 versions below SP3 and Windows XP before SP2.
+Visual Studio 2005 	    	Whidbey 		8.0 	    2005 - 11 - 07			ENDED			Windows 98, Windows 2000 and Windows Me
+Visual Studio 2008 	    	Orcas 	        9.0 	    2007 - 11 - 19			ENDED			Windows XP SP2, Windows Server 2003 SP1 and Windows Vista RTM
+Visual Studio 2010 	    	Dev10 / Rosario 10.0 	    2010 - 04 - 12			ENDED			Windows XP SP3, Windows Server 2003 SP2, Windows Vista SP1, Windows Server 2008 below SP2, Windows 7 before SP1 and Windows Server 2008 R2 before SP1.
+Visual Studio 2012 	    	Dev11 	        11.0 	    2012 - 09 - 12			ENDED			For Windows 8 | Add support for Windows Store apps
+Visual Studio 2013 	    	Dev12 	        12.0 	    August 24, 2015			ENDED			XP + VISTA + WIN7 + WIN8 + WIN8.1 | NET 4.5.1
+Visual Studio 2015 	    	Dev14 	        14.0 	    June 27, 2016 		October 14, 2025	XP + VISTA + WIN7 + WIN8 + WIN8.1 + WIN10 | .NET 4, .NET 4.5, .NET 4.5.1, and .NET 4.5.2.
+Visual Studio 2017 			Dev15 			15.0 		November 8, 2022 	April 13, 2027		XP + VISTA + WIN7 + WIN8 + WIN8.1 + WIN10 | C++17 standard | NET Framework versions 4.7, 4.6.2, 4.6.1, 4.6, 4.5.2, and 3.5
+Visual Studio 2019 			Dev16 			16.0 		January 10, 2023 	April 10, 2029		XP + VISTA + WIN7 + WIN8 + WIN8.1 + WIN10 | NET Framework versions 4.8, 4.7.2, 4.7.1, 4.7, 4.6.2, 4.6.1, 4.6, 4.5.2, 4.5.1, 4.5, and 4.0
+Visual Studio 2022 			Dev17 			17.0 		January 10, 2023 	January 13, 2032	WIN7 + WIN8 + WIN8.1 + WIN10 + WIN11      | NET Framework versions 4.8.1, 4.8, 4.7.2, 4.7.1, 4.7, and 4.6.2
+
+MSVC++ 5.0  _MSC_VER == 1100
+MSVC++ 6.0  _MSC_VER == 1200
+MSVC++ 7.0  _MSC_VER == 1300
+MSVC++ 7.1  _MSC_VER == 1310 (Visual Studio 2003)
+MSVC++ 8.0  _MSC_VER == 1400 (Visual Studio 2005)
+MSVC++ 9.0  _MSC_VER == 1500 (Visual Studio 2008)
+MSVC++ 10.0 _MSC_VER == 1600 (Visual Studio 2010)
+MSVC++ 11.0 _MSC_VER == 1700 (Visual Studio 2012)
+MSVC++ 12.0 _MSC_VER == 1800 (Visual Studio 2013)
+MSVC++ 14.0 _MSC_VER == 1900 (Visual Studio 2015)
+MSVC++ 15.0	_MSC_VER == 1916 (Visual Studio 2017)
+MSVC++ 16.0	_MSC_VER == 1929 (Visual Studio 2019)
+MSVC++ 17.0 _MSC_VER == 1942 (Visual Studio 2022)
+
+DirectX 		Release Date 		Shader Model 		Shader Profile(s)
+------------------------------------------------------------------------------------------------------
+DirectX 8.0 	November 12, 2000 	Shader Model 1.0 	vs_1_1														32bits WIN ME
+DirectX 9.0 	November 19, 2002 	Shader Model 2.0 	vs_2_0, vs_2_x, ps_2_0, ps_2_x								32bits XP
+DirectX 9.0c 	August 4, 2004 		Shader Model 3.0 	vs_3_0, ps_3_0												XP - SP2
+DirectX 10.0 	November 30, 2006 	Shader Model 4.0 	vs_4_0, ps_4_0, gs_4_0										VISTA
+DirectX 10.1 	February 4, 2008 	Shader Model 4.1 	vs_4_1, ps_4_1, gs_4_1										VISTA - SP1
+DirectX 11.0 	October 22, 2009 	Shader Model 5.0 	vs_5_0, ps_5_0, gs_5_0, ds_5_0, hs_5_0, cs_5_0				WIN7
+DirectX 11.1																										WIN8
+DirectX 11.2																										WIN8.1
+DirectX 12.0    Augost 21, 2015 Shader Model 5.1 — GCN 1 + , Fermi + , DirectX 12 (11_0 + ) with WDDM 2.0.WIN10		WIN10
+Shader Model 6.0 — GCN 1 + , Kepler + , DirectX 12 (11_0 + ) with WDDM 2.1.WIN10									=
+Shader Model 6.1 — GCN 1 + , Kepler + , DirectX 12 (11_0 + ) with WDDM 2.3.WIN10									=
+Shader Model 6.2 — GCN 1 + , Kepler + , DirectX 12 (11_0 + ) with WDDM 2.4.WIN10									=
+Shader Model 6.3 — GCN 1 + , Kepler + , DirectX 12 (11_0 + ) with WDDM 2.5.WIN10									=
+Shader Model 6.4 — GCN 1 + , Kepler + , Skylake + , DirectX 12 (11_0 + ) with WDDM 2.6.WIN10						=
+Shader Model 6.5 — GCN 1 + , Kepler + , Skylake + , DirectX 12 (11_0 + ) with WDDM 2.7.WIN10						=
+Shader Model 6.6 — GCN 4 + , Maxwell + , DirectX 12 (11_0 + ) with WDDM 3.0.WIN11									WIN11
+Shader Model 6.7 — GCN 4 + , Maxwell + , DirectX 12 (12_0 + ) with WDDM 3.1.WIN11									=
+Shader Model 6.8 — RDNA 1 + , Maxwell 2 + , DirectX 12 (12_0 + ) with WDDM 3.1 / 3.2 with Agility SDK				=
+
+DX12 Versions:
+--------------
+10.00.10240.16384 	July 29, 2015 		Windows 10, Xbox One
+10.00.15063.0000 	March 20, 2017 		Windows 10, Depth Bounds Testing and Programmable MSAA added
+10.00.17763.0000 	November 20, 2019 	Direct3D 12 only for Windows 7 SP1, via a dedicated source code package for app developers[
+10.00.17763.0001 	October 2, 2018 	Windows 10, DirectX Raytracing support added
+10.00.18362.0116 	May 19, 2019 		Windows 10, Variable Rate Shading(VRS) support added
+10.00.19041.0928 	November 10, 2020 	Windows 10, Xbox Series X, Ultimate
+10.00.22000.1000 	October 5, 2021 	Windows 11, Added native refresh rate switching[94] and improved graphics capabilities to Windows Subsystem for Linux
+#endif
+
 #if !defined _PLATFORM_H_
 #define _PLATFORM_H_
 
@@ -40,12 +105,12 @@
 // -------------------------------------------------------------------------------------------
 // Check, if we are compiling in 32bits:
 #if defined(__i386__) || defined(i386) || defined(_M_IX86) || defined(_X86_) || defined(__THW_INTEL)
-#define CPU_X86 //CPU: 32bits!
+	#define CPU_X86 //CPU: 32bits!
 #endif
 
 // Check, if we are compiling in 64bits:
 #if defined(__LP64__) || defined(_WIN64) || (defined(__x86_64__) && !defined(__ILP32__) ) || defined(_M_X64) || defined(__ia64) || defined (_M_IA64) || defined(__aarch64__) || defined(__powerpc64__) || (defined(__arm64__) && defined(__APPLE__)) || __ppc64__
-#define X64	//CPU: 64bits!
+	#define X64	//CPU: 64bits!
 #endif
 
 // -------------------------------------------------------------------------------------------
@@ -64,9 +129,9 @@ static_assert(false, "At least one X86 or X64 need to be defined!");
 //	CHECK for ARM version
 // -------------------------------------------------------------------------------------------
 #if defined(__arm__) || defined(__thumb__) || defined(_ARM) || defined(_M_ARM)
-#define CPU_ARM32	//FOR: ANDROID_PLATFORM
+	#define CPU_ARM32	//FOR: ANDROID_PLATFORM
 #elif defined(__arm64) || defined(__arm64__) || defined(_M_ARM64) || defined(__aarch64__)
-#define CPU_ARM64	//FOR: ANDROID_PLATFORM
+	#define CPU_ARM64	//FOR: ANDROID_PLATFORM
 #endif
 
 // -------------------------------------------------------------------------------------------
@@ -127,7 +192,7 @@ static_assert(false, "At least one X86 or X64 need to be defined!");
 
 
 // -------------------------------------------------------------------------------------------
-// ASSERT: VALID COMPILATION OPTIONS:
+// ASSERT: COMPILATION OPTIONS:
 // -------------------------------------------------------------------------------------------
 // LOG WINDOWS:
 #if (defined CPU_X86 || defined X64) && defined WINDOWS_PLATFORM
@@ -222,41 +287,41 @@ static_assert(false, "At least one X86 or X64 need to be defined!");
 #ifdef __AVX512F__	//AVX512 |Core i7/i9-7xxxX Skylake-X| (2017) && |AMD Ryzen 7XXX PC processors | --> TARGET CODE: WIN10 64b+AVX512 API:DX12 (Level DX12.x)
 	//To be compiled in: VS2017-VS2022
 #include <immintrin.h>
-#elif defined (__AVX2__)				//AVX2	 (i3/5/7 Haswell)	      = (Q2 2013) TARGET CODE: WIN10 64b+AVX2	API:DX12 (Level DX12.x)
+#elif defined (__AVX2__)					//AVX2	 (i3/5/7 Haswell)	      = (Q2 2013) TARGET CODE: WIN10 64b+AVX2	API:DX12 (Level DX12.x)
 #define _XM_AVX2_INTRINSICS_
-#include <immintrin.h>					//#include <wmmintrin.h>
-#elif defined (__AVX__)					//AVX	 (i3/5/7 Sandy Bridge)    = (Q3 2011) TARGET CODE: WIN7  64b+AVX	API:DX11 (Level DX11)
+#include <immintrin.h>						//#include <wmmintrin.h>
+#elif defined (__AVX__)						//AVX	 (i3/5/7 Sandy Bridge)    = (Q3 2011) TARGET CODE: WIN7  64b+AVX	API:DX11 (Level DX11)
 #define _XM_AVX_INTRINSICS_
-#include <immintrin.h>					//#include <wmmintrin.h>
-#elif defined (__AES__)					//AES-NI						  = (2008)
-#include <wmmintrin.h>					//#include <nmmintrin.h>
-#elif defined (__SSE4A__)				// AMD Only
-#include <ammintrin.h>					// AMD Only
-#elif defined (__SSE42__)				//SSE42 (for Intel(R) Core(TM) 2 Duo processor)	= (Nov 2008)
-#include <nmmintrin.h>					//#include <smmintrin.h>
-#elif defined (__SSE41__)				//SSE41 (for Intel(R) Core(TM) 2 Duo processor) = (2007/2008)
-#include <smmintrin.h>					//#include <tmmintrin.h>
-#elif defined (__SSE3__)				//SSE3 (Pentium 4 Prescott)		  = (April 2005)
-#include <tmmintrin.h>					//#include <pmmintrin.h>
+#include <immintrin.h>						//#include <wmmintrin.h>
+#elif defined (__AES__)						//AES-NI						  = (2008)
+#include <wmmintrin.h>						//#include <nmmintrin.h>
+#elif defined (__SSE4A__)					// AMD Only
+#include <ammintrin.h>						// AMD Only
+#elif defined (__SSE42__)					//SSE42 (for Intel(R) Core(TM) 2 Duo processor)	= (Nov 2008)
+#include <nmmintrin.h>						//#include <smmintrin.h>
+#elif defined (__SSE41__)					//SSE41 (for Intel(R) Core(TM) 2 Duo processor) = (2007/2008)
+#include <smmintrin.h>						//#include <tmmintrin.h>
+#elif defined (__SSE3__)					//SSE3 (Pentium 4 Prescott)		  = (April 2005)
+#include <tmmintrin.h>						//#include <pmmintrin.h>
 #elif defined (_M_X64) || defined (_M_AMD64)//SSE2 x64 (Pentium 4F)		      = (Fev 2005)TARGET CODE: WIN7  64b+SSE2 API:DX11 (Level DX9, DX10 or DX10.1)
 #define SSE2_ONLY
 #define _XM_SSE_INTRINSICS_
-#include <pmmintrin.h>					//#include <emmintrin.h>
+#include <pmmintrin.h>						//#include <emmintrin.h>
 #elif defined (_M_IX86_FP) && _M_IX86_FP >= 2//SSE2 x32	(Pentium 4)			  = (Nov 2000) TARGET CODE: WINXP 32b+SSE2 API:DX9 / API:OPENGL 3.3+
 #define SSE2_ONLY
 #define _XM_SSE_INTRINSICS_
-#include <emmintrin.h>					//#include <xmmintrin.h>
+#include <emmintrin.h>						//#include <xmmintrin.h>
 static_assert(false, "This Target is not valid for WOMA3D Engine");
 #elif defined _M_IX86_FP && _M_IX86_FP==1	//SSE x32	(Pentium - III Katmai)= (Fev 1999) Target: WINXP 32b+SSE
 	// SSE
 #define _XM_SSE_INTRINSICS_
-#include <xmmintrin.h>					//#include <mmintrin.h>
+#include <xmmintrin.h>						//#include <mmintrin.h>
 static_assert(false, "This Target is not valid for WOMA3D Engine");
 #elif defined __I86__ == 6					//Pentium - II					  = (May 1996) Target: Win98 x86+32b
-#include <mmintrin.h>					//MMX
+#include <mmintrin.h>						//MMX
 static_assert(false, "This Target is not valid for WOMA3D Engine");
 #elif defined __I86__ == 5					//Pentium - I					  = (Ago 1995) Target: MS-DOS 6.0 16b + Win95
-#include <mmintrin.h>					//MMX
+#include <mmintrin.h>						//MMX
 static_assert(false, "This Target is not valid for WOMA3D Engine");
 #elif defined __i486__						//IA-32		(CPU: 486)			  = (Jun 1991) Target: MS-DOS 5.0 16b + Windows 3.x
 static_assert(false, "This Target is not valid for WOMA3D Engine");
@@ -268,7 +333,7 @@ static_assert(false, "This Target is not valid for WOMA3D Engine");
 #endif
 
 #ifdef _XM_NO_INTRINSICS_ // This is for 32bits Builds.
-#define m128_f32 vector4_f32
+	#define m128_f32 vector4_f32
 #endif
 
 // -------------------------------------------------------------------------------------------
@@ -325,26 +390,26 @@ static_assert(false, "This code is for a LOWENDIAN CPU");
 #endif
 
 #if defined WINDOWS_PLATFORM
-#define WOMA_NEWLINE "\r\n"
+	#define WOMA_NEWLINE "\r\n"
 #elif defined __APPLE__
-#define WOMA_NEWLINE "\r"
+	#define WOMA_NEWLINE "\r"
 #else //ANDROID & LINUX:
-#define WOMA_NEWLINE "\n"
+	#define WOMA_NEWLINE "\n"
 #endif
 
 // -------------------------------------------------------------------------------------------
 //	Select OS GUI API:
 // -------------------------------------------------------------------------------------------
 #if defined WINDOWS_PLATFORM
-#define WIN32_GUI
+	#define WIN32_GUI
 #endif
 
 #ifdef LINUX_PLATFORM
-#define GTK_GUI
+	#define GTK_GUI
 #endif
 
 #ifdef ANDROID_PLATFORM
-#define SDK_GUI
+	#define SDK_GUI
 #endif
 
 // ASSERT: proper OS-GUI selected:
@@ -372,7 +437,7 @@ static_assert(false, "This code is for a LOWENDIAN CPU");
 // 64 bits WIN10 SDK + AVX2, VS2015: In Target Platform Windows 10 -> (Compile for DX12)
 #if VER_PRODUCTMAJORVERSION >= 10 && _MSC_VER >= 1900 //WIN10 & >=VS2015
 #ifndef WIN10
-#define WIN10				// Target Windows: Window 10!
+	#define WIN10				// Target Windows: Window 10!
 #endif
 #endif
 
@@ -388,25 +453,25 @@ static_assert(false, "This code is for a LOWENDIAN CPU");
 #if defined _USING_V110_SDK71_	// 32 bits WINXP SDK + SSE2, VS2010 or VS2012 (update4) For Windows XP (Sample: v110_xp/v120_xp/v140_xp)" XP Toolset is used? (Compile for DX9)
 	// DX9sdk can be selected	// (Use DX-APIs: for DX9) for Windows XP Builds
 #ifndef WIN_XP
-#define WIN_XP			// Target Windows: Window XP! (NOTE: Cant use "WINXP" string already used by MS )
+	#define WIN_XP					// Target Windows: Window XP! (NOTE: Cant use "WINXP" string already used by MS )
 #endif
 #endif
 #if _MSC_VER >= 1600			// 64 bits WIN6 SDK + AVX, Compiled in VS2010 or VS2012 or VS2013 or VS2015 or better TO USE (DX11)
 	//DX9 can be selected
 #ifndef WIN6x
-#define WIN6x			// Target Windows: Vista, 7, 8 or 8.1
-#define DX9 			// can be selected 
+	#define WIN6x					// Target Windows: Vista, 7, 8 or 8.1
+	#define DX9 					// can be selected 
 #endif
 #endif
 #if VER_PRODUCTMAJORVERSION >= 10	// 64 bits WIN10 SDK + AVX2, VS2015: In Target Platform Windows 10 -> (Compile for DX12)
 #if _MSC_VER >= 1900
 	// AVX2	 (i3/5/7 Haswell) = (Q2 2013) TARGET CODE: WIN10 64b+AVX2 API:DX12 (Level DX12.x)
 #if (defined __AVX512F__ || defined __AVX512__ || defined __AVX__ || defined __AVX2__)
-#define DX11	//can be selected DX11.x, DX10.x and DX9.x
-#define DX12	//can be selected DX12.x
+	#define DX11	//can be selected DX11.x, DX10.x and DX9.x
+	#define DX12	//can be selected DX12.x
 #else
-#define DX9
-#define DX11	//can be selected DX11.x, DX10.x and DX9.x
+	#define DX9
+	#define DX11	//can be selected DX11.x, DX10.x and DX9.x
 #endif
 #endif
 #endif
@@ -415,11 +480,11 @@ static_assert(false, "This code is for a LOWENDIAN CPU");
 // -------------------------------------------------------------------------------------------
 // (Windows: Vista, 7 & 8) or Linux? ---> Allow OpenGL 3.3+ & 4.0
 #if defined ANDROID_PLATFORM || ((defined WIN6x) && (defined LINUX_PLATFORM && !defined X64))
-#define OPENGL3  //OPENGL-API: 3.3+ ~ DX10 for Microsoft Windows / Mac OS X / Linux / Android level:26
+	#define OPENGL3  //OPENGL-API: 3.3+ ~ DX10 for Microsoft Windows / Mac OS X / Linux / Android level:26
 #endif
 
 #if defined WIN10 || (defined LINUX_PLATFORM && defined X64)
-#define OPENGL40 //OPENGL-API: 4.0  ~ DX11 for Microsoft Windows / Mac OS X / Linux	
+	#define OPENGL40 //OPENGL-API: 4.0  ~ DX11 for Microsoft Windows / Mac OS X / Linux	
 #endif
 
 // Android? ---> Allow GLES2
@@ -432,9 +497,9 @@ static_assert(false, "This code is for a LOWENDIAN CPU");
 #endif
 
 #if __ANDROID_API__ == __ANDROID_API_FUTURE__
-#define GLES3	//3.0 ~ DX11
+	#define GLES3	//3.0 ~ DX11
 #else
-#define GLES2	//2.0 ~ DX11
+	#define GLES2	//2.0 ~ DX11
 #endif
 
 /*
@@ -482,15 +547,15 @@ static_assert(false, "WIN6x: X64 or WIN32, have to be selected");
 // Windows Platforms Define (Internal API Version):
 // -------------------------------------------------------------------------------------------
 #if defined _MSC_VER
-#define _WindowsXP32b_	5.1
-#define _WindowsXP64b_	5.2
-#define _Windows_Vista_ 6.0
-#define _Windows_7_		6.1
-#define _Windows_8_		6.2
-#define _Windows_8_1_	6.3
-#define _Windows_10_   10.0
-//WIN11 _Windows_10_	(They use WIN10 API)
-//WIN12 _Windows_10_	(They use WIN10 API)
+	#define _WindowsXP32b_	5.1
+	#define _WindowsXP64b_	5.2
+	#define _Windows_Vista_ 6.0
+	#define _Windows_7_		6.1
+	#define _Windows_8_		6.2
+	#define _Windows_8_1_	6.3
+	#define _Windows_10_    10.0
+	//WIN11 _Windows_10_	(They use WIN10 API)
+	//WIN12 _Windows_10_	(They use WIN10 API)
 #endif
 
 // -------------------------------------------------------------------------------------------
@@ -581,9 +646,9 @@ static_assert(false, "WIN6x: X64 or WIN32, have to be selected");
 	//#define RELEASE					// TO FORCE the DEBUG of a RELEASE bin!
 	#define WOMA_CONSOLE_APPLICATION
 #else
-	#if defined _MSC_VER
+  #if defined _MSC_VER
 	#define WOMA_WIN32_APPLICATION
-	#endif
+  #endif
 #endif
 #endif
 

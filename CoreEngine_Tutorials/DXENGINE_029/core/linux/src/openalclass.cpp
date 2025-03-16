@@ -20,15 +20,6 @@
 
 #include "openalclass.h"
 
-#if notes
-	//sudo apt pulseaudio alsa-utils install snd-hda-intel sox libsox-fmt-all vlc-bin ffmpeg libopenal-dev libasound2-dev libasound2-plugins
-	//vi ~/ .asoundrc
-	//pcm.default pulse
-	//ctl.default pulse
-	//https://www.reddit.com/r/bashonubuntuonwindows/comments/hrn1lz/wsl_sound_through_pulseaudio_solved/?rdt=50845
-	//https://www.linuxuprising.com/2021/03/how-to-get-sound-pulseaudio-to-work-on.html
-#endif
-
 OpenALClass::OpenALClass()
 {
 }

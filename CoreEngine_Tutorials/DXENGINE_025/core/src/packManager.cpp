@@ -156,11 +156,11 @@ int wildcmp(const char *wild, const char *string)
 
 bool InitPackLib(char* packfilename)				// Need to be CHAR!
 {	
-	char File_Pak[MAX_STR_LEN] = { 0 };						// Need to be CHAR!
+	char File_Pak[MAX_STR_LEN] = { 0 };				// Need to be CHAR!
 
 	wtoa(File_Pak, WOMA::APPDATA, MAX_STR_LEN);
 
-	strcat(File_Pak, packfilename);				// Need to be CHAR!
+	strcat(File_Pak, packfilename);					// Need to be CHAR!
 
 	// Uncode Pack: Make sure that you RUN LEVEL 16 First!
 	int res = EncodeIDEA(File_Pak, DECODE);			// engine.pck (encoded) --> engine.pack (decoded)
@@ -238,6 +238,7 @@ bool InitPackLibs()
 {
 	// Read the Total Number of Files that will be Uncompressed:
     std::fstream fs;
+	//REPORT_FILE = "C:\\Users\\pedro\\AppData\\Local\\Temp\\Pmborg\\WoMA3Dengine\\counter.dat"
 	REPORT_FILE = WOMA::APPDATA; REPORT_FILE.append(TEXT(PACK_COUNTER_FILE));
 	fs.open(REPORT_FILE.c_str(), std::fstream::in);
     fs >> totalPackCounter;

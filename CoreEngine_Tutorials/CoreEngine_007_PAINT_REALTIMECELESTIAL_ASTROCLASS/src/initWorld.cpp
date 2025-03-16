@@ -30,7 +30,7 @@
 extern bool download(const std::string url, const std::string file_path);
 #if UNICODE
 	#ifdef X64
-		#if defined(_DEBUG) & !defined(NDEBUG)
+		#if defined(_DEBUG) //&& !defined(NDEBUG)
 			#pragma comment( lib, "x64/WDebug/maxminddb_LIBX64_d.lib" )		//DEBUG
 			#pragma comment( lib, "x64/WDebug/GeoLite2PP_LIBX64_d.lib" )	//DEBUG
 		#elif !defined _DEBUG && defined NDEBUG
@@ -41,7 +41,7 @@ extern bool download(const std::string url, const std::string file_path);
 			#pragma comment( lib, "x64/WRelease/GeoLite2PP_LIBX64.lib" )	//DBGREL
 		#endif
 	#else
-		#if defined(_DEBUG) & !defined(NDEBUG)
+		#if defined(_DEBUG) //&& !defined(NDEBUG)
 			#pragma comment( lib, "Win32/WDebug/maxminddb_LIB_d.lib" )		//DEBUG
 			#pragma comment( lib, "Win32/WDebug/GeoLite2PP_LIB_d.lib" )		//DEBUG
 		#elif !defined _DEBUG && defined NDEBUG
@@ -54,7 +54,7 @@ extern bool download(const std::string url, const std::string file_path);
 	#endif
 #else
 	#ifdef X64
-		#if defined(_DEBUG) & !defined(NDEBUG)
+		#if defined(_DEBUG)// && !defined(NDEBUG)
 			#pragma comment( lib, "x64/Debug/maxminddb_LIBX64_d.lib" )		//DEBUG
 			#pragma comment( lib, "x64/Debug/GeoLite2PP_LIBX64_d.lib" )		//DEBUG
 		#elif !defined _DEBUG && defined NDEBUG
@@ -65,7 +65,7 @@ extern bool download(const std::string url, const std::string file_path);
 			#pragma comment( lib, "x64/Release/GeoLite2PP_LIBX64.lib" )		//DBGREL
 		#endif
 	#else
-		#if defined(_DEBUG) & !defined(NDEBUG)
+		#if defined(_DEBUG) //&& !defined(NDEBUG)
 			#pragma comment( lib, "Win32/Debug/maxminddb_LIB_d.lib" )		//DEBUG
 			#pragma comment( lib, "Win32/Debug/GeoLite2PP_LIB_d.lib" )		//DEBUG
 		#elif !defined _DEBUG && defined NDEBUG

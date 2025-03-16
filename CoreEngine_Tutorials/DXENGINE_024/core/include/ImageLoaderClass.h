@@ -38,7 +38,7 @@
 #define LOAD_IMAGE_32bits 32
 
 #ifdef X64
-#if defined(_DEBUG) & !defined(NDEBUG)
+#if defined(_DEBUG)// && !defined(NDEBUG)
 #pragma comment( lib, "TIFF_LIBX64_d.lib" )
 #else
 #pragma comment( lib, "TIFF_LIBX64.lib" )
@@ -52,7 +52,7 @@
 #endif
 
 #ifdef X64
-#if defined(_DEBUG) & !defined(NDEBUG)
+#if defined(_DEBUG)// && !defined(NDEBUG)
 #pragma comment( lib, "ZLIB_LIBX64_d.lib" )
 #else
 #pragma comment( lib, "ZLIB_LIBX64.lib" )
@@ -66,7 +66,7 @@
 #endif
 
 #ifdef X64
-#if defined(_DEBUG) & !defined(NDEBUG)
+#if defined(_DEBUG)// && !defined(NDEBUG)
 #pragma comment( lib, "PNG_LIBX64_d.lib" )
 #else
 #pragma comment( lib, "PNG_LIBX64.lib" )
@@ -80,7 +80,7 @@
 #endif
 
 #ifdef X64
-#if defined(_DEBUG) & !defined(NDEBUG)
+#if defined(_DEBUG)// && !defined(NDEBUG)
 #pragma comment( lib, "JPG_LIBX64_d.lib" )
 #else
 #pragma comment( lib, "JPG_LIBX64.lib" )

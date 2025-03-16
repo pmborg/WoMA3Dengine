@@ -159,6 +159,8 @@ UINT RENDER_PAGE;
 // -------------------------------------------------------------------------------------------------------------------------------------
 namespace WOMA
 {
+	BOOL DeleteDirectory(const TCHAR* sPath);
+
 	// State Vars:
 	//---------------------------------------------------
 	int		game_state = GAME_LOADING;
@@ -304,13 +306,39 @@ void DefineConsoleTitle()
 
 void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 {
-#if defined WINDOWS_PLATFORM
-		SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
 
+	// Changes the Process Priority:
+	// -----------------------------
+#if defined WINDOWS_PLATFORM
+	//THREAD_PRIORITY_IDLE(-15)
+	//THREAD_PRIORITY_LOWEST(-2)
+	//THREAD_PRIORITY_BELOW_NORMAL(-1)
+	//THREAD_PRIORITY_NORMAL(0)
+	//THREAD_PRIORITY_ABOVE_NORMAL(+1)
+	//THREAD_PRIORITY_HIGHEST(+2)
+	//THREAD_PRIORITY_TIME_CRITICAL(+15)
+	#if _DEBUG
+		SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST); //THREAD_PRIORITY_HIGHEST = 2
+	#else
+		SetThreadPriority(GetCurrentThread(), 12);
+	#endif
+#else
+	#if _DEBUG
+		setpriority(PRIO_PROCESS, 0, 20);	// -20 (highest priority) to +20 (lowest priority). 
+	#else
+		setpriority(PRIO_PROCESS, 0, -19);	// Be nice to other processes, helps reduce mouse lag
+	#endif
+#endif
+
+	// Init Windows COM services:
+	// --------------------------
+#if defined WINDOWS_PLATFORM
 	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 	if (FAILED(hr)) WomaFatalException("CoInitializeEx Failed!");
 #endif
 
+	// Benchmark trigonometric functions:
+	// ----------------------------------
 #ifdef MATH_BENCH && LEVEL < 60 // Disabled at 60: TrigonometryMathClass.cpp
 	TimerClass m_Timer;
 	m_Timer.Initialize();	// Initialize the timer object.

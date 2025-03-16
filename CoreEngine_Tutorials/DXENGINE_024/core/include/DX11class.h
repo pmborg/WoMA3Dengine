@@ -215,12 +215,11 @@ WDDM 2.0->Windows 10				Display Drivers or Creates a DXGI 1.4
 	using namespace DirectX;
 	    //COMPILE: C:\WoMA3Dengine\ThirdParty\DirectXTex\DirectXTex_Desktop_2022_Win10.sln
 		#if _DEBUG
-		#pragma comment(lib, "Libs/x64/Debug/DirectX11TK.lib")
-		//#pragma comment(lib, "/WoMA3Dengine/ThirdParty/DirectXTex/DirectXTex/Bin/Desktop_2022_Win10/x64/Debug/DirectXTex.lib")
-		#pragma comment(lib, "/WoMA3Dengine/ThirdParty/DirectXTex/DirectXTex-jan2023/DirectXTex/Bin/Desktop_2022_Win10/x64/Debug/DirectXTex.lib")
+			#pragma comment(lib, "Libs/x64/Debug/DirectX11TK.lib")
+			#pragma comment(lib, "/WoMA3Dengine/ThirdParty/DirectXTex/DirectXTex-jan2023/DirectXTex/Bin/Desktop_2022_Win10/x64/Debug/DirectXTex.lib")
 		#else
-		#pragma comment(lib, "/WoMA3Dengine/ThirdParty/DirectXTK/Bin/Desktop_2013/x64/Release/DirectXTK.lib")
-		#pragma comment(lib, "/WoMA3Dengine/ThirdParty/DirectXTex/DirectXTex/Bin/Desktop_2022_Win10/x64/Release/DirectXTex.lib")
+			#pragma comment(lib, "/WoMA3Dengine/ThirdParty/DirectXTK/Bin/Desktop_2013/x64/Release/DirectXTK.lib")
+			#pragma comment(lib, "/WoMA3Dengine/ThirdParty/DirectXTex/DirectXTex/Bin/Desktop_2022_Win10/x64/Release/DirectXTex.lib")
 		#endif
 #endif
 
