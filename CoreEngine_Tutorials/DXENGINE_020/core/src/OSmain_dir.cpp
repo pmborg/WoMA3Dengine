@@ -298,9 +298,9 @@ namespace WOMA
 		bool settings = fileExists(ChkSettings);
 		if (!settings)
 		{
-			bool isDocDirCreated0 = CreateDirectory(PUBLIC_DOCUMENTS0, 0);	//TO:		//C:\Users\Public\Documents\\Pmborg
-			bool isDocDirCreated1 = CreateDirectory(PUBLIC_DOCUMENTS1, 0);	//TO:		//C:\Users\Public\Documents\\Pmborg\\CORE_ENGINE_LEVEL
-			bool isDocDirCreated = CreateDirectory(PUBLIC_DOCUMENTS, 0);	//TO:		//C:\Users\Public\Documents\\Pmborg\\CORE_ENGINE_LEVEL\\DX_ENGINE_LEVEL
+			bool isDocDirCreated0 = CreateDirectory(PUBLIC_DOCUMENTS0, 0);	//TO: //C:\Users\Public\Documents\\Pmborg
+			bool isDocDirCreated1 = CreateDirectory(PUBLIC_DOCUMENTS1, 0);	//TO: //C:\Users\Public\Documents\\Pmborg\\CORE_ENGINE_LEVEL
+			bool isDocDirCreated = CreateDirectory(PUBLIC_DOCUMENTS, 0);	//TO: //C:\Users\Public\Documents\\Pmborg\\CORE_ENGINE_LEVEL\\DX_ENGINE_LEVEL
 
 			StringCchPrintf(src, MAX_STR_LEN, TEXT("%s\\%s"), currentdir, TEXT("settings.xml"));
 			StringCchPrintf(dest, MAX_STR_LEN, TEXT("%s%s"), PUBLIC_DOCUMENTS, TEXT("settings.xml"));

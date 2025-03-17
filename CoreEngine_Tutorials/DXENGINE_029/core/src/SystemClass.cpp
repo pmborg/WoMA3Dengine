@@ -995,6 +995,9 @@ bool SystemClass::LoadXmlSettings()
 	#if defined WINDOWS_PLATFORM
 		SystemHandle->AppSettings->WINDOW_WIDTH = SystemHandle->AppSettings->WINDOW_HEIGHT = 0;
 	#endif
+	#ifdef RELEASE
+		SystemHandle->AppSettings->FULL_SCREEN = true;
+	#endif
 	SystemHandle->AppSettings->INIT_CAMZ = -20;
 	SystemHandle->AppSettings->NETWORK_ENABLED = true;
 #endif

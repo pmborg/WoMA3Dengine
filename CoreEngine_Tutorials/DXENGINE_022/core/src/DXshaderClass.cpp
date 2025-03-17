@@ -26,6 +26,7 @@
 #if (DX_ENGINE_LEVEL >= 21 || defined USE_VIEW2D_SPRITES) && ( defined DX11 || defined DX9 /*defined DX9*/ || defined DX12 )
 
 #include "DXshaderClass.h"
+#include "fileLoader.h"
 
 #if (defined DX9 && D3D11_SPEC_DATE_YEAR == 2009)
 #include "dx9Class.h"
@@ -491,7 +492,8 @@ namespace DirectX {
 #else
 			vertVer.append(/*SystemHandle->*/driverList[SystemHandle->AppSettings->DRIVER]->ShaderModel);  //TEXT("vs_5_0")
 #endif
-			result = D3DCompileFromFile(vsFilename.c_str(), defines/*NULL*/, D3D_COMPILE_STANDARD_FILE_INCLUDE, vertexHLSL.c_str(), /*"vs_5_0"*/vertVer.c_str(), compileFlags, 0, &vertexShaderBuffer, &errorMessage);
+			LPCWSTR file = (LPCWSTR)WOMA::LoadFileW((WCHAR*)vsFilename.c_str());
+			result = D3DCompileFromFile(file, defines/*NULL*/, D3D_COMPILE_STANDARD_FILE_INCLUDE, vertexHLSL.c_str(), /*"vs_5_0"*/vertVer.c_str(), compileFlags, 0, &vertexShaderBuffer, &errorMessage);
 			if (FAILED(result))
 			{
 				if (errorMessage) {
@@ -501,7 +503,7 @@ namespace DirectX {
 				return false;
 			}
 			vertVer[0] = 'p';  //TEXT("ps_5_0")
-			result = D3DCompileFromFile(vsFilename.c_str(), defines/*NULL*/, D3D_COMPILE_STANDARD_FILE_INCLUDE, pixelHLSL.c_str(), /*"ps_5_0"*/vertVer.c_str(), compileFlags, 0, &pixelShaderBuffer, &errorMessage);
+			result = D3DCompileFromFile(file, defines/*NULL*/, D3D_COMPILE_STANDARD_FILE_INCLUDE, pixelHLSL.c_str(), /*"ps_5_0"*/vertVer.c_str(), compileFlags, 0, &pixelShaderBuffer, &errorMessage);
 			if (FAILED(result))
 			{
 				WomaMessageBox((TCHAR*)errorMessage->GetBufferPointer(), TEXT("SHADER Error description :"));

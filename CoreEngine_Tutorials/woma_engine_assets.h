@@ -21,7 +21,7 @@
 
 //--------------------------------------------------------------------------------------------------------
 #define COMPANY_DIRECTORY	TEXT("Pmborg")
-#define PROJECT_DIRECTORY	TEXT("WoMA3Dengine")
+#define PROJECT_DIRECTORY	TEXT("WoMAengine2023")
 #define ICON_FILE			TEXT("WoMA.ico")
 #define GENERALSETTINGS		"generalsettings"
 

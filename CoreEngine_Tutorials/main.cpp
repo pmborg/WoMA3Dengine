@@ -79,9 +79,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	Command = APPLICATION_MAIN(argc, argv);		// ENTRY-POINT: WINDOWS RELEASE!
 
-	for (int i = 0; i < MAX_PARAMS; i++)
-		SAFE_DELETE(WOMA::ARGv[i]);
-
 	return Command;
 }
 #endif

@@ -18,8 +18,8 @@
 // PURPOSE: 
 //  - Log Current PATH
 //  - Check if PATH if NETWORK PATH (Release)
-//  - Init: PROGRAM_FILES "C:\ProgramFiles(x86)\Pmborg\Woma2017\"
-//  - Init: APPDATA "C:\Users\"username"\AppData\Local\Pmborg\Woma2017\"
+//  - Init: PROGRAM_FILES 
+//  - Init: APPDATA
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234567222;
 
@@ -71,5 +71,8 @@ namespace WOMA
 	extern void setup_OSmain_dirs();
 
   #if CORE_ENGINE_LEVEL >= 4 && defined WINDOWS_PLATFORM
+    #ifdef RELEASE
+  		extern BOOL DeleteDirectory(const TCHAR* sPath);
+    #endif
   #endif
 }

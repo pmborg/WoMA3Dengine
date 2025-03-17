@@ -74,7 +74,7 @@ bool textFontClass::Initialize(void* g_driver, TCHAR* fontFilename, TCHAR* textu
 		m_driver11 = (DirectX::DX11Class*)g_driver;
 		//[TEMMPLATE] LOAD TEXTURE DX11:
 		#define m_driver11 ((DirectX::DX11Class*)m_driver11)
-		LOADTEXTURE(textureFilename, m_Texture11);
+		LOADTEXTURE(WOMA::LoadFile(textureFilename), m_Texture11);
 		if (SUCCEEDED(hr)) {
 			meshSRV11.push_back(m_Texture11);
 		}

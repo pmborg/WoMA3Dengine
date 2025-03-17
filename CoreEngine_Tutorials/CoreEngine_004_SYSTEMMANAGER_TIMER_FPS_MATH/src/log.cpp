@@ -152,7 +152,6 @@ LogManager::~LogManager()
 			debugFile = NULL;
 		}
 	}
-
 }
 
 TCHAR* LogManager::getLogFileName()

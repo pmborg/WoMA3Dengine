@@ -322,7 +322,7 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 	#else
 		SetThreadPriority(GetCurrentThread(), 12);
 	#endif
-#else
+#elif defined LINUX_PLATFORM && defined RELEASE
 	#if _DEBUG
 		setpriority(PRIO_PROCESS, 0, 20);	// -20 (highest priority) to +20 (lowest priority). 
 	#else
@@ -399,7 +399,7 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 void APPLICATION_STOP()
 {
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
-	r_Application->Shutdown();
+	SAFE_SHUTDOWN(r_Application);
 #endif
 
 #if defined WINDOWS_PLATFORM
@@ -407,17 +407,19 @@ void APPLICATION_STOP()
 #endif
 
 #if defined USE_MINIDUMPER
-	SAFE_DELETE(WOMA::miniDumper);		// Free Top level Exception handler & Mini-Dumper.
+	SAFE_DELETE(WOMA::miniDumper); // Free Top level Exception handler & Mini-Dumper.
 #endif
 
+
 #if defined USE_LOG_MANAGER
-	WOMA::logManager->ShutdownInstance();	// Write, Close & Free: The logManager.
+	if (WOMA::logManager)
+		WOMA::logManager->ShutdownInstance();	// Write, Close & Free: The logManager.
 	WOMA::logManager = NULL;				// Because of STATIC Classes Shutdown: Do not log
 #endif
 
+
 #if defined ANDROID_PLATFORM
 	engine.has_focus_ = false;
-	//terminate();
 #endif
 }
 

@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: fileLoader.cpp
 // --------------------------------------------------------------------------------------------
@@ -21,7 +20,7 @@
 
 #include "main.h"
 #include "fileLoader.h"
-#include "OSmain_dir.h" //#include "OsDirectories.h"
+#include "OSmain_dir.h"
 #pragma warning( disable : 6386 )
 
 namespace WOMA
@@ -29,11 +28,35 @@ namespace WOMA
 	STRING lastfile;
 	STRING file;
 
-TCHAR* LoadFile(TCHAR* filename)
+#if !defined UNICODE && defined WINDOWS_PLATFORM
+WCHAR* LoadFileW(WCHAR* filename)
+{
+	static WCHAR wfilename[MAX_STR_LEN] = { 0 };
+
+	TCHAR file[MAX_STR_LEN] = { 0 };
+	WideCharToMultiByte(CP_ACP, 0, filename, -1, file, MAX_STR_LEN, NULL, NULL);
+	TCHAR* cfile = LoadFile(file, true);
+
+	MultiByteToWideChar(CP_ACP, 0, cfile, -1, wfilename, MAX_STR_LEN);
+	return wfilename;
+}
+#endif
+
+TCHAR* LoadFile(TCHAR* filename, bool shader)
 {
 	static TCHAR file_[MAX_STR_LEN*2];
 	ZeroMemory(&file_, sizeof(file));
 
+#ifdef RELEASE
+	if (shader)
+		file = WOMA::PROGRAM_FILES;
+	else
+		file = WOMA::APPDATA; // WOMA::womaTempPATH;
+
+	file.append(filename);
+	lastfile = file;
+	return (TCHAR*)file.c_str();
+#else
 	if (filename[0]!='.') {
 		StringCchPrintf(file_, sizeof(file_), TEXT("%s%s"), TEXT("./"), filename);
 	} else {
@@ -46,6 +69,7 @@ TCHAR* LoadFile(TCHAR* filename)
 	file = file_;
 	lastfile = file;
 	return (TCHAR*)&file_;
+#endif
 }
 
 }

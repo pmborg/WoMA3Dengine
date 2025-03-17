@@ -169,6 +169,10 @@ bool LinuxSystemClass::APPLICATION_INIT_SYSTEM() // ApplicationInit()
 	IF_NOT_RETURN_FALSE(SystemClass::LoadXmlSettings());		// XML: Load Application Settings: "settings.xml", pickup "Driver" to Use.
 #endif
 
+#if CORE_ENGINE_LEVEL >= 7 && defined RELEASE
+	InitPackLibs();	// LOAD NOW: Urgent Resources: windows.pck
+#endif
+
 #if CORE_ENGINE_LEVEL >= 4 && defined USE_SYSTEM_CHECK	// BEFORE: ApplicationInitMainWindow()
 	IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());		// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 
 #endif

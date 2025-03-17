@@ -127,7 +127,11 @@ void WinSystemClass::StartTimer()
 	// Dont Update on: FullScreen or Full-windowed
 	if ((!AppSettings->FULL_SCREEN) && (windowStyle != 0x96080000)) 
 	{
+		#if defined RELEASE //INTRO_DEMO
+		SetTimer(m_hWnd, TIMER_TITLE, 100 / KEYB_TIMES_PER_SECOND, NULL);	// 100ms = 10 x per second!
+		#else
 		SetTimer(m_hWnd, TIMER_TITLE, 2000 / KEYB_TIMES_PER_SECOND, NULL);	// 2000ms = 2 seconds! (1000ms = 1 second!)
+		#endif
 		
 	}
 

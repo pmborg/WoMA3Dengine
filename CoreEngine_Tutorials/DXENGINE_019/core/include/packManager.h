@@ -19,7 +19,6 @@
 #pragma once
 
 #include "standard_platform.h"
-
 #include "unzip.h"
 #include "zip.h"
 
