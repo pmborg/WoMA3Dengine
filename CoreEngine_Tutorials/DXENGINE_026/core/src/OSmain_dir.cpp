@@ -255,18 +255,17 @@ namespace WOMA
 	bool init_os_main_dirs(TCHAR* currentdir)
 	//-------------------------------------------------------------------------------------------
 	{
-
 	#if defined RELEASE && !defined ANDROID_PLATFORM
 		// DONT LOG HERE!
 
 	#if defined WINDOWS_PLATFORM
-#if _NOT
+  #if _NOT
 		// "C:\Users\"username"\AppData\Local\Pmborg\WoMA3Dengine\"
 		//StringCchPrintf(APPDATA, MAX_STR_LEN, TEXT("%s\\%s\\%s\\"), _tgetenv(TEXT("APPDATA")), APP_COMPANY_NAME, APP_PROJECT_NAME);
 		//if (!bIsWow64 || WINXP_FLAG)
 		//	_tcscpy_s(PROGRAM_FILES, _tgetenv(TEXT("ProgramFiles")));	//is Not Wow64
 		//else
-#endif
+  #endif
 		//PROGRAM_FILES =  "C:\\Program Files (x86)"
 		_tcscpy_s(PROGRAM_FILES, _tgetenv(TEXT("ProgramFiles(x86)")));//Is Wow64: 32 bits on a 64bits OS.
 
@@ -291,10 +290,12 @@ namespace WOMA
 
 		TCHAR src[MAX_STR_LEN] = { 0 };
 		TCHAR dest[MAX_STR_LEN] = { 0 };
-
 		TCHAR ChkSettings[MAX_STR_LEN] = {0};
-																											//ChkSettings= "C:\\Users\\Public\\Documents\\Pmborg\\29\\29\\settings.xml"
-		StringCchPrintf(ChkSettings, MAX_STR_LEN, TEXT("%s%s"), PUBLIC_DOCUMENTS, TEXT("settings.xml"));	//				C:\\Users\\Public\\Documents\\Pmborg\\CORE_ENGINE_LEVEL\\DX_ENGINE_LEVEL\\settings.xml
+
+		_tcscpy_s((TCHAR*)APP_PROJECT_NAME, MAX_STR_LEN, (TCHAR*)currentdir);
+
+		//ChkSettings = "C:\\Users\\Public\\Documents\\Pmborg\\29\\29\\settings_029.xml"
+		StringCchPrintf(ChkSettings, MAX_STR_LEN, TEXT("%s%s"), PUBLIC_DOCUMENTS, SETTINGS_FILE);
 		bool settings = fileExists(ChkSettings);
 		if (!settings)
 		{
@@ -302,26 +303,46 @@ namespace WOMA
 			bool isDocDirCreated1 = CreateDirectory(PUBLIC_DOCUMENTS1, 0);	//TO: //C:\Users\Public\Documents\\Pmborg\\CORE_ENGINE_LEVEL
 			bool isDocDirCreated = CreateDirectory(PUBLIC_DOCUMENTS, 0);	//TO: //C:\Users\Public\Documents\\Pmborg\\CORE_ENGINE_LEVEL\\DX_ENGINE_LEVEL
 
-			StringCchPrintf(src, MAX_STR_LEN, TEXT("%s\\%s"), currentdir, TEXT("settings.xml"));
-			StringCchPrintf(dest, MAX_STR_LEN, TEXT("%s%s"), PUBLIC_DOCUMENTS, TEXT("settings.xml"));
-			//src =  "C:\\Program Files (x86)\\WoMAengine2023\\settings.xml"
-			//dest = "C:\\Users\\Public\\Documents\\Pmborg\\29\\29\\settings.xml"
+			StringCchPrintf(src, MAX_STR_LEN, TEXT("%s\\%s"), currentdir, SETTINGS_FILE);
+			printf("src: %s\n", src);
+			StringCchPrintf(dest, MAX_STR_LEN, TEXT("%s%s"), PUBLIC_DOCUMENTS, SETTINGS_FILE);
+			printf("dest: %s\n", dest);
+			//src =  "C:\\Program Files (x86)\\WoMAengine2023\\settings_029.xml"
+			//dest = "C:\\Users\\Public\\Documents\\Pmborg\\29\\29\\settings_029.xml"
+			bool b = CopyFile(src, dest, true);
+		}
+
+		//ChkSettings = "C:\\Users\\Public\\Documents\\Pmborg\\29\\29\\world_29.xml"
+		StringCchPrintf(ChkSettings, MAX_STR_LEN, TEXT("%s%s"), PUBLIC_DOCUMENTS, WORLD_XML);
+		bool world = fileExists(ChkSettings);
+		if (!world)
+		{
+			bool isDocDirCreated0 = CreateDirectory(PUBLIC_DOCUMENTS0, 0);	//TO: //C:\Users\Public\Documents\\Pmborg
+			bool isDocDirCreated1 = CreateDirectory(PUBLIC_DOCUMENTS1, 0);	//TO: //C:\Users\Public\Documents\\Pmborg\\CORE_ENGINE_LEVEL
+			bool isDocDirCreated = CreateDirectory(PUBLIC_DOCUMENTS, 0);	//TO: //C:\Users\Public\Documents\\Pmborg\\CORE_ENGINE_LEVEL\\DX_ENGINE_LEVEL
+
+			StringCchPrintf(src, MAX_STR_LEN, TEXT("%s\\%s"), currentdir, WORLD_XML);
+			printf("src: %s\n", src);
+			StringCchPrintf(dest, MAX_STR_LEN, TEXT("%s%s"), PUBLIC_DOCUMENTS, WORLD_XML);
+			printf("dest: %s\n", dest);
+			//src =  "C:\\Program Files (x86)\\WoMAengine2023\\world_29.xml"
+			//dest = "C:\\Users\\Public\\Documents\\Pmborg\\29\\29\\world_29.xml"
 			bool b = CopyFile(src, dest, true);
 		}
 
 		//APPDATA = TEMP
 		STRING dirName1 = WOMA::APPDATA1;
-#if _NOT
+  #if _NOT
 		char r1; //PATH string replacement()
 		std::map<char, char> rs1 = { {'\\', '/'} };	//CONVERT:	C:\\Users\\<username>\\AppData\\Roaming\\Pmborg
 		std::replace_if(dirName1.begin(), dirName1.end(), [&](char c) { return r1 = rs1[c]; }, r1);
-#endif
+  #endif
 		STRING dirName = WOMA::APPDATA;
-#if _NOT
+  #if _NOT
 		char r; //PATH string replacement()
 		std::map<char, char> rs = { {'\\', '/'} };	//CONVERT:	C:\\Users\\<username>\\AppData\\Roaming\\Pmborg\\WoMA
 		std::replace_if(dirName.begin(), dirName.end(), [&](char c) { return r = rs[c]; }, r);
-#endif
+  #endif
 		//dirName1 = "C:\\Users\\[____]\\AppData\\Local\\Temp\\Pmborg"
 		bool isDirCreated1 = CreateDirectory(dirName1.c_str(), 0);	//TO:		dirName1 = "\\Temp\\Pmborg"
 		DWORD dw1 = GetLastError();
@@ -362,7 +383,7 @@ namespace WOMA
 		StringCchPrintf(src, MAX_STR_LEN, TEXT("%s\\%s"), currentdir, TEXT("woma.pck"));
 		StringCchPrintf(dest, MAX_STR_LEN, TEXT("%s%s"), APPDATA, TEXT("woma.pck"));
 		b = CopyFile(src, dest, true);
-#if _NOT
+  #if _NOT
 		StringCchPrintf(src, MAX_STR_LEN, TEXT("%s\\%s"), currentdir, TEXT("my.ip"));
 		StringCchPrintf(dest, MAX_STR_LEN, TEXT("%s%s"), APPDATA, TEXT("my.ip"));
 		b = CopyFile(src, dest, true);
@@ -370,21 +391,21 @@ namespace WOMA
 		StringCchPrintf(src, MAX_STR_LEN, TEXT("%s\\%s"), currentdir, TEXT("present.weather"));
 		StringCchPrintf(dest, MAX_STR_LEN, TEXT("%s%s"), APPDATA, TEXT("present.weather"));
 		b = CopyFile(src, dest, true);
-#endif
+  #endif
 #endif
 		// "C:\ProgramFiles(x86)\Pmborg\WoMA3Dengine\"
 		// "C:\Program Files\Pmborg\WoMA3Dengine\"
-		//StringCchPrintf(PROGRAM_FILES, MAX_STR_LEN, TEXT("%s\\%s\\%s\\"), (!bIsWow64 || WINXP_FLAG) ? _tgetenv(TEXT("ProgramFiles")) : _tgetenv(TEXT("ProgramFiles(x86)")), APP_COMPANY_NAME, APP_PROJECT_NAME);
+		//StringCchPrintf(PROGRAM_FILES, MAX_STR_LEN, TEXT("%s\\%s\\%s\\"), (!bIsWow64 || WINXP_FLAG) ? _tgetenv(TEXT("ProgramFiles")) : _tgetenv(TEXT("ProgramFiles(x86)")), APP_COMPANY_NAME, PROJECT_NAME);
 		// --OR--
 		//Installer will install on: C:\Program Files (x86)\WoMA3Dengine
-		StringCchPrintf(PROGRAM_FILES, MAX_STR_LEN, TEXT("%s\\%s\\"), _tgetenv(TEXT("ProgramFiles(x86)")), APP_PROJECT_NAME);
+		//StringCchPrintf(PROGRAM_FILES, MAX_STR_LEN, TEXT("%s\\%s\\"), _tgetenv(TEXT("ProgramFiles(x86)")), APP_PROJECT_NAME);
 	#endif
 
 	#if CORE_ENGINE_LEVEL >= 2 && defined LINUX_PLATFORM
 		// "C:\Program Files\Pmborg\Woma2017\" ==> "/opt/Pmborg/Woma2017"
 		// "C:\Users\"username"\AppData\Local\Pmborg\Woma2017\" ==> ~/.pmborg/Woma2017
-		StringCchPrintf(PROGRAM_FILES, MAX_STR_LEN, TEXT("/opt/%s/%s/"), APP_COMPANY_NAME, APP_PROJECT_NAME);
-		StringCchPrintf(APPDATA, MAX_STR_LEN, TEXT("~/.%s/%s/"), APP_COMPANY_NAME, APP_PROJECT_NAME);
+		StringCchPrintf(PROGRAM_FILES, MAX_STR_LEN, TEXT("/opt/%s/%s/"), APP_COMPANY_NAME, PROJECT_NAME);
+		StringCchPrintf(APPDATA, MAX_STR_LEN, TEXT("~/.%s/%s/"), APP_COMPANY_NAME, PROJECT_NAME);
 	#endif
 
 		return true;

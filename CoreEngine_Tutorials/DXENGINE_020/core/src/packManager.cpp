@@ -244,6 +244,10 @@ bool InitPackLibs()
     fs >> totalPackCounter;
 	fs.close();
 
+	STRING deleteoldengine = WOMA::APPDATA;
+	deleteoldengine.append(TEXT("/engine"));
+	WOMA::DeleteDirectory(deleteoldengine.c_str());
+
 	IF_NOT_RETURN_FALSE (InitPackLib("windows.pck"));	// Need to be CHAR!
 
 #if !defined USE_MAIN_THREAD

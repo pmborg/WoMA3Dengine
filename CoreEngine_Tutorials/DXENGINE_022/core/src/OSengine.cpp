@@ -203,9 +203,9 @@ namespace WOMA
 
 	TCHAR   APP_NAME[MAX_STR_LEN] = { 0 };              // "Aplication Name"
 
-	TCHAR   APP_COMPANY_NAME[] = COMPANY_DIRECTORY;		// "Company" Directory Name: 1st lvl
-	TCHAR   APP_PROJECT_NAME[] = PROJECT_DIRECTORY;		// "Project" Directory Name: 2nd lvl
-	TCHAR   APP_FULLNAME[MAX_STR_LEN] = { 0 };          // "Aplication FullName"
+	TCHAR   APP_COMPANY_NAME[MAX_STR_LEN] = COMPANY_DIRECTORY;	// "Company" Directory Name: 1st lvl
+	TCHAR   APP_PROJECT_NAME[MAX_STR_LEN] = PROJECT_DIRECTORY;	// "Project" Directory Name: 2nd lvl
+	TCHAR   APP_FULLNAME[MAX_STR_LEN] = { 0 };					// "Aplication FullName"
 
 	#if defined WINDOWS_PLATFORM
 	TCHAR	APP_ICO[] = ICON_FILE;			// "Define" Main Window: Icon 

@@ -18,7 +18,7 @@
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234567222;
 
-#include "main.h"
+#include "OSengine.h"
 #include "fileLoader.h"
 #include "OSmain_dir.h"
 #pragma warning( disable : 6386 )
@@ -36,7 +36,7 @@ WCHAR* LoadFileW(WCHAR* filename)
 	TCHAR file[MAX_STR_LEN] = { 0 };
 	WideCharToMultiByte(CP_ACP, 0, filename, -1, file, MAX_STR_LEN, NULL, NULL);
 	TCHAR* cfile = LoadFile(file, true);
-
+	printf("cfile: %s\n", cfile);
 	MultiByteToWideChar(CP_ACP, 0, cfile, -1, wfilename, MAX_STR_LEN);
 	return wfilename;
 }
@@ -48,11 +48,12 @@ TCHAR* LoadFile(TCHAR* filename, bool shader)
 	ZeroMemory(&file_, sizeof(file));
 
 #ifdef RELEASE
-	if (shader)
-		file = WOMA::PROGRAM_FILES;
-	else
+	if (shader) {
+		file = WOMA::APP_PROJECT_NAME;
+		file.append(TEXT("/"));
+	} else {
 		file = WOMA::APPDATA; // WOMA::womaTempPATH;
-
+	}
 	file.append(filename);
 	lastfile = file;
 	return (TCHAR*)file.c_str();

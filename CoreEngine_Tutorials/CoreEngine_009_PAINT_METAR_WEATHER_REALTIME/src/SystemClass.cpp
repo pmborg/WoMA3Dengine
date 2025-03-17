@@ -95,7 +95,7 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 
 	StringCchPrintf(WOMA::APP_NAME, MAX_STR_LEN,
 		TEXT("%s v%c%c%c%c.%c%c.%c%c BIN:%s OS:%s %s BUILD:%s BIN:%dbit %s CHAR:%s Lvl: %d"),
-		WOMA::APP_PROJECT_NAME,
+		PROJECT_NAME,
 		BUILD_YEAR_CH0, BUILD_YEAR_CH1, BUILD_YEAR_CH2, BUILD_YEAR_CH3,
 		BUILD_MONTH_CH0, BUILD_MONTH_CH1, BUILD_DAY_CH0, BUILD_DAY_CH1,
 		//1
