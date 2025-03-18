@@ -236,7 +236,7 @@
     <ClCompile Include="..\..\..\ThirdParty\PNG_LIB\src\pngwutil.c" />
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="..\settings.xml" />
+    <Xml Include="..\settings_029.xml" />
     <Xml Include="..\world_29.xml" />
   </ItemGroup>
   <ItemGroup>

@@ -20,6 +20,7 @@
 #include "tech-level.h"
 
 //--------------------------------------------------------------------------------------------------------
+#define PROJECT_NAME		TEXT("WoMAengine")
 #define COMPANY_DIRECTORY	TEXT("Pmborg")
 #define PROJECT_DIRECTORY	TEXT("WoMAengine2023")
 #define ICON_FILE			TEXT("WoMA.ico")

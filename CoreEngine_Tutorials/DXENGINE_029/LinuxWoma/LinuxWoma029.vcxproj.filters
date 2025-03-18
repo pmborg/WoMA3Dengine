@@ -570,8 +570,8 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="..\settings.xml" />
     <Xml Include="..\world_29.xml" />
+    <Xml Include="..\settings_029.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\GLengine\color.ps">
@@ -787,5 +787,8 @@
     <Text Include="..\engine\data\fonts\font01.txt">
       <Filter>engine</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="..\engine\audio\DST-Aircord.wav" />
   </ItemGroup>
 </Project>
