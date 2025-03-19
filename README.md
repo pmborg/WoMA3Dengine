@@ -45,6 +45,8 @@ Try to Change the driver on the fly without the need of close and open the Appli
  ...<br>
 
 <hr>
+
+<h2>HTTP WOMA 3D ENGINE TUTORIAL LIST</h2>
  
 - <b>DX42: WORLD.XML: load M3D and use SHADOW INSTANCES but now with GPU ROTATION on (BLACK_BISHOPs and BLACK_KNIGHTs)</b><br> 
 	
@@ -140,17 +142,32 @@ Try to Change the driver on the fly without the need of close and open the Appli
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_030.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_030.png)	
 
+<hr>
 <h2>INTERMEDIATE 3D ENGINE TUTORIAL LIST</h2>
+<hr>
 
 - <b>DX29: INTRO DEMO OF BASIC TUTORIAL SERIES</b><br>
 	-  Adding the Sound Manager<br>
 	-  Adding Play background Music<br>
 	-  Generate the first RELEASE BUILD<br>
 	-  Add the installer of INTRO DEMO OF BASIC TUTORIAL SERIES<br>
-	
-[![WoMA3Dengine at Level 29 INTRO DEMO](https://i.imgur.com/q3AMNrr.png)](https://www.youtube.com/watch?v=tdMsRX_lQ5A)
 
-  
+<p align=center>
+Intel/AMD X64 VIDEO:
+<table align=center><tr><td>
+	
+[![WoMA3Dengine at Level 29 BASIC INTRO DEMO X64](https://i.imgur.com/q3AMNrr.png)](https://www.youtube.com/watch?v=tdMsRX_lQ5A)
+</td></tr></table>
+</p>
+
+<p align=center>
+Android ARM64/x86 VIDEO:<br>
+<table align=center><tr><td>
+	
+[![WoMA3Dengine at Level 29 BASIC INTRO DEMO Android ARM64/x86](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/refs/heads/main/Image_Tutorial_Snapshot/ANDROIDEngine_029.png)](https://www.youtube.com/watch?v=O1IvEg84ayM)
+</td></tr></table>
+</p>
+
 <hr>
 
 - <b>DX28: Sky dome with a sky sphere</b><br>
@@ -391,8 +408,8 @@ Add third party image readers:<br>
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_019.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_019.png)	
 
+<hr>
 <h2>BASIC 3D ENGINE TUTORIAL LIST</h2>
-
 <hr>
 
 - <b>009 Get current RealTime Weather using the aviation METAR</b><br>
@@ -484,15 +501,4 @@ Add third party image readers:<br>
 
 <hr>
 <h2>3D - CORE TUTORIAL SERIES</h2>
-
-
-<br>
-<h2>HTTP WOMA 3D ENGINE TUTORIAL LIST</h2>
-
-<br>
-
-<b>LEVEL 29 - 1st BASIC DEMO VIDEO:</b>
 <hr>
-
-[![WoMA3Dengine at Level 29 INTRO DEMO](https://i.imgur.com/q3AMNrr.png)](https://www.youtube.com/watch?v=tdMsRX_lQ5A)
-
