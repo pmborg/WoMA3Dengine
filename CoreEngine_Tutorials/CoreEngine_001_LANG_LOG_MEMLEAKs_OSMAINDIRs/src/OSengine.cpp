@@ -323,11 +323,9 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 	//THREAD_PRIORITY_ABOVE_NORMAL(+1)
 	//THREAD_PRIORITY_HIGHEST(+2)
 	//THREAD_PRIORITY_TIME_CRITICAL(+15)
-	#if _DEBUG
-		SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST); //THREAD_PRIORITY_HIGHEST = 2
-	#else
-		SetThreadPriority(GetCurrentThread(), 12);
-	#endif
+
+	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST); //THREAD_PRIORITY_HIGHEST = 2
+
 #elif defined LINUX_PLATFORM && defined RELEASE
 	#if _DEBUG
 		setpriority(PRIO_PROCESS, 0, 20);	// -20 (highest priority) to +20 (lowest priority). 
