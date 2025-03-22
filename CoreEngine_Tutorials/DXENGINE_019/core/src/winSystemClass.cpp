@@ -264,7 +264,7 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	IF_FAILED_RETURN_FALSE(PlayIntroMovie(WOMA::LoadFile(TEXT("engine/data/Logo.mp4"))));	// VIDEO DEMO
   #endif
 
-	//################################ LOAD LoadAllGraphicAssets STUFF ##################################
+//################################ LOAD LoadAllGraphicAssets STUFF ##################################
 
 	IF_NOT_RETURN_FALSE(SystemClass::LoadAllGraphicAssets());			// Load all main Graphics, that will be rendered
 

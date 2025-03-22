@@ -264,7 +264,7 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	IF_FAILED_RETURN_FALSE(PlayIntroMovie(WOMA::LoadFile(TEXT("engine/data/Logo.mp4"))));	// VIDEO DEMO
   #endif
 
-	//################################ LOAD LoadAllGraphicAssets STUFF ##################################
+//################################ LOAD LoadAllGraphicAssets STUFF ##################################
 	#if DX_ENGINE_LEVEL >= 20 && defined USE_LOADING_THREADS
 	IF_NOT_RETURN_FALSE(DXsystemHandle->ApplicationMandatoryLoad());	// START-THREAD LOAD-ALL: "mandatory 2D/3D Stuff", before "start rendering":
 	#endif

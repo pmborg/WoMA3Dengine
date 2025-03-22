@@ -51,7 +51,96 @@ SamplerState SampleType: register(s0);
 ////////////////
 // CBUFFERS
 ////////////////
-#include "cbuffer.hlsl"
+// SYNC: DXshaderClass.h -- DX12: CBV
+#if DXAPI11 == 1
+cbuffer VSShaderParametersBuffer	//DX11
+#endif
+#if DXAPI12 == 1
+cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: Descriptor: 0
+#endif
+{
+	// BLOCK: VS1
+matrix worldMatrix; //worldMatrix
+matrix view; //view
+matrix projection; //projection
+matrix WV; //worldMatrix+viewMatrix
+matrix WVP; //worldMatrix+viewMatrix+projectionMatrix
+
+	// 23 BLOCK: VS2
+bool VShasLight;
+bool VShasSpecular;
+bool VShasNormMap;
+bool VShasFog;
+
+	// 23 BLOCK: VS3
+float3 VSlightDirection; // LIGHT
+float VSPad1;
+float4 VSambientColor; // LIGHT
+float4 VSdiffuseColor; // LIGHT
+float4 VSemissiveColor; // LIGHT: Ke
+
+	// 31 BLOCK: VS4
+float VSfogStart;
+float VSfogEnd;
+bool VShasShadowMap;
+bool VS_USE_WVP;
+
+	// 45 BLOCK: VS5
+matrix ViewToLightProj;
+};
+
+///////////////
+// PIXEL BUFFER
+///////////////
+//Note: on DX11 dont use: register()
+
+// SYNC: DXshaderClass.h -- DX12: CBV
+#if DXAPI11 == 1
+cbuffer PSShaderParametersBuffer	//DX11
+#endif
+#if DXAPI12 == 1
+cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: Descriptor: 1
+#endif
+{
+	// BLOCK1:
+float4 pixelColor;
+
+	// BLOCK2:
+bool hasTexture; // No? Use pixelColor, then.
+bool hasLight; // Future Load Obj. Engine Level
+bool hasSpecular; // Future Load Obj. Engine Level
+bool isFont; // Future Load Obj. Engine Level
+
+	// BLOCK3:
+float4 ambientColor; // LIGHT: Ka
+float4 diffuseColor; // LIGHT: Kd
+float4 emissiveColor; // LIGHT: Ke 
+float4 lightDirection; // LIGHT
+
+	// BLOCK4:
+bool hasColorMap; // 66
+float lightType; // Future
+float shaderType; // Future
+float shaderTypeParameter; // Future
+
+	// BLOCK5:
+bool hasAlfaColor;
+float alfaColor;
+float fade; // Fade from 0 to 1
+float frameTime; // For animations
+
+	// BLOCK6:
+bool hasFog;
+bool isSky;
+bool hasAlfaMap;
+bool hasNormMap;
+
+	// BLOCK7:
+float3 cameraPosition; // Future
+bool castShadow;
+float3 specularColor;
+float nShininess;
+};
 
 ////////////////////////////////////////////////////////////////////////////////
 float4 PSlightFunc(float3 Normal)
@@ -100,8 +189,8 @@ if (VS_USE_WVP) {
 float4 MyPixelShader023Light(PSIn input) : SV_TARGET
 {
 	float4	textureColor = pixelColor;    // SET PIXEL COLOR
-	float	lightIntensity = 0;
-
+    float	diffuseFactor = 0;
+    float4 L_Diffuse = diffuseColor;
 	//-----------------------------------------------------------------------------------
 	// 21 & 41: TEXTURE: Sample the pixel color from the texture using the sampler at this texture coordinate location
 	if (hasTexture) 
@@ -112,15 +201,17 @@ float4 MyPixelShader023Light(PSIn input) : SV_TARGET
 	// 23 & 43: LIGHT
 	if (hasLight) 
 	{
-		lightIntensity = PSlightFunc(input.normal);
-
-		if (hasTexture) {
-			textureColor = textureColor * saturate(emissiveColor + ambientColor + lightIntensity);	
-		} else {
-			textureColor = textureColor * saturate(emissiveColor + ambientColor + (lightIntensity * diffuseColor));
-		}
-	}
+        if (isSky)
+            diffuseFactor = saturate(dot(input.normal, (float3)lightDirection));
+		else
+            diffuseFactor = saturate(dot(input.normal, (float3) -lightDirection));
+		
+        if (hasTexture) {
+            textureColor = textureColor * saturate(emissiveColor + ambientColor + diffuseFactor);
+        } else {
+            textureColor = textureColor * saturate(emissiveColor + ambientColor + (diffuseFactor * L_Diffuse));
+        }
+    }
 
 	return textureColor;
-	//return lightIntensity; //FOR DEBUG
 }
