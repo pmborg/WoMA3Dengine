@@ -271,9 +271,36 @@ DX12:
 		DXGI 1.6	IDXGIFactory7	DX12: Win10, version 1809
 */
 
+#if _DEBUG
+	// Get the debug message queue
+	ComPtr<IDXGIInfoQueue> dxgiInfoQueue;
+	if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(dxgiInfoQueue.GetAddressOf()))))
+	{
+		dxgiInfoQueue->SetBreakOnSeverity(DXGI_DEBUG_ALL, DXGI_INFO_QUEUE_MESSAGE_SEVERITY_ERROR, true);
+		dxgiInfoQueue->SetBreakOnSeverity(DXGI_DEBUG_ALL, DXGI_INFO_QUEUE_MESSAGE_SEVERITY_CORRUPTION, true);
+
+		// List of messages to suppress
+		DXGI_INFO_QUEUE_MESSAGE_ID suppressMessages[] =
+		{
+			D3D12_MESSAGE_ID_CREATERESOURCE_STATE_IGNORED
+		};
+		DXGI_INFO_QUEUE_FILTER filter = {};
+		filter.DenyList.NumIDs = _countof(suppressMessages);
+		filter.DenyList.pIDList = suppressMessages;
+
+		// Apply the filter
+		dxgiInfoQueue->AddStorageFilterEntries(DXGI_DEBUG_DXGI, &filter);
+		WOMA::logManager->DEBUG_MSG("Debug message filter applied.\n");
+	}
+	else
+	{
+		WOMA::logManager->DEBUG_MSG("Failed to get ID3D12InfoQueue interface.\n");
+	}
+#endif
+
 	// [*] Create dxgi factory : "CreateDXGIFactory2"
 	WOMA_LOGManager_DebugMSG(TEXT("CreateDXGIFactory2"));
-	ThrowIfFailed(CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&dxgiFactory)));// Create a DXGI 1.3 / 1.4 /1.5 factory Interface with Factory:2
+	ThrowIfFailed(CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&dxgiFactory)));// Create a DXGI 1.3 / 1.4 / 1.5 / 1.6 factory Interface with Factory:2
 
 	m_sCapabilities.CapDX12 = false;
 	WOMA_LOGManager_DebugMSG(TEXT("D3D12CreateDevice()"));
@@ -343,29 +370,7 @@ DX12:
 	}
 	//DEBUG: --> DX12Class::initDX12Device()
 
-/*
-	// Get the debug message queue
-	ComPtr<ID3D12InfoQueue> infoQueue;
-	if (SUCCEEDED(m_device->As(&infoQueue)))
-	{
-		// List of messages to suppress
-		D3D12_MESSAGE_ID suppressMessages[] =
-		{
-			D3D12_MESSAGE_ID_CREATERESOURCE_STATE_IGNORED
-		};
-		D3D12_INFO_QUEUE_FILTER filter = {};
-		filter.DenyList.NumIDs = _countof(suppressMessages);
-		filter.DenyList.pIDList = suppressMessages;
 
-		// Apply the filter
-		infoQueue->PushStorageFilter(&filter);
-		WOMA::logManager->DEBUG_MSG("Debug message filter applied.\n");
-	}
-	else
-	{
-		WOMA::logManager->DEBUG_MSG("Failed to get ID3D12InfoQueue interface.\n");
-	}
-*/
 
 #if defined SET_DEVICE_CAPABILITIES
 
