@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: fileLoader.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,33 +16,57 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Get full filename inside diretory or woma.pck files depending DEBUG or RELEASE build
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
+//WomaIntegrityCheck = 1234567222;
 
-#include "main.h"
-
+#include "OSengine.h"
 #include "fileLoader.h"
-#include "OSmain_dir.h" //#include "OsDirectories.h"
+#include "OSmain_dir.h"
+#pragma warning( disable : 6386 )
 
 namespace WOMA
 {
 	STRING lastfile;
 	STRING file;
 
-TCHAR* LoadFile(TCHAR* filename)
+#if !defined UNICODE && defined WINDOWS_PLATFORM
+WCHAR* LoadFileW(WCHAR* filename)
+{
+	static WCHAR wfilename[MAX_STR_LEN] = { 0 };
+
+	TCHAR file[MAX_STR_LEN] = { 0 };
+	WideCharToMultiByte(CP_ACP, 0, filename, -1, file, MAX_STR_LEN, NULL, NULL);
+	TCHAR* cfile = LoadFile(file, true);
+	printf("cfile: %s\n", cfile);
+	MultiByteToWideChar(CP_ACP, 0, cfile, -1, wfilename, MAX_STR_LEN);
+	return wfilename;
+}
+#endif
+
+TCHAR* LoadFile(TCHAR* filename, bool shader)
 {
 	static TCHAR file_[MAX_STR_LEN*2];
 	ZeroMemory(&file_, sizeof(file));
 
 #ifdef RELEASE
-	file = WOMA::APPDATA; // WOMA::womaTempPATH;
+	if (shader) {
+		file = WOMA::APP_PROJECT_NAME;
+		file.append(TEXT("/"));
+	} else {
+		file = WOMA::APPDATA; // WOMA::womaTempPATH;
+	}
 	file.append(filename);
 	lastfile = file;
 	return (TCHAR*)file.c_str();
 #else
-	if (filename[0]!='.')
+	if (filename[0]!='.') {
 		StringCchPrintf(file_, sizeof(file_), TEXT("%s%s"), TEXT("./"), filename);
-	else
+	} else {
+#if defined UNICODE
 		_tcscpy_s(file_, sizeof(file_),  filename);
+#else
+		strcpy_s(file_, sizeof(file_), filename);
+#endif
+	}
 	file = file_;
 	lastfile = file;
 	return (TCHAR*)&file_;

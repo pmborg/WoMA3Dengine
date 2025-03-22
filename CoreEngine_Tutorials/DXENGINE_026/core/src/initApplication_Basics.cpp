@@ -518,8 +518,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)	//
 	IF_NOT_THROW_EXCEPTION(m_Light);
 	m_Light->SetAmbientColor(0.55f, 0.55f, 0.55f, 1);
 	m_Light->SetDiffuseColor(1, 1, 1, 1.0f);
-	//m_Light->SetDiffuseColor(0.55f, 0.55f, 0.55f, 1.0f);
-
 #if defined USE_REAL_SUNLIGHT_DIRECTION
 	m_Light->SetDirection(SunX / 1000, SunY / 1000, SunZ / 1000);
 #else
@@ -555,8 +553,8 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)	//
 	//if ((RENDER_PAGE >= 25 && RENDER_PAGE < 27) || FORCE_RENDER_ALL)
 	IF_NOT_RETURN_FALSE(initCubes3D());
 #endif
-#if DX_ENGINE_LEVEL >= 26 && defined USE_SPHERE  // 26: SPHEREs
-	float size = 3;
+	float size = 3.0f;
+#if defined USE_SPHERE  // 26: SPHEREs
 	if (RENDER_PAGE >= 61)
 		size = SystemHandle->world.skySize;
 	else

@@ -37,6 +37,16 @@
 
 #include "dxWinSystemClass.h"	// SystemHandle
 
+#include <algorithm>
+#include <cstdint>
+#include <cstdio>
+#include <cstdarg>
+#include <vector>
+#include <memory>
+#include <string>
+#include <cwctype>
+#include <exception>
+
 namespace DirectX {
 
 // ----------------------------------------------------------------------------------------------
@@ -194,11 +204,9 @@ void DX12Class::Shutdown()
 
 }
 
-//#if defined USE_DX10DRIVER_FONTS_
 void DX12Class::addText(int Xpos, int Ypos, TCHAR* text, float R, float G, float B) {}
 void DX12Class::RenderDriverText() {}
 bool DX12Class::InitD2DScreenTexture() { return true; }
-//#endif
 
 // |Init Step: 1| This is for DIRECTX Driver only!
 // ----------------------------------------------------------------------------------------------
@@ -221,6 +229,33 @@ BOOL DX12Class::CheckAPIdriver(UINT USE_THIS_ADAPTER)
 
 		// Enable additional debug layers:
 		dxgiFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
+	}
+#endif
+
+#if _DEBUG
+	// Get the debug message queue
+	ComPtr<IDXGIInfoQueue> dxgiInfoQueue;
+	if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(dxgiInfoQueue.GetAddressOf()))))
+	{
+		dxgiInfoQueue->SetBreakOnSeverity(DXGI_DEBUG_ALL, DXGI_INFO_QUEUE_MESSAGE_SEVERITY_ERROR, true);
+		dxgiInfoQueue->SetBreakOnSeverity(DXGI_DEBUG_ALL, DXGI_INFO_QUEUE_MESSAGE_SEVERITY_CORRUPTION, true);
+
+		// List of messages to suppress
+		DXGI_INFO_QUEUE_MESSAGE_ID suppressMessages[] =
+		{
+			D3D12_MESSAGE_ID_CREATERESOURCE_STATE_IGNORED
+		};
+		DXGI_INFO_QUEUE_FILTER filter = {};
+		filter.DenyList.NumIDs = _countof(suppressMessages);
+		filter.DenyList.pIDList = suppressMessages;
+
+		// Apply the filter
+		dxgiInfoQueue->AddStorageFilterEntries(DXGI_DEBUG_DXGI, &filter);
+		WOMA::logManager->DEBUG_MSG("Debug message filter applied.\n");
+	}
+	else
+	{
+		WOMA::logManager->DEBUG_MSG("Failed to get ID3D12InfoQueue interface.\n");
 	}
 #endif
 
@@ -271,33 +306,6 @@ DX12:
 		DXGI 1.6	IDXGIFactory7	DX12: Win10, version 1809
 */
 
-#if _DEBUG
-	// Get the debug message queue
-	ComPtr<IDXGIInfoQueue> dxgiInfoQueue;
-	if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(dxgiInfoQueue.GetAddressOf()))))
-	{
-		dxgiInfoQueue->SetBreakOnSeverity(DXGI_DEBUG_ALL, DXGI_INFO_QUEUE_MESSAGE_SEVERITY_ERROR, true);
-		dxgiInfoQueue->SetBreakOnSeverity(DXGI_DEBUG_ALL, DXGI_INFO_QUEUE_MESSAGE_SEVERITY_CORRUPTION, true);
-
-		// List of messages to suppress
-		DXGI_INFO_QUEUE_MESSAGE_ID suppressMessages[] =
-		{
-			D3D12_MESSAGE_ID_CREATERESOURCE_STATE_IGNORED
-		};
-		DXGI_INFO_QUEUE_FILTER filter = {};
-		filter.DenyList.NumIDs = _countof(suppressMessages);
-		filter.DenyList.pIDList = suppressMessages;
-
-		// Apply the filter
-		dxgiInfoQueue->AddStorageFilterEntries(DXGI_DEBUG_DXGI, &filter);
-		WOMA::logManager->DEBUG_MSG("Debug message filter applied.\n");
-	}
-	else
-	{
-		WOMA::logManager->DEBUG_MSG("Failed to get ID3D12InfoQueue interface.\n");
-	}
-#endif
-
 	// [*] Create dxgi factory : "CreateDXGIFactory2"
 	WOMA_LOGManager_DebugMSG(TEXT("CreateDXGIFactory2"));
 	ThrowIfFailed(CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&dxgiFactory)));// Create a DXGI 1.3 / 1.4 / 1.5 / 1.6 factory Interface with Factory:2
@@ -305,8 +313,10 @@ DX12:
 	m_sCapabilities.CapDX12 = false;
 	WOMA_LOGManager_DebugMSG(TEXT("D3D12CreateDevice()"));
 
+	D3D12EnableExperimentalFeatures(0, nullptr, nullptr, nullptr);
+
 	// [*] Create DX12 device
-	if (WOMA::UseWarpDevice)
+	if (WOMA::UseWarpDevice) //CommandLineArgs
 	{
 		ComPtr<IDXGIAdapter> warpAdapter;
 		if (FAILED(dxgiFactory->EnumWarpAdapter(IID_PPV_ARGS(&warpAdapter))))

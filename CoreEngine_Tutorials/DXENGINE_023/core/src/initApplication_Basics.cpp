@@ -518,8 +518,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)	//
 	IF_NOT_THROW_EXCEPTION(m_Light);
 	m_Light->SetAmbientColor(0.55f, 0.55f, 0.55f, 1);
 	m_Light->SetDiffuseColor(1, 1, 1, 1.0f);
-	//m_Light->SetDiffuseColor(0.55f, 0.55f, 0.55f, 1.0f);
-
 #if defined USE_REAL_SUNLIGHT_DIRECTION
 	m_Light->SetDirection(SunX / 1000, SunY / 1000, SunZ / 1000);
 #else

@@ -377,8 +377,9 @@ bool ApplicationClass::Initialize(WomaDriverClass* Driver)
 	initIntroDemo();
 #endif
 
-	// 3D:
-	// 2D:
+
+//########################################### 3D: STUFF ###########################################
+//########################################### 2D: STUFF ###########################################
 	// FONTS:
 #if defined USE_RASTERTEK_TEXT_FONT //27
 	initText();
@@ -390,7 +391,7 @@ bool ApplicationClass::Initialize(WomaDriverClass* Driver)
 #endif
 
 #if CORE_ENGINE_LEVEL >= 10 && !defined ANDROID_PLATFORM
-	Driver->Finalize(); //For DX12
+	Driver->Finalize(); //Mostly for DX12
 #endif
 
 	if (WOMA::game_state == GAME_STOP) return false;

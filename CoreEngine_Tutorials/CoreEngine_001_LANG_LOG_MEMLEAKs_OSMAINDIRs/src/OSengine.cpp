@@ -339,6 +339,8 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 #if defined WINDOWS_PLATFORM
 	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 	if (FAILED(hr)) WomaFatalException("CoInitializeEx Failed!");
+
+	IF_NOT_THROW_EXCEPTION(XMVerifyCPUSupport());
 #endif
 
 	// Benchmark trigonometric functions:

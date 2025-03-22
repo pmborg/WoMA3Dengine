@@ -1,10 +1,9 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: win32InputClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,15 +16,21 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: A basic input used in first WOMA LEVELs using OS functions.
 // --------------------------------------------------------------------------------------------
+//#define GENERATE //(Airports List)
+
 #include "main.h"
 
-#include "win32InputClass.h"
+#if defined USE_PROCESS_OS_KEYS && defined WINDOWS_PLATFORM
+
+#include "InputClass.h"
+#if CORE_ENGINE_LEVEL >= 10
 #include "dxWinSystemClass.h"
+#endif
 
 InputClass::InputClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567831;
+	WomaIntegrityCheck = 1234567222;
 
 	ZeroMemory (&m_keys, sizeof(m_keys));
 }
@@ -39,6 +44,7 @@ void InputClass::Initialize()
 		m_keys[i] = false;
 }
 
+#if defined USE_DIRECT_INPUT
 #include "minwindef.h"
 void InputClass::KeyDown(unsigned int lparam, unsigned int wparam)
 {
@@ -70,6 +76,7 @@ void InputClass::KeyUp(unsigned int lparam, unsigned int wparam)
 	DXsystemHandle->m_Input->m_keyboardState[key] = 0;
 	m_keys[key] = false;
 }
+#endif
 
 void InputClass::KeyDown(unsigned int input)
 {
@@ -91,3 +98,4 @@ bool InputClass::IsKeyDown(unsigned int key)
 	return m_keys[key];
 }
 
+#endif

@@ -519,9 +519,10 @@ bool ApplicationClass::Initialize(WomaDriverClass* Driver)
 	initIntroDemo();
 #endif
 
-	// 3D:
+
+//########################################### 3D: STUFF ###########################################
 	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(Driver));	// (m_Light && xml_loader.theWorld) and SCENE MANAGER: QuadTree object Loader/Render
-	// 2D:
+//########################################### 2D: STUFF ###########################################
 #if DX_ENGINE_LEVEL >= 24 && defined USE_VIEW2D_SPRITES
 	DEMO_WOMA_APPLICATION_InitializeSprites2D();				//TITLE + MAP + MINI-MAP
 #endif
@@ -536,7 +537,7 @@ bool ApplicationClass::Initialize(WomaDriverClass* Driver)
 #endif
 
 #if CORE_ENGINE_LEVEL >= 10 && !defined ANDROID_PLATFORM
-	Driver->Finalize(); //For DX12
+	Driver->Finalize(); //Mostly for DX12
 #endif
 
 	if (WOMA::game_state == GAME_STOP) return false;

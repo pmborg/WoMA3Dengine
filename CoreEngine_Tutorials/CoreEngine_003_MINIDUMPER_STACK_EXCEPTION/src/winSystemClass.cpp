@@ -124,7 +124,6 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	//  SystemClass::SystemClass()				Run: 1st - OS common    - WOMA::APP_NAME
 	//	ApplicationClass::ApplicationClass()	Run: 2nd - User: level  - ApplicationClass::Start()
 	//	WinSystemClass::WinSystemClass()		Run: 3th - Start Timers - WinSystemClass::WinSystemClass_init();
-
 	IF_NOT_RETURN_FALSE(APPLICATION_CORE_SYSTEM()); // MyRegisterClass()
 
 #if defined USE_TINYXML_LOADER // Must be before: ApplicationInitMainWindow()
