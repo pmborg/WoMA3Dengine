@@ -94,18 +94,6 @@ struct ModelTextureLightVertexType
 };
 #pragma pack(pop)
 
-//	-------------------------------------------------------------------------------------------
-#pragma pack(push, 1)
-struct ModelNormalBumpVertexType
-{
-	float x, y, z;				//3
-	float tu, tv;				//2
-	float nx, ny, nz;			//3
-	float tx, ty, tz;	//35	//3
-	float bx, by, bz;	//35	//3
-};
-#pragma pack(pop)
-
 struct SentenceType
 {
 #if (defined OPENGL3 || defined OPENGL4)

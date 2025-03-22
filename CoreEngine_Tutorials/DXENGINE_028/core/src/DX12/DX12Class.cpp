@@ -212,7 +212,7 @@ BOOL DX12Class::CheckAPIdriver(UINT USE_THIS_ADAPTER)
 	//
 	// LoadPipeline() - PART 1
 	//
-	UINT FactoryFlags = 0;
+	UINT dxgiFactoryFlags = 0;
 
 	// [*] Enable the debug layer (requires the Graphics Tools "optional feature").
 	// NOTE: Enabling the debug layer after device creation will invalidate the active device.
@@ -223,7 +223,7 @@ BOOL DX12Class::CheckAPIdriver(UINT USE_THIS_ADAPTER)
 		debugController->EnableDebugLayer();
 
 		// Enable additional debug layers:
-		FactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
+		dxgiFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
 	}
 #endif
 
@@ -276,27 +276,7 @@ DX12:
 
 	// [*] Create dxgi factory : "CreateDXGIFactory2"
 	WOMA_LOGManager_DebugMSG(TEXT("CreateDXGIFactory2"));
-	ThrowIfFailed(CreateDXGIFactory2(FactoryFlags, IID_PPV_ARGS(&dxgiFactory)));// Create a DXGI 1.3 / 1.4 /1.5 factory Interface with Factory:2
-
-	//
-	// EnumAdapters
-	//
-	ComPtr<IDXGIAdapter1> hardwareAdapter;
-	//D3D_FEATURE_LEVEL feacture_level = D3D_FEATURE_LEVEL_12_1;					// Target DX 12.1
-
-	D3D_FEATURE_LEVEL featureLevels[] = {
-	#if defined USE_DX11_3
-		D3D_FEATURE_LEVEL_12_2,
-    #endif
-		D3D_FEATURE_LEVEL_12_1,
-		D3D_FEATURE_LEVEL_12_0,
-		D3D_FEATURE_LEVEL_11_1,
-		D3D_FEATURE_LEVEL_11_0,
-		D3D_FEATURE_LEVEL_10_1,
-		D3D_FEATURE_LEVEL_10_0
-	};
-	int num_levels = sizeof(featureLevels) / sizeof(D3D_FEATURE_LEVEL);
-	D3D_FEATURE_LEVEL* PtrfeatureLevels = featureLevels;
+	ThrowIfFailed(CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&dxgiFactory)));// Create a DXGI 1.3 / 1.4 /1.5 factory Interface with Factory:2
 
 	m_sCapabilities.CapDX12 = false;
 	WOMA_LOGManager_DebugMSG(TEXT("D3D12CreateDevice()"));
@@ -313,6 +293,26 @@ DX12:
 	}
 	else
 	{
+		//
+		// EnumAdapters
+		//
+		ComPtr<IDXGIAdapter1> hardwareAdapter;
+		//D3D_FEATURE_LEVEL feacture_level = D3D_FEATURE_LEVEL_12_1;					// Target DX 12.1
+
+		D3D_FEATURE_LEVEL featureLevels[] = {
+		#if defined USE_DX11_3
+			D3D_FEATURE_LEVEL_12_2,
+		#endif
+			D3D_FEATURE_LEVEL_12_1,
+			D3D_FEATURE_LEVEL_12_0,
+			D3D_FEATURE_LEVEL_11_1,
+			D3D_FEATURE_LEVEL_11_0,
+			D3D_FEATURE_LEVEL_10_1,
+			D3D_FEATURE_LEVEL_10_0
+		};
+		int num_levels = sizeof(featureLevels) / sizeof(D3D_FEATURE_LEVEL);
+		D3D_FEATURE_LEVEL* PtrfeatureLevels = featureLevels;
+
 		GetHardwareAdapter(dxgiFactory.Get(), &hardwareAdapter, *PtrfeatureLevels);
 		if (FAILED(D3D12CreateDevice(hardwareAdapter.Get(), *PtrfeatureLevels, IID_PPV_ARGS(&m_device))))
 		{
@@ -345,6 +345,30 @@ DX12:
 		}
 	}
 	//DEBUG: --> DX12Class::initDX12Device()
+
+/*
+	// Get the debug message queue
+	ComPtr<ID3D12InfoQueue> infoQueue;
+	if (SUCCEEDED(m_device->As(&infoQueue)))
+	{
+		// List of messages to suppress
+		D3D12_MESSAGE_ID suppressMessages[] =
+		{
+			D3D12_MESSAGE_ID_CREATERESOURCE_STATE_IGNORED
+		};
+		D3D12_INFO_QUEUE_FILTER filter = {};
+		filter.DenyList.NumIDs = _countof(suppressMessages);
+		filter.DenyList.pIDList = suppressMessages;
+
+		// Apply the filter
+		infoQueue->PushStorageFilter(&filter);
+		WOMA::logManager->DEBUG_MSG("Debug message filter applied.\n");
+	}
+	else
+	{
+		WOMA::logManager->DEBUG_MSG("Failed to get ID3D12InfoQueue interface.\n");
+	}
+*/
 
 #if defined SET_DEVICE_CAPABILITIES
 
@@ -571,7 +595,6 @@ bool DX12Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, i
 	BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize)
 	//----------------------------------------------------------------------------------------------
 {
-
 	m_VSYNC_ENABLED = vsync;
 
 	WOMA::logManager->DEBUG_MSG(TEXT("-------------------------\n"));
@@ -785,21 +808,7 @@ bool DX12Class::initDX12Device (HWND hwnd)
 
 	ThrowIfFailed(m_device->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&m_commandQueue)));
 	
-	// Create Descriptor Heaps:
-	{
-	#if defined USE_DSV
-		// (DSV)
-		D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc = {};
-		dsvHeapDesc.NumDescriptors = 1; // BufferCount;
-		dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
-		dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-		ThrowIfFailed ( m_device->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&m_pDsvHeap)) );
 
-		m_pDsvHeap->SetName(L"Constant Buffer Depth Stensill View");
-
-		m_DsvDescriptorSize = m_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
-	#endif
-	}
 
 	//
 	// LoadAssets()- PART 3
@@ -833,6 +842,9 @@ bool DX12Class::initDX12Device (HWND hwnd)
 		SystemHandle->AppSettings->FULL_SCREEN, SystemHandle->AppSettings->UseDoubleBuffering, SystemHandle->AppSettings->AllowResize,
 		numerator, denominator));
 
+	if (!SystemHandle->AppSettings->AllowResize)
+		ThrowIfFailed(dxgiFactory->MakeWindowAssociation(hwnd, DXGI_MWA_NO_ALT_ENTER));
+
 	ThrowIfFailed(s_PrimarySwapChain.As(&m_swapChain)); // m_swapChain = (IDXGISwapChain3*)s_PrimarySwapChain;
 #else
 	// Describe and create the swap chain.
@@ -848,13 +860,14 @@ bool DX12Class::initDX12Device (HWND hwnd)
 
 	ComPtr<IDXGISwapChain1> swapChain;
 	ThrowIfFailed(dxgiFactory->CreateSwapChainForHwnd(	m_commandQueue.Get(), hwnd, &swapChainDesc, nullptr, nullptr, &swapChain));
+
+	if (!SystemHandle->AppSettings->AllowResize)
+		ThrowIfFailed(dxgiFactory->MakeWindowAssociation(hwnd, DXGI_MWA_NO_ALT_ENTER));
+
 	ThrowIfFailed(swapChain.As(&m_swapChain)); // m_swapChain = (IDXGISwapChain3*)s_PrimarySwapChain;
 #endif
 
 	m_currentFrame = m_swapChain->GetCurrentBackBufferIndex(); // 0
-
-	if (!SystemHandle->AppSettings->AllowResize)
-		ThrowIfFailed(dxgiFactory->MakeWindowAssociation(hwnd, DXGI_MWA_NO_ALT_ENTER));
 
 	// [*] render target view: "Describe" the render target view (RTV) descriptor heap:
 	// ----------------------------------------------------------------------------
@@ -867,8 +880,19 @@ bool DX12Class::initDX12Device (HWND hwnd)
 	m_rtvHeap->SetName(L"Render Target View Descriptor Heap");
 	m_rtvDescriptorSize = m_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
-	//FILE: bool DXshaderClass::InitializeShader
-	//D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
+	// Create Descriptor Heaps:
+#if defined USE_DSV //24
+	// (DSV)
+	D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc = {};
+	dsvHeapDesc.NumDescriptors = 1; // BufferCount;
+	dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
+	dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+	ThrowIfFailed(m_device->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&m_pDsvHeap)));
+
+	m_pDsvHeap->SetName(L"Constant Buffer Depth Stensill View");
+
+	m_DsvDescriptorSize = m_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
+#endif
 
 
 
@@ -932,8 +956,6 @@ bool DX12Class::createSwapChainDX12device (	HWND hwnd, int screenWidth, int scre
 
 	ThrowIfFailed(dxgiFactory->CreateSwapChain(m_commandQueue.Get(), &swapChainDesc, &s_PrimarySwapChain));
 
-
-
 	return true;
 }
 
@@ -968,9 +990,6 @@ bool DX12Class::CreateSetDepthStencilView(int screenWidth, int screenHeight)
 	desc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
 	desc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
 */
-
-	//CD3DX12_CLEAR_VALUE clearValue = CD3DX12_CLEAR_VALUE(DXGI_FORMAT_D32_FLOAT, 1.0f, 0); // Dont work well, once dont reset color
-
 	D3D12_CLEAR_VALUE clearValue = {};
 	clearValue.Format = DXGI_FORMAT_D32_FLOAT;
 	clearValue.DepthStencil.Depth = 1.0f;
@@ -1017,7 +1036,6 @@ void DX12Class::Finalize() //::LoadAssets()
 	// [3]
 	//
 	// Create synchronization objects:
-
 
 	for (UINT n = 0; n < BufferCount; n++)
 	{
@@ -1119,10 +1137,10 @@ void DX12Class::EndScene(UINT monitorWindow)
 	// The first argument instructs DXGI to block execution, until VSync (if VSync ON), putting the application to sleep until the next VSync. 
 	// This ensures we don't waste any cycles rendering frames that will never be displayed to the screen.
 #if defined USE_PRESENT_DXGI_1_0
-	// Direct3D 11++
+	// Direct3D 12++
 	HRESULT hr = m_swapChain->Present(m_VSYNC_ENABLED, 0); // if (m_VSYNC_ENABLED) Sleep a bit, until next motinor Hz
 #else
-	// Direct3D 11.1++
+	// Direct3D 12.1++
 	DXGI_PRESENT_PARAMETERS PresentDesc = { 0 };
 	UINT Flags = DXGI_PRESENT_DO_NOT_WAIT;
 	HRESULT hr = m_swapChain->Present1(m_VSYNC_ENABLED, Flags, &PresentDesc);
@@ -1144,7 +1162,6 @@ void DX12Class::EndScene(UINT monitorWindow)
 
 void DX12Class::MoveToNextFrame()
 {
-
 	// Schedule a Signal command in the queue.
 	const UINT64 currentFenceValue = m_fenceValues[m_currentFrame];
 	ThrowIfFailed(m_commandQueue->Signal(m_fence.Get(), currentFenceValue));
@@ -1168,7 +1185,6 @@ void DX12Class::MoveToNextFrame()
 //
 void DX12Class::WaitForGpu()
 {
-
 	// Schedule a Signal command in the queue.
 	ThrowIfFailed(m_commandQueue->Signal(m_fence.Get(), m_fenceValues[m_currentFrame]));
 	ThrowIfFailed(m_fence->SetEventOnCompletion(m_fenceValues[m_currentFrame], m_fenceEvent));
@@ -1425,267 +1441,6 @@ void DX12Class::TurnZBufferOff()
     g_Zbuffer = false;
 }
 
-#if defined USE_DX10DRIVER_FONTS_ //defined INTRO_DEMO || ENGINE_LEVEL >= 29	// FONT v2
-/*
-bool DX12Class::InitD2D_D3D101_DWrite(IDXGIAdapter1 *Adapter, int screenWidth, int screenHeight)
-{
-	//Create our Direc3D 10.1 Device///////////////////////////////////////////////////////////////////////////////////////
-	HRESULT hr;
-
-	D3D10_FEATURE_LEVEL1 featureLevelsDX10 [] =	{	D3D10_FEATURE_LEVEL_10_1, D3D10_FEATURE_LEVEL_10_0
-													#if defined DX9
-													,D3D10_FEATURE_LEVEL_9_3, D3D10_FEATURE_LEVEL_9_2, D3D10_FEATURE_LEVEL_9_1
-													#endif
-												};
-
-	unsigned int totalFeature10Levels = ARRAYSIZE( featureLevelsDX10 );
-
-	for (UINT i = 0; i < totalFeature10Levels; i++)
-	{
-		hr = D3D10CreateDevice1(Adapter, D3D10_DRIVER_TYPE_HARDWARE, NULL, D3D10_CREATE_DEVICE_BGRA_SUPPORT,
-						featureLevelsDX10[i], D3D10_1_SDK_VERSION, &d3d101Device);
-		if (hr == S_OK)
-			break;
-	}
-
-	IF_FAILED_RETURN_FALSE (hr);
-
-	//Create Shared Texture that Direct3D 10.1 will render on//////////////////////////////////////////////////////////////
-	D3D11_TEXTURE2D_DESC sharedTexDesc = {0};	//ZeroMemory(&sharedTexDesc, sizeof(sharedTexDesc));
-
-	sharedTexDesc.Width = screenWidth;
-	sharedTexDesc.Height = screenHeight;	
-	sharedTexDesc.Format = BUFFER_COLOR_FORMAT; //DXGI_FORMAT_B8G8R8A8_UNORM;
-	sharedTexDesc.MipLevels = 1;	
-	sharedTexDesc.ArraySize = 1;
-	sharedTexDesc.SampleDesc.Count = MSAA_COUNT;
-	sharedTexDesc.SampleDesc.Quality = MSAA_QUALITY;
-	sharedTexDesc.Usage = D3D11_USAGE_DEFAULT;
-	sharedTexDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;	
-	sharedTexDesc.MiscFlags = D3D11_RESOURCE_MISC_SHARED_KEYEDMUTEX;	
-
-	IF_FAILED_RETURN_FALSE (hr = m_device->CreateTexture2D(&sharedTexDesc, NULL, &sharedTex11));
-
-	// Get the keyed mutex for the shared texture (for D3D11)///////////////////////////////////////////////////////////////
-	IF_FAILED_RETURN_FALSE (hr = sharedTex11->QueryInterface(__uuidof(IDXGIKeyedMutex), (void**)&keyedMutex11));	
-
-	// Get the "Shared Handle" needed to open the shared texture in D3D10.1///////////////////////////////////////////////////
-	HANDLE sharedHandle10;
-
-	IDXGIResource *sharedResource10;
-	IF_FAILED_RETURN_FALSE (hr = sharedTex11->QueryInterface(__uuidof(IDXGIResource), (void**)&sharedResource10));
-	IF_FAILED_RETURN_FALSE (hr = sharedResource10->GetSharedHandle(&sharedHandle10));
-	sharedResource10->Release();
-
-	// "Open the Shared Surface" for the shared texture in D3D10.1///////////////////////////////////////////////////////////////////
-	IDXGISurface1 *sharedSurface10;	
-
-	IF_FAILED_RETURN_FALSE (hr = d3d101Device->OpenSharedResource(sharedHandle10, __uuidof(IDXGISurface1), (void**)(&sharedSurface10)));
-	IF_FAILED_RETURN_FALSE (hr = sharedSurface10->QueryInterface(__uuidof(IDXGIKeyedMutex), (void**)&keyedMutex10));	
-
-	// Create D2D factory///////////////////////////////////////////////////////////////////////////////////////////////////
-	ID2D1Factory *D2DFactory;	
-	IF_FAILED_RETURN_FALSE (hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, __uuidof(ID2D1Factory), (void**)&D2DFactory));	
-
-	D2D1_RENDER_TARGET_PROPERTIES renderTargetProperties;
-	ZeroMemory(&renderTargetProperties, sizeof(renderTargetProperties));
-
-	renderTargetProperties.type = D2D1_RENDER_TARGET_TYPE_HARDWARE;
-	renderTargetProperties.pixelFormat = D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED);	
-
-	IF_FAILED_RETURN_FALSE (hr = D2DFactory->CreateDxgiSurfaceRenderTarget(sharedSurface10, &renderTargetProperties, &D2DRenderTarget));
-
-	sharedSurface10->Release();
-	D2DFactory->Release();	
-
-	// Create a solid color brush to draw something with		
-	IF_FAILED_RETURN_FALSE (hr = D2DRenderTarget->CreateSolidColorBrush(D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f), &Brush));
-
-	//DirectWrite///////////////////////////////////////////////////////////////////////////////////////////////////////////
-	IF_FAILED_RETURN_FALSE (hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&DWriteFactory)));
-
-	// Use: Text Font: "Consolas"
-	IF_FAILED_RETURN_FALSE (hr = DWriteFactory->CreateTextFormat(L"Consolas", NULL, DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 24.0f, L"en-us",&TextFormat));
-	IF_FAILED_RETURN_FALSE (hr = TextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING));
-	IF_FAILED_RETURN_FALSE (hr = TextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR));
-
-	d3d101Device->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_POINTLIST);
-
-	return InitD2DScreenTexture();
-}
-*/
-bool DX12Class::InitD2DScreenTexture()
-{
-	/*
-	HRESULT hr;
-
-	// DEFINE: vertex buffer -------------------------------------------------------------
-	DXtextureVertexType v[] =
-	{
-		// Front Face
-		DXtextureVertexType(-1.0f, -1.0f, -1.0f, 0.0f, 1.0f),
-		DXtextureVertexType(-1.0f,  1.0f, -1.0f, 0.0f, 0.0f),
-		DXtextureVertexType( 1.0f,  1.0f, -1.0f, 1.0f, 0.0f),
-		DXtextureVertexType( 1.0f, -1.0f, -1.0f, 1.0f, 1.0f),
-	};
-
-	// DEFINE: index buffer -------------------------------------------------------------
-	DWORD indices[] = {
-		// Front Face
-		0,  1,  2, 0,  2,  3,
-	};
-
-	// CREATE: vertex buffer -------------------------------------------------------------
-	D3D11_BUFFER_DESC indexBufferDesc = {0}; //ZeroMemory( &indexBufferDesc, sizeof(indexBufferDesc) );
-
-	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	indexBufferDesc.ByteWidth = sizeof(DWORD) * 2 * 3;
-	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	//indexBufferDesc.CPUAccessFlags = 0;
-	//indexBufferDesc.MiscFlags = 0;
-
-	D3D11_SUBRESOURCE_DATA iinitData;
-
-	iinitData.pSysMem = indices;
-	IF_FAILED_RETURN_FALSE (hr = m_device->CreateBuffer(&indexBufferDesc, &iinitData, &d2dIndexBuffer));
-
-	// CREATE: index buffer -------------------------------------------------------------
-	D3D11_BUFFER_DESC vertexBufferDesc = {0}; //ZeroMemory( &vertexBufferDesc, sizeof(vertexBufferDesc) );
-
-	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	vertexBufferDesc.ByteWidth = sizeof( DXtextureLightVertexType ) * 4;
-	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	//vertexBufferDesc.CPUAccessFlags = 0;
-	//vertexBufferDesc.MiscFlags = 0;
-
-	D3D11_SUBRESOURCE_DATA vertexBufferData; 
-
-	ZeroMemory( &vertexBufferData, sizeof(vertexBufferData) );
-	vertexBufferData.pSysMem = v;
-	IF_FAILED_RETURN_FALSE (hr = m_device->CreateBuffer( &vertexBufferDesc, &vertexBufferData, &d2dVertBuffer));
-
-
-	// CREATE Texture -------------------------------------------------------------
-	//Create A shader resource view from the texture D2D will render to,
-	//So we can use it to texture a square which overlays our scene
-	IF_FAILED_RETURN_FALSE (hr = m_device->CreateShaderResourceView(sharedTex11, NULL, &d2dTexture));
-
-
-	// CREATE BlendState: Transparency -------------------------------------------------------------
-	D3D11_BLEND_DESC blendDesc = {0}; //ZeroMemory( &blendDesc, sizeof(blendDesc) );
-	D3D11_RENDER_TARGET_BLEND_DESC rtbd = {0}; //ZeroMemory( &rtbd, sizeof(rtbd) );
-
-	rtbd.BlendEnable			 = true;
-	rtbd.SrcBlend				 = D3D11_BLEND_SRC_COLOR;
-	rtbd.DestBlend				 = D3D11_BLEND_INV_SRC_ALPHA;
-	rtbd.BlendOp				 = D3D11_BLEND_OP_ADD;
-	rtbd.SrcBlendAlpha			 = D3D11_BLEND_ONE;
-	rtbd.DestBlendAlpha			 = D3D11_BLEND_ZERO;
-	rtbd.BlendOpAlpha			 = D3D11_BLEND_OP_ADD;
-	rtbd.RenderTargetWriteMask	 = D3D10_COLOR_WRITE_ENABLE_ALL;
-
-	blendDesc.AlphaToCoverageEnable = false;
-	blendDesc.RenderTarget[0] = rtbd;
-
-	IF_FAILED_RETURN_FALSE (hr = m_device->CreateBlendState(&blendDesc, &Transparency));
-
-	// CREATE -------------------------------------------------------------
-	D3D11_RASTERIZER_DESC cmdesc;
-
-	ZeroMemory(&cmdesc, sizeof(D3D11_RASTERIZER_DESC));
-	cmdesc.FillMode = D3D11_FILL_SOLID;
-	cmdesc.CullMode = D3D11_CULL_BACK;
-	cmdesc.FrontCounterClockwise = true;
-	//hr = m_device->CreateRasterizerState(&cmdesc, &CCWcullMode);
-
-	cmdesc.FrontCounterClockwise = false;
-	hr = m_device->CreateRasterizerState(&cmdesc, &CWcullMode);
-
-
-	// CREATE the color SHADER -------------------------------------------------------------
-	SAFE_SHUTDOWN (	m_FontV2Shader );	// Release previews Font Size (on Window Re-size)
-	m_FontV2Shader = NEW DirectX::DXshaderClass (ShaderVersionH, ShaderVersionL, false);
-	IF_NOT_THROW_EXCEPTION (m_FontV2Shader);
-
-	bool result = m_FontV2Shader->Initialize(SHADER_TEXTURE, m_device, SystemHandle->m_hWnd);
-	if(!result)
-		{ WomaMessageBox(TEXT("Could not initialize the m_FontV2Shader")); return false; }
-
-	*/
-	return true;
-}
-
-
-void DX12Class::RenderDriverText(int Xpos, int Ypos, WCHAR* wprintText, int Width, int Height, float R, float G, float B)
-{
-	/*
-	keyedMutex11->ReleaseSync(0);		//Release the D3D 11 Device
-	keyedMutex10->AcquireSync(0, 5);	//Use D3D10.1 device
-	D2DRenderTarget->BeginDraw();		//Draw D2D content
-
-	D2DRenderTarget->Clear(D2D1::ColorF(0.0f, 0.0f, 0.0f, 0.0f));					//Clear D2D Background
-	D2D1_COLOR_F FontColor = D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f);					//Set the Font Color
-	Brush->SetColor(FontColor);														//Set the brush color D2D will use to draw with
-	D2D1_RECT_F layoutRect = D2D1::RectF(50, 100, (float)Width, (float)Height);		//Create the D2D Render Area
-
-																					//Draw the Text
-	D2DRenderTarget->DrawText(wprintText, (UINT)wcslen(wprintText), TextFormat, layoutRect, Brush);
-
-	D2DRenderTarget->EndDraw();
-	keyedMutex10->ReleaseSync(1);		//Release the D3D10.1 Device
-	keyedMutex11->AcquireSync(1, 5);	//Use the D3D11 Device
-
-	// -------------------------------------------------------------
-	//Set the blend state for D2D render target texture objects
-	m_deviceContext->OMSetBlendState(Transparency, NULL, 0xffffffff);
-
-	//Set the d2d vertex buffer
-	static UINT stride = sizeof(DXtextureVertexType);
-	static UINT offset = 0;
-	m_deviceContext->IASetVertexBuffers(0, 1, &d2dVertBuffer, &stride, &offset);
-
-	//Set the d2d Index buffer
-	m_deviceContext->IASetIndexBuffer(d2dIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-	m_deviceContext->PSSetShaderResources(0, 1, &d2dTexture);
-	m_deviceContext->RSSetState(CWcullMode);
-
-	//Draw TEXT:
-	static XMMATRIX World = XMMatrixIdentity();
-	m_FontV2Shader->Render(m_deviceContext, 6, &World, &World, &World);
-	// -------------------------------------------------------------
-	*/
-
-	D2D1_SIZE_F rtSize = m_d2dRenderTargets[m_currentFrame]->GetSize();
-	D2D1_RECT_F textRect = D2D1::RectF(0, 0, rtSize.width, rtSize.height);
-	//static const WCHAR text[] = L"11On12";
-
-	// Acquire our wrapped render target resource for the current back buffer.
-	m_d3d11On12Device->AcquireWrappedResources(m_wrappedBackBuffers[m_currentFrame].GetAddressOf(), 1);
-
-	// Render text directly to the back buffer.
-	m_d2dDeviceContext->SetTarget(m_d2dRenderTargets[m_currentFrame].Get());
-	m_d2dDeviceContext->BeginDraw();
-	m_d2dDeviceContext->SetTransform(D2D1::Matrix3x2F::Identity());
-	m_d2dDeviceContext->DrawTextW(
-		wprintText,
-		_tcslen(wprintText)-1,
-		m_textFormat.Get(),
-		&textRect,
-		m_textBrush.Get()
-		);
-	ThrowIfFailed(m_d2dDeviceContext->EndDraw());
-
-	// Release our wrapped render target resource. Releasing 
-	// transitions the back buffer resource to the state specified
-	// as the OutState when the wrapped resource was created.
-	m_d3d11On12Device->ReleaseWrappedResources(m_wrappedBackBuffers[m_currentFrame].GetAddressOf(), 1);
-
-	// Flush to submit the 11 command list to the shared command queue.
-	m_d3d11DeviceContext->Flush();
-}
-#endif
-
 // ----------------------------------------------------------------------------------------------
 void DX12Class::GetProjectionMatrix(XMMATRIX& projectionMatrix)
 // ----------------------------------------------------------------------------------------------
@@ -1772,12 +1527,8 @@ void DX12Class::Initialize3DCamera()
 	#endif
 
 		// SETUP 3D Normal Camera:
-		DXsystemHandle->m_Camera->SetPosition(SystemHandle->AppSettings->INIT_CAMX, SystemHandle->AppSettings->INIT_CAMY,
-			SystemHandle->AppSettings->INIT_CAMZ);
-
-		DXsystemHandle->m_Camera->SetRotation(SystemHandle->AppSettings->INIT_ROTX, SystemHandle->AppSettings->INIT_ROTY,
-			SystemHandle->AppSettings->INIT_ROTZ);
-
+		DXsystemHandle->m_Camera->SetPosition(SystemHandle->AppSettings->INIT_CAMX, SystemHandle->AppSettings->INIT_CAMY, SystemHandle->AppSettings->INIT_CAMZ);
+		DXsystemHandle->m_Camera->SetRotation(SystemHandle->AppSettings->INIT_ROTX, SystemHandle->AppSettings->INIT_ROTY, SystemHandle->AppSettings->INIT_ROTZ);
 		DXsystemHandle->m_Camera->CalculateViewMatrix();
 	}
 
@@ -1853,34 +1604,6 @@ ImageLoaderClass* DX12Class::CaptureScreenShot(int screenWidth, int screenHeight
 // ----------------------------------------------------------------------------------------------
 {
 	return NULL;
-}
-#endif
-
-#ifdef NOT_USED
-// ----------------------------------------------------------------------------------------------
-void DX12Class::GetProjectionViewMatrix (UINT camera, UINT projection, XMMATRIX *projectionMatrix, XMMATRIX *viewMatrix)
-// ----------------------------------------------------------------------------------------------
-{
-	switch (projection)
-	{
-		case PROJECTION_PERSPECTIVE:
-			projectionMatrix = &m_projectionMatrix;	
-
-			if (camera == CAMERA_NORMAL)
-				viewMatrix = &(m_Camera)->m_viewMatrix;		
-			#if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28
-			else
-				viewMatrix = &(m_CameraSKY)->m_viewMatrix;	
-			#endif
-			break;
-
-		#if defined USE_VIEW2D_SPRITES
-		case PROJECTION_ORTHOGRAPH:
-			 projectionMatrix = &m_orthoMatrix;
-			 viewMatrix = &(m_Camera)->m_viewmatrix2D;		
-			break;
-		#endif
-	}
 }
 #endif
 

@@ -235,8 +235,14 @@ void DX11Class::RenderDriverText()
 	//if (!keyedMutex11)	//main window might resize
 	//	return;
 
-	SystemHandle->m_Application->keyedMutex11->ReleaseSync(0);		//Release the D3D 11 Device
-	SystemHandle->m_Application->keyedMutex10->AcquireSync(0, 5);	//Use D3D10.1 device
+	if (SystemHandle->m_Application->keyedMutex11)
+		SystemHandle->m_Application->keyedMutex11->ReleaseSync(0);		//Release the D3D 11 Device
+	else
+		return;
+	if (SystemHandle->m_Application->keyedMutex10)
+		SystemHandle->m_Application->keyedMutex10->AcquireSync(0, 5);	//Use D3D10.1 device
+	else
+		return;
 	D2DRenderTarget->BeginDraw();		//Draw D2D content
 
 	D2DRenderTarget->Clear(D2D1::ColorF(0.0f, 0.0f, 0.0f, 0.0f));					//Clear D2D Background

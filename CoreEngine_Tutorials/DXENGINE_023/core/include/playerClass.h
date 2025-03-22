@@ -23,7 +23,6 @@
 // PRE-PROCESSING DIRECTIVES //
 ///////////////////////////////
 #include "main.h"
-//#if defined DX_ENGINE
 
 #if defined DX9sdk
 	#include "DX9Class.h"
@@ -47,7 +46,7 @@
 #endif
 
 #if defined DX12
-	// DX12 includes
+// DX12 includes
 #include <dxgi1_4.h>	// Always 1st!	(Select Driver)
 #include <d3d12.h>		// DX12			(Select Device)
 #include <D3Dcompiler.h>// Use Compiler
@@ -59,14 +58,6 @@ using namespace DirectX;
 /////////////
 // GLOBALS //
 /////////////
-
-/*
-#if TUTORIAL_PRE_CHAP < 90
-#define N_MAX_PLAYERS 1
-#else
-#define N_MAX_PLAYERS 10	//network support added on CH 90: Align with: network\server\networkmessages.h
-#endif//
-*/
 
 typedef struct
 {	

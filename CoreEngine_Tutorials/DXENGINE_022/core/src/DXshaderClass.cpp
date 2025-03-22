@@ -368,6 +368,8 @@ namespace DirectX {
 			break;
 			//#endif
 
+		//	float3 position		: POSITION;
+		//	float2 texCoords	: TEXCOORD0; //22
 		case SHADER_TEXTURE:		//22
 		case SHADER_TEXTURE_FONT:	//27
 #if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009
@@ -552,7 +554,7 @@ namespace DirectX {
 			// GS
 #endif
 		}
-#endif//DX11
+#endif
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// DX 12
@@ -655,8 +657,6 @@ namespace DirectX {
 			{
 			case SHADER_COLOR:
 			{
-				// ORIGINAL: D:\WoMAengine2014\EXTRA\DX12 Samples\DirectX-Graphics-Samples\Samples\01 D3D12HelloWorld\src\HelloTriangle
-
 				// SHADER_COLOR:
 				// | Root Signature		| Shader Registers	|
 				// |0| DescriptorTable  | b0				|
@@ -670,12 +670,13 @@ namespace DirectX {
 
 				// rootSignatureFlags: Allow input layout and deny uneccessary access to certain pipeline stages.
 				D3D12_ROOT_SIGNATURE_FLAGS rootSignatureFlags =
-					D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
-					D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
-					D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
-					D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS |
-					D3D12_ROOT_SIGNATURE_FLAG_DENY_PIXEL_SHADER_ROOT_ACCESS;
-
+					D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+/*
+					| D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS
+					| D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS
+					| D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS
+					| D3D12_ROOT_SIGNATURE_FLAG_DENY_PIXEL_SHADER_ROOT_ACCESS;
+*/
 				int numStaticSamplers = 0;
 				rootSignatureDesc.Init(_countof(rootParameters), rootParameters, numStaticSamplers, nullptr, rootSignatureFlags);
 				break;
@@ -792,7 +793,7 @@ namespace DirectX {
 			};
 
 			// NOTE! The run time compiler support only Shader 5.0, for more use: USE_PRECOMPILED_SHADERS option 
-			STRING vertVer = TEXT("vs_");
+			std::string vertVer = TEXT("vs_"); //cant be: STRING
 			vertVer.append(/*SystemHandle->*/driverList[SystemHandle->AppSettings->DRIVER]->szShaderModel);  //TEXT("vs_5_0")
 			vertVer[4] = '_';  //TEXT("vs_5_0")
 			result = D3DCompileFromFile(vsFilename.c_str(), defines/*nullptr*/, nullptr, vertexHLSL.c_str(), ("vs_5_0")/*vertVer.c_str()*/, compileFlags, 0, &vertexShader, &errorMessage);

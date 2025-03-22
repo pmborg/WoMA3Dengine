@@ -81,7 +81,6 @@
     <ClInclude Include="core\include\ApplicationTextClass.h" />
     <ClInclude Include="core\include\AudioClass.h" />
     <ClInclude Include="core\include\d3dx12.h" />
-    <ClInclude Include="core\include\DemoApplicationClass.h" />
     <ClInclude Include="core\include\DX11class.h" />
     <ClInclude Include="core\include\dx12class.h" />
     <ClInclude Include="core\include\DX12Textureclass.h" />

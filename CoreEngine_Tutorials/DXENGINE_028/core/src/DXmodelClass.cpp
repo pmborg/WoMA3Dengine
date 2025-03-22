@@ -1317,17 +1317,17 @@ bool DXmodelClass::UpdateBuffersRotY(int positionX, int positionY)
 		// If the position we are rendering this bitmap to has not changed then don't update the vertex buffer since it
 		// currently has the correct parameters.
 
-		//static bool RenderfirstTime=true;
+		static bool RenderfirstTime=true;
 #if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
-	//if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
-	//	RenderfirstTime = m_driver11->RenderfirstTime;
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+		RenderfirstTime = m_driver11->RenderfirstTime;
 #endif
 #if defined DX12
-	//if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
-	//	RenderfirstTime = m_driver->RenderfirstTime;
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+		RenderfirstTime = m_driver->RenderfirstTime;
 #endif
-	//if (((positionX == m_previousPosX) && (positionY == m_previousPosY)) && !RenderfirstTime)
-	//	return true;
+	if (((positionX == m_previousPosX) && (positionY == m_previousPosY)) && !RenderfirstTime)
+		return true;
 
 //If the position to render this image has changed then we record the new location for the next time we come through this function.
 
@@ -1682,14 +1682,14 @@ void DXmodelClass::RenderWithFade(float fadeLight, bool FOG)
 			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 				m_Shader11->PSfade = fadeLight;
 
-		#endif//DX11
+		#endif
 
 		#if defined DX12
 			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 			{
 				m_Shader->PSfade = fadeLight;
 			}
-		#endif//DX12
+		#endif
 
 		Render();
 #endif
@@ -1942,7 +1942,6 @@ void DXmodelClass::rotateY (float rZrad) // in radians!!
 {
 #if defined DX11 || defined DX12 || defined DX9
     XMMATRIX m = XMMatrixRotationY (rZrad);
-    //m_worldMatrix *= m;
 #endif
 #if defined DX9sdk
 	D3DXMATRIX m;
@@ -1955,7 +1954,6 @@ void DXmodelClass::rotateZ (float rZrad) // in radians!!
 {
 #if defined DX11 || defined DX12 || defined DX9
     XMMATRIX m = XMMatrixRotationZ (rZrad);
-    //m_worldMatrix *= m;
 #endif
 #if defined DX9sdk
 	D3DXMATRIX m;
@@ -1997,9 +1995,16 @@ void DXmodelClass::scale(float x, float y, float z)
 		m_worldMatrix._43 = z;
 		#endif
 	#else
-		m_worldMatrix._11 = x;
-		m_worldMatrix._22 = y;
-		m_worldMatrix._33 = z;
+		//NEED: DEFINE: "_XM_SSE_INTRINSICS_" for fast code
+		//#if D3D11_SPEC_DATE_YEAR == 2009
+			m_worldMatrix._11 = x;
+			m_worldMatrix._22 = y;
+			m_worldMatrix._33 = z;
+		//#else
+		//	m_worldMatrix.r[0].m128_f32[0] = x;
+		//	m_worldMatrix.r[1].m128_f32[1] = y;
+		//	m_worldMatrix.r[2].m128_f32[2] = z;
+		//#endif
 	#endif
 }
 
@@ -2020,9 +2025,16 @@ void DXmodelClass::translation(float x, float y, float z)
 		m_worldMatrix._43 = z;
 		#endif
 	#else
-		m_worldMatrix._41 = x;
-		m_worldMatrix._42 = y;
-		m_worldMatrix._43 = z;
+		//NEED: DEFINE: "_XM_SSE_INTRINSICS_" for fast code
+		//#if D3D11_SPEC_DATE_YEAR == 2009
+			m_worldMatrix._41 = x;
+			m_worldMatrix._42 = y;
+			m_worldMatrix._43 = z;
+		//#else
+		//	m_worldMatrix.r[3].m128_f32[0] = x;
+		//	m_worldMatrix.r[3].m128_f32[1] = y;
+		//	m_worldMatrix.r[3].m128_f32[2] = z;
+		//#endif
 	#endif
 }
 

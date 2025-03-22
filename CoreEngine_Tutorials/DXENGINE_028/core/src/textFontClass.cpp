@@ -333,7 +333,7 @@ int textFontClass::GetSentencePixelLength(char* sentence)
 		// If the letter is a space then count it as three pixels.
 		if (letter == 0)
 		{
-			pixelLength += (int)m_spaceSize;
+			pixelLength += m_spaceSize;
 		}
 		else
 		{
@@ -351,52 +351,3 @@ int textFontClass::GetFontHeight()
 }
 
 #endif
-
-
-
-/*
-
-			// First triangle in quad.
-			vertexPtr[index].position.x = drawX;  // Top left.
-			vertexPtr[index].position.y = drawY;
-			vertexPtr[index].position.z = 0.0f;
-			vertexPtr[index].texture.u = m_Font[letter].left;
-			vertexPtr[index].texture.v = 1.0f;
-			index++;
-
-			vertexPtr[index].position.x = drawX + m_Font[letter].size;  // Bottom right.
-			vertexPtr[index].position.y = drawY - m_fontHeight;
-			vertexPtr[index].position.z = 0.0f;
-			vertexPtr[index].texture.u = m_Font[letter].right;
-			vertexPtr[index].texture.v = 0.0f;
-			index++;
-
-			vertexPtr[index].position.x = drawX;  // Bottom left.
-			vertexPtr[index].position.y = drawY - m_fontHeight;
-			vertexPtr[index].position.z = 0.0f;
-			vertexPtr[index].texture.u = m_Font[letter].left;
-			vertexPtr[index].texture.v = 0.0f;
-			index++;
-
-			// Second triangle in quad.
-			vertexPtr[index].position.x = drawX;  // Top left.
-			vertexPtr[index].position.y = drawY;
-			vertexPtr[index].position.z = 0.0f;
-			vertexPtr[index].texture.u = m_Font[letter].left;
-			vertexPtr[index].texture.v = 1.0f;
-			index++;
-
-			vertexPtr[index].position.x = drawX + m_Font[letter].size;  // Top right.
-			vertexPtr[index].position.y = drawY;
-			vertexPtr[index].position.z = 0.0f;
-			vertexPtr[index].texture.u = m_Font[letter].right;
-			vertexPtr[index].texture.v = 1.0f;
-			index++;
-
-			vertexPtr[index].position.x = drawX + m_Font[letter].size;  // Bottom right.
-			vertexPtr[index].position.y = drawY - m_fontHeight;
-			vertexPtr[index].position.z = 0.0f;
-			vertexPtr[index].texture.u = m_Font[letter].right;
-			vertexPtr[index].texture.v = 0.0f;
-			index++;
-*/

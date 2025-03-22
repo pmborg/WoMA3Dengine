@@ -92,6 +92,10 @@ extern float fadeIntro;
 #endif
 #endif
 
+#if defined USE_SCENE_MANAGER
+#include "SceneManager.h"
+#endif
+
 #if  defined USE_RASTERTEK_TEXT_FONT
 #include "ApplicationTextClass.h"
 #endif
@@ -266,6 +270,10 @@ public:
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 	std::vector<PositionClass*> m_Position;
+#endif
+
+#if defined USE_SCENE_MANAGER
+	SceneManager* sceneManager = SceneManager::GetInstance();
 #endif
 
 #if defined USE_SKY2D || ENGINE_LEVEL >= 27 // SKY

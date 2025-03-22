@@ -127,19 +127,22 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 		{
 			TranslateMessage(&msg); // TranslateMessage produces WM_CHAR messages only for keys that are mapped to ASCII characters by the keyboard driver.
 			DispatchMessage(&msg);  // Process Msg:  (INVOKE: WinSystemClass::MessageHandler)
+		} else {
+			try {
+				if (WOMA::game_state > GAME_MINIMIZED)
+					ProcessFrame();// Render ONE: Application Frame
+				else
+					Sleep(100);
+			}
+			catch (...) //catch (exception& e)
+			{
+				return -2;
+			}
 		}
 		if (WOMA::main_loop_state < 0) {
 			WOMA::game_state = GAME_STOP;
 			break;
 		}
-		try {
-			ProcessFrame();// Render ONE: Application Frame
-		}
-		catch (...) //catch (exception& e)
-		{
-			return -2;
-		}
-	
 		if (WOMA::game_state == ENGINE_RESTART)
 			return ENGINE_RESTART;
 	} while (msg.message != WM_QUIT);

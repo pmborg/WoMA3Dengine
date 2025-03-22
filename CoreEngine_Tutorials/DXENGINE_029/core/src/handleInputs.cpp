@@ -236,7 +236,7 @@ bool ApplicationClass::HandleUserInput(double frameTime)
 			if (!m_player[g_NetID]->p_player.IsNumPadPlus && numPadPlus == true)
 				numPadPlus = false;
 	}
-#endif//
+#endif
 
     // Proccess "EXIT MAP": with "ESC" key
     // --------------------------------------------------------------------------------------------

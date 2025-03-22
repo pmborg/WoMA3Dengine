@@ -384,6 +384,8 @@ namespace DirectX {
 			break;
 			//#endif
 
+		//	float3 position		: POSITION;
+		//	float2 texCoords	: TEXCOORD0; //22
 		case SHADER_TEXTURE:		//22
 		case SHADER_TEXTURE_FONT:	//27
 #if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009
@@ -402,6 +404,9 @@ namespace DirectX {
 #endif
 			break;
 
+		//	float3 position		: POSITION;	//21
+		//	float2 texCoords	: TEXCOORD; //22
+		//	float3 normal		: NORMAL;	//23
 		case SHADER_TEXTURE_LIGHT:				//23
 		case SHADER_TEXTURE_LIGHT_RENDERSHADOW:	//36
 #if defined DX12
@@ -598,7 +603,7 @@ namespace DirectX {
 			// GS
 #endif
 		}
-#endif//DX11
+#endif
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// DX 12
@@ -641,6 +646,7 @@ namespace DirectX {
 				// |0| DescriptorTable  | b0				|
 				// |1| DescriptorTable  | t0				|
 				// |2| DescriptorTable  | b1				|
+									 
 				srvHeapDesc.NumDescriptors = 3;
 				break;
 			}
@@ -721,8 +727,6 @@ namespace DirectX {
 			{
 			case SHADER_COLOR:
 			{
-				// ORIGINAL: D:\WoMAengine2014\EXTRA\DX12 Samples\DirectX-Graphics-Samples\Samples\01 D3D12HelloWorld\src\HelloTriangle
-
 				// SHADER_COLOR:
 				// | Root Signature		| Shader Registers	|
 				// |0| DescriptorTable  | b0				|
@@ -736,12 +740,13 @@ namespace DirectX {
 
 				// rootSignatureFlags: Allow input layout and deny uneccessary access to certain pipeline stages.
 				D3D12_ROOT_SIGNATURE_FLAGS rootSignatureFlags =
-					D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
-					D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
-					D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
-					D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS |
-					D3D12_ROOT_SIGNATURE_FLAG_DENY_PIXEL_SHADER_ROOT_ACCESS;
-
+					D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+/*
+					| D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS
+					| D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS
+					| D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS
+					| D3D12_ROOT_SIGNATURE_FLAG_DENY_PIXEL_SHADER_ROOT_ACCESS;
+*/
 				int numStaticSamplers = 0;
 				rootSignatureDesc.Init(_countof(rootParameters), rootParameters, numStaticSamplers, nullptr, rootSignatureFlags);
 				break;
@@ -822,18 +827,25 @@ namespace DirectX {
 			{
 			#if !defined RENDER_OBJ_WITH_ALFA
 				// | Root Signature		| Shader Registers	|
-				// |0| DescriptorTable  | b0				|buffer
-				// |1| DescriptorTable  | b1				|buffer
-				// |2| DescriptorTable  | t0				|texture
+				// |0| DescriptorTable  | b0				|buffer		VERTEX
+				// |1| DescriptorTable  | b1				|buffer		PIXEL
+				// |2| DescriptorTable  | t0				|texture	PIXEL
 				
 				CD3DX12_DESCRIPTOR_RANGE ranges[3];
 				//b0
 				ranges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);	// CBV0: Constant Buffer View: VERTEX SHADER Constants
+				//#if DX_ENGINE_LEVEL < 31
 				//b1
 				ranges[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 1);	// CBV1: Constant Buffer View: PIXEL SHADER Constants
 				//t0
 				ranges[2].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);	// SRV0: Shader Resource View: TEXTURE
 
+				//#else
+				////b1
+				//ranges[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 1);	// CBV: Constant Buffer View: PIXEL SHADER Constants
+				////t0
+				//ranges[2].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);	// SRV: Shader Resource View: TEXTURE
+				//#endif
 				CD3DX12_ROOT_PARAMETER rootParameters[3];
 				rootParameters[0].InitAsDescriptorTable(1, &ranges[0], D3D12_SHADER_VISIBILITY_VERTEX);
 				rootParameters[1].InitAsDescriptorTable(1, &ranges[1], D3D12_SHADER_VISIBILITY_PIXEL);
@@ -942,7 +954,7 @@ namespace DirectX {
 			};
 
 			// NOTE! The run time compiler support only Shader 5.0, for more use: USE_PRECOMPILED_SHADERS option 
-			STRING vertVer = TEXT("vs_");
+			std::string vertVer = TEXT("vs_"); //cant be: STRING
 			vertVer.append(/*SystemHandle->*/driverList[SystemHandle->AppSettings->DRIVER]->szShaderModel);  //TEXT("vs_5_0")
 			vertVer[4] = '_';  //TEXT("vs_5_0")
 			result = D3DCompileFromFile(vsFilename.c_str(), defines/*nullptr*/, nullptr, vertexHLSL.c_str(), ("vs_5_0")/*vertVer.c_str()*/, compileFlags, 0, &vertexShader, &errorMessage);
@@ -1144,7 +1156,7 @@ namespace DirectX {
 					//SHADER_TEXTURE_LIGHT < 31
 					// | Root Signature		| Shader Registers	|
 					// |0| DescriptorTable  | b0				| <-- HERE [0]
-					// |1| DescriptorTable  | b1				| <-- HERE [1]
+					// |1| DescriptorTable  | b1				| <-- HERE [2]
 					// |2| DescriptorTable  | t0				| --> DXmodelClass::InitializeDXbuffers		2
 
 					D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc[2] = {};

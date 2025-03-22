@@ -68,7 +68,7 @@ public:
 		void SetTime(INT64 dt);
 		void SetFade(float fade);
 		void SetScreenToShow(UINT screenToShow, UINT render_page);
-	#endif//
+	#endif
 
     #if TUTORIAL_PRE_CHAP >= 12
     void SetCompoundPosition(WCHAR *file, float dist, UINT, float, float, float, float scale);
@@ -76,24 +76,24 @@ public:
 
 	#if DX_ENGINE_LEVEL >= 30
     void SetRenderCount(int terrainCount, int compoundCount, UINT totalCompoundLoaded);
-	#endif//
+	#endif
 
 	#if TUTORIAL_PRE_CHAP >= 14
 	void SetLoboRenderCount(int count);
-	#endif//
+	#endif
 
 	#if TUTORIAL_PRE_CHAP >= 45
 	void SetBillRenderCount(int count);
-	#endif//
+	#endif
 
 	#if TUTORIAL_PRE_CHAP >= 63
 	void SetXP(UINT XP, UINT maxXP, float percent);
 	void SetGold(float gold);
-	#endif//
+	#endif
 
 	#if TUTORIAL_PRE_CHAP >= 90
 	void SetLatency(int latency);
-	#endif//
+	#endif
 
 	#if TUTORIAL_PRE_CHAP >= 200
 	//TextClass now has a new function for setting the data to print out.

@@ -240,6 +240,7 @@ void ApplicationClass::initLightDemo()
 #endif
 }
 
+#if defined USE_TITLE_BANNER	//24 DX_ENGINE_LEVEL >= 24
 void ApplicationClass::initStatic2D()
 {
 		// Step 1: Prepare Vertex(s)
@@ -261,6 +262,7 @@ void ApplicationClass::initStatic2D()
 	#endif
 	
 }
+#endif
 
 #if defined USE_CUBE
 bool ApplicationClass::initCubes3D()
@@ -617,7 +619,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)	//
 	threadCompoundLoaderHandle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)CompoundReadFunction, (void*)this, 0, &threadCompoundLoaderId);
 	if (!threadCompoundLoaderHandle) { return false; }
 	if (!SetThreadPriority(threadCompoundLoaderHandle, THREAD_PRIORITY_IDLE/*THREAD_PRIORITY_LOWEST*//*THREAD_PRIORITY_BELOW_NORMAL*/)) { return false; }
-#endif//
+#endif
 #endif
 
 	return true;

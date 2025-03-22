@@ -44,6 +44,16 @@ extern MyWin Win;
 #include "GLmodelClass.h"
 #endif
 
+#if defined USE_SCENE_MANAGER
+#include "SceneManager.h"
+#include "xml_loader.h"
+
+namespace WOMA
+{
+SceneManager* sceneManager;
+}
+#endif
+
 #if defined (SCENE_COMPOUND) //TUTORIAL_CHAP >= 55
 #include "compound.h"
 void CompoundReadFunction(WomaDriverClass* Driver);
@@ -118,8 +128,6 @@ ApplicationClass::ApplicationClass()
 #endif
 
 	m_Light = NULL;
-
-	// TERRAIN
 
 #if defined USE_LIGHT_RAY
 	m_lightRayModel = NULL;

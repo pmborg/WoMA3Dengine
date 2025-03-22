@@ -169,7 +169,7 @@ void ApplicationTextClass::SetScreenToShow(UINT screenToShow, UINT render_page)
 	// Update the sentence vertex buffer with the new string information.
 	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_ScreenToShow], timeString, SystemHandle->AppSettings->WINDOW_WIDTH - 180, 100, 0.0f, 1.0f, 0.0f));
 }
-#endif//
+#endif
 
 #if TUTORIAL_PRE_CHAP >= 12
 //13,14,15
@@ -191,7 +191,7 @@ void ApplicationTextClass::SetCompoundPosition(WCHAR *file, float dist, UINT id,
     StringCchPrintf(dataString, sizeof(dataString), TEXT("OBJ xyz: %4.2f,%4.2f,%4.2f (Scale:%4.2f)"), posX, posY, posZ, scale);
     ASSERT(m_Text.UpdateSentence(m_sentence[TEXT_COMPOUND], dataString, 10, 140, 1.0f, 0.0f, 1.0f));
 }
-#endif//
+#endif
 
 #if DX_ENGINE_LEVEL >= 30
 //08
@@ -206,7 +206,7 @@ void ApplicationTextClass::SetRenderCount(int Count, int compoundCount, UINT tot
 	// Update the sentence vertex buffer with the new string information:
 	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_TERRAINRENDERCOUNT], countString, 10, 100, 0.0f, 0.5f, 1.0f));
 }
-#endif//
+#endif
 
 #if TUTORIAL_CHAP >= 50
 //09
@@ -225,7 +225,7 @@ void ApplicationTextClass::SetLoboRenderCount(int count)
 	// Update the sentence vertex buffer with the new string information.
 	ASSERT (m_Text.UpdateSentence(m_sentence[TEXT_WATERRENDERCOUNT], countString, 10, 110, 0.0f, 1.0f, 0.0f));
 }
-#endif//
+#endif
 
 #if TUTORIAL_PRE_CHAP >= 45 // 60 // BILLBOARD
 //10
@@ -244,7 +244,7 @@ void ApplicationTextClass::SetBillRenderCount(int count)
 	// Update the sentence vertex buffer with the new string information.
 	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_BILLRENDERCOUNT], countString, 10, 130, 0.0f, 1.0f, 0.0f));
 }
-#endif//
+#endif
 
 #if TUTORIAL_PRE_CHAP >= 63 && defined (MAIN_FRAME) // 83
 void ApplicationTextClass::SetXP(UINT XP, UINT maxXP, float percent)
@@ -275,7 +275,7 @@ void ApplicationTextClass::SetGold(float gold)
 
 	ASSERT (m_Text.UpdateSentence(m_sentence[TEXT_GOLD], timeString,  SystemHandle->AppSettings->WINDOW_WIDTH - (int)(m_scaleX * 160), (g_SCREEN_HEIGHT - 30), 0.0f, 1.0f, 0.0f));
 }
-#endif//
+#endif
 
 #if ENGINE_LEVEL >= 140 // #if TUTORIAL_PRE_CHAP >= 90
 void ApplicationTextClass::SetLatency(int latency)
@@ -300,7 +300,7 @@ void ApplicationTextClass::SetLatency(int latency)
 	// Update the sentence vertex buffer with the new string information.
 	ASSERT (m_Text.UpdateSentence(m_sentence[TEXT_LATENCY], latencyString, 10, 150, 0.0f, 1.0f, 0.0f));
 }
-#endif//
+#endif
 
 #if TUTORIAL_PRE_CHAP >= 200
 //11,12

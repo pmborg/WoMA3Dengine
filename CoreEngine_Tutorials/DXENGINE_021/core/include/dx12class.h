@@ -52,14 +52,15 @@
 #endif
 #if DX12_DXGI_API == 6
 #include <dxgi1_6.h>	// Always 1st!	(Select Driver)
-#include "include/d3dx12/d3dx12.h"
 #endif
 
 #include <d3d12.h>		// DX12			(Select Device)
 #include <D3Dcompiler.h>// Use Compiler
 #include <DirectXMath.h>// Use Math
 
-
+#include <d3d12sdklayers.h>
+#include <wrl.h>
+#include <iostream>
 
 //#endif
 
@@ -290,6 +291,9 @@ private:
 #endif
 #if DX12_DXGI_API == 5
 	ComPtr<IDXGIFactory5>		dxgiFactory;  // Create a DXGI 1.5 Interface
+#endif
+#if DX12_DXGI_API == 6
+	ComPtr<IDXGIFactory6>		dxgiFactory;  // Create a DXGI 1.6 Interface
 #endif
 
 	ComPtr<ID3D12Resource>		m_depthStencil;

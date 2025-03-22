@@ -240,6 +240,30 @@ void ApplicationClass::initLightDemo()
 #endif
 }
 
+#if defined USE_TITLE_BANNER	//24 DX_ENGINE_LEVEL >= 24
+void ApplicationClass::initStatic2D()
+{
+		// Step 1: Prepare Vertex(s)
+		std::vector<ModelTextureVertexType> SpriteVertexVector;				// 1 Declare: the Vector with Vertex "TYPE"
+		ModelTextureVertexType vertex = {};									// 2 Use this "VERTEX" on macro
+		CREATE_VERTEXVECTOR_SQUAD_MODEL(SpriteVertexVector, 0, 0, 0);		// 3 Initialize Vertex ARRAY at world center at first
+		std::vector<UINT> emptyIndexList;									// Empty index list.
+
+	//--------------------------------------------------------------------------------
+	//CreateDXbuffers for 2D:
+	#if defined USE_TITLE_BANNER
+		// # Title #
+		initModelwithTexture2D(m_titleModel, DEMO_TITLE_TEXTURE, SpriteVertexVector, emptyIndexList, SHADER_TEXTURE);
+	#endif
+
+	#if defined USE_IMGUI	
+		//Settings Icon:
+		initModelwithTexture2D(m_iconSettings, DEMO_SETTINGS_ICON, SpriteVertexVector, emptyIndexList, SHADER_TEXTURE);
+	#endif
+	
+}
+#endif
+
 #if defined USE_CUBE
 bool ApplicationClass::initCubes3D()
 {
@@ -591,7 +615,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)	//
 	threadCompoundLoaderHandle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)CompoundReadFunction, (void*)this, 0, &threadCompoundLoaderId);
 	if (!threadCompoundLoaderHandle) { return false; }
 	if (!SetThreadPriority(threadCompoundLoaderHandle, THREAD_PRIORITY_IDLE/*THREAD_PRIORITY_LOWEST*//*THREAD_PRIORITY_BELOW_NORMAL*/)) { return false; }
-#endif//
+#endif
 #endif
 
 	return true;

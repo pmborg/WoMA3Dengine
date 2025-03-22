@@ -2,7 +2,7 @@
 // Filename: GLtextureClass.cpp
 // --------------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------------
-// World of Middle Age  - 3D Multi-Platform ENGINE 2017
+// World of Middle Age  - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
 // code by : Pedro Borges - pmborg@yahoo.com
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine

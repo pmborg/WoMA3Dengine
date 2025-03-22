@@ -36,6 +36,16 @@ extern MyWin Win;
 #pragma warning(push)
 #pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
 
+#if defined USE_SCENE_MANAGER
+#include "SceneManager.h"
+#include "xml_loader.h"
+
+namespace WOMA
+{
+SceneManager* sceneManager;
+}
+#endif
+
 #if defined (SCENE_COMPOUND) //TUTORIAL_CHAP >= 55
 #include "compound.h"
 void CompoundReadFunction(WomaDriverClass* Driver);
@@ -103,8 +113,6 @@ ApplicationClass::ApplicationClass()
 #if defined SCENE_TERRAIN_QUAD_TREE
 	TerrainQuadtree = NULL;
 #endif
-
-	// TERRAIN
 
 #if defined USE_LIGHT_RAY
 	m_lightRayModel = NULL;
