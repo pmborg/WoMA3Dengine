@@ -368,7 +368,6 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 	OutputDebugString(txt);
 	//------------------------------------------------------
 #endif
-
 #if CORE_ENGINE_LEVEL >= 1 && defined WINDOWS_PLATFORM
 	WOMA::setup_OSmain_dirs();				//1 Keep this order!
 	WOMA::activate_mem_leak_detection();	//2
@@ -403,7 +402,6 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 	if (!PLATFORM_INIT_GTK2())
 		WOMA_LOGManager_DebugMSGAUTO(TEXT("Could not initialize GTK2!")); // Note: Dont use DEBUG_MSG yet...
 #endif
-
 }
 
 void APPLICATION_STOP()

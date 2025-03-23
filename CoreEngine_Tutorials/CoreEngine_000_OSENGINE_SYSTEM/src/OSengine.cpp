@@ -362,7 +362,6 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 	OutputDebugString(txt);
 	//------------------------------------------------------
 #endif
-
 	#if defined USE_LOG_MANAGER
 	WOMA::start_log_manager();				//3
 	#endif
@@ -393,7 +392,6 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 	if (!PLATFORM_INIT_GTK2())
 		WOMA_LOGManager_DebugMSGAUTO(TEXT("Could not initialize GTK2!")); // Note: Dont use DEBUG_MSG yet...
 #endif
-
 }
 
 void APPLICATION_STOP()
