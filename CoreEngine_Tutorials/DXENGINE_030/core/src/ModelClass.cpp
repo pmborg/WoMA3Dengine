@@ -29,7 +29,7 @@
 #include "fileLoader.h"
 #include "OSmain_dir.h"
 #include "dxWinSystemClass.h"
-
+#include "mem_leak.h"
 
 #ifdef NOTES
 GEOMETRY

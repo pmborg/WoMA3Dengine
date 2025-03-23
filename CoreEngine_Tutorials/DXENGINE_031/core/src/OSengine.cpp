@@ -382,7 +382,21 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 	OutputDebugString(txt);
 	//------------------------------------------------------
 #endif
-
+#if (defined OPENGL3 || defined OPENGL4) && CORE_ENGINE_LEVEL >= 10
+	// [7] Start LINUX Platform: "OpenGL" (LoadExtensions)
+	// -------------------------------------------------------------------------------------------
+	#if defined WINDOWS_PLATFORM || (defined LINUX_PLATFORM && RUN_ASMAIN)
+	//NOTE: (Standard Xlib "-display") options. Also it may support the "-geometry"
+	// 
+	//-display DISPLAY
+	//	Specify the X server to connect to.If not specified, the value of the DISPLAY environment variable is used.
+	//
+	//-geometry W x H + X + Y
+	//	Determines where window's should be created on the screen. The parameter following -geometry should be formatted as a standard X geometry specification. The effect of using this option is to change the GLUT initial size and initial position the same as if glutInitWindowSize or glutInitWindowPosition were called directly. 
+	//
+	glutInit(&WOMA::ARGc, WOMA::ARGv);
+	#endif
+#endif
 #if CORE_ENGINE_LEVEL >= 1 && defined WINDOWS_PLATFORM
 	WOMA::setup_OSmain_dirs();				//1 Keep this order!
 	WOMA::activate_mem_leak_detection();	//2
@@ -416,22 +430,6 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("Init: INIT_GTK2()\n"));
 	if (!PLATFORM_INIT_GTK2())
 		WOMA_LOGManager_DebugMSGAUTO(TEXT("Could not initialize GTK2!")); // Note: Dont use DEBUG_MSG yet...
-#endif
-
-#if (defined OPENGL3 || defined OPENGL4) && CORE_ENGINE_LEVEL >= 10
-	// [7] Start LINUX Platform: "OpenGL" (LoadExtensions)
-	// -------------------------------------------------------------------------------------------
-	#if defined WINDOWS_PLATFORM || (defined LINUX_PLATFORM && RUN_ASMAIN)
-	//NOTE: (Standard Xlib "-display") options. Also it may support the "-geometry"
-	// 
-	//-display DISPLAY
-	//	Specify the X server to connect to.If not specified, the value of the DISPLAY environment variable is used.
-	//
-	//-geometry W x H + X + Y
-	//	Determines where window's should be created on the screen. The parameter following -geometry should be formatted as a standard X geometry specification. The effect of using this option is to change the GLUT initial size and initial position the same as if glutInitWindowSize or glutInitWindowPosition were called directly. 
-	//
-	glutInit(&WOMA::ARGc, WOMA::ARGv);
-	#endif
 #endif
 }
 

@@ -1,4 +1,7 @@
-- <b>DX33: WORLD.XML: load OBJ 3D file format, the compond, using transparent textures ALFA MAP and ALFA COLOR</b><br> 
-	- Loading now OBJ with alfa color and alfamap
+- <b>DX30: WORLD.XML: load OBJ 3D file format, using COLOR shader</b><br> 
+	- SceneManager and SceneNode<br> 
+	- QuadTree and Frustum<br> 
+	- <b>World</b> and <b>Objects</b>: Loading objects as a descriptor:	<b>World.xml</b><br>
+	- Load <b>obj</b> format<br>
 	
-![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_033.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_033.png)	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_030.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_030.png)	
