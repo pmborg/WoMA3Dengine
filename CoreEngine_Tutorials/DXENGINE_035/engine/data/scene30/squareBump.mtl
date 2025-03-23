@@ -12,6 +12,6 @@ newmtl Material1
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Kd Gravel_2451.jpg
-	map_bump Gravel_2451_bump_map.jpg
-	bump Gravel_2451_bump_map.jpg
+	map_Kd grassTexture.jpg
+	map_bump grassNormal.jpg
+	bump grassNormal.jpg

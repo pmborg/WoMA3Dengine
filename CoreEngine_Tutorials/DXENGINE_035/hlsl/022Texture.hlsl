@@ -65,5 +65,6 @@ float4 MyPixelShader022Texture(PSIn input) : SV_TARGET
 
 	color.rgb*=fade;
 
+    //return 1;
 	return color;
 }

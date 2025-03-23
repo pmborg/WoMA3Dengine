@@ -124,10 +124,10 @@ float4 MyPixelShader023Light(PSIn input) : SV_TARGET
 	// 23: LIGHT
 	//if (hasLight) 
 	{
-		//if (lightType == 1)	
-			lightIntensity = PSlightFunc1(input.normal);
-		//else
-		//	lightIntensity = PSlightFunc2(input.normal);
+        if (isSky)
+            lightIntensity = PSlightFunc2(input.normal);
+        else
+            lightIntensity = PSlightFunc1(input.normal);
 
 		if (hasTexture) {
 			textureColor = textureColor * saturate(emissiveColor + ambientColor + lightIntensity);	

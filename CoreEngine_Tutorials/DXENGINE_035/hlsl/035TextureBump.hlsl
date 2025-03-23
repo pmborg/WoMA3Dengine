@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------
-// Filename: 023Light.hlsl
+// Filename: 035TextureBump.hlsl
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
 *	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2023
@@ -13,7 +13,7 @@
 #define PS_USE_ALFA_TEXTURE	 //33
 #define PS_USE_ALFACOLOR 	 //33
 #define PS_USE_SPECULAR		 //34
-#define PS_USE_BUMP		 	 //35
+#define PS_USE_BUMP		 	 //35		NEW!!
 
 //////////////
 // TYPEDEFS //
@@ -25,7 +25,7 @@ struct VSIn
 	float3 position : POSITION;	//21
 	float2 texCoords: TEXCOORD; //22
 	float3 normal	: NORMAL;	//23
-	float3 tangent	: TANGENT;	//35 NEW!!
+    float3 tangent : TANGENT; //35		NEW:BUMPv1!!
 };
 
 // PIXEL:
@@ -36,9 +36,8 @@ struct PSIn
 	float3 normal				: NORMAL;				// 23 LIGHT
 	float3 viewDirection		: TEXCOORD1;			// 34 Specular
 	float4 cameraPosition		: WS;					// 34 Specular
-	float3 tangent				: TANGENT;				// 35 BUMP
+	float3 tangent				: TANGENT;				// 35 BUMP		 NEW!!
 };
-
 
 
 /////////////
@@ -46,20 +45,20 @@ struct PSIn
 /////////////
 
 //Set on: DXmodelClass::RenderSubMesh
-#if DXAPI11 == 1
+//#if DXAPI11 == 1
 Texture2D shaderTexture;		// 22: Texture
 Texture2D AlfaMapTexture;		// 33: AlfaMap
-Texture2D TangentMapTexture;	// 35: TangentMap NEW!!
-#endif
+Texture2D normalMapTexture;	// 35: TangentMap NEW!!
+//#endif
 #if DXAPI12 == 1
 Texture2D AlfaMapTexture:		register(t0); // 33: AlfaMap	//DX12: Descriptor: 2
 Texture2D shaderTexture:		register(t1); // 22: Texture	//DX12: Descriptor: 3
-Texture2D TangentMapTexture:	register(t1); // 35: TangentMap //DX12: Descriptor: 4
+Texture2D normalMapTexture:	register(t1); // 35: TangentMap //DX12: Descriptor: 4
 #endif
 
-#if DXAPI11 == 1
+//#if DXAPI11 == 1
 SamplerState SampleType;
-#endif
+//#endif
 #if DXAPI12 == 1
 SamplerState SampleType: register(s0);
 #endif
@@ -133,36 +132,32 @@ float4 MyPixelShader035TextureBump(PSIn input) : SV_TARGET
 	if (hasTexture) 
 		textureColor = shaderTexture.Sample(SampleType, input.texCoords);
 
-	// 23: LIGHT
-	if (hasLight) 
-	{
 	//35: BUMP NEW!!
-	#if defined PS_USE_BUMP
-		float3 normal = input.normal;
-		
-		if (hasNormMap) 
-		{
-			float4 normalMap	= TangentMapTexture.Sample( SampleType, input.texCoords);	// Load normal from normal map
-			normalMap			= (2.0f*normalMap) - 1.0f;							// Change normal map range from [0, 1] to [-1, 1]
-			float3 tangent		= normalize(input.tangent - dot(input.tangent, input.normal)*input.normal);	//Make sure tangent is completely orthogonal to normal
-			float3 biTangent	= cross(input.normal, input.tangent);				// Create the biTangent
-			float3x3 texSpace	= float3x3(tangent, biTangent, input.normal);		// Create the "Texture Space"
-			normal				= normalize(mul(normalMap, texSpace));				// BUMP: Convert normal from normal map to texture space and store in input.normal
-		}
-	#endif
+    float3 normal = input.normal;
+	if (hasNormMap)
+    {                                                                                              // Load normal from normal map
+        float3 normalMap = normalMapTexture.Sample(SampleType, input.texCoords).xyz * 2.0f - 1.0f; // Change normal map range from [0, 1] to [-1, 1]
+        //V1:
+        //float3 normal = normalize(input.normal + normalMap);
+        //V2:
+		float3 tangent = normalize(input.tangent - dot(input.tangent, input.normal) * input.normal); //Make sure tangent is completely orthogonal to normal
+		float3 biTangent = cross(input.normal, input.tangent); // Create the biTangent
+		float3x3 texSpace = float3x3(tangent, biTangent, input.normal); // Create the "Texture Space"
+		normal = normalize(mul(normalMap, texSpace)); // BUMP: Convert normal from normal map to texture space and store in input.normal
+    }
 	
-		if (lightType == 1)	
-			lightIntensity = PSlightFunc1(input.normal);
-		else
-			lightIntensity = PSlightFunc2(input.normal);
+	// 23: LIGHT
+    if (isSky)
+        lightIntensity = PSlightFunc2(/*input.normal*/ normal);
+    else
+        lightIntensity = PSlightFunc1(/*input.normal*/ normal);
 
-		if (hasTexture) {
-			textureColor = textureColor * saturate(emissiveColor + ambientColor + lightIntensity);	
-		} else {
-			textureColor = textureColor * saturate(emissiveColor + ambientColor + (lightIntensity * diffuseColor));
-		}
-	}
-
+    if (hasTexture) {
+        textureColor = textureColor * saturate(emissiveColor + ambientColor + lightIntensity);
+    } else {
+        textureColor = textureColor * saturate(emissiveColor + ambientColor + (lightIntensity * diffuseColor));
+    }
+	
 #if defined PS_USE_ALFA_TEXTURE // 33: Alfa Map: (Optional AlfaMap for blending textutres)
 	if (hasAlfaMap)
 		textureColor.a = AlfaMapTexture.Sample(SampleType, input.texCoords).r;
