@@ -120,12 +120,12 @@ float4 MyPixelShader023Light(PSIn input) : SV_TARGET
 		textureColor = shaderTexture.Sample(SampleType, input.texCoords);
 
 	// 23: LIGHT
-	//if (hasLight) 
+    if (hasLight) 
 	{
-		//if (lightType == 1)	
-			lightIntensity = PSlightFunc1(input.normal);
-		//else
-		//	lightIntensity = PSlightFunc2(input.normal);
+        if (isSky)
+            lightIntensity = PSlightFunc2(input.normal);
+        else
+            lightIntensity = PSlightFunc1(input.normal);
 
 		if (hasTexture) {
 			textureColor = textureColor * saturate(emissiveColor + ambientColor + lightIntensity);	
@@ -150,21 +150,16 @@ float4 MyPixelShader023Light(PSIn input) : SV_TARGET
 	{
 		if (lightIntensity > 0.0f)
 		{
-			float4 color = ambientColor;
+			//float3 Reflection = normalize(2 * lightIntensity * input.normal + lightDirection);
+            float3 Reflection = reflect(lightDirection, input.normal);
 			
-			color += (diffuseColor * lightIntensity);
-		
-			color = saturate(color);
-			//return color;
-			float3 Reflection = normalize(2 * lightIntensity * input.normal + lightDirection);
-			float  fPhoneValue = saturate(dot(Reflection, input.viewDirection));	// (R.V)
-			float4 specular = pow(fPhoneValue, nShininess);							// Ls = (R.V)^alfa (alfa Determine the amount of specular light based on the reflection vector, viewing direction, and specular power.)
-
-			color = color * textureColor;
-			textureColor = saturate(textureColor + specular);		// specular = Ls (contribution of the light source) * Ks (specular component of the material)
-			//return specular;
+			//float  fPhoneValue = saturate(dot(Reflection, input.viewDirection));	// (R.V)
+            float fPhoneValue = max(dot(Reflection, input.viewDirection), 0.0f);	// (R.V)
+			
+			float4 specular = pow(fPhoneValue, nShininess);		// Ls = (R.V)^alfa (alfa Determine the amount of specular light based on the reflection vector, viewing direction, and specular power.)
+			textureColor = saturate(textureColor + specular);	// specular = Ls (contribution of the light source) * Ks (specular component of the material)
 		}
-	}
+    }
 
 #endif
 
