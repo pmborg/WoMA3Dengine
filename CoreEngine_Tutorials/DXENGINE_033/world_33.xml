@@ -1,0 +1,13 @@
+<woma>
+  <!-- ENGINE LVL 25-->
+  <camera screenNear="0.1f" screenDepth="2048" >
+    <initPos x="0.25f" y="2" z="-15" />
+    <initRot x="0" y="0" z="0" />
+  </camera>
+
+  <!-- ENGINE LVL 31-->
+  <fog start="32" end="256"/>
+  
+  <world hVisibility="128" seaLevel="0" size="512" patchSize="64" skyDayTexture="engine/data/sky/NEW_SKY_DOME.jpg" skyNightTexture=""/>
+  <object fromPage="33" toPage="33" depend="0" scale="0.2" posX="0" posZ="2" translateY="2" rotX="" rotY="" rotZ="" shader="" filename="engine/data/scene30/spaceCompound.obj"/>
+</woma>
