@@ -29,48 +29,67 @@ namespace WOMA
 	STRING file;
 
 #if !defined UNICODE && defined WINDOWS_PLATFORM
-WCHAR* LoadFileW(WCHAR* filename)
-{
-	static WCHAR wfilename[MAX_STR_LEN] = { 0 };
+	WCHAR* LoadFileW(WCHAR* filename)
+	{
+		static WCHAR wfilename[MAX_STR_LEN] = { 0 };
 
-	TCHAR file[MAX_STR_LEN] = { 0 };
-	WideCharToMultiByte(CP_ACP, 0, filename, -1, file, MAX_STR_LEN, NULL, NULL);
-	TCHAR* cfile = LoadFile(file, true);
-	printf("cfile: %s\n", cfile);
-	MultiByteToWideChar(CP_ACP, 0, cfile, -1, wfilename, MAX_STR_LEN);
-	return wfilename;
-}
+		TCHAR file[MAX_STR_LEN] = { 0 };
+		WideCharToMultiByte(CP_ACP, 0, filename, -1, file, MAX_STR_LEN, NULL, NULL);
+		TCHAR* cfile = LoadFile(file, true);
+		//printf("cfile: %s\n", cfile);
+		MultiByteToWideChar(CP_ACP, 0, cfile, -1, wfilename, MAX_STR_LEN);
+		return wfilename;
+	}
 #endif
 
-TCHAR* LoadFile(TCHAR* filename, bool shader)
-{
-	static TCHAR file_[MAX_STR_LEN*2];
-	ZeroMemory(&file_, sizeof(file));
+	TCHAR* LoadFile(TCHAR* filename, bool shader)
+	{
+		static TCHAR file_[MAX_STR_LEN * 2];
+		ZeroMemory(&file_, sizeof(file));
 
 #ifdef RELEASE
-	if (shader) {
-		file = WOMA::APP_PROJECT_NAME;
-		file.append(TEXT("/"));
-	} else {
-		file = WOMA::APPDATA; // WOMA::womaTempPATH;
-	}
-	file.append(filename);
-	lastfile = file;
-	return (TCHAR*)file.c_str();
+		if (shader) {
+			file = WOMA::APP_PROJECT_NAME;
+			file.append(TEXT("/"));
+		}
+		else {
+			file = WOMA::APPDATA; // WOMA::womaTempPATH;
+		}
+		file.append(filename);
+		lastfile = file;
+		return (TCHAR*)file.c_str();
 #else
-	if (filename[0]!='.') {
-		StringCchPrintf(file_, sizeof(file_), TEXT("%s%s"), TEXT("./"), filename);
-	} else {
+		if (filename[0] != '.') {
+#if CORE_ENGINE_LEVEL >= 10 && defined _DEBUG
+			if (shader)
+				StringCchPrintf(file_, sizeof(file_), TEXT("%s%s"), TEXT("./"), filename);
+			else
+				StringCchPrintf(file_, sizeof(file_), TEXT("%s%s"), TEXT("../"), filename);
+#else
+			StringCchPrintf(file_, sizeof(file_), TEXT("%s%s"), TEXT("./"), filename);
+#endif
+		}
+		else {
 #if defined UNICODE
-		_tcscpy_s(file_, sizeof(file_),  filename);
+#if CORE_ENGINE_LEVEL >= 10 && defined _DEBUG
+			if (shader)
+				_tcscpy_s(file_, sizeof(file_), filename);
+			else
+				StringCchPrintf(file_, sizeof(file_), TEXT("%s%s"), TEXT("../"), filename);
+#endif
 #else
-		strcpy_s(file_, sizeof(file_), filename);
+#if CORE_ENGINE_LEVEL >= 10 && defined _DEBUG
+			if (shader)
+				strcpy_s(file_, sizeof(file_), filename);
+			else
+				StringCchPrintf(file_, sizeof(file_), TEXT("%s%s"), TEXT("../"), filename);
+#endif
+#endif
+		}
+		file = file_;
+		lastfile = file;
+		return (TCHAR*)&file_;
 #endif
 	}
-	file = file_;
-	lastfile = file;
-	return (TCHAR*)&file_;
-#endif
-}
 
 }

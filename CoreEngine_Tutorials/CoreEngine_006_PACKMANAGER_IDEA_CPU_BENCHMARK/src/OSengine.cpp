@@ -25,6 +25,7 @@
 #include <inttypes.h>
 
 #if defined WINDOWS_PLATFORM
+	#include <DirectXMath.h>
 	WinSystemClass* SystemHandle = NULL;
 #endif
 
@@ -348,7 +349,7 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 	if (FAILED(hr)) WomaFatalException("CoInitializeEx Failed!");
 
-	IF_NOT_THROW_EXCEPTION(XMVerifyCPUSupport());
+	IF_NOT_THROW_EXCEPTION(DirectX::XMVerifyCPUSupport());
 #endif
 
 	// Benchmark trigonometric functions:

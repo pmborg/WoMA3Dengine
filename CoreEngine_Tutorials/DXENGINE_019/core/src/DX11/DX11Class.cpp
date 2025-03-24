@@ -507,6 +507,8 @@ if (dx11_force_dx9)
 	/******************************************************************/
 	// Check Math Library:
 	/******************************************************************/
+	if (!XMVerifyCPUSupport())
+		MessageBox(NULL, TEXT("WARNING: Failed to verify DirectX Math library support."), TEXT("Error"), MB_OK);
 
 	/******************************************************************/
 	// Check DX Driver Multithread

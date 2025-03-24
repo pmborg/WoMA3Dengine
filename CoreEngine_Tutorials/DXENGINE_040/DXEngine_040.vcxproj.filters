@@ -79,7 +79,7 @@
     <Filter Include="src-basic-level\036-Advanced">
       <UniqueIdentifier>{8b852649-81ab-49c6-bb3e-4d3476d58812}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src-basic-level\039-Advanced">
+    <Filter Include="src-basic-level\038-Advanced">
       <UniqueIdentifier>{d7d7fe68-9a8c-4ae2-9581-d808937478b5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -330,7 +330,7 @@
       <Filter>src-basic-level\036-Advanced</Filter>
     </ClInclude>
     <ClInclude Include="core\include\w3d.h">
-      <Filter>src-basic-level\039-Advanced</Filter>
+      <Filter>src-basic-level\038-Advanced</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -609,7 +609,7 @@
       <Filter>src-basic-level\036-Advanced</Filter>
     </ClCompile>
     <ClCompile Include="core\src\w3d.cpp">
-      <Filter>src-basic-level\039-Advanced</Filter>
+      <Filter>src-basic-level\038-Advanced</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

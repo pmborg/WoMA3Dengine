@@ -79,6 +79,9 @@
     <Filter Include="src-basic-level\036-Advanced">
       <UniqueIdentifier>{8b852649-81ab-49c6-bb3e-4d3476d58812}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src-basic-level\038-Advanced">
+      <UniqueIdentifier>{6dc3eddd-1076-4c0b-a1d8-455eda355943}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\include\main.h">
@@ -325,6 +328,9 @@
     <ClInclude Include="..\tech-level.h" />
     <ClInclude Include="core\include\DXrenderTextureClass.h">
       <Filter>src-basic-level\036-Advanced</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\w3d.h">
+      <Filter>src-basic-level\038-Advanced</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -601,6 +607,9 @@
     </ClCompile>
     <ClCompile Include="core\src\DXrenderTextureClass.cpp">
       <Filter>src-basic-level\036-Advanced</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\w3d.cpp">
+      <Filter>src-basic-level\038-Advanced</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

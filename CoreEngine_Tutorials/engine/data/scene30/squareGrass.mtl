@@ -1,0 +1,8 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 15.03.2012 23:05:26
+
+newmtl Material1
+	map_Kd grassTexture.jpg
+
+newmtl Material2
+	map_Kd grassTexture.jpg

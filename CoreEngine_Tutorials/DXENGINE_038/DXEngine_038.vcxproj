@@ -72,6 +72,7 @@
     <ClInclude Include="core\include\systemManager.h" />
     <ClInclude Include="core\include\timerClass.h" />
     <ClInclude Include="core\include\TrigonometryMathClass.h" />
+    <ClInclude Include="core\include\w3d.h" />
     <ClInclude Include="core\include\weatherClass.h" />
     <ClInclude Include="core\include\win32InputClass.h" />
     <ClInclude Include="core\include\winCpuClass.h" />
@@ -130,6 +131,7 @@
     <ClCompile Include="core\src\QuadTree.cpp" />
     <ClCompile Include="core\src\SceneManager.cpp" />
     <ClCompile Include="core\src\SceneNode.cpp" />
+    <ClCompile Include="core\src\w3d.cpp" />
     <ClCompile Include="core\src\winWomaSetupManager.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="core\src\0CheckOS.cpp" />
