@@ -20,7 +20,7 @@ float4 HasShadows(float4 lightViewPosition)
         // Compare the depth of the shadow map value and the depth of the light to determine whether to shadow or to light this pixel
         // If the light is in front of the object then light the pixel, if not then shadow this pixel since an object (occluder) is casting a shadow on it
         if (lightDepthValue > (depthValue + bias))
-            return float4 (0.55f, 0.55f, 0.55f, 1); //On Shadow: return 55% of light
+            return float4 (0.505f, 0.50f, 0.50f, 1); //On Shadow: return 50% of light
     }
 
     return 1; //Not on Shadow: return 100% of light
