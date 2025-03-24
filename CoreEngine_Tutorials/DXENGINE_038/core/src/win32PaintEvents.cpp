@@ -234,7 +234,6 @@ int MainWindowPaint(UINT monitor)
 
 	PaintSetup(hdc, hdcMem, font_title, font, scr);
 
-#if defined USE_LOADING_THREADS || DX_ENGINE_LEVEL >= 37
 	if (WOMA::game_state == GAME_LOADING)
 	{
 		TCHAR printOnLoading[MAX_STR_LEN] = { 0 };
@@ -254,7 +253,6 @@ int MainWindowPaint(UINT monitor)
 			TextToPrintOnLoading.label.c_str(), (int)_tcslen(TextToPrintOnLoading.label.c_str()));
 		BitBlt(hdc, 0, 0, SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT, hdcMem, 0, 0, SRCPAINT);
 	}
-#endif
 
 	// Restore the old bitmap
 	SelectObject(hdcMem, hbmOld);

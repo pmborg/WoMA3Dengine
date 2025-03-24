@@ -648,9 +648,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)	//
 
 		WOMA::sceneManager->addModel(WOMA::sceneManager->RootNode, objModel[i]);			// Add node to nodesList: RootNode
 
-	#if defined USE_LOADING_THREADS || DX_ENGINE_LEVEL >= 37
 		WOMA::num_loading_objects++;
-	#endif
 	}
 #endif
 

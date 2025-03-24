@@ -30,9 +30,7 @@
 #if (defined DX_ENGINE)
 #include "DXmodelClass.h"
 #endif
-#ifdef OPENGL3
 #include "GLmodelClass.h"
-#endif
 
 #include "dxWinSystemClass.h"
 
@@ -80,10 +78,6 @@ ApplicationClass::ApplicationClass()
 	ClearColor[2] = 0.8f;
 	ClearColor[3] = 1.0f;
 
-	lightViewMatrix			= NULL;
-	ShadowProjectionMatrix	= NULL;
-	m_RenderTexture			= NULL;
-
 	m_Light = NULL;
 
 	// TERRAIN
@@ -125,7 +119,6 @@ void ApplicationClass::Shutdown()
 
 	//3D:
 
-#if defined OPENGL3
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
 	{
 		SAFE_SHUTDOWN_MODELGL3(m_1stSquare3DColorModel);			//DEMO1:
@@ -143,7 +136,6 @@ void ApplicationClass::Shutdown()
 		SAFE_SHUTDOWN_MODELGL3(m_1stTriangleTextureVertexModel);
 	}
 	else
-#endif
 	{
 #if (defined DX_ENGINE)
 		SAFE_SHUTDOWN_MODELDX(m_1stSquare3DColorModel);
@@ -172,13 +164,11 @@ void ApplicationClass::Shutdown()
 	}
 #endif
 
-#if defined OPENGL3
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
 	{
 		SAFE_SHUTDOWN_MODELGL3(m_3th3DModel1);
 		SAFE_SHUTDOWN_MODELGL3(m_3th3DModel2);
 	}
-#endif
 
 #if (defined DX_ENGINE)
 	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
@@ -192,7 +182,6 @@ void ApplicationClass::Shutdown()
 	}
 #endif
 
-#if defined OPENGL3
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
 	{
 		SAFE_SHUTDOWN_MODELGL3(m_cube1Model);
@@ -202,30 +191,21 @@ void ApplicationClass::Shutdown()
 		SAFE_SHUTDOWN_MODELGL3(m_SphereModel2);
 		SAFE_SHUTDOWN_MODELGL3(m_SkyModel);
 	}
-#endif
 
 	//2D:
 	DEMO_WOMA_APPLICATION_Shutdown2D();
 
 
 	for (int i = 0; i < objModel.size(); i++) {
-#if defined OPENGL3
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) {
 			SAFE_SHUTDOWN_MODELGL3(objModel[i]);
 		} 
 		else 
-#endif
 		{
 			SAFE_SHUTDOWN_MODELDX(objModel[i]);
 		}
 	}
 
-	SAFE_SHUTDOWN(m_RenderTexture);
-
-
-#if DX_ENGINE_LEVEL >= 37 && defined ALLOW_CBIND_PROGRESS_BAR
-	SAFE_DELETE (bindBar);
-#endif
 
 	for (UINT i = 0; i <m_Position.size(); i++) {
 		SAFE_DELETE(m_Position[i]);
@@ -254,10 +234,8 @@ void ApplicationClass::WOMA_APPLICATION_Shutdown()
 		SAFE_SHUTDOWN_MODELDX(m_lightRayModel);
 #endif
 
-#if defined OPENGL3
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
 		SAFE_SHUTDOWN_MODELGL3(m_lightRayModel);
-#endif
 }
 
 //-----------------------------------------------------------------------------------------
@@ -375,41 +353,6 @@ void ApplicationClass::SetPlayerPosition(UINT netID)
 }
 
 
-#if DX_ENGINE_LEVEL >= 37 && defined ALLOW_CBIND_PROGRESS_BAR
-bindBar = NEW CBind;
-// PROGRESS BAR:
-/*
-CreateWindowExA(
-	_In_ DWORD dwExStyle,
-	_In_opt_ LPCSTR lpClassName,
-	_In_opt_ LPCSTR lpWindowName,
-	_In_ DWORD dwStyle,
-	_In_ int X,
-	_In_ int Y,
-	_In_ int nWidth,
-	_In_ int nHeight,
-	_In_opt_ HWND hWndParent,
-	_In_opt_ HMENU hMenu,
-	_In_opt_ HINSTANCE hInstance,
-	_In_opt_ LPVOID lpParam);
-*/
-bindBar->hwndPrgBar = CreateWindowEx(0, PROGRESS_CLASS, NULL,
-	WS_CHILD | WS_VISIBLE | PBS_SMOOTH,
-	50, SystemHandle->AppSettings->WINDOW_WIDTH - 100,
-	200, 30,
-	SystemHandle->m_hWnd, //Equivalent: SystemHandle->windowsArray[SystemHandle->AppSettings->UI_MONITOR].hWnd,
-	(HMENU)401,
-	SystemHandle->m_hinstance,
-	NULL);
-
-SendMessage(bindBar->hwndPrgBar, PBM_SETRANGE, 0, (LPARAM)MAKELPARAM(0, 100));
-SendMessage(bindBar->hwndPrgBar, PBM_SETBKCOLOR, 0, RGB(0, 0, 0));
-SendMessage(bindBar->hwndPrgBar, PBM_SETBARCOLOR, 0, RGB(0, 0, 128));
-SendMessage(bindBar->hwndPrgBar, PBM_SETPOS, (WPARAM)(0), 0);
-
-ShowWindow(bindBar->hwndPrgBar, SW_SHOWNORMAL);
-#endif
-
 // --------------------------------------------------------------------------------------------
 // INIT/LOAD 3D Objects
 // --------------------------------------------------------------------------------------------
@@ -464,20 +407,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 
 		objModel[i]->m_ObjId = i; //SYNC-ID: objModel[i] with: xml_loader.theWorld[i]
 
-			if ((SHADER_TYPE)SystemHandle->xml_loader.theWorld[i].shader != SHADER_TEXTURE_LIGHT_RENDERSHADOW) {
-				SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows = true;
-				SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows = false;
-				objModel[i]->ModelCastShadow = true;
-				objModel[i]->ModelRenderShadow = false;
-			}
-			else
-			{
-				SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows = true;
-				SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows = true;
-				objModel[i]->ModelCastShadow = true;
-				objModel[i]->ModelRenderShadow = true;
-			}
-
 		if (!(objModel[i]->LoadModel(SystemHandle->xml_loader.theWorld[i].filename, Driver, (SHADER_TYPE)SystemHandle->xml_loader.theWorld[i].shader,
 			SystemHandle->xml_loader.theWorld[i].filename, 
 			SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows, 
@@ -492,7 +421,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 			RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);  // Invoke: Window PAINT before end.
 
 		sceneManager->addModel(sceneManager->RootNode, objModel[i]);	// Add node to nodesList: RootNode
-		WOMA::num_loading_objects++;
 	}
 
 	SystemHandle->ProcessPerformanceStats();
@@ -500,22 +428,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	WOMA_LOGManager_DebugMSGAUTO("Time spent on OBJ(s) load: %" PRId64 "\n", passedTotalTime2);
 	//WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("passedTotalTime2: %ld\n", (long)passedTotalTime2));
 
-#if DX_ENGINE_LEVEL >= 37 && defined ALLOW_CBIND_PROGRESS_BAR
-	SendMessage(bindBar->hwndPrgBar, PBM_SETRANGE, 0, (LPARAM)MAKELPARAM(0, 100));
-	SendMessage(bindBar->hwndPrgBar, PBM_SETPOS, (WPARAM)(0), 99);
-#endif
-
 	//SHADOWMAP //////////////////////////////////////////////////////////////////////////////////////////////////////
-	m_Light->GenerateOrthoMatrix(15, 15, 20, 0.1f); // Control Zoom in Shadow Map here! 15, 15
-	float LightX = USELIGHTSIZE * FAST_sin(initWorld->SunAzimuth);		// Real Sun Position on Sky:
-	float LightZ = USELIGHTSIZE * FAST_cos(initWorld->SunAzimuth);		// Real Sun Position on Sky:
-	float LightY = USELIGHTSIZE * FAST_sin(initWorld->SunElevation);	// Sun Elevation
-	m_Light->GenerateViewMatrix(LightX, LightY, LightZ);
-
-	m_RenderTexture = NEW DXrendertextureclass;
-	const int SHADOWMAP_WIDTH = SystemHandle->AppSettings->MaxTextureSize;  //2048;
-	const int SHADOWMAP_HEIGHT = SystemHandle->AppSettings->MaxTextureSize; //2048; 
-	IF_NOT_RETURN_FALSE(m_RenderTexture->Initialize(Driver, SHADOWMAP_WIDTH, SHADOWMAP_HEIGHT, SystemHandle->AppSettings->SCREEN_DEPTH, SystemHandle->AppSettings->SCREEN_NEAR));
 
 	//TERRAIN ////////////////////////////////////////////////////////////////////////////////////////////////////////
 

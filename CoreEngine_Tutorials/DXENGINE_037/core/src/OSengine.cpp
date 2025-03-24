@@ -197,9 +197,7 @@ namespace WOMA
 #if defined USE_LOADING_THREADS || defined USE_MAIN_THREAD //vars
 	UINT	num_running_THREADS = 0;
 #endif
-#if defined USE_LOADING_THREADS || DX_ENGINE_LEVEL >= 37
 	UINT	num_loading_objects = 1;
-#endif
 
 	TCHAR   APP_NAME[MAX_STR_LEN] = { 0 };              // "Aplication Name"
 

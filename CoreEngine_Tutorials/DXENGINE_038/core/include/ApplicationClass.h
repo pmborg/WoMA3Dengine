@@ -76,6 +76,10 @@
 #define PASS_MINIMAP2		12
 #define PASS_MINIMAP3		13
 
+#if DX_ENGINE_LEVEL >= 37 && defined ALLOW_CBIND_PROGRESS_BAR
+#include "cbind.h"
+#endif
+
 #include "virtualModelClass.h"
 extern std::vector<VirtualModelClass*> m_screenShots;
 
@@ -270,6 +274,10 @@ public:
 	DXshaderClass* m_FontV2Shader = NULL;
 	IDXGIKeyedMutex* keyedMutex11 = NULL;
 	IDXGIKeyedMutex* keyedMutex10 = NULL;
+#endif
+
+#if DX_ENGINE_LEVEL >= 37 && defined ALLOW_CBIND_PROGRESS_BAR
+	CBind* bindBar = NULL;
 #endif
 
 #if defined USE_LIGHT_RAY
