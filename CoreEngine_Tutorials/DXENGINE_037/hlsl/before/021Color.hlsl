@@ -2,7 +2,7 @@
 // Filename: 021Color.hlsl
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
-*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2023
+*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2017
 *	-------------------------------------------------------------------------------------------
 *	code by : Pedro Borges - pmborg@yahoo.com
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
@@ -80,7 +80,7 @@ cbuffer VSShaderParametersBuffer// SYNC: DXshaderClass.h
 	bool	VShasShadowMap;
 	float	VSpad2;
 
-	// 36 BLOCK: VS5
+	// 45 BLOCK: VS5
 	matrix	ViewToLightProj;
 };
 

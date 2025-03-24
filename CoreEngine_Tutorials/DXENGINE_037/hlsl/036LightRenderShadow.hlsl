@@ -9,6 +9,8 @@
 *
 **********************************************************************************************/
 
+//case SHADER_TEXTURE_LIGHT_CASTSHADOW:
+
 #define PS_USE_LIGHT            //23
 #define PS_USE_ALFA_TEXTURE     //33
 #define PS_USE_ALFACOLOR        //33
@@ -198,10 +200,17 @@ float4 MyPixelShader036LightRenderShadow(PSIn input) : SV_TARGET
         }
     #endif
     
-		//if (lightType == 1)	
-			lightIntensity = PSlightFunc1(input.normal);
-		//else
-		//	lightIntensity = PSlightFunc2(input.normal);
+	#if defined PS_USE_SHADOWMAP_TEXTURE//36
+        if (isSky)
+            lightIntensity = PSlightFunc2(input.normal);
+        else
+            lightIntensity = PSlightFunc1(input.normal);
+	#else
+        if (lightType == 1) 
+            lightIntensity = PSlightFunc2(input.normal);
+        else
+            lightIntensity = PSlightFunc1(input.normal);
+	#endif
 
 
         if (hasTexture) {
