@@ -1,0 +1,15 @@
+<woma>
+  <!-- ENGINE LVL 25-->
+  <camera screenNear="0.1f" screenDepth="2048" >
+    <initPos x="-0.5f" y="1" z="-9" />
+    <initRot x="0" y="0" z="0" />
+  </camera>
+
+  <!-- ENGINE LVL 31-->
+  <fog start="32" end="256"/>
+  
+  <world hVisibility="128" seaLevel="0" size="512" patchSize="64" skyDayTexture="engine/data/sky/NEW_SKY_DOME.jpg" skyNightTexture=""/>
+  <object fromPage="36" toPage="36" depend="0" scale="0.004f" posX="0" translateY="0.3" posZ="0" rotX="" rotY="" rotZ="" shader="" filename="engine/data/Chess/branco-bispo.obj"/>
+  <object fromPage="36" toPage="36" depend="0" scale="1.15" posX="-0.55f" translateY="0" posZ="0.5f" rotX="" rotY="" rotZ="" shader="6" filename="engine/data/Chess/Chess.obj"/>
+
+</woma>
