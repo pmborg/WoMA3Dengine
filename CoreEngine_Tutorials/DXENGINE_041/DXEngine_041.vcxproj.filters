@@ -1,599 +1,643 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="core">
-      <UniqueIdentifier>{66c2b98e-c776-4d04-bcd2-3e4cd2c805b3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="core\include">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="core\src">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="src">
-      <UniqueIdentifier>{9ca981c0-08bf-486f-91a1-970de7b44fa4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="include">
       <UniqueIdentifier>{4146fecd-d626-46df-9bff-42a8aa26cbfa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\dx9">
+    <Filter Include="src-basic-level">
+      <UniqueIdentifier>{9ca981c0-08bf-486f-91a1-970de7b44fa4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-basic-level\Demos">
       <UniqueIdentifier>{b49b00f6-c894-4a98-a3e4-8e7d422954b9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\dx11">
+    <Filter Include="src-basic-level\dx11">
       <UniqueIdentifier>{080542a0-0745-40d7-82b1-faa757996bbf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\dx12">
+    <Filter Include="src-basic-level\dx12">
       <UniqueIdentifier>{4a6fae0c-3497-4fed-ae22-85d8a754bdbd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\OPENGL">
+    <Filter Include="src-basic-level\OPENGL">
       <UniqueIdentifier>{90fc141a-752b-484a-9263-fe967f52690c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\DX">
+    <Filter Include="src-basic-level\App">
       <UniqueIdentifier>{7ba8c3a0-f7f2-426b-9b69-f272369f6d93}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\utils">
-      <UniqueIdentifier>{76cf8724-99d0-4b38-bf5b-54e7fdbe122e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\text">
-      <UniqueIdentifier>{ef8bec6e-6b24-422f-99ea-3070301ddf7b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\dinput">
+    <Filter Include="src-basic-level\dinput">
       <UniqueIdentifier>{a146ba1f-3e6d-43ef-ad86-0de51e8fcf72}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Audio">
+    <Filter Include="src-basic-level\Audio">
       <UniqueIdentifier>{34657b86-30c5-4758-9e6e-dd1c4dc733b2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\SceneManager">
-      <UniqueIdentifier>{15528b4a-a1ac-4381-9197-87e5143a04a7}</UniqueIdentifier>
+    <Filter Include="src-basic-level\core">
+      <UniqueIdentifier>{00617744-d1e1-4797-a6da-cc29f1c2afe3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-basic-level\core\000-Kernel">
+      <UniqueIdentifier>{dec43442-a818-4f43-a9d9-b442c1ef3a80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-basic-level\core\001-MemLeakDetector">
+      <UniqueIdentifier>{eca2c860-cf15-426e-ae13-69132b4f13f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-basic-level\core\002-Windows">
+      <UniqueIdentifier>{75de1fb3-bcc5-4ea7-bcc8-ffb81cb65edc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-basic-level\core\003-Exceptions">
+      <UniqueIdentifier>{bdf26b10-dbf8-4607-9f11-8a57cce2da59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-basic-level\core\004-CheckSystem">
+      <UniqueIdentifier>{9244810a-b1a6-42df-a746-db78174ba252}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-basic-level\core\005-Setup+xml">
+      <UniqueIdentifier>{45af2c24-dc1a-4352-ab6e-7bd2b8f5fcfc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-basic-level\core\005-Setup+xml\xml">
+      <UniqueIdentifier>{1c300e5d-0cc7-4776-9a86-7cb640f109ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-basic-level\core\006-Application+packManager+CPUspeed">
+      <UniqueIdentifier>{a939b0ab-5778-4626-9b87-418dc6ab9ccf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-basic-level\core\007-AstroPositions">
+      <UniqueIdentifier>{9837dcb5-9285-400d-9f60-91345f92f81b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-basic-level\core\009PresentWeather+Forecast">
+      <UniqueIdentifier>{ce8112d7-6972-4cf8-ad85-00ce1abc0fed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-basic-level\RESOURCE">
+      <UniqueIdentifier>{f9d9fe31-c86e-4c1d-8ba3-93adf277d560}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-basic-level\Image">
+      <UniqueIdentifier>{0c38e99a-b941-4e2f-90cd-967f3ba79c81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-basic-level\light">
+      <UniqueIdentifier>{ba95f253-3f62-4670-a3f8-18c114a0b116}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-basic-level\030-Advanced">
+      <UniqueIdentifier>{38226a15-1ca1-4359-bdc1-1256b4b5693e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HLSL">
+      <UniqueIdentifier>{4e00f712-12e2-415f-a061-a609f9d62db9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-basic-level\036-Advanced">
+      <UniqueIdentifier>{8b852649-81ab-49c6-bb3e-4d3476d58812}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-basic-level\039-Advanced">
+      <UniqueIdentifier>{d7d7fe68-9a8c-4ae2-9581-d808937478b5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="core_engine_level.h" />
-    <ClInclude Include="core\include\ApplicationClass.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\astroClass.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\default_settings_xml.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\dumpUploader.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\fileLoader.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\fpsClass.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\GLmathClass.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\idea.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\initWorld.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\language.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\log.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
     <ClInclude Include="core\include\main.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\Math3D.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\mem_leak.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\metarClass.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\minidumperClass.h">
-      <Filter>core\include</Filter>
+      <Filter>src-basic-level\core\000-Kernel</Filter>
     </ClInclude>
     <ClInclude Include="core\include\OSengine.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\OSmain_dir.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\packManager.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\processorInfo.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\stackTrace.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\standard_platform.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\stateMachine.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\SystemClass.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\systemFeatures.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\systemManager.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\timerClass.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\TrigonometryMathClass.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\weatherClass.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\win32InputClass.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\winCpuClass.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\winCpuCores.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\WindowPaintClass.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\winSystemClass.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\wmiUtilClass.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\woma_exception.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\woma_macros.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\WomaSetupManager.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="core\include\xml_loader.h">
-      <Filter>core\include</Filter>
+      <Filter>src-basic-level\core\000-Kernel</Filter>
     </ClInclude>
     <ClInclude Include="core\include\platform.h">
-      <Filter>core\include</Filter>
+      <Filter>src-basic-level\core\000-Kernel</Filter>
     </ClInclude>
-    <ClInclude Include="include\d3dx12.h">
+    <ClInclude Include="core\include\standard_platform.h">
+      <Filter>src-basic-level\core\000-Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\SystemClass.h">
+      <Filter>src-basic-level\core\000-Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\winSystemClass.h">
+      <Filter>src-basic-level\core\000-Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\woma_macros.h">
+      <Filter>src-basic-level\core\000-Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\language.h">
+      <Filter>src-basic-level\core\001-MemLeakDetector</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\log.h">
+      <Filter>src-basic-level\core\001-MemLeakDetector</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\mem_leak.h">
+      <Filter>src-basic-level\core\001-MemLeakDetector</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\OSmain_dir.h">
+      <Filter>src-basic-level\core\001-MemLeakDetector</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\stateMachine.h">
+      <Filter>src-basic-level\core\002-Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\win32InputClass.h">
+      <Filter>src-basic-level\core\002-Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\dumpUploader.h">
+      <Filter>src-basic-level\core\003-Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\fileLoader.h">
+      <Filter>src-basic-level\core\003-Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\minidumperClass.h">
+      <Filter>src-basic-level\core\003-Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\woma_exception.h">
+      <Filter>src-basic-level\core\003-Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\stackTrace.h">
+      <Filter>src-basic-level\core\003-Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\TrigonometryMathClass.h">
+      <Filter>src-basic-level\core\004-CheckSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\winCpuCores.h">
+      <Filter>src-basic-level\core\004-CheckSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\Math3D.h">
+      <Filter>src-basic-level\core\004-CheckSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\fpsClass.h">
+      <Filter>src-basic-level\core\004-CheckSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\WomaSetupManager.h">
+      <Filter>src-basic-level\core\005-Setup+xml</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\xml_loader.h">
+      <Filter>src-basic-level\core\005-Setup+xml\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\ApplicationClass.h">
+      <Filter>src-basic-level\core\006-Application+packManager+CPUspeed</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\packManager.h">
+      <Filter>src-basic-level\core\006-Application+packManager+CPUspeed</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\idea.h">
+      <Filter>src-basic-level\core\006-Application+packManager+CPUspeed</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\winCpuClass.h">
+      <Filter>src-basic-level\core\006-Application+packManager+CPUspeed</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\astroClass.h">
+      <Filter>src-basic-level\core\007-AstroPositions</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\initWorld.h">
+      <Filter>src-basic-level\core\007-AstroPositions</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\WindowPaintClass.h">
+      <Filter>src-basic-level\core\004-CheckSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>src-basic-level\RESOURCE</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\dxWinSystemClass.h">
+      <Filter>src-basic-level\dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\DX9class.h">
+      <Filter>src-basic-level\dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\DX11class.h">
+      <Filter>src-basic-level\dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\DXbasicTypes.h">
+      <Filter>src-basic-level\dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\DXcameraClass.h">
+      <Filter>src-basic-level\dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\DXdrivers.h">
+      <Filter>src-basic-level\dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\DXengine.h">
+      <Filter>src-basic-level\dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\DXmodelClass.h">
+      <Filter>src-basic-level\dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\DXshaderClass.h">
+      <Filter>src-basic-level\dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\DxTextClass.h">
+      <Filter>src-basic-level\dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\dx12class.h">
+      <Filter>src-basic-level\dx12</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\DX12Textureclass.h">
+      <Filter>src-basic-level\dx12</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\AudioClass.h">
+      <Filter>src-basic-level\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\WomaSphere.h">
+      <Filter>src-basic-level\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\WomaCube.h">
+      <Filter>src-basic-level\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\GLcameraClass.h">
+      <Filter>src-basic-level\OPENGL</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\GLmathClass.h">
+      <Filter>src-basic-level\OPENGL</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\GLmodelClass.h">
+      <Filter>src-basic-level\OPENGL</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\GLopenGLclass.h">
+      <Filter>src-basic-level\OPENGL</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\GLshaderClass.h">
+      <Filter>src-basic-level\OPENGL</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\GLTextClass.h">
+      <Filter>src-basic-level\OPENGL</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\glTextureclass.h">
+      <Filter>src-basic-level\OPENGL</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\playerClass.h">
+      <Filter>src-basic-level\dinput</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\positionClass.h">
+      <Filter>src-basic-level\dinput</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\wglopenglclass.h">
+      <Filter>src-basic-level\OPENGL</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\weatherClass.h">
+      <Filter>src-basic-level\core\009PresentWeather+Forecast</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\metarClass.h">
+      <Filter>src-basic-level\core\009PresentWeather+Forecast</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\default_settings_xml.h">
+      <Filter>src-basic-level\core\000-Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\ApplicationTextClass.h">
+      <Filter>src-basic-level\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\d3dx12.h">
+      <Filter>src-basic-level\dx12</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\processorInfo.h">
+      <Filter>src-basic-level\core\004-CheckSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\systemFeatures.h">
+      <Filter>src-basic-level\core\004-CheckSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\systemManager.h">
+      <Filter>src-basic-level\core\004-CheckSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\wmiUtilClass.h">
+      <Filter>src-basic-level\core\004-CheckSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\timerClass.h">
+      <Filter>src-basic-level\core\004-CheckSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\textFontClass.h">
+      <Filter>src-basic-level\Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\woma_engine_assets.h" />
+    <ClInclude Include="..\level.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\DemoApplicationClass.h">
+    <ClInclude Include="core\include\womadriverclass.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\DX9class.h">
+    <ClInclude Include="core\include\vertexTypes.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\DX11class.h">
+    <ClInclude Include="core\include\ImageLoaderClass.h">
+      <Filter>src-basic-level\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\lightClass.h">
+      <Filter>src-basic-level\light</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\virtualCameraClass.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\dx12class.h">
+    <ClInclude Include="core\include\virtualModelClass.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\DXengine.h">
+    <ClInclude Include="core\include\virtualTextClass.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\dxWinSystemClass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\modelClass.h">
+      <Filter>src-basic-level\030-Advanced</Filter>
     </ClInclude>
-    <ClInclude Include="include\GLopenGLclass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\QuadTree.h">
+      <Filter>src-basic-level\030-Advanced</Filter>
     </ClInclude>
-    <ClInclude Include="include\wglopenglclass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\SceneManager.h">
+      <Filter>src-basic-level\030-Advanced</Filter>
     </ClInclude>
-    <ClInclude Include="include\womadriverclass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\SceneNode.h">
+      <Filter>src-basic-level\030-Advanced</Filter>
     </ClInclude>
-    <ClInclude Include="include\DX12Textureclass.h">
-      <Filter>include</Filter>
+    <ClInclude Include="..\tech-level.h" />
+    <ClInclude Include="core\include\DXrenderTextureClass.h">
+      <Filter>src-basic-level\036-Advanced</Filter>
     </ClInclude>
-    <ClInclude Include="include\DXbasicTypes.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DXcameraClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DXdrivers.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DXmodelClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DXshaderClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\GLcameraClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\GLmodelClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\GLshaderClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\glTextureclass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ImageLoaderClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\playerClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\positionClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\vertexTypes.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\virtualCameraClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\virtualModelClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ApplicationTextClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DxTextClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\fileLoader.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\GLTextClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\language.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\lightClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\stackTrace.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\textFontClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\virtualTextClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\win32InputClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\winCpuClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\WomaCube.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\WomaSphere.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\AudioClass.h">
-      <Filter>src\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DXinputclass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DXfrustumClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\modelClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\QuadTree.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SceneManager.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SceneNode.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DXrenderTextureClass.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="38core_engine_level.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\m3d.h">
-      <Filter>include</Filter>
+    <ClInclude Include="core\include\w3d.h">
+      <Filter>src-basic-level\039-Advanced</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
-    <ClCompile Include="core\src\0CheckOS.cpp">
-      <Filter>core\src</Filter>
+    <ClCompile Include="core\src\Dx11DriverFonts.cpp">
+      <Filter>src-basic-level\dx11</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\1CheckSYS.cpp">
-      <Filter>core\src</Filter>
+    <ClCompile Include="core\src\DX11CaptureScreenShot.cpp">
+      <Filter>src-basic-level\dx11</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\2UpdateOSifNeeded.cpp">
-      <Filter>core\src</Filter>
+    <ClCompile Include="core\src\DX11Blending.cpp">
+      <Filter>src-basic-level\dx11</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\3CheckSetup.cpp">
-      <Filter>core\src</Filter>
+    <ClCompile Include="core\src\DX11\DX11CapabilitiesClass.cpp">
+      <Filter>src-basic-level\dx11</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\4CheckEngineUpdates.cpp">
-      <Filter>core\src</Filter>
+    <ClCompile Include="core\src\DX11\DX11Class.cpp">
+      <Filter>src-basic-level\dx11</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\5LaunchEngine.cpp">
-      <Filter>core\src</Filter>
+    <ClCompile Include="core\src\DX11\DX11CreateDevice-and-SwapChain.cpp">
+      <Filter>src-basic-level\dx11</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\6OperatingSystem.cpp">
-      <Filter>core\src</Filter>
+    <ClCompile Include="core\src\DX11\DX11GetModesList.cpp">
+      <Filter>src-basic-level\dx11</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\7ProcessorInfo.cpp">
-      <Filter>core\src</Filter>
+    <ClCompile Include="core\src\DX11LoadTexture.cpp">
+      <Filter>src-basic-level\dx11</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\8SystemFeatures.cpp">
-      <Filter>core\src</Filter>
+    <ClCompile Include="core\src\DX11RasterizerState.cpp">
+      <Filter>src-basic-level\dx11</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\ApplicationClass_ext.cpp">
-      <Filter>core\src</Filter>
+    <ClCompile Include="core\src\DX11\DX11ViewPort-and-Scissor.cpp">
+      <Filter>src-basic-level\dx11</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\astroClass.cpp">
-      <Filter>core\src</Filter>
+    <ClCompile Include="core\src\DX11\DX11Zbuffer.cpp">
+      <Filter>src-basic-level\dx11</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\default_settings_xml.cpp">
-      <Filter>core\src</Filter>
+    <ClCompile Include="core\src\DX12\DX12Class.cpp">
+      <Filter>src-basic-level\dx12</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\dumpUploader.cpp">
-      <Filter>core\src</Filter>
+    <ClCompile Include="core\src\DX12Textureclass.cpp">
+      <Filter>src-basic-level\dx12</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\fileLoader.cpp">
-      <Filter>core\src</Filter>
+    <ClCompile Include="core\src\GLX\GL3w.cpp">
+      <Filter>src-basic-level\OPENGL</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\fpsClass.cpp">
-      <Filter>core\src</Filter>
+    <ClCompile Include="core\src\GLcameraClass.cpp">
+      <Filter>src-basic-level\OPENGL</Filter>
     </ClCompile>
     <ClCompile Include="core\src\GLmathClass.cpp">
-      <Filter>core\src</Filter>
+      <Filter>src-basic-level\OPENGL</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\idea.cpp">
-      <Filter>core\src</Filter>
+    <ClCompile Include="core\src\GLmodelClass.cpp">
+      <Filter>src-basic-level\OPENGL</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\initWorld.cpp">
-      <Filter>core\src</Filter>
+    <ClCompile Include="core\src\GLX\GLopenGLclass.cpp">
+      <Filter>src-basic-level\OPENGL</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\language.cpp">
-      <Filter>core\src</Filter>
+    <ClCompile Include="core\src\GLshaderClass.cpp">
+      <Filter>src-basic-level\OPENGL</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\log.cpp">
-      <Filter>core\src</Filter>
+    <ClCompile Include="core\src\GLTextClass.cpp">
+      <Filter>src-basic-level\OPENGL</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\Math3D.cpp">
-      <Filter>core\src</Filter>
+    <ClCompile Include="core\src\GLTextureclass.cpp">
+      <Filter>src-basic-level\OPENGL</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\mem_leak.cpp">
-      <Filter>core\src</Filter>
+    <ClCompile Include="core\src\DXcameraClass.cpp">
+      <Filter>src-basic-level\dx11</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\MetarClass.cpp">
-      <Filter>core\src</Filter>
+    <ClCompile Include="core\src\DXinputClass.cpp">
+      <Filter>src-basic-level\dx11</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\minidumperClass.cpp">
-      <Filter>core\src</Filter>
+    <ClCompile Include="core\src\DXmodelClass.cpp">
+      <Filter>src-basic-level\dx11</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\OSengine.cpp">
-      <Filter>core\src</Filter>
+    <ClCompile Include="core\src\DXshaderClass.cpp">
+      <Filter>src-basic-level\dx11</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\OSmain_dir.cpp">
-      <Filter>core\src</Filter>
+    <ClCompile Include="core\src\DXshaderLoader.cpp">
+      <Filter>src-basic-level\dx11</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\packManager.cpp">
-      <Filter>core\src</Filter>
+    <ClCompile Include="core\src\DxTextClass.cpp">
+      <Filter>src-basic-level\dx11</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\stackTrace.cpp">
-      <Filter>core\src</Filter>
+    <ClCompile Include="core\src\dxWinSystemClass.cpp">
+      <Filter>src-basic-level\dx11</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\SystemClass.cpp">
-      <Filter>core\src</Filter>
-    </ClCompile>
-    <ClCompile Include="core\src\TimerClass.cpp">
-      <Filter>core\src</Filter>
-    </ClCompile>
-    <ClCompile Include="core\src\TrigonometryMathClass.cpp">
-      <Filter>core\src</Filter>
-    </ClCompile>
-    <ClCompile Include="core\src\WeatherClass.cpp">
-      <Filter>core\src</Filter>
-    </ClCompile>
-    <ClCompile Include="core\src\win32InputClass.cpp">
-      <Filter>core\src</Filter>
-    </ClCompile>
-    <ClCompile Include="core\src\win32MainWindowEvents.cpp">
-      <Filter>core\src</Filter>
-    </ClCompile>
-    <ClCompile Include="core\src\win32PaintEvents.cpp">
-      <Filter>core\src</Filter>
-    </ClCompile>
-    <ClCompile Include="core\src\winCpuClass.cpp">
-      <Filter>core\src</Filter>
-    </ClCompile>
-    <ClCompile Include="core\src\winCpuCores.cpp">
-      <Filter>core\src</Filter>
-    </ClCompile>
-    <ClCompile Include="core\src\WindowPaintClass.cpp">
-      <Filter>core\src</Filter>
-    </ClCompile>
-    <ClCompile Include="core\src\winSystemClass.cpp">
-      <Filter>core\src</Filter>
-    </ClCompile>
-    <ClCompile Include="core\src\winWMIutilClass.cpp">
-      <Filter>core\src</Filter>
-    </ClCompile>
-    <ClCompile Include="core\src\woma_exception.cpp">
-      <Filter>core\src</Filter>
+    <ClCompile Include="core\src\AudioClass.cpp">
+      <Filter>src-basic-level\Audio</Filter>
     </ClCompile>
     <ClCompile Include="core\src\xml_settings_loader.cpp">
-      <Filter>core\src</Filter>
+      <Filter>src-basic-level\core\005-Setup+xml\xml</Filter>
     </ClCompile>
     <ClCompile Include="core\src\xml_settings_saver.cpp">
-      <Filter>core\src</Filter>
+      <Filter>src-basic-level\core\005-Setup+xml\xml</Filter>
     </ClCompile>
-    <ClCompile Include="src\DX11\DX11CapabilitiesClass.cpp">
-      <Filter>src\dx11</Filter>
+    <ClCompile Include="core\src\default_settings_xml.cpp">
+      <Filter>src-basic-level\core\000-Kernel</Filter>
     </ClCompile>
-    <ClCompile Include="src\DX11\DX11Class.cpp">
-      <Filter>src\dx11</Filter>
+    <ClCompile Include="core\src\OSengine.cpp">
+      <Filter>src-basic-level\core\000-Kernel</Filter>
     </ClCompile>
-    <ClCompile Include="src\DX11\DX11CreateDevice-and-SwapChain.cpp">
-      <Filter>src\dx11</Filter>
+    <ClCompile Include="core\src\SystemClass.cpp">
+      <Filter>src-basic-level\core\000-Kernel</Filter>
     </ClCompile>
-    <ClCompile Include="src\DX11\DX11GetModesList.cpp">
-      <Filter>src\dx11</Filter>
+    <ClCompile Include="core\src\winSystemClass.cpp">
+      <Filter>src-basic-level\core\000-Kernel</Filter>
     </ClCompile>
-    <ClCompile Include="src\DX11\DX11ViewPort-and-Scissor.cpp">
-      <Filter>src\dx11</Filter>
+    <ClCompile Include="core\src\language.cpp">
+      <Filter>src-basic-level\core\001-MemLeakDetector</Filter>
     </ClCompile>
-    <ClCompile Include="src\DX11\DX11Zbuffer.cpp">
-      <Filter>src\dx11</Filter>
+    <ClCompile Include="core\src\log.cpp">
+      <Filter>src-basic-level\core\001-MemLeakDetector</Filter>
     </ClCompile>
-    <ClCompile Include="src\DX12\DX12Class.cpp">
-      <Filter>src\dx12</Filter>
+    <ClCompile Include="core\src\mem_leak.cpp">
+      <Filter>src-basic-level\core\001-MemLeakDetector</Filter>
     </ClCompile>
-    <ClCompile Include="src\GLX\GL3w.cpp">
-      <Filter>src\OPENGL</Filter>
+    <ClCompile Include="core\src\OSmain_dir.cpp">
+      <Filter>src-basic-level\core\001-MemLeakDetector</Filter>
     </ClCompile>
-    <ClCompile Include="src\GLX\GLopenGLclass.cpp">
-      <Filter>src\OPENGL</Filter>
+    <ClCompile Include="core\src\win32InputClass.cpp">
+      <Filter>src-basic-level\core\002-Windows</Filter>
     </ClCompile>
-    <ClCompile Include="src\GLX\wglopenglclass.cpp">
-      <Filter>src\OPENGL</Filter>
+    <ClCompile Include="core\src\win32MainWindowEvents.cpp">
+      <Filter>src-basic-level\core\002-Windows</Filter>
     </ClCompile>
-    <ClCompile Include="src\dxWinSystemClass.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="core\src\win32PaintEvents.cpp">
+      <Filter>src-basic-level\core\002-Windows</Filter>
     </ClCompile>
-    <ClCompile Include="src\initApplication_Basics.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="core\src\fileLoader.cpp">
+      <Filter>src-basic-level\core\003-Exceptions</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderApplication_Basics.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="core\src\minidumperClass.cpp">
+      <Filter>src-basic-level\core\003-Exceptions</Filter>
     </ClCompile>
-    <ClCompile Include="src\DX11LoadTexture.cpp">
-      <Filter>src\dx11</Filter>
+    <ClCompile Include="core\src\dumpUploader.cpp">
+      <Filter>src-basic-level\core\003-Exceptions</Filter>
     </ClCompile>
-    <ClCompile Include="src\DX11RasterizerState.cpp">
-      <Filter>src\dx11</Filter>
+    <ClCompile Include="core\src\stackTrace.cpp">
+      <Filter>src-basic-level\core\003-Exceptions</Filter>
     </ClCompile>
-    <ClCompile Include="src\DX12Textureclass.cpp">
-      <Filter>src\dx12</Filter>
+    <ClCompile Include="core\src\woma_exception.cpp">
+      <Filter>src-basic-level\core\003-Exceptions</Filter>
     </ClCompile>
-    <ClCompile Include="src\GLcameraClass.cpp">
-      <Filter>src\OPENGL</Filter>
+    <ClCompile Include="core\src\fpsClass.cpp">
+      <Filter>src-basic-level\core\004-CheckSystem</Filter>
     </ClCompile>
-    <ClCompile Include="src\GLmodelClass.cpp">
-      <Filter>src\OPENGL</Filter>
+    <ClCompile Include="core\src\Math3D.cpp">
+      <Filter>src-basic-level\core\004-CheckSystem</Filter>
     </ClCompile>
-    <ClCompile Include="src\GLshaderClass.cpp">
-      <Filter>src\OPENGL</Filter>
+    <ClCompile Include="core\src\OperatingSystem.cpp">
+      <Filter>src-basic-level\core\004-CheckSystem</Filter>
     </ClCompile>
-    <ClCompile Include="src\GLTextureclass.cpp">
-      <Filter>src\OPENGL</Filter>
+    <ClCompile Include="core\src\0CheckOS.cpp">
+      <Filter>src-basic-level\core\004-CheckSystem</Filter>
     </ClCompile>
-    <ClCompile Include="src\DXshaderLoader.cpp">
-      <Filter>src\DX</Filter>
+    <ClCompile Include="core\src\1CheckSYS.cpp">
+      <Filter>src-basic-level\core\004-CheckSystem</Filter>
     </ClCompile>
-    <ClCompile Include="src\DXcameraClass.cpp">
-      <Filter>src\DX</Filter>
+    <ClCompile Include="core\src\2UpdateOSifNeeded.cpp">
+      <Filter>src-basic-level\core\004-CheckSystem</Filter>
     </ClCompile>
-    <ClCompile Include="src\DXmodelClass.cpp">
-      <Filter>src\DX</Filter>
+    <ClCompile Include="core\src\3CheckSetup.cpp">
+      <Filter>src-basic-level\core\004-CheckSystem</Filter>
     </ClCompile>
-    <ClCompile Include="src\DXshaderClass.cpp">
-      <Filter>src\DX</Filter>
+    <ClCompile Include="core\src\4CheckEngineUpdates.cpp">
+      <Filter>src-basic-level\core\004-CheckSystem</Filter>
     </ClCompile>
-    <ClCompile Include="src\ImageLoaderClass.cpp">
-      <Filter>src\utils</Filter>
+    <ClCompile Include="core\src\5LaunchEngine.cpp">
+      <Filter>src-basic-level\core\004-CheckSystem</Filter>
     </ClCompile>
-    <ClCompile Include="..\DXENGINE_021\src\winWomaSetupManager.cpp">
-      <Filter>src\utils</Filter>
+    <ClCompile Include="core\src\7ProcessorInfo.cpp">
+      <Filter>src-basic-level\core\004-CheckSystem</Filter>
     </ClCompile>
-    <ClCompile Include="src\DX11Blending.cpp">
-      <Filter>src\dx11</Filter>
+    <ClCompile Include="core\src\8SystemFeatures.cpp">
+      <Filter>src-basic-level\core\004-CheckSystem</Filter>
     </ClCompile>
-    <ClCompile Include="src\lightClass.cpp">
-      <Filter>src\utils</Filter>
+    <ClCompile Include="core\src\winWMIutilClass.cpp">
+      <Filter>src-basic-level\core\004-CheckSystem</Filter>
     </ClCompile>
-    <ClCompile Include="src\Application_LightRay.cpp">
-      <Filter>src\utils</Filter>
+    <ClCompile Include="core\src\winCpuCores.cpp">
+      <Filter>src-basic-level\core\004-CheckSystem</Filter>
     </ClCompile>
-    <ClCompile Include="src\WomaCube.cpp">
-      <Filter>src\utils</Filter>
+    <ClCompile Include="core\src\TrigonometryMathClass.cpp">
+      <Filter>src-basic-level\core\004-CheckSystem</Filter>
     </ClCompile>
-    <ClCompile Include="src\WomaSphere.cpp">
-      <Filter>src\utils</Filter>
+    <ClCompile Include="core\src\TimerClass.cpp">
+      <Filter>src-basic-level\core\004-CheckSystem</Filter>
     </ClCompile>
-    <ClCompile Include="src\DxTextClass.cpp">
-      <Filter>src\text</Filter>
+    <ClCompile Include="core\src\winWomaSetupManager.cpp">
+      <Filter>src-basic-level\core\005-Setup+xml</Filter>
     </ClCompile>
-    <ClCompile Include="src\textFontClass.cpp">
-      <Filter>src\text</Filter>
+    <ClCompile Include="core\src\packManager.cpp">
+      <Filter>src-basic-level\core\006-Application+packManager+CPUspeed</Filter>
     </ClCompile>
-    <ClCompile Include="src\ApplicationTextClass.cpp">
-      <Filter>src\text</Filter>
+    <ClCompile Include="core\src\idea.cpp">
+      <Filter>src-basic-level\core\006-Application+packManager+CPUspeed</Filter>
     </ClCompile>
-    <ClCompile Include="src\DXinputClass.cpp">
-      <Filter>src\dinput</Filter>
+    <ClCompile Include="core\src\winCpuClass.cpp">
+      <Filter>src-basic-level\core\006-Application+packManager+CPUspeed</Filter>
     </ClCompile>
-    <ClCompile Include="src\handleInputs.cpp">
-      <Filter>src\dinput</Filter>
+    <ClCompile Include="core\src\ApplicationClass.cpp">
+      <Filter>src-basic-level\core\006-Application+packManager+CPUspeed</Filter>
     </ClCompile>
-    <ClCompile Include="src\playerClass.cpp">
-      <Filter>src\dinput</Filter>
+    <ClCompile Include="core\src\initWorld.cpp">
+      <Filter>src-basic-level\core\007-AstroPositions</Filter>
     </ClCompile>
-    <ClCompile Include="src\positionClass.cpp">
-      <Filter>src\dinput</Filter>
+    <ClCompile Include="core\src\astroClass.cpp">
+      <Filter>src-basic-level\core\007-AstroPositions</Filter>
     </ClCompile>
-    <ClCompile Include="src\AudioClass.cpp">
-      <Filter>src\Audio</Filter>
+    <ClCompile Include="core\src\WeatherClass.cpp">
+      <Filter>src-basic-level\core\009PresentWeather+Forecast</Filter>
     </ClCompile>
-    <ClCompile Include="src\QuadTree.cpp">
-      <Filter>src\SceneManager</Filter>
+    <ClCompile Include="core\src\MetarClass.cpp">
+      <Filter>src-basic-level\core\009PresentWeather+Forecast</Filter>
     </ClCompile>
-    <ClCompile Include="src\SceneManager.cpp">
-      <Filter>src\SceneManager</Filter>
+    <ClCompile Include="core\src\WindowPaintClass.cpp">
+      <Filter>src-basic-level\core\004-CheckSystem</Filter>
     </ClCompile>
-    <ClCompile Include="src\SceneNode.cpp">
-      <Filter>src\SceneManager</Filter>
+    <ClCompile Include="core\src\Application_LightRay.cpp">
+      <Filter>src-basic-level\dinput</Filter>
     </ClCompile>
-    <ClCompile Include="src\DXfrustumClass.cpp">
-      <Filter>src\dx11</Filter>
+    <ClCompile Include="core\src\playerClass.cpp">
+      <Filter>src-basic-level\dinput</Filter>
     </ClCompile>
-    <ClCompile Include="src\GLTextClass.cpp">
-      <Filter>src\OPENGL</Filter>
+    <ClCompile Include="core\src\positionClass.cpp">
+      <Filter>src-basic-level\dinput</Filter>
     </ClCompile>
-    <ClCompile Include="src\ModelClass.cpp">
-      <Filter>src\SceneManager</Filter>
+    <ClCompile Include="core\src\handleInputs.cpp">
+      <Filter>src-basic-level\dinput</Filter>
     </ClCompile>
-    <ClCompile Include="src\DXrenderTextureClass.cpp">
-      <Filter>src\DX</Filter>
+    <ClCompile Include="core\src\initApplication_Basics.cpp">
+      <Filter>src-basic-level\App</Filter>
     </ClCompile>
-    <ClCompile Include="src\m3d.cpp">
-      <Filter>src\utils</Filter>
+    <ClCompile Include="core\src\renderApplication_Basics.cpp">
+      <Filter>src-basic-level\App</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\ApplicationTextClass.cpp">
+      <Filter>src-basic-level\Demos</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\textFontClass.cpp">
+      <Filter>src-basic-level\Demos</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\WomaCube.cpp">
+      <Filter>src-basic-level\Demos</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\WomaSphere.cpp">
+      <Filter>src-basic-level\Demos</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\GLX\wglopenglclass.cpp">
+      <Filter>src-basic-level\OPENGL</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\ImageLoaderClass.cpp">
+      <Filter>src-basic-level\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\lightClass.cpp">
+      <Filter>src-basic-level\light</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\modelClass.cpp">
+      <Filter>src-basic-level\030-Advanced</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\QuadTree.cpp">
+      <Filter>src-basic-level\030-Advanced</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\SceneManager.cpp">
+      <Filter>src-basic-level\030-Advanced</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\SceneNode.cpp">
+      <Filter>src-basic-level\030-Advanced</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\DXfrustumClass.cpp">
+      <Filter>src-basic-level\030-Advanced</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\DXrenderTextureClass.cpp">
+      <Filter>src-basic-level\036-Advanced</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\w3d.cpp">
+      <Filter>src-basic-level\039-Advanced</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="settings.xml" />
-    <Xml Include="world.xml" />
+    <Xml Include="world_40.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="WoMA.ico">
+      <Filter>src-basic-level\RESOURCE</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DXEngine.rc">
+      <Filter>src-basic-level\RESOURCE</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="hlsl\021Color.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="hlsl\022Texture.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="hlsl\023Light.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="hlsl\027Texture.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

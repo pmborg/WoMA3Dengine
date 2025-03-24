@@ -2,7 +2,7 @@
 // Filename: 040LightInstance.hlsl
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
-*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2017
+*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2024
 *	-------------------------------------------------------------------------------------------
 *	code by : Pedro Borges - pmborg@yahoo.com
 *	Downloaded from : http://woma.servegame.com
@@ -64,30 +64,49 @@ SamplerState SampleType;		//: register(s0);		// 3D (default) WRAP
 ////////////////////////////////////////////////////////////////////////////////
 PSIn MyVertexShader040LightInstance(VSIn input, uint instanceID : SV_InstanceID)
 {
-    PSIn output;
+	PSIn output;
 	float4 cameraPosition;
 
 	/*
-	_m00, _m01,_m02, _m03 
-	_m10, _m11,_m12, _m13 
-	_m20, _m21,_m22, _m23 
-	_m30, _m31,_m32, _m33 
+	_m00, _m01,_m02, _m03
+	_m10, _m11,_m12, _m13
+	_m20, _m21,_m22, _m23
+	_m30, _m31,_m32, _m33
 	*/
-	// 40 - Update the position of the vertices based on the data for this particular instance.
-	input.position.x += input.instancePosition.x * (1/worldMatrix._m00);
-	input.position.y += input.instancePosition.y * (1/worldMatrix._m11);
-	input.position.z += input.instancePosition.z * (1/worldMatrix._m22);
 
-	//21: POSITION: Calculate the position of the vertex against the world, view, and projection matrices
-if (VS_USE_WVP) {
-	output.position = mul(float4(input.position, 1), WVP);	// Calculate the position of the vertex against the world, view, and projection matrices
-} else {
+	matrix <float, 4, 4> rotationAroundY =
+	{
+		{ 1, 0, 0, 0 },		//cos(VSrotY), 0.0f, -sin(VSrotY), 0.0f,
+		{ 0, 1, 0, 0 },		//0.0f, 1.0f, 0.0f, 0.0f,
+		{ 0, 0, 1, 0 },		//sin(VSrotY), 0.0f, cos(VSrotY), 0.0f,
+		{ 0, 0, 0, 1 }		//0.0f, 0.0f, 0.0f, 1.0f
+	};
+	rotationAroundY[0].x = cos(VSrotY);
+	rotationAroundY[0].z = -sin(VSrotY);
+	rotationAroundY[2].x = sin(VSrotY);
+	rotationAroundY[2].z = cos(VSrotY);
+	//[1st] ROTATE the instance
 	float4 position = float4(input.position, 1);
-	position = mul(position, worldMatrix);
-	position = mul(position, view);			//viewMatrix
-	position = mul(position, projection);	//projectionMatrix
-	output.position = position;
-}
+	position = mul(position, rotationAroundY);
+
+	//[2nd] TRANSLATE the instance
+	// 40 - Update the position of the vertices based on the data for this particular instance.
+	//input.position = RotateAroundYInDegrees(input.position, VSrotY);
+	position.x += input.instancePosition.x * (1 / worldMatrix._m00);
+	position.y += input.instancePosition.y * (1 / worldMatrix._m11);
+	position.z += input.instancePosition.z * (1 / worldMatrix._m22);
+
+	//[3th] PRESPECTIVE the instance
+	//21: POSITION: Calculate the position of the vertex against the world, view, and projection matrices
+	if (VS_USE_WVP) {
+		output.position = mul(float4(input.position, 1), WVP);	// Calculate the position of the vertex against the world, view, and projection matrices
+	}
+	else {
+		position = mul(position, worldMatrix);
+		position = mul(position, view);			//viewMatrix
+		position = mul(position, projection);	//projectionMatrix
+		output.position = position;
+	}
 
 	//22: TEXTURE: Store the texture coordinates for the pixel shader:
 	output.texCoords = input.texCoords;
@@ -95,12 +114,12 @@ if (VS_USE_WVP) {
 	cameraPosition = mul(float4(input.position, 1), WV);								// FOG: Calculate the camera position.
 
 	//23: LIGHT: NORMAL
-	if (VShasLight || VShasSpecular) 
+	if (VShasLight || VShasSpecular)
 		output.normal = normalize(mul(input.normal, (float3x3)worldMatrix));// Calculate the normal vector against the world matrix only
-	
+
 	//34: SPECULAR
 #if defined PS_USE_SPECULAR
-	
+
 	output.cameraPosition = cameraPosition;
 
 	if (VShasSpecular)	// If enabled on material, calculate the Specular LIGHT
@@ -110,9 +129,8 @@ if (VS_USE_WVP) {
 	}
 #endif
 
-    return output;
+	return output;
 }
-
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -131,10 +149,10 @@ float4 MyPixelShader040LightInstance(PSIn input) : SV_TARGET
 	// 23: LIGHT
 	if (hasLight) 
 	{
-		//if (lightType == 1)	
+		if (lightType == 1)	
 			lightIntensity = PSlightFunc1(input.normal);
-		//else
-		//	lightIntensity = PSlightFunc2(input.normal);
+		else
+			lightIntensity = PSlightFunc2(input.normal);
 
 		if (hasTexture) {
 			textureColor = textureColor * saturate(emissiveColor + ambientColor + lightIntensity);	

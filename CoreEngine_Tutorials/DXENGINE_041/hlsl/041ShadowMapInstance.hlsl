@@ -2,7 +2,7 @@
 // Filename: 041ShadowMapInstance.hlsl
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
-*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2017
+*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2024
 *	-------------------------------------------------------------------------------------------
 *	code by : Pedro Borges - pmborg@yahoo.com
 *	Downloaded from : http://woma.servegame.com
@@ -41,27 +41,45 @@ struct PSIn
 PSIn MyVertexShader041ShadowMapInstance(VSIn input, uint instanceID : SV_InstanceID)
 {
     PSIn output;
-
 	/*
 	_m00, _m01,_m02, _m03 
 	_m10, _m11,_m12, _m13 
 	_m20, _m21,_m22, _m23 
 	_m30, _m31,_m32, _m33 
 	*/
-	// 51 - Update the position of the vertices based on the data for this particular instance.
-	input.position.x += input.instancePosition.x * (1/worldMatrix._m00);
-	input.position.y += input.instancePosition.y * (1/worldMatrix._m11);
-	input.position.z += input.instancePosition.z * (1/worldMatrix._m22);
-
-if (VS_USE_WVP) {
-	output.position = mul(float4(input.position, 1), WVP);	// Calculate the position of the vertex against the world, view, and projection matrices
-} else {
+	
+	matrix <float, 4, 4> rotationAroundY =
+	{
+		{ 1, 0, 0, 0 },		//cos(VSrotY), 0.0f, -sin(VSrotY), 0.0f,
+		{ 0, 1, 0, 0 },		//0.0f, 1.0f, 0.0f, 0.0f,
+		{ 0, 0, 1, 0 },		//sin(VSrotY), 0.0f, cos(VSrotY), 0.0f,
+		{ 0, 0, 0, 1 }		//0.0f, 0.0f, 0.0f, 1.0f
+	};
+	rotationAroundY[0].x = cos(VSrotY);
+	rotationAroundY[0].z = -sin(VSrotY);
+	rotationAroundY[2].x = sin(VSrotY);
+	rotationAroundY[2].z = cos(VSrotY);
+	//[1st] ROTATE the instance
 	float4 position = float4(input.position, 1);
-	position = mul(position, worldMatrix);
-	position = mul(position, view);			//viewMatrix
-	position = mul(position, projection);	//projectionMatrix
-	output.position = position;
-}
+	position = mul(position, rotationAroundY);
+
+	//[2nd] TRANSLATE the instance
+	// 40 - Update the position of the vertices based on the data for this particular instance.
+	//input.position = RotateAroundYInDegrees(input.position, VSrotY);
+	position.x += input.instancePosition.x * (1 / worldMatrix._m00);
+	position.y += input.instancePosition.y * (1 / worldMatrix._m11);
+	position.z += input.instancePosition.z * (1 / worldMatrix._m22);
+
+	//21: POSITION: Calculate the position of the vertex against the world, view, and projection matrices
+	if (VS_USE_WVP) {
+		output.position = mul(float4(input.position, 1), WVP);	// Calculate the position of the vertex against the world, view, and projection matrices
+	}
+	else {
+		position = mul(position, worldMatrix);
+		position = mul(position, view);			//viewMatrix
+		position = mul(position, projection);	//projectionMatrix
+		output.position = position;
+	}
 
 	output.fDepth = output.position.z / output.position.w;		// Store the position value in a second input value for depth value calculations.
 
