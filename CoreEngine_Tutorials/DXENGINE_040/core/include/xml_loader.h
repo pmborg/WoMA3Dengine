@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: xml_loader.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,13 +17,17 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
+//WomaIntegrityCheck = 1234567222;
 
 #pragma once
 #pragma warning( disable : 5208 ) // warning C5208: unnamed class used in typedef name cannot declare members other than non-static data members, member enumerations, or member classes
 
-#define _CRT_SECURE_NO_WARNINGS
+// Convert from tyni v1 to v2: https://phabricator.mitk.org/T27985
+
 #include "platform.h"
+#if defined USE_TINYXML_LOADER
+
+#include "tinyxml2.h"
 
 #ifdef TIXML_USE_STL
 #include <iostream>
@@ -38,51 +42,51 @@ using namespace std;
 	_CrtMemState startMemState;
 	_CrtMemState endMemState;
 #endif
-
-#include "tinyxml.h"
+	
 
 #if UNICODE
 #ifdef X64
 	#if defined(_DEBUG) & !defined(NDEBUG)
-		#pragma comment( lib, "x64/WDebug/TinyXML_LIBX64_d.lib" )	//DEBUG
+		#pragma comment( lib, "x64/WDebug/TinyXMLv2_LIBX64_d.lib" )	//DEBUG
 	#elif !defined _DEBUG && defined NDEBUG
-		#pragma comment( lib, "x64/WRelease/TinyXML_LIBX64.lib" )	//RELEASE
+		#pragma comment( lib, "x64/WRelease/TinyXMLv2_LIBX64.lib" )	//RELEASE
 	#else
-		#pragma comment( lib, "x64/WRelease/TinyXML_LIBX64.lib" )	//DBGREL
+		#pragma comment( lib, "x64/WRelease/TinyXMLv2_LIBX64.lib" )	//DBGREL
 	#endif
 #else
 	#if defined(_DEBUG) & !defined(NDEBUG)
-		#pragma comment( lib, "Win32/WDebug/TinyXML_LIB_d.lib" )	//DEBUG
+		#pragma comment( lib, "Win32/WDebug/TinyXMLv2_LIB_d.lib" )	//DEBUG
 	#elif !defined _DEBUG && defined NDEBUG
-		#pragma comment( lib, "Win32/WRelease/TinyXML_LIB.lib" )	//RELEASE
+		#pragma comment( lib, "Win32/WRelease/TinyXMLv2_LIB.lib" )	//RELEASE
 	#else
-		#pragma comment( lib, "Win32/WRelease/TinyXML_LIB.lib" )	//DBGREL
+		#pragma comment( lib, "Win32/WRelease/TinyXMLv2_LIB.lib" )	//DBGREL
 	#endif
 #endif
 #else
 #ifdef X64
-	#if defined(_DEBUG) & !defined(NDEBUG)
-		#pragma comment( lib, "x64/Debug/TinyXML_LIBX64_d.lib" )	//DEBUG
+	#if defined(_DEBUG)// && !defined(NDEBUG)
+		#pragma comment( lib, "x64/Debug/TinyXMLv2_LIBX64_d.lib" )	//DEBUG
 	#elif !defined _DEBUG && defined NDEBUG
-		#pragma comment( lib, "x64/Release/TinyXML_LIBX64.lib" )	//RELEASE
+		#pragma comment( lib, "x64/Release/TinyXMLv2_LIBX64.lib" )	//RELEASE
 	#else
-		#pragma comment( lib, "x64/Release/TinyXML_LIBX64.lib" )	//DBGREL
+		#pragma comment( lib, "x64/Release/TinyXMLv2_LIBX64.lib" )	//DBGREL
 	#endif
 #else
 	#if defined(_DEBUG) & !defined(NDEBUG)
-		#pragma comment( lib, "Win32/Debug/TinyXML_LIB_d.lib" )		//DEBUG
+		#pragma comment( lib, "Win32/Debug/TinyXMLv2_LIB_d.lib" )		//DEBUG
 	#elif !defined _DEBUG && defined NDEBUG
-		#pragma comment( lib, "Win32/Release/TinyXML_LIB.lib" )		//RELEASE
+		#pragma comment( lib, "Win32/Release/TinyXMLv2_LIB.lib" )		//RELEASE
 	#else
-		#pragma comment( lib, "Win32/Release/TinyXML_LIB.lib" )		//DBGREL
+		#pragma comment( lib, "Win32/Release/TinyXMLv2_LIB.lib" )		//DBGREL
 	#endif
 #endif
 #endif
+
 
 #include "main.h"
 #include <vector>
 
-#include "womadriverclass.h"
+#include "WomaDriverClass.h"
 
 
 // -------------------------------------------------------------------------------------------
@@ -95,10 +99,13 @@ typedef struct {
 
 	// Driver Settings:
 	// --------------------------------------------------------------------------------------------
-	char driverName[10], UseAllMonitors[10], useDoubleBuffering[10], vsync[10], msaa[10];
+	char driverName[10], UseAllMonitors[10], useDoubleBuffering[10], vsync[10];// , msaa[10];
 
 	// Map Settings:
 	// --------------------------------------------------------------------------------------------
+	#if TUTORIAL_PRE_CHAP >= 15
+	char minimapEnabled[10];
+	#endif
 
 		char initPosX[10], initPosY[10], initPosZ[10];
 		char initRotX[10], initRotY[10], initRotZ[10];
@@ -109,15 +116,14 @@ typedef struct {
 
 	// Sound Settings:
 	// --------------------------------------------------------------------------------------------
-	#if defined USE_PLAY_MUSIC
 		char musicEnabled[10];
-	#endif
-	#if DX_ENGINE_LEVEL >= 29 && defined USE_SOUND_MANAGER
 		char soundEffectsEnabled[10];
-	#endif
 
 	// Player Settings:
 	// --------------------------------------------------------------------------------------------
+	#if TUTORIAL_PRE_CHAP >= 60 //80
+		char playerName[16], faction[10], meshType[16];
+	#endif
 
 	// Network Settings:
 	// --------------------------------------------------------------------------------------------
@@ -130,8 +136,10 @@ typedef struct {
 
 	// World Settings:
 	// --------------------------------------------------------------------------------------------
-    char hVisibility[10], seaLevel[10], size[10], patchSize[10], skyDayTexture[MAX_STR_LEN], skyNightTexture[MAX_STR_LEN];
-
+	char hVisibility[10], seaLevel[10], size[10], patchSize[10], skySize[10],
+		clearColorR[10], clearColorG[10], clearColorB[10],
+		mainTexture[MAX_STR_LEN], water[MAX_STR_LEN], waterTexture[MAX_STR_LEN],
+		skyDayTexture[MAX_STR_LEN], skyNightTexture[MAX_STR_LEN];
 } worldsettings;
 
 struct WOMA_OBJECT
@@ -162,7 +170,7 @@ typedef struct {
 	char filename[256];
 	WOMA_OBJECT WOMA_object;
 	int instances = 0;			//40
-} obj3d;
+} xmlobj3d;
 
 class XMLloader
 {
@@ -177,20 +185,19 @@ public:
 
 	bool loadWorld(TCHAR* file);
 	bool InitWorldLoader(TCHAR* filename);				//Note: Have to be char
-
-	obj3d object3d;
-	std::vector<obj3d> theWorld;
+	xmlobj3d object3d;
+	std::vector<xmlobj3d> theWorld;
 
 	// --------------------------------------------------------------------------------------------
 	// Globals:
 	// --------------------------------------------------------------------------------------------
 	generalsettings GenSettings;
 
-	TiXmlElement* child_screen = NULL;
-	TiXmlElement* child_world = NULL;
-	TiXmlElement* child_object = NULL;
-
+	/*TiXmlElement*/ tinyxml2::XMLDocument* child_screen = NULL;
+	/*TiXmlElement*/ tinyxml2::XMLElement* child_world = NULL;
+	/*TiXmlElement*/ tinyxml2::XMLNode* child_object = NULL;
 
 	worldsettings worldSettings;
 };
 
+#endif

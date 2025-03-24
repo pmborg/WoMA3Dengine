@@ -21,7 +21,7 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
 
 	// 23 BLOCK: VS3
 	float3	VSlightDirection;	// LIGHT
-	float   VSPad1;
+	float   VSlightPAD;         // 3+1=XMFLOAT4
 	float4	VSambientColor;		// LIGHT
 	float4	VSdiffuseColor;		// LIGHT
 	float4	VSemissiveColor;	// LIGHT: Ke
@@ -34,6 +34,19 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
 
 	// 45 BLOCK: VS5
 	matrix	ViewToLightProj;
+	matrix	WorldInverseTranspose;	// WorldInverseTranspose
+	float4	vEye;					// camera position													   
+	// 42 BLOCK: VS6
+	float	VSrotX;
+	float	VSrotY;
+	float	VSrotZ;
+	float	time;
+
+	// 42 BLOCK: VS7
+	float	VSshaderType;
+	float	vsPAD2;
+	float	vsPAD3;
+	float	vsPAD4;
 };
 
 ///////////////
@@ -67,7 +80,7 @@ cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: D
 	// BLOCK4:
 	bool	hasColorMap;		// 66
 	float	lightType;			// Future
-	float	shaderType;			// Future
+	float	PSshaderType;			// Future
 	float	shaderTypeParameter;// Future
 
 	// BLOCK5:

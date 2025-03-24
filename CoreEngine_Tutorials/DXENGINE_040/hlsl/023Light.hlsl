@@ -9,10 +9,13 @@
 *
 **********************************************************************************************/
 
+//case SHADER_TEXTURE_LIGHT:				//23
+
 #define PS_USE_LIGHT		 //23
-#define PS_USE_ALFA_TEXTURE	 //33
-#define PS_USE_ALFACOLOR 	 //33
-#define PS_USE_SPECULAR		 //34
+//#define PS_USE_ALFA_TEXTURE	 //33
+//#define PS_USE_ALFACOLOR 	 //33
+//#define PS_USE_SPECULAR		 //34
+//#define PS_USE_FOG           //51
 
 //////////////
 // TYPEDEFS //
@@ -36,6 +39,9 @@ struct PSIn
 	float3 viewDirection		: TEXCOORD1;			// 34 Specular
 	float4 cameraPosition		: WS;					// 34 Specular
 #endif
+#if defined PS_USE_FOG
+    float fogFactor				: FOG;		// 51 FOG
+#endif	
 };
 
 
@@ -89,6 +95,12 @@ if (VS_USE_WVP) {
 
 	cameraPosition = mul(float4(input.position, 1), WV);
 
+#if defined PS_USE_FOG
+	//51:
+    if (VShasFog) 
+        output.fogFactor = saturate((VSfogEnd - cameraPosition.z) / (VSfogEnd - VSfogStart)); // Calculate linear fog.  
+#endif
+	
 	//23: LIGHT: NORMAL
 	if (VShasLight || VShasSpecular) 
 		output.normal = normalize(mul(input.normal, (float3x3)worldMatrix));// Calculate the normal vector against the world matrix only
@@ -113,62 +125,85 @@ if (VS_USE_WVP) {
 ////////////////////////////////////////////////////////////////////////////////
 float4 MyPixelShader023Light(PSIn input) : SV_TARGET
 {
-	float4	textureColor = pixelColor;    // SET PIXEL COLOR
-	float	lightIntensity = 0;
-
+    float4 textureColor = pixelColor; // SET PIXEL COLOR
+    float lightIntensity = 0;
+#if defined PS_USE_FOG
+    float4 fogColor = float4(87.0f / 256.0f, 87 / 256.0f, 87.0f / 256.0f, 1.0f);
+#endif
+	
 	//-----------------------------------------------------------------------------------
 	// 21 & 41: TEXTURE: Sample the pixel color from the texture using the sampler at this texture coordinate location
-	if (hasTexture) 
-		textureColor = shaderTexture.Sample(SampleType, input.texCoords);
+    if (hasTexture) 
+        textureColor = shaderTexture.Sample(SampleType, input.texCoords);
 
 	// 23: LIGHT
 	//if (hasLight) 
 	{
-		//if (lightType == 1)	
-		//	lightIntensity = PSlightFunc1(input.normal);
-		//else
-			lightIntensity = PSlightFunc2(input.normal);
+        if (isSky)
+            lightIntensity = PSlightFunc2(input.normal);
+        else
+            lightIntensity = PSlightFunc1(input.normal);
 
-		if (hasTexture) {
-			textureColor = textureColor * saturate(emissiveColor + ambientColor + lightIntensity);	
-		} else {
-			textureColor = textureColor * saturate(emissiveColor + ambientColor + (lightIntensity * diffuseColor));
-		}
-	}
+        if (hasTexture)
+        {
+            textureColor = textureColor * saturate(emissiveColor + ambientColor + lightIntensity);
+        }
+        else
+        {
+            textureColor = textureColor * saturate(emissiveColor + ambientColor + (lightIntensity * diffuseColor));
+        }
+    }
 
 #if defined PS_USE_ALFA_TEXTURE // 33: Alfa Map: (Optional AlfaMap for blending textutres)
-	if (hasAlfaMap)
-		textureColor.a = AlfaMapTexture.Sample(SampleType, input.texCoords).r;
+    if (hasAlfaMap)
+        textureColor.a = AlfaMapTexture.Sample(SampleType, input.texCoords).r;
 #endif
 
 #if defined PS_USE_ALFACOLOR	// 33: Alfa Color
-	if (hasAlfaColor)
-		textureColor.a = alfaColor;
+    if (hasAlfaColor)
+        textureColor.a = alfaColor;
 #endif
 
 #if defined PS_USE_SPECULAR //34: If enabled on material, calculate the Specular LIGHT
-
-	if (hasSpecular)	
-	{
-		if (lightIntensity > 0.0f)
-		{
-			float4 color = ambientColor;
+    if (hasSpecular)
+    {
+        if (lightIntensity > 0.0f)
+        {
+            float4 color = ambientColor;
 			
-			color += (diffuseColor * lightIntensity);
+            color += (diffuseColor * lightIntensity);
 		
-			color = saturate(color);
+            color = saturate(color);
 			//return color;
-			float3 Reflection = normalize(2 * lightIntensity * input.normal + lightDirection);
-			float  fPhoneValue = saturate(dot(Reflection, input.viewDirection));	// (R.V)
-			float4 specular = pow(fPhoneValue, nShininess);							// Ls = (R.V)^alfa (alfa Determine the amount of specular light based on the reflection vector, viewing direction, and specular power.)
+            float3 Reflection = normalize(2 * lightIntensity * input.normal + lightDirection);
+            float fPhoneValue = saturate(dot(Reflection, input.viewDirection)); // (R.V)
+            float4 specular = pow(fPhoneValue, nShininess); // Ls = (R.V)^alfa (alfa Determine the amount of specular light based on the reflection vector, viewing direction, and specular power.)
 
-			color = color * textureColor;
-			textureColor = saturate(textureColor + specular);		// specular = Ls (contribution of the light source) * Ks (specular component of the material)
+            color = color * textureColor;
+            textureColor = saturate(textureColor + specular); // specular = Ls (contribution of the light source) * Ks (specular component of the material)
 			//return specular;
-		}
-	}
-
+        }
+    }
 #endif
 
+#if defined PS_USE_FOG
+    if (hasFog)
+    {
+		//textureColor = input.fogFactor * textureColor + (1.0 - input.fogFactor) * fogColor; // FOG: Calculate the final color using the fog effect equation.
+        float4 fog4 = 0;
+        if (isSky)
+        {
+            fog4.r = 0.9;
+        }
+        else
+        {
+            fog4.r = (1.0 - input.fogFactor);
+        }
+        fog4.g = fog4.r;
+        fog4.b = fog4.r;
+        textureColor.rgb = lerp(textureColor.rgb, fogColor.rgb, fog4.rgb);
+    }
+#endif
+	
 	return textureColor;
 }
