@@ -78,10 +78,6 @@ ApplicationClass::ApplicationClass()
 	ClearColor[2] = 0.8f;
 	ClearColor[3] = 1.0f;
 
-	lightViewMatrix			= NULL;
-	ShadowProjectionMatrix	= NULL;
-	m_RenderTexture			= NULL;
-
 	m_Light = NULL;
 
 	// TERRAIN
@@ -209,8 +205,6 @@ void ApplicationClass::Shutdown()
 			SAFE_SHUTDOWN_MODELDX(objModel[i]);
 		}
 	}
-
-	SAFE_SHUTDOWN(m_RenderTexture);
 
 
 	for (UINT i = 0; i <m_Position.size(); i++) {
@@ -413,20 +407,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 
 		objModel[i]->m_ObjId = i; //SYNC-ID: objModel[i] with: xml_loader.theWorld[i]
 
-			if ((SHADER_TYPE)SystemHandle->xml_loader.theWorld[i].shader != SHADER_TEXTURE_LIGHT_RENDERSHADOW) {
-				SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows = true;
-				SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows = false;
-				objModel[i]->ModelCastShadow = true;
-				objModel[i]->ModelRenderShadow = false;
-			}
-			else
-			{
-				SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows = true;
-				SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows = true;
-				objModel[i]->ModelCastShadow = true;
-				objModel[i]->ModelRenderShadow = true;
-			}
-
 		if (!(objModel[i]->LoadModel(SystemHandle->xml_loader.theWorld[i].filename, Driver, (SHADER_TYPE)SystemHandle->xml_loader.theWorld[i].shader,
 			SystemHandle->xml_loader.theWorld[i].filename, 
 			SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows, 
@@ -449,16 +429,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	//WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("passedTotalTime2: %ld\n", (long)passedTotalTime2));
 
 	//SHADOWMAP //////////////////////////////////////////////////////////////////////////////////////////////////////
-	m_Light->GenerateOrthoMatrix(15, 15, 20, 0.1f); // Control Zoom in Shadow Map here! 15, 15
-	float LightX = USELIGHTSIZE * FAST_sin(initWorld->SunAzimuth);		// Real Sun Position on Sky:
-	float LightZ = USELIGHTSIZE * FAST_cos(initWorld->SunAzimuth);		// Real Sun Position on Sky:
-	float LightY = USELIGHTSIZE * FAST_sin(initWorld->SunElevation);	// Sun Elevation
-	m_Light->GenerateViewMatrix(LightX, LightY, LightZ);
-
-	m_RenderTexture = NEW DXrendertextureclass;
-	const int SHADOWMAP_WIDTH = SystemHandle->AppSettings->MaxTextureSize;  //2048;
-	const int SHADOWMAP_HEIGHT = SystemHandle->AppSettings->MaxTextureSize; //2048; 
-	IF_NOT_RETURN_FALSE(m_RenderTexture->Initialize(Driver, SHADOWMAP_WIDTH, SHADOWMAP_HEIGHT, SystemHandle->AppSettings->SCREEN_DEPTH, SystemHandle->AppSettings->SCREEN_NEAR));
 
 	//TERRAIN ////////////////////////////////////////////////////////////////////////////////////////////////////////
 

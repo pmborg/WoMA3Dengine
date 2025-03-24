@@ -297,22 +297,24 @@
 		#undef USE_WIN32_SOUND_MANAGER
 		#undef USE_WIN32_PLAY_MUSIC
 		#undef INTRO_DEMO
-		#define  SUN_LIGHT_DEMO_ANIMATION true //back
 
+		#define SUN_LIGHT_DEMO_ANIMATION true //back
 		#define USE_SCENE_MANAGER	//30-
 		#define USE_FRUSTRUM		//30-
 	#endif
 
 	#if DX_ENGINE_LEVEL >= 31
+		//#undef DX12					//to be added later
 		#define RENDER_MULTIPLE_TEXTURES
 	#endif
 
 	#if DX_ENGINE_LEVEL >= 32
+		//#undef DX12					//to be added later
 		#define RENDER_OBJ_WITH_LIGHT
 	#endif
 
 	#if DX_ENGINE_LEVEL >= 33
-		#undef DX12					//to be added later
+		//#undef DX12					//to be added later
 		#define RENDER_OBJ_WITH_ALFA				   
 	#endif
 

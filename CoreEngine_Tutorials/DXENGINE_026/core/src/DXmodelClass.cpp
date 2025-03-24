@@ -223,39 +223,36 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 	{
   #if defined DX9sdk
 	case DRIVER_DX9:
-		// Create the SHADER object.
-		m_Shader9 = NEW DXshaderClass(m_driver9->ShaderVersionH, m_driver9->ShaderVersionL, Model3D);
-		IF_NOT_THROW_EXCEPTION(m_Shader9);
-		result = m_Shader9->Initialize(m_ObjId, objectName, ShaderType, ((DirectX::DX9Class*)m_driver9)->m_device, SystemHandle->m_hWnd, PrimitiveTopology);
+		// Create the SHADER object / LOAD HLSL ---> return shader as pointer!!
+		shader = NEW DXshaderClass(m_driver9->ShaderVersionH, m_driver9->ShaderVersionL, Model3D);
+		IF_NOT_THROW_EXCEPTION(shader);
+		result = shader->Initialize(m_ObjId, objectName, ShaderType, ((DirectX::DX9Class*)m_driver9)->m_device, SystemHandle->m_hWnd, PrimitiveTopology);
 	break;
   #endif
   #if defined DX9 && D3D11_SPEC_DATE_YEAR > 2009
 	case DRIVER_DX9:
-		// Create the SHADER object.
-		m_Shader11 = NEW DXshaderClass(m_driver11->ShaderVersionH, m_driver11->ShaderVersionL, Model3D);
-		shader = m_Shader11;
-		IF_NOT_THROW_EXCEPTION(m_Shader11);
-		result = m_Shader11->Initialize(m_ObjId, objectName, ShaderType, ((DirectX::DX11Class*)m_driver11)->m_device11, SystemHandle->m_hWnd, PrimitiveTopology);
+		// Create the SHADER object / LOAD HLSL ---> return shader as pointer!!
+		shader = NEW DXshaderClass(m_driver11->ShaderVersionH, m_driver11->ShaderVersionL, Model3D);
+		IF_NOT_THROW_EXCEPTION(shader);
+		result = shader->Initialize(m_ObjId, objectName, ShaderType, ((DirectX::DX11Class*)m_driver11)->m_device11, SystemHandle->m_hWnd, PrimitiveTopology);
 	break;
   #endif
 
   #if defined DX11 // Pure DX11
 	case DRIVER_DX11:
-		// Create the SHADER object / LOAD HLSL
-		m_Shader11 = NEW DXshaderClass(m_driver11->ShaderVersionH, m_driver11->ShaderVersionL, Model3D);
-		shader = m_Shader11;
-		IF_NOT_THROW_EXCEPTION(m_Shader11);
-		result = m_Shader11->Initialize(m_ObjId, objectName, ShaderType, ((DirectX::DX11Class*)m_driver11)->m_device11, SystemHandle->m_hWnd, PrimitiveTopology);
+		// Create the SHADER object / LOAD HLSL ---> return shader as pointer!!
+		shader = NEW DXshaderClass(m_driver11->ShaderVersionH, m_driver11->ShaderVersionL, Model3D);
+		IF_NOT_THROW_EXCEPTION(shader);
+		result = shader->Initialize(m_ObjId, objectName, ShaderType, ((DirectX::DX11Class*)m_driver11)->m_device11, SystemHandle->m_hWnd, PrimitiveTopology);
 	break;
   #endif
 
   #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 	case DRIVER_DX12:
-		// Create the SHADER object.
-		m_Shader = NEW DXshaderClass(m_driver->ShaderVersionH, m_driver->ShaderVersionL, Model3D);
-		shader = m_Shader;
-		IF_NOT_THROW_EXCEPTION(m_Shader);
-		result = m_Shader->Initialize(m_ObjId, objectName, ShaderType, ((DirectX::DX12Class*)m_driver)->m_device, SystemHandle->m_hWnd, PrimitiveTopology);
+		// Create the SHADER object / LOAD HLSL ---> return shader as pointer!!
+		shader = NEW DXshaderClass(m_driver->ShaderVersionH, m_driver->ShaderVersionL, Model3D);
+		IF_NOT_THROW_EXCEPTION(shader);
+		result = shader->Initialize(m_ObjId, objectName, ShaderType, ((DirectX::DX12Class*)m_driver)->m_device, SystemHandle->m_hWnd, PrimitiveTopology);
 	break;
   #endif
 	}
@@ -1148,7 +1145,7 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 
 // SetStreamSource
 // ----------------------------------------------------------------------------------------
-void DXmodelClass::SetBuffers(void* deviceContext)
+void DXmodelClass::SetGeometryBuffers(void* deviceContext)
 // ----------------------------------------------------------------------------------------
 {
 #if defined DX11 || defined DX9
@@ -1178,8 +1175,8 @@ void DXmodelClass::SetBuffers(void* deviceContext)
 		case SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED: //41
 			stride[0] = sizeof(DXtextureLightVertexType); break;
 
-		case SHADER_TEXTURE_LIGHT_CASTSHADOW:			//36
-		case SHADER_TEXTURE_LIGHT_CASTSHADOW_INSTANCED: //40
+		case SHADER_TEXTURE_LIGHT_SAVESHADOW:			//36
+		case SHADER_TEXTURE_LIGHT_SAVESHADOW_INSTANCED: //40
 			stride[0] = sizeof(DXShadowMapVertexType); break;
 
 		case SHADER_NORMAL_BUMP:						//35
@@ -1707,7 +1704,7 @@ void DXmodelClass::Render(UINT camera, UINT projection, UINT pass, void* lightVi
 	{
 		// Step 1 - Put the "vertex", "index" and "instances"(if exist) buffers on the graphics pipeline to prepare them for drawing:
 		// ----------------------------------------------------------------------------------------
-		SetBuffers(m_driver->m_device);
+		SetGeometryBuffers(m_driver->m_device);
 
 		// Step 2 - Get "view" and "projection" matrices from the "driver" and "camera" objects
 		// ----------------------------------------------------------------------------------------
@@ -1740,7 +1737,7 @@ void DXmodelClass::Render(UINT camera, UINT projection, UINT pass, void* lightVi
 			//IASetPrimitiveTopology()
 			//IASetVertexBuffers()
 			//IASetIndexBuffer()
-			SetBuffers(m_driver11->m_deviceContext);
+			SetGeometryBuffers(m_driver11->m_deviceContext);
 		}
 
 		// Step 2 - Get "view" and "projection" matrices from the "driver" and "camera" objects
@@ -1749,16 +1746,14 @@ void DXmodelClass::Render(UINT camera, UINT projection, UINT pass, void* lightVi
 		XMMATRIX* viewMatrix;
 
 		if (projection == PROJECTION_MINIMAP) {
-			//projectionMatrix = &(m_driver11->m_projectionMiniMapMatrix);
 			projectionMatrix = (XMMATRIX*)ShadowProjectionMatrix;	//Use provided projection
-			viewMatrix = (XMMATRIX*)lightViewMatrix;							//Use provided view
-
+			viewMatrix = (XMMATRIX*)lightViewMatrix;				//Use provided view
 		} else
 		{
 		if (camera != CAMERA_MINIMAP)
 			projectionMatrix = m_driver11->GetProjectionMatrix(camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
 		else
-			projectionMatrix = (XMMATRIX*)ShadowProjectionMatrix;	//Use provided projection
+			projectionMatrix = (XMMATRIX*)ShadowProjectionMatrix;	//Use provided projection: MINI-MAP
 		
 			viewMatrix = m_driver11->GetViewMatrix(camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
 		}
@@ -2025,6 +2020,8 @@ void DXmodelClass::translation(float x, float y, float z)
 #undef _44
 
 
+// Create: Bounding Box 
+// --------------------------------------------------------------------------------------------
 }
 
 #endif

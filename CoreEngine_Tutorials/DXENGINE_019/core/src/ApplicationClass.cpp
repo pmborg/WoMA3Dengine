@@ -377,13 +377,13 @@ bool ApplicationClass::Initialize(WomaDriverClass* Driver)
 	initIntroDemo();
 #endif
 
-
 //########################################### 3D: STUFF ###########################################
 //########################################### 2D: STUFF ###########################################
-	// FONTS:
+	// 2D-FONTS: Windows
 #if defined USE_RASTERTEK_TEXT_FONT //27
 	initText();
 #endif
+	// 2D-FONTS: Android / Linux
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
 	r_Application = new RApplicationClass;
 	_tprintf("r_Application->Initialize(m_videoDisplay, m_hwnd, screenWidth, screenHeight)\n");

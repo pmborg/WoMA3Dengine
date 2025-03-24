@@ -89,6 +89,7 @@ void WinSystemClass::ProcessFrame()
 	if (WOMA::game_state == ENGINE_RESTART)
 		return;
 
+	// Render Setup?
 #if CORE_ENGINE_LEVEL >= 5 && defined CLIENT_SCENE_SETUP
 	if (WOMA::game_state == GAME_SETUP)
 	{
@@ -103,8 +104,6 @@ void WinSystemClass::ProcessFrame()
 #endif
 
 	{
-		
-
 		#if defined INTRO_DEMO
 		if (RENDER_PAGE < 15) 
 		#else
@@ -116,14 +115,14 @@ void WinSystemClass::ProcessFrame()
 		for (int mon = 0; mon < windowsArray.size(); mon++)
 		{
 			{
-				m_Driver->BeginScene(mon);					//RESET FRAME
-				m_Application->dayLightFade = m_Application->Update();					//OS CORE ONLY!  F1, F2, ...
-				m_Application->RenderScene(mon, m_Driver);	//RENDER ONE FRAME: 100% is done here!
+				m_Driver->BeginScene(mon);								//RESET FRAME
+				m_Application->dayLightFade = m_Application->Update();	//OS CORE ONLY!  F1, F2, ...
+				m_Application->RenderScene(mon, m_Driver);				//RENDER ONE FRAME: 100% is done here!
 
-				if (!g_contextDriver)						//PRESENT FRAME
-					m_Driver->EndScene(mon);				//[DX]
+				if (!g_contextDriver)									//SHOW FRAME:
+					m_Driver->EndScene(mon);							// [DX]: Present
 				else
-					g_contextDriver->EndScene(mon);			//[OPENGL]: SwapBuffers
+					g_contextDriver->EndScene(mon);						// [OPENGL]: SwapBuffers
 			}
 		}
 
@@ -267,8 +266,8 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 //################################ LOAD LoadAllGraphicAssets STUFF ##################################
 	#if DX_ENGINE_LEVEL >= 20 && defined USE_LOADING_THREADS
 	IF_NOT_RETURN_FALSE(DXsystemHandle->ApplicationMandatoryLoad());	// START-THREAD LOAD-ALL: "mandatory 2D/3D Stuff", before "start rendering":
+	//#else
 	#endif
-
 	IF_NOT_RETURN_FALSE(SystemClass::LoadAllGraphicAssets());			// Load all main Graphics, that will be rendered
 
 	//---------------------------------------------------------------------------------------------------
@@ -493,23 +492,22 @@ HWND WinSystemClass::WomaCreateWindowEx(DWORD dwExStyle, TCHAR* lpClassName, TCH
 bool WinSystemClass::InitOsInput()
 //----------------------------------------------------------------------------
 {
-	SystemClass::InitOsInput();
+	SystemClass::InitOsInput();	//m_Application->SetPlayerPosition(g_NetID);
 
 	// INIT OS Keyboard (WIN32: This object will be used to handle reading the input from the user)
 	WOMA_LOGManager_DebugMSG("===============================================================================\n");
 	WOMA_LOGManager_DebugMSG("INIT OS BASIC INPUT\n");
+	WOMA_LOGManager_DebugMSG("===============================================================================\n");
 
 	m_OsInput = NEW InputClass;
 	IF_NOT_THROW_EXCEPTION(m_OsInput);
-
-	m_OsInput->Initialize();
+	m_OsInput->Initialize();	//reset: m_keys[i]
 
 #if defined USE_DIRECT_INPUT
 	// Set the Player Position Init Player Class
 	WOMA_LOGManager_DebugMSG("===============================================================================\n");
 	WOMA_LOGManager_DebugMSG("INIT OS ADVANCED DIRECT INPUT\n");
 	WOMA_LOGManager_DebugMSG("===============================================================================\n");
-
 
 	DXsystemHandle->m_Input = (DXInputClass*)&SystemHandle->m_InputManager;
 #endif

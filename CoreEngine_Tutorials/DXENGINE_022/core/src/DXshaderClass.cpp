@@ -285,7 +285,7 @@ namespace DirectX {
 #endif
 
 		//bUseGS = true;	//ON/OFF (default: OFF)
-		hasTexture = (shaderType != SHADER_COLOR) && (shaderType != SHADER_TEXTURE_LIGHT_CASTSHADOW);
+		hasTexture = (shaderType != SHADER_COLOR) && (shaderType != SHADER_TEXTURE_LIGHT_SAVESHADOW);
 		result = InitializeShader(shaderType, device, hwnd, PrimitiveTopology); //LOAD: HLSL code
 
 		return result;

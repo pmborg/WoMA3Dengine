@@ -71,6 +71,8 @@ void WinSystemClass::ProcessFrame()
 	if (WOMA::game_state == ENGINE_RESTART)
 		return;
 
+	// Render Setup?
+
 }
 
 void WinSystemClass::WinSystemClass_init()
@@ -357,23 +359,22 @@ HWND WinSystemClass::WomaCreateWindowEx(DWORD dwExStyle, TCHAR* lpClassName, TCH
 bool WinSystemClass::InitOsInput()
 //----------------------------------------------------------------------------
 {
-	SystemClass::InitOsInput();
+	SystemClass::InitOsInput();	//m_Application->SetPlayerPosition(g_NetID);
 
 	// INIT OS Keyboard (WIN32: This object will be used to handle reading the input from the user)
 	WOMA_LOGManager_DebugMSG("===============================================================================\n");
 	WOMA_LOGManager_DebugMSG("INIT OS BASIC INPUT\n");
+	WOMA_LOGManager_DebugMSG("===============================================================================\n");
 
 	m_OsInput = NEW InputClass;
 	IF_NOT_THROW_EXCEPTION(m_OsInput);
-
-	m_OsInput->Initialize();
+	m_OsInput->Initialize();	//reset: m_keys[i]
 
 #if defined USE_DIRECT_INPUT
 	// Set the Player Position Init Player Class
 	WOMA_LOGManager_DebugMSG("===============================================================================\n");
 	WOMA_LOGManager_DebugMSG("INIT OS ADVANCED DIRECT INPUT\n");
 	WOMA_LOGManager_DebugMSG("===============================================================================\n");
-
 
 	DXsystemHandle->m_Input = (DXInputClass*)&SystemHandle->m_InputManager;
 #endif

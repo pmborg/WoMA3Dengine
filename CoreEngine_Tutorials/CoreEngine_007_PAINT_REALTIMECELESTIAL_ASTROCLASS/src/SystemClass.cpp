@@ -716,54 +716,53 @@ extern android_app* app;
 
 void SystemClass::FrameUpdate()
 {
-
 #if defined WINDOWS_PLATFORM && defined USE_DIRECT_INPUT
-if (DXsystemHandle->m_Input->m_mouseState.rgbButtons[MOUSE_LEFT] & 0x80)
-{
-	POINT mousePos;
-
-	GetCursorPos(&mousePos);
-	ScreenToClient(SystemHandle->m_hWnd, &mousePos);
-
-	#define mousex mousePos.x
-	#define mousey mousePos.y
-	//printf("mousex: %d mouseY: %d\n", mousex, mousey);
-	if (mousex < 24 && mousey < 24)
+	if (DXsystemHandle->m_Input->m_mouseState.rgbButtons[MOUSE_LEFT] & 0x80)
 	{
-		RENDER_PAGE = 25;
-		WOMA::previous_game_state = GAME_IMGUI;
-		WOMA::game_state = ENGINE_RESTART;
-		return;
+		POINT mousePos;
+
+		GetCursorPos(&mousePos);
+		ScreenToClient(SystemHandle->m_hWnd, &mousePos);
+
+		#define mousex mousePos.x
+		#define mousey mousePos.y
+		//printf("mousex: %d mouseY: %d\n", mousex, mousey);
+		if (mousex < 24 && mousey < 24)
+		{
+			RENDER_PAGE = 25;
+			WOMA::previous_game_state = GAME_IMGUI;
+			WOMA::game_state = ENGINE_RESTART;
+			return;
+		}
 	}
-}
 #endif
 
 #if defined LINUX_PLATFORM
-if (WOMA::game_state == GAME_RUN)
-{
-	/*
-	int err = XGrabPointer(Win.display, Win.window,
-							True, ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
-							GrabModeAsync, GrabModeAsync,
-							Win.window, None, CurrentTime);
-
-	processXEvents(wm_protocols, wm_delete_window);
-	XUngrabPointer(Win.display, CurrentTime);
-
-	#define mousex event.xbutton.x_root 
-	#define mousey event.xbutton.y_root
-	//if (event.xbutton.button == Button1)
-	//	_tprintf("mousex: %d mouseY: %d\n", (mousex) - WOMA::settings.WINDOW_Xpos, (mousey) -WOMA::settings.WINDOW_Ypos);
-	
-	if ((mousex < 100 && mousey < 100) && (mousex > 0 && mousey > 0))
+	if (WOMA::game_state == GAME_RUN)
 	{
-		RENDER_PAGE = 25;
-		WOMA::previous_game_state = GAME_IMGUI;
-		WOMA::game_state = ENGINE_RESTART;
-		return;
+		/*
+		int err = XGrabPointer(Win.display, Win.window,
+								True, ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
+								GrabModeAsync, GrabModeAsync,
+								Win.window, None, CurrentTime);
+
+		processXEvents(wm_protocols, wm_delete_window);
+		XUngrabPointer(Win.display, CurrentTime);
+
+		#define mousex event.xbutton.x_root 
+		#define mousey event.xbutton.y_root
+		//if (event.xbutton.button == Button1)
+		//	_tprintf("mousex: %d mouseY: %d\n", (mousex) - WOMA::settings.WINDOW_Xpos, (mousey) -WOMA::settings.WINDOW_Ypos);
+	
+		if ((mousex < 100 && mousey < 100) && (mousex > 0 && mousey > 0))
+		{
+			RENDER_PAGE = 25;
+			WOMA::previous_game_state = GAME_IMGUI;
+			WOMA::game_state = ENGINE_RESTART;
+			return;
+		}
+		*/
 	}
-	*/
-}
 #endif
 
 #if defined ANDROID_PLATFORM && !defined NewWomaEngine && defined USE_IMGUI
@@ -809,7 +808,7 @@ bool SystemClass::InitOsInput()
 {
   #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 	g_NetID = (UINT)0; // Just Us on the world? So WE will be the index: zero...
-	m_Application->SetPlayerPosition(g_NetID);	// Step 6: SetPlayerPosition
+	m_Application->SetPlayerPosition(g_NetID);
   #endif
 	return true;
 }

@@ -26,3 +26,4 @@ report.txt
 **/Android1.NativeActivity/_*.h
 **/Android1.NativeActivity/_*.cpp
 ThirdParty/DirectXTex
+ThirdParty/DirectXTex.old

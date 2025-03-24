@@ -301,7 +301,7 @@ namespace DirectX {
 #endif
 
 		//bUseGS = true;	//ON/OFF (default: OFF)
-		hasTexture = (shaderType != SHADER_COLOR) && (shaderType != SHADER_TEXTURE_LIGHT_CASTSHADOW);
+		hasTexture = (shaderType != SHADER_COLOR) && (shaderType != SHADER_TEXTURE_LIGHT_SAVESHADOW);
 		result = InitializeShader(shaderType, device, hwnd, PrimitiveTopology); //LOAD: HLSL code
 
 		return result;
@@ -1366,7 +1366,7 @@ namespace DirectX {
 		{
 			dataVSptr->VSlightDirection = light->m_lightDirection;
 
-			if (m_shaderType < SHADER_TEXTURE_LIGHT_CASTSHADOW || m_shaderType >= SHADER_Slope_Texture_Terrain)
+			if (m_shaderType < SHADER_TEXTURE_LIGHT_SAVESHADOW || m_shaderType >= SHADER_Slope_Texture_Terrain)
 			{
 				dataVSptr->VSambientColor = light->m_ambientColor;		// Use Global: Light
 				dataVSptr->VSdiffuseColor = light->m_diffuseColor;
@@ -1442,7 +1442,7 @@ namespace DirectX {
 		{
 			dataPSptr->lightDirection = light->m_lightDirection;
 
-			if (m_shaderType < SHADER_TEXTURE_LIGHT_CASTSHADOW || m_shaderType >= SHADER_Slope_Texture_Terrain)
+			if (m_shaderType < SHADER_TEXTURE_LIGHT_SAVESHADOW || m_shaderType >= SHADER_Slope_Texture_Terrain)
 			{
 				dataPSptr->ambientColor = light->m_ambientColor; // Use Global Light
 				dataPSptr->diffuseColor = light->m_diffuseColor;

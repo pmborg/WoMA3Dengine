@@ -317,8 +317,7 @@ void DX11Class::DeleteViewBuffers()
 	if (m_deviceContext)
 		m_deviceContext->OMSetRenderTargets(0, NULL, NULL);
 
-	// For each Monitor: 
-	// Before shutting down set to windowed mode or when you release the swap chain it will throw an exception.
+	// For each Monitor, Before shutting down set to windowed mode or when you release the swap chain it will throw an exception.
 	for (int i = 0; i < DX11windowsArray.size(); i++)
 	{
 		if (DX11windowsArray[i].m_swapChain)
@@ -327,7 +326,7 @@ void DX11Class::DeleteViewBuffers()
 		if (DX11windowsArray[i].m_swapChain1)
 			DX11windowsArray[i].m_swapChain1->SetFullscreenState(false, NULL);
 
-		SAFE_RELEASE(DX11windowsArray[i].m_backBuffer);				// Release pointer to the back buffer
+		SAFE_RELEASE(DX11windowsArray[i].m_backBuffer);			// Release pointer to the back buffer
 	}
 
 	// For each Monitor: 
@@ -337,11 +336,11 @@ void DX11Class::DeleteViewBuffers()
 		SAFE_RELEASE(DX11windowsArray[i].m_renderTargetView);	// Init Step: 9	(backBufferRTV)
 	}
 
-	SAFE_RELEASE(m_depthBuffer);					// Init Step: 9
+	SAFE_RELEASE(m_depthBuffer);								// Init Step: 9
 
 	for (int i = 0; i < DX11windowsArray.size(); i++)
 	{
-		SAFE_RELEASE(DX11windowsArray[i].m_depthStencilView);		// Init Step: 10
+		SAFE_RELEASE(DX11windowsArray[i].m_depthStencilView);	// Init Step: 10
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -355,7 +354,7 @@ void DX11Class::Shutdown()
 		Shutdown2D();
 
 #if defined USE_RASTERIZER_STATE
-	//createAllRasterizerStates:
+	//CreateAllRasterizerStates:
 	for (UINT i = 0; i < 3; i++)
 		for (UINT j = 0; j < 2; j++)
 			SAFE_RELEASE(m_rasterState[i][j]);
@@ -637,13 +636,16 @@ HRESULT result = S_OK;
 		// With the graphics written to the back buffer we can then swap it to the front and display our graphics on the user's screen. 
 		//
 		// OMSetRenderTargets: NOTE: Need to be After [1], [2] and [3]
+		// For each Monitor: 
+		for (int i = 0; i < DX11windowsArray.size(); i++)
+			SetBackBufferRenderTarget(i);
+
 		// #Generate new "ProjectionMatrix" and "OrthoMatrix"
 		// --------------------------------------------------
 	#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
 		setProjectionMatrixWorldMatrixOrthoMatrix ( screenWidth, screenHeight, screenNear, screenDepth);
 	#endif
 	}
-
 
 #if defined CLIENT_SCENE_TEXT || defined USE_VIEW2D_SPRITES
 	Initialize3DCamera();
@@ -797,7 +799,7 @@ void DX11Class::BeginScene(UINT monitorWindow)
 	SetBackBufferRenderTarget(monitorWindow);
 
 	// Clear Screen
-	m_deviceContext->ClearRenderTargetView(DX11windowsArray[monitorWindow].m_renderTargetView, driver_ClearColor);					// Clear the "back buffer":
+	m_deviceContext->ClearRenderTargetView(DX11windowsArray[monitorWindow].m_renderTargetView, driver_ClearColor);	// Clear the "back buffer":
 #if defined SET_DEVICE_CAPABILITIES
 	ClearDepthBuffer();
 #endif

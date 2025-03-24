@@ -357,16 +357,16 @@ void ApplicationClass::initIntroDemo()
 bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)	//WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_Initialize3D()\n");
 // --------------------------------------------------------------------------------------------
 {
-	_tprintf(TEXT("----------------------------------------------------------------------------------------\n"));
-	_tprintf(TEXT("[%d]: WOMA_APPLICATION_Initialize3D()\n"), gettid());
+	WOMA_LOGManager_DebugMSGAUTO(TEXT("----------------------------------------------------------------------------------------\n"));
+	WOMA_LOGManager_DebugMSGAUTO(TEXT("[%d]: WOMA_APPLICATION_Initialize3D()\n"), gettid());
 
 	//ASTRO ////////////////////////////////////////////////////////////////////////////////////////////////////////
 #if defined USE_ASTRO_CLASS
-	SystemHandle->m_Application->initWorld->Calculate();
+	initWorld->Calculate();
 #endif
 
 #if defined USE_ASTRO_CLASS && defined USE_REAL_SUNLIGHT_DIRECTION //#if ENGINE_LEVEL >= 33
-	SystemHandle->m_Application->Calc3DSunMoonPosition();
+	Calc3DSunMoonPosition();
 	//if (WOMA::game_state == GAME_STOP) return false;
 #endif
 
@@ -380,18 +380,18 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)	//
 
 	//Sphere+SKY:
 
-
-
 	//-----------------------------------------------------------------------------------------------------------------
 	// Create "model OBJECTS" from loaded "XML OBJECTS" in file WORLD.XML
 	//-----------------------------------------------------------------------------------------------------------------
 
-	//ASTRO ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//ANIMATED SKELETON MESHs //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	//RENDER ASTROs ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	//SHADOWMAP //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	//TERRAIN ////////////////////////////////////////////////////////////////////////////////////////////////////////
-//0
+	//TERRAINs /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//0
 #if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN		// UNDER WATER: Terrain
 	loadedTerrain[0] = NEW CTerrain(TERRAIN);
 	loadedTerrain[0]->initUnderWaterDemo(0);			//UNDERWATER	(populate: modelVertexVector) 2022:LEVEL_ENGINE: 25
@@ -419,7 +419,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)	//
 	initMainTerrainDemo(0);
 #endif
 
-	//NETWORK ////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//NETWORK //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #if defined SAVEW3D
 	WomaMessageBox(TEXT("Conversion from OBJ to W3D, ended."), TEXT("SAVEW3D"));
@@ -427,18 +427,17 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)	//
 	return false;
 #endif
 
+	//Finally, launch dynamic Load Compound/OBJ Thread /////////////////////////////////////////////////////////////////////////////////
 #if defined (CHECK_COMPOUND_COLISION) && defined (SCENE_COMPOUND) //TUTORIAL_CHAP >= 55 && 
 	for (UINT i = 0; i < N_COMPOUNDS; i++) {
 		compoundTreeLoadingOrder[i].compoundTreeId = i;
 		compoundTreeLoadingOrder[i].order = 0;
 	}
 
-	// [26] Finally, launch Load Compound/OBJ Thread:
-	//-----------------------------------------------------------------------------------------	
 #if TUTORIAL_CHAP < 95
 	CompoundReadFunction(Driver);
 #else
-// Create a thread to load our compounds:
+	// Create a thread to load our compounds:
 	threadCompoundLoaderAlive = true;
 	threadCompoundLoaderHandle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)CompoundReadFunction, (void*)this, 0, &threadCompoundLoaderId);
 	if (!threadCompoundLoaderHandle) { return false; }

@@ -500,28 +500,28 @@ void ApplicationClass::initIntroDemo()
 bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)	//WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_Initialize3D()\n");
 // --------------------------------------------------------------------------------------------
 {
-	_tprintf(TEXT("----------------------------------------------------------------------------------------\n"));
-	_tprintf(TEXT("[%d]: WOMA_APPLICATION_Initialize3D()\n"), gettid());
+	WOMA_LOGManager_DebugMSGAUTO(TEXT("----------------------------------------------------------------------------------------\n"));
+	WOMA_LOGManager_DebugMSGAUTO(TEXT("[%d]: WOMA_APPLICATION_Initialize3D()\n"), gettid());
 
 	//ASTRO ////////////////////////////////////////////////////////////////////////////////////////////////////////
 #if defined USE_ASTRO_CLASS
-	SystemHandle->m_Application->initWorld->Calculate();
+	initWorld->Calculate();
 #endif
 
 #if defined USE_ASTRO_CLASS && defined USE_REAL_SUNLIGHT_DIRECTION //#if ENGINE_LEVEL >= 33
-	SystemHandle->m_Application->Calc3DSunMoonPosition();
+	Calc3DSunMoonPosition();
 	//if (WOMA::game_state == GAME_STOP) return false;
 #endif
 
 	//LIGHT ////////////////////////////////////////////////////////////////////////////////////////////////////////
 	m_Light = NEW LightClass;	// Create the light object
 	IF_NOT_THROW_EXCEPTION(m_Light);
-	m_Light->SetAmbientColor(0.55f, 0.55f, 0.55f, 1);
-	m_Light->SetDiffuseColor(1, 1, 1, 1.0f);
+	m_Light->SetAmbientColor(0.55f, 0.55f, 0.55f, 1);	//later in world.xml
+	m_Light->SetDiffuseColor(1, 1, 1, 1.0f);			//later in world.xml
 #if defined USE_REAL_SUNLIGHT_DIRECTION
 	m_Light->SetDirection(SunX / 1000, SunY / 1000, SunZ / 1000);
 #else
-	m_Light->SetDirection(-0.535041273f, -1, 0);
+	m_Light->SetDirection(-0.535041273f, -1, 0);		//later in world.xml
 #endif
 
 	//LIGHT_RAY /////////////////////// DO: ///////////////////////////////////////////////////////////////////////////
@@ -538,30 +538,29 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)	//
 #endif
 
 #if DX_ENGINE_LEVEL >= 22 && LEVEL < 60	// 22:TEXTURE
-	//if (RENDER_PAGE < 27 || RENDER_PAGE == 28 || FORCE_RENDER_ALL)
 	initTextureDemo();
 
 #endif
+
 #if DX_ENGINE_LEVEL >= 23  && LEVEL < 60	// 23:LIGHT
-	//if (RENDER_PAGE < 27 || FORCE_RENDER_ALL)
 	initLightDemo();
 
 #endif
 
 	//Sphere+SKY:
 
-
-
 	//-----------------------------------------------------------------------------------------------------------------
 	// Create "model OBJECTS" from loaded "XML OBJECTS" in file WORLD.XML
 	//-----------------------------------------------------------------------------------------------------------------
 
-	//ASTRO ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//ANIMATED SKELETON MESHs //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	//RENDER ASTROs ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	//SHADOWMAP //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	//TERRAIN ////////////////////////////////////////////////////////////////////////////////////////////////////////
-//0
+	//TERRAINs /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//0
 #if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN		// UNDER WATER: Terrain
 	loadedTerrain[0] = NEW CTerrain(TERRAIN);
 	loadedTerrain[0]->initUnderWaterDemo(0);			//UNDERWATER	(populate: modelVertexVector) 2022:LEVEL_ENGINE: 25
@@ -589,7 +588,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)	//
 	initMainTerrainDemo(0);
 #endif
 
-	//NETWORK ////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//NETWORK //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #if defined SAVEW3D
 	WomaMessageBox(TEXT("Conversion from OBJ to W3D, ended."), TEXT("SAVEW3D"));
@@ -597,18 +596,17 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)	//
 	return false;
 #endif
 
+	//Finally, launch dynamic Load Compound/OBJ Thread /////////////////////////////////////////////////////////////////////////////////
 #if defined (CHECK_COMPOUND_COLISION) && defined (SCENE_COMPOUND) //TUTORIAL_CHAP >= 55 && 
 	for (UINT i = 0; i < N_COMPOUNDS; i++) {
 		compoundTreeLoadingOrder[i].compoundTreeId = i;
 		compoundTreeLoadingOrder[i].order = 0;
 	}
 
-	// [26] Finally, launch Load Compound/OBJ Thread:
-	//-----------------------------------------------------------------------------------------	
 #if TUTORIAL_CHAP < 95
 	CompoundReadFunction(Driver);
 #else
-// Create a thread to load our compounds:
+	// Create a thread to load our compounds:
 	threadCompoundLoaderAlive = true;
 	threadCompoundLoaderHandle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)CompoundReadFunction, (void*)this, 0, &threadCompoundLoaderId);
 	if (!threadCompoundLoaderHandle) { return false; }

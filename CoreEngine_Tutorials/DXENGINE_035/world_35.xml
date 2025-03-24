@@ -1,7 +1,7 @@
 <woma>
   <!-- ENGINE LVL 25-->
   <camera screenNear="0.1f" screenDepth="2048" >
-    <initPos x="0.25f" y="0" z="-6" />
+    <initPos x="0.25f" y="0" z="-5.25f" />
     <initRot x="0" y="0" z="0" />
   </camera>
 
@@ -9,5 +9,6 @@
   <fog start="32" end="256"/>
   
   <world hVisibility="128" seaLevel="0" size="512" patchSize="64" skyDayTexture="engine/data/sky/NEW_SKY_DOME.jpg" skyNightTexture=""/>
-  <object fromPage="35" toPage="35" depend="0" scale="1" posX="0" posZ="0" translateY="" rotX="" rotY="" rotZ="" shader="" filename="engine/data/scene30/squareBump.obj"/>
+  <object fromPage="35" toPage="35" depend="0" scale="1" posX="0" posZ="0" translateY="" rotX="" rotY="" rotZ="" shader="" filename="engine/data/scene30/squareBump2.obj"/>
+  <!--object fromPage="35" toPage="35" depend="0" scale="1" posX="0" posZ="0" translateY="" rotX="" rotY="" rotZ="" shader="" filename="engine/data/scene30/squareBump.obj"/-->
 </woma>

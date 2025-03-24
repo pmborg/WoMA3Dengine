@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: ApplicationClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -15,13 +15,19 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567222;
+
 #ifndef _ApplicationClass_H_
 #define _ApplicationClass_H_
 #pragma once
 
 // -------------------------------------------------------------------------------------------------
+#pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
 #include "main.h"
+
+#if defined WINDOWS_PLATFORM && defined DX_ENGINE
 #include <d3d11.h>
+#endif
 
 // Set Basic Defaults:
 #define I_AM_2D				/*2D*/		false
@@ -33,49 +39,109 @@
 ///////////////////////
 // MY CLASS INCLUDES //
 ///////////////////////
-
-#include "Math3D.h"
+#if defined WINDOWS_PLATFORM
 #include "winCpuClass.h"
+#endif
 
-#include "fpsClass.h"
-#include "timerClass.h"
+	#if defined USE_TIMER
+	#include "Math3D.h"
+	#include "fpsClass.h"
+	#include "timerClass.h"
+	#endif
 
+#if CORE_ENGINE_LEVEL >= 7 && defined USE_ASTRO_CLASS
 #include "initWorld.h"
 #include "astroClass.h"
+#endif
 
+#if CORE_ENGINE_LEVEL >= 9 && defined USE_METARCLASS
 #include "weatherClass.h"
 #include "metarClass.h"
+#endif
 
+#if CORE_ENGINE_LEVEL >= 10 && !defined NewWomaEngine //#if DX_ENGINE_LEVEL >= 19 && !defined NewWomaEngine
 #include "WomaDriverClass.h"
+#endif
+
+#if TUTORIAL_CHAP >= 90
+#include "../network/NetworkClass.h"
+#else
+#define MAX_CLIENTS 1
+#endif
 
 #define PASS_OPAC			0
 #define PASS_TRANSPARENT	1
 #define PASS_SHADOWS		2
+#define PASS_MINIMAP1		11
+#define PASS_MINIMAP2		12
+#define PASS_MINIMAP3		13
 
 #include "virtualModelClass.h"
 extern std::vector<VirtualModelClass*> m_screenShots;
+
 // -------------------------------------------------------------------------------------------------
-
-extern UINT RENDER_PAGE;
 extern bool FORCE_RENDER_ALL;
+
+#if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 extern UINT g_NetID;
+#endif
 
-#include "PositionClass.h"
-#include "PlayerClass.h"
-#include "DXinputClass.h"
+#if defined INTRO_DEMO && CORE_ENGINE_LEVEL >= 10 //29
+extern int SpriteScreenToShow;
+extern float fadeIntro;
+#endif
 
+#if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
+#include "positionClass.h"
+#include "playerClass.h"
+#if defined DX_ENGINE
+	#include "DXinputClass.h"
+#endif
+#endif
+
+#if defined USE_SCENE_MANAGER
 #include "SceneManager.h"
+#endif
 
+#if  defined USE_RASTERTEK_TEXT_FONT
 #include "ApplicationTextClass.h"
+#endif
 
 #include "lightClass.h"	
 
-#define MAX_TERRAINS 0
+#if defined USE_DX10DRIVER_FONTS
+#include "DXshaderClass.h"
+#endif
 
+#if defined SCENE_GENERATEDUNDERWATER
+	#define MAX_TERRAINS 1
+#endif
+#if defined SCENE_WATER_TERRAIN
+	#define MAX_TERRAINS 2
+#endif
+#if defined SCENE_MAIN_TOPO_TERRAIN
+	#define MAX_TERRAINS 3
+#endif
+#if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX
+	#define MAX_TERRAINS 4
+#endif
+
+#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
 #include "DXrenderTextureClass.h"
+#endif
+
+#if defined SCENE_TERRAIN_QUAD_TREE
+#include "TerrainQuadtreeClass.h"
+#endif
+
+#if defined (SCENE_COMPOUND)
+#include "compound.h"
+#endif
 
 #pragma warning( push )
 #pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
+
+#if true //WINDOWS_PLATFORM
 
 	#if defined DX_ENGINE
 		#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {\
@@ -86,9 +152,11 @@ extern UINT g_NetID;
 			if(model) { (model)->Shutdown(); delete ((DirectX::DXmodelClass*)model); model=NULL; } \
 		}
 	#else
-		#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow) {}
+		#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1) {}
+		#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {}
 	#endif
 
+	#if (defined OPENGL3 || defined OPENGL4)
 		#define CREATE_MODELGL3_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {\
 			model = NEW GLmodelClass(model3D); IF_NOT_THROW_EXCEPTION (model); \
 		}
@@ -96,6 +164,9 @@ extern UINT g_NetID;
 		#define SAFE_SHUTDOWN_MODELGL3(model) {\
 			if (model) { (model)->Shutdown(); delete ((GLmodelClass*)model); model=NULL; } \
 		}
+	#else
+		#define CREATE_MODELGL3_IF_NOT_EXCEPTION(model, model3D, renderShadow) {}
+	#endif
 
 
 #define CREATE_MODEL_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2)\
@@ -110,6 +181,34 @@ extern UINT g_NetID;
 	}\
 }
 
+#else
+	// LINUX & ANDROID
+	//#define CREATE_MODEL_IF_NOT_EXCEPTION(model, model3D) {\
+	//	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) { model = NEW GLmodelClass(model3D); IF_NOT_THROW_EXCEPTION (model); } \
+	//}
+#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1) {}
+#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {}
+
+#define CREATE_MODEL_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2)\
+{\
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)\
+	{\
+		CREATE_MODELGL3_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2);	\
+	}\
+	else\
+	{\
+		CREATE_MODELDX_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2);\
+	}\
+}
+
+	#define SAFE_SHUTDOWN_MODELGL3(model) {\
+		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) if (model) { (model)->Shutdown(); delete ((GLmodelClass*)model); model=NULL; } \
+	}
+
+	#define CAMERA_RENDER(camera) {\
+		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) ((GLopenGLclass*)m_Driver)->camera->Render(); \
+	}
+#endif
 #pragma warning( pop )
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -118,7 +217,7 @@ extern UINT g_NetID;
 class ApplicationClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567831;
+	UINT WomaIntegrityCheck = 1234567222;
 	ApplicationClass();
 	~ApplicationClass();
 	
@@ -138,72 +237,155 @@ public:
 	void Calc3DSunMoonPosition();
 	#endif
 
-	void RenderScene(UINT monitorWindow, WomaDriverClass* driver);
-	void RenderModel(UINT monitorWindow, WomaDriverClass* driver, UINT modelID, UINT pass);
-	float Update(UINT monitorWindow, WomaDriverClass* m_Driver);					// PROCESS User Update
-	void AppPreRender(UINT monitorWindow, WomaDriverClass* Driver, float fadeLight);					// PRE-RENDER - Shadows
-	void AppRender(UINT monitorWindow, float fadeLight);	// RENDER - 3D
-	void AppPosRender();									// POS-RENDER - 2D: Render 
-
 	virtual bool WOMA_APPLICATION_InitGUI();
 
+	float dayLightFade;
+
+#if CORE_ENGINE_LEVEL >= 10 && !defined NewWomaEngine //#if DX_ENGINE_LEVEL >= 19 && !defined NewWomaEngine
+	void RenderScene(UINT monitorWindow, WomaDriverClass* driver);
+	float Update();						// PROCESS User Update
+	void AppRender(UINT monitorWindow,  float fadeLight);								// RENDER - 3D
 	// 3D
+	//void	defineSquarModel(float unit);
 	bool	Initialize(WomaDriverClass* Driver);
+#endif
+
+	void AppPosRender();																// POS-RENDER - 2D: Render 
+
+	void RenderModel(UINT monitorWindow, WomaDriverClass* driver, UINT modelID, UINT pass);
+	
+	void AppPreRender(UINT monitorWindow, WomaDriverClass* Driver, float fadeLight);	// PRE-RENDER - Shadows
+
 	virtual bool WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver); // APP_Load
 
+#if defined USE_LIGHT_RAY
 	void CalculateLightRayVertex (float SunDistance);
+#endif
 
 	std::vector<ModelColorVertexType> MyLightVertexVector;
 	std::vector<ModelColorVertexType>* m_LightVertexVector;
 	LightClass* m_Light = NULL;
 
-	void initLightRay(WomaDriverClass* m_Driver);
+#if defined USE_DX10DRIVER_FONTS
+	DXshaderClass* m_FontV2Shader = NULL;
+	IDXGIKeyedMutex* keyedMutex11 = NULL;
+	IDXGIKeyedMutex* keyedMutex10 = NULL;
+#endif
 
+#if defined USE_LIGHT_RAY
+	void initLightRay();
+#endif
+
+	//TERRAINs:
+#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN //24
+	//CTerrain*	autoGenUnderWaterTerrain;
+	//void		initUnderWaterDemo(void* m_Driver, UINT terrainId);
+#endif
+
+#if defined SCENE_MAIN_TERRAIN
+	CTerrain*	mainTerrain;
+	//void		initMainTerrainDemo(UINT terrainId);
+#endif
+
+#if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 	std::vector<PositionClass*> m_Position;
+#endif
+
+#if defined USE_SCENE_MANAGER
+	SceneManager* sceneManager = SceneManager::GetInstance();
+#endif
 
 	std::vector<VirtualModelClass*> objModel;
 
 	void initShadowTextureDemo();
 
-	// SKY
+#if defined USE_SKY2D || ENGINE_LEVEL >= 27 // SKY
+	std::vector<ModelTextureLightVertexType> sky_vertexdata; //std::vector<ModelTextureVertexType> sky_vertexdata;
+	std::vector<UINT>						 sky_indexdata;
+#endif
 
+#if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 	void	SetPlayerPosition(UINT netID);
-	bool	HandleUserInput(float frameTime);
+	bool	HandleUserInput(double frameTime);
+#endif
 
-	void	initText(WomaDriverClass* m_Driver);
+#if  defined USE_RASTERTEK_TEXT_FONT
+	bool	initText();
+	DirectX::ApplicationTextClass* AppTextClass = NULL;
+#endif
 
-	XMMATRIX*				lightViewMatrix = NULL;
-	XMMATRIX*				ShadowProjectionMatrix = NULL;
-	DXrendertextureclass*	m_RenderTexture = NULL;
+#if defined USE_TITLE_BANNER //24
+	VirtualModelClass*		m_titleModel = NULL;
+#endif
 
-	DirectX::ApplicationTextClass* AppTextClass=NULL;
+#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
+	DXrendertextureclass*	m_RenderShadowTexture = NULL;	//TO INTERNAL RENDER!
+#endif
+
+	float scaleX = 0;
+	float scaleY = 0;
+	float rescale = 0;
+
+#ifdef INTRO_DEMO
+	void	initIntroDemo();
+#endif
 
 private:
 	void	Render_SKY_SUN_MOON(float);				//30
 
+#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
 	void	RenderSceneToShadowMap(void* Driver);	//45
-
-
+#endif
 
 //VARS:
 // ---------------------------------------------------------------------
 private:
 
-
+#if defined USE_DIRECT_INPUT//|| defined INTRO_DEMO
 	PositionClass* m_NextPosition;
+#endif
 
 public:
-	float	dt=0;	// Delta time
+	double	dt=0;	// Delta time
+
+#if defined SCENE_COMPOUND
+	void LoadCompound(int i, WomaDriverClass* Driver);
+	UINT totalCompoundLoaded = 0;
+	UINT totalRenderCompound = 0;
+	void RenderCompound(UINT i, UINT p);
+	void RenderAllCompounds(UINT p);
+	void RenderAllTransparentCompounds();
+
+	UINT N_COMPOUNDS;
+	UINT CHG_COMPOUND;
+
+	/*
+	// Originally: G:\DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64\src\Applicationclass.cpp
+	compoundTree compound[] = {
+
+	//G:\woma2013\trunk\Part1\source\engine\application
+	std::vector <compoundTree>  compound;
+
+	compoundTree compound[];
+	compoundTreeLoadOrder compoundTreeLoadingOrder[];
+	*/
+#endif
 
 	//---------------------------------------------------------------------
 	//TO SAFE DELETE: void ApplicationClass::WOMA_APPLICATION_Shutdown()
 	//---------------------------------------------------------------------
+#if defined USE_ASTRO_CLASS
 	InitWorld*		initWorld = NULL;    // Get Astro Positions
+#endif
 
+#if CORE_ENGINE_LEVEL >= 9 && defined USE_METARCLASS
 	WeatherClass*	weatherClass = NULL;
 	MetarClass*		metarClass = NULL;
+#endif
 
+#if defined USE_LIGHT_RAY
 	VirtualModelClass* m_lightRayModel = NULL;
+#endif
 
 	//	-------------------------------------------------------------------------------------------
 	//	WoMA Vertex(s) Arrays:  NOTE: Cant be used to create and Obj more than ONCE!
@@ -214,24 +396,37 @@ public:
 
 	float ClearColor[4]={0};
 
-	//SceneManager*				m_sceneManager=NULL;
+#if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
+	#define HowManyPlayers SystemHandle->m_player.size()
+#endif
 
 public:
 	void DemoRender();
-	void RenderSprites();
-
-	//3D
-	bool DEMO_WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver); // APP_Load
+	void RenderDemoIntroSprites();
 
 	// 2D
-	bool DEMO_WOMA_APPLICATION_InitializeSprites2D();
 	void DEMO_WOMA_APPLICATION_Shutdown2D();
+#if defined INTRO_DEMO || defined USE_VIEW2D_SPRITES
+	bool DEMO_WOMA_APPLICATION_InitializeSprites2D();
+#endif
 
-	void initColorDemo(WomaDriverClass* Driver);
+#if defined SCENE_COLOR
+	void initColorDemo();
+#endif
 	void initTextureDemo();
 	void initLightDemo();
-	void	initTitleBanner2D();
-	bool initCubes3D(WomaDriverClass* m_Driver);
+#if defined USE_TITLE_BANNER	//24
+	void	initStatic2D();
+#endif
+#if defined USE_CUBE // Cubes
+	bool initCubes3D();
+#endif
+
+#if defined INTRO_DEMO // VIDEO+INTRO+DEMO
+	float	WOMA_APPLICATION_DemoRender(UINT64 passedTotalTime);
+	float	WOMA_APPLICATION_IntroRender(UINT64 passedTotalTime);
+
+#endif
 
 	//	-------------------------------------------------------------------------------------------
 	//	WoMA Vertex(s) Arrays:  NOTE: Cant be used to create and Obj more than ONCE!
@@ -244,7 +439,7 @@ public:
 	std::vector<ModelColorVertexType> TriangleColorVertexVector;// COLOR-DEMO-2: CREATE_VERTEXVECTOR_TRIANGLE_MODEL_OPTIMIZED
 	VirtualModelClass* m_1stTriangle3DColorModel = NULL;		// COLOR-DEMO-2: CREATE_MODELDX_IF_NOT_EXCEPTION
 
-	ModelTextureVertexType textureVertex = { 0 };					// Use this "VERTEX" on macro
+	ModelTextureVertexType textureVertex;					// Use this "VERTEX" on macro
 
 	//DEMO-1:
 	std::vector<ModelTextureVertexType> SquareTextureVertexVector;	// TEXTURE-DEMO-1: CREATE_VERTEXVECTOR_SQUAD_MODEL_OPTIMIZED
@@ -274,12 +469,19 @@ public:
 	VirtualModelClass* m_1stTriangleLightVertexModel = NULL;			// TEXTURE-DEMO-2: initLoadTexture()
 	VirtualModelClass* m_3th3DModel2 = NULL;							// Model
 
-	VirtualModelClass* m_titleModel = NULL;
 
+
+#if defined USE_IMGUI
+	VirtualModelClass* m_iconSettings = NULL;
+#endif
+
+#if defined USE_CUBE // Cubes
 	VirtualModelClass* m_cube1Model = NULL;
 	VirtualModelClass* m_cube2Model = NULL;
 	VirtualModelClass* m_cube3Model = NULL;
+#endif
 
+#if defined USE_SPHERE && DX_ENGINE_LEVEL >= 26
 	std::vector<ModelTextureLightVertexType> Sphere_vertexdata; //CreateSphereModel()
 	std::vector<UINT>						 Sphere_indexdata;	//CreateSphereModel()
 	void	CreateSphereModel(UINT SPHERE_SIZE, int Sphere_gridpoints);
@@ -288,11 +490,18 @@ public:
 	VirtualModelClass* m_SphereModel2 = NULL;
 	void	initSphere1(float SPHERE_SIZE);
 	void	initSphere2(float SPHERE_SIZE);
+#endif
 
+#if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28
 	VirtualModelClass* m_SkyModel = NULL;
+#endif
+#if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28 && defined USE_SKYSPHERE
 	void	initSky(float SPHERE_SIZE);
+#endif
 
-	// TERRAIN
+#if defined SCENE_TERRAIN_QUAD_TREE //67
+	TerrainQuadtreeClass* TerrainQuadtree;
+#endif
 
 
 };

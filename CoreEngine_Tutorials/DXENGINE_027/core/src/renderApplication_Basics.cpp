@@ -53,7 +53,7 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 	// [1] Process INPUT, CAMERA & Animations:
 	// --------------------------------------------------------------------------------------------
 
-	// [2] SceneManager: Process and Create Lists of objects to render from WORLD.XML
+	// [2] SceneManager: Process/Filter and Create Lists/trees of objects to render from: WORLD.XML
 	// --------------------------------------------------------------------------------------------
 #if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
 	SceneManager::GetInstance()->Render();							//Create Lists of objects to render from WORLD.XML
@@ -62,7 +62,7 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 	// [3] LIGHT RAY:
 	// --------------------------------------------------------------------------------------------
 #if defined USE_LIGHT_RAY
-	if (RENDER_PAGE >= 23) //if ((RENDER_PAGE != 24) && (RENDER_PAGE != 40) && (RENDER_PAGE != 49))
+	if (RENDER_PAGE >= 23)
 	{
 		CalculateLightRayVertex(SunDistance);					// Calculate Light Source Position
 
@@ -159,7 +159,8 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 	m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
 #endif
 #if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
-	for (UINT id = 0; id < SceneManager::GetInstance()->opacModelList.size(); id++)
+	UINT size = SceneManager::GetInstance()->opacModelList.size();
+	for (UINT id = 0; id < size; id++)
 		RenderModel(monitorWindow, m_Driver, id, PASS_OPAC); //objModel[id]->Render(m_Driver, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_OPAC);
 #endif
 
@@ -309,10 +310,14 @@ float ApplicationClass::Update()
 #endif
 #endif
 
+	//--------------------------------------------------------------------------------------------
+	// DETECT COLISIONS: Get the closest Compound object/(s):
+	//--------------------------------------------------------------------------------------------
 #if defined CHECK_COMPOUND_COLISION
-	//--------------------------------------------------------------------------------------------
-	// DETECT COLISIONS: Get the closest Compound object:
-	//--------------------------------------------------------------------------------------------
+	// and what about a MOUSE PICK ? (left key?):
+	/////////////////////////////////////////////////////
+	anyMouseClickToPick();
+
 	float X = 0.0f, Z = 0.0f;
 	float camX = m_Position[g_NetID]->m_positionX;
 	float camZ = m_Position[g_NetID]->m_positionZ;
@@ -361,11 +366,10 @@ float ApplicationClass::Update()
 	if (closestObjDist >= 0 && closestObjDist <= 3) {
 		closestObjDist = pick(prwsPos, prwsDir, compound[closestObjId].objModel->bottleVertPosArray, compound[closestObjId].objModel->indices, bottleWorld, true);
 	}
-
-	// and what about a MOUSE PICK ? (left key?):
-	/////////////////////////////////////////////////////
-	anyMouseClickToPick();
 #endif
+
+	// [Colision 2] Billboards
+	// --------------------------------------------------------
 
 #if defined USE_DIRECT_INPUT					
 	HandleUserInput(dt);	// GET INPUT for CAMERA: Movement
@@ -390,73 +394,78 @@ float ApplicationClass::Update()
 	}
 #endif
 
-#if defined USE_SKYSPHERE && defined USE_SKY_CAMERA_DOME	// [2] CAMERA SKY: Update & Prepare to Take a Shot
-if (RENDER_PAGE >= 28)
-{
-	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
-	{
-#if defined DX_ENGINE
-		DXsystemHandle->m_CameraSKY->m_rotationX = DXsystemHandle->m_Camera->m_rotationX;
-		DXsystemHandle->m_CameraSKY->m_rotationY = DXsystemHandle->m_Camera->m_rotationY;
-		DXsystemHandle->m_CameraSKY->CalculateViewMatrix();
-#endif
-	}
-#if (defined OPENGL3 || defined OPENGL4)
-	else
-	{
-		GLopenGLclass* driver = (GLopenGLclass*)driverList[SystemHandle->AppSettings->DRIVER];
+	// Render with Multi-Monitors: (setup camera)
 
-		driver->gl_CameraSKY->m_rotationX = driver->gl_Camera->m_rotationX;
-		driver->gl_CameraSKY->m_rotationY = driver->gl_Camera->m_rotationY;
-		driver->gl_CameraSKY->CalculateViewMatrix();
+	// [2] CAMERA SKY: Update & Prepare to Take a Shot
+#if defined USE_SKYSPHERE && defined USE_SKY_CAMERA_DOME	
+	if (RENDER_PAGE >= 28)
+	{
+		if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+		{
+	#if defined DX_ENGINE
+			DXsystemHandle->m_CameraSKY->m_rotationX = DXsystemHandle->m_Camera->m_rotationX;
+			DXsystemHandle->m_CameraSKY->m_rotationY = DXsystemHandle->m_Camera->m_rotationY;
+			DXsystemHandle->m_CameraSKY->CalculateViewMatrix();
+	#endif
+		}
+	#if (defined OPENGL3 || defined OPENGL4)
+		else
+		{
+			GLopenGLclass* driver = (GLopenGLclass*)driverList[SystemHandle->AppSettings->DRIVER];
+
+			driver->gl_CameraSKY->m_rotationX = driver->gl_Camera->m_rotationX;
+			driver->gl_CameraSKY->m_rotationY = driver->gl_Camera->m_rotationY;
+			driver->gl_CameraSKY->CalculateViewMatrix();
+		}
+	#endif
 	}
-#endif
-}
 #endif
 
 // CONSTRUCT: FRUSTRUM
 #if defined USE_FRUSTRUM
-#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
-m_Driver->frustum->ConstructFrustum(SystemHandle->AppSettings->SCREEN_DEPTH / 2.5f,
-	&((DX12Class*)m_Driver)->m_projectionMatrix,
-	&DXsystemHandle->m_Camera->m_viewMatrix);
-#endif
-
-#if defined DX11 || defined DX9
-if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
-m_Driver->frustum->ConstructFrustum(SystemHandle->AppSettings->SCREEN_DEPTH / 2.5f,
-	&((DX11Class*)m_Driver)->m_projectionMatrix, &DXsystemHandle->m_Camera->m_viewMatrix);
-#endif
-
-#if (defined OPENGL3 || defined OPENGL4)
-if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) {
-
-	mat4 glPrjMatrix = ((GLopenGLclass*)m_Driver)->m_projectionMatrix;
-	XMMATRIX m_projectionMatrix = XMMatrixSet
-	(
-		glPrjMatrix.m[0], glPrjMatrix.m[1], glPrjMatrix.m[2], glPrjMatrix.m[3],
-		glPrjMatrix.m[4], glPrjMatrix.m[5], glPrjMatrix.m[6], glPrjMatrix.m[7],
-		glPrjMatrix.m[8], glPrjMatrix.m[9], glPrjMatrix.m[10], glPrjMatrix.m[11],
-		glPrjMatrix.m[12], glPrjMatrix.m[13], glPrjMatrix.m[14], glPrjMatrix.m[15]
-	);
-
-	mat4 glvMatrix = ((GLopenGLclass*)m_Driver)->gl_Camera->m_viewMatrix;
-	XMMATRIX m_viewMatrix = XMMatrixSet
-	(
-		glvMatrix.m[0], glvMatrix.m[1], glvMatrix.m[2], glvMatrix.m[3],
-		glvMatrix.m[4], glvMatrix.m[5], glvMatrix.m[6], glvMatrix.m[7],
-		glvMatrix.m[8], glvMatrix.m[9], glvMatrix.m[10], glvMatrix.m[11],
-		glvMatrix.m[12], glvMatrix.m[13], glvMatrix.m[14], glvMatrix.m[15]
-	);
-
+	#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 	m_Driver->frustum->ConstructFrustum(SystemHandle->AppSettings->SCREEN_DEPTH / 2.5f,
-		&m_projectionMatrix,
-		&m_viewMatrix);
-}
-#endif
+		&((DX12Class*)m_Driver)->m_projectionMatrix,
+		&DXsystemHandle->m_Camera->m_viewMatrix);
+	#endif
+
+	#if defined DX11 || defined DX9
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+	m_Driver->frustum->ConstructFrustum(SystemHandle->AppSettings->SCREEN_DEPTH / 2.5f,
+		&((DX11Class*)m_Driver)->m_projectionMatrix, 
+		&DXsystemHandle->m_Camera->m_viewMatrix);
+	#endif
+
+	#if (defined OPENGL3 || defined OPENGL4)
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) {
+
+		mat4 glPrjMatrix = ((GLopenGLclass*)m_Driver)->m_projectionMatrix;
+		XMMATRIX m_projectionMatrix = XMMatrixSet
+		(
+			glPrjMatrix.m[0], glPrjMatrix.m[1], glPrjMatrix.m[2], glPrjMatrix.m[3],
+			glPrjMatrix.m[4], glPrjMatrix.m[5], glPrjMatrix.m[6], glPrjMatrix.m[7],
+			glPrjMatrix.m[8], glPrjMatrix.m[9], glPrjMatrix.m[10], glPrjMatrix.m[11],
+			glPrjMatrix.m[12], glPrjMatrix.m[13], glPrjMatrix.m[14], glPrjMatrix.m[15]
+		);
+
+		mat4 glvMatrix = ((GLopenGLclass*)m_Driver)->gl_Camera->m_viewMatrix;
+		XMMATRIX m_viewMatrix = XMMatrixSet
+		(
+			glvMatrix.m[0], glvMatrix.m[1], glvMatrix.m[2], glvMatrix.m[3],
+			glvMatrix.m[4], glvMatrix.m[5], glvMatrix.m[6], glvMatrix.m[7],
+			glvMatrix.m[8], glvMatrix.m[9], glvMatrix.m[10], glvMatrix.m[11],
+			glvMatrix.m[12], glvMatrix.m[13], glvMatrix.m[14], glvMatrix.m[15]
+		);
+
+		m_Driver->frustum->ConstructFrustum(SystemHandle->AppSettings->SCREEN_DEPTH / 2.5f,
+			&m_projectionMatrix,
+			&m_viewMatrix);
+	}
+	#endif
 #endif
 
+	//Update Sun and Moon position:
 #if defined USE_ASTRO_CLASS
 if (!astroClass) {
 	WOMA_APPLICATION_InitGUI();
@@ -488,54 +497,49 @@ if (AppTextClass) {
 		m_Position[g_NetID]->m_rotationY,
 		m_Position[g_NetID]->m_rotationZ);
 #else
+	#if !defined TEXT_TEST
+	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
+		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+		{
 
+			AppTextClass->SetCameraPosition(DXsystemHandle->m_Camera->m_positionX,
+				DXsystemHandle->m_Camera->m_positionY,
+				DXsystemHandle->m_Camera->m_positionZ);
 
-#if !defined TEXT_TEST
-#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
-	{
+			AppTextClass->SetCameraRotation(DXsystemHandle->m_Camera->m_rotationX,
+				DXsystemHandle->m_Camera->m_rotationY,
+				DXsystemHandle->m_Camera->m_rotationZ);
 
-		AppTextClass->SetCameraPosition(DXsystemHandle->m_Camera->m_positionX,
-			DXsystemHandle->m_Camera->m_positionY,
-			DXsystemHandle->m_Camera->m_positionZ);
+		}
+	#endif
+	#if defined DX12
+		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+		{
+			AppTextClass->SetCameraPosition(DXsystemHandle->m_Camera->m_positionX,
+				DXsystemHandle->m_Camera->m_positionY,
+				DXsystemHandle->m_Camera->m_positionZ);
 
-		AppTextClass->SetCameraRotation(DXsystemHandle->m_Camera->m_rotationX,
-			DXsystemHandle->m_Camera->m_rotationY,
-			DXsystemHandle->m_Camera->m_rotationZ);
+			AppTextClass->SetCameraRotation(DXsystemHandle->m_Camera->m_rotationX,
+				DXsystemHandle->m_Camera->m_rotationY,
+				DXsystemHandle->m_Camera->m_rotationZ);
+		}
+	#endif
+	#if (defined OPENGL3 || defined OPENGL4)
+		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+		{
+			AppTextClass->SetCameraPosition(((GLopenGLclass*)m_Driver)->gl_Camera->m_positionX,
+				((GLopenGLclass*)m_Driver)->gl_Camera->m_positionY,
+				((GLopenGLclass*)m_Driver)->gl_Camera->m_positionZ);
 
-	}
-#endif
-#if defined DX12
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
-	{
-		AppTextClass->SetCameraPosition(DXsystemHandle->m_Camera->m_positionX,
-			DXsystemHandle->m_Camera->m_positionY,
-			DXsystemHandle->m_Camera->m_positionZ);
-
-		AppTextClass->SetCameraRotation(DXsystemHandle->m_Camera->m_rotationX,
-			DXsystemHandle->m_Camera->m_rotationY,
-			DXsystemHandle->m_Camera->m_rotationZ);
-	}
-#endif
-#if (defined OPENGL3 || defined OPENGL4)
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
-	{
-		AppTextClass->SetCameraPosition(((GLopenGLclass*)m_Driver)->gl_Camera->m_positionX,
-			((GLopenGLclass*)m_Driver)->gl_Camera->m_positionY,
-			((GLopenGLclass*)m_Driver)->gl_Camera->m_positionZ);
-
-		AppTextClass->SetCameraRotation(((GLopenGLclass*)m_Driver)->gl_Camera->m_rotationX,
-			((GLopenGLclass*)m_Driver)->gl_Camera->m_rotationY,
-			((GLopenGLclass*)m_Driver)->gl_Camera->m_rotationZ);
-	}
-#endif
-#endif
+			AppTextClass->SetCameraRotation(((GLopenGLclass*)m_Driver)->gl_Camera->m_rotationX,
+				((GLopenGLclass*)m_Driver)->gl_Camera->m_rotationY,
+				((GLopenGLclass*)m_Driver)->gl_Camera->m_rotationZ);
+		}
+	#endif
+	#endif
 #endif
 
 }
-
-
-
 #endif
 
 // LIGHT: Get fade (real Sun Position): Show Debug Info

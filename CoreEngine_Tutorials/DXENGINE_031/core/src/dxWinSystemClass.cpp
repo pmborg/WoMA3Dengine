@@ -132,7 +132,7 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 {
 	MSG msg = { 0 };						// Reset msg
 	
-	//MAIN DEBUG BUILD LOOP:
+	//MAIN LOOP: (single thread version for DEBUG)
 	WOMA::main_loop_state = 0;
 	do
 	{
@@ -143,7 +143,7 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 		} else {
 			try {
 				if (WOMA::game_state > GAME_MINIMIZED)
-					ProcessFrame();// Render ONE: Application Frame
+					ProcessFrame();	// Render ONE: Application Frame
 				else
 					Sleep(100);
 			}
@@ -169,10 +169,10 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 void dxWinSystemClass::ProcessFrame() //RENDER ALL GRAPHICS
 //----------------------------------------------------------------------------
 {
-	WinSystemClass::ProcessFrame(); // Process Input, Timer and FPS and GRAPHICs
+	// Process Input, Timer and FPS and GRAPHICs:
+	WinSystemClass::ProcessFrame(); 
 
 	// Process Special: "PRINT SCREEN" key, the "Back-Buffer" have 1 frame rendered, so now we can dump it:
-
 #if defined ALLOW_PRINT_SCREEN_SAVE_PNG && defined DX11
 	if ((WOMA::game_state > GAME_MINIMIZED) && (OS_KEY_DOWN(DIK_SYSRQ + 0x35) || OS_KEY_DOWN(DIK_F10 + 0x35)))
 		ASSERT(SaveScreenshot());
