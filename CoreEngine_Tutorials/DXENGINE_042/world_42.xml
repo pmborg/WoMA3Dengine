@@ -1,0 +1,29 @@
+<woma>
+  <!-- ENGINE LVL 25-->
+  <camera screenNear="0.1f" screenDepth="2048" >
+    <initPos x="-0.5f" y="1" z="-9" />
+    <initRot x="0" y="0" z="0" />
+  </camera>
+
+  <!-- ENGINE LVL 31-->
+  <fog start="32" end="256"/>
+  
+  <world hVisibility="128" seaLevel="0" size="512" patchSize="64" skyDayTexture="engine/data/sky/NEW_SKY_DOME.jpg" skyNightTexture=""/>
+
+  <object id="0"  fromPage="42" toPage="42" depend="" scale="1.15"   posX="-0.55f" translateY="-0.2" posZ="0.5f" rotX="" rotY="" rotZ="" shader="6" instances="" filename="engine/data/Chess/Chess.W3D"   castShadow="1" renderShadows="1"/>
+
+  <object id="1"  fromPage="42" toPage="42" depend="" scale="0.004f" posX=" 1" translateY="0" posZ="4" rotX="" rotY="" rotZ=""   shader="" instances="2" filename="engine/data/Chess/branco-bispo.W3D"  castShadow="1" renderShadows="0"/>
+  <object id="2"  fromPage="42" toPage="42" depend="" scale="0.004f" posX=" 0" translateY="0" posZ= "4" rotX="" rotY="" rotZ=""  shader="" instances="2" filename="engine/data/Chess/branco-cavalo.W3D" castShadow="1" renderShadows="0"/>
+  <object id="3"  fromPage="42" toPage="42" depend="" scale="0.004f" posX="-1" translateY="0" posZ="4" rotX="" rotY="" rotZ=""   shader="" instances="8" filename="engine/data/Chess/branco-peao.W3D"   castShadow="1" renderShadows="0"/>
+  <object id="4"  fromPage="42" toPage="42" depend="" scale="0.004f" posX="-2" translateY="0" posZ= "4" rotX="" rotY="" rotZ=""  shader="" instances="1" filename="engine/data/Chess/branco-rainha.W3D" castShadow="1" renderShadows="0"/>
+  <object id="5"  fromPage="42" toPage="42" depend="" scale="0.004f" posX="-3" translateY="0" posZ="4" rotX="" rotY="" rotZ=""   shader="" instances="1" filename="engine/data/Chess/branco-rei.W3D"    castShadow="1" renderShadows="0"/>
+  <object id="6"  fromPage="42" toPage="42" depend="" scale="0.004f" posX="-4" translateY="0" posZ= "4" rotX="" rotY="" rotZ=""  shader="" instances="2" filename="engine/data/Chess/branco-torre.W3D"  castShadow="1" renderShadows="0"/>
+
+  <object id="7"  fromPage="42" toPage="42" depend="" scale="0.004f" posX=" 1" translateY="0" posZ="-3" rotX="" rotY="180" rotZ=""  shader=""  instances="2" filename="engine/data/Chess/preto-bispo.W3D"   castShadow="1" renderShadows="0"/>
+  <object id="8"  fromPage="42" toPage="42" depend="" scale="0.004f" posX=" 0" translateY="0" posZ= "-3" rotX="" rotY="180" rotZ=""      shader=""  instances="2" filename="engine/data/Chess/preto-cavalo.W3D"  castShadow="1" renderShadows="0"/>
+  <object id="9"  fromPage="42" toPage="42" depend="" scale="0.004f" posX="-1" translateY="0" posZ="-3"  rotX="" rotY="" rotZ=""      shader=""  instances="8" filename="engine/data/Chess/preto-peao.W3D"    castShadow="1" renderShadows="0"/>
+  <object id="10" fromPage="42" toPage="42" depend="" scale="0.004f" posX="-2" translateY="0" posZ= "-3" rotX="" rotY="" rotZ=""      shader=""  instances="1" filename="engine/data/Chess/preto-rainha.W3D"  castShadow="1" renderShadows="0"/>
+  <object id="11" fromPage="42" toPage="42" depend="" scale="0.004f" posX="-3" translateY="0" posZ="-3"  rotX="" rotY="" rotZ=""      shader=""  instances="1" filename="engine/data/Chess/preto-rei.W3D"     castShadow="1" renderShadows="0"/>
+  <object id="12" fromPage="42" toPage="42" depend="" scale="0.004f" posX="-4" translateY="0" posZ= "-3" rotX="" rotY="" rotZ=""      shader=""  instances="2" filename="engine/data/Chess/preto-torre.W3D"   castShadow="1" renderShadows="0"/>
+
+</woma>

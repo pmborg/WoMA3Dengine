@@ -2,7 +2,7 @@
 // Filename: 040LightInstance.hlsl
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
-*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2017
+*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2024
 *	-------------------------------------------------------------------------------------------
 *	code by : Pedro Borges - pmborg@yahoo.com
 *	Downloaded from : http://woma.servegame.com
@@ -114,9 +114,8 @@ PSIn MyVertexShader040LightInstance(VSIn input, uint instanceID : SV_InstanceID)
 	cameraPosition = mul(float4(input.position, 1), WV);								// FOG: Calculate the camera position.
 
 	//23: LIGHT: NORMAL
-    matrix<float, 4, 4> WorldMatrix = worldMatrix * rotationAroundY;
 	if (VShasLight || VShasSpecular)
-		output.normal = normalize(mul(input.normal, (float3x3)WorldMatrix));// Calculate the normal vector against the world matrix only
+		output.normal = normalize(mul(input.normal, (float3x3)worldMatrix));// Calculate the normal vector against the world matrix only
 
 	//34: SPECULAR
 #if defined PS_USE_SPECULAR
@@ -125,7 +124,7 @@ PSIn MyVertexShader040LightInstance(VSIn input, uint instanceID : SV_InstanceID)
 
 	if (VShasSpecular)	// If enabled on material, calculate the Specular LIGHT
 	{
-		float4 worldPosition = mul(float4(input.position, 1), WorldMatrix);			// P
+		float4 worldPosition = mul(float4(input.position, 1), worldMatrix);			// P
 		output.viewDirection = normalize(cameraPosition.xyz - worldPosition.xyz);	// L = Lp - p (L = lightDirection)
 	}
 #endif
@@ -150,10 +149,10 @@ float4 MyPixelShader040LightInstance(PSIn input) : SV_TARGET
 	// 23: LIGHT
 	if (hasLight) 
 	{
-		//if (lightType == 1)	
+		if (lightType == 1)	
 			lightIntensity = PSlightFunc1(input.normal);
-		//else
-		//	lightIntensity = PSlightFunc2(input.normal);
+		else
+			lightIntensity = PSlightFunc2(input.normal);
 
 		if (hasTexture) {
 			textureColor = textureColor * saturate(emissiveColor + ambientColor + lightIntensity);	

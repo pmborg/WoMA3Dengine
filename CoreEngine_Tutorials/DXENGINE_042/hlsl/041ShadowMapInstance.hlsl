@@ -2,7 +2,7 @@
 // Filename: 041ShadowMapInstance.hlsl
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
-*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2017
+*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2024
 *	-------------------------------------------------------------------------------------------
 *	code by : Pedro Borges - pmborg@yahoo.com
 *	Downloaded from : http://woma.servegame.com

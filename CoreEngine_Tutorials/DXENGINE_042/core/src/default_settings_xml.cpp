@@ -1,10 +1,9 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: default_settings_xml.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2023
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2023 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -18,14 +17,14 @@
 // PURPOSE: SET DEFAULT: "Aplication Settings" (they will be overwritten by "settings.xml" in run-time)
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567831;
-// 
-// --------------------------------------------------------------------------------------------
-// Includes:
-// --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567222;
+
 #define _CRT_SECURE_NO_WARNINGS
 #include "OSengine.h"
+#include "main.h"
+#if defined USE_LOG_MANAGER
 #include "log.h"
+#endif
 #include "default_settings_xml.h"			// Settings
 
 // --------------------------------------------------------------------------------------------
@@ -33,84 +32,109 @@
 // --------------------------------------------------------------------------------------------
 namespace WOMA
 {
-	ILogManager* logManager = NULL;	// Global Log Manager
-
-	UINT ENGINE_LEVEL_USED = 0;
-
 	// --------------------------------------------------------------------------------------------
 	// Driver Settings:
 	// --------------------------------------------------------------------------------------------
 	Settings settings =
 	{
+	#if defined WINDOWS_PLATFORM	
 		NULL,		// LANGID id
-		//false,	// HaswellCPU
+	#endif
 		0,			// Endian (BIG_ENDIAN 0) & (LITTLE_ENDIAN 1)
 
 		// driver
 		// -------------------------------------------------------------------------------------------
-		-1,			// Use Woma Driver		{DRIVER_GL3=0, DRIVER_DX11};
-		0,			// USE MONITOR
+	#if defined USE_TINYXML_LOADER
+		-1,			// Use Woma Driver	-1 (auto)	{DRIVER_DX11=0, DRIVER_GL3=1, DRIVER_DX11_DX9=2, DRIVER_DX12=3};
+	#else
+		DRIVER_DX11,
+	#endif
+		0,			// USE: UI_MONITOR
+		// -------------------------------------------------------------------------------------------
 		false,		// UseAllMonitors
 		true,		// Use Double Buffering?
-		true,		// Start in VSYNC?		(TRUE: Benchmark | FALSE: Smooth)
-
-		true,	// MSAA_ENABLED?
-		0,		// MSAA_X: 0 = Autodetect best mode (Values: 1,2,4,8...)
+		true,		// Start in VSYNC?		(TRUE: Smooth:60FPS | FALSE: To Benchmark)
 
 		//	Texture
 		// -------------------------------------------------------------------------------------------
-		1024,	// maxTexture Resolution Size
+		1024,	// maxTexture Resolution Default Size: 512 / 1024 / 1920 / 3,840
+		// -------------------------------------------------------------------------------------------
 		false,	// bilinear
 		false,	// trilinear
 		false,	// Anisotropic;
-		16,		// AnisotropicLevel
+		4,		// AnisotropicLevel: 4,8,16 (if == true)
 
 		// screen
 		// -------------------------------------------------------------------------------------------
 		false,	// Start in FULLSCREEN?
+		#if CORE_ENGINE_LEVEL < 10
+		false, 
+		#else
 		true,	// AllowResize and FULLSCREEN Switch?
+		#endif
+		// -------------------------------------------------------------------------------------------
+	#if defined LINUX_PLATFORM
+		600,	// PosX:		Note: 0 = (AUTO) Bottom Right Corner.
+		20,		// PosY			Note: 0 = (AUTO) Bottom Right Corner.
+	#else
 		0,		// PosX:		Note: 0 = (AUTO) Bottom Right Corner.
 		0,		// PosY			Note: 0 = (AUTO) Bottom Right Corner.
+	#endif
 		0,		// PosX_ori
 		0,		// PosY_ori
+		// -------------------------------------------------------------------------------------------
+	#if defined ANDROID_PLATFORM
 		1280,	// WIN_WIDTH	Note: On Fullscreen WIN_WIDTH = SCREEN_RESOLUTION_WIDTH
 		1024,	// WIN_HEIGHT	Note: On Fullscreen WIN_HEIGHT = SCREEN_RESOLUTION_HEIGHT
 		1280,	// WIN_WIDTH_ori	
 		1024,	// WIN_HEIGHT_ori	
-		32,		// BITSPERPEL	16,24,32?
+	#else //LINUX: (or load from XML like WINDOWS)
+		1920, //550,	// WIN_WIDTH	Note: On Fullscreen WIN_WIDTH = SCREEN_RESOLUTION_WIDTH
+		1080, //940,	// WIN_HEIGHT	Note: On Fullscreen WIN_HEIGHT = SCREEN_RESOLUTION_HEIGHT
+		1920, //550,	// WIN_WIDTH_ori	
+		1080, //940,	// WIN_HEIGHT_ori	
+	#endif
+		32,		// BITSPERPEL	16, 24(RGB), 32(RGBA)
 
 		// -------------------------------------------------------------------------------------------
 		//  Camera:
 		0.1f,	// SCR_NEAR
-		512.0f, // SCR_DEPTH	(Depend of Computer Performance)
+		512.0f, // SCR_DEPTH	(Depend of Computer Performance: 512 / 1024 / 2048)
 
-		0,	//INIT_CAMX;
-		0,	//INIT_CAMY;
-		0,	//INIT_CAMZ;
+		0,		// INIT_CAMX;
+		2,		// INIT_CAMY;
+	#if defined ANDROID_PLATFORM
+		-29,	// INIT_CAMZ;
+	#else //LINUX: (or load from XML like WINDOWS)
+		- 28,	// INIT_CAMZ;
+	#endif
 
-		0,	//INIT_ROTX;
-		0,	//INIT_ROTY;
-		0,	//INIT_ROTZ;
-
-	// ------------------------------------------------------------------------------------------
-	// FOG
-	1,
-	512,
-
-	// ------------------------------------------------------------------------------------------
-	// SOUND
-	true,	// Bk Music...
-	true,	// Sounding...
+		0,		// INIT_ROTX;
+		0,		// INIT_ROTY;
+		0,		// INIT_ROTZ;
 
 	// ------------------------------------------------------------------------------------------
-	0,		// 800 SCREEN_RESOLUTION_WIDTH NOTE: 0 = Auto Detect
-	0,		// 600 SCREEN_RESOLUTION_HEIGHT NOTE: 0 = Auto Detect
+		// FOG
+		1,		//nofog
+		1024,	//nofog
 
 	// ------------------------------------------------------------------------------------------
-	// TODO: Networking...
-	false,
-	"012345678912345",// char only!
-	0,
+		// SOUND
+		true,	// Background Music...
+		true,	// Sound: Effects...
+
+	// ------------------------------------------------------------------------------------------
+		0,		// 800 SCREEN_RESOLUTION_WIDTH NOTE: 0 = Auto Detect
+		0,		// 600 SCREEN_RESOLUTION_HEIGHT NOTE: 0 = Auto Detect
+
+	// ------------------------------------------------------------------------------------------
+		// Networking...
+		false,
+		"___.___.___.___",// char only!
+		0,
 	};
+
+#if CORE_ENGINE_LEVEL >= 4
 	STRING	filename;					
+#endif
 }

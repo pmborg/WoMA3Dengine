@@ -614,7 +614,7 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="settings.xml" />
-    <Xml Include="world_40.xml" />
+    <Xml Include="world_41.xml" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="WoMA.ico">
