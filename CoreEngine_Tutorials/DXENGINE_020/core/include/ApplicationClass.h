@@ -257,14 +257,8 @@ public:
 #endif
 
 	//TERRAINs:
-#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN //24
-	//CTerrain*	autoGenUnderWaterTerrain;
-	//void		initUnderWaterDemo(void* m_Driver, UINT terrainId);
-#endif
-
 #if defined SCENE_MAIN_TERRAIN
 	CTerrain*	mainTerrain;
-	//void		initMainTerrainDemo(UINT terrainId);
 #endif
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO

@@ -79,12 +79,6 @@ void AndroidSystemClass::Shutdown()
     // AndroidSystemClass Shutdown:
     WOMA_LOGManager_DebugMSG("AndroidSystemClass::Stop()\n");
 
-    // STOP	All: Loading/Worker Threads:
-#if defined _NOT
-    // STOP	All: Loading/Worker Threads:
-    StopAllThreads();
-#endif
-
 #if defined USE_SCENE_MANAGER
     //SceneManager* sceneManager = SceneManager::GetInstance();
     SAFE_SHUTDOWN(sceneManager);
@@ -92,44 +86,11 @@ void AndroidSystemClass::Shutdown()
 
     SystemClass::Shutdown();
 
-#if _NOT //DX_ENGINE_LEVEL >= 19 // Initializing Engine
-    if (m_eglOpenGL)
-    {
-        m_eglOpenGL->Shutdown();// Release the OpenGL object.
-        delete m_eglOpenGL;
-        m_eglOpenGL = 0;
-    }
-
-    engine->animating = 0;
-    engine->display = EGL_NO_DISPLAY;
-    engine->context = EGL_NO_CONTEXT;
-    engine->surface = EGL_NO_SURFACE;
-#endif
-
 #if defined _DEBUG && defined WOMA_CONSOLE_APPLICATION
     //printf ("\npress ENTER to close, console window..."); getchar();
 #endif	
 }
 
-#if defined _NOT
-bool AndroidSystemClass::ApplicationCreateThreads()
-{
-#ifdef RELEASE // On DEBUG all are there already no need!
-    #if ENGINE_LEVEL >= 10
-        InitPackLibs();	// LOAD NOW: Urgent Resources (Used on Main Splash)!
-    #endif
-
-    // Load on Thread: The other Resources less urgent... (Used for Redering)!
-    #if defined USE_LOADING_THREADS
-        WOMA::num_running_THREADS++;
-        threadLoadPacksHandle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)StartPackLibs, (void*) this, 0, &threadLoadPacksId);
-        ASSERT(threadLoadPacksHandle);
-    #endif
-#endif
-
-    return true;
-}
-#endif	
 
 bool AndroidSystemClass::APPLICATION_INIT_SYSTEM()
 {

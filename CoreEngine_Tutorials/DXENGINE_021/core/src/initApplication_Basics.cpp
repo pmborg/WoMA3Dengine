@@ -132,6 +132,16 @@ bool ApplicationClass::initCubes3D()
 	//DEMO2:
 	{
 		initLoadTexture3D(m_cube2Model, LEVEL22_DEMO_TEXTURE, cube.VertexCubeTextureModel, cube.IndexCubeList, SHADER_TEXTURE);
+		#if NOTES
+		//#define initLoadTexture3D(model, texture, vertexVector, IndexList, shader_type)
+		//{
+		//	std::vector<STRING> Textures;
+		//	Textures.push_back(TEXT("engine/data/seafloor.dds"));
+		//	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) { CREATE_MODELGL3_IF_NOT_EXCEPTION(m_cube2Model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
+		//	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) { CREATE_MODELDX_IF_NOT_EXCEPTION(m_cube2Model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
+		//	ASSERT(m_cube2Model->LoadTexture(TEXT("engine/data/seafloor.dds"), SystemHandle->m_Driver, SHADER_TEXTURE, &Textures, &cube.VertexCube2, &cube.IndexCubeList));
+		//}
+		#endif
 	}
 	//DEMO3:
 	{

@@ -2,14 +2,15 @@
 // Filename: AndroidSystemClass.h
 // --------------------------------------------------------------------------------------------
 // ********************************************************************************************
-// World of Middle Age  - 3D Multi-Platform ENGINE 2017
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
 // code by : Pedro Borges - pmborg@yahoo.com
-// Downloaded from : http://woma.servegame.com
+// Downloaded from : https://github.com/pmborg/WoMA3Dengine
 //
 // PURPOSE:
 //
 // ********************************************************************************************
+//WomaIntegrityCheck = 1234567222;
 #pragma once
 
 // ALL Includes to Android: http://mobilepearls.com/labs/native-android-api/
@@ -21,7 +22,6 @@
 #include "SystemClass.h"
 
 #ifdef ANDROID_PLATFORM
-//#include "logManager.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,10 +35,6 @@
 #include <errno.h>
 #include <android/log.h>
 
-#endif
-
-#if _NOT //DX_ENGINE_LEVEL >= 19
-#include "eGLopenGLclass.h"	// Android
 #endif
 
 #if DX_ENGINE_LEVEL >= 21
@@ -56,7 +52,6 @@ public:
 	~AndroidSystemClass();
 	void Shutdown();
 
-	//bool InitSelectedDriver();
 	bool APPLICATION_INIT_SYSTEM();
 	int	 APPLICATION_MAIN_LOOP();
 #if CORE_ENGINE_LEVEL >= 2
@@ -69,8 +64,6 @@ public:
 
 	bool LoadWorldXmlSettings();
 
-	//bool ApplicationInitMainWindow();
-
 	void PAUSE();
 	void UNPAUSE();
 	void GPH_RESIZE();
@@ -79,30 +72,14 @@ public:
 	//bool ApplicationInit();
 #if DX_ENGINE_LEVEL >= 19 && defined USE_LOADING_THREADS
 	bool ApplicationMandatoryLoad();
-  #if defined _NOT
-	bool ApplicationCreateThreads();
-  #endif
 #endif
-
-	#if _NOT //ENGINE_LEVEL >= 10
-	bool InitializeWindows(/*eGLopenGLclass*/ void*, int&, int&);
-	#endif
 
 	#if DX_ENGINE_LEVEL >= 19 // Initializing Engine
 	EGLDisplay display;
-	//EGLDisplay mDisplay;
-	//NativeWindowType displayWindow;
-	//ANativeWindow displayWindow;
-
-	//eGLopenGLclass* m_eglOpenGL;
 	#endif
-
-	//WOMA::Settings* AppSettings = NULL;
 
 private:
 	bool mResizing;
-
-	//void ShutdownWindows();	
 
 	// VARS
 	// --------------------------------------------------------------
@@ -130,8 +107,6 @@ public:
 	TrigonometryMathClass	m_math;	// Init Math Class
 #endif
 
-	//ApplicationClass*		m_Application;	//OLD 20...
-
 #if ENGINE_LEVEL >= 10
 	InputClass*				m_OsInput;
 	std::vector<Woma_Label> TextToPrint[N_SCREEN_TEXT];
@@ -151,9 +126,7 @@ public:
 
 	STRING		XML_WORLD_FILE;
 
-	//std::vector<WomaDriverClass*> driverList;
 	resolutionType		resolution;
-	//WomaDriverClass*	m_Driver;
 #endif
 
 #if DX_ENGINE_LEVEL >= 21

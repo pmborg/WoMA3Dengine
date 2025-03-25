@@ -173,14 +173,6 @@ bool engine_init_display(struct womaengine* engine)
 	engine->height = h;
 	engine->state.angle = 0;
 
-	// Initialize GL state.
-#if _NOT //defined GLES3
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
-	glShadeModel(GL_SMOOTH);
-	glEnable(GL_CULL_FACE);
-	glDisable(GL_DEPTH_TEST);
-#endif
-
 	return 0;
 }
 

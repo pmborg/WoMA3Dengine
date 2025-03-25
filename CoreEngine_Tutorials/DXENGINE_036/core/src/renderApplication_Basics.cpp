@@ -760,7 +760,6 @@ float ApplicationClass::WOMA_APPLICATION_DemoRender(UINT64 passedTotalTime)
 			WOMA::main_loop_state = -1;		//WINDOWS
 			WOMA::game_state = GAME_STOP;	//LINUX
 		}
-
 	}
 
 	return fade;

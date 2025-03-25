@@ -1354,6 +1354,7 @@ bool newDriver()
 #endif
 		break;
 	}
+
 	return true;
 }
 #endif

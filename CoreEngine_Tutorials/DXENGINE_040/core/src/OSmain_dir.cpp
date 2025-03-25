@@ -259,13 +259,6 @@ namespace WOMA
 		// DONT LOG HERE!
 
 	#if defined WINDOWS_PLATFORM
-  #if _NOT
-		// "C:\Users\"username"\AppData\Local\Pmborg\WoMA3Dengine\"
-		//StringCchPrintf(APPDATA, MAX_STR_LEN, TEXT("%s\\%s\\%s\\"), _tgetenv(TEXT("APPDATA")), APP_COMPANY_NAME, APP_PROJECT_NAME);
-		//if (!bIsWow64 || WINXP_FLAG)
-		//	_tcscpy_s(PROGRAM_FILES, _tgetenv(TEXT("ProgramFiles")));	//is Not Wow64
-		//else
-  #endif
 		//PROGRAM_FILES =  "C:\\Program Files (x86)"
 		_tcscpy_s(PROGRAM_FILES, _tgetenv(TEXT("ProgramFiles(x86)")));//Is Wow64: 32 bits on a 64bits OS.
 
@@ -332,17 +325,7 @@ namespace WOMA
 
 		//APPDATA = TEMP
 		STRING dirName1 = WOMA::APPDATA1;
-  #if _NOT
-		char r1; //PATH string replacement()
-		std::map<char, char> rs1 = { {'\\', '/'} };	//CONVERT:	C:\\Users\\<username>\\AppData\\Roaming\\Pmborg
-		std::replace_if(dirName1.begin(), dirName1.end(), [&](char c) { return r1 = rs1[c]; }, r1);
-  #endif
 		STRING dirName = WOMA::APPDATA;
-  #if _NOT
-		char r; //PATH string replacement()
-		std::map<char, char> rs = { {'\\', '/'} };	//CONVERT:	C:\\Users\\<username>\\AppData\\Roaming\\Pmborg\\WoMA
-		std::replace_if(dirName.begin(), dirName.end(), [&](char c) { return r = rs[c]; }, r);
-  #endif
 		//dirName1 = "C:\\Users\\[____]\\AppData\\Local\\Temp\\Pmborg"
 		bool isDirCreated1 = CreateDirectory(dirName1.c_str(), 0);	//TO:		dirName1 = "\\Temp\\Pmborg"
 		DWORD dw1 = GetLastError();
@@ -383,15 +366,6 @@ namespace WOMA
 		StringCchPrintf(src, MAX_STR_LEN, TEXT("%s\\%s"), currentdir, TEXT("woma.pck"));
 		StringCchPrintf(dest, MAX_STR_LEN, TEXT("%s%s"), APPDATA, TEXT("woma.pck"));
 		b = CopyFile(src, dest, true);
-  #if _NOT
-		StringCchPrintf(src, MAX_STR_LEN, TEXT("%s\\%s"), currentdir, TEXT("my.ip"));
-		StringCchPrintf(dest, MAX_STR_LEN, TEXT("%s%s"), APPDATA, TEXT("my.ip"));
-		b = CopyFile(src, dest, true);
-
-		StringCchPrintf(src, MAX_STR_LEN, TEXT("%s\\%s"), currentdir, TEXT("present.weather"));
-		StringCchPrintf(dest, MAX_STR_LEN, TEXT("%s%s"), APPDATA, TEXT("present.weather"));
-		b = CopyFile(src, dest, true);
-  #endif
 #endif
 		// "C:\ProgramFiles(x86)\Pmborg\WoMA3Dengine\"
 		// "C:\Program Files\Pmborg\WoMA3Dengine\"

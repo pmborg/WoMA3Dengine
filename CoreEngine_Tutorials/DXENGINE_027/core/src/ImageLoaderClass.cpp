@@ -143,6 +143,9 @@ unsigned char* Convert32to24bits(unsigned char* src, UINT imageSize24bits)
 }
 
 #if defined USE_IMAGE_TIFF
+#if NOTES
+// SOURCE: http://www.libtiff.org/libtiff.html
+#endif
 ////////////////////////////////////////////////////////////////////////////////
 // TIF
 ///////////////////////////////////////////////////////////////////////////////
@@ -228,7 +231,7 @@ unsigned char* ImageLoaderClass::loadTIF(TCHAR* filename, UINT* width, UINT* hei
 ////////////////////////////////////////////////////////////////////////////////
 // JPG
 ///////////////////////////////////////////////////////////////////////////////
-//#include "c:/WoMAengine2023/_EXTERNAL_/IMAGING/JPG_LIB/include/jpeglib.h"
+
 #include "jpeglib.h"
 
 unsigned char* ImageLoaderClass::loadJPEG(TCHAR* filename, UINT* width, UINT* height, UINT* imageSize, UINT loadimagebits)
@@ -328,8 +331,6 @@ unsigned char* ImageLoaderClass::loadJPEG(TCHAR* filename, UINT* width, UINT* he
 #endif
 
 #if defined USE_IMAGE_PNG
-
-//std::istringstream *inputStream;
 
 #ifndef FAR
 #ifdef NEED_FAR_POINTERS

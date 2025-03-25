@@ -103,7 +103,6 @@ static void validateShader(GLuint shader, TCHAR* file = 0) {
 		if (length > 0) {// If we have any information to display
 			printf("FILE: %s", file);
 			printf("Wbuffer: %s", Wbuffer);
-			//WomaMessageBox(Wbuffer, file); // Output the information);
 		}
 		#else
 		_tprintf("ERROR: glGetShaderInfoLog: %s\n", infoLog);
@@ -178,7 +177,6 @@ bool GLshaderClass::InitializeShader(SHADER_TYPE shaderType, TCHAR* vsFilename, 
 		OutputLinkerErrorMessage(m_shaderProgram);
 		return false;
 	}
-
 
 	return true;
 }
@@ -378,11 +376,12 @@ bool GLshaderClass::SetShaderParameters(SHADER_TYPE shaderType, mat4* worldMatri
 
 	//V2:
 	mat4 WVP = (*worldMatrix) * (*viewMatrix) * (*projectionMatrix);
+
 	// Set the world matrix in the vertex shader.
 	location = glGetUniformLocation(m_shaderProgram, "worldMatrix");
 	//ASSERT(location >= 0);
 	glUniformMatrix4fv(location, 1, false, (float*)worldMatrix);
-	
+
 	//V2:
 	// Set the projection matrix in the vertex shader.
 	location = glGetUniformLocation(m_shaderProgram, "WVP");
@@ -425,17 +424,9 @@ bool GLshaderClass::SetShaderParameters(SHADER_TYPE shaderType, mat4* worldMatri
 		location = glGetUniformLocation(m_shaderProgram, "lightDirection");
 		ASSERT(location != -1);
 		glUniform3fv(location, 1, light->GetDirection());
-		/*
-		// Set the light direction in the pixel shader.
-		location = glGetUniformLocation(m_shaderProgram, "diffuseLightColor");
-		ASSERT(location != -1);
-		glUniform4fv(location, 1, light->GetDiffuseColor());
-		*/
-
 	}
 
 	return true;
 }
 
 #endif
-
