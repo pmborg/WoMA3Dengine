@@ -219,7 +219,7 @@
     <Xml Include="..\world.xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\engine\data\airports.metar" />
+    <None Include="..\..\engine\data\airports.metar" />
     <None Include="..\GLengine\color.ps" />
     <None Include="..\GLengine\color.vs" />
     <None Include="..\GLengine\light.ps" />
@@ -228,18 +228,18 @@
     <None Include="..\GLengine\texture.vs" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\engine\data\basics\Earth_Diffuse.bmp" />
-    <Image Include="..\engine\data\basics\Earth_Diffuse.DDS" />
-    <Image Include="..\engine\data\basics\Earth_Diffuse.jpg" />
-    <Image Include="..\engine\data\basics\Earth_Diffuse.png" />
-    <Image Include="..\engine\data\basics\Earth_Diffuse.tga" />
-    <Image Include="..\engine\data\basics\Earth_Diffuse.TIF" />
-    <Image Include="..\engine\data\basics\logotipo_small_backgroundV2.bmp" />
-    <Image Include="..\engine\data\basics\seafloor.png" />
-    <Image Include="..\engine\data\basics\target.bmp" />
-    <Image Include="..\engine\data\original\Earth_Diffuse.bmp" />
-    <Image Include="..\engine\data\TITLE\WOMA_ENGINE-BIG.png" />
-    <Image Include="..\engine\data\TITLE\WOMA_ENGINE.png" />
+    <Image Include="..\..\engine\data\basics\Earth_Diffuse.bmp" />
+    <Image Include="..\..\engine\data\basics\Earth_Diffuse.DDS" />
+    <Image Include="..\..\engine\data\basics\Earth_Diffuse.jpg" />
+    <Image Include="..\..\engine\data\basics\Earth_Diffuse.png" />
+    <Image Include="..\..\engine\data\basics\Earth_Diffuse.tga" />
+    <Image Include="..\..\engine\data\basics\Earth_Diffuse.TIF" />
+    <Image Include="..\..\engine\data\basics\logotipo_small_backgroundV2.bmp" />
+    <Image Include="..\..\engine\data\basics\seafloor.png" />
+    <Image Include="..\..\engine\data\basics\target.bmp" />
+    <Image Include="..\..\engine\data\original\Earth_Diffuse.bmp" />
+    <Image Include="..\..\engine\data\TITLE\WOMA_ENGINE-BIG.png" />
+    <Image Include="..\..\engine\data\TITLE\WOMA_ENGINE.png" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

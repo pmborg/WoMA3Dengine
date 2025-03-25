@@ -236,8 +236,8 @@
     <Xml Include="..\world.xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\engine\data\airports.metar" />
-    <None Include="..\engine\data\fonts\008font.png_debug" />
+    <None Include="..\..\engine\data\airports.metar" />
+    <None Include="..\..\engine\data\fonts\008font.png_debug" />
     <None Include="..\GLengine\color.ps" />
     <None Include="..\GLengine\color.vs" />
     <None Include="..\GLengine\font.ps" />
@@ -248,30 +248,30 @@
     <None Include="..\GLengine\texture.vs" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\engine\data\basics\Earth_Diffuse.bmp" />
-    <Image Include="..\engine\data\basics\Earth_Diffuse.DDS" />
-    <Image Include="..\engine\data\basics\Earth_Diffuse.jpg" />
-    <Image Include="..\engine\data\basics\Earth_Diffuse.png" />
-    <Image Include="..\engine\data\basics\Earth_Diffuse.tga" />
-    <Image Include="..\engine\data\basics\Earth_Diffuse.TIF" />
-    <Image Include="..\engine\data\basics\logotipo_small_backgroundV2.bmp" />
-    <Image Include="..\engine\data\basics\seafloor.png" />
-    <Image Include="..\engine\data\basics\target.bmp" />
-    <Image Include="..\engine\data\fonts\008font.png" />
-    <Image Include="..\engine\data\fonts\008font.tga" />
-    <Image Include="..\engine\data\fonts\008font2.tga" />
-    <Image Include="..\engine\data\fonts\font01.tga" />
-    <Image Include="..\engine\data\original\Earth_Diffuse.bmp" />
-    <Image Include="..\engine\data\sky\NEW_SKY_DOME.jpg" />
-    <Image Include="..\engine\data\sky\NEW_SKY_NIGHT.jpg" />
-    <Image Include="..\engine\data\TITLE\WOMA_ENGINE-BIG.png" />
-    <Image Include="..\engine\data\TITLE\WOMA_ENGINE.png" />
+    <Image Include="..\..\engine\data\basics\Earth_Diffuse.bmp" />
+    <Image Include="..\..\engine\data\basics\Earth_Diffuse.DDS" />
+    <Image Include="..\..\engine\data\basics\Earth_Diffuse.jpg" />
+    <Image Include="..\..\engine\data\basics\Earth_Diffuse.png" />
+    <Image Include="..\..\engine\data\basics\Earth_Diffuse.tga" />
+    <Image Include="..\..\engine\data\basics\Earth_Diffuse.TIF" />
+    <Image Include="..\..\engine\data\basics\logotipo_small_backgroundV2.bmp" />
+    <Image Include="..\..\engine\data\basics\seafloor.png" />
+    <Image Include="..\..\engine\data\basics\target.bmp" />
+    <Image Include="..\..\engine\data\fonts\008font.png" />
+    <Image Include="..\..\engine\data\fonts\008font.tga" />
+    <Image Include="..\..\engine\data\fonts\008font2.tga" />
+    <Image Include="..\..\engine\data\fonts\font01.tga" />
+    <Image Include="..\..\engine\data\original\Earth_Diffuse.bmp" />
+    <Image Include="..\..\engine\data\sky\NEW_SKY_DOME.jpg" />
+    <Image Include="..\..\engine\data\sky\NEW_SKY_NIGHT.jpg" />
+    <Image Include="..\..\engine\data\TITLE\WOMA_ENGINE-BIG.png" />
+    <Image Include="..\..\engine\data\TITLE\WOMA_ENGINE.png" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\engine\data\fonts\008fontdata.txt" />
-    <Text Include="..\engine\data\fonts\008fontdata2.txt" />
-    <Text Include="..\engine\data\fonts\008fontdata_windows.txt" />
-    <Text Include="..\engine\data\fonts\font01.txt" />
+    <Text Include="..\..\engine\data\fonts\008fontdata.txt" />
+    <Text Include="..\..\engine\data\fonts\008fontdata2.txt" />
+    <Text Include="..\..\engine\data\fonts\008fontdata_windows.txt" />
+    <Text Include="..\..\engine\data\fonts\font01.txt" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
