@@ -105,6 +105,7 @@ void WinSystemClass::ProcessFrame()
 
 	{
 		#if defined INTRO_DEMO
+		m_Application->dayLightFade = m_Application->Update();	//OS CORE ONLY!  F1, F2, ...
 		if (RENDER_PAGE < 15) 
 		#else
 		if (RENDER_PAGE < 10)
@@ -116,7 +117,9 @@ void WinSystemClass::ProcessFrame()
 		{
 			{
 				m_Driver->BeginScene(mon);								//RESET FRAME
+				#if !defined INTRO_DEMO
 				m_Application->dayLightFade = m_Application->Update();	//OS CORE ONLY!  F1, F2, ...
+				#endif
 				m_Application->RenderScene(mon, m_Driver);				//RENDER ONE FRAME: 100% is done here!
 
 				if (!g_contextDriver)									//SHOW FRAME:
