@@ -2,10 +2,10 @@
 // Filename: 040LightInstance.hlsl
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
-*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2024
+*	World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 *	-------------------------------------------------------------------------------------------
 *	code by : Pedro Borges - pmborg@yahoo.com
-*	Downloaded from : http://woma.servegame.com
+*	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
 
@@ -113,10 +113,17 @@ PSIn MyVertexShader040LightInstance(VSIn input, uint instanceID : SV_InstanceID)
 
 	cameraPosition = mul(float4(input.position, 1), WV);								// FOG: Calculate the camera position.
 
-	//23: LIGHT: NORMAL
-	if (VShasLight || VShasSpecular)
-		output.normal = normalize(mul(input.normal, (float3x3)worldMatrix));// Calculate the normal vector against the world matrix only
-
+	//23: LIGHT: NORMAL (we need to recalculate normals due rotations)
+    if (VShasLight || VShasSpecular)
+    {
+        matrix world = worldMatrix * rotationAroundY;
+        world._m30 = position.x;
+        world._m31 = position.y;
+        world._m32 = position.z;
+       
+        output.normal = normalize(mul(input.normal, (float3x3) world));
+    }
+    
 	//34: SPECULAR
 #if defined PS_USE_SPECULAR
 
