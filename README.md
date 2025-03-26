@@ -12,8 +12,8 @@
   - <b>Back:		</b> arrow or s<br>
   - <b>Look Up:		</b> pg. Up<br>
   - <b>Look Down:	</b>	pg. Down<br>
-  - <b>Go Up: 		</b>	R<br>
-  - <b>Go Down: 	</b>	F<br>
+  - <b>Go Up: 		</b>	R (GOD MODE: true)<br>
+  - <b>Go Down: 	</b>	F (GOD MODE: true)<br>
   
 <h2>Keys / Hints:</h2> <br>
 <b>[F1]</b> System Info<br>
