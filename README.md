@@ -40,6 +40,11 @@ Try to Change the driver on the fly without the need of close and open the Appli
 <h2>3D - TERRAINSE TUTORIAL SERIES</h2>
 <hr>
 
+- <b>DX51: WORLD.XML: Add <b>fog</b> (ModelTextureVertexType). </b><br> 
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_051.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_051.png)	 
+
+<hr> 
 - <b>DX50: WORLD.XML: The under water terrain. </b><br> 
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_050.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_050.png)	 

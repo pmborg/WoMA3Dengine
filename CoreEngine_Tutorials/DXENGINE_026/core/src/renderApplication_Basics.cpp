@@ -20,6 +20,7 @@
 //WomaIntegrityCheck = 1234567222;
 
 #include "OSengine.h"
+#pragma warning(disable : 4267) // warning C4267: 'initializing': conversion from 'size_t' to 'UINT', possible loss of data
 #include "OSmain_dir.h"
 #include "ApplicationClass.h"
 

@@ -1,0 +1,12 @@
+<woma>
+  <camera screenNear="0.1" screenDepth="2048">
+    <initPos x="128" y="0" z="128" />
+    <initRot x="25" y="" z="0" />
+  </camera>
+  <!-- FOG: ON -->
+  <fog start="1" end="16"/>
+  <world hVisibility="128" seaLevel="0" size="512" patchSize="64"
+         mainTexture="engine/data/Terrain/011map1_heightmap01_v7.bmp"
+         skyDayTexture="engine/data/sky/NEW_SKY_DOME.jpg"
+         skyNightTexture=""/>
+</woma>
