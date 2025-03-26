@@ -867,14 +867,14 @@ bool CTerrain::initTerrainWaterMeshDemo(UINT terrainId) // Used to load WATER
 #if defined DX11 || defined DX9
 		if (((DirectX::DXmodelClass*)SystemHandle->m_Application->m_Model[terrainId])->m_Shader11) {
 			((DirectX::DXmodelClass*)SystemHandle->m_Application->m_Model[terrainId])->m_Shader11->hasAlfaColor = true;
-			((DirectX::DXmodelClass*)SystemHandle->m_Application->m_Model[terrainId])->m_Shader11->alfaColor = 0.75f;
+			((DirectX::DXmodelClass*)SystemHandle->m_Application->m_Model[terrainId])->m_Shader11->alfaColor = 0.35f;
 		}
 #endif
 #if defined DX12
 		if (((DirectX::DXmodelClass*)SystemHandle->m_Application->m_Model[terrainId])->m_Shader)
 		{
 			((DirectX::DXmodelClass*)SystemHandle->m_Application->m_Model[terrainId])->m_Shader->hasAlfaColor = true;
-			((DirectX::DXmodelClass*)SystemHandle->m_Application->m_Model[terrainId])->m_Shader->alfaColor = 0.5f;
+			((DirectX::DXmodelClass*)SystemHandle->m_Application->m_Model[terrainId])->m_Shader->alfaColor = 0.35f;
 		}
 #endif
 
@@ -960,8 +960,6 @@ bool CTerrain::initMainTopoTerrainDemo(UINT terrainId)
 	// m_heightMap[index]
 	// height[y][x]
 	LoadHeightMapTerrain(TERRAIN_LEVEL50_HMAP, xpos, zpos);
-	// IMG new Format equivalente:
-	// height[(terrain_squares-1)  - y][x] == m_heightMap[(m_terrainWidth * y) + x]
 
 	// RASTER: CalculateTextureCoordinates() |tu tv|
 		//------------------------------------------------------------------------------------------

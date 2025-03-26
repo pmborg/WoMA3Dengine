@@ -149,7 +149,6 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 #if defined SCENE_MAIN_TOPO_TERRAIN && !defined USE_TERRAIN_ALFA_MAP
 	static bool fog = (RENDER_PAGE == 51 || RENDER_PAGE >= 60) ? true : false;
 	if (RENDER_PAGE >= 50)
-		//if ((RENDER_PAGE >= 62 && m_mainMapModel) && (WOMA::game_state != GAME_MAP))
 	{
 		if (m_Model[2])
 			m_Model[2]->RenderWithFade(fadeLight, fog);	// New function to replace these 2 line options.
@@ -164,7 +163,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 #if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
 	UINT size = SceneManager::GetInstance()->opacModelList.size();
 	for (UINT id = 0; id < size; id++)
-		RenderModel(monitorWindow, m_Driver, id, PASS_OPAC); //objModel[id]->Render(m_Driver, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_OPAC);
+		RenderModel(monitorWindow, m_Driver, id, PASS_OPAC); //eq: objModel[id]->Render(m_Driver, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_OPAC);
 #endif
 
 	//THE "OTHER" NETWORK PLAYERS
