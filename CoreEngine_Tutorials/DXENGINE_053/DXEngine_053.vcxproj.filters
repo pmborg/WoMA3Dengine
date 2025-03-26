@@ -623,7 +623,7 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="settings.xml" />
-    <Xml Include="world_52.xml" />
+    <Xml Include="world_53.xml" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="WoMA.ico">

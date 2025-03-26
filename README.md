@@ -40,6 +40,11 @@ Try to Change the driver on the fly without the need of close and open the Appli
 <h2>3D - TERRAIN TUTORIAL SERIES</h2>
 <hr>
 
+- <b>DX54: WORLD.XML: TERRAIN: Add <b>Water waves</b> ModelTextureVertexType</b><br> 
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_054.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_054.png)	 
+
+<hr> 
 - <b>DX53: WORLD.XML: TERRAIN: Add extra color terrain(extra Green in this example) ModelTextureVertexType</b><br> 
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_053.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_053.png)	 
