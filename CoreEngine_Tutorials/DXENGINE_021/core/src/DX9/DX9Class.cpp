@@ -2,7 +2,7 @@
 // Filename: DX9Class.cpp
 // --------------------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------
-// World of Middle Age  - 3D Multi-Platform ENGINE 2017
+// World of Middle Age  - 3D Multi-Platform ENGINE 2025
 //-------------------------------------------------------------------------------------------
 // code by : Pedro Borges - pmborg@yahoo.com
 // Downloaded from : woma.no-ip.org
@@ -805,11 +805,6 @@ void DX9Class::GetProjectionMatrix(XMMATRIX& projectionMatrix)
 	projectionMatrix = m_projectionMatrix;
 }
 
-
-#if TUTORIAL_PRE_CHAP >= 15
-void GetProjectionMiniMapMatrix(XMMATRIX&){}
-void GetProjectionMapMatrix(XMMATRIX& projectionMapMatrix){}
-#endif
 
 /*
 void DX9Class::setRasterStateCullFront(UINT fillMode){}

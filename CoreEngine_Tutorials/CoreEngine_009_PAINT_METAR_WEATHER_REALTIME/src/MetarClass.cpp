@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: MetarClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -26,6 +25,7 @@
 #include "defs.h"
 #endif
 
+#if CORE_ENGINE_LEVEL >= 9 && defined USE_METARCLASS //ENGINE_LEVEL >= 13
 #include "metarClass.h"
 #include <math.h>	/* exp */
 
@@ -34,7 +34,7 @@ Weather weather;
 MetarClass::MetarClass()
 {
     CLASSLOADER();
-    WomaIntegrityCheck = 1234567142;
+    WomaIntegrityCheck = 1234567222;
 }
 
 MetarClass::~MetarClass() { CLASSDELETE(); }
@@ -713,3 +713,4 @@ bool MetarClass::Initialize(STRING Metar)
 }
 
 
+#endif

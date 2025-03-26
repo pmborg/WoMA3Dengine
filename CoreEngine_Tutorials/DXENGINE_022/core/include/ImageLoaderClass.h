@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: ImageLoaderClass.h
 // --------------------------------------------------------------------------------------------
@@ -247,6 +246,7 @@ const int chCount[] = {
 	};
 	return chCount[format];
 }
+
 // Define some sized types
 typedef unsigned char uint8;
 typedef   signed char  int8;

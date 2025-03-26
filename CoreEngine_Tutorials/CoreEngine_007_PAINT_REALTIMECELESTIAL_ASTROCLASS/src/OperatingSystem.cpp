@@ -16,12 +16,13 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567142;
+//WomaIntegrityCheck = 1234567222;
 
 #define _CRT_SECURE_NO_WARNINGS
 
-#include "WinSystemClass.h"
+#include "platform.h"
 #if CORE_ENGINE_LEVEL >= 4 && defined USE_SYSTEM_CHECK
+#include "WinSystemClass.h"
 #if !defined LINUX_PLATFORM
 
 #define _WIN32_DCOM

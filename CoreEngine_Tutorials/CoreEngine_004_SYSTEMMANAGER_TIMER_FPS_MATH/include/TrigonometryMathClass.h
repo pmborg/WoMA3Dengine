@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: TrigonometryMathClass.h
 // --------------------------------------------------------------------------------------------
@@ -22,6 +21,7 @@
 #pragma once
 
 #include "platform.h"
+#if defined USE_TIMER_CLASS
 #include "timerClass.h" // To benchMark
 
 using namespace std;	// endl
@@ -49,3 +49,8 @@ public:
 private:
 
 };
+#else
+	#define FAST_sin(x) sin(x)
+	#define FAST_cos(x) cos(x)
+	#define FAST_sqrt(x) sqrt(x)
+#endif

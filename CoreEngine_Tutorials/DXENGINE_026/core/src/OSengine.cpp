@@ -62,6 +62,7 @@
 	#include "GLopenGLclass.h"
 #endif
 
+TCHAR DEMO_NAME_SHOW[MAX_STR_LEN] = {};
 TCHAR* DEMO_NAME[] =
 {
 //{"07:Loading a files from engine.pck and Press[F2] for RealTime Celestial Positions of Sun and Moon accordingly with user Location"},
@@ -97,9 +98,9 @@ TCHAR* DEMO_NAME[] =
 {TEXT("46")}, //Reserved future demo 
 {TEXT("47")}, //Reserved future demo 
 {TEXT("48")}, //Reserved future demo 
-{TEXT("49: TERRAIN: Generate under water terrain. ModelTextureVertexType")},
-{TEXT("50: TERRAIN: the under water terrain. ModelTextureVertexType")},
-{TEXT("51: TERRAIN: Add fog ModelTextureVertexType")},
+{TEXT("49: TERRAIN: Generate under water terrain. ModelTextureVertexType (Keys: WASD + RF) F11: God mode/switch")},
+{TEXT("50: TERRAIN: the under water terrain. ModelTextureVertexType (Keys: WASD + RF) F11: God mode/switch")},
+{TEXT("51: TERRAIN: Add fog ModelTextureVertexType (Keys: WASD + RF) F11: God mode/switch")},
 {TEXT("52: TERRAIN: Use Light Shader + Add Normals + Add Index(s) ModelTextureVertexType")},
 {TEXT("53: TERRAIN: Add extra color terrain(extra Green in this example) ModelTextureVertexType")},
 {TEXT("54: TERRAIN: Add Water waves ModelTextureVertexType")},

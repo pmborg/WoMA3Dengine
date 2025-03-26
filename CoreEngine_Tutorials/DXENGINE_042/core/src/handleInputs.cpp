@@ -39,7 +39,7 @@
 #include "ApplicationClass.h"
 #include "OSengine.h"
 
- 
+bool f11GodState = false;
 bool g_GOD_MODE = false;
 
 #if defined DX_ENGINE
@@ -92,7 +92,6 @@ void DXInputClass::ProcessInput()
 
 	#if !defined RELEASE
 	m_ourPlayer->p_player.IsGodModePressed	= (m_keyboardState[KeyGodMode] & 0x80) ? true:false;
-
 	m_ourPlayer->p_player.Is1Pressed = (m_keyboardState[KeyFlyUp] & 0x80) ? true : false;
 	m_ourPlayer->p_player.IsQPressed = (m_keyboardState[KeyFlyDown] & 0x80) ? true : false;
 	#endif
@@ -123,15 +122,15 @@ bool ApplicationClass::HandleUserInput(double frameTime)
 
     // Proccess "F11": GOD MODE SWITCH
     // --------------------------------------------------------------------------------------------
-    static bool f11state = false;
+    
 
 #if defined DX_ENGINE
-    if ((DXsystemHandle->m_player[g_NetID]->p_player.IsGodModePressed) && (!f11state)) {
-        f11state = true;
+    if ((DXsystemHandle->m_player[g_NetID]->p_player.IsGodModePressed) && (!f11GodState)) {
+        f11GodState = true;
     }
-    if ((!DXsystemHandle->m_player[g_NetID]->p_player.IsGodModePressed) && (f11state)) {
+    if ((!DXsystemHandle->m_player[g_NetID]->p_player.IsGodModePressed) && (f11GodState)) {
         g_GOD_MODE = !g_GOD_MODE;
-        f11state = false;
+        f11GodState = false;
     }
 #endif
 

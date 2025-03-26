@@ -1,0 +1,12 @@
+<woma>
+  <camera screenNear="0.1" screenDepth="2048">
+    <initPos x="0" y="0" z="0" />
+    <initRot x="25" y="" z="0" />
+  </camera>
+  <!-- ENGINE LVL 31-->
+  <fog start="32" end="256"/>
+  <world hVisibility="128" seaLevel="0" size="512" patchSize="64"
+         mainTexture="engine/data/Terrain/011map1_heightmap01_v7.bmp"
+         skyDayTexture="engine/data/sky/desert_equi.jpgd5a2d427-55de-4d44-a8ec-5ba440b11e2fZoom.jpg"
+         skyNightTexture=""/>
+</woma>

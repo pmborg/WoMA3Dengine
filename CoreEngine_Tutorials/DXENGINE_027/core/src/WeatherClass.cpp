@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: WeatherClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -216,7 +215,14 @@ bool WeatherClass::GetPresentWeather(TCHAR* ICAO)
     IFSTREAM fileIn(WOMA::LoadFile (szFileName));
 	if (!fileIn)
 	{
+#ifdef RELEASE
+		STRING err = TEXT("File not found: "); err += szFileName;
+		WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "));
+		WomaFatalExceptionW((TCHAR*)err.c_str());
+		return false;
+#else
         return true;
+#endif
 	}
 
     int i = 0; // String Index

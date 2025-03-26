@@ -364,10 +364,6 @@ int png_sig_cmp(png_bytep sig, png_size_t start, png_size_t num_to_check)
 }
 
 #define PNG_STDIO_SUPPORTED
-//#include "c:/WoMAengine2023/_EXTERNAL_/IMAGING/ZLIB_LIB/include/zconf.h"
-//#include "c:/WoMAengine2023/_EXTERNAL_/IMAGING/ZLIB_LIB/include/zlib.h"
-//#include "c:/WoMAengine2023/_EXTERNAL_/IMAGING/PNG_LIB/include/pngconf.h"
-//#include "c:/WoMAengine2023/_EXTERNAL_/IMAGING/PNG_LIB/include/png.h"
 #include "zconf.h"
 #include "zlib.h"
 #include "pngconf.h"

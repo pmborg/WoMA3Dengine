@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Upload the "file".dmp and "report".txt to Woma Server (woma.servegame.com) via FTP
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567142;
+//WomaIntegrityCheck = 1234567222;
 
 #include "platform.h"
 #if defined USE_MINIDUMPER && defined WINDOWS_PLATFORM

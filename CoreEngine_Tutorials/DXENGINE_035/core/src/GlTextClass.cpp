@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: GlTextClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -248,6 +247,22 @@ bool GlTextClass::UpdateSentence(SentenceType* sentence, TCHAR* text, int positi
 
 	return true;
 }
+
+#if NOTES
+//SIMILAR TO:
+//bool DXmodelClass::RenderSprite(void* Driver, int positionX, int positionY, float scale)
+//UpdateBuffersRotY
+//
+//m_worldMatrix = XMMatrixIdentity();
+//m_worldMatrix._11 = m_worldMatrix._22 = m_worldMatrix._33 = scale;
+//m_worldMatrix._42 = +SystemHandle->AppSettings->WINDOW_HEIGHT / 2 - m_worldMatrix._33 * SpriteTextureHeight / 2;
+//
+//Render(m_driver, CAMERA_NORMAL, PROJECTION_ORTHOGRAPH);
+//	SetBuffers(driver->m_device);
+//	XMMATRIX* projectionMatrix = driver->GetProjectionMatrix(Driver, camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
+//	XMMATRIX* viewMatrix = driver->GetViewMatrix(Driver, camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
+//	m_Shader->Render(driver->m_device, m_indexCount, &m_worldMatrix, viewMatrix, projectionMatrix);	// Single Material (Optimized)
+#endif
 
 void GlTextClass::RenderSentence(SentenceType* sentence)
 {

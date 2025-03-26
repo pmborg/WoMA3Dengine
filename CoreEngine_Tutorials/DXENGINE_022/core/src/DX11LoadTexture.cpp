@@ -18,13 +18,13 @@
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234567222;
 
-#include "OSengine.h"
-
+#include "platform.h"
 #if (defined DX11 && DX_ENGINE_LEVEL >= 22) // Texturing
-
+#include "OSengine.h"
 #include "WomaDriverClass.h"
 #include "dx11Class.h"
 #include "winsystemclass.h"	// SystemHandle
+#include "fileLoader.h"
 
 // http://directxtk.codeplex.com/wikipage?title=WICTextureLoader&referringTitle=Home
 // #include <WICTextureLoader.h>
@@ -201,7 +201,7 @@ HRESULT DX11Class::LOADTEXTURE_DX11_WIN_SDK8(
 			return hr;
 		}
 	}
-
+	
 	hr = LoadTexture(pDevice, pSrcFile, ppShaderResourceView);
 
 	// COMMON:

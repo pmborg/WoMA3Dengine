@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: ApplicationTextClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -133,67 +134,6 @@ void ApplicationTextClass::SetLightDirection(float rotX, float rotY, float rotZ)
 }
 #endif
 
-#if _NOT //defined INTRO_DEMO
-//##-----------------------------------------------------------------------------------------
-void ApplicationTextClass::SetTime(INT64 dt)
-{
-	static TCHAR timeString[20];
-
-	// Setup the X rotation string.
-	StringCchPrintf (timeString, sizeof(timeString), TEXT("Time: %6.3f "), (float)dt/1000.f);
-
-	// Update the sentence vertex buffer with the new string information.
-	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_TIME], timeString, SystemHandle->AppSettings->WINDOW_WIDTH - 180, 60, 0.0f, 1.0f, 0.0f));
-}
-
-//##-----------------------------------------------------------------------------------------
-void ApplicationTextClass::SetFade(float fade)
-{
-	static TCHAR timeString[20];
-
-	// Setup the X rotation string.
-	StringCchPrintf (timeString, sizeof(timeString), TEXT("Fade: %6.3f "), fade);
-
-	// Update the sentence vertex buffer with the new string information.
-	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_FADE], timeString, SystemHandle->AppSettings->WINDOW_WIDTH - 180, 80, 0.0f, 1.0f, 0.0f));
-}
-
-//##-----------------------------------------------------------------------------------------
-void ApplicationTextClass::SetScreenToShow(UINT screenToShow, UINT render_page)
-{
-	static TCHAR timeString[20];
-
-	// Setup the X rotation string.
-	StringCchPrintf (timeString, sizeof(timeString), TEXT("Screen: %d Page: %d "), screenToShow, render_page);
-
-	// Update the sentence vertex buffer with the new string information.
-	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_ScreenToShow], timeString, SystemHandle->AppSettings->WINDOW_WIDTH - 180, 100, 0.0f, 1.0f, 0.0f));
-}
-#endif
-
-#if TUTORIAL_PRE_CHAP >= 12
-//13,14,15
-void ApplicationTextClass::SetCompoundPosition(WCHAR *file, float dist, UINT id, float posX, float posY, float posZ, float scale)
-{
-    char dataString[150];
-
-    // Convert ID string to char:
-    CHAR psz[100] = { 0 };
-    wtoa(psz, file, 100);
-
-    if (dist > 10000)
-        dist = 9999;
-
-	sprintf_s(dataString, "OBJ ID: %d %s DIST: %4.2f", id, psz, dist);
-    IF_NOT_RETURN_FALSE(m_Text.UpdateSentence(m_sentence[TEXT_COMPOUND_ID], dataString, 10, 120, 1.0f, 0.0f, 1.0f));
-
-    // Setup the X, Y, Z position and (scale) string:
-    StringCchPrintf(dataString, sizeof(dataString), TEXT("OBJ xyz: %4.2f,%4.2f,%4.2f (Scale:%4.2f)"), posX, posY, posZ, scale);
-    ASSERT(m_Text.UpdateSentence(m_sentence[TEXT_COMPOUND], dataString, 10, 140, 1.0f, 0.0f, 1.0f));
-}
-#endif
-
-#if DX_ENGINE_LEVEL >= 30
 //08
 void ApplicationTextClass::SetRenderCount(int Count, int compoundCount, UINT totalCompoundLoaded)
 {
@@ -206,7 +146,6 @@ void ApplicationTextClass::SetRenderCount(int Count, int compoundCount, UINT tot
 	// Update the sentence vertex buffer with the new string information:
 	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_TERRAINRENDERCOUNT], countString, 10, 100, 0.0f, 0.5f, 1.0f));
 }
-#endif
 
 #if TUTORIAL_CHAP >= 50
 //09
@@ -225,128 +164,6 @@ void ApplicationTextClass::SetLoboRenderCount(int count)
 	// Update the sentence vertex buffer with the new string information.
 	ASSERT (m_Text.UpdateSentence(m_sentence[TEXT_WATERRENDERCOUNT], countString, 10, 110, 0.0f, 1.0f, 0.0f));
 }
-#endif
-
-#if TUTORIAL_PRE_CHAP >= 45 // 60 // BILLBOARD
-//10
-void ApplicationTextClass::SetBillRenderCount(int count)
-{
-	char tempString[32];
-	char countString[32];
-
-	// Convert the count integer to string format.
-	//_itoa_s(count, tempString, 10);	//Bug on ANDROID
-
-	// Setup the render count string.
-	strcpy_s(countString, "Bill Render Count: ");
-	strcat_s(countString, tempString);
-
-	// Update the sentence vertex buffer with the new string information.
-	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_BILLRENDERCOUNT], countString, 10, 130, 0.0f, 1.0f, 0.0f));
-}
-#endif
-
-#if TUTORIAL_PRE_CHAP >= 63 && defined (MAIN_FRAME) // 83
-void ApplicationTextClass::SetXP(UINT XP, UINT maxXP, float percent)
-{
-	char timeString[25];
-	bool result;
-
-	// Setup the X rotation string.
-	sprintf_s (timeString, "XP %d/%d (%3.2f %%)", XP, maxXP, percent);
-
-	// Update the sentence vertex buffer with the new string information.
-	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_XP], timeString,  SystemHandle->AppSettings->WINDOW_WIDTH/2 - 50, g_SCREEN_HEIGHT - 30, 0.0f, 1.0f, 0.0f));
-}
-
-void ApplicationTextClass::SetGold(float gold)
-{
-	char timeString[20];
-	bool result;
-
-	// Setup the X rotation string.
-	sprintf_s (timeString, "%6.2f gold", gold);
-
-	// Update the sentence vertex buffer with the new string information.
-
-	//TODO: USE SystemHandle->m_Application->scaleX !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	float m_scaleX = SystemHandle->AppSettings->WINDOW_WIDTH / 1920.0f;
-	//float m_scaleY = g_SCREEN_HEIGHT / 1080.0f;
-
-	ASSERT (m_Text.UpdateSentence(m_sentence[TEXT_GOLD], timeString,  SystemHandle->AppSettings->WINDOW_WIDTH - (int)(m_scaleX * 160), (g_SCREEN_HEIGHT - 30), 0.0f, 1.0f, 0.0f));
-}
-#endif
-
-#if ENGINE_LEVEL >= 140 // #if TUTORIAL_PRE_CHAP >= 90
-void ApplicationTextClass::SetLatency(int latency)
-{
-	char tempString[20];
-	char latencyString[20];
-	bool result;
-
-
-	// Truncate the latency to below 10,000.
-	if(latency > 9999)
-		latency = 9999;
-
-	// Convert the latency integer to string format.
-	//_itoa_s(latency, tempString, 10);	//Bug on ANDROID
-
-	// Setup the cpu string.
-	strcpy_s(latencyString, "Latency: ");
-	strcat_s(latencyString, tempString);
-	strcat_s(latencyString, " ms");
-
-	// Update the sentence vertex buffer with the new string information.
-	ASSERT (m_Text.UpdateSentence(m_sentence[TEXT_LATENCY], latencyString, 10, 150, 0.0f, 1.0f, 0.0f));
-}
-#endif
-
-#if TUTORIAL_PRE_CHAP >= 200
-//11,12
-void ApplicationTextClass::SetVideoCardInfo(char* videoCardName, int videoCardMemory)
-{
-	char dataString[150];
-	char tempString[16];
-	char memoryString[32];
-
-	// Setup the video card name string.
-	strcpy_s(dataString, "Video Card: ");
-	strcat_s(dataString, videoCardName);
-
-	// Update the sentence vertex buffer with the new string information.
-	IF_NOT_RETURN_FALSE (m_Text.UpdateSentence(m_sentence[11], dataString, 10, 10, 1.0f, 1.0f, 1.0f));
-
-	// Truncate the memory value to prevent buffer over flow.
-	if(videoCardMemory > 9999999)
-		videoCardMemory = 9999999;
-
-	// Convert the video memory integer value to a string format.
-	//_itoa_s(videoCardMemory, tempString, 10);	//Bug on ANDROID
-
-	// Setup the video memory string.
-	strcpy_s(memoryString, "Video Memory: ");
-	strcat_s(memoryString, tempString);
-	strcat_s(memoryString, " MB");
-
-	// Update the sentence vertex buffer with the new string information.
-	ASSERT (m_Text.UpdateSentence(m_sentence[12], memoryString, 10, 30, 1.0f, 1.0f, 1.0f));
-}
-
-void ApplicationTextClass::SetVideoCardInfo (DXGI_ADAPTER_DESC* adapterDesc)
-{
-	// Store the dedicated video card memory in megabytes.
-	int m_videoCardMemory = (int)(adapterDesc->DedicatedVideoMemory / 1024 / 1024);
-	char txt[10]; strcpy_s (txt, g_driver->ShaderModel); txt[1]='.';
-
-	sprintf_s (TextMsgs[TEXT_VIDEOINFO1].txt, "%s - %s (Shader Model %s)", APPLICATION_NAME, DXSTR, txt);
-	sprintf_s (TextMsgs[TEXT_VIDEOINFO2].txt, "%s (%s)", BOARD, MEMORY);
-	sprintf_s (TextMsgs[TEXT_VIDEOINFO3].txt, "%s (%d MB)", VIDEOCARD, m_videoCardMemory);
-	strcpy_s (TextMsgs[TEXT_VIDEOINFO4].txt, CPU);
-
-	OutputFormattedDebugString( L"Get Video Adapter Description: Initialized\n" );
-}
-
 #endif
 
 }

@@ -33,7 +33,7 @@
 WinCpuClass::WinCpuClass()
 {
 	CLASSLOADER();
-    WomaIntegrityCheck = 1234567142;
+    WomaIntegrityCheck = 1234567222;
 
 	//private:
     m_canReadCpu=false;

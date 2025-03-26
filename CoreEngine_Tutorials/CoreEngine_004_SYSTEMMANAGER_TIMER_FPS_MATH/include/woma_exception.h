@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: woma_exception.h
 // --------------------------------------------------------------------------------------------
@@ -22,6 +21,7 @@
 #pragma once
 
 #include "platform.h"
+#if defined USE_WOMA_EXCEPTION
 
 using namespace std;//endl
 #include <sstream>	//wstring
@@ -30,13 +30,14 @@ using namespace std;//endl
 // --------------------------------------------------------------------------------------------
 // LINKS:
 // --------------------------------------------------------------------------------------------
+#if defined USE_MINIDUMPER
 
 #if UNICODE
 	#ifdef X64
 		#if defined(_DEBUG) & !defined(NDEBUG)
 			#pragma comment( lib, "x64/WDebug/UltimateTCPIP_LIBX64_d.lib" )		//DEBUG
 		#elif !defined _DEBUG && defined NDEBUG
-			//#pragma comment( lib, "x64/WRelease/UltimateTCPIP_LIBX64.lib" )		//RELEASE
+			//#pragma comment( lib, "x64/WRelease/UltimateTCPIP_LIBX64.lib" )	//RELEASE
 			#pragma comment( lib, "x64/Release/UltimateTCPIP_LIBX64.lib" )		//RELEASE
 		#else
 			#pragma comment( lib, "x64/WDebug/UltimateTCPIP_LIBX64_d.lib" )		//DBGREL
@@ -70,12 +71,21 @@ using namespace std;//endl
 	#endif
 #endif
 
+#endif
+
 // --------------------------------------------------------------------------------------------
 // CLASS:
 // --------------------------------------------------------------------------------------------
+#if defined WINDOWS_PLATFORM
 	class woma_exception : public runtime_error
+#else
+	class woma_exception : public exception
+#endif
 {
 	public:
 	woma_exception(const std::string &arg, const char *file, const char *function, int line);
 	~woma_exception() throw();
 	};
+#else
+	#define woma_exception(X, FILE, FUNCTION, LINE) exception(X)
+#endif

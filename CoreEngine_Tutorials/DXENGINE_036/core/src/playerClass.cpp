@@ -37,5 +37,5 @@ PlayerClass::PlayerClass(UINT id)
 }
 
 PlayerClass::~PlayerClass(){CLASSDELETE();}
-#endif//
+#endif
 

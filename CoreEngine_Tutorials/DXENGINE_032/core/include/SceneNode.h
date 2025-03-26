@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234567222;
 #pragma once
-#include "main.h"
+#include "platform.h"
 #include "virtualModelClass.h"
 
 

@@ -264,6 +264,8 @@ namespace WOMA
 extern int Command;
 
 extern TCHAR* DEMO_NAME[];
+extern bool g_GOD_MODE;
+extern TCHAR DEMO_NAME_SHOW[MAX_STR_LEN];
 
 #if CORE_ENGINE_LEVEL >= 4
 TCHAR* getComputerName();

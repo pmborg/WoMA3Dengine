@@ -25,6 +25,7 @@
 // --------------------------------------------------------------------------------------------
 
 #include "platform.h"
+#pragma warning(disable : 4244) // warning C4244: '=': conversion from 'int' to 'float', possible
 #include <stdint.h>
 #include "Math3D.h"
 #include "AutoGenTerrain.h"			
@@ -33,7 +34,7 @@
 #include "ImageLoaderClass.h"
 #include "OSengine.h"				// To define OS [SystemHandle] Pointer (System Class) & define WomaSYSTEM for: WINDOWS, LINUX & ANDROID
 #include "winsystemclass.h"			// SystemHandle
-
+#include "fileLoader.h"
 
 #if defined DX9sdk
 #include "Dx9Class.h"
@@ -115,6 +116,20 @@ int gp_wrap(int a)
 
 void CTerrain::DUMP_TEXT_Version(TCHAR* filename)
 {
+#if _DEBUG && false // Write ALL to a TEXT file Format, just to Debug it! 
+	{
+		OFSTREAM fileOut(filename);    //Open file for Write : cpp
+		for (int i = 0; i<terrain_squares /*+1*/; i++)
+		{
+			for (int j = 0; j<terrain_squares /*+1*/; j++)
+			{
+				fileOut << height[i][j] << TEXT(" ");
+			}
+			fileOut << endl;
+		}
+		fileOut.close();
+	}
+#endif
 }
 
 void CTerrain::CalculateMaxMin()
@@ -627,14 +642,17 @@ bool CTerrain::initTerrainWaterMeshDemo(UINT terrainId) // Used to load WATER
 
 		// FORCE FOR NOW TRANSPARENT:
 #if defined DX11 || defined DX9
-		((DirectX::DXmodelClass*)SystemHandle->m_Application->m_Model[terrainId])->m_Shader11->hasAlfaColor = true;
-		((DirectX::DXmodelClass*)SystemHandle->m_Application->m_Model[terrainId])->m_Shader11->alfaColor = 0.75f;
-		//((DirectX::DXmodelClass*)SystemHandle->m_Application->m_Model[terrainId])->m_Shader11->VSshaderType = 54;
+		if (((DirectX::DXmodelClass*)SystemHandle->m_Application->m_Model[terrainId])->m_Shader11) {
+			((DirectX::DXmodelClass*)SystemHandle->m_Application->m_Model[terrainId])->m_Shader11->hasAlfaColor = true;
+			((DirectX::DXmodelClass*)SystemHandle->m_Application->m_Model[terrainId])->m_Shader11->alfaColor = 0.75f;
+		}
 #endif
 #if defined DX12
-		((DirectX::DXmodelClass*)SystemHandle->m_Application->m_Model[terrainId])->m_Shader->hasAlfaColor = true;
-		((DirectX::DXmodelClass*)SystemHandle->m_Application->m_Model[terrainId])->m_Shader->alfaColor = 0.5f;
-		//((DirectX::DXmodelClass*)m_Model[terrainId])->m_Shader->VSshaderType = 54;
+		if (((DirectX::DXmodelClass*)SystemHandle->m_Application->m_Model[terrainId])->m_Shader)
+		{
+			((DirectX::DXmodelClass*)SystemHandle->m_Application->m_Model[terrainId])->m_Shader->hasAlfaColor = true;
+			((DirectX::DXmodelClass*)SystemHandle->m_Application->m_Model[terrainId])->m_Shader->alfaColor = 0.5f;
+		}
 #endif
 
 	loaded = true; // Ready!
@@ -684,32 +702,6 @@ void CTerrain::NormalizeHeightMap(float scale, float moveY)
 	#define j y
 	#define i x
 	{
-	/*
-		//LVL:55
-		int i, j;
-		// Make a soft borders: Y
-		UINT border = 12;
-		for (j = 1; j < border; j++)
-			for (i = j; i < m_terrainWidth - j; i++)
-				height[(terrain_squares-1)  - y][x] = M_heightMap((m_terrainWidth * (border - j)), i);
-
-		border = 7;
-		// Make a soft borders: Ymax
-		for (UINT k = 0, j = m_terrainHeight - 1 - 1; j > (m_terrainHeight - border); j--, k++)
-			for (i = 1 + k; i < m_terrainWidth - k; i++)
-				height[(terrain_squares-1)  - y][x] = M_heightMap((m_terrainWidth * ((m_terrainHeight - border) + k)), i);
-
-		// Make a soft borders: X0
-		for (i = 1; i < border; i++)
-			for (j = i; j < m_terrainHeight - i; j++)
-				height[(terrain_squares-1)  - y][x] = M_heightMap((m_terrainWidth * j), (border - i));
-
-		// Make a soft borders: Xmax
-		border = 10;
-		for (UINT k = 0, i = m_terrainWidth - 1 - 1; i > (m_terrainWidth - border); i--, k++)
-			for (j = 1; j < m_terrainHeight - 1; j++)
-				height[(terrain_squares-1)  - y][x] = M_heightMap((m_terrainWidth * j), (m_terrainWidth - border) + k);
-	*/
 	}
 
 	//UINT COUNTER = 0;
@@ -718,8 +710,6 @@ void CTerrain::NormalizeHeightMap(float scale, float moveY)
 		for (i = 1; i < (int)m_terrainWidth - 1; i++)
 		{
 				UINT index = (m_terrainWidth * j) + i;
-				//if (COUNTER++ < 100)
-					//printf(TEXT("TERRAIN %d %d = %f\n"), j, i, height[(terrain_squares-1)  - y][x]);
 				{
 					//LVL:55
 					height[(terrain_squares-1)  - y][x] /= scale; //15.0f;
@@ -1001,7 +991,7 @@ bool CTerrain::CheckHeightOfTrianglev2(float x, float z, float& height, float v0
 
 	return true;
 }
-#endif//
+#endif
 
 // Used by TerrainId [0][1][2][3]
 // ----------------------------------------------------------------------------

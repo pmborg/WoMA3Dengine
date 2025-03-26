@@ -2,7 +2,7 @@
 // Filename: DX9Class.cpp
 // --------------------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------
-// World of Middle Age  - 3D Multi-Platform ENGINE 2017
+// World of Middle Age  - 3D Multi-Platform ENGINE 2025
 //-------------------------------------------------------------------------------------------
 // code by : Pedro Borges - pmborg@yahoo.com
 // Downloaded from : woma.no-ip.org
@@ -35,7 +35,7 @@ DX9Class::~DX9Class() {
 DX9Class::DX9Class() 
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567311;
+	WomaIntegrityCheck = 1234567222;
 	// SUPER: 
 	// Video Card Info:
 	// ---------------------------------------------------------------------------
@@ -140,7 +140,7 @@ bool DX9Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, in
 
 	//Init Step: 14 - Transparency: To render text on top of 3D
 	IF_NOT_RETURN_FALSE(CreateBlendState());
-#endif//
+#endif
 
 	return true;
 }
@@ -198,6 +198,9 @@ bool DX9Class::Resize(int screenWidth, int screenHeight, float screenNear, float
 		setViewportDevice(screenWidth, screenHeight);
 
 		//Init Step: 12 - Set ProjectionMatrix (CH06) and OrthoMatrix (CH07)
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader // #if TUTORIAL_PRE_CHAP >= 6
+		setProjectionMatrixWorldMatrixOrthoMatrix(screenWidth, screenHeight, screenNear, screenDepth);
+#endif
 	}
 
 	RenderfirstTime = true;	 // Used to render Once the "Mini-Map" and Sprites
@@ -300,12 +303,27 @@ void DX9Class::getProfile( UINT g_USE_MONITOR )
 void DX9Class::Initialize3DCamera()
 // ----------------------------------------------------------------------------------------------
 {
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+	if (!m_Camera) {
+		m_Camera = NEW DirectX::DXcameraClass; // DX Implementation
+		IF_NOT_THROW_EXCEPTION (m_Camera);
+	}
+#endif
 
 #if defined USE_VIEW2D // 26
 	SetCamera2D();
 #endif
 
 	// Normal Camera:
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+	m_Camera->SetPosition(	SystemHandle->AppSettings->INIT_CAMX, SystemHandle->AppSettings->INIT_CAMY, 
+							SystemHandle->AppSettings->INIT_CAMZ);
+
+	m_Camera->SetRotation(	SystemHandle->AppSettings->INIT_ROTX, SystemHandle->AppSettings->INIT_ROTY, 
+							SystemHandle->AppSettings->INIT_ROTZ);
+
+	m_Camera->Render();
+#endif
 
 }
 
@@ -736,10 +754,39 @@ void DX9Class::Shutdown()
 // ----------------------------------------------------------------------------------------------
 {
 
+	#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+		if(m_Camera) { 
+			delete ((DirectX::DXcameraClass*)m_Camera); 
+			m_Camera=NULL; 
+		}
+	#endif
+
 	SAFE_RELEASE(m_device);
 
 	SAFE_RELEASE(m_D3D9);
 }
+
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21
+// ----------------------------------------------------------------------------------------------
+void DX9Class::setProjectionMatrixWorldMatrixOrthoMatrix (int screenWidth, int screenHeight, float screenNear, float screenDepth)
+// ----------------------------------------------------------------------------------------------
+{
+	float fieldOfView, screenAspect;
+
+	ASSERT (screenWidth > 0);
+	ASSERT (screenHeight > 0);
+	ASSERT (screenNear > 0);
+	ASSERT (screenDepth > 0);
+
+	// Create the projection matrix:
+	fieldOfView = (float)PI / 4.0f; // Or... fieldOfView = (90 / 2) * 0,0174532925f; (which is equal) for 45 degrees...
+	screenAspect = (float)screenWidth / (float)screenHeight;
+
+	D3DXMATRIX matProj;
+    D3DXMatrixPerspectiveFovLH( &matProj, fieldOfView, screenAspect, screenNear, screenDepth );
+    m_device->SetTransform( D3DTS_PROJECTION, &matProj );
+}
+#endif
 
 
 #define CleanColor D3DCOLOR_XRGB((int)(driver_ClearColor[0]*255), (int)(driver_ClearColor[1]*255), (int)(driver_ClearColor[2]*255))
@@ -762,12 +809,15 @@ void DX9Class::BeginScene(UINT monitorWindow)
 }
 
 // ---------------------------------------------------------
-
-
-#if TUTORIAL_PRE_CHAP >= 15
-void GetProjectionMiniMapMatrix(XMMATRIX&){}
-void GetProjectionMapMatrix(XMMATRIX& projectionMapMatrix){}
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+// ----------------------------------------------------------------------------------------------
+void DX9Class::GetProjectionMatrix(XMMATRIX& projectionMatrix)
+// ----------------------------------------------------------------------------------------------
+{
+	projectionMatrix = m_projectionMatrix;
+}
 #endif
+
 
 /*
 void DX9Class::setRasterStateCullFront(UINT fillMode){}

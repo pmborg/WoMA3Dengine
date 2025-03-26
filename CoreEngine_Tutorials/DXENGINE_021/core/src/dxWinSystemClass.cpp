@@ -265,6 +265,7 @@ void dxWinSystemClass::ProcessOSInput() // This Function will be invoked several
 	womaSetup->Initialize(m_Driver);
 #endif
 }
+
 bool dxWinSystemClass::ApplicationInitMainWindow()
 {
 
@@ -298,7 +299,7 @@ bool dxWinSystemClass::SaveScreenshot()
 	WCHAR path_desktop[MAX_STR_LEN] = {0};
 	DirectX::DX11Class* Driver = (DirectX::DX11Class*)m_Driver;
 
-	#if defined _NOTES
+	#if false /*_NOTES*/
 	#define CSIDL_DESKTOP                   0x0000         // <desktop>
 	#define CSIDL_INTERNET                  0x0001         // Internet Explorer (icon on desktop)
 	#define CSIDL_PROGRAMS                  0x0002         // Start Menu\Programs
@@ -427,8 +428,7 @@ void InitializeObjectsLoaderThreadFunction() // InitializeThread
 }
 #endif
 
-
-#if DX_ENGINE_LEVEL >= 20 && defined USE_LOADING_THREADS /*&& defined RELEASE */
+#if DX_ENGINE_LEVEL >= 20 && defined USE_LOADING_THREADS
 bool dxWinSystemClass::ApplicationMandatoryLoad()
 //----------------------------------------------------------------------------
 {

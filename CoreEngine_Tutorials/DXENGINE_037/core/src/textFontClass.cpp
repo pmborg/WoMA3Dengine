@@ -22,8 +22,9 @@
 #include "platform.h"
 #if defined USE_RASTERTEK_TEXT_FONT //&& defined DX_ENGINE
 #include "OSengine.h"
-#pragma warning( disable : 4473 ) // Disable warning C4473: 'printf' : not enough arguments passed for format string
-#pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
+#pragma warning(disable : 4473) // Disable warning C4473: 'printf' : not enough arguments passed for format string
+#pragma warning(disable : 4005) // Disable warning C4005: '' : macro redefinition
+#pragma warning(disable : 4244) // warning C4244: '=': conversion from 'int' to 'float', possible
 
 #include "textFontClass.h"
 #include "virtualModelClass.h"

@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567142;
+//WomaIntegrityCheck = 1234567222;
 #pragma once
 
 #pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
@@ -25,7 +25,7 @@
 class InitWorld
 {
 public:
-    UINT WomaIntegrityCheck = 1234567142;
+    UINT WomaIntegrityCheck = 1234567222;
 	InitWorld();
 	~InitWorld();
 

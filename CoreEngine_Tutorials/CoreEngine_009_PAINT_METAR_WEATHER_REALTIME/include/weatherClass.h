@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: WeatherClass.h
 // --------------------------------------------------------------------------------------------
@@ -15,15 +14,16 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567142;
+//WomaIntegrityCheck = 1234567222;
 #pragma once
 
 #include "main.h" // TCHAR
+#if defined USE_METARCLASS
 
 class WeatherClass
 {
 public:
-    UINT WomaIntegrityCheck = 1234567142;
+    UINT WomaIntegrityCheck = 1234567222;
     WeatherClass();
     ~WeatherClass();
 
@@ -39,3 +39,4 @@ public:
 
 };
 
+#endif

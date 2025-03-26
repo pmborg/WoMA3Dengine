@@ -179,7 +179,6 @@ void LinuxSystemClass::ProcessInput()
 }
 #endif
 
-
 // Frame() --> ProcessFrame();
 void LinuxSystemClass::ProcessFrame() // EQUAL to: WinSystemClass::ProcessFrame()
 //-------------------------------------------------------------------------------
@@ -196,7 +195,6 @@ extern bool createWindow();
 //----------------------------------------------------------------------------
 // Source: http://www.opengl.org/discussion_boards/archive/index.php/t-177999.html
 // D:\WoMAengine2014\woma_developer\SAMPLES\Sample020_StartEngine\Src\original_sample_code.cxx
-// 
 // C:\WoMAengine2023\LinuxWoma\LinuxWoma\main_linux.cppcreateWindow();
 //----------------------------------------------------------------------------
 bool LinuxSystemClass::ApplicationInitMainWindow(void* OpenGL)

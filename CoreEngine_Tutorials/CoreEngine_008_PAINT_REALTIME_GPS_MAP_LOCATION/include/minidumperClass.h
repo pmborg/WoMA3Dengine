@@ -16,7 +16,7 @@
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // PURPOSE: Intercept a Fatal Exception and get the "file".dmp
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567142;
+//WomaIntegrityCheck = 1234567222;
 #pragma once
 
 ///////////////////////////////
@@ -44,7 +44,7 @@ private:
 	static LONG WINAPI TopLevelFilter( struct _EXCEPTION_POINTERS *pExceptionInfo );
 
 public:
-	UINT WomaIntegrityCheck = 1234567142;
+	UINT WomaIntegrityCheck = 1234567222;
 	MiniDumper();
 	~MiniDumper();
 };

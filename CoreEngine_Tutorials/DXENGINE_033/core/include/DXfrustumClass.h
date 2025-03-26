@@ -20,7 +20,7 @@
 
 #include "main.h"
 #include "DXdrivers.h"
-#include <DirectXMath.h>// Use Math
+#include <DirectXMath.h>
 using namespace DirectX;
 
 #if D3D11_SPEC_DATE_YEAR > 2009 && ENGINE_LEVEL < 60

@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // ----------------------------------------------------------------------------------------------
 // Filename: minidumperClass.h
 // --------------------------------------------------------------------------------------------
@@ -25,6 +24,7 @@
 ///////////////////////////////
 
 #include "platform.h"
+#if defined USE_MINIDUMPER && defined WINDOWS_PLATFORM
 
 #include <dbghelp.h>	// VC7: ships with updated headers
 #include <assert.h>		// For UniCode
@@ -49,3 +49,4 @@ public:
 	~MiniDumper();
 };
 
+#endif

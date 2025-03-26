@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567142;
+//WomaIntegrityCheck = 1234567222;
 #pragma once
 
 #include "main.h" // TCHAR
@@ -23,7 +23,7 @@
 class WeatherClass
 {
 public:
-    UINT WomaIntegrityCheck = 1234567142;
+    UINT WomaIntegrityCheck = 1234567222;
     WeatherClass();
     ~WeatherClass();
 

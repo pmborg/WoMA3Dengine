@@ -16,6 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567222;
 
 #include "platform.h"
 #if defined USE_DIRECT_INPUT// && defined INTRO_DEMO
@@ -36,5 +37,5 @@ PlayerClass::PlayerClass(UINT id)
 }
 
 PlayerClass::~PlayerClass(){CLASSDELETE();}
-#endif//
+#endif
 

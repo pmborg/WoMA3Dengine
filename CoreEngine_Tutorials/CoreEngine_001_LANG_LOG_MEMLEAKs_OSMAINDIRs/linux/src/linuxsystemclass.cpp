@@ -179,7 +179,6 @@ void LinuxSystemClass::ProcessInput()
 }
 #endif
 
-
 // Frame() --> ProcessFrame();
 void LinuxSystemClass::ProcessFrame() // EQUAL to: WinSystemClass::ProcessFrame()
 //-------------------------------------------------------------------------------

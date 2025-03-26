@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: winCpuCores.cpp
 // --------------------------------------------------------------------------------------------
@@ -23,6 +22,7 @@
 //#define GENERATE //(Airports List)
 
 #include "WinSystemClass.h"
+#if defined WINDOWS_PLATFORM
 #include "winCpuCores.h"
 
 WinCpuCores::WinCpuCores()
@@ -194,3 +194,4 @@ void WinCpuCores::GetProcessorInformation()
 }
 
 
+#endif

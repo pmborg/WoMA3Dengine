@@ -27,6 +27,7 @@
 
 #pragma warning(push)
 #pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
+#pragma warning(disable : 4244) // warning C4244: '=': conversion from 'int' to 'float', possible
 
 #ifdef OPENGL3
 	#include "GLopenGLclass.h"

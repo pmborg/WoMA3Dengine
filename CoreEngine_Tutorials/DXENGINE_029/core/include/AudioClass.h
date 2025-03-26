@@ -16,6 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567222;
 #pragma once
 
 #include "platform.h"
@@ -29,7 +30,7 @@ typedef int SoundSourceID;
 #if DX_ENGINE_LEVEL >= 29 && (defined USE_WIN32_SOUND_MANAGER || defined USE_WIN32_PLAY_MUSIC)
 
 #ifdef X64
-#if defined(_DEBUG) & !defined(NDEBUG)
+#if defined(_DEBUG)// && !defined(NDEBUG)
 #pragma comment( lib, "x64/Debug/OpenAL32_LIBX64_d.lib" )
 #else
 #pragma comment( lib, "OpenAL32_LIBX64.lib" )
@@ -43,13 +44,13 @@ typedef int SoundSourceID;
 #endif
 
 #ifdef X64
-#if defined(_DEBUG) & !defined(NDEBUG)
+#if defined(_DEBUG)// && !defined(NDEBUG)
 #pragma comment( lib, "x64/Debug/ALUT_LIBX64_d.lib" )
 #else
 #pragma comment( lib, "ALUT_LIBX64.lib" )
 #endif
 #else
-#if defined(_DEBUG) & !defined(NDEBUG)
+#if defined(_DEBUG)// && !defined(NDEBUG)
 #pragma comment( lib, "x64/Debug/ALUT_LIB_d.lib" )
 #else
 #pragma comment( lib, "ALUT_LIB.lib" )
@@ -57,7 +58,7 @@ typedef int SoundSourceID;
 #endif
 
 #ifdef X64
-#if defined(_DEBUG) & !defined(NDEBUG)
+#if defined(_DEBUG)// && !defined(NDEBUG)
 #pragma comment( lib, "x64/Debug/OGG_LIBX64_d.lib" )
 #else
 #pragma comment( lib, "OGG_LIBX64.lib" )
@@ -71,13 +72,13 @@ typedef int SoundSourceID;
 #endif
 
 #ifdef X64
-#if defined(_DEBUG) & !defined(NDEBUG)
+#if defined(_DEBUG)// && !defined(NDEBUG)
 #pragma comment( lib, "VORBIS_LIBX64_d.lib" )
 #else
 #pragma comment( lib, "VORBIS_LIBX64.lib" )
 #endif
 #else
-#if defined(_DEBUG) & !defined(NDEBUG)
+#if defined(_DEBUG)// && !defined(NDEBUG)
 #pragma comment( lib, "VORBIS_LIB_d.lib" )
 #else
 #pragma comment( lib, "VORBIS_LIB.lib" )
@@ -85,13 +86,13 @@ typedef int SoundSourceID;
 #endif
 
 #ifdef X64
-#if defined(_DEBUG) & !defined(NDEBUG)
+#if defined(_DEBUG)// && !defined(NDEBUG)
 #pragma comment( lib, "VORBISFILE_LIBX64_d.lib" )
 #else
 #pragma comment( lib, "VORBISFILE_LIBX64.lib" )
 #endif
 #else
-#if defined(_DEBUG) & !defined(NDEBUG)
+#if defined(_DEBUG)// && !defined(NDEBUG)
 #pragma comment( lib, "VORBISFILE_LIB_d.lib" )
 #else
 #pragma comment( lib, "VORBISFILE_LIB.lib" )

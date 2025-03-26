@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: MetarClass.h
 // --------------------------------------------------------------------------------------------
@@ -15,10 +14,11 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567142;
+//WomaIntegrityCheck = 1234567222;
 #pragma once
 
 #include "main.h" // STRING
+#if defined USE_METARCLASS //ENGINE_LEVEL >= 13
 
 typedef struct
 {
@@ -73,7 +73,7 @@ extern Weather weather;
 class MetarClass
 {
 public:
-    UINT WomaIntegrityCheck = 1234567142;
+    UINT WomaIntegrityCheck = 1234567222;
 	MetarClass();
 	~MetarClass();
 
@@ -83,3 +83,4 @@ private:
 
 };
 
+#endif
