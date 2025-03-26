@@ -37,7 +37,7 @@ Try to Change the driver on the fly without the need of close and open the Appli
 <h2>HTTP WOMA 3D ENGINE TUTORIAL LIST</h2>
 
 <hr>
-<h2>3D - TERRAINSE TUTORIAL SERIES</h2>
+<h2>3D - TERRAIN TUTORIAL SERIES</h2>
 <hr>
 
 - <b>DX52: WORLD.XML: TERRAIN: Use Light Shader + Add Normals + Add Index(s) ModelTextureVertexType.</b><br> 
