@@ -421,24 +421,10 @@
 	*/
 	#endif
 
-	#if DX_ENGINE_LEVEL >= 55 //Slope Texture Shader
-		#define SCENE_SLOPE_MAP_TEXTURE //55 use 4 textures
-	#endif
 
-	#if DX_ENGINE_LEVEL >= 56 // 56 ~ 	#if TUTORIAL_CHAP >= 19 // TERRAIN
-		#define USE_TERRAIN_TUTORIAL_CHAP_19 //TODO
-	#endif
-	#if DX_ENGINE_LEVEL >= 57 // 57 ~ 	#if TUTORIAL_CHAP >= 21 // TERRAIN
-		#define USE_TERRAIN_TUTORIAL_CHAP_21 //TODO
-	#endif
-	#if DX_ENGINE_LEVEL >= 58 // 58 ~ 	#if TUTORIAL_CHAP >= 22 // TERRAIN
-		#define USE_TERRAIN_TUTORIAL_CHAP_22 //TODO
-	#endif
-	#if DX_ENGINE_LEVEL >= 59 // 59 ~ 	#if TUTORIAL_CHAP >= 23 // TERRAIN
-		#define USE_TERRAIN_TUTORIAL_CHAP_22 //TODO
-	#endif
 	#if DX_ENGINE_LEVEL >= 60 // 60 ~ 	#if TUTORIAL_CHAP >= 24 // TERRAIN
-		#define USE_TERRAIN_TUTORIAL_CHAP_24 //ontop: SCENE_SLOPE_MAP_TEXTURE
+		#define SCENE_SLOPE_MAP_TEXTURE //55 use 4 textures
+		#define USE_TERRAIN_TUTORIAL_CHAP_24 
 		#undef SCENE_TERRAIN_COLLISION
 	#endif
 	#if DX_ENGINE_LEVEL >= 61

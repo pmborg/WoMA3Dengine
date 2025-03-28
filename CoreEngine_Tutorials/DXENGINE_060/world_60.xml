@@ -1,0 +1,18 @@
+<woma>
+  <!-- ENGINE LVL 25-->
+  <camera screenNear="0.1f" screenDepth="2048" >
+    <initPos x="19" y="1" z="28" />
+    <initRot x="4" y="40" z="0" />
+  </camera>
+
+  <!-- ENGINE LVL 31-->
+  <fog start="0" end="256"/>
+  
+  <world hVisibility="128" seaLevel="0" size="512" patchSize="64" skySize="30" 
+         water="engine/data/Terrain/heightmap256x256.bmp" 
+         waterTexture="engine/data/Terrain/008water_tex04.jpg" 
+         mainTexture="engine/data/scene60DEMO/t_011map1_heightmap01_v7.bmp"
+         skyDayTexture="engine/data/sky/desert_equi.jpgd5a2d427-55de-4d44-a8ec-5ba440b11e2fZoom.jpg"
+         skyNightTexture=""/>
+  
+</woma>

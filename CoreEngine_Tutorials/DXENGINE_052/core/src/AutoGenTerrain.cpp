@@ -672,7 +672,7 @@ bool CTerrain::LoadHeightMapTerrain(TCHAR* file, float xPos, float zPos, bool sk
 
 	//[1] Begin by opening the file and then read it into a unsigned char array. Close the file after we are finished reading the data from it.
 	//	  Open the height map file in binary.
-	error = _tfopen_s(&filePtr, filename, TEXT("rb"));
+	error = _tfopen_s(&filePtr, (TCHAR*)filename.c_str(), TEXT("rb"));
 	if (error != 0)
 		throw woma_exception("LoadHeightMapTerrain failed!", __FILE__, __FUNCTION__, __LINE__);
 
@@ -793,9 +793,6 @@ bool CTerrain::LoadHeightMapTerrain(TCHAR* file, float xPos, float zPos, bool sk
 	// Now that we have stored the height map data for the terrain in our own array we can release the bitmap array.
 	// Release the bitmap image data:
 	SAFE_DELETE_ARRAY(bitmapImage); //delete [] bitmapImage; bitmapImage = 0;
-	
-	//Terrain_Smooth();
-
 
 	return true;
 }
@@ -1195,9 +1192,8 @@ float CTerrain::getTerrainHeight(UINT id, float xPos, float zPos)
 	#if !defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX //DX_ENGINE_LEVEL < 52
 		if (id == 2 && m_terrainType < TERRAIN_LIGHT) { GETupperANDlower6(modelVertexVector2/*m_vertices_9*/); }
 	#else
-	if (id == 2 && m_terrainType == TERRAIN_LIGHT)	{ GETupperANDlower6(modelVertexVector2/*m_vertices_12*/); }
-	if (id == 3 && m_terrainType == TERRAIN)		{ GETupperANDlower6(modelVertexVector3/*m_vertices_12*/); }
-	//id not used
+		if (id == 2 && m_terrainType == TERRAIN_LIGHT)	{ GETupperANDlower6(modelVertexVector2/*m_vertices_12*/); }
+		if (id == 3 && m_terrainType == TERRAIN)		{ GETupperANDlower6(modelVertexVector3/*m_vertices_12*/); }
 	#endif
 
 
@@ -1205,6 +1201,9 @@ float CTerrain::getTerrainHeight(UINT id, float xPos, float zPos)
 		CheckHeightOfTrianglev2(xPos, zPos, height, v4, v5, v6);	//Lower Triangle
 	else
 		CheckHeightOfTrianglev2(xPos, zPos, height, v1, v2, v3);	//Upper Triangle
+
+	if (height>0)
+		height -= 8.0f;
 
 	return height;
 }

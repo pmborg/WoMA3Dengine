@@ -145,6 +145,8 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 			}
 			catch (...) //catch (exception& e)
 			{
+				WOMA::game_state = GAME_STOP;
+				WOMA::main_loop_state = -2;
 				return -2;
 			}
 		}

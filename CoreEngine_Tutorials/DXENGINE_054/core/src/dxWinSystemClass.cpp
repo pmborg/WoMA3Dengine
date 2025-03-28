@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: dxWinSystemClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -148,6 +149,8 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 			}
 			catch (...) //catch (exception& e)
 			{
+				WOMA::game_state = GAME_STOP;
+				WOMA::main_loop_state = -2;
 				return -2;
 			}
 		}

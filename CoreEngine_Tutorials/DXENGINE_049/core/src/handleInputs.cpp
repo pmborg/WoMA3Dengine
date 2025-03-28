@@ -320,18 +320,10 @@ bool ApplicationClass::HandleUserInput(double frameTime)
     //[3] - Check Terrain Colisions: CHAP 14!!
     // --------------------------------------------------------------------------------------------
 #if defined SCENE_TERRAIN_COLLISION
-/*
-	#if DX_ENGINE_LEVEL == 49
+#if NOTES
 		#define mainTerrain loadedTerrain[0]
 		#define ID 0
-	#elif !defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX //DX_ENGINE_LEVEL < 52
-		#define mainTerrain loadedTerrain[2]
-		#define ID 2
-	#else
-		#define mainTerrain loadedTerrain[3]
-		#define ID 3
-	#endif
-*/
+#endif
 
     //Detect colision with terrain LEFT / RIGHT:
     if (!g_GOD_MODE)
