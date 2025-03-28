@@ -40,6 +40,11 @@ Try to Change the driver on the fly without the need of close and open the Appli
 <h2>3D - TERRAIN TUTORIAL SERIES</h2>
 <hr>
 
+- <b>DX61: WORLD.XML: TERRAIN: 256x256 MULTI-LAYER DEMO</b><br> 
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_061.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_061.png)	 
+
+<hr> 
 - <b>DX60: WORLD.XML: TERRAIN: 256x256 MULTI-LAYER DEMO</b><br> 
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_060.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_060.png)	 
