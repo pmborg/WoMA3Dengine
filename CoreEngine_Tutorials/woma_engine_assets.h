@@ -397,12 +397,12 @@
 #endif
 
 #if LEVEL == 60
-	#define DEMO_TITLE TEXT("60: TERRAIN: 256x256 MULTI-LAYER DEMO")
+	#define DEMO_TITLE TEXT("60: TERRAIN: 256x256 multi-layer")
 	#define WORLD_XML TEXT("world_60.xml")
 #endif
 
 #if LEVEL == 61
-	#define DEMO_TITLE TEXT("61: TERRAIN: 512x512 DEMO")
+	#define DEMO_TITLE TEXT("61: TERRAIN: 512x512 advanced multi-layer")
 	#define WORLD_XML TEXT("world_61.xml")
 #endif
 
