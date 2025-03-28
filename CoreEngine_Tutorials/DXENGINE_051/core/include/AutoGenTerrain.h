@@ -181,7 +181,7 @@ public:
 	~CTerrain();
 
 	// TERRAIN:
-#if ENGINE_LEVEL != 62 && defined SCENE_GENERATEDUNDERWATER
+#if DX_ENGINE_LEVEL != 62 && defined SCENE_GENERATEDUNDERWATER
 	void	GenerateRandomHeightMapTerrain(UINT randValue, bool Move_down_edges = false);
 #endif
 	int		GetVertexCount();

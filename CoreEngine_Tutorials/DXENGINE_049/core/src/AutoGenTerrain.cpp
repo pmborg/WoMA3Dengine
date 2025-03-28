@@ -36,6 +36,161 @@
 #include "winsystemclass.h"			// SystemHandle
 #include "fileLoader.h"
 
+// ---------------------------------------------------------------------------
+// LOAD HEIGHT MAP
+// ---------------------------------------------------------------------------
+
+// NOTE: Original version from Rastertek.
+
+// LoadHeightMapTerrain is a new function that loads the bitmap file containing the height map into the new height map array. 
+// If you want to use a more optimal file structure like .raw 
+// you can change the code to load that in instead. For simplicity however I used the bitmap format since it is very common 
+// and most people have worked with it before. 
+// Note that bitmap contains red, green, and blue colors. 
+// But since this is a grey scale image you can read either the red, green, or blue color 
+// as they will all be the same grey value and you only need one of them.
+bool CTerrain::LoadHeightMapTerrain(TCHAR* file, float xPos, float zPos, bool skipZero)
+{
+	UINT imageSize = 0;
+	unsigned char* bitmapImage = NULL;
+	STRING filename;
+	filename.append(WOMA::LoadFile(file));
+
+#if D3D11_SPEC_DATE_YEAR == 2009 || LEVEL >= 60
+	FILE* filePtr;
+	int error;
+	unsigned int count;
+	BITMAPFILEHEADER bitmapFileHeader;
+	BITMAPINFOHEADER bitmapInfoHeader;
+
+	//[1] Begin by opening the file and then read it into a unsigned char array. Close the file after we are finished reading the data from it.
+	//	  Open the height map file in binary.
+	error = _tfopen_s(&filePtr, (TCHAR*)filename.c_str(), TEXT("rb"));
+	if (error != 0)
+		throw woma_exception("LoadHeightMapTerrain failed!", __FILE__, __FUNCTION__, __LINE__);
+
+	//[2] Read in the file header.
+	count = (UINT)fread(&bitmapFileHeader, sizeof(BITMAPFILEHEADER), 1, filePtr);
+	if (count != 1)
+		throw woma_exception("LoadHeightMapTerrain failed!", __FILE__, __FUNCTION__, __LINE__);
+
+	//[3] Check Signature:
+	if (bitmapFileHeader.bfType != 0x4d42)	// "BM"
+		throw woma_exception("Error reading file!", __FILE__, __FUNCTION__, __LINE__);
+
+	//[4] Read in the bitmap info header.
+	count = (UINT)fread(&bitmapInfoHeader, sizeof(BITMAPINFOHEADER), 1, filePtr);
+	if (count != 1)
+		throw woma_exception("LoadHeightMapTerrain failed!", __FILE__, __FUNCTION__, __LINE__);
+
+	//[5] 1, 4 and 8 not supported:
+	if (bitmapInfoHeader.biBitCount < 24)
+		throw woma_exception("Error reading file!", __FILE__, __FUNCTION__, __LINE__);
+
+	//Store the size of the terrain so we can use these values for building the vertex and index buffers as well as rendering the terrain.
+
+	// Save the dimensions of the terrain.
+	m_terrainWidth = bitmapInfoHeader.biWidth;
+	m_terrainHeight = bitmapInfoHeader.biHeight;
+
+	// Calculate the size of the bitmap image data.
+	imageSize = m_terrainWidth * m_terrainHeight * bitmapInfoHeader.biBitCount / 8; //  x (24/8) = x 3
+
+	// Allocate memory for the bitmap image data.
+	bitmapImage = NEW unsigned char[imageSize];
+	IF_NOT_THROW_EXCEPTION(bitmapImage);
+
+	// Move to the beginning of the bitmap data.
+	fseek(filePtr, bitmapFileHeader.bfOffBits, SEEK_SET);
+
+	// Read in the bitmap image data.
+	count = (UINT)fread(bitmapImage, 1, imageSize, filePtr);
+	if (count != (UINT)imageSize)
+		throw woma_exception("LoadHeightMapTerrain failed!", __FILE__, __FUNCTION__, __LINE__);
+
+	// Close the file.
+	if (filePtr)
+		error = fclose(filePtr);
+	if (error != 0)
+		throw woma_exception("LoadHeightMapTerrain failed!", __FILE__, __FUNCTION__, __LINE__);
+#else
+	ImageLoaderClass ImageLoader;
+
+	const TCHAR* extension = _tcsrchr(filename.c_str(), '.');
+	if (extension == NULL) return false;
+
+	if (_tcsicmp(extension, TEXT(".jpg")) == 0 || _tcsicmp(extension, TEXT(".jpeg")) == 0)
+	{
+		bitmapImage = ImageLoader.loadJPEG((TCHAR*)filename.c_str(), &m_terrainWidth, &m_terrainHeight, &imageSize, LOAD_IMAGE_24bits);
+	}
+	else if (_tcsicmp(extension, TEXT(".png")) == 0)
+	{
+		bitmapImage = ImageLoader.loadPNG((TCHAR*)filename.c_str(), &m_terrainWidth, &m_terrainHeight, &imageSize, LOAD_IMAGE_24bits);
+	}
+	else if (_tcsicmp(extension, TEXT(".tga")) == 0)
+	{
+		bitmapImage = ImageLoader.loadTGA((TCHAR*)filename.c_str(), &m_terrainWidth, &m_terrainHeight, &imageSize, LOAD_IMAGE_24bits);
+	}
+	else if (_tcsicmp(extension, TEXT(".bmp")) == 0)
+	{
+		if (m_terrainType == TERRAIN_COLOR_QUAD_FOG_SLOP_TEXTURE_Detail_Mapping_TextureMapping_AlphaMapping_BumpMapping_LighMapping_TransparentTexture_MINI_MAP)
+			bitmapImage = ImageLoader.loadBMP((TCHAR*)filename.c_str(), &m_terrainWidth, &m_terrainHeight, &imageSize, LOAD_IMAGE_24bits, false);
+		else
+			bitmapImage = ImageLoader.loadBMP((TCHAR*)filename.c_str(), &m_terrainWidth, &m_terrainHeight, &imageSize, LOAD_IMAGE_24bits);
+	}
+	else if (_tcsicmp(extension, TEXT(".tif")) == 0)
+	{
+		bitmapImage = ImageLoader.loadTIF((TCHAR*)filename.c_str(), &m_terrainWidth, &m_terrainHeight, &imageSize, LOAD_IMAGE_24bits);
+	}
+	else if (_tcsicmp(extension, TEXT(".dds")) == 0)
+	{
+		bitmapImage = ImageLoader.loadDDS((TCHAR*)filename.c_str(), &m_terrainWidth, &m_terrainHeight, &imageSize, LOAD_IMAGE_24bits);
+	}
+	else {
+		WomaFatalExceptionW(TEXT("IMAGE: Format not supported!"));
+		return false;
+	}
+
+#endif
+
+	ASSERT(m_terrainWidth == terrain_squares);
+	ASSERT(m_terrainHeight == terrain_squares);
+
+	// Now that the bitmap has been read in create the two dimensional height map array and read the buffer into it. 
+	// Note that during the for loop I use the two loop variables (i and j) to be the X (width) and Z (depth) of the terrain. 
+	// And then I use the bitmap value to be the Y (height) of the terrain. You will also see I increment the index into the bitmap (k) by three 
+	// since we only need one of the color values (red, green, or blue) to be used as the grey scale value.
+
+	// Convert 32bits into 8 bits:
+	// Read the image data into the height map array.
+	int k = 0, index = 0;
+	for (int y = m_terrainHeight - 1; y >= 0; y--) {
+		for (int x = m_terrainWidth - 1; x >= 0; x--)
+		{
+			// Bitmaps are upside down so load bottom to top into the height map array.
+			index = ((terrain_squares) * (y + zPos)) + (x + xPos);
+
+			// Store the pixel value as the height at this point in the height map array.
+			height[y][x] = bitmapImage[k];
+			// Increment the bitmap image data index.
+			k += 3;
+			//WOMA_LOGManager_DebugMSGAUTO("%d ", (int)bitmapImage[k]);
+			//printf("%d %d %d-", (int)m_heightMap[index].x, (int)m_heightMap[index].y, (int)m_heightMap[index].z);
+		}
+	}
+
+#undef j
+#undef i
+#undef m_heightMap
+
+	// Now that we have stored the height map data for the terrain in our own array we can release the bitmap array.
+	// Release the bitmap image data:
+	SAFE_DELETE_ARRAY(bitmapImage); //delete [] bitmapImage; bitmapImage = 0;
+	//Terrain_Smooth();
+
+	return true;
+}
+
 #if defined DX9sdk
 #include "Dx9Class.h"
 #endif
@@ -66,9 +221,10 @@ CTerrain::CTerrain(MY_TERRAIN_TYPE terrainType)
 }
 
 CTerrain::~CTerrain() { 
-	/*CLASSDELETE();*/ 
+	//CLASSDELETE();
 	//SAFE_DELETE(m_heightMap);
-} //In static classes we can't call: CLASSDELETE();
+	//In static classes we can't call: CLASSDELETE();
+} 
 
 #if defined SCENE_GENERATEDUNDERWATER
 void WorldUnderWaterMapGenerator(MY_TERRAIN_TYPE terrainType)
@@ -119,9 +275,9 @@ void CTerrain::DUMP_TEXT_Version(TCHAR* filename)
 #if _DEBUG && false // Write ALL to a TEXT file Format, just to Debug it! 
 	{
 		OFSTREAM fileOut(filename);    //Open file for Write : cpp
-		for (int i = 0; i<terrain_squares /*+1*/; i++)
+		for (int i = 0; i<terrain_squares; i++)
 		{
-			for (int j = 0; j<terrain_squares /*+1*/; j++)
+			for (int j = 0; j<terrain_squares; j++)
 			{
 				fileOut << height[i][j] << TEXT(" ");
 			}
@@ -162,7 +318,7 @@ int CTerrain::GetVertexCount()
 }
 #endif
 
-#if ENGINE_LEVEL != 62 && defined SCENE_GENERATEDUNDERWATER
+#if DX_ENGINE_LEVEL != 62 && defined SCENE_GENERATEDUNDERWATER
 // backterrain[(terrain_squares + 1)] [(terrain_squares + 1)]
 // ----------------------------------------------------------------------------
 void CTerrain::GenerateRandomHeightMapTerrain(UINT randValue, bool Move_down_edges) // OLD: void CTerrain::CreateTerrain(UINT randValue)
@@ -170,7 +326,7 @@ void CTerrain::GenerateRandomHeightMapTerrain(UINT randValue, bool Move_down_edg
 {
 	int i, j, k;
 	float* backterrain;
-	/*D3DXVECTOR3*/ vec3 vec1, vec2, vec3;
+	D3DXVECTOR3 vec3 vec1, vec2, vec3;
 	int currentstep = terrain_squares;
 	float mv, rm;
 	float offset = 0, yscale = 0, maxheight = 0, minheight = 0;
@@ -291,8 +447,8 @@ void CTerrain::GenerateRandomHeightMapTerrain(UINT randValue, bool Move_down_edg
 	WOMA_LOGManager_DebugMSG("Scaling to minheight...\n");
 	maxheight = height[0][0];
 	minheight = height[0][0];
-	for (i = 0; i<terrain_squares /*+1*/; i++)
-		for (j = 0; j<terrain_squares /*+1*/; j++)
+	for (i = 0; i<terrain_squares; i++)
+		for (j = 0; j<terrain_squares; j++)
 		{
 			if (height[i][j]>maxheight) maxheight = height[i][j];
 			if (height[i][j]<minheight) minheight = height[i][j];
@@ -304,8 +460,8 @@ void CTerrain::GenerateRandomHeightMapTerrain(UINT randValue, bool Move_down_edg
 	else
 		yscale = 1;
 
-	for (i = 0; i<terrain_squares /*+1*/; i++)
-		for (j = 0; j<terrain_squares /*+1*/; j++)
+	for (i = 0; i<terrain_squares; i++)
+		for (j = 0; j<terrain_squares; j++)
 		{
 			height[i][j] -= minheight;
 			height[i][j] *= yscale;
@@ -316,8 +472,8 @@ void CTerrain::GenerateRandomHeightMapTerrain(UINT randValue, bool Move_down_edg
 	{
 		// Moving down edges of heightmap:
 		WOMA_LOGManager_DebugMSG("Moving down edges...\n");
-		for (i = 0; i<terrain_squares /*+1*/; i++)
-			for (j = 0; j<terrain_squares /*+1*/; j++)
+		for (i = 0; i<terrain_squares; i++)
+			for (j = 0; j<terrain_squares; j++)
 			{
 				mv = (float)((i - terrain_squares / 2.0f)*(i - terrain_squares / 2.0f) + (j - terrain_squares / 2.0f)*(j - terrain_squares / 2.0f));
 				rm = (float)((terrain_squares*0.8f)*(terrain_squares*0.8f) / 4.0f);
@@ -336,8 +492,8 @@ void CTerrain::GenerateRandomHeightMapTerrain(UINT randValue, bool Move_down_edg
 	WOMA_LOGManager_DebugMSG("Terrain Banks...\n");
 	for (k = 0; k<10; k++)
 	{
-		for (i = 0; i<terrain_squares /*+1*/; i++)
-			for (j = 0; j<terrain_squares /*+1*/; j++)
+		for (i = 0; i<terrain_squares; i++)
+			for (j = 0; j<terrain_squares; j++)
 			{
 				mv = height[i][j];
 				if ((mv)>0.02f)
@@ -355,8 +511,8 @@ void CTerrain::GenerateRandomHeightMapTerrain(UINT randValue, bool Move_down_edg
 	for (k = 0; k<terrain_smoothsteps; k++)
 	{
 		WOMA_LOGManager_DebugMSGAUTO(TEXT("Terrain Smoothstep: %d/%d\n"), k, terrain_smoothsteps);
-		for (i = 0; i<terrain_squares /*+1*/; i++)
-			for (j = 0; j<terrain_squares /*+1*/; j++)
+		for (i = 0; i<terrain_squares; i++)
+			for (j = 0; j<terrain_squares; j++)
 			{
 
 				vec1.x = 2 * terrain_geometry_scale;
@@ -383,21 +539,21 @@ void CTerrain::GenerateRandomHeightMapTerrain(UINT randValue, bool Move_down_edg
 				}
 
 			}
-		for (i = 0; i<terrain_squares /*+1*/; i++)
-			for (j = 0; j<terrain_squares /*+1*/; j++)
+		for (i = 0; i<terrain_squares; i++)
+			for (j = 0; j<terrain_squares; j++)
 			{
 				height[i][j] = (backterrain[i + terrain_squares*j]);
 			}
 	}
-	for (i = 0; i<terrain_squares /*+1*/; i++)
-		for (j = 0; j<terrain_squares /*+1*/; j++)
+	for (i = 0; i<terrain_squares; i++)
+		for (j = 0; j<terrain_squares; j++)
 		{
 			rm = 0.5f;
 			mv = height[i][j] * (1.0f - rm) + rm*0.25f*(height[gp_wrap(i - 1)][j] + height[i][gp_wrap(j - 1)] + height[gp_wrap(i + 1)][j] + height[i][gp_wrap(j + 1)]);
 			backterrain[i + terrain_squares*j] = mv;
 		}
-	for (i = 0; i<terrain_squares /*+1*/; i++)
-		for (j = 0; j<terrain_squares /*+1*/; j++)
+	for (i = 0; i<terrain_squares; i++)
+		for (j = 0; j<terrain_squares; j++)
 		{
 			height[i][j] = (backterrain[i + terrain_squares*j]);
 		}
@@ -413,8 +569,8 @@ void CTerrain::GenerateRandomHeightMapTerrain(UINT randValue, bool Move_down_edg
 						// Current Values:	11.441930, -29.799995
 
 						// Correct Margins and convert color from: -25 to 25 --> -1 to -30 (Once this is UnderWater)
-	for (i = 0; i<terrain_squares /*+1*/; i++)
-		for (j = 0; j<terrain_squares /*+1*/; j++)
+	for (i = 0; i<terrain_squares; i++)
+		for (j = 0; j<terrain_squares; j++)
 		{
 			height[i][j] = MIN(-1, height[i][j] - 10);	//At max: -1
 			height[i][j] = MAX(-20, height[i][j]);		//At min: -20
@@ -439,13 +595,13 @@ void CTerrain::GenerateRandomHeightMapTerrain(UINT randValue, bool Move_down_edg
 }
 #endif
 
-#if true //DX_ENGINE_LEVEL <56 62
+#if true //DX_ENGINE_LEVEL <56 62								 
 void CTerrain::SaveBMPHeightMapTerrain(CHAR* maps, UINT bmp_type) // NEED TO BE: "char"!
 {
 	//0...128+1 128..256+1
-	for (UINT tY = 0; tY<terrain_squares /*/ MAP_CHUNK_SIZE*/; tY++)
+	for (UINT tY = 0; tY<terrain_squares; tY++)
 	{
-		for (UINT tX = 0; tX<terrain_squares /*/ MAP_CHUNK_SIZE*/; tX++)
+		for (UINT tX = 0; tX<terrain_squares; tX++)
 		{
 			// Write MAP (0,0) == 0...128+1 (129x129 Floats)
 			//----------------------------------------------------------------------------
@@ -599,7 +755,7 @@ void CTerrain::initUnderWaterDemo(UINT terrainId)
 #endif
 
 	// [BuildTerrainModel]: QUAD SIZE: Step 1: Setup all vertices positions: X, Y, Z:	// ADD Vertex: modelVertexVector.push_back(vertex);
-	PopulateTerrainModelVertexVector(terrainId, 1/*terrain_squareSize*/);
+	PopulateTerrainModelVertexVector(terrainId, 1); //1=terrain_squareSize
 
 	// Add TEXTURE MAP: to all vertices
 	UINT modelVertexVectorSize = (UINT)modelVertexVector0.size();
@@ -631,7 +787,7 @@ bool CTerrain::initTerrainWaterMeshDemo(UINT terrainId) // Used to load WATER
 {
 		LoadHeightMapTerrain(OCEANWATER_HMAP, 0, 0);	// FLAT WATER!
 
-		PopulateTerrainModelVertexVector(terrainId, 1/*terrain_squareSize*/);
+		PopulateTerrainModelVertexVector(terrainId, 1); //1=terrain_squareSize
 
 		std::vector<STRING> Textures; Textures.push_back(OCEANWATER_TEXTURE);		// WATER: Shader:TEXTURE
 		// Add TEXTURE MAP: to all vertices
@@ -710,6 +866,7 @@ void CTerrain::NormalizeHeightMap(float scale, float moveY)
 		for (i = 1; i < (int)m_terrainWidth - 1; i++)
 		{
 				UINT index = (m_terrainWidth * j) + i;
+
 				{
 					//LVL:55
 					height[(terrain_squares-1)  - y][x] /= scale; //15.0f;
@@ -744,7 +901,7 @@ bool CTerrain::initMainTopoTerrainDemo(UINT terrainId)
 		//  Populate:	modelVertexVector2[i] x, y, z
 		//				modelVertexVector2[i].tu
 		//				modelVertexVector2[i].tv
-		PopulateTerrainModelVertexVector(terrainId, 1/*terrain_squareSize*/);	// 512x125	to 0 2048,2048
+		PopulateTerrainModelVertexVector(terrainId, 1);	//1=terrain_squareSize // 512x125	to 0 2048,2048
 
 	//------------------------------------------------------------------------------------------
 	// Step 3: ID2 SCALE: modelVertexVector2[i].y |tu tv OPEN GL|
@@ -924,7 +1081,7 @@ float CTerrain::getTerrainHeight(UINT id, float xPos, float zPos)
 	//  3,4---6
 
 	#if !defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX //DX_ENGINE_LEVEL < 52
-		if (id == 2 && m_terrainType < TERRAIN_LIGHT) { GETupperANDlower6(modelVertexVector0/*m_vertices_9*/); }
+		if (id == 2 && m_terrainType < TERRAIN_LIGHT) { GETupperANDlower6(modelVertexVector0); }	//m_vertices_9
 	#endif
 
 
@@ -1002,7 +1159,7 @@ void CTerrain::CreateTerrainModel(UINT id, std::vector<STRING> Textures, SHADER_
 	CREATE_MODEL_IF_NOT_EXCEPTION(SystemHandle->m_Application->m_Model[id], I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);  // m_Model[id] = NEW
 	SystemHandle->m_Application->m_Model[id]->ModelHASfog = true;
 
-#if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX //ENGINE_LEVEL >= 25
+#if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX //DX_ENGINE_LEVEL >= 25
 	if (id == 2 || id ==4)
 	{
 		//TRIANGLESTRIP
