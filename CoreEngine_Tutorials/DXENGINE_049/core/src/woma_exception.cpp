@@ -42,11 +42,13 @@ woma_exception::woma_exception(const std::string &arg, const char *file, const c
 		#if defined WINDOWS_PLATFORM
 		//Show extra runtime "Call Stack" frame Debug info on a "woma_exception":
 		sttrace = NEW stack_trace(NULL, 0);
-		
 		if (sttrace)
 		{
-			CHAR str[MAX_STR_LEN] = { 0 }; wtoa(str, WOMA::APP_FULLNAME, MAX_STR_LEN); // wchar ==> char
-			MessageBoxA(NULL, sttrace->to_string().c_str(), str, 0);
+			std::string msg = file; msg.append(TEXT("\n"));
+			msg.append(function); msg.append(TEXT("\n"));
+			msg.append(TEXT("\n\n"));
+			msg.append(sttrace->to_string().c_str());
+			MessageBoxA(NULL, msg.c_str(), arg.c_str(), 0);
 		}
 		#endif
 	#endif

@@ -88,6 +88,13 @@ namespace WOMA
 		}
 		file = file_;
 		lastfile = file;
+
+		{
+			HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+			SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE);
+			WOMA_LOGManager_DebugMSG((CHAR*)"[FILE LOAD] %s\n", file_);
+			SetConsoleTextAttribute(hConsole, FOREGROUND_RED + FOREGROUND_GREEN + FOREGROUND_BLUE);
+		}
 		return (TCHAR*)&file_;
 #endif
 	}

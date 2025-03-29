@@ -635,7 +635,7 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="settings.xml" />
-    <Xml Include="world_61.xml" />
+    <Xml Include="world_63.xml" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="WoMA.ico">
@@ -687,9 +687,6 @@
     <FxCompile Include="hlsl\060Terrain.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
-    <FxCompile Include="hlsl\061Terrain.hlsl">
-      <Filter>HLSL</Filter>
-    </FxCompile>
     <FxCompile Include="hlsl\cbuffer.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
@@ -702,5 +699,6 @@
     <FxCompile Include="hlsl\shadows.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
+    <FxCompile Include="hlsl\063Terrain.hlsl" />
   </ItemGroup>
 </Project>

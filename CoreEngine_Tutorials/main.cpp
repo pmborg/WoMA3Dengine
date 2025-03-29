@@ -76,10 +76,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	int argc = 0;
 	char* argv[MAX_PARAMS] = { NULL };
 	COMMANDLINE_TO_ARGC_ARGV();					// POPULATE: argc & argv
-
-	Command = APPLICATION_MAIN(argc, argv);		// ENTRY-POINT: WINDOWS RELEASE!
-
-	return Command;
+	
+	return APPLICATION_MAIN(argc, argv);		// ENTRY-POINT: WINDOWS RELEASE!
 }
 #endif
 
@@ -110,7 +108,7 @@ void android_main(android_app* state)			// ENTRY-POINT: ANDROID
 	init_engine(app, &engine);
 
 	//MANDATORY: Wait for JAVA window creation:
-	while (!engine.has_focus_)
+	while (!engine.has_focus_)					//Means: window created.
 		process_events(&engine, app);
 
 	int argc = 0;
