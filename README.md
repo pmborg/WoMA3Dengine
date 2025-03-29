@@ -34,6 +34,8 @@ Try to Change the driver on the fly without the need of close and open the Appli
 - DirectX 9<br>
 - OPENGL 4<br>
 
+<b>[F11]</b> Switch God Mode<br>
+
 <h2>HTTP WOMA 3D ENGINE TUTORIAL LIST</h2>
 
 <hr>
