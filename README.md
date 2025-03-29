@@ -1,6 +1,3 @@
-- <b>DX63: WORLD.XML: TERRAIN 4k: (multi layer) 512x512 MINI MAP 3D Navegation
-![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_063.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_063.png)	 
-
 # WoMA3Dengine (DX11, DX12, OPENGL, DX9) Advanced Tutorials
 <hr>
 <h1>WoMA3Dengine at Level 29 INTRO DEMO</h1>
@@ -42,6 +39,11 @@ Try to Change the driver on the fly without the need of close and open the Appli
 <h2>3D - TERRAIN TUTORIAL SERIES</h2>
 <hr>
 
+- <b>DX63: WORLD.XML: TERRAIN: MAIN-MAP and MINI-MAP</b><br> 
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_063.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_063.png)	 
+
+<hr> 
 - <b>DX61: WORLD.XML: TERRAIN: 256x256 MULTI-LAYER DEMO</b><br> 
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_061.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_061.png)	 
