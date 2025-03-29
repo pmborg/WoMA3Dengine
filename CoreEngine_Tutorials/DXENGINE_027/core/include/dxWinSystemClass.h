@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // ----------------------------------------------------------------------------------------------
 // Filename: dxWinSystemClass.h
 // --------------------------------------------------------------------------------------------
@@ -80,7 +81,6 @@ public:
 #endif
 
 	DXcameraClass* m_Camera = NULL;
-
 #if defined ALLOW_PRINT_SCREEN_SAVE_PNG && defined DX11
 	bool SaveScreenshot();
 #endif

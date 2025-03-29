@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // ----------------------------------------------------------------------------------------------
 // Filename: dxWinSystemClass.h
 // --------------------------------------------------------------------------------------------
@@ -83,7 +84,6 @@ public:
 #if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28
 	DXcameraClass* m_CameraSKY = NULL;
 #endif
-
 #if defined ALLOW_PRINT_SCREEN_SAVE_PNG && defined DX11
 	bool SaveScreenshot();
 #endif

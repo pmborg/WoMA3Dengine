@@ -189,7 +189,7 @@ void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, 
 void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 {
 	SystemHandle->TotalVertexCounter = 0;
-	#if LEVEL >= 10 && LEVEL <= 21
+	#if DX_ENGINE_LEVEL >= 10 && LEVEL <= 21
 	{
 		#define cor driverList[SystemHandle->AppSettings->DRIVER]->driver_ClearColor
 		cor[2] += ((float)dt / 10000);

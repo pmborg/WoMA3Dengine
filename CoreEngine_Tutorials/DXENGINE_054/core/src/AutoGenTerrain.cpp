@@ -35,6 +35,7 @@
 #include "OSengine.h"				// To define OS [SystemHandle] Pointer (System Class) & define WomaSYSTEM for: WINDOWS, LINUX & ANDROID
 #include "winsystemclass.h"			// SystemHandle
 #include "fileLoader.h"
+#include "ApplicationClass.h"
 
 // ---------------------------------------------------------------------------
 // LOAD HEIGHT MAP
@@ -328,7 +329,7 @@ void CTerrain::GenerateRandomHeightMapTerrain(UINT randValue, bool Move_down_edg
 {
 	int i, j, k;
 	float* backterrain;
-	D3DXVECTOR3 vec3 vec1, vec2, vec3;
+	vec3 vec1, vec2, vec3;
 	int currentstep = terrain_squares;
 	float mv, rm;
 	float offset = 0, yscale = 0, maxheight = 0, minheight = 0;
@@ -1046,8 +1047,6 @@ void CTerrain::PopulateTerrainModelVertexVector(UINT id, float unit)
 	m_terrainHeight = (UINT)((UINT)terrain_squares * (UINT)unit);
 
 	int k = 0;
-	//UINT COUNTER = 0;
-	//WOMA_LOGManager_DebugMSG("Vertex Data:\n");
 	for (UINT y = 0; y < terrain_squares ; y++) {
 
 		for (UINT x = 0; x < terrain_squares; x++)
@@ -1125,17 +1124,10 @@ void CTerrain::PopulateTerrainModelVertexVector(UINT id, float unit)
 				}
 
 				modelVertexVector2.push_back(vertex2);
-				//#if defined DEBUG_TERRAIN_VERTICES
-				//WOMA_LOGManager_DebugMSG("(y:%d,x:%d)= Z:%.2f X:%.2f => %d | ", y, x, vertex2.z, vertex2.x, (int)height[y][x]);
-				//#endif
 			}
-			#if defined DEBUG_TERRAIN_VERTICES
-			//WOMA_LOGManager_DebugMSG("%d (%d %d) %d # ", k++, y, x, (int)height[y][x]);
-			#endif
 		#endif
 
 		}//x
-		//WOMA_LOGManager_DebugMSG("\n");
 	}//y
 }
 

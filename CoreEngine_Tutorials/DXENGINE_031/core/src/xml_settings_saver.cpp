@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: xml_settings_saver.cpp
 // --------------------------------------------------------------------------------------------
@@ -180,7 +181,6 @@ bool XMLloader::saveConfigSettings (char* file) // Note: Have to be char
 			child_texture->SetAttribute("AnisotropicLevel", stri);
 		}
 
-#if LEVEL >= 29
 		///*<sound>*/tinyxml2::XMLElement* child_sound = root->FirstChildElement( "sound" );
 		tinyxml2::XMLElement* child_sound = root->InsertNewChildElement("sound");
 		root->LinkEndChild(child_sound);
@@ -192,7 +192,6 @@ bool XMLloader::saveConfigSettings (char* file) // Note: Have to be char
 			str = (SystemHandle->AppSettings->SOUND_ENABLED) ? "true" : "false";
 			child_sound->SetAttribute("effects", str.c_str());
 		}
-#endif
 
 	}
 	else
