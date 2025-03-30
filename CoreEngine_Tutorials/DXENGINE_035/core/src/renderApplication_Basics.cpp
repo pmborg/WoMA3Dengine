@@ -341,32 +341,25 @@ float ApplicationClass::Update()
 #if defined USE_TIMER_CLASS
 	// TIME Control: Show Debug Info
 	UINT64 passedTotalTime = (UINT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
-
+#endif
+#if defined USE_TIMER_CLASS
 	if (m_Driver->RenderfirstTime)
 	{
-		TCHAR tmp[MAX_STR_LEN]; _stprintf(tmp, TEXT("PASSED TOTAL TIME TO LOAD: %ju ms\n"), passedTotalTime); OutputDebugString(tmp);
-#if defined SAVEW3D
+	#if defined SAVEW3D
 		WomaMessageBox(TEXT("Conversion from OBJ to W3D, ended."), TEXT("SAVEW3D"));
 		WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP;
 		return -100;
-#endif
+	#endif
 	}
 #endif
 
-#if defined INTRO_DEMO //|DEMO  (RENDER_PAGE < 15)|
+#if defined INTRO_DEMO
 	// 5 INTRO DEBUG TEXT: Show time, etc..
 	if (RENDER_PAGE < 21) {
-		if (m_Driver->RenderfirstTime) {
-			TCHAR tmp[MAX_STR_LEN]; _stprintf(tmp, TEXT("WOMA_APPLICATION_IntroRender(%ju)\n"), passedTotalTime); OutputDebugString(tmp);
-		}
 		fadeIntro = WOMA_APPLICATION_IntroRender(passedTotalTime);
 	}
 	else
 		fadeIntro = 1;
-
-	if (m_Driver->RenderfirstTime) {
-		TCHAR tmp[MAX_STR_LEN]; _stprintf(tmp, TEXT("WOMA_APPLICATION_DemoRender(%ju)\n"), passedTotalTime); OutputDebugString(tmp);
-	}
 	WOMA_APPLICATION_DemoRender(passedTotalTime);
 
 	if (RENDER_PAGE < 15)
@@ -390,10 +383,6 @@ float ApplicationClass::Update()
 	float camX = m_Position[g_NetID]->m_positionX;
 	float camZ = m_Position[g_NetID]->m_positionZ;
 	UINT N_COMPOUNDS = SceneManager::GetInstance()->opacModelList.size();
-
-	//for (UINT id = 0; id < SceneManager::GetInstance()->opacModelList.size(); id++)
-	//	RenderModel(monitorWindow, m_Driver, id, PASS_OPAC); //objModel[id]->Render(m_Driver, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_OPAC);
-
 	for (UINT c = 0; c < N_COMPOUNDS; c++)
 	{
 		UINT id = compoundTreeLoadingOrder[c].compoundTreeId;

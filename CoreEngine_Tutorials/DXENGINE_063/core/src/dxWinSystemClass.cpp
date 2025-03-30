@@ -116,13 +116,16 @@ bool dxWinSystemClass::APPLICATION_INIT_SYSTEM() //LOAD ALL GRAPHICS
 	InitPackLibs();											// UNPACK Resources
 #endif
 
+	driverList.clear();
+
+	//ClassRegister/LoadXMLSettings/InitializeSystemScreen/ApplicationInitMainWindow/InitOsInput/StartTimer
+	bool res = WinSystemClass::APPLICATION_INIT_SYSTEM();	
+
 #if DX_ENGINE_LEVEL >= 29 && defined USE_WIN32_SOUND_MANAGER	
 	IF_NOT_RETURN_FALSE(StartSoundManager());	// 29: START-AUDIO: Start Background Music (NOTE: After the INIT "rendering-device")
 #endif
 
-	driverList.clear();
-
-	return WinSystemClass::APPLICATION_INIT_SYSTEM();	//ClassRegister/LoadXMLSettings/InitializeSystemScreen/ApplicationInitMainWindow/InitOsInput/StartTimer
+	return res;
 }
 
 

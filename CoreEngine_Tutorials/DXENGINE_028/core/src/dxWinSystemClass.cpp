@@ -118,7 +118,10 @@ bool dxWinSystemClass::APPLICATION_INIT_SYSTEM() //LOAD ALL GRAPHICS
 
 	driverList.clear();
 
-	return WinSystemClass::APPLICATION_INIT_SYSTEM();	//ClassRegister/LoadXMLSettings/InitializeSystemScreen/ApplicationInitMainWindow/InitOsInput/StartTimer
+	//ClassRegister/LoadXMLSettings/InitializeSystemScreen/ApplicationInitMainWindow/InitOsInput/StartTimer
+	bool res = WinSystemClass::APPLICATION_INIT_SYSTEM();	
+
+	return res;
 }
 
 
