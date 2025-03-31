@@ -405,7 +405,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{3CA24FA2-2E52-4B72-9D21-4573FD07DC09}</ProjectGuid>
+    <ProjectGuid>{C77D0B25-31D1-4C54-B578-7ACC8E5D1E38}</ProjectGuid>
     <RootNamespace>CoreEngine</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>DXEngine_064</ProjectName>

@@ -1,7 +1,7 @@
 <woma>
   <camera screenNear="0.1" screenDepth="2048">
-    <initPos x="239" y="0" z="127" />
-    <initRot x="9" y="37" z="0" />
+    <initPos x="243.3f" y="0" z="135.1f" />
+    <initRot x="16.5f" y="37" z="0" />
   </camera>
   <!-- FOG: OFF -->
   <fog start="32" end="256"/>

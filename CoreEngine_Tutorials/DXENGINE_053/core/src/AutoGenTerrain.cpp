@@ -1183,7 +1183,7 @@ float CTerrain::getTerrainHeight(UINT id, float xPos, float zPos)
 	//	| /   |
 	//  3,4---6
 
-	if (id == 0 && m_terrainType < TERRAIN_LIGHT) { GETupperANDlower6(modelVertexVector0/); }	//m_vertices_9
+	if (id == 0 && m_terrainType < TERRAIN_LIGHT) { GETupperANDlower6(modelVertexVector0); }	//m_vertices_9
 	if (id == 1 && m_terrainType < TERRAIN_LIGHT) { GETupperANDlower6(modelVertexVector1); }	//m_vertices_9
 	#if !defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX //DX_ENGINE_LEVEL < 52
 		if (id == 2 && m_terrainType < TERRAIN_LIGHT) { GETupperANDlower6(modelVertexVector2); }	//m_vertices_9
