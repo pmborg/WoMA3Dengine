@@ -107,7 +107,7 @@ void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, 
 		float ry = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotY;
 		if (ry == -1000) {
 			static float rY = 0.0f;
-			rY += (float)dt * (0.005f / 16.66f);	// MOVIMENT FORMULA!
+			rY = (float)dt * (0.005f / 16.66f);	// MOVIMENT FORMULA!
 			model->rotateY(rY);
 		}
 		else
