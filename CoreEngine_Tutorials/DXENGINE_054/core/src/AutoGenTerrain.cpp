@@ -861,8 +861,8 @@ bool CTerrain::initTerrainWaterMeshDemo(UINT terrainId) // Used to load WATER
 		TCHAR waterTexture[MAX_STR_LEN] = { 0 };	atow(waterTexture, SystemHandle->world.waterTexture.c_str(), MAX_STR_LEN);
 		std::vector<STRING> Textures; Textures.push_back(waterTexture);		// WATER: Shader:TEXTURE
 		// Add TEXTURE MAP: to all vertices
-		for (UINT i = 0; i < modelVertexVector1.size(); i++)				// Num Vertices: 6x256x256	Shader:TEXTURE
-			modelVertexVector1[i].y -= 0.04f;
+		//for (UINT i = 0; i < modelVertexVector1.size(); i++)				// Num Vertices: 6x256x256	Shader:TEXTURE
+		//	modelVertexVector1[i].y -= 0.04f;
 
 		CreateTerrainModel(terrainId,  Textures, SHADER_TEXTURE_WATER);		// m_Model[id]->Load
 

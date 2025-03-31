@@ -159,8 +159,9 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 #endif
 #if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
 	UINT size = SceneManager::GetInstance()->opacModelList.size();
-	for (UINT id = 0; id < size; id++)
+	for (UINT id = 0; id < size; id++) {
 		RenderModel(monitorWindow, m_Driver, id, PASS_OPAC); //eq: objModel[id]->Render(m_Driver, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_OPAC);
+	}
 #endif
 
 	//THE "OTHER" NETWORK PLAYERS
@@ -329,10 +330,6 @@ float ApplicationClass::Update()
 	float camX = m_Position[g_NetID]->m_positionX;
 	float camZ = m_Position[g_NetID]->m_positionZ;
 	UINT N_COMPOUNDS = SceneManager::GetInstance()->opacModelList.size();
-
-	//for (UINT id = 0; id < SceneManager::GetInstance()->opacModelList.size(); id++)
-	//	RenderModel(monitorWindow, m_Driver, id, PASS_OPAC); //objModel[id]->Render(m_Driver, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_OPAC);
-
 	for (UINT c = 0; c < N_COMPOUNDS; c++)
 	{
 		UINT id = compoundTreeLoadingOrder[c].compoundTreeId;
@@ -400,7 +397,6 @@ float ApplicationClass::Update()
 		else
 		{
 			GLopenGLclass* driver = (GLopenGLclass*)driverList[SystemHandle->AppSettings->DRIVER];
-
 			driver->gl_CameraSKY->m_rotationX = driver->gl_Camera->m_rotationX;
 			driver->gl_CameraSKY->m_rotationY = driver->gl_Camera->m_rotationY;
 			driver->gl_CameraSKY->CalculateViewMatrix();

@@ -792,8 +792,8 @@ bool CTerrain::initTerrainWaterMeshDemo(UINT terrainId) // Used to load WATER
 
 		std::vector<STRING> Textures; Textures.push_back(OCEANWATER_TEXTURE);		// WATER: Shader:TEXTURE
 		// Add TEXTURE MAP: to all vertices
-		for (UINT i = 0; i < modelVertexVector1.size(); i++)				// Num Vertices: 6x256x256	Shader:TEXTURE
-			modelVertexVector1[i].y -= 0.04f;
+		//for (UINT i = 0; i < modelVertexVector1.size(); i++)				// Num Vertices: 6x256x256	Shader:TEXTURE
+		//	modelVertexVector1[i].y -= 0.04f;
 
 		CreateTerrainModel(terrainId,  Textures, SHADER_TEXTURE);
 

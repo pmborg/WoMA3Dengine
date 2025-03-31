@@ -1048,7 +1048,9 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
                                             {
                                                 ID3D11ShaderResourceView* tempMeshSRV=NULL;
                                                 fileNamePath = MathLibPath + fileNamePath;	// TO Support TEMP:
-                                                fileNamePath = WOMA::LoadFile((TCHAR*) fileNamePath.c_str());
+												STRING pathtoengine = TEXT("../");
+												if (fileNamePath.substr(0, 3) != pathtoengine)
+													fileNamePath = WOMA::LoadFile((TCHAR*) fileNamePath.c_str());
 
 												//[TEMMPLATE] LOAD TEXTURE DX11:
 												#define m_driver11 ((DirectX::DX11Class*)/*SystemHandle->*/driverList[SystemHandle->AppSettings->DRIVER])
@@ -1063,7 +1065,6 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
                                     }
                                 }
                             }
-                            ///NEW
 						}
 					}
 				}

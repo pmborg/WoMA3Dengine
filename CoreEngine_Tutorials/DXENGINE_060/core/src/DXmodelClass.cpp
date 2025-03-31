@@ -768,8 +768,14 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 		{
 			for (UINT i = 0; i < (*textureFile).size(); i++)
 			{
+				TCHAR* textureFilename = NULL;
 				// Get full pathname for this texture:
-				TCHAR* textureFilename = WOMA::LoadFile((TCHAR*)(*textureFile)[i].c_str());
+				STRING fileNamePath = (TCHAR*)(*textureFile)[i].c_str();
+				STRING pathtoengine = TEXT("../");
+				if (fileNamePath.substr(0, 3) != pathtoengine)
+					textureFilename = WOMA::LoadFile((TCHAR*)fileNamePath.c_str());
+				else
+					textureFilename = (TCHAR*)fileNamePath.c_str();
 				HRESULT res = LoadTextureImage(textureFilename);
 				if (res != S_OK)
 					return false;

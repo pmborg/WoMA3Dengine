@@ -735,7 +735,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)	//
 			size = 512;	// CHECK AT WOMA_APPLICATION_Initialize3D:
 
 	initSphere1(size);
-	initSphere2(size);
 #endif
 
 #if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28 && defined USE_SKYSPHERE  // 28: SPHEREs

@@ -132,7 +132,10 @@ void ApplicationClass::AppPreRender(UINT monitorWindow, WomaDriverClass* Driver,
 void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, UINT modelID, UINT pass)
 {
 	VirtualModelClass* model = objModel[modelID];
-	((DXmodelClass*)model)->m_worldMatrix = XMMatrixIdentity();
+	if (m_Driver->RenderfirstTime)
+		((DXmodelClass*)model)->m_worldMatrix = XMMatrixIdentity();
+
+	model->translation(0, 0, 0);
 
 	{
 		float rx = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotX;
@@ -162,15 +165,18 @@ void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, 
 		else
 			model->rotateZ(rz);
 	}
+	
 
-	model->translation(0, 0, 0);
 
-	float scale = SystemHandle->xml_loader.theWorld[model->m_ObjId].scale;
-	model->scale(scale, scale, scale);
+	if (m_Driver->RenderfirstTime) {
+		float scale = SystemHandle->xml_loader.theWorld[model->m_ObjId].scale;
+		model->scale(scale, scale, scale);
+	}
 
-	model->translation(SystemHandle->xml_loader.theWorld[model->m_ObjId].posX,
-		SystemHandle->xml_loader.theWorld[model->m_ObjId].translateY,
-		SystemHandle->xml_loader.theWorld[model->m_ObjId].posZ);
+		model->translation(SystemHandle->xml_loader.theWorld[model->m_ObjId].posX,
+			SystemHandle->xml_loader.theWorld[model->m_ObjId].translateY,
+			SystemHandle->xml_loader.theWorld[model->m_ObjId].posZ);
+	
 
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
 	model->Render(CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass, &(m_Light->m_viewMatrix), &(m_Light->m_ligth_orthoMatrix));// Pass 2 (Shadow));
@@ -257,8 +263,9 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 #endif
 #if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
 	UINT size = SceneManager::GetInstance()->opacModelList.size();
-	for (UINT id = 0; id < size; id++)
+	for (UINT id = 0; id < size; id++) {
 		RenderModel(monitorWindow, m_Driver, id, PASS_OPAC); //eq: objModel[id]->Render(m_Driver, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_OPAC);
+	}
 #endif
 
 	//THE "OTHER" NETWORK PLAYERS
@@ -516,7 +523,6 @@ float ApplicationClass::Update()
 		else
 		{
 			GLopenGLclass* driver = (GLopenGLclass*)driverList[SystemHandle->AppSettings->DRIVER];
-
 			driver->gl_CameraSKY->m_rotationX = driver->gl_Camera->m_rotationX;
 			driver->gl_CameraSKY->m_rotationY = driver->gl_Camera->m_rotationY;
 			driver->gl_CameraSKY->CalculateViewMatrix();

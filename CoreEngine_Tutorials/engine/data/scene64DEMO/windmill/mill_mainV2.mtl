@@ -1,0 +1,80 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 08.07.2012 14:42:27
+
+newmtl _02_Material4_bricks01
+	Ns 45.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.2400 0.2400 0.2400
+	Ks 0.3806 0.3806 0.3806
+	Ke 0.0000 0.0000 0.0000
+	map_Ka bricks.jpg
+	map_Kd bricks.jpg
+	#map_bump Map__4_Normal_Bump.jpg
+	#bump Map__4_Normal_Bump.jpg
+
+newmtl _03_Material5_plank_wall_big01
+	Ns 48.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.2400 0.2400 0.2400
+	Ks 0.3184 0.3184 0.3184
+	Ke 0.0000 0.0000 0.0000
+	map_Ka 056E_stonewall_01_bump.jpg
+	map_Kd 056E_stonewall_01_bump.jpg
+	#map_bump mill_Map__2_NormalBump.jpg
+	#bump mill_Map__2_NormalBump.jpg
+
+newmtl _04_Material8_bright_planks01
+	Ns 50.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.2400 0.2400 0.2400
+	Ks 0.3833 0.3833 0.3833
+	Ke 0.0000 0.0000 0.0000
+	map_Ka bright_planks.jpg
+	map_Kd bright_planks.jpg
+
+newmtl _06_Material28_tar_roof01
+	Ns 35.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.2400 0.2400 0.2400
+	Ks 0.1713 0.1713 0.1713
+	Ke 0.0000 0.0000 0.0000
+	map_Ka tar_roof.jpg
+	map_Kd tar_roof.jpg
+	#map_bump millMap__9_Normal_Bump.jpg
+	#bump millMap__9_Normal_Bump.jpg
+
+newmtl _07_Material_door01
+	Ns 48.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.2400 0.2400 0.2400
+	Ks 0.3184 0.3184 0.3184
+	Ke 0.0000 0.0000 0.0000
+	map_Ka door.jpg
+	map_Kd door.jpg
+	#map_bump Map__11_Normal_Bump.jpg
+	#bump Map__11_Normal_Bump.jpg

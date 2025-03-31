@@ -946,7 +946,6 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 							#endif
 
                             ///BUMP:
-                            ///NEW
 						}
 					}
 				}

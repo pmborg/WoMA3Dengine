@@ -1,0 +1,23 @@
+<woma>
+  <camera screenNear="0.1f" screenDepth="512" >
+    <initPos x="21" y="5" z="10" />
+    <initRot x="-2.5f" y="29" z="0" />
+  </camera>
+
+  <!-- ENGINE LVL 31-->
+  <fog start="0" end="2048"/><!--NO FOG-->
+  <!--fog start="32" end="128"/--><!--FOG-->
+
+  <!--clearColorR="0.5f" clearColorG="0.6f" clearColorB="0.8f"-->
+  <world hVisibility="128" seaLevel="0" size="512" patchSize="64" skySize="25" 
+         clearColorR="0" clearColorG="0" clearColorB="0"
+         water="engine/data/Terrain/heightmap512x512.bmp" 
+         waterTexture="engine/data/Terrain/008water_tex04.jpg" 
+         mainTexture="engine/data/scene61DEMO/WorldHM.bmp"
+         skyDayTexture="engine/data/sky/desert_equi.jpgd5a2d427-55de-4d44-a8ec-5ba440b11e2fZoom.jpg"
+         skyNightTexture=""/>
+
+  <object id="0" depend="0" instances="" fromPage="64" toPage="64" scale="0.25" posX="40"    posZ="33"   translateY="0.5f"   rotX="" rotY="PI"  rotZ="" shader="" castShadow="" renderShadows="" filename="engine/data/scene30/spaceCompound.obj"/>
+  <object id="0" depend="0" instances="" fromPage="60" toPage="60" scale="1"    posX="44"    posZ="88"   translateY="10"     rotX="" rotY=""    rotZ="" shader="" castShadow="" renderShadows="" filename="engine/data/scene64DEMO/windmill/mill_mainV2.obj"/>
+  <object id="0" depend="0" instances="" fromPage="60" toPage="60" scale="0.8f" posX="44"    posZ="91"   translateY="23"     rotX="" rotY=""    rotZ="-1000" shader="" castShadow="" renderShadows="" filename="engine/data/scene64DEMO/windmill/mill_pas.obj"/>
+</woma>

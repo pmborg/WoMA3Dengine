@@ -1,0 +1,44 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 07.07.2012 23:31:39
+
+newmtl _null_01
+	Ns 59.2940
+	Ni 1.0000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.4941 0.9647 0.4000
+	Ks 0.7000 0.7000 0.7000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka bright_planks.jpg
+	map_Kd bright_planks.jpg
+
+newmtl _01_Material2_arm_beams01
+	Ns 58.0000
+	Ni 1.0000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.2400 0.2400 0.2400
+	Ks 0.1608 0.1608 0.1608
+	Ke 0.0000 0.0000 0.0000
+	map_Ka arm_beams.jpg
+	map_Kd arm_beams.jpg
+
+newmtl _04_Material8_bright_planks01
+	Ns 59.0000
+	Ni 1.0000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.2400 0.2400 0.2400
+	Ks 0.5025 0.5025 0.5025
+	Ke 0.0000 0.0000 0.0000
+	map_Ka bright_planks.jpg
+	map_Kd bright_planks.jpg

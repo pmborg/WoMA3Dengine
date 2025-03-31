@@ -429,7 +429,7 @@ void dxWinSystemClass::ApplicationInitSceneManager()
 	// DXsystemHandle->world.patchSize= 256
 
 	// SCENE MANAGER: Create SceneManager Engine: (Driver will use Frustrum to filter)
-#if defined USE_SCENE_MANAGER				 // SystemHandle->world.size = worldSizeDiameter
+#if defined USE_SCENE_MANAGER
 	SceneManager::GetInstance()->CreateRootNode(world.size, m_Application->ClearColor); // 256 x 8 --> //-512,-512, 512, 512
 	SceneManager::GetInstance()->quadTree.Initialize(SceneManager::GetInstance()->RootNode);
 #endif

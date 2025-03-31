@@ -39,6 +39,11 @@ Try to Change the driver on the fly without the need of close and open the Appli
 <h2>3D - TERRAIN TUTORIAL SERIES</h2>
 <hr>
 
+- <b>DX64: WORLD.XML: TERRAIN: Add a model with 2 pass and add a 3D static animated model</b><br> 
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_064.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_064.png)	 
+
+<hr> 
 - <b>DX63: WORLD.XML: TERRAIN: MAIN-MAP and MINI-MAP</b><br> 
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_063.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_063.png)	 

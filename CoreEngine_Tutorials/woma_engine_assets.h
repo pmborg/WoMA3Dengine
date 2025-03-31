@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------
 // Filename: woma_engine_assets.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2024
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
 // Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
@@ -233,7 +233,7 @@
 #if LEVEL >= 29
 	#if LEVEL == 29
 	#if (!defined DEMO_LEVEL) || LEVEL == 29
-		#if defined LINUX_PLATFORM //AQUI
+		#if defined LINUX_PLATFORM
 			#define SETTINGS_FILE		TEXT("settings.xml")
 		#else
 			#define SETTINGS_FILE		TEXT("settings_029.xml")
@@ -423,43 +423,6 @@
 	#define DEMO_MINIMMAP_ARROW_TEXTURE TEXT("engine/data/scene63MAP/015ArrowV2.png")
 #endif
 #if LEVEL == 64
-	#define DEMO_TITLE TEXT("64: ASSIMP")
+	#define DEMO_TITLE TEXT("64: Add a model with 2 pass and add a 3D animated model")
 	#define WORLD_XML TEXT("world_64.xml")
 #endif
-
-
-//----------------------------------------------------------------------------------------------------------------------------------
-#if LEVEL == 70 //Compound model with Alfa
-	#define DEMO_TITLE TEXT("60:TERRAIN: 256x256 with compound")
-	#define WORLD_XML TEXT("world_60.xml")
-#endif
-#if LEVEL == 71
-	#define DEMO_TITLE TEXT("61:TERRAIN: 256x256 with compound and colision")
-	#define WORLD_XML TEXT("world_61.xml")
-#endif
-
-#if DX_ENGINE_LEVEL >= 80 //25 //IMGUI!
-	#if defined ANDROID_PLATFORM
-		#define DEMO_SETTINGS_ICON TEXT("engine/data/basics/settings_929846-big.png")
-	#else
-		#define DEMO_SETTINGS_ICON TEXT("engine/data/basics/settings_929846.png")
-	#endif
-#endif
-
-
-
-/*
-#if defined _MSC_VER and defined _DEBUG //LETS DEBUG ONE:
-#undef DX9sdk
-#undef DX9
-#undef DX10
-#undef DX11
-#undef DX12
-#undef GLES2
-#undef GLES3
-#undef GLES31
-#undef OPENGL21
-#undef OPENGL3
-#undef OPENGL40
-#endif
-*/
