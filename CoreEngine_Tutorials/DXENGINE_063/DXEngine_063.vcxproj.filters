@@ -699,6 +699,8 @@
     <FxCompile Include="hlsl\shadows.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
-    <FxCompile Include="hlsl\063Terrain.hlsl" />
+    <FxCompile Include="hlsl\063Terrain.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
