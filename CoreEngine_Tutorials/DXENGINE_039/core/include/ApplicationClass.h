@@ -285,9 +285,6 @@ public:
 #endif
 
 	//TERRAINs:
-#if defined SCENE_MAIN_TERRAIN
-	CTerrain*	mainTerrain;
-#endif
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 	std::vector<PositionClass*> m_Position;

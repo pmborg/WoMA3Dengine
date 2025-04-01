@@ -377,6 +377,7 @@
 		#undef USE_LIGHT_RAY				//Static light
 			
 		#define SCENE_GENERATEDUNDERWATER	//NEW
+		#undef SCENE_TERRAIN_COLLISION
 	#endif
 
 	#if DX_ENGINE_LEVEL >= 50	//50-
@@ -387,10 +388,12 @@
 		#define SCENE_GENERATEDUNDERWATER	//0
 		#define SCENE_WATER_TERRAIN			//1
 		#define SCENE_MAIN_TOPO_TERRAIN		//2
+		#undef SCENE_TERRAIN_COLLISION
 	#endif
 
 	#if DX_ENGINE_LEVEL >= 51	//51-
 		#define SCENE_FOG
+		#undef SCENE_TERRAIN_COLLISION
 	#endif
 
 	#if DX_ENGINE_LEVEL >= 52	//52-
@@ -400,12 +403,16 @@
 
 		#undef USE_REAL_SUNLIGHT_DIRECTION	//Static light
 		#define USE_LIGHT_RAY				//Static light
-
+		#undef SCENE_TERRAIN_COLLISION
 		//#define DEBUG_TERRAIN_VERTICES
 	#endif
 
 	#if DX_ENGINE_LEVEL >= 53 //TEXTURE+COLOR SHADER
+		#define TERRAIN_COLLISION_NX 0.45f
+		#define TERRAIN_COLLISION_NZ 0.45f
 		#define SCENE_TERRAIN_COLLISION
+		#define EXTRA_INFO
+		//#define DEBUG_COLLISION_TERRAIN
 	#endif
 
 	#if DX_ENGINE_LEVEL >= 54
@@ -422,7 +429,7 @@
 	#endif
 
 
-	#if DX_ENGINE_LEVEL >= 60 // 60 ~ 	#if TUTORIAL_CHAP >= 24 // TERRAIN
+	#if DX_ENGINE_LEVEL >= 60
 		#define SCENE_SLOPE_MAP_TEXTURE //55 use 4 textures
 		#define USE_TERRAIN_TUTORIAL_CHAP_24 
 		#undef SCENE_TERRAIN_COLLISION
@@ -442,42 +449,20 @@
 		//#undef USE_STATUSBAR //DEBUG!
 	#endif
 	#if DX_ENGINE_LEVEL >= 64
+		#undef USE_CUBE
+	#endif
+	#if DX_ENGINE_LEVEL >= 65
+		#define SCENE_TERRAIN_COLLISION
+		#define EXTRA_INFO
+	#endif
+	
+	#if DX_ENGINE_LEVEL >= 67
 		#define LOADMD5		// LOADMD5 & FBX (Animated Characters)
-		#define USE_ASSIMP	// LOADMD5 & FBX (Animated Characters)
-	#endif
-	//--------------------------------------------------------------------------------------------------------------------------
-	#if DX_ENGINE_LEVEL >= 70
-		#define USE_ASSIMP_CHARACTERS
-	#endif
-	#if DX_ENGINE_LEVEL >= 75
-		#define SCENE_COMPOUND	//TUTORIAL_CHAP >= 55
-	#endif
-
-	#if DX_ENGINE_LEVEL >= 76 //Check Compound Colision
-		#define CHECK_COMPOUND_COLISION	//TUTORIAL_CHAP >= 96
-	#endif
-
-	#if DX_ENGINE_LEVEL >= 80 //25 //IMGUI!
-		#if DX_ENGINE_LEVEL == 25
-			#undef SCENE_COLOR
-			#undef SCENE_TEXTURE
-			#undef SCENE_TEXTURE_LIGHT
-			#undef USE_LIGHT_RAY
-		#endif
-
-		#define USE_IMGUI	// ASSIMP (Animated + Character using HLSL)
-
-		#if !defined ANDROID_PLATFORM
-		#define RUN_ASMAIN true //#define RUN_ASMAIN false //true
-		#endif
-	#endif
-
-	#if DX_ENGINE_LEVEL >= 100 //Render objects loaded by threads.
+		#define USE_ASSIMP
 	#endif
 
 
 	//#define USE_MULTI_MONITOR
-
 	//-------------------------------------------------------------------------------------------------------
 	#if !defined USE_LIGHT_RAY			// ON/OFF - Render light ray !!Dep!!: #undef  dx12_upload_old_way
 		#define  dx12_upload_old_way	// DX12 upload method

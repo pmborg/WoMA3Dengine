@@ -619,7 +619,7 @@ void ApplicationClass::WOMA_APPLICATION_FrameUpdateInstancesPositions(UINT m_Obj
 // --------------------------------------------------------------------------------------------
 // INIT/LOAD 3D Objects
 // --------------------------------------------------------------------------------------------
-bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)	//WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_Initialize3D()\n");
+bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 // --------------------------------------------------------------------------------------------
 {
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("----------------------------------------------------------------------------------------\n"));
@@ -810,10 +810,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)	//
 #if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX && defined SCENE_TERRAIN_COLLISION
 	loadedTerrain[3] = NEW CTerrain(TERRAIN);
 	loadedTerrain[3]->initMainTopoTerrainDemo(3);
-#endif
-
-#if defined SCENE_MAIN_TERRAIN									//66: MAIN: TERRAIN-V3
-	initMainTerrainDemo(0);
 #endif
 
 	//NETWORK //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

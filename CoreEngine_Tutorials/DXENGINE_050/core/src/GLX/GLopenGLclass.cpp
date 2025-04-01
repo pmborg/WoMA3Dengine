@@ -187,7 +187,7 @@ void GLopenGLclass::ClearDepthBuffer()
 
 void GLopenGLclass::EndScene(UINT monitorWindow){} // Not implemented in MAIN DRIVER only in context Driver.
 
-#if defined INTRO_DEMO || defined USE_ALPHA_BLENDING //|| ENGINE_LEVEL >= 26
+#if defined INTRO_DEMO || defined USE_ALPHA_BLENDING
 // MORE INFO: https://www.opengl.org/archives/resources/faq/technical/transparency.htm
 void GLopenGLclass::TurnOnAlphaBlending()
 {
@@ -376,7 +376,7 @@ bool GLopenGLclass::Initialize(float* clearColor)
 
 	TurnZBufferOn();
 
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); //#if ENGINE_LEVEL >=26
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// Set the field of view and screen aspect ratio.
 	float fieldOfView = 3.14159265358979323846f / 4.0f;

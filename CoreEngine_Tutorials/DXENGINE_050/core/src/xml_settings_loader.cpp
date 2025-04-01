@@ -265,7 +265,7 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 	    g_MESH_TYPE = (BYTE) atoi (GenSettings.meshType);
 	#endif
 
-	#if ENGINE_LEVEL >= 140 // #if TUTORIAL_PRE_CHAP >= 90
+	#if DX_ENGINE_LEVEL >= 140 // #if TUTORIAL_PRE_CHAP >= 90
 	    SystemHandle->AppSettings->NETWORK_ENABLED = (strcmp (GenSettings.networkEnabled, "true") == 0) ?  true : false;
 	    strcpy_s (SystemHandle->AppSettings->SERVER_ADDRESS, sizeof(SystemHandle->AppSettings->SERVER_ADDRESS), GenSettings.networkServerIP);
 	    SystemHandle->AppSettings->SERVER_PORT = (unsigned short) atoi (GenSettings.networkPort);
@@ -393,7 +393,7 @@ bool XMLloader::loadWorld (TCHAR* file_) // Note: Have to be char
 				strcpy(worldSettings.water, child_world->ToElement()->Attribute("water"));
 				strcpy(worldSettings.waterTexture, child_world->ToElement()->Attribute("waterTexture"));
 		#endif
-		#if DX_ENGINE_LEVEL >= 49
+		#if DX_ENGINE_LEVEL >= 50
 			strcpy(worldSettings.mainTexture, child_world->ToElement()->Attribute("mainTexture"));
 		#endif
 			strcpy(worldSettings.skyDayTexture, child_world->ToElement()->Attribute("skyDayTexture"));

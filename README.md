@@ -39,6 +39,11 @@ Try to Change the driver on the fly without the need of close and open the Appli
 <h2>3D - TERRAIN TUTORIAL SERIES</h2>
 <hr>
 
+- <b>DX65: WORLD.XML: TERRAIN: Walking on Terrain.</b><br> 
+	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_065.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_065.png)	 
+
+<hr> 
 - <b>DX64: WORLD.XML: TERRAIN: Add a model with 2 pass and add a 3D static animated model</b><br> 
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_064.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_064.png)	 

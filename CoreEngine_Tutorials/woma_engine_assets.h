@@ -359,14 +359,13 @@
 #endif
 #if LEVEL >= 53
 	#if LEVEL == 53
-	#define DEMO_TITLE TEXT("53:TERRAIN: With extra color terrain (extra Green in this example)")
+	#define DEMO_TITLE TEXT("53:TERRAIN: With extra color terrain (with terrain collision)")
 	#define WORLD_XML TEXT("world_53.xml")
 	#endif
 	#define TERRAIN_LEVEL53_COLOR_MAP XMFLOAT3 MAP_COLOR(10,35,10);
-	
 #endif
 #if LEVEL == 54
-	#define DEMO_TITLE TEXT("54:TERRAIN: Water waves")
+	#define DEMO_TITLE TEXT("54:TERRAIN: Water waves (with terrain collision)")
 	#define WORLD_XML TEXT("world_54.xml")
 #endif
 #if LEVEL >= 55
@@ -422,7 +421,11 @@
 	#define DEMO_MINIMMAP_BORDER_TEXTURE TEXT("engine/data/scene63MAP/015MiniMap.png")
 	#define DEMO_MINIMMAP_ARROW_TEXTURE TEXT("engine/data/scene63MAP/015ArrowV2.png")
 #endif
-#if LEVEL == 64
-	#define DEMO_TITLE TEXT("64: Add a model with 2 pass and add a 3D animated model")
+#if DX_ENGINE_LEVEL == 64
+	#define DEMO_TITLE TEXT("64: Add a model with 2 pass and add a 3D static animated model")
 	#define WORLD_XML TEXT("world_64.xml")
+#endif
+#if DX_ENGINE_LEVEL == 65
+	#define DEMO_TITLE TEXT("65: Walking on Terrain.")
+	#define WORLD_XML TEXT("world_65.xml")
 #endif

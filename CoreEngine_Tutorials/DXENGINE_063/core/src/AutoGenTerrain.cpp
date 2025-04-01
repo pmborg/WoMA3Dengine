@@ -173,16 +173,14 @@ bool CTerrain::LoadHeightMapTerrain(TCHAR* file, float xPos, float zPos, bool sk
 	if (m_terrainType == TERRAIN_COLOR_QUAD_FOG_SLOP_TEXTURE_Detail_Mapping_TextureMapping_AlphaMapping_BumpMapping_LighMapping_TransparentTexture_MINI_MAP)
 	{
 		m_heightMap_21 = NEW HeightMapType_21[m_terrainWidth * m_terrainHeight];
-#define m_heightMap m_heightMap_21
+		#define m_heightMap m_heightMap_21
 
 		int index = 0;
 
 		//#define m_heightMap height
 		// Read the image data into the height map.
 		for (j = 0; j < (int)m_terrainHeight; j++) {
-
 			for (i = 0; i < (int)m_terrainWidth; i++) {
-
 
 				float height = bitmapImage[k];
 				index = (m_terrainWidth * j) + i;
@@ -233,7 +231,7 @@ bool CTerrain::LoadHeightMapTerrain(TCHAR* file, float xPos, float zPos, bool sk
 		for (j = 0; j < (int)m_terrainHeight; j++) {
 
 			for (i = 0; i < (int)m_terrainWidth; i++) {
-				height[(terrain_squares - 1) - y][x] = (float)bitmapImage[k];
+				height[y][x] = (float)bitmapImage[k]; //AQUI-TERR
 
 				k += 3;
 			}
@@ -943,10 +941,6 @@ bool CTerrain::initTerrainWaterMeshDemo(UINT terrainId) // Used to load WATER
 
 		TCHAR waterTexture[MAX_STR_LEN] = { 0 };	atow(waterTexture, SystemHandle->world.waterTexture.c_str(), MAX_STR_LEN);
 		std::vector<STRING> Textures; Textures.push_back(waterTexture);		// WATER: Shader:TEXTURE
-		// Add TEXTURE MAP: to all vertices
-		//for (UINT i = 0; i < modelVertexVector1.size(); i++)				// Num Vertices: 6x256x256	Shader:TEXTURE
-		//	modelVertexVector1[i].y -= 0.04f;
-
 		CreateTerrainModel(terrainId,  Textures, SHADER_TEXTURE_WATER);		// m_Model[id]->Load
 
 		// FORCE FOR NOW TRANSPARENT:
@@ -997,8 +991,6 @@ bool CTerrain::initTerrainWaterMeshDemo(UINT terrainId) // Used to load WATER
 		for(j=1; j<m_terrainHeight-1; j++)\
 			m_heightMap[(m_terrainWidth * j) + i].y = m_heightMap[(m_terrainWidth * j) + (m_terrainWidth-border)+k].y;\
 }
-
-
 
 
 //NEW!
@@ -1082,16 +1074,18 @@ bool CTerrain::initMainTopoTerrainDemo(UINT terrainId)
 	// m_heightMap[index]
 	// height[y][x]
 	//[1]RASTER LoadHeightMap()
-	TCHAR mainTexture[MAX_STR_LEN] = { 0 };	atow(mainTexture, SystemHandle->world.mainTexture.c_str(), MAX_STR_LEN);
+	TCHAR HeightMapMainTexture[MAX_STR_LEN] = { 0 }; atow(HeightMapMainTexture, SystemHandle->world.mainTexture.c_str(), MAX_STR_LEN);
 
 	//Populate m_heightMap_21[index].x...y...z
-	IF_NOT_RETURN_FALSE(LoadHeightMapTerrain(mainTexture, xpos, zpos))
+	IF_NOT_RETURN_FALSE(LoadHeightMapTerrain(HeightMapMainTexture, xpos, zpos))
 
 		// IMG new format equivalente: height[(terrain_squares-1)  - y][x] == m_heightMap[(m_terrainWidth * y) + x]
 		//[2]RASTER NormalizeHeightMap()
-		if (terrainId == 2) {
+		if (terrainId == 2 || terrainId == 3) //AQUI-TERR
+		{
 			//Populate m_heightMap[(m_terrainWidth * j) + i].y
-			NormalizeHeightMap(5, -1.4f); //equal to ReduceHeightMap();
+			
+			NormalizeHeightMap(5, -1.4f); //(float scale, float moveY) //equal to ReduceHeightMap();
 			if (m_terrainType == TERRAIN_COLOR_QUAD_FOG_SLOP_TEXTURE_Detail_Mapping_TextureMapping_AlphaMapping_BumpMapping_LighMapping_TransparentTexture_MINI_MAP)
 				return CreateTerrain60(xpos, zpos);
 		}
@@ -1106,19 +1100,6 @@ bool CTerrain::initMainTopoTerrainDemo(UINT terrainId)
 
 	//------------------------------------------------------------------------------------------
 	// Step 3: ID2 SCALE: modelVertexVector2[i].y |tu tv OPEN GL|
-	if (terrainId == 2) 
-	{
-		// Add TEXTURE MAP: to all vertices
-		for (UINT i = 0; i < modelVertexVector2.size(); i++)				// Num Vertices: 6x256x256 //{ size=6303750 }
-		{
-			if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)			// FOR: OPENGL(U, V MAP)!
-			{
-				float aux = modelVertexVector2[i].tu;
-				modelVertexVector2[i].tu = modelVertexVector2[i].tv;
-				modelVertexVector2[i].tv = aux;
-			}
-		}
-	}
 
 	#if defined SCENE_TERRAIN_COLLISION
 	//------------------------------------------------------------------------------------------
@@ -1139,16 +1120,17 @@ bool CTerrain::initMainTopoTerrainDemo(UINT terrainId)
 		#endif
 	#endif
 
+	//#if DX_ENGINE_LEVEL < 60
 	//------------------------------------------------------------------------------------------
 	// Step 5: Populate: VirtualModelClass* SystemHandle->m_Application->m_Model[id]
 	//Populate: indices.push_back
-	if (terrainId == 2 || terrainId == 4)
+	if (terrainId == 2 || terrainId == 3 || terrainId == 4)//AQUI-TERR
 	{
 		std::vector<STRING> Textures;
 		Textures.push_back(TERRAIN_LEVEL50_TEXTURE);
 		CreateTerrainModel(terrainId,  Textures, SHADER_AUTO);
 	}
-
+	//#endif
 	return true;
 }
 #endif
@@ -1321,10 +1303,6 @@ float CTerrain::getTerrainHeight(UINT id, float xPos, float zPos)
 		CheckHeightOfTrianglev2(xPos, zPos, height, v4, v5, v6);	//Lower Triangle
 	else
 		CheckHeightOfTrianglev2(xPos, zPos, height, v1, v2, v3);	//Upper Triangle
-
-	if (height>0)
-		height -= 8.0f;
-
 	return height;
 }
 
@@ -1576,7 +1554,24 @@ void CTerrain::CreateTerrainModel(UINT id, std::vector<STRING> Textures, SHADER_
 #if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX
 	if (id == 0) ASSERT(SystemHandle->m_Application->m_Model[id]->LoadTexture(TEXT("id0:under water"), m_Driver, shader_type, &Textures, &modelVertexVector0));
 	if (id == 1) ASSERT(SystemHandle->m_Application->m_Model[id]->LoadTexture(TEXT("id1:water"), m_Driver, shader_type, &Textures, &modelVertexVector1));
+
+	//HeightMapType_24:
+	//	float x_, float y_, float z_, 		//POSITION
+	//	float tu_, float tv_, 				//TEXCOORD0
+	//	float tu2_, float tv2_, 				
+	//	float nx_, float ny_, float nz_,	//NORMAL
+	//	float r_, float g_, float b_,		//COLOR
+	//	float Maptu_, float Maptv_,			//TEXCOORD1
+	//	float Maptu2_, float Maptv2_,			
+	//	float tx_, float ty_, float tz_,	//TANGENT
+	//	float bx_, float by_, float bz_		//BINORMAL	
 	if (id == 2) ASSERT(SystemHandle->m_Application->m_Model[id]->LoadTerrain(TEXT("id2:terrain"), m_Driver, shader_type, &Textures, &modelVertexVector2, &indices));
+#if defined DEBUG_COLLISION_TERRAIN
+	//ModelTextureVertexType
+	//float x, y, z;
+	//float tu, tv;
+	if (id == 3) ASSERT(SystemHandle->m_Application->m_Model[id]->LoadTexture(TEXT("id3:terrain"), m_Driver, shader_type, &Textures, &modelVertexVector3, &indices)); //AQUI-TERR
+#endif
 #else
 	if (id == 0) ASSERT(SystemHandle->m_Application->m_Model[id]->LoadTexture(TEXT("id0:under water"), m_Driver, shader_type, &Textures, &modelVertexVector0));
 	if (id == 1) ASSERT(SystemHandle->m_Application->m_Model[id]->LoadTexture(TEXT("id1:water"), m_Driver, shader_type, &Textures, &modelVertexVector1));
@@ -1584,7 +1579,8 @@ void CTerrain::CreateTerrainModel(UINT id, std::vector<STRING> Textures, SHADER_
 #endif
 
 	#if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX
-	if (id == 2 || id == 4)  {
+	//AQUI-TERR
+	if (id == 2 || id == 4) {
 		if (shader_type < SHADER_Terrain_Texture_DEMO60) {
 			SystemHandle->m_Application->m_Model[id]->PrimitiveTopology = TRIANGLESTRIP; //After: Load
 		} else {

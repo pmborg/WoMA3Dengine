@@ -167,6 +167,8 @@ bool CTerrain::LoadHeightMapTerrain(TCHAR* file, float xPos, float zPos, bool sk
 	int k = 0, index = 0;
 	for (int y = m_terrainHeight - 1; y >= 0; y--) {
 		for (int x = m_terrainWidth - 1; x >= 0; x--)
+	//for (int y = 0; y < (int)m_terrainHeight; y++) {
+	//	for (int x = 0; x < (int)m_terrainWidth; x++) 
 		{
 			// Bitmaps are upside down so load bottom to top into the height map array.
 			index = ((terrain_squares) * (y + zPos)) + (x + xPos);
@@ -858,10 +860,6 @@ bool CTerrain::initTerrainWaterMeshDemo(UINT terrainId) // Used to load WATER
 		PopulateTerrainModelVertexVector(terrainId, 1); //1=terrain_squareSize
 
 		std::vector<STRING> Textures; Textures.push_back(OCEANWATER_TEXTURE);		// WATER: Shader:TEXTURE
-		// Add TEXTURE MAP: to all vertices
-		//for (UINT i = 0; i < modelVertexVector1.size(); i++)				// Num Vertices: 6x256x256	Shader:TEXTURE
-		//	modelVertexVector1[i].y -= 0.04f;
-
 		CreateTerrainModel(terrainId,  Textures, SHADER_TEXTURE);
 
 		// FORCE FOR NOW TRANSPARENT:
@@ -912,8 +910,6 @@ bool CTerrain::initTerrainWaterMeshDemo(UINT terrainId) // Used to load WATER
 		for(j=1; j<m_terrainHeight-1; j++)\
 			m_heightMap[(m_terrainWidth * j) + i].y = m_heightMap[(m_terrainWidth * j) + (m_terrainWidth-border)+k].y;\
 }
-
-
 
 
 //NEW!
@@ -973,7 +969,7 @@ bool CTerrain::initMainTopoTerrainDemo(UINT terrainId)
 
 	//------------------------------------------------------------------------------------------
 	// Step 3: ID2 SCALE: modelVertexVector2[i].y |tu tv OPEN GL|
-	if (terrainId == 2) 
+	if (terrainId == 2) //AQUITERR
 	{
 		// Add TEXTURE MAP: to all vertices
 		for (UINT i = 0; i < modelVertexVector2.size(); i++)				// Num Vertices: 6x256x256 //{ size=6303750 }
@@ -1012,16 +1008,17 @@ bool CTerrain::initMainTopoTerrainDemo(UINT terrainId)
 		#endif
 	#endif
 
+	//#if DX_ENGINE_LEVEL < 60
 	//------------------------------------------------------------------------------------------
 	// Step 5: Populate: VirtualModelClass* SystemHandle->m_Application->m_Model[id]
 	//Populate: indices.push_back
-	if (terrainId == 2 || terrainId == 4)
+	if (terrainId == 2 || terrainId == 3 || terrainId == 4)//AQUI-TERR
 	{
 		std::vector<STRING> Textures;
 		Textures.push_back(TERRAIN_LEVEL50_TEXTURE);
 		CreateTerrainModel(terrainId,  Textures, SHADER_AUTO);
 	}
-
+	//#endif
 	return true;
 }
 #endif
@@ -1197,10 +1194,6 @@ float CTerrain::getTerrainHeight(UINT id, float xPos, float zPos)
 		CheckHeightOfTrianglev2(xPos, zPos, height, v4, v5, v6);	//Lower Triangle
 	else
 		CheckHeightOfTrianglev2(xPos, zPos, height, v1, v2, v3);	//Upper Triangle
-
-	if (height>0)
-		height -= 8.0f;
-
 	return height;
 }
 
@@ -1457,7 +1450,8 @@ void CTerrain::CreateTerrainModel(UINT id, std::vector<STRING> Textures, SHADER_
 #endif
 
 	#if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX
-	if (id == 2 || id == 4)  {
+	//AQUI-TERR
+	if (id == 2 || id == 4) {
 		if (shader_type < SHADER_Terrain_Texture_DEMO60) {
 			SystemHandle->m_Application->m_Model[id]->PrimitiveTopology = TRIANGLESTRIP; //After: Load
 		} else {

@@ -783,10 +783,6 @@ bool WinSystemClass::ShowWindow(int windowLeft, int windowTop) {
 	GetWindowRect(m_hWnd, &m_rcWindowBounds);	//{top=0 bottom=1057 left=1920	right=3840}
 	GetClientRect(m_hWnd, &m_rcWindowClient);	//{top=0 bottom=1018 left=0		right=1904}	
 
-#if ENGINE_LEVEL >= 10 && defined ALLOW_MAINWINDOW_DROPFILES
-	DragAcceptFiles(m_hWnd, TRUE);
-#endif
-
 	return true;
 }
 

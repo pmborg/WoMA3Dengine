@@ -30,6 +30,10 @@
 #include "DxTextClass.h"
 #endif
 
+extern float terrain_nx;
+extern float terrain_nz;
+extern float nextHeight;
+
 namespace DirectX {
 
 ApplicationTextClass::ApplicationTextClass()
@@ -115,22 +119,20 @@ void ApplicationTextClass::SetCameraRotation(float rotX, float rotY, float rotZ)
 #endif
 
 #if defined EXTRA_INFO
-void ApplicationTextClass::SetClockTime(UINT h, UINT m)
+void ApplicationTextClass::SetInfoA(UINT h, UINT m)
 {
 	static TCHAR dataString[40];
 
-	// Setup the clock string:
-	StringCchPrintf (dataString, sizeof(dataString), TEXT("Hour: %02d:%02d"), h, m);
-	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_CLOCK], dataString, 10, Y_INIT + 60, 0.0f, 1.0f, 0.0f));
+	StringCchPrintf(dataString, sizeof(dataString), TEXT("nx: %5.2f nz: %5.2f"), terrain_nx, terrain_nz);
+	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_CLOCK], dataString, 10, Y_INIT + 120, 0.0f, 1.0f, 0.0f));
 }
 
-void ApplicationTextClass::SetLightDirection(float rotX, float rotY, float rotZ)
+void ApplicationTextClass::SetInfoB(float rotX, float rotY, float rotZ)
 {
 	static TCHAR dataString[40];
-
-	// Setup the LightDirection string:
-	StringCchPrintf (dataString, sizeof(dataString), TEXT("Light Dir: rX:%5.2f  rY:%5.2f rZ:%5.2f"), rotX, rotY, rotZ);
-	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_LIGHT_DIR], dataString, Y_INIT + 10, 80, 0.0f, 1.0f, 0.0f));
+	StringCchPrintf(dataString, sizeof(dataString), TEXT("nextHeight: %5.2f - m_positionY: %5.2f"), nextHeight, SystemHandle->m_Application->m_Position[g_NetID]->m_positionY);
+	float nextHeight = 0;
+	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_LIGHT_DIR], dataString, 10, Y_INIT + 60, 0.0f, 1.0f, 0.0f));
 }
 #endif
 

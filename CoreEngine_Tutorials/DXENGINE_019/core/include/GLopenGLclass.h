@@ -118,7 +118,7 @@ public:
 
 	void SetRasterizerState(UINT cullMode, UINT fillMode);
 
-	#if defined INTRO_DEMO || defined USE_ALPHA_BLENDING //|| ENGINE_LEVEL >= 26
+	#if defined INTRO_DEMO || defined USE_ALPHA_BLENDING
 	//We have two new functions for turning on and off alpha blending:
 	void TurnOnAlphaBlending();
 	void TurnOffAlphaBlending();

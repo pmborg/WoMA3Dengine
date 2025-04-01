@@ -29,10 +29,6 @@
 
 #include "xml_loader.h"
 
-#if ENGINE_LEVEL >= 10 && defined ALLOW_MAINWINDOW_DROPFILES
-#include <Shellapi.h>
-#endif
-
 #if CORE_ENGINE_LEVEL >= 2 && defined USE_STATUSBAR
 #include "dxWinSystemClass.h"
 

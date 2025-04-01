@@ -60,6 +60,10 @@ UINT KeyLookDown= {DIK_PGDN};
 	UINT KeyFlyDown	= {DIK_F};
 #endif
 
+float terrain_nx = 0.0f;
+float terrain_nz = 0.0f;
+float nextHeight = 0;
+
 //The ProcessInput function is where we deal with the changes that have happened in the input devices since the last frame. 
 //For this tutorial we will just do a simple mouse location update similar to how Windows keeps track of where the mouse cursor is. 
 //To do so we use the m_mouseX and m_mouseY variables that were initialized to zero and simply add the changes in the mouse position 
@@ -315,7 +319,7 @@ bool ApplicationClass::HandleUserInput(double frameTime)
     }
 #endif
 
-    static float nextHeight = 0;
+    
 
     //[3] - Check Terrain Colisions: CHAP 14!!
     // --------------------------------------------------------------------------------------------
@@ -333,30 +337,33 @@ bool ApplicationClass::HandleUserInput(double frameTime)
     //Detect colision with terrain LEFT / RIGHT:
     if (!g_GOD_MODE)
     {
-        float nx = 0.0f, nz = 0.0f;
 		nextHeight = mainTerrain->getTerrainHeight(TERRAIN_ID, m_NextPosition->m_positionX, m_NextPosition->m_positionZ);
-
-        if	((m_NextPosition->m_positionZ < mainTerrain->m_terrainHeight-1) && 
-			(m_NextPosition->m_positionX < mainTerrain->m_terrainWidth-1) &&
+		int terrainHeight = mainTerrain->m_terrainHeight;
+		int terrainWidth = mainTerrain->m_terrainWidth;
+        if	((m_NextPosition->m_positionZ < terrainHeight) && 
+			(m_NextPosition->m_positionX < terrainWidth) &&
             (m_NextPosition->m_positionZ > 1) && 
 			(m_NextPosition->m_positionX > 1)
 			)
 		{
-			nx = SystemHandle->m_Application->loadedTerrain[2]->modelVertexVector2[(mainTerrain->m_terrainHeight * ((int)m_NextPosition->m_positionZ)) + ((int)m_NextPosition->m_positionX)].nx;//TODO: all map types
-			nz = SystemHandle->m_Application->loadedTerrain[2]->modelVertexVector2[(mainTerrain->m_terrainHeight * ((int)m_NextPosition->m_positionZ)) + ((int)m_NextPosition->m_positionX)].nz;
+			terrain_nx = SystemHandle->m_Application->loadedTerrain[2]->modelVertexVector2[(mainTerrain->m_terrainHeight * ((int)m_NextPosition->m_positionZ)) + ((int)m_NextPosition->m_positionX)].nx;//TODO: all map types
+			terrain_nz = SystemHandle->m_Application->loadedTerrain[2]->modelVertexVector2[(mainTerrain->m_terrainHeight * ((int)m_NextPosition->m_positionZ)) + ((int)m_NextPosition->m_positionX)].nz;
 
-			if (abs(nz) <= 0.5f || nextHeight < m_Position[g_NetID]->m_positionY) {
+			if (abs (terrain_nz) <= TERRAIN_COLLISION_NX || nextHeight < m_Position[g_NetID]->m_positionY) 
+			{
 				#if defined CHECK_COMPOUND_COLISION//96
 				if (CompoundZnormalOK)
 				#endif
 				   m_Position[g_NetID]->m_positionZ = m_NextPosition->m_positionZ;
 			}
-			if (abs(nx) <= 0.5f  || nextHeight <m_Position[g_NetID]->m_positionY) {
+			if (abs (terrain_nx) <= TERRAIN_COLLISION_NZ || nextHeight < m_Position[g_NetID]->m_positionY) 
+			{
 				#if defined CHECK_COMPOUND_COLISION//96
 				if (CompoundXnormalOK)
 				#endif
 				   m_Position[g_NetID]->m_positionX = m_NextPosition->m_positionX;
 			}
+			
 		}
     } else {
        m_Position[g_NetID]->m_positionZ = m_NextPosition->m_positionZ;

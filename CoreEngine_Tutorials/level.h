@@ -122,17 +122,16 @@
 						// G:\DRIVE_MY_SOURCE_CODE\WorldOfMiddleAge\WorldOfMiddleAge.sln	
 	//#define LEVEL 61	// TUTORIAL_CHAP 25  TERRAIN Bigger HEIGHT MAPs 512x512: ............
 	//#define LEVEL 62	// TUTORIAL_CHAP 26  TERRAIN MAIN MAP : ..............................
-	#define LEVEL 63	// TUTORIAL_CHAP 27  TERRAIN MINI MAP 3D Navegation : ...............
+	//#define LEVEL 63	// TUTORIAL_CHAP 27  TERRAIN MINI MAP 3D Navegation : ...............
 
-	#define LEVEL 64	// MD5		(Animated + Character using HLSL)
+	//#define LEVEL 64  // Mill + compound
+	#define LEVEL 65    // Walk on Terrain.
+	
+	
+	
+	/////////////////////////////////////////////
+	//#define LEVEL 67	// MD5 (Animated + Character using HLSL)
 	//#define LEVEL 70	// ASSIMP	(Animated + Character using HLSL)
-
-
-
-
-
-
-
 
 	//ADVANCED-OBJECTS:
 	//--------------------------------------------------------------------------------------------------------

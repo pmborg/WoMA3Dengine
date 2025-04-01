@@ -152,7 +152,10 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 			m_Model[2]->RenderWithFade(fadeLight, fog);	// New function to replace these 2 line options.
 	}
 #endif
-
+#if defined DEBUG_COLLISION_TERRAIN
+	if (m_Model[3])
+		m_Model[3]->RenderWithFade(fadeLight, fog);	// New function to replace these 2 line options. //AQUI-TERR
+#endif
 	// 3D STATIC OPAC OBJECTS
 	// --------------------------------------------------------------------------------------------
 #if defined USE_RASTERIZER_STATE
@@ -479,8 +482,8 @@ if (!astroClass) {
 
 if (AppTextClass) {
 #if defined EXTRA_INFO
-	AppTextClass->SetClockTime(astroClass->hour, astroClass->minute);
-	AppTextClass->SetLightDirection(m_Light->m_lightDirection.x, m_Light->m_lightDirection.y, m_Light->m_lightDirection.z);
+	AppTextClass->SetInfoA(astroClass->hour, astroClass->minute);
+	AppTextClass->SetInfoB(m_Light->m_lightDirection.x, m_Light->m_lightDirection.y, m_Light->m_lightDirection.z);
 #endif
 	AppTextClass->SetFps(SystemHandle->fps);						// Update the FPS "Value" in the text object.
 

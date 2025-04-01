@@ -252,9 +252,6 @@ public:
 	bool		LoadColorMap(char* filename);
 	bool		CreateTerrain60(float xPos, float zPos);
 #endif
-#if defined SCENE_MAIN_TERRAIN
-	void		initMainTerrainDemo(UINT terrainId);
-#endif
 	void		CreateTerrainModel(UINT id, std::vector<STRING> Textures, SHADER_TYPE shader_type);
 
 #if defined SCENE_TERRAIN_COLLISION

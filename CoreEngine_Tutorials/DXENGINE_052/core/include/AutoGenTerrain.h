@@ -230,9 +230,6 @@ public:
 #if defined SCENE_MAIN_TOPO_TERRAIN
 	bool		initMainTopoTerrainDemo	(UINT terrainId);
 #endif
-#if defined SCENE_MAIN_TERRAIN
-	void		initMainTerrainDemo(UINT terrainId);
-#endif
 	void		CreateTerrainModel(UINT id, std::vector<STRING> Textures, SHADER_TYPE shader_type);
 
 #if defined SCENE_TERRAIN_COLLISION

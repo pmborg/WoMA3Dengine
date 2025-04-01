@@ -571,8 +571,8 @@ bool CTerrain::LoadColorMap(char* filename)
 	return true;
 }
 
-bool CTerrain::CreateTerrain60(float xPos, float zPos) {
-
+bool CTerrain::CreateTerrain60(float xPos, float zPos) 
+{
 	//Populate m_heightMap_21[index].nx...ny...nz
 	IF_NOT_RETURN_FALSE (CalculateNormals());
 
@@ -716,7 +716,7 @@ bool CTerrain::CreateTerrain60(float xPos, float zPos) {
 	CREATE_MODEL_IF_NOT_EXCEPTION(SystemHandle->m_Application->m_Model[2], I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);  // m_Model[id] = NEW
 	SystemHandle->m_Application->m_Model[2]->ModelHASfog = true;
 	
-	ASSERT(SystemHandle->m_Application->m_Model[2]->LoadTerrain(TEXT("Terrain_Texture_DEMO24"), m_Driver, SHADER_Terrain_Texture_DEMO61, &Terrain60Textures, &modelVertexVector2, &Terrain60indices));
+	ASSERT(SystemHandle->m_Application->m_Model[2]->LoadTerrain(TEXT("Terrain 61"), m_Driver, SHADER_Terrain_Texture_DEMO61, &Terrain60Textures, &modelVertexVector2, &Terrain60indices));
 
 	return true;
 }

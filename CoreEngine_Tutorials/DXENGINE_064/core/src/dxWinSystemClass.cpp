@@ -167,7 +167,7 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 
 	ASSERT(WOMA::game_state == GAME_STOP);
 
-	return (int)msg.wParam;
+	return 0;
 }
 
 //----------------------------------------------------------------------------
@@ -426,12 +426,12 @@ void dxWinSystemClass::ApplicationInitSceneManager()
 //----------------------------------------------------------------------------
 {
 	//  QUADTREE:
-	// ||256|256||
+	// ||338|338||
 	// -----------
-	// ||256|256||
+	// ||338|338||
 
-	// DXsystemHandle->world.size		= 512
-	// DXsystemHandle->world.patchSize= 256
+	DXsystemHandle->world.size = terrain_squares;
+	DXsystemHandle->world.patchSize = 338;
 
 	// SCENE MANAGER: Create SceneManager Engine: (Driver will use Frustrum to filter)
 #if defined USE_SCENE_MANAGER

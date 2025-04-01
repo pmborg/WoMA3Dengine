@@ -69,7 +69,7 @@ union Vector2 {
 };
 #pragma pack(pop)
 
-#if defined INTRO_DEMO || ENGINE_LEVEL == 14 || DX_ENGINE_LEVEL >= 22 // Texturing
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL == 14 || DX_ENGINE_LEVEL >= 22 // Texturing
 #pragma pack(push, 1)
 struct ModelTextureVertexType
 {

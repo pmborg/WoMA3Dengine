@@ -60,8 +60,8 @@ public:
 	void SetCameraPosition(float, float, float);
 	void SetCameraRotation(float, float, float);
 #if defined EXTRA_INFO
-	void SetClockTime(UINT, UINT);
-	void SetLightDirection(float rotX, float rotY, float rotZ);
+	void SetInfoA(UINT, UINT);
+	void SetInfoB(float rotX, float rotY, float rotZ);
 	#endif
 
 	#if defined INTRO_DEMO

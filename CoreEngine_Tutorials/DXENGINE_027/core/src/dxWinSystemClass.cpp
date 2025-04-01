@@ -163,7 +163,7 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 
 	ASSERT(WOMA::game_state == GAME_STOP);
 
-	return (int)msg.wParam;
+	return 0;
 }
 
 //----------------------------------------------------------------------------

@@ -263,11 +263,7 @@ void start_log_manager()
 	// [3]  PRINT Log Dirs: (After init_os_main_dirs & After logManager)
 	// -------------------------------------------------------------------------------------------
 	//WOMA_LOGManager_DebugMSGAUTO(TEXT("Init: logDirs()\n"));
-#if defined WINDOWS_PLATFORM && ENGINE_LEVEL >= 3
-	logDirs(isXP(), isWow64());
-#else
 	logDirs();
-#endif
 
 	// [5] Log Binary Type:
 	// -------------------------------------------------------------------------------------------

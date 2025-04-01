@@ -117,6 +117,9 @@
     <ClCompile Include="src\xml_settings_loader.cpp" />
     <ClCompile Include="src\xml_settings_saver.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Xml Include="settings.xml" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
