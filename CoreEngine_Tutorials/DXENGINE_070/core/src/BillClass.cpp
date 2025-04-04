@@ -192,8 +192,8 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 		xmlobj.renderShadows = false;	//41
 		xmlobj.meshSRV = billFileLoaded[type];
 
-		strcpy_s(xmlobj.filename, 256, BILLBOARD_MODEL);
-
+		if (m_Trees[i].type < 100)
+			strcpy_s(xmlobj.filename, 256, BILLBOARD_MODEL);
 		xmlobj.WOMA_object = WOMA_OBJECT();
 		xmlobj.WOMA_object.shaderType = SHADER_TEXTURE_LIGHT;
 

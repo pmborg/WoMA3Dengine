@@ -431,7 +431,7 @@ void dxWinSystemClass::ApplicationInitSceneManager()
 	// ||338|338||
 
 	DXsystemHandle->world.size = terrain_squares;
-	DXsystemHandle->world.patchSize = 64;
+	DXsystemHandle->world.patchSize = terrain_squares/2;
 
 	// SCENE MANAGER: Create SceneManager Engine: (Driver will use Frustrum to filter)
 #if defined USE_SCENE_MANAGER
