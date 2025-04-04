@@ -60,7 +60,7 @@ public:
 	NodeType* m_QuadRootNode = NULL;
 
 #ifdef _DEBUG
-	UINT totalLoaded=0, totalRendered = 0, totalVertexRendered = 0;
+	UINT totalLoaded = 0, totalVertexRendered = 0;
 #endif
 
 private:

@@ -435,9 +435,12 @@
 #if DX_ENGINE_LEVEL == 70
 	#define DEMO_TITLE TEXT("70: BILLBOARD for Trees / Flowers, (LIGHT and Fog)")
 	#define WORLD_XML TEXT("world_70.xml")
-	#define BILLBOARD_MODEL TEXT("engine/data/scene70Bill/060square.obj")
 	//#define BILLBOARD_MODEL TEXT("engine/data/scene30/squareTexture.obj")
-  #if DX_ENGINE_LEVEL >= 70
+#endif
+
+#if DX_ENGINE_LEVEL >= 70
+	#define BILLBOARD_MODEL TEXT("engine/data/scene70Bill/060square.obj")
+
 	#define BILL_TREE_0 TEXT("engine/data/scene70Bill/060SH10_1bill.tif")	// 0 TREEs
 	#define BILL_TREE_1 TEXT("engine/data/scene70Bill/060SH10_2bill.tif")	// 1
 	#define BILL_TREE_2 TEXT("engine/data/scene70Bill/060SH10_3bill.tif")	// 2
@@ -456,11 +459,14 @@
 	#define BILL_BUSH_2 TEXT("engine/data/scene70Bill/408742C.png") 		//13
 	#define BILL_BUSH_3 TEXT("engine/data/scene70Bill/408742D.png") 		//14
 	#define BILL_BUSH_4 TEXT("engine/data/scene70Bill/408742E.png") 		//15
-  #endif
 #endif
+
 #if DX_ENGINE_LEVEL == 71
 	#define DEMO_TITLE TEXT("71: BILLBOARD for FENCES, (LIGHT and Fog)")
 	#define WORLD_XML TEXT("world_71.xml")
+#endif
+#if DX_ENGINE_LEVEL >= 71
+	#define BILLBOARD_FENCE_MODEL TEXT("engine/data/scene70Bill/fence.obj")
 #endif
 #if DX_ENGINE_LEVEL == 72
 	#define DEMO_TITLE TEXT("72: FIRE")

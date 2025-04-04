@@ -25,14 +25,14 @@
 //////////////
 #include  "WomaDriverClass.h"
 #include  "virtualModelClass.h"
-
+#include  "xml_loader.h"
 #include "Tree.h"
 
 // Number of Billboard Trees
 #define N_BILLBOARD 1000
-#define N_FENCES 55
-#define N_FIRE 1
-#define N_GRASS 2500
+#define N_FENCES 0
+#define N_FIRE 0
+#define N_GRASS 0
 
 extern ID3D11ShaderResourceView* billFileLoaded[];
 
@@ -48,11 +48,10 @@ public:
 	BillClass();
 	~BillClass();
 
-	//bool Initialize(/*TerrainClass* Terrain,*/ FrustumClass* m_FrustumObj_, FrustumClass* m_FrustumGrass_, /*TextClass* m_Text_, DX11Class* m_Direct3D,*/ int m_terrainWidth, int m_terrainHeight, bool instance);
+	xmlobj3d* fillxml(int id, UINT type);
 	bool Initialize(int m_terrainWidth, int m_terrainHeight, bool instance);
 	void Shutdown();
 	bool BillBoardRender(bool instance);
-	//void CopyBillArray(void* vertexList);
 
 public:
 int		BillrenderCount=0;

@@ -77,9 +77,9 @@ ID3D11ShaderResourceView* billFileLoaded[] =
 	NULL,//18
 	NULL,//19
 */
-}; // Note HARD CODED!! They have to have the same Size
+};
 
-TCHAR billFileName[][128] = 
+TCHAR billFileName[][MAX_STR_LEN] = 
 {
 	BILL_TREE_0,	//0 TREEs
 	BILL_TREE_1,	//1
@@ -104,24 +104,66 @@ TCHAR billFileName[][128] =
 
 #define borderLimit 12 // Border Limit without Bills
 
+xmlobj3d* BillClass::fillxml(int id, UINT type)
+{
+	DirectX::DX11Class* m_driver11 = (DirectX::DX11Class*)m_Driver;
+
+	static xmlobj3d xmlobj;
+	xmlobj.id = id;
+	xmlobj.fromPage = 0;
+	xmlobj.toPage = 0;
+	xmlobj.depend = 0;
+	xmlobj.scale = m_Trees[id].scale;
+	xmlobj.posX = m_Trees[id].vPos.x;
+	xmlobj.posZ = m_Trees[id].vPos.z;
+	xmlobj.translateY = m_Trees[id].vPos.y;
+	xmlobj.rotY = m_Trees[id].rotY;
+	xmlobj.shader = SHADER_TEXTURE_LIGHT;
+	xmlobj.instances = 0;			//40
+	xmlobj.castShadow = false;		//41
+	xmlobj.renderShadows = false;	//41
+
+	if (m_Trees[id].type < 100)
+	{
+		// Create the texture object, if not created before
+		if (!billFileLoaded[type])
+		{
+			ID3D11ShaderResourceView* tempMeshSRV = NULL;
+			HRESULT hr = S_OK;
+
+			LOADTEXTURE(WOMA::LoadFile(billFileName[type]), tempMeshSRV);
+			billFileLoaded[type] = tempMeshSRV;
+		}
+
+		xmlobj.meshSRV = billFileLoaded[type];
+		strcpy_s(xmlobj.filename, 256, BILLBOARD_MODEL);
+	}
+	else
+		xmlobj.meshSRV = NULL;
+
+	xmlobj.WOMA_object = WOMA_OBJECT();
+	xmlobj.WOMA_object.shaderType = SHADER_TEXTURE_LIGHT;
+
+	return &xmlobj;
+}
+
 bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instance)
 {	
 	UNREFERENCED_PARAMETER(instance);
-	DirectX::DX11Class* m_driver11 = (DirectX::DX11Class*)m_Driver;
 	ZeroMemory( &m_Trees, sizeof( m_Trees ) );
 	billNames_length = sizeof( billFileName ) / sizeof (billFileName[0]);
 	UINT type = 0;
 
 	// BILLBOARDs
 	int i;
-	for (i=0;i<N_BILLBOARD;i++) 
+	for (i=0; i< N_BILLBOARD;i++)
 	{
 		// Tree.vPos:
 		float height = -1; //Initially Invalid
 		float PosX = 0;
 		float PosZ = 0;
 		while (height <= 0  || height > 5.0f
-				|| (m_Trees[i].vPos.x >= 31 && m_Trees[i].vPos.x <= 49) && (m_Trees[i].vPos.z >= 24 && m_Trees[i].vPos.z <= 35) 
+				|| (m_Trees[i].vPos.x >= 29 && m_Trees[i].vPos.x <= 49) && (m_Trees[i].vPos.z >= 22 && m_Trees[i].vPos.z <= 38) //out of house (compound)
 				|| (m_Trees[i].vPos.x < borderLimit || m_Trees[i].vPos.x > m_terrainWidth - borderLimit) 
 				|| (m_Trees[i].vPos.z < borderLimit || m_Trees[i].vPos.z > m_terrainHeight - borderLimit) )
 		{
@@ -138,7 +180,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 
 		// Tree.scale:
 		float scale = 0;
-		if (type >= 6)
+		if (type >= 6 && type < 11)
 			scale =  0.1f + (rand() % 10)/10.0f;
 		else
 			scale = 0.25f + (rand() % 30) / 10.0f;
@@ -147,8 +189,8 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 			scale += 1.5f;
 			height -= 0.5f;
 		}
-		if (type >= 6 )				// Make flowers Smaller
-			scale = scale/3;
+		if (type >= 6)					// Make flowers Smaller
+			scale = scale/2;
 
 		if (i == 0) { //Make 1 special tree on the first compound
 			m_Trees[i].vPos.x = 27;
@@ -158,47 +200,15 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 			scale = 4;
 		}
 
-
 		m_Trees[i].ID = i;
 		m_Trees[i].type = type;
 		m_Trees[i].scale = scale;		
 		m_Trees[i].vPos.y = height;
 
-		// Create the texture object, if not created before
-		if (!billFileLoaded[type]) 
-		{
-			ID3D11ShaderResourceView* tempMeshSRV = NULL;
-			HRESULT hr = S_OK;
-
-			LOADTEXTURE(WOMA::LoadFile(billFileName[type]), tempMeshSRV);
-			billFileLoaded[type] = tempMeshSRV;
-		}
-
-		xmlobj3d xmlobj;
-		xmlobj.id = i;
-		xmlobj.fromPage = 0; 
-		xmlobj.toPage = 0; 
-		xmlobj.depend = 0;
-		xmlobj.scale = m_Trees[i].scale;
-		xmlobj.posX = m_Trees[i].vPos.x;
-		xmlobj.posZ = m_Trees[i].vPos.z;
-		xmlobj.translateY = m_Trees[i].vPos.y;
-		xmlobj.rotX = 0; 
-		xmlobj.rotY = 0; 
-		xmlobj.rotZ = 0;
-		xmlobj.shader = SHADER_TEXTURE_LIGHT;
-		xmlobj.instances = 0;			//40
-		xmlobj.castShadow = false;		//41
-		xmlobj.renderShadows = false;	//41
-		xmlobj.meshSRV = billFileLoaded[type];
-
-		if (m_Trees[i].type < 100)
-			strcpy_s(xmlobj.filename, 256, BILLBOARD_MODEL);
-		xmlobj.WOMA_object = WOMA_OBJECT();
-		xmlobj.WOMA_object.shaderType = SHADER_TEXTURE_LIGHT;
-
-		SystemHandle->xml_loader.theWorld.push_back(xmlobj);
+		xmlobj3d* xmlobj = fillxml(i, type);
+		SystemHandle->xml_loader.theWorld.push_back(*xmlobj);
 	}
+	//N_BILLBOARD
 
 	billTotal = i;
 
@@ -234,6 +244,3 @@ int __cdecl BillSortCB( const VOID* arg1, const VOID* arg2 )
     return -1;   
 }
 
-//////////////////////////////////////////////////////
-// Bill Board
-//////////////////////////////////////////////////////

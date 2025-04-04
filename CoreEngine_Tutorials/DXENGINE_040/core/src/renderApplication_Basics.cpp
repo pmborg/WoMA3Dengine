@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: renderApplication_Basics.cpp
 // --------------------------------------------------------------------------------------------
@@ -137,22 +136,21 @@ void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, 
 	//VirtualModelClass* model = objModel[modelID];
 
 	float positionX, positionY, positionZ;
-	positionX = SystemHandle->xml_loader.theWorld[model->m_ObjId].posX;
-	positionY = SystemHandle->xml_loader.theWorld[model->m_ObjId].translateY;
-	positionZ = SystemHandle->xml_loader.theWorld[model->m_ObjId].posZ;
+	positionX = SystemHandle->xml_loader.theWorld[modelID].posX;
+	positionY = SystemHandle->xml_loader.theWorld[modelID].translateY;
+	positionZ = SystemHandle->xml_loader.theWorld[modelID].posZ;
 
 	if (!m_Driver->frustum->CheckSphere(positionX, positionY, positionZ, model->boundingSphere) && ((!m_Driver->RenderfirstTime)))
 		return;
 
-	if (m_Driver->RenderfirstTime)
+	if (m_Driver->RenderfirstTime || (SystemHandle->xml_loader.theWorld[model->m_ObjId].rotY != 0 && modelID > world_xml_objs))
 		((DXmodelClass*)model)->m_worldMatrix = XMMatrixIdentity();
 
 	model->translation(0, 0, 0);
 
-
 	if (m_Driver->RenderfirstTime)
 	{
-		float scale = SystemHandle->xml_loader.theWorld[model->m_ObjId].scale;
+		float scale = SystemHandle->xml_loader.theWorld[modelID].scale;
 		model->scale(scale, scale, scale);
 	}
 
@@ -160,7 +158,7 @@ void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, 
 	if (((DXmodelClass*)model)->m_instanceCount == 0)
 #endif
 	{
-		float rx = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotX;
+		float rx = SystemHandle->xml_loader.theWorld[modelID].rotX;
 		if (rx == -1000) {
 			static float rX = 0.0f;
 			rX = (float)dt * (0.005f / 16.66f);	// MOVIMENT FORMULA!

@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: ApplicationClass.h
 // --------------------------------------------------------------------------------------------
@@ -66,7 +65,7 @@
 #include "AutoGenTerrain.h"			
 
 #if TUTORIAL_CHAP >= 60 // BILLBOARD
-#include "Bill/BillClass.h"				//[ch60]
+#include "BillClass.h"				//[ch60]
 #endif//
 
 #if TUTORIAL_CHAP >= 90

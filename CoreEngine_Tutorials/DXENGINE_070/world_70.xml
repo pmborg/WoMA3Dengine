@@ -1,10 +1,4 @@
 <woma>
-  <!-- ENGINE LVL 25-->
-  <!--camera screenNear="0.01f" screenDepth="256" >
-    <initPos x="61" y="2" z="49"/>
-    <initRot x="0" y="13" z="0"/>
-  </camera-->
-
   <camera screenNear="0.1f" screenDepth="512" >
     <initPos x="12" y="8.2f" z="6" />
     <initRot x="11.1f" y="61.1f" z="0" />
@@ -14,7 +8,6 @@
   <fog start="0" end="2048"/><!--NO FOG-->
   <!--fog start="32" end="128"/--><!--FOG-->
 
-  <!--clearColorR="0.5f" clearColorG="0.6f" clearColorB="0.8f"-->
   <world hVisibility="128" seaLevel="0" size="512" patchSize="64" skySize="25" 
          clearColorR="0" clearColorG="0" clearColorB="0"
          water="engine/data/Terrain/heightmap512x512.bmp" 
@@ -23,32 +16,7 @@
          skyDayTexture="engine/data/sky/desert_equi.jpgd5a2d427-55de-4d44-a8ec-5ba440b11e2fZoom.jpg"
          skyNightTexture=""/>
 
-  <object id="0" depend="0" instances="" fromPage="64" toPage="64" scale="0.25" posX="40"    posZ="33"   translateY="0.5f"   rotX="" rotY="PI"  rotZ="" shader="" castShadow="" renderShadows="" filename="engine/data/scene30/spaceCompound.obj"/>
-  <object id="0" depend="0" instances="" fromPage="60" toPage="60" scale="1"    posX="44"    posZ="88"   translateY="10"     rotX="" rotY=""    rotZ="" shader="" castShadow="" renderShadows="" filename="engine/data/scene64DEMO/windmill/mill_mainV2.obj"/>
-  <object id="0" depend="0" instances="" fromPage="60" toPage="60" scale="0.8f" posX="44"    posZ="91"   translateY="23"     rotX="" rotY=""    rotZ="-1000" shader="" castShadow="" renderShadows="" filename="engine/data/scene64DEMO/windmill/mill_pas.obj"/>
-  
-  <!-- ORIGINAL: G:\woma2013\trunk\Part1\engine\data -->
-  <!-- TARGET C:\WoMAengine2023\DXEngine_055\engine\data -->
-  <!--
-  <object id="0" depend="0" instances="" fromPage="60" toPage="60" scale="0.4f"   posX="42"     posZ="92"     translateY="1.5f"     rotX="" rotY=""                         rotZ="" shader="" castShadow="" renderShadows="" filename="engine/data/scene64DEMO/windmill/mill_mainV2.obj"/>
-  <object id="0" depend="0" instances="" fromPage="60" toPage="60" scale="0.35f"  posX="42"     posZ="93.2"   translateY="5.5f"     rotX="" rotY=""                         rotZ="" shader="" castShadow="" renderShadows="" filename="engine/data/scene64DEMO/windmill/mill_pas.obj"/>
-  
-  <object id="0" depend="0" instances="" fromPage="60" toPage="60" scale="0.1f"   posX="29.0f"  posZ="23.2f"  translateY="0.00f"    rotX="" rotY="1.57079632679489661923f"  rotZ="" shader="" castShadow="" renderShadows="" filename="engine/data/scene30/Elementalsit.obj"/>
-  <object id="0" depend="0" instances="" fromPage="60" toPage="60" scale="0.025f" posX="38"     posZ="129"    translateY="0.00f"    rotX="" rotY="1.57079632679489661923f"  rotZ="" shader="" castShadow="" renderShadows="" filename="engine/data/scene60DEMO/building9/building9.obj"/>
-  <object id="0" depend="0" instances="" fromPage="60" toPage="60" scale="0.04f"  posX="36"     posZ="30"     translateY="-0.3f"    rotX="" rotY=""                         rotZ="" shader="" castShadow="" renderShadows="" filename="engine/data/scene60DEMO/old_abandonated_house_50/010old_abandonated_house_50.obj"/>
-  <object id="0" depend="0" instances="" fromPage="60" toPage="60" scale="0.4f"   posX="26"     posZ="45"     translateY=""         rotX="" rotY=""                         rotZ="" shader="" castShadow="" renderShadows="" filename="engine/data/scene30/spaceCompound.obj"/>
-  <object id="0" depend="0" instances="" fromPage="60" toPage="60" scale="0.05f"  posX="2"      posZ="23"     translateY=""         rotX="" rotY=""                         rotZ="" shader="" castShadow="" renderShadows="" filename="engine/data/scene60DEMO/Light_HouseV3/010Light_HouseV3.obj"/>
-  <object id="0" depend="0" instances="" fromPage="60" toPage="60" scale="0.15f"  posX="158.0f" posZ="36.2f"  translateY="-12.40f"  rotX="" rotY="1.57079632679489661923f"  rotZ="" shader="" castShadow="" renderShadows="" filename="engine/data/scene60DEMO/tunnelv2/tunnelv2.obj"/>
-
-  <object id="0" depend="0" instances="" fromPage="60" toPage="60" scale="0.02f"  posX="-5.3f"  posZ="23"     translateY="1.00f"    rotX="" rotY="1.57079632679489661923f"  rotZ="" shader="" castShadow="" renderShadows="" filename="engine/data/scene60DEMO/boat/boat.obj"/>
-
-  <object id="0" depend="0" instances="" fromPage="60" toPage="60" scale="0.01f"  posX="13"     posZ="14"     translateY="5.70f"    rotX="" rotY="1.57079632679489661923f"  rotZ="" shader="" castShadow="" renderShadows="" filename="engine/data/scene60DEMO/wall/wall.obj"/>
-  <object id="0" depend="0" instances="" fromPage="60" toPage="60" scale="0.01f"  posX="73"     posZ="55"     translateY="0.00f"    rotX="" rotY="1.57079632679489661923f"  rotZ="" shader="" castShadow="" renderShadows="" filename="engine/data/scene60DEMO/jojinery/jojinery.obj"/>
-  <object id="0" depend="0" instances="" fromPage="60" toPage="60" scale="0.01f"  posX="17"     posZ="20"     translateY="0.00f"    rotX="" rotY=""                         rotZ="" shader="" castShadow="" renderShadows="" filename="engine/data/scene60DEMO/house/house.obj"/>
-  <object id="0" depend="0" instances="" fromPage="60" toPage="60" scale="0.01f"  posX="80"     posZ="21"     translateY="0.00f"    rotX="" rotY="1.57079632679489661923f"  rotZ="" shader="" castShadow="" renderShadows="" filename="engine/data/scene60DEMO/mill/mill.obj"/>
-  <object id="0" depend="0" instances="" fromPage="60" toPage="60" scale="0.01f"  posX="99"     posZ="50"     translateY="0.00f"    rotX="" rotY="1.57079632679489661923f"  rotZ="" shader="" castShadow="" renderShadows="" filename="engine/data/scene60DEMO/building6/building6.obj"/>
-
-  <object id="0" depend="0" instances="" fromPage="60" toPage="60" scale="0.4f"   posX="214"    posZ="125"    translateY="0.00f"    rotX="" rotY="1.57079632679489661923f"  rotZ="" shader="" castShadow="" renderShadows="" filename="engine/data/scene60DEMO/SmallFactory/SmallFactory.obj"/>
-  <object id="0" depend="0" instances="" fromPage="60" toPage="60" scale="0.125f" posX="145"    posZ="78"     translateY="0.00f"    rotX="" rotY="1.57079632679489661923f"  rotZ="" shader="" castShadow="" renderShadows="" filename="engine/data/scene60DEMO/statue/statue.obj"/>
-  -->
-</woma>
+  <object id="0" depend="0" instances="" fromPage="64" toPage="64" scale="0.25"  posX="40"    posZ="33"   translateY="0.5f"  rotX="" rotY="PI"  rotZ="" shader="" castShadow="" renderShadows="" filename="engine/data/scene30/spaceCompound.obj"/>
+  <object id="0" depend="0" instances="" fromPage="60" toPage="60" scale="0.75f" posX="44"    posZ="88"   translateY="9"     rotX="" rotY=""    rotZ="" shader="" castShadow="" renderShadows="" filename="engine/data/scene64DEMO/windmill/mill_mainV2.obj"/>
+  <object id="0" depend="0" instances="" fromPage="60" toPage="60" scale="0.75f" posX="44"    posZ="91"   translateY="19"    rotX="" rotY=""    rotZ="-1000" shader="" castShadow="" renderShadows="" filename="engine/data/scene64DEMO/windmill/mill_pas.obj"/>
+ </woma>

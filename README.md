@@ -45,7 +45,10 @@ Try to Change the driver on the fly without the need of close and open the Appli
 - <b>DX72: FIRE</b><br> 
 <hr> 
 
-- <b>DX71: BILLBOARD for FENCES</b><br> 
+- <b>DX71: BILLBOARD for FENCES</b><br>
+
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_071.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_071.png)	 
+
 <hr> 
 
 - <b>DX70: BILLBOARD for Trees / Flowers</b><br> 

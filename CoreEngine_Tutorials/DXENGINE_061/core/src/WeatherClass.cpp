@@ -195,7 +195,7 @@ bool WeatherClass::GetPresentWeather(TCHAR* ICAO)
     StringCchPrintf(downloadFilename, sizeof(downloadFilename), TEXT("https://%s=%s"), TEXT("metar.vatsim.net/metar.php?id"), ICAO);
     //LPPT 011400Z 32008KT 290V360 9999 FEW022 BKN026 23/17 Q1019
 
-    WOMA_LOGManager_DebugMSG("URL: %s", downloadFilename);
+    WOMA_LOGManager_DebugMSG("URL: %s\n", downloadFilename);
 
 #if defined WINDOWS_PLATFORM
     HRESULT hr = URLDownloadToFile(NULL, downloadFilename, WOMA::LoadFile (szFileName), 0, NULL);

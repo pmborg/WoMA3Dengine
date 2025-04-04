@@ -467,13 +467,8 @@
 	#if DX_ENGINE_LEVEL >= 73
 		#define TUTORIAL_CHAP 63
 		#define BILLBOARD_FOR_WINDY_GRASS
-	#endif																																															//--------------------------------------------------------------------------------------------------------------------------							 
-	#if DX_ENGINE_LEVEL >= 77
-		#define LOADMD5		// LOADMD5 & FBX (Animated Characters)
-		#define USE_ASSIMP
-	#endif
-
-
+   #endif
+   
 	//#define USE_MULTI_MONITOR
 	//-------------------------------------------------------------------------------------------------------
 	#if !defined USE_LIGHT_RAY			// ON/OFF - Render light ray !!Dep!!: #undef  dx12_upload_old_way

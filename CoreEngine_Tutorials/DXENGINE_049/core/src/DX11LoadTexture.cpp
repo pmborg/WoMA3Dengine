@@ -191,7 +191,6 @@ HRESULT DX11Class::LOADTEXTURE_DX11_WIN_SDK8(
 	TCHAR* pSrcFile,
 	ID3D11ShaderResourceView** ppShaderResourceView)
 {
-
 	HRESULT hr = S_OK;
 
 	// COMMON: Check if this Texture/Resource already exist? if yes... return our Resource, already cached!

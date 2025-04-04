@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: winSystemClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -176,7 +175,7 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 
  // ################################################# INIT DRIVERS ###################################
 	
-	return true;						// GREEN LIGHT: to Start Rendering! :)
+	return true; // GREEN LIGHT: to Start Rendering! :)
 }
 
 #if defined USE_PROCESS_OS_KEYS //CORE_ENGINE_LEVEL >= 3

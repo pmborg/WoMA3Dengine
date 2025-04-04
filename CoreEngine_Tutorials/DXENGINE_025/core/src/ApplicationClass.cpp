@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: ApplicationClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -472,10 +471,11 @@ bool ApplicationClass::Initialize(WomaDriverClass* Driver)
 #endif
 
 //########################################### 3D: STUFF ###########################################
-	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(Driver));	// (m_Light && xml_loader.theWorld) and SCENE MANAGER: QuadTree object Loader/Render
+	// (m_Light && xml_loader.theWorld) and SCENE MANAGER: QuadTree object Loader/Render
+	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(Driver));	
 //########################################### 2D: STUFF ###########################################
 #if DX_ENGINE_LEVEL >= 24 && defined USE_VIEW2D_SPRITES
-	DEMO_WOMA_APPLICATION_InitializeSprites2D();				//2D-TITLE + 2D-MAP + 2D-MINI-MAP
+	DEMO_WOMA_APPLICATION_InitializeSprites2D();				//2D:TITLE + 2D:MAP + 2D:MINI-MAP
 #endif
 	// 2D-FONTS: Windows
 #if defined USE_RASTERTEK_TEXT_FONT //27

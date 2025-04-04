@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: initApplication_Basics.cpp
 // --------------------------------------------------------------------------------------------
@@ -521,7 +520,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	initWorld->Calculate();
 #endif
 
-#if defined USE_ASTRO_CLASS && defined USE_REAL_SUNLIGHT_DIRECTION //#if ENGINE_LEVEL >= 33
+#if defined USE_ASTRO_CLASS && defined USE_REAL_SUNLIGHT_DIRECTION
 	Calc3DSunMoonPosition();
 	//if (WOMA::game_state == GAME_STOP) return false;
 #endif
@@ -565,25 +564,27 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	IF_NOT_RETURN_FALSE(initCubes3D());
 #endif
 
+//Sphere:
 	float size = 3.0f;
 #if defined USE_SPHERE
 	if (RENDER_PAGE >= 61)
 		size = SystemHandle->world.skySize;
 	else
 		if (RENDER_PAGE >= 55)
-			size = 512;	// CHECK AT WOMA_APPLICATION_Initialize3D:
+			size = 512;	// SYNC/CHECK AT WOMA_APPLICATION_Initialize3D():
 
 	initSphere1(size);
 	initSphere2(size);
 #endif
 
+//Sky:
 #if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28 && defined USE_SKYSPHERE  // 28: SPHEREs
 	size = 48;
 	if (RENDER_PAGE >= 61)
 		size = SystemHandle->world.skySize;
 	else
 		if (RENDER_PAGE >= 55)
-			size = 512;	// CHECK AT WOMA_APPLICATION_Initialize3D:
+			size = 512;	// SYNC/CHECK AT WOMA_APPLICATION_Initialize3D():
 		else
 			size = 48;
 
@@ -627,6 +628,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	if (!m_billTreeClass->Initialize(loadedTerrain[2]->m_terrainWidth/2, loadedTerrain[2]->m_terrainHeight/2, false))
 	{
 		WomaMessageBox(TEXT("Could not initialize the billboardClass"), TEXT("Create Bill Board for Trees / Flowers"));
+		return false;
 	}
 #endif
 

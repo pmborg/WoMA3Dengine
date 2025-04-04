@@ -155,7 +155,7 @@ bool DX9Class::Resize(int screenWidth, int screenHeight, float screenNear, float
 {
 	if (m_device)
 	{
-#if defined USE_DRIVER_FONTS //defined INTRO_DEMO || ENGINE_LEVEL >= 29	// FONT v2
+#if defined USE_DRIVER_FONTS
 		InitD2DScreenTexture();
 #endif
 
@@ -946,7 +946,7 @@ void  DX9Class::TurnOnAlphaBlending() {}
 void  DX9Class::TurnOffAlphaBlending() {}
 #endif
 
-#if defined USE_DRIVER_FONTS //defined INTRO_DEMO || ENGINE_LEVEL >= 29	// FONT v2
+#if defined USE_DRIVER_FONTS
 
 void DX9Class::InitD2DScreenTexture()
 {
