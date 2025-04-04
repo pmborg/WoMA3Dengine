@@ -589,6 +589,8 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 			case TIMER_TITLE:
 				if (!SystemHandle->AppSettings->FULL_SCREEN)
 					SystemHandle->refreshTitle();
+				if (WOMA::game_state == GAME_LOADING)
+					RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);	// Invoke: Window PAINT before end.
 				return 0;
 
 			#if CORE_ENGINE_LEVEL >= 7 && defined USE_ASTRO_CLASS
