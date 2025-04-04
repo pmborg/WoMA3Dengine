@@ -82,7 +82,7 @@ public:
 	void SetLoboRenderCount(int count);
 	#endif
 
-	#if TUTORIAL_PRE_CHAP >= 45
+#if TUTORIAL_CHAP >= 60 // BILLBOARD
 	void SetBillRenderCount(int count);
 	#endif
 

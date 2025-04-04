@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: ApplicationClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -427,6 +428,10 @@ void ApplicationClass::Shutdown()
 
 #if defined USE_RASTERTEK_TEXT_FONT //27
 	SAFE_SHUTDOWN(AppTextClass);
+#endif
+
+#if TUTORIAL_CHAP >= 60
+	SAFE_SHUTDOWN(m_billTreeClass);
 #endif
 
 #if defined (SCENE_COMPOUND)//TUTORIAL_CHAP >= 55 && 

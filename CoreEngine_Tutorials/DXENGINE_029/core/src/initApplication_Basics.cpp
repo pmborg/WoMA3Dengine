@@ -17,12 +17,14 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567222;
 
 #include "main.h"
 #include "ApplicationClass.h"
 #include "OSengine.h"
 #include "Math3D.h"
 #include "mem_leak.h"
+#include "log.h"
 #include <cinttypes>
 
 #pragma warning(push)
@@ -592,20 +594,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	UINT64 passedTotalTime1 = (UINT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
 	WOMA_LOGManager_DebugMSGAUTO("Time to reach OBJ load: %" PRId64 "\n", passedTotalTime1);
 
-	//-----------------------------------------------------------------------------------------------------------------
-	// Create "model OBJECTS" from loaded "XML OBJECTS" in file WORLD.XML
-	//-----------------------------------------------------------------------------------------------------------------
-
-	//ANIMATED SKELETON MESHs //////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	SystemHandle->ProcessPerformanceStats();
-	UINT64 passedTotalTime2 = (UINT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
-	WOMA_LOGManager_DebugMSGAUTO("Time spent on OBJ(s) load: %" PRId64 "\n", passedTotalTime2);
-
-	//RENDER ASTROs ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	//SHADOWMAP //////////////////////////////////////////////////////////////////////////////////////////////////////
-
 	//TERRAINs /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//0
 #if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN		// UNDER WATER: Terrain
@@ -631,13 +619,33 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	loadedTerrain[3]->initMainTopoTerrainDemo(3);
 #endif
 
-	//NETWORK //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#if defined SAVEW3D
-	WomaMessageBox(TEXT("Conversion from OBJ to W3D, ended."), TEXT("SAVEW3D"));
-	WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP; //Publish_Quit_Message();
-	return false;
+	//-----------------------------------------------------------------------------------------	
+	// Create Bill Board for Trees / Flowers
+	//-----------------------------------------------------------------------------------------	
+#if TUTORIAL_CHAP >= 60 && defined (SCENE_MAIN_TOPO_TERRAIN) && defined (SCENE_BILLBOARDS) // BILLBOARD
+	IF_NOT_RETURN_FALSE(m_billTreeClass = NEW BillClass);
+	if (!m_billTreeClass->Initialize(loadedTerrain[2]->m_terrainWidth/2, loadedTerrain[2]->m_terrainHeight/2, false))
+	{
+		WomaMessageBox(TEXT("Could not initialize the billboardClass"), TEXT("Create Bill Board for Trees / Flowers"));
+	}
 #endif
+
+	//-----------------------------------------------------------------------------------------------------------------
+	// Create "model OBJECTS" from loaded "XML OBJECTS" in file WORLD.XML
+	//-----------------------------------------------------------------------------------------------------------------
+
+	//ANIMATED SKELETON MESHs //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	SystemHandle->ProcessPerformanceStats();
+	UINT64 passedTotalTime2 = (UINT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
+	WOMA_LOGManager_DebugMSGAUTO("Time spent on OBJ(s) load: %" PRId64 "\n", passedTotalTime2);
+
+	//RENDER ASTROs ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	//SHADOWMAP //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
 
 	//Finally, launch dynamic Load Compound/OBJ Thread /////////////////////////////////////////////////////////////////////////////////
 #if defined (CHECK_COMPOUND_COLISION) && defined (SCENE_COMPOUND) //TUTORIAL_CHAP >= 55 && 
@@ -656,6 +664,14 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	if (!SetThreadPriority(threadCompoundLoaderHandle, THREAD_PRIORITY_IDLE/*THREAD_PRIORITY_LOWEST*//*THREAD_PRIORITY_BELOW_NORMAL*/)) { return false; }
 #endif
 #endif
+
+#if defined SAVEW3D
+	WomaMessageBox(TEXT("Conversion from OBJ to W3D, ended."), TEXT("SAVEW3D"));
+	WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP; //Publish_Quit_Message();
+	return false;
+#endif
+
+	//NETWORK //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	return true;
 }

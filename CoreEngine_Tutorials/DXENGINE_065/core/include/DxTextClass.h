@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: DxTextClass.h
 // --------------------------------------------------------------------------------------------
@@ -35,6 +36,10 @@
 #include "DXshaderClass.h"
 #include "textFontClass.h"
 // ----------------------------------------
+
+#if TUTORIAL_CHAP >= 60 // BILLBOARD
+#define TEXT_BILLRENDERCOUNT 7
+#endif
 
 namespace DirectX {
 

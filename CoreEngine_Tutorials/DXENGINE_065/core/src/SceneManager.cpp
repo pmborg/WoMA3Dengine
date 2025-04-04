@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: SceneManager.cpp
 // --------------------------------------------------------------------------------------------
@@ -140,7 +141,7 @@ void SceneManager::Render()
 {
 #ifdef _DEBUG
 	quadTree.totalVertexRendered = 0;
-	quadTree.totalRendered = 0;
+	//quadTree.totalRendered = 0;
 #endif	
 
 	quadTree.RenderNode(quadTree.m_QuadRootNode);

@@ -102,10 +102,12 @@ const bool isRHCoordSys = true;	// SET default
 
 ModelClass::ModelClass()
 {
+	CLASSLOADER();
 }
 
 ModelClass::~ModelClass()
 {
+	CLASSDELETE();
 }
 
 // Populate: obj3d
@@ -618,6 +620,7 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 
 	// Get Path to Mat. Lib.
 	// ---------------------
+	STRING meshMatLib_ = meshMatLib;
 	{
 	STRING temp = MathLibPath;
 	int indexCh = (int)temp.find_last_of('\\');
@@ -637,7 +640,7 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 	//std::wstring lastStringRead;
 	//bool SKIP_MATERIALS = false;
 #if !defined(STANDALONE)
-	if (meshMatLib.find(TEXT("none")) == 0) //Special Case for Billboards: dont have a fixed texture.
+	if (meshMatLib_.find(TEXT("none")) == 0) //Special Case for Billboards: dont have a fixed texture.
 	{
 		SurfaceMaterial tempMat;
 		obj3d.material.push_back(tempMat);

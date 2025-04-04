@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: w3d.cpp
 // --------------------------------------------------------------------------------------------
@@ -82,7 +83,7 @@ namespace DirectX
 			version = version - 0.1f;
 
 		StringCchPrintfA(W3D.version, sizeof(W3D.version), "W3D v%.1f", version);
-		WOMA_LOGManager_DebugMSG("W3D.version: %s\n", W3D.version);
+		//WOMA_LOGManager_DebugMSG("W3D.version: %s\n", W3D.version);
 
 		W3D.min = minVertex;
 		W3D.max = maxVertex;

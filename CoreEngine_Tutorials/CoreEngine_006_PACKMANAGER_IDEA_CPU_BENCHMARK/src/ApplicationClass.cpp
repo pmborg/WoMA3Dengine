@@ -192,6 +192,10 @@ void ApplicationClass::Shutdown()
 	SAFE_SHUTDOWN(AppTextClass);
 #endif
 
+#if TUTORIAL_CHAP >= 60
+	SAFE_SHUTDOWN(m_billTreeClass);
+#endif
+
 #if defined (SCENE_COMPOUND)//TUTORIAL_CHAP >= 55 && 
 	//for (UINT i = 0; i < N_COMPOUNDS; i++) {
 	//	SAFE_SHUTDOWN(compound[i].objModel);

@@ -54,14 +54,16 @@ extern RApplicationClass* r_Application;
 void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 //-------------------------------------------------------------------------------------------
 {
-	// [1] Process INPUT, CAMERA & Animations:
+	totalRendered = 0;
+
+	// [1] Animations:
 	// --------------------------------------------------------------------------------------------
 
 	// [2] SceneManager: Process/Filter and Create Lists/trees of objects to render from: WORLD.XML
 	// --------------------------------------------------------------------------------------------
 #if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
 	SceneManager::GetInstance()->opacModelList.clear();				//Reset list of opac objects
-	SceneManager::GetInstance()->Render();							//Create Lists of objects to render from WORLD.XML
+	SceneManager::GetInstance()->Render();							//Create Lists for all objects to render (from WORLD.XML) and more
 #endif
 
 	// [3] LIGHT RAY:
@@ -83,16 +85,33 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 
 	AppRender(monitorWindow, dayLightFade);				// [2] Render: All 3D!!!
 
-	AppPosRender();										// [3] Render: All 2D (on TOPs)
+	AppPosRender(monitorWindow);										// [3] Render: All 2D (on TOPs)
 }
 
 void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, UINT modelID, UINT pass)
 {
-	VirtualModelClass* model = objModel[modelID];
+	DXmodelClass* model = (DXmodelClass*)objModel[modelID];
+	//VirtualModelClass* model = objModel[modelID];
+
+	float positionX, positionY, positionZ;
+	positionX = SystemHandle->xml_loader.theWorld[model->m_ObjId].posX;
+	positionY = SystemHandle->xml_loader.theWorld[model->m_ObjId].translateY;
+	positionZ = SystemHandle->xml_loader.theWorld[model->m_ObjId].posZ;
+
+	if (!m_Driver->frustum->CheckSphere(positionX, positionY, positionZ, model->boundingSphere) && ((!m_Driver->RenderfirstTime)))
+		return;
+
 	if (m_Driver->RenderfirstTime)
 		((DXmodelClass*)model)->m_worldMatrix = XMMatrixIdentity();
 
 	model->translation(0, 0, 0);
+
+
+	if (m_Driver->RenderfirstTime)
+	{
+		float scale = SystemHandle->xml_loader.theWorld[model->m_ObjId].scale;
+		model->scale(scale, scale, scale);
+	}
 
 	{
 		float rx = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotX;
@@ -102,16 +121,21 @@ void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, 
 			model->rotateX(rX);
 		}
 		else
-			model->rotateX(rx);
+			if (rx)
+				model->rotateX(rx);
 
-		float ry = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotY;
+		float ry = 0;
+		{
+			ry = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotY;
+		}
 		if (ry == -1000) {
 			static float rY = 0.0f;
 			rY = (float)dt * (0.005f / 16.66f);	// MOVIMENT FORMULA!
 			model->rotateY(rY);
 		}
 		else
-			model->rotateY(ry);
+			if (ry)
+				model->rotateY(ry);
 
 		float rz = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotZ;
 		if (rz == -1000) {
@@ -120,24 +144,23 @@ void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, 
 			model->rotateZ(rZ);
 		}
 		else
-			model->rotateZ(rz);
-	}
-	
+			if (rz)
+				model->rotateZ(rz);
+	}// non-Instancing
+ 
 
 
-	if (m_Driver->RenderfirstTime) {
-		float scale = SystemHandle->xml_loader.theWorld[model->m_ObjId].scale;
-		model->scale(scale, scale, scale);
-	}
 
-		model->translation(SystemHandle->xml_loader.theWorld[model->m_ObjId].posX,
-			SystemHandle->xml_loader.theWorld[model->m_ObjId].translateY,
-			SystemHandle->xml_loader.theWorld[model->m_ObjId].posZ);
-	
+	model->translation(positionX, positionY, positionZ);
+																
+														   
 
-	model->Render(CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass);// Pass 2 (Shadow));
+	if (pass == 0)
+		totalRendered++;
+
+		model->Render(CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass);// Pass 2 (Shadow));
 }
-
+ 
 #define TERRAIN_SCALE 1
 //#############################################################################################################
 // [2/3] RENDER - 3D
@@ -240,27 +263,35 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 	for (UINT id = 0; id < SceneManager::GetInstance()->opacModelList.size(); id++)
 		objModel[id]->Render(CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_TRANSPARENT);
 #endif
-}//#############################################################################################################
+}
 
 //#############################################################################################################
 // [3/3] POS-RENDER - 2D: Render TRANSPARENT Parts of 3D OBJs (like: glass window, etc...)
 //#############################################################################################################
-void ApplicationClass::AppPosRender()
+void ApplicationClass::AppPosRender(UINT monitorWindow)
 {
-	//WomaDriverClass* m_Driver = SystemHandle->m_Driver;
-#if defined USE_ALPHA_BLENDING
-	m_Driver->TurnOnAlphaBlending();
-#endif
-	m_Driver->ClearDepthBuffer();
-
 #if defined USE_RASTERIZER_STATE
 	m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
 #endif
 
-	//float rescale = 1;
+#if TUTORIAL_CHAP >= 60 && defined SCENE_BILLBOARDS && defined USE_SCENE_MANAGER && defined DX_ENGINE // BILLBOARD + FENCES + FIRE
+	UINT size = SceneManager::GetInstance()->transparentModelList.size();
+	if (size > 0) {
+		qsort(m_Trees, size, sizeof(Tree), BillSortCB);
+		for (UINT id = 0; id < size; id++) {
+			RenderModel(monitorWindow, m_Driver, m_Trees[id].ID + world_xml_objs, PASS_OPAC); //eq: objModel[id]->Render(m_Driver, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_OPAC);
+		}
+	}
+#endif
 
+#if defined USE_ALPHA_BLENDING
+	m_Driver->TurnOnAlphaBlending();
+#endif
+
+	m_Driver->ClearDepthBuffer();
+	// -------------------------
 #if defined USE_TITLE_BANNER 
-	if ((RENDER_PAGE >= 24 && m_titleModel) && (WOMA::game_state != GAME_MAP)) //Dont render on main map
+	if ((RENDER_PAGE >= 24 && m_titleModel) && (WOMA::game_state != GAME_MAP)) //Dont render title, on main map!
 	{
 		int X = ((SystemHandle->AppSettings->WINDOW_WIDTH - m_titleModel->SpriteTextureWidth) / 2);
 		int Y = 10;
@@ -607,9 +638,12 @@ if (AppTextClass) {
 
 #if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER
 	AppTextClass->SetRenderCount(SceneManager::GetInstance()->quadTree.totalVertexRendered,
-		SceneManager::GetInstance()->quadTree.totalRendered,
+		SystemHandle->m_Application->totalRendered,
 		(UINT)SystemHandle->xml_loader.theWorld.size());
 #endif
+#if _NOT DX_ENGINE_LEVEL >= 70
+	AppTextClass->SetBillRenderCount(0);
+#endif  
 }
 #endif
 

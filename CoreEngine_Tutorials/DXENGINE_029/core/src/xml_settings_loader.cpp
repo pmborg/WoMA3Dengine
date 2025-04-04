@@ -37,10 +37,12 @@
 
 XMLloader::XMLloader()
 {
+	CLASSLOADER();
 }
 
 XMLloader::~XMLloader()
 {
+	CLASSDELETE();
 }
 
 #if DX_ENGINE_LEVEL >= 20 // Initializing Engine: <world hVisibility="128" seaLevel="0" size="512" patchSize="256" skyTexture="">

@@ -170,6 +170,7 @@ namespace WOMA
 
 #if defined USE_LOG_MANAGER
 	ILogManager* logManager = NULL;	// Global Log Manager
+	ILogManager* logManager_bk = NULL;	// Global Log Manager
 #endif
 
 	UINT ENGINE_LEVEL_USED = 0;

@@ -57,7 +57,7 @@ PositionClass::PositionClass(UINT id)
 	m_lookDownSpeed  = 0.0f;
 }
 
-PositionClass::~PositionClass(){/*if (WOMA::logManager)*/ CLASSDELETE();}
+PositionClass::~PositionClass(){CLASSDELETE();}
 
 //The SetPosition and SetRotation functions are used for setting the position and rotation of the viewer/camera. 
 //These functions are generally used to initialize the position of the camera other than at the origin. 

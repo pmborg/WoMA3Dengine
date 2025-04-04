@@ -1,4 +1,5 @@
 // NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // -------------------------------------------------------------------------------------------------------------------------------------
 // Filename: WomaCube.cpp
 // --------------------------------------------------------------------------------------------
@@ -17,7 +18,8 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Define a Color and Texture Cube
 // --------------------------------------------------------------------------------------------
-
+//WomaIntegrityCheck = 1234567222;
+// 
 //-------------------+
 // Project Includes: |
 //-------------------+
@@ -123,6 +125,7 @@ CCube::CCube(int x_0, int y_0, int z_0)
 CCube::~CCube()
 {
 	Shutdown();
+	CLASSDELETE();
 }
 
 void CCube::Shutdown()

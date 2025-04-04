@@ -80,9 +80,7 @@ GLmodelClass::GLmodelClass(bool model3d)
 */
 }
 
-GLmodelClass::~GLmodelClass(){
-	CLASSDELETE();
-}
+GLmodelClass::~GLmodelClass(){CLASSDELETE();}
 
 #if defined USE_LIGHT_RAY
 void GLmodelClass::UpdateDynamic( std::vector<ModelColorVertexType>* lightVertexVector)

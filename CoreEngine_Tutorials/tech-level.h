@@ -129,22 +129,20 @@
 
 	#if defined DX12 //SELECT DXGI_API version:
 		//#define DX12_DXGI_API 3	//IDXGIFactory3
-		#define DX12_DXGI_API 4		//IDXGIFactory4
+		//#define DX12_DXGI_API 4		//IDXGIFactory4
 		//#define DX12_DXGI_API 5	//IDXGIFactory5
-		//#define DX12_DXGI_API 6	//IDXGIFactory6
+		#define DX12_DXGI_API 6	//IDXGIFactory6
 	#endif
+#endif	  
 	  
 //--------------------------------------------------------------------------------------------------------
 //WINDOWS_PLATFORM + LINUX_PLATFORM + ANDROID_PLATFORM
 //--------------------------------------------------------------------------------------------------------
-	#if LEVEL >= 11
+	#if DX_ENGINE_LEVEL >= 11
 		#undef CLIENT_SCENE_SETUP // For fps benchmark only!
 	#endif
 
-	#if LEVEL >= 19 && !defined WOMAENGINE_BASIC
-	//#if _DEBUG
-	//	#undef USE_SYSTEM_CHECK // Just to make it faster in DEBUG
-	//#endif
+	#if DX_ENGINE_LEVEL >= 19 && !defined WOMAENGINE_BASIC
 		#if defined WINDOWS_PLATFORM
 		#define CLIENT_SCENE_SETUP
 		#endif
@@ -165,7 +163,6 @@
 	#if DX_ENGINE_LEVEL >= 21 && !defined WOMAENGINE_BASIC
 		//#define dx12_upload_old_way	//DX12 upload method
 		
-
 		#if defined WINDOWS_PLATFORM && defined DX12
 		#define USE_RASTERIZER_STATE //Mandatory for DX12
 		#endif
@@ -290,14 +287,13 @@
 	//--------------------------------------------------------------------------------------------------------------------------
 	#if DX_ENGINE_LEVEL >= 30 // WORLD.XML: load "COLOR" .OBJ
 		#define NO_SCENE_IMAGE_LOAD
-		#undef USE_CUBE
+		//#undef USE_CUBE
 		#undef SCENE_COLOR
 		#undef SCENE_TEXTURE
 		#undef SCENE_TEXTURE_LIGHT
 		#undef USE_WIN32_SOUND_MANAGER
 		#undef USE_WIN32_PLAY_MUSIC
 		#undef INTRO_DEMO
-
 		#define SUN_LIGHT_DEMO_ANIMATION true //back
 		#define USE_SCENE_MANAGER	//30-
 		#define USE_FRUSTRUM		//30-
@@ -334,7 +330,6 @@
 
 	#if DX_ENGINE_LEVEL >= 37	//37-
 		//#define USE_MAIN_THREAD		//MAIN LOOP is a THREAD
-		//#define USE_MAIN_THREAD		// ON/OFF (Note: Dont work on openGL, NOTE!!! This is buggy with maximize!!! Dont use for now
 		//#define USE_LOADING_THREADS	//Use Thread to load Graphics (Bug! will launch multiple!?)
 	#endif
 
@@ -344,7 +339,7 @@
 
 	#if DX_ENGINE_LEVEL >= 39	
 		#undef SAVEW3D
-		#define LOADW3D //39-
+		#define LOADW3D
 		#undef OPENGL3
 	#endif
 
@@ -376,7 +371,7 @@
 		#define USE_REAL_SUNLIGHT_DIRECTION	//Static light
 		#undef USE_LIGHT_RAY				//Static light
 			
-		#define SCENE_GENERATEDUNDERWATER	//NEW
+		#define SCENE_GENERATEDUNDERWATER
 		#undef SCENE_TERRAIN_COLLISION
 	#endif
 
@@ -446,7 +441,6 @@
 	#endif
 	#if DX_ENGINE_LEVEL >= 63
 		#define USE_MINI_MAP
-		//#undef USE_STATUSBAR //DEBUG!
 	#endif
 	#if DX_ENGINE_LEVEL >= 64
 		#undef USE_CUBE
@@ -456,7 +450,25 @@
 		#define EXTRA_INFO
 	#endif
 	
-	#if DX_ENGINE_LEVEL >= 67
+	//--------------------------------------------------------------------------------------------------------------------------
+	#if DX_ENGINE_LEVEL >= 70
+		#define TUTORIAL_CHAP 60
+		//#define BILLBOARD_FOR_TREES_AND_FLOWERS
+		#define SCENE_BILLBOARDS
+	#endif
+	#if DX_ENGINE_LEVEL >= 71
+		#define TUTORIAL_CHAP 61
+		#define BILLBOARD_FOR_FENCES
+	#endif
+	#if DX_ENGINE_LEVEL >= 72
+		#define TUTORIAL_CHAP 62
+		#define BILLBOARD_FOR_FIRE
+	#endif
+	#if DX_ENGINE_LEVEL >= 73
+		#define TUTORIAL_CHAP 63
+		#define BILLBOARD_FOR_WINDY_GRASS
+	#endif																																															//--------------------------------------------------------------------------------------------------------------------------							 
+	#if DX_ENGINE_LEVEL >= 77
 		#define LOADMD5		// LOADMD5 & FBX (Animated Characters)
 		#define USE_ASSIMP
 	#endif
@@ -475,5 +487,5 @@
 	#if defined RELEASE && DX_ENGINE_LEVEL < 29 && defined _MSC_VER
 	#error "WOMA COMPILATION ERROR: RELEASE bin is not Supported before DX_ENGINE_LEVEL 29"
 	#endif
-#endif
+
 	

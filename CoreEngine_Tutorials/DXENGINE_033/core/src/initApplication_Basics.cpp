@@ -17,12 +17,14 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567222;
 
 #include "main.h"
 #include "ApplicationClass.h"
 #include "OSengine.h"
 #include "Math3D.h"
 #include "mem_leak.h"
+#include "log.h"
 #include <cinttypes>
 
 #pragma warning(push)
@@ -590,55 +592,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	initSky(size);
 #endif
 
-	//-----------------------------------------------------------------------------------------------------------------
-	// Create "model OBJECTS" from loaded "XML OBJECTS" in file WORLD.XML
-	//-----------------------------------------------------------------------------------------------------------------
-#if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined USE_FRUSTRUM
-
-	// Load 3D Objects: convert XML "objects" -- Load OBJ or W3D --> VirtualModelClass:
-	UINT len = (UINT)SystemHandle->xml_loader.theWorld.size();
-	for (UINT i = 0; i < len; i++)
-	{
-		objModel.push_back(NULL);
-#if NOTES
-		//compoundTreeLoadOrder compound_obj;
-		//compound_obj.compoundTreeId = i;
-		//compound_obj.order = 0;
-		//compoundTreeLoadingOrder.push_back(compound_obj);
-#endif
-		CREATE_MODEL_IF_NOT_EXCEPTION(objModel[i], I_AM_3D, SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows);
-		objModel[i]->m_ObjId = i; //SYNC-ID: objModel[i] with: xml_loader.theWorld[i]
-
-		TCHAR wfilename[MAX_STR_LEN] = { 0 }; atow(wfilename, SystemHandle->xml_loader.theWorld[i].filename, MAX_STR_LEN);
-
-		if (!(objModel[i]->LoadModel(wfilename, Driver, 
-			(SHADER_TYPE)SystemHandle->xml_loader.theWorld[i].shader,
-			wfilename,
-			SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows,
-			SystemHandle->xml_loader.theWorld[i].WOMA_object.instances)))
-		{
-			WomaMessageBox(wfilename, TEXT("Error Loading: "), FALSE); return false;
-		}
-
-		if (WOMA::game_state == GAME_STOP)
-			return false;
-		else
-			RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);	// Invoke: Window PAINT before end.
-
-		WOMA::sceneManager->addModel(WOMA::sceneManager->RootNode, objModel[i]);			// Add node to nodesList: RootNode
-
-	#if defined USE_LOADING_THREADS || DX_ENGINE_LEVEL >= 37
-		WOMA::num_loading_objects++;
-	#endif
-	}
-#endif
-
-	//ANIMATED SKELETON MESHs //////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	//RENDER ASTROs ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	//SHADOWMAP //////////////////////////////////////////////////////////////////////////////////////////////////////
-
 	//TERRAINs /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//0
 #if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN		// UNDER WATER: Terrain
@@ -664,13 +617,72 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	loadedTerrain[3]->initMainTopoTerrainDemo(3);
 #endif
 
-	//NETWORK //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#if defined SAVEW3D
-	WomaMessageBox(TEXT("Conversion from OBJ to W3D, ended."), TEXT("SAVEW3D"));
-	WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP; //Publish_Quit_Message();
-	return false;
+	world_xml_objs = SystemHandle->xml_loader.theWorld.size();
+	//-----------------------------------------------------------------------------------------	
+	// Create Bill Board for Trees / Flowers
+	//-----------------------------------------------------------------------------------------	
+#if TUTORIAL_CHAP >= 60 && defined (SCENE_MAIN_TOPO_TERRAIN) && defined (SCENE_BILLBOARDS) // BILLBOARD
+	IF_NOT_RETURN_FALSE(m_billTreeClass = NEW BillClass);
+	if (!m_billTreeClass->Initialize(loadedTerrain[2]->m_terrainWidth/2, loadedTerrain[2]->m_terrainHeight/2, false))
+	{
+		WomaMessageBox(TEXT("Could not initialize the billboardClass"), TEXT("Create Bill Board for Trees / Flowers"));
+	}
 #endif
+
+	//-----------------------------------------------------------------------------------------------------------------
+	// Create "model OBJECTS" from loaded "XML OBJECTS" in file WORLD.XML
+	//-----------------------------------------------------------------------------------------------------------------
+
+#if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined USE_FRUSTRUM
+
+	// Load 3D Objects: convert XML "objects" -- Load OBJ or W3D --> VirtualModelClass:
+	UINT len = (UINT)SystemHandle->xml_loader.theWorld.size();
+	int objModel_size = objModel.size();
+	for (UINT i = objModel_size; i < objModel_size+len; i++)
+	{
+		objModel.push_back(NULL);
+#if NOTES
+		//compoundTreeLoadOrder compound_obj;
+		//compound_obj.compoundTreeId = i;
+		//compound_obj.order = 0;
+		//compoundTreeLoadingOrder.push_back(compound_obj);
+#endif
+		CREATE_MODEL_IF_NOT_EXCEPTION(objModel[i], I_AM_3D, SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows);
+		objModel[i]->m_ObjId = i; //SYNC-ID: objModel[i] with: xml_loader.theWorld[i]
+
+		TCHAR wfilename[MAX_STR_LEN] = { 0 }; atow(wfilename, SystemHandle->xml_loader.theWorld[i].filename, MAX_STR_LEN);
+
+		if (!(objModel[i]->LoadModel(wfilename, Driver, 
+			(SHADER_TYPE)SystemHandle->xml_loader.theWorld[i].shader,
+			wfilename,
+			SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows,
+			SystemHandle->xml_loader.theWorld[i].WOMA_object.instances)))
+		{
+			WomaMessageBox(wfilename, TEXT("Error Loading: "), FALSE); return false;
+		}
+		{
+		if (WOMA::game_state == GAME_STOP)
+			return false;
+		else
+			RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);	// Invoke: Window PAINT before end.
+		}
+
+		WOMA::sceneManager->addModel(WOMA::sceneManager->RootNode, objModel[i]);			// Add node to nodesList: RootNode
+
+#if defined USE_LOADING_THREADS || DX_ENGINE_LEVEL >= 37
+		WOMA::num_loading_objects++;
+#endif
+	}
+#endif
+
+	//ANIMATED SKELETON MESHs //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	//RENDER ASTROs ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	//SHADOWMAP //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
 
 	//Finally, launch dynamic Load Compound/OBJ Thread /////////////////////////////////////////////////////////////////////////////////
 #if defined (CHECK_COMPOUND_COLISION) && defined (SCENE_COMPOUND) //TUTORIAL_CHAP >= 55 && 
@@ -689,6 +701,14 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	if (!SetThreadPriority(threadCompoundLoaderHandle, THREAD_PRIORITY_IDLE/*THREAD_PRIORITY_LOWEST*//*THREAD_PRIORITY_BELOW_NORMAL*/)) { return false; }
 #endif
 #endif
+
+#if defined SAVEW3D
+	WomaMessageBox(TEXT("Conversion from OBJ to W3D, ended."), TEXT("SAVEW3D"));
+	WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP; //Publish_Quit_Message();
+	return false;
+#endif
+
+	//NETWORK //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	return true;
 }

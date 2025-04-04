@@ -33,27 +33,27 @@
 #endif											// \\wsl.localhost\Ubuntu\home\pedro\projects\LinuxWoma\bin\x64\Debug\report.txt
 //--------------------------------------------------------------------------------------------------------
 
-#if LEVEL == 0
+#if CORE_ENGINE_LEVEL == 0
 	#define DEMO_TITLE TEXT("00: WOMA Hello World!")
 #endif
 
-#if LEVEL == 1
+#if CORE_ENGINE_LEVEL == 1
 	#define DEMO_TITLE TEXT("01: Write report.txt file")
 #endif
-#if LEVEL == 2
+#if CORE_ENGINE_LEVEL == 2
 	#define DEMO_TITLE TEXT("02: Adding the MAIN WINDOW! (basic static version)")
 #endif
-#if LEVEL == 3
+#if CORE_ENGINE_LEVEL == 3
 	#define DEMO_TITLE TEXT("03: Testing MINI FILE DUMPER: C:\\Users\\Public\\Documents\\<user>\\<core-level>\\<dx-level>\\_WoMA3Dengine_<DATE>.dmp")
 #endif
-#if LEVEL >= 4 
-	#if LEVEL == 4 
+#if CORE_ENGINE_LEVEL >= 4 
+	#if CORE_ENGINE_LEVEL == 4 
 	#define DEMO_TITLE TEXT("04: From now on: PRESS [F1] for: [SYSTEM MANAGER DISPLAY] and added FPS(title bar)")
 	#endif
 	#define MIN_WIN32_FONT_X 22
 	#define MIN_WIN32_FONT_Y 25
 #endif
-#if LEVEL == 5
+#if CORE_ENGINE_LEVEL == 5
   #if defined LINUX_PLATFORM
 	#define DEMO_ROOT_DIR TEXT("/projects/LinuxWoma005/CoreEngine_Tutorials/CoreEngine_005_PAINT_SETTINGS_XML")
   #endif
@@ -65,7 +65,7 @@
 #endif
 	#define DEMO_TITLE TEXT("05: From now on: PRESS [F6] for: [GAME SETUP] and added FILE: C:\\Users\\Public\\Documents\\<user>\\<core-level>\\<dx-level>\\settings.xml")
 #endif
-#if LEVEL == 6
+#if CORE_ENGINE_LEVEL == 6
   #if defined LINUX_PLATFORM
 	#define DEMO_ROOT_DIR TEXT("/projects/LinuxWoma006/CoreEngine_Tutorials/CoreEngine_006_PACKMANAGER_IDEA_CPU_BENCHMARK")
   #endif
@@ -77,7 +77,7 @@
 	static_assert(false, "This Chap is for windows only!");
 	#endif
 #endif
-#if LEVEL == 7
+#if CORE_ENGINE_LEVEL == 7
   #if defined LINUX_PLATFORM
 	#define DEMO_ROOT_DIR TEXT("/projects/LinuxWoma007/CoreEngine_Tutorials/CoreEngine_007_PAINT_REALTIMECELESTIAL_ASTROCLASS")
   #endif
@@ -87,11 +87,11 @@
 	#define DEMO_TITLE TEXT("07: Loading a files from engine.pck and Press [F2] for RealTime Celestial Positions of Sun and Moon accordingly with user Location")
 	#define BACKGROUND_IMAGE TEXT("engine/data/basics/logotipo_small_backgroundV2.bmp")
 #endif
-#if LEVEL >= 8
+#if CORE_ENGINE_LEVEL >= 8
   #if defined LINUX_PLATFORM
 	#define DEMO_ROOT_DIR TEXT("/projects/LinuxWoma008/CoreEngine_Tutorials/CoreEngine_008_PAINT_REALTIME_GPS_MAP_LOCATION")
   #endif
-	#if LEVEL == 8
+	#if CORE_ENGINE_LEVEL == 8
 #if !defined DEMO_LEVEL
 	#define SETTINGS_FILE		TEXT("settings_008.xml")
 #endif
@@ -101,7 +101,7 @@
 	#define POSITION_TARGET_IMAGE TEXT("engine/data/basics/target.bmp")
 	#define WORLD_IP_TARGET_IMAGE TEXT("engine/data/original/Earth_Diffuse.bmp")
 #endif
-#if LEVEL == 9 //saveConfigSettings
+#if CORE_ENGINE_LEVEL == 9 //saveConfigSettings
   #if defined LINUX_PLATFORM
 	#define DEMO_ROOT_DIR TEXT("/projects/LinuxWoma009/CoreEngine_Tutorials/CoreEngine_009_PAINT_METAR_WEATHER_REALTIME")
   #endif
@@ -111,58 +111,58 @@
 	#define DEMO_TITLE TEXT("09: From now on: PRESS [F4] for: [REAL Wheather] at user location.")
 #endif
 
-#if LEVEL == 10
+#if DX_ENGINE_LEVEL == 10
 #if !defined DEMO_LEVEL
 	#define SETTINGS_FILE		TEXT("settings_010.xml")
 #endif
 	//#define DEMO_TITLE		TEXT("10: CLEAR SCREEN")
 	#define DEMO_TITLE TEXT("10: PRESS [F6] for SETUP and change Driver: OPENGL, DX9, DX11, DX12: Initiate the 3D Graphic Drivers and attache the swapchain to mainwindow.")
 #endif
-#if LEVEL >= 10
+#if DX_ENGINE_LEVEL >= 10
 #define USE_THIS_GRAPHIC_CARD_ADAPTER 0
 #endif
 
 //--------------------------------------------------------------------------------------------------------
 //WINDOWS_PLATFORM + LINUX_PLATFORM + ANDROID_PLATFORM
 //--------------------------------------------------------------------------------------------------------
-#if LEVEL == 11
+#if DX_ENGINE_LEVEL == 11
 #if !defined DEMO_LEVEL
 	#define SETTINGS_FILE		TEXT("settings_011.xml")
 #endif
 	#define DEMO_TITLE TEXT("11: WINDOWS_PLATFORM + LINUX_PLATFORM + ANDROID_PLATFORM")
 #endif
 
-#if LEVEL == 19
+#if DX_ENGINE_LEVEL == 19
 	#define DEMO_TITLE TEXT("19: OPENGL, DX9, DX11, DX12: ALT ENTER")
 #if !defined DEMO_LEVEL
 	#define SETTINGS_FILE		TEXT("settings_019.xml")
 #endif
 #endif
 
-#if LEVEL == 20
+#if DX_ENGINE_LEVEL == 20
 #if !defined DEMO_LEVEL
 	#define SETTINGS_FILE		TEXT("settings_020.xml")
 #endif
 	#define DEMO_TITLE TEXT("20: OPENGL, DX9, DX11, DX12: Allow mainwindow resizing. + ALT ENTER")
 #endif
 
-#if LEVEL == 21
+#if DX_ENGINE_LEVEL == 21
 #if !defined DEMO_LEVEL
 	#define SETTINGS_FILE		TEXT("settings_021.xml")
 #endif
 	#define DEMO_TITLE TEXT("21: The Basic triangle and squar using vertexes with indexes. HLSL: The COLOR shader")
 #endif
-#if LEVEL >= 21 && LEVEL < 30
+#if DX_ENGINE_LEVEL >= 21 && LEVEL < 30
 	#define WORLD_XML TEXT("world.xml")
 #endif
 
-#if LEVEL == 22
+#if DX_ENGINE_LEVEL == 22
 #if !defined DEMO_LEVEL
 	#define SETTINGS_FILE		TEXT("settings_022.xml")
 #endif
 	#define DEMO_TITLE TEXT("22: Loading and Rendering Textures. HLSL: The TEXTURE shader")
 #endif
-#if LEVEL >= 22
+#if DX_ENGINE_LEVEL >= 22
 	//22:
 	#define LEVEL22_DEMO_TEXTURE TEXT("engine/data/basics/seafloor.bmp")
 
@@ -175,64 +175,64 @@
 		#define LEVEL22_IMAGE_tga TEXT("engine/data/basics/Earth_Diffuse.tga")
 	#endif
 #endif
-#if LEVEL == 23
+#if DX_ENGINE_LEVEL == 23
 #if !defined DEMO_LEVEL
 	#define SETTINGS_FILE		TEXT("settings_023.xml")
 #endif
 	#define DEMO_TITLE TEXT("23: Adding the first light, 'Diffuse Lighting'. HLSL: The LIGHT shader")
 #endif
-#if LEVEL >= 23
+#if DX_ENGINE_LEVEL >= 23
 	#define LEVEL22_DEMO_TEXTURE TEXT("engine/data/basics/seafloor.png")
 #endif
-#if LEVEL == 24
+#if DX_ENGINE_LEVEL == 24
 #if !defined DEMO_LEVEL
 	#define SETTINGS_FILE		TEXT("settings_024.xml")
 #endif
 	#define DEMO_TITLE TEXT("24: Adding Orthogonal Projection: Used on 2D Orthogonal Sprites")
 #endif
-#if LEVEL >= 24
+#if DX_ENGINE_LEVEL >= 24
 	#if defined ANDROID_PLATFORM
 		#define DEMO_TITLE_TEXTURE TEXT("engine/data/TITLE/WOMA_ENGINE-BIG.png")
 	#else
 		#define DEMO_TITLE_TEXTURE TEXT("engine/data/TITLE/WOMA_ENGINE.png")
 	#endif
 #endif
-#if LEVEL == 25
+#if DX_ENGINE_LEVEL == 25
 #if !defined DEMO_LEVEL
 	#define SETTINGS_FILE		TEXT("settings_025.xml")
 #endif
 	#define DEMO_TITLE TEXT("25: The 2D FONTS DRIVER")
 #endif
-#if LEVEL == 26
+#if DX_ENGINE_LEVEL == 26
 #if !defined DEMO_LEVEL
 	#define SETTINGS_FILE		TEXT("settings_026.xml")
 #endif
 	#define DEMO_TITLE TEXT("The first 3D SPHEREs")
 #endif
-#if LEVEL >= 26
+#if DX_ENGINE_LEVEL >= 26
 	#define SKY_DOME_DAY_TEXTURE TEXT("engine/data/sky/NEW_SKY_DOME.jpg")
 	#define SKY_DOME_NIGHT_TEXTURE TEXT("engine/data/sky/NEW_SKY_NIGHT.jpg")
 #endif
-#if LEVEL == 27
+#if DX_ENGINE_LEVEL == 27
 #if !defined DEMO_LEVEL
 	#define SETTINGS_FILE		TEXT("settings_027.xml")
 #endif
 	#define DEMO_TITLE TEXT("The rastertek fonts on DX9, DX11, DX12 and OPENGL")
 #endif
-#if LEVEL >= 27
+#if DX_ENGINE_LEVEL >= 27
 	#define FONT_DATA_FILE TEXT("engine/data/fonts/008fontdata.txt")
 	#define FONT_DATA_TEXTURE TEXT("engine/data/fonts/008font.png")
 #endif
-#if LEVEL == 28
+#if DX_ENGINE_LEVEL == 28
 #if !defined DEMO_LEVEL
 	#define SETTINGS_FILE		TEXT("settings_028.xml")
 #endif
 	#define DEMO_TITLE TEXT("The DX direct input, the Sky Camera and the Sphere Skydome")
 	#define WORLD_XML TEXT("world_28.xml")
 #endif
-#if LEVEL >= 29
-	#if LEVEL == 29
-	#if (!defined DEMO_LEVEL) || LEVEL == 29
+#if DX_ENGINE_LEVEL >= 29
+	#if DX_ENGINE_LEVEL == 29
+	#if (!defined DEMO_LEVEL) || DX_ENGINE_LEVEL == 29
 		#if defined LINUX_PLATFORM
 			#define SETTINGS_FILE		TEXT("settings.xml")
 		#else
@@ -271,74 +271,74 @@
 	#endif
 #endif
 
-#if LEVEL == 30
+#if DX_ENGINE_LEVEL == 30
 #if !defined DEMO_LEVEL
 	#define SETTINGS_FILE		TEXT("settings_030.xml")
 #endif
 	#define DEMO_TITLE TEXT("WORLD.XML: load OBJ 3D file format, using COLOR shader")
 	#define WORLD_XML TEXT("world_30.xml")
 #endif
-#if LEVEL >= 30
+#if DX_ENGINE_LEVEL >= 30
 	#define SETTINGS_FILE		TEXT("settings.xml")
 #endif
-#if LEVEL == 31
+#if DX_ENGINE_LEVEL == 31
 	#define DEMO_TITLE TEXT("WORLD.XML: load OBJ 3D file format, with MULTIPLE TEXTURES, using TEXTURE shader")
 	#define WORLD_XML TEXT("world_31.xml")
 #endif
-#if LEVEL == 32
+#if DX_ENGINE_LEVEL == 32
 	#define DEMO_TITLE TEXT("WORLD.XML: load OBJ 3D file format, the first advanced object, using LIGHT shader")
 	#define WORLD_XML TEXT("world_32.xml")
 #endif
-#if LEVEL == 33
+#if DX_ENGINE_LEVEL == 33
 	#define DEMO_TITLE TEXT("WORLD.XML: load OBJ 3D file format, the compond, using transparent textures ALFA MAP and ALFA COLOR")
 	#define WORLD_XML TEXT("world_33.xml")
 #endif
-#if LEVEL == 34
+#if DX_ENGINE_LEVEL == 34
 	#define DEMO_TITLE TEXT("WORLD.XML: load OBJ 3D file format, with SPECULAR and SHININESS")
 	#define WORLD_XML TEXT("world_34.xml")
 #endif
-#if LEVEL == 35
+#if DX_ENGINE_LEVEL == 35
 	#define DEMO_TITLE TEXT("WORLD.XML: load OBJ 3D file format, with BUMP MAP")
 	#define WORLD_XML TEXT("world_35.xml")
 #endif
-#if LEVEL == 36
+#if DX_ENGINE_LEVEL == 36
 	#define DEMO_TITLE TEXT("WORLD.XML: load OBJ 3D file format, render a SHADOW MAP")
 	#define WORLD_XML TEXT("world_36.xml")
 #endif
-#if LEVEL == 37
+#if DX_ENGINE_LEVEL == 37
 	#define DEMO_TITLE TEXT("WORLD.XML: load OBJ 3D file format, render chess board pieces, adding MAIN THREAD and the LOADER THREAD")
 	#define WORLD_XML TEXT("world_37.xml")
 #endif
-#if LEVEL == 38
+#if DX_ENGINE_LEVEL == 38
 	#define DEMO_TITLE TEXT("WORLD.XML: load OBJ 3D file format, save to W3D Woma 3D fast file FORMAT")
 	#define WORLD_XML TEXT("world_38.xml")
 #endif
-#if LEVEL == 39
+#if DX_ENGINE_LEVEL == 39
 	#define DEMO_TITLE TEXT("WORLD.XML: load W3D (the Woma 3D file format) files up to 30x faster than OBJ files in DX LEVEl38")
 	#define WORLD_XML TEXT("world_39.xml")
 #endif
-#if LEVEL == 40
+#if DX_ENGINE_LEVEL == 40
 	#define DEMO_TITLE TEXT("WORLD.XML: load W3D and use INSTANCES to clone objects using GPU")
 	#define WORLD_XML TEXT("world_40.xml")
 #endif
-#if LEVEL == 41
+#if DX_ENGINE_LEVEL == 41
 	#define DEMO_TITLE TEXT("WORLD.XML: load W3D and use SHADOW INSTANCES")
 	#define WORLD_XML TEXT("world_41.xml")
 #endif
-#if LEVEL == 42
+#if DX_ENGINE_LEVEL == 42
 	#define DEMO_TITLE TEXT("WORLD.XML: load W3D and use SHADOW INSTANCES with ROTATION per instance")
 	#define WORLD_XML TEXT("world_42.xml")
 #endif
-#if LEVEL >= 49 
-	#if LEVEL == 49
+#if DX_ENGINE_LEVEL >= 49 
+	#if DX_ENGINE_LEVEL == 49
 	#define DEMO_TITLE TEXT("49:TERRAIN: Generate under water terrain.")
 	#define WORLD_XML TEXT("world_49.xml")
 	#endif
 	//49: Terrain[0]
 	#define OCEANFLOOR_TEXTURE TEXT("engine/data/terrain/OceanFloor.jpg")
 #endif
-#if LEVEL >= 50
-	#if LEVEL == 50
+#if DX_ENGINE_LEVEL >= 50
+	#if DX_ENGINE_LEVEL == 50
 	#define DEMO_TITLE TEXT("50:TERRAIN: the under water terrain.")
 	#define WORLD_XML TEXT("world_50.xml")
 	#endif
@@ -349,28 +349,28 @@
 	#define TERRAIN_LEVEL50_HMAP TEXT("engine/data/Terrain/011map1_heightmap01_v7.bmp")
 	#define TERRAIN_LEVEL50_TEXTURE TEXT("engine/data/scene30/grassTexture.jpg")
 #endif
-#if LEVEL == 51
+#if DX_ENGINE_LEVEL == 51
 	#define DEMO_TITLE TEXT("51:TERRAIN: With fog")
 	#define WORLD_XML TEXT("world_51.xml")
 #endif
-#if LEVEL == 52
+#if DX_ENGINE_LEVEL == 52
 	#define DEMO_TITLE TEXT("52:TERRAIN: With Light Shader + Add Normals + Add Index(s)")
 	#define WORLD_XML TEXT("world_52.xml")
 #endif
-#if LEVEL >= 53
-	#if LEVEL == 53
+#if DX_ENGINE_LEVEL >= 53
+	#if DX_ENGINE_LEVEL == 53
 	#define DEMO_TITLE TEXT("53:TERRAIN: With extra color terrain (with terrain collision)")
 	#define WORLD_XML TEXT("world_53.xml")
 	#endif
 	#define TERRAIN_LEVEL53_COLOR_MAP XMFLOAT3 MAP_COLOR(10,35,10);
 #endif
-#if LEVEL == 54
+#if DX_ENGINE_LEVEL == 54
 	#define DEMO_TITLE TEXT("54:TERRAIN: Water waves (with terrain collision)")
 	#define WORLD_XML TEXT("world_54.xml")
 #endif
-#if LEVEL >= 55
+#if DX_ENGINE_LEVEL >= 55
 	#define SETTINGS_FILE		TEXT("settings.xml")
-	#if LEVEL == 55
+	#if DX_ENGINE_LEVEL == 55
 	#define DEMO_TITLE TEXT("55:TERRAIN: 256x256 with Slope Texture Shader")
 	#define WORLD_XML TEXT("world_55.xml")
 	#endif
@@ -395,32 +395,33 @@
 #if DX_ENGINE_LEVEL >= 59 //TUTORIAL_CHAP 23 - TERRAIN Text. + Alpha + Bump + Light Mapping ... 023terrain_fog_slope_detail_mapping.hlsl
 #endif
 
-#if LEVEL == 60
+#if DX_ENGINE_LEVEL == 60
 	#define DEMO_TITLE TEXT("60: TERRAIN: 256x256 multi-layer")
 	#define WORLD_XML TEXT("world_60.xml")
 #endif
 
-#if LEVEL == 61
+#if DX_ENGINE_LEVEL == 61
 	#define DEMO_TITLE TEXT("61: TERRAIN: 512x512 advanced multi-layer")
 	#define WORLD_XML TEXT("world_61.xml")
 #endif
 
-#if LEVEL == 62
+#if DX_ENGINE_LEVEL == 62
 	#define DEMO_TITLE TEXT("62: The MAIN MAP key:M")
 	#define WORLD_XML TEXT("world_62.xml")
 #endif
-#if LEVEL >= 62
+#if DX_ENGINE_LEVEL >= 62
 	#define DEMO_MAINMMAP_TEXTURE TEXT("engine/data/scene62MAP/mapFramev4.bmp")
 #endif
-#if LEVEL == 63
+#if DX_ENGINE_LEVEL == 63
 	#define DEMO_TITLE TEXT("63: The MINI-MAP")
 	#define WORLD_XML TEXT("world_63.xml")
 #endif
-#if LEVEL >= 63
+#if DX_ENGINE_LEVEL >= 63
 	#define DEMO_MINIMMAP_TEXTURE TEXT("engine/data/scene63MAP/015MiniMap.png")
 	#define DEMO_MINIMMAP_BORDER_TEXTURE TEXT("engine/data/scene63MAP/015MiniMap.png")
 	#define DEMO_MINIMMAP_ARROW_TEXTURE TEXT("engine/data/scene63MAP/015ArrowV2.png")
 #endif
+//----------------------------------------------------------------------------------------------------------------------------------								
 #if DX_ENGINE_LEVEL == 64
 	#define DEMO_TITLE TEXT("64: Add a model with 2 pass and add a 3D static animated model")
 	#define WORLD_XML TEXT("world_64.xml")
@@ -429,3 +430,43 @@
 	#define DEMO_TITLE TEXT("65: Walking on Terrain.")
 	#define WORLD_XML TEXT("world_65.xml")
 #endif
+
+//----------------------------------------------------------------------------------------------------------------------------------
+#if DX_ENGINE_LEVEL == 70
+	#define DEMO_TITLE TEXT("70: BILLBOARD for Trees / Flowers, (LIGHT and Fog)")
+	#define WORLD_XML TEXT("world_70.xml")
+	#define BILLBOARD_MODEL TEXT("engine/data/scene70Bill/060square.obj")
+	//#define BILLBOARD_MODEL TEXT("engine/data/scene30/squareTexture.obj")
+  #if DX_ENGINE_LEVEL >= 70
+	#define BILL_TREE_0 TEXT("engine/data/scene70Bill/060SH10_1bill.tif")	// 0 TREEs
+	#define BILL_TREE_1 TEXT("engine/data/scene70Bill/060SH10_2bill.tif")	// 1
+	#define BILL_TREE_2 TEXT("engine/data/scene70Bill/060SH10_3bill.tif")	// 2
+	#define BILL_TREE_3 TEXT("engine/data/scene70Bill/060EU03a_bill.tif")	// 3
+	#define BILL_TREE_4 TEXT("engine/data/scene70Bill/060EU03m_bill.tif")	// 4
+	#define BILL_TREE_5 TEXT("engine/data/scene70Bill/060EU03y_bill.tif")	// 5
+
+	#define BILL_FLOWER_0 TEXT("engine/data/scene70Bill/060rosa.png") 		// 6	//FLOWERs
+	#define BILL_FLOWER_1 TEXT("engine/data/scene70Bill/060tulia.png") 		// 7
+	#define BILL_FLOWER_2 TEXT("engine/data/scene70Bill/060flor1.png") 		// 8
+	#define BILL_FLOWER_3 TEXT("engine/data/scene70Bill/060girasol.png") 	// 9 
+	#define BILL_FLOWER_4 TEXT("engine/data/scene70Bill/060flor2.png") 		//10
+
+	#define BILL_BUSH_0 TEXT("engine/data/scene70Bill/408742.png") 			//11
+	#define BILL_BUSH_1 TEXT("engine/data/scene70Bill/408742B.png") 		//12
+	#define BILL_BUSH_2 TEXT("engine/data/scene70Bill/408742C.png") 		//13
+	#define BILL_BUSH_3 TEXT("engine/data/scene70Bill/408742D.png") 		//14
+	#define BILL_BUSH_4 TEXT("engine/data/scene70Bill/408742E.png") 		//15
+  #endif
+#endif
+#if DX_ENGINE_LEVEL == 71
+	#define DEMO_TITLE TEXT("71: BILLBOARD for FENCES, (LIGHT and Fog)")
+	#define WORLD_XML TEXT("world_71.xml")
+#endif
+#if DX_ENGINE_LEVEL == 72
+	#define DEMO_TITLE TEXT("72: FIRE")
+	#define WORLD_XML TEXT("world_72.xml")
+#endif
+#if DX_ENGINE_LEVEL == 73
+	#define DEMO_TITLE TEXT("73: WINDY GRASS")
+	#define WORLD_XML TEXT("world_73.xml")
+#endif																																	

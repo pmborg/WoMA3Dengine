@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: xml_loader.h
 // --------------------------------------------------------------------------------------------
@@ -148,15 +149,17 @@ struct WOMA_OBJECT
 		BOOL castShadows_, BOOL renderShadows_, BOOL modelHASlight_, UINT instances_)
 	{
 		shaderType = shader;
-		castShadows = castShadows_; renderShadows = renderShadows_; modelHASlight = modelHASlight_;
+		castShadows = castShadows_; 
+		renderShadows = renderShadows_; 
+		modelHASlight = modelHASlight_;
 		instances = instances_;
 	}
 
-	SHADER_TYPE shaderType;
-	BOOL		castShadows;
-	BOOL		renderShadows;
-	BOOL		modelHASlight;
-	UINT		instances;
+	SHADER_TYPE shaderType= SHADER_AUTO;
+	BOOL		castShadows=false;
+	BOOL		renderShadows = false;
+	BOOL		modelHASlight = false;
+	UINT		instances=0;
 };
 
 //<world>

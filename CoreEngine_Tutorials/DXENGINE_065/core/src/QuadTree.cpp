@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: QuadTree.cpp
 // --------------------------------------------------------------------------------------------
@@ -38,7 +39,7 @@ QuadTree::QuadTree()
 	frustum = NULL;
 
 #ifdef _DEBUG
-	totalLoaded = totalRendered = totalVertexRendered = 0;
+	totalLoaded = totalVertexRendered = 0;
 #endif
 }
 
@@ -159,7 +160,7 @@ void QuadTree::AddSceneNode(NodeType* quadNode, SceneNode* node)
 void QuadTree::RenderNode(NodeType* node)
 {
 	// Check to see if the node can be viewed, height doesn't matter in a quad tree.
-	//result = frustum->CheckCube(node->positionX, 0.0f, node->positionZ, node->width/2);   // More accurated but slower
+	//bool result = frustum->CheckCube(node->positionX, 0.0f, node->positionZ, node->width/2);   // More accurated but slower
 	bool result = frustum->CheckSphere(node->positionX, 0.0f, node->positionZ, (node->width/2)*1.4142135623730950488016887242097f );   // Faster
 	if (!result) return;
 
@@ -182,10 +183,10 @@ void QuadTree::RenderNode(NodeType* node)
 	{
 		VirtualModelClass* model = node->sceneNodes[i]->nodeState.model;
 
-		SceneManager::GetInstance()->opacModelList.push_back(model);
+			SceneManager::GetInstance()->opacModelList.push_back(model);
 
 	#ifdef _DEBUG
-		totalRendered++;
+		
 		totalVertexRendered += node->sceneNodes[i]->nodeState.model->m_vertexCount;
 	#endif
 	}

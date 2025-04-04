@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: initApplication_Basics.cpp
 // --------------------------------------------------------------------------------------------
@@ -16,12 +17,14 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567222;
 
 #include "main.h"
 #include "ApplicationClass.h"
 #include "OSengine.h"
 #include "Math3D.h"
 #include "mem_leak.h"
+#include "log.h"
 #include <cinttypes>
 
 #pragma warning(push)
@@ -749,14 +752,57 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	initSky(size);
 #endif
 
+	//TERRAINs /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//0
+#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN		// UNDER WATER: Terrain
+	loadedTerrain[0] = NEW CTerrain(TERRAIN);
+	loadedTerrain[0]->initUnderWaterDemo(0);			//UNDERWATER	(populate: modelVertexVector) 2022:LEVEL_ENGINE: 25
+#endif
+
+	//1 WATER TERRAIN MESH: 6 vertex + 6 index
+#if defined SCENE_WATER_TERRAIN
+	loadedTerrain[1] = NEW CTerrain(TERRAIN);
+	loadedTerrain[1]->initTerrainWaterMeshDemo(1);		//WATER			(populate: modelVertexVector)
+#endif
+
+	//2 MAIN TERRAIN MESH: 4 vertex + 6 index
+#if defined SCENE_MAIN_TOPO_TERRAIN	&& !defined USE_TERRAIN_ALFA_MAP
+#if DX_ENGINE_LEVEL >= 60 && defined USE_TERRAIN_TUTORIAL_CHAP_24
+	loadedTerrain[2] = NEW CTerrain(TERRAIN_COLOR_QUAD_FOG_SLOP_TEXTURE_Detail_Mapping_TextureMapping_AlphaMapping_BumpMapping_LighMapping_TransparentTexture_MINI_MAP);				//TERRAIN_LIGHT+COLOR
+#else
+	loadedTerrain[2] = NEW CTerrain(TERRAIN_COLOR);				//TERRAIN_LIGHT+COLOR
+#endif
+	loadedTerrain[2]->initMainTopoTerrainDemo(2);		//TERRAIN		(populate: modelVertexVector)
+#endif
+
+	//3 TERRAIN:6 vertex + 6 index: TO BE USED BY COLLISION TERRAIN
+#if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX && defined SCENE_TERRAIN_COLLISION
+	loadedTerrain[3] = NEW CTerrain(TERRAIN);
+	loadedTerrain[3]->initMainTopoTerrainDemo(3);
+#endif
+
+	world_xml_objs = SystemHandle->xml_loader.theWorld.size();
+	//-----------------------------------------------------------------------------------------	
+	// Create Bill Board for Trees / Flowers
+	//-----------------------------------------------------------------------------------------	
+#if TUTORIAL_CHAP >= 60 && defined (SCENE_MAIN_TOPO_TERRAIN) && defined (SCENE_BILLBOARDS) // BILLBOARD
+	IF_NOT_RETURN_FALSE(m_billTreeClass = NEW BillClass);
+	if (!m_billTreeClass->Initialize(loadedTerrain[2]->m_terrainWidth/2, loadedTerrain[2]->m_terrainHeight/2, false))
+	{
+		WomaMessageBox(TEXT("Could not initialize the billboardClass"), TEXT("Create Bill Board for Trees / Flowers"));
+	}
+#endif
+
 	//-----------------------------------------------------------------------------------------------------------------
 	// Create "model OBJECTS" from loaded "XML OBJECTS" in file WORLD.XML
 	//-----------------------------------------------------------------------------------------------------------------
+
 #if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined USE_FRUSTRUM
 
 	// Load 3D Objects: convert XML "objects" -- Load OBJ or W3D --> VirtualModelClass:
 	UINT len = (UINT)SystemHandle->xml_loader.theWorld.size();
-	for (UINT i = 0; i < len; i++)
+	int objModel_size = objModel.size();
+	for (UINT i = objModel_size; i < objModel_size+len; i++)
 	{
 		objModel.push_back(NULL);
 #if NOTES
@@ -789,11 +835,12 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 		{
 			WomaMessageBox(wfilename, TEXT("Error Loading: "), FALSE); return false;
 		}
-
+		{
 		if (WOMA::game_state == GAME_STOP)
 			return false;
 		else
 			RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);	// Invoke: Window PAINT before end.
+		}
 
 		WOMA::sceneManager->addModel(WOMA::sceneManager->RootNode, objModel[i]);			// Add node to nodesList: RootNode
 
@@ -830,42 +877,8 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	// --------------------------------------------------------------------------------------------
 #endif
 
-	//TERRAINs /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//0
-#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN		// UNDER WATER: Terrain
-	loadedTerrain[0] = NEW CTerrain(TERRAIN);
-	loadedTerrain[0]->initUnderWaterDemo(0);			//UNDERWATER	(populate: modelVertexVector) 2022:LEVEL_ENGINE: 25
-#endif
 
-	//1 WATER TERRAIN MESH: 6 vertex + 6 index
-#if defined SCENE_WATER_TERRAIN
-	loadedTerrain[1] = NEW CTerrain(TERRAIN);
-	loadedTerrain[1]->initTerrainWaterMeshDemo(1);		//WATER			(populate: modelVertexVector)
-#endif
 
-	//2 MAIN TERRAIN MESH: 4 vertex + 6 index
-#if defined SCENE_MAIN_TOPO_TERRAIN	&& !defined USE_TERRAIN_ALFA_MAP
-#if DX_ENGINE_LEVEL >= 60 && defined USE_TERRAIN_TUTORIAL_CHAP_24
-	loadedTerrain[2] = NEW CTerrain(TERRAIN_COLOR_QUAD_FOG_SLOP_TEXTURE_Detail_Mapping_TextureMapping_AlphaMapping_BumpMapping_LighMapping_TransparentTexture_MINI_MAP);				//TERRAIN_LIGHT+COLOR
-#else
-	loadedTerrain[2] = NEW CTerrain(TERRAIN_COLOR);				//TERRAIN_LIGHT+COLOR
-#endif
-	loadedTerrain[2]->initMainTopoTerrainDemo(2);		//TERRAIN		(populate: modelVertexVector)
-#endif
-
-	//3 TERRAIN:6 vertex + 6 index: TO BE USED BY COLLISION TERRAIN
-#if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX && defined SCENE_TERRAIN_COLLISION
-	loadedTerrain[3] = NEW CTerrain(TERRAIN);
-	loadedTerrain[3]->initMainTopoTerrainDemo(3);
-#endif
-
-	//NETWORK //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#if defined SAVEW3D
-	WomaMessageBox(TEXT("Conversion from OBJ to W3D, ended."), TEXT("SAVEW3D"));
-	WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP; //Publish_Quit_Message();
-	return false;
-#endif
 
 	//Finally, launch dynamic Load Compound/OBJ Thread /////////////////////////////////////////////////////////////////////////////////
 #if defined (CHECK_COMPOUND_COLISION) && defined (SCENE_COMPOUND) //TUTORIAL_CHAP >= 55 && 
@@ -884,6 +897,14 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	if (!SetThreadPriority(threadCompoundLoaderHandle, THREAD_PRIORITY_IDLE/*THREAD_PRIORITY_LOWEST*//*THREAD_PRIORITY_BELOW_NORMAL*/)) { return false; }
 #endif
 #endif
+
+#if defined SAVEW3D
+	WomaMessageBox(TEXT("Conversion from OBJ to W3D, ended."), TEXT("SAVEW3D"));
+	WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP; //Publish_Quit_Message();
+	return false;
+#endif
+
+	//NETWORK //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	return true;
 }

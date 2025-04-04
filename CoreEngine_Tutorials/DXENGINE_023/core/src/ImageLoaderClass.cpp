@@ -55,11 +55,7 @@ ImageLoaderClass::ImageLoaderClass(const FORMAT fmt, const int w, const int h, c
 	pixels = NEW unsigned char[w*h * 3];
 }
 
-ImageLoaderClass::~ImageLoaderClass()
-{
-	//SAFE_DELETE (pixels);
-	CLASSDELETE();
-}
+ImageLoaderClass::~ImageLoaderClass(){ CLASSDELETE(); }
 
 unsigned char* Convert24to32bits(unsigned char* src, UINT imageSize32bits, bool fixEndian, bool fixTarga = false)
 {

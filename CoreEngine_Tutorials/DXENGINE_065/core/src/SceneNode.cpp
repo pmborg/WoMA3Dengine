@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: SceneNode.cpp
 // --------------------------------------------------------------------------------------------
@@ -31,7 +32,7 @@ SceneNode::SceneNode(float posX, float posY, float posZ, float boundingSphere)
 	width = boundingSphere;
 
 	#if _DEBUG
-	WOMA_LOGManager_DebugMSG("SceneManager::Node: X,Y,Z - DIM: %d %d %d - %d\n", (int)positionX, (int)positionY, (int)positionZ, (int)width);
+	//WOMA_LOGManager_DebugMSG("SceneManager::Node: X,Y,Z - DIM: %d %d %d - %d\n", (int)positionX, (int)positionY, (int)positionZ, (int)width);
 	#endif
 }
 

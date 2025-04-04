@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: ApplicationTextClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -138,17 +139,29 @@ void ApplicationTextClass::SetInfoB(float rotX, float rotY, float rotZ)
 //08
 void ApplicationTextClass::SetRenderCount(int Count, int compoundCount, UINT totalCompoundLoaded)
 {
-	TCHAR countString[64];
+	TCHAR countString[80];
 
 	// Setup the render count string.
     //StringCchPrintf(countString, sizeof(countString), TEXT("Terrain Render Count: %dK Objs: %d/%d"), terrainCount/1024, compoundCount, totalCompoundLoaded);
-	StringCchPrintf(countString, sizeof(countString), TEXT("Vertex count : %d Objects on QUAD %d/%d (loaded/total)"), Count, compoundCount, totalCompoundLoaded);
+	StringCchPrintf(countString, sizeof(countString), TEXT("Vertex count : %d Objects on QUAD %d/%d (loaded/total)"), (int)SystemHandle->TotalVertexCounter, compoundCount, totalCompoundLoaded);
 
 	// Update the sentence vertex buffer with the new string information:
 	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_TERRAINRENDERCOUNT], countString, 10, 100, 0.0f, 0.5f, 1.0f));
 }
 
-#if TUTORIAL_CHAP >= 50
+#if TUTORIAL_CHAP >= 60 // BILLBOARD
+//10
+void ApplicationTextClass::SetBillRenderCount(int count)
+{
+	char countString[80];
+	StringCchPrintf(countString, sizeof(countString), TEXT("Angle: %d"), (int)SystemHandle->m_Application->billangle);
+
+	// Update the sentence vertex buffer with the new string information.
+	ASSERT(m_Text->UpdateSentence(m_sentence[TEXT_BILLRENDERCOUNT], countString, 10, 130, 0.0f, 1.0f, 0.0f));
+}
+#endif
+
+#if TUTORIAL_CHAP >= 85
 //09
 void ApplicationTextClass::SetLoboRenderCount(int count)
 {
@@ -202,7 +215,7 @@ bool ApplicationTextClass::Initialize(void* Driver)
 		m_sentence[i] = NULL;
 
 	for (UINT i = 0; i < (UINT)_countof(m_sentence); i++)
-		IF_NOT_RETURN_FALSE(m_Text->InitializeSentence(&m_sentence[i], 60));
+		IF_NOT_RETURN_FALSE(m_Text->InitializeSentence(&m_sentence[i], 80));
 
 #if defined DX12
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)

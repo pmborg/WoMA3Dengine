@@ -49,6 +49,10 @@
 	#include "timerClass.h"
 	#endif
 
+#if TUTORIAL_CHAP >= 60 // BILLBOARD
+#include "Bill/BillClass.h"				//[ch60]
+#endif//
+
 #if TUTORIAL_CHAP >= 90
 #include "../network/NetworkClass.h"
 #else
@@ -211,7 +215,7 @@ public:
 	float dayLightFade;
 
 #if DX_ENGINE_LEVEL >= 23 || defined USE_VIEW2D_SPRITES
-	void AppPosRender();																// POS-RENDER - 2D: Render 
+	void AppPosRender(UINT monitorWindow);																// POS-RENDER - 2D: Render 
 #endif
 
 #if defined USE_LIGHT_RAY
@@ -224,6 +228,7 @@ public:
 	IDXGIKeyedMutex* keyedMutex10 = NULL;
 #endif
 
+	UINT totalRendered = 0;
 #if defined USE_LIGHT_RAY
 	void initLightRay();
 #endif
@@ -242,6 +247,10 @@ public:
 	std::vector<ModelTextureLightVertexType> sky_vertexdata; //std::vector<ModelTextureVertexType> sky_vertexdata;
 	std::vector<UINT>						 sky_indexdata;
 #endif
+
+#if TUTORIAL_CHAP >= 60 // BILLBOARD
+	BillClass* m_billTreeClass = NULL;
+#endif//
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 	void	SetPlayerPosition(UINT netID);

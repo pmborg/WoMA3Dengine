@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: DXmodelClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -775,9 +776,14 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 					textureFilename = WOMA::LoadFile((TCHAR*)fileNamePath.c_str());
 				else
 					textureFilename = (TCHAR*)fileNamePath.c_str();
+
+				if (fileNamePath.find(TEXT("none")) != 0) //dont load on special cases (like billboards)
+				{
 				HRESULT res = LoadTextureImage(textureFilename);
 				if (res != S_OK)
 					return false;
+				} else
+					meshSRV11.push_back(NULL); //on special cases (like billboards)
 			}
 		}
 

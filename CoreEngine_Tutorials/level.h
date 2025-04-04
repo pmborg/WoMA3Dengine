@@ -1,3 +1,21 @@
+// --------------------------------------------------------------------------------------------
+// Filename: level.h
+// --------------------------------------------------------------------------------------------
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// --------------------------------------------------------------------------------------------
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+//
+// This file is part of the WorldOfMiddleAge project.
+//
+// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
+// You may not alter or remove any copyright or other notice from copies of the content.
+// The content contained in this file is provided only for educational and informational purposes.
+// 
+// Downloaded from : https://github.com/pmborg/WoMA3Dengine
+// --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567222;
+
 #if defined DEMO_LEVEL //FOR DEMOS LEVEL 1..54 (defined at project level)
 	#define LEVEL DEMO_LEVEL
 	#define SETTINGS_FILE		TEXT("settings.xml")
@@ -18,13 +36,13 @@
 	//#define LEVEL  4 // FOR WINDOWS: "F1" on LINUX (REPORT.txt only!) TINYXML + OS_KEYS + SYSTEM_CHECK + CHECK_IO + TIMER + The User International Language 
 	#endif
 
-	#if defined WINDOWS_PLATFORM
+
 	//#define LEVEL  5 // FOR WINDOWS: "F6" GAME SETUP + MAIN WINDOW! (with resize)
 	//#define LEVEL  6 // FOR WINDOWS: [TOOL] IDEA: C:\WoMA3Dengine\windows_engine\windows.pack + windows.pck (IDEA)
 	//#define LEVEL  7 // FOR WINDOWS: "F2" Load engine.pck (IDEA+ZIP) use image on background + RealTime Celestial Positions of Sun and Moon
 	//#define LEVEL  8 // FOR WINDOWS: "F3" REAL TIME MAP GEOPOSITION (initWorld), test with VPN!
 	//#define LEVEL  9 // FOR WINDOWS: "F4" REAL TIME Wheather
-	#endif
+
 
 	#if defined WINDOWS_PLATFORM || defined LINUX_PLATFORM || defined ANDROID_PLATFORM
 	//--------------------------------------------------------------------------------------------------------------------------
@@ -77,8 +95,8 @@
 	//BASIC-TERRAIN:
 	//#define LEVEL 49 // Terrain : 512 UNDERWATER
 	//#define LEVEL 50 // Terrain : 512 Union : UNDERWATER + BASIC WATER
-	//#define LEVEL 51 // Terrain : 512 FOG effect on Terrain and SKY +(op) SCENE_TERRAIN_COLLISION
-	//#define LEVEL 52 // Terrain : 512 with : Light shader
+	//#define LEVEL 51 // Terrain : 512 FOG effect on Terrain and SKY 
+	//#define LEVEL 52 // Terrain : 512 with : Light shader +(op) SCENE_TERRAIN_COLLISION
 
 	//ADVANCED-TERRAIN:
 	//--------------------------------------------------------------------------------------------------------
@@ -90,22 +108,6 @@
 #endif
 	//#define LEVEL 53 // Terrain : 512 with : Indices and Terrain Slop Color shader
 	//#define LEVEL 54 // Terrain : 256 Water waves
-	//--------------------------------------------------------------------------------------------------------
-	// DXengineDEMO55:
-	//--------------------------------------------------------------------------------------------------------
-	//#define LEVEL 55 // Terrain : 256 Slope Texture Shader							#if TUTORIAL_CHAP >= 18		// DONE!
-
-#if NOTES
-	//{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//{ "TEXCOORD", 0, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//{ "NORMAL",	  0, DXGI_FORMAT_R32G32B32_FLOAT,   0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//{ "TEXCOORD", 1, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },//Mapping
-#endif
-	//#define LEVEL 56 // 56 ~ G:\DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64		#if TUTORIAL_CHAP >= 19		// TODO!
-	//#define LEVEL 57 // 57 ~ G:\DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64		#if TUTORIAL_CHAP >= 21		// TODO!
-	//#define LEVEL 58 // 58 ~ G:\DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64		#if TUTORIAL_CHAP >= 22		// TODO!
-	//#define LEVEL 59 // 59 ~ G:\DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64		#if TUTORIAL_CHAP >= 23		// TODO!
 
 	//--------------------------------------------------------------------------------------------------------
 #if NOTES
@@ -117,17 +119,21 @@
 	//{ "TANGENT",  0, DXGI_FORMAT_R32G32B32_FLOAT,   0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },//BUMP MAP
 	//{ "BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT,   0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },//BUMP MAP
 #endif
-	//#define LEVEL 60	// 60 ~ G:\DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64		#if TUTORIAL_CHAP >= 24		// DOING...
+	//#define LEVEL 60	// 60 ~ G:\DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64		#if TUTORIAL_CHAP >= 24
 	//--------------------------------------------------------------------------------------------------------
 						// G:\DRIVE_MY_SOURCE_CODE\WorldOfMiddleAge\WorldOfMiddleAge.sln	
-	//#define LEVEL 61	// TUTORIAL_CHAP 25  TERRAIN Bigger HEIGHT MAPs 512x512: ............
-	//#define LEVEL 62	// TUTORIAL_CHAP 26  TERRAIN MAIN MAP : ..............................
-	//#define LEVEL 63	// TUTORIAL_CHAP 27  TERRAIN MINI MAP 3D Navegation : ...............
+	//#define LEVEL 61	// TUTORIAL_CHAP 25  TERRAIN Bigger HEIGHT MAPs 512x512
+	//#define LEVEL 62	// TUTORIAL_CHAP 26  TERRAIN MAIN MAP
+	//#define LEVEL 63	// TUTORIAL_CHAP 27  TERRAIN MAIN MAP + MINI MAP 3D Navegation
 
 	//#define LEVEL 64  // Mill + compound
-	#define LEVEL 65    // Walk on Terrain.
+	//#define LEVEL 65    // Walk on Terrain.
 	
 	
+	#define LEVEL 70  // BILLBOARD for Trees / Flowers, (LIGHT and Fog) : .. / bill / billClass.*, tree.h
+	//#define LEVEL 71  // BILLBOARD for FENCES, (LIGHT and Fog) : ......... / bill / billClass.*, tree.h
+	//#define LEVEL 72  // FIRE ........................................... / bill / billClass.*, tree.h
+	//#define LEVEL 73  // WINDY GRASS .................................... / bill / billClass.*, tree.h																									  
 	
 	/////////////////////////////////////////////
 	//#define LEVEL 67	// MD5 (Animated + Character using HLSL)

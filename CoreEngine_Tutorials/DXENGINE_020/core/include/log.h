@@ -47,6 +47,8 @@ public:
 };
 
 extern ILogManager* logManager;		// Global log manager
+extern ILogManager* logManager_bk;	// Global log manager
+
 extern void start_log_manager();
 extern std::string android_temp_folder(struct android_app* app);
 }

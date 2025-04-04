@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: AutoGenTerrain.cpp
 // --------------------------------------------------------------------------------------------
@@ -303,9 +304,8 @@ CTerrain::CTerrain(MY_TERRAIN_TYPE terrainType)
 }
 
 CTerrain::~CTerrain() { 
-	//CLASSDELETE();
 	//SAFE_DELETE(m_heightMap);
-	//In static classes we can't call: CLASSDELETE();
+	CLASSDELETE(); //In static classes we can't call: CLASSDELETE();
 } 
 
 #if defined SCENE_GENERATEDUNDERWATER
