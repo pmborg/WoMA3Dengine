@@ -23,7 +23,7 @@ Moon Geometric elevation<br>
 Moon Azimuth<br>
 <b>[F3]</b> Map with current location<br>
 <b>[F4]</b> Get real time weather info (when network option is: ON)<br>
-<b>[F5]</b> Game Rendering page (defaultt page)<br>
+<b>[F5]</b> Game Rendering page (default page)<br>
 <b>[F6]</b> SETUP<br>
 Try to Change the driver on the fly without the need of close and open the Application.<br>
 - DirectX 12<br>
@@ -45,10 +45,10 @@ Try to Change the driver on the fly without the need of close and open the Appli
 - <b>DX72: FIRE</b><br> 
 <hr> 
 
-- <b>DX71: BILLBOARD for FENCES, (LIGHT and Fog)</b><br> 
+- <b>DX71: BILLBOARD for FENCES</b><br> 
 <hr> 
 
-- <b>DX70: BILLBOARD for Trees / Flowers, (LIGHT and Fog)</b><br> 
+- <b>DX70: BILLBOARD for Trees / Flowers</b><br> 
 
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_070.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_070.png)	 
 
@@ -141,7 +141,7 @@ Try to Change the driver on the fly without the need of close and open the Appli
 
 <hr>
 
-- <b>DX39: WORLD.XML: load M3D (the Woma 3D file format) files up to 30x faster than OBJ files in DX LEVEl38</b><br> 
+- <b>DX39: WORLD.XML: load M3D (the Woma 3D file format) files up to 30x faster than OBJ files in DX LEVEL 38</b><br> 
 	- Loading the generated files (in DX38) ".M3D" Woma3DFormat. in 0.5 seconds vs 13.5 seconds using the ".OBJ" 3D file format
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_039.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_039.png)	
