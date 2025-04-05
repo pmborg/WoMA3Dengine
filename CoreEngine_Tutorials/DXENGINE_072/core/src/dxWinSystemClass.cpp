@@ -117,7 +117,7 @@ bool dxWinSystemClass::APPLICATION_INIT_SYSTEM() //LOAD ALL GRAPHICS
 #endif
 
 	driverList.clear();
-
+	m_DirectSound = NULL;
 	//ClassRegister/LoadXMLSettings/InitializeSystemScreen/ApplicationInitMainWindow/InitOsInput/StartTimer
 	bool res = WinSystemClass::APPLICATION_INIT_SYSTEM();	
 

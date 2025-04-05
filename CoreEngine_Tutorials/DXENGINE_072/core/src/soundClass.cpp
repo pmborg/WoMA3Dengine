@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 ///////////////////////////////////////////////////////////////////////////////
 // Filename: soundClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -27,6 +28,7 @@
 #include "mem_leak.h"
 #include "ApplicationClass.h"
 
+IDirectSound8* m_DirectSound=NULL;
 
 //Use the class constructor to initialize the private member variables that are used inside the sound class.
 SoundClass::SoundClass()
@@ -53,8 +55,11 @@ bool SoundClass::Initialize(HWND hwnd, char* filename)
 	//After loading is complete then PlayWaveFile is called which then plays the .wav file once.
 
 	// Initialize direct sound and the primary sound buffer.
-	result = InitializeDirectSound(hwnd);
-	if(!result){return false;}
+	if (!m_DirectSound)
+	{
+		result = InitializeDirectSound(hwnd);
+		if(!result){return false;}
+	}
  
 	// Load a wave audio file onto a secondary buffer.
 	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
@@ -64,7 +69,6 @@ bool SoundClass::Initialize(HWND hwnd, char* filename)
 	#endif
 	if(!result){return false;}
 
-	//WOMA_LOGManager_DebugMSG( TEXT("Sound Class: Initialized\n") );
 	return true;
 }
 
@@ -111,7 +115,6 @@ bool SoundClass::InitializeDirectSound(HWND hwnd)
 	ASSERT(!FAILED(result));
 
 	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
-
 	// Setup the primary buffer description.
 	bufferDesc.dwSize = sizeof(DSBUFFERDESC);
 	bufferDesc.dwFlags = DSBCAPS_PRIMARYBUFFER | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRL3D;
@@ -147,9 +150,9 @@ bool SoundClass::InitializeDirectSound(HWND hwnd)
 
 	// Set the initial position of the listener to be in the middle of the scene.
 	m_listener->SetPosition(0.0f, 0.0f, 0.0f, DS3D_IMMEDIATE);
-
 	#endif
 
+	WOMA_LOGManager_DebugMSG( TEXT("Sound Class: Initialized\n") );
 	return true;
 }
 
