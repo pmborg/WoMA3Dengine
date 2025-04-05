@@ -42,7 +42,10 @@ Try to Change the driver on the fly without the need of close and open the Appli
 - <b>DX73: WINDY GRASS</b><br> 
 <hr> 
 
-- <b>DX72: FIRE</b><br> 
+- <b>DX72: FIRE (Add 3D Sound / Effects.)</b><br>
+
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_072.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_072.png)	
+  
 <hr> 
 
 - <b>DX71: BILLBOARD for FENCES</b><br>
@@ -122,13 +125,13 @@ Try to Change the driver on the fly without the need of close and open the Appli
 
 <h2>HTTP WOMA 3D ENGINE TUTORIAL LIST</h2>
  
-- <b>DX42: WORLD.XML: load M3D and use SHADOW INSTANCES but now with GPU ROTATION on (BLACK_BISHOPs and BLACK_KNIGHTs)</b><br> 
+- <b>DX42: WORLD.XML: load W3D and use SHADOW INSTANCES but now with GPU ROTATION on (BLACK_BISHOPs and BLACK_KNIGHTs)</b><br> 
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_042.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_042.png)	 
 
 <hr>
 
-- <b>DX41: WORLD.XML: load M3D and use SHADOW INSTANCES</b><br> 
+- <b>DX41: WORLD.XML: load W3D and use SHADOW INSTANCES</b><br> 
 	- This is a join of DX40 with DX39 now all together.
 	- 041ShadowMapInstance.hlsl is equivalent to 036ShadowMap.hlsl but with instances.
 	
@@ -136,7 +139,7 @@ Try to Change the driver on the fly without the need of close and open the Appli
 
 <hr>
 
-- <b>DX40: WORLD.XML: load M3D and use INSTANCES to clone objects using GPU</b><br> 
+- <b>DX40: WORLD.XML: load W3D and use INSTANCES to clone objects using GPU</b><br> 
 	- This is a very powerful tool, with less we can do more, using Shader INSTANCES to clone objects into different positions
 	- 040LightInstance.hlsl is equivalent to 023Light.hlsl but with instances
 	
@@ -144,15 +147,15 @@ Try to Change the driver on the fly without the need of close and open the Appli
 
 <hr>
 
-- <b>DX39: WORLD.XML: load M3D (the Woma 3D file format) files up to 30x faster than OBJ files in DX LEVEL 38</b><br> 
-	- Loading the generated files (in DX38) ".M3D" Woma3DFormat. in 0.5 seconds vs 13.5 seconds using the ".OBJ" 3D file format
+- <b>DX39: WORLD.XML: load W3D (the Woma 3D file format) files up to 30x faster than OBJ files in DX LEVEL 38</b><br> 
+	- Loading the generated files (in DX38) ".W3D" Woma3DFormat. in 0.5 seconds vs 13.5 seconds using the ".OBJ" 3D file format
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_039.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_039.png)	
 
 <hr>
 
-- <b>DX38: WORLD.XML: load OBJ 3D file format, save to M3D Woma 3D fast file FORMAT</b><br> 
-	- Load and Convert the powerfull but slow ".OBJ" 3D file format and to a fast ".M3D" Woma3DFormat.
+- <b>DX38: WORLD.XML: load OBJ 3D file format, save to W3D Woma 3D fast file FORMAT</b><br> 
+	- Load and Convert the powerfull but slow ".OBJ" 3D file format and to a fast ".W3D" Woma3DFormat.
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_038.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_038.png)	
 
