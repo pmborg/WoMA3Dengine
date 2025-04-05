@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: ApplicationClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -14,7 +15,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-// PURPOSE: 25+
+// PURPOSE: Control all Application main cycles.
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234567222;
 
@@ -61,10 +62,10 @@ void ApplicationClass::PositionUpdate(int playerId, float positionX, float posit
 	}
 
 	if (positionX > m_terrainWidth)
-		positionX = m_terrainWidth;
+		positionX = (float)m_terrainWidth;
 
 	if (positionZ > m_terrainHeight)
-		positionZ = m_terrainHeight;
+		positionZ = (float)m_terrainHeight;
 
 	// Calculate the position of the camera on the minimap in terms of percentage.
 	percentX = 0.5f;
@@ -437,7 +438,7 @@ void ApplicationClass::Shutdown()
 	//for (UINT i = 0; i < N_COMPOUNDS; i++) {
 	//	SAFE_SHUTDOWN(compound[i].objModel);
 
-	#if TUTORIAL_CHAP >= 70 && defined (SOUND3D)
+	#if TUTORIAL_CHAP >= 70 && defined SOUND3D
 		SAFE_SHUTDOWN(compound[i].sound);
 	#endif
 	//}
@@ -571,7 +572,7 @@ bool ApplicationClass::Start()
 
 
 //	-------------------------------------------------------------------------------------------
-#if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
+#if defined USE_DIRECT_INPUT
 void ApplicationClass::SetPlayerPosition(UINT netID)
 {
 	//OutputDebugString("SetPlayerPosition(%d)\n", netID);

@@ -26,7 +26,7 @@
 
 #include "OSengine.h"
 #include "OSmain_dir.h"
-
+#include "fileLoader.h"
 #if defined USE_TINYXML_LOADER
 #if defined ANDROID_PLATFORM
 #include "AndroidEngine.h"
@@ -35,6 +35,11 @@
 
 #include "xml_loader.h"
 
+#if DX_ENGINE_LEVEL >= 72
+#include "soundclass.h"
+#include "mem_leak.h"
+#endif
+
 XMLloader::XMLloader()
 {
 	CLASSLOADER();
@@ -42,6 +47,12 @@ XMLloader::XMLloader()
 
 XMLloader::~XMLloader()
 {
+#if DX_ENGINE_LEVEL >= 72
+	for (size_t i = 0; i < theWorld.size(); i++)
+	{
+		SAFE_SHUTDOWN(theWorld[i].audio);
+	}
+#endif
 	CLASSDELETE();
 }
 
@@ -431,6 +442,20 @@ bool XMLloader::loadWorld (TCHAR* file_) // Note: Have to be char
 	#if DX_ENGINE_LEVEL >= 41 && defined USE_SHADOW_INSTANCES
 				object3d.castShadow = atoi(element->Attribute("castShadow"));
 				object3d.renderShadows = atoi(element->Attribute("renderShadows"));
+	#endif
+	#if DX_ENGINE_LEVEL >= 72
+				object3d.soundRange = (float)atof(element->Attribute("soundRange"));
+				if (object3d.soundRange > 0)
+				{
+					strcpy(object3d.audioFilename, element->Attribute("audio"));
+					object3d.audio = NEW SoundClass;
+					if (!object3d.audio->Initialize(SystemHandle->m_hWnd, WOMA::LoadFile(object3d.audioFilename)))
+					{
+						WomaMessageBox(TEXT("Could not initialize Direct 3D Sound"), TEXT("Error: "));
+					}
+
+					IF_NOT_RETURN_FALSE( object3d.audio->PlayWaveFile(object3d.posX, 1, object3d.posZ, /*loop?*/true, object3d.soundRange));
+				}
 	#endif
 				theWorld.push_back(object3d); // add a new object to our list
 				element = element->NextSiblingElement();

@@ -258,6 +258,8 @@ public:
 	bool			LoadXmlSettings();
 #endif
 
+	bool			LoadXmlWorld();
+
 #if CORE_ENGINE_LEVEL >= 6 && !defined NewWomaEngine
 #if defined WINDOWS_PLATFORM && !defined WIN_XP //&& ENGINE_LEVEL >= 19
 	WinCpuClass	m_Cpu;

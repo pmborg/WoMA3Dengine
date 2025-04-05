@@ -149,6 +149,8 @@ void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, 
 	if (!m_Driver->frustum->CheckSphere(positionX, positionY, positionZ, model->boundingSphere) && ((!m_Driver->RenderfirstTime)))
 		return;
 
+	// Set the initial position of the listener to be in the middle of the scene.
+
 	if (m_Driver->RenderfirstTime || (SystemHandle->xml_loader.theWorld[model->m_ObjId].rotY != 0 && modelID > world_xml_objs))
 		((DXmodelClass*)model)->m_worldMatrix = XMMatrixIdentity();
 

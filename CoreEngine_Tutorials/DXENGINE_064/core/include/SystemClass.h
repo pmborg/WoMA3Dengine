@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: SystemClass.h
 // --------------------------------------------------------------------------------------------
@@ -256,6 +257,8 @@ public:
 	STRING			XML_SETTINGS_FILE;	// Note: Have to be "char" (No STRING)
 	bool			LoadXmlSettings();
 #endif
+
+	bool			LoadXmlWorld();
 
 #if CORE_ENGINE_LEVEL >= 6 && !defined NewWomaEngine
 #if defined WINDOWS_PLATFORM && !defined WIN_XP //&& ENGINE_LEVEL >= 19

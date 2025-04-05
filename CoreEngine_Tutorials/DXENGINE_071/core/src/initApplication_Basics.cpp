@@ -783,7 +783,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	loadedTerrain[3]->initMainTopoTerrainDemo(3);
 #endif
 
-	world_xml_objs = SystemHandle->xml_loader.theWorld.size();
+	world_xml_objs = (UINT)SystemHandle->xml_loader.theWorld.size();
 	//-----------------------------------------------------------------------------------------	
 	// Create Bill Board for Trees / Flowers
 	//-----------------------------------------------------------------------------------------	
@@ -806,7 +806,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 
 	// Load 3D Objects: convert XML "objects" -- Load OBJ or W3D --> VirtualModelClass:
 	UINT len = (UINT)SystemHandle->xml_loader.theWorld.size();
-	int objModel_size = objModel.size();
+	UINT objModel_size = (UINT)objModel.size();
 	for (UINT i = objModel_size; i < objModel_size+len; i++)
 	{
 		objModel.push_back(NULL);

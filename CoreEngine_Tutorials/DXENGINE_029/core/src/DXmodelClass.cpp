@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: DXmodelClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -185,9 +186,12 @@ bool DXmodelClass::LoadTexture(	TCHAR* objectName, void* driver, SHADER_TYPE sha
 	else
 		ModelShaderType = shader_type;
 
-	ASSERT(ModelShaderType == SHADER_TEXTURE || ModelShaderType == SHADER_TEXTURE_FONT || ModelShaderType == SHADER_TEXTURE_WATER);
+	ASSERT(	ModelShaderType == SHADER_TEXTURE || 
+			ModelShaderType == SHADER_TEXTURE_FONT || 
+			ModelShaderType == SHADER_TEXTURE_WATER ||
+			ModelShaderType == SHADER_FIRE);
 
-	modelTextureVertex = model; //*
+	modelTextureVertex = model;
 	indexModelList = indexList;
 	return InitializeDXbuffers(objectName, textureFile);
 }
@@ -207,7 +211,8 @@ bool DXmodelClass::LoadLight(TCHAR* objectName, void* driver, SHADER_TYPE shader
 		ASSERT( (ModelShaderType == SHADER_TEXTURE_LIGHT) ||						// 4
 				(ModelShaderType == SHADER_TEXTURE_LIGHT_RENDERSHADOW) ||			// 6
 				(ModelShaderType == SHADER_TEXTURE_LIGHT_INSTANCED) ||				// 8
-				(ModelShaderType == SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED) );	//10
+				(ModelShaderType == SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED) ||	//10
+			    (ModelShaderType == SHADER_FIRE) );
 	indexModelList = indexList;
 	return InitializeDXbuffers(objectName, textureFile);
 }
@@ -273,6 +278,7 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 	case SHADER_TEXTURE:
 	case SHADER_TEXTURE_FONT:
 	case SHADER_TEXTURE_WATER:
+	case SHADER_FIRE:
 		m_vertexCount = (UINT) (*modelTextureVertex).size();	// Set the number of vertices in the vertex array.
 		if (m_vertexCount == 0)									// Better check, if object is empty...
 			return false;		
@@ -527,10 +533,27 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 	case SHADER_TEXTURE:
 	case SHADER_TEXTURE_FONT:
 	case SHADER_TEXTURE_WATER:
+	case SHADER_FIRE:
 	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
 		{
 			result = InitializeTextureBuffers(m_driver11->m_device11, indices);
+		#if TUTORIAL_CHAP >= 62 // FIRE
+				// Set the three scrolling speeds for the three different noise textures.
+				m_Shader11->scrollSpeeds = XMFLOAT3(1.3f, 2.1f, 2.3f);
+
+				// Set the three scales which will be used to create the three different noise octave textures.
+				m_Shader11->scales = XMFLOAT3(1.0f, 2.0f, 3.0f);
+
+				// Set the three different x and y distortion factors for the three different noise textures.
+				m_Shader11->distortion1 = XMFLOAT2(0.1f, 0.2f);
+				m_Shader11->distortion2 = XMFLOAT2(0.1f, 0.3f);
+				m_Shader11->distortion3 = XMFLOAT2(0.1f, 0.1f);
+
+				// The the scale and bias of the texture coordinate sampling perturbation.
+				m_Shader11->distortionScale = 0.8f;
+				m_Shader11->distortionBias = 0.5f;
+		#endif
 		}
 	#endif
 	#if defined DX12
@@ -583,9 +606,6 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 			meshSRV_size = (UINT) meshSRV.size();
 		}
 		#endif
-		if (meshSRV_size > 1)
-			Sleep(1);	//1ms
-
 		//3D: Create the texture object for this model:
 		if (meshSRV_size == 0)
 		{
@@ -1177,6 +1197,7 @@ void DXmodelClass::SetGeometryBuffers(void* deviceContext)
 		case SHADER_TEXTURE:
 		case SHADER_TEXTURE_FONT:
 		case SHADER_TEXTURE_WATER:
+		case SHADER_FIRE:
 			stride[0] = sizeof(DXtextureVertexType); break;
 
 		case SHADER_TEXTURE_LIGHT:						//23
@@ -1808,10 +1829,22 @@ void DXmodelClass::Render(UINT camera, UINT projection, UINT pass, void* lightVi
 			if (ModelShaderType >= SHADER_TEXTURE)
 				for (UINT i = 0; i < meshSRV11.size(); i++)
 					pContext->PSSetShaderResources(i, 1, &meshSRV11[i]);	// Set shader texture resource(s) in the "Pixel Shader", only!
+
 			#if defined USE_VIEW2D_SPRITES
 			m_Shader11->PSfade = model_fade;
 			#endif
+		#if TUTORIAL_CHAP >= 62 // FIRE
+			if (ModelShaderType == SHADER_FIRE) {
+				static float frameTime = 0.0f;
 
+				// Increment the frame time counter.
+				frameTime += 0.01f;
+				if (frameTime > 1000.0f)
+					frameTime = 0.0f;
+
+				m_Shader11->frameTime = frameTime;
+			}
+		#endif
 			m_Shader11->shaderTypeParameter = (float)shaderTypeParameter;
 			m_Shader11->Render(pass, pContext, m_indexCount, &m_worldMatrix, viewMatrix, projectionMatrix);	// Single Material (Optimized)
 		}

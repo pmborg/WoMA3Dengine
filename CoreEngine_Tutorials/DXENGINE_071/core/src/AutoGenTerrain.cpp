@@ -383,8 +383,8 @@ void CTerrain::CalculateMaxMin()
 		{
 			maxY = MAX(maxY, height[y][x]);
 			minY = MIN(minY, height[y][x]);
-			if (minY < -300)
-				Sleep(1);
+			//if (minY < -300)
+			//	Sleep(1);
 		}
 
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("Terrain MAX Height: %f\n"), maxY);	// 23

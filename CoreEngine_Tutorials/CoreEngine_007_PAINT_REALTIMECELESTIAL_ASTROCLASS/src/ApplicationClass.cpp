@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: ApplicationClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -14,7 +15,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-// PURPOSE: 25+
+// PURPOSE: Control all Application main cycles.
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234567222;
 
@@ -199,7 +200,7 @@ void ApplicationClass::Shutdown()
 	//for (UINT i = 0; i < N_COMPOUNDS; i++) {
 	//	SAFE_SHUTDOWN(compound[i].objModel);
 
-	#if TUTORIAL_CHAP >= 70 && defined (SOUND3D)
+	#if TUTORIAL_CHAP >= 70 && defined SOUND3D
 		SAFE_SHUTDOWN(compound[i].sound);
 	#endif
 	//}

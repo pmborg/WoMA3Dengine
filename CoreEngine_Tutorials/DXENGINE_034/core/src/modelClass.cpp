@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: modelClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -1219,12 +1220,16 @@ void ModelClass::CalculateTangentBinormal(ModelNormalBumpVertexType vertex1, Mod
 }
 
 // Create: DXmodelClass based on obj3D (an advanced model mesh)
-bool ModelClass::CreateObject(/*DXmodelClass*/ void* XmodelClass, TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow, bool renderShadow)
+bool ModelClass::CreateObject(void* XmodelClass, TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow, bool renderShadow)
 {
 	// Make Sure that: "meshSubsets" size are equal to "meshMaterials" size
 	if (obj3d.meshSubsets != obj3d.meshMaterials.size())
 	{
-		WomaMessageBox((TCHAR*)filename.c_str(), TEXT("LoadOBJ: Warning meshSubsets != meshMaterials.size"));
+		int fire = (int)obj3d.meshMaterials[0].find_first_of("FireMaterial3");
+		if (fire != 0)
+			WomaMessageBox((TCHAR*)filename.c_str(), TEXT("LoadOBJ: Warning meshSubsets != meshMaterials.size"));
+		else
+			shader_type = SHADER_FIRE;
 	}
 
 	//Set the subsets material to the index value of the its material in our material array
@@ -1264,7 +1269,7 @@ bool ModelClass::CreateObject(/*DXmodelClass*/ void* XmodelClass, TCHAR* objectN
 	//SHADER_NORMAL_BUMP?
 		//SHADER_TEXTURE_LIGHT
 		//SHADER_TEXTURE_LIGHT_RENDERSHADOW
-		if (obj3d.hasNorm || shader_type == SHADER_TEXTURE_LIGHT)
+		if ((obj3d.hasNorm || shader_type == SHADER_TEXTURE_LIGHT) && shader_type != SHADER_FIRE)
 		{
 			std::vector<ModelTextureLightVertexType> modelTextureLightVertex;
 			ModelTextureLightVertexType tempVert;

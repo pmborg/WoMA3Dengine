@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: SystemClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -979,16 +980,6 @@ bool SystemClass::LoadXmlSettings()
 		return false;
 	}
 
-	// Load and Parse XML FILE:"world.xml" the Configuration file
-	//----------------------------------------------------------------------------
-	XML_WORLD_FILE = WOMA::PUBLIC_DOCUMENTS;
-	XML_WORLD_FILE += WORLD_XML;
-	if (!SystemHandle->xml_loader.InitWorldLoader((TCHAR*)XML_WORLD_FILE.c_str()))
-	{
-		STRING err = TEXT("LoadXmlSettings::World File not found/Invalid: "); err += XML_WORLD_FILE;
-		WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "));
-		return false;
-	}
 
 #if DX_ENGINE_LEVEL == 29 && defined INTRO_DEMO // Force Full Screen
 	#if defined WINDOWS_PLATFORM
@@ -1007,6 +998,27 @@ bool SystemClass::LoadXmlSettings()
 
 	return true;
 }
+
+bool SystemClass::LoadXmlWorld()
+{
+	WOMA_LOGManager_DebugMSG("===============================================================================\n");
+	WOMA_LOGManager_DebugMSGAUTO(TEXT("LOAD XML WORLD\n"));
+	WOMA_LOGManager_DebugMSG("===============================================================================\n");
+
+	// Load and Parse XML FILE:"world.xml" the Configuration file
+	//----------------------------------------------------------------------------
+	XML_WORLD_FILE = WOMA::PUBLIC_DOCUMENTS;
+	XML_WORLD_FILE += WORLD_XML;
+	if (!SystemHandle->xml_loader.InitWorldLoader((TCHAR*)XML_WORLD_FILE.c_str()))
+	{
+		STRING err = TEXT("LoadXmlSettings::World File not found/Invalid: "); err += XML_WORLD_FILE;
+		WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "));
+		return false;
+	}
+
+	return true;
+}
+
 #endif
 
 #if CORE_ENGINE_LEVEL >= 4 && defined USE_TIMER_CLASS

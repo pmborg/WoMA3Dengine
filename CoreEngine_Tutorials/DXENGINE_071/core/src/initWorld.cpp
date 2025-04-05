@@ -23,8 +23,11 @@
 //WomaIntegrityCheck = 1234567222;
 
 #include "OSengine.h"
-#include "mem_leak.h"
+
 #if defined USE_ASTRO_CLASS
+#include "mem_leak.h"
+#include "fileLoader.h"
+
 #include <GeoLite2PP.hpp>
 #pragma comment(lib, "Ws2_32.lib")	//undefined reference to imp_getaddrinfo
 extern bool download(const std::string url, const std::string file_path);
@@ -288,7 +291,7 @@ bool InitWorld::getMyLocation(double* latitude, double* longitude, STRING ip)
 	STRING		wLOCAL_APPDATA = WOMA::APPDATA;
 	STRING		szFileName = wLOCAL_APPDATA + TEXT("my.location");
 
-	std::string database_filename = "GeoLite2-City.mmdb";	//program file <dir>
+	std::string database_filename = WOMA::LoadFile(GEO_DATABASE);	//program file <dir>
 	GeoLite2PP::DB db(database_filename);
 	CHAR ip_str[MAX_STR_LEN] = { 0 };
 	#if defined UNICODE

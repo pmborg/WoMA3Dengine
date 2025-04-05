@@ -126,11 +126,11 @@
 	//#define LEVEL 62	// TUTORIAL_CHAP 26  TERRAIN MAIN MAP
 	//#define LEVEL 63	// TUTORIAL_CHAP 27  TERRAIN MAIN MAP + MINI MAP 3D Navegation
 	//#define LEVEL 64  // Mill + compound
-	//#define LEVEL 65    // Walk on Terrain.
+	//#define LEVEL 65  // Walk on Terrain.
 	
 	//#define LEVEL 70  // BILLBOARD for Trees / Flowers, (LIGHT and Fog) : .. / bill / billClass.*, tree.h
-	#define LEVEL 71  // BILLBOARD for FENCES, (LIGHT and Fog) : ......... / bill / billClass.*, tree.h
-	//#define LEVEL 72  // FIRE ........................................... / bill / billClass.*, tree.h
+	//#define LEVEL 71  // BILLBOARD for FENCES, (LIGHT and Fog) : ......... / bill / billClass.*, tree.h
+	#define LEVEL 72    // FIRE ........................................... / bill / billClass.*, tree.h
 	//#define LEVEL 73  // WINDY GRASS .................................... / bill / billClass.*, tree.h																									  
 	
 	/////////////////////////////////////////////

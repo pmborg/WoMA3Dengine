@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: WomaDriverClass.h
 // --------------------------------------------------------------------------------------------
@@ -124,6 +125,7 @@ enum SHADER_TYPE
 		SHADER_Terrain_Texture_DEMO60,						//060Terrain.hlsl ~ \DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64	#if TUTORIAL_CHAP >= 24 // TERRAIN
 		SHADER_Terrain_Texture_DEMO61,						//061Terrain.hlsl ~ \DRIVE_MY_SOURCE_CODE\WorldOfMiddleAge\WoMA_PartII\engine\024terrain_fog_slope_detail_mapping.hlsl
 
+		SHADER_FIRE,				//72
 		//SHADER_SKYTEXTURE,		//90:
 		//SHADER_REALSKYTEXTURE,	//91:
 };

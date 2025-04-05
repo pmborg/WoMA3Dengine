@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: DXshaderClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -84,6 +85,7 @@ static const D3D12_INPUT_ELEMENT_DESC colorPolygonLayout[] =
 	float3 position :	POSITION;
 	float2 texCoords :	TEXCOORD0; //22
 };*/
+							// SHADER_FIRE
 #if defined DX11 || defined DX9
 static const D3D11_INPUT_ELEMENT_DESC texturePolygonLayout11[] =
 {
@@ -121,17 +123,6 @@ static const D3D12_INPUT_ELEMENT_DESC lightPolygonLayout[] =
 	{ "NORMAL",    0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 };
 #endif
-
-// TERRAINS: G:\DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64	#if TUTORIAL_CHAP >= 13 // TERRAIN
-
-// TERRAINS: #if TUTORIAL_CHAP >= 19 (G:\DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64)
-
-// TERRAINS: G:\DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64	#if TUTORIAL_CHAP >= 21 // TERRAIN
-// TERRAINS: G:\DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64	#if TUTORIAL_CHAP >= 22 // TERRAIN
-// TERRAINS: G:\DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64	#if TUTORIAL_CHAP >= 23 // TERRAIN
-// TERRAINS: G:\DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64	#if TUTORIAL_CHAP >= 24 // TERRAIN
-
-//NEW SHADER:
 
 namespace DirectX {
 
@@ -176,6 +167,10 @@ namespace DirectX {
 		texture11_2 = NULL;
 
 #endif	
+
+#if TUTORIAL_CHAP >= 62 // FIRE
+		m_sampleStateFire = 0;
+#endif
 
 		// VERTEX CBUFFER:
 		// --------------------------------------------------------------------------------------------
@@ -326,6 +321,9 @@ namespace DirectX {
 		}
 #endif
 
+#if TUTORIAL_CHAP >= 62 // FIRE
+		SAFE_RELEASE(m_sampleStateFire);
+#endif
 	}
 
 	// ----------------------------------------------------------------------------------------------
@@ -387,6 +385,7 @@ namespace DirectX {
 		//	float2 texCoords	: TEXCOORD0; //22
 		case SHADER_TEXTURE:		//22
 		case SHADER_TEXTURE_FONT:	//27
+		case SHADER_FIRE:			//072fire.hlsl
 #if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009
 			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 			{
@@ -412,7 +411,7 @@ namespace DirectX {
 			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 			{
 				polygonLayout = &lightPolygonLayout[0];
-				numElements = _countof(lightPolygonLayout); // sizeof(lightPolygonLayout) / sizeof(lightPolygonLayout[0]);	// Get a count of the elements in the layout.			
+				numElements = _countof(lightPolygonLayout); //EQ: sizeof(lightPolygonLayout) / sizeof(lightPolygonLayout[0];	// Get a count of the elements in the layout.			
 			}
 #endif
 #if defined DX11 || defined DX9
@@ -423,8 +422,6 @@ namespace DirectX {
 			}
 #endif
 			break;
-
-//NEW SHADER:
 
 		default:
 			throw woma_exception("WRONG SHADER! (That shader is not supported yet)", __FILE__, __FUNCTION__, __LINE__);
@@ -486,7 +483,7 @@ namespace DirectX {
 #if D3D11_SPEC_DATE_YEAR == 2009
 			// Compile the vertex shader code:
 			STRING vertVer = TEXT("vs_");
-			vertVer.append(/*SystemHandle->*/driverList[SystemHandle->AppSettings->DRIVER]->ShaderModel);  //TEXT("vs_5_0")
+			vertVer.append(driverList[SystemHandle->AppSettings->DRIVER]->ShaderModel);  //TEXT("vs_5_0")
 			result = D3DX11CompileFromFile(vsFilename.c_str(), NULL, NULL, vertexHLSL.c_str(), "vs_5_0"/*vertVer.c_str()*/, D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL,
 				&vertexShaderBuffer, &errorMessage, NULL);
 			if (FAILED(result))
@@ -531,13 +528,13 @@ namespace DirectX {
 
 			std::string vertVer = "vs_";
 #if UNICODE
-			CHAR str[MAX_STR_LEN] = { 0 }; wtoa(str, (TCHAR*)/*SystemHandle->*/driverList[SystemHandle->AppSettings->DRIVER]->ShaderModel, MAX_STR_LEN); // wchar ==> char
+			CHAR str[MAX_STR_LEN] = { 0 }; wtoa(str, (TCHAR*)driverList[SystemHandle->AppSettings->DRIVER]->ShaderModel, MAX_STR_LEN); // wchar ==> char
 			vertVer.append(str);  //TEXT("vs_5_0")
 #else
-			vertVer.append(/*SystemHandle->*/driverList[SystemHandle->AppSettings->DRIVER]->ShaderModel);  //TEXT("vs_5_0")
+			vertVer.append(driverList[SystemHandle->AppSettings->DRIVER]->ShaderModel);  //TEXT("vs_5_0")
 #endif
 			LPCWSTR file = (LPCWSTR)WOMA::LoadFileW((WCHAR*)vsFilename.c_str());
-			result = D3DCompileFromFile(file, defines/*NULL*/, D3D_COMPILE_STANDARD_FILE_INCLUDE, vertexHLSL.c_str(), /*"vs_5_0"*/vertVer.c_str(), compileFlags, 0, &vertexShaderBuffer, &errorMessage);
+			result = D3DCompileFromFile(file, defines, D3D_COMPILE_STANDARD_FILE_INCLUDE, vertexHLSL.c_str(), /*"vs_5_0"*/vertVer.c_str(), compileFlags, 0, &vertexShaderBuffer, &errorMessage);
 			if (FAILED(result))
 			{
 				if (errorMessage) {
@@ -547,7 +544,7 @@ namespace DirectX {
 				return false;
 			}
 			vertVer[0] = 'p';  //TEXT("ps_5_0")
-			result = D3DCompileFromFile(file, defines/*NULL*/, D3D_COMPILE_STANDARD_FILE_INCLUDE, pixelHLSL.c_str(), /*"ps_5_0"*/vertVer.c_str(), compileFlags, 0, &pixelShaderBuffer, &errorMessage);
+			result = D3DCompileFromFile(file, defines, D3D_COMPILE_STANDARD_FILE_INCLUDE, pixelHLSL.c_str(), /*"ps_5_0"*/vertVer.c_str(), compileFlags, 0, &pixelShaderBuffer, &errorMessage);
 			if (FAILED(result))
 			{
 				WomaMessageBox((TCHAR*)errorMessage->GetBufferPointer(), TEXT("SHADER Error description :"));
@@ -948,7 +945,7 @@ namespace DirectX {
 
 			// NOTE! The run time compiler support only Shader 5.0, for more use: USE_PRECOMPILED_SHADERS option 
 			std::string vertVer = TEXT("vs_"); //cant be: STRING
-			vertVer.append(/*SystemHandle->*/driverList[SystemHandle->AppSettings->DRIVER]->szShaderModel);  //TEXT("vs_5_0")
+			vertVer.append(driverList[SystemHandle->AppSettings->DRIVER]->szShaderModel);  //TEXT("vs_5_0")
 			vertVer[4] = '_';  //TEXT("vs_5_0")
 			result = D3DCompileFromFile(vsFilename.c_str(), defines/*nullptr*/, nullptr, vertexHLSL.c_str(), ("vs_5_0")/*vertVer.c_str()*/, compileFlags, 0, &vertexShader, &errorMessage);
 			if (FAILED(result))
@@ -1260,7 +1257,21 @@ namespace DirectX {
 
 			// Create the texture sampler state:
 			result = device11->CreateSamplerState(&samplerDesc, &m_sampleState11);
-			if (FAILED(result)) { WomaFatalExceptionW(TEXT("CreateSamplerState error")); /*return false;*/ }
+			if (FAILED(result)) { WomaFatalException (TEXT("CreateSamplerState error")); /*return false;*/ }
+
+#if TUTORIAL_CHAP >= 62 // FIRE
+			D3D11_SAMPLER_DESC samplerDescFire;
+
+			//FIRE: Create a second texture sampler state description for a Clamp sampler.
+			samplerDescFire = samplerDesc;
+			samplerDescFire.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+			samplerDescFire.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+			samplerDescFire.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+
+			// Create the texture sampler state.
+			result = device11->CreateSamplerState(&samplerDescFire, &m_sampleStateFire);
+			if (FAILED(result)) { WomaFatalException (TEXT("error")); return false; }
+#endif//
 
 			// --------------------------------------------------------------------------------------------
 			// CREATE Buffer(s) DATA for "Vertex Shader"
@@ -1374,6 +1385,16 @@ namespace DirectX {
 
 		// BLOCK: VS5
 
+#if TUTORIAL_CHAP >= 62 // FIRE
+		if (m_shaderType == SHADER_FIRE)
+		{
+			dataVSptr->frameTime = frameTime;
+			dataVSptr->scrollSpeeds = scrollSpeeds;
+			dataVSptr->scales = scales;
+			//dataVSptr->padding6 = 0.0f;
+		}
+#endif
+
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 		{
@@ -1393,9 +1414,9 @@ namespace DirectX {
 
 		if (m_shaderType == SHADER_COLOR)
 			return;
-
+		// --------------------------------------------------------------------------------------------
 		// PIXEL SHADER: will need to have access to some variables also (Texturing / light parameters)
-		// ----------------------------------------------------------------------------
+		// --------------------------------------------------------------------------------------------
 		PSconstantBufferType* dataPSptr = NULL; // Use a Unique ConstantBuffer
 
 #if defined DX11 || defined DX9
@@ -1472,6 +1493,17 @@ namespace DirectX {
 		}
 #endif
 
+#if TUTORIAL_CHAP >= 62 // FIRE
+		if (m_shaderType == SHADER_FIRE)
+		{
+			dataPSptr->distortion1 = distortion1;
+			dataPSptr->distortion2 = distortion2;
+			dataPSptr->distortion3 = distortion3;
+			dataPSptr->distortionScale = distortionScale;
+			dataPSptr->distortionBias = distortionBias;
+		}
+#endif
+
 		// ----------------------------------------------------------------------------
 #if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009 && DX_ENGINE_LEVEL >= 23
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
@@ -1504,6 +1536,11 @@ namespace DirectX {
 
 			if (m_shaderType >= SHADER_TEXTURE)
 				deviceContext->PSSetSamplers(0, 1, &m_sampleState11);		// Set the Sampler state in the pixel shader (Bilinear, Trilinear: 2x, Anisotropic: 4x, 8x, 16x, ...)
+#if TUTORIAL_CHAP >= 62 // FIRE
+			if (m_shaderType == SHADER_FIRE) {
+				deviceContext->PSSetSamplers(1, 1, &m_sampleStateFire);
+			}
+#endif//
 
 			// Set CODE to Run on Shaders:
 			deviceContext->VSSetShader(m_vertexShader11, NULL, 0);		// Set the vertex code that will be used to process vertices

@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: SystemClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -983,8 +984,6 @@ bool SystemClass::LoadXmlSettings()
 		return false;
 	}
 
-	// Load and Parse XML FILE:"world.xml" the Configuration file
-	//----------------------------------------------------------------------------
 
 	SystemHandle->LandScape = (SystemHandle->AppSettings->WINDOW_WIDTH >= SystemHandle->AppSettings->WINDOW_HEIGHT) ? true : false;
 
@@ -992,6 +991,7 @@ bool SystemClass::LoadXmlSettings()
 
 	return true;
 }
+
 #endif
 
 #if CORE_ENGINE_LEVEL >= 4 && defined USE_TIMER_CLASS

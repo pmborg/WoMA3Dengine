@@ -87,14 +87,17 @@
 	#define DEMO_TITLE TEXT("07: Loading a files from engine.pck and Press [F2] for RealTime Celestial Positions of Sun and Moon accordingly with user Location")
 	#define BACKGROUND_IMAGE TEXT("engine/data/basics/logotipo_small_backgroundV2.bmp")
 #endif
+#if CORE_ENGINE_LEVEL >= 7
+	#define GEO_DATABASE TEXT("engine/data/GeoLite2-City.mmdb")
+#endif
 #if CORE_ENGINE_LEVEL >= 8
   #if defined LINUX_PLATFORM
 	#define DEMO_ROOT_DIR TEXT("/projects/LinuxWoma008/CoreEngine_Tutorials/CoreEngine_008_PAINT_REALTIME_GPS_MAP_LOCATION")
   #endif
 	#if CORE_ENGINE_LEVEL == 8
-#if !defined DEMO_LEVEL
+  #if !defined DEMO_LEVEL
 	#define SETTINGS_FILE		TEXT("settings_008.xml")
-#endif
+  #endif
 	#define DEMO_TITLE TEXT("08: From now on: PRESS [F3] for: [REAL TIME MAP] user location.")
 	#endif
 	#define BACKGROUND_IMAGE TEXT("engine/data/basics/logotipo_small_backgroundV2.bmp")
@@ -469,9 +472,13 @@
 	#define BILLBOARD_FENCE_MODEL TEXT("engine/data/scene70Bill/fence.obj")
 #endif
 #if DX_ENGINE_LEVEL == 72
-	#define DEMO_TITLE TEXT("72: FIRE")
+	#define DEMO_TITLE TEXT("72: FIRE (Add 3D Sound / Effects)")
 	#define WORLD_XML TEXT("world_72.xml")
 #endif
+#if DX_ENGINE_LEVEL >= 72
+	#define BILLBOARD_FIRE_MODEL TEXT("engine/data/scene72Fire/072fire.obj")
+#endif
+
 #if DX_ENGINE_LEVEL == 73
 	#define DEMO_TITLE TEXT("73: WINDY GRASS")
 	#define WORLD_XML TEXT("world_73.xml")

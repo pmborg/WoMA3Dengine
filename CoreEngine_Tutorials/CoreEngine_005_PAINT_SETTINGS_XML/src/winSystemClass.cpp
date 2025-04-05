@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: winSystemClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -152,9 +153,10 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	//	WinSystemClass::WinSystemClass()		Run: 3th - Start Timers - WinSystemClass::WinSystemClass_init();
 	IF_NOT_RETURN_FALSE(APPLICATION_CORE_SYSTEM()); // MyRegisterClass()
 
-#if defined USE_TINYXML_LOADER // Must be before: ApplicationInitMainWindow()
+#if defined USE_TINYXML_LOADER				// Must be before: ApplicationInitMainWindow()
 	IF_NOT_RETURN_FALSE(LoadXmlSettings());	// XML: Load Application Settings: "settings.xml", pickup "Driver" to Use.
 #endif
+
 
 #if defined USE_SYSTEM_CHECK // BEFORE: ApplicationInitMainWindow()
 	IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());		// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 
@@ -166,6 +168,7 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 #if defined USE_TIMER_CLASS									// WINDOWS AFTER: ApplicationInitMainWindow()
 	StartTimer();											// START-TIMERS: ("Window Title" refresh & Real-Time Weather refresh)
 #endif
+
 
 // ########################################### LOAD DRIVERS ###########################################
 	

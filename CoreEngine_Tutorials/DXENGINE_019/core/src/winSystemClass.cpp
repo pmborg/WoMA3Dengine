@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: winSystemClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -210,9 +211,10 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	//	ApplicationClass::ApplicationClass()	Run: 2nd - User: level  - ApplicationClass::Start()
 	//	WinSystemClass::WinSystemClass()		Run: 3th - Start Timers - WinSystemClass::WinSystemClass_init();
 
-#if defined USE_TINYXML_LOADER // Must be before: ApplicationInitMainWindow()
+#if defined USE_TINYXML_LOADER				// Must be before: ApplicationInitMainWindow()
 	IF_NOT_RETURN_FALSE(LoadXmlSettings());	// XML: Load Application Settings: "settings.xml", pickup "Driver" to Use.
 #endif
+
 
 #ifdef INTRO_DEMO
 	SystemHandle->m_Application->ClearColor[0] = 0;
@@ -236,6 +238,7 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 #if defined USE_TIMER_CLASS									// WINDOWS AFTER: ApplicationInitMainWindow()
 	StartTimer();											// START-TIMERS: ("Window Title" refresh & Real-Time Weather refresh)
 #endif
+
 
 // ########################################### LOAD DRIVERS ###########################################
 	#if CORE_ENGINE_LEVEL >= 10 && defined OPENGL3	

@@ -463,6 +463,7 @@
 	#if DX_ENGINE_LEVEL >= 72
 		#define TUTORIAL_CHAP 62
 		#define BILLBOARD_FOR_FIRE
+		#define SOUND3D	//3D Sound Effects
 	#endif
 	#if DX_ENGINE_LEVEL >= 73
 		#define TUTORIAL_CHAP 63

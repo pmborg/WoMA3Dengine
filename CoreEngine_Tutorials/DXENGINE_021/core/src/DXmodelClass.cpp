@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: DXmodelClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -800,6 +801,7 @@ void DXmodelClass::SetGeometryBuffers(void* deviceContext)
 		case SHADER_TEXTURE:
 		case SHADER_TEXTURE_FONT:
 		case SHADER_TEXTURE_WATER:
+		case SHADER_FIRE:
 			stride[0] = sizeof(DXtextureVertexType); break;
 
 		case SHADER_TEXTURE_LIGHT:						//23

@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: DXshaderClass.h
 // --------------------------------------------------------------------------------------------
@@ -138,6 +139,15 @@ private:
 		float		vsPAD2;
 		float		vsPAD3;
 		float		vsPAD4;
+
+		//FIRE:
+	#if TUTORIAL_CHAP >= 62 // FIRE
+		//VS:
+		float		frameTime;
+		XMFLOAT3	scrollSpeeds;
+		XMFLOAT3	scales;
+		float		padding6;
+	#endif
 	};
 
 	// PIXEL CBUFFER:
@@ -181,6 +191,16 @@ private:
 		BOOL		castShadow;
 		XMFLOAT3	specularColor;
 		float		nShininess;
+
+		//FIRE:
+	#if TUTORIAL_CHAP >= 62 // FIRE
+		//PS:
+		XMFLOAT2	distortion1;
+		XMFLOAT2	distortion2;
+		XMFLOAT2	distortion3;
+		float		distortionScale;
+		float		distortionBias;
+	#endif
 	};
 
 
@@ -272,6 +292,10 @@ public:
 			ID3D11Buffer*		m_PixelShaderBuffer11 = NULL;
 			ID3D11SamplerState* m_sampleState11 = NULL;	// Resource: "Textures" States
 
+		#if TUTORIAL_CHAP >= 62 // FIRE
+			ID3D11SamplerState* m_sampleStateFire;
+		#endif
+
 			ID3D11ShaderResourceView*	texture11 = NULL;	// 21
 			ID3D11ShaderResourceView*	texture11_2 = NULL;	// 43: Alfa Map
 		#endif
@@ -288,7 +312,7 @@ public:
 		// Internal Shader VARs to Copy to Buffers: VS/PS
 		// --------------------------------------------------------------------------------------------
 		// BLOCK1:
-		XMFLOAT4	pixelColor;		
+		XMFLOAT4	pixelColor = {};
 
 		// BLOCK2:
 		BOOL		hasTexture = false;
@@ -297,13 +321,13 @@ public:
 		BOOL		isFontShader = false;
 
 		// BLOCK3:
-		XMFLOAT4	ambientColor;	// LIGHT: Ka
-		XMFLOAT4	diffuseColor;	// LIGHT: Kd
-		XMFLOAT4	emissiveColor;	// LIGHT: Ke
+		XMFLOAT4	ambientColor = {};	// LIGHT: Ka
+		XMFLOAT4	diffuseColor = {};	// LIGHT: Kd
+		XMFLOAT4	emissiveColor = {};	// LIGHT: Ke
 		//			lightDirection (AUTO)
 
 		// BLOCK4:
-		bool		hasColorMap;			// 66
+		bool		hasColorMap=false;			// 66
 		float		lightType = 0;			// Light Type
 		bool		isDay = 0;		// Future
 		float		shaderTypeParameter = 0;// Future
@@ -324,14 +348,22 @@ public:
 
 		// BLOCK7:
 		// cameraPosition (AUTO)
-		BOOL		castShadow;
-		XMFLOAT3	specularColor;	// 44:
+		BOOL		castShadow=false;
+		XMFLOAT3	specularColor = {};	// 44:
 		float		nShininess = 0;		// 44:
 
-		float		VSshaderType = 0;		// Future
-		//float	vsPAD2;
-		//float	vsPAD3;
-		//float	vsPAD4;
+		float		VSshaderType = 0;	// Future
+		//float		vsPAD2;				// Future
+		//float		vsPAD3;				// Future
+		//float		vsPAD4;				// Future
+
+		//FIRE:
+#if TUTORIAL_CHAP >= 62 // FIRE
+		float frameTime;
+		XMFLOAT3 scrollSpeeds, scales;
+		XMFLOAT2 distortion1, distortion2, distortion3;
+		float distortionScale, distortionBias;
+#endif//
 
 		// --------------------------------------------------------------------------------------------
 		// Internal Shader VARs to Copy to Buffers: VS

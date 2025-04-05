@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: SystemClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -981,6 +982,20 @@ bool SystemClass::LoadXmlSettings()
 		return false;
 	}
 
+
+	SystemHandle->LandScape = (SystemHandle->AppSettings->WINDOW_WIDTH >= SystemHandle->AppSettings->WINDOW_HEIGHT) ? true : false;
+
+	//FORCE LANDSCAPE
+
+	return true;
+}
+
+bool SystemClass::LoadXmlWorld()
+{
+	WOMA_LOGManager_DebugMSG("===============================================================================\n");
+	WOMA_LOGManager_DebugMSGAUTO(TEXT("LOAD XML WORLD\n"));
+	WOMA_LOGManager_DebugMSG("===============================================================================\n");
+
 	// Load and Parse XML FILE:"world.xml" the Configuration file
 	//----------------------------------------------------------------------------
 	XML_WORLD_FILE = WOMA::PUBLIC_DOCUMENTS;
@@ -992,12 +1007,9 @@ bool SystemClass::LoadXmlSettings()
 		return false;
 	}
 
-	SystemHandle->LandScape = (SystemHandle->AppSettings->WINDOW_WIDTH >= SystemHandle->AppSettings->WINDOW_HEIGHT) ? true : false;
-
-	//FORCE LANDSCAPE
-
 	return true;
 }
+
 #endif
 
 #if CORE_ENGINE_LEVEL >= 4 && defined USE_TIMER_CLASS

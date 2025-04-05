@@ -32,9 +32,9 @@
 #endif
 
 #if defined OPENGL3
-void processNormalKeys(unsigned char key, int x, int y) {
-
-	printf("key: ", key);
+void processNormalKeys(unsigned char key, int x, int y) 
+{
+	//printf("key: %c", key);
 	if (key == 27)
 		DXsystemHandle->m_Input->m_keyboardState[DIK_ESCAPE] = 0x80;
 	else if (key == 'r') {
@@ -52,7 +52,6 @@ void processNormalKeys(unsigned char key, int x, int y) {
 
 void processSpecialKeys(int key, int x, int y) {
 
-	int mod;
 	switch (key) {
 	case GLUT_KEY_F1:
 		DXsystemHandle->m_Input->m_keyboardState[DIK_F1] = 0x80;
@@ -161,8 +160,11 @@ HRESULT result;
 
 	if ( SystemHandle->AppSettings->FULL_SCREEN )
 		result = m_keyboard->SetCooperativeLevel(SystemHandle->m_hWnd, DISCL_FOREGROUND | DISCL_EXCLUSIVE);
-	else
+	else {
 		result = m_keyboard->SetCooperativeLevel(SystemHandle->m_hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
+		if (FAILED(result))
+			result = m_keyboard->SetCooperativeLevel(GetDesktopWindow(), DISCL_NONEXCLUSIVE);
+	}
 
 	IF_FAILED_RETURN_FALSE (result);
 
@@ -192,6 +194,8 @@ HRESULT result;
 
 	// Set the cooperative level of the mouse to share with other programs.
 	result = m_mouse->SetCooperativeLevel(SystemHandle->m_hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
+	if (FAILED(result))
+		result = m_mouse->SetCooperativeLevel(GetDesktopWindow(), DISCL_NONEXCLUSIVE);
 
 	// Once the mouse is setup we acquire it so that we can begin using it.
 	// Acquire the mouse.
