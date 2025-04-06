@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: soundclass.h
 // --------------------------------------------------------------------------------------------
@@ -43,7 +44,7 @@
 #include <dsound.h>
 #include <stdio.h>
 
-
+extern IDirectSound8* m_DirectSound;
 ///////////////////////////////////////////////////////////////////////////////
 // Class name: SoundClass
 ///////////////////////////////////////////////////////////////////////////////
@@ -96,7 +97,6 @@ private:
 	void ShutdownWaveFile(IDirectSoundBuffer8**);
 #endif
 
-	IDirectSound8* m_DirectSound = NULL;
 	IDirectSoundBuffer* m_primaryBuffer = NULL;
 	IDirectSoundBuffer8* m_secondaryBuffer1 = NULL;	// For MUSIC
 

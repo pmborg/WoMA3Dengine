@@ -81,28 +81,19 @@ ID3D11ShaderResourceView* billFileLoaded[] =
 
 TCHAR billFileName[][MAX_STR_LEN] = 
 {
-	BILL_TREE_0,	//0 TREEs
+	//TREEs: 6
+	BILL_TREE_0,	//0 
 	BILL_TREE_1,	//1
 	BILL_TREE_2,	//2
 	BILL_TREE_3,	//3
 	BILL_TREE_4,	//4
 	BILL_TREE_5,	//5
 
-	BILL_FLOWER_0,	//6	//FLOWERs
-	BILL_FLOWER_1,	//7
-	BILL_FLOWER_2,	//8
-	BILL_FLOWER_3,	//9 
-	BILL_FLOWER_4,	//10
-
-	BILL_BUSH_0,	//11
-	BILL_BUSH_1,	//12
-	BILL_BUSH_2,	//13
-	BILL_BUSH_3,	//14
-	BILL_BUSH_4		//15
-
 };
 
-#define borderLimit 12 // Border Limit without Bills
+#define TOTAL_STATIC (6+5+5)
+
+#define borderLimit 13 // Border Limit without Bills
 
 xmlobj3d* BillClass::fillxml(int id, UINT type)
 {
@@ -136,7 +127,8 @@ xmlobj3d* BillClass::fillxml(int id, UINT type)
 		}
 
 		xmlobj.meshSRV = billFileLoaded[type];
-		strcpy_s(xmlobj.filename, 256, BILLBOARD_MODEL);
+		if (m_Trees[id].type < TOTAL_STATIC)
+			strcpy_s(xmlobj.filename, 256, BILLBOARD_MODEL);		//engine/data/scene70Bill/060square.obj
 	}
 	else
 		xmlobj.meshSRV = NULL;
