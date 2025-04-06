@@ -97,13 +97,6 @@ TCHAR billFileName[][MAX_STR_LEN] =
 	BILL_FLOWER_3,	//9 
 	BILL_FLOWER_4,	//10
 
-	//BUSHs: 5
-	BILL_BUSH_0,	//11 
-	BILL_BUSH_1,	//12
-	BILL_BUSH_2,	//13
-	BILL_BUSH_3,	//14
-	BILL_BUSH_4,	//15
-
 };
 
 #define TOTAL_STATIC (6+5+5)
