@@ -39,7 +39,10 @@ Try to Change the driver on the fly without the need of close and open the Appli
 <h2>3D - BILLBOARD TUTORIAL SERIES</h2>
 <hr>
 
-- <b>DX73: WINDY GRASS</b><br> 
+- <b>DX73: WINDY GRASS (soon)</b><br>
+ 
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_073.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_073.png)	
+
 <hr> 
 
 - <b>DX72: FIRE (Add 3D Sound / Effects.)</b><br>
