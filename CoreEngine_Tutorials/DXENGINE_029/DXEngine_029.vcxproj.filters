@@ -70,6 +70,9 @@
     <Filter Include="src-basic-level\light">
       <UniqueIdentifier>{ba95f253-3f62-4670-a3f8-18c114a0b116}</UniqueIdentifier>
     </Filter>
+    <Filter Include="HLSL">
+      <UniqueIdentifier>{444e4c56-aadd-4951-b2e3-785e0af3a5cc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\include\main.h">
@@ -575,5 +578,19 @@
     <ResourceCompile Include="DXEngine_029.rc">
       <Filter>src-basic-level\RESOURCE</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="hlsl\021Color.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="hlsl\022Texture.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="hlsl\023Light.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="hlsl\027Texture.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

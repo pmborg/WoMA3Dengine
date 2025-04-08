@@ -5,17 +5,5 @@
         <initPos x="0" y="2" z="-28"/>
         <initRot x="0" y="0" z="0"/>
     </camera>
-  <!-- ENGINE LVL 22-->
-  <!-- Texture Filtering: -->
-  <!-- MSAA: ON -->
-  <!--   1 - Point filtering (default ==> all = false) -->
-  <!--   2 - Bilinear filtering -->
-  <!--   3 - Trilinear filtering -->
-  <!--   4 - Anisotropic filtering -->
-  <texture  maxTexture="1024"
-            msaa="true"
-            bilinear="false"
-            trilinear="false"
-            Anisotropic="false"
-            AnisotropicLevel="16" />
+    <texture maxTexture="1024" bilinear="false" trilinear="false" Anisotropic="false" AnisotropicLevel="16"/>
 </generalsettings>

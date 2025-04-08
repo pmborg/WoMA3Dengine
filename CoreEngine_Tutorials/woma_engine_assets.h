@@ -233,6 +233,7 @@
 	#define DEMO_TITLE TEXT("The DX direct input, the Sky Camera and the Sphere Skydome")
 	#define WORLD_XML TEXT("world_28.xml")
 #endif
+
 #if DX_ENGINE_LEVEL >= 29
 	#if DX_ENGINE_LEVEL == 29
 	#if (!defined DEMO_LEVEL) || DX_ENGINE_LEVEL == 29
@@ -332,6 +333,7 @@
 	#define DEMO_TITLE TEXT("WORLD.XML: load W3D and use SHADOW INSTANCES with ROTATION per instance")
 	#define WORLD_XML TEXT("world_42.xml")
 #endif
+
 #if DX_ENGINE_LEVEL >= 49 
 	#if DX_ENGINE_LEVEL == 49
 	#define DEMO_TITLE TEXT("49:TERRAIN: Generate under water terrain.")
@@ -385,18 +387,6 @@
 #endif
 
 //------------------------------------------------------------------------------------------------------------------
-//BASED ON: 
-#if DX_ENGINE_LEVEL >= 56 //TUTORIAL_CHAP 19 - TERRAIN Texture Mapping ........................ 019terrain_fog_slope_detail_mapping.hlsl
-	//TODO!!half done
-#endif
-
-#if DX_ENGINE_LEVEL >= 57 //TUTORIAL_CHAP 21 - TERRAIN Bump Mapping ........................... 021terrain.hlsl
-#endif
-#if DX_ENGINE_LEVEL >= 58 //TUTORIAL_CHAP 22 - TERRAIN Texture + Alpha + Bump Mapping ......... 022terrain_fog_slope_detail_mapping.hlsl
-#endif
-
-#if DX_ENGINE_LEVEL >= 59 //TUTORIAL_CHAP 23 - TERRAIN Text. + Alpha + Bump + Light Mapping ... 023terrain_fog_slope_detail_mapping.hlsl
-#endif
 
 #if DX_ENGINE_LEVEL == 60
 	#define DEMO_TITLE TEXT("60: TERRAIN: 256x256 multi-layer")
@@ -456,12 +446,6 @@
 	#define BILL_FLOWER_2 TEXT("engine/data/scene70Bill/060flor1.png") 		// 8
 	#define BILL_FLOWER_3 TEXT("engine/data/scene70Bill/060girasol.png") 	// 9 
 	#define BILL_FLOWER_4 TEXT("engine/data/scene70Bill/060flor2.png") 		//10
-
-	#define BILL_BUSH_0 TEXT("engine/data/scene70Bill/408742.png") 			//11
-	#define BILL_BUSH_1 TEXT("engine/data/scene70Bill/408742B.png") 		//12
-	#define BILL_BUSH_2 TEXT("engine/data/scene70Bill/408742C.png") 		//13
-	#define BILL_BUSH_3 TEXT("engine/data/scene70Bill/408742D.png") 		//14
-	#define BILL_BUSH_4 TEXT("engine/data/scene70Bill/408742E.png") 		//15
 #endif
 
 #if DX_ENGINE_LEVEL == 71
@@ -482,4 +466,12 @@
 #if DX_ENGINE_LEVEL == 73
 	#define DEMO_TITLE TEXT("73: WINDY GRASS")
 	#define WORLD_XML TEXT("world_73.xml")
-#endif																																	
+#endif																															
+#if DX_ENGINE_LEVEL >= 73
+	#define BILLBOARD_GRASS_MODEL TEXT("engine/data/scene73grass/grass.obj")
+	#define BILL_GRASS_0 TEXT("engine/data/scene70Bill/408742.png") 		//16
+	#define BILL_GRASS_1 TEXT("engine/data/scene70Bill/408742B.png") 		//17
+	#define BILL_GRASS_2 TEXT("engine/data/scene70Bill/408742C.png") 		//18
+	#define BILL_GRASS_3 TEXT("engine/data/scene70Bill/408742D.png") 		//19
+	#define BILL_GRASS_4 TEXT("engine/data/scene70Bill/408742E.png") 		//20
+#endif

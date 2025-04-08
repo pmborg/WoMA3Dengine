@@ -36,6 +36,9 @@
     <Filter Include="src\utils">
       <UniqueIdentifier>{76cf8724-99d0-4b38-bf5b-54e7fdbe122e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="HLSL">
+      <UniqueIdentifier>{b25d950f-e340-4e01-95e9-465b9e2ac1aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\include\ApplicationClass.h">
@@ -468,5 +471,16 @@
   <ItemGroup>
     <Xml Include="settings.xml" />
     <Xml Include="world.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="hlsl\021Color.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="hlsl\022Texture.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="hlsl\023Light.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

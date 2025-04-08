@@ -470,8 +470,5 @@
     <FxCompile Include="hlsl\023Light.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
-    <FxCompile Include="hlsl\cbuffer.hlsl">
-      <Filter>HLSL</Filter>
-    </FxCompile>
   </ItemGroup>
 </Project>

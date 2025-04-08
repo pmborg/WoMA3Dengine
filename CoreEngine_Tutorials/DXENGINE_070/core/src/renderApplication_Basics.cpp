@@ -209,13 +209,8 @@ void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, 
 			if (rz)
 				model->rotateZ(rz);
 	}// non-Instancing
- 
-
-
 
 	model->translation(positionX, positionY, positionZ);
-																
-														   
 
 	if (pass == 0)
 		totalRendered++;

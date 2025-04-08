@@ -68,16 +68,6 @@ ID3D11ShaderResourceView* billFileLoaded[] =
 	NULL,//10
 
 	NULL,//11
-	NULL,//12
-	NULL,//13
-	NULL,//14
-	NULL,//15
-/*
-	NULL,//16
-	NULL,//17
-	NULL,//18
-	NULL,//19
-*/
 };
 
 TCHAR billFileName[][MAX_STR_LEN] = 
@@ -99,8 +89,6 @@ TCHAR billFileName[][MAX_STR_LEN] =
 
 };
 
-#define TOTAL_STATIC (6+5+5)
-
 #define borderLimit 13 // Border Limit without Bills
 
 xmlobj3d* BillClass::fillxml(int id, UINT type)
@@ -109,6 +97,7 @@ xmlobj3d* BillClass::fillxml(int id, UINT type)
 
 	static xmlobj3d xmlobj;
 	xmlobj.id = id;
+	xmlobj.type = type;
 	xmlobj.fromPage = 0;
 	xmlobj.toPage = 0;
 	xmlobj.depend = 0;
@@ -135,7 +124,7 @@ xmlobj3d* BillClass::fillxml(int id, UINT type)
 		}
 
 		xmlobj.meshSRV = billFileLoaded[type];
-		if (m_Trees[id].type < TOTAL_STATIC)
+		if (m_Trees[id].type < 11)
 			strcpy_s(xmlobj.filename, 256, BILLBOARD_MODEL);		//engine/data/scene70Bill/060square.obj
 	}
 	else
@@ -166,7 +155,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 		float PosX = 0;
 		float PosZ = 0;
 		while (height <= 0  || height > 5.0f
-				|| (m_Trees[i].vPos.x >= 29 && m_Trees[i].vPos.x <= 49) && (m_Trees[i].vPos.z >= 22 && m_Trees[i].vPos.z <= 38) //out of house (compound)
+				|| (m_Trees[i].vPos.x >= 28 && m_Trees[i].vPos.x <= 52) && (m_Trees[i].vPos.z >= 21 && m_Trees[i].vPos.z <= 38) //out of house (compound)
 				|| (m_Trees[i].vPos.x < borderLimit || m_Trees[i].vPos.x > m_terrainWidth - borderLimit) 
 				|| (m_Trees[i].vPos.z < borderLimit || m_Trees[i].vPos.z > m_terrainHeight - borderLimit) )
 		{
@@ -180,7 +169,6 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 
 		// Tree.type: (type of tree)
 		type = rand () % (billNames_length);
-
 		// Tree.scale:
 		float scale = 0;
 		if (type >= 6 && type < 11)
@@ -208,7 +196,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 		m_Trees[i].scale = scale;		
 		m_Trees[i].vPos.y = height;
 
-		xmlobj3d* xmlobj = fillxml(i, type);
+		xmlobj3d* xmlobj = fillxml(i, m_Trees[i].type);
 		SystemHandle->xml_loader.theWorld.push_back(*xmlobj);
 	}
 	//N_BILLBOARD
@@ -229,7 +217,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 				m_Trees[i].vPos.z = 22 + z * 14.0f;
 				m_Trees[i].vPos.y = mainTerrain->getTerrainHeight(TERRAIN_ID, m_Trees[i].vPos.x, m_Trees[i].vPos.z);
 
-				xmlobj3d* xmlobj = fillxml(i, type);
+				xmlobj3d* xmlobj = fillxml(i, 100);
 				SystemHandle->xml_loader.theWorld.push_back(*xmlobj);
 
 				if (i++ > N_BILLBOARD + N_FENCES + N_FIRE)
@@ -250,7 +238,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 			m_Trees[i].vPos.z = 23 + y * 1.33f;
 			m_Trees[i].vPos.y = mainTerrain->getTerrainHeight(TERRAIN_ID, m_Trees[i].vPos.x, m_Trees[i].vPos.z);
 
-			xmlobj3d* xmlobj = fillxml(i, type);
+			xmlobj3d* xmlobj = fillxml(i, 100);
 			SystemHandle->xml_loader.theWorld.push_back(*xmlobj);
 
 			if (i++ > N_BILLBOARD + N_FENCES)

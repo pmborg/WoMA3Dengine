@@ -36,13 +36,11 @@
 	//#define LEVEL  4 // FOR WINDOWS: "F1" on LINUX (REPORT.txt only!) TINYXML + OS_KEYS + SYSTEM_CHECK + CHECK_IO + TIMER + The User International Language 
 	#endif
 
-
 	//#define LEVEL  5 // FOR WINDOWS: "F6" GAME SETUP + MAIN WINDOW! (with resize)
 	//#define LEVEL  6 // FOR WINDOWS: [TOOL] IDEA: C:\WoMA3Dengine\windows_engine\windows.pack + windows.pck (IDEA)
 	//#define LEVEL  7 // FOR WINDOWS: "F2" Load engine.pck (IDEA+ZIP) use image on background + RealTime Celestial Positions of Sun and Moon
 	//#define LEVEL  8 // FOR WINDOWS: "F3" REAL TIME MAP GEOPOSITION (initWorld), test with VPN!
 	//#define LEVEL  9 // FOR WINDOWS: "F4" REAL TIME Wheather
-
 
 	#if defined WINDOWS_PLATFORM || defined LINUX_PLATFORM || defined ANDROID_PLATFORM
 	//--------------------------------------------------------------------------------------------------------------------------
@@ -130,8 +128,8 @@
 	
 	//#define LEVEL 70  // BILLBOARD for Trees / Flowers, (LIGHT and Fog) : .. / bill / billClass.*, tree.h
 	//#define LEVEL 71  // BILLBOARD for FENCES, (LIGHT and Fog) : ......... / bill / billClass.*, tree.h
-	#define LEVEL 72    // FIRE ........................................... / bill / billClass.*, tree.h
-	//#define LEVEL 73  // WINDY GRASS .................................... / bill / billClass.*, tree.h																									  
+	//#define LEVEL 72    // FIRE ........................................... / bill / billClass.*, tree.h
+	#define LEVEL 73  // WINDY GRASS .................................... / bill / billClass.*, tree.h																									  
 	
 	/////////////////////////////////////////////
 	//#define LEVEL 75	// MD5 (Animated + Character using HLSL)

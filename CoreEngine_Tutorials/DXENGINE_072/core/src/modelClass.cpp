@@ -1247,6 +1247,15 @@ bool ModelClass::CreateObject(void* XmodelClass, TCHAR* objectName, void* g_driv
 				obj3d.subsetMaterialArray.push_back(j);
 		}
 	}
+
+	// --------------------------------------------------------------------------------------------
+	// Post Read Actions:
+	// --------------------------------------------------------------------------------------------
+#if defined SAVEW3D
+	obj3d.fileNameOnly = WOMA::LoadFile((TCHAR*)filename.c_str());
+	//obj3d.fileNameOnly.replace(obj3d.fileNameOnly.size() - 3, 3, TEXT("W3D"));
+#endif
+
 	////////////////////////////////////////////////////////////////////
 	//MATERIALS DONE!
 	////////////////////////////////////////////////////////////////////
@@ -1257,10 +1266,6 @@ bool ModelClass::CreateObject(void* XmodelClass, TCHAR* objectName, void* g_driv
 	else
 		((GLmodelClass*)XmodelClass)->obj3d = obj3d;
 	#endif
-
-// --------------------------------------------------------------------------------------------
-// Post Read Actions:
-// --------------------------------------------------------------------------------------------
 
 	///////////////////////// COMPUTE NORMALS //////////////////////////
 	// If computeNormals was set to true then we will create our own

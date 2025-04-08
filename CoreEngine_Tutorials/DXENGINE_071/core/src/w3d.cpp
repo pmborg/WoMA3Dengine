@@ -72,7 +72,7 @@ namespace DirectX
 		//------------------------------------------------------------------------------------------------------------------
 		if (ModelShaderType == SHADER_TEXTURE_LIGHT_RENDERSHADOW ||
 			ModelShaderType == SHADER_TEXTURE_LIGHT_INSTANCED ||
-			ModelShaderType == SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED)
+			ModelShaderType == SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED )
 			ModelShaderType = SHADER_TEXTURE_LIGHT;
 
 		if (ModelShaderType == SHADER_NORMAL_BUMP_INSTANCED)
@@ -241,7 +241,7 @@ namespace DirectX
 			obj3dfile.read((char*)&modelColorVertex_[0], W3D.verticesCount * W3D.size_verticesCount /*sizeof(ModelColorVertexType)*/);
 			modelColorVertex = &modelColorVertex_;
 		}
-		else if (strcmp(W3D.version, "W3D v1.1") == 0)	//22
+		else if ((strcmp(W3D.version, "W3D v1.1") == 0) || (strcmp(W3D.version, "W3D v2.9") == 0))	//22 || FIRE
 		{
 			modelTextureVertex_.resize(m_vertexCount);
 			obj3dfile.read((char*)&modelTextureVertex_[0], W3D.verticesCount * W3D.size_verticesCount /*sizeof(ModelTextureVertexType)*/);
@@ -316,18 +316,29 @@ namespace DirectX
 		{
 			for (UINT i = 0; i < W3D.texturenameCount; i++)
 			{
-				STRING meshtexture = WOMA::LoadFile((TCHAR*)obj3d.textureNameArray[i].c_str());
+				STRING textureFilename;
+				// Get full pathname for this texture:
+				STRING fileNamePath = (TCHAR*)obj3d.textureNameArray[i].c_str();
+				STRING pathtoengine = TEXT("../");
+				if (fileNamePath.substr(0, 3) != pathtoengine)
+					textureFilename = WOMA::LoadFile((TCHAR*)fileNamePath.c_str());
+				else
+					textureFilename = (TCHAR*)fileNamePath.c_str();
 
 #if !defined(STANDALONE)
 				ID3D11ShaderResourceView* tempMeshSRV = NULL;
 				HRESULT hr = S_OK;
-
-				LOADTEXTURE(meshtexture.c_str(), tempMeshSRV);
+				if (textureFilename.find(TEXT("../none")) != 0 && textureFilename.find(TEXT("../"))) //dont load on special cases (like billboards)
+				{
+				LOADTEXTURE(textureFilename.c_str(), tempMeshSRV);
 				//DX11
 				if (SUCCEEDED(hr))
 					meshSRV11.push_back(tempMeshSRV);		                //[4]
 				else
 					return false;
+				}
+				else
+					meshSRV11.push_back(NULL); //on special cases (like billboards)
 #endif
 			}
 		}
@@ -337,16 +348,22 @@ namespace DirectX
 #if !defined(STANDALONE)
 		if (strcmp(W3D.version, "W3D v1.0") == 0)	//21 COLOR
 			LoadColor((TCHAR*)filename.c_str(), g_driver, shader_type, modelColorVertex, &obj3d.indices32, instanceCount);
-
+		else
 		if (strcmp(W3D.version, "W3D v1.1") == 0)	//22 TEXTURE
 			LoadTexture((TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, modelTextureVertex, &obj3d.indices32, instanceCount);
-
+		else
 		if (strcmp(W3D.version, "W3D v1.2") == 0)	//23 LIGHT
 			LoadLight((TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, modelTextureLightVertex, &obj3d.indices32, instanceCount);
-
+		else
 		if (strcmp(W3D.version, "W3D v1.3") == 0)	//35
 			LoadBump((TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, modelNormalBumpVertex, &obj3d.indices32, instanceCount);
-
+		else
+		if (strcmp(W3D.version, "W3D v2.9") == 0)	// FIRE
+			LoadTexture((TCHAR*)filename.c_str(), g_driver, SHADER_FIRE, &obj3d.textureNameArray, modelTextureVertex, &obj3d.indices32, instanceCount);
+		else
+		{			
+			Sleep(1); /////
+		}
 		// "W3D v1.4"	//36
 #endif
 

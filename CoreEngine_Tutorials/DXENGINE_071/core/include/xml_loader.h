@@ -176,6 +176,7 @@ typedef struct {
 	bool castShadow = false;	//41
 	bool renderShadows = false;	//41
 #endif
+	UINT type = 0;
 	ID3D11ShaderResourceView* meshSRV;
 } xmlobj3d;
 
