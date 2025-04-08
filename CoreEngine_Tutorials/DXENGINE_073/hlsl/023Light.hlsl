@@ -78,8 +78,17 @@ PSIn MyVertexShader023Light(VSIn input)
 {
 	PSIn output;
 	float4 cameraPosition;
+   
+    if (VS_USE_WVP) {
+	output.position = mul(float4(input.position, 1), WVP);	// Calculate the position of the vertex against the world, view, and projection matrices
+} else {
+	float4 position = float4(input.position, 1);
+	position = mul(position, worldMatrix);
+	position = mul(position, view);			//viewMatrix
+	position = mul(position, projection);	//projectionMatrix
+	output.position = position;
+}
 
-    
     if (isAnimatedBill)
     {
         output.position.x += sin(vsframeTime * 100) * (1 - input.texCoords.y) / 200;
@@ -97,16 +106,6 @@ PSIn MyVertexShader023Light(VSIn input)
         */
     }
     
-    if (VS_USE_WVP) {
-	output.position = mul(float4(input.position, 1), WVP);	// Calculate the position of the vertex against the world, view, and projection matrices
-} else {
-	float4 position = float4(input.position, 1);
-	position = mul(position, worldMatrix);
-	position = mul(position, view);			//viewMatrix
-	position = mul(position, projection);	//projectionMatrix
-	output.position = position;
-}
-
 	//22: TEXTURE: Store the texture coordinates for the pixel shader:
 	output.texCoords = input.texCoords;
 

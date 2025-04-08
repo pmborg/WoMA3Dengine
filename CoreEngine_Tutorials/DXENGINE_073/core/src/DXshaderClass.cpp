@@ -1635,11 +1635,11 @@ namespace DirectX {
 
 		else if (isAnimatedBill)
 		{
-			//frameTime += 0.001;
-			//if (frameTime > 100)
-			//	frameTime = 0;
-			//dataVSptr->frameTime = frameTime;
-			dataVSptr->frameTime = (float)(SystemHandle->m_Application->dt);	// MOVIMENT FORMULA!
+			frameTime += 0.001;
+			if (frameTime > 100)
+				frameTime = 0;
+			dataVSptr->frameTime = frameTime;
+			//dataVSptr->frameTime = (float)(SystemHandle->m_Application->dt);	// MOVIMENT FORMULA!
 		}
 		dataVSptr->isAnimatedBill = isAnimatedBill;
 
