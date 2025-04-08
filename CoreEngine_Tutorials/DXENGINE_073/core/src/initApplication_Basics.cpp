@@ -682,7 +682,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 
 #if defined USE_ASTRO_CLASS && defined USE_REAL_SUNLIGHT_DIRECTION
 	Calc3DSunMoonPosition();
-	//if (WOMA::game_state == GAME_STOP) return false;
 #endif
 
 	//LIGHT ////////////////////////////////////////////////////////////////////////////////////////////////////////

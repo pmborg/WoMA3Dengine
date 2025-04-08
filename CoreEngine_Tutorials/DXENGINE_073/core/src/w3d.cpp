@@ -362,7 +362,7 @@ namespace DirectX
 			LoadTexture((TCHAR*)filename.c_str(), g_driver, SHADER_FIRE, &obj3d.textureNameArray, modelTextureVertex, &obj3d.indices32, instanceCount);
 		else
 		{			
-			Sleep(1); /////
+			return false;
 		}
 		// "W3D v1.4"	//36
 #endif

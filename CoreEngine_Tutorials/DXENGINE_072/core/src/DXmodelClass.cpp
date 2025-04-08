@@ -780,6 +780,7 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 			meshSRV_size = (UINT) meshSRV.size();
 		}
 		#endif
+
 		//3D: Create the texture object for this model:
 		if (meshSRV_size == 0)
 		{

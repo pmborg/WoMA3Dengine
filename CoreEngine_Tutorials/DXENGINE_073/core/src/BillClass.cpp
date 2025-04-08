@@ -269,18 +269,35 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 	if (i++ > N_BILLBOARD + N_FENCES + N_FIRE)
 		return false;
 
+	CTerrain* mainTerrainPath=NEW CTerrain(TERRAIN);
+	mainTerrainPath->LoadHeightMapTerrain(TEXT("engine/data/scene73grass/t_025TerrainMappingV4.bmp"), 0, 0); //float xPos, float zPos
+	//height[terrain_squares][terrain_squares]
+
 	for (UINT b=0;b<N_GRASS;b++) 
 	{
 		// Tree.vPos:
 		float height = -1; //Initially Invalid
-		while (height <= 0 || height > 1.0f
+		while (height <= 0		//not on water
+			|| height > 1.0f	//not above 1m
 			|| (m_Trees[i].vPos.x >= 28 && m_Trees[i].vPos.x <= 52) && (m_Trees[i].vPos.z >= 21 && m_Trees[i].vPos.z <= 38) //out of house (compound)
-			|| (m_Trees[i].vPos.x < borderLimit || m_Trees[i].vPos.x > m_terrainWidth - borderLimit)
-			|| (m_Trees[i].vPos.z < borderLimit || m_Trees[i].vPos.z > m_terrainHeight - borderLimit))
+			|| (m_Trees[i].vPos.x < borderLimit || m_Trees[i].vPos.x > m_terrainWidth - borderLimit)		//no near limits
+			|| (m_Trees[i].vPos.z < borderLimit || m_Trees[i].vPos.z > m_terrainHeight - borderLimit)		//no near limits
+			||
+				(
+				mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z) - 1][(UINT)m_Trees[i].vPos.x] > 0			//no grass on main PATH (terrain)
+				)
+			||
+				(
+				mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z)][(UINT)m_Trees[i].vPos.x] > 0				//no grass on main PATH (terrain)
+				)
+			||
+				(
+				mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z + 1)][(UINT)m_Trees[i].vPos.x] > 0			//no grass on main PATH (terrain)
+				)
+			)
 		{
-			m_Trees[i].vPos.x = (float) ((rand() % (m_terrainWidth*25))/100.0f);
-			m_Trees[i].vPos.z = (float) ((rand() % (m_terrainHeight*25))/100.0f);
-			
+			m_Trees[i].vPos.x = (float) (1+(rand() % (m_terrainWidth*25))/100.0f);
+			m_Trees[i].vPos.z = (float) (1+(rand() % (m_terrainHeight*25))/100.0f);
 			height = mainTerrain->getTerrainHeight(TERRAIN_ID, m_Trees[i].vPos.x, m_Trees[i].vPos.z);
 		}
 
@@ -292,8 +309,6 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 		if (b == 0) { //Make 1 special tree on the first compound
 			m_Trees[i].vPos.x = 26;
 			m_Trees[i].vPos.z = 26;
-			//height = mainTerrain->getTerrainHeight(TERRAIN_ID, m_Trees[i].vPos.x, m_Trees[i].vPos.z);
-			//type = 3;
 		}
 
 		xmlobj3d* xmlobj = fillxml(i, m_Trees[i].type);
@@ -305,6 +320,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 
 	billTotal = i;
 
+	SAFE_DELETE(mainTerrainPath);
 	WOMA_LOGManager_DebugMSG( "Bill Class: Initialized\n" );
 
 	return true;
