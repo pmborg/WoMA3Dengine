@@ -44,6 +44,10 @@ BillClass::BillClass()
 	billNames_length = 0;
 	BillrenderCount =0;
 	billTotal = 0;
+
+	mainTerrainPath = NEW CTerrain(TERRAIN);
+	mainTerrainPath->LoadHeightMapTerrain(TEXT("engine/data/scene73grass/t_025TerrainMappingV4.bmp"), 0, 0); //float xPos, float zPos
+	//height[terrain_squares][terrain_squares]
 }
 
 BillClass::~BillClass() 
@@ -161,10 +165,15 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 		float height = -1; //Initially Invalid
 		float PosX = 0;
 		float PosZ = 0;
-		while (height <= 0  || height > 5.0f
-				|| (m_Trees[i].vPos.x >= 28 && m_Trees[i].vPos.x <= 52) && (m_Trees[i].vPos.z >= 21 && m_Trees[i].vPos.z <= 38) //out of house (compound)
-				|| (m_Trees[i].vPos.x < borderLimit || m_Trees[i].vPos.x > m_terrainWidth - borderLimit) 
-				|| (m_Trees[i].vPos.z < borderLimit || m_Trees[i].vPos.z > m_terrainHeight - borderLimit) )
+		while (height <= 0		//not on water
+			|| height > 1.0f	//not above 1m
+			|| (m_Trees[i].vPos.x >= 28 && m_Trees[i].vPos.x <= 52) && (m_Trees[i].vPos.z >= 21 && m_Trees[i].vPos.z <= 38) //out of house (compound)
+			|| (m_Trees[i].vPos.x < borderLimit || m_Trees[i].vPos.x > m_terrainWidth - borderLimit)		//no near limits
+			|| (m_Trees[i].vPos.z < borderLimit || m_Trees[i].vPos.z > m_terrainHeight - borderLimit)		//no near limits
+			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z) - 1][(UINT)m_Trees[i].vPos.x] > 0			//no grass on main PATH (terrain)
+			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z)][(UINT)m_Trees[i].vPos.x] > 0				//no grass on main PATH (terrain)
+			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z + 1)][(UINT)m_Trees[i].vPos.x] > 0			//no grass on main PATH (terrain)
+			)
 		{
 			PosX = (float)((rand() % (m_terrainWidth * 100)) / 100.0f);
 			PosZ = (float)((rand() % (m_terrainHeight * 100)) / 100.0f);
@@ -269,10 +278,6 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 	if (i++ > N_BILLBOARD + N_FENCES + N_FIRE)
 		return false;
 
-	CTerrain* mainTerrainPath=NEW CTerrain(TERRAIN);
-	mainTerrainPath->LoadHeightMapTerrain(TEXT("engine/data/scene73grass/t_025TerrainMappingV4.bmp"), 0, 0); //float xPos, float zPos
-	//height[terrain_squares][terrain_squares]
-
 	for (UINT b=0;b<N_GRASS;b++) 
 	{
 		// Tree.vPos:
@@ -282,18 +287,9 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 			|| (m_Trees[i].vPos.x >= 28 && m_Trees[i].vPos.x <= 52) && (m_Trees[i].vPos.z >= 21 && m_Trees[i].vPos.z <= 38) //out of house (compound)
 			|| (m_Trees[i].vPos.x < borderLimit || m_Trees[i].vPos.x > m_terrainWidth - borderLimit)		//no near limits
 			|| (m_Trees[i].vPos.z < borderLimit || m_Trees[i].vPos.z > m_terrainHeight - borderLimit)		//no near limits
-			||
-				(
-				mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z) - 1][(UINT)m_Trees[i].vPos.x] > 0			//no grass on main PATH (terrain)
-				)
-			||
-				(
-				mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z)][(UINT)m_Trees[i].vPos.x] > 0				//no grass on main PATH (terrain)
-				)
-			||
-				(
-				mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z + 1)][(UINT)m_Trees[i].vPos.x] > 0			//no grass on main PATH (terrain)
-				)
+			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z) - 1][(UINT)m_Trees[i].vPos.x] > 0			//no grass on main PATH (terrain)
+			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z)][(UINT)m_Trees[i].vPos.x] > 0				//no grass on main PATH (terrain)
+			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z + 1)][(UINT)m_Trees[i].vPos.x] > 0			//no grass on main PATH (terrain)
 			)
 		{
 			m_Trees[i].vPos.x = (float) (1+(rand() % (m_terrainWidth*25))/100.0f);
@@ -319,8 +315,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 	}
 
 	billTotal = i;
-
-	SAFE_DELETE(mainTerrainPath);
+	
 	WOMA_LOGManager_DebugMSG( "Bill Class: Initialized\n" );
 
 	return true;
@@ -328,6 +323,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 
 void BillClass::Shutdown()
 {
+	SAFE_DELETE(mainTerrainPath);
 	return;
 }
 

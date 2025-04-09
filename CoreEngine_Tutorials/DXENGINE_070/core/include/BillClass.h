@@ -53,6 +53,8 @@ public:
 	void Shutdown();
 	bool BillBoardRender(bool instance);
 
+	CTerrain* mainTerrainPath = NULL;
+
 public:
 int		BillrenderCount=0;
 UINT	billTotal = 0;
