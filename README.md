@@ -1,7 +1,5 @@
 # WoMA3Dengine (DX11, DX12, OPENGL, DX9) Advanced Tutorials
 
-![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/WoMA.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/WoMA.png)	
-
 <hr>
 <h1>WoMA3Dengine at Level 29 INTRO DEMO</h1>
 
