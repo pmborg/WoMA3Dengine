@@ -36,7 +36,6 @@
 // -----------------------------------------------------------------------------------------
 #pragma warning( disable : 4838 )
 #pragma warning( disable : 5208 )	// 
-#define _CRT_SECURE_NO_WARNINGS		// Ignore: warning C4996
 #include "platform.h"				// WOMA PLATFORM	- (Check OS: WINDOWS / LINUX / ANDROID)
 #include "standard_platform.h"		// WOMA INCLUDES	- Standard Platform: INCLUDES
 #include "woma_macros.h"			// WOMA MACROS		- COMMON WOMA ENGINE: MACROS

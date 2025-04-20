@@ -120,7 +120,7 @@ bool SystemManager::CheckOS()
 	StringCchPrintf(SystemHandle->systemDefinitions.binaryArchitecture, MAX_STR_LEN, TEXT("Binary Architecture: %d bits"), _BITS_);
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.binaryArchitecture);
 
-#ifdef WIN10
+#ifdef WIN10 //NOTE: WIN11 is WIN10 Platform upgraded.
 	#define _BINARY_CODE_ TEXT("Windows 10 Code")
 #elif defined WIN6x
 	#define _BINARY_CODE_ TEXT("Windows Vista Code")
@@ -136,7 +136,7 @@ bool SystemManager::CheckOS()
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.binaryCode);
 
 #if defined WINDOWS_PLATFORM
-  //#if !defined WIN10
+
 	StringCchPrintf(SystemHandle->systemDefinitions.windowsVersion, MAX_STR_LEN, TEXT("Windows Version: %d.%d.%d"), MajorVersion, MinorVersion, BuildVersion);
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.windowsVersion);
 
@@ -162,12 +162,14 @@ bool SystemManager::CheckOS()
 	};
 
 	TCHAR v[MAX_STR_LEN] = { 0 };
-	//_itoa(BuildVersion, v, 10);	//Bug on ANDROID
+#if !defined ANDROID_PLATFORM
+	_itoa(BuildVersion, v, 10);
+#endif
 	STRING verstr = mapWindowsVersions[v];
 
 	StringCchPrintf(SystemHandle->systemDefinitions.windowsBuildVersion, MAX_STR_LEN, TEXT("Windows Version: %s"), verstr.c_str());
 	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.windowsBuildVersion);
-  //#endif
+ 
 #else
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("sysname: %s\n"), SystemHandle->systemDefinitions.ver.sysname);
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("nodename: %s\n"), SystemHandle->systemDefinitions.ver.nodename);

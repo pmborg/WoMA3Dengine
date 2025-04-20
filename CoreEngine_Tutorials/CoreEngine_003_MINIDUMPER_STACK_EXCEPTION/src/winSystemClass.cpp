@@ -101,9 +101,6 @@ WinSystemClass::~WinSystemClass()
 	SystemHandle = NULL;
 }
 
-// WINDOWS/LINUX
-extern int InitImGui(HWND hwnd = NULL);
-
 bool WinSystemClass::APPLICATION_CORE_SYSTEM()
 {
 	WOMA_LOGManager_DebugMSG("WinSystemClass::APPLICATION_INIT_SYSTEM()\n");
