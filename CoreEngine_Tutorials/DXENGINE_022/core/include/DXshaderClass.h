@@ -56,7 +56,7 @@
 #include <D3Dcompiler.h>// Use Compiler
 #include <DirectXMath.h>// Use Math
 
-	#include "DX12TextureClass.h"
+#include "DX12TextureClass.h"
 
 // Windows STL includes
 #include <stdio.h>
@@ -76,237 +76,237 @@ using namespace Microsoft::WRL;
 #include <fstream>
 using namespace std;
 
-namespace DirectX 
+namespace DirectX
 {
 #define 	SOLID_PIPELINE_STATES		0
 
 #if defined INTRO_DEMO || defined USE_VIEW2D_SPRITES || defined USE_ALPHA_BLENDING // OLD:ENGINE_LEVEL >= 26
-	#define TRANSPARENT_PIPELINE_STATES 1
-	#define MAXNUM_PIPELINE_STATES		2
+#define TRANSPARENT_PIPELINE_STATES 1
+#define MAXNUM_PIPELINE_STATES		2
 #else
-	#define MAXNUM_PIPELINE_STATES		1
+#define MAXNUM_PIPELINE_STATES		1
 #endif
 
-////////////////////////////////////////////////////////////////////////////////
-// Class name: DXshaderClass
-////////////////////////////////////////////////////////////////////////////////
-class DXshaderClass
-{
-private:
-	// NOTE: DONT USE "bool" USE "BOOL"
-
-    // VERTEX CBUFFER:
-	struct VSconstantBufferType
+	////////////////////////////////////////////////////////////////////////////////
+	// Class name: DXshaderClass
+	////////////////////////////////////////////////////////////////////////////////
+	class DXshaderClass
 	{
-		// BLOCK: VS1
-		XMMATRIX world;           // [64]: world
-		XMMATRIX view;
-		XMMATRIX projection;
-		XMMATRIX WV;              // [64]: world * view 
-		XMMATRIX WVP;             // [64]: world * view * projection matrix
+	private:
+		// NOTE: DONT USE "bool" USE "BOOL"
 
-		// 23 BLOCK: VS2
-		BOOL	VShasLight;
-		BOOL	VShasSpecular;
-		BOOL	VShasNormMap;
-		BOOL	VShasFog;
+		// VERTEX CBUFFER:
+		struct VSconstantBufferType
+		{
+			// BLOCK: VS1
+			XMMATRIX world;           // [64]: world
+			XMMATRIX view;
+			XMMATRIX projection;
+			XMMATRIX WV;              // [64]: world * view 
+			XMMATRIX WVP;             // [64]: world * view * projection matrix
 
-		// 23 BLOCK: VS3
-		XMFLOAT4	VSlightDirection;	// LIGHT (XMVECTOR = XMFLOAT4)
-		XMFLOAT4	VSambientColor;		// LIGHT: Ka
-		XMFLOAT4	VSdiffuseColor;		// LIGHT: Kd
-		XMFLOAT4	VSemissiveColor;	// LIGHT: Ke
+			// 23 BLOCK: VS2
+			BOOL	VShasLight;
+			BOOL	VShasSpecular;
+			BOOL	VShasNormMap;
+			BOOL	VShasFog;
 
-		// 31 BLOCK: VS4
-		float		VSfogStart;			
-		float		VSfogEnd;			
-		BOOL		VShasShadowMap; 
-		BOOL		VS_USE_WVP;
+			// 23 BLOCK: VS3
+			XMFLOAT4	VSlightDirection;	// LIGHT (XMVECTOR = XMFLOAT4)
+			XMFLOAT4	VSambientColor;		// LIGHT: Ka
+			XMFLOAT4	VSdiffuseColor;		// LIGHT: Kd
+			XMFLOAT4	VSemissiveColor;	// LIGHT: Ke
 
-		// 36 BLOCK: VS5
-		XMMATRIX	ViewToLightProj;
-		XMMATRIX	WorldInverseTranspose;
-		XMFLOAT4	vEye;
+			// 31 BLOCK: VS4
+			float		VSfogStart;
+			float		VSfogEnd;
+			BOOL		VShasShadowMap;
+			BOOL		VS_USE_WVP;
 
-		// 42 BLOCK: VS6	DX_ENGINE_LEVEL >= 42
-		float		VSrotX;
-		float		VSrotY;
-		float		VSrotZ;
-		float		time;
+			// 36 BLOCK: VS5
+			XMMATRIX	ViewToLightProj;
+			XMMATRIX	WorldInverseTranspose;
+			XMFLOAT4	vEye;
 
-		// 42 BLOCK: VS7
-		float		VSshaderType;
-		float		vsPAD2;
-		float		vsPAD3;
-		float		vsPAD4;
+			// 42 BLOCK: VS6	DX_ENGINE_LEVEL >= 42
+			float		VSrotX;
+			float		VSrotY;
+			float		VSrotZ;
+			float		time;
 
-		//FIRE:
-	#if TUTORIAL_CHAP >= 62 // FIRE
-		//VS:
-		float		frameTime;
-		XMFLOAT3	scrollSpeeds;
-		XMFLOAT3	scales;
-		float		padding6;
-	#endif
-	};
+			// 42 BLOCK: VS7
+			float		VSshaderType;
+			float		vsPAD2;
+			float		vsPAD3;
+			float		vsPAD4;
 
-	// PIXEL CBUFFER:
-	struct PSconstantBufferType
-	{
-		// BLOCK1:
-		XMFLOAT4    pixelColor;		// ch06: 16: (difColor) 4xfloat
+			//FIRE:
+#if TUTORIAL_CHAP >= 62 // FIRE
+	//VS:
+			float		frameTime = 0;
+			XMFLOAT3	scrollSpeeds;
+			XMFLOAT3	scales;
+			bool		isAnimatedBill;
+#endif
+		};
 
-		// BLOCK2:
-		BOOL        hasTexture;     // No? Use pixelColor, then.
-		BOOL        hasLight;		
-		BOOL        hasSpecular;	
-		BOOL		isFont;
+		// PIXEL CBUFFER:
+		struct PSconstantBufferType
+		{
+			// BLOCK1:
+			XMFLOAT4    pixelColor;		// ch06: 16: (difColor) 4xfloat
 
-		// BLOCK3:
-		XMFLOAT4	ambientColor;	// LIGHT: Ka
-		XMFLOAT4	diffuseColor;	// LIGHT: Kd
-		XMFLOAT4	emissiveColor;	// LIGHT: Ke
-		XMFLOAT4	lightDirection;	// LIGHT (XMVECTOR = XMFLOAT4)
+			// BLOCK2:
+			BOOL        hasTexture;     // No? Use pixelColor, then.
+			BOOL        hasLight;
+			BOOL        hasSpecular;
+			BOOL		isFont;
 
-		// BLOCK4:
-		BOOL		hasColorMap;		// 66
-		float		lightType;			// 29
-		bool		isDay;
-		float		shaderTypeParameter;
+			// BLOCK3:
+			XMFLOAT4	ambientColor;	// LIGHT: Ka
+			XMFLOAT4	diffuseColor;	// LIGHT: Kd
+			XMFLOAT4	emissiveColor;	// LIGHT: Ke
+			XMFLOAT4	lightDirection;	// LIGHT (XMVECTOR = XMFLOAT4)
 
-		// BLOCK5:
-		BOOL		hasAlfaColor;
-		float		alfaColor;
-		float		fade;
-		float		frameTime;
+			// BLOCK4:
+			BOOL		hasColorMap;		// 66
+			float		lightType;			// 29
+			bool		isDay;
+			float		shaderTypeParameter;
 
-		// BLOCK6:
-		BOOL		hasFog;
-		BOOL		isSky;
-		BOOL		hasAlfaMap;
-		BOOL		hasNormMap;
-	
-		// BLOCK7:
-		XMFLOAT3	cameraPosition;
-		BOOL		castShadow;
-		XMFLOAT3	specularColor;
-		float		nShininess;
+			// BLOCK5:
+			BOOL		hasAlfaColor;
+			float		alfaColor;
+			float		fade;
+			float		frameTime;
 
-		//FIRE:
-	#if TUTORIAL_CHAP >= 62 // FIRE
-		//PS:
-		XMFLOAT2	distortion1;
-		XMFLOAT2	distortion2;
-		XMFLOAT2	distortion3;
-		float		distortionScale;
-		float		distortionBias;
-	#endif
-	};
+			// BLOCK6:
+			BOOL		hasFog;
+			BOOL		isSky;
+			BOOL		hasAlfaMap;
+			BOOL		hasNormMap;
+
+			// BLOCK7:
+			XMFLOAT3	cameraPosition;
+			BOOL		castShadow;
+			XMFLOAT3	specularColor;
+			float		nShininess;
+
+			//FIRE:
+#if TUTORIAL_CHAP >= 62 // FIRE
+	//PS:
+			XMFLOAT2	distortion1;
+			XMFLOAT2	distortion2;
+			XMFLOAT2	distortion3;
+			float		distortionScale;
+			float		distortionBias;
+#endif
+		};
 
 
-//PIXEL SKY:
-struct ConstantBufferSkyType
-{
-};
+		//PIXEL SKY:
+		struct ConstantBufferSkyType
+		{
+		};
 
-	// FUNCTIONS:
-	// ---------------------------------------------------------------------
-public:
-	UINT WomaIntegrityCheck = 1234567222;
-	DXshaderClass(UINT ShaderVersionH, UINT ShaderVersionL, bool shader_3D);
-	~DXshaderClass();
-	void Shutdown();
+		// FUNCTIONS:
+		// ---------------------------------------------------------------------
+	public:
+		UINT WomaIntegrityCheck = 1234567222;
+		DXshaderClass(UINT ShaderVersionH, UINT ShaderVersionL, bool shader_3D);
+		~DXshaderClass();
+		void Shutdown();
 
-	bool Initialize(INT m_ObjId, TCHAR* objectName, SHADER_TYPE shaderType, /*ID3D11Device*/ void*, HWND, PRIMITIVE_TOPOLOGY PrimitiveTopology, bool useGS = false);
-	void Render(UINT pass,/*ID3D11DeviceContext*/ void*, int, XMMATRIX*, XMMATRIX*, XMMATRIX*);
-	void SetShaderParameters(UINT pass, /*ID3D11DeviceContext*/ void* deviceContext,
-								XMMATRIX* worldMatrix, XMMATRIX* viewMatrix, XMMATRIX* projectionMatrix,
-								XMMATRIX* lightViewMatrix=NULL, XMMATRIX* ShadowProjectionMatrix=NULL);
+		bool Initialize(INT m_ObjId, TCHAR* objectName, SHADER_TYPE shaderType, /*ID3D11Device*/ void*, HWND, PRIMITIVE_TOPOLOGY PrimitiveTopology, bool useGS = false);
+		void Render(UINT pass,/*ID3D11DeviceContext*/ void*, int, XMMATRIX*, XMMATRIX*, XMMATRIX*);
+		void SetShaderParameters(UINT pass, /*ID3D11DeviceContext*/ void* deviceContext,
+			XMMATRIX* worldMatrix, XMMATRIX* viewMatrix, XMMATRIX* projectionMatrix,
+			XMMATRIX* lightViewMatrix = NULL, XMMATRIX* ShadowProjectionMatrix = NULL);
 
-	void RenderShader(UINT pass, /*ID3D11DeviceContext*/ void*, int texture_index, int, int start = 0);
+		void RenderShader(UINT pass, /*ID3D11DeviceContext*/ void*, int texture_index, int, int start = 0);
 
-private:
-	bool InitializeShader(SHADER_TYPE shaderType, /*ID3D11Device*/ void*, HWND, PRIMITIVE_TOPOLOGY PrimitiveTopology);
+	private:
+		bool InitializeShader(SHADER_TYPE shaderType, /*ID3D11Device*/ void*, HWND, PRIMITIVE_TOPOLOGY PrimitiveTopology);
 
 
 #if defined DX11 || defined DX9
-	void OutputShaderErrorMessage(ID3D10Blob*, HWND, TCHAR*);
+		void OutputShaderErrorMessage(ID3D10Blob*, HWND, TCHAR*);
 #endif
 
-	// VARS:
-	// ----------------------------------------------------------------------
-	STRING MODEL_NAME;
-	INT    m_ObjId = 0;
+		// VARS:
+		// ----------------------------------------------------------------------
+		STRING MODEL_NAME;
+		INT    m_ObjId = 0;
 
 #if defined DX9sdk
-	DirectX::DX9Class* m_driver9=NULL;
+		DirectX::DX9Class* m_driver9 = NULL;
 #endif
 #if defined DX11 || defined DX9
-	DirectX::DX11Class* m_driver11 = NULL;
+		DirectX::DX11Class* m_driver11 = NULL;
 #endif
 #if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009
-	DirectX::DX12Class* m_driver = NULL;
+		DirectX::DX12Class* m_driver = NULL;
 #endif
-private:
-	UINT ShaderVersionH, ShaderVersionL;
+	private:
+		UINT ShaderVersionH, ShaderVersionL;
 
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC opaquePsoDesc = {};
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC transparentPsoDesc = {};
+		D3D12_GRAPHICS_PIPELINE_STATE_DESC opaquePsoDesc = {};
+		D3D12_GRAPHICS_PIPELINE_STATE_DESC transparentPsoDesc = {};
 
 #if defined DX11 || defined DX9
-	ID3D11InputLayout*		m_layout11 = NULL;
-	ID3D11Buffer*			m_VertexShaderBuffer11 = NULL; /*m_matrixBuffer*/
+		ID3D11InputLayout* m_layout11 = NULL;
+		ID3D11Buffer* m_VertexShaderBuffer11 = NULL; /*m_matrixBuffer*/
 
-	// Shader CODE:
-	ID3D11VertexShader*		m_vertexShader11 = NULL;
-	ID3D11PixelShader*		m_pixelShader11 = NULL;
-	ID3D11GeometryShader*	m_geometryShader11 = NULL;	// GS
+		// Shader CODE:
+		ID3D11VertexShader* m_vertexShader11 = NULL;
+		ID3D11PixelShader* m_pixelShader11 = NULL;
+		ID3D11GeometryShader* m_geometryShader11 = NULL;	// GS
 #endif
 
-public:
+	public:
 
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-	ComPtr<ID3D12RootSignature>		m_rootSignature = NULL;
-	ComPtr<ID3D12PipelineState>		m_pipelineState[2][3][2][MAXNUM_PIPELINE_STATES] = {0};
-	
-	UINT m_CbvSrvDescriptorSize = 0;
-	ComPtr<ID3D12DescriptorHeap>	DX12mSrvDescriptorHeap = NULL;			// for Descriptor buffer(s)
+		ComPtr<ID3D12RootSignature>		m_rootSignature = NULL;
+		ComPtr<ID3D12PipelineState>		m_pipelineState[2][3][2][MAXNUM_PIPELINE_STATES] = { 0 };
 
-	// First Constant Buffer
-	VSconstantBufferType	mVS_constantBufferData = {};
-	ComPtr<ID3D12Resource>	mVS_constantBuffer = NULL;
-	UINT					c_alignedVSConstantBufferSize = 0;
-	UINT8*					m_pMappedVSConstantBuffer = NULL;
+		UINT m_CbvSrvDescriptorSize = 0;
+		ComPtr<ID3D12DescriptorHeap>	DX12mSrvDescriptorHeap = NULL;			// for Descriptor buffer(s)
 
-	PSconstantBufferType	mPS_constantBufferData = {};
-	// Second Constant Buffer
+		// First Constant Buffer
+		VSconstantBufferType	mVS_constantBufferData = {};
+		ComPtr<ID3D12Resource>	mVS_constantBuffer = NULL;
+		UINT					c_alignedVSConstantBufferSize = 0;
+		UINT8* m_pMappedVSConstantBuffer = NULL;
+
+		PSconstantBufferType	mPS_constantBufferData = {};
+		// Second Constant Buffer
 
 #endif
 
-	SHADER_TYPE		m_shaderType;
-	bool			shader2D;
+		SHADER_TYPE		m_shaderType;
+		bool			shader2D;
 
-	bool VS_USE_WVP = false; 
+		bool VS_USE_WVP = false;
 
-		#if defined DX11 || defined DX9
-			ID3D11Buffer*		m_PixelShaderBuffer11 = NULL;
-			ID3D11SamplerState* m_sampleState11 = NULL;	// Resource: "Textures" States
+#if defined DX11 || defined DX9
+		ID3D11Buffer* m_PixelShaderBuffer11 = NULL;
+		ID3D11SamplerState* m_sampleState11 = NULL;	// Resource: "Textures" States
 
-		#if TUTORIAL_CHAP >= 62 // FIRE
-			ID3D11SamplerState* m_sampleStateFire;
-		#endif
+#if TUTORIAL_CHAP >= 62 // FIRE
+		ID3D11SamplerState* m_sampleStateFire;
+#endif
 
-			ID3D11ShaderResourceView*	texture11 = NULL;	// 21
-			ID3D11ShaderResourceView*	texture11_2 = NULL;	// 43: Alfa Map
-		#endif
-		#if defined DX9sdk
-			LPDIRECT3DTEXTURE9 texture9 = NULL;
-			LPDIRECT3DTEXTURE9 texture9_2 = NULL;
-		#endif
-		#if defined DX12
-			DX12TextureClass* texture = NULL;
-			DX12TextureClass* texture2 = NULL;
-		#endif
+		ID3D11ShaderResourceView* texture11 = NULL;	// 21
+		ID3D11ShaderResourceView* texture11_2 = NULL;	// 43: Alfa Map
+#endif
+#if defined DX9sdk
+		LPDIRECT3DTEXTURE9 texture9 = NULL;
+		LPDIRECT3DTEXTURE9 texture9_2 = NULL;
+#endif
+#if defined DX12
+		DX12TextureClass* texture = NULL;
+		DX12TextureClass* texture2 = NULL;
+#endif
 
 		// --------------------------------------------------------------------------------------------
 		// Internal Shader VARs to Copy to Buffers: VS/PS
@@ -327,7 +327,7 @@ public:
 		//			lightDirection (AUTO)
 
 		// BLOCK4:
-		bool		hasColorMap=false;			// 66
+		bool		hasColorMap = false;			// 66
 		float		lightType = 0;			// Light Type
 		bool		isDay = 0;		// Future
 		float		shaderTypeParameter = 0;// Future
@@ -336,19 +336,19 @@ public:
 		bool		hasAlfaColor = 0;
 		float		alfaColor = 0;
 		float		PSfade = 0;			// Fade from 0 to 1
-		#if defined INTRO_DEMO
+#if defined INTRO_DEMO
 		float		frameTime = 0;		// For animations
-		#endif
+#endif
 
 		// BLOCK6:
-		BOOL		hasFog=false;
+		BOOL		hasFog = false;
 		BOOL		isSky = false;
 		BOOL		hasAlfaMap = false;	// 43
 		BOOL		hasNormMap = false;
 
 		// BLOCK7:
 		// cameraPosition (AUTO)
-		BOOL		castShadow=false;
+		BOOL		castShadow = false;
 		XMFLOAT3	specularColor = {};	// 44:
 		float		nShininess = 0;		// 44:
 
@@ -359,12 +359,13 @@ public:
 
 		//FIRE:
 #if TUTORIAL_CHAP >= 62 // FIRE
-		float frameTime;
+		//VS:
+		float frameTime = 0;
 		XMFLOAT3 scrollSpeeds, scales;
+		//PS
 		XMFLOAT2 distortion1, distortion2, distortion3;
 		float distortionScale, distortionBias;
-#endif//
-
+#endif
 		// --------------------------------------------------------------------------------------------
 		// Internal Shader VARs to Copy to Buffers: VS
 		// --------------------------------------------------------------------------------------------
@@ -377,8 +378,8 @@ public:
 
 		//Sky: 2
 
-    bool bUseGS;	// GS
-};
+		bool bUseGS;	// GS
+	};
 
 }
 

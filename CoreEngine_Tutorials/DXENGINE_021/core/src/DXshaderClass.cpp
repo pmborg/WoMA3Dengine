@@ -853,7 +853,7 @@ namespace DirectX {
 			// Create the texture sampler state.
 			result = device11->CreateSamplerState(&samplerDescFire, &m_sampleStateFire);
 			if (FAILED(result)) { WomaFatalException (TEXT("error")); return false; }
-#endif//
+#endif
 
 			// --------------------------------------------------------------------------------------------
 			// CREATE Buffer(s) DATA for "Vertex Shader"
@@ -977,7 +977,7 @@ namespace DirectX {
 			if (m_shaderType == SHADER_FIRE) {
 				deviceContext->PSSetSamplers(1, 1, &m_sampleStateFire);
 			}
-#endif//
+#endif
 
 			// Set CODE to Run on Shaders:
 			deviceContext->VSSetShader(m_vertexShader11, NULL, 0);		// Set the vertex code that will be used to process vertices

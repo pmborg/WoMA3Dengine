@@ -35,7 +35,6 @@
 
 #if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21
 #include "Math3D.h"
-
 #endif
 
 #include "dxWinSystemClass.h"	// SystemHandle

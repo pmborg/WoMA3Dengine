@@ -404,6 +404,7 @@ bool ApplicationClass::Initialize(WomaDriverClass* Driver)
 	ASSERT(Driver);
 #endif
 
+	//imgGui:
 #if defined ANDROID_PLATFORM && CORE_ENGINE_LEVEL >= 10 && !RUN_ASMAIN && defined USE_IMGUI
 	ImGui_Init(engine_state.app);
 #endif
@@ -413,7 +414,8 @@ bool ApplicationClass::Initialize(WomaDriverClass* Driver)
 	if (WOMA::game_state == GAME_STOP) return false;
 #endif
 
-#if defined INTRO_DEMO //29
+	//DEMO:
+#if defined INTRO_DEMO
 	initIntroDemo();
 #endif
 
@@ -421,11 +423,11 @@ bool ApplicationClass::Initialize(WomaDriverClass* Driver)
 	// (m_Light && xml_loader.theWorld) and SCENE MANAGER: QuadTree object Loader/Render
 	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(Driver));	
 //########################################### 2D: STUFF ###########################################
-	// 2D-FONTS: Windows
-#if defined USE_RASTERTEK_TEXT_FONT //27
+	// 2D-FONTS: (Windows)
+#if defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONT //27
 	initText();
 #endif
-	// 2D-FONTS: Android / Linux
+	// 2D-FONTS: (Android / Linux)
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
 	r_Application = new RApplicationClass;
 	_tprintf("r_Application->Initialize(m_videoDisplay, m_hwnd, screenWidth, screenHeight)\n");

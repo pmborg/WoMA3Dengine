@@ -153,22 +153,21 @@ void ParseCommandLineArgs(int argc, char* argv[])
 int APPLICATION_MAIN(int argc, char* argv[])
 // -------------------------------------------------------------------------------------------------------------------------------------
 {
-	APPLICATION_STARTUP(argc, argv, Command);           // ENGINE SETUP: |CoInitializeEx|+|OSmain_dirs|+|Memory leaks check|+|Log|+|Mini Dumper|
-	ParseCommandLineArgs(argc, argv);                   // [*] Parse the command line parameters: -warp /warp
+    APPLICATION_STARTUP(argc, argv, Command);           // ENGINE SETUP: |CoInitializeEx|+|OSmain_dirs|+|Memory leaks check|+|Log|+|Mini Dumper|
+    ParseCommandLineArgs(argc, argv);                   // [*] Parse the command line parameters: -warp /warp
 
-	do {
-		{
-			SYSTEM demo(&WOMA::settings);               // NEW |SystemClass()::WinSystemClass()::DxWinSystemClass() for Specific OS|+|WOMA::APP_NAME|+|NEW ApplicationClass()"|
+    do {
+        {
+            SYSTEM demo(&WOMA::settings);               // NEW |SystemClass()::WinSystemClass()::DxWinSystemClass() for Specific OS|+|WOMA::APP_NAME|+|NEW ApplicationClass()"|
+            
+            if (demo.APPLICATION_INIT_SYSTEM())         // INIT Woma Engine: |SOUND|+|Register|+|XML|+|Sys.Chk|+|Window|+|OS-Input|+|Timer|+|Drivers|+|Load Assets|
+                Command = demo.APPLICATION_MAIN_LOOP(); // RUN: OS MAIN LOOP -> PROCESS FRAMES: (UPDATE + RENDER)!
+        }                                               // DELETE SYSTEM demo: Close WINDOW
+		if (Command == ENGINE_RESTART)  // The User set new settings?
+			Sleep(2000);                // Need to be 2secs to change resources between drivers
+    } while (Command == ENGINE_RESTART);	            // Try to restart the Engine with new settings then! (if fail! goto VectoredExceptionHandler())
+    
+    APPLICATION_STOP();                                 // ENGINE STOP: |CoUninitialize|+|Free Mini Dumper|+|CLOSE Log|+|DELETE Temp files(RELEASE)
 
-			if (demo.APPLICATION_INIT_SYSTEM())         // INIT Woma Engine: |SOUND|+|Register|+|XML|+|Sys.Chk|+|Window|+|OS-Input|+|Timer|+|Drivers|+|Load Assets|
-				Command = demo.APPLICATION_MAIN_LOOP(); // RUN: OS MAIN LOOP -> PROCESS FRAMES: (UPDATE + RENDER)!
-
-			if (Command == ENGINE_RESTART)              // The User set new settings?
-				Sleep(2000);                            // Need to be 2secs to change resources between drivers
-		}                                               // DELETE SYSTEM demo: Close WINDOW
-	} while (Command == ENGINE_RESTART);	            // Try to restart the Engine with new settings then! (if fail! goto VectoredExceptionHandler())
-
-	APPLICATION_STOP();                                 // ENGINE STOP: |CoUninitialize|+|Free Mini Dumper|+|CLOSE Log|+|DELETE Temp files(RELEASE)
-
-	return Command;                                     // ENGINE RETURN: to OS (Can be: 0, ENGINE_RESTART or "an error" code)
+    return Command;                                     // ENGINE RETURN: to OS (Can be: 0, ENGINE_RESTART or "an error" code)
 }

@@ -26,6 +26,7 @@
 #include "mem_leak.h"
 #include "log.h"
 #include <cinttypes>
+#include <string.h>
 
 #pragma warning(push)
 #pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
@@ -453,7 +454,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 
 #if defined USE_ASTRO_CLASS && defined USE_REAL_SUNLIGHT_DIRECTION
 	Calc3DSunMoonPosition();
-	//if (WOMA::game_state == GAME_STOP) return false;
 #endif
 
 	//-----------------------------------------------------------------------------------------------------------------
@@ -522,8 +522,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 
 	//SHADOWMAP //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
+	//Load ASSIMP Chars /////////////////////////////////////////////////////////////////////////////////
 
 	//Finally, launch dynamic Load Compound/OBJ Thread /////////////////////////////////////////////////////////////////////////////////
 #if defined (CHECK_COMPOUND_COLISION) && defined (SCENE_COMPOUND) //TUTORIAL_CHAP >= 55 && 
@@ -553,5 +552,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 
 	return true;
 }
+
 
 #pragma warning(pop)
