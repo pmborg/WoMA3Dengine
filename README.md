@@ -34,11 +34,73 @@ Try to Change the driver on the fly without the need of close and open the Appli
 
 <b>[F11]</b> Switch God Mode<br>
 
-<h2>HTTP WOMA 3D ENGINE TUTORIAL LIST</h2>
+<h1>HTTP WOMA 3D ENGINE TUTORIAL LIST</h1>
 
 <hr>
-<h2>3D - BILLBOARD TUTORIAL SERIES</h2>
+<h2>3D - ADVANCED TUTORIAL SERIES</h2>
 <hr>
+
+<!-- ------------------------------------------------------------------------------------------------ -->
+
+<hr>
+<h2>3D - ADVANCED MESH TUTORIAL SERIES: BEGIN</h2>
+
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/ActorCore.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/ActorCore.png)	
+
+Free models from: actorcore.reallusion.com
+
+<hr>
+
+- <b>DX80: SOON</b><br>
+ 
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_080.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_080.png)	
+
+<hr> 
+
+- <b>DX81: SOON</b><br>
+ 
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_081.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_081.png)	
+
+<hr> 
+
+- <b>DX82: SOON</b><br>
+ 
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_082.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_082.png)	
+
+<hr> 
+
+<hr>
+<h2>3D - ADVANCED MESH TUTORIAL SERIES: END</h2>
+<hr>
+
+<!-- ------------------------------------------------------------------------------------------------ -->
+
+<hr>
+<h2>3D - INTERMEDIATE TUTORIAL SERIES</h2>
+<hr>
+
+
+<hr>
+<h2>3D - BILLBOARD TUTORIAL SERIES: BEGIN</h2>
+<hr>
+
+- <b>DX76: SOON</b><br>
+
+ ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_076.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_076.png)
+
+<hr> 
+
+- <b>DX75: SOON</b><br>
+
+ ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_075.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_075.png)
+ 
+<hr> 
+
+- <b>DX74: SOON</b><br>
+
+  ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_074.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_074.png)
+  
+<hr> 
 
 - <b>DX73: GRASS - TYPE I</b><br>
  
@@ -64,9 +126,14 @@ Try to Change the driver on the fly without the need of close and open the Appli
 
 <hr> 
 
+<hr>
+<h2>3D - BILLBOARD TUTORIAL SERIES: END</h2>
+<hr>
+
+<!-- ------------------------------------------------------------------------------------------------ -->
 
 <hr>
-<h2>3D - TERRAIN TUTORIAL SERIES</h2>
+<h2>3D - TERRAIN TUTORIAL SERIES: START</h2>
 <hr>
 
 - <b>DX65: WORLD.XML: TERRAIN: Walking on Terrain.</b><br> 
@@ -124,11 +191,19 @@ Try to Change the driver on the fly without the need of close and open the Appli
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_049.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_049.png)	 
 
 <hr>
-<h2>3D - INTERMEDIATE TUTORIAL SERIES</h2>
+<h2>3D - TERRAIN TUTORIAL SERIES: START</h2>
 <hr>
 
-<h2>HTTP WOMA 3D ENGINE TUTORIAL LIST</h2>
+<!-- ------------------------------------------------------------------------------------------------ -->
+
+<hr>
+<h2>INTERMEDIATE 3D ENGINE TUTORIAL LIST</h2>
+<hr>
  
+<hr>
+<h2>BASIC 3D ENGINE TUTORIAL LIST</h2>
+<hr>
+
 - <b>DX42: WORLD.XML: load W3D and use SHADOW INSTANCES but now with GPU ROTATION on (BLACK_BISHOPs and BLACK_KNIGHTs)</b><br> 
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_042.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_042.png)	 
@@ -224,8 +299,10 @@ Try to Change the driver on the fly without the need of close and open the Appli
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_030.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_030.png)	
 
 <hr>
-<h2>INTERMEDIATE 3D ENGINE TUTORIAL LIST</h2>
+<h2>INTERMEDIATE 3D ENGINE TUTORIAL LIST: END</h2>
 <hr>
+
+<!-- ------------------------------------------------------------------------------------------------ -->
 
 - <b>DX29: INTRO DEMO OF BASIC TUTORIAL SERIES</b><br>
 	-  Adding the Sound Manager<br>
@@ -490,7 +567,12 @@ Add third party image readers:<br>
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_019.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_019.png)	
 
 <hr>
-<h2>BASIC 3D ENGINE TUTORIAL LIST</h2>
+<h2>BASIC 3D ENGINE TUTORIAL LIST: END</h2>
+<hr>
+
+
+<hr>
+<h2>3D - CORE TUTORIAL SERIES: BEGIN</h2>
 <hr>
 
 - <b>009 Get current RealTime Weather using the aviation METAR</b><br>
@@ -581,5 +663,5 @@ Add third party image readers:<br>
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_000_OSENGINE_SYSTEM.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_000_OSENGINE_SYSTEM.png)	
 
 <hr>
-<h2>3D - CORE TUTORIAL SERIES</h2>
+<h2>3D - CORE TUTORIAL SERIES: END</h2>
 <hr>
