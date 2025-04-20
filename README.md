@@ -51,21 +51,21 @@ Free models from: actorcore.reallusion.com
 
 <hr>
 
-- <b>DX80: SOON</b><br>
+- <b>DX82: ASSIMP: Animated / walking mesh on the terrain, following a path: SOON</b><br>
  
-![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_080.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_080.png)	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_082.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_082.png)	
 
 <hr> 
 
-- <b>DX81: SOON</b><br>
+- <b>DX81: ASSIMP: Loading an animated mesh: SOON</b><br>
  
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_081.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_081.png)	
 
 <hr> 
 
-- <b>DX82: SOON</b><br>
+- <b>DX80: ASSIMP: Loading a static mesh: SOON</b><br>
  
-![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_082.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_082.png)	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_080.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_080.png)	
 
 <hr> 
 
