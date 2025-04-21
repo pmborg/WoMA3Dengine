@@ -39,6 +39,9 @@
     <Filter Include="HLSL">
       <UniqueIdentifier>{26d72f3b-125a-496a-92cd-d95056e3e34d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GLSL">
+      <UniqueIdentifier>{802d3b33-685e-4b39-bfb0-0c83338af602}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\include\ApplicationClass.h">
@@ -464,5 +467,19 @@
     <FxCompile Include="hlsl\common.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="GLengine\color.ps">
+      <Filter>GLSL</Filter>
+    </None>
+    <None Include="GLengine\color.vs">
+      <Filter>GLSL</Filter>
+    </None>
+    <None Include="GLengine\texture.ps">
+      <Filter>GLSL</Filter>
+    </None>
+    <None Include="GLengine\texture.vs">
+      <Filter>GLSL</Filter>
+    </None>
   </ItemGroup>
 </Project>
