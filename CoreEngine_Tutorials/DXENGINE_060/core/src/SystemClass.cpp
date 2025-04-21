@@ -19,7 +19,9 @@
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234567222;
 
+#ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
+#endif
 #pragma warning( disable : 4477 )
 #pragma warning( disable : 4838 )
 
@@ -92,7 +94,7 @@ bool SystemClass::LoadAllGraphicAssets()
 	SystemHandle->m_Application->rescale = min(SystemHandle->m_Application->scaleX, SystemHandle->m_Application->scaleY);
 
 	//################################ LOAD ALL INITIAL 3D OBJECTS ##################################
-	// That will be rendered@ 1st Frame & START TIMER
+	// Load all assets that will be rendered@ 1st Frame and START TIMER
 	if (!m_Application->Initialize(m_Driver)) {
 		WOMA::main_loop_state = -1; 
 		WOMA::game_state = GAME_STOP;

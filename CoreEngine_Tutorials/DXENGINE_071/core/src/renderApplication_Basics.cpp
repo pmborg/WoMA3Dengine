@@ -363,6 +363,7 @@ void ApplicationClass::AppPosRender(UINT monitorWindow)
 #if defined USE_TITLE_BANNER 
 	if ((RENDER_PAGE >= 24 && m_titleModel) && (WOMA::game_state != GAME_MAP)) //Dont render title, on main map!
 	{
+		float rescale = 1;
 		int X = ((SystemHandle->AppSettings->WINDOW_WIDTH - m_titleModel->SpriteTextureWidth) / 2);
 		int Y = 10;
 		m_titleModel->RenderSprite(X, Y, rescale);

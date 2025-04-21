@@ -299,8 +299,6 @@ void CTerrain::CalculateMaxMin()
 		{
 			maxY = MAX(maxY, height[y][x]);
 			minY = MIN(minY, height[y][x]);
-			//if (minY < -300)
-			//	Sleep(1);
 		}
 
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("Terrain MAX Height: %f\n"), maxY);	// 23
@@ -328,14 +326,14 @@ void CTerrain::GenerateRandomHeightMapTerrain(UINT randValue, bool Move_down_edg
 {
 	int i, j, k;
 	float* backterrain;
-	vec3 vec1, vec2, vec3;
+	WOMA::vec3 vec1, vec2, vec3;
 	int currentstep = terrain_squares;
 	float mv, rm;
 	float offset = 0, yscale = 0, maxheight = 0, minheight = 0;
 
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("Terrain Size: %d x %d\n"), (terrain_squares + 1), (terrain_squares + 1));	// 23
 
-	srand(randValue);
+	//srand(randValue);
 
 	// [backterrain]
 	const UINT floatSize = sizeof(float); //4
@@ -575,7 +573,7 @@ void CTerrain::GenerateRandomHeightMapTerrain(UINT randValue, bool Move_down_edg
 		for (j = 0; j<terrain_squares; j++)
 		{
 			height[i][j] = MIN(-1, height[i][j] - 10);	//At max: -1
-			height[i][j] = MAX(-20, height[i][j]);		//At min: -20
+			height[i][j] = MAX(-20, height[i][j]);		//At MIN: -20
 		}
 
 	// Terrain MAX Height : -13.558070

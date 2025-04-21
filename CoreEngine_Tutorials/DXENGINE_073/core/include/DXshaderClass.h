@@ -371,7 +371,9 @@ namespace DirectX
 		XMFLOAT2 distortion1, distortion2, distortion3;
 		float distortionScale, distortionBias;
 #endif
+#if DX_ENGINE_LEVEL >= 73 && defined BILLBOARD_FOR_WINDY_GRASS
 		bool isAnimatedBill = false;
+#endif
 		// --------------------------------------------------------------------------------------------
 		// Internal Shader VARs to Copy to Buffers: VS
 		// --------------------------------------------------------------------------------------------

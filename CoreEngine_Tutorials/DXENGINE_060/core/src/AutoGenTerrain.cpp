@@ -379,8 +379,6 @@ void CTerrain::CalculateMaxMin()
 		{
 			maxY = MAX(maxY, height[y][x]);
 			minY = MIN(minY, height[y][x]);
-			//if (minY < -300)
-			//	Sleep(1);
 		}
 
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("Terrain MAX Height: %f\n"), maxY);	// 23
@@ -410,14 +408,14 @@ void CTerrain::GenerateRandomHeightMapTerrain(UINT randValue, bool Move_down_edg
 {
 	int i, j, k;
 	float* backterrain;
-	vec3 vec1, vec2, vec3;
+	WOMA::vec3 vec1, vec2, vec3;
 	int currentstep = terrain_squares;
 	float mv, rm;
 	float offset = 0, yscale = 0, maxheight = 0, minheight = 0;
 
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("Terrain Size: %d x %d\n"), (terrain_squares + 1), (terrain_squares + 1));	// 23
 
-	srand(randValue);
+	//srand(randValue);
 
 	// [backterrain]
 	const UINT floatSize = sizeof(float); //4
@@ -657,7 +655,7 @@ void CTerrain::GenerateRandomHeightMapTerrain(UINT randValue, bool Move_down_edg
 		for (j = 0; j<terrain_squares; j++)
 		{
 			height[i][j] = MIN(-1, height[i][j] - 10);	//At max: -1
-			height[i][j] = MAX(-20, height[i][j]);		//At min: -20
+			height[i][j] = MAX(-20, height[i][j]);		//At MIN: -20
 		}
 
 	// Terrain MAX Height : -13.558070
@@ -1168,28 +1166,33 @@ void CTerrain::PopulateTerrainModelVertexVector(UINT id, float unit)
 			#if defined SCENE_WATER_TERRAIN
 			if (id == 1) {
 				ModelVertexs(vertex1, modelVertexVector1,
-					x0 + x * unit, y0 + (y + 1) * unit, scaleFactor * height[min(terrain_squares - 1, y + 1)][x],										// Upper left
-					x0 + x * unit + unit, y0 + (y + 1) * unit, scaleFactor * height[min(terrain_squares - 1, y + 1)][min(terrain_squares - 1, x + 1)],	// Upper right	
+					x0 + x * unit, y0 + (y + 1) * unit, scaleFactor * height[MIN(terrain_squares - 1, y + 1)][x],										// Upper left
+					x0 + x * unit + unit, y0 + (y + 1) * unit, scaleFactor * height[MIN(terrain_squares - 1, y + 1)][MIN(terrain_squares - 1, x + 1)],	// Upper right	
 					x0 + x * unit, y0 + y * unit, scaleFactor * height[y][x],																			// Bottom left
-					x0 + x * unit + unit, y0 + y * unit, scaleFactor * height[y][min(terrain_squares - 1, x + 1)]);										// Bottom right
+					x0 + x * unit + unit, y0 + y * unit, scaleFactor * height[y][MIN(terrain_squares - 1, x + 1)]);										// Bottom right
 			}
 			#endif
 			#if !defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX
 			if (id == 2) {
 				ModelVertexs(vertex2, modelVertexVector2,
-					x0 + x * unit, y0 + (y + 1) * unit, scaleFactor * height[min(terrain_squares - 1, y + 1)][x],										// Upper left
-					x0 + x * unit + unit, y0 + (y + 1) * unit, scaleFactor * height[min(terrain_squares - 1, y + 1)][min(terrain_squares - 1, x + 1)],	// Upper right	
+					x0 + x * unit, y0 + (y + 1) * unit, scaleFactor * height[MIN(terrain_squares - 1, y + 1)][x],										// Upper left
+					x0 + x * unit + unit, y0 + (y + 1) * unit, scaleFactor * height[MIN(terrain_squares - 1, y + 1)][MIN(terrain_squares - 1, x + 1)],	// Upper right	
 					x0 + x * unit, y0 + y * unit, scaleFactor * height[y][x],																			// Bottom left
-					x0 + x * unit + unit, y0 + y * unit, scaleFactor * height[y][min(terrain_squares - 1, x + 1)]);										// Bottom right
+					x0 + x * unit + unit, y0 + y * unit, scaleFactor * height[y][MIN(terrain_squares - 1, x + 1)]);										// Bottom right
 			}
 			#endif
 			#if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX && defined SCENE_TERRAIN_COLLISION//DX_ENGINE_LEVEL >= 52
 			if (id == 3) {
+				//(vertex, modelVertexVector,	Ul_x, Ul_y, Ul_z, 
+				//								Ur_x, Ur_y, Ur_z, 
+				//								Bl_x, Bl_y, Bl_z, 
+				//								Br_x, Br_y, Br_z)
+
 				ModelVertexs(vertex3, modelVertexVector3,
-					x0 + x * unit, y0 + (y + 1) * unit, scaleFactor * height[min(terrain_squares - 1, y + 1)][x],										// Upper left
-					x0 + x * unit + unit, y0 + (y + 1) * unit, scaleFactor * height[min(terrain_squares - 1, y + 1)][min(terrain_squares - 1, x + 1)],	// Upper right	
+					x0 + x * unit, y0 + (y + 1) * unit, scaleFactor * height[MIN(terrain_squares - 1, y + 1)][x],										// Upper left
+					x0 + x * unit + unit, y0 + (y + 1) * unit, scaleFactor * height[MIN(terrain_squares - 1, y + 1)][MIN(terrain_squares - 1, x + 1)],	// Upper right	
 					x0 + x * unit, y0 + y * unit, scaleFactor * height[y][x],																			// Bottom left
-					x0 + x * unit + unit, y0 + y * unit, scaleFactor * height[y][min(terrain_squares - 1, x + 1)]);										// Bottom right
+					x0 + x * unit + unit, y0 + y * unit, scaleFactor * height[y][MIN(terrain_squares - 1, x + 1)]);										// Bottom right
 			}
 			#endif
 

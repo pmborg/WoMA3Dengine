@@ -20,7 +20,7 @@
 
 
 #include "platform.h"
-#include "math.h"
+#include "Math3D.h"
 #include "GLcameraClass.h"
 
 GLcameraClass::GLcameraClass()

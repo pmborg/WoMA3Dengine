@@ -1244,7 +1244,8 @@ bool ModelClass::CreateObject(void* XmodelClass, TCHAR* objectName, void* g_driv
 #else
 			if (obj3d.meshMaterials[i] == obj3d.material[j].matName)
 #endif
-				obj3d.subsetMaterialArray.push_back(j);
+				if (obj3d.meshMaterials[i].size() > 0)
+					obj3d.subsetMaterialArray.push_back(j);
 		}
 	}
 

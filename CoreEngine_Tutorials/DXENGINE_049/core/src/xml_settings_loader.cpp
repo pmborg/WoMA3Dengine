@@ -36,7 +36,9 @@
 #include "xml_loader.h"
 
 #if DX_ENGINE_LEVEL >= 72
+#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
 #include "soundclass.h"
+#endif
 #include "mem_leak.h"
 #endif
 
@@ -47,7 +49,7 @@ XMLloader::XMLloader()
 
 XMLloader::~XMLloader()
 {
-#if DX_ENGINE_LEVEL >= 72
+#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
 	for (size_t i = 0; i < theWorld.size(); i++)
 	{
 		SAFE_SHUTDOWN(theWorld[i].audio);
@@ -443,7 +445,7 @@ bool XMLloader::loadWorld (TCHAR* file_) // Note: Have to be char
 				object3d.castShadow = atoi(element->Attribute("castShadow"));
 				object3d.renderShadows = atoi(element->Attribute("renderShadows"));
 	#endif
-	#if DX_ENGINE_LEVEL >= 72
+	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
 				object3d.soundRange = (float)atof(element->Attribute("soundRange"));
 				if (object3d.soundRange > 0)
 				{

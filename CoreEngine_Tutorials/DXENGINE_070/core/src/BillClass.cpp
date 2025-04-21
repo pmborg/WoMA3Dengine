@@ -20,7 +20,7 @@
 //WomaIntegrityCheck = 1234567222;
 
 #include "OSengine.h"
-
+#if defined SCENE_BILLBOARDS
 #include "BillClass.h"
 #include "mem_leak.h"
 #include "ApplicationClass.h"
@@ -45,7 +45,7 @@ BillClass::BillClass()
 	BillrenderCount =0;
 
 	mainTerrainPath = NEW CTerrain(TERRAIN);
-	mainTerrainPath->LoadHeightMapTerrain(TEXT("engine/data/scene73grass/t_025TerrainMappingV4.bmp"), 0, 0); //float xPos, float zPos
+	mainTerrainPath->LoadHeightMapTerrain(BILLBOARD_TERRAIN, 0, 0); //engine/data/scene73grass/t_025TerrainMappingV4.bmp
 	//height[terrain_squares][terrain_squares]
 }
 
@@ -233,4 +233,4 @@ int __cdecl BillSortCB( const VOID* arg1, const VOID* arg2 )
 
     return -1;   
 }
-
+#endif

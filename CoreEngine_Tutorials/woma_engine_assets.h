@@ -136,7 +136,7 @@
 #endif
 
 #if DX_ENGINE_LEVEL == 19
-	#define DEMO_TITLE TEXT("19: OPENGL, DX9, DX11, DX12: ALT ENTER")
+	#define DEMO_TITLE TEXT("19: PRESS[F6] for SETUP and change Driver : OPENGL, DX9, DX11, DX12 : Initiate the 3D Graphic Drivers and attache the swapchain to mainwindow.")
 #if !defined DEMO_LEVEL
 	#define SETTINGS_FILE		TEXT("settings_019.xml")
 #endif
@@ -432,6 +432,7 @@
 #endif
 
 #if DX_ENGINE_LEVEL >= 70
+	#define BILLBOARD_TERRAIN TEXT("engine/data/scene73grass/t_025TerrainMappingV4.bmp")
 	#define BILLBOARD_MODEL TEXT("engine/data/scene70Bill/060square.obj")
 
 	#define BILL_TREE_0 TEXT("engine/data/scene70Bill/060SH10_1bill.tif")	// 0 TREEs
@@ -446,6 +447,8 @@
 	#define BILL_FLOWER_2 TEXT("engine/data/scene70Bill/060flor1.png") 		// 8
 	#define BILL_FLOWER_3 TEXT("engine/data/scene70Bill/060girasol.png") 	// 9 
 	#define BILL_FLOWER_4 TEXT("engine/data/scene70Bill/060flor2.png") 		//10
+
+	#define BILL_GRASS TEXT("engine/data/scene73grass/Grass_Patch_3.png")	//11
 #endif
 
 #if DX_ENGINE_LEVEL == 71

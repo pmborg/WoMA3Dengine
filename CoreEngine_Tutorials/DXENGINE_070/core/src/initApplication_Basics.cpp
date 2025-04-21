@@ -26,6 +26,7 @@
 #include "mem_leak.h"
 #include "log.h"
 #include <cinttypes>
+#include <string.h>
 
 #pragma warning(push)
 #pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
@@ -230,7 +231,7 @@ void ApplicationClass::initLightDemo()
 		MAP_XYtoUV(TriangleLightVertexVector, X, Y, Z);										// Step 2: ADD TEXTURING: Auto-Map textures to all vertices: tu, tv
 
 		// Calculate Normals, only once per triangle, (i.e. each 3 vertices):
-		vec3 normal; // "static": to preserve the value in all iterations
+		WOMA::vec3 normal; // "static": to preserve the value in all iterations
 		normal = CalcNormals(&TriangleLightVertexVector[0]);
 
 		for (UINT i = 0; i < TriangleLightVertexVector.size(); i++)							// Step 3: Add normals to all vertices
@@ -809,12 +810,12 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	for (UINT i = objModel_size; i < objModel_size+len; i++)
 	{
 		objModel.push_back(NULL);
-		//CREATE_MODEL_IF_NOT_EXCEPTION(objModel[i], I_AM_3D, SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows);
 		if (SystemHandle->xml_loader.theWorld[i].type < 200)
 		{
 			CREATE_MODEL_IF_NOT_EXCEPTION(objModel[i], I_AM_2D, SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows);
 		}
-		else {
+		else 
+		{
 			CREATE_MODEL_IF_NOT_EXCEPTION(objModel[i], I_AM_3D, SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows);
 		}
 
@@ -923,8 +924,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	// --------------------------------------------------------------------------------------------
 #endif
 
-
-
+	//Load ASSIMP Chars /////////////////////////////////////////////////////////////////////////////////
 
 	//Finally, launch dynamic Load Compound/OBJ Thread /////////////////////////////////////////////////////////////////////////////////
 #if defined (CHECK_COMPOUND_COLISION) && defined (SCENE_COMPOUND) //TUTORIAL_CHAP >= 55 && 
@@ -954,5 +954,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 
 	return true;
 }
+
 
 #pragma warning(pop)

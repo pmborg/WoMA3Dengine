@@ -117,7 +117,9 @@ bool dxWinSystemClass::APPLICATION_INIT_SYSTEM() //LOAD ALL GRAPHICS
 #endif
 
 	driverList.clear();
+#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
 	m_DirectSound = NULL;
+#endif
 	//ClassRegister/LoadXMLSettings/InitializeSystemScreen/ApplicationInitMainWindow/InitOsInput/StartTimer
 	bool res = WinSystemClass::APPLICATION_INIT_SYSTEM();	
 

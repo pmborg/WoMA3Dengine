@@ -19,7 +19,9 @@
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234567222;
 
+#ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
+#endif
 #include "OSengine.h"
 #include "main.h"
 #if defined USE_LOG_MANAGER

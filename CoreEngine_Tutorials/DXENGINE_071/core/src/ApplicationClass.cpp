@@ -674,7 +674,7 @@ bool ApplicationClass::Initialize(WomaDriverClass* Driver)
 	DEMO_WOMA_APPLICATION_InitializeSprites2D();				//2D:TITLE + 2D:MAP + 2D:MINI-MAP
 #endif
 	// 2D-FONTS: (Windows)
-#if defined USE_RASTERTEK_TEXT_FONT //27
+#if defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONT //27
 	initText();
 #endif
 	// 2D-FONTS: (Android / Linux)

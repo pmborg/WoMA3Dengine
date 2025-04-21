@@ -37,7 +37,9 @@ using namespace std;
 #include <stdio.h>
 #endif
 
+#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
 #include "soundclass.h"
+#endif
 
 #if defined( WIN32 ) && defined( TUNE )
 	#include <crtdbg.h>
@@ -181,7 +183,9 @@ typedef struct {
 	UINT type = 0;
 	ID3D11ShaderResourceView* meshSRV;
 	char audioFilename[256];
+	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
 	SoundClass* audio=NULL;
+	#endif
 	float soundRange =0;
 	bool Bill=false;
 } xmlobj3d;

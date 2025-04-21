@@ -368,9 +368,9 @@ namespace DirectX
 #endif
 
 		return true;
-#endif // Not forced obj
+#endif
 	}
-#endif//50
+#endif
 
 } //namespace DirectX 
 

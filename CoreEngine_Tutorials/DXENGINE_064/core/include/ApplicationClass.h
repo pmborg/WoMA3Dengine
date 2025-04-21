@@ -67,7 +67,12 @@
 
 #if TUTORIAL_CHAP >= 60 // BILLBOARD
 #include "BillClass.h"				//[ch60]
-#endif//
+#endif
+
+#if defined USE_ASSIMP_GLLIB
+#include "GLAnimationScene.h"
+//#include "QuatCamera.h"
+#endif
 
 #if TUTORIAL_CHAP >= 90
 #include "../network/NetworkClass.h"
@@ -103,7 +108,7 @@ extern float fadeIntro;
 
 struct InstanceType
 {
-	vec3 /*XMFLOAT3/*D3DXVECTOR3*/	position;
+	WOMA::vec3	position;
 };
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
@@ -556,8 +561,13 @@ public:
 #if defined SCENE_TERRAIN_QUAD_TREE //67
 	TerrainQuadtreeClass* TerrainQuadtree;
 #endif
-
-
+#if defined USE_ASSIMP_GLLIB
+	//The Scene
+	MyAnimationScene* myScene = NULL;
+	bool myScene_has_animation = false;
+	//The camera
+	//QuatCamera my_camera;
+#endif
 };
 
 #define SunDistance 512

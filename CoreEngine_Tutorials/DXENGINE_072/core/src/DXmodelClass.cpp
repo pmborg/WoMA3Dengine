@@ -800,14 +800,17 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 				HRESULT res = LoadTextureImage(textureFilename);
 				if (res != S_OK)
 					return false;
-				} else
+				} 
+#if defined DX11
+				else
 					meshSRV11.push_back(NULL); //on special cases (like billboards)
+#endif
 			}
 		}
 
 		//2D:
 		#if defined USE_VIEW2D_SPRITES
-			if (!Model3D && m_Texture11)	// SPRITE? Get Size...
+			if (!Model3D)	// SPRITE? Get Size...
 			{
 				#if defined DX12
 				if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
@@ -818,7 +821,7 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 				#endif
 
 				#if defined DX11 || defined DX9
-				if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+				if (m_Texture11 && (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9))
 				{
 					// Get Sprite Size:
 					ID3D11Resource* textureResource;
@@ -2009,13 +2012,13 @@ bool DXmodelClass::RenderSprite( int positionX, int positionY, float scale, floa
 	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
 	case DRIVER_DX9:
 	case DRIVER_DX11:
-		if (!UpdateBuffersRotY(/*m_driver11,*/ positionX, positionY))
+		if (!UpdateBuffersRotY(positionX, positionY))
 			return false;
 	break;
 	#endif
 	#if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009
 	case DRIVER_DX12:
-		if (!UpdateBuffersRotY( positionX, positionY))
+		if (!UpdateBuffersRotY(positionX, positionY))
 			return false;
 	break;
 	#endif
@@ -2025,60 +2028,10 @@ bool DXmodelClass::RenderSprite( int positionX, int positionY, float scale, floa
 	m_worldMatrix = XMMatrixIdentity();
 
 	if (fade == -1000)
+	{
 		Render(/*m_driver11,*/ CAMERA_NORMAL, PROJECTION_MINIMAP);
-
-	/*
-	#define _11 r[0].m128_f32[0]
-	#define _12 r[0].m128_f32[1]
-	#define _13 r[0].m128_f32[2]
-	#define _14 r[0].m128_f32[3]
-
-	#define _21 r[1].m128_f32[0]
-	#define _22 r[1].m128_f32[1]
-	#define _23 r[1].m128_f32[2]
-	#define _24 r[1].m128_f32[3]
-
-	#define _31 r[2].m128_f32[0]
-	#define _32 r[2].m128_f32[1]
-	#define _33 r[2].m128_f32[2]
-	#define _34 r[2].m128_f32[3]
-
-	#define _41 r[3].m128_f32[0]
-	#define _42 r[3].m128_f32[1]
-	#define _43 r[3].m128_f32[2]
-	#define _44 r[3].m128_f32[3]
-
-	
-
-	//scale2D = scale;
-	
-	//if (scale != 1) {
-	//	m_worldMatrix._11 = m_worldMatrix._22 = m_worldMatrix._33 = scale;
-	//}
-	
-	//float Ypos = (SystemHandle->AppSettings->WINDOW_HEIGHT) / 2 - m_worldMatrix._33 * SpriteTextureHeight / 2;
-	//m_worldMatrix._42 = Ypos;
-
-	#undef _11
-	#undef _12
-	#undef _13
-	#undef _14
-
-	#undef _21
-	#undef _22
-	#undef _23
-	#undef _24
-
-	#undef _31
-	#undef _32
-	#undef _33
-	#undef _34
-
-	#undef _41
-	#undef _42
-	#undef _43
-	#undef _44
-	*/
+		return true;
+	}
 
 	//PROJECTION_ORTHOGRAPH:
 	// 
