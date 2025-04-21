@@ -20,6 +20,7 @@
 //WomaIntegrityCheck = 1234567222;
 
 #include "main.h"
+
 #if defined USE_LOG_MANAGER
 #include "OSengine.h"
 #include "mem_leak.h"

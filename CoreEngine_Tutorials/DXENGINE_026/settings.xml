@@ -1,5 +1,5 @@
 <generalsettings>
-    <screen uiMonitor="0" fullScreen="false" posX="0" posY="0" width="550" height="940" allowResize="true" vsync="true" bitsPerPixel="32"/>
+    <screen uiMonitor="1" fullScreen="false" posX="0" posY="0" width="550" height="940" allowResize="true" vsync="true" bitsPerPixel="32"/>
     <driver name="DX11" UseAllMonitors="false" useDoubleBuffering="true"/>
     <camera screenNear="0.1" screenDepth="2048">
         <initPos x="0" y="2" z="-28"/>

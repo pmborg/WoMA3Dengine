@@ -31,16 +31,19 @@
 // --------------------------
 // "OBJ" MATERIAL FORMAT:
 // --------------------------
+#pragma pack(push, 1)
+//Without pragma pack the above struct takes 16 bytes, with the pragma pack instructions, same struct takes 14 bytes!
+
 typedef struct
 {
-	char matName[100];					//size:100 100xchar
+	char matName[100] = {};					//size:100 100xchar
 
-	XMFLOAT4 diffuseColor;				//size:16
-	XMFLOAT4 ambientColor;				//size:16
-	XMFLOAT4 emissiveColor;				//size:16
+	XMFLOAT4 diffuseColor = {};				//size:16
+	XMFLOAT4 ambientColor = {};				//size:16
+	XMFLOAT4 emissiveColor = {};				//size:16
 
 	int texArrayIndex=NULL;				//size:4
-	bool hasTexture;					//size:1
+	bool hasTexture=false;					//size:1
 
 	bool transparent;							//size:1	>= 33
 #if defined DX11 ||	defined DX9
@@ -50,32 +53,32 @@ typedef struct
 	DX12TextureClass* alfaMap = NULL;			//size:8	>= 33	DX12
 #endif
 
-	bool bSpecular;							//size:1	>= 34: NEW SPECULAR + SHININESS:
-	XMFLOAT3 specularColor;					//size:12	>= 34: NEW SPECULAR + SHININESS:
+	bool bSpecular=false;							//size:1	>= 34: NEW SPECULAR + SHININESS:
+	XMFLOAT3 specularColor = {};					//size:12	>= 34: NEW SPECULAR + SHININESS:
 	int nShininess=NULL;					//size:4	>= 34: NEW SPECULAR + SHININESS:
 
-	bool hasNormMap;						//size:1	>= 37: NEW BUMP
+	bool hasNormMap=false;						//size:1	>= 37: NEW BUMP
 	int normMapTexArrayIndex=NULL;			//size:4	>= 37: NEW BUMP
 											//TOTAL		 192
 } SurfaceMaterial;
 
 typedef struct
 {
-	STRING fileNameOnly;
+	STRING fileNameOnly = TEXT("");
 
 	//Vertex definition indices
-	std::vector<int> vertPosIndex;			//vertPos Indexs
-	std::vector<int> vertTCIndex;			//vertTexCoord Indexs
-	std::vector<int> vertNormIndex;			//vertNorm Indexs
+	std::vector<int> vertPosIndex = {};			//vertPos Indexs
+	std::vector<int> vertTCIndex = {};			//vertTexCoord Indexs
+	std::vector<int> vertNormIndex = {};			//vertNorm Indexs
 
 	UINT	triangleCount = 0;				//Total Triangles
 	UINT	meshTriangles = 0;
 
-	std::vector<STRING>		meshMaterials;
+	std::vector<STRING>		meshMaterials = {};
 
-	std::vector<XMFLOAT3>	vertPos;		//30
-	std::vector<XMFLOAT2>	vertTexCoord;	//31
-	std::vector<XMFLOAT3>	vertNorm;		//32
+	std::vector<XMFLOAT3>	vertPos = {};		//30
+	std::vector<XMFLOAT2>	vertTexCoord = {};	//31
+	std::vector<XMFLOAT3>	vertNorm = {};		//32
 
 	//Make sure we have a default if no tex coords or normals are defined
 	bool hasTexCoord = false;				//ch07
@@ -86,20 +89,21 @@ typedef struct
 
 	UINT meshSubsets = 0;					// Num. of sub-meshes
 
-	std::vector<UINT> indices32;			// DX >= 9.2
-	std::vector<WORD> indices16;			// DX >= 9.0 Shader 2.0
+	std::vector<UINT> indices32 = {};			// DX >= 9.2
+	std::vector<WORD> indices16 = {};			// DX >= 9.0 Shader 2.0
 
-	std::vector<int> meshSubsetIndexStart;	// Start Index of each subset
-	std::vector<int> subsetMaterialArray;	// Index of material to use in each subset
+	std::vector<int> meshSubsetIndexStart = {};	// Start Index of each subset
+	std::vector<int> subsetMaterialArray = {};	// Index of material to use in each subset
 
-	std::vector<SurfaceMaterial> material;
-	std::vector<STRING> textureNameArray;	// filename of all textures loaded
+	std::vector<SurfaceMaterial> material = {};
+	std::vector<STRING> textureNameArray = {};	// filename of all textures loaded
 
 	//---------------------------------------------------------------------
 	UINT m_vertexCount = 0, m_indexCount = 0;			//virtualModelClass.h
 	bool	ModelHASNormals = false;
 
 } ADVOBJ3D;
+#pragma pack(pop)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: ModelClass

@@ -953,7 +953,7 @@ namespace DirectX {
 			std::string vertVer = TEXT("vs_"); //cant be: STRING
 			vertVer.append(driverList[SystemHandle->AppSettings->DRIVER]->szShaderModel);  //TEXT("vs_5_0")
 			vertVer[4] = '_';  //TEXT("vs_5_0")
-			result = D3DCompileFromFile(vsFilename.c_str(), defines/*nullptr*/, nullptr, vertexHLSL.c_str(), "vs_5_0"/*vertVer.c_str()*/, compileFlags, 0, &vertexShader, &errorMessage);
+			result = D3DCompileFromFile(vsFilename.c_str(), defines/*nullptr*/, nullptr, vertexHLSL.c_str(), ("vs_5_0")/*vertVer.c_str()*/, compileFlags, 0, &vertexShader, &errorMessage);
 			if (FAILED(result))
 			{
 				if (errorMessage)
@@ -962,7 +962,7 @@ namespace DirectX {
 			}
 
 			vertVer[0] = 'p';  //TEXT("ps_5_0")
-			result = D3DCompileFromFile(psFilename.c_str(), defines/*nullptr*/, nullptr, pixelHLSL.c_str(), "ps_5_0"/*vertVer.c_str()*/, compileFlags, 0, &pixelShader, &errorMessage);
+			result = D3DCompileFromFile(psFilename.c_str(), defines/*nullptr*/, nullptr, pixelHLSL.c_str(), ("ps_5_0")/*vertVer.c_str()*/, compileFlags, 0, &pixelShader, &errorMessage);
 			if (FAILED(result))
 			{
 				if (errorMessage)
@@ -1026,7 +1026,7 @@ namespace DirectX {
 					for (UINT fillMode = 0; fillMode < 2; fillMode++)		//0..1
 					{
 						opaquePsoDesc.RasterizerState = driver->m_rasterState[cullMode][fillMode];
-						//EQUAL TO:   device->CreateGraphicsPipelineState(&opaquePsoDesc, IID_ID3D12PipelineState, &m_pipelineState[cullMode][fillMode][TRANSPARENT_PIPELINE_STATES]);
+						//EQUAL TO:   device->CreateGraphicsPipelineState(&opaquePsoDesc, IID_ID3D12PipelineState, &m_pipelineState[zBufferMode][cullMode][fillMode][SOLID_PIPELINE_STATES]);
 						ThrowIfFailed(device->CreateGraphicsPipelineState(&opaquePsoDesc, IID_PPV_ARGS(&m_pipelineState[zBufferMode][cullMode][fillMode][SOLID_PIPELINE_STATES])));
 					}
 				}
@@ -1277,7 +1277,7 @@ namespace DirectX {
 			// Create the texture sampler state.
 			result = device11->CreateSamplerState(&samplerDescFire, &m_sampleStateFire);
 			if (FAILED(result)) { WomaFatalException (TEXT("error")); return false; }
-#endif//
+#endif
 
 			// --------------------------------------------------------------------------------------------
 			// CREATE Buffer(s) DATA for "Vertex Shader"
@@ -1546,7 +1546,7 @@ namespace DirectX {
 			if (m_shaderType == SHADER_FIRE) {
 				deviceContext->PSSetSamplers(1, 1, &m_sampleStateFire);
 			}
-#endif//
+#endif
 
 			// Set CODE to Run on Shaders:
 			deviceContext->VSSetShader(m_vertexShader11, NULL, 0);		// Set the vertex code that will be used to process vertices
@@ -1740,8 +1740,9 @@ namespace DirectX {
 
 	void DXshaderClass::Render(UINT pass,/*ID3D11DeviceContext*/ void* Device_Context, int indexCount, XMMATRIX* worldMatrix, XMMATRIX* viewMatrix, XMMATRIX* projectionMatrix)
 	{
+#if _DEBUG
 		ASSERT(indexCount > 0);
-
+#endif
 		SetShaderParameters(pass, Device_Context, worldMatrix, viewMatrix, projectionMatrix);	// Set the shader parameters that it will use for rendering
 		RenderShader(pass, Device_Context, /*texture_index*/ 0, indexCount);					// Now render the prepared buffers with the shader
 	}

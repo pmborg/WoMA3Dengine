@@ -51,10 +51,10 @@ enum PRIMITIVE_TOPOLOGY
 	LINESTRIP,		// ...not used...												6 Vertex = 5 LINEs --> DrawPrimitive( D3DPT_LINESTRIP, 0, 5 );
 	TRIANGLELIST,	// DxModel default Defined in (CREATE_MODEL_IF_NOT_EXCEPTION)   1 Triang. = 3 Vert.--> DrawPrimitive( D3DPT_TRIANGLELIST, 0, 1 );
 	TRIANGLESTRIP,	// Used on Optimized Sky Mesh: Sky/Sun/Moon Terrain          	4 Triang. = 6 Vert.--> DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, 4 );
-					// LINELIST_ADJ,
-					// LINESTRIP_ADJ,
-					// TRIANGLELIST_ADJ,
-					// TRIANGLESTRIP_ADJ,
+	// LINELIST_ADJ,
+	// LINESTRIP_ADJ,
+	// TRIANGLELIST_ADJ,
+	// TRIANGLESTRIP_ADJ,
 };
 
 #include "main.h"
@@ -76,55 +76,56 @@ public:
 #endif
 	virtual void Render(UINT camera = 0, UINT projection = 0, UINT pass = 0, void* lightViewMatrix = NULL, void* ShadowProjectionMatrix = NULL) = 0;
 
-	virtual bool LoadColor(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<ModelColorVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0) = 0;
-	virtual bool LoadTexture(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0) = 0;
-	virtual bool LoadLight(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureLightVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0) = 0;
-	virtual bool LoadBump(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelNormalBumpVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount = 0) = 0;
+	virtual bool LoadColor(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<ModelColorVertexType>* model, std::vector<UINT>* indexList = NULL, UINT instanceCount = 0) = 0;
+	virtual bool LoadTexture(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<ModelTextureVertexType>* model, std::vector<UINT>* indexList = NULL, UINT instanceCount = 0) = 0;
+	virtual bool LoadLight(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<ModelTextureLightVertexType>* model, std::vector<UINT>* indexList = NULL, UINT instanceCount = 0) = 0;
+	virtual bool LoadBump(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<ModelNormalBumpVertexType>* model, std::vector<UINT>* indexList = NULL, UINT instanceCount = 0) = 0;
 
 #if defined USE_VIEW2D_SPRITES // Sprites
 	virtual bool RenderSprite(int positionX, int positionY, float scale = 1.0f, float fade = 1.0f) = 0;
-	virtual bool UpdateBuffersRotY( int positionX, int positionY)=0;
-	virtual bool UpdateSpriteBuffersRotY( int positionX, int positionY)=0;
+	virtual bool UpdateBuffersRotY(int positionX, int positionY) = 0;
+	virtual bool UpdateSpriteBuffersRotY(int positionX, int positionY) = 0;
 #endif
 #if defined USE_LIGHT_RAY
-	virtual void UpdateDynamic( std::vector<ModelColorVertexType>* lightVertexVector) = 0;
+	virtual void UpdateDynamic(std::vector<ModelColorVertexType>* lightVertexVector) = 0;
 #endif
-	virtual bool LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow = false, bool renderShadow=false, UINT instanceCount=0) = 0;
+	virtual bool LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow = false, bool renderShadow = false, UINT instanceCount = 0) = 0;
 
 	virtual void Identity() = 0;
-	virtual void multiply (void* m)=0;	//XMMATRIX* or mat4*
+	virtual void multiply(void* m) = 0;	//XMMATRIX* or mat4*
 
-	virtual void rotateX (float rad)=0;
-	virtual void rotateY (float rad)=0;
-	virtual void rotateZ (float rad)=0;
-	virtual void scale(float x, float y, float z)=0;
-	virtual void translation(float x, float y, float z)=0;
+	virtual void rotateX(float rad) = 0;
+	virtual void rotateY(float rad) = 0;
+	virtual void rotateZ(float rad) = 0;
+	virtual void scale(float x, float y, float z) = 0;
+	virtual void translation(float x, float y, float z) = 0;
 
 	//VARS:
 	// ----------------------------------------------------------------------
 	UINT				WomaIntegrityCheck = 1234567222;
 
-	INT					m_ObjId=-1;
-	SHADER_TYPE			ModelShaderType= SHADER_AUTO;	//Used by shader.cpp
+	INT					m_ObjId = -1;
+	SHADER_TYPE			ModelShaderType = SHADER_AUTO;	//Used by shader.cpp
 	PRIMITIVE_TOPOLOGY  PrimitiveTopology;
 	UINT				m_vertexCount = 0, m_indexCount = 0;
 
 	float				PosX = 0, PosY = 0, PosZ = 0;
 
-	bool				Model3D=false;
+	bool				Model3D = false;
 	bool				ModelHASfog = false;
 	bool				ModelHASlight = false;
 	bool				ModelHASAlfaColor = false;
 	bool				ModelHASColorMap = false;
-	float				ModelAlfaColor=0;
-	int					shaderTypeParameter=0;			//Used by HLSL CODE
+	float				ModelAlfaColor = 0;
+	int					shaderTypeParameter = 0;			//Used by HLSL CODE
+	bool				isAnimatedBill = false;
 
-	float				boundingSphere=0;
+	float				boundingSphere = 0;
 	bool				ModelHASNormals = false;
 	bool				ModelcomputeNormals = false;
 
-	int					SpriteTextureWidth=0;	//NOTE: Have to be "int"
-	int					SpriteTextureHeight=0;	//NOTE: Have to be "int"
+	int					SpriteTextureWidth = 0;	//NOTE: Have to be "int"
+	int					SpriteTextureHeight = 0;	//NOTE: Have to be "int"
 
 };
 

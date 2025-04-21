@@ -438,8 +438,6 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 			m_Shader11->hasAlfaColor = ModelHASAlfaColor;			//IMPORTANT LEVEL 62!
 			m_Shader11->alfaColor = ModelAlfaColor;					//IMPORTANT LEVEL 62!
 			m_Shader11->hasFog = ModelHASfog;						//IMPORTANT LEVEL 62!
-			//m_Shader11->hasFog = ModelHASfog;						//IMPORTANT LEVEL 62!
-			//m_Shader11->shaderTypeParameter = shaderTypeParameter;	//IMPORTANT LEVEL 62!
 	}
 #endif
 #if defined DX12
@@ -603,6 +601,7 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 			meshSRV_size = (UINT) meshSRV.size();
 		}
 		#endif
+
 		//3D: Create the texture object for this model:
 		if (meshSRV_size == 0)
 		{
@@ -622,8 +621,11 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 				HRESULT res = LoadTextureImage(textureFilename);
 				if (res != S_OK)
 					return false;
-				} else
+				} 
+#if defined DX11
+				else
 					meshSRV11.push_back(NULL); //on special cases (like billboards)
+#endif
 			}
 		}
 
@@ -640,7 +642,7 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 				#endif
 
 				#if defined DX11 || defined DX9
-				if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+				if (m_Texture11 && (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9))
 				{
 					// Get Sprite Size:
 					ID3D11Resource* textureResource;
@@ -664,7 +666,7 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 
 	SAFE_DELETE_ARRAY (indices);
 
-	if (Model3D) 
+	//if (Model3D) 
 	{
 		// Compute distance between maxVertex and minVertex
 		float distX = (maxVertex.x - minVertex.x) / 2.0f;
@@ -677,6 +679,10 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 		// Compute bounding sphere (distance between min and max bounding box vertices)
 		boundingSphere = XMVectorGetX(XMVector3Length(XMVectorSet(distX, distY, distZ, 0.0f)));	
 
+		#if defined BOUNDINGVOLUMES
+		//if (Model3D) 
+			CreateBoundingVolumes();
+		#endif
 	}
 	return true;
 }
@@ -1599,13 +1605,13 @@ bool DXmodelClass::RenderSprite( int positionX, int positionY, float scale, floa
 	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
 	case DRIVER_DX9:
 	case DRIVER_DX11:
-		if (!UpdateBuffersRotY(/*m_driver11,*/ positionX, positionY))
+		if (!UpdateBuffersRotY(positionX, positionY))
 			return false;
 	break;
 	#endif
 	#if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009
 	case DRIVER_DX12:
-		if (!UpdateBuffersRotY( positionX, positionY))
+		if (!UpdateBuffersRotY(positionX, positionY))
 			return false;
 	break;
 	#endif
@@ -1615,60 +1621,10 @@ bool DXmodelClass::RenderSprite( int positionX, int positionY, float scale, floa
 	m_worldMatrix = XMMatrixIdentity();
 
 	if (fade == -1000)
+	{
 		Render(/*m_driver11,*/ CAMERA_NORMAL, PROJECTION_MINIMAP);
-
-	/*
-	#define _11 r[0].m128_f32[0]
-	#define _12 r[0].m128_f32[1]
-	#define _13 r[0].m128_f32[2]
-	#define _14 r[0].m128_f32[3]
-
-	#define _21 r[1].m128_f32[0]
-	#define _22 r[1].m128_f32[1]
-	#define _23 r[1].m128_f32[2]
-	#define _24 r[1].m128_f32[3]
-
-	#define _31 r[2].m128_f32[0]
-	#define _32 r[2].m128_f32[1]
-	#define _33 r[2].m128_f32[2]
-	#define _34 r[2].m128_f32[3]
-
-	#define _41 r[3].m128_f32[0]
-	#define _42 r[3].m128_f32[1]
-	#define _43 r[3].m128_f32[2]
-	#define _44 r[3].m128_f32[3]
-
-	
-
-	//scale2D = scale;
-	
-	//if (scale != 1) {
-	//	m_worldMatrix._11 = m_worldMatrix._22 = m_worldMatrix._33 = scale;
-	//}
-	
-	//float Ypos = (SystemHandle->AppSettings->WINDOW_HEIGHT) / 2 - m_worldMatrix._33 * SpriteTextureHeight / 2;
-	//m_worldMatrix._42 = Ypos;
-
-	#undef _11
-	#undef _12
-	#undef _13
-	#undef _14
-
-	#undef _21
-	#undef _22
-	#undef _23
-	#undef _24
-
-	#undef _31
-	#undef _32
-	#undef _33
-	#undef _34
-
-	#undef _41
-	#undef _42
-	#undef _43
-	#undef _44
-	*/
+		return true;
+	}
 
 	//PROJECTION_ORTHOGRAPH:
 	// 
@@ -2242,6 +2198,73 @@ bool DXmodelClass::LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shad
 
 // Create: Bounding Box 
 // --------------------------------------------------------------------------------------------
+#if defined BOUNDINGVOLUMES
+void DXmodelClass::CreateBoundingVolumes(std::vector<XMFLOAT3>& vertPosArray)
+// --------------------------------------------------------------------------------------------
+{
+	XMFLOAT3 minVertex = XMFLOAT3(FLT_MAX, FLT_MAX, FLT_MAX);
+	XMFLOAT3 maxVertex = XMFLOAT3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+
+	for(UINT i = 0; i < vertPosArray.size(); i++)
+	{
+		// The minVertex and maxVertex will most likely not be actual vertices in the model, but vertices
+		// that use the smallest and largest x, y, and z values from the model to be sure ALL vertices are
+		// covered by the bounding volume
+
+		//Get the smallest vertex
+		minVertex.x = min(minVertex.x, vertPosArray[i].x);	// Find smallest x value in model
+		minVertex.y = min(minVertex.y, vertPosArray[i].y);	// Find smallest y value in model
+		minVertex.z = min(minVertex.z, vertPosArray[i].z);	// Find smallest z value in model
+
+		//Get the largest vertex
+		maxVertex.x = max(maxVertex.x, vertPosArray[i].x);	// Find largest x value in model
+		maxVertex.y = max(maxVertex.y, vertPosArray[i].y);	// Find largest y value in model
+		maxVertex.z = max(maxVertex.z, vertPosArray[i].z);	// Find largest z value in model
+	}
+
+	// Create bounding box	
+	// Front Vertices:
+	boundingBoxVerts.push_back(XMFLOAT3(minVertex.x, minVertex.y, minVertex.z));
+	boundingBoxVerts.push_back(XMFLOAT3(minVertex.x, maxVertex.y, minVertex.z));
+	boundingBoxVerts.push_back(XMFLOAT3(maxVertex.x, maxVertex.y, minVertex.z));
+	boundingBoxVerts.push_back(XMFLOAT3(maxVertex.x, minVertex.y, minVertex.z));
+
+	// Back Vertices:
+	boundingBoxVerts.push_back(XMFLOAT3(minVertex.x, minVertex.y, maxVertex.z));
+	boundingBoxVerts.push_back(XMFLOAT3(maxVertex.x, minVertex.y, maxVertex.z));
+	boundingBoxVerts.push_back(XMFLOAT3(maxVertex.x, maxVertex.y, maxVertex.z));
+	boundingBoxVerts.push_back(XMFLOAT3(minVertex.x, maxVertex.y, maxVertex.z));
+
+	DWORD i[36];	//DWORD* i = NEW DWORD[36];
+
+	// Front Face
+	i[0] = 0; i[1] = 1; i[2] = 2;
+	i[3] = 0; i[4] = 2; i[5] = 3;
+
+	// Back Face
+	i[6] = 4; i[7] = 5; i[8] = 6;
+	i[9] = 4; i[10] = 6; i[11] = 7;
+
+	// Top Face
+	i[12] = 1; i[13] = 7; i[14] = 6;
+	i[15] = 1; i[16] = 6; i[17] = 2;
+
+	// Bottom Face
+	i[18] = 0; i[19] = 4; i[20] = 5;
+	i[21] = 0; i[22] = 5; i[23] = 3;
+
+	// Left Face
+	i[24] = 4; i[25] = 7; i[26] = 1;
+	i[27] = 4; i[28] = 1; i[29] = 0;
+
+	// Right Face
+	i[30] = 3; i[31] = 2; i[32] = 6;
+	i[33] = 3; i[34] = 6; i[35] = 5;
+
+	for (int j = 0; j < 36; j++)
+		boundingBoxIndex.push_back(i[j]);
+}
+#endif
 }
 
 #endif

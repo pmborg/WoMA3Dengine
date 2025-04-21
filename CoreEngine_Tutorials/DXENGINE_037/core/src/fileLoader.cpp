@@ -36,7 +36,6 @@ namespace WOMA
 		TCHAR file[MAX_STR_LEN] = { 0 };
 		WideCharToMultiByte(CP_ACP, 0, filename, -1, file, MAX_STR_LEN, NULL, NULL);
 		TCHAR* cfile = LoadFile(file, true);
-		//printf("cfile: %s\n", cfile);
 		MultiByteToWideChar(CP_ACP, 0, cfile, -1, wfilename, MAX_STR_LEN);
 		return wfilename;
 	}
@@ -88,7 +87,7 @@ namespace WOMA
 		}
 		file = file_;
 		lastfile = file;
-#if defined WINDOWS_PLATFORM
+#if defined WINDOWS_PLATFORM && _DEBUG
 		{
 			HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 			SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE);

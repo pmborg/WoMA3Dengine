@@ -91,7 +91,7 @@
 
 #define ThrowIfFailed(hr)\
 {\
-	if (FAILED(hr)) { WomaFatalException("Assert failed!"); }\
+	if (FAILED(hr)) { WomaFatalException("hr = fail!"); }\
 }
 
 extern const wchar_t* GetWC(const char* c);

@@ -277,7 +277,7 @@ void AudioClass::setSourceGain(const SoundSourceID source, const float gain)
 	alSourcef(soundSources[source].source, AL_GAIN, gain);
 }
 
-void AudioClass::setSourcePosition(const SoundSourceID source, const vec3 &position)
+void AudioClass::setSourcePosition(const SoundSourceID source, const WOMA::vec3 &position)
 {
 	ALfloat pos[3]={position.x, position.y, position.z};
 	alSourcefv(soundSources[source].source, AL_POSITION, pos);
@@ -290,7 +290,7 @@ void AudioClass::setSourceAttenuation(const SoundSourceID source, const float ro
 }
 
 // Frame()
-void AudioClass::setListenerOrientation(const vec3 &position, const vec3 &zDir, const vec3 &vel)
+void AudioClass::setListenerOrientation(const WOMA::vec3 &position, const WOMA::vec3 &zDir, const WOMA::vec3 &vel)
 {
 	ALfloat pos[3]={position.x, position.z, position.y};	// Z/Y swap?
 	alListenerfv(AL_POSITION, pos);

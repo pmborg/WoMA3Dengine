@@ -458,6 +458,7 @@ bool ApplicationClass::Initialize(WomaDriverClass* Driver)
 	ASSERT(Driver);
 #endif
 
+	//imgGui:
 #if defined ANDROID_PLATFORM && CORE_ENGINE_LEVEL >= 10 && !RUN_ASMAIN && defined USE_IMGUI
 	ImGui_Init(engine_state.app);
 #endif
@@ -467,7 +468,8 @@ bool ApplicationClass::Initialize(WomaDriverClass* Driver)
 	if (WOMA::game_state == GAME_STOP) return false;
 #endif
 
-#if defined INTRO_DEMO //29
+	//DEMO:
+#if defined INTRO_DEMO
 	initIntroDemo();
 #endif
 
@@ -478,11 +480,11 @@ bool ApplicationClass::Initialize(WomaDriverClass* Driver)
 #if DX_ENGINE_LEVEL >= 24 && defined USE_VIEW2D_SPRITES
 	DEMO_WOMA_APPLICATION_InitializeSprites2D();				//2D:TITLE + 2D:MAP + 2D:MINI-MAP
 #endif
-	// 2D-FONTS: Windows
-#if defined USE_RASTERTEK_TEXT_FONT //27
+	// 2D-FONTS: (Windows)
+#if defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONT //27
 	initText();
 #endif
-	// 2D-FONTS: Android / Linux
+	// 2D-FONTS: (Android / Linux)
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
 	r_Application = new RApplicationClass;
 	_tprintf("r_Application->Initialize(m_videoDisplay, m_hwnd, screenWidth, screenHeight)\n");

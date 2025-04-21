@@ -94,7 +94,9 @@ DX12 Versions:
 
 #define DISABLE_BIN_COMPILE_MESSAGE_FOR_WINDOWS_PLATFORM_X64	//Dont Show: TARGET: CPU_X64 on WINDOWS_PLATFORM
 
+#ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
+#endif
 #pragma warning( disable : 4005 )	// Disable warning C4005: '' : macro redefinition
 #pragma warning( disable : 4067 )	// Disable warning C4067: unexpected tokens following preprocessor directive - expected a newline
 #pragma warning( disable : 6262 )	// Disable warning C6262: 
@@ -654,6 +656,10 @@ static_assert(false, "WIN6x: X64 or WIN32, have to be selected");
 
 #if defined WOMA_CONSOLE_APPLICATION
 	#define _CONSOLE
+#endif
+
+#if DX_ENGINE_LEVEL >= 80
+#define LOG_FILE os_file
 #endif
 
 #endif

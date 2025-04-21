@@ -19,7 +19,9 @@
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234567222;
 
+#ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
+#endif
 #include "main.h"
 //#define DX_INPUT_DEBUG_TEST	//ON/OFF LOG ON CONSOLE KEYs
 

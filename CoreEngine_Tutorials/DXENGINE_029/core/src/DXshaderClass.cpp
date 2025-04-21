@@ -1026,7 +1026,7 @@ namespace DirectX {
 					for (UINT fillMode = 0; fillMode < 2; fillMode++)		//0..1
 					{
 						opaquePsoDesc.RasterizerState = driver->m_rasterState[cullMode][fillMode];
-						//EQUAL TO:   device->CreateGraphicsPipelineState(&opaquePsoDesc, IID_ID3D12PipelineState, &m_pipelineState[cullMode][fillMode][TRANSPARENT_PIPELINE_STATES]);
+						//EQUAL TO:   device->CreateGraphicsPipelineState(&opaquePsoDesc, IID_ID3D12PipelineState, &m_pipelineState[zBufferMode][cullMode][fillMode][SOLID_PIPELINE_STATES]);
 						ThrowIfFailed(device->CreateGraphicsPipelineState(&opaquePsoDesc, IID_PPV_ARGS(&m_pipelineState[zBufferMode][cullMode][fillMode][SOLID_PIPELINE_STATES])));
 					}
 				}
@@ -1277,7 +1277,7 @@ namespace DirectX {
 			// Create the texture sampler state.
 			result = device11->CreateSamplerState(&samplerDescFire, &m_sampleStateFire);
 			if (FAILED(result)) { WomaFatalException (TEXT("error")); return false; }
-#endif//
+#endif
 
 			// --------------------------------------------------------------------------------------------
 			// CREATE Buffer(s) DATA for "Vertex Shader"
@@ -1546,7 +1546,7 @@ namespace DirectX {
 			if (m_shaderType == SHADER_FIRE) {
 				deviceContext->PSSetSamplers(1, 1, &m_sampleStateFire);
 			}
-#endif//
+#endif
 
 			// Set CODE to Run on Shaders:
 			deviceContext->VSSetShader(m_vertexShader11, NULL, 0);		// Set the vertex code that will be used to process vertices
@@ -1740,8 +1740,9 @@ namespace DirectX {
 
 	void DXshaderClass::Render(UINT pass,/*ID3D11DeviceContext*/ void* Device_Context, int indexCount, XMMATRIX* worldMatrix, XMMATRIX* viewMatrix, XMMATRIX* projectionMatrix)
 	{
+#if _DEBUG
 		ASSERT(indexCount > 0);
-
+#endif
 		SetShaderParameters(pass, Device_Context, worldMatrix, viewMatrix, projectionMatrix);	// Set the shader parameters that it will use for rendering
 		RenderShader(pass, Device_Context, /*texture_index*/ 0, indexCount);					// Now render the prepared buffers with the shader
 	}
