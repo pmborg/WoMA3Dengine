@@ -19,7 +19,7 @@
 #pragma once
 
 #include "platform.h"
-#include "math.h"				 
+#include "math3D.h"				 
 
 struct vec4 {
 	float x, y, z, w;

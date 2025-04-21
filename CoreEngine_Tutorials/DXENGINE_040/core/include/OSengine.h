@@ -152,7 +152,7 @@
 			argv[i] = (char*)malloc(MAX_STR_LEN);       \
 		GetModuleFileNameA(NULL, argv[argc++], MAX_PATH);\
 		while (std::getline(test, segment, ' '))        \
-		strcpy(argv[argc++], segment.c_str());          \
+			strcpy(argv[argc++], segment.c_str());      \
 	}
 	#pragma warning(pop) // _UCRT_DISABLED_WARNINGS
 #endif
