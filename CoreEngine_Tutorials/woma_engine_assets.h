@@ -481,3 +481,7 @@
 	#define BILLBOARD_BUSH_MODEL TEXT("engine/data/scene74bush/bush.obj")
 	#define BILL_BUSH_0 TEXT("engine/data/scene74bush/billboardgrass0001.png") 		//21
 #endif
+#if DX_ENGINE_LEVEL == 75
+	#define DEMO_TITLE TEXT("75: UTIL: PROGRESS BAR FOR TERRAIN LOADING")
+	#define WORLD_XML TEXT("world_75.xml")
+#endif																	  

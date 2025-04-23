@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 ///////////////////////////////////////////////////////////////////////////////
 // Filename: soundClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -20,6 +19,7 @@
 // --------------------------------------------------------------------------------------------
 #include "platform.h"
 
+#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
 //#define DX_ENGINE_LEVEL 71  SOUND EFFECT (Add Support): .................... /sound/soundClass.*
 //#define DX_ENGINE_LEVEL 72  3D SOUND EFFECT (Add Support): ................. /sound/soundClass.*
 
@@ -418,3 +418,4 @@ bool SoundClass::PlayWaveFile()
 
 	return true;
 }
+#endif

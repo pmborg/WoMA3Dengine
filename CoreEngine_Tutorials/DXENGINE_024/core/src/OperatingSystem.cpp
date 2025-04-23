@@ -18,8 +18,6 @@
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234567222;
 
-#define _CRT_SECURE_NO_WARNINGS
-
 #include "platform.h"
 #if CORE_ENGINE_LEVEL >= 4 && defined USE_SYSTEM_CHECK
 #include "WinSystemClass.h"

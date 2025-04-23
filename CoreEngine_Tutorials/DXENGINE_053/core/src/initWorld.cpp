@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: initWorld.cpp
 // --------------------------------------------------------------------------------------------
@@ -351,7 +350,7 @@ bool InitWorld::getMyLocation(double* latitude, double* longitude, STRING ip)
 void InitializeCelestialInfoScreen(int x, int y)
 //-----------------------------------------------------------------------------------------
 {
-	WOMA::logManager->DEBUG_MSG("InitializeCelestialInfoScreen...");
+	if (WOMA::logManager) WOMA::logManager->DEBUG_MSG("InitializeCelestialInfoScreen...");
 
 	TCHAR str[50];
 
@@ -426,7 +425,7 @@ void InitializeCelestialInfoScreen(int x, int y)
 		text.label = str;
 		SystemHandle->TextToPrint[1].push_back(text);
 
-		WOMA::logManager->DEBUG_MSG(" done\n");
+		if (WOMA::logManager) WOMA::logManager->DEBUG_MSG(" done\n");
 	}
 }
 #endif
@@ -461,7 +460,7 @@ bool InitializeWeatherInfoScreen(int x, int y)
 	IF_NOT_THROW_EXCEPTION(metarClass);
 	metarClass->Initialize(weatherClass->Metar);
 
-	WOMA::logManager->DEBUG_MSG("InitializeWeatherInfoScreen...");
+	if (WOMA::logManager) WOMA::logManager->DEBUG_MSG("InitializeWeatherInfoScreen...");
 	if (weatherClass)
 	{
 		StringCchPrintf(str, sizeof(str), TEXT("METAR: %s"), weatherClass->Metar.c_str());
@@ -537,7 +536,7 @@ bool InitializeWeatherInfoScreen(int x, int y)
 		}
 	}
 
-	WOMA::logManager->DEBUG_MSG(" done\n");
+	if (WOMA::logManager) WOMA::logManager->DEBUG_MSG(" done\n");
 	OS_REDRAW_WINDOW;
 
 	return true;

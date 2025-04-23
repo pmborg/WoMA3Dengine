@@ -215,7 +215,7 @@ bool InitPackLib(char* packfilename)				// Need to be CHAR!
 		if (numZipItems == 0)
 			{WomaFatalExceptionW(TEXT("Could not open the pack file")); /*return false;*/}
 
-		#if defined ALLOW_CBIND_PROGRESS_BAR
+		#if _NOT //defined ALLOW_CBIND_PROGRESS_BAR
         //RedrawWindow(g_hwnd, NULL, NULL, RDW_UPDATENOW|RDW_INVALIDATE/*|RDW_ERASE*/);// Invoke: Window PAINT
 		#endif
 

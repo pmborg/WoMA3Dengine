@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: initApplication_Basics.cpp
 // --------------------------------------------------------------------------------------------
@@ -809,6 +808,33 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	}
 #endif
 
+
+#if defined ALLOW_CBIND_PROGRESS_BAR
+	INITCOMMONCONTROLSEX i;
+	i.dwSize = sizeof(INITCOMMONCONTROLSEX);
+	i.dwICC = ICC_PROGRESS_CLASS;
+	InitCommonControlsEx(&i);
+
+	// --- CREATE PROGRESS BAR:
+	SystemHandle->hwndPrgBar = SystemHandle->WomaCreateWindowEx(0, PROGRESS_CLASS, NULL, WS_CHILD | WS_VISIBLE | PBS_SMOOTH, 50, SystemHandle->AppSettings->WINDOW_HEIGHT - 100,
+		SystemHandle->AppSettings->WINDOW_WIDTH - 100, 20, SystemHandle->m_hWnd, (HMENU)401, SystemHandle->m_hinstance, NULL);
+
+	SendMessage(SystemHandle->hwndPrgBar, PBM_SETRANGE, 0, (LPARAM)MAKELPARAM(0, 100));
+	SendMessage(SystemHandle->hwndPrgBar, PBM_SETBKCOLOR, 0, RGB(0, 0, 0));
+	SendMessage(SystemHandle->hwndPrgBar, PBM_SETBARCOLOR, 0, RGB(0, 0, 128));
+	SendMessage(SystemHandle->hwndPrgBar, PBM_SETPOS, (WPARAM)(0), 0);
+
+	::ShowWindow(SystemHandle->hwndPrgBar, 1);
+
+	// --- CREATE PROGRESS TEXT:
+	SystemHandle->settingstext = SystemHandle->WomaCreateWindowEx(WS_EX_TRANSPARENT, TEXT("STATIC"), TEXT(""),
+		WS_CHILD | WS_VISIBLE | SS_LEFT | WS_BORDER | SS_OWNERDRAW, 25, 25, 175, 22, SystemHandle->m_hWnd, 0, SystemHandle->m_hinstance, NULL);
+
+	::ShowWindow(SystemHandle->settingstext, 1);
+
+	TCHAR title[MAX_STR_LEN] = {};
+#endif
+
 	//-----------------------------------------------------------------------------------------------------------------
 	// 3D-Load Scene: Create "model OBJECTS" from loaded "XML OBJECTS" in file WORLD.XML     //////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
@@ -821,6 +847,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	// Load 3D Objects: convert XML "objects" -- Load OBJ or W3D --> VirtualModelClass:
 	UINT len = (UINT)SystemHandle->xml_loader.theWorld.size();
 	UINT objModel_size = (UINT)objModel.size();
+	MSG msg = { 0 };
 	for (UINT i = objModel_size; i < objModel_size+len; i++)
 	{
 		objModel.push_back(NULL);
@@ -849,6 +876,9 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 #endif
 		TCHAR wfilename[MAX_STR_LEN] = { 0 }; atow(wfilename, SystemHandle->xml_loader.theWorld[i].filename, MAX_STR_LEN);
 
+		if (WOMA::game_state == GAME_STOP)
+			return false;
+
 			//Load OBJ or W3D:
 			if (!(objModel[i]->LoadModel(wfilename, Driver, 
 				(SHADER_TYPE)SystemHandle->xml_loader.theWorld[i].shader,
@@ -866,11 +896,19 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 			((DXmodelClass*)objModel[i])->ModelHASAlfaColor = true;
 		else
 		{
+#if !defined ALLOW_CBIND_PROGRESS_BAR
 			RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);	// Invoke: Window PAINT before end.
+#endif
 		}
 
+#if defined ALLOW_CBIND_PROGRESS_BAR
+		UINT progress = ((float)WOMA::num_loading_objects / (float)(objModel_size + len)) * 100.0f;
+		SendMessage(SystemHandle->hwndPrgBar, PBM_SETPOS, (WPARAM)progress, 0);
+		StringCchPrintf(title, MAX_STR_LEN, TEXT("Loading: %d / %d"), WOMA::num_loading_objects, objModel_size + len);
+		SetWindowText(SystemHandle->settingstext, title);
+#endif
+
 		//Allow Refresh on Timer:
-		MSG msg = { 0 };
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))	// There is any OS messages to handle?
 		{
 			TranslateMessage(&msg); // TranslateMessage produces WM_CHAR messages only for keys that are mapped to ASCII characters by the keyboard driver.
@@ -880,7 +918,13 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 		WOMA::sceneManager->addModel(WOMA::sceneManager->RootNode, objModel[i]);			// Add node to nodesList: RootNode
 
 		WOMA::num_loading_objects++;
+		
 	}
+#endif
+
+#if defined ALLOW_CBIND_PROGRESS_BAR
+	::CloseWindow(SystemHandle->settingstext);
+	::CloseWindow(SystemHandle->hwndPrgBar);
 #endif
 
 	//Restore: Temp. Disable log file:

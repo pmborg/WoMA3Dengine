@@ -144,11 +144,11 @@ public:
 
 	// Setup Sound:
 	void setSourceGain(const SoundSourceID source, const float gain);
-	void setSourcePosition(const SoundSourceID source, const vec3 &position);
+	void setSourcePosition(const SoundSourceID source, const WOMA::vec3 &position);
 	void setSourceAttenuation(const SoundSourceID source, const float rollOff, const float refDistance);
 
 	// Frame()
-	void setListenerOrientation(const vec3 &position, const vec3 &zDir, const vec3 &velocity);
+	void setListenerOrientation(const WOMA::vec3 &position, const WOMA::vec3 &zDir, const WOMA::vec3 &velocity);
 
 private:
 	SoundID insertSound(Sound &sound);

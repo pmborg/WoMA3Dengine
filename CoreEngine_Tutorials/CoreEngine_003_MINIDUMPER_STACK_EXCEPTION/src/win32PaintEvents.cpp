@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: win32PaintEvents.cpp
 // --------------------------------------------------------------------------------------------
@@ -47,6 +46,27 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 
 		break;
 	}
+#if defined ALLOW_CBIND_PROGRESS_BAR
+	case WM_DRAWITEM: // DRAW TEXT FROM PROGRESS BAR
+		// --------------------------------------------------------------------------------------------
+	{
+		try {
+			LPDRAWITEMSTRUCT pDIS = (LPDRAWITEMSTRUCT)lparam;
+			if (pDIS->hwndItem == SystemHandle->settingstext) {
+				SetBkColor(pDIS->hDC, TRANSPARENT);
+				SetTextColor(pDIS->hDC, RGB(200, 200, 200));
+				TCHAR staticText[99];
+				int len = (int)SendMessage(SystemHandle->settingstext, WM_GETTEXT, ARRAYSIZE(staticText), (LPARAM)staticText);
+
+				TextOut(pDIS->hDC, pDIS->rcItem.left, pDIS->rcItem.top, staticText, len);
+			}
+		}
+		catch (...) {
+			// Log or handle the exception gracefully
+		}
+		break;
+	}
+#endif
 
 #ifdef _EXTRA_DEBUG
 	default:

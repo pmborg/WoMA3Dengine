@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: winSystemClass.h
 // --------------------------------------------------------------------------------------------
@@ -148,8 +147,15 @@ public:
 	HBITMAP bmpTarget;
 #endif
 
+#if defined ALLOW_CBIND_PROGRESS_BAR
+	HWND hwndPrgBar = NULL;
+	HWND settingstext = NULL;
+#endif
+
 private:
 	void ShutdownWindows();
+
+
 };
 
 /////////////

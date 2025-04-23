@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: initApplication_Basics.cpp
 // --------------------------------------------------------------------------------------------
@@ -646,9 +645,41 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	}
 #endif
 
+
+#if defined ALLOW_CBIND_PROGRESS_BAR
+	INITCOMMONCONTROLSEX i;
+	i.dwSize = sizeof(INITCOMMONCONTROLSEX);
+	i.dwICC = ICC_PROGRESS_CLASS;
+	InitCommonControlsEx(&i);
+
+	// --- CREATE PROGRESS BAR:
+	SystemHandle->hwndPrgBar = SystemHandle->WomaCreateWindowEx(0, PROGRESS_CLASS, NULL, WS_CHILD | WS_VISIBLE | PBS_SMOOTH, 50, SystemHandle->AppSettings->WINDOW_HEIGHT - 100,
+		SystemHandle->AppSettings->WINDOW_WIDTH - 100, 20, SystemHandle->m_hWnd, (HMENU)401, SystemHandle->m_hinstance, NULL);
+
+	SendMessage(SystemHandle->hwndPrgBar, PBM_SETRANGE, 0, (LPARAM)MAKELPARAM(0, 100));
+	SendMessage(SystemHandle->hwndPrgBar, PBM_SETBKCOLOR, 0, RGB(0, 0, 0));
+	SendMessage(SystemHandle->hwndPrgBar, PBM_SETBARCOLOR, 0, RGB(0, 0, 128));
+	SendMessage(SystemHandle->hwndPrgBar, PBM_SETPOS, (WPARAM)(0), 0);
+
+	::ShowWindow(SystemHandle->hwndPrgBar, 1);
+
+	// --- CREATE PROGRESS TEXT:
+	SystemHandle->settingstext = SystemHandle->WomaCreateWindowEx(WS_EX_TRANSPARENT, TEXT("STATIC"), TEXT(""),
+		WS_CHILD | WS_VISIBLE | SS_LEFT | WS_BORDER | SS_OWNERDRAW, 25, 25, 175, 22, SystemHandle->m_hWnd, 0, SystemHandle->m_hinstance, NULL);
+
+	::ShowWindow(SystemHandle->settingstext, 1);
+
+	TCHAR title[MAX_STR_LEN] = {};
+#endif
+
 	//-----------------------------------------------------------------------------------------------------------------
 	// 3D-Load Scene: Create "model OBJECTS" from loaded "XML OBJECTS" in file WORLD.XML     //////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
+
+#if defined ALLOW_CBIND_PROGRESS_BAR
+	::CloseWindow(SystemHandle->settingstext);
+	::CloseWindow(SystemHandle->hwndPrgBar);
+#endif
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// ANIMATED SKELETON MESHs ////////////////////////////////////////////////////////////////////////////////////////

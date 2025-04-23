@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: initWorld.cpp
 // --------------------------------------------------------------------------------------------
@@ -346,7 +345,7 @@ bool InitWorld::getMyLocation(double* latitude, double* longitude, STRING ip)
 void InitializeCelestialInfoScreen(int x, int y)
 //-----------------------------------------------------------------------------------------
 {
-	WOMA::logManager->DEBUG_MSG("InitializeCelestialInfoScreen...");
+	if (WOMA::logManager) WOMA::logManager->DEBUG_MSG("InitializeCelestialInfoScreen...");
 
 	TCHAR str[50];
 
@@ -421,7 +420,7 @@ void InitializeCelestialInfoScreen(int x, int y)
 		text.label = str;
 		SystemHandle->TextToPrint[1].push_back(text);
 
-		WOMA::logManager->DEBUG_MSG(" done\n");
+		if (WOMA::logManager) WOMA::logManager->DEBUG_MSG(" done\n");
 	}
 }
 #endif

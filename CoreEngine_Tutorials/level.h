@@ -130,7 +130,8 @@
 	//#define LEVEL 71  // BILLBOARD for FENCES, (LIGHT and Fog) : .........
 	//#define LEVEL 72  // FIRE ........................................... 
 	//#define LEVEL 73  // WINDY GRASS .................................... 																							  
-	#define LEVEL 74    // CROSS BILLBOARD and CLONES
+	//#define LEVEL 74  // CROSS BILLBOARD and CLONES
+	#define LEVEL 75    // UTIL: PROGRESS BAR FOR TERRAIN LOADING															  
 	#endif
 #endif
 

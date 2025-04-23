@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------------
 // Filename: win32MainWindowEvents.cpp
@@ -535,6 +534,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 		if ((wParam & 0xFFF0) == SC_SCREENSAVE || (wParam & 0xFFF0) == SC_MONITORPOWER)
 			return 0;
 	}
+
 
 
 	// -----------------------------------------------------------------------------

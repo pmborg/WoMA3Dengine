@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: ApplicationClass.h
 // --------------------------------------------------------------------------------------------
@@ -84,10 +83,6 @@
 #define PASS_MINIMAP1		11
 #define PASS_MINIMAP2		12
 #define PASS_MINIMAP3		13
-
-#if DX_ENGINE_LEVEL >= 37 && defined ALLOW_CBIND_PROGRESS_BAR
-#include "cbind.h"
-#endif
 
 #include "virtualModelClass.h"
 extern std::vector<VirtualModelClass*> m_screenShots;
@@ -283,10 +278,6 @@ public:
 	DXshaderClass* m_FontV2Shader = NULL;
 	IDXGIKeyedMutex* keyedMutex11 = NULL;
 	IDXGIKeyedMutex* keyedMutex10 = NULL;
-#endif
-
-#if DX_ENGINE_LEVEL >= 37 && defined ALLOW_CBIND_PROGRESS_BAR
-	CBind* bindBar = NULL;
 #endif
 
 	UINT totalRendered = 0;

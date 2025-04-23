@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: win32PaintEvents.cpp
 // --------------------------------------------------------------------------------------------
@@ -51,7 +50,27 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 
 		break;
 	}
+#if defined ALLOW_CBIND_PROGRESS_BAR
+	case WM_DRAWITEM: // DRAW TEXT FROM PROGRESS BAR
+		// --------------------------------------------------------------------------------------------
+	{
+		try {
+			LPDRAWITEMSTRUCT pDIS = (LPDRAWITEMSTRUCT)lparam;
+			if (pDIS->hwndItem == SystemHandle->settingstext) {
+				SetBkColor(pDIS->hDC, TRANSPARENT);
+				SetTextColor(pDIS->hDC, RGB(200, 200, 200));
+				TCHAR staticText[99];
+				int len = (int)SendMessage(SystemHandle->settingstext, WM_GETTEXT, ARRAYSIZE(staticText), (LPARAM)staticText);
 
+				TextOut(pDIS->hDC, pDIS->rcItem.left, pDIS->rcItem.top, staticText, len);
+			}
+		}
+		catch (...) {
+			// Log or handle the exception gracefully
+		}
+		break;
+	}
+#endif
 #if CORE_ENGINE_LEVEL >= 4 && defined USE_USER_SETUP
 	case WM_PAINT:
 	#if defined USE_STATUSBAR //#if defined _DEBUG
@@ -195,7 +214,7 @@ int MainWindowPaint(UINT monitor)
 
 	PaintSetup(hdc, hdcMem, font_title, font, scr);
 
-#if defined USE_LOADING_THREADS || DX_ENGINE_LEVEL >= 37
+#if (defined USE_LOADING_THREADS || DX_ENGINE_LEVEL >= 37) && ! defined ALLOW_CBIND_PROGRESS_BAR
 	if (WOMA::game_state == GAME_LOADING)
 	{
 		TCHAR printOnLoading[MAX_STR_LEN] = { 0 };

@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: ApplicationClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -400,9 +399,6 @@ void ApplicationClass::Shutdown()
 	SAFE_SHUTDOWN(m_MiniMapBitmapTexture);
 	SAFE_SHUTDOWN(m_BorderTexture);
 	SAFE_SHUTDOWN(m_PointTexture);
-#if DX_ENGINE_LEVEL >= 37 && defined ALLOW_CBIND_PROGRESS_BAR
-	SAFE_DELETE (bindBar);
-#endif
 
 #if defined SCENE_TERRAIN_QUAD_TREE
 	SAFE_SHUTDOWN(TerrainQuadtree);
@@ -603,42 +599,6 @@ void ApplicationClass::SetPlayerPosition(UINT netID)
        m_Position[netID]->SetRotation(SystemHandle->AppSettings->INIT_ROTX, SystemHandle->AppSettings->INIT_ROTY, SystemHandle->AppSettings->INIT_ROTZ);
     }
 }
-#endif
-
-
-#if DX_ENGINE_LEVEL >= 37 && defined ALLOW_CBIND_PROGRESS_BAR
-bindBar = NEW CBind;
-// PROGRESS BAR:
-/*
-CreateWindowExA(
-	_In_ DWORD dwExStyle,
-	_In_opt_ LPCSTR lpClassName,
-	_In_opt_ LPCSTR lpWindowName,
-	_In_ DWORD dwStyle,
-	_In_ int X,
-	_In_ int Y,
-	_In_ int nWidth,
-	_In_ int nHeight,
-	_In_opt_ HWND hWndParent,
-	_In_opt_ HMENU hMenu,
-	_In_opt_ HINSTANCE hInstance,
-	_In_opt_ LPVOID lpParam);
-*/
-bindBar->hwndPrgBar = CreateWindowEx(0, PROGRESS_CLASS, NULL,
-	WS_CHILD | WS_VISIBLE | PBS_SMOOTH,
-	50, SystemHandle->AppSettings->WINDOW_WIDTH - 100,
-	200, 30,
-	SystemHandle->m_hWnd, //Equivalent: SystemHandle->windowsArray[SystemHandle->AppSettings->UI_MONITOR].hWnd,
-	(HMENU)401,
-	SystemHandle->m_hinstance,
-	NULL);
-
-SendMessage(bindBar->hwndPrgBar, PBM_SETRANGE, 0, (LPARAM)MAKELPARAM(0, 100));
-SendMessage(bindBar->hwndPrgBar, PBM_SETBKCOLOR, 0, RGB(0, 0, 0));
-SendMessage(bindBar->hwndPrgBar, PBM_SETBARCOLOR, 0, RGB(0, 0, 128));
-SendMessage(bindBar->hwndPrgBar, PBM_SETPOS, (WPARAM)(0), 0);
-
-ShowWindow(bindBar->hwndPrgBar, SW_SHOWNORMAL);
 #endif
 
 

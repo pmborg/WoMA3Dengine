@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: soundclass.h
 // --------------------------------------------------------------------------------------------
@@ -44,7 +43,9 @@
 #include <dsound.h>
 #include <stdio.h>
 
+#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
 extern IDirectSound8* m_DirectSound;
+#endif
 ///////////////////////////////////////////////////////////////////////////////
 // Class name: SoundClass
 ///////////////////////////////////////////////////////////////////////////////

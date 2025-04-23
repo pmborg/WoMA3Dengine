@@ -471,6 +471,9 @@
 	#if DX_ENGINE_LEVEL >= 74
 		#define TUTORIAL_CHAP 64
 	#endif					  
+	#if DX_ENGINE_LEVEL >= 75
+		#define ALLOW_CBIND_PROGRESS_BAR
+	#endif				  
    
 	//#define USE_MULTI_MONITOR
 	//-------------------------------------------------------------------------------------------------------

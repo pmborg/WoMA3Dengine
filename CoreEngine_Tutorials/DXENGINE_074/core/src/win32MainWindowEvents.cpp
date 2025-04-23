@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------------
 // Filename: win32MainWindowEvents.cpp
@@ -578,6 +577,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 	}
 
 
+
 	// -----------------------------------------------------------------------------
 	// TIMERS:
 	// -----------------------------------------------------------------------------
@@ -589,8 +589,12 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 			case TIMER_TITLE:
 				if (!SystemHandle->AppSettings->FULL_SCREEN)
 					SystemHandle->refreshTitle();
-				if (WOMA::game_state == GAME_LOADING)
+				if (WOMA::game_state == GAME_LOADING) {
 					RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);	// Invoke: Window PAINT before end.
+#if defined ALLOW_CBIND_PROGRESS_BAR
+					RedrawWindow(SystemHandle->hwndPrgBar, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE/*|RDW_ERASE*/);// Invoke: Window PAINT
+#endif
+				}
 				return 0;
 
 			#if CORE_ENGINE_LEVEL >= 7 && defined USE_ASTRO_CLASS
