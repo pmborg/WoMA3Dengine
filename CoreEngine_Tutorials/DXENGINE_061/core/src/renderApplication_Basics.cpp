@@ -118,7 +118,8 @@ void ApplicationClass::AppPreRender(UINT monitorWindow, WomaDriverClass* Driver,
 				if (shader_type != SHADER_TEXTURE_LIGHT_RENDERSHADOW &&
 					shader_type != SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED &&
 					shader_type != SHADER_NORMAL_BUMP_INSTANCED)
-					RenderModel(monitorWindow, Driver, id, (UINT)PASS_SHADOWS);
+					if (objModel[id]->ModelCastShadow)
+						RenderModel(monitorWindow, Driver, id, (UINT)PASS_SHADOWS);
 			}
 	#endif
 		}
@@ -134,7 +135,6 @@ void ApplicationClass::AppPreRender(UINT monitorWindow, WomaDriverClass* Driver,
 void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, UINT modelID, UINT pass)
 {
 	DXmodelClass* model = (DXmodelClass*)objModel[modelID];
-	//VirtualModelClass* model = objModel[modelID];
 
 	float positionX, positionY, positionZ;
 	positionX = SystemHandle->xml_loader.theWorld[modelID].posX;
@@ -285,9 +285,8 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 #endif
 #if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
 	UINT size = SceneManager::GetInstance()->opacModelList.size();
-	for (UINT id = 0; id < size; id++) {
-		RenderModel(monitorWindow, m_Driver, id, PASS_OPAC); //eq: objModel[id]->Render(m_Driver, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_OPAC);
-	}
+	for (UINT id = 0; id < size; id++)
+			RenderModel(monitorWindow, m_Driver, id, PASS_OPAC);
 #endif
 
 	//THE "OTHER" NETWORK PLAYERS
@@ -302,9 +301,6 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 #if DX_ENGINE_LEVEL >= 50 && defined SCENE_WATER_TERRAIN //50
 	if (RENDER_PAGE >= 50)
 	{
-		//m_Model[1]->scale(TERRAIN_SCALE, 1, TERRAIN_SCALE);
-		//((DirectX::DXmodelClass*)m_Model[1])->ModelHASAlfaColor = true;
-		//((DirectX::DXmodelClass*)m_Model[1])->ModelAlfaColor = 0.5f;
 		((DirectX::DXmodelClass*)m_Model[1])->m_Shader11->time += (float)SystemHandle->m_Application->dt * (0.0025f / 16.66f);
 		m_Model[1]->translation(0, -0.75, 0);
 		m_Model[1]->scale(5, 5, 5);
@@ -334,7 +330,8 @@ void ApplicationClass::AppPosRender(UINT monitorWindow)
 	if (size > 0) {
 		qsort(m_Trees, size, sizeof(Tree), BillSortCB);
 		for (UINT id = 0; id < size; id++) {
-			RenderModel(monitorWindow, m_Driver, m_Trees[id].ID + world_xml_objs, PASS_OPAC); //eq: objModel[id]->Render(m_Driver, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_OPAC);
+			UINT i = m_Trees[id].ID + world_xml_objs;
+			RenderModel(monitorWindow, m_Driver, i, PASS_OPAC);
 		}
 	}
 #endif
@@ -425,7 +422,6 @@ void ApplicationClass::AppPosRender(UINT monitorWindow)
 		}
 	}
 
-	//m_Driver->ClearDepthBuffer();		// Force BANNER: On Top of 3D Rendered
 	m_Driver->RenderDriverText();
 #endif
 

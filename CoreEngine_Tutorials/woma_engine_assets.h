@@ -153,7 +153,7 @@
 #if !defined DEMO_LEVEL
 	#define SETTINGS_FILE		TEXT("settings_021.xml")
 #endif
-	#define DEMO_TITLE TEXT("21: The Basic triangle and squar using vertexes with indexes. HLSL: The COLOR shader")
+	#define DEMO_TITLE TEXT("21: The Basic triangle and square using vertexes with indexes. HLSL: The COLOR shader")
 #endif
 #if DX_ENGINE_LEVEL >= 21 && LEVEL < 30
 	#define WORLD_XML TEXT("world.xml")
@@ -447,8 +447,6 @@
 	#define BILL_FLOWER_2 TEXT("engine/data/scene70Bill/060flor1.png") 		// 8
 	#define BILL_FLOWER_3 TEXT("engine/data/scene70Bill/060girasol.png") 	// 9 
 	#define BILL_FLOWER_4 TEXT("engine/data/scene70Bill/060flor2.png") 		//10
-
-	#define BILL_GRASS TEXT("engine/data/scene73grass/Grass_Patch_3.png")	//11
 #endif
 
 #if DX_ENGINE_LEVEL == 71
@@ -472,9 +470,14 @@
 #endif																															
 #if DX_ENGINE_LEVEL >= 73
 	#define BILLBOARD_GRASS_MODEL TEXT("engine/data/scene73grass/grass.obj")
-	#define BILL_GRASS_0 TEXT("engine/data/scene70Bill/408742.png") 		//16
-	#define BILL_GRASS_1 TEXT("engine/data/scene70Bill/408742B.png") 		//17
-	#define BILL_GRASS_2 TEXT("engine/data/scene70Bill/408742C.png") 		//18
-	#define BILL_GRASS_3 TEXT("engine/data/scene70Bill/408742D.png") 		//19
-	#define BILL_GRASS_4 TEXT("engine/data/scene70Bill/408742E.png") 		//20
+	#define BILL_GRASS TEXT("engine/data/scene73grass/Grass_Patch_3.png")	//11
+#endif
+
+#if DX_ENGINE_LEVEL == 74
+	#define DEMO_TITLE TEXT("74: CROSS BILLBOARDs and CLONE BILLBOARDs")
+	#define WORLD_XML TEXT("world_74.xml")
+#endif
+#if DX_ENGINE_LEVEL >= 74
+	#define BILLBOARD_BUSH_MODEL TEXT("engine/data/scene74bush/bush.obj")
+	#define BILL_BUSH_0 TEXT("engine/data/scene74bush/billboardgrass0001.png") 		//21
 #endif

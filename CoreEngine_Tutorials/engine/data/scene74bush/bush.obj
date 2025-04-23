@@ -1,0 +1,38 @@
+# 3ds Max Wavefront OBJ Exporter v0.99 - (c)2007 guruware
+# File Created: 23.04.2025 13:13:31
+
+mtllib bush.mtl
+
+#
+# object default
+#
+
+v  -0.7500 0.7000 -0.0000
+v  0.7500 0.7000 -0.0000
+v  0.7500 0.0000 -0.0000
+v  -0.7500 0.0000 -0.0000
+v  0.0000 0.7000 0.7500
+v  0.0000 0.7000 0
+v  0.0000 0.0000 0
+v  0.0000 -0.0000 0.7500
+# 8 vertices
+
+vn 0.0000 1.0000 0.0000
+# 1 vertex normals
+
+vt 0.0000 1.0000 0.0000
+vt 1.0000 1.0000 0.0000
+vt 1.0000 0.0000 0.0000
+vt 0.0000 0.0000 0.0000
+# 4 texture coords
+
+o default
+g default
+usemtl GrassMaterial
+s 1
+f 1/1/1 2/2/1 3/3/1 
+f 1/1/1 3/3/1 4/4/1 
+f 5/1/1 6/2/1 7/3/1 
+f 5/1/1 7/3/1 8/4/1 
+# 0 polygons - 4 triangles
+

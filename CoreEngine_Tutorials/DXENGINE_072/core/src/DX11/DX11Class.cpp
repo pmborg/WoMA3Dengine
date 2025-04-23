@@ -794,7 +794,6 @@ void DX11Class::BeginScene(UINT monitorWindow)
 #endif
 
 	// Clear Screen
-	m_deviceContext->ClearRenderTargetView(DX11windowsArray[monitorWindow].m_renderTargetView, driver_ClearColor);	// Clear the "back buffer":
 #if defined SET_DEVICE_CAPABILITIES
 	ClearDepthBuffer();
 #endif

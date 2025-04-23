@@ -96,7 +96,7 @@ Free models from: actorcore.reallusion.com
  
 <hr> 
 
-- <b>DX74: SOON</b><br>
+- <b>DX74: CROSS BILLBOARD and CLONES</b><br>
 
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_074.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_074.png)
   

@@ -299,7 +299,9 @@ void ApplicationClass::Shutdown()
 		else 
 	#endif
 		{
-			SAFE_SHUTDOWN_MODELDX(objModel[i]);
+			{
+				SAFE_SHUTDOWN_MODELDX(objModel[i]);
+			}
 		}
 	}
 

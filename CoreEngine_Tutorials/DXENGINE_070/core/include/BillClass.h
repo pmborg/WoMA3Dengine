@@ -33,11 +33,11 @@
 #define N_FENCES 0
 #define N_FIRE 0
 #define N_GRASS 0
+#define N_BUSH  0
 
 extern ID3D11ShaderResourceView* billFileLoaded[];
 
 extern Tree			m_Trees[N_BILLBOARD];						// Array of tree info. NOTE: SHARED on 2 (BILLBOARD Instances)
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: BillClass

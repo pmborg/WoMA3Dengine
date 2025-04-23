@@ -453,7 +453,6 @@
 	//--------------------------------------------------------------------------------------------------------------------------
 	#if DX_ENGINE_LEVEL >= 70
 		#define TUTORIAL_CHAP 60
-		//#define BILLBOARD_FOR_TREES_AND_FLOWERS
 		#define SCENE_BILLBOARDS
 	#endif
 	#if DX_ENGINE_LEVEL >= 71
@@ -469,6 +468,9 @@
 		#define TUTORIAL_CHAP 63
 		#define BILLBOARD_FOR_WINDY_GRASS
    #endif
+	#if DX_ENGINE_LEVEL >= 74
+		#define TUTORIAL_CHAP 64
+	#endif					  
    
 	//#define USE_MULTI_MONITOR
 	//-------------------------------------------------------------------------------------------------------

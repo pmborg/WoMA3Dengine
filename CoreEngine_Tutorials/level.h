@@ -126,19 +126,11 @@
 	//#define LEVEL 64  // Mill + compound
 	//#define LEVEL 65  // Walk on Terrain.
 	
-	//#define LEVEL 70  // BILLBOARD for Trees / Flowers, (LIGHT and Fog) : .. / bill / billClass.*, tree.h
-	//#define LEVEL 71  // BILLBOARD for FENCES, (LIGHT and Fog) : ......... / bill / billClass.*, tree.h
-	//#define LEVEL 72    // FIRE ........................................... / bill / billClass.*, tree.h
-	#define LEVEL 73  // WINDY GRASS .................................... / bill / billClass.*, tree.h																									  
-	
-	/////////////////////////////////////////////
-	//#define LEVEL 75	// MD5 (Animated + Character using HLSL)
-	//#define LEVEL 76	// Terrain : 256x256 SCENE_COMPOUND: (world.xml only)
-	//#define LEVEL 77	// Terrain : 256x256 CHECK_COMPOUND_COLISION
-	//#define LEVEL 80	// ASSIMP	(Animated + Character using HLSL)
-	//#define LEVEL 85	// IMGUI
-	//#define LEVEL 90	// TUTORIAL_CHAP 30  Animated SKYDOM : Two layers of Bitmap Clouds ... / sky / SkyPlaneClass.*
-	//#define LEVEL 91	// TUTORIAL_CHAP 31  Animated SKYDOM : Animated layer of Bitmap Clouds / sky / RealSkyPlaneClass.*					
+	//#define LEVEL 70  // BILLBOARD for Trees / Flowers, (LIGHT and Fog) : 
+	//#define LEVEL 71  // BILLBOARD for FENCES, (LIGHT and Fog) : .........
+	//#define LEVEL 72  // FIRE ........................................... 
+	//#define LEVEL 73  // WINDY GRASS .................................... 																							  
+	#define LEVEL 74    // CROSS BILLBOARD and CLONES
 	#endif
 #endif
 

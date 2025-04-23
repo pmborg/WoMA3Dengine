@@ -710,7 +710,7 @@ void DXmodelClass::Shutdown()
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 	{
 	#if defined NOTES
-		//DX11 dont need to clean, like in DX12!
+		//DX11 no need to clean, like in DX12!
 		for (size_t i = 0; i < meshSRV11.size(); i++)
 			SAFE_DELETE(meshSRV11[i]);
 	#endif

@@ -47,7 +47,6 @@ BillClass::BillClass()
 
 	mainTerrainPath = NEW CTerrain(TERRAIN);
 	mainTerrainPath->LoadHeightMapTerrain(BILLBOARD_TERRAIN, 0, 0); //engine/data/scene73grass/t_025TerrainMappingV4.bmp
-	//height[terrain_squares][terrain_squares]
 }
 
 BillClass::~BillClass() 
@@ -72,6 +71,8 @@ ID3D11ShaderResourceView* billFileLoaded[] =
 	NULL,//10
 
 	NULL,//11
+
+	NULL,//12
 };
 
 TCHAR billFileName[][MAX_STR_LEN] = 
@@ -99,7 +100,7 @@ xmlobj3d* BillClass::fillxml(int id, UINT type)
 	DirectX::DX11Class* m_driver11 = (DirectX::DX11Class*)m_Driver;
 
 	static xmlobj3d xmlobj;
-	xmlobj.id = id;
+	xmlobj.id = id+ SystemHandle->m_Application->world_xml_objs;
 	xmlobj.type = type;
 	xmlobj.fromPage = 0;
 	xmlobj.toPage = 0;
@@ -161,7 +162,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 		float PosZ = 0;
 		while (height <= 0		//not on water
 			|| height > 1.0f	//not above 1m
-			|| (m_Trees[i].vPos.x >= 28 && m_Trees[i].vPos.x <= 52) && (m_Trees[i].vPos.z >= 21 && m_Trees[i].vPos.z <= 38) //out of house (compound)
+			|| (m_Trees[i].vPos.x >= 27 && m_Trees[i].vPos.x <= 53) && (m_Trees[i].vPos.z >= 21 && m_Trees[i].vPos.z <= 38) //out of house (compound)
 			|| (m_Trees[i].vPos.x < borderLimit || m_Trees[i].vPos.x > m_terrainWidth - borderLimit)		//no near limits
 			|| (m_Trees[i].vPos.z < borderLimit || m_Trees[i].vPos.z > m_terrainHeight - borderLimit)		//no near limits
 			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z) - 1][(UINT)m_Trees[i].vPos.x] > 0			//no grass on main PATH (terrain)
@@ -211,69 +212,73 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 	}
 	//N_BILLBOARD
 
-	//Fences in X:
-	for (int z=0; z<2; z++) {
+	if (N_FENCES > 0)
+	{
+		//Fences in X:
+		for (int z=0; z<2; z++) {
 
-		for (int x=0; x<17; x++) {
+			for (int x=0; x<17; x++) {
 
-			if ( !(z == 0 && x == 8) )
-			{
+				if ( !(z == 0 && (x == 7 || x == 8)) ) //Exclude: DOOR at Fences
+				{
+					m_Trees[i].ID = i;
+					m_Trees[i].type = 100; // 100 = Fence
+					m_Trees[i].scale = 1.0f;
+					m_Trees[i].rotY = 0.0f;
+
+					m_Trees[i].vPos.x = 29.5f + x * 1.33f;
+					m_Trees[i].vPos.z = 21.5f+0.5f*z + z * 14.0f;
+					m_Trees[i].vPos.y = mainTerrain->getTerrainHeight(TERRAIN_ID, m_Trees[i].vPos.x, m_Trees[i].vPos.z);
+
+					xmlobj3d* xmlobj = fillxml(i, 100);
+					SystemHandle->xml_loader.theWorld.push_back(*xmlobj);
+
+					if (i++ > N_BILLBOARD + N_FENCES + N_FIRE)
+						return false;
+				}
+			}
+		}
+
+		//Fences in Z:	
+		for (int y = 0; y < 11; y++) {
+			for (int x=0; x<2; x++) {
 				m_Trees[i].ID = i;
 				m_Trees[i].type = 100; // 100 = Fence
 				m_Trees[i].scale = 1.0f;
-				m_Trees[i].rotY = 0.0f;
+				m_Trees[i].rotY = PI/2.0f;
 
-				m_Trees[i].vPos.x = 29 + x * 1.33f;
-				m_Trees[i].vPos.z = 22 + z * 14.0f;
+				m_Trees[i].vPos.x = 29.5f+0.5f*x + x * 22.0f;
+				m_Trees[i].vPos.z = 23 + y * 1.33f;
 				m_Trees[i].vPos.y = mainTerrain->getTerrainHeight(TERRAIN_ID, m_Trees[i].vPos.x, m_Trees[i].vPos.z);
 
 				xmlobj3d* xmlobj = fillxml(i, 100);
 				SystemHandle->xml_loader.theWorld.push_back(*xmlobj);
 
-				if (i++ > N_BILLBOARD + N_FENCES + N_FIRE)
+				if (i++ > N_BILLBOARD + N_FENCES)
 					return false;
 			}
 		}
 	}
+	if (N_FIRE > 0)
+	{
+		m_Trees[i].ID = i;
+		m_Trees[i].type = 200; // 200 = Fire
+		m_Trees[i].scale = 1.4f;
+		m_Trees[i].rotY = 0;
 
-	//Fences in Z:	
-	for (int y = 0; y < 11; y++) {
-		for (int x=0; x<2; x++) {
-			m_Trees[i].ID = i;
-			m_Trees[i].type = 100; // 100 = Fence
-			m_Trees[i].scale = 1.0f;
-			m_Trees[i].rotY = PI/2.0f;
+		m_Trees[i].vPos.x = 112;
+		m_Trees[i].vPos.z = 228;
+		m_Trees[i].vPos.y = mainTerrain->getTerrainHeight(TERRAIN_ID, m_Trees[i].vPos.x, m_Trees[i].vPos.z);
 
-			m_Trees[i].vPos.x = 29 + x * 22.0f;
-			m_Trees[i].vPos.z = 23 + y * 1.33f;
-			m_Trees[i].vPos.y = mainTerrain->getTerrainHeight(TERRAIN_ID, m_Trees[i].vPos.x, m_Trees[i].vPos.z);
+		xmlobj3d* xmlobj = fillxml(i, 200);
+		xmlobj->Bill = true;
+		SystemHandle->xml_loader.theWorld.push_back(*xmlobj);
 
-			xmlobj3d* xmlobj = fillxml(i, 100);
-			SystemHandle->xml_loader.theWorld.push_back(*xmlobj);
-
-			if (i++ > N_BILLBOARD + N_FENCES)
-				return false;
-		}
+		if (i++ > N_BILLBOARD + N_FENCES + N_FIRE)
+			return false;
 	}
 
-	m_Trees[i].ID = i;
-	m_Trees[i].type = 200; // 200 = Fire
-	m_Trees[i].scale = 1.4f;
-	m_Trees[i].rotY = 0;
-
-	m_Trees[i].vPos.x = 112;
-	m_Trees[i].vPos.z = 228;
-	m_Trees[i].vPos.y = mainTerrain->getTerrainHeight(TERRAIN_ID, m_Trees[i].vPos.x, m_Trees[i].vPos.z);
-
-	xmlobj3d* xmlobj = fillxml(i, 200);
-	xmlobj->Bill = true;
-	SystemHandle->xml_loader.theWorld.push_back(*xmlobj);
-
-	if (i++ > N_BILLBOARD + N_FENCES + N_FIRE)
-		return false;
-
 	billTotal = i;
-	
 	WOMA_LOGManager_DebugMSG( "Bill Class: Initialized\n" );
 
 	return true;
@@ -287,7 +292,7 @@ void BillClass::Shutdown()
 
 //-----------------------------------------------------------------------------   
 // Name: TreeSortCB()   
-// Desc: Callback function for sorting trees in back-to-front order   
+// Desc: Callback function for sorting Bill/trees in back-to-front order   
 //-----------------------------------------------------------------------------   
 int __cdecl BillSortCB( const VOID* arg1, const VOID* arg2 )   
 {   

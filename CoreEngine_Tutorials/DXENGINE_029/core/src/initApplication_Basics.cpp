@@ -517,7 +517,9 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("----------------------------------------------------------------------------------------\n"));
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("[%d]: WOMA_APPLICATION_Initialize3D()\n"), gettid());
 
-	//ASTRO ////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//-----------------------------------------------------------------------------------------------------------------
+	// INIT ASTROs (Sun Moon) /////////////////////////////////////////////////////////////////////////////////////////
+	//-----------------------------------------------------------------------------------------------------------------
 #if defined USE_ASTRO_CLASS
 	initWorld->Calculate();
 #endif
@@ -526,7 +528,9 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	Calc3DSunMoonPosition();
 #endif
 
-	//LIGHT ////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//-----------------------------------------------------------------------------------------------------------------
+	// INIT LIGHT /////////////////////////////////////////////////////////////////////////////////////////////////////
+	//-----------------------------------------------------------------------------------------------------------------
 	m_Light = NEW LightClass;	// Create the light object
 	IF_NOT_THROW_EXCEPTION(m_Light);
 	m_Light->SetAmbientColor(0.55f, 0.55f, 0.55f, 1);	//later in world.xml
@@ -537,13 +541,13 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	m_Light->SetDirection(-0.535041273f, -1, 0);		//later in world.xml
 #endif
 
-	//LIGHT_RAY /////////////////////// DO: ///////////////////////////////////////////////////////////////////////////
-#if defined USE_LIGHT_RAY	//	CalculateLightRayVertex(SunDistance);							// Calculate Light Source Position
-	initLightRay();			//	m_lightRayModel->UpdateDynamic(m_Driver, m_LightVertexVector);	// Update LightRay vertex(s)
-#endif						//	m_lightRayModel->Render(m_Driver);								// Render LightRay
+	//LIGHT_RAY ////////////////////////////////////////////////////////////////////////////////////////////////////
+#if defined USE_LIGHT_RAY	//DO: CalculateLightRayVertex(SunDistance);							  // Calculate Light Source Position
+	initLightRay();			//	  m_lightRayModel->UpdateDynamic(m_Driver, m_LightVertexVector);  // Update LightRay vertex(s)
+#endif						//	  m_lightRayModel->Render(m_Driver);							  // Render LightRay
 
 	//-----------------------------------------------------------------------------------------------------------------
-	// INIT ALL BASIC DEMOS:
+	// INIT ALL BASIC DEMOS: //////////////////////////////////////////////////////////////////////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
 #if defined SCENE_COLOR
 	initColorDemo();
@@ -560,11 +564,14 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 
 #endif
 
-	//Sphere+SKY:
 #if DX_ENGINE_LEVEL >= 25 && defined USE_CUBE
 	IF_NOT_RETURN_FALSE(initCubes3D());
 #endif
 
+	//-----------------------------------------------------------------------------------------------------------------
+	// INIT SKY ///////////////////////////////////////////////////////////////////////////////////////////////////////
+	//-----------------------------------------------------------------------------------------------------------------
+	
 //Sphere:
 	float size = 3.0f;
 #if defined USE_SPHERE
@@ -596,7 +603,9 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	UINT64 passedTotalTime1 = (UINT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
 	WOMA_LOGManager_DebugMSGAUTO("Time to reach OBJ load: %" PRId64 "\n", passedTotalTime1);
 
-	//TERRAINs /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//-----------------------------------------------------------------------------------------------------------------
+	// INIT TERRAINs //////////////////////////////////////////////////////////////////////////////////////////////////
+	//-----------------------------------------------------------------------------------------------------------------
 	//0
 #if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN		// UNDER WATER: Terrain
 	loadedTerrain[0] = NEW CTerrain(TERRAIN);
@@ -621,9 +630,13 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	loadedTerrain[3]->initMainTopoTerrainDemo(3);
 #endif
 
-	//-----------------------------------------------------------------------------------------	
-	// Create Bill Board for Trees / Flowers
-	//-----------------------------------------------------------------------------------------	
+	//-----------------------------------------------------------------------------------------------------------------
+	// Init MAIN 3D Scene       ///////////////////////////////////////////////////////////////////////////////////////
+	//-----------------------------------------------------------------------------------------------------------------
+
+	//-----------------------------------------------------------------------------------------------------------------
+	// Create Bill Board for Trees / Flowers (extra populate WORLD.XML)       /////////////////////////////////////////
+	//-----------------------------------------------------------------------------------------------------------------
 #if TUTORIAL_CHAP >= 60 && defined (SCENE_MAIN_TOPO_TERRAIN) && defined (SCENE_BILLBOARDS) // BILLBOARD
 	IF_NOT_RETURN_FALSE(m_billTreeClass = NEW BillClass);
 	if (!m_billTreeClass->Initialize(loadedTerrain[2]->m_terrainWidth/2, loadedTerrain[2]->m_terrainHeight/2, false))
@@ -634,22 +647,35 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 #endif
 
 	//-----------------------------------------------------------------------------------------------------------------
-	// Create "model OBJECTS" from loaded "XML OBJECTS" in file WORLD.XML
+	// 3D-Load Scene: Create "model OBJECTS" from loaded "XML OBJECTS" in file WORLD.XML     //////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
 
-	//ANIMATED SKELETON MESHs //////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//-----------------------------------------------------------------------------------------------------------------
+	// ANIMATED SKELETON MESHs ////////////////////////////////////////////////////////////////////////////////////////
+	//-----------------------------------------------------------------------------------------------------------------
 
+	//-----------------------------------------------------------------------------------------------------------------
+	// DEMO-29                  ///////////////////////////////////////////////////////////////////////////////////////
+	//-----------------------------------------------------------------------------------------------------------------
 	SystemHandle->ProcessPerformanceStats();
 	UINT64 passedTotalTime2 = (UINT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
 	WOMA_LOGManager_DebugMSGAUTO("Time spent on OBJ(s) load: %" PRId64 "\n", passedTotalTime2);
 
-	//RENDER ASTROs ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//-----------------------------------------------------------------------------------------------------------------
+	// LOAD PROGRESS BAR       ////////////////////////////////////////////////////////////////////////////////////////
+	//-----------------------------------------------------------------------------------------------------------------
 
-	//SHADOWMAP //////////////////////////////////////////////////////////////////////////////////////////////////////
+	//-----------------------------------------------------------------------------------------------------------------
+	// RENDER ASTROs //////////////////////////////////////////////////////////////////////////////////////////////////
+	//-----------------------------------------------------------------------------------------------------------------
 
-	//Load ASSIMP Chars /////////////////////////////////////////////////////////////////////////////////
+	//-----------------------------------------------------------------------------------------------------------------
+	// SHADOWMAP //////////////////////////////////////////////////////////////////////////////////////////////////////
+	//-----------------------------------------------------------------------------------------------------------------
 
-	//Finally, launch dynamic Load Compound/OBJ Thread /////////////////////////////////////////////////////////////////////////////////
+	// --------------------------------------------------------------------------------------------
+	//Finally, launch dynamic Load Compound/OBJ Thread ////////////////////////////////////////////
+	// --------------------------------------------------------------------------------------------
 #if defined (CHECK_COMPOUND_COLISION) && defined (SCENE_COMPOUND) //TUTORIAL_CHAP >= 55 && 
 	for (UINT i = 0; i < N_COMPOUNDS; i++) {
 		compoundTreeLoadingOrder[i].compoundTreeId = i;
@@ -673,7 +699,9 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	return false;
 #endif
 
-	//NETWORK //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// --------------------------------------------------------------------------------------------
+	//INIT CLIENT/SERVER NETWORK COMS /////////////////////////////////////////////////////////////
+	// --------------------------------------------------------------------------------------------
 
 	return true;
 }

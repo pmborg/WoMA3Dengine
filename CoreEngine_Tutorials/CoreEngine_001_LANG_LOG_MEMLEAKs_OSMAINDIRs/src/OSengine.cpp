@@ -64,7 +64,7 @@ TCHAR* DEMO_NAME[] =
 //{"09 : From now on : PRESS[F4] for : [REAL Wheather] at user location."},
 //{"19 : PRESS[F6] for SETUP and change Driver : OPENGL, DX9, DX11, DX12 : Initiate the 3D Graphic Drivers and attache the swapchain to mainwindow."},
 //{"20 : OPENGL, DX9, DX11, DX12 : Allow mainwindow resizing."},
-{TEXT("TUTORIAL 21: The Basic triangle and squar using vertexes with indexes. The COLOR shader")},
+{TEXT("TUTORIAL 21: The Basic triangle and square using vertexes with indexes. The COLOR shader")},
 {TEXT("TUTORIAL 22: Loading and Rendering Textures - The TEXTURE shader")},
 {TEXT("TUTORIAL 23: Adding the first light, 'Diffuse Lighting'. - The LIGHT shader")},
 {TEXT("TUTORIAL 24: Adding Orthogonal Projection - Used on 2D Orthogonal Sprites")},

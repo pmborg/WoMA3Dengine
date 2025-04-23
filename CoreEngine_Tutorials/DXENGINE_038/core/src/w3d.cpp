@@ -340,7 +340,7 @@ namespace DirectX
 #if !defined(STANDALONE)
 				ID3D11ShaderResourceView* tempMeshSRV = NULL;
 				HRESULT hr = S_OK;
-				if (textureFilename.find(TEXT("../none")) != 0 && textureFilename.find(TEXT("../"))) //dont load on special cases (like billboards)
+				if (textureFilename.find(TEXT("../none")) != 0 /* && textureFilename.find(TEXT("../"))*/) //dont load on special cases (like billboards)
 				{
 				LOADTEXTURE(textureFilename.c_str(), tempMeshSRV);
 				//DX11

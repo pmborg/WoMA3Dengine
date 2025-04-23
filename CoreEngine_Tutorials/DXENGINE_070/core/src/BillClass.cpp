@@ -46,7 +46,6 @@ BillClass::BillClass()
 
 	mainTerrainPath = NEW CTerrain(TERRAIN);
 	mainTerrainPath->LoadHeightMapTerrain(BILLBOARD_TERRAIN, 0, 0); //engine/data/scene73grass/t_025TerrainMappingV4.bmp
-	//height[terrain_squares][terrain_squares]
 }
 
 BillClass::~BillClass() 
@@ -71,6 +70,8 @@ ID3D11ShaderResourceView* billFileLoaded[] =
 	NULL,//10
 
 	NULL,//11
+
+	NULL,//12
 };
 
 TCHAR billFileName[][MAX_STR_LEN] = 
@@ -92,7 +93,7 @@ xmlobj3d* BillClass::fillxml(int id, UINT type)
 	DirectX::DX11Class* m_driver11 = (DirectX::DX11Class*)m_Driver;
 
 	static xmlobj3d xmlobj;
-	xmlobj.id = id;
+	xmlobj.id = id+ SystemHandle->m_Application->world_xml_objs;
 	xmlobj.type = type;
 	xmlobj.fromPage = 0;
 	xmlobj.toPage = 0;
@@ -149,7 +150,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 		float PosZ = 0;
 		while (height <= 0		//not on water
 			|| height > 1.0f	//not above 1m
-			|| (m_Trees[i].vPos.x >= 28 && m_Trees[i].vPos.x <= 52) && (m_Trees[i].vPos.z >= 21 && m_Trees[i].vPos.z <= 38) //out of house (compound)
+			|| (m_Trees[i].vPos.x >= 27 && m_Trees[i].vPos.x <= 53) && (m_Trees[i].vPos.z >= 21 && m_Trees[i].vPos.z <= 38) //out of house (compound)
 			|| (m_Trees[i].vPos.x < borderLimit || m_Trees[i].vPos.x > m_terrainWidth - borderLimit)		//no near limits
 			|| (m_Trees[i].vPos.z < borderLimit || m_Trees[i].vPos.z > m_terrainHeight - borderLimit)		//no near limits
 			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z) - 1][(UINT)m_Trees[i].vPos.x] > 0			//no grass on main PATH (terrain)
@@ -200,7 +201,6 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 	//N_BILLBOARD
 
 	billTotal = i;
-	
 	WOMA_LOGManager_DebugMSG( "Bill Class: Initialized\n" );
 
 	return true;
@@ -214,7 +214,7 @@ void BillClass::Shutdown()
 
 //-----------------------------------------------------------------------------   
 // Name: TreeSortCB()   
-// Desc: Callback function for sorting trees in back-to-front order   
+// Desc: Callback function for sorting Bill/trees in back-to-front order   
 //-----------------------------------------------------------------------------   
 int __cdecl BillSortCB( const VOID* arg1, const VOID* arg2 )   
 {   

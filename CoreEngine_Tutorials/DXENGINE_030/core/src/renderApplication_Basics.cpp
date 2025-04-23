@@ -91,7 +91,6 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, UINT modelID, UINT pass)
 {
 	DXmodelClass* model = (DXmodelClass*)objModel[modelID];
-	//VirtualModelClass* model = objModel[modelID];
 
 	float positionX, positionY, positionZ;
 	positionX = SystemHandle->xml_loader.theWorld[modelID].posX;
@@ -220,9 +219,8 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 #endif
 #if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
 	UINT size = SceneManager::GetInstance()->opacModelList.size();
-	for (UINT id = 0; id < size; id++) {
-		RenderModel(monitorWindow, m_Driver, id, PASS_OPAC); //eq: objModel[id]->Render(m_Driver, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_OPAC);
-	}
+	for (UINT id = 0; id < size; id++)
+			RenderModel(monitorWindow, m_Driver, id, PASS_OPAC);
 #endif
 
 	//THE "OTHER" NETWORK PLAYERS
@@ -252,7 +250,8 @@ void ApplicationClass::AppPosRender(UINT monitorWindow)
 	if (size > 0) {
 		qsort(m_Trees, size, sizeof(Tree), BillSortCB);
 		for (UINT id = 0; id < size; id++) {
-			RenderModel(monitorWindow, m_Driver, m_Trees[id].ID + world_xml_objs, PASS_OPAC); //eq: objModel[id]->Render(m_Driver, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_OPAC);
+			UINT i = m_Trees[id].ID + world_xml_objs;
+			RenderModel(monitorWindow, m_Driver, i, PASS_OPAC);
 		}
 	}
 #endif
@@ -343,7 +342,6 @@ void ApplicationClass::AppPosRender(UINT monitorWindow)
 		}
 	}
 
-	//m_Driver->ClearDepthBuffer();		// Force BANNER: On Top of 3D Rendered
 	m_Driver->RenderDriverText();
 #endif
 
