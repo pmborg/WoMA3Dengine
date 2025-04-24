@@ -50,6 +50,8 @@
 #endif
 #endif
 
+#include "fileLoader.h"
+
 /////////////////////
 // Windows GLOBALS //
 /////////////////////
@@ -228,6 +230,12 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());		// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 
 #endif
 	IF_NOT_RETURN_FALSE(ApplicationInitMainWindow());		// CREATE: The/all "MainWindow(s) + INIT DX/GL "rendering-device"
+
+#if defined USE_INTRO_VIDEO_DEMO // WINDOWS START-VIDEO: Start DEMO INTRO (MP4): (Give Time to Unpack/Load Resources)
+	DXsystemHandle->g_DShowPlayer = NEW DShowPlayer(m_hWnd);	//INTRO MOVIE: mpg player
+	IF_FAILED_RETURN_FALSE(DXsystemHandle->PlayIntroMovie(WOMA::LoadFile(VIDEO_INTRO)));	// VIDEO DEMO
+#endif
+
 #if defined USE_PROCESS_OS_KEYS
 	IF_NOT_RETURN_FALSE(InitOsInput());						// INIT-INPUT Devices, NOTE: AFTER: ApplicationInitMainWindow()
 #endif
@@ -256,11 +264,6 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 
   #if defined USE_SCENE_MANAGER							// INIT SCENE-MANAGER:
 	DXsystemHandle->ApplicationInitSceneManager();		// INIT QUAD TREE
-  #endif
-
-  #if defined USE_INTRO_VIDEO_DEMO // WINDOWS START-VIDEO: Start DEMO INTRO (MP4): (Give Time to Unpack/Load Resources)
-	g_DShowPlayer = NEW DShowPlayer(m_hWnd);	//INTRO MOVIE: mpg player
-	IF_FAILED_RETURN_FALSE(PlayIntroMovie(WOMA::LoadFile(TEXT("engine/data/Logo.mp4"))));	// VIDEO DEMO
   #endif
 
 //################################ LOAD LoadAllGraphicAssets STUFF ##################################

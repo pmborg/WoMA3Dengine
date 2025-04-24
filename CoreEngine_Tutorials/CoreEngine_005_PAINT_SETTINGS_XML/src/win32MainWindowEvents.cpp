@@ -252,8 +252,8 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 
 #if defined USE_INTRO_VIDEO_DEMO
 	case WM_GRAPH_EVENT:
-		if (SystemHandle->g_DShowPlayer) // NOTE: And error in codecs may lead on a g_DShowPlayer = NULL
-			SystemHandle->g_DShowPlayer->HandleGraphEvent(OnGraphEvent);
+		if (DXsystemHandle->g_DShowPlayer) // NOTE: And error in codecs may lead on a g_DShowPlayer = NULL
+			DXsystemHandle->g_DShowPlayer->HandleGraphEvent(OnGraphEvent);
 		return 0;
 #endif
 

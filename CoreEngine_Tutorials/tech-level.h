@@ -151,10 +151,13 @@
 		//#define USE_DX11_3
 		#endif
 		#define SET_DEVICE_CAPABILITIES //report.txt
-		#define USE_STATUSBAR
+		//#define USE_STATUSBAR
+		#define USE_NORMAL_WINDOW
 	#endif
 
 	#if DX_ENGINE_LEVEL >= 20 && !defined WOMAENGINE_BASIC
+		#undef USE_NORMAL_WINDOW
+		#define USE_STATUSBAR
  		#define USE_ALLOW_RESIZE
 		#define USE_ALTENTER_SWAP_FULLSCREEN_WINDOWMODE //Dep: USE_ALLOW_RESIZE
 		//#define USE_ASPECT_RATIO //Dep: USE_ALLOW_RESIZE
@@ -473,7 +476,10 @@
 	#endif					  
 	#if DX_ENGINE_LEVEL >= 75
 		#define ALLOW_CBIND_PROGRESS_BAR
-	#endif				  
+	#endif
+	#if DX_ENGINE_LEVEL >= 76
+		#define USE_INTRO_VIDEO_DEMO
+	#endif		  
    
 	//#define USE_MULTI_MONITOR
 	//-------------------------------------------------------------------------------------------------------

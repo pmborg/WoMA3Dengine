@@ -459,6 +459,54 @@ void dxWinSystemClass::ApplicationInitSceneManager()
 	SceneManager::GetInstance()->quadTree.Initialize(SceneManager::GetInstance()->RootNode);
 #endif
 }
+
+#endif
+
+#if defined USE_INTRO_VIDEO_DEMO 
+
+void CALLBACK OnGraphEvent(HWND hwnd, long evCode, LONG_PTR param1, LONG_PTR param2)
+{
+	switch (evCode)
+	{
+	case EC_COMPLETE:
+	case EC_USERABORT:
+		DXsystemHandle->g_DShowPlayer->Pause(); //Stop();
+		break;
+
+	case EC_ERRORABORT:
+		WomaMessageBox(TEXT("VIDEO: Playback error"), TEXT("Error: "));
+		DXsystemHandle->g_DShowPlayer->Stop();
+		break;
+	}
+}
+
+
+HRESULT dxWinSystemClass::PlayIntroMovie(TCHAR* movie)
+//----------------------------------------------------------------------------
+{
+	HRESULT hr = g_DShowPlayer->OpenFile(movie);
+	IF_FAILED_RETURN_FALSE(hr);
+
+	InvalidateRect(m_hWnd, NULL, FALSE);
+	g_DShowPlayer->Play();
+
+	RECT rc;
+	GetClientRect(m_hWnd, &rc);
+	g_DShowPlayer->UpdateVideoWindow(&rc);
+
+	MSG msg = { };
+	while (g_DShowPlayer->m_state != STATE_STOPPED && g_DShowPlayer->m_state != STATE_PAUSED)
+	{
+		while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+		{	// Process OS Messages
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+
+	}
+
+	return hr;
+}
 #endif
 
 #if defined USE_LOADING_THREADS

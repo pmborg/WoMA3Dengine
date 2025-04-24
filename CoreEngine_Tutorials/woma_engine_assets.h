@@ -485,3 +485,10 @@
 	#define DEMO_TITLE TEXT("75: UTIL: PROGRESS BAR FOR TERRAIN LOADING")
 	#define WORLD_XML TEXT("world_75.xml")
 #endif																	  
+#if DX_ENGINE_LEVEL == 76
+	#define DEMO_TITLE TEXT("76: UTIL: INTRO VIDEO DEMO")
+	#define WORLD_XML TEXT("world_76.xml")
+#endif
+#if DX_ENGINE_LEVEL >= 76
+	#define VIDEO_INTRO TEXT("engine/data/76video/Logo.mp4")
+#endif

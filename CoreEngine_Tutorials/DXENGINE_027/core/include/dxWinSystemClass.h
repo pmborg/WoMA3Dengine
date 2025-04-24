@@ -37,7 +37,7 @@
 
 #if defined USE_INTRO_VIDEO_DEMO
 #include <dshow.h>
-#include "../../WomaUtils/include/playback.h"
+#include "playback.h"
 #endif
 
 extern PSTR Scmdline;
@@ -100,6 +100,12 @@ public:
 	void ApplicationInitSceneManager();
 #endif
 
+#if defined USE_INTRO_VIDEO_DEMO
+	DShowPlayer* g_DShowPlayer;
+#endif
+#if defined USE_INTRO_VIDEO_DEMO	//35: VIDEO DEMO
+	HRESULT PlayIntroMovie(TCHAR* movie);
+#endif
 
 	//private:
 	void Shutdown();

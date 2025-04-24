@@ -131,7 +131,9 @@
 	//#define LEVEL 72  // FIRE ........................................... 
 	//#define LEVEL 73  // WINDY GRASS .................................... 																							  
 	//#define LEVEL 74  // CROSS BILLBOARD and CLONES
-	#define LEVEL 75    // UTIL: PROGRESS BAR FOR TERRAIN LOADING															  
+	//#define LEVEL 75  // UTIL: PROGRESS BAR FOR TERRAIN LOADING															  
+	#define LEVEL 76    // UTIL: INTRO VIDEO DEMO
+	
 	#endif
 #endif
 
@@ -143,6 +145,6 @@
 	#define CORE_ENGINE_LEVEL LEVEL
 	#define DX_ENGINE_LEVEL 0
 #else
-	#define CORE_ENGINE_LEVEL LEVEL
+	#define CORE_ENGINE_LEVEL 10
 	#define DX_ENGINE_LEVEL LEVEL
 #endif

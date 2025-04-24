@@ -105,7 +105,7 @@ bool SystemClass::LoadAllGraphicAssets()
 
 	//Shutdown VIDEO PLAYER:
 #if defined USE_INTRO_VIDEO_DEMO
-	SAFE_DELETE(g_DShowPlayer);
+	SAFE_DELETE(DXsystemHandle->g_DShowPlayer);
 #endif
 
 	return true;
