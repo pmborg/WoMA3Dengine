@@ -57,13 +57,13 @@ Free models from: actorcore.reallusion.com
 
 <hr> 
 
-- <b>DX81: ASSIMP: Loading an animated mesh: SOON</b><br>
+- <b>DX81: ASSIMP: Loading an animated mesh: (SOON)</b><br>
  
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_081.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_081.png)	
 
 <hr> 
 
-- <b>DX80: ASSIMP: Loading a static mesh: SOON</b><br>
+- <b>DX80: ASSIMP: Loading a static mesh: (SOON)</b><br>
  
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_080.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_080.png)	
 
@@ -84,13 +84,13 @@ Free models from: actorcore.reallusion.com
 <h2>3D - BILLBOARD TUTORIAL SERIES: BEGIN</h2>
 <hr>
 
-- <b>DX78: Colision detection with objects</b><br>
+- <b>DX78: Colision detection with objects (SOON)</b><br>
 
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_078.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_078.png)
 
 <hr> 
 
-- <b>DX77: Using GS Shader for BILLBOARDs</b><br>
+- <b>DX77: Using GS Shader for BILLBOARDs (SOON)</b><br>
 
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_077.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_077.png)
 
