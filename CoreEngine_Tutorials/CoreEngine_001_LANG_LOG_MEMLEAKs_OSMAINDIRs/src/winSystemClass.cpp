@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: winSystemClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -101,7 +102,6 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	IF_NOT_RETURN_FALSE(LoadXmlSettings());	// XML: Load Application Settings: "settings.xml", pickup "Driver" to Use.
 #endif
 
-
 #if defined USE_SYSTEM_CHECK // BEFORE: ApplicationInitMainWindow()
 	IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());		// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 
 #endif
@@ -109,9 +109,8 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	IF_NOT_RETURN_FALSE(InitOsInput());						// INIT-INPUT Devices, NOTE: AFTER: ApplicationInitMainWindow()
 #endif
 #if defined USE_TIMER_CLASS									// WINDOWS AFTER: ApplicationInitMainWindow()
-	StartTimer();											// START-TIMERS: ("Window Title" refresh & Real-Time Weather refresh)
+	StartTimer();											// START WINDOWS TIMER: ("Window Title" refresh & Real-Time Weather refresh)
 #endif
-
 
 // ########################################### LOAD DRIVERS ###########################################
 	

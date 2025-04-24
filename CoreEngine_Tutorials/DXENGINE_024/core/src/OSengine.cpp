@@ -200,7 +200,7 @@ namespace WOMA
 #if defined USE_LOADING_THREADS || defined USE_MAIN_THREAD //vars
 	UINT	num_running_THREADS = 0;
 #endif
-#if defined USE_LOADING_THREADS || DX_ENGINE_LEVEL >= 37
+#if defined USE_LOADING_THREADS || DX_ENGINE_LEVEL >= 30
 	UINT	num_loading_objects = 1;
 #endif
 
@@ -333,6 +333,7 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 	// Changes the Process Priority:
 	// -----------------------------
 #if defined WINDOWS_PLATFORM
+#if NOTES
 	//THREAD_PRIORITY_IDLE(-15)
 	//THREAD_PRIORITY_LOWEST(-2)
 	//THREAD_PRIORITY_BELOW_NORMAL(-1)
@@ -340,7 +341,7 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 	//THREAD_PRIORITY_ABOVE_NORMAL(+1)
 	//THREAD_PRIORITY_HIGHEST(+2)
 	//THREAD_PRIORITY_TIME_CRITICAL(+15)
-
+#endif
 	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST); //THREAD_PRIORITY_HIGHEST = 2
 
 #elif defined LINUX_PLATFORM && defined RELEASE
@@ -354,10 +355,10 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 	// Init Windows COM services:
 	// --------------------------
 #if defined WINDOWS_PLATFORM
+	IF_NOT_THROW_EXCEPTION(DirectX::XMVerifyCPUSupport());
+
 	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 	if (FAILED(hr)) WomaFatalException("CoInitializeEx Failed!");
-
-	IF_NOT_THROW_EXCEPTION(DirectX::XMVerifyCPUSupport());
 #endif
 
 	// Benchmark trigonometric functions:
@@ -385,6 +386,7 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 	OutputDebugString(txt);
 	//------------------------------------------------------
 #endif
+
 #if (defined OPENGL3 || defined OPENGL4) && CORE_ENGINE_LEVEL >= 10
 	// [7] Start LINUX Platform: "OpenGL" (LoadExtensions)
 	// -------------------------------------------------------------------------------------------
@@ -407,6 +409,7 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 	#if defined USE_LOG_MANAGER
 	WOMA::start_log_manager();				//3
 	#endif
+
 	DefineConsoleTitle();
 
 	// Save Command Line Arguments to use later on

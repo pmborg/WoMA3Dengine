@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: winSystemClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -211,7 +212,6 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	IF_NOT_RETURN_FALSE(LoadXmlSettings());	// XML: Load Application Settings: "settings.xml", pickup "Driver" to Use.
 #endif
 
-
 #ifdef INTRO_DEMO
 	SystemHandle->m_Application->ClearColor[0] = 0;
 	SystemHandle->m_Application->ClearColor[1] = 0;
@@ -235,9 +235,8 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	IF_NOT_RETURN_FALSE(InitOsInput());						// INIT-INPUT Devices, NOTE: AFTER: ApplicationInitMainWindow()
 #endif
 #if defined USE_TIMER_CLASS									// WINDOWS AFTER: ApplicationInitMainWindow()
-	StartTimer();											// START-TIMERS: ("Window Title" refresh & Real-Time Weather refresh)
+	StartTimer();											// START WINDOWS TIMER: ("Window Title" refresh & Real-Time Weather refresh)
 #endif
-
 
 // ########################################### LOAD DRIVERS ###########################################
 	#if CORE_ENGINE_LEVEL >= 10 && defined OPENGL3	
@@ -454,8 +453,6 @@ bool WinSystemClass::MyRegisterClass(HINSTANCE hInstance)
 	//wcex.hbrBackground	= (HBRUSH)GetStockObject(WHITE_BRUSH);	//TO USE THIS COLOR: WHITE
 	wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);		//TO USE THIS COLOR: BLACK
 	wcex.lpszClassName  = WOMA_ENGINE_CLASS;
-	wcex.cbSize = sizeof(WNDCLASSEX);
-
 
 	IF_NOT_RETURN_FALSE (RegisterClassEx(&wcex));
 
@@ -667,11 +664,12 @@ bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ voi
 	{
 		if (AppSettings->AllowResize)
 		{
-			// This Style is needed to allow Lancher to have the browser refreshed:
-			//if (AppSettings->WINDOW_WIDTH == 1920)
-			//	windowStyle = WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP; //Means: NO TOP BAR!
-			//else
-				windowStyle = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS & ~WS_THICKFRAME;		// Normal WINDOW "Classic" (-[]X)
+
+#if defined USE_NORMAL_WINDOW
+			windowStyle = WS_OVERLAPPEDWINDOW;													// No TaskBar (bottom)
+#else
+			windowStyle = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS & ~WS_THICKFRAME; // Allow TaskBar (bottom)
+#endif
 
 			// Define Window Size and Position:
 			RECT R = { 0, 0, width, height };
@@ -719,17 +717,16 @@ bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ voi
 		windowTop = AppSettings->WINDOW_Ypos;
 	}
 
-	DWORD dwExStyle = (AppSettings->FULL_SCREEN) ? WS_EX_TOPMOST : WS_EX_APPWINDOW;
+	DWORD dwExStyle = (AppSettings->FULL_SCREEN) ? WS_EX_TOPMOST : WS_EX_APPWINDOW; //
 
 	if ((AppSettings->WINDOW_WIDTH == 0) && (AppSettings->WINDOW_HEIGHT == 0))
 		WomaFatalException("FATAL ERROR: Monitor Settings Invalid");
 
 
-
 	// ------------------------------------------------------------------------------------------
 	// Create: WIN OS Main Window 
 	// ------------------------------------------------------------------------------------------
-#if normal_window
+#if defined USE_NORMAL_WINDOW
 	HWND hWnd = CreateWindow(WOMA_ENGINE_CLASS, WOMA::APP_FULLNAME, WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, CW_USEDEFAULT, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT,
 		nullptr, nullptr, m_hinstance, nullptr);
@@ -738,7 +735,7 @@ bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ voi
 #if defined _DEBUG && defined USE_STATUSBAR
 	TaskBarHeigth = WOMA::getTaskBarHeight();
 	if (!AppSettings->FULL_SCREEN)
-		AppSettings->WINDOW_HEIGHT = AppSettings->WINDOW_HEIGHT - TaskBarHeigth - 32/*statusBarHeigth*/;
+		AppSettings->WINDOW_HEIGHT = AppSettings->WINDOW_HEIGHT - TaskBarHeigth - TaskBarHeigth; //
 #endif
 
 	// [*] Create the window and return the handle to it:
@@ -763,7 +760,6 @@ bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ voi
 	windowsArray[MONITOR_NUM].hWnd = hWnd;
 
 	ShowWindow(windowLeft, windowTop);
-
 	return true;
 }
 
@@ -780,9 +776,6 @@ bool WinSystemClass::ShowWindow(int windowLeft, int windowTop) {
 	SetForegroundWindow(m_hWnd);    // Slightly "Higher Priority"
 	SetFocus(m_hWnd);               // Force "Focus" to our Window
 	UpdateWindow(m_hWnd);           // 1st Window WIN32/"Paint"  NOW!
-
-	//Useful if not "fullscreen" or "fullscreen windowed":
-	//MoveWindow(m_hWnd, windowLeft, windowTop, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT, TRUE);	// Adjust to Correct Real/Render size "Depend of the Window Sytle"
 
 	// Save window properties
 	GetWindowRect(m_hWnd, &m_rcWindowBounds);	//{top=0 bottom=1057 left=1920	right=3840}
@@ -854,23 +847,6 @@ BOOL CALLBACK MyInfoEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonit
 bool WinSystemClass::ApplicationInitMainWindow()
 //----------------------------------------------------------------------------
 {
-#if defined RELEASE
-	// PURPOSE: Registers the Window Application Class, but first check if we are running!
-	if (FindWindow(WOMA_ENGINE_CLASS, NULL))
-	{
-		WomaMessageBox((TCHAR*)TEXT("Another Process is already Running..."), (TCHAR*)TEXT("FATAL ERROR:"));
-		WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP; //Publish_Quit_Message();
-		return false;
-	}
-	else
-#endif
-	{
-		if (!MyRegisterClass(m_hinstance)) {// Try to Register WOMA Engine WINDOW CLASS
-			WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP; //Publish_Quit_Message();
-			return false;
-		}
-	}
-
 	//Populate Monitor List: (for Game Setup)
 	info.Array = (ScreenArrayInfo*)&monitorArray;
 	info.Count = 0;
@@ -893,8 +869,6 @@ bool WinSystemClass::ApplicationInitMainWindow()
 			IF_NOT_RETURN_FALSE(CreateMainWindow(i /* use all these monitors*/, g_contextDriver, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT));
 	}
 #endif
-
-
 
 	return true;
 }

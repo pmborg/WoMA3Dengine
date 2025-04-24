@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: DX11createDevice-and-SwapChain.cpp
 // --------------------------------------------------------------------------------------------
@@ -46,79 +47,49 @@ UINT numElements = sizeof(DriverTypes) / sizeof(DriverTypes[0]);
 
 
 namespace DirectX {
-	bool DX11Class::createDevice()
+	//Init Step: 3
+	// ----------------------------------------------------------------------------------------------
+	bool DX11Class::createDevice_legacy()
 		// ----------------------------------------------------------------------------------------------
 	{
-		HRESULT result;
+		HRESULT result = S_OK;
 		IDXGIFactory* factory;
 		IDXGIAdapter* adapter;
 		IDXGIOutput* adapterOutput;
-		unsigned int numModes, i, numerator=1, denominator=1;
+		unsigned int numModes, i, numerator = 1, denominator = 1;
 		DXGI_MODE_DESC* displayModeList;
 		DXGI_ADAPTER_DESC adapterDesc;
-		DXGI_SWAP_CHAIN_DESC swapChainDesc;
-		ID3D11Texture2D* backBufferPtr;
 
-		WOMA::Settings*			AppSettings = SystemHandle->AppSettings;
-		#define m_vsync_enabled AppSettings->VSYNC_ENABLED
-		#define screenWidth		AppSettings->WINDOW_WIDTH
-		#define screenHeight	AppSettings->WINDOW_HEIGHT
-		#define hwnd			SystemHandle->m_hWnd
-		#define fullscreen		AppSettings->FULL_SCREEN
-
-		DXwindowDataContainer DXwindow;
-		DXwindow.m_swapChain = NULL;
-		DXwindow.m_backBuffer = NULL;
-		DXwindow.m_renderTargetView = NULL;
-		DXwindow.m_depthStencilView = NULL;
-
-		#define m_swapChain DXwindow.m_swapChain
+		#define screenWidth		SystemHandle->AppSettings->WINDOW_WIDTH
+		#define screenHeight	SystemHandle->AppSettings->WINDOW_HEIGHT
 
 #if _DEBUG
-		HRESULT hr = DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debugDev));
+		result = DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debugDev));
 #endif
 
 		// Create a DirectX graphics interface factory.
 		result = CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&factory);
-		if (FAILED(result))
-		{
-			return false;
-		}
+		IF_FAILED_RETURN_FALSE(result);
 
 		// Use the factory to create an adapter for the primary graphics interface (video card).
 		result = factory->EnumAdapters(0, &adapter);
-		if (FAILED(result))
-		{
-			return false;
-		}
+		IF_FAILED_RETURN_FALSE(result);
 
 		// Enumerate the primary adapter output (monitor).
 		result = adapter->EnumOutputs(0, &adapterOutput);
-		if (FAILED(result))
-		{
-			return false;
-		}
+		IF_FAILED_RETURN_FALSE(result);
 
 		// Get the number of modes that fit the DXGI_FORMAT_R8G8B8A8_UNORM display format for the adapter output (monitor).
 		result = adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, NULL);
-		if (FAILED(result))
-		{
-			return false;
-		}
+		IF_FAILED_RETURN_FALSE(result);
 
 		// Create a list to hold all the possible display modes for this monitor/video card combination.
 		displayModeList = new DXGI_MODE_DESC[numModes];
-		if (!displayModeList)
-		{
-			return false;
-		}
+		IF_NOT_RETURN_FALSE(displayModeList);
 
 		// Now fill the display mode list structures.
 		result = adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, displayModeList);
-		if (FAILED(result))
-		{
-			return false;
-		}
+		IF_FAILED_RETURN_FALSE(result);
 
 		// Now go through all the display modes and find the one that matches the screen width and height.
 		// When a match is found store the numerator and denominator of the refresh rate for that monitor.
@@ -136,10 +107,7 @@ namespace DirectX {
 
 		// Get the adapter (video card) description.
 		result = adapter->GetDesc(&adapterDesc);
-		if (FAILED(result))
-		{
-			return false;
-		}
+		IF_FAILED_RETURN_FALSE(result);
 
 		// Store the dedicated video card memory in megabytes.
 		m_videoCardMemory = (int)(adapterDesc.DedicatedVideoMemory / 1024 / 1024);
@@ -171,201 +139,6 @@ namespace DirectX {
 		factory->Release();
 		factory = 0;
 
-		// Initialize the swap chain description.
-		ZeroMemory(&swapChainDesc, sizeof(swapChainDesc));
-
-		// Set to a single back buffer.
-		//swapChainDesc.BufferCount = 1;
-		swapChainDesc.BufferCount = (AppSettings->UseDoubleBuffering) ? 2 : 1; // Use double-buffering to minimize latency.
-
-		// Set the width and height of the back buffer.
-		swapChainDesc.BufferDesc.Width = screenWidth;
-		swapChainDesc.BufferDesc.Height = screenHeight;
-
-		// Set regular 32-bit surface for the back buffer.
-		swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-
-		// Set the refresh rate of the back buffer.
-		if (m_vsync_enabled)
-		{
-			swapChainDesc.BufferDesc.RefreshRate.Numerator = numerator;
-			swapChainDesc.BufferDesc.RefreshRate.Denominator = denominator;
-		}
-		else
-		{
-			swapChainDesc.BufferDesc.RefreshRate.Numerator = 0;
-			swapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
-		}
-
-		// Set the usage of the back buffer.
-		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-
-		// Set the handle for the window to render to.
-		swapChainDesc.OutputWindow = hwnd;
-
-		// Turn multisampling off.
-		swapChainDesc.SampleDesc.Count = MSAA_COUNT;
-		swapChainDesc.SampleDesc.Quality = MSAA_QUALITY;
-
-		// Set to full screen or windowed mode.
-		if (fullscreen)
-		{
-			swapChainDesc.Windowed = false;
-		}
-		else
-		{
-			swapChainDesc.Windowed = true;
-		}
-
-		// Set the scan line ordering and scaling to unspecified.
-		swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-		swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-
-		// Discard the back buffer contents after presenting.
-		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-
-		// Don't set the advanced flags.
-#if defined(_DEBUG) & !defined(NDEBUG)
-		swapChainDesc.Flags = D3D11_CREATE_DEVICE_DEBUG;
-#endif
-
-		// Set the feature level to DirectX 11.
-		//featureLevel = D3D_FEATURE_LEVEL_11_0;
-
-		// From most desired to least desired:
-		D3D_FEATURE_LEVEL featureLevels[] = {
-		#if defined USE_DX11_3
-			D3D_FEATURE_LEVEL_12_2,
-			D3D_FEATURE_LEVEL_12_1,
-			D3D_FEATURE_LEVEL_12_0,
-		#endif
-		#if defined USE_DX11_1
-			D3D_FEATURE_LEVEL_11_1,
-		#endif
-			D3D_FEATURE_LEVEL_11_0,
-			D3D_FEATURE_LEVEL_10_1,
-			D3D_FEATURE_LEVEL_10_0
-		};
-		int num_levels = sizeof(featureLevels) / sizeof(D3D_FEATURE_LEVEL);
-		
-		// Create the swap chain, Direct3D device, and Direct3D device context.
-		result = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, 0, featureLevels, num_levels,
-			D3D11_SDK_VERSION, &swapChainDesc, &m_swapChain, &m_device11, NULL, &m_deviceContext);
-		if (FAILED(result))
-		{
-			return false;
-		}
-
-		// Get the pointer to the back buffer.
-		result = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBufferPtr);
-		if (FAILED(result))
-		{
-			return false;
-		}
-
-		DX11windowsArray.push_back(DXwindow);
-
-		#undef m_vsync_enabled
-		#undef screenWidth
-		#undef screenHeight
-		#undef hwnd
-		#undef fullscreen
-
-		#undef m_swapChain
-
-		// Check driver capabilities:
-		// Defaults:
-		m_sCapabilities.MSAAmultiSampleCount = 1;
-		m_sCapabilities.MSAAquality = 1;
-#if defined SET_DEVICE_CAPABILITIES
-		setDeviceCapabilities(featureLevel_);
-
-		// Check DX11 Multi-Threading Capabilities:
-		// -------------------------------------------------------------------------
-		D3D11_FEATURE_DATA_THREADING ThreadingOptions;
-		m_device11->CheckFeatureSupport(D3D11_FEATURE_THREADING, &ThreadingOptions, sizeof(ThreadingOptions));
-
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("Driver Support Concurrent Creates: %s\n"), ThreadingOptions.DriverConcurrentCreates ? TEXT("yes") : TEXT("no"));
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("Driver Support Command Lists: %s\n\n"), ThreadingOptions.DriverCommandLists ? TEXT("yes") : TEXT("no"));
-
-		// -------------------------------------------------------------------------
-		// Get the best Multi Sample Quality (MSAAmultiSampleCount & MSAAquality)
-		// -------------------------------------------------------------------------
-		m_sCapabilities.MSAA_SUPPORTBoolean = false; // Lets check this...
-
-		// Detect Max Capabilities:
-
-		// Check "4X" MSAA quality support for our back buffer format.
-		// All Direct3D 11 capable devices support "4X" MSAA for all render target formats, so we only need to check quality support.
-		if (!FAILED(m_device11->CheckMultisampleQualityLevels(BUFFER_COLOR_FORMAT, 4, &m_sCapabilities.MSAAquality))) //WomaFatalException("Failed to check multisample support!");
-		{
-			if (m_sCapabilities.MSAAquality <= 0)
-			{
-				//SystemHandle->AppSettings->MSAA_ENABLED = FALSE;
-				WomaMessageBox(TEXT("WARNING: This card don't support, MultiSample Anti-Aliasing (MSAA)"), TEXT("WARNING")); // NOTE: Don't make it fatal (just reset setting)
-			}
-			else
-			{
-				// Support at least 4:
-				m_sCapabilities.MSAA_SUPPORTBoolean = true;
-
-				if (MSAA_COUNT == 0) // 0 = Auto Detect Max!
-				{
-					UINT quality = 0;
-					for (UINT msaaSamples_ = 1; msaaSamples_ <= D3D11_MAX_MULTISAMPLE_SAMPLE_COUNT; msaaSamples_++)
-					{
-						result = m_device11->CheckMultisampleQualityLevels(BUFFER_COLOR_FORMAT, msaaSamples_, &quality);
-						if (result == S_OK && quality != 0)
-						{
-							m_sCapabilities.MSAAmultiSampleCount = msaaSamples_;
-							m_sCapabilities.MSAAquality = quality;
-							WOMA_LOGManager_DebugMSGAUTO(TEXT("DRIVER MSAAmultiSampleCount: %d\n"), m_sCapabilities.MSAAmultiSampleCount);		// Get the max Sample Count: 8
-							WOMA_LOGManager_DebugMSGAUTO(TEXT("DRIVER multiSampleQuality: %d\n"), m_sCapabilities.MSAAquality);	// Get the max MsaaQuality: 32
-
-							// Use Max Setting Supported:
-							MSAA_QUALITY = m_sCapabilities.MSAAquality;
-							MSAA_COUNT = MIN (4, m_sCapabilities.MSAAmultiSampleCount);
-
-						}
-					}
-				}
-			}
-		}
-
-		if (SystemHandle->AppSettings->MSAA_Anisotropic == false) //Setup defaults!
-		{
-			MSAA_QUALITY = 0;
-			MSAA_COUNT = 1;
-		}
-
-		// Log It!
-		if (SystemHandle->AppSettings->MSAA_Anisotropic) {
-			WOMA_LOGManager_DebugMSGAUTO(TEXT("MSSA is Enabled with %d Samples\n"), MSAA_COUNT);
-		}
-		else
-		{
-			if (SystemHandle->AppSettings->MSAA_bilinear)
-				WOMA_LOGManager_DebugMSGAUTO(TEXT("Antialise: bilinear\n"));
-			else if (SystemHandle->AppSettings->MSAA_trilinear)
-				WOMA_LOGManager_DebugMSGAUTO(TEXT("Antialise: trilinear\n"));
-			else
-				WOMA_LOGManager_DebugMSGAUTO(TEXT("Antialise: off\n"));
-		}
-#endif
-
-		return true;
-	}
-
-	//Init Step: 3
-	// ----------------------------------------------------------------------------------------------
-	bool DX11Class::createDevice_old()
-		// ----------------------------------------------------------------------------------------------
-	{
-		HRESULT result = S_OK;
-
-#if _DEBUG
-		HRESULT hr = DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debugDev));
-#endif
 
 		// From most desired to least desired:
 		D3D_FEATURE_LEVEL featureLevels[] = {
@@ -413,6 +186,8 @@ namespace DirectX {
 	#endif
 		}
 		
+	#undef screenWidth
+	#undef screenHeight
 
 		//DEVICE_TYPES:
 		// "hardware"
@@ -423,13 +198,14 @@ namespace DirectX {
 		{
 		retry:
 			//NOTE: DX11 might fallback to "D3D_FEATURE_LEVEL_10_1" or even "D3D_FEATURE_LEVEL_10_0" if DX11 is not supported
-			result = D3D11CreateDevice(0,			//0 = 1st: adapterGraphicCard
+			result = D3D11CreateDevice(
+				0,									//0 = 1st: adapterGraphicCard
 				DriverTypes[device_type].DX11Type,	// device_type
 				NULL,								// used only by: D3D_DRIVER_TYPE_SOFTWARE
 				DeviceFlags,
 				PtrfeatureLevels, num_levels/*ARRAYSIZE(featureLevels)*/,
 				D3D11_SDK_VERSION,
-				&m_device11,
+				m_device.ReleaseAndGetAddressOf(),
 				&featureLevel_,				// OUTPUT: The address of the feature level that was selected
 				&m_deviceContext);			// OUTPUT: The address for the rendering context
 
@@ -448,13 +224,13 @@ namespace DirectX {
 				break;
 			}
 		}
-		
+
+		m_device11 = m_device.Get();
 		if (result != S_OK || !m_device11)
 		{
 			WomaFatalException(("FATAL ERROR: Could not Create DX 11 Device: D3D11CreateDevice")); //CHAR!
 		}
 
-		//g_deviceContext = m_deviceContext; // Save the context in a global variable to be used and abused! :)
 
 		g_ALLOW_DX9x = dx11_force_dx9;
 
@@ -479,6 +255,7 @@ namespace DirectX {
 		// Defaults:
 		m_sCapabilities.MSAAmultiSampleCount = 1;
 		m_sCapabilities.MSAAquality = 1;
+
 #if defined SET_DEVICE_CAPABILITIES
 		setDeviceCapabilities(featureLevel_);
 
@@ -495,10 +272,7 @@ namespace DirectX {
 		// -------------------------------------------------------------------------
 		m_sCapabilities.MSAA_SUPPORTBoolean = false; // Lets check this...
 
-
-
 		// Detect Max Capabilities:
-
 
 		// Check "4X" MSAA quality support for our back buffer format.
 		// All Direct3D 11 capable devices support "4X" MSAA for all render target formats, so we only need to check quality support.
@@ -511,9 +285,10 @@ namespace DirectX {
 			}
 			else
 			{
+				// Support at least 4:
 				m_sCapabilities.MSAA_SUPPORTBoolean = true;
 
-				if (MSAA_COUNT == 0) // 0 = Detect Max, other setting: Use it!
+				if (MSAA_COUNT == 0) // 0 = Auto Detect Max!
 				{
 					UINT quality = 0;
 					for (UINT msaaSamples_ = 1; msaaSamples_ <= D3D11_MAX_MULTISAMPLE_SAMPLE_COUNT; msaaSamples_++)
@@ -528,15 +303,14 @@ namespace DirectX {
 
 							// Use Max Setting Supported:
 							MSAA_QUALITY = m_sCapabilities.MSAAquality;
-							MSAA_COUNT = m_sCapabilities.MSAAmultiSampleCount;
+							MSAA_COUNT = MIN(4, m_sCapabilities.MSAAmultiSampleCount);
 
-							//if (MSAA_COUNT >0 && MSAA_COUNT == m_sCapabilities.MSAAmultiSampleCount)
-							//	break;
 						}
 					}
 				}
 			}
 		}
+
 		if (SystemHandle->AppSettings->MSAA_Anisotropic == false) //Setup defaults!
 		{
 			MSAA_QUALITY = 0;
@@ -557,9 +331,148 @@ namespace DirectX {
 				WOMA_LOGManager_DebugMSGAUTO(TEXT("Antialise: off\n"));
 		}
 #endif
-		
+
+		return true;
+}
+
+
+	//Init Step: 4
+	// ----------------------------------------------------------------------------------------------
+/*
+	bool DX11Class::createSwapChainDX11device(HWND hwnd, int screenWidth, int screenHeight, BOOL vsync,
+		BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize,
+		UINT numerator, UINT denominator)
+		// ----------------------------------------------------------------------------------------------
+	{
+		HRESULT result = S_OK;
+
+		if (dx11_force_dx9)
+			g_UseDoubleBuffering = FALSE;
+
+		ASSERT(hwnd); // FATAL ERROR: Create Main Window first!
+
+		// Fill out the description of the swap chain
+		// ==========================================
+		// Initialize the swap chain description:
+		DXGI_SWAP_CHAIN_DESC swapChainDesc = { 0 };	// dxgi.h
+
+		// Set to a single/double-buffering back buffer:
+		swapChainDesc.BufferCount = (g_UseDoubleBuffering) ? 2 : 1; // Use double-buffering to minimize latency.
+
+		// Set the width and height of the back buffer:
+		swapChainDesc.BufferDesc.Width = screenWidth;
+		swapChainDesc.BufferDesc.Height = screenHeight;
+
+		// The default: 32-bit surface for the back buffer: (RGB + A) 8 bits each (This is the most common swap chain format)
+		swapChainDesc.BufferDesc.Format = BUFFER_COLOR_FORMAT; // Default: DXGI_FORMAT_R8G8B8A8_UNORM
+
+		// Set the refresh rate of the back buffer:
+		swapChainDesc.BufferDesc.RefreshRate.Numerator = (vsync) ? numerator : 0;
+		swapChainDesc.BufferDesc.RefreshRate.Denominator = (vsync) ? denominator : 1;
+
+		// Set the default usage of the back buffer:
+		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+
+		swapChainDesc.Windowed = !fullscreen;	// Set to "Fullscreen" or "Windowed Mode":
+
+		// Default: 0, This member is used to tell Direct3D how to perform multisample anti-aliased (MSAA) rendering	
+#if defined SET_DEVICE_CAPABILITIES
+		swapChainDesc.SampleDesc.Count = MSAA_COUNT;
+		swapChainDesc.SampleDesc.Quality = MSAA_QUALITY;		// MSAA
+#else
+		swapChainDesc.SampleDesc.Count = 1;
+		swapChainDesc.SampleDesc.Quality = 0;
+#endif
+		swapChainDesc.Flags = (g_AllowResize) ? DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH : 0;
+
+		// Set the scan line ordering and scaling to unspecified:
+		//swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+		//swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+
+		// Discard the back buffer contents after presenting:
+#if D3D11_SPEC_DATE_YEAR > 2009
+		if (swapChainDesc.SampleDesc.Count == 1)
+			swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+		else
+			swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+#endif
+
+		IDXGIDevice* pDXGIDevice = NULL;
+		result = m_device11->QueryInterface(__uuidof(IDXGIDevice), (void**)&pDXGIDevice);
+		if (FAILED(result)) return false;
+
+#if defined DXGI1_1 || defined DXGI1_2
+		pDXGIDevice->SetGPUThreadPriority(7);
+#endif
+
+		IDXGIAdapterN* pDXGIAdapter = NULL;
+		result = pDXGIDevice->GetParent(__uuidof(IDXGIAdapterN), (void**)&pDXGIAdapter);
+		if (FAILED(result)) return false;
+
+		if (pDXGIAdapter)
+		{
+			DXGI_ADAPTER_DESC sDXGIAdapterDesc;
+			pDXGIAdapter->GetDesc(&sDXGIAdapterDesc);
+			m_sCapabilities.nTotalAvailableGPUMemory = sDXGIAdapterDesc.DedicatedVideoMemory; //unit: bytes
+		}
+
+		IDXGIFactoryN* pIDXGIFactory = NULL;
+		result = pDXGIAdapter->GetParent(__uuidof(IDXGIFactoryN), (void**)&pIDXGIFactory);
+		if (FAILED(result)) return false;
+
+		// For each Monitor: 
+		for (int i = 0; i < SystemHandle->windowsArray.size(); i++)
+		{
+			DXwindowDataContainer DXwindow;
+			DXwindow.m_swapChain = NULL;
+			DXwindow.m_backBuffer = NULL;
+			DXwindow.m_renderTargetView = NULL;
+			DXwindow.m_depthStencilView = NULL;
+
+			// Windows 10 and up:
+			swapChainDesc.OutputWindow = SystemHandle->windowsArray[i].hWnd;						// Set the handle for the window to render to.
+			WOMA_LOGManager_DebugMSGAUTO(TEXT("Try CreateSwapChain settings for Windows 10:\n"));
+			result = pIDXGIFactory->CreateSwapChain(m_device11, &swapChainDesc, &DXwindow.m_swapChain); // Turn Screen to Black
+			if (FAILED(result))
+			{
+				//WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("DX11 ERROR - CreateSwapChain(): %s\n"), std::system_category().message(result));
+				// Windows 8.1:
+#if D3D11_SPEC_DATE_YEAR > 2009
+				swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
+				swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
+#endif
+				swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+				WOMA_LOGManager_DebugMSGAUTO(TEXT("Try CreateSwapChain settings for Windows 8.1:\n"));
+				result = pIDXGIFactory->CreateSwapChain(m_device11, &swapChainDesc, &DXwindow.m_swapChain); // Are we ok now?
+				if (FAILED(result)) {
+					//WOMA_LOGManager_DebugMSGAUTO(TEXT("DX11 ERROR - CreateSwapChain(): %s\n"), std::system_category().message(result));
+					// older Windows
+					swapChainDesc.BufferCount = 1;
+					swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+					swapChainDesc.Flags = 0;
+					WOMA_LOGManager_DebugMSGAUTO(TEXT("Try CreateSwapChain settings for Windows legacy:\n"));
+					result = pIDXGIFactory->CreateSwapChain(m_device11, &swapChainDesc, &DXwindow.m_swapChain); // Are we ok now?
+					if (FAILED(result)) {
+						//WOMA_LOGManager_DebugMSGAUTO(TEXT("DX11 FATAL ERROR - CreateSwapChain(): %s\n"), std::system_category().message(result));
+						return false;
+					}
+				}
+			}
+
+			DX11windowsArray.push_back(DXwindow);
+		}
+
+		if (!g_AllowResize)
+			pIDXGIFactory->MakeWindowAssociation(SystemHandle->windowsArray[0].hWnd, DXGI_MWA_NO_WINDOW_CHANGES | DXGI_MWA_NO_ALT_ENTER); //Prevent DXGI from responding to an alt-enter sequence.
+
+		SAFE_RELEASE(pDXGIDevice);
+		SAFE_RELEASE(pDXGIAdapter);
+		SAFE_RELEASE(pIDXGIFactory);
+
 		return true;
 	}
+*/
+
 
 	//Init Step: 4
 	#if defined USE_DX11_1

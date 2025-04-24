@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // ----------------------------------------------------------------------------------------------
 // Filename: DX11Class.h
 // --------------------------------------------------------------------------------------------
@@ -94,6 +95,8 @@
 #if _DEBUG
 #pragma comment(lib, "dxguid.lib")
 #endif
+
+#include <wrl/client.h>
 
 //////////////
 // INCLUDES //
@@ -294,6 +297,7 @@ public:
 
 	void BeginScene(UINT monitorWindow);
 	void EndScene(UINT monitorWindow);
+	void OnDeviceLost();
 	void ClearDepthBuffer();
 
 #if defined USE_RASTERIZER_STATE
@@ -389,16 +393,24 @@ public:
 
 	// For each DX11 Adapter:
 	IDXGIAdapter1* adapterGraphicCard = NULL;
+
+#if defined USE_DEVICE_LEGACY
 	ID3D11Device* m_device11 = NULL;
+#else
+	ID3D11Device* m_device11 = NULL;
+	Microsoft::WRL::ComPtr<ID3D11Device>           m_device;
+#endif
+
 #ifdef USE_DX11_3
 	ID3D11Device3* pDevice3 = nullptr;
 #endif
+
 	ID3D11DeviceContext* m_deviceContext = NULL;
 
 	// For each DX11 Monitor:
 	struct DXwindowDataContainer
 	{
-		IDXGISwapChain* m_swapChain=NULL;
+		//IDXGISwapChain* m_swapChain=NULL;
 		IDXGISwapChain1* m_swapChain1 = NULL;
 		ID3D11Texture2D* m_backBuffer = NULL;
 		ID3D11RenderTargetView* m_renderTargetView = NULL;
@@ -457,7 +469,7 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 	
 	bool createDevice ();
-	bool createDevice_old();
+	bool createDevice_legacy();
 #if defined SET_DEVICE_CAPABILITIES
 	void setDeviceCapabilities(D3D_FEATURE_LEVEL featureLevel);
 #endif

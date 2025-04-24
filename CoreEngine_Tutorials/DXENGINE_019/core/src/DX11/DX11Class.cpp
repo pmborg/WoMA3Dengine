@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // ----------------------------------------------------------------------------------------------
 // Filename: DX11Class.cpp
 // --------------------------------------------------------------------------------------------
@@ -136,7 +137,6 @@ void LOAD_TEXTURES(std::vector<TCHAR*> file, std::vector<ID3D11ShaderResourceVie
 
 DX11Class::~DX11Class() // Used for Static Classes
 {
-	//_tprintf(TEXT("driverName: %s "), driverName);
 	Shutdown();
 	CLASSDELETE();
 }
@@ -283,7 +283,7 @@ DX11Class::DX11Class()
 void DX11Class::Shutdown2D()
 //----------------------------------------------------------------------------------------------
 {
-#if defined USE_DX10DRIVER_FONTS // || defined INTRO_DEMO	// FONT v2
+#if defined USE_DX10DRIVER_FONTS
 	if (SystemHandle->m_Application) {
 		SAFE_SHUTDOWN(SystemHandle->m_Application->m_FontV2Shader);	// Release previews Font Size (on Window Re-size)
 		SAFE_RELEASE(SystemHandle->m_Application->keyedMutex11);
@@ -311,110 +311,71 @@ void DX11Class::Shutdown2D()
 #endif
 }
 
-void DX11Class::DeleteViewBuffers()
-{
-	if (m_deviceContext)
-		m_deviceContext->OMSetRenderTargets(0, NULL, NULL);
 
-	// For each Monitor, Before shutting down set to windowed mode or when you release the swap chain it will throw an exception.
-	for (int i = 0; i < DX11windowsArray.size(); i++)
-	{
-		if (DX11windowsArray[i].m_swapChain)
-			DX11windowsArray[i].m_swapChain->SetFullscreenState(false, NULL);
-
-		if (DX11windowsArray[i].m_swapChain1)
-			DX11windowsArray[i].m_swapChain1->SetFullscreenState(false, NULL);
-
-		SAFE_RELEASE(DX11windowsArray[i].m_backBuffer);			// Release pointer to the back buffer
-	}
-
-	// For each Monitor: 
-	for (int i = 0; i < DX11windowsArray.size(); i++)
-	{
-		SAFE_RELEASE(DX11windowsArray[i].m_backBuffer);			// Release pointer to the back buffer
-		SAFE_RELEASE(DX11windowsArray[i].m_renderTargetView);	// Init Step: 9	(backBufferRTV)
-	}
-
-	SAFE_RELEASE(m_depthBuffer);								// Init Step: 9
-
-	for (int i = 0; i < DX11windowsArray.size(); i++)
-	{
-		SAFE_RELEASE(DX11windowsArray[i].m_depthStencilView);	// Init Step: 10
-	}
-}
 //----------------------------------------------------------------------------------------------
 void DX11Class::Shutdown()
 //----------------------------------------------------------------------------------------------
 {
-	//if (m_device11) 
-	{
+	if (m_deviceContext)
 		DeleteViewBuffers();
 
-		Shutdown2D();
+	Shutdown2D();
 
 #if defined USE_RASTERIZER_STATE
-	//CreateAllRasterizerStates:
-	for (UINT i = 0; i < 3; i++)
-		for (UINT j = 0; j < 2; j++)
-			SAFE_RELEASE(m_rasterState[i][j]);
+//CreateAllRasterizerStates:
+for (UINT i = 0; i < 3; i++)
+	for (UINT j = 0; j < 2; j++)
+		SAFE_RELEASE(m_rasterState[i][j]);
 #endif
 
-	//Release the two new blending states.
-	#if defined INTRO_DEMO || defined USE_ALPHA_BLENDING
-		SAFE_RELEASE (m_alphaEnableBlendingState);
-		SAFE_RELEASE (m_alphaDisableBlendingState);
-	#endif
+//Release the two new blending states.
+#if defined INTRO_DEMO || defined USE_ALPHA_BLENDING
+	SAFE_RELEASE (m_alphaEnableBlendingState);
+	SAFE_RELEASE (m_alphaDisableBlendingState);
+#endif
 
-	#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 22
-		WOMA_LOGManager_DebugMSGAUTO (TEXT("Number of Textures: %d\n"), allTextureNameArray.size());
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 22
+	WOMA_LOGManager_DebugMSGAUTO (TEXT("Number of Textures: %d\n"), allTextureNameArray.size());
 
-		for (UINT i=0; i < allTextureNameArray.size(); i++)
-			SAFE_RELEASE (allTexturePointerArray[i]);	// Free All Textures from our Texture manager
-	#endif
+	for (UINT i=0; i < allTextureNameArray.size(); i++)
+		SAFE_RELEASE (allTexturePointerArray[i]);	// Free All Textures from our Texture manager
+#endif
 
-	#if defined USE_FRUSTRUM
-		SAFE_DELETE(frustum);
-	#endif
+#if defined USE_FRUSTRUM
+	SAFE_DELETE(frustum);
+#endif
 
-		// createSetDepthStencilState() - Here we release the new depth stencil during the Shutdown function.
-		SAFE_RELEASE (m_depthDisabledStencilState);
-		SAFE_RELEASE (m_depthStencilState);
+	// createSetDepthStencilState() - Here we release the new depth stencil during the Shutdown function.
+	SAFE_RELEASE (m_depthDisabledStencilState);
+	SAFE_RELEASE (m_depthStencilState);
 
-		SAFE_RELEASE (adapterGraphicCard);
-		SAFE_RELEASE (m_deviceContext);
+	SAFE_RELEASE (adapterGraphicCard);
+	SAFE_RELEASE (m_deviceContext);
 
-		// For each Monitor: 
-		for (int i = 0; i < DX11windowsArray.size(); i++) {
-			if (DX11windowsArray[i].m_swapChain)
-				SAFE_RELEASE(DX11windowsArray[i].m_swapChain);
-			if (DX11windowsArray[i].m_swapChain1)
-				SAFE_RELEASE(DX11windowsArray[i].m_swapChain1);
-		}
-
-		// The Last one!
-		#if _DEBUG
-		DXGI_DEBUG_RLO_FLAGS flags = DXGI_DEBUG_RLO_DETAIL;//DXGI_DEBUG_RLO_ALL;
-		if (debugDev)
-		HRESULT hr = debugDev->ReportLiveObjects(DXGI_DEBUG_ALL, flags);
-		#endif
-
-	#ifdef USE_DX11_3
-		SAFE_RELEASE(pDevice3);
-	#endif
-
-		ULONG count = 0;
-		if (m_device11) {
-			count = m_device11->Release();
-			m_device11 = NULL;
-		}
-
-		#ifdef _DEBUG
-		if (count)
-			WOMA_LOGManager_DebugMSG("DEBUG WARNING: There are %d unreleased references left on the D3D device!\n", count);
-		#endif
-
-		//ASSERT (!count);
+	// For each Monitor: 
+	for (int i = 0; i < DX11windowsArray.size(); i++) {
+		//if (DX11windowsArray[i].m_swapChain)
+		//	SAFE_RELEASE(DX11windowsArray[i].m_swapChain);
+		if (DX11windowsArray[i].m_swapChain1)
+			SAFE_RELEASE(DX11windowsArray[i].m_swapChain1);
 	}
+
+#ifdef USE_DX11_3
+	SAFE_RELEASE(pDevice3);
+#endif
+
+	ULONG count = 0;
+	if (m_device11) {
+		count = m_device11->Release();
+		m_device11 = NULL;
+	}
+
+	#ifdef _DEBUG
+	if (count)
+		WOMA_LOGManager_DebugMSG("DEBUG WARNING: There are %d unreleased references left on the D3D device!\n", count);
+	#endif
+
+	//ASSERT (!count);
 }
 
 
@@ -503,6 +464,7 @@ if (dx11_force_dx9)
 
 	pAdapter->Release();			// Don't forget to release when you are done
 	SAFE_RELEASE(pDXGIFactory1);	// Release the factory, Lancher.exe dont use more :)
+
 	/******************************************************************/
 	// Check Math Library:
 	/******************************************************************/
@@ -512,6 +474,7 @@ if (dx11_force_dx9)
 	/******************************************************************/
 	// Check DX Driver Multithread
 	/******************************************************************/
+
 	return TRUE;
 }
 
@@ -535,7 +498,9 @@ bool DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, i
     WOMA_LOGManager_DebugMSG("-------------------------\n");
 
 	//Init Step: 3, 4
-	ASSERT(createDevice ());
+	//ASSERT(createDevice ());
+	ASSERT(createDevice_legacy());
+	
 
 #ifdef USE_DX11_3
 	//https://learn.microsoft.com/en-us/windows/win32/api/d3d11_3/nn-d3d11_3-id3d11device3
@@ -556,7 +521,7 @@ bool DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, i
 		//printf("retry on: createSwapChainDX11device()\n");
 		//IF_NOT_RETURN_FALSE(createSwapChainDX11device((HWND)hwnd, screenWidth, screenHeight, vsync, fullscreen, g_UseDoubleBuffering, g_AllowResize, numerator, denominator));
 	}
-
+#
 	//Init Step: 5 - Get Best Shader of this Graphic Card: dx10,dx10.1,dx11,etc... OUTPUT: ShaderModel
 	getProfile (g_USE_MONITOR);					
 
@@ -588,7 +553,43 @@ bool DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, i
 	return true;
 }
 
+void DX11Class::DeleteViewBuffers()
+{
+	m_deviceContext->OMSetRenderTargets(0, NULL, NULL);
 
+	// For each Monitor, Before shutting down set to windowed mode or when you release the swap chain it will throw an exception.
+	for (int i = 0; i < DX11windowsArray.size(); i++)
+	{
+		//if (DX11windowsArray[i].m_swapChain)
+		//	DX11windowsArray[i].m_swapChain->SetFullscreenState(false, NULL);
+
+		if (DX11windowsArray[i].m_swapChain1)
+			DX11windowsArray[i].m_swapChain1->SetFullscreenState(false, NULL);
+
+		SAFE_RELEASE(DX11windowsArray[i].m_backBuffer);			// Release pointer to the back buffer
+	}
+
+	// For each Monitor: 
+	for (int i = 0; i < DX11windowsArray.size(); i++)
+	{
+		SAFE_RELEASE(DX11windowsArray[i].m_backBuffer);			// Release pointer to the back buffer
+		SAFE_RELEASE(DX11windowsArray[i].m_renderTargetView);	// Init Step: 9	(backBufferRTV)
+	}
+
+	SAFE_RELEASE(m_depthBuffer);								// Init Step: 9
+
+	for (int i = 0; i < DX11windowsArray.size(); i++)
+	{
+		SAFE_RELEASE(DX11windowsArray[i].m_depthStencilView);	// Init Step: 10
+	}
+
+	//for (int i = 0; i < DX11windowsArray.size(); i++) {
+	//	DX11windowsArray[i].m_renderTargetView->Reset();
+	//	DX11windowsArray[i].m_depthStencilView->Reset();
+	//}
+
+	m_deviceContext->Flush();
+}
 
 //----------------------------------------------------------------------------------------------
 bool DX11Class::Resize (int screenWidth, int screenHeight, float screenNear, float screenDepth, BOOL fullscreen, UINT depthBits)
@@ -598,18 +599,124 @@ HRESULT result = S_OK;
 
 	RenderfirstTime = true;	 // Used on SPRITES!
 
-	if (m_deviceContext && m_device11)
+	if (m_deviceContext)
 	{
 		DeleteViewBuffers();
 
 		for (int i = 0; i < DX11windowsArray.size(); i++)
 		{
-		#if D3D11_SPEC_DATE_YEAR == 2009
 			// #Resize: Init Step: 8 - Resize internal Buffers for new Window size:
-			result = (DX11windowsArray[i].m_swapChain->ResizeBuffers(1, screenWidth, screenHeight, BUFFER_COLOR_FORMAT, 0));
-			if (FAILED(result)) return false;
-		#endif
+			if (DX11windowsArray[i].m_swapChain1)
+			{
+				result = (DX11windowsArray[i].m_swapChain1->ResizeBuffers((SystemHandle->AppSettings->UseDoubleBuffering) ? 2 : 1 , screenWidth, screenHeight, DXGI_FORMAT_B8G8R8A8_UNORM, 0));
+				// If the device was reset we must completely reinitialize the renderer.
+				if (result == DXGI_ERROR_DEVICE_REMOVED || result == DXGI_ERROR_DEVICE_RESET)
+				{
+					OnDeviceLost();
+				}
+				else
+				{
+					{ if (FAILED(result)) { WomaFatalException("FATAL: ResizeBuffers() error!"); } }
+				}
+			}
 		}
+
+		DXGI_SWAP_CHAIN_DESC1 swapChainDesc;
+
+		// Initialize the swap chain description.
+		ZeroMemory(&swapChainDesc, sizeof(swapChainDesc));
+
+		// Set to a single back buffer.
+		//swapChainDesc.BufferCount = 1;
+		swapChainDesc.BufferCount = (SystemHandle->AppSettings->UseDoubleBuffering) ? 2 : 1; // Use double-buffering to minimize latency.
+
+		// Set the width and height of the back buffer.
+		swapChainDesc.Width = screenWidth;
+		swapChainDesc.Height = screenHeight;
+
+		// Set regular 32-bit surface for the back buffer.
+		swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+		//// Set the refresh rate of the back buffer.
+		//if (SystemHandle->AppSettings->VSYNC_ENABLED)
+		//{
+		//	swapChainDesc.RefreshRate.Numerator = numerator;
+		//	swapChainDesc.RefreshRate.Denominator = denominator;
+		//}
+		//else
+		//{
+		//	swapChainDesc.RefreshRate.Numerator = 0;
+		//	swapChainDesc.RefreshRate.Denominator = 1;
+		//}
+
+		// Set the usage of the back buffer.
+		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+
+		// Set the handle for the window to render to.
+		//swapChainDesc.OutputWindow = SystemHandle->m_hWnd;
+
+		// Turn multisampling off.
+		swapChainDesc.SampleDesc.Count = MSAA_COUNT;
+		swapChainDesc.SampleDesc.Quality = MSAA_QUALITY;
+
+		//// Set to full screen or windowed mode.
+		//if (fullscreen)
+		//{
+		//	swapChainDesc.Windowed = false;
+		//}
+		//else
+		//{
+		//	swapChainDesc.Windowed = true;
+		//}
+		//
+		//// Set the scan line ordering and scaling to unspecified.
+		//swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+		//swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+
+		// Discard the back buffer contents after presenting.
+		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+
+		// Don't set the advanced flags.
+#if defined(_DEBUG) & !defined(NDEBUG)
+		swapChainDesc.Flags = D3D11_CREATE_DEVICE_DEBUG;
+#endif
+
+
+		DXwindowDataContainer DXwindow;
+		DXwindow.m_swapChain1 = NULL;
+		DXwindow.m_backBuffer = NULL;
+		DXwindow.m_renderTargetView = NULL;
+		DXwindow.m_depthStencilView = NULL;
+		//#define m_swapChain DXwindow.m_swapChain
+
+
+		// First, retrieve the underlying DXGI Device from the D3D Device.
+		Microsoft::WRL::ComPtr<IDXGIDevice1> dxgiDevice;
+		m_device.As(&dxgiDevice);
+
+		// Identify the physical adapter (GPU or card) this device is running on.
+		Microsoft::WRL::ComPtr<IDXGIAdapter> dxgiAdapter;
+		dxgiDevice->GetAdapter(dxgiAdapter.GetAddressOf());
+
+		// And obtain the factory object that created it.
+		Microsoft::WRL::ComPtr<IDXGIFactory2> dxgiFactory;
+		dxgiAdapter->GetParent(IID_PPV_ARGS(dxgiFactory.GetAddressOf()));
+
+		DXGI_SWAP_CHAIN_FULLSCREEN_DESC fsSwapChainDesc = {};
+		fsSwapChainDesc.Windowed = TRUE;
+
+		if (WOMA::game_state == GAME_LOADING)
+			DX11windowsArray.push_back(DXwindow);
+
+		// Create a SwapChain from a Win32 window.
+		dxgiFactory->CreateSwapChainForHwnd(
+			m_device11,
+			SystemHandle->m_hWnd,
+			&swapChainDesc,
+			&fsSwapChainDesc,
+			nullptr,
+			&DX11windowsArray[0].m_swapChain1
+		);
 
 		// #CreateViewBuffers:
 		// -------------------
@@ -653,6 +760,7 @@ HRESULT result = S_OK;
 	#if defined USE_DX10DRIVER_FONTS
 	m_sCapabilities.USE_DXDRIVER_FONTSBoolean = InitD2D_D3D101_DWrite(adapterGraphicCard, L"Consolas", screenWidth, screenHeight, 1, 1, 1); // RGB
 	#endif
+
 	return true;
 }
 
@@ -746,8 +854,8 @@ bool DX11Class::CreateRenderTargetView (int screenWidth, int screenHeight)
 	// For each Monitor: 
 	for (int i = 0; i < DX11windowsArray.size(); i++)
 	{
-		if (DX11windowsArray[i].m_swapChain) {
-			IF_FAILED_RETURN_FALSE(DX11windowsArray[i].m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&DX11windowsArray[i].m_backBuffer));
+		if (DX11windowsArray[i].m_swapChain1) {
+			IF_FAILED_RETURN_FALSE(DX11windowsArray[i].m_swapChain1->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&DX11windowsArray[i].m_backBuffer));
 		} else {
 			IF_FAILED_RETURN_FALSE(DX11windowsArray[i].m_swapChain1->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&DX11windowsArray[i].m_backBuffer));
 		}
@@ -795,24 +903,39 @@ void DX11Class::BeginScene(UINT monitorWindow)
 	}
 #endif
 
-	SetBackBufferRenderTarget(monitorWindow);
-
 	// Clear Screen
 	m_deviceContext->ClearRenderTargetView(DX11windowsArray[monitorWindow].m_renderTargetView, driver_ClearColor);	// Clear the "back buffer":
 #if defined SET_DEVICE_CAPABILITIES
 	ClearDepthBuffer();
 #endif
+
+	SetBackBufferRenderTarget(monitorWindow);
+}
+void DX11Class::OnDeviceLost() {
+	Sleep(1);
 }
 
 // ----------------------------------------------------------------------------------------------
 void DX11Class::EndScene(UINT monitorWindow)
 // ----------------------------------------------------------------------------------------------
 {
+	HRESULT hr;
+
 	// <PRINT THE 3D SCENE TO SCREEN> to Swap Chain (wait from VSYNC refresh rate, if it is the case)
-	if (DX11windowsArray[monitorWindow].m_swapChain)
-		DX11windowsArray[monitorWindow].m_swapChain->Present(m_VSYNC_ENABLED, 0);
+	if (DX11windowsArray[monitorWindow].m_swapChain1)
+		hr = DX11windowsArray[monitorWindow].m_swapChain1->Present(m_VSYNC_ENABLED, 0);
+	//else
+	//	hr = DX11windowsArray[monitorWindow].m_swapChain1->Present(m_VSYNC_ENABLED, 0);
+
+	// If the device was reset we must completely reinitialize the renderer.
+	if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
+	{
+		OnDeviceLost();
+	}
 	else
-		DX11windowsArray[monitorWindow].m_swapChain1->Present(m_VSYNC_ENABLED, 0);
+	{
+		{ if (FAILED(hr)) { WomaFatalException("FATAL: swapChain->Present() error!"); } }
+	}
 
 	//RESET ShaderResources! to avoid HLSL WARNINGS: Resource being set to OM RenderTarget slot 0 is still bound on input!
 }

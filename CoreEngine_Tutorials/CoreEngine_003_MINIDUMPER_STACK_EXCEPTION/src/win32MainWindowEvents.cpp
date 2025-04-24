@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------------
 // Filename: win32MainWindowEvents.cpp
@@ -147,13 +148,6 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 	// ----------------------------------------------------------------------------
 	// Check if the window is being closed: (i.e.) 
 	// MainWindow Close: in Task Bar OR Window [X] (top right corner), etc...
-/*
-	case WM_CLOSE:
-		//KillTimer(hwnd, TIMER_TITLE);
-		WOMA::main_loop_state = -1; 
-		//::PostMessage(hwnd, WM_QUIT, 0, 0);
-		break;// return 0;	// Cancel Close, do nothing.
-*/
 
 	case WM_CLOSE:	// During the shutdown process of the device, the WM_CLOSE message is broadcasted to the applications.
 
@@ -251,8 +245,8 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 			if (wParam == SIZE_MINIMIZED) // -
 			{
 				mMaximized = false;
+				WOMA::previous_game_state = WOMA::game_state;
 				WOMA::game_state = GAME_MINIMIZED;
-
 			}
 			else if (wParam == SIZE_MAXIMIZED)	// [] (go from default to maximize!)
 			{
@@ -287,7 +281,13 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 						DestroyWindow(SystemHandle->statusbar);
 				#endif
 					if (SystemHandle->m_hWnd) 
-						{ ONRESIZE(); }
+					{ 
+						RECT rc;
+						GetClientRect(SystemHandle->m_hWnd, &rc);
+						SystemHandle->AppSettings->WINDOW_WIDTH = rc.right - rc.left;
+						SystemHandle->AppSettings->WINDOW_HEIGHT = rc.bottom - rc.top;
+						ONRESIZE(); 
+					}
 				}
 				else if (mResizing)
 				{
@@ -310,11 +310,11 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 						{ ONRESIZE(); }
 				}
 
-				#if defined USE_STATUSBAR //#if defined _DEBUG
+				#if defined USE_STATUSBAR
 					if (SystemHandle->m_hWnd) {
 						if (SystemHandle->statusbar)
 							DestroyWindow(SystemHandle->statusbar);
-						//DoCreateStatusBar(SystemHandle->m_hWnd, 0 idStatus, m_hinstance, 1 cParts);
+
 						SystemHandle->statusbar = DoCreateStatusBar(SystemHandle->m_hWnd, 0, m_hinstance, 1);
 						SendMessage(SystemHandle->statusbar, SB_SETTEXT, 0, (LPARAM)DEMO_TITLE);
 						if (AppSettings->FULL_SCREEN)

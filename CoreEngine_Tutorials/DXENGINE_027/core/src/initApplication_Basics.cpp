@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: initApplication_Basics.cpp
 // --------------------------------------------------------------------------------------------
@@ -628,7 +629,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 		return false;
 	}
 #endif
-
 
 #if defined ALLOW_CBIND_PROGRESS_BAR
 	INITCOMMONCONTROLSEX i;

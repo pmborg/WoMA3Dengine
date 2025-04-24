@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: initApplication_Basics.cpp
 // --------------------------------------------------------------------------------------------
@@ -757,7 +758,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	}
 #endif
 
-
 #if defined ALLOW_CBIND_PROGRESS_BAR
 	INITCOMMONCONTROLSEX i;
 	i.dwSize = sizeof(INITCOMMONCONTROLSEX);
@@ -794,6 +794,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	UINT len = (UINT)SystemHandle->xml_loader.theWorld.size();
 	UINT objModel_size = (UINT)objModel.size();
 	MSG msg = { 0 };
+	WOMA::num_loading_objects = 1;
 	for (UINT i = objModel_size; i < objModel_size+len; i++)
 	{
 		objModel.push_back(NULL);
