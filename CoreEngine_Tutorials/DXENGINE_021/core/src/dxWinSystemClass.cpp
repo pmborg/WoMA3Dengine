@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: dxWinSystemClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -110,23 +109,6 @@ dxWinSystemClass::~dxWinSystemClass()
 bool dxWinSystemClass::APPLICATION_INIT_SYSTEM() //LOAD ALL GRAPHICS
 //----------------------------------------------------------------------------
 {
-#if defined RELEASE
-	// PURPOSE: Registers the Window Application Class, but first check if we are running!
-	if (FindWindow(WOMA_ENGINE_CLASS, NULL))
-	{
-		WomaMessageBox((TCHAR*)TEXT("Another Process is already Running..."), (TCHAR*)TEXT("FATAL ERROR:"));
-		WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP; //Publish_Quit_Message();
-		return false;
-	}
-	else
-#endif
-	{
-		if (!MyRegisterClass(m_hinstance)) {// Try to Register WOMA Engine WINDOW CLASS
-			WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP; //Publish_Quit_Message();
-			return false;
-		}
-	}
-
 #if CORE_ENGINE_LEVEL >= 7 && defined RELEASE
 	InitPackLibs();											// UNPACK Resources
 #endif
