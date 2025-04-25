@@ -1213,7 +1213,7 @@ namespace DirectX {
 		// NOTE: DX12 = 5.1 (min.)
 
 		D3D12_FEATURE_DATA_SHADER_MODEL shaderModel;
-#if _MSC_VER > 1916 && D3D_HIGHEST_SHADER_MODEL>=0
+#if _MSC_VER >= 1943
 		shaderModel.HighestShaderModel = D3D_HIGHEST_SHADER_MODEL;
 #else
 		shaderModel.HighestShaderModel = D3D_SHADER_MODEL_5_1;
