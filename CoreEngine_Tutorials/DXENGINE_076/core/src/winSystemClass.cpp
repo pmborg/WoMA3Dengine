@@ -1,3 +1,4 @@
+// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: winSystemClass.cpp
 // --------------------------------------------------------------------------------------------
@@ -34,6 +35,7 @@
 #include "stateMachine.h"
 
 #include "woma_exception.h"
+#include "fileLoader.h"
 
 #include "packManager.h"
 #include "idea.h"
@@ -49,7 +51,7 @@
 #endif
 #endif
 
-#include "fileLoader.h"
+
 
 /////////////////////
 // Windows GLOBALS //
