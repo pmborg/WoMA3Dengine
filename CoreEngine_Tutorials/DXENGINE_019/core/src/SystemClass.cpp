@@ -297,7 +297,7 @@ void SystemClass::InitializeSystemScreen(int x, int y)
 	//float LINE = 24;
 	//float LINE_SPACE=45;
 	//v2
-	float LINE = 22;
+	float LINE = 16;
 	float LINE_SPACE = 40;
 	if (fontSizeY > 0) {
 		LINE = MIN(LINE, 2 * fontSizeY);
@@ -404,7 +404,19 @@ void SystemClass::InitializeSystemScreen(int x, int y)
 	}
 	else
 #endif
-		HALF = (AppSettings->WINDOW_WIDTH / 5) * 3;
+
+
+	// BenchMark totalMemoryCapacity
+	text.y += (int)LINE_SPACE; text.label = TEXT("MEMORY:");
+	TextToPrint[0].push_back(text);
+
+	text.y += (int)LINE; text.label = systemDefinitions.totalMemoryCapacity;
+	TextToPrint[0].push_back(text);
+
+	text.y += (int)LINE; text.label = systemDefinitions.freeMemory;
+	TextToPrint[0].push_back(text);
+
+	HALF = (AppSettings->WINDOW_WIDTH / 5) * 3;
 
 	// ----------------------------------
 	// CPU FEATURES:
@@ -453,12 +465,6 @@ void SystemClass::InitializeSystemScreen(int x, int y)
 	text.x = HALF;
 	text.y = 10;
 	// ----------------------------------
-	// RAM
-	text.label = systemDefinitions.totalMemoryCapacity;
-	TextToPrint[0].push_back(text);
-	text.y += (int)LINE; text.label = systemDefinitions.freeMemory;
-	TextToPrint[0].push_back(text);
-
 	// BenchMark MathSpeed
 	text.y += (int)LINE; text.label = systemDefinitions.benchMarkMathSpeed1;
 	TextToPrint[0].push_back(text);
