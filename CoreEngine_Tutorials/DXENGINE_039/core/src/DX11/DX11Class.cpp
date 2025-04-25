@@ -633,18 +633,6 @@ HRESULT result = S_OK;
 		// Set regular 32-bit surface for the back buffer.
 		swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
-		//// Set the refresh rate of the back buffer.
-		//if (SystemHandle->AppSettings->VSYNC_ENABLED)
-		//{
-		//	swapChainDesc.RefreshRate.Numerator = numerator;
-		//	swapChainDesc.RefreshRate.Denominator = denominator;
-		//}
-		//else
-		//{
-		//	swapChainDesc.RefreshRate.Numerator = 0;
-		//	swapChainDesc.RefreshRate.Denominator = 1;
-		//}
-
 		// Set the usage of the back buffer.
 		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 
@@ -655,36 +643,21 @@ HRESULT result = S_OK;
 		swapChainDesc.SampleDesc.Count = MSAA_COUNT;
 		swapChainDesc.SampleDesc.Quality = MSAA_QUALITY;
 
-		//// Set to full screen or windowed mode.
-		//if (fullscreen)
-		//{
-		//	swapChainDesc.Windowed = false;
-		//}
-		//else
-		//{
-		//	swapChainDesc.Windowed = true;
-		//}
-		//
-		//// Set the scan line ordering and scaling to unspecified.
-		//swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-		//swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-
 		// Discard the back buffer contents after presenting.
 		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 
 		// Don't set the advanced flags.
-#if defined(_DEBUG) & !defined(NDEBUG)
-		swapChainDesc.Flags = D3D11_CREATE_DEVICE_DEBUG;
+#if defined USE_ALTENTER_SWAP_FULLSCREEN_WINDOWMODE
+		swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+#else
+		swapChainDesc.Flags = 0;
 #endif
-
 
 		DXwindowDataContainer DXwindow;
 		DXwindow.m_swapChain1 = NULL;
 		DXwindow.m_backBuffer = NULL;
 		DXwindow.m_renderTargetView = NULL;
 		DXwindow.m_depthStencilView = NULL;
-		//#define m_swapChain DXwindow.m_swapChain
-
 
 		// First, retrieve the underlying DXGI Device from the D3D Device.
 		Microsoft::WRL::ComPtr<IDXGIDevice1> dxgiDevice;
@@ -701,7 +674,7 @@ HRESULT result = S_OK;
 		DXGI_SWAP_CHAIN_FULLSCREEN_DESC fsSwapChainDesc = {};
 		fsSwapChainDesc.Windowed = TRUE;
 
-		if (WOMA::game_state == GAME_LOADING)
+		if (WOMA::game_state == GAME_LOADING || WOMA::game_state == GAME_SETUP)
 			DX11windowsArray.push_back(DXwindow);
 
 		// Create a SwapChain from a Win32 window.
