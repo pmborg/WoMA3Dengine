@@ -1,3 +1,0 @@
-#Tinyxml Open Source
-Source: www.sourceforge.net/projects/tinyxml
-File:   tinyxml_2_6_2.zip
