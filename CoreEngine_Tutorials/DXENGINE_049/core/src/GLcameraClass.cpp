@@ -21,7 +21,9 @@
 #include "platform.h"
 #include "Math3D.h"
 #include "GLcameraClass.h"
-
+#if defined ANDROID_PLATFORM
+#include "math.h"
+#endif
 GLcameraClass::GLcameraClass()
 {
 	CLASSLOADER();

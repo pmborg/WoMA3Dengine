@@ -30,6 +30,7 @@ extern float FAST_sqrt(float x);
 #ifndef PI
 	#define PI 3.14159265358979323846f
 #endif
+
 namespace WOMA
 {
 	struct vec3

@@ -30,7 +30,9 @@
 #include "dxWinSystemClass.h"
 #include "DXmodelClass.h"
 #endif
-
+#if defined ANDROID_PLATFORM
+#include "math.h"
+#endif
 #pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
 
 	#define SPHERE_GRIDPOINTS 25

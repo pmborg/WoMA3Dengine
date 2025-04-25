@@ -31,6 +31,10 @@
 	#include "GLmodelClass.h"
 #endif
 
+#if defined ANDROID_PLATFORM
+#include <cmath> // Add this for mathematical functions like cos and sin
+#endif
+
 //------------------------------------------------------------------------------------------
 #if defined USE_ASTRO_CLASS && defined USE_REAL_SUNLIGHT_DIRECTION //#if ENGINE_LEVEL >= 33
 	void ApplicationClass::Calc3DSunMoonPosition()
@@ -88,8 +92,8 @@
 		XMVECTOR vec = XMVector3Normalize(XMVectorSet(vertex.x, vertex.y, vertex.z, 1));
 		m_Light->SetDirection(-vec.m128_f32[0], -vec.m128_f32[1], vec.m128_f32[2]);
 #else
-		vec3 vec = {};
-		vec3 Init(vertex.x, vertex.y, vertex.z);
+		WOMA::vec3 vec = {};
+		WOMA::vec3 Init(vertex.x, vertex.y, vertex.z);
 
 		vec = vector3dNormalize(Init);
 	  #if defined WINDOWS_PLATFORM

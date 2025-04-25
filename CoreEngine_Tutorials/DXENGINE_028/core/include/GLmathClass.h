@@ -18,7 +18,7 @@
 #pragma once
 
 #include "platform.h"
-#include "math3D.h"				 
+#include "Math3D.h"				 
 
 struct vec4 {
 	float x, y, z, w;
@@ -65,7 +65,6 @@ mat4 operator * (const mat4 &mat1, const mat4 &mat2);
 class GLmathClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567222;
 	GLmathClass();
 	~GLmathClass();
 

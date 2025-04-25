@@ -18,11 +18,12 @@
 
 #include "main.h" // CLASSLOADER
 #include "GLmathClass.h"
-
+#if defined ANDROID_PLATFORM
+#include "math.h"
+#endif
 GLmathClass::GLmathClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567222;
 }
 
 GLmathClass::~GLmathClass() {CLASSDELETE();}
