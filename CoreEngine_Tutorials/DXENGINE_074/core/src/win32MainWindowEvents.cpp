@@ -247,8 +247,8 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 
 
 	case WM_QUIT:
-		ASSERT(SystemHandle);
-		ASSERT(WOMA::game_state == GAME_STOP);
+        WOMA::game_state = GAME_STOP;
+        WOMA::main_loop_state = -2;
 		break;
 
 	case WM_DESTROY:	// The main application Window will be destroyed
@@ -325,28 +325,27 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 	// -----------------------------------------------------------------------------
 	case WM_SYSKEYDOWN:
 	{
-		switch (wParam)
+
+        if (wParam == VK_RETURN) // ENTER is down
 		{
-			case VK_RETURN:					// key: ENTER
+			DWORD dwMask = (1 << 29); // Check if ALT key is pressed
+			if (lparam & dwMask)      // key: ALT is down also
 			{
-				DWORD dwMask = (1 << 29);
-				if ((lparam & dwMask) != 0) // key: ALT is down also
+				// Toggle the full screen/window mode
+				SystemHandle->AppSettings->FULL_SCREEN = !SystemHandle->AppSettings->FULL_SCREEN;
+				if (SystemHandle->AppSettings->FULL_SCREEN) 
 				{
-					// Toggle the full screen/window mode
-					SystemHandle->AppSettings->FULL_SCREEN = !SystemHandle->AppSettings->FULL_SCREEN;
-					if (SystemHandle->AppSettings->FULL_SCREEN) 
-					{
-						SystemHandle->AppSettings->WINDOW_WIDTH = SystemHandle->AppSettings->WINDOW_HEIGHT = 0;
-					}
-
-					//Need to Save...
-					CHAR str[MAX_STR_LEN] = { 0 }; wtoa(str, (TCHAR*)SystemHandle->XML_SETTINGS_FILE.c_str(), MAX_STR_LEN); // wchar ==> char
-				#if defined CLIENT_SCENE_SETUP
-					SystemHandle->xml_loader.saveConfigSettings(str);
-				#endif
-
-					WOMA::game_state = ENGINE_RESTART;
+					SystemHandle->AppSettings->WINDOW_WIDTH = SystemHandle->AppSettings->WINDOW_HEIGHT = 0;
 				}
+
+				//Need to Save...
+				CHAR str[MAX_STR_LEN] = { 0 }; wtoa(str, (TCHAR*)SystemHandle->XML_SETTINGS_FILE.c_str(), MAX_STR_LEN); // wchar ==> char
+			#if defined CLIENT_SCENE_SETUP
+				SystemHandle->xml_loader.saveConfigSettings(str);
+			#endif
+
+				WOMA::game_state = ENGINE_RESTART;
+                return 0; // Prevent further processing of ALT+ENTER
 			}
 		}
 

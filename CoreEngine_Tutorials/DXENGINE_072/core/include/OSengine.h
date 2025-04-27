@@ -226,7 +226,7 @@ namespace WOMA
 #if defined USE_LOADING_THREADS || defined USE_MAIN_THREAD //extern
 	extern UINT		num_running_THREADS;
 #endif
-#if defined USE_LOADING_THREADS || DX_ENGINE_LEVEL >= 37
+#if defined USE_LOADING_THREADS || DX_ENGINE_LEVEL >= 30
 	extern UINT		num_loading_objects;
 #endif
 
@@ -350,3 +350,4 @@ extern STRING LOAD_ASSET_SAVE_TO_CACHE(TCHAR* XMLFILE);
 #endif
 
 #endif
+

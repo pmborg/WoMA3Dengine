@@ -22,9 +22,10 @@
 //////////////
 // INCLUDES //
 //////////////
-#include  "WomaDriverClass.h"
-#include  "virtualModelClass.h"
-#include  "xml_loader.h"
+#include "OSengine.h"
+#include "WomaDriverClass.h"
+#include "virtualModelClass.h"
+#include "xml_loader.h"
 #include "Tree.h"
 
 // Number of Billboard Trees
@@ -66,5 +67,7 @@ VirtualModelClass* fire;
 
 UINT				billNames_length;
 };
+
+extern BillClass* m_billTreeClass;
 
 #endif

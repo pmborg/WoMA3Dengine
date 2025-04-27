@@ -490,5 +490,14 @@
 	#define WORLD_XML TEXT("world_76.xml")
 #endif
 #if DX_ENGINE_LEVEL >= 76
-	#define VIDEO_INTRO TEXT("engine/data/76video/Logo.mp4")
+	#define VIDEO_INTRO TEXT("engine/data/75video/Logo.mp4")
+#endif
+
+#if DX_ENGINE_LEVEL == 77
+	#define DEMO_TITLE TEXT("77: Use instances for TREEs")
+	#define WORLD_XML TEXT("world_77.xml")
+#endif
+#if DX_ENGINE_LEVEL >= 77
+	//#define BILL_GS TEXT("engine/data/77GS/tree.obj")
+    #define BILL_GS TEXT("engine/data/77GS/maple-tree.obj")
 #endif

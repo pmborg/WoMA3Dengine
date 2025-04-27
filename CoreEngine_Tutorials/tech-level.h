@@ -477,9 +477,12 @@
 	#if DX_ENGINE_LEVEL >= 75
 		#define ALLOW_CBIND_PROGRESS_BAR
 	#endif
-	#if DX_ENGINE_LEVEL >= 76
+	#if DX_ENGINE_LEVEL == 76 || defined (NDEBUG) && DX_ENGINE_LEVEL >= 76
 		#define USE_INTRO_VIDEO_DEMO
-	#endif		  
+	#endif
+	#if DX_ENGINE_LEVEL >= 77
+		#define USE_INSTANCES_FOR_TREES
+	#endif	  
    
 	//#define USE_MULTI_MONITOR
 	//-------------------------------------------------------------------------------------------------------

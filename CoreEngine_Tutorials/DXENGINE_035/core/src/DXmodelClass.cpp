@@ -157,7 +157,9 @@ DXmodelClass::~DXmodelClass() {CLASSDELETE();}
 // Load Model in DX Buffers after any "Format" Read:
 //
 // -------------------	// COLOR
-bool DXmodelClass::LoadColor(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<ModelColorVertexType> *model, std::vector<UINT>* indexList, UINT instanceCount)
+bool DXmodelClass::LoadColor(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, 
+                            std::vector<ModelColorVertexType> *model, 
+                            std::vector<UINT>* indexList, UINT instanceCount)
 {
 	LOADDRIVER(driver);
 	MODEL_NAME = objectName;
@@ -196,7 +198,9 @@ bool DXmodelClass::LoadTexture(	TCHAR* objectName, void* driver, SHADER_TYPE sha
 	return InitializeDXbuffers(objectName, textureFile);
 }
 
-bool DXmodelClass::LoadLight(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureLightVertexType> *model, std::vector<UINT>* indexList, UINT instanceCount)
+bool DXmodelClass::LoadLight(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, 
+                            std::vector<STRING> *textureFile, std::vector<ModelTextureLightVertexType> *model, 
+                            std::vector<UINT>* indexList, UINT instanceCount)
 {
 	LOADDRIVER(driver);
 	MODEL_NAME = objectName;
@@ -208,16 +212,21 @@ bool DXmodelClass::LoadLight(TCHAR* objectName, void* driver, SHADER_TYPE shader
 
 		modelTextureLightVertex = model;
 
-		ASSERT( (ModelShaderType == SHADER_TEXTURE_LIGHT) ||						// 4
-				(ModelShaderType == SHADER_TEXTURE_LIGHT_RENDERSHADOW) ||			// 6
-				(ModelShaderType == SHADER_TEXTURE_LIGHT_INSTANCED) ||				// 8
-				(ModelShaderType == SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED) ||	//10
-			    (ModelShaderType == SHADER_FIRE) );
+		ASSERT( (ModelShaderType == SHADER_TEXTURE_LIGHT) ||						// SHADER_TYPE =  4
+				(ModelShaderType == SHADER_TEXTURE_LIGHT_RENDERSHADOW) ||			// SHADER_TYPE =  6
+				(ModelShaderType == SHADER_TEXTURE_LIGHT_INSTANCED) ||				// SHADER_TYPE =  8
+				(ModelShaderType == SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED) ||	// SHADER_TYPE = 10
+			    (ModelShaderType == SHADER_FIRE) ||                                 // SHADER_TYPE = 21
+                (ModelShaderType == SHADER_TEXTURE_GS_INSTANCED)                    // SHADER_TYPE = 22
+             );
+
 	indexModelList = indexList;
 	return InitializeDXbuffers(objectName, textureFile);
 }
 
-bool DXmodelClass::LoadBump(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelNormalBumpVertexType> *model, std::vector<UINT>* indexList, UINT instanceCount)
+bool DXmodelClass::LoadBump(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, 
+                            std::vector<STRING> *textureFile, std::vector<ModelNormalBumpVertexType> *model, 
+                            std::vector<UINT>* indexList, UINT instanceCount)
 {
 	LOADDRIVER(driver);
 	MODEL_NAME = objectName;
@@ -304,6 +313,7 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 	// ----------------------------------------------------------------------------------------------
 	case SHADER_TEXTURE_LIGHT:			    //23
 	case SHADER_TEXTURE_LIGHT_RENDERSHADOW: //36
+    case SHADER_TEXTURE_GS_INSTANCED:       //77
 		m_vertexCount = (UINT) (*modelTextureLightVertex).size();	// Set the number of vertices in the vertex array.
 		if (m_vertexCount == 0)										// Better check, if object is empty...
 			return false;	
@@ -312,6 +322,7 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 	// ----------------------------------------------------------------------------------------------
 
 	// ----------------------------------------------------------------------------------------------
+
 	case SHADER_NORMAL_BUMP:
 		m_vertexCount = (UINT) (*modelNormalBumpVertex).size();	// Set the number of vertices in the vertex array.
 		if (m_vertexCount == 0)									// Better check, if object is empty...
@@ -328,8 +339,6 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 
 	if (ShaderType >= SHADER_TEXTURE_LIGHT)
 		shader->hasLight	= ModelHASlight;	// COLOR AND TEXTURE = FALSE
-	//if (ShaderType == SHADER_TEXTURE_FONT)
-	//	shader->isFontShader = ModelIsFont;	// COLOR AND TEXTURE = FALSE
 	if (ShaderType >= SHADER_TEXTURE_LIGHT)		// COLOR AND TEXTURE = FALSE
 		shader->hasNormMap	= ModelHASNormals;
 
@@ -584,6 +593,7 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 	case SHADER_TEXTURE_LIGHT_RENDERSHADOW:			//36: Draw Shadows
 	case SHADER_TEXTURE_LIGHT_INSTANCED:			//40: INSTANCED like 23 light, but using Instances
 	case SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED: //41
+    case SHADER_TEXTURE_GS_INSTANCED:               //77
 	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
 		{
@@ -1268,6 +1278,7 @@ void DXmodelClass::SetGeometryBuffers(void* deviceContext)
 		case SHADER_TEXTURE_LIGHT_RENDERSHADOW:			//36
 		case SHADER_TEXTURE_LIGHT_INSTANCED:			//40
 		case SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED: //41
+        case SHADER_TEXTURE_GS_INSTANCED:               //77
 			stride[0] = sizeof(DXtextureLightVertexType); break;
 
 		case SHADER_TEXTURE_LIGHT_SAVESHADOW:			//36

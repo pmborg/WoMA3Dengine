@@ -57,14 +57,11 @@ extern shaderTree shaderManager_51[];
 #ifndef RAD2DEG
 	#define RAD2DEG(x)  ((float)(x) * (180.0f/PI))
 #endif
+
 //-------------------------------------------------------------------------------------------------------------
-// 21 Vertex: SHADER_COLOR: v + Kd
-/*struct VSIn
-{
-	float3 position :	POSITION;
-	float4 color :		COLOR;	//21
-};*/
 #if defined DX11 || defined DX9
+        // 21: SHADER_COLOR: v + Kd
+        // 54: SHADER_TEXTURE_WATER:
 static const D3D11_INPUT_ELEMENT_DESC colorPolygonLayout11[] =
 {
 	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,	0, 0,							 D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -78,13 +75,10 @@ static const D3D12_INPUT_ELEMENT_DESC colorPolygonLayout[] =
 	{ "COLOR",		0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 };
 #endif
+
 //-------------------------------------------------------------------------------------------------------------
-/*struct VSIn
-{
-	float3 position :	POSITION;
-	float2 texCoords :	TEXCOORD0; //22
-};*/
-							// SHADER_FIRE
+                            // 27: SHADER_TEXTURE_FONT :	//27
+							// 72: SHADER_FIRE
 #if defined DX11 || defined DX9
 static const D3D11_INPUT_ELEMENT_DESC texturePolygonLayout11[] =
 {
@@ -99,14 +93,9 @@ static const D3D12_INPUT_ELEMENT_DESC texturePolygonLayout[] =
 	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,		0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 };
 #endif
+
 //-------------------------------------------------------------------------------------------------------------
-/*struct VSIn
-{
-	float3 position : POSITION;	 //21
-	float2 texCoords : TEXCOORD; //22
-	float3 normal : NORMAL;		 //23
-};*/
-#if defined DX11 || defined DX9 //SHADER_TEXTURE_LIGHT_RENDERSHADOW (Render: 3D + Shadow)
+#if defined DX11 || defined DX9 // 36: SHADER_TEXTURE_LIGHT_RENDERSHADOW (Render: 3D + Shadow)
 static const D3D11_INPUT_ELEMENT_DESC lightPolygonLayout11[] =
 {
 	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,	0, 0,							 D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -123,6 +112,7 @@ static const D3D12_INPUT_ELEMENT_DESC lightPolygonLayout[] =
 };
 #endif
 
+//-------------------------------------------------------------------------------------------------
 static const D3D11_INPUT_ELEMENT_DESC lightNormalPolygonLayout11[] =
 {
 	{ "POSITION", 0,DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -132,6 +122,7 @@ static const D3D11_INPUT_ELEMENT_DESC lightNormalPolygonLayout11[] =
 	{ "BINORMAL", 0,DXGI_FORMAT_R32G32B32_FLOAT, 0, 44, D3D11_INPUT_PER_VERTEX_DATA, 0 }	//+4*3
 };
 
+//-------------------------------------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
 static const D3D11_INPUT_ELEMENT_DESC shadowMapPolygonLayout11[] =
 {
@@ -162,6 +153,8 @@ static const D3D11_INPUT_ELEMENT_DESC lightNormalInstancedPolygonLayout11[] =
 	{ "INSTANCEPOS", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 0,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },//Instance Position
 };
 
+//-------------------------------------------------------------------------------------------------
+
 static const D3D11_INPUT_ELEMENT_DESC ligthcolorPolygonLayout11[] =
 {
 	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,	0, 0,							 D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -190,6 +183,8 @@ static const D3D11_INPUT_ELEMENT_DESC mappingDetailligthcolorBumpPolygonLayout11
 	{ "TANGENT",  0, DXGI_FORMAT_R32G32B32_FLOAT,   0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },//BUMP MAP
 	{ "BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT,   0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },//BUMP MAP
 };
+
+
 
 namespace DirectX {
 
@@ -498,7 +493,6 @@ namespace DirectX {
 			polygonLayout11 = &lightNormalPolygonLayout11[0];
 			numElements = sizeof(lightNormalPolygonLayout11) / sizeof(lightNormalPolygonLayout11[0]);
 			break;
-
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
 		case SHADER_TEXTURE_LIGHT_SAVESHADOW:
 			polygonLayout11 = &shadowMapPolygonLayout11[0];
@@ -1558,10 +1552,10 @@ namespace DirectX {
 			dataVSptr->WV = XMMatrixTranspose(WV);							// Pre compute WV to reuse in all Vertices
 			dataVSptr->WVP = XMMatrixTranspose(WV * (*projectionMatrix));	// Pre compute WVP to reuse in all Vertices
 		}
-		else {
+		//else {
 			dataVSptr->view = XMMatrixTranspose(*viewMatrix);
 			dataVSptr->projection = XMMatrixTranspose(*projectionMatrix);
-		}
+		//}
 
 		// BLOCK: VS2
 		dataVSptr->VShasLight = hasLight;
@@ -1596,6 +1590,11 @@ namespace DirectX {
 
 		dataVSptr->VShasShadowMap = castShadow;
 
+//#if  DX_ENGINE_LEVEL >= 77
+//        if (m_shaderType == SHADER_TEXTURE_GS_INSTANCED)
+//            dataVSptr->VS_USE_WVP = FALSE;
+//        else
+//#endif
 		dataVSptr->VS_USE_WVP = VS_USE_WVP;
 
 		// BLOCK: VS5

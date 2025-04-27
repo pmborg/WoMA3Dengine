@@ -132,7 +132,8 @@
 	//#define LEVEL 73  // WINDY GRASS .................................... 																							  
 	//#define LEVEL 74  // CROSS BILLBOARD and CLONES
 	//#define LEVEL 75  // UTIL: PROGRESS BAR FOR TERRAIN LOADING															  
-	#define LEVEL 76    // UTIL: INTRO VIDEO DEMO
+	//#define LEVEL 76  // UTIL: INTRO VIDEO DEMO
+	#define LEVEL 77    // USE INSTANCES FOR TREES										   
 	
 	#endif
 #endif

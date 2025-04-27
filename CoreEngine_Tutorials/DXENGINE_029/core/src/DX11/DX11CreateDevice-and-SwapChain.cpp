@@ -46,17 +46,307 @@ UINT numElements = sizeof(DriverTypes) / sizeof(DriverTypes[0]);
 
 
 namespace DirectX {
+		
+							  
+																								  
+ 
+				
+					   
+					   
+							
+													  
+								 
+							   
+									
+								
+
+														   
+												   
+											   
+												
+									
+											 
+
+								
+							  
+							  
+									
+									
+
+										  
+
+		  
+																 
+	  
+
+												
+																	  
+								
+
+																						 
+											 
+								
+
+												   
+												  
+								
+
+																													
+																													 
+								
+
+																								 
+												
+									  
+
+											  
+																																
+								
+
+																								   
+																								   
+							   
+  
+															
+   
+															   
+	
+														 
+															 
+	
+   
+  
+
+											 
+										 
+								
+
+													   
+																		   
+
+																		 
+		   
+															
+	 
+								 
+																																										   
+				
+  
+			   
+  
+	  
+								  
+						  
+					 
+
+							   
+						  
+				   
+
+						
+					
+			 
+
+						
+					
+			 
+
+										  
+												   
+
+								
+								 
+																													
+
+												
+											  
+												
+
+												   
+															  
+
+											
+					 
+  
+															 
+																 
+  
+	 
+  
+													 
+													   
+  
+
+									 
+															 
+
+											   
+								   
+
+						   
+											 
+												 
+
+										
+				
+  
+								 
+  
+	 
+  
+								
+  
+
+														  
+																				  
+																  
+
+													  
+													 
+
+								 
+									  
+												 
+	  
+
+										
+										 
+
+									   
+									  
+					   
+						 
+						 
+						 
+	   
+					   
+						 
+	   
+						 
+						 
+						
+   
+																	
+  
+																		
+																										   
+																						
+					
+  
+			   
+  
+
+									   
+																						
+					
+  
+			   
+  
+
+									  
+
+					   
+				   
+					
+			
+				  
+				   
+
+							  
+			 
+										  
+								 
+
+								   
+									  
+
+											
+																			 
+											   
+																									   
+
+																																					
+																																			
+
+																			 
+																		  
+																			 
+																   
+
+							
+
+															   
+																															  
+																																											
+  
+									   
+   
+													 
+																																								 
+   
+	  
+   
+						 
+											  
+
+											   
+	
+					 
+																								   
+	 
+																									 
+										
+	  
+														  
+											
+																																					
+																																		
+
+								   
+												 
+																 
+
+	  
+	 
+	
+   
+  
+
+																			
+  
+				   
+				 
+  
+
+		   
+												   
+																					  
+  
+	 
+  
+											   
+															   
+													 
+																
+	  
+														  
+  
+	  
+
+			 
+ 
+	  
 	//Init Step: 3
 	// ----------------------------------------------------------------------------------------------
 	bool DX11Class::createDevice_legacy()
 		// ----------------------------------------------------------------------------------------------
 	{
 		HRESULT result = S_OK;
-		IDXGIFactory* factory;
-		IDXGIAdapter* adapter;
-		IDXGIOutput* adapterOutput;
+		IDXGIFactory* factory=nullptr;
+		IDXGIAdapter* adapter = nullptr;
+		IDXGIOutput* adapterOutput = nullptr;
 		unsigned int numModes, i, numerator = 1, denominator = 1;
-		DXGI_MODE_DESC* displayModeList;
+		DXGI_MODE_DESC* displayModeList = nullptr;
 		DXGI_ADAPTER_DESC adapterDesc;
 
 		#define screenWidth		SystemHandle->AppSettings->WINDOW_WIDTH
@@ -138,7 +428,7 @@ namespace DirectX {
 		factory->Release();
 		factory = 0;
 
-
+        
 		// From most desired to least desired:
 		D3D_FEATURE_LEVEL featureLevels[] = {
 		#if defined USE_DX11_3
@@ -198,13 +488,14 @@ namespace DirectX {
 		retry:
 			//NOTE: DX11 might fallback to "D3D_FEATURE_LEVEL_10_1" or even "D3D_FEATURE_LEVEL_10_0" if DX11 is not supported
 			result = D3D11CreateDevice(
-				0,									//0 = 1st: adapterGraphicCard
+                USE_THIS_GRAPHIC_CARD_ADAPTER,		//0 = 1st: adapterGraphicCard
 				DriverTypes[device_type].DX11Type,	// device_type
 				NULL,								// used only by: D3D_DRIVER_TYPE_SOFTWARE
 				DeviceFlags,
 				PtrfeatureLevels, num_levels/*ARRAYSIZE(featureLevels)*/,
 				D3D11_SDK_VERSION,
-				m_device.ReleaseAndGetAddressOf(),
+				//m_device.ReleaseAndGetAddressOf(),
+                &m_device11,
 				&featureLevel_,				// OUTPUT: The address of the feature level that was selected
 				&m_deviceContext);			// OUTPUT: The address for the rendering context
 
@@ -224,7 +515,7 @@ namespace DirectX {
 			}
 		}
 
-		m_device11 = m_device.Get();
+		//m_device11 = *m_device.GetAddressOf();
 		if (result != S_OK || !m_device11)
 		{
 			WomaFatalException(("FATAL ERROR: Could not Create DX 11 Device: D3D11CreateDevice")); //CHAR!
@@ -329,148 +620,148 @@ namespace DirectX {
 			else
 				WOMA_LOGManager_DebugMSGAUTO(TEXT("Antialise: off\n"));
 		}
+	  
+
+			  
+ 
+
+
+			   
+																								  
+  
+																									
+																 
+								   
+																								   
+  
+						
+
+					 
+								
+
+														 
+
+											   
+											   
+										   
+													   
+
+												  
+																										  
+
+												 
+											   
+												 
+
+																													   
+																							   
+
+											 
+																		   
+																			   
+
+											  
+															  
+
+																				  
+
+																											   
+								   
+											  
+														   
+	 
+									 
+									   
+	  
+																					 
+
+														   
+																					 
+																	 
+
+													   
+							   
+										  
+													   
+	  
+															
+	  
+
+								  
+																				   
+								   
+
+									  
+									   
+	  
+
+									 
+																				  
+								   
+
+				   
+   
+									  
+											
+																								  
+   
+
+									  
+																					
+								   
+
+					   
+															 
+   
+								  
+							   
+								
+									  
+									  
+
+						
+																													   
+																						
+																													  
+					  
+	
+																																 
+				   
+							   
+																
+																			 
 #endif
+																 
+																						  
+																												 
+						 
+																														  
+					 
+								   
+														 
+							 
+																							  
+																												  
+						  
+																																 
+				   
+	  
+	 
+	
+
+										
+   
+
+					 
+																																														 
+
+							
+							 
+							  
 
 		return true;
 }
-
-
-	//Init Step: 4
-	// ----------------------------------------------------------------------------------------------
-/*
-	bool DX11Class::createSwapChainDX11device(HWND hwnd, int screenWidth, int screenHeight, BOOL vsync,
-		BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize,
-		UINT numerator, UINT denominator)
-		// ----------------------------------------------------------------------------------------------
-	{
-		HRESULT result = S_OK;
-
-		if (dx11_force_dx9)
-			g_UseDoubleBuffering = FALSE;
-
-		ASSERT(hwnd); // FATAL ERROR: Create Main Window first!
-
-		// Fill out the description of the swap chain
-		// ==========================================
-		// Initialize the swap chain description:
-		DXGI_SWAP_CHAIN_DESC swapChainDesc = { 0 };	// dxgi.h
-
-		// Set to a single/double-buffering back buffer:
-		swapChainDesc.BufferCount = (g_UseDoubleBuffering) ? 2 : 1; // Use double-buffering to minimize latency.
-
-		// Set the width and height of the back buffer:
-		swapChainDesc.BufferDesc.Width = screenWidth;
-		swapChainDesc.BufferDesc.Height = screenHeight;
-
-		// The default: 32-bit surface for the back buffer: (RGB + A) 8 bits each (This is the most common swap chain format)
-		swapChainDesc.BufferDesc.Format = BUFFER_COLOR_FORMAT; // Default: DXGI_FORMAT_R8G8B8A8_UNORM
-
-		// Set the refresh rate of the back buffer:
-		swapChainDesc.BufferDesc.RefreshRate.Numerator = (vsync) ? numerator : 0;
-		swapChainDesc.BufferDesc.RefreshRate.Denominator = (vsync) ? denominator : 1;
-
-		// Set the default usage of the back buffer:
-		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-
-		swapChainDesc.Windowed = !fullscreen;	// Set to "Fullscreen" or "Windowed Mode":
-
-		// Default: 0, This member is used to tell Direct3D how to perform multisample anti-aliased (MSAA) rendering	
-#if defined SET_DEVICE_CAPABILITIES
-		swapChainDesc.SampleDesc.Count = MSAA_COUNT;
-		swapChainDesc.SampleDesc.Quality = MSAA_QUALITY;		// MSAA
-#else
-		swapChainDesc.SampleDesc.Count = 1;
-		swapChainDesc.SampleDesc.Quality = 0;
-#endif
-		swapChainDesc.Flags = (g_AllowResize) ? DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH : 0;
-
-		// Set the scan line ordering and scaling to unspecified:
-		//swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-		//swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-
-		// Discard the back buffer contents after presenting:
-#if D3D11_SPEC_DATE_YEAR > 2009
-		if (swapChainDesc.SampleDesc.Count == 1)
-			swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-		else
-			swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-#endif
-
-		IDXGIDevice* pDXGIDevice = NULL;
-		result = m_device11->QueryInterface(__uuidof(IDXGIDevice), (void**)&pDXGIDevice);
-		if (FAILED(result)) return false;
-
-#if defined DXGI1_1 || defined DXGI1_2
-		pDXGIDevice->SetGPUThreadPriority(7);
-#endif
-
-		IDXGIAdapterN* pDXGIAdapter = NULL;
-		result = pDXGIDevice->GetParent(__uuidof(IDXGIAdapterN), (void**)&pDXGIAdapter);
-		if (FAILED(result)) return false;
-
-		if (pDXGIAdapter)
-		{
-			DXGI_ADAPTER_DESC sDXGIAdapterDesc;
-			pDXGIAdapter->GetDesc(&sDXGIAdapterDesc);
-			m_sCapabilities.nTotalAvailableGPUMemory = sDXGIAdapterDesc.DedicatedVideoMemory; //unit: bytes
-		}
-
-		IDXGIFactoryN* pIDXGIFactory = NULL;
-		result = pDXGIAdapter->GetParent(__uuidof(IDXGIFactoryN), (void**)&pIDXGIFactory);
-		if (FAILED(result)) return false;
-
-		// For each Monitor: 
-		for (int i = 0; i < SystemHandle->windowsArray.size(); i++)
-		{
-			DXwindowDataContainer DXwindow;
-			DXwindow.m_swapChain = NULL;
-			DXwindow.m_backBuffer = NULL;
-			DXwindow.m_renderTargetView = NULL;
-			DXwindow.m_depthStencilView = NULL;
-
-			// Windows 10 and up:
-			swapChainDesc.OutputWindow = SystemHandle->windowsArray[i].hWnd;						// Set the handle for the window to render to.
-			WOMA_LOGManager_DebugMSGAUTO(TEXT("Try CreateSwapChain settings for Windows 10:\n"));
-			result = pIDXGIFactory->CreateSwapChain(m_device11, &swapChainDesc, &DXwindow.m_swapChain); // Turn Screen to Black
-			if (FAILED(result))
-			{
-				//WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("DX11 ERROR - CreateSwapChain(): %s\n"), std::system_category().message(result));
-				// Windows 8.1:
-#if D3D11_SPEC_DATE_YEAR > 2009
-				swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
-				swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
-#endif
-				swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-				WOMA_LOGManager_DebugMSGAUTO(TEXT("Try CreateSwapChain settings for Windows 8.1:\n"));
-				result = pIDXGIFactory->CreateSwapChain(m_device11, &swapChainDesc, &DXwindow.m_swapChain); // Are we ok now?
-				if (FAILED(result)) {
-					//WOMA_LOGManager_DebugMSGAUTO(TEXT("DX11 ERROR - CreateSwapChain(): %s\n"), std::system_category().message(result));
-					// older Windows
-					swapChainDesc.BufferCount = 1;
-					swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-					swapChainDesc.Flags = 0;
-					WOMA_LOGManager_DebugMSGAUTO(TEXT("Try CreateSwapChain settings for Windows legacy:\n"));
-					result = pIDXGIFactory->CreateSwapChain(m_device11, &swapChainDesc, &DXwindow.m_swapChain); // Are we ok now?
-					if (FAILED(result)) {
-						//WOMA_LOGManager_DebugMSGAUTO(TEXT("DX11 FATAL ERROR - CreateSwapChain(): %s\n"), std::system_category().message(result));
-						return false;
-					}
-				}
-			}
-
-			DX11windowsArray.push_back(DXwindow);
-		}
-
-		if (!g_AllowResize)
-			pIDXGIFactory->MakeWindowAssociation(SystemHandle->windowsArray[0].hWnd, DXGI_MWA_NO_WINDOW_CHANGES | DXGI_MWA_NO_ALT_ENTER); //Prevent DXGI from responding to an alt-enter sequence.
-
-		SAFE_RELEASE(pDXGIDevice);
-		SAFE_RELEASE(pDXGIAdapter);
-		SAFE_RELEASE(pIDXGIFactory);
-
-		return true;
-	}
-*/
+  
 
 
 	//Init Step: 4

@@ -24,6 +24,9 @@
 #include "ApplicationClass.h"
 #include "OSmain_dir.h"
 #include "mem_leak.h"
+#if TUTORIAL_CHAP >= 60 // BILLBOARD
+#include "BillClass.h"				//[ch60]
+#endif
 
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
 #include "Rapplicationclass.h"
@@ -196,7 +199,7 @@ void ApplicationClass::Shutdown()
 	SAFE_SHUTDOWN(AppTextClass);
 #endif
 
-#if TUTORIAL_CHAP >= 60
+#if TUTORIAL_CHAP >= 60 && defined SCENE_BILLBOARDS
 	SAFE_SHUTDOWN(m_billTreeClass);
 #endif
 
@@ -384,6 +387,7 @@ bool ApplicationClass::Initialize(WomaDriverClass* Driver)
 
 //########################################### 3D: STUFF ###########################################
 //########################################### 2D: STUFF ###########################################
+ 
 	// 2D-FONTS: (Windows)
 #if defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONT //27
 	initText();

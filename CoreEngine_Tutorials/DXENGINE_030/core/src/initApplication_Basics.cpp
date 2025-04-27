@@ -627,23 +627,45 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	loadedTerrain[3]->initMainTopoTerrainDemo(3);
 #endif
 
-	//-----------------------------------------------------------------------------------------------------------------
+	//=================================================================================================================
 	// Init MAIN 3D Scene       ///////////////////////////////////////////////////////////////////////////////////////
-	//-----------------------------------------------------------------------------------------------------------------
-	world_xml_objs = (UINT)SystemHandle->xml_loader.theWorld.size();
+	//=================================================================================================================
 
 	//-----------------------------------------------------------------------------------------------------------------
-	// Create Bill Board for Trees / Flowers (extra populate WORLD.XML)       /////////////////////////////////////////
+	// Add Instanced Billboards:
+	//-----------------------------------------------------------------------------------------------------------------
+#if defined USE_INSTANCES_FOR_TREES
+	xmlobj3d XMLobj3D = {};
+
+	XMLobj3D.id = SystemHandle->xml_loader.theWorld.size();
+	XMLobj3D.posX = 0; XMLobj3D.translateY = 0; XMLobj3D.posZ = 0;
+	XMLobj3D.shader = SHADER_TEXTURE_GS_INSTANCED;
+	XMLobj3D.scale = 0.0215f;
+	XMLobj3D.instances = 15;
+
+	strcpy_s(XMLobj3D.filename, sizeof(XMLobj3D.filename), BILL_GS);
+	SystemHandle->xml_loader.theWorld.push_back(XMLobj3D);
+#endif
+
+	world_xml_objs = (UINT)SystemHandle->xml_loader.theWorld.size(); //Get 
+	WOMA_LOGManager_DebugMSGAUTO("Number of objects loaded in: WORLD.XML %d\n", world_xml_objs);
+
+	//-----------------------------------------------------------------------------------------------------------------
+	// Create Billboard for Trees / Flowers (extra populate WORLD.XML)       /////////////////////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
 #if TUTORIAL_CHAP >= 60 && defined (SCENE_MAIN_TOPO_TERRAIN) && defined (SCENE_BILLBOARDS) // BILLBOARD
 	IF_NOT_RETURN_FALSE(m_billTreeClass = NEW BillClass);
 	if (!m_billTreeClass->Initialize(loadedTerrain[2]->m_terrainWidth/2, loadedTerrain[2]->m_terrainHeight/2, false))
 	{
-		WomaMessageBox(TEXT("Could not initialize the billboardClass"), TEXT("Create Bill Board for Trees / Flowers"));
+		WomaMessageBox(TEXT("Could not initialize the billboard Class"), TEXT("Create Billboard for Trees / Flowers"));
 		return false;
 	}
+	WOMA_LOGManager_DebugMSGAUTO("Number of billboard objects added %d\n", SystemHandle->xml_loader.theWorld.size()- world_xml_objs);
 #endif
 
+	//-----------------------------------------------------------------------------------------------------------------
+	// PROGRESS BAR		///////////////////////////////////////////////////////////////////////////////////////////////
+	//-----------------------------------------------------------------------------------------------------------------
 #if defined ALLOW_CBIND_PROGRESS_BAR
 	INITCOMMONCONTROLSEX i;
 	i.dwSize = sizeof(INITCOMMONCONTROLSEX);
@@ -670,10 +692,12 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	TCHAR title[MAX_STR_LEN] = {};
 #endif
 
-	//-----------------------------------------------------------------------------------------------------------------
-	// 3D-Load Scene: Create "model OBJECTS" from loaded "XML OBJECTS" in file WORLD.XML     //////////////////////////
+	// Temporarly disable log file (on this loop) due performance:
 	//-----------------------------------------------------------------------------------------------------------------
 
+	//-----------------------------------------------------------------------------------------------------------------
+	// [MAIN OBJ LOAD]: 3D-Load Scene: Create "model OBJECTS" from loaded "XML OBJECTS" in file WORLD.XML     /////////
+	//-----------------------------------------------------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined USE_FRUSTRUM
 
 	// Load 3D Objects: convert XML "objects" -- Load OBJ or W3D --> VirtualModelClass:
@@ -681,6 +705,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	UINT objModel_size = (UINT)objModel.size();
 	MSG msg = { 0 };
 	WOMA::num_loading_objects = 1;
+
 	for (UINT i = objModel_size; i < objModel_size+len; i++)
 	{
 		objModel.push_back(NULL);
@@ -690,9 +715,8 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 		}
 
 		objModel[i]->m_ObjId = i; //SYNC-ID: objModel[i] with: xml_loader.theWorld[i]
-
+        //objModel[i]->ModelAlfaColor = true;
 		TCHAR wfilename[MAX_STR_LEN] = { 0 }; atow(wfilename, SystemHandle->xml_loader.theWorld[i].filename, MAX_STR_LEN);
-
 		if (WOMA::game_state == GAME_STOP)
 			return false;
 
@@ -725,7 +749,8 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 			TranslateMessage(&msg); // TranslateMessage produces WM_CHAR messages only for keys that are mapped to ASCII characters by the keyboard driver.
 			DispatchMessage(&msg);  // Process Msg:  (INVOKE: WinSystemClass::MessageHandler)
 		}
-		
+
+        //((DXmodelClass*)objModel[i])->ModelHASAlfaColor = true;
 		WOMA::sceneManager->addModel(WOMA::sceneManager->RootNode, objModel[i]);			// Add node to nodesList: RootNode
 
 #if defined USE_LOADING_THREADS || DX_ENGINE_LEVEL >= 37
@@ -740,16 +765,15 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	::CloseWindow(SystemHandle->hwndPrgBar);
 #endif
 
+	//Restore: Temp. Disable log file:
+	//-----------------------------------------------------------------------------------------------------------------
+
 	//-----------------------------------------------------------------------------------------------------------------
 	// ANIMATED SKELETON MESHs ////////////////////////////////////////////////////////////////////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// DEMO-29                  ///////////////////////////////////////////////////////////////////////////////////////
-	//-----------------------------------------------------------------------------------------------------------------
-
-	//-----------------------------------------------------------------------------------------------------------------
-	// LOAD PROGRESS BAR       ////////////////////////////////////////////////////////////////////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
 
 	//-----------------------------------------------------------------------------------------------------------------

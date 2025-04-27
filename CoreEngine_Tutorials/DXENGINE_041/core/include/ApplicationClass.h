@@ -62,9 +62,9 @@
 #include "WomaDriverClass.h"
 #endif
 
-#if TUTORIAL_CHAP >= 60 // BILLBOARD
-#include "BillClass.h"				//[ch60]
-#endif
+//#if TUTORIAL_CHAP >= 60 // BILLBOARD
+//#include "BillClass.h"				//[ch60]
+//#endif
 
 #if defined USE_ASSIMP_GLLIB
 #include "GLAnimationScene.h"
@@ -312,9 +312,7 @@ public:
 
 	void ApplicationClass::WOMA_APPLICATION_FrameUpdateInstancesPositions(UINT m_ObjId, int m_instanceCount, InstanceType* instances_);
 
-#if TUTORIAL_CHAP >= 60 // BILLBOARD
-	BillClass* m_billTreeClass = NULL;
-#endif//
+
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 	void	SetPlayerPosition(UINT netID);

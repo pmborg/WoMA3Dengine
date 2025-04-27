@@ -19,91 +19,6 @@
 //
 // ----------------------------------------------------------------------------------------------
 
-/*
-**Displaying Graphics**
-
-Rendering 2D with Sprites and Text
-	Describes step-by-step procedures for using 2D graphics techniques.
-	https://msdn.microsoft.com/en-us/library/ff634505.aspx
-// ----------------------------------------------------------------------------------------------
-Rendering 3D with Effects
-	Describes step-by-step procedures for using 3D graphics techniques.
-	https://msdn.microsoft.com/en-us/library/bb975154.aspx
-// ----------------------------------------------------------------------------------------------
-"What Is" Articles:
-	// SOURCE: https://msdn.microsoft.com/en-us/library/dd282490.aspx
-
-
-|Antialiasing| MSAA: off/X1/X2/X4/X8
-	Antialiasing is a technique for softening or blurring sharp edges so they appear less jagged when rendered.
-	Enabling AntiAliasing (MultiSampling) --> MSAA --> BOOL VAR: mEnable4xMsaa
-
-	-> depth buffers must have the same "sample counts" and "quality levels"
-	-> depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
-	-> Samplers: DXshaderClass::InitializeShader()
-	http://www.tweakguides.com/Graphics_11.html
-
-|MULTIPLE SCREENS| https://stackoverflow.com/questions/10744788/display-different-images-per-monitor-directx-10?answertab=active#tab-top
-
-|Back-Buffer| (DX11windowsArray[0].m_backBuffer)
-	A back buffer is a render target whose contents will be sent to the device when GraphicsDevice.Present is called.
-
-|Blend-State| (#defined USE_ALPHA_BLENDING)
-|Alpha-Blending|
-	Blend state controls how color and alpha values are blended when combining rendered data with existing render target data.
-
-|Color-Blending| (#defined USE_DX10DRIVER_FONTS)
-	Color blending mixes two colors together to produce a third color.
-
-|Depth-Buffer| (m_depthBuffer)
-	A depth buffer contains per-pixel floating-point data for the z depth of each pixel rendered. 
-	A depth buffer may also contain stencil data which can be used to do more complex rendering such as simple shadows or outlines
-
-|Depth-Stencil-State|  (m_depthStencilState)
-	Depth stencil state controls how the depth buffer and the stencil buffer are used.
-
-|Depth-Texture| (#define USE_SHADOW_MAP)
-	A depth texture, also known as a shadow map, is a texture that contains the data from the depth buffer for a particular scene.
-
-|Effect/HLSL Loader|
-|Model|
-|Model-Bone|
-	A model bone is a matrix that represents the position of a mesh as it relates to other meshes in a 3D model.
-
-|Profile| getProfile ( UINT g_USE_MONITOR );
-	A profile is a feature set that is implemented in hardware. Like:	
-	vs1.1,vs2.1 ps1.1,ps1.2,ps1.3,ps1.4,ps2.0 (DX9.x)
-	4.0(DX10), 4.1(DX10.1), 5.0 (DX11), 5.1 (DX12)
-
-|Rasterizer-State|	(#define defined USE_RASTERIZER_STATE)
-	Rasterizer state determines how to render 3D data such as position, color, and texture onto a 2D surface.
-
-|Render-Target| (SetBackBufferRenderTarget(UINT monitorWindow))
-	A render target is a memory buffer for rendering pixels. One common use for a render target is offscreen rendering.
-
-|Sampler-State|	(m_sampleState)
-	Sampler state determines how texture data is sampled using texture addressing modes, filtering, and level of detail.
-
-|Stencil-Buffer| (m_depthStencilView)
-				ID3D11DepthStencilState* m_depthStencilState;
-				ID3D11DepthStencilState* m_depthDisabledStencilState;
-	A stencil buffer contains per-pixel integer data which is used to add more control over which pixels are rendered. 
-	A stencil buffer can also be used in combination with a depth buffer to do more complex rendering such as simple shadows or outlines.
-
-|Vectors, Matrices, and Quaternions|
-	Presents an overview of the math-related functionality provided by the XNA Framework.
-
-|View-Frustum|	(#define USE_FRUSTRUM)
-	A view frustum is a 3D volume that defines how models are projected from camera space to projection space. 
-	Objects must be positioned within the 3D volume to be visible.
-
-|Viewport|		(D3D11_VIEWPORT viewport;)
-	A viewport is a 2D rectangle that defines the size of the rendering surface onto which a 3D scene is projected.
-*/
-
-// Introduction to: Programming DirectCompute & DirectX 11 Compute Shaders:
-// http://openvidia.sourceforge.net/index.php/DirectCompute
-
 #include "OSengine.h"
 #include "mem_leak.h"
 #if defined DX_ENGINE
@@ -134,7 +49,7 @@ void LOAD_TEXTURES(std::vector<TCHAR*> file, std::vector<ID3D11ShaderResourceVie
 
 DX11Class::~DX11Class() // Used for Static Classes
 {
-	Shutdown();
+    Shutdown();
 	CLASSDELETE();
 }
 
@@ -359,16 +274,30 @@ for (UINT i = 0; i < 3; i++)
 	SAFE_RELEASE(pDevice3);
 #endif
 
-	ULONG count = 0;
-	if (m_device11) {
-		count = m_device11->Release();
-		m_device11 = NULL;
-	}
-
-	#ifdef _DEBUG
-	if (count)
-		WOMA_LOGManager_DebugMSG("DEBUG WARNING: There are %d unreleased references left on the D3D device!\n", count);
-	#endif
+    ULONG count = 0;
+    if (m_device11)
+    {
+        /*
+        #ifdef _DEBUG
+                Microsoft::WRL::ComPtr<ID3D11Debug> debugDevice;
+                if (SUCCEEDED(m_device11->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(debugDevice.GetAddressOf())))) {
+                    debugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+                }
+        #endif
+        */
+        count = m_device11->Release();
+        m_device11 = nullptr;
+    }
+    /*
+    Microsoft::WRL::ComPtr<IDXGIDebug> dxgiDebug;
+    if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&dxgiDebug)))) {
+        dxgiDebug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_DETAIL);
+    }
+    */
+#ifdef _DEBUG
+    if (count)
+        WOMA_LOGManager_DebugMSG("DEBUG WARNING: There are %d unreleased references left on the D3D device!\n", count);
+#endif
 
 	//ASSERT (!count);
 }
@@ -379,7 +308,7 @@ for (UINT i = 0; i < 3; i++)
 BOOL DX11Class::CheckAPIdriver(UINT USE_THIS_ADAPTER_CARD)
 // ----------------------------------------------------------------------------------------------
 {
-	IDXGIFactoryN* pDXGIFactory = NULL;
+	//IDXGIFactoryN* pDXGIFactory = NULL;
 	IDXGIFactory1* pDXGIFactory1 = NULL;
 
 	/*******************************************************************
@@ -493,7 +422,6 @@ bool DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, i
     WOMA_LOGManager_DebugMSG("-------------------------\n");
 
 	//Init Step: 3, 4
-	//ASSERT(createDevice ());
 	ASSERT(createDevice_legacy());
 	
 
@@ -513,10 +441,9 @@ bool DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, i
 	} else 
 #endif
 	{
-		//printf("retry on: createSwapChainDX11device()\n");
-		//IF_NOT_RETURN_FALSE(createSwapChainDX11device((HWND)hwnd, screenWidth, screenHeight, vsync, fullscreen, g_UseDoubleBuffering, g_AllowResize, numerator, denominator));
+        ASSERT(true);
 	}
-#
+
 	//Init Step: 5 - Get Best Shader of this Graphic Card: dx10,dx10.1,dx11,etc... OUTPUT: ShaderModel
 	getProfile (g_USE_MONITOR);					
 
@@ -660,16 +587,16 @@ HRESULT result = S_OK;
 		DXwindow.m_depthStencilView = NULL;
 
 		// First, retrieve the underlying DXGI Device from the D3D Device.
-		Microsoft::WRL::ComPtr<IDXGIDevice1> dxgiDevice;
-		m_device.As(&dxgiDevice);
+        IDXGIDevice1* dxgiDevice;
+        HRESULT hr = m_device11->QueryInterface(__uuidof(IDXGIDevice), (void**)&dxgiDevice);
 
 		// Identify the physical adapter (GPU or card) this device is running on.
-		Microsoft::WRL::ComPtr<IDXGIAdapter> dxgiAdapter;
-		dxgiDevice->GetAdapter(dxgiAdapter.GetAddressOf());
+        IDXGIAdapter* dxgiAdapter;
+        hr = dxgiDevice->GetParent(__uuidof(IDXGIAdapter), (void**)&dxgiAdapter);
 
 		// And obtain the factory object that created it.
-		Microsoft::WRL::ComPtr<IDXGIFactory2> dxgiFactory;
-		dxgiAdapter->GetParent(IID_PPV_ARGS(dxgiFactory.GetAddressOf()));
+        IDXGIFactory2* dxgiFactory;
+        dxgiAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&dxgiFactory);
 
 		DXGI_SWAP_CHAIN_FULLSCREEN_DESC fsSwapChainDesc = {};
 		fsSwapChainDesc.Windowed = TRUE;
@@ -684,9 +611,12 @@ HRESULT result = S_OK;
 			&swapChainDesc,
 			&fsSwapChainDesc,
 			nullptr,
-			&DX11windowsArray[0].m_swapChain1
+			&DX11windowsArray[DX11windowsArray.size()-1].m_swapChain1
 		);
 
+        SAFE_RELEASE(dxgiFactory);
+        SAFE_RELEASE(dxgiAdapter);
+        SAFE_RELEASE(dxgiDevice);						  
 		// #CreateViewBuffers:
 		// -------------------
 
@@ -825,9 +755,9 @@ bool DX11Class::CreateRenderTargetView (int screenWidth, int screenHeight)
 	{
 		if (DX11windowsArray[i].m_swapChain1) {
 			IF_FAILED_RETURN_FALSE(DX11windowsArray[i].m_swapChain1->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&DX11windowsArray[i].m_backBuffer));
-		} else {
-			IF_FAILED_RETURN_FALSE(DX11windowsArray[i].m_swapChain1->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&DX11windowsArray[i].m_backBuffer));
-		}
+		  
+																																				 
+		} 
 		
 		CD3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDescMSAA(D3D11_RTV_DIMENSION_TEXTURE2DMS);			//MSAA_on
 		CD3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc(D3D11_RTV_DIMENSION_TEXTURE2D);					//MSAA_off
@@ -905,11 +835,11 @@ void DX11Class::EndScene(UINT monitorWindow)
 	}
 
 	//RESET ShaderResources! to avoid HLSL WARNINGS: Resource being set to OM RenderTarget slot 0 is still bound on input!
-	//WHY 3? hlsl use 4 registers: MAX
+	//WHY 3,4,5...? hlsl use 4 registers: MAX
 	//Texture2D shaderTexture			: register(t0);	// 21: Texture
 	//Texture2D AlfaMapTexture			: register(t1);	// 33: AlfaMap
 	//Texture2D ShadowMapTextureTexture : register(t2);	// 36: ShadowMap
-	//									: register(t3);
+	//									: register(t3);  t number...
 
 	ID3D11ShaderResourceView* const pSRV[15] = { NULL };
 	m_deviceContext->PSSetShaderResources(0, 15, pSRV);

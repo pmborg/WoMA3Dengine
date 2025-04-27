@@ -19,10 +19,42 @@
 //WomaIntegrityCheck = 1234567222;
 
 #include "OSengine.h"
-#if defined SCENE_BILLBOARDS
+
 #include "BillClass.h"
-#include "mem_leak.h"
 #include "ApplicationClass.h"
+#include "mem_leak.h"
+
+#if TUTORIAL_CHAP >= 60  && defined SCENE_BILLBOARDS // BILLBOARD
+BillClass* m_billTreeClass = NULL;
+#endif
+
+#define borderLimit 13 // Border Limit without Bills
+
+BillClass::BillClass()
+{
+    CLASSLOADER();
+
+    billNames_length = 0;
+    BillrenderCount = 0;
+    billTotal = 0;
+
+    mainTerrainPath = NEW CTerrain(TERRAIN);
+    mainTerrainPath->LoadHeightMapTerrain(BILLBOARD_TERRAIN, 0, 0); //engine/data/scene73grass/t_025TerrainMappingV4.bmp
+}
+
+BillClass::~BillClass()
+{
+    Shutdown();
+    CLASSDELETE();
+}
+
+void BillClass::Shutdown()
+{
+    SAFE_DELETE(mainTerrainPath);
+    return;
+}
+
+#if defined SCENE_BILLBOARDS
 #include "fileLoader.h"
 
 #ifdef OPENGL3
@@ -36,23 +68,7 @@
 
 Tree			m_Trees[N_BILLBOARD + N_FENCES + N_FIRE + N_GRASS];	// Array of tree info. NOTE: SHARED on 2 (BILLBOARD Instances)
 
-BillClass::BillClass()
-{
-	CLASSLOADER();
 
-	billNames_length = 0;
-	BillrenderCount =0;
-	billTotal = 0;
-
-	mainTerrainPath = NEW CTerrain(TERRAIN);
-	mainTerrainPath->LoadHeightMapTerrain(BILLBOARD_TERRAIN, 0, 0); //engine/data/scene73grass/t_025TerrainMappingV4.bmp
-}
-
-BillClass::~BillClass() 
-{
-	Shutdown();
-	CLASSDELETE();
-}
 
 ID3D11ShaderResourceView* billFileLoaded[] = 
 {
@@ -94,7 +110,7 @@ TCHAR billFileName[][MAX_STR_LEN] =
 	BILL_GRASS, //11
 };
 
-#define borderLimit 13 // Border Limit without Bills
+
 
 xmlobj3d* BillClass::fillxml(int id, UINT type)
 {
@@ -319,12 +335,6 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 	return true;
 }
 
-void BillClass::Shutdown()
-{
-	SAFE_DELETE(mainTerrainPath);
-	return;
-}
-
 //-----------------------------------------------------------------------------   
 // Name: TreeSortCB()   
 // Desc: Callback function for sorting Bill/trees in back-to-front order   
@@ -347,3 +357,4 @@ int __cdecl BillSortCB( const VOID* arg1, const VOID* arg2 )
     return -1;   
 }
 #endif
+

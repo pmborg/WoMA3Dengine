@@ -71,7 +71,8 @@ namespace DirectX
 		//------------------------------------------------------------------------------------------------------------------
 		if (ModelShaderType == SHADER_TEXTURE_LIGHT_RENDERSHADOW ||
 			ModelShaderType == SHADER_TEXTURE_LIGHT_INSTANCED ||
-			ModelShaderType == SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED )
+			ModelShaderType == SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED  ||
+            ModelShaderType == SHADER_TEXTURE_GS_INSTANCED)
 			ModelShaderType = SHADER_TEXTURE_LIGHT;
 
 		if (ModelShaderType == SHADER_NORMAL_BUMP_INSTANCED)

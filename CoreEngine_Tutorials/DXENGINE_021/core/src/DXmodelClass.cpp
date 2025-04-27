@@ -151,7 +151,9 @@ DXmodelClass::~DXmodelClass() {CLASSDELETE();}
 // Load Model in DX Buffers after any "Format" Read:
 //
 // -------------------	// COLOR
-bool DXmodelClass::LoadColor(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<ModelColorVertexType> *model, std::vector<UINT>* indexList, UINT instanceCount)
+bool DXmodelClass::LoadColor(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, 
+                            std::vector<ModelColorVertexType> *model, 
+                            std::vector<UINT>* indexList, UINT instanceCount)
 {
 	LOADDRIVER(driver);
 	MODEL_NAME = objectName;
@@ -811,6 +813,7 @@ void DXmodelClass::SetGeometryBuffers(void* deviceContext)
 		case SHADER_TEXTURE_LIGHT_RENDERSHADOW:			//36
 		case SHADER_TEXTURE_LIGHT_INSTANCED:			//40
 		case SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED: //41
+        case SHADER_TEXTURE_GS_INSTANCED:               //77
 			stride[0] = sizeof(DXtextureLightVertexType); break;
 
 		case SHADER_TEXTURE_LIGHT_SAVESHADOW:			//36

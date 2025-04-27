@@ -247,8 +247,8 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 
 
 	case WM_QUIT:
-		ASSERT(SystemHandle);
-		ASSERT(WOMA::game_state == GAME_STOP);
+        WOMA::game_state = GAME_STOP;
+        WOMA::main_loop_state = -2;
 		break;
 
 	case WM_DESTROY:	// The main application Window will be destroyed

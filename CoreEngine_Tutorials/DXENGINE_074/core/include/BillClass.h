@@ -22,9 +22,10 @@
 //////////////
 // INCLUDES //
 //////////////
-#include  "WomaDriverClass.h"
-#include  "virtualModelClass.h"
-#include  "xml_loader.h"
+#include "OSengine.h"
+#include "WomaDriverClass.h"
+#include "virtualModelClass.h"
+#include "xml_loader.h"
 #include "Tree.h"
 
 // Number of Billboard Trees
@@ -32,8 +33,8 @@
 #define N_BILLBOARD 1000
 #define N_FENCES 55
 #define N_FIRE 1
-#define N_GRASS 2500
-#define N_BUSH  1000
+#define N_GRASS 2000
+#define N_BUSH  750
 
 extern ID3D11ShaderResourceView* billFileLoaded[];
 
@@ -68,5 +69,7 @@ FrustumClass*		m_FrustumGrass;
 
 UINT				billNames_length;
 };
+
+extern BillClass* m_billTreeClass;
 
 #endif

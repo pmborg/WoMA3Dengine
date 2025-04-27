@@ -181,23 +181,4 @@ namespace DirectX {
 		XMFLOAT2 texCoord2;
 	};
 
-/*
-	// 64: SkinMesh
-	// -------------------------------------------------------------------------------------------
-	struct DXSkinMeshVertexType
-	{
-		DXSkinMeshVertexType() {}
-		DXSkinMeshVertexType(float x, float y, float z,
-			float u, float v,
-			float nx, float ny, float nz,
-			float tx, float ty, float tz)
-			: position(x, y, z), texCoord(u, v), normal(nx, ny, nz), tangent(tx, ty, tz) {
-		}
-
-		XMFLOAT3 position;
-		XMFLOAT2 texCoord;
-		XMFLOAT3 normal;
-		XMFLOAT3 tangent;
-	};
-*/
 }

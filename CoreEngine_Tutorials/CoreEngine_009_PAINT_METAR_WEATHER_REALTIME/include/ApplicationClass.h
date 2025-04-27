@@ -58,9 +58,9 @@
 #include "metarClass.h"
 #endif
 
-#if TUTORIAL_CHAP >= 60 // BILLBOARD
-#include "BillClass.h"				//[ch60]
-#endif
+//#if TUTORIAL_CHAP >= 60 // BILLBOARD
+//#include "BillClass.h"				//[ch60]
+//#endif
 
 #if defined USE_ASSIMP_GLLIB
 #include "GLAnimationScene.h"
@@ -262,9 +262,7 @@ public:
 	std::vector<UINT>						 sky_indexdata;
 #endif
 
-#if TUTORIAL_CHAP >= 60 // BILLBOARD
-	BillClass* m_billTreeClass = NULL;
-#endif//
+
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 	void	SetPlayerPosition(UINT netID);

@@ -573,95 +573,10 @@ void ApplicationClass::initShadowTextureDemo()
 // WOMA_APPLICATION_FrameUpdateInstancesPositions
 // ----------------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES // Normal Bump + Instancing 
-//CHESS BOARD OBJ       0
-
-#define WHITE_BISHOP	1  //BISPO_BRANCO
-#define WHITE_KNIGHT	2  //CAVALO_BRANCO
-#define WHITE_PAWN		3  //PEAO_BRANCO
-#define WHITE_QUEEN		4  //RAINHA_BRANCO
-#define WHITE_KING		5  //REI_BRANCO	
-#define WHITE_ROOK		6  //TORRE_BRANCO
-
-#define BLACK_BISHOP	7  //BISPO_PRETO
-#define BLACK_KNIGHT	8  //CAVALO_PRETO
-#define BLACK_PAWN		9  //PEAO_PRETO
-#define BLACK_QUEEN		10 //RAINHA_PRETO
-#define BLACK_KING		11 //REI_PRETO	
-#define BLACK_ROOK		12 //TORRE_PRETO	
 
 void ApplicationClass::WOMA_APPLICATION_FrameUpdateInstancesPositions(UINT m_ObjId, int m_instanceCount, InstanceType* instances_)
 {
 	InstanceType* instances = instances_;
-	
-	for (int i = 0; i < m_instanceCount; i++)
-	{
-		switch (m_ObjId)
-		{
-		case BLACK_QUEEN:
-		case WHITE_QUEEN:
-			instances[i].position.x = (float)i+3;
-			instances[i].position.z = (float)-2;
-			instances[i].position.y = (float)0.1f;
-			break;
-		case BLACK_KING:
-		case WHITE_KING:
-			instances[i].position.x = (float)i+3;
-			instances[i].position.z = (float)-2;
-			instances[i].position.y = (float)0.1f;
-			break;
-		case BLACK_BISHOP:
-		case WHITE_BISHOP:
-			if (i == 0) {
-				instances[i].position.x = (float)-2 + i;
-				instances[i].position.z = (float)-2;
-				instances[i].position.y = (float)0.1f;
-			}
-			else {
-				instances[i].position.x = (float) + i;
-				instances[i].position.z = (float)-2;
-				instances[i].position.y = (float)0.1f;
-			}
-			break;
-		case BLACK_KNIGHT:
-		case WHITE_KNIGHT:
-			if (i == 0) {
-				instances[i].position.x = (float)i-2;
-				instances[i].position.z = (float)-2;
-				instances[i].position.y = (float)0.1f;
-			}
-			else {
-				instances[i].position.x = (float)2 + i;
-				instances[i].position.z = (float)-2;
-				instances[i].position.y = (float)0.1f;
-			}
-			break;
-		case BLACK_PAWN:
-		case WHITE_PAWN:
-			instances[i].position.x = (float)-2 + i;
-			instances[i].position.z = (float)-3;
-			instances[i].position.y = (float)0.1f;
-			break;
-		case BLACK_ROOK:
-		case WHITE_ROOK:
-			if (i == 0) {
-				instances[i].position.x = (float)i + 1;
-				instances[i].position.z = (float)-2;
-				instances[i].position.y = (float)0.1f;
-			}
-			else {
-				instances[i].position.x = (float)7 + i;
-				instances[i].position.z = (float)-2;
-				instances[i].position.y = (float)0.1f;
-			}
-			break;
-		}
-
-		if (m_ObjId == BLACK_PAWN)
-			instances[i].position.z += (float)2;
-
-		instances[i].position.z = instances[i].position.z + (float)2;
-		instances[i].position.x = instances[i].position.x - (float)1;
-	}
 
 }
 #endif
@@ -791,23 +706,45 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	loadedTerrain[3]->initMainTopoTerrainDemo(3);
 #endif
 
-	//-----------------------------------------------------------------------------------------------------------------
+	//=================================================================================================================
 	// Init MAIN 3D Scene       ///////////////////////////////////////////////////////////////////////////////////////
-	//-----------------------------------------------------------------------------------------------------------------
-	world_xml_objs = (UINT)SystemHandle->xml_loader.theWorld.size();
+	//=================================================================================================================
 
 	//-----------------------------------------------------------------------------------------------------------------
-	// Create Bill Board for Trees / Flowers (extra populate WORLD.XML)       /////////////////////////////////////////
+	// Add Instanced Billboards:
+	//-----------------------------------------------------------------------------------------------------------------
+#if defined USE_INSTANCES_FOR_TREES
+	xmlobj3d XMLobj3D = {};
+
+	XMLobj3D.id = SystemHandle->xml_loader.theWorld.size();
+	XMLobj3D.posX = 0; XMLobj3D.translateY = 0; XMLobj3D.posZ = 0;
+	XMLobj3D.shader = SHADER_TEXTURE_GS_INSTANCED;
+	XMLobj3D.scale = 0.0215f;
+	XMLobj3D.instances = 15;
+
+	strcpy_s(XMLobj3D.filename, sizeof(XMLobj3D.filename), BILL_GS);
+	SystemHandle->xml_loader.theWorld.push_back(XMLobj3D);
+#endif
+
+	world_xml_objs = (UINT)SystemHandle->xml_loader.theWorld.size(); //Get 
+	WOMA_LOGManager_DebugMSGAUTO("Number of objects loaded in: WORLD.XML %d\n", world_xml_objs);
+
+	//-----------------------------------------------------------------------------------------------------------------
+	// Create Billboard for Trees / Flowers (extra populate WORLD.XML)       /////////////////////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
 #if TUTORIAL_CHAP >= 60 && defined (SCENE_MAIN_TOPO_TERRAIN) && defined (SCENE_BILLBOARDS) // BILLBOARD
 	IF_NOT_RETURN_FALSE(m_billTreeClass = NEW BillClass);
 	if (!m_billTreeClass->Initialize(loadedTerrain[2]->m_terrainWidth/2, loadedTerrain[2]->m_terrainHeight/2, false))
 	{
-		WomaMessageBox(TEXT("Could not initialize the billboardClass"), TEXT("Create Bill Board for Trees / Flowers"));
+		WomaMessageBox(TEXT("Could not initialize the billboard Class"), TEXT("Create Billboard for Trees / Flowers"));
 		return false;
 	}
+	WOMA_LOGManager_DebugMSGAUTO("Number of billboard objects added %d\n", SystemHandle->xml_loader.theWorld.size()- world_xml_objs);
 #endif
 
+	//-----------------------------------------------------------------------------------------------------------------
+	// PROGRESS BAR		///////////////////////////////////////////////////////////////////////////////////////////////
+	//-----------------------------------------------------------------------------------------------------------------
 #if defined ALLOW_CBIND_PROGRESS_BAR
 	INITCOMMONCONTROLSEX i;
 	i.dwSize = sizeof(INITCOMMONCONTROLSEX);
@@ -834,10 +771,12 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	TCHAR title[MAX_STR_LEN] = {};
 #endif
 
-	//-----------------------------------------------------------------------------------------------------------------
-	// 3D-Load Scene: Create "model OBJECTS" from loaded "XML OBJECTS" in file WORLD.XML     //////////////////////////
+	// Temporarly disable log file (on this loop) due performance:
 	//-----------------------------------------------------------------------------------------------------------------
 
+	//-----------------------------------------------------------------------------------------------------------------
+	// [MAIN OBJ LOAD]: 3D-Load Scene: Create "model OBJECTS" from loaded "XML OBJECTS" in file WORLD.XML     /////////
+	//-----------------------------------------------------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined USE_FRUSTRUM
 
 	// Load 3D Objects: convert XML "objects" -- Load OBJ or W3D --> VirtualModelClass:
@@ -845,6 +784,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	UINT objModel_size = (UINT)objModel.size();
 	MSG msg = { 0 };
 	WOMA::num_loading_objects = 1;
+
 	for (UINT i = objModel_size; i < objModel_size+len; i++)
 	{
 		objModel.push_back(NULL);
@@ -854,7 +794,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 		}
 
 		objModel[i]->m_ObjId = i; //SYNC-ID: objModel[i] with: xml_loader.theWorld[i]
-
+        //objModel[i]->ModelAlfaColor = true;
 #if   !defined USE_SHADOW_INSTANCES
 		SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows = false;
 		SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows = false;
@@ -867,7 +807,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	#endif
 #endif
 		TCHAR wfilename[MAX_STR_LEN] = { 0 }; atow(wfilename, SystemHandle->xml_loader.theWorld[i].filename, MAX_STR_LEN);
-
 		if (WOMA::game_state == GAME_STOP)
 			return false;
 
@@ -900,7 +839,8 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 			TranslateMessage(&msg); // TranslateMessage produces WM_CHAR messages only for keys that are mapped to ASCII characters by the keyboard driver.
 			DispatchMessage(&msg);  // Process Msg:  (INVOKE: WinSystemClass::MessageHandler)
 		}
-		
+
+        //((DXmodelClass*)objModel[i])->ModelHASAlfaColor = true;
 		WOMA::sceneManager->addModel(WOMA::sceneManager->RootNode, objModel[i]);			// Add node to nodesList: RootNode
 
 		WOMA::num_loading_objects++;
@@ -913,16 +853,15 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	::CloseWindow(SystemHandle->hwndPrgBar);
 #endif
 
+	//Restore: Temp. Disable log file:
+	//-----------------------------------------------------------------------------------------------------------------
+
 	//-----------------------------------------------------------------------------------------------------------------
 	// ANIMATED SKELETON MESHs ////////////////////////////////////////////////////////////////////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// DEMO-29                  ///////////////////////////////////////////////////////////////////////////////////////
-	//-----------------------------------------------------------------------------------------------------------------
-
-	//-----------------------------------------------------------------------------------------------------------------
-	// LOAD PROGRESS BAR       ////////////////////////////////////////////////////////////////////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
 
 	//-----------------------------------------------------------------------------------------------------------------
@@ -953,7 +892,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	IF_NOT_RETURN_FALSE(m_RenderShadowTexture->Initialize(Driver, SHADOWMAP_WIDTH, SHADOWMAP_HEIGHT, 0, 0, SystemHandle->AppSettings->SCREEN_DEPTH, SystemHandle->AppSettings->SCREEN_NEAR));
 
 	// --------------------------------------------------------------------------------------------
-	// Optionally: DEBUG SPRITE: Render Shadows on a texture:
+	// Optionally: DEBUG SPRITE Model: (m_2nd3DModel) Render Shadows on a texture:
 	// --------------------------------------------------------------------------------------------
 #endif
 

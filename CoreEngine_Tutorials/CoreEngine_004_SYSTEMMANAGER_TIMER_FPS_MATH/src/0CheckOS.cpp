@@ -143,21 +143,19 @@ bool SystemManager::CheckOS()
 	std::map<CString, CString> mapWindowsVersions
 	{
 		{ L"10240", L"1507" }, // Windows10 (Original  version)
-		{ L"10586", L"1511" },	  
+		{ L"10586", L"1511" }, // Windows10 November Update	  
 		{ L"14393", L"1607" }, // Windows10 (Anniversary Update)
 		{ L"15063", L"1703" }, // Windows10 (Creators Update)
 		{ L"16299", L"1709" }, // Windows10 (Fall Creators Update)
 		{ L"17134", L"1803" }, // Windows10 (April 2018 Update)
 		{ L"17763", L"1809" }, // Windows10 (October 2018 Update)
 		{ L"18362", L"1903" }, // Windows10 (May 2019 Update)
-		{ L"18363", L"1909" }, // Windows10 (November 2019 Update)
+		{ L"19002", L"1909" }, // Windows 10 19H2 November 2019
 		{ L"19041", L"2004" }, // May 2020 Update
 		{ L"19042", L"20H2" }, // October 2020 Update
-		{ L"19043", L"21H1" }, // May 2021 Update
+		{ L"19043", L"2009" }, // May 2021 Update
 		{ L"19044", L"21H2" }, // November 2021 Update
 		{ L"19045", L"22H2" }, // Windows10 (October 2023 Update)
-                               // The last version of Windows 10 with a build number that starts with 19046 is build 19046.5737, 
-                               // which was released on April 8, 2025. This build number was part of the KB5055518 update
 
 		//---------------------------------------------------------------------
 		{ L"22000", L"21H2" }, // Windows11 (Original  version) October 5, 2021 

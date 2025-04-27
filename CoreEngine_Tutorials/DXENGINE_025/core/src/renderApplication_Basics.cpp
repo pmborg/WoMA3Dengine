@@ -46,6 +46,10 @@ extern RApplicationClass* r_Application;
 #endif
 #endif
 
+#if TUTORIAL_CHAP >= 60 // BILLBOARD
+#include "BillClass.h"				//[ch60]
+#endif
+
 //-------------------------------------------------------------------------------------------
 void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 //-------------------------------------------------------------------------------------------

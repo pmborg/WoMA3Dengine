@@ -1,7 +1,7 @@
 // -------------------------------------------------------------------------------------------------------------------------------------
 // Filename: main.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2024
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
 // Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
@@ -74,10 +74,15 @@ int Command = 0;
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
 	int argc = 0;
-	char* argv[MAX_PARAMS] = { NULL };
+	char* argv[MAX_PARAMS] = { };
 	COMMANDLINE_TO_ARGC_ARGV();					// POPULATE: argc & argv
 	
-	return APPLICATION_MAIN(argc, argv);		// ENTRY-POINT: WINDOWS RELEASE!
+    int res = APPLICATION_MAIN(argc, argv);	// ENTRY POINT!
+
+    for (int i = 0; i < MAX_PARAMS; i++)
+        SAFE_DELETE(argv[i]);
+
+    return res;
 }
 #endif
 
