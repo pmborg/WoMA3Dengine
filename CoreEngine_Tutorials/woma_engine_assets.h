@@ -463,7 +463,6 @@
 #if DX_ENGINE_LEVEL >= 72
 	#define BILLBOARD_FIRE_MODEL TEXT("engine/data/scene72Fire/072fire.obj")
 #endif
-
 #if DX_ENGINE_LEVEL == 73
 	#define DEMO_TITLE TEXT("73: WINDY GRASS")
 	#define WORLD_XML TEXT("world_73.xml")
@@ -484,6 +483,7 @@
 #if DX_ENGINE_LEVEL == 75
 	#define DEMO_TITLE TEXT("75: UTIL: PROGRESS BAR FOR TERRAIN LOADING")
 	#define WORLD_XML TEXT("world_75.xml")
+	#define VIDEO_INTRO TEXT("engine/data/76video/Logo.mp4")													 
 #endif																	  
 #if DX_ENGINE_LEVEL == 76
 	#define DEMO_TITLE TEXT("76: UTIL: INTRO VIDEO DEMO")
@@ -498,6 +498,9 @@
 	#define WORLD_XML TEXT("world_77.xml")
 #endif
 #if DX_ENGINE_LEVEL >= 77
-	//#define BILL_GS TEXT("engine/data/77GS/tree.obj")
     #define BILL_GS TEXT("engine/data/77GS/maple-tree.obj")
+#endif
+#if DX_ENGINE_LEVEL == 78
+	#define DEMO_TITLE TEXT("78: Check 'WORLD.XML' Object collision")
+	#define WORLD_XML TEXT("world_78.xml")
 #endif

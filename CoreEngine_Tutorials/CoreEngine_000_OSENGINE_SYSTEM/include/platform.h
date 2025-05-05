@@ -597,7 +597,7 @@ static_assert(false, "WIN6x: X64 or WIN32, have to be selected");
 #define WOMA_CONSOLE_APPLICATION	// Allow: OS "CMD Line Console" VS Native "WINDOWS" or "X-WINDOWS"
 #endif
 
-#define MAX_PARAMS			10			// Max parameters on command line
+#define MAX_PARAMS			20			// Max parameters on command line
 #define MAX_STR_LEN			512			// Used by TCHAR Arrays
 #define MAX_PATH			260							 
 #define CONSOLE_LOG_WIDTH	900

@@ -300,6 +300,7 @@
 		#define SUN_LIGHT_DEMO_ANIMATION true //back
 		#define USE_SCENE_MANAGER	//30-
 		#define USE_FRUSTRUM		//30-
+		#undef DX12					    //to be added later									   
 	#endif
 
 	#if DX_ENGINE_LEVEL >= 31
@@ -458,31 +459,35 @@
 		#define TUTORIAL_CHAP 60
 		#define SCENE_BILLBOARDS
 	#endif
-	#if DX_ENGINE_LEVEL >= 71
+	#if DX_ENGINE_LEVEL >= 71 && defined SCENE_BILLBOARDS
 		#define TUTORIAL_CHAP 61
 		#define BILLBOARD_FOR_FENCES
 	#endif
-	#if DX_ENGINE_LEVEL >= 72
+	#if DX_ENGINE_LEVEL >= 72 && defined SCENE_BILLBOARDS
 		#define TUTORIAL_CHAP 62
 		#define BILLBOARD_FOR_FIRE
 		#define SOUND3D	//3D Sound Effects
 	#endif
-	#if DX_ENGINE_LEVEL >= 73
+	#if DX_ENGINE_LEVEL >= 73 && defined SCENE_BILLBOARDS
 		#define TUTORIAL_CHAP 63
 		#define BILLBOARD_FOR_WINDY_GRASS
    #endif
-	#if DX_ENGINE_LEVEL >= 74
+	#if DX_ENGINE_LEVEL >= 74 && defined SCENE_BILLBOARDS
 		#define TUTORIAL_CHAP 64
 	#endif					  
-	#if DX_ENGINE_LEVEL >= 75
+	#if DX_ENGINE_LEVEL >= 75 && defined SCENE_BILLBOARDS
 		#define ALLOW_CBIND_PROGRESS_BAR
 	#endif
 	#if DX_ENGINE_LEVEL == 76 || defined (NDEBUG) && DX_ENGINE_LEVEL >= 76
 		#define USE_INTRO_VIDEO_DEMO
 	#endif
-	#if DX_ENGINE_LEVEL >= 77
+	#if DX_ENGINE_LEVEL >= 77 && defined SCENE_BILLBOARDS
 		#define USE_INSTANCES_FOR_TREES
 	#endif	  
+    #if DX_ENGINE_LEVEL >= 78
+        #define USE_BOUNDING_VOLUMES
+        #define CHECK_OBJ_COLISION
+    #endif						 
    
 	//#define USE_MULTI_MONITOR
 	//-------------------------------------------------------------------------------------------------------
