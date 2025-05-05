@@ -22,7 +22,7 @@
 #if defined DX_ENGINE
 #include <d3d11.h>
 
-#if defined OPENGL21 || defined OPENGL3 //|| defined OPENGL40 
+#if defined OPENGL3
 	#include "GLmathClass.h"
 	#include "GLopenGLclass.h"
 #endif

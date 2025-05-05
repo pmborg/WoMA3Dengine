@@ -323,6 +323,23 @@ bool ApplicationClass::Start()
 
 
 
+#if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION
+//-----------------------------------------------------------------------------   
+// Name: CompoundSortCB()   
+// Desc: Callback function for sorting Compounds in front-to-back order   
+//-----------------------------------------------------------------------------   
+int __cdecl CompoundSortCB(const VOID* arg1, const VOID* arg2)
+{
+	compoundTreeLoadOrder* p1 = (compoundTreeLoadOrder*)arg1;
+	compoundTreeLoadOrder* p2 = (compoundTreeLoadOrder*)arg2;
+
+	if (p1->order > p2->order)
+		return +1;
+
+	return -1;
+}
+
+#endif
 
 #pragma warning(pop)
 

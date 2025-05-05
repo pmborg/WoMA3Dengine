@@ -2518,7 +2518,7 @@ bool DXmodelClass::LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shad
 
 // Create: Bounding Box 
 // --------------------------------------------------------------------------------------------
-#if defined BOUNDINGVOLUMES
+#if defined USE_BOUNDING_VOLUMES
 void DXmodelClass::CreateBoundingVolumes(std::vector<XMFLOAT3>& vertPosArray)
 // --------------------------------------------------------------------------------------------
 {

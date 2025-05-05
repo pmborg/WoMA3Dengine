@@ -31,18 +31,18 @@ void ApplicationClass::TerrainRender(UINT monitorWindow, WomaDriverClass* Driver
 	m_Driver->TurnOffAlphaBlending(); // Re assume default
 
 	//Water Render:
-	float t = ((DirectX::DXmodelClass*)m_Model[1])->m_Shader11->time;
-	((DirectX::DXmodelClass*)m_Model[1])->m_Shader11->time = 0;
-	((DirectX::DXmodelClass*)m_Model[1])->shaderTypeParameter = 1; // Render for Map
-	m_Model[1]->Render(CAMERA_NORMAL, PROJECTION_MINIMAP, PASS_MINIMAP1, m_viewMatrix, m_projectionMatrix); //AQUI VAMOS AQUI  CAMERA_MINIMAP???? was CAMERA_NORMAL before
-	((DirectX::DXmodelClass*)m_Model[1])->m_Shader11->time = t;
+	float t = ((DirectX::DXmodelClass*)m_TerrainModel[1])->m_Shader11->time;
+	((DirectX::DXmodelClass*)m_TerrainModel[1])->m_Shader11->time = 0;
+	((DirectX::DXmodelClass*)m_TerrainModel[1])->shaderTypeParameter = 1; // Render for Map
+	m_TerrainModel[1]->Render(CAMERA_NORMAL, PROJECTION_MINIMAP, PASS_MINIMAP1, m_viewMatrix, m_projectionMatrix); //AQUI VAMOS AQUI  CAMERA_MINIMAP???? was CAMERA_NORMAL before
+	((DirectX::DXmodelClass*)m_TerrainModel[1])->m_Shader11->time = t;
 
 	//Terrain Render:
-	((DirectX::DXmodelClass*)m_Model[2])->shaderTypeParameter = 1; // Render for Map
-	m_Model[2]->Render(CAMERA_NORMAL, PROJECTION_MINIMAP, PASS_MINIMAP1, m_viewMatrix, m_projectionMatrix);
+	((DirectX::DXmodelClass*)m_TerrainModel[2])->shaderTypeParameter = 1; // Render for Map
+	m_TerrainModel[2]->Render(CAMERA_NORMAL, PROJECTION_MINIMAP, PASS_MINIMAP1, m_viewMatrix, m_projectionMatrix);
 
-	((DirectX::DXmodelClass*)m_Model[1])->shaderTypeParameter = 0;
-	((DirectX::DXmodelClass*)m_Model[2])->shaderTypeParameter = 0;
+	((DirectX::DXmodelClass*)m_TerrainModel[1])->shaderTypeParameter = 0;
+	((DirectX::DXmodelClass*)m_TerrainModel[2])->shaderTypeParameter = 0;
 }
 
 DXcameraClass m_CameraMINIMAP; // DX Implementation

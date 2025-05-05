@@ -24,6 +24,7 @@
 // --------------------------------------------------------------------------------------------
 
 #include "platform.h"
+
 #pragma warning(disable : 4244) // warning C4244: '=': conversion from 'int' to 'float', possible
 #include <stdint.h>
 #include "Math3D.h"
@@ -188,8 +189,6 @@ bool CTerrain::LoadHeightMapTerrain(TCHAR* file, float xPos, float zPos, bool sk
 	// Now that we have stored the height map data for the terrain in our own array we can release the bitmap array.
 	// Release the bitmap image data:
 	SAFE_DELETE_ARRAY(bitmapImage); //delete [] bitmapImage; bitmapImage = 0;
-	//Terrain_Smooth();
-
 	return true;
 }
 
@@ -793,16 +792,16 @@ bool CTerrain::initTerrainWaterMeshDemo(UINT terrainId) // Used to load WATER
 
 		// FORCE FOR NOW TRANSPARENT:
 #if defined DX11 || defined DX9
-		if (((DirectX::DXmodelClass*)SystemHandle->m_Application->m_Model[terrainId])->m_Shader11) {
-			((DirectX::DXmodelClass*)SystemHandle->m_Application->m_Model[terrainId])->m_Shader11->hasAlfaColor = true;
-			((DirectX::DXmodelClass*)SystemHandle->m_Application->m_Model[terrainId])->m_Shader11->alfaColor = 0.35f;
+		if (((DirectX::DXmodelClass*)SystemHandle->m_Application->m_TerrainModel[terrainId])->m_Shader11) {
+			((DirectX::DXmodelClass*)SystemHandle->m_Application->m_TerrainModel[terrainId])->m_Shader11->hasAlfaColor = true;
+			((DirectX::DXmodelClass*)SystemHandle->m_Application->m_TerrainModel[terrainId])->m_Shader11->alfaColor = 0.35f;
 		}
 #endif
 #if defined DX12
-		if (((DirectX::DXmodelClass*)SystemHandle->m_Application->m_Model[terrainId])->m_Shader)
+		if (((DirectX::DXmodelClass*)SystemHandle->m_Application->m_TerrainModel[terrainId])->m_Shader)
 		{
-			((DirectX::DXmodelClass*)SystemHandle->m_Application->m_Model[terrainId])->m_Shader->hasAlfaColor = true;
-			((DirectX::DXmodelClass*)SystemHandle->m_Application->m_Model[terrainId])->m_Shader->alfaColor = 0.35f;
+			((DirectX::DXmodelClass*)SystemHandle->m_Application->m_TerrainModel[terrainId])->m_Shader->hasAlfaColor = true;
+			((DirectX::DXmodelClass*)SystemHandle->m_Application->m_TerrainModel[terrainId])->m_Shader->alfaColor = 0.35f;
 		}
 #endif
 
@@ -840,8 +839,7 @@ bool CTerrain::initTerrainWaterMeshDemo(UINT terrainId) // Used to load WATER
 			m_heightMap[(m_terrainWidth * j) + i].y = m_heightMap[(m_terrainWidth * j) + (m_terrainWidth-border)+k].y;\
 }
 
-
-//NEW!
+#pragma warning( disable : 4018 ) //4018: '>': signed/unsigned mismatch
 //The next new function is NormalizeHeightMap. All it does is it goes through the terrain and divides each height value by 15 so that the terrain doesn't look too spikey. 
 //Generally its better just to do this work on the height map before loading it in.
 void CTerrain::NormalizeHeightMap(float scale, float moveY)
@@ -853,7 +851,6 @@ void CTerrain::NormalizeHeightMap(float scale, float moveY)
 	{
 	}
 
-	//UINT COUNTER = 0;
 	for (j = 1; j < (int)m_terrainHeight - 1; j++)
 	{
 		for (i = 1; i < (int)m_terrainWidth - 1; i++)
@@ -920,9 +917,7 @@ bool CTerrain::initMainTopoTerrainDemo(UINT terrainId)
 	// Step 3: ID3 Reduce terrain scale/height:	|tu tv OPEN GL|
 	#endif
 
-	//#if DX_ENGINE_LEVEL < 60
-	//------------------------------------------------------------------------------------------
-	// Step 5: Populate: VirtualModelClass* SystemHandle->m_Application->m_Model[id]
+	// Step 5: Populate: VirtualModelClass* SystemHandle->m_Application->m_TerrainModel[id]
 	//Populate: indices.push_back
 	if (terrainId == 2 || terrainId == 3 || terrainId == 4)//AQUI-TERR
 	{
@@ -930,7 +925,6 @@ bool CTerrain::initMainTopoTerrainDemo(UINT terrainId)
 		Textures.push_back(TERRAIN_LEVEL50_TEXTURE);
 		CreateTerrainModel(terrainId,  Textures, SHADER_AUTO);
 	}
-	//#endif
 	return true;
 }
 #endif
@@ -1140,8 +1134,8 @@ void CTerrain::CreateTerrainModel(UINT id, std::vector<STRING> Textures, SHADER_
 	std::vector<UINT> indices; // (2 * (terrain_squares)*(terrain_squares));
 
 	// Add TEXTURE: Create a model: NEW GLmodelClass || NEW DXmodelClass
-	CREATE_MODEL_IF_NOT_EXCEPTION(SystemHandle->m_Application->m_Model[id], I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);  // m_Model[id] = NEW
-	SystemHandle->m_Application->m_Model[id]->ModelHASfog = true;
+	CREATE_MODEL_IF_NOT_EXCEPTION(SystemHandle->m_Application->m_TerrainModel[id], I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);  // m_TerrainModel[id] = NEW
+	SystemHandle->m_Application->m_TerrainModel[id]->ModelHASfog = true;
 
 #if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX //DX_ENGINE_LEVEL >= 25
 	if (id == 2 || id ==4)
@@ -1181,24 +1175,18 @@ void CTerrain::CreateTerrainModel(UINT id, std::vector<STRING> Textures, SHADER_
 
 #if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX
 #else
-	if (id == 0) ASSERT(SystemHandle->m_Application->m_Model[id]->LoadTexture(TEXT("id0:under water"), m_Driver, shader_type, &Textures, &modelVertexVector0));
+	if (id == 0) ASSERT(SystemHandle->m_Application->m_TerrainModel[id]->LoadTexture(TEXT("id0:under water"), m_Driver, shader_type, &Textures, &modelVertexVector0));
 #endif
 
 	#if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX
-	//AQUI-TERR
 	if (id == 2 || id == 4) {
 		if (shader_type < SHADER_Terrain_Texture_DEMO60) {
-			SystemHandle->m_Application->m_Model[id]->PrimitiveTopology = TRIANGLESTRIP; //After: Load
+			SystemHandle->m_Application->m_TerrainModel[id]->PrimitiveTopology = TRIANGLESTRIP; //After: Load
 		} else {
-			SystemHandle->m_Application->m_Model[id]->PrimitiveTopology = TRIANGLELIST; //After: Load
+			SystemHandle->m_Application->m_TerrainModel[id]->PrimitiveTopology = TRIANGLELIST; //After: Load
 		}
 	}
 	#endif
 
-	// QuadTree
-	#if defined SCENE_TERRAIN_QUAD_TREE
-	TerrainQuadtree = NEW TerrainQuadtreeClass;
-	TerrainQuadtree->Initialize(0, autoGenUnderWaterTerrain, m_Driver);
-	#endif
 }
 

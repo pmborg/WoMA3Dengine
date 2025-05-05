@@ -1260,8 +1260,8 @@ bool InitSelectedDriver()
 	{
 #if defined DX11 // [0] Pure DX11
 	case DRIVER_DX11:
-		ASSERT(((DirectX::DX11Class*)(driverList[DRIVER_DX11]))->OnInit(AppSettings->UI_MONITOR, SystemHandle->m_hWnd, 
-			AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT, 24 /*BufferDeep*/,
+		IF_NOT_RETURN_FALSE(((DirectX::DX11Class*)(driverList[DRIVER_DX11]))->OnInit(AppSettings->UI_MONITOR, SystemHandle->m_hWnd, 
+			AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT, AppSettings->DEPTH_BITS,
 			AppSettings->SCREEN_DEPTH, AppSettings->SCREEN_NEAR, AppSettings->MSAA_Anisotropic, AppSettings->VSYNC_ENABLED,
 			AppSettings->FULL_SCREEN, AppSettings->UseDoubleBuffering, AppSettings->AllowResize));
 		break;

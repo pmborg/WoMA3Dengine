@@ -214,9 +214,12 @@ namespace WOMA
 
 	// SUBSYSTEM:CONSOLE
 	extern BOOL		UseWarpDevice;
+    extern BOOL	    renderOnce;
+    extern UINT     woma_timer;
+#if _NOT
 	extern int		ARGc;
 	extern CHAR**	ARGv;
-
+#endif
 	extern TCHAR strConsoleTitle[MAX_STR_LEN];
 #if defined USE_LOG_MANAGER //1
 	extern bool dirExists(STRING& dirName_in);

@@ -147,13 +147,15 @@ public:
 	XMFLOAT3 minVertex = XMFLOAT3(0, 0, 0);
 	XMFLOAT3 maxVertex = XMFLOAT3(0, 0, 0);
 
-#if defined BOUNDINGVOLUMES
+#if defined USE_BOUNDING_VOLUMES
 	std::vector<XMFLOAT3> boundingBoxVerts;
 	std::vector<DWORD> boundingBoxIndex;
 	void CreateBoundingVolumes(std::vector<XMFLOAT3>& vertPosArray);
 #endif
 
 	HRESULT LoadTextureImage(TCHAR* textureFilename);
+
+    UINT			m_instanceCount = 0;
 
 // ----------------------------------------------------------------------
 private:
@@ -165,7 +167,7 @@ private:
 
 	DXshaderClass* CreateShader(TCHAR* objectName, SHADER_TYPE ShaderType);
 	bool InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* textureFile=NULL);
-	bool CreateDXbuffers(UINT sizeofMODELvertex, /*ID3D11Device*/ void* device, void* indices, void* vertices);
+	bool CreateDXbuffers(UINT sizeofMODELvertex, void* device, void* indices, void* vertices);
 	void SetGeometryBuffers(void* deviceContext);	//ID3D11DeviceContext
 
 	#if defined USE_LIGHT_RAY
@@ -230,7 +232,7 @@ private:
 	float	m_xTexture=0;
 #endif
 
-	
+
 
 };
 

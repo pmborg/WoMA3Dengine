@@ -1570,7 +1570,7 @@ void DXmodelClass::translation(float x, float y, float z)
 
 // Create: Bounding Box 
 // --------------------------------------------------------------------------------------------
-#if defined BOUNDINGVOLUMES
+#if defined USE_BOUNDING_VOLUMES
 void DXmodelClass::CreateBoundingVolumes(std::vector<XMFLOAT3>& vertPosArray)
 // --------------------------------------------------------------------------------------------
 {

@@ -1284,6 +1284,10 @@ bool ModelClass::CreateObject(void* XmodelClass, TCHAR* objectName, void* g_driv
 				tempVert.y = obj3d.vertPos[obj3d.vertPosIndex[j]].y;
 				tempVert.z = obj3d.vertPos[obj3d.vertPosIndex[j]].z;
 
+#if defined CHECK_OBJ_COLISION
+                ((DXmodelClass*)XmodelClass)->bottleVertPosArray.push_back(XMFLOAT3(tempVert.x, tempVert.y, tempVert.z));
+#endif
+
 				tempVert.tu = obj3d.vertTexCoord[obj3d.vertTCIndex[j]].x;
 				tempVert.tv = obj3d.vertTexCoord[obj3d.vertTCIndex[j]].y;
 
@@ -1322,6 +1326,9 @@ bool ModelClass::CreateObject(void* XmodelClass, TCHAR* objectName, void* g_driv
 					tempVert.tu = obj3d.vertTexCoord[obj3d.vertTCIndex[j]].x;
 					tempVert.tv = obj3d.vertTexCoord[obj3d.vertTCIndex[j]].y;
 
+#if defined CHECK_OBJ_COLISION
+                    ((DXmodelClass*)XmodelClass)->bottleVertPosArray.push_back(XMFLOAT3(tempVert.x, tempVert.y, tempVert.z));
+#endif
 					modelTextureVertex.push_back(tempVert);
 				}
 
@@ -1352,6 +1359,10 @@ bool ModelClass::CreateObject(void* XmodelClass, TCHAR* objectName, void* g_driv
 						tempVert.y = obj3d.vertPos[obj3d.vertPosIndex[obj3d.indices32[indexStart + j]]].y;
 						tempVert.z = obj3d.vertPos[obj3d.vertPosIndex[obj3d.indices32[indexStart + j]]].z;
 
+#if defined CHECK_OBJ_COLISION
+                        ((DXmodelClass*)XmodelClass)->bottleVertPosArray.push_back(XMFLOAT3(tempVert.x, tempVert.y, tempVert.z));
+#endif
+
 						//Color:
 						tempVert.r = obj3d.material[obj3d.subsetMaterialArray[i]].diffuseColor.x;
 						tempVert.g = obj3d.material[obj3d.subsetMaterialArray[i]].diffuseColor.y;
@@ -1373,6 +1384,11 @@ bool ModelClass::CreateObject(void* XmodelClass, TCHAR* objectName, void* g_driv
 			#endif
 			}
 	// VERTICES/INDEXES DONE
+
+#if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION TUTORIAL_CHAP >= 96 && false
+    // Get bounding volume information from "bottleVertPosArray":
+    ((DXmodelClass*)XmodelClass)->CreateBoundingVolumes( ((DXmodelClass*)XmodelClass)->bottleVertPosArray );				//Output CenterOffset
+#endif
 
 	return true;
 }

@@ -313,9 +313,9 @@ static_assert(false, "At least one X86 or X64 need to be defined!");
 #define SSE2_ONLY
 #define _XM_SSE_INTRINSICS_
 #include <emmintrin.h>						//#include <xmmintrin.h>
-static_assert(false, "This Target is not valid for WOMA3D Engine");
 #elif defined _M_IX86_FP && _M_IX86_FP==1	//SSE x32	(Pentium - III Katmai)= (Fev 1999) Target: WINXP 32b+SSE
-	// SSE
+// SSE
+static_assert(false, "This Target is not valid for WOMA3D Engine");
 #define _XM_SSE_INTRINSICS_
 #include <xmmintrin.h>						//#include <mmintrin.h>
 static_assert(false, "This Target is not valid for WOMA3D Engine");
@@ -437,9 +437,10 @@ static_assert(false, "This code is for a LOWENDIAN CPU");
 #endif
 
 // 64 bits WIN10 SDK + AVX2, VS2015: In Target Platform Windows 10 -> (Compile for DX12)
-#if VER_PRODUCTMAJORVERSION >= 10 && _MSC_VER >= 1900 //WIN10 & >=VS2015
+#if VER_PRODUCTMAJORVERSION >= 10 && _MSC_VER >= 1900 && defined X64 //WIN10 & >=VS2015
 #ifndef WIN10
 	#define WIN10				// Target Windows: Window 10!
+    #undef WIN6x
 #endif
 #endif
 
@@ -460,7 +461,7 @@ static_assert(false, "This code is for a LOWENDIAN CPU");
 #endif
 #if _MSC_VER >= 1600			// 64 bits WIN6 SDK + AVX, Compiled in VS2010 or VS2012 or VS2013 or VS2015 or better TO USE (DX11)
 	//DX9 can be selected
-#ifndef WIN6x
+#if !defined WIN6x && !defined WIN10
 	#define WIN6x					// Target Windows: Vista, 7, 8 or 8.1
 	#define DX9 					// can be selected 
 #endif
@@ -481,7 +482,7 @@ static_assert(false, "This code is for a LOWENDIAN CPU");
 // Select OPENGL-APIs to COMPILE:
 // -------------------------------------------------------------------------------------------
 // (Windows: Vista, 7 & 8) or Linux? ---> Allow OpenGL 3.3+ & 4.0
-#if defined ANDROID_PLATFORM || ((defined WIN6x) && (defined LINUX_PLATFORM && !defined X64))
+#if defined ANDROID_PLATFORM || (defined WIN6x) || (defined LINUX_PLATFORM && !defined X64)
 	#define OPENGL3  //OPENGL-API: 3.3+ ~ DX10 for Microsoft Windows / Mac OS X / Linux / Android level:26
 #endif
 
@@ -498,23 +499,11 @@ static_assert(false, "This code is for a LOWENDIAN CPU");
 # error __ANDROID_API__ must be defined
 #endif
 
-#if __ANDROID_API__ == __ANDROID_API_FUTURE__
+#if __ANDROID_API__ >= 26
 	#define GLES3	//3.0 ~ DX11
 #else
-	#define GLES2	//2.0 ~ DX11
+	#define GLES2	//2.0 ~ DX10
 #endif
-
-/*
-#if defined __ANDROID_API__ && __ANDROID_API__ >= 21
-	#define GLES31	//3.1 ~ DX11 - Android 5.0 (API level 21+) - for Android / BlackBerry / iOS / Symbian
-#elif defined __ANDROID_API__ && __ANDROID_API__ >= 18
-	#define GLES3	//3.0 ~ DX11 - Android 4.3 (API level 18+) - for Android / BlackBerry / iOS / Symbian
-#elif defined __ANDROID_API__ && __ANDROID_API__ >= 8
-	#define GLES2	//2.0 ~ DX11 - Android 2.2 (API level 8+) - for Android / BlackBerry / iOS / Symbian
-#else
-		#error "MIN: __ANDROID_API__" is 9
-#endif
-*/
 
 // NOTE: Google's "Almost Native Graphics Layer Engine" (ANGLE) project provides a means to convert OpenGL ES 2.0 application calls to DirectX 
 #endif
@@ -522,7 +511,7 @@ static_assert(false, "This code is for a LOWENDIAN CPU");
 // ASSERT (Render-System API DRIVERs): Check at-least for one driver:
 #if !defined (DX9) && !defined (DX11) && !defined (DX12) && \
 	!defined (GLES2) && !defined (GLES3) && !defined (GLES31) && \
-	!defined (OPENGL21) && !defined (OPENGL3) && !defined (OPENGL40)
+	!defined (OPENGL3) && !defined (OPENGL40)
 #error "WOMA COMPILATION ERROR: At least one Render-System have to be Selected to COMPILE!"
 #endif
 
@@ -608,7 +597,7 @@ static_assert(false, "WIN6x: X64 or WIN32, have to be selected");
 #define WOMA_CONSOLE_APPLICATION	// Allow: OS "CMD Line Console" VS Native "WINDOWS" or "X-WINDOWS"
 #endif
 
-#define MAX_PARAMS			 10			// Max parameters on command line
+#define MAX_PARAMS			10			// Max parameters on command line
 #define MAX_STR_LEN			512			// Used by TCHAR Arrays
 #define MAX_PATH			260							 
 #define CONSOLE_LOG_WIDTH	900
@@ -663,3 +652,17 @@ static_assert(false, "WIN6x: X64 or WIN32, have to be selected");
 #endif
 
 #endif
+
+/*
+#undef DX9sdk   //Original DX9
+#undef DX9      //DX9 Using modern API: DX11
+#undef DX10     
+#undef DX11
+#undef DX12
+
+#undef GLES2    //Android: x64|ARM64 (c++: API:26) (Packaging: API:25)
+#undef GLES3
+
+#undef OPENGL3  //Windows: 32bits
+#undef OPENGL40 //Windows: 64bits or Linux: 64bits
+*/

@@ -301,12 +301,12 @@ void ApplicationClass::Shutdown()
 	#if (defined OPENGL3 || defined OPENGL4)
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
 		{
-			SAFE_SHUTDOWN_MODELGL3(m_Model[i]);
+			SAFE_SHUTDOWN_MODELGL3(m_TerrainModel[i]);
 		}
 		else
 	#endif
 		{
-			SAFE_SHUTDOWN_MODELDX(m_Model[i]);
+			SAFE_SHUTDOWN_MODELDX(m_TerrainModel[i]);
 		}
 	}
 
@@ -488,7 +488,7 @@ bool ApplicationClass::Start()
 	}
 
 	for (int i = 0; i < MAX_TERRAINS; i++)
-		m_Model[i] = NULL;
+		m_TerrainModel[i] = NULL;
 
 #if defined USE_RASTERTEK_TEXT_FONT
 	AppTextClass = NULL;
@@ -532,6 +532,23 @@ void ApplicationClass::SetPlayerPosition(UINT netID)
 
 
 
+#if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION
+//-----------------------------------------------------------------------------   
+// Name: CompoundSortCB()   
+// Desc: Callback function for sorting Compounds in front-to-back order   
+//-----------------------------------------------------------------------------   
+int __cdecl CompoundSortCB(const VOID* arg1, const VOID* arg2)
+{
+	compoundTreeLoadOrder* p1 = (compoundTreeLoadOrder*)arg1;
+	compoundTreeLoadOrder* p2 = (compoundTreeLoadOrder*)arg2;
+
+	if (p1->order > p2->order)
+		return +1;
+
+	return -1;
+}
+
+#endif
 
 #if CORE_ENGINE_LEVEL >= 10 && !defined NewWomaEngine
 //-------------------------------------------------------------------------------------------

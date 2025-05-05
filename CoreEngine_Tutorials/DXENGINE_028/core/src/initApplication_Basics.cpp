@@ -635,7 +635,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 #if defined USE_INSTANCES_FOR_TREES
 	xmlobj3d XMLobj3D = {};
 
-	XMLobj3D.id = SystemHandle->xml_loader.theWorld.size();
+	XMLobj3D.id = (int)SystemHandle->xml_loader.theWorld.size();
 	XMLobj3D.posX = 0; XMLobj3D.translateY = 0; XMLobj3D.posZ = 0;
 	XMLobj3D.shader = SHADER_TEXTURE_GS_INSTANCED;
 	XMLobj3D.scale = 0.0215f;
@@ -721,21 +721,11 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	// --------------------------------------------------------------------------------------------
 	//Finally, launch dynamic Load Compound/OBJ Thread ////////////////////////////////////////////
 	// --------------------------------------------------------------------------------------------
-#if defined (CHECK_COMPOUND_COLISION) && defined (SCENE_COMPOUND) //TUTORIAL_CHAP >= 55 && 
-	for (UINT i = 0; i < N_COMPOUNDS; i++) {
+#if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION
+	for (UINT i = 0; i < WOMA::num_loading_objects; i++) {
 		compoundTreeLoadingOrder[i].compoundTreeId = i;
 		compoundTreeLoadingOrder[i].order = 0;
 	}
-
-#if TUTORIAL_CHAP < 95
-	CompoundReadFunction(Driver);
-#else
-	// Create a thread to load our compounds:
-	threadCompoundLoaderAlive = true;
-	threadCompoundLoaderHandle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)CompoundReadFunction, (void*)this, 0, &threadCompoundLoaderId);
-	if (!threadCompoundLoaderHandle) { return false; }
-	if (!SetThreadPriority(threadCompoundLoaderHandle, THREAD_PRIORITY_IDLE/*THREAD_PRIORITY_LOWEST*//*THREAD_PRIORITY_BELOW_NORMAL*/)) { return false; }
-#endif
 #endif
 
 #if defined SAVEW3D

@@ -133,7 +133,10 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 //----------------------------------------------------------------------------
 {
 	MSG msg = { 0 };						// Reset msg
-	
+
+    if (WOMA::renderOnce)
+        WOMA::woma_timer = 0;
+
 	//MAIN LOOP: (single thread version for DEBUG)
 	WOMA::main_loop_state = 0;
 	do
@@ -156,7 +159,8 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 				return -2;
 			}
 		}
-		if (WOMA::main_loop_state < 0) {
+		if (WOMA::main_loop_state < 0 || (WOMA::renderOnce && WOMA::woma_timer > 15))
+        {
 			WOMA::game_state = GAME_STOP;
 			break;
 		}

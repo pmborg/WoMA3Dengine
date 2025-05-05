@@ -63,6 +63,8 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 	// --------------------------------------------------------------------------------------------
 #if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
 	SceneManager::GetInstance()->Render();							//Create Lists for all objects to render (from WORLD.XML) and more
+
+    world_main_size = SceneManager::GetInstance()->opacModelList.size();
 #endif
 
 	// [3] LIGHT RAY:
@@ -144,7 +146,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 #endif
 
 	if (RENDER_PAGE == 49)
-		m_Model[0]->RenderWithFade();					// New function to replace these 2 line options.
+		m_TerrainModel[0]->RenderWithFade();					// New function to replace these 2 line options.
 #endif
 
 	// [2] Render MAIN Terrain Here
@@ -153,23 +155,23 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 	static bool fog = (RENDER_PAGE == 51 || RENDER_PAGE >= 60) ? true : false;
 	if (RENDER_PAGE >= 50)
 	{
-		if (m_Model[2])
-			m_Model[2]->RenderWithFade(fadeLight, fog);	// New function to replace these 2 line options.
+		if (m_TerrainModel[2])
+			m_TerrainModel[2]->RenderWithFade(fadeLight, fog);	// New function to replace these 2 line options.
 	}
 #endif
 #if defined DEBUG_COLLISION_TERRAIN
-	if (m_Model[3])
-		m_Model[3]->RenderWithFade(fadeLight, fog);	// New function to replace these 2 line options. //AQUI-TERR
+	if (m_TerrainModel[3])
+		m_TerrainModel[3]->RenderWithFade(fadeLight, fog);	// New function to replace these 2 line options. //AQUI-TERR
 #endif
-	// 3D STATIC OPAC OBJECTS
+
+	// 3D STATIC OPAC OBJECTS on WORLD.XML:
 	// --------------------------------------------------------------------------------------------
 #if defined USE_RASTERIZER_STATE
 	m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
 #endif
 #if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
-	UINT size = SceneManager::GetInstance()->opacModelList.size();
-	for (UINT id = 0; id < size; id++)
-			RenderModel(monitorWindow, m_Driver, id, PASS_OPAC);
+	for (UINT id = 0; id < world_main_size; id++)
+			RenderModel(monitorWindow, m_Driver, id, PASS_OPAC); // Render MAIN OBJs.
 #endif
 
 	//THE "OTHER" NETWORK PLAYERS
@@ -186,7 +188,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 }
 
 //#############################################################################################################
-// [3/3] POS-RENDER - 2D: Render TRANSPARENT Parts of 3D OBJs (like: glass window, etc...)
+// [3/3] POS-RENDER - 2D: Render TRANSPARENT Parts of 3D OBJs (like: "Glass windows", "Billboards", etc...)
 //#############################################################################################################
 void ApplicationClass::AppPosRender(UINT monitorWindow)
 {
@@ -198,9 +200,9 @@ void ApplicationClass::AppPosRender(UINT monitorWindow)
 	UINT size = SceneManager::GetInstance()->transparentModelList.size();
 	if (size > 0) {
 		qsort(m_Trees, size, sizeof(Tree), BillSortCB);
-		for (UINT id = 0; id < size; id++) {
+		for (UINT id = world_main_size; id < size; id++) {
 			UINT i = m_Trees[id].ID + world_xml_objs;
-			RenderModel(monitorWindow, m_Driver, i, PASS_OPAC);
+			RenderModel(monitorWindow, m_Driver, i, PASS_OPAC); // Render: "Billboards"
 		}
 	}
 #endif
@@ -336,16 +338,13 @@ float ApplicationClass::Update()
 	//--------------------------------------------------------------------------------------------
 	// DETECT COLISIONS: Get the closest Compound object/(s):
 	//--------------------------------------------------------------------------------------------
-#if defined CHECK_COMPOUND_COLISION
-	// and what about a MOUSE PICK ? (left key?):
-	/////////////////////////////////////////////////////
-	anyMouseClickToPick();
+#if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION //Get the closest Compound object/(s):
 
 	float X = 0.0f, Z = 0.0f;
 	float camX = m_Position[g_NetID]->m_positionX;
 	float camZ = m_Position[g_NetID]->m_positionZ;
-	UINT N_COMPOUNDS = SceneManager::GetInstance()->opacModelList.size();
-	for (UINT c = 0; c < N_COMPOUNDS; c++)
+
+	for (UINT c = 0; c < world_main_size; c++)
 	{
 		UINT id = compoundTreeLoadingOrder[c].compoundTreeId;
 		X = objModel[id]->PosX - camX; //compound[id].posX
@@ -353,26 +352,26 @@ float ApplicationClass::Update()
 		compoundTreeLoadingOrder[c].order = (UINT)(X * X + Z * Z);
 	}
 
-	qsort(compoundTreeLoadingOrder, N_COMPOUNDS, sizeof(compoundTreeLoadOrder), CompoundSortCB);	// Order compound by distance:
+	qsort(compoundTreeLoadingOrder, world_main_size, sizeof(compoundTreeLoadOrder), CompoundSortCB);	// Order compound by distance:
 
 	// [Colision 1] Check Colison with with "10" COMPOUNDS near to us...:
 	// --------------------------------------------------------
-	static XMMATRIX bottleWorld;
 	XMVECTOR prwsPos, prwsDir;
 
 	/////////////////////////////////////////  IMPORTANT - Get the initial Ray /////////////////////////////////////////
 	pickRayVector((float)SystemHandle->AppSettings->WINDOW_WIDTH / 2.0f, (float)SystemHandle->AppSettings->WINDOW_HEIGHT - 65, prwsPos, prwsDir);
 
-	for (UINT c = 0; c < 10/*N_COMPOUNDS*/; c++) // We dont need all, right?:)
+    UINT	closestObjId = UINT_MAX;
+	for (UINT c = 0; c < MIN (world_main_size, 10); c++) // We dont need all, right?:)
 	{
 		UINT i = compoundTreeLoadingOrder[c].compoundTreeId;	// This is the compound[id] to check colisions...
 
-		if (compound[i].ready && compound[i].visibel) // Check compounds already loaded... 
+		if (objModel[i]->ready && objModel[i]->visibel) // Check compounds already loaded... 
 		{
-			closestObjDist = FLT_MAX;
-			D3DX_TO_XM_MATRIX(bottleWorld, compound[i].objModel->m_world); // CONVERT MATRIXs....:/(
-
-			closestObjDist = pick(prwsPos, prwsDir, compound[i].objModel->bottleBoundingBoxVertPosArray, compound[i].objModel->bottleBoundingBoxVertIndexArray, bottleWorld, !true);	// Use Bounding Boxes, Faster!
+			//closestObjDist = FLT_MAX;
+			closestObjDist = pick(prwsPos, prwsDir, objModel[i]->bottleBoundingBoxVertPosArray,
+                                                    objModel[i]->bottleBoundingBoxVertIndexArray,
+                                                    ((DXmodelClass*)objModel[i])->m_worldMatrix, !true);	// Use Bounding Boxes, Faster!
 			if (closestObjDist < FLT_MAX)
 			{
 				closestObjId = i;	// Get the Closest Object ID!
@@ -383,12 +382,11 @@ float ApplicationClass::Update()
 
 	// Calculate it with more accurance if we are really close to an object:
 	if (closestObjDist >= 0 && closestObjDist <= 3) {
-		closestObjDist = pick(prwsPos, prwsDir, compound[closestObjId].objModel->bottleVertPosArray, compound[closestObjId].objModel->indices, bottleWorld, true);
+		closestObjDist = pick(prwsPos, prwsDir, objModel[closestObjId]->bottleVertPosArray, 
+                                                objModel[closestObjId]->bottleBoundingBoxVertIndexArray, ((DXmodelClass*)objModel[closestObjId])->m_worldMatrix, true);
 	}
-#endif
 
-	// [Colision 2] Billboards
-	// --------------------------------------------------------
+#endif
 
 #if defined USE_DIRECT_INPUT					
 	HandleUserInput(dt);	// GET INPUT for CAMERA: Movement
@@ -883,10 +881,10 @@ void ApplicationClass::RenderDemoIntroSprites()
 #endif
 
 
-#if defined CHECK_COMPOUND_COLISION //DX_ENGINE_LEVEL >= 56
-// Calculate the world space pick ray from the 2d coordinates of our mouse cursor.
+#if defined CHECK_OBJ_COLISION
+// Calculate the world space pick ray from the 2d coordinates
 // ==================================================================================================================================
-void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickRayInWorldSpacePos, XMVECTOR& pickRayInWorldSpaceDir/*, bool mouseClick*/)
+void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickRayInWorldSpacePos, XMVECTOR& pickRayInWorldSpaceDir)
 // ==================================================================================================================================
 {
 	int ClientWidth = SystemHandle->AppSettings->WINDOW_WIDTH; //g_ScreenWidth;
@@ -896,9 +894,6 @@ void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickR
 	XMVECTOR pickRayInViewSpacePos = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 
 	float PRVecX, PRVecY, PRVecZ;
-
-	//if (mouseClick) {
-		//Transform 2D pick position on screen space to 3D ray in View space
 
 #define _11 r[0].m128_f32[0]
 #define _12 r[0].m128_f32[1]
@@ -932,7 +927,7 @@ void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickR
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 	{
-		driver = (DX12Class*)Driver;
+		driver = (DX12Class*)driverList[SystemHandle->AppSettings->DRIVER];
 	}
 #endif
 #if defined DX11 || defined DX9
@@ -943,14 +938,14 @@ void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickR
 #endif
 #if defined DX9sdk
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
-		driver9 = (DX9Class*)Driver;
+		driver9 = (DX9Class*)driverList[SystemHandle->AppSettings->DRIVER];
 #endif
 
-	XMMATRIX* m_projectionMatrix = NULL;
-	driver11->GetProjectionMatrix(*m_projectionMatrix/*Driver, camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix*/);
+	XMMATRIX m_projectionMatrix;
+	driver11->GetProjectionMatrix(m_projectionMatrix);
 
-	PRVecX = (((2.0f * mouseX) / ClientWidth) - 1) / m_projectionMatrix->_11;
-	PRVecY = -(((2.0f * mouseY) / ClientHeight) - 1) / m_projectionMatrix->_22;
+	PRVecX = (((2.0f * mouseX) / ClientWidth) - 1) / m_projectionMatrix._11;
+	PRVecY = -(((2.0f * mouseY) / ClientHeight) - 1) / m_projectionMatrix._22;
 	PRVecZ = 1.0f;	//View space's Z direction ranges from 0 to 1, so we set 1 since the ray goes "into" the screen
 
 #undef _11
@@ -968,22 +963,19 @@ void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickR
 #undef _33
 #undef _34
 
-
+#undef _41
+#undef _42
+#undef _43
 #undef _44
 
 	pickRayInViewSpaceDir = XMVectorSet(PRVecX, PRVecY, PRVecZ, 0.0f);
-	//} else {
-		//to use the center of the screen (client area)
-		//to be the point that creates the picking ray (eg. first person shooter)
-		//pickRayInViewSpaceDir = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-	//}
 
 	// Transform 3D Ray from View space to 3D ray in World space
 	XMMATRIX pickRayToWorldSpaceMatrix;
 	XMVECTOR matInvDeter;	//We don't use this, but the xna matrix inverse function requires the first parameter to not be null
 
 	// Convert D3DXMATRIX to XMMATRIX:
-	XMMATRIX* camView = driver11->GetViewMatrix(driver11, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_OPAC, NULL /*lightViewMatrix*/, NULL/*ShadowProjectionMatrix*/);
+	XMMATRIX* camView = driver11->GetViewMatrix(CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_OPAC, NULL /*lightViewMatrix*/, NULL/*ShadowProjectionMatrix*/);
 
 	pickRayToWorldSpaceMatrix = XMMatrixInverse(&matInvDeter, *camView);	//Inverse of View Space matrix is World space matrix
 	pickRayInWorldSpacePos = XMVector3TransformCoord(pickRayInViewSpacePos, pickRayToWorldSpaceMatrix);
@@ -992,9 +984,8 @@ void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickR
 
 // Calculates whether the object was picked or not | getPoligon = true (detect colision)
 // ==================================================================================================================================
-float ApplicationClass::pick(XMVECTOR pickRayInWorldSpacePos, XMVECTOR pickRayInWorldSpaceDir,
-	// ==================================================================================================================================
-	std::vector<XMFLOAT3>& vertPosArray, std::vector<DWORD>& indexPosArray, XMMATRIX& worldSpace, bool getPoligon)
+float ApplicationClass::pick(XMVECTOR pickRayInWorldSpacePos, XMVECTOR pickRayInWorldSpaceDir, std::vector<XMFLOAT3>& vertPosArray, 
+                            std::vector<DWORD>& indexPosArray, XMMATRIX& worldSpace, bool getPoligon)
 {
 	float closer = FLT_MAX;
 	bool found = false;
@@ -1095,7 +1086,6 @@ bool ApplicationClass::PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTO
 {
 	//To find out if the point is inside the triangle, we will check to see if the point
 	//is on the correct side of each of the triangles edges.
-
 	XMVECTOR cp1 = XMVector3Cross((triV3 - triV2), (point - triV2));
 	XMVECTOR cp2 = XMVector3Cross((triV3 - triV2), (triV1 - triV2));
 	if (XMVectorGetX(XMVector3Dot(cp1, cp2)) >= 0)
@@ -1121,224 +1111,4 @@ bool ApplicationClass::PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTO
 
 
 
-#if defined (CHECK_COMPOUND_COLISION) //TUTORIAL_CHAP >= 96 && 
-// Check if the "LEFT Mouse Button" was pressed and if there is anything to pick
-// ==================================================================================================================================
-void ApplicationClass::anyMouseClickToPick()
-// ==================================================================================================================================
-{
-	static int pickWhat = 2;
-	//static float pickedDist = 0.0f;
-	static bool isShoot = false;
-	static XMMATRIX bottleWorld;
-
-	float tempDist;
-	XMVECTOR prwsPos, prwsDir;
-	int hitIndex = -1;
-	float closestDist = FLT_MAX;
-
-	if (m_Input->m_mouseState.rgbButtons[MOUSE_LEFT] & 0x80)
-	{
-		if (isShoot == false)
-		{
-			POINT mousePos;
-
-			GetCursorPos(&mousePos);
-			ScreenToClient(g_hwnd, &mousePos);
-
-			int mousex = mousePos.x;
-			int mousey = mousePos.y;
-			pickRayVector((float)mousex, (float)mousey, prwsPos, prwsDir); // when we click LEFT mouse button
-
-			// Check all COMPOUNDS Objects:
-			// ----------------------------
-			for (UINT i = 0; i < N_COMPOUNDS; i++)
-			{
-				compound[i].bottleHit = 0; //reset it
-				if (compound[i].ready && compound[i].visibel) // Check compounds already loaded... 
-				{
-					tempDist = FLT_MAX;
-
-					D3DX_TO_XM_MATRIX(bottleWorld, compound[i].objModel->m_world);
-#ifdef zero
-					if (pickWhat == 0)//(L"Bounding Sphere";)
-					{
-						float pRToPointDist = 0.0f; // Closest distance from the pick ray to the objects center
-
-						XMVECTOR bottlePos = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-						XMVECTOR pOnLineNearBottle = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-
-						// For the Bounding Sphere to work correctly, we need to make sure we are testing
-						// the distance from the objects "actual" center and the pick ray. We have stored
-						// the distance from (0, 0, 0) in the objects model space to the object "actual"
-						// center in bottleCenterOffset. So now we just need to add that difference to
-						// the bottles world space position, this way the bounding sphere will be centered
-						// on the object real center.
-						XMVECTOR bottleCenterOffset = XMVectorSet(compound[i].objModel->bottleCenterOffset.x,
-							compound[i].objModel->bottleCenterOffset.y,
-							compound[i].objModel->bottleCenterOffset.z,
-							compound[i].objModel->bottleCenterOffset.w);
-
-						bottlePos = XMVector3TransformCoord(bottlePos, bottleWorld) + bottleCenterOffset;
-						// This equation gets the point on the pick ray which is closest to bottlePos
-						pOnLineNearBottle = prwsPos + XMVector3Dot((bottlePos - prwsPos), prwsDir) / XMVector3Dot(prwsDir, prwsDir) * prwsDir;
-
-						// Now we get the distance between bottlePos and pOnLineNearBottle
-						// This line is slightly less accurate, but it offers a performance increase by
-						// estimating the distance using XMVector3LengthEst()
-						//pRToPointDist = XMVectorGetX(XMVector3LengthEst(pOnLineNearBottle - bottlePos));				
-						pRToPointDist = XMVectorGetX(XMVector3Length(pOnLineNearBottle - bottlePos));
-
-						// If the distance between the closest point on the pick ray (pOnLineNearBottle) to bottlePos
-						// is less than the bottles bounding sphere (represented by a float called bottleBoundingSphere)
-						// then we know the pick ray has intersected with the bottles bounding sphere, and we can move on
-						// to testing if the pick ray has actually intersected with the bottle itself.
-						if (pRToPointDist < compound[i].objModel->bottleBoundingSphere)
-						{
-							// This line is the distance to the pick ray intersection with the sphere
-							//tempDist = XMVectorGetX(XMVector3Length(pOnLineNearBottle - prwsPos));
-
-							// Check for picking with the actual model now
-							tempDist = pick(prwsPos, prwsDir, compound[i].objModel->bottleVertPosArray, compound[i].objModel->indices, bottleWorld);
-						}
-					}
-
-					// Bounding Box picking test (L"Bounding Box";)
-					if (pickWhat == 1)
-						tempDist = pick(prwsPos, prwsDir, compound[i].objModel->bottleBoundingBoxVertPosArray, compound[i].objModel->bottleBoundingBoxVertIndexArray, bottleWorld);
-#endif					
-					// Check for picking directly with the model without bounding volumes testing first: (L"Model")
-					//if(pickWhat == 2)
-					tempDist = pick(prwsPos, prwsDir, compound[i].objModel->bottleVertPosArray, compound[i].objModel->indices, bottleWorld);
-
-					if (tempDist < closestDist)
-					{
-						closestDist = tempDist;
-						hitIndex = i; // Compund = hitIndex
-					}
-				}
-			}
-
-			// Check all Players, online:
-			// ----------------------------
-			selected_playerID = g_NetID;	// Init the other selected player as "us":
-
-			for (UINT i = 0; i < HowManyPlayers; i++)
-			{
-				m_player[i]->p_player.bottleHit = false; //reset it
-				if (m_player[i]->p_player.online && m_player[i]->p_player.visibel) // Check players online and visible at camera... 
-				{
-					tempDist = FLT_MAX;
-
-					float posY = m_Terrain[active_terrain].getTerrainHeight(m_Position[i]->m_positionX, m_Position[i]->m_positionZ);
-					m_player[i]->p_player.m_world._42 = posY;
-					D3DX_TO_XM_MATRIX(bottleWorld, m_player[i]->p_player.m_world);
-
-					// Check for picking directly with the model without bounding volumes testing first: (L"Model")
-					//if(pickWhat == 2) 
-					{
-						BYTE meshtype = m_player[i]->p_player.meshType;
-						tempDist = pick(prwsPos, prwsDir, robotMesh[meshtype].bottleVertPosArray, robotMesh[meshtype].indices, bottleWorld);
-					}
-
-					if (tempDist < closestDist)
-					{
-						closestDist = tempDist;
-						selected_playerID = i;
-						m_player[i]->p_player.bottleHit = true;
-					}
-				}
-			}
-
-
-			// Check all animals:
-			// ----------------------------
-			selected_animalTypeID = -1;
-			selected_whatAnimalID = -1;
-
-			for (UINT c = 0; c < animals.size(); c++) 		// For all kind of animals:
-			{
-				AnimalClass* animal = (AnimalClass*)animals[c];
-				for (UINT i = 0; i < animal->N_LOBOS; i++) // For all animals of this type
-				{
-					if (animal->lobo[i].visible  /*&& !animal->lobo[i].alreadyLooted*/)
-					{
-
-						tempDist = FLT_MAX;
-
-						D3DX_TO_XM_MATRIX(bottleWorld, animal->lobo[i].m_world);
-
-						// Check for picking directly with the model without bounding volumes testing first: (L"Model")
-						//if(pickWhat == 2) 
-						{
-							tempDist = pick(prwsPos, prwsDir, animal->m_objModel.bottleVertPosArray, animal->m_objModel.indices, bottleWorld);
-						}
-
-						if (tempDist < closestDist)
-						{
-							closestDist = tempDist;
-							selected_animalTypeID = c;
-							selected_whatAnimalID = i;
-						}
-
-					}
-				}
-			}
-
-			// Check if we are picking up a respawnd obj:
-			for (UINT i = 0; i < respawnObjectList.size(); i++)
-			{
-				if (!respawnObjectList[i].hide &&
-					m_FrustumObj->CheckSphere(respawnObjectList[i].objModel->m_world._41, respawnObjectList[i].objModel->m_world._42, respawnObjectList[i].objModel->m_world._43,
-						respawnObjectList[i].objModel->diameter * respawnObjectList[i].scale))
-				{
-					tempDist = FLT_MAX;
-					D3DX_TO_XM_MATRIX(bottleWorld, respawnObjectList[i].objModel->m_world);
-
-					// Check for picking directly with the model without bounding volumes testing first: (L"Model")
-					tempDist = pick(prwsPos, prwsDir, respawnObjectList[i].objModel->bottleVertPosArray, respawnObjectList[i].objModel->indices, bottleWorld);
-
-					if (tempDist < closestDist)
-					{
-						respawnObjectList[i].hide = true;
-						closestDist = tempDist;
-						selected_respawnObjectID = i;
-						respawnObjectList[i].bottleHit = true;
-
-						if (i == 0) {
-							BYTE currentAMMO = m_player[g_NetID]->p_player.ammu[m_player[g_NetID]->p_player.currentWeapon];
-							m_player[g_NetID]->p_player.ammu[m_player[g_NetID]->p_player.currentWeapon] = min(MAX_AMMU, max(255, currentAMMO + 50));											// Reduce 1 ammu
-						}
-
-						if (i == 1)
-							m_player[g_NetID]->p_player.health = min(gameDemo.health_lvl[m_player[g_NetID]->p_player.playerlvl], m_player[g_NetID]->p_player.health + 20);											// Reduce 1 ammu
-
-						lastTime[selected_respawnObjectID] = m_Timer.currentTime;
-					}
-				}
-			}
-
-			//------------------------------------------------------------------------------------------------------
-			// To avoid pick more than 1 compound:
-			if (closestDist < FLT_MAX)
-			{
-				if (hitIndex >= 0) {
-					compound[hitIndex].bottleHit = 1; //warning C4701: potentially uninitialized local variable 'hitIndex' used
-					CHG_COMPOUND = hitIndex;
-				}
-				//pickedDist = closestDist;
-			}
-
-			isShoot = true;
-
-		}//allow press mouse?
-
-	}//if mouse pressed...
-
-	if (!(m_Input->m_mouseState.rgbButtons[MOUSE_LEFT] & 0x80))
-	{
-		isShoot = false;
-	}
-}
-#endif
 #endif

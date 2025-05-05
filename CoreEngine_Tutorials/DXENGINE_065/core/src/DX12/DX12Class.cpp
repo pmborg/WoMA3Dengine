@@ -804,6 +804,7 @@ namespace DirectX {
 	{
 		HRESULT result = S_OK;
 
+
 		return true;
 	}
 

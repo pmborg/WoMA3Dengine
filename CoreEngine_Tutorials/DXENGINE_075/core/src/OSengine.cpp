@@ -192,9 +192,8 @@ namespace WOMA
 #endif
 	// SUBSYSTEM:CONSOLE
 	BOOL	UseWarpDevice = FALSE;
-	int     ARGc = 0;
-	CHAR**	ARGv = { 0 };
-
+    BOOL	renderOnce = FALSE;
+    UINT    woma_timer = 0;
 	TCHAR	strConsoleTitle[MAX_STR_LEN] = { 0 };
 
 #if defined USE_LOADING_THREADS || defined USE_MAIN_THREAD //vars
@@ -397,7 +396,7 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 	//-geometry W x H + X + Y
 	//	Determines where window's should be created on the screen. The parameter following -geometry should be formatted as a standard X geometry specification. The effect of using this option is to change the GLUT initial size and initial position the same as if glutInitWindowSize or glutInitWindowPosition were called directly. 
 	//
-	glutInit(&WOMA::ARGc, WOMA::ARGv);
+	glutInit(&argc, argv);
 	#endif
 #endif
 #if CORE_ENGINE_LEVEL >= 1 && defined WINDOWS_PLATFORM
@@ -409,12 +408,6 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 	#endif
 
 	DefineConsoleTitle();
-
-	// Save Command Line Arguments to use later on
-#if defined WOMA_CONSOLE_APPLICATION  || !defined WINDOWS_PLATFORM
-	WOMA::ARGc = argc;
-	WOMA::ARGv = argv;
-#endif
 
 	// [4] Set A Top level "Exception handler" for all Exceptions. Catch, Dump & Send Report WOMA ENGINE HOME using FTP!
 	// -------------------------------------------------------------------------------------------

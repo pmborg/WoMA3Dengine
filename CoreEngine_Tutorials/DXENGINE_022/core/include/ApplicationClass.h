@@ -77,6 +77,8 @@
 #define MAX_CLIENTS 1
 #endif
 
+
+
 #include "virtualModelClass.h"
 extern std::vector<VirtualModelClass*> m_screenShots;
 
@@ -131,6 +133,15 @@ extern float fadeIntro;
 
 #if defined (SCENE_COMPOUND)
 #include "compound.h"
+#endif
+
+#if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION
+struct compoundTreeLoadOrder {
+    UINT compoundTreeId;
+    UINT order;
+};
+
+extern int __cdecl CompoundSortCB(const VOID* arg1, const VOID* arg2);
 #endif
 
 #pragma warning( push )
@@ -240,8 +251,6 @@ public:
 	void RenderScene(UINT monitorWindow, WomaDriverClass* driver);
 	float Update();						// PROCESS User Update
 	void AppRender(UINT monitorWindow,  float fadeLight);								// RENDER - 3D
-	// 3D
-	//void	defineSquarModel(float unit);
 	bool	Initialize(WomaDriverClass* Driver);
 #endif
 
@@ -254,6 +263,8 @@ public:
 #if defined USE_LIGHT_RAY
 	void CalculateLightRayVertex (float SunDistance);
 #endif
+
+    UINT world_main_size=0;
 
 #if defined USE_DX10DRIVER_FONTS
 	DXshaderClass* m_FontV2Shader = NULL;
@@ -276,12 +287,26 @@ public:
 	SceneManager* sceneManager = SceneManager::GetInstance();
 #endif
 
+#if defined CHECK_OBJ_COLISION
+    void pickRayVector(float mouseX, float mouseY, XMVECTOR& pickRayInWorldSpacePos, XMVECTOR& pickRayInWorldSpaceDir);
+    float pick(XMVECTOR pickRayInWorldSpacePos, XMVECTOR pickRayInWorldSpaceDir,
+        std::vector<XMFLOAT3>& vertPosArray, std::vector<DWORD>& indexPosArray, XMMATRIX& worldSpace, bool getPoligon = false);
+    bool PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTOR& triV3, XMVECTOR& point);
+    void anyMouseClickToPick();
+#endif
+
+#if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION
+    compoundTreeLoadOrder compoundTreeLoadingOrder[10000] = {}; // MAX 10000 Objs on Scene
+#endif
+
 #if defined USE_SKY2D || ENGINE_LEVEL >= 27 // SKY
 	std::vector<ModelTextureLightVertexType> sky_vertexdata; //std::vector<ModelTextureVertexType> sky_vertexdata;
 	std::vector<UINT>						 sky_indexdata;
 #endif
 
-
+#if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION //float	closestObjDist = FLT_MAX;
+	float	closestObjDist = FLT_MAX;
+#endif
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 	void	SetPlayerPosition(UINT netID);

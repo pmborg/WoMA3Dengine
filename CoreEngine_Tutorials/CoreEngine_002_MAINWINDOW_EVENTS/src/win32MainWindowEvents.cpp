@@ -20,6 +20,7 @@
 //WomaIntegrityCheck = 1234567222;
 
 #pragma warning( disable : 4312 ) // warning C4312: 'type cast': conversion from 'int' to 'HMENU' of greater size
+#include "OSengine.h"
 #include "stateMachine.h"
 #include "OSmain_dir.h"
 
@@ -107,6 +108,33 @@ HWND DoCreateStatusBar(HWND hwndParent, int idStatus, HINSTANCE hinst, int cPart
 }
 #endif
 
+	#define TIMER_TITLE 0
+
+  // TIMERS:
+
+// Start benchamark - TIMER / FPS / CPU Initialize: (Min. Req.: Windows Vista)
+//	-------------------------------------------------------------------------------------------
+void WinSystemClass::StartTimer()
+{
+	if (WOMA::game_state >= GAME_STOP)
+		return;
+
+	// Start Timer for Window Title
+	#define KEYB_TIMES_PER_SECOND 1
+
+	// Dont Update on: FullScreen or Full-windowed
+	if ((!AppSettings->FULL_SCREEN) && (windowStyle != 0x96080000)) 
+	{
+		#if defined RELEASE //INTRO_DEMO
+		SetTimer(m_hWnd, TIMER_TITLE, 100 / KEYB_TIMES_PER_SECOND, NULL);	// 100ms = 10 x per second!
+		#else
+		SetTimer(m_hWnd, TIMER_TITLE, 2000 / KEYB_TIMES_PER_SECOND, NULL);	// 2000ms = 2 seconds! (1000ms = 1 second!)
+		#endif
+		
+	}
+
+}
+
 //extern void ImGuiShutdown();
 //extern bool ImGuiDONE;  // Main loop
 
@@ -162,8 +190,9 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 		break;
 
 	case WM_DESTROY:	// The main application Window will be destroyed
+		//PostQuitMessage(0);
 
-		return 0;
+        break; //return 0;
 
 #if defined USE_INTRO_VIDEO_DEMO
 	case WM_GRAPH_EVENT:
@@ -380,12 +409,13 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 	// Here we reset everything based on the new window dimensions.
 	case WM_EXITSIZEMOVE:
 	{
-		UNPAUSE();		// Restore State: "Green" Light to Render Again (after: return 0)
 		if (mResizing)
 			if (SystemHandle->m_hWnd) 
 				{ ONRESIZE(); } // Do the Window, "Buffers" & Textures Re-size
 
+        UNPAUSE();		// Restore State: "Green" Light to Render Again (after: return 0)
 		mResizing = false;
+
 		return 0;
 	}
 
@@ -445,6 +475,17 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 	// -----------------------------------------------------------------------------
 	// TIMERS:
 	// -----------------------------------------------------------------------------
+	case WM_TIMER: // Once per second:
+		if (WOMA::game_state < GAME_STOP)
+		{
+			switch (wParam)
+			{
+			case TIMER_TITLE:
+                WOMA::woma_timer++;
+				return 0;
+
+			}
+		}
 
 	}
 

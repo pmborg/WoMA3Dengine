@@ -131,5 +131,6 @@ public:
 	bool				ModelCastShadow = false;
 	bool				ModelRenderShadow = false;
 #endif
+
 };
 

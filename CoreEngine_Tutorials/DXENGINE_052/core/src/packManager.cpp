@@ -271,7 +271,7 @@ bool StartPackLibs()
   #if TUTORIAL_PRE_CHAP >= 11
     IF_NOT_RETURN_FALSE(InitPackLib(L"Terrain.pack"));
 
-    #ifdef CHECK_COMPOUND_COLISION
+    #ifdef CHECK_COMPOUND_COLISION //ALLData.pack
 	IF_NOT_RETURN_FALSE(InitPackLib(L"ALLData.pack"));
     #endif
   #endif

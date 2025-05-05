@@ -28,7 +28,7 @@
 #include "DXinputClass.h"
 #include "OSengine.h"
 
-#if defined OPENGL21 || defined OPENGL3
+#if defined OPENGL3
 #include "GLopenGLclass.h"
 #endif
 

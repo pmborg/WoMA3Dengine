@@ -79,15 +79,26 @@ WinSystemClass::~WinSystemClass()
 
 bool WinSystemClass::APPLICATION_CORE_SYSTEM()
 {
-	WOMA_LOGManager_DebugMSG("WinSystemClass::APPLICATION_INIT_SYSTEM()\n");
+	WOMA_LOGManager_DebugMSG("WinSystemClass::APPLICATION_CORE_SYSTEM()\n");
 
-	int yes = WomaMessageBox(TEXT("Memory leak done on Purpose for this Tutorial!\nCheck Visual Studio Output Console log for more info!\ndo a double click on windows console."), TEXT("WOMA Tutorial 001:"), true);
+	int yes = IDYES;
+
+    if (!WOMA::renderOnce)
+        yes = WomaMessageBox(TEXT("Memory leak done on Purpose for this Tutorial!\nCheck Visual Studio Output Console log for more info!\ndo a double click on windows console."), TEXT("WOMA Tutorial 001:"), true/*YesOrNo*/);
+
 	if (yes == IDYES)
 		UINT* p = NEW UINT[1];
 	//free(p);
 	return false;
 
 	return true;
+}
+
+bool WinSystemClass::APPLICATION_CORE_INIT_DONE()
+{
+    WOMA_LOGManager_DebugMSG("WinSystemClass::APPLICATION_CORE_INIT_DONE()\n");
+
+    return true;
 }
 
 bool WinSystemClass::APPLICATION_INIT_SYSTEM()
@@ -99,25 +110,18 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	//	WinSystemClass::WinSystemClass()		Run: 3th - Start Timers - WinSystemClass::WinSystemClass_init();
 	IF_NOT_RETURN_FALSE(APPLICATION_CORE_SYSTEM()); // MyRegisterClass()
 
-#if defined USE_TINYXML_LOADER				// Must be before: ApplicationInitMainWindow()
-	IF_NOT_RETURN_FALSE(LoadXmlSettings());	// XML: Load Application Settings: "settings.xml", pickup "Driver" to Use.
-#endif
-
 #if defined USE_SYSTEM_CHECK // BEFORE: ApplicationInitMainWindow()
 	IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());		// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 
 #endif
-
 #if defined USE_INTRO_VIDEO_DEMO // WINDOWS START-VIDEO: Start DEMO INTRO (MP4): (Give Time to Unpack/Load Resources)
 	DXsystemHandle->g_DShowPlayer = NEW DShowPlayer(m_hWnd);	//INTRO MOVIE: mpg player
 	IF_FAILED_RETURN_FALSE(DXsystemHandle->PlayIntroMovie(WOMA::LoadFile(VIDEO_INTRO)));	// VIDEO DEMO
 #endif
-
 #if defined USE_PROCESS_OS_KEYS
 	IF_NOT_RETURN_FALSE(InitOsInput());						// INIT-INPUT Devices, NOTE: AFTER: ApplicationInitMainWindow()
 #endif
-#if defined USE_TIMER_CLASS									// WINDOWS AFTER: ApplicationInitMainWindow()
-	StartTimer();											// START WINDOWS TIMER: ("Window Title" refresh & Real-Time Weather refresh)
-#endif
+
+    IF_NOT_RETURN_FALSE(APPLICATION_CORE_INIT_DONE());
 
 // ########################################### LOAD DRIVERS ###########################################
 	

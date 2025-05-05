@@ -149,6 +149,31 @@ void ParseCommandLineArgs(int argc, char* argv[])
 		{
 			WOMA::UseWarpDevice = true;
 		}
+        if (_tcsnicmp(argv[i], "-renderOnce", _tcslen(argv[i])) == 0 ||
+            _tcsnicmp(argv[i], "/renderOnce", _tcslen(argv[i])) == 0)
+        {
+            WOMA::renderOnce = true;
+        }
+        if (_tcsnicmp(argv[i], "-Xpos", _tcslen(argv[i])) == 0 ||
+            _tcsnicmp(argv[i], "/Xpos", _tcslen(argv[i])) == 0)
+        {
+            WOMA::settings.WINDOW_Xpos = atoi(argv[i + 1]);
+        }
+        if (_tcsnicmp(argv[i], "-Ypos", _tcslen(argv[i])) == 0 ||
+            _tcsnicmp(argv[i], "/Ypos", _tcslen(argv[i])) == 0)
+        {
+            WOMA::settings.WINDOW_Ypos = atoi(argv[i + 1]);
+        }
+        if (_tcsnicmp(argv[i], "-WIDTH", _tcslen(argv[i])) == 0 ||
+            _tcsnicmp(argv[i], "/WIDTH", _tcslen(argv[i])) == 0)
+        {
+            WOMA::settings.WINDOW_WIDTH = atoi(argv[i + 1]);
+        }
+        if (_tcsnicmp(argv[i], "-HEIGHT", _tcslen(argv[i])) == 0 ||
+            _tcsnicmp(argv[i], "/HEIGHT", _tcslen(argv[i])) == 0)
+        {
+            WOMA::settings.WINDOW_HEIGHT = atoi(argv[i + 1]);
+        }															 
 	}
 #endif
 }
@@ -159,20 +184,22 @@ int APPLICATION_MAIN(int argc, char* argv[])
 // -------------------------------------------------------------------------------------------------------------------------------------
 {
     APPLICATION_STARTUP(argc, argv, Command);           // ENGINE SETUP: |CoInitializeEx|+|OSmain_dirs|+|Memory leaks check|+|Log|+|Mini Dumper|
-    ParseCommandLineArgs(argc, argv);                   // [*] Parse the command line parameters: -warp /warp
-
+    
     do {
         {
             SYSTEM demo(&WOMA::settings);               // NEW |SystemClass()::WinSystemClass()::DxWinSystemClass() for Specific OS|+|WOMA::APP_NAME|+|NEW ApplicationClass()"|
-            
+        #if defined USE_TINYXML_LOADER				    // Must be before: ApplicationInitMainWindow()
+            IF_NOT_RETURN_FALSE(demo.LoadXmlSettings());// XML: Load Application Settings: "settings.xml", pickup "Driver" to Use (override default: WOMA::settings)
+        #endif
+            ParseCommandLineArgs(argc, argv);           // [*] Parse the command line parameters: -warp /warp, ... (override settings.xml)
+
             if (demo.APPLICATION_INIT_SYSTEM())         // INIT Woma Engine: |SOUND|+|Register|+|XML|+|Sys.Chk|+|Window|+|OS-Input|+|Timer|+|Drivers|+|Load Assets|
                 Command = demo.APPLICATION_MAIN_LOOP(); // RUN: OS MAIN LOOP -> PROCESS FRAMES: (UPDATE + RENDER)!
         }                                               // DELETE SYSTEM demo: Close WINDOW
 		if (Command == ENGINE_RESTART)  // The User set new settings?
 			Sleep(2000);                // Need to be 2secs to change resources between drivers
     } while (Command == ENGINE_RESTART);	            // Try to restart the Engine with new settings then! (if fail! goto VectoredExceptionHandler())
-    
-    APPLICATION_STOP();                                 // ENGINE STOP: |CoUninitialize|+|Free Mini Dumper|+|CLOSE Log|+|DELETE Temp files(RELEASE)
 
+    APPLICATION_STOP();                                 // ENGINE STOP: |CoUninitialize|+|Free Mini Dumper|+|CLOSE Log|+|DELETE Temp files(RELEASE)
     return Command;                                     // ENGINE RETURN: to OS (Can be: 0, ENGINE_RESTART or "an error" code)
 }

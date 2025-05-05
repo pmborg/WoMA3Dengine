@@ -20,6 +20,7 @@
 //WomaIntegrityCheck = 1234567222;
 
 #pragma warning( disable : 4312 ) // warning C4312: 'type cast': conversion from 'int' to 'HMENU' of greater size
+#include "OSengine.h"
 #include "stateMachine.h"
 #include "OSmain_dir.h"
 
@@ -252,12 +253,13 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 		break;
 
 	case WM_DESTROY:	// The main application Window will be destroyed
+		//PostQuitMessage(0);
 
 	#if CORE_ENGINE_LEVEL >= 7 && defined USE_ASTRO_CLASS
 		KillTimer(hwnd, TIMER_ASTRO);
 	#endif
 
-		return 0;
+        break; //return 0;
 
 #if defined USE_INTRO_VIDEO_DEMO
 	case WM_GRAPH_EVENT:
@@ -508,12 +510,13 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 	// Here we reset everything based on the new window dimensions.
 	case WM_EXITSIZEMOVE:
 	{
-		UNPAUSE();		// Restore State: "Green" Light to Render Again (after: return 0)
 		if (mResizing)
 			if (SystemHandle->m_hWnd) 
 				{ ONRESIZE(); } // Do the Window, "Buffers" & Textures Re-size
 
+        UNPAUSE();		// Restore State: "Green" Light to Render Again (after: return 0)
 		mResizing = false;
+
 		return 0;
 	}
 
@@ -579,6 +582,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 			switch (wParam)
 			{
 			case TIMER_TITLE:
+                WOMA::woma_timer++;
 				if (!SystemHandle->AppSettings->FULL_SCREEN)
 					SystemHandle->refreshTitle();
 				if (WOMA::game_state == GAME_LOADING) {

@@ -71,6 +71,7 @@ namespace WOMA
 		// screen
 		// -------------------------------------------------------------------------------------------
 		bool	FULL_SCREEN;
+        UINT    DEPTH_BITS;
 		bool	AllowResize;
 		// -------------------------------------------------------------------------------------------
 		int		WINDOW_Xpos;	//NOTE: Have to be "int" not UINT due other / used later on window position Calculations

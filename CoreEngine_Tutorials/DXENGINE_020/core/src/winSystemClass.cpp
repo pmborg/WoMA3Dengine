@@ -119,18 +119,20 @@ void WinSystemClass::ProcessFrame()
 		{
 			{
 				m_Driver->BeginScene(mon);								//RESET FRAME
+
 				#if !defined INTRO_DEMO
 				m_Application->dayLightFade = m_Application->Update();	//OS CORE ONLY!  F1, F2, ...
 				#endif
+                
 				m_Application->RenderScene(mon, m_Driver);				//RENDER ONE FRAME: 100% is done here!
-
+                
 				if (!g_contextDriver)									//SHOW FRAME:
 					m_Driver->EndScene(mon);							// [DX]: Present
 				else
 					g_contextDriver->EndScene(mon);						// [OPENGL]: SwapBuffers
 			}
 		}
-
+       
 		m_Driver->RenderfirstTime = false;
 	}
 }
@@ -141,7 +143,6 @@ void WinSystemClass::WinSystemClass_init()
 // Init Vars:
 // --------------------------------------------------------------
 
-	m_hinstance = NULL;
 #if defined USE_PROCESS_OS_KEYS //CORE_ENGINE_LEVEL >= 3
 	m_OsInput = NULL;
 #endif
@@ -197,9 +198,16 @@ WinSystemClass::~WinSystemClass()
 
 bool WinSystemClass::APPLICATION_CORE_SYSTEM()
 {
-	WOMA_LOGManager_DebugMSG("WinSystemClass::APPLICATION_INIT_SYSTEM()\n");
+	WOMA_LOGManager_DebugMSG("WinSystemClass::APPLICATION_CORE_SYSTEM()\n");
 
 	return true;
+}
+
+bool WinSystemClass::APPLICATION_CORE_INIT_DONE()
+{
+    WOMA_LOGManager_DebugMSG("WinSystemClass::APPLICATION_CORE_INIT_DONE()\n");
+
+    return true;
 }
 
 bool WinSystemClass::APPLICATION_INIT_SYSTEM()
@@ -209,10 +217,6 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	//  SystemClass::SystemClass()				Run: 1st - OS common    - WOMA::APP_NAME
 	//	ApplicationClass::ApplicationClass()	Run: 2nd - User: level  - ApplicationClass::Start()
 	//	WinSystemClass::WinSystemClass()		Run: 3th - Start Timers - WinSystemClass::WinSystemClass_init();
-
-#if defined USE_TINYXML_LOADER				// Must be before: ApplicationInitMainWindow()
-	IF_NOT_RETURN_FALSE(LoadXmlSettings());	// XML: Load Application Settings: "settings.xml", pickup "Driver" to Use.
-#endif
 
 #ifdef INTRO_DEMO
 	SystemHandle->m_Application->ClearColor[0] = 0;
@@ -230,18 +234,16 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());		// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 
 #endif
 	IF_NOT_RETURN_FALSE(ApplicationInitMainWindow());		// CREATE: The/all "MainWindow(s) + INIT DX/GL "rendering-device"
-
+    StartTimer();											// START WINDOWS TIMER: ("Window Title" refresh & Real-Time Weather refresh)
 #if defined USE_INTRO_VIDEO_DEMO // WINDOWS START-VIDEO: Start DEMO INTRO (MP4): (Give Time to Unpack/Load Resources)
 	DXsystemHandle->g_DShowPlayer = NEW DShowPlayer(m_hWnd);	//INTRO MOVIE: mpg player
 	IF_FAILED_RETURN_FALSE(DXsystemHandle->PlayIntroMovie(WOMA::LoadFile(VIDEO_INTRO)));	// VIDEO DEMO
 #endif
-
 #if defined USE_PROCESS_OS_KEYS
 	IF_NOT_RETURN_FALSE(InitOsInput());						// INIT-INPUT Devices, NOTE: AFTER: ApplicationInitMainWindow()
 #endif
-#if defined USE_TIMER_CLASS									// WINDOWS AFTER: ApplicationInitMainWindow()
-	StartTimer();											// START WINDOWS TIMER: ("Window Title" refresh & Real-Time Weather refresh)
-#endif
+
+    IF_NOT_RETURN_FALSE(APPLICATION_CORE_INIT_DONE());
 
 // ########################################### LOAD DRIVERS ###########################################
 	#if CORE_ENGINE_LEVEL >= 10 && defined OPENGL3	
@@ -267,10 +269,7 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
   #endif
 
 //################################ LOAD LoadAllGraphicAssets STUFF ##################################
-	#if DX_ENGINE_LEVEL >= 20 && defined USE_LOADING_THREADS
-	IF_NOT_RETURN_FALSE(DXsystemHandle->ApplicationMandatoryLoad());	// START-THREAD LOAD-ALL: "mandatory 2D/3D Stuff", before "start rendering":
-	//#else
-	#endif
+
 	IF_NOT_RETURN_FALSE(SystemClass::LoadAllGraphicAssets());			// Load all main Graphics, that will be rendered
 
 	//---------------------------------------------------------------------------------------------------

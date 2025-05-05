@@ -24,7 +24,9 @@
 //SELECT DXGI DX11 version:
 #if defined DX11 || defined DX9
 	#include<D3D11.h>
-	#if defined WIN6x
+    #if defined WIN10
+        #define DXGI1_6	// DX11: Target For: Oct 10, 2017 - WINDOWS 10.0.15063
+	#elif defined WIN6x
 		#define DXGI1_3	// DX10: Target For: Vista (for drivers WDDM 1.0 specification)
 	#elif D3D11_SPEC_DATE_YEAR == 2009
 		#define DXGI1_1				//SDK: C:\WoMAengine2014\Microsoft_DirectX_SDK_June_2010
@@ -35,7 +37,6 @@
 			//- Support for adapter enumeration ordering: IDXGIFactory1::EnumAdapters1
 			//- Support for BGRA format
 
-	#eé abrirem olse
 		//https://learn.microsoft.com/en-us/windows-hardware/drivers/other-wdk-downloads
 		//https://github.com/toivjon/dxgi-sandbox
 		//https://github.com/apitrace/dxsdk
@@ -65,7 +66,7 @@
 			// Fullscreen state no longer owns the display
 
 		//#define DXGI1_5 //Oct 5, 2017 - WINDOWS 10.0.14393:
-			// Support for Hich Dynamic Range(HDR)
+			// Support for High Dynamic Range(HDR)
 			// Support for Wide Color Gamut(WCG)
 			// Support for flexibleand performant output duplication
 			// Support for offeringand reclaiming resources
@@ -346,7 +347,7 @@ public:
 	IDXGIDebug* debugDev = NULL;
 #endif
 
-	bool dx11_force_dx9;
+	bool dx11_force_dx9=false;
 
 	D3D_FEATURE_LEVEL featureLevel_ = D3D_FEATURE_LEVEL_11_0;	// OUTPUT: (createDevice) The address of the feature level that was selected
 
@@ -356,18 +357,19 @@ public:
 	// For each DX11 Adapter:
 	IDXGIAdapter1* adapterGraphicCard = NULL;
 
-#if defined USE_DEVICE_LEGACY
-	ID3D11Device* m_device11 = NULL;
-#else
-	ID3D11Device* m_device11 = NULL;
-	Microsoft::WRL::ComPtr<ID3D11Device>           m_device;
-#endif
+//#if defined USE_DEVICE_LEGACY
+//	ID3D11Device* m_device11 = NULL;
+//#else
+//	ID3D11Device* m_device11 = NULL;
+//	Microsoft::WRL::ComPtr<ID3D11Device>           m_device;
+//#endif
+	ID3D11Device*        m_device11 = nullptr;
+    ID3D11DeviceContext* m_deviceContext = nullptr;
+
 
 #ifdef USE_DX11_3
 	ID3D11Device3* pDevice3 = nullptr;
 #endif
-
-	ID3D11DeviceContext* m_deviceContext = NULL;
 
 	// For each DX11 Monitor:
 	struct DXwindowDataContainer
@@ -382,9 +384,9 @@ public:
 	std::vector<DXwindowDataContainer> DX11windowsArray;
 
 	// TODO: Go inside DXwindowDataContainer
-	bool ScissorEnable;
+	bool ScissorEnable=false;
 
-	UINT mCurRasterState;
+	UINT mCurRasterState=0;
 
 	// ---------------------------------------------------------
 	bool	g_ALLOW_DX9x;

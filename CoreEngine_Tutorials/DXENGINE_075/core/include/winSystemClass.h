@@ -85,6 +85,7 @@ public:
 	void Shutdown();
 
 	bool APPLICATION_CORE_SYSTEM();
+    bool APPLICATION_CORE_INIT_DONE();
 	bool APPLICATION_INIT_SYSTEM();
 	int	 APPLICATION_MAIN_LOOP();
 

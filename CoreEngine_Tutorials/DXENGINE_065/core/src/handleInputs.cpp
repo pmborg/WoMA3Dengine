@@ -138,109 +138,6 @@ bool ApplicationClass::HandleUserInput(double frameTime)
     }
 #endif
 
-#if defined (CHECK_COMPOUND_COLISION) //TUTORIAL_CHAP >= 96 && 
-    // Process Movement Keys: + - (NUM PAD), LEFT, RIGHT, UP or DOWN (SHIFT: SLOW MOVE)
-    int c = CHG_COMPOUND;
-
-    float deltaMove = (m_player[g_NetID]->p_player.IsShift) ? 0.1f : 1.0f; // Slow or Normal MOVE?
-
-	if (hitIndex >= 0)  // An OBJ was selected so we are in EDIT MODE.
-	{
-		// <- //
-		static bool cursorLeft = false;
-		if (m_player[g_NetID]->p_player.IsLeftPressed && cursorLeft == false)
-		{
-			cursorLeft = true;
-			compound[c].objModel->m_worldMatrix._41 -= deltaMove; //41, 42, 43
-		}
-		else
-			if (!m_player[g_NetID]->p_player.IsLeftPressed && cursorLeft == true)
-				cursorLeft = false;
-
-		// -> //
-		static bool cursorRight = false;
-		if (m_player[g_NetID]->p_player.IsRightPressed && cursorRight == false)
-		{
-			cursorRight = true;
-			compound[c].objModel->m_worldMatrix._41 += deltaMove; //41, 42, 43
-		}
-		else
-			if (!m_player[g_NetID]->p_player.IsRightPressed && cursorRight == true)
-				cursorRight = false;
-	
-		// ^ //
-		static bool cursorUp = false;
-		if (m_player[g_NetID]->p_player.IsUpPressed && cursorUp == false)
-		{
-			cursorUp = true;
-			compound[c].objModel->m_worldMatrix._43 -= deltaMove; //41, 42, 43
-		}
-		else
-			if (!m_player[g_NetID]->p_player.IsUpPressed && cursorUp == true)
-				cursorUp = false;
-
-		// v //
-		static bool cursorDown = false;
-		if (m_player[g_NetID]->p_player.IsDownPressed && cursorDown == false)
-		{
-			cursorDown = true;
-			compound[c].objModel->m_worldMatrix._43 += deltaMove; //41, 42, 43
-		}
-		else
-			if (!m_player[g_NetID]->p_player.IsDownPressed && cursorDown == true)
-				cursorDown = false;
-	
-		// pagDOWN //
-		static bool pgDown = false;
-		if (m_player[g_NetID]->p_player.IsPgDownPressed && pgDown == false)
-		{
-			pgDown = true;
-			compound[c].objModel->m_worldMatrix._42 -= deltaMove; //41, 42, 43
-		}
-		else
-			if (!m_player[g_NetID]->p_player.IsPgDownPressed && pgDown == true)
-				pgDown = false;
-
-		// pgUP //
-		static bool pgUp = false;
-		if (m_player[g_NetID]->p_player.IsPgUpPressed && pgUp == false)
-		{
-			pgUp = true;
-			compound[c].objModel->m_worldMatrix._42 += deltaMove; //41, 42, 43
-		}
-		else
-			if (!m_player[g_NetID]->p_player.IsPgUpPressed && pgUp == true)
-				pgUp = false;
-
-		// - //
-		static bool numPadMinus = false;
-		if (m_player[g_NetID]->p_player.IsNumPadMinus && numPadMinus == false)
-		{
-			numPadMinus = true;
-
-			compound[c].objModel->m_worldMatrix._11 -= (deltaMove / 10); //....scale 11 22 33
-			compound[c].objModel->m_worldMatrix._33 = compound[c].objModel->m_worldMatrix._22 = compound[c].objModel->m_worldMatrix._11;
-		}
-		else
-			if (!m_player[g_NetID]->p_player.IsNumPadMinus && numPadMinus == true)
-				numPadMinus = false;
-
-		
-		// + //
-		static bool numPadPlus = false;
-		if (m_player[g_NetID]->p_player.IsNumPadPlus && numPadPlus == false)
-		{
-			numPadPlus = true;
-
-			compound[c].objModel->m_worldMatrix._11 += (deltaMove / 10); //....scale 11 22 33
-			compound[c].objModel->m_worldMatrix._33 = compound[c].objModel->m_worldMatrix._22 = compound[c].objModel->m_worldMatrix._11;
-		}
-		else
-			if (!m_player[g_NetID]->p_player.IsNumPadPlus && numPadPlus == true)
-				numPadPlus = false;
-	}
-#endif
-
     // Proccess "EXIT MAP": with "ESC" key
     // --------------------------------------------------------------------------------------------
     if (WOMA::game_state == GAME_MAP)
@@ -278,10 +175,9 @@ bool ApplicationClass::HandleUserInput(double frameTime)
     m_NextPosition->m_rotationX =m_Position[g_NetID]->m_rotationX;
 
 
-#if defined CHECK_COMPOUND_COLISION// Check Compound Colision
+#if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION// Check Compound Colision: STOP!
 	bool CompoundXnormalOK = true;
 	bool CompoundZnormalOK = true;
-	#if defined CHECK_COMPOUND_COLISION //&& defined (CHECK_COMPOUND_COLISION)
 	
 	if (!g_GOD_MODE) {
 		if (DXsystemHandle->m_player[g_NetID]->p_player.IsUpPressed && (DXsystemHandle->m_Application->closestObjDist > -1) && (DXsystemHandle->m_Application->closestObjDist <= 1)) {
@@ -290,7 +186,6 @@ bool ApplicationClass::HandleUserInput(double frameTime)
 			m_NextPosition->m_forwardSpeed = 0; //Stop immediately
 		}
 	}
-	#endif
 #endif
 
 	// --------------------------------------------------------------------------------------------
@@ -373,13 +268,13 @@ bool ApplicationClass::HandleUserInput(double frameTime)
 			terrain_nz = SystemHandle->m_Application->loadedTerrain[2]->modelVertexVector2[(mainTerrain->m_terrainHeight * ((int)m_NextPosition->m_positionZ)) + ((int)m_NextPosition->m_positionX)].nz;
 
 			{
-				#if defined CHECK_COMPOUND_COLISION//96
+				#if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION //Check!: CompoundZnormalOK
 				if (CompoundZnormalOK)
 				#endif
 				   m_Position[g_NetID]->m_positionZ = m_NextPosition->m_positionZ;
 			}
 			{
-				#if defined CHECK_COMPOUND_COLISION//96
+				#if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION //Check!: CompoundXnormalOK
 				if (CompoundXnormalOK)
 				#endif
 				   m_Position[g_NetID]->m_positionX = m_NextPosition->m_positionX;

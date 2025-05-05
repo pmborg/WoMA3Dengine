@@ -87,6 +87,7 @@ public:
 	void Shutdown();
 
 	bool APPLICATION_CORE_SYSTEM();
+    bool APPLICATION_CORE_INIT_DONE();
 	bool APPLICATION_INIT_SYSTEM();
 	int	 APPLICATION_MAIN_LOOP();
 
@@ -135,6 +136,8 @@ public:
 	// --------------------------------------------------------------
 	HINSTANCE m_hinstance;
 	bool mResizing;
+
+	void StartTimer();
 
 #if defined ALLOW_CBIND_PROGRESS_BAR
 	HWND hwndPrgBar = NULL;

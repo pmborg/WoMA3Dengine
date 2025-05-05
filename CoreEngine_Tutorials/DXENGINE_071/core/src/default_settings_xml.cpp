@@ -69,6 +69,7 @@ namespace WOMA
 		// screen
 		// -------------------------------------------------------------------------------------------
 		false,	// Start in FULLSCREEN?
+        24, //DEPTH_BITS
 		#if CORE_ENGINE_LEVEL < 10
 		false, 
 		#else

@@ -105,7 +105,6 @@ public:
 
 	//VARS:
 	// ----------------------------------------------------------------------
-	bool				CLONE = false;
 	UINT				WomaIntegrityCheck = 1234567222;
 
 	INT					m_ObjId = -1;
@@ -135,5 +134,7 @@ public:
 	bool				ModelCastShadow = false;
 	bool				ModelRenderShadow = false;
 #endif
+
+    bool				CLONE = false;
 };
 

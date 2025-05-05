@@ -73,6 +73,8 @@
 #define MAX_CLIENTS 1
 #endif
 
+
+
 #if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
 #include "virtualModelClass.h"
 extern std::vector<VirtualModelClass*> m_screenShots;
@@ -123,6 +125,15 @@ extern UINT g_NetID;
 
 #if defined (SCENE_COMPOUND)
 #include "compound.h"
+#endif
+
+#if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION
+struct compoundTreeLoadOrder {
+    UINT compoundTreeId;
+    UINT order;
+};
+
+extern int __cdecl CompoundSortCB(const VOID* arg1, const VOID* arg2);
 #endif
 
 #pragma warning( push )
@@ -236,6 +247,8 @@ public:
 	void CalculateLightRayVertex (float SunDistance);
 #endif
 
+    UINT world_main_size=0;
+
 #if defined USE_DX10DRIVER_FONTS
 	DXshaderClass* m_FontV2Shader = NULL;
 	IDXGIKeyedMutex* keyedMutex11 = NULL;
@@ -257,12 +270,26 @@ public:
 	SceneManager* sceneManager = SceneManager::GetInstance();
 #endif
 
+#if defined CHECK_OBJ_COLISION
+    void pickRayVector(float mouseX, float mouseY, XMVECTOR& pickRayInWorldSpacePos, XMVECTOR& pickRayInWorldSpaceDir);
+    float pick(XMVECTOR pickRayInWorldSpacePos, XMVECTOR pickRayInWorldSpaceDir,
+        std::vector<XMFLOAT3>& vertPosArray, std::vector<DWORD>& indexPosArray, XMMATRIX& worldSpace, bool getPoligon = false);
+    bool PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTOR& triV3, XMVECTOR& point);
+    void anyMouseClickToPick();
+#endif
+
+#if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION
+    compoundTreeLoadOrder compoundTreeLoadingOrder[10000] = {}; // MAX 10000 Objs on Scene
+#endif
+
 #if defined USE_SKY2D || ENGINE_LEVEL >= 27 // SKY
 	std::vector<ModelTextureLightVertexType> sky_vertexdata; //std::vector<ModelTextureVertexType> sky_vertexdata;
 	std::vector<UINT>						 sky_indexdata;
 #endif
 
-
+#if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION //float	closestObjDist = FLT_MAX;
+	float	closestObjDist = FLT_MAX;
+#endif
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 	void	SetPlayerPosition(UINT netID);

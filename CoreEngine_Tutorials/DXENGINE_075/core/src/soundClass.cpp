@@ -19,10 +19,9 @@
 // --------------------------------------------------------------------------------------------
 #include "platform.h"
 
-#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
-//#define DX_ENGINE_LEVEL 71  SOUND EFFECT (Add Support): .................... /sound/soundClass.*
-//#define DX_ENGINE_LEVEL 72  3D SOUND EFFECT (Add Support): ................. /sound/soundClass.*
+#pragma warning(disable : 4267) //warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
 
+#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
 #include "OSengine.h"
 #include "soundclass.h"
 #include "mem_leak.h"
@@ -249,15 +248,6 @@ bool SoundClass::LoadWaveFile(char* filename, IDirectSoundBuffer8** secondaryBuf
 	waveFormat.nBlockAlign = (waveFormat.wBitsPerSample / 8) * waveFormat.nChannels;
 	waveFormat.nAvgBytesPerSec = waveFormat.nSamplesPerSec * waveFormat.nBlockAlign;
 	waveFormat.cbSize = 0;
- 
-	//DWORD           dwSize;
-	//DWORD           dwFlags;
-	//DWORD           dwBufferBytes;
-	//DWORD           dwReserved;
-	//LPWAVEFORMATEX  lpwfxFormat;
-	//#if DIRECTSOUND_VERSION >= 0x0700
-	//GUID            guid3DAlgorithm;
-	//#endif
 
 	// Set the buffer description of the secondary sound buffer that the wave file will be loaded onto.
 	bufferDesc.dwSize = sizeof(DSBUFFERDESC);
@@ -286,13 +276,6 @@ bool SoundClass::LoadWaveFile(char* filename, IDirectSoundBuffer8** secondaryBuf
 
 	// [3] Create a temporary sound buffer with the specific buffer settings.
 	result = m_DirectSound->CreateSoundBuffer(&bufferDesc, &tempBuffer, NULL);
-	/*
-	LPVOID lpMsgBuf;
-	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-		NULL, result, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&lpMsgBuf, 0, NULL);
-	WomaMessageBox((TCHAR*)lpMsgBuf, TEXT("Error"));
-	LocalFree(lpMsgBuf);
-	*/
 	if(FAILED(result))
 		return false;
  

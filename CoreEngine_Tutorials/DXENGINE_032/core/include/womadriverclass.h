@@ -32,16 +32,10 @@
 
 #elif defined GLES3
 #include <GLES3/gl3.h>
-//#include <GLES3/gl3ext.h>
-//#include <GLES3/gl31.h>
-//#include <GLES3/gl32.h>
 #endif
 
 #include <GL/gl.h>
 #include <GL/glext.h>
-
-//#include <GLES/gl.h>
-//#include <GLES/glext.h>
 #endif
 
 // Define the Rendering States for textures:
