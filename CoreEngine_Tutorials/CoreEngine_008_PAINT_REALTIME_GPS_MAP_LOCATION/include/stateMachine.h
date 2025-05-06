@@ -54,9 +54,7 @@
 #define GAME_CREATECHAR      29 // the game is in the:    "Create a Character"
 #endif
 
-//#if DX_ENGINE_LEVEL >= 62 //TUTORIAL_PRE_CHAP >= 26 (G:\DRIVE_MY_SOURCE_CODE\WorldOfMiddleAge\WoMA_PartII)
 #define GAME_MAP             80 // the game is in the:    "Running Mode + Map Mode"
-//#endif
 
 // GAME STATE: [NO RENDEING]
 //-----------------------------------------------------------------------------

@@ -478,23 +478,21 @@ float ApplicationClass::Update()
 	qsort(compoundTreeLoadingOrder, world_main_size, sizeof(compoundTreeLoadOrder), CompoundSortCB);	// Order compound by distance:
 
 	// [Colision 1] Check Colison with with "10" COMPOUNDS near to us...:
-	// --------------------------------------------------------
+	// ------------------------------------------------------------------
 	XMVECTOR prwsPos, prwsDir;
 
 	/////////////////////////////////////////  IMPORTANT - Get the initial Ray /////////////////////////////////////////
 	pickRayVector((float)SystemHandle->AppSettings->WINDOW_WIDTH / 2.0f, (float)SystemHandle->AppSettings->WINDOW_HEIGHT - 65, prwsPos, prwsDir);
 
     UINT	closestObjId = UINT_MAX;
-	for (UINT c = 0; c < MIN (world_main_size, 10); c++) // We dont need all, right?:)
+	for (UINT c = 0; c < MIN (world_main_size, 10); c++)        // We dont need all, right?:)
 	{
 		UINT i = compoundTreeLoadingOrder[c].compoundTreeId;	// This is the compound[id] to check colisions...
 
-		if (objModel[i]->ready && objModel[i]->visibel) // Check compounds already loaded... 
 		{
-			//closestObjDist = FLT_MAX;
-			closestObjDist = pick(prwsPos, prwsDir, objModel[i]->bottleBoundingBoxVertPosArray,
-                                                    objModel[i]->bottleBoundingBoxVertIndexArray,
-                                                    ((DXmodelClass*)objModel[i])->m_worldMatrix, !true);	// Use Bounding Boxes, Faster!
+			closestObjDist = pick(prwsPos, prwsDir, objModel[i]->boundingBoxVerts,
+                                                    objModel[i]->boundingBoxIndex,
+                                                    ((DXmodelClass*)objModel[i])->m_worldMatrix, false);	// Use Bounding Boxes, Faster!
 			if (closestObjDist < FLT_MAX)
 			{
 				closestObjId = i;	// Get the Closest Object ID!
@@ -504,9 +502,11 @@ float ApplicationClass::Update()
 	}
 
 	// Calculate it with more accurance if we are really close to an object:
-	if (closestObjDist >= 0 && closestObjDist <= 3) {
-		closestObjDist = pick(prwsPos, prwsDir, objModel[closestObjId]->bottleVertPosArray, 
-                                                objModel[closestObjId]->bottleBoundingBoxVertIndexArray, ((DXmodelClass*)objModel[closestObjId])->m_worldMatrix, true);
+	if (closestObjDist >= 0 && closestObjDist <= 3) 
+    {
+        closestObjDist = pick(prwsPos, prwsDir, objModel[closestObjId]->bottleVertPosArray,
+                              ((DXmodelClass*)objModel[closestObjId])->obj3d.indices32,
+                              ((DXmodelClass*)objModel[closestObjId])->m_worldMatrix, true);
 	}
 
 #endif
@@ -1117,7 +1117,7 @@ void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickR
 // Calculates whether the object was picked or not | getPoligon = true (detect colision)
 // ==================================================================================================================================
 float ApplicationClass::pick(XMVECTOR pickRayInWorldSpacePos, XMVECTOR pickRayInWorldSpaceDir, std::vector<XMFLOAT3>& vertPosArray, 
-                            std::vector<DWORD>& indexPosArray, XMMATRIX& worldSpace, bool getPoligon)
+                            std::vector<UINT/*DWORD*/>& indexPosArray, XMMATRIX& worldSpace, bool getPoligon)
 {
 	float closer = FLT_MAX;
 	bool found = false;

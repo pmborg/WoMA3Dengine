@@ -487,6 +487,9 @@
     #if DX_ENGINE_LEVEL >= 78
         #define USE_BOUNDING_VOLUMES
         #define CHECK_OBJ_COLISION
+		
+		#undef SCENE_BILLBOARDS
+        #undef USE_INSTANCES_FOR_TREES
     #endif						 
    
 	//#define USE_MULTI_MONITOR

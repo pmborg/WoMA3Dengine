@@ -396,8 +396,6 @@ void ApplicationClass::Shutdown()
 			else
 			{
 				if (objModel[i]) { 
-					//(objModel[i])->Shutdown(); 
-					//delete ((DirectX::DXmodelClass*)objModel[i]); 
 					objModel[i] = NULL; 
 				}
 			}

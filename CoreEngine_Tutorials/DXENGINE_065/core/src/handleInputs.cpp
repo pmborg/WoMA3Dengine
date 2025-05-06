@@ -54,9 +54,9 @@ UINT KeyLookUp	= {DIK_PGUP};
 UINT KeyLookDown= {DIK_PGDN};
 
 #if !defined RELEASE
-	UINT KeyGodMode	= {DIK_F11};
-	UINT KeyFlyUp	= {DIK_R};
-	UINT KeyFlyDown	= {DIK_F};
+UINT KeyGodMode	= {DIK_F11};
+UINT KeyFlyUp	= {DIK_R};
+UINT KeyFlyDown	= {DIK_F};
 #endif
 
 float terrain_nx = 0.0f;
@@ -126,8 +126,6 @@ bool ApplicationClass::HandleUserInput(double frameTime)
 
     // Proccess "F11": GOD MODE SWITCH
     // --------------------------------------------------------------------------------------------
-    
-
 #if defined DX_ENGINE
     if ((DXsystemHandle->m_player[g_NetID]->p_player.IsGodModePressed) && (!f11GodState)) {
         f11GodState = true;
@@ -175,7 +173,7 @@ bool ApplicationClass::HandleUserInput(double frameTime)
     m_NextPosition->m_rotationX =m_Position[g_NetID]->m_rotationX;
 
 
-#if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION// Check Compound Colision: STOP!
+#if defined CHECK_OBJ_COLISION //Check Compound Colision: STOP!
 	bool CompoundXnormalOK = true;
 	bool CompoundZnormalOK = true;
 	
@@ -237,9 +235,7 @@ bool ApplicationClass::HandleUserInput(double frameTime)
     }
 #endif
 
-    
-
-    //[3] - Check Terrain Colisions: CHAP 14!!
+    //[3] - Check Terrain Colisions
     // --------------------------------------------------------------------------------------------
 #if defined SCENE_TERRAIN_COLLISION
 #if NOTES
@@ -268,13 +264,13 @@ bool ApplicationClass::HandleUserInput(double frameTime)
 			terrain_nz = SystemHandle->m_Application->loadedTerrain[2]->modelVertexVector2[(mainTerrain->m_terrainHeight * ((int)m_NextPosition->m_positionZ)) + ((int)m_NextPosition->m_positionX)].nz;
 
 			{
-				#if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION //Check!: CompoundZnormalOK
+				#if defined CHECK_OBJ_COLISION //Check!: CompoundZnormalOK
 				if (CompoundZnormalOK)
 				#endif
 				   m_Position[g_NetID]->m_positionZ = m_NextPosition->m_positionZ;
 			}
 			{
-				#if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION //Check!: CompoundXnormalOK
+				#if defined CHECK_OBJ_COLISION //Check!: CompoundXnormalOK
 				if (CompoundXnormalOK)
 				#endif
 				   m_Position[g_NetID]->m_positionX = m_NextPosition->m_positionX;
@@ -294,7 +290,7 @@ bool ApplicationClass::HandleUserInput(double frameTime)
     //[4] Get the new allowed positions:
    m_Position[g_NetID]->m_positionZ = m_NextPosition->m_positionZ;
    m_Position[g_NetID]->m_positionX = m_NextPosition->m_positionX;
-#endif //SCENE_TERRAIN_COLLISION
+#endif
 
    m_Position[g_NetID]->m_positionY = height;
    posX =m_Position[g_NetID]->m_positionX;

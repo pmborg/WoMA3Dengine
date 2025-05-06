@@ -2195,7 +2195,6 @@ bool DXmodelClass::LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shad
 		return LoadW3D(shader_type, g_driver, filename, castShadow, renderShadow, instanceCount);
 #endif
 
-	return true;
 }
 
 // Create: Bounding Box 

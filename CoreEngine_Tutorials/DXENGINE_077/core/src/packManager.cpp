@@ -216,7 +216,7 @@ bool InitPackLib(char* packfilename)				// Need to be CHAR!
 			{WomaFatalExceptionW(TEXT("Could not open the pack file")); /*return false;*/}
 
 		#if _NOT //defined ALLOW_CBIND_PROGRESS_BAR
-        //RedrawWindow(g_hwnd, NULL, NULL, RDW_UPDATENOW|RDW_INVALIDATE/*|RDW_ERASE*/);// Invoke: Window PAINT
+        //RedrawWindow(g_hwnd, NULL, NULL, RDW_UPDATENOW|RDW_INVALIDATE);// Invoke: Window PAINT
 		#endif
 
 	} else {

@@ -86,6 +86,7 @@ public:
 	virtual void UpdateDynamic(std::vector<ModelColorVertexType>* lightVertexVector) = 0;
 #endif
 
+
 	virtual void Identity() = 0;
 	virtual void multiply(void* m) = 0;	//XMMATRIX* or mat4*
 

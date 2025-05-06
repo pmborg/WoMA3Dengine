@@ -85,6 +85,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 	case WM_DRAWITEM: // DRAW TEXT FROM PROGRESS BAR
 		// --------------------------------------------------------------------------------------------
 	{
+        if (WOMA::game_state <= GAME_RUN) {
 		try {
 			LPDRAWITEMSTRUCT pDIS = (LPDRAWITEMSTRUCT)lparam;
 			if (pDIS->hwndItem == SystemHandle->settingstext) {
@@ -99,6 +100,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 		catch (...) {
 			// Log or handle the exception gracefully
 		}
+        }
 		break;
 	}
 #endif

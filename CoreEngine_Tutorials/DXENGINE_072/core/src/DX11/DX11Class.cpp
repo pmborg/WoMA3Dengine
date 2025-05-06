@@ -513,6 +513,7 @@ HRESULT result = S_OK;
 				if (result == DXGI_ERROR_DEVICE_REMOVED || result == DXGI_ERROR_DEVICE_RESET)
 				{
 					OnDeviceLost();
+                    return false;
 				}
 				else
 				{
@@ -821,64 +822,21 @@ void DX11Class::BeginScene(UINT monitorWindow)
 //    4.	Log the Event
 //    •	Log the device loss and recovery process for debugging purposes.
 
-void DX11Class::OnDeviceLost() {
-    WOMA_LOGManager_DebugMSG("Device lost. Releasing resources...\n");
+void DX11Class::OnDeviceLost() // Our Driver in use was re-installed??
+{
+    WOMA_LOGManager_DebugMSG("Device lost!\n");
 
-    // Step 1: Release all resources tied to the device
-    if (m_deviceContext) {
-        m_deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
-        m_deviceContext->Flush();
-    }
-
-    for (auto& window : DX11windowsArray) {
-        SAFE_RELEASE(window.m_backBuffer);
-        SAFE_RELEASE(window.m_renderTargetView);
-        SAFE_RELEASE(window.m_depthStencilView);
-        if (window.m_swapChain1) {
-            window.m_swapChain1->SetFullscreenState(FALSE, nullptr); // Ensure windowed mode
-            SAFE_RELEASE(window.m_swapChain1);
-        }
-    }
-
-    SAFE_RELEASE(m_depthBuffer);
-    SAFE_RELEASE(m_deviceContext);
-    SAFE_RELEASE(m_device11);
-
-    // Step 2: Recreate the device and context
-    HRESULT hr = createDevice_legacy();
-    if (FAILED(hr)) {
-        WomaFatalException("Failed to recreate the Direct3D device.");
-        return;
-    }
-
-    // Step 3: Reinitialize resources
-    for (auto& window : DX11windowsArray) {
-        if (!Resize(SystemHandle->AppSettings->WINDOW_WIDTH,
-            SystemHandle->AppSettings->WINDOW_HEIGHT,
-            SystemHandle->AppSettings->SCREEN_NEAR,
-            SystemHandle->AppSettings->SCREEN_DEPTH,
-            SystemHandle->AppSettings->FULL_SCREEN,
-            SystemHandle->AppSettings->DEPTH_BITS)) 
-        {
-            WomaFatalException("Failed to resize and reinitialize resources.");
-            return;
-        }
-    }
-
-    // Step 4: Log success
-    WOMA_LOGManager_DebugMSG("Device successfully reset and resources reinitialized.\n");
+    WOMA::game_state = ENGINE_RESTART;
 }
 // ----------------------------------------------------------------------------------------------
 void DX11Class::EndScene(UINT monitorWindow)
 // ----------------------------------------------------------------------------------------------
 {
-	HRESULT hr;
+	HRESULT hr=S_OK;
 
 	// <PRINT THE 3D SCENE TO SCREEN> to Swap Chain (wait from VSYNC refresh rate, if it is the case)
 	if (DX11windowsArray[monitorWindow].m_swapChain1)
 		hr = DX11windowsArray[monitorWindow].m_swapChain1->Present(m_VSYNC_ENABLED, 0);
-	//else
-	//	hr = DX11windowsArray[monitorWindow].m_swapChain1->Present(m_VSYNC_ENABLED, 0);
 
 	// If the device was reset we must completely reinitialize the renderer.
 	if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)

@@ -242,9 +242,6 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 #if defined USE_PROCESS_OS_KEYS
 	IF_NOT_RETURN_FALSE(InitOsInput());						// INIT-INPUT Devices, NOTE: AFTER: ApplicationInitMainWindow()
 #endif
-
-    IF_NOT_RETURN_FALSE(APPLICATION_CORE_INIT_DONE());
-
 // ########################################### LOAD DRIVERS ###########################################
 	#if CORE_ENGINE_LEVEL >= 10 && defined OPENGL3	
 	if (AppSettings->DRIVER == DRIVER_GL3)
@@ -252,6 +249,8 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	#endif
 	LoadAllDrivers();		//NEW DirectX::DX11Class()	(NEW DX9, NEW DX11, NEW DX12, NEW OpenGL): push_back(NEW DirectX::*Class());
 	
+	InitializeSystemScreen(10, 10); // SETUP SCREEN: F1,F2,F3,F4,F5,F6 (RUNNING NOW ON: PaintSetup())
+
 #if CORE_ENGINE_LEVEL >= 10 && defined USE_IMGUI && RUN_ASMAIN //After: InitializeSystemScreen
 	if (WOMA::previous_game_state == GAME_IMGUI) {
 		InitImGui(SystemHandle->m_hWnd);
@@ -759,6 +758,7 @@ bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ voi
 	windowsArray[MONITOR_NUM].hWnd = hWnd;
 
 	ShowWindow(windowLeft, windowTop);
+
 	return true;
 }
 

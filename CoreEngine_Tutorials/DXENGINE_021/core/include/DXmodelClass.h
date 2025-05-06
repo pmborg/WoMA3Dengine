@@ -136,8 +136,6 @@ public:
 	XMFLOAT3 maxVertex = XMFLOAT3(0, 0, 0);
 
 #if defined USE_BOUNDING_VOLUMES
-	std::vector<XMFLOAT3> boundingBoxVerts;
-	std::vector<DWORD> boundingBoxIndex;
 	void CreateBoundingVolumes(std::vector<XMFLOAT3>& vertPosArray);
 #endif
 

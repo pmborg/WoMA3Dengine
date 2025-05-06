@@ -2639,7 +2639,6 @@ bool DXmodelClass::LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shad
 	}
 #endif
 
-	return true;
 }
 
 // Create: Bounding Box 

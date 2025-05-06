@@ -649,12 +649,9 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	//-----------------------------------------------------------------------------------------------------------------
 	// PROGRESS BAR		///////////////////////////////////////////////////////////////////////////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
+    MSG msg = { 0 };
 #if defined ALLOW_CBIND_PROGRESS_BAR
-	INITCOMMONCONTROLSEX i;
-	i.dwSize = sizeof(INITCOMMONCONTROLSEX);
-	i.dwICC = ICC_PROGRESS_CLASS;
-	InitCommonControlsEx(&i);
-
+    TCHAR title[MAX_STR_LEN] = {};
 	// --- CREATE PROGRESS BAR:
 	SystemHandle->hwndPrgBar = SystemHandle->WomaCreateWindowEx(0, PROGRESS_CLASS, NULL, WS_CHILD | WS_VISIBLE | PBS_SMOOTH, 50, SystemHandle->AppSettings->WINDOW_HEIGHT - 100,
 		SystemHandle->AppSettings->WINDOW_WIDTH - 100, 20, SystemHandle->m_hWnd, (HMENU)401, SystemHandle->m_hinstance, NULL);
@@ -671,8 +668,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 		WS_CHILD | WS_VISIBLE | SS_LEFT | WS_BORDER | SS_OWNERDRAW, 25, 25, 175, 22, SystemHandle->m_hWnd, 0, SystemHandle->m_hinstance, NULL);
 
 	::ShowWindow(SystemHandle->settingstext, 1);
-
-	TCHAR title[MAX_STR_LEN] = {};
 #endif
 
 	// Temporarly disable log file (on this loop) due performance:
@@ -683,8 +678,9 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	//-----------------------------------------------------------------------------------------------------------------
 
 #if defined ALLOW_CBIND_PROGRESS_BAR
-	::CloseWindow(SystemHandle->settingstext);
-	::CloseWindow(SystemHandle->hwndPrgBar);
+    ::ShowWindow(SystemHandle->hwndPrgBar, SW_HIDE);
+    ::ShowWindow(SystemHandle->settingstext, SW_HIDE);
+    RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);	// Invoke: Window PAINT before end.
 #endif
 
 	//Restore: Temp. Disable log file:

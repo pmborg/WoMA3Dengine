@@ -586,10 +586,11 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 				if (!SystemHandle->AppSettings->FULL_SCREEN)
 					SystemHandle->refreshTitle();
 				if (WOMA::game_state == GAME_LOADING) {
-					RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);	// Invoke: Window PAINT before end.
 #if defined ALLOW_CBIND_PROGRESS_BAR
-					RedrawWindow(SystemHandle->hwndPrgBar, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE/*|RDW_ERASE*/);// Invoke: Window PAINT
+					RedrawWindow(SystemHandle->hwndPrgBar, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);// Invoke: Window PAINT
+                    RedrawWindow(SystemHandle->settingstext, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);// Invoke: Window PAINT
 #endif
+                    RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);	// Invoke: Window PAINT before end.
 				}
 				return 0;
 

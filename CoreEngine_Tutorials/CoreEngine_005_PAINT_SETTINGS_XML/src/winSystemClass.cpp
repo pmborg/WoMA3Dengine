@@ -170,14 +170,10 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 #if defined USE_PROCESS_OS_KEYS
 	IF_NOT_RETURN_FALSE(InitOsInput());						// INIT-INPUT Devices, NOTE: AFTER: ApplicationInitMainWindow()
 #endif
-
     IF_NOT_RETURN_FALSE(APPLICATION_CORE_INIT_DONE());
-
 // ########################################### LOAD DRIVERS ###########################################
 	
-#if CORE_ENGINE_LEVEL < 10 && defined USE_SYSTEM_CHECK // BEFORE need to be: ApplicationInitMainWindow() & AFTER need to be: InitSelectedDriver()
 	InitializeSystemScreen(10, 10); // SETUP SCREEN: F1,F2,F3,F4,F5,F6 (RUNNING NOW ON: PaintSetup())
-#endif
 
  // ################################################# INIT DRIVERS ###################################
 	
@@ -647,6 +643,7 @@ bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ voi
 	windowsArray[MONITOR_NUM].hWnd = hWnd;
 
 	ShowWindow(windowLeft, windowTop);
+
 	return true;
 }
 
