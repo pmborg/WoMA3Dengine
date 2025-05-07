@@ -136,8 +136,9 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 #endif
     IF_NOT_RETURN_FALSE(APPLICATION_CORE_INIT_DONE());
 // ########################################### LOAD DRIVERS ###########################################
-	
+#if defined USE_SYSTEM_CHECK
 	InitializeSystemScreen(10, 10); // SETUP SCREEN: F1,F2,F3,F4,F5,F6 (RUNNING NOW ON: PaintSetup())
+#endif
 
  // ################################################# INIT DRIVERS ###################################
 	

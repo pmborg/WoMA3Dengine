@@ -169,6 +169,7 @@ bool CTerrain::LoadHeightMapTerrain(TCHAR* file, float xPos, float zPos, bool sk
 #define i x
 	const static float fixedBorderHeight = 0.0f; ////
 
+#if DX_ENGINE_LEVEL >= 60 && defined USE_TERRAIN_TUTORIAL_CHAP_24
 	if (m_terrainType == TERRAIN_COLOR_QUAD_FOG_SLOP_TEXTURE_Detail_Mapping_TextureMapping_AlphaMapping_BumpMapping_LighMapping_TransparentTexture_MINI_MAP)
 	{
 		m_heightMap_21 = NEW HeightMapType_21[m_terrainWidth * m_terrainHeight];
@@ -224,6 +225,7 @@ bool CTerrain::LoadHeightMapTerrain(TCHAR* file, float xPos, float zPos, bool sk
 		}
 	}
 	else
+#endif
 	{
 		for (j = 0; j < (int)m_terrainHeight; j++) {
 
@@ -993,6 +995,7 @@ void CTerrain::NormalizeHeightMap(float scale, float moveY)
 
 	#define j y
 	#define i x
+#if DX_ENGINE_LEVEL >= 60 && defined USE_TERRAIN_TUTORIAL_CHAP_24
 	if (m_terrainType == TERRAIN_COLOR_QUAD_FOG_SLOP_TEXTURE_Detail_Mapping_TextureMapping_AlphaMapping_BumpMapping_LighMapping_TransparentTexture_MINI_MAP)
 	{
 		int i, j;
@@ -1019,6 +1022,7 @@ void CTerrain::NormalizeHeightMap(float scale, float moveY)
 			for(j=1; j < (int)m_terrainHeight-1; j++)
 				m_heightMap_21[(m_terrainWidth * j) + i].y = m_heightMap_21[(m_terrainWidth * j) + (m_terrainWidth-border)+k].y;
 	} else 
+#endif
 	{
 	}
 
@@ -1028,6 +1032,7 @@ void CTerrain::NormalizeHeightMap(float scale, float moveY)
 		{
 				UINT index = (m_terrainWidth * j) + i;
 
+    #if DX_ENGINE_LEVEL >= 60 && defined USE_TERRAIN_TUTORIAL_CHAP_24
 				if (m_terrainType == TERRAIN_COLOR_QUAD_FOG_SLOP_TEXTURE_Detail_Mapping_TextureMapping_AlphaMapping_BumpMapping_LighMapping_TransparentTexture_MINI_MAP)
 				{
 					//LVL:60
@@ -1035,6 +1040,7 @@ void CTerrain::NormalizeHeightMap(float scale, float moveY)
 					if ((i >= 0 && i < (int)m_terrainWidth) || (j >= 0 && j < (int)m_terrainHeight))
 						m_heightMap_21[(m_terrainWidth * j) + i].y += moveY;
 				} else 
+	#endif
 				{
 					//LVL:55
 					height[(terrain_squares-1)  - y][x] /= scale; //15.0f;

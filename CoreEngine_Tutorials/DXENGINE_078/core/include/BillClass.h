@@ -56,7 +56,9 @@ public:
 
 	CTerrain* mainTerrainPath = NULL;
 
+#if DX_ENGINE_LEVEL >= 77 && defined USE_INSTANCES_FOR_TREES
     void BillboardGS(InstanceType* instances, int m_instanceCount);
+#endif
 
 public:
 int		BillrenderCount=0;

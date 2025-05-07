@@ -129,7 +129,9 @@ void ApplicationClass::AppPreRender(UINT monitorWindow, WomaDriverClass* Driver,
 	}
 #endif
 
+#if DX_ENGINE_LEVEL >= 62 && defined USE_MAIN_MAP
 	AppPreRenderMainMapMiniMap(monitorWindow, Driver, fadeLight);
+#endif
 
 	//MANDATORY! Back to Normal: From now on RENDER TO main buffer SCREEN:
 	((DirectX::DX11Class*)Driver)->SetBackBufferRenderTarget(monitorWindow);

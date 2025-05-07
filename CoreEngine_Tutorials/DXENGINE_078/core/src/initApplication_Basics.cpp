@@ -578,8 +578,10 @@ void ApplicationClass::initShadowTextureDemo()
 void ApplicationClass::WOMA_APPLICATION_FrameUpdateInstancesPositions(UINT m_ObjId, int m_instanceCount, InstanceType* instances_)
 {
 	InstanceType* instances = instances_;
+#if DX_ENGINE_LEVEL >= 77 && defined USE_INSTANCES_FOR_TREES
     BillClass bill;
     bill.BillboardGS(instances, m_instanceCount);
+#endif
 
 }
 #endif

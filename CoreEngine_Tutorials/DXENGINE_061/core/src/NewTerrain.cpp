@@ -19,6 +19,7 @@
 #pragma warning( disable : 4018 ) //'<': signed/unsigned mismatch
 
 #include "platform.h"
+#if DX_ENGINE_LEVEL >= 60 && defined USE_TERRAIN_TUTORIAL_CHAP_24
 #include "OSengine.h"				// To define OS [SystemHandle] Pointer (System Class) & define WomaSYSTEM for: WINDOWS, LINUX & ANDROID
 #include "AutoGenTerrain.h"		
 #include "DXmodelClass.h"
@@ -719,4 +720,5 @@ bool CTerrain::CreateTerrain60(float xPos, float zPos)
 
 	return true;
 }
+#endif
 

@@ -448,7 +448,6 @@
 	#define BILL_FLOWER_3 TEXT("engine/data/scene70Bill/060girasol.png") 	// 9 
 	#define BILL_FLOWER_4 TEXT("engine/data/scene70Bill/060flor2.png") 		//10
 #endif
-
 #if DX_ENGINE_LEVEL == 71
 	#define DEMO_TITLE TEXT("71: BILLBOARD for FENCES, (LIGHT and Fog)")
 	#define WORLD_XML TEXT("world_71.xml")
@@ -471,7 +470,6 @@
 	#define BILLBOARD_GRASS_MODEL TEXT("engine/data/scene73grass/grass.obj")
 	#define BILL_GRASS TEXT("engine/data/scene73grass/Grass_Patch_3.png")	//11
 #endif
-
 #if DX_ENGINE_LEVEL == 74
 	#define DEMO_TITLE TEXT("74: CROSS BILLBOARDs and CLONE BILLBOARDs")
 	#define WORLD_XML TEXT("world_74.xml")
@@ -492,7 +490,6 @@
 #if DX_ENGINE_LEVEL >= 76
 	#define VIDEO_INTRO TEXT("engine/data/75video/Logo.mp4")
 #endif
-
 #if DX_ENGINE_LEVEL == 77
 	#define DEMO_TITLE TEXT("77: Use instances for TREEs")
 	#define WORLD_XML TEXT("world_77.xml")
@@ -503,4 +500,17 @@
 #if DX_ENGINE_LEVEL == 78
 	#define DEMO_TITLE TEXT("78: Check 'WORLD.XML' Object collision")
 	#define WORLD_XML TEXT("world_78.xml")
+#endif
+
+#if DX_ENGINE_LEVEL == 80
+	#define DEMO_TITLE TEXT("80: ASSIMP: Loading a static mesh")
+	#define WORLD_XML TEXT("world_80.xml")
+#endif
+#if DX_ENGINE_LEVEL == 81
+	#define DEMO_TITLE TEXT("81: ASSIMP: Loading an animated mesh")
+	#define WORLD_XML TEXT("world_81.xml")
+#endif
+#if DX_ENGINE_LEVEL == 82
+	#define DEMO_TITLE TEXT("82: ASSIMP: Animated / walking mesh on the terrain, following a path")
+	#define WORLD_XML TEXT("world_82.xml")
 #endif

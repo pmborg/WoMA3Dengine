@@ -38,6 +38,7 @@ extern MyWin Win;
 #pragma warning(push)
 #pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
 
+#if DX_ENGINE_LEVEL >= 63 && defined USE_MINI_MAP
 void ApplicationClass::PositionUpdate(int playerId, float positionX, float positionZ)
 {
 	// Set the size of the mini-map: HARDCODED!
@@ -107,6 +108,7 @@ void ApplicationClass::PositionUpdate(int playerId, float positionX, float posit
 	#undef g_ScreenWidth	
 	#undef g_ScreenHeight	
 }
+#endif
 
 #if (defined DX_ENGINE)
 #include "DXmodelClass.h"
@@ -398,10 +400,14 @@ void ApplicationClass::Shutdown()
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
 	SAFE_SHUTDOWN(m_RenderShadowTexture);
 #endif
+#if DX_ENGINE_LEVEL >= 62 && defined USE_MAIN_MAP
 	SAFE_SHUTDOWN(m_RenderMapTexture);
+#endif
+#if DX_ENGINE_LEVEL >= 63 && defined USE_MINI_MAP
 	SAFE_SHUTDOWN(m_MiniMapBitmapTexture);
 	SAFE_SHUTDOWN(m_BorderTexture);
 	SAFE_SHUTDOWN(m_PointTexture);
+#endif
 
 #if defined SCENE_TERRAIN_QUAD_TREE
 	SAFE_SHUTDOWN(TerrainQuadtree);

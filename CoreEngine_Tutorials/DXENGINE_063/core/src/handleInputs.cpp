@@ -138,6 +138,7 @@ bool ApplicationClass::HandleUserInput(double frameTime)
 
     // Proccess "EXIT MAP": with "ESC" key
     // --------------------------------------------------------------------------------------------
+#if DX_ENGINE_LEVEL >= 62 && defined USE_MAIN_MAP //TUTORIAL_PRE_CHAP >= 26 (G:\DRIVE_MY_SOURCE_CODE\WorldOfMiddleAge\WoMA_PartII)
     if (WOMA::game_state == GAME_MAP)
     {
         static bool state = false;
@@ -160,6 +161,7 @@ bool ApplicationClass::HandleUserInput(double frameTime)
     if (!SystemHandle->m_player[g_NetID]->p_player.IsMapPressed && mapKey == true) {
         mapKey = false;
     }
+#endif
 
     //[1] Set the frame time for calculating the updated position:
     // --------------------------------------------------------------------------------------------

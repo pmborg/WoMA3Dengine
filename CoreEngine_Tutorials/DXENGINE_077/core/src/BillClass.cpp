@@ -392,6 +392,7 @@ int __cdecl BillSortCB( const VOID* arg1, const VOID* arg2 )
 }
 #endif
 
+#if DX_ENGINE_LEVEL >= 77 && defined USE_INSTANCES_FOR_TREES
 void BillClass::BillboardGS(InstanceType* instances, int m_instanceCount)
 {
     int m_terrainWidth = SystemHandle->m_Application->loadedTerrain[2]->m_terrainWidth / 2;
@@ -423,3 +424,4 @@ void BillClass::BillboardGS(InstanceType* instances, int m_instanceCount)
     }
 }
 
+#endif

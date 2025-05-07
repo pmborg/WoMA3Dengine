@@ -60,8 +60,6 @@
 	#define USE_USER_SETUP
 	#if !defined ANDROID_PLATFORM
 		#define USE_PROCESS_OS_KEYS	//4 - NOTE: Madatory at 4
-	//#endif
-	//#if defined WINDOWS_PLATFORM || defined LINUX_PLATFORM
 		#define USE_SYSTEM_CHECK	//4
 	#endif
   	#define USE_CHECK_IO			//4
@@ -80,7 +78,6 @@
 #if CORE_ENGINE_LEVEL >= 6 && defined WINDOWS_PLATFORM
 	#define USE_TIMER			//6 Calculate FPS & dT for animations
 	#define USE_IDEA_PACK		//6
-	
 #endif
 
 #if CORE_ENGINE_LEVEL >= 7 && defined WINDOWS_PLATFORM
@@ -151,7 +148,6 @@
 		//#define USE_DX11_3
 		#endif
 		#define SET_DEVICE_CAPABILITIES //report.txt
-		//#define USE_STATUSBAR
 		#define USE_NORMAL_WINDOW
 	#endif
 
@@ -164,8 +160,6 @@
 	#endif
 
 	#if DX_ENGINE_LEVEL >= 21 && !defined WOMAENGINE_BASIC
-		//#define dx12_upload_old_way	//DX12 upload method
-		
 		#if defined WINDOWS_PLATFORM && defined DX12
 		#define USE_RASTERIZER_STATE //Mandatory for DX12
 		#endif
@@ -236,7 +230,6 @@
 	#endif
 
 	#if DX_ENGINE_LEVEL >= 26
-		//#undef USE_IMGUI
 		#define USE_CUBE					//26-
 		#define USE_SPHERE					//26-
 	#endif
@@ -290,7 +283,6 @@
 	//--------------------------------------------------------------------------------------------------------------------------
 	#if DX_ENGINE_LEVEL >= 30 // WORLD.XML: load "COLOR" .OBJ
 		#define NO_SCENE_IMAGE_LOAD
-		//#undef USE_CUBE
 		#undef SCENE_COLOR
 		#undef SCENE_TEXTURE
 		#undef SCENE_TEXTURE_LIGHT
@@ -304,17 +296,14 @@
 	#endif
 
 	#if DX_ENGINE_LEVEL >= 31
-		//#undef DX12					//to be added later
 		#define RENDER_MULTIPLE_TEXTURES
 	#endif
 
 	#if DX_ENGINE_LEVEL >= 32
-		//#undef DX12					//to be added later
 		#define RENDER_OBJ_WITH_LIGHT
 	#endif
 
 	#if DX_ENGINE_LEVEL >= 33
-		//#undef DX12					//to be added later
 		#define RENDER_OBJ_WITH_ALFA				   
 	#endif
 
@@ -329,7 +318,6 @@
 	#if DX_ENGINE_LEVEL >= 36	//36-
 		#define USE_SHADOW_MAP
 		#define USELIGHTSIZE 10
-		//#define USE_REAL_SUNLIGHT_DIRECTION
 	#endif
 
 	#if DX_ENGINE_LEVEL >= 37	//37-
@@ -491,6 +479,20 @@
 		#undef SCENE_BILLBOARDS
         #undef USE_INSTANCES_FOR_TREES
     #endif						 
+	#if DX_ENGINE_LEVEL >= 80
+        #undef USE_MAIN_MAP
+        #undef USE_MINI_MAP
+        #undef USE_INSTANCES_FOR_TREES
+        #undef USE_TERRAIN_512
+        #undef SCENE_WATER_TERRAIN
+        #undef SCENE_MAIN_TOPO_TERRAIN
+        #undef SCENE_MAIN_TOPO_TERRAIN_USE_INDEX
+        #undef ALLOW_CBIND_PROGRESS_BAR
+        #undef USE_TERRAIN_TUTORIAL_CHAP_24
+        #undef SCENE_TERRAIN_COLLISION
+
+        #define USE_ASSIMP
+    #endif
    
 	//#define USE_MULTI_MONITOR
 	//-------------------------------------------------------------------------------------------------------

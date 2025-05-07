@@ -757,3 +757,60 @@ namespace WOMA
 }
 #endif
 
+void ParseCommandLineArgs(int argc, char* argv[])
+{
+#if defined UNICODE
+    for (int i = 1; i < argc; ++i)
+    {
+        CHAR* parameter = argv[i];
+        TCHAR* wparameter = NULL;
+        atow(wparameter, parameter, (int)_tcslen(wparameter)); //VER_PRODUCTVERSION_STRING_FOUR_PARTS
+
+        if (_tcsnicmp(wparameter, TEXT("-warp"), _tcslen(wparameter)) == 0 ||
+            _tcsnicmp(wparameter, TEXT("/warp"), _tcslen(wparameter)) == 0)
+        {
+            WOMA::UseWarpDevice = true;
+        }
+    }
+#else
+    for (int i = 1; i < argc; ++i)
+    {
+        if (strlen(argv[i]) == 0)
+            continue;
+        if (_tcsnicmp(argv[i], "-warp", _tcslen(argv[i])) == 0 ||
+            _tcsnicmp(argv[i], "/warp", _tcslen(argv[i])) == 0)
+        {
+            WOMA::UseWarpDevice = true;
+        }
+        if (_tcsnicmp(argv[i], "-renderOnce", _tcslen(argv[i])) == 0 ||
+            _tcsnicmp(argv[i], "/renderOnce", _tcslen(argv[i])) == 0)
+        {
+            WOMA::renderOnce = true;
+        }
+        if (_tcsnicmp(argv[i], "-Xpos", _tcslen(argv[i])) == 0 ||
+            _tcsnicmp(argv[i], "/Xpos", _tcslen(argv[i])) == 0)
+        {
+            WOMA::settings.WINDOW_Xpos = atoi(argv[i + 1]);
+            i++;
+        }
+        if (_tcsnicmp(argv[i], "-Ypos", _tcslen(argv[i])) == 0 ||
+            _tcsnicmp(argv[i], "/Ypos", _tcslen(argv[i])) == 0)
+        {
+            WOMA::settings.WINDOW_Ypos = atoi(argv[i + 1]);
+            i++;
+        }
+        if (_tcsnicmp(argv[i], "-WIDTH", _tcslen(argv[i])) == 0 ||
+            _tcsnicmp(argv[i], "/WIDTH", _tcslen(argv[i])) == 0)
+        {
+            WOMA::settings.WINDOW_WIDTH = atoi(argv[i + 1]);
+            i++;
+        }
+        if (_tcsnicmp(argv[i], "-HEIGHT", _tcslen(argv[i])) == 0 ||
+            _tcsnicmp(argv[i], "/HEIGHT", _tcslen(argv[i])) == 0)
+        {
+            WOMA::settings.WINDOW_HEIGHT = atoi(argv[i + 1]);
+            i++;
+        }
+    }
+#endif
+}

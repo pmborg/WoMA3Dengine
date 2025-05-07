@@ -114,9 +114,7 @@ extern float fadeIntro;
 #include "DXshaderClass.h"
 #endif
 
-#if defined SCENE_GENERATEDUNDERWATER
-	#define MAX_TERRAINS 1
-#endif
+    #define MAX_TERRAINS 1
 #if defined SCENE_WATER_TERRAIN
 	#define MAX_TERRAINS 2
 #endif

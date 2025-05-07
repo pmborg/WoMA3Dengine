@@ -25,6 +25,7 @@
 //#############################################################################################################
 // PRE-RENDER - MAP
 //#############################################################################################################
+#if DX_ENGINE_LEVEL >= 62 && defined USE_MAIN_MAP
 void ApplicationClass::TerrainRender(UINT monitorWindow, WomaDriverClass* Driver, float fadeLight, XMMATRIX* m_viewMatrix, XMMATRIX* m_projectionMatrix)
 {
 	//MACRO/FUNCTIONAQUI1
@@ -215,3 +216,4 @@ void ApplicationClass::RenderMainMapMiniMap()
 	}
 #endif
 }
+#endif

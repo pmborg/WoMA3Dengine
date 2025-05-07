@@ -209,11 +209,13 @@ void dxWinSystemClass::Shutdown()
 		m_CameraSKY = NULL;
 	}
 #endif
+#if DX_ENGINE_LEVEL >= 62 && defined USE_MAIN_MAP
 	if (m_CameraMAP)
 	{
 		delete ((DirectX::DXcameraClass*)m_CameraMAP);
 		m_CameraMAP = NULL;
 	}
+#endif
 #if defined USE_DIRECT_INPUT
 	for (UINT i = 0; i < HowManyPlayers; i++)
 	{

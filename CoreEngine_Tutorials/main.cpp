@@ -21,7 +21,7 @@
 
 // DEFINE ENGINE LEVEL:
 // C:\[WoMAengine]\woma_engine_assets.h
-
+ 
 // --------------------------------------------------------------------------------------------
 // #HOWTO:
 // C:\[WoMAengine]\Android-howto\HowTo\HowToInstallVisualStudio2019CrossPlatformDevelopmentEnvironment\howto_download_and_install_VisualStudio2019CrossPlatformSetupEnvironment.txt
@@ -125,58 +125,6 @@ void android_main(android_app* state)			// ENTRY-POINT: ANDROID
 #endif
 
 #endif
-
-void ParseCommandLineArgs(int argc, char* argv[])
-{
-#if defined UNICODE
-	for (int i = 1; i < argc; ++i)
-	{
-		CHAR* parameter = argv[i];
-		TCHAR* wparameter = NULL;
-		atow(wparameter, parameter, (int)_tcslen(wparameter)); //VER_PRODUCTVERSION_STRING_FOUR_PARTS
-
-		if (_tcsnicmp(wparameter, TEXT("-warp"), _tcslen(wparameter)) == 0 ||
-			_tcsnicmp(wparameter, TEXT("/warp"), _tcslen(wparameter)) == 0)
-		{
-			WOMA::UseWarpDevice = true;
-		}
-	}
-#else
-	for (int i = 1; i < argc; ++i)
-	{
-		if (_tcsnicmp(argv[i], "-warp", _tcslen(argv[i])) == 0 ||
-			_tcsnicmp(argv[i], "/warp", _tcslen(argv[i])) == 0)
-		{
-			WOMA::UseWarpDevice = true;
-		}
-        if (_tcsnicmp(argv[i], "-renderOnce", _tcslen(argv[i])) == 0 ||
-            _tcsnicmp(argv[i], "/renderOnce", _tcslen(argv[i])) == 0)
-        {
-            WOMA::renderOnce = true;
-        }
-        if (_tcsnicmp(argv[i], "-Xpos", _tcslen(argv[i])) == 0 ||
-            _tcsnicmp(argv[i], "/Xpos", _tcslen(argv[i])) == 0)
-        {
-            WOMA::settings.WINDOW_Xpos = atoi(argv[i + 1]);
-        }
-        if (_tcsnicmp(argv[i], "-Ypos", _tcslen(argv[i])) == 0 ||
-            _tcsnicmp(argv[i], "/Ypos", _tcslen(argv[i])) == 0)
-        {
-            WOMA::settings.WINDOW_Ypos = atoi(argv[i + 1]);
-        }
-        if (_tcsnicmp(argv[i], "-WIDTH", _tcslen(argv[i])) == 0 ||
-            _tcsnicmp(argv[i], "/WIDTH", _tcslen(argv[i])) == 0)
-        {
-            WOMA::settings.WINDOW_WIDTH = atoi(argv[i + 1]);
-        }
-        if (_tcsnicmp(argv[i], "-HEIGHT", _tcslen(argv[i])) == 0 ||
-            _tcsnicmp(argv[i], "/HEIGHT", _tcslen(argv[i])) == 0)
-        {
-            WOMA::settings.WINDOW_HEIGHT = atoi(argv[i + 1]);
-        }															 
-	}
-#endif
-}
 
 // Entry point of all WoMA ENGINE Applications all "main's" call this this one (used by: WINDOWS / LINUX / ANDROID)
 // -------------------------------------------------------------------------------------------------------------------------------------

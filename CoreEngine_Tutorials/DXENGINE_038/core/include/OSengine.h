@@ -262,6 +262,7 @@ namespace WOMA
 #endif
 }
 
+void ParseCommandLineArgs(int argc, char* argv[]);
 
 #if CORE_ENGINE_LEVEL >= 1 && !defined NewWomaEngine
 extern int Command;
