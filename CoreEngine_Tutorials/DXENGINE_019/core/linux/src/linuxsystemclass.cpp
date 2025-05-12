@@ -223,14 +223,6 @@ bool LinuxSystemClass::APPLICATION_INIT_SYSTEM() // ApplicationInit()
 
 	InitializeSystemScreen(10, 10);			// SETUP SCREEN: F1,F2,F3,F4
 
-#if CORE_ENGINE_LEVEL >= 10 && defined USE_IMGUI
-	if (WOMA::previous_game_state == GAME_IMGUI) {
-		InitImGui();
-		WOMA::previous_game_state = WOMA::game_state = ENGINE_RESTART;
-		return false;
-	}
-#endif
-
 #if defined USE_PROCESS_OS_KEYS
 	IF_NOT_RETURN_FALSE(InitOsInput());			// INIT-INPUT Devices, NOTE: After "Create MainWindow(s)"
 #endif

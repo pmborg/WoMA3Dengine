@@ -254,12 +254,11 @@ namespace DirectX
 
 #if defined DX11 || defined DX9
 		ID3D11InputLayout* m_layout11 = NULL;
-		ID3D11Buffer* m_VertexShaderBuffer11 = NULL; /*m_matrixBuffer*/
+		ID3D11Buffer* m_VertexShaderBuffer11 = NULL; /*Constant Buffer*/
 
 		// Shader CODE:
 		ID3D11VertexShader* m_vertexShader11 = NULL;
 		ID3D11PixelShader* m_pixelShader11 = NULL;
-		ID3D11GeometryShader* m_geometryShader11 = NULL;	// GS
 #endif
 
 	public:
@@ -381,7 +380,7 @@ namespace DirectX
 
 		//Sky: 2
 
-		bool bUseGS;	// GS
+		bool bUseGS=false;	// GS
 	};
 
 }

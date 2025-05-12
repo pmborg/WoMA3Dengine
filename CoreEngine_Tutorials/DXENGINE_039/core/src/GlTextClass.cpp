@@ -193,7 +193,7 @@ bool GlTextClass::UpdateSentence(SentenceType* sentence, TCHAR* text, int positi
 	int numLetters;
 	ModelTextureVertexType* vertices;
 	float drawX, drawY;
-	//WomaDriverClass* m_Driver = /*SystemHandle->*/driverList[SystemHandle->AppSettings->DRIVER];
+	//WomaDriverClass* m_Driver = driverList[SystemHandle->AppSettings->DRIVER];
 
 	positionY += 36;
 
@@ -271,7 +271,7 @@ void GlTextClass::RenderSentence(SentenceType* sentence)
 #if (defined OPENGL3 || defined OPENGL4)
 	m_spriteShader->SetShader();
 
-	GLopenGLclass* driver = (GLopenGLclass*)/*SystemHandle->*/driverList[SystemHandle->AppSettings->DRIVER];
+	GLopenGLclass* driver = (GLopenGLclass*)driverList[SystemHandle->AppSettings->DRIVER];
 
 	static mat4 m_worldMatrix = m_worldMatrix.mat4identity();
 	static mat4 m_viewMatrix = m_viewMatrix.mat4identity();

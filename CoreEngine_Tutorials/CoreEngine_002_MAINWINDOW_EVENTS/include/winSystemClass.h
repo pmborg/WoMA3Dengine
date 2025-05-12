@@ -39,8 +39,7 @@
 
 extern HWND DoCreateStatusBar(HWND hwndParent, int idStatus, HINSTANCE hinst, int cParts);
 
-#if defined WINDOWS_PLATFORM
-#include <combaseapi.h>				// VC7: ships with updated headers: CoInitializeEx()
+
 
 #define check(A)							{}
 
@@ -91,7 +90,7 @@ public:
 	bool APPLICATION_INIT_SYSTEM();
 	int	 APPLICATION_MAIN_LOOP();
 
-	HWND	m_hWnd = 0;
+	HWND	m_hWnd;
 	#if defined USE_PROCESS_OS_KEYS //CORE_ENGINE_LEVEL >= 3
     void GetInputs();
 	bool InitOsInput();
@@ -154,7 +153,4 @@ private:
 // GLOBALS //
 /////////////
 extern WinSystemClass* SystemHandle;
-
-#endif
-
 #endif

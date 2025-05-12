@@ -308,24 +308,6 @@ void SystemClass::FrameUpdate()
 	}
 #endif
 
-#if defined ANDROID_PLATFORM && !defined NewWomaEngine && defined USE_IMGUI
-	if (WOMA::game_state == GAME_RUN)
-	{
-		struct womaengine* engine = (struct womaengine*)app->userData;
-
-		#define mousex engine->state.x
-		#define mousey engine->state.y
-		//_tprintf("mousex: %d mouseY: %d\n", mousex, mousey);
-		if ((mousex < 100 && mousey < 100) && (mousex > 0 && mousey > 0))
-		{
-			RENDER_PAGE = 25;
-			WOMA::previous_game_state = GAME_IMGUI;
-			WOMA::game_state = ENGINE_RESTART;
-			return;
-		}
-	}
-#endif
-
 	#if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 	  #if !defined ANDROID_PLATFORM
 		DXsystemHandle->GetInputs();				// READ-INPUT: WinSystemClass::ProcessInput() + DXInputClass::Frame()

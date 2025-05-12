@@ -322,7 +322,7 @@ bool ApplicationClass::HandleUserInput(double frameTime)
 	#if defined OPENGL3
 	else
 	{
-		GLopenGLclass* driver = (GLopenGLclass*) /*SystemHandle->*/driverList[SystemHandle->AppSettings->DRIVER];
+		GLopenGLclass* driver = (GLopenGLclass*) driverList[SystemHandle->AppSettings->DRIVER];
 
 		driver->gl_Camera->m_positionY = height + 1.25f; // Camera are: "x.xf" above our feets.
 		driver->gl_Camera->m_positionX = posX;

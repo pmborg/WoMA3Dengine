@@ -27,3 +27,6 @@ report.txt
 **/Android1.NativeActivity/_*.cpp
 ThirdParty/DirectXTex
 ThirdParty/DirectXTex.old
+ThirdParty/PPG-master/Int/
+ThirdParty/PPG-master/External/assimp/lib/
+CoreEngine_Tutorials/DXENGINE_*/Int

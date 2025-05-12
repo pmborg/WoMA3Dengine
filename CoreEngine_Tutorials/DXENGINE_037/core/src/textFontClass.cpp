@@ -195,7 +195,7 @@ void textFontClass::BuildVertexArray(void* vertices, TCHAR* sentence, float draw
 {
 	VertexType* vertexPtr;
 	int numLetters, index, i, letter;
-	//WomaDriverClass* m_Driver = /*SystemHandle->*/driverList[SystemHandle->AppSettings->DRIVER];
+	//WomaDriverClass* m_Driver = driverList[SystemHandle->AppSettings->DRIVER];
 
 	if (m_Driver->RenderfirstTime)
 		_tprintf(TEXT("[%d]: BuildVertexArray(%s, drawX: %f, drawY: %f)\n"), gettid(), sentence, drawX, drawY);

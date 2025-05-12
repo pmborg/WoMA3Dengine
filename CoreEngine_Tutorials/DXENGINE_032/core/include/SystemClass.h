@@ -97,7 +97,7 @@ typedef struct {
 	#define obj_instances_4		4
 	#define obj_instances_8		8
 
-typedef struct
+typedef struct GPU_
 {
 	TCHAR GraphicCard[MAX_STR_LEN] = {};
 	//TCHAR AdapterDACType[MAX_STR_LEN] = {};
@@ -107,10 +107,9 @@ typedef struct
 	TCHAR SharedSystemMemory[MAX_STR_LEN] = {};
 } GPU;
 
-typedef struct
+typedef struct SystemSettings_
 {
 	TCHAR szCountryNameBuffer[MAX_STR_LEN] = {}; // Will hold country
-
 	TCHAR cCurrentPath[FILENAME_MAX] = {};
 
 	// System

@@ -547,10 +547,6 @@ bool ApplicationClass::WOMA_APPLICATION_InitGUI()
 	return true;
 }
 
-#if defined ANDROID_PLATFORM && CORE_ENGINE_LEVEL >= 10 && !RUN_ASMAIN && defined USE_IMGUI
-extern void ImGui_Init(struct android_app* app);
-#endif
-
 //-------------------------------------------------------------------------------------------
 bool ApplicationClass::Start()
 //-------------------------------------------------------------------------------------------
@@ -640,9 +636,6 @@ bool ApplicationClass::Initialize(WomaDriverClass* Driver)
 #endif
 
 	//imgGui:
-#if defined ANDROID_PLATFORM && CORE_ENGINE_LEVEL >= 10 && !RUN_ASMAIN && defined USE_IMGUI
-	ImGui_Init(engine_state.app);
-#endif
 
 #if defined USE_DIRECT_INPUT
 	m_NextPosition = NEW PositionClass(/*ID*/-1);

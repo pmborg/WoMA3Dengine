@@ -55,6 +55,13 @@ int __cdecl BillSortCB(const VOID* arg1, const VOID* arg2);
 #include "BillClass.h"				//[ch60]
 #endif
 
+#if defined USE_ASSIMP
+std::ofstream os_file("log.txt", std::ios::out);
+#include "PPG.h"
+#include "MyDemo.h"
+extern MyDemo demo;
+#endif
+
 //-------------------------------------------------------------------------------------------
 void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 //-------------------------------------------------------------------------------------------
@@ -63,6 +70,21 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 
 	// [1] Animations:
 	// --------------------------------------------------------------------------------------------
+#if defined USE_ASSIMP && defined MAIN_RENDER // ASSIMP: Skin-MESH (0.15ms)
+    static Application demoapp;
+
+    if (m_Driver->RenderfirstTime)
+        demo.Start(demoapp.m_Graphics, ASSIMP_MODEL_BOBLAMPCLEAN);
+
+    static DWORD previousTime = timeGetTime();
+    DWORD currentTime = timeGetTime();
+    float deltaTime = (currentTime - previousTime) / 1000.0f;
+    previousTime = currentTime;
+
+    demo.Update(demoapp.m_Graphics, deltaTime);
+    demo.Render(demoapp.m_Graphics);
+#endif
+
 
 	// [2] SceneManager: Process/Filter and Create Lists/trees of objects to render from: WORLD.XML
 	// --------------------------------------------------------------------------------------------
@@ -271,7 +293,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 
 	// RENDER: SKY Sphere:
 	// --------------------------------------------------------------------------------------------
-#if defined USE_SKY_CAMERA_DOME && defined USE_SKYSPHERE	// Render world "Sky": Centered SKY Camera:
+#if (defined USE_SKY_CAMERA_DOME && defined USE_SKYSPHERE) && defined MAIN_RENDER	// MAIN-RENDER: "Sky": (0.0ms)
 	if (RENDER_PAGE >= 28 && m_SkyModel)
 	{
 		m_Driver->SetRasterizerState(CULL_NONE/*CULL_BACK*/, FILL_SOLID); // Render the Inside of Sphere
@@ -310,7 +332,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 
 	// [2] Render MAIN Terrain Here
 	// --------------------------------------------------------------------------------------------
-#if defined SCENE_MAIN_TOPO_TERRAIN && !defined USE_TERRAIN_ALFA_MAP
+#if (defined SCENE_MAIN_TOPO_TERRAIN && !defined USE_TERRAIN_ALFA_MAP) && defined MAIN_RENDER //MAIN-RENDER TERRAIN (0.3 ms)
 	static bool fog = (RENDER_PAGE == 51 || RENDER_PAGE >= 60) ? true : false;
 	if (RENDER_PAGE >= 50)
 	{
@@ -328,9 +350,9 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 #if defined USE_RASTERIZER_STATE
 	m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
 #endif
-#if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
+#if (defined USE_SCENE_MANAGER && defined DX_ENGINE) && defined MAIN_RENDER //MAIN-RENDER: MAIN OBJs. (9 ms)
 	for (UINT id = 0; id < world_main_size; id++)
-			RenderModel(monitorWindow, m_Driver, id, PASS_OPAC); // Render MAIN OBJs.
+			RenderModel(monitorWindow, m_Driver, id, PASS_OPAC);
 #endif
 
 	//THE "OTHER" NETWORK PLAYERS
@@ -342,7 +364,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 
 	// [1] WATER:
 	// --------------------------------------------------------------------------------------------
-#if DX_ENGINE_LEVEL >= 50 && defined SCENE_WATER_TERRAIN //50
+#if (DX_ENGINE_LEVEL >= 50 && defined SCENE_WATER_TERRAIN) && defined MAIN_RENDER //MAIN-RENDER: WATER (0.3 ms)
 	if (RENDER_PAGE >= 50)
 	{
 		((DirectX::DXmodelClass*)m_TerrainModel[1])->m_Shader11->time += (float)SystemHandle->m_Application->dt * (0.0025f / 16.66f);
@@ -369,7 +391,7 @@ void ApplicationClass::AppPosRender(UINT monitorWindow)
 	m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
 #endif
 
-#if TUTORIAL_CHAP >= 60 && defined SCENE_BILLBOARDS && defined USE_SCENE_MANAGER && defined DX_ENGINE // BILLBOARD + FENCES + FIRE
+#if (TUTORIAL_CHAP >= 60 && defined SCENE_BILLBOARDS && defined USE_SCENE_MANAGER && defined DX_ENGINE) && defined MAIN_RENDER // MAIN-RENDER: BILLBOARD + FENCES + FIRE (11.4 ms)
 	UINT size = SceneManager::GetInstance()->transparentModelList.size();
 	if (size > 0) {
 		qsort(m_Trees, size, sizeof(Tree), BillSortCB);
@@ -386,7 +408,7 @@ void ApplicationClass::AppPosRender(UINT monitorWindow)
 
 	m_Driver->ClearDepthBuffer();
 	// -------------------------
-#if defined USE_TITLE_BANNER 
+#if (defined USE_TITLE_BANNER && defined MAIN_RENDER) && defined MAIN_RENDER // MAIN-RENDER: TITLE (0.3 ms)
 	if ((RENDER_PAGE >= 24 && m_titleModel) && (WOMA::game_state != GAME_MAP)) //Dont render title, on main map!
 	{
 		float rescale = 1;
@@ -396,24 +418,13 @@ void ApplicationClass::AppPosRender(UINT monitorWindow)
 	}
 #endif
 
-#if defined USE_MAIN_MAP || defined USE_MINI_MAP
+#if (defined USE_MAIN_MAP || defined USE_MINI_MAP) && defined MAIN_RENDER //MAIN-RENDER: MINI-MAP (0.4)
 	RenderMainMapMiniMap();
-#endif
-
-#if defined USE_IMGUI
-	if (RENDER_PAGE >= 24 && m_iconSettings)
-	{
-		float rescale = 1;
-		int X = 2;
-		int Y = 2;
-		m_iconSettings->RenderSprite(X, Y, rescale);
-	}
-	m_Driver->ClearDepthBuffer();
 #endif
 
 	// RENDER RASTERTEK V1 FONT:
 	// -------------------------
-#if defined USE_RASTERTEK_TEXT_FONT
+#if (defined USE_RASTERTEK_TEXT_FONT) && defined MAIN_RENDER //MAIN-RENDER: Raster FONT: v1 (0.4 ms)
 #if !defined INTRO_DEMO //|DEMO|
 	if (RENDER_PAGE >= 27)
 		AppTextClass->Render();
@@ -444,7 +455,7 @@ void ApplicationClass::AppPosRender(UINT monitorWindow)
 
 	// RENDER NATIVE TEXT:
 	// -------------------
-#if defined USE_DX10DRIVER_FONTS
+#if defined USE_DX10DRIVER_FONTS && defined MAIN_RENDER //MAIN-RENDER: Driver Font (0.5 ms)
 	#if !defined INTRO_DEMO //|DEMO Force NATIVE TEXT|
 	if ((RENDER_PAGE >= 22) && (m_Driver->m_sCapabilities.USE_DXDRIVER_FONTSBoolean) && (SystemHandle->AppSettings->DRIVER == DRIVER_DX11))
 	#endif
@@ -733,9 +744,6 @@ if (AppTextClass) {
 		SystemHandle->m_Application->totalRendered,
 		(UINT)SystemHandle->xml_loader.theWorld.size());
 #endif
-#if _NOT DX_ENGINE_LEVEL >= 70
-	AppTextClass->SetBillRenderCount(0);
-#endif  
 }
 #endif
 

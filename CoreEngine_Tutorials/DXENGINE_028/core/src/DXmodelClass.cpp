@@ -253,7 +253,7 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 		// Create the SHADER object / LOAD HLSL ---> return shader as pointer!!
 		shader = NEW DXshaderClass(m_driver11->ShaderVersionH, m_driver11->ShaderVersionL, Model3D);
 		IF_NOT_THROW_EXCEPTION(shader);
-		result = shader->Initialize(m_ObjId, objectName, ShaderType, ((DirectX::DX11Class*)m_driver11)->m_device11, SystemHandle->m_hWnd, PrimitiveTopology);
+		result = shader->Initialize(m_ObjId, objectName, ShaderType, ((DirectX::DX11Class*)m_driver11)->m_device11, SystemHandle->m_hWnd, PrimitiveTopology, (ShaderType == SHADER_TEXTURE_GS_INSTANCED)?true:false);
 	break;
   #endif
 
@@ -267,7 +267,7 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
   #endif
 	}
 	if (!result)
-		{ WomaFatalExceptionW(TEXT("Could not initialize the Shader, error in HLSL code!")); /*return false;*/ }
+		{ WomaFatalExceptionW(TEXT("Could not initialize the Shader, error in HLSL code!")); }
 
 #if defined DX11 || defined DX12 || defined DX9
 
@@ -1689,7 +1689,7 @@ void DXmodelClass::RenderWithFade(float fadeLight, bool FOG)
 #if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28 && defined USE_SKYSPHERE
 void DXmodelClass::RenderSky(UINT camera, float fadeLight)
 {
-	#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
+#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 	{
 		m_Shader->PSfade = fadeLight;
@@ -1749,7 +1749,7 @@ void DXmodelClass::Render(UINT camera, UINT projection, UINT pass, void* lightVi
 	{
 		 ID3D11DeviceContext* pContext = m_driver11->m_deviceContext;
 
-		// Step 1 - Put the "vertex", "index" and "instances"(if exist) buffers on the graphics pipeline to prepare them for drawing:
+		// Step 1 - Put the "vertex", "index" and "instances" (if exist) buffers on the graphics pipeline to prepare them for drawing:
 		// ----------------------------------------------------------------------------------------
 #if defined USE_TERRAIN_QUAD_TREE
 		if (m_Shader11->m_shaderType == SHADER_Slope_Texture_Terrain) {
@@ -1762,10 +1762,11 @@ void DXmodelClass::Render(UINT camera, UINT projection, UINT pass, void* lightVi
 		else
 #endif
 		{
-			//IASetPrimitiveTopology()
-			//IASetVertexBuffers()
-			//IASetIndexBuffer()
-			SetGeometryBuffers(m_driver11->m_deviceContext);
+            //DO:
+			// IASetPrimitiveTopology()
+			// IASetVertexBuffers()
+			// IASetIndexBuffer()
+			SetGeometryBuffers(pContext);
 		}
 
 		// Step 2 - Get "view" and "projection" matrices from the "driver" and "camera" objects
@@ -1774,14 +1775,16 @@ void DXmodelClass::Render(UINT camera, UINT projection, UINT pass, void* lightVi
 		XMMATRIX* viewMatrix;
 
 		if (projection == PROJECTION_MINIMAP) {
-			projectionMatrix = (XMMATRIX*)ShadowProjectionMatrix;	//Use provided projection
+			projectionMatrix = (XMMATRIX*)ShadowProjectionMatrix;	//Use provided projection: MINI-MAP
 			viewMatrix = (XMMATRIX*)lightViewMatrix;				//Use provided view
 		} else
 		{
 		if (camera != CAMERA_MINIMAP)
+        {
 			projectionMatrix = m_driver11->GetProjectionMatrix(camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
+        }
 		else
-			projectionMatrix = (XMMATRIX*)ShadowProjectionMatrix;	//Use provided projection: MINI-MAP
+			projectionMatrix = (XMMATRIX*)ShadowProjectionMatrix;   //Use provided projection: for Shadows
 		
 			viewMatrix = m_driver11->GetViewMatrix(camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
 		}
@@ -1809,7 +1812,12 @@ void DXmodelClass::Render(UINT camera, UINT projection, UINT pass, void* lightVi
 			}
 		#endif
 			m_Shader11->shaderTypeParameter = (float)shaderTypeParameter;
-			m_Shader11->Render(pass, pContext, m_indexCount, &m_worldMatrix, viewMatrix, projectionMatrix);	// Single Material (Optimized)
+            
+            #if defined USE_OPTIMIZING
+            m_Shader11->Render(pass, pContext, m_indexCount, &m_worldMatrix, viewMatrix, &m_driver11->m_projectionMatrix_sky);	// Single Material (Optimized)
+            #else
+            m_Shader11->Render(pass, pContext, m_indexCount, &m_worldMatrix, viewMatrix, projectionMatrix);
+            #endif
 		}
 	}
 #endif

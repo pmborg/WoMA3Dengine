@@ -144,8 +144,6 @@
 	#pragma warning(push)
 	#pragma warning(disable : 6387)
 	#define COMMANDLINE_TO_ARGC_ARGV() {                \
-		WOMA::Scmdline = lpCmdLine;                     \
-		WOMA::Cmdshow = nShowCmd;                       \
 		std::string segment;                            \
 		std::stringstream test(lpCmdLine);              \
 		for (int i = 0; i < MAX_PARAMS; i++)            \
@@ -216,10 +214,10 @@ namespace WOMA
 	extern BOOL		UseWarpDevice;
     extern BOOL	    renderOnce;
     extern UINT     woma_timer;
-#if _NOT
+
 	extern int		ARGc;
 	extern CHAR**	ARGv;
-#endif
+
 	extern TCHAR strConsoleTitle[MAX_STR_LEN];
 #if defined USE_LOG_MANAGER //1
 	extern bool dirExists(STRING& dirName_in);
@@ -298,7 +296,6 @@ namespace WOMA
 #endif
 
 #if CORE_ENGINE_LEVEL >= 10 && CORE_ENGINE_LEVEL == 10	//DX9 DX11+DX10 DX12 OPENGL3
-//extern int USE_THIS_GRAPHIC_CARD_ADAPTER;
 #endif
 
 #if defined ANDROID_PLATFORM

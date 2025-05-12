@@ -389,7 +389,7 @@ namespace DirectX {
 		HRESULT result;
 		D3D11_MAPPED_SUBRESOURCE mappedResource;
 		DXtextureVertexType* verticesPtr;
-		//WomaDriverClass* m_Driver = /*SystemHandle->*/driverList[SystemHandle->AppSettings->DRIVER];
+		//WomaDriverClass* m_Driver = driverList[SystemHandle->AppSettings->DRIVER];
 
 		if (!sentence)
 		{

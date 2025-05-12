@@ -502,7 +502,7 @@ void SystemClass::refreshTitle() // Run once per second.
 #else
 #if defined USE_ASTRO_CLASS
 	//(astroClass == NULL) ? 0 : astroClass->hour, (astroClass == NULL) ? 0 : astroClass->minute,
-	StringCchPrintf(pstrFPS, 300, TEXT("FPS:%d [%s] %s shader:%s state:%d PAGE: %d - TOTAL VERTEX: %d"), SystemHandle->fps,
+	StringCchPrintf(pstrFPS, 300, TEXT("FPS:%d(%4.1f ms) [%s] %s shader:%s state:%d PAGE: %d - TOTAL VERTEX: %d"), SystemHandle->fps, (SystemHandle->fps==0)?1:1000.0f/SystemHandle->fps,
 		m_Driver->driverName, WOMA::APP_FULLNAME,
 		m_Driver->szShaderModel, WOMA::game_state, RENDER_PAGE, SystemHandle->TotalVertexCounter);
 #else
@@ -918,24 +918,6 @@ void SystemClass::FrameUpdate()
 			return;
 		}
 		*/
-	}
-#endif
-
-#if defined ANDROID_PLATFORM && !defined NewWomaEngine && defined USE_IMGUI
-	if (WOMA::game_state == GAME_RUN)
-	{
-		struct womaengine* engine = (struct womaengine*)app->userData;
-
-		#define mousex engine->state.x
-		#define mousey engine->state.y
-		//_tprintf("mousex: %d mouseY: %d\n", mousex, mousey);
-		if ((mousex < 100 && mousey < 100) && (mousex > 0 && mousey > 0))
-		{
-			RENDER_PAGE = 25;
-			WOMA::previous_game_state = GAME_IMGUI;
-			WOMA::game_state = ENGINE_RESTART;
-			return;
-		}
 	}
 #endif
 

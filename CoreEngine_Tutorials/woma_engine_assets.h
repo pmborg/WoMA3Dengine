@@ -502,15 +502,14 @@
 	#define WORLD_XML TEXT("world_78.xml")
 #endif
 
-#if DX_ENGINE_LEVEL == 80
-	#define DEMO_TITLE TEXT("80: ASSIMP: Loading a static mesh")
-	#define WORLD_XML TEXT("world_80.xml")
-#endif
-#if DX_ENGINE_LEVEL == 81
-	#define DEMO_TITLE TEXT("81: ASSIMP: Loading an animated mesh")
-	#define WORLD_XML TEXT("world_81.xml")
-#endif
 #if DX_ENGINE_LEVEL == 82
-	#define DEMO_TITLE TEXT("82: ASSIMP: Animated / walking mesh on the terrain, following a path")
+	#define DEMO_TITLE TEXT("82: ASSIMP: Animated mesh")
 	#define WORLD_XML TEXT("world_82.xml")
+#endif
+#if DX_ENGINE_LEVEL >= 82
+    #define ASSIMP_MODEL_BOBLAMPCLEAN TEXT("C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\Data\\Models\\boblampclean\\boblampclean.md5mesh")
+#endif
+#if DX_ENGINE_LEVEL == 83
+	#define DEMO_TITLE TEXT("83: ASSIMP: Animated / walking mesh on the terrain, following a path")
+	#define WORLD_XML TEXT("world_83.xml")
 #endif

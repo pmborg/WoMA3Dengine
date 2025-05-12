@@ -911,7 +911,7 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 							  if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9) 
 							  {
 								//[TEMMPLATE] LOAD TEXTURE DX11:
-								#define m_driver11 ((DirectX::DX11Class*)/*SystemHandle->*/driverList[SystemHandle->AppSettings->DRIVER])
+								#define m_driver11 ((DirectX::DX11Class*)driverList[SystemHandle->AppSettings->DRIVER])
 								LOADTEXTURE((TCHAR*)fileNamePath.c_str(), tempMeshSRV);
 								obj3d.material[matCount - 1].alfaMap11 = tempMeshSRV;
 							  }
@@ -920,7 +920,7 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 							  #if defined DX12
 								if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 								{
-									#define m_driver ((DirectX::DX12Class*)/*SystemHandle->*/driverList[SystemHandle->AppSettings->DRIVER])
+									#define m_driver ((DirectX::DX12Class*)driverList[SystemHandle->AppSettings->DRIVER])
 									DX12TextureClass* alfaMap = NEW DX12TextureClass;
 									obj3d.material[matCount - 1].alfaMap = alfaMap;
 									IF_NOT_THROW_EXCEPTION(alfaMap);

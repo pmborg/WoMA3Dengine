@@ -259,11 +259,6 @@ void ApplicationClass::initStatic2D()
 		initModelwithTexture2D(m_titleModel, DEMO_TITLE_TEXTURE, SpriteVertexVector, emptyIndexList, SHADER_TEXTURE);
 	#endif
 
-	#if defined USE_IMGUI	
-		//Settings Icon:
-		initModelwithTexture2D(m_iconSettings, DEMO_SETTINGS_ICON, SpriteVertexVector, emptyIndexList, SHADER_TEXTURE);
-	#endif
-	
 }
 #endif
 
@@ -321,8 +316,8 @@ void ApplicationClass::DEMO_WOMA_APPLICATION_Shutdown2D()
 // --------------------------------------------------------------------------------------------
 {
 #if defined USE_DX10DRIVER_FONTS
-	if ((DirectX::DX11Class*)/*SystemHandle->*/driverList.size() > 0)
-		((DirectX::DX11Class*)/*SystemHandle->*/driverList[SystemHandle->AppSettings->DRIVER])->Shutdown2D();
+	if ((DirectX::DX11Class*)driverList.size() > 0)
+		((DirectX::DX11Class*)driverList[SystemHandle->AppSettings->DRIVER])->Shutdown2D();
 #endif
 
 	WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_Shutdown2D()\n");
@@ -332,9 +327,6 @@ void ApplicationClass::DEMO_WOMA_APPLICATION_Shutdown2D()
 		{
 		#if defined USE_TITLE_BANNER // TITLE-SHUTDOWN
 			SAFE_SHUTDOWN_MODELDX(m_titleModel);
-		#endif
-		#if defined USE_IMGUI
-			SAFE_SHUTDOWN_MODELDX(m_iconSettings);
 		#endif
 		#if defined USE_MAIN_MAP
 			SAFE_SHUTDOWN_MODELDX(m_mainMapFrameModel);
@@ -352,9 +344,6 @@ void ApplicationClass::DEMO_WOMA_APPLICATION_Shutdown2D()
 		{
 		#if defined USE_TITLE_BANNER // TITLE-SHUTDOWN
 			SAFE_SHUTDOWN_MODELGL3(m_titleModel);
-		#endif
-		#if defined USE_IMGUI
-			SAFE_SHUTDOWN_MODELGL3(m_iconSettings);
 		#endif
 		#if defined USE_MAIN_MAP
 			SAFE_SHUTDOWN_MODELGL3(m_mainMapFrameModel);
@@ -665,8 +654,8 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	//-----------------------------------------------------------------------------------------------------------------
 	// PROGRESS BAR		///////////////////////////////////////////////////////////////////////////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
-    MSG msg = { 0 };
 #if defined ALLOW_CBIND_PROGRESS_BAR
+    MSG msg = { 0 };
     TCHAR title[MAX_STR_LEN] = {};
 	// --- CREATE PROGRESS BAR:
 	SystemHandle->hwndPrgBar = SystemHandle->WomaCreateWindowEx(0, PROGRESS_CLASS, NULL, WS_CHILD | WS_VISIBLE | PBS_SMOOTH, 50, SystemHandle->AppSettings->WINDOW_HEIGHT - 100,

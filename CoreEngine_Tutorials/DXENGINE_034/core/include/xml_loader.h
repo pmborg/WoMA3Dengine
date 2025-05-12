@@ -162,7 +162,8 @@ struct WOMA_OBJECT
 };
 
 //<world>
-typedef struct {
+typedef struct xmlobj3d_
+{
 	int fromPage, toPage, depend = 0;
 	float scale = 1, posX = 0, posZ = 0, translateY = 0;
 	float rotX = 0, rotY = 0, rotZ = 0;

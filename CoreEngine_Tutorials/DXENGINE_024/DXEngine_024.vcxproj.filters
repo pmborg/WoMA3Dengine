@@ -161,9 +161,6 @@
     <ClInclude Include="core\include\xml_loader.h">
       <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="core\include\platform.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
     <ClInclude Include="core\include\d3dx12.h">
       <Filter>core\include</Filter>
     </ClInclude>
@@ -242,6 +239,10 @@
     <ClInclude Include="core\include\womadriverclass.h">
       <Filter>core\include</Filter>
     </ClInclude>
+    <ClInclude Include="..\level.h" />
+    <ClInclude Include="..\tech-level.h" />
+    <ClInclude Include="core\include\platform.h" />
+    <ClInclude Include="..\woma_engine_assets.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />

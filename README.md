@@ -45,29 +45,11 @@ Try to Change the driver on the fly without the need of close and open the Appli
 <hr>
 <h2>3D - ADVANCED MESH TUTORIAL SERIES: BEGIN</h2>
 
-![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/ActorCore.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/ActorCore.png)	
-
-Free models from: actorcore.reallusion.com
-
 <hr>
 
-- <b>DX82: ASSIMP: Animated / walking mesh on the terrain, following a path: SOON</b><br>
+- <b>DX82: ASSIMP: Loading an animated mesh: (SOON)</b><br>
  
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_082.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_082.png)	
-
-<hr> 
-
-- <b>DX81: ASSIMP: Loading an animated mesh: (SOON)</b><br>
- 
-![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_081.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_081.png)	
-
-<hr> 
-
-- <b>DX80: ASSIMP: Loading a static mesh: (SOON)</b><br>
- 
-![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_080.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_080.png)	
-
-<hr> 
 
 <hr>
 <h2>3D - ADVANCED MESH TUTORIAL SERIES: END</h2>

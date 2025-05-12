@@ -65,6 +65,12 @@ HANDLE threadInitializeLoaderHandle = NULL;
 unsigned long threadInitializeLoaderId = NULL;
 #endif
 
+#if defined USE_ASSIMP
+#include "PPG.h"
+#include "MyDemo.h"
+MyDemo demo;
+#endif
+
 dxWinSystemClass* DXsystemHandle = NULL;
 
 //----------------------------------------------------------------------------------
@@ -124,6 +130,7 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
     if (WOMA::renderOnce)
         WOMA::woma_timer = 0;
 
+
 	//MAIN LOOP: (single thread version for DEBUG)
 	WOMA::main_loop_state = 0;
 	do
@@ -151,8 +158,10 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 			WOMA::game_state = GAME_STOP;
 			break;
 		}
-		if (WOMA::game_state == ENGINE_RESTART)
+		if (WOMA::game_state == ENGINE_RESTART) {
+            WOMA_LOGManager_DebugMSG("ENGINE_RESTART!\n");
 			return ENGINE_RESTART;
+        }
 	} while (msg.message != WM_QUIT);
 
 	ASSERT(WOMA::game_state == GAME_STOP);

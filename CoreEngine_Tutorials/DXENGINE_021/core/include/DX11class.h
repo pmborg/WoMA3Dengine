@@ -283,6 +283,7 @@ public:
 
 	void BeginScene(UINT monitorWindow);
 	void EndScene(UINT monitorWindow);
+    void ResetResource(UINT monitorWindow);
 	void OnDeviceLost();
 	void ClearDepthBuffer();
 
@@ -333,6 +334,7 @@ public:
 
 	// 3D
 	XMMATRIX m_projectionMatrix = {};
+    XMMATRIX m_projectionMatrix_sky = {};
 	void GetProjectionMatrix(XMMATRIX&);
 
     //We need to setup our ProjectionMatrix (21) and OrthoMatrix (CH07)
@@ -426,6 +428,16 @@ public:
     void GetOrthoMatrix(XMMATRIX&);
 #endif
 
+    // ---------------------------------------------------------
+    BYTE dummybuff1[128] = { 0 };
+    ID3D11Texture2D* m_depthStencilBuffer = NULL;
+    ID3D11DepthStencilState* m_depthStencilState = NULL;
+    ID3D11DepthStencilState* m_depthDisabledStencilState = NULL;
+    BYTE dummybuff2[128] = { 0 };
+#if defined USE_RASTERIZER_STATE
+    ID3D11RasterizerState* m_rasterState[3][2] = { 0 };
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////
 private:
 ////////////////////////////////////////////////////////////////////////////////
@@ -435,7 +447,6 @@ private:
 #if defined SET_DEVICE_CAPABILITIES
 	void setDeviceCapabilities(D3D_FEATURE_LEVEL featureLevel);
 #endif
-	//bool createSwapChainDX11device (HWND hwnd, int screenWidth, int screenHeight, BOOL vsync, BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize, UINT numerator, UINT denominator);
 #if defined USE_DX11_1
 	bool createSwapChainDX11device2(HWND hwnd, int screenWidth, int screenHeight, BOOL vsync, BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize, UINT numerator, UINT denominator);
 #endif
@@ -458,15 +469,7 @@ private:
 	bool InitD2D_D3D101_DWrite(IDXGIAdapter1 *Adapter, WCHAR* fontStyle, int screenWidth, int screenHeight, float R, float G, float B);
 	bool InitD2DScreenTexture();
 #endif
-	// ---------------------------------------------------------
-	BYTE dummybuff1[128] = { 0 };
-	ID3D11Texture2D*		 m_depthBuffer=NULL;
-	ID3D11DepthStencilState* m_depthStencilState = NULL;
-	ID3D11DepthStencilState* m_depthDisabledStencilState = NULL;
-	BYTE dummybuff2[128] = { 0 };
-#if defined USE_RASTERIZER_STATE
-	ID3D11RasterizerState* m_rasterState[3][2] = { 0 };
-#endif
+
 
 public:
 	XMMATRIX m_projectionMiniMapMatrix;

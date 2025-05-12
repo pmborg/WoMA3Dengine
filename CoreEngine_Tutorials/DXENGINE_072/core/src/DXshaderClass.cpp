@@ -214,7 +214,6 @@ namespace DirectX {
 		//Shader CODE:
 		m_vertexShader11 = NULL;		//Code: VS
 		m_pixelShader11 = NULL;			//Code: PS
-		m_geometryShader11 = NULL;		//Code: GS
 #endif
 
 		m_shaderType = SHADER_AUTO;
@@ -339,11 +338,10 @@ namespace DirectX {
 		bool result = false;
 		m_ObjId = Id;
 		m_shaderType = shaderType;
-		bUseGS = useGS;
 		MODEL_NAME = objectName;
+        bUseGS = useGS;
 
 		//GLOBAL:
-	//WOMA_LOGManager_DebugMSGAUTO(TEXT("%s Initialize Shader %s: %d.%d\n"), (TCHAR*)objectName, (TCHAR*)(WOMA::SHADER_TYPE_NAME[m_shaderType+1] + TEXT(" ")).c_str(), ShaderVersionH, ShaderVersionL);
 
 #ifdef USE_PRECOMPILED_SHADERS
 		if (ShaderVersionH == 4 && ShaderVersionL == 0)
@@ -358,7 +356,6 @@ namespace DirectX {
 					shaderManager = shaderManager_51; // 5.1 or Future?
 #endif
 
-		//bUseGS = true;	//ON/OFF (default: OFF)
 		hasTexture = (shaderType != SHADER_COLOR) && (shaderType != SHADER_TEXTURE_LIGHT_SAVESHADOW);
 		result = InitializeShader(shaderType, device, hwnd, PrimitiveTopology); //LOAD: HLSL code
 
@@ -378,8 +375,6 @@ namespace DirectX {
 
 			SAFE_RELEASE(m_pixelShader11);			// Release the pixel shader.	
 			SAFE_RELEASE(m_vertexShader11);			// Release the vertex shader.
-			SAFE_RELEASE(m_geometryShader11);		// Release the Geometry Shader.
-
 			SAFE_RELEASE(m_PixelShaderBuffer11);	// Release the PS constant buffer.
 			SAFE_RELEASE(m_sampleState11);			// Release the sampler state.
 		}
@@ -730,6 +725,8 @@ namespace DirectX {
 			vertVer.append(driverList[SystemHandle->AppSettings->DRIVER]->ShaderModel);  //TEXT("vs_5_0")
 #endif
 			LPCWSTR file = (LPCWSTR)WOMA::LoadFileW((WCHAR*)vsFilename.c_str());
+
+            // VERTEX:
 			result = D3DCompileFromFile(file, defines, D3D_COMPILE_STANDARD_FILE_INCLUDE, vertexHLSL.c_str(), /*"vs_5_0"*/vertVer.c_str(), compileFlags, 0, &vertexShaderBuffer, &errorMessage);
 			if (FAILED(result))
 			{
@@ -739,6 +736,10 @@ namespace DirectX {
 				}
 				return false;
 			}
+
+            //GS:
+
+            // PIXEL:
 			vertVer[0] = 'p';  //TEXT("ps_5_0")
 			result = D3DCompileFromFile(file, defines, D3D_COMPILE_STANDARD_FILE_INCLUDE, pixelHLSL.c_str(), /*"ps_5_0"*/vertVer.c_str(), compileFlags, 0, &pixelShaderBuffer, &errorMessage);
 			if (FAILED(result))
@@ -1554,7 +1555,8 @@ namespace DirectX {
 		// Copy the matrices into the constant buffer.
 		dataVSptr->world = XMMatrixTranspose(*worldMatrix);
 
-		if (VS_USE_WVP) {
+		if (VS_USE_WVP || bUseGS)
+        {
 			XMMATRIX WV = (*worldMatrix) * (*viewMatrix);
 			dataVSptr->WV = XMMatrixTranspose(WV);							// Pre compute WV to reuse in all Vertices
 			dataVSptr->WVP = XMMatrixTranspose(WV * (*projectionMatrix));	// Pre compute WVP to reuse in all Vertices
@@ -1757,9 +1759,11 @@ namespace DirectX {
 		{
 			deviceContext11->Unmap(m_PixelShaderBuffer11, 0);	// Unlock the constant buffer.
 			deviceContext11->PSSetConstantBuffers(0, 1, &m_PixelShaderBuffer11);
+
 		}
 #endif
-	}
+
+}
 
 
 	void DXshaderClass::RenderShader(UINT pass, /*ID3D11DeviceContext*/ void* Device_Context, int texture_index, int indexCount, int start)
@@ -1780,24 +1784,19 @@ namespace DirectX {
 			if (castShadow)
 				deviceContext->PSSetSamplers(0, 2, &m_sampleStateClamp11);// Set the Sampler state in the pixel shader (Bilinear, Trilinear: 2x, Anisotropic: 4x, 8x, 16x, ...)
 
-			// Set CODE to Run on Shaders:
+			// VS: Set CODE to Run on Shaders:
 			deviceContext->VSSetShader(m_vertexShader11, NULL, 0);		// Set the vertex code that will be used to process vertices
-			deviceContext->PSSetShader(m_pixelShader11, NULL, 0);			// Set the pixel code that will be used to process pixels
 
-			// GS
-			if (bUseGS) {
-				// [VS] -> HS -> DS -> [GS] -> [PS]
-				// Set PIPE: VS => GS -> PS
-				deviceContext->HSSetShader(NULL, NULL, 0);
-				deviceContext->DSSetShader(NULL, NULL, 0);
-				deviceContext->GSSetShader(m_geometryShader11, NULL, 0);
-			} else {
+            {
 				// [VS] -> HS -> DS -> GS -> [PS]
 				// Set PIPE: VS => PS
 				deviceContext->HSSetShader(NULL, NULL, 0);
 				deviceContext->DSSetShader(NULL, NULL, 0);
 				deviceContext->GSSetShader(NULL, NULL, 0);
 			}
+
+            // PS: Set CODE to Run on Shaders:
+            deviceContext->PSSetShader(m_pixelShader11, NULL, 0);		// Set the pixel code that will be used to process pixels
 
 #if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES // Normal Bump + Instancing 
 			if (m_instanceCount > 0)

@@ -331,7 +331,7 @@ public:
 	std::vector<UINT>						 sky_indexdata;
 #endif
 
-	void ApplicationClass::WOMA_APPLICATION_FrameUpdateInstancesPositions(UINT m_ObjId, int m_instanceCount, InstanceType* instances_);
+	void WOMA_APPLICATION_FrameUpdateInstancesPositions(UINT m_ObjId, int m_instanceCount, InstanceType* instances_);
 
 #if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION //float	closestObjDist = FLT_MAX;
 	float	closestObjDist = FLT_MAX;
@@ -503,10 +503,6 @@ public:
 	VirtualModelClass* m_3th3DModel2 = NULL;							// Model
 
 
-
-#if defined USE_IMGUI
-	VirtualModelClass* m_iconSettings = NULL;
-#endif
 
 #if defined USE_CUBE // Cubes
 	VirtualModelClass* m_cube1Model = NULL;

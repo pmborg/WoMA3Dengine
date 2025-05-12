@@ -434,10 +434,6 @@ public:
 
 
 
-#if defined USE_IMGUI
-	VirtualModelClass* m_iconSettings = NULL;
-#endif
-
 #if defined USE_CUBE // Cubes
 	VirtualModelClass* m_cube1Model = NULL;
 	VirtualModelClass* m_cube2Model = NULL;

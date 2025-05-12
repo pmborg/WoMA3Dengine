@@ -187,6 +187,10 @@ namespace WOMA
 	BOOL	UseWarpDevice = FALSE;
     BOOL	renderOnce = FALSE;
     UINT    woma_timer = 0;
+
+	int     ARGc = 0;
+	CHAR**	ARGv = { 0 };
+
 	TCHAR	strConsoleTitle[MAX_STR_LEN] = { 0 };
 
 #if defined USE_LOADING_THREADS || defined USE_MAIN_THREAD //vars
@@ -380,6 +384,12 @@ void APPLICATION_STARTUP(int argc, char* argv[], int Command)
 	#endif
 
 	DefineConsoleTitle();
+
+#if defined WOMA_CONSOLE_APPLICATION  || !defined WINDOWS_PLATFORM
+    // Save Command Line Arguments to use later on
+	WOMA::ARGc = argc;
+	WOMA::ARGv = argv;
+#endif
 
 	// [4] Set A Top level "Exception handler" for all Exceptions. Catch, Dump & Send Report WOMA ENGINE HOME using FTP!
 	// -------------------------------------------------------------------------------------------

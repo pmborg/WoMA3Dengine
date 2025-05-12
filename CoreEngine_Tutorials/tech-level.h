@@ -172,6 +172,7 @@
 		#define SCENE_COLOR
 		#define ROTATE_SQUARE
 
+        #define MAIN_RENDER
 		//#define USE_PRECOMPILED_SHADERS	// [ON/OFF] ON: Merge Shader's Code on .EXE / OFF: Compile in run-time
 	#endif
 
@@ -479,20 +480,22 @@
 		#undef SCENE_BILLBOARDS
         #undef USE_INSTANCES_FOR_TREES
     #endif						 
-	#if DX_ENGINE_LEVEL >= 80
-        #undef USE_MAIN_MAP
-        #undef USE_MINI_MAP
-        #undef USE_INSTANCES_FOR_TREES
-        #undef USE_TERRAIN_512
-        #undef SCENE_WATER_TERRAIN
-        #undef SCENE_MAIN_TOPO_TERRAIN
-        #undef SCENE_MAIN_TOPO_TERRAIN_USE_INDEX
-        #undef ALLOW_CBIND_PROGRESS_BAR
-        #undef USE_TERRAIN_TUTORIAL_CHAP_24
-        #undef SCENE_TERRAIN_COLLISION
-
-        #define USE_ASSIMP
+    #if defined ASSIMP //>= 80
+    	#if DX_ENGINE_LEVEL == 80
+    		#define USE_MATH3D
+    		#define USE_ASSIMP_GLLIB //80
+    	#endif
+    	#if DX_ENGINE_LEVEL == 81
+    		//#define USE_MATH3D
+    		#define USE_ASSIMP_DXLIB //81
+    	#endif
     #endif
+    #if DX_ENGINE_LEVEL >= 82
+        #define SCENE_BILLBOARDS
+        #define USE_INSTANCES_FOR_TREES
+        #define USE_ASSIMP     //83
+    #endif
+    
    
 	//#define USE_MULTI_MONITOR
 	//-------------------------------------------------------------------------------------------------------

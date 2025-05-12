@@ -647,7 +647,7 @@ static_assert(false, "WIN6x: X64 or WIN32, have to be selected");
 	#define _CONSOLE
 #endif
 
-#if DX_ENGINE_LEVEL >= 80
+#if DX_ENGINE_LEVEL == 80 || DX_ENGINE_LEVEL == 81
 #define LOG_FILE os_file
 #endif
 

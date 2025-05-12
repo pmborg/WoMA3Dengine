@@ -147,7 +147,7 @@ DX11Class::DX11Class()
 	#endif
 
 	// Private: ------------------------------------------------------------------------
-	m_depthBuffer = NULL;
+	m_depthStencilBuffer = NULL;
 
 	//Initialize the new depth stencil state to null in the class constructor.
 	m_depthStencilState = NULL;
@@ -220,7 +220,7 @@ void DX11Class::Shutdown()
 {
 	if (m_deviceContext)
 	{
-		m_deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
+		//m_deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 		DeleteViewBuffers();
 	}
 
@@ -472,7 +472,7 @@ void DX11Class::DeleteViewBuffers()
         SAFE_RELEASE(DX11windowsArray[i].m_renderTargetView);	// Init Step: 9	(backBufferRTV)
     }
 
-    SAFE_RELEASE(m_depthBuffer);								// Init Step: 9
+    SAFE_RELEASE(m_depthStencilBuffer);								// Init Step: 9
 
     for (int i = 0; i < DX11windowsArray.size(); i++)
     {
@@ -525,10 +525,7 @@ HRESULT result = S_OK;
 			}
 		}
 
-		DXGI_SWAP_CHAIN_DESC1 swapChainDesc;
-
-		// Initialize the swap chain description.
-		ZeroMemory(&swapChainDesc, sizeof(swapChainDesc));
+		DXGI_SWAP_CHAIN_DESC1 swapChainDesc = { 0 }; //ZeroMemory(&swapChainDesc, sizeof(swapChainDesc));
 
 		// Set to a single back buffer.
 		//swapChainDesc.BufferCount = 1;
@@ -833,6 +830,11 @@ void DX11Class::OnDeviceLost() // Our Driver in use was re-installed??
 
     WOMA::game_state = ENGINE_RESTART;
 }
+
+void DX11Class::ResetResource(UINT monitorWindow)
+{
+}
+
 // ----------------------------------------------------------------------------------------------
 void DX11Class::EndScene(UINT monitorWindow)
 // ----------------------------------------------------------------------------------------------
@@ -853,6 +855,7 @@ void DX11Class::EndScene(UINT monitorWindow)
 		{ if (FAILED(hr)) { WomaFatalException("FATAL: swapChain->Present() error!"); } }
 	}
 
+    ResetResource(monitorWindow);
 }
 
 
@@ -890,7 +893,8 @@ void DX11Class::setProjectionMatrixWorldMatrixOrthoMatrix (int screenWidth, int 
 	screenAspect = (float)screenWidth / (float)screenHeight;
 
 	// Create the projection matrix for "3D" rendering.
-	m_projectionMatrix = XMMatrixPerspectiveFovLH( fieldOfView, screenAspect, screenNear, screenDepth);			// 3D PROJECTION
+	m_projectionMatrix = XMMatrixPerspectiveFovLH( fieldOfView, screenAspect, screenNear, screenDepth);		// 3D PROJECTION
+    m_projectionMatrix_sky = XMMatrixPerspectiveFovLH(fieldOfView, screenAspect, screenNear, 512);			// SKY 3D PROJECTION
 
 #if defined CLIENT_SCENE_TEXT || defined USE_VIEW2D_SPRITES
 	// And the final thing we will setup in the Initialize function is an orthographic projection matrix. 

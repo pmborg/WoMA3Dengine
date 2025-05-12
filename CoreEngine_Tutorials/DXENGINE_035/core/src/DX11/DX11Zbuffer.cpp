@@ -188,7 +188,7 @@ bool DX11Class::createDepthStencil(int screenWidth, int screenHeight, BOOL fulls
 	// Then this 2D buffer is drawn to the screen:
 	// ===========================================
 	// Create the texture for the depth buffer using the filled out description.
-	IF_FAILED_RETURN_FALSE (m_device11->CreateTexture2D(&depthBufferDesc, NULL, &m_depthBuffer));
+	IF_FAILED_RETURN_FALSE (m_device11->CreateTexture2D(&depthBufferDesc, NULL, &m_depthStencilBuffer));
 
 #if TUTORIAL_PRE_CHAP >= 7
 	IF_FAILED_RETURN_FALSE (m_device11->CreateTexture2D(&depthBufferDesc, NULL, &m_depthStencilWaterBuffer));
@@ -223,7 +223,7 @@ bool DX11Class::createSetDepthStencilView (int screenWidth, int screenHeight)
 	// For each Monitor: 
 	for (int i = 0; i < DX11windowsArray.size(); i++)
 	{
-		result = m_device11->CreateDepthStencilView(m_depthBuffer, &depthStencilViewDesc, &DX11windowsArray[i].m_depthStencilView); //depthBufferDSV
+		result = m_device11->CreateDepthStencilView(m_depthStencilBuffer, &depthStencilViewDesc, &DX11windowsArray[i].m_depthStencilView); //depthBufferDSV
 		IF_FAILED_RETURN_FALSE(result);
 	}
 
