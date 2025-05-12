@@ -66,7 +66,7 @@ Try to Change the driver on the fly without the need of close and open the Appli
 <h2>3D - BILLBOARD TUTORIAL SERIES: BEGIN</h2>
 <hr>
 
-- <b>DX78: Colision detection with objects (SOON)</b><br>
+- <b>DX78: Colision detection with objects</b><br>
 
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_078.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_078.png)
 
