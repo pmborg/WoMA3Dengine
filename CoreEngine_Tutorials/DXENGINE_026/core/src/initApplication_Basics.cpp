@@ -638,8 +638,10 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	//-----------------------------------------------------------------------------------------------------------------
 	// PROGRESS BAR		///////////////////////////////////////////////////////////////////////////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
-#if defined ALLOW_CBIND_PROGRESS_BAR
+#if defined WINDOWS_PLATFORM
     MSG msg = { 0 };
+#endif
+#if defined ALLOW_CBIND_PROGRESS_BAR
     TCHAR title[MAX_STR_LEN] = {};
 	// --- CREATE PROGRESS BAR:
 	SystemHandle->hwndPrgBar = SystemHandle->WomaCreateWindowEx(0, PROGRESS_CLASS, NULL, WS_CHILD | WS_VISIBLE | PBS_SMOOTH, 50, SystemHandle->AppSettings->WINDOW_HEIGHT - 100,
