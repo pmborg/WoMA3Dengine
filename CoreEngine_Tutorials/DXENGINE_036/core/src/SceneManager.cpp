@@ -131,7 +131,7 @@ void SceneManager::ReleaseNode(SceneNode* node)
 SceneManager* SceneManager::GetInstance()
 {
 	if (!WOMA::sceneManager)
-		WOMA::sceneManager = NEW SceneManager (/*Driver*/);
+		WOMA::sceneManager = NEW SceneManager ();
 
 	return WOMA::sceneManager;
 }

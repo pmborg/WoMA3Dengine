@@ -24,7 +24,7 @@
 
 
 namespace DirectX {
-#if defined USE_DX10DRIVER_FONTS // FONT v2
+#if defined USE_DX_DRIVER_FONT // FONT v2
 
 //invoked@: DX11Class::Resize
 bool DX11Class::InitD2D_D3D101_DWrite(IDXGIAdapter1 *Adapter, WCHAR* fontStyle, int screenWidth, int screenHeight, float R, float G, float B)

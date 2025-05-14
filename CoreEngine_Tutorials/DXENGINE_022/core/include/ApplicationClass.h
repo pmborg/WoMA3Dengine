@@ -110,7 +110,7 @@ extern float fadeIntro;
 #include "ApplicationTextClass.h"
 #endif
 
-#if defined USE_DX10DRIVER_FONTS
+#if defined USE_DX_DRIVER_FONT
 #include "DXshaderClass.h"
 #endif
 
@@ -264,7 +264,7 @@ public:
 
     UINT world_main_size=0;
 
-#if defined USE_DX10DRIVER_FONTS
+#if defined USE_DX_DRIVER_FONT
 	DXshaderClass* m_FontV2Shader = NULL;
 	IDXGIKeyedMutex* keyedMutex11 = NULL;
 	IDXGIKeyedMutex* keyedMutex10 = NULL;

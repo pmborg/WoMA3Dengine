@@ -132,5 +132,4 @@ void GBufferPass::Render(Graphics& graphics, Scene& scene)
     graphics.UnbindShaderResourceView(2);
     graphics.UnbindShaderResourceView(3);
     graphics.UnbindShaderResourceView(4);
-    //AQUI graphics.UnbindRenderTargetView();
 }

@@ -124,7 +124,7 @@ struct InstanceType
 
 #include "lightClass.h"	
 
-#if defined USE_DX10DRIVER_FONTS
+#if defined USE_DX_DRIVER_FONT
 #include "DXshaderClass.h"
 #endif
 
@@ -272,7 +272,7 @@ public:
 
 	void AppPosRender(UINT monitorWindow);																// POS-RENDER - 2D: Render 
 
-	void RenderModel(UINT monitorWindow, WomaDriverClass* driver, UINT modelID, UINT pass);
+	void RenderModel(UINT monitorWindow, WomaDriverClass* driver, UINT modelID, UINT pass, XMMATRIX* m_viewMatrix=NULL, XMMATRIX* m_projectionMatrix = NULL);
 	
 	void AppPreRender(UINT monitorWindow, WomaDriverClass* Driver, float fadeLight);	// PRE-RENDER - Shadows
 
@@ -288,7 +288,7 @@ public:
 	std::vector<ModelColorVertexType>* m_LightVertexVector;
 	LightClass* m_Light = NULL;
 
-#if defined USE_DX10DRIVER_FONTS
+#if defined USE_DX_DRIVER_FONT
 	DXshaderClass* m_FontV2Shader = NULL;
 	IDXGIKeyedMutex* keyedMutex11 = NULL;
 	IDXGIKeyedMutex* keyedMutex10 = NULL;

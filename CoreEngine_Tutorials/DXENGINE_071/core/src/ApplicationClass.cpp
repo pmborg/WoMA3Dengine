@@ -100,8 +100,16 @@ void ApplicationClass::PositionUpdate(int playerId, float positionX, float posit
 	// Determine the pixel location of the point on the Main-Map:
 	m_pointMapLocationX[playerId] = (int)((g_ScreenWidth - scaleX * 1000/*m_MapBitmap->m_bitmapWidth*/) / 2 + (int)(percentMapX * scaleX * 1000/*m_mainMapSizeX*/));   // Re-Scale Map.
 	m_pointMapLocationY[playerId] = (int)((g_ScreenHeight - scaleY * 1000/*m_MapBitmap->m_bitmapHeight*/) / 2 + (int)(percentMapY * scaleY * 1000/*m_mainMapSizeY*/));
-	m_pointMapLocationX[playerId] += 20;
-	m_pointMapLocationY[playerId] += 30;
+    if (SystemHandle->AppSettings->FULL_SCREEN) 
+    {
+        //m_pointMapLocationX[playerId] -= 20;
+        m_pointMapLocationY[playerId] -= 30;
+    }
+    else
+    {
+        m_pointMapLocationX[playerId] += 20;
+        m_pointMapLocationY[playerId] += 30;
+    }
 
 	#undef m_terrainWidth	
 	#undef m_terrainHeight 
@@ -359,7 +367,7 @@ void ApplicationClass::Shutdown()
 #endif
 #endif
 
-#if defined USE_DX10DRIVER_FONTS
+#if defined USE_DX_DRIVER_FONT
 	SAFE_SHUTDOWN(m_FontV2Shader);
 #endif
 

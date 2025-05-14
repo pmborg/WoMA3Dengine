@@ -35,7 +35,7 @@ struct
 DriverTypes[] =
 {
 	{ D3D_DRIVER_TYPE_HARDWARE,	 TEXT("hardware")},
-	#if !defined USE_DX10DRIVER_FONTS
+	#if !defined USE_DX_DRIVER_FONT
 	{ D3D_DRIVER_TYPE_WARP,	   TEXT("emulator")},
 	{ D3D_DRIVER_TYPE_REFERENCE, TEXT("software")},
 	#endif

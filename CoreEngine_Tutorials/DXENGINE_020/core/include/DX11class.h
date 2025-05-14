@@ -227,7 +227,7 @@ WDDM 2.0->Windows 10				Display Drivers or Creates a DXGI 1.4
 	#include "DXGIDebug.h"
 #endif
 
-#if defined USE_DX10DRIVER_FONTS// FONT v2
+#if defined USE_DX_DRIVER_FONT// FONT v2
 	#include <D2D1.h>
 	#include <dwrite.h>
 
@@ -306,7 +306,7 @@ public:
 	ID3D11BlendState* m_alphaDisableBlendingState = NULL;	//m_alphaDisableBlendingState is for turning off alpha blending.
 #endif
 
-#if defined USE_DX10DRIVER_FONTS
+#if defined USE_DX_DRIVER_FONT
 	std::vector<DXTextLine> allTextArray;
 	void addText(int Xpos, int Ypos, TCHAR* printText, float R, float G, float B);
 	void RenderDriverText();
@@ -359,15 +359,8 @@ public:
 	// For each DX11 Adapter:
 	IDXGIAdapter1* adapterGraphicCard = NULL;
 
-//#if defined USE_DEVICE_LEGACY
-//	ID3D11Device* m_device11 = NULL;
-//#else
-//	ID3D11Device* m_device11 = NULL;
-//	Microsoft::WRL::ComPtr<ID3D11Device>           m_device;
-//#endif
 	ID3D11Device*        m_device11 = nullptr;
     ID3D11DeviceContext* m_deviceContext = nullptr;
-
 
 #ifdef USE_DX11_3
 	ID3D11Device3* pDevice3 = nullptr;
@@ -402,7 +395,7 @@ public:
 #endif
 
 // ---------------------------------------------------------
-#if defined USE_DX10DRIVER_FONTS // FONT v2
+#if defined USE_DX_DRIVER_FONT // FONT v2
 	ID3D11RasterizerState* CWcullMode = NULL;
 
 	ID3D10Device1 *d3d101Device = NULL;
@@ -467,7 +460,7 @@ private:
 	bool createSetDepthStencilView (int screenWidth, int screenHeight);
 
 	// ---------------------------------------------------------
-#if defined USE_DX10DRIVER_FONTS
+#if defined USE_DX_DRIVER_FONT
 	bool InitD2D_D3D101_DWrite(IDXGIAdapter1 *Adapter, WCHAR* fontStyle, int screenWidth, int screenHeight, float R, float G, float B);
 	bool InitD2DScreenTexture();
 #endif

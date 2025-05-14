@@ -218,7 +218,7 @@ InitWorld::InitWorld ()
 
 void InitWorld::Calculate() 
 {
-	ASSERT(astroClass);
+	if (astroClass) {
 	astroClass->updateTime ();
 	astroClass->AstroCalculations (latitude, longitude);
 
@@ -231,6 +231,7 @@ void InitWorld::Calculate()
     geometricElevation = astroClass->GeometricElevation;
 	SunElevation = astroClass->SunElevation;
 	SunAzimuth = astroClass->SunAzimuth;
+    }
 }
 
 InitWorld::~InitWorld() {SAFE_DELETE(astroClass); CLASSDELETE();}

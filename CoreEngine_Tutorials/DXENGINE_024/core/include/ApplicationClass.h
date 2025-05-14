@@ -119,7 +119,7 @@ extern float fadeIntro;
 
 #include "lightClass.h"	
 
-#if defined USE_DX10DRIVER_FONTS
+#if defined USE_DX_DRIVER_FONT
 #include "DXshaderClass.h"
 #endif
 
@@ -275,7 +275,7 @@ public:
 	std::vector<ModelColorVertexType>* m_LightVertexVector;
 	LightClass* m_Light = NULL;
 
-#if defined USE_DX10DRIVER_FONTS
+#if defined USE_DX_DRIVER_FONT
 	DXshaderClass* m_FontV2Shader = NULL;
 	IDXGIKeyedMutex* keyedMutex11 = NULL;
 	IDXGIKeyedMutex* keyedMutex10 = NULL;

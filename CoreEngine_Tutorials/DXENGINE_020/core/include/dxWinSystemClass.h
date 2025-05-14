@@ -77,7 +77,7 @@ public:
 	bool ApplicationMandatoryLoad();
 #endif
 
-#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 || defined USE_DX10DRIVER_FONTS
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 || defined USE_DX_DRIVER_FONT
 	DXcameraClass* m_Camera = NULL;
 #endif
 #if defined ALLOW_PRINT_SCREEN_SAVE_PNG && defined DX11

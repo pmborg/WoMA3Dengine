@@ -24,13 +24,16 @@
 
 class MyDemo : public Demo
 {
-private:
+public:
+    std::unique_ptr<SceneModel> assimpSceneModel;
+    std::unique_ptr<SceneModel> assimpSceneModel2;
     Scene scene;
+
+private:
 
     std::unique_ptr<Sampler> linearSampler;
     std::unique_ptr<Sampler> pointSampler;
 
-    std::unique_ptr<SceneModel> assimpModel;
 
     //AQUI std::unique_ptr<BlitPass> blitPass;
 	BlitPass* blitPass;
@@ -132,9 +135,6 @@ public:
             .AddLight(spotLight)
             .SetGlobalAmbient(XMFLOAT4(0.1, 0.1, 0.1, 1));
 		
-		assimpModel = std::unique_ptr<SceneModel>(SceneModel::LoadModelToScene(model, scene, graphics));
-        auto bobLampObj = assimpModel->m_SceneObject;
-        scene.m_MainCamera.m_EyePosition = XMVectorSet(0, 1, -11, 1);
         scene.Start(graphics);
 
         auto deviceContext = graphics.m_DeviceContext;

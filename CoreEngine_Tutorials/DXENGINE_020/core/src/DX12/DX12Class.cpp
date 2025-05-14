@@ -1523,7 +1523,7 @@ namespace DirectX {
 	void DX12Class::Initialize3DCamera()
 		// ----------------------------------------------------------------------------------------------
 	{
-#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 || defined USE_DX10DRIVER_FONTS
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 || defined USE_DX_DRIVER_FONT
 		if (DXsystemHandle->m_Camera) {
 
 			// SETUP 2D Camera

@@ -29,6 +29,8 @@
 
 #include "xml_loader.h"
 
+#include "DX11Class.h"
+
 #if CORE_ENGINE_LEVEL >= 2 && defined USE_STATUSBAR
 #include "dxWinSystemClass.h"
 
@@ -327,27 +329,28 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 	// -----------------------------------------------------------------------------
 	case WM_SYSKEYDOWN:
 	{
-
         if (wParam == VK_RETURN) // ENTER is down
 		{
 			DWORD dwMask = (1 << 29); // Check if ALT key is pressed
 			if (lparam & dwMask)      // key: ALT is down also
 			{
-				// Toggle the full screen/window mode
-				SystemHandle->AppSettings->FULL_SCREEN = !SystemHandle->AppSettings->FULL_SCREEN;
-				if (SystemHandle->AppSettings->FULL_SCREEN) 
-				{
-					SystemHandle->AppSettings->WINDOW_WIDTH = SystemHandle->AppSettings->WINDOW_HEIGHT = 0;
-				}
+                if ((SystemHandle->AppSettings->WINDOW_WIDTH == 1920) &&
+                    (SystemHandle->AppSettings->WINDOW_HEIGHT == 1080) &&
+                    (SystemHandle->AppSettings->FULL_SCREEN == true))
+                    SystemHandle->AppSettings->FULL_SCREEN = false;
+                else
+                SystemHandle->AppSettings->FULL_SCREEN = !SystemHandle->AppSettings->FULL_SCREEN;
+                if (SystemHandle->AppSettings->FULL_SCREEN)
+                {
+                    SystemHandle->AppSettings->WINDOW_WIDTH = 1920;
+                    SystemHandle->AppSettings->WINDOW_HEIGHT = 1080;
+                    ONRESIZE();
+                    BOOL fullscreen;
+                    ((DX11Class*)m_Driver)->DX11windowsArray[0].m_swapChain1->GetFullscreenState(&fullscreen, nullptr);
+                    ((DX11Class*)m_Driver)->DX11windowsArray[0].m_swapChain1->SetFullscreenState(!fullscreen, nullptr);
+                }
 
-				//Need to Save...
-				CHAR str[MAX_STR_LEN] = { 0 }; wtoa(str, (TCHAR*)SystemHandle->XML_SETTINGS_FILE.c_str(), MAX_STR_LEN); // wchar ==> char
-			#if defined CLIENT_SCENE_SETUP
-				SystemHandle->xml_loader.saveConfigSettings(str);
-			#endif
-
-				WOMA::game_state = ENGINE_RESTART;
-                return 0; // Prevent further processing of ALT+ENTER
+                break; // return 0; // Prevent further processing of ALT+ENTER
 			}
 		}
 
@@ -433,27 +436,11 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 				}
 				else // API call such as SetWindowPos or mSwapChain->SetFullscreenState.
 				{
-					SystemHandle->AppSettings->WINDOW_WIDTH = LOWORD(lparam);	// New Usefull Size
-					SystemHandle->AppSettings->WINDOW_HEIGHT = HIWORD(lparam);	// New Usefull Size
-					if (SystemHandle->m_hWnd) 
-						{ ONRESIZE(); }
 				}
-
-				#if defined USE_STATUSBAR
-					if (SystemHandle->m_hWnd) {
-						if (SystemHandle->statusbar)
-							DestroyWindow(SystemHandle->statusbar);
-
-						SystemHandle->statusbar = DoCreateStatusBar(SystemHandle->m_hWnd, 0, m_hinstance, 1);
-						SendMessage(SystemHandle->statusbar, SB_SETTEXT, 0, (LPARAM)DEMO_TITLE);
-						if (AppSettings->FULL_SCREEN)
-							::ShowWindow(SystemHandle->statusbar, SW_HIDE);
-					}
-				#endif
 			}
 		}
 
-		return 0;
+        break;// return 0;
 	}
 
 	#if defined USE_ASPECT_RATIO

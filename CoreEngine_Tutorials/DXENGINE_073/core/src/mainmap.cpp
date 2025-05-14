@@ -32,7 +32,7 @@ void ApplicationClass::TerrainRender(UINT monitorWindow, WomaDriverClass* Driver
 	m_Driver->TurnOffAlphaBlending(); // Re assume default
 
 	//Water Render:
-	float t = ((DirectX::DXmodelClass*)m_TerrainModel[1])->m_Shader11->time;
+	float t = ((DirectX::DXmodelClass*)m_TerrainModel[1])->m_Shader11->time; //preserve animation time
 	((DirectX::DXmodelClass*)m_TerrainModel[1])->m_Shader11->time = 0;
 	((DirectX::DXmodelClass*)m_TerrainModel[1])->shaderTypeParameter = 1; // Render for Map
 	m_TerrainModel[1]->Render(CAMERA_NORMAL, PROJECTION_MINIMAP, PASS_MINIMAP1, m_viewMatrix, m_projectionMatrix); //AQUI VAMOS AQUI  CAMERA_MINIMAP???? was CAMERA_NORMAL before
@@ -42,7 +42,7 @@ void ApplicationClass::TerrainRender(UINT monitorWindow, WomaDriverClass* Driver
 	((DirectX::DXmodelClass*)m_TerrainModel[2])->shaderTypeParameter = 1; // Render for Map
 	m_TerrainModel[2]->Render(CAMERA_NORMAL, PROJECTION_MINIMAP, PASS_MINIMAP1, m_viewMatrix, m_projectionMatrix);
 
-	((DirectX::DXmodelClass*)m_TerrainModel[1])->shaderTypeParameter = 0;
+	((DirectX::DXmodelClass*)m_TerrainModel[1])->shaderTypeParameter = 
 	((DirectX::DXmodelClass*)m_TerrainModel[2])->shaderTypeParameter = 0;
 }
 
@@ -56,7 +56,7 @@ void ApplicationClass::AppPreRenderMainMapMiniMap(UINT monitorWindow, WomaDriver
 {
 	//---------------------------------------------------------------------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 62 && defined USE_MAIN_MAP
-	//if (!DXsystemHandle->m_CameraMAP && m_Driver->RenderfirstTime) //m_Driver->RenderfirstTime
+	if (!DXsystemHandle->m_CameraMAP && m_Driver->RenderfirstTime) //m_Driver->RenderfirstTime
 	{
 		//Set Camera Position - Render Camera:
 		//"viewMatrix": SET Camera Roration and Position to 2D Render: TEXT and SPRITES
@@ -91,18 +91,21 @@ void ApplicationClass::AppPreRenderMainMapMiniMap(UINT monitorWindow, WomaDriver
 				driver->gl_Camera->Render();
 		}
 #endif
-
+        // Render Water/Terrain in: to texture: m_RenderMapTexture
 		m_RenderMapTexture->SetRenderTarget(Driver);								// Set the render target to be the render to texture.
 		m_RenderMapTexture->ClearRenderTarget(Driver, 0.30f, 0.30f, 0.30f, 1.0f);	// Clear the render to texture!
-
 		TerrainRender(monitorWindow, Driver, fadeLight, &m_CameraMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix);
+#if defined USE_MINIMAP_EXPANSION
+        for (UINT id = 0; id < world_main_size; id++)
+            RenderModel(monitorWindow, m_Driver, id, PASS_OPAC, &m_CameraMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix);
+#endif
 	}
 #endif
 
 	//G:\DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64\src\terrain\Minimapclass.cpp
 	//ORI: bool MiniMapClass::RenderMiniMapToTexture(ID3D11DeviceContext* pContext)
 	//---------------------------------------------------------------------------------------------------------------------------------
-#if DX_ENGINE_LEVEL >= 63 && defined USE_MINI_MAP
+#if DX_ENGINE_LEVEL >= 63 && defined USE_MINI_MAP //&& !defined USE_MINIMAP_EXPANSION
 	{
 		//"viewMatrix": SET Camera Roration and Position to 2D Render: TEXT and SPRITES
 		m_CameraMINIMAP.SetRotation(+89.999f, 0, 0);
@@ -119,14 +122,16 @@ void ApplicationClass::AppPreRenderMainMapMiniMap(UINT monitorWindow, WomaDriver
 		}
 	#endif
 
-		m_MiniMapBitmapTexture->SetRenderTarget(Driver);							 // Set the render target to be the render to texture: pContext->OMSetRenderTargets
-		m_MiniMapBitmapTexture->ClearRenderTarget(Driver, 0.0f, 0.0f, 0.0f, 1.0f);// Clear the render to texture!
-		// GET PROJECTION!
+        // Render Water/Terrain in: to texture: m_MiniMapBitmapTexture
+		m_MiniMapBitmapTexture->SetRenderTarget(Driver);							// Set the render target to be the render to texture: pContext->OMSetRenderTargets
+		m_MiniMapBitmapTexture->ClearRenderTarget(Driver, 0.0f, 0.0f, 0.0f, 1.0f);  // Clear the render to texture!
 		TerrainRender(monitorWindow, Driver, fadeLight, &m_CameraMINIMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix);
+#if defined USE_MINIMAP_EXPANSION
+        for (UINT id = 0; id < world_main_size-1; id++)
+            RenderModel(monitorWindow, m_Driver, id, PASS_OPAC, &m_CameraMINIMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix);
+#endif
 	}
 #endif
-
-
 }
 
 //
@@ -140,8 +145,11 @@ void ApplicationClass::RenderMainMapMiniMap()
 		int X = ((SystemHandle->AppSettings->WINDOW_WIDTH - m_mainMapModel->SpriteTextureWidth) / 2);
 		int Y = ((SystemHandle->AppSettings->WINDOW_HEIGHT - m_mainMapModel->SpriteTextureHeight) / 2);
 
+        //[1] Render background MAP.
 		m_Driver->TurnOffAlphaBlending(); // Re assume default
 		m_mainMapModel->RenderSprite(X, Y, 1/*rescale*/);
+
+        //[2] map Frame:
 		m_Driver->ClearDepthBuffer();
 		m_Driver->TurnOnAlphaBlending(); // Re assume default
 		m_mainMapFrameModel->RenderSprite(X, Y, 1/*rescale*/); //SHADER_TEXTURE
@@ -180,7 +188,7 @@ void ApplicationClass::RenderMainMapMiniMap()
 	{
 		//[1] Put the "mini-map" bitmap vertex and index buffers on the graphics pipeline to prepare them for drawing.
 		m_Driver->ClearDepthBuffer(); //ClearDepthStencilView
-		m_miniMapModel->RenderSprite(m_mapLocationX, m_mapLocationY, 1/*rescale*/); //SHADER_TEXTURE
+		m_miniMapModel->RenderSprite(m_mapLocationX, m_mapLocationY); //SHADER_TEXTURE
 
 		//[2] Put the "border" bitmap vertex and index buffers on the graphics pipeline to prepare them for drawing.
 		m_Driver->ClearDepthBuffer();

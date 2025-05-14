@@ -282,7 +282,6 @@ void ApplicationClass::initStatic2D()
 #endif
 
 #if DX_ENGINE_LEVEL >= 62 && defined USE_MAIN_MAP 
-		//if (!m_RenderMapTexture)
 		{
 			m_RenderMapTexture = NEW DXrendertextureclass;
 			//ORI: m_MapTexture->Initialize(m_DirectX11, g_ScreenWidth, g_ScreenHeight))
@@ -366,7 +365,7 @@ bool ApplicationClass::DEMO_WOMA_APPLICATION_InitializeSprites2D()
 void ApplicationClass::DEMO_WOMA_APPLICATION_Shutdown2D()
 // --------------------------------------------------------------------------------------------
 {
-#if defined USE_DX10DRIVER_FONTS
+#if defined USE_DX_DRIVER_FONT
 	if ((DirectX::DX11Class*)driverList.size() > 0)
 		((DirectX::DX11Class*)driverList[SystemHandle->AppSettings->DRIVER])->Shutdown2D();
 #endif
@@ -895,7 +894,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
 	m_Light->GenerateOrthoMatrix(15, 15, 20, 0.1f);						// Control Zoom in Shadow Map here! 15, 15
 
-#if defined USE_REAL_SUNLIGHT_DIRECTION
+#if defined USE_REAL_SUNLIGHT_DIRECTION || !defined USE_LIGHT_RAY
 	float LightX = USELIGHTSIZE * FAST_sin(initWorld->SunAzimuth);		// Real Sun Position on Sky:
 	float LightZ = USELIGHTSIZE * FAST_cos(initWorld->SunAzimuth);		// Real Sun Position on Sky:
 	float LightY = USELIGHTSIZE * FAST_sin(initWorld->SunElevation);	// Sun Elevation

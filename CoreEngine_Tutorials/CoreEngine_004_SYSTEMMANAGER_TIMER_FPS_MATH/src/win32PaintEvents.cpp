@@ -75,15 +75,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 #endif
 #if CORE_ENGINE_LEVEL >= 4 && defined USE_USER_SETUP
 	case WM_PAINT:
-	#if defined USE_STATUSBAR //#if defined _DEBUG
-		if (SystemHandle->m_hWnd) {
-			if (SystemHandle->statusbar)
-				DestroyWindow(SystemHandle->statusbar);
-			SystemHandle->statusbar = DoCreateStatusBar(SystemHandle->m_hWnd, 0/*idStatus*/, SystemHandle->m_hinstance, 1/*cParts*/);
-			SendMessage(SystemHandle->statusbar, SB_SETTEXT, 0, (LPARAM)DEMO_TITLE);
-			if (SystemHandle->AppSettings->FULL_SCREEN)
-				ShowWindow(SystemHandle->statusbar, SW_HIDE);
-		}
+	#if defined USE_STATUSBAR 
 	#endif
 	{
 		for (UINT i = 0; i < SystemHandle->windowsArray.size(); i++)

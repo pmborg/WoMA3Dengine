@@ -1627,7 +1627,7 @@ bool DXmodelClass::RenderSprite( int positionX, int positionY, float scale, floa
 
 	if (fade == -1000)
 	{
-		Render(/*m_driver11,*/ CAMERA_NORMAL, PROJECTION_MINIMAP);
+		Render(CAMERA_NORMAL, PROJECTION_MINIMAP);
 		return true;
 	}
 
@@ -1646,7 +1646,7 @@ bool DXmodelClass::RenderSprite( int positionX, int positionY, float scale, floa
 	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
 	case DRIVER_DX9:
 	case DRIVER_DX11:
-		Render(/*m_driver11,*/ CAMERA_NORMAL, PROJECTION_ORTHOGRAPH);
+		Render(CAMERA_NORMAL, PROJECTION_ORTHOGRAPH);
 	break;
 	#endif
 	#if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009
@@ -1908,7 +1908,7 @@ void DXmodelClass::Render(UINT camera, UINT projection, UINT pass, void* lightVi
 			RenderSubMesh(m_driver11, &m_worldMatrix, viewMatrix, projectionMatrix, pass, (XMMATRIX*)lightViewMatrix, (XMMATRIX*)ShadowProjectionMatrix); // Multiple Material
 		else
 		{
-			// Step 3: Render Simple Mesh: (Basic Tutorials) include: SKY and MAIN Terrain
+			// Step 3: Render Simple Mesh: (Basic Tutorials) include: SKY, MAIN Terrain, Spites
 			// ----------------------------------------------------------------------------------------
 			if (ModelShaderType >= SHADER_TEXTURE)
 				for (UINT i = 0; i < meshSRV11.size(); i++)

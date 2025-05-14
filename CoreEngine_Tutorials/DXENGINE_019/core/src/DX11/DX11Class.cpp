@@ -113,7 +113,7 @@ DX11Class::DX11Class()
 
 	displayModeList = NULL;
 	// ---------------------------------------------------------
-	#if defined USE_DX10DRIVER_FONTS
+	#if defined USE_DX_DRIVER_FONT
 	CWcullMode = NULL;
 
 	d3d101Device = NULL;
@@ -185,7 +185,7 @@ DX11Class::DX11Class()
 void DX11Class::Shutdown2D()
 //----------------------------------------------------------------------------------------------
 {
-#if defined USE_DX10DRIVER_FONTS
+#if defined USE_DX_DRIVER_FONT
 	if (SystemHandle->m_Application) {
 		SAFE_SHUTDOWN(SystemHandle->m_Application->m_FontV2Shader);	// Release previews Font Size (on Window Re-size)
 		SAFE_RELEASE(SystemHandle->m_Application->keyedMutex11);
@@ -549,7 +549,7 @@ HRESULT result = S_OK;
 		swapChainDesc.SampleDesc.Quality = MSAA_QUALITY;
 
 		// Discard the back buffer contents after presenting.
-		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+        swapChainDesc.SwapEffect =  DXGI_SWAP_EFFECT_DISCARD;
 
 		// Don't set the advanced flags.
 #if defined USE_ALTENTER_SWAP_FULLSCREEN_WINDOWMODE
@@ -656,7 +656,7 @@ HRESULT result = S_OK;
 	Initialize3DCamera();
 #endif
 
-	#if defined USE_DX10DRIVER_FONTS
+	#if defined USE_DX_DRIVER_FONT
 	m_sCapabilities.USE_DXDRIVER_FONTSBoolean = InitD2D_D3D101_DWrite(adapterGraphicCard, L"Consolas", screenWidth, screenHeight, 1, 1, 1); // RGB
 	#endif
 
@@ -940,7 +940,7 @@ void DX11Class::SetCamera2D()
 void DX11Class::Initialize3DCamera()
 // ----------------------------------------------------------------------------------------------
 {
-#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 || defined USE_DX10DRIVER_FONTS
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 || defined USE_DX_DRIVER_FONT
 	if (DXsystemHandle->m_Camera) 
 	{
 

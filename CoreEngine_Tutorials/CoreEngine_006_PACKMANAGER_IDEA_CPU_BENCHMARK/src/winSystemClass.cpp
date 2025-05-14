@@ -69,7 +69,7 @@ WinSystemClass::WinSystemClass(WOMA::Settings* appSettings): SystemClass() //	Sy
 void WinSystemClass::ProcessFrame()
 //----------------------------------------------------------------------------
 {
-	SystemClass::FrameUpdate();	// Process: (INPUT + PerformanceStats) Only!
+	SystemClass::FrameUpdate();	// Process: (INPUT + PerformanceStats) Only!                                        | PROFILE:(0.4%)
 
 	if (WOMA::game_state == ENGINE_RESTART)
 		return;
@@ -584,14 +584,13 @@ bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ voi
 		{
 
 #if defined USE_NORMAL_WINDOW
-			windowStyle = WS_OVERLAPPEDWINDOW;													// No TaskBar (bottom)
+			windowStyle = WS_OVERLAPPEDWINDOW;													    // No TaskBar (bottom)
 #else
 			windowStyle = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS & ~WS_THICKFRAME; // Allow TaskBar (bottom)
 #endif
 
 			// Define Window Size and Position:
 			RECT R = { 0, 0, width, height };
-			// [*] Define Window Style:
 			AdjustWindowRect(&R, windowStyle, false);	// Compute "window rectangle dimensions" based on "requested client area" dimensions, fot this "style"!
 
 			// Determine the real / resolution of the Window on this "style":
@@ -600,19 +599,14 @@ bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ voi
 		}
 		else
 		{
-			// WINDOW: With CLOSE option only! & Allow Child Windows on top! 
-			// NOTE: Title Var				WS_CAPTION
-			//		 [X]					WS_SYSMENU
-			//		 Remove "sizing border" & ~WS_THICKFRAME 
-
 			windowStyle = WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
+
 			// Allow full-Screen on a Windowed:
 			if ((AppSettings->WINDOW_WIDTH == AppSettings->SCREEN_RESOLUTION_WIDTH) && (AppSettings->WINDOW_HEIGHT == AppSettings->SCREEN_RESOLUTION_HEIGHT))
 				windowStyle = windowStyle & (~WS_CAPTION);
 
 			// Define Window Size and Position:
 			RECT R = { 0, 0, width, height };
-			// [*] Define Window Style:
 			AdjustWindowRect(&R, windowStyle, false);
 		}
 	}
@@ -635,7 +629,8 @@ bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ voi
 		windowTop = AppSettings->WINDOW_Ypos;
 	}
 
-	DWORD dwExStyle = (AppSettings->FULL_SCREEN) ? WS_EX_TOPMOST : WS_EX_APPWINDOW; //
+	//DWORD dwExStyle = (AppSettings->FULL_SCREEN) ? 0 : WS_EX_APPWINDOW;
+    DWORD dwExStyle = 0;
 
 	if ((AppSettings->WINDOW_WIDTH == 0) && (AppSettings->WINDOW_HEIGHT == 0))
 		WomaFatalException("FATAL ERROR: Monitor Settings Invalid");
@@ -646,14 +641,16 @@ bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ voi
 	// ------------------------------------------------------------------------------------------
 #if defined USE_NORMAL_WINDOW
 	HWND hWnd = CreateWindow(WOMA_ENGINE_CLASS, WOMA::APP_FULLNAME, WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT, CW_USEDEFAULT, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT,
+        windowLeft, windowTop, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT,
 		nullptr, nullptr, m_hinstance, nullptr);
 #else
 	int TaskBarHeigth = 0;
 #if defined _DEBUG && defined USE_STATUSBAR
-	TaskBarHeigth = WOMA::getTaskBarHeight();
-	if (!AppSettings->FULL_SCREEN)
+    if (!AppSettings->FULL_SCREEN)
+    {
+	    TaskBarHeigth = WOMA::getTaskBarHeight();
 		AppSettings->WINDOW_HEIGHT = AppSettings->WINDOW_HEIGHT - TaskBarHeigth - TaskBarHeigth; //
+    }
 #endif
 
 	// [*] Create the window and return the handle to it:
@@ -668,8 +665,11 @@ bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ voi
 
 	ASSERT(hWnd);
 #if defined USE_STATUSBAR
-	SystemHandle->statusbar = DoCreateStatusBar(hWnd, 0/*idStatus*/, m_hinstance, 1/*cParts*/);
-	SendMessage(SystemHandle->statusbar, SB_SETTEXT, 0, (LPARAM)DEMO_TITLE);
+    if (!AppSettings->FULL_SCREEN)
+    {
+        SystemHandle->statusbar = DoCreateStatusBar(hWnd, 0/*idStatus*/, m_hinstance, 1/*cParts*/);
+        SendMessage(SystemHandle->statusbar, SB_SETTEXT, 0, (LPARAM)DEMO_TITLE);
+    }
 #endif
 	// Save window for Main Monitor
 	m_hWnd = hWnd;

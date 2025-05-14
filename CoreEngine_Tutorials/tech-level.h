@@ -152,7 +152,6 @@
 	#endif
 
 	#if DX_ENGINE_LEVEL >= 20 && !defined WOMAENGINE_BASIC
-		#undef USE_NORMAL_WINDOW
 		#define USE_STATUSBAR
  		#define USE_ALLOW_RESIZE
 		#define USE_ALTENTER_SWAP_FULLSCREEN_WINDOWMODE //Dep: USE_ALLOW_RESIZE
@@ -160,6 +159,7 @@
 	#endif
 
 	#if DX_ENGINE_LEVEL >= 21 && !defined WOMAENGINE_BASIC
+		#undef USE_NORMAL_WINDOW						
 		#if defined WINDOWS_PLATFORM && defined DX12
 		#define USE_RASTERIZER_STATE //Mandatory for DX12
 		#endif
@@ -225,7 +225,7 @@
 			#undef SCENE_TEXTURE_LIGHT
 		#endif
 		#if defined DX_ENGINE
-			#define USE_DX10DRIVER_FONTS
+			#define USE_DX_DRIVER_FONT
 			#define USE_ALPHA_BLENDING
 		#endif
 	#endif
@@ -276,7 +276,7 @@
 			#define USE_WIN32_SOUND_MANAGER	// 29-SOUND: Sound Manager/"ogg" Loader
 			#define USE_WIN32_PLAY_MUSIC	// 29-MUSIC: "ogg" Loader
 			#if DX_ENGINE_LEVEL == 29
-			#define USE_DX10DRIVER_FONTS	//FORCE!	   
+			#define USE_DX_DRIVER_FONT	//FORCE!	    
 			#endif
 		#endif
 	#endif
@@ -479,7 +479,13 @@
 		
 		#undef SCENE_BILLBOARDS
         #undef USE_INSTANCES_FOR_TREES
-    #endif						 
+    #endif
+    #if DX_ENGINE_LEVEL >= 79
+        #undef USE_LIGHT_RAY
+        #undef USE_INSTANCES_FOR_TREES
+        #define USE_MINIMAP_EXPANSION
+    #endif
+	
     #if defined ASSIMP //>= 80
     	#if DX_ENGINE_LEVEL == 80
     		#define USE_MATH3D
@@ -496,7 +502,18 @@
         #define USE_ASSIMP     //83
     #endif
     
-   
+	//MAIN_RENDER:
+	#define MAIN_RENDER_TITLE           //24
+	#define MAIN_RENDER_DRIVER_FONT     //25
+	#define MAIN_RENDER_RASTERTEK_FONT  //27
+	#define MAIN_RENDER_SKY             //28
+	#define MAIN_RENDER_MAIN_OBJ        //30
+	#define MAIN_RENDER_WATER           //50
+	#define MAIN_RENDER_TERRAIN         //55/65
+	#define MAIN_RENDER_MINIMAP         //63
+	#define MAIN_RENDER_BILLBOARDS      //70/74
+	#define MAIN_RENDER_ASSIMP          //82
+
 	//#define USE_MULTI_MONITOR
 	//-------------------------------------------------------------------------------------------------------
 	#if !defined USE_LIGHT_RAY			// ON/OFF - Render light ray !!Dep!!: #undef  dx12_upload_old_way
@@ -510,5 +527,3 @@
 	#if defined RELEASE && DX_ENGINE_LEVEL < 29 && defined _MSC_VER
 	#error "WOMA COMPILATION ERROR: RELEASE bin is not Supported before DX_ENGINE_LEVEL 29"
 	#endif
-
-	

@@ -389,27 +389,11 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 				}
 				else // API call such as SetWindowPos or mSwapChain->SetFullscreenState.
 				{
-					SystemHandle->AppSettings->WINDOW_WIDTH = LOWORD(lparam);	// New Usefull Size
-					SystemHandle->AppSettings->WINDOW_HEIGHT = HIWORD(lparam);	// New Usefull Size
-					if (SystemHandle->m_hWnd) 
-						{ ONRESIZE(); }
 				}
-
-				#if defined USE_STATUSBAR
-					if (SystemHandle->m_hWnd) {
-						if (SystemHandle->statusbar)
-							DestroyWindow(SystemHandle->statusbar);
-
-						SystemHandle->statusbar = DoCreateStatusBar(SystemHandle->m_hWnd, 0, m_hinstance, 1);
-						SendMessage(SystemHandle->statusbar, SB_SETTEXT, 0, (LPARAM)DEMO_TITLE);
-						if (AppSettings->FULL_SCREEN)
-							::ShowWindow(SystemHandle->statusbar, SW_HIDE);
-					}
-				#endif
 			}
 		}
 
-		return 0;
+        break;// return 0;
 	}
 
 	#if defined USE_ASPECT_RATIO

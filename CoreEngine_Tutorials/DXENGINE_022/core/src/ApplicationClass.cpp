@@ -225,7 +225,7 @@ void ApplicationClass::Shutdown()
 #endif
 #endif
 
-#if defined USE_DX10DRIVER_FONTS
+#if defined USE_DX_DRIVER_FONT
 	SAFE_SHUTDOWN(m_FontV2Shader);
 #endif
 

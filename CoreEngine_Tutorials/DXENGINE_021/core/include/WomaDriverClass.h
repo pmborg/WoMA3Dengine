@@ -242,7 +242,7 @@ public:
 	virtual void TurnOffAlphaBlending() = 0;
 	#endif
 
-	#if defined USE_DX10DRIVER_FONTS // FONT v2
+	#if defined USE_DX_DRIVER_FONT // FONT v2
 	virtual void addText(int Xpos, int Ypos, TCHAR* text, float R, float G, float B) = 0;
 	virtual void RenderDriverText() = 0;
 	#endif

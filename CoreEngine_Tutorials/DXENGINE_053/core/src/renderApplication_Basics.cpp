@@ -68,11 +68,13 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 
 	// [1] Animations:
 	// --------------------------------------------------------------------------------------------
-#if defined USE_ASSIMP && defined MAIN_RENDER // ASSIMP: Skin-MESH (0.15ms)
+#if defined USE_ASSIMP && defined MAIN_RENDER_ASSIMP // ASSIMP: Skin-MESH (0.15ms)
     static Application demoapp;
 
-    if (m_Driver->RenderfirstTime)
+    if (m_Driver->RenderfirstTime) {
         demo.Start(demoapp.m_Graphics, ASSIMP_MODEL_BOBLAMPCLEAN);
+        demo.assimpSceneModel = std::unique_ptr<SceneModel>(SceneModel::LoadModelToScene(ASSIMP_MODEL_BOBLAMPCLEAN, demo.scene, demoapp.m_Graphics));
+    }
 
     static DWORD previousTime = timeGetTime();
     DWORD currentTime = timeGetTime();
@@ -100,11 +102,8 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 	if (RENDER_PAGE >= 23)
 	{
 		CalculateLightRayVertex(SunDistance);					// Calculate Light Source Position
-
-#if defined USE_LIGHT_RAY
 		m_lightRayModel->UpdateDynamic(m_LightVertexVector);	// Update LightRay vertex(s)
 		m_lightRayModel->Render();								// Render LightRay
-#endif
 	}
 #endif
 
@@ -132,7 +131,7 @@ void ApplicationClass::AppPreRender(UINT monitorWindow, WomaDriverClass* Driver,
 			m_Light->GenerateViewMatrix(MyLightVertexVector[1].x / 100, MyLightVertexVector[1].y / 100, MyLightVertexVector[1].z / 100);
 	#endif
 
-			// RENDER SHADOWS for all these 3D STATIC OBJECTS:
+			// RENDER SHADOWS for all these 3D STATIC OBJECTS, to texture
 			// --------------------------------------------------------------------------------------------
 	#if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
 			// OPAC Parts:
@@ -157,7 +156,7 @@ void ApplicationClass::AppPreRender(UINT monitorWindow, WomaDriverClass* Driver,
 	m_Driver->TurnOnAlphaBlending(); // Re-assume default
 }
 
-void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, UINT modelID, UINT pass)
+void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, UINT modelID, UINT pass, XMMATRIX* m_viewMatrix, XMMATRIX* m_projectionMatrix)
 {
 	DXmodelClass* model = (DXmodelClass*)objModel[modelID];
 
@@ -226,7 +225,10 @@ void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, 
 		totalRendered++;
 
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
-		model->Render(CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass, &(m_Light->m_viewMatrix), &(m_Light->m_ligth_orthoMatrix));// Pass 2 (Shadow));
+        if (m_viewMatrix == NULL &&  m_projectionMatrix == NULL)
+            model->Render(CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass, &(m_Light->m_viewMatrix), &(m_Light->m_ligth_orthoMatrix));// Pass 2 (Shadow));
+        else
+            model->Render(CAMERA_NORMAL, PROJECTION_MINIMAP, pass, m_viewMatrix, m_projectionMatrix);// Pass 2 (Shadow));
 #else
 		model->Render(CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass);// Pass 2 (Shadow));
 #endif
@@ -252,7 +254,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 
 	// RENDER: SKY Sphere:
 	// --------------------------------------------------------------------------------------------
-#if (defined USE_SKY_CAMERA_DOME && defined USE_SKYSPHERE) && defined MAIN_RENDER	// MAIN-RENDER: "Sky": (0.0ms)
+#if (defined USE_SKY_CAMERA_DOME && defined USE_SKYSPHERE) && defined MAIN_RENDER_SKY	// MAIN-RENDER: "Sky": (0.0ms)
 	if (RENDER_PAGE >= 28 && m_SkyModel)
 	{
 		m_Driver->SetRasterizerState(CULL_NONE/*CULL_BACK*/, FILL_SOLID); // Render the Inside of Sphere
@@ -291,7 +293,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 
 	// [2] Render MAIN Terrain Here
 	// --------------------------------------------------------------------------------------------
-#if (defined SCENE_MAIN_TOPO_TERRAIN && !defined USE_TERRAIN_ALFA_MAP) && defined MAIN_RENDER //MAIN-RENDER TERRAIN (0.3 ms)
+#if (defined SCENE_MAIN_TOPO_TERRAIN && !defined USE_TERRAIN_ALFA_MAP) && defined MAIN_RENDER_TERRAIN //MAIN-RENDER TERRAIN (0.3 ms)
 	static bool fog = (RENDER_PAGE == 51 || RENDER_PAGE >= 60) ? true : false;
 	if (RENDER_PAGE >= 50)
 	{
@@ -309,7 +311,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 #if defined USE_RASTERIZER_STATE
 	m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
 #endif
-#if (defined USE_SCENE_MANAGER && defined DX_ENGINE) && defined MAIN_RENDER //MAIN-RENDER: MAIN OBJs. (9 ms)
+#if (defined USE_SCENE_MANAGER && defined DX_ENGINE) && defined MAIN_RENDER_MAIN_OBJ //MAIN-RENDER: MAIN OBJs. (9 ms)
 	for (UINT id = 0; id < world_main_size; id++)
 			RenderModel(monitorWindow, m_Driver, id, PASS_OPAC);
 #endif
@@ -323,7 +325,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 
 	// [1] WATER:
 	// --------------------------------------------------------------------------------------------
-#if (DX_ENGINE_LEVEL >= 50 && defined SCENE_WATER_TERRAIN) && defined MAIN_RENDER //MAIN-RENDER: WATER (0.3 ms)
+#if (DX_ENGINE_LEVEL >= 50 && defined SCENE_WATER_TERRAIN) && defined MAIN_RENDER_WATER //MAIN-RENDER: WATER (0.3 ms)
 	if (RENDER_PAGE >= 50)
 	{
 		((DirectX::DXmodelClass*)m_TerrainModel[1])->m_Shader11->time += (float)SystemHandle->m_Application->dt * (0.0025f / 16.66f);
@@ -350,7 +352,7 @@ void ApplicationClass::AppPosRender(UINT monitorWindow)
 	m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
 #endif
 
-#if (TUTORIAL_CHAP >= 60 && defined SCENE_BILLBOARDS && defined USE_SCENE_MANAGER && defined DX_ENGINE) && defined MAIN_RENDER // MAIN-RENDER: BILLBOARD + FENCES + FIRE (11.4 ms)
+#if (TUTORIAL_CHAP >= 60 && defined SCENE_BILLBOARDS && defined USE_SCENE_MANAGER && defined DX_ENGINE) && defined MAIN_RENDER_BILLBOARDS // MAIN-RENDER: BILLBOARD + FENCES + FIRE (11.4 ms)
 	UINT size = SceneManager::GetInstance()->transparentModelList.size();
 	if (size > 0) {
 		qsort(m_Trees, size, sizeof(Tree), BillSortCB);
@@ -367,7 +369,7 @@ void ApplicationClass::AppPosRender(UINT monitorWindow)
 
 	m_Driver->ClearDepthBuffer();
 	// -------------------------
-#if (defined USE_TITLE_BANNER && defined MAIN_RENDER) && defined MAIN_RENDER // MAIN-RENDER: TITLE (0.3 ms)
+#if (defined USE_TITLE_BANNER && defined MAIN_RENDER) && defined MAIN_RENDER_TITLE // MAIN-RENDER: TITLE (0.3 ms)
 	if ((RENDER_PAGE >= 24 && m_titleModel) && (WOMA::game_state != GAME_MAP)) //Dont render title, on main map!
 	{
 		float rescale = 1;
@@ -377,13 +379,13 @@ void ApplicationClass::AppPosRender(UINT monitorWindow)
 	}
 #endif
 
-#if (defined USE_MAIN_MAP || defined USE_MINI_MAP) && defined MAIN_RENDER //MAIN-RENDER: MINI-MAP (0.4)
+#if (defined USE_MAIN_MAP || defined USE_MINI_MAP) && defined MAIN_RENDER_MINIMAP //MAIN-RENDER: MINI-MAP (0.4)
 	RenderMainMapMiniMap();
 #endif
 
 	// RENDER RASTERTEK V1 FONT:
 	// -------------------------
-#if (defined USE_RASTERTEK_TEXT_FONT) && defined MAIN_RENDER //MAIN-RENDER: Raster FONT: v1 (0.4 ms)
+#if (defined USE_RASTERTEK_TEXT_FONT) && defined MAIN_RENDER_RASTERTEK_FONT //MAIN-RENDER: Raster FONT: v1 (0.4 ms)
 #if !defined INTRO_DEMO //|DEMO|
 	if (RENDER_PAGE >= 27)
 		AppTextClass->Render();
@@ -414,7 +416,7 @@ void ApplicationClass::AppPosRender(UINT monitorWindow)
 
 	// RENDER NATIVE TEXT:
 	// -------------------
-#if defined USE_DX10DRIVER_FONTS && defined MAIN_RENDER //MAIN-RENDER: Driver Font (0.5 ms)
+#if defined USE_DX_DRIVER_FONT && defined MAIN_RENDER_DRIVER_FONT //MAIN-RENDER: Driver Font (0.5 ms)
 	#if !defined INTRO_DEMO //|DEMO Force NATIVE TEXT|
 	if ((RENDER_PAGE >= 22) && (m_Driver->m_sCapabilities.USE_DXDRIVER_FONTSBoolean) && (SystemHandle->AppSettings->DRIVER == DRIVER_DX11))
 	#endif

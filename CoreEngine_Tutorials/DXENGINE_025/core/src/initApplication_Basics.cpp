@@ -315,7 +315,7 @@ bool ApplicationClass::DEMO_WOMA_APPLICATION_InitializeSprites2D()
 void ApplicationClass::DEMO_WOMA_APPLICATION_Shutdown2D()
 // --------------------------------------------------------------------------------------------
 {
-#if defined USE_DX10DRIVER_FONTS
+#if defined USE_DX_DRIVER_FONT
 	if ((DirectX::DX11Class*)driverList.size() > 0)
 		((DirectX::DX11Class*)driverList[SystemHandle->AppSettings->DRIVER])->Shutdown2D();
 #endif
