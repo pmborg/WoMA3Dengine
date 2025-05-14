@@ -180,9 +180,8 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 
 		WOMA::main_loop_state = -1;
 		WOMA::game_state = GAME_STOP;
-		//::PostMessage(hwnd, WM_QUIT, 0, 0);
+		::PostMessage(hwnd, WM_QUIT, 0, 0);
 		break;
-
 
 	case WM_QUIT:
         WOMA::game_state = GAME_STOP;
@@ -190,7 +189,6 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 		break;
 
 	case WM_DESTROY:	// The main application Window will be destroyed
-		//PostQuitMessage(0);
 
         break; //return 0;
 

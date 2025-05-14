@@ -1430,7 +1430,7 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 		IF_NOT_RETURN_FALSE (instances = NEW InstanceType[m_instanceCount]);
 		
 		// Call "User" Function:
-		SystemHandle->m_Application->WOMA_APPLICATION_FrameUpdateInstancesPositions (m_ObjId, m_instanceCount, instances);
+		SystemHandle->m_Application->WOMA_APPLICATION_FrameUpdateInstancesPositions (SystemHandle->xml_loader.theWorld[m_ObjId].id, m_instanceCount, instances);
 
 		//The instance buffer description is setup exactly the same as a vertex buffer description.
 		ZeroMemory( &instanceBufferDesc, sizeof( instanceBufferDesc ) );

@@ -254,10 +254,6 @@ public:
 	std::vector<PositionClass*> m_Position;
 #endif
 
-#if defined USE_SCENE_MANAGER
-	SceneManager* sceneManager = SceneManager::GetInstance();
-#endif
-
 #if defined CHECK_OBJ_COLISION
     void pickRayVector(float mouseX, float mouseY, XMVECTOR& pickRayInWorldSpacePos, XMVECTOR& pickRayInWorldSpaceDir);
     float pick(XMVECTOR pickRayInWorldSpacePos, XMVECTOR pickRayInWorldSpaceDir,

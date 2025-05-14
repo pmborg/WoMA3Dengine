@@ -85,14 +85,13 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
     demo.Render(demoapp.m_Graphics);
 #endif
 
-
 	// [2] SceneManager: Process/Filter and Create Lists/trees of objects to render from: WORLD.XML
 	// --------------------------------------------------------------------------------------------
 #if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
-	SceneManager::GetInstance()->opacModelList.clear();				//Reset list of opac objects
-	SceneManager::GetInstance()->Render();							//Create Lists for all objects to render (from WORLD.XML) and more
+	WOMA::sceneManager->opacModelList.clear();			//Reset list of opac objects
 
-    world_main_size = SceneManager::GetInstance()->opacModelList.size();
+    WOMA::sceneManager->CreateLists();					//Create Lists for all objects to render (from WORLD.XML) and more
+    world_main_size = WOMA::sceneManager->opacModelList.size();
 #endif
 
 	// [3] LIGHT RAY:
@@ -111,19 +110,31 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 
 	AppRender(monitorWindow, dayLightFade);				// [2] Render: All 3D!!!
 
-	AppPosRender(monitorWindow);										// [3] Render: All 2D (on TOPs)
+	AppPosRender(monitorWindow);						// [3] Render: All 2D (on TOPs)
 }
 
-void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, UINT modelID, UINT pass, XMMATRIX* m_viewMatrix, XMMATRIX* m_projectionMatrix)
+void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, UINT ID, UINT pass, XMMATRIX* m_viewMatrix, XMMATRIX* m_projectionMatrix)
 {
-	DXmodelClass* model = (DXmodelClass*)objModel[modelID];
+    UINT modelID;
+    //SceneManager* sceneManager = SceneManager::GetInstance();
+
+    if (pass == PASS_OPAC) 
+    {
+        if (WOMA::sceneManager->opacModelList.size() == 0)
+            return;
+        modelID = WOMA::sceneManager->opacModelList[ID]->m_ObjId;
+    } 
+    else {
+        ASSERT(0);
+    }
+    DXmodelClass* model = (DXmodelClass*)objModel[modelID];
 
 	float positionX, positionY, positionZ;
 	positionX = SystemHandle->xml_loader.theWorld[modelID].posX;
 	positionY = SystemHandle->xml_loader.theWorld[modelID].translateY;
 	positionZ = SystemHandle->xml_loader.theWorld[modelID].posZ;
 
-	if ( (((DXmodelClass*)model)->m_instanceCount == 0) && !m_Driver->frustum->CheckSphere(positionX, positionY, positionZ, model->boundingSphere*2) && ((!m_Driver->RenderfirstTime)))
+	if ( (((DXmodelClass*)model)->m_instanceCount == 0) && !m_Driver->frustum->CheckSphere(positionX, positionY, positionZ, model->boundingSphere) && ((!m_Driver->RenderfirstTime))) //SYNC with QuadTree.cpp
 		return;
 
 	// Set the initial position of the listener to be in the middle of the scene.
@@ -201,7 +212,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 	#endif
 
 	// RENDER: SKY Sphere:
-	// --------------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------------------------------
 #if (defined USE_SKY_CAMERA_DOME && defined USE_SKYSPHERE) && defined MAIN_RENDER_SKY	// MAIN-RENDER: "Sky": (0.0ms)
 	if (RENDER_PAGE >= 28 && m_SkyModel)
 	{
@@ -231,7 +242,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 	m_Driver->ClearDepthBuffer(); // Need to Be Right after: m_Sky2DModel->RenderSprite 
 #endif
 
-	// --------------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------------------------------
 	// [0] TERRAIN: UNDER WATER!
 #if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN || defined SCENE_MAIN_TERRAIN
 #if defined USE_RASTERIZER_STATE
@@ -243,7 +254,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 #endif
 
 	// [2] Render MAIN Terrain Here
-	// --------------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------------------------------
 #if (defined SCENE_MAIN_TOPO_TERRAIN && !defined USE_TERRAIN_ALFA_MAP) && defined MAIN_RENDER_TERRAIN //MAIN-RENDER TERRAIN (0.3 ms)
 	static bool fog = (RENDER_PAGE == 51 || RENDER_PAGE >= 60) ? true : false;
 	if (RENDER_PAGE >= 50)
@@ -257,8 +268,8 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 		m_TerrainModel[3]->RenderWithFade(fadeLight, fog);	// New function to replace these 2 line options. //AQUI-TERR
 #endif
 
-	// 3D STATIC OPAC OBJECTS on WORLD.XML:
-	// --------------------------------------------------------------------------------------------
+	// 3D STATIC OPAC OBJECTS on WORLD.XML, that listed in: sceneManager->opacModelList (in front of camera)
+    //----------------------------------------------------------------------------------------------------------------------
 #if defined USE_RASTERIZER_STATE
 	m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
 #endif
@@ -276,7 +287,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 	// [1] WATER:
 	// --------------------------------------------------------------------------------------------
 
-	// Render TRANSPARENT Parts of 3D OBJs (like: glass window, etc...) (last part)
+	// Render TRANSPARENT Parts of 3D OBJs (like: glass window of (Space Compound), etc...) (last part)
 	// --------------------------------------------------------------------------------------------
 }
 
@@ -290,12 +301,12 @@ void ApplicationClass::AppPosRender(UINT monitorWindow)
 #endif
 
 #if (TUTORIAL_CHAP >= 60 && defined SCENE_BILLBOARDS && defined USE_SCENE_MANAGER && defined DX_ENGINE) && defined MAIN_RENDER_BILLBOARDS // MAIN-RENDER: BILLBOARD + FENCES + FIRE (11.4 ms)
-	UINT size = SceneManager::GetInstance()->transparentModelList.size();
+	UINT size = WOMA::sceneManager->transparentModelList.size();
 	if (size > 0) {
 		qsort(m_Trees, size, sizeof(Tree), BillSortCB);
-		for (UINT id = world_main_size; id < size; id++) {
-			UINT i = m_Trees[id].ID + world_xml_objs;
-			RenderModel(monitorWindow, m_Driver, i, PASS_OPAC); // Render: "Billboards"
+		for (UINT id = 0; id < size; id++) {
+            UINT i = m_Trees[id].ID +world_xml_objs;
+			RenderModel(monitorWindow, m_Driver, i, PASS_BILL); // Render: "Billboards"
 		}
 	}
 #endif
@@ -638,7 +649,7 @@ if (AppTextClass) {
 #endif
 
 #if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER
-	AppTextClass->SetRenderCount(SceneManager::GetInstance()->quadTree.totalVertexRendered,
+	AppTextClass->SetRenderCount(WOMA::sceneManager->quadTree.totalVertexRendered,
 		SystemHandle->m_Application->totalRendered,
 		(UINT)SystemHandle->xml_loader.theWorld.size());
 #endif

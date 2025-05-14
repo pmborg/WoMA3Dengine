@@ -136,7 +136,7 @@ SceneManager* SceneManager::GetInstance()
 	return WOMA::sceneManager;
 }
 
-void SceneManager::Render()
+void SceneManager::CreateLists()
 {
 #ifdef _DEBUG
 	quadTree.totalVertexRendered = 0;

@@ -232,15 +232,15 @@ WDDM 2.0->Windows 10				Display Drivers or Creates a DXGI 1.4
 	#include <dwrite.h>
 
 	#ifdef X64
-		#pragma comment (lib, "\\WoMAengine2023\\ExternalTools\\Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\d3dx10.lib")
-		#pragma comment (lib, "\\WoMAengine2023\\ExternalTools\\Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\D3D10_1.lib")
-		#pragma comment (lib, "\\WoMAengine2023\\ExternalTools\\Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\D2D1.lib")
-		#pragma comment (lib, "\\WoMAengine2023\\ExternalTools\\Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\dwrite.lib")
-	#else
-		#pragma comment (lib, "\\WoMAengine2023\\ExternalTools\\Microsoft_DirectX_SDK_June_2010\\Lib\\x86\\d3dx10.lib")
-		#pragma comment (lib, "\\WoMAengine2023\\ExternalTools\\Microsoft_DirectX_SDK_June_2010\\Lib\\x86\\D3D10_1.lib")
-		#pragma comment (lib, "\\WoMAengine2023\\ExternalTools\\Microsoft_DirectX_SDK_June_2010\\Lib\\x86\\D2D1.lib")
-		#pragma comment (lib, "\\WoMAengine2023\\ExternalTools\\Microsoft_DirectX_SDK_June_2010\\Lib\\x86\\dwrite.lib")
+		#pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\d3dx10.lib")
+		#pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\D3D10_1.lib")
+		#pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\D2D1.lib")
+		#pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\dwrite.lib")
+	#else                        
+		#pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x86\\d3dx10.lib")
+		#pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x86\\D3D10_1.lib")
+		#pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x86\\D2D1.lib")
+		#pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x86\\dwrite.lib")
 	#endif
 
 #endif

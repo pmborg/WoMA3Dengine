@@ -63,6 +63,8 @@ public:
 	UINT totalLoaded = 0, totalVertexRendered = 0;
 #endif
 
+    
+
 private:
 	DXfrustumClass* frustum = NULL;
 };

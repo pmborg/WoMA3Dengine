@@ -109,6 +109,7 @@ public:
 	UINT				WomaIntegrityCheck = 1234567222;
 
 	INT					m_ObjId = -1;
+    INT					xmlId = -1;
 	SHADER_TYPE			ModelShaderType = SHADER_AUTO;	//Used by shader.cpp
 	PRIMITIVE_TOPOLOGY  PrimitiveTopology;
 	UINT				m_vertexCount = 0, m_indexCount = 0;

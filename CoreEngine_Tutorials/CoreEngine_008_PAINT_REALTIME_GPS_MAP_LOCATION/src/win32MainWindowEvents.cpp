@@ -139,7 +139,7 @@ void WinSystemClass::StartTimer()
 	}
 
   #if CORE_ENGINE_LEVEL >= 7 && defined USE_ASTRO_CLASS && defined RELEASE
-  SetTimer(m_hWnd, TIMER_ASTRO, 120 * 1000 / KEYB_TIMES_PER_SECOND, NULL);	// every 2 mins
+    SetTimer(m_hWnd, TIMER_ASTRO, 120 * 1000 / KEYB_TIMES_PER_SECOND, NULL);	// every 2 mins
   #endif
 }
 
@@ -243,9 +243,8 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 
 		WOMA::main_loop_state = -1;
 		WOMA::game_state = GAME_STOP;
-		//::PostMessage(hwnd, WM_QUIT, 0, 0);
+		::PostMessage(hwnd, WM_QUIT, 0, 0);
 		break;
-
 
 	case WM_QUIT:
         WOMA::game_state = GAME_STOP;
@@ -253,10 +252,10 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 		break;
 
 	case WM_DESTROY:	// The main application Window will be destroyed
-		//PostQuitMessage(0);
 
 	#if CORE_ENGINE_LEVEL >= 7 && defined USE_ASTRO_CLASS
-		KillTimer(hwnd, TIMER_ASTRO);
+		KillTimer(hwnd, TIMER_TITLE);
+        KillTimer(hwnd, TIMER_ASTRO);
 	#endif
 
         break; //return 0;

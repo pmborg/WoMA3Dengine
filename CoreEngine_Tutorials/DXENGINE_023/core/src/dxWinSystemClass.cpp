@@ -149,28 +149,18 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 			TranslateMessage(&msg); // TranslateMessage produces WM_CHAR messages only for keys that are mapped to ASCII characters by the keyboard driver.
 			DispatchMessage(&msg);  // Process Msg:  (INVOKE: WinSystemClass::MessageHandler)
 		} else {
-			try {
 				if (WOMA::game_state > GAME_MINIMIZED)
 					ProcessFrame();	// Render ONE: Application Frame
 				else
 					Sleep(100);
-			}
-			catch (...) //catch (exception& e)
-			{
-				WOMA::game_state = GAME_STOP;
-				WOMA::main_loop_state = -2;
-				return -2;
-			}
 		}
 		if (WOMA::main_loop_state < 0 || (WOMA::renderOnce && WOMA::woma_timer > 15))
         {
 			WOMA::game_state = GAME_STOP;
-			break;
+            return WOMA::game_state;
 		}
-		if (WOMA::game_state == ENGINE_RESTART) {
-            WOMA_LOGManager_DebugMSG("ENGINE_RESTART!\n");
-			return ENGINE_RESTART;
-        }
+		if (WOMA::game_state == ENGINE_RESTART)
+			return WOMA::game_state;
 	} while (msg.message != WM_QUIT);
 
 	ASSERT(WOMA::game_state == GAME_STOP);
@@ -397,8 +387,11 @@ void dxWinSystemClass::ApplicationInitSceneManager()
 
 	// SCENE MANAGER: Create SceneManager Engine: (Driver will use Frustrum to filter)
 #if defined USE_SCENE_MANAGER
-	SceneManager::GetInstance()->CreateRootNode(world.size, m_Application->ClearColor); // 256 x 8 --> //-512,-512, 512, 512
-	SceneManager::GetInstance()->quadTree.Initialize(SceneManager::GetInstance()->RootNode);
+    if (WOMA::sceneManager == NULL)
+        WOMA::sceneManager = SceneManager::GetInstance();
+
+	WOMA::sceneManager->CreateRootNode(world.size, m_Application->ClearColor); // 256 x 8 --> //-512,-512, 512, 512
+    WOMA::sceneManager->quadTree.Initialize(WOMA::sceneManager->RootNode);
 #endif
 }
 

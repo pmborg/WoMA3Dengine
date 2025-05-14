@@ -178,18 +178,28 @@ void QuadTree::RenderNode(NodeType* node)
 	if (count != 0) return;
 
 	// Not really Render! But List All Models/objects to render, on this Node: (this quad is in front of camera)
+    UINT world_xml_objs = (UINT)SystemHandle->xml_loader.theWorld.size(); //Get 
 	for (int i = 0; i < node->sceneNodes.size(); i++)
 	{
 		VirtualModelClass* model = node->sceneNodes[i]->nodeState.model;
-
+        
+        if (!model->ModelHASAlfaColor)
+        {
+            UINT modelID = model->m_ObjId;
+            float positionX, positionY, positionZ;
+            positionX = SystemHandle->xml_loader.theWorld[modelID].posX;
+            positionY = SystemHandle->xml_loader.theWorld[modelID].translateY;
+            positionZ = SystemHandle->xml_loader.theWorld[modelID].posZ;
+            if ((((DXmodelClass*)model)->m_instanceCount == 0) && !m_Driver->frustum->CheckSphere(positionX, positionY, positionZ, model->boundingSphere))
+                continue;
+        }
 		//This Model have transparent parts?, note it! to render transparent parts later.
 		if (model->ModelHASAlfaColor)
-			SceneManager::GetInstance()->transparentModelList.push_back(model);
+            WOMA::sceneManager->transparentModelList.push_back(model);
 		else
-			SceneManager::GetInstance()->opacModelList.push_back(model);
+            WOMA::sceneManager->opacModelList.push_back(model);
 
 	#ifdef _DEBUG
-		
 		totalVertexRendered += node->sceneNodes[i]->nodeState.model->m_vertexCount;
 	#endif
 	}

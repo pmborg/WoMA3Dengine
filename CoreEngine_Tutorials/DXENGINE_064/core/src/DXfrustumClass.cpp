@@ -178,7 +178,8 @@ bool DXfrustumClass::CheckSphere(float xCenter, float yCenter, float zCenter, fl
 	// Check if the radius of the sphere is inside the view frustum.
 	for(int i=0; i<4; i++) 
 	{
-		if (XMVectorGetX(XMPlaneDotCoord( m_planes[i], XMVectorSet(xCenter, yCenter, zCenter, 0) )) < -radius )
+        register float f = XMVectorGetX(XMPlaneDotCoord(m_planes[i], XMVectorSet(xCenter, yCenter, zCenter, 0)));
+		if (f < -radius )
 			return false;
 	}
 
@@ -187,11 +188,12 @@ bool DXfrustumClass::CheckSphere(float xCenter, float yCenter, float zCenter, fl
 
 #pragma warning( disable : 4701 ) // warning C4701: potentially uninitialized local variable 'd' used
 float DXfrustumClass::SphereDistance(float xCenter, float yCenter, float zCenter, float radius)
-{   float d;
+{   
+    register float d;
 	// Check if the radius of the sphere is inside the view frustum.
 	for(int i=0; i<4; i++) 
 	{
-		d = XMVectorGetX(XMPlaneDotCoord( m_planes[i], XMVectorSet(xCenter, yCenter, zCenter, 0) ));
+        d = XMVectorGetX(XMPlaneDotCoord( m_planes[i], XMVectorSet(xCenter, yCenter, zCenter, 0) ));
 		if( d <= -radius)
 			return 0;
 	}

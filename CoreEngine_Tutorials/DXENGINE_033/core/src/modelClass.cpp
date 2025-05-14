@@ -809,6 +809,8 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 
 					if(Transparency > 0.0f)
 						obj3d.material[matCount-1].transparent = true;
+
+                    obj3d.hasTransparent = true;
 				}
 				break;
 
@@ -826,6 +828,8 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 
 					if(Transparency > 0.0f)
 						obj3d.material[matCount-1].transparent = true;
+
+                    obj3d.hasTransparent = true;
 				}
 				break;
 

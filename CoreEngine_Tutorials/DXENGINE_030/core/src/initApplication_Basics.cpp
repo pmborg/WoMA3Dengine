@@ -716,9 +716,9 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 			}
 
 		{
-#if !defined ALLOW_CBIND_PROGRESS_BAR
-			RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);	// Invoke: Window PAINT before end.
-#endif
+//#if !defined ALLOW_CBIND_PROGRESS_BAR
+//			RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);	// Invoke: Window PAINT before end.
+//#endif
 		}
 
 #if defined ALLOW_CBIND_PROGRESS_BAR

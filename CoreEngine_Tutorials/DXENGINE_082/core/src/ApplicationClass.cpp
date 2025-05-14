@@ -132,7 +132,7 @@ void ApplicationClass::PositionUpdate(int playerId, float positionX, float posit
 
 namespace WOMA
 {
-SceneManager* sceneManager;
+SceneManager* sceneManager=NULL;
 }
 #endif
 

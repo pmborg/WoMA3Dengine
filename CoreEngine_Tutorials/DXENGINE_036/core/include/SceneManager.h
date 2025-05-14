@@ -30,14 +30,14 @@ public:
 
 	static SceneManager* GetInstance();
 
-	void Render();
+	void CreateLists();
 	void addModel (SceneNode* node, VirtualModelClass* model);
 	void CreateRootNode(UINT worldSizeDiameter, float* color);
 
 	SceneNode* RootNode;
 
 	std::vector<VirtualModelClass*> opacModelList;
-	std::vector<VirtualModelClass*> shadowModelList;
+	//std::vector<VirtualModelClass*> shadowModelList;
 
 	//private:
 	QuadTree quadTree;

@@ -801,6 +801,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 		}
 
 		objModel[i]->m_ObjId = i; //SYNC-ID: objModel[i] with: xml_loader.theWorld[i]
+        objModel[i]->xmlId = SystemHandle->xml_loader.theWorld[i].id;
 
 #if   !defined USE_SHADOW_INSTANCES
 		SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows = false;
@@ -842,13 +843,13 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 		if (SystemHandle->xml_loader.theWorld[i].meshSRV) {
 			((DXmodelClass*)objModel[i])->meshSRV11[0] = SystemHandle->xml_loader.theWorld[i].meshSRV;
 		}
-		if (i >= world_xml_objs)
+		if (i >= world_xml_objs) //Are we a Billboard?
 			((DXmodelClass*)objModel[i])->ModelHASAlfaColor = true;
 		else
 		{
-#if !defined ALLOW_CBIND_PROGRESS_BAR
-			RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);	// Invoke: Window PAINT before end.
-#endif
+//#if !defined ALLOW_CBIND_PROGRESS_BAR
+//			RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);	// Invoke: Window PAINT before end.
+//#endif
 		}
 
 #if defined ALLOW_CBIND_PROGRESS_BAR

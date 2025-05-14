@@ -87,6 +87,7 @@
 #define PASS_MINIMAP1		11
 #define PASS_MINIMAP2		12
 #define PASS_MINIMAP3		13
+#define PASS_BILL			70
 
 #include "virtualModelClass.h"
 extern std::vector<VirtualModelClass*> m_screenShots;
@@ -306,10 +307,6 @@ public:
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 	std::vector<PositionClass*> m_Position;
-#endif
-
-#if defined USE_SCENE_MANAGER
-	SceneManager* sceneManager = SceneManager::GetInstance();
 #endif
 
 	std::vector<VirtualModelClass*> objModel;

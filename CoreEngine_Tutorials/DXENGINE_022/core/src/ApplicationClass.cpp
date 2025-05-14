@@ -52,7 +52,7 @@ extern MyWin Win;
 
 namespace WOMA
 {
-SceneManager* sceneManager;
+SceneManager* sceneManager=NULL;
 }
 #endif
 

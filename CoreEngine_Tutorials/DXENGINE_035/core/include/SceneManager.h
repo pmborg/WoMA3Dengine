@@ -30,7 +30,7 @@ public:
 
 	static SceneManager* GetInstance();
 
-	void Render();
+	void CreateLists();
 	void addModel (SceneNode* node, VirtualModelClass* model);
 	void CreateRootNode(UINT worldSizeDiameter, float* color);
 
