@@ -12,7 +12,7 @@
 ForwardPass::ForwardPass(Graphics& graphics, Texture& renderTarget) :
     m_RenderTarget(renderTarget)
 {
-	shader = std::make_unique<Shader>(L"C:\\WoMAengine2023\\PPG-master\\Bin\\Debug\\VertexShader.cso", L"C:\\WoMAengine2023\\PPG-master\\Bin\\Debug\\Forward.ps.cso", graphics);
+	shader = std::make_unique<Shader>(L"C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\VertexShader.cso", L"C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\Forward.ps.cso", graphics);
     m_Buffer = graphics.CreateBuffer(sizeof(PBRMaterialInfo), D3D11_BIND_CONSTANT_BUFFER, nullptr);
     m_BoneBuffer = graphics.CreateBuffer(sizeof(XMMATRIX) * Skeleton::NUM_BONES, D3D11_BIND_CONSTANT_BUFFER, nullptr);
 }

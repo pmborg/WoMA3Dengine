@@ -26,7 +26,7 @@
 
 ShadowMapPass::ShadowMapPass(Graphics& graphics)
 {
-    shader = std::make_unique<Shader>(L"C:\\WoMAengine2023\\PPG-master\\Bin\\Debug\\VertexShader.cso", L"C:\\WoMAengine2023\\PPG-master\\Bin\\Debug\\ShadowMap.ps.cso", graphics);
+    shader = std::make_unique<Shader>(L"C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\VertexShader.cso", L"C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\ShadowMap.ps.cso", graphics);
 }
 
 void ShadowMapPass::Render(Graphics& graphics, Scene& scene, Texture& shadowMapTexture, ShadowMapRenderDesc& desc)

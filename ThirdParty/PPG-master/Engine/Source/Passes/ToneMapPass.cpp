@@ -27,8 +27,8 @@ ToneMapPass::ToneMapPass(Graphics& graphics, Texture& colour, Texture& dest) :
     m_ColourTexture(colour),
     m_DestTexture(dest)
 {
-    m_Shader = std::make_unique<Shader>(L"C:\\WoMAengine2023\\PPG-master\\Bin\\Debug\\Fullscreen.vs.cso", 
-                                        L"C:\\WoMAengine2023\\PPG-master\\Bin\\Debug\\ToneMapReinhard.ps.cso", graphics);
+    m_Shader = std::make_unique<Shader>(L"C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\Fullscreen.vs.cso", 
+                                        L"C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\ToneMapReinhard.ps.cso", graphics);
 }
 
 ToneMapPass::~ToneMapPass()
