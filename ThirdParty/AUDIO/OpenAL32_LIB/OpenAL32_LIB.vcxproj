@@ -421,7 +421,7 @@
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>X64;_WINDOWS;_DEBUG;_TIMESPEC_DEFINED;%(PreprocessorDefinitions);ALUT_BUILD_LIBRARY;AL_LIBTYPE_STATIC;ALUT_API=extern;ALC_API=extern;AL_API=extern;AL_BUILD_LIBRARY;AL_ALEXT_PROTOTYPES;_LARGEFILE_SOURCE;_LARGE_FILES;restrict=;inline=__inline;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;strcasecmp=_stricmp;strncasecmp=_strnicmp;isfinite=_finite;isnan=_isnan;CMAKE_INTDIR="Debug";OpenAL32_EXPORTS</PreprocessorDefinitions>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <BrowseInformation>true</BrowseInformation>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <CompileAs>CompileAsC</CompileAs>
