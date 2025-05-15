@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Used to Manage: the Mouse and the Joystick
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567222;
+//WomaIntegrityCheck = 1234567155;
 #pragma once
 
 ///////////////////////////////
@@ -63,7 +63,7 @@
 class DXInputClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567222;
+	UINT WomaIntegrityCheck = 1234567155;
 	DXInputClass();
 	~DXInputClass();
 

@@ -93,7 +93,7 @@ namespace DirectX
 class DXcameraClass : public VirtualCameraClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567222;
+	UINT WomaIntegrityCheck = 1234567155;
 	DXcameraClass(UINT camera_type = 0);
 	~DXcameraClass();
 

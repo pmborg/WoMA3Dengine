@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Define APIs for winSystemClass.cpp which is the WINDOWS OS API
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567222;
+//WomaIntegrityCheck = 1234567155;
 
 #include "OSengine.h"
 #if defined DX_ENGINE
@@ -32,7 +32,7 @@ WinSystemClass::WinSystemClass() : SystemClass()
 //----------------------------------------------------------------------------------
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567222;
+	WomaIntegrityCheck = 1234567155;
 
 	//public:
 	SystemHandle = this;

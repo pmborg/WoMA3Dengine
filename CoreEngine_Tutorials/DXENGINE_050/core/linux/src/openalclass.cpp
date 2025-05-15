@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // ORIGINAL: Rastertek Tutorial 14: Font Engine : https://www.rastertek.com/gl4linuxtut56.html
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567222;
+//WomaIntegrityCheck = 1234567155;
 
 #include "openalclass.h"
 

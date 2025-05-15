@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567222;
+//WomaIntegrityCheck = 1234567155;
 
 #pragma once
 
@@ -30,7 +30,7 @@
 class AstroClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567222;
+	UINT WomaIntegrityCheck = 1234567155;
 	AstroClass();
 	~AstroClass();
 

@@ -211,7 +211,7 @@ namespace DirectX
 		// FUNCTIONS:
 		// ---------------------------------------------------------------------
 	public:
-		UINT WomaIntegrityCheck = 1234567222;
+		UINT WomaIntegrityCheck = 1234567155;
 		DXshaderClass(UINT ShaderVersionH, UINT ShaderVersionL, bool shader_3D);
 		~DXshaderClass();
 		void Shutdown();

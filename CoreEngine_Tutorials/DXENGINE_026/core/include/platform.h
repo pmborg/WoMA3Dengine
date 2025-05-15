@@ -21,7 +21,7 @@
 //		NO GLOBAL VARIABLE(s)
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567222;
+//WomaIntegrityCheck = 1234567155;
 #pragma once
 
 #if NOTES
@@ -499,7 +499,7 @@ static_assert(false, "This code is for a LOWENDIAN CPU");
 # error __ANDROID_API__ must be defined
 #endif
 
-#if __ANDROID_API__ >= 26
+#if __ANDROID_API__ > 26
 	#define GLES3	//3.0 ~ DX11
 #else
 	#define GLES2	//2.0 ~ DX10

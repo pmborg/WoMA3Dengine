@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567222;
+//WomaIntegrityCheck = 1234567155;
 
 #pragma once
 
@@ -38,7 +38,7 @@ extern float tableSin[360*100], tableCos[360*100];
 class TrigonometryMathClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567222;
+	UINT WomaIntegrityCheck = 1234567155;
 	TrigonometryMathClass();
 	~TrigonometryMathClass();
 

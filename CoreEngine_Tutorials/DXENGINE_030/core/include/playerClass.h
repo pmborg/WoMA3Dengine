@@ -110,7 +110,7 @@ typedef struct
 class PlayerClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567222;
+	UINT WomaIntegrityCheck = 1234567155;
 	PlayerClass(UINT id);
 	~PlayerClass();
 

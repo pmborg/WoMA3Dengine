@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567222;
+//WomaIntegrityCheck = 1234567155;
 
 #if defined DEMO_LEVEL //FOR DEMOS LEVEL 1..54 (defined at project level)
 	#define LEVEL DEMO_LEVEL

@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Used to Manage: the Mouse and the Joystick
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567222;
+//WomaIntegrityCheck = 1234567155;
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
@@ -79,7 +79,7 @@ void processSpecialKeys(int key, int x, int y) {
 DXInputClass::DXInputClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567222;
+	WomaIntegrityCheck = 1234567155;
 
 	// NOTE: rgbButtons holds the state of four of the mouse buttons. 
 	// 0 is for the left button

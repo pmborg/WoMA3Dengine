@@ -56,7 +56,7 @@ namespace DirectX {
 	{
 		// WomaDriverClass / Public: ------------------------------------------------------
 		CLASSLOADER();
-		WomaIntegrityCheck = 1234567222;
+		WomaIntegrityCheck = 1234567155;
 
 		// SUPER Video Card Info:
 		// ---------------------------------------------------------------------------

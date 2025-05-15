@@ -102,9 +102,9 @@
     <ClInclude Include="..\core\linux\include\soundclass.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\WoMAengine2023\SOURCE_CODE_HTML\DXENGINE_029\core\linux\src\linuxaudio.cpp" />
     <ClCompile Include="..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.cpp" />
     <ClCompile Include="..\..\main.cpp" />
+    <ClCompile Include="..\core\linux\src\linuxaudio.cpp" />
     <ClCompile Include="..\core\linux\src\openalclass.cpp" />
     <ClCompile Include="..\core\linux\src\soundclass.cpp" />
     <ClCompile Include="..\core\src\Application_LightRay.cpp" />

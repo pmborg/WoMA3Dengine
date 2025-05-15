@@ -78,7 +78,7 @@ dxWinSystemClass::dxWinSystemClass(WOMA::Settings* appSettings) : WinSystemClass
 //----------------------------------------------------------------------------------
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567222;
+	WomaIntegrityCheck = 1234567155;
 	WinSystemClass::AppSettings = appSettings;
 	WinSystemClass::mMaximized = WinSystemClass::AppSettings->FULL_SCREEN;
 

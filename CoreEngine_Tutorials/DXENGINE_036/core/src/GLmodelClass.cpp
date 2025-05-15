@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567222;
+//WomaIntegrityCheck = 1234567155;
 
 #include "platform.h"
 #pragma warning( disable : 4473 )
@@ -35,7 +35,7 @@
 GLmodelClass::GLmodelClass(bool model3d) 
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567222;
+	WomaIntegrityCheck = 1234567155;
 
 	// SUPER: ----------------------------------------------------------------------
 	m_ObjId = 0;

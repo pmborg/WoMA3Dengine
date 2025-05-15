@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567222;
+//WomaIntegrityCheck = 1234567155;
 
 #include "WinSystemClass.h"
 #include "SystemFeatures.h"
@@ -25,7 +25,7 @@
 SystemFeatures::SystemFeatures()
 {
 	CLASSLOADER();
-    WomaIntegrityCheck = 1234567222;
+    WomaIntegrityCheck = 1234567155;
 
     displayAllCpuFeactures = TEXT("");
 }

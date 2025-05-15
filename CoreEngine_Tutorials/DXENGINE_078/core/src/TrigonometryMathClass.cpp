@@ -19,7 +19,7 @@
 //  Use pre-calculated data to speed-up until 20x, trivial trigonometry Math Calculations.
 //  Precision 2 decimal numbers, i.e. sin(0.12)
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567222;
+//WomaIntegrityCheck = 1234567155;
 
 #include "platform.h"
 #if defined USE_TIMER_CLASS
@@ -46,7 +46,7 @@ float tableSin[360*100], tableCos[360*100];
 TrigonometryMathClass::TrigonometryMathClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567222;
+	WomaIntegrityCheck = 1234567155;
 
 	Initialize();
 }

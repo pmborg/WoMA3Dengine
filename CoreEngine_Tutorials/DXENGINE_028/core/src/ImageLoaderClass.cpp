@@ -28,7 +28,7 @@
 ImageLoaderClass::ImageLoaderClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567222;
+	WomaIntegrityCheck = 1234567155;
 
 	//private:
 	pixels = NULL;

@@ -28,7 +28,7 @@
 WinCpuCores::WinCpuCores()
 {
 	CLASSLOADER();
-    WomaIntegrityCheck = 1234567222;
+    WomaIntegrityCheck = 1234567155;
 
 	numaNodeCount = NULL;
 	processorPackageCount = NULL;

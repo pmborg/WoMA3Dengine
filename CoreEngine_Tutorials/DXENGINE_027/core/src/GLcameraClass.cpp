@@ -27,7 +27,7 @@
 GLcameraClass::GLcameraClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567222;
+	WomaIntegrityCheck = 1234567155;
 
 	m_positionX = 0.0f;
 	m_positionY = 0.0f;

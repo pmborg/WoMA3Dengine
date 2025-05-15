@@ -60,7 +60,7 @@
 class wGLopenGLclass : public GLopenGLclass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567222;
+	UINT WomaIntegrityCheck = 1234567155;
 	wGLopenGLclass();
 	~wGLopenGLclass();
 

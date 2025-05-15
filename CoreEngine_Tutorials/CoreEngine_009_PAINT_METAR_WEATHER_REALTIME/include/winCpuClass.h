@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567222;
+//WomaIntegrityCheck = 1234567155;
 #pragma once
 
 #include "platform.h"
@@ -38,7 +38,7 @@
 class WinCpuClass
 {
 public:
-    UINT WomaIntegrityCheck = 1234567222;
+    UINT WomaIntegrityCheck = 1234567155;
     WinCpuClass();
     ~WinCpuClass();
 

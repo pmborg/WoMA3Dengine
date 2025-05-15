@@ -133,7 +133,7 @@ namespace DirectX {
 	DXshaderClass::DXshaderClass(UINT ShaderVersion_H, UINT ShaderVersion_L, bool shader_3D)
 	{
 		CLASSLOADER();
-		WomaIntegrityCheck = 1234567222;
+		WomaIntegrityCheck = 1234567155;
 		
 #if defined DX9sdk
 		m_driver9 = ((DirectX::DX9Class*)m_Driver);

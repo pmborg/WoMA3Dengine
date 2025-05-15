@@ -35,7 +35,7 @@ DX9Class::~DX9Class() {
 DX9Class::DX9Class() 
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567222;
+	WomaIntegrityCheck = 1234567155;
 	// SUPER: 
 	// Video Card Info:
 	// ---------------------------------------------------------------------------

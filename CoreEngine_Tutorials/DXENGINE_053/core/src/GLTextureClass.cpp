@@ -36,7 +36,7 @@
 GLtextureClass::GLtextureClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567222;
+	WomaIntegrityCheck = 1234567155;
 
 	m_textureID = NULL;
 	loaded = false;

@@ -30,7 +30,7 @@
 class GLcameraClass : public VirtualCameraClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567222;
+	UINT WomaIntegrityCheck = 1234567155;
 	GLcameraClass();
 	~GLcameraClass();
 

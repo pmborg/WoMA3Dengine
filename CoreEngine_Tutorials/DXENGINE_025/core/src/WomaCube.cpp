@@ -17,7 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Define a Color and Texture Cube
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567222;
+//WomaIntegrityCheck = 1234567155;
 // 
 //-------------------+
 // Project Includes: |
@@ -31,7 +31,7 @@
 CCube::CCube(int x_0, int y_0, int z_0)
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567222;
+	WomaIntegrityCheck = 1234567155;
 
 	const float l = 1;	///*txtSize*/128 / 2;
 	const float y = 1;	//ZZ (D3D)

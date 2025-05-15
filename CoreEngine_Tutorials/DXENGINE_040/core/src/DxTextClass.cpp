@@ -32,7 +32,7 @@ namespace DirectX {
 	DxTextClass::DxTextClass()
 	{
 		CLASSLOADER();
-		WomaIntegrityCheck = 1234567222;
+		WomaIntegrityCheck = 1234567155;
 
 		//private:
 		m_Font = NULL;

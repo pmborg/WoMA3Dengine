@@ -48,7 +48,7 @@ namespace DirectX {
 class DxTextClass : public VirtualTextClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567222;
+	UINT WomaIntegrityCheck = 1234567155;
 	DxTextClass();
 	~DxTextClass();
 

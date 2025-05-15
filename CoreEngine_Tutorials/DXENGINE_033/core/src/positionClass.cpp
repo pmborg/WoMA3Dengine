@@ -17,7 +17,7 @@
 // PURPOSE: Define the position of a player.
 //			Process the Dynamic movement: Newton Laws of the player.
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567222;
+//WomaIntegrityCheck = 1234567155;
 
 #include "platform.h"
 #if defined USE_DIRECT_INPUT// && defined INTRO_DEMO
@@ -34,7 +34,7 @@
 PositionClass::PositionClass(UINT id)
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567222;
+	WomaIntegrityCheck = 1234567155;
 
 	m_positionX = SystemHandle->AppSettings->INIT_CAMX;
 	m_positionY = SystemHandle->AppSettings->INIT_CAMY;

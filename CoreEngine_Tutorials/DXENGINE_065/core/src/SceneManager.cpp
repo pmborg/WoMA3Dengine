@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567222;
+//WomaIntegrityCheck = 1234567155;
 
 // PURPOSE: The AudioClass is the Interface Audio to Client EXE 
 //			 No need to Link audio LIBs on client EXE

@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Process the basic Camera Calculations
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567222;
+//WomaIntegrityCheck = 1234567155;
 
 #include "platform.h"
 #if defined DX_ENGINE
@@ -32,7 +32,7 @@ namespace DirectX
 DXcameraClass::DXcameraClass(UINT camera_type)
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567222;
+	WomaIntegrityCheck = 1234567155;
 
 	//public:
 	m_positionX = m_positionY = m_positionZ = 0.0f;

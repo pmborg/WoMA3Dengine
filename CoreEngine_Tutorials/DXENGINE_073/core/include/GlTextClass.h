@@ -63,7 +63,7 @@ public:
 	#pragma pack(pop)
 #endif
 
-	UINT WomaIntegrityCheck = 1234567222;
+	UINT WomaIntegrityCheck = 1234567155;
 	GlTextClass();
 	~GlTextClass();
 

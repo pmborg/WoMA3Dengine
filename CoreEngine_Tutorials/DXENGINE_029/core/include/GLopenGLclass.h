@@ -88,7 +88,6 @@
 class GLopenGLclass : public WomaDriverClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567222;
 	GLopenGLclass();
 	~GLopenGLclass();
 	void Shutdown2D();

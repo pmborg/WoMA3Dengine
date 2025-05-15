@@ -350,7 +350,7 @@
     <ClCompile Include="..\core\src\playerClass.cpp">
       <Filter>src\GLEngine_028</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\WoMAengine2023\SOURCE_CODE_HTML\DXENGINE_029\core\linux\src\linuxaudio.cpp">
+    <ClCompile Include="..\core\linux\src\linuxaudio.cpp">
       <Filter>src\GLEngine_029</Filter>
     </ClCompile>
   </ItemGroup>
@@ -592,15 +592,13 @@
     <None Include="..\GLengine\texture.vs">
       <Filter>GLSL-LINUX</Filter>
     </None>
-    <None Include="..\engine\data\airports.metar">
-      <Filter>engine</Filter>
-    </None>
     <None Include="..\GLengine\font.ps">
       <Filter>GLSL-LINUX</Filter>
     </None>
     <None Include="..\GLengine\font.vs">
       <Filter>GLSL-LINUX</Filter>
     </None>
+    <None Include="..\..\engine\data\airports.metar" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
@@ -701,94 +699,38 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\engine\data\original\Earth_Diffuse.bmp">
-      <Filter>engine\original</Filter>
-    </Image>
-    <Image Include="..\engine\data\basics\Earth_Diffuse.bmp">
-      <Filter>engine\basics</Filter>
-    </Image>
-    <Image Include="..\engine\data\basics\Earth_Diffuse.DDS">
-      <Filter>engine\basics</Filter>
-    </Image>
-    <Image Include="..\engine\data\basics\Earth_Diffuse.jpg">
-      <Filter>engine\basics</Filter>
-    </Image>
-    <Image Include="..\engine\data\basics\Earth_Diffuse.png">
-      <Filter>engine\basics</Filter>
-    </Image>
-    <Image Include="..\engine\data\basics\Earth_Diffuse.tga">
-      <Filter>engine\basics</Filter>
-    </Image>
-    <Image Include="..\engine\data\basics\Earth_Diffuse.TIF">
-      <Filter>engine\basics</Filter>
-    </Image>
-    <Image Include="..\engine\data\basics\logotipo_small_backgroundV2.bmp">
-      <Filter>engine\basics</Filter>
-    </Image>
-    <Image Include="..\engine\data\basics\seafloor.png">
-      <Filter>engine\basics</Filter>
-    </Image>
-    <Image Include="..\engine\data\basics\target.bmp">
-      <Filter>engine\basics</Filter>
-    </Image>
-    <Image Include="..\engine\data\fonts\008font.png">
-      <Filter>engine</Filter>
-    </Image>
-    <Image Include="..\engine\data\fonts\008font.tga">
-      <Filter>engine</Filter>
-    </Image>
-    <Image Include="..\engine\data\fonts\008font2.tga">
-      <Filter>engine</Filter>
-    </Image>
-    <Image Include="..\engine\data\fonts\font01.tga">
-      <Filter>engine</Filter>
-    </Image>
-    <Image Include="..\engine\data\sky\NEW_SKY_DOME.jpg">
-      <Filter>engine</Filter>
-    </Image>
-    <Image Include="..\engine\data\sky\NEW_SKY_NIGHT.jpg">
-      <Filter>engine</Filter>
-    </Image>
-    <Image Include="..\engine\data\TITLE\WOMA_ENGINE.png">
-      <Filter>engine</Filter>
-    </Image>
-    <Image Include="..\engine\data\TITLE\WOMA_ENGINE-BIG.png">
-      <Filter>engine</Filter>
-    </Image>
-    <Image Include="..\engine\data\banners\TEXT1_WoMA_Muti_Platform_Engine.png">
-      <Filter>engine</Filter>
-    </Image>
-    <Image Include="..\engine\data\banners\TEXT2_is_a_Pmborg_Production.png">
-      <Filter>engine</Filter>
-    </Image>
-    <Image Include="..\engine\data\banners\TEXT3_WoMA_Code_By.png">
-      <Filter>engine</Filter>
-    </Image>
-    <Image Include="..\engine\data\banners\TEXT4_Pedro_Borges.png">
-      <Filter>engine</Filter>
-    </Image>
-    <Image Include="..\engine\data\banners\TEXT5_Music_By.png">
-      <Filter>engine</Filter>
-    </Image>
-    <Image Include="..\engine\data\banners\TEXT6_Deceased_Superior_Technician.png">
-      <Filter>engine</Filter>
-    </Image>
+    <Image Include="..\..\engine\data\banners\TEXT1_WoMA_Muti_Platform_Engine.png" />
+    <Image Include="..\..\engine\data\banners\TEXT2_is_a_Pmborg_Production.png" />
+    <Image Include="..\..\engine\data\banners\TEXT3_WoMA_Code_By.png" />
+    <Image Include="..\..\engine\data\banners\TEXT4_Pedro_Borges.png" />
+    <Image Include="..\..\engine\data\banners\TEXT5_Music_By.png" />
+    <Image Include="..\..\engine\data\banners\TEXT6_Deceased_Superior_Technician.png" />
+    <Image Include="..\..\engine\data\basics\Earth_Diffuse.bmp" />
+    <Image Include="..\..\engine\data\basics\Earth_Diffuse.DDS" />
+    <Image Include="..\..\engine\data\basics\Earth_Diffuse.jpg" />
+    <Image Include="..\..\engine\data\basics\Earth_Diffuse.png" />
+    <Image Include="..\..\engine\data\basics\Earth_Diffuse.tga" />
+    <Image Include="..\..\engine\data\basics\Earth_Diffuse.TIF" />
+    <Image Include="..\..\engine\data\basics\logotipo_small_backgroundV2.bmp" />
+    <Image Include="..\..\engine\data\basics\seafloor.png" />
+    <Image Include="..\..\engine\data\basics\target.bmp" />
+    <Image Include="..\..\engine\data\fonts\008font.png" />
+    <Image Include="..\..\engine\data\fonts\008font.tga" />
+    <Image Include="..\..\engine\data\fonts\008font2.tga" />
+    <Image Include="..\..\engine\data\fonts\font01.tga" />
+    <Image Include="..\..\engine\data\original\Earth_Diffuse.bmp" />
+    <Image Include="..\..\engine\data\sky\NEW_SKY_DOME.jpg" />
+    <Image Include="..\..\engine\data\sky\NEW_SKY_NIGHT.jpg" />
+    <Image Include="..\..\engine\data\TITLE\WOMA_ENGINE-BIG.png" />
+    <Image Include="..\..\engine\data\TITLE\WOMA_ENGINE.png" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\engine\data\fonts\008fontdata.txt">
-      <Filter>engine</Filter>
-    </Text>
-    <Text Include="..\engine\data\fonts\008fontdata_windows.txt">
-      <Filter>engine</Filter>
-    </Text>
-    <Text Include="..\engine\data\fonts\008fontdata2.txt">
-      <Filter>engine</Filter>
-    </Text>
-    <Text Include="..\engine\data\fonts\font01.txt">
-      <Filter>engine</Filter>
-    </Text>
+    <Text Include="..\..\engine\data\fonts\008fontdata.txt" />
+    <Text Include="..\..\engine\data\fonts\008fontdata2.txt" />
+    <Text Include="..\..\engine\data\fonts\008fontdata_windows.txt" />
+    <Text Include="..\..\engine\data\fonts\font01.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Media Include="..\engine\audio\DST-Aircord.wav" />
+    <Media Include="..\..\engine\audio\DST-Aircord.wav" />
   </ItemGroup>
 </Project>

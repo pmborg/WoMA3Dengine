@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567222;
+//WomaIntegrityCheck = 1234567155;
 
 #ifndef _ApplicationClass_H_
 #define _ApplicationClass_H_
@@ -235,7 +235,7 @@ extern int __cdecl CompoundSortCB(const VOID* arg1, const VOID* arg2);
 class ApplicationClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567222;
+	UINT WomaIntegrityCheck = 1234567155;
 	ApplicationClass();
 	~ApplicationClass();
 	

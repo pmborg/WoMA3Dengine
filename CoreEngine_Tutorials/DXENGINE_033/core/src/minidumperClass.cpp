@@ -79,7 +79,7 @@ MiniDumper::MiniDumper()
 	//AddVectoredExceptionHandler(1, VectoredExceptionHandler);
 
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567222;
+	WomaIntegrityCheck = 1234567155;
 }
 
 MiniDumper::~MiniDumper() {CLASSDELETE();}
