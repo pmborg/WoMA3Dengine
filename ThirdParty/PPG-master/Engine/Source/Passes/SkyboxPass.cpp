@@ -41,10 +41,10 @@ SkyboxPass::SkyboxPass(Graphics& graphics, Texture& renderTarget, const LPCWSTR&
 
     skyboxMesh = std::make_unique<Mesh>(CubeVertices(), std::move(skyboxIndices), graphics);
     scaleMatrix = XMMatrixScaling(size, size, size);
-    shader = std::make_unique<Shader>(L"C:\\WoMAengine2023\\PPG-master\\Bin\\Debug\\Skybox.vs.cso", L"C:\\WoMAengine2023\\PPG-master\\Bin\\Debug\\Skybox.ps.cso", graphics);
-    cubeToEnvMapShader = std::make_unique<Shader>(L"C:\\WoMAengine2023\\PPG-master\\Bin\\Debug\\Skybox.vs.cso", L"C:\\WoMAengine2023\\PPG-master\\Bin\\Debug\\IrradianceMap.ps.cso", graphics);
-    prefilterShader = std::make_unique<Shader>(L"C:\\WoMAengine2023\\PPG-master\\Bin\\Debug\\Skybox.vs.cso", L"C:\\WoMAengine2023\\PPG-master\\Bin\\Debug\\SpecularPreFilter.ps.cso", graphics);
-    brdfIntegrateShader = std::make_unique<Shader>(L"C:\\WoMAengine2023\\PPG-master\\Bin\\Debug\\Fullscreen.vs.cso", L"C:\\WoMAengine2023\\PPG-master\\Bin\\Debug\\IntegrateBRDF.ps.cso", graphics);
+    shader = std::make_unique<Shader>(L"C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\Skybox.vs.cso", L"C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\Skybox.ps.cso", graphics);
+    cubeToEnvMapShader = std::make_unique<Shader>(L"C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\Skybox.vs.cso", L"C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\IrradianceMap.ps.cso", graphics);
+    prefilterShader = std::make_unique<Shader>(L"C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\Skybox.vs.cso", L"C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\SpecularPreFilter.ps.cso", graphics);
+    brdfIntegrateShader = std::make_unique<Shader>(L"C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\Fullscreen.vs.cso", L"C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\IntegrateBRDF.ps.cso", graphics);
 
     WCHAR ext[_MAX_EXT];
     _wsplitpath_s(fileName, nullptr, 0, nullptr, 0, nullptr, 0, ext, _MAX_EXT);
@@ -56,7 +56,7 @@ SkyboxPass::SkyboxPass(Graphics& graphics, Texture& renderTarget, const LPCWSTR&
     else
     {
         skyboxTexture = std::unique_ptr<Texture>(Texture::LoadTextureFromPath(graphics, fileName));
-        rectToCubeMapShader = std::make_unique<Shader>(L"C:\\WoMAengine2023\\PPG-master\\Bin\\Debug\\Skybox.vs.cso", L"C:\\WoMAengine2023\\PPG-master\\Bin\\Debug\\RectToCubeMap.ps.cso", graphics);
+        rectToCubeMapShader = std::make_unique<Shader>(L"C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\Skybox.vs.cso", L"C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\RectToCubeMap.ps.cso", graphics);
         skyboxCubeMap = std::unique_ptr<Texture>(Texture::CreateTextureCube(
             graphics, m_CubeMapSize, "Cube Map", DXGI_FORMAT_R16G16B16A16_FLOAT, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE));
         skyboxCubeMap->CreateSRV(graphics, DXGI_FORMAT_R16G16B16A16_FLOAT, D3D11_SRV_DIMENSION_TEXTURECUBE);

@@ -11,7 +11,7 @@
 SpritePass::SpritePass(Graphics& graphics, Texture& renderTarget) :
     m_RenderTarget(renderTarget)
 {
-    m_Shader = std::make_unique<Shader>(L"C:\\WoMAengine2023\\PPG-master\\Bin\\Debug\\VertexShader.cso", L"C:\\WoMAengine2023\\PPG-master\\Bin\\Debug\\Sprite.ps.cso", graphics);
+    m_Shader = std::make_unique<Shader>(L"C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\VertexShader.cso", L"C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\Sprite.ps.cso", graphics);
     m_QuadMesh = std::make_unique<Mesh>(QuadVertices(), QuadIndices(), graphics);
 
     D3D11_DEPTH_STENCIL_DESC depthStencilStateDesc;
