@@ -62,11 +62,11 @@
     <ClInclude Include="..\core\include\OSengine.h" />
     <ClInclude Include="..\core\include\OSmain_dir.h" />
     <ClInclude Include="..\core\include\platform.h" />
-    <ClInclude Include="..\core\include\ProcessorInfo.h" />
+    <ClInclude Include="..\core\include\processorInfo.h" />
     <ClInclude Include="..\core\include\standard_platform.h" />
     <ClInclude Include="..\core\include\stateMachine.h" />
     <ClInclude Include="..\core\include\SystemClass.h" />
-    <ClInclude Include="..\core\include\SystemFeatures.h" />
+    <ClInclude Include="..\core\include\systemFeatures.h" />
     <ClInclude Include="..\core\include\systemManager.h" />
     <ClInclude Include="..\core\include\timerClass.h" />
     <ClInclude Include="..\core\include\TrigonometryMathClass.h" />

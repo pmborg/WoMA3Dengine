@@ -59,11 +59,11 @@
     <ClInclude Include="..\include\OSengine.h" />
     <ClInclude Include="..\include\OSmain_dir.h" />
     <ClInclude Include="..\include\platform.h" />
-    <ClInclude Include="..\include\ProcessorInfo.h" />
+    <ClInclude Include="..\include\processorInfo.h" />
     <ClInclude Include="..\include\standard_platform.h" />
     <ClInclude Include="..\include\stateMachine.h" />
     <ClInclude Include="..\include\SystemClass.h" />
-    <ClInclude Include="..\include\SystemFeatures.h" />
+    <ClInclude Include="..\include\systemFeatures.h" />
     <ClInclude Include="..\include\systemManager.h" />
     <ClInclude Include="..\include\timerClass.h" />
     <ClInclude Include="..\include\TrigonometryMathClass.h" />

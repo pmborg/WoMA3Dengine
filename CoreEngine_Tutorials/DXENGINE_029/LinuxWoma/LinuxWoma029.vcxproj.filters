@@ -445,10 +445,10 @@
     <ClInclude Include="..\core\include\fileLoader.h">
       <Filter>src\CoreEngine_003</Filter>
     </ClInclude>
-    <ClInclude Include="..\core\include\SystemFeatures.h">
+    <ClInclude Include="..\core\include\systemFeatures.h">
       <Filter>src\CoreEngine_004</Filter>
     </ClInclude>
-    <ClInclude Include="..\core\include\ProcessorInfo.h">
+    <ClInclude Include="..\core\include\processorInfo.h">
       <Filter>src\CoreEngine_004</Filter>
     </ClInclude>
     <ClInclude Include="..\core\include\systemManager.h">

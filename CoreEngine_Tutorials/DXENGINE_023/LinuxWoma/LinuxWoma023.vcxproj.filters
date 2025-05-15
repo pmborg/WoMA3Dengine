@@ -445,7 +445,7 @@
     <ClInclude Include="..\core\include\platform.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\core\include\ProcessorInfo.h">
+    <ClInclude Include="..\core\include\processorInfo.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="..\core\linux\include\Rinputclass.h">
@@ -460,7 +460,7 @@
     <ClInclude Include="..\core\include\SystemClass.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\core\include\SystemFeatures.h">
+    <ClInclude Include="..\core\include\systemFeatures.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="..\core\include\systemManager.h">

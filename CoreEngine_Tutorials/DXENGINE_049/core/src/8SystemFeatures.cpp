@@ -19,7 +19,7 @@
 //WomaIntegrityCheck = 1234567155;
 
 #include "WinSystemClass.h"
-#include "SystemFeatures.h"
+#include "systemFeatures.h"
 #include "processorInfo.h"
 
 SystemFeatures::SystemFeatures()

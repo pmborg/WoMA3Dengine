@@ -64,7 +64,7 @@
     <ClInclude Include="..\include\standard_platform.h" />
     <ClInclude Include="..\include\stateMachine.h" />
     <ClInclude Include="..\include\SystemClass.h" />
-    <ClInclude Include="..\include\SystemFeatures.h" />
+    <ClInclude Include="..\include\systemFeatures.h" />
     <ClInclude Include="..\include\systemManager.h" />
     <ClInclude Include="..\include\timerClass.h" />
     <ClInclude Include="..\include\TrigonometryMathClass.h" />

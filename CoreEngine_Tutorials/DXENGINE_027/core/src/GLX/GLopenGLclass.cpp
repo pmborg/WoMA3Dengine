@@ -24,6 +24,7 @@
 //		glesOpenGLClass.cpp		OpenGL ES 2.0 --> API "Android 2.2++"
 //
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567155;
 
 #include "platform.h"
 #if (defined OPENGL3 || defined OPENGL4) && DX_ENGINE_LEVEL >= 19 
@@ -46,7 +47,7 @@ GLmathClass* mathClass;
 GLopenGLclass::GLopenGLclass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567155;
+	
 
 	mathClass = NULL;
 	_tcscpy_s(driverName, TEXT("GL3+")); // driverName = TEXT ("GL3+");

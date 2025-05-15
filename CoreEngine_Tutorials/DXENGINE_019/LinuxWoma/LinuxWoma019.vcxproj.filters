@@ -58,7 +58,7 @@
     <ClInclude Include="..\core\include\platform.h">
       <Filter>Include</Filter>
     </ClInclude>
-    <ClInclude Include="..\core\include\ProcessorInfo.h">
+    <ClInclude Include="..\core\include\processorInfo.h">
       <Filter>Include</Filter>
     </ClInclude>
     <ClInclude Include="..\core\include\standard_platform.h">
@@ -70,7 +70,7 @@
     <ClInclude Include="..\core\include\SystemClass.h">
       <Filter>Include</Filter>
     </ClInclude>
-    <ClInclude Include="..\core\include\SystemFeatures.h">
+    <ClInclude Include="..\core\include\systemFeatures.h">
       <Filter>Include</Filter>
     </ClInclude>
     <ClInclude Include="..\core\include\systemManager.h">

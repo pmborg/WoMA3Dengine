@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------------------------
-// Filename: ProcessorInfo.h
+// Filename: processorInfo.h
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
@@ -19,7 +19,7 @@
 //WomaIntegrityCheck = 1234567155;
 #pragma once
 
-#include "platform.h"	// TCHAR
+#include "platform.h"	// TCHAR    
 #include "main.h"		// TCHAR
 
 #if defined WINDOWS_PLATFORM
