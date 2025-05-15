@@ -18,7 +18,7 @@
 //WomaIntegrityCheck = 1234567142;
 
 #pragma once
-
+#ifndef __AndroidNewSystemClass_H__
 #include "SystemClass.h"
 
 class AndroidNewSystemClass : public SystemClass
@@ -33,6 +33,4 @@ public:
 	int APPLICATION_MAIN_LOOP();
 };
 
-//#if defined WINDOWS_PLATFORM && !defined ANDROID_PLATFORM
-//&& !defined NewWomaEngine
-
+#endif

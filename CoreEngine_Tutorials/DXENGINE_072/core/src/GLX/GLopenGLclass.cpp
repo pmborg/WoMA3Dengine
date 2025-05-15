@@ -37,7 +37,7 @@
 #if defined ANDROID_PLATFORM
 #if defined GLES2 && USE_GL_GLCOREARB
 #include "GLES2/gl2ext.h"
-#include "C:\WoMAengine2023\ExternalTools\GL3Plus\GL\glcorearb.h"
+#include "C:\WoMA3Dengine\ThirdParty\GL3Plus\GL\glcorearb.h"
 #endif
 #endif
 

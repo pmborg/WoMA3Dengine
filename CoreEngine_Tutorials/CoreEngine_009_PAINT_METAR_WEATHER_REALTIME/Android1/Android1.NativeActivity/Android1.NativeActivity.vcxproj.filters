@@ -22,9 +22,6 @@
     <ClInclude Include="android_native_app_glue.h">
       <Filter>ANDROID</Filter>
     </ClInclude>
-    <ClInclude Include="AndroidNewSystemClass.h">
-      <Filter>Include\000</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\language.h">
       <Filter>Include\001</Filter>
     </ClInclude>

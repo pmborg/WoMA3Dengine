@@ -57,9 +57,6 @@
       <Filter>ANDROID</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\main.cpp" />
-    <ClCompile Include="AndroidNewSystemClass.c">
-      <Filter>ANDROID</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.cpp">
       <Filter>LIB_tinyxml2</Filter>
     </ClCompile>
@@ -87,6 +84,7 @@
     <ClCompile Include="..\..\core\src\xml_settings_loader.cpp" />
     <ClCompile Include="..\..\core\src\xml_settings_saver.cpp" />
     <ClCompile Include="..\..\core\src\OSengine.cpp" />
+    <ClCompile Include="..\..\core\Android1\Android1.NativeActivity\AndroidNewSystemClass.c" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Include">

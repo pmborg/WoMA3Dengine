@@ -253,7 +253,6 @@
     <ClInclude Include="..\..\include\woma_exception.h" />
     <ClInclude Include="..\..\include\woma_macros.h" />
     <ClInclude Include="..\..\include\xml_loader.h" />
-    <ClInclude Include="AndroidNewSystemClass.h" />
     <ClInclude Include="..\..\..\tech-level.h" />
     <ClInclude Include="..\..\..\woma_engine_assets.h" />
     <ClInclude Include="Android.h" />
