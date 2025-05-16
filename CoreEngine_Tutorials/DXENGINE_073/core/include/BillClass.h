@@ -23,7 +23,7 @@
 // INCLUDES //
 //////////////
 #include "OSengine.h"
-#include "WomaDriverClass.h"
+#include "womadriverclass.h"
 #include "virtualModelClass.h"
 #include "xml_loader.h"
 #include "Tree.h"

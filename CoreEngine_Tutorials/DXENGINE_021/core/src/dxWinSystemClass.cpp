@@ -23,7 +23,7 @@
 #include "mem_leak.h"
 #if defined WINDOWS_PLATFORM
 #include "dxWinSystemClass.h"
-#include "WomaDriverClass.h"
+#include "womadriverclass.h"
 #include "packManager.h"
 #include "OSmain_dir.h"
 #include "fileLoader.h"
@@ -38,7 +38,7 @@
 	#include "Dx12Class.h"
   #endif
   #if defined OPENGL3
-	#include "WomaDriverClass.h"	//woma
+	#include "womadriverclass.h"	//woma
 	#include "GLmathClass.h"		//woma	
 	#include "GLopenGLclass.h"		//woma
     #if defined WINDOWS_PLATFORM

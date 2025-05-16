@@ -24,7 +24,7 @@
 #include "OSengine.h"
 #include "mem_leak.h"
 
-#include "WomaDriverClass.h"
+#include "womadriverclass.h"
 #include "GLmathClass.h"
 #include "GLopenGLclass.h"
 #include "GLmodelClass.h"

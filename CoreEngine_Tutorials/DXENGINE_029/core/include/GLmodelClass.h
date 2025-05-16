@@ -29,7 +29,7 @@
 #include "GLmathClass.h"
 
 #include "fileLoader.h"
-#include "GLTextureClass.h"
+#include "glTextureclass.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: GLmodelClass

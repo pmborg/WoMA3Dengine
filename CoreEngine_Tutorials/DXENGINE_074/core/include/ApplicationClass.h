@@ -59,7 +59,7 @@
 #endif
 
 #if CORE_ENGINE_LEVEL >= 10 && !defined NewWomaEngine //#if DX_ENGINE_LEVEL >= 19 && !defined NewWomaEngine
-#include "WomaDriverClass.h"
+#include "womadriverclass.h"
 #endif
 
 #include "AutoGenTerrain.h"			

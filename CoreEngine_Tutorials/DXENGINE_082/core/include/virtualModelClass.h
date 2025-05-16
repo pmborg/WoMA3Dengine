@@ -57,7 +57,7 @@ enum PRIMITIVE_TOPOLOGY
 };
 
 #include "main.h"
-#include "WomaDriverClass.h"
+#include "womadriverclass.h"
 #include "vertexTypes.h"
 #include "GLmathClass.h"
 

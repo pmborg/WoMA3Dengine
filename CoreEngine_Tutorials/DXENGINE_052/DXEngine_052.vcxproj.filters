@@ -500,9 +500,6 @@
     <ClCompile Include="core\src\2UpdateOSifNeeded.cpp">
       <Filter>src-basic-level\core\004-CheckSystem</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\3CheckSetup.cpp">
-      <Filter>src-basic-level\core\004-CheckSystem</Filter>
-    </ClCompile>
     <ClCompile Include="core\src\4CheckEngineUpdates.cpp">
       <Filter>src-basic-level\core\004-CheckSystem</Filter>
     </ClCompile>

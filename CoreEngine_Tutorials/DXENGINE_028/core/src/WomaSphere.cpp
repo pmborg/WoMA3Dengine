@@ -24,7 +24,7 @@
 #include "ApplicationClass.h"
 #include "Math3D.h"
 #include "mem_leak.h"
-#include "WomaDriverClass.h"	//woma
+#include "womadriverclass.h"	//woma
 #include "GLmodelClass.h"
 #if (defined DX_ENGINE)
 #include "dxWinSystemClass.h"

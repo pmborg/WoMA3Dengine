@@ -50,7 +50,7 @@
 #include <DxErr.h>
 #pragma comment(lib, "dxerr.lib")
 
-#include "WomaDriverClass.h"
+#include "womadriverclass.h"
 
 	#include "DXcameraClass.h"
 

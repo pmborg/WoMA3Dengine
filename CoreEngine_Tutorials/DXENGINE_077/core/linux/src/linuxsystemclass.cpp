@@ -37,7 +37,7 @@
 
 #include "fileLoader.h"
 
-	#include "WomaDriverClass.h"
+	#include "womadriverclass.h"
 
 	#include <math.h>
 	#include "GLmathClass.h"

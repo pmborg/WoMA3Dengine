@@ -30,7 +30,7 @@
 #if (defined OPENGL3 || defined OPENGL4) && DX_ENGINE_LEVEL >= 19 
 #include "mem_leak.h"
 #include "stateMachine.h"
-#include "WomaDriverClass.h"
+#include "womadriverclass.h"
 #include "OSengine.h"
 #include "GLmathClass.h"
 #include "GLopenGLclass.h"

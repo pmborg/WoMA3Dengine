@@ -105,7 +105,7 @@ using namespace DirectX;
 #include <vector>
 #include <sstream> // to allow: fileTmp = "data/" + fileTmp;
 
-#include "WomaDriverClass.h"
+#include "womadriverclass.h"
 
 #ifdef _DEBUG
 	#include "DXGIDebug.h"

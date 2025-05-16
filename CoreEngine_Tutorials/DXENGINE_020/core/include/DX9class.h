@@ -50,7 +50,7 @@
 #include <DxErr.h>
 #pragma comment(lib, "dxerr.lib")
 
-#include "WomaDriverClass.h"
+#include "womadriverclass.h"
 
 #if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader1 // Color Shader
 	#include "DXcameraClass.h"

@@ -28,7 +28,7 @@
 #include "platform.h"
 #include "Math3D.h"
 #include "vertexTypes.h"
-#include "WomaDriverClass.h"
+#include "womadriverclass.h"
 #include "virtualModelClass.h"
 
 #if DX_ENGINE_LEVEL >= 60 && defined USE_TERRAIN_TUTORIAL_CHAP_24

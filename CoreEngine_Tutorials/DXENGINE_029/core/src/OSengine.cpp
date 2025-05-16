@@ -57,7 +57,7 @@
 #endif
 
 #if CORE_ENGINE_LEVEL >= 10 && !defined NewWomaEngine
-	#include "WomaDriverClass.h"
+	#include "womadriverclass.h"
 	#include "GLmathClass.h"
 	#include "GLopenGLclass.h"
 #endif

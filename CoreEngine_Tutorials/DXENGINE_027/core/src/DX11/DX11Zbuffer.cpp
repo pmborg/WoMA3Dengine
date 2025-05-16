@@ -28,7 +28,7 @@
 #endif
 
 #if defined DX11 || defined DX9
-#include "WomaDriverClass.h"
+#include "womadriverclass.h"
 
 #include "dx11Class.h"
 

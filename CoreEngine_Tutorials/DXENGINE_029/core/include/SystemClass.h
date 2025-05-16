@@ -64,7 +64,7 @@ typedef struct {
 #endif
 
 #if DX_ENGINE_LEVEL >= 19 && !defined NewWomaEngine
-#include "WomaDriverClass.h"
+#include "womadriverclass.h"
 #endif
 
 #include "playerClass.h"

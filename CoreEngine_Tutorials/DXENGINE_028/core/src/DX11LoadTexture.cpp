@@ -21,7 +21,7 @@
 #include "platform.h"
 #if (defined DX11 && DX_ENGINE_LEVEL >= 22) // Texturing
 #include "OSengine.h"
-#include "WomaDriverClass.h"
+#include "womadriverclass.h"
 #include "dx11Class.h"
 #include "winsystemclass.h"	// SystemHandle
 #include "fileLoader.h"

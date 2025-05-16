@@ -24,7 +24,7 @@
 #include "DXengine.h"
 #endif
 
-#include "WomaDriverClass.h"
+#include "womadriverclass.h"
 #include "GLmathClass.h"
 #include "GLopenGLclass.h"
 
@@ -39,10 +39,10 @@
 #include "packManager.h"
 #include "idea.h"
 
-#include "WomaDriverClass.h"
+#include "womadriverclass.h"
 #include "dxWinSystemClass.h"
 #if defined OPENGL3
-#include "WomaDriverClass.h"	//woma
+#include "womadriverclass.h"	//woma
 #include "GLmathClass.h"		//woma	
 #include "GLopenGLclass.h"		//woma
 #if defined WINDOWS_PLATFORM

@@ -24,7 +24,7 @@
 #ifdef USE_RASTERTEK_TEXT_FONT
 
 #include "main.h"
-#include "WomaDriverClass.h"
+#include "womadriverclass.h"
 #include "vertexTypes.h"
 
 ////////////////////////////////////////////////////////////////////////////////

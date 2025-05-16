@@ -229,7 +229,7 @@ WDDM 2.0->Windows 10				Display Drivers or Creates a DXGI 1.4
 #include <vector>
 #include <sstream> // to allow: fileTmp = "data/" + fileTmp;
 
-#include "WomaDriverClass.h"
+#include "womadriverclass.h"
 
 #ifdef _DEBUG
 	#include "DXGIDebug.h"

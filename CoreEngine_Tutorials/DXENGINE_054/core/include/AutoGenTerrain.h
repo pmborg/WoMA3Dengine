@@ -28,7 +28,7 @@
 #include "platform.h"
 #include "Math3D.h"
 #include "vertexTypes.h"
-#include "WomaDriverClass.h"
+#include "womadriverclass.h"
 #include "virtualModelClass.h"
 
 		#define terrain_squares 256

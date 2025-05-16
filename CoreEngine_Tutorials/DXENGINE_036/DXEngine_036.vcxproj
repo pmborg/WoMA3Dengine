@@ -135,7 +135,6 @@
     <ClCompile Include="core\src\0CheckOS.cpp" />
     <ClCompile Include="core\src\1CheckSYS.cpp" />
     <ClCompile Include="core\src\2UpdateOSifNeeded.cpp" />
-    <ClCompile Include="core\src\3CheckSetup.cpp" />
     <ClCompile Include="core\src\4CheckEngineUpdates.cpp" />
     <ClCompile Include="core\src\5LaunchEngine.cpp" />
     <ClCompile Include="core\src\7ProcessorInfo.cpp" />

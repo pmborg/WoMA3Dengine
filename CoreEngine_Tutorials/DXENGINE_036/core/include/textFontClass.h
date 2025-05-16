@@ -56,7 +56,7 @@ using namespace std;
 #endif
 #endif
 
-#include "GLTextureClass.h"
+#include "glTextureclass.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: textFontClass

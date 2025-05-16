@@ -197,9 +197,6 @@
     <ClCompile Include="core\src\2UpdateOSifNeeded.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\3CheckSetup.cpp">
-      <Filter>core\src</Filter>
-    </ClCompile>
     <ClCompile Include="core\src\4CheckEngineUpdates.cpp">
       <Filter>core\src</Filter>
     </ClCompile>

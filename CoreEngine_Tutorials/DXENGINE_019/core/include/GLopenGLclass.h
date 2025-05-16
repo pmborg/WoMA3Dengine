@@ -82,7 +82,7 @@
 	#include "GLcameraClass.h"
 #endif
 
-#include "WomaDriverClass.h"	//woma
+#include "womadriverclass.h"	//woma
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: GLopenGLclass

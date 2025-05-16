@@ -24,7 +24,7 @@
 #include "WinSystemClass.h"
 #include "dxWinSystemClass.h"
 #endif
-#include "WomaDriverClass.h"
+#include "womadriverclass.h"
 #include "GLmathClass.h"
 #include "GLopenGLclass.h"
 

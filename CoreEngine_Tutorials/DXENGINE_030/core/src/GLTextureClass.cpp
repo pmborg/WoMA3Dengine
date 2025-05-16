@@ -15,10 +15,10 @@
 
 #if (defined OPENGL3 || defined OPENGL4) && DX_ENGINE_LEVEL >= 22
 #include "OSengine.h"
-#include "WomaDriverClass.h"
+#include "womadriverclass.h"
 #include "GLmathClass.h"
 #include "GLopenGLclass.h"
-#include "GLTextureClass.h"
+#include "glTextureclass.h"
 #include "log.h"
 
 

@@ -31,7 +31,7 @@
 	#pragma warning( disable : 4324 )
 	#include <DirectXMath.h> //#include <xnamath.h>
 
-	#include "WomaDriverClass.h"
+	#include "womadriverclass.h"
 #endif
 
 #if defined DX11 || defined DX9

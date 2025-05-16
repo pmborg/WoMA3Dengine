@@ -30,7 +30,7 @@
 
 #if  DX_ENGINE_LEVEL >= 22 || defined USE_VIEW2D_SPRITES
 #include "fileLoader.h"
-#include "GLTextureClass.h"
+#include "glTextureclass.h"
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////

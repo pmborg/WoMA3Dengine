@@ -39,7 +39,7 @@ extern RApplicationClass* r_Application;
 #include "Dx12Class.h"
 #endif
 #if (defined OPENGL3 || defined OPENGL4)
-#include "WomaDriverClass.h"	//woma
+#include "womadriverclass.h"	//woma
 #include "GLmathClass.h"		//woma	
 #include "GLopenGLclass.h"		//woma
 #if defined WINDOWS_PLATFORM
