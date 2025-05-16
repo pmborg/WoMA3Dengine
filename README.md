@@ -49,7 +49,11 @@ Try to Change the driver on the fly without the need of close and open the Appli
 
 - <b>DX82: ASSIMP: Loading an animated mesh:</b><br>
  
+<b>DEBUG VERSION:</b>
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_082.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_082.png)	
+
+<b>RELEASE VERSION - about 1070 FPS:</b>
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_082.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_082-RELEASE.png)	
 
 <hr>
 <h2>3D - ADVANCED MESH TUTORIAL SERIES: END</h2>
