@@ -135,7 +135,7 @@ void ApplicationTextClass::SetInfoB(float rotX, float rotY, float rotZ)
 }
 #endif
 
-#if TUTORIAL_CHAP >= 60 // BILLBOARD
+#if TUTORIAL_CHAP >= 60 && _DEBUG // BILLBOARD
 //10
 void ApplicationTextClass::SetBillRenderCount(int count)
 {
@@ -147,7 +147,7 @@ void ApplicationTextClass::SetBillRenderCount(int count)
 }
 #endif
 
-#if TUTORIAL_CHAP >= 85
+#if TUTORIAL_CHAP >= 85 && _DEBUG
 //09
 void ApplicationTextClass::SetLoboRenderCount(int count)
 {

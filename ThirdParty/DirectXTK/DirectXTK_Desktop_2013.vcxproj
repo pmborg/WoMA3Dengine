@@ -263,9 +263,9 @@
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>Bin\Desktop_2013\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>Bin\Desktop_2013\$(Platform)\$(Configuration)\</IntDir>
-    <TargetName>DirectXTK</TargetName>
+    <OutDir>$(SolutionDir)/Libs/$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

@@ -135,6 +135,7 @@ void ApplicationTextClass::SetInfoB(float rotX, float rotY, float rotZ)
 }
 #endif
 
+#if DX_ENGINE_LEVEL >= 30 && _DEBUG
 //08
 void ApplicationTextClass::SetRenderCount(int Count, int compoundCount, UINT totalCompoundLoaded)
 {
@@ -147,8 +148,9 @@ void ApplicationTextClass::SetRenderCount(int Count, int compoundCount, UINT tot
 	// Update the sentence vertex buffer with the new string information:
 	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_TERRAINRENDERCOUNT], countString, 10, 100, 0.0f, 0.5f, 1.0f));
 }
+#endif
 
-#if TUTORIAL_CHAP >= 60 // BILLBOARD
+#if TUTORIAL_CHAP >= 60 && _DEBUG // BILLBOARD
 //10
 void ApplicationTextClass::SetBillRenderCount(int count)
 {
@@ -160,7 +162,7 @@ void ApplicationTextClass::SetBillRenderCount(int count)
 }
 #endif
 
-#if TUTORIAL_CHAP >= 85
+#if TUTORIAL_CHAP >= 85 && _DEBUG
 //09
 void ApplicationTextClass::SetLoboRenderCount(int count)
 {

@@ -112,7 +112,7 @@ bool SystemManager::checkCPU ()
 	processorInfo.cpuCores.GetProcessorInformation();
 #endif
 
-	#if defined RELEASE && !defined ANDROID_PLATFORM
+	#if defined NDEBUG && !defined ANDROID_PLATFORM
     if (processorInfo.cpuCores.processorCoreCount <= 1)
         WomaMessageBox(TEXT("CPU CORE WARNING: Your Processor just have 1 core, this application will run very slow!\n"));
 	#endif
@@ -159,7 +159,7 @@ bool SystemManager::checkCPU ()
     CPUSpeedMHz = (float) atof(Token.c_str()); //clockSpeed in GHz
 #endif
 
-#if defined RELEASE && !defined ANDROID_PLATFORM
+#if defined NDEBUG && !defined ANDROID_PLATFORM
     if (CPUSpeedMHz < 2)
         WomaMessageBox(TEXT("CPU WARNING: Your Processor is slow (< 2GHz), this application will run very slow also!\n"));
 #endif

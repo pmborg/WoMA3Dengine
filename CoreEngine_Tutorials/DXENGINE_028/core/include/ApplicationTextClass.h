@@ -70,32 +70,32 @@ public:
 		void SetScreenToShow(UINT screenToShow, UINT render_page);
 	#endif
 
-    #if TUTORIAL_PRE_CHAP >= 12
+    #if TUTORIAL_PRE_CHAP >= 12 && _DEBUG
     void SetCompoundPosition(WCHAR *file, float dist, UINT, float, float, float, float scale);
     #endif
 
-	#if DX_ENGINE_LEVEL >= 30
+	#if DX_ENGINE_LEVEL >= 30 && _DEBUG
     void SetRenderCount(int terrainCount, int compoundCount, UINT totalCompoundLoaded);
 	#endif
 
-	#if TUTORIAL_PRE_CHAP >= 14
+	#if TUTORIAL_PRE_CHAP >= 14 && _DEBUG
 	void SetLoboRenderCount(int count);
 	#endif
 
-#if TUTORIAL_CHAP >= 60 // BILLBOARD
+#if TUTORIAL_CHAP >= 60 && _DEBUG // BILLBOARD
 	void SetBillRenderCount(int count);
 	#endif
 
-	#if TUTORIAL_PRE_CHAP >= 63
+	#if TUTORIAL_PRE_CHAP >= 63 && _DEBUG
 	void SetXP(UINT XP, UINT maxXP, float percent);
 	void SetGold(float gold);
 	#endif
 
-	#if TUTORIAL_PRE_CHAP >= 90
+	#if TUTORIAL_PRE_CHAP >= 90 && _DEBUG
 	void SetLatency(int latency);
 	#endif
 
-	#if TUTORIAL_PRE_CHAP >= 200
+	#if TUTORIAL_PRE_CHAP >= 200 && _DEBUG
 	//TextClass now has a new function for setting the data to print out.
 	void SetVideoCardInfo(char*, int);
 	void SetMousePosition(int mouseX, int mouseY, LONG mouseMovement);

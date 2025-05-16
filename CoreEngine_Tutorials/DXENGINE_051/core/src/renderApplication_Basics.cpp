@@ -718,7 +718,7 @@ if (AppTextClass) {
 	#endif
 #endif
 
-#if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER
+#if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && _DEBUG
 	AppTextClass->SetRenderCount(WOMA::sceneManager->quadTree.totalVertexRendered,
 		SystemHandle->m_Application->totalRendered,
 		(UINT)SystemHandle->xml_loader.theWorld.size());

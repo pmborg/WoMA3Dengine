@@ -23,66 +23,66 @@
 #include<D3D11.h>
 //SELECT DXGI DX11 version:
 #if defined DX11 || defined DX9
-	#include<D3D11.h>
+    #include<D3D11.h>
     #if defined WIN10
         #define DXGI1_6	// DX11: Target For: Oct 10, 2017 - WINDOWS 10.0.15063
-	#elif defined WIN6x
-		#define DXGI1_3	// DX10: Target For: Vista (for drivers WDDM 1.0 specification)
-	#elif D3D11_SPEC_DATE_YEAR == 2009
-		#define DXGI1_1				//SDK: C:\WoMAengine2014\Microsoft_DirectX_SDK_June_2010
-			// WINDOWS VISTA (SP2):
-			//- Support for synchronized shared surfaces
-			//- Support for high color
-			//- Support for maximum frame latency control
-			//- Support for adapter enumeration ordering: IDXGIFactory1::EnumAdapters1
-			//- Support for BGRA format
+    #elif defined WIN6x
+        #define DXGI1_3	// DX10: Target For: Vista (for drivers WDDM 1.0 specification)
+    #elif D3D11_SPEC_DATE_YEAR == 2009
+        #define DXGI1_1				//SDK: C:\WoMAengine2014\Microsoft_DirectX_SDK_June_2010
+            // WINDOWS VISTA (SP2):
+            //- Support for synchronized shared surfaces
+            //- Support for high color
+            //- Support for maximum frame latency control
+            //- Support for adapter enumeration ordering: IDXGIFactory1::EnumAdapters1
+            //- Support for BGRA format
 
-		//https://learn.microsoft.com/en-us/windows-hardware/drivers/other-wdk-downloads
-		//https://github.com/toivjon/dxgi-sandbox
-		//https://github.com/apitrace/dxsdk
-		//SDK10+: C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\um\d3d11.h
+        //https://learn.microsoft.com/en-us/windows-hardware/drivers/other-wdk-downloads
+        //https://github.com/toivjon/dxgi-sandbox
+        //https://github.com/apitrace/dxsdk
+        //SDK10+: C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\um\d3d11.h
 
-		#define DXGI1_2 //Nov 29, 2013 -  WINDOWS 7 (PLATFORM UPDATE) / WINDOWS 8.0:
-			// Support for stereo swap chain
-			// Support for flip // model swap chain
-			// Support for desktop duplication
-			// Support for 16 bpp formats
-			// Support for debugging APIs
-			// Optimization of the use of video memory
-			// Optimization for presentations
-		
-		//#define DXGI1_3 //Sep 3, 2014 -  WINDOWS 8.1 SDK
-			// Support for DXGI adapter memory trim
-			// Support for multi // plane overlays
-			// Support for overlappingand scaled swap chains
-			// Support for selecting backbuffer subregion for swap chain
-			// Support for lower - latency swap chain presentation
+        #define DXGI1_2 //Nov 29, 2013 -  WINDOWS 7 (PLATFORM UPDATE) / WINDOWS 8.0:
+            // Support for stereo swap chain
+            // Support for flip // model swap chain
+            // Support for desktop duplication
+            // Support for 16 bpp formats
+            // Support for debugging APIs
+            // Optimization of the use of video memory
+            // Optimization for presentations
+        
+        //#define DXGI1_3 //Sep 3, 2014 -  WINDOWS 8.1 SDK
+            // Support for DXGI adapter memory trim
+            // Support for multi // plane overlays
+            // Support for overlappingand scaled swap chains
+            // Support for selecting backbuffer subregion for swap chain
+            // Support for lower - latency swap chain presentation
 
-		//#define DXGI1_4 //Aug 11, 2015 - WINDOWS 10.0.10240.0
-			// Support for cheaper adapter enumeration
-			// Support for video memory budget tracking
-			// Support for invariant backbuffer identity
-			// Support for alternate frame rendering(AFR)
-			// Fullscreen state no longer owns the display
+        //#define DXGI1_4 //Aug 11, 2015 - WINDOWS 10.0.10240.0
+            // Support for cheaper adapter enumeration
+            // Support for video memory budget tracking
+            // Support for invariant backbuffer identity
+            // Support for alternate frame rendering(AFR)
+            // Fullscreen state no longer owns the display
 
-		//#define DXGI1_5 //Oct 5, 2017 - WINDOWS 10.0.14393:
-			// Support for High Dynamic Range(HDR)
-			// Support for Wide Color Gamut(WCG)
-			// Support for flexibleand performant output duplication
-			// Support for offeringand reclaiming resources
+        //#define DXGI1_5 //Oct 5, 2017 - WINDOWS 10.0.14393:
+            // Support for High Dynamic Range(HDR)
+            // Support for Wide Color Gamut(WCG)
+            // Support for flexibleand performant output duplication
+            // Support for offeringand reclaiming resources
 
-		//#define DXGI1_6 //Oct 10, 2017 - WINDOWS 10.0.15063:
-			// Support for listening adapter enumeration change events
-			// Support for adapter enumeration ordering prefence
-			// Support for checking adapter synchronization object features
-			// Support for detecting HDR display detection
-	#endif
+        //#define DXGI1_6 //Oct 10, 2017 - WINDOWS 10.0.15063:
+            // Support for listening adapter enumeration change events
+            // Support for adapter enumeration ordering prefence
+            // Support for checking adapter synchronization object features
+            // Support for detecting HDR display detection
+    #endif
 #endif
 
 #include "main.h"
 
 #if defined DXGI1_3
-	#include "d3d11_3.h"
+    #include "d3d11_3.h"
 #endif
 
 #if defined DX11 || defined DX9
@@ -116,17 +116,17 @@ WDDM 2.0->Windows 10				Display Drivers or Creates a DXGI 1.4
 #endif
 
 #ifdef DXGI1_6
-	#include <dxgi1_6.h>
+    #include <dxgi1_6.h>
 #elif defined DXGI1_5
-	#include <dxgi1_5.h>
+    #include <dxgi1_5.h>
 #elif defined DXGI1_4
-	#include <dxgi1_4.h>
+    #include <dxgi1_4.h>
 #elif defined DXGI1_3
-	#include <dxgi1_3.h>
+    #include <dxgi1_3.h>
 #elif defined DXGI1_2	
-	#include <dxgi1_2.h>
+    #include <dxgi1_2.h>
 #else
-	#include <dxgi.h>
+    #include <dxgi.h>
 #endif
 
 // ----------------------------------------------------------------------------------------------
@@ -205,16 +205,14 @@ WDDM 2.0->Windows 10				Display Drivers or Creates a DXGI 1.4
 #include <d3d11.h>
 
 #if D3D11_SPEC_DATE_YEAR == 2009
-	//ON [VS2015 or VS2017 or VS2019] We will use the win10SDK (ALERT SYSTEM ONLY!) --> "D3D11_SPEC_DATE_YEAR = 2011"
-	#pragma warning( disable : 4324 )	// 4324: '': structure was padded due to __declspec(align())
-	#pragma warning( disable : 4838 )
-	#include <DirectXMath.h> //#include <xnamath.h>				//#include <d3dx10math.h>
-	#include <d3dx11tex.h>
-	#pragma comment(lib, "/WoMA3Dengine/ThirdParty/Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\d3dx11.lib")	// DONT NEED THIS AT WIN8 SDK BUT NEED WITH OLD JUN 2010 SDK
-	#pragma comment(lib, "/WoMA3Dengine/ThirdParty/Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\d3dx10.lib")	// DONT NEED THIS AT WIN8 SDK BUT NEED WITH OLD JUN 2010 SDK
+    //ON [VS2015 or VS2017 or VS2019] We will use the win10SDK (ALERT SYSTEM ONLY!) --> "D3D11_SPEC_DATE_YEAR = 2011"
+    #pragma warning( disable : 4324 )	// 4324: '': structure was padded due to __declspec(align())
+    #pragma warning( disable : 4838 )
+    #include <DirectXMath.h> //#include <xnamath.h>				//#include <d3dx10math.h>
+    #include <d3dx11tex.h>
 #else
-	#include <DirectXMath.h> 
-	using namespace DirectX;
+    #include <DirectXMath.h> 
+    using namespace DirectX;
 #endif
 
 #include <assert.h>
@@ -224,28 +222,26 @@ WDDM 2.0->Windows 10				Display Drivers or Creates a DXGI 1.4
 #include "womadriverclass.h"
 
 #ifdef _DEBUG
-	#include "DXGIDebug.h"
+    #include "DXGIDebug.h"
 #endif
 
 #if defined USE_DX_DRIVER_FONT// FONT v2
-	#include <D2D1.h>
-	#include <dwrite.h>
+    #include <D2D1.h>
+    #include <dwrite.h>
 
-	#ifdef X64
-		#pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\d3dx10.lib")
-		#pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\D3D10_1.lib")
-		#pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\D2D1.lib")
-		#pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\dwrite.lib")
-	#else                        
-		#pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x86\\d3dx10.lib")
-		#pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x86\\D3D10_1.lib")
-		#pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x86\\D2D1.lib")
-		#pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x86\\dwrite.lib")
-	#endif
+    #ifdef X64
+        #pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\d3dx10.lib")
+        #pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\D3D10_1.lib")
+        #pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\D2D1.lib")
+        #pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\dwrite.lib")
+    #else                        
+        #pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x86\\d3dx10.lib")
+        #pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x86\\D3D10_1.lib")
+        #pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x86\\D2D1.lib")
+        #pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x86\\dwrite.lib")
+    #endif
 
 #endif
-
-//extern ID3D11DeviceContext* g_deviceContext; // Also to Comunicate with DXUT
 
 #define	MaxTextSizes 24
 
@@ -253,12 +249,12 @@ namespace DirectX {
 
 struct DXTextLine
 {
-	int Xpos;
-	int Ypos;
-	STRING printText;
-	float R;
-	float G;
-	float B;
+    int Xpos;
+    int Ypos;
+    STRING printText;
+    float R;
+    float G;
+    float B;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -267,158 +263,158 @@ struct DXTextLine
 class DX11Class : public WomaDriverClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567155;
-	DX11Class();
-	~DX11Class();
+    UINT WomaIntegrityCheck = 1234567155;
+    DX11Class();
+    ~DX11Class();
 
-	void Initialize3DCamera();
-	bool Initialize(float* clearColor);	//bool Initialize();
-	void Finalize();
+    void Initialize3DCamera();
+    bool Initialize(float* clearColor);	//bool Initialize();
+    void Finalize();
 
-	bool OnInit(int g_USE_MONITOR, void* hwnd, int screenWidth, int screenHeight, UINT depthBits,
-				float screenDepth, float screenNear, BOOL msaa, bool vsync,
-				BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize);
-	void Shutdown();
-	void Shutdown2D();
+    bool OnInit(int g_USE_MONITOR, void* hwnd, int screenWidth, int screenHeight, UINT depthBits,
+                float screenDepth, float screenNear, BOOL msaa, bool vsync,
+                BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize);
+    void Shutdown();
+    void Shutdown2D();
 
-	void BeginScene(UINT monitorWindow);
-	void EndScene(UINT monitorWindow);
+    void BeginScene(UINT monitorWindow);
+    void EndScene(UINT monitorWindow);
     void ResetResource(UINT monitorWindow);
-	void OnDeviceLost();
-	void ClearDepthBuffer();
+    void OnDeviceLost();
+    void ClearDepthBuffer();
 
 #if defined USE_RASTERIZER_STATE
-	void SetRasterizerState(UINT cullMode, UINT fillMode);
+    void SetRasterizerState(UINT cullMode, UINT fillMode);
 #endif
-	//We now have two new function in the DX11Class for turning the Z buffer on and off when rendering 2D images:
-	void TurnZBufferOn();
-	void TurnZBufferOff();
+    //We now have two new function in the DX11Class for turning the Z buffer on and off when rendering 2D images:
+    void TurnZBufferOn();
+    void TurnZBufferOff();
 
 #if defined INTRO_DEMO || defined USE_ALPHA_BLENDING
-	bool CreateBlendState();
+    bool CreateBlendState();
 
-	//We have two new functions for turning on and off alpha blending:
-	void TurnOnAlphaBlending();
-	void TurnOffAlphaBlending();
+    //We have two new functions for turning on and off alpha blending:
+    void TurnOnAlphaBlending();
+    void TurnOffAlphaBlending();
 
-	//We have two new blending states:
-	ID3D11BlendState* m_alphaEnableBlendingState = NULL;	//m_alphaEnableBlendingState is for turning on alpha blending and 
-	ID3D11BlendState* m_alphaDisableBlendingState = NULL;	//m_alphaDisableBlendingState is for turning off alpha blending.
+    //We have two new blending states:
+    ID3D11BlendState* m_alphaEnableBlendingState = NULL;	//m_alphaEnableBlendingState is for turning on alpha blending and 
+    ID3D11BlendState* m_alphaDisableBlendingState = NULL;	//m_alphaDisableBlendingState is for turning off alpha blending.
 #endif
 
 #if defined USE_DX_DRIVER_FONT
-	std::vector<DXTextLine> allTextArray;
-	void addText(int Xpos, int Ypos, TCHAR* printText, float R, float G, float B);
-	void RenderDriverText();
+    std::vector<DXTextLine> allTextArray;
+    void addText(int Xpos, int Ypos, TCHAR* printText, float R, float G, float B);
+    void RenderDriverText();
 #endif
 
 #if defined ALLOW_PRINT_SCREEN_SAVE_PNG
-	ImageLoaderClass* CaptureScreenShot(int screenWidth, int screenHeight);
+    ImageLoaderClass* CaptureScreenShot(int screenWidth, int screenHeight);
 #endif
 
-	BOOL Check (int* Hi, int* low);
-	BOOL CheckAPIdriver (UINT USE_THIS_ADAPTER);
-	bool getModesList(int g_USE_MONITOR, int screenWidth, int screenHeight, BOOL fullscreen, UINT* numerator, UINT* denominator);
+    BOOL Check (int* Hi, int* low);
+    BOOL CheckAPIdriver (UINT USE_THIS_ADAPTER);
+    bool getModesList(int g_USE_MONITOR, int screenWidth, int screenHeight, BOOL fullscreen, UINT* numerator, UINT* denominator);
 
-	void SelectDepthFormat(UINT depthBits, BOOL fullscreen);
+    void SelectDepthFormat(UINT depthBits, BOOL fullscreen);
 
-	bool Resize (int screenWidth, int screenHeight,float screenNear, float screenDepth, BOOL fullscreen, UINT depthBits);
-	void DeleteViewBuffers();
-	void SetCamera2D();
+    bool Resize (int screenWidth, int screenHeight,float screenNear, float screenDepth, BOOL fullscreen, UINT depthBits);
+    void DeleteViewBuffers();
+    void SetCamera2D();
 
-	//void ResetViewport();
-	void SetBackBufferRenderTarget(UINT monitorWindow);
+    //void ResetViewport();
+    void SetBackBufferRenderTarget(UINT monitorWindow);
 
-	XMMATRIX* GetViewMatrix( UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix);
-	XMMATRIX* GetProjectionMatrix( UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix);
+    XMMATRIX* GetViewMatrix( UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix);
+    XMMATRIX* GetProjectionMatrix( UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix);
 
 #if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
-	// 3D
-	XMMATRIX m_projectionMatrix = {};
+    // 3D
+    XMMATRIX m_projectionMatrix = {};
     XMMATRIX m_projectionMatrix_sky = {};
-	void GetProjectionMatrix(XMMATRIX&);
+    void GetProjectionMatrix(XMMATRIX&);
 
     //We need to setup our ProjectionMatrix (21) and OrthoMatrix (CH07)
-	void setProjectionMatrixWorldMatrixOrthoMatrix (int screenWidth, int screenHeight,float screenNear, float screenDepth);
+    void setProjectionMatrixWorldMatrixOrthoMatrix (int screenWidth, int screenHeight,float screenNear, float screenDepth);
 #endif
 
-	// Public: ------------------------------------------------------------------------
-	// VARS:
-	// --------------------------------------------------------------------------------
+    // Public: ------------------------------------------------------------------------
+    // VARS:
+    // --------------------------------------------------------------------------------
 #if _DEBUG
-	IDXGIDebug* debugDev = NULL;
+    IDXGIDebug* debugDev = NULL;
 #endif
 
-	bool dx11_force_dx9=false;
+    bool dx11_force_dx9=false;
 
-	D3D_FEATURE_LEVEL featureLevel_ = D3D_FEATURE_LEVEL_11_0;	// OUTPUT: (createDevice) The address of the feature level that was selected
+    D3D_FEATURE_LEVEL featureLevel_ = D3D_FEATURE_LEVEL_11_0;	// OUTPUT: (createDevice) The address of the feature level that was selected
 
-	DXGI_FORMAT BUFFER_COLOR_FORMAT= DXGI_FORMAT_R8G8B8A8_UNORM;
-	DXGI_FORMAT BUFFER_DEPTH_FORMAT;
+    DXGI_FORMAT BUFFER_COLOR_FORMAT= DXGI_FORMAT_R8G8B8A8_UNORM;
+    DXGI_FORMAT BUFFER_DEPTH_FORMAT;
 
-	// For each DX11 Adapter:
-	IDXGIAdapter1* adapterGraphicCard = NULL;
+    // For each DX11 Adapter:
+    IDXGIAdapter1* adapterGraphicCard = NULL;
 
-	ID3D11Device*        m_device11 = nullptr;
+    ID3D11Device*        m_device11 = nullptr;
     ID3D11DeviceContext* m_deviceContext = nullptr;
 
 #ifdef USE_DX11_3
-	ID3D11Device3* pDevice3 = nullptr;
+    ID3D11Device3* pDevice3 = nullptr;
 #endif
 
-	// For each DX11 Monitor:
-	struct DXwindowDataContainer
-	{
-		//IDXGISwapChain* m_swapChain=NULL;
-		IDXGISwapChain1* m_swapChain1 = NULL;
-		ID3D11Texture2D* m_backBuffer = NULL;
-		ID3D11RenderTargetView* m_renderTargetView = NULL;
-		ID3D11DepthStencilView* m_depthStencilView = NULL;
-		D3D11_VIEWPORT viewport = {0};
-	};
-	std::vector<DXwindowDataContainer> DX11windowsArray;
+    // For each DX11 Monitor:
+    struct DXwindowDataContainer
+    {
+        //IDXGISwapChain* m_swapChain=NULL;
+        IDXGISwapChain1* m_swapChain1 = NULL;
+        ID3D11Texture2D* m_backBuffer = NULL;
+        ID3D11RenderTargetView* m_renderTargetView = NULL;
+        ID3D11DepthStencilView* m_depthStencilView = NULL;
+        D3D11_VIEWPORT viewport = {0};
+    };
+    std::vector<DXwindowDataContainer> DX11windowsArray;
 
-	// TODO: Go inside DXwindowDataContainer
-	bool ScissorEnable=false;
+    // TODO: Go inside DXwindowDataContainer
+    bool ScissorEnable=false;
 
-	UINT mCurRasterState=0;
+    UINT mCurRasterState=0;
 
-	// ---------------------------------------------------------
-	bool	g_ALLOW_DX9x;
+    // ---------------------------------------------------------
+    bool	g_ALLOW_DX9x;
 
-	// Aux. Used by all monitors:
-	// Used in: resolutionType resolution;
-	DXGI_MODE_DESC* displayModeList = NULL;
-	
+    // Aux. Used by all monitors:
+    // Used in: resolutionType resolution;
+    DXGI_MODE_DESC* displayModeList = NULL;
+    
 #if zero
-	ID3D11DepthStencilView* m_depthStencilViewWater = NULL;
+    ID3D11DepthStencilView* m_depthStencilViewWater = NULL;
 #endif
 
 // ---------------------------------------------------------
 #if defined USE_DX_DRIVER_FONT // FONT v2
-	ID3D11RasterizerState* CWcullMode = NULL;
+    ID3D11RasterizerState* CWcullMode = NULL;
 
-	ID3D10Device1 *d3d101Device = NULL;
+    ID3D10Device1 *d3d101Device = NULL;
 
 
-	ID2D1RenderTarget *D2DRenderTarget = NULL;
-	ID2D1SolidColorBrush *Brush = NULL;
+    ID2D1RenderTarget *D2DRenderTarget = NULL;
+    ID2D1SolidColorBrush *Brush = NULL;
 
-	ID3D11Texture2D *sharedTex11 = NULL;
-	ID3D11Buffer *d2dVertBuffer = NULL;
-	ID3D11Buffer *d2dIndexBuffer = NULL;
+    ID3D11Texture2D *sharedTex11 = NULL;
+    ID3D11Buffer *d2dVertBuffer = NULL;
+    ID3D11Buffer *d2dIndexBuffer = NULL;
 
-	ID3D11ShaderResourceView *d2dTexture = NULL;
-	IDWriteFactory *DWriteFactory = NULL;
+    ID3D11ShaderResourceView *d2dTexture = NULL;
+    IDWriteFactory *DWriteFactory = NULL;
 
-	IDWriteTextFormat *TextFormat = NULL;
+    IDWriteTextFormat *TextFormat = NULL;
 
-	ID3D11Buffer* cbPerObjectBuffer = NULL;
-	ID3D11BlendState* Transparency = NULL;
+    ID3D11Buffer* cbPerObjectBuffer = NULL;
+    ID3D11BlendState* Transparency = NULL;
 #endif
 
 #if  defined USE_VIEW2D_SPRITES
-	// 2D
+    // 2D
     XMMATRIX m_orthoMatrix;
     void GetOrthoMatrix(XMMATRIX&);
 #endif
@@ -436,38 +432,38 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 private:
 ////////////////////////////////////////////////////////////////////////////////
-	
-	bool createDevice ();
-	bool createDevice_legacy();
+    
+    bool createDevice ();
+    bool createDevice_legacy();
 #if defined SET_DEVICE_CAPABILITIES
-	void setDeviceCapabilities(D3D_FEATURE_LEVEL featureLevel);
+    void setDeviceCapabilities(D3D_FEATURE_LEVEL featureLevel);
 #endif
 #if defined USE_DX11_1
-	bool createSwapChainDX11device2(HWND hwnd, int screenWidth, int screenHeight, BOOL vsync, BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize, UINT numerator, UINT denominator);
+    bool createSwapChainDX11device2(HWND hwnd, int screenWidth, int screenHeight, BOOL vsync, BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize, UINT numerator, UINT denominator);
 #endif
-	void getProfile ( UINT g_USE_MONITOR );
+    void getProfile ( UINT g_USE_MONITOR );
 
 #if defined USE_RASTERIZER_STATE
-	bool createRasterizerStates (bool lineAntialiasing);
+    bool createRasterizerStates (bool lineAntialiasing);
 #endif
 
-	void setViewportDevice(UINT monitorWindow, int screenWidth, int screenHeight);
-	void setScissorRectangle(UINT left, UINT right, UINT top, UINT bottom, bool enabled);
+    void setViewportDevice(UINT monitorWindow, int screenWidth, int screenHeight);
+    void setScissorRectangle(UINT left, UINT right, UINT top, UINT bottom, bool enabled);
 
-	bool CreateRenderTargetView (int screenWidth, int screenHeight);
-	bool createDepthStencil(int screenWidth, int screenHeight, BOOL fullscreen, UINT depthBits);
-	bool createSetDepthStencilState (bool depthEnable);
-	bool createSetDepthStencilView (int screenWidth, int screenHeight);
+    bool CreateRenderTargetView (int screenWidth, int screenHeight);
+    bool createDepthStencil(int screenWidth, int screenHeight, BOOL fullscreen, UINT depthBits);
+    bool createSetDepthStencilState (bool depthEnable);
+    bool createSetDepthStencilView (int screenWidth, int screenHeight);
 
-	// ---------------------------------------------------------
+    // ---------------------------------------------------------
 #if defined USE_DX_DRIVER_FONT
-	bool InitD2D_D3D101_DWrite(IDXGIAdapter1 *Adapter, WCHAR* fontStyle, int screenWidth, int screenHeight, float R, float G, float B);
-	bool InitD2DScreenTexture();
+    bool InitD2D_D3D101_DWrite(IDXGIAdapter1 *Adapter, WCHAR* fontStyle, int screenWidth, int screenHeight, float R, float G, float B);
+    bool InitD2DScreenTexture();
 #endif
 
 
 public:
-	XMMATRIX m_projectionMiniMapMatrix;
+    XMMATRIX m_projectionMiniMapMatrix;
 
 };
 

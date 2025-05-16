@@ -19,6 +19,28 @@
 // --------------------------------------------------------------------------------------------
 #include "platform.h"
 #include "mem_leak.h"
+
+#if D3D11_SPEC_DATE_YEAR == 2009
+    //ON [VS2015 or VS2017 or VS2019] We will use the win10SDK (ALERT SYSTEM ONLY!) --> "D3D11_SPEC_DATE_YEAR = 2011"
+    #pragma warning( disable : 4324 )	// 4324: '': structure was padded due to __declspec(align())
+    #pragma warning( disable : 4838 )
+    #include <DirectXMath.h> //#include <xnamath.h>				//#include <d3dx10math.h>
+    #include <d3dx11tex.h>
+    #pragma comment(lib, "/WoMA3Dengine/ThirdParty/Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\d3dx11.lib")	// DONT NEED THIS AT WIN8 SDK BUT NEED WITH OLD JUN 2010 SDK
+    #pragma comment(lib, "/WoMA3Dengine/ThirdParty/Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\d3dx10.lib")	// DONT NEED THIS AT WIN8 SDK BUT NEED WITH OLD JUN 2010 SDK
+#else
+    #include <DirectXMath.h> 
+    using namespace DirectX;
+    //COMPILE: C:\WoMA3Dengine\ThirdParty\DirectXTex\DirectXTex_Desktop_2022_Win10.sln
+    #if _DEBUG
+    #pragma comment(lib, "Libs/x64/Debug/DirectX11TK.lib")
+    #pragma comment(lib, "/WoMA3Dengine/ThirdParty/DirectXTex/DirectXTex-jan2023/DirectXTex/Bin/Desktop_2022_Win10/x64/Debug/DirectXTex.lib")
+    #else
+    #pragma comment(lib, "C:\\WoMAengine2023\\Libs\\x64\\Release\\DirectX11TK.lib")
+    #pragma comment(lib, "C:\\WoMAengine2023\\Libs\\x64\\Release\\DirectXTex.lib")
+    #endif
+#endif
+
 #define _CRT_SECURE_NO_WARNINGS
 #include <setjmp.h>
 

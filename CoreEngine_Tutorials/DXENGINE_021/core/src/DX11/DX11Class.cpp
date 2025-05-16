@@ -281,8 +281,9 @@ for (UINT i = 0; i < 3; i++)
         debugDev->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_DETAIL);
         WOMA_LOGManager_DebugMSG("WOMA WARNING: There are %d unreleased references left on the D3D device!\n", count);
     }
-#endif
     SAFE_RELEASE(debugDev);
+#endif
+    
 }
 
 // |Init Step: 1| This is for DIRECTX Driver only!

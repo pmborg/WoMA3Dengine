@@ -72,7 +72,7 @@
 		|ultimateTCP_IP_LIB|
 
 	XML
-		|TinyXML_LIB|
+		|TinyXMLv2_LIB| (legacy-v1: TinyXML_LIB dont support Android)
 
 	(D3D11_SPEC_DATE_YEAR > 2009)
 		|DirectXTex|(DX11)

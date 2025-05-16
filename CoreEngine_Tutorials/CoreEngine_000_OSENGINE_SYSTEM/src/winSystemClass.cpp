@@ -76,7 +76,7 @@ bool WinSystemClass::APPLICATION_CORE_SYSTEM()
 	WOMA_LOGManager_DebugMSG("WinSystemClass::APPLICATION_CORE_SYSTEM()\n");
 
 	WomaMessageBox(WOMA::strConsoleTitle, TEXT("WOMA Hello World!"), MB_OK);
-	return false;
+	return false; //false mean exit now
 
 	return true;
 }

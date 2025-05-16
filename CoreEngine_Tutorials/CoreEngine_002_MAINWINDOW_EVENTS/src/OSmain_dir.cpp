@@ -235,7 +235,7 @@ namespace WOMA
 
 		WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("Current Directory: %s\n"), currentPath);
 
-#if NOTES //defined  WINDOWS_PLATFORM && defined RELEASE // In "Debug" we use the local data at disk / At production "Release" we use the default "Dirs"
+#if _NOT //defined  WINDOWS_PLATFORM && defined RELEASE // In "Debug" we use the local data at disk / At production "Release" we use the default "Dirs"
 	// Check if is a network PATH:
 	//if (PathIsNetworkPath  (SystemHandle->systemDefinitions.cCurrentPath)) 
 	//	{WomaFatalException( TEXT("On Release version, no NETWORK PATH is allowed!") ); return false;}

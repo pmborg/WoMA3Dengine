@@ -59,7 +59,7 @@ namespace WOMA
 		return (TCHAR*)file.c_str();
 #else
 		if (filename[0] != '.') {
-#if CORE_ENGINE_LEVEL >= 8 && defined _DEBUG
+#if CORE_ENGINE_LEVEL >= 8 && !defined RELEASE
 			if (shader)
 				StringCchPrintf(file_, sizeof(file_), TEXT("%s%s"), TEXT("./"), filename);
 			else
@@ -77,7 +77,7 @@ namespace WOMA
 				StringCchPrintf(file_, sizeof(file_), TEXT("%s%s"), TEXT("../"), filename);
 #endif
 #else
-#if CORE_ENGINE_LEVEL >= 8 && defined _DEBUG
+#if CORE_ENGINE_LEVEL >= 8 && !defined RELEASE
 			if (shader)
 				strcpy_s(file_, sizeof(file_), filename);
 			else

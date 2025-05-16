@@ -30,6 +30,8 @@
 // Added: Codec Check
 
 #pragma once
+#include "platform.h"
+#if defined USE_INTRO_VIDEO_DEMO 
 
 class CVideoRenderer;
 
@@ -85,3 +87,5 @@ private:
     IMediaEventEx   *m_pEvent;
     CVideoRenderer  *m_pVideo;
 };
+
+#endif

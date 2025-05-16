@@ -26,7 +26,7 @@
 //------------------------------------------------------------------------------------------------------------
 //#define CORE_ENGINE_LEVEL 10
 //------------------------------------------------------------------------------------------------------------
-#if defined RELEASE
+#if defined NDEBUG
 	#define USE_NETWORK
 #else
 	#if CORE_ENGINE_LEVEL > 9 && (defined _DEBUG || defined DEBUG)
@@ -467,7 +467,7 @@
 	#if DX_ENGINE_LEVEL >= 75 && defined SCENE_BILLBOARDS
 		#define ALLOW_CBIND_PROGRESS_BAR
 	#endif
-	#if DX_ENGINE_LEVEL == 76 || defined (NDEBUG) && DX_ENGINE_LEVEL >= 76
+	#if DX_ENGINE_LEVEL == 76 || defined (RELEASE) && DX_ENGINE_LEVEL >= 76
 		#define USE_INTRO_VIDEO_DEMO
 	#endif
 	#if DX_ENGINE_LEVEL >= 77 && defined SCENE_BILLBOARDS
@@ -483,7 +483,7 @@
     #if DX_ENGINE_LEVEL >= 79
         #undef USE_LIGHT_RAY
         #undef USE_INSTANCES_FOR_TREES
-        #define USE_MINIMAP_EXPANSION
+        //#define USE_MINIMAP_EXPANSION
     #endif
 	
     #if defined ASSIMP //>= 80
@@ -495,11 +495,6 @@
     		//#define USE_MATH3D
     		#define USE_ASSIMP_DXLIB //81
     	#endif
-    #endif
-    #if DX_ENGINE_LEVEL >= 82
-        #define SCENE_BILLBOARDS
-        #define USE_INSTANCES_FOR_TREES
-        #define USE_ASSIMP     //83
     #endif
     
 	//MAIN_RENDER:
@@ -514,6 +509,19 @@
 	#define MAIN_RENDER_BILLBOARDS      //70/74
 	#define MAIN_RENDER_ASSIMP          //82
 
+    #if DX_ENGINE_LEVEL >= 82
+        #define SCENE_BILLBOARDS
+        #define USE_INSTANCES_FOR_TREES
+        #define USE_ASSIMP     			//82
+		#undef MAIN_RENDER_DRIVER_FONT  //25
+    #endif
+	
+	
+	
+	
+	
+	
+	
 	//#define USE_MULTI_MONITOR
 	//-------------------------------------------------------------------------------------------------------
 	#if !defined USE_LIGHT_RAY			// ON/OFF - Render light ray !!Dep!!: #undef  dx12_upload_old_way

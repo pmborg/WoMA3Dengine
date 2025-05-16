@@ -17,8 +17,13 @@
 // Original Code Adapted from: https://github.com/nicholaschuayunzhi/PPG
 
 #pragma once
+#if _DEBUG
 #pragma comment( lib, "C://WoMA3Dengine//ThirdParty//PPG-master//Bin//Debug//AssimpEngine.lib" )
+#else
+#pragma comment( lib, "C://WoMA3Dengine//ThirdParty//PPG-master//Bin//Release//AssimpEngine.lib" )
+#endif
 #pragma comment(lib, "C://WoMA3Dengine//ThirdParty//PPG-master//External//assimp//lib//assimp-vc142-mtd.lib")
+
 #include "../Engine/Source/PPG.h"
 #include <math.h>
 

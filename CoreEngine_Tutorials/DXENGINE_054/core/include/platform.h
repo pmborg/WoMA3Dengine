@@ -611,7 +611,7 @@ static_assert(false, "WIN6x: X64 or WIN32, have to be selected");
 
 // -------------------------------------------------------------------------------------------
 #if defined NDEBUG && !defined _DEBUG
-	#define RELEASE // ON/OFF Comercial Version (Check Serials) RELEASE = NDEBUG + "Real" Client Path(s) with Pack(s)
+	//#define RELEASE // ON/OFF Comercial Version (Check Serials) RELEASE = NDEBUG + "Real" Client Path(s) with Pack(s)
 #endif
 
 #if defined UNICODE

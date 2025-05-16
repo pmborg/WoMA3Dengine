@@ -134,9 +134,9 @@
 	//#define LEVEL 75  // UTIL: PROGRESS BAR FOR TERRAIN LOADING															  
 	//#define LEVEL 76  // UTIL: INTRO VIDEO DEMO
 	//#define LEVEL 77  // USE INSTANCES FOR TREES										   
-    #define LEVEL 78  // COLISION DETECTION
+    //#define LEVEL 78  // COLISION DETECTION
 
-    //#define LEVEL 80	// ASSIMP	
+    #define LEVEL 80	// ASSIMP-ENGINE	
 	
 	#endif
 #endif
