@@ -324,7 +324,7 @@
       <OmitFramePointers>true</OmitFramePointers>
       <StructMemberAlignment>Default</StructMemberAlignment>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <SDLCheck>false</SDLCheck>
+      <SDLCheck>true</SDLCheck>
       <MinimalRebuild>false</MinimalRebuild>
       <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>

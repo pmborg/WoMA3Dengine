@@ -217,7 +217,8 @@ bool DXmodelClass::LoadLight(TCHAR* objectName, void* driver, SHADER_TYPE shader
 				(ModelShaderType == SHADER_TEXTURE_LIGHT_INSTANCED) ||				// SHADER_TYPE =  8
 				(ModelShaderType == SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED) ||	// SHADER_TYPE = 10
 			    (ModelShaderType == SHADER_FIRE) ||                                 // SHADER_TYPE = 21
-                (ModelShaderType == SHADER_TEXTURE_GS_INSTANCED)                    // SHADER_TYPE = 22
+                (ModelShaderType == SHADER_TEXTURE_GS_INSTANCED) ||                 // SHADER_TYPE = 22
+                (ModelShaderType == SHADER_TEXTURE_LIGHT_FAST)
              );
 
 	indexModelList = indexList;
@@ -295,6 +296,7 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 	case SHADER_TEXTURE_LIGHT:			    //23
 	case SHADER_TEXTURE_LIGHT_RENDERSHADOW: //36
     case SHADER_TEXTURE_GS_INSTANCED:       //77
+    case SHADER_TEXTURE_LIGHT_FAST:         //83
 		m_vertexCount = (UINT) (*modelTextureLightVertex).size();	// Set the number of vertices in the vertex array.
 		if (m_vertexCount == 0)										// Better check, if object is empty...
 			return false;	
@@ -573,6 +575,7 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 	case SHADER_TEXTURE_LIGHT_INSTANCED:			//40: INSTANCED like 23 light, but using Instances
 	case SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED: //41
     case SHADER_TEXTURE_GS_INSTANCED:               //77
+    case SHADER_TEXTURE_LIGHT_FAST:					//83: LIGHT 
 	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
 		{
@@ -1218,6 +1221,7 @@ void DXmodelClass::SetGeometryBuffers(void* deviceContext)
 		case SHADER_TEXTURE_LIGHT_INSTANCED:			//40
 		case SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED: //41
         case SHADER_TEXTURE_GS_INSTANCED:               //77
+        case SHADER_TEXTURE_LIGHT_FAST:					//83
 			stride[0] = sizeof(DXtextureLightVertexType); break;
 
 		case SHADER_TEXTURE_LIGHT_SAVESHADOW:			//36

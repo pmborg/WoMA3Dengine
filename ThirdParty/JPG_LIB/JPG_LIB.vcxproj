@@ -690,7 +690,7 @@
       <OmitFramePointers>true</OmitFramePointers>
       <StructMemberAlignment>Default</StructMemberAlignment>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <SDLCheck>false</SDLCheck>
+      <SDLCheck>true</SDLCheck>
       <MinimalRebuild>true</MinimalRebuild>
     </ClCompile>
     <Link>

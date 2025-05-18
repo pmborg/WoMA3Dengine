@@ -40,7 +40,7 @@ private:
     std::unique_ptr<Sampler> pointSampler;
 
 
-    //AQUI std::unique_ptr<BlitPass> blitPass;
+    //  std::unique_ptr<BlitPass> blitPass;
 	BlitPass* blitPass;
     std::unique_ptr<GBufferPass> gBufferPass;
     std::unique_ptr<DeferredPass> deferredPass;

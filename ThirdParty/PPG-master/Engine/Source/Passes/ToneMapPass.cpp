@@ -38,7 +38,7 @@ ToneMapPass::~ToneMapPass()
 void ToneMapPass::Render(Graphics& graphics, Scene& scene)
 {
     auto deviceContext = graphics.m_DeviceContext;
-    //AQUI graphics.SetRenderTarget(m_DestTexture, false);
+    //  graphics.SetRenderTarget(m_DestTexture, false);
 
     deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
     m_ColourTexture.UseSRV(deviceContext, 0);
@@ -46,5 +46,5 @@ void ToneMapPass::Render(Graphics& graphics, Scene& scene)
     deviceContext->Draw(4, 0);
 
     graphics.UnbindShaderResourceView(0);
-    //AQUI graphics.UnbindRenderTargetView();
+    //  graphics.UnbindRenderTargetView();
 }

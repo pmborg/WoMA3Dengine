@@ -121,7 +121,9 @@ enum SHADER_TYPE
 		SHADER_FIRE,										//72
 		SHADER_TEXTURE_GS_INSTANCED,						//77
 
-		SHADER_MESH,										//80
+		SHADER_MESH,										//80&81
+
+        SHADER_TEXTURE_LIGHT_FAST,
 
 		//SHADER_SKYTEXTURE,								//90:
 		//SHADER_REALSKYTEXTURE,							//91:

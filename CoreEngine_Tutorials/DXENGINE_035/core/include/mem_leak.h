@@ -53,9 +53,9 @@
 #if (defined(_DEBUG) && !defined(NDEBUG)) && defined WINDOWS_PLATFORM
 #include <crtdbg.h>
 	#define NEW new( _NORMAL_BLOCK, __FILE__, __LINE__ ) // Note: Use "NEW" instead of "new", to trace memory leaks!
-	#define MALLOC(X)  woma_malloc( X, __FILE__, __LINE__, __FUNCTION__)
+	#define MALLOC(X)  WOMA::woma_malloc( X, __FILE__, __LINE__, __FUNCTION__)
 #else
 	#define NEW new
-	#define MALLOC malloc
+	#define MALLOC ::malloc
 #endif
 

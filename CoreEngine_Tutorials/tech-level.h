@@ -476,9 +476,6 @@
     #if DX_ENGINE_LEVEL >= 78
         #define USE_BOUNDING_VOLUMES
         #define CHECK_OBJ_COLISION
-		
-		#undef SCENE_BILLBOARDS
-        #undef USE_INSTANCES_FOR_TREES
     #endif
     #if DX_ENGINE_LEVEL >= 79
         #undef USE_LIGHT_RAY
@@ -486,17 +483,7 @@
         //#define USE_MINIMAP_EXPANSION
     #endif
 	
-    #if defined ASSIMP //>= 80
-    	#if DX_ENGINE_LEVEL == 80
-    		#define USE_MATH3D
-    		#define USE_ASSIMP_GLLIB //80
-    	#endif
-    	#if DX_ENGINE_LEVEL == 81
-    		//#define USE_MATH3D
-    		#define USE_ASSIMP_DXLIB //81
-    	#endif
-    #endif
-    
+    //-------------------------------------------------------------------------------------------------------
 	//MAIN_RENDER:
 	#define MAIN_RENDER_TITLE           //24
 	#define MAIN_RENDER_DRIVER_FONT     //25
@@ -515,11 +502,14 @@
         #define USE_ASSIMP     			//82
 		#undef MAIN_RENDER_DRIVER_FONT  //25
     #endif
+    #if NDEBUG
+        #define TEXT_TEST
+    #endif
 	
 	
-	
-	
-	
+
+
+
 	
 	
 	//#define USE_MULTI_MONITOR

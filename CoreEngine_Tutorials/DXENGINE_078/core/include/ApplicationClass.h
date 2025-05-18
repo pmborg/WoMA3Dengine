@@ -299,6 +299,7 @@ public:
 #endif
 
 	UINT totalRendered = 0;
+    bool startNewFrame = true;
 	UINT world_xml_objs = 0;
 	float billangle = 0;
 #if defined USE_LIGHT_RAY
@@ -331,6 +332,7 @@ public:
 	std::vector<ModelTextureLightVertexType> sky_vertexdata; //std::vector<ModelTextureVertexType> sky_vertexdata;
 	std::vector<UINT>						 sky_indexdata;
 #endif
+    UINT billboardRrenderCount = 0;
 
 	void WOMA_APPLICATION_FrameUpdateInstancesPositions(UINT m_ObjId, int m_instanceCount, InstanceType* instances_);
 

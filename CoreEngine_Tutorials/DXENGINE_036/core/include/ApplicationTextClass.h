@@ -59,7 +59,7 @@ public:
 
 	void SetCameraPosition(float, float, float);
 	void SetCameraRotation(float, float, float);
-#if defined EXTRA_INFO
+#if defined EXTRA_INFO2
 	void SetInfoA(UINT, UINT);
 	void SetInfoB(float rotX, float rotY, float rotZ);
 	#endif
@@ -102,7 +102,7 @@ public:
 	void SetVideoCardInfo (DXGI_ADAPTER_DESC* adapterDesc);
 	#endif
 
-	SentenceType* m_sentence[N_TEXT_MAX_SENTENCE] = { 0 }; //std::vector<SentenceType*>	m_sentence;	
+	SentenceType* m_sentence[N_TEXT_MAX_SENTENCE] = { 0 };
 	VirtualTextClass*	m_Text = NULL;
 };
 

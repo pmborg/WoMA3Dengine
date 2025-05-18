@@ -299,6 +299,7 @@ public:
 #endif
 
 	UINT totalRendered = 0;
+    bool startNewFrame = true;
 	UINT world_xml_objs = 0;
 #if defined USE_LIGHT_RAY
 	void initLightRay();

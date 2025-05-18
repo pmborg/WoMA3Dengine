@@ -176,6 +176,7 @@ typedef struct xmlobj3d_
 	bool castShadow = false;	//41
 	bool renderShadows = false;	//41
 #endif
+    bool render = true;
 } xmlobj3d;
 
 class XMLloader

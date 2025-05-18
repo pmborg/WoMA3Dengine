@@ -640,7 +640,7 @@ bool ApplicationClass::Initialize(WomaDriverClass* Driver)
 //-------------------------------------------------------------------------------------------
 {
 #if !defined ANDROID_PLATFORM
-	ASSERT(Driver);
+    ASSERT_DEBUG(Driver);
 #endif
 
 	//imgGui:

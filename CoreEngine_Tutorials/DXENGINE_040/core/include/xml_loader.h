@@ -172,6 +172,7 @@ typedef struct xmlobj3d_
 	char filename[256];
 	WOMA_OBJECT WOMA_object;
 	int instances = 0;			//40
+    bool render = true;
 } xmlobj3d;
 
 class XMLloader

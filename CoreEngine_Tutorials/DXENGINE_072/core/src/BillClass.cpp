@@ -144,7 +144,7 @@ xmlobj3d* BillClass::fillxml(int id, UINT type)
 
 		xmlobj.meshSRV = billFileLoaded[type];
 		if (m_Trees[id].type < 11)
-			strcpy_s(xmlobj.filename, 256, BILLBOARD_MODEL);		//engine/data/scene70Bill/060square.obj
+			strcpy_s(xmlobj.filename, 256, BILLBOARD_MODEL);		    //engine/data/scene70Bill/060square.obj
 	}
 	else
 		xmlobj.meshSRV = NULL;
@@ -155,7 +155,7 @@ xmlobj3d* BillClass::fillxml(int id, UINT type)
 		strcpy_s(xmlobj.filename, 256, BILLBOARD_FIRE_MODEL);		//200: engine/data/scene72Fire/072fire.obj
 
 	xmlobj.WOMA_object = WOMA_OBJECT();
-	xmlobj.WOMA_object.shaderType = SHADER_TEXTURE_LIGHT;
+    xmlobj.WOMA_object.shaderType = SHADER_TEXTURE_LIGHT;
 
 	return &xmlobj;
 }

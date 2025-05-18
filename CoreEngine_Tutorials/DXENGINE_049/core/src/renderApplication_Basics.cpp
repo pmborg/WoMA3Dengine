@@ -65,6 +65,7 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 //-------------------------------------------------------------------------------------------
 {
 	totalRendered = 0;
+    startNewFrame = true;
 
 	// [1] Animations:
 	// --------------------------------------------------------------------------------------------
@@ -89,8 +90,6 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 	// --------------------------------------------------------------------------------------------
 #if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
 	WOMA::sceneManager->opacModelList.clear();			//Reset list of opac objects
-    //WOMA::sceneManager->shadowModelList.clear();			//Reset list of cast shadow objects
-
     WOMA::sceneManager->CreateLists();					//Create Lists for all objects to render (from WORLD.XML) and more
     world_main_size = WOMA::sceneManager->opacModelList.size();
 #endif
@@ -108,7 +107,7 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 
 	// [4] Render one Screen:
 	// --------------------------------------------------------------------------------------------
-	AppPreRender(monitorWindow, driver, dayLightFade);	// [1] Render: SHADOWS 1st...
+	AppPreRender(monitorWindow, driver, dayLightFade);	// [1] Render:  RENDER SHADOW MAP + MAIN && MINI MAP
 
 	AppRender(monitorWindow, dayLightFade);				// [2] Render: All 3D!!!
 
@@ -322,7 +321,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 #endif
 #if defined DEBUG_COLLISION_TERRAIN
 	if (m_TerrainModel[3])
-		m_TerrainModel[3]->RenderWithFade(fadeLight, fog);	// New function to replace these 2 line options. //AQUI-TERR
+		m_TerrainModel[3]->RenderWithFade(fadeLight, fog);	// New function to replace these 2 line options. 
 #endif
 
 	// 3D STATIC OPAC OBJECTS on WORLD.XML, that listed in: sceneManager->opacModelList (in front of camera)
@@ -365,14 +364,13 @@ void ApplicationClass::AppPosRender(UINT monitorWindow)
 #endif
 
 #if (TUTORIAL_CHAP >= 60 && defined SCENE_BILLBOARDS && defined USE_SCENE_MANAGER && defined DX_ENGINE) && defined MAIN_RENDER_BILLBOARDS // MAIN-RENDER: BILLBOARD + FENCES + FIRE (11.4 ms)
-	UINT size = WOMA::sceneManager->transparentModelList.size();
-	if (size > 0) {
-		qsort(m_Trees, size, sizeof(Tree), BillSortCB);
-		for (UINT id = 0; id < size; id++) {
-            UINT i = m_Trees[id].ID +world_xml_objs;
-			RenderModel(monitorWindow, m_Driver, i, PASS_BILL); // Render: "Billboards"
+        UINT obj_id;
+		for (UINT tree_id = 0; tree_id < _countof(m_Trees); tree_id++)
+        {
+            obj_id = m_Trees[tree_id].ID + world_xml_objs;
+            if (SystemHandle->xml_loader.theWorld[obj_id].render) //FASTER-AQUI2
+			    RenderModel(monitorWindow, m_Driver, obj_id, PASS_BILL); // Render: "Billboards"
 		}
-	}
 #endif
 
 #if defined USE_ALPHA_BLENDING
@@ -649,7 +647,7 @@ if (!astroClass) {
 #if defined USE_RASTERTEK_TEXT_FONT							
 
 if (AppTextClass) {
-#if defined EXTRA_INFO
+#if defined EXTRA_INFO2
 	AppTextClass->SetInfoA(astroClass->hour, astroClass->minute);
 	AppTextClass->SetInfoB(m_Light->m_lightDirection.x, m_Light->m_lightDirection.y, m_Light->m_lightDirection.z);
 #endif
@@ -662,6 +660,7 @@ if (AppTextClass) {
 #endif
 
 #if defined USE_DIRECT_INPUT			// we will use DX input method
+#if !defined TEXT_TEST
 	AppTextClass->SetCameraPosition(m_Position[g_NetID]->m_positionX,
 		m_Position[g_NetID]->m_positionY,
 		m_Position[g_NetID]->m_positionZ);
@@ -669,6 +668,7 @@ if (AppTextClass) {
 	AppTextClass->SetCameraRotation(m_Position[g_NetID]->m_rotationX,
 		m_Position[g_NetID]->m_rotationY,
 		m_Position[g_NetID]->m_rotationZ);
+#endif
 #else
 	#if !defined TEXT_TEST
 	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
@@ -712,11 +712,14 @@ if (AppTextClass) {
 	#endif
 #endif
 
-#if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && _DEBUG
+#if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && _DEBUG && !defined TEXT_TEST
 	AppTextClass->SetRenderCount(WOMA::sceneManager->quadTree.totalVertexRendered,
 		SystemHandle->m_Application->totalRendered,
 		(UINT)SystemHandle->xml_loader.theWorld.size());
 #endif
+#if TUTORIAL_CHAP >= 60 && _DEBUG // BILLBOARD
+	AppTextClass->SetBillRenderCount(SystemHandle->m_Application->billboardRrenderCount);
+#endif  
 }
 #endif
 

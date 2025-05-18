@@ -331,12 +331,10 @@ void CTerrain::GenerateRandomHeightMapTerrain(UINT randValue, bool Move_down_edg
 
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("Terrain Size: %d x %d\n"), (terrain_squares + 1), (terrain_squares + 1));	// 23
 
-	//srand(randValue);
-
 	// [backterrain]
 	const UINT floatSize = sizeof(float); //4
 	const UINT TerrainSize = (terrain_squares + 1)*(terrain_squares + 1)*floatSize;
-	backterrain = (float*) WOMA::MALLOC(TerrainSize);
+	backterrain = (float*) MALLOC(TerrainSize);
 	for (size_t i = 0; i < (terrain_squares + 1)*(terrain_squares + 1); i++)
 		backterrain[i] = 0;
 
@@ -895,7 +893,7 @@ bool CTerrain::initMainTopoTerrainDemo(UINT terrainId)
 
 	//------------------------------------------------------------------------------------------
 	// Step 3: ID2 SCALE: modelVertexVector2[i].y |tu tv OPEN GL|
-	if (terrainId == 2) //AQUITERR
+	if (terrainId == 2)
 	{
 		// Add TEXTURE MAP: to all vertices
 		for (UINT i = 0; i < modelVertexVector2.size(); i++)				// Num Vertices: 6x256x256 //{ size=6303750 }
@@ -919,7 +917,7 @@ bool CTerrain::initMainTopoTerrainDemo(UINT terrainId)
 
 	// Step 5: Populate: VirtualModelClass* SystemHandle->m_Application->m_TerrainModel[id]
 	//Populate: indices.push_back
-	if (terrainId == 2 || terrainId == 3 || terrainId == 4)//AQUI-TERR
+	if (terrainId == 2 || terrainId == 3 || terrainId == 4)
 	{
 		std::vector<STRING> Textures;
 		Textures.push_back(TERRAIN_LEVEL50_TEXTURE);

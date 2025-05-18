@@ -35,7 +35,7 @@ void ApplicationClass::TerrainRender(UINT monitorWindow, WomaDriverClass* Driver
 	float t = ((DirectX::DXmodelClass*)m_TerrainModel[1])->m_Shader11->time; //preserve animation time
 	((DirectX::DXmodelClass*)m_TerrainModel[1])->m_Shader11->time = 0;
 	((DirectX::DXmodelClass*)m_TerrainModel[1])->shaderTypeParameter = 1; // Render for Map
-	m_TerrainModel[1]->Render(CAMERA_NORMAL, PROJECTION_MINIMAP, PASS_MINIMAP1, m_viewMatrix, m_projectionMatrix); //AQUI VAMOS AQUI  CAMERA_MINIMAP???? was CAMERA_NORMAL before
+	m_TerrainModel[1]->Render(CAMERA_NORMAL, PROJECTION_MINIMAP, PASS_MINIMAP1, m_viewMatrix, m_projectionMatrix);
 	((DirectX::DXmodelClass*)m_TerrainModel[1])->m_Shader11->time = t;
 
 	//Terrain Render:
@@ -183,7 +183,7 @@ void ApplicationClass::RenderMainMapMiniMap()
 	}
 #endif
 
-#if defined USE_MINI_MAP //AQUI27
+#if defined USE_MINI_MAP
 	if (RENDER_PAGE >= 63 && m_miniMapModel)
 	{
 		//[1] Put the "mini-map" bitmap vertex and index buffers on the graphics pipeline to prepare them for drawing.

@@ -1130,6 +1130,7 @@ void DXmodelClass::SetGeometryBuffers(void* deviceContext)
 		case SHADER_TEXTURE_LIGHT_INSTANCED:			//40
 		case SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED: //41
         case SHADER_TEXTURE_GS_INSTANCED:               //77
+        case SHADER_TEXTURE_LIGHT_FAST:					//83
 			stride[0] = sizeof(DXtextureLightVertexType); break;
 
 		case SHADER_TEXTURE_LIGHT_SAVESHADOW:			//36

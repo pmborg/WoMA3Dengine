@@ -561,8 +561,7 @@
       </OmitFramePointers>
       <StructMemberAlignment>Default</StructMemberAlignment>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
-      <SDLCheck>
-      </SDLCheck>
+      <SDLCheck>true</SDLCheck>
       <MinimalRebuild>false</MinimalRebuild>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>

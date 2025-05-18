@@ -249,6 +249,7 @@ public:
 #endif
 
 	UINT totalRendered = 0;
+    bool startNewFrame = true;
 #if defined USE_LIGHT_RAY
 	void initLightRay();
 #endif

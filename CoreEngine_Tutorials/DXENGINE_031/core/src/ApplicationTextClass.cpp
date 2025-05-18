@@ -66,8 +66,12 @@ void ApplicationTextClass::SetFps(int fps)
 	// avoid division by zero:
 	if (fps == 0)
 		fps=1;
-	
+
+#if defined EXTRA_INFO
+    StringCchPrintf(strBuffer, sizeof(strBuffer), TEXT("Fps: %d"), fps);
+#else
     StringCchPrintf(strBuffer, sizeof(strBuffer), TEXT("Fps: %d  - ms: %4.2f"), fps, 1000.0f/fps);
+#endif
 
 	if(fps >= 60)
 		green = 1.0f;	// If fps is 60 or above set the fps color to green.
@@ -117,7 +121,7 @@ void ApplicationTextClass::SetCameraRotation(float rotX, float rotY, float rotZ)
 }
 #endif
 
-#if defined EXTRA_INFO
+#if defined EXTRA_INFO2
 void ApplicationTextClass::SetInfoA(UINT h, UINT m)
 {
 	static TCHAR dataString[40];
@@ -135,7 +139,7 @@ void ApplicationTextClass::SetInfoB(float rotX, float rotY, float rotZ)
 }
 #endif
 
-#if DX_ENGINE_LEVEL >= 30 && _DEBUG
+#if DX_ENGINE_LEVEL >= 30 && _DEBUG && !defined TEXT_TEST
 //08
 void ApplicationTextClass::SetRenderCount(int Count, int compoundCount, UINT totalCompoundLoaded)
 {
@@ -155,7 +159,7 @@ void ApplicationTextClass::SetRenderCount(int Count, int compoundCount, UINT tot
 void ApplicationTextClass::SetBillRenderCount(int count)
 {
 	char countString[80];
-	StringCchPrintf(countString, sizeof(countString), TEXT("Angle: %d"), (int)SystemHandle->m_Application->billangle);
+	StringCchPrintf(countString, sizeof(countString), TEXT("N.Bill: %d"), count);
 
 	// Update the sentence vertex buffer with the new string information.
 	ASSERT(m_Text->UpdateSentence(m_sentence[TEXT_BILLRENDERCOUNT], countString, 10, 130, 0.0f, 1.0f, 0.0f));
@@ -208,14 +212,14 @@ bool ApplicationTextClass::Initialize(void* Driver)
 	// Initialize the Text object:
 	if (!m_Text->Initialize(Driver))
 	{
-		WomaFatalException(("Could not initialize the Text Object")); /*return false;*/
+		WomaFatalException(("Could not initialize the Text Object"));
 	}
 
 	// TextClass: PART2
 	for (UINT i = (UINT)_countof(m_sentence); i < N_TEXT_MAX_SENTENCE; i++)
-		m_sentence[i] = NULL;
+		m_sentence[i] = NULL; //Reset not used slots
 
-	for (UINT i = 0; i < (UINT)_countof(m_sentence); i++)
+	for (UINT i = 0; i < (UINT)_countof(m_sentence); i++) //Init used slots
 		IF_NOT_RETURN_FALSE(m_Text->InitializeSentence(&m_sentence[i], 80));
 
 #if defined DX12

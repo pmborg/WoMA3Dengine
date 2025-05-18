@@ -311,7 +311,9 @@ namespace DirectX {
 		//float	vsPAD4;
 
 		// --------------------------------------------------------------------------------------------
+#if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES // Normal Bump + Instancing 
 		m_instanceCount = NULL;
+#endif
 
 		bUseGS = false;	// GS
 		// --------------------------------------------------------------------------------------------
@@ -469,6 +471,7 @@ namespace DirectX {
 		//	float3 normal		: NORMAL;	//23
 		case SHADER_TEXTURE_LIGHT:				//23
 		case SHADER_TEXTURE_LIGHT_RENDERSHADOW:	//36
+        case SHADER_TEXTURE_LIGHT_FAST:
 #if defined DX12
 			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 			{
@@ -1527,7 +1530,7 @@ namespace DirectX {
 		ID3D11DeviceContext* deviceContext11 = ((ID3D11DeviceContext*)Device_Context);
 
 	#if defined DX12 || defined DX11 || defined DX9 /*defined DX9*/
-		VSconstantBufferType* dataVSptr = NULL;				// Reset Pointer, only once:
+		VSconstantBufferType* dataVSptr = NULL;		// Reset Pointer, only once:
 	#endif
 	#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
@@ -1548,9 +1551,8 @@ namespace DirectX {
 	#endif
 
 		LightClass* light = SystemHandle->m_Application->m_Light;
-		//
+
 		// BOTH: DX11 and DX12
-		//
 
 		// Copy the matrices into the constant buffer.
 		dataVSptr->world = XMMatrixTranspose(*worldMatrix);
@@ -1648,7 +1650,6 @@ namespace DirectX {
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 		{
 			// Update the constant buffer resource:
-			//CD3DX12_RANGE readRange(0, 0);		// We do not intend to read from this resource on the CPU.
 			memcpy(m_pMappedVSConstantBuffer, &mVS_constantBufferData, sizeof(mVS_constantBufferData));
 		}
 #endif
@@ -1661,8 +1662,14 @@ namespace DirectX {
 		}
 #endif
 
-		if (m_shaderType == SHADER_COLOR)
+        //if (!SystemHandle->m_Application->startNewFrame)
+        //    return;
+		if (m_shaderType == SHADER_COLOR || 
+            m_shaderType == SHADER_TEXTURE_LIGHT_FAST ||
+            m_shaderType == SHADER_Terrain_Texture_DEMO61
+            )
 			return;
+
 		// --------------------------------------------------------------------------------------------
 		// PIXEL SHADER: will need to have access to some variables also (Texturing / light parameters)
 		// --------------------------------------------------------------------------------------------
@@ -1774,6 +1781,7 @@ namespace DirectX {
 		}
 #endif
 
+        SystemHandle->m_Application->startNewFrame = false;
 }
 
 

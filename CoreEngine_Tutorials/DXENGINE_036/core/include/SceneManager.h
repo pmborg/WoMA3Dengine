@@ -37,7 +37,6 @@ public:
 	SceneNode* RootNode;
 
 	std::vector<VirtualModelClass*> opacModelList;
-	//std::vector<VirtualModelClass*> shadowModelList;
 
 	//private:
 	QuadTree quadTree;

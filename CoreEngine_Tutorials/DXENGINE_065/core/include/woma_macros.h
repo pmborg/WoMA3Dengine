@@ -87,6 +87,11 @@
 	#define ASSERT(x) { if (!(x)) _tprintf("ASSERT FAILED: FILE: %s LINE: %s - %s()\n", __FILE__, __LINE__, __func__); }
 #else
 	#define ASSERT(x) { if (!(x)) WomaFatalException("Assert failed!"); }
+  #if _DEBUG
+    #define ASSERT_DEBUG(x) { if (!(x)) WomaFatalException("Assert failed!"); }
+  #else
+    #define ASSERT_DEBUG(x) {}
+  #endif
 #endif
 
 #define ThrowIfFailed(hr)\

@@ -75,7 +75,7 @@ void DeferredPass::DisableAmbientOcclusion()
 void DeferredPass::Render(Graphics& graphics, Scene& scene)
 {
     graphics.ClearRenderTargetView(m_RenderTarget.GetRTV(), Colors::Transparent);
-    //AQUI graphics.SetRenderTarget(m_RenderTarget, false);
+    //  graphics.SetRenderTarget(m_RenderTarget, false);
 
     auto deviceContext = graphics.m_DeviceContext;
     scene.lightManager.Use(deviceContext, 1);
@@ -127,5 +127,5 @@ void DeferredPass::Render(Graphics& graphics, Scene& scene)
     graphics.UnbindShaderResourceView(7);
     graphics.UnbindShaderResourceView(8);
     graphics.UnbindShaderResourceView(9);
-    //AQUI graphics.UnbindRenderTargetView();
+    //  graphics.UnbindRenderTargetView();
 }

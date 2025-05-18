@@ -413,7 +413,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{1FBC1362-CC56-47AA-9BAC-81E1860520C2}</ProjectGuid>
+    <ProjectGuid>{917949E6-9E59-4A42-A357-DF9FAD61F126}</ProjectGuid>
     <RootNamespace>CoreEngine</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>DXEngine_082</ProjectName>
@@ -515,7 +515,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;core\include;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\ZipUtils_LIB\include;..\..\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib;..\..\ThirdParty\maxminddb_LIB\libmaxminddb-main\include;..\..\ThirdParty\GL3Plus;..\..\ThirdParty\freeglut\include_;C:\WoMA3Dengine\ThirdParty\freeglut-3.6.0\include;..\..\ThirdParty\tiff-3.8.2-src;..\..\ThirdParty\DirectXTex\DirectXTex-jan2023\DirectXTex;..\..\ThirdParty/DirectXTK\Inc;..\..\ThirdParty/TIFF_LIB\include;..\..\ThirdParty/JPG_LIB/include/;..\..\ThirdParty/ZLIB_LIB/include/;..\..\ThirdParty/PNG_LIB/include/;..\..\ThirdParty/\TinyXML_LIB.v2\tinyxml2-10.0.0;..\..\ThirdParty\AUDIO\ALUT_LIB\include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\include\AL;..\..\ThirdParty\AUDIO\VORBIS_LIB\include;..\..\ThirdParty\AUDIO\OGG_LIB\include;C:\WoMA3Dengine\ThirdParty\PPG-master\Engine\Source;C:\WoMA3Dengine\ThirdParty\PPG-master\App</IncludePath>
     <TargetName>CoreEngine_082</TargetName>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);.;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_082;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_082\Libs;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_082\x64\Debug;C:\WoMA3Dengine\CoreEngine_Tutorials\;..\..\ThirdParty\freeglut\lib\x64;Libs/$(Platform)/$(Configuration);..\..\ThirdParty/DirectXTK\Bin\Desktop_2013\x64\Debug;..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;C:\WoMA3Dengine\CoreEngine_Tutorials\x64\Debug;C:\WoMA3Dengine\CoreEngine_Tutorials\Libs\x64\Debug\;..\..\ThirdParty\freeglut-3.6.0\X64LIB\lib\Debug;..\..\ThirdParty\AUDIO\Output\OpenAL32_LIB;..\..\ThirdParty\AUDIO\Output\OGG_LIB;..\..\ThirdParty\AUDIO\Output\ALUT_LIB;..\..\ThirdParty\AUDIO\Output\vorbis_LIB;..\..\ThirdParty\AUDIO\Output\vorbisfile_LIB;C:\WoMA3Dengine\CoreEngine_Tutorials\Libs\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);.;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_082;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_082\Libs;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_082\x64\Debug__;C:\WoMA3Dengine\CoreEngine_Tutorials\;..\..\ThirdParty\freeglut\lib\x64;Libs/$(Platform)/$(Configuration);..\..\ThirdParty/DirectXTK\Bin\Desktop_2013\x64\Debug__;..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;C:\WoMA3Dengine\CoreEngine_Tutorials\x64\Debug__;C:\WoMA3Dengine\CoreEngine_Tutorials\Libs\x64\Debug\__;..\..\ThirdParty\freeglut-3.6.0\X64LIB\lib\Debug__;..\..\ThirdParty\AUDIO\Output\OpenAL32_LIB;..\..\ThirdParty\AUDIO\Output\OGG_LIB;..\..\ThirdParty\AUDIO\Output\ALUT_LIB;..\..\ThirdParty\AUDIO\Output\vorbis_LIB;..\..\ThirdParty\AUDIO\Output\vorbisfile_LIB;C:\WoMA3Dengine\CoreEngine_Tutorials\Libs\;C:\WoMA3Dengine\CoreEngine_Tutorials\Libs\x64\Release</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WRelease|x64'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;core\include;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\ZipUtils_LIB\include;..\..\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib;..\..\ThirdParty\maxminddb_LIB\libmaxminddb-main\include;..\..\ThirdParty\GL3Plus;..\..\ThirdParty\freeglut\include_;C:\WoMA3Dengine\ThirdParty\freeglut-3.6.0\include;..\..\ThirdParty\tiff-3.8.2-src;..\..\ThirdParty\DirectXTex\DirectXTex-jan2023\DirectXTex;..\..\ThirdParty/DirectXTK\Inc;..\..\ThirdParty/TIFF_LIB\include;..\..\ThirdParty/JPG_LIB/include/;..\..\ThirdParty/ZLIB_LIB/include/;..\..\ThirdParty/PNG_LIB/include/;..\..\ThirdParty/\TinyXML_LIB.v2\tinyxml2-10.0.0;..\..\ThirdParty\AUDIO\ALUT_LIB\include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\include\AL;..\..\ThirdParty\AUDIO\VORBIS_LIB\include;..\..\ThirdParty\AUDIO\OGG_LIB\include;C:\WoMA3Dengine\ThirdParty\PPG-master\Engine\Source;C:\WoMA3Dengine\ThirdParty\PPG-master\App</IncludePath>
@@ -669,9 +669,9 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>yes</IntrinsicFunctions>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);ALUT_BUILD_LIBRARY;ALUT_API=extern;DEMO_LEVEL=82;MAINENGINE_LINUX;FREEGLUT_STATIC;RELEASE</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);ASSIMP;DEMO_LEVEL=82;_WINDOWS;__ASSIMP_BUILD_NO_VRML_IMPORTER;WIN32_LEAN_AND_MEAN;__ASSIMP_BUILD_NO_C4D_IMPORTER;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING=1;SHADER_PATH="C:/WoMAengine2023/_EXTERNAL_/assimp/samples/SimpleTexturedDirectx11/SimpleTexturedDirectx11/";CMAKE_INTDIR="Debug";ALUT_BUILD_LIBRARY;ALUT_API=extern;MAINENGINE_LINUX;FREEGLUT_STATIC</PreprocessorDefinitions>
       <ConformanceMode>
       </ConformanceMode>
       <DebugInformationFormat>None</DebugInformationFormat>

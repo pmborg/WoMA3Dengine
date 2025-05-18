@@ -30,12 +30,14 @@
 QuadTree::QuadTree() 
 {
 	CLASSLOADER();
-
+#if defined USE_TINYXML_LOADER //5
+    _xml_loader = &SystemHandle->xml_loader;
+#endif
 	// public:
 	m_QuadRootNode = NULL;
 
 	// private:
-	frustum = NULL;
+	_frustum = NULL;
 
 #ifdef _DEBUG
 	totalLoaded = totalVertexRendered = 0;
@@ -76,7 +78,7 @@ void QuadTree::ReleaseNode(NodeType* node)
 
 void QuadTree::Initialize(SceneNode* worldRootNode)
 {
-	frustum = m_Driver->frustum;	// Save: Application Frustum
+	_frustum = m_Driver->frustum;	// Save: Application Frustum
 
 	m_QuadRootNode = NEW NodeType();			// Create QUAD-ROOT Node:
 
@@ -160,7 +162,7 @@ void QuadTree::RenderNode(NodeType* node)
 {
 	// Check to see if the node can be viewed, height doesn't matter in a quad tree.
 	//bool result = frustum->CheckCube(node->positionX, 0.0f, node->positionZ, node->width/2);   // More accurated but slower
-	bool result = frustum->CheckSphere(node->positionX, 0.0f, node->positionZ, (node->width/2)*1.4142135623730950488016887242097f );   // Faster
+	bool result = _frustum->CheckSphere(node->positionX, 0.0f, node->positionZ, (node->width/2)*1.4142135623730950488016887242097f );   // Faster
 	if (!result) return;
 
 	// If it can be seen then check all four child nodes to see if they can also be seen.
@@ -178,22 +180,26 @@ void QuadTree::RenderNode(NodeType* node)
 	if (count != 0) return;
 
 	// Not really Render! But List All Models/objects to render, on this Node: (this quad is in front of camera)
-    UINT world_xml_objs = (UINT)SystemHandle->xml_loader.theWorld.size(); //Get 
+    UINT world_xml_objs = (UINT)_xml_loader->theWorld.size(); //Get 
+    VirtualModelClass* model;
 	for (int i = 0; i < node->sceneNodes.size(); i++)
 	{
-		VirtualModelClass* model = node->sceneNodes[i]->nodeState.model;
+		 model = node->sceneNodes[i]->nodeState.model;
         
-        if (!model->ModelHASAlfaColor)
-        {
+        //if (!model->ModelHASAlfaColor) //FASTER-AQUI2
+        //{
             UINT modelID = model->m_ObjId;
             float positionX, positionY, positionZ;
-            positionX = SystemHandle->xml_loader.theWorld[modelID].posX;
-            positionY = SystemHandle->xml_loader.theWorld[modelID].translateY;
-            positionZ = SystemHandle->xml_loader.theWorld[modelID].posZ;
-            if ((((DXmodelClass*)model)->m_instanceCount == 0) && !m_Driver->frustum->CheckSphere(positionX, positionY, positionZ, model->boundingSphere))
+            positionX = _xml_loader->theWorld[modelID].posX;
+            positionY = _xml_loader->theWorld[modelID].translateY;
+            positionZ = _xml_loader->theWorld[modelID].posZ;
+            if ((((DXmodelClass*)model)->m_instanceCount == 0) && !_frustum->CheckSphere(positionX, positionY, positionZ, model->boundingSphere)) {
+                _xml_loader->theWorld[modelID].render = false; //FASTER-AQUI2
                 continue;
-        }
-            WOMA::sceneManager->opacModelList.push_back(model);
+            } else
+               _xml_loader->theWorld[modelID].render = true; //FASTER-AQUI2
+        //}
+        WOMA::sceneManager->opacModelList.push_back(model);
 
 	#ifdef _DEBUG
 		totalVertexRendered += node->sceneNodes[i]->nodeState.model->m_vertexCount;

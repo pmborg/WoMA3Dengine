@@ -75,5 +75,5 @@ void ForwardPass::Render(Graphics& graphics, Scene& scene)
     graphics.UnbindShaderResourceView(0);
     graphics.UnbindShaderResourceView(1);
     graphics.UnbindShaderResourceView(4);
-    //AQUI graphics.UnbindRenderTargetView();
+    //  graphics.UnbindRenderTargetView();
 }

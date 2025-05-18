@@ -168,6 +168,7 @@ typedef struct xmlobj3d_
 	int shader = 0;
 	char filename[256];
 	WOMA_OBJECT WOMA_object;
+    bool render = true;
 } xmlobj3d;
 
 class XMLloader

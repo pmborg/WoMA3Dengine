@@ -22,7 +22,7 @@
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234567155;
  
-#define _CRT_SECURE_NO_WARNINGS
+//#define _CRT_SECURE_NO_WARNINGS
 
 #include "OSengine.h"
 #include "OSmain_dir.h"

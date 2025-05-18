@@ -85,7 +85,7 @@ namespace WOMA
 	#endif
 	}
 
-#if defined _DEBUG
+#if (defined(_DEBUG) && !defined(NDEBUG)) && defined WINDOWS_PLATFORM
 	void* woma_malloc(size_t size, const char* file, int line, const char* func)
 	{
 		void* p = malloc(size); // Replace by NEW!

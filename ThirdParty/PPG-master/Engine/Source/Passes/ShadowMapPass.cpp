@@ -53,5 +53,5 @@ void ShadowMapPass::Render(Graphics& graphics, Scene& scene, Texture& shadowMapT
     }
 
     graphics.Clear(DirectX::Colors::Transparent, 1.0f, 0);
-    //AQUI graphics.UnbindRenderTargetView();
+    //  graphics.UnbindRenderTargetView();
 }

@@ -230,7 +230,7 @@ bool CTerrain::LoadHeightMapTerrain(TCHAR* file, float xPos, float zPos, bool sk
 		for (j = 0; j < (int)m_terrainHeight; j++) {
 
 			for (i = 0; i < (int)m_terrainWidth; i++) {
-				height[y][x] = (float)bitmapImage[k]; //AQUI-TERR
+				height[y][x] = (float)bitmapImage[k]; 
 
 				k += 3;
 			}
@@ -412,12 +412,10 @@ void CTerrain::GenerateRandomHeightMapTerrain(UINT randValue, bool Move_down_edg
 
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("Terrain Size: %d x %d\n"), (terrain_squares + 1), (terrain_squares + 1));	// 23
 
-	//srand(randValue);
-
 	// [backterrain]
 	const UINT floatSize = sizeof(float); //4
 	const UINT TerrainSize = (terrain_squares + 1)*(terrain_squares + 1)*floatSize;
-	backterrain = (float*) WOMA::MALLOC(TerrainSize);
+	backterrain = (float*) MALLOC(TerrainSize);
 	for (size_t i = 0; i < (terrain_squares + 1)*(terrain_squares + 1); i++)
 		backterrain[i] = 0;
 
@@ -1074,7 +1072,7 @@ bool CTerrain::initMainTopoTerrainDemo(UINT terrainId)
 
 		// IMG new format equivalente: height[(terrain_squares-1)  - y][x] == m_heightMap[(m_terrainWidth * y) + x]
 		//[2]RASTER NormalizeHeightMap()
-		if (terrainId == 2 || terrainId == 3) //AQUI-TERR
+		if (terrainId == 2 || terrainId == 3) 
 		{
 			//Populate m_heightMap[(m_terrainWidth * j) + i].y
 			
@@ -1115,7 +1113,7 @@ bool CTerrain::initMainTopoTerrainDemo(UINT terrainId)
 
 	// Step 5: Populate: VirtualModelClass* SystemHandle->m_Application->m_TerrainModel[id]
 	//Populate: indices.push_back
-	if (terrainId == 2 || terrainId == 3 || terrainId == 4)//AQUI-TERR
+	if (terrainId == 2 || terrainId == 3 || terrainId == 4)
 	{
 		std::vector<STRING> Textures;
 		Textures.push_back(TERRAIN_LEVEL50_TEXTURE);
@@ -1549,7 +1547,7 @@ void CTerrain::CreateTerrainModel(UINT id, std::vector<STRING> Textures, SHADER_
 	//ModelTextureVertexType
 	//float x, y, z;
 	//float tu, tv;
-	if (id == 3) ASSERT(SystemHandle->m_Application->m_TerrainModel[id]->LoadTexture(TEXT("id3:terrain"), m_Driver, shader_type, &Textures, &modelVertexVector3, &indices)); //AQUI-TERR
+	if (id == 3) ASSERT(SystemHandle->m_Application->m_TerrainModel[id]->LoadTexture(TEXT("id3:terrain"), m_Driver, shader_type, &Textures, &modelVertexVector3, &indices)); 
 #endif
 #else
 	if (id == 0) ASSERT(SystemHandle->m_Application->m_TerrainModel[id]->LoadTexture(TEXT("id0:under water"), m_Driver, shader_type, &Textures, &modelVertexVector0));

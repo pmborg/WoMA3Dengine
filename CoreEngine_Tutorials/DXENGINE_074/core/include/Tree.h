@@ -19,8 +19,6 @@
 #ifndef _TREE_H_
 #define _TREE_H_
 
-//#include  "womadriverclass.h"
-
 //-----------------------------------------------------------------------------   
 // Name: Tree   
 // Desc: Simple structure to hold data for rendering a tree   

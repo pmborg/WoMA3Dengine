@@ -17,6 +17,7 @@
 // Original Code Adapted from: https://github.com/nicholaschuayunzhi/PPG
 
 #pragma once
+#pragma warning( disable : 4099 )
 // System includes
 #define NOMINMAX //https://stackoverflow.com/questions/5004858/stdmin-gives-error
 #include <windows.h>
@@ -65,7 +66,7 @@ inline DirectX::XMFLOAT2 XMFLOAT2Subtract(DirectX::XMFLOAT2 a, DirectX::XMFLOAT2
 inline void SetDebugName(ID3D11DeviceChild* child, const std::string& name)
 {
     if (child != nullptr)
-        child->SetPrivateData(WKPDID_D3DDebugObjectName, name.size(), name.c_str());
+        child->SetPrivateData(WKPDID_D3DDebugObjectName, (UINT)name.size(), name.c_str());
 }
 
 inline float GetFloatAtIndex(DirectX::XMFLOAT4& vec, int i)
