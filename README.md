@@ -49,8 +49,8 @@ Try to Change the driver on the fly without the need of close and open the Appli
 
 - <b>DX83: ASSIMP: Update billboard shader:</b><br>
  
-<b>RELEASE version (1920x1080 Fullscreen) - about 1070 FPS (using AVX2):</b><br>
-<b>RELEASE version (1920x1080 Fullscreen) - about 1321 FPS (using AVX512):</b>
+<b>RELEASE version (1920x1080 Fullscreen) - about 1070 FPS (using AVX2) @target WIN10:</b><br>
+<b>RELEASE version (1920x1080 Fullscreen) - about 1321 FPS (using AVX512) @target WIN11:</b>
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_083-RELEASE.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_083-RELEASE.png)	
 
 <hr>
