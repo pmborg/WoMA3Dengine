@@ -47,14 +47,21 @@ Try to Change the driver on the fly without the need of close and open the Appli
 
 <hr>
 
+- <b>DX83: ASSIMP: Loading an animated mesh:</b><br>
+ 
+<b>RELEASE version - about 1070 FPS (using AVX2):</b><br>
+<b>RELEASE version - about 1321 FPS (using AVX512):</b>
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_083-RELEASE.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_083-RELEASE.png)	
+
+<hr>
+
 - <b>DX82: ASSIMP: Loading an animated mesh:</b><br>
  
 <b>DEBUG version:</b>
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_082.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_082.png)	
 
-<b>RELEASE version - about 1070 FPS (using AVX2):</b><br>
-<b>RELEASE version - about 1321 FPS (using AVX512):</b>
-![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_082.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_082-RELEASE.png)	
+<b>RELEASE version - about 1070 FPS (using AVX512):</b><br>
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_082-RELEASE.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_082-RELEASE.png)	
 
 <hr>
 <h2>3D - ADVANCED MESH TUTORIAL SERIES: END</h2>
