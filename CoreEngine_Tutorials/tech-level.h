@@ -506,9 +506,9 @@
         #define TEXT_TEST
     #endif
 	
-	
-
-
+	#if DX_ENGINE_LEVEL >= 83
+	// Updated billboard shader
+	#endif
 
 	
 	

@@ -136,9 +136,11 @@
 	//#define LEVEL 77  // USE INSTANCES FOR TREES										   
     //#define LEVEL 78  // COLISION DETECTION
 
-    #define LEVEL 80	// ASSIMP-ENGINE	
+    #define LEVEL 82	// ASSIMP-ENGINE	
+	#define LEVEL 83	// Updated billboard shader
 	
 	#endif
+	
 #endif
 
 #if !defined LEVEL

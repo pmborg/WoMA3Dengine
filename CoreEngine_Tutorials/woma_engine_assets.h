@@ -510,6 +510,6 @@
     #define ASSIMP_MODEL_BOBLAMPCLEAN TEXT("C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\Data\\Models\\boblampclean\\boblampclean.md5mesh")
 #endif
 #if DX_ENGINE_LEVEL == 83
-	#define DEMO_TITLE TEXT("83: ASSIMP: Animated / walking mesh on the terrain, following a path")
+	#define DEMO_TITLE TEXT("83: Updated billboard shader")
 	#define WORLD_XML TEXT("world_83.xml")
 #endif
