@@ -47,7 +47,7 @@ Try to Change the driver on the fly without the need of close and open the Appli
 
 <hr>
 
-- <b>DX83: ASSIMP: Updated billboard shader:</b><br>
+- <b>DX83: ASSIMP: Update billboard shader:</b><br>
  
 <b>RELEASE version - about 1070 FPS (using AVX2):</b><br>
 <b>RELEASE version - about 1321 FPS (using AVX512):</b>
