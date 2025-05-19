@@ -864,6 +864,10 @@ void ParseCommandLineArgs(int argc, char* argv[])
             _tcsnicmp(argv[i], "/renderOnce", _tcslen(argv[i])) == 0)
         {
             WOMA::renderOnce = true;
+            HWND hWnd = GetConsoleWindow();
+            if (hWnd != NULL) {
+                ShowWindow(hWnd, SW_MINIMIZE);
+            }
         }
         if (_tcsnicmp(argv[i], "-Xpos", _tcslen(argv[i])) == 0 ||
             _tcsnicmp(argv[i], "/Xpos", _tcslen(argv[i])) == 0)

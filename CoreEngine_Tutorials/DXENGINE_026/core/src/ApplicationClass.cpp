@@ -343,6 +343,7 @@ void ApplicationClass::WOMA_APPLICATION_Shutdown()
 		SAFE_SHUTDOWN_MODELGL3(m_lightRayModel);
 #endif
 #endif
+
 }
 
 //-----------------------------------------------------------------------------------------

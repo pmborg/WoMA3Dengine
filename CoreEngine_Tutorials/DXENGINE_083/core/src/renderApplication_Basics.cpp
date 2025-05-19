@@ -67,17 +67,15 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 //-------------------------------------------------------------------------------------------
 {
 	totalRendered = 0;
-    startNewFrame = true;
-
 	// [1] Animations:
 	// --------------------------------------------------------------------------------------------
 #if defined USE_ASSIMP && defined MAIN_RENDER_ASSIMP // ASSIMP: Skin-MESH (0.15ms)
     static Application demoapp;
-
-    if (m_Driver->RenderfirstTime) {
+    if (m_Driver->RenderfirstTime) 
+    {
         demo.Start(demoapp.m_Graphics, ASSIMP_MODEL_BOBLAMPCLEAN);
         demo.assimpSceneModel = std::unique_ptr<SceneModel>(SceneModel::LoadModelToScene(ASSIMP_MODEL_BOBLAMPCLEAN, demo.scene, demoapp.m_Graphics));
-        demo.assimpSceneModel2 = std::unique_ptr<SceneModel>(SceneModel::LoadModelToScene(ASSIMP_MODEL_BOBLAMPCLEAN, demo.scene, demoapp.m_Graphics));
+
     }
 
     static DWORD previousTime = timeGetTime();
@@ -196,7 +194,7 @@ void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, 
 	positionY = SystemHandle->xml_loader.theWorld[modelID].translateY;
 	positionZ = SystemHandle->xml_loader.theWorld[modelID].posZ;
 
-	if ( (((DXmodelClass*)model)->m_instanceCount == 0) && !m_Driver->frustum->CheckSphere(positionX, positionY, positionZ, model->boundingSphere) && ((!m_Driver->RenderfirstTime))) //SYNC with QuadTree.cpp
+	if ( (((DXmodelClass*)model)->m_instanceCount == 0) && !m_Driver->frustum->CheckSphere(positionX, positionY, positionZ, model->boundingSphere*2) && ((!m_Driver->RenderfirstTime))) //SYNC with QuadTree.cpp
 		return;
 
 	// Set the initial position of the listener to be in the middle of the scene.

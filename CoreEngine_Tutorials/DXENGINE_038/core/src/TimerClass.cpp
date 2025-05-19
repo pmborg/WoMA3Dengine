@@ -101,8 +101,6 @@ void TimerClass::Frame()
 	QueryPerformanceCounter((LARGE_INTEGER*)& currentTime);
 	timeDifference = (float)(currentTime - m_startTime);
 #else
-	//::gettimeofday(&currentTime, NULL);
-	//timersub(&currentTime, &m_startTime, &timeDifference);
 	currentTime = timeGetTime();
 	timeDifference = (currentTime - m_startTime);
 #endif
@@ -114,14 +112,6 @@ void TimerClass::Frame()
 //GetTime returns the most recent frame time that was calculated.
 double TimerClass::GetTime()
 {
-	/*
-#if defined LINUX_PLATFORM || defined ANDROID_PLATFORM 
-	Sleep(1000*1000);	//1 segundo = 1000*1000us
-#elif defined WINDOWS_PLATFORM
-	Sleep(1000);		//1 segundo = 1000ms
-#endif
-	_tprintf("GetTime(): %f\n", m_frameTime);
-	*/
 	return m_frameTime;
 }
 

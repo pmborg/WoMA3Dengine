@@ -36,6 +36,12 @@
 #define N_GRASS 2000
 #define N_BUSH  750
 
+//#define N_BILLBOARD 1
+//#define N_FENCES 55
+//#define N_FIRE 1
+//#define N_GRASS 1
+//#define N_BUSH  1
+
 extern ID3D11ShaderResourceView* billFileLoaded[];
 
 extern Tree			m_Trees[N_BILLBOARD + N_FENCES + N_FIRE + N_GRASS + N_BUSH];	// Array of tree info. NOTE: SHARED on 2 (BILLBOARD Instances)
@@ -52,8 +58,6 @@ public:
 	xmlobj3d* fillxml(int id, UINT type);
 	bool Initialize(int m_terrainWidth, int m_terrainHeight, bool instance);
 	void Shutdown();
-	bool BillBoardRender(bool instance);
-
 	CTerrain* mainTerrainPath = NULL;
 
 public:
@@ -61,11 +65,10 @@ int		BillrenderCount=0;
 UINT	billTotal = 0;
 
 private:
-
-VirtualModelClass* fence;
-VirtualModelClass* fire;
-VirtualModelClass* grass;
-FrustumClass*		m_FrustumGrass;	
+VirtualModelClass*  fence;
+VirtualModelClass*  fire;
+VirtualModelClass*  grass;
+FrustumClass*       m_FrustumGrass;	
 
 UINT				billNames_length;
 };

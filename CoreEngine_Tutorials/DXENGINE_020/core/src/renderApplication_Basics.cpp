@@ -62,26 +62,8 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 //-------------------------------------------------------------------------------------------
 {
 	totalRendered = 0;
-    startNewFrame = true;
-
 	// [1] Animations:
 	// --------------------------------------------------------------------------------------------
-#if defined USE_ASSIMP && defined MAIN_RENDER_ASSIMP // ASSIMP: Skin-MESH (0.15ms)
-    static Application demoapp;
-
-    if (m_Driver->RenderfirstTime) {
-        demo.Start(demoapp.m_Graphics, ASSIMP_MODEL_BOBLAMPCLEAN);
-        demo.assimpSceneModel = std::unique_ptr<SceneModel>(SceneModel::LoadModelToScene(ASSIMP_MODEL_BOBLAMPCLEAN, demo.scene, demoapp.m_Graphics));
-    }
-
-    static DWORD previousTime = timeGetTime();
-    DWORD currentTime = timeGetTime();
-    float deltaTime = (currentTime - previousTime) / 1000.0f;
-    previousTime = currentTime;
-
-    demo.Update(demoapp.m_Graphics, deltaTime);
-    demo.Render(demoapp.m_Graphics);
-#endif
 
 	// [2] SceneManager: Process/Filter and Create Lists/trees of objects to render from: WORLD.XML
 	// --------------------------------------------------------------------------------------------

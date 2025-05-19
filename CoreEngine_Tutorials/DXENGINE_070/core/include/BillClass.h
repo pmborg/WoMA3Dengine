@@ -51,8 +51,6 @@ public:
 	xmlobj3d* fillxml(int id, UINT type);
 	bool Initialize(int m_terrainWidth, int m_terrainHeight, bool instance);
 	void Shutdown();
-	bool BillBoardRender(bool instance);
-
 	CTerrain* mainTerrainPath = NULL;
 
 public:

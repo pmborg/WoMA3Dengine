@@ -135,9 +135,12 @@
 	//#define LEVEL 76  // UTIL: INTRO VIDEO DEMO
 	//#define LEVEL 77  // USE INSTANCES FOR TREES										   
     //#define LEVEL 78  // COLISION DETECTION
+	
+	//#define LEVEL 79  // EXPAND MINI-MAP
 
-    #define LEVEL 82	// ASSIMP-ENGINE	
-	#define LEVEL 83	// Updated billboard shader
+    //#define LEVEL 82	// ASSIMP-ENGINE	
+	//#define LEVEL 83	// Updated billboard shader
+	#define LEVEL 84	// ASSIMP: Animated / walking mesh on the terrain, following a path								
 	
 	#endif
 	

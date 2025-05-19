@@ -51,6 +51,17 @@ namespace WOMA
 	vec3 operator + (const vec3& u, const vec3& v);
 	vec3 operator + (const vec3& v, const float s);
 	vec3 operator + (const float s, const vec3& v);
+#if true
+	vec3 operator - (const vec3& u, const vec3& v);
+	vec3 operator - (const vec3& v, const float s);
+	vec3 operator - (const float s, const vec3& v);
+	vec3 operator * (const vec3& u, const vec3& v);
+	vec3 operator * (const vec3& v, const float s);
+	vec3 operator * (const float s, const vec3& v);
+	vec3 operator / (const vec3& u, const vec3& v);
+	vec3 operator / (const vec3& v, const float s);
+	vec3 operator / (const float s, const vec3& v);
+#endif
 }
 
 

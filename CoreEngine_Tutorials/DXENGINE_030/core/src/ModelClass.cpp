@@ -901,7 +901,10 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
                                 }
 
                                 fileNamePath = MathLibPath + fileNamePath;	// TO Support TEMP:
-                                fileNamePath = WOMA::LoadFile((TCHAR*) fileNamePath.c_str());
+                                STRING pathtoengine = TEXT("../");
+                                if (fileNamePath.substr(0, 3) != pathtoengine)
+                                    fileNamePath = WOMA::LoadFile((TCHAR*)fileNamePath.c_str());
+                                //fileNamePath = WOMA::LoadFile((TCHAR*) fileNamePath.c_str());
                                 hr = S_OK;
 
                                 ID3D11ShaderResourceView* tempMeshSRV=NULL;

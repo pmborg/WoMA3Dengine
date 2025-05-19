@@ -33,6 +33,9 @@ public:
     std::unique_ptr<SceneModel> assimpSceneModel;
     std::unique_ptr<SceneModel> assimpSceneModel2;
     Scene scene;
+#if DX_ENGINE_LEVEL >= 84 && defined (SCENE_SKIN)
+    Scene scene2;
+#endif
 
 private:
 
@@ -43,6 +46,8 @@ private:
     //  std::unique_ptr<BlitPass> blitPass;
 	BlitPass* blitPass;
     std::unique_ptr<GBufferPass> gBufferPass;
+    //std::unique_ptr<GBufferPass> gBufferPass2;
+
     std::unique_ptr<DeferredPass> deferredPass;
     std::unique_ptr<SSAOPass> ssaoPass;
     std::unique_ptr<ToneMapPass> toneMapPass;
@@ -102,6 +107,7 @@ public:
         auto& toneMappedTexture = *(toneMappedColour.get());
 		//VertexShader.cso
         gBufferPass = std::make_unique<GBufferPass>(graphics, *diffuse.get(), *metalRough.get(), *normals.get(), *emissive.get());
+        //gBufferPass2 = std::make_unique<GBufferPass>(graphics, *diffuse.get(), *metalRough.get(), *normals.get(), *emissive.get());
 
 		//Fullscreen.vs.cso
         deferredPass = std::make_unique<DeferredPass>(graphics, colourTexture, *diffuse.get(), *metalRough.get(), *normals.get(), *emissive.get());
@@ -139,9 +145,18 @@ public:
             .AddLight(pointLight)
             .AddLight(spotLight)
             .SetGlobalAmbient(XMFLOAT4(0.1, 0.1, 0.1, 1));
+#if DX_ENGINE_LEVEL >= 84 && defined (SCENE_SKIN)
+        scene2.lightManager
+            .AddLight(dirLight)
+            .AddLight(pointLight)
+            .AddLight(spotLight)
+            .SetGlobalAmbient(XMFLOAT4(0.1, 0.1, 0.1, 1));
+#endif
 		
         scene.Start(graphics);
-
+#if DX_ENGINE_LEVEL >= 84 && defined (SCENE_SKIN)
+        scene2.Start(graphics);
+#endif
         auto deviceContext = graphics.m_DeviceContext;
         linearSampler->Use(deviceContext, 0);
         pointSampler->Use(deviceContext, 1);
@@ -150,12 +165,70 @@ public:
     void Update(Graphics& graphics, float deltaTime) override
     {
 
-        animJob.UpdateTimeElapsed(scene, deltaTime);		//!!!!!!!!
+        animJob.UpdateTimeElapsed(scene, deltaTime);
+#if DX_ENGINE_LEVEL >= 84 && defined (SCENE_SKIN)
+        animJob.UpdateTimeElapsed(scene2, deltaTime);
+#endif
     }
 
 	void Render(Graphics& graphics) 
 	{
-		gBufferPass->Render(graphics, scene);
+
+        #define m_Driver driverList[SystemHandle->AppSettings->DRIVER]
+        {
+            XMMATRIX world = XMMatrixIdentity();
+            //Scale:
+            //_11
+            //_22
+            //_33
+            world.r[0].m128_f32[0] = world.r[1].m128_f32[1] = world.r[2].m128_f32[2] = 0.2f;
+
+            XMMATRIX rotX = XMMatrixRotationX(PI / 2);
+            world *= rotX;
+            //XMMATRIX rotY = XMMatrixRotationY(PI / 2);
+            //world *= rotY;
+            //XMMATRIX rotZ = XMMatrixRotationZ(PI/2);
+            //world *= rotZ;
+
+            //Translate:
+            world.r[3].m128_f32[0] = 39;    //_41: X
+            world.r[3].m128_f32[1] = 0.4f;  //_42: Y 
+            world.r[3].m128_f32[2] = 20;    //_43: Z
+
+            scene.UpdateModel(graphics, world);
+        }
+        gBufferPass->Render(graphics, scene);
+
+#if defined SCENE_SKIN
+        {
+            XMMATRIX world = XMMatrixIdentity();
+            //Scale:
+            //_11
+            //_22
+            //_33
+            world.r[0].m128_f32[0] = world.r[1].m128_f32[1] = world.r[2].m128_f32[2] = 0.7f;
+
+            XMMATRIX rotX = XMMatrixRotationX(PI/2);
+            world *= rotX;
+            XMMATRIX rotY = XMMatrixRotationY(PI +SystemHandle->m_Application->m_characterPos->m_rotationY);
+            world *= rotY;
+            //XMMATRIX rotZ = XMMatrixRotationZ(PI/2);
+            //world *= rotZ;
+
+            //Translate:
+            world.r[3].m128_f32[0] = SystemHandle->m_Application->m_characterPos->m_positionX;  //_41: X
+            world.r[3].m128_f32[1] = SystemHandle->m_Application->m_characterPos->m_positionY;  //_42: Y 
+            world.r[3].m128_f32[2] = SystemHandle->m_Application->m_characterPos->m_positionZ;  //_43: Z
+
+            scene2.UpdateModel(graphics, world);
+        }
+        gBufferPass->Render(graphics, scene2);
+#endif
+
+
+
+
+
 	}
 
     void End()

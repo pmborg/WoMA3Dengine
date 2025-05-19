@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{A24D8902-4013-45E9-B835-8441D1D4CD09}</ProjectGuid>
+    <ProjectGuid>{F5DD3F17-CEBC-42AF-B0D4-C6447C271865}</ProjectGuid>
     <RootNamespace>Engine</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>AssimpEngine</ProjectName>

@@ -52,8 +52,6 @@ public:
 	xmlobj3d* fillxml(int id, UINT type);
 	bool Initialize(int m_terrainWidth, int m_terrainHeight, bool instance);
 	void Shutdown();
-	bool BillBoardRender(bool instance);
-
 	CTerrain* mainTerrainPath = NULL;
 
 public:
@@ -61,8 +59,7 @@ int		BillrenderCount=0;
 UINT	billTotal = 0;
 
 private:
-
-VirtualModelClass* fence;
+VirtualModelClass*  fence;
 
 UINT				billNames_length;
 };

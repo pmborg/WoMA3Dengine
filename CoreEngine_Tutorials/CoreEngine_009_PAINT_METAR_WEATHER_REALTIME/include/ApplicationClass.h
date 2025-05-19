@@ -73,8 +73,6 @@
 #define MAX_CLIENTS 1
 #endif
 
-
-
 #if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
 #include "virtualModelClass.h"
 extern std::vector<VirtualModelClass*> m_screenShots;
@@ -119,10 +117,6 @@ extern UINT g_NetID;
 
 #if defined SCENE_TERRAIN_QUAD_TREE
 #include "TerrainQuadtreeClass.h"
-#endif
-
-#if defined (SCENE_COMPOUND)
-#include "compound.h"
 #endif
 
 #if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION
@@ -223,7 +217,7 @@ public:
 	void Benchmark();
 	#endif
 
-	bool Initialize();
+	//bool Initialize();
 	bool Start();
 	void WOMA_APPLICATION_Shutdown();
 
@@ -254,10 +248,12 @@ public:
 #endif
 
 	UINT totalRendered = 0;
-    bool startNewFrame = true;
+
 #if defined USE_LIGHT_RAY
 	void initLightRay();
 #endif
+
+//83&84:
 
 	//TERRAINs:
 

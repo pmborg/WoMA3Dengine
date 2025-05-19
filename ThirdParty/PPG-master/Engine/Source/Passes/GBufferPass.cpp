@@ -56,36 +56,11 @@ void GBufferPass::Render(Graphics& graphics, Scene& scene)
 {
     auto deviceContext = graphics.m_DeviceContext;
 
-    graphics.ClearRenderTargetView(m_Diffuse.GetRTV(), Colors::Transparent);
-    graphics.ClearRenderTargetView(m_MetalRough.GetRTV(), Colors::Transparent);
-    graphics.ClearRenderTargetView(m_Normals.GetRTV(), Colors::Transparent);
-    graphics.ClearRenderTargetView(m_Emissive.GetRTV(), Colors::Transparent);
+    //graphics.ClearRenderTargetView(m_Diffuse.GetRTV(), Colors::Transparent);
+    //graphics.ClearRenderTargetView(m_MetalRough.GetRTV(), Colors::Transparent);
+    //graphics.ClearRenderTargetView(m_Normals.GetRTV(), Colors::Transparent);
+    //graphics.ClearRenderTargetView(m_Emissive.GetRTV(), Colors::Transparent);
 
-    #define m_Driver driverList[SystemHandle->AppSettings->DRIVER]
-    if (m_Driver->RenderfirstTime) 
-    {
-        XMMATRIX static world = XMMatrixIdentity();
-        //Scale:
-        //_11
-        //_22
-        //_33
-        world.r[0].m128_f32[0] = world.r[1].m128_f32[1] = world.r[2].m128_f32[2] = 0.2f;  
-
-        XMMATRIX rotX = XMMatrixRotationX(PI / 2);
-        world *= rotX;
-        //XMMATRIX rotY = XMMatrixRotationY(PI / 2);
-        //world *= rotY;
-        //XMMATRIX rotZ = XMMatrixRotationZ(PI/2);
-        //world *= rotZ;
-
-        //Translate:
-        world.r[3].m128_f32[0] = 39;    //_41: X
-        world.r[3].m128_f32[1] = 0.4f;  //_42: Y 
-        world.r[3].m128_f32[2] = 20;    //_43: Z
-
-        scene.UpdateModel(graphics, world);
-    }
-    
     scene.UseCamera(graphics, scene.m_MainCamera); // VIEW / PROJ
 
     scene.lightManager.Use(deviceContext, 1);

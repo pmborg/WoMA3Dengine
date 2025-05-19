@@ -79,8 +79,6 @@
 #define MAX_CLIENTS 1
 #endif
 
-
-
 #define PASS_OPAC			0
 #define PASS_TRANSPARENT	1
 #define PASS_SHADOWS		2
@@ -148,10 +146,6 @@ struct InstanceType
 
 #if defined SCENE_TERRAIN_QUAD_TREE
 #include "TerrainQuadtreeClass.h"
-#endif
-
-#if defined (SCENE_COMPOUND)
-#include "compound.h"
 #endif
 
 #if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION
@@ -252,7 +246,7 @@ public:
 	void Benchmark();
 	#endif
 
-	bool Initialize();
+	//bool Initialize();
 	bool Start();
 	void WOMA_APPLICATION_Shutdown();
 
@@ -299,11 +293,28 @@ public:
 #endif
 
 	UINT totalRendered = 0;
-    bool startNewFrame = true;
+
 	UINT world_xml_objs = 0;
 	float billangle = 0;
 #if defined USE_LIGHT_RAY
 	void initLightRay();
+#endif
+
+//83&84:
+    // =======================
+    // SAVE WALK
+    // =======================
+    struct Filme
+    {
+        INT64 timeFrame;
+        float X, Y, Z;
+        float rotY;
+    }Filme_;
+
+    Filme filmeKey;
+
+#ifdef SAVE_WALK
+    static std::vector<Filme> saveFilme;
 #endif
 
 	//TERRAINs:

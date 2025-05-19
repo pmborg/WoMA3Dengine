@@ -51,13 +51,6 @@ extern shaderTree shaderManager_41[];
 extern shaderTree shaderManager_50[];
 extern shaderTree shaderManager_51[];
 
-#ifndef DEG2RAD
-	#define DEG2RAD(x)  ((float)(x) * (PI/180.0f))
-#endif
-#ifndef RAD2DEG
-	#define RAD2DEG(x)  ((float)(x) * (180.0f/PI))
-#endif
-
 //-------------------------------------------------------------------------------------------------------------
 #if defined DX11 || defined DX9
         // 21: SHADER_COLOR: v + Kd
@@ -1414,8 +1407,6 @@ namespace DirectX {
 		}
 #endif
 
-        //if (!SystemHandle->m_Application->startNewFrame)
-        //    return;
 		if (m_shaderType == SHADER_COLOR || 
             m_shaderType == SHADER_TEXTURE_LIGHT_FAST ||
             m_shaderType == SHADER_Terrain_Texture_DEMO61
@@ -1533,7 +1524,6 @@ namespace DirectX {
 		}
 #endif
 
-        SystemHandle->m_Application->startNewFrame = false;
 }
 
 

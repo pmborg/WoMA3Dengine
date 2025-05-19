@@ -193,7 +193,7 @@ void QuadTree::RenderNode(NodeType* node)
             positionX = _xml_loader->theWorld[modelID].posX;
             positionY = _xml_loader->theWorld[modelID].translateY;
             positionZ = _xml_loader->theWorld[modelID].posZ;
-            if ((((DXmodelClass*)model)->m_instanceCount == 0) && !_frustum->CheckSphere(positionX, positionY, positionZ, model->boundingSphere)) {
+            if ((((DXmodelClass*)model)->m_instanceCount == 0) && !_frustum->CheckSphere(positionX, positionY, positionZ, model->boundingSphere*2)) {
                 _xml_loader->theWorld[modelID].render = false; //FASTER-AQUI2
                 continue;
             } else

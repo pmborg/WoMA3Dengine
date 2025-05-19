@@ -507,8 +507,14 @@
     #endif
 	
 	#if DX_ENGINE_LEVEL >= 83
-	// Updated billboard shader
+        //#define SAVE_WALK
+	    // Updated billboard shader & SAVE FILME
 	#endif
+
+    #if DX_ENGINE_LEVEL >= 84 //#if TUTORIAL_CHAP >= 100
+	    #define LOAD_WALK
+        #define SCENE_SKIN
+    #endif
 
 	
 	

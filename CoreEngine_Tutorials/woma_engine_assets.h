@@ -513,3 +513,11 @@
 	#define DEMO_TITLE TEXT("83: Updated billboard shader")
 	#define WORLD_XML TEXT("world_83.xml")
 #endif
+#if DX_ENGINE_LEVEL == 84
+	#define DEMO_TITLE TEXT("84: ASSIMP: Animated / walking mesh on the terrain, following a path")
+	#define WORLD_XML TEXT("world_84.xml")
+#endif
+#if DX_ENGINE_LEVEL >= 84
+    #define ASSIMP_MODEL_FEMALE TEXT("C:\\WoMAengine2023\\engine\\data\\scene84SKINMESH\\Female.md5mesh")
+    #define MODEL_FEMALE_PATH TEXT("C:\\WoMAengine2023\\engine\\data\\scene84SKINMESH\\female-character-path\\character.txt")
+#endif					 

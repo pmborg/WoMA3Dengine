@@ -42,7 +42,6 @@ public:
 
 	//SetFrameTime is used to keep the viewer/camera in sync with the speed of the application.
 	void SetFrameTime(double);
-	void GetRotation(float&);
 
 	//The movement functions are called to move the viewer/camera based on the user input.
 	void MoveForward(bool, bool ctrl, bool mouseWhell, bool water = false);

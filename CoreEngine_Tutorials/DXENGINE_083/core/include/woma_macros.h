@@ -241,4 +241,12 @@ extern const wchar_t* GetWC(const char* c);
 	#define Publish_Quit_Message(){ return false; }
 #endif
 
+
+#ifndef DEG2RAD
+#define DEG2RAD(x)  ((float)(x) * (PI/180.0f))
+#endif
+#ifndef RAD2DEG
+#define RAD2DEG(x)  ((float)(x) * (180.0f/PI))
+#endif
+
 #endif

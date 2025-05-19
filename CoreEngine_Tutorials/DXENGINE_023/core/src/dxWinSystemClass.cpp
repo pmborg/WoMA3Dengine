@@ -139,7 +139,6 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
     if (WOMA::renderOnce)
         WOMA::woma_timer = 0;
 
-
 	//MAIN LOOP: (single thread version for DEBUG)
 	WOMA::main_loop_state = 0;
 	do
