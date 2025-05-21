@@ -150,6 +150,7 @@ public:
 	STRING			ComputerName;
 
 	void FrameUpdate();
+    void ParseCommandLineArgs(int argc, char* argv[]);
 
 	resolutionType		resolution;
 

@@ -71,17 +71,17 @@ WinSystemClass::~WinSystemClass()
 	SystemHandle = NULL;
 }
 
-bool WinSystemClass::APPLICATION_CORE_SYSTEM()
+bool WinSystemClass::APPLICATION_BEFORE_WINDOW()
 {
 	WOMA_LOGManager_DebugMSG("WinSystemClass::APPLICATION_CORE_SYSTEM()\n");
 
 	WomaMessageBox(WOMA::strConsoleTitle, TEXT("WOMA Hello World!"), MB_OK);
-	return false; //false mean exit now
+	return false; //false means exit now and dont enter on main loop
 
 	return true;
 }
 
-bool WinSystemClass::APPLICATION_CORE_INIT_DONE()
+bool WinSystemClass::APPLICATION_AFTER_WINDOW()
 {
     WOMA_LOGManager_DebugMSG("WinSystemClass::APPLICATION_CORE_INIT_DONE()\n");
 
@@ -95,27 +95,27 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	//  SystemClass::SystemClass()				Run: 1st - OS common    - WOMA::APP_NAME
 	//	ApplicationClass::ApplicationClass()	Run: 2nd - User: level  - ApplicationClass::Start()
 	//	WinSystemClass::WinSystemClass()		Run: 3th - Start Timers - WinSystemClass::WinSystemClass_init();
-	IF_NOT_RETURN_FALSE(APPLICATION_CORE_SYSTEM()); // MyRegisterClass()
 
-#if defined USE_SYSTEM_CHECK // BEFORE: ApplicationInitMainWindow()
+	IF_NOT_RETURN_FALSE(APPLICATION_BEFORE_WINDOW());
+#if defined USE_SYSTEM_CHECK                                // BEFORE: APPLICATION_INIT_MAIN_WINDOW()
 	IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());		// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 
 #endif
+    IF_NOT_RETURN_FALSE(APPLICATION_AFTER_WINDOW());
 
 #if defined USE_INTRO_VIDEO_DEMO // WINDOWS START-VIDEO: Start DEMO INTRO (MP4): (Give Time to Unpack/Load Resources)
 	DXsystemHandle->g_DShowPlayer = NEW DShowPlayer(m_hWnd);	//INTRO MOVIE: mpg player
 	IF_FAILED_RETURN_FALSE(DXsystemHandle->PlayIntroMovie(WOMA::LoadFile(VIDEO_INTRO)));	// VIDEO DEMO
 #endif
 #if defined USE_PROCESS_OS_KEYS
-	IF_NOT_RETURN_FALSE(InitOsInput());						// INIT-INPUT Devices, NOTE: AFTER: ApplicationInitMainWindow()
+	IF_NOT_RETURN_FALSE(InitOsInput());						// INIT-INPUT Devices, NOTE: AFTER: APPLICATION_INIT_MAIN_WINDOW()
 #endif
-    IF_NOT_RETURN_FALSE(APPLICATION_CORE_INIT_DONE());
 // ########################################### LOAD DRIVERS ###########################################
 #if defined USE_SYSTEM_CHECK
 	InitializeSystemScreen(10, 10); // SETUP SCREEN: F1,F2,F3,F4,F5,F6 (RUNNING NOW ON: PaintSetup())
 #endif
 
  // ################################################# INIT DRIVERS ###################################
-	
+
 	return true; // GREEN LIGHT: to Start Rendering! :)
 }
 

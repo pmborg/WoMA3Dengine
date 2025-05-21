@@ -36,7 +36,7 @@ void	PaintSplashScreen(HDC hdc);
 
 
 // ---------------------------------------------------------------------------------------------
-LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
+LRESULT CALLBACK WOMA_PAINT_MessageHandler(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 // ---------------------------------------------------------------------------------------------
 {
 	switch (umessage)
@@ -46,39 +46,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 
 		break;
 	}
-#if defined ALLOW_CBIND_PROGRESS_BAR
-	case WM_DRAWITEM: // DRAW TEXT FROM PROGRESS BAR
-		// --------------------------------------------------------------------------------------------
-	{
-        if (WOMA::game_state <= GAME_RUN) {
-		try {
-			LPDRAWITEMSTRUCT pDIS = (LPDRAWITEMSTRUCT)lparam;
-			if (pDIS->hwndItem == SystemHandle->settingstext) {
-				SetBkColor(pDIS->hDC, TRANSPARENT);
-				SetTextColor(pDIS->hDC, RGB(200, 200, 200));
-				TCHAR staticText[99];
-				int len = (int)SendMessage(SystemHandle->settingstext, WM_GETTEXT, ARRAYSIZE(staticText), (LPARAM)staticText);
-
-				TextOut(pDIS->hDC, pDIS->rcItem.left, pDIS->rcItem.top, staticText, len);
-			}
-		}
-		catch (...) {
-			// Log or handle the exception gracefully
-		}
-        }
-		break;
-	}
-#endif
-
-#ifdef _EXTRA_DEBUG
-	default:
-	{
-		WOMA::logManager->DEBUG_MSG(TEXT("Msg: %04X \n"), umessage);
-	}
-#endif
 
 	}
-	return SystemHandle->MessageHandler(hwnd, umessage, wparam, lparam);
+	return SystemHandle->WOMA_SYSTEM_MessageHandler(hwnd, umessage, wparam, lparam);
 }
 
 #endif

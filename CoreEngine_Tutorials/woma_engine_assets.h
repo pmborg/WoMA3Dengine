@@ -43,6 +43,11 @@
 #if CORE_ENGINE_LEVEL == 2
 	#define DEMO_TITLE TEXT("02: Adding the MAIN WINDOW! (basic static version)")
 #endif
+#if CORE_ENGINE_LEVEL >= 2
+    #define MIN_WIDTH_RESOLUTION 1000
+    #define MIN_HEIGHT_RESOLUTION 1000
+    #define MAX_WIN32_MONITORS 16  //Windows 10/11 Pro & Enterprise: Officially supports up to 10 displays, but some users have 16 (according chagpt!)
+#endif	  
 #if CORE_ENGINE_LEVEL == 3
 	#define DEMO_TITLE TEXT("03: Testing MINI FILE DUMPER: C:\\Users\\Public\\Documents\\<user>\\<core-level>\\<dx-level>\\_WoMA3Dengine_<DATE>.dmp")
 #endif
@@ -122,7 +127,9 @@
 	#define DEMO_TITLE TEXT("10: PRESS [F6] for SETUP and change Driver: OPENGL, DX9, DX11, DX12: Initiate the 3D Graphic Drivers and attache the swapchain to mainwindow.")
 #endif
 #if DX_ENGINE_LEVEL >= 10
-#define USE_THIS_GRAPHIC_CARD_ADAPTER 0
+    #define USE_THIS_GRAPHIC_CARD_ADAPTER 0
+    #define MIN_WIDTH_RESOLUTION 1000
+    #define MIN_HEIGHT_RESOLUTION 1000							  
 #endif
 
 //--------------------------------------------------------------------------------------------------------
@@ -502,6 +509,10 @@
 	#define WORLD_XML TEXT("world_78.xml")
 #endif
 
+#if DX_ENGINE_LEVEL == 79
+    #define DEMO_TITLE TEXT("79: Mini-map Expanded")
+    #define WORLD_XML TEXT("world_79.xml")
+#endif						 
 #if DX_ENGINE_LEVEL == 82
 	#define DEMO_TITLE TEXT("82: ASSIMP: Animated mesh")
 	#define WORLD_XML TEXT("world_82.xml")
@@ -521,3 +532,7 @@
     #define ASSIMP_MODEL_FEMALE TEXT("C:\\WoMAengine2023\\engine\\data\\scene84SKINMESH\\Female.md5mesh")
     #define MODEL_FEMALE_PATH TEXT("C:\\WoMAengine2023\\engine\\data\\scene84SKINMESH\\female-character-path\\character.txt")
 #endif					 
+#if DX_ENGINE_LEVEL == 85
+    #define DEMO_TITLE TEXT("85: ASSIMP: Latest")
+    #define WORLD_XML TEXT("world_85.xml")
+#endif						 

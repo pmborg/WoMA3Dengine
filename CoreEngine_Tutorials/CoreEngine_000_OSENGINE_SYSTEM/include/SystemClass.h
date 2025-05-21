@@ -134,6 +134,7 @@ public:
 	STRING			ComputerName;
 
 	void FrameUpdate();
+    void ParseCommandLineArgs(int argc, char* argv[]);
 
 #if defined USE_PROCESS_OS_KEYS
 #if defined WINDOWS_PLATFORM

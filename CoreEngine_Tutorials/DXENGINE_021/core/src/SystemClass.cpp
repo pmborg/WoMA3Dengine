@@ -631,14 +631,14 @@ void SystemClass::ProcessOSInput() // This Function will be invoked several time
 	{
 		WOMA::game_state = GAME_SETUP;
 		OS_REDRAW_WINDOW;
-		// Toggle the full screen/window mode
 
+		// Toggle the full screen/window mode
 		if (SystemHandle->AppSettings->FULL_SCREEN)
 		{
 			SystemHandle->AppSettings->FULL_SCREEN = false;
 			CHAR str[MAX_STR_LEN] = { 0 }; wtoa(str, (TCHAR*)SystemHandle->XML_SETTINGS_FILE.c_str(), MAX_STR_LEN); // wchar ==> char
 			#if defined CLIENT_SCENE_SETUP
-			SystemHandle->xml_loader.saveConfigSettings(str);
+			SystemHandle->xml_loader.saveXMLsettingsFile(str);
 			#endif
 
 			RENDER_PAGE = 5;
@@ -950,6 +950,74 @@ bool SystemClass::InitOsInput()
 }
 #endif
 
+
+void SystemClass::ParseCommandLineArgs(int argc, char* argv[])
+{
+#if defined USE_TINYXML_LOADER			        // Must be before: APPLICATION_INIT_MAIN_WINDOW()
+    IF_NOT_THROW_EXCEPTION(LoadXmlSettings()); // XML: Load Application Settings: "settings.xml", pickup "Driver" to Use (override default: WOMA::settings)
+#endif
+
+#if defined UNICODE
+    for (int i = 1; i < argc; ++i)
+    {
+        CHAR* parameter = argv[i];
+        TCHAR* wparameter = NULL;
+        atow(wparameter, parameter, (int)_tcslen(wparameter)); //VER_PRODUCTVERSION_STRING_FOUR_PARTS
+
+        if (_tcsnicmp(wparameter, TEXT("-warp"), _tcslen(wparameter)) == 0 ||
+            _tcsnicmp(wparameter, TEXT("/warp"), _tcslen(wparameter)) == 0)
+        {
+            WOMA::UseWarpDevice = true;
+        }
+    }
+#else
+    for (int i = 1; i < argc; ++i)
+    {
+        if (strlen(argv[i]) == 0)
+            continue;
+        if (_tcsnicmp(argv[i], "-warp", _tcslen(argv[i])) == 0 ||
+            _tcsnicmp(argv[i], "/warp", _tcslen(argv[i])) == 0)
+        {
+            WOMA::UseWarpDevice = true;
+        }
+        if (_tcsnicmp(argv[i], "-renderOnce", _tcslen(argv[i])) == 0 ||
+            _tcsnicmp(argv[i], "/renderOnce", _tcslen(argv[i])) == 0)
+        {
+            WOMA::renderOnce = true;
+            HWND hWnd = GetConsoleWindow();
+            if (hWnd != NULL) {
+                ShowWindow(hWnd, SW_MINIMIZE);
+            }
+        }
+        if (_tcsnicmp(argv[i], "-Xpos", _tcslen(argv[i])) == 0 ||
+            _tcsnicmp(argv[i], "/Xpos", _tcslen(argv[i])) == 0)
+        {
+            WOMA::settings.WINDOW_Xpos = atoi(argv[i + 1]);
+            i++;
+        }
+        if (_tcsnicmp(argv[i], "-Ypos", _tcslen(argv[i])) == 0 ||
+            _tcsnicmp(argv[i], "/Ypos", _tcslen(argv[i])) == 0)
+        {
+            WOMA::settings.WINDOW_Ypos = atoi(argv[i + 1]);
+            i++;
+        }
+        if (_tcsnicmp(argv[i], "-WIDTH", _tcslen(argv[i])) == 0 ||
+            _tcsnicmp(argv[i], "/WIDTH", _tcslen(argv[i])) == 0)
+        {
+            WOMA::settings.WINDOW_WIDTH = atoi(argv[i + 1]);
+            i++;
+        }
+        if (_tcsnicmp(argv[i], "-HEIGHT", _tcslen(argv[i])) == 0 ||
+            _tcsnicmp(argv[i], "/HEIGHT", _tcslen(argv[i])) == 0)
+        {
+            WOMA::settings.WINDOW_HEIGHT = atoi(argv[i + 1]);
+            i++;
+        }
+    }
+#endif
+}
+
+
 #if defined USE_TINYXML_LOADER //5
 bool SystemClass::LoadXmlSettings()
 {
@@ -1233,6 +1301,18 @@ void SystemClass::onJoystickAxis(int axis, float value)
 #if DX_ENGINE_LEVEL >= 19 && LEVEL >= 10// || (LEVEL < 10 && defined ANDROID_PLATFORM)
 bool InitSelectedDriver()
 {
+#ifdef INTRO_DEMO
+    SystemHandle->m_Application->ClearColor[0] = 0;
+    SystemHandle->m_Application->ClearColor[1] = 0;
+    SystemHandle->m_Application->ClearColor[2] = 0;
+    SystemHandle->m_Application->ClearColor[3] = 1;
+#else
+    SystemHandle->m_Application->ClearColor[0] = 0.5f;
+    SystemHandle->m_Application->ClearColor[1] = 0.6f;
+    SystemHandle->m_Application->ClearColor[2] = 0.8f;
+    SystemHandle->m_Application->ClearColor[3] = 1.0f;
+#endif
+
 	/*******************************************************************
 	// [INIT CONTEXT Driver]: ("g_contextDriver->OnInit()") Create: Rendering Context DRIVER! DirectX 11 or OPEN GL3+
 	*******************************************************************/

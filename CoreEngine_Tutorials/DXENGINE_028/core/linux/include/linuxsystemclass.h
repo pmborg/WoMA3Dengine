@@ -69,7 +69,7 @@ public:
 private:
 	bool mResizing;
 
-	bool ApplicationInitMainWindow(/*glxOpenGLClass*/ void* OpenGL);
+	bool APPLICATION_INIT_MAIN_WINDOW(/*glxOpenGLClass*/ void* OpenGL);
 
 public:
 };

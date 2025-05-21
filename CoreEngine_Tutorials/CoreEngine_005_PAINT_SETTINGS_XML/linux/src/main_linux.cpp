@@ -41,7 +41,7 @@ void linux_window_title()
 bool createWindow()
 {
 	//----------------------------------------------------------------------------
-	//bool LinuxSystemClass::ApplicationInitMainWindow(void* OpenGL)
+	//bool LinuxSystemClass::APPLICATION_INIT_MAIN_WINDOW(void* OpenGL)
 	// 
 	// Init globals:
 	Win.width = SystemHandle->AppSettings->WINDOW_WIDTH;	// screenWidth;

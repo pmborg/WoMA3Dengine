@@ -37,8 +37,9 @@
 
 #define g_contextDriver NULL
 
+#if defined USE_STATUSBAR
 extern HWND DoCreateStatusBar(HWND hwndParent, int idStatus, HINSTANCE hinst, int cParts);
-
+#endif
 
 
 #define check(A)							{}
@@ -56,8 +57,8 @@ public:
 	~WinSystemClass();
 	void Shutdown();
 
-	bool APPLICATION_CORE_SYSTEM();
-    bool APPLICATION_CORE_INIT_DONE();
+	bool APPLICATION_BEFORE_WINDOW();
+    bool APPLICATION_AFTER_WINDOW();
 	bool APPLICATION_INIT_SYSTEM();
 	int	 APPLICATION_MAIN_LOOP();
 

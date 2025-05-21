@@ -24,7 +24,37 @@
 #include "stateMachine.h"
 #include "OSmain_dir.h"
 
+
+#define TIMER_TITLE 0
+
+// TIMERS:
+
 #if defined WINDOWS_PLATFORM
+// Start benchamark - TIMER / FPS / CPU Initialize: (Min. Req.: Windows Vista)
+//	-------------------------------------------------------------------------------------------
+void WinSystemClass::StartTimer()
+{
+    if (WOMA::game_state >= GAME_STOP)
+        return;
+
+    // Start Timer for Window Title
+#define KEYB_TIMES_PER_SECOND 1
+
+// Dont Update on: FullScreen or Full-windowed
+    if ((!AppSettings->FULL_SCREEN) && (windowStyle != 0x96080000))
+    {
+#if defined NDEBUG //INTRO_DEMO
+        SetTimer(m_hWnd, TIMER_TITLE, 100 / KEYB_TIMES_PER_SECOND, NULL);	// 100ms = 10 x per second!
+#else
+        SetTimer(m_hWnd, TIMER_TITLE, 2000 / KEYB_TIMES_PER_SECOND, NULL);	// 2000ms = 2 seconds! (1000ms = 1 second!)
+#endif
+
+    }
+
+}
+#endif
+
+
 #include "winsystemclass.h"
 
 #if CORE_ENGINE_LEVEL >= 2 && defined USE_STATUSBAR
@@ -108,39 +138,10 @@ HWND DoCreateStatusBar(HWND hwndParent, int idStatus, HINSTANCE hinst, int cPart
 }
 #endif
 
-	#define TIMER_TITLE 0
-
-  // TIMERS:
-
-// Start benchamark - TIMER / FPS / CPU Initialize: (Min. Req.: Windows Vista)
-//	-------------------------------------------------------------------------------------------
-void WinSystemClass::StartTimer()
-{
-	if (WOMA::game_state >= GAME_STOP)
-		return;
-
-	// Start Timer for Window Title
-	#define KEYB_TIMES_PER_SECOND 1
-
-	// Dont Update on: FullScreen or Full-windowed
-	if ((!AppSettings->FULL_SCREEN) && (windowStyle != 0x96080000)) 
-	{
-		#if defined NDEBUG //INTRO_DEMO
-		SetTimer(m_hWnd, TIMER_TITLE, 100 / KEYB_TIMES_PER_SECOND, NULL);	// 100ms = 10 x per second!
-		#else
-		SetTimer(m_hWnd, TIMER_TITLE, 2000 / KEYB_TIMES_PER_SECOND, NULL);	// 2000ms = 2 seconds! (1000ms = 1 second!)
-		#endif
-		
-	}
-
-}
-
-//extern void ImGuiShutdown();
-//extern bool ImGuiDONE;  // Main loop
 
 #if CORE_ENGINE_LEVEL >= 2 && defined WINDOWS_PLATFORM	
 //----------------------------------------------------------------------------
-LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lparam)
+LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lparam)
 //----------------------------------------------------------------------------
 {
 	// Note: break;		--> Means call windows default handler also!
@@ -327,6 +328,10 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 					// sends a WM_EXITSIZEMOVE message.
 
 					//mResizing = true;
+                #if defined USE_STATUSBAR
+                    if (SystemHandle->statusbar)
+                		DestroyWindow(SystemHandle->statusbar);
+                #endif
 				}
 				else // API call such as SetWindowPos or mSwapChain->SetFullscreenState.
 				{
@@ -398,6 +403,13 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
         UNPAUSE();		// Restore State: "Green" Light to Render Again (after: return 0)
 		mResizing = false;
 
+#if defined USE_STATUSBAR
+        if (!AppSettings->FULL_SCREEN) 
+        {
+            SystemHandle->statusbar = DoCreateStatusBar(SystemHandle->m_hWnd, 0, m_hinstance, 1);
+            SendMessage(SystemHandle->statusbar, SB_SETTEXT, 0, (LPARAM)DEMO_TITLE);
+        }
+#endif
 		return 0;
 	}
 
@@ -466,6 +478,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
                 WOMA::woma_timer++;
 				if (!SystemHandle->AppSettings->FULL_SCREEN)
 					SystemHandle->refreshTitle();
+
 				return 0;
 
 			}
@@ -477,4 +490,3 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 }
 #endif
 
-#endif

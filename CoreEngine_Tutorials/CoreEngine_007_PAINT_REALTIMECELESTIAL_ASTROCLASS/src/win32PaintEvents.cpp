@@ -44,7 +44,7 @@ void	PaintSplashScreen(HDC hdc);
 
 
 // ---------------------------------------------------------------------------------------------
-LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
+LRESULT CALLBACK WOMA_PAINT_MessageHandler(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 // ---------------------------------------------------------------------------------------------
 {
 	switch (umessage)
@@ -54,49 +54,18 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 
 		break;
 	}
-#if defined ALLOW_CBIND_PROGRESS_BAR
-	case WM_DRAWITEM: // DRAW TEXT FROM PROGRESS BAR
-		// --------------------------------------------------------------------------------------------
-	{
-        if (WOMA::game_state <= GAME_RUN) {
-		try {
-			LPDRAWITEMSTRUCT pDIS = (LPDRAWITEMSTRUCT)lparam;
-			if (pDIS->hwndItem == SystemHandle->settingstext) {
-				SetBkColor(pDIS->hDC, TRANSPARENT);
-				SetTextColor(pDIS->hDC, RGB(200, 200, 200));
-				TCHAR staticText[99];
-				int len = (int)SendMessage(SystemHandle->settingstext, WM_GETTEXT, ARRAYSIZE(staticText), (LPARAM)staticText);
 
-				TextOut(pDIS->hDC, pDIS->rcItem.left, pDIS->rcItem.top, staticText, len);
-			}
-		}
-		catch (...) {
-			// Log or handle the exception gracefully
-		}
-        }
-		break;
-	}
-#endif
-#if CORE_ENGINE_LEVEL >= 4 && defined USE_USER_SETUP
+    #if defined USE_USER_SETUP
 	case WM_PAINT:
-	#if defined USE_STATUSBAR 
-	#endif
 	{
 		for (UINT i = 0; i < SystemHandle->windowsArray.size(); i++)
 			MainWindowPaint(i);
 		break;
 	}
-#endif
-
-#ifdef _EXTRA_DEBUG
-	default:
-	{
-		WOMA::logManager->DEBUG_MSG(TEXT("Msg: %04X \n"), umessage);
-	}
-#endif
+    #endif
 
 	}
-	return SystemHandle->MessageHandler(hwnd, umessage, wparam, lparam);
+	return SystemHandle->WOMA_SYSTEM_MessageHandler(hwnd, umessage, wparam, lparam);
 }
 
 #if CORE_ENGINE_LEVEL >= 4 && defined USE_USER_SETUP
@@ -119,7 +88,7 @@ void PaintSetup(HDC hdc, HDC hdcMem, HFONT font_title, HFONT font, int scr)
 		{
 			int TextToPrintSize = (int)SystemHandle->TextToPrint[scr].size();
 
-			#if CORE_ENGINE_LEVEL >= 4 && defined USE_SYSTEM_CHECK // BEFORE need to be: ApplicationInitMainWindow() & AFTER need to be: InitSelectedDriver()
+			#if CORE_ENGINE_LEVEL >= 4 && defined USE_SYSTEM_CHECK // BEFORE need to be: APPLICATION_INIT_MAIN_WINDOW() & AFTER need to be: InitSelectedDriver()
 			if (TextToPrintSize == 0)
 				SystemHandle->InitializeSystemScreen(10, 10);		// SETUP SCREEN: F1,F2,F3,F4,F5,F6
 			#endif

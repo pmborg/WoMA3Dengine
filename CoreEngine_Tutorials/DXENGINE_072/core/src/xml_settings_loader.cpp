@@ -152,7 +152,7 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 	bool res = false;
 	try
 	{
-		res = loadConfigSettings(filename);
+		res = loadXMLsettingsFile(filename);
 	}
 	catch (const std::exception& e)
 	{
@@ -165,8 +165,9 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 	{
 		// Process DATA imported from XML:
 		SystemHandle->AppSettings->UI_MONITOR = atoi(GenSettings.uiMonitor);
-		#if defined USE_ALTENTER_SWAP_FULLSCREEN_WINDOWMODE
+		#if defined USE_ALTENTER_SWAP_FULLSCREEN_WINDOWMODE || CORE_ENGINE_LEVEL < 9
 		SystemHandle->AppSettings->FULL_SCREEN = (strcmp (GenSettings.screenFullScreen, "true") == 0) ?  true : false;
+        SystemHandle->AppSettings->FULLSCREEN_ON_WINDOWED = (strcmp(GenSettings.screenFullScreenWindowed, "true") == 0) ? true : false;
 		#else
 		SystemHandle->AppSettings->FULL_SCREEN = false;
 		#endif
@@ -487,7 +488,7 @@ bool XMLloader::loadWorld (TCHAR* file_) // Note: Have to be char
 
 
 // -------------------------------------------------------------------------------------------
-bool XMLloader::loadConfigSettings (TCHAR* file_) // Note: Have to be char
+bool XMLloader::loadXMLsettingsFile (TCHAR* file_) // Note: Have to be char
 // -------------------------------------------------------------------------------------------
 {
 	CHAR XMLFILE[MAX_STR_LEN] = {0}; 
@@ -558,6 +559,8 @@ bool XMLloader::loadConfigSettings (TCHAR* file_) // Note: Have to be char
 			/*Element*//*TiXmlElement*/ tinyxml2::XMLElement* element = child_screen->ToElement();
 			strcpy (GenSettings.uiMonitor, element->Attribute("uiMonitor"));
 			strcpy (GenSettings.screenFullScreen, element->Attribute("fullScreen"));
+            if (element->Attribute("fullScreenWindowed"))
+                strcpy(GenSettings.screenFullScreenWindowed, element->Attribute("fullScreenWindowed"));
 
 			//Moved to WORLD.XML
 			//strcpy (GenSettings.posX, element->Attribute("posX"));

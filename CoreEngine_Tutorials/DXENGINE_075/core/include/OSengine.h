@@ -172,7 +172,7 @@ extern UINT RENDER_PAGE;
 
 extern int APPLICATION_MAIN(int argc, char* argv[]);
 extern void APPLICATION_STOP();
-extern void APPLICATION_STARTUP(int argc, char* argv[], int Command);
+extern void APPLICATION_STARTUP(int argc, char* argv[]);
 
 extern void ShowFPS(float fFPS);
 
@@ -260,8 +260,6 @@ namespace WOMA
 #endif
 }
 
-void ParseCommandLineArgs(int argc, char* argv[]);
-
 #if CORE_ENGINE_LEVEL >= 1 && !defined NewWomaEngine
 extern int Command;
 
@@ -348,6 +346,10 @@ struct File {
 
 #if defined ANDROID_PLATFORM
 extern STRING LOAD_ASSET_SAVE_TO_CACHE(TCHAR* XMLFILE);
+#endif
+
+#ifndef EXIT_SUCCESS
+#define EXIT_SUCCESS 0
 #endif
 
 #endif

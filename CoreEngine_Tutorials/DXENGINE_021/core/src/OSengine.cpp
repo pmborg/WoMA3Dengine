@@ -70,9 +70,9 @@ TCHAR* DEMO_NAME[] =
 //{"09 : From now on : PRESS[F4] for : [REAL Wheather] at user location."},
 //{"19 : PRESS[F6] for SETUP and change Driver : OPENGL, DX9, DX11, DX12 : Initiate the 3D Graphic Drivers and attache the swapchain to mainwindow."},
 //{"20 : OPENGL, DX9, DX11, DX12 : Allow mainwindow resizing."},
-{TEXT("TUTORIAL 21: The Basic triangle and square using vertexes with indexes. The COLOR shader")},
-{TEXT("TUTORIAL 22: Loading and Rendering Textures - The TEXTURE shader")},
-{TEXT("TUTORIAL 23: Adding the first light, 'Diffuse Lighting'. - The LIGHT shader")},
+{TEXT("TUTORIAL 21: The Basic triangle and square using vertexes with indexes - The COLOR shader (try: F1,F2,F3,F4,F5,F6)")},
+{TEXT("TUTORIAL 22: Loading and Rendering Textures - The TEXTURE shader (try: F1,F2,F3,F4,F5,F6)")},
+{TEXT("TUTORIAL 23: Adding the first light, 'Diffuse Lighting'. - The LIGHT shader (try: F1,F2,F3,F4,F5,F6)")},
 {TEXT("TUTORIAL 24: Adding Orthogonal Projection - Used on 2D Orthogonal Sprites")},
 {TEXT("TUTORIAL 25: DX10DRIVER_FONTS (Windows Only!)")},
 {TEXT("TUTORIAL 26: The first 3D objects: the CUBEs and SPHEREs - COLOR Shader, TEXTURE Shader and LIGHT Shader")},
@@ -330,7 +330,7 @@ void DefineConsoleTitle()
 
 }
 
-void APPLICATION_STARTUP(int argc, char* argv[], int Command)
+void APPLICATION_STARTUP(int argc, char* argv[])
 {
 
 	// Changes the Process Priority:
@@ -856,64 +856,3 @@ namespace WOMA
 }
 #endif
 
-void ParseCommandLineArgs(int argc, char* argv[])
-{
-#if defined UNICODE
-    for (int i = 1; i < argc; ++i)
-    {
-        CHAR* parameter = argv[i];
-        TCHAR* wparameter = NULL;
-        atow(wparameter, parameter, (int)_tcslen(wparameter)); //VER_PRODUCTVERSION_STRING_FOUR_PARTS
-
-        if (_tcsnicmp(wparameter, TEXT("-warp"), _tcslen(wparameter)) == 0 ||
-            _tcsnicmp(wparameter, TEXT("/warp"), _tcslen(wparameter)) == 0)
-        {
-            WOMA::UseWarpDevice = true;
-        }
-    }
-#else
-    for (int i = 1; i < argc; ++i)
-    {
-        if (strlen(argv[i]) == 0)
-            continue;
-        if (_tcsnicmp(argv[i], "-warp", _tcslen(argv[i])) == 0 ||
-            _tcsnicmp(argv[i], "/warp", _tcslen(argv[i])) == 0)
-        {
-            WOMA::UseWarpDevice = true;
-        }
-        if (_tcsnicmp(argv[i], "-renderOnce", _tcslen(argv[i])) == 0 ||
-            _tcsnicmp(argv[i], "/renderOnce", _tcslen(argv[i])) == 0)
-        {
-            WOMA::renderOnce = true;
-            HWND hWnd = GetConsoleWindow();
-            if (hWnd != NULL) {
-                ShowWindow(hWnd, SW_MINIMIZE);
-            }
-        }
-        if (_tcsnicmp(argv[i], "-Xpos", _tcslen(argv[i])) == 0 ||
-            _tcsnicmp(argv[i], "/Xpos", _tcslen(argv[i])) == 0)
-        {
-            WOMA::settings.WINDOW_Xpos = atoi(argv[i + 1]);
-            i++;
-        }
-        if (_tcsnicmp(argv[i], "-Ypos", _tcslen(argv[i])) == 0 ||
-            _tcsnicmp(argv[i], "/Ypos", _tcslen(argv[i])) == 0)
-        {
-            WOMA::settings.WINDOW_Ypos = atoi(argv[i + 1]);
-            i++;
-        }
-        if (_tcsnicmp(argv[i], "-WIDTH", _tcslen(argv[i])) == 0 ||
-            _tcsnicmp(argv[i], "/WIDTH", _tcslen(argv[i])) == 0)
-        {
-            WOMA::settings.WINDOW_WIDTH = atoi(argv[i + 1]);
-            i++;
-        }
-        if (_tcsnicmp(argv[i], "-HEIGHT", _tcslen(argv[i])) == 0 ||
-            _tcsnicmp(argv[i], "/HEIGHT", _tcslen(argv[i])) == 0)
-        {
-            WOMA::settings.WINDOW_HEIGHT = atoi(argv[i + 1]);
-            i++;
-        }
-    }
-#endif
-}

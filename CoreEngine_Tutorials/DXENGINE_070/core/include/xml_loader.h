@@ -94,7 +94,7 @@ typedef struct {
 
 	// Screen Settings:
 	// --------------------------------------------------------------------------------------------
-	char uiMonitor[10], screenFullScreen[10], allowResize[10], posX[10], posY[10], screenWidth[10], screenHeight[10], bitsPerPixel[10], screenNear[10], screenDepth[10];
+	char uiMonitor[10], screenFullScreen[10], screenFullScreenWindowed[10], allowResize[10], posX[10], posY[10], screenWidth[10], screenHeight[10], bitsPerPixel[10], screenNear[10], screenDepth[10];
 
 	// Driver Settings:
 	// --------------------------------------------------------------------------------------------
@@ -188,8 +188,8 @@ public:
 	~XMLloader();
 
 	// --------------------------------------------------------------------------------------------
-	bool saveConfigSettings(char* file); //Note: Have to be char
-	bool loadConfigSettings(TCHAR* file); //Note: Have to be char
+	bool saveXMLsettingsFile(char* file); //Note: Have to be char
+	bool loadXMLsettingsFile(TCHAR* file); //Note: Have to be char
 	bool initAppicationSettings(TCHAR* filename); //Note: Have to be char
 
 	bool loadWorld(TCHAR* file);

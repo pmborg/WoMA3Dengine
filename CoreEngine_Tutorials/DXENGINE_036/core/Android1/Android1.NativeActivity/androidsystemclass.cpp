@@ -125,7 +125,7 @@ bool AndroidSystemClass::APPLICATION_INIT_SYSTEM()
     return false;
 #endif
 
-#if CORE_ENGINE_LEVEL >= 5 // Must be before: ApplicationInitMainWindow()
+#if CORE_ENGINE_LEVEL >= 5 // Must be before: APPLICATION_INIT_MAIN_WINDOW()
   #if defined USE_TINYXML_LOADER
     IF_NOT_RETURN_FALSE(SystemClass::LoadXmlSettings());	// XML: Load Application Settings: "settings.xml", pickup "Driver" to Use.
   #endif
@@ -153,7 +153,7 @@ bool AndroidSystemClass::APPLICATION_INIT_SYSTEM()
 #endif
 
     // SYSTEM-CHECK:
-#if CORE_ENGINE_LEVEL >= 4 && defined USE_SYSTEM_CHECK		// BEFORE: ApplicationInitMainWindow()
+#if CORE_ENGINE_LEVEL >= 4 && defined USE_SYSTEM_CHECK		// BEFORE: APPLICATION_INIT_MAIN_WINDOW()
     IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());		// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 
     WOMA_LOGManager_DebugMSG("==========================================================\n");
     WOMA_LOGManager_DebugMSGAUTO(TEXT("BEFORE SYSTEM START - CORE_ENGINE_LEVEL: %d\n"), CORE_ENGINE_LEVEL);

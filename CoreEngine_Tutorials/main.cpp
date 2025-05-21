@@ -65,8 +65,6 @@
 
 #include "OSengine.h"
 
-int Command = 0;
-
 #if defined WINDOWS_PLATFORM
 // -------------------------------------------------------------------------------------------------------------------------------------
 // SUBSYSTEM:WINDOWS                                    //FOR: WOMA_WIN32_APPLICATION (WINDOWS)
@@ -75,6 +73,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 {
 	int argc = 0;
 	char* argv[MAX_PARAMS] = { };
+	
+    WOMA::Scmdline = lpCmdLine;
+    WOMA::Cmdshow = nShowCmd;						 
 	COMMANDLINE_TO_ARGC_ARGV();					// POPULATE: argc & argv
 	
     int res = APPLICATION_MAIN(argc, argv);	// ENTRY POINT!
@@ -126,20 +127,19 @@ void android_main(android_app* state)			// ENTRY-POINT: ANDROID
 
 #endif
 
+int Command = EXIT_SUCCESS;
+
 // Entry point of all WoMA ENGINE Applications all "main's" call this this one (used by: WINDOWS / LINUX / ANDROID)
 // -------------------------------------------------------------------------------------------------------------------------------------
 int APPLICATION_MAIN(int argc, char* argv[])
 // -------------------------------------------------------------------------------------------------------------------------------------
 {
-    APPLICATION_STARTUP(argc, argv, Command);           // ENGINE SETUP: |CoInitializeEx|+|OSmain_dirs|+|Memory leaks check|+|Log|+|Mini Dumper|
+    APPLICATION_STARTUP(argc, argv);           			// ENGINE SETUP: |CoInitializeEx|+|OSmain_dirs|+|Memory leaks check|+|Log|+|Mini Dumper|
     
     do {
         {
             SYSTEM demo(&WOMA::settings);               // NEW |SystemClass()::WinSystemClass()::DxWinSystemClass() for Specific OS|+|WOMA::APP_NAME|+|NEW ApplicationClass()"|
-        #if defined USE_TINYXML_LOADER				    // Must be before: ApplicationInitMainWindow()
-            IF_NOT_RETURN_FALSE(demo.LoadXmlSettings());// XML: Load Application Settings: "settings.xml", pickup "Driver" to Use (override default: WOMA::settings)
-        #endif
-            ParseCommandLineArgs(argc, argv);           // [*] Parse the command line parameters: -warp /warp, ... (override settings.xml)
+            demo.ParseCommandLineArgs(argc, argv);      // LoadXmlSettings & Parse the command line parameters: -warp /warp, ... (override settings.xml)
 
             if (demo.APPLICATION_INIT_SYSTEM())         // INIT Woma Engine: |SOUND|+|Register|+|XML|+|Sys.Chk|+|Window|+|OS-Input|+|Timer|+|Drivers|+|Load Assets|
                 Command = demo.APPLICATION_MAIN_LOOP(); // RUN: OS MAIN LOOP -> PROCESS FRAMES: (UPDATE + RENDER)!

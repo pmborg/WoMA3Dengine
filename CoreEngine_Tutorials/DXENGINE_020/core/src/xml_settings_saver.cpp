@@ -30,7 +30,7 @@
 #include "xml_loader.h"
 
 //*********************************************************************************************/
-bool XMLloader::saveConfigSettings (char* file) // Note: Have to be char
+bool XMLloader::saveXMLsettingsFile (char* file) // Note: Have to be char
 //*********************************************************************************************/
 {
 	// TUTORIALv1: https://www.cs.cmu.edu/~preethi/src/tinyxml/docs/tutorial0.html
@@ -60,6 +60,9 @@ bool XMLloader::saveConfigSettings (char* file) // Note: Have to be char
 
 			str = (SystemHandle->AppSettings->FULL_SCREEN) ? "true" : "false";
 			child_screen->SetAttribute("fullScreen", str.c_str());
+
+            str = (SystemHandle->AppSettings->FULLSCREEN_ON_WINDOWED) ? "true" : "false";
+            child_screen->SetAttribute("fullScreenWindowed", str.c_str());
 
 			_itoa(SystemHandle->AppSettings->WINDOW_Xpos_ori, stri, 10);
 			child_screen->SetAttribute("posX", stri);

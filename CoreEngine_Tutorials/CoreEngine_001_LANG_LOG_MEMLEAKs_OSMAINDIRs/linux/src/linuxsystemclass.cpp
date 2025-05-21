@@ -157,7 +157,7 @@ bool LinuxSystemClass::APPLICATION_INIT_SYSTEM() // ApplicationInit()
 
 	IF_NOT_RETURN_FALSE(APPLICATION_CORE_SYSTEM());
 
-#if defined USE_TINYXML_LOADER // Must be before: ApplicationInitMainWindow()
+#if defined USE_TINYXML_LOADER // Must be before: APPLICATION_INIT_MAIN_WINDOW()
 	IF_NOT_RETURN_FALSE(SystemClass::LoadXmlSettings());		// XML: Load Application Settings: "settings.xml", pickup "Driver" to Use.
 #endif
 

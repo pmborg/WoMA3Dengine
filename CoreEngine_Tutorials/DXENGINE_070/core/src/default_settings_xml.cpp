@@ -37,38 +37,39 @@ namespace WOMA
 	// --------------------------------------------------------------------------------------------
 	// Driver Settings:
 	// --------------------------------------------------------------------------------------------
-	Settings settings =
-	{
-	#if defined WINDOWS_PLATFORM	
-		NULL,		// LANGID id
-	#endif
-		0,			// Endian (BIG_ENDIAN 0) & (LITTLE_ENDIAN 1)
+    Settings settings =
+    {
+    #if defined WINDOWS_PLATFORM	
+        NULL,		// LANGID id
+    #endif
+        0,			// Endian (BIG_ENDIAN 0) & (LITTLE_ENDIAN 1)
 
-		// driver
-		// -------------------------------------------------------------------------------------------
-	#if defined USE_TINYXML_LOADER
-		-1,			// Use Woma Driver	-1 (auto)	{DRIVER_DX11=0, DRIVER_GL3=1, DRIVER_DX11_DX9=2, DRIVER_DX12=3};
-	#else
-		DRIVER_DX11,
-	#endif
-		0,			// USE: UI_MONITOR
-		// -------------------------------------------------------------------------------------------
-		false,		// UseAllMonitors
-		true,		// Use Double Buffering?
-		true,		// Start in VSYNC?		(TRUE: Smooth:60FPS | FALSE: To Benchmark)
+        // driver
+        // -------------------------------------------------------------------------------------------
+    #if defined USE_TINYXML_LOADER
+        - 1,			// Use Woma Driver	-1 (auto)	{DRIVER_DX11=0, DRIVER_GL3=1, DRIVER_DX11_DX9=2, DRIVER_DX12=3};
+    #else
+        DRIVER_DX11,
+    #endif
+        0,			// USE: UI_MONITOR
+        // -------------------------------------------------------------------------------------------
+        false,		// UseAllMonitors
+        true,		// Use Double Buffering?
+        true,		// Start in VSYNC?		(TRUE: Smooth:60FPS | FALSE: To Benchmark)
 
-		//	Texture
-		// -------------------------------------------------------------------------------------------
-		1024,	// maxTexture Resolution Default Size: 512 / 1024 / 1920 / 3,840
-		// -------------------------------------------------------------------------------------------
-		false,	// bilinear
-		false,	// trilinear
-		false,	// Anisotropic;
-		4,		// AnisotropicLevel: 4,8,16 (if == true)
+        //	Texture
+        // -------------------------------------------------------------------------------------------
+        1024,	// maxTexture Resolution Default Size: 512 / 1024 / 1920 / 3,840
+        // -------------------------------------------------------------------------------------------
+        false,	// bilinear
+        false,	// trilinear
+        false,	// Anisotropic;
+        4,		// AnisotropicLevel: 4,8,16 (if == true)
 
-		// screen
-		// -------------------------------------------------------------------------------------------
-		false,	// Start in FULLSCREEN?
+        // screen
+        // -------------------------------------------------------------------------------------------
+        false,	// Start in FULLSCREEN?
+        false,  // FULLSCREEN ON WINDOWED?
         24, //DEPTH_BITS
 		#if CORE_ENGINE_LEVEL < 10
 		false, 
@@ -93,9 +94,9 @@ namespace WOMA
 		1024,	// WIN_HEIGHT_ori	
 	#else //LINUX: (or load from XML like WINDOWS)
 		1920, //550,	// WIN_WIDTH	Note: On Fullscreen WIN_WIDTH = SCREEN_RESOLUTION_WIDTH
-		1080, //940,	// WIN_HEIGHT	Note: On Fullscreen WIN_HEIGHT = SCREEN_RESOLUTION_HEIGHT
+		1000, //940,	// WIN_HEIGHT	Note: On Fullscreen WIN_HEIGHT = SCREEN_RESOLUTION_HEIGHT
 		1920, //550,	// WIN_WIDTH_ori	
-		1080, //940,	// WIN_HEIGHT_ori	
+		1000, //940,	// WIN_HEIGHT_ori	
 	#endif
 		32,		// BITSPERPEL	16, 24(RGB), 32(RGBA)
 

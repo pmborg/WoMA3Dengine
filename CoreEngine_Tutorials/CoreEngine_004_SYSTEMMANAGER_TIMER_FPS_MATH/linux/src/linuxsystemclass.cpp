@@ -157,16 +157,16 @@ bool LinuxSystemClass::APPLICATION_INIT_SYSTEM() // ApplicationInit()
 
 	IF_NOT_RETURN_FALSE(APPLICATION_CORE_SYSTEM());
 
-#if defined USE_TINYXML_LOADER // Must be before: ApplicationInitMainWindow()
+#if defined USE_TINYXML_LOADER // Must be before: APPLICATION_INIT_MAIN_WINDOW()
 	IF_NOT_RETURN_FALSE(SystemClass::LoadXmlSettings());		// XML: Load Application Settings: "settings.xml", pickup "Driver" to Use.
 #endif
 
-#if CORE_ENGINE_LEVEL >= 4 && defined USE_SYSTEM_CHECK	// BEFORE: ApplicationInitMainWindow()
+#if CORE_ENGINE_LEVEL >= 4 && defined USE_SYSTEM_CHECK	// BEFORE: APPLICATION_INIT_MAIN_WINDOW()
 	IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());		// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 
 #endif
 
 	// WINDOWS with CONTEXT:
-	IF_NOT_RETURN_FALSE(ApplicationInitMainWindow(g_contextDriver));	// Create the window the application will be using and also initialize OpenGL.
+	IF_NOT_RETURN_FALSE(APPLICATION_INIT_MAIN_WINDOW(g_contextDriver));	// Create the window the application will be using and also initialize OpenGL.
 
 	InitializeSystemScreen(10, 10);			// SETUP SCREEN: F1,F2,F3,F4
 
@@ -205,7 +205,7 @@ extern bool createWindow();
 // D:\WoMAengine2014\woma_developer\SAMPLES\Sample020_StartEngine\Src\original_sample_code.cxx
 // C:\WoMAengine2023\LinuxWoma\LinuxWoma\main_linux.cppcreateWindow();
 //----------------------------------------------------------------------------
-bool LinuxSystemClass::ApplicationInitMainWindow(void* OpenGL)
+bool LinuxSystemClass::APPLICATION_INIT_MAIN_WINDOW(void* OpenGL)
 {
 	bool res = createWindow();
 

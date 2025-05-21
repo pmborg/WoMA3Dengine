@@ -24,7 +24,37 @@
 #include "stateMachine.h"
 #include "OSmain_dir.h"
 
+
+#define TIMER_TITLE 0
+
+// TIMERS:
+
 #if defined WINDOWS_PLATFORM
+// Start benchamark - TIMER / FPS / CPU Initialize: (Min. Req.: Windows Vista)
+//	-------------------------------------------------------------------------------------------
+void WinSystemClass::StartTimer()
+{
+    if (WOMA::game_state >= GAME_STOP)
+        return;
+
+    // Start Timer for Window Title
+#define KEYB_TIMES_PER_SECOND 1
+
+// Dont Update on: FullScreen or Full-windowed
+    if ((!AppSettings->FULL_SCREEN) && (windowStyle != 0x96080000))
+    {
+#if defined NDEBUG //INTRO_DEMO
+        SetTimer(m_hWnd, TIMER_TITLE, 100 / KEYB_TIMES_PER_SECOND, NULL);	// 100ms = 10 x per second!
+#else
+        SetTimer(m_hWnd, TIMER_TITLE, 2000 / KEYB_TIMES_PER_SECOND, NULL);	// 2000ms = 2 seconds! (1000ms = 1 second!)
+#endif
+
+    }
+
+}
+#endif
+
+
 #include "winsystemclass.h"
 
 #include "xml_loader.h"
@@ -110,39 +140,10 @@ HWND DoCreateStatusBar(HWND hwndParent, int idStatus, HINSTANCE hinst, int cPart
 }
 #endif
 
-	#define TIMER_TITLE 0
-
-  // TIMERS:
-
-// Start benchamark - TIMER / FPS / CPU Initialize: (Min. Req.: Windows Vista)
-//	-------------------------------------------------------------------------------------------
-void WinSystemClass::StartTimer()
-{
-	if (WOMA::game_state >= GAME_STOP)
-		return;
-
-	// Start Timer for Window Title
-	#define KEYB_TIMES_PER_SECOND 1
-
-	// Dont Update on: FullScreen or Full-windowed
-	if ((!AppSettings->FULL_SCREEN) && (windowStyle != 0x96080000)) 
-	{
-		#if defined NDEBUG //INTRO_DEMO
-		SetTimer(m_hWnd, TIMER_TITLE, 100 / KEYB_TIMES_PER_SECOND, NULL);	// 100ms = 10 x per second!
-		#else
-		SetTimer(m_hWnd, TIMER_TITLE, 2000 / KEYB_TIMES_PER_SECOND, NULL);	// 2000ms = 2 seconds! (1000ms = 1 second!)
-		#endif
-		
-	}
-
-}
-
-//extern void ImGuiShutdown();
-//extern bool ImGuiDONE;  // Main loop
 
 #if CORE_ENGINE_LEVEL >= 2 && defined WINDOWS_PLATFORM	
 //----------------------------------------------------------------------------
-LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lparam)
+LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lparam)
 //----------------------------------------------------------------------------
 {
 	// Note: break;		--> Means call windows default handler also!
@@ -167,27 +168,37 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 					//BUTTON: OK
 					if (HWND(lparam) == womaSetup->m_hBtnOK)
 					{
-						//WOMA::game_state = GAME_SETUP; // GAME_MENU;
+                        //GET VSYNC CheckBox:
+                        SystemHandle->AppSettings->VSYNC_ENABLED = (SendMessage(womaSetup->hWndCheckBox[0], BM_GETCHECK, 0, 0) == BST_CHECKED);
+
+                        //GET UI_MONITOR COMBOBOX:
+                        SystemHandle->AppSettings->UI_MONITOR = (int)(SendMessage(womaSetup->hWndComboBox[1], CB_GETCURSEL, NULL, NULL));
+
+                        //GET DRIVER:
+                        int		previous_DRIVER = SystemHandle->AppSettings->DRIVER;
+                        SystemHandle->AppSettings->DRIVER = (int)(SendMessage(womaSetup->hWndComboBox[2], CB_GETCURSEL, NULL, NULL));
 
 						//GET FULL_SCREEN COMBOBOX: "Display Mode"
 						int index = (int)SendMessage(womaSetup->hWndComboBox[0], CB_GETCURSEL, NULL, NULL);
-						if (index == 0)
-							SystemHandle->AppSettings->FULL_SCREEN = false;
-						if (index == 1)
+                        // (index == 0)     // Windowed
+						SystemHandle->AppSettings->FULL_SCREEN = false;
+                        SystemHandle->AppSettings->FULLSCREEN_ON_WINDOWED = false;
+						if (index == 1) {   // Fullscreen
 							SystemHandle->AppSettings->FULL_SCREEN = true;
+                        } else
+                        if (index == 2)     // Windowed(Fullscreen)
+                            SystemHandle->AppSettings->FULLSCREEN_ON_WINDOWED = true;
 
-						//GET VSYNC CheckBox:
-						SystemHandle->AppSettings->VSYNC_ENABLED = (SendMessage(womaSetup->hWndCheckBox[0], BM_GETCHECK, 0, 0) == BST_CHECKED);
+                        //if (index == 1 || index == 2) 
+                        {
+                            int resId = (int)(SendMessage(womaSetup->hWndComboBoxperMonitor[SystemHandle->AppSettings->UI_MONITOR], CB_GETCURSEL, NULL, NULL));
+                            SystemHandle->AppSettings->WINDOW_WIDTH = SystemHandle->allWindowsArray[SystemHandle->AppSettings->UI_MONITOR].ScreenResolution[resId].Width;
+                            SystemHandle->AppSettings->WINDOW_HEIGHT = SystemHandle->allWindowsArray[SystemHandle->AppSettings->UI_MONITOR].ScreenResolution[resId].Height;
+                        }
 
-						//GET UI_MONITOR COMBOBOX:
-						SystemHandle->AppSettings->UI_MONITOR = (int)(SendMessage(womaSetup->hWndComboBox[1], CB_GETCURSEL, NULL, NULL));
-
-						//GET UI_MONITOR COMBOBOX:
-						int		previous_DRIVER = SystemHandle->AppSettings->DRIVER;
-						SystemHandle->AppSettings->DRIVER = (int)(SendMessage(womaSetup->hWndComboBox[7], CB_GETCURSEL, NULL, NULL));
 						CHAR str[MAX_STR_LEN] = { 0 }; wtoa(str, (TCHAR*)SystemHandle->XML_SETTINGS_FILE.c_str(), MAX_STR_LEN); // wchar ==> char
-						#if defined CLIENT_SCENE_SETUP //#if CORE_ENGINE_LEVEL > 9
-						SystemHandle->xml_loader.saveConfigSettings(str);
+						#if defined CLIENT_SCENE_SETUP
+						SystemHandle->xml_loader.saveXMLsettingsFile(str);
 						#endif
 						SystemHandle->AppSettings->DRIVER = previous_DRIVER;
 
@@ -384,6 +395,10 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 					// sends a WM_EXITSIZEMOVE message.
 
 					//mResizing = true;
+                #if defined USE_STATUSBAR
+                    if (SystemHandle->statusbar)
+                		DestroyWindow(SystemHandle->statusbar);
+                #endif
 				}
 				else // API call such as SetWindowPos or mSwapChain->SetFullscreenState.
 				{
@@ -455,6 +470,13 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
         UNPAUSE();		// Restore State: "Green" Light to Render Again (after: return 0)
 		mResizing = false;
 
+#if defined USE_STATUSBAR
+        if (!AppSettings->FULL_SCREEN) 
+        {
+            SystemHandle->statusbar = DoCreateStatusBar(SystemHandle->m_hWnd, 0, m_hinstance, 1);
+            SendMessage(SystemHandle->statusbar, SB_SETTEXT, 0, (LPARAM)DEMO_TITLE);
+        }
+#endif
 		return 0;
 	}
 
@@ -523,6 +545,7 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
                 WOMA::woma_timer++;
 				if (!SystemHandle->AppSettings->FULL_SCREEN)
 					SystemHandle->refreshTitle();
+
 				return 0;
 
 			}
@@ -534,4 +557,3 @@ LRESULT CALLBACK WinSystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wPa
 }
 #endif
 
-#endif

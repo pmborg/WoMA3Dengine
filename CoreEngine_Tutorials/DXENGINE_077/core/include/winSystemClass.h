@@ -35,8 +35,9 @@
 
 #define WOMA_ENGINE_CLASS TEXT("WoMA3Dengine")
 
+#if defined USE_STATUSBAR
 extern HWND DoCreateStatusBar(HWND hwndParent, int idStatus, HINSTANCE hinst, int cParts);
-
+#endif
 
 
 #define check(A)							{}
@@ -68,7 +69,7 @@ namespace WOMA
 	};
 }
 
-extern LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam);
+extern LRESULT CALLBACK WOMA_PAINT_MessageHandler(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam);
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: WinSystemClass
@@ -83,8 +84,8 @@ public:
 	~WinSystemClass();
 	void Shutdown();
 
-	bool APPLICATION_CORE_SYSTEM();
-    bool APPLICATION_CORE_INIT_DONE();
+	bool APPLICATION_BEFORE_WINDOW();
+    bool APPLICATION_AFTER_WINDOW();
 	bool APPLICATION_INIT_SYSTEM();
 	int	 APPLICATION_MAIN_LOOP();
 
@@ -93,13 +94,13 @@ public:
     void GetInputs();
 	bool InitOsInput();
 	#endif
-	bool ApplicationInitMainWindow();
+	bool APPLICATION_INIT_MAIN_WINDOW();
 	bool MyRegisterClass(HINSTANCE hInstance);
 	HWND WomaCreateWindowEx(DWORD dwExStyle, TCHAR* lpClassName, TCHAR* lpWindowName, DWORD dwStyle,
 		int X, int Y, int nWidth, int nHeight, HWND hWndParent, HMENU hMenu, HINSTANCE hInstance, LPVOID lpParam);
 	bool CreateMainWindow(UINT USE_MONITOR_, void*, int&, int&); //wGLopenGLclass
 	bool ShowWindow(int windowLeft, int windowTop);
-	LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
+	LRESULT CALLBACK WOMA_SYSTEM_MessageHandler(HWND, UINT, WPARAM, LPARAM);
 	void ProcessFrame();
 
 	// --------------------------------------------------------------
@@ -126,7 +127,7 @@ public:
 	RECT              m_rcWindowClient;    // Saved client area size for mode switches
 
 	ScreenArrayInfo info;
-	MONITORINFOEX monitorArray[15];
+	MONITORINFOEX monitorArray[MAX_WIN32_MONITORS];
 
 public:
 	// VARS:

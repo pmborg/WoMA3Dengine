@@ -42,11 +42,11 @@
 //------------------------------------------------------------------------------------------------------------
 
 #if CORE_ENGINE_LEVEL >= 1
-#define USE_LOG_MANAGER			//1
+	#define USE_LOG_MANAGER			//1
 #endif
 
 #if CORE_ENGINE_LEVEL >= 2 && !defined WOMAENGINE_BASIC
-	//
+	//#define WOMA_SKIP_CREATE_MAIN_WINDOW  //for command line application only!
 #endif
 
 #if CORE_ENGINE_LEVEL >= 3
@@ -57,21 +57,21 @@
 #endif
 
 #if CORE_ENGINE_LEVEL >= 4
-	#define USE_USER_SETUP
+	#define USE_USER_SETUP          //4
 	#if !defined ANDROID_PLATFORM
 		#define USE_PROCESS_OS_KEYS	//4 - NOTE: Madatory at 4
 		#define USE_SYSTEM_CHECK	//4
 	#endif
   	#define USE_CHECK_IO			//4
 	#define USE_TIMER_CLASS			//4
-#endif
+	#endif
 
 #if CORE_ENGINE_LEVEL >= 5
 	#if !defined ANDROID_PLATFORM
-	#define USE_TINYXML_LOADER
+	#define USE_TINYXML_LOADER      //5
 	#endif
 	#if defined WINDOWS_PLATFORM
-	#define CLIENT_SCENE_SETUP	//CoreEngine_005 (PAINT+settings.xml)
+	#define CLIENT_SCENE_SETUP	    //5 (PAINT+settings.xml)
 	#endif
 #endif
 
@@ -81,28 +81,28 @@
 #endif
 
 #if CORE_ENGINE_LEVEL >= 7 && defined WINDOWS_PLATFORM
-	#define USE_ASTRO_CLASS     //CoreEngine_007 (PAINT RealTimeCelestial)		
+	#define USE_ASTRO_CLASS                 //7 CoreEngine_007 (PAINT RealTimeCelestial)		
 	#if CORE_ENGINE_LEVEL == 7 || DX_ENGINE_LEVEL == 25 || DX_ENGINE_LEVEL == 29
 	#define USE_NETWORK
 	#endif
 	#if defined WINDOWS_PLATFORM
-		#define ALLOW_LOADING_SPLASH
-		#define USE_ALLOW_MAINWINDOW_RESIZE //Allow main Window to Resize
+		#define ALLOW_LOADING_SPLASH        //7 
+		#define USE_ALLOW_MAINWINDOW_RESIZE //7 Allow main Window to Resize
 	#endif
 #endif
 
 #if CORE_ENGINE_LEVEL >= 8 && defined WINDOWS_PLATFORM
-	#define USE_GPS_MAP			//CoreEngine_008 (PAINT RealTimeMapGPSPosition)	
+	#define USE_GPS_MAP			//8 CoreEngine_008 (PAINT RealTimeMapGPSPosition)	
 	#if CORE_ENGINE_LEVEL == 8
-		#define USE_NETWORK
+		#define USE_NETWORK     //8
 	#endif
 #endif
 
 #if CORE_ENGINE_LEVEL >= 9 && defined WINDOWS_PLATFORM
-	#define USE_METARCLASS	//CoreEngine_009 (PAINT RealTimeWeather) TODO: Android read asset file
+	#define USE_METARCLASS	//9 CoreEngine_009 (PAINT RealTimeWeather) TODO: Android read asset file
 	#if CORE_ENGINE_LEVEL >= 9
 		#if !defined MAINENGINE
-			#define USE_NETWORK
+			#define USE_NETWORK //9
 		#endif
 	#endif
 	//#define GENERATE //(Airports List)
@@ -126,12 +126,12 @@
 
 	#if defined DX12 //SELECT DXGI_API version:
 		//#define DX12_DXGI_API 3	//IDXGIFactory3
-		//#define DX12_DXGI_API 4		//IDXGIFactory4
+		//#define DX12_DXGI_API 4	//IDXGIFactory4
 		//#define DX12_DXGI_API 5	//IDXGIFactory5
-		#define DX12_DXGI_API 6	//IDXGIFactory6
+		#define DX12_DXGI_API 6	    //IDXGIFactory6
 	#endif
-#endif	  
-	  
+#endif
+
 //--------------------------------------------------------------------------------------------------------
 //WINDOWS_PLATFORM + LINUX_PLATFORM + ANDROID_PLATFORM
 //--------------------------------------------------------------------------------------------------------
@@ -159,7 +159,7 @@
 	#endif
 
 	#if DX_ENGINE_LEVEL >= 21 && !defined WOMAENGINE_BASIC
-		#undef USE_NORMAL_WINDOW						
+        #undef USE_NORMAL_WINDOW
 		#if defined WINDOWS_PLATFORM && defined DX12
 		#define USE_RASTERIZER_STATE //Mandatory for DX12
 		#endif
@@ -249,8 +249,8 @@
 			#if defined DX_ENGINE
 				#define ALLOW_PRINT_SCREEN_SAVE_PNG	// Level:22
 			#endif
-			#define USE_DIRECT_INPUT			//28-we will use DX input method
-			//#define USE_JOY					// Need to be tested...
+			#define USE_DIRECT_INPUT			    //28-we will use DX input method
+			//#define USE_JOY					    // Need to be tested...
 		#endif
 
 		#define SUN_LIGHT_DEMO_ANIMATION true
@@ -276,7 +276,7 @@
 			#define USE_WIN32_SOUND_MANAGER	// 29-SOUND: Sound Manager/"ogg" Loader
 			#define USE_WIN32_PLAY_MUSIC	// 29-MUSIC: "ogg" Loader
 			#if DX_ENGINE_LEVEL == 29
-			#define USE_DX_DRIVER_FONT	//FORCE!	    
+			#define USE_DX_DRIVER_FONT	//FORCE!	   
 			#endif
 		#endif
 	#endif
@@ -291,9 +291,9 @@
 		#undef USE_WIN32_PLAY_MUSIC
 		#undef INTRO_DEMO
 		#define SUN_LIGHT_DEMO_ANIMATION true //back
-		#define USE_SCENE_MANAGER	//30-
-		#define USE_FRUSTRUM		//30-
-		#undef DX12					    //to be added later									   
+		#define USE_SCENE_MANAGER	    //30-
+		#define USE_FRUSTRUM		    //30-
+        #undef DX12					    //to be added later
 	#endif
 
 	#if DX_ENGINE_LEVEL >= 31
@@ -330,9 +330,9 @@
 		#define SAVEW3D
 	#endif
 
-	#if DX_ENGINE_LEVEL >= 39	
+	#if DX_ENGINE_LEVEL >= 39
 		#undef SAVEW3D
-		#define LOADW3D
+		#define LOADW3D 
 		#undef OPENGL3
 	#endif
 
@@ -511,10 +511,13 @@
 	    // Updated billboard shader & SAVE FILME
 	#endif
 
-    #if DX_ENGINE_LEVEL >= 84 //#if TUTORIAL_CHAP >= 100
+    #if DX_ENGINE_LEVEL >= 84
 	    #define LOAD_WALK
         #define SCENE_SKIN
     #endif
+    #if DX_ENGINE_LEVEL >= 85
+        #define ASSIMP_LATEST
+    #endif						 
 
 	
 	
@@ -528,6 +531,6 @@
 
 	#undef  dx12_upload_old_way
 	//-------------------------------------------------------------------------------------------------------
-	#if defined RELEASE && DX_ENGINE_LEVEL < 29 && defined _MSC_VER
-	#error "WOMA COMPILATION ERROR: RELEASE bin is not Supported before DX_ENGINE_LEVEL 29"
+	#if defined NDEBUG && DX_ENGINE_LEVEL < 29 && defined _MSC_VER
+	#error "WOMA COMPILATION ERROR: NDEBUG bin is not Supported before DX_ENGINE_LEVEL 29"
 	#endif

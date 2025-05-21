@@ -48,40 +48,41 @@ void PaintMapLocation(HDC hdc);
 
 
 // ---------------------------------------------------------------------------------------------
-LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
+LRESULT CALLBACK WOMA_PAINT_MessageHandler(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 // ---------------------------------------------------------------------------------------------
 {
 	switch (umessage)
 	{
 	case WM_CREATE: // LOAD BACKGROUND IMAGE: NOTE: "LoadBitmap" DONT load inside a LIB!
 	{
-#if CORE_ENGINE_LEVEL >= 8 && defined USE_GPS_MAP
-		//bmpExercising = LoadBitmap(g_hInstance, MAKEINTRESOURCE(IDB_BITMAP2));	// Load the bitmap from the resource
-		if (!SystemHandle->bmpWorldMap) {
-			STRING imagefilename = WOMA::LoadFile(WORLD_IP_TARGET_IMAGE);
-			SystemHandle->bmpWorldMap = (HBITMAP)::LoadImage(NULL, imagefilename.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-			if (!SystemHandle->bmpWorldMap)
-			{
-				STRING err = TEXT("File not found: "); err += WOMA::lastfile;
-				WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "));
-				WomaFatalExceptionW((TCHAR*)err.c_str());
-			}
+    #if  defined USE_GPS_MAP
+	//bmpExercising = LoadBitmap(g_hInstance, MAKEINTRESOURCE(IDB_BITMAP2));	// Load the bitmap from the resource
+	if (!SystemHandle->bmpWorldMap) {
+		STRING imagefilename = WOMA::LoadFile(WORLD_IP_TARGET_IMAGE);
+		SystemHandle->bmpWorldMap = (HBITMAP)::LoadImage(NULL, imagefilename.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		if (!SystemHandle->bmpWorldMap)
+		{
+			STRING err = TEXT("File not found: "); err += WOMA::lastfile;
+			WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "));
+			WomaFatalExceptionW((TCHAR*)err.c_str());
 		}
+	}
 
-		if (!SystemHandle->bmpTarget) {
-			SystemHandle->bmpTarget = (HBITMAP)::LoadImage(NULL, WOMA::LoadFile(POSITION_TARGET_IMAGE), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-			if (!SystemHandle->bmpTarget)
-			{
-				STRING err = TEXT("File not found: "); err += WOMA::lastfile;
-				WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "));
-				WomaFatalExceptionW((TCHAR*)err.c_str());
-			}
+	if (!SystemHandle->bmpTarget) {
+		SystemHandle->bmpTarget = (HBITMAP)::LoadImage(NULL, WOMA::LoadFile(POSITION_TARGET_IMAGE), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		if (!SystemHandle->bmpTarget)
+		{
+			STRING err = TEXT("File not found: "); err += WOMA::lastfile;
+			WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "));
+			WomaFatalExceptionW((TCHAR*)err.c_str());
 		}
-#endif
+	}
+    #endif
 
 		break;
 	}
-#if defined ALLOW_CBIND_PROGRESS_BAR
+
+    #if defined ALLOW_CBIND_PROGRESS_BAR
 	case WM_DRAWITEM: // DRAW TEXT FROM PROGRESS BAR
 		// --------------------------------------------------------------------------------------------
 	{
@@ -103,27 +104,19 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
         }
 		break;
 	}
-#endif
-#if CORE_ENGINE_LEVEL >= 4 && defined USE_USER_SETUP
+    #endif
+
+    #if defined USE_USER_SETUP
 	case WM_PAINT:
-	#if defined USE_STATUSBAR 
-	#endif
 	{
 		for (UINT i = 0; i < SystemHandle->windowsArray.size(); i++)
 			MainWindowPaint(i);
 		break;
 	}
-#endif
-
-#ifdef _EXTRA_DEBUG
-	default:
-	{
-		WOMA::logManager->DEBUG_MSG(TEXT("Msg: %04X \n"), umessage);
-	}
-#endif
+    #endif
 
 	}
-	return SystemHandle->MessageHandler(hwnd, umessage, wparam, lparam);
+	return SystemHandle->WOMA_SYSTEM_MessageHandler(hwnd, umessage, wparam, lparam);
 }
 
 #if CORE_ENGINE_LEVEL >= 4 && defined USE_USER_SETUP
@@ -146,7 +139,7 @@ void PaintSetup(HDC hdc, HDC hdcMem, HFONT font_title, HFONT font, int scr)
 		{
 			int TextToPrintSize = (int)SystemHandle->TextToPrint[scr].size();
 
-			#if CORE_ENGINE_LEVEL >= 4 && defined USE_SYSTEM_CHECK // BEFORE need to be: ApplicationInitMainWindow() & AFTER need to be: InitSelectedDriver()
+			#if CORE_ENGINE_LEVEL >= 4 && defined USE_SYSTEM_CHECK // BEFORE need to be: APPLICATION_INIT_MAIN_WINDOW() & AFTER need to be: InitSelectedDriver()
 			if (TextToPrintSize == 0)
 				SystemHandle->InitializeSystemScreen(10, 10);		// SETUP SCREEN: F1,F2,F3,F4,F5,F6
 			#endif
