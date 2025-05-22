@@ -17,12 +17,18 @@
 // Original Code Adapted from: https://github.com/nicholaschuayunzhi/PPG
 
 #pragma once
+
+#include "platform.h"
 #if _DEBUG
 #pragma comment( lib, "C://WoMA3Dengine//ThirdParty//PPG-master//Bin//Debug//AssimpEngine.lib" )
 #else
 #pragma comment( lib, "C://WoMA3Dengine//ThirdParty//PPG-master//Bin//Release//AssimpEngine.lib" )
 #endif
+#if !defined ASSIMP_LATEST
 #pragma comment(lib, "C://WoMA3Dengine//ThirdParty//PPG-master//External//assimp//lib//assimp-vc142-mtd.lib")
+#else
+#pragma comment(lib, "C:\\WoMAengine2023\\_EXTERNAL_\\assimp\\lib\\Debug\\assimp-vc143-mtd.lib")
+#endif
 
 #include "../Engine/Source/PPG.h"
 #include <math.h>
@@ -43,22 +49,17 @@ private:
     std::unique_ptr<Sampler> pointSampler;
 
 
-    //  std::unique_ptr<BlitPass> blitPass;
-	BlitPass* blitPass;
     std::unique_ptr<GBufferPass> gBufferPass;
-    //std::unique_ptr<GBufferPass> gBufferPass2;
 
-    std::unique_ptr<DeferredPass> deferredPass;
-    std::unique_ptr<SSAOPass> ssaoPass;
-    std::unique_ptr<ToneMapPass> toneMapPass;
+    
+
 
     std::unique_ptr<Texture> colour;
     std::unique_ptr<Texture> diffuse;
     std::unique_ptr<Texture> metalRough;
     std::unique_ptr<Texture> normals;
     std::unique_ptr<Texture> emissive;
-    std::unique_ptr<Texture> ambientOcclusion;
-    std::unique_ptr<Texture> toneMappedColour;
+
 
     AnimationJob animJob;
 
@@ -77,7 +78,7 @@ private:
     }
 
 public:
-    void Start(Graphics& graphics, TCHAR* model) override
+    void Start(Graphics& graphics) override
     {
         // Rendering Stuff
         auto& clientRect = graphics.m_ClientRect;
@@ -90,36 +91,15 @@ public:
         metalRough = CreateRenderTexture(graphics, clientWidth, clientHeight, "MetalRough", DXGI_FORMAT_R16G16B16A16_FLOAT);
         emissive = CreateRenderTexture(graphics, clientWidth, clientHeight, "Emissive", DXGI_FORMAT_R16G16B16A16_FLOAT);
 
-        toneMappedColour = CreateRenderTexture(graphics, clientWidth, clientHeight, "Tone Mapped Colour", DXGI_FORMAT_R16G16B16A16_FLOAT);
-        Texture* ao = Texture::CreateTexture(graphics, clientWidth, clientHeight, "Ambient Occlusion",
-            DXGI_FORMAT_R16_UNORM, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE);
-        ao->CreateRTV(graphics, DXGI_FORMAT_R16_UNORM);
-        ao->CreateSRV(graphics, DXGI_FORMAT_R16_UNORM);
-        ambientOcclusion = std::unique_ptr<Texture>(ao);
-
         /////////////////////////brickTexture = LoadTextureFromPath(graphics, L"Data\\Brick_Wall_014_COLOR.jpg");
         /////////////////////////brickNormalMap = LoadTextureFromPath(graphics, L"Data\\Brick_Wall_014_NORM.jpg");
 
         linearSampler = std::make_unique<Sampler>(graphics, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
         pointSampler = std::make_unique<Sampler>(graphics, D3D11_FILTER_MIN_MAG_MIP_POINT, D3D11_TEXTURE_ADDRESS_CLAMP);
 
-        auto& colourTexture = *(colour.get());
-        auto& toneMappedTexture = *(toneMappedColour.get());
 		//VertexShader.cso
         gBufferPass = std::make_unique<GBufferPass>(graphics, *diffuse.get(), *metalRough.get(), *normals.get(), *emissive.get());
-        //gBufferPass2 = std::make_unique<GBufferPass>(graphics, *diffuse.get(), *metalRough.get(), *normals.get(), *emissive.get());
-
-		//Fullscreen.vs.cso
-        deferredPass = std::make_unique<DeferredPass>(graphics, colourTexture, *diffuse.get(), *metalRough.get(), *normals.get(), *emissive.get());
-
-		//Fullscreen.vs.cso
-        ssaoPass = std::make_unique<SSAOPass>(graphics, *ao, *(graphics.m_DepthStencilBuffer).get(), *normals.get());
-
-		//Fullscreen.vs.cso
-        toneMapPass = std::make_unique<ToneMapPass>(graphics, colourTexture, toneMappedTexture);
-		//Fullscreen.vs.cso
-		blitPass = new BlitPass(graphics, toneMappedTexture, *(graphics.m_BackBuffer.get()));
-
+        
         // Lighting
         auto lightColour = XMFLOAT4(5.0f, 5.0f, 5.0f, 1.0f);
 

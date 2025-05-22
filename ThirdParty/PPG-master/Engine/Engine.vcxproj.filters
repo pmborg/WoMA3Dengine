@@ -120,9 +120,7 @@
     <ClInclude Include="Source\Jobs\AnimationJob.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\App\MyDemo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ClInclude Include="..\App\MyDemo.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\stdafx.cpp">

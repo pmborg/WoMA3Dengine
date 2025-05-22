@@ -70,7 +70,6 @@ void Scene::Update(Graphics& graphics, float deltaTime)
     //m_MainCamera.HandleMovement(input, deltaTime);
     lightManager.SetEyePosition(m_MainCamera.m_EyePosition);
     lightManager.Update(graphics);
-    lightManager.RenderAnyShadowMap(graphics, *this);
 	for (size_t i = 0; i < m_Node[0]->m_ChildrenIndices.size(); ++i)
 	{
 		auto objIndex = m_Node[0]->m_ChildrenIndices[i];

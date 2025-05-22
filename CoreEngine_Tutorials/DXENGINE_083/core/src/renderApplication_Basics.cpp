@@ -71,9 +71,10 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 	// --------------------------------------------------------------------------------------------
 #if defined USE_ASSIMP && defined MAIN_RENDER_ASSIMP // ASSIMP: Skin-MESH (0.15ms)
     static Application demoapp;
+    static MyDemo demo;
     if (m_Driver->RenderfirstTime) 
     {
-        demo.Start(demoapp.m_Graphics, ASSIMP_MODEL_BOBLAMPCLEAN);
+        demo.Start(demoapp.m_Graphics);
         demo.assimpSceneModel = std::unique_ptr<SceneModel>(SceneModel::LoadModelToScene(ASSIMP_MODEL_BOBLAMPCLEAN, demo.scene, demoapp.m_Graphics));
 
     }

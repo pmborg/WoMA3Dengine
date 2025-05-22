@@ -32,11 +32,7 @@
 #include "Resources/Sampler.h"
 #include "Resources/Shader.h"
 
-#include "Passes/BlitPass.h"
 #include "Passes/GBufferPass.h"
-#include "Passes/DeferredPass.h"
-#include "Passes/SSAOPass.h"
-#include "Passes/ToneMapPass.h"
 
 #include "Jobs/AnimationJob.h"
 

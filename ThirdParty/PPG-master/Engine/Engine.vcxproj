@@ -159,16 +159,32 @@
   <ItemGroup>
     <ClInclude Include="..\App\MyDemo.h" />
     <ClInclude Include="Source\Jobs\AnimationJob.h" />
-    <ClInclude Include="Source\Passes\BlitPass.h" />
-    <ClInclude Include="Source\Passes\DeferredPass.h" />
-    <ClInclude Include="Source\Passes\ForwardPass.h" />
+    <ClInclude Include="Source\Passes\BlitPass.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Source\Passes\DeferredPass.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Source\Passes\ForwardPass.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Source\Passes\GBufferPass.h" />
-    <ClInclude Include="Source\Passes\ShadowMapPass.h" />
-    <ClInclude Include="Source\Passes\SkyboxPass.h" />
+    <ClInclude Include="Source\Passes\ShadowMapPass.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Source\Passes\SkyboxPass.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Source\LowLevel\Application.h" />
-    <ClInclude Include="Source\Passes\SpritePass.h" />
-    <ClInclude Include="Source\Passes\SSAOPass.h" />
-    <ClInclude Include="Source\Passes\ToneMapPass.h" />
+    <ClInclude Include="Source\Passes\SpritePass.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Source\Passes\SSAOPass.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Source\Passes\ToneMapPass.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Source\Scene\Camera.h" />
     <ClInclude Include="Source\Demo.h" />
     <ClInclude Include="Source\LowLevel\Graphics.h" />
@@ -195,23 +211,27 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Jobs\AnimationJob.cpp" />
-    <ClCompile Include="Source\Passes\BlitPass.cpp" />
+    <ClCompile Include="Source\Passes\BlitPass.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Source\Passes\DeferredPass.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Source\Passes\GBufferPass.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Source\Passes\ShadowMapPass.cpp" />
+    <ClCompile Include="Source\Passes\ShadowMapPass.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Source\LowLevel\Application.cpp" />
     <ClCompile Include="Source\Passes\SSAOPass.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Source\Passes\ToneMapPass.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Source\Scene\Camera.cpp">

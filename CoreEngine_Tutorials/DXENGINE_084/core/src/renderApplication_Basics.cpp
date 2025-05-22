@@ -73,14 +73,12 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 	// --------------------------------------------------------------------------------------------
 #if defined USE_ASSIMP && defined MAIN_RENDER_ASSIMP // ASSIMP: Skin-MESH (0.15ms)
     static Application demoapp;
+    static MyDemo demo;
     if (m_Driver->RenderfirstTime) 
     {
-        demo.Start(demoapp.m_Graphics, ASSIMP_MODEL_BOBLAMPCLEAN);
+        demo.Start(demoapp.m_Graphics);
         demo.assimpSceneModel = std::unique_ptr<SceneModel>(SceneModel::LoadModelToScene(ASSIMP_MODEL_BOBLAMPCLEAN, demo.scene, demoapp.m_Graphics));
 
-        //#define _m_ TEXT("C:\\WoMAengine2023\\engine\\test\\uploads_files_6115920_100k\\Spartan Warrior 3D Model - Fully Rigged with PBR Textures_preview_26b649aa-dbc4-457f-89e7-e66f6f4dcfdb_307cf730_anim_Walking.blend")
-        //#define _m_ TEXT("C:\\WoMAengine2023\\engine\\test\\uploads_files_6115920_100k\\Spartan Warrior 3D Model - Fully Rigged with PBR Textures_preview_26b649aa-dbc4-457f-89e7-e66f6f4dcfdb_307cf730.obj")
-        //demo.assimpSceneModel2 = std::unique_ptr<SceneModel>(SceneModel::LoadModelToScene(_m_ /*ASSIMP_MODEL_FEMALE*/, demo.scene2, demoapp.m_Graphics));
         demo.assimpSceneModel2 = std::unique_ptr<SceneModel>(SceneModel::LoadModelToScene(ASSIMP_MODEL_FEMALE, demo.scene2, demoapp.m_Graphics));
     #if defined SCENE_SKIN
         {
@@ -120,21 +118,19 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
     // ============================
     static UINT filmeIdx = 0; // 1st line of filme file
 
-    if (filmeIdx < loadFilme.size()) {	// Prepare to read the next movement animation
-
+    if (filmeIdx < loadFilme.size()) 	// Prepare to read the next movement animation
+    {
         m_characterPos->m_positionX = loadFilme[filmeIdx].X;
         m_characterPos->m_positionY = mainTerrain->getTerrainHeight(TERRAIN_ID, m_characterPos->m_positionX, m_characterPos->m_positionZ);
         m_characterPos->m_positionZ = loadFilme[filmeIdx].Z;
         m_characterPos->m_rotationY = DEG2RAD(loadFilme[filmeIdx].rotY);
         
-        //INT64 passedTime = (INT64)((m_Timer.currentTime - m_Timer.m_startEngineTime) / m_ticksPerMs);
         static DWORD m_startTime = timeGetTime();
-        while (filmeIdx < loadFilme.size() && loadFilme[filmeIdx].timeFrame <=  (timeGetTime()- m_startTime)/2) {
+        while (filmeIdx < loadFilme.size() && loadFilme[filmeIdx].timeFrame <=  (timeGetTime()- m_startTime)) {
             filmeIdx++;
         }
     }
     else {
-        //m_Timer.m_startEngineTime = m_Timer.currentTime;
         m_characterPos->m_positionX = 20.0f;
         m_characterPos->m_positionZ = 20.0f;
         filmeIdx = 0;

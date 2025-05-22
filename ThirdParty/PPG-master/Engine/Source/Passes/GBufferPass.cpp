@@ -62,9 +62,9 @@ void GBufferPass::Render(Graphics& graphics, Scene& scene)
     //graphics.ClearRenderTargetView(m_Emissive.GetRTV(), Colors::Transparent);
 
     scene.UseCamera(graphics, scene.m_MainCamera); // VIEW / PROJ
-
     scene.lightManager.Use(deviceContext, 1);
     scene.UseModel(graphics);
+
     shader->Use(deviceContext);
     deviceContext->VSSetConstantBuffers(3, 1, &m_BoneBuffer);
     deviceContext->PSSetConstantBuffers(0, 1, &m_Buffer);
@@ -102,9 +102,9 @@ void GBufferPass::Render(Graphics& graphics, Scene& scene)
         meshRenderer.m_Mesh->Draw(deviceContext);
     }
 
-    graphics.UnbindShaderResourceView(0);
-    graphics.UnbindShaderResourceView(1);
-    graphics.UnbindShaderResourceView(2);
-    graphics.UnbindShaderResourceView(3);
-    graphics.UnbindShaderResourceView(4);
+    //graphics.UnbindShaderResourceView(0);
+    //graphics.UnbindShaderResourceView(1);
+    //graphics.UnbindShaderResourceView(2);
+    //graphics.UnbindShaderResourceView(3);
+    //graphics.UnbindShaderResourceView(4);
 }

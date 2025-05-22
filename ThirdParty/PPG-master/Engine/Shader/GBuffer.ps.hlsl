@@ -108,5 +108,6 @@ GBufferOutput main(PixelShaderInput IN)
     OUT.metalRoughOcclusion.b = occlusion;
     OUT.normal = float4(surf.N * 0.5 + 0.5, 1);
     OUT.emissive = emissive;
+    
     return OUT;
 }

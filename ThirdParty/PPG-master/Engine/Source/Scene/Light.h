@@ -76,9 +76,7 @@ public:
     LightManager& AddLight(Light& light);
     LightManager& SetGlobalAmbient(XMFLOAT4 colour);
     LightManager& SetEyePosition(XMVECTOR eyePositionVec);
-    void SetLightWithShadows(Graphics& graphics, unsigned int index, ShadowMapRenderDesc& desc);
     unsigned int m_NumLights = 0;
-    void RenderAnyShadowMap(Graphics& Graphics, Scene& scene);
 private:
     ID3D11Buffer* m_Buffer;
     LightProperties m_LightProps;
@@ -88,7 +86,5 @@ private:
 
     bool hasLightWithShadows = false;
     ID3D11Buffer* m_OneShadowMapCBuffer;
-    ShadowMapRenderDesc m_OneShadowMapDesc;
     std::unique_ptr<Texture> m_OneShadowMapTexture;
-    std::unique_ptr<ShadowMapPass> m_ShadowMapPass;
 };

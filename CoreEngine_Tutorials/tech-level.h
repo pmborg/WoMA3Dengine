@@ -334,6 +334,7 @@
 		#undef SAVEW3D
 		#define LOADW3D 
 		#undef OPENGL3
+        #undef OPENGL40
 	#endif
 
 	#if DX_ENGINE_LEVEL >= 40	//40-
