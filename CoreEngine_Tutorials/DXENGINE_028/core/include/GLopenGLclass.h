@@ -22,7 +22,7 @@
 #define GLopenGLclass_h_
 
 #include "platform.h"
-#if defined OPENGL3 && DX_ENGINE_LEVEL >= 19
+#if (defined OPENGL3 || defined OPENGL40) && DX_ENGINE_LEVEL >= 19
 
 //////////////
 // INCLUDES //

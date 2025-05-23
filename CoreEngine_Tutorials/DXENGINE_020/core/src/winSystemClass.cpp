@@ -41,7 +41,7 @@
 
 #include "womadriverclass.h"
 #include "dxWinSystemClass.h"
-#if defined OPENGL3
+#if (defined OPENGL3 || defined OPENGL40) 
 #include "womadriverclass.h"	//woma
 #include "GLmathClass.h"		//woma	
 #include "GLopenGLclass.h"		//woma
@@ -231,7 +231,7 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	IF_NOT_RETURN_FALSE(InitOsInput());						// INIT-INPUT Devices, NOTE: AFTER: APPLICATION_INIT_MAIN_WINDOW()
 #endif
 // ########################################### LOAD DRIVERS ###########################################
-	#if CORE_ENGINE_LEVEL >= 10 && defined OPENGL3	
+	#if CORE_ENGINE_LEVEL >= 10 && (defined OPENGL3 || defined OPENGL40)
 	if (AppSettings->DRIVER == DRIVER_GL3)
 		IF_NOT_RETURN_FALSE(newDriver());	//Create NEW CONTEXT Class: g_contextDriver
 	#endif

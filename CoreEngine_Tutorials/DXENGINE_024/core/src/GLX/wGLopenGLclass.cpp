@@ -18,7 +18,7 @@
 // --------------------------------------------------------------------------------------------
 
 #include "OSengine.h"
-#if defined OPENGL3 && defined WINDOWS_PLATFORM && CORE_ENGINE_LEVEL >= 10  // Initializing Engine && defined WINDOWS_PLATFORM
+#if (defined OPENGL3 || defined OPENGL40) && defined WINDOWS_PLATFORM && CORE_ENGINE_LEVEL >= 10  // Initializing Engine && defined WINDOWS_PLATFORM
 #include "womadriverclass.h"
 #include "GLmathClass.h"
 #include "GLopenGLclass.h"

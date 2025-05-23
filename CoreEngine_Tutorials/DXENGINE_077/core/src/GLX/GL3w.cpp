@@ -14,7 +14,7 @@
 // 
 
 #include "platform.h"
-#if CORE_ENGINE_LEVEL >= 10 && defined OPENGL3
+#if CORE_ENGINE_LEVEL >= 10 && (defined OPENGL3 || defined OPENGL40) 
 //-----------------------------------------------------------------------------
 #include <GL/gl3w.h>
 

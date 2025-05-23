@@ -324,7 +324,7 @@ bool WomaSetupManager::Initialize(void* Driver)
 #else
     SendMessage(hWndComboBox[2], CB_ADDSTRING, 0, reinterpret_cast<LPARAM>(TEXT("DX11 (not suppported)")));
 #endif
-#if defined OPENGL3
+#if (defined OPENGL3 || defined OPENGL40) 
     SendMessage(hWndComboBox[2], CB_ADDSTRING, 1, reinterpret_cast<LPARAM>(TEXT("GL3")));
 #else
     SendMessage(hWndComboBox[2], CB_ADDSTRING, 1, reinterpret_cast<LPARAM>(TEXT("GL3 (not suppported)")));

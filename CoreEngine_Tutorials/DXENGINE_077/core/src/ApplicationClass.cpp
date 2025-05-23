@@ -122,7 +122,7 @@ void ApplicationClass::PositionUpdate(int playerId, float positionX, float posit
 #include "DXmodelClass.h"
 #endif
 
-#ifdef OPENGL3
+#if (defined OPENGL3 || defined OPENGL40) 
 #include "GLmodelClass.h"
 #endif
 

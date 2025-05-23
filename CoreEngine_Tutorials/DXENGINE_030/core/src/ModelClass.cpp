@@ -1183,7 +1183,7 @@ bool ModelClass::CreateObject(void* XmodelClass, TCHAR* objectName, void* g_driv
 
 				if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
 					((DXmodelClass*)XmodelClass)->LoadColor((TCHAR*)filename.c_str(), g_driver, shader_type, &modelColorVertex, &obj3d.indices32);
-			#if defined	OPENGL3
+            #if (defined OPENGL3 || defined OPENGL40) 
 				else
 					((GLmodelClass*)XmodelClass)->LoadColor((TCHAR*)filename.c_str(), g_driver, /*shader_type*/ SHADER_COLOR, &modelColorVertex, &obj3d.indices32);
 			#endif

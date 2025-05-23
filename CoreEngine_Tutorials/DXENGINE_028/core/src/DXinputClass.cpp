@@ -28,11 +28,11 @@
 #include "DXinputClass.h"
 #include "OSengine.h"
 
-#if defined OPENGL3
+#if (defined OPENGL3 || defined OPENGL40) 
 #include "GLopenGLclass.h"
 #endif
 
-#if defined OPENGL3
+#if (defined OPENGL3 || defined OPENGL40) 
 void processNormalKeys(unsigned char key, int x, int y) 
 {
 	//printf("key: %c", key);

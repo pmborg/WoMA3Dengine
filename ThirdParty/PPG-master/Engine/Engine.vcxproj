@@ -75,7 +75,7 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>C:/WoMA3Dengine/ThirdParty/PPG-master/Bin/Debug</OutDir>
     <IntDir>$(SolutionDir)Int\$(Configuration)\</IntDir>
-    <IncludePath>$(ProjectDir)Source;$(IncludePath);.;$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_082\core\include;C:\Users\pedro\Downloads\openal-soft-makemhr\include;C:\Users\pedro\Downloads\openal-soft-makemhr\include\AL;core\include;include;C:\WoMA3Dengine\ThirdParty\DirectXTex\DirectXTex-jan2023\DirectXTex;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;C:\WoMA3Dengine\ThirdParty\PPG-master\External\assimp\include;../../../CoreEngine_Tutorials/DXENGINE_082/core;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\ZipUtils_LIB\include;..\..\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib;..\..\ThirdParty\maxminddb_LIB\libmaxminddb-main\include;..\..\ThirdParty\GL3Plus;..\..\ThirdParty\freeglut\include_;C:\WoMA3Dengine\ThirdParty\freeglut-3.6.0\include;..\..\ThirdParty\tiff-3.8.2-src;..\..\ThirdParty\DirectXTex\DirectXTex-jan2023\DirectXTex;..\..\ThirdParty/DirectXTK\Inc;..\..\ThirdParty/TIFF_LIB\include;..\..\ThirdParty/JPG_LIB/include/;..\..\ThirdParty/ZLIB_LIB/include/;..\..\ThirdParty/PNG_LIB/include/;..\..\ThirdParty/\TinyXML_LIB.v2\tinyxml2-10.0.0;..\..\ThirdParty\AUDIO\ALUT_LIB\include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\include\AL;..\..\ThirdParty\AUDIO\VORBIS_LIB\include;..\..\ThirdParty\AUDIO\OGG_LIB\include;C:\WoMA3Dengine\ThirdParty\PPG-master\Engine\Source;C:\WoMA3Dengine\ThirdParty\PPG-master\App</IncludePath>
+    <IncludePath>$(ProjectDir)Source;$(IncludePath);.;$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_082\core\include;C:\Users\pedro\Downloads\openal-soft-makemhr\include;C:\Users\pedro\Downloads\openal-soft-makemhr\include\AL;core\include;include;C:\WoMA3Dengine\ThirdParty\external\DirectXTex\DirectXTex;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;C:\WoMA3Dengine\ThirdParty\PPG-master\External\assimp\include;../../../CoreEngine_Tutorials/DXENGINE_082/core;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\ZipUtils_LIB\include;..\..\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib;..\..\ThirdParty\maxminddb_LIB\libmaxminddb-main\include;..\..\ThirdParty\GL3Plus;..\..\ThirdParty\freeglut\include_;C:\WoMA3Dengine\ThirdParty\freeglut-3.6.0\include;..\..\ThirdParty\tiff-3.8.2-src;..\..\ThirdParty\DirectXTex\DirectXTex-jan2023\DirectXTex;..\..\ThirdParty/DirectXTK\Inc;..\..\ThirdParty/TIFF_LIB\include;..\..\ThirdParty/JPG_LIB/include/;..\..\ThirdParty/ZLIB_LIB/include/;..\..\ThirdParty/PNG_LIB/include/;..\..\ThirdParty/\TinyXML_LIB.v2\tinyxml2-10.0.0;..\..\ThirdParty\AUDIO\ALUT_LIB\include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\include\AL;..\..\ThirdParty\AUDIO\VORBIS_LIB\include;..\..\ThirdParty\AUDIO\OGG_LIB\include;C:\WoMA3Dengine\ThirdParty\PPG-master\Engine\Source;C:\WoMA3Dengine\ThirdParty\PPG-master\App</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -255,11 +255,6 @@
     <ClCompile Include="Source\Resources\Texture.cpp" />
     <ClCompile Include="Source\Scene\Transform.cpp" />
     <ClCompile Include="Source\LowLevel\Window.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\External\DirectXTex\DirectXTex\DirectXTex_Desktop_2019.vcxproj">
-      <Project>{371b9fa9-4c90-4ac6-a123-aced756d6c77}</Project>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Data\Brick_Wall_014_COLOR.jpg" />

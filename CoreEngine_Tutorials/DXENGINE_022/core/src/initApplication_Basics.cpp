@@ -31,7 +31,7 @@
 #pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
 #pragma warning(disable : 4244) // warning C4244: '=': conversion from 'int' to 'float', possible
 
-#ifdef OPENGL3
+#if (defined OPENGL3 || defined OPENGL40) 
 	#include "GLopenGLclass.h"
 	#include "GLmodelClass.h"
 #endif
@@ -323,7 +323,7 @@ bool ApplicationClass::initText()
 
 	switch (SystemHandle->AppSettings->DRIVER)
 	{
-#ifdef OPENGL3
+#if (defined OPENGL3 || defined OPENGL40) 
 	case DRIVER_GL3:
 		ASSERT(AppTextClass->Initialize((GLopenGLclass*)m_Driver));
 		break;

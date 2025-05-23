@@ -37,7 +37,7 @@
   #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009 //Use: WIN10SDK
 	#include "Dx12Class.h"
   #endif
-  #if defined OPENGL3
+    #if (defined OPENGL3 || defined OPENGL40) 
 	#include "womadriverclass.h"	//woma
 	#include "GLmathClass.h"		//woma	
 	#include "GLopenGLclass.h"		//woma
@@ -65,12 +65,6 @@
 #if defined USE_LOADING_THREADS
 HANDLE threadInitializeLoaderHandle = NULL;
 unsigned long threadInitializeLoaderId = NULL;
-#endif
-
-#if defined USE_ASSIMP
-#include "PPG.h"
-#include "MyDemo.h"
-MyDemo demo;
 #endif
 
 dxWinSystemClass* DXsystemHandle = NULL;

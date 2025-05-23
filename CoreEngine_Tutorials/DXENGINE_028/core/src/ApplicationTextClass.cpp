@@ -175,7 +175,7 @@ void ApplicationTextClass::SetLoboRenderCount(int count)
 bool ApplicationTextClass::Initialize(void* Driver)
 {
 	// TODO GL
-#ifdef OPENGL3
+#if (defined OPENGL3 || defined OPENGL40) 
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
 	{
 		m_Text = NEW GlTextClass(); IF_NOT_THROW_EXCEPTION(m_Text);
@@ -250,7 +250,7 @@ bool ApplicationTextClass::Shutdown()
 
 		switch (SystemHandle->AppSettings->DRIVER)
 		{
-#ifdef OPENGL3
+#if (defined OPENGL3 || defined OPENGL40) 
 		case DRIVER_GL3:
 			if (m_Text)
 			{

@@ -318,7 +318,7 @@ bool ApplicationClass::HandleUserInput(double frameTime)
 		DXsystemHandle->m_Camera->m_rotationX =m_Position[g_NetID]->m_rotationX;
 	#endif
 	}
-	#if defined OPENGL3
+    #if (defined OPENGL3 || defined OPENGL40) 
 	else
 	{
 		GLopenGLclass* driver = (GLopenGLclass*) driverList[SystemHandle->AppSettings->DRIVER];

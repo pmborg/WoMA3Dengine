@@ -1673,7 +1673,7 @@ bool DXmodelClass::RenderSprite( int positionX, int positionY, float scale, floa
 
 void DXmodelClass::RenderWithFade(float fadeLight, bool FOG)
 {
-#if defined DX11 || defined DX12 || defined OPENGL3
+#if defined DX11 || defined DX12 || (defined OPENGL3 || defined OPENGL40) 
 		#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
 			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 				m_Shader11->PSfade = fadeLight;

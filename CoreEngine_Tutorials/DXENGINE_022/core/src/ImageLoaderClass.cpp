@@ -34,7 +34,7 @@
     //COMPILE: C:\WoMA3Dengine\ThirdParty\DirectXTex\DirectXTex_Desktop_2022_Win10.sln
     #if _DEBUG
     #pragma comment(lib, "Libs/x64/Debug/DirectX11TK.lib")
-    #pragma comment(lib, "/WoMA3Dengine/ThirdParty/DirectXTex/DirectXTex-jan2023/DirectXTex/Bin/Desktop_2022_Win10/x64/Debug/DirectXTex.lib")
+    #pragma comment(lib, "/WoMA3Dengine/ThirdParty/external/DirectXTex/DirectXTex/Bin/Desktop_2022_Win10/x64/Debug/DirectXTex.lib")
     #else
     #pragma comment(lib, "C:\\WoMAengine2023\\Libs\\x64\\Release\\DirectX11TK.lib")
     #pragma comment(lib, "C:\\WoMAengine2023\\Libs\\x64\\Release\\DirectXTex.lib")

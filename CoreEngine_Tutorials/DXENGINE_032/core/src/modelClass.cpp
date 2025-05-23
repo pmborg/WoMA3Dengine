@@ -1143,7 +1143,7 @@ bool ModelClass::CreateObject(void* XmodelClass, TCHAR* objectName, void* g_driv
 	//Move data to advanced model types:
 	if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
 		((DXmodelClass*)XmodelClass)->obj3d = obj3d;
-	#if defined	OPENGL3
+    #if (defined OPENGL3 || defined OPENGL40) 
 	else
 		((GLmodelClass*)XmodelClass)->obj3d = obj3d;
 	#endif
@@ -1187,7 +1187,7 @@ bool ModelClass::CreateObject(void* XmodelClass, TCHAR* objectName, void* g_driv
 
 			if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
 				((DXmodelClass*)XmodelClass)->LoadLight((TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, &modelTextureLightVertex, &obj3d.indices32);
-		#if defined	OPENGL3
+        #if (defined OPENGL3 || defined OPENGL40) 
 			else
 				((GLmodelClass*)XmodelClass)->LoadLight((TCHAR*)filename.c_str(), g_driver, /*shader_type*/(renderShadow) ? SHADER_TEXTURE_LIGHT_RENDERSHADOW : SHADER_TEXTURE_LIGHT, & obj3d.textureNameArray, & modelTextureLightVertex, & obj3d.indices32);
 		#endif
@@ -1218,7 +1218,7 @@ bool ModelClass::CreateObject(void* XmodelClass, TCHAR* objectName, void* g_driv
 
 				if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
 					((DXmodelClass*)XmodelClass)->LoadTexture((TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, &modelTextureVertex, &obj3d.indices32);
-				#if defined	OPENGL3
+                #if (defined OPENGL3 || defined OPENGL40) 
 				else
 					((GLmodelClass*)XmodelClass)->LoadTexture((TCHAR*)filename.c_str(), g_driver, /*shader_type*/ SHADER_TEXTURE, &obj3d.textureNameArray, &modelTextureVertex, &obj3d.indices32);
 				#endif
@@ -1259,7 +1259,7 @@ bool ModelClass::CreateObject(void* XmodelClass, TCHAR* objectName, void* g_driv
 
 				if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
 					((DXmodelClass*)XmodelClass)->LoadColor((TCHAR*)filename.c_str(), g_driver, shader_type, &modelColorVertex, &obj3d.indices32);
-			#if defined	OPENGL3
+            #if (defined OPENGL3 || defined OPENGL40) 
 				else
 					((GLmodelClass*)XmodelClass)->LoadColor((TCHAR*)filename.c_str(), g_driver, /*shader_type*/ SHADER_COLOR, &modelColorVertex, &obj3d.indices32);
 			#endif

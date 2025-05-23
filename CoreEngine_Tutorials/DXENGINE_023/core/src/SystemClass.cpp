@@ -828,7 +828,7 @@ void SystemClass::Shutdown()
 
 #if CORE_ENGINE_LEVEL >= 10 && !defined NewWomaEngine
 	if (driverList.size() > 0) {
-#ifdef OPENGL3
+#if (defined OPENGL3 || defined OPENGL40) 
 		if (driverList[DRIVER_GL3]) {
 			delete ((GLopenGLclass*)driverList[DRIVER_GL3]);
 			driverList[DRIVER_GL3] = NULL;
@@ -1422,7 +1422,7 @@ bool newDriver()
 		break;
 
 	case DRIVER_GL3:
-#ifdef OPENGL3
+#if (defined OPENGL3 || defined OPENGL40) 
 	#if defined WINDOWS_PLATFORM
 		g_contextDriver = NEW wGLopenGLclass;		// Create the OpenGL object for windows --> gl3wInit();
 	#endif

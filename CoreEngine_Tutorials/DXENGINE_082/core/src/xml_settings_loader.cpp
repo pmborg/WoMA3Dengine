@@ -198,7 +198,7 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 			if (SystemHandle->AppSettings->DRIVER<0)
 				SystemHandle->AppSettings->DRIVER = (strcmp(GenSettings.driverName, "DX12") == 0) ? DRIVER_DX12 : -1;
 	    #endif
-		#if defined OPENGL3 //defined WIN6x || defined WIN10 || defined LINUX_PLATFORM
+        #if (defined OPENGL3 || defined OPENGL40)  //defined WIN6x || defined WIN10 || defined LINUX_PLATFORM
 			if (SystemHandle->AppSettings->DRIVER < 0)
 				SystemHandle->AppSettings->DRIVER = (strcmp (GenSettings.driverName, "GL3+") == 0) ? DRIVER_GL3: -1;
 		#endif
@@ -236,7 +236,7 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 			if (SystemHandle->AppSettings->DRIVER == -1)
 				SystemHandle->AppSettings->DRIVER = DRIVER_DX11;
 	#endif
-	#if defined OPENGL3
+#if (defined OPENGL3 || defined OPENGL40) 
 			if (SystemHandle->AppSettings->DRIVER == -1)
 				SystemHandle->AppSettings->DRIVER = DRIVER_GL3;
 	#endif

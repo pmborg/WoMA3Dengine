@@ -56,7 +56,7 @@ void BillClass::Shutdown()
 #if defined SCENE_BILLBOARDS
 #include "fileLoader.h"
 
-#ifdef OPENGL3
+#if (defined OPENGL3 || defined OPENGL40) 
 #include "GLopenGLclass.h"
 #include "GLmodelClass.h"
 #endif

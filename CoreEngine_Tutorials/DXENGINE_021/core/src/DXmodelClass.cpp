@@ -1266,7 +1266,7 @@ bool DXmodelClass::RenderSprite( int positionX, int positionY, float scale, floa
 
 void DXmodelClass::RenderWithFade(float fadeLight, bool FOG)
 {
-#if defined DX11 || defined DX12 || defined OPENGL3
+#if defined DX11 || defined DX12 || (defined OPENGL3 || defined OPENGL40) 
 #endif
 }
 

@@ -136,7 +136,6 @@ namespace DirectX {
 		// Release the factory.
 		factory->Release();
 		factory = 0;
-
         
 		// From most desired to least desired:
 		D3D_FEATURE_LEVEL featureLevels[] = {

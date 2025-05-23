@@ -1,0 +1,6 @@
+[submodule "ThirdParty/external/assimp"]
+	path = ThirdParty/external/assimp
+	url = https://github.com/assimp/assimp.git
+[submodule "ThirdParty/external/DirectXTex"]
+	path = ThirdParty/external/DirectXTex
+	url = https://github.com/microsoft/DirectXTex.git
