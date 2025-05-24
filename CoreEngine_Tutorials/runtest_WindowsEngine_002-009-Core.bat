@@ -42,8 +42,8 @@ cd C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_M
 start C:\WoMA3Dengine\CoreEngine_Tutorials\x64\Debug\CoreEngine_004.exe /renderOnce /Xpos 000  /Ypos 360 /WIDTH 640 /HEIGHT 360
 cd C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_005_PAINT_SETTINGS_XML
 start C:\WoMA3Dengine\CoreEngine_Tutorials\x64\Debug\CoreEngine_005.exe /renderOnce /Xpos 640  /Ypos 360 /WIDTH 640 /HEIGHT 360
-cd C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_006_PACKMANAGER_IDEA_CPU_BENCHMARK
-start C:\WoMA3Dengine\CoreEngine_Tutorials\x64\Debug\CoreEngine_006.exe /renderOnce /Xpos 1280 /Ypos 360 /WIDTH 640 /HEIGHT 360
+REM cd C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_006_PACKMANAGER_IDEA_CPU_BENCHMARK
+REM start C:\WoMA3Dengine\CoreEngine_Tutorials\x64\Debug\CoreEngine_006.exe /renderOnce /Xpos 1280 /Ypos 360 /WIDTH 640 /HEIGHT 360
 
 cd C:\WoMA3Dengine\CoreEngine_Tutorials\CoreEngine_007_PAINT_REALTIMECELESTIAL_ASTROCLASS														 
 start C:\WoMA3Dengine\CoreEngine_Tutorials\x64\Debug\CoreEngine_007.exe /renderOnce /Xpos 000  /Ypos 720 /WIDTH 640 /HEIGHT 360

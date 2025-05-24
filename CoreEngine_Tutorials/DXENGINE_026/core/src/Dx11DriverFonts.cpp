@@ -109,7 +109,7 @@ bool DX11Class::InitD2D_D3D101_DWrite(IDXGIAdapter1 *Adapter, WCHAR* fontStyle, 
 	// Create a solid color brush to draw something with:
 	IF_FAILED_RETURN_FALSE (hr = D2DRenderTarget->CreateSolidColorBrush(D2D1::ColorF(R, G, B, 1.0f), &Brush));
 
-	float FontSizeIndex = 22; // MAX(24, 24.0f * MIN(1, 2 * SystemHandle->m_scaleX)); // At least 8, Max: 24 (with this formula Text Scale Better)
+	float FontSizeIndex = 22; // MAX(22, 22.0f * MIN(1, 2 * SystemHandle->m_scaleX)); // At least 8, Max: 24 (with this formula Text Scale Better)
 
 	// Create new font: (DirectWrite)
 	IF_FAILED_RETURN_FALSE(hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&DWriteFactory)));

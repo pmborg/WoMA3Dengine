@@ -1,5 +1,0 @@
-﻿cl : command line  warning D9035: option 'Gm' has been deprecated and will be removed in a future release
-  stdafx.cpp
-cl : command line  warning D9035: option 'Gm' has been deprecated and will be removed in a future release
-  SDKMeshFileWriter.cpp
-  SDKMeshFileWriter2010.vcxproj -> C:\WoMAengine2023\ExternalTools\Microsoft_DirectX_SDK_June_2010\Samples\C++\Misc\ContentExporter\SDKMeshFileWriter\Debug_2010\SDKMeshFileWriter.lib

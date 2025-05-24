@@ -219,7 +219,7 @@ bool WomaSetupManager::Initialize(void* Driver)
 			xPos + 150, yPos, 200, 6*40/*80*/, windownTOP, HMENU((HMENU)(UINT_PTR)(mon * 100 + 2010)), SystemHandle->m_hinstance, NULL);
 
 		TCHAR str[50];
-#if _NOT //CORE_ENGINE_LEVEL >= 10
+#if CORE_ENGINE_LEVEL >= 10
 		UINT resolutionWidth = 0;
 		UINT resolutionHeight = 0;
 

@@ -723,7 +723,13 @@ BOOL CALLBACK MyInfoEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonit
     iMonitor.cbSize = sizeof(MONITORINFOEX);
     GetMonitorInfo(hMonitor, &iMonitor);
 
-    // Part I: get current settings:
+    // Part I: get all options:
+    if (GetMonitorInfo(hMonitor, &iMonitor)) {
+        ListDisplayModes(iMonitor.szDevice);
+    }
+
+
+    // Part II: get current settings:
     double horizontalScale = 0;
     double verticalScale = 0;
     double cxLogical = 0;
@@ -777,10 +783,6 @@ BOOL CALLBACK MyInfoEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonit
         return true;
     };
 
-    // Part II: get all options:
-    if (GetMonitorInfo(hMonitor, &iMonitor)) {
-        ListDisplayModes(iMonitor.szDevice);
-    }
 }
 #pragma warning(pop)
 #endif
@@ -856,6 +858,7 @@ BOOL CALLBACK MyInfoEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonit
 #pragma warning(pop)
 #endif
 */
+
 bool WinSystemClass::APPLICATION_INIT_MAIN_WINDOW()
 //----------------------------------------------------------------------------
 {

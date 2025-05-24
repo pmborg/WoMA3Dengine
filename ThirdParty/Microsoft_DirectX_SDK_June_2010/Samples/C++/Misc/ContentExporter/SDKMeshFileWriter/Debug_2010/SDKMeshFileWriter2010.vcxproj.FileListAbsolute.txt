@@ -1,1 +1,0 @@
-C:\WoMAengine2023\ExternalTools\Microsoft_DirectX_SDK_June_2010\Samples\C++\Misc\ContentExporter\SDKMeshFileWriter\Debug_2010\SDKMeshFileWriter.lib
