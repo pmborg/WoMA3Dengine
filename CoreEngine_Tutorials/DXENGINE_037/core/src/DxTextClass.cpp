@@ -17,6 +17,7 @@
 // PURPOSE: 
 // Original DX11 version of the code was inpired on: https://www.rastertek.com/dx11tut12.html
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567155;
 #pragma once
 
 #include "OSengine.h"

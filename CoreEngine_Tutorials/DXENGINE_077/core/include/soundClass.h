@@ -17,6 +17,8 @@
 // PURPOSE: Add local/3D sound/effects.
 // ORIGINAL VERSION: https://en.wikibooks.org/wiki/DirectX/10.0/Direct3D/Direct_Sound
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567155;
+
 #ifndef _SOUNDCLASS_H_
 #define _SOUNDCLASS_H_
 

@@ -22,6 +22,7 @@
 // -PopulateTerrainModelVertexVector: height[][]		-> POPULATE modelVertexVector
 // 
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567155;
 
 #include "platform.h"
 

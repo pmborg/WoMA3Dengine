@@ -18,6 +18,7 @@
 // --------------------------------------------------------------------------------------------
 // LOAD / SAVE: The fast static 3D object format of Woma.
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567155;
 
 #include "platform.h"
 #include "OSengine.h"		// Get [SystemHandle] Pointer to System Class & define WomaSYSTEM for: WINDOWS, LINUX & ANDROID

@@ -16,6 +16,8 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: A basic input used in first WOMA LEVELs using OS functions.
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567155;
+
 //#define GENERATE //(Airports List)
 
 #include "main.h"

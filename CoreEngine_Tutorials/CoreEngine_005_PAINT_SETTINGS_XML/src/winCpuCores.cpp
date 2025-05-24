@@ -19,7 +19,7 @@
 //	Original Source Code:
 //	http://msdn.microsoft.com/en-us/library/windows/desktop/ms683194%28v=vs.85%29.aspx
 // --------------------------------------------------------------------------------------------
-//#define GENERATE //(Airports List)
+//WomaIntegrityCheck = 1234567155;
 
 #include "WinSystemClass.h"
 #if defined WINDOWS_PLATFORM

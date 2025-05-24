@@ -16,7 +16,8 @@
 // --------------------------------------------------------------------------------------------
 // This code was inpired on: https://www.rastertek.com/dx11tut12.html
 // --------------------------------------------------------------------------------------------
-#pragma once
+//WomaIntegrityCheck = 1234567155;
+
 
 #include "platform.h"
 #if defined USE_RASTERTEK_TEXT_FONT //&& defined DX_ENGINE

@@ -16,6 +16,8 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567155;
+
 #pragma once
 
 // First thing in the header is to specify the libraries to link when using this object module

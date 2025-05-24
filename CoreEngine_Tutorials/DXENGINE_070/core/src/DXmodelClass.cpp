@@ -16,6 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Paint the main window depending of engine state screen page.
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567155;
 
 #include "OSengine.h"
 #if defined DX_ENGINE

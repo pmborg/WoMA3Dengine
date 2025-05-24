@@ -17,6 +17,8 @@
 // PURPOSE: Add local/3D sound/effects.
 // ORIGINAL VERSION: https://en.wikibooks.org/wiki/DirectX/10.0/Direct3D/Direct_Sound
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567155;
+
 #include "platform.h"
 
 #pragma warning(disable : 4267) //warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data

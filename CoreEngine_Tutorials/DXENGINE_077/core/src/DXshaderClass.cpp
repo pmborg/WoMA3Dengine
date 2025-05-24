@@ -16,6 +16,8 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567155;
+
 #pragma warning ( push )
 #pragma warning ( disable : 4101 ) //warning C4101 : 'cameraPosition' : unreferenced local variable
 

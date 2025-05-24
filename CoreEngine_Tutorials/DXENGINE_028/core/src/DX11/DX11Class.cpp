@@ -18,6 +18,7 @@
 // PURPOSE: MAIN PURPOSE: Work as a DirectX 11 Driver.
 //
 // ----------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567155;
 
 #include "OSengine.h"
 #include "mem_leak.h"

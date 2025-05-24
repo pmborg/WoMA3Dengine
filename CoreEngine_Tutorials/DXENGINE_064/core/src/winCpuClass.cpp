@@ -17,6 +17,8 @@
 //   Get processor benchmark info
 //   Allocate logical processors to different threads
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234567155;
+
 #include "main.h"
 
 #if CORE_ENGINE_LEVEL >= 6 && !defined WIN_XP // Initializing Engine
