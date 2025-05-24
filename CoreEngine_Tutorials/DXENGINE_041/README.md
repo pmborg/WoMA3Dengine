@@ -1,7 +1,6 @@
-- <b>DX30: WORLD.XML: load OBJ 3D file format, using COLOR shader</b><br> 
-	- SceneManager and SceneNode<br> 
-	- QuadTree and Frustum<br> 
-	- <b>World</b> and <b>Objects</b>: Loading objects as a descriptor:	<b>World.xml</b><br>
-	- Load <b>obj</b> format<br>
+<hr>
+- <b>DX41: WORLD.XML: load W3D and use SHADOW INSTANCES</b><br> 
+	- This is a join of DX40 with DX39 now all together.
+	- 041ShadowMapInstance.hlsl is equivalent to 036ShadowMap.hlsl but with instances.
 	
-![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_030.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_030.png)	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_041.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_041.png)	

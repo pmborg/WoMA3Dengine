@@ -1,7 +1,6 @@
-- <b>DX30: WORLD.XML: load OBJ 3D file format, using COLOR shader</b><br> 
-	- SceneManager and SceneNode<br> 
-	- QuadTree and Frustum<br> 
-	- <b>World</b> and <b>Objects</b>: Loading objects as a descriptor:	<b>World.xml</b><br>
-	- Load <b>obj</b> format<br>
+<hr>
+- <b>DX40: WORLD.XML: load W3D and use INSTANCES to clone objects using GPU</b><br> 
+	- This is a very powerful tool, with less we can do more, using Shader INSTANCES to clone objects into different positions
+	- 040LightInstance.hlsl is equivalent to 023Light.hlsl but with instances
 	
-![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_030.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_030.png)	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_040.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_040.png)	

@@ -1,7 +1,6 @@
-- <b>DX30: WORLD.XML: load OBJ 3D file format, using COLOR shader</b><br> 
-	- SceneManager and SceneNode<br> 
-	- QuadTree and Frustum<br> 
-	- <b>World</b> and <b>Objects</b>: Loading objects as a descriptor:	<b>World.xml</b><br>
-	- Load <b>obj</b> format<br>
-	
-![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_030.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_030.png)	
+<hr>
+- <b>DX83: ASSIMP: Update billboard shader:</b><br>
+ 
+<b>RELEASE version (1920x1080 Fullscreen) - about 1070 FPS (using AVX2) @target WIN10</b><br>
+<b>RELEASE version (1920x1080 Fullscreen) - about 1321 FPS (using AVX512) @target WIN11</b>
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_083-RELEASE.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_083-RELEASE.png)	

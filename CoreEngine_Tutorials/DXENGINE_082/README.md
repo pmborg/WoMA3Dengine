@@ -1,7 +1,8 @@
-- <b>DX30: WORLD.XML: load OBJ 3D file format, using COLOR shader</b><br> 
-	- SceneManager and SceneNode<br> 
-	- QuadTree and Frustum<br> 
-	- <b>World</b> and <b>Objects</b>: Loading objects as a descriptor:	<b>World.xml</b><br>
-	- Load <b>obj</b> format<br>
-	
-![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_030.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_030.png)	
+<hr>
+- <b>DX82: ASSIMP: Loading an animated mesh:</b><br>
+ 
+<b>DEBUG version:</b>
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_082.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_082.png)	
+
+<b>RELEASE version - about 1070 FPS (using AVX512):</b><br>
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_082-RELEASE.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_082-RELEASE.png)	
