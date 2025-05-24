@@ -230,19 +230,9 @@ WDDM 2.0->Windows 10				Display Drivers or Creates a DXGI 1.4
 #if defined USE_DX_DRIVER_FONT// FONT v2
     #include <D2D1.h>
     #include <dwrite.h>
-
-    #ifdef X64
-        #pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\d3dx10.lib")
-        #pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\D3D10_1.lib")
-        #pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\D2D1.lib")
-        #pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\dwrite.lib")
-    #else                        
-        #pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x86\\d3dx10.lib")
-        #pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x86\\D3D10_1.lib")
-        #pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x86\\D2D1.lib")
-        #pragma comment (lib, "C:\\WoMA3Dengine\\ThirdParty\\Microsoft_DirectX_SDK_June_2010\\Lib\\x86\\dwrite.lib")
-    #endif
-
+    #pragma comment(lib, "d2d1.lib")
+    #pragma comment(lib, "dwrite.lib")
+    #pragma comment(lib, "d3d10_1.lib")
 #endif
 
     #if D3D11_SPEC_DATE_YEAR == 2009
@@ -490,6 +480,7 @@ private:
     // ---------------------------------------------------------
 #if defined USE_DX_DRIVER_FONT
     bool InitD2D_D3D101_DWrite(IDXGIAdapter1 *Adapter, WCHAR* fontStyle, int screenWidth, int screenHeight, float R, float G, float B);
+    bool InitD2D_D3D101_DWrite_(IDXGIAdapter1* Adapter, WCHAR* fontStyle, int screenWidth, int screenHeight, float R, float G, float B);
     bool InitD2DScreenTexture();
 #endif
 
