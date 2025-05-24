@@ -4,3 +4,6 @@
 [submodule "ThirdParty/external/DirectXTex"]
 	path = ThirdParty/external/DirectXTex
 	url = https://github.com/microsoft/DirectXTex.git
+[submodule "ThirdParty/external/DirectXTK"]
+	path = ThirdParty/external/DirectXTK
+	url = https://github.com/microsoft/DirectXTK.git
