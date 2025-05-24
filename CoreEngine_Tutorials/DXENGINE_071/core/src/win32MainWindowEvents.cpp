@@ -488,13 +488,6 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 	// -----------------------------------------------------------------------------
 	// MIN-SIZE: Catch this message so to prevent the window from becoming too small.
 	// -----------------------------------------------------------------------------
-	case WM_GETMINMAXINFO:
-        if (!WOMA::renderOnce)
-        {
-		    ((MINMAXINFO*)lparam)->ptMinTrackSize.x = (LONG)MIN_WIDTH_RESOLUTION;	// OFFICIALLY: Min Screen Resolution
-		    ((MINMAXINFO*)lparam)->ptMinTrackSize.y = (LONG)MIN_HEIGHT_RESOLUTION;	// OFFICIALLY: Min Screen Resolution
-        }
-        break; //return 0;
 
 	// -----------------------------------------------------------------------------
 	// MOVE: The mainwindow is being dragged...

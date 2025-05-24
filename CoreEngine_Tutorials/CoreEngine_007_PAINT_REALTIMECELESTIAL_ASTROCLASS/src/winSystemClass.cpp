@@ -693,6 +693,81 @@ bool WinSystemClass::ShowWindow(int windowLeft, int windowTop)
 	return true;
 }
 
+
+#if defined CLIENT_SCENE_SETUP
+#pragma warning(push)
+#pragma warning( disable : 4715 )
+extern void ListDisplayModes(TCHAR* deviceName);
+BOOL CALLBACK MyInfoEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonitor, LPARAM dwData)
+{
+    MONITORINFOEX iMonitor;
+    iMonitor.cbSize = sizeof(MONITORINFOEX);
+    GetMonitorInfo(hMonitor, &iMonitor);
+
+    // Part I: get current settings:
+    double horizontalScale = 0;
+    double verticalScale = 0;
+    double cxLogical = 0;
+    double cyLogical = 0;
+    double cxPhysical = 0;
+    double cyPhysical = 0;
+    {
+        // Get the logical width and height of the monitor
+        MONITORINFOEX monitorInfoEx;
+        monitorInfoEx.cbSize = sizeof(monitorInfoEx);
+        GetMonitorInfo(hMonitor, &monitorInfoEx);
+        cxLogical = monitorInfoEx.rcMonitor.right - monitorInfoEx.rcMonitor.left;
+        cyLogical = monitorInfoEx.rcMonitor.bottom - monitorInfoEx.rcMonitor.top;
+
+        // Get the physical width and height of the monitor
+        DEVMODE devMode;
+        devMode.dmSize = sizeof(devMode);
+        devMode.dmDriverExtra = 0;
+        EnumDisplaySettings(monitorInfoEx.szDevice, ENUM_CURRENT_SETTINGS, &devMode);
+        cxPhysical = devMode.dmPelsWidth;
+        cyPhysical = devMode.dmPelsHeight;
+
+        // Calculate the scaling factor
+        horizontalScale = ((double)cxPhysical / (double)cxLogical);
+        verticalScale = ((double)cyPhysical / (double)cyLogical);
+    }
+
+    if (iMonitor.dwFlags == DISPLAY_DEVICE_MIRRORING_DRIVER)
+    {
+        return true;
+    }
+    else
+    {
+        ScreenArrayInfo* info = reinterpret_cast<ScreenArrayInfo*>(dwData);
+        if (info->Count == info->MaxCount)
+            return false;
+        SystemHandle->monitorArray[info->Count] = iMonitor;
+
+        //SETUP SIMILAR ARRAY as DX11DRIVER:
+        WOMA::WindowDataContainer screen;
+        screen.MonitorName = iMonitor.szDevice;
+        screen.width = (UINT)cxPhysical;	// GetSystemMetrics(SM_CXSCREEN);
+        screen.height = (UINT)cyPhysical; // GetSystemMetrics(SM_CYSCREEN);
+        screen.refreshRate_Numerator = 60;  //Default
+        screen.refreshRate_Denominator = 1; //Default
+
+        if ((info->Count == SystemHandle->AppSettings->UI_MONITOR) || (SystemHandle->AppSettings->UseAllMonitors == true))
+            SystemHandle->windowsArray.push_back(screen); //List of Monitors that will be used
+
+        info->Count++;
+        return true;
+    };
+
+    // Part II: get all options:
+    if (GetMonitorInfo(hMonitor, &iMonitor)) {
+        ListDisplayModes(iMonitor.szDevice);
+    }
+}
+#pragma warning(pop)
+#endif
+
+
+/*
 #if defined CLIENT_SCENE_SETUP
 #pragma warning(push)
 #pragma warning( disable : 4715 )
@@ -761,7 +836,7 @@ BOOL CALLBACK MyInfoEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonit
 }
 #pragma warning(pop)
 #endif
-
+*/
 bool WinSystemClass::APPLICATION_INIT_MAIN_WINDOW()
 //----------------------------------------------------------------------------
 {

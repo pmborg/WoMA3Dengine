@@ -1236,7 +1236,7 @@ void CTerrain::CreateTerrainModel(UINT id, std::vector<STRING> Textures, SHADER_
 	CREATE_MODEL_IF_NOT_EXCEPTION(SystemHandle->m_Application->m_TerrainModel[id], I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);  // m_TerrainModel[id] = NEW
 	SystemHandle->m_Application->m_TerrainModel[id]->ModelHASfog = true;
 
-#if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX //DX_ENGINE_LEVEL >= 25
+#if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX
 	if (id == 2 || id ==4)
 	{
 		//TRIANGLESTRIP
