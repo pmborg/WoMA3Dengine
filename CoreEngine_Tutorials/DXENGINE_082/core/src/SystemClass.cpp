@@ -982,6 +982,8 @@ void SystemClass::ParseCommandLineArgs(int argc, char* argv[])
             _tcsnicmp(argv[i], "/renderOnce", _tcslen(argv[i])) == 0)
         {
             WOMA::renderOnce = true;
+            WOMA::settings.FULLSCREEN_ON_WINDOWED = false;
+            WOMA::settings.FULL_SCREEN = false;
             HWND hWnd = GetConsoleWindow();
             if (hWnd != NULL) {
                 ShowWindow(hWnd, SW_MINIMIZE);
@@ -1036,10 +1038,9 @@ bool SystemClass::LoadXmlSettings()
 		return false;
 	}
 
-
 	SystemHandle->LandScape = (SystemHandle->AppSettings->WINDOW_WIDTH >= SystemHandle->AppSettings->WINDOW_HEIGHT) ? true : false;
 
-	//FORCE LANDSCAPE
+	//FORCE LANDSCAPE:
 
 	return true;
 }

@@ -80,7 +80,7 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
         demo.assimpSceneModel = std::unique_ptr<SceneModel>(SceneModel::LoadModelToScene(ASSIMP_MODEL_BOBLAMPCLEAN, demo.scene, demoapp.m_Graphics));
 
         demo.assimpSceneModel2 = std::unique_ptr<SceneModel>(SceneModel::LoadModelToScene(ASSIMP_MODEL_FEMALE, demo.scene2, demoapp.m_Graphics));
-    #if defined SCENE_SKIN
+        #if defined SCENE_SKIN
         {
         #ifdef LOAD_WALK
             std::wifstream fileIn(MODEL_FEMALE_PATH);
@@ -98,8 +98,7 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
             }
 
             fileIn.close();
-
-        #endif
+            #endif
         }
         if (!m_characterPos)
             m_characterPos = NEW PositionClass(0);
@@ -115,14 +114,14 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 
 #if defined ( LOAD_WALK ) && defined (SCENE_SKIN)
     // Do the Movement Animation of the "Character"
-    // ============================
+    // ============================================
     static UINT filmeIdx = 0; // 1st line of filme file
 
     if (filmeIdx < loadFilme.size()) 	// Prepare to read the next movement animation
     {
         m_characterPos->m_positionX = loadFilme[filmeIdx].X;
-        m_characterPos->m_positionY = mainTerrain->getTerrainHeight(TERRAIN_ID, m_characterPos->m_positionX, m_characterPos->m_positionZ);
         m_characterPos->m_positionZ = loadFilme[filmeIdx].Z;
+        m_characterPos->m_positionY = mainTerrain->getTerrainHeight(TERRAIN_ID, m_characterPos->m_positionX, m_characterPos->m_positionZ);
         m_characterPos->m_rotationY = DEG2RAD(loadFilme[filmeIdx].rotY);
         
         static DWORD m_startTime = timeGetTime();

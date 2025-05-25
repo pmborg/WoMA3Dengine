@@ -48,18 +48,13 @@ private:
     std::unique_ptr<Sampler> linearSampler;
     std::unique_ptr<Sampler> pointSampler;
 
-
     std::unique_ptr<GBufferPass> gBufferPass;
-
-    
-
 
     std::unique_ptr<Texture> colour;
     std::unique_ptr<Texture> diffuse;
     std::unique_ptr<Texture> metalRough;
     std::unique_ptr<Texture> normals;
     std::unique_ptr<Texture> emissive;
-
 
     AnimationJob animJob;
 
@@ -165,11 +160,6 @@ public:
 
             XMMATRIX rotX = XMMatrixRotationX(PI / 2);
             world *= rotX;
-            //XMMATRIX rotY = XMMatrixRotationY(PI / 2);
-            //world *= rotY;
-            //XMMATRIX rotZ = XMMatrixRotationZ(PI/2);
-            //world *= rotZ;
-
             //Translate:
             world.r[3].m128_f32[0] = 39;    //_41: X
             world.r[3].m128_f32[1] = 0.4f;  //_42: Y 
@@ -192,9 +182,6 @@ public:
             world *= rotX;
             XMMATRIX rotY = XMMatrixRotationY(PI +SystemHandle->m_Application->m_characterPos->m_rotationY);
             world *= rotY;
-            //XMMATRIX rotZ = XMMatrixRotationZ(PI/2);
-            //world *= rotZ;
-
             //Translate:
             world.r[3].m128_f32[0] = SystemHandle->m_Application->m_characterPos->m_positionX;  //_41: X
             world.r[3].m128_f32[1] = SystemHandle->m_Application->m_characterPos->m_positionY;  //_42: Y 
@@ -204,10 +191,6 @@ public:
         }
         gBufferPass->Render(graphics, scene2);
 #endif
-
-
-
-
 
 	}
 
