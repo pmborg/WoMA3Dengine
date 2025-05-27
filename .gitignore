@@ -28,8 +28,15 @@ report.txt
 ThirdParty/DirectXTex
 ThirdParty/DirectXTex.old
 ThirdParty/PPG-master/Int/
+ThirdParty/PPG-master/Bin-latest
 ThirdParty/PPG-master/External/assimp/lib/
-CoreEngine_Tutorials/DXENGINE_*/Int
-CoreEngine_Tutorials/Int
+CoreEngine_Tutorials/DXENGINE_*/Int-latest
+CoreEngine_Tutorials/Int-latest
 log.txt
 output
+assimp.dir
+zlibstatic.dir
+ThirdParty/external/assimp-build/lib
+ThirdParty/external/assimp-build/contrib/zlib
+ThirdParty/external/assimp-build/code/Debug
+ThirdParty/external/assimp-build/code/CMakeFiles/generate.stamp

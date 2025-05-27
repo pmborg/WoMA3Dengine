@@ -86,7 +86,7 @@ bool GLtextureClass::loadImage(TCHAR *fileName, bool wrap)
 	* -WBMP
 	* -HEIF
 */
-	//AAssetManager* assetManager = NULL; // engine_state.app->activity->assetManager;
+
 	AAssetManager* assetManager = engine_state.app->activity->assetManager;
 	auto spAndroidRobotTexture = TextureAsset::loadAsset(assetManager, fileName);
 

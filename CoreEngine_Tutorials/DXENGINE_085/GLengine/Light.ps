@@ -1,0 +1,66 @@
+//hlsl2glsl TOOL
+//https://shader-playground.timjones.io/#
+
+////////////////////////////////////////////////////////////////////////////////
+// Filename: light.ps
+////////////////////////////////////////////////////////////////////////////////
+#version 400
+
+///////////////////////
+// UNIFORM VARIABLES //
+///////////////////////
+uniform sampler2D shaderTexture;
+uniform vec3 lightDirection;
+uniform vec4 diffuseLightColor;
+uniform int lightType;
+
+/////////////////////
+// INPUT VARIABLES //
+/////////////////////
+in vec2 texCoord;
+in vec3 normal;
+
+
+//////////////////////
+// OUTPUT VARIABLES //
+//////////////////////
+out vec4 outputColor;
+
+vec4 xll_saturate_vf4( vec4 x) {
+  return clamp( x, 0.0, 1.0);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Pixel Shader
+////////////////////////////////////////////////////////////////////////////////
+void main(void)
+{
+	vec4 textureColor;
+	vec3 lightDir;
+	float lightIntensity;
+	
+	vec4 emissiveColor=vec4(0);
+	vec4 ambientColor=vec4(0.1, 0.1, 0.1, 1);
+
+	// Sample the pixel color from the texture using the sampler at this texture coordinate location.
+	textureColor = texture(shaderTexture, texCoord);
+
+	if (lightType == 1)	
+		lightIntensity = clamp(dot(normal, -lightDirection), 0.0f, 1.0f);
+	else
+		lightIntensity = clamp(dot(normal, lightDirection), 0.0f, 1.0f);
+
+    //if (hasLight)
+	{
+        //if (hasTexture)
+		{
+            outputColor = (xll_saturate_vf4(((emissiveColor + ambientColor) + lightIntensity)));
+        }
+        //else{
+        //    outputColor = (textureColor * xll_saturate_vf4(((emissiveColor + ambientColor) + (lightIntensity * diffuseColor))));
+        //}
+    }
+
+	// Multiply the texture pixel and the final diffuse color to get the final pixel color result.
+	outputColor = outputColor * textureColor;
+}

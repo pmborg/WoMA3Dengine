@@ -142,11 +142,12 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 	WOMA::main_loop_state = 0;
 	do
 	{
-		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))	// There is any OS messages to handle?
+		while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))	// There is any OS messages to handle?
 		{
 			TranslateMessage(&msg); // TranslateMessage produces WM_CHAR messages only for keys that are mapped to ASCII characters by the keyboard driver.
 			DispatchMessage(&msg);  // Process Msg:  (INVOKE: WinSystemClass::MessageHandler)
-		} else {
+		}
+        {
 				if (WOMA::game_state > GAME_MINIMIZED)
 					ProcessFrame();	// Render ONE: Application Frame
 				else

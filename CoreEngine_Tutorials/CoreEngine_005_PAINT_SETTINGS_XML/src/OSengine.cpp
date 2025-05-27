@@ -326,6 +326,7 @@ void DefineConsoleTitle()
 
 void APPLICATION_STARTUP(int argc, char* argv[])
 {
+    std::cout << "<" << PROJECT_NAME << "> STARTUP:" << std::endl;
 
 	// Changes the Process Priority:
 	// -----------------------------
@@ -419,6 +420,8 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 	if (!PLATFORM_INIT_GTK2())
 		WOMA_LOGManager_DebugMSGAUTO(TEXT("Could not initialize GTK2!")); // Note: Dont use DEBUG_MSG yet...
 #endif
+
+
 }
 
 void APPLICATION_STOP()
@@ -833,5 +836,11 @@ namespace WOMA
 		MY_LOG("%s", lpText);
 	}
 }
+#endif
+
+
+#if DEMO_LEVEL >= 80 && DEMO_LEVEL <= 81
+#include "stdafx.h"
+bool firstFrame = true;
 #endif
 

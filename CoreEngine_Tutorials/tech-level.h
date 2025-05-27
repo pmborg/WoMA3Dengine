@@ -517,9 +517,9 @@
         #define SCENE_SKIN
     #endif
     #if DX_ENGINE_LEVEL >= 85
-        #define ASSIMP_LATEST
-    #endif						 
-
+        #define USE_FBX_MODEL1
+        //#define DEBUG_MESH
+    #endif
 	
 	
 	//#define USE_MULTI_MONITOR

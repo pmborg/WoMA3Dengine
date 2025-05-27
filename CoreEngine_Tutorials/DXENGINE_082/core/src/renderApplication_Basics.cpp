@@ -55,8 +55,13 @@ int __cdecl BillSortCB(const VOID* arg1, const VOID* arg2);
 #include "BillClass.h"				//[ch60]
 #endif
 
-#if defined USE_ASSIMP
 std::ofstream os_file("log.txt", std::ios::out);
+void log(char* msg)
+{
+    LOG_FILE << msg << std::endl;
+}
+
+#if defined USE_ASSIMP
 #include "PPG.h"
 #include "MyDemo.h"
 extern MyDemo demo;

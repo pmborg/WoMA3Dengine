@@ -62,6 +62,9 @@
 	#include "GLopenGLclass.h"
 #endif
 
+    #include <DirectXTex.h>
+    #include "ImageLoaderClass.h"
+
 TCHAR DEMO_NAME_SHOW[MAX_STR_LEN] = {};
 TCHAR* DEMO_NAME[] =
 {
@@ -332,6 +335,7 @@ void DefineConsoleTitle()
 
 void APPLICATION_STARTUP(int argc, char* argv[])
 {
+    std::cout << "<" << PROJECT_NAME << "> STARTUP:" << std::endl;
 
 	// Changes the Process Priority:
 	// -----------------------------
@@ -440,6 +444,11 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 	if (!PLATFORM_INIT_GTK2())
 		WOMA_LOGManager_DebugMSGAUTO(TEXT("Could not initialize GTK2!")); // Note: Dont use DEBUG_MSG yet...
 #endif
+
+
+    WOMA_LOGManager_DebugMSGAUTO(TEXT("USING LIBs:\n"));
+    WOMA_LOGManager_DebugMSGAUTO(TEXT("DIRECTXTEX_VERSION: %d\n"), DIRECTX_TEX_VERSION); //#include <DirectXTex.h>
+
 }
 
 void APPLICATION_STOP()
@@ -862,5 +871,11 @@ bool download(const std::string url, const std::string filename)
 	DownloadFiles(url.c_str(), filename.c_str());
 	return true;
 }
+#endif
+
+
+#if DEMO_LEVEL >= 80 && DEMO_LEVEL <= 81
+#include "stdafx.h"
+bool firstFrame = true;
 #endif
 

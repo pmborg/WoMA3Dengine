@@ -20,14 +20,15 @@
 
 #include "platform.h"
 #if _DEBUG
-#pragma comment( lib, "C://WoMA3Dengine//ThirdParty//PPG-master//Bin//Debug//AssimpEngine.lib" )
+    #pragma comment( lib, "C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin-latest\\Debug\\Assimp-latest-Engine.lib" )
 #else
-#pragma comment( lib, "C://WoMA3Dengine//ThirdParty//PPG-master//Bin//Release//AssimpEngine.lib" )
+    #pragma comment( lib, "C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin-latest\\Release\\Assimp-latest-Engine.lib" )
 #endif
-#if !defined ASSIMP_LATEST
-#pragma comment(lib, "C://WoMA3Dengine//ThirdParty//PPG-master//External//assimp//lib//assimp-vc142-mtd.lib")
+
+#if _DEBUG
+    #pragma comment(lib, "C:\\WoMA3Dengine\\ThirdParty\\external\\assimp-build\\lib\\Debug\\assimp-vc143-mtd.lib")
 #else
-#pragma comment(lib, "C:\\WoMAengine2023\\_EXTERNAL_\\assimp\\lib\\Debug\\assimp-vc143-mtd.lib")
+    #pragma comment(lib, "C:\\WoMA3Dengine\\ThirdParty\\external\\assimp-build\\lib\\Release\\assimp-vc143-mtd.lib")
 #endif
 
 #include "../Engine/Source/PPG.h"
@@ -153,13 +154,14 @@ public:
         {
             XMMATRIX world = XMMatrixIdentity();
             //Scale:
-            //_11
+            //_11+		BoneIds	{x=0.00000000 y=0.00000000 z=0.00000000 ...}	DirectX::XMFLOAT4
+
             //_22
             //_33
             world.r[0].m128_f32[0] = world.r[1].m128_f32[1] = world.r[2].m128_f32[2] = 0.2f;
-
             XMMATRIX rotX = XMMatrixRotationX(PI / 2);
             world *= rotX;
+            
             //Translate:
             world.r[3].m128_f32[0] = 39;    //_41: X
             world.r[3].m128_f32[1] = 0.4f;  //_42: Y 

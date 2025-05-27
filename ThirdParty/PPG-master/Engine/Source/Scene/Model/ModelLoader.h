@@ -122,12 +122,14 @@ void ModelLoader::ProcessMeshes()
     }
 }
 
-void ModelLoader::ProcessBones(aiMesh* mesh, std::vector<Vertex>& vertices)
+void ModelLoader::ProcessBones(aiMesh* aimesh, std::vector<Vertex>& vertices)
 {
-    for (UINT i = 0; i < mesh->mNumBones; ++i)
-    {
+    if (aimesh->mNumBones>0)
         m_HasBones = true;
-        aiBone* bone = mesh->mBones[i];
+
+    for (UINT i = 0; i < aimesh->mNumBones; ++i)
+    {
+        aiBone* bone = aimesh->mBones[i];
         int boneId = m_SkeletonLoader.AddBone(bone);
         for (UINT j = 0; j < bone->mNumWeights; ++j)
         {
@@ -187,9 +189,125 @@ Mesh* ModelLoader::GenerateMesh(aiMesh* aimesh)
     std::vector<WORD> indices;
     bool hasTexCoord = aimesh->mTextureCoords[0];
 
+    /*
+    if (!aimesh->mNormals) 
+    {
+        // Allocate normals array
+        aimesh->mNormals = new aiVector3D[aimesh->mNumVertices];
+        // Zero initialize
+        for (UINT i = 0; i < aimesh->mNumVertices; ++i) {
+            aimesh->mNormals[i] = aiVector3D(0.0f, 0.0f, 0.0f);
+        }
+
+        // Accumulate face normals to each vertex
+        for (UINT i = 0; i < aimesh->mNumFaces; ++i) {
+            const aiFace& face = aimesh->mFaces[i];
+            if (face.mNumIndices < 3) continue; // Not a triangle
+
+            UINT i0 = face.mIndices[0];
+            UINT i1 = face.mIndices[1];
+            UINT i2 = face.mIndices[2];
+
+            const aiVector3D& v0 = aimesh->mVertices[i0];
+            const aiVector3D& v1 = aimesh->mVertices[i1];
+            const aiVector3D& v2 = aimesh->mVertices[i2];
+
+            // Compute face normal
+            XMVECTOR p0 = XMLoadFloat3((XMFLOAT3*)&v0);
+            XMVECTOR p1 = XMLoadFloat3((XMFLOAT3*)&v1);
+            XMVECTOR p2 = XMLoadFloat3((XMFLOAT3*)&v2);
+
+            XMVECTOR edge1 = XMVectorSubtract(p1, p0);
+            XMVECTOR edge2 = XMVectorSubtract(p2, p0);
+            XMVECTOR faceNormal = XMVector3Cross(edge1, edge2);
+
+            // Add face normal to each vertex normal
+            XMFLOAT3 fn;
+            XMStoreFloat3(&fn, faceNormal);
+
+            aimesh->mNormals[i0] += aiVector3D(fn.x, fn.y, fn.z);
+            aimesh->mNormals[i1] += aiVector3D(fn.x, fn.y, fn.z);
+            aimesh->mNormals[i2] += aiVector3D(fn.x, fn.y, fn.z);
+        }
+
+        // Normalize all normals
+        for (UINT i = 0; i < aimesh->mNumVertices; ++i) {
+            aiVector3D& n = aimesh->mNormals[i];
+            float len = n.Length();
+            if (len > 0.0f)
+                n /= len;
+        }
+    }
+
+    if (!aimesh->mTangents || aimesh->mBitangents)
+    {
+        // Allocate tangent and bitangent arrays
+        aimesh->mTangents = new aiVector3D[aimesh->mNumVertices];
+        aimesh->mBitangents = new aiVector3D[aimesh->mNumVertices];
+        for (UINT i = 0; i < aimesh->mNumVertices; ++i) {
+            aimesh->mTangents[i] = aiVector3D(0.0f, 0.0f, 0.0f);
+            aimesh->mBitangents[i] = aiVector3D(0.0f, 0.0f, 0.0f);
+        }
+
+        // Accumulate tangents and bitangents per face
+        for (UINT i = 0; i < aimesh->mNumFaces; ++i) {
+            const aiFace& face = aimesh->mFaces[i];
+            if (face.mNumIndices < 3) continue; // Not a triangle
+
+            UINT i0 = face.mIndices[0];
+            UINT i1 = face.mIndices[1];
+            UINT i2 = face.mIndices[2];
+
+            const aiVector3D& v0 = aimesh->mVertices[i0];
+            const aiVector3D& v1 = aimesh->mVertices[i1];
+            const aiVector3D& v2 = aimesh->mVertices[i2];
+
+            // Texture coordinates must exist
+            if (!aimesh->mTextureCoords[0]) continue;
+            const aiVector3D& uv0 = aimesh->mTextureCoords[0][i0];
+            const aiVector3D& uv1 = aimesh->mTextureCoords[0][i1];
+            const aiVector3D& uv2 = aimesh->mTextureCoords[0][i2];
+
+            // Edges of the triangle : position delta
+            aiVector3D deltaPos1 = v1 - v0;
+            aiVector3D deltaPos2 = v2 - v0;
+            // UV delta
+            aiVector3D deltaUV1 = uv1 - uv0;
+            aiVector3D deltaUV2 = uv2 - uv0;
+
+            float r = (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+            if (fabs(r) < 1e-8f) r = 1.0f; // Prevent division by zero
+            else r = 1.0f / r;
+
+            aiVector3D tangent = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y) * r;
+            aiVector3D bitangent = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x) * r;
+
+            aimesh->mTangents[i0] += tangent;
+            aimesh->mTangents[i1] += tangent;
+            aimesh->mTangents[i2] += tangent;
+
+            aimesh->mBitangents[i0] += bitangent;
+            aimesh->mBitangents[i1] += bitangent;
+            aimesh->mBitangents[i2] += bitangent;
+        }
+
+        // Normalize all tangents and bitangents
+        for (UINT i = 0; i < aimesh->mNumVertices; ++i) {
+            float lenT = aimesh->mTangents[i].Length();
+            if (lenT > 0.0f)
+                aimesh->mTangents[i] /= lenT;
+            float lenB = aimesh->mBitangents[i].Length();
+            if (lenB > 0.0f)
+                aimesh->mBitangents[i] /= lenB;
+        }
+    }
+    */
+
+
+
     for (UINT i = 0; i < aimesh->mNumVertices; i++)
     {
-        Vertex vertex;
+        Vertex vertex = {};
         vertex.Position.x = aimesh->mVertices[i].x;
         vertex.Position.y = aimesh->mVertices[i].y;
         vertex.Position.z = aimesh->mVertices[i].z;
@@ -198,20 +316,20 @@ Mesh* ModelLoader::GenerateMesh(aiMesh* aimesh)
             vertex.TexCoord.x = aimesh->mTextureCoords[0][i].x;
             vertex.TexCoord.y = aimesh->mTextureCoords[0][i].y;
         }
-		//if (aimesh->mNormals)
+        if (aimesh->mNormals)
 		{
         vertex.Normal.x = aimesh->mNormals[i].x;
         vertex.Normal.y = aimesh->mNormals[i].y;
         vertex.Normal.z = aimesh->mNormals[i].z;
 		}
 
-		//if (aimesh->mTangents)
+		if (aimesh->mTangents)
 		{
         vertex.Tangent.x = aimesh->mTangents[i].x;
         vertex.Tangent.y = aimesh->mTangents[i].y;
         vertex.Tangent.z = aimesh->mTangents[i].z;
 		}
-		//if (aimesh->mBitangents)
+		if (aimesh->mBitangents)
 		{
         vertex.Binormal.x = aimesh->mBitangents[i].x;
         vertex.Binormal.y = aimesh->mBitangents[i].y;

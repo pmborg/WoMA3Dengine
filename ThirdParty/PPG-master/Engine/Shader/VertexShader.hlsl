@@ -43,7 +43,7 @@ struct VertexShaderOutput
 VertexShaderOutput main(AppData input)
 {
     //PB:
-    if (BoneTransforms[127]._11 == 1.0f)
+    if (BoneTransforms[127]._11 > 0)
     {
         matrix boneTransform = input.boneWeight[0] * BoneTransforms[input.boneIds[0]];
         for (int i = 1; i < 4; ++i)
@@ -51,10 +51,10 @@ VertexShaderOutput main(AppData input)
             boneTransform += input.boneWeight[i] * BoneTransforms[input.boneIds[i]];
         }
         
-        input.position = mul(boneTransform, float4(input.position, 1.0f) *0.1f ); //SCALE:0.3
-        input.normal = normalize(mul(boneTransform, float4(input.normal, 0.0f)));
-        input.tangent = normalize(mul(boneTransform, float4(input.tangent, 0.0f)));
-        input.binormal = normalize(mul(boneTransform, float4(input.binormal, 0.0f)));
+        input.position = mul(boneTransform, float4(input.position, 1.0f)*0.1f );
+        //input.normal = normalize(mul(boneTransform, float4(input.normal, 0.0f)));
+        //input.tangent = normalize(mul(boneTransform, float4(input.tangent, 0.0f)));
+        //input.binormal = normalize(mul(boneTransform, float4(input.binormal, 0.0f)));
     }
 
     VertexShaderOutput OUT;
@@ -67,8 +67,8 @@ VertexShaderOutput main(AppData input)
     // assume a uniform scaling is observed
     // otherwise have have to multiply by transpose(inverse(model))
     // inverse should be calculated in the application (CPU)
-    OUT.normal = normalize(mul(model, float4(input.normal, 0)).xyz);
-    OUT.tangent = normalize(mul(model, normalize(float4(input.tangent, 0))).xyz);
-    OUT.binormal = normalize(mul(model, normalize(float4(input.binormal, 0))).xyz);
+    //OUT.normal = normalize(mul(model, float4(input.normal, 0)).xyz);
+    //OUT.tangent = normalize(mul(model, normalize(float4(input.tangent, 0))).xyz);
+    //OUT.binormal = normalize(mul(model, normalize(float4(input.binormal, 0))).xyz);
     return OUT;
 }

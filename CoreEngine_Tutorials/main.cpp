@@ -144,8 +144,8 @@ int APPLICATION_MAIN(int argc, char* argv[])
             if (demo.APPLICATION_INIT_SYSTEM())         // INIT Woma Engine: |SOUND|+|Register|+|XML|+|Sys.Chk|+|Window|+|OS-Input|+|Timer|+|Drivers|+|Load Assets|
                 Command = demo.APPLICATION_MAIN_LOOP(); // RUN: OS MAIN LOOP -> PROCESS FRAMES: (UPDATE + RENDER)!
         }                                               // DELETE SYSTEM demo: Close WINDOW
-		if (Command == ENGINE_RESTART)  // The User set new settings?
-			Sleep(2000);                // Need to be 2secs to change resources between drivers
+		if (Command == ENGINE_RESTART)                  // The User set new settings?
+			Sleep(2000);                                // Need to be 2secs to change resources between drivers
     } while (Command == ENGINE_RESTART);	            // Try to restart the Engine with new settings then! (if fail! goto VectoredExceptionHandler())
 
     APPLICATION_STOP();                                 // ENGINE STOP: |CoUninitialize|+|Free Mini Dumper|+|CLOSE Log|+|DELETE Temp files(RELEASE)

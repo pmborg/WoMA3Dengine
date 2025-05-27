@@ -18,7 +18,7 @@
 
 #pragma once
 #pragma warning( disable : 4099 )
-// System includes
+
 #define NOMINMAX //https://stackoverflow.com/questions/5004858/stdmin-gives-error
 #include <windows.h>
 #include <fstream> 
@@ -45,8 +45,7 @@ extern std::ofstream os_file;
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3dcompiler.lib")
-#pragma comment( lib, "dxguid.lib")
-
+#pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "winmm.lib")
 #include "woma_macros.h"
 

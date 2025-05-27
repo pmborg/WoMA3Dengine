@@ -51,7 +51,6 @@ extern RApplicationClass* r_Application;
 #endif
 
 #if defined USE_ASSIMP
-std::ofstream os_file("log.txt", std::ios::out);
 #include "PPG.h"
 #include "MyDemo.h"
 extern MyDemo demo;

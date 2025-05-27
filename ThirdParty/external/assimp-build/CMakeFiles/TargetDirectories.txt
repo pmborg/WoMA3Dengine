@@ -1,0 +1,10 @@
+C:/WoMA3Dengine/ThirdParty/external/assimp-build/CMakeFiles/uninstall.dir
+C:/WoMA3Dengine/ThirdParty/external/assimp-build/CMakeFiles/UpdateAssimpLibsDebugSymbolsAndDLLs.dir
+C:/WoMA3Dengine/ThirdParty/external/assimp-build/CMakeFiles/INSTALL.dir
+C:/WoMA3Dengine/ThirdParty/external/assimp-build/CMakeFiles/ALL_BUILD.dir
+C:/WoMA3Dengine/ThirdParty/external/assimp-build/CMakeFiles/ZERO_CHECK.dir
+C:/WoMA3Dengine/ThirdParty/external/assimp-build/contrib/zlib/CMakeFiles/zlibstatic.dir
+C:/WoMA3Dengine/ThirdParty/external/assimp-build/contrib/zlib/CMakeFiles/INSTALL.dir
+C:/WoMA3Dengine/ThirdParty/external/assimp-build/contrib/zlib/CMakeFiles/ALL_BUILD.dir
+C:/WoMA3Dengine/ThirdParty/external/assimp-build/code/CMakeFiles/assimp.dir
+C:/WoMA3Dengine/ThirdParty/external/assimp-build/code/CMakeFiles/INSTALL.dir

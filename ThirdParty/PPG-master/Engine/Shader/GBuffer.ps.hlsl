@@ -1,5 +1,5 @@
 #include "Common/Lighting.hlsli"
-#include "Common/Shading.hlsli"
+//#include "Common/Shading.hlsli"
 
 #define VERTEX_NORMALS 0
 #define NORMAL_MAP 1
@@ -39,14 +39,17 @@ struct PixelShaderInput
 struct GBufferOutput
 {
     float4 diffuse : SV_TARGET0;
-    float4 metalRoughOcclusion : SV_TARGET1;
-    float4 normal : SV_TARGET2;
-    float4 emissive : SV_TARGET3;
+    //float4 metalRoughOcclusion : SV_TARGET1;
+    //float4 normal : SV_TARGET2;
+    //float4 emissive : SV_TARGET3;
 };
 
 GBufferOutput main(PixelShaderInput IN)
 {
     GBufferOutput OUT;
+    OUT.diffuse = Albedo.Sample(LinearSampler, IN.texCoord);
+/*
+    
     float3 N = normalize(IN.normal);
     SurfaceInfo surf;
     surf.posW = IN.wPosition;
@@ -103,11 +106,11 @@ GBufferOutput main(PixelShaderInput IN)
 
 
     OUT.diffuse = pow(float4(albedo.rgb, 0), 2.2);
-    OUT.metalRoughOcclusion.r = metallic;
-    OUT.metalRoughOcclusion.g = roughness;
-    OUT.metalRoughOcclusion.b = occlusion;
-    OUT.normal = float4(surf.N * 0.5 + 0.5, 1);
-    OUT.emissive = emissive;
-    
+    //OUT.metalRoughOcclusion.r = metallic;
+    //OUT.metalRoughOcclusion.g = roughness;
+    //OUT.metalRoughOcclusion.b = occlusion;
+    //OUT.normal = float4(surf.N * 0.5 + 0.5, 1);
+    //OUT.emissive = emissive;
+*/
     return OUT;
 }

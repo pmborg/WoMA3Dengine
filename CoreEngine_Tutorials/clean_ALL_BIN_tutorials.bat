@@ -17,8 +17,14 @@ call CLEAN_ALL.bat
 cd ..
 )
 
-rem cd ../ThirdParty/DirectXTK
-rem del /S /F /Q x64 2> nul
-rem del /S /F /Q Bin 2> nul
-rem rmdir /S /Q x64 2> nul
-rem rmdir /S /Q Bin 2> nul
+del /S /F /Q Libs 2> nul
+rmdir /S /Q Libs 2> nul
+
+del /S /F /Q x64 2> nul
+rmdir /S /Q x64 2> nul
+
+del /S /F /Q Int 2> nul
+rmdir /S /Q Int 2> nul
+
+del /S /F /Q Int-latest 2> nul
+rmdir /S /Q Int-latest 2> nul

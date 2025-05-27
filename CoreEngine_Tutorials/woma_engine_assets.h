@@ -128,8 +128,6 @@
 #endif
 #if DX_ENGINE_LEVEL >= 10
     #define USE_THIS_GRAPHIC_CARD_ADAPTER 0
-    #define MIN_WIDTH_RESOLUTION 1000
-    #define MIN_HEIGHT_RESOLUTION 1000							  
 #endif
 
 //--------------------------------------------------------------------------------------------------------

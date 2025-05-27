@@ -19,7 +19,10 @@
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234567155;
 
+#ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include "platform.h"
 
 #if defined ANDROID_PLATFORM
