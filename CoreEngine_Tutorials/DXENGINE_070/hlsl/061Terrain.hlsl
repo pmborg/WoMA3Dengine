@@ -1,7 +1,13 @@
-////////////////////////////////////////////////////////////////////////////////
-// Filename: 024terrain_fog_slope_detail_mapping.hlsl
-////////////////////////////////////////////////////////////////////////////////
-
+// --------------------------------------------------------------------------------------------
+// Filename: 061Terrain.hlsl
+// --------------------------------------------------------------------------------------------
+/**********************************************************************************************
+*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2023
+*	-------------------------------------------------------------------------------------------
+*	code by : Pedro Borges - pmborg@yahoo.com
+*	Downloaded from : https://github.com/pmborg/WoMA3Dengine
+*
+**********************************************************************************************/
 #include "cbuffer.hlsl"
 #include "light.hlsl"
 
@@ -191,20 +197,20 @@ float4 MyPixelShader061terrain_fog_slope_detail_mapping(PSIn input) : SV_TARGET
         if (true /*input.fogFactor > 0*/) 
 #endif
         {
-
-        // hasLight = true to render mini-map
-        // hasLight = false to render main terrain
-            if (hasLight)
-            { // IF MINI MAP
-                if (input.verticePosition.y < 0.1f)
-                {
-                    clip(-1.0);
-                    return (float4) 0; // this pixel is below water, SKIP it! CLIP IF: (x is less than zero)
-                }
-            }
+//
+//       // hasLight = true to render mini-map
+//       // hasLight = false to render main terrain
+//           if (hasLight)
+//           { // IF MINI MAP
+//               if (input.verticePosition.y < 0.1f)
+//               {
+//                   clip(-1.0);
+//                   return (float4) 0; // this pixel is below water, SKIP it! CLIP IF: (x is less than zero)
+//               }
+ //          }
 
 		//CH19: This wll be our mapping texture:
-            mappingColor = textureMappingTexture.Sample(SampleType, input.texMapping.xy); //x1
+        mappingColor = textureMappingTexture.Sample(SampleType, input.texMapping.xy); //x1
 
 		// TERRAIN:
 		{	
