@@ -39,7 +39,7 @@ public:
     XMVECTOR m_LookAt = m_EyePosition + m_Forward;
     float m_Pitch = 0;
     float m_Yaw = 0;
-    float m_NearZ = 0.1;
+    float m_NearZ = 0.1f;
     float m_FarZ = 200;
     float m_Speed = 10;
 

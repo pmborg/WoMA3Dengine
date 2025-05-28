@@ -65,8 +65,6 @@ PSIn MyVertexShader054Texture(VSIn input)
     float s_Y = 0;
     float s_Z = 0;
     
-    //output.worldPos = mul(float4(input.position, 1), worldMatrix).xyz;
-    
    //51:
     cameraPosition = mul(float4(input.position, 1), WV);
 #if defined PS_USE_FOG
@@ -103,9 +101,6 @@ PSIn MyVertexShader054Texture(VSIn input)
     Pos[2] = s_Y; //convert to DX: z
     Pos *= 7.5f;
     Pos[3] /= 7.5f;
-
-    //if ((Pos[0] > 0.5f && Pos[1] > 0.5f) && (Pos[0] < 51.5f && Pos[1] < 49))
-    //    Pos[2] = 0;
     
     // Set world position AFTER all math, before projection
     output.worldPos = Pos.xyz;
@@ -130,14 +125,20 @@ float4 MyPixelShader054Texture(PSIn input) : SV_TARGET
     color[2] = text[2];
  
     if ((input.worldPos.x > 0.5f && input.worldPos.z > 0.5f) && (input.worldPos.x < 51.5f && input.worldPos.z < 49))
+    {
+        //river
         textureColor = (textureColor + color) / 2.0;
-    else
-        textureColor = textureColor * color;
-
 #if defined PS_USE_ALFACOLOR	// 33: Alfa Color
-    if (hasAlfaColor)
-        textureColor.a = alfaColor;
+        if (hasAlfaColor)
+            textureColor.a = alfaColor;
 #endif
+    }
+    else
+    {
+        //ocean:
+        textureColor = textureColor * color;
+        textureColor.a = 1;
+    }
     
     return textureColor;
 }

@@ -186,10 +186,12 @@ void ApplicationClass::RenderMainMapMiniMap()
 #if defined USE_MINI_MAP
 	if (RENDER_PAGE >= 63 && m_miniMapModel)
 	{
+        m_Driver->TurnOffAlphaBlending(); // Re assume default
 		//[1] Put the "mini-map" bitmap vertex and index buffers on the graphics pipeline to prepare them for drawing.
 		m_Driver->ClearDepthBuffer(); //ClearDepthStencilView
 		m_miniMapModel->RenderSprite(m_mapLocationX, m_mapLocationY); //SHADER_TEXTURE
 
+        m_Driver->TurnOnAlphaBlending(); // Re assume default
 		//[2] Put the "border" bitmap vertex and index buffers on the graphics pipeline to prepare them for drawing.
 		m_Driver->ClearDepthBuffer();
 		m_miniMapBorderModel->RenderSprite(m_mapLocationX, m_mapLocationY, 1/*rescale*/); //SHADER_TEXTURE

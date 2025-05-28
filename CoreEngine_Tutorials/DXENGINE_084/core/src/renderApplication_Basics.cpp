@@ -223,7 +223,6 @@ void ApplicationClass::AppPreRender(UINT monitorWindow, WomaDriverClass* Driver,
 void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, UINT ID, UINT pass, XMMATRIX* m_viewMatrix, XMMATRIX* m_projectionMatrix)
 {
     UINT modelID;
-    //SceneManager* sceneManager = SceneManager::GetInstance();
 
     if (pass == PASS_OPAC) 
     {
@@ -269,7 +268,8 @@ void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, 
 		((DXmodelClass*)model)->m_worldMatrix = XMMatrixIdentity();
 
 #if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
-	if (SystemHandle->xml_loader.theWorld[modelID].meshSRV || 
+	if (SystemHandle->xml_loader.theWorld[modelID].depend == -1 ||
+        SystemHandle->xml_loader.theWorld[modelID].meshSRV || 
 		SystemHandle->xml_loader.theWorld[model->m_ObjId].Bill || 
 		SystemHandle->xml_loader.theWorld[model->m_ObjId].type == 12)
 #else
@@ -280,7 +280,7 @@ void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, 
 	model->translation(0, 0, 0);
 
 #if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
-	if ((m_Driver->RenderfirstTime) || (SystemHandle->xml_loader.theWorld[modelID].meshSRV) || SystemHandle->xml_loader.theWorld[model->m_ObjId].Bill)
+	if ((m_Driver->RenderfirstTime) || SystemHandle->xml_loader.theWorld[modelID].depend == -1 || (SystemHandle->xml_loader.theWorld[modelID].meshSRV) || SystemHandle->xml_loader.theWorld[model->m_ObjId].Bill)
 #else
 	if ((m_Driver->RenderfirstTime) || (SystemHandle->xml_loader.theWorld[modelID].meshSRV))
 #endif

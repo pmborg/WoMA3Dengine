@@ -114,19 +114,19 @@ public:
         spotLight.m_Direction = XMFLOAT4(0, -1, 0, 0);
         spotLight.m_Position = XMFLOAT4(3, 2, 0, 0);
         spotLight.m_LightType = LightType::SpotLight;
-        spotLight.m_SpotAngle = 3.142 / 4.0;
+        spotLight.m_SpotAngle = 3.142f / 4.0f;
 
         scene.lightManager
             .AddLight(dirLight)
             .AddLight(pointLight)
             .AddLight(spotLight)
-            .SetGlobalAmbient(XMFLOAT4(0.1, 0.1, 0.1, 1));
+            .SetGlobalAmbient(XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f));
 #if DX_ENGINE_LEVEL >= 84 && defined (SCENE_SKIN)
         scene2.lightManager
             .AddLight(dirLight)
             .AddLight(pointLight)
             .AddLight(spotLight)
-            .SetGlobalAmbient(XMFLOAT4(0.1, 0.1, 0.1, 1));
+            .SetGlobalAmbient(XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f));
 #endif
 		
         scene.Start(graphics);

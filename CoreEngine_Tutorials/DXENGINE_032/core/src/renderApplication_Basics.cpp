@@ -97,7 +97,6 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, UINT ID, UINT pass, XMMATRIX* m_viewMatrix, XMMATRIX* m_projectionMatrix)
 {
     UINT modelID;
-    //SceneManager* sceneManager = SceneManager::GetInstance();
 
     if (pass == PASS_OPAC) 
     {
