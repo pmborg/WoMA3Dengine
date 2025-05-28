@@ -527,8 +527,8 @@
 	#define WORLD_XML TEXT("world_84.xml")
 #endif
 #if DX_ENGINE_LEVEL >= 84
-    #define ASSIMP_MODEL_FEMALE TEXT("C:\\WoMAengine2023\\engine\\data\\scene84SKINMESH\\Female.md5mesh")
-    #define MODEL_FEMALE_PATH TEXT("C:\\WoMAengine2023\\engine\\data\\scene84SKINMESH\\female-character-path\\character.txt")
+    #define ASSIMP_MODEL_FEMALE TEXT("C:\\WoMA3Dengine\\CoreEngine_Tutorials\\engine\\data\\scene84SKINMESH\\Female.md5mesh")
+    #define MODEL_FEMALE_PATH TEXT("C:\\WoMA3Dengine\\CoreEngine_Tutorials\\engine\\data\\scene84SKINMESH\\female-character-path\\character.txt")
 #endif					 
 #if DX_ENGINE_LEVEL == 85
     #define DEMO_TITLE TEXT("85: ASSIMP: Latest")
