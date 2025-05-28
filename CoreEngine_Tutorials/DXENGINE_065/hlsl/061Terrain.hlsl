@@ -66,8 +66,7 @@ Texture2D generalNormalTexture : register(t10); //CH22 - N normal001            
 
 Texture2D bigPathMappingTexture : register(t11); //CH22 - N grassNormal          t11*
 Texture2D smallstonePathTexture : register(t12); //CH22 - T 056B_castle.jpg
-
-Texture2D shaderTexture : register(t13); //CH23 - MAP colorLightMapTexture
+Texture2D shaderTexture         : register(t13); //CH23 - MAP colorLightMapTexture
 
 SamplerState SampleType; //CH05 - TEXTURE
 
@@ -80,6 +79,9 @@ PSIn MyVertexShader061terrain_fog_slope_detail_mapping(VSIn input)
     float4 cameraPosition; //FOG
     input.position.w = 1.0f; //CH4 Change the position vector to be 4 units for proper matrix calculations.
 
+    if (input.position.y < 0)
+        input.position.y *= 3;
+    
     output.position = mul(input.position, WVP); //Calculate the position of the vertex against the world, view, and projection matrices.
     output.tex = input.tex; //CH05 - TEXTURE- Store the texture coordinates for the pixel shader.
 
@@ -92,27 +94,12 @@ PSIn MyVertexShader061terrain_fog_slope_detail_mapping(VSIn input)
     cameraPosition = mul(input.position, WV); //FOG: Calculate the camera position.
 
     //CH16 FOG:
-/*
-#if defined (FOGGED)
-    //CH22 FOGv2:
-	if (input.position.y <= 0.1f) {// MATCH: "#define Height_of_water 0.1f" ON: InfiniteFixedTerraniWater()
-        output.fogFactor = saturate((VSfogEnd - cameraPosition.z / 2) / (VSfogEnd)); //CH16 - FOG - Calculate linear fog:
-		output.fogFactor /= 3;
-    } else
-        output.fogFactor = saturate((VSfogEnd - cameraPosition.z / 2) / (VSfogEnd - VSfogStart)); //CH16 - FOG - Calculate linear fog:
-#else
-    output.fogFactor = 1;
-#endif
-*/
-    
 #if defined (FOGGED)
     if (true /*VShasFog*/)
         output.fogFactor = saturate((VSfogEnd - cameraPosition.z) / (VSfogEnd - VSfogStart)); // Calculate linear fog.  
     else
         output.fogFactor = 0;
 #endif    
-    
-    
     //CH18 - Store the position value in a second input value for depth value calculations.
     output.depthPosition = cameraPosition;
 
@@ -197,19 +184,7 @@ float4 MyPixelShader061terrain_fog_slope_detail_mapping(PSIn input) : SV_TARGET
         if (true /*input.fogFactor > 0*/) 
 #endif
         {
-//
-//       // hasLight = true to render mini-map
-//       // hasLight = false to render main terrain
-//           if (hasLight)
-//           { // IF MINI MAP
-//               if (input.verticePosition.y < 0.1f)
-//               {
-//                   clip(-1.0);
-//                   return (float4) 0; // this pixel is below water, SKIP it! CLIP IF: (x is less than zero)
-//               }
- //          }
-
-		//CH19: This wll be our mapping texture:
+  		//CH19: This wll be our mapping texture:
         mappingColor = textureMappingTexture.Sample(SampleType, input.texMapping.xy); //x1
 
 		// TERRAIN:
@@ -260,7 +235,6 @@ float4 MyPixelShader061terrain_fog_slope_detail_mapping(PSIn input) : SV_TARGET
 
         //if( input.depthPosition.z  < 128)
         {
-
                 textureColor = lerp(textureColor, stonePathTexture.Sample(SampleType, input.tex.zw), mappingColor.g / 3); //GREEN for sidewalk...
                 textureColor = lerp(textureColor, sandTexture.Sample(SampleType, input.tex.zw), mappingColor.b / 3); //BLUE for sand...
                 textureColor = lerp(textureColor, mudTexture.Sample(SampleType, input.tex.zw), mappingColor.r / 3); //RED for mud...
@@ -297,10 +271,9 @@ float4 MyPixelShader061terrain_fog_slope_detail_mapping(PSIn input) : SV_TARGET
                 //color = lightFunc(normapMapFunc(generalBumpMap, input), color); //Add BUMP
                     textureColor = lerp(textureColor, color, alphaValue.r / 1.5f); //RED for mud...
                 }
-
             }
 
-            if (input.verticePosition.y <= 0.1f)
+            if (input.verticePosition.y < 0)
                 textureColor.rgb -= 0.2f;
 
 		//CH23:

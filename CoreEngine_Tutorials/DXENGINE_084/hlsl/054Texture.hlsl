@@ -98,19 +98,22 @@ PSIn MyVertexShader054Texture(VSIn input)
         // float h = 0.01 * sin(dot(K, X0) + w*time*3);
     }
 
-    Pos[0] = s_X;
-    Pos[2] = s_Y;
-    Pos[1] = s_Z;
+    Pos[0] = s_X; //convert to DX: x
+    Pos[1] = s_Z; //convert to DX: y
+    Pos[2] = s_Y; //convert to DX: z
     Pos *= 7.5f;
     Pos[3] /= 7.5f;
 
+    //if ((Pos[0] > 0.5f && Pos[1] > 0.5f) && (Pos[0] < 51.5f && Pos[1] < 49))
+    //    Pos[2] = 0;
+    
     // Set world position AFTER all math, before projection
     output.worldPos = Pos.xyz;
     
     output.Pos = mul(Pos, WVP); // Calculate the position of the vertex against the world, view, and projection matrices
     
     output.Color = 0.9;
-    output.Color += float4(0.1, 0.2, 0.5, 1);
+    output.Color += float4(0.1, 0.4, 0.5, 1);
     output.Color /= 1.75;
     
     return output;
