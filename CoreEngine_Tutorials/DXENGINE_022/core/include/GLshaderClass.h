@@ -94,7 +94,7 @@ public:
 
 	// BLOCK6:
 	BOOL		hasFog;
-	BOOL		isSky;
+	BOOL		isSky=false;
 	BOOL		hasAlfaMap;	// 43
 	BOOL		hasNormMap;
 

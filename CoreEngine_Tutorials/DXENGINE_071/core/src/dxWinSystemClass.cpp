@@ -118,7 +118,7 @@ bool dxWinSystemClass::APPLICATION_INIT_SYSTEM() //LOAD ALL GRAPHICS
 
 	driverList.clear();
 
-	//ClassRegister/LoadXMLSettings/InitializeSystemScreen/ApplicationInitMainWindow/InitOsInput/StartTimer
+	//ClassRegister/LoadXMLWorld/InitializeSystemScreen/ApplicationInitMainWindow/InitOsInput/StartTimer
 	bool res = WinSystemClass::APPLICATION_INIT_SYSTEM();	
 
 #if DX_ENGINE_LEVEL >= 29 && defined USE_WIN32_SOUND_MANAGER	
@@ -156,7 +156,7 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 		if (WOMA::main_loop_state < 0 || (WOMA::renderOnce && WOMA::woma_timer > 15))
         {
 			WOMA::game_state = GAME_STOP;
-            return WOMA::game_state;
+            return EXIT_SUCCESS;
 		}
 		if (WOMA::game_state == ENGINE_RESTART)
 			return WOMA::game_state;

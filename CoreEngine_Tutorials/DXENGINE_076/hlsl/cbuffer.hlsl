@@ -56,7 +56,7 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
 
 	// 42 BLOCK: VS7
 	float	VSshaderType;
-	float	vsPAD2;
+	bool	vsIsSky;
 	float	vsPAD3;
 	float	vsPAD4;
 
@@ -114,7 +114,7 @@ cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: D
 	bool	hasNormMap;
 
 	// BLOCK7:
-	float3	cameraPosition;	// Future
+	float3	cameraPosition;
 	bool	castShadow;
 	float3	specularColor;
 	float	nShininess;

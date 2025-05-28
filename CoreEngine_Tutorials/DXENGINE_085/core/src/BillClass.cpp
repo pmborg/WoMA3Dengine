@@ -188,7 +188,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 			|| height > 1.0f	//not above 1m
 			|| (m_Trees[i].vPos.x >= 27 && m_Trees[i].vPos.x <= 53) && (m_Trees[i].vPos.z >= 20 && m_Trees[i].vPos.z <= 38) //out of house (compound)
 			|| (m_Trees[i].vPos.x < borderLimit || m_Trees[i].vPos.x > m_terrainWidth - borderLimit)		//no near limits
-			|| (m_Trees[i].vPos.z < borderLimit || m_Trees[i].vPos.z > m_terrainHeight - borderLimit)		//no near limits
+			|| (m_Trees[i].vPos.z < borderLimit || m_Trees[i].vPos.z > 220 /*m_terrainHeight - borderLimit*/)		//no near limits
 			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z) - 1][(UINT)m_Trees[i].vPos.x] > 0			//no grass on main PATH (terrain)
 			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z)][(UINT)m_Trees[i].vPos.x] > 0				//no grass on main PATH (terrain)
 			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z + 1)][(UINT)m_Trees[i].vPos.x] > 0			//no grass on main PATH (terrain)
@@ -218,13 +218,13 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 		if (type >= 6)					// Make flowers Smaller
 			scale = scale/2;
 
-		if (i == 0) { //Make 1 special tree on the first compound
-			m_Trees[i].vPos.x = 27;
-			m_Trees[i].vPos.z = 27;
-			height = mainTerrain->getTerrainHeight(TERRAIN_ID, m_Trees[i].vPos.x, m_Trees[i].vPos.z);
-			type = 3;
-			scale = 4;
-		}
+		//if (i == 0) { //Make 1 special tree on the first compound
+		//	m_Trees[i].vPos.x = 27;
+		//	m_Trees[i].vPos.z = 27;
+		//	height = mainTerrain->getTerrainHeight(TERRAIN_ID, m_Trees[i].vPos.x, m_Trees[i].vPos.z);
+		//	type = 3;
+		//	scale = 4;
+		//}
 
 		m_Trees[i].ID = i;
 		m_Trees[i].type = type;
@@ -310,7 +310,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 			|| height > 1.0f	//not above 1m
 			|| (m_Trees[i].vPos.x >= 27 && m_Trees[i].vPos.x <= 53) && (m_Trees[i].vPos.z >= 20 && m_Trees[i].vPos.z <= 38) //out of house (compound)
 			|| (m_Trees[i].vPos.x < borderLimit || m_Trees[i].vPos.x > m_terrainWidth - borderLimit)		//no near limits
-			|| (m_Trees[i].vPos.z < borderLimit || m_Trees[i].vPos.z > m_terrainHeight - borderLimit)		//no near limits
+			|| (m_Trees[i].vPos.z < borderLimit || m_Trees[i].vPos.z > 220 /*m_terrainHeight - borderLimit*/)		//no near limits
 			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z) - 1][(UINT)m_Trees[i].vPos.x] > 0			//no grass on main PATH (terrain)
 			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z)][(UINT)m_Trees[i].vPos.x] > 0				//no grass on main PATH (terrain)
 			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z + 1)][(UINT)m_Trees[i].vPos.x] > 0			//no grass on main PATH (terrain)
@@ -341,7 +341,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 			|| height > 1.0f	//not above 1m
 			|| (m_Trees[i].vPos.x >= 27 && m_Trees[i].vPos.x <= 53) && (m_Trees[i].vPos.z >= 20 && m_Trees[i].vPos.z <= 38) //out of house (compound)
 			|| (m_Trees[i].vPos.x < borderLimit || m_Trees[i].vPos.x > m_terrainWidth - borderLimit)		//no near limits
-			|| (m_Trees[i].vPos.z < borderLimit || m_Trees[i].vPos.z > m_terrainHeight - borderLimit)		//no near limits
+			|| (m_Trees[i].vPos.z < borderLimit || m_Trees[i].vPos.z > 220 /*m_terrainHeight - borderLimit*/)		//no near limits
 			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z) - 1][(UINT)m_Trees[i].vPos.x] > 0			//no grass on main PATH (terrain)
 			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z)][(UINT)m_Trees[i].vPos.x] > 0				//no grass on main PATH (terrain)
 			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z + 1)][(UINT)m_Trees[i].vPos.x] > 0			//no grass on main PATH (terrain)
@@ -407,7 +407,7 @@ void BillClass::BillboardGS(InstanceType* instances, int m_instanceCount)
             || height > 1.0f	//not above 1m
             || (tree.vPos.x >= 27 && tree.vPos.x <= 53) && (tree.vPos.z >= 21 && tree.vPos.z <= 38) //out of house (compound)
             || (tree.vPos.x < borderLimit || tree.vPos.x > m_terrainWidth - borderLimit)		//no near limits
-            || (tree.vPos.z < borderLimit || tree.vPos.z > m_terrainHeight - borderLimit)		//no near limits
+            || (tree.vPos.z < borderLimit || tree.vPos.z > 220 /*m_terrainHeight - borderLimit*/)		//no near limits
             || mainTerrainPath->height[(UINT)(tree.vPos.z) - 1][(UINT)tree.vPos.x] > 0			//no grass on main PATH (terrain)
             || mainTerrainPath->height[(UINT)(tree.vPos.z)][(UINT)tree.vPos.x] > 0				//no grass on main PATH (terrain)
             || mainTerrainPath->height[(UINT)(tree.vPos.z + 1)][(UINT)tree.vPos.x] > 0			//no grass on main PATH (terrain)

@@ -146,7 +146,6 @@ void ApplicationTextClass::SetRenderCount(int Count, int compoundCount, UINT tot
 	TCHAR countString[80];
 
 	// Setup the render count string.
-    //StringCchPrintf(countString, sizeof(countString), TEXT("Terrain Render Count: %dK Objs: %d/%d"), terrainCount/1024, compoundCount, totalCompoundLoaded);
 	StringCchPrintf(countString, sizeof(countString), TEXT("Vertex count : %d Objects on QUAD %d/%d (loaded/total)"), (int)SystemHandle->TotalVertexCounter, compoundCount, totalCompoundLoaded);
 
 	// Update the sentence vertex buffer with the new string information:
@@ -156,10 +155,10 @@ void ApplicationTextClass::SetRenderCount(int Count, int compoundCount, UINT tot
 
 #if TUTORIAL_CHAP >= 60 && _DEBUG // BILLBOARD
 //10
-void ApplicationTextClass::SetBillRenderCount(int count)
+void ApplicationTextClass::SetBillRenderCount(int count, float deltaTime)
 {
 	char countString[80];
-	StringCchPrintf(countString, sizeof(countString), TEXT("N.Bill: %d"), count);
+	StringCchPrintf(countString, sizeof(countString), TEXT("N.Bill: %d - Anim.Time: %d ms"), count, (UINT)deltaTime);
 
 	// Update the sentence vertex buffer with the new string information.
 	ASSERT(m_Text->UpdateSentence(m_sentence[TEXT_BILLRENDERCOUNT], countString, 10, 130, 0.0f, 1.0f, 0.0f));

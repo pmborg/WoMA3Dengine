@@ -136,7 +136,7 @@ namespace DirectX
 
 			// 42 BLOCK: VS7
 			float		VSshaderType;
-			float		vsPAD2;
+			bool		vsIsSky=false;
 			float		vsPAD3;
 			float		vsPAD4;
 
@@ -182,7 +182,7 @@ namespace DirectX
 
 			// BLOCK6:
 			BOOL		hasFog;
-			BOOL		isSky;
+			BOOL		isSky=false;
 			BOOL		hasAlfaMap;
 			BOOL		hasNormMap;
 

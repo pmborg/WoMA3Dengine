@@ -264,7 +264,7 @@ public:
 	void RenderScene(UINT monitorWindow, WomaDriverClass* driver);
 	float Update();						// PROCESS User Update
 	void AppRender(UINT monitorWindow,  float fadeLight);								// RENDER - 3D
-	bool	Initialize(WomaDriverClass* Driver);
+	bool Initialize(WomaDriverClass* Driver);
 #endif
 
 	void AppPosRender(UINT monitorWindow);																// POS-RENDER - 2D: Render 
@@ -292,6 +292,7 @@ public:
 	IDXGIKeyedMutex* keyedMutex10 = NULL;
 #endif
 
+    DWORD total_deltaTime=0;
 	UINT totalRendered = 0;
 
 	UINT world_xml_objs = 0;

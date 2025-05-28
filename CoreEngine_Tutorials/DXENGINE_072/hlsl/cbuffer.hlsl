@@ -31,11 +31,11 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
 	bool	VShasFog;
 
 	// 23 BLOCK: VS3
-	float3	VSlightDirection;	// LIGHT
+    float3  VSlightDirection;   // LIGHT (XMVECTOR = XMFLOAT4)
 	float   VSlightPAD;         // 3+1=XMFLOAT4
-	float4	VSambientColor;		// LIGHT
-	float4	VSdiffuseColor;		// LIGHT
-	float4	VSemissiveColor;	// LIGHT: Ke
+	float4	VSambientColor;		// LIGHT: Ka
+	float4	VSdiffuseColor;		// LIGHT: Kd
+    float4  VSemissiveColor;    // LIGHT: Ke
 
 	// 31 BLOCK: VS4
 	float	VSfogStart;
@@ -56,7 +56,7 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
 
 	// 42 BLOCK: VS7
 	float	VSshaderType;
-	float	vsPAD2;
+	bool	vsIsSky;
 	float	vsPAD3;
 	float	vsPAD4;
 
@@ -64,7 +64,7 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
     float   vsframeTime;
     float3  scrollSpeeds;
     float3  scales;
-    float   padding6;
+    bool    isAnimatedBill;
 };
 
 ///////////////
@@ -114,7 +114,7 @@ cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: D
 	bool	hasNormMap;
 
 	// BLOCK7:
-	float3	cameraPosition;	// Future
+	float3	cameraPosition;
 	bool	castShadow;
 	float3	specularColor;
 	float	nShininess;

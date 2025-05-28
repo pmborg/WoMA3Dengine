@@ -83,7 +83,7 @@ public:
 	#endif
 
 #if TUTORIAL_CHAP >= 60 && _DEBUG // BILLBOARD
-	void SetBillRenderCount(int count);
+	void SetBillRenderCount(int count, float deltaTime);
 	#endif
 
 	#if TUTORIAL_PRE_CHAP >= 63 && _DEBUG

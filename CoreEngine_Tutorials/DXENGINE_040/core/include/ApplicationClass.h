@@ -262,7 +262,7 @@ public:
 	void RenderScene(UINT monitorWindow, WomaDriverClass* driver);
 	float Update();						// PROCESS User Update
 	void AppRender(UINT monitorWindow,  float fadeLight);								// RENDER - 3D
-	bool	Initialize(WomaDriverClass* Driver);
+	bool Initialize(WomaDriverClass* Driver);
 #endif
 
 	void AppPosRender(UINT monitorWindow);																// POS-RENDER - 2D: Render 

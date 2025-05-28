@@ -78,17 +78,23 @@ PSIn MyVertexShader023Light(VSIn input)
 {
 	PSIn output;
 	float4 cameraPosition;
-
-if (VS_USE_WVP) {
+    float4 position;
+    
+    if (VS_USE_WVP) {
 	output.position = mul(float4(input.position, 1), WVP);	// Calculate the position of the vertex against the world, view, and projection matrices
 } else {
-	float4 position = float4(input.position, 1);
+	position = float4(input.position, 1);
 	position = mul(position, worldMatrix);
 	position = mul(position, view);			//viewMatrix
 	position = mul(position, projection);	//projectionMatrix
 	output.position = position;
 }
 
+    if (isAnimatedBill)
+    {
+        output.position.x += sin(vsframeTime * 100) * (1 - input.texCoords.y) / 200;
+    }
+    
 	//22: TEXTURE: Store the texture coordinates for the pixel shader:
 	output.texCoords = input.texCoords;
 
@@ -96,17 +102,34 @@ if (VS_USE_WVP) {
 
 #if defined PS_USE_FOG
 	//51:
-    if (VShasFog) 
+    if (VShasFog)
+    {
         output.fogFactor = saturate((VSfogEnd - cameraPosition.z) / (VSfogEnd - VSfogStart)); // Calculate linear fog.  
+    }
+    else if (vsIsSky)
+    {
+        float _VSfogStart;
+        float _VSfogEnd;
+       //if (position.y < 0)
+       //{
+       //    _VSfogStart = 1;
+       //    _VSfogEnd = 5;
+       //}
+       //else
+        {
+            _VSfogStart = 0;
+            _VSfogEnd = 1524;
+        }
+        output.fogFactor = saturate((_VSfogEnd - cameraPosition.z) / (_VSfogEnd - _VSfogStart)); // Calculate linear fog.  
+    }
 #endif
 	
 	//23: LIGHT: NORMAL
-	if (VShasLight || VShasSpecular) 
-		output.normal = normalize(mul(input.normal, (float3x3)worldMatrix));// Calculate the normal vector against the world matrix only
+        if (VShasLight || VShasSpecular) 
+            output.normal = normalize(mul(input.normal, (float3x3) worldMatrix)); // Calculate the normal vector against the world matrix only
 	
 	//34: SPECULAR
 #if defined PS_USE_SPECULAR
-	
 	output.cameraPosition = cameraPosition;
 
 	if (VShasSpecular)	// If enabled on material, calculate the Specular LIGHT
@@ -115,7 +138,7 @@ if (VS_USE_WVP) {
 		output.viewDirection = normalize(cameraPosition.xyz - worldPosition.xyz);	// L = Lp - p (L = lightDirection)
 	}
 #endif
-
+    
 	return output;
 }
 
@@ -186,15 +209,15 @@ float4 MyPixelShader023Light(PSIn input) : SV_TARGET
 #endif
 
 #if defined PS_USE_FOG
-    if (hasFog)
+    if (hasFog || isSky)
     {
 		//textureColor = input.fogFactor * textureColor + (1.0 - input.fogFactor) * fogColor; // FOG: Calculate the final color using the fog effect equation.
         float4 fog4 = 0;
-        if (isSky)
-        {
-            fog4.r = 0.9;
-        }
-        else
+        //if (isSky)
+        //{
+        //    fog4.r = 0.9;
+        //}
+        //else
         {
             fog4.r = (1.0 - input.fogFactor);
         }
@@ -203,6 +226,7 @@ float4 MyPixelShader023Light(PSIn input) : SV_TARGET
         textureColor.rgb = lerp(textureColor.rgb, fogColor.rgb, fog4.rgb);
     }
 #endif
-	
+    
+    //return float4(0, 1, 1, 1);
 	return textureColor;
 }

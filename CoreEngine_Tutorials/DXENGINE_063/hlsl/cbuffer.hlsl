@@ -1,3 +1,14 @@
+// --------------------------------------------------------------------------------------------
+// Filename: cbuffer.hlsl
+// --------------------------------------------------------------------------------------------
+/**********************************************************************************************
+*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2023
+*	-------------------------------------------------------------------------------------------
+*	code by : Pedro Borges - pmborg@yahoo.com
+*	Downloaded from : https://github.com/pmborg/WoMA3Dengine
+*
+**********************************************************************************************/
+
 // SYNC: DXshaderClass.h -- DX12: CBV
 #if DXAPI11 == 1
 cbuffer VSShaderParametersBuffer	//DX11
@@ -20,11 +31,11 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
 	bool	VShasFog;
 
 	// 23 BLOCK: VS3
-	float3	VSlightDirection;	// LIGHT
+    float3  VSlightDirection;   // LIGHT (XMVECTOR = XMFLOAT4)
 	float   VSlightPAD;         // 3+1=XMFLOAT4
-	float4	VSambientColor;		// LIGHT
-	float4	VSdiffuseColor;		// LIGHT
-	float4	VSemissiveColor;	// LIGHT: Ke
+	float4	VSambientColor;		// LIGHT: Ka
+	float4	VSdiffuseColor;		// LIGHT: Kd
+    float4  VSemissiveColor;    // LIGHT: Ke
 
 	// 31 BLOCK: VS4
 	float	VSfogStart;
@@ -36,6 +47,7 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
 	matrix	ViewToLightProj;
 	matrix	WorldInverseTranspose;	// WorldInverseTranspose
 	float4	vEye;					// camera position													   
+
 	// 42 BLOCK: VS6
 	float	VSrotX;
 	float	VSrotY;
@@ -44,9 +56,15 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
 
 	// 42 BLOCK: VS7
 	float	VSshaderType;
-	float	vsPAD2;
+	bool	vsIsSky;
 	float	vsPAD3;
 	float	vsPAD4;
+
+    // FIRE:
+    float   vsframeTime;
+    float3  scrollSpeeds;
+    float3  scales;
+    bool    isAnimatedBill;
 };
 
 ///////////////
@@ -96,8 +114,15 @@ cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: D
 	bool	hasNormMap;
 
 	// BLOCK7:
-	float3	cameraPosition;	// Future
+	float3	cameraPosition;
 	bool	castShadow;
 	float3	specularColor;
 	float	nShininess;
+
+    // FIRE:
+    float2  distortion1;
+    float2  distortion2;
+    float2  distortion3;
+    float   distortionScale;
+    float   distortionBias;
 };

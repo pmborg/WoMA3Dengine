@@ -253,7 +253,7 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 
 //################################ LOAD LoadAllGraphicAssets STUFF ##################################
 
-	IF_NOT_RETURN_FALSE(SystemClass::LoadAllGraphicAssets());			// Load all main Graphics, that will be rendered
+	IF_NOT_RETURN_FALSE(SystemClass::LoadAllGraphicAssets());			// Load all main Graphics, that will be rendered on starting scene.
 
 	//---------------------------------------------------------------------------------------------------
 	if (WOMA::game_state >= GAME_STOP)	// Something FATAL on loading "mandatory 2D/3D Stuff"?
