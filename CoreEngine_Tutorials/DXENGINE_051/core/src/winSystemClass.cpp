@@ -220,7 +220,7 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 #if defined USE_SYSTEM_CHECK                                // BEFORE: APPLICATION_INIT_MAIN_WINDOW()
 	IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());		// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 
 #endif
-	IF_NOT_RETURN_FALSE(APPLICATION_INIT_MAIN_WINDOW());		// CREATE: The/all "MainWindow(s) + INIT DX/GL "rendering-device"
+	IF_NOT_RETURN_FALSE(APPLICATION_INIT_MAIN_WINDOW());	// CREATE: The/all "MainWindow(s) + INIT DX/GL "rendering-device"
     StartTimer();											// START WINDOWS TIMER: ("Window Title" refresh & Real-Time Weather refresh)
 
 #if defined USE_INTRO_VIDEO_DEMO // WINDOWS START-VIDEO: Start DEMO INTRO (MP4): (Give Time to Unpack/Load Resources)

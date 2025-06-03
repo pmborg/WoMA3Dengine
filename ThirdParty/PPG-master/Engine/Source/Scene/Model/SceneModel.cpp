@@ -32,16 +32,15 @@
 
 #include "platform.h"
 #include "woma_exception.h"
-//#include <assimp/version.h>
-//#if DX_ENGINE_LEVEL >= 85
-//#include <assimp/revision.h>
-//#endif
+#include <assimp/version.h>
+#include <assimp/revision.h>
 
 #define ASSIMP_LOAD_FLAGS   aiProcess_Triangulate | \
                             aiProcess_GenSmoothNormals | \
-                            aiProcess_MakeLeftHanded     | \
-                            aiProcess_FlipUVs            | \
+                            aiProcess_MakeLeftHanded | \
                             aiProcess_FlipWindingOrder
+                            //aiProcess_FlipUVs            | \
+                            
 //Ori:
 /*
 #define ASSIMP_LOAD_FLAGS   aiProcess_Triangulate | \
@@ -76,6 +75,19 @@ void showNodeName(aiNode* node, UINT i)
 double TicksPerSecond;
 SceneModel* SceneModel::LoadModelToScene(std::string fileName, Scene& scene, Graphics& graphics, SceneObject::Index parentIndex /*= 0*/)
 {
+#ifdef DEBUG_MESH
+    LOG_FILE << "WOMA ("<< LEVEL <<") LOAD FILE : " << (char*)fileName.c_str() << endl;
+    LOG_FILE << "LOADING... C:/WoMA3Dengine/ThirdParty/external/assimp" << endl;
+
+    UINT versionMajor = aiGetVersionMajor();
+    UINT versionMinor = aiGetVersionMinor();
+    UINT revision = aiGetVersionRevision();
+
+    LOG_FILE << "versionMajor : " << versionMajor << endl;
+    LOG_FILE << "versionMinor : " << versionMinor << endl;
+    LOG_FILE << "revision : " << revision << endl;
+#endif
+
     Assimp::Importer importer;
     const aiScene* pAssimpScene = importer.ReadFile(fileName, ASSIMP_LOAD_FLAGS);
     if (pAssimpScene == NULL)
@@ -108,17 +120,15 @@ SceneModel* SceneModel::LoadModelToScene(std::string fileName, Scene& scene, Gra
     }
 
 #ifdef DEBUG_MESH
-    LOG_FILE << "---		Node Names: " << endl;
+    LOG_FILE << "[1] ---		Node Names: " << endl;
     showNodeName(pAssimpScene->mRootNode);
     LOG_FILE << endl;
-    // Process(get data of): Vertex, Indices and Textures
-    LOG_FILE << "---		Bone Names : " << endl;
 #endif
 
 #ifdef DEBUG_MESH
     if (pAssimpScene->mAnimations)
     {
-        LOG_FILE << "---		Animation Channels: " << endl;
+        LOG_FILE << "[2] ---		Animation Channels: " << endl;
         for (UINT i = 0; i < pAssimpScene->mAnimations[0]->mNumChannels; i++) {
             LOG_FILE << i << ":" << pAssimpScene->mAnimations[0]->mChannels[i]->mNodeName.C_Str() << endl;
             LOG_FILE << "mNumRotationKeys: " << pAssimpScene->mAnimations[0]->mChannels[i]->mNumRotationKeys << endl;
@@ -134,6 +144,9 @@ SceneModel* SceneModel::LoadModelToScene(std::string fileName, Scene& scene, Gra
         LOG_FILE << endl;
     }
 #endif
+
+    // Process(get data of): Vertex, Indices and Textures
+    LOG_FILE << "[3] ---		Bone Names : " << endl;
 
     ModelLoader ml = ModelLoader(pAssimpScene, scene, graphics, fileName, parentIndex);
 	return ml.LoadModel();

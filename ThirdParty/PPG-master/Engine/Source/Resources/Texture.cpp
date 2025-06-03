@@ -81,8 +81,35 @@ Texture* Texture::CreateTextureCube(Graphics& graphics, int size, const std::str
     return new Texture(texturePtr, name);
 }
 
-Texture* Texture::LoadTextureFromPath(Graphics& graphics, const LPCWSTR& texturePath)
+Texture* Texture::LoadTextureFromPath(Graphics& graphics, LPCWSTR& texturePath)
 {
+    std::wstring texturePath_ = texturePath;
+
+    // Find the position of "../../AppData/Local"
+    std::wstring marker = L"../../AppData/Local";
+    size_t pos = texturePath_.find(marker);
+
+    // Get everything before "../../AppData/Local"
+    std::wstring beforeAppData;
+    bool fix = false;
+    if (pos != std::wstring::npos) {
+        beforeAppData = texturePath_.substr(0, pos);
+        fix = true;
+    }
+
+    // Get the file name only
+    size_t lastSlash = texturePath_.find_last_of(L"/\\");
+    std::wstring fileName;
+    if (lastSlash != std::wstring::npos) {
+        fileName = texturePath_.substr(lastSlash + 1);
+    }
+    beforeAppData.append(fileName);
+
+    if (fix)
+        texturePath = beforeAppData.c_str();
+    else
+        texturePath = texturePath_.c_str();
+
     std::filesystem::path filePath(texturePath);
     if (!std::filesystem::exists(filePath))
     {

@@ -145,29 +145,37 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 	WOMA::main_loop_state = 0;
 	do
 	{
-		while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))	// There is any OS messages to handle?
+        BOOL gResult = TRUE;
+		if ((gResult = PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) > 0)	// There is any OS messages to handle?
 		{
 			TranslateMessage(&msg); // TranslateMessage produces WM_CHAR messages only for keys that are mapped to ASCII characters by the keyboard driver.
 			DispatchMessage(&msg);  // Process Msg:  (INVOKE: WinSystemClass::MessageHandler)
 		}
-        {
-				if (WOMA::game_state > GAME_MINIMIZED)
-					ProcessFrame();	// Render ONE: Application Frame
-				else
-					Sleep(100);
-		}
+
+		if (WOMA::game_state > GAME_MINIMIZED)
+			ProcessFrame();	// Render ONE: Application Frame
+		else
+			Sleep(100);
+
 		if (WOMA::main_loop_state < 0 || (WOMA::renderOnce && WOMA::woma_timer > 15))
         {
 			WOMA::game_state = GAME_STOP;
-            return EXIT_SUCCESS;
+            return EXIT_SUCCESS;        //Controlled Exit.
 		}
-		if (WOMA::game_state == ENGINE_RESTART)
-			return WOMA::game_state;
+        if (WOMA::game_state == ENGINE_RESTART)
+            PostQuitMessage(WOMA::game_state); //return WOMA::game_state;    //If ENGINE_RESTART is allowed.
+
 	} while (msg.message != WM_QUIT);
 
-	ASSERT(WOMA::game_state == GAME_STOP);
+    //Clear message queue:
+    while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) > 0) 
+    {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
 
-	return EXIT_SUCCESS;
+    WOMA_LOGManager_DebugMSG("msg.wParam: %d\n", msg.wParam);
+	return msg.wParam; //return the PostQuitMessage (message code)
 }
 
 //----------------------------------------------------------------------------

@@ -783,10 +783,12 @@ void SystemClass::ParseCommandLineArgs(int argc, char* argv[])
             WOMA::renderOnce = true;
             WOMA::settings.FULLSCREEN_ON_WINDOWED = false;
             WOMA::settings.FULL_SCREEN = false;
+#if defined WINDOWS_PLATFORM
             HWND hWnd = GetConsoleWindow();
             if (hWnd != NULL) {
                 ShowWindow(hWnd, SW_MINIMIZE);
             }
+#endif
         }
         if (_tcsnicmp(argv[i], "-Xpos", _tcslen(argv[i])) == 0 ||
             _tcsnicmp(argv[i], "/Xpos", _tcslen(argv[i])) == 0)

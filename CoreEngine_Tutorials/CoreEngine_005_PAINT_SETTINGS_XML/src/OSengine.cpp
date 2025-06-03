@@ -839,7 +839,7 @@ namespace WOMA
 #endif
 
 
-#if DEMO_LEVEL >= 80 && DEMO_LEVEL <= 81
+#if DEMO_LEVEL >= 79 && DEMO_LEVEL <= 81
 #include "stdafx.h"
 bool firstFrame = true;
 #endif

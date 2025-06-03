@@ -48,6 +48,7 @@ GBufferOutput main(PixelShaderInput IN)
 {
     GBufferOutput OUT;
     OUT.diffuse = Albedo.Sample(LinearSampler, IN.texCoord);
+    //OUT.diffuse = float4(1,1,1,1);
 /*
     
     float3 N = normalize(IN.normal);

@@ -984,10 +984,12 @@ void SystemClass::ParseCommandLineArgs(int argc, char* argv[])
             WOMA::renderOnce = true;
             WOMA::settings.FULLSCREEN_ON_WINDOWED = false;
             WOMA::settings.FULL_SCREEN = false;
+#if defined WINDOWS_PLATFORM
             HWND hWnd = GetConsoleWindow();
             if (hWnd != NULL) {
                 ShowWindow(hWnd, SW_MINIMIZE);
             }
+#endif
         }
         if (_tcsnicmp(argv[i], "-Xpos", _tcslen(argv[i])) == 0 ||
             _tcsnicmp(argv[i], "/Xpos", _tcslen(argv[i])) == 0)
@@ -1048,7 +1050,7 @@ bool SystemClass::LoadXmlSettings()
 bool SystemClass::LoadXmlWorld()
 {
 	WOMA_LOGManager_DebugMSG("===============================================================================\n");
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("LOAD XML WORLD\n"));
+	WOMA_LOGManager_DebugMSGAUTO(TEXT("LOAD XML WORLD: %s\n"), (TCHAR*)XML_WORLD_FILE.c_str());
 	WOMA_LOGManager_DebugMSG("===============================================================================\n");
 
 	// Load and Parse XML FILE:"world.xml" the Configuration file

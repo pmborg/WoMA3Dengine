@@ -113,7 +113,7 @@ void ApplicationClass::initTextureDemo()
 		//DEMO-1:
 		float X = 2.5f, Y = 1.5f, Z = 0;
 		CREATE_VERTEXVECTOR_SQUAD_MODEL_OPTIMIZED(SquareTextureVertexVector, X, Y, Z);	// Step 1: Setup all vertices positions: X, Y, Z
-		MAP_XZtoUV(SquareTextureVertexVector, X, Y, Z);				// Step 2: ADD TEXTURING: Auto-Map textures to all vertices: tu, tv
+		MAP_XZtoUV(SquareTextureVertexVector, X, Y, Z);				                    // Step 2: ADD TEXTURING: Auto-Map textures to all vertices: tu, tv
 
 		// Image Converter: \WoMA3Dengine\ExternalTools\Microsoft_DirectX_SDK_June_2010\Utilities\bin\x86\texconv.exe -ft PNG Earth_Diffuse.bmp
 
@@ -709,7 +709,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	XMLobj3D.posX = 0; XMLobj3D.translateY = 0; XMLobj3D.posZ = 0;
 	XMLobj3D.shader = SHADER_TEXTURE_GS_INSTANCED;
 	XMLobj3D.scale = 0.0215f;
-	XMLobj3D.instances = 15;
+	XMLobj3D.instances = N_INSTANCE_TREES;
 
 	strcpy_s(XMLobj3D.filename, sizeof(XMLobj3D.filename), BILL_GS);
 	SystemHandle->xml_loader.theWorld.push_back(XMLobj3D);

@@ -60,10 +60,12 @@ namespace WOMA
 #else
 		if (filename[0] != '.') {
 #if CORE_ENGINE_LEVEL >= 8 && !defined RELEASE
-			if (shader)
+			if (shader) {
 				StringCchPrintf(file_, sizeof(file_), TEXT("%s%s"), TEXT("./"), filename);
-			else
+            }
+            else {
 				StringCchPrintf(file_, sizeof(file_), TEXT("%s%s"), TEXT("../"), filename);
+            }
 #else
 			StringCchPrintf(file_, sizeof(file_), TEXT("%s%s"), TEXT("./"), filename);
 #endif
@@ -78,10 +80,11 @@ namespace WOMA
 #endif
 #else
 #if CORE_ENGINE_LEVEL >= 8 && !defined RELEASE
-			if (shader)
+			if (shader) {
 				strcpy_s(file_, sizeof(file_), filename);
-			else
+            } else {
 				StringCchPrintf(file_, sizeof(file_), TEXT("%s%s"), TEXT("../"), filename);
+            }
 #endif
 #endif
 		}

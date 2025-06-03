@@ -18,17 +18,24 @@
 
 #pragma once
 #include "stdafx.h"
+#include <assimp\scene.h>
+#include <DirectXMath.h>
+#include "assimp/matrix4x4.h"
+#define Matrix4f aiMatrix4x4
 
 class Scene;
 class Bone;
 class Animator;
 class Animation;
 
-class AnimationJob
+class AnimationModelLoader
 {
 public:
     void UpdateTimeElapsed(Scene& scene, float deltaTime);
 private:
-    void CalculateBoneTransforms(Bone* bone,Animator& animator, const DirectX::XMMATRIX& transform, float time);
+    
+    void CalculateBoneTransforms(float AnimationTime, const aiNode* p_node, const Matrix4f& parent_transform, UINT initialBoneId);
+    void ReadNodeHierarchy(float AnimationTime, Bone* bone, Animator& animator, const DirectX::XMMATRIX& transform);
+    void ReadNodeHierarchy2(float AnimationTime, Bone* bone, Animator& animator, const DirectX::XMMATRIX& transform);
 };
 

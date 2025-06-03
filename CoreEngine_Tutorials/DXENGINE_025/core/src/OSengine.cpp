@@ -62,8 +62,10 @@
 	#include "GLopenGLclass.h"
 #endif
 
+#if DX_ENGINE_LEVEL >= 22 && defined WINDOWS_PLATFORM 
     #include <DirectXTex.h>
-    #include "ImageLoaderClass.h"
+#endif
+#include "ImageLoaderClass.h"
 
 TCHAR DEMO_NAME_SHOW[MAX_STR_LEN] = {};
 TCHAR* DEMO_NAME[] =
@@ -446,8 +448,10 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 #endif
 
 
+#if DX_ENGINE_LEVEL >= 22 && defined WINDOWS_PLATFORM
     WOMA_LOGManager_DebugMSGAUTO(TEXT("USING LIBs:\n"));
     WOMA_LOGManager_DebugMSGAUTO(TEXT("DIRECTXTEX_VERSION: %d\n"), DIRECTX_TEX_VERSION); //#include <DirectXTex.h>
+#endif
 
 }
 
@@ -866,7 +870,7 @@ namespace WOMA
 #endif
 
 
-#if DEMO_LEVEL >= 80 && DEMO_LEVEL <= 81
+#if DEMO_LEVEL >= 79 && DEMO_LEVEL <= 81
 #include "stdafx.h"
 bool firstFrame = true;
 #endif

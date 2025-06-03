@@ -1155,7 +1155,6 @@ namespace DirectX {
 #endif
 
         dataVSptr->vsIsSky = isSky;
-
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 		{

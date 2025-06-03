@@ -501,6 +501,7 @@
 #endif
 #if DX_ENGINE_LEVEL >= 77
     #define BILL_GS TEXT("engine/data/77GS/maple-tree.obj")
+	#define N_INSTANCE_TREES 5						  
 #endif
 #if DX_ENGINE_LEVEL == 78
 	#define DEMO_TITLE TEXT("78: Check 'WORLD.XML' Object collision")
@@ -508,7 +509,7 @@
 #endif
 
 #if DX_ENGINE_LEVEL == 79
-    #define DEMO_TITLE TEXT("79: Mini-map Expanded")
+    #define DEMO_TITLE TEXT("79: FBX/DAE")
     #define WORLD_XML TEXT("world_79.xml")
 #endif						 
 #if DX_ENGINE_LEVEL == 82

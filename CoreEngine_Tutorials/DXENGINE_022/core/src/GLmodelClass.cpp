@@ -614,25 +614,44 @@ void GLmodelClass::Render(/*GLopenGLclass WomaDriverClass* Driver,*/ UINT camera
 // TODO: ALSO SHARED FROM DX do it on model class!?
 void GLmodelClass::GetIndices()
 {
-	if ( indexModelList == NULL || indexModelList->size() == 0) // BASIC object, without index? One index per vertice?
-	{
-		m_indexCount = m_vertexCount;			// Set the number of indices in the index array.
-		indices = NEW UINT[m_indexCount];		// Create the index array.
-		IF_NOT_THROW_EXCEPTION(indices);
+    int j = 0;
+    WOMA_LOGManager_DebugMSG("Indices: \n");
+    if (indexModelList == NULL || indexModelList->size() == 0) // BASIC object, without index? One index per vertice?
+    {
+        m_indexCount = m_vertexCount;			// Set the number of indices in the index array.
+        indices = NEW UINT[m_indexCount];		// Create the index array.
+        IF_NOT_THROW_EXCEPTION(indices);
 
-		// getArrayIndices()
-		for (UINT i = 0; i < m_indexCount; i++)
-			indices[i] = i;						// Load the index array with data:
+        // getArrayIndices()
+        for (UINT i = 0; i < m_indexCount; i++) {
+            indices[i] = i;						// Load the index array with data:
+#if (defined _DEBUG || defined  DEBUG) && DX_ENGINE_LEVEL < 29
+            WOMA_LOGManager_DebugMSG("%u ", indices[i]);
+            if (j++ >= 2) {
+                j = 0;
+                WOMA_LOGManager_DebugMSG("\n");
+            }
+#endif
+        }
 
-	} else {
-		m_indexCount = (UINT)indexModelList->size();
-		indices = NEW UINT[m_indexCount];		// Create the index array.
-		IF_NOT_THROW_EXCEPTION (indices);
+    }
+    else {
+        m_indexCount = (UINT)indexModelList->size();
+        indices = NEW UINT[m_indexCount];		// Create the index array.
+        IF_NOT_THROW_EXCEPTION(indices);
 
-		// cloneArrayIndices()
-		for (UINT i = 0; i < m_indexCount; i++)
-			indices[i] = indexModelList->at(i);	// Load the index array with data:
-	}
+        // cloneArrayIndices()
+        for (UINT i = 0; i < m_indexCount; i++) {
+            indices[i] = indexModelList->at(i);	// Load the index array with data:
+#if (defined _DEBUG || defined  DEBUG) && DX_ENGINE_LEVEL < 29
+            WOMA_LOGManager_DebugMSG("%u ", indices[i]);
+            if (j++ >= 2) {
+                j = 0;
+                WOMA_LOGManager_DebugMSG("\n");
+            }
+#endif
+        }
+    }
 }
 
 
@@ -642,8 +661,6 @@ bool GLmodelClass::InitializeColorBuffers(/*GLopenGLclass*/ void* OpenGL)
 	//UINT*	indices = NULL;
 
 	m_vertexCount = (UINT) (*modelColorVertex).size();	// Set the number of vertices in the vertex array.
-
-	GetIndices();
 
 	// Create the vertex array.
 	vertices = NEW ModelColorVertexType[m_vertexCount];
@@ -662,10 +679,13 @@ bool GLmodelClass::InitializeColorBuffers(/*GLopenGLclass*/ void* OpenGL)
 		vertices[i].b = (*modelColorVertex)[i].b;
 		vertices[i].a = (*modelColorVertex)[i].a;
 
-	#if (defined _DEBUG || defined  DEBUG)
+	#if (defined _DEBUG || defined  DEBUG) && DX_ENGINE_LEVEL < 29
 		WOMA_LOGManager_DebugMSG("vertices[i].x=%f vertices[i].y=%f vertices[i].z=%f\n", vertices[i].x, vertices[i].y, vertices[i].z);
 	#endif
 	}
+
+    GetIndices();
+
 
 #if (defined _DEBUG || defined  DEBUG) //&& defined ANDROID_PLATFORM
 	_tprintf(TEXT("[%d]: InitializeColorBuffers::glGenVertexArrays()\n"), gettid());
@@ -693,8 +713,6 @@ bool GLmodelClass::InitializeTextureBuffers(/*GLopenGLclass*/ void* OpenGL)
 
 	m_vertexCount = (UINT) (*modelTextureVertex).size();	// Set the number of vertices in the vertex array.
 
-	GetIndices();
-
 	// Create the vertex array.
 	vertices = NEW ModelTextureVertexType[m_vertexCount];
 	IF_NOT_THROW_EXCEPTION(vertices);
@@ -714,6 +732,8 @@ bool GLmodelClass::InitializeTextureBuffers(/*GLopenGLclass*/ void* OpenGL)
 		WOMA_LOGManager_DebugMSG("vertices: %f %f %f # %f %f \n", vertices[i].x, vertices[i].y, vertices[i].z, vertices[i].tu, vertices[i].tv);
 		#endif
 	}
+
+    GetIndices();
 
 #if (defined _DEBUG || defined  DEBUG) //&& defined ANDROID_PLATFORM
 	_tprintf(TEXT("[%d]: InitializeTextureBuffers::glGenVertexArrays()\n"), gettid());

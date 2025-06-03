@@ -52,7 +52,7 @@ extern RApplicationClass* r_Application;
 int __cdecl BillSortCB(const VOID* arg1, const VOID* arg2);
 
 #if TUTORIAL_CHAP >= 60 // BILLBOARD
-#include "BillClass.h"				//[ch60]
+#include "BillClass.h"	//[ch60]
 #endif
 
 std::ofstream os_file("log.txt", std::ios::out);
@@ -61,11 +61,9 @@ void log(char* msg)
     LOG_FILE << msg << std::endl;
 }
 
-#if defined USE_ASSIMP
 #include "PPG.h"
 #include "MyDemo.h"
 extern MyDemo demo;
-#endif
 
 //-------------------------------------------------------------------------------------------
 void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
@@ -74,14 +72,21 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 	totalRendered = 0;
 	// [1] Animations:
 	// --------------------------------------------------------------------------------------------
-#if defined USE_ASSIMP && defined MAIN_RENDER_ASSIMP // ASSIMP: Skin-MESH (0.15ms)
+#if defined USE_ASSIMP_LATEST && defined MAIN_RENDER_ASSIMP // ASSIMP: Skin-MESH (0.15ms)
     static Application demoapp;
     static MyDemo demo;
     if (m_Driver->RenderfirstTime) 
     {
         demo.Start(demoapp.m_Graphics);
+#if defined USE_FBX_MODEL1
+        demo.assimpSceneModel = std::unique_ptr<SceneModel>(SceneModel::LoadModelToScene(ASSIMP_MODEL_FBX, demo.scene, demoapp.m_Graphics));
+#else
         demo.assimpSceneModel = std::unique_ptr<SceneModel>(SceneModel::LoadModelToScene(ASSIMP_MODEL_BOBLAMPCLEAN, demo.scene, demoapp.m_Graphics));
+#endif
 
+#ifdef DEBUG_MESH
+        log("STARTING...");
+#endif
     }
 
     static UINT filmeIdx = 0; // 1st line of filme file
@@ -99,7 +104,9 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
     previousTime = currentTime;
     total_deltaTime = (timeGetTime() - m_startTime);
 
+    //if (myScene_has_animation)
     demo.Update(demoapp.m_Graphics, deltaTime);
+
     demo.Render(demoapp.m_Graphics);
 #endif
 

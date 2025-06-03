@@ -25,7 +25,8 @@ struct AppData
     float2 texCoord : TEXCOORD;
     float3 tangent : TANGENT;
     float3 binormal : BINORMAL;
-    float4 boneIds : BLENDINDICES;
+    float4 boneIds : BLENDINDICES; //AQUIFLOAT
+    //uint4 boneIds : BLENDINDICES0; //AQUIFLOAT
     float4 boneWeight : BLENDWEIGHT;
 };
 
@@ -42,19 +43,20 @@ struct VertexShaderOutput
 
 VertexShaderOutput main(AppData input)
 {
-    //PB:
-    if (BoneTransforms[127]._11 > 0)
+    //PB
+    //bool skinningEnabled = (BoneTransforms[127]._11 > 0);
+    //if (skinningEnabled)
     {
-        matrix boneTransform = input.boneWeight[0] * BoneTransforms[input.boneIds[0]];
+        matrix boneTransform = input.boneWeight[0] * BoneTransforms[(uint) input.boneIds[0]];
         for (int i = 1; i < 4; ++i)
         {
-            boneTransform += input.boneWeight[i] * BoneTransforms[input.boneIds[i]];
+            boneTransform += input.boneWeight[i] * BoneTransforms[(uint) input.boneIds[i]];
         }
         
-        input.position = mul(boneTransform, float4(input.position, 1.0f)*0.1f );
-        //input.normal = normalize(mul(boneTransform, float4(input.normal, 0.0f)));
-        //input.tangent = normalize(mul(boneTransform, float4(input.tangent, 0.0f)));
-        //input.binormal = normalize(mul(boneTransform, float4(input.binormal, 0.0f)));
+        input.position = mul(boneTransform, float4(input.position, 1.0f)).xyz;
+        input.normal = normalize(mul(boneTransform, float4(input.normal, 0.0f)).xyz);
+        input.tangent = normalize(mul(boneTransform, float4(input.tangent, 0.0f)).xyz);
+        input.binormal = normalize(mul(boneTransform, float4(input.binormal, 0.0f)).xyz);
     }
 
     VertexShaderOutput OUT;
@@ -67,8 +69,9 @@ VertexShaderOutput main(AppData input)
     // assume a uniform scaling is observed
     // otherwise have have to multiply by transpose(inverse(model))
     // inverse should be calculated in the application (CPU)
-    //OUT.normal = normalize(mul(model, float4(input.normal, 0)).xyz);
-    //OUT.tangent = normalize(mul(model, normalize(float4(input.tangent, 0))).xyz);
-    //OUT.binormal = normalize(mul(model, normalize(float4(input.binormal, 0))).xyz);
+    OUT.normal = normalize(input.normal);
+    OUT.tangent = normalize(input.tangent);
+    OUT.binormal = normalize(input.binormal);
+
     return OUT;
 }

@@ -21,6 +21,7 @@
 
 using namespace DirectX;
 
+#pragma pack(push, 1)
 // Only support this for now
 struct Vertex
 {
@@ -29,7 +30,8 @@ struct Vertex
     XMFLOAT2 TexCoord;
     XMFLOAT3 Tangent;
     XMFLOAT3 Binormal;
-    XMFLOAT4 BoneIds = { 0.0, 0.0, 0.0, 0.0 };
+    //UINT    BoneIds[4] = {0}; //AQUIFLOAT
+    XMFLOAT4 BoneIds = { 0.0, 0.0, 0.0, 0.0 };//AQUIFLOAT
     XMFLOAT4 BoneWeights = { 0.0, 0.0, 0.0, 0.0 };
 
     Vertex() = default;
@@ -37,6 +39,7 @@ struct Vertex
         Position(pos), Normal(norm), TexCoord(texC), Tangent(), Binormal(), BoneIds(), BoneWeights()
     {}
 };
+#pragma pack(pop)
 
 class Graphics;
 class Texture;

@@ -47,13 +47,7 @@ extern RApplicationClass* r_Application;
 #endif
 
 #if TUTORIAL_CHAP >= 60 // BILLBOARD
-#include "BillClass.h"				//[ch60]
-#endif
-
-#if defined USE_ASSIMP
-#include "PPG.h"
-#include "MyDemo.h"
-extern MyDemo demo;
+#include "BillClass.h"	//[ch60]
 #endif
 
 //-------------------------------------------------------------------------------------------

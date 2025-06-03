@@ -1,6 +1,6 @@
 <woma>
   <camera screenNear="0.1f" screenDepth="256" >
-    <initPos x="3" y="8" z="12"/>
+    <initPos x="37" y="1" z="14"/>
     <initRot x="15" y="40" z="0"/>
   </camera>
 

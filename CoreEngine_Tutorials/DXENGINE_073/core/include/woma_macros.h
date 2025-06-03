@@ -139,7 +139,7 @@ extern const wchar_t* GetWC(const char* c);
 	#if defined UNICODE
 		#define WOMA_LOGManager_DebugMSGAUTO	wprintf	//TCHAR
 	#else
-		#define WOMA_LOGManager_DebugMSGAUTO	WOMA_LOGManager_DebugMSG	//TCHAR
+		#define WOMA_LOGManager_DebugMSGAUTO	_tprintf //WOMA_LOGManager_DebugMSG	//TCHAR
 	#endif
 
 	#if defined WINDOWS_PLATFORM

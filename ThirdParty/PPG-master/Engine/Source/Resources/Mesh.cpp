@@ -28,7 +28,7 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<WORD> indices, Graphics& gr
     // calculate tangent
     if (calcTangents)
     {
-        for (int i = 0; i < m_Indices.size(); i += 3)
+        for (int i = 0; i < m_Indices.size()-3; i += 3)
         {
             WORD index0 = m_Indices[i];
             WORD index1 = m_Indices[i + 1];

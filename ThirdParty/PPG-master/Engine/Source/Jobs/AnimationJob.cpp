@@ -17,7 +17,7 @@
 // Original Code Adapted from: https://github.com/nicholaschuayunzhi/PPG
 
 #include "stdafx.h"
-
+#include "OSengine.h"
 #include "AnimationJob.h"
 #include "Scene/Scene.h"
 #include "Scene/Model/Skeleton.h"
@@ -30,7 +30,7 @@ inline float lerp(float a, float b, float f)
 }
 
 template <typename T>
-int FindTranslation(std::vector<T> keys, double time)
+int FindTranslation(double time, std::vector<T> keys)
 {
     float duration = time;
     for (UINT i = 0; i < keys.size() - 1; ++i)
@@ -44,16 +44,17 @@ int FindTranslation(std::vector<T> keys, double time)
 	return 0;
 }
 
-void AnimationJob::UpdateTimeElapsed(Scene& scene, float deltaTime)
+void AnimationModelLoader::UpdateTimeElapsed(Scene& scene, float deltaTime)
 {
 
-	for (size_t i = 1; i < scene.m_Node.size(); ++i)
+	//for (size_t i = 1; i < scene.m_Node.size(); ++i)  //AQUI
+    for (size_t i = 0; i < scene.m_Node.size(); ++i)
 	{
 		auto sceneObj = scene.m_Node[i];
-		if (sceneObj->m_Animator.m_Skeleton == nullptr) 
-			continue;
 
         Animator& animator = sceneObj->m_Animator;
+        if (animator.m_Skeleton == nullptr) continue;
+
         Skeleton* skeleton = animator.m_Skeleton;
 		if (skeleton->m_Animations.size() == 0) 
 		{
@@ -66,22 +67,63 @@ void AnimationJob::UpdateTimeElapsed(Scene& scene, float deltaTime)
         animator.m_TimeElapsed = fmod(animator.m_TimeElapsed, animation.m_Duration);
 
 		// ORGINAL:
-		if (i==1)
-        CalculateBoneTransforms(skeleton->m_Root, animator, skeleton->m_RootTransform, animator.m_TimeElapsed);
-		break;
+		//if (i==1) //AQUI!
+        ReadNodeHierarchy(animator.m_TimeElapsed, skeleton->m_Root, animator, skeleton->m_RootTransform);
+		//break;    //AQUI!
+//#if _NOT
+		//AI VERSION:
+		//for (size_t i = 0; i < skeleton->m_Bones.size(); ++i)
+		//{
+		//	CalculateBoneTransforms(animator.m_TimeElapsed, skeleton->m_Bones[i], animator, skeleton->m_RootTransform);
+		//}
+//#endif
     }
 
 }
 
-void AnimationJob::CalculateBoneTransforms(Bone* bone, Animator& animator, const XMMATRIX& parentTransform, float time)
+void AnimationModelLoader::ReadNodeHierarchy2(float AnimationTime, Bone* bone, Animator& animator, const XMMATRIX& parentTransform)
+{
+    //animator.m_FinalTransforms[bone->m_Index] = bone->m_Offset * globalTransform * skeleton->m_GlobalInverse;
+
+#ifdef DEBUG_MESH
+    if (m_Driver->RenderfirstTime)
+    {
+#define i bone->m_Index
+        LOG_FILE << "Transform[" << i << "]:" << std::endl;
+
+        LOG_FILE << " " << animator.m_FinalTransforms[i].r[0].m128_f32[0];
+        LOG_FILE << " " << animator.m_FinalTransforms[i].r[0].m128_f32[1];
+        LOG_FILE << " " << animator.m_FinalTransforms[i].r[0].m128_f32[2];
+        LOG_FILE << " " << animator.m_FinalTransforms[i].r[0].m128_f32[3] << std::endl;
+
+        LOG_FILE << " " << animator.m_FinalTransforms[i].r[1].m128_f32[0];
+        LOG_FILE << " " << animator.m_FinalTransforms[i].r[1].m128_f32[1];
+        LOG_FILE << " " << animator.m_FinalTransforms[i].r[1].m128_f32[2];
+        LOG_FILE << " " << animator.m_FinalTransforms[i].r[1].m128_f32[3] << std::endl;
+
+        LOG_FILE << " " << animator.m_FinalTransforms[i].r[2].m128_f32[0];
+        LOG_FILE << " " << animator.m_FinalTransforms[i].r[2].m128_f32[1];
+        LOG_FILE << " " << animator.m_FinalTransforms[i].r[2].m128_f32[2];
+        LOG_FILE << " " << animator.m_FinalTransforms[i].r[2].m128_f32[3] << std::endl;
+
+        LOG_FILE << " " << animator.m_FinalTransforms[i].r[3].m128_f32[0];
+        LOG_FILE << " " << animator.m_FinalTransforms[i].r[3].m128_f32[1];
+        LOG_FILE << " " << animator.m_FinalTransforms[i].r[3].m128_f32[2];
+        LOG_FILE << " " << animator.m_FinalTransforms[i].r[3].m128_f32[3] << std::endl;
+#undef i
+    }
+#endif
+}
+
+void AnimationModelLoader::ReadNodeHierarchy (float AnimationTime, Bone* bone, Animator& animator, const XMMATRIX& parentTransform)
 {
 	std::string& boneName = bone->m_Name;
 
+    float factor = 0;
+    XMMATRIX globalTransform;
     Skeleton* skeleton = animator.m_Skeleton;
     Animation& animation = skeleton->m_Animations[animator.m_AnimIndexChosen];
     NodeAnimation& nodeAnim = animation.mChannels[boneName];
-    float factor = 0;
-	XMMATRIX globalTransform;
 
 	if (nodeAnim.mPositionKeys.size() > 1) //Female dont have: nodeAnim.m_Positions
 	{
@@ -90,14 +132,14 @@ void AnimationJob::CalculateBoneTransforms(Bone* bone, Animator& animator, const
     if (nodeAnim.mPositionKeys.size() > 1)
     {
         //ori: int posKeyIdx = CurrentKeyIndex<NodeAnimation::PositionKey>(nodeAnim.m_Positions, time);
-		int position_index = FindTranslation(nodeAnim.mPositionKeys, time);
+		int position_index = FindTranslation(AnimationTime, nodeAnim.mPositionKeys);
         int next_position_index = position_index + 1;
 
         NodeAnimation::PositionKey posKey = nodeAnim.mPositionKeys[position_index];
         NodeAnimation::PositionKey nPosKey = nodeAnim.mPositionKeys[next_position_index];
 
 		float delta_time = (nPosKey.m_Time - posKey.m_Time);
-        factor = (time - posKey.m_Time) / delta_time;
+        factor = (AnimationTime - posKey.m_Time) / delta_time;
 
         interpPos = XMVectorLerp(posKey.m_Position, nPosKey.m_Position, factor);
     }
@@ -107,14 +149,14 @@ void AnimationJob::CalculateBoneTransforms(Bone* bone, Animator& animator, const
     XMVECTOR interpQuat = nodeAnim.m_Rotations[0].m_Quaternion;
     if (nodeAnim.m_Rotations.size() > 1)
     {
-        int RotationIndex = FindTranslation<NodeAnimation::RotationKey>(nodeAnim.m_Rotations, time);
+        int RotationIndex = FindTranslation<NodeAnimation::RotationKey>(AnimationTime, nodeAnim.m_Rotations);
         int NextRotationIndex = RotationIndex + 1;
 
         NodeAnimation::RotationKey rotKey = nodeAnim.m_Rotations[RotationIndex];
         NodeAnimation::RotationKey nRotKey = nodeAnim.m_Rotations[NextRotationIndex];
 
 		float DeltaTime = (nRotKey.m_Time - rotKey.m_Time);
-        factor = (time - rotKey.m_Time) / DeltaTime;
+        factor = (AnimationTime - rotKey.m_Time) / DeltaTime;
 
         interpQuat = XMQuaternionSlerp(rotKey.m_Quaternion, nRotKey.m_Quaternion, factor);
 
@@ -123,7 +165,8 @@ void AnimationJob::CalculateBoneTransforms(Bone* bone, Animator& animator, const
 
     // Scaling:
     float interpScale = 1;
-#if scale
+//#define doscale
+#if defined doscale
     if (nodeAnim.m_Scalings.size() > 1)
     {
 		interpScale = nodeAnim.m_Scalings[0].m_Scaling.x;
@@ -134,27 +177,64 @@ void AnimationJob::CalculateBoneTransforms(Bone* bone, Animator& animator, const
         NodeAnimation::ScalingKey scalKey = nodeAnim.m_Scalings[scalKeyIdx];
         NodeAnimation::ScalingKey nScalKey = nodeAnim.m_Scalings[nScalKeyIdx];
 
-        t = (time - scalKey.m_Time) / (nScalKey.m_Time - scalKey.m_Time);
+        auto t = (time - scalKey.m_Time) / (nScalKey.m_Time - scalKey.m_Time);
         interpScale = lerp(scalKey.m_Scaling.x, nScalKey.m_Scaling.x, t);
     }
 
     XMMATRIX scale = XMMatrixScaling(interpScale, interpScale, interpScale);
-	XMMATRIX nodeTransform = scale * rotation * translation;
+	XMMATRIX nodeTransform = scale * rotation_matr * translate_matr;
+#else
+    //NEW version:
+    XMMATRIX nodeTransform = rotation_matr * translate_matr;
+
 #endif
-	    //NEW version:
-		XMMATRIX nodeTransform = rotation_matr * translate_matr;
+
 		globalTransform = nodeTransform * parentTransform;
-	}
+    	}
 	else
 	{
 		globalTransform = parentTransform;
 	}
 
+    if (bone->m_Index < animator.m_Skeleton->m_Bones.size() - 1)
+    {
+        animator.m_FinalTransforms[bone->m_Index] = bone->m_Offset * globalTransform;// *skeleton->m_GlobalInverse;
 
-    animator.m_FinalTransforms[bone->m_Index] = bone->m_Offset * globalTransform * skeleton->m_GlobalInverse;
+#ifdef DEBUG_MESH
+    if (m_Driver->RenderfirstTime) 
+    {
+        #define i bone->m_Index
+        LOG_FILE << "Transform[" << i << "]:" << std::endl;
+
+        XMMATRIX t_FinalTransforms = animator.m_FinalTransforms[i];
+        //t_FinalTransforms = XMMatrixTranspose(t_FinalTransforms);
+
+        LOG_FILE << " " << t_FinalTransforms.r[0].m128_f32[0];
+        LOG_FILE << " " << t_FinalTransforms.r[0].m128_f32[1];
+        LOG_FILE << " " << t_FinalTransforms.r[0].m128_f32[2];
+        LOG_FILE << " " << t_FinalTransforms.r[0].m128_f32[3] << std::endl;
+                          
+        LOG_FILE << " " << t_FinalTransforms.r[1].m128_f32[0];
+        LOG_FILE << " " << t_FinalTransforms.r[1].m128_f32[1];
+        LOG_FILE << " " << t_FinalTransforms.r[1].m128_f32[2];
+        LOG_FILE << " " << t_FinalTransforms.r[1].m128_f32[3] << std::endl;
+                          
+        LOG_FILE << " " << t_FinalTransforms.r[2].m128_f32[0];
+        LOG_FILE << " " << t_FinalTransforms.r[2].m128_f32[1];
+        LOG_FILE << " " << t_FinalTransforms.r[2].m128_f32[2];
+        LOG_FILE << " " << t_FinalTransforms.r[2].m128_f32[3] << std::endl;
+                          
+        LOG_FILE << " " << t_FinalTransforms.r[3].m128_f32[0]; 
+        LOG_FILE << " " << t_FinalTransforms.r[3].m128_f32[1];
+        LOG_FILE << " " << t_FinalTransforms.r[3].m128_f32[2];
+        LOG_FILE << " " << t_FinalTransforms.r[3].m128_f32[3] << std::endl;
+        #undef i
+    }
+#endif
+    }
 
 	for (size_t i = 0; i < bone->m_Children.size(); ++i) {
-		CalculateBoneTransforms(bone->m_Children[i], animator, globalTransform, time);
+		ReadNodeHierarchy(AnimationTime, bone->m_Children[i], animator, globalTransform);
 	}
 }
 

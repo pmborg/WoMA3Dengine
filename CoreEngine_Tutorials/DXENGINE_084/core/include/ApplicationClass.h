@@ -64,13 +64,8 @@
 
 #include "AutoGenTerrain.h"			
 
-//#if TUTORIAL_CHAP >= 60 // BILLBOARD
-//#include "BillClass.h"				//[ch60]
-//#endif
-
-#if defined USE_ASSIMP_GLLIB
+#if defined USE_ASSIMP_LATEST && DEMO_LEVEL >= 79 && DEMO_LEVEL <= 80
 #include "GLAnimationScene.h"
-//#include "QuatCamera.h"
 #endif
 
 #if TUTORIAL_CHAP >= 90
@@ -586,12 +581,10 @@ public:
 #if defined SCENE_TERRAIN_QUAD_TREE //67
 	TerrainQuadtreeClass* TerrainQuadtree;
 #endif
-#if defined USE_ASSIMP_GLLIB
+#if defined USE_ASSIMP_LATEST && DEMO_LEVEL >= 79 && DEMO_LEVEL <= 80
 	//The Scene
 	MyAnimationScene* myScene = NULL;
 	bool myScene_has_animation = false;
-	//The camera
-	//QuatCamera my_camera;
 #endif
 };
 

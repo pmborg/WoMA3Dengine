@@ -556,15 +556,18 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 		WORD*	indices9 = NULL;//DX9/12
 	#endif
 
-	if ( indexModelList == NULL || indexModelList->size() == 0) // BASIC object, without index? One index per vertice?
-	{
-		m_indexCount = m_vertexCount;			// Set the number of indices in the index array.
+        int j = 0;
+        if (indexModelList == NULL || indexModelList->size() == 0) // BASIC object, without index? One index per vertice?
+        {
+            m_indexCount = m_vertexCount;			// Set the number of indices in the index array.
 
-		#if defined DX11 || defined DX12 || defined DX9
-			indices = NEW UINT[m_indexCount];		// Create the index array: DX10/11
-			IF_NOT_THROW_EXCEPTION(indices);
-			for (UINT i = 0; i < m_indexCount; i++)
-				indices[i] = i;						// Load the index array with data:
+#if defined DX11 || defined DX12 || defined DX9
+            indices = NEW UINT[m_indexCount];		// Create the index array: DX10/11
+            IF_NOT_THROW_EXCEPTION(indices);
+            for (UINT i = 0; i < m_indexCount; i++) 
+            {
+            indices[i] = i;						// Load the index array with data:
+        }
 		#else
 			indices9 = NEW WORD[m_indexCount];		// Create the index array: DX9/12
 			IF_NOT_THROW_EXCEPTION(indices9);
@@ -579,8 +582,9 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 			indices = NEW UINT[m_indexCount];		// Create the index array: DX10/11
 			IF_NOT_THROW_EXCEPTION(indices);
 
-			for (UINT i = 0; i < m_indexCount; i++)
+			for (UINT i = 0; i < m_indexCount; i++) {
 				indices[i] = indexModelList->at(i);	// Load the index array with data:
+            }
 		#else
 			indices9 = NEW WORD[m_indexCount];		// Create the index array: DX9/12
 			IF_NOT_THROW_EXCEPTION(indices9);
@@ -923,11 +927,6 @@ bool DXmodelClass::InitializeTextureBuffers(/*ID3D11Device*/ void* device, void*
 			vertices[i].position = D3DXVECTOR3((*modelTextureVertex)[i].x, (*modelTextureVertex)[i].y, (*modelTextureVertex)[i].z); 
 			vertices[i].texCoord = D3DXVECTOR2((*modelTextureVertex)[i].tu, (*modelTextureVertex)[i].tv);
 		#endif
-
-#if _DEBUG && false
-		WOMA_LOGManager_DebugMSG("vertices: %d %d %d - %f %f \n", 
-			vertices[i].position.x, vertices[i].position.y, vertices[i].position.z, vertices[i].texCoord.x, vertices[i].texCoord.y);
-#endif
 
 			CALCULATE_MAX_MIN(vertices[i].position);
 		}

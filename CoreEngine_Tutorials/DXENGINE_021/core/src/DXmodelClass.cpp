@@ -288,15 +288,25 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 		WORD*	indices9 = NULL;//DX9/12
 	#endif
 
-	if ( indexModelList == NULL || indexModelList->size() == 0) // BASIC object, without index? One index per vertice?
-	{
-		m_indexCount = m_vertexCount;			// Set the number of indices in the index array.
+        int j = 0;
+        if (indexModelList == NULL || indexModelList->size() == 0) // BASIC object, without index? One index per vertice?
+        {
+            m_indexCount = m_vertexCount;			// Set the number of indices in the index array.
 
-		#if defined DX11 || defined DX12 || defined DX9
-			indices = NEW UINT[m_indexCount];		// Create the index array: DX10/11
-			IF_NOT_THROW_EXCEPTION(indices);
-			for (UINT i = 0; i < m_indexCount; i++)
-				indices[i] = i;						// Load the index array with data:
+#if defined DX11 || defined DX12 || defined DX9
+            indices = NEW UINT[m_indexCount];		// Create the index array: DX10/11
+            IF_NOT_THROW_EXCEPTION(indices);
+            for (UINT i = 0; i < m_indexCount; i++) 
+            {
+            indices[i] = i;						// Load the index array with data:
+#if (defined _DEBUG || defined  DEBUG) && DX_ENGINE_LEVEL < 29
+            WOMA_LOGManager_DebugMSG("%u ", indices[i]);
+            if (j++ >= 2) {
+                j = 0;
+                WOMA_LOGManager_DebugMSG("\n");
+            }
+#endif
+        }
 		#else
 			indices9 = NEW WORD[m_indexCount];		// Create the index array: DX9/12
 			IF_NOT_THROW_EXCEPTION(indices9);
@@ -311,8 +321,16 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 			indices = NEW UINT[m_indexCount];		// Create the index array: DX10/11
 			IF_NOT_THROW_EXCEPTION(indices);
 
-			for (UINT i = 0; i < m_indexCount; i++)
+			for (UINT i = 0; i < m_indexCount; i++) {
 				indices[i] = indexModelList->at(i);	// Load the index array with data:
+#if (defined _DEBUG || defined  DEBUG) && DX_ENGINE_LEVEL < 29
+                WOMA_LOGManager_DebugMSG("%u ", indices[i]);
+                if (j++ >= 2) {
+                    j = 0;
+                    WOMA_LOGManager_DebugMSG("\n");
+                }
+#endif
+            }
 		#else
 			indices9 = NEW WORD[m_indexCount];		// Create the index array: DX9/12
 			IF_NOT_THROW_EXCEPTION(indices9);

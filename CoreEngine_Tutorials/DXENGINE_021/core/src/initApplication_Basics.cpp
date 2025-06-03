@@ -430,7 +430,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	XMLobj3D.posX = 0; XMLobj3D.translateY = 0; XMLobj3D.posZ = 0;
 	XMLobj3D.shader = SHADER_TEXTURE_GS_INSTANCED;
 	XMLobj3D.scale = 0.0215f;
-	XMLobj3D.instances = 15;
+	XMLobj3D.instances = N_INSTANCE_TREES;
 
 	strcpy_s(XMLobj3D.filename, sizeof(XMLobj3D.filename), BILL_GS);
 	SystemHandle->xml_loader.theWorld.push_back(XMLobj3D);

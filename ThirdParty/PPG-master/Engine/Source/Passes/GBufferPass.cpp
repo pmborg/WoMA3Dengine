@@ -56,20 +56,17 @@ void GBufferPass::Render(Graphics& graphics, Scene& scene)
 {
     auto deviceContext = graphics.m_DeviceContext;
 
-    //graphics.ClearRenderTargetView(m_Diffuse.GetRTV(), Colors::Transparent);
-    //graphics.ClearRenderTargetView(m_MetalRough.GetRTV(), Colors::Transparent);
-    //graphics.ClearRenderTargetView(m_Normals.GetRTV(), Colors::Transparent);
-    //graphics.ClearRenderTargetView(m_Emissive.GetRTV(), Colors::Transparent);
-
-    scene.UseCamera(graphics, scene.m_MainCamera); // VIEW / PROJ
-    scene.lightManager.Use(deviceContext, 1);
-    scene.UseModel(graphics);
-
     shader->Use(deviceContext);
-    deviceContext->VSSetConstantBuffers(3, 1, &m_BoneBuffer);
-    deviceContext->PSSetConstantBuffers(0, 1, &m_Buffer);
+
+    scene.UseModel(graphics);                                 // 0   VERTEX Buffer: World
+    scene.UseCamera(graphics, scene.m_MainCamera);            // 1,2 VERTEX Buffer: VIEW: & PROJ
+    deviceContext->VSSetConstantBuffers(3, 1, &m_BoneBuffer); // 3   VERTEX Buffer: Bones
+
+    deviceContext->PSSetConstantBuffers(0, 1, &m_Buffer);    // 0 Pixel Buffer: 
+    scene.lightManager.Use(deviceContext, 1);                // 1 Pixel Buffer: Light
 
     Animator* currentAnimator = nullptr;
+
 	for (size_t i = 0; i < scene.m_Node.size(); ++i)
 	{
 		auto sceneObj = scene.m_Node[i];
@@ -81,30 +78,13 @@ void GBufferPass::Render(Graphics& graphics, Scene& scene)
         {
             if (animator != currentAnimator)
             {
-				animator->m_FinalTransforms[127].r->m128_f32[0] = 1;
                 graphics.UpdateBuffer(m_BoneBuffer, animator->m_FinalTransforms);
                 currentAnimator = animator;
             }
         }
-
         PBRMaterial* mat = meshRenderer.m_Material;
-        graphics.UpdateBuffer(m_Buffer, &(mat->m_MaterialInfo));
         if (mat->m_Albedo)
             mat->m_Albedo->UseSRV(deviceContext, 0);
-        if (mat->m_Normal)
-            mat->m_Normal->UseSRV(deviceContext, 1);
-        if (mat->m_OccRoughMetal)
-            mat->m_OccRoughMetal->UseSRV(deviceContext, 2);
-        if (mat->m_AoMap)
-            mat->m_AoMap->UseSRV(deviceContext, 3);
-        if (mat->m_Emissive)
-            mat->m_Emissive->UseSRV(deviceContext, 4);
         meshRenderer.m_Mesh->Draw(deviceContext);
     }
-
-    //graphics.UnbindShaderResourceView(0);
-    //graphics.UnbindShaderResourceView(1);
-    //graphics.UnbindShaderResourceView(2);
-    //graphics.UnbindShaderResourceView(3);
-    //graphics.UnbindShaderResourceView(4);
 }

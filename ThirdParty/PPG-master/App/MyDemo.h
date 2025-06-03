@@ -57,9 +57,9 @@ private:
     std::unique_ptr<Texture> normals;
     std::unique_ptr<Texture> emissive;
 
-    AnimationJob animJob;
+    AnimationModelLoader animJob;
 
-    std::unique_ptr<Texture> LoadTextureFromPath(Graphics& graphics, const LPCWSTR& path)
+    std::unique_ptr<Texture> LoadTextureFromPath(Graphics& graphics, LPCWSTR& path)
     {
         Texture* tex = Texture::LoadTextureFromPath(graphics, path);
         return std::unique_ptr<Texture>(tex);
@@ -149,8 +149,6 @@ public:
 
 	void Render(Graphics& graphics) 
 	{
-
-        #define m_Driver driverList[SystemHandle->AppSettings->DRIVER]
         {
             XMMATRIX world = XMMatrixIdentity();
             //Scale:
@@ -158,10 +156,18 @@ public:
 
             //_22
             //_33
-            world.r[0].m128_f32[0] = world.r[1].m128_f32[1] = world.r[2].m128_f32[2] = 0.2f;
-            XMMATRIX rotX = XMMatrixRotationX(PI / 2);
+#if defined USE_FBX_MODEL1
+            world.r[0].m128_f32[0] = world.r[1].m128_f32[1] = world.r[2].m128_f32[2] = 0.01f;
+            //XMMATRIX rotX = XMMatrixRotationX(PI / 2);
+            //world *= rotX;
+#else
+            world.r[0].m128_f32[0] = world.r[1].m128_f32[1] = world.r[2].m128_f32[2] = 0.02f;
+            XMMATRIX rotX = XMMatrixRotationX(-PI / 2);
             world *= rotX;
-            
+            XMMATRIX rotZ = XMMatrixRotationZ(PI/2);
+            world *= rotZ;
+#endif
+
             //Translate:
             world.r[3].m128_f32[0] = 39;    //_41: X
             world.r[3].m128_f32[1] = 0.4f;  //_42: Y 
@@ -178,7 +184,7 @@ public:
             //_11
             //_22
             //_33
-            world.r[0].m128_f32[0] = world.r[1].m128_f32[1] = world.r[2].m128_f32[2] = 0.7f;
+            world.r[0].m128_f32[0] = world.r[1].m128_f32[1] = world.r[2].m128_f32[2] = 0.07f;
 
             XMMATRIX rotX = XMMatrixRotationX(PI/2);
             world *= rotX;

@@ -473,15 +473,11 @@
 	#endif
 	#if DX_ENGINE_LEVEL >= 77 && defined SCENE_BILLBOARDS
 		#define USE_INSTANCES_FOR_TREES
+		#define USE_ANIMATION_VERTEX_FLOAT //AQUIFLOAT											  
 	#endif	  
     #if DX_ENGINE_LEVEL >= 78
         #define USE_BOUNDING_VOLUMES
         #define CHECK_OBJ_COLISION
-    #endif
-    #if DX_ENGINE_LEVEL >= 79
-        #undef USE_LIGHT_RAY
-        #undef USE_INSTANCES_FOR_TREES
-        //#define USE_MINIMAP_EXPANSION
     #endif
 	
     //-------------------------------------------------------------------------------------------------------
@@ -497,28 +493,41 @@
 	#define MAIN_RENDER_BILLBOARDS      //70/74
 	#define MAIN_RENDER_ASSIMP          //82
 
-    #if DX_ENGINE_LEVEL >= 82
-        #define SCENE_BILLBOARDS
-        #define USE_INSTANCES_FOR_TREES
-        #define USE_ASSIMP     			//82
-		#undef MAIN_RENDER_DRIVER_FONT  //25
-    #endif
-    #if NDEBUG
-        #define TEXT_TEST
-    #endif
+    #if defined ASSIMP //>= 79
+        #if DX_ENGINE_LEVEL == 79
+            #define USE_FBX_MODEL1 //FBX/DAE
+            #define MAVERICK
+            #define DEBUG_MESH          //79+80
+			#define USE_MATH3D          //79+80
+			#define USE_ASSIMP_GLLIB    //79+80
+            #define USE_ASSIMP_LATEST   //79-def
+        #endif
+		#if DX_ENGINE_LEVEL == 80
+            #define DEBUG_MESH          //79+80
+			#define USE_MATH3D          //79+80
+			#define USE_ASSIMP_GLLIB    //79+80
+            //#undef  USE_ASSIMP_LATEST   //79-undef
+		#endif
+		#if DX_ENGINE_LEVEL == 81
+			//#define USE_MATH3D
+			#define USE_ASSIMP_DXLIB //81
+		#endif
+	#endif
 	
+    #if DX_ENGINE_LEVEL >= 82
+        #define USE_ASSIMP_LATEST     	//82
+        #define DEBUG_MESH
+    #endif
 	#if DX_ENGINE_LEVEL >= 83
         //#define SAVE_WALK
 	    // Updated billboard shader & SAVE FILME
 	#endif
-
     #if DX_ENGINE_LEVEL >= 84
 	    #define LOAD_WALK
         #define SCENE_SKIN
     #endif
     #if DX_ENGINE_LEVEL >= 85
-        #define USE_FBX_MODEL1
-        //#define DEBUG_MESH
+        #define USE_MINIMAP_EXPANSION
     #endif
 	
 	
@@ -535,3 +544,7 @@
 	#if defined NDEBUG && DX_ENGINE_LEVEL < 29 && defined _MSC_VER
 	#error "WOMA COMPILATION ERROR: NDEBUG bin is not Supported before DX_ENGINE_LEVEL 29"
 	#endif
+	//-------------------------------------------------------------------------------------------------------
+    #if NDEBUG
+        #define TEXT_TEST
+    #endif

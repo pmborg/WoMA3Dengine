@@ -58,8 +58,8 @@ public:
         symbol->SizeOfStruct = sizeof(SYMBOL_INFO);  
         symbol->MaxNameLen = 3*KBs;
   
-		IMAGEHLP_LINE64 line ={0};  
-        line.SizeOfStruct = sizeof(IMAGEHLP_LINE64);	// memset(&line,0,sizeof(line));
+		IMAGEHLP_LINE64 line ={0};  // memset(&line,0,sizeof(line));
+        line.SizeOfStruct = sizeof(IMAGEHLP_LINE64);	
   
 		const HANDLE process = GetCurrentProcess();
 
@@ -115,8 +115,7 @@ public:
 			current_context = *context;
   
             DWORD machine_type;  
-            STACKFRAME64 frame;  
-            //memset(&frame, 0, sizeof(frame));  
+            STACKFRAME64 frame = { 0 }; //memset(&frame, 0, sizeof(frame));  
             frame.AddrPC.Mode = AddrModeFlat;  
 			frame.AddrFrame.Mode = AddrModeFlat;
 			frame.AddrStack.Mode = AddrModeFlat;
