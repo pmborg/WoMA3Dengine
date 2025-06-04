@@ -141,7 +141,7 @@ void ApplicationTextClass::SetInfoB(float rotX, float rotY, float rotZ)
 
 #if TUTORIAL_CHAP >= 60 && _DEBUG // BILLBOARD
 //10
-void ApplicationTextClass::SetBillRenderCount(int count, float deltaTime)
+void DirectX::ApplicationTextClass::SetBillRenderCount(int count, UINT deltaTime)
 {
 	char countString[80];
 	StringCchPrintf(countString, sizeof(countString), TEXT("N.Bill: %d - Anim.Time: %d ms"), count, (UINT)deltaTime);

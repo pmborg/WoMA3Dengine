@@ -29,7 +29,9 @@
 #pragma once
 
 #define WOMAAUTHOR_ID		"Pedro Borges (pmborg@yahoo.com)"						// WoMA Engine: Author
+#if _NOT
 #define WOMASERVER			"woma.servegame.com"									// Define: WOMA ENGINE HOME: (Server)
+#endif
 
 // -----------------------------------------------------------------------------------------
 // DEFINE PLATFORM: Defaults
@@ -59,7 +61,6 @@
 //	-------------------------------------------------------------------------------------------
 extern UINT CLASS_LOAD_N;
 extern UINT CLASS_DELETE_N;
-
 
 #if defined USE_ASTRO_CLASS
 extern void InitializeCelestialInfoScreen(int x, int y);

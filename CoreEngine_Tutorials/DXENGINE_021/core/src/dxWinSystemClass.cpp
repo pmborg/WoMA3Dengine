@@ -166,7 +166,7 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
     }
 
     WOMA_LOGManager_DebugMSG("msg.wParam: %d\n", msg.wParam);
-	return msg.wParam; //return the PostQuitMessage (message code)
+	return (int)msg.wParam; //return the PostQuitMessage (message code)
 }
 
 //----------------------------------------------------------------------------

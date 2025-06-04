@@ -34,7 +34,10 @@
 // ------------------------------------------------------------------------------------------------
 #define WIN32_LEAN_AND_MEAN			// Exclude APIs such as Cryptography, DDE, RPC, Shell, and "Windows Sockets"!
 #define NOCOMM						// Excludes the serial communication API.
+#define NOMENUS                     //– Excludes menu-related functions and constants.
+#define NOCOLOR                     //– Excludes color-related macros and functions.
 #define _CRT_SECURE_NO_WARNINGS		// Ignore: warning C4996
+#define STRICT                      // This one enables strict type checking for Windows handles (e.g., HWND, HDC)
 #pragma warning( disable : 4098 )	// warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
 #pragma warning( disable : 4297 )	// warning C4297: 'WinMain' : function assumed not to throw an exception but do (ONCE WE USE MINI DUMPER WE DONT NEED THIS!)
 #pragma warning( disable : 4091 )	// warning C4091 : 'typedef ' : ignored on left of '' when no variable is declared

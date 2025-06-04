@@ -7,7 +7,7 @@
 // code by : Pedro Borges - pmborg@yahoo.com
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 //
-// Supported Formats:
+// Supported Formats by ImageLoaderClass:
 //
 // JPG	JPG Compress
 // PNG  ZLIB Compress
@@ -16,6 +16,8 @@
 // DDS
 // TIF
 //
+// --------------------------------------------------------------------------------------------
+// Texture converter: C:\WoMAengine2014\_Microsoft_DirectX_SDK_June_2010_\Utilities\bin\x86\texconv.exe -ft PNG *.tga
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234567155;
 

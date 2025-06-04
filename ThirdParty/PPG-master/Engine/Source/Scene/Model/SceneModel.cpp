@@ -35,29 +35,7 @@
 #include <assimp/version.h>
 #include <assimp/revision.h>
 
-#define ASSIMP_LOAD_FLAGS   aiProcess_Triangulate | \
-                            aiProcess_GenSmoothNormals | \
-                            aiProcess_MakeLeftHanded | \
-                            aiProcess_FlipWindingOrder
-                            //aiProcess_FlipUVs            | \
-                            
-//Ori:
-/*
-#define ASSIMP_LOAD_FLAGS   aiProcess_Triangulate | \
-                            aiProcess_GenSmoothNormals | \
-                            aiProcess_CalcTangentSpace | \
-                            aiProcess_ConvertToLeftHanded
-*/
-/*
-#define ASSIMP_LOAD_FLAGS   aiProcess_FlipUVs | \
-                            aiProcess_LimitBoneWeights | \
-                            aiProcess_Triangulate | \
-                            aiProcess_GenSmoothNormals | \
-                            aiProcess_CalcTangentSpace | \
-                            aiProcess_ConvertToLeftHanded | \
-                            aiProcess_Triangulate | \
-                            aiProcess_GenSmoothNormals
-*/
+#define DX_ASSIMP_LOAD_FLAGS aiProcess_LimitBoneWeights | aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_MakeLeftHanded | aiProcess_FlipWindingOrder
 
 #ifdef DEBUG_MESH
 void showNodeName(aiNode* node, UINT i = 0);
@@ -89,7 +67,7 @@ SceneModel* SceneModel::LoadModelToScene(std::string fileName, Scene& scene, Gra
 #endif
 
     Assimp::Importer importer;
-    const aiScene* pAssimpScene = importer.ReadFile(fileName, ASSIMP_LOAD_FLAGS);
+    const aiScene* pAssimpScene = importer.ReadFile(fileName, DX_ASSIMP_LOAD_FLAGS);
     if (pAssimpScene == NULL)
         throw woma_exception("ModelLoader::Model file not found", __FILE__, __FUNCTION__, __LINE__);
 

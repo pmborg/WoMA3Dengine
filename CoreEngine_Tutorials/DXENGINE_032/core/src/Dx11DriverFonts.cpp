@@ -22,11 +22,13 @@
 #include "dx11Class.h"
 #include "winsystemclass.h"	// SystemHandle
 
-
 namespace DirectX {
 #if defined USE_DX_DRIVER_FONT // FONT v2
 
-//invoked@: DX11Class::Resize
+// invoked@: DX11Class::Resize
+#if _NOT
+// https://learn.microsoft.com/en-us/windows/win32/directwrite/getting-started-with-directwrite
+#endif
 bool DX11Class::InitD2D_D3D101_DWrite(IDXGIAdapter1 *Adapter, WCHAR* fontStyle, int screenWidth, int screenHeight, float R, float G, float B)
 {
 	//Create our Direc3D 10.1 Device///////////////////////////////////////////////////////////////////////////////////////

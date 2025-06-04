@@ -79,6 +79,10 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
     {
         demo.Start(demoapp.m_Graphics);
 #if defined USE_FBX_MODEL1
+        //#define ASSIMP_MODEL_FBX TEXT("C:\\WoMAengine2023_GOLD_INFO_BOOKs\\__COMPRADO__\\Forest Huntress 3D model\\uploads_files_2627306_Forest+Huntress\\Forest Huntress.fbx")
+        //#define ASSIMP_MODEL_FBX TEXT("C:\\Users\\pedro\\Downloads\\noesisv4474\\rp_nathan_animated_003_walkingout.md5mesh")
+        #define ASSIMP_MODEL_FBX TEXT("C:\\Users\\pedro\\Downloads\\noesisv4474\\rp_nathan_animated_003_walkingout.dae")
+        //#define ASSIMP_MODEL_FBX TEXT("C:\\WoMAengine2023\\engine\\data\\scene84SKINMESH\\55-rp_nathan_animated_003_walking_fbx\\rp_nathan_animated_003_walking.fbx")
         demo.assimpSceneModel = std::unique_ptr<SceneModel>(SceneModel::LoadModelToScene(ASSIMP_MODEL_FBX, demo.scene, demoapp.m_Graphics));
 #else
         demo.assimpSceneModel = std::unique_ptr<SceneModel>(SceneModel::LoadModelToScene(ASSIMP_MODEL_BOBLAMPCLEAN, demo.scene, demoapp.m_Graphics));
