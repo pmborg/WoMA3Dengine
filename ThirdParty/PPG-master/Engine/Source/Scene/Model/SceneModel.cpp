@@ -35,7 +35,6 @@
 #include <assimp/version.h>
 #include <assimp/revision.h>
 
-#define DX_ASSIMP_LOAD_FLAGS aiProcess_LimitBoneWeights | aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_MakeLeftHanded | aiProcess_FlipWindingOrder
 
 #ifdef DEBUG_MESH
 void showNodeName(aiNode* node, UINT i = 0);
@@ -54,7 +53,7 @@ double TicksPerSecond;
 SceneModel* SceneModel::LoadModelToScene(std::string fileName, Scene& scene, Graphics& graphics, SceneObject::Index parentIndex /*= 0*/)
 {
 #ifdef DEBUG_MESH
-    LOG_FILE << "WOMA ("<< LEVEL <<") LOAD FILE : " << (char*)fileName.c_str() << endl;
+    LOG_FILE << "WOMA (" << LEVEL << ") LOAD FILE : " << (char*)fileName.c_str() << endl;
     LOG_FILE << "LOADING... C:/WoMA3Dengine/ThirdParty/external/assimp" << endl;
 
     UINT versionMajor = aiGetVersionMajor();
@@ -65,6 +64,19 @@ SceneModel* SceneModel::LoadModelToScene(std::string fileName, Scene& scene, Gra
     LOG_FILE << "versionMinor : " << versionMinor << endl;
     LOG_FILE << "revision : " << revision << endl;
 #endif
+
+    unsigned int DX_ASSIMP_LOAD_FLAGS = 0;
+    const TCHAR* extension = _tcsrchr(fileName.c_str(), '.');
+    if (_tcsicmp(extension, TEXT(".md5mesh")) == 0 || _tcsicmp(extension, TEXT(".MD5MESH")) == 0)
+    {
+        //MD5MESH:
+        DX_ASSIMP_LOAD_FLAGS = aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace | aiProcess_ConvertToLeftHanded;
+    }
+    else
+    {
+        //DAE:
+        DX_ASSIMP_LOAD_FLAGS = aiProcess_LimitBoneWeights | aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_MakeLeftHanded | aiProcess_FlipWindingOrder;
+    }
 
     Assimp::Importer importer;
     const aiScene* pAssimpScene = importer.ReadFile(fileName, DX_ASSIMP_LOAD_FLAGS);

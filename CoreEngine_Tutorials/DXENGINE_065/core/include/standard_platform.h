@@ -35,7 +35,6 @@
 #define WIN32_LEAN_AND_MEAN			// Exclude APIs such as Cryptography, DDE, RPC, Shell, and "Windows Sockets"!
 #define NOCOMM						// Excludes the serial communication API.
 #define NOMENUS                     //– Excludes menu-related functions and constants.
-#define NOCOLOR                     //– Excludes color-related macros and functions.
 #define _CRT_SECURE_NO_WARNINGS		// Ignore: warning C4996
 #define STRICT                      // This one enables strict type checking for Windows handles (e.g., HWND, HDC)
 #pragma warning( disable : 4098 )	// warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
