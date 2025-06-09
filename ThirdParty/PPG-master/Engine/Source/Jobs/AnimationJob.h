@@ -34,7 +34,7 @@ public:
     void UpdateTimeElapsed(Scene& scene, float deltaTime);
 private:
     
-    void CalculateBoneTransforms(float AnimationTime, const aiNode* p_node, const Matrix4f& parent_transform, UINT initialBoneId);
+    void CalculateBoneTransforms(float AnimationTime, const aiNode* p_node, const Matrix4f& parent_transform);
     void ReadNodeHierarchy(float AnimationTime, Bone* bone, Animator& animator, const DirectX::XMMATRIX& transform);
     void ReadNodeHierarchy2(float AnimationTime, Bone* bone, Animator& animator, const DirectX::XMMATRIX& transform);
 };

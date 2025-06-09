@@ -25,7 +25,9 @@
 #include "assimp/Importer.hpp"
 #include "assimp/postprocess.h"
 #include "assimp/scene.h"
+
 #include "assimp/pbrmaterial.h"
+
 #include "LowLevel/Graphics.h"
 #include "Resources/Mesh.h"
 #include "Resources/Texture.h"
@@ -105,7 +107,7 @@ SceneModel* ModelLoader::LoadModel()
 		m_Animator->m_IsEnabled = true;
 		m_Animator->m_Skeleton = m_Model->m_Skeleton;
     }
-
+    
     GenerateSceneObjectHierarchy(pAssimpScene->mRootNode, true, m_Model->m_SceneObject->m_Index);
 
     return m_Model;

@@ -36,7 +36,7 @@ public:
 
     std::string m_Name;
     Transform m_Transform;
-    const Index m_Index;
+    Index m_Index;
     const Index  m_ParentIndex;
     std::vector<Index> m_ChildrenIndices;
 

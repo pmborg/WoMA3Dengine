@@ -83,7 +83,7 @@ SceneModel* SceneModel::LoadModelToScene(std::string fileName, Scene& scene, Gra
     if (pAssimpScene == NULL)
         throw woma_exception("ModelLoader::Model file not found", __FILE__, __FUNCTION__, __LINE__);
 
-    if (!pAssimpScene || pAssimpScene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !pAssimpScene->mRootNode || !pAssimpScene->HasMeshes())
+    if (!pAssimpScene /* || pAssimpScene->mFlags == AI_SCENE_FLAGS_INCOMPLETE*/ || !pAssimpScene->mRootNode || !pAssimpScene->HasMeshes())
     {
 #ifdef DEBUG_MESH
         LOG_FILE << "error in assimp: " << importer.GetErrorString() << std::endl;

@@ -47,8 +47,7 @@ int FindTranslation(double time, std::vector<T> keys)
 void AnimationModelLoader::UpdateTimeElapsed(Scene& scene, float deltaTime)
 {
 
-	//for (size_t i = 1; i < scene.m_Node.size(); ++i)  //AQUI
-    for (size_t i = 0; i < scene.m_Node.size(); ++i)
+	for (size_t i = 1; i < scene.m_Node.size(); ++i)
 	{
 		auto sceneObj = scene.m_Node[i];
 
@@ -66,25 +65,14 @@ void AnimationModelLoader::UpdateTimeElapsed(Scene& scene, float deltaTime)
         animator.m_TimeElapsed += deltaTime * animation.m_TicksPerSecond;
         animator.m_TimeElapsed = fmod(animator.m_TimeElapsed, animation.m_Duration);
 
-		// ORGINAL:
-		//if (i==1) //AQUI!
-        ReadNodeHierarchy(animator.m_TimeElapsed, skeleton->m_Root, animator, skeleton->m_RootTransform);
-		//break;    //AQUI!
-//#if _NOT
-		//AI VERSION:
-		//for (size_t i = 0; i < skeleton->m_Bones.size(); ++i)
-		//{
-		//	CalculateBoneTransforms(animator.m_TimeElapsed, skeleton->m_Bones[i], animator, skeleton->m_RootTransform);
-		//}
-//#endif
+		if (i==1)
+            ReadNodeHierarchy(animator.m_TimeElapsed, skeleton->m_Root, animator, skeleton->m_RootTransform);
     }
 
 }
 
 void AnimationModelLoader::ReadNodeHierarchy2(float AnimationTime, Bone* bone, Animator& animator, const XMMATRIX& parentTransform)
 {
-    //animator.m_FinalTransforms[bone->m_Index] = bone->m_Offset * globalTransform * skeleton->m_GlobalInverse;
-
 #ifdef DEBUG_MESH
     if (m_Driver->RenderfirstTime)
     {
@@ -128,42 +116,45 @@ void AnimationModelLoader::ReadNodeHierarchy (float AnimationTime, Bone* bone, A
 	if (nodeAnim.mPositionKeys.size() > 1) //Female dont have: nodeAnim.m_Positions
 	{
     // Translation:
+    // ---------------------------------------------------------------------------------------------------
     XMVECTOR interpPos = nodeAnim.mPositionKeys[0].m_Position;
     if (nodeAnim.mPositionKeys.size() > 1)
     {
-        //ori: int posKeyIdx = CurrentKeyIndex<NodeAnimation::PositionKey>(nodeAnim.m_Positions, time);
-		int position_index = FindTranslation(AnimationTime, nodeAnim.mPositionKeys);
+        int position_index = FindTranslation(AnimationTime, nodeAnim.mPositionKeys);
+        //int position_index = FindTranslation(AnimationTime + initialIndexId, nodeAnim.mPositionKeys);
+		//int position_index = initialIndexId+FindTranslation(AnimationTime+ initialIndexId, nodeAnim.mPositionKeys);
+        //position_index = MIN(position_index, nodeAnim.mPositionKeys.size() - 2);
         int next_position_index = position_index + 1;
 
         NodeAnimation::PositionKey posKey = nodeAnim.mPositionKeys[position_index];
         NodeAnimation::PositionKey nPosKey = nodeAnim.mPositionKeys[next_position_index];
-
-		float delta_time = (nPosKey.m_Time - posKey.m_Time);
+        float delta_time = (nPosKey.m_Time - posKey.m_Time);
         factor = (AnimationTime - posKey.m_Time) / delta_time;
-
         interpPos = XMVectorLerp(posKey.m_Position, nPosKey.m_Position, factor);
     }
     XMMATRIX translate_matr = XMMatrixTranslationFromVector(interpPos);
 
     // Rotation:
+    // ---------------------------------------------------------------------------------------------------
     XMVECTOR interpQuat = nodeAnim.m_Rotations[0].m_Quaternion;
     if (nodeAnim.m_Rotations.size() > 1)
     {
         int RotationIndex = FindTranslation<NodeAnimation::RotationKey>(AnimationTime, nodeAnim.m_Rotations);
+        //int RotationIndex = FindTranslation<NodeAnimation::RotationKey>(AnimationTime+ initialIndexId, nodeAnim.m_Rotations);
+        //int RotationIndex = initialIndexId+FindTranslation<NodeAnimation::RotationKey>(AnimationTime, nodeAnim.m_Rotations);
+        //RotationIndex = MIN(RotationIndex, nodeAnim.m_Rotations.size() - 2);
         int NextRotationIndex = RotationIndex + 1;
 
         NodeAnimation::RotationKey rotKey = nodeAnim.m_Rotations[RotationIndex];
-        NodeAnimation::RotationKey nRotKey = nodeAnim.m_Rotations[NextRotationIndex];
-
+        NodeAnimation::RotationKey nRotKey= nodeAnim.m_Rotations[NextRotationIndex];
 		float DeltaTime = (nRotKey.m_Time - rotKey.m_Time);
         factor = (AnimationTime - rotKey.m_Time) / DeltaTime;
-
         interpQuat = XMQuaternionSlerp(rotKey.m_Quaternion, nRotKey.m_Quaternion, factor);
-
     }
     XMMATRIX rotation_matr = XMMatrixRotationQuaternion(interpQuat);
 
     // Scaling:
+    // ---------------------------------------------------------------------------------------------------
     float interpScale = 1;
 //#define doscale
 #if defined doscale
@@ -171,7 +162,7 @@ void AnimationModelLoader::ReadNodeHierarchy (float AnimationTime, Bone* bone, A
     {
 		interpScale = nodeAnim.m_Scalings[0].m_Scaling.x;
 
-        int scalKeyIdx = CurrentKeyIndex<NodeAnimation::ScalingKey>(nodeAnim.m_Scalings, time);
+        int scalKeyIdx = initialIndexId+CurrentKeyIndex<NodeAnimation::ScalingKey>(nodeAnim.m_Scalings, time);
         int nScalKeyIdx = scalKeyIdx + 1;
 
         NodeAnimation::ScalingKey scalKey = nodeAnim.m_Scalings[scalKeyIdx];
@@ -186,11 +177,10 @@ void AnimationModelLoader::ReadNodeHierarchy (float AnimationTime, Bone* bone, A
 #else
     //NEW version:
     XMMATRIX nodeTransform = rotation_matr * translate_matr;
-
 #endif
 
 		globalTransform = nodeTransform * parentTransform;
-    	}
+    }
 	else
 	{
 		globalTransform = parentTransform;
@@ -198,7 +188,7 @@ void AnimationModelLoader::ReadNodeHierarchy (float AnimationTime, Bone* bone, A
 
     if (bone->m_Index < animator.m_Skeleton->m_Bones.size() - 1)
     {
-        animator.m_FinalTransforms[bone->m_Index] = bone->m_Offset * globalTransform;// *skeleton->m_GlobalInverse;
+        animator.m_FinalTransforms[bone->m_Index] = bone->m_Offset * globalTransform;
 
 #ifdef DEBUG_MESH
     if (m_Driver->RenderfirstTime) 

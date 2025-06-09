@@ -153,13 +153,10 @@ public:
             XMMATRIX world = XMMatrixIdentity();
             //Scale:
             //_11+		BoneIds	{x=0.00000000 y=0.00000000 z=0.00000000 ...}	DirectX::XMFLOAT4
-
             //_22
             //_33
 #if defined USE_FBX_MODEL1
             world.r[0].m128_f32[0] = world.r[1].m128_f32[1] = world.r[2].m128_f32[2] = 0.01f;
-            //XMMATRIX rotX = XMMatrixRotationX(PI / 2);
-            //world *= rotX;
 #else
             world.r[0].m128_f32[0] = world.r[1].m128_f32[1] = world.r[2].m128_f32[2] = 0.02f;
             XMMATRIX rotX = XMMatrixRotationX(-PI / 2);
@@ -167,12 +164,12 @@ public:
             XMMATRIX rotZ = XMMatrixRotationZ(PI/2);
             world *= rotZ;
 #endif
-
             //Translate:
-            world.r[3].m128_f32[0] = 39;    //_41: X
-            world.r[3].m128_f32[1] = 0.4f;  //_42: Y 
-            world.r[3].m128_f32[2] = 20;    //_43: Z
+            const float X=39, Z=20;
+            world.r[3].m128_f32[0] = X; //_41: X
+            world.r[3].m128_f32[2] = Z; //_43: Z
 
+            world.r[3].m128_f32[1] = mainTerrain->getTerrainHeight(TERRAIN_ID, world.r[3].m128_f32[0], world.r[3].m128_f32[2]);
             scene.UpdateModel(graphics, world);
         }
         gBufferPass->Render(graphics, scene);
