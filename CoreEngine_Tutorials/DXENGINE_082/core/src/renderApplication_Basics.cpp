@@ -79,12 +79,12 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
     {
         demo.Start(demoapp.m_Graphics);
 #if defined USE_FBX_MODEL1
-        //#define ASSIMP_MODEL_FBX TEXT("C:\\WoMAengine2023_GOLD_INFO_BOOKs\\__COMPRADO__\\Forest Huntress 3D model\\uploads_files_2627306_Forest+Huntress\\Forest Huntress.fbx")
-        //#define ASSIMP_MODEL_FBX TEXT("C:\\Users\\pedro\\Downloads\\noesisv4474\\rp_nathan_animated_003_walkingout.md5mesh")
-        //https://free3d.com/3d-model/nathan-animated-003-walking-644277.html
-        #define ASSIMP_MODEL_FBX TEXT("C:\\Users\\pedro\\Downloads\\noesisv4474\\rp_nathan_animated_003_walkingout.dae")
-        //#define ASSIMP_MODEL_FBX TEXT("C:/Users/pedro/Desktop/ANIM/Actorcore-3dsmax-0112-342309/b083-runtoblastbout.dae")
-        //#define ASSIMP_MODEL_FBX TEXT("C:\\WoMAengine2023\\engine\\data\\scene84SKINMESH\\55-rp_nathan_animated_003_walking_fbx\\rp_nathan_animated_003_walking.fbx")
+        // Source:
+        // https://free3d.com/3d-model/nathan-animated-003-walking-644277.html
+        // Exported (fbx->dae) with (swap UV), using: [noesisv4474.zip https://www.richwhitehouse.com/filemirror/noesisv4474.zip] noesisv4474\Noesis.exe
+        // Fix/remote: texture file path: manually on rp_nathan_animated_003_walkingout2.dae
+        #define ASSIMP_MODEL_FBX TEXT("C:\\WoMAengine2023\\engine\\data\\scene85\\rp_nathan_animated_003_walkingout.dae") 
+        //#define ASSIMP_MODEL_FBX TEXT("C:\\WoMAengine2023\\engine\\data\\scene85\\untitled.dae")
         demo.assimpSceneModel = std::unique_ptr<SceneModel>(SceneModel::LoadModelToScene(ASSIMP_MODEL_FBX, demo.scene, demoapp.m_Graphics));
 #else
         demo.assimpSceneModel = std::unique_ptr<SceneModel>(SceneModel::LoadModelToScene(ASSIMP_MODEL_BOBLAMPCLEAN, demo.scene, demoapp.m_Graphics));
@@ -112,8 +112,8 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 
     //if (myScene_has_animation)
     demo.Update(demoapp.m_Graphics, deltaTime);
-
     demo.Render(demoapp.m_Graphics);
+
 #endif
 
     qsort(m_Trees, _countof(m_Trees), sizeof(Tree), BillSortCB);

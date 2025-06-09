@@ -31,8 +31,6 @@
 #include "OSmain_dir.h"
 #include "language.h"
 
-#include "stateMachine.h"
-
 #include "woma_exception.h"
 #include "fileLoader.h"
 

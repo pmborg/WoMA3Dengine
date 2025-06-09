@@ -27,8 +27,6 @@
 #include "OSmain_dir.h"
 #include "language.h"
 
-#include "stateMachine.h"
-
 /////////////////////
 // Windows GLOBALS //
 /////////////////////

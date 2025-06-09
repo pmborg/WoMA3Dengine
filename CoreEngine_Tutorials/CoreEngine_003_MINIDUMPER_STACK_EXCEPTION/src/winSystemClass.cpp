@@ -27,8 +27,6 @@
 #include "OSmain_dir.h"
 #include "language.h"
 
-#include "stateMachine.h"
-
 #include "woma_exception.h"
 #include "fileLoader.h"
 
@@ -123,8 +121,8 @@ bool WinSystemClass::APPLICATION_AFTER_WINDOW()
     {
         WomaFatalException("This is to Test the Exception Handler!");	// Check file: "<exe>.txt"
     }
-    else
-        return false;
+
+    return false;
 
     return true;
 }

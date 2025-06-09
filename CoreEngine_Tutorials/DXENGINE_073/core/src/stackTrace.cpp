@@ -171,8 +171,8 @@ private:
 
 stack_trace::stack_trace(CONTEXT* context, size_t skip)  
 {  
-	for (size_t i = 0; i < max_frame_ptrs;  ++i)
-		m_frame_ptrs[i]=0;
+	//for (size_t i = 0; i < max_frame_ptrs;  ++i)
+	//	m_frame_ptrs[i]=0;
 	
     sym_handler::get_instance().capture_stack_trace(context, m_frame_ptrs, max_frame_ptrs, skip);  
   
@@ -181,7 +181,7 @@ stack_trace::stack_trace(CONTEXT* context, size_t skip)
 std::string stack_trace::to_string()  
 {  
     std::stringstream ss;  
-    for (size_t i = 0; i < max_frame_ptrs && m_frame_ptrs[i];  ++i)  
+    for (size_t i = 5; i < max_frame_ptrs && m_frame_ptrs[i];  ++i)  
     {  
         ss << sym_handler::get_instance().get_symbol_info(m_frame_ptrs[i]) << "\n";  
     }  

@@ -58,7 +58,7 @@
 #include "metarClass.h"
 #endif
 
-#if CORE_ENGINE_LEVEL >= 10 && !defined NewWomaEngine //#if DX_ENGINE_LEVEL >= 19 && !defined NewWomaEngine
+#if CORE_ENGINE_LEVEL >= 10 && !defined NewWomaEngine
 #include "womadriverclass.h"
 #endif
 

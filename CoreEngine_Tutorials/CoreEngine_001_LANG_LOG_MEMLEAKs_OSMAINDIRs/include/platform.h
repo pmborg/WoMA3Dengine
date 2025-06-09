@@ -136,6 +136,10 @@ static_assert(false, "At least one X86 or X64 need to be defined!");
 	#define CPU_ARM64	//FOR: ANDROID_PLATFORM
 #endif
 
+#if defined CPU_ARM32
+static_assert(false, "This HW Target is not valid for WOMA3D Engine");
+#endif
+
 // -------------------------------------------------------------------------------------------
 //	Automatically Select Platform to Compile: (WINDOWS_PLATFORM / LINUX_PLATFORM / ANDROID_PLATFORM)
 // -------------------------------------------------------------------------------------------
@@ -191,7 +195,6 @@ static_assert(false, "At least one X86 or X64 need to be defined!");
 	#error "WOMA COMPILATION ERROR: This platform is not Supported yet."
 #endif
 #endif
-
 
 // -------------------------------------------------------------------------------------------
 // ASSERT: COMPILATION OPTIONS:
@@ -315,22 +318,22 @@ static_assert(false, "At least one X86 or X64 need to be defined!");
 #include <emmintrin.h>						//#include <xmmintrin.h>
 #elif defined _M_IX86_FP && _M_IX86_FP==1	//SSE x32	(Pentium - III Katmai)= (Fev 1999) Target: WINXP 32b+SSE
 // SSE
-static_assert(false, "This Target is not valid for WOMA3D Engine");
+static_assert(false, "This HW Target is not valid for WOMA3D Engine");
 #define _XM_SSE_INTRINSICS_
 #include <xmmintrin.h>						//#include <mmintrin.h>
-static_assert(false, "This Target is not valid for WOMA3D Engine");
+static_assert(false, "This HW Target is not valid for WOMA3D Engine");
 #elif defined __I86__ == 6					//Pentium - II					  = (May 1996) Target: Win98 x86+32b
 #include <mmintrin.h>						//MMX
-static_assert(false, "This Target is not valid for WOMA3D Engine");
+static_assert(false, "This HW Target is not valid for WOMA3D Engine");
 #elif defined __I86__ == 5					//Pentium - I					  = (Ago 1995) Target: MS-DOS 6.0 16b + Win95
 #include <mmintrin.h>						//MMX
-static_assert(false, "This Target is not valid for WOMA3D Engine");
+static_assert(false, "This HW Target is not valid for WOMA3D Engine");
 #elif defined __i486__						//IA-32		(CPU: 486)			  = (Jun 1991) Target: MS-DOS 5.0 16b + Windows 3.x
-static_assert(false, "This Target is not valid for WOMA3D Engine");
+static_assert(false, "This HW Target is not valid for WOMA3D Engine");
 #elif defined __i386__						//IA-32		(CPU: 386)			  = (Nov 1989) Target: MS-DOS 3.31 16b + DOS/4GW
-static_assert(false, "This Target is not valid for WOMA3D Engine");
+static_assert(false, "This HW Target is not valid for WOMA3D Engine");
 #else										//x86 - 286 16-bit				  = (Nov 1987) Target: MS-DOS 3.31 16b
-static_assert(false, "This Target is not valid for WOMA3D Engine");
+static_assert(false, "This HW Target is not valid for WOMA3D Engine");
 #endif
 #endif
 
@@ -531,8 +534,8 @@ static_assert(false, "WIN6x: X64 or WIN32, have to be selected");
 #endif
 #endif
 
-#define BIG_ENDIAN		0
-#define LITTLE_ENDIAN	1
+#define BIG_ENDIAN 0    //constexpr int BIG_ENDIAN = 0;
+#define LITTLE_ENDIAN 1 //  constexpr int LITTLE_ENDIAN = 1;
 
 // -------------------------------------------------------------------------------------------
 // Windows Platforms Define (Internal API Version):
@@ -597,17 +600,21 @@ static_assert(false, "WIN6x: X64 or WIN32, have to be selected");
 #define WOMA_CONSOLE_APPLICATION	// Allow: OS "CMD Line Console" VS Native "WINDOWS" or "X-WINDOWS"
 #endif
 
+#define KBs 1024
+#define MBs (1024*KBs)
+#define GBs (1024*MBs)
+
+#define MAX(a,b)	(((a) > (b)) ? (a) : (b))
+#define MIN(a,b)	(((a) < (b)) ? (a) : (b))
+
+#if defined ANDROID_PLATFORM
+#define MAX_PATH 260
+#endif
+
 #define MAX_PARAMS			20			// Max parameters on command line
 #define MAX_STR_LEN			512			// Used by TCHAR Arrays
-#define MAX_PATH			260							 
 #define CONSOLE_LOG_WIDTH	900
 #define MAXBUFF				5*KBs
-
-#define GAME_LOADING		0					// the game is in the:    "Initialization / Load Mode"
-#define GAME_RUN            50					// F5: the game is in the:    "Running Mode"
-#define ENGINE_RESTART      100					// the game is in the:    "Re-start" the "SystemClass"
-#define GAME_STOP           ENGINE_RESTART+1	// the game is in the:    "Stop Threads and Free Resources Mode": This the correct mode to: Stop the "Application"
-#define GAME_EXIT           ENGINE_RESTART+2	// the game is in the:    "Exit Mode (Only SystemClass should use this), After all Threads Have Completed
 
 // -------------------------------------------------------------------------------------------
 #if defined NDEBUG && !defined _DEBUG
@@ -623,11 +630,13 @@ static_assert(false, "WIN6x: X64 or WIN32, have to be selected");
 // -------------------------------------------------------------------------------------------
 // Define WOMA Project "Settings/Features" that will be COMPILED depending of "ENGINE_LEVEL"
 // -------------------------------------------------------------------------------------------
-#if MAINENGINE_LINUX
-	#include "../../woma_engine_assets.h"				// PUBLIC DEMOS: WINDOWS / ANDROID / LINUX
-#else
+#if defined MAVERICK
 	#include "C:\WoMAengine2023\woma_engine_assets.h"
+#else
+    #include "../../woma_engine_assets.h"				// PUBLIC DEMOS: WINDOWS / ANDROID / LINUX
 #endif
+
+#include "stateMachine.h"
 
 #if CORE_ENGINE_LEVEL < 10
 	#define WOMA_CONSOLE_APPLICATION
@@ -653,6 +662,7 @@ static_assert(false, "WIN6x: X64 or WIN32, have to be selected");
 
 #endif
 
+#if _NOT
 /*
 #undef DX9sdk   //Original DX9
 #undef DX9      //DX9 Using modern API: DX11
@@ -666,3 +676,4 @@ static_assert(false, "WIN6x: X64 or WIN32, have to be selected");
 #undef OPENGL3  //Windows: 32bits
 #undef OPENGL40 //Windows: 64bits or Linux: 64bits
 */
+#endif

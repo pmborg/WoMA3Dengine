@@ -53,6 +53,7 @@
     <ClInclude Include="..\include\OSmain_dir.h" />
     <ClInclude Include="..\include\platform.h" />
     <ClInclude Include="..\include\standard_platform.h" />
+    <ClInclude Include="..\include\stateMachine.h" />
     <ClInclude Include="..\include\SystemClass.h" />
     <ClInclude Include="..\include\winSystemClass.h" />
     <ClInclude Include="..\include\woma_macros.h" />

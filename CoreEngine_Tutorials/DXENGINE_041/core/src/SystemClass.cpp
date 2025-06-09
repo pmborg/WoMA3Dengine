@@ -36,8 +36,6 @@
 #include "language.h"
 #endif
 
-#include "stateMachine.h"
-
 #if CORE_ENGINE_LEVEL >= 4 && defined USE_SYSTEM_CHECK
 #include "systemManager.h"
 #endif

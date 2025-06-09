@@ -1,4 +1,4 @@
-// -------------------------------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 // Filename: main.cpp
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
@@ -18,51 +18,9 @@
 // PURPOSE: Entry point of all WoMA ENGINE Applications OS: WINDOWS / LINUX / ANDROID
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234567155;
-
-// DEFINE ENGINE LEVEL:
-// C:\[WoMAengine]\woma_engine_assets.h
- 
-// --------------------------------------------------------------------------------------------
-// #HOWTO:
-// C:\[WoMAengine]\Android-howto\HowTo\HowToInstallVisualStudio2019CrossPlatformDevelopmentEnvironment\howto_download_and_install_VisualStudio2019CrossPlatformSetupEnvironment.txt
-
-// [LINUX]
-// NOTE: ON LINUX dont forget to OPEN a WSL console before compile!
-//       C:\ProgramData\Microsoft\Windows\Start Menu\Programs\WSL
-
-// [ANDROID]
-//   USE ANDROID DEVICES FROM VS-2017 or VS-2019 (Re-install original builds and Disable updates)
-//   START: [VS-2017 or VS-2019] TOOLS / ANDROID / Android Device Manager / Start a x86 device
-// --or compile ARMx64 to ANDROID RELEASE or phone link.
-// 
-// #[Microsoft Visual Studio Community 2022] TOOLS / OPTIONS / ANDROID:
-//   C:\ProgramData\Microsoft\AndroidSDK\25
-//   C:\Program Files (x86)\Android\AndroidNDK\android-ndk-r15c
-//   C:\Java\jdk1.8.0_202
-//   C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\Apps\apache-ant-1.9.3
-// 
-// INCLUDE... C:\Program Files (x86)\Android\AndroidNDK64\android-ndk-r15c\platforms\android-26\arch-arm64\usr\include
-// 
-// WINDOWS:
-// **   C:\[WoMAengine]\DXEngine_055\GLengine
-//      C:\[WoMAengine]\DXEngine_055\REPORT.txt
-// 
-// LINUX:
-// C:\[WoMAengine]\LinuxWoma\LinuxWoma\bin\x64\Debug
-//   ~/projects/LinuxWoma/bin/x64/Debug/GLengine
-//----> ~\projects\LinuxWoma\bin\x64\Debug\GLengine
-//      ~\projects\LinuxWoma\bin\x64\Debug\REPORT.txt
-// 
-// ANDROID:
-// **C:\[WoMAengine]\Android-WomaEngine\Android2\Android2.Packaging\ARM64\Debug
-//   ~/projects/LinuxWoma/Android-WomaEngine/Android2/Android2.NativeActivity/GLengine
-//----> ~\projects\LinuxWoma\Android-WomaEngine\Android2\Android2.NativeActivity\GLengine
-// 
-// COMMON:
-// C:\[WoMAengine]\DXEngine_055\engine\data\basics
-// ~\projects\LinuxWoma\bin\x64\Debug\engine\data\basics
-//----> C:\[WoMAengine]\Android-WomaEngine\Android2\Android2.Packaging\ARM64\Debug\Package\assets\engine\data\basics
-
+#if NOTES
+#include "notes.h"
+#endif
 #include "OSengine.h"
 
 #if defined WINDOWS_PLATFORM
@@ -134,20 +92,20 @@ int Command = EXIT_SUCCESS;
 int APPLICATION_MAIN(int argc, char* argv[])
 // -------------------------------------------------------------------------------------------------------------------------------------
 {
-    APPLICATION_STARTUP(argc, argv);           			// ENGINE SETUP: |CoInitializeEx|+|OSmain_dirs|+|Memory leaks check|+|Log|+|Mini Dumper|
-    
-    do {
-        {
-            SYSTEM demo(&WOMA::settings);               // NEW |SystemClass()::WinSystemClass()::DxWinSystemClass() for Specific OS|+|WOMA::APP_NAME|+|NEW ApplicationClass()"|
-            demo.ParseCommandLineArgs(argc, argv);      // LoadXmlSettings & Parse the command line parameters: -warp /warp, ... (override settings.xml)
-
-            if (demo.APPLICATION_INIT_SYSTEM())         // INIT Woma Engine: |SOUND|+|Register|+|XML|+|Sys.Chk|+|Window|+|OS-Input|+|Timer|+|Drivers|+|Load Assets|
-                Command = demo.APPLICATION_MAIN_LOOP(); // RUN: OS MAIN LOOP -> PROCESS FRAMES: (UPDATE + RENDER)!
-        }                                               // DELETE SYSTEM demo: Close WINDOW
-		if (Command == ENGINE_RESTART)                  // The User set new settings?
-			Sleep(2000);                                // Need to be 2secs to change resources between drivers
-    } while (Command == ENGINE_RESTART);	            // Try to restart the Engine with new settings then! (if fail! goto VectoredExceptionHandler())
-
-    APPLICATION_STOP();                                 // ENGINE STOP: |CoUninitialize|+|Free Mini Dumper|+|CLOSE Log|+|DELETE Temp files(RELEASE)
-    return Command;                                     // ENGINE RETURN: to OS (Can be: 0, ENGINE_RESTART or "an error" code)
+    APPLICATION_STARTUP(argc, argv);                      // ENGINE SETUP: |CoInitializeEx|+|OSmain_dirs|+|Memory leaks check|+|Log|+|Mini Dumper|
+    if (Command == EXIT_SUCCESS) {
+      do {
+          {
+              SYSTEM demo(&WOMA::settings);               // NEW |SystemClass()::WinSystemClass()::DxWinSystemClass() for Specific OS|+|WOMA::APP_NAME|+|NEW ApplicationClass()"|
+              demo.ParseCommandLineArgs(argc, argv);      // LoadXmlSettings & Parse the command line parameters: -warp /warp, ... (override settings.xml)
+      
+              if (demo.APPLICATION_INIT_SYSTEM())         // INIT Woma Engine: |SOUND|+|Register|+|XML|+|Sys.Chk|+|Window|+|OS-Input|+|Timer|+|Drivers|+|Load Assets|
+                  Command = demo.APPLICATION_MAIN_LOOP(); // RUN: OS MAIN LOOP -> PROCESS FRAMES: (UPDATE + RENDER)!
+          }                                               // DELETE SYSTEM demo: Close WINDOW
+          if (Command == ENGINE_RESTART)                  // The User set new settings?
+              Sleep(2000);                                // Need to be 2secs to change resources between drivers
+      } while (Command == ENGINE_RESTART);	              // Try to restart the Engine with new settings then! (if fail! goto VectoredExceptionHandler())
+    }                                                     
+    APPLICATION_STOP();                                   // ENGINE STOP: |CoUninitialize|+|Free Mini Dumper|+|CLOSE Log|+|DELETE Temp files(RELEASE)
+    return Command;                                       // ENGINE RETURN: to OS (Can be: 0, ENGINE_RESTART or "an error" code)
 }

@@ -37,6 +37,7 @@ woma_exception::woma_exception(const std::string &arg, const char *file, const c
 {
 	#if defined USE_WOMA_EXCEPTION
 		std::string msg;
+        Command = EXIT_FAILURE;
 
 		#if defined WINDOWS_PLATFORM
 		//Show extra runtime "Call Stack" frame Debug info on a "woma_exception":
@@ -48,13 +49,18 @@ woma_exception::woma_exception(const std::string &arg, const char *file, const c
 			msg.append(TEXT("\n\n"));
 			msg.append(sttrace->to_string().c_str());
 			MessageBoxA(NULL, msg.c_str(), arg.c_str(), 0);
+            WOMA_LOGManager_DebugMSGAUTO(TEXT("WOMA EXCEPTION: %s\n"), msg.c_str());
 		}
+        SAFE_DELETE(sttrace);
 		#endif
 	#endif
 }
 
 woma_exception::~woma_exception() throw() 
 {
+#if CORE_ENGINE_LEVEL >= 3 && defined WINDOWS_PLATFORM
+	SAFE_DELETE (sttrace);
+#endif
 }
 
 #endif

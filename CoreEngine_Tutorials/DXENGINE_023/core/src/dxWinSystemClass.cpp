@@ -153,14 +153,14 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 		if (WOMA::main_loop_state < 0 || (WOMA::renderOnce && WOMA::woma_timer > 15))
         {
 			WOMA::game_state = GAME_STOP;
-            return EXIT_SUCCESS;        //Controlled Exit.
+            return EXIT_SUCCESS;                //Controlled Exit.
 		}
         if (WOMA::game_state == ENGINE_RESTART)
-            PostQuitMessage(WOMA::game_state); //return WOMA::game_state;    //If ENGINE_RESTART is allowed.
+            PostQuitMessage(WOMA::game_state);  //RESTART ENGINE: return WOMA::game_state;
 
 	} while (msg.message != WM_QUIT);
 
-    //Clear message queue:
+    //Clear all message queue:
     while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) > 0) 
     {
         TranslateMessage(&msg);

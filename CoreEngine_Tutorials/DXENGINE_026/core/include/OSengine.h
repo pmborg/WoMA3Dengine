@@ -96,12 +96,6 @@
 
 #pragma once
 #include "platform.h"
-		
-#if CORE_ENGINE_LEVEL < 2
-#define ENGINE_RESTART 100
-#else
-#include "stateMachine.h"
-#endif
 
 #if !defined NewWomaEngine
 #if defined WINDOWS_PLATFORM

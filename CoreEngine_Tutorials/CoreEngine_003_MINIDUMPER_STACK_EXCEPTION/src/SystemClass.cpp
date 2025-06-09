@@ -36,8 +36,6 @@
 #include "language.h"
 #endif
 
-#include "stateMachine.h"
-
 #define GET_NAME(NAME) #NAME
 #define GET_VERSION(VERSION) GET_NAME(VERSION)
 

@@ -30,11 +30,19 @@
 
 // Number of Billboard Trees
 
+#if defined SIMPLE
+#define N_BILLBOARD 1
+#define N_FENCES 55
+#define N_FIRE 1
+#define N_GRASS 1
+#define N_BUSH  1
+#else
 #define N_BILLBOARD 1000
 #define N_FENCES 55
 #define N_FIRE 1
 #define N_GRASS 2000
 #define N_BUSH  750
+#endif
 
 extern ID3D11ShaderResourceView* billFileLoaded[];
 

@@ -204,7 +204,7 @@ LONG MiniDumper::TopLevelFilter( struct _EXCEPTION_POINTERS *pExceptionInfo )
         ::MessageBox(NULL, TEXT("WARNING: Error Sending the report!"), WOMA::APP_FULLNAME, MB_OK);
     }
 
-	return EXCEPTION_CONTINUE_SEARCH; //return retval;
+	return EXCEPTION_CONTINUE_SEARCH;
 }
 
 #endif

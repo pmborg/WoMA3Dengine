@@ -532,6 +532,6 @@
     #define MODEL_FEMALE_PATH TEXT("C:\\WoMA3Dengine\\CoreEngine_Tutorials\\engine\\data\\scene84SKINMESH\\female-character-path\\character.txt")
 #endif					 
 #if DX_ENGINE_LEVEL == 85
-    #define DEMO_TITLE TEXT("85: ASSIMP: Latest")
+    #define DEMO_TITLE TEXT("85: MINI-MAP: Expansion")
     #define WORLD_XML TEXT("world_85.xml")
 #endif						 

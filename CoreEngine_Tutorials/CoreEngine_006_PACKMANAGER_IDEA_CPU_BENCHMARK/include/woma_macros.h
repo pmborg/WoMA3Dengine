@@ -34,6 +34,7 @@
 	#define wtoa(strA,strW,lenA) strcpy_s(strA,lenA,strW)	// USE SAMPLE: CHAR Aip[MAX_STR_LEN]={ 0 };			wtoa(Aip, ip, MAX_STR_LEN);
 #endif
 
+#if _NOT
 // int to TCHAR*
 // --------------------------------------------------------------------------------------------
 /*
@@ -45,6 +46,7 @@
 	#endif
 #endif
 */
+#endif
 
 #if defined LINUX_PLATFORM
 	extern bool PLATFORM_INIT_GTK2();
@@ -77,7 +79,7 @@
 	#if defined VERBOSE_MEMORY_DEBUG
 		#define IF_NOT_THROW_EXCEPTION(x) { WOMA_LOGManager_DebugMSG("[MEM_DEBUG] NEW %s CREATED!\n", #x); if (!x) WomaFatalException("Not Enough Memory!"); }
 	#else
-		#define IF_NOT_THROW_EXCEPTION(x) { if (!x) WomaFatalException("Not Enough Memory!"); }
+		#define IF_NOT_THROW_EXCEPTION(x) { if (!x) throw woma_exception("Exception!", __FILE__, __FUNCTION__, __LINE__); }
 	#endif
 #else
 	#define IF_NOT_THROW_EXCEPTION(x) ASSERT(x)
@@ -182,12 +184,6 @@ extern const wchar_t* GetWC(const char* c);
 
 // Global MEM HANDLERS - WOMA Macros:
 // --------------------------------------------------------------------------------------------
-#define KBs 1024
-#define MBs (1024*KBs)
-#define GBs (1024*MBs)
-
-#define MAX(a,b)	(((a) > (b)) ? (a) : (b))
-#define MIN(a,b)	(((a) < (b)) ? (a) : (b))
 
 #ifndef SAFE_SHUTDOWN
 	#if defined VERBOSE_MEMORY_DEBUG

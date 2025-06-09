@@ -120,9 +120,10 @@ LogManager::LogManager()
 	UINT errno_t = _tfopen_s(&debugFile, REPORT_FILE.c_str(), TEXT("w"));
 	if (errno_t != 0) {
 		// This means that the file is locked by another Woma APP instance, dont abort because of that!
-		//CANT USE WomaMessageBox:
 		WOMA_LOGManager_DebugMSG(TEXT("[ERROR] WARNING! - LOG MANGER - Cant Open for Write: %s\n"), REPORT_FILE.c_str());
+
 		#if defined WINDOWS_PLATFORM
+        //CANT USE WomaMessageBox here so using: MessageBox
 		MessageBox(NULL, REPORT_FILE.c_str(), TEXT("WARNING! - LOG MANGER - Cant Open for Write"), MB_ICONWARNING);
 		#endif
 		ON = false;
@@ -130,7 +131,7 @@ LogManager::LogManager()
 	else
 		ON = true;
 
-	_tprintf(TEXT("*LOG FILE: %s\n"), REPORT_FILE.c_str()); // NOTE: Need to be "_tprintf"
+	_tprintf(TEXT("|LOG FILE|: %s\n"), REPORT_FILE.c_str()); // NOTE: Need to be "_tprintf"
 }
 
 LogManager::~LogManager()
@@ -189,7 +190,7 @@ void LogManager::DEBUG_MSG(WCHAR* strMsg, ...)
 	// Get Full STRING and process STRING patameters:
 	va_list args;
 	va_start(args, strMsg);
-	vswprintf_s(WstrBuffer /*+ wcslen(WstrBuffer)*/, MAXBUFF /*- wcslen(WstrBuffer)*/, strMsg, args);
+	vswprintf_s(WstrBuffer, MAXBUFF, strMsg, args);
 	WstrBuffer[MAXBUFF - 1] = 0;
 	va_end(args);
 

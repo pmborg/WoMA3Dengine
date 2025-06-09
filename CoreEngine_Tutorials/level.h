@@ -136,12 +136,13 @@
 	//#define LEVEL 77  // USE INSTANCES FOR TREES										   
     //#define LEVEL 78  // COLISION DETECTION
 	
-	//#define LEVEL 79  // EXPAND MINI-MAP
-
+    //#define LEVEL 79  // Advanced DAE         (not published)
+	//#define LEVEL 80	// GL-ASSIMP EXT-PRJ    (not published)
+	//#define LEVEL 81	// ASSIMP               (not published)
     //#define LEVEL 82	// ASSIMP-ENGINE	
 	//#define LEVEL 83	// Updated billboard shader
 	//#define LEVEL 84	// ASSIMP: Animated / walking mesh on the terrain, following a path								
-	#define LEVEL 85    // ASSIMP-LATEST:  
+	#define LEVEL 85    // EXPAND MINI-MAP
 	
 	#endif
 #endif

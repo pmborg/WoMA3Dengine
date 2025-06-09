@@ -109,7 +109,7 @@ TCHAR* DEMO_NAME[] =
 {DEMO_TITLE},//64 - Animated static object
 {DEMO_TITLE},//65
 {DEMO_TITLE},//66
-{DEMO_TITLE},//67 - LOADMD5 & FBX (Animated Characters)
+{DEMO_TITLE},//67
 {DEMO_TITLE},//68
 {DEMO_TITLE},//69
 {DEMO_TITLE},//70
@@ -317,7 +317,13 @@ void DefineConsoleTitle()
 
 void APPLICATION_STARTUP(int argc, char* argv[])
 {
-    std::cout << "<" << PROJECT_NAME << "> STARTUP:" << std::endl;
+    std::cout << "<" << PROJECT_NAME << "> STARTUP" << std::endl;
+
+#if defined WOMA_CONSOLE_APPLICATION  || !defined WINDOWS_PLATFORM
+    // Save Command Line Arguments to use later on
+    WOMA::ARGc = argc;
+    WOMA::ARGv = argv;
+#endif
 
 	// Changes the Process Priority:
 	// -----------------------------
@@ -331,7 +337,7 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 	//THREAD_PRIORITY_HIGHEST(+2)
 	//THREAD_PRIORITY_TIME_CRITICAL(+15)
 #endif
-	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST); //THREAD_PRIORITY_HIGHEST = 2
+	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
 
 #elif defined LINUX_PLATFORM && defined RELEASE
 	#if _DEBUG
@@ -341,18 +347,9 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 	#endif
 #endif
 
-	// Init Windows COM services:
-	// --------------------------
-#if defined WINDOWS_PLATFORM
-	IF_NOT_THROW_EXCEPTION(DirectX::XMVerifyCPUSupport());
-
-	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
-	if (FAILED(hr)) WomaFatalException("CoInitializeEx Failed!");
-#endif
-
-	// Benchmark trigonometric functions:
-	// ----------------------------------
 #ifdef MATH_BENCH && LEVEL < 60 // Disabled at 60: TrigonometryMathClass.cpp
+    // Benchmark trigonometric functions:
+    // ----------------------------------
 	TimerClass m_Timer;
 	m_Timer.Initialize();	// Initialize the timer object.
 
@@ -377,26 +374,19 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 #endif
 
 #if CORE_ENGINE_LEVEL >= 1 && defined WINDOWS_PLATFORM
-	WOMA::setup_OSmain_dirs();				//1 Keep this order!
-	WOMA::activate_mem_leak_detection();	//2
+	WOMA::setup_OSmain_dirs();				//1! Keep this order!
+	WOMA::activate_mem_leak_detection();	//2!
 #endif
 	#if defined USE_LOG_MANAGER
-	WOMA::start_log_manager();				//3
+	WOMA::start_log_manager();				//3!
 	#endif
 
-	DefineConsoleTitle();
-
-#if defined WOMA_CONSOLE_APPLICATION  || !defined WINDOWS_PLATFORM
-    // Save Command Line Arguments to use later on
-	WOMA::ARGc = argc;
-	WOMA::ARGv = argv;
-#endif
-
-	// [4] Set A Top level "Exception handler" for all Exceptions. Catch, Dump & Send Report WOMA ENGINE HOME using FTP!
-	// -------------------------------------------------------------------------------------------
+	// Set A Top level "Exception handler" for all Exceptions. Catch, Dump & Send Report WOMA ENGINE HOME using FTP!
 #if defined USE_MINIDUMPER 
-	WOMA::miniDumper = NEW MiniDumper();	// NOTE: After logManager!
+	WOMA::miniDumper = NEW MiniDumper();	//4! (NOTE: After logManager!)
 #endif
+
+    DefineConsoleTitle();
 
 #ifdef LINUX_PLATFORM 
 	// [6-1] Start LINUX Platform GUI: Settings
@@ -412,7 +402,7 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 		WOMA_LOGManager_DebugMSGAUTO(TEXT("Could not initialize GTK2!")); // Note: Dont use DEBUG_MSG yet...
 #endif
 
-
+    WOMA_LOGManager_DebugMSGAUTO("<%s> STARTUP ENDED\n", PROJECT_NAME);
 }
 
 void APPLICATION_STOP()
@@ -421,21 +411,15 @@ void APPLICATION_STOP()
 	SAFE_SHUTDOWN(r_Application);
 #endif
 
-#if defined WINDOWS_PLATFORM
-	CoUninitialize();
-#endif
-
 #if defined USE_MINIDUMPER
 	SAFE_DELETE(WOMA::miniDumper); // Free Top level Exception handler & Mini-Dumper.
 #endif
 
-
 #if defined USE_LOG_MANAGER
 	if (WOMA::logManager)
 		WOMA::logManager->ShutdownInstance();	// Write, Close & Free: The logManager.
-	WOMA::logManager = NULL;				// Because of STATIC Classes Shutdown: Do not log
+	WOMA::logManager = NULL;				    // Because its a STATIC Class Shutdown and do not log
 #endif
-
 
 #if defined ANDROID_PLATFORM
 	engine.has_focus_ = false;

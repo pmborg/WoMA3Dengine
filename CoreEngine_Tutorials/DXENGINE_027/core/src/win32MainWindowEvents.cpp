@@ -21,9 +21,7 @@
 
 #pragma warning( disable : 4312 ) // warning C4312: 'type cast': conversion from 'int' to 'HMENU' of greater size
 #include "OSengine.h"
-#include "stateMachine.h"
 #include "OSmain_dir.h"
-
 
 #define TIMER_TITLE 0
 

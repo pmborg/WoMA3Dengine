@@ -497,13 +497,13 @@
         #if DX_ENGINE_LEVEL == 79
             #define USE_FBX_MODEL1 //FBX/DAE
             #define MAVERICK
-            #define DEBUG_MESH          //79+80
+            //#define DEBUG_MESH          //79+80
 			#define USE_MATH3D          //79+80
 			#define USE_ASSIMP_GLLIB    //79+80
             #define USE_ASSIMP_LATEST   //79-def
         #endif
 		#if DX_ENGINE_LEVEL == 80
-            #define DEBUG_MESH          //79+80
+            //#define DEBUG_MESH          //79+80
 			#define USE_MATH3D          //79+80
 			#define USE_ASSIMP_GLLIB    //79+80
             //#undef  USE_ASSIMP_LATEST   //79-undef
@@ -520,7 +520,7 @@
     #endif
 	#if DX_ENGINE_LEVEL >= 83
         //#define SAVE_WALK
-	    // Updated billboard shader & SAVE FILME
+	    // Updated billboard shader & SAVE_WALK FILME
 	#endif
     #if DX_ENGINE_LEVEL >= 84
 	    #define LOAD_WALK
