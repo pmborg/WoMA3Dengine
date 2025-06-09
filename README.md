@@ -47,6 +47,11 @@ Try to Change the driver on the fly without the need of close and open the Appli
 
 <hr>
 
+- <b>DX85: Expand MiniMap</b><br>
+ 
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_085.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_085.png)	
+
+<hr>
 - <b>DX84: ASSIMP: Animated / walking mesh on the terrain, following a path:</b><br>
  
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_084.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_084.png)	
