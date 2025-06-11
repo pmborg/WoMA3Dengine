@@ -29,14 +29,14 @@
 // -------------------------------------------------------------------------------------------------------------------------------------
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
-	int argc = 0;
-	char* argv[MAX_PARAMS] = { };
-	
+    int argc = 0;
+    char* argv[MAX_PARAMS] = { };
+    
     WOMA::Scmdline = lpCmdLine;
-    WOMA::Cmdshow = nShowCmd;						 
-	COMMANDLINE_TO_ARGC_ARGV();					// POPULATE: argc & argv
-	
-    int res = APPLICATION_MAIN(argc, argv);	// ENTRY POINT!
+    WOMA::Cmdshow = nShowCmd;                        
+    COMMANDLINE_TO_ARGC_ARGV();                 // POPULATE: argc & argv
+    
+    int res = APPLICATION_MAIN(argc, argv); // ENTRY POINT!
 
     for (int i = 0; i < MAX_PARAMS; i++)
         SAFE_DELETE(argv[i]);
@@ -47,11 +47,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 #if !defined WOMA_WIN32_APPLICATION
 // -------------------------------------------------------------------------------------------------------------------------------------
-// SUBSYSTEM:CONSOLE							// FOR: WOMA_CONSOLE_APPLICATION (LINUX, or WINDOWS-Console)
+// SUBSYSTEM:CONSOLE                            // FOR: WOMA_CONSOLE_APPLICATION (LINUX, or WINDOWS-Console)
 // -------------------------------------------------------------------------------------------------------------------------------------
 int main(int argc, char* argv[])
 {
-	return APPLICATION_MAIN(argc, argv);		// ENTRY-POINT: WINDOWS DEBUG or LINUX!
+    return APPLICATION_MAIN(argc, argv);        // ENTRY-POINT: WINDOWS DEBUG or LINUX!
 }
 #endif
 
@@ -60,26 +60,26 @@ android_app* app;
 struct womaengine engine = { 0 };
 
 #if defined WOMAENGINE
-void android_main(android_app* state)			// ENTRY-POINT: ANDROID
+void android_main(android_app* state)           // ENTRY-POINT: ANDROID
 {
-	app = state;
+    app = state;
 
-	_tprintf("[%d]: android_main()\n", gettid());
-	state->userData = &engine;
-	state->onAppCmd = engine_handle_cmd;
-	state->onInputEvent = engine_handle_input;
-	engine.app = state;
-	init_engine(app, &engine);
+    _tprintf("[%d]: android_main()\n", gettid());
+    state->userData = &engine;
+    state->onAppCmd = engine_handle_cmd;
+    state->onInputEvent = engine_handle_input;
+    engine.app = state;
+    init_engine(app, &engine);
 
-	//MANDATORY: Wait for JAVA window creation:
-	while (!engine.has_focus_)					//Means: window created.
-		process_events(&engine, app);
+    //MANDATORY: Wait for JAVA window creation:
+    while (!engine.has_focus_)                  //Means: window created.
+        process_events(&engine, app);
 
-	int argc = 0;
-	char* argv[0];
-	APPLICATION_MAIN(argc, argv);
+    int argc = 0;
+    char* argv[0];
+    APPLICATION_MAIN(argc, argv);
 
-	engine.has_focus_ = false;
+    engine.has_focus_ = false;
 }
 #endif
 
@@ -93,7 +93,7 @@ int APPLICATION_MAIN(int argc, char* argv[])
 // -------------------------------------------------------------------------------------------------------------------------------------
 {
     APPLICATION_STARTUP(argc, argv);                      // ENGINE SETUP: |CoInitializeEx|+|OSmain_dirs|+|Memory leaks check|+|Log|+|Mini Dumper|
-    if (Command == EXIT_SUCCESS) {
+    if (Command == EXIT_SUCCESS) {                        // If APPLICATION_STARTUP throw an exception, Command will be: EXIT_FAILURE
       do {
           {
               SYSTEM demo(&WOMA::settings);               // NEW |SystemClass()::WinSystemClass()::DxWinSystemClass() for Specific OS|+|WOMA::APP_NAME|+|NEW ApplicationClass()"|
@@ -104,7 +104,7 @@ int APPLICATION_MAIN(int argc, char* argv[])
           }                                               // DELETE SYSTEM demo: Close WINDOW
           if (Command == ENGINE_RESTART)                  // The User set new settings?
               Sleep(2000);                                // Need to be 2secs to change resources between drivers
-      } while (Command == ENGINE_RESTART);	              // Try to restart the Engine with new settings then! (if fail! goto VectoredExceptionHandler())
+      } while (Command == ENGINE_RESTART);                // Try to restart the Engine with new settings then! (if fail! goto VectoredExceptionHandler())
     }                                                     
     APPLICATION_STOP();                                   // ENGINE STOP: |CoUninitialize|+|Free Mini Dumper|+|CLOSE Log|+|DELETE Temp files(RELEASE)
     return Command;                                       // ENGINE RETURN: to OS (Can be: 0, ENGINE_RESTART or "an error" code)
