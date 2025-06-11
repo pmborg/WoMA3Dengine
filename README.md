@@ -82,6 +82,7 @@ Try to Change the driver on the fly without the need of close and open the Appli
 	- Walk_back
 	- Walk_back2
 	- Walk_back3
+   (Art/Animation Credits: Palasky)
   
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_086.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_086.png)	
 
