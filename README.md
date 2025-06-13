@@ -47,7 +47,8 @@ Try to Change the driver on the fly without the need of close and open the Appli
 
 <hr>
 
-- <b>DX86: The main character (Soon)</b><br>
+- <b>DX86: The main character (With idle animation)</b><br>
+Later: (and much more)
  Multi animation Character: 33
     - Attack(3)
     - Idle(3)
