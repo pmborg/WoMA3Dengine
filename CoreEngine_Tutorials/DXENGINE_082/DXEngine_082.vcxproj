@@ -125,7 +125,7 @@
     <ClInclude Include="core\include\WomaCube.h" />
     <ClInclude Include="core\include\womadriverclass.h" />
     <ClInclude Include="core\include\WomaSphere.h" />
-    <ClInclude Include="include\Texture.h" />
+    <ClInclude Include="core\include\Texture.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
@@ -228,7 +228,7 @@
     <ClCompile Include="core\src\renderApplication_Basics.cpp" />
     <ClCompile Include="core\src\WomaCube.cpp" />
     <ClCompile Include="core\src\WomaSphere.cpp" />
-    <ClCompile Include="src\Texture.cpp" />
+    <ClCompile Include="core\src\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="settings.xml" />
