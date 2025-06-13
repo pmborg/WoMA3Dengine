@@ -32,6 +32,7 @@ ThirdParty/PPG-master/Bin-latest
 ThirdParty/PPG-master/External/assimp/lib/
 CoreEngine_Tutorials/DXENGINE_*/Int-latest
 CoreEngine_Tutorials/Int-latest
+CoreEngine_Tutorials/Int
 log.txt
 output
 assimp.dir
@@ -40,3 +41,6 @@ ThirdParty/external/assimp-build/lib
 ThirdParty/external/assimp-build/contrib/zlib
 ThirdParty/external/assimp-build/code/Debug
 ThirdParty/external/assimp-build/code/CMakeFiles/generate.stamp
+CoreEngine_Tutorials/DXENGINE_082/src
+CoreEngine_Tutorials/DXENGINE_082/include
+*.pdb
