@@ -20,9 +20,9 @@
 
 #include "platform.h"
 #if _DEBUG
-    #pragma comment( lib, "C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\Assimp-latest-Engine.lib" )
+    #pragma comment( lib, "C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin-latest\\Debug\\Assimp-latest-Engine.lib" )
 #else
-    #pragma comment( lib, "C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin-latest\\Release\\Assimp-latest-Engine.lib" )
+    #pragma comment( lib, "C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Release\\Assimp-latest-Engine.lib" )
 #endif
 
 #if _DEBUG
