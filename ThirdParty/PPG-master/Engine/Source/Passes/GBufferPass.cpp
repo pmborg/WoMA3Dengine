@@ -55,6 +55,7 @@ GBufferPass::~GBufferPass()
 void GBufferPass::Render(Graphics& graphics, Scene& scene)
 {
     auto deviceContext = graphics.m_DeviceContext;
+    static XMMATRIX staticm_FinalTransforms[128] = {};
 
     shader->Use(deviceContext);
 
@@ -74,14 +75,20 @@ void GBufferPass::Render(Graphics& graphics, Scene& scene)
 
         MeshRenderer& meshRenderer = sceneObj->m_MeshRenderer;
         Animator* animator = meshRenderer.m_Animator;
-        if (animator != nullptr && animator->m_IsEnabled)
+        if (animator != nullptr && animator->m_IsEnabled /* && (i == 10)*/)
         {
             if (animator != currentAnimator)
             {
                 graphics.UpdateBuffer(m_BoneBuffer, animator->m_FinalTransforms);
                 currentAnimator = animator;
             }
+            animator->m_FinalTransforms[127].r->m128_f32[0] = 127;    //AQUI-ANIM
+        } 
+        else {                                                        //AQUI-ANIM
+            staticm_FinalTransforms[127].r->m128_f32[0] = 0;       
+            graphics.UpdateBuffer(m_BoneBuffer, staticm_FinalTransforms);
         }
+        
         PBRMaterial* mat = meshRenderer.m_Material;
         if (mat->m_Albedo)
             mat->m_Albedo->UseSRV(deviceContext, 0);

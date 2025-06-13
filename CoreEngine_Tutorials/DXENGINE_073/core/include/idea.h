@@ -38,7 +38,7 @@ word16 read_word16_from_file(FILE *fp);
 void write_char_to_file(char data,FILE *fp);
 void write_word16_to_file(word16 data,FILE *fp);
 void cipher_file(FILE *in,FILE *out,word16 *key);
-void decipher_file(FILE *in,FILE *out,word16 *key);
+void decipher_FromFile(FILE *in,FILE *out,word16 *key);
 void swap_files_and_clean_up(char *file);
 
 #endif

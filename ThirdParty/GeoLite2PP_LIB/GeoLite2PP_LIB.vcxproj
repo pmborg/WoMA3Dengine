@@ -302,8 +302,8 @@
       <ConformanceMode>
       </ConformanceMode>
       <DebugInformationFormat>None</DebugInformationFormat>
-      <FloatingPointModel>Precise</FloatingPointModel>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions512</EnableEnhancedInstructionSet>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
       <LanguageStandard>stdcpp14</LanguageStandard>

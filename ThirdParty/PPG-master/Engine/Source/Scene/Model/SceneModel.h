@@ -24,6 +24,8 @@
 #include "Scene/Scene.h"
 #include "Skeleton.h"
 
+#include <assimp\anim.h>
+
 class Graphics;
 class SceneObject;
 class ModelLoader;
@@ -35,7 +37,10 @@ public:
     SceneModel(std::shared_ptr<SceneObject>& sceneObject);
     ~SceneModel();
     Skeleton* m_Skeleton;
-    static SceneModel* LoadModelToScene(std::string fileName, Scene& Scene, Graphics& graphics, SceneObject::Index parentIndex = 0);
+    static SceneModel * LoadModelToScene(UINT type, std::string meshFileName, std::string animFileName, Scene& Scene, Graphics& graphics, SceneObject::Index parentIndex = 0);
+
+    std::vector<const aiAnimation*> m_Animations; // Store pointers to aiAnimation ANIM!
+
 private:
     friend class ModelLoader;
     std::vector<Mesh*> m_Meshes;
@@ -43,3 +48,16 @@ private:
     std::vector<Texture*> m_Textures;
 };
 
+#ifndef GENERATE_PACK
+#define Forest_Huntress_idle_fbx_Model_LOD0_fbx_size 3438412
+#define Skin_1_Armor_and_Weapon_Albedo_png_size 42376836
+#define Skin_1_Body_Albedo_png_size 23213119
+#define Skin_1_Hair_Albedo_png_size 9668891
+#define Skin_1_Head_Albedo_png_size 12728492
+#endif
+
+extern unsigned char* Forest_Huntress_idle_fbx_Model_LOD0_fbxBuffer;
+extern unsigned char* Skin_1_Armor_and_Weapon_Albedo_pngBuffer;
+extern unsigned char* Skin_1_Body_Albedo_pngBuffer;
+extern unsigned char* Skin_1_Hair_Albedo_pngBuffer;
+extern unsigned char* Skin_1_Head_Albedo_pngBuffer;

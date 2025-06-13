@@ -22,6 +22,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 #include "OSengine.h"
+#include "mem_leak.h"
 
 #if defined WINDOWS_PLATFORM
 #include "stateMachine.h"
@@ -34,6 +35,9 @@
 #include "idea.h"
 extern int EncodeIDEA(char* filename, int whatTOdo);
 #endif
+
+STRING REPORT_FILE;
+
 
 namespace WOMA
 {
@@ -101,7 +105,7 @@ TCHAR FileName[MAX_PATH];
 	return TRUE;
 }
 
-#ifdef RELEASE
+#if defined RELEASE  || DX_ENGINE_LEVEL >= 86
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdio.h>
@@ -183,7 +187,11 @@ bool InitPackLib(char* packfilename)				// Need to be CHAR!
 		ZIPENTRY ze; 
 		GetZipItem(hz,-1,&ze); 
 		numZipItems=ze.index;	// -1 gives overall information about the zipfile
+#if DX_ENGINE_LEVEL <= 29
 		SetUnzipBaseDir ( hz, WOMA::APPDATA );
+#else
+        SetUnzipBaseDir(hz, WOMA::APPDATA1);
+#endif
 
 		for (zipIndx=0; zipIndx<numZipItems; zipIndx++)
 		{ZIPENTRY ze; 
@@ -191,7 +199,7 @@ bool InitPackLib(char* packfilename)				// Need to be CHAR!
 
 			CHAR psz[MAX_STR_LEN] = {0};
 			wtoa(psz, ze.name, 100);
-			#ifdef ZIP_MEM
+            #if _NOT //#ifdef ZIP_MEM
 				if (wildcmp("*.obj", psz) || 
 					wildcmp("*.wav", psz) ||
 					wildcmp("*.mp3", psz) ||
@@ -207,7 +215,7 @@ bool InitPackLib(char* packfilename)				// Need to be CHAR!
 
 			packCounter++;
 
-			#ifdef _DEBUG
+            #if _NOT //#ifdef _DEBUG
 				if ((zipIndx % 10) == 0)				// Update every 10 files... (to avoid a massive update!)
                     RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW|RDW_INVALIDATE);// Invoke: Window PAINT
 			#endif
@@ -234,8 +242,6 @@ bool InitPackLib(char* packfilename)				// Need to be CHAR!
 	return true;
 }
 
-STRING REPORT_FILE;
-
 bool InitPackLibs() 
 {
 	// Read the Total Number of Files that will be Uncompressed:
@@ -252,9 +258,9 @@ bool InitPackLibs()
 
 	IF_NOT_RETURN_FALSE (InitPackLib("windows.pck"));	// Need to be CHAR!
 
-#if !defined USE_MAIN_THREAD
+    #if !defined USE_MAIN_THREAD
 	IF_NOT_RETURN_FALSE(InitPackLib("woma.pck"));		// Need to be CHAR!
-#endif
+    #endif
 
 	return true;
 }

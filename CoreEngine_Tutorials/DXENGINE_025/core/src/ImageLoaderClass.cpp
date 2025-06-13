@@ -36,7 +36,6 @@
 #if defined WINDOWS_PLATFORM && DX_ENGINE_LEVEL >= 22
 #include <DirectXMath.h> 
 using namespace DirectX;
-
     #if _DEBUG
         #pragma comment(lib, "/WoMA3Dengine/ThirdParty/external/DirectXTK/Bin/Desktop_2022_Win10/x64/Debug/DirectXTK.lib")
         #pragma comment(lib, "/WoMA3Dengine/ThirdParty/external/DirectXTex/DirectXTex/Bin/Desktop_2022_Win10/x64/Debug/DirectXTex.lib")

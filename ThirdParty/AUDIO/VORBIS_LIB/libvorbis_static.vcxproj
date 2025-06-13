@@ -403,7 +403,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\libogg\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>X64;NDEBUG;_LIB;_WINDOWS;%(PreprocessorDefinitions);ALUT_BUILD_LIBRARY;ALUT_API=extern;ALC_API=extern;AL_API=extern;AL_LIBTYPE_STATIC;LIBVORBIS_EXPORTS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>X64;NDEBUG;;%(PreprocessorDefinitions);_WINDOWS;ALUT_BUILD_LIBRARY;ALUT_API=extern;ALC_API=extern;AL_API=extern;AL_LIBTYPE_STATIC;LIBVORBIS_EXPORTS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <StringPooling>
       </StringPooling>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -416,7 +416,7 @@
       <CompileAs>CompileAsC</CompileAs>
       <DisableSpecificWarnings>4244;4100;4267;4189;4305;4127;4706;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <CallingConvention>Cdecl</CallingConvention>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions512</EnableEnhancedInstructionSet>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <FloatingPointModel>Fast</FloatingPointModel>
       <SDLCheck>true</SDLCheck>

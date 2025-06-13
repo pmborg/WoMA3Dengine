@@ -714,10 +714,10 @@
       <PreprocessorDefinitions>X64;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
       <BufferSecurityCheck>true</BufferSecurityCheck>
-      <FloatingPointModel>Precise</FloatingPointModel>
+      <FloatingPointModel>Fast</FloatingPointModel>
       <OpenMPSupport>false</OpenMPSupport>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions512</EnableEnhancedInstructionSet>
       <DebugInformationFormat>
       </DebugInformationFormat>
       <OmitFramePointers>true</OmitFramePointers>

@@ -30,9 +30,9 @@ struct Vertex
     XMFLOAT2 TexCoord;
     XMFLOAT3 Tangent;
     XMFLOAT3 Binormal;
-    //UINT    BoneIds[4] = {0}; //AQUIFLOAT
-    XMFLOAT4 BoneIds = { 0.0, 0.0, 0.0, 0.0 };//AQUIFLOAT
-    XMFLOAT4 BoneWeights = { 0.0, 0.0, 0.0, 0.0 };
+    XMUINT4  BoneIds = { 0, 0, 0, 0 }; //AQUIFLOAT
+    //XMFLOAT4 BoneIds = { 0.0, 0.0, 0.0, 0.0 };//AQUIFLOAT
+    XMFLOAT4 BoneWeights = { 0.0f, 0.0f, 0.0f, 0.0f };
 
     Vertex() = default;
     Vertex(XMFLOAT3 pos, XMFLOAT3 norm, XMFLOAT2 texC) :

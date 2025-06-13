@@ -176,10 +176,6 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
     StartTimer();											// START WINDOWS TIMER: ("Window Title" refresh & Real-Time Weather refresh)
     IF_NOT_RETURN_FALSE(APPLICATION_AFTER_WINDOW());
 
-#if defined USE_INTRO_VIDEO_DEMO // WINDOWS START-VIDEO: Start DEMO INTRO (MP4): (Give Time to Unpack/Load Resources)
-	DXsystemHandle->g_DShowPlayer = NEW DShowPlayer(m_hWnd);	//INTRO MOVIE: mpg player
-	IF_FAILED_RETURN_FALSE(DXsystemHandle->PlayIntroMovie(WOMA::LoadFile(VIDEO_INTRO)));	// VIDEO DEMO
-#endif
 #if defined USE_PROCESS_OS_KEYS
 	IF_NOT_RETURN_FALSE(InitOsInput());						// INIT-INPUT Devices, NOTE: AFTER: APPLICATION_INIT_MAIN_WINDOW()
 #endif

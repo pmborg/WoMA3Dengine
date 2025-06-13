@@ -368,6 +368,9 @@
     <ClInclude Include="core\include\video.h">
       <Filter>src-basic-level\76video</Filter>
     </ClInclude>
+    <ClInclude Include="include\Texture.h">
+      <Filter>src-basic-level\Image</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
@@ -664,6 +667,9 @@
     </ClCompile>
     <ClCompile Include="core\src\video.cpp">
       <Filter>src-basic-level\76video</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Texture.cpp">
+      <Filter>src-basic-level\Image</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

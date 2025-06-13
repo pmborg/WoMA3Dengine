@@ -1,9 +1,4 @@
-#include "Common/Lighting.hlsli"
-//#include "Common/Shading.hlsli"
-
-#define VERTEX_NORMALS 0
-#define NORMAL_MAP 1
-#define BUMP_MAP 2
+#include "Common/Sampler.hlsli"
 
 Texture2D Albedo : register(t0);
 Texture2D NormalMap : register(t1);
@@ -28,8 +23,8 @@ cbuffer PBRMaterial : register(b0)
 struct PixelShaderInput
 {
     float4 position : SV_POSITION;
-    float4 pos : POSITION0;
-    float4 wPosition : POSITION1;
+    //float4 pos : POSITION0;
+    //float4 wPosition : POSITION1;
     float3 normal : NORMAL;
     float3 tangent : TANGENT;
     float3 binormal : BINORMAL;
@@ -39,79 +34,27 @@ struct PixelShaderInput
 struct GBufferOutput
 {
     float4 diffuse : SV_TARGET0;
-    //float4 metalRoughOcclusion : SV_TARGET1;
-    //float4 normal : SV_TARGET2;
-    //float4 emissive : SV_TARGET3;
 };
+
+//float3 lightDirection = { 0.228761971, -0.915644038, 0.199814045 };
+//
+//////////////////////////////////////////////////////////////////////////////////
+//float4 PSlightFunc1(float3 Normal)
+//////////////////////////////////////////////////////////////////////////////////
+//{
+//    return saturate(dot(Normal, lightDirection)); // Calculate the amount of light on this pixel
+//}
 
 GBufferOutput main(PixelShaderInput IN)
 {
     GBufferOutput OUT;
-    OUT.diffuse = Albedo.Sample(LinearSampler, IN.texCoord);
-    //OUT.diffuse = float4(1,1,1,1);
-/*
+    //float lightIntensity = 0;
+    //
+    //lightIntensity = PSlightFunc1(IN.normal);
+    //float4 ambientColor = { 0.550000012, 0.550000012, 0.550000012, 0};
+    //OUT.diffuse = Albedo.Sample(PointSampler, IN.texCoord) * saturate(ambientColor + lightIntensity);
     
-    float3 N = normalize(IN.normal);
-    SurfaceInfo surf;
-    surf.posW = IN.wPosition;
-    surf.N = normalize(IN.normal);
-    surf.T = normalize(IN.tangent);
-    surf.B = normalize(IN.binormal);
-    surf.V = normalize(eyePosition.xyz - surf.posW.xyz);
-    surf.NdotV = dot(surf.N, surf.V);
-
-    if (gNormalState == NORMAL_MAP)
-    {
-        surf.N = CalcNormalFromNormMap(NormalMap, IN.texCoord, surf);
-    }
-    else if (gNormalState == BUMP_MAP)
-    {
-        surf.N = CalcNormalFromBumpMap(NormalMap, IN.texCoord, surf);
-    }
-
-    // PACK GBUFFER
-    float4 albedo = gAlbedo;
-    if (gUseAlbedoMap)
-    {
-
-        albedo = Albedo.Sample(LinearSampler, IN.texCoord);
-        if (gConvertToLinear)
-            albedo = SRGBtoLINEAR(albedo);
-    }
-
-    float occlusion = 1;
-
-    float metallic = gMetallic;
-    float roughness = gRoughness;
-    if (gUseOccMetalRough)
-    {
-        float3 occRoughMetal = OcclusionRoughnessMetal.Sample(LinearSampler, IN.texCoord).rgb;
-        occlusion = occRoughMetal.r;
-        roughness = occRoughMetal.g;
-        metallic = occRoughMetal.b;
-    }
-
-    if (gUseAoMap)
-    {
-        occlusion = AoMap.Sample(LinearSampler, IN.texCoord).r;
-    }
-
-    float4 emissive = float4(0.0, 0.0, 0.0, 0.0);
-    if (gUseEmmisive)
-    {
-        emissive = Emissive.Sample(LinearSampler, IN.texCoord);
-        if (gConvertToLinear)
-            emissive = SRGBtoLINEAR(emissive);
-
-    }
-
-
-    OUT.diffuse = pow(float4(albedo.rgb, 0), 2.2);
-    //OUT.metalRoughOcclusion.r = metallic;
-    //OUT.metalRoughOcclusion.g = roughness;
-    //OUT.metalRoughOcclusion.b = occlusion;
-    //OUT.normal = float4(surf.N * 0.5 + 0.5, 1);
-    //OUT.emissive = emissive;
-*/
+    OUT.diffuse = Albedo.Sample(PointSampler, IN.texCoord);
+    //OUT.diffuse = float4(1,1,1,1);
     return OUT;
 }

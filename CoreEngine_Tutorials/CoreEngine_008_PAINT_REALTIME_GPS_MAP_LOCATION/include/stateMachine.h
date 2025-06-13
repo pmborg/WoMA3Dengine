@@ -57,13 +57,6 @@
 
 // GAME STATE: [NO RENDEING]
 //-----------------------------------------------------------------------------
-#ifndef ENGINE_RESTART
-	#define ENGINE_RESTART       100				// the game is in the:    "Re-start" the "SystemClass"
-#endif
-#ifndef GAME_STOP
-	#define GAME_STOP            ENGINE_RESTART+1	// the game is in the:    "Stop Threads and Free Resources Mode": This the correct mode to: Stop the "Application"
-#endif
-#ifndef GAME_EXIT
-	#define GAME_EXIT            ENGINE_RESTART+2	// the game is in the:    "Exit Mode (Only SystemClass should use this), After all Threads Have Completed
-#endif
-
+#define ENGINE_RESTART       100				// the game is in the:    "Re-start" the "SystemClass"
+#define GAME_STOP            ENGINE_RESTART+1	// the game is in the:    "Stop Threads and Free Resources Mode": This the correct mode to: Stop the "Application"
+#define GAME_EXIT            ENGINE_RESTART+2	// the game is in the:    "Exit Mode (Only SystemClass should use this), After all Threads Have Completed

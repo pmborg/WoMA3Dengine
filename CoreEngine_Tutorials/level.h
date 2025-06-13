@@ -136,9 +136,9 @@
     //#define LEVEL 77  // USE INSTANCES FOR TREES                                         
     //#define LEVEL 78  // COLISION DETECTION
     
-    //#define LEVEL 79  // Advanced DAE         (not published)
+    //#define LEVEL 79  // Advanced DAE/FBX     (not published)
     //#define LEVEL 80  // GL-ASSIMP EXT-PRJ    (not published)
-    //#define LEVEL 81  // ASSIMP               (not published)
+    //#define LEVEL 81  // DX-ASSIMP            (not published)
     
     //#define LEVEL 82  // ASSIMP-ENGINE                                                                                                   
     //#define LEVEL 83  // Updated billboard shader

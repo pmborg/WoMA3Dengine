@@ -447,10 +447,12 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 		WOMA_LOGManager_DebugMSGAUTO(TEXT("Could not initialize GTK2!")); // Note: Dont use DEBUG_MSG yet...
 #endif
 
-#if DX_ENGINE_LEVEL >= 22 && defined WINDOWS_PLATFORM
-    //DIRECTX_TEX_VERSION:
+#if DX_ENGINE_LEVEL >= 19 && defined WINDOWS_PLATFORM
     WOMA_LOGManager_DebugMSGAUTO(TEXT("USING LIBs:\n"));
-    WOMA_LOGManager_DebugMSGAUTO(TEXT("DIRECTXTEX_VERSION: %d\n"), DIRECTX_TEX_VERSION); //#include <DirectXTex.h>
+    WOMA_LOGManager_DebugMSGAUTO(TEXT("D3D11_SDK_VERSION: %d\n"), D3D11_SDK_VERSION);   //<d3d11.h>
+#endif
+#if DX_ENGINE_LEVEL >= 22 && defined WINDOWS_PLATFORM
+    WOMA_LOGManager_DebugMSGAUTO(TEXT("DIRECTXTEX_VERSION: %d\n"), DIRECTX_TEX_VERSION);//<DirectXTex.h>
 #endif
 
     WOMA_LOGManager_DebugMSGAUTO("<%s> STARTUP ENDED\n", PROJECT_NAME);

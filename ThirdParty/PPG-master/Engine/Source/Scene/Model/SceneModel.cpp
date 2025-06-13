@@ -31,6 +31,7 @@
 #include "Skeleton.h"
 
 #include "platform.h"
+#include "OSengine.h"
 #include "woma_exception.h"
 #include <assimp/version.h>
 #include <assimp/revision.h>
@@ -50,10 +51,11 @@ void showNodeName(aiNode* node, UINT i)
 #endif
 
 double TicksPerSecond;
-SceneModel* SceneModel::LoadModelToScene(std::string fileName, Scene& scene, Graphics& graphics, SceneObject::Index parentIndex /*= 0*/)
+
+SceneModel* SceneModel::LoadModelToScene(UINT type, std::string meshFileName, std::string animFileName, Scene& scene, Graphics& graphics, SceneObject::Index parentIndex /*= 0*/)
 {
 #ifdef DEBUG_MESH
-    LOG_FILE << "WOMA (" << LEVEL << ") LOAD FILE : " << (char*)fileName.c_str() << endl;
+    LOG_FILE << "WOMA (" << LEVEL << ") LOAD FILE : " << (char*)meshFileName.c_str() << endl;
     LOG_FILE << "LOADING... C:/WoMA3Dengine/ThirdParty/external/assimp" << endl;
 
     UINT versionMajor = aiGetVersionMajor();
@@ -65,25 +67,63 @@ SceneModel* SceneModel::LoadModelToScene(std::string fileName, Scene& scene, Gra
     LOG_FILE << "revision : " << revision << endl;
 #endif
 
+
     unsigned int DX_ASSIMP_LOAD_FLAGS = 0;
-    const TCHAR* extension = _tcsrchr(fileName.c_str(), '.');
-    if (_tcsicmp(extension, TEXT(".md5mesh")) == 0 || _tcsicmp(extension, TEXT(".MD5MESH")) == 0)
+    const TCHAR* extension = _tcsrchr(meshFileName.c_str(), '.');
+    if (type == 1 || _tcsicmp(extension, TEXT(".dae")) == 0 || _tcsicmp(extension, TEXT(".DAE")) == 0)
     {
-        //MD5MESH:
-        DX_ASSIMP_LOAD_FLAGS = aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace | aiProcess_ConvertToLeftHanded;
+        //MD5MESH converted from DAE:
+        if (type == 1) {
+            DX_ASSIMP_LOAD_FLAGS = aiProcess_LimitBoneWeights | aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_MakeLeftHanded| aiProcess_FlipUVs;
+        }
+        else//DAE:
+            DX_ASSIMP_LOAD_FLAGS = aiProcess_LimitBoneWeights | aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_MakeLeftHanded | aiProcess_FlipWindingOrder | aiProcessPreset_TargetRealtime_Fast;
     }
     else
     {
-        //DAE:
-        DX_ASSIMP_LOAD_FLAGS = aiProcess_LimitBoneWeights | aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_MakeLeftHanded | aiProcess_FlipWindingOrder;
+        //MD5MESH / OBJ:
+        DX_ASSIMP_LOAD_FLAGS = aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace | aiProcess_ConvertToLeftHanded;
     }
 
-    Assimp::Importer importer;
-    const aiScene* pAssimpScene = importer.ReadFile(fileName, DX_ASSIMP_LOAD_FLAGS);
-    if (pAssimpScene == NULL)
-        throw woma_exception("ModelLoader::Model file not found", __FILE__, __FUNCTION__, __LINE__);
+    aiScene* pAssimpScene=NULL;
 
-    if (!pAssimpScene /* || pAssimpScene->mFlags == AI_SCENE_FLAGS_INCOMPLETE*/ || !pAssimpScene->mRootNode || !pAssimpScene->HasMeshes())
+    // IMPORT TO ASSIMP:
+    Assimp::Importer importer;
+    if (type == 0) 
+    {
+        const aiScene* pScene = importer.ReadFile(meshFileName, DX_ASSIMP_LOAD_FLAGS);
+        if (pScene == NULL)
+            throw woma_exception("ModelLoader::Model file not found", __FILE__, __FUNCTION__, __LINE__);
+        pAssimpScene = (aiScene*)pScene;
+    } 
+    else
+    {
+        while (!Forest_Huntress_idle_fbx_Model_LOD0_fbxBuffer)
+        {
+            Sleep(100);
+            if (WOMA::game_state == GAME_STOP)
+                return NULL;
+        }
+        const void* pBuffer=NULL;
+        size_t bufferSize=0;
+    
+#ifndef GENERATE_PACK
+        unsigned long filebufferSize=0;
+        switch (type) {
+        case 1:
+            pBuffer = Forest_Huntress_idle_fbx_Model_LOD0_fbxBuffer;
+            filebufferSize = Forest_Huntress_idle_fbx_Model_LOD0_fbx_size;
+            break;
+        }
+
+        const aiScene* pScene = importer.ReadFileFromMemory(pBuffer, filebufferSize, DX_ASSIMP_LOAD_FLAGS, "fbx"); // format hint, e.g. "obj", "fbx", "gltf"
+        if (pScene == NULL)
+            throw woma_exception("ModelLoader::Model file not found", __FILE__, __FUNCTION__, __LINE__);
+        pAssimpScene = (aiScene*)pScene;
+#endif
+    }
+
+    if (!pAssimpScene  || pAssimpScene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !pAssimpScene->mRootNode || !pAssimpScene->HasMeshes())
     {
 #ifdef DEBUG_MESH
         LOG_FILE << "error in assimp: " << importer.GetErrorString() << std::endl;
@@ -91,43 +131,62 @@ SceneModel* SceneModel::LoadModelToScene(std::string fileName, Scene& scene, Gra
         throw woma_exception("ModelLoader::error in assimp", __FILE__, __FUNCTION__, __LINE__);
     }
 
-    if (pAssimpScene->mAnimations)
+    //Create ModelLoader:
+    ModelLoader ml = ModelLoader(pAssimpScene, scene, graphics, meshFileName, parentIndex);
+    // IMPORT FROM ASSIMP:
+    SceneModel* model = ml.LoadModel(type);
+
+    aiScene* assimpScene;
+    Assimp::Importer animImporter;
+    const aiScene* pFbxAnimScene = animImporter.ReadFile(animFileName, DX_ASSIMP_LOAD_FLAGS);
+    if (pFbxAnimScene && pFbxAnimScene->HasAnimations()) 
     {
-        if (pAssimpScene->mAnimations[0]->mTicksPerSecond != 0.0)
+        for (unsigned int i = 0; i < pFbxAnimScene->mNumAnimations; ++i) {
+            const aiAnimation* anim = pFbxAnimScene->mAnimations[i];
+            model->m_Animations.push_back(anim);
+        }
+        assimpScene = (aiScene*)pFbxAnimScene;
+    }
+    else
+        assimpScene = (aiScene*) pAssimpScene;
+
+    if (assimpScene->mAnimations)
+    {
+        if (assimpScene->mAnimations[0]->mTicksPerSecond != 0.0)
         {
-            TicksPerSecond = pAssimpScene->mAnimations[0]->mTicksPerSecond;
+            TicksPerSecond = assimpScene->mAnimations[0]->mTicksPerSecond;
         }
         else {
             TicksPerSecond = 30;
         }
 #ifdef DEBUG_MESH
-        LOG_FILE << "scene->HasAnimations: " << pAssimpScene->HasAnimations() << endl;
-        LOG_FILE << "scene->mNumMeshes: " << pAssimpScene->mNumMeshes << endl;
-        LOG_FILE << "scene->mAnimations[0]->mNumChannels: " << pAssimpScene->mAnimations[0]->mNumChannels << endl;
-        LOG_FILE << "scene->mAnimations[0]->mDuration: " << pAssimpScene->mAnimations[0]->mDuration << endl;
-        LOG_FILE << "scene->mAnimations[0]->mTicksPerSecond: " << pAssimpScene->mAnimations[0]->mTicksPerSecond << endl;
+        LOG_FILE << "scene->HasAnimations: " << assimpScene->HasAnimations() << endl;
+        LOG_FILE << "scene->mNumMeshes: " << assimpScene->mNumMeshes << endl;
+        LOG_FILE << "scene->mAnimations[0]->mNumChannels: " << assimpScene->mAnimations[0]->mNumChannels << endl;
+        LOG_FILE << "scene->mAnimations[0]->mDuration: " << assimpScene->mAnimations[0]->mDuration << endl;
+        LOG_FILE << "scene->mAnimations[0]->mTicksPerSecond: " << assimpScene->mAnimations[0]->mTicksPerSecond << endl;
 #endif
     }
 
 #ifdef DEBUG_MESH
     LOG_FILE << "[1] ---		Node Names: " << endl;
-    showNodeName(pAssimpScene->mRootNode);
+    showNodeName(assimpScene->mRootNode);
     LOG_FILE << endl;
 #endif
 
 #ifdef DEBUG_MESH
-    if (pAssimpScene->mAnimations)
+    if (assimpScene->mAnimations)
     {
         LOG_FILE << "[2] ---		Animation Channels: " << endl;
-        for (UINT i = 0; i < pAssimpScene->mAnimations[0]->mNumChannels; i++) {
-            LOG_FILE << i << ":" << pAssimpScene->mAnimations[0]->mChannels[i]->mNodeName.C_Str() << endl;
-            LOG_FILE << "mNumRotationKeys: " << pAssimpScene->mAnimations[0]->mChannels[i]->mNumRotationKeys << endl;
-            for (size_t k = 0; k < pAssimpScene->mAnimations[0]->mChannels[i]->mNumRotationKeys; k++) {
+        for (UINT i = 0; i < assimpScene->mAnimations[0]->mNumChannels; i++) {
+            LOG_FILE << i << ":" << assimpScene->mAnimations[0]->mChannels[i]->mNodeName.C_Str() << endl;
+            LOG_FILE << "mNumRotationKeys: " << assimpScene->mAnimations[0]->mChannels[i]->mNumRotationKeys << endl;
+            for (size_t k = 0; k < assimpScene->mAnimations[0]->mChannels[i]->mNumRotationKeys; k++) {
                 LOG_FILE << "\tChannel[" << i << "]: ";
                 LOG_FILE << "RotationKeys[" << k << "]: ";
-                LOG_FILE << pAssimpScene->mAnimations[0]->mChannels[i]->mRotationKeys[k].mValue.x << " ";
-                LOG_FILE << pAssimpScene->mAnimations[0]->mChannels[i]->mRotationKeys[k].mValue.y << " ";
-                LOG_FILE << pAssimpScene->mAnimations[0]->mChannels[i]->mRotationKeys[k].mValue.z << " ";
+                LOG_FILE << assimpScene->mAnimations[0]->mChannels[i]->mRotationKeys[k].mValue.x << " ";
+                LOG_FILE << assimpScene->mAnimations[0]->mChannels[i]->mRotationKeys[k].mValue.y << " ";
+                LOG_FILE << assimpScene->mAnimations[0]->mChannels[i]->mRotationKeys[k].mValue.z << " ";
                 LOG_FILE << endl;
             }
         }
@@ -138,8 +197,7 @@ SceneModel* SceneModel::LoadModelToScene(std::string fileName, Scene& scene, Gra
     // Process(get data of): Vertex, Indices and Textures
     LOG_FILE << "[3] ---		Bone Names : " << endl;
 
-    ModelLoader ml = ModelLoader(pAssimpScene, scene, graphics, fileName, parentIndex);
-	return ml.LoadModel();
+	return model;
 }
 
 SceneModel::SceneModel(std::shared_ptr<SceneObject>& sceneObject) :

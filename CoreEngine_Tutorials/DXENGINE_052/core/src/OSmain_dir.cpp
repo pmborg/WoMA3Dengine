@@ -164,6 +164,10 @@ namespace WOMA
 	#if defined WINDOWS_PLATFORM
 		if (!GetCurrentDirectory(MAX_STR_LEN, cCurrentPath))
 			return (TCHAR*)TEXT("");
+
+        #if defined USE_SYSTEM_CHECK & !defined NewWomaEngine
+        strcpy_s(SystemHandle->systemDefinitions.cCurrentPath, FILENAME_MAX, cCurrentPath);
+        #endif
 	#else // Linux / Android
 		char* CurrentPath;
 

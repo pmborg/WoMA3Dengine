@@ -531,12 +531,25 @@
     #endif
     #if DX_ENGINE_LEVEL >= 86
         #undef USE_STATUSBAR
-        #define USE_MODEL1
-        #define USE_MODEL2
-        #define USE_MODEL3
+        //#define USE_MODEL1
+        //#define USE_MODEL2
+        //#define USE_MODEL3
         #define USE_MODEL4
-        #undef DEBUG_MESH
+
+        //#define DEBUG_MESH
+        #define ALLOW_MUTIPACK
+        #define USE_INTRO_VIDEO_DEMO
+      #ifndef USE_MODEL2
+        #undef SCENE_SKIN
+      #endif
     #endif
+	
+	
+	
+	
+	
+	
+	
     #ifndef USE_MODEL2
         #undef SCENE_SKIN
     #endif

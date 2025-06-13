@@ -94,7 +94,7 @@ public:
 #endif
 
 #if defined USE_INTRO_VIDEO_DEMO
-	DShowPlayer* g_DShowPlayer;
+	DShowPlayer* g_DShowPlayer=NULL;
 #endif
 #if defined USE_INTRO_VIDEO_DEMO	//35: VIDEO DEMO
 	HRESULT PlayIntroMovie(TCHAR* movie);

@@ -160,7 +160,6 @@ bool WinSystemClass::APPLICATION_AFTER_WINDOW()
     //FILE1: windows.pack (zip)
     PackDir(TEXT("\\WoMA3Dengine\\windows_engine"), TEXT("windows.pack"));
 #if defined USE_IDEA_PACK
-    //Test1:
     IF_NOT_THROW_EXCEPTION(EncodeIDEA("\\WoMA3Dengine\\windows_engine\\windows.pack", ENCODE));	// windows.pack (zip) --> windows.pck (encoded)
 #endif
     WomaMessageBox(TEXT("This diretory: \\WoMA3Dengine\\windows_engine\nwas packed(zip) into: \\WoMA3Dengine\\windows.pack\nand then Encoded into: \\WoMA3Dengine\\windows.pck\nPress OK, to close app."), TEXT("Tutorial: 006"));
@@ -169,8 +168,7 @@ bool WinSystemClass::APPLICATION_AFTER_WINDOW()
     //FILE2: woma.pack (zip)
     PackDir(TEXT("\\WoMA3Dengine\\woma_engine"), TEXT("woma.pack"));
 #if defined USE_IDEA_PACK
-    //Test1:
-    IF_NOT_THROW_EXCEPTION(EncodeIDEA("\\WoMA3Dengine\\woma_engine\\woma.pack", ENCODE));	// windows.pack (zip) --> windows.pck (encoded)
+    IF_NOT_THROW_EXCEPTION(EncodeIDEA("\\WoMA3Dengine\\woma_engine\\woma.pack", ENCODE));	// woma.pack (zip) --> woma.pck (encoded)
 #endif
     WomaMessageBox(TEXT("This diretory: \\WoMA3Dengine\\woma_engine\nwas packed(zip) into: \\WoMA3Dengine\\woma.pack\nand then Encoded into: \\WoMA3Dengine\\woma.pck\nPress OK, to close app."), TEXT("Tutorial: 006"));
 
@@ -195,10 +193,6 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
     StartTimer();											// START WINDOWS TIMER: ("Window Title" refresh & Real-Time Weather refresh)
     IF_NOT_RETURN_FALSE(APPLICATION_AFTER_WINDOW());
 
-#if defined USE_INTRO_VIDEO_DEMO // WINDOWS START-VIDEO: Start DEMO INTRO (MP4): (Give Time to Unpack/Load Resources)
-	DXsystemHandle->g_DShowPlayer = NEW DShowPlayer(m_hWnd);	//INTRO MOVIE: mpg player
-	IF_FAILED_RETURN_FALSE(DXsystemHandle->PlayIntroMovie(WOMA::LoadFile(VIDEO_INTRO)));	// VIDEO DEMO
-#endif
 #if defined USE_PROCESS_OS_KEYS
 	IF_NOT_RETURN_FALSE(InitOsInput());						// INIT-INPUT Devices, NOTE: AFTER: APPLICATION_INIT_MAIN_WINDOW()
 #endif

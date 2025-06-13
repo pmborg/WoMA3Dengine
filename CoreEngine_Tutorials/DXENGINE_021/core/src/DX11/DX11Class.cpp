@@ -559,7 +559,7 @@ HRESULT result = S_OK;
 		swapChainDesc.Flags = 0;
 #endif
 
-		DXwindowDataContainer DXwindow;
+        DXwindowDataContainer DXwindow = {};
 
 		// First, retrieve the underlying DXGI Device from the D3D Device.
         IDXGIDevice1* dxgiDevice;
@@ -591,7 +591,7 @@ HRESULT result = S_OK;
 		DXGI_SWAP_CHAIN_FULLSCREEN_DESC fsSwapChainDesc = {};
 		fsSwapChainDesc.Windowed = TRUE;
 
-		if (WOMA::game_state == GAME_LOADING || WOMA::game_state == GAME_SETUP)
+		if (WOMA::game_state == GAME_LOADING || WOMA::game_state == GAME_SETUP || DX11windowsArray.size() == 0)
 			DX11windowsArray.push_back(DXwindow);
 
 		// Create a SwapChain from a Win32 window.

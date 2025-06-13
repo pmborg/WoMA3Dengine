@@ -65,12 +65,12 @@ void WinSystemClass::StartTimer()
 
 #include "DX11Class.h"
 
-#if CORE_ENGINE_LEVEL >= 2 && defined USE_STATUSBAR
-#include "dxWinSystemClass.h"
-
 #if defined USE_INTRO_VIDEO_DEMO
 extern void CALLBACK OnGraphEvent(HWND hwnd, long evCode, LONG_PTR param1, LONG_PTR param2);
 #endif
+
+#if CORE_ENGINE_LEVEL >= 2 && defined USE_STATUSBAR
+#include "dxWinSystemClass.h"
 
 #pragma comment( lib, "comctl32.lib" )
 

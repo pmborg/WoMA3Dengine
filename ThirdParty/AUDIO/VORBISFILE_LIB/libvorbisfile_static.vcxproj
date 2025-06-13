@@ -405,7 +405,7 @@
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CallingConvention>Cdecl</CallingConvention>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions512</EnableEnhancedInstructionSet>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <FloatingPointModel>Fast</FloatingPointModel>
       <SDLCheck>true</SDLCheck>

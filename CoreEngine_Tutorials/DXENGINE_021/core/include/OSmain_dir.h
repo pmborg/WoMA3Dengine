@@ -69,9 +69,7 @@ namespace WOMA
 
 	extern void setup_OSmain_dirs();
 
-  #if CORE_ENGINE_LEVEL >= 4 && defined WINDOWS_PLATFORM
-    #ifdef RELEASE
-  		extern BOOL DeleteDirectory(const TCHAR* sPath);
-    #endif
+  #if CORE_ENGINE_LEVEL >= 4 && defined WINDOWS_PLATFORM && defined RELEASE || DX_ENGINE_LEVEL >= 86
+  	extern BOOL DeleteDirectory(const TCHAR* sPath);
   #endif
 }

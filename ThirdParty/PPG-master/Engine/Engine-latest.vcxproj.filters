@@ -205,9 +205,6 @@
     <ClCompile Include="Source\stdafx.cpp">
       <Filter>PPG-master\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Resources\Texture.cpp">
-      <Filter>PPG-master\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Scene\Transform.cpp">
       <Filter>PPG-master\Source Files</Filter>
     </ClCompile>

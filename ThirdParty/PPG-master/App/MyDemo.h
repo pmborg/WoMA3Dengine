@@ -22,13 +22,13 @@
 #if _DEBUG
     #pragma comment( lib, "C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin-latest\\Debug\\Assimp-latest-Engine.lib" )
 #else
-    #pragma comment( lib, "C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin-latest\\Release\\Assimp-latest-Engine.lib" )
+    #pragma comment( lib, "C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Release\\Assimp-latest-Engine.lib" )
 #endif
 
 #if _DEBUG
     #pragma comment(lib, "C:\\WoMA3Dengine\\ThirdParty\\external\\assimp-build\\lib\\Debug\\assimp-vc143-mtd.lib")
 #else
-    #pragma comment(lib, "C:\\WoMA3Dengine\\ThirdParty\\external\\assimp-build\\lib\\Release\\assimp-vc143-mtd.lib")
+    #pragma comment(lib, "C:\\WoMA3Dengine\\ThirdParty\\external\\assimp-build\\lib\\Release\\assimp-vc143-mt.lib")
 #endif
 
 #include "../Engine/Source/PPG.h"
@@ -37,12 +37,18 @@
 class MyDemo : public Demo
 {
 public:
-    std::unique_ptr<SceneModel> assimpSceneModel;
-    std::unique_ptr<SceneModel> assimpSceneModel2;
     Scene scene;
+    SceneModel* assimpSceneModel=NULL;
+
 #if DX_ENGINE_LEVEL >= 84 && defined (SCENE_SKIN)
     Scene scene2;
+    SceneModel* assimpSceneModel2 = NULL;
 #endif
+
+    Scene scene3;
+    SceneModel* assimpSceneModel3 = NULL;
+    Scene scene4;
+    SceneModel* assimpSceneModel4 = NULL;
 
 private:
 
@@ -87,9 +93,6 @@ public:
         metalRough = CreateRenderTexture(graphics, clientWidth, clientHeight, "MetalRough", DXGI_FORMAT_R16G16B16A16_FLOAT);
         emissive = CreateRenderTexture(graphics, clientWidth, clientHeight, "Emissive", DXGI_FORMAT_R16G16B16A16_FLOAT);
 
-        /////////////////////////brickTexture = LoadTextureFromPath(graphics, L"Data\\Brick_Wall_014_COLOR.jpg");
-        /////////////////////////brickNormalMap = LoadTextureFromPath(graphics, L"Data\\Brick_Wall_014_NORM.jpg");
-
         linearSampler = std::make_unique<Sampler>(graphics, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
         pointSampler = std::make_unique<Sampler>(graphics, D3D11_FILTER_MIN_MAG_MIP_POINT, D3D11_TEXTURE_ADDRESS_CLAMP);
 
@@ -133,6 +136,8 @@ public:
 #if DX_ENGINE_LEVEL >= 84 && defined (SCENE_SKIN)
         scene2.Start(graphics);
 #endif
+        scene3.Start(graphics);
+        scene4.Start(graphics);
         auto deviceContext = graphics.m_DeviceContext;
         linearSampler->Use(deviceContext, 0);
         pointSampler->Use(deviceContext, 1);
@@ -141,39 +146,49 @@ public:
     void Update(Graphics& graphics, float deltaTime) override
     {
 
+#if DX_ENGINE_LEVEL >= 79 && defined USE_MODEL1
         animJob.UpdateTimeElapsed(scene, deltaTime);
+#endif
 #if DX_ENGINE_LEVEL >= 84 && defined (SCENE_SKIN)
         animJob.UpdateTimeElapsed(scene2, deltaTime);
+#endif
+#if DX_ENGINE_LEVEL >= 86 && defined (SCENE_SKIN)
+        animJob.UpdateTimeElapsed(scene3, deltaTime);
+#endif
+#if DX_ENGINE_LEVEL >= 86 && defined USE_MODEL4
+        animJob.UpdateTimeElapsed(scene4, deltaTime);
 #endif
     }
 
 	void Render(Graphics& graphics) 
 	{
+        graphics.m_DeviceContext->RSSetState(graphics.m_RasterizerState);
+        // Model 1 ------------------------------------------------------------------------------------------
+#if DX_ENGINE_LEVEL >= 79 && defined USE_MODEL1
         {
             XMMATRIX world = XMMatrixIdentity();
             //Scale:
             //_11+		BoneIds	{x=0.00000000 y=0.00000000 z=0.00000000 ...}	DirectX::XMFLOAT4
             //_22
             //_33
-#if defined USE_FBX_MODEL1
-            world.r[0].m128_f32[0] = world.r[1].m128_f32[1] = world.r[2].m128_f32[2] = 0.01f;
-#else
+
             world.r[0].m128_f32[0] = world.r[1].m128_f32[1] = world.r[2].m128_f32[2] = 0.02f;
             XMMATRIX rotX = XMMatrixRotationX(-PI / 2);
             world *= rotX;
             XMMATRIX rotZ = XMMatrixRotationZ(PI/2);
             world *= rotZ;
-#endif
             //Translate:
             const float X=39, Z=20;
             world.r[3].m128_f32[0] = X; //_41: X
             world.r[3].m128_f32[2] = Z; //_43: Z
-
             world.r[3].m128_f32[1] = mainTerrain->getTerrainHeight(TERRAIN_ID, world.r[3].m128_f32[0], world.r[3].m128_f32[2]);
             scene.UpdateModel(graphics, world);
         }
         gBufferPass->Render(graphics, scene);
+#endif
 
+        // Model 2 ------------------------------------------------------------------------------------------
+#if DX_ENGINE_LEVEL >= 84 && defined USE_MODEL2
 #if defined SCENE_SKIN
         {
             XMMATRIX world = XMMatrixIdentity();
@@ -196,6 +211,54 @@ public:
         }
         gBufferPass->Render(graphics, scene2);
 #endif
+#endif
+
+#if DX_ENGINE_LEVEL >= 86 && defined USE_MODEL3
+        // Model 3 ------------------------------------------------------------------------------------------
+        {
+            XMMATRIX world = XMMatrixIdentity();
+            //Scale:
+            //_11+		BoneIds	{x=0.00000000 y=0.00000000 z=0.00000000 ...}	DirectX::XMFLOAT4
+            //_22
+            //_33
+
+            world.r[0].m128_f32[0] = world.r[1].m128_f32[1] = world.r[2].m128_f32[2] = 0.0075f;
+
+            //Translate:
+            const float X = 36.5f, Z = 20;
+            world.r[3].m128_f32[0] = X; //_41: X
+            world.r[3].m128_f32[2] = Z; //_43: Z
+
+            world.r[3].m128_f32[1] = mainTerrain->getTerrainHeight(TERRAIN_ID, world.r[3].m128_f32[0], world.r[3].m128_f32[2]);
+
+            scene3.UpdateModel(graphics, world);
+        }
+        gBufferPass->Render(graphics, scene3);
+#endif
+#if DX_ENGINE_LEVEL >= 86 && defined USE_MODEL4
+        // Model 4 ------------------------------------------------------------------------------------------
+        {
+            XMMATRIX world = XMMatrixIdentity();
+            //Scale:
+            //_11+		BoneIds	{x=0.00000000 y=0.00000000 z=0.00000000 ...}	DirectX::XMFLOAT4
+            //_22
+            //_33
+
+            //world.r[0].m128_f32[0] = world.r[1].m128_f32[1] = world.r[2].m128_f32[2] = 1;
+            world.r[0].m128_f32[0] = world.r[1].m128_f32[1] = world.r[2].m128_f32[2] = 0.0075f;
+
+            //Translate:
+            const float X = 35, Z = 20;
+            world.r[3].m128_f32[0] = X; //_41: X
+            world.r[3].m128_f32[2] = Z; //_43: Z
+
+            world.r[3].m128_f32[1] = mainTerrain->getTerrainHeight(TERRAIN_ID, world.r[3].m128_f32[0], world.r[3].m128_f32[2]);
+
+            scene4.UpdateModel(graphics, world);
+        }
+        gBufferPass->Render(graphics, scene4);
+#endif
+
 
 	}
 

@@ -486,14 +486,13 @@
 #if DX_ENGINE_LEVEL == 75
     #define DEMO_TITLE TEXT("75: UTIL: PROGRESS BAR FOR TERRAIN LOADING")
     #define WORLD_XML TEXT("world_75.xml")
-    #define VIDEO_INTRO TEXT("engine/data/76video/Logo.mp4")                                                     
 #endif                                                                    
 #if DX_ENGINE_LEVEL == 76
     #define DEMO_TITLE TEXT("76: UTIL: INTRO VIDEO DEMO")
     #define WORLD_XML TEXT("world_76.xml")
 #endif
 #if DX_ENGINE_LEVEL >= 76
-    #define VIDEO_INTRO TEXT("engine/data/75video/Logo.mp4")
+    #define VIDEO_INTRO TEXT("engine/data/76video/Logo.mp4")
 #endif
 #if DX_ENGINE_LEVEL == 77
     #define DEMO_TITLE TEXT("77: Use instances for TREEs")
@@ -537,12 +536,7 @@
     #define WORLD_XML TEXT("world_85.xml")
 #endif                   
 #if DX_ENGINE_LEVEL == 86
-    #define DEMO_TITLE TEXT("86: ")
+    #define DEMO_TITLE TEXT("86: The main character.")
     #define WORLD_XML TEXT("world_86.xml")
 #endif
-#if DX_ENGINE_LEVEL >= 86
-    #define FOREST_HUNTRESS TEXT("engine\\data\\scene86ForestHuntress\\Forest_Huntress.obj")
-    //#define FOREST_HUNTRESS_ANIM TEXT("engine\\data\\scene86ForestHuntress\\Forest_Huntress@Walkout.md5mesh")
-    #define FOREST_HUNTRESS_ANIM TEXT("engine\\data\\scene86ForestHuntress\\merged_output.fbx")
-    //#define FOREST_HUNTRESS_ANIM TEXT("engine\\data\\scene86ForestHuntress\\merged_outputout.dae")
-#endif                       
+					 

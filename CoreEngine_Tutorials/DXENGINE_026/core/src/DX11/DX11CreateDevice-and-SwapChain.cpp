@@ -202,7 +202,6 @@ namespace DirectX {
 				DeviceFlags,
 				PtrfeatureLevels, num_levels/*ARRAYSIZE(featureLevels)*/,
 				D3D11_SDK_VERSION,
-				//m_device.ReleaseAndGetAddressOf(),
                 &m_device11,
 				&featureLevel_,				// OUTPUT: The address of the feature level that was selected
 				&m_deviceContext);			// OUTPUT: The address for the rendering context

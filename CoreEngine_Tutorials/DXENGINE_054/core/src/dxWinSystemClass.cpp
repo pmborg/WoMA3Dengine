@@ -139,7 +139,6 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
         WOMA::woma_timer = 0;
 
 	//MAIN LOOP: (single thread version for DEBUG)
-	WOMA::main_loop_state = 0;
 	do
 	{
         BOOL gResult = TRUE;
@@ -462,7 +461,6 @@ void CALLBACK OnGraphEvent(HWND hwnd, long evCode, LONG_PTR param1, LONG_PTR par
 		break;
 	}
 }
-
 
 HRESULT dxWinSystemClass::PlayIntroMovie(TCHAR* movie)
 //----------------------------------------------------------------------------

@@ -101,7 +101,7 @@ void Scene::UseCamera(Graphics& graphics, Camera& camera)
     deviceContext->VSSetConstantBuffers(2, 1, &m_ProjBuffer);
 }
 
-std::shared_ptr<SceneObject> Scene::CreateSceneObject(const std::string& name, SceneObject::Index parentIndex /*= 0*/)
+std::shared_ptr<SceneObject> Scene::CreateSceneObject(const std::string& name, SceneObject::Index parentIndex /*=0*/)
 {
     SceneObject::Index index = m_Node.size();
     m_Node.push_back(std::make_shared<SceneObject>( name, index, parentIndex ));

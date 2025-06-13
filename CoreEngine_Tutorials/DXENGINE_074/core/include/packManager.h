@@ -60,16 +60,56 @@
 #endif
 #endif
 
+
+#if DX_ENGINE_LEVEL >= 86
+#if UNICODE
+#ifdef X64
+#if defined(_DEBUG)// && !defined(NDEBUG)
+#pragma comment( lib, "x64/WDebug/commonfunctionsX64_d.lib" )		//DEBUG
+#elif !defined _DEBUG && defined NDEBUG
+#pragma comment( lib, "x64/Release/commonfunctionsX64.lib" )		//RELEASE: C:\WoMAengine2023\x64\Release\commonfunctionsX64.lib
+#else
+#pragma comment( lib, "x64/WRelease/commonfunctionsX64.lib" )		//DBGREL
+#endif
+#else
+#if defined(_DEBUG)// && !defined(NDEBUG)
+#pragma comment( lib, "Win32/WDebug/commonfunctions_d.lib" )		//DEBUG
+#elif !defined _DEBUG && defined NDEBUG
+#pragma comment( lib, "Win32/WRelease/commonfunctions.lib" )		//RELEASE
+#else
+#pragma comment( lib, "Win32/WRelease/commonfunctions.lib" )		//DBGREL
+#endif
+#endif
+#else
+#ifdef X64
+#if defined(_DEBUG)// && !defined(NDEBUG)
+#pragma comment( lib, "x64/Debug/commonfunctionsX64_d.lib" )		//DEBUG
+#elif !defined _DEBUG && defined NDEBUG
+#pragma comment( lib, "x64/Release/commonfunctionsX64.lib" )		//RELEASE
+#else
+#pragma comment( lib, "x64/Release/commonfunctionsX64.lib" )		//DBGREL
+#endif
+#else
+#if defined(_DEBUG)// && !defined(NDEBUG)
+#pragma comment( lib, "Win32/Debug/commonfunctions_d.lib" )			//DEBUG
+#elif !defined _DEBUG && defined NDEBUG
+#pragma comment( lib, "Win32/Release/commonfunctions.lib" )			//RELEASE
+#else
+#pragma comment( lib, "Win32/Release/commonfunctions.lib" )			//DBGREL
+#endif
+#endif
+#endif
+#endif
+
 #if CORE_ENGINE_LEVEL >= 6
 extern BOOL PackDirectory(HZIP hz, const TCHAR* sPath);
 extern void PackDir(STRING dir, STRING packName);
 #endif
 
-#if CORE_ENGINE_LEVEL >= 7
-#ifdef RELEASE
+#if CORE_ENGINE_LEVEL >= 7 && defined RELEASE || DX_ENGINE_LEVEL >= 86
 extern bool InitPackLibs();
 extern bool StartPackLibs();
-#endif
+extern bool InitPackLib(char* packfilename);
 #endif
 
 #ifdef RELEASE

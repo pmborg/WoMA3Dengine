@@ -48,15 +48,15 @@ class ModelLoader
 private:
     ModelLoader(const aiScene* assimpScene, Scene& scene, Graphics& graphics, std::string& fileName, SceneObject::Index parentIndex);
 
-    void ProcessMeshes();
-    Mesh* GenerateMesh(UINT m, aiMesh* mesh);
+    void ProcessMeshes(UINT type);
+    Mesh* GenerateMesh(UINT type, UINT m, aiMesh* mesh);
     PBRMaterial* GenerateMaterial(aiMesh* mesh);
     void LoadBones(UINT meshindex, aiMesh* mesh, std::vector<Vertex>& vertices);
     void GenerateSceneObjectHierarchy(aiNode* node, bool isRoot, int parentIndex);
 
     Texture* loadTexture(aiMaterial* mat, aiTextureType type, unsigned int index = 0);
     std::map<std::string, Texture*> m_TextureMap;
-    SceneModel* LoadModel();
+    SceneModel* LoadModel(UINT type);
 
     const aiScene* pAssimpScene;
     Scene& m_Scene;
@@ -92,13 +92,14 @@ ModelLoader::ModelLoader(const aiScene* assimpScene, Scene& scene, Graphics& gra
             m_LoadType = LoadType::GLTF;
         }
     }
+
     std::shared_ptr<SceneObject> object = m_Scene.CreateSceneObject(pAssimpScene->mRootNode->mName.C_Str(), parentIndex);
     m_Model = new SceneModel(object);
 }
 
-SceneModel* ModelLoader::LoadModel()
+SceneModel* ModelLoader::LoadModel(UINT type)
 {
-    ProcessMeshes();
+    ProcessMeshes(type); //Vetices + Indices + Normals... + Materials + Bones
 
     if (m_HasBones)
     {
@@ -113,14 +114,14 @@ SceneModel* ModelLoader::LoadModel()
     return m_Model;
 }
 
-void ModelLoader::ProcessMeshes()
+void ModelLoader::ProcessMeshes(UINT type)
 {
     std::shared_ptr<SceneObject> object = m_Model->m_SceneObject;
     for (UINT meshindex = 0; meshindex < pAssimpScene->mNumMeshes; meshindex++) //MESH-1
     {
 		LOG_FILE << "MESH id: " << meshindex << std::endl;
         aiMesh* rootMesh = pAssimpScene->mMeshes[meshindex];
-        GenerateMesh(meshindex, rootMesh);
+        GenerateMesh(type, meshindex, rootMesh);
         GenerateMaterial(rootMesh);
     }
 }
@@ -155,9 +156,25 @@ void ModelLoader::LoadBones(UINT meshindex, aiMesh* pMesh, std::vector<Vertex>& 
                 Vertex& vertex = vertices[id];
                 if (GetFloatAtIndex(vertex.BoneWeights, k) == 0.0)
                 {
-                    //vertex.BoneIds[k] = bone_index; //AQUIFLOAT
-                    SetFloatAtIndex(vertex.BoneIds, k, bone_index); //AQUIFLOAT
                     SetFloatAtIndex(vertex.BoneWeights, k, weight);
+                    //vertex.BoneIds[k] = bone_index; //AQUIFLOAT
+                    //SetFloatAtIndex(vertex.BoneIds, k, bone_index); //AQUIFLOAT
+                    switch (k)
+                    {
+                    case 0:
+                        vertex.BoneIds.x = bone_index;
+                        break;
+                    case 1:
+                        vertex.BoneIds.y = bone_index;
+                        break;
+                    case 2:
+                        vertex.BoneIds.z = bone_index;
+                        break;
+                    case 3:
+                        vertex.BoneIds.w = bone_index;
+                        break;
+                    }
+                    
                     break;
                 }
             }
@@ -199,7 +216,7 @@ void ModelLoader::GenerateSceneObjectHierarchy(aiNode* node, bool isRoot, int pa
     }
 }
 
-Mesh* ModelLoader::GenerateMesh(UINT meshindex, aiMesh* aimesh)
+Mesh* ModelLoader::GenerateMesh(UINT type, UINT meshindex, aiMesh* aimesh)
 {
     std::vector<Vertex> vertices;
     std::vector<WORD> indices;
@@ -209,7 +226,7 @@ Mesh* ModelLoader::GenerateMesh(UINT meshindex, aiMesh* aimesh)
     LOG_FILE << " bones: " << aimesh->mNumBones << " vertices: " << aimesh->mNumVertices << std::endl;
 #endif
 
-    if (!aimesh->mNormals) 
+    if (!aimesh->mNormals)
     {
         // Allocate normals array
         aimesh->mNormals = new aiVector3D[aimesh->mNumVertices];
@@ -333,32 +350,37 @@ Mesh* ModelLoader::GenerateMesh(UINT meshindex, aiMesh* aimesh)
         vertex.Position.x = aimesh->mVertices[v].x;
         vertex.Position.y = aimesh->mVertices[v].y;
         vertex.Position.z = aimesh->mVertices[v].z;
+
         if (hasTexCoord)
         {
             vertex.TexCoord.x = aimesh->mTextureCoords[0][v].x;
             vertex.TexCoord.y = aimesh->mTextureCoords[0][v].y;
+            if (vertex.TexCoord.y > 1) {
+                vertex.TexCoord.y -= 1;
+            }
         }
+
         if (aimesh->mNormals)
 		{
-        vertex.Normal.x = aimesh->mNormals[v].x;
-        vertex.Normal.y = aimesh->mNormals[v].y;
-        vertex.Normal.z = aimesh->mNormals[v].z;
+            vertex.Normal.x = aimesh->mNormals[v].x;
+            vertex.Normal.y = aimesh->mNormals[v].y;
+            vertex.Normal.z = aimesh->mNormals[v].z;
 		}
 #ifdef DEBUG_MESH
         LOG_FILE << "Vertice: [" << v << "] X: " << vertex.Position.x << " Y: " << vertex.Position.y << " Z: " << vertex.Position.z;
         LOG_FILE << " -- Ux: " << vertex.TexCoord.x << " Vy: " << vertex.TexCoord.y << std::endl;
 #endif
-		if (aimesh->mTangents)
+        if (aimesh->mTangents)
 		{
-        vertex.Tangent.x = aimesh->mTangents[v].x;
-        vertex.Tangent.y = aimesh->mTangents[v].y;
-        vertex.Tangent.z = aimesh->mTangents[v].z;
+            vertex.Tangent.x = aimesh->mTangents[v].x;
+            vertex.Tangent.y = aimesh->mTangents[v].y;
+            vertex.Tangent.z = aimesh->mTangents[v].z;
 		}
-		if (aimesh->mBitangents)
+        if (aimesh->mBitangents)
 		{
-        vertex.Binormal.x = aimesh->mBitangents[v].x;
-        vertex.Binormal.y = aimesh->mBitangents[v].y;
-        vertex.Binormal.z = aimesh->mBitangents[v].z;
+            vertex.Binormal.x = aimesh->mBitangents[v].x;
+            vertex.Binormal.y = aimesh->mBitangents[v].y;
+            vertex.Binormal.z = aimesh->mBitangents[v].z;
 		}
 		vertices.push_back(vertex);
     }
@@ -385,18 +407,6 @@ Mesh* ModelLoader::GenerateMesh(UINT meshindex, aiMesh* aimesh)
 
     Mesh* mesh = new Mesh(vertices, indices, m_Graphics, (aimesh->mTangents && aimesh->mBitangents) ? false : true);
     m_Model->m_Meshes.push_back(mesh);
-
-	//for (UINT i = 0; i < aimesh->mNumVertices; i++)
-	//{
-	//	LOG_FILE << "id: " << i << " weight: " << vertices[i].BoneWeights.x;
-	//	LOG_FILE << " " << vertices[i].BoneWeights.y;
-	//	LOG_FILE << " " << vertices[i].BoneWeights.z;
-	//	LOG_FILE << " " << vertices[i].BoneWeights.w << std::endl;
-	//	LOG_FILE << "id: " << i << " bone_index: " << vertices[i].BoneIds.x;
-	//	LOG_FILE << " " << vertices[i].BoneIds.y;
-	//	LOG_FILE << " " << vertices[i].BoneIds.z;
-	//	LOG_FILE << " " << vertices[i].BoneIds.w << std::endl;
-	//}
 
     return mesh;
 }
@@ -480,7 +490,10 @@ Texture* ModelLoader::loadTexture(aiMaterial* mat, aiTextureType type, unsigned 
         aiString str;
         mat->GetTexture(type, index, &str);
         std::string textureName = str.C_Str();
+
+        textureName = textureName.substr(textureName.find_last_of("/\\") + 1);
         textureName = m_Directory + textureName;
+
         std::wstring stemp = std::wstring(textureName.begin(), textureName.end());
         LPCWSTR path = stemp.c_str();
         auto it = m_TextureMap.find(textureName);
@@ -497,4 +510,3 @@ Texture* ModelLoader::loadTexture(aiMaterial* mat, aiTextureType type, unsigned 
     }
     return texture;
 }
-

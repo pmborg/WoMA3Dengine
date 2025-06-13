@@ -22,6 +22,7 @@
 #pragma warning(disable : 4267) // warning C4267: 'initializing': conversion from 'size_t' to 'UINT', possible loss of data
 #include "OSmain_dir.h"
 #include "ApplicationClass.h"
+#include "fileLoader.h"
 
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
 #include "Rapplicationclass.h"

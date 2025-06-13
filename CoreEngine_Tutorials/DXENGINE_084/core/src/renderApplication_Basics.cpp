@@ -22,6 +22,7 @@
 #pragma warning(disable : 4267) // warning C4267: 'initializing': conversion from 'size_t' to 'UINT', possible loss of data
 #include "OSmain_dir.h"
 #include "ApplicationClass.h"
+#include "fileLoader.h"
 #include "SceneManager.h"
 
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
@@ -80,23 +81,16 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
     if (m_Driver->RenderfirstTime) 
     {
         demo.Start(demoapp.m_Graphics);
-#if defined USE_FBX_MODEL1
-        // Source:
-        // https://free3d.com/3d-model/nathan-animated-003-walking-644277.html
-        // Exported (fbx->dae) with (swap UV), using: [noesisv4474.zip https://www.richwhitehouse.com/filemirror/noesisv4474.zip] noesisv4474\Noesis.exe
-        // Fix/remote: texture file path: manually on rp_nathan_animated_003_walkingout2.dae
-        #define ASSIMP_MODEL_FBX TEXT("C:\\WoMAengine2023\\engine\\data\\scene85\\rp_nathan_animated_003_walkingout.dae") 
-        //#define ASSIMP_MODEL_FBX TEXT("C:\\WoMAengine2023\\engine\\data\\scene85\\untitled.dae")
-        demo.assimpSceneModel = std::unique_ptr<SceneModel>(SceneModel::LoadModelToScene(ASSIMP_MODEL_FBX, demo.scene, demoapp.m_Graphics));
-#else
-        demo.assimpSceneModel = std::unique_ptr<SceneModel>(SceneModel::LoadModelToScene(ASSIMP_MODEL_BOBLAMPCLEAN, demo.scene, demoapp.m_Graphics));
+#if DX_ENGINE_LEVEL >= 79 && defined USE_MODEL1
+        demo.assimpSceneModel = SceneModel::LoadModelToScene(0, WOMA::LoadFile(ASSIMP_MODEL_BOBLAMPCLEAN), "" , demo.scene, demoapp.m_Graphics);
 #endif
 
-        demo.assimpSceneModel2 = std::unique_ptr<SceneModel>(SceneModel::LoadModelToScene(ASSIMP_MODEL_FEMALE, demo.scene2, demoapp.m_Graphics));
+#if DX_ENGINE_LEVEL >= 84 && defined USE_MODEL2
+        demo.assimpSceneModel2 = SceneModel::LoadModelToScene(0, WOMA::LoadFile(ASSIMP_MODEL_FEMALE), "", demo.scene2, demoapp.m_Graphics);
         #if defined SCENE_SKIN
         {
         #ifdef LOAD_WALK
-            std::wifstream fileIn(MODEL_FEMALE_PATH);
+            std::wifstream fileIn(WOMA::LoadFile(MODEL_FEMALE_PATH));
             std::wstring movement;
 
             std::wstring filename;
@@ -118,6 +112,7 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
         if (!m_character)
             m_character = NEW PlayerClass(0);
     #endif
+#endif
 #ifdef DEBUG_MESH
         log("STARTING...");
 #endif
@@ -159,7 +154,7 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
     }
 #endif
 
-    //if (myScene_has_animation)
+    //RENDER all MESHs:
     demo.Update(demoapp.m_Graphics, deltaTime);
     demo.Render(demoapp.m_Graphics);
 

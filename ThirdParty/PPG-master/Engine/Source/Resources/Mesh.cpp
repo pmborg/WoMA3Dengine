@@ -95,5 +95,5 @@ void Mesh::Draw(ID3D11DeviceContext* deviceContext)
     deviceContext->IASetVertexBuffers(0, 1, &m_VertexBuffer, &m_VertexStride, &offset);
     deviceContext->IASetIndexBuffer(m_IndexBuffer, DXGI_FORMAT_R16_UINT, 0);
     deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-    deviceContext->DrawIndexed(m_Indices.size(), 0, 0);
+    deviceContext->DrawIndexed(m_Indices.size(), 0, 0); //12132
 }

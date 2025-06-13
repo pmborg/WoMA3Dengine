@@ -522,7 +522,7 @@ bool XMLloader::loadXMLsettingsFile (TCHAR* file_) // Note: Have to be char
 	doc.LoadFile(XML_FILE.c_str());
 #else
 	//SETTINGS.XML
-	STRING dir = WOMA::getCurrentDir();
+    STRING dir=WOMA::getCurrentDir();
 	tinyxml2::XMLError error = doc.LoadFile(XMLFILE);
 	if (error == tinyxml2::XML_ERROR_FILE_NOT_FOUND)
 	{

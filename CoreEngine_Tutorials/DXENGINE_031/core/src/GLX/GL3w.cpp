@@ -8,10 +8,9 @@
 // Download Python 2.7.3 or newer:	http://www.python.org/download/releases/2.7.3/
 // Download gl3w.cpp Generator:		https://github.com/skaslev/gl3w
 // Run:								c:\Python27\python.exe gl3w_gen.py
-// 
-// generates:						gl3w.h and gl3w.c
+// generates:						gl3w.h,glcorearb.h and gl3w.c
 // Source:							Generated support for (Windows / Apple / Linux)
-// 
+
 
 #include "platform.h"
 #if CORE_ENGINE_LEVEL >= 10 && (defined OPENGL3 || defined OPENGL40) 

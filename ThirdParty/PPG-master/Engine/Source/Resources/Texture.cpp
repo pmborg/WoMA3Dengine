@@ -81,8 +81,12 @@ Texture* Texture::CreateTextureCube(Graphics& graphics, int size, const std::str
     return new Texture(texturePtr, name);
 }
 
+extern Texture* LoadTextureFromPathFBX(Graphics& graphics, LPCWSTR& texturePath);
+
 Texture* Texture::LoadTextureFromPath(Graphics& graphics, LPCWSTR& texturePath)
 {
+    return LoadTextureFromPathFBX(graphics, texturePath);
+
     std::wstring texturePath_ = texturePath;
 
     // Find the position of "../../AppData/Local"
