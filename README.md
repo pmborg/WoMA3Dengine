@@ -48,40 +48,21 @@ Try to Change the driver on the fly without the need of close and open the Appli
 <hr>
 
 - <b>DX86: The main character (Soon)</b><br>
- Multi animation Character:
-	- Attack
-	- Attack2
-	- Attack3
-	- Death
-	- Death2
-	- Death3
-	- Draw_bow
-	- Draw_sword
-	- Get_hit
-	- Get_hit2
-	- Hide_bow
-	- Hide_sword
-	- idle
-	- idle2
-	- idle3
-	- Jump
-	- Jump2
-	- Jump3
-	- Run
-	- Run2
-	- Run3
-	- Strafe_left
-	- Strafe_left2
-	- Strafe_left3
-	- Strafe_right
-	- Strafe_right2
-	- Strafe_right3
-	- Walk
-	- Walk2
-	- Walk3
-	- Walk_back
-	- Walk_back2
-	- Walk_back3
+ Multi animation Character: 33
+    - Attack(3)
+    - Idle(3)
+    - Walk(3)
+    - Walk back (3)
+    - Walk left (3)
+    - Walk right (3)
+    - Run (3)
+    - Death (3)
+    - Hide weapon (2)
+    - Draw weapon (2)
+    - Get hit (2)
+    - Jump (3)
+   <br>
+   (Art/Animation Credits: <b>Palasky</b>)
   
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_086.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_086.png)	
 
