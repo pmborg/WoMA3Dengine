@@ -48,7 +48,7 @@ Try to Change the driver on the fly without the need of close and open the Appli
 
 - <b>DX87: THE MAIN CHARACTER - The other sample variantes</b><br>
  
-![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_087.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_087.png)	
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_087.jpg](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_087.jpg)	
 
 <hr>
 
