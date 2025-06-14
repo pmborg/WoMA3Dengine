@@ -40,10 +40,8 @@ public:
     Scene scene;
     SceneModel* assimpSceneModel=NULL;
 
-#if DX_ENGINE_LEVEL >= 84 && defined (SCENE_SKIN)
     Scene scene2;
     SceneModel* assimpSceneModel2 = NULL;
-#endif
 
     Scene scene3;
     SceneModel* assimpSceneModel3 = NULL;
@@ -124,18 +122,14 @@ public:
             .AddLight(pointLight)
             .AddLight(spotLight)
             .SetGlobalAmbient(XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f));
-#if DX_ENGINE_LEVEL >= 84 && defined (SCENE_SKIN)
         scene2.lightManager
             .AddLight(dirLight)
             .AddLight(pointLight)
             .AddLight(spotLight)
             .SetGlobalAmbient(XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f));
-#endif
 		
         scene.Start(graphics);
-#if DX_ENGINE_LEVEL >= 84 && defined (SCENE_SKIN)
         scene2.Start(graphics);
-#endif
         scene3.Start(graphics);
         scene4.Start(graphics);
         auto deviceContext = graphics.m_DeviceContext;

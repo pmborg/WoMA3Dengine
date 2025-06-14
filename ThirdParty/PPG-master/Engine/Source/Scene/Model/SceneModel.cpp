@@ -36,6 +36,8 @@
 #include <assimp/version.h>
 #include <assimp/revision.h>
 
+//FBX-1
+unsigned char* Forest_Huntress_idle_fbx_Model_LOD0_fbxBuffer = NULL;
 
 #ifdef DEBUG_MESH
 void showNodeName(aiNode* node, UINT i = 0);
@@ -51,6 +53,8 @@ void showNodeName(aiNode* node, UINT i)
 #endif
 
 double TicksPerSecond;
+
+
 
 SceneModel* SceneModel::LoadModelToScene(UINT type, std::string meshFileName, std::string animFileName, Scene& scene, Graphics& graphics, SceneObject::Index parentIndex /*= 0*/)
 {
@@ -106,7 +110,7 @@ SceneModel* SceneModel::LoadModelToScene(UINT type, std::string meshFileName, st
         }
         const void* pBuffer=NULL;
         size_t bufferSize=0;
-    
+
 #ifndef GENERATE_PACK
         unsigned long filebufferSize=0;
         switch (type) {

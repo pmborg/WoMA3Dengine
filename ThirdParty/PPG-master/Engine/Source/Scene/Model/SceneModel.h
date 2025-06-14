@@ -57,7 +57,3 @@ private:
 #endif
 
 extern unsigned char* Forest_Huntress_idle_fbx_Model_LOD0_fbxBuffer;
-extern unsigned char* Skin_1_Armor_and_Weapon_Albedo_pngBuffer;
-extern unsigned char* Skin_1_Body_Albedo_pngBuffer;
-extern unsigned char* Skin_1_Hair_Albedo_pngBuffer;
-extern unsigned char* Skin_1_Head_Albedo_pngBuffer;
