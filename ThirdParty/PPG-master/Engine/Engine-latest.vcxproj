@@ -187,6 +187,7 @@
     <ClInclude Include="Source\Passes\ToneMapPass.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="Source\Resources\Texture.h" />
     <ClInclude Include="Source\stdafx.h" />
     <ClInclude Include="Source\Scene\Camera.h" />
     <ClInclude Include="Source\Demo.h" />
@@ -207,7 +208,6 @@
     <ClInclude Include="Source\Scene\Scene.h" />
     <ClInclude Include="Source\Resources\Shader.h" />
     <ClInclude Include="Source\Scene\SceneObject.h" />
-    <ClInclude Include="Source\Resources\Texture.h" />
     <ClInclude Include="Source\Scene\Transform.h" />
     <ClInclude Include="Source\LowLevel\Window.h" />
   </ItemGroup>
@@ -277,6 +277,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Source\Resources\Texture.cpp" />
     <ClCompile Include="Source\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

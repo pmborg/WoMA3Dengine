@@ -81,11 +81,16 @@ Texture* Texture::CreateTextureCube(Graphics& graphics, int size, const std::str
     return new Texture(texturePtr, name);
 }
 
+#if DX_ENGINE_LEVEL >= 86
 extern Texture* LoadTextureFromPathFBX(Graphics& graphics, LPCWSTR& texturePath);
+#endif
 
-Texture* Texture::LoadTextureFromPath(Graphics& graphics, LPCWSTR& texturePath)
+Texture* Texture::LoadTextureFromPath(UINT modeltype, Graphics& graphics, LPCWSTR& texturePath)
 {
-    return LoadTextureFromPathFBX(graphics, texturePath);
+#if DX_ENGINE_LEVEL >= 86
+    if (modeltype >=1)
+        return LoadTextureFromPathFBX(graphics, texturePath);
+#endif
 
     std::wstring texturePath_ = texturePath;
 
@@ -174,7 +179,7 @@ bool Texture::CreateSRV(Graphics& graphics, DXGI_FORMAT texFormat, D3D11_SRV_DIM
 
 bool Texture::CreateRTV(Graphics& graphics, DXGI_FORMAT texFormat)
 {
-#define m_driver11 ((DirectX::DX11Class*)driverList[SystemHandle->AppSettings->DRIVER])
+    #define m_driver11 ((DirectX::DX11Class*)driverList[SystemHandle->AppSettings->DRIVER])
 
     ID3D11RenderTargetView* rtv = ((DirectX::DX11Class*)m_driver11)->DX11windowsArray[0].m_renderTargetView;
     m_TextureRTVs.push_back(rtv);

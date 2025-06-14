@@ -75,7 +75,9 @@
     <ClInclude Include="core\include\SystemClass.h" />
     <ClInclude Include="core\include\systemFeatures.h" />
     <ClInclude Include="core\include\systemManager.h" />
-    <ClInclude Include="core\include\Texture.h" />
+    <ClInclude Include="core\include\Texture.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="core\include\timerClass.h" />
     <ClInclude Include="core\include\Tree.h" />
     <ClInclude Include="core\include\TrigonometryMathClass.h" />
@@ -145,7 +147,9 @@
     <ClCompile Include="core\src\SceneManager.cpp" />
     <ClCompile Include="core\src\SceneNode.cpp" />
     <ClCompile Include="core\src\soundClass.cpp" />
-    <ClCompile Include="core\src\Texture.cpp" />
+    <ClCompile Include="core\src\Texture.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="core\src\video.cpp" />
     <ClCompile Include="core\src\w3d.cpp" />
     <ClCompile Include="core\src\winWomaSetupManager.cpp" />

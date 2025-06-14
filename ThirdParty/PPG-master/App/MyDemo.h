@@ -63,9 +63,9 @@ private:
 
     AnimationModelLoader animJob;
 
-    std::unique_ptr<Texture> LoadTextureFromPath(Graphics& graphics, LPCWSTR& path)
+    std::unique_ptr<Texture> LoadTextureFromPath(UINT modeltype, Graphics& graphics, LPCWSTR& path)
     {
-        Texture* tex = Texture::LoadTextureFromPath(graphics, path);
+        Texture* tex = Texture::LoadTextureFromPath(modeltype, graphics, path);
         return std::unique_ptr<Texture>(tex);
     }
 

@@ -530,10 +530,9 @@
         #define USE_MINIMAP_EXPANSION
     #endif
     //-------------------------------------------------
-    #if DX_ENGINE_LEVEL < 86
-        #define USE_MODEL1
-        #define USE_MODEL2
-    #endif
+    #define USE_MODEL1
+    #define USE_MODEL2
+
     #if DX_ENGINE_LEVEL >= 86
         #undef USE_STATUSBAR
         //#define DEBUG_MESH
@@ -544,8 +543,7 @@
     #ifndef USE_MODEL2
         #undef SCENE_SKIN
     #endif
-	
-	
+    //#define SIMPLE
 	
 	
 	

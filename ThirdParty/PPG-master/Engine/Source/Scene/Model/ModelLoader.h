@@ -50,11 +50,11 @@ private:
 
     void ProcessMeshes(UINT type);
     Mesh* GenerateMesh(UINT type, UINT m, aiMesh* mesh);
-    PBRMaterial* GenerateMaterial(aiMesh* mesh);
+    PBRMaterial* GenerateMaterial(UINT type, aiMesh* mesh);
     void LoadBones(UINT meshindex, aiMesh* mesh, std::vector<Vertex>& vertices);
     void GenerateSceneObjectHierarchy(aiNode* node, bool isRoot, int parentIndex);
 
-    Texture* loadTexture(aiMaterial* mat, aiTextureType type, unsigned int index = 0);
+    Texture* loadTexture(UINT modeltype, aiMaterial* mat, aiTextureType type, unsigned int index = 0);
     std::map<std::string, Texture*> m_TextureMap;
     SceneModel* LoadModel(UINT type);
 
@@ -122,7 +122,7 @@ void ModelLoader::ProcessMeshes(UINT type)
 		LOG_FILE << "MESH id: " << meshindex << std::endl;
         aiMesh* rootMesh = pAssimpScene->mMeshes[meshindex];
         GenerateMesh(type, meshindex, rootMesh);
-        GenerateMaterial(rootMesh);
+        GenerateMaterial(type, rootMesh);
     }
 }
 
@@ -411,31 +411,31 @@ Mesh* ModelLoader::GenerateMesh(UINT type, UINT meshindex, aiMesh* aimesh)
     return mesh;
 }
 
-PBRMaterial* ModelLoader::GenerateMaterial(aiMesh* mesh)
+PBRMaterial* ModelLoader::GenerateMaterial(UINT modeltype, aiMesh* mesh)
 {
     PBRMaterial* material = new PBRMaterial();
     if (mesh->mMaterialIndex >= 0)
     {
         aiMaterial* mat = pAssimpScene->mMaterials[mesh->mMaterialIndex];
 
-        Texture* normal = loadTexture(mat, aiTextureType_NORMALS);
-        Texture* bump = loadTexture(mat, aiTextureType_HEIGHT);
+        Texture* normal = loadTexture(modeltype, mat, aiTextureType_NORMALS);
+        Texture* bump = loadTexture(modeltype, mat, aiTextureType_HEIGHT);
         if (normal) material->UseNormalMap(normal);
         else if (bump) material->UseBumpMap(bump);
 
-        Texture* ao = loadTexture(mat, aiTextureType_LIGHTMAP);
+        Texture* ao = loadTexture(modeltype, mat, aiTextureType_LIGHTMAP);
         if (ao) material->UseAoMap(ao);
 
-        Texture* emissive = loadTexture(mat, aiTextureType_EMISSIVE);
+        Texture* emissive = loadTexture(modeltype, mat, aiTextureType_EMISSIVE);
         if (emissive) material->UseEmissiveMap(emissive);
 
         if (m_LoadType == LoadType::GLTF)
         {
             material->ConvertToLinear(true);
-            Texture* albedo = loadTexture(mat, AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_BASE_COLOR_TEXTURE);
+            Texture* albedo = loadTexture(modeltype, mat, AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_BASE_COLOR_TEXTURE);
             if (albedo) material->UseAlbedoMap(albedo);
 
-            Texture* occlusionMetalRough = loadTexture(mat, AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_METALLICROUGHNESS_TEXTURE);
+            Texture* occlusionMetalRough = loadTexture(modeltype, mat, AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_METALLICROUGHNESS_TEXTURE);
             if (occlusionMetalRough) material->UseOccRoughMetal(occlusionMetalRough);
 
             float metallic;
@@ -451,7 +451,7 @@ PBRMaterial* ModelLoader::GenerateMaterial(aiMesh* mesh)
         }
         else
         {
-            Texture* albedo = loadTexture(mat, aiTextureType_DIFFUSE);
+            Texture* albedo = loadTexture(modeltype, mat, aiTextureType_DIFFUSE);
             if (albedo) material->UseAlbedoMap(albedo);
 
             aiColor3D colour;
@@ -481,7 +481,7 @@ PBRMaterial* ModelLoader::GenerateMaterial(aiMesh* mesh)
     return material;
 }
 
-Texture* ModelLoader::loadTexture(aiMaterial* mat, aiTextureType type, unsigned int index)
+Texture* ModelLoader::loadTexture(UINT modeltype, aiMaterial* mat, aiTextureType type, unsigned int index)
 {
     bool hasTex = mat->GetTextureCount(type) > 0;
     Texture* texture = nullptr;
@@ -503,7 +503,7 @@ Texture* ModelLoader::loadTexture(aiMaterial* mat, aiTextureType type, unsigned 
         }
         else
         {
-            texture = Texture::LoadTextureFromPath(m_Graphics, path);
+            texture = Texture::LoadTextureFromPath(modeltype, m_Graphics, path);
             m_TextureMap.emplace(textureName, texture);
             m_Model->m_Textures.push_back(texture);
         }

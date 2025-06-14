@@ -1355,3 +1355,8 @@ bool ApplicationClass::PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTO
 
 
 #endif
+
+Texture* LoadTextureFromPathFBX(Graphics& graphics, LPCWSTR& texture) 
+{
+    return NULL;
+}
