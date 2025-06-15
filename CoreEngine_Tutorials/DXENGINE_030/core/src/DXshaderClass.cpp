@@ -1535,7 +1535,6 @@ namespace DirectX {
 
 }
 
-
 	void DXshaderClass::RenderShader(UINT pass, /*ID3D11DeviceContext*/ void* Device_Context, int texture_index, int indexCount, int start)
 	{
 #if defined DX11 || defined DX9

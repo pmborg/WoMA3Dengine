@@ -60,9 +60,10 @@ int __cdecl BillSortCB(const VOID* arg1, const VOID* arg2);
 void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 //-------------------------------------------------------------------------------------------
 {
-	totalRendered = 0;
-	// [1] Animations:
-	// --------------------------------------------------------------------------------------------
+    totalRendered = 0;
+
+    // [1] Animations:
+    // --------------------------------------------------------------------------------------------
 
     qsort(m_Trees, _countof(m_Trees), sizeof(Tree), BillSortCB);
 
@@ -1309,4 +1310,11 @@ bool ApplicationClass::PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTO
 
 
 
+#endif
+
+#if LEVEL > 79 && LEVEL < 86
+Texture* LoadTextureFromPathFBX(UINT model_type, Graphics& graphics, LPCWSTR& texture)
+{
+    return NULL;
+}
 #endif

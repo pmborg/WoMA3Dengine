@@ -97,12 +97,12 @@ TCHAR* DEMO_NAME[] =
 {TEXT("TUTORIAL 40: WORLD.XML: load W3D and use INSTANCES to clone objects using GPU")},
 {TEXT("TUTORIAL 41: WORLD.XML: load W3D and use SHADOW INSTANCES")},
 {TEXT("TUTORIAL 42: WORLD.XML: load W3D and use SHADOW INSTANCES with ROTATION per instance")},
-{TEXT("43")}, //Reserved future demo 
-{TEXT("44")}, //Reserved future demo 
-{TEXT("45")}, //Reserved future demo 
-{TEXT("46")}, //Reserved future demo 
-{TEXT("47")}, //Reserved future demo 
-{TEXT("48")}, //Reserved future demo 
+{TEXT("43")}, //Reserved
+{TEXT("44")}, //Reserved
+{TEXT("45")}, //Reserved
+{TEXT("46")}, //Reserved
+{TEXT("47")}, //Reserved
+{TEXT("48")}, //Reserved
 {TEXT("49: TERRAIN: Generate under water terrain. ModelTextureVertexType (Keys: WASD + RF) F11: God mode/switch")},
 {TEXT("50: TERRAIN: the under water terrain. ModelTextureVertexType (Keys: WASD + RF) F11: God mode/switch")},
 {TEXT("51: TERRAIN: Add fog ModelTextureVertexType (Keys: WASD + RF) F11: God mode/switch")},
@@ -111,37 +111,37 @@ TCHAR* DEMO_NAME[] =
 {TEXT("54: TERRAIN: Add Water waves ModelTextureVertexType")},
 {TEXT("55: TERRAIN: 256x256 with Slope Texture Shader[0]ModelTextureVertexType")},
 {TEXT("56: TERRAIN: 256x256 Terrain Texture Multi Layers ")},
-{TEXT("57: ")},    //Reserved future demo 
-{TEXT("58: ")},    //Reserved future demo 
-{TEXT("59: ")},    //Reserved future demo 
+{DEMO_TITLE},//57  Reserved
+{DEMO_TITLE},//58  Reserved
+{DEMO_TITLE},//59  Reserved
 {DEMO_TITLE},//60 - USE_TERRAIN_TUTORIAL_CHAP_24 
 {DEMO_TITLE},//61 - USE_TERRAIN_512
-{DEMO_TITLE},//62 - USE_MAIN_MAP
-{DEMO_TITLE},//63 - USE_MINI_MAP
-{DEMO_TITLE},//64 - Animated static object
-{DEMO_TITLE},//65
-{DEMO_TITLE},//66
-{DEMO_TITLE},//67
-{DEMO_TITLE},//68
-{DEMO_TITLE},//69
-{DEMO_TITLE},//70
-{DEMO_TITLE},//71
-{DEMO_TITLE},//72
-{DEMO_TITLE},//73
-{DEMO_TITLE},//74
-{DEMO_TITLE},//75
-{DEMO_TITLE},//76
-{DEMO_TITLE},//77
-{DEMO_TITLE},//78
-{DEMO_TITLE},//79
-{DEMO_TITLE},//80
-{DEMO_TITLE},//81
-{DEMO_TITLE},//82
-{DEMO_TITLE},//83
-{DEMO_TITLE},//84
-{DEMO_TITLE},//85
-{DEMO_TITLE},//86
-{DEMO_TITLE},//87
+{DEMO_TITLE},//62 - TERRAIN MAIN MAP
+{DEMO_TITLE},//63 - TERRAIN MAIN MAP + MINI MAP 3D Navegation
+{DEMO_TITLE},//64 - Mill + compound - Animated static object
+{DEMO_TITLE},//65 - Walk on Terrain.
+{DEMO_TITLE},//66  Reserved
+{DEMO_TITLE},//67  Reserved
+{DEMO_TITLE},//68  Reserved
+{DEMO_TITLE},//69  Reserved
+{DEMO_TITLE},//70 - BILLBOARD for Trees / Flowers, (LIGHT and Fog) : 
+{DEMO_TITLE},//71 - BILLBOARD for FENCES, (LIGHT and Fog)
+{DEMO_TITLE},//72 - FIRE
+{DEMO_TITLE},//73 - WINDY GRAS
+{DEMO_TITLE},//74 - CROSS BILLBOARD and CLONES
+{DEMO_TITLE},//75 - UTIL: PROGRESS BAR FOR TERRAIN LOADING      
+{DEMO_TITLE},//76 - UTIL: INTRO VIDEO DEMO
+{DEMO_TITLE},//77 - USE INSTANCES FOR TREES
+{DEMO_TITLE},//78 - COLISION DETECTION: Part I
+{DEMO_TITLE},//79 - Advanced DAE/FBX      (not published)
+{DEMO_TITLE},//80 - OPENGL-ASSIMP EXT-PRJ (not published)
+{DEMO_TITLE},//81 - DX-ASSIMP             (not published)
+{DEMO_TITLE},//82 - ASSIMP-ENGINE (Latest Version)
+{DEMO_TITLE},//83 - Updated billboard shader
+{DEMO_TITLE},//84 - ASSIMP: Animated / walking mesh on the terrain, following a path   
+{DEMO_TITLE},//85 - EXPAND MINI-MAP    
+{DEMO_TITLE},//86 - THE MAIN CHARACTER
+{DEMO_TITLE},//87 - THE MAIN CHARACTER - The other sample variants
 {DEMO_TITLE},//88
 {DEMO_TITLE},//89
 {DEMO_TITLE},//90

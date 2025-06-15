@@ -64,28 +64,110 @@ void log(char* msg)
 
 #include "PPG.h"
 #include "MyDemo.h"
-extern MyDemo demo;
 
-//-------------------------------------------------------------------------------------------
-void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
-//-------------------------------------------------------------------------------------------
+WomaMesh womamesh1;
+
+void InitMeshDemo(ApplicationClass* app, Application* demoapp, MyDemo* demo)
 {
-	totalRendered = 0;
-	// [1] Animations:
-	// --------------------------------------------------------------------------------------------
-#if defined USE_ASSIMP_LATEST && defined MAIN_RENDER_ASSIMP // ASSIMP: Skin-MESH (0.15ms)
-    static Application demoapp;
-    static MyDemo demo;
-    if (m_Driver->RenderfirstTime) 
-    {
-        demo.Start(demoapp.m_Graphics);
+    // Lighting
+    auto lightColour = XMFLOAT4(5.0f, 5.0f, 5.0f, 1.0f);
+
+    Light pointLight;
+    pointLight.m_Color = XMFLOAT4(1, 1, 0, 0);
+    pointLight.m_Position = XMFLOAT4(4, 3, 0, 0);
+    pointLight.m_LightType = LightType::PointLight;
+
+    Light dirLight;
+    dirLight.m_Color = lightColour;
+    dirLight.m_Direction = XMFLOAT4(-1, -1, 1, 0);
+    dirLight.m_LightType = LightType::DirectionalLight;
+
+    Light spotLight;
+    spotLight.m_Color = XMFLOAT4(Colors::Magenta);
+    spotLight.m_Direction = XMFLOAT4(0, -1, 0, 0);
+    spotLight.m_Position = XMFLOAT4(3, 2, 0, 0);
+    spotLight.m_LightType = LightType::SpotLight;
+    spotLight.m_SpotAngle = 3.142f / 4.0f;
+
+    //82:
+    womamesh1.scene.lightManager
+        .AddLight(dirLight)
+        .AddLight(pointLight)
+        .AddLight(spotLight)
+        .SetGlobalAmbient(XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f));
+
+    womamesh1.scene.Start(demoapp->m_Graphics);
+}
+void LoadingMesh(ApplicationClass* app, Application* demoapp, MyDemo* demo)
+{
 #if DX_ENGINE_LEVEL >= 79 && defined USE_MODEL1
-        demo.assimpSceneModel = SceneModel::LoadModelToScene(0, WOMA::LoadFile(ASSIMP_MODEL_BOBLAMPCLEAN), "" , demo.scene, demoapp.m_Graphics);
+        womamesh1.assimpSceneModel = SceneModel::LoadModelToScene(0, WOMA::LoadFile(ASSIMP_MODEL_BOBLAMPCLEAN), "" , womamesh1.scene, demoapp->m_Graphics);
 #endif
 
 #ifdef DEBUG_MESH
         log("STARTING...");
 #endif
+}
+
+
+void UpdateMesh(Application* demoapp, MyDemo* demo, float deltaTime)
+{
+    //Update animation/bone matrix's and RENDER all MESHs:
+#if DX_ENGINE_LEVEL >= 79 && defined USE_MODEL1
+    demo->animJob.UpdateTimeElapsed(womamesh1.scene, deltaTime);
+#endif
+}
+
+void RenderMesh(Application* demoapp, MyDemo* demo)
+{
+    demoapp->m_Graphics.m_DeviceContext->RSSetState(demoapp->m_Graphics.m_RasterizerState);
+        // Model 1 ------------------------------------------------------------------------------------------
+#if DX_ENGINE_LEVEL >= 79 && defined USE_MODEL1
+    {
+        XMMATRIX world = XMMatrixIdentity();
+        //Scale:
+        //_11+		BoneIds	{x=0.00000000 y=0.00000000 z=0.00000000 ...}	DirectX::XMFLOAT4
+        //_22
+        //_33
+
+        world.r[0].m128_f32[0] = world.r[1].m128_f32[1] = world.r[2].m128_f32[2] = 0.02f;
+        XMMATRIX rotX = XMMatrixRotationX(-PI / 2);
+        world *= rotX;
+        XMMATRIX rotZ = XMMatrixRotationZ(PI / 2);
+        world *= rotZ;
+        //Translate:
+        const float X = 39, Z = 20;
+        world.r[3].m128_f32[0] = X; //_41: X
+        world.r[3].m128_f32[2] = Z; //_43: Z
+        world.r[3].m128_f32[1] = mainTerrain->getTerrainHeight(TERRAIN_ID, world.r[3].m128_f32[0], world.r[3].m128_f32[2]);
+
+        womamesh1.scene.UpdateModel(demoapp->m_Graphics, world);
+    }
+    demo->gBufferPass->Render(demoapp->m_Graphics, womamesh1.scene);
+#endif
+
+    // Model 2 ------------------------------------------------------------------------------------------
+
+}
+
+//-------------------------------------------------------------------------------------------
+void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
+//-------------------------------------------------------------------------------------------
+{
+    totalRendered = 0;
+
+    // [1] Animations:
+    // --------------------------------------------------------------------------------------------
+    static Application demoapp;
+    static MyDemo demo;
+
+#if defined USE_ASSIMP_LATEST && defined MAIN_RENDER_ASSIMP // ASSIMP: Skin-MESH (0.15ms)
+    if (m_Driver->RenderfirstTime)
+    {
+        // INIT: Model 1,2,3,4...
+        demo.Start(demoapp.m_Graphics);
+        InitMeshDemo(this, &demoapp, &demo);
+        LoadingMesh(this, &demoapp, &demo);
     }
 
     static UINT filmeIdx = 0; // 1st line of filme file
@@ -97,16 +179,14 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
         previousTime = m_startTime;
         filmeIdx = 0;
     }
-    
+
     DWORD currentTime = timeGetTime();
     float deltaTime = (currentTime - previousTime) / 1000.0f;
     previousTime = currentTime;
     total_deltaTime = (timeGetTime() - m_startTime);
 
-    //RENDER all MESHs:
-    demo.Update(demoapp.m_Graphics, deltaTime);
-    demo.Render(demoapp.m_Graphics);
-
+    UpdateMesh(&demoapp, &demo, deltaTime);
+    RenderMesh(&demoapp, &demo);
 #endif
 
     qsort(m_Trees, _countof(m_Trees), sizeof(Tree), BillSortCB);
@@ -1356,7 +1436,9 @@ bool ApplicationClass::PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTO
 
 #endif
 
-Texture* LoadTextureFromPathFBX(Graphics& graphics, LPCWSTR& texture) 
+#if LEVEL > 79 && LEVEL < 86
+Texture* LoadTextureFromPathFBX(UINT model_type, Graphics& graphics, LPCWSTR& texture)
 {
     return NULL;
 }
+#endif

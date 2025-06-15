@@ -151,7 +151,7 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 		if (WOMA::game_state > GAME_MINIMIZED)
 			ProcessFrame();	// Render ONE: Application Frame
 		else
-			Sleep(100);
+			Sleep(100);     // We are background slow down
 
 		if (WOMA::main_loop_state < 0 || (WOMA::renderOnce && WOMA::woma_timer > 15))
         {
@@ -178,10 +178,10 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 void dxWinSystemClass::ProcessFrame() //RENDER ALL GRAPHICS
 //----------------------------------------------------------------------------
 {
-	// Process Input, Timer and FPS and GRAPHICs:
+	// Process Input, Timer, FPS and GRAPHICs:
 	WinSystemClass::ProcessFrame(); 
 
-	// Process Special: "PRINT SCREEN" key, the "Back-Buffer" have 1 frame rendered, so now we can dump it:
+	// Process Special: "PRINT SCREEN" key or F10, the "Back-Buffer" have 1 frame rendered, so now we can dump it:
 #if defined ALLOW_PRINT_SCREEN_SAVE_PNG && defined DX11
 	if ((WOMA::game_state > GAME_MINIMIZED) && (OS_KEY_DOWN(DIK_SYSRQ + 0x35) || OS_KEY_DOWN(DIK_F10 + 0x35)))
 		ASSERT(SaveScreenshot());
@@ -485,10 +485,25 @@ HRESULT dxWinSystemClass::PlayIntroMovie(TCHAR* movie)
 	MSG msg = { };
 	while (g_DShowPlayer->m_state != STATE_STOPPED && g_DShowPlayer->m_state != STATE_PAUSED)
 	{
+        // Process OS Messages:
 		while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-		{	// Process OS Messages
+		{	
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
+            
+            // Make Sure that we have aquired the FOCUS and INPUT:
+            if (DXsystemHandle->m_Input->m_mouse && DXsystemHandle->m_Input->m_keyboard)				
+            {
+                IF_NOT_THROW_EXCEPTION(DXsystemHandle->m_Input->Frame());
+            }
+            else
+                DXsystemHandle->m_Input->Initialize(SystemHandle->m_hinstance);
+
+            // End Video, when Esc key is pressed:
+            if (SystemHandle->m_player[g_NetID]->p_player.IsEscapePressed) 
+                break;
+
+            Sleep(1); //Give CPU to loader threads.
 		}
 
 	}

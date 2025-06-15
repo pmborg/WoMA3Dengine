@@ -74,10 +74,10 @@ SceneModel* SceneModel::LoadModelToScene(UINT type, std::string meshFileName, st
 
     unsigned int DX_ASSIMP_LOAD_FLAGS = 0;
     const TCHAR* extension = _tcsrchr(meshFileName.c_str(), '.');
-    if (type == 1 || _tcsicmp(extension, TEXT(".dae")) == 0 || _tcsicmp(extension, TEXT(".DAE")) == 0)
+    if (type >= 1 || _tcsicmp(extension, TEXT(".dae")) == 0 || _tcsicmp(extension, TEXT(".DAE")) == 0)
     {
-        //MD5MESH converted from DAE:
-        if (type == 1) {
+        //MD5MESH (converted from DAE) or FBX:
+        if (type >= 1) {
             DX_ASSIMP_LOAD_FLAGS = aiProcess_LimitBoneWeights | aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_MakeLeftHanded| aiProcess_FlipUVs;
         }
         else//DAE:
@@ -102,12 +102,6 @@ SceneModel* SceneModel::LoadModelToScene(UINT type, std::string meshFileName, st
     } 
     else
     {
-        while (!Forest_Huntress_idle_fbx_Model_LOD0_fbxBuffer)
-        {
-            Sleep(100);
-            if (WOMA::game_state == GAME_STOP)
-                return NULL;
-        }
         const void* pBuffer=NULL;
         size_t bufferSize=0;
 
@@ -115,6 +109,8 @@ SceneModel* SceneModel::LoadModelToScene(UINT type, std::string meshFileName, st
         unsigned long filebufferSize=0;
         switch (type) {
         case 1:
+        case 2:
+        case 3:
             pBuffer = Forest_Huntress_idle_fbx_Model_LOD0_fbxBuffer;
             filebufferSize = Forest_Huntress_idle_fbx_Model_LOD0_fbx_size;
             break;
@@ -135,9 +131,11 @@ SceneModel* SceneModel::LoadModelToScene(UINT type, std::string meshFileName, st
         throw woma_exception("ModelLoader::error in assimp", __FILE__, __FUNCTION__, __LINE__);
     }
 
-    //Create ModelLoader:
+    // Create ModelLoader:
+    // -------------------
     ModelLoader ml = ModelLoader(pAssimpScene, scene, graphics, meshFileName, parentIndex);
-    // IMPORT FROM ASSIMP:
+    // LOAD ASSIMP data to our model:
+    // ------------------------------
     SceneModel* model = ml.LoadModel(type);
 
     aiScene* assimpScene;

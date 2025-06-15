@@ -234,23 +234,20 @@ public:
 	void CalculateLightRayVertex (float SunDistance);
 #endif
 
-    UINT world_main_size=0;
-
-#if defined USE_DX_DRIVER_FONT
-	DXshaderClass* m_FontV2Shader = NULL;
-	IDXGIKeyedMutex* keyedMutex11 = NULL;
-	IDXGIKeyedMutex* keyedMutex10 = NULL;
-#endif
-
-	UINT totalRendered = 0;
-
 #if defined USE_LIGHT_RAY
 	void initLightRay();
 #endif
 
-//83&84:
+    UINT world_main_size = 0;
+    UINT totalRendered = 0;
 
-	//TERRAINs:
+#if defined USE_DX_DRIVER_FONT
+    DXshaderClass* m_FontV2Shader = NULL;
+    IDXGIKeyedMutex* keyedMutex11 = NULL;
+    IDXGIKeyedMutex* keyedMutex10 = NULL;
+#endif
+
+//83&84:
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 	std::vector<PositionClass*> m_Position;

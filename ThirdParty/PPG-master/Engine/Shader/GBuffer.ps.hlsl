@@ -54,7 +54,9 @@ GBufferOutput main(PixelShaderInput IN)
     //float4 ambientColor = { 0.550000012, 0.550000012, 0.550000012, 0};
     //OUT.diffuse = Albedo.Sample(PointSampler, IN.texCoord) * saturate(ambientColor + lightIntensity);
     
-    OUT.diffuse = Albedo.Sample(PointSampler, IN.texCoord);
+    //OUT.diffuse = Albedo.Sample(PointSampler, IN.texCoord);
+    OUT.diffuse = Albedo.Sample(LinearSampler, IN.texCoord);
+    
     //OUT.diffuse = float4(1,1,1,1);
     return OUT;
 }

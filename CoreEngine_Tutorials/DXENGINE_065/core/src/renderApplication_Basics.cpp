@@ -58,9 +58,10 @@ extern RApplicationClass* r_Application;
 void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 //-------------------------------------------------------------------------------------------
 {
-	totalRendered = 0;
-	// [1] Animations:
-	// --------------------------------------------------------------------------------------------
+    totalRendered = 0;
+
+    // [1] Animations:
+    // --------------------------------------------------------------------------------------------
 
 	// [2] SceneManager: Process/Filter and Create Lists/trees of objects to render from: WORLD.XML
 	// --------------------------------------------------------------------------------------------
@@ -1263,4 +1264,11 @@ bool ApplicationClass::PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTO
 
 
 
+#endif
+
+#if LEVEL > 79 && LEVEL < 86
+Texture* LoadTextureFromPathFBX(UINT model_type, Graphics& graphics, LPCWSTR& texture)
+{
+    return NULL;
+}
 #endif

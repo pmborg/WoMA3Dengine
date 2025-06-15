@@ -99,8 +99,10 @@ ModelLoader::ModelLoader(const aiScene* assimpScene, Scene& scene, Graphics& gra
 
 SceneModel* ModelLoader::LoadModel(UINT type)
 {
-    ProcessMeshes(type); //Vetices + Indices + Normals... + Materials + Bones
+    // Create Mesh:
+    ProcessMeshes(type); //Vetices + Indices + Normals...(Binormals and Tangents) + Materials + Bones
 
+    // Create Skeleton:
     if (m_HasBones)
     {
 		m_Model->m_Skeleton = m_SkeletonLoader.GenerateSkeleton(pAssimpScene->mRootNode);
@@ -109,8 +111,10 @@ SceneModel* ModelLoader::LoadModel(UINT type)
 		m_Animator->m_Skeleton = m_Model->m_Skeleton;
     }
     
+    // For each sub-mesh create: SceneObject (Matrix structure)
     GenerateSceneObjectHierarchy(pAssimpScene->mRootNode, true, m_Model->m_SceneObject->m_Index);
 
+    // Return Model ready to: Update & Render
     return m_Model;
 }
 
@@ -275,7 +279,6 @@ Mesh* ModelLoader::GenerateMesh(UINT type, UINT meshindex, aiMesh* aimesh)
         }
     }    
 
-    /*
     if (!aimesh->mTangents || aimesh->mBitangents)
     {
         // Allocate tangent and bitangent arrays
@@ -338,7 +341,6 @@ Mesh* ModelLoader::GenerateMesh(UINT type, UINT meshindex, aiMesh* aimesh)
                 aimesh->mBitangents[i] /= lenB;
         }
     }
-    */
 
 #ifdef DEBUG_MESH
     LOG_FILE << "--- vertices" << std::endl;

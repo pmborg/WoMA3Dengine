@@ -275,25 +275,26 @@ public:
 	void CalculateLightRayVertex (float SunDistance);
 #endif
 
-    UINT world_main_size=0;
-
 	std::vector<ModelColorVertexType> MyLightVertexVector;
 	std::vector<ModelColorVertexType>* m_LightVertexVector;
 	LightClass* m_Light = NULL;
 
-#if defined USE_DX_DRIVER_FONT
-	DXshaderClass* m_FontV2Shader = NULL;
-	IDXGIKeyedMutex* keyedMutex11 = NULL;
-	IDXGIKeyedMutex* keyedMutex10 = NULL;
-#endif
+    UINT world_xml_objs = 0;
 
     DWORD total_deltaTime=0;
-	UINT totalRendered = 0;
-
-	UINT world_xml_objs = 0;
 	float billangle = 0;
+
 #if defined USE_LIGHT_RAY
 	void initLightRay();
+#endif
+
+    UINT world_main_size = 0;
+    UINT totalRendered = 0;
+
+#if defined USE_DX_DRIVER_FONT
+    DXshaderClass* m_FontV2Shader = NULL;
+    IDXGIKeyedMutex* keyedMutex11 = NULL;
+    IDXGIKeyedMutex* keyedMutex10 = NULL;
 #endif
 
 //83&84:
@@ -312,8 +313,6 @@ public:
 #ifdef SAVE_WALK
     static std::vector<Filme> saveFilme;
 #endif
-
-	//TERRAINs:
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 	std::vector<PositionClass*> m_Position;
