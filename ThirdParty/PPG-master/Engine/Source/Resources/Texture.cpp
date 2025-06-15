@@ -82,14 +82,14 @@ Texture* Texture::CreateTextureCube(Graphics& graphics, int size, const std::str
 }
 
 #if DX_ENGINE_LEVEL >= 86
-extern Texture* LoadTextureFromPathFBX(Graphics& graphics, LPCWSTR& texturePath);
+extern Texture* LoadTextureFromPathFBX(UINT modeltype, Graphics& graphics, LPCWSTR& texturePath);
 #endif
 
 Texture* Texture::LoadTextureFromPath(UINT modeltype, Graphics& graphics, LPCWSTR& texturePath)
 {
 #if DX_ENGINE_LEVEL >= 86
     if (modeltype >=1)
-        return LoadTextureFromPathFBX(graphics, texturePath);
+        return LoadTextureFromPathFBX(modeltype, graphics, texturePath);
 #endif
 
     std::wstring texturePath_ = texturePath;

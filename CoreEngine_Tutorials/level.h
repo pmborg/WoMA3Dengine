@@ -143,8 +143,8 @@
     //#define LEVEL 82  // ASSIMP-ENGINE                                                                                                   
     //#define LEVEL 83  // Updated billboard shader
     //#define LEVEL 84  // ASSIMP: Animated / walking mesh on the terrain, following a path                                                
-    //#define LEVEL 85  // EXPAND MINI-MAP                                                                                                 
-    #define LEVEL 86    // THE MAIN CHARACTER
+    //#define LEVEL 86  // THE MAIN CHARACTER
+    #define LEVEL 87    // THE MAIN CHARACTER - The other sample variantes
     
     #endif
 #endif

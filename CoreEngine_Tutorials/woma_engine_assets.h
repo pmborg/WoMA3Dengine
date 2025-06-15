@@ -517,7 +517,7 @@
     #define WORLD_XML TEXT("world_82.xml")
 #endif
 #if DX_ENGINE_LEVEL >= 82
-    #define ASSIMP_MODEL_BOBLAMPCLEAN TEXT("engine\\Data\\Models\\boblampclean\\boblampclean.md5mesh")
+    #define ASSIMP_MODEL_BOBLAMPCLEAN TEXT("engine\\data\\Models\\boblampclean\\boblampclean.md5mesh")
 #endif
 #if DX_ENGINE_LEVEL == 83
     #define DEMO_TITLE TEXT("83: Updated billboard shader")
@@ -539,4 +539,15 @@
     #define DEMO_TITLE TEXT("86: The main character.")
     #define WORLD_XML TEXT("world_86.xml")
 #endif
+#if DX_ENGINE_LEVEL >= 86
+    #define MAIN_CHAR_MODEL1 0
+#endif
+#if DX_ENGINE_LEVEL == 87
+    #define DEMO_TITLE TEXT("87: The main character - The other sample variantes")
+    #define WORLD_XML TEXT("world_87.xml")
+#endif
+#if DX_ENGINE_LEVEL >= 87
+    #define MAIN_CHAR_MODEL2 1
+    #define MAIN_CHAR_MODEL3 2
+#endif						 
 					 
