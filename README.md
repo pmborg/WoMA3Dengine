@@ -1,5 +1,12 @@
 # WoMA3Dengine (DX11, DX12, OPENGL, DX9) Advanced Tutorials
 
+**Notes:**<br>
+For now please just clone all content at:<br>
+**C:\WoMA3Dengine**<br>
+<br>
+Later on I will make path free but for a few paths are hardcoded there.<br>
+<br>
+
 <hr>
 <h1>WoMA3Dengine at Level 29 INTRO DEMO</h1>
 
