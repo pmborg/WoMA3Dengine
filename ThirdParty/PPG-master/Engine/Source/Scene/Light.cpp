@@ -52,10 +52,10 @@ LightManager& LightManager::AddLight(Light& light)
         m_NumLights++;
         return *this;
     }
-    else
-    {
-        throw std::exception("LightManager:: Too many lights added");
-    }
+    //else
+    //{
+    //    throw std::exception("LightManager:: Too many lights added");
+    //}
 }
 
 Light& LightManager::GetLight(unsigned int index)
