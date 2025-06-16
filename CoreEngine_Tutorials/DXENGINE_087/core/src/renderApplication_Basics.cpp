@@ -176,7 +176,7 @@ void LoadingMesh(ApplicationClass* app, Application* demoapp, MyDemo* demo)
         womamesh4[MAIN_CHAR_MODEL2].assimpSceneModel = SceneModel::LoadModelToScene(2, WOMA::LoadFile("engine/data/scene87ForestHuntress/"), "", womamesh4[MAIN_CHAR_MODEL2].scene, demoapp->m_Graphics);
         womamesh4[MAIN_CHAR_MODEL3].assimpSceneModel = SceneModel::LoadModelToScene(3, WOMA::LoadFile("engine/data/scene87ForestHuntress/"), "", womamesh4[MAIN_CHAR_MODEL3].scene, demoapp->m_Graphics);
 #endif
-        Shutdownauxcommonfunctions();
+
 #ifdef DEBUG_MESH
         log("STARTING...");
 #endif

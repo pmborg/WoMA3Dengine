@@ -142,6 +142,7 @@ void LoadingMesh(ApplicationClass* app, Application* demoapp, MyDemo* demo)
             app->m_character = NEW PlayerClass(0);
     #endif
 #endif
+
 #ifdef DEBUG_MESH
         log("STARTING...");
 #endif

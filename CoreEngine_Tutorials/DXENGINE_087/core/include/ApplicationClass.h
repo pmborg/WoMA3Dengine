@@ -589,5 +589,7 @@ public:
 
 #define SunDistance 512
 
+extern void Shutdownauxcommonfunctions();
+
 #endif
 

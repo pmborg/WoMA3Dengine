@@ -160,7 +160,7 @@ void LoadingMesh(ApplicationClass* app, Application* demoapp, MyDemo* demo)
 #if DX_ENGINE_LEVEL >= 86 && defined USE_MODEL4
         womamesh4[MAIN_CHAR_MODEL1].assimpSceneModel = SceneModel::LoadModelToScene(1, WOMA::LoadFile("engine/data/scene86ForestHuntress/"), "", womamesh4[MAIN_CHAR_MODEL1].scene, demoapp->m_Graphics);
 #endif
-        Shutdownauxcommonfunctions();
+
 #ifdef DEBUG_MESH
         log("STARTING...");
 #endif

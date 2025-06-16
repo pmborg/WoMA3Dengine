@@ -465,7 +465,7 @@ void ApplicationClass::Shutdown()
 	#endif
 	//}
 #endif
-
+        Shutdownauxcommonfunctions();
 }
 
 //-----------------------------------------------------------------------------------------
