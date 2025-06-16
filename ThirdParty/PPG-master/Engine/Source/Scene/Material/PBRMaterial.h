@@ -22,6 +22,11 @@
 
 using namespace DirectX;
 
+_declspec(align(16)) struct LigthInfo
+{
+    XMFLOAT4	lightDirection;
+};
+
 _declspec(align(16)) struct PBRMaterialInfo
 {
     XMFLOAT4 m_Albedo = XMFLOAT4(0, 0, 0, 0);

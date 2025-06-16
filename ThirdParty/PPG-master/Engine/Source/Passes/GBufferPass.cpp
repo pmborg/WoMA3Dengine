@@ -38,8 +38,13 @@ GBufferPass::GBufferPass(Graphics& graphics, Texture& diffuse, Texture& metalRou
 {
     shader = std::make_unique<Shader>(	L"C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\VertexShader.cso", 
 										L"C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\GBuffer.ps.cso", graphics);
-    m_Buffer = graphics.CreateBuffer(sizeof(PBRMaterialInfo), D3D11_BIND_CONSTANT_BUFFER, nullptr);
+
+
+
+    //m_Buffer = graphics.CreateBuffer(sizeof(PBRMaterialInfo), D3D11_BIND_CONSTANT_BUFFER, nullptr);
+    m_Buffer = graphics.CreateBuffer(sizeof(LigthInfo), D3D11_BIND_CONSTANT_BUFFER, nullptr);
     m_BoneBuffer = graphics.CreateBuffer(sizeof(XMMATRIX) * Skeleton::NUM_BONES, D3D11_BIND_CONSTANT_BUFFER, nullptr);
+
     m_RenderTargets[0] = m_Diffuse.GetRTV();
     m_RenderTargets[1] = m_MetalRough.GetRTV();
     m_RenderTargets[2] = m_Normals.GetRTV();
@@ -63,8 +68,8 @@ void GBufferPass::Render(Graphics& graphics, Scene& scene)
     scene.UseCamera(graphics, scene.m_MainCamera);            // 1,2 VERTEX Buffer: VIEW: & PROJ
     deviceContext->VSSetConstantBuffers(3, 1, &m_BoneBuffer); // 3   VERTEX Buffer: Bones
 
-    deviceContext->PSSetConstantBuffers(0, 1, &m_Buffer);    // 0 Pixel Buffer: 
-    scene.lightManager.Use(deviceContext, 1);                // 1 Pixel Buffer: Light
+    deviceContext->PSSetConstantBuffers(0, 1, &m_Buffer);   // 0 Pixel Buffer: 
+    scene.lightManager.Use(deviceContext, 1);               // 1 Pixel Buffer: Light
 
     Animator* currentAnimator = nullptr;
 
@@ -90,6 +95,8 @@ void GBufferPass::Render(Graphics& graphics, Scene& scene)
         }
         
         PBRMaterial* mat = meshRenderer.m_Material;
+        graphics.UpdateBuffer(m_Buffer, &SystemHandle->m_Application->m_Light->m_lightDirection);
+
         if (mat->m_Albedo)
             mat->m_Albedo->UseSRV(deviceContext, 0);
         meshRenderer.m_Mesh->Draw(deviceContext);

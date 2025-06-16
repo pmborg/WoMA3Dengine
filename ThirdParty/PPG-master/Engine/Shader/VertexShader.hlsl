@@ -1,3 +1,5 @@
+#define PS_USE_SPECULAR
+
 cbuffer PerObject : register(b0)
 {
     matrix model;
@@ -39,6 +41,10 @@ struct VertexShaderOutput
     float3 tangent : TANGENT;
     float3 binormal : BINORMAL;
     float2 texCoord : TEXCOORD0;
+#if defined PS_USE_SPECULAR
+	float3 viewDirection		: TEXCOORD1;			// 34 Specular
+	float4 cameraPosition		: WS;					// 34 Specular
+#endif
 };
 
 

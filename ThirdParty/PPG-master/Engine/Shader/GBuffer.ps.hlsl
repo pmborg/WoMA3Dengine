@@ -1,23 +1,18 @@
-#include "Common/Sampler.hlsli"
+#define PS_USE_SPECULAR
+
+sampler LinearSampler : register(s0);
+sampler PointSampler : register(s1);
 
 Texture2D Albedo : register(t0);
-Texture2D NormalMap : register(t1);
-Texture2D OcclusionRoughnessMetal : register(t2);
-Texture2D AoMap : register(t3);
-Texture2D Emissive : register(t4);
+//Texture2D NormalMap : register(t1);
+//Texture2D OcclusionRoughnessMetal : register(t2);
+//Texture2D AoMap : register(t3);
+//Texture2D Emissive : register(t4);
 
-cbuffer PBRMaterial : register(b0)
+
+cbuffer LigthInfo : register(b0)
 {
-    float4 gAlbedo;
-    float gMetallic;
-    float gRoughness;
-
-    int gUseAlbedoMap;
-    int gUseOccMetalRough;
-    int gUseAoMap;
-    int gUseEmmisive;
-    int gNormalState;
-    int gConvertToLinear;
+    float4 lightDirection;
 }
 
 struct PixelShaderInput
@@ -29,34 +24,46 @@ struct PixelShaderInput
     float3 tangent : TANGENT;
     float3 binormal : BINORMAL;
     float2 texCoord : TEXCOORD0;
+#if defined PS_USE_SPECULAR
+	float3 viewDirection		: TEXCOORD1;			// 34 Specular
+	float4 cameraPosition		: WS;					// 34 Specular
+#endif
 };
 
-struct GBufferOutput
-{
-    float4 diffuse : SV_TARGET0;
-};
-
-//float3 lightDirection = { 0.228761971, -0.915644038, 0.199814045 };
-//
 //////////////////////////////////////////////////////////////////////////////////
-//float4 PSlightFunc1(float3 Normal)
+float4 PSlightFunc1(float3 Normal)
 //////////////////////////////////////////////////////////////////////////////////
-//{
-//    return saturate(dot(Normal, lightDirection)); // Calculate the amount of light on this pixel
-//}
-
-GBufferOutput main(PixelShaderInput IN)
 {
-    GBufferOutput OUT;
-    //float lightIntensity = 0;
-    //
-    //lightIntensity = PSlightFunc1(IN.normal);
-    //float4 ambientColor = { 0.550000012, 0.550000012, 0.550000012, 0};
-    //OUT.diffuse = Albedo.Sample(PointSampler, IN.texCoord) * saturate(ambientColor + lightIntensity);
+    return saturate(dot(Normal, lightDirection.xyz)); // Calculate the amount of light on this pixel
+}
+
+float4 main(PixelShaderInput input) : SV_TARGET
+{
+    float4 ambientColor = { 0.550000012, 0.550000012, 0.550000012, 0 };
+    float4 textureColor = Albedo.Sample(LinearSampler, input.texCoord);
+    float lightIntensity = PSlightFunc1(input.normal);
     
-    //OUT.diffuse = Albedo.Sample(PointSampler, IN.texCoord);
-    OUT.diffuse = Albedo.Sample(LinearSampler, IN.texCoord);
+    textureColor = textureColor * saturate(ambientColor + lightIntensity);
     
-    //OUT.diffuse = float4(1,1,1,1);
-    return OUT;
+#if defined PS_USE_SPECULAR //34: If enabled on material, calculate the Specular LIGHT
+    {
+        if (lightIntensity > 0.0f)
+        {
+            float4 color = ambientColor;
+			
+            //color += (diffuseColor * lightIntensity);
+            color += (lightIntensity);
+		
+            color = saturate(color);
+            float3 Reflection = normalize(2 * lightIntensity * input.normal + lightDirection.xyz);
+            float fPhoneValue = saturate(dot(Reflection, input.viewDirection)); // (R.V)
+            float4 specular = pow(fPhoneValue, 52/*nShininess*/); // Ls = (R.V)^alfa (alfa Determine the amount of specular light based on the reflection vector, viewing direction, and specular power.)
+
+            color = color * textureColor;
+            textureColor = saturate(textureColor + specular); // specular = Ls (contribution of the light source) * Ks (specular component of the material)
+        }
+    }
+#endif
+    
+    return textureColor;
 }

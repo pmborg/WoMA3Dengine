@@ -42,18 +42,17 @@ struct WomaMesh {
 class MyDemo : public Demo
 {
 public:
-
-
     AnimationModelLoader animJob;
     std::unique_ptr<GBufferPass> gBufferPass;
 private:
-    std::unique_ptr<Sampler> linearSampler;
-    std::unique_ptr<Sampler> pointSampler;
     std::unique_ptr<Texture> colour;
     std::unique_ptr<Texture> diffuse;
     std::unique_ptr<Texture> metalRough;
     std::unique_ptr<Texture> normals;
     std::unique_ptr<Texture> emissive;
+
+    std::unique_ptr<Sampler> linearSampler;
+    std::unique_ptr<Sampler> pointSampler;
 
     std::unique_ptr<Texture> LoadTextureFromPath(UINT modeltype, Graphics& graphics, LPCWSTR& path)
     {
@@ -77,17 +76,19 @@ public:
         unsigned int clientWidth = clientRect.right - clientRect.left;
         unsigned int clientHeight = clientRect.bottom - clientRect.top;
 
+
         colour = CreateRenderTexture(graphics, clientWidth, clientHeight, "Colour", DXGI_FORMAT_R16G16B16A16_FLOAT);
         diffuse = CreateRenderTexture(graphics, clientWidth, clientHeight, "Diffuse", DXGI_FORMAT_R16G16B16A16_FLOAT);
-        normals = CreateRenderTexture(graphics, clientWidth, clientHeight, "Normals", DXGI_FORMAT_R16G16B16A16_FLOAT);
         metalRough = CreateRenderTexture(graphics, clientWidth, clientHeight, "MetalRough", DXGI_FORMAT_R16G16B16A16_FLOAT);
+        normals = CreateRenderTexture(graphics, clientWidth, clientHeight, "Normals", DXGI_FORMAT_R16G16B16A16_FLOAT);
         emissive = CreateRenderTexture(graphics, clientWidth, clientHeight, "Emissive", DXGI_FORMAT_R16G16B16A16_FLOAT);
-
-        linearSampler = std::make_unique<Sampler>(graphics, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
-        pointSampler = std::make_unique<Sampler>(graphics, D3D11_FILTER_MIN_MAG_MIP_POINT, D3D11_TEXTURE_ADDRESS_CLAMP);
 
 		//VertexShader.cso
         gBufferPass = std::make_unique<GBufferPass>(graphics, *diffuse.get(), *metalRough.get(), *normals.get(), *emissive.get());
+
+
+        linearSampler = std::make_unique<Sampler>(graphics, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+        pointSampler = std::make_unique<Sampler>(graphics, D3D11_FILTER_MIN_MAG_MIP_POINT, D3D11_TEXTURE_ADDRESS_CLAMP);
 
         auto deviceContext = graphics.m_DeviceContext;
         linearSampler->Use(deviceContext, 0);
