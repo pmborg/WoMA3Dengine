@@ -4,7 +4,7 @@
 For now please just clone all content at:<br>
 **C:\WoMA3Dengine**<br>
 <br>
-Later on I will make path free but for a few paths are hardcoded there.<br>
+Later on I will make path free but for now a few paths are hardcoded there.<br>
 <br>
 
 <hr>
