@@ -54,6 +54,8 @@ Try to Change the driver on the fly without the need of close and open the Appli
 <hr>
 
 - <b>DX87: THE MAIN CHARACTER - The other sample variants</b><br>
+    Using animation:<br>
+    - Idle, Idle2, Idle3 for each variant.
  
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_087.jpg](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_087.jpg)	
 
