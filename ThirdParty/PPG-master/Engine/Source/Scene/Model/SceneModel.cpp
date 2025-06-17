@@ -36,8 +36,10 @@
 #include <assimp/version.h>
 #include <assimp/revision.h>
 
-//FBX-1
+//FBX: SceneModel.h
 unsigned char* Forest_Huntress_idle_fbx_Model_LOD0_fbxBuffer = NULL;
+unsigned char* Forest_Huntress_idle2_fbx_Model_LOD0_fbxBuffer = NULL;
+unsigned char* Forest_Huntress_idle3_fbx_Model_LOD0_fbxBuffer = NULL;
 
 #ifdef DEBUG_MESH
 void showNodeName(aiNode* node, UINT i = 0);
@@ -108,12 +110,22 @@ SceneModel* SceneModel::LoadModelToScene(UINT type, std::string meshFileName, st
 #ifndef GENERATE_PACK
         unsigned long filebufferSize=0;
         switch (type) {
+        //SceneModel.h
+        //DX_ENGINE_LEVEL >= 86
         case 1:
-        case 2:
-        case 3:
             pBuffer = Forest_Huntress_idle_fbx_Model_LOD0_fbxBuffer;
             filebufferSize = Forest_Huntress_idle_fbx_Model_LOD0_fbx_size;
             break;
+        //DX_ENGINE_LEVEL >= 87
+        case 2:
+            pBuffer = Forest_Huntress_idle2_fbx_Model_LOD0_fbxBuffer;
+            filebufferSize = Forest_Huntress_idle2_fbx_Model_LOD0_fbx_size;
+            break;
+        case 3:
+            pBuffer = Forest_Huntress_idle3_fbx_Model_LOD0_fbxBuffer;
+            filebufferSize = Forest_Huntress_idle3_fbx_Model_LOD0_fbx_size;
+            break;
+
         }
 
         const aiScene* pScene = importer.ReadFileFromMemory(pBuffer, filebufferSize, DX_ASSIMP_LOAD_FLAGS, "fbx"); // format hint, e.g. "obj", "fbx", "gltf"

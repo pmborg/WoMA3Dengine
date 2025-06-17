@@ -493,17 +493,16 @@
     #define MAIN_RENDER_BILLBOARDS      //70/74
     #define MAIN_RENDER_ASSIMP          //82
 
+	//#define DEBUG_MESH					
     #if defined ASSIMP //>= 79
         #if DX_ENGINE_LEVEL == 79
             //FBX/DAE
             #define MAVERICK
-            //#define DEBUG_MESH          //79+80
             #define USE_MATH3D          //79+80
             #define USE_ASSIMP_GLLIB    //79+80
             #define USE_ASSIMP_LATEST   //79-def
         #endif
         #if DX_ENGINE_LEVEL == 80
-            //#define DEBUG_MESH          //79+80
             #define USE_MATH3D          //79+80
             #define USE_ASSIMP_GLLIB    //79+80
             //#undef  USE_ASSIMP_LATEST   //79-undef
@@ -513,10 +512,8 @@
             #define USE_ASSIMP_DXLIB //81
         #endif
     #endif
-    
     #if DX_ENGINE_LEVEL >= 82
         #define USE_ASSIMP_LATEST       //82
-        #define DEBUG_MESH
     #endif
     #if DX_ENGINE_LEVEL >= 83
         //#define SAVE_WALK
@@ -532,26 +529,23 @@
     //-------------------------------------------------
     #define USE_MODEL1
     #define USE_MODEL2
+    #ifndef USE_MODEL2
+        #undef SCENE_SKIN
+    #endif
 
     #if DX_ENGINE_LEVEL >= 86
         #undef USE_STATUSBAR
-        //#define DEBUG_MESH
         #define USE_INTRO_VIDEO_DEMO
         #define USE_MODEL4
     #endif
     //-------------------------------------------------
-    #ifndef USE_MODEL2
-        #undef SCENE_SKIN
-    #endif
     //#define SIMPLE
 	
 	
 	
 	
 	
-    #ifndef USE_MODEL2
-        #undef SCENE_SKIN
-    #endif
+
     //#define USE_MULTI_MONITOR
     //-------------------------------------------------------------------------------------------------------
     #if !defined USE_LIGHT_RAY          // ON/OFF - Render light ray !!Dep!!: #undef  dx12_upload_old_way

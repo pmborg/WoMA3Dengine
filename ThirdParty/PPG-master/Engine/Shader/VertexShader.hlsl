@@ -79,7 +79,20 @@ VertexShaderOutput main(VertexShaderInput input)
     OUT.normal = normalize(input.normal);
     OUT.tangent = normalize(input.tangent);
     OUT.binormal = normalize(input.binormal);
+    
+    float4 cameraPosition = mul(float4(input.position, 1), vp);
+    
+	//34: SPECULAR
+#if defined PS_USE_SPECULAR
+    OUT.cameraPosition = cameraPosition;
 
+    //if (VShasSpecular)	// If enabled on material, calculate the Specular LIGHT
+    {
+        float4 worldPosition = mul(float4(input.position, 1), model); // P
+        OUT.viewDirection = normalize(cameraPosition.xyz - worldPosition.xyz); // L = Lp - p (L = lightDirection)
+    }
+#endif
+    
     return OUT;
 }
 

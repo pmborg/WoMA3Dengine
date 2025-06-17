@@ -49,11 +49,19 @@ private:
 };
 
 #ifndef GENERATE_PACK
-#define Forest_Huntress_idle_fbx_Model_LOD0_fbx_size 3438412
+#define Forest_Huntress_idle_fbx_Model_LOD0_fbx_size 3438412    //Forest_Huntress_idle_fbx_Model_LOD0_fbx
+#define Forest_Huntress_idle2_fbx_Model_LOD0_fbx_size 3393868   //Forest_Huntress_idle2_fbx_Model_LOD0_fbx
+#define Forest_Huntress_idle3_fbx_Model_LOD0_fbx_size 3372588   //Forest_Huntress_idle3_fbx_Model_LOD0_fbx
+
 #define Skin_1_Armor_and_Weapon_Albedo_png_size 42376836
 #define Skin_1_Body_Albedo_png_size 23213119
 #define Skin_1_Hair_Albedo_png_size 9668891
 #define Skin_1_Head_Albedo_png_size 12728492
 #endif
 
+//DX_ENGINE_LEVEL >= 86:
 extern unsigned char* Forest_Huntress_idle_fbx_Model_LOD0_fbxBuffer;
+//DX_ENGINE_LEVEL >= 87:
+extern unsigned char* Forest_Huntress_idle2_fbx_Model_LOD0_fbxBuffer;
+extern unsigned char* Forest_Huntress_idle3_fbx_Model_LOD0_fbxBuffer;
+
