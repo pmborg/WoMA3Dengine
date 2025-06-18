@@ -29,9 +29,6 @@
 #include "OSmain_dir.h"
 #include "fileLoader.h"
 
-  #if defined DX9sdk
-	#include "Dx9Class.h"
-  #endif
   #if defined DX11 || defined DX9
 	#include "Dx11Class.h"
   #endif
@@ -46,10 +43,6 @@
 	#include "wGLopenGLclass.h"		// Windows
     #endif
   #endif
-
-#if defined USE_DIRECT_INPUT
-	#include <dinput.h>
-#endif
 
 #if defined ALLOW_PRINT_SCREEN_SAVE_PNG && defined DX11
 #include <wincodec.h>
@@ -185,7 +178,7 @@ void dxWinSystemClass::Shutdown()
 #if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21
 	if (m_Camera)
 	{
-		delete ((DirectX::DXcameraClass*)m_Camera); 
+		delete ((DXcameraClass*)m_Camera); 
 		m_Camera = NULL;
 	}
 #endif
@@ -237,12 +230,6 @@ void dxWinSystemClass::GPH_RESIZE()
 
 	switch (AppSettings->DRIVER)
 	{
-	#if defined DX9sdk
-		case DRIVER_DX9:
-			((DirectX::DX9Class*)m_Driver)->Resize(SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT,
-					SystemHandle->AppSettings->SCREEN_NEAR, SystemHandle->AppSettings->SCREEN_DEPTH,
-					SystemHandle->AppSettings->FULL_SCREEN, SystemHandle->AppSettings->BITSPERPEL);
-	#endif
 	#if defined DX11 || defined DX9
 		case DRIVER_DX9:
 		case DRIVER_DX11:
@@ -437,7 +424,7 @@ HRESULT dxWinSystemClass::PlayIntroMovie(TCHAR* movie)
             // Make Sure that we have aquired the FOCUS and INPUT:
             if (DXsystemHandle->m_Input->m_mouse && DXsystemHandle->m_Input->m_keyboard)				
             {
-                IF_NOT_THROW_EXCEPTION(DXsystemHandle->m_Input->Frame());
+                IF_NOT_THROW_EXCEPTION(DXsystemHandle->m_Input->GetMouseKeyboardState());
             }
             else
                 DXsystemHandle->m_Input->Initialize(SystemHandle->m_hinstance);

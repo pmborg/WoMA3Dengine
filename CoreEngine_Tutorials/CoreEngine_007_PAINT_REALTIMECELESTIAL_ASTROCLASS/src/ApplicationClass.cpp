@@ -108,6 +108,11 @@ ApplicationClass::ApplicationClass()
 	initWorld =  NULL;    // Get Astro Positions
 #endif
 
+#if defined USE_3RD_PERSON_CAMERA
+    m_camYaw = 0.0f;
+    m_camPitch = 0.0f;
+#endif
+
 #if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN //24
 	//autoGenUnderWaterTerrain		= NULL;
 #endif

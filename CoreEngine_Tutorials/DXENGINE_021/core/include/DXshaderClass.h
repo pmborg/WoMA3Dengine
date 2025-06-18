@@ -31,9 +31,6 @@
 #include "womadriverclass.h"
 #include "virtualModelClass.h"
 
-  #if defined DX9sdk
-	#include "Dx9Class.h"
-  #endif
 	#if defined DX11 || defined DX9
 	#include "Dx11Class.h"
   #endif
@@ -238,9 +235,6 @@ namespace DirectX
 		STRING MODEL_NAME;
 		INT    m_ObjId = 0;
 
-#if defined DX9sdk
-		DirectX::DX9Class* m_driver9 = NULL;
-#endif
 #if defined DX11 || defined DX9
 		DirectX::DX11Class* m_driver11 = NULL;
 #endif
@@ -297,10 +291,6 @@ namespace DirectX
 
 		ID3D11ShaderResourceView* texture11 = NULL;	// 21
 		ID3D11ShaderResourceView* texture11_2 = NULL;	// 43: Alfa Map
-#endif
-#if defined DX9sdk
-		LPDIRECT3DTEXTURE9 texture9 = NULL;
-		LPDIRECT3DTEXTURE9 texture9_2 = NULL;
 #endif
 #if defined DX12
 		DX12TextureClass* texture = NULL;

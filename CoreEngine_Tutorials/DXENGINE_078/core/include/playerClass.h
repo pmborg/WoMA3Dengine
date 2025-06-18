@@ -25,10 +25,6 @@
 ///////////////////////////////
 #include "main.h"
 
-#if defined DX9sdk
-	#include "DX9Class.h"
-#endif
-
 #if defined DX11
 // -------------------------------------------------------------------------------------------
 // Use OLD xnamath from DirectX SDK June2010 or Windows Kit 8?

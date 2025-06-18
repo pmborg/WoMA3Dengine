@@ -70,8 +70,8 @@ public:
 	bool Initialize(HINSTANCE);
 	void Shutdown();
 
-	bool Frame();
-	void ProcessInput();
+	bool GetMouseKeyboardState();
+	void ProcessInputKeys();
 
 	// Mouse
 	void mouseWheelIn(WPARAM wParam);

@@ -32,7 +32,7 @@
 #define FILE_REPORT_LOG     TEXT("report.txt")  // C:\WoMAengine2023\DXEngine_055\report.txt
 #endif                                          // \\wsl.localhost\Ubuntu\home\pedro\projects\LinuxWoma\bin\x64\Debug\report.txt
 //--------------------------------------------------------------------------------------------------------
-
+ 
 #if CORE_ENGINE_LEVEL == 0
     #define DEMO_TITLE TEXT("00: WOMA Hello World!")
 #endif
@@ -47,7 +47,7 @@
     #define MIN_WIDTH_RESOLUTION 1000
     #define MIN_HEIGHT_RESOLUTION 1000
     #define MAX_WIN32_MONITORS 16  //Windows 10/11 Pro & Enterprise: Officially supports up to 10 displays, but some users have 16 (according chagpt!)
-#endif    
+#endif
 #if CORE_ENGINE_LEVEL == 3
     #define DEMO_TITLE TEXT("03: Testing MINI FILE DUMPER: C:\\Users\\Public\\Documents\\<user>\\<core-level>\\<dx-level>\\_WoMA3Dengine_<DATE>.dmp")
 #endif
@@ -215,7 +215,7 @@
 #if !defined DEMO_LEVEL
     #define SETTINGS_FILE       TEXT("settings_026.xml")
 #endif
-    #define DEMO_TITLE TEXT("The first 3D SPHEREs")
+    #define DEMO_TITLE TEXT("26: The first 3D SPHEREs")
 #endif
 #if DX_ENGINE_LEVEL >= 26
     #define SKY_DOME_DAY_TEXTURE TEXT("engine/data/sky/NEW_SKY_DOME.jpg")
@@ -225,7 +225,7 @@
 #if !defined DEMO_LEVEL
     #define SETTINGS_FILE       TEXT("settings_027.xml")
 #endif
-    #define DEMO_TITLE TEXT("The rastertek fonts on DX9, DX11, DX12 and OPENGL")
+    #define DEMO_TITLE TEXT("27: The rastertek fonts on DX9, DX11, DX12 and OPENGL")
 #endif
 #if DX_ENGINE_LEVEL >= 27
     #define FONT_DATA_FILE TEXT("engine/data/fonts/008fontdata.txt")
@@ -235,7 +235,7 @@
 #if !defined DEMO_LEVEL
     #define SETTINGS_FILE       TEXT("settings_028.xml")
 #endif
-    #define DEMO_TITLE TEXT("The DX direct input, the Sky Camera and the Sphere Skydome")
+    #define DEMO_TITLE TEXT("28: The DX direct input, the Sky Camera and the Sphere Skydome")
     #define WORLD_XML TEXT("world_28.xml")
 #endif
 
@@ -249,7 +249,7 @@
         #endif
     #endif
 
-    #define DEMO_TITLE TEXT("DEMO: The music and the sound effects")
+    #define DEMO_TITLE TEXT("29: DEMO: The music and the sound effects")
     #define WORLD_XML TEXT("world_29.xml")
     #endif
 
@@ -284,58 +284,58 @@
 #if !defined DEMO_LEVEL
     #define SETTINGS_FILE       TEXT("settings_030.xml")
 #endif
-    #define DEMO_TITLE TEXT("WORLD.XML: load OBJ 3D file format, using COLOR shader")
+    #define DEMO_TITLE TEXT("30: load OBJ 3D file format, using COLOR shader")
     #define WORLD_XML TEXT("world_30.xml")
 #endif
 #if DX_ENGINE_LEVEL >= 30
     #define SETTINGS_FILE       TEXT("settings.xml")
 #endif
 #if DX_ENGINE_LEVEL == 31
-    #define DEMO_TITLE TEXT("WORLD.XML: load OBJ 3D file format, with MULTIPLE TEXTURES, using TEXTURE shader")
+    #define DEMO_TITLE TEXT("31: load OBJ 3D file format, with MULTIPLE TEXTURES, using TEXTURE shader")
     #define WORLD_XML TEXT("world_31.xml")
 #endif
 #if DX_ENGINE_LEVEL == 32
-    #define DEMO_TITLE TEXT("WORLD.XML: load OBJ 3D file format, the first advanced object, using LIGHT shader")
+    #define DEMO_TITLE TEXT("32: load OBJ 3D file format, the first advanced object, using LIGHT shader")
     #define WORLD_XML TEXT("world_32.xml")
 #endif
 #if DX_ENGINE_LEVEL == 33
-    #define DEMO_TITLE TEXT("WORLD.XML: load OBJ 3D file format, the compond, using transparent textures ALFA MAP and ALFA COLOR")
+    #define DEMO_TITLE TEXT("33: load OBJ 3D file format, the compond, using transparent textures ALFA MAP and ALFA COLOR")
     #define WORLD_XML TEXT("world_33.xml")
 #endif
 #if DX_ENGINE_LEVEL == 34
-    #define DEMO_TITLE TEXT("WORLD.XML: load OBJ 3D file format, with SPECULAR and SHININESS")
+    #define DEMO_TITLE TEXT("34: load OBJ 3D file format, with SPECULAR and SHININESS")
     #define WORLD_XML TEXT("world_34.xml")
 #endif
 #if DX_ENGINE_LEVEL == 35
-    #define DEMO_TITLE TEXT("WORLD.XML: load OBJ 3D file format, with BUMP MAP")
+    #define DEMO_TITLE TEXT("35: load OBJ 3D file format, with BUMP MAP")
     #define WORLD_XML TEXT("world_35.xml")
 #endif
 #if DX_ENGINE_LEVEL == 36
-    #define DEMO_TITLE TEXT("WORLD.XML: load OBJ 3D file format, render a SHADOW MAP")
+    #define DEMO_TITLE TEXT("36: load OBJ 3D file format, render a SHADOW MAP")
     #define WORLD_XML TEXT("world_36.xml")
 #endif
 #if DX_ENGINE_LEVEL == 37
-    #define DEMO_TITLE TEXT("WORLD.XML: load OBJ 3D file format, render chess board pieces, adding MAIN THREAD and the LOADER THREAD")
+    #define DEMO_TITLE TEXT("37: load OBJ 3D file format, render chess board pieces, adding MAIN THREAD and the LOADER THREAD")
     #define WORLD_XML TEXT("world_37.xml")
 #endif
 #if DX_ENGINE_LEVEL == 38
-    #define DEMO_TITLE TEXT("WORLD.XML: load OBJ 3D file format, save to W3D Woma 3D fast file FORMAT")
+    #define DEMO_TITLE TEXT("38: load OBJ 3D file format, save to W3D Woma 3D fast file FORMAT")
     #define WORLD_XML TEXT("world_38.xml")
 #endif
 #if DX_ENGINE_LEVEL == 39
-    #define DEMO_TITLE TEXT("WORLD.XML: load W3D (the Woma 3D file format) files up to 30x faster than OBJ files in DX LEVEl38")
+    #define DEMO_TITLE TEXT("39: load W3D (the Woma 3D file format) files up to 30x faster than OBJ files in DX LEVEl38")
     #define WORLD_XML TEXT("world_39.xml")
 #endif
 #if DX_ENGINE_LEVEL == 40
-    #define DEMO_TITLE TEXT("WORLD.XML: load W3D and use INSTANCES to clone objects using GPU")
+    #define DEMO_TITLE TEXT("40: load W3D and use INSTANCES to clone objects using GPU")
     #define WORLD_XML TEXT("world_40.xml")
 #endif
 #if DX_ENGINE_LEVEL == 41
-    #define DEMO_TITLE TEXT("WORLD.XML: load W3D and use SHADOW INSTANCES")
+    #define DEMO_TITLE TEXT("41: load W3D and use SHADOW INSTANCES")
     #define WORLD_XML TEXT("world_41.xml")
 #endif
 #if DX_ENGINE_LEVEL == 42
-    #define DEMO_TITLE TEXT("WORLD.XML: load W3D and use SHADOW INSTANCES with ROTATION per instance")
+    #define DEMO_TITLE TEXT("42: load W3D and use SHADOW INSTANCES with ROTATION per instance")
     #define WORLD_XML TEXT("world_42.xml")
 #endif
 
@@ -543,11 +543,22 @@
     #define MAIN_CHAR_MODEL1 0
 #endif
 #if DX_ENGINE_LEVEL == 87
-    #define DEMO_TITLE TEXT("87: The main character - The other sample variantes")
+    #define DEMO_TITLE TEXT("87: The main character - The other sample variants")
     #define WORLD_XML TEXT("world_87.xml")
 #endif
 #if DX_ENGINE_LEVEL >= 87
     #define MAIN_CHAR_MODEL2 1
     #define MAIN_CHAR_MODEL3 2
 #endif						 
-					 
+#if DX_ENGINE_LEVEL == 88
+    #define DEMO_TITLE TEXT("88: 3rd person camera")
+    #define WORLD_XML TEXT("world_88.xml")
+#endif					 
+#if DX_ENGINE_LEVEL == 89
+    #define DEMO_TITLE TEXT("88: Mesh with PBR Textures")
+    #define WORLD_XML TEXT("world_89.xml")
+#endif					 
+#if DX_ENGINE_LEVEL == 90
+    #define DEMO_TITLE TEXT("90: OPTIMIZING")
+    #define WORLD_XML TEXT("world_90.xml")
+#endif

@@ -103,8 +103,10 @@ void WinSystemClass::ProcessFrame()
 #endif
 
 	{
+        m_Application->dayLightFade = m_Application->ProcessInputUpdate();	//OS CORE ONLY!  F1, F2, ...
+
 		#if defined INTRO_DEMO
-		m_Application->dayLightFade = m_Application->Update();	//OS CORE ONLY!  F1, F2, ...
+		//m_Application->dayLightFade = m_Application->ProcessInputUpdate();	//OS CORE ONLY!  F1, F2, ...
 		if (RENDER_PAGE < 15) 
 		#else
 		if (RENDER_PAGE < 10)
@@ -115,16 +117,12 @@ void WinSystemClass::ProcessFrame()
 		for (int mon = 0; mon < windowsArray.size(); mon++)
 		{
 			{
-				m_Driver->BeginScene(mon);								//RESET FRAME                               | PROFILE: 0.08%
+				m_Driver->BeginScene(mon);								//RESET FRAME                           | PROFILE: 0.08%
 
-				#if !defined INTRO_DEMO
-				m_Application->dayLightFade = m_Application->Update();	//OS CORE ONLY!  F1, F2, ...                | PROFILE: 10.78%
-				#endif
-                
-				m_Application->RenderScene(mon, m_Driver);				//RENDER ONE FRAME: 100% is done here!      | PROFILE: 44.40%
+				m_Application->RenderScene(mon, m_Driver);				//RENDER ONE FRAME: 100% is done here!  | PROFILE: 44.40%
                 
 				if (!g_contextDriver)									//SHOW FRAME:
-					m_Driver->EndScene(mon);							// [DX]: Present                            | PROFILE: 19.03%
+					m_Driver->EndScene(mon);							// [DX]: Present                        | PROFILE: 19.03%
 				else
 					g_contextDriver->EndScene(mon);						// [OPENGL]: SwapBuffers
 			}
@@ -270,7 +268,7 @@ void WinSystemClass::GetInputs()
 #if defined USE_DIRECT_INPUT						// Read the User Input
 	if (DXsystemHandle->m_Input->m_mouse && DXsystemHandle->m_Input->m_keyboard)	// Make Sure that we have aquired the FOCUS and INPUT:
 	{
-		ASSERT(DXsystemHandle->m_Input->Frame()); // Update "Keyboard State": Process the changes in the Mouse and Keyboard.
+		ASSERT(DXsystemHandle->m_Input->GetMouseKeyboardState()); // Update "Keyboard State": Process the changes in the Mouse and Keyboard.
 	}
 	else
 		DXsystemHandle->m_Input->Initialize(SystemHandle->m_hinstance); //re-gain input if necessary.

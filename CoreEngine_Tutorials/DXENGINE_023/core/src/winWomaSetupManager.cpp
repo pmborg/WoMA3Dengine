@@ -329,7 +329,7 @@ bool WomaSetupManager::Initialize(void* Driver)
 #else
     SendMessage(hWndComboBox[2], CB_ADDSTRING, 1, reinterpret_cast<LPARAM>(TEXT("GL3 (not suppported)")));
 #endif
-#if defined DX9sdk
+#if _NOT //defined DX9sdk
     SendMessage(hWndComboBox[2], CB_ADDSTRING, 2, reinterpret_cast<LPARAM>(TEXT("DX9")));
 #elif defined DX9 && D3D11_SPEC_DATE_YEAR > 2009
     SendMessage(hWndComboBox[2], CB_ADDSTRING, 2, reinterpret_cast<LPARAM>(TEXT("DX9(onDX11)")));

@@ -40,9 +40,6 @@ namespace DirectX {
 		m_baseViewMatrix = NULL;
 
 
-#if defined DX9sdk
-		m_driver9 = NULL;
-#endif
 #if defined DX_ENGINE
 		m_spriteShader = NULL;
 #endif

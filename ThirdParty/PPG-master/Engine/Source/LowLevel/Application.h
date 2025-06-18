@@ -29,6 +29,8 @@ public:
     Application();
     Graphics m_Graphics; // graphics depends on window
 
+
+
 private:
 
     Window m_Window;

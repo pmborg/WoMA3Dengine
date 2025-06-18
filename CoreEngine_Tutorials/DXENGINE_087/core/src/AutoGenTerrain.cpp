@@ -272,9 +272,6 @@ bool CTerrain::LoadHeightMapTerrain(TCHAR* file, float xPos, float zPos, bool sk
 	return true;
 }
 
-#if defined DX9sdk
-#include "Dx9Class.h"
-#endif
 #if defined DX11 || defined DX9
 #include "Dx11Class.h"
 #endif

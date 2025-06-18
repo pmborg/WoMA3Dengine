@@ -25,7 +25,7 @@
 //-----------------------------------------------------------------------------   
 struct Tree   
 {   
-	/*D3DXVECTOR3*/ XMFLOAT3 vPos;				// Origin of tree   
+	XMFLOAT3 vPos;				// Origin of tree   
 	float		rotY;
 	float		scale;
 	UINT        type;

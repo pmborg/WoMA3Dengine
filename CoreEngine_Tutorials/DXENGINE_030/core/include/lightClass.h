@@ -31,10 +31,6 @@
 #pragma warning( disable : 4324 ) // 4324: '': structure was padded due to __declspec(align())
 #pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
 
-#if defined DX9sdk
-	#include "DX9Class.h" // Driver
-#endif
-
 #if defined DX11
 	#include <d3d11.h>
 	#pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
@@ -101,11 +97,6 @@ public:
 	float m_diffuseColor[4] = {};
 
 	float m_viewMatrix[4] = {};
-#endif
-
-#if defined DX9sdk
-	D3DXVECTOR3 vecDir = {};
-	D3DLIGHT9 light = {};
 #endif
 
 //	-------------------------------------------------------------------------------------------

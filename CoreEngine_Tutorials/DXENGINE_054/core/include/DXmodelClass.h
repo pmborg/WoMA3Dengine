@@ -47,9 +47,6 @@ using namespace DirectX;
 //////////////
 // INCLUDES //
 //////////////
-#if defined DX9sdk
-#include "DX9Class.h"
-#endif
 
 #include "DXshaderClass.h"
 #include "virtualModelClass.h"
@@ -94,9 +91,6 @@ public:
 	#if defined DX11 || defined DX9
 		ID3D11ShaderResourceView* m_Texture11 = NULL;
 	#endif
-	#if defined DX9sdk
-		LPDIRECT3DTEXTURE9 m_Texture9 = NULL;
-	#endif
 	#if defined DX12
 		DX12TextureClass* m_Texture = NULL;
 	#endif
@@ -132,15 +126,8 @@ public:
 	#if defined DX11 || defined DX9
 		std::vector<ID3D11ShaderResourceView*> meshSRV11;	// vector with all pointer(s) to textures loaded
 	#endif
-	#ifdef DX9sdk
-		std::vector<IDirect3DBaseTexture9*> meshSRV9;	// vector with all pointer(s) to textures loaded
-	#endif
 
 // DX Specific:
-#if defined DX9sdk
-	DXshaderClass*	m_Shader9;
-	D3DXMATRIX		m_worldMatrix9;
-#else
   #if defined DX11 || defined DX9
 	DXshaderClass*	m_Shader11=NULL;
   #endif
@@ -149,7 +136,6 @@ public:
   #endif
 
 	XMMATRIX		m_worldMatrix;
-#endif
 
 	XMFLOAT4 objectCenterOffset = XMFLOAT4(0, 0, 0, 0);
 	XMFLOAT3 minVertex = XMFLOAT3(0, 0, 0);
@@ -219,9 +205,6 @@ private:
 	// VARS:
 	// ----------------------------------------------------------------------
 	
-#if defined DX9sdk
-	DirectX::DX9Class* m_driver9=NULL;
-#endif
 #if defined DX11 || defined DX9
 	DirectX::DX11Class* m_driver11 = NULL;
 #endif
@@ -251,11 +234,6 @@ private:
 #if defined DX11 || defined DX9
 	ID3D11Buffer	*m_vertexBuffer11 = NULL;
 	ID3D11Buffer	*m_indexBuffer11 = NULL;
-#endif
-
-#if defined DX9sdk
-	LPDIRECT3DVERTEXBUFFER9 vertexBuffer9;
-	LPDIRECT3DINDEXBUFFER9  indexBuffer9;
 #endif
 
 	std::vector<UINT>* indexModelList;

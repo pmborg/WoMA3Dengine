@@ -159,12 +159,8 @@ namespace DirectX
 		// DUMP: indices
 		// --------------------------------------------------------------------------------------------------------------------------------
 		// Scale down all "int" to "short"
-#if DX9sdk
-		FIN_WRITE((char*)&indices16[0], W3D.indicesCount * sizeof(WORD));
-#else
 //WOMA_LOGManager_DebugMSGAUTO(TEXT("sizeof(UINT): %d\n"), sizeof(UINT));
 		FIN_WRITE((char*)&obj3d.indices32[0], W3D.indicesCount * sizeof(UINT));
-#endif
 
 		// DUMP: SubsetIndexStart
 		// --------------------------------------------------------------------------------------------------------------------------------
@@ -273,13 +269,8 @@ namespace DirectX
 			modelNormalBumpVertex = &modelNormalBumpVertex_;
 		}
 
-#if DX9sdk
-		indices16.resize(m_indexCount);
-		obj3d.read((char*)&indices16[0], W3D.indicesCount * W3D.size_indicesCount /*sizeof(WORD)*/);
-#else
 		obj3d.indices32.resize(m_indexCount);
 		obj3dfile.read((char*)&obj3d.indices32[0], W3D.indicesCount * W3D.size_indicesCount /*sizeof(UINT)*/);
-#endif
 
 		// READ: meshSubsetIndexStart
 		obj3d.meshSubsetIndexStart.resize(W3D.meshSubsetIndexStartCount);

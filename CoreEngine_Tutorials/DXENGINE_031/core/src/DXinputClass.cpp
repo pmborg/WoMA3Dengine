@@ -22,7 +22,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 #include "main.h"
-//#define DX_INPUT_DEBUG_TEST	//ON/OFF LOG ON CONSOLE KEYs
+#define DX_INPUT_DEBUG_TEST	//ON/OFF LOG ON CONSOLE KEYs
 
 #if defined USE_DIRECT_INPUT
 #include "DXinputClass.h"
@@ -142,7 +142,7 @@ HRESULT result;
 	caps.dwSize = sizeof(DIDEVCAPS);
 	m_keyboard->GetCapabilities(&caps);
 
-	WOMA_LOGManager_DebugMSGAUTO (TEXT("Dx KeyBoard Num. Buttons: %d\n"), caps.dwButtons);
+	//WOMA_LOGManager_DebugMSGAUTO (TEXT("Dx KeyBoard Num. Buttons: %d\n"), caps.dwButtons);
 
 	// Set the data format.  In this case since it is a keyboard we can use the predefined data format.
 	result = m_keyboard->SetDataFormat(&c_dfDIKeyboard);
@@ -211,18 +211,13 @@ bool DXInputClass::Initialize(HINSTANCE hinstance)
 {
 	HRESULT result;
 
-	//if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
-	{
-		//This function call will initialize the interface to Direct Input. 
-		//Once you have a Direct Input object you can initialize other input devices.
+	// Initialize the main direct input interface.
+	result = DirectInput8Create(hinstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_directInput, NULL);
+	IF_FAILED_RETURN_FALSE (result);
 
-		// Initialize the main direct input interface.
-		result = DirectInput8Create(hinstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_directInput, NULL);
-		IF_FAILED_RETURN_FALSE (result);
+	AddPC_keyboard();	// KEYBOARD: The first input device we will initialize will be the keyboard.
+	AddPC_mouse();		// MOUSE: The next input device we setup is the mouse
 
-		AddPC_keyboard();	// KEYBOARD: The first input device we will initialize will be the keyboard.
-		AddPC_mouse();		// MOUSE: The next input device we setup is the mouse
-	}
 	return true;
 }
 
@@ -333,7 +328,7 @@ void DXInputClass::GetKeyName(int key, char *keyn)
 
 //The Frame function for the InputClass will read the current state of the devices into state buffers we setup. 
 //After the state of each device is read it then processes the changes.
-bool DXInputClass::Frame()
+bool DXInputClass::GetMouseKeyboardState()
 {
 	// Read the current state of the keyboard.
 	if(!ReadKeyboard())return false;
@@ -360,7 +355,7 @@ bool DXInputClass::Frame()
 		WOMA_LOGManager_DebugMSG ("\n");
 	#endif
 
-	ProcessInput();
+	ProcessInputKeys();
 
 	return true;
 }

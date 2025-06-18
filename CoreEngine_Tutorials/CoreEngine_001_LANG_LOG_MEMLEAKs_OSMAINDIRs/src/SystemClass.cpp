@@ -264,26 +264,6 @@ extern android_app* app;
 
 void SystemClass::FrameUpdate()
 {
-#if defined WINDOWS_PLATFORM && defined USE_DIRECT_INPUT
-	if (DXsystemHandle->m_Input->m_mouseState.rgbButtons[MOUSE_LEFT] & 0x80)
-	{
-		POINT mousePos;
-
-		GetCursorPos(&mousePos);
-		ScreenToClient(SystemHandle->m_hWnd, &mousePos);
-
-		#define mousex mousePos.x
-		#define mousey mousePos.y
-		//printf("mousex: %d mouseY: %d\n", mousex, mousey);
-		if (mousex < 24 && mousey < 24)
-		{
-			RENDER_PAGE = 25;
-			WOMA::previous_game_state = GAME_IMGUI;
-			WOMA::game_state = ENGINE_RESTART;
-			return;
-		}
-	}
-#endif
 
 #if defined LINUX_PLATFORM
 	if (WOMA::game_state == GAME_RUN)
@@ -315,15 +295,15 @@ void SystemClass::FrameUpdate()
 
 	#if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 	  #if !defined ANDROID_PLATFORM
-		DXsystemHandle->GetInputs();				// READ-INPUT: WinSystemClass::ProcessInput() + DXInputClass::Frame()
+		DXsystemHandle->GetInputs();				    // READ-INPUT: WinSystemClass::ProcessInput() + DXInputClass::Frame()
 	  #endif
 	  #if defined DX_ENGINE
-		DXsystemHandle->m_Input->ProcessInput();	// PROCESS-INPUT/POSITION: (WINDOWS & DX) DXInputClass::ProcessInput()
+		DXsystemHandle->m_Input->ProcessInputKeys();	// Process Keyboard keys / (DXInputClass)
 	  #endif
 	#endif
 
 	#if defined USE_PROCESS_OS_KEYS && defined WINDOWS_PLATFORM
-		ProcessOSInput();							// READ+PROCESS-OS-INPUT: Process Special: Function Keys |ESC and F1 to F6|
+		ProcessOSInput();							    // Proccess Special function keys |ESC and F1 to F6|
 		if (WOMA::game_state == ENGINE_RESTART)
 			return;
 	#endif

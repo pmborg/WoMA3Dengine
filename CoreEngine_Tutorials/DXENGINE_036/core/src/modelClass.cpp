@@ -318,11 +318,6 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 									{
 										if(vertTCIndexTemp == obj3d.vertTCIndex[iCheck])
 										{
-										#if DX9sdk
-                                        if ((g_driver) && (g_driver->ShaderVersionH < 4.0f))
-                                            indices16.push_back((WORD)iCheck);		//Set index for this vertex
-                                        else
-										#endif
 											obj3d.indices32.push_back(iCheck);		//Set index for this vertex
 											vertAlreadyExists = true;		//If we've made it here, the vertex already exists
 										}
@@ -338,11 +333,6 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 								obj3d.vertTCIndex.push_back(vertTCIndexTemp);
 								obj3d.vertNormIndex.push_back(vertNormIndexTemp);
 								obj3d.m_vertexCount++;	//We created a new vertex
-								#if DX9sdk
-								if ( (g_driver) && (g_driver->ShaderVersionH < 4.0f) )
-									obj3d.indices16.push_back((WORD) /*totalVerts*/m_vertexCount - 1);	//Set index for this vertex
-								else
-								#endif
 									obj3d.indices32.push_back(obj3d.m_vertexCount-1);	//Set index for this vertex
 								obj3d.m_indexCount++;
 							}							
@@ -351,11 +341,6 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 							//make sure the rest of the triangles use this vertex
 							if(i == 0)
 							{
-								#if DX9sdk
-                                if ((g_driver) && (g_driver->ShaderVersionH < 4.0f))
-                                    firstVIndex = obj3d.indices16[vIndex];	//The first vertex index of this FACE
-                                else
-								#endif
 								    firstVIndex = obj3d.indices32[vIndex];	//The first vertex index of this FACE
 
 							}
@@ -364,11 +349,6 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 							//the next triangle uses this one (eg. tri1(1,2,3) tri2(1,3,4) tri3(1,4,5))
 							if(i == 2)
 							{				
-								#if DX9sdk
-                                if ((g_driver) && (g_driver->ShaderVersionH < 4.0f))
-                                    lastVIndex = obj3d.indices16[vIndex];	//The last vertex index of this TRIANGLE
-                                else
-								#endif
 								    lastVIndex = obj3d.indices32[vIndex];	//The last vertex index of this TRIANGLE
 							}
 							vIndex++;	//Increment index count
@@ -383,20 +363,10 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 						for(UINT l = 0; l < obj3d.triangleCount-1; ++l)	//Loop through the next vertices to create new triangles
 						{
 							//First vertex of this triangle (the very first vertex of the face too)
-							#if DX9sdk
-                            if ((g_driver) && (g_driver->ShaderVersionH < 4.0f))
-                                indices16.push_back((WORD) firstVIndex);			//Set index for this vertex
-                            else
-							#endif
 								obj3d.indices32.push_back(firstVIndex);			//Set index for this vertex
 							vIndex++;
 
 							//Second Vertex of this triangle (the last vertex used in the tri before this one)
-							#if DX9sdk
-                            if ((g_driver) && (g_driver->ShaderVersionH < 4.0f))
-								obj3d.indices16.push_back((WORD) lastVIndex);			//Set index for this vertex
-                            else
-							#endif
 								obj3d.indices32.push_back(lastVIndex);			//Set index for this vertex
 							vIndex++;
 
@@ -463,11 +433,6 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 									{
 										if(vertTCIndexTemp == obj3d.vertTCIndex[iCheck])
 										{
-											#if DX9sdk
-                                            if ((g_driver) && (g_driver->ShaderVersionH < 4.0f))
-												obj3d.indices16.push_back((WORD) iCheck);			//Set index for this vertex
-                                            else
-											#endif
 												obj3d.indices32.push_back(iCheck);			//Set index for this vertex
 											vertAlreadyExists = true;		//If we've made it here, the vertex already exists
 											obj3d.m_indexCount++;
@@ -482,21 +447,11 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 								obj3d.vertTCIndex.push_back(vertTCIndexTemp);
 								obj3d.vertNormIndex.push_back(vertNormIndexTemp);
 								obj3d.m_vertexCount++;					//New vertex created, add to total verts
-								#if DX9sdk
-                                if ((g_driver) && (g_driver->ShaderVersionH < 4.0f))
-									obj3d.indices16.push_back((WORD) obj3d.m_vertexCount - 1);		//Set index for this vertex
-                                else
-								#endif
 									obj3d.indices32.push_back(obj3d.m_vertexCount-1);		//Set index for this vertex
 								obj3d.m_indexCount++;
 							}
 
 							//Set the second vertex for the next triangle to the last vertex we got		
-							#if DX9sdk
-                            if ((g_driver) && (g_driver->ShaderVersionH < 4.0f))
-                                lastVIndex = indices16[vIndex];	//The last vertex index of this TRIANGLE
-                            else
-							#endif
 							    lastVIndex = obj3d.indices32[vIndex];	//The last vertex index of this TRIANGLE
 
 							obj3d.meshTriangles++;	//New triangle defined

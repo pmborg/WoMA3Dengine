@@ -244,7 +244,7 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 			if (SystemHandle->AppSettings->DRIVER == -1)
 				SystemHandle->AppSettings->DRIVER = DRIVER_DX9;
 	#endif
-	#if defined DX9sdk		// Pure DX9
+	#if _NOT //defined DX9sdk		// Pure DX9
 			if (SystemHandle->AppSettings->DRIVER == -1)
 				SystemHandle->AppSettings->DRIVER = DRIVER_DX9;
 	#endif

@@ -50,16 +50,7 @@ namespace DirectX {
 		XMFLOAT3 position = {};
 	    XMFLOAT4 color = {};
 #endif
-#if defined DX9sdk
-		D3DXVECTOR3 position;
-		DWORD		color;
-#endif
 	};
-
-	#if defined DX9sdk
-		#define CUSTOMVERTEX_XYZ_DIFFUSE_DX9 DXcolorVertexType
-		#define CUSTOMFVF_XYZ_DIFFUSE_DX9 (D3DFVF_XYZ | D3DFVF_DIFFUSE)
-	#endif
 
 	//22:
 	// -------------------------------------------------------------------------------------------
@@ -74,16 +65,7 @@ namespace DirectX {
 		XMFLOAT3 position;
 	    XMFLOAT2 texCoord;
 //#endif
-#if defined DX9sdk
-		D3DXVECTOR3 position;
-	    D3DXVECTOR2 texCoord;
-#endif
 	};
-
-	#if defined DX9sdk
-		#define CUSTOMVERTEX_XYZ_TEXTURE_DX9 DXtextureVertexType
-		#define CUSTOMFVF_XYZ_TEXTURE_DX9 (D3DFVF_XYZ | D3DFVF_TEX1)
-	#endif
 
 	//23:
 	// -------------------------------------------------------------------------------------------
@@ -100,17 +82,7 @@ namespace DirectX {
 	    XMFLOAT2 texCoord;
 		XMFLOAT3 normal;
 //#endif
-#if defined DX9sdk
-		D3DXVECTOR3 position;
-	    D3DXVECTOR2 texCoord;
-		D3DXVECTOR3 normal;
-#endif
 	};
-
-	#if defined DX9sdk
-		#define CUSTOMVERTEX_XYZ_LIGHT_DX9 DXtextureLightVertexType
-		#define CUSTOMFVF_XYZ_LIGHT_DX9 (D3DFVF_XYZ | D3DFVF_TEX1 | D3DFVF_NORMAL)
-	#endif
 
 	// 36: Shadow
 	// -------------------------------------------------------------------------------------------

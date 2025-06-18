@@ -50,9 +50,6 @@
 #endif
 
 #if DX_ENGINE_LEVEL >= 19 && !defined NewWomaEngine
-#if defined DX9sdk
-#include "Dx9Class.h"
-#endif
 #if defined DX11 || defined DX9
 #include "Dx11Class.h"
 #endif
@@ -498,12 +495,12 @@ void SystemClass::refreshTitle() // Run once per second.
 #else
 #if defined USE_ASTRO_CLASS
 	//(astroClass == NULL) ? 0 : astroClass->hour, (astroClass == NULL) ? 0 : astroClass->minute,
-	StringCchPrintf(pstrFPS, 300, TEXT("FPS:%d(%4.1f ms) [%s] %s shader:%s state:%d PAGE: %d - TOTAL VERTEX: %d"), SystemHandle->fps, (SystemHandle->fps==0)?1:1000.0f/SystemHandle->fps,
+	StringCchPrintf(pstrFPS, 300, TEXT("LVL: %d FPS:%d(%4.1f ms) [%s] %s shader:%s state:%d - TOTAL VERTEX: %d"), RENDER_PAGE, SystemHandle->fps, (SystemHandle->fps==0)?1:1000.0f/SystemHandle->fps,
 		m_Driver->driverName, WOMA::APP_FULLNAME,
-		m_Driver->szShaderModel, WOMA::game_state, RENDER_PAGE, SystemHandle->TotalVertexCounter);
+		m_Driver->szShaderModel, WOMA::game_state, SystemHandle->TotalVertexCounter);
 #else
-	StringCchPrintf(pstrFPS, 300, TEXT("FPS:%d PAGE: %d %s [%s] shader:%s state:%d - TOTAL VERTEX: %d"), 
-		SystemHandle->fps, RENDER_PAGE, WOMA::APP_FULLNAME, m_Driver->driverName, m_Driver->szShaderModel, WOMA::game_state, SystemHandle->TotalVertexCounter);
+	StringCchPrintf(pstrFPS, 300, TEXT("LVL: %d FPS:%d %s [%s] shader:%s state:%d - TOTAL VERTEX: %d"), 
+        RENDER_PAGE, SystemHandle->fps, WOMA::APP_FULLNAME, m_Driver->driverName, m_Driver->szShaderModel, WOMA::game_state, SystemHandle->TotalVertexCounter);
 #endif
 #endif
 
@@ -868,26 +865,6 @@ extern android_app* app;
 
 void SystemClass::FrameUpdate()
 {
-#if defined WINDOWS_PLATFORM && defined USE_DIRECT_INPUT
-	if (DXsystemHandle->m_Input->m_mouseState.rgbButtons[MOUSE_LEFT] & 0x80)
-	{
-		POINT mousePos;
-
-		GetCursorPos(&mousePos);
-		ScreenToClient(SystemHandle->m_hWnd, &mousePos);
-
-		#define mousex mousePos.x
-		#define mousey mousePos.y
-		//printf("mousex: %d mouseY: %d\n", mousex, mousey);
-		if (mousex < 24 && mousey < 24)
-		{
-			RENDER_PAGE = 25;
-			WOMA::previous_game_state = GAME_IMGUI;
-			WOMA::game_state = ENGINE_RESTART;
-			return;
-		}
-	}
-#endif
 
 #if defined LINUX_PLATFORM
 	if (WOMA::game_state == GAME_RUN)
@@ -919,21 +896,21 @@ void SystemClass::FrameUpdate()
 
 	#if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 	  #if !defined ANDROID_PLATFORM
-		DXsystemHandle->GetInputs();				// READ-INPUT: WinSystemClass::ProcessInput() + DXInputClass::Frame()
+		DXsystemHandle->GetInputs();				    // READ-INPUT: WinSystemClass::ProcessInput() + DXInputClass::Frame()
 	  #endif
 	  #if defined DX_ENGINE
-		DXsystemHandle->m_Input->ProcessInput();	// PROCESS-INPUT/POSITION: (WINDOWS & DX) DXInputClass::ProcessInput()
+		DXsystemHandle->m_Input->ProcessInputKeys();	// Process Keyboard keys / (DXInputClass)
 	  #endif
 	#endif
 
 	#if defined USE_PROCESS_OS_KEYS && defined WINDOWS_PLATFORM
-		ProcessOSInput();							// READ+PROCESS-OS-INPUT: Process Special: Function Keys |ESC and F1 to F6|
+		ProcessOSInput();							    // Proccess Special function keys |ESC and F1 to F6|
 		if (WOMA::game_state == ENGINE_RESTART)
 			return;
 	#endif
 	
 	#if CORE_ENGINE_LEVEL >= 4 && defined USE_TIMER_CLASS
-		ProcessPerformanceStats();					// ProcessPerformanceStats-FPS: m_Timer.Frame(); m_Fps.Frame(); m_Cpu.Frame();
+		ProcessPerformanceStats();					    // ProcessPerformanceStats-FPS: m_Timer.Frame(); m_Fps.Frame(); m_Cpu.Frame();
 	#endif
 }
 
@@ -1153,13 +1130,7 @@ void SystemClass::LoadAllDrivers()
 	// -------------------------------------------------------------------------------------------
 	// [2] DX 9 (or DX11 with Downgrade: DX9)
 	// -------------------------------------------------------------------------------------------
-#if defined DX9sdk
-	//if (WOMA::CapDX9)
-	{
-		driverList.push_back(NEW DirectX::DX9Class());//driver = g_contextDriver;	// Re-Use the same driver ( Context Driver )
-		WOMA_LOGManager_DebugMSG("LoadDriver[2]: DX9Class\n");
-	}
-#elif defined DX9 && D3D11_SPEC_DATE_YEAR > 2009
+#if   defined DX9 && D3D11_SPEC_DATE_YEAR > 2009
 	WOMA_LOGManager_DebugMSG("LoadDriver[2]: DX9(DX11)Class\n");
 	driverList.push_back(NEW DirectX::DX11Class());
 	((DirectX::DX11Class*)driverList[2])->dx11_force_dx9 = true;
@@ -1341,13 +1312,6 @@ bool InitSelectedDriver()
 #endif
 		break;
 #endif
-#if defined DX9sdk //[2]
-	case DRIVER_DX9:
-		ASSERT(((DirectX::DX9Class*)(driverList[DRIVER_DX9]))->OnInit(AppSettings->UI_MONITOR, SystemHandle->m_hWnd, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT, 24 /*BufferDeep*/,
-			AppSettings->SCREEN_DEPTH, AppSettings->SCREEN_NEAR, AppSettings->MSAA_Anisotropic, AppSettings->VSYNC_ENABLED,
-			AppSettings->FULL_SCREEN, AppSettings->UseDoubleBuffering, AppSettings->AllowResize));
-		break;
-#endif
 #if defined DX9 && D3D11_SPEC_DATE_YEAR > 2009 //[2]
 	case DRIVER_DX9:
 		ASSERT(((DirectX::DX11Class*)(driverList[DRIVER_DX9]))->OnInit(AppSettings->UI_MONITOR, SystemHandle->m_hWnd, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT, 24 /*BufferDeep*/,
@@ -1375,15 +1339,6 @@ bool InitSelectedDriver()
 
 #if defined DX_ENGINE
 	WOMA_LOGManager_DebugMSGAUTO(TEXT("DX 9 Support: %s\n"), driverList[SystemHandle->AppSettings->DRIVER]->m_sCapabilities.CapDX9 ? TEXT("true") : TEXT("false"));		//Allow DX11, scale down to DX9, if needed?
-
-#if defined DX9sdk
-	if (driverList[DRIVER_DX9] && AppSettings->DRIVER == DRIVER_DX9) {
-		if (!WOMA::UseWarpDevice)
-			_tcscpy_s(driverName, sizeof(driverName), TEXT("DX9sdk"));
-		else
-			_tcscpy_s(driverName, sizeof(driverName), TEXT("DX9sdk WARP"));
-	}
-#endif
 
 #if defined DX11 // Pure DX11
 	if (driverList[DRIVER_DX11]) //Driver 11 will give backward compatibility:

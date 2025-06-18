@@ -105,9 +105,6 @@ public:
 #if defined DX9 || defined DX11
 	ID3D11ShaderResourceView* GetTexture11();
 #endif
-#if defined DX9sdk
-	LPDIRECT3DTEXTURE9 GetTexture();
-#endif
 #if defined DX12
 	DX12TextureClass* GetTexture();
 #endif
@@ -129,9 +126,6 @@ public:
 	// ----------------------------------------------------------------------
 	FontType* m_Font = NULL;
 
-#if defined DX9sdk
-	DirectX::DX9Class* m_driver9 = NULL;
-#endif
 #if defined DX11 || defined DX9
 	DirectX::DX11Class* m_driver11 = NULL;
 #endif
@@ -142,9 +136,6 @@ public:
 	// [PATTERN] Image loader:
 #if defined DX9 || defined DX11
 	ID3D11ShaderResourceView* m_Texture11 = NULL;
-#endif
-#if defined DX9sdk
-	LPDIRECT3DTEXTURE9 m_Texture9 = NULL;
 #endif
 #if defined DX12
 	DX12TextureClass* m_Texture = NULL;

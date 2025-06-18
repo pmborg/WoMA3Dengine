@@ -22,32 +22,17 @@
 
 #include "lightClass.h"
 
-#ifdef DX9sdk
-	#include "SystemPlatform.h"		// To define OS [SystemHandle] Pointer (System Class) & define WomaSYSTEM for: WINDOWS, LINUX & ANDROID
-	#include "winsystemclass.h"	// SystemHandle
-#endif
-
 LightClass::LightClass() 
 {
 	CLASSLOADER();
 	WomaIntegrityCheck = 1234567155;
 
-#ifdef DX9sdk
-	ZeroMemory( &light, sizeof( D3DLIGHT9 ) );
-	light.Range = 1000.0f;
-#endif
 }
 
 LightClass::~LightClass() {CLASSDELETE();}
 
 void LightClass::SetAmbientColor(float red, float green, float blue, float alpha)
 {
-#ifdef DX9sdk
-	 alpha = 0;
-	 DWORD color = D3DCOLOR_ARGB((BYTE)(alpha*255.0f), (BYTE)(red*255.0f), (BYTE)(green*255.0f), (BYTE)(blue*255.0f));
-	 color = 0xffffffff ;
-	((DX_CLASS*)SystemHandle->m_Application->m_Driver)->m_device->SetRenderState(D3DRS_AMBIENT,color);
-#endif
 #if defined DX_ENGINE
 	m_ambientColor = XMFLOAT4(red, green, blue, alpha);
 #else
@@ -60,12 +45,6 @@ void LightClass::SetAmbientColor(float red, float green, float blue, float alpha
 
 void LightClass::SetDiffuseColor(float red, float green, float blue, float alpha)
 {
-#ifdef DX9sdk
-	light.Type = D3DLIGHT_DIRECTIONAL;
-	light.Diffuse.r = red;
-	light.Diffuse.g = green;
-	light.Diffuse.b = blue;
-#endif
 #if defined DX_ENGINE
 	m_diffuseColor = XMFLOAT4(red, green, blue, alpha);
 #else
@@ -78,10 +57,6 @@ void LightClass::SetDiffuseColor(float red, float green, float blue, float alpha
 
 void LightClass::SetDirection(float x, float y, float z)
 {
-#ifdef DX9sdk
-	D3DXVECTOR3 vecDir = D3DXVECTOR3(m_lightDirection.x, m_lightDirection.y, m_lightDirection.z);
-	D3DXVec3Normalize( ( D3DXVECTOR3* )&light.Direction, &vecDir );
-#endif
 #if defined DX_ENGINE
 	m_lightDirection = XMFLOAT4(x, y, z, 0); // Invert Direction to avoid "-" in shader code for every vertex
 #else

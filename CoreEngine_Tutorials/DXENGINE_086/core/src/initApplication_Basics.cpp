@@ -501,17 +501,6 @@ void ApplicationClass::initIntroDemo()
 
 		switch (SystemHandle->AppSettings->DRIVER)
 		{
-		#if defined DX9sdk
-		case DRIVER_DX9:
-			((DirectX::DXmodelClass*)m_spriteModel)->m_Shader9->isFontShader = false;
-			break;
-		#endif
-
-		#if defined DX9 && D3D11_SPEC_DATE_YEAR > 2009
-		case DRIVER_DX9:
-			((DirectX::DXmodelClass*)m_spriteModel)->m_Shader11->isFontShader = false;
-			break;
-		#endif
 
 		#if defined DX11
 		case DRIVER_DX11:

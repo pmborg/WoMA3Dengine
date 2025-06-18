@@ -25,9 +25,6 @@
 
 #include "DXcameraClass.h"
 
-namespace DirectX
-{
-
 //The class constructor will initialize the position and rotation of the camera to be at the origin of the scene.
 DXcameraClass::DXcameraClass(UINT camera_type)
 {
@@ -42,20 +39,10 @@ DXcameraClass::DXcameraClass(UINT camera_type)
 #if defined DX12 || defined DX11 || defined DX9
 	lookAt = XMVectorSet( 0.0f, 0.0f, 1.0f, 0.0f );
 #endif
-#if defined DX9sdk
-	up9.x = 0.0f;
-	up9.y = 0.0f;
-	up9.z = 1.0f;
-#endif
 
 	// Setup the vector that points upwards.
 #if defined DX12 || defined DX11 || defined DX9
 	up = XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f );
-#endif
-#if defined DX9sdk
-	up9.x = 0.0f;
-	up9.y = 1.0f;
-	up9.z = 0.0f;
 #endif
 
 #if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28
@@ -81,36 +68,72 @@ void DXcameraClass::SetRotation(float x, float y, float z)
 }
 
 //The GetPosition and GetRotation functions return the location and rotation of the camera to calling functions.
-/*D3DXVECTOR3*/ XMFLOAT3 DXcameraClass::GetPosition()
+XMFLOAT3 DXcameraClass::GetPosition()
 {
-    return /*D3DXVECTOR3*/ XMFLOAT3(m_positionX, m_positionY, m_positionZ);
+    return XMFLOAT3(m_positionX, m_positionY, m_positionZ);
 }
 
-/*D3DXVECTOR3*/ XMFLOAT3 DXcameraClass::GetRotation()
+XMFLOAT3 DXcameraClass::GetRotation()
 {
-    return /*D3DXVECTOR3*/ XMFLOAT3(m_rotationX, m_rotationY, m_rotationZ);
+    return XMFLOAT3(m_rotationX, m_rotationY, m_rotationZ);
 }
 
 //The Render function uses the position and rotation of the camera to build and update the view matrix. We first setup our variables for up, position, rotation, and so forth. Then at the origin of the scene we first rotate the camera based on the x, y, and z rotation of the camera. Once it is properly rotated when then translate the camera to the position in 3D space. With the correct values in the position, lookAt, and up we can then use the D3DXMatrixLookAtLH function to create the view matrix to represent the current camera rotation and translation.
-void DirectX::DXcameraClass::CalculateViewMatrix()
+#if defined USE_3RD_PERSON_CAMERA
+void DXcameraClass::CalculateViewMatrix_3rd_PersonCamera(float camYaw, float camPitch)
+{
+    static float charCamDist = 1.0f; // 15.0f This is the distance between the camera and the character
+    static float YcamDist = 0.0f;    // 5.0f
+
+    // Third Person Camera
+    // Set the cameras target to be looking at the character.
+    camTarget = XMVectorSet(m_positionX, m_positionY, m_positionZ, 0.0f); //char position
+
+    // This line is because this lessons model was set to stand on the point (0,0,0) (my bad), and we
+    // don't want to just be looking at the models feet, so we move the camera's target vector up 5 units
+    camTarget = XMVectorSetY(camTarget, XMVectorGetY(camTarget) + YcamDist );
+
+    // Unlike before, when we rotated the cameras target vector around the cameras position,
+    // we are now rotating the cameras position around it's target (which is the character)
+    // Rotate camera around target
+    XMMATRIX camRotationMatrix = XMMatrixRotationRollPitchYaw(-camPitch, camYaw, 0);
+    camPosition = XMVector3TransformNormal(DefaultForward, camRotationMatrix);
+    camPosition = XMVector3Normalize(camPosition);
+
+    // Set our cameras position to rotate around the character. We need to add 5 to the characters
+    // position's y axis because i'm stupid and modeled the character in the 3d modeling program
+    // to be "standing" on (0,0,0), instead of centered around it ;) Well target her head here though
+    camPosition = (camPosition * charCamDist) + camTarget;
+
+    // We need to set our cameras forward and right vectors to lay
+    // in the worlds xz plane, since they are the vectors we will
+    // be using to determine the direction our character is running
+    camForward = XMVector3Normalize(camTarget - camPosition);	// Get forward vector based on target
+    camForward = XMVectorSetY(camForward, 0.0f);	// set forwards y component to 0 so it lays only on
+    // the xz plane
+    camForward = XMVector3Normalize(camForward);
+    // To get our camera's Right vector, we set it's x component to the negative z component from the
+    // camera's forward vector, and the z component to the camera forwards x component
+    camRight = XMVectorSet(-XMVectorGetZ(camForward), 0.0f, XMVectorGetX(camForward), 0.0f);
+
+    // Our camera does not "roll", so we can safely assume that the cameras right vector is always
+    // in the xz plane, so to get the up vector, we just get the normalized vector from the camera
+    // position to the cameras target, and cross it with the camera's Right vector
+    camUp = XMVector3Normalize(XMVector3Cross(XMVector3Normalize(camPosition - camTarget), camRight));
+
+    m_viewMatrix = XMMatrixLookAtLH(camPosition, camTarget, up);
+}
+#endif
+void DXcameraClass::CalculateViewMatrix()
 {
 #if defined DX12 || defined DX11 || defined DX9
 	XMMATRIX rotationMatrix = {};
 	XMVECTOR position = {};
 #endif
-#if defined DX9sdk
-	D3DXMATRIX  rotationMatrix = {};
-	D3DXVECTOR3 position = {};
-#endif
 
 	// Setup the position of the camera in the world.
 #if defined DX12 || defined DX11 || defined DX9
 	position = XMVectorSet( m_positionX, m_positionY, m_positionZ, 0.0f );
-#endif
-#if defined DX9sdk
-	position.x = m_positionX;
-	position.y = m_positionY;
-	position.z = m_positionZ;
 #endif
 
 	// Create the rotation matrix from the yaw, pitch, and roll values.
@@ -119,21 +142,10 @@ void DirectX::DXcameraClass::CalculateViewMatrix()
 													m_rotationY * 0.0174532925f,	
 													m_rotationZ * 0.0174532925f);
 #endif
-#if defined DX9sdk
-	D3DXMatrixRotationYawPitchRoll(&rotationMatrix, m_rotationY * 0.0174532925f,	//yaw
-													m_rotationX * 0.0174532925f,	//pitch
-													m_rotationZ * 0.0174532925f);	//roll
-#endif
 
 #if defined DX12 || defined DX11 || defined DX9
 	lookAt = XMVectorSet( 0.0f, 0.0f, 1.0f, 0.0f );
 #endif
-#if defined DX9sdk
-	lookAt9.x = 0.0f;
-	lookAt9.y = 0.0f;
-	lookAt9.z = 1.0f;
-#endif
-
 	
 #if defined DX12 || defined DX11 || defined DX9
 	// Transform the lookAt and up vector by the rotation matrix so the view is correctly rotated at the origin.
@@ -141,25 +153,17 @@ void DirectX::DXcameraClass::CalculateViewMatrix()
 	// Translate the rotated camera position to the location of the viewer.
 	lookAt = position + lookAt;
 #endif
-#if defined DX9sdk
-	D3DXVec3TransformCoord(&lookAt9, &lookAt9, &rotationMatrix);
-	lookAt9 = position + lookAt9;
-#endif
 
 	// Finally create the view matrix from: EyePosition, FocusPosition, UpDirection
 #if defined DX12 || defined DX11 || defined DX9
-	/*
-	//XMMatrixLookAtRH:
+	#if NOTES
 	m_viewMatrix.r[0] = { 1,0,0,0 };
 	m_viewMatrix.r[1] = { 0,1,0,0 };
 	m_viewMatrix.r[2] = { 0,0,1,0 };
 	m_viewMatrix.r[3] = { m_positionX, m_positionY, m_positionZ, 1 };
-	*/
+	#endif
 
 	m_viewMatrix = XMMatrixLookAtLH( position, lookAt, up );
-#endif
-#if defined DX9sdk
-	D3DXMatrixLookAtLH(&m_viewMatrix, &position, &lookAt9, &up9);
 #endif
 }
 
@@ -169,9 +173,6 @@ void DirectX::DXcameraClass::CalculateViewMatrix()
 	void DXcameraClass::GetViewMatrix(XMMATRIX& viewMatrix)
 #endif
 
-#if defined DX9sdk
-	void DXcameraClass::GetViewMatrix(D3DXMATRIX& viewMatrix)
-#endif
 {
 	viewMatrix = m_viewMatrix;
 }
@@ -181,7 +182,6 @@ void DXcameraClass::Use2DViewMatrix()
 	m_viewmatrix2D = m_viewMatrix;
 }
 
-}
 
 #endif
 

@@ -257,7 +257,7 @@ public:
 
 #if CORE_ENGINE_LEVEL >= 10 && !defined NewWomaEngine //#if DX_ENGINE_LEVEL >= 19 && !defined NewWomaEngine
 	void RenderScene(UINT monitorWindow, WomaDriverClass* driver);
-	float Update();						// PROCESS User Update
+	float ProcessInputUpdate();						// PROCESS User Update
 	void AppRender(UINT monitorWindow,  float fadeLight);								// RENDER - 3D
 	bool Initialize(WomaDriverClass* Driver);
 #endif
@@ -303,7 +303,11 @@ public:
 	std::vector<PositionClass*> m_Position;
 #endif
 
-	std::vector<VirtualModelClass*> objModel;
+#if defined USE_3RD_PERSON_CAMERA
+    float m_camYaw = 0.0f;
+    float m_camPitch = 0.0f;
+    DIMOUSESTATE2 mouseLastState = {};
+#endif
 
 #if defined CHECK_OBJ_COLISION
     void pickRayVector(float mouseX, float mouseY, XMVECTOR& pickRayInWorldSpacePos, XMVECTOR& pickRayInWorldSpaceDir);
@@ -317,17 +321,40 @@ public:
     compoundTreeLoadOrder compoundTreeLoadingOrder[10000] = {}; // MAX 10000 Objs on Scene
 #endif
 
-	void initShadowTextureDemo();
-
 #if defined USE_SKY2D || ENGINE_LEVEL >= 27 // SKY
-	std::vector<ModelTextureLightVertexType> sky_vertexdata; //std::vector<ModelTextureVertexType> sky_vertexdata;
-	std::vector<UINT>						 sky_indexdata;
+    std::vector<ModelTextureLightVertexType> sky_vertexdata; //std::vector<ModelTextureVertexType> sky_vertexdata;
+    std::vector<UINT>						 sky_indexdata;
+#endif
+    std::vector<VirtualModelClass*> objModel;
+	void initShadowTextureDemo();
+#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
+    DXrendertextureclass* m_RenderShadowTexture = NULL;	//TO INTERNAL RENDER!
+#endif
+    void WOMA_APPLICATION_FrameUpdateInstancesPositions(UINT m_ObjId, int m_instanceCount, InstanceType* instances_);
+    CTerrain* loadedTerrain[MAX_TERRAINS] = { 0 };
+#if DX_ENGINE_LEVEL >= 62 && defined USE_MAIN_MAP
+    void AppPreRenderMainMapMiniMap(UINT monitorWindow, WomaDriverClass* Driver, float fadeLight);
+    void RenderMainMapMiniMap();
+    VirtualModelClass* m_mainMapModel = NULL;
+    VirtualModelClass* m_mainMapFrameModel = NULL;
+    bool mapKey = false;
+
+    VirtualModelClass* m_miniMapArrowModel = NULL;
+    DXrendertextureclass* m_RenderMapTexture = NULL;		//TO INTERNAL RENDER!
+    int m_pointLocationX[MAX_CLIENTS] = {}, m_pointLocationY[MAX_CLIENTS] = {}, m_pointRotation[MAX_CLIENTS] = {};
+    int m_pointMapLocationX[MAX_CLIENTS] = {}, m_pointMapLocationY[MAX_CLIENTS] = {};
+#endif
+#if DX_ENGINE_LEVEL >= 63 && defined USE_MINI_MAP
+    void PositionUpdate(int playerId, float positionX, float positionZ);
+    VirtualModelClass* m_miniMapModel = NULL;
+    VirtualModelClass* m_miniMapBorderModel = NULL;
+
+    int m_mapLocationX = 0, m_mapLocationY = 0;
+    DXrendertextureclass* m_MiniMapBitmapTexture = NULL;	//TO INTERNAL RENDER!
+    DXrendertextureclass* m_BorderTexture = NULL;
+    DXrendertextureclass* m_PointTexture = NULL;
 #endif
     UINT billboardRrenderCount = 0;
-
-	void WOMA_APPLICATION_FrameUpdateInstancesPositions(UINT m_ObjId, int m_instanceCount, InstanceType* instances_);
-
-	CTerrain*	loadedTerrain[MAX_TERRAINS] = { 0 };
 
 #if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION //float	closestObjDist = FLT_MAX;
 	float	closestObjDist = FLT_MAX;
@@ -335,7 +362,7 @@ public:
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 	void	SetPlayerPosition(UINT netID);
-	bool	HandleUserInput(double frameTime);
+	bool	ProcessUserKeyboardInput(double frameTime);
 #endif
 
 #if  defined USE_RASTERTEK_TEXT_FONT
@@ -347,48 +374,17 @@ public:
 	VirtualModelClass*		m_titleModel = NULL;
 #endif
 
-#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
-	DXrendertextureclass*	m_RenderShadowTexture = NULL;	//TO INTERNAL RENDER!
-#endif
-
-#if DX_ENGINE_LEVEL >= 62 && defined USE_MAIN_MAP
-	void AppPreRenderMainMapMiniMap(UINT monitorWindow, WomaDriverClass* Driver, float fadeLight);
-	void RenderMainMapMiniMap();
-	VirtualModelClass*		m_mainMapModel = NULL;
-	VirtualModelClass*		m_mainMapFrameModel = NULL;
-	bool mapKey = false;
-	VirtualModelClass* m_miniMapArrowModel = NULL;
-#endif
-
-#if DX_ENGINE_LEVEL >= 63 && defined USE_MINI_MAP
-	void PositionUpdate(int playerId, float positionX, float positionZ);
-	VirtualModelClass*		m_miniMapModel = NULL;		
-	VirtualModelClass*		m_miniMapBorderModel = NULL;
-#endif
-
-#if DX_ENGINE_LEVEL >= 62 && defined USE_MAIN_MAP
-	DXrendertextureclass*	m_RenderMapTexture = NULL;		//TO INTERNAL RENDER!
-#endif
-
 	float scaleX = 0;
 	float scaleY = 0;
 	float rescale = 0;
 
-#if DX_ENGINE_LEVEL >= 62 && defined USE_MAIN_MAP
-	int m_pointLocationX[MAX_CLIENTS] = {}, m_pointLocationY[MAX_CLIENTS] = {}, m_pointRotation[MAX_CLIENTS] = {};
-	int m_pointMapLocationX[MAX_CLIENTS] = {}, m_pointMapLocationY[MAX_CLIENTS] = {};
-#endif
-
-#if DX_ENGINE_LEVEL >= 63 && defined USE_MINI_MAP
-	int m_mapLocationX=0,	m_mapLocationY = 0;
-	DXrendertextureclass*	m_MiniMapBitmapTexture = NULL;	//TO INTERNAL RENDER!
-	DXrendertextureclass*	m_BorderTexture = NULL;
-	DXrendertextureclass*	m_PointTexture = NULL;
-#endif
-
 #ifdef INTRO_DEMO
 	void	initIntroDemo();
 #endif
+
+// ---------------------------------------------------------------------
+// PRIVATE VARS:
+// ---------------------------------------------------------------------
 
 private:
 	void	Render_SKY_SUN_MOON(float);				//30
@@ -396,10 +392,6 @@ private:
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
 	void	RenderSceneToShadowMap(void* Driver);	//45
 #endif
-
-//VARS:
-// ---------------------------------------------------------------------
-private:
 
 #if defined USE_DIRECT_INPUT//|| defined INTRO_DEMO
 	PositionClass* m_NextPosition;
@@ -450,11 +442,11 @@ public:
 	//	-------------------------------------------------------------------------------------------
 	//	WoMA Vertex(s) Arrays:  NOTE: Cant be used to create and Obj more than ONCE!
 	//	-------------------------------------------------------------------------------------------
+    float ClearColor[4] = { 0 };
+
 	ModelColorVertexType colorVertex = { 0 };					// Use this "VERTEX" on macro
 	std::vector<UINT> IndexSquarList;							// COLOR-DEMO-1: UINT indexList[6] = {0,1,2, 0,3,1};
 	std::vector<UINT> IndexTriangleList;						// COLOR-DEMO-2: UINT indexList[6] = {0,1,2};
-
-	float ClearColor[4]={0};
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 	#define HowManyPlayers SystemHandle->m_player.size()
@@ -528,8 +520,6 @@ public:
 	std::vector<ModelTextureLightVertexType> TriangleLightVertexVector;	// TEXTURE-DEMO-2: CREATE_VERTEXVECTOR_TRIANGLE_MODEL_OPTIMIZED
 	VirtualModelClass* m_1stTriangleLightVertexModel = NULL;			// TEXTURE-DEMO-2: initLoadTexture()
 	VirtualModelClass* m_3th3DModel2 = NULL;							// Model
-
-
 
 #if defined USE_CUBE // Cubes
 	VirtualModelClass* m_cube1Model = NULL;

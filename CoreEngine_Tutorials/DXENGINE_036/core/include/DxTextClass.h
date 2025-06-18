@@ -68,9 +68,6 @@ public:
 	DXshaderClass* m_spriteShader = NULL;
 //#endif
 
-#if defined DX9sdk
-	DirectX::DX9Class* m_driver9 = NULL;
-#endif
 #if defined DX11 || defined DX9
 	DirectX::DX11Class* m_driver11 = NULL;
 	ID3D11DeviceContext* m_deviceContext11 = NULL;

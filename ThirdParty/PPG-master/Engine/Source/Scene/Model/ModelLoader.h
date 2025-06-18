@@ -68,7 +68,6 @@ private:
     SkeletonLoader m_SkeletonLoader;
     Animator* m_Animator;
     friend class SceneModel;
-
     bool m_HasBones = false;
 };
 
@@ -512,3 +511,5 @@ Texture* ModelLoader::loadTexture(UINT modeltype, aiMaterial* mat, aiTextureType
     }
     return texture;
 }
+
+extern std::string original_files[];

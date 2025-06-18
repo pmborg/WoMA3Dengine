@@ -84,13 +84,6 @@ bool textFontClass::Initialize(void* g_driver, TCHAR* fontFilename, TCHAR* textu
 		}
 	}
 #endif
-#if defined DX9sdk
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
-	{
-		hr = D3DXCreateTextureFromFile(((DX_CLASS*)g_driver)->m_device, WOMA::LoadFile(textureFilename), &m_Texture9);
-		IF_FAILED_RETURN_FALSE(hr);
-	}
-#endif
 #if (defined OPENGL3 || defined OPENGL4)
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
 	{
@@ -178,12 +171,6 @@ void textFontClass::ReleaseFontData()
 ID3D11ShaderResourceView* textFontClass::GetTexture11()
 {
 	return m_Texture11;
-}
-#endif
-#if defined DX9sdk
-LPDIRECT3DTEXTURE9 textFontClass::GetTexture()
-{
-	return m_Texture9;
 }
 #endif
 #if defined DX12

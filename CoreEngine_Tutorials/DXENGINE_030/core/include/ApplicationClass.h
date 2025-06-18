@@ -246,7 +246,7 @@ public:
 
 #if CORE_ENGINE_LEVEL >= 10 && !defined NewWomaEngine //#if DX_ENGINE_LEVEL >= 19 && !defined NewWomaEngine
 	void RenderScene(UINT monitorWindow, WomaDriverClass* driver);
-	float Update();						// PROCESS User Update
+	float ProcessInputUpdate();						// PROCESS User Update
 	void AppRender(UINT monitorWindow,  float fadeLight);								// RENDER - 3D
 	bool Initialize(WomaDriverClass* Driver);
 #endif
@@ -286,7 +286,11 @@ public:
 	std::vector<PositionClass*> m_Position;
 #endif
 
-	std::vector<VirtualModelClass*> objModel;
+#if defined USE_3RD_PERSON_CAMERA
+    float m_camYaw = 0.0f;
+    float m_camPitch = 0.0f;
+    DIMOUSESTATE2 mouseLastState = {};
+#endif
 
 #if defined CHECK_OBJ_COLISION
     void pickRayVector(float mouseX, float mouseY, XMVECTOR& pickRayInWorldSpacePos, XMVECTOR& pickRayInWorldSpaceDir);
@@ -301,9 +305,10 @@ public:
 #endif
 
 #if defined USE_SKY2D || ENGINE_LEVEL >= 27 // SKY
-	std::vector<ModelTextureLightVertexType> sky_vertexdata; //std::vector<ModelTextureVertexType> sky_vertexdata;
-	std::vector<UINT>						 sky_indexdata;
+    std::vector<ModelTextureLightVertexType> sky_vertexdata; //std::vector<ModelTextureVertexType> sky_vertexdata;
+    std::vector<UINT>						 sky_indexdata;
 #endif
+    std::vector<VirtualModelClass*> objModel;
 
 #if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION //float	closestObjDist = FLT_MAX;
 	float	closestObjDist = FLT_MAX;
@@ -311,7 +316,7 @@ public:
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 	void	SetPlayerPosition(UINT netID);
-	bool	HandleUserInput(double frameTime);
+	bool	ProcessUserKeyboardInput(double frameTime);
 #endif
 
 #if  defined USE_RASTERTEK_TEXT_FONT
@@ -331,12 +336,12 @@ public:
 	void	initIntroDemo();
 #endif
 
+// ---------------------------------------------------------------------
+// PRIVATE VARS:
+// ---------------------------------------------------------------------
+
 private:
 	void	Render_SKY_SUN_MOON(float);				//30
-
-//VARS:
-// ---------------------------------------------------------------------
-private:
 
 #if defined USE_DIRECT_INPUT//|| defined INTRO_DEMO
 	PositionClass* m_NextPosition;
@@ -387,11 +392,11 @@ public:
 	//	-------------------------------------------------------------------------------------------
 	//	WoMA Vertex(s) Arrays:  NOTE: Cant be used to create and Obj more than ONCE!
 	//	-------------------------------------------------------------------------------------------
+    float ClearColor[4] = { 0 };
+
 	ModelColorVertexType colorVertex = { 0 };					// Use this "VERTEX" on macro
 	std::vector<UINT> IndexSquarList;							// COLOR-DEMO-1: UINT indexList[6] = {0,1,2, 0,3,1};
 	std::vector<UINT> IndexTriangleList;						// COLOR-DEMO-2: UINT indexList[6] = {0,1,2};
-
-	float ClearColor[4]={0};
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 	#define HowManyPlayers SystemHandle->m_player.size()
@@ -465,8 +470,6 @@ public:
 	std::vector<ModelTextureLightVertexType> TriangleLightVertexVector;	// TEXTURE-DEMO-2: CREATE_VERTEXVECTOR_TRIANGLE_MODEL_OPTIMIZED
 	VirtualModelClass* m_1stTriangleLightVertexModel = NULL;			// TEXTURE-DEMO-2: initLoadTexture()
 	VirtualModelClass* m_3th3DModel2 = NULL;							// Model
-
-
 
 #if defined USE_CUBE // Cubes
 	VirtualModelClass* m_cube1Model = NULL;

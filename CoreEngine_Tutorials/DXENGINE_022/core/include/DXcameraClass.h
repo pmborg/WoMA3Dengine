@@ -24,18 +24,6 @@
 #if defined DX_ENGINE
 #include <d3d11.h>
 
-#if defined DX9sdk
-	//////////////
-	// INCLUDES //
-	//////////////
-	#include <d3d9.h>
-	#include <d3dx9.h>
-	#pragma warning( disable : 4324 )
-	#include <DirectXMath.h> //#include <xnamath.h>
-
-	#include "womadriverclass.h"
-#endif
-
 #if defined DX11 || defined DX9
 	// -------------------------------------------------------------------------------------------
 	// Use OLD xnamath from DirectX SDK June2010 or Windows Kit 8?
@@ -89,9 +77,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: DXcameraClass
 ////////////////////////////////////////////////////////////////////////////////
-namespace DirectX
-{
-
 class DXcameraClass : public VirtualCameraClass
 {
 public:
@@ -102,16 +87,21 @@ public:
 	void SetPosition(float, float, float);
 	void SetRotation(float, float, float);
 
-    /*D3DXVECTOR3*/ XMFLOAT3 GetPosition();
-    /*D3DXVECTOR3*/ XMFLOAT3 GetRotation();
+    XMFLOAT3 GetPosition();
+    XMFLOAT3 GetRotation();
 
 	void CalculateViewMatrix();
-
-#if defined DX9sdk
-	void GetViewMatrix(D3DXMATRIX&);
-#else
-	void GetViewMatrix(XMMATRIX&);
+#if defined USE_3RD_PERSON_CAMERA
+    XMVECTOR camPosition;
+    XMVECTOR camTarget;
+    XMVECTOR camUp;
+    XMVECTOR DefaultForward = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+    XMVECTOR DefaultRight = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
+    XMVECTOR camForward = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+    XMVECTOR camRight = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
+    void CalculateViewMatrix_3rd_PersonCamera(float camYaw = 0.0f, float camPitch = 0.0f);
 #endif
+    void GetViewMatrix(XMMATRIX&);
 
 	void Use2DViewMatrix();
 
@@ -120,29 +110,17 @@ public:
 	float m_positionX, m_positionY, m_positionZ;
 	float m_rotationX, m_rotationY, m_rotationZ;
 
-  #if defined DX9sdk
-	D3DXMATRIX m_viewMatrix;
-  #else
 	XMMATRIX m_viewMatrix;
-  #endif
 
-  #ifndef DX9sdk
 	XMMATRIX m_viewmatrix2D;
-  #else
-	D3DXMATRIX m_viewmatrix2D;
-  #endif
 
 private:
 #if defined DX12 || defined DX11 || defined DX9
 	XMVECTOR /*XMFLOAT3*/ lookAt;
 	XMVECTOR /*XMFLOAT3*/ up;
 #endif
-#if defined DX9sdk
-	D3DXVECTOR3 lookAt9;
-	D3DXVECTOR3 up9;
-#endif
 
 };
 
-}
+
 #endif

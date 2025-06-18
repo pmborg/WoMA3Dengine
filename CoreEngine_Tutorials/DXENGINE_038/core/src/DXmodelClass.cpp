@@ -58,9 +58,6 @@ DXmodelClass::DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive, bool comp
 	// VARS:
 	// ----------------------------------------------------------------------
 	
-#if defined DX9sdk
-	m_driver9 = NULL;
-#endif
 #if defined DX11 || defined DX9
 	m_driver11 = NULL;
 #endif
@@ -94,9 +91,6 @@ DXmodelClass::DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive, bool comp
 	// Public ----------------------------------------------------------------------
 	
 	
-#if defined DX9sdk
-	m_Shader9 = NULL;
-#endif
 #if defined DX11 || defined DX9
 	m_Shader11 = NULL;
 #endif
@@ -120,11 +114,6 @@ DXmodelClass::DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive, bool comp
 		m_vertexBuffer11	= m_indexBuffer11	= NULL;
 	#endif
 
-	#if defined DX9sdk
-		indexBuffer9 = NULL;
-		vertexBuffer9 = NULL;
-	#endif
-
 	m_vertexCount	= m_indexCount	= NULL;
 	
 	Identity();
@@ -139,16 +128,6 @@ void DXmodelClass::LOADDRIVER(void* driver)
 {
 	switch (SystemHandle->AppSettings->DRIVER)
 	{
-	#if defined DX9sdk
-	case DRIVER_DX9:
-		m_driver9 = (DirectX::DX9Class*)driver;
-		break;
-	#endif
-	#if defined DX9 && D3D11_SPEC_DATE_YEAR > 2009
-	case DRIVER_DX9:
-		m_driver11 = (DirectX::DX11Class*)driver;
-		break;
-	#endif
 
 	#if defined DX11
 	case DRIVER_DX11:
@@ -264,22 +243,6 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 	// LOAD HLSL CODE:
 	switch (SystemHandle->AppSettings->DRIVER)
 	{
-  #if defined DX9sdk
-	case DRIVER_DX9:
-		// Create the SHADER object / LOAD HLSL ---> return shader as pointer!!
-		shader = NEW DXshaderClass(m_driver9->ShaderVersionH, m_driver9->ShaderVersionL, Model3D);
-		IF_NOT_THROW_EXCEPTION(shader);
-		result = shader->Initialize(m_ObjId, objectName, ShaderType, ((DirectX::DX9Class*)m_driver9)->m_device, SystemHandle->m_hWnd, PrimitiveTopology);
-	break;
-  #endif
-  #if defined DX9 && D3D11_SPEC_DATE_YEAR > 2009
-	case DRIVER_DX9:
-		// Create the SHADER object / LOAD HLSL ---> return shader as pointer!!
-		shader = NEW DXshaderClass(m_driver11->ShaderVersionH, m_driver11->ShaderVersionL, Model3D);
-		IF_NOT_THROW_EXCEPTION(shader);
-		result = shader->Initialize(m_ObjId, objectName, ShaderType, ((DirectX::DX11Class*)m_driver11)->m_device11, SystemHandle->m_hWnd, PrimitiveTopology);
-	break;
-  #endif
 
   #if defined DX11 // Pure DX11
 	case DRIVER_DX11:
@@ -414,9 +377,6 @@ HRESULT DXmodelClass::LoadTextureImage(TCHAR* textureFilename)
 
 	switch (SystemHandle->AppSettings->DRIVER)
 	{
-	#if defined DX9
-	case DRIVER_DX9:
-	#endif
 	#if defined DX11
 	case DRIVER_DX11:
 	#endif
@@ -425,9 +385,6 @@ HRESULT DXmodelClass::LoadTextureImage(TCHAR* textureFilename)
 	}
 #endif
 
-#if defined DX9sdk
-	hr = D3DXCreateTextureFromFile(((DX_CLASS*)m_driver)->m_device, textureFilename, &m_Texture);
-#endif
 	if (hr != S_OK)
 	{
 		WomaMessageBox(textureFilename, TEXT("Texture File not found")); return false;
@@ -436,16 +393,6 @@ HRESULT DXmodelClass::LoadTextureImage(TCHAR* textureFilename)
 	{
 		switch (SystemHandle->AppSettings->DRIVER)
 		{
-#if defined DX9 && D3D11_SPEC_DATE_YEAR == 2009
-		case DRIVER_DX9:
-			meshSRV9.push_back(m_Texture9);		// Image Converter: *.png to *.dds: C:\WoMAengine2023\ExternalTools\Microsoft_DirectX_SDK_June_2010\Utilities\bin\x64\texconv.exe -ft DDS *.png
-			break;
-#endif
-#if defined DX9 && D3D11_SPEC_DATE_YEAR > 2009
-		case DRIVER_DX9:
-			meshSRV11.push_back(m_Texture11);	// Image Converter: *.png to *.dds: C:\WoMAengine2023\ExternalTools\Microsoft_DirectX_SDK_June_2010\Utilities\bin\x64\texconv.exe -ft DDS *.png
-			break;
-#endif
 
 #if defined DX11
 		case DRIVER_DX11:
@@ -472,13 +419,6 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 
 #if defined DX11 || defined DX12 || defined DX9
 	
-#if defined DX9sdk
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
-	{
-		m_Shader9 = CreateShader(objectName, ModelShaderType);
-		IF_NOT_RETURN_FALSE(m_Shader9);
-	}
-#endif
 #if defined DX11 || defined DX9
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 	{
@@ -564,16 +504,6 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 	case SHADER_COLOR: 
 		switch (SystemHandle->AppSettings->DRIVER)
 		{
-#if defined DX9sdk
-		case DRIVER_DX9:
-			result = InitializeColorBuffers(((DirectX::DX9Class*)m_driver9)->m_device, indices9);
-		break;
-#endif
-#if defined DX9// && D3D11_SPEC_DATE_YEAR > 2009
-		case DRIVER_DX9:
-			result = InitializeColorBuffers(((DirectX::DX11Class*)m_driver11)->m_device11, indices);
-		break;
-#endif
 
 #if defined DX11 // Pure DX11
 		case DRIVER_DX11:
@@ -780,10 +710,6 @@ void DXmodelClass::Shutdown()
 		SAFE_RELEASE(m_vertexBuffer11);	// Release the vertex buffer.
 	}
 #endif
-#if defined DX9sdk
-	SAFE_RELEASE( indexBuffer9 );
-	SAFE_RELEASE( vertexBuffer9 );	//TODO: use same name as DX11??
-#endif
 
 #if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
@@ -807,9 +733,6 @@ void DXmodelClass::Shutdown()
 #endif
 		
 #if defined DX12 || defined DX11 || defined DX9
-	#if defined DX9sdk
-	SAFE_SHUTDOWN(m_Shader9);
-	#endif
 
 	#if defined DX11 || defined DX9
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
@@ -847,11 +770,6 @@ bool DXmodelClass::InitializeColorBuffers(/*ID3D11Device*/ void* device, void* i
 		vertices[i].position = XMFLOAT3((*modelColorVertex)[i].x, (*modelColorVertex)[i].y, (*modelColorVertex)[i].z);
 		vertices[i].color	 = XMFLOAT4((*modelColorVertex)[i].r, (*modelColorVertex)[i].g, (*modelColorVertex)[i].b, (*modelColorVertex)[i].a);
 #endif
-#if defined DX9sdk
-		vertices[i].position = D3DXVECTOR3((*modelColorVertex)[i].x, (*modelColorVertex)[i].y, (*modelColorVertex)[i].z); 
-		vertices[i].color	 = D3DCOLOR_ARGB(	(BYTE)((*modelColorVertex)[i].a*255.0f), 
-												(BYTE)((*modelColorVertex)[i].r*255.0f), (BYTE)((*modelColorVertex)[i].g*255.0f), (BYTE)((*modelColorVertex)[i].b*255.0f));
-#endif
 
 		CALCULATE_MAX_MIN(vertices[i].position);
 	}
@@ -879,13 +797,8 @@ bool DXmodelClass::InitializeTextureBuffers(/*ID3D11Device*/ void* device, void*
 		for (UINT i = 0; i < m_vertexCount; i++)
 		{
 			// Load the vertex array with data.
-		#ifndef DX9sdk
 			vertices[i].position = XMFLOAT3((*modelTextureVertex)[i].x, (*modelTextureVertex)[i].y, (*modelTextureVertex)[i].z);
 			vertices[i].texCoord = XMFLOAT2((*modelTextureVertex)[i].tu, (*modelTextureVertex)[i].tv);
-		#else
-			vertices[i].position = D3DXVECTOR3((*modelTextureVertex)[i].x, (*modelTextureVertex)[i].y, (*modelTextureVertex)[i].z); 
-			vertices[i].texCoord = D3DXVECTOR2((*modelTextureVertex)[i].tu, (*modelTextureVertex)[i].tv);
-		#endif
 
 			CALCULATE_MAX_MIN(vertices[i].position);
 		}
@@ -912,15 +825,9 @@ bool DXmodelClass::InitializeTextureLightBuffers(/*ID3D11Device*/ void* device, 
 	for (UINT i = 0; i < m_vertexCount; i++)
 	{
 		// Load the vertex array with data.
-	#ifndef DX9sdk
 		vertices[i].position = XMFLOAT3((*modelTextureLightVertex)[i].x, (*modelTextureLightVertex)[i].y, (*modelTextureLightVertex)[i].z);
 		vertices[i].texCoord = XMFLOAT2((*modelTextureLightVertex)[i].tu, (*modelTextureLightVertex)[i].tv);
 		vertices[i].normal = XMFLOAT3((*modelTextureLightVertex)[i].nx, (*modelTextureLightVertex)[i].ny, (*modelTextureLightVertex)[i].nz);
-	#else
-		vertices[i].position = D3DXVECTOR3((*modelTextureLightVertex)[i].x, (*modelTextureLightVertex)[i].y, (*modelTextureLightVertex)[i].z); 
-		vertices[i].texCoord = D3DXVECTOR2((*modelTextureLightVertex)[i].tu, (*modelTextureLightVertex)[i].tv);
-		vertices[i].normal = D3DXVECTOR3((*modelTextureLightVertex)[i].nx, (*modelTextureLightVertex)[i].ny, (*modelTextureLightVertex)[i].nz);
-	#endif
 		CALCULATE_MAX_MIN(vertices[i].position);
 	}
 	
@@ -1250,70 +1157,6 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 		// Create the index buffer.
 		result = ((ID3D11Device*)device)->CreateBuffer(&indexBufferDesc, &indexData, &m_indexBuffer11);
 		IF_FAILED_RETURN_FALSE(result);
-	}
-#elif defined DX9 && D3D11_SPEC_DATE_YEAR == 2009
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
-	{
-#define device ((IDirect3DDevice9*)Driver_Device)
-
-		// DX9
-		//
-		// Copy Vertex Data: Create a vertex buffer interface called vertexBuffer
-		//
-		DWORD FVF = NULL;
-
-		switch (ModelShaderType)
-		{
-		case SHADER_COLOR:
-			FVF = CUSTOMFVF_XYZ_DIFFUSE_DX9;
-			break;
-
-		case SHADER_TEXTURE:
-		case SHADER_TEXTURE_WATER:
-			FVF = CUSTOMFVF_XYZ_TEXTURE_DX9;
-			break;
-
-		case SHADER_TEXTURE_LIGHT:
-		case SHADER_TEXTURE_LIGHT_RENDERSHADOW:
-			FVF = CUSTOMFVF_XYZ_LIGHT_DX9;
-			break;
-
-		default:
-			throw woma_exception("WRONG SHADER!", __FILE__, __FUNCTION__, __LINE__);
-		}
-
-		//
-		// Create an vertex buffer:
-		//
-		device->CreateVertexBuffer(m_vertexCount * sizeofMODELvertex,
-			D3DUSAGE_WRITEONLY,
-			FVF,
-			D3DPOOL_MANAGED,
-			&vertexBuffer9,
-			NULL);	// parameter "Reserved"
-
-		// Lock vertexBuffer and load the [vertices] into it:
-		VOID* pVoid;    // a void pointer
-		vertexBuffer9->Lock(0, 0, (void**)&pVoid, 0);
-		memcpy(pVoid, vertices, sizeofMODELvertex * m_vertexCount);
-		vertexBuffer9->Unlock();
-
-		if (m_indexCount > 0)
-		{
-			//
-			// Create an index buffer to use with our [indexBuffer] into it:
-			//
-			((IDirect3DDevice9*)device)->CreateIndexBuffer(m_indexCount * sizeof(WORD),
-				D3DUSAGE_WRITEONLY,
-				D3DFMT_INDEX16,
-				D3DPOOL_DEFAULT,
-				&indexBuffer9,
-				NULL);
-			WORD* pIndices = NULL;
-			indexBuffer9->Lock(0, sizeof(WORD) * m_indexCount, (void**)&pIndices, 0);
-			memcpy(pIndices, indices, sizeof(WORD) * m_indexCount);
-			indexBuffer9->Unlock();
-		}
 	}
 #endif
 
@@ -1970,14 +1813,6 @@ void DXmodelClass::RenderSky(UINT camera, float fadeLight)
 		Render(CAMERA_SKY, PROJECTION_PERSPECTIVE);
 	}
 #endif
-#if defined DX9sdk
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
-	{
-		m_Shader->PSfade = fadeLight;
-		m_Shader->isSky = true;
-		Render(m_driver9, CAMERA_SKY, PROJECTION_PERSPECTIVE);
-	}
-#endif
 	
 }
 #endif
@@ -2093,94 +1928,6 @@ void DXmodelClass::Render(UINT camera, UINT projection, UINT pass, void* lightVi
 		}
 	}
 #endif
-#if defined DX9sdk
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
-	{
-	#define d3ddev m_driver9->m_device
-
-		/*
-			static float index = 0.0f;
-			index+= 0.01f;    // an ever-increasing float value
-
-			// Frame Move
-			//------------------------------------------------------------------------
-			D3DXMATRIX matRotateY;    // a matrix to store the rotation information
-
-			// build a matrix to rotate the model based on the increasing float value:
-			// [cos# 0 -sin# 0]
-			// [   0 1     0 0]
-			// [sin# 0 cos#  0]
-			// [   0 0     0 1]
-			D3DXMatrixRotationY(&matRotateY, index);
-
-			// tell Direct3D about our matrix
-			d3ddev->SetTransform(D3DTS_WORLD, &matRotateY);
-		*/
-
-		/*
-		// States
-		//------------------------------------------------------------------------
-		if(g_isWireFrame)
-			d3ddev->SetRenderState(D3DRS_FILLMODE,D3DFILL_WIREFRAME);
-		else
-			d3ddev->SetRenderState(D3DRS_FILLMODE,D3DFILL_SOLID);
-		*/
-
-		// DX9: Samples:
-		// http://www.directxtutorial.com/Lesson.aspx?lessonid=9-4-5
-		// http://www.codesampler.com/dx9src.htm
-
-		// Step 3: Render Simple Mesh:
-		// ----------------------------------------------------------------------------------------
-		D3DXMATRIX viewMatrix;
-		m_driver9->m_Camera->GetViewMatrix(viewMatrix);
-
-		d3ddev->SetTransform(D3DTS_WORLD, &m_worldMatrix9);
-		d3ddev->SetTransform(D3DTS_VIEW, &viewMatrix);    // set the view transform to matView
-
-		if (m_indexCount > 0)
-			d3ddev->SetIndices(indexBuffer9);
-
-		switch (ModelShaderType)
-		{
-		case SHADER_COLOR:		// COLOR
-			d3ddev->SetStreamSource(0, vertexBuffer9, 0, sizeof(CUSTOMVERTEX_XYZ_DIFFUSE_DX9));
-			d3ddev->SetFVF(CUSTOMFVF_XYZ_DIFFUSE_DX9);	// Type of Vertice: COLOR
-
-			((DirectX::DX9Class*)SystemHandle->m_Driver)->m_device->LightEnable(0, FALSE);
-			((DirectX::DX9Class*)SystemHandle->m_Driver)->m_device->SetRenderState(D3DRS_LIGHTING, FALSE);
-			break;
-
-		case SHADER_TEXTURE:
-		case SHADER_TEXTURE_WATER:
-			d3ddev->SetStreamSource(0, vertexBuffer, 0, sizeof(CUSTOMVERTEX_XYZ_TEXTURE_DX9));
-			d3ddev->SetFVF(CUSTOMFVF_XYZ_TEXTURE_DX9);	// Type of Vertice: TEXTURE
-
-			((DX_CLASS*)SystemHandle->m_Application->m_Driver)->m_device->LightEnable(0, FALSE);
-			((DX_CLASS*)SystemHandle->m_Application->m_Driver)->m_device->SetRenderState(D3DRS_LIGHTING, FALSE);
-			break;
-
-		case SHADER_TEXTURE_LIGHT:
-		case SHADER_TEXTURE_LIGHT_RENDERSHADOW:
-			d3ddev->SetStreamSource(0, vertexBuffer, 0, sizeof(CUSTOMVERTEX_XYZ_LIGHT_DX9));
-			d3ddev->SetFVF(CUSTOMFVF_XYZ_LIGHT_DX9);	// Type of Vertice: LIGHT
-
-			((DX_CLASS*)SystemHandle->m_Application->m_Driver)->m_device->LightEnable(0, TRUE);
-			((DX_CLASS*)SystemHandle->m_Application->m_Driver)->m_device->SetRenderState(D3DRS_LIGHTING, TRUE);
-			break;
-		default:
-			throw woma_exception("WRONG SHADER!", __FILE__, __FUNCTION__, __LINE__);
-		}
-
-		if (ModelShaderType >= SHADER_TEXTURE)
-			for (UINT i = 0; i < meshSRV.size(); i++)
-				d3ddev->SetTexture(i, meshSRV[i]);
-
-#define PrimType D3DPT_TRIANGLESTRIP //D3DPT_TRIANGLELIST
-		d3ddev->DrawIndexedPrimitive(PrimType, 0/*VertexStart*/, 0, m_vertexCount, 0/*IndexStart*/, m_indexCount);
-		SystemHandle->TotalVertexCounter += indexCount;
-	}
-#endif
 }
 
 
@@ -2192,9 +1939,6 @@ void DXmodelClass::Identity()
 	#if defined DX11 || defined DX12 || defined DX9
 		m_worldMatrix = XMMatrixIdentity();
 	#endif
-	#if defined DX9sdk
-		D3DXMatrixIdentity(&m_worldMatrix9);
-	#endif
 }
 
 void DXmodelClass::multiply (void* m) // in radians!!
@@ -2202,19 +1946,12 @@ void DXmodelClass::multiply (void* m) // in radians!!
 #if defined DX11 || defined DX12 || defined DX9
 	m_worldMatrix *= *(XMMATRIX*)m;
 #endif
-#if defined DX9sdk
-	m_worldMatrix9 *= *(D3DXMATRIX*)m;
-#endif
 }
 
 void DXmodelClass::rotateX (float rZrad) // in radians!!
 {
 #if defined DX11 || defined DX12 || defined DX9
     XMMATRIX m = XMMatrixRotationX (rZrad);
-#endif
-#if defined DX9sdk
-	D3DXMATRIX m;
-	D3DXMatrixRotationX(&m, rZrad);
 #endif
 	m_worldMatrix *= m;
 }
@@ -2224,10 +1961,6 @@ void DXmodelClass::rotateY (float rZrad) // in radians!!
 #if defined DX11 || defined DX12 || defined DX9
     XMMATRIX m = XMMatrixRotationY (rZrad);
 #endif
-#if defined DX9sdk
-	D3DXMATRIX m;
-	D3DXMatrixRotationY(&m, rZrad);
-#endif
 	m_worldMatrix *= m;
 }
 
@@ -2235,10 +1968,6 @@ void DXmodelClass::rotateZ (float rZrad) // in radians!!
 {
 #if defined DX11 || defined DX12 || defined DX9
     XMMATRIX m = XMMatrixRotationZ (rZrad);
-#endif
-#if defined DX9sdk
-	D3DXMATRIX m;
-	D3DXMatrixRotationZ(&m, rZrad);
 #endif
 	m_worldMatrix *= m;
 }

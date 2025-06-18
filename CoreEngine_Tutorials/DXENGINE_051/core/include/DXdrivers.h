@@ -54,9 +54,5 @@
 		#endif
 	#endif
 		
-	#if defined DX9sdk
-		#include "DX9Class.h"
-	#endif
-
 #endif
 

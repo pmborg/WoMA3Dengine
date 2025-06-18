@@ -30,9 +30,6 @@
 extern RApplicationClass* r_Application;
 #endif
 
-#if defined DX9sdk
-#include "Dx9Class.h"
-#endif
 #if defined DX11 || defined DX9
 #include "Dx11Class.h"
 #endif
@@ -431,24 +428,23 @@ void ApplicationClass::AppPosRender(UINT monitorWindow)
 
 }
 
-float ApplicationClass::Update()
+float ApplicationClass::ProcessInputUpdate()
 {
 	float fadeLight = 1;
 
-#if defined USE_TIMER_CLASS && defined INTRO_DEMO
+#if defined SAVEW3D
+    WomaMessageBox(TEXT("Conversion from OBJ to W3D, ended."), TEXT("SAVEW3D"));
+    WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP;
+    return -100;
+#endif
+
+#if defined USE_TIMER_CLASS
 	// TIME Control: Show Debug Info
 	UINT64 passedTotalTime = (UINT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
-#endif
-#if defined USE_TIMER_CLASS
-	if (m_Driver->RenderfirstTime)
-	{
-	#if defined SAVEW3D
-		WomaMessageBox(TEXT("Conversion from OBJ to W3D, ended."), TEXT("SAVEW3D"));
-		WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP;
-		return -100;
-	#endif
-	}
-#endif
+    if (m_Driver->RenderfirstTime)
+    {
+        TCHAR tmp[MAX_STR_LEN]; _stprintf(tmp, TEXT("PASSED TOTAL TIME TO LOAD: %ju ms\n"), passedTotalTime); OutputDebugString(tmp);
+    }
 
 #if defined INTRO_DEMO
 	// 5 INTRO DEBUG TEXT: Show time, etc..
@@ -465,6 +461,7 @@ float ApplicationClass::Update()
 #if defined USE_DIRECT_INPUT && defined INTRO_DEMO
 	// Animate Camera (INTRO_DEMO)
 	SystemHandle->m_player[g_NetID]->p_player.IsDownPressed = true;
+#endif
 #endif
 #endif
 
@@ -522,7 +519,7 @@ float ApplicationClass::Update()
 #endif
 
 #if defined USE_DIRECT_INPUT					
-	HandleUserInput(dt);	// GET INPUT for CAMERA: Movement
+	ProcessUserKeyboardInput(dt); //Keyboard keys
 #endif
 
 	// SET CAMERA (for this monitor): Prepare to Take a Shot: Generate the view matrix based on the camera's position.
@@ -530,8 +527,13 @@ float ApplicationClass::Update()
 #if defined DX_ENGINE	
 	if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
 	{
-		if (DXsystemHandle->m_Camera)
-			DXsystemHandle->m_Camera->CalculateViewMatrix();
+		if (DXsystemHandle->m_Camera) {
+#if defined USE_3RD_PERSON_CAMERA
+            DXsystemHandle->m_Camera->CalculateViewMatrix_3rd_PersonCamera(SystemHandle->m_Application->m_camYaw, SystemHandle->m_Application->m_camPitch);
+#else
+            DXsystemHandle->m_Camera->CalculateViewMatrix();
+#endif
+        }
 	}
 #endif
 
@@ -979,9 +981,6 @@ void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickR
 #if defined DX11 || defined DX9
 	DX11Class* driver11 = NULL;
 #endif
-#if defined DX9sdk
-	DX9Class* driver9 = NULL;
-#endif
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 	{
@@ -993,10 +992,6 @@ void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickR
 	{
 		driver11 = (DirectX::DX11Class*)driverList[SystemHandle->AppSettings->DRIVER];
 	}
-#endif
-#if defined DX9sdk
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
-		driver9 = (DX9Class*)driverList[SystemHandle->AppSettings->DRIVER];
 #endif
 
 	XMMATRIX m_projectionMatrix;

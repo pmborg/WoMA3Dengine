@@ -82,13 +82,13 @@ PSIn MyVertexShader023Light(VSIn input)
     
     if (VS_USE_WVP) {
 	output.position = mul(float4(input.position, 1), WVP);	// Calculate the position of the vertex against the world, view, and projection matrices
-} else {
-	position = float4(input.position, 1);
-	position = mul(position, worldMatrix);
-	position = mul(position, view);			//viewMatrix
-	position = mul(position, projection);	//projectionMatrix
-	output.position = position;
-}
+    } else {
+	    position = float4(input.position, 1);
+	    position = mul(position, worldMatrix);
+	    position = mul(position, view);			//viewMatrix
+	    position = mul(position, projection);	//projectionMatrix
+	    output.position = position;
+    }
 
     if (isAnimatedBill)
     {
@@ -125,8 +125,8 @@ PSIn MyVertexShader023Light(VSIn input)
 #endif
 	
 	//23: LIGHT: NORMAL
-        if (VShasLight || VShasSpecular) 
-            output.normal = normalize(mul(input.normal, (float3x3) worldMatrix)); // Calculate the normal vector against the world matrix only
+    if (VShasLight || VShasSpecular) 
+        output.normal = normalize(mul(input.normal, (float3x3) worldMatrix)); // Calculate the normal vector against the world matrix only
 	
 	//34: SPECULAR
 #if defined PS_USE_SPECULAR
@@ -211,16 +211,9 @@ float4 MyPixelShader023Light(PSIn input) : SV_TARGET
 #if defined PS_USE_FOG
     if (hasFog || isSky)
     {
-		//textureColor = input.fogFactor * textureColor + (1.0 - input.fogFactor) * fogColor; // FOG: Calculate the final color using the fog effect equation.
         float4 fog4 = 0;
-        //if (isSky)
-        //{
-        //    fog4.r = 0.9;
-        //}
-        //else
-        {
-            fog4.r = (1.0 - input.fogFactor);
-        }
+        fog4.r = (1.0 - input.fogFactor);
+
         fog4.g = fog4.r;
         fog4.b = fog4.r;
         textureColor.rgb = lerp(textureColor.rgb, fogColor.rgb, fog4.rgb);

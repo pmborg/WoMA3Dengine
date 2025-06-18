@@ -29,9 +29,6 @@
 #include "DXshaderClass.h"
 #include "fileLoader.h"
 
-#if (defined DX9 && D3D11_SPEC_DATE_YEAR == 2009)
-#include "dx9Class.h"
-#endif
 #if defined DX11 || defined DX9
 #include "dx11Class.h"
 #endif
@@ -122,9 +119,6 @@ namespace DirectX {
 		CLASSLOADER();
 		WomaIntegrityCheck = 1234567155;
 		
-#if defined DX9sdk
-		m_driver9 = ((DirectX::DX9Class*)m_Driver);
-#endif
 #if defined DX11 || defined DX9
 		m_driver11 = ((DirectX::DX11Class*)m_Driver);
 #endif
@@ -355,13 +349,6 @@ namespace DirectX {
 			{
 				polygonLayout11 = &colorPolygonLayout11[0];
 				numElements = _countof(colorPolygonLayout11);
-			}
-#endif
-#if defined DX9sdk
-			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
-			{
-				polygonLayout9 = &colorPolygonLayout9[0];
-				numElements = _countof(colorPolygonLayout9);
 			}
 #endif
 			break;

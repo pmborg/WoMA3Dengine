@@ -72,7 +72,7 @@ float nextHeight = 0;
 //Even if the user keeps moving the mouse to the left we will just keep the cursor at the zero position until they start 
 //moving it to the right again.
 
-void DXInputClass::ProcessInput()
+void DXInputClass::ProcessInputKeys()
 {
 	// Update the location of the mouse cursor based on the change of the mouse location during the frame.
 	#define m_ourPlayer DXsystemHandle->m_player[g_NetID]
@@ -115,7 +115,7 @@ void DXInputClass::ProcessInput()
 #if defined USE_DIRECT_INPUT
 // The HandleUserInput function does all the processing related to the user input from the keyboard and mouse.
 // ==================================================================================================================================
-bool ApplicationClass::HandleUserInput(double frameTime)
+bool ApplicationClass::ProcessUserKeyboardInput(double frameTime)
 // ==================================================================================================================================
 {
     float posX, posZ;
@@ -198,19 +198,35 @@ bool ApplicationClass::HandleUserInput(double frameTime)
 	float height = SystemHandle->AppSettings->INIT_CAMY;
 
 #if defined DX_ENGINE
+#if defined USE_3RD_PERSON_CAMERA
+    #define mouseCurrState DXsystemHandle->m_Input->m_mouseState
+    
+    if (
+        ((mouseCurrState.lX != mouseLastState.lX) || 
+         (mouseCurrState.lY != mouseLastState.lY) ) &&
+          mouseCurrState.rgbButtons[MOUSE_LEFT] & 0x80
+       )
+    {
+        m_camYaw += mouseLastState.lX * 0.002f;
+        m_camPitch += mouseCurrState.lY * 0.002f;
+        //WOMA_LOGManager_DebugMSGAUTO("m_camYaw: %4.1f - m_camPitch: %4.1f\n", m_camYaw, m_camPitch);
+
+        // Check that the camera doesn't go over the top or under the player
+        if (m_camPitch > 0.85f)
+            m_camPitch = 0.85f;
+        if (m_camPitch < -0.85f)
+            m_camPitch = -0.85f;
+
+        mouseLastState = mouseCurrState;
+    }
+#else
     if (DXsystemHandle->m_Input->m_mouseState.rgbButtons[MOUSE_LEFT] & 0x80)
     {
         m_NextPosition->m_rotationY += 0.1f * DXsystemHandle->m_Input->m_mouseX;	// (0.005/0.0174532925f)
         m_NextPosition->m_rotationX += 0.1f * DXsystemHandle->m_Input->m_mouseY;	// (0.005/0.0174532925f)
     }
+#endif
 
-
-	if (DXsystemHandle->m_Input->m_mouseState.rgbButtons[MOUSE_RIGHT] & 0x80) {
-		m_Light->m_lightDirection.x /*m128_f32[0]*/ -= 0.001f* DXsystemHandle->m_Input->m_mouseX;		// X
-		m_Light->m_lightDirection.y /*m128_f32[1]*/ += 0.002f* DXsystemHandle->m_Input->m_mouseY;		// Y
-		//m_Light->m_lightDirection.m128_f32[2] += 0.001* m_Input->mouseWheel;	// Z
-	}
-	else
 	{  // An OBJ was not selected so we are NOT in EDIT MODE.
 
 		m_NextPosition->TurnLeft(DXsystemHandle->m_player[g_NetID]->p_player.IsLeftPressed, DXsystemHandle->m_player[g_NetID]->p_player.IsLeftCtrlPressed);	//LEFT ARROW

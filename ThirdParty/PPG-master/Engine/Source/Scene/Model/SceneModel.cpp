@@ -54,9 +54,7 @@ void showNodeName(aiNode* node, UINT i)
 }
 #endif
 
-double TicksPerSecond;
-
-
+double TicksPerSecond=0;
 
 SceneModel* SceneModel::LoadModelToScene(UINT type, std::string meshFileName, std::string animFileName, Scene& scene, Graphics& graphics, SceneObject::Index parentIndex /*= 0*/)
 {
