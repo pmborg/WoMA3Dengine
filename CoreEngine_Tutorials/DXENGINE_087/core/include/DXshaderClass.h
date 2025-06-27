@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: MAIN PURPOSE:
 // ----------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #pragma once
 
@@ -138,13 +138,13 @@ namespace DirectX
 			float		vsPAD4;
 
 			//FIRE:
-#if TUTORIAL_CHAP >= 62 // FIRE
+//#if TUTORIAL_CHAP >= 62 // FIRE
 	//VS:
 			float		frameTime = 0;
 			XMFLOAT3	scrollSpeeds;
 			XMFLOAT3	scales;
 			bool		isAnimatedBill;
-#endif
+//#endif
 		};
 
 		// PIXEL CBUFFER:
@@ -190,14 +190,14 @@ namespace DirectX
 			float		nShininess;
 
 			//FIRE:
-#if TUTORIAL_CHAP >= 62 // FIRE
+//#if TUTORIAL_CHAP >= 62 // FIRE
 	//PS:
 			XMFLOAT2	distortion1;
 			XMFLOAT2	distortion2;
 			XMFLOAT2	distortion3;
 			float		distortionScale;
 			float		distortionBias;
-#endif
+//#endif
 		};
 
 
@@ -209,7 +209,7 @@ namespace DirectX
 		// FUNCTIONS:
 		// ---------------------------------------------------------------------
 	public:
-		UINT WomaIntegrityCheck = 1234567155;
+		UINT WomaIntegrityCheck = 1234525256;
 		DXshaderClass(UINT ShaderVersionH, UINT ShaderVersionL, bool shader_3D);
 		~DXshaderClass();
 		void Shutdown();

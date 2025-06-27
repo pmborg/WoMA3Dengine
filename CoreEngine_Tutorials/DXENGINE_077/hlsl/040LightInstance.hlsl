@@ -8,6 +8,7 @@
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
+//WomaIntegrityCheck = 1234525256;
 
 #define PS_USE_LIGHT		 //23
 #define PS_USE_ALFA_TEXTURE	 //33
@@ -48,16 +49,15 @@ struct PSIn
 
 Texture2D shaderTexture;			//: register(t0);	// 21:
 Texture2D AlfaMapTexture;			//: register(t1);	// 43: AlfaMap
-//Texture2D ShadowMapTextureTexture;	//: register(t2);	// 45: ShadowMap
 
 SamplerState SampleType;		//: register(s0);		// 3D (default) WRAP
-//SamplerState SampleTypeClamp;	//: register(s1);
+
 
 ////////////////
 // CBUFFERS
 ////////////////
-#include "cbuffer.hlsl"
-#include "light.hlsl"
+#include "cbuffer.hlsli"
+#include "light.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader

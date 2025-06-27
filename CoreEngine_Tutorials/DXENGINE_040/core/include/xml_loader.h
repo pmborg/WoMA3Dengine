@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #pragma once
 #pragma warning( disable : 5208 ) // warning C5208: unnamed class used in typedef name cannot declare members other than non-static data members, member enumerations, or member classes
@@ -173,6 +173,7 @@ typedef struct xmlobj3d_
 	WOMA_OBJECT WOMA_object;
 	int instances = 0;			//40
     bool render = true;
+    float ry=0; //DX_ENGINE_LEVEL >= 88
 } xmlobj3d;
 
 class XMLloader

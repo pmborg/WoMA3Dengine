@@ -34,10 +34,7 @@
 #include "../Engine/Source/PPG.h"
 #include <math.h>
 
-struct WomaMesh {
-    Scene scene;
-    SceneModel* assimpSceneModel = NULL;
-} WOMAMESH;
+
 
 class MyDemo : public Demo
 {

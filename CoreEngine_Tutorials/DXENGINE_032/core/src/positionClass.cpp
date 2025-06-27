@@ -17,15 +17,14 @@
 // PURPOSE: Define the position of a player.
 //			Process the Dynamic movement: Newton Laws of the player.
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #include "platform.h"
-#if defined USE_DIRECT_INPUT// && defined INTRO_DEMO
+#if defined USE_DIRECT_INPUT
 #include "OSengine.h"
 
 #pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
 #include "positionClass.h"
-#include "TrigonometryMathClass.h" //sim, cos table
 #if defined DX_ENGINE
 #include <mmsystem.h> //timeGetTime
 #endif
@@ -34,7 +33,7 @@
 PositionClass::PositionClass(UINT id)
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567155;
+	WomaIntegrityCheck = 1234525256;
 
 	m_positionX = SystemHandle->AppSettings->INIT_CAMX;
 	m_positionY = SystemHandle->AppSettings->INIT_CAMY;
@@ -54,6 +53,7 @@ PositionClass::PositionClass(UINT id)
 	m_rightTurnSpeed = 0.0f;
 	m_lookUpSpeed    = 0.0f;
 	m_lookDownSpeed  = 0.0f;
+
 }
 
 PositionClass::~PositionClass(){CLASSDELETE();}
@@ -67,7 +67,6 @@ void PositionClass::SetPosition(float x, float y, float z)
 	m_positionY = y;
 	m_positionZ = z;
 }
-
 
 void PositionClass::SetRotation(float x, float y, float z)
 {
@@ -85,7 +84,6 @@ void PositionClass::GetPosition(float& x, float& y, float& z)
 	y = m_positionY;
 	z = m_positionZ;
 }
-
 
 void PositionClass::GetRotation(float& x, float& y, float& z)
 {
@@ -118,9 +116,9 @@ void PositionClass::MoveForward(bool keydown, bool ctrl, bool mouseWhell, bool w
 	{
 		m_forwardSpeed += m_frameTime * 0.0005f;
 		#if defined _DEBUG
-		float maxSpeed = ctrl ? 0.1f : 0.004f; // MAX SPEED
+		float maxSpeed = ctrl ? 0.006f : 0.002f; // MAX SPEED (Run / Walk)
 		#else
-		float maxSpeed = ctrl ? 0.04f : 0.004f; // MAX SPEED
+		float maxSpeed = ctrl ? 0.03f : 0.003f; // MAX SPEED
 		#endif
 		if (water)
 			maxSpeed/=3;
@@ -151,7 +149,7 @@ void PositionClass::MoveBackward(bool keydown, bool ctrl, bool mouseWhell, bool 
 	if(keydown||mouseWhell)
 	{
 		m_backwardSpeed += m_frameTime * 0.0005f;
-		float maxSpeed = ctrl ? 0.04f : 0.004f; // MAX SPEED
+        float maxSpeed = 0.001f; // MAX SPEED (Walk)
 
 #if defined INTRO_DEMO
 		maxSpeed /= 8; // MAX SPEED for INTRO_DEMO
@@ -179,7 +177,6 @@ void PositionClass::MoveBackward(bool keydown, bool ctrl, bool mouseWhell, bool 
 }
 
 //This function calculates the upward speed and movement of the viewer/camera.
-
 void PositionClass::MoveUpward(bool keydown)
 {
 	// Update the upward speed movement based on the frame time and whether the user is holding the key down or not.
@@ -207,7 +204,6 @@ void PositionClass::MoveUpward(bool keydown)
 }
 
 //This function calculates the downward speed and movement of the viewer/camera.
-
 void PositionClass::MoveDownward(bool keydown)
 {
 	// Update the downward speed movement based on the frame time and whether the user is holding the key down or not.
@@ -235,7 +231,6 @@ void PositionClass::MoveDownward(bool keydown)
 }
 
 //This function calculates the left turn speed and rotation of the viewer/camera.
-
 void PositionClass::TurnLeft(bool keydown, bool ctrl)
 {
 
@@ -253,7 +248,6 @@ void PositionClass::TurnLeft(bool keydown, bool ctrl)
 	else
 	{
 		m_leftTurnSpeed -= m_frameTime* 0.005f;
-
 		if(m_leftTurnSpeed < 0.0f)
 		{
 			m_leftTurnSpeed = 0.0f;
@@ -268,13 +262,12 @@ void PositionClass::TurnLeft(bool keydown, bool ctrl)
 }
 
 //This function calculates the right turn speed and rotation of the viewer/camera.
-
 void PositionClass::TurnRight(bool keydown, bool ctrl)
 {
 	// Update the right turn speed movement based on the frame time and whether the user is holding the key down or not.
 	if(keydown)
 	{
-		float maxSpeed = ctrl ? 0.1f : 0.05f;
+        float maxSpeed = ctrl ? 0.1f : 0.05f;
 		m_rightTurnSpeed += m_frameTime * 0.02f;
 
 		if(m_rightTurnSpeed > (m_frameTime * maxSpeed))
@@ -301,7 +294,6 @@ void PositionClass::TurnRight(bool keydown, bool ctrl)
 }
 
 //This function calculates the upward turn speed and rotation of the viewer/camera.
-
 void PositionClass::LookUpward(bool keydown)
 {
 	// Update the upward rotation speed movement based on the frame time and whether the user is holding the key down or not.
@@ -333,7 +325,6 @@ void PositionClass::LookUpward(bool keydown)
 }
 
 //This function calculates the downward turn speed and rotation of the viewer/camera.
-
 void PositionClass::LookDownward(bool keydown)
 {
 	// Update the downward rotation speed movement based on the frame time and whether the user is holding the key down or not.
@@ -363,5 +354,4 @@ void PositionClass::LookDownward(bool keydown)
 	if(m_rotationX < -89.0f)
 		m_rotationX = -89.0f;
 }
-
 #endif

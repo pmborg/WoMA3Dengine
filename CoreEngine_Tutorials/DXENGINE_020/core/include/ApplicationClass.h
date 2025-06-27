@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #ifndef _ApplicationClass_H_
 #define _ApplicationClass_H_
@@ -211,7 +211,7 @@ extern int __cdecl CompoundSortCB(const VOID* arg1, const VOID* arg2);
 class ApplicationClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567155;
+	UINT WomaIntegrityCheck = 1234525256;
 	ApplicationClass();
 	~ApplicationClass();
 	
@@ -241,7 +241,6 @@ public:
 	void AppRender(UINT monitorWindow,  float fadeLight);								// RENDER - 3D
 	bool Initialize(WomaDriverClass* Driver);
 #endif
-
 #if DX_ENGINE_LEVEL >= 23 || defined USE_VIEW2D_SPRITES
 	void AppPosRender(UINT monitorWindow);																// POS-RENDER - 2D: Render 
 #endif

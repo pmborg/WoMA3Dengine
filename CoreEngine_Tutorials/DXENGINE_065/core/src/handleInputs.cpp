@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Work as Input Manager, using inputClass as a Direct Driver
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #include "platform.h"
 #if defined USE_DIRECT_INPUT
@@ -42,13 +42,18 @@ bool f11GodState = false;
 bool g_GOD_MODE = false;
 
 #if defined DX_ENGINE
+UINT Key1[] = { DIK_1 }; //bow
+UINT Key2[] = { DIK_2 }; //sword
+
 UINT KeyFront[]	= {DIK_W, DIK_UP};
 UINT KeyBack[]	= {DIK_S, DIK_DOWN};
 UINT KeyLeft[]	= {DIK_A, DIK_LEFT};
 UINT KeyRigth[]	= {DIK_D, DIK_RIGHT};
 
-//UINT KeyRun		= {DIK_LCONTROL};
-UINT KeyRun =	  { DIK_LSHIFT };
+UINT KeyStrafeLeft[] = { DIK_Q };
+UINT KeyStrafeRigth[] = { DIK_E };
+
+UINT KeyRun[] = {DIK_LSHIFT, DIK_LCONTROL};
 
 UINT KeyLookUp	= {DIK_PGUP};
 UINT KeyLookDown= {DIK_PGDN};
@@ -80,25 +85,32 @@ void DXInputClass::ProcessInputKeys()
 	// Process Keyboard STATE: (CHECK)
 	// =======================
 	//EXIT:
-	m_ourPlayer->p_player.IsEscapePressed	= (m_keyboardState[DIK_ESCAPE] & 0x80) ? true:false;
+	m_ourPlayer->p_player.IsEscapePressed	    = (m_keyboardState[DIK_ESCAPE] & 0x80) ? true:false;
+
+    m_ourPlayer->p_player.Is1Pressed           = (m_keyboardState[Key1[0]] & 0x80) ? true : false; 	// Weapon:1 Bow
+    m_ourPlayer->p_player.Is2Pressed           = (m_keyboardState[Key2[0]] & 0x80) ? true : false; 	// Weapon:2 Sward
 
 	//BASE MOVEMENT:
-	m_ourPlayer->p_player.IsUpPressed		= (m_keyboardState[KeyFront[0]] & 0x80) || (m_keyboardState[KeyFront[1]] & 0x80) ? true:false;
-	m_ourPlayer->p_player.IsDownPressed		= (m_keyboardState[KeyBack[0]] & 0x80) || (m_keyboardState[KeyBack[1]] & 0x80) ? true:false;
-	m_ourPlayer->p_player.IsLeftPressed		= (m_keyboardState[KeyLeft[0]] & 0x80) || (m_keyboardState[KeyLeft[1]] & 0x80) ? true:false;
-	m_ourPlayer->p_player.IsRightPressed	= (m_keyboardState[KeyRigth[0]] & 0x80) || (m_keyboardState[KeyRigth[1]] & 0x80) ? true:false;
+	m_ourPlayer->p_player.IsUpPressed		    = (m_keyboardState[KeyFront[0]] & 0x80) || (m_keyboardState[KeyFront[1]] & 0x80) ? true:false;
+	m_ourPlayer->p_player.IsDownPressed		    = (m_keyboardState[KeyBack[0]] & 0x80)  || (m_keyboardState[KeyBack[1]] & 0x80)  ? true:false;
+	m_ourPlayer->p_player.IsLeftPressed		    = (m_keyboardState[KeyLeft[0]] & 0x80)  || (m_keyboardState[KeyLeft[1]] & 0x80)  ? true:false;
+	m_ourPlayer->p_player.IsRightPressed	    = (m_keyboardState[KeyRigth[0]] & 0x80) || (m_keyboardState[KeyRigth[1]] & 0x80) ? true:false;
 
-	m_ourPlayer->p_player.IsLeftCtrlPressed = (m_keyboardState[KeyRun] & 0x80) ? true : false;				//RUN
+    m_ourPlayer->p_player.IsStrafeLeftPressed   = (m_keyboardState[KeyStrafeLeft[0]] & 0x80) ? true : false; 	// q
+    m_ourPlayer->p_player.IsStrafeRightPressed  = (m_keyboardState[KeyStrafeRigth[0]] & 0x80) ? true : false;   // e
 
-	m_ourPlayer->p_player.IsPgUpPressed		= (m_keyboardState[KeyLookUp] & 0x80) ? true:false;				//Look UP
-	m_ourPlayer->p_player.IsPgDownPressed	= (m_keyboardState[KeyLookDown] & 0x80) ? true : false;			//Look DOWN
+	m_ourPlayer->p_player.IsLeftCtrlPressed     = (m_keyboardState[KeyRun[0]] & 0x80) || (m_keyboardState[KeyRun[1]] & 0x80) ? true : false;    //RUN
 
-	#if !defined RELEASE
-	m_ourPlayer->p_player.IsGodModePressed	= (m_keyboardState[KeyGodMode] & 0x80) ? true:false;
-	m_ourPlayer->p_player.Is1Pressed = (m_keyboardState[KeyFlyUp] & 0x80) ? true : false;
-	m_ourPlayer->p_player.IsQPressed = (m_keyboardState[KeyFlyDown] & 0x80) ? true : false;
-	#endif
-    
+	m_ourPlayer->p_player.IsPgUpPressed		    = (m_keyboardState[KeyLookUp] & 0x80) ? true:false;				//Look UP
+	m_ourPlayer->p_player.IsPgDownPressed	    = (m_keyboardState[KeyLookDown] & 0x80) ? true : false;			//Look DOWN
+
+    //GodMode:
+#if !defined RELEASE
+    m_ourPlayer->p_player.IsGodModePressed = (m_keyboardState[KeyGodMode] & 0x80) ? true : false;
+    m_ourPlayer->p_player.Is1Pressed = (m_keyboardState[KeyFlyUp] & 0x80) ? true : false;
+    m_ourPlayer->p_player.IsQPressed = (m_keyboardState[KeyFlyDown] & 0x80) ? true : false;
+#endif
+
 	//COMPOUND DEBUG:
 
 	//MAP

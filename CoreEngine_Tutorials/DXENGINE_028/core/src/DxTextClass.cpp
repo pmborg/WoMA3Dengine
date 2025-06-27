@@ -17,7 +17,7 @@
 // PURPOSE: 
 // Original DX11 version of the code was inpired on: https://www.rastertek.com/dx11tut12.html
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 #pragma once
 
 #include "OSengine.h"
@@ -33,7 +33,7 @@ namespace DirectX {
 	DxTextClass::DxTextClass()
 	{
 		CLASSLOADER();
-		WomaIntegrityCheck = 1234567155;
+		WomaIntegrityCheck = 1234525256;
 
 		//private:
 		m_Font = NULL;

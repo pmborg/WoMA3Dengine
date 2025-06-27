@@ -8,8 +8,7 @@
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
-#include "cbuffer.hlsl"
-#include "light.hlsl"
+//WomaIntegrityCheck = 1234525256;
 
 #define FOGGED
 
@@ -69,6 +68,12 @@ Texture2D smallstonePathTexture : register(t12); //CH22 - T 056B_castle.jpg
 Texture2D shaderTexture         : register(t13); //CH23 - MAP colorLightMapTexture
 
 SamplerState SampleType; //CH05 - TEXTURE
+
+////////////////
+// CBUFFERS
+////////////////
+#include "cbuffer.hlsli"
+#include "light.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
@@ -189,34 +194,34 @@ float4 MyPixelShader061terrain_fog_slope_detail_mapping(PSIn input) : SV_TARGET
 
 		// TERRAIN:
 		{	
-			//CH17 - Start by sampling all three main textures.
-			//------------------------------------------------------------------------------------------------------
-			// Sample the grass color from the texture using the sampler at this texture coordinate location.
+			    //CH17 - Start by sampling all three main textures.
+			    //------------------------------------------------------------------------------------------------------
+			    // Sample the grass color from the texture using the sampler at this texture coordinate location.
                 grassColor = grassTexture.Sample(SampleType, input.tex.xy);
 
-			// Sample the slope color from the texture using the sampler at this texture coordinate location.
+			    // Sample the slope color from the texture using the sampler at this texture coordinate location.
                 slopeColor = slopeTexture.Sample(SampleType, input.tex.xy);
 
-			// Sample the rock color from the texture using the sampler at this texture coordinate location.
+			    // Sample the rock color from the texture using the sampler at this texture coordinate location.
                 rockColor = rockTexture.Sample(SampleType, input.tex.xy);
 
-			// ALPHA MIXTURE Flat Terrain Big Areas:
-            //------------------------------------------------------------------------------------------------------
-			// Sample the pixel color from the detail map texture using the sampler at this texture coordinate location.
+			    // ALPHA MIXTURE Flat Terrain Big Areas:
+                //------------------------------------------------------------------------------------------------------
+			    // Sample the pixel color from the detail map texture using the sampler at this texture coordinate location.
                 detailColor = detailTexture.Sample(SampleType, input.tex.xy);
                 grassColor = lerp(grassColor, detailColor, (mappingColor.r + mappingColor.g + mappingColor.b) / 3);
             
-			// ALPHA MIXTURE Flat Terrain Big walk Path:
-            //------------------------------------------------------------------------------------------------------
+			    // ALPHA MIXTURE Flat Terrain Big walk Path:
+                //------------------------------------------------------------------------------------------------------
                 alphamappingColor = bigPathMappingTexture.Sample(SampleType, input.texMapping.xy); //x1
                 color = smallstonePathTexture.Sample(SampleType, input.tex.xy);
                 grassColor = lerp(grassColor, color, alphamappingColor.g);
 
-			//CH17 - Now determine the slope for this pixel, which is just one subtracted from the Y normal.
-			//------------------------------------------------------------------------------------------------------
+			    //CH17 - Now determine the slope for this pixel, which is just one subtracted from the Y normal.
+			    //------------------------------------------------------------------------------------------------------
                 slope = 1.0f - input.normal.y; // Calculate the slope of this point.
 
-			// Determine which texture to use based on height:
+			    // Determine which texture to use based on height:
                 if (slope < 0.2f)
                 {
                     blendAmount = slope / 0.2f;
@@ -239,13 +244,13 @@ float4 MyPixelShader061terrain_fog_slope_detail_mapping(PSIn input) : SV_TARGET
                 textureColor = lerp(textureColor, sandTexture.Sample(SampleType, input.tex.zw), mappingColor.b / 3); //BLUE for sand...
                 textureColor = lerp(textureColor, mudTexture.Sample(SampleType, input.tex.zw), mappingColor.r / 3); //RED for mud...
 
-            //CH22: Apply General BUMP
-            //------------------------------------------------------------------------------------------------------
+                //CH22: Apply General BUMP
+                //------------------------------------------------------------------------------------------------------
                 float4 generalBumpMap = generalNormalTexture.Sample(SampleType, input.tex.zw); // BUMP for "stonePathTexture"
-            //textureColor = lightFunc(normapMapFunc(generalBumpMap, input), textureColor);
+                //textureColor = lightFunc(normapMapFunc(generalBumpMap, input), textureColor);
                 textureColor += (diffuseColor / 3 * lightIntensity);
             
-            //CH24: Add transparency on Cyan
+                //CH24: Add transparency on Cyan
                 alphaValue = detailMappingTexture.Sample(SampleType, input.texMapping.xy); //x1	// This wll be our mapping texture:
                 if (alphaValue.g >= 0.1f && alphaValue.b >= 0.25f)
                 { // TRANSPARENT Color
@@ -253,28 +258,28 @@ float4 MyPixelShader061terrain_fog_slope_detail_mapping(PSIn input) : SV_TARGET
                     return (float4) 0;
                 }
 
-            // CH20 Flat Part:
-            //------------------------------------------------------------------------------------------------------
+               // CH20 Flat Part:
+               //------------------------------------------------------------------------------------------------------
                 if (slope < 0.2f)
                 {
                     float4 bumpMap = normalTexture.Sample(SampleType, input.tex.xy); //BUMP for "stonePathTexture"
 
                     color = stonePathTexture.Sample(SampleType, input.tex.xy);
-                //color = lightFunc(normapMapFunc(bumpMap, input), color); //Add BUMP
+                    //color = lightFunc(normapMapFunc(bumpMap, input), color); //Add BUMP
                     textureColor = lerp(textureColor, color, alphaValue.g * 2.5); //GREEN for stone...
 
                     color = sandTexture.Sample(SampleType, input.tex.xy);
-                //color = lightFunc(normapMapFunc(generalBumpMap, input), color); //Add BUMP
+                    //color = lightFunc(normapMapFunc(generalBumpMap, input), color); //Add BUMP
                     textureColor = lerp(textureColor, color, alphaValue.b); //BLUE for sand...
 
                     color = mudTexture.Sample(SampleType, input.tex.xy);
-                //color = lightFunc(normapMapFunc(generalBumpMap, input), color); //Add BUMP
+                    //color = lightFunc(normapMapFunc(generalBumpMap, input), color); //Add BUMP
                     textureColor = lerp(textureColor, color, alphaValue.r / 1.5f); //RED for mud...
                 }
-            }
+        }
 
-            if (input.verticePosition.y < 0)
-                textureColor.rgb -= 0.2f;
+        if (input.verticePosition.y < 0)
+            textureColor.rgb -= 0.2f;
 
 		//CH23:
             if (false /*!isDay*/)
@@ -290,13 +295,13 @@ float4 MyPixelShader061terrain_fog_slope_detail_mapping(PSIn input) : SV_TARGET
 #if defined (FOGGED)
             else
             {
-            // The fog color equation does a linear interpolation between the texture color and the fog color based on the fog factor input value.
-            
-            //ver1:
-            //textureColor /= 1.5;
-		    //textureColor = input.fogFactor * textureColor + (1.0 - input.fogFactor) * fogColor;	// FOG: Calculate the final color using the fog effect equation.
-            
-            //ver2:
+                // The fog color equation does a linear interpolation between the texture color and the fog color based on the fog factor input value.
+              
+                //version 1:
+                //textureColor /= 1.5;
+		        //textureColor = input.fogFactor * textureColor + (1.0 - input.fogFactor) * fogColor;	// FOG: Calculate the final color using the fog effect equation.
+              
+                //version 2:
                 float4 fog4 = 0;
                 fog4.r = (1.0 - input.fogFactor);
         
@@ -313,8 +318,9 @@ float4 MyPixelShader061terrain_fog_slope_detail_mapping(PSIn input) : SV_TARGET
             textureColor *= 1.5;
         }
         
-            return textureColor;
-        }
+        return textureColor;
+        //return float4(1,1,1,1);
+    }
 #if defined (FOGGED)
         else
         {

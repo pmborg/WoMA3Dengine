@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: START and STOP WorldOfMiddleAge 3D ENGINE
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #include "platform.h"
 #include "OSengine.h"
@@ -842,3 +842,8 @@ namespace WOMA
 bool firstFrame = true;
 #endif
 
+#if DEMO_LEVEL < 86
+std::string original_files[] = {
+    TEXT("")
+};
+#endif

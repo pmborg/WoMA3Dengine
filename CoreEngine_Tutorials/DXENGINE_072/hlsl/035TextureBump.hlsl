@@ -8,6 +8,7 @@
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
+//WomaIntegrityCheck = 1234525256;
 
 #define PS_USE_LIGHT		//23
 #define PS_USE_ALFA_TEXTURE	//33
@@ -71,8 +72,8 @@ SamplerState SampleType: register(s0);
 ////////////////
 // CBUFFERS
 ////////////////
-#include "cbuffer.hlsl"
-#include "light.hlsl"
+#include "cbuffer.hlsli"
+#include "light.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader

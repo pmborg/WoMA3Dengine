@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: MAIN PURPOSE:
 // ----------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #pragma once
 
@@ -64,7 +64,7 @@ namespace DirectX
 class DXmodelClass : public VirtualModelClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567155;
+	UINT WomaIntegrityCheck = 1234525256;
 
 	DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY = TRIANGLELIST, bool computeNormals = false, bool modelHASshadow = false, bool modelRENDERshadow = false);
 	~DXmodelClass();
@@ -136,9 +136,9 @@ public:
 
 	XMMATRIX		m_worldMatrix;
 
-	XMFLOAT4 objectCenterOffset = XMFLOAT4(0, 0, 0, 0);
-	XMFLOAT3 minVertex = XMFLOAT3(0, 0, 0);
-	XMFLOAT3 maxVertex = XMFLOAT3(0, 0, 0);
+	XMFLOAT4        objectCenterOffset = XMFLOAT4(0, 0, 0, 0);
+	XMFLOAT3        minVertex = XMFLOAT3(0, 0, 0);
+	XMFLOAT3        maxVertex = XMFLOAT3(0, 0, 0);
 
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
 	DXshaderClass*	m_ShaderShadowMap=NULL;

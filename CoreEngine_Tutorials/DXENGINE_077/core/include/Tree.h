@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #ifndef _TREE_H_
 #define _TREE_H_
@@ -25,7 +25,7 @@
 //-----------------------------------------------------------------------------   
 struct Tree   
 {   
-	XMFLOAT3 vPos;				// Origin of tree   
+	XMFLOAT3    vPos;				// Origin of tree   
 	float		rotY;
 	float		scale;
 	UINT        type;

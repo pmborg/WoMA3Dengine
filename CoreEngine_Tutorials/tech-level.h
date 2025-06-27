@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #pragma once
 
@@ -405,16 +405,7 @@
     #endif
 
     #if DX_ENGINE_LEVEL >= 54
-    /*world.xml
-    <woma>
-        <world hVisibility="128" seaLevel="0" size="512" patchSize="64" 
-                water="engine/data/Terrains/heightmap256x256.bmp" 
-                waterTexture="engine/data/Terrain/008water_tex04.jpg"
-                mainTexture="engine/data/Terrain/011map1_heightmap01_v7.bmp" 
-                skyDayTexture="engine/data/NEW_SKY_DOME.jpg" 
-                skyNightTexture=""/>
-    </woma>
-    */
+    //world.xml
     #endif
 
 
@@ -536,8 +527,17 @@
     #if DX_ENGINE_LEVEL >= 86
         #undef USE_STATUSBAR
         #define USE_INTRO_VIDEO_DEMO
+      #if DX_ENGINE_LEVEL < 88
         #define USE_MODEL4
+      #endif
     #endif
+	
+#if DX_ENGINE_LEVEL >= 88
+    #define USE_3RD_PERSON_CAMERA
+#endif
+	
+	
+	
     //-------------------------------------------------
     //#define SIMPLE
 	

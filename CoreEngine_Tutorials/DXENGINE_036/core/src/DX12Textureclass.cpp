@@ -10,7 +10,7 @@
 // PURPOSE:
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #include "platform.h"
 
@@ -23,7 +23,7 @@
 DX12TextureClass::DX12TextureClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567155;
+	WomaIntegrityCheck = 1234525256;
 
 	//m_textureID = NULL;
 	loaded = false;

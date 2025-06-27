@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #include "OSengine.h"
 #if (defined OPENGL3 || defined OPENGL40) && defined WINDOWS_PLATFORM && CORE_ENGINE_LEVEL >= 10  // Initializing Engine && defined WINDOWS_PLATFORM
@@ -36,7 +36,7 @@ wGLopenGLclass::wGLopenGLclass()
 {
 	CLASS_LOAD_N--; 
 	CLASSLOADER();  //dont count super class!
-	WomaIntegrityCheck = 1234567155;
+	WomaIntegrityCheck = 1234525256;
 
 	m_deviceContext = NULL;
 	m_renderingContext1 = NULL;

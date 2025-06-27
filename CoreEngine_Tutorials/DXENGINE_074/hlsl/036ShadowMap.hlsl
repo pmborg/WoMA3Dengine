@@ -8,6 +8,7 @@
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
+//WomaIntegrityCheck = 1234525256;
 
 //////////////
 // TYPEDEFS //
@@ -29,7 +30,7 @@ struct PSIn
 ////////////////
 // CBUFFERS
 ////////////////
-#include "cbuffer.hlsl"
+#include "cbuffer.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader

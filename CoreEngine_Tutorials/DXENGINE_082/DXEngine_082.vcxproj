@@ -87,6 +87,7 @@
     <ClInclude Include="core\include\WindowPaintClass.h" />
     <ClInclude Include="core\include\winSystemClass.h" />
     <ClInclude Include="core\include\wmiUtilClass.h" />
+    <ClInclude Include="core\include\womamesh.h" />
     <ClInclude Include="core\include\WomaSetupManager.h" />
     <ClInclude Include="core\include\woma_exception.h" />
     <ClInclude Include="core\include\woma_macros.h" />
@@ -188,6 +189,7 @@
     <ClCompile Include="core\src\WindowPaintClass.cpp" />
     <ClCompile Include="core\src\winSystemClass.cpp" />
     <ClCompile Include="core\src\winWMIutilClass.cpp" />
+    <ClCompile Include="core\src\womamesh.cpp" />
     <ClCompile Include="core\src\woma_exception.cpp" />
     <ClCompile Include="core\src\xml_settings_loader.cpp" />
     <ClCompile Include="core\src\xml_settings_saver.cpp" />

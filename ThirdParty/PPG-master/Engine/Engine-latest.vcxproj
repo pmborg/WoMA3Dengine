@@ -177,7 +177,7 @@
     <ClInclude Include="Source\Passes\SkyboxPass.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="Source\LowLevel\Application.h" />
+    <ClInclude Include="Source\LowLevel\MeshApplication.h" />
     <ClInclude Include="Source\Passes\SpritePass.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
@@ -238,7 +238,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Jobs\AnimationJob.cpp" />
-    <ClCompile Include="Source\LowLevel\Application.cpp" />
+    <ClCompile Include="Source\LowLevel\MeshApplication.cpp" />
     <ClCompile Include="Source\LowLevel\Graphics.cpp" />
     <ClCompile Include="Source\LowLevel\Window.cpp" />
     <ClCompile Include="Source\Passes\BlitPass.cpp">

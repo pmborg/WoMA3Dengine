@@ -17,7 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: START and STOP WorldOfMiddleAge 3D ENGINE
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #include "platform.h"
 #include "OSengine.h"
@@ -883,3 +883,8 @@ bool download(const std::string url, const std::string filename)
 bool firstFrame = true;
 #endif
 
+#if DEMO_LEVEL < 86
+std::string original_files[] = {
+    TEXT("")
+};
+#endif

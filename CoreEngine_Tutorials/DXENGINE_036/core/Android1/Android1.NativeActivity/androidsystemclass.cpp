@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 //ANDROID NATIVE APLICATION: http://developer.android.com/reference/android/app/NativeActivity.html
 
@@ -32,7 +32,7 @@
 AndroidSystemClass::AndroidSystemClass(WOMA::Settings* appSettings) : SystemClass()
 {
     CLASSLOADER();
-    WomaIntegrityCheck = 1234567155;
+    WomaIntegrityCheck = 1234525256;
     AppSettings = appSettings; // Super
     SystemHandle = this;
 

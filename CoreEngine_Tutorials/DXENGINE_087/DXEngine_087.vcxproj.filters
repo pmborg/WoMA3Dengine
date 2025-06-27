@@ -97,6 +97,9 @@
     <Filter Include="src-basic-level\76video">
       <UniqueIdentifier>{f6ccab74-4307-49ea-90c2-b124cecb8b88}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src-basic-level\mesh">
+      <UniqueIdentifier>{180af76b-89b9-45aa-996d-a265b16d93eb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\include\main.h">
@@ -370,6 +373,9 @@
     </ClInclude>
     <ClInclude Include="core\include\Texture.h">
       <Filter>src-basic-level\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\womamesh.h">
+      <Filter>src-basic-level\mesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -670,6 +676,9 @@
     </ClCompile>
     <ClCompile Include="core\src\Texture.cpp">
       <Filter>src-basic-level\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\womamesh.cpp">
+      <Filter>src-basic-level\mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

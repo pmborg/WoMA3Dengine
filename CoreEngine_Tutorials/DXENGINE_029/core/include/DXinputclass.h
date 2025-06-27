@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Used to Manage: the Mouse and the Joystick
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 #pragma once
 
 ///////////////////////////////
@@ -63,7 +63,7 @@
 class DXInputClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567155;
+	UINT WomaIntegrityCheck = 1234525256;
 	DXInputClass();
 	~DXInputClass();
 
@@ -87,10 +87,10 @@ private:
 	// Mouse
 	bool AddPC_mouse();
 	bool ReadMouse();
-	void GetMouseLocation(int&, int&);
+	//void GetMouseLocation(int&, int&);
 
 private:
-	IDirectInput8* m_directInput;		//the interfaces to Direct Input
+	IDirectInput8* m_directInput=NULL;		//the interfaces to Direct Input
 		
 public:
 	// Used by Camera Movement:

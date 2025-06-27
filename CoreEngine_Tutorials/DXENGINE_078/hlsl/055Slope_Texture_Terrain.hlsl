@@ -8,6 +8,7 @@
 *	Downloaded from : http://woma.servegame.com
 *
 /*********************************************************************************************/
+//WomaIntegrityCheck = 1234525256;
 
 #define PS_USE_LIGHT			//23
 //#define PS_USE_FADE			//Night/Day
@@ -77,8 +78,8 @@ SamplerState SampleType : register(s0); // 3D (default) WRAP
 ////////////////
 // CBUFFERS
 ////////////////
-#include "cbuffer.hlsl"
-#include "light.hlsl"
+#include "cbuffer.hlsli"
+#include "light.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
@@ -279,5 +280,6 @@ float4 MyPixelShader055Slope_Texture_Terrain(PSIn input) : SV_TARGET
 
     //color = color * textureColor;
 	
-    return textureColor;
+	//return float4(1,1,1,1);
+	return textureColor;
 }

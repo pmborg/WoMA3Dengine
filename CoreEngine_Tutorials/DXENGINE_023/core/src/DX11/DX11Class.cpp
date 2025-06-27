@@ -18,7 +18,7 @@
 // PURPOSE: MAIN PURPOSE: Work as a DirectX 11 Driver.
 //
 // ----------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #include "OSengine.h"
 #include "mem_leak.h"
@@ -60,7 +60,7 @@ DX11Class::DX11Class()
 {
 	// WomaDriverClass / Public: ------------------------------------------------------
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567155;
+	WomaIntegrityCheck = 1234525256;
 
 	// SUPER: 
 	dx11_force_dx9 = false;
@@ -951,12 +951,6 @@ void DX11Class::Initialize3DCamera()
 	DXsystemHandle->m_Camera->SetPosition(	SystemHandle->AppSettings->INIT_CAMX, SystemHandle->AppSettings->INIT_CAMY, SystemHandle->AppSettings->INIT_CAMZ);
 
 	DXsystemHandle->m_Camera->SetRotation(	SystemHandle->AppSettings->INIT_ROTX, SystemHandle->AppSettings->INIT_ROTY, SystemHandle->AppSettings->INIT_ROTZ);
-
-//#if defined USE_3RD_PERSON_CAMERA
-//    DXsystemHandle->m_Camera->CalculateViewMatrix_3rd_PersonCamera(SystemHandle->m_Application->m_camYaw, SystemHandle->m_Application->m_camPitch);
-//#else
-//    DXsystemHandle->m_Camera->CalculateViewMatrix();
-//#endif
 	}
 
 }

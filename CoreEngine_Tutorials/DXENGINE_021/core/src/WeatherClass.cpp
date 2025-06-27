@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 //   Get the nearest airport, based on our IP.
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #include "OSengine.h"
 #if CORE_ENGINE_LEVEL >= 9 && defined USE_METARCLASS //ENGINE_LEVEL >= 13
@@ -48,7 +48,7 @@ extern bool download(const std::string url, const std::string file);
 
 WeatherClass::WeatherClass()
 {
-    WomaIntegrityCheck = 1234567155;
+    WomaIntegrityCheck = 1234525256;
 	CLASSLOADER();
 
     Metar = TEXT("");

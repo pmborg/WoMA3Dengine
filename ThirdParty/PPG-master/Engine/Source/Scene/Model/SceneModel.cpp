@@ -37,9 +37,14 @@
 #include <assimp/revision.h>
 
 //FBX: SceneModel.h
-unsigned char* Forest_Huntress_idle_fbx_Model_LOD0_fbxBuffer = NULL;
-unsigned char* Forest_Huntress_idle2_fbx_Model_LOD0_fbxBuffer = NULL;
-unsigned char* Forest_Huntress_idle3_fbx_Model_LOD0_fbxBuffer = NULL;
+unsigned char* Forest_Huntress_idle_fbx_Model_LOD0_fbxBuffer = NULL;        //==86 & 87
+unsigned char* Forest_Huntress_idle2_fbx_Model_LOD0_fbxBuffer = NULL;       //==87 & 88
+unsigned char* Forest_Huntress_idle3_fbx_Model_LOD0_fbxBuffer = NULL;       //==87
+
+//unsigned char* Forest_Huntress_idle2_fbx_Model_LOD0_fbxBuffer = NULL;       // >= 88
+unsigned char* Forest_Huntress_Walk_fbx_Model_LOD0_fbxBuffer = NULL;        // >= 88
+unsigned char* Forest_Huntress_Walk_back_fbx_Model_LOD0_fbxBuffer = NULL;   // >= 88
+unsigned char* Forest_Huntress_Run2_fbx_Model_LOD0_fbxBuffer = NULL;        // >= 88
 
 #ifdef DEBUG_MESH
 void showNodeName(aiNode* node, UINT i = 0);
@@ -56,7 +61,7 @@ void showNodeName(aiNode* node, UINT i)
 
 double TicksPerSecond=0;
 
-SceneModel* SceneModel::LoadModelToScene(UINT type, std::string meshFileName, std::string animFileName, Scene& scene, Graphics& graphics, SceneObject::Index parentIndex /*= 0*/)
+SceneModel* SceneModel::LoadModelToScene(UINT dxlevel, bool enginefile, UINT type, std::string meshFileName, std::string animFileName, Scene& scene, Graphics& graphics, SceneObject::Index parentIndex /*= 0*/)
 {
 #ifdef DEBUG_MESH
     LOG_FILE << "WOMA (" << LEVEL << ") LOAD FILE : " << (char*)meshFileName.c_str() << endl;
@@ -81,7 +86,11 @@ SceneModel* SceneModel::LoadModelToScene(UINT type, std::string meshFileName, st
             DX_ASSIMP_LOAD_FLAGS = aiProcess_LimitBoneWeights | aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_MakeLeftHanded| aiProcess_FlipUVs;
         }
         else//DAE:
-            DX_ASSIMP_LOAD_FLAGS = aiProcess_LimitBoneWeights | aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_MakeLeftHanded | aiProcess_FlipWindingOrder | aiProcessPreset_TargetRealtime_Fast;
+            if (_tcsicmp(meshFileName.c_str(), TEXT("../engine\\data\\scene85\\rp_nathan_animated_003_walkingout.dae")) == 0)
+                DX_ASSIMP_LOAD_FLAGS = aiProcess_LimitBoneWeights | aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_MakeLeftHanded | aiProcess_FlipUVs;
+            else
+                DX_ASSIMP_LOAD_FLAGS = aiProcess_LimitBoneWeights | aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_MakeLeftHanded | aiProcess_FlipWindingOrder | aiProcessPreset_TargetRealtime_Fast;
+
     }
     else
     {
@@ -93,7 +102,8 @@ SceneModel* SceneModel::LoadModelToScene(UINT type, std::string meshFileName, st
 
     // IMPORT TO ASSIMP:
     Assimp::Importer importer;
-    if (type == 0) 
+
+    if (enginefile)
     {
         const aiScene* pScene = importer.ReadFile(meshFileName, DX_ASSIMP_LOAD_FLAGS);
         if (pScene == NULL)
@@ -107,23 +117,45 @@ SceneModel* SceneModel::LoadModelToScene(UINT type, std::string meshFileName, st
 
 #ifndef GENERATE_PACK
         unsigned long filebufferSize=0;
-        switch (type) {
-        //SceneModel.h
-        //DX_ENGINE_LEVEL >= 86
-        case 1:
-            pBuffer = Forest_Huntress_idle_fbx_Model_LOD0_fbxBuffer;
-            filebufferSize = Forest_Huntress_idle_fbx_Model_LOD0_fbx_size;
-            break;
-        //DX_ENGINE_LEVEL >= 87
-        case 2:
-            pBuffer = Forest_Huntress_idle2_fbx_Model_LOD0_fbxBuffer;
-            filebufferSize = Forest_Huntress_idle2_fbx_Model_LOD0_fbx_size;
-            break;
-        case 3:
-            pBuffer = Forest_Huntress_idle3_fbx_Model_LOD0_fbxBuffer;
-            filebufferSize = Forest_Huntress_idle3_fbx_Model_LOD0_fbx_size;
-            break;
-
+        
+        //Align with: SceneModel.h
+        if (dxlevel == 86 || dxlevel == 87)
+        {
+            if (type== 1)
+            {
+                pBuffer = Forest_Huntress_idle_fbx_Model_LOD0_fbxBuffer;
+                filebufferSize = Forest_Huntress_idle_fbx_Model_LOD0_fbx_size;
+            }
+        }
+        if (dxlevel == 87)
+        {
+            if (type == 2) {
+                pBuffer = Forest_Huntress_idle2_fbx_Model_LOD0_fbxBuffer;
+                filebufferSize = Forest_Huntress_idle2_fbx_Model_LOD0_fbx_size;
+            }
+            if (type == 3) {
+                pBuffer = Forest_Huntress_idle3_fbx_Model_LOD0_fbxBuffer;
+                filebufferSize = Forest_Huntress_idle3_fbx_Model_LOD0_fbx_size;
+            }
+        }
+        if (dxlevel == 88)
+        {
+            if (type == 1) {
+                pBuffer = Forest_Huntress_idle2_fbx_Model_LOD0_fbxBuffer;
+                filebufferSize = Forest_Huntress_idle2_fbx_Model_LOD0_fbx_size;
+            }
+            if (type == 2) {
+                pBuffer = Forest_Huntress_Walk_fbx_Model_LOD0_fbxBuffer;
+                filebufferSize = Forest_Huntress_Walk_fbx_Model_LOD0_fbx_size;
+            }
+            if (type == 3) {
+                pBuffer = Forest_Huntress_Walk_back_fbx_Model_LOD0_fbxBuffer;
+                filebufferSize = Forest_Huntress_Walk_back_fbx_Model_LOD0_fbx_size;
+            }
+            if (type == 4) {
+                pBuffer = Forest_Huntress_Run2_fbx_Model_LOD0_fbxBuffer;
+                filebufferSize = Forest_Huntress_Run2_fbx_Model_LOD0_fbx_size;
+            }
         }
 
         const aiScene* pScene = importer.ReadFileFromMemory(pBuffer, filebufferSize, DX_ASSIMP_LOAD_FLAGS, "fbx"); // format hint, e.g. "obj", "fbx", "gltf"

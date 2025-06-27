@@ -8,6 +8,7 @@
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
+//WomaIntegrityCheck = 1234525256;
 
 //////////////
 // TYPEDEFS //
@@ -42,7 +43,7 @@ SamplerState SampleType; //3D (default) WRAP
 ////////////////
 // CBUFFERS
 ////////////////
-#include "cbuffer.hlsl"
+#include "cbuffer.hlsli"
 
 float rand_1_05(in float2 uv)
 {

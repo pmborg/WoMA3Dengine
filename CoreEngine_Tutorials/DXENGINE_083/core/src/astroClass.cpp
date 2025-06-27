@@ -23,7 +23,7 @@
 //   - Calculate "Moon Distance": (ans the aparent Size correction: "Moon Scale")
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #include "platform.h"
 #if defined USE_ASTRO_CLASS
@@ -31,7 +31,7 @@
 
 AstroClass::AstroClass() 
 {
-    WomaIntegrityCheck = 1234567155;
+    WomaIntegrityCheck = 1234525256;
 	CLASSLOADER();
 
 	//public:

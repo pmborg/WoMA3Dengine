@@ -21,7 +21,7 @@
 //		NO GLOBAL VARIABLE(s)
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 #pragma once
 
 #if NOTES
@@ -348,22 +348,22 @@ static_assert(false, "This HW Target is not valid for WOMA3D Engine");
 #ifdef X64
 #if defined SSE2_ONLY
 	// Make sure that AVX Instruction is Used (Faster Code!)
-#if defined __AVX__ || defined __AVX2__
-static_assert(false, "AVX1/2 should be disabled!");
-#endif
+    #if defined __AVX__ || defined __AVX2__
+    static_assert(false, "AVX1/2 should be disabled!");
+    #endif
 #else
-	// Make sure that AVX Instruction is Used (Faster Code!)
-#if !defined __AVX2__
-static_assert(false, "AVX2 should be enabled!");
-#endif
+	// Make sure that AVX2 Instruction is Used (Faster Code!)
+    #if !defined __AVX2__
+    static_assert(false, "AVX2 should be enabled!");
+    #endif
 #endif
 #else 
   // Allow 32Bits Builds to Run on P4 CPU's Since: 2001+
-#if defined __AVX__ || defined __AVX2__
-static_assert(false, "AVX1/2 should be disabled!");
-#endif
+    #if defined __AVX__ || defined __AVX2__
+    static_assert(false, "AVX1/2 should be disabled!");
+    #endif
 
-static_assert(_M_IX86_FP == 2, "SSE2 instructions should be enabled!");
+    static_assert(_M_IX86_FP == 2, "SSE2 instructions should be enabled!");
 #endif
 #endif
 

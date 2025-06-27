@@ -546,14 +546,20 @@
     #define DEMO_TITLE TEXT("87: The main character - The other sample variants")
     #define WORLD_XML TEXT("world_87.xml")
 #endif
-#if DX_ENGINE_LEVEL >= 87
+#if DX_ENGINE_LEVEL >= 87 && DX_ENGINE_LEVEL < 88
     #define MAIN_CHAR_MODEL2 1
     #define MAIN_CHAR_MODEL3 2
 #endif						 
 #if DX_ENGINE_LEVEL == 88
-    #define DEMO_TITLE TEXT("88: 3rd person camera")
+    #define DEMO_TITLE TEXT("88: 3rd person camera: WASD + left (CTRL or SHIFT) to run")
     #define WORLD_XML TEXT("world_88.xml")
-#endif					 
+#endif
+#if DX_ENGINE_LEVEL >= 88
+    #define MAIN_CHAR_MODEL1 0 //Idle
+    #define MAIN_CHAR_MODEL2 1 //Walk
+    #define MAIN_CHAR_MODEL3 2 //Walk back
+    #define MAIN_CHAR_MODEL4 3 //Run
+#endif			 
 #if DX_ENGINE_LEVEL == 89
     #define DEMO_TITLE TEXT("88: Mesh with PBR Textures")
     #define WORLD_XML TEXT("world_89.xml")

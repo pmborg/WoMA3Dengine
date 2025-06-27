@@ -30,7 +30,7 @@ Copyright (C) 2002  Andy Pennell
 //  IMPORTANT NOTE: Compile with "Security Check": NO
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #include "OSengine.h"
 #if defined USE_MINIDUMPER
@@ -80,7 +80,7 @@ MiniDumper::MiniDumper()
 	//AddVectoredExceptionHandler(1, VectoredExceptionHandler);
 
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567155;
+	WomaIntegrityCheck = 1234525256;
 }
 
 MiniDumper::~MiniDumper() {CLASSDELETE();}

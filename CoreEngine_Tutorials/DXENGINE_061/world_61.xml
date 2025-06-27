@@ -8,7 +8,7 @@
   <!-- ENGINE LVL 31-->
   <fog start="0" end="256"/>
   
-  <world hVisibility="128" seaLevel="0" size="512" patchSize="64" skySize="30" 
+  <world hVisibility="128" seaLevel="0" size="512" patchSize="64" skySize="25" 
          water="engine/data/Terrain/heightmap512x512.bmp" 
          waterTexture="engine/data/Terrain/008water_tex04.jpg" 
          mainTexture="engine/data/scene61DEMO/WorldHM.bmp"

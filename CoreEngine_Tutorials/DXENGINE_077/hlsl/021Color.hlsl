@@ -8,6 +8,8 @@
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
+//WomaIntegrityCheck = 1234525256;
+
 //#define WITHOUT_CONSTANT_BUFFER
 //////////////
 // TYPEDEFS //

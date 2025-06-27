@@ -8,7 +8,7 @@
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 //
 // ********************************************************************************************
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #pragma once
 
@@ -38,7 +38,7 @@ using namespace DirectX;
 class DX12TextureClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567155;
+	UINT WomaIntegrityCheck = 1234525256;
 	DX12TextureClass();
 	~DX12TextureClass();
 

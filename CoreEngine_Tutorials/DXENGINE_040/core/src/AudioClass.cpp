@@ -17,7 +17,7 @@
 // PURPOSE: The AudioClass is the Interface Audio to Client EXE 
 //			 No need to Link audio LIBs on client EXE
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #include "OSengine.h"
 #if DX_ENGINE_LEVEL >= 29 && (defined USE_WIN32_SOUND_MANAGER || defined USE_WIN32_PLAY_MUSIC)

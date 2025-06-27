@@ -16,8 +16,9 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
+#include "platform.h"
 #include "OSengine.h"
 #pragma warning(disable : 4267) // warning C4267: 'initializing': conversion from 'size_t' to 'UINT', possible loss of data
 #include "OSmain_dir.h"
@@ -57,7 +58,7 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 {
     totalRendered = 0;
 
-    // [1] Animations:
+    // [1] sort billboards:
     // --------------------------------------------------------------------------------------------
 
 	// [2] SceneManager: Process/Filter and Create Lists/trees of objects to render from: WORLD.XML
@@ -160,8 +161,8 @@ void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, 
 
 	model->translation(positionX, positionY, positionZ);
 
-	if (pass == 0)
-		totalRendered++;
+	//if (pass == 0)
+	totalRendered++;
 
 		model->Render(CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass);// Pass 2 (Shadow));
 }
@@ -195,7 +196,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 		m_SkyModel->RenderSky(CAMERA_SKY); // Cant Reach: (CAMERA_SKY)
 	}
 #endif
-
+    
 #if defined USE_ALPHA_BLENDING
 	m_Driver->TurnOffAlphaBlending();
 #endif
@@ -1191,7 +1192,7 @@ bool ApplicationClass::PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTO
 
 #endif
 
-#if LEVEL > 79 && LEVEL < 86
+#if LEVEL == 79 || LEVEL == 82 || LEVEL == 83 || LEVEL == 84 || LEVEL == 85
 Texture* LoadTextureFromPathFBX(UINT model_type, Graphics& graphics, LPCWSTR& texture)
 {
     return NULL;

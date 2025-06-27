@@ -53,6 +53,13 @@ Try to Change the driver on the fly without the need of close and open the Appli
 <h2>3D - ADVANCED MESH TUTORIAL SERIES: BEGIN</h2>
 <hr>
 
+- <b>DX88: USE_3RD_PERSON_CAMERA</b><br>
+    3rd person camera: WASD + left (CTRL or SHIFT) to run:<br>
+ 
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_088.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_088.png)	
+
+<hr>
+
 - <b>DX87: THE MAIN CHARACTER - The other sample variants</b><br>
     Using animation:<br>
     - Idle, Idle2, Idle3 for each variant.

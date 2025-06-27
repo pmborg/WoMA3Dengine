@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Used to Manage: the Mouse and the Joystick
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
@@ -79,7 +79,7 @@ void processSpecialKeys(int key, int x, int y) {
 DXInputClass::DXInputClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567155;
+	WomaIntegrityCheck = 1234525256;
 
 	// NOTE: rgbButtons holds the state of four of the mouse buttons. 
 	// 0 is for the left button
@@ -211,12 +211,14 @@ bool DXInputClass::Initialize(HINSTANCE hinstance)
 {
 	HRESULT result;
 
+    SAFE_RELEASE(m_directInput);
+
 	// Initialize the main direct input interface.
 	result = DirectInput8Create(hinstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_directInput, NULL);
 	IF_FAILED_RETURN_FALSE (result);
 
-	AddPC_keyboard();	// KEYBOARD: The first input device we will initialize will be the keyboard.
-	AddPC_mouse();		// MOUSE: The next input device we setup is the mouse
+    IF_NOT_RETURN_FALSE (AddPC_keyboard());	// KEYBOARD: The first input device we will initialize will be the keyboard.
+    IF_NOT_RETURN_FALSE(AddPC_mouse());		// MOUSE: The next input device we setup is the mouse
 
 	return true;
 }

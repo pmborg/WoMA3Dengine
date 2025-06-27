@@ -8,6 +8,7 @@
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
+//WomaIntegrityCheck = 1234525256;
 
 //#define WITHOUT_CONSTANT_BUFFER
 
@@ -47,7 +48,7 @@ SamplerState SampleType: register(s0);
 ////////////////
 // CBUFFERS
 ////////////////
-#include "cbuffer.hlsl"
+#include "cbuffer.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader

@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #include "OSengine.h"
 #if defined DX_ENGINE
@@ -70,7 +70,7 @@ dxWinSystemClass::dxWinSystemClass(WOMA::Settings* appSettings) : WinSystemClass
 //----------------------------------------------------------------------------------
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567155;
+	WomaIntegrityCheck = 1234525256;
 	WinSystemClass::AppSettings = appSettings;
 	WinSystemClass::mMaximized = WinSystemClass::AppSettings->FULL_SCREEN;
 
@@ -142,9 +142,9 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 		}
 
 		if (WOMA::game_state > GAME_MINIMIZED)
-			ProcessFrame();	// Render ONE: Application Frame
+			ProcessFrame();	// Render ONE: Application Frame!
 		else
-			Sleep(100);     // We are background slow down
+			Sleep(100);     // We are in background slow down
 
 		if (WOMA::main_loop_state < 0 || (WOMA::renderOnce && WOMA::woma_timer > 15))
         {
@@ -171,7 +171,7 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 void dxWinSystemClass::ProcessFrame() //RENDER ALL GRAPHICS
 //----------------------------------------------------------------------------
 {
-	// Process Input, Timer, FPS and GRAPHICs:
+	// Process Input, Timer, FPS and Render all GRAPHICs!
 	WinSystemClass::ProcessFrame(); 
 
 	// Process Special: "PRINT SCREEN" key or F10, the "Back-Buffer" have 1 frame rendered, so now we can dump it:
@@ -435,7 +435,6 @@ void dxWinSystemClass::ApplicationInitSceneManager()
     WOMA::sceneManager->quadTree.Initialize(WOMA::sceneManager->RootNode);
 #endif
 }
-
 #endif
 
 #if defined USE_INTRO_VIDEO_DEMO 

@@ -19,7 +19,7 @@
 // 
 //  NOTE: If a constructor throws an Exception ===> the object's destructor do not run. !!!
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #include "OSengine.h"
 #include "log.h"

@@ -16,8 +16,9 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
+#include "platform.h"
 #include "OSengine.h"
 #pragma warning(disable : 4267) // warning C4267: 'initializing': conversion from 'size_t' to 'UINT', possible loss of data
 #include "OSmain_dir.h"
@@ -53,99 +54,15 @@ int __cdecl BillSortCB(const VOID* arg1, const VOID* arg2);
 #include "BillClass.h"	//[ch60]
 #endif
 
-std::ofstream os_file("log.txt", std::ios::out);
-void log(char* msg)
-{
-    LOG_FILE << msg << std::endl;
-}
-
-#include "PPG.h"
+#include "C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Engine\\Source\\Resources\\Texture.h"
+#include "LowLevel/MeshApplication.h"
 #include "MyDemo.h"
+#include "womamesh.h"
 
-WomaMesh womamesh1;
-
-void InitMeshDemo(ApplicationClass* app, Application* demoapp, MyDemo* demo)
-{
-    // Lighting
-    auto lightColour = XMFLOAT4(5.0f, 5.0f, 5.0f, 1.0f);
-
-    Light pointLight;
-    pointLight.m_Color = XMFLOAT4(1, 1, 0, 0);
-    pointLight.m_Position = XMFLOAT4(4, 3, 0, 0);
-    pointLight.m_LightType = LightType::PointLight;
-
-    Light dirLight;
-    dirLight.m_Color = lightColour;
-    dirLight.m_Direction = XMFLOAT4(-1, -1, 1, 0);
-    dirLight.m_LightType = LightType::DirectionalLight;
-
-    Light spotLight;
-    spotLight.m_Color = XMFLOAT4(Colors::Magenta);
-    spotLight.m_Direction = XMFLOAT4(0, -1, 0, 0);
-    spotLight.m_Position = XMFLOAT4(3, 2, 0, 0);
-    spotLight.m_LightType = LightType::SpotLight;
-    spotLight.m_SpotAngle = 3.142f / 4.0f;
-
-    //82:
-    womamesh1.scene.lightManager
-        .AddLight(dirLight)
-        .AddLight(pointLight)
-        .AddLight(spotLight)
-        .SetGlobalAmbient(XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f));
-
-    womamesh1.scene.Start(demoapp->m_Graphics);
-}
-void LoadingMesh(ApplicationClass* app, Application* demoapp, MyDemo* demo)
-{
-#if DX_ENGINE_LEVEL >= 79 && defined USE_MODEL1
-        womamesh1.assimpSceneModel = SceneModel::LoadModelToScene(0, WOMA::LoadFile(ASSIMP_MODEL_BOBLAMPCLEAN), "" , womamesh1.scene, demoapp->m_Graphics);
-#endif
-
-#ifdef DEBUG_MESH
-        log("STARTING...");
-#endif
-}
-
-
-void UpdateMesh(Application* demoapp, MyDemo* demo, float deltaTime)
-{
-    //Update animation/bone matrix's and RENDER all MESHs:
-#if DX_ENGINE_LEVEL >= 79 && defined USE_MODEL1
-    demo->animJob.UpdateTimeElapsed(womamesh1.scene, deltaTime);
-#endif
-}
-
-void RenderMesh(Application* demoapp, MyDemo* demo)
-{
-    demoapp->m_Graphics.m_DeviceContext->RSSetState(demoapp->m_Graphics.m_RasterizerState);
-        // Model 1 ------------------------------------------------------------------------------------------
-#if DX_ENGINE_LEVEL >= 79 && defined USE_MODEL1
-    {
-        XMMATRIX world = XMMatrixIdentity();
-        //Scale:
-        //_11+		BoneIds	{x=0.00000000 y=0.00000000 z=0.00000000 ...}	DirectX::XMFLOAT4
-        //_22
-        //_33
-
-        world.r[0].m128_f32[0] = world.r[1].m128_f32[1] = world.r[2].m128_f32[2] = 0.02f;
-        XMMATRIX rotX = XMMatrixRotationX(-PI / 2);
-        world *= rotX;
-        XMMATRIX rotZ = XMMatrixRotationZ(PI / 2);
-        world *= rotZ;
-        //Translate:
-        const float X = 39, Z = 20;
-        world.r[3].m128_f32[0] = X; //_41: X
-        world.r[3].m128_f32[2] = Z; //_43: Z
-        world.r[3].m128_f32[1] = mainTerrain->getTerrainHeight(TERRAIN_ID, world.r[3].m128_f32[0], world.r[3].m128_f32[2]);
-
-        womamesh1.scene.UpdateModel(demoapp->m_Graphics, world);
-    }
-    demo->gBufferPass->Render(demoapp->m_Graphics, womamesh1.scene);
-#endif
-
-    // Model 2 ------------------------------------------------------------------------------------------
-
-}
+extern void InitMeshDemo(ApplicationClass* app, MeshApplication* demoapp, MyDemo* demo);
+extern void LoadingMesh(ApplicationClass* app, MeshApplication* demoapp, MyDemo* demo);
+extern void UpdateMesh(MeshApplication* demoapp, MyDemo* demo, float deltaTime);
+extern void RenderMesh(MeshApplication* demoapp, MyDemo* demo);
 
 //-------------------------------------------------------------------------------------------
 void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
@@ -153,39 +70,8 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 {
     totalRendered = 0;
 
-    // [1] Animations:
+    // [1] sort billboards:
     // --------------------------------------------------------------------------------------------
-    static Application demoapp;
-    static MyDemo demo;
-
-#if defined USE_ASSIMP_LATEST && defined MAIN_RENDER_ASSIMP // ASSIMP: Skin-MESH (0.15ms)
-    if (m_Driver->RenderfirstTime)
-    {
-        // INIT: Model 1,2,3,4...
-        demo.Start(demoapp.m_Graphics);
-        InitMeshDemo(this, &demoapp, &demo);
-        LoadingMesh(this, &demoapp, &demo);
-    }
-
-    static UINT filmeIdx = 0; // 1st line of filme file
-    static DWORD m_startTime = timeGetTime();
-    static DWORD previousTime = timeGetTime();
-
-    if (total_deltaTime > 70000) {
-        m_startTime = timeGetTime();
-        previousTime = m_startTime;
-        filmeIdx = 0;
-    }
-
-    DWORD currentTime = timeGetTime();
-    float deltaTime = (currentTime - previousTime) / 1000.0f;
-    previousTime = currentTime;
-    total_deltaTime = (timeGetTime() - m_startTime);
-
-    UpdateMesh(&demoapp, &demo, deltaTime);
-    RenderMesh(&demoapp, &demo);
-#endif
-
     qsort(m_Trees, _countof(m_Trees), sizeof(Tree), BillSortCB);
 
 	// [2] SceneManager: Process/Filter and Create Lists/trees of objects to render from: WORLD.XML
@@ -351,12 +237,23 @@ void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, 
 		if (SystemHandle->xml_loader.theWorld[model->m_ObjId].meshSRV)
 	#endif
 		{
-			float cameraPositionX = SystemHandle->m_Application->m_Position[g_NetID]->m_positionX;
-			float cameraPositionZ = SystemHandle->m_Application->m_Position[g_NetID]->m_positionZ;
-			billangle = atan2(positionX - cameraPositionX, positionZ - cameraPositionZ) * (180 / PI);
-			ry = billangle / (180 / PI);
-			if (SystemHandle->xml_loader.theWorld[model->m_ObjId].type == 12)
-				ry -= PI/4;
+            float cameraPositionX = SystemHandle->m_Application->m_Position[g_NetID]->m_positionX;
+            float cameraPositionZ = SystemHandle->m_Application->m_Position[g_NetID]->m_positionZ;
+
+            // Calculate distance in XZ plane
+            float dx = positionX - cameraPositionX;
+            float dz = positionZ - cameraPositionZ;
+            float distance = sqrt(dx * dx + dz * dz);
+
+            if (distance >= 3.0f) {
+                billangle = atan2(dx, dz) * (180 / PI);
+                ry = billangle / (180 / PI);
+                if (SystemHandle->xml_loader.theWorld[model->m_ObjId].type == 12)
+                    ry -= PI / 4;
+                SystemHandle->xml_loader.theWorld[modelID].ry = ry; //save it!
+            }
+            else
+                ry = SystemHandle->xml_loader.theWorld[modelID].ry;
 		} else
 		{
 			ry = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotY;
@@ -383,8 +280,8 @@ void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, 
 
 	model->translation(positionX, positionY, positionZ);
 
-	if (pass == 0)
-		totalRendered++;
+	//if (pass == 0)
+	totalRendered++;
 
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
         if (m_viewMatrix == NULL &&  m_projectionMatrix == NULL)
@@ -425,10 +322,12 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 		m_SkyModel->RenderSky(CAMERA_SKY); // Cant Reach: (CAMERA_SKY)
 	}
 #endif
-
+    
 #if defined USE_ALPHA_BLENDING
 	m_Driver->TurnOffAlphaBlending();
 #endif
+
+    mesh_animations();
 
 #if defined USE_SKYSPHERE && defined USE_SUN && defined USE_MOON
 	if (RENDER_PAGE >= 28)				//30: SKY
@@ -1431,7 +1330,7 @@ bool ApplicationClass::PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTO
 
 #endif
 
-#if LEVEL > 79 && LEVEL < 86
+#if LEVEL == 79 || LEVEL == 82 || LEVEL == 83 || LEVEL == 84 || LEVEL == 85
 Texture* LoadTextureFromPathFBX(UINT model_type, Graphics& graphics, LPCWSTR& texture)
 {
     return NULL;

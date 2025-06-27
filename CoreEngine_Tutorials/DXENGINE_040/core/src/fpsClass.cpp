@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Get the time spent in ms (mili seconds) to render a frame
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #include "fpsClass.h"
 
@@ -32,7 +32,7 @@ double timeGetTime(void)
 FpsClass::FpsClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567155;
+	WomaIntegrityCheck = 1234525256;
 
 	//private:
 	m_fps = m_count = 0;

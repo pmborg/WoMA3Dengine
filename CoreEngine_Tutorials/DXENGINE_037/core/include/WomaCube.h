@@ -17,7 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: interface for a Color and Texture Cube
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #pragma once
 
@@ -32,7 +32,7 @@ const int n_faces = 6;
 class CCube
 {
 public:
-	UINT WomaIntegrityCheck = 1234567155;
+	UINT WomaIntegrityCheck = 1234525256;
 	CCube(int x_0, int y_0, int z_0);
 	virtual ~CCube();
 	void Shutdown();

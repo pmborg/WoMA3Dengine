@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #pragma warning ( push )
 #pragma warning ( disable : 4101 ) //warning C4101 : 'cameraPosition' : unreferenced local variable
@@ -183,7 +183,7 @@ namespace DirectX {
 	DXshaderClass::DXshaderClass(UINT ShaderVersion_H, UINT ShaderVersion_L, bool shader_3D)
 	{
 		CLASSLOADER();
-		WomaIntegrityCheck = 1234567155;
+		WomaIntegrityCheck = 1234525256;
 		
 #if defined DX11 || defined DX9
 		m_driver11 = ((DirectX::DX11Class*)m_Driver);

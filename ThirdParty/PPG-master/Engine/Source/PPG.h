@@ -19,7 +19,7 @@
 #pragma once
 
 #include "Demo.h"
-#include "LowLevel/Application.h"
+#include "LowLevel/MeshApplication.h"
 
 #include "Scene/Scene.h"
 #include "Scene/Camera.h"

@@ -8,11 +8,12 @@
 *	Downloaded from : http://woma.servegame.com
 *
 /*********************************************************************************************/
+//WomaIntegrityCheck = 1234525256;
 
 //case SHADER_Terrain_Texture_DEMO60:
 
 #define DXAPI11 1
-#include "cbuffer.hlsl"
+#include "cbuffer.hlsli"
 
 //////////////
 // TYPEDEFS //

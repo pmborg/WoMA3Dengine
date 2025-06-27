@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #include "platform.h"
 #pragma warning( disable : 4477 )
@@ -38,7 +38,7 @@
 
 GLshaderClass::GLshaderClass() {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567155;
+	WomaIntegrityCheck = 1234525256;
 }
 
 GLshaderClass::~GLshaderClass() {CLASSDELETE();}

@@ -8,7 +8,7 @@
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
-
+//WomaIntegrityCheck = 1234525256;
 
 //////////////
 // TYPEDEFS //
@@ -196,18 +196,6 @@ PSIn MyVertexShader022Texture(VSIn input)
     if (isAnimatedBill)
     {
         output.position.x += sin(vsframeTime * 100) * (1 - input.texCoords.y) / 10;
-        /*
-        float windStrength = 0.5; // Intensity of sway
-        float3 windDirection = float3(1.0, 0.0, 0.0); // Wind direction
-        
-        float heightFactor = saturate(input.position.y); // More movement at the top
-        float wave = sin(vsframeTime + input.position.x * 0.5) * windStrength;
-    
-        // Apply movement in the wind direction
-        float3 offset = windDirection * wave * heightFactor;
-    
-        input.position.xyz += offset;
-        */
     }
     
     output.texCoords = input.texCoords; // TEXTURE: Store the texture coordinates for the pixel shader:

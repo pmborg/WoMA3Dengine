@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------
-// Filename: 023Light.hlsl
+// Filename: 083Light.hlsl
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
 *	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2023
@@ -8,6 +8,7 @@
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
+//WomaIntegrityCheck = 1234525256;
 
 #define DXAPI11             1   //force
 #define PS_USE_LIGHT		    //23
@@ -190,7 +191,7 @@ cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: D
     //float distortionBias;
 };
 
-//#include "light.hlsl"
+//#include "light.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader

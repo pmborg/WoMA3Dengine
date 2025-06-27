@@ -16,8 +16,9 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
+#include "platform.h"
 #include "OSengine.h"
 #pragma warning(disable : 4267) // warning C4267: 'initializing': conversion from 'size_t' to 'UINT', possible loss of data
 #include "OSmain_dir.h"
@@ -59,9 +60,8 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 {
     totalRendered = 0;
 
-    // [1] Animations:
+    // [1] sort billboards:
     // --------------------------------------------------------------------------------------------
-
     qsort(m_Trees, _countof(m_Trees), sizeof(Tree), BillSortCB);
 
 	// [2] SceneManager: Process/Filter and Create Lists/trees of objects to render from: WORLD.XML
@@ -204,12 +204,23 @@ void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, 
 		float ry = 0;
 		if (SystemHandle->xml_loader.theWorld[model->m_ObjId].meshSRV)
 		{
-			float cameraPositionX = SystemHandle->m_Application->m_Position[g_NetID]->m_positionX;
-			float cameraPositionZ = SystemHandle->m_Application->m_Position[g_NetID]->m_positionZ;
-			billangle = atan2(positionX - cameraPositionX, positionZ - cameraPositionZ) * (180 / PI);
-			ry = billangle / (180 / PI);
-			if (SystemHandle->xml_loader.theWorld[model->m_ObjId].type == 12)
-				ry -= PI/4;
+            float cameraPositionX = SystemHandle->m_Application->m_Position[g_NetID]->m_positionX;
+            float cameraPositionZ = SystemHandle->m_Application->m_Position[g_NetID]->m_positionZ;
+
+            // Calculate distance in XZ plane
+            float dx = positionX - cameraPositionX;
+            float dz = positionZ - cameraPositionZ;
+            float distance = sqrt(dx * dx + dz * dz);
+
+            if (distance >= 3.0f) {
+                billangle = atan2(dx, dz) * (180 / PI);
+                ry = billangle / (180 / PI);
+                if (SystemHandle->xml_loader.theWorld[model->m_ObjId].type == 12)
+                    ry -= PI / 4;
+                SystemHandle->xml_loader.theWorld[modelID].ry = ry; //save it!
+            }
+            else
+                ry = SystemHandle->xml_loader.theWorld[modelID].ry;
 		} else
 		{
 			ry = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotY;
@@ -236,8 +247,8 @@ void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, 
 
 	model->translation(positionX, positionY, positionZ);
 
-	if (pass == 0)
-		totalRendered++;
+	//if (pass == 0)
+	totalRendered++;
 
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
         if (m_viewMatrix == NULL &&  m_projectionMatrix == NULL)
@@ -278,7 +289,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 		m_SkyModel->RenderSky(CAMERA_SKY); // Cant Reach: (CAMERA_SKY)
 	}
 #endif
-
+    
 #if defined USE_ALPHA_BLENDING
 	m_Driver->TurnOffAlphaBlending();
 #endif
@@ -1284,7 +1295,7 @@ bool ApplicationClass::PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTO
 
 #endif
 
-#if LEVEL > 79 && LEVEL < 86
+#if LEVEL == 79 || LEVEL == 82 || LEVEL == 83 || LEVEL == 84 || LEVEL == 85
 Texture* LoadTextureFromPathFBX(UINT model_type, Graphics& graphics, LPCWSTR& texture)
 {
     return NULL;

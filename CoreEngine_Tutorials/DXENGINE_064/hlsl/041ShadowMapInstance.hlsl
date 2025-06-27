@@ -9,6 +9,8 @@
 *
 *   is equivalent to 036ShadowMap.hlsl but with instances.
 **********************************************************************************************/
+//WomaIntegrityCheck = 1234525256;
+
 #define DESKTOP_GL 1
 
 //////////////
@@ -32,7 +34,7 @@ struct PSIn
 ////////////////
 // CBUFFERS
 ////////////////
-#include "cbuffer.hlsl"
+#include "cbuffer.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader

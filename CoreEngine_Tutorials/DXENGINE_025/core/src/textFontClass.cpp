@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // This code was inpired on: https://www.rastertek.com/dx11tut12.html
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 
 #include "platform.h"
@@ -43,7 +43,7 @@
 textFontClass::textFontClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567155;
+	WomaIntegrityCheck = 1234525256;
 
 }
 

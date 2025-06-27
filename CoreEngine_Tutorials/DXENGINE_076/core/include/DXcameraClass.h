@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // ----------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #pragma once
 
@@ -80,7 +80,7 @@
 class DXcameraClass : public VirtualCameraClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567155;
+	UINT WomaIntegrityCheck = 1234525256;
 	DXcameraClass(UINT camera_type = 0);
 	~DXcameraClass();
 
@@ -99,7 +99,7 @@ public:
     XMVECTOR DefaultRight = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
     XMVECTOR camForward = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
     XMVECTOR camRight = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
-    void CalculateViewMatrix_3rd_PersonCamera(float camYaw = 0.0f, float camPitch = 0.0f);
+    void CalculateViewMatrix_3rd_PersonCamera(float camYaw = 0.0f, float camPitch = 0.0f, bool sky = false);
 #endif
     void GetViewMatrix(XMMATRIX&);
 

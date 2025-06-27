@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #include "main.h"
 #include "ApplicationClass.h"
@@ -630,7 +630,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 //Sphere:
 	float size = 3.0f;
 #if defined USE_SPHERE
-	if (RENDER_PAGE >= 61)
+	if (RENDER_PAGE >= 60)
 		size = SystemHandle->world.skySize;
 	else
 		if (RENDER_PAGE >= 55)
@@ -809,9 +809,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 			((DXmodelClass*)objModel[i])->ModelHASAlfaColor = true;
 		else
 		{
-//#if !defined ALLOW_CBIND_PROGRESS_BAR
-//			RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);	// Invoke: Window PAINT before end.
-//#endif
 		}
 
 #if defined ALLOW_CBIND_PROGRESS_BAR

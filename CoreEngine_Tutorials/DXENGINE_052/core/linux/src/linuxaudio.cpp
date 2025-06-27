@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: DEFINE COMMON WorldOfMiddleAge 3D ENGINE MACROS
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #if notes
 	//sudo apt pulseaudio alsa-utils install snd-hda-intel sox libsox-fmt-all vlc-bin ffmpeg libopenal-dev libasound2-dev libasound2-plugins

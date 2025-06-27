@@ -8,6 +8,8 @@
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
+//WomaIntegrityCheck = 1234525256;
+
 #define PS_USE_ALFACOLOR
 #define PS_USE_ALFA_TEXTURE
 
@@ -18,10 +20,24 @@
 // VERTEX:
 struct VSIn
 {
-	float3 position : POSITION;				//21
-	float2 texCoords: TEXCOORD; 			//22
-	float3 normal	: NORMAL;				//23
+	float3 position         : POSITION;				//21
+	float2 texCoords        : TEXCOORD; 			//22
+	float3 normal	        : NORMAL;				//23
     float3 instancePosition : INSTANCEPOS;
+};
+
+//GEOMETRY:
+struct GSIn
+{
+    float4 position         : SV_POSITION; // 21
+	//float4 worldPos 		: POSITION;
+    float2 texCoords        : TEXCOORD0; // 22
+    float3 normal           : NORMAL; // 23 & 47: LIGHT+BUMP
+	//float3 tangent 		: TANGENT;
+#if defined PS_USE_SPECULAR
+    float3 viewDirection    : TEXCOORD1; // 44 Specular: SHADER_TEXTURE_LIGHT_INSTANCED
+#endif
+    float4 cameraPosition   : WS; // FOG & SPECULAR
 };
 
 // PIXEL:
@@ -31,8 +47,10 @@ struct PSIn
 	//float4 worldPos 		: POSITION;
     float2 texCoords		: TEXCOORD0;			// 22
 	float3 normal			: NORMAL;				// 23 & 47: LIGHT+BUMP
-	//float3 tangent 			: TANGENT;
+	//float3 tangent 		: TANGENT;
+#if defined PS_USE_SPECULAR
 	float3 viewDirection	: TEXCOORD1;			// 44 Specular: SHADER_TEXTURE_LIGHT_INSTANCED
+#endif
 	float4 cameraPosition	: WS;					// FOG & SPECULAR
 };
 
@@ -50,15 +68,15 @@ SamplerState SampleType; //: register(s0);		// 3D (default) WRAP
 ////////////////
 // CBUFFERS
 ////////////////
-#include "cbuffer.hlsl"
-#include "light.hlsl"
+#include "cbuffer.hlsli"
+#include "light.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
 ////////////////////////////////////////////////////////////////////////////////
-PSIn MyVertexShader077GS(VSIn input, uint instanceID : SV_InstanceID)
+GSIn MyVertexShader077GS(VSIn input, uint instanceID : SV_InstanceID)
 {
-	PSIn output;
+    GSIn output;
 	float4 cameraPosition;
 
 	// _m00, _m01,_m02, _m03
@@ -118,10 +136,9 @@ PSIn MyVertexShader077GS(VSIn input, uint instanceID : SV_InstanceID)
     }
     
 	//34: SPECULAR
+    output.cameraPosition = cameraPosition;
+    
 #if defined PS_USE_SPECULAR
-
-	output.cameraPosition = cameraPosition;
-
 	if (VShasSpecular)	// If enabled on material, calculate the Specular LIGHT
 	{
 		float4 worldPosition = mul(float4(input.position, 1), worldMatrix);			// P
@@ -132,11 +149,48 @@ PSIn MyVertexShader077GS(VSIn input, uint instanceID : SV_InstanceID)
 	return output;
 }
 
+[maxvertexcount(3)]
+void MyGSShader077GS(triangle GSIn input[3], inout TriangleStream<PSIn> triStream)
+{
+    PSIn output;
+    float3 camPos = mul(input[0].position, WV).xyz;
+
+    //1: Instance, too distante dont render:
+    // Compute average distance of the triangle from the camera
+    float3 triCenter = (input[0].position.xyz + input[1].position.xyz + input[2].position.xyz) / 3.0f;
+    float dist = distance(camPos, triCenter);
+    if (dist > 2000.0f)
+        return; // Do not emit this triangle
+
+    //2: Instance, Out of camera dont Render:
+	//take the cross product of the input triangle edges in world space: 
+    float3 wV0 = input[1].position.xyz - input[0].position.xyz;
+    float3 wV1 = input[2].position.xyz - input[0].position.xyz;
+    float3 wNormal = normalize(cross(wV0, wV1));
+    if (dot(camPos, wNormal) <= 0.0f)
+        return;
+    
+    // Emit triangle as usual
+    [unroll]
+    for (int i = 0; i < 3; ++i)
+    {
+        output.position = input[i].position;
+        output.texCoords = input[i].texCoords;
+        output.normal = input[i].normal;
+#if defined PS_USE_SPECULAR
+        output.viewDirection = input[i].viewDirection;
+#endif
+        output.cameraPosition = input[i].cameraPosition;
+        triStream.Append(output);
+    }
+
+    triStream.RestartStrip();
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Pixel Shader
 ////////////////////////////////////////////////////////////////////////////////
-float4 MyPixelShader077GS(PSIn input) : SV_TARGET
+float4 MyPixelShader077GS(GSIn input) : SV_TARGET
 {
 	float4	textureColor = pixelColor;    // SET PIXEL COLOR
 	float	lightIntensity = 0;
@@ -195,8 +249,6 @@ float4 MyPixelShader077GS(PSIn input) : SV_TARGET
 
 #endif
 
-    //textureColor.a = 1;
-    
     return textureColor;
 }
     

@@ -19,7 +19,7 @@
 //	Original Source Code:
 //	http://msdn.microsoft.com/en-us/library/windows/desktop/ms683194%28v=vs.85%29.aspx
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #include "WinSystemClass.h"
 #if defined WINDOWS_PLATFORM
@@ -28,7 +28,7 @@
 WinCpuCores::WinCpuCores()
 {
 	CLASSLOADER();
-    WomaIntegrityCheck = 1234567155;
+    WomaIntegrityCheck = 1234525256;
 
 	numaNodeCount = NULL;
 	processorPackageCount = NULL;

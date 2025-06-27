@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #if defined DEMO_LEVEL //FOR DEMOS LEVEL 1..54 (defined at project level)
     #define LEVEL DEMO_LEVEL
@@ -144,7 +144,8 @@
     //#define LEVEL 83  // Updated billboard shader
     //#define LEVEL 84  // ASSIMP: Animated / walking mesh on the terrain, following a path                                                
     //#define LEVEL 86  // THE MAIN CHARACTER
-    #define LEVEL 87    // THE MAIN CHARACTER - The other sample variantes
+    //#define LEVEL 87  // THE MAIN CHARACTER - The other sample variants
+	#define LEVEL 88    // USE_3RD_PERSON_CAMERA
     
     #endif
 #endif

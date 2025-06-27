@@ -37,7 +37,7 @@ public:
     SceneModel(std::shared_ptr<SceneObject>& sceneObject);
     ~SceneModel();
     Skeleton* m_Skeleton;
-    static SceneModel * LoadModelToScene(UINT type, std::string meshFileName, std::string animFileName, Scene& Scene, Graphics& graphics, SceneObject::Index parentIndex = 0);
+    static SceneModel * LoadModelToScene(UINT level, bool enginefile, UINT type, std::string meshFileName, std::string animFileName, Scene& Scene, Graphics& graphics, SceneObject::Index parentIndex = 0);
 
     std::vector<const aiAnimation*> m_Animations; // Store pointers to aiAnimation ANIM!
 
@@ -49,9 +49,14 @@ private:
 };
 
 #ifndef GENERATE_PACK
-#define Forest_Huntress_idle_fbx_Model_LOD0_fbx_size 3438412    //Forest_Huntress_idle_fbx_Model_LOD0_fbx
-#define Forest_Huntress_idle2_fbx_Model_LOD0_fbx_size 3393868   //Forest_Huntress_idle2_fbx_Model_LOD0_fbx
-#define Forest_Huntress_idle3_fbx_Model_LOD0_fbx_size 3372588   //Forest_Huntress_idle3_fbx_Model_LOD0_fbx
+#define Forest_Huntress_idle_fbx_Model_LOD0_fbx_size        3438412    //86 87 Forest_Huntress_idle_fbx_Model_LOD0_fbx
+
+#define Forest_Huntress_idle2_fbx_Model_LOD0_fbx_size       3393868   //87 Forest_Huntress_idle2_fbx_Model_LOD0_fbx
+#define Forest_Huntress_idle3_fbx_Model_LOD0_fbx_size       3372588   //87 Forest_Huntress_idle3_fbx_Model_LOD0_fbx
+
+#define Forest_Huntress_Walk_fbx_Model_LOD0_fbx_size        2961996
+#define Forest_Huntress_Walk_back_fbx_Model_LOD0_fbx_size   2958892
+#define Forest_Huntress_Run2_fbx_Model_LOD0_fbx_size        2932652
 
 #define Skin_1_Armor_and_Weapon_Albedo_png_size 42376836
 #define Skin_1_Body_Albedo_png_size 23213119
@@ -64,4 +69,8 @@ extern unsigned char* Forest_Huntress_idle_fbx_Model_LOD0_fbxBuffer;
 //DX_ENGINE_LEVEL >= 87:
 extern unsigned char* Forest_Huntress_idle2_fbx_Model_LOD0_fbxBuffer;
 extern unsigned char* Forest_Huntress_idle3_fbx_Model_LOD0_fbxBuffer;
-
+//DX_ENGINE_LEVEL >= 88:
+extern unsigned char* Forest_Huntress_idle2_fbx_Model_LOD0_fbxBuffer;       // >= 88
+extern unsigned char* Forest_Huntress_Walk_fbx_Model_LOD0_fbxBuffer;        // >= 88
+extern unsigned char* Forest_Huntress_Walk_back_fbx_Model_LOD0_fbxBuffer;   // >= 88
+extern unsigned char* Forest_Huntress_Run2_fbx_Model_LOD0_fbxBuffer;        // >= 88

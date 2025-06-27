@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Process the basic Camera Calculations
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #include "platform.h"
 #if defined DX_ENGINE
@@ -29,7 +29,7 @@
 DXcameraClass::DXcameraClass(UINT camera_type)
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567155;
+	WomaIntegrityCheck = 1234525256;
 
 	//public:
 	m_positionX = m_positionY = m_positionZ = 0.0f;
@@ -80,14 +80,17 @@ XMFLOAT3 DXcameraClass::GetRotation()
 
 //The Render function uses the position and rotation of the camera to build and update the view matrix. We first setup our variables for up, position, rotation, and so forth. Then at the origin of the scene we first rotate the camera based on the x, y, and z rotation of the camera. Once it is properly rotated when then translate the camera to the position in 3D space. With the correct values in the position, lookAt, and up we can then use the D3DXMatrixLookAtLH function to create the view matrix to represent the current camera rotation and translation.
 #if defined USE_3RD_PERSON_CAMERA
-void DXcameraClass::CalculateViewMatrix_3rd_PersonCamera(float camYaw, float camPitch)
+void DXcameraClass::CalculateViewMatrix_3rd_PersonCamera(float camYaw, float camPitch, bool sky)
 {
-    static float charCamDist = 1.0f; // 15.0f This is the distance between the camera and the character
+    static float charCamDist = 2.0f; // 15.0f This is the distance between the camera and the character
     static float YcamDist = 0.0f;    // 5.0f
 
     // Third Person Camera
     // Set the cameras target to be looking at the character.
-    camTarget = XMVectorSet(m_positionX, m_positionY, m_positionZ, 0.0f); //char position
+    if (sky)
+        camTarget = XMVectorSet(0, 0, 0, 0.0f); //char position
+    else
+        camTarget = XMVectorSet(m_positionX, m_positionY, m_positionZ, 0.0f); //char position
 
     // This line is because this lessons model was set to stand on the point (0,0,0) (my bad), and we
     // don't want to just be looking at the models feet, so we move the camera's target vector up 5 units
@@ -138,7 +141,7 @@ void DXcameraClass::CalculateViewMatrix()
 
 	// Create the rotation matrix from the yaw, pitch, and roll values.
 #if defined DX12 || defined DX11 || defined DX9
-	rotationMatrix = XMMatrixRotationRollPitchYaw(m_rotationX * 0.0174532925f,	    
+	rotationMatrix = XMMatrixRotationRollPitchYaw(  m_rotationX * 0.0174532925f,	    
 													m_rotationY * 0.0174532925f,	
 													m_rotationZ * 0.0174532925f);
 #endif

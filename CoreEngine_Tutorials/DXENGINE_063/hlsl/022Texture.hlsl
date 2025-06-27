@@ -8,7 +8,7 @@
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
-
+//WomaIntegrityCheck = 1234525256;
 
 //////////////
 // TYPEDEFS //
@@ -81,7 +81,7 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
 
     // 23 BLOCK: VS3
     float3 VSlightDirection; // LIGHT
-    float VSlightPAD; // 3+1=XMFLOAT4
+    float  VSlightPAD; // 3+1=XMFLOAT4
     float4 VSambientColor; // LIGHT
     float4 VSdiffuseColor; // LIGHT
     float4 VSemissiveColor; // LIGHT: Ke
@@ -108,6 +108,12 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
     float vsPAD2;
     float vsPAD3;
     float vsPAD4;
+    
+    // FIRE:
+    float vsframeTime;
+    float3 scrollSpeeds;
+    float3 scales;
+    bool isAnimatedBill;
 };
 
 ///////////////
@@ -172,7 +178,7 @@ PSIn MyVertexShader022Texture(VSIn input)
 #if defined PS_USE_FOG
     float4 cameraPosition;
 #endif
-
+    
     if (VS_USE_WVP)
     {
         output.position = mul(float4(input.position, 1), WVP); // Calculate the position of the vertex against the world, view, and projection matrices
@@ -186,6 +192,12 @@ PSIn MyVertexShader022Texture(VSIn input)
         output.position = position;
     }
 
+    
+    if (isAnimatedBill)
+    {
+        output.position.x += sin(vsframeTime * 100) * (1 - input.texCoords.y) / 10;
+    }
+    
     output.texCoords = input.texCoords; // TEXTURE: Store the texture coordinates for the pixel shader:
 
     //51:

@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #pragma once
 
@@ -75,13 +75,20 @@ typedef struct
 	bool IsEscapePressed;	
 
 	//BASE MOVEMENT:
-	bool IsLeftPressed;		// <- or a
-	bool IsRightPressed;	// -> or d
-	bool IsUpPressed;		// ^ or w
-	bool IsDownPressed;		// v or s
-	bool IsLeftCtrlPressed; // RUN:			left ctrl
-	bool IsPgUpPressed;		// LOOK UP:		pg up
-	bool IsPgDownPressed;	// LOOK DOWN:	pg down
+	bool IsLeftPressed;		    // <- or a
+	bool IsRightPressed;	    // -> or d
+    bool IsStrafeLeftPressed;	// q
+    bool IsStrafeRightPressed;	// e
+
+	bool IsUpPressed;		    // ^ or w
+	bool IsDownPressed;		    // v or s
+	bool IsLeftCtrlPressed;     // RUN:			left ctrl
+	bool IsPgUpPressed;		    // LOOK UP:		pg up
+	bool IsPgDownPressed;	    // LOOK DOWN:	pg down
+
+    //bool Is1Pressed;	        // Weapon:1
+    bool Is2Pressed;	        // Weapon:1
+
 
 #if DX_ENGINE_LEVEL >= 21 && defined USE_DIRECT_INPUT
 	//GOD_MODE:
@@ -108,7 +115,7 @@ typedef struct
 class PlayerClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567155;
+	UINT WomaIntegrityCheck = 1234525256;
 	PlayerClass(UINT id);
 	~PlayerClass();
 

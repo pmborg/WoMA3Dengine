@@ -17,7 +17,7 @@
 //   Get processor benchmark info
 //   Allocate logical processors to different threads
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #include "main.h"
 
@@ -35,7 +35,7 @@
 WinCpuClass::WinCpuClass()
 {
 	CLASSLOADER();
-    WomaIntegrityCheck = 1234567155;
+    WomaIntegrityCheck = 1234525256;
 
 	//private:
     m_canReadCpu=false;
