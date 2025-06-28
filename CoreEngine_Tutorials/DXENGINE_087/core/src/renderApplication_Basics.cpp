@@ -405,6 +405,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 
     m_Driver->TurnOffAlphaBlending();
     mesh_animations();
+    m_Driver->TurnOnAlphaBlending();
 }
 
 //#############################################################################################################
