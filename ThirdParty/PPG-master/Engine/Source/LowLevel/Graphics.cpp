@@ -15,6 +15,7 @@
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
 // Original Code Adapted from: https://github.com/nicholaschuayunzhi/PPG
+// WomaIntegrityCheck = 1234525256;
 
 #include "stdafx.h"
 #include "OSengine.h"
@@ -142,16 +143,6 @@ void Graphics::ClearDepthStencil(FLOAT clearDepth, UINT8 clearStencil)
 
 Graphics::~Graphics()
 {
-    //SAFE_RELEASE(m_DepthStencilState);
-    //SAFE_RELEASE(m_DeviceContext);
-    //SAFE_RELEASE(m_RasterizerState);
-    //SAFE_RELEASE(m_SwapChain);
-    
     SAFE_RELEASE(m_AlphaBlendState);
-    //SAFE_RELEASE(m_Device);
-
-    //if (m_Debug != nullptr)
-    //    m_Debug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
-    //m_Debug = nullptr;
 }
 

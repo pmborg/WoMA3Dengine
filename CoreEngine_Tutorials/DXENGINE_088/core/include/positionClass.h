@@ -45,8 +45,10 @@ public:
 	void SetFrameTime(double);
 
 	//The movement functions are called to move the viewer/camera based on the user input.
-	void MoveForward(bool, bool ctrl, bool mouseWhell, bool water = false);
-	void MoveBackward(bool, bool ctrl, bool mouseWhell, bool water = false);
+	void MoveForward(bool, bool ctrl, bool water = false);
+    void StrafeLeft(bool keydown, bool ctrl, bool water);
+    void StrafeRight(bool keydown, bool ctrl, bool water);
+	void MoveBackward(bool, bool ctrl, bool water = false);
 	void MoveUpward(bool);
 	void MoveDownward(bool);
 	void TurnLeft(bool, bool ctrl);
@@ -55,16 +57,16 @@ public:
 	void LookDownward(bool);
 
 public:
-	float m_positionX, m_positionY, m_positionZ;
-	float m_rotationX, m_rotationY, m_rotationZ;
-	float m_forwardSpeed, m_backwardSpeed;
+	float m_positionX=0, m_positionY = 0, m_positionZ = 0;
+	float m_rotationX = 0, m_rotationY = 0, m_rotationZ = 0;
+	float m_forwardSpeed = 0, m_backwardSpeed = 0;
+    float m_strafeLeftSpeed = 0, m_strafeRightSpeed = 0;
 
 private:
-	float m_frameTime;
-	float m_upwardSpeed, m_downwardSpeed;
-	float m_leftTurnSpeed, m_rightTurnSpeed;
-	float m_lookUpSpeed, m_lookDownSpeed;
-    double lastMovementTime=0;
+	float m_frameTime = 0;
+	float m_upwardSpeed = 0, m_downwardSpeed = 0;
+	float m_leftTurnSpeed = 0, m_rightTurnSpeed = 0;
+	float m_lookUpSpeed = 0, m_lookDownSpeed = 0;
 };
 #endif
 

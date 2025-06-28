@@ -31,8 +31,8 @@ public:
     static Texture* CreateTexture(Graphics& graphics, int width, int height, const std::string& name, DXGI_FORMAT texFormat, UINT bindFlags, D3D11_SUBRESOURCE_DATA* data = NULL);
     static Texture* CreateTextureDepthStencil(Graphics& graphics, int width, int height, const std::string& name, DXGI_FORMAT texFormat, UINT bindFlags, D3D11_SUBRESOURCE_DATA* data = NULL);
     static Texture* CreateTextureCube(Graphics& graphics, int size, const std::string& name, DXGI_FORMAT texFormat, UINT bindFlags, UINT mipLevels = 1, D3D11_SUBRESOURCE_DATA* data = NULL);
-    Texture* LoadTextureFromMemory(Graphics& graphics, const uint8_t* data, size_t size, const std::wstring& ext);
-    static Texture* LoadTextureFromPath(UINT modeltype, Graphics& graphics, LPCWSTR& texturePath);
+    //Texture* LoadTextureFromMemory(Graphics& graphics, const uint8_t* data, size_t size, const std::wstring& ext);
+    static Texture* LoadTextureFromPath(UINT this_level, UINT modeltype, Graphics& graphics, LPCWSTR& texturePath);
     bool CreateSRV(Graphics& graphics, DXGI_FORMAT texFormat, D3D11_SRV_DIMENSION viewDimension = D3D11_SRV_DIMENSION_TEXTURE2D, UINT mipLevels = 1);
     bool CreateRTV(Graphics& graphics, DXGI_FORMAT texFormat);
     bool CreateTextureCubeRTVs(Graphics& graphics, DXGI_FORMAT texFormat, UINT mipLevels = 1);

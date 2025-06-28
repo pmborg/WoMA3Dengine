@@ -15,6 +15,7 @@
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
 // Original Code Adapted from: https://github.com/nicholaschuayunzhi/PPG
+// WomaIntegrityCheck = 1234525256;
 
 #include "stdafx.h"
 #include <map>
@@ -37,14 +38,18 @@
 #include <assimp/revision.h>
 
 //FBX: SceneModel.h
-unsigned char* Forest_Huntress_idle_fbx_Model_LOD0_fbxBuffer = NULL;        //==86 & 87
-unsigned char* Forest_Huntress_idle2_fbx_Model_LOD0_fbxBuffer = NULL;       //==87 & 88
-unsigned char* Forest_Huntress_idle3_fbx_Model_LOD0_fbxBuffer = NULL;       //==87
+unsigned char* Forest_Huntress_idle_fbx_Model_LOD0_fbxBuffer = NULL;            //==86 & 87
+unsigned char* Forest_Huntress_idle2_fbx_Model_LOD0_fbxBuffer = NULL;           //==87 & 88
+unsigned char* Forest_Huntress_idle3_fbx_Model_LOD0_fbxBuffer = NULL;           //==87
 
-//unsigned char* Forest_Huntress_idle2_fbx_Model_LOD0_fbxBuffer = NULL;       // >= 88
-unsigned char* Forest_Huntress_Walk_fbx_Model_LOD0_fbxBuffer = NULL;        // >= 88
-unsigned char* Forest_Huntress_Walk_back_fbx_Model_LOD0_fbxBuffer = NULL;   // >= 88
-unsigned char* Forest_Huntress_Run2_fbx_Model_LOD0_fbxBuffer = NULL;        // >= 88
+//unsigned char* Forest_Huntress_idle2_fbx_Model_LOD0_fbxBuffer = NULL;         // >= 88
+unsigned char* Forest_Huntress_Walk_fbx_Model_LOD0_fbxBuffer = NULL;            // >= 88
+unsigned char* Forest_Huntress_Walk_back_fbx_Model_LOD0_fbxBuffer = NULL;       // >= 88
+unsigned char* Forest_Huntress_Run2_fbx_Model_LOD0_fbxBuffer = NULL;            // >= 88
+
+unsigned char* Forest_Huntress_Strafe_left_fbx_Model_LOD0_fbxBuffer = NULL;     // >= 88
+unsigned char* Forest_Huntress_Strafe_right_fbx_Model_LOD0_fbxBuffer = NULL;    // >= 88
+unsigned char* Forest_Huntress_Draw_sword_fbx_Model_LOD0_fbxBuffer = NULL;      // >= 88
 
 #ifdef DEBUG_MESH
 void showNodeName(aiNode* node, UINT i = 0);
@@ -138,7 +143,7 @@ SceneModel* SceneModel::LoadModelToScene(UINT dxlevel, bool enginefile, UINT typ
                 filebufferSize = Forest_Huntress_idle3_fbx_Model_LOD0_fbx_size;
             }
         }
-        if (dxlevel == 88)
+        if (dxlevel >= 88)
         {
             if (type == 1) {
                 pBuffer = Forest_Huntress_idle2_fbx_Model_LOD0_fbxBuffer;
@@ -155,6 +160,18 @@ SceneModel* SceneModel::LoadModelToScene(UINT dxlevel, bool enginefile, UINT typ
             if (type == 4) {
                 pBuffer = Forest_Huntress_Run2_fbx_Model_LOD0_fbxBuffer;
                 filebufferSize = Forest_Huntress_Run2_fbx_Model_LOD0_fbx_size;
+            }
+            if (type == 5) {
+                pBuffer = Forest_Huntress_Strafe_left_fbx_Model_LOD0_fbxBuffer;     // >= 88 id=4
+                filebufferSize = Forest_Huntress_Strafe_left_fbx_Model_LOD0_fbx_size;
+            }
+            if (type == 6) {
+                pBuffer = Forest_Huntress_Strafe_right_fbx_Model_LOD0_fbxBuffer;    // >= 88 id=5
+                filebufferSize = Forest_Huntress_Strafe_right_fbx_Model_LOD0_fbx_size;
+            }
+            if (type == 7) {
+                pBuffer = Forest_Huntress_Draw_sword_fbx_Model_LOD0_fbxBuffer;      // >= 88 id=6
+                filebufferSize = Forest_Huntress_Draw_sword_fbx_Model_LOD0_fbx_size;
             }
         }
 
@@ -178,7 +195,7 @@ SceneModel* SceneModel::LoadModelToScene(UINT dxlevel, bool enginefile, UINT typ
     ModelLoader ml = ModelLoader(pAssimpScene, scene, graphics, meshFileName, parentIndex);
     // LOAD ASSIMP data to our model:
     // ------------------------------
-    SceneModel* model = ml.LoadModel(type);
+    SceneModel* model = ml.LoadModel(DX_ENGINE_LEVEL, type);
 
     aiScene* assimpScene;
     Assimp::Importer animImporter;

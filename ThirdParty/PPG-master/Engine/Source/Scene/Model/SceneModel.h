@@ -49,14 +49,18 @@ private:
 };
 
 #ifndef GENERATE_PACK
-#define Forest_Huntress_idle_fbx_Model_LOD0_fbx_size        3438412    //86 87 Forest_Huntress_idle_fbx_Model_LOD0_fbx
+#define Forest_Huntress_idle_fbx_Model_LOD0_fbx_size            3438412   //86 87 Forest_Huntress_idle_fbx_Model_LOD0_fbx
 
-#define Forest_Huntress_idle2_fbx_Model_LOD0_fbx_size       3393868   //87 Forest_Huntress_idle2_fbx_Model_LOD0_fbx
-#define Forest_Huntress_idle3_fbx_Model_LOD0_fbx_size       3372588   //87 Forest_Huntress_idle3_fbx_Model_LOD0_fbx
+#define Forest_Huntress_idle2_fbx_Model_LOD0_fbx_size           3399212   //87 Forest_Huntress_idle2_fbx_Model_LOD0_fbx
+#define Forest_Huntress_idle3_fbx_Model_LOD0_fbx_size           3372588   //87 Forest_Huntress_idle3_fbx_Model_LOD0_fbx
 
-#define Forest_Huntress_Walk_fbx_Model_LOD0_fbx_size        2961996
-#define Forest_Huntress_Walk_back_fbx_Model_LOD0_fbx_size   2958892
-#define Forest_Huntress_Run2_fbx_Model_LOD0_fbx_size        2932652
+#define Forest_Huntress_Walk_fbx_Model_LOD0_fbx_size            2846204
+#define Forest_Huntress_Walk_back_fbx_Model_LOD0_fbx_size       2711868
+#define Forest_Huntress_Run2_fbx_Model_LOD0_fbx_size            2932652
+
+#define Forest_Huntress_Strafe_left_fbx_Model_LOD0_fbx_size     2825516
+#define Forest_Huntress_Strafe_right_fbx_Model_LOD0_fbx_size    2949324
+#define Forest_Huntress_Draw_sword_fbx_Model_LOD0_fbx_size      2991644
 
 #define Skin_1_Armor_and_Weapon_Albedo_png_size 42376836
 #define Skin_1_Body_Albedo_png_size 23213119
@@ -70,7 +74,11 @@ extern unsigned char* Forest_Huntress_idle_fbx_Model_LOD0_fbxBuffer;
 extern unsigned char* Forest_Huntress_idle2_fbx_Model_LOD0_fbxBuffer;
 extern unsigned char* Forest_Huntress_idle3_fbx_Model_LOD0_fbxBuffer;
 //DX_ENGINE_LEVEL >= 88:
-extern unsigned char* Forest_Huntress_idle2_fbx_Model_LOD0_fbxBuffer;       // >= 88
-extern unsigned char* Forest_Huntress_Walk_fbx_Model_LOD0_fbxBuffer;        // >= 88
-extern unsigned char* Forest_Huntress_Walk_back_fbx_Model_LOD0_fbxBuffer;   // >= 88
-extern unsigned char* Forest_Huntress_Run2_fbx_Model_LOD0_fbxBuffer;        // >= 88
+extern unsigned char* Forest_Huntress_idle2_fbx_Model_LOD0_fbxBuffer;           // >= 88
+extern unsigned char* Forest_Huntress_Walk_fbx_Model_LOD0_fbxBuffer;            // >= 88
+extern unsigned char* Forest_Huntress_Walk_back_fbx_Model_LOD0_fbxBuffer;       // >= 88
+extern unsigned char* Forest_Huntress_Run2_fbx_Model_LOD0_fbxBuffer;            // >= 88
+
+extern unsigned char* Forest_Huntress_Strafe_left_fbx_Model_LOD0_fbxBuffer;     // >= 88
+extern unsigned char* Forest_Huntress_Strafe_right_fbx_Model_LOD0_fbxBuffer;    // >= 88
+extern unsigned char* Forest_Huntress_Draw_sword_fbx_Model_LOD0_fbxBuffer;      // >= 88

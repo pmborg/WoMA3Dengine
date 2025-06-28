@@ -165,12 +165,11 @@ UINT CLASS_LOAD_N = 1;
 UINT CLASS_DELETE_N = 1;
 
 #if CORE_ENGINE_LEVEL >= 10 & !defined NewWomaEngine
-UINT RENDER_PAGE = DX_ENGINE_LEVEL;
 std::vector<WomaDriverClass*> driverList;
 WomaDriverClass* g_contextDriver = NULL;	// Note: Used only at 20  wGLopenGLclass
-#else
-UINT RENDER_PAGE;
 #endif
+
+UINT RENDER_PAGE = DX_ENGINE_LEVEL;
 
 // WINDOWS vs LINUX
 // -------------------------------------------------------------------------------------------------------------------------------------

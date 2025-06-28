@@ -55,12 +55,14 @@ TrigonometryMathClass::~TrigonometryMathClass() {CLASSDELETE();}
 
 void TrigonometryMathClass::Initialize()
 {
-	printf("TrigonometryMathClass::Initialize() - START\n");
+    WOMA_LOGManager_DebugMSGAUTO("TrigonometryMathClass::Initialize() - START\n");
+
 	for (UINT deg=0;deg<360*100;deg++) {
 		tableSin[deg] = sin (((float)deg / 100.0f) * 0.0174532925f); //0.0174532925f (PI / 180.0f): Convert degrees to radians.
 		tableCos[deg] = cos (((float)deg / 100.0f) * 0.0174532925f); //0.0174532925f (PI / 180.0f): Convert degrees to radians.
 	}
-	printf("TrigonometryMathClass::Initialize() - END\n");
+
+    WOMA_LOGManager_DebugMSGAUTO("TrigonometryMathClass::Initialize() - END\n");
 }
 
 // --------------------------------------------------------------------------------------------

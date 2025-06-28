@@ -60,7 +60,7 @@ int __cdecl BillSortCB(const VOID* arg1, const VOID* arg2);
 #include "womamesh.h"
 
 extern void InitMeshDemo(ApplicationClass* app, MeshApplication* demoapp, MyDemo* demo);
-extern void LoadingMesh(ApplicationClass* app, MeshApplication* demoapp, MyDemo* demo);
+extern void LoadingMesh(UINT this_level, ApplicationClass* app, MeshApplication* demoapp, MyDemo* demo);
 extern void UpdateMesh(MeshApplication* demoapp, MyDemo* demo, float deltaTime);
 extern void RenderMesh(MeshApplication* demoapp, MyDemo* demo);
 

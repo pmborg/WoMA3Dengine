@@ -15,8 +15,11 @@
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
 // Original Code Adapted from: https://github.com/nicholaschuayunzhi/PPG
+// WomaIntegrityCheck = 1234525256;
 
 #include "stdafx.h"
+#include <filesystem>
+
 #include "OSengine.h"
 #include "DX11Class.h"
 #include "Texture.h"
@@ -81,43 +84,51 @@ Texture* Texture::CreateTextureCube(Graphics& graphics, int size, const std::str
     return new Texture(texturePtr, name);
 }
 
-#if DX_ENGINE_LEVEL >= 86
-extern Texture* LoadTextureFromPathFBX(UINT modeltype, Graphics& graphics, LPCWSTR& texturePath);
+#if LEVEL >= 86
+extern Texture* LoadTextureFromPathFBX(UINT model_type, Graphics& graphics, LPCWSTR& texture);
 #endif
 
-Texture* Texture::LoadTextureFromPath(UINT modeltype, Graphics& graphics, LPCWSTR& texturePath)
+void ReplaceTextureVersionW(std::wstring& path, const std::wstring& from, const std::wstring& to) {
+    size_t pos = path.find(from);
+    if (pos != std::wstring::npos) {
+        path.replace(pos, from.length(), to);
+    }
+}
+
+Texture* Texture::LoadTextureFromPath(UINT this_level, UINT modeltype, Graphics& graphics, LPCWSTR& texturePath)
 {
-#if DX_ENGINE_LEVEL >= 86
+    std::wstring filetexturePath = texturePath;
+if (this_level>=86) 
+{
     if (modeltype >=1)
         return LoadTextureFromPathFBX(modeltype, graphics, texturePath);
-#endif
+}
 
-    std::wstring texturePath_ = texturePath;
 
     // Find the position of "../../AppData/Local"
     std::wstring marker = L"../../AppData/Local";
-    size_t pos = texturePath_.find(marker);
+    size_t pos = filetexturePath.find(marker);
 
     // Get everything before "../../AppData/Local"
     std::wstring beforeAppData;
     bool fix = false;
     if (pos != std::wstring::npos) {
-        beforeAppData = texturePath_.substr(0, pos);
+        beforeAppData = filetexturePath.substr(0, pos);
         fix = true;
     }
 
     // Get the file name only
-    size_t lastSlash = texturePath_.find_last_of(L"/\\");
+    size_t lastSlash = filetexturePath.find_last_of(L"/\\");
     std::wstring fileName;
     if (lastSlash != std::wstring::npos) {
-        fileName = texturePath_.substr(lastSlash + 1);
+        fileName = filetexturePath.substr(lastSlash + 1);
     }
     beforeAppData.append(fileName);
 
     if (fix)
         texturePath = beforeAppData.c_str();
     else
-        texturePath = texturePath_.c_str();
+        texturePath = filetexturePath.c_str();
 
     std::filesystem::path filePath(texturePath);
     if (!std::filesystem::exists(filePath))
@@ -168,7 +179,7 @@ Texture::Texture(ID3D11Texture2D* texture, const std::string& name) :
     m_Texture(texture),
     m_Name(name)
 {
-    SetDebugName(m_Texture, name);
+    //SetDebugName(m_Texture, name);
 }
 
 bool Texture::CreateSRV(Graphics& graphics, DXGI_FORMAT texFormat, D3D11_SRV_DIMENSION viewDimension /*= D3D11_SRV_DIMENSION_TEXTURE2D*/, UINT mipLevels /*= 1*/)
@@ -179,7 +190,7 @@ bool Texture::CreateSRV(Graphics& graphics, DXGI_FORMAT texFormat, D3D11_SRV_DIM
 
 bool Texture::CreateRTV(Graphics& graphics, DXGI_FORMAT texFormat)
 {
-    #define m_driver11 ((DirectX::DX11Class*)driverList[SystemHandle->AppSettings->DRIVER])
+#define m_driver11 ((DirectX::DX11Class*)driverList[SystemHandle->AppSettings->DRIVER])
 
     ID3D11RenderTargetView* rtv = ((DirectX::DX11Class*)m_driver11)->DX11windowsArray[0].m_renderTargetView;
     m_TextureRTVs.push_back(rtv);
@@ -200,7 +211,7 @@ bool Texture::CreateTextureCubeRTVs(Graphics& graphics, DXGI_FORMAT texFormat, U
             renderTargetViewDesc.Texture2DArray.FirstArraySlice = i;
             ID3D11RenderTargetView* rtv;
             HRESULT result = graphics.m_Device->CreateRenderTargetView(m_Texture, &renderTargetViewDesc, &rtv);
-            SetDebugName(rtv, m_Name + " RTV " + std::to_string(i));
+            //SetDebugName(rtv, m_Name + " RTV " + std::to_string(i));
             m_TextureRTVs.push_back(rtv);
             if (FAILED(result))
             {
@@ -221,7 +232,7 @@ bool Texture::CreateDSV(Graphics& graphics, DXGI_FORMAT texFormat)
     depthStencilViewDesc.Texture2D.MipSlice = 0;
 
     HRESULT result = graphics.m_Device->CreateDepthStencilView(m_Texture, &depthStencilViewDesc, &m_TextureDSV);
-    SetDebugName(m_TextureDSV, m_Name + " DSV");
+    //SetDebugName(m_TextureDSV, m_Name + " DSV");
     return SUCCEEDED(result);
 }
 

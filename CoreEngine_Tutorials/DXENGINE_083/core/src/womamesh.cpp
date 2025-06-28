@@ -73,7 +73,7 @@ void InitMeshDemo(ApplicationClass* app, MeshApplication* demoapp, MyDemo* demo)
 
     womamesh1.scene.Start(demoapp->m_Graphics);
 }
-void LoadingMesh(ApplicationClass* app, MeshApplication* demoapp, MyDemo* demo)
+void LoadingMesh(UINT this_level, ApplicationClass* app, MeshApplication* demoapp, MyDemo* demo)
 {
 #if DX_ENGINE_LEVEL >= 79 && defined USE_MODEL1
     womamesh1.assimpSceneModel = SceneModel::LoadModelToScene(DX_ENGINE_LEVEL, true, 0, WOMA::LoadFile((TCHAR*)ASSIMP_MODEL_BOBLAMPCLEAN), "", womamesh1.scene, demoapp->m_Graphics);
@@ -133,7 +133,7 @@ void ApplicationClass::mesh_animations()
         // INIT: Model 1,2,3,4...
         demo.Start(demoapp.m_Graphics);
         InitMeshDemo(this, &demoapp, &demo);
-        LoadingMesh(this, &demoapp, &demo);
+        LoadingMesh(DX_ENGINE_LEVEL, this, &demoapp, &demo);
     }
 
     static UINT filmeIdx = 0; // 1st line of filme file

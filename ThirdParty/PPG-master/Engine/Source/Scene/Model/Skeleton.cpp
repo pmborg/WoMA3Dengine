@@ -15,9 +15,9 @@
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
 // Original Code Adapted from: https://github.com/nicholaschuayunzhi/PPG
+// WomaIntegrityCheck = 1234525256;
 
 #include "stdafx.h"
-
 #include "Skeleton.h"
 
 Skeleton::~Skeleton()

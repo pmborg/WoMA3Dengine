@@ -99,7 +99,7 @@ void InitMeshDemo(ApplicationClass* app, MeshApplication* demoapp, MyDemo* demo)
     for (size_t i = 0; i < size_original_files; i++)
         womamesh4[i].scene.Start(demoapp->m_Graphics);
 }
-void LoadingMesh(ApplicationClass* app, MeshApplication* demoapp, MyDemo* demo)
+void LoadingMesh(UINT this_level, ApplicationClass* app, MeshApplication* demoapp, MyDemo* demo)
 {
 #if DX_ENGINE_LEVEL >= 79 && defined USE_MODEL1
     womamesh1.assimpSceneModel = SceneModel::LoadModelToScene(DX_ENGINE_LEVEL, true, 0, WOMA::LoadFile((TCHAR*)ASSIMP_MODEL_BOBLAMPCLEAN), "", womamesh1.scene, demoapp->m_Graphics);
@@ -141,7 +141,6 @@ void LoadingMesh(ApplicationClass* app, MeshApplication* demoapp, MyDemo* demo)
     womamesh4[MAIN_CHAR_MODEL4].assimpSceneModel = SceneModel::LoadModelToScene(DX_ENGINE_LEVEL, false, 4, WOMA::LoadFile((TCHAR*)TEXT("engine/data/scene87ForestHuntress/")), "", womamesh4[MAIN_CHAR_MODEL4].scene, demoapp->m_Graphics);
 
 #if defined ALLOW_CBIND_PROGRESS_BAR
-    //::ShowWindow(SystemHandle->hwndPrgBar, SW_SHOW);
     ::ShowWindow(SystemHandle->settingstext, SW_SHOW);
     RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);	// Invoke: Window PAINT before end.
     MSG msg = { 0 };
@@ -316,7 +315,7 @@ void ApplicationClass::mesh_animations()
         // INIT: Model 1,2,3,4...
         demo.Start(demoapp.m_Graphics);
         InitMeshDemo(this, &demoapp, &demo);
-        LoadingMesh(this, &demoapp, &demo);
+        LoadingMesh(DX_ENGINE_LEVEL, this, &demoapp, &demo);
     }
 
     static UINT filmeIdx = 0; // 1st line of filme file

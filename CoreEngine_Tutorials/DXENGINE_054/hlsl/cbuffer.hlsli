@@ -99,7 +99,7 @@ cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: D
 	// BLOCK4:
 	bool	hasColorMap;		// 66
 	float	lightType;			// Future
-	float	PSshaderType;			// Future
+    bool    isDay;
 	float	shaderTypeParameter;// Future
 
 	// BLOCK5:

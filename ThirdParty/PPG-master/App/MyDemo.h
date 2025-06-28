@@ -15,6 +15,7 @@
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
 // Original Code Adapted from: https://github.com/nicholaschuayunzhi/PPG
+// WomaIntegrityCheck = 1234525256;
 
 #pragma once
 
@@ -51,9 +52,9 @@ private:
     std::unique_ptr<Sampler> linearSampler;
     std::unique_ptr<Sampler> pointSampler;
 
-    std::unique_ptr<Texture> LoadTextureFromPath(UINT modeltype, Graphics& graphics, LPCWSTR& path)
+    std::unique_ptr<Texture> LoadTextureFromPath(UINT this_level, UINT modeltype, Graphics& graphics, LPCWSTR& path)
     {
-        Texture* tex = Texture::LoadTextureFromPath(modeltype, graphics, path);
+        Texture* tex = Texture::LoadTextureFromPath(this_level, modeltype, graphics, path);
         return std::unique_ptr<Texture>(tex);
     }
 

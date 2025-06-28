@@ -53,8 +53,6 @@ PositionClass::PositionClass(UINT id)
 	m_rightTurnSpeed = 0.0f;
 	m_lookUpSpeed    = 0.0f;
 	m_lookDownSpeed  = 0.0f;
-
-    lastMovementTime = 0;
 }
 
 PositionClass::~PositionClass(){CLASSDELETE();}
@@ -110,27 +108,18 @@ void PositionClass::SetFrameTime(double time)
 //frame rate. Each function then uses some basic math to calculate the new position of the viewer/camera.
 
 //This function calculates the forward speed and movement of the viewer/camera.
-void PositionClass::MoveForward(bool keydown, bool ctrl, bool mouseWhell, bool water)
+void PositionClass::MoveForward(bool keydown, bool ctrl, bool water)
 {
 	// Update the forward speed movement based on the frame time and whether the user is holding the key down or not.
-	if(keydown||mouseWhell)
+	if(keydown)
 	{
-		lastMovementTime = timeGetTime();
 		m_forwardSpeed += m_frameTime * 0.0005f;
-		#if defined _DEBUG
 		float maxSpeed = ctrl ? 0.006f : 0.002f; // MAX SPEED (Run / Walk)
-		#else
-		float maxSpeed = ctrl ? 0.03f : 0.003f; // MAX SPEED
-		#endif
 		if (water)
 			maxSpeed/=3;
 
-		if (mouseWhell)
-			m_forwardSpeed = ctrl ? 0.1f : 0.01f;
-		else
 		if(m_forwardSpeed > (m_frameTime * maxSpeed))
 			m_forwardSpeed = m_frameTime * maxSpeed;
-
 	}
 	else
 	{
@@ -144,13 +133,62 @@ void PositionClass::MoveForward(bool keydown, bool ctrl, bool mouseWhell, bool w
 	m_positionZ += FAST_cos(m_rotationY) * m_forwardSpeed;
 }
 
+// Strafe Left (move perpendicular to the left of facing direction)
+void PositionClass::StrafeLeft(bool keydown, bool ctrl, bool water)
+{
+    if (keydown)
+    {
+        m_strafeLeftSpeed += m_frameTime * 0.0005f;
+        float maxSpeed = 0.001f;
+        if (water)
+            maxSpeed /= 3;
+        if (m_strafeLeftSpeed > (m_frameTime * maxSpeed))
+            m_strafeLeftSpeed = m_frameTime * maxSpeed;
+    }
+    else
+    {
+        m_strafeLeftSpeed -= m_frameTime * 0.0004f;
+        if (m_strafeLeftSpeed < 0.0f)
+            m_strafeLeftSpeed = 0.0f;
+    }
+
+    // StrafeLeft
+    float angleLeft = m_rotationY - 90.0f;
+    m_positionX += FAST_sin(angleLeft) * m_strafeLeftSpeed;
+    m_positionZ += FAST_cos(angleLeft) * m_strafeLeftSpeed;
+}
+
+// Strafe Right (move perpendicular to the right of facing direction)
+void PositionClass::StrafeRight(bool keydown, bool ctrl, bool water)
+{
+    if (keydown)
+    {
+        m_strafeRightSpeed += m_frameTime * 0.0005f;
+        float maxSpeed = 0.001f;
+        if (water)
+            maxSpeed /= 3;
+        if (m_strafeRightSpeed > (m_frameTime * maxSpeed))
+            m_strafeRightSpeed = m_frameTime * maxSpeed;
+    }
+    else
+    {
+        m_strafeRightSpeed -= m_frameTime * 0.0004f;
+        if (m_strafeRightSpeed < 0.0f)
+            m_strafeRightSpeed = 0.0f;
+    }
+
+    // StrafeRight
+    float angleRight = m_rotationY + 90.0f;
+    m_positionX += FAST_sin(angleRight) * m_strafeRightSpeed;
+    m_positionZ += FAST_cos(angleRight) * m_strafeRightSpeed;
+}
+
 //This function calculates the backward speed and movement of the viewer/camera.
-void PositionClass::MoveBackward(bool keydown, bool ctrl, bool mouseWhell, bool water)
+void PositionClass::MoveBackward(bool keydown, bool ctrl, bool water)
 {
 	// Update the backward speed movement based on the frame time and whether the user is holding the key down or not.
-	if(keydown||mouseWhell)
+	if(keydown)
 	{
-		lastMovementTime = timeGetTime();
 		m_backwardSpeed += m_frameTime * 0.0005f;
         float maxSpeed = 0.001f; // MAX SPEED (Walk)
 
@@ -161,9 +199,6 @@ void PositionClass::MoveBackward(bool keydown, bool ctrl, bool mouseWhell, bool 
 		if (water)
 			maxSpeed/=3;
 
-		if (mouseWhell)
-			m_backwardSpeed = ctrl ? 0.1f : 0.01f;
-		else
 		if(m_backwardSpeed > (m_frameTime * maxSpeed))
 			m_backwardSpeed = m_frameTime * maxSpeed;
 	}
@@ -185,7 +220,6 @@ void PositionClass::MoveUpward(bool keydown)
 	// Update the upward speed movement based on the frame time and whether the user is holding the key down or not.
 	if(keydown)
 	{
-		lastMovementTime = timeGetTime();
 		m_upwardSpeed += m_frameTime * 0.003f;
 
 		if(m_upwardSpeed > (m_frameTime * 0.01f))
@@ -213,7 +247,6 @@ void PositionClass::MoveDownward(bool keydown)
 	// Update the downward speed movement based on the frame time and whether the user is holding the key down or not.
 	if(keydown)
 	{
-		lastMovementTime = timeGetTime();
 		m_downwardSpeed += m_frameTime * 0.003f;
 
 		if(m_downwardSpeed > (m_frameTime * 0.01f))
@@ -238,11 +271,9 @@ void PositionClass::MoveDownward(bool keydown)
 //This function calculates the left turn speed and rotation of the viewer/camera.
 void PositionClass::TurnLeft(bool keydown, bool ctrl)
 {
-
 	// Update the left turn speed movement based on the frame time and whether the user is holding the key down or not.
 	if(keydown)
 	{
-		lastMovementTime = timeGetTime();
         float maxSpeed = ctrl ? 0.1f : 0.3f;
 		m_leftTurnSpeed += m_frameTime * 0.02f;
 
@@ -273,7 +304,6 @@ void PositionClass::TurnRight(bool keydown, bool ctrl)
 	// Update the right turn speed movement based on the frame time and whether the user is holding the key down or not.
 	if(keydown)
 	{
-		lastMovementTime = timeGetTime();
         float maxSpeed = ctrl ? 0.1f : 0.3f;
 		m_rightTurnSpeed += m_frameTime * 0.02f;
 
@@ -306,7 +336,6 @@ void PositionClass::LookUpward(bool keydown)
 	// Update the upward rotation speed movement based on the frame time and whether the user is holding the key down or not.
 	if(keydown)
 	{
-		lastMovementTime = timeGetTime();
 		m_lookUpSpeed += m_frameTime * 0.02f;
 
 		if(m_lookUpSpeed > (m_frameTime * 0.05f))
@@ -338,7 +367,6 @@ void PositionClass::LookDownward(bool keydown)
 	// Update the downward rotation speed movement based on the frame time and whether the user is holding the key down or not.
 	if(keydown)
 	{
-		lastMovementTime = timeGetTime();
 		m_lookDownSpeed += m_frameTime * 0.02f;
 
 		if(m_lookDownSpeed > (m_frameTime * 0.05f))
