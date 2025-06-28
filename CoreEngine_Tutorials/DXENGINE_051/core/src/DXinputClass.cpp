@@ -22,7 +22,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 #include "main.h"
-#define DX_INPUT_DEBUG_TEST	//ON/OFF LOG ON CONSOLE KEYs
+//#define DX_INPUT_DEBUG_TEST	//ON/OFF LOG ON CONSOLE KEYs
 
 #if defined USE_DIRECT_INPUT
 #include "DXinputClass.h"

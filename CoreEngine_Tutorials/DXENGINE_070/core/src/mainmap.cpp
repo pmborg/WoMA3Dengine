@@ -34,16 +34,16 @@ void ApplicationClass::TerrainRender(UINT monitorWindow, WomaDriverClass* Driver
 	//Water Render:
 	float t = ((DirectX::DXmodelClass*)m_TerrainModel[1])->m_Shader11->time; //preserve animation time
 	((DirectX::DXmodelClass*)m_TerrainModel[1])->m_Shader11->time = 0;
-	((DirectX::DXmodelClass*)m_TerrainModel[1])->shaderTypeParameter = 1; // Render for Map
+	((DirectX::DXmodelClass*)m_TerrainModel[1])->shaderTypeParameter = 1; // Render for Map projection
 	m_TerrainModel[1]->Render(CAMERA_NORMAL, PROJECTION_MINIMAP, PASS_MINIMAP1, m_viewMatrix, m_projectionMatrix);
 	((DirectX::DXmodelClass*)m_TerrainModel[1])->m_Shader11->time = t;
 
 	//Terrain Render:
-	((DirectX::DXmodelClass*)m_TerrainModel[2])->shaderTypeParameter = 1; // Render for Map
+	((DirectX::DXmodelClass*)m_TerrainModel[2])->shaderTypeParameter = 1; // Render for Map projection
 	m_TerrainModel[2]->Render(CAMERA_NORMAL, PROJECTION_MINIMAP, PASS_MINIMAP1, m_viewMatrix, m_projectionMatrix);
 
 	((DirectX::DXmodelClass*)m_TerrainModel[1])->shaderTypeParameter = 
-	((DirectX::DXmodelClass*)m_TerrainModel[2])->shaderTypeParameter = 0;
+	((DirectX::DXmodelClass*)m_TerrainModel[2])->shaderTypeParameter = 0; // Render in normal projection
 }
 
 DXcameraClass m_CameraMINIMAP; // DX Implementation

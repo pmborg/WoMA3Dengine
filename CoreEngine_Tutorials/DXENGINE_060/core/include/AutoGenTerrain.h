@@ -39,8 +39,6 @@
 		#define terrain_squares 256
 		#define MAP_CHUNK_SIZE 128
 
-//C:\WoMAengine2014\_WORD_HEIGHT_MAPS_\NASA\Topography\gebco_08_rev_elev_21600x10800.png
-
 #if defined SCENE_GENERATEDUNDERWATER
 #define terrain_squareSize						4.0f // Era 8...
 #define terrain_smoothsteps						40
@@ -76,29 +74,12 @@
 #endif
 
 enum MY_TERRAIN_TYPE
-{																																						    //RASTERTEK TUTORIAL
-	TERRAIN,//																																woma2013:ch10	Tutorial 1: Grid and Camera Movement
-	TERRAIN_LIGHT,//																														woma2013:ch12	Tutorial 4: Terrain Lighting
-	TERRAIN_COLOR,//																														woma2013:ch13	Tutorial 5: Color Mapped Terrain
-	TERRAIN_COLOR_MAP,//
-
-	//TERRAIN_WITH_HEIGHT,//																												woma2013:ch11	Tutorial 2: Bitmap Height Maps
-	//TERRAIN_COLOR_QUAD,//																													woma2013:ch14   
-	//TERRAIN_WATER_COLOR_QUAD,//                                                                                                           woma2013:ch28
-	//TERRAIN_COLOR_QUAD_MINI_MAP,//																										woma2013:ch15
-	//TERRAIN_COLOR_QUAD_FOG_MINI_MAP,//																									woma2013:ch16
-	//TERRAIN_COLOR_QUAD_FOG_SLOP_TEXTURE_MINI_MAP,//																						woma2013:ch17
-	//TERRAIN_COLOR_QUAD_FOG_SLOP_TEXTURE_Detail_Mapping_MINI_MAP,//																		woma2013:ch18
-	////_19
-	//TERRAIN_COLOR_QUAD_FOG_SLOP_TEXTURE_Detail_Mapping_TextureMapping_MINI_MAP,//															woma2013:ch19
-	//TERRAIN_COLOR_QUAD_FOG_SLOP_TEXTURE_Detail_Mapping_TextureMapping_AlphaMapping_MINI_MAP,//											woma2013:ch20
-	////_21
-	//TERRAIN_COLOR_QUAD_FOG_SLOP_TEXTURE_Detail_Mapping_BumpMapping_MINI_MAP,//															woma2013:ch21
-	//TERRAIN_COLOR_QUAD_FOG_SLOP_TEXTURE_Detail_Mapping_TextureMapping_AlphaMapping_BumpMapping_MINI_MAP,//								woma2013:ch22
-	//TERRAIN_COLOR_QUAD_FOG_SLOP_TEXTURE_Detail_Mapping_TextureMapping_AlphaMapping_BumpMapping_LighMapping_MINI_MAP,//					woma2013:ch23
-	TERRAIN_COLOR_QUAD_FOG_SLOP_TEXTURE_Detail_Mapping_TextureMapping_AlphaMapping_BumpMapping_LighMapping_TransparentTexture_MINI_MAP//	woma2013:ch24
-
-	//NOTE Update Also: #define N_MAX_TERRAINS TERRAIN_WATER_COLOR_QUAD + 1 // TERRAIN TYPES!
+{																																			
+    TERRAIN,
+    TERRAIN_LIGHT,
+    TERRAIN_COLOR,
+    TERRAIN_COLOR_MAP,
+    TERRAIN_COLOR_QUAD_FOG_SLOP_TEXTURE_Detail_Mapping_TextureMapping_AlphaMapping_BumpMapping_LighMapping_TransparentTexture_MINI_MAP
 };
 
 //VERTEX:
@@ -194,8 +175,6 @@ public:
 	void	CopyVertexArray(UINT id, ModelTextureVertexType* vertexList);
 #endif
 
-
-
 	void PopulateTerrainModelVertexVector(UINT id, float unit);
 
 	void SaveBMPHeightMapTerrain(CHAR* maps, UINT bmp_type = SAVE_BMP_HM);
@@ -216,8 +195,8 @@ public:
 	//vertex2
 #if DX_ENGINE_LEVEL >= 60 && defined USE_TERRAIN_TUTORIAL_CHAP_24
 	int m_indexCount = 0, m_vertexCount = 0;
-	HeightMapType_24 vertex2 = {};									// Use this "VERTEX" on macro
-	std::vector<HeightMapType_24> modelVertexVector2;				// Declare: the Vector with Vertex "TYPE"
+	HeightMapType_24 vertex2 = {};									                    // Use this "VERTEX" on macro
+	std::vector<HeightMapType_24> modelVertexVector2;				                    // Declare: the Vector with Vertex "TYPE"
 	std::vector<UINT> Terrain60indices;
 	std::vector<STRING> Terrain60Textures;
 #else
@@ -252,11 +231,11 @@ public:
 	bool		LoadColorMap(char* filename);
 	bool		CreateTerrain60(float xPos, float zPos);
 #endif
+
 	void		CreateTerrainModel(UINT id, std::vector<STRING> Textures, SHADER_TYPE shader_type);
 
 #if defined SCENE_TERRAIN_COLLISION
 	float	getTerrainHeight(UINT terrainId, float xPos, float zPos);
-	//bool	CheckHeightOfTriangle(float x, float z, float& height, float v0[3], float v1[3], float v2[3]);
 	bool	CheckHeightOfTrianglev2(float x, float z, float& height, float v0[3], float v1[3], float v2[3]);
 #endif
 

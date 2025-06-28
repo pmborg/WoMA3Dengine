@@ -327,8 +327,6 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 	m_Driver->TurnOffAlphaBlending();
 #endif
 
-    mesh_animations();
-
 #if defined USE_SKYSPHERE && defined USE_SUN && defined USE_MOON
 	if (RENDER_PAGE >= 28)				//30: SKY
 		Render_SKY_SUN_MOON(fadeLight); //34: SUN_MOON
@@ -404,6 +402,9 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 		    objModel[id]->Render(CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_TRANSPARENT);
     }
 #endif
+
+    m_Driver->TurnOffAlphaBlending();
+    mesh_animations();
 }
 
 //#############################################################################################################

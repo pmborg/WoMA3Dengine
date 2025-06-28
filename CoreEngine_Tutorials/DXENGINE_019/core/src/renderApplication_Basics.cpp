@@ -179,6 +179,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 
 	// Render TRANSPARENT Parts of 3D OBJs (like: glass window of (Space Compound), etc...) (last part)
 	// --------------------------------------------------------------------------------------------
+
 }
 
 #if DX_ENGINE_LEVEL >= 23 || defined USE_VIEW2D_SPRITES

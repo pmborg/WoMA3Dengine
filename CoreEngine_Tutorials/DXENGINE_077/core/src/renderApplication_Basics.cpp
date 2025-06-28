@@ -392,6 +392,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 		    objModel[id]->Render(CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_TRANSPARENT);
     }
 #endif
+
 }
 
 //#############################################################################################################

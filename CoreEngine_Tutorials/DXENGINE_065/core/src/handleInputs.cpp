@@ -247,9 +247,12 @@ bool ApplicationClass::ProcessUserKeyboardInput(double frameTime)
 		DXsystemHandle->m_player[g_NetID]->p_player.IsUpPressed = true;
 		//On water? make it slow...:
 		bool onWater = (m_NextPosition->m_positionY <= -0.25);
-		m_NextPosition->MoveForward(DXsystemHandle->m_player[g_NetID]->p_player.IsUpPressed, DXsystemHandle->m_player[g_NetID]->p_player.IsLeftCtrlPressed, DXsystemHandle->m_Input->mouseWheelUp(), onWater ? true : false);	//FRONT ARROW
-		m_NextPosition->MoveBackward(DXsystemHandle->m_player[g_NetID]->p_player.IsDownPressed, DXsystemHandle->m_player[g_NetID]->p_player.IsLeftCtrlPressed, DXsystemHandle->m_Input->mouseWheelDown(), onWater ? true : false);	//BACK ARROW
-	
+		m_NextPosition->MoveForward(DXsystemHandle->m_player[g_NetID]->p_player.IsUpPressed, DXsystemHandle->m_player[g_NetID]->p_player.IsLeftCtrlPressed, onWater ? true : false);	//FRONT ARROW
+		m_NextPosition->MoveBackward(DXsystemHandle->m_player[g_NetID]->p_player.IsDownPressed, DXsystemHandle->m_player[g_NetID]->p_player.IsLeftCtrlPressed, onWater ? true : false);	//BACK ARROW
+
+        m_NextPosition->StrafeLeft(DXsystemHandle->m_player[g_NetID]->p_player.IsStrafeLeftPressed, false, onWater ? true : false);	    //STRAFE LEFT
+        m_NextPosition->StrafeRight(DXsystemHandle->m_player[g_NetID]->p_player.IsStrafeRightPressed, false, onWater ? true : false);	//STRAFE RIGHT
+
 		m_NextPosition->LookUpward(DXsystemHandle->m_player[g_NetID]->p_player.IsPgUpPressed);		//PG UP
 		m_NextPosition->LookDownward(DXsystemHandle->m_player[g_NetID]->p_player.IsPgDownPressed);	//PG DOWN
 	}

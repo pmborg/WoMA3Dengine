@@ -245,6 +245,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 
 	// Render TRANSPARENT Parts of 3D OBJs (like: glass window of (Space Compound), etc...) (last part)
 	// --------------------------------------------------------------------------------------------
+
 }
 
 //#############################################################################################################
