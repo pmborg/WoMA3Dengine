@@ -551,7 +551,7 @@
     #define MAIN_CHAR_MODEL3 2
 #endif						 
 #if DX_ENGINE_LEVEL == 88
-    #define DEMO_TITLE TEXT("88: 3rd person camera: WASD + left (CTRL or SHIFT) to run")
+    #define DEMO_TITLE TEXT("88: 3rd person camera: (W A S D) + left (CTRL or SHIFT) to run + STRAFE (Q E)")
     #define WORLD_XML TEXT("world_88.xml")
 #endif
 #if DX_ENGINE_LEVEL >= 88

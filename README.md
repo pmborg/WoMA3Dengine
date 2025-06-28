@@ -54,7 +54,7 @@ Try to Change the driver on the fly without the need of close and open the Appli
 <hr>
 
 - <b>DX88: USE_3RD_PERSON_CAMERA</b><br>
-    3rd person camera: WASD + left (CTRL or SHIFT) to run:<br>
+    3rd person camera: (W A S D) + left (CTRL or SHIFT) to run + STRAFE (Q E):<br>
  
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_088.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_088.png)	
 
