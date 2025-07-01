@@ -146,6 +146,7 @@
     //#define LEVEL 86  // THE MAIN CHARACTER
     //#define LEVEL 87  // THE MAIN CHARACTER - The other sample variants
 	#define LEVEL 88    // USE_3RD_PERSON_CAMERA
+	#define LEVEL 89    // PBR SHADER
     
     #endif
 #endif

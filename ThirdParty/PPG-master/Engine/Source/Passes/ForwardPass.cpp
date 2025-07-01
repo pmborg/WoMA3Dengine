@@ -44,13 +44,6 @@ void ForwardPass::Render(Graphics& graphics, Scene& scene)
     }
 
     Animator* currentAnimator = nullptr;
-
-    //for (size_t it = 0; it < length; it++)
-    //{
-    //    animator->m_FinalTransforms[it];
-    //}
-    
-
 	for (size_t i = 0; i < scene.m_Node.size(); ++i)
 	{
 		auto sceneObj = scene.m_Node[i];
@@ -62,7 +55,7 @@ void ForwardPass::Render(Graphics& graphics, Scene& scene)
         Animator* animator = meshRenderer.m_Animator;
         if (animator != nullptr && animator->m_IsEnabled)
         {
-            //if (animator != currentAnimator)
+            if (animator != currentAnimator)
             {
                 graphics.UpdateBuffer(m_BoneBuffer, animator->m_FinalTransforms);
                 currentAnimator = animator;
@@ -70,16 +63,17 @@ void ForwardPass::Render(Graphics& graphics, Scene& scene)
         }
 
         PBRMaterial* mat = meshRenderer.m_Material;
-        graphics.UpdateBuffer(m_Buffer, &(mat->m_MaterialInfo));
+        graphics.UpdateBuffer(m_Buffer, &(mat->m_MaterialInfo));    //Load Textures:
+
         if (mat->m_Albedo)
             mat->m_Albedo->UseSRV(deviceContext, 0);
         if (mat->m_Normal)
             mat->m_Normal->UseSRV(deviceContext, 1);
+
         meshRenderer.m_Mesh->Draw(deviceContext);
     }
 
     graphics.UnbindShaderResourceView(0);
     graphics.UnbindShaderResourceView(1);
     graphics.UnbindShaderResourceView(4);
-    //  graphics.UnbindRenderTargetView();
 }

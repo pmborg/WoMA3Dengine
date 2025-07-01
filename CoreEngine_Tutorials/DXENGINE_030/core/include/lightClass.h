@@ -67,7 +67,7 @@ public:
 
 	//CH10
 	void SetAmbientColor(float, float, float, float);
-	void SetDiffuseColor(float, float, float, float);
+	void SetDiffuseLightColor(float, float, float, float);
 	void SetDirection(float, float, float);
 
 #if defined DX_ENGINE

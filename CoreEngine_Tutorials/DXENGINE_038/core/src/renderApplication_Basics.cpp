@@ -324,6 +324,14 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
     }
 #endif
 
+#if defined USE_TIMER_CLASS
+    // TIME Control: Show Debug Info
+    if (m_Driver->RenderfirstTime)
+    {
+        UINT64 passedTotalTime = (UINT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
+        TCHAR tmp[MAX_STR_LEN]; _stprintf(tmp, TEXT("PASSED TOTAL TIME TO LOAD: %ju ms\n"), passedTotalTime); OutputDebugString(tmp);
+    }
+#endif
 }
 
 //#############################################################################################################
@@ -519,13 +527,14 @@ float ApplicationClass::ProcessInputUpdate()
 #endif
 
 #if defined USE_TIMER_CLASS
+#if defined INTRO_DEMO
 	// TIME Control: Show Debug Info
 	UINT64 passedTotalTime = (UINT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
     if (m_Driver->RenderfirstTime)
     {
         TCHAR tmp[MAX_STR_LEN]; _stprintf(tmp, TEXT("PASSED TOTAL TIME TO LOAD: %ju ms\n"), passedTotalTime); OutputDebugString(tmp);
     }
-
+#endif
 #if defined INTRO_DEMO
 	// 5 INTRO DEBUG TEXT: Show time, etc..
 	if (RENDER_PAGE < 21) {
@@ -1250,7 +1259,7 @@ bool ApplicationClass::PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTO
 
 #endif
 
-#if LEVEL == 79 || LEVEL == 82 || LEVEL == 83 || LEVEL == 84 || LEVEL == 85
+#if LEVEL >= 79 && LEVEL <= 85
 Texture* LoadTextureFromPathFBX(UINT model_type, Graphics& graphics, LPCWSTR& texture)
 {
     return NULL;

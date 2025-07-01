@@ -42,7 +42,8 @@ private:
     static const UINT NUM_RENDER_TARGETS = 4;
     std::unique_ptr<Shader> shader;
 
-    ID3D11Buffer* m_Buffer = nullptr;
+    ID3D11Buffer* m_PBRMaterialBuffer = nullptr;
+    //ID3D11Buffer* m_LightBuffer = nullptr;
     ID3D11Buffer* m_BoneBuffer = nullptr;
     ID3D11RenderTargetView* m_RenderTargets[NUM_RENDER_TARGETS];
 };

@@ -54,18 +54,18 @@ struct VertexShaderInput
 struct VertexShaderOutput
 {
     float4 position : SV_POSITION;
-    //float4 pos : POSITION0;
-    //float4 wPosition : POSITION1;
     float3 normal : NORMAL;
-    float3 tangent : TANGENT;
-    float3 binormal : BINORMAL;
+    //float3 tangent : TANGENT;
+    //float3 binormal : BINORMAL;
     float2 texCoord : TEXCOORD0;
 #if defined PS_USE_SPECULAR
 	float3 viewDirection		: TEXCOORD1;			// 34 Specular
 	float4 cameraPosition		: WS;					// 34 Specular
+    float4 wPosition : POSITION1;
 #endif
+    //float4 pos : POSITION0;
+    float3x3 TBN : TBN_MATRIX;
 };
-
 
 VertexShaderOutput main(VertexShaderInput input)
 {
@@ -87,17 +87,14 @@ VertexShaderOutput main(VertexShaderInput input)
     }
 
     vp = mul(projection, view);
-    //OUT.wPosition = mul(model, float4(input.position, 1.0f));
     OUT.position = mul(vp, mul(model, float4(input.position, 1.0f)));
-    //OUT.pos = OUT.position;
     OUT.texCoord = input.texCoord;
 
     // assume a uniform scaling is observed
     // otherwise have have to multiply by transpose(inverse(model))
     // inverse should be calculated in the application (CPU)
     OUT.normal = normalize(input.normal);
-    OUT.tangent = normalize(input.tangent);
-    OUT.binormal = normalize(input.binormal);
+    OUT.TBN = float3x3(normalize(input.tangent), normalize(input.binormal), OUT.normal);
     
     float4 cameraPosition = mul(float4(input.position, 1), vp);
     
@@ -108,6 +105,7 @@ VertexShaderOutput main(VertexShaderInput input)
     //if (VShasSpecular)	// If enabled on material, calculate the Specular LIGHT
     {
         float4 worldPosition = mul(float4(input.position, 1), model); // P
+        OUT.wPosition = worldPosition;
         OUT.viewDirection = normalize(cameraPosition.xyz - worldPosition.xyz); // L = Lp - p (L = lightDirection)
     }
 #endif

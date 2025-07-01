@@ -261,7 +261,7 @@ public:
 	void AppRender(UINT monitorWindow,  float fadeLight);								// RENDER - 3D
 	bool Initialize(WomaDriverClass* Driver);
 #endif
-    void mesh_animations(void);
+    void RenderMeshAnimations(void);
 	void AppPosRender(UINT monitorWindow);																// POS-RENDER - 2D: Render 
 
 	void RenderModel(UINT monitorWindow, WomaDriverClass* driver, UINT modelID, UINT pass, XMMATRIX* m_viewMatrix=NULL, XMMATRIX* m_projectionMatrix = NULL);

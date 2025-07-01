@@ -302,7 +302,7 @@ void LinuxSystemClass::ProcessFrame() // EQUAL to: WinSystemClass::ProcessFrame(
 	if ((WOMA::game_state >= GAME_RUN && WOMA::game_state < ENGINE_RESTART) || (WOMA::game_state == GAME_SETUP))
 	#endif
 	{
-		m_Application->dayLightFade = m_Application->Update(); //OS CORE ONLY!  F1, F2, ...
+		m_Application->dayLightFade = m_Application->ProcessInputUpdate();     //OS CORE ONLY!  F1, F2, ...
 
 	#if defined INTRO_DEMO
 		if (RENDER_PAGE < 15)

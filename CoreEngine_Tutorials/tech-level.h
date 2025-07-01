@@ -532,12 +532,15 @@
       #endif
     #endif
 	
-#if DX_ENGINE_LEVEL >= 88
-    #define USE_3RD_PERSON_CAMERA
-#endif
-	
-	
-	
+	#if DX_ENGINE_LEVEL >= 88
+		#define USE_3RD_PERSON_CAMERA
+	#endif
+		
+	#if DX_ENGINE_LEVEL >= 89
+		#undef  USE_IDEA_PACK
+		#define USE_CYPHER_PACK
+	#endif
+		
     //-------------------------------------------------
     //#define SIMPLE
 	

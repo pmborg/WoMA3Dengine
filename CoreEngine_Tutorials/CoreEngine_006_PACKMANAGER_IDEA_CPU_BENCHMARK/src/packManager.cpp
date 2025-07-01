@@ -169,7 +169,12 @@ bool InitPackLib(char* packfilename)				// Need to be CHAR!
 	strcat(File_Pak, packfilename);					// Need to be CHAR!
 
 	// Uncode Pack: Make sure that you RUN LEVEL 16 First!
+#ifdef  USE_IDEA_PACK
 	int res = EncodeIDEA(File_Pak, DECODE);			// engine.pck (encoded) --> engine.pack (decoded)
+#endif
+#if defined USE_CYPHER_PACK
+    int res = EncodeIDEA90(File_Pak, DECODE);			// engine.pck (encoded) --> engine.pack (decoded)
+#endif
 
 	char *File_Pack = strrchr(File_Pak, '.');		// Need to be CHAR!
 	if (File_Pack) {
@@ -330,4 +335,8 @@ void PackDir(STRING dir, STRING packName)
 }
 #endif
 
+#endif
+
+#if defined USE_CYPHER_PACK
+int EncodeIDEA(char* filename, int whatTOdo) { return 0; }
 #endif

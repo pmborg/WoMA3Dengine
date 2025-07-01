@@ -99,9 +99,9 @@ ModelLoader::ModelLoader(const aiScene* assimpScene, Scene& scene, Graphics& gra
 SceneModel* ModelLoader::LoadModel(UINT this_level, UINT type)
 {
     // Create Mesh:
-    ProcessMeshes(this_level, type); //Vetices + Indices + Normals...(Binormals and Tangents) + Materials + Bones
+    ProcessMeshes(this_level, type); //Vetices + Indices + (Normals+Binormals+Tangents) + Materials + Bones
 
-    // Create Skeleton:
+    // Create Skeleton Structure:
     if (m_HasBones)
     {
 		m_Model->m_Skeleton = m_SkeletonLoader.GenerateSkeleton(pAssimpScene->mRootNode);
@@ -110,7 +110,7 @@ SceneModel* ModelLoader::LoadModel(UINT this_level, UINT type)
 		m_Animator->m_Skeleton = m_Model->m_Skeleton;
     }
     
-    // For each sub-mesh create: SceneObject (Matrix structure)
+    // For each sub-mesh create: SceneObject (Create Bones Matrix structure)
     GenerateSceneObjectHierarchy(pAssimpScene->mRootNode, true, m_Model->m_SceneObject->m_Index);
 
     // Return Model ready to: Update & Render
@@ -419,64 +419,93 @@ PBRMaterial* ModelLoader::GenerateMaterial(UINT this_level, UINT modeltype, aiMe
     {
         aiMaterial* mat = pAssimpScene->mMaterials[mesh->mMaterialIndex];
 
-        Texture* normal = loadTexture(this_level, modeltype, mat, aiTextureType_NORMALS);
-        Texture* bump = loadTexture(this_level, modeltype, mat, aiTextureType_HEIGHT);
-        if (normal) material->UseNormalMap(normal);
-        else if (bump) material->UseBumpMap(bump);
+        // 0: Albedo/BaseColor
+        Texture* albedo = nullptr;
+        if (m_LoadType == LoadType::GLTF) {
+            albedo = loadTexture(this_level, modeltype, mat, AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_BASE_COLOR_TEXTURE);
+        }
+        else {
+            albedo = loadTexture(this_level, modeltype, mat, aiTextureType_DIFFUSE);
+        }
+        if (albedo) material->UseAlbedoMap(albedo);
 
+        // 1: Normal
+        Texture* normal = loadTexture(this_level, modeltype, mat, aiTextureType_NORMALS);
+        if (normal) material->UseNormalMap(normal);
+
+        // 2: Bump
+        Texture* bump = loadTexture(this_level, modeltype, mat, aiTextureType_HEIGHT);
+        if (bump) material->UseBumpMap(bump);
+
+        // 3: Ambient Occlusion
         Texture* ao = loadTexture(this_level, modeltype, mat, aiTextureType_LIGHTMAP);
         if (ao) material->UseAoMap(ao);
 
+        // 4: Emissive
         Texture* emissive = loadTexture(this_level, modeltype, mat, aiTextureType_EMISSIVE);
         if (emissive) material->UseEmissiveMap(emissive);
+#if _NOT_YET
+        // Specular (classic)
+        Texture* specular = loadTexture(this_level, modeltype, mat, aiTextureType_SPECULAR);
+        if (specular) material->UseSpecularMap(specular);
+#endif
+        // 5: Opacity/Alpha
+        Texture* opacity = loadTexture(this_level, modeltype, mat, aiTextureType_OPACITY);
+        if (opacity) material->UseAlphaMap(opacity);
 
+        //6: Metallic
+        Texture* metallic = loadTexture(this_level, modeltype, mat, aiTextureType_METALNESS);
+        if (metallic) material->UseMetallicMap(metallic);
+
+        //7: Roughness
+        Texture* roughness = loadTexture(this_level, modeltype, mat, aiTextureType_DIFFUSE_ROUGHNESS);
+        if (roughness) material->UseRoughnessMap(roughness);
+
+        // Metallic-Roughness (GLTF)
         if (m_LoadType == LoadType::GLTF)
         {
             material->ConvertToLinear(true);
-            Texture* albedo = loadTexture(this_level, modeltype, mat, AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_BASE_COLOR_TEXTURE);
-            if (albedo) material->UseAlbedoMap(albedo);
-
+        
             Texture* occlusionMetalRough = loadTexture(this_level, modeltype, mat, AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_METALLICROUGHNESS_TEXTURE);
             if (occlusionMetalRough) material->UseOccRoughMetal(occlusionMetalRough);
-
-            float metallic;
+        
+            float metallic = 1.0f, roughness = 1.0f;
             if (mat->Get(AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_METALLIC_FACTOR, metallic) == AI_SUCCESS)
-            {
                 material->SetMetallic(metallic);
-            }
-            float roughness;
             if (mat->Get(AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_ROUGHNESS_FACTOR, roughness) == AI_SUCCESS)
-            {
                 material->SetRoughness(roughness);
-            }
+        
+            // Handle GLTF extensions here (clearcoat, sheen, transmission, etc.)
         }
         else
         {
-            Texture* albedo = loadTexture(this_level, modeltype, mat, aiTextureType_DIFFUSE);
-            if (albedo) material->UseAlbedoMap(albedo);
-
+            // Classic workflow: set color, roughness, metallic, etc.
             aiColor3D colour;
-            aiReturn res = mat->Get(AI_MATKEY_COLOR_DIFFUSE, colour);
-            if (res == aiReturn_SUCCESS)
+            if (mat->Get(AI_MATKEY_COLOR_DIFFUSE, colour) == aiReturn_SUCCESS)
                 material->SetAlbedo(colour[0], colour[1], colour[2]);
 
-            material->SetRoughness(0.9f);
-            material->SetMetallic(0.0f);
+            //material->SetRoughness(0.9f);
+            //material->SetMetallic(0.0f);
 
-            float shininess;
-            res = mat->Get(AI_MATKEY_SHININESS, shininess);
-            if (res == aiReturn_SUCCESS)
-            {
-                // convert shininess to roughness
-                float roughness = sqrt(2.0f / (shininess + 2.0f));
-                material->SetRoughness(roughness);
-            }
+            //float shininess;
+            //if (mat->Get(AI_MATKEY_SHININESS, shininess) == aiReturn_SUCCESS)
+            //    material->SetRoughness(sqrt(2.0f / (shininess + 2.0f)));
         }
+
+        // 8: Emissive color
+        aiColor3D emissiveColor;
+        if (mat->Get(AI_MATKEY_COLOR_EMISSIVE, emissiveColor) == aiReturn_SUCCESS)
+            material->SetEmissive(emissiveColor[0], emissiveColor[1], emissiveColor[2]);
+#if _NOT_YET
+        // Double-sided
+        int doubleSided = 0;
+        if (mat->Get("$mat.twosided", 0, 0, doubleSided) == aiReturn_SUCCESS && doubleSided)
+            material->SetDoubleSided(true);
+#endif
     }
     else
     {
-        material
-            ->SetAlbedo(1, 0, 1);
+        material->SetAlbedo(1, 0, 1);
     }
     m_Model->m_Materials.push_back(material);
     return material;
@@ -486,17 +515,21 @@ Texture* ModelLoader::loadTexture(UINT this_level, UINT modeltype, aiMaterial* m
 {
     bool hasTex = mat->GetTextureCount(type) > 0;
     Texture* texture = nullptr;
+    aiString str;
     if (hasTex)
     {
-        aiString str;
         mat->GetTexture(type, index, &str);
         std::string textureName = str.C_Str();
-
         textureName = textureName.substr(textureName.find_last_of("/\\") + 1);
         textureName = m_Directory + textureName;
 
+        // Normalize to lowercase and forward slashes
+        std::transform(textureName.begin(), textureName.end(), textureName.begin(), ::tolower);
+        std::replace(textureName.begin(), textureName.end(), '\\', '/');
+
         std::wstring stemp = std::wstring(textureName.begin(), textureName.end());
         LPCWSTR path = stemp.c_str();
+
         auto it = m_TextureMap.find(textureName);
         if (it != m_TextureMap.end())
         {
@@ -507,6 +540,155 @@ Texture* ModelLoader::loadTexture(UINT this_level, UINT modeltype, aiMaterial* m
             texture = Texture::LoadTextureFromPath(this_level, modeltype, m_Graphics, path);
             m_TextureMap.emplace(textureName, texture);
             m_Model->m_Textures.push_back(texture);
+        }
+    }
+    else {
+        if (this_level >= 89) 
+        {
+            switch (modeltype)
+            {
+            case 1:
+                {
+                    mat->GetTexture(aiTextureType_DIFFUSE, index, &str);
+                    std::string albedo = str.C_Str();
+
+                    std::string texFile;
+                    if (_stricmp(albedo.c_str(), "Skin_1_Armor_and_Weapon_Albedo.png") == 0)
+                    {
+                        switch (type)
+                        {
+                        case aiTextureType_NORMALS:   // Normal
+                            texFile = "Skin_1_Armor_and_Weapon_Normal.png";
+                            break;
+                        case aiTextureType_HEIGHT:    // Bump
+                            texFile = "Skin_1_Armor_and_Weapon_Height.png";
+                            break;
+                        case aiTextureType_LIGHTMAP:  // Ambient Occlusion
+                            texFile = "Skin_1_Armor_and_Weapon_AO.png";
+                            break;
+                        case aiTextureType_EMISSIVE:  // Emissive
+                            return nullptr;
+                        case aiTextureType_METALNESS: // Metallic
+                            texFile = "Skin_1_Armor_and_Weapon_Metallic.png";
+                            break;
+                        case aiTextureType_DIFFUSE_ROUGHNESS: // Roughness
+                            texFile = "Skin_1_Armor_and_Weapon_Roughness.png";
+                            break;
+                        case aiTextureType_OPACITY:   // Opacity/Alpha
+                            texFile = "Skin_1_Armor_and_Weapon_Alpha.png";
+                            break;
+                        default:
+                            return nullptr;
+                        }
+                    }
+                    else if (_stricmp(albedo.c_str(), "Skin_1_Body_Albedo.png") == 0)
+                    {
+                        switch (type)
+                        {
+                        case aiTextureType_NORMALS:   // Normal
+                            texFile = "Skin_1_Body_Normal.png";
+                            break;
+                        case aiTextureType_HEIGHT:    // Bump
+                            texFile = "Skin_1_Body_Height.png";
+                            break;
+                        case aiTextureType_LIGHTMAP:  // Ambient Occlusion
+                            texFile = "Skin_1_Body_Mixed_AO.png";
+                            break;
+                        case aiTextureType_EMISSIVE:  // Emissive
+                            return nullptr;
+                        case aiTextureType_OPACITY:   // Opacity/Alpha
+                            return nullptr;
+                        case aiTextureType_METALNESS: // Metallic
+                            texFile = "Skin_1_Body_Metallic.png";
+                            break;
+                        case aiTextureType_DIFFUSE_ROUGHNESS: // Roughness
+                            texFile = "Skin_1_Body_Roughness.png";
+                            break;
+                        default:
+                            return nullptr;
+                        }
+                    }
+                    else if (_stricmp(albedo.c_str(), "Skin_1_Hair_Albedo.png") == 0)
+                    {
+                        switch (type)
+                        {
+                        case aiTextureType_NORMALS:   // Normal
+                            texFile = "Skin_1_Hair_normal.png";
+                            break;
+                        case aiTextureType_HEIGHT:    // Bump
+                            texFile = "Skin_1_Hair_Height.png";
+                            break;
+                        case aiTextureType_LIGHTMAP:  // Ambient Occlusion
+                            return nullptr;
+                        case aiTextureType_EMISSIVE:  // Emissive
+                            return nullptr;
+                        case aiTextureType_OPACITY:   // Opacity/Alpha
+                            texFile = "Skin_1_Hair_Alpha.png";
+                            break;
+                        case aiTextureType_METALNESS: // Metallic
+                            texFile = "Skin_1_Hair_Metallic.png";
+                            break;
+                        case aiTextureType_DIFFUSE_ROUGHNESS: // Roughness
+                            texFile = "Skin_1_Hair_Roughness.png";
+                            break;
+                        default:
+                            return nullptr;
+                        }
+                    }
+                    else if (_stricmp(albedo.c_str(), "Skin_1_Head_Albedo.png") == 0)
+                    {
+                        switch (type)
+                        {
+                        case aiTextureType_NORMALS:   // Normal
+                            texFile = "Skin_1_Head2_Normal.png";
+                            break;
+                        case aiTextureType_HEIGHT:    // Bump
+                            texFile = "Skin_1_Head_Height.png";
+                            break;
+                        case aiTextureType_LIGHTMAP:  // Ambient Occlusion
+                            texFile = "Skin_1_Head_ao.png";
+                            break;
+                        case aiTextureType_EMISSIVE:  // Emissive
+                            return nullptr;
+                        case aiTextureType_OPACITY:   // Opacity/Alpha
+                            texFile = "Skin_1_Head_Alpha.png";
+                            break;
+                        case aiTextureType_METALNESS: // Metallic
+                            texFile = "Skin_1_Head_Metallic.png";
+                            break;
+                        case aiTextureType_DIFFUSE_ROUGHNESS: // Roughness
+                            texFile = "Skin_1_Head_Roughness.png";
+                            break;
+                        default:
+                            return nullptr;
+                        }
+                    }
+
+                    // After the switch/case blocks for each albedo
+                    if (texFile.empty())
+                        return nullptr;
+
+                    // Compose the full path
+                    std::string textureName = m_Directory + texFile;
+                    std::transform(textureName.begin(), textureName.end(), textureName.begin(), ::tolower);
+                    std::replace(textureName.begin(), textureName.end(), '\\', '/');
+
+                    // Check cache
+                    auto it = m_TextureMap.find(textureName);
+                    if (it != m_TextureMap.end()) {
+                        return it->second;
+                    }
+
+                    // Load and cache
+                    std::wstring stemp = std::wstring(textureName.begin(), textureName.end());
+                    LPCWSTR path = stemp.c_str();
+                    texture = Texture::LoadTextureFromPath(this_level, modeltype, m_Graphics, path);
+                    if (texture) {
+                        m_TextureMap.emplace(textureName, texture);
+                        m_Model->m_Textures.push_back(texture);
+                    }
+                }
+            }
         }
     }
     return texture;

@@ -84,7 +84,7 @@ void Scene::UseModel(Graphics& graphics)
     deviceContext->VSSetConstantBuffers(0, 1, &m_ModelBuffer);
 }
 
-void Scene::UpdateModel(Graphics& graphics, const XMMATRIX& model)
+void Scene::UpdateWorldMatrixModel(Graphics& graphics, const XMMATRIX& model)
 {
     graphics.UpdateBuffer(m_ModelBuffer, &model);
 }

@@ -84,9 +84,7 @@ Texture* Texture::CreateTextureCube(Graphics& graphics, int size, const std::str
     return new Texture(texturePtr, name);
 }
 
-#if LEVEL >= 86
 extern Texture* LoadTextureFromPathFBX(UINT model_type, Graphics& graphics, LPCWSTR& texture);
-#endif
 
 void ReplaceTextureVersionW(std::wstring& path, const std::wstring& from, const std::wstring& to) {
     size_t pos = path.find(from);

@@ -21,7 +21,7 @@
 #include "PBRMaterial.h"
 #include "Resources/Texture.h"
 
-PBRMaterial::PBRMaterial(PBRMaterial&& PhongMaterial)
+PBRMaterial::PBRMaterial(PBRMaterial&& PhongMaterial)// noexcept
 {
     m_Albedo = PhongMaterial.m_Albedo;
     m_Normal = PhongMaterial.m_Normal;
@@ -52,21 +52,21 @@ PBRMaterial& PBRMaterial::SetRoughness(float n)
 PBRMaterial& PBRMaterial::UseAlbedoMap(Texture* albedo)
 {
     m_Albedo = albedo;
-    m_MaterialInfo.m_UseAlbedo = 1;
+    m_MaterialInfo.m_UseAlbedoMap = 1;
     return *this;
 }
 
 PBRMaterial& PBRMaterial::UseNormalMap(Texture* normal)
 {
     m_Normal = normal;
-    m_MaterialInfo.m_NormalState = 1;
+    m_MaterialInfo.m_NormalState += 1;
     return *this;
 }
 
 PBRMaterial& PBRMaterial::UseBumpMap(Texture* bump)
 {
-    m_Normal = bump;
-    m_MaterialInfo.m_NormalState = 2;
+    m_Bump = bump;
+    m_MaterialInfo.m_NormalState += 2;
     return *this;
 }
 
@@ -87,12 +87,46 @@ PBRMaterial& PBRMaterial::UseAoMap(Texture* aoMap)
 PBRMaterial& PBRMaterial::UseEmissiveMap(Texture* emissive)
 {
     m_Emissive = emissive;
-    m_MaterialInfo.m_UseEmissive = 1;
+    m_MaterialInfo.m_UseEmissiveMap = 1;
     return *this;
 }
 
 PBRMaterial& PBRMaterial::ConvertToLinear(bool convertToLinear)
 {
     m_MaterialInfo.m_ConvertToLinear = convertToLinear;
+    return *this;
+}
+
+// Set the emissive color (RGB)
+PBRMaterial& PBRMaterial::SetEmissive(float r, float g, float b)
+{
+    m_MaterialInfo.m_UseEmissiveColor = 1;
+    // Store emissive color in the alpha channel of m_Albedo or add a new member if needed
+    m_EmissiveColor = XMFLOAT3(r, g, b);
+    return *this;
+}
+
+
+// Add this method:
+PBRMaterial& PBRMaterial::UseAlphaMap(Texture* alpha)
+{
+    m_AlphaMap = alpha;
+    m_MaterialInfo.m_UseAlphaMap = (alpha != nullptr) ? 1 : 0;
+    return *this;
+}
+
+// Add this method:
+PBRMaterial& PBRMaterial::UseMetallicMap(Texture* metallic)
+{
+    m_Metallic = metallic;
+    m_MaterialInfo.m_UseMetallicMap = (metallic != nullptr) ? 1 : 0;
+    return *this;
+}
+
+// Add this method:
+PBRMaterial& PBRMaterial::UseRoughnessMap(Texture* roughness)
+{
+    m_Roughness = roughness;
+    m_MaterialInfo.m_UseRoughnessMap = (roughness != nullptr) ? 1 : 0;
     return *this;
 }

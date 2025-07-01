@@ -211,7 +211,7 @@ void AndroidSystemClass::ProcessFrame()
 
 #if CORE_ENGINE_LEVEL >= 10
 	{
-		m_Application->dayLightFade = m_Application->Update();					//OS CORE ONLY!  F1, F2, ...
+		m_Application->dayLightFade = m_Application->ProcessInputUpdate();					//OS CORE ONLY!  F1, F2, ...
 
 		#if defined INTRO_DEMO
 		if (RENDER_PAGE < 15) 

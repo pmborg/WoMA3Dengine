@@ -91,7 +91,7 @@ void InitMeshDemo(ApplicationClass* app, MeshApplication* demoapp, MyDemo* demo)
     womamesh3.scene.Start(demoapp->m_Graphics);
     womamesh4[MAIN_CHAR_MODEL1].scene.Start(demoapp->m_Graphics);
 }
-void LoadingMesh(UINT this_level, ApplicationClass* app, MeshApplication* demoapp, MyDemo* demo)
+void LoadAllMeshModels(UINT this_level, ApplicationClass* app, MeshApplication* demoapp, MyDemo* demo)
 {
 #if DX_ENGINE_LEVEL >= 79 && defined USE_MODEL1
     womamesh1.assimpSceneModel = SceneModel::LoadModelToScene(DX_ENGINE_LEVEL, true, 0, WOMA::LoadFile((TCHAR*)ASSIMP_MODEL_BOBLAMPCLEAN), "", womamesh1.scene, demoapp->m_Graphics);
@@ -135,7 +135,7 @@ void LoadingMesh(UINT this_level, ApplicationClass* app, MeshApplication* demoap
     log("STARTING...");
 #endif
 }
-void UpdateMesh(MeshApplication* demoapp, MyDemo* demo, float deltaTime)
+void UpdateAllMeshAnimations(MeshApplication* demoapp, MyDemo* demo, float deltaTime)
 {
     //Update animation/bone matrix's and RENDER all MESHs:
 #if DX_ENGINE_LEVEL >= 79 && defined USE_MODEL1
@@ -151,7 +151,7 @@ void UpdateMesh(MeshApplication* demoapp, MyDemo* demo, float deltaTime)
     demo->animJob.UpdateTimeElapsed(womamesh4[MAIN_CHAR_MODEL1].scene, deltaTime);
 #endif
 }
-void RenderMesh(MeshApplication* demoapp, MyDemo* demo)
+void RenderAllMeshModels(MeshApplication* demoapp, MyDemo* demo)
 {
     demoapp->m_Graphics.m_DeviceContext->RSSetState(demoapp->m_Graphics.m_RasterizerState);
         // Model 1 ------------------------------------------------------------------------------------------
@@ -174,7 +174,7 @@ void RenderMesh(MeshApplication* demoapp, MyDemo* demo)
         world.r[3].m128_f32[2] = Z; //_43: Z
         world.r[3].m128_f32[1] = mainTerrain->getTerrainHeight(TERRAIN_ID, world.r[3].m128_f32[0], world.r[3].m128_f32[2]);
 
-        womamesh1.scene.UpdateModel(demoapp->m_Graphics, world);
+        womamesh1.scene.UpdateWorldMatrixModel(demoapp->m_Graphics, world);
     }
     demo->gBufferPass->Render(demoapp->m_Graphics, womamesh1.scene);
 #endif
@@ -200,7 +200,7 @@ void RenderMesh(MeshApplication* demoapp, MyDemo* demo)
         world.r[3].m128_f32[1] = SystemHandle->m_Application->m_characterPos->m_positionY;  //_42: Y 
         world.r[3].m128_f32[2] = SystemHandle->m_Application->m_characterPos->m_positionZ;  //_43: Z
 
-        womamesh2.scene.UpdateModel(demoapp->m_Graphics, world);
+        womamesh2.scene.UpdateWorldMatrixModel(demoapp->m_Graphics, world);
     }
     demo->gBufferPass->Render(demoapp->m_Graphics, womamesh2.scene);
 #endif
@@ -222,7 +222,7 @@ void RenderMesh(MeshApplication* demoapp, MyDemo* demo)
         world.r[3].m128_f32[2] = Z; //_43: Z
         world.r[3].m128_f32[1] = mainTerrain->getTerrainHeight(TERRAIN_ID, world.r[3].m128_f32[0], world.r[3].m128_f32[2]);
 
-        womamesh3.scene.UpdateModel(demoapp->m_Graphics, world);
+        womamesh3.scene.UpdateWorldMatrixModel(demoapp->m_Graphics, world);
     }
     gBufferPass->Render(demoapp->m_Graphics, womamesh3.scene);
 #endif
@@ -241,13 +241,13 @@ void RenderMesh(MeshApplication* demoapp, MyDemo* demo)
         world.r[3].m128_f32[2] = Z; //_43: Z
         world.r[3].m128_f32[1] = mainTerrain->getTerrainHeight(TERRAIN_ID, world.r[3].m128_f32[0], world.r[3].m128_f32[2]);
 
-        womamesh4[MAIN_CHAR_MODEL1].scene.UpdateModel(demoapp->m_Graphics, world);
+        womamesh4[MAIN_CHAR_MODEL1].scene.UpdateWorldMatrixModel(demoapp->m_Graphics, world);
     }
     demo->gBufferPass->Render(demoapp->m_Graphics, womamesh4[MAIN_CHAR_MODEL1].scene);
 #endif
 }
 
-void ApplicationClass::mesh_animations()
+void ApplicationClass::RenderMeshAnimations()
 {
     static MeshApplication demoapp;
     static MyDemo demo;
@@ -258,7 +258,7 @@ void ApplicationClass::mesh_animations()
         // INIT: Model 1,2,3,4...
         demo.Start(demoapp.m_Graphics);
         InitMeshDemo(this, &demoapp, &demo);
-        LoadingMesh(DX_ENGINE_LEVEL, this, &demoapp, &demo);
+        LoadAllMeshModels(DX_ENGINE_LEVEL, this, &demoapp, &demo);
     }
 
     static UINT filmeIdx = 0; // 1st line of filme file
@@ -297,8 +297,8 @@ void ApplicationClass::mesh_animations()
     }
 #endif
 
-    UpdateMesh(&demoapp, &demo, deltaTime);
-    RenderMesh(&demoapp, &demo);
+    UpdateAllMeshAnimations(&demoapp, &demo, deltaTime);
+    RenderAllMeshModels(&demoapp, &demo);
 #endif
 }
 

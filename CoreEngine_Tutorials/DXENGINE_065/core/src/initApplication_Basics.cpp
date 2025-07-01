@@ -584,7 +584,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	m_Light = NEW LightClass;	// Create the light object
 	IF_NOT_THROW_EXCEPTION(m_Light);
 	m_Light->SetAmbientColor(0.55f, 0.55f, 0.55f, 1);	//later in world.xml
-	m_Light->SetDiffuseColor(1, 1, 1, 1.0f);			//later in world.xml
+	m_Light->SetDiffuseLightColor(1, 1, 1, 1.0f);			//later in world.xml
 #if defined USE_REAL_SUNLIGHT_DIRECTION
 	m_Light->SetDirection(SunX / 1000, SunY / 1000, SunZ / 1000);
 #else

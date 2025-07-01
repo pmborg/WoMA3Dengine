@@ -43,7 +43,7 @@ void LightClass::SetAmbientColor(float red, float green, float blue, float alpha
 #endif
 }
 
-void LightClass::SetDiffuseColor(float red, float green, float blue, float alpha)
+void LightClass::SetDiffuseLightColor(float red, float green, float blue, float alpha)
 {
 #if defined DX_ENGINE
 	m_diffuseColor = XMFLOAT4(red, green, blue, alpha);

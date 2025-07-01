@@ -36,7 +36,7 @@
 #define N_GRASS 2500
 #define N_BUSH  0
 
-#if defined SIMPLE
+#if defined false //SIMPLE
 #define N_BILLBOARD 1
 #define N_FENCES 55
 #define N_FIRE 1

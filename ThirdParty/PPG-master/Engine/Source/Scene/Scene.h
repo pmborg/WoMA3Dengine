@@ -40,7 +40,7 @@ public:
     void Start(Graphics& graphics);
     void Update(Graphics& graphics,float deltaTime);
     void UseModel(Graphics& graphics);
-    void UpdateModel(Graphics& graphics, const XMMATRIX& model);
+    void UpdateWorldMatrixModel(Graphics& graphics, const XMMATRIX& model);
     void UseCamera(Graphics& graphics, Camera& camera);
 private:
     void UpdateModelRecursive(SceneObject::Index objIdx, XMMATRIX model);

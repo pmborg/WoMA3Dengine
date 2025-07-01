@@ -40,21 +40,18 @@ GBufferPass::GBufferPass(Graphics& graphics, Texture& diffuse, Texture& metalRou
     shader = std::make_unique<Shader>(	L"C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\VertexShader.cso", 
 										L"C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\GBuffer.ps.cso", graphics);
 
-
-
-    //m_Buffer = graphics.CreateBuffer(sizeof(PBRMaterialInfo), D3D11_BIND_CONSTANT_BUFFER, nullptr);
-    m_Buffer = graphics.CreateBuffer(sizeof(LigthInfo), D3D11_BIND_CONSTANT_BUFFER, nullptr);
+    m_PBRMaterialBuffer = graphics.CreateBuffer(sizeof(PBRMaterialInfo), D3D11_BIND_CONSTANT_BUFFER, nullptr);
     m_BoneBuffer = graphics.CreateBuffer(sizeof(XMMATRIX) * Skeleton::NUM_BONES, D3D11_BIND_CONSTANT_BUFFER, nullptr);
 
     m_RenderTargets[0] = m_Diffuse.GetRTV();
-    m_RenderTargets[1] = m_MetalRough.GetRTV();
-    m_RenderTargets[2] = m_Normals.GetRTV();
-    m_RenderTargets[3] = m_Emissive.GetRTV();
+    //m_RenderTargets[1] = m_MetalRough.GetRTV();
+    //m_RenderTargets[2] = m_Normals.GetRTV();
+    //m_RenderTargets[3] = m_Emissive.GetRTV();
 }
 
 GBufferPass::~GBufferPass()
 {
-    SAFE_RELEASE(m_Buffer);
+    SAFE_RELEASE(m_PBRMaterialBuffer);
     SAFE_RELEASE(m_BoneBuffer);
 }
 
@@ -65,12 +62,12 @@ void GBufferPass::Render(Graphics& graphics, Scene& scene)
 
     shader->Use(deviceContext);
 
-    scene.UseModel(graphics);                                 // 0   VERTEX Buffer: World
-    scene.UseCamera(graphics, scene.m_MainCamera);            // 1,2 VERTEX Buffer: VIEW: & PROJ
-    deviceContext->VSSetConstantBuffers(3, 1, &m_BoneBuffer); // 3   VERTEX Buffer: Bones
+    scene.UseModel(graphics);                                    // 0   VERTEX Buffer: World
+    scene.UseCamera(graphics, scene.m_MainCamera);               // 1,2 VERTEX Buffer: VIEW: & PROJ
+    deviceContext->VSSetConstantBuffers(3, 1, &m_BoneBuffer);    // 3   VERTEX Buffer: Bones
 
-    deviceContext->PSSetConstantBuffers(0, 1, &m_Buffer);   // 0 Pixel Buffer: 
-    scene.lightManager.Use(deviceContext, 1);               // 1 Pixel Buffer: Light
+    deviceContext->PSSetConstantBuffers(0, 1, &m_PBRMaterialBuffer);   // 0 Pixel Buffer: 
+    scene.lightManager.Use(deviceContext, 1);     //need!?               
 
     Animator* currentAnimator = nullptr;
 
@@ -81,7 +78,7 @@ void GBufferPass::Render(Graphics& graphics, Scene& scene)
 
         MeshRenderer& meshRenderer = sceneObj->m_MeshRenderer;
         Animator* animator = meshRenderer.m_Animator;
-        if (animator != nullptr && animator->m_IsEnabled /* && (i == 10)*/)
+        if (animator != nullptr && animator->m_IsEnabled)
         {
             if (animator != currentAnimator)
             {
@@ -96,10 +93,44 @@ void GBufferPass::Render(Graphics& graphics, Scene& scene)
         }
         
         PBRMaterial* mat = meshRenderer.m_Material;
-        graphics.UpdateBuffer(m_Buffer, &SystemHandle->m_Application->m_Light->m_lightDirection);
+        mat->m_MaterialInfo.m_LightDirection = SystemHandle->m_Application->m_Light->m_lightDirection;
+        mat->m_MaterialInfo.m_LightPos.x = SystemHandle->m_Application->MyLightVertexVector[1].x;
+        mat->m_MaterialInfo.m_LightPos.y = SystemHandle->m_Application->MyLightVertexVector[1].y;
+        mat->m_MaterialInfo.m_LightPos.z = SystemHandle->m_Application->MyLightVertexVector[1].z;
 
+        mat->m_MaterialInfo.ambientColor = SystemHandle->m_Application->m_Light->m_ambientColor;
+        mat->m_MaterialInfo.lightColor = SystemHandle->m_Application->m_Light->m_diffuseColor;
+
+        graphics.UpdateBuffer(m_PBRMaterialBuffer, &(mat->m_MaterialInfo));
+
+        // 0:
         if (mat->m_Albedo)
             mat->m_Albedo->UseSRV(deviceContext, 0);
+        // 1:
+        if (mat->m_Normal)
+            mat->m_Normal->UseSRV(deviceContext, 1);
+        // 2: future: GLTF Format
+        if (mat->m_OccRoughMetal)
+            mat->m_OccRoughMetal->UseSRV(deviceContext, 2);
+        // 3: 
+        if (mat->m_AoMap)
+            mat->m_AoMap->UseSRV(deviceContext, 3);
+        // 4: 
+        if (mat->m_Emissive)
+            mat->m_Emissive->UseSRV(deviceContext, 4);
+        //5:
+        if (mat->m_Metallic)
+            mat->m_Metallic->UseSRV(deviceContext, 5);
+        //6:
+        if (mat->m_Roughness)
+            mat->m_Roughness->UseSRV(deviceContext, 6);
+        //7:
+        if (mat->m_AlphaMap)
+            mat->m_AlphaMap->UseSRV(deviceContext, 7);
+        //8:
+        if (mat->m_Bump)
+            mat->m_Bump->UseSRV(deviceContext, 8);
+
         meshRenderer.m_Mesh->Draw(deviceContext);
     }
 }

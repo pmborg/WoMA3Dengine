@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #include "level.h"
 #include "tech-level.h"
@@ -561,7 +561,7 @@
     #define MAIN_CHAR_MODEL4 3 //Run
 #endif			 
 #if DX_ENGINE_LEVEL == 89
-    #define DEMO_TITLE TEXT("88: Mesh with PBR Textures")
+    #define DEMO_TITLE TEXT("89: PBR Textures and Shader")
     #define WORLD_XML TEXT("world_89.xml")
 #endif					 
 #if DX_ENGINE_LEVEL == 90
