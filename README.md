@@ -53,6 +53,11 @@ Try to Change the driver on the fly without the need of close and open the Appli
 <h2>3D - ADVANCED MESH TUTORIAL SERIES: BEGIN</h2>
 <hr>
 
+- <b>DX89: The object Model Map Editor(soon)</b><br>
+  
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_089.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_089.png)	
+
+<hr>
 - <b>DX88: USE_3RD_PERSON_CAMERA</b><br>
     3rd person camera: (W A S D) + left (CTRL or SHIFT) to run + STRAFE (Q E):<br>
     Key 1: Draw sword<br>
