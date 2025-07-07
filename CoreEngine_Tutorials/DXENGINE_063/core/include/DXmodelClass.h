@@ -106,7 +106,6 @@ public:
 		std::vector<HeightMapType_24>* model, std::vector<UINT>* indexList,
 		UINT instanceCount);
 #endif
-
 	// MODEL LOAD:
 	ADVOBJ3D obj3d;
 	bool LoadModel	(TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow = false, bool renderShadow=false, UINT instanceCount=0);

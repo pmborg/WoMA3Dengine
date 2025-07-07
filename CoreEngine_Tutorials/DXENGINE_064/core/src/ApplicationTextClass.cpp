@@ -153,7 +153,7 @@ void ApplicationTextClass::SetRenderCount(int Count, int compoundCount, UINT tot
 }
 #endif
 
-#if TUTORIAL_CHAP >= 60 && _DEBUG // BILLBOARD
+#if TUTORIAL_CHAP >= 60 && !defined RELEASE // BILLBOARD
 //10
 void DirectX::ApplicationTextClass::SetBillRenderCount(int count, UINT deltaTime)
 {

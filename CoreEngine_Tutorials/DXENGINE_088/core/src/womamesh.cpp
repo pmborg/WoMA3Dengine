@@ -143,13 +143,11 @@ void LoadAllMeshModels(UINT this_level, ApplicationClass* app, MeshApplication* 
     TCHAR title[MAX_STR_LEN] = {};
 #endif
     for (UINT i = 0; i < size_original_files; i++)
-    //for (UINT i = 0; i < 1; i++)
     {
 #if defined ALLOW_CBIND_PROGRESS_BAR
         StringCchPrintf(title, MAX_STR_LEN, TEXT("Loading Mesh: %d / %d       "), (int)i, (int)size_original_files);
         SetWindowText(SystemHandle->settingstext, title);
 #endif
-
         //Allow Refresh on Timer:
         while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))	// There is any OS messages to handle?
         {
@@ -158,7 +156,7 @@ void LoadAllMeshModels(UINT this_level, ApplicationClass* app, MeshApplication* 
         }
         womamesh4[i].assimpSceneModel = SceneModel::LoadModelToScene(DX_ENGINE_LEVEL, false, 1+i, WOMA::LoadFile((TCHAR*)TEXT("engine/data/scene87ForestHuntress/")), "", womamesh4[i].scene, demoapp->m_Graphics);
     }
-    //::ShowWindow(SystemHandle->hwndPrgBar, SW_HIDE);
+
     ::ShowWindow(SystemHandle->settingstext, SW_HIDE);
     RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);	// Invoke: Window PAINT before end.
 
@@ -170,24 +168,30 @@ void UpdateAllMeshAnimations(MeshApplication* demoapp, MyDemo* demo, float delta
 {
     //Update animation/bone matrix's and RENDER all MESHs:
 #if DX_ENGINE_LEVEL >= 79 && defined USE_MODEL1
-    demo->animJob.UpdateTimeElapsed(womamesh1.scene, deltaTime);
+    if (womamesh1.assimpSceneModel && womamesh1.assimpSceneModel->loaded)
+        demo->animJob.UpdateTimeElapsed(womamesh1.scene, deltaTime);
 #endif
 #if DX_ENGINE_LEVEL >= 84 && defined (SCENE_SKIN)
-    demo->animJob.UpdateTimeElapsed(womamesh2.scene, deltaTime);
+    if (womamesh2.assimpSceneModel && womamesh2.assimpSceneModel->loaded)
+        demo->animJob.UpdateTimeElapsed(womamesh2.scene, deltaTime);
 #endif
 #if DX_ENGINE_LEVEL >= 86 && defined (SCENE_SKIN)
-    demo->animJob.UpdateTimeElapsed(womamesh3.scene, deltaTime);
+    if (womamesh3.assimpSceneModel && womamesh3.assimpSceneModel->loaded)
+        demo->animJob.UpdateTimeElapsed(womamesh3.scene, deltaTime);
 #endif
 #if DX_ENGINE_LEVEL >= 86 && defined USE_MODEL4
     demo->animJob.UpdateTimeElapsed(womamesh4[MAIN_CHAR_MODEL1].scene, deltaTime);
 #endif
-    demo->animJob.UpdateTimeElapsed(womamesh4[USING_CHAR_MODEL_ANIMATION].scene, deltaTime);
+    if (womamesh4[USING_CHAR_MODEL_ANIMATION].assimpSceneModel &&
+        womamesh4[USING_CHAR_MODEL_ANIMATION].assimpSceneModel->loaded)
+        demo->animJob.UpdateTimeElapsed(womamesh4[USING_CHAR_MODEL_ANIMATION].scene, deltaTime);
 }
 void RenderAllMeshModels(MeshApplication* demoapp, MyDemo* demo)
 {
     demoapp->m_Graphics.m_DeviceContext->RSSetState(demoapp->m_Graphics.m_RasterizerState);
         // Model 1 ------------------------------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 79 && defined USE_MODEL1
+    if (womamesh1.assimpSceneModel && womamesh1.assimpSceneModel->loaded)
     {
         XMMATRIX world = XMMatrixIdentity();
         //Scale:
@@ -207,13 +211,14 @@ void RenderAllMeshModels(MeshApplication* demoapp, MyDemo* demo)
         world.r[3].m128_f32[1] = mainTerrain->getTerrainHeight(TERRAIN_ID, world.r[3].m128_f32[0], world.r[3].m128_f32[2]);
 
         womamesh1.scene.UpdateWorldMatrixModel(demoapp->m_Graphics, world);
+        demo->gBufferPass->Render(demoapp->m_Graphics, womamesh1.scene);
     }
-    demo->gBufferPass->Render(demoapp->m_Graphics, womamesh1.scene);
 #endif
 
     // Model 2 ------------------------------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 84 && defined USE_MODEL2
 #if defined SCENE_SKIN
+    if (womamesh2.assimpSceneModel && womamesh2.assimpSceneModel->loaded && SystemHandle->m_Application->m_characterPos)
     {
         XMMATRIX world = XMMatrixIdentity();
         //Scale:
@@ -233,8 +238,8 @@ void RenderAllMeshModels(MeshApplication* demoapp, MyDemo* demo)
         world.r[3].m128_f32[2] = SystemHandle->m_Application->m_characterPos->m_positionZ;  //_43: Z
 
         womamesh2.scene.UpdateWorldMatrixModel(demoapp->m_Graphics, world);
+        demo->gBufferPass->Render(demoapp->m_Graphics, womamesh2.scene);
     }
-    demo->gBufferPass->Render(demoapp->m_Graphics, womamesh2.scene);
 #endif
 #endif
 
@@ -255,8 +260,8 @@ void RenderAllMeshModels(MeshApplication* demoapp, MyDemo* demo)
         world.r[3].m128_f32[1] = mainTerrain->getTerrainHeight(TERRAIN_ID, world.r[3].m128_f32[0], world.r[3].m128_f32[2]);
 
         womamesh3.scene.UpdateWorldMatrixModel(demoapp->m_Graphics, world);
+        gBufferPass->Render(demoapp->m_Graphics, womamesh3.scene);
     }
-    gBufferPass->Render(demoapp->m_Graphics, womamesh3.scene);
 #endif
 #if DX_ENGINE_LEVEL >= 86 && defined USE_MODEL4
     // Model 4 ------------------------------------------------------------------------------------------
@@ -275,10 +280,12 @@ void RenderAllMeshModels(MeshApplication* demoapp, MyDemo* demo)
         world.r[3].m128_f32[1] = mainTerrain->getTerrainHeight(TERRAIN_ID, world.r[3].m128_f32[0], world.r[3].m128_f32[2]);
 
         womamesh4[MAIN_CHAR_MODEL1].scene.UpdateWorldMatrixModel(demoapp->m_Graphics, world);
+        demo->gBufferPass->Render(demoapp->m_Graphics, womamesh4[MAIN_CHAR_MODEL1].scene);
     }
-    demo->gBufferPass->Render(demoapp->m_Graphics, womamesh4[MAIN_CHAR_MODEL1].scene);
 #endif
     // Model 4 ------------------------------------------------------------------------------------------
+    if (womamesh4[USING_CHAR_MODEL_ANIMATION].assimpSceneModel && 
+        womamesh4[USING_CHAR_MODEL_ANIMATION].assimpSceneModel->loaded)
     {
         XMMATRIX world = XMMatrixIdentity();
         //Scale:
@@ -297,22 +304,40 @@ void RenderAllMeshModels(MeshApplication* demoapp, MyDemo* demo)
         world.r[3].m128_f32[1] = mainTerrain->getTerrainHeight(TERRAIN_ID, world.r[3].m128_f32[0], world.r[3].m128_f32[2]);
 
         womamesh4[USING_CHAR_MODEL_ANIMATION].scene.UpdateWorldMatrixModel(demoapp->m_Graphics, world);
+        demo->gBufferPass->Render(demoapp->m_Graphics, womamesh4[USING_CHAR_MODEL_ANIMATION].scene);
     }
-    demo->gBufferPass->Render(demoapp->m_Graphics, womamesh4[USING_CHAR_MODEL_ANIMATION].scene);
 }
+
+bool threadLoadMeshAlive=false;
+HANDLE threadLoadMeshHandle=NULL;
+unsigned long threadLoadMeshId=NULL;
+
+static MeshApplication *demoapp_;
+static MyDemo *demo_;
+
+DWORD StartMeshLibs(LPVOID lpParam)
+{
+    SetUnhandledExceptionFilter(TopLevelFilter);
+
+    ApplicationClass* app = static_cast<ApplicationClass*>(lpParam);
+
+    // INIT: Model 1,2,3,4...
+    demo_->Start(demoapp_->m_Graphics);
+    InitMeshDemo(app, demoapp_, demo_);
+    LoadAllMeshModels(DX_ENGINE_LEVEL, app, demoapp_, demo_);
+
+    return 0;
+};
 
 void ApplicationClass::RenderMeshAnimations()
 {
-    static MeshApplication demoapp;
-    static MyDemo demo;
+    static MeshApplication demoapp; demoapp_ = &demoapp;
+    static MyDemo demo; demo_ = &demo;
 
 #if defined USE_ASSIMP_LATEST && defined MAIN_RENDER_ASSIMP // ASSIMP: Skin-MESH (0.15ms)
     if (m_Driver->RenderfirstTime)
     {
-        // INIT: Model 1,2,3,4...
-        demo.Start(demoapp.m_Graphics);
-        InitMeshDemo(this, &demoapp, &demo);
-        LoadAllMeshModels(DX_ENGINE_LEVEL, this, &demoapp, &demo);
+        threadLoadMeshHandle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)StartMeshLibs, (void*)this, 0, &threadLoadMeshId);
     }
 
     static UINT filmeIdx = 0; // 1st line of filme file
@@ -333,21 +358,25 @@ void ApplicationClass::RenderMeshAnimations()
 #if defined ( LOAD_WALK ) && defined (SCENE_SKIN)
     // Do the Movement Animation of the "Character"
     // ============================================
-    if (filmeIdx < loadFilme.size()) 	// Prepare to read the next movement animation
+    if (m_characterPos)
     {
-        m_characterPos->m_positionX = loadFilme[filmeIdx].X;
-        m_characterPos->m_positionZ = loadFilme[filmeIdx].Z;
-        m_characterPos->m_positionY = mainTerrain->getTerrainHeight(TERRAIN_ID, m_characterPos->m_positionX, m_characterPos->m_positionZ);
-        m_characterPos->m_rotationY = DEG2RAD(loadFilme[filmeIdx].rotY);
+        if (filmeIdx < loadFilme.size()) 	// Prepare to read the next movement animation
+        {
+            m_characterPos->m_positionX = loadFilme[filmeIdx].X;
+            m_characterPos->m_positionZ = loadFilme[filmeIdx].Z;
+            m_characterPos->m_positionY = mainTerrain->getTerrainHeight(TERRAIN_ID, m_characterPos->m_positionX, m_characterPos->m_positionZ);
+            m_characterPos->m_rotationY = DEG2RAD(loadFilme[filmeIdx].rotY);
 
-        while (filmeIdx < loadFilme.size() && loadFilme[filmeIdx].timeFrame <= total_deltaTime) {
-            filmeIdx++;
+            while (filmeIdx < loadFilme.size() && loadFilme[filmeIdx].timeFrame <= total_deltaTime) {
+                filmeIdx++;
+            }
         }
-    }
-    else {
-        m_characterPos->m_positionX = 20.0f;
-        m_characterPos->m_positionZ = 20.0f;
-        filmeIdx = 0;
+        else {
+  
+            m_characterPos->m_positionX = 20.0f;
+            m_characterPos->m_positionZ = 20.0f;
+            filmeIdx = 0;
+        }
     }
 #endif
 

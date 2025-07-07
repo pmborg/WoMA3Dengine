@@ -253,11 +253,12 @@ SceneModel* SceneModel::LoadModelToScene(UINT dxlevel, bool enginefile, UINT typ
         }
         LOG_FILE << endl;
     }
-#endif
 
     // Process(get data of): Vertex, Indices and Textures
     LOG_FILE << "[3] ---		Bone Names : " << endl;
+#endif
 
+    model->loaded = true; //ready to render!
 	return model;
 }
 

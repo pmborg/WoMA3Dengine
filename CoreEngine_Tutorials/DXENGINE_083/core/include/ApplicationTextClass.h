@@ -24,19 +24,59 @@
 #include "virtualTextClass.h"
 
 // Index position in the ARRAY:
-#define TEXT_FPS			0
-#define TEXT_CPU			1
-#define TEXT_POS			2
-#define TEXT_ROT			3
-#define TEXT_TIME			4
-#define TEXT_FADE			5
-#define TEXT_ScreenToShow	6
-#define TEXT_CLOCK			7
-#define TEXT_LIGHT_DIR		8
+#define TEXT_FPS			    0
+#define TEXT_CPU			    1
+#define TEXT_POS			    2
+#define TEXT_ROT			    3
+#define TEXT_TIME			    4
+#define TEXT_FADE			    5
+#define TEXT_ScreenToShow	    6
+//#define TEXT_CLOCK		    7
+#define TEXT_BILLRENDERCOUNT    7
+#define TEXT_LIGHT_DIR		    8
 #define TEXT_TERRAINRENDERCOUNT 9	// 60
-#define TEXT_LATENCY			10	// 140
+#define TEXT_BILLRENDERCOUNT    10  // 89
+#define TEXT_LATENCY			11	// 140
 
-#define N_TEXT_MAX_SENTENCE 11 // LAST+1
+#if DX_ENGINE_LEVEL >= 89 && defined USE_MAP_EDITOR // #if TUTORIAL_PRE_CHAP >= 12
+#define TEXT_COMPOUND_ID    12
+#define TEXT_COMPOUND       13 //LAST!
+#endif
+
+#define N_TEXT_MAX_SENTENCE 14 // LAST+1
+
+
+
+#if TUTORIAL_PRE_CHAP >= 45 && TUTORIAL_PRE_CHAP < 55// BILLBOARD
+#define N_TEXT_MAX_SENTENCE 8
+#endif
+
+#if TUTORIAL_PRE_CHAP >= 55
+#define TEXT_TIME 8
+#endif
+#if TUTORIAL_PRE_CHAP >= 55 && TUTORIAL_PRE_CHAP < 63
+#define N_TEXT_MAX_SENTENCE 9
+#endif
+
+#if TUTORIAL_PRE_CHAP >= 63 // 83
+#define TEXT_XP 9
+#define TEXT_GOLD 10
+#endif
+#if TUTORIAL_PRE_CHAP >= 63 && TUTORIAL_PRE_CHAP < 90
+#define N_TEXT_MAX_SENTENCE 11
+#endif
+#if defined _NOT
+// Not used yet...
+// ----------------------------------------
+/*
+#if TUTORIAL_PRE_CHAP >= 50
+#define TEXT_WATERRENDERCOUNT 9
+#endif
+#if TUTORIAL_PRE_CHAP >= 50 && TUTORIAL_PRE_CHAP < 60
+#define N_TEXT_MAX_SENTENCE 10
+#endif
+*/
+#endif
 
 namespace DirectX {
 
@@ -70,8 +110,8 @@ public:
 		void SetScreenToShow(UINT screenToShow, UINT render_page);
 	#endif
 
-    #if TUTORIAL_PRE_CHAP >= 12 && _DEBUG
-    void SetCompoundPosition(WCHAR *file, float dist, UINT, float, float, float, float scale);
+    #if DX_ENGINE_LEVEL >= 89 && defined USE_MAP_EDITOR // #if TUTORIAL_PRE_CHAP >= 12 
+    void SetCompoundPosition(CHAR* file, float dist, UINT, float, float, float, float scale, float rotY);
     #endif
 
 	#if DX_ENGINE_LEVEL >= 30 && _DEBUG
@@ -82,7 +122,7 @@ public:
 	void SetLoboRenderCount(int count);
 	#endif
 
-#if TUTORIAL_CHAP >= 60 && _DEBUG // BILLBOARD
+#if TUTORIAL_CHAP >= 60 && !defined RELEASE // BILLBOARD
 	void SetBillRenderCount(int count, UINT deltaTime);
 	#endif
 

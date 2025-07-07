@@ -89,7 +89,6 @@ public:
 #endif
 	virtual bool LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow = false, bool renderShadow = false, UINT instanceCount = 0) = 0;
 
-
 	virtual void Identity() = 0;
 	virtual void multiply(void* m) = 0;	//XMMATRIX* or mat4*
 

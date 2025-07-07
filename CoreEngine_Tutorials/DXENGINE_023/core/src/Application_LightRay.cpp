@@ -108,9 +108,7 @@
 		m_Light->GenerateViewMatrix(vertex.x, vertex.y, vertex.z);
 		#endif
 	}
-#endif
 
-#if defined USE_LIGHT_RAY
 void ApplicationClass::initLightRay()
 {
 	m_LightVertexVector = &MyLightVertexVector;

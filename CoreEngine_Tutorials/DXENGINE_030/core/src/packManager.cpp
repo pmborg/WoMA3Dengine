@@ -272,6 +272,7 @@ bool InitPackLibs()
 
 bool StartPackLibs() 
 {
+    SetUnhandledExceptionFilter(TopLevelFilter);
 #if defined USE_MAIN_THREAD
 	threadLoadPacksAlive = true;
 #endif

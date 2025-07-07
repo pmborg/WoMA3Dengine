@@ -76,8 +76,6 @@ LONG WINAPI VectoredExceptionHandler(PEXCEPTION_POINTERS pExceptionInfo)
 
 MiniDumper::MiniDumper()
 {
-	SetUnhandledExceptionFilter( TopLevelFilter );
-	//AddVectoredExceptionHandler(1, VectoredExceptionHandler);
 
 	CLASSLOADER();
 	WomaIntegrityCheck = 1234525256;
@@ -95,7 +93,7 @@ void WriteError(TCHAR* szDumpPath)
 #pragma warning( disable : 4996 ) // Disable warning C4996: '': This function or variable may be unsafe.
 #pragma warning( disable : 4005 ) // Disable warning C4005: 'strdup' : macro redefinition
 
-LONG MiniDumper::TopLevelFilter( struct _EXCEPTION_POINTERS *pExceptionInfo )
+LONG TopLevelFilter( struct _EXCEPTION_POINTERS *pExceptionInfo )
 {
 	TCHAR szDumpPath[_MAX_PATH] = { 0 };
 	LONG retval = EXCEPTION_CONTINUE_SEARCH;

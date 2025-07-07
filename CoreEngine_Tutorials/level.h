@@ -134,7 +134,7 @@
     //#define LEVEL 75  // UTIL: PROGRESS BAR FOR TERRAIN LOADING                                                             
     //#define LEVEL 76  // UTIL: INTRO VIDEO DEMO
     //#define LEVEL 77  // USE INSTANCES FOR TREES                                         
-    //#define LEVEL 78  // COLISION DETECTION
+    //#define LEVEL 78  // COLISION DETECTION: Part I
     
     //#define LEVEL 79  // Advanced DAE/FBX     (not published)
     //#define LEVEL 80  // GL-ASSIMP EXT-PRJ    (not published)
@@ -143,10 +143,11 @@
     //#define LEVEL 82  // ASSIMP-ENGINE                                                                                                   
     //#define LEVEL 83  // Updated billboard shader
     //#define LEVEL 84  // ASSIMP: Animated / walking mesh on the terrain, following a path                                                
+	//#define LEVEL 85  // EXPAND MINI-MAP									  
     //#define LEVEL 86  // THE MAIN CHARACTER
     //#define LEVEL 87  // THE MAIN CHARACTER - The other sample variants
-	#define LEVEL 88    // USE_3RD_PERSON_CAMERA
-	#define LEVEL 89    // PBR SHADER
+	//#define LEVEL 88  // USE_3RD_PERSON_CAMERA
+	#define LEVEL 89    // PBR SHADER + 
     
     #endif
 #endif

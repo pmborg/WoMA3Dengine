@@ -503,6 +503,8 @@ HRESULT dxWinSystemClass::PlayIntroMovie(TCHAR* movie)
 void InitializeObjectsLoaderThreadFunction() // InitializeThread
 //-----------------------------------------------------------------------------------------	
 {
+    SetUnhandledExceptionFilter(TopLevelFilter);
+
 	WOMA_LOGManager_DebugMSG("CreateThread: InitializeObjectsLoaderThreadFunction\n");
 
 	switch (SystemHandle->systemManager->processorInfo.cpuCores.logicalProcessorCount)

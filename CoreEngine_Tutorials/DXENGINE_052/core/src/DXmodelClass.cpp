@@ -2179,16 +2179,21 @@ bool DXmodelClass::LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shad
 	if (_tcsicmp(extension, TEXT(".obj")) == 0 || _tcsicmp(extension, TEXT(".OBJ")) == 0)
 	{
 		bool b = modelClass.LoadOBJ(this, shader_type, g_driver, filename, castShadow, renderShadow, instanceCount);
-		if (b)
-            return modelClass.CreateObject(this, (TCHAR*)filename.c_str(), g_driver, shader_type /*SHADER_AUTO*/, filename, castShadow, renderShadow); // Auto Detect Shader Type
+		if (b) {
+            bool res = modelClass.CreateObject(this, (TCHAR*)filename.c_str(), g_driver, shader_type /*SHADER_AUTO*/, filename, castShadow, renderShadow); // Auto Detect Shader Type
+            return res;
+        }
 	}
 
 #if defined LOADW3D
 	else if (_tcsicmp(extension, TEXT(".w3d")) == 0 || _tcsicmp(extension, TEXT(".W3D")) == 0)
-		return LoadW3D(shader_type, g_driver, filename, castShadow, renderShadow, instanceCount);
+    {
+        bool res = LoadW3D(shader_type, g_driver, filename, castShadow, renderShadow, instanceCount);
+        return res;
+    }
 #endif
 
-    return true;
+    return false;
 }
 
 // Create: Bounding Box 

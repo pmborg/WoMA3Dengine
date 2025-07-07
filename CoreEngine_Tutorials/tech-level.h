@@ -246,7 +246,7 @@
 
     #if DX_ENGINE_LEVEL >= 28
         #if defined WINDOWS_PLATFORM
-            #if defined DX_ENGINE
+            #if defined DX_ENGINE && defined NDEBUG
                 #define ALLOW_PRINT_SCREEN_SAVE_PNG // Level:22
             #endif
             #define USE_DIRECT_INPUT                //28-we will use DX input method
@@ -258,7 +258,7 @@
         #define USE_SKY_CAMERA_DOME         //28-we have sky camera in the world
         #define USE_SKYSPHERE               //28-the sky is a Sphere
 
-        #if defined DX_ENGINE
+        #if defined DX_ENGINE && defined NDEBUG
         #define ALLOW_PRINT_SCREEN_SAVE_PNG //28-print screen key will generate an image at DESKTOP
         #endif
     #endif
@@ -367,6 +367,7 @@
             
         #define SCENE_GENERATEDUNDERWATER
         #undef SCENE_TERRAIN_COLLISION
+		#define FIXEDBORDERHEIGHT -5.0f							   
     #endif
 
     #if DX_ENGINE_LEVEL >= 50   //50-
@@ -436,7 +437,7 @@
     #endif
     
     //--------------------------------------------------------------------------------------------------------------------------
-    #if DX_ENGINE_LEVEL >= 70
+    #if DX_ENGINE_LEVEL >= 70 //SCENE_BILLBOARDS
         #define TUTORIAL_CHAP 60
         #define SCENE_BILLBOARDS
     #endif
@@ -503,6 +504,13 @@
             #define USE_ASSIMP_DXLIB //81
         #endif
     #endif
+	
+    #if DX_ENGINE_LEVEL >= 79
+        #undef  USE_IDEA_PACK
+        #define USE_CYPHER_PACK
+        #define MULTIPACK_PACK  TEXT("C:/WoMAengine2023/engine/data/womamulti.pack")
+        #define MULTIPACK_PCK   TEXT("womamulti.pck")
+    #endif
     #if DX_ENGINE_LEVEL >= 82
         #define USE_ASSIMP_LATEST       //82
     #endif
@@ -517,6 +525,7 @@
     #if DX_ENGINE_LEVEL >= 85
         #define USE_MINIMAP_EXPANSION
     #endif
+
     //-------------------------------------------------
     #define USE_MODEL1
     #define USE_MODEL2
@@ -536,6 +545,9 @@
 		#define USE_3RD_PERSON_CAMERA
 	#endif
 		
+#if DX_ENGINE_LEVEL >= 89
+    #define USE_MAP_EDITOR
+#endif						 
 	
 	
 	
@@ -552,8 +564,8 @@
 
     #undef  dx12_upload_old_way
     //-------------------------------------------------------------------------------------------------------
-    #if defined NDEBUG && DX_ENGINE_LEVEL < 29 && defined _MSC_VER
-    #error "WOMA COMPILATION ERROR: NDEBUG bin is not Supported before DX_ENGINE_LEVEL 29"
+#if defined NDEBUG && DX_ENGINE_LEVEL < 29 && defined _MSC_VER && !defined SIMPLE
+#error "WOMA COMPILATION ERROR: RELEASE bin is not Supported before DX_ENGINE_LEVEL 29"
     #endif
     //-------------------------------------------------------------------------------------------------------
     #if NDEBUG

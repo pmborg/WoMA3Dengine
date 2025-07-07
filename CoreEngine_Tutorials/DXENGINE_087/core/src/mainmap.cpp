@@ -96,7 +96,7 @@ void ApplicationClass::AppPreRenderMainMapMiniMap(UINT monitorWindow, WomaDriver
 		m_RenderMapTexture->ClearRenderTarget(Driver, 0.30f, 0.30f, 0.30f, 1.0f);	// Clear the render to texture!
 		TerrainRender(monitorWindow, Driver, fadeLight, &m_CameraMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix);
 #if defined USE_MINIMAP_EXPANSION
-        for (UINT id = 0; id < world_main_size; id++)
+        for (UINT id = 0; id < world_main_size; id++)  //TODO: use sceneManager
             RenderModel(monitorWindow, m_Driver, id, PASS_OPAC, &m_CameraMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix);
 #endif
 	}
@@ -127,7 +127,7 @@ void ApplicationClass::AppPreRenderMainMapMiniMap(UINT monitorWindow, WomaDriver
 		m_MiniMapBitmapTexture->ClearRenderTarget(Driver, 0.0f, 0.0f, 0.0f, 1.0f);  // Clear the render to texture!
 		TerrainRender(monitorWindow, Driver, fadeLight, &m_CameraMINIMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix);
 #if defined USE_MINIMAP_EXPANSION
-        for (UINT id = 0; id < world_main_size-1; id++)
+        for (UINT id = 0; id < world_main_size-1; id++)  //TODO: use sceneManager
             RenderModel(monitorWindow, m_Driver, id, PASS_OPAC, &m_CameraMINIMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix);
 #endif
 	}

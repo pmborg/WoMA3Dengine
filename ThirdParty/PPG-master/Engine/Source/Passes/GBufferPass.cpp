@@ -94,9 +94,9 @@ void GBufferPass::Render(Graphics& graphics, Scene& scene)
         
         PBRMaterial* mat = meshRenderer.m_Material;
         mat->m_MaterialInfo.m_LightDirection = SystemHandle->m_Application->m_Light->m_lightDirection;
-        mat->m_MaterialInfo.m_LightPos.x = SystemHandle->m_Application->MyLightVertexVector[1].x;
-        mat->m_MaterialInfo.m_LightPos.y = SystemHandle->m_Application->MyLightVertexVector[1].y;
-        mat->m_MaterialInfo.m_LightPos.z = SystemHandle->m_Application->MyLightVertexVector[1].z;
+        mat->m_MaterialInfo.m_LightPos.x = SystemHandle->m_Application->MyLightVertexVector[1].x;   //USE_LIGHT_RAY
+        mat->m_MaterialInfo.m_LightPos.y = SystemHandle->m_Application->MyLightVertexVector[1].y;   //USE_LIGHT_RAY
+        mat->m_MaterialInfo.m_LightPos.z = SystemHandle->m_Application->MyLightVertexVector[1].z;   //USE_LIGHT_RAY
 
         mat->m_MaterialInfo.ambientColor = SystemHandle->m_Application->m_Light->m_ambientColor;
         mat->m_MaterialInfo.lightColor = SystemHandle->m_Application->m_Light->m_diffuseColor;

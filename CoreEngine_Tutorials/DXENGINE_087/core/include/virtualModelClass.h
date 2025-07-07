@@ -94,7 +94,6 @@ public:
 #endif
 	virtual bool LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow = false, bool renderShadow = false, UINT instanceCount = 0) = 0;
 
-
 	virtual void Identity() = 0;
 	virtual void multiply(void* m) = 0;	//XMMATRIX* or mat4*
 
@@ -138,17 +137,16 @@ public:
 #endif
 
     bool				CLONE = false;
-    bool ready = false, hide = false, visibel = false;
+    bool ready = false, hide = false, visible = true;
 
 #if defined USE_BOUNDING_VOLUMES
-    std::vector<XMFLOAT3>   boundingBoxVerts;
-    std::vector<UINT/*DWORD*/>      boundingBoxIndex;
+    std::vector<XMFLOAT3>       boundingBoxVerts;   //BOX
+    std::vector<UINT/*DWORD*/>  boundingBoxIndex;
 
-    XMFLOAT4                bottleCenterOffset;
-    std::vector<XMFLOAT3>   bottleVertPosArray;
-    //std::vector<DWORD>      bottleBoundingBoxVertIndexArray;
-    //std::vector<XMFLOAT3>   bottleBoundingBoxVertPosArray;
+    XMFLOAT4                bottleCenterOffset;     //SPHERE
     float                   bottleBoundingSphere;
+    std::vector<XMFLOAT3>   bottleVertPosArray;     //Allow: X,Y,Z without a verticeType
+    
 #endif
 
 };

@@ -56,7 +56,7 @@ using namespace DirectX;
 // GLOBALS //
 /////////////
 
-typedef struct
+typedef struct playerType
 {	
 	// Current Position:
 	// --------------------------------------------------------------------------------
@@ -65,6 +65,8 @@ typedef struct
 	#endif
     bool online;			// Network State
 
+
+
     // ids:
 	// --------------------------------------------------------------------------------
 
@@ -72,16 +74,25 @@ typedef struct
 	// --------------------------------------------------------------------------------
 
 	//EXIT:
-	bool IsEscapePressed;	
+	bool IsEscapePressed=false;	
 
 	//BASE MOVEMENT:
-	bool IsLeftPressed;		    // <- or a
-	bool IsRightPressed;	    // -> or d
+	bool IsLeftPressed;		    // a
+	bool IsRightPressed;	    // d
+    bool IsUpPressed;		    // w
+    bool IsDownPressed;		    // s
+#if defined USE_MAP_EDITOR
+    bool IsEDITORNumPad4;	    // NumPad: 4
+    bool IsEDITORNumPad6;	    // NumPad: 6
+
+    bool IsEDITORLeftPressed;	// <-
+    bool IsEDITORRightPressed;	// ->
+    bool IsEDITORUpPressed;		//  ^
+    bool IsEDITORDownPressed;	//  v
+#endif
     bool IsStrafeLeftPressed;	// q
     bool IsStrafeRightPressed;	// e
 
-	bool IsUpPressed;		    // ^ or w
-	bool IsDownPressed;		    // v or s
 	bool IsLeftCtrlPressed;     // RUN:			left ctrl
 	bool IsPgUpPressed;		    // LOOK UP:		pg up
 	bool IsPgDownPressed;	    // LOOK DOWN:	pg down

@@ -38,9 +38,6 @@
 #include "textFontClass.h"
 // ----------------------------------------
 
-#if TUTORIAL_CHAP >= 60 // BILLBOARD
-#define TEXT_BILLRENDERCOUNT 7
-#endif
 
 namespace DirectX {
 

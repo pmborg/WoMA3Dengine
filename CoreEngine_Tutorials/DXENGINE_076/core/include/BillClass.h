@@ -30,19 +30,11 @@
 
 // Number of Billboard Trees
 
-#if defined false //SIMPLE
-#define N_BILLBOARD 1
-#define N_FENCES 55
-#define N_FIRE 1
-#define N_GRASS 1
-#define N_BUSH  1
-#else
 #define N_BILLBOARD 1000
 #define N_FENCES 55
 #define N_FIRE 1
 #define N_GRASS 2000
 #define N_BUSH  750
-#endif
 
 extern ID3D11ShaderResourceView* billFileLoaded[];
 
@@ -67,12 +59,12 @@ int		BillrenderCount=0;
 UINT	billTotal = 0;
 
 private:
-VirtualModelClass*  fence;
-VirtualModelClass*  fire;
-VirtualModelClass*  grass;
-FrustumClass*       m_FrustumGrass;	
+VirtualModelClass*  fence = nullptr;
+VirtualModelClass*  fire = nullptr;
+VirtualModelClass*  grass = nullptr;
+FrustumClass*       m_FrustumGrass = nullptr;
 
-UINT				billNames_length;
+UINT				billNames_length=0;
 };
 
 extern BillClass* m_billTreeClass;

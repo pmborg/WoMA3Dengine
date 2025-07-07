@@ -16,12 +16,34 @@
 // 
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Entry point of all WoMA ENGINE Applications OS: WINDOWS / LINUX / ANDROID
+
+// KEY FEATURES:
+//
+// • PLATFORM ABSTRACTION :
+//      The file uses preprocessor directives to select the appropriate entry point(WinMain for Windows GUI, main for console / Linux, and android_main for Android), ensuring compatibility across different operating systems.
+// 
+// • CENTRALIZED APPLICATION LOGIC :
+//      All platform - specific entry points delegate to a single function, APPLICATION_MAIN, which encapsulates the core engine startup, main loop, and shutdown logic.
+// 
+// • COMMAND - LINE ARGUMENT HANDLING :
+//      Command - line arguments are parsed and passed to the engine, allowing for flexible configuration and runtime overrides.
+// 
+// • ENGINE LIFECYCLE MANAGEMENT :
+//      The engine is initialized via APPLICATION_STARTUP, runs the main loop(with support for engine restarts), and is properly shut down with APPLICATION_STOP, ensuring resources are managed and released correctly.
+// 
+// • ERROR HANDLING :
+//      The design anticipates exceptions during startup, allowing for centralized error reporting and graceful application termination.
+// 
+// • EXTENSIBILITY :
+//      The structure supports integration with external libraries(such as Assimp for model loading) and can be easily extended for new platforms or features.
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
+
 #if NOTES
 #include "notes.h"
 #endif
 #include "OSengine.h"
+#pragma warning(disable : 6387)				   
 
 #if defined WINDOWS_PLATFORM
 // -------------------------------------------------------------------------------------------------------------------------------------
@@ -97,7 +119,7 @@ int APPLICATION_MAIN(int argc, char* argv[])
       do {
           {
               SYSTEM demo(&WOMA::settings);               // NEW |SystemClass()::WinSystemClass()::DxWinSystemClass() for Specific OS|+|WOMA::APP_NAME|+|NEW ApplicationClass()"|
-              demo.ParseCommandLineArgs(argc, argv);      // LoadXmlSettings & Parse the command line parameters: -warp /warp, ... (override settings.xml)
+              demo.ParseCommandLineArgs(argc, argv);      // LoadXmlSettings + Parse the command line parameters: -warp /warp, ... (override settings.xml)
       
               if (demo.APPLICATION_INIT_SYSTEM())         // INIT Woma Engine: |SOUND|+|Register|+|XML|+|Sys.Chk|+|Window|+|OS-Input|+|Timer|+|Drivers|+|Load Assets|
                   Command = demo.APPLICATION_MAIN_LOOP(); // RUN: OS MAIN LOOP -> PROCESS FRAMES: (UPDATE + RENDER)!

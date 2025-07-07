@@ -358,6 +358,7 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 	//THREAD_PRIORITY_TIME_CRITICAL(+15)
 #endif
 	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
+    SetUnhandledExceptionFilter(TopLevelFilter);
 
 #elif defined LINUX_PLATFORM && defined RELEASE
 	#if _DEBUG

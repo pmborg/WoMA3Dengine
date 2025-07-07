@@ -193,11 +193,17 @@ extern const wchar_t* GetWC(const char* c);
 	#endif
 #endif
 
+#ifdef _DEBUG
+#define IS_INVALID_PTR(p) ((p) == reinterpret_cast<void*>(0xdddddddddddddddd))
+#else
+#define IS_INVALID_PTR(p) (false)
+#endif
+
 #ifndef SAFE_RELEASE
 	#if defined VERBOSE_MEMORY_DEBUG
 		#define SAFE_RELEASE(p)  { if(p) { WOMA_LOGManager_DebugMSGAUTO(TEXT("[MEM_DEBUG] RELEASE %s\n"), #p); (p)->Release(); (p)=NULL; } }
 	#else
-		#define SAFE_RELEASE(p)  { if(p) { (p)->Release(); (p)=NULL; } }
+#define SAFE_RELEASE(p)  { if((p) && !IS_INVALID_PTR(p)) { (p)->Release(); (p)=NULL; } }
 	#endif
 #endif
 

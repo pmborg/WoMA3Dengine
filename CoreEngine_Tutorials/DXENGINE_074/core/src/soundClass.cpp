@@ -23,7 +23,7 @@
 
 #pragma warning(disable : 4267) //warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
 
-#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
+#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
 #include "OSengine.h"
 #include "soundclass.h"
 #include "mem_leak.h"
@@ -38,7 +38,7 @@ SoundClass::SoundClass()
 	m_primaryBuffer = NULL;
 	m_secondaryBuffer1 = NULL;
 
-	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
+	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
 	m_listener = NULL;
 	m_secondary3DBuffer1 = NULL;
 	#endif
@@ -63,7 +63,7 @@ bool SoundClass::Initialize(HWND hwnd, char* filename)
 	}
  
 	// Load a wave audio file onto a secondary buffer.
-	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
+	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
 	result = LoadWaveFile(filename, &m_secondaryBuffer1, &m_secondary3DBuffer1);
 	#else
 	result = LoadWaveFile(filename, &m_secondaryBuffer1);
@@ -79,7 +79,7 @@ bool SoundClass::Initialize(HWND hwnd, char* filename)
 void SoundClass::Shutdown()
 {
 	// Release the secondary buffer.
-	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
+	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
 	ShutdownWaveFile(&m_secondaryBuffer1, &m_secondary3DBuffer1);
 	#else
 	ShutdownWaveFile(&m_secondaryBuffer1);
@@ -98,7 +98,7 @@ void SoundClass::Shutdown()
 bool SoundClass::InitializeDirectSound(HWND hwnd)
 {
 	HRESULT result = { };
-	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
+	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
 	DSBUFFERDESC bufferDesc = {0};
 	WAVEFORMATEX waveFormat = {0};
 	#endif
@@ -115,7 +115,7 @@ bool SoundClass::InitializeDirectSound(HWND hwnd)
 
 	ASSERT(!FAILED(result));
 
-	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
+	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
 	// Setup the primary buffer description.
 	bufferDesc.dwSize = sizeof(DSBUFFERDESC);
 	bufferDesc.dwFlags = DSBCAPS_PRIMARYBUFFER | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRL3D;
@@ -160,7 +160,7 @@ bool SoundClass::InitializeDirectSound(HWND hwnd)
 //The ShutdownDirectSound function handles releasing the primary buffer and DirectSound interfaces.
 void SoundClass::ShutdownDirectSound()
 {
-	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
+	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
 	SAFE_RELEASE (m_listener);
 	#endif
 
@@ -175,7 +175,7 @@ void SoundClass::ShutdownDirectSound()
 
 //The LoadWaveFile function is what handles loading in a .wav audio file and then copies the data onto a new secondary buffer. 
 //If you are looking to do different formats you would replace this function or write a similar one.
-#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
+#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
 bool SoundClass::LoadWaveFile(char* filename, IDirectSoundBuffer8** secondaryBuffer, IDirectSound3DBuffer8** secondary3DBuffer)
 #else
 bool SoundClass::LoadWaveFile(char* filename, IDirectSoundBuffer8** secondaryBuffer)
@@ -253,7 +253,7 @@ bool SoundClass::LoadWaveFile(char* filename, IDirectSoundBuffer8** secondaryBuf
 
 	// Set the buffer description of the secondary sound buffer that the wave file will be loaded onto.
 	bufferDesc.dwSize = sizeof(DSBUFFERDESC);
-	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
+	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
 	bufferDesc.dwFlags = DSBCAPS_CTRLVOLUME | DSBCAPS_CTRL3D;
 	#else
 	bufferDesc.dwFlags = DSBCAPS_CTRLVOLUME;
@@ -332,7 +332,7 @@ bool SoundClass::LoadWaveFile(char* filename, IDirectSoundBuffer8** secondaryBuf
 	// Release the wave data since it was copied into the secondary buffer.
 	SAFE_DELETE_ARRAY ( waveData);
  
-	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D && defined SOUND3D
+	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
 	// Get the 3D interface to the secondary sound buffer.
 	result = (*secondaryBuffer)->QueryInterface(IID_IDirectSound3DBuffer8, (void**)&*secondary3DBuffer);
 	if(FAILED(result))
@@ -343,13 +343,13 @@ bool SoundClass::LoadWaveFile(char* filename, IDirectSoundBuffer8** secondaryBuf
 }
 
 //ShutdownWaveFile just does a release of the secondary buffer.
-#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
+#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
 void SoundClass::ShutdownWaveFile(IDirectSoundBuffer8** secondaryBuffer, IDirectSound3DBuffer8** secondary3DBuffer)
 #else
 void SoundClass::ShutdownWaveFile(IDirectSoundBuffer8** secondaryBuffer)
 #endif
 {
-	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
+	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
 	SAFE_RELEASE (*secondary3DBuffer);
 	#endif
 
@@ -364,7 +364,7 @@ void SoundClass::ShutdownWaveFile(IDirectSoundBuffer8** secondaryBuffer)
 //if it wasn't already. Also note that we set the position to start playing at the beginning of the secondary sound buffer 
 //otherwise it will continue from where it last stopped playing. And since we set the capabilities of the buffer to allow us 
 //to control the sound we set the volume to maximum here.
-#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
+#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
 bool SoundClass::PlayWaveFile(float positionX, float positionY, float positionZ, bool loop, float range)
 #else
 bool SoundClass::PlayWaveFile()
@@ -383,7 +383,7 @@ bool SoundClass::PlayWaveFile()
 	if(FAILED(m_secondaryBuffer1->SetVolume(DSBVOLUME_MAX)))
 		return false;
 
-	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
+	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
 	// Set the 3D position of the sound.
 	m_secondary3DBuffer1->SetPosition(positionX, positionY, positionZ, DS3D_IMMEDIATE);
 

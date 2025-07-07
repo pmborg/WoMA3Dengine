@@ -160,10 +160,12 @@ void QuadTree::AddSceneNode(NodeType* quadNode, SceneNode* node)
 //void SceneManager::Render()
 void QuadTree::RenderNode(NodeType* node)
 {
+#if !defined USE_MAP_EDITOR
 	// Check to see if the node can be viewed, height doesn't matter in a quad tree.
 	//bool result = frustum->CheckCube(node->positionX, 0.0f, node->positionZ, node->width/2);   // More accurated but slower
 	bool result = _frustum->CheckSphere(node->positionX, 0.0f, node->positionZ, (node->width/2)*1.4142135623730950488016887242097f );   // Faster
 	if (!result) return;
+#endif
 
 	// If it can be seen then check all four child nodes to see if they can also be seen.
 	int count = 0;
@@ -186,9 +188,11 @@ void QuadTree::RenderNode(NodeType* node)
 	{
 		 model = node->sceneNodes[i]->nodeState.model;
         
+         UINT modelID = model->m_ObjId;
+
         //if (!model->ModelHASAlfaColor) //FASTER-AQUI2
         //{
-            UINT modelID = model->m_ObjId;
+#if !defined USE_MAP_EDITOR
             float positionX, positionY, positionZ;
             positionX = _xml_loader->theWorld[modelID].posX;
             positionY = _xml_loader->theWorld[modelID].translateY;
@@ -197,6 +201,7 @@ void QuadTree::RenderNode(NodeType* node)
                 _xml_loader->theWorld[modelID].render = false; //FASTER-AQUI2
                 continue;
             } else
+#endif
                _xml_loader->theWorld[modelID].render = true; //FASTER-AQUI2
         //}
 		//This Model have transparent parts?, note it! to render transparent parts later.

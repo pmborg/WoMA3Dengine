@@ -168,7 +168,7 @@ bool CTerrain::LoadHeightMapTerrain(TCHAR* file, float xPos, float zPos, bool sk
 	int k = 0; int x, y;
 #define j y
 #define i x
-	const static float fixedBorderHeight = 0.0f; ////
+	const static float fixedBorderHeight = FIXEDBORDERHEIGHT;
 
 #if DX_ENGINE_LEVEL >= 60 && defined USE_TERRAIN_TUTORIAL_CHAP_24
 	if (m_terrainType == TERRAIN_COLOR_QUAD_FOG_SLOP_TEXTURE_Detail_Mapping_TextureMapping_AlphaMapping_BumpMapping_LighMapping_TransparentTexture_MINI_MAP)

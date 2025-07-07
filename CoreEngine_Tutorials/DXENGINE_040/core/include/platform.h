@@ -1,8 +1,8 @@
-// --------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------------
 // Filename: platform.h
-// --------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
-// --------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------------
 // Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
@@ -13,16 +13,65 @@
 // The content contained in this file is provided only for educational and informational purposes.
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
-// --------------------------------------------------------------------------------------------
-// PURPOSE: Define/Auto-detect all global "target-settings" to compile WOMA project ENGINE
+// --------------------------------------------------------------------------------------------------------------------
+// PURPOSE: Auto-detect all global "target-settings" to compile WOMA ENGINE project.
 //
-// - ONLY DEFINE(s) HERE:
+// ONLY DEFINE(s) HERE:
 //		NO INCLUDE(s) (except APPLE API & ANDROID API)
 //		NO GLOBAL VARIABLE(s)
 //
-// --------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------------
+// PROJECT TARGETS:
+//  Debug      - MULTI-BYTE (ANSI/UTF-8): Uses local project directories for assets and configs.
+//  Release    - MULTI-BYTE (ANSI/UTF-8): Uses local directories or installed directories (set by installer).
+//  WDebug     - UNICODE (UTF-16/wchar_t): Unicode version of Debug, uses local directories.
+//  WRelease   - UNICODE (UTF-16/wchar_t): Unicode version of Release, uses local or installed directories.
+//  DBGREL     - Debug a Release build using local directories (typically for installer testing).
+// 
+// Notes:
+//  - MULTI-BYTE: Standard char-based strings, best for legacy/ASCII-only builds.
+//  - UNICODE: Wide-character strings, required for full internationalization and modern Windows APIs.
+//  - "Local directories" refer to paths within the project tree; "installed directories" are set by the installer.
+// 
+// --------------------------------------------------------------------------------------------------------------------
+// KEY FEATURES:
+//
+// • PLATFORM AUTO-DETECTION :
+//      Automatically detects and defines the target platform (Windows, Linux, Android, etc.) and CPU architecture (x86, x64, ARM).
+//
+// • STRICT COMPILATION ASSERTIONS :
+//      Uses static_assert and preprocessor checks to enforce valid and supported build configurations, preventing invalid combinations.
+//
+// • RENDER SYSTEM SELECTION :
+//      Auto-selects the appropriate graphics API (DirectX 9/11/12, OpenGL, GLES) based on platform, CPU, and SDK version.
+//
+// • INTRINSICS AND SIMD SUPPORT :
+//      Includes and configures the correct SIMD/intrinsics headers (SSE, AVX, AVX2, AVX-512, etc.) for optimal math performance.
+//
+// • ENDIANNESS DETECTION :
+//      Detects and defines CPU endianness (little or big endian) for cross-platform compatibility.
+//
+// • OS GUI API SELECTION :
+//      Selects the correct GUI API (Win32, GTK, Android SDK) for the target platform.
+//
+// • BUILD-TIME METADATA :
+//      Defines macros to extract build date, time, and platform information for versioning and diagnostics.
+//
+// • PROJECT-WIDE CONSTANTS :
+//      Declares common constants (e.g., MAX_PATH, MAX_PARAMS, KBs, MBs) and utility macros (MAX, MIN) for consistent usage.
+//
+// • ENGINE FEATURE FLAGS :
+//      Sets up engine-level feature flags and includes project asset settings based on the build configuration.
+//
+// • NO GLOBAL VARIABLES OR INCLUDES :
+//      Restricts the file to only preprocessor definitions and platform detection logic, as per project guidelines
+// --------------------------------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234525256;
 #pragma once
+
+#if defined NDEBUG && !defined _DEBUG
+    //#define RELEASE // ON/OFF use installed directories from installer. RELEASE = NDEBUG + "Real" Client Path(s) with Pack(s)
+#endif
 
 #if NOTES
 --------------------------------------------------------------------------------------------
@@ -68,15 +117,15 @@ DirectX 11.0 	October 22, 2009 	Shader Model 5.0 	vs_5_0, ps_5_0, gs_5_0, ds_5_0
 DirectX 11.1																										WIN8
 DirectX 11.2																										WIN8.1
 DirectX 12.0    Augost 21, 2015 Shader Model 5.1 — GCN 1 + , Fermi + , DirectX 12 (11_0 + ) with WDDM 2.0.WIN10		WIN10
-Shader Model 6.0 — GCN 1 + , Kepler + , DirectX 12 (11_0 + ) with WDDM 2.1.WIN10									=
-Shader Model 6.1 — GCN 1 + , Kepler + , DirectX 12 (11_0 + ) with WDDM 2.3.WIN10									=
-Shader Model 6.2 — GCN 1 + , Kepler + , DirectX 12 (11_0 + ) with WDDM 2.4.WIN10									=
-Shader Model 6.3 — GCN 1 + , Kepler + , DirectX 12 (11_0 + ) with WDDM 2.5.WIN10									=
-Shader Model 6.4 — GCN 1 + , Kepler + , Skylake + , DirectX 12 (11_0 + ) with WDDM 2.6.WIN10						=
-Shader Model 6.5 — GCN 1 + , Kepler + , Skylake + , DirectX 12 (11_0 + ) with WDDM 2.7.WIN10						=
-Shader Model 6.6 — GCN 4 + , Maxwell + , DirectX 12 (11_0 + ) with WDDM 3.0.WIN11									WIN11
-Shader Model 6.7 — GCN 4 + , Maxwell + , DirectX 12 (12_0 + ) with WDDM 3.1.WIN11									=
-Shader Model 6.8 — RDNA 1 + , Maxwell 2 + , DirectX 12 (12_0 + ) with WDDM 3.1 / 3.2 with Agility SDK				=
+ Shader Model 6.0 — GCN 1 + , Kepler + , DirectX 12 (11_0 + ) with WDDM 2.1.WIN10									=
+ Shader Model 6.1 — GCN 1 + , Kepler + , DirectX 12 (11_0 + ) with WDDM 2.3.WIN10									=
+ Shader Model 6.2 — GCN 1 + , Kepler + , DirectX 12 (11_0 + ) with WDDM 2.4.WIN10									=
+ Shader Model 6.3 — GCN 1 + , Kepler + , DirectX 12 (11_0 + ) with WDDM 2.5.WIN10									=
+ Shader Model 6.4 — GCN 1 + , Kepler + , Skylake + , DirectX 12 (11_0 + ) with WDDM 2.6.WIN10						=
+ Shader Model 6.5 — GCN 1 + , Kepler + , Skylake + , DirectX 12 (11_0 + ) with WDDM 2.7.WIN10						=
+ Shader Model 6.6 — GCN 4 + , Maxwell + , DirectX 12 (11_0 + ) with WDDM 3.0.WIN11									WIN11
+ Shader Model 6.7 — GCN 4 + , Maxwell + , DirectX 12 (12_0 + ) with WDDM 3.1.WIN11									=
+ Shader Model 6.8 — RDNA 1 + , Maxwell 2 + , DirectX 12 (12_0 + ) with WDDM 3.1 / 3.2 with Agility SDK				=
 
 DX12 Versions:
 --------------
@@ -89,9 +138,6 @@ DX12 Versions:
 10.00.22000.1000 	October 5, 2021 	Windows 11, Added native refresh rate switching[94] and improved graphics capabilities to Windows Subsystem for Linux
 #endif
 
-#if !defined _PLATFORM_H_
-#define _PLATFORM_H_
-
 #define DISABLE_BIN_COMPILE_MESSAGE_FOR_WINDOWS_PLATFORM_X64	//Dont Show: TARGET: CPU_X64 on WINDOWS_PLATFORM
 
 #ifndef _CRT_SECURE_NO_WARNINGS
@@ -102,9 +148,9 @@ DX12 Versions:
 #pragma warning( disable : 6262 )	// Disable warning C6262: 
 #pragma warning( disable : 4217 )	// LINK : warning LNK4217: symbol
 
-// -------------------------------------------------------------------------------------------
-// CHECK: 32bits vs 64bits:
-// -------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------
+// === 32bits or 64bits DETECTION for X86 CPUs (for: WINDOWS_PLATFORM or LINUX_PLATFORM)  ===
+// -------------------------------------------------------------------------------------------------------------------
 // Check, if we are compiling in 32bits:
 #if defined(__i386__) || defined(i386) || defined(_M_IX86) || defined(_X86_) || defined(__THW_INTEL)
 	#define CPU_X86 //CPU: 32bits!
@@ -115,9 +161,9 @@ DX12 Versions:
 	#define X64	//CPU: 64bits!
 #endif
 
-// -------------------------------------------------------------------------------------------
-// ASSERT: X86 vs X64 VALID COMPILATION OPTIONS:
-// -------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------
+// ASSERT: 32bits and 64bits VALID COMPILATION OPTIONS:
+// -------------------------------------------------------------------------------------------------------------------
 #if defined _MSC_VER
 #if defined CPU_X86 && defined X64
 static_assert(false, "Can't be X86 and X64 at the same time!");
@@ -127,9 +173,9 @@ static_assert(false, "At least one X86 or X64 need to be defined!");
 #endif
 #endif
 
-// -------------------------------------------------------------------------------------------
-//	CHECK for ARM version
-// -------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------
+// === 32bits or 64bits DETECTION for ARM CPUs (for: ANDROID_PLATFORM) ===
+// -------------------------------------------------------------------------------------------------------------------
 #if defined(__arm__) || defined(__thumb__) || defined(_ARM) || defined(_M_ARM)
 	#define CPU_ARM32	//FOR: ANDROID_PLATFORM
 #elif defined(__arm64) || defined(__arm64__) || defined(_M_ARM64) || defined(__aarch64__)
@@ -140,9 +186,9 @@ static_assert(false, "At least one X86 or X64 need to be defined!");
 static_assert(false, "This HW Target is not valid for WOMA3D Engine");
 #endif
 
-// -------------------------------------------------------------------------------------------
-//	Automatically Select Platform to Compile: (WINDOWS_PLATFORM / LINUX_PLATFORM / ANDROID_PLATFORM)
-// -------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------
+// === PLATFORM DETECTION (for current supported platforms) === (WINDOWS_PLATFORM / LINUX_PLATFORM / ANDROID_PLATFORM)
+// -------------------------------------------------------------------------------------------------------------------
 /* Windows, both 32-bit and 64-bit */
 #if defined(_WIN32) || defined(WIN32) || defined(_WIN64) || defined(WIN64) || \
     defined(__WIN32__) || defined(__TOS_WIN__) || defined(__WINDOWS__)
@@ -196,9 +242,9 @@ static_assert(false, "This HW Target is not valid for WOMA3D Engine");
 #endif
 #endif
 
-// -------------------------------------------------------------------------------------------
-// ASSERT: COMPILATION OPTIONS:
-// -------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------
+// VALIDATE: COMPILATION OPTIONS:
+// -------------------------------------------------------------------------------------------------------------------
 // LOG WINDOWS:
 #if (defined CPU_X86 || defined X64) && defined WINDOWS_PLATFORM
 #if defined X64
@@ -238,14 +284,14 @@ static_assert(false, "This HW Target is not valid for WOMA3D Engine");
 	#pragma message ("TARGET: CPU_ARM64 on ANDROID_PLATFORM")
 #endif
 
-// ASSERT one valid PLATFORM Selected:
+// ASSERT that only one valid PLATFORM id selected:
 #if (!defined (WINDOWS_PLATFORM)) && (!defined (LINUX_PLATFORM)) && (!defined (ANDROID_PLATFORM))
 	#error "WOMA COMPILATION ERROR: Only 1, target Platform can be select to COMPILE!"
 #endif
 
-// -------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------
 // CHECK: Intel Intrinsics: SSE, SSE2, AVX, AVX2, AVX-512, etc...
-// -------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------
 	//x86intrin.h	: x86 instructions
 	//mmintrin.h	: MMX(Pentium MMX!)
 	//mm3dnow.h		: 3dnow!(K6 - 2) (deprecated)
@@ -261,15 +307,15 @@ static_assert(false, "This HW Target is not valid for WOMA3D Engine");
 	//immintrin.h	: AVX512, AVX2, AVX, SSE4_2 + SSE4_1 + SSSE3 + SSE3 + SSE2 + SSE + MMX(Core i7 Sandy Bridge, Bulldozer)
 
 #if !defined(_XM_NO_INTRINSICS_) && defined WINDOWS_PLATFORM
-	// -------------------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------------------------------------------
 	// Select Advanced MATH-LIB based on which CPU X86 Generation we are TARGETTING:
 	// GET COMPILATION OPTION SELECTED - C++/Code Generation: SAMPLE: 
 	// - Advanced Vector Extensions 512 (/arch:AVX512)
 	// - Advanced Vector Extensions 2 (/arch:AVX2)
 	// ...
-	// -------------------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------------------------------------------
 	//AVX512 (Core i7/i9-7xxxX Skylake-X) (2017):
-	// -------------------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------------------------------------------
 #ifdef __AVX2__
 	//#pragma message ("__AVX2__")
 #endif
@@ -290,7 +336,7 @@ static_assert(false, "This HW Target is not valid for WOMA3D Engine");
 #endif
 
 #ifdef __AVX512F__	//AVX512 |Core i7/i9-7xxxX Skylake-X| (2017) && |AMD Ryzen 7XXX PC processors | --> TARGET CODE: WIN10 64b+AVX512 API:DX12 (Level DX12.x)
-	//To be compiled in: VS2017-VS2022
+	//To be compiled in: VS2017-VS2019-VS2022
 #include <immintrin.h>
 #elif defined (__AVX2__)					//AVX2	 (i3/5/7 Haswell)	      = (Q2 2013) TARGET CODE: WIN10 64b+AVX2	API:DX12 (Level DX12.x)
 #define _XM_AVX2_INTRINSICS_
@@ -337,13 +383,13 @@ static_assert(false, "This HW Target is not valid for WOMA3D Engine");
 #endif
 #endif
 
-#ifdef _XM_NO_INTRINSICS_ // This is for 32bits Builds.
+#ifdef _XM_NO_INTRINSICS_ // This is for WINXP 32bits (DX9) Builds
 	#define m128_f32 vector4_f32
 #endif
 
-// -------------------------------------------------------------------------------------------
-// ASSERT: VALID COMPILATION OPTIONS: Intel Intrinsics: SSE, SSE2, AVX, AVX2, AVX-512, etc...
-// -------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------
+// === VALIDATE COMPILATION OPTIONS for MATH LIBS: Intel Intrinsics: SSE, SSE2, AVX, AVX2, AVX-512, etc... ===
+// -------------------------------------------------------------------------------------------------------------------
 #if defined _MSC_VER
 #ifdef X64
 #if defined SSE2_ONLY
@@ -367,9 +413,9 @@ static_assert(false, "This HW Target is not valid for WOMA3D Engine");
 #endif
 #endif
 
-// -------------------------------------------------------------------------------------------
-//	CHECK for LOW/BIG ENDIAN
-// -------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------
+//	=== DETECT LOW or BIG ENDIAN ===
+// -------------------------------------------------------------------------------------------------------------------
 #if defined(__BYTE_ORDER__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 #define CPU_BIGENDIAN
 #elif defined(__BYTE_ORDER__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
@@ -387,9 +433,9 @@ static_assert(false, "This HW Target is not valid for WOMA3D Engine");
 #define CPU_LOWENDIAN
 #endif
 
-// -------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------
 // ASSERT: VALID COMPILATION OPTIONS:
-// -------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------
 #if !defined (CPU_LOWENDIAN)
 static_assert(false, "This code is for a LOWENDIAN CPU");
 #endif
@@ -402,9 +448,9 @@ static_assert(false, "This code is for a LOWENDIAN CPU");
 	#define WOMA_NEWLINE "\n"
 #endif
 
-// -------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------
 //	Select OS GUI API:
-// -------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------
 #if defined WINDOWS_PLATFORM
 	#define WIN32_GUI
 #endif
@@ -417,7 +463,9 @@ static_assert(false, "This code is for a LOWENDIAN CPU");
 	#define SDK_GUI
 #endif
 
+// -------------------------------------------------------------------------------------------------------------------
 // ASSERT: proper OS-GUI selected:
+// -------------------------------------------------------------------------------------------------------------------
 #if defined (WINDOWS_PLATFORM) && !defined (WIN32_GUI)
 #error "WOMA COMPILATION ERROR: WINDOWS PLATFORM ONLY SUPPORT WIN32_GUI"
 #endif
@@ -430,9 +478,9 @@ static_assert(false, "This code is for a LOWENDIAN CPU");
 #error "WOMA COMPILATION ERROR: ANDROID PLATFORM ONLY SUPPORT SDK_GUI"
 #endif
 
-// -------------------------------------------------------------------------------------------
-//	Auto-select "Render-driver" to Compile: DX12 / DX11 (dx11,dx10.1,dx10 and dx9.3) / OPENGL3.3+ / DX9
-// -------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------
+//	Auto-select "Render-driver" to Compile: DX12 / DX11 (dx11,dx10.1,dx10 and dx9.3) / OPENGL3.3+ / OPENGL4 / DX9 (for XP)
+// -------------------------------------------------------------------------------------------------------------------
 #if defined WINDOWS_PLATFORM && !defined ANDROID_PLATFORM 
 	// Should be Compiled with: VS2010(for DX11) or VS2012(for DX11) or VS2013(for DX11) or VS2015(for DX12)
 #if !defined VER_PRODUCTMAJORVERSION
@@ -482,8 +530,9 @@ static_assert(false, "This code is for a LOWENDIAN CPU");
 #endif
 #endif
 
+// -------------------------------------------------------------------------------------------------------------------
 // Select OPENGL-APIs to COMPILE:
-// -------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------
 // (Windows: Vista, 7 & 8) or Linux? ---> Allow OpenGL 3.3+ & 4.0
 #if defined ANDROID_PLATFORM || (defined WIN6x) || (defined LINUX_PLATFORM && !defined X64)
 	#define OPENGL3  //OPENGL-API: 3.3+ ~ DX10 for Microsoft Windows / Mac OS X / Linux / Android level:26
@@ -518,9 +567,9 @@ static_assert(false, "This code is for a LOWENDIAN CPU");
 #error "WOMA COMPILATION ERROR: At least one Render-System have to be Selected to COMPILE!"
 #endif
 
-// -------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------
 // ASSERT BIN Build Check:
-// -------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------
 // ASSERT: Only Allow WinXp in 32 bits:
 #if defined X64 && defined WIN_XP
 static_assert(false, "WIN_XP: Must be compiled in 32bits");
@@ -530,16 +579,16 @@ static_assert(false, "WIN_XP: Must be compiled in 32bits");
 #if (defined X64 || defined WIN32)
 // Allow 32 and 64 bits: For WIN6x
 #else
-static_assert(false, "WIN6x: X64 or WIN32, have to be selected");
+static_assert(false, "WIN6x: X64 or WIN32, must be selected");
 #endif
 #endif
 
 #define BIG_ENDIAN 0    //constexpr int BIG_ENDIAN = 0;
 #define LITTLE_ENDIAN 1 //  constexpr int LITTLE_ENDIAN = 1;
 
-// -------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------
 // Windows Platforms Define (Internal API Version):
-// -------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------
 #if defined _MSC_VER
 	#define _WindowsXP32b_	5.1
 	#define _WindowsXP64b_	5.2
@@ -552,9 +601,9 @@ static_assert(false, "WIN6x: X64 or WIN32, have to be selected");
 	//WIN12 _Windows_10_	(They use WIN10 API)
 #endif
 
-// -------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------
 // Define Compilation Time:
-// -------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------
 #define BUILD_YEAR_CH0 (__DATE__[ 7])
 #define BUILD_YEAR_CH1 (__DATE__[ 8])
 #define BUILD_YEAR_CH2 (__DATE__[ 9])
@@ -604,76 +653,40 @@ static_assert(false, "WIN6x: X64 or WIN32, have to be selected");
 #define MBs (1024*KBs)
 #define GBs (1024*MBs)
 
+#ifdef MAX
+#undef MAX
+#endif
+#ifdef MIN
+#undef MIN
+#endif
 #define MAX(a,b)	(((a) > (b)) ? (a) : (b))
 #define MIN(a,b)	(((a) < (b)) ? (a) : (b))
 
 #if defined ANDROID_PLATFORM
-#define MAX_PATH 260
+#ifdef MAX_PATH
+#undef MAX_PATH
+#endif
+#define MAX_PATH            260
 #endif
 
 #define MAX_PARAMS			20			// Max parameters on command line
 #define MAX_STR_LEN			512			// Used by TCHAR Arrays
-#define CONSOLE_LOG_WIDTH	900
-#define MAXBUFF				5*KBs
+#define MAXBUFF				5*KBs       // Used for generic buffers
 
-// -------------------------------------------------------------------------------------------
-#if defined NDEBUG && !defined _DEBUG
-	//#define RELEASE // ON/OFF Comercial Version (Check Serials) RELEASE = NDEBUG + "Real" Client Path(s) with Pack(s)
-#endif
+#define CONSOLE_LOG_WIDTH	900         // Windows debug console size/width
 
+// -------------------------------------------------------------------------------------------------------------------
 #if defined UNICODE
-	//UNICODE
+	//UNICODE       // Unicode (wchar_t/UTF-16) supports all languages
 #else
-	//MULTI-BYTE
+	//MULTI-BYTE    
 #endif
 
-// -------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------
 // Define WOMA Project "Settings/Features" that will be COMPILED depending of "ENGINE_LEVEL"
-// -------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------
 #if defined MAVERICK
-	#include "C:\WoMAengine2023\woma_engine_assets.h"
+	#include "C:\WoMAengine2023\woma_engine_assets.h"   // MAIN ENGINE
 #else
-    #include "../../woma_engine_assets.h"				// PUBLIC DEMOS: WINDOWS / ANDROID / LINUX
-#endif
-
-#include "stateMachine.h"
-
-#if CORE_ENGINE_LEVEL < 10
-	#define WOMA_CONSOLE_APPLICATION
-	#define WomaDriverClass void
-#else
-#if _DEBUG
-	//#define RELEASE					// TO FORCE the DEBUG of a RELEASE bin!
-	#define WOMA_CONSOLE_APPLICATION
-#else
-  #if defined _MSC_VER
-	#define WOMA_WIN32_APPLICATION
-  #endif
-#endif
-#endif
-
-#if defined WOMA_CONSOLE_APPLICATION
-	#define _CONSOLE
-#endif
-
-#if DX_ENGINE_LEVEL >= 79
-#define LOG_FILE os_file
-#endif
-
-#endif
-
-#if _NOT
-/*
-#undef DX9sdk   //Original DX9
-#undef DX9      //DX9 Using modern API: DX11
-#undef DX10     
-#undef DX11
-#undef DX12
-
-#undef GLES2    //Android: x64|ARM64 (c++: API:26) (Packaging: API:25)
-#undef GLES3
-
-#undef OPENGL3  //Windows: 32bits
-#undef OPENGL40 //Windows: 64bits or Linux: 64bits
-*/
+    #include "../../woma_engine_assets.h"				// PUBLIC (AUTO GENERATED DEMOS): WINDOWS / ANDROID / LINUX
 #endif

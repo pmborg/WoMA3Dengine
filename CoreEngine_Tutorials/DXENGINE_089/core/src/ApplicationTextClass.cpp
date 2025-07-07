@@ -139,6 +139,24 @@ void ApplicationTextClass::SetInfoB(float rotX, float rotY, float rotZ)
 }
 #endif
 
+#if DX_ENGINE_LEVEL >= 89 && defined USE_MAP_EDITOR // #if TUTORIAL_PRE_CHAP >= 12
+//13,14,15
+void ApplicationTextClass::SetCompoundPosition(CHAR* file, float dist, UINT id, float posX, float posY, float posZ, float scale, float rotY)
+{
+    TCHAR dataString[150];
+
+    if (dist > 10000) // if distance >10km make as 10km... (we will not see it anyway!)
+        dist = 9999;
+
+	sprintf_s(dataString, "OBJ ID: %d %s DIST: %4.2f", id, file, dist);
+    ASSERT(m_Text->UpdateSentence(m_sentence[TEXT_COMPOUND_ID], dataString, 10, 180, 1.0f, 0.0f, 1.0f));
+
+    // Setup the X, Y, Z position and (scale) string:
+    StringCchPrintf(dataString, sizeof(dataString), TEXT("OBJ xyz: %4.2f, %4.2f, %4.2f (Scale: %4.2f) (rotY: %f)"), posX, posY, posZ, scale, rotY);
+    ASSERT(m_Text->UpdateSentence(m_sentence[TEXT_COMPOUND], dataString, 10, 200, 1.0f, 0.0f, 1.0f));
+}
+#endif
+
 #if DX_ENGINE_LEVEL >= 30 && _DEBUG && !defined TEXT_TEST
 //08
 void ApplicationTextClass::SetRenderCount(int Count, int compoundCount, UINT totalCompoundLoaded)
@@ -153,7 +171,7 @@ void ApplicationTextClass::SetRenderCount(int Count, int compoundCount, UINT tot
 }
 #endif
 
-#if TUTORIAL_CHAP >= 60 && _DEBUG // BILLBOARD
+#if TUTORIAL_CHAP >= 60 && !defined RELEASE // BILLBOARD
 //10
 void DirectX::ApplicationTextClass::SetBillRenderCount(int count, UINT deltaTime)
 {

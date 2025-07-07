@@ -45,7 +45,7 @@
 #include <dsound.h>
 #include <stdio.h>
 
-#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
+#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
 extern IDirectSound8* m_DirectSound;
 #endif
 ///////////////////////////////////////////////////////////////////////////////
@@ -88,13 +88,13 @@ private:
 	bool InitializeDirectSound(HWND);
 	void ShutdownDirectSound();
 
-#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
+#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
 	bool LoadWaveFile(char*, IDirectSoundBuffer8**, IDirectSound3DBuffer8**);
 #else
 	bool LoadWaveFile(char*, IDirectSoundBuffer8**);
 #endif
 
-#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
+#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
 	void ShutdownWaveFile(IDirectSoundBuffer8** secondaryBuffer, IDirectSound3DBuffer8** secondary3DBuffer);
 #else
 	void ShutdownWaveFile(IDirectSoundBuffer8**);
@@ -103,18 +103,18 @@ private:
 	IDirectSoundBuffer* m_primaryBuffer = NULL;
 	IDirectSoundBuffer8* m_secondaryBuffer1 = NULL;	// For MUSIC
 
-	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
+	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
 	IDirectSound3DBuffer8* m_secondary3DBuffer1;	// For Sound Effect
 	#endif
 
 	WaveHeaderType waveFileHeader = {};
 
 public:
-	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
+	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
 	IDirectSound3DListener8* m_listener;
 	#endif
 
-#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
+#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
 	bool PlayWaveFile(float positionX, float positionY, float positionZ, bool loop, float range);
 #else
 	bool PlayWaveFile();

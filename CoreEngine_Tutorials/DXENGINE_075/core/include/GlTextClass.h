@@ -31,7 +31,7 @@
 #include "GLshaderClass.h"
 #include "textFontClass.h"
 // ----------------------------------------
-
+#include "ApplicationTextClass.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: GlTextClass

@@ -52,11 +52,13 @@
 #include "GLAnimationScene.h"
 #endif
 
-#if TUTORIAL_CHAP >= 90
+#if TUTORIAL_CHAP >= 140
 #include "../network/NetworkClass.h"
 #else
 #define MAX_CLIENTS 1
 #endif
+
+
 
 #if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
 #include "virtualModelClass.h"
@@ -71,7 +73,7 @@ extern UINT g_NetID;
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 #include "positionClass.h"
-#include "playerClass.h"
+//#include "PlayerClass.h" //AQUI
 #if defined DX_ENGINE
 	#include "DXinputClass.h"
 #endif
@@ -106,8 +108,9 @@ extern UINT g_NetID;
 
 #if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION
 struct compoundTreeLoadOrder {
-    UINT compoundTreeId;
-    UINT order;
+    UINT compoundTreeId=0;
+    UINT order=0;
+    bool ready=false;
 };
 
 extern int __cdecl CompoundSortCB(const VOID* arg1, const VOID* arg2);
@@ -216,6 +219,9 @@ public:
 
 	float dayLightFade;
 
+#if defined CHECK_OBJ_COLISION
+    XMVECTOR prwsPos = {}, prwsDir = {};
+#endif
 #if DX_ENGINE_LEVEL >= 23 || defined USE_VIEW2D_SPRITES
 	void AppPosRender(UINT monitorWindow);																// POS-RENDER - 2D: Render 
 #endif
@@ -251,13 +257,15 @@ public:
 
 #if defined CHECK_OBJ_COLISION
     void pickRayVector(float mouseX, float mouseY, XMVECTOR& pickRayInWorldSpacePos, XMVECTOR& pickRayInWorldSpaceDir);
-    float pick(XMVECTOR pickRayInWorldSpacePos, XMVECTOR pickRayInWorldSpaceDir,
-        std::vector<XMFLOAT3>& vertPosArray, std::vector<UINT/*DWORD*/>& indexPosArray, XMMATRIX& worldSpace, bool getPoligon = false);
+    float pick(
+                XMVECTOR pickRayInWorldSpacePos, 
+                XMVECTOR pickRayInWorldSpaceDir,
+                std::vector<XMFLOAT3>& vertPosArray, 
+                std::vector<UINT/*DWORD*/>& indexPosArray, 
+                XMMATRIX& worldSpace, 
+                bool getPoligon = false);
     bool PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTOR& triV3, XMVECTOR& point);
-    void anyMouseClickToPick();
-#endif
-
-#if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION
+    
     compoundTreeLoadOrder compoundTreeLoadingOrder[10000] = {}; // MAX 10000 Objs on Scene
 #endif
 
@@ -314,7 +322,7 @@ public:
 	void RenderAllTransparentCompounds();
 
 	UINT N_COMPOUNDS;
-	UINT CHG_COMPOUND;
+	
 
 	/*
 	// Originally: G:\DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64\src\Applicationclass.cpp

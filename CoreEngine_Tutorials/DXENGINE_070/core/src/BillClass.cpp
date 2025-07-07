@@ -36,6 +36,7 @@ BillClass::BillClass()
 
     billNames_length = 0;
     BillrenderCount = 0;
+    billTotal = 0;
 
     mainTerrainPath = NEW CTerrain(TERRAIN);
     mainTerrainPath->LoadHeightMapTerrain(BILLBOARD_TERRAIN, 0, 0); //engine/data/scene73grass/t_025TerrainMappingV4.bmp
@@ -100,8 +101,6 @@ TCHAR billFileName[][MAX_STR_LEN] =
 	BILL_TREE_5,	//5
 
 };
-
-
 
 xmlobj3d* BillClass::fillxml(int id, UINT type)
 {
@@ -196,15 +195,6 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 		}
 		if (type >= 6)					// Make flowers Smaller
 			scale = scale/2;
-
-		//if (i == 0) { //Make 1 special tree on the first compound
-		//	m_Trees[i].vPos.x = 27;
-		//	m_Trees[i].vPos.z = 27;
-		//	height = mainTerrain->getTerrainHeight(TERRAIN_ID, m_Trees[i].vPos.x, m_Trees[i].vPos.z);
-		//	type = 3;
-		//	scale = 4;
-		//}
-
 		m_Trees[i].ID = i;
 		m_Trees[i].type = type;
 		m_Trees[i].scale = scale;		

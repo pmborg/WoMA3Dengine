@@ -436,7 +436,7 @@
     //#define BILLBOARD_MODEL TEXT("engine/data/scene30/squareTexture.obj")
 #endif
 
-#if DX_ENGINE_LEVEL >= 70
+#if DX_ENGINE_LEVEL >= 70 //SCENE_BILLBOARDS
     #define BILLBOARD_TERRAIN TEXT("engine/data/scene73grass/t_025TerrainMappingV4.bmp")
     #define BILLBOARD_MODEL TEXT("engine/data/scene70Bill/060square.obj")
 
@@ -554,12 +554,6 @@
     #define DEMO_TITLE TEXT("88: 3rd person camera: (W A S D) + left (CTRL or SHIFT) to run + STRAFE (Q E)")
     #define WORLD_XML TEXT("world_88.xml")
 #endif
-#if DX_ENGINE_LEVEL >= 88
-    #define MAIN_CHAR_MODEL1 0 //Idle
-    #define MAIN_CHAR_MODEL2 1 //Walk
-    #define MAIN_CHAR_MODEL3 2 //Walk back
-    #define MAIN_CHAR_MODEL4 3 //Run
-#endif			 
 #if DX_ENGINE_LEVEL == 89
     #define DEMO_TITLE TEXT("89: PBR Textures and Shader")
     #define WORLD_XML TEXT("world_89.xml")
@@ -567,4 +561,58 @@
 #if DX_ENGINE_LEVEL == 90
     #define DEMO_TITLE TEXT("90: OPTIMIZING")
     #define WORLD_XML TEXT("world_90.xml")
+#endif
+
+
+
+
+
+
+
+
+#include "stateMachine.h"
+
+#if CORE_ENGINE_LEVEL < 10
+	#define WOMA_CONSOLE_APPLICATION
+	#define WomaDriverClass void
+#else
+#if _DEBUG
+	//#define RELEASE					// TO FORCE the DEBUG of a RELEASE bin!
+	#define WOMA_CONSOLE_APPLICATION
+#else
+  #if defined _MSC_VER
+	#define WOMA_WIN32_APPLICATION
+  #endif
+#endif
+#endif
+
+#if defined WOMA_CONSOLE_APPLICATION
+	#define _CONSOLE
+#endif
+
+#if DX_ENGINE_LEVEL >= 79 && defined DEBUG_MESH
+#define LOG_FILE os_file
+#endif
+
+#if _NOT
+#undef DX9sdk   //Original DX9
+#undef DX9      //DX9 Using modern API: DX11
+#undef DX10     
+#undef DX11
+#undef DX12
+
+#undef GLES2    //Android: x64|ARM64 (c++: API:26) (Packaging: API:25)
+#undef GLES3
+
+#undef OPENGL3  //Windows: 32bits
+#undef OPENGL40 //Windows: 64bits or Linux: 64bits
+#endif
+
+
+#if DX_ENGINE_LEVEL >= 100 //IMGUI!
+  #if defined ANDROID_PLATFORM
+      #define DEMO_SETTINGS_ICON TEXT("engine/data/basics/settings_929846-big.png")
+  #else
+      #define DEMO_SETTINGS_ICON TEXT("engine/data/basics/settings_929846.png")
+  #endif
 #endif

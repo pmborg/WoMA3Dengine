@@ -110,7 +110,7 @@ bool dxWinSystemClass::APPLICATION_INIT_SYSTEM() //LOAD ALL GRAPHICS
 #endif
 
 	driverList.clear();
-#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
+#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
 	m_DirectSound = NULL;
 #endif
 
@@ -516,6 +516,8 @@ HRESULT dxWinSystemClass::PlayIntroMovie(TCHAR* movie)
 void InitializeObjectsLoaderThreadFunction() // InitializeThread
 //-----------------------------------------------------------------------------------------	
 {
+    SetUnhandledExceptionFilter(TopLevelFilter);
+
 	WOMA_LOGManager_DebugMSG("CreateThread: InitializeObjectsLoaderThreadFunction\n");
 
 	switch (SystemHandle->systemManager->processorInfo.cpuCores.logicalProcessorCount)

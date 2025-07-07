@@ -64,6 +64,9 @@ UINT KeyFlyUp	= {DIK_R};
 UINT KeyFlyDown	= {DIK_F};
 #endif
 
+UINT KeyNumPad4 = {DIK_NUMPAD4};
+UINT KeyNumPad6 = {DIK_NUMPAD6};
+
 float terrain_nx = 0.0f;
 float terrain_nz = 0.0f;
 float nextHeight = 0;
@@ -87,28 +90,43 @@ void DXInputClass::ProcessInputKeys()
 	//EXIT:
 	m_ourPlayer->p_player.IsEscapePressed	    = (m_keyboardState[DIK_ESCAPE] & 0x80) ? true:false;
 
-    m_ourPlayer->p_player.Is1Pressed           = (m_keyboardState[Key1[0]] & 0x80) ? true : false; 	// Weapon:1 Bow
-    m_ourPlayer->p_player.Is2Pressed           = (m_keyboardState[Key2[0]] & 0x80) ? true : false; 	// Weapon:2 Sward
+    m_ourPlayer->p_player.Is1Pressed            = (m_keyboardState[Key1[0]] & 0x80) ? true : false; 	// Weapon:1 Bow
+    m_ourPlayer->p_player.Is2Pressed            = (m_keyboardState[Key2[0]] & 0x80) ? true : false; 	// Weapon:2 Sward
 
 	//BASE MOVEMENT:
-	m_ourPlayer->p_player.IsUpPressed		    = (m_keyboardState[KeyFront[0]] & 0x80) || (m_keyboardState[KeyFront[1]] & 0x80) ? true:false;
-	m_ourPlayer->p_player.IsDownPressed		    = (m_keyboardState[KeyBack[0]] & 0x80)  || (m_keyboardState[KeyBack[1]] & 0x80)  ? true:false;
-	m_ourPlayer->p_player.IsLeftPressed		    = (m_keyboardState[KeyLeft[0]] & 0x80)  || (m_keyboardState[KeyLeft[1]] & 0x80)  ? true:false;
-	m_ourPlayer->p_player.IsRightPressed	    = (m_keyboardState[KeyRigth[0]] & 0x80) || (m_keyboardState[KeyRigth[1]] & 0x80) ? true:false;
+	m_ourPlayer->p_player.IsUpPressed		    = (m_keyboardState[KeyFront[0]] & 0x80) ? true:false;
+	m_ourPlayer->p_player.IsDownPressed		    = (m_keyboardState[KeyBack[0]]  & 0x80) ? true:false;
+	m_ourPlayer->p_player.IsLeftPressed		    = (m_keyboardState[KeyLeft[0]]  & 0x80) ? true:false;
+	m_ourPlayer->p_player.IsRightPressed	    = (m_keyboardState[KeyRigth[0]] & 0x80) ? true:false;
 
-    m_ourPlayer->p_player.IsStrafeLeftPressed   = (m_keyboardState[KeyStrafeLeft[0]] & 0x80) ? true : false; 	// q
+    // MAP_EDITOR
+#if defined USE_MAP_EDITOR
+    m_ourPlayer->p_player.IsEDITORNumPad4       = (m_keyboardState[KeyNumPad4] & 0x80) ? true : false;
+    m_ourPlayer->p_player.IsEDITORNumPad6       = (m_keyboardState[KeyNumPad6] & 0x80) ? true : false;
+
+    m_ourPlayer->p_player.IsEDITORUpPressed     = (m_keyboardState[KeyFront[1]] & 0x80) ? true : false;
+    m_ourPlayer->p_player.IsEDITORDownPressed   = (m_keyboardState[KeyBack[1]]  & 0x80) ? true : false;
+    m_ourPlayer->p_player.IsEDITORLeftPressed   = (m_keyboardState[KeyLeft[1]]  & 0x80) ? true : false;
+    m_ourPlayer->p_player.IsEDITORRightPressed  = (m_keyboardState[KeyRigth[1]] & 0x80) ? true : false;
+#endif
+
+    //Strafe:
+    m_ourPlayer->p_player.IsStrafeLeftPressed   = (m_keyboardState[KeyStrafeLeft[0]]  & 0x80) ? true : false; 	// q
     m_ourPlayer->p_player.IsStrafeRightPressed  = (m_keyboardState[KeyStrafeRigth[0]] & 0x80) ? true : false;   // e
 
-	m_ourPlayer->p_player.IsLeftCtrlPressed     = (m_keyboardState[KeyRun[0]] & 0x80) || (m_keyboardState[KeyRun[1]] & 0x80) ? true : false;    //RUN
+    //RUN:
+	m_ourPlayer->p_player.IsLeftCtrlPressed     = (m_keyboardState[KeyRun[0]] & 0x80) || (m_keyboardState[KeyRun[1]] & 0x80) ? true : false;    
 
-	m_ourPlayer->p_player.IsPgUpPressed		    = (m_keyboardState[KeyLookUp] & 0x80) ? true:false;				//Look UP
-	m_ourPlayer->p_player.IsPgDownPressed	    = (m_keyboardState[KeyLookDown] & 0x80) ? true : false;			//Look DOWN
+    //Look UP
+    //Look DOWN	
+    m_ourPlayer->p_player.IsPgUpPressed		    = (m_keyboardState[KeyLookUp]   & 0x80) ? true:false;				
+	m_ourPlayer->p_player.IsPgDownPressed	    = (m_keyboardState[KeyLookDown] & 0x80) ? true : false;			
 
     //GodMode:
 #if !defined RELEASE
-    m_ourPlayer->p_player.IsGodModePressed = (m_keyboardState[KeyGodMode] & 0x80) ? true : false;
-    m_ourPlayer->p_player.Is1Pressed = (m_keyboardState[KeyFlyUp] & 0x80) ? true : false;
-    m_ourPlayer->p_player.IsQPressed = (m_keyboardState[KeyFlyDown] & 0x80) ? true : false;
+    m_ourPlayer->p_player.IsGodModePressed  = (m_keyboardState[KeyGodMode] & 0x80) ? true : false;
+    m_ourPlayer->p_player.Is1Pressed        = (m_keyboardState[KeyFlyUp] & 0x80) ? true : false;
+    m_ourPlayer->p_player.IsQPressed        = (m_keyboardState[KeyFlyDown] & 0x80) ? true : false;
 #endif
 
 	//COMPOUND DEBUG:
@@ -212,24 +230,34 @@ bool ApplicationClass::ProcessUserKeyboardInput(double frameTime)
 #if defined DX_ENGINE
 #if defined USE_3RD_PERSON_CAMERA
     #define mouseCurrState DXsystemHandle->m_Input->m_mouseState
-    
-    if (
-        ((mouseCurrState.lX != mouseLastState.lX) || 
-         (mouseCurrState.lY != mouseLastState.lY) ) &&
-          mouseCurrState.rgbButtons[MOUSE_LEFT] & 0x80
-       )
+    if (g_GOD_MODE)
     {
-        m_camYaw += mouseLastState.lX * 0.002f;
-        m_camPitch += mouseCurrState.lY * 0.002f;
-        //WOMA_LOGManager_DebugMSGAUTO("m_camYaw: %4.1f - m_camPitch: %4.1f\n", m_camYaw, m_camPitch);
+        if (DXsystemHandle->m_Input->m_mouseState.rgbButtons[MOUSE_LEFT] & 0x80)
+        {
+            m_NextPosition->m_rotationY += 0.1f * DXsystemHandle->m_Input->m_mouseX;	// (0.005/0.0174532925f)
+            m_NextPosition->m_rotationX += 0.1f * DXsystemHandle->m_Input->m_mouseY;	// (0.005/0.0174532925f)
+        }
+    }
+    else
+    {
+        if (
+            ((mouseCurrState.lX != mouseLastState.lX) || 
+             (mouseCurrState.lY != mouseLastState.lY) ) &&
+              mouseCurrState.rgbButtons[MOUSE_LEFT] & 0x80
+           )
+        {
+            m_camYaw += mouseLastState.lX * 0.002f;
+            m_camPitch += mouseCurrState.lY * 0.002f;
+            //WOMA_LOGManager_DebugMSGAUTO("m_camYaw: %4.1f - m_camPitch: %4.1f\n", m_camYaw, m_camPitch);
 
-        // Check that the camera doesn't go over the top or under the player
-        if (m_camPitch > 0.85f)
-            m_camPitch = 0.85f;
-        if (m_camPitch < -0.85f)
-            m_camPitch = -0.85f;
+            // Check that the camera doesn't go over the top or under the player
+            if (m_camPitch > 0.85f)
+                m_camPitch = 0.85f;
+            if (m_camPitch < -0.85f)
+                m_camPitch = -0.85f;
 
-        mouseLastState = mouseCurrState;
+            mouseLastState = mouseCurrState;
+        }
     }
 #else
     if (DXsystemHandle->m_Input->m_mouseState.rgbButtons[MOUSE_LEFT] & 0x80)

@@ -43,7 +43,7 @@ PositionClass::PositionClass(UINT id)
 	m_rotationY = SystemHandle->AppSettings->INIT_ROTY;
 	m_rotationZ = SystemHandle->AppSettings->INIT_ROTZ;
 
-	m_frameTime = 0.0f;
+	m_frameTime      = 0.0f;
 
 	m_forwardSpeed   = 0.0f;
 	m_backwardSpeed  = 0.0f;
@@ -110,11 +110,15 @@ void PositionClass::SetFrameTime(double time)
 //This function calculates the forward speed and movement of the viewer/camera.
 void PositionClass::MoveForward(bool keydown, bool ctrl, bool water)
 {
+    float maxSpeed;
 	// Update the forward speed movement based on the frame time and whether the user is holding the key down or not.
 	if(keydown)
 	{
 		m_forwardSpeed += m_frameTime * 0.0005f;
-		float maxSpeed = ctrl ? 0.006f : 0.002f; // MAX SPEED (Run / Walk)
+        if (g_GOD_MODE)
+            maxSpeed = 0.1f;
+        else
+		    maxSpeed = ctrl ? 0.006f : 0.002f; // MAX SPEED (Run / Walk)
 		if (water)
 			maxSpeed/=3;
 

@@ -36,7 +36,7 @@
 #include "xml_loader.h"
 
 #if DX_ENGINE_LEVEL >= 72
-#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
+#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
 #include "soundclass.h"
 #endif
 #include "mem_leak.h"
@@ -49,7 +49,7 @@ XMLloader::XMLloader()
 
 XMLloader::~XMLloader()
 {
-#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
+#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
 	for (size_t i = 0; i < theWorld.size(); i++)
 	{
 		SAFE_SHUTDOWN(theWorld[i].audio);
@@ -432,11 +432,28 @@ bool XMLloader::loadWorld (TCHAR* file_) // Note: Have to be char
 				object3d.posX = (float)atof(element->Attribute("posX"));
 				object3d.posZ = (float)atof(element->Attribute("posZ"));
 				object3d.translateY = (float)atof(element->Attribute("translateY"));
-
-				object3d.rotX = (float)atof(element->Attribute("rotX"));
-				object3d.rotY = (float)atof(element->Attribute("rotY"));
-				object3d.rotZ = (float)atof(element->Attribute("rotZ"));
-
+#if DX_ENGINE_LEVEL >= 89
+                STRING s = element->Attribute("rotY");//Aqui debug only
+                if (s == "PI") {
+                    object3d.rotY = static_cast<float>(PI);
+                }
+                else 
+                if (s == "PI/2") {
+                    object3d.rotY = static_cast<float>(PI/2);
+                }
+                else
+                if (s == "-PI/2") {
+                    object3d.rotY = static_cast<float>(-PI/2);
+                }
+                else
+#endif
+                {
+                    object3d.rotY = (float)atof(element->Attribute("rotY"));
+                }
+        
+                object3d.rotX = (float)atof(element->Attribute("rotX"));
+                object3d.rotZ = (float)atof(element->Attribute("rotZ"));
+        
 				object3d.shader = atoi(element->Attribute("shader"));
 				strcpy(object3d.filename, element->Attribute("filename"));
 	#if DX_ENGINE_LEVEL >= 40
@@ -446,7 +463,7 @@ bool XMLloader::loadWorld (TCHAR* file_) // Note: Have to be char
 				object3d.castShadow = atoi(element->Attribute("castShadow"));
 				object3d.renderShadows = atoi(element->Attribute("renderShadows"));
 	#endif
-	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D
+	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
                 const TCHAR* soundRange = element->Attribute("soundRange");
                 if (soundRange) 
                 {

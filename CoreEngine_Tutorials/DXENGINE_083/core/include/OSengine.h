@@ -161,6 +161,7 @@
 #if defined LINUX_PLATFORM
 	#define WOMAOS "LINUX"
 #endif
+extern LONG TopLevelFilter(struct _EXCEPTION_POINTERS* pExceptionInfo);
 
 extern UINT RENDER_PAGE;
 

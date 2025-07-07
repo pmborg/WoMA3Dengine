@@ -106,13 +106,15 @@ public:
 		std::vector<HeightMapType_24>* model, std::vector<UINT>* indexList,
 		UINT instanceCount);
 #endif
-
+#if DX_ENGINE_LEVEL >= 89 && defined USE_MAP_EDITOR
+    bool bottleHit=false;			// Means this player is selected to a detail view...
+#endif
 	// MODEL LOAD:
 	ADVOBJ3D obj3d;
 	bool LoadModel	(TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow = false, bool renderShadow=false, UINT instanceCount=0);
 
     XMVECTOR center;
-    float diameter;
+    float diameter=0;
 
 	STRING MODEL_NAME=TEXT("");
 

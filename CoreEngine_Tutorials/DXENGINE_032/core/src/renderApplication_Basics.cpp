@@ -83,24 +83,36 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 	// [4] Render one Screen:
 	// --------------------------------------------------------------------------------------------
 
-	AppRender(monitorWindow, dayLightFade);				// [2] Render: All 3D!!!
+	AppRender(monitorWindow, dayLightFade);				// [2] Render:  All 3D!!!
 
-	AppPosRender(monitorWindow);						// [3] Render: All 2D (on TOPs)
+	AppPosRender(monitorWindow);						// [3] Render:  All 2D (on TOPs): AppTextClass-Fill + Billboards + Title + Map + Minimap + AppTextClass + RENDER NATIVE TEXT
+}
+
+int ApplicationClass::get_model_id(UINT ID, UINT pass)
+{
+    UINT modelID;
+    if (pass == PASS_OPAC)
+    {
+        if (WOMA::sceneManager->opacModelList.size() == 0)
+            return -1;
+        modelID = WOMA::sceneManager->opacModelList[ID]->m_ObjId;
+    }
+#if _DEBUG
+    else {
+        ASSERT(0);
+    }
+#endif
+
+    return modelID;
 }
 
 void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, UINT ID, UINT pass, XMMATRIX* m_viewMatrix, XMMATRIX* m_projectionMatrix)
 {
-    UINT modelID;
+    // === GET MODEL ID: ===
+    int modelID = get_model_id( ID, pass);
+    if (modelID<0)
+        return;
 
-    if (pass == PASS_OPAC) 
-    {
-        if (WOMA::sceneManager->opacModelList.size() == 0)
-            return;
-        modelID = WOMA::sceneManager->opacModelList[ID]->m_ObjId;
-    } 
-    else {
-        ASSERT(0);
-    }
     DXmodelClass* model = (DXmodelClass*)objModel[modelID];
 
 	float positionX, positionY, positionZ;
@@ -108,22 +120,25 @@ void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, 
 	positionY = SystemHandle->xml_loader.theWorld[modelID].translateY;
 	positionZ = SystemHandle->xml_loader.theWorld[modelID].posZ;
 
-	if ( (((DXmodelClass*)model)->m_instanceCount == 0) && !m_Driver->frustum->CheckSphere(positionX, positionY, positionZ, model->boundingSphere*2) && ((!m_Driver->RenderfirstTime))) //SYNC with QuadTree.cpp
-		return;
-
+    // === SET AUDIO DISTANCE (IF ITS THE CASE) ===
 	// Set the initial position of the listener to be in the middle of the scene.
 
-	if (m_Driver->RenderfirstTime || (SystemHandle->xml_loader.theWorld[model->m_ObjId].rotY != 0 && modelID > world_xml_objs))
+    // === RESET WORLD MATRIX ===
+	if (m_Driver->RenderfirstTime || (SystemHandle->xml_loader.theWorld[model->m_ObjId].rotY != 0 && (UINT)modelID > world_xml_objs))
 		((DXmodelClass*)model)->m_worldMatrix = XMMatrixIdentity();
+    else
 
+    // === RESET TRANSLATION ===
 	model->translation(0, 0, 0);
 
+    // === SET SCALE ===
 	if (m_Driver->RenderfirstTime)
 	{
 		float scale = SystemHandle->xml_loader.theWorld[modelID].scale;
 		model->scale(scale, scale, scale);
 	}
 
+    // === SET ROTATION IN X AXIS: ===
 	{
 		float rx = SystemHandle->xml_loader.theWorld[modelID].rotX;
 		if (rx == -1000) {
@@ -135,6 +150,7 @@ void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, 
 			if (rx)
 				model->rotateX(rx);
 
+        // === SET ROTATION IN Y AXIS: ===
 		float ry = 0;
 		{
 			ry = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotY;
@@ -148,6 +164,7 @@ void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, 
 			if (ry)
 				model->rotateY(ry);
 
+        // === SET ROTATION IN Z AXIS: ===
 		float rz = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotZ;
 		if (rz == -1000) {
 			static float rZ = 0.0f;
@@ -159,11 +176,13 @@ void ApplicationClass::RenderModel(UINT monitorWindow, WomaDriverClass* driver, 
 				model->rotateZ(rz);
 	}// non-Instancing
 
+    // === SET CURRENT OBJ. WORLD POSITION: ===
 	model->translation(positionX, positionY, positionZ);
 
 	//if (pass == 0)
 	totalRendered++;
 
+    // === RENDER OBJ.: ===
 		model->Render(CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass);// Pass 2 (Shadow));
 }
  
@@ -193,7 +212,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 		m_Driver->SetRasterizerState(CULL_NONE/*CULL_BACK*/, FILL_SOLID); // Render the Inside of Sphere
 		m_SkyModel->translation(0, 0, 0);
 		m_SkyModel->scale(20, 20, 20);
-		m_SkyModel->RenderSky(CAMERA_SKY); // Cant Reach: (CAMERA_SKY)
+		m_SkyModel->RenderSky(CAMERA_SKY); // Camera with fixed position: 0,0,0: (CAMERA_SKY)
 	}
 #endif
     
@@ -217,17 +236,16 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 #endif
 
     //----------------------------------------------------------------------------------------------------------------------
-	// [0] TERRAIN: UNDER WATER!
+	// TERRAIN[0]: UNDER WATER
 #if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN || defined SCENE_MAIN_TERRAIN
 #if defined USE_RASTERIZER_STATE
-	m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
+    m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
 #endif
-
 	if (RENDER_PAGE == 49)
 		m_TerrainModel[0]->RenderWithFade();					// New function to replace these 2 line options.
 #endif
 
-	// [2] Render MAIN Terrain Here
+	// TERRAIN[2]: Render MAIN Terrain
     //----------------------------------------------------------------------------------------------------------------------
 #if (defined SCENE_MAIN_TOPO_TERRAIN && !defined USE_TERRAIN_ALFA_MAP) && defined MAIN_RENDER_TERRAIN //MAIN-RENDER TERRAIN (0.3 ms)
 	static bool fog = (RENDER_PAGE == 51 || RENDER_PAGE >= 60) ? true : false;
@@ -237,7 +255,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 			m_TerrainModel[2]->RenderWithFade(fadeLight, fog);	// New function to replace these 2 line options.
 	}
 #endif
-#if defined DEBUG_COLLISION_TERRAIN
+#if defined DEBUG_COLLISION_TERRAIN //For debug collision terrain only!
 	if (m_TerrainModel[3])
 		m_TerrainModel[3]->RenderWithFade(fadeLight, fog);	// New function to replace these 2 line options. 
 #endif
@@ -248,7 +266,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 	m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
 #endif
 #if (defined USE_SCENE_MANAGER && defined DX_ENGINE) && defined MAIN_RENDER_MAIN_OBJ //MAIN-RENDER: MAIN OBJs. (9 ms)
-	for (UINT id = 0; id < world_main_size; id++)
+	for (UINT id = 0; id < world_main_size; id++) //TODO: use sceneManager
 			RenderModel(monitorWindow, m_Driver, id, PASS_OPAC);
 #endif
 
@@ -258,13 +276,16 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 	// TRANSPARENT:
 	// --------------------------------------------------------------------------------------------
 
-	// [1] WATER:
+	// TERRAIN[1]: Render Mesh for WATER:
 	// --------------------------------------------------------------------------------------------
 
 	// Render TRANSPARENT Parts of 3D OBJs (like: glass window of (Space Compound), etc...) (last part)
 	// --------------------------------------------------------------------------------------------
 
-#if defined USE_TIMER_CLASS
+    // Render Animated meshes:
+    // -----------------------
+
+#if defined USE_TIMER_CLASS && !defined RELEASE
     // TIME Control: Show Debug Info
     if (m_Driver->RenderfirstTime)
     {
@@ -280,10 +301,11 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 void ApplicationClass::AppPosRender(UINT monitorWindow)
 {
 
-    // CAMERA TEXT: Show Debug Info
+    // === AppTextClass-Fill: ===
 #if defined USE_RASTERTEK_TEXT_FONT							
 
-    if (AppTextClass) {
+    if (AppTextClass) 
+    {
 #if defined EXTRA_INFO2
         AppTextClass->SetInfoA(astroClass->hour, astroClass->minute);
         AppTextClass->SetInfoB(m_Light->m_lightDirection.x, m_Light->m_lightDirection.y, m_Light->m_lightDirection.z);
@@ -349,17 +371,18 @@ void ApplicationClass::AppPosRender(UINT monitorWindow)
 #endif
 #endif
 
-#if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && _DEBUG && !defined TEXT_TEST
+#if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && !defined RELEASE && !defined TEXT_TEST
         AppTextClass->SetRenderCount(WOMA::sceneManager->quadTree.totalVertexRendered,
             SystemHandle->m_Application->totalRendered,
             (UINT)SystemHandle->xml_loader.theWorld.size());
 #endif
-#if TUTORIAL_CHAP >= 60 && _DEBUG // BILLBOARD
+#if TUTORIAL_CHAP >= 60 && !defined RELEASE // BILLBOARD
         AppTextClass->SetBillRenderCount(SystemHandle->m_Application->billboardRrenderCount, total_deltaTime);
 #endif  
     }
 #endif
 
+    //=============================================================================================================
     // LIGHT: Get fade (real Sun Position): Show Debug Info
 
 #if defined USE_RASTERIZER_STATE
@@ -371,8 +394,8 @@ void ApplicationClass::AppPosRender(UINT monitorWindow)
 		for (UINT tree_id = 0; tree_id < _countof(m_Trees); tree_id++)
         {
             obj_id = m_Trees[tree_id].ID + world_xml_objs;
-            if (SystemHandle->xml_loader.theWorld[obj_id].render) //FASTER-AQUI2
-			    RenderModel(monitorWindow, m_Driver, obj_id, PASS_BILL); // Render: "Billboards"
+            if (SystemHandle->xml_loader.theWorld[obj_id].render)           //TODO: use sceneManager
+			    RenderModel(monitorWindow, m_Driver, obj_id, PASS_BILL);    // Render: "Billboards"
 		}
 #endif
 
@@ -515,13 +538,14 @@ float ApplicationClass::ProcessInputUpdate()
 
 	// [Colision 1] Check Colison with with "10" COMPOUNDS near to us...:
 	// ------------------------------------------------------------------
-	XMVECTOR prwsPos, prwsDir;
-
-	/////////////////////////////////////////  IMPORTANT - Get the initial Ray /////////////////////////////////////////
+    
+	/////////////////////////////////////////  IMPORTANT - Get the Collision Ray /////////////////////////////////////////
+#if defined CHECK_OBJ_COLISION
 	pickRayVector((float)SystemHandle->AppSettings->WINDOW_WIDTH / 2.0f, (float)SystemHandle->AppSettings->WINDOW_HEIGHT - 65, prwsPos, prwsDir);
+#endif
 
     UINT	closestObjId = UINT_MAX;
-	for (UINT c = 0; c < MIN (world_main_size, 10); c++)        // We dont need all, right?:)
+	for (UINT c = 0; c < MIN (world_main_size, 5); c++)        // We dont need all, right?:)
 	{
 		UINT i = compoundTreeLoadingOrder[c].compoundTreeId;	// This is the compound[id] to check colisions...
 
@@ -558,9 +582,12 @@ float ApplicationClass::ProcessInputUpdate()
 	{
 		if (DXsystemHandle->m_Camera) {
 #if defined USE_3RD_PERSON_CAMERA
+        if (g_GOD_MODE) 
+            DXsystemHandle->m_Camera->CalculateViewMatrix();
+        else
             DXsystemHandle->m_Camera->CalculateViewMatrix_3rd_PersonCamera(SystemHandle->m_Application->m_camYaw, SystemHandle->m_Application->m_camPitch);
 #else
-            DXsystemHandle->m_Camera->CalculateViewMatrix();
+         DXsystemHandle->m_Camera->CalculateViewMatrix();
 #endif
         }
 	}
@@ -584,9 +611,19 @@ float ApplicationClass::ProcessInputUpdate()
 		if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
 		{
 	#if defined DX_ENGINE
-			DXsystemHandle->m_CameraSKY->m_rotationX = DXsystemHandle->m_Camera->m_rotationX;
-			DXsystemHandle->m_CameraSKY->m_rotationY = DXsystemHandle->m_Camera->m_rotationY;
-			DXsystemHandle->m_CameraSKY->CalculateViewMatrix();
+        #if defined USE_3RD_PERSON_CAMERA
+            if (g_GOD_MODE) {
+                DXsystemHandle->m_CameraSKY->m_rotationX = DXsystemHandle->m_Camera->m_rotationX;
+                DXsystemHandle->m_CameraSKY->m_rotationY = DXsystemHandle->m_Camera->m_rotationY;
+                DXsystemHandle->m_CameraSKY->CalculateViewMatrix();
+            } else {
+                DXsystemHandle->m_CameraSKY->CalculateViewMatrix_3rd_PersonCamera(SystemHandle->m_Application->m_camYaw, SystemHandle->m_Application->m_camPitch, true);
+            }
+        #else
+            DXsystemHandle->m_CameraSKY->m_rotationX = DXsystemHandle->m_Camera->m_rotationX;
+            DXsystemHandle->m_CameraSKY->m_rotationY = DXsystemHandle->m_Camera->m_rotationY;
+            DXsystemHandle->m_CameraSKY->CalculateViewMatrix();
+        #endif
 	#endif
 		}
 	#if (defined OPENGL3 || defined OPENGL4)
@@ -971,18 +1008,12 @@ void ApplicationClass::RenderDemoIntroSprites()
 
 
 #if defined CHECK_OBJ_COLISION
-// Calculate the world space pick ray from the 2d coordinates
+// Calculate the world space pick ray from the 2D coordinates
 // ==================================================================================================================================
 void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickRayInWorldSpacePos, XMVECTOR& pickRayInWorldSpaceDir)
 // ==================================================================================================================================
 {
-	int ClientWidth = SystemHandle->AppSettings->WINDOW_WIDTH; //g_ScreenWidth;
-	int ClientHeight = SystemHandle->AppSettings->WINDOW_HEIGHT; //g_ScreenHeight;
-
-	XMVECTOR pickRayInViewSpaceDir = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-	XMVECTOR pickRayInViewSpacePos = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-
-	float PRVecX, PRVecY, PRVecZ;
+    #define m_driver11 ((DirectX::DX11Class*)driverList[SystemHandle->AppSettings->DRIVER])
 
 #define _11 r[0].m128_f32[0]
 #define _12 r[0].m128_f32[1]
@@ -1004,32 +1035,40 @@ void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickR
 #define _43 r[3].m128_f32[2]
 #define _44 r[3].m128_f32[3]
 
-#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-	DX12Class* driver = NULL;
-#endif
-#if defined DX11 || defined DX9
-	DX11Class* driver11 = NULL;
-#endif
-#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
-	{
-		driver = (DX12Class*)driverList[SystemHandle->AppSettings->DRIVER];
-	}
-#endif
-#if defined DX11 || defined DX9
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
-	{
-		driver11 = (DirectX::DX11Class*)driverList[SystemHandle->AppSettings->DRIVER];
-	}
-#endif
+    int ClientWidth = SystemHandle->AppSettings->WINDOW_WIDTH; //g_ScreenWidth;
+    int ClientHeight = SystemHandle->AppSettings->WINDOW_HEIGHT; //g_ScreenHeight;
+
+    XMVECTOR pickRayInViewSpaceDir = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+    XMVECTOR pickRayInViewSpacePos = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+
+    float PRVecX, PRVecY, PRVecZ;
 
 	XMMATRIX m_projectionMatrix;
-	driver11->GetProjectionMatrix(m_projectionMatrix);
+    m_driver11->GetProjectionMatrix(m_projectionMatrix);
 
 	PRVecX = (((2.0f * mouseX) / ClientWidth) - 1) / m_projectionMatrix._11;
 	PRVecY = -(((2.0f * mouseY) / ClientHeight) - 1) / m_projectionMatrix._22;
-	PRVecZ = 1.0f;	//View space's Z direction ranges from 0 to 1, so we set 1 since the ray goes "into" the screen
+	//PRVecZ = 1.0f;	//View space's Z direction ranges from 0 to 1, so we set 1 since the ray goes "into" the screen
 
+    double angle_deg = m_Position[g_NetID]->m_rotationY;
+    //double angle_rad = angle_deg * PI / 180.0;
+    //WOMA_LOGManager_DebugMSGAUTO("Angle (deg): %f, Angle (rad): %f\n", angle_deg, angle_rad);
+    PRVecZ = FAST_cos(angle_deg);
+    //WOMA_LOGManager_DebugMSGAUTO("PRVecZ: %f\n", PRVecZ);
+
+	pickRayInViewSpaceDir = XMVectorSet(PRVecX, PRVecY, PRVecZ, 0.0f);
+
+	// Transform 3D Ray from View space to 3D ray in World space
+	XMMATRIX pickRayToWorldSpaceMatrix;
+	XMVECTOR matInvDeter;	//We don't use this, but the xna matrix inverse function requires the first parameter to not be null
+
+	// Convert D3DXMATRIX to XMMATRIX:
+	XMMATRIX* camView = m_driver11->GetViewMatrix(CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_OPAC, NULL /*lightViewMatrix*/, NULL/*ShadowProjectionMatrix*/);
+
+	pickRayToWorldSpaceMatrix = XMMatrixInverse(&matInvDeter, *camView);	//Inverse of View Space matrix is World space matrix
+	pickRayInWorldSpacePos = XMVector3TransformCoord(pickRayInViewSpacePos, pickRayToWorldSpaceMatrix);
+	pickRayInWorldSpaceDir = XMVector3TransformNormal(pickRayInViewSpaceDir, pickRayToWorldSpaceMatrix);
+    pickRayInWorldSpaceDir = XMVector3Normalize(pickRayInWorldSpaceDir);
 #undef _11
 #undef _12
 #undef _13
@@ -1049,19 +1088,6 @@ void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickR
 #undef _42
 #undef _43
 #undef _44
-
-	pickRayInViewSpaceDir = XMVectorSet(PRVecX, PRVecY, PRVecZ, 0.0f);
-
-	// Transform 3D Ray from View space to 3D ray in World space
-	XMMATRIX pickRayToWorldSpaceMatrix;
-	XMVECTOR matInvDeter;	//We don't use this, but the xna matrix inverse function requires the first parameter to not be null
-
-	// Convert D3DXMATRIX to XMMATRIX:
-	XMMATRIX* camView = driver11->GetViewMatrix(CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_OPAC, NULL /*lightViewMatrix*/, NULL/*ShadowProjectionMatrix*/);
-
-	pickRayToWorldSpaceMatrix = XMMatrixInverse(&matInvDeter, *camView);	//Inverse of View Space matrix is World space matrix
-	pickRayInWorldSpacePos = XMVector3TransformCoord(pickRayInViewSpacePos, pickRayToWorldSpaceMatrix);
-	pickRayInWorldSpaceDir = XMVector3TransformNormal(pickRayInViewSpaceDir, pickRayToWorldSpaceMatrix);
 }
 
 // Calculates whether the object was picked or not | getPoligon = true (detect colision)
@@ -1190,8 +1216,6 @@ bool ApplicationClass::PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTO
 	}
 	return false;
 }
-
-
 
 #endif
 
