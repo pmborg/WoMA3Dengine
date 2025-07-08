@@ -49,8 +49,9 @@ extern RApplicationClass* r_Application;
 #include "BillClass.h"	//[ch60]
 #endif
 
+
 //-------------------------------------------------------------------------------------------
-void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
+void ApplicationClass::RenderScene(UINT monitorIndex, WomaDriverClass* driver)
 //-------------------------------------------------------------------------------------------
 {
     totalRendered = 0;
@@ -58,31 +59,31 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
     // [1] sort billboards:
     // --------------------------------------------------------------------------------------------
 
-	// [2] SceneManager: Process/Filter and Create Lists/trees of objects to render from: WORLD.XML
-	// --------------------------------------------------------------------------------------------
+    // [2] SceneManager: Process/Filter and Create Lists/trees of objects to render from: WORLD.XML
+    // --------------------------------------------------------------------------------------------
 #if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
     WOMA::sceneManager->CreateLists();					//Create Lists for all objects to render (from WORLD.XML) and more
     world_main_size = WOMA::sceneManager->opacModelList.size();
 #endif
 
-	// [3] LIGHT RAY:
-	// --------------------------------------------------------------------------------------------
+    // [3] LIGHT RAY:
+    // --------------------------------------------------------------------------------------------
 #if defined USE_LIGHT_RAY
-	if (RENDER_PAGE >= 23)
-	{
-		CalculateLightRayVertex(SunDistance);					// Calculate Light Source Position
-		m_lightRayModel->UpdateDynamic(m_LightVertexVector);	// Update LightRay vertex(s)
-		m_lightRayModel->Render();								// Render LightRay
-	}
+    if (RENDER_PAGE >= 23)
+    {
+        CalculateLightRayVertex(SunDistance);					// Calculate Light Source Position
+        m_lightRayModel->UpdateDynamic(m_LightVertexVector);	// Update LightRay vertex(s)
+        m_lightRayModel->Render();								// Render LightRay
+    }
 #endif
 
-	// [4] Render one Screen:
-	// --------------------------------------------------------------------------------------------
+    // [4] Render one Screen:
+    // --------------------------------------------------------------------------------------------
 
-	AppRender(monitorWindow, dayLightFade);				// [2] Render:  All 3D!!!
+    AppRender(monitorIndex, dayLightFade);				// [2] Render: All 3D!!!
 
 #if DX_ENGINE_LEVEL >= 23 || defined USE_VIEW2D_SPRITES
-	AppPosRender(monitorWindow);						// [3] Render:  All 2D (on TOPs): AppTextClass-Fill + Billboards + Title + Map + Minimap + AppTextClass + RENDER NATIVE TEXT
+    AppPosRender(monitorIndex);							// [3] Render:  All 2D (on TOPs): AppTextClass-Fill + Billboards + Title + Map + Minimap + AppTextClass + RENDER NATIVE TEXT
 #endif
 }
 
@@ -90,7 +91,7 @@ void ApplicationClass::RenderScene(UINT monitorWindow, WomaDriverClass* driver)
 //#############################################################################################################
 // [2/3] RENDER - 3D
 //#############################################################################################################
-void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
+void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight)
 {
 	SystemHandle->TotalVertexCounter = 0;
 	#if DX_ENGINE_LEVEL >= 10 && LEVEL <= 21
@@ -164,7 +165,7 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
 #endif
 #if (defined USE_SCENE_MANAGER && defined DX_ENGINE) && defined MAIN_RENDER_MAIN_OBJ //MAIN-RENDER: MAIN OBJs. (9 ms)
 	for (UINT id = 0; id < world_main_size; id++) //TODO: use sceneManager
-			RenderModel(monitorWindow, m_Driver, id, PASS_OPAC);
+			RenderModel(monitorIndex, m_Driver, id, PASS_OPAC);
 #endif
 
 	//THE "OTHER" NETWORK PLAYERS
@@ -190,15 +191,30 @@ void ApplicationClass::AppRender(UINT monitorWindow, float fadeLight)
         TCHAR tmp[MAX_STR_LEN]; _stprintf(tmp, TEXT("PASSED TOTAL TIME TO LOAD: %ju ms\n"), passedTotalTime); OutputDebugString(tmp);
     }
 #endif
+
+#if defined USE_MAP_EDITOR
+    //Src:
+    MyLightVertexVector[0].r = 1; MyLightVertexVector[0].g = 0; MyLightVertexVector[0].b = 0; MyLightVertexVector[0].a = 1;
+    MyLightVertexVector[1].r = 1; MyLightVertexVector[1].g = 0; MyLightVertexVector[1].b = 0; MyLightVertexVector[1].a = 1;
+
+    MyLightVertexVector[0].x = prwsPos.m128_f32[0];
+    MyLightVertexVector[0].y = prwsPos.m128_f32[1];
+    MyLightVertexVector[0].z = prwsPos.m128_f32[2];
+    //Dest:
+    MyLightVertexVector[1].x = prwsPos.m128_f32[0] + prwsDir.m128_f32[0] * 100;
+    MyLightVertexVector[1].y = prwsPos.m128_f32[1] + prwsDir.m128_f32[1] * 100;
+    MyLightVertexVector[1].z = prwsPos.m128_f32[2] + prwsDir.m128_f32[2] * 100;
+    m_lightRayModel->UpdateDynamic(&MyLightVertexVector);	
+    m_lightRayModel->Render();								
+#endif
 }
 
 #if DX_ENGINE_LEVEL >= 23 || defined USE_VIEW2D_SPRITES
 //#############################################################################################################
 // [3/3] POS-RENDER - 2D: Render TRANSPARENT Parts of 3D OBJs (like: "Glass windows", "Billboards", etc...)
 //#############################################################################################################
-void ApplicationClass::AppPosRender(UINT monitorWindow)
+void ApplicationClass::AppPosRender(UINT monitorIndex)
 {
-
     // === AppTextClass-Fill: ===
 #if defined USE_RASTERTEK_TEXT_FONT							
 
@@ -287,7 +303,7 @@ void ApplicationClass::AppPosRender(UINT monitorWindow)
         {
             obj_id = m_Trees[tree_id].ID + world_xml_objs;
             if (SystemHandle->xml_loader.theWorld[obj_id].render)           //TODO: use sceneManager
-			    RenderModel(monitorWindow, m_Driver, obj_id, PASS_BILL);    // Render: "Billboards"
+			    RenderModel(monitorIndex, m_Driver, obj_id, PASS_BILL);    // Render: "Billboards"
 		}
 #endif
 
@@ -431,7 +447,7 @@ float ApplicationClass::ProcessInputUpdate()
 
 	// [Colision 1] Check Colison with with "10" COMPOUNDS near to us...:
 	// ------------------------------------------------------------------
-    
+    XMVECTOR prwsPos = {}, prwsDir = {};
 	/////////////////////////////////////////  IMPORTANT - Get the Collision Ray /////////////////////////////////////////
 #if defined CHECK_OBJ_COLISION
 	pickRayVector((float)SystemHandle->AppSettings->WINDOW_WIDTH / 2.0f, (float)SystemHandle->AppSettings->WINDOW_HEIGHT - 65, prwsPos, prwsDir);
@@ -673,6 +689,40 @@ float ApplicationClass::WOMA_APPLICATION_DemoRender(UINT64 passedTotalTime)
 
 #if defined CHECK_OBJ_COLISION
 // Calculate the world space pick ray from the 2D coordinates
+#if false
+void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickRayInWorldSpacePos, XMVECTOR& pickRayInWorldSpaceDir)
+{
+#define m_driver11 ((DirectX::DX11Class*)driverList[SystemHandle->AppSettings->DRIVER])
+
+    // [1] Get dimensions
+    float width = static_cast<float>(SystemHandle->windowsArray[0].width);
+    float height = static_cast<float>(SystemHandle->windowsArray[0].height);
+
+    // [2] Convert mouse to Normalized Device Coordinates (NDC)
+    float ndcX = (2.0f * mouseX / width) - 1.0f;
+    float ndcY = 1.0f - (2.0f * mouseY / height); // invert Y
+
+    // [3] View-space ray in clip space (Z=1 for far plane, W=1)
+    XMVECTOR rayClip = XMVectorSet(ndcX, ndcY, 1.0f, 1.0f);
+
+    // [4] Inverse projection transform (clip -> view space)
+    XMMATRIX projMatrix = m_driver11->m_projectionMatrix;
+    XMMATRIX invProj = XMMatrixInverse(nullptr, projMatrix);
+    XMVECTOR rayEye = XMVector4Transform(rayClip, invProj);
+
+    // THIS IS IMPORTANT: rayEye is homogeneous; convert to direction
+    rayEye = XMVectorSet(rayEye.m128_f32[0], rayEye.m128_f32[1], rayEye.m128_f32[2], 0.0f);
+
+    // [5] Inverse view transform (view -> world space)
+    XMMATRIX viewMatrix = DXsystemHandle->m_Camera->m_viewMatrix;
+    XMMATRIX invView = XMMatrixInverse(nullptr, viewMatrix);
+    pickRayInWorldSpaceDir = XMVector3TransformNormal(rayEye, invView);
+    pickRayInWorldSpaceDir = XMVector3Normalize(pickRayInWorldSpaceDir);
+
+    // [6] Ray origin = camera position
+    pickRayInWorldSpacePos = XMLoadFloat3(&DXsystemHandle->m_Camera->GetPosition());
+}
+#else
 // ==================================================================================================================================
 void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickRayInWorldSpacePos, XMVECTOR& pickRayInWorldSpaceDir)
 // ==================================================================================================================================
@@ -699,8 +749,12 @@ void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickR
 #define _43 r[3].m128_f32[2]
 #define _44 r[3].m128_f32[3]
 
-    int ClientWidth = SystemHandle->AppSettings->WINDOW_WIDTH; //g_ScreenWidth;
-    int ClientHeight = SystemHandle->AppSettings->WINDOW_HEIGHT; //g_ScreenHeight;
+
+
+    int ClientWidth = SystemHandle->AppSettings->WINDOW_WIDTH;   
+    int ClientHeight = SystemHandle->AppSettings->WINDOW_HEIGHT; 
+    //float ClientWidth = static_cast<float>(SystemHandle->windowsArray[0].width);
+    //float ClientHeight = static_cast<float>(SystemHandle->windowsArray[0].height);
 
     XMVECTOR pickRayInViewSpaceDir = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
     XMVECTOR pickRayInViewSpacePos = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
@@ -712,13 +766,7 @@ void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickR
 
 	PRVecX = (((2.0f * mouseX) / ClientWidth) - 1) / m_projectionMatrix._11;
 	PRVecY = -(((2.0f * mouseY) / ClientHeight) - 1) / m_projectionMatrix._22;
-	//PRVecZ = 1.0f;	//View space's Z direction ranges from 0 to 1, so we set 1 since the ray goes "into" the screen
-
-    double angle_deg = m_Position[g_NetID]->m_rotationY;
-    //double angle_rad = angle_deg * PI / 180.0;
-    //WOMA_LOGManager_DebugMSGAUTO("Angle (deg): %f, Angle (rad): %f\n", angle_deg, angle_rad);
-    PRVecZ = FAST_cos(angle_deg);
-    //WOMA_LOGManager_DebugMSGAUTO("PRVecZ: %f\n", PRVecZ);
+    PRVecZ = 1;
 
 	pickRayInViewSpaceDir = XMVectorSet(PRVecX, PRVecY, PRVecZ, 0.0f);
 
@@ -730,9 +778,12 @@ void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickR
 	XMMATRIX* camView = m_driver11->GetViewMatrix(CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_OPAC, NULL /*lightViewMatrix*/, NULL/*ShadowProjectionMatrix*/);
 
 	pickRayToWorldSpaceMatrix = XMMatrixInverse(&matInvDeter, *camView);	//Inverse of View Space matrix is World space matrix
-	pickRayInWorldSpacePos = XMVector3TransformCoord(pickRayInViewSpacePos, pickRayToWorldSpaceMatrix);
+    
+    pickRayInWorldSpacePos = XMLoadFloat3(&DXsystemHandle->m_Camera->GetPosition());
 	pickRayInWorldSpaceDir = XMVector3TransformNormal(pickRayInViewSpaceDir, pickRayToWorldSpaceMatrix);
     pickRayInWorldSpaceDir = XMVector3Normalize(pickRayInWorldSpaceDir);
+
+
 #undef _11
 #undef _12
 #undef _13
@@ -753,6 +804,8 @@ void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickR
 #undef _43
 #undef _44
 }
+#endif
+
 
 // Calculates whether the object was picked or not | getPoligon = true (detect colision)
 // ==================================================================================================================================

@@ -37,6 +37,11 @@
 	#include "DirectXTex.h"
 #endif
 
+#if defined USE_CONVERT_TO_DDS
+extern bool SaveAsDDS(const std::wstring& originalFile, const unsigned char* imageData, UINT width, UINT height);
+extern bool SaveAsDDS_Debug(const STRING& originalFile, const DirectX::ScratchImage& image);
+#endif
+
 namespace DirectX {
 
 
@@ -75,17 +80,30 @@ HRESULT DX11Class::LoadTexture(ID3D11Device* pDevice, TCHAR* pSrcFile, ID3D11Sha
 			{
 				return hr;
 			}
+    #if defined USE_CONVERT_TO_DDS
+            SaveAsDDS_Debug(pSrcFile, image);
+    #endif
 		}
 	}
 	else 
 	{
-		#ifdef UNICODE
-		hr = DirectX::CreateWICTextureFromFile(pDevice, m_deviceContext, pSrcFile, nullptr, ppShaderResourceView);
-		#else
-		// BMP, JPG, PNG, TIF -> Use: DirectXTK.lib
-			WCHAR DX_pSrcFile[MAX_STR_LEN] = { 0 }; MultiByteToWideChar(CP_ACP, 0, pSrcFile, -1, DX_pSrcFile, MAX_STR_LEN);
-			hr = DirectX::CreateWICTextureFromFile(pDevice, m_deviceContext, /*pSrcFile*/DX_pSrcFile, nullptr, ppShaderResourceView);
-		#endif
+        DirectX::ScratchImage image;
+        DirectX::TexMetadata info;
+
+        #ifdef UNICODE
+        hr = DirectX::LoadFromWICFile(pSrcFile, DirectX::WIC_FLAGS_NONE, &info, image);
+        #else
+        WCHAR DX_pSrcFile[MAX_STR_LEN] = { 0 }; MultiByteToWideChar(CP_ACP, 0, pSrcFile, -1, DX_pSrcFile, MAX_STR_LEN);
+        hr = DirectX::LoadFromWICFile(DX_pSrcFile, DirectX::WIC_FLAGS_NONE, &info, image);
+        #endif
+
+        if (SUCCEEDED(hr))
+        {
+            hr = DirectX::CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), image.GetMetadata(), ppShaderResourceView);
+    #if defined USE_CONVERT_TO_DDS
+            if (SUCCEEDED(hr)) SaveAsDDS_Debug(pSrcFile, image);
+    #endif
+        }
 	}
 
 	return hr;

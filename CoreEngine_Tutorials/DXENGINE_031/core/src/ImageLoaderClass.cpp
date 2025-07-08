@@ -52,6 +52,12 @@ using namespace DirectX;
 #include "OSengine.h"
 #include "ImageLoaderClass.h"
 #include "OSmain_dir.h"
+
+#if defined USE_CONVERT_TO_DDS
+#include <DirectXTex.h>
+#include <filesystem>
+#endif
+
 ImageLoaderClass::ImageLoaderClass()
 {
 	CLASSLOADER();
@@ -1489,3 +1495,52 @@ bool ImageLoaderClass::savePNG(TCHAR *fileName)
 }
 #endif // NO_PNG
 
+#if defined USE_CONVERT_TO_DDS
+bool SaveAsDDS(const std::wstring& originalFile, const unsigned char* imageData, UINT width, UINT height)
+{
+    using namespace DirectX;
+    std::filesystem::path path(originalFile);
+    if (path.extension() == L".dds" || path.extension() == L".DDS")
+        return false;
+
+    ScratchImage image;
+    HRESULT hr = image.Initialize2D(DXGI_FORMAT_R8G8B8A8_UNORM, width, height, 1, 1);
+    if (FAILED(hr))
+        return false;
+
+    memcpy(image.GetImages()->pixels, imageData, width * height * 4); // 4 = RGBA8
+
+    std::filesystem::path ddsPath = path;
+    ddsPath.replace_extension(".dds");
+
+    return SUCCEEDED(SaveToDDSFile(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DDS_FLAGS_NONE, ddsPath.c_str()));
+}
+
+bool SaveAsDDS_Debug(const STRING& originalFile, const DirectX::ScratchImage& image)
+{
+    std::filesystem::path path(originalFile);
+    if (path.extension() == ".dds" || path.extension() == ".DDS")
+        return false;
+
+    std::filesystem::path ddsPath = path;
+    ddsPath.replace_extension(".dds");
+
+    return SUCCEEDED(DirectX::SaveToDDSFile(
+        image.GetImages(), image.GetImageCount(), image.GetMetadata(),
+        DirectX::DDS_FLAGS_NONE, ddsPath.c_str()));
+}
+
+bool SaveAsDDS_Debug(const std::wstring& originalFile, const DirectX::ScratchImage& image)
+{
+    std::filesystem::path path(originalFile);
+    if (path.extension() == L".dds" || path.extension() == L".DDS")
+        return false;
+
+    std::filesystem::path ddsPath = path;
+    ddsPath.replace_extension(L".dds");
+
+    return SUCCEEDED(DirectX::SaveToDDSFile(
+        image.GetImages(), image.GetImageCount(), image.GetMetadata(),
+        DirectX::DDS_FLAGS_NONE, ddsPath.c_str()));
+}
+#endif

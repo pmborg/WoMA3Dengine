@@ -36,11 +36,19 @@
 #define N_GRASS 0
 #define N_BUSH  0
 
+#if false //defined MAVERICK// true //SIMPLE
+#define N_BILLBOARD 100
+#define N_FENCES 55
+#define N_FIRE  1
+#define N_GRASS 1
+#define N_BUSH  1
+#else
 #define N_BILLBOARD 1000
 #define N_FENCES 55
 #define N_FIRE 1
 #define N_GRASS 2000
 #define N_BUSH  750
+#endif
 
 extern ID3D11ShaderResourceView* billFileLoaded[];
 

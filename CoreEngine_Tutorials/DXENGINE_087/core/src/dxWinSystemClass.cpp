@@ -152,7 +152,7 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 		if (WOMA::main_loop_state < 0 || (WOMA::renderOnce && WOMA::woma_timer > 15))
         {
 			WOMA::game_state = GAME_STOP;
-            return EXIT_SUCCESS;                //Controlled Exit.
+            return EXIT_SUCCESS;                //Controlled Exit for automatic tests.
 		}
         if (WOMA::game_state == ENGINE_RESTART)
             PostQuitMessage(WOMA::game_state);  //RESTART ENGINE: return WOMA::game_state;

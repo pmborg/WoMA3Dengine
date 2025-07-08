@@ -92,7 +92,9 @@ void ReplaceTextureVersionW(std::wstring& path, const std::wstring& from, const 
         path.replace(pos, from.length(), to);
     }
 }
-
+#if defined USE_CONVERT_TO_DDS
+extern bool SaveAsDDS_Debug(const std::wstring& originalFile, const DirectX::ScratchImage& image);
+#endif
 Texture* Texture::LoadTextureFromPath(UINT this_level, UINT modeltype, Graphics& graphics, LPCWSTR& texturePath)
 {
     std::wstring filetexturePath = texturePath;
@@ -169,6 +171,11 @@ if (this_level>=86)
     {
         throw std::exception("Texture::Failed to create texture");
     }
+
+#if defined USE_CONVERT_TO_DDS
+    SaveAsDDS_Debug(texturePath, image);
+#endif
+
     return tex;
 }
 

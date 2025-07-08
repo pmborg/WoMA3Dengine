@@ -1137,9 +1137,13 @@ void DXmodelClass::UpdateDynamic(std::vector<ModelColorVertexType>* lightVertexV
 	m_previousPosZ = positionZ;
 
 	//Now that the coordinates are calculated create a temporary vertex array and fill it with the new six vertex points.
-	m_vertexCount = (UINT) (*modelColorVertex).size();
+    m_vertexCount = (UINT)(*modelColorVertex).size();
+    //m_vertexCount = 2;
+     
 	DXcolorVertexType*	vertices = NEW DXcolorVertexType[m_vertexCount];
-	IF_NOT_THROW_EXCEPTION (vertices);
+    //DXcolorVertexType vertices[2] = {};
+
+	IF_NOT_THROW_EXCEPTION (vertices);//
 
 	for (UINT i = 0; i < m_vertexCount; i++)
 	{

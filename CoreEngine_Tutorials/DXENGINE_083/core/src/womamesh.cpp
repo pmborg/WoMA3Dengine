@@ -153,7 +153,8 @@ void ApplicationClass::RenderMeshAnimations()
 #if defined USE_ASSIMP_LATEST && defined MAIN_RENDER_ASSIMP // ASSIMP: Skin-MESH (0.15ms)
     if (m_Driver->RenderfirstTime)
     {
-        threadLoadMeshHandle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)StartMeshLibs, (void*)this, 0, &threadLoadMeshId);
+        //threadLoadMeshHandle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)StartMeshLibs, (void*)this, 0, &threadLoadMeshId);
+        StartMeshLibs((void*)this);
     }
 
     static UINT filmeIdx = 0; // 1st line of filme file
