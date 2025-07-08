@@ -30,7 +30,7 @@
 
 // Number of Billboard Trees
 
-#if false //defined MAVERICK// true //SIMPLE
+#if false //defined SIMPLE
 #define N_BILLBOARD 100
 #define N_FENCES 55
 #define N_FIRE  1

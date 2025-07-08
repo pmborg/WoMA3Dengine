@@ -245,6 +245,7 @@ void RenderAllMeshModels(MeshApplication* demoapp, MyDemo* demo)
 
 #if DX_ENGINE_LEVEL >= 86 && defined USE_MODEL3
     // Model 3 ------------------------------------------------------------------------------------------
+    if (womamesh3.assimpSceneModel && womamesh3.assimpSceneModel->loaded && SystemHandle->m_Application->m_characterPos)
     {
         XMMATRIX world = XMMatrixIdentity();
         //Scale:
@@ -264,6 +265,8 @@ void RenderAllMeshModels(MeshApplication* demoapp, MyDemo* demo)
     }
 #endif
 #if DX_ENGINE_LEVEL >= 86 && defined USE_MODEL4
+    if (womamesh4[MAIN_CHAR_MODEL1].assimpSceneModel &&
+        womamesh4[MAIN_CHAR_MODEL1].assimpSceneModel->loaded)
     // Model 4 ------------------------------------------------------------------------------------------
     {
         XMMATRIX world = XMMatrixIdentity();
@@ -318,11 +321,9 @@ static MyDemo *demo_;
 DWORD StartMeshLibs(LPVOID lpParam)
 {
     SetUnhandledExceptionFilter(TopLevelFilter);
-
     ApplicationClass* app = static_cast<ApplicationClass*>(lpParam);
 
     // INIT: Model 1,2,3,4...
-    demo_->Start(demoapp_->m_Graphics);
     InitMeshDemo(app, demoapp_, demo_);
     LoadAllMeshModels(DX_ENGINE_LEVEL, app, demoapp_, demo_);
 
@@ -337,8 +338,8 @@ void ApplicationClass::RenderMeshAnimations()
 #if defined USE_ASSIMP_LATEST && defined MAIN_RENDER_ASSIMP // ASSIMP: Skin-MESH (0.15ms)
     if (m_Driver->RenderfirstTime)
     {
-        //threadLoadMeshHandle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)StartMeshLibs, (void*)this, 0, &threadLoadMeshId);
-        StartMeshLibs((void*)this);
+        demo_->Start(demoapp.m_Graphics);
+        threadLoadMeshHandle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)StartMeshLibs, (void*)this, 0, &threadLoadMeshId);
     }
 
     static UINT filmeIdx = 0; // 1st line of filme file

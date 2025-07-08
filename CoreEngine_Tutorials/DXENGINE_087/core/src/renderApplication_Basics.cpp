@@ -215,14 +215,12 @@ void ApplicationClass::RenderModel(UINT monitorIndex, WomaDriverClass* driver, U
     positionY = SystemHandle->xml_loader.theWorld[modelID].translateY;
     positionZ = SystemHandle->xml_loader.theWorld[modelID].posZ;
 
-#if !defined USE_MAP_EDITOR && DX_ENGINE_LEVEL >= 78
    // === CHECK IF WE ARE VISIBLE: ===
    if ((((DXmodelClass*)model)->m_instanceCount == 0) && !m_Driver->frustum->CheckSphere(positionX, positionY, positionZ, model->boundingSphere * 2) && ((!m_Driver->RenderfirstTime))) { //SYNC with QuadTree.cpp
        ((DXmodelClass*)model)->visible = false;
        return;
    }
    ((DXmodelClass*)model)->visible = true;
-#endif
 
 	// === SET AUDIO DISTANCE (IF ITS THE CASE) ===											   
     // Set the initial position of the listener to be in the middle of the scene.

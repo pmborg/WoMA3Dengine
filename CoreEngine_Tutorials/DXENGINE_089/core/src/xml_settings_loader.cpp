@@ -432,7 +432,7 @@ bool XMLloader::loadWorld (TCHAR* file_) // Note: Have to be char
 				object3d.posX = (float)atof(element->Attribute("posX"));
 				object3d.posZ = (float)atof(element->Attribute("posZ"));
 				object3d.translateY = (float)atof(element->Attribute("translateY"));
-#if DX_ENGINE_LEVEL >= 89
+#if _NOT //DX_ENGINE_LEVEL >= 89
                 STRING s = element->Attribute("rotY");//Aqui debug only
                 if (s == "PI") {
                     object3d.rotY = static_cast<float>(PI);
