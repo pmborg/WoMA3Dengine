@@ -1,6 +1,10 @@
 # WoMA3Dengine (DX11, DX12, OPENGL, DX9) Advanced Tutorials
 
 **Notes:**<br>
+
+**Use:**<br>
+Microsoft Visual Studio Community **2022 (64-bit)** - Version **17.14.8**<br>
+<br>
 For now please just clone all content at:<br>
 **C:\WoMA3Dengine**<br>
 <br>
