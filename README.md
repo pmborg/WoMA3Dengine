@@ -57,7 +57,13 @@ Try to Change the driver on the fly without the need of close and open the Appli
 <h2>3D - ADVANCED MESH TUTORIAL SERIES: BEGIN</h2>
 <hr>
 
-- <b>DX89: The object Model Map Editor(soon)</b><br>
+- <b>DX90: Replacing Billboards with advanced gaming like objects(Low Poly). (**SOON!**)</b><br>
+  
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_090.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_090.png)	
+
+<hr>
+
+- <b>DX89: The object Model Map Editor (**SOON!**)</b><br>
   
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_089.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_089.png)	
 
