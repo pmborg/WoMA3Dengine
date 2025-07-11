@@ -5,7 +5,7 @@
 **Use:**<br>
 Microsoft Visual Studio Community **2022 (64-bit)** - Version **17.14.8**<br>
 <br>
-For now please just clone all content at (From here it will compile for **Windows**, **Linux** and **Android**):<br>
+For now please just clone all content at (From this path all Platforms will compile using "Visual Studio", **Windows**, **Linux** and **Android**):<br>
 **C:\WoMA3Dengine**<br>
 <br>
 Later on I will make path free but for now a few paths are hardcoded there.<br>
