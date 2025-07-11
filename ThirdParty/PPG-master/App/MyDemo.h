@@ -35,8 +35,6 @@
 #include "../Engine/Source/PPG.h"
 #include <math.h>
 
-
-
 class MyDemo : public Demo
 {
 public:
@@ -90,7 +88,7 @@ public:
         linearSampler->Use(deviceContext, 0);
         pointSampler->Use(deviceContext, 1);
     }
-
+    
     void Update(Graphics& graphics, float deltaTime) override
     {
     }

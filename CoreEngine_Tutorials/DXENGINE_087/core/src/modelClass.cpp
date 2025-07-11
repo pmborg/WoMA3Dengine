@@ -128,8 +128,8 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 	//Open file: filename
 	// ---------------------
 	IFSTREAM fileIn ((TCHAR*)newfilename.c_str());
-	if (!fileIn) 
-		{ WomaMessageBox((TCHAR*)newfilename.c_str(), TEXT("Error, Could not load: ")); return FALSE; }
+    if (!fileIn)
+        return FALSE;
 
 	obj3d.m_vertexCount = 0;		//totalVerts
 	TCHAR lastToken = 0;

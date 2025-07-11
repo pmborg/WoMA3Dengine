@@ -28,6 +28,8 @@
 #include "w3d.h"
 #include "mem_leak.h"
 
+
+
 namespace DirectX
 {
 
@@ -40,14 +42,7 @@ namespace DirectX
 		return path.substr(path.find_last_of('/') + 1);
 	}
 
-	// --------------------------
-	// "W3D" MATERIAL FORMAT:
-	// --------------------------
-	//Aux struct:
-	typedef struct
-	{
-		char fileName[100]; //Have to be CHAR!
-	} textureName;
+
 
 	#pragma warning( push )
 	#pragma warning( disable : 4127 ) // Disable warning C4127: conditional expression is constant
@@ -189,8 +184,8 @@ namespace DirectX
 
 		return true;
 	}
-#pragma warning( pop )
 
+#pragma warning( pop )
 
 #if defined LOADW3D //ENGINE_LEVEL >= 50
 	// --------------------------------------------------------------------------------------------
@@ -362,6 +357,7 @@ namespace DirectX
 		return true;
 #endif
 	}
+
 #endif
 
 } //namespace DirectX 

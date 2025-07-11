@@ -42,8 +42,9 @@ extern bool SaveAsDDS(const std::wstring& originalFile, const unsigned char* ima
 extern bool SaveAsDDS_Debug(const STRING& originalFile, const DirectX::ScratchImage& image);
 #endif
 
-namespace DirectX {
+extern bool extLoadDatfromMEM(DX11Class* dx11class, ID3D11Device* pDevice, STRING filename, ID3D11ShaderResourceView** ppShaderResourceView);
 
+namespace DirectX {
 
 #if (defined DX11 || defined DX9 ) && D3D11_SPEC_DATE_YEAR > 2009
 HRESULT DX11Class::LoadTexture(ID3D11Device* pDevice, TCHAR* pSrcFile, ID3D11ShaderResourceView**  ppShaderResourceView)
@@ -53,6 +54,12 @@ HRESULT DX11Class::LoadTexture(ID3D11Device* pDevice, TCHAR* pSrcFile, ID3D11Sha
 	// NEW PART:
 	const TCHAR *extension = _tcsrchr(pSrcFile, '.');
 	if (extension == NULL) return -1;
+
+    if (_tcsicmp(extension, TEXT(".dat")) == 0) 
+    {
+        //"../scene87ForestHuntress/worldMap/WALL_wall_BaseColor.dat"
+        return extLoadDatfromMEM (this, pDevice, pSrcFile, ppShaderResourceView);
+    }
 
 	if (_tcsicmp(extension, TEXT(".dds")) == 0) // Use: DirectXTK.lib
 	{

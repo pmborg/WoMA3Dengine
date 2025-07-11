@@ -64,7 +64,6 @@ extern void LoadAllMeshModels(UINT this_level, ApplicationClass* app, MeshApplic
 extern void UpdateAllMeshAnimations(MeshApplication* demoapp, MyDemo* demo, float deltaTime);
 extern void RenderAllMeshModels(MeshApplication* demoapp, MyDemo* demo);
 
-
 //-------------------------------------------------------------------------------------------
 void ApplicationClass::RenderScene(UINT monitorIndex, WomaDriverClass* driver)
 //-------------------------------------------------------------------------------------------
@@ -207,7 +206,7 @@ void ApplicationClass::RenderModel(UINT monitorIndex, WomaDriverClass* driver, U
     //int modelID = get_model_id(ID, pass);
     //if (modelID < 0)
     //    return;
-	//
+
     DXmodelClass* model = (DXmodelClass*)objModel[modelID];
 
     float positionX, positionY, positionZ;
@@ -215,11 +214,34 @@ void ApplicationClass::RenderModel(UINT monitorIndex, WomaDriverClass* driver, U
     positionY = SystemHandle->xml_loader.theWorld[modelID].translateY;
     positionZ = SystemHandle->xml_loader.theWorld[modelID].posZ;
 
+#if defined USE_AABB_COLISION_CHECK
+    static const float padding = 0.1f;
+    DXmodelClass* dxModel = (DXmodelClass*)model;
+    dxModel->UpdateWorldAABB();
+
+    const XMFLOAT3& min = dxModel->worldMinVertex;
+    const XMFLOAT3& max = dxModel->worldMaxVertex;
+
+    if ((dxModel->m_instanceCount == 0) &&
+        !m_Driver->frustum->CheckAABB(
+            min.x - padding, min.y - padding, min.z - padding,
+            max.x + padding, max.y + padding, max.z + padding))
+    {
+        dxModel->visible = false;
+        return;
+    }
+#else
    // === CHECK IF WE ARE VISIBLE: ===
-   if ((((DXmodelClass*)model)->m_instanceCount == 0) && !m_Driver->frustum->CheckSphere(positionX, positionY, positionZ, model->boundingSphere * 2) && ((!m_Driver->RenderfirstTime))) { //SYNC with QuadTree.cpp
-       ((DXmodelClass*)model)->visible = false;
-       return;
-   }
+    if (SystemHandle->xml_loader.theWorld[modelID].depend != -1)
+    {
+       if ((((DXmodelClass*)model)->m_instanceCount == 0) && !m_Driver->frustum->CheckSphere(positionX, positionY, positionZ, model->boundingSphere * 2) && ((!m_Driver->RenderfirstTime))) //SYNC with QuadTree.cpp
+       { 
+           ((DXmodelClass*)model)->visible = false;
+           return;
+       }
+    }
+#endif
+
    ((DXmodelClass*)model)->visible = true;
 
 	// === SET AUDIO DISTANCE (IF ITS THE CASE) ===											   
@@ -671,12 +693,6 @@ void ApplicationClass::AppPosRender(UINT monitorIndex)
 float ApplicationClass::ProcessInputUpdate()
 {
 	float fadeLight = 1;
-
-#if defined SAVEW3D
-    WomaMessageBox(TEXT("Conversion from OBJ to W3D, ended."), TEXT("SAVEW3D"));
-    WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP;
-    return -100;
-#endif
 
 #if defined USE_TIMER_CLASS
 #if defined INTRO_DEMO
@@ -1455,3 +1471,6 @@ Texture* LoadTextureFromPathFBX(UINT model_type, Graphics& graphics, LPCWSTR& te
     return NULL;
 }
 #endif
+
+
+

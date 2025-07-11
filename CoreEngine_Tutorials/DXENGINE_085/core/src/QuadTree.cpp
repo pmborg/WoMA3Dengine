@@ -190,20 +190,22 @@ void QuadTree::RenderNode(NodeType* node)
         
          UINT modelID = model->m_ObjId;
 
-        //if (!model->ModelHASAlfaColor) //FASTER-AQUI2
-        //{
+         if (SystemHandle->xml_loader.theWorld[modelID].depend == -1)
+         {
+             _xml_loader->theWorld[modelID].render = true;      //FASTER-AQUI2
+         }else{
 #if !defined USE_MAP_EDITOR
             float positionX, positionY, positionZ;
             positionX = _xml_loader->theWorld[modelID].posX;
             positionY = _xml_loader->theWorld[modelID].translateY;
             positionZ = _xml_loader->theWorld[modelID].posZ;
             if ((((DXmodelClass*)model)->m_instanceCount == 0) && !_frustum->CheckSphere(positionX, positionY, positionZ, model->boundingSphere*2)) {
-                _xml_loader->theWorld[modelID].render = false; //FASTER-AQUI2
+                _xml_loader->theWorld[modelID].render = false;  //FASTER-AQUI2
                 continue;
             } else
 #endif
-               _xml_loader->theWorld[modelID].render = true; //FASTER-AQUI2
-        //}
+               _xml_loader->theWorld[modelID].render = true;    //FASTER-AQUI2
+        }
 		//This Model have transparent parts?, note it! to render transparent parts later.
         if (model->ModelHASAlfaColor)
             SystemHandle->m_Application->billboardRrenderCount++;

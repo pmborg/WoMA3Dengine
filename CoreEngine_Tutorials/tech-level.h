@@ -36,7 +36,7 @@
 #endif
 
 #if defined _DEBUG
-    //#define VERBOSE_MEMORY_DEBUG          // [ON/OFF]: used (woma_macros.h)
+    //#define VERBOSE_MEMORY_DEBUG          // Default: off - [ON/OFF]: used (woma_macros.h)
 #endif
 
 //------------------------------------------------------------------------------------------------------------
@@ -46,7 +46,7 @@
 #endif
 
 #if CORE_ENGINE_LEVEL >= 2 && !defined WOMAENGINE_BASIC
-    //#define WOMA_SKIP_CREATE_MAIN_WINDOW  //for command line application only!
+    //#define WOMA_SKIP_CREATE_MAIN_WINDOW  // Default: off - for command line application only!
 #endif
 
 #if CORE_ENGINE_LEVEL >= 3
@@ -105,7 +105,7 @@
             #define USE_NETWORK //9
         #endif
     #endif
-    //#define GENERATE //(Airports List)
+    //#define GENERATE // Default: off - (Airports List)
 #endif
 
 //-------------------------------------------------------------------------------------------------------
@@ -125,9 +125,9 @@
     #define OPENGL3 //WINDOWS_PLATFORM + LINUX_PLATFORM + ANDROID_PLATFORM
 
     #if defined DX12 //SELECT DXGI_API version:
-        //#define DX12_DXGI_API 3   //IDXGIFactory3
-        //#define DX12_DXGI_API 4   //IDXGIFactory4
-        //#define DX12_DXGI_API 5   //IDXGIFactory5
+        //#define DX12_DXGI_API 3   // Default: off - IDXGIFactory3
+        //#define DX12_DXGI_API 4   // Default: off - IDXGIFactory4
+        //#define DX12_DXGI_API 5   // Default: off - IDXGIFactory5
         #define DX12_DXGI_API 6     //IDXGIFactory6
     #endif
 #endif
@@ -144,8 +144,8 @@
         #define CLIENT_SCENE_SETUP
         #endif
         #if defined DX11 //DEFAULT: DX11_0
-        //#define USE_DX11_1
-        //#define USE_DX11_3
+        //#define USE_DX11_1    // Default: off
+        //#define USE_DX11_3    // Default: off
         #endif
         #define SET_DEVICE_CAPABILITIES //report.txt
         #define USE_NORMAL_WINDOW
@@ -155,7 +155,7 @@
         #define USE_STATUSBAR
         #define USE_ALLOW_RESIZE
         #define USE_ALTENTER_SWAP_FULLSCREEN_WINDOWMODE //Dep: USE_ALLOW_RESIZE
-        //#define USE_ASPECT_RATIO //Dep: USE_ALLOW_RESIZE
+        //#define USE_ASPECT_RATIO // Default: off - Dep: USE_ALLOW_RESIZE
     #endif
 
     #if DX_ENGINE_LEVEL >= 21 && !defined WOMAENGINE_BASIC
@@ -173,7 +173,7 @@
         #define ROTATE_SQUARE
 
         #define MAIN_RENDER
-        //#define USE_PRECOMPILED_SHADERS   // [ON/OFF] ON: Merge Shader's Code on .EXE / OFF: Compile in run-time
+        //#define USE_PRECOMPILED_SHADERS   // Default: off - [ON/OFF] ON: Merge Shader's Code on .EXE / OFF: Compile in run-time
     #endif
 
     #if DX_ENGINE_LEVEL >= 22
@@ -182,7 +182,7 @@
         #define USE_IMAGE_BMP       //Mandatory!
 
         #undef SCENE_COLOR
-        //#define NO_SCENE_IMAGE_LOAD //un-comment for DEBUG (debuging only!)
+        //#define NO_SCENE_IMAGE_LOAD // Default: off - un-comment for DEBUG (debuging only!)
 
         #if !defined NO_SCENE_IMAGE_LOAD
             #if defined WINDOWS_PLATFORM
@@ -218,6 +218,7 @@
         #define USE_VIEW2D_SPRITES
         #define USE_RASTERIZER_STATE
         #define USE_DSV //DX12
+		#define SENTENCE_MAX_LEN    120							   
     #endif
 
     #if DX_ENGINE_LEVEL >= 25 //WINDOWS ONLY
@@ -238,7 +239,7 @@
     #if DX_ENGINE_LEVEL >= 27
         #if defined WINDOWS_PLATFORM
         #define USE_RASTERTEK_TEXT_FONT     //27-Allow Legends for all Levels since 20: with "techno" of 28 (Text Fonts)
-        //#define TEXT_TEST //(debug only!)
+        //#define TEXT_TEST                 // Default: off - (debug only!)
         #else
         #define USE_RASTERTEK_TEXT_FONTV2
         #endif
@@ -250,7 +251,7 @@
                 #define ALLOW_PRINT_SCREEN_SAVE_PNG // Level:22
             #endif
             #define USE_DIRECT_INPUT                //28-we will use DX input method
-            //#define USE_JOY                       // Need to be tested...
+            //#define USE_JOY                       // Default: off - Need to be tested...
         #endif
 
         #define SUN_LIGHT_DEMO_ANIMATION true
@@ -322,12 +323,14 @@
     #endif
 
     #if DX_ENGINE_LEVEL >= 37   //37-
-        //#define USE_MAIN_THREAD       //MAIN LOOP is a THREAD
-        //#define USE_LOADING_THREADS   //Use Thread to load Graphics (Bug! will launch multiple!?)
+        //#define USE_MAIN_THREAD       // Default: off - MAIN LOOP is a THREAD
+        //#define USE_LOADING_THREADS   // Default: off - Use Thread to load Graphics (Bug! will launch multiple!?)
     #endif
 
     #if DX_ENGINE_LEVEL >= 38   //38-
-        #define SAVEW3D
+        #if defined _DEBUG
+            #define SAVEW3D
+        #endif
     #endif
 
     #if DX_ENGINE_LEVEL >= 39
@@ -394,7 +397,7 @@
         #undef USE_REAL_SUNLIGHT_DIRECTION  //Static light
         #define USE_LIGHT_RAY               //Static light
         #undef SCENE_TERRAIN_COLLISION
-        //#define DEBUG_TERRAIN_VERTICES
+        //#define DEBUG_TERRAIN_VERTICES    // Default: off
     #endif
 
     #if DX_ENGINE_LEVEL >= 53 //TEXTURE+COLOR SHADER
@@ -402,7 +405,7 @@
         #define TERRAIN_COLLISION_NZ 0.45f
         #define SCENE_TERRAIN_COLLISION
         #define EXTRA_INFO
-        //#define DEBUG_COLLISION_TERRAIN
+        //#define DEBUG_COLLISION_TERRAIN   // Default: off
     #endif
 
     #if DX_ENGINE_LEVEL >= 54
@@ -423,7 +426,7 @@
     #endif
     #if DX_ENGINE_LEVEL >= 62
         #define USE_MAIN_MAP
-        //#define DX_INPUT_DEBUG_TEST
+        //#define DX_INPUT_DEBUG_TEST // Default: off
     #endif
     #if DX_ENGINE_LEVEL >= 63
         #define USE_MINI_MAP
@@ -515,8 +518,7 @@
         #define USE_ASSIMP_LATEST       //82
     #endif
     #if DX_ENGINE_LEVEL >= 83
-        //#define SAVE_WALK
-        // Updated billboard shader & SAVE_WALK FILME
+        //#define SAVE_WALK // Default: off - Updated billboard shader & SAVE_WALK FILME
     #endif
     #if DX_ENGINE_LEVEL >= 84
         #define LOAD_WALK
@@ -547,6 +549,7 @@
 		
 #if DX_ENGINE_LEVEL >= 89
     #define USE_MAP_EDITOR
+	//#define USE_AABB_COLISION_CHECK // Default: off												 
 #endif						 
 	
 	

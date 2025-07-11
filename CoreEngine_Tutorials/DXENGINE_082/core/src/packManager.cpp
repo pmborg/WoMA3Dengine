@@ -31,8 +31,9 @@
 #include "OSmain_dir.h"
 #include "winSystemClass.h"
 
-#if defined USE_IDEA_PACK
 #include "idea.h"
+
+#if defined USE_IDEA_PACK
 extern int EncodeIDEA(char* filename, int whatTOdo);
 #endif
 
@@ -86,7 +87,7 @@ TCHAR FileName[MAX_PATH];
 
 				_tprintf(TEXT("%s\n"), FileName);	// ACTION!
 				ZipAdd(hz,FileName, FileName);		// id, ZIP DEST, Source
-
+                WOMA_LOGManager_DebugMSGAUTO(TEXT("ZipAdd: %s\n"), FileName);
 				_tcscpy(FileName,DirPath);
 			}
 		} else {
@@ -160,6 +161,7 @@ int wildcmp(const char *wild, const char *string)
   return !*wild;
 }
 
+#if !defined USE_CYPHER_PACK
 bool InitPackLib(char* packfilename)				// Need to be CHAR!
 {	
 	char File_Pak[MAX_STR_LEN] = { 0 };				// Need to be CHAR!
@@ -173,7 +175,7 @@ bool InitPackLib(char* packfilename)				// Need to be CHAR!
 	int res = EncodeIDEA(File_Pak, DECODE);			// engine.pck (encoded) --> engine.pack (decoded)
 #endif
 #if defined USE_CYPHER_PACK
-    int res = EncodeIDEA90(File_Pak, DECODE);			// engine.pck (encoded) --> engine.pack (decoded)
+    int res = EncodeIDEA90(File_Pak, DECODE_MEM);		// engine.pck (encoded) --> engine.pack (decoded)
 #endif
 
 	char *File_Pack = strrchr(File_Pak, '.');		// Need to be CHAR!
@@ -246,6 +248,7 @@ bool InitPackLib(char* packfilename)				// Need to be CHAR!
 
 	return true;
 }
+#endif
 
 bool InitPackLibs() 
 {

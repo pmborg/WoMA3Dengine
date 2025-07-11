@@ -918,18 +918,11 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	}
 #endif
 
-#if defined SAVEW3D
-	WomaMessageBox(TEXT("Conversion from OBJ to W3D, ended."), TEXT("SAVEW3D"));
-	WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP; //Publish_Quit_Message();
-	return false;
-#endif
-
 	// --------------------------------------------------------------------------------------------
 	//INIT CLIENT/SERVER NETWORK COMS /////////////////////////////////////////////////////////////
 	// --------------------------------------------------------------------------------------------
 
 	return true;
 }
-
 
 #pragma warning(pop)

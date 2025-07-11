@@ -13,7 +13,7 @@
 // The content contained in this file is provided only for educational and informational purposes.
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
-// 
+//
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Entry point of all WoMA ENGINE Applications OS: WINDOWS / LINUX / ANDROID
 
@@ -98,7 +98,7 @@ void android_main(android_app* state)           // ENTRY-POINT: ANDROID
         process_events(&engine, app);
 
     int argc = 0;
-    char* argv[0];
+    char* argv[1] = { nullptr };
     APPLICATION_MAIN(argc, argv);
 
     engine.has_focus_ = false;
@@ -119,7 +119,7 @@ int APPLICATION_MAIN(int argc, char* argv[])
       do {
           {
               SYSTEM demo(&WOMA::settings);               // NEW |SystemClass()::WinSystemClass()::DxWinSystemClass() for Specific OS|+|WOMA::APP_NAME|+|NEW ApplicationClass()"|
-              demo.ParseCommandLineArgs(argc, argv);      // LoadXmlSettings + Parse the command line parameters: -warp /warp, ... (override settings.xml)
+              demo.ParseCommandLineArgs(argc, argv);      // LoadXmlSettings + Parse the command line parameters: -warp /warp, ... (that will override: settings.xml)
       
               if (demo.APPLICATION_INIT_SYSTEM())         // INIT Woma Engine: |SOUND|+|Register|+|XML|+|Sys.Chk|+|Window|+|OS-Input|+|Timer|+|Drivers|+|Load Assets|
                   Command = demo.APPLICATION_MAIN_LOOP(); // RUN: OS MAIN LOOP -> PROCESS FRAMES: (UPDATE + RENDER)!

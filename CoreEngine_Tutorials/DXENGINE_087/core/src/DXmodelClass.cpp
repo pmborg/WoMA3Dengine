@@ -740,7 +740,7 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 				// Get full pathname for this texture:
 				STRING fileNamePath = (TCHAR*)(*textureFile)[i].c_str();
 				STRING pathtoengine = TEXT("../");
-				if (fileNamePath.substr(0, 3) != pathtoengine)
+				if ((fileNamePath.substr(0, 3) != pathtoengine) && (_tcsicmp(fileNamePath.c_str(), TEXT(".dat")) != 0))
 					textureFilename = WOMA::LoadFile((TCHAR*)fileNamePath.c_str());
 				else
 					textureFilename = (TCHAR*)fileNamePath.c_str();
@@ -2286,58 +2286,58 @@ void DXmodelClass::rotateZ (float rZrad) // in radians!!
 
 void DXmodelClass::scale(float x, float y, float z)
 {
-	#if defined _XM_NO_INTRINSICS_
-		#if X64
-		m_worldMatrix.vector4_f32[0] = x;
-		m_worldMatrix.vector4_f32[1] = y;
-		m_worldMatrix.vector4_f32[2] = z;
-		#else
-		m_worldMatrix._41 = x;
-		m_worldMatrix._42 = y;
-		m_worldMatrix._43 = z;
-		#endif
-	#else
-		//NEED: DEFINE: "_XM_SSE_INTRINSICS_" for fast code
-		//#if D3D11_SPEC_DATE_YEAR == 2009
-			m_worldMatrix._11 = x;
-			m_worldMatrix._22 = y;
-			m_worldMatrix._33 = z;
-		//#else
-		//	m_worldMatrix.r[0].m128_f32[0] = x;
-		//	m_worldMatrix.r[1].m128_f32[1] = y;
-		//	m_worldMatrix.r[2].m128_f32[2] = z;
-		//#endif
-	#endif
+#if defined _XM_NO_INTRINSICS_
+#if X64
+    m_worldMatrix.vector4_f32[0] = x;
+    m_worldMatrix.vector4_f32[1] = y;
+    m_worldMatrix.vector4_f32[2] = z;
+#else
+    m_worldMatrix._41 = x;
+    m_worldMatrix._42 = y;
+    m_worldMatrix._43 = z;
+#endif
+#else
+    //NEED: DEFINE: "_XM_SSE_INTRINSICS_" for fast code
+    //#if D3D11_SPEC_DATE_YEAR == 2009
+    m_worldMatrix._11 = x;
+    m_worldMatrix._22 = y;
+    m_worldMatrix._33 = z;
+    //#else
+    //	m_worldMatrix.r[0].m128_f32[0] = x;
+    //	m_worldMatrix.r[1].m128_f32[1] = y;
+    //	m_worldMatrix.r[2].m128_f32[2] = z;
+    //#endif
+#endif
 }
 
 void DXmodelClass::translation(float x, float y, float z)
 {
-	PosX = x;
-	PosY = y;
-	PosZ = z;
+    PosX = x;
+    PosY = y;
+    PosZ = z;
 
-	#if defined _XM_NO_INTRINSICS_
-		#if x64
-		m_worldMatrix.vector4_f32[0] = x;
-		m_worldMatrix.vector4_f32[1] = y;
-		m_worldMatrix.vector4_f32[2] = z;
-		#else
-		m_worldMatrix._41 = x;
-		m_worldMatrix._42 = y;
-		m_worldMatrix._43 = z;
-		#endif
-	#else
-		//NEED: DEFINE: "_XM_SSE_INTRINSICS_" for fast code
-		//#if D3D11_SPEC_DATE_YEAR == 2009
-			m_worldMatrix._41 = x;
-			m_worldMatrix._42 = y;
-			m_worldMatrix._43 = z;
-		//#else
-		//	m_worldMatrix.r[3].m128_f32[0] = x;
-		//	m_worldMatrix.r[3].m128_f32[1] = y;
-		//	m_worldMatrix.r[3].m128_f32[2] = z;
-		//#endif
-	#endif
+#if defined _XM_NO_INTRINSICS_
+#if x64
+    m_worldMatrix.vector4_f32[0] = x;
+    m_worldMatrix.vector4_f32[1] = y;
+    m_worldMatrix.vector4_f32[2] = z;
+#else
+    m_worldMatrix._41 = x;
+    m_worldMatrix._42 = y;
+    m_worldMatrix._43 = z;
+#endif
+#else
+    //NEED: DEFINE: "_XM_SSE_INTRINSICS_" for fast code
+    //#if D3D11_SPEC_DATE_YEAR == 2009
+    m_worldMatrix._41 = x;
+    m_worldMatrix._42 = y;
+    m_worldMatrix._43 = z;
+    //#else
+    //	m_worldMatrix.r[3].m128_f32[0] = x;
+    //	m_worldMatrix.r[3].m128_f32[1] = y;
+    //	m_worldMatrix.r[3].m128_f32[2] = z;
+    //#endif
+#endif
 }
 
 #undef _11
@@ -2364,14 +2364,16 @@ void DXmodelClass::translation(float x, float y, float z)
 bool DXmodelClass::LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow, bool renderShadow, UINT instanceCount)
 {
 #if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES // Normal Bump + Instancing 
-	m_instanceCount = instanceCount;
+    m_instanceCount = instanceCount;
 #endif
 
-	const TCHAR* extension = _tcsrchr(filename.c_str(), '.');
+    const TCHAR* extension = _tcsrchr(filename.c_str(), '.');
 
 	if (_tcsicmp(extension, TEXT(".obj")) == 0 || _tcsicmp(extension, TEXT(".OBJ")) == 0)
 	{
 		bool b = modelClass.LoadOBJ(this, shader_type, g_driver, filename, castShadow, renderShadow, instanceCount);
+        if (!b)
+            { WomaMessageBox((TCHAR*)filename.c_str(), TEXT("Error, Could not load: ")); return false; }
 		if (b) {
             bool res = modelClass.CreateObject(this, (TCHAR*)filename.c_str(), g_driver, shader_type /*SHADER_AUTO*/, filename, castShadow, renderShadow); // Auto Detect Shader Type
             if (res)
@@ -2393,14 +2395,24 @@ bool DXmodelClass::LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shad
     return false;
 }
 
+#if defined USE_BOUNDING_VOLUMES
+void DXmodelClass::UpdateWorldAABB()
+{
+    XMMATRIX world = m_worldMatrix;
+    XMVECTOR vMin = XMVector3TransformCoord(XMLoadFloat3(&minVertex), world);
+    XMVECTOR vMax = XMVector3TransformCoord(XMLoadFloat3(&maxVertex), world);
+
+    XMStoreFloat3(&worldMinVertex, XMVectorMin(vMin, vMax));
+    XMStoreFloat3(&worldMaxVertex, XMVectorMax(vMin, vMax));
+}
+
 // Create: Bounding Box 
 // --------------------------------------------------------------------------------------------
-#if defined USE_BOUNDING_VOLUMES
 void DXmodelClass::CreateBoundingVolumes(std::vector<XMFLOAT3>& vertPosArray)
 // --------------------------------------------------------------------------------------------
 {
-	XMFLOAT3 minVertex = XMFLOAT3(FLT_MAX, FLT_MAX, FLT_MAX);
-	XMFLOAT3 maxVertex = XMFLOAT3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+	this->minVertex = XMFLOAT3(FLT_MAX, FLT_MAX, FLT_MAX);
+    this->maxVertex = XMFLOAT3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
 
 	for(UINT i = 0; i < vertPosArray.size(); i++)
 	{
@@ -2417,6 +2429,7 @@ void DXmodelClass::CreateBoundingVolumes(std::vector<XMFLOAT3>& vertPosArray)
 		maxVertex.x = max(maxVertex.x, vertPosArray[i].x);	// Find largest x value in model
 		maxVertex.y = max(maxVertex.y, vertPosArray[i].y);	// Find largest y value in model
 		maxVertex.z = max(maxVertex.z, vertPosArray[i].z);	// Find largest z value in model
+
 	}
 
 	// Create bounding box	
@@ -2460,6 +2473,8 @@ void DXmodelClass::CreateBoundingVolumes(std::vector<XMFLOAT3>& vertPosArray)
 
 	for (int j = 0; j < 36; j++)
 		boundingBoxIndex.push_back(i[j]);
+
+    UpdateWorldAABB();
 }
 #endif
 }

@@ -64,193 +64,6 @@ extern void LoadAllMeshModels(UINT this_level, ApplicationClass* app, MeshApplic
 extern void UpdateAllMeshAnimations(MeshApplication* demoapp, MyDemo* demo, float deltaTime);
 extern void RenderAllMeshModels(MeshApplication* demoapp, MyDemo* demo);
 
-
-#if DX_ENGINE_LEVEL >= 89 && defined USE_MAP_EDITOR
-void ApplicationClass::CheckEditor(int hitIndex, int c)
-{
-
-    // Process Movement Keys: + - (NUM PAD), LEFT, RIGHT, UP or DOWN (SHIFT: SLOW MOVE)
-    float deltaMove = (DXsystemHandle->m_player[g_NetID]->p_player.IsShift) ? 0.1f : 1.0f; // Slow or Normal MOVE?
-
-    #define _11 r[0].m128_f32[0]
-    #define _12 r[0].m128_f32[1]
-    #define _13 r[0].m128_f32[2]
-    #define _14 r[0].m128_f32[3]
-
-    #define _21 r[1].m128_f32[0]
-    #define _22 r[1].m128_f32[1]
-    #define _23 r[1].m128_f32[2]
-    #define _24 r[1].m128_f32[3]
-
-    #define _31 r[2].m128_f32[0]
-    #define _32 r[2].m128_f32[1]
-    #define _33 r[2].m128_f32[2]
-    #define _34 r[2].m128_f32[3]
-
-    #define _41 r[3].m128_f32[0]
-    #define _42 r[3].m128_f32[1]
-    #define _43 r[3].m128_f32[2]
-    #define _44 r[3].m128_f32[3]
-
-#if defined(USE_RASTERTEK_TEXT_FONT)
-    static bool firstPick = true;
-    if (c >= 0 && firstPick) // IF user clicked in a obj. dif. than default first one: "render text" he want the: "EDIT MODE"...
-        firstPick = false;
-
-    if (c >= 0 && ((DXmodelClass*)objModel[c])->ready && !firstPick)
-    {
-        AppTextClass->SetCompoundPosition((CHAR*)((DXmodelClass*)objModel[c])->MODEL_NAME.c_str(), closestObjDist, c,
-            ((DXmodelClass*)objModel[c])->m_worldMatrix._41, //X
-            ((DXmodelClass*)objModel[c])->m_worldMatrix._42, //Y
-            ((DXmodelClass*)objModel[c])->m_worldMatrix._43, //Z
-            ((DXmodelClass*)objModel[c])->m_worldMatrix._11, //scale
-            SystemHandle->xml_loader.theWorld[c].rotY        //Rot 
-            );
-    }
-    if (c >= 0)  // An OBJ was selected so we are in EDIT MODE.
-    {
-        // -----------------------------------------------------------------
-        // Arrow <- (X) //
-        static bool cursorLeft = false;
-        if (DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORLeftPressed && cursorLeft == false)
-        {
-            cursorLeft = true;
-            SystemHandle->xml_loader.theWorld[c].posX -= deltaMove;
-        }
-        else
-            if (!DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORLeftPressed && cursorLeft == true)
-                cursorLeft = false;
-
-        // Arrow -> (X)//
-        static bool cursorRight = false;
-        if (DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORRightPressed && cursorRight == false)
-        {
-            cursorRight = true;
-            SystemHandle->xml_loader.theWorld[c].posX += deltaMove;
-        }
-        else
-            if (!DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORRightPressed && cursorRight == true)
-                cursorRight = false;
-
-        // Arrow ^ (Z)//
-        static bool cursorUp = false;
-        if (DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORUpPressed && cursorUp == false)
-        {
-            cursorUp = true;
-            SystemHandle->xml_loader.theWorld[c].posZ -= deltaMove;
-        }
-        else
-            if (!DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORUpPressed && cursorUp == true)
-                cursorUp = false;
-
-        // Arrow v (Z)//
-        static bool cursorDown = false;
-        if (DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORDownPressed && cursorDown == false)
-        {
-            cursorDown = true;
-            SystemHandle->xml_loader.theWorld[c].posZ += deltaMove;
-        }
-        else
-            if (!DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORDownPressed && cursorDown == true)
-                cursorDown = false;
-
-        // -----------------------------------------------------------------
-        // pagDOWN (Y)//
-        static bool pgDown = false;
-        if (DXsystemHandle->m_player[g_NetID]->p_player.IsPgDownPressed && pgDown == false)
-        {
-            pgDown = true;
-            SystemHandle->xml_loader.theWorld[c].translateY -= deltaMove;
-        }
-        else
-            if (!DXsystemHandle->m_player[g_NetID]->p_player.IsPgDownPressed && pgDown == true)
-                pgDown = false;
-
-        // pgUP (Y)//
-        static bool pgUp = false;
-        if (DXsystemHandle->m_player[g_NetID]->p_player.IsPgUpPressed && pgUp == false)
-        {
-            pgUp = true;
-            SystemHandle->xml_loader.theWorld[c].translateY += deltaMove;
-        }
-        else
-            if (!DXsystemHandle->m_player[g_NetID]->p_player.IsPgUpPressed && pgUp == true)
-                pgUp = false;
-
-        // -----------------------------------------------------------------
-        // NUMPAD - is Scale//
-        static bool numPadMinus = false;
-        if (DXsystemHandle->m_player[g_NetID]->p_player.IsNumPadMinus && numPadMinus == false)
-        {
-            numPadMinus = true;
-            SystemHandle->xml_loader.theWorld[c].scale -= (deltaMove / 2);
-        }
-        else
-            if (!DXsystemHandle->m_player[g_NetID]->p_player.IsNumPadMinus && numPadMinus == true)
-                numPadMinus = false;
-
-
-        // NUMPAD + is Scale//
-        static bool numPadPlus = false;
-        if (DXsystemHandle->m_player[g_NetID]->p_player.IsNumPadPlus && numPadPlus == false)
-        {
-            numPadPlus = true;
-            SystemHandle->xml_loader.theWorld[c].scale += (deltaMove / 2);
-        }
-        else
-            if (!DXsystemHandle->m_player[g_NetID]->p_player.IsNumPadPlus && numPadPlus == true)
-                numPadPlus = false;
-
-        // -----------------------------------------------------------------
-        // NUMPAD - is rotY//
-        static bool numPad4Left = false;
-        if (DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORNumPad4 && numPad4Left == false)
-        {
-            numPad4Left = true;
-            SystemHandle->xml_loader.theWorld[c].rotY -= (deltaMove / 100);
-        }
-        else
-            if (!DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORNumPad4 && numPad4Left == true)
-                numPad4Left = false;
-
-        
-        // NUMPAD + is rotY//
-        static bool numPad6Right = false;
-        if (DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORNumPad6 && numPad6Right == false)
-        {
-            numPad6Right = true;
-            SystemHandle->xml_loader.theWorld[c].rotY += (deltaMove / 100);
-        }
-        else
-            if (!DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORNumPad6 && numPad6Right == true)
-                numPad6Right = false;
-    }
-
-
-    #undef _11
-    #undef _12
-    #undef _13
-    #undef _14
-
-    #undef _21
-    #undef _22
-    #undef _23
-    #undef _24
-
-    #undef _31
-    #undef _32
-    #undef _33
-    #undef _34
-
-    #undef _41
-    #undef _42
-    #undef _43
-    #undef _44
-#endif
-
-}
-#endif
-
 //-------------------------------------------------------------------------------------------
 void ApplicationClass::RenderScene(UINT monitorIndex, WomaDriverClass* driver)
 //-------------------------------------------------------------------------------------------
@@ -393,7 +206,7 @@ void ApplicationClass::RenderModel(UINT monitorIndex, WomaDriverClass* driver, U
     //int modelID = get_model_id(ID, pass);
     //if (modelID < 0)
     //    return;
-	//
+
     DXmodelClass* model = (DXmodelClass*)objModel[modelID];
 
     float positionX, positionY, positionZ;
@@ -401,11 +214,34 @@ void ApplicationClass::RenderModel(UINT monitorIndex, WomaDriverClass* driver, U
     positionY = SystemHandle->xml_loader.theWorld[modelID].translateY;
     positionZ = SystemHandle->xml_loader.theWorld[modelID].posZ;
 
+#if defined USE_AABB_COLISION_CHECK
+    static const float padding = 0.1f;
+    DXmodelClass* dxModel = (DXmodelClass*)model;
+    dxModel->UpdateWorldAABB();
+
+    const XMFLOAT3& min = dxModel->worldMinVertex;
+    const XMFLOAT3& max = dxModel->worldMaxVertex;
+
+    if ((dxModel->m_instanceCount == 0) &&
+        !m_Driver->frustum->CheckAABB(
+            min.x - padding, min.y - padding, min.z - padding,
+            max.x + padding, max.y + padding, max.z + padding))
+    {
+        dxModel->visible = false;
+        return;
+    }
+#else
    // === CHECK IF WE ARE VISIBLE: ===
-   if ((((DXmodelClass*)model)->m_instanceCount == 0) && !m_Driver->frustum->CheckSphere(positionX, positionY, positionZ, model->boundingSphere * 2) && ((!m_Driver->RenderfirstTime))) { //SYNC with QuadTree.cpp
-       ((DXmodelClass*)model)->visible = false;
-       return;
-   }
+    if (SystemHandle->xml_loader.theWorld[modelID].depend != -1)
+    {
+       if ((((DXmodelClass*)model)->m_instanceCount == 0) && !m_Driver->frustum->CheckSphere(positionX, positionY, positionZ, model->boundingSphere * 2) && ((!m_Driver->RenderfirstTime))) //SYNC with QuadTree.cpp
+       { 
+           ((DXmodelClass*)model)->visible = false;
+           return;
+       }
+    }
+#endif
+
    ((DXmodelClass*)model)->visible = true;
 
 	// === SET AUDIO DISTANCE (IF ITS THE CASE) ===											   
@@ -857,12 +693,6 @@ void ApplicationClass::AppPosRender(UINT monitorIndex)
 float ApplicationClass::ProcessInputUpdate()
 {
 	float fadeLight = 1;
-
-#if defined SAVEW3D
-    WomaMessageBox(TEXT("Conversion from OBJ to W3D, ended."), TEXT("SAVEW3D"));
-    WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP;
-    return -100;
-#endif
 
 #if defined USE_TIMER_CLASS
 #if defined INTRO_DEMO
@@ -1646,11 +1476,10 @@ void ApplicationClass::anyMouseClickToPick()
 // ==================================================================================================================================
 {
 	static int pickWhat = 1;
-	//static float pickedDist = 0.0f;
 	static bool isShoot = false;
-	static XMMATRIX bottleWorld;
+	static XMMATRIX targetWorld;
 
-	float tempDist;
+	float tempDist=0;
 	
 	int hitIndex = -1;
 	float closestDist = FLT_MAX;
@@ -1678,7 +1507,7 @@ void ApplicationClass::anyMouseClickToPick()
                     tempDist = FLT_MAX;
 
                     //D3DX_TO_XM_MATRIX(bottleWorld, compound[i].objModel->m_world);
-                    bottleWorld = ((DXmodelClass*)objModel[i])->m_worldMatrix;
+                    targetWorld = ((DXmodelClass*)objModel[i])->m_worldMatrix;
 
                     //("Bounding Sphere")
                     //-------------------
@@ -1686,7 +1515,7 @@ void ApplicationClass::anyMouseClickToPick()
                     {
                         float pRToPointDist = 0.0f; // Closest distance from the pick ray to the objects center
 
-                        XMVECTOR bottlePos = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+                        XMVECTOR targetPos = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
                         XMVECTOR pOnLineNearBottle = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 
                         // For the Bounding Sphere to work correctly, we need to make sure we are testing
@@ -1700,16 +1529,16 @@ void ApplicationClass::anyMouseClickToPick()
                             objModel[i]->bottleCenterOffset.z,
                             objModel[i]->bottleCenterOffset.w);
 
-                        bottlePos = XMVector3TransformCoord(bottlePos, bottleWorld) + bottleCenterOffset;
+                        targetPos = XMVector3TransformCoord(targetPos, targetWorld) + bottleCenterOffset;
                         // This equation gets the point on the pick ray which is closest to bottlePos
-                        pOnLineNearBottle = prwsPos + XMVector3Dot((bottlePos - prwsPos), prwsDir) / XMVector3Dot(prwsDir, prwsDir) * prwsDir;
+                        pOnLineNearBottle = prwsPos + XMVector3Dot((targetPos - prwsPos), prwsDir) / XMVector3Dot(prwsDir, prwsDir) * prwsDir;
 
                         // Now we get the distance between bottlePos and pOnLineNearBottle
                         // This line is slightly less accurate, but it offers a performance increase by
                         // estimating the distance using XMVector3LengthEst()
-                        pRToPointDist = XMVectorGetX(XMVector3LengthEst(pOnLineNearBottle - bottlePos));				
+                        pRToPointDist = XMVectorGetX(XMVector3LengthEst(pOnLineNearBottle - targetPos));				
                         //v2:
-                        //pRToPointDist = XMVectorGetX(XMVector3Length(pOnLineNearBottle - bottlePos));
+                        //pRToPointDist = XMVectorGetX(XMVector3Length(pOnLineNearBottle - targetPos));
 
                         // If the distance between the closest point on the pick ray (pOnLineNearBottle) to bottlePos
                         // is less than the bottles bounding sphere (represented by a float called bottleBoundingSphere)
@@ -1721,19 +1550,19 @@ void ApplicationClass::anyMouseClickToPick()
                             tempDist = XMVectorGetX(XMVector3Length(pOnLineNearBottle - prwsPos));
                             //v2:
                             // Check for picking with the actual model now
-                            //tempDist = pick(prwsPos, prwsDir, objModel[i]->bottleVertPosArray, objModel[i]->boundingBoxIndex, bottleWorld);
+                            //tempDist = pick(prwsPos, prwsDir, objModel[i]->bottleVertPosArray, objModel[i]->boundingBoxIndex, targetWorld);
                         }
                     }
 
                     // ("Bounding Box")
                     //-----------------
                     if (pickWhat == 1)
-                        tempDist = pick(prwsPos, prwsDir, objModel[i]->boundingBoxVerts, objModel[i]->boundingBoxIndex, bottleWorld);
+                        tempDist = pick(prwsPos, prwsDir, objModel[i]->boundingBoxVerts, objModel[i]->boundingBoxIndex, targetWorld);
 	
                     // ("Model") Check for picking directly with the real model: 
                     //----------------------------------------------------------
                     if(pickWhat == 2) {
-                        //tempDist = pick(prwsPos, prwsDir, objModel[i]->bottleVertPosArray, objModel[i]->indices, bottleWorld);
+                        //tempDist = pick(prwsPos, prwsDir, objModel[i]->bottleVertPosArray, objModel[i]->indices, targetWorld);
                         tempDist = pick(prwsPos, prwsDir, objModel[i]->bottleVertPosArray,
                             objModel[i]->boundingBoxIndex,
                             ((DXmodelClass*)objModel[i])->m_worldMatrix, false);	// Use Bounding Boxes, Faster!
@@ -1746,6 +1575,7 @@ void ApplicationClass::anyMouseClickToPick()
 					}
 				}
 			}
+
 			//------------------------------------------------------------------------------------------------------
 			// To avoid pick more than 1 compound:
 			if (closestDist < FLT_MAX)
@@ -1777,5 +1607,193 @@ void ApplicationClass::anyMouseClickToPick()
 Texture* LoadTextureFromPathFBX(UINT model_type, Graphics& graphics, LPCWSTR& texture)
 {
     return NULL;
+}
+#endif
+
+
+
+#if DX_ENGINE_LEVEL >= 89 && defined USE_MAP_EDITOR
+void ApplicationClass::CheckEditor(int hitIndex, int c)
+{
+
+    // Process Movement Keys: + - (NUM PAD), LEFT, RIGHT, UP or DOWN (SHIFT: SLOW MOVE)
+    float deltaMove = (DXsystemHandle->m_player[g_NetID]->p_player.IsShift) ? 0.1f : 1.0f; // Slow or Normal MOVE?
+
+#define _11 r[0].m128_f32[0]
+#define _12 r[0].m128_f32[1]
+#define _13 r[0].m128_f32[2]
+#define _14 r[0].m128_f32[3]
+
+#define _21 r[1].m128_f32[0]
+#define _22 r[1].m128_f32[1]
+#define _23 r[1].m128_f32[2]
+#define _24 r[1].m128_f32[3]
+
+#define _31 r[2].m128_f32[0]
+#define _32 r[2].m128_f32[1]
+#define _33 r[2].m128_f32[2]
+#define _34 r[2].m128_f32[3]
+
+#define _41 r[3].m128_f32[0]
+#define _42 r[3].m128_f32[1]
+#define _43 r[3].m128_f32[2]
+#define _44 r[3].m128_f32[3]
+
+#if defined(USE_RASTERTEK_TEXT_FONT)
+    static bool firstPick = true;
+    if (c >= 0 && firstPick) // IF user clicked in a obj. dif. than default first one: "render text" he want the: "EDIT MODE"...
+        firstPick = false;
+
+    if (c >= 0 && ((DXmodelClass*)objModel[c])->ready && !firstPick)
+    {
+        AppTextClass->SetCompoundPosition((CHAR*)((DXmodelClass*)objModel[c])->MODEL_NAME.c_str(), closestObjDist, c,
+            ((DXmodelClass*)objModel[c])->m_worldMatrix._41, //X
+            ((DXmodelClass*)objModel[c])->m_worldMatrix._42, //Y
+            ((DXmodelClass*)objModel[c])->m_worldMatrix._43, //Z
+            ((DXmodelClass*)objModel[c])->m_worldMatrix._11, //scale
+            SystemHandle->xml_loader.theWorld[c].rotY        //Rot 
+        );
+    }
+    if (c >= 0)  // An OBJ was selected so we are in EDIT MODE.
+    {
+        // -----------------------------------------------------------------
+        // Arrow <- (X) //
+        static bool cursorLeft = false;
+        if (DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORLeftPressed && cursorLeft == false)
+        {
+            cursorLeft = true;
+            SystemHandle->xml_loader.theWorld[c].posX -= deltaMove;
+        }
+        else
+            if (!DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORLeftPressed && cursorLeft == true)
+                cursorLeft = false;
+
+        // Arrow -> (X)//
+        static bool cursorRight = false;
+        if (DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORRightPressed && cursorRight == false)
+        {
+            cursorRight = true;
+            SystemHandle->xml_loader.theWorld[c].posX += deltaMove;
+        }
+        else
+            if (!DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORRightPressed && cursorRight == true)
+                cursorRight = false;
+
+        // Arrow ^ (Z)//
+        static bool cursorUp = false;
+        if (DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORUpPressed && cursorUp == false)
+        {
+            cursorUp = true;
+            SystemHandle->xml_loader.theWorld[c].posZ -= deltaMove;
+        }
+        else
+            if (!DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORUpPressed && cursorUp == true)
+                cursorUp = false;
+
+        // Arrow v (Z)//
+        static bool cursorDown = false;
+        if (DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORDownPressed && cursorDown == false)
+        {
+            cursorDown = true;
+            SystemHandle->xml_loader.theWorld[c].posZ += deltaMove;
+        }
+        else
+            if (!DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORDownPressed && cursorDown == true)
+                cursorDown = false;
+
+        // -----------------------------------------------------------------
+        // pagDOWN (Y)//
+        static bool pgDown = false;
+        if (DXsystemHandle->m_player[g_NetID]->p_player.IsPgDownPressed && pgDown == false)
+        {
+            pgDown = true;
+            SystemHandle->xml_loader.theWorld[c].translateY -= deltaMove;
+        }
+        else
+            if (!DXsystemHandle->m_player[g_NetID]->p_player.IsPgDownPressed && pgDown == true)
+                pgDown = false;
+
+        // pgUP (Y)//
+        static bool pgUp = false;
+        if (DXsystemHandle->m_player[g_NetID]->p_player.IsPgUpPressed && pgUp == false)
+        {
+            pgUp = true;
+            SystemHandle->xml_loader.theWorld[c].translateY += deltaMove;
+        }
+        else
+            if (!DXsystemHandle->m_player[g_NetID]->p_player.IsPgUpPressed && pgUp == true)
+                pgUp = false;
+
+        // -----------------------------------------------------------------
+        // NUMPAD - is Scale//
+        static bool numPadMinus = false;
+        if (DXsystemHandle->m_player[g_NetID]->p_player.IsNumPadMinus && numPadMinus == false)
+        {
+            numPadMinus = true;
+            SystemHandle->xml_loader.theWorld[c].scale -= (deltaMove / 2);
+        }
+        else
+            if (!DXsystemHandle->m_player[g_NetID]->p_player.IsNumPadMinus && numPadMinus == true)
+                numPadMinus = false;
+
+
+        // NUMPAD + is Scale//
+        static bool numPadPlus = false;
+        if (DXsystemHandle->m_player[g_NetID]->p_player.IsNumPadPlus && numPadPlus == false)
+        {
+            numPadPlus = true;
+            SystemHandle->xml_loader.theWorld[c].scale += (deltaMove / 2);
+        }
+        else
+            if (!DXsystemHandle->m_player[g_NetID]->p_player.IsNumPadPlus && numPadPlus == true)
+                numPadPlus = false;
+
+        // -----------------------------------------------------------------
+        // NUMPAD - is rotY//
+        static bool numPad4Left = false;
+        if (DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORNumPad4 && numPad4Left == false)
+        {
+            numPad4Left = true;
+            SystemHandle->xml_loader.theWorld[c].rotY -= (deltaMove / 100);
+        }
+        else
+            if (!DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORNumPad4 && numPad4Left == true)
+                numPad4Left = false;
+
+
+        // NUMPAD + is rotY//
+        static bool numPad6Right = false;
+        if (DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORNumPad6 && numPad6Right == false)
+        {
+            numPad6Right = true;
+            SystemHandle->xml_loader.theWorld[c].rotY += (deltaMove / 100);
+        }
+        else
+            if (!DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORNumPad6 && numPad6Right == true)
+                numPad6Right = false;
+    }
+
+
+#undef _11
+#undef _12
+#undef _13
+#undef _14
+
+#undef _21
+#undef _22
+#undef _23
+#undef _24
+
+#undef _31
+#undef _32
+#undef _33
+#undef _34
+
+#undef _41
+#undef _42
+#undef _43
+#undef _44
+#endif
+
 }
 #endif
