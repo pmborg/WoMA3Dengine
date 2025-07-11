@@ -5,7 +5,7 @@
 **Use:**<br>
 Microsoft Visual Studio Community **2022 (64-bit)** - Version **17.14.8**<br>
 <br>
-For now please just clone all content at:<br>
+For now please just clone all content at (From here it will compile for **Windows**, **Linux** and **Android**):<br>
 **C:\WoMA3Dengine**<br>
 <br>
 Later on I will make path free but for now a few paths are hardcoded there.<br>
@@ -64,6 +64,14 @@ Try to Change the driver on the fly without the need of close and open the Appli
 <hr>
 
 - <b>DX89: The object Model Map Editor (**SOON!**)</b><br>
+**Editor Keys/Controls:**<br>
+- **Mouse**, select the object<br>
+- **Arrow Keys**, move left and right, front and back. (NOTE: use shift from pixel move)<br>
+- **PgUp and PgDown**, move up and down. (NOTE: use shift from pixel move)<br>
+- **Numpad-4 and Numpad-6**, rotate the object.<br>
+- **"+" and "-"**, Scale it.<br>
+Then update the "world.xml" with the new positions show on screen.<br>
+NOTE: Use GodMode toggle: F11 to have a better view.<br>
   
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_089.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_089.png)	
 
