@@ -63,6 +63,34 @@ The **WoMA3Dengine** is a modular, cross-platform 3D graphics engine that showca
 - Debug render modes (wireframe, UV checker, LOD, normals)
 - Editor toolkits planned (map/scene builder)
 
+<hr>
+## 🧪 Which Project to Build?
+
+WoMA3Dengine is divided into tutorial levels across three platforms:
+
+### 🪟 Windows (Visual Studio 2022)
+Choose the solution depending on your level of interest or tutorial stage:
+
+| Solution | Tutorials | Description |
+|----------|-----------|-------------|
+| `WindowsEngine_000-009-Core.sln`         | 000–009 | Engine startup, camera, math, debug, sun/moon |
+| `WindowsEngine_019-029-Basic.sln`        | 019–029 | Texture mapping, models, intro to terrain |
+| `WindowsEngine_030-045-Intermediate.sln` | 030–045 | Billboards, instancing, lighting, input |
+| `WindowsEngine_049-089-Terrain.sln`      | 049–089 | Full terrain system, weather, PBR, animation |
+
+🔹 To explore the latest and most complete version, open and build:  
+`WindowsEngine_049-089-Terrain.sln` → `CoreEngine_089`
+
+---
+
+### 🤖 Android (Visual Studio 2022)
+To build the Android version using NDK:<br>
+`ANDROID1_engine_ALL.sln`
+
+### 🐧 Linux (Visual Studio 2022)
+`LINUX_engine_ALL.sln`
+
+
 
 <hr>
 <h1>WoMA3Dengine at Level 29 INTRO DEMO</h1>
