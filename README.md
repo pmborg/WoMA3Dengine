@@ -10,6 +10,58 @@ For now please just clone all content at (From this path all Platforms will comp
 <br>
 Later on I will make path free but for now a few paths are hardcoded there.<br>
 <br>
+<hr>
+
+## ✨ Features
+
+The **WoMA3Dengine** is a modular, cross-platform 3D graphics engine that showcases modern rendering techniques and engine design through a step-by-step tutorial approach.
+
+### 🖥️ Platform & API Support
+- **Cross-platform**: Windows, Linux, Android
+- **Graphics APIs**: DirectX 9, 11, 12, OpenGL (3.3+), Vulkan (planned)
+- **Shader Languages**: HLSL & GLSL
+- **Build System**: Visual Studio, GCC, Android NDK
+
+### 🔧 Engine Architecture
+- Modular and extensible engine layers using `DX_ENGINE_LEVEL` and `CORE_ENGINE_LEVEL`
+- Separation of rendering pipeline, asset management, and scene logic
+- Runtime and editor/debug builds
+- Memory leak detection and structured exception handling
+
+### 🧱 Rendering Features
+- Physically Based Rendering (PBR) using glTF material specs
+- Multiple lighting models: Phong, Blinn-Phong, and physically-based
+- Dynamic day/night lighting system with real-time sun/moon direction
+- Real-time shadows: PCF and shadow maps
+- Frustum culling and bounding-box optimization
+- Instancing & billboarding
+- Screen-space effects: fog, depth-based shading
+
+### 🌍 Scene & Asset Management
+- Mesh loading via **ASSIMP** (.obj, .fbx, .dae, .3ds, .blend)
+- Texture pipeline with automatic DDS conversion (_DEBUG)
+- Cyphered asset loading from packed W3D formats
+- LOD generation and selection
+- Sky dome, water, terrain heightmap loading
+
+### 🎮 Animation & Effects
+- FBX animation support with skeleton/bone playback
+- Multiple animation merging and metadata extraction
+- Billboarded particles and vegetation
+- Celestial simulation: real sun/moon positioning, METAR-based weather
+
+### 📐 Math & Utilities
+- Custom camera system (1st-person, 3rd-person, orbit)
+- Ray casting / object picking
+- AABB and bounding sphere generation
+- Full linear algebra library (vectors, matrices, quaternions)
+
+### 🧪 Development Tools
+- Modular tutorial progression (89+ stages)
+- Logging system to console, VS output, and log file
+- Debug render modes (wireframe, UV checker, LOD, normals)
+- Editor toolkits planned (map/scene builder)
+
 
 <hr>
 <h1>WoMA3Dengine at Level 29 INTRO DEMO</h1>
