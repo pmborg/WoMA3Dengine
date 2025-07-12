@@ -6,8 +6,8 @@
 Microsoft Visual Studio Community **2022 (64-bit)** - Version **17.14.8**<br>
 <br>
 For now please just clone all content at (From this path all Platforms will compile using "Visual Studio", **Windows**, **Linux** and **Android**):<br>
-C:\> **git clone --recursive https://github.com/pmborg/WoMA3Dengine.git**
-**C:\WoMA3Dengine**<br>
+C:\> **git clone --recursive https://github.com/pmborg/WoMA3Dengine.git**<br>
+Clone to: **C:\WoMA3Dengine**<br>
 <br>
 Later on I will make path free but for now a few paths are hardcoded there.<br>
 <br>
