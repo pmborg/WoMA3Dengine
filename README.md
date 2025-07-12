@@ -13,6 +13,12 @@ Later on I will make path free but for now a few paths are hardcoded there.<br>
 <br>
 <hr>
 
+## Platforms
+[![Platform: Windows](https://img.shields.io/badge/platform-Windows-blue)]()
+[![Platform: Linux](https://img.shields.io/badge/platform-Linux-yellow)]()
+[![Platform: Android](https://img.shields.io/badge/platform-Android-green)]()
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)]()
+
 ## ✨ Features
 
 The **WoMA3Dengine** is a modular, cross-platform 3D graphics engine that showcases modern rendering techniques and engine design through a step-by-step tutorial approach.
