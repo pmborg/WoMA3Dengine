@@ -6,7 +6,7 @@
 Microsoft Visual Studio Community **2022 (64-bit)** - Version **17.14.8**<br>
 <br>
 For now please just clone all content at (From this path all Platforms will compile using "Visual Studio", **Windows**, **Linux** and **Android**):<br>
-C:\>**git clone --recursive https://github.com/pmborg/WoMA3Dengine.git**
+C:\> **git clone --recursive https://github.com/pmborg/WoMA3Dengine.git**
 **C:\WoMA3Dengine**<br>
 <br>
 Later on I will make path free but for now a few paths are hardcoded there.<br>
@@ -81,15 +81,27 @@ Choose the solution depending on your level of interest or tutorial stage:
 🔹 To explore the latest and most complete version, open and build:  
 `WindowsEngine_049-089-Terrain.sln` → `CoreEngine_089`
 
----
+<hr>
 
 ### 🤖 Android (Visual Studio 2022)
 To build the Android version using NDK:<br>
 `ANDROID1_engine_ALL.sln`
 
-### 🐧 Linux (Visual Studio 2022)
-`LINUX_engine_ALL.sln`
+**Android-SDK:**<br>
+C:\Program Files (x86)\Android\AndroidSDK\25<br>
+**Android-NDK:**<br>
+C:\Program Files (x86)\Android\AndroidNDK\android-ndk-r15c<br>
+**Java:**<br>
+C:\Java\jdk1.8.0_202<br>
+**Ant:**<br>
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\Apps\apache-ant-1.9.3<br>
 
+<hr>
+
+### 🐧 Linux (Visual Studio 2022)
+`LINUX_engine_ALL.sln`<br>
+**Check this file for more information about how to setup WSL:**<br>
+https://github.com/pmborg/WoMA3Dengine/blob/main/HowTo/HowToWSL2/What%20to%20install%20on%20WSL%20LINUX.txt
 
 
 <hr>
