@@ -13,6 +13,13 @@ Later on I will make path free but for now a few paths are hardcoded there.<br>
 <br>
 <hr>
 
+## Platforms
+[![Platform: Windows](https://img.shields.io/badge/platform-Windows-blue)]()
+[![Platform: Linux](https://img.shields.io/badge/platform-Linux-yellow)]()
+[![Platform: Android](https://img.shields.io/badge/platform-Android-green)]()
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)]()
+
+
 <details>
 <summary>📘 Table of Contents</summary>
 
@@ -39,12 +46,6 @@ Later on I will make path free but for now a few paths are hardcoded there.<br>
 
 </details>
 
-
-## Platforms
-[![Platform: Windows](https://img.shields.io/badge/platform-Windows-blue)]()
-[![Platform: Linux](https://img.shields.io/badge/platform-Linux-yellow)]()
-[![Platform: Android](https://img.shields.io/badge/platform-Android-green)]()
-[![License: MIT](https://img.shields.io/badge/license-MIT-green)]()
 
 ## ✨ Features
 
