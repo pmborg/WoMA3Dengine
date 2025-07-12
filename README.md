@@ -107,8 +107,8 @@ Choose the solution depending on your level of interest or tutorial stage:
 
 | Solution | Tutorials | Description |
 |----------|-----------|-------------|
-| `WindowsEngine_000-009-Core.sln`         | 000–009 | Engine startup, camera, math, debug, sun/moon |
-| `WindowsEngine_019-029-Basic.sln`        | 019–029 | Texture mapping, models, intro to terrain |
+| `WindowsEngine_000-009-Core.sln`         | 000–009 | Engine startup, math, debug, sun/moon |
+| `WindowsEngine_019-029-Basic.sln`        | 019–029 | Texture mapping, camera, models, intro to terrain |
 | `WindowsEngine_030-045-Intermediate.sln` | 030–045 | Billboards, instancing, lighting, input |
 | `WindowsEngine_049-089-Terrain.sln`      | 049–089 | Full terrain system, weather, PBR, animation |
 
