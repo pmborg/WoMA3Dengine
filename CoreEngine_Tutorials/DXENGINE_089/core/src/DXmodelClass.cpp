@@ -2369,7 +2369,7 @@ bool DXmodelClass::LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shad
 
     const TCHAR* extension = _tcsrchr(filename.c_str(), '.');
 
-#if !defined SIMPLE && !defined MAVERICK
+#if !defined SIMPLE
     if ((_tcsicmp(extension, TEXT(".obj")) == 0 || _tcsicmp(extension, TEXT(".OBJ")) == 0) && (filename.find("scene87ForestHuntress.priv") != std::string::npos))
     {
         {
@@ -2377,7 +2377,8 @@ bool DXmodelClass::LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shad
             if (!b)
             {
                 WomaMessageBox((TCHAR*)filename.c_str(), TEXT("Error, Could not load: ")); return false;
-            }
+            }else
+            return true;
         }
     }
 #endif
