@@ -81,9 +81,10 @@ namespace DirectX
 		StringCchPrintfA(W3D.version, sizeof(W3D.version), "W3D v%.1f", version);
 		//WOMA_LOGManager_DebugMSG("W3D.version: %s\n", W3D.version);
 
+#if defined USE_BOUNDING_VOLUMES
 		W3D.min = minVertex;
 		W3D.max = maxVertex;
-
+#endif
 		W3D.verticesCount = m_vertexCount;	// TOTAL: Vertice ==> Equal to: "m_vertexCount"
 		W3D.size_verticesCount = sizeofMODELvertex;
 		W3D.indicesCount = m_indexCount;	// TOTAL: Indice  ==> Equal to: "m_indexCount"
@@ -218,10 +219,10 @@ namespace DirectX
 		// READ: HEADER DATA INDX
 		// --------------------------------------------------------------------------------------------------------------------------------
 		obj3dfile.read((char*)&W3D, sizeof(W3D));
-
+#if defined USE_BOUNDING_VOLUMES
 		minVertex = W3D.min;
 		maxVertex = W3D.max;
-
+#endif
 		m_vertexCount = W3D.verticesCount;	// TOTAL: Vertice ==> Equal to: "m_vertexCount"
 		m_indexCount = W3D.indicesCount;	// TOTAL: Indice  ==> Equal to: "m_indexCount"
 

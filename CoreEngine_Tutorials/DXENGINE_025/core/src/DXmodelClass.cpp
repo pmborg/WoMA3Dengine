@@ -91,11 +91,13 @@ DXmodelClass::DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive, bool comp
 #endif
 
 	//meshSRV
+#if DX_ENGINE_LEVEL >= 21 && defined USE_BOUNDING_VOLUMES
 	minVertex = XMFLOAT3(FLT_MAX, FLT_MAX, FLT_MAX);
 	maxVertex = XMFLOAT3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
 
 	objectCenterOffset = XMFLOAT4(0, 0, 0, 0);
 	boundingSphere = false;
+#endif
 
 	// Private ----------------------------------------------------------------------
 	#ifdef DX11 || defined DX9
@@ -572,7 +574,7 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 				// Get full pathname for this texture:
 				STRING fileNamePath = (TCHAR*)(*textureFile)[i].c_str();
 				STRING pathtoengine = TEXT("../");
-				if (fileNamePath.substr(0, 3) != pathtoengine)
+				if ((fileNamePath.substr(0, 3) != pathtoengine) && (_tcsicmp(fileNamePath.c_str(), TEXT(".dat")) != 0))
 					textureFilename = WOMA::LoadFile((TCHAR*)fileNamePath.c_str());
 				else
 					textureFilename = (TCHAR*)fileNamePath.c_str();
@@ -627,7 +629,7 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 
 	SAFE_DELETE_ARRAY (indices);
 
-	//if (Model3D) 
+#if defined USE_BOUNDING_VOLUMES
 	{
 		// Compute distance between maxVertex and minVertex
 		float distX = (maxVertex.x - minVertex.x) / 2.0f;
@@ -645,6 +647,7 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 			CreateBoundingVolumes();
 		#endif
 	}
+#endif
 	return true;
 }
 
@@ -715,8 +718,9 @@ bool DXmodelClass::InitializeColorBuffers(/*ID3D11Device*/ void* device, void* i
 		vertices[i].position = XMFLOAT3((*modelColorVertex)[i].x, (*modelColorVertex)[i].y, (*modelColorVertex)[i].z);
 		vertices[i].color	 = XMFLOAT4((*modelColorVertex)[i].r, (*modelColorVertex)[i].g, (*modelColorVertex)[i].b, (*modelColorVertex)[i].a);
 #endif
-
+#if defined USE_BOUNDING_VOLUMES
 		CALCULATE_MAX_MIN(vertices[i].position);
+#endif
 	}
 
 	IF_NOT_RETURN_FALSE (CreateDXbuffers(sizeof (DXcolorVertexType), device, indices, vertices));
@@ -750,7 +754,9 @@ bool DXmodelClass::InitializeTextureBuffers(/*ID3D11Device*/ void* device, void*
 			vertices[i].position.x, vertices[i].position.y, vertices[i].position.z, vertices[i].texCoord.x, vertices[i].texCoord.y);
 #endif
 
+#if defined USE_BOUNDING_VOLUMES
 			CALCULATE_MAX_MIN(vertices[i].position);
+#endif
 		}
 	}
 
@@ -778,7 +784,9 @@ bool DXmodelClass::InitializeTextureLightBuffers(/*ID3D11Device*/ void* device, 
 		vertices[i].position = XMFLOAT3((*modelTextureLightVertex)[i].x, (*modelTextureLightVertex)[i].y, (*modelTextureLightVertex)[i].z);
 		vertices[i].texCoord = XMFLOAT2((*modelTextureLightVertex)[i].tu, (*modelTextureLightVertex)[i].tv);
 		vertices[i].normal = XMFLOAT3((*modelTextureLightVertex)[i].nx, (*modelTextureLightVertex)[i].ny, (*modelTextureLightVertex)[i].nz);
+#if defined USE_BOUNDING_VOLUMES
 		CALCULATE_MAX_MIN(vertices[i].position);
+#endif
 	}
 	
 	IF_NOT_RETURN_FALSE (CreateDXbuffers(sizeof (DXtextureLightVertexType), device, indices, vertices));
@@ -1644,7 +1652,7 @@ void DXmodelClass::Render(UINT camera, UINT projection, UINT pass, void* lightVi
 				if (frameTime > 1000.0f)
 					frameTime = 0.0f;
 
-				m_Shader11->frameTime = frameTime;
+				m_Shader11->shaderfireframeTime = frameTime;
 			}
 		#endif
 			m_Shader11->shaderTypeParameter = (float)shaderTypeParameter;
@@ -1723,58 +1731,58 @@ void DXmodelClass::rotateZ (float rZrad) // in radians!!
 
 void DXmodelClass::scale(float x, float y, float z)
 {
-	#if defined _XM_NO_INTRINSICS_
-		#if X64
-		m_worldMatrix.vector4_f32[0] = x;
-		m_worldMatrix.vector4_f32[1] = y;
-		m_worldMatrix.vector4_f32[2] = z;
-		#else
-		m_worldMatrix._41 = x;
-		m_worldMatrix._42 = y;
-		m_worldMatrix._43 = z;
-		#endif
-	#else
-		//NEED: DEFINE: "_XM_SSE_INTRINSICS_" for fast code
-		//#if D3D11_SPEC_DATE_YEAR == 2009
-			m_worldMatrix._11 = x;
-			m_worldMatrix._22 = y;
-			m_worldMatrix._33 = z;
-		//#else
-		//	m_worldMatrix.r[0].m128_f32[0] = x;
-		//	m_worldMatrix.r[1].m128_f32[1] = y;
-		//	m_worldMatrix.r[2].m128_f32[2] = z;
-		//#endif
-	#endif
+#if defined _XM_NO_INTRINSICS_
+#if X64
+    m_worldMatrix.vector4_f32[0] = x;
+    m_worldMatrix.vector4_f32[1] = y;
+    m_worldMatrix.vector4_f32[2] = z;
+#else
+    m_worldMatrix._41 = x;
+    m_worldMatrix._42 = y;
+    m_worldMatrix._43 = z;
+#endif
+#else
+    //NEED: DEFINE: "_XM_SSE_INTRINSICS_" for fast code
+    //#if D3D11_SPEC_DATE_YEAR == 2009
+    m_worldMatrix._11 = x;
+    m_worldMatrix._22 = y;
+    m_worldMatrix._33 = z;
+    //#else
+    //	m_worldMatrix.r[0].m128_f32[0] = x;
+    //	m_worldMatrix.r[1].m128_f32[1] = y;
+    //	m_worldMatrix.r[2].m128_f32[2] = z;
+    //#endif
+#endif
 }
 
 void DXmodelClass::translation(float x, float y, float z)
 {
-	PosX = x;
-	PosY = y;
-	PosZ = z;
+    PosX = x;
+    PosY = y;
+    PosZ = z;
 
-	#if defined _XM_NO_INTRINSICS_
-		#if x64
-		m_worldMatrix.vector4_f32[0] = x;
-		m_worldMatrix.vector4_f32[1] = y;
-		m_worldMatrix.vector4_f32[2] = z;
-		#else
-		m_worldMatrix._41 = x;
-		m_worldMatrix._42 = y;
-		m_worldMatrix._43 = z;
-		#endif
-	#else
-		//NEED: DEFINE: "_XM_SSE_INTRINSICS_" for fast code
-		//#if D3D11_SPEC_DATE_YEAR == 2009
-			m_worldMatrix._41 = x;
-			m_worldMatrix._42 = y;
-			m_worldMatrix._43 = z;
-		//#else
-		//	m_worldMatrix.r[3].m128_f32[0] = x;
-		//	m_worldMatrix.r[3].m128_f32[1] = y;
-		//	m_worldMatrix.r[3].m128_f32[2] = z;
-		//#endif
-	#endif
+#if defined _XM_NO_INTRINSICS_
+#if x64
+    m_worldMatrix.vector4_f32[0] = x;
+    m_worldMatrix.vector4_f32[1] = y;
+    m_worldMatrix.vector4_f32[2] = z;
+#else
+    m_worldMatrix._41 = x;
+    m_worldMatrix._42 = y;
+    m_worldMatrix._43 = z;
+#endif
+#else
+    //NEED: DEFINE: "_XM_SSE_INTRINSICS_" for fast code
+    //#if D3D11_SPEC_DATE_YEAR == 2009
+    m_worldMatrix._41 = x;
+    m_worldMatrix._42 = y;
+    m_worldMatrix._43 = z;
+    //#else
+    //	m_worldMatrix.r[3].m128_f32[0] = x;
+    //	m_worldMatrix.r[3].m128_f32[1] = y;
+    //	m_worldMatrix.r[3].m128_f32[2] = z;
+    //#endif
+#endif
 }
 
 #undef _11
@@ -1798,14 +1806,24 @@ void DXmodelClass::translation(float x, float y, float z)
 #undef _44
 
 
+#if defined USE_BOUNDING_VOLUMES
+void DXmodelClass::UpdateWorldAABB()
+{
+    XMMATRIX world = m_worldMatrix;
+    XMVECTOR vMin = XMVector3TransformCoord(XMLoadFloat3(&minVertex), world);
+    XMVECTOR vMax = XMVector3TransformCoord(XMLoadFloat3(&maxVertex), world);
+
+    XMStoreFloat3(&worldMinVertex, XMVectorMin(vMin, vMax));
+    XMStoreFloat3(&worldMaxVertex, XMVectorMax(vMin, vMax));
+}
+
 // Create: Bounding Box 
 // --------------------------------------------------------------------------------------------
-#if defined USE_BOUNDING_VOLUMES
 void DXmodelClass::CreateBoundingVolumes(std::vector<XMFLOAT3>& vertPosArray)
 // --------------------------------------------------------------------------------------------
 {
-	XMFLOAT3 minVertex = XMFLOAT3(FLT_MAX, FLT_MAX, FLT_MAX);
-	XMFLOAT3 maxVertex = XMFLOAT3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+	this->minVertex = XMFLOAT3(FLT_MAX, FLT_MAX, FLT_MAX);
+    this->maxVertex = XMFLOAT3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
 
 	for(UINT i = 0; i < vertPosArray.size(); i++)
 	{
@@ -1822,6 +1840,7 @@ void DXmodelClass::CreateBoundingVolumes(std::vector<XMFLOAT3>& vertPosArray)
 		maxVertex.x = max(maxVertex.x, vertPosArray[i].x);	// Find largest x value in model
 		maxVertex.y = max(maxVertex.y, vertPosArray[i].y);	// Find largest y value in model
 		maxVertex.z = max(maxVertex.z, vertPosArray[i].z);	// Find largest z value in model
+
 	}
 
 	// Create bounding box	
@@ -1865,6 +1884,8 @@ void DXmodelClass::CreateBoundingVolumes(std::vector<XMFLOAT3>& vertPosArray)
 
 	for (int j = 0; j < 36; j++)
 		boundingBoxIndex.push_back(i[j]);
+
+    UpdateWorldAABB();
 }
 #endif
 }

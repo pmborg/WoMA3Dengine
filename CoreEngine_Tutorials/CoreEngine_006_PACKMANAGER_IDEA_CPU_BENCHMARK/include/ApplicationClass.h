@@ -73,7 +73,6 @@ extern UINT g_NetID;
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 #include "positionClass.h"
-//#include "PlayerClass.h" //AQUI
 #if defined DX_ENGINE
 	#include "DXinputClass.h"
 #endif
@@ -388,6 +387,8 @@ public:
 	VirtualModelClass* m_cube2Model = NULL;
 	VirtualModelClass* m_cube3Model = NULL;
 #endif
+
+    float shadergrassframeTime = 0;
 
 #if defined SCENE_TERRAIN_QUAD_TREE //67
 	TerrainQuadtreeClass* TerrainQuadtree;

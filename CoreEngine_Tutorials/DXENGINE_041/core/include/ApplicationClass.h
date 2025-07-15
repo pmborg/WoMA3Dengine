@@ -105,7 +105,6 @@ struct InstanceType
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 #include "positionClass.h"
-//#include "PlayerClass.h" //AQUI
 #if defined DX_ENGINE
 	#include "DXinputClass.h"
 #endif
@@ -333,7 +332,7 @@ public:
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
     DXrendertextureclass* m_RenderShadowTexture = NULL;	//TO INTERNAL RENDER!
 #endif
-    void WOMA_APPLICATION_FrameUpdateInstancesPositions(UINT m_ObjId, int m_instanceCount, InstanceType* instances_);
+    void WOMA_APPLICATION_SetInstancePositions(UINT m_ObjId, int m_instanceCount, InstanceType* instances_, UINT type=0);
 
 #if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION //float	closestObjDist = FLT_MAX;
 	float	closestObjDist = FLT_MAX;
@@ -523,6 +522,8 @@ public:
 #if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28 && defined USE_SKYSPHERE
 	void	initSky(float SPHERE_SIZE);
 #endif
+
+    float shadergrassframeTime = 0;
 
 #if defined SCENE_TERRAIN_QUAD_TREE //67
 	TerrainQuadtreeClass* TerrainQuadtree;

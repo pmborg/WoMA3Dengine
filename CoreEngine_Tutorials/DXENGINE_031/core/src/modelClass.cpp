@@ -111,7 +111,7 @@ ModelClass::~ModelClass()
 
 // Populate: obj3d
 // --------------------------------------------------------------------------------------------
-bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow, bool renderShadow, UINT instanceCount)
+bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow, bool renderShadow, UINT instanceCount, UINT instanceType)
 // --------------------------------------------------------------------------------------------
 {	HRESULT hr = 0;
 
@@ -128,8 +128,8 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 	//Open file: filename
 	// ---------------------
 	IFSTREAM fileIn ((TCHAR*)newfilename.c_str());
-	if (!fileIn) 
-		{ WomaMessageBox((TCHAR*)newfilename.c_str(), TEXT("Error, Could not load: ")); return FALSE; }
+    if (!fileIn)
+        return FALSE;
 
 	obj3d.m_vertexCount = 0;		//totalVerts
 	TCHAR lastToken = 0;

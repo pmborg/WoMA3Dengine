@@ -552,13 +552,22 @@ void ApplicationClass::initShadowTextureDemo()
 // ----------------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES // Normal Bump + Instancing 
 
-void ApplicationClass::WOMA_APPLICATION_FrameUpdateInstancesPositions(UINT m_ObjId, int m_instanceCount, InstanceType* instances_)
+void ApplicationClass::WOMA_APPLICATION_SetInstancePositions(UINT m_ObjId, int m_instanceCount, InstanceType* instances_, UINT type)
 {
 	InstanceType* instances = instances_;
-#if DX_ENGINE_LEVEL >= 77 && defined USE_INSTANCES_FOR_TREES
+
     BillClass bill;
-    bill.BillboardGS(instances, m_instanceCount);
+
+    switch (type)
+    {
+#if defined USE_INSTANCES_FOR_TREES
+        case 0:
+            bill.Tree0GS(instances, m_instanceCount);
+            break;
 #endif
+        default:
+            break;
+    }
 
 }
 #endif
@@ -627,9 +636,9 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	IF_NOT_RETURN_FALSE(initCubes3D());
 #endif
 
-	//-----------------------------------------------------------------------------------------------------------------
+    //=================================================================================================================
 	// INIT SKY ///////////////////////////////////////////////////////////////////////////////////////////////////////
-	//-----------------------------------------------------------------------------------------------------------------
+    //=================================================================================================================
 	
 //Sphere:
 	float size = 3.0f;
@@ -657,9 +666,9 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	initSky(size);
 #endif
 
-	//-----------------------------------------------------------------------------------------------------------------
+    //=================================================================================================================
 	// INIT TERRAINs //////////////////////////////////////////////////////////////////////////////////////////////////
-	//-----------------------------------------------------------------------------------------------------------------
+    //=================================================================================================================
 	//0
 #if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN		// UNDER WATER: Terrain
 	loadedTerrain[0] = NEW CTerrain(TERRAIN);
@@ -693,23 +702,29 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	//=================================================================================================================
 
 	//-----------------------------------------------------------------------------------------------------------------
-	// Add Instanced Billboards:
+	// Add Instanced Billboards to World.xml
 	//-----------------------------------------------------------------------------------------------------------------
 #if defined USE_INSTANCES_FOR_TREES
+    {
 	xmlobj3d XMLobj3D = {};
 
-	XMLobj3D.id = (int)SystemHandle->xml_loader.theWorld.size();
-	XMLobj3D.posX = 0; XMLobj3D.translateY = 0; XMLobj3D.posZ = 0;
-	XMLobj3D.shader = SHADER_TEXTURE_GS_INSTANCED;
-	XMLobj3D.scale = 0.0215f;
-	XMLobj3D.instances = N_INSTANCE_TREES;
+	    XMLobj3D.id = (int)SystemHandle->xml_loader.theWorld.size();
+	    XMLobj3D.posX = 0; XMLobj3D.translateY = 0; XMLobj3D.posZ = 0;
+	    XMLobj3D.shader = SHADER_TEXTURE_GS_INSTANCED;
+	    XMLobj3D.scale = 0.0215f;
+	    XMLobj3D.instances = N_INSTANCE_TREES;
+        XMLobj3D.type = 0;
 
-	strcpy_s(XMLobj3D.filename, sizeof(XMLobj3D.filename), BILL_GS);
-	SystemHandle->xml_loader.theWorld.push_back(XMLobj3D);
+	    strcpy_s(XMLobj3D.filename, sizeof(XMLobj3D.filename), BILL_GS);
+	    SystemHandle->xml_loader.theWorld.push_back(XMLobj3D);  //Add obj as xml entry
+    }
 #endif
 
+    //-----------------------------------------------------------------------------------------------------------------
+    // Log xml objects:
 	world_xml_objs = (UINT)SystemHandle->xml_loader.theWorld.size(); //Get 
 	WOMA_LOGManager_DebugMSGAUTO("Number of objects loaded in: WORLD.XML %d\n", world_xml_objs);
+    //theWorld.size()=11
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// Create Billboard for Trees / Flowers (extra populate WORLD.XML)       /////////////////////////////////////////
@@ -723,6 +738,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	}
 	WOMA_LOGManager_DebugMSGAUTO("Number of billboard objects added %d\n", SystemHandle->xml_loader.theWorld.size()- world_xml_objs);
 #endif
+    //theWorld.size()=3816
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// PROGRESS BAR		///////////////////////////////////////////////////////////////////////////////////////////////
@@ -761,18 +777,17 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 #if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined USE_FRUSTRUM
 
 	// Load 3D Objects: convert XML "objects" -- Load OBJ or W3D --> VirtualModelClass:
-	UINT len = (UINT)SystemHandle->xml_loader.theWorld.size();
+	UINT theWorld_size = (UINT)SystemHandle->xml_loader.theWorld.size();
 	UINT objModel_size = (UINT)objModel.size();
 	WOMA::num_loading_objects = 1;
 
-	for (UINT i = objModel_size; i < objModel_size+len; i++)
+	for (UINT i = objModel_size; i < objModel_size + theWorld_size; i++)
 	{
 		objModel.push_back(NULL);
 
 		if (i > 0
 			&& strcmp(SystemHandle->xml_loader.theWorld[i].filename, SystemHandle->xml_loader.theWorld[i - 1].filename) == 0 
-			&& SystemHandle->xml_loader.theWorld[i].type == 11
-			)
+			&& SystemHandle->xml_loader.theWorld[i].type == 11)
 		{
 			objModel[i] = objModel[i - 1];
 			SystemHandle->xml_loader.theWorld[i].CLONE = true;
@@ -781,13 +796,9 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 		{
 
 		if (SystemHandle->xml_loader.theWorld[i].type < 200)
-		{
-			CREATE_MODEL_IF_NOT_EXCEPTION(objModel[i], I_AM_2D, SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows);
-		}
+		{ CREATE_MODEL_IF_NOT_EXCEPTION(objModel[i], I_AM_2D, SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows); }
 		else 
-		{
-			CREATE_MODEL_IF_NOT_EXCEPTION(objModel[i], I_AM_3D, SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows);
-		}
+		{ CREATE_MODEL_IF_NOT_EXCEPTION(objModel[i], I_AM_3D, SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows); }
 
 		objModel[i]->m_ObjId = i; //SYNC-ID: objModel[i] with: xml_loader.theWorld[i]
         objModel[i]->xmlId = SystemHandle->xml_loader.theWorld[i].id;
@@ -817,6 +828,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 				((DXmodelClass*)objModel[i])->isAnimatedBill = false;
 		}
 #endif
+
 			//Load OBJ or W3D:
 			if (!(objModel[i]->LoadModel(wfilename, Driver, 
 				(SHADER_TYPE)SystemHandle->xml_loader.theWorld[i].shader,
@@ -834,14 +846,12 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 		}
 		if (i >= world_xml_objs) //Are we a Billboard?
 			((DXmodelClass*)objModel[i])->ModelHASAlfaColor = true;
-		else
-		{
-		}
+
 
 #if defined ALLOW_CBIND_PROGRESS_BAR
-		UINT progress = ((float)WOMA::num_loading_objects / (float)(objModel_size + len)) * 100.0f;
+		UINT progress = ((float)WOMA::num_loading_objects / (float)(objModel_size + theWorld_size)) * 100.0f;
 		SendMessage(SystemHandle->hwndPrgBar, PBM_SETPOS, (WPARAM)progress, 0);
-		StringCchPrintf(title, MAX_STR_LEN, TEXT("Loading: %d / %d"), WOMA::num_loading_objects, objModel_size + len);
+		StringCchPrintf(title, MAX_STR_LEN, TEXT("Loading: %d / %d"), WOMA::num_loading_objects, objModel_size + theWorld_size);
 		SetWindowText(SystemHandle->settingstext, title);
 #endif
 
@@ -867,10 +877,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	//Restore: Temp. Disable log file:
 	//-----------------------------------------------------------------------------------------------------------------
 	WOMA::logManager = WOMA::logManager_bk;
-
-	//-----------------------------------------------------------------------------------------------------------------
-	// ANIMATED SKELETON MESHs ////////////////////////////////////////////////////////////////////////////////////////
-	//-----------------------------------------------------------------------------------------------------------------
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// DEMO-29                  ///////////////////////////////////////////////////////////////////////////////////////
@@ -918,7 +924,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	}
 #endif
 
-#if defined SAVEW3D
+#if defined SAVEW3D && DX_ENGINE_LEVEL < 89
 	WomaMessageBox(TEXT("Conversion from OBJ to W3D, ended."), TEXT("SAVEW3D"));
 	WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP; //Publish_Quit_Message();
 	return false;
@@ -930,6 +936,5 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 
 	return true;
 }
-
 
 #pragma warning(pop)

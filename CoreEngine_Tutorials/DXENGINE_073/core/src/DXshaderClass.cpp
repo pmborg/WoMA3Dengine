@@ -1610,7 +1610,7 @@ namespace DirectX {
 #if TUTORIAL_CHAP >= 62 // FIRE
 		if (m_shaderType == SHADER_FIRE)
 		{
-			dataVSptr->frameTime = frameTime;
+			dataVSptr->vsframeTime = shaderfireframeTime;
 			dataVSptr->scrollSpeeds = scrollSpeeds;
 			dataVSptr->scales = scales;
 			//dataVSptr->padding6 = 0.0f;
@@ -1620,10 +1620,7 @@ namespace DirectX {
 #if DX_ENGINE_LEVEL >= 73 && defined BILLBOARD_FOR_WINDY_GRASS
 		else if (isAnimatedBill)
 		{
-			frameTime += 0.001f;
-			if (frameTime > 100)
-				frameTime = 0;
-			dataVSptr->frameTime = frameTime;
+			dataVSptr->vsframeTime = SystemHandle->m_Application->shadergrassframeTime;
 		}
 		dataVSptr->isAnimatedBill = isAnimatedBill;
 #endif

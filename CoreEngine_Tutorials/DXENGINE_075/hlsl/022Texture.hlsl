@@ -247,5 +247,6 @@ float4 MyPixelShader022Texture(PSIn input) : SV_TARGET
     }
 #endif
     
+    //return float4(1,1,1,1);
     return textureColor;
 }

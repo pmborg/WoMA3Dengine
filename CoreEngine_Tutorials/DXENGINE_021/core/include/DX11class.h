@@ -414,6 +414,7 @@ public:
     ID3D11Texture2D* m_depthStencilBuffer = NULL;
     ID3D11DepthStencilState* m_depthStencilState = NULL;
     ID3D11DepthStencilState* m_depthDisabledStencilState = NULL;
+    ID3D11DepthStencilState* testStencilState = NULL;
     BYTE dummybuff2[128] = { 0 };
 #if defined USE_RASTERIZER_STATE
     ID3D11RasterizerState* m_rasterState[3][2] = { 0 };

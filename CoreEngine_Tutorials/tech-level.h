@@ -218,7 +218,7 @@
         #define USE_VIEW2D_SPRITES
         #define USE_RASTERIZER_STATE
         #define USE_DSV //DX12
-		#define SENTENCE_MAX_LEN    120							   
+		#define SENTENCE_MAX_LEN    140							   
     #endif
 
     #if DX_ENGINE_LEVEL >= 25 //WINDOWS ONLY
@@ -370,7 +370,8 @@
             
         #define SCENE_GENERATEDUNDERWATER
         #undef SCENE_TERRAIN_COLLISION
-		#define FIXEDBORDERHEIGHT -5.0f							   
+		
+		#define FIXEDBORDERHEIGHT -5.0f
     #endif
 
     #if DX_ENGINE_LEVEL >= 50   //50-
@@ -552,6 +553,10 @@
 	//#define USE_AABB_COLISION_CHECK // Default: off												 
 #endif						 
 	
+#if DX_ENGINE_LEVEL >= 90       // From now on DX: Will use W3D + DDS
+    //#undef  USE_MAP_EDITOR
+    #undef USE_INSTANCES_FOR_TREES
+#endif																	 
 	
 	
 	

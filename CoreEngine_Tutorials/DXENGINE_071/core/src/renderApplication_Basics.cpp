@@ -54,16 +54,24 @@ int __cdecl BillSortCB(const VOID* arg1, const VOID* arg2);
 #include "BillClass.h"	//[ch60]
 #endif
 
-
+float sort_cameraX=0, sort_cameraY=0, sort_cameraZ = 0;
 //-------------------------------------------------------------------------------------------
 void ApplicationClass::RenderScene(UINT monitorIndex, WomaDriverClass* driver)
 //-------------------------------------------------------------------------------------------
 {
     totalRendered = 0;
 
+#if defined USE_DIRECT_INPUT
+    sort_cameraX = SystemHandle->m_Application->m_Position[g_NetID]->m_positionX;
+    sort_cameraY = SystemHandle->m_Application->m_Position[g_NetID]->m_positionY;
+    sort_cameraZ = SystemHandle->m_Application->m_Position[g_NetID]->m_positionZ;
+#endif
+
     // [1] sort billboards:
     // --------------------------------------------------------------------------------------------
+#if DX_ENGINE_LEVEL >= 70  && defined SCENE_BILLBOARDS //SCENE_BILLBOARDS
     qsort(m_Trees, _countof(m_Trees), sizeof(Tree), BillSortCB);
+#endif
 
     // [2] SceneManager: Process/Filter and Create Lists/trees of objects to render from: WORLD.XML
     // --------------------------------------------------------------------------------------------
@@ -87,9 +95,9 @@ void ApplicationClass::RenderScene(UINT monitorIndex, WomaDriverClass* driver)
 
     // [4] Render one Screen:
     // --------------------------------------------------------------------------------------------
-    AppPreRender(monitorIndex, driver, dayLightFade);	// [1] Render:  RENDER SHADOW MAP + MAIN && MINI MAP
+    AppPreRender(monitorIndex, driver, dayLightFade);	// [1] Render:  RENDER SHADOW MAP + MAIN MAP && MINI MAP
 
-    AppRender(monitorIndex, dayLightFade);				// [2] Render: All 3D!!!
+    AppRender(monitorIndex, dayLightFade);				// [2] Render: All main 3D scene!
 
     AppPosRender(monitorIndex);							// [3] Render:  All 2D (on TOPs): AppTextClass-Fill + Billboards + Title + Map + Minimap + AppTextClass + RENDER NATIVE TEXT
 }
@@ -193,11 +201,6 @@ void ApplicationClass::RenderModel(UINT monitorIndex, WomaDriverClass* driver, U
         ASSERT(0);
     }
     
-    //// === GET MODEL ID: ===
-    //int modelID = get_model_id(ID, pass);
-    //if (modelID < 0)
-    //    return;
-	//
     DXmodelClass* model = (DXmodelClass*)objModel[modelID];
 
     float positionX, positionY, positionZ;
@@ -218,13 +221,17 @@ void ApplicationClass::RenderModel(UINT monitorIndex, WomaDriverClass* driver, U
 	// === RESET TRANSLATION ===							
     model->translation(0, 0, 0);
 
-	// === SET SCALE ===					
+    {
     if ((m_Driver->RenderfirstTime) || (SystemHandle->xml_loader.theWorld[modelID].meshSRV))
     {
         float scale = SystemHandle->xml_loader.theWorld[modelID].scale;
-        model->scale(scale, scale, scale);
+        float scaleY = SystemHandle->xml_loader.theWorld[modelID].scaleY;
+        if (scaleY != 1)
+            model->scale(scale, scaleY, scale);
+        else
+            model->scale(scale, scale, scale);
     }
-
+    }
 	// === SET ROTATION IN X AXIS: ===								  
 #if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES // Instancing
     if (((DXmodelClass*)model)->m_instanceCount == 0)
@@ -244,23 +251,27 @@ void ApplicationClass::RenderModel(UINT monitorIndex, WomaDriverClass* driver, U
         float ry = 0;
         if (SystemHandle->xml_loader.theWorld[model->m_ObjId].meshSRV)
         {
-            float cameraPositionX = SystemHandle->m_Application->m_Position[g_NetID]->m_positionX;
-            float cameraPositionZ = SystemHandle->m_Application->m_Position[g_NetID]->m_positionZ;
+            if (SystemHandle->xml_loader.theWorld[model->m_ObjId].Bill)
+            {
+                float cameraPositionX = sort_cameraX;
+                float cameraPositionZ = sort_cameraZ;
 
-            // Calculate distance in XZ plane
-            float dx = positionX - cameraPositionX;
-            float dz = positionZ - cameraPositionZ;
-            float distance = sqrt(dx * dx + dz * dz);
+                // Calculate distance in XZ plane
+                float dx = positionX - cameraPositionX;
+                float dz = positionZ - cameraPositionZ;
+                float distance = sqrt(dx * dx + dz * dz);
 
-            if (distance >= 3.0f) {
-                billangle = atan2(dx, dz) * (180 / PI);
-                ry = billangle / (180 / PI);
-                if (SystemHandle->xml_loader.theWorld[model->m_ObjId].type == 12)
-                    ry -= PI / 4;
-                SystemHandle->xml_loader.theWorld[modelID].ry = ry; //save it!
-            }
-            else
-                ry = SystemHandle->xml_loader.theWorld[modelID].ry;
+                if (distance >= 3.0f) {
+                    billangle = atan2(dx, dz) * (180 / PI);
+                    ry = billangle / (180 / PI);
+                    if (SystemHandle->xml_loader.theWorld[model->m_ObjId].type == 12)
+                        ry -= PI / 4;
+                    SystemHandle->xml_loader.theWorld[modelID].ry = ry; //save it!
+                }
+                else
+                    ry = SystemHandle->xml_loader.theWorld[modelID].ry;
+            } else
+                ry = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotY;
         }
         else
         {
@@ -302,6 +313,7 @@ void ApplicationClass::RenderModel(UINT monitorIndex, WomaDriverClass* driver, U
 #else
     model->Render(CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass);// Pass 2 (Shadow));
 #endif
+
 }
 
 #define TERRAIN_SCALE 1
@@ -357,7 +369,7 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight)
     m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
 #endif
 	if (RENDER_PAGE == 49)
-		m_TerrainModel[0]->RenderWithFade();					// New function to replace these 2 line options.
+		m_TerrainModel[UNDERWATER_TERRAIN_ID]->RenderWithFade();					// New function to replace these 2 line options.
 #endif
 
 	// TERRAIN[2]: Render MAIN Terrain
@@ -366,66 +378,54 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight)
 	static bool fog = (RENDER_PAGE == 51 || RENDER_PAGE >= 60) ? true : false;
 	if (RENDER_PAGE >= 50)
 	{
-		if (m_TerrainModel[2])
-			m_TerrainModel[2]->RenderWithFade(fadeLight, fog);	// New function to replace these 2 line options.
+		if (m_TerrainModel[MAIN_TERRAIN_ID])
+			m_TerrainModel[MAIN_TERRAIN_ID]->RenderWithFade(fadeLight, fog);	    // New function to replace these 2 line options.
 	}
 #endif
 #if defined DEBUG_COLLISION_TERRAIN //For debug collision terrain only!
-	if (m_TerrainModel[3])
-		m_TerrainModel[3]->RenderWithFade(fadeLight, fog);	// New function to replace these 2 line options. 
-#endif
-
-	// 3D STATIC OPAC OBJECTS on WORLD.XML, that listed in: sceneManager->opacModelList (in front of camera)
-    //----------------------------------------------------------------------------------------------------------------------
-#if defined USE_RASTERIZER_STATE
-	m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
-#endif
-#if (defined USE_SCENE_MANAGER && defined DX_ENGINE) && defined MAIN_RENDER_MAIN_OBJ //MAIN-RENDER: MAIN OBJs. (9 ms)
-	for (UINT id = 0; id < world_main_size; id++) //TODO: use sceneManager
-			RenderModel(monitorIndex, m_Driver, id, PASS_OPAC);
+	if (m_TerrainModel[DEBUG_COLLISION_TERRAIN_ID])
+		m_TerrainModel[DEBUG_COLLISION_TERRAIN_ID]->RenderWithFade(fadeLight, fog);	// New function to replace these 2 line options. 
 #endif
 
 	//THE "OTHER" NETWORK PLAYERS
 	//----------------------------------------------------------------------------------------------------------------------
 
-	// TRANSPARENT:
+    // Render Animated meshes:
+    // -----------------------
+
+	// TRANSPARENT and SEMI-TRANSPARENT:
 	// --------------------------------------------------------------------------------------------
 	m_Driver->TurnOnAlphaBlending();
 
-	// TERRAIN[1]: Render Mesh for WATER:
-	// --------------------------------------------------------------------------------------------
-#if (DX_ENGINE_LEVEL >= 50 && defined SCENE_WATER_TERRAIN) && defined MAIN_RENDER_WATER //MAIN-RENDER: WATER (0.3 ms)
-	if (RENDER_PAGE >= 50)
-	{
-		((DirectX::DXmodelClass*)m_TerrainModel[1])->m_Shader11->time += (float)SystemHandle->m_Application->dt * (0.0025f / 16.66f);
-		m_TerrainModel[1]->translation(0, -0.75, 0);
-		m_TerrainModel[1]->scale(5, 5, 5);
-		m_TerrainModel[1]->RenderWithFade(fadeLight);
-	}
+// 3D STATIC OPAC OBJECTS on WORLD.XML, that listed in: sceneManager->opacModelList (in front of camera)
+//----------------------------------------------------------------------------------------------------------------------
+#if defined USE_RASTERIZER_STATE && (defined INTRO_DEMO || defined USE_ALPHA_BLENDING)
+    m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
 #endif
 
 	// Render TRANSPARENT Parts of 3D OBJs (like: glass window of (Space Compound), etc...) (last part)
 	// --------------------------------------------------------------------------------------------
-#if DX_ENGINE_LEVEL >= 33 && defined USE_SCENE_MANAGER
+#if DX_ENGINE_LEVEL >= 33 && defined USE_SCENE_MANAGER && defined MAIN_RENDER_MAIN_OBJ //MAIN-RENDER: MAIN OBJs. (9 ms)
 	for (UINT id = 0; id < WOMA::sceneManager->opacModelList.size(); id++) {
+        RenderModel(monitorIndex, m_Driver, id, PASS_OPAC);
+            
         if (((DXmodelClass*)objModel[id])->obj3d.hasTransparent == true)
+        {
 		    objModel[id]->Render(CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_TRANSPARENT);
+        }
     }
 #endif
 
-    // Render Animated meshes:
-    // -----------------------
-
-#if defined USE_TIMER_CLASS && !defined RELEASE
-    // TIME Control: Show Debug Info
-    if (m_Driver->RenderfirstTime)
-    {
-        UINT64 passedTotalTime = (UINT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
-        TCHAR tmp[MAX_STR_LEN]; _stprintf(tmp, TEXT("PASSED TOTAL TIME TO LOAD: %ju ms\n"), passedTotalTime); OutputDebugString(tmp);
-    }
+    // TERRAIN[1]: Render Mesh for WATER:
+// --------------------------------------------------------------------------------------------
+#if (DX_ENGINE_LEVEL >= 50 && defined SCENE_WATER_TERRAIN) && defined MAIN_RENDER_WATER //MAIN-RENDER: WATER (0.3 ms)
+    ((DirectX::DXmodelClass*)m_TerrainModel[WATER_TERRAIN_ID])->m_Shader11->time += (float)SystemHandle->m_Application->dt * (0.0025f / 16.66f);
+    m_TerrainModel[WATER_TERRAIN_ID]->translation(0, -0.75, 0);
+    m_TerrainModel[WATER_TERRAIN_ID]->scale(5, 5, 5);
+    m_TerrainModel[WATER_TERRAIN_ID]->RenderWithFade(fadeLight);
 #endif
 
-#if defined USE_MAP_EDITOR
+#if defined USE_MAP_EDITOR // MAP EDITOR: Render "Red" src/target line:
     //Src:
     MyLightVertexVector[0].r = 1; MyLightVertexVector[0].g = 0; MyLightVertexVector[0].b = 0; MyLightVertexVector[0].a = 1;
     MyLightVertexVector[1].r = 1; MyLightVertexVector[1].g = 0; MyLightVertexVector[1].b = 0; MyLightVertexVector[1].a = 1;
@@ -439,6 +439,15 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight)
     MyLightVertexVector[1].z = prwsPos.m128_f32[2] + prwsDir.m128_f32[2] * 100;
     m_lightRayModel->UpdateDynamic(&MyLightVertexVector);	
     m_lightRayModel->Render();								
+#endif
+
+#if defined USE_TIMER_CLASS && !defined RELEASE
+    // TIME Control: Show Debug Info
+    if (m_Driver->RenderfirstTime)
+    {
+        UINT64 passedTotalTime = (UINT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
+        TCHAR tmp[MAX_STR_LEN]; _stprintf(tmp, TEXT("PASSED TOTAL TIME TO LOAD: %ju ms\n"), passedTotalTime); OutputDebugString(tmp);
+    }
 #endif
 }
 
@@ -628,12 +637,6 @@ void ApplicationClass::AppPosRender(UINT monitorIndex)
 float ApplicationClass::ProcessInputUpdate()
 {
 	float fadeLight = 1;
-
-#if defined SAVEW3D
-    WomaMessageBox(TEXT("Conversion from OBJ to W3D, ended."), TEXT("SAVEW3D"));
-    WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP;
-    return -100;
-#endif
 
 #if defined USE_TIMER_CLASS
 #if defined INTRO_DEMO
@@ -1412,3 +1415,6 @@ Texture* LoadTextureFromPathFBX(UINT model_type, Graphics& graphics, LPCWSTR& te
     return NULL;
 }
 #endif
+
+
+

@@ -11,7 +11,7 @@
 
 #define ENCODE 1
 #define DECODE 2
-
+#define DECODE_MEM 3
 
 #define IDEAKEYSIZE 16
 #define IDEABLOCKSIZE 8

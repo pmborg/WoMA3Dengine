@@ -167,6 +167,7 @@ typedef struct xmlobj3d_
 	int id = 0;					//40
 	int fromPage, toPage, depend = 0;
 	float scale = 1, posX = 0, posZ = 0, translateY = 0;
+    float scaleY = 1;
 	float rotX = 0, rotY = 0, rotZ = 0;
 	int shader = 0;
 	char filename[256];
@@ -177,8 +178,9 @@ typedef struct xmlobj3d_
 	bool renderShadows = false;	//41
 #endif
     bool render = true;
-	UINT type = 0;
+    UINT type = 0;
 	ID3D11ShaderResourceView* meshSRV;
+    bool Bill = false;
     float ry=0; //DX_ENGINE_LEVEL >= 88
 } xmlobj3d;
 

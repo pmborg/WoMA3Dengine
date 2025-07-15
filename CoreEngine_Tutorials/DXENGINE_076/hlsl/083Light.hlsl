@@ -204,7 +204,7 @@ PSIn MyVertexShader083Light(VSIn input)
 	output.position = mul(float4(input.position, 1), WVP);	// Calculate the position of the vertex against the world, view, and projection matrices
 
     if (isAnimatedBill)
-        output.position.x += sin(vsframeTime * 100) * (1 - input.texCoords.y) / 200;
+        output.position.x += sin(vsframeTime) * (1 - input.texCoords.y) / 100;
     
 	//22: TEXTURE: Store the texture coordinates for the pixel shader:
 	output.texCoords = input.texCoords;

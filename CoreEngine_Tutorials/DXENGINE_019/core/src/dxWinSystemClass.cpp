@@ -485,7 +485,6 @@ void InitializeObjectsLoaderThreadFunction() // InitializeThread
 }
 #endif
 
-
 #endif
 
 #endif

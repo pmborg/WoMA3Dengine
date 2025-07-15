@@ -44,7 +44,6 @@ extern bool SaveAsDDS_Debug(const STRING& originalFile, const DirectX::ScratchIm
 
 namespace DirectX {
 
-
 #if (defined DX11 || defined DX9 ) && D3D11_SPEC_DATE_YEAR > 2009
 HRESULT DX11Class::LoadTexture(ID3D11Device* pDevice, TCHAR* pSrcFile, ID3D11ShaderResourceView**  ppShaderResourceView)
 {

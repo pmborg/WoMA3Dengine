@@ -32,26 +32,28 @@
 #define N_BILLBOARD 1000
 #define N_FENCES 0
 #define N_FIRE 0
-#define N_GRASS 0
-#define N_BUSH  0
+#define N_GRASS_0 0
+#define N_BUSH_0  0
 
-#if false //defined MAVERICK// true //SIMPLE
+#if false //defined SIMPLE
 #define N_BILLBOARD 100
-#define N_FENCES 55
-#define N_FIRE  1
-#define N_GRASS 1
-#define N_BUSH  1
+#define N_FENCES    55
+#define N_FIRE      1
+#define N_GRASS_0   1
+#define N_BUSH_0    1
 #else
 #define N_BILLBOARD 1000
-#define N_FENCES 55
-#define N_FIRE 1
-#define N_GRASS 2000
-#define N_BUSH  750
+#define N_FENCES      55
+#define N_FIRE         1
+#define N_GRASS_0   2000
+#define N_BUSH_0     750
 #endif
 
 extern ID3D11ShaderResourceView* billFileLoaded[];
 
-extern Tree			m_Trees[N_BILLBOARD];						// Array of tree info. NOTE: SHARED on 2 (BILLBOARD Instances)
+extern Tree			m_Trees[N_BILLBOARD];						        // Array of tree info.
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: BillClass

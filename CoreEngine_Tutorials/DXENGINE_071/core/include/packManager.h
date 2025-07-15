@@ -117,9 +117,3 @@ extern int numZipItems;
 extern int zipIndx;
 extern UINT packCounter, totalPackCounter;
 #endif
-
-#if defined  USE_CYPHER_PACK
-#define ENCODE 1
-#define DECODE 2
-extern int EncodeIDEA90(char* filename, int whatTOdo);
-#endif

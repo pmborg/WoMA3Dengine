@@ -160,8 +160,6 @@ void ModelLoader::LoadBones(UINT meshindex, aiMesh* pMesh, std::vector<Vertex>& 
                 if (GetFloatAtIndex(vertex.BoneWeights, k) == 0.0)
                 {
                     SetFloatAtIndex(vertex.BoneWeights, k, weight);
-                    //vertex.BoneIds[k] = bone_index; //AQUIFLOAT
-                    //SetFloatAtIndex(vertex.BoneIds, k, bone_index); //AQUIFLOAT
                     switch (k)
                     {
                     case 0:

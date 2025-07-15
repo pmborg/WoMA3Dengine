@@ -99,7 +99,6 @@ extern float fadeIntro;
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 #include "positionClass.h"
-//#include "PlayerClass.h" //AQUI
 #if defined DX_ENGINE
 	#include "DXinputClass.h"
 #endif
@@ -489,6 +488,8 @@ public:
 	void	initSphere1(float SPHERE_SIZE);
 	void	initSphere2(float SPHERE_SIZE);
 #endif
+
+    float shadergrassframeTime = 0;
 
 #if defined SCENE_TERRAIN_QUAD_TREE //67
 	TerrainQuadtreeClass* TerrainQuadtree;

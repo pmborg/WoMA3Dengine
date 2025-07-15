@@ -100,7 +100,6 @@ extern float fadeIntro;
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 #include "positionClass.h"
-//#include "PlayerClass.h" //AQUI
 #if defined DX_ENGINE
 	#include "DXinputClass.h"
 #endif
@@ -503,6 +502,8 @@ public:
 #if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28 && defined USE_SKYSPHERE
 	void	initSky(float SPHERE_SIZE);
 #endif
+
+    float shadergrassframeTime = 0;
 
 #if defined SCENE_TERRAIN_QUAD_TREE //67
 	TerrainQuadtreeClass* TerrainQuadtree;

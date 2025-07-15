@@ -89,8 +89,8 @@ void ApplicationClass::PositionUpdate(int playerId, float positionX, float posit
 	m_pointLocationY[playerId] -= 1;
 
 	// MAIN-MAP:
-	float m_positionX = SystemHandle->m_Application->m_Position[g_NetID]->m_positionX;
-	float m_positionZ = SystemHandle->m_Application->m_Position[g_NetID]->m_positionZ;
+	float m_positionX = sort_cameraX;
+	float m_positionZ = sort_cameraZ;
 
 	int Qx = (int)(m_positionX / ((m_terrainWidth ) / 2));
 	int Qz = (int)(m_positionZ / ((m_terrainHeight ) / 2));

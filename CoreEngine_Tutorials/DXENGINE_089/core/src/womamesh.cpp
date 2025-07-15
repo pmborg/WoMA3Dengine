@@ -278,8 +278,8 @@ void RenderAllMeshModels(MeshApplication* demoapp, MyDemo* demo)
         //Translate:
         XMMATRIX rotY = XMMatrixRotationY(PI + SystemHandle->m_Application->m_Position[g_NetID]->m_rotationY * 0.0174532925f);
         world *= rotY;
-        world.r[3].m128_f32[0] = SystemHandle->m_Application->m_Position[g_NetID]->m_positionX;
-        world.r[3].m128_f32[2] = SystemHandle->m_Application->m_Position[g_NetID]->m_positionZ;
+        world.r[3].m128_f32[0] = sort_cameraX;
+        world.r[3].m128_f32[2] = sort_cameraZ;
         world.r[3].m128_f32[1] = mainTerrain->getTerrainHeight(TERRAIN_ID, world.r[3].m128_f32[0], world.r[3].m128_f32[2]);
 
         womamesh4[MAIN_CHAR_MODEL1].scene.UpdateWorldMatrixModel(demoapp->m_Graphics, world);
@@ -301,8 +301,8 @@ void RenderAllMeshModels(MeshApplication* demoapp, MyDemo* demo)
         XMMATRIX rotY = XMMatrixRotationY(PI + SystemHandle->m_Application->m_Position[g_NetID]->m_rotationY * 0.0174532925f);
         world *= rotY;
 
-        world.r[3].m128_f32[0] = SystemHandle->m_Application->m_Position[g_NetID]->m_positionX;
-        world.r[3].m128_f32[2] = SystemHandle->m_Application->m_Position[g_NetID]->m_positionZ;
+        world.r[3].m128_f32[0] = sort_cameraX;
+        world.r[3].m128_f32[2] = sort_cameraZ;
 
         world.r[3].m128_f32[1] = mainTerrain->getTerrainHeight(TERRAIN_ID, world.r[3].m128_f32[0], world.r[3].m128_f32[2]);
 

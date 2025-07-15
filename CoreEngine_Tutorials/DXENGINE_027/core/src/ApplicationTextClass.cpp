@@ -205,7 +205,7 @@ bool ApplicationTextClass::Initialize(void* Driver)
 		m_sentence[i] = NULL; //Reset not used slots
 
 	for (UINT i = 0; i < (UINT)_countof(m_sentence); i++) //Init used slots
-		IF_NOT_RETURN_FALSE(m_Text->InitializeSentence(&m_sentence[i], 80));
+		IF_NOT_RETURN_FALSE(m_Text->InitializeSentence(&m_sentence[i], SENTENCE_MAX_LEN));
 
 #if defined DX12
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)

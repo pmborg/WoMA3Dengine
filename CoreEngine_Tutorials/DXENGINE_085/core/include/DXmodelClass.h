@@ -108,7 +108,7 @@ public:
 #endif
 	// MODEL LOAD:
 	ADVOBJ3D obj3d;
-	bool LoadModel	(TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow = false, bool renderShadow=false, UINT instanceCount=0);
+	bool LoadModel	(TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow = false, bool renderShadow=false, UINT instanceCount=0/*, UINT instanceType = 0*/);
 
     XMVECTOR center;
     float diameter=0;

@@ -111,7 +111,7 @@ ModelClass::~ModelClass()
 
 // Populate: obj3d
 // --------------------------------------------------------------------------------------------
-bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow, bool renderShadow, UINT instanceCount)
+bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow, bool renderShadow, UINT instanceCount, UINT instanceType)
 // --------------------------------------------------------------------------------------------
 {	HRESULT hr = 0;
 

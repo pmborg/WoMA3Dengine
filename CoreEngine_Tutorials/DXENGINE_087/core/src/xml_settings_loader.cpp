@@ -429,11 +429,13 @@ bool XMLloader::loadWorld (TCHAR* file_) // Note: Have to be char
 				object3d.depend = atoi(element->Attribute("depend"));
 
 				object3d.scale = (float)atof(element->Attribute("scale"));
+                if (element->Attribute("scaleY"))
+                    object3d.scaleY = (float)atof(element->Attribute("scaleY"));
 				object3d.posX = (float)atof(element->Attribute("posX"));
 				object3d.posZ = (float)atof(element->Attribute("posZ"));
 				object3d.translateY = (float)atof(element->Attribute("translateY"));
 #if _NOT //DX_ENGINE_LEVEL >= 89
-                STRING s = element->Attribute("rotY");//Aqui debug only
+                STRING s = element->Attribute("rotY");//debug only
                 if (s == "PI") {
                     object3d.rotY = static_cast<float>(PI);
                 }

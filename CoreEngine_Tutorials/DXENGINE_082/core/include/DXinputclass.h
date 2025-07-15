@@ -35,7 +35,6 @@
 //////////////
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
-//#include "PlayerClass.h" //AQUI
 
 /* Mouse constants */
 #define MOUSE_LEFT   0

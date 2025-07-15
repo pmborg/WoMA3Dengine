@@ -32,18 +32,18 @@ void ApplicationClass::TerrainRender(UINT monitorWindow, WomaDriverClass* Driver
 	m_Driver->TurnOffAlphaBlending(); // Re assume default
 
 	//Water Render:
-	float t = ((DirectX::DXmodelClass*)m_TerrainModel[1])->m_Shader11->time; //preserve animation time
-	((DirectX::DXmodelClass*)m_TerrainModel[1])->m_Shader11->time = 0;
-	((DirectX::DXmodelClass*)m_TerrainModel[1])->shaderTypeParameter = 1; // Render for Map projection
-	m_TerrainModel[1]->Render(CAMERA_NORMAL, PROJECTION_MINIMAP, PASS_MINIMAP1, m_viewMatrix, m_projectionMatrix);
-	((DirectX::DXmodelClass*)m_TerrainModel[1])->m_Shader11->time = t;
+	float t = ((DirectX::DXmodelClass*)m_TerrainModel[WATER_TERRAIN_ID])->m_Shader11->time; //preserve animation time
+	((DirectX::DXmodelClass*)m_TerrainModel[WATER_TERRAIN_ID])->m_Shader11->time = 0;
+	((DirectX::DXmodelClass*)m_TerrainModel[WATER_TERRAIN_ID])->shaderTypeParameter = 1; // Render for Map projection
+	m_TerrainModel[WATER_TERRAIN_ID]->Render(CAMERA_NORMAL, PROJECTION_MINIMAP, PASS_MINIMAP1, m_viewMatrix, m_projectionMatrix);
+	((DirectX::DXmodelClass*)m_TerrainModel[WATER_TERRAIN_ID])->m_Shader11->time = t;
 
 	//Terrain Render:
-	((DirectX::DXmodelClass*)m_TerrainModel[2])->shaderTypeParameter = 1; // Render for Map projection
-	m_TerrainModel[2]->Render(CAMERA_NORMAL, PROJECTION_MINIMAP, PASS_MINIMAP1, m_viewMatrix, m_projectionMatrix);
+	((DirectX::DXmodelClass*)m_TerrainModel[MAIN_TERRAIN_ID])->shaderTypeParameter = 1; // Render for Map projection
+	m_TerrainModel[MAIN_TERRAIN_ID]->Render(CAMERA_NORMAL, PROJECTION_MINIMAP, PASS_MINIMAP1, m_viewMatrix, m_projectionMatrix);
 
-	((DirectX::DXmodelClass*)m_TerrainModel[1])->shaderTypeParameter = 
-	((DirectX::DXmodelClass*)m_TerrainModel[2])->shaderTypeParameter = 0; // Render in normal projection
+	((DirectX::DXmodelClass*)m_TerrainModel[WATER_TERRAIN_ID])->shaderTypeParameter = 
+	((DirectX::DXmodelClass*)m_TerrainModel[MAIN_TERRAIN_ID])->shaderTypeParameter = 0; // Render in normal projection
 }
 
 DXcameraClass m_CameraMINIMAP; // DX Implementation
@@ -109,10 +109,7 @@ void ApplicationClass::AppPreRenderMainMapMiniMap(UINT monitorWindow, WomaDriver
 	{
 		//"viewMatrix": SET Camera Roration and Position to 2D Render: TEXT and SPRITES
 		m_CameraMINIMAP.SetRotation(+89.999f, 0, 0);
-
-		m_CameraMINIMAP.SetPosition(SystemHandle->m_Application->m_Position[g_NetID]->m_positionX,
-									100,
-									SystemHandle->m_Application->m_Position[g_NetID]->m_positionZ);
+		m_CameraMINIMAP.SetPosition(sort_cameraX, 100, sort_cameraZ); // 100 Magic number
 
 		//MACRO RENDER:
 	#if defined DX_ENGINE	

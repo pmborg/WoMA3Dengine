@@ -391,9 +391,7 @@ bool SoundClass::PlayWaveFile()
 	if (SystemHandle->m_Application->m_Position.size() == 0) {
 		m_listener->SetPosition(0, 0, 0, DS3D_IMMEDIATE);
 	} else {
-		m_listener->SetPosition(SystemHandle->m_Application->m_Position[g_NetID]->m_positionX, 
-			SystemHandle->m_Application->m_Position[g_NetID]->m_positionY, 
-			SystemHandle->m_Application->m_Position[g_NetID]->m_positionZ, DS3D_IMMEDIATE);
+		m_listener->SetPosition(sort_cameraX, sort_cameraY, sort_cameraZ, DS3D_IMMEDIATE);
 	}
 	#endif
 

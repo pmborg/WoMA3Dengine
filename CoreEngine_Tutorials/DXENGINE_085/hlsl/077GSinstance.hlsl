@@ -248,7 +248,8 @@ float4 MyPixelShader077GS(GSIn input) : SV_TARGET
 	}
 
 #endif
-
+    
+    //return float4(1,1,1,1);
     return textureColor;
 }
     

@@ -52,7 +52,7 @@ bool DX11Class::createSetDepthStencilState (bool depthTestEnabled)
 
 	// Set up the description of the stencil state.
 	depthStencilDesc.DepthEnable = depthTestEnabled;
-	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+    depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;			
 
 	depthStencilDesc.StencilEnable = false;
@@ -85,6 +85,12 @@ bool DX11Class::createSetDepthStencilState (bool depthTestEnabled)
 		result = m_device11->CreateDepthStencilState(&depthStencilDesc, &m_depthDisabledStencilState);// false
 		if(FAILED(result)){WomaFatalException(("Error: CreateDepthStencilState")); /*return false;*/}
 	}
+
+    if (!testStencilState)
+    {
+        depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+        result = m_device11->CreateDepthStencilState(&depthStencilDesc, &testStencilState);// false
+    }
 
 	return true;
 }

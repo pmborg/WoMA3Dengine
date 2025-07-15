@@ -50,3 +50,16 @@ struct MyObject3D
 	UINT	 texturenameCount = 0;
 	UINT	 size_texturenameCount = 0;
 };
+
+namespace DirectX
+{
+    // --------------------------
+    // "W3D" MATERIAL FORMAT:
+    // --------------------------
+    //Aux struct:
+    typedef struct
+    {
+        char fileName[100]; //Have to be CHAR!
+    } textureName;
+};
+

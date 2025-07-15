@@ -71,31 +71,31 @@ void DXfrustumClass::ConstructFrustum(float screenDepth, XMMATRIX *ProjectionMat
     matrix = XMMatrixMultiply(*g_viewMatrix, projectionMatrix);
 
 	// Calculate left plane of frustum.
-	m_planes[0].m128_f32[0] /*.a*/ = matrix._14 + matrix._11; 
-	m_planes[0].m128_f32[1] /*.b*/ = matrix._24 + matrix._21;
-	m_planes[0].m128_f32[2] /*.c*/ = matrix._34 + matrix._31;
-	m_planes[0].m128_f32[3] /*.d*/ = matrix._44 + matrix._41;
+	m_frustumPlane[0].m128_f32[0] /*.a*/ = matrix._14 + matrix._11; 
+	m_frustumPlane[0].m128_f32[1] /*.b*/ = matrix._24 + matrix._21;
+	m_frustumPlane[0].m128_f32[2] /*.c*/ = matrix._34 + matrix._31;
+	m_frustumPlane[0].m128_f32[3] /*.d*/ = matrix._44 + matrix._41;
 
 	// Calculate right plane of frustum.
-	m_planes[1].m128_f32[0] /*.a*/ = matrix._14 - matrix._11; 
-	m_planes[1].m128_f32[1] /*.b*/ = matrix._24 - matrix._21;
-	m_planes[1].m128_f32[2] /*.c*/ = matrix._34 - matrix._31;
-	m_planes[1].m128_f32[3] /*.d*/ = matrix._44 - matrix._41;
+	m_frustumPlane[1].m128_f32[0] /*.a*/ = matrix._14 - matrix._11; 
+	m_frustumPlane[1].m128_f32[1] /*.b*/ = matrix._24 - matrix._21;
+	m_frustumPlane[1].m128_f32[2] /*.c*/ = matrix._34 - matrix._31;
+	m_frustumPlane[1].m128_f32[3] /*.d*/ = matrix._44 - matrix._41;
 
 	// Calculate near plane of frustum.
-	m_planes[2].m128_f32[0] /*.a*/ = matrix._14 + matrix._13;        // a = The X value of the plane's normal
-	m_planes[2].m128_f32[1] /*.b*/ = matrix._24 + matrix._23;        // b = The Y value of the plane's normal
-	m_planes[2].m128_f32[2] /*.c*/ = matrix._34 + matrix._33;        // c = The Z value of the plane's normal
-	m_planes[2].m128_f32[3] /*.b*/ = matrix._44 + matrix._43;        // d = The distance the plane is from the origin
+	m_frustumPlane[2].m128_f32[0] /*.a*/ = matrix._14 + matrix._13;        // a = The X value of the plane's normal
+	m_frustumPlane[2].m128_f32[1] /*.b*/ = matrix._24 + matrix._23;        // b = The Y value of the plane's normal
+	m_frustumPlane[2].m128_f32[2] /*.c*/ = matrix._34 + matrix._33;        // c = The Z value of the plane's normal
+	m_frustumPlane[2].m128_f32[3] /*.b*/ = matrix._44 + matrix._43;        // d = The distance the plane is from the origin
 
 	// Calculate far plane of frustum.
-	m_planes[3].m128_f32[0] /*.a*/ = matrix._14 - matrix._13;        // a = The X value of the plane's normal
-	m_planes[3].m128_f32[1] /*.b*/ = matrix._24 - matrix._23;        // b = The Y value of the plane's normal
-	m_planes[3].m128_f32[2] /*.c*/ = matrix._34 - matrix._33;        // c = The Z value of the plane's normal
-	m_planes[3].m128_f32[3] /*.d*/ = matrix._44 - matrix._43;        // d = The distance the plane is from the origin
+	m_frustumPlane[3].m128_f32[0] /*.a*/ = matrix._14 - matrix._13;        // a = The X value of the plane's normal
+	m_frustumPlane[3].m128_f32[1] /*.b*/ = matrix._24 - matrix._23;        // b = The Y value of the plane's normal
+	m_frustumPlane[3].m128_f32[2] /*.c*/ = matrix._34 - matrix._33;        // c = The Z value of the plane's normal
+	m_frustumPlane[3].m128_f32[3] /*.d*/ = matrix._44 - matrix._43;        // d = The distance the plane is from the origin
 
     for(int i = 0; i < 4; i++) {
-		m_planes[i] = XMPlaneNormalize (m_planes[i]);
+		m_frustumPlane[i] = XMPlaneNormalize (m_frustumPlane[i]);
 	}
 }
 
@@ -129,7 +129,7 @@ bool DXfrustumClass::CheckPoint(float x, float y, float z)
 	// Check if the point is inside all six planes of the view frustum.
 	for(int i=0; i<4; i++) 
 	{
-		if (XMVectorGetX(XMPlaneDotCoord( m_planes[i], XMVectorSet(x, y, z, 0) )) < 0.0f )
+		if (XMVectorGetX(XMPlaneDotCoord( m_frustumPlane[i], XMVectorSet(x, y, z, 0) )) < 0.0f )
 			return false;
 	}
 
@@ -146,21 +146,21 @@ bool DXfrustumClass::CheckCube(float xCenter, float yCenter, float zCenter, floa
 	// Check if any one point of the cube is in the view frustum.
 	for(int i=0; i<4; i++) 
 	{
-		if (XMVectorGetX(XMPlaneDotCoord( m_planes[i], XMVectorSet((xCenter - radius), (yCenter - radius), (zCenter - radius), 0) )) >= 0.0f )
+		if (XMVectorGetX(XMPlaneDotCoord( m_frustumPlane[i], XMVectorSet((xCenter - radius), (yCenter - radius), (zCenter - radius), 0) )) >= 0.0f )
 			continue;
-		if (XMVectorGetX(XMPlaneDotCoord( m_planes[i], XMVectorSet((xCenter + radius), (yCenter - radius), (zCenter - radius), 0) )) >= 0.0f )
+		if (XMVectorGetX(XMPlaneDotCoord( m_frustumPlane[i], XMVectorSet((xCenter + radius), (yCenter - radius), (zCenter - radius), 0) )) >= 0.0f )
 			continue;
-		if (XMVectorGetX(XMPlaneDotCoord( m_planes[i], XMVectorSet((xCenter - radius), (yCenter + radius), (zCenter - radius), 0) )) >= 0.0f )
+		if (XMVectorGetX(XMPlaneDotCoord( m_frustumPlane[i], XMVectorSet((xCenter - radius), (yCenter + radius), (zCenter - radius), 0) )) >= 0.0f )
 			continue;
-		if (XMVectorGetX(XMPlaneDotCoord( m_planes[i], XMVectorSet((xCenter + radius), (yCenter + radius), (zCenter - radius), 0) )) >= 0.0f )
+		if (XMVectorGetX(XMPlaneDotCoord( m_frustumPlane[i], XMVectorSet((xCenter + radius), (yCenter + radius), (zCenter - radius), 0) )) >= 0.0f )
 			continue;
-		if (XMVectorGetX(XMPlaneDotCoord( m_planes[i], XMVectorSet((xCenter - radius), (yCenter - radius), (zCenter + radius), 0) )) >= 0.0f )
+		if (XMVectorGetX(XMPlaneDotCoord( m_frustumPlane[i], XMVectorSet((xCenter - radius), (yCenter - radius), (zCenter + radius), 0) )) >= 0.0f )
 			continue;
-		if (XMVectorGetX(XMPlaneDotCoord( m_planes[i], XMVectorSet((xCenter + radius), (yCenter - radius), (zCenter + radius), 0) )) >= 0.0f )
+		if (XMVectorGetX(XMPlaneDotCoord( m_frustumPlane[i], XMVectorSet((xCenter + radius), (yCenter - radius), (zCenter + radius), 0) )) >= 0.0f )
 			continue;
-		if (XMVectorGetX(XMPlaneDotCoord( m_planes[i], XMVectorSet((xCenter - radius), (yCenter + radius), (zCenter + radius), 0) )) >= 0.0f )
+		if (XMVectorGetX(XMPlaneDotCoord( m_frustumPlane[i], XMVectorSet((xCenter - radius), (yCenter + radius), (zCenter + radius), 0) )) >= 0.0f )
 			continue;
-		if (XMVectorGetX(XMPlaneDotCoord( m_planes[i], XMVectorSet((xCenter + radius), (yCenter + radius), (zCenter + radius), 0) )) >= 0.0f )
+		if (XMVectorGetX(XMPlaneDotCoord( m_frustumPlane[i], XMVectorSet((xCenter + radius), (yCenter + radius), (zCenter + radius), 0) )) >= 0.0f )
 			continue;
 
 		return false;
@@ -178,7 +178,7 @@ bool DXfrustumClass::CheckSphere(float xCenter, float yCenter, float zCenter, fl
 	// Check if the radius of the sphere is inside the view frustum.
 	for(int i=0; i<4; i++) 
 	{
-        float f = XMVectorGetX(XMPlaneDotCoord(m_planes[i], XMVectorSet(xCenter, yCenter, zCenter, 0)));
+        float f = XMVectorGetX(XMPlaneDotCoord(m_frustumPlane[i], XMVectorSet(xCenter, yCenter, zCenter, 0)));
 		if (f < -radius )
 			return false;
 	}
@@ -193,7 +193,7 @@ float DXfrustumClass::SphereDistance(float xCenter, float yCenter, float zCenter
 	// Check if the radius of the sphere is inside the view frustum.
 	for(int i=0; i<4; i++) 
 	{
-        d = XMVectorGetX(XMPlaneDotCoord( m_planes[i], XMVectorSet(xCenter, yCenter, zCenter, 0) ));
+        d = XMVectorGetX(XMPlaneDotCoord( m_frustumPlane[i], XMVectorSet(xCenter, yCenter, zCenter, 0) ));
 		if( d <= -radius)
 			return 0;
 	}
@@ -210,21 +210,21 @@ bool DXfrustumClass::CheckRectangle(float xCenter, float yCenter, float zCenter,
 	// Check if any of the 4 planes of the rectangle are inside the view frustum.
 	for(int i=0; i<4; i++)
 	{
-		if (XMVectorGetX(XMPlaneDotCoord( m_planes[i], XMVectorSet((xCenter - xSize), (yCenter - ySize), (zCenter - zSize), 0) )) >= 0.0f )
+		if (XMVectorGetX(XMPlaneDotCoord( m_frustumPlane[i], XMVectorSet((xCenter - xSize), (yCenter - ySize), (zCenter - zSize), 0) )) >= 0.0f )
 			continue;
-		if (XMVectorGetX(XMPlaneDotCoord( m_planes[i], XMVectorSet((xCenter + xSize), (yCenter - ySize), (zCenter - zSize), 0) )) >= 0.0f )
+		if (XMVectorGetX(XMPlaneDotCoord( m_frustumPlane[i], XMVectorSet((xCenter + xSize), (yCenter - ySize), (zCenter - zSize), 0) )) >= 0.0f )
 			continue;
-		if (XMVectorGetX(XMPlaneDotCoord( m_planes[i], XMVectorSet((xCenter - xSize), (yCenter + ySize), (zCenter - zSize), 0) )) >= 0.0f )
+		if (XMVectorGetX(XMPlaneDotCoord( m_frustumPlane[i], XMVectorSet((xCenter - xSize), (yCenter + ySize), (zCenter - zSize), 0) )) >= 0.0f )
 			continue;
-		if (XMVectorGetX(XMPlaneDotCoord( m_planes[i], XMVectorSet((xCenter - xSize), (yCenter - ySize), (zCenter + zSize), 0) )) >= 0.0f )
+		if (XMVectorGetX(XMPlaneDotCoord( m_frustumPlane[i], XMVectorSet((xCenter - xSize), (yCenter - ySize), (zCenter + zSize), 0) )) >= 0.0f )
 			continue;
-		if (XMVectorGetX(XMPlaneDotCoord( m_planes[i], XMVectorSet((xCenter + xSize), (yCenter + ySize), (zCenter - zSize), 0) )) >= 0.0f )
+		if (XMVectorGetX(XMPlaneDotCoord( m_frustumPlane[i], XMVectorSet((xCenter + xSize), (yCenter + ySize), (zCenter - zSize), 0) )) >= 0.0f )
 			continue;
-		if (XMVectorGetX(XMPlaneDotCoord( m_planes[i], XMVectorSet((xCenter + xSize), (yCenter - ySize), (zCenter + zSize), 0) )) >= 0.0f )
+		if (XMVectorGetX(XMPlaneDotCoord( m_frustumPlane[i], XMVectorSet((xCenter + xSize), (yCenter - ySize), (zCenter + zSize), 0) )) >= 0.0f )
 			continue;
-		if (XMVectorGetX(XMPlaneDotCoord( m_planes[i], XMVectorSet((xCenter - xSize), (yCenter + ySize), (zCenter + zSize), 0) )) >= 0.0f )
+		if (XMVectorGetX(XMPlaneDotCoord( m_frustumPlane[i], XMVectorSet((xCenter - xSize), (yCenter + ySize), (zCenter + zSize), 0) )) >= 0.0f )
 			continue;
-		if (XMVectorGetX(XMPlaneDotCoord( m_planes[i], XMVectorSet((xCenter + xSize), (yCenter + ySize), (zCenter + zSize), 0) )) >= 0.0f )
+		if (XMVectorGetX(XMPlaneDotCoord( m_frustumPlane[i], XMVectorSet((xCenter + xSize), (yCenter + ySize), (zCenter + zSize), 0) )) >= 0.0f )
 			continue;
 
 		return false;
@@ -232,5 +232,66 @@ bool DXfrustumClass::CheckRectangle(float xCenter, float yCenter, float zCenter,
 
 	return true;
 }
+
+#if defined USE_AABB_COLISION_CHECK
+bool DXfrustumClass::CheckAABB(float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
+{
+    for (int i = 0; i < 4; i++) // If you add far/near planes, use 6
+    {
+        // Get plane normal components
+        XMFLOAT4 plane;
+        XMStoreFloat4(&plane, m_frustumPlane[i]);
+
+        // Positive vertex (furthest in the direction of the normal)
+        float x = (plane.x >= 0.0f) ? maxX : minX;
+        float y = (plane.y >= 0.0f) ? maxY : minY;
+        float z = (plane.z >= 0.0f) ? maxZ : minZ;
+
+        // Plane equation: dot(normal, vertex) + d
+        float distance = plane.x * x + plane.y * y + plane.z * z + plane.w;
+
+        // If the vertex is outside, the whole box is outside
+        if (distance < 0.0f)
+            return false;
+    }
+
+    return true;
+}
+
+/*
+bool DXfrustumClass::CheckAABB(float xMin, float yMin, float zMin, float xMax, float yMax, float zMax)
+{
+    XMFLOAT3 corners[8] = {
+        {xMin, yMin, zMin},
+        {xMax, yMin, zMin},
+        {xMin, yMax, zMin},
+        {xMax, yMax, zMin},
+        {xMin, yMin, zMax},
+        {xMax, yMin, zMax},
+        {xMin, yMax, zMax},
+        {xMax, yMax, zMax}
+    };
+
+    for (int i = 0; i < 6; i++)
+    {
+        XMVECTOR plane = m_frustumPlane[i];
+        int out = 0;
+
+        for (int j = 0; j < 8; j++)
+        {
+            XMVECTOR corner = XMLoadFloat3(&corners[j]);
+            if (XMVectorGetX(XMPlaneDotCoord(plane, corner)) < 0.0f)
+                out++;
+        }
+
+        // All 8 points are outside this plane = culled
+        if (out == 8)
+            return false;
+    }
+
+    return true;
+}
+*/
+#endif
 
 #endif

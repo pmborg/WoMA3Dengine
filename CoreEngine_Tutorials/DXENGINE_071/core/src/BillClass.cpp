@@ -67,9 +67,7 @@ void BillClass::Shutdown()
 #include "DXmodelClass.h"
 #endif
 
-Tree			m_Trees[N_BILLBOARD + N_FENCES];			// Array of tree info. NOTE: SHARED on 2 (BILLBOARD Instances)
-
-
+Tree			m_Trees[N_BILLBOARD + N_FENCES];			                // Array of tree info. 
 
 ID3D11ShaderResourceView* billFileLoaded[] = 
 {
@@ -90,16 +88,17 @@ ID3D11ShaderResourceView* billFileLoaded[] =
 
 	NULL,//12
 };
-
 TCHAR billFileName[][MAX_STR_LEN] = 
 {
-	//TREEs: 6
-	BILL_TREE_0,	//0 
-	BILL_TREE_1,	//1
-	BILL_TREE_2,	//2
-	BILL_TREE_3,	//3
-	BILL_TREE_4,	//4
-	BILL_TREE_5,	//5
+    // N_BILLBOARD
+
+	//TREEs: 6      //Type:
+	BILL_TREE_0,	//0 bush
+	BILL_TREE_1,	//1 bush
+	BILL_TREE_2,	//2 bush
+	BILL_TREE_3,	//3 tree
+	BILL_TREE_4,	//4 tree
+	BILL_TREE_5,	//5 tree
 
 	//FLOWERs: 5
 	BILL_FLOWER_0,	//6	
@@ -107,6 +106,9 @@ TCHAR billFileName[][MAX_STR_LEN] =
 	BILL_FLOWER_2,	//8
 	BILL_FLOWER_3,	//9 
 	BILL_FLOWER_4,	//10
+                    //Meta Type:
+                    // 100: engine/data/scene70Bill/fence.obj
+                    // 200: engine/data/scene72Fire/072fire.obj
 };
 
 xmlobj3d* BillClass::fillxml(int id, UINT type)
@@ -144,18 +146,21 @@ xmlobj3d* BillClass::fillxml(int id, UINT type)
 		xmlobj.meshSRV = billFileLoaded[type];
 		if (m_Trees[id].type < 11)
 			strcpy_s(xmlobj.filename, 256, BILLBOARD_MODEL);		    //engine/data/scene70Bill/060square.obj
+
 	}
 	else
 		xmlobj.meshSRV = NULL;
 
 	if (m_Trees[id].type == 100)
-		strcpy_s(xmlobj.filename, 256, BILLBOARD_FENCE_MODEL);		//100: engine/data/scene70Bill/fence.obj
+		strcpy_s(xmlobj.filename, 256, BILLBOARD_FENCE_MODEL);		    //100: engine/data/scene70Bill/fence.obj
 
 	xmlobj.WOMA_object = WOMA_OBJECT();
     xmlobj.WOMA_object.shaderType = SHADER_TEXTURE_LIGHT;
 
 	return &xmlobj;
 }
+
+static Tree tree_ = {};
 
 bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instance)
 {	
@@ -169,11 +174,11 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 	for (i=0; i< N_BILLBOARD;i++)
 	{
 		// Tree.vPos:
-		float height = -1; //Initially Invalid
+		float height = -100; //Initially Invalid
 		float PosX = 0;
 		float PosZ = 0;
-		while (height <= 0		//not on water
-			|| height > 1.0f	//not above 1m
+		while (height <= 0 ||		//not on water
+			height > 1.0f	//not above 1m
 			|| (m_Trees[i].vPos.x >= 27 && m_Trees[i].vPos.x <= 53) && (m_Trees[i].vPos.z >= 20 && m_Trees[i].vPos.z <= 38) //out of house (compound)
 			|| (m_Trees[i].vPos.x < borderLimit || m_Trees[i].vPos.x > m_terrainWidth - borderLimit)		//no near limits
 			|| (m_Trees[i].vPos.z < borderLimit || m_Trees[i].vPos.z > 220 /*m_terrainHeight - borderLimit*/)		//no near limits
@@ -191,7 +196,8 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 		}
 
 		// Tree.type: (type of tree)
-		type = rand () % (billNames_length);
+        type = rand() % 11; //random number between 0 and 10
+        ASSERT(type <= 10);
 		// Tree.scale:
 		float scale = 0;
 		if (type >= 6 && type < 11)
@@ -205,12 +211,14 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 		}
 		if (type >= 6)					// Make flowers Smaller
 			scale = scale/2;
+
 		m_Trees[i].ID = i;
 		m_Trees[i].type = type;
 		m_Trees[i].scale = scale;		
 		m_Trees[i].vPos.y = height;
 
 		xmlobj3d* xmlobj = fillxml(i, m_Trees[i].type);
+        xmlobj->Bill = true;
 		SystemHandle->xml_loader.theWorld.push_back(*xmlobj);
 	}
 	//N_BILLBOARD
@@ -245,6 +253,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 		//Fences in Z:	
 		for (int y = 0; y < 11; y++) {
 			for (int x=0; x<2; x++) {
+
 				m_Trees[i].ID = i;
 				m_Trees[i].type = 100; // 100 = Fence
 				m_Trees[i].scale = 1.0f;
@@ -269,26 +278,21 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 	return true;
 }
 
-//-----------------------------------------------------------------------------   
-// Name: TreeSortCB()   
-// Desc: Callback function for sorting Bill/trees in back-to-front order   
-//-----------------------------------------------------------------------------   
-int __cdecl BillSortCB( const VOID* arg1, const VOID* arg2 )   
-{   
-    Tree* p1 = (Tree*)arg1;   
-    Tree* p2 = (Tree*)arg2;   
+inline float Distance2D(const Tree* p, float camX, float camZ) {
+    float dx = p->vPos.x - camX;
+    float dz = p->vPos.z - camZ;
+    return dx * dx + dz * dz;
+}
 
-	// Version 3: Faster and accurated
-	float cameraX = SystemHandle->m_Application->m_Position[g_NetID]->m_positionX;
-	float cameraZ = SystemHandle->m_Application->m_Position[g_NetID]->m_positionZ;
-	float X1 = p1->vPos.x - cameraX;
-	float Z1 = p1->vPos.z - cameraZ;
-	float X2 = p2->vPos.x - cameraX;
-	float Z2 = p2->vPos.z - cameraZ;
-    if ((X1*X1 + Z1*Z1) < (X2*X2 + Z2*Z2))
-        return +1;
+int __cdecl BillSortCB(const void* arg1, const void* arg2)
+{
+    const Tree* p1 = static_cast<const Tree*>(arg1);
+    const Tree* p2 = static_cast<const Tree*>(arg2);
 
-    return -1;   
+    float d1 = Distance2D(p1, sort_cameraX, sort_cameraZ);
+    float d2 = Distance2D(p2, sort_cameraX, sort_cameraZ);
+
+    return (d1 < d2) ? +1 : -1;
 }
 #endif
 

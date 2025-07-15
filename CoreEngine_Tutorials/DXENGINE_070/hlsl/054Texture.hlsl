@@ -130,7 +130,7 @@ float4 MyPixelShader054Texture(PSIn input) : SV_TARGET
         //river
         textureColor = (textureColor + color) / 2.0;
 #if defined PS_USE_ALFACOLOR	// 33: Alfa Color
-        if (hasAlfaColor)
+        //if (hasAlfaColor)
             textureColor.a = alfaColor;
 #endif
     }

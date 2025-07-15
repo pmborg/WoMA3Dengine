@@ -42,12 +42,15 @@ public:
 	bool CheckSphere(float, float, float, float);
     float SphereDistance(float xCenter, float yCenter, float zCenter, float radius);
 	bool CheckRectangle(float, float, float, float, float, float);
-
-private:
-	XMVECTOR m_planes[6];
-	float m_planes2[6][4];
+#if defined USE_AABB_COLISION_CHECK
+    bool CheckAABB(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
+#endif
 
 public:
     float m_screenDepth;
+
+private:
+	XMVECTOR m_frustumPlane[6]; //XMVECTOR m_planes[6];
+	float m_planes2[6][4];
 };
 

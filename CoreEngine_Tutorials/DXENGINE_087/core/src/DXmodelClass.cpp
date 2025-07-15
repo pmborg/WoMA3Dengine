@@ -103,11 +103,13 @@ DXmodelClass::DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive, bool comp
 #endif
 
 	//meshSRV
+#if DX_ENGINE_LEVEL >= 21 && defined USE_BOUNDING_VOLUMES
 	minVertex = XMFLOAT3(FLT_MAX, FLT_MAX, FLT_MAX);
 	maxVertex = XMFLOAT3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
 
 	objectCenterOffset = XMFLOAT4(0, 0, 0, 0);
 	boundingSphere = false;
+#endif
 
 	// Private ----------------------------------------------------------------------
 	#ifdef DX11 || defined DX9
@@ -795,7 +797,7 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 
 	SAFE_DELETE_ARRAY (indices);
 
-	//if (Model3D) 
+#if defined USE_BOUNDING_VOLUMES
 	{
 		// Compute distance between maxVertex and minVertex
 		float distX = (maxVertex.x - minVertex.x) / 2.0f;
@@ -813,6 +815,7 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 			CreateBoundingVolumes();
 		#endif
 	}
+#endif
 	return true;
 }
 
@@ -890,8 +893,9 @@ bool DXmodelClass::InitializeColorBuffers(/*ID3D11Device*/ void* device, void* i
 		vertices[i].position = XMFLOAT3((*modelColorVertex)[i].x, (*modelColorVertex)[i].y, (*modelColorVertex)[i].z);
 		vertices[i].color	 = XMFLOAT4((*modelColorVertex)[i].r, (*modelColorVertex)[i].g, (*modelColorVertex)[i].b, (*modelColorVertex)[i].a);
 #endif
-
+#if defined USE_BOUNDING_VOLUMES
 		CALCULATE_MAX_MIN(vertices[i].position);
+#endif
 	}
 
 	IF_NOT_RETURN_FALSE (CreateDXbuffers(sizeof (DXcolorVertexType), device, indices, vertices));
@@ -920,7 +924,9 @@ bool DXmodelClass::InitializeTextureBuffers(/*ID3D11Device*/ void* device, void*
 			vertices[i].position = XMFLOAT3((*modelTextureVertex)[i].x, (*modelTextureVertex)[i].y, (*modelTextureVertex)[i].z);
 			vertices[i].texCoord = XMFLOAT2((*modelTextureVertex)[i].tu, (*modelTextureVertex)[i].tv);
 
+#if defined USE_BOUNDING_VOLUMES
 			CALCULATE_MAX_MIN(vertices[i].position);
+#endif
 		}
 	}
 
@@ -948,7 +954,9 @@ bool DXmodelClass::InitializeTextureLightBuffers(/*ID3D11Device*/ void* device, 
 		vertices[i].position = XMFLOAT3((*modelTextureLightVertex)[i].x, (*modelTextureLightVertex)[i].y, (*modelTextureLightVertex)[i].z);
 		vertices[i].texCoord = XMFLOAT2((*modelTextureLightVertex)[i].tu, (*modelTextureLightVertex)[i].tv);
 		vertices[i].normal = XMFLOAT3((*modelTextureLightVertex)[i].nx, (*modelTextureLightVertex)[i].ny, (*modelTextureLightVertex)[i].nz);
+#if defined USE_BOUNDING_VOLUMES
 		CALCULATE_MAX_MIN(vertices[i].position);
+#endif
 	}
 	
 	IF_NOT_RETURN_FALSE (CreateDXbuffers(sizeof (DXtextureLightVertexType), device, indices, vertices));
@@ -974,8 +982,9 @@ bool DXmodelClass::InitializeShadowMapBuffers(/*ID3D11Device*/ void* device, UIN
 	for (UINT i = 0; i < m_vertexCount; i++)
 	{
 		vertices[i].position = XMFLOAT3((*modelShadowMapVertex)[i].x, (*modelShadowMapVertex)[i].y, (*modelShadowMapVertex)[i].z);
-
+#if defined USE_BOUNDING_VOLUMES
 		CALCULATE_MAX_MIN(vertices[i].position);
+#endif
 	}
 
 	IF_NOT_RETURN_FALSE (CreateDXbuffers(sizeof (DXShadowMapVertexType), device, indices, vertices));
@@ -1006,8 +1015,9 @@ bool DXmodelClass::InitializeTextureNormalBumpBuffers(/*ID3D11Device*/ void* dev
 		vertices[i].normal		= XMFLOAT3((*modelNormalBumpVertex)[i].nx, (*modelNormalBumpVertex)[i].ny, (*modelNormalBumpVertex)[i].nz);
 		vertices[i].tangent		= XMFLOAT3((*modelNormalBumpVertex)[i].tx, (*modelNormalBumpVertex)[i].ty, (*modelNormalBumpVertex)[i].tz);
 		vertices[i].binormal	= XMFLOAT3((*modelNormalBumpVertex)[i].bx, (*modelNormalBumpVertex)[i].by, (*modelNormalBumpVertex)[i].bz);
-
+#if defined USE_BOUNDING_VOLUMES
 		CALCULATE_MAX_MIN(vertices[i].position);
+#endif
 	}
 
 	IF_NOT_RETURN_FALSE (CreateDXbuffers(sizeof (DXNormalBumpVertexType), device, indices, vertices));
@@ -1034,8 +1044,9 @@ bool DXmodelClass::InitializeTextureDouble_Color_Terrain(/*ID3D11Device*/ void* 
 		vertices[i].texCoord = XMFLOAT2((*modelTextureDouble_Color_Terrain)[i].tu, (*modelTextureDouble_Color_Terrain)[i].tv);
 		vertices[i].normal = XMFLOAT3((*modelTextureDouble_Color_Terrain)[i].nx, (*modelTextureDouble_Color_Terrain)[i].ny, (*modelTextureDouble_Color_Terrain)[i].nz);
 		vertices[i].color = XMFLOAT4((*modelTextureDouble_Color_Terrain)[i].r, (*modelTextureDouble_Color_Terrain)[i].g, (*modelTextureDouble_Color_Terrain)[i].b, (*modelTextureDouble_Color_Terrain)[i].a);
-
+#if defined USE_BOUNDING_VOLUMES
 		CALCULATE_MAX_MIN(vertices[i].position);
+#endif
 	}
 
 	IF_NOT_RETURN_FALSE(CreateDXbuffers(sizeof(DXTextureDouble_Color_TerrainType), device, indices, vertices));
@@ -1063,7 +1074,9 @@ bool DXmodelClass::InitializeTextureDouble_Color_Terrain_TexMapping(/*ID3D11Devi
 		vertices[i].normal = XMFLOAT3((*modelTextureDouble_Color_Terrain_TexMapping)[i].nx, (*modelTextureDouble_Color_Terrain_TexMapping)[i].ny, (*modelTextureDouble_Color_Terrain_TexMapping)[i].nz);
 		vertices[i].color = XMFLOAT4((*modelTextureDouble_Color_Terrain_TexMapping)[i].r, (*modelTextureDouble_Color_Terrain_TexMapping)[i].g, (*modelTextureDouble_Color_Terrain_TexMapping)[i].b, (*modelTextureDouble_Color_Terrain_TexMapping)[i].a);
 		vertices[i].texCoord2 = XMFLOAT2((*modelTextureDouble_Color_Terrain_TexMapping)[i].tu2, (*modelTextureDouble_Color_Terrain_TexMapping)[i].tv2);
+#if defined USE_BOUNDING_VOLUMES
 		CALCULATE_MAX_MIN(vertices[i].position);
+#endif
 	}
 
 #if DX_ENGINE_LEVEL >= 56 && defined USE_TERRAIN_QUAD_TREE
@@ -1100,8 +1113,9 @@ bool DXmodelClass::InitializeTextureHeightMapType_24_Terrain(/*ID3D11Device*/ vo
 		vertices[i].mappingTexture = XMFLOAT4((*modelTextureHeightMapType_24_Terrain)[i].Maptu, (*modelTextureHeightMapType_24_Terrain)[i].Maptv, (*modelTextureHeightMapType_24_Terrain)[i].Maptu2, (*modelTextureHeightMapType_24_Terrain)[i].Maptv2);
 		vertices[i].tangent = XMFLOAT3((*modelTextureHeightMapType_24_Terrain)[i].tx, (*modelTextureHeightMapType_24_Terrain)[i].ty, (*modelTextureHeightMapType_24_Terrain)[i].tz);
 		vertices[i].binormal = XMFLOAT3((*modelTextureHeightMapType_24_Terrain)[i].bx, (*modelTextureHeightMapType_24_Terrain)[i].by, (*modelTextureHeightMapType_24_Terrain)[i].bz);
-
+#if defined USE_BOUNDING_VOLUMES
 		CALCULATE_MAX_MIN(vertices[i].position);
+#endif
 	}
 
 #if DX_ENGINE_LEVEL >= 56 && defined USE_TERRAIN_QUAD_TREE
@@ -1393,7 +1407,8 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 		IF_NOT_RETURN_FALSE (instances = NEW InstanceType[m_instanceCount]);
 		
 		// Call "User" Function:
-		SystemHandle->m_Application->WOMA_APPLICATION_FrameUpdateInstancesPositions (SystemHandle->xml_loader.theWorld[m_ObjId].id, m_instanceCount, instances);
+		SystemHandle->m_Application->WOMA_APPLICATION_SetInstancePositions (SystemHandle->xml_loader.theWorld[m_ObjId].id, m_instanceCount, instances, 
+                                                                            SystemHandle->xml_loader.theWorld[m_ObjId].type);
 
 		//The instance buffer description is setup exactly the same as a vertex buffer description.
 		ZeroMemory( &instanceBufferDesc, sizeof( instanceBufferDesc ) );
@@ -2207,7 +2222,7 @@ void DXmodelClass::Render(UINT camera, UINT projection, UINT pass, void* lightVi
 				if (frameTime > 1000.0f)
 					frameTime = 0.0f;
 
-				m_Shader11->frameTime = frameTime;
+				m_Shader11->shaderfireframeTime = frameTime;
 			}
 		#endif
 			m_Shader11->shaderTypeParameter = (float)shaderTypeParameter;
@@ -2361,7 +2376,7 @@ void DXmodelClass::translation(float x, float y, float z)
 #undef _44
 
 
-bool DXmodelClass::LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow, bool renderShadow, UINT instanceCount)
+bool DXmodelClass::LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow, bool renderShadow, UINT instanceCount/*, UINT instanceType*/)
 {
 #if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES // Normal Bump + Instancing 
     m_instanceCount = instanceCount;

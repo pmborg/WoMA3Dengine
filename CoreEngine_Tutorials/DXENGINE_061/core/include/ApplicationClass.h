@@ -106,7 +106,6 @@ struct InstanceType
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 #include "positionClass.h"
-//#include "PlayerClass.h" //AQUI
 #if defined DX_ENGINE
 	#include "DXinputClass.h"
 #endif
@@ -334,7 +333,7 @@ public:
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
     DXrendertextureclass* m_RenderShadowTexture = NULL;	//TO INTERNAL RENDER!
 #endif
-    void WOMA_APPLICATION_FrameUpdateInstancesPositions(UINT m_ObjId, int m_instanceCount, InstanceType* instances_);
+    void WOMA_APPLICATION_SetInstancePositions(UINT m_ObjId, int m_instanceCount, InstanceType* instances_, UINT type=0);
     CTerrain* loadedTerrain[MAX_TERRAINS] = { 0 };
 
 #if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION //float	closestObjDist = FLT_MAX;
@@ -526,6 +525,12 @@ public:
 	void	initSky(float SPHERE_SIZE);
 #endif
 
+    float shadergrassframeTime = 0;
+
+    #define UNDERWATER_TERRAIN_ID       0
+    #define WATER_TERRAIN_ID            1
+    #define MAIN_TERRAIN_ID             2
+    #define DEBUG_COLLISION_TERRAIN_ID  3
 	VirtualModelClass* m_TerrainModel[MAX_TERRAINS] = {};				// Model: For using only [0]
 
 #if defined SCENE_TERRAIN_QUAD_TREE //67

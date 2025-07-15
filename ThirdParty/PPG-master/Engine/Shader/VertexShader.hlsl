@@ -46,8 +46,7 @@ struct VertexShaderInput
     float2 texCoord : TEXCOORD;
     float3 tangent : TANGENT;
     float3 binormal : BINORMAL;
-    //float4 boneIds : BLENDINDICES; //AQUIFLOAT
-    uint4 boneIds : BLENDINDICES0; //AQUIFLOAT
+    uint4 boneIds : BLENDINDICES0;
     float4 boneWeight : BLENDWEIGHT;
 }; 
 
@@ -55,15 +54,12 @@ struct VertexShaderOutput
 {
     float4 position : SV_POSITION;
     float3 normal : NORMAL;
-    //float3 tangent : TANGENT;
-    //float3 binormal : BINORMAL;
     float2 texCoord : TEXCOORD0;
 #if defined PS_USE_SPECULAR
 	float3 viewDirection		: TEXCOORD1;			// 34 Specular
 	float4 cameraPosition		: WS;					// 34 Specular
     float4 wPosition : POSITION1;
 #endif
-    //float4 pos : POSITION0;
     float3x3 TBN : TBN_MATRIX;
 };
 
@@ -72,7 +68,7 @@ VertexShaderOutput main(VertexShaderInput input)
     matrix vp;
     VertexShaderOutput OUT;
     
-    bool skinningEnabled = (BoneTransforms[127]._11 == 127); //AQUI-ANIM
+    bool skinningEnabled = (BoneTransforms[127]._11 == 127);  //AQUI-ANIM
     if (skinningEnabled)                                      //AQUI-ANIM
     {
         matrix boneTransform = input.boneWeight[0] * BoneTransforms[input.boneIds[0]];

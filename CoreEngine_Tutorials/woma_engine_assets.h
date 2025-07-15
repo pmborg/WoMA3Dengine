@@ -473,7 +473,7 @@
 #endif                                                                                                                          
 #if DX_ENGINE_LEVEL >= 73
     #define BILLBOARD_GRASS_MODEL TEXT("engine/data/scene73grass/grass.obj")
-    #define BILL_GRASS TEXT("engine/data/scene73grass/Grass_Patch_3.png")   //11
+    #define BILL_GRASS_0 TEXT("engine/data/scene73grass/Grass_Patch_3.png")   //11
 #endif
 #if DX_ENGINE_LEVEL == 74
     #define DEMO_TITLE TEXT("74: CROSS BILLBOARDs and CLONE BILLBOARDs")
@@ -560,7 +560,10 @@
 #endif					 
 #if DX_ENGINE_LEVEL == 90
     #define DEMO_TITLE TEXT("90: OPTIMIZING")
-    #define WORLD_XML TEXT("world_90.xml")
+    #define WORLD_XML   TEXT("world_90.xml")
+    //#define TREE1_GS    TEXT("engine/data/scene87ForestHuntress.priv/worldMap/models_plant_bush_shape_spark/Tree-03-1.obj")
+    #define FENCE1_MODEL    TEXT("engine/data/scene87ForestHuntress.priv/worldMap/woodfence/Fence_module.obj")
+    #define N_INSTANCE_TREES1 10
 #endif
 
 

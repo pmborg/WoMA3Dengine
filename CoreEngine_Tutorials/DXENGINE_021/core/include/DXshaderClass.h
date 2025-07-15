@@ -138,7 +138,7 @@ namespace DirectX
 			//FIRE:
 //#if TUTORIAL_CHAP >= 62 // FIRE
 	//VS:
-			float		frameTime = 0;
+			float		vsframeTime = 0;
 			XMFLOAT3	scrollSpeeds;
 			XMFLOAT3	scales;
 			bool		isAnimatedBill;
@@ -349,7 +349,7 @@ namespace DirectX
 		//FIRE:
 #if TUTORIAL_CHAP >= 62 // FIRE
 		//VS:
-		float frameTime = 0;
+		float shaderfireframeTime = 0;
 		XMFLOAT3 scrollSpeeds, scales;
 		//PS
 		XMFLOAT2 distortion1, distortion2, distortion3;

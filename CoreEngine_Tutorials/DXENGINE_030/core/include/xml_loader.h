@@ -164,11 +164,13 @@ typedef struct xmlobj3d_
 {
 	int fromPage, toPage, depend = 0;
 	float scale = 1, posX = 0, posZ = 0, translateY = 0;
+    float scaleY = 1;
 	float rotX = 0, rotY = 0, rotZ = 0;
 	int shader = 0;
 	char filename[256];
 	WOMA_OBJECT WOMA_object;
     bool render = true;
+    UINT type = 0;
     float ry=0; //DX_ENGINE_LEVEL >= 88
 } xmlobj3d;
 

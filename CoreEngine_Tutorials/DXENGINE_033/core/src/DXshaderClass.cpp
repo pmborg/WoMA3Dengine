@@ -1385,7 +1385,7 @@ namespace DirectX {
 #if TUTORIAL_CHAP >= 62 // FIRE
 		if (m_shaderType == SHADER_FIRE)
 		{
-			dataVSptr->frameTime = frameTime;
+			dataVSptr->vsframeTime = shaderfireframeTime;
 			dataVSptr->scrollSpeeds = scrollSpeeds;
 			dataVSptr->scales = scales;
 			//dataVSptr->padding6 = 0.0f;

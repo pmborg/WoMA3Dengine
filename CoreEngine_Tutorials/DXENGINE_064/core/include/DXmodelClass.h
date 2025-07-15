@@ -108,7 +108,7 @@ public:
 #endif
 	// MODEL LOAD:
 	ADVOBJ3D obj3d;
-	bool LoadModel	(TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow = false, bool renderShadow=false, UINT instanceCount=0);
+	bool LoadModel	(TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow = false, bool renderShadow=false, UINT instanceCount=0/*, UINT instanceType = 0*/);
 
 	STRING MODEL_NAME=TEXT("");
 
@@ -144,14 +144,19 @@ public:
 	XMMATRIX		m_worldMatrix;
 
 	XMFLOAT4        objectCenterOffset = XMFLOAT4(0, 0, 0, 0);
-	XMFLOAT3        minVertex = XMFLOAT3(0, 0, 0);
-	XMFLOAT3        maxVertex = XMFLOAT3(0, 0, 0);
 
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
 	DXshaderClass*	m_ShaderShadowMap=NULL;
 #endif
 
 #if defined USE_BOUNDING_VOLUMES
+    XMFLOAT3 minVertex = XMFLOAT3(FLT_MAX, FLT_MAX, FLT_MAX);
+    XMFLOAT3 maxVertex = XMFLOAT3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+
+    XMFLOAT3 worldMinVertex;
+    XMFLOAT3 worldMaxVertex;
+
+    void UpdateWorldAABB();
 	void CreateBoundingVolumes(std::vector<XMFLOAT3>& vertPosArray);
 #endif
 
@@ -164,13 +169,14 @@ public:
 #endif
 
 // ----------------------------------------------------------------------
-private:
+//private:
 // ----------------------------------------------------------------------
 
 	bool SaveW3D	(STRING filename, void* indices, void* vertices, UINT sizeofMODELvertex);
 
 #if defined LOADW3D
-	bool LoadW3D	(SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow=false, bool renderShadow=false, UINT instanceCount=0);
+	bool LoadW3D	    (SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow=false, bool renderShadow=false, UINT instanceCount=0);
+    bool LoadW3DfromMEM (SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow = false, bool renderShadow = false, UINT instanceCount = 0);
 #endif
 
 	DXshaderClass* CreateShader(TCHAR* objectName, SHADER_TYPE ShaderType);

@@ -545,9 +545,9 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	IF_NOT_RETURN_FALSE(initCubes3D());
 #endif
 
-	//-----------------------------------------------------------------------------------------------------------------
+    //=================================================================================================================
 	// INIT SKY ///////////////////////////////////////////////////////////////////////////////////////////////////////
-	//-----------------------------------------------------------------------------------------------------------------
+    //=================================================================================================================
 	
 //Sphere:
 	float size = 3.0f;
@@ -580,9 +580,9 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	UINT64 passedTotalTime1 = (UINT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
 	WOMA_LOGManager_DebugMSGAUTO("Time to reach OBJ load: %" PRId64 "\n", passedTotalTime1);
 
-	//-----------------------------------------------------------------------------------------------------------------
+    //=================================================================================================================
 	// INIT TERRAINs //////////////////////////////////////////////////////////////////////////////////////////////////
-	//-----------------------------------------------------------------------------------------------------------------
+    //=================================================================================================================
 	//0
 #if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN		// UNDER WATER: Terrain
 	loadedTerrain[0] = NEW CTerrain(TERRAIN);
@@ -612,20 +612,12 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	//=================================================================================================================
 
 	//-----------------------------------------------------------------------------------------------------------------
-	// Add Instanced Billboards:
+	// Add Instanced Billboards to World.xml
 	//-----------------------------------------------------------------------------------------------------------------
-#if defined USE_INSTANCES_FOR_TREES
-	xmlobj3d XMLobj3D = {};
 
-	XMLobj3D.id = (int)SystemHandle->xml_loader.theWorld.size();
-	XMLobj3D.posX = 0; XMLobj3D.translateY = 0; XMLobj3D.posZ = 0;
-	XMLobj3D.shader = SHADER_TEXTURE_GS_INSTANCED;
-	XMLobj3D.scale = 0.0215f;
-	XMLobj3D.instances = N_INSTANCE_TREES;
-
-	strcpy_s(XMLobj3D.filename, sizeof(XMLobj3D.filename), BILL_GS);
-	SystemHandle->xml_loader.theWorld.push_back(XMLobj3D);
-#endif
+    //-----------------------------------------------------------------------------------------------------------------
+    // Log xml objects:
+    //theWorld.size()=11
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// Create Billboard for Trees / Flowers (extra populate WORLD.XML)       /////////////////////////////////////////
@@ -639,6 +631,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	}
 	WOMA_LOGManager_DebugMSGAUTO("Number of billboard objects added %d\n", SystemHandle->xml_loader.theWorld.size()- world_xml_objs);
 #endif
+    //theWorld.size()=3816
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// PROGRESS BAR		///////////////////////////////////////////////////////////////////////////////////////////////
@@ -683,10 +676,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	//-----------------------------------------------------------------------------------------------------------------
 
 	//-----------------------------------------------------------------------------------------------------------------
-	// ANIMATED SKELETON MESHs ////////////////////////////////////////////////////////////////////////////////////////
-	//-----------------------------------------------------------------------------------------------------------------
-
-	//-----------------------------------------------------------------------------------------------------------------
 	// DEMO-29                  ///////////////////////////////////////////////////////////////////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
 	SystemHandle->ProcessPerformanceStats();
@@ -711,7 +700,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	}
 #endif
 
-#if defined SAVEW3D
+#if defined SAVEW3D && DX_ENGINE_LEVEL < 89
 	WomaMessageBox(TEXT("Conversion from OBJ to W3D, ended."), TEXT("SAVEW3D"));
 	WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP; //Publish_Quit_Message();
 	return false;
@@ -723,6 +712,5 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 
 	return true;
 }
-
 
 #pragma warning(pop)

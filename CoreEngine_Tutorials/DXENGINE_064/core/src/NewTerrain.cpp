@@ -713,10 +713,10 @@ bool CTerrain::CreateTerrain60(float xPos, float zPos)
 	SAFE_DELETE(m_vertices_21);
 	SAFE_DELETE(m_TerrainModel);
 
-	CREATE_MODEL_IF_NOT_EXCEPTION(SystemHandle->m_Application->m_TerrainModel[2], I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);  // m_TerrainModel[id] = NEW
-	SystemHandle->m_Application->m_TerrainModel[2]->ModelHASfog = true;
+	CREATE_MODEL_IF_NOT_EXCEPTION(SystemHandle->m_Application->m_TerrainModel[MAIN_TERRAIN_ID], I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);  // m_TerrainModel[id] = NEW
+	SystemHandle->m_Application->m_TerrainModel[MAIN_TERRAIN_ID]->ModelHASfog = true;
 	
-	ASSERT(SystemHandle->m_Application->m_TerrainModel[2]->LoadTerrain(TEXT("Terrain 61"), m_Driver, SHADER_Terrain_Texture_DEMO61, &Terrain60Textures, &modelVertexVector2, &Terrain60indices));
+	ASSERT(SystemHandle->m_Application->m_TerrainModel[MAIN_TERRAIN_ID]->LoadTerrain(TEXT("Terrain 61"), m_Driver, SHADER_Terrain_Texture_DEMO61, &Terrain60Textures, &modelVertexVector2, &Terrain60indices));
 
 	return true;
 }

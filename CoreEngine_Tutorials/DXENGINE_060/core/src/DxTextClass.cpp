@@ -405,7 +405,7 @@ namespace DirectX {
 		// Check for possible buffer overflow.
 		if (numLetters > sentence->maxLength)
 		{
-			WomaFatalExceptionW(TEXT("Text Size Fatal Error")); //return false;
+			WomaFatalExceptionW(TEXT("Text Size Fatal Error")); //redefine: SENTENCE_MAX_LEN
 		}
 
 		// Create the vertex array.

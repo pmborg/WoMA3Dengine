@@ -573,7 +573,6 @@ bool dxWinSystemClass::ApplicationMandatoryLoad()
 }
 #endif
 
-
 #endif
 
 #endif
