@@ -295,19 +295,29 @@ java -version
 	
 ---
 
-## 🧰 Blender & Python Setup (For Asset Tools and Automation)
+## 🧰 Blender
 
 - [ ] Install Blender 4.5 (or newer):  
 	[Download](https://www.blender.org/download/)  
 	File: `blender-4.5.0-windows-x64.msi`
 
+## Python Setup (For Asset Tools and Automation)
 - [ ] Install Python from Microsoft Store.
-	OPEN CMD
+	OPEN CMD:
 	Just type: python
+	close (shell)
+
+- [ ] Install Script dependencies:	
+	OPEN CMD:
+	pip install numpy
+	pip install imageio
+
+## Video player to read mp4:
+- [ ] Install Video MP4 deps. for player:
+	https://files2.codecguide.com/K-Lite_Codec_Pack_1905_Standard.exe
+	
 
 ### Validate:
 	CMD
 	python --version
 	pip --version
-	pip install numpy
-	pip install imageio
