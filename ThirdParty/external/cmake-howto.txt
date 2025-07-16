@@ -1,3 +1,4 @@
+(on CMD shell do):
 cd C:\WoMA3Dengine\ThirdParty\external\assimp
 cmake -B ../assimp-build -DBUILD_SHARED_LIBS=OFF -DASSIMP_BUILD_TESTS=OFF
 

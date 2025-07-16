@@ -287,3 +287,27 @@ java -version
 			Windows Subsystem for Linux
 			
 	COMPILE ANDROID WITH SUCCESS!
+
+---
+	#Also needed to compile assimp lib:
+	Install cmake for windows: cmake-4.1.0-rc2-windows-x86_64.msi
+	https://github.com/Kitware/CMake/releases/download/v4.1.0-rc2/cmake-4.1.0-rc2-windows-x86_64.msi
+	
+---
+
+## 🧰 Blender & Python Setup (For Asset Tools and Automation)
+
+- [ ] Install Blender 4.5 (or newer):  
+	[Download](https://www.blender.org/download/)  
+	File: `blender-4.5.0-windows-x64.msi`
+
+- [ ] Install Python from Microsoft Store.
+	OPEN CMD
+	Just type: python
+
+### Validate:
+	CMD
+	python --version
+	pip --version
+	pip install numpy
+	pip install imageio
