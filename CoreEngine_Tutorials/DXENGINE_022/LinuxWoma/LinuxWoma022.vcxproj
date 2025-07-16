@@ -98,7 +98,7 @@
     <ClCompile Include="..\core\src\GLcameraClass.cpp" />
     <ClCompile Include="..\core\src\GLmodelClass.cpp" />
     <ClCompile Include="..\core\src\GLshaderClass.cpp" />
-    <ClCompile Include="..\core\src\GLTextureClass.cpp" />
+    <ClCompile Include="..\core\src\GLTextureclass.cpp" />
     <ClCompile Include="..\core\src\GLX\GLopenGLclass.cpp" />
     <ClCompile Include="..\core\linux\src\linux.cpp" />
     <ClCompile Include="..\core\linux\src\linuxsystemclass.cpp" />

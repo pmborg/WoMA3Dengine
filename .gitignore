@@ -45,3 +45,4 @@ CoreEngine_Tutorials/DXENGINE_082/src
 CoreEngine_Tutorials/DXENGINE_082/include
 *.pdb
 ThirdParty/freeglut-3.6.0/X64LIB/lib/Debug/freeglut_staticd.*
+hooks
