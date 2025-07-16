@@ -8,9 +8,36 @@ LINUX:
 ##############################################
 #POWER SHELL
 PS C:\Users\pedro> wsl -l
+
+	The Windows Subsystem for Linux is not installed. You can install by running 'wsl.exe --install'.
+	For more information please visit https://aka.ms/wslinstall
+
+	Press any key to install Windows Subsystem for Linux.
+	Press CTRL-C or close this window to cancel.
+	This prompt will time out in 60 seconds.
+	Downloading: Windows Subsystem for Linux 2.5.9
+	Installing: Windows Subsystem for Linux 2.5.9
+	Windows Subsystem for Linux 2.5.9 has been installed.
+	Installing Windows optional component: VirtualMachinePlatform
+
+	Deployment Image Servicing and Management tool
+	Version: 10.0.26100.1150
+
+	Image Version: 10.0.26100.4652
+
+	Enabling feature(s)
+	[==========================100.0%==========================]
+	The operation completed successfully.
+	The requested operation is successful. Changes will not be effective until the system is rebooted.
+	Windows Subsystem for Linux has no installed distributions.
+	You can resolve this by installing a distribution with the instructions below:
+
+	Use 'wsl.exe --list --online' to list available distributions
+	and 'wsl.exe --install <Distro>' to install.
+
+(Tested with ubunto 22)
 PS C:\Users\pedro> wsl --unregister Ubuntu
-PS C:\Users\pedro> wsl --install
-#WSL (env. to run remote debug USER: pedro/basico)
+PS C:\Users\pedro> wsl --install Ubuntu-22.04
 
 PS C:\Users\pedro> wsl -v
 WSL version: 2.2.4.0
@@ -40,6 +67,7 @@ sudo apt install -y git
 sudo apt-get install git-lfs
 git lfs install
 
+#Install C:
 sudo apt install -y g++
 sudo apt install -y g++ gdb make ninja-build rsync zip
 sudo apt install -y libx11-dev
@@ -48,37 +76,38 @@ sudo apt-file update
 #sudo apt-file search "gl.h"
 sudo apt install -y mingw-w64-common
 sudo apt install -y wine
-
 sudo apt-mark hold acpid acpi-support
 sudo apt install -y ubuntu-gnome-desktop
 
+#Utils:
 sudo apt install curl
 sudo apt install dos2unix
-#RESET PROXY:
+#(RESET PROXY:)
 echo | sudo tee /etc/apt/apt.conf
+sudo apt-get install nfs-common autofs cifs-utils
 
-sudo apt-get  install nfs-common autofs cifs-utils
+#Install opengl dev. env.
 sudo apt install gdebi-core
 sudo apt-get  upgrade cmake make g++ libx11-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev libxrandr-dev libxext-dev libxcursor-dev libxinerama-dev libxi-dev
 sudo apt install mesa-utils
 
-sudo apt-get  update
-sudo apt-get  upgrade
+#sudo apt-get  update
+#sudo apt-get  upgrade
 
 pedro@DESKTOP-E220Q1G:~$ glxinfo | grep "OpenGL version"
 OpenGL version string: 4.2 (Compatibility Profile) Mesa 23.2.1-1ubuntu3.1~22.04.2
 
-#Upgrade gtk:
+#Upgrade gtk dev. env.:
 sudo apt-get  upgrade gtk+3.0
-
 sudo apt-get  install build-essential libgtk-3-dev
 sudo apt-get  install libpciaccess-dev
 sudo apt-get  install build-essential checkinstall
 sudo apt-get  autoremove
 sudo apt-get  install xserver-xorg-dev libxext-dev libxinerama-dev libxrandr-dev libxi-dev libudev-dev
-sudo apt install plocate
+#sudo apt install plocate
 
-sudo ln -sf /mnt/c /c
+#Install opengl dev env part II.
+#sudo ln -sf /mnt/c /c
 sudo apt install libgtk2.0-dev libglib2.0-dev
 sudo apt-get  install -y build-essential gnome-devel
 sudo apt-get  install freeglut3-dev
@@ -87,8 +116,9 @@ sudo apt-get  install build-essential libgl1-mesa-dev libglu1-mesa-dev xorg-dev
 sudo apt-get  install g++-multilib
 sudo apt install apt-transport-https && sudo apt update
 apt list --upgradable
+sudo apt-get update && sudo apt-get upgrade
 
-pedro@DESKTOP-E220Q1G:/usr$ dpkg -l libgtk* | grep -e '^i' | grep -e 'libgtk-*[0-9]'
+dpkg -l libgtk* | grep -e '^i' | grep -e 'libgtk-*[0-9]'
 ii  libgtk-3-0:amd64           3.24.33-1ubuntu2.2        amd64        GTK graphical user interface library
 ii  libgtk-3-bin               3.24.33-1ubuntu2.2        amd64        programs for the GTK graphical user interface library
 ii  libgtk-3-common            3.24.33-1ubuntu2.2        all          common files for the GTK graphical user interface library
@@ -104,12 +134,6 @@ ii  libgtk3-perl               0.038-1                   all          Perl bindi
 ii  libgtk3.0-cil              2.99.3-4build1            amd64        CLI binding for the GTK+ 3.0 toolkit
 ii  libgtk3.0-cil-dev          2.99.3-4build1            amd64        CLI binding for the GTK+ toolkit 3.0
 
-#if needed: 
-sudo apt remove -y libgtk-4-1
-sudo apt remove -y libgtk-3-0
-
-sudo apt-get update
-sudo apt-get upgrade
 sudo apt install net-tools
 
 #Device protection in Windows Security

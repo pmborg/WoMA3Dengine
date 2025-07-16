@@ -64,13 +64,13 @@ Enable-WindowsOptionalFeature -Online -FeatureName HypervisorPlatform -All
 #[3] I dont care if you have another or another(s) versions of java (11,17,18) JDK, just install this one, dont need to remove the others: 
 	DOWNLOAD AND INSTALL: jdk1.8.0_25
 	https://www.oracle.com/java/technologies/downloads/#license-lightbox
-
+	jdk-8u202-windows-x64.exe
 -----------------------------------------------------------------------------------------------
 #[4] After the instalation:
 	#Setup Enviroment Variables:
-	JAVA_HOME=C:\Program Files\Java\jdk1.8.0_25
+	JAVA_HOME=C:\Program Files\Java\jdk1.8.0_202
 	#Add this line on PATH
-	PATH=C:\Program Files\Java\jdk1.8.0_25\bin;...
+	PATH=C:\Program Files\Java\jdk1.8.0_202\bin;...
 	
 	(... more will come later, but lets do it for the correct order...)
 
@@ -79,16 +79,16 @@ echo %JAVA_HOME%
 java -version
 
 #Should See:
-Microsoft Windows [Version 10.0.19045.2846]
+Microsoft Windows [Version 10.0.26100.4652]
 (c) Microsoft Corporation. All rights reserved.
 
-C:\Users\pmborg>echo %JAVA_HOME%
-C:\Program Files\Java\jdk1.8.0_25
+C:\Users\pmbor>echo %JAVA_HOME%
+C:\Program Files\Java\jdk1.8.0_202
 
-C:\Users\pmborg>java -version
-java version "1.8.0_25"
-Java(TM) SE Runtime Environment (build 1.8.0_25-b18)
-Java HotSpot(TM) 64-Bit Server VM (build 25.25-b02, mixed mode)
+C:\Users\pmbor>java -version
+java version "1.8.0_202"
+Java(TM) SE Runtime Environment (build 1.8.0_202-b08)
+Java HotSpot(TM) 64-Bit Server VM (build 25.202-b08, mixed mode)
 
 -----------------------------------------------------------------------------------------------
 #[5] Download: VS2019 Community:
@@ -125,7 +125,7 @@ TOOLS / ANDROID / Android SDK Manager
 
 -----------------------------------------------------------------------------------------------
 #[8.1] Create a Android Emulator
-TOOLS / ANDROID / Device Manager
+TOOLS / ANDROID / Android Device Manager...
 Create as image show...
 CLOSE
 
@@ -143,15 +143,7 @@ C:\Microsoft\AndroidSDK\25\platform-tools
 #[9.2]
 ANDROID_HOME=C:\Microsoft\AndroidSDK\25
 
-#[9.3]
-#Install Android Studio (android-studio-2022.2.1.18-windows.exe):
-https://developer.android.com/studio
-Install and Run for the first time "Android Studio"
 
-#[9.4] Install Mobile development with .NET
-#[9.5] Install Android 7.1 Platform 25
-#[9.6] Google USB Driver
-#[9.7] Define Android SDK and JDK path.
 
 
 
