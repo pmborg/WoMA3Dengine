@@ -49,7 +49,7 @@ extern RApplicationClass* r_Application;
 #include "BillClass.h"	//[ch60]
 #endif
 
-#if defined USE_DIRECT_INPUT
+#if defined USE_DIRECT_INPUT || DX_ENGINE_LEVEL >= 63
 float sort_cameraX=0, sort_cameraY=0, sort_cameraZ = 0;
 #endif
 //-------------------------------------------------------------------------------------------

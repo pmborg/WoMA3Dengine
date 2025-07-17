@@ -36,6 +36,9 @@
 
 #include "DXrendertextureclass.h"
 
+#include <shlwapi.h>  // for PathFindFileName
+extern std::string CleanFilePath(const std::string& input);
+
 namespace DirectX {
 
 	#define CALCULATE_MAX_MIN(vertice){\
@@ -742,10 +745,13 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 				// Get full pathname for this texture:
 				STRING fileNamePath = (TCHAR*)(*textureFile)[i].c_str();
 				STRING pathtoengine = TEXT("../");
+
 				if ((fileNamePath.substr(0, 3) != pathtoengine) && (_tcsicmp(fileNamePath.c_str(), TEXT(".dat")) != 0))
 					textureFilename = WOMA::LoadFile((TCHAR*)fileNamePath.c_str());
 				else
 					textureFilename = (TCHAR*)fileNamePath.c_str();
+
+                fileNamePath = CleanFilePath(fileNamePath);
 
 				if (fileNamePath.find(TEXT("none")) != 0) //dont load on special cases (like billboards)
 				{

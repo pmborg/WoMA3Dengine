@@ -131,7 +131,7 @@ namespace WOMA
 
         // Convert from WCHAR to TCHAR (ANSI)
         WideCharToMultiByte(CP_ACP, 0, filename, -1, file, MAX_STR_LEN, NULL, NULL);
-
+#if defined USE_DDS_LOADER_INSTEAD
         // Try to replace with .dds if it exists
         TCHAR finalddsPath[MAX_STR_LEN] = { 0 };
         if (TryReplaceWithDDS(file, finalddsPath, MAX_STR_LEN))
@@ -141,7 +141,7 @@ namespace WOMA
         TCHAR finalobjPath[MAX_STR_LEN] = { 0 };
         if (TryReplaceWithW3D(file, finalobjPath, MAX_STR_LEN))
             _tcscpy_s(file, finalobjPath);
-
+#endif
         // Use standard LoadFile to resolve full path and base folder
         TCHAR* cfile = LoadFile(file, true);
 

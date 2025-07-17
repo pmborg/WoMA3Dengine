@@ -207,25 +207,25 @@ HRESULT DX11Class::LOADTEXTURE_DX11_WIN_SDK8(
 			return hr;
 		}
 	}
-	
-	hr = LoadTexture(pDevice, pSrcFile, ppShaderResourceView);
+    STRING finalname = pSrcFile;
+	hr = LoadTexture(pDevice, (TCHAR*)finalname.c_str(), ppShaderResourceView);
 
 	// COMMON:
 	if (FAILED(hr))
 	{
-		WomaMessageBox(pSrcFile, TEXT("Texture File not found"));
+		WomaMessageBox((TCHAR*)finalname.c_str(), TEXT("Texture File not found"));
 	}
 	else {
-		allTextureNameArray.push_back(pSrcFile);
+		allTextureNameArray.push_back((TCHAR*)finalname.c_str());
 		allTexturePointerArray.push_back(*ppShaderResourceView);
 	}
 	if (hr != S_OK && WOMA::game_state == GAME_SETUP) {
 		WOMA::game_state = ENGINE_RESTART;
 		return hr;
-	} else {
+	} 
+	else {
 			ASSERT(hr == S_OK);
 	}
-
 
 	return hr;
 }

@@ -52,7 +52,7 @@ extern RApplicationClass* r_Application;
 #include "BillClass.h"	//[ch60]
 #endif
 
-#if defined USE_DIRECT_INPUT
+#if defined USE_DIRECT_INPUT || DX_ENGINE_LEVEL >= 63
 float sort_cameraX=0, sort_cameraY=0, sort_cameraZ = 0;
 #endif
 //-------------------------------------------------------------------------------------------
@@ -361,7 +361,7 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight)
 
 	// Render TRANSPARENT Parts of 3D OBJs (like: glass window of (Space Compound), etc...) (last part)
 	// --------------------------------------------------------------------------------------------
-#if DX_ENGINE_LEVEL >= 33 && defined USE_SCENE_MANAGER && defined MAIN_RENDER_MAIN_OBJ //MAIN-RENDER: MAIN OBJs. (9 ms)
+#if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined MAIN_RENDER_MAIN_OBJ //MAIN-RENDER: MAIN OBJs. (9 ms)
 	for (UINT id = 0; id < WOMA::sceneManager->opacModelList.size(); id++) {
         RenderModel(monitorIndex, m_Driver, id, PASS_OPAC);
             

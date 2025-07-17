@@ -79,7 +79,7 @@ namespace DirectX
 			version = version - 0.1f;
 
 		StringCchPrintfA(W3D.version, sizeof(W3D.version), "W3D v%.1f", version);
-		//WOMA_LOGManager_DebugMSG("W3D.version: %s\n", W3D.version);
+		WOMA_LOGManager_DebugMSG("filename: %s W3D.version: %s\n", filename.c_str(), W3D.version);
 
 #if defined USE_BOUNDING_VOLUMES
 		W3D.min = minVertex;
@@ -252,7 +252,7 @@ namespace DirectX
 			obj3dfile.read((char*)&modelTextureVertex_[0], W3D.verticesCount * W3D.size_verticesCount /*sizeof(ModelTextureVertexType)*/);
 			modelTextureVertex = &modelTextureVertex_;
 		}
-		else if (strcmp(W3D.version, "W3D v1.2") == 0)	//23
+		else if (strcmp(W3D.version, "W3D v1.2") == 0 || strcmp(W3D.version, "W3D v3.2") == 0)	//23 SHADER_TEXTURE_LIGHT or SHADER_TEXTURE_LIGHT_FAST
 		{
 			modelTextureLightVertex_.resize(m_vertexCount);
 			obj3dfile.read((char*)&modelTextureLightVertex_[0], W3D.verticesCount * W3D.size_verticesCount /*sizeof(ModelTextureLightVertexType)*/);
@@ -360,8 +360,12 @@ namespace DirectX
 		else
 		if (strcmp(W3D.version, "W3D v2.9") == 0)	// FIRE
 			LoadTexture((TCHAR*)filename.c_str(), g_driver, SHADER_FIRE, &obj3d.textureNameArray, modelTextureVertex, &obj3d.indices32, instanceCount);
+        else 
+        if (strcmp(W3D.version, "W3D v3.2") == 0)
+            LoadLight((TCHAR*)filename.c_str(), g_driver, SHADER_TEXTURE_LIGHT_FAST, &obj3d.textureNameArray, modelTextureLightVertex, &obj3d.indices32, instanceCount);
 		else
-		{			
+		{	
+            ASSERT(false);
 			return false;
 		}
 		// "W3D v1.4"	//36

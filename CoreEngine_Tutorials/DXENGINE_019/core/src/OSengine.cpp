@@ -22,6 +22,12 @@
 #include "platform.h"
 #include "OSengine.h"
 
+#include <windows.h>
+#include <tchar.h>
+#include <regex>
+#include <filesystem>
+namespace fs = std::filesystem;
+
 #include <inttypes.h>
 
 #if defined WINDOWS_PLATFORM
@@ -329,6 +335,45 @@ void DefineConsoleTitle()
 
 }
 
+// Entry point of all WoMA ENGINE Applications all "main's" call this this one (used by: WINDOWS / LINUX / ANDROID)
+int CHECK_IF_WE_ARE_A_RUNNING_DEMO()
+{
+	TCHAR buffer[MAX_PATH];
+	GetModuleFileName(NULL, buffer, MAX_PATH);
+	STRING currentExePath = buffer;
+
+	if (currentExePath.find(TEXT("\\Downloads\\")) != STRING::npos)
+	{
+		STRING exeName = currentExePath.substr(currentExePath.find_last_of(TEXT("\\")) + 1);
+
+		std::regex levelRegex("CoreEngine_(\\d+)");
+		std::smatch match;
+		if (std::regex_search(exeName, match, levelRegex) && match.size() > 1) {
+			STRING levelStr = match[1];
+			std::vector<STRING> prefixes = { TEXT("CoreEngine_"), TEXT("DXENGINE_") };
+			STRING basePath = TEXT("C:\\WoMA3Dengine\\CoreEngine_Tutorials");
+
+			for (const auto& prefix : prefixes) {
+				for (const auto& entry : fs::directory_iterator(basePath)) {
+					if (entry.is_directory()) {
+						STRING folderName = entry.path().filename().string();
+						if (folderName.find(prefix + levelStr) != STRING::npos) {
+							STRING fullPath = basePath + TEXT("\\") + folderName;
+							if (!SetCurrentDirectory(fullPath.c_str())) {
+								MessageBox(NULL, TEXT("Failed to change working directory."), TEXT("WoMA Engine Error"), MB_ICONERROR);
+								return EXIT_FAILURE;
+							}
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return EXIT_SUCCESS;
+}
+
 void APPLICATION_STARTUP(int argc, char* argv[])
 {
     std::cout << "<" << PROJECT_NAME << "> STARTUP" << std::endl;
@@ -403,6 +448,9 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 	glutInit(&argc, argv);
 	#endif
 #endif
+
+	ASSERT(CHECK_IF_WE_ARE_A_RUNNING_DEMO() == EXIT_SUCCESS);
+
 #if CORE_ENGINE_LEVEL >= 1 && defined WINDOWS_PLATFORM
 	WOMA::setup_OSmain_dirs();				//1! Keep this order!
 	WOMA::activate_mem_leak_detection();	//2!

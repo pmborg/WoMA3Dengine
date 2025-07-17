@@ -213,8 +213,8 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 		}
 
 		// Tree.type: (type of tree)
-        type = rand() % 11; //random number between 0 and 10
-        ASSERT(type <= 10);
+        type = rand() % billNames_length; //random number between 0 and 10
+        ASSERT(type <= billNames_length-1);
 		// Tree.scale:
 		float scale = 0;
 		if (type >= 6 && type < 11)

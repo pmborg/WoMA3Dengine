@@ -431,6 +431,8 @@ bool XMLloader::loadWorld (TCHAR* file_) // Note: Have to be char
 				object3d.scale = (float)atof(element->Attribute("scale"));
                 if (element->Attribute("scaleY"))
                     object3d.scaleY = (float)atof(element->Attribute("scaleY"));
+                else
+                    object3d.scaleY = 1;
 				object3d.posX = (float)atof(element->Attribute("posX"));
 				object3d.posZ = (float)atof(element->Attribute("posZ"));
 				object3d.translateY = (float)atof(element->Attribute("translateY"));
