@@ -289,9 +289,10 @@ java -version
 	COMPILE ANDROID WITH SUCCESS!
 
 ---
-	#Also needed to compile assimp lib:
-	Install cmake for windows: cmake-4.1.0-rc2-windows-x86_64.msi
-	https://github.com/Kitware/CMake/releases/download/v4.1.0-rc2/cmake-4.1.0-rc2-windows-x86_64.msi
+	#Also needed to compile assimp lib: (need to be this version!)
+	Install cmake for windows: cmake-3.31.4-windows-x86_64.msi
+	https://cmake.org/cmake/help/latest/release/3.31.html
+	
 	
 ---
 
