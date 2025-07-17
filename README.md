@@ -15,6 +15,11 @@ Later on I will make path free but for now a few paths are hardcoded there.<br>
 
 # cmake version new to be: 
 <b>cmake-3.31.4</b>
+
+## How did I install all environment from scratch:
+[INSTALL_ALL_FROM_SCRATCH.md](https://github.com/pmborg/WoMA3Dengine/blob/main/HowTo/INSTALL_ALL_FROM_SCRATCH/INSTALL_ALL_FROM_SCRATCH.md)
+
+
 <hr>
 
 ## Platforms

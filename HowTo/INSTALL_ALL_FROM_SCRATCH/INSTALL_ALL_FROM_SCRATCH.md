@@ -96,16 +96,17 @@ java -version
 [click on power button] to reboot, where you should see... (update and restart) option.
 
 ---
+<!--
 [ ] Install VS2017 Professional
-
+-->
 
 
 
 	
-[ ] Installed VS2019 Community: (Used by Android Emulators)
-	C:\WoMA3Dengine\HowTo\INSTALL_ALL_FROM_SCRATCH\Install_VS_COMINUTY_2019\vs_community__0729f4f97f2a4ae0a25a30028a90c6f0.exe
-	"Select options on Snapshot": 
-	C:\WoMA3Dengine\HowTo\INSTALL_ALL_FROM_SCRATCH\Install_VS_COMINUTY_2019\Install_VS_2019.png
+[ ] Installed VS2019 Community: (Used by Android Emulators)<br>
+        <b>NOTE:</b> Need to be this version: 16.11.42 After this one Microsfot ruin everything, and dont do updated after having this one.<br>
+	"Select options on Snapshot": <br>
+	C:\WoMA3Dengine\HowTo\INSTALL_ALL_FROM_SCRATCH\Install_VS_COMINUTY_2019\Install_VS_2019.png<br>
 	
 ---
 
