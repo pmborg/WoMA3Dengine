@@ -381,11 +381,11 @@ CMAKE_AR-ADVANCED:INTERNAL=1
 //This is the directory where this CMakeCache.txt was created
 CMAKE_CACHEFILE_DIR:INTERNAL=c:/WoMA3Dengine/ThirdParty/external/assimp-build
 //Major version of cmake used to create the current loaded cache
-CMAKE_CACHE_MAJOR_VERSION:INTERNAL=4
+CMAKE_CACHE_MAJOR_VERSION:INTERNAL=3
 //Minor version of cmake used to create the current loaded cache
-CMAKE_CACHE_MINOR_VERSION:INTERNAL=1
+CMAKE_CACHE_MINOR_VERSION:INTERNAL=31
 //Patch version of cmake used to create the current loaded cache
-CMAKE_CACHE_PATCH_VERSION:INTERNAL=0
+CMAKE_CACHE_PATCH_VERSION:INTERNAL=4
 //Path to CMake executable.
 CMAKE_COMMAND:INTERNAL=C:/Program Files/CMake/bin/cmake.exe
 //Path to cpack program executable.
@@ -477,7 +477,7 @@ CMAKE_RC_FLAGS_RELEASE-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_RC_FLAGS_RELWITHDEBINFO
 CMAKE_RC_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //Path to CMake installation.
-CMAKE_ROOT:INTERNAL=C:/Program Files/CMake/share/cmake-4.1
+CMAKE_ROOT:INTERNAL=C:/Program Files/CMake/share/cmake-3.31
 //ADVANCED property for variable: CMAKE_SHARED_LINKER_FLAGS
 CMAKE_SHARED_LINKER_FLAGS-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_SHARED_LINKER_FLAGS_DEBUG

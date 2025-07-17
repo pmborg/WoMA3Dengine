@@ -86,16 +86,13 @@
       <DisableSpecificWarnings>4131;4127;4244;4244</DisableSpecificWarnings>
       <ExceptionHandling>
       </ExceptionHandling>
-      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <MinimalRebuild></MinimalRebuild>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>Disabled</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <SupportJustMyCode></SupportJustMyCode>
-      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
       <UseFullPaths>false</UseFullPaths>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;ASSIMP_BUILD_NO_M3D_IMPORTER;ASSIMP_BUILD_NO_M3D_EXPORTER;ASSIMP_BUILD_NO_VRML_IMPORTER;WIN32_LEAN_AND_MEAN;UNICODE;_UNICODE;NO_FSEEKO;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
@@ -126,16 +123,13 @@
       <DisableSpecificWarnings>4131;4127;4244;4244</DisableSpecificWarnings>
       <ExceptionHandling>
       </ExceptionHandling>
-      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <MinimalRebuild></MinimalRebuild>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <SupportJustMyCode></SupportJustMyCode>
-      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
       <UseFullPaths>false</UseFullPaths>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;ASSIMP_BUILD_NO_M3D_IMPORTER;ASSIMP_BUILD_NO_M3D_EXPORTER;ASSIMP_BUILD_NO_VRML_IMPORTER;WIN32_LEAN_AND_MEAN;UNICODE;_UNICODE;NO_FSEEKO;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
@@ -168,16 +162,13 @@
       <DisableSpecificWarnings>4131;4127;4244;4244</DisableSpecificWarnings>
       <ExceptionHandling>
       </ExceptionHandling>
-      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild></MinimalRebuild>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MinSpace</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <SupportJustMyCode></SupportJustMyCode>
-      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
       <UseFullPaths>false</UseFullPaths>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;ASSIMP_BUILD_NO_M3D_IMPORTER;ASSIMP_BUILD_NO_M3D_EXPORTER;ASSIMP_BUILD_NO_VRML_IMPORTER;WIN32_LEAN_AND_MEAN;UNICODE;_UNICODE;NO_FSEEKO;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
@@ -211,16 +202,13 @@
       <DisableSpecificWarnings>4131;4127;4244;4244</DisableSpecificWarnings>
       <ExceptionHandling>
       </ExceptionHandling>
-      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MinimalRebuild></MinimalRebuild>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <SupportJustMyCode></SupportJustMyCode>
-      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
       <UseFullPaths>false</UseFullPaths>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;ASSIMP_BUILD_NO_M3D_IMPORTER;ASSIMP_BUILD_NO_M3D_EXPORTER;ASSIMP_BUILD_NO_VRML_IMPORTER;WIN32_LEAN_AND_MEAN;UNICODE;_UNICODE;NO_FSEEKO;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
@@ -255,7 +243,7 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CMake\share\cmake-4.1\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CheckFunctionExists.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CheckIncludeFile.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CheckIncludeFileCXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CheckTypeSize.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CheckSourceCompiles.cmake;C:\WoMA3Dengine\ThirdParty\external\assimp\contrib\zlib\zconf.h.cmakein;C:\WoMA3Dengine\ThirdParty\external\assimp\contrib\zlib\zlib.pc.cmakein;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CMake\share\cmake-3.31\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.31\Modules\CheckFunctionExists.cmake;C:\Program Files\CMake\share\cmake-3.31\Modules\CheckIncludeFile.cmake;C:\Program Files\CMake\share\cmake-3.31\Modules\CheckIncludeFileCXX.cmake;C:\Program Files\CMake\share\cmake-3.31\Modules\CheckTypeSize.cmake;C:\Program Files\CMake\share\cmake-3.31\Modules\Internal\CheckSourceCompiles.cmake;C:\WoMA3Dengine\ThirdParty\external\assimp\contrib\zlib\zconf.h.cmakein;C:\WoMA3Dengine\ThirdParty\external\assimp\contrib\zlib\zlib.pc.cmakein;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\WoMA3Dengine\ThirdParty\external\assimp-build\contrib\zlib\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/WoMA3Dengine/ThirdParty/external/assimp/contrib/zlib/CMakeLists.txt</Message>
@@ -268,7 +256,7 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\CMake\share\cmake-4.1\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CheckFunctionExists.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CheckIncludeFile.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CheckIncludeFileCXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CheckTypeSize.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CheckSourceCompiles.cmake;C:\WoMA3Dengine\ThirdParty\external\assimp\contrib\zlib\zconf.h.cmakein;C:\WoMA3Dengine\ThirdParty\external\assimp\contrib\zlib\zlib.pc.cmakein;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\CMake\share\cmake-3.31\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.31\Modules\CheckFunctionExists.cmake;C:\Program Files\CMake\share\cmake-3.31\Modules\CheckIncludeFile.cmake;C:\Program Files\CMake\share\cmake-3.31\Modules\CheckIncludeFileCXX.cmake;C:\Program Files\CMake\share\cmake-3.31\Modules\CheckTypeSize.cmake;C:\Program Files\CMake\share\cmake-3.31\Modules\Internal\CheckSourceCompiles.cmake;C:\WoMA3Dengine\ThirdParty\external\assimp\contrib\zlib\zconf.h.cmakein;C:\WoMA3Dengine\ThirdParty\external\assimp\contrib\zlib\zlib.pc.cmakein;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\WoMA3Dengine\ThirdParty\external\assimp-build\contrib\zlib\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
       <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/WoMA3Dengine/ThirdParty/external/assimp/contrib/zlib/CMakeLists.txt</Message>
@@ -281,7 +269,7 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Program Files\CMake\share\cmake-4.1\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CheckFunctionExists.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CheckIncludeFile.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CheckIncludeFileCXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CheckTypeSize.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CheckSourceCompiles.cmake;C:\WoMA3Dengine\ThirdParty\external\assimp\contrib\zlib\zconf.h.cmakein;C:\WoMA3Dengine\ThirdParty\external\assimp\contrib\zlib\zlib.pc.cmakein;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Program Files\CMake\share\cmake-3.31\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.31\Modules\CheckFunctionExists.cmake;C:\Program Files\CMake\share\cmake-3.31\Modules\CheckIncludeFile.cmake;C:\Program Files\CMake\share\cmake-3.31\Modules\CheckIncludeFileCXX.cmake;C:\Program Files\CMake\share\cmake-3.31\Modules\CheckTypeSize.cmake;C:\Program Files\CMake\share\cmake-3.31\Modules\Internal\CheckSourceCompiles.cmake;C:\WoMA3Dengine\ThirdParty\external\assimp\contrib\zlib\zconf.h.cmakein;C:\WoMA3Dengine\ThirdParty\external\assimp\contrib\zlib\zlib.pc.cmakein;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\WoMA3Dengine\ThirdParty\external\assimp-build\contrib\zlib\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
       <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/WoMA3Dengine/ThirdParty/external/assimp/contrib/zlib/CMakeLists.txt</Message>
@@ -294,7 +282,7 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Program Files\CMake\share\cmake-4.1\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CheckFunctionExists.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CheckIncludeFile.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CheckIncludeFileCXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CheckTypeSize.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CheckSourceCompiles.cmake;C:\WoMA3Dengine\ThirdParty\external\assimp\contrib\zlib\zconf.h.cmakein;C:\WoMA3Dengine\ThirdParty\external\assimp\contrib\zlib\zlib.pc.cmakein;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Program Files\CMake\share\cmake-3.31\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.31\Modules\CheckFunctionExists.cmake;C:\Program Files\CMake\share\cmake-3.31\Modules\CheckIncludeFile.cmake;C:\Program Files\CMake\share\cmake-3.31\Modules\CheckIncludeFileCXX.cmake;C:\Program Files\CMake\share\cmake-3.31\Modules\CheckTypeSize.cmake;C:\Program Files\CMake\share\cmake-3.31\Modules\Internal\CheckSourceCompiles.cmake;C:\WoMA3Dengine\ThirdParty\external\assimp\contrib\zlib\zconf.h.cmakein;C:\WoMA3Dengine\ThirdParty\external\assimp\contrib\zlib\zlib.pc.cmakein;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\WoMA3Dengine\ThirdParty\external\assimp-build\contrib\zlib\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
     </CustomBuild>
