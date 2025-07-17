@@ -12,7 +12,8 @@ Clone to: **C:\WoMA3Dengine**<br>
 Later on I will make path free but for now a few paths are hardcoded there.<br>
 <br>
 <hr>
-#cmake version new to be: 
+
+# cmake version new to be: 
 <b>cmake-3.31.4</b>
 <hr>
 
