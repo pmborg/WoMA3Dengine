@@ -262,6 +262,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 					m_Trees[i].vPos.y = mainTerrain->getTerrainHeight(TERRAIN_ID, m_Trees[i].vPos.x, m_Trees[i].vPos.z);
 
 					xmlobj3d* xmlobj = fillxml(i, 100);
+					xmlobj->Bill = false;
 					SystemHandle->xml_loader.theWorld.push_back(*xmlobj);
 
 					if (i++ > N_BILLBOARD + N_FENCES + N_FIRE)
@@ -285,6 +286,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 				m_Trees[i].vPos.y = mainTerrain->getTerrainHeight(TERRAIN_ID, m_Trees[i].vPos.x, m_Trees[i].vPos.z);
 
 				xmlobj3d* xmlobj = fillxml(i, 100);
+				xmlobj->Bill = false;
 				SystemHandle->xml_loader.theWorld.push_back(*xmlobj);
 
 				if (i++ > N_BILLBOARD + N_FENCES)
