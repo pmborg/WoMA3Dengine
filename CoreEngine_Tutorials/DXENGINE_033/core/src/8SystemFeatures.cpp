@@ -273,8 +273,6 @@ STRING SystemFeatures::Initialize()
 
     SVM             = InstructionSet::SVM();        //((ECX & 1 << 2) || false);	// AMD only! - AMD virtualization (AMD-V)
     sse4A           = InstructionSet::SSE4a();      //((ECX & 1 << 6) || false);	// AMD only!
-	//sse5 =			((ECX & 1<<11) || false);	// AMD only!
-
     // Get processor Extended Features:
     //cpuID((unsigned*)CPUInfo, 7);			// EAX=7
     avx2 = InstructionSet::AVX2(); // ((EBX & 1 << 5) || false);
@@ -309,9 +307,6 @@ STRING SystemFeatures::Initialize()
 
 #ifdef SHOW_AMD_ONLY
     StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("SSE4A:  %s  (AMD only)"), (sse4A) ? TEXT("true") : TEXT("false")); //bSSE4A
-    SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
-
-    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("SSE5:  %s  (AMD only)"), (sse5) ? TEXT("true") : TEXT("false")); //bSSE5
     SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
 #endif
 

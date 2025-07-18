@@ -54,7 +54,9 @@ public:
 	bool amd_3DNowExt;
 	bool SVM;		//if(!hypervisor) virtualization = "AMD virtualization (AMD-V)"
 	bool sse4A;
+#if _NOT
 	bool sse5;
+#endif
 
     // Get processor info:
 	bool avx2;
