@@ -22,17 +22,17 @@
 #include "platform.h"
 #include "OSengine.h"
 
+#include <inttypes.h>
+
+#if defined WINDOWS_PLATFORM
 #include <windows.h>
 #include <tchar.h>
 #include <regex>
 #include <filesystem>
 namespace fs = std::filesystem;
 
-#include <inttypes.h>
-
-#if defined WINDOWS_PLATFORM
-	#include <DirectXMath.h>
-	WinSystemClass* SystemHandle = NULL;
+#include <DirectXMath.h>
+WinSystemClass* SystemHandle = NULL;
 #endif
 
 #if defined ANDROID_PLATFORM 
@@ -99,6 +99,7 @@ TCHAR* DEMO_NAME[] =
 {TEXT("TUTORIAL 36: WORLD.XML: load OBJ 3D file format, render a SHADOW MAP")},
 {TEXT("TUTORIAL 37: WORLD.XML: load OBJ 3D file format, render chess board pieces, adding MAIN THREAD and the LOADER THREAD")},
 {TEXT("TUTORIAL 38: WORLD.XML: load OBJ 3D file format, save to W3D Woma 3D fast file FORMAT")},
+{TEXT("TUTORIAL 39: WORLD.XML: load W3D(the Woma 3D file format) files up to 30x faster than OBJ files in DX LEVEl38")},
 {TEXT("TUTORIAL 39: WORLD.XML: load W3D(the Woma 3D file format) files up to 30x faster than OBJ files in DX LEVEl38")},
 {TEXT("TUTORIAL 40: WORLD.XML: load W3D and use INSTANCES to clone objects using GPU")},
 {TEXT("TUTORIAL 41: WORLD.XML: load W3D and use SHADOW INSTANCES")},
@@ -338,6 +339,7 @@ void DefineConsoleTitle()
 
 }
 
+#if defined WINDOWS_PLATFORM
 // Entry point of all WoMA ENGINE Applications all "main's" call this this one (used by: WINDOWS / LINUX / ANDROID)
 int CHECK_IF_WE_ARE_A_RUNNING_DEMO()
 {
@@ -376,6 +378,7 @@ int CHECK_IF_WE_ARE_A_RUNNING_DEMO()
 
 	return EXIT_SUCCESS;
 }
+#endif
 
 void APPLICATION_STARTUP(int argc, char* argv[])
 {
@@ -451,7 +454,9 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 	#endif
 #endif
 
+#if defined WINDOWS_PLATFORM
 	ASSERT(CHECK_IF_WE_ARE_A_RUNNING_DEMO() == EXIT_SUCCESS);
+#endif
 
 #if CORE_ENGINE_LEVEL >= 1 && defined WINDOWS_PLATFORM
 	WOMA::setup_OSmain_dirs();				//1! Keep this order!
