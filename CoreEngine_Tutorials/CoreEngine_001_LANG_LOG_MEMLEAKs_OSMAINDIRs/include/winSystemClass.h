@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Export APIs for winSystemClass.cpp which is the WINDOWS OS API
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #pragma once
 
@@ -50,7 +50,7 @@ extern HWND DoCreateStatusBar(HWND hwndParent, int idStatus, HINSTANCE hinst, in
 class WinSystemClass : public SystemClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567155;
+	UINT WomaIntegrityCheck = 1234525256;
 	WinSystemClass();
 	WinSystemClass(WOMA::Settings* AppSettings);
 	void WinSystemClass_init();

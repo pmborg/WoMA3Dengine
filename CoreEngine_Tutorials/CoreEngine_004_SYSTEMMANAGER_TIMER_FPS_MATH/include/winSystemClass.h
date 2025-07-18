@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Export APIs for winSystemClass.cpp which is the WINDOWS OS API
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #pragma once
 
@@ -79,7 +79,7 @@ extern LRESULT CALLBACK WOMA_PAINT_MessageHandler(HWND hwnd, UINT umessage, WPAR
 class WinSystemClass : public SystemClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234567155;
+	UINT WomaIntegrityCheck = 1234525256;
 	WinSystemClass();
 	WinSystemClass(WOMA::Settings* AppSettings);
 	void WinSystemClass_init();
@@ -100,7 +100,7 @@ public:
 	bool MyRegisterClass(HINSTANCE hInstance);
 	HWND WomaCreateWindowEx(DWORD dwExStyle, TCHAR* lpClassName, TCHAR* lpWindowName, DWORD dwStyle,
 		int X, int Y, int nWidth, int nHeight, HWND hWndParent, HMENU hMenu, HINSTANCE hInstance, LPVOID lpParam);
-	bool CreateMainWindow(UINT USE_MONITOR_, void*, int&, int&); //wGLopenGLclass
+	bool CreateWin32MainWindow(UINT USE_MONITOR_, void*, int&, int&); //wGLopenGLclass
 	bool ShowWindow(int windowLeft, int windowTop);
 	LRESULT CALLBACK WOMA_SYSTEM_MessageHandler(HWND, UINT, WPARAM, LPARAM);
 	void ProcessFrame();

@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Export APIs for systemclass.cpp which is the common OS API
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 #pragma once
 #ifndef __SYSTEMCLASS_H__
 
@@ -67,7 +67,7 @@ typedef struct {
 #include "womadriverclass.h"
 #endif
 
-#include "playerClass.h"
+
 
 typedef struct {
 	int			hVisibility;
@@ -170,7 +170,7 @@ typedef struct SystemSettings_
 class SystemClass
 {
 public:
-    UINT WomaIntegrityCheck = 1234567155;
+    UINT WomaIntegrityCheck = 1234525256;
 	SystemClass();
 	~SystemClass();
 

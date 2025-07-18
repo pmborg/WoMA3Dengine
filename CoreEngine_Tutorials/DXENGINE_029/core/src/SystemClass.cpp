@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Define APIs for systemclass.cpp which is the common OS API
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
@@ -841,17 +841,6 @@ void SystemClass::Shutdown()
 			driverList[DRIVER_DX11] = NULL;
 		}
 #endif
-#if defined DX9 && D3D11_SPEC_DATE_YEAR > 2009
-		if (driverList[DRIVER_DX9]) {
-			delete ((DirectX::DX11Class*)driverList[DRIVER_DX9]);
-			driverList[DRIVER_DX9] = NULL;
-		}
-#elif defined DX9sdk
-		if (driverList[DRIVER_DX9]) {
-			delete ((DirectX::DX9Class*)driverList[DRIVER_DX9]);
-			driverList[DRIVER_DX9] = NULL;
-		}
-#endif
 	}
 #endif
 
@@ -863,34 +852,6 @@ extern android_app* app;
 
 void SystemClass::FrameUpdate()
 {
-
-#if defined LINUX_PLATFORM
-	if (WOMA::game_state == GAME_RUN)
-	{
-		/*
-		int err = XGrabPointer(Win.display, Win.window,
-								True, ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
-								GrabModeAsync, GrabModeAsync,
-								Win.window, None, CurrentTime);
-
-		processXEvents(wm_protocols, wm_delete_window);
-		XUngrabPointer(Win.display, CurrentTime);
-
-		#define mousex event.xbutton.x_root 
-		#define mousey event.xbutton.y_root
-		//if (event.xbutton.button == Button1)
-		//	_tprintf("mousex: %d mouseY: %d\n", (mousex) - WOMA::settings.WINDOW_Xpos, (mousey) -WOMA::settings.WINDOW_Ypos);
-	
-		if ((mousex < 100 && mousey < 100) && (mousex > 0 && mousey > 0))
-		{
-			RENDER_PAGE = 25;
-			WOMA::previous_game_state = GAME_IMGUI;
-			WOMA::game_state = ENGINE_RESTART;
-			return;
-		}
-		*/
-	}
-#endif
 
 	#if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 	  #if !defined ANDROID_PLATFORM
@@ -1016,9 +977,9 @@ bool SystemClass::LoadXmlSettings()
 	}
 
 #if DX_ENGINE_LEVEL == 29 && defined INTRO_DEMO // Force Full Screen
-	#if defined WINDOWS_PLATFORM
-		SystemHandle->AppSettings->WINDOW_WIDTH = SystemHandle->AppSettings->WINDOW_HEIGHT = 0;
-	#endif
+	//#if defined WINDOWS_PLATFORM
+	//	SystemHandle->AppSettings->WINDOW_WIDTH = SystemHandle->AppSettings->WINDOW_HEIGHT = 0;
+	//#endif
 	#ifdef RELEASE
 		SystemHandle->AppSettings->FULL_SCREEN = true;
 	#endif
@@ -1139,14 +1100,7 @@ void SystemClass::LoadAllDrivers()
 	// -------------------------------------------------------------------------------------------
 	// [2] DX 9 (or DX11 with Downgrade: DX9)
 	// -------------------------------------------------------------------------------------------
-#if   defined DX9 && D3D11_SPEC_DATE_YEAR > 2009
-	WOMA_LOGManager_DebugMSG("LoadDriver[2]: DX9(DX11)Class\n");
-	driverList.push_back(NEW DirectX::DX11Class());
-	((DirectX::DX11Class*)driverList[2])->dx11_force_dx9 = true;
-	((DirectX::DX11Class*)driverList[2])->CheckAPIdriver(USE_THIS_GRAPHIC_CARD_ADAPTER); //Recalc the capabilities for DX9
-#else
 	driverList.push_back(NULL);
-#endif
 
 	// -------------------------------------------------------------------------------------------
 	// [3] DX 12
@@ -1319,13 +1273,6 @@ bool InitSelectedDriver()
 			AppSettings->SCREEN_DEPTH, AppSettings->SCREEN_NEAR, AppSettings->MSAA_Anisotropic, AppSettings->VSYNC_ENABLED,
 			AppSettings->FULL_SCREEN, AppSettings->UseDoubleBuffering, AppSettings->AllowResize));
 #endif
-		break;
-#endif
-#if defined DX9 && D3D11_SPEC_DATE_YEAR > 2009 //[2]
-	case DRIVER_DX9:
-		ASSERT(((DirectX::DX11Class*)(driverList[DRIVER_DX9]))->OnInit(AppSettings->UI_MONITOR, SystemHandle->m_hWnd, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT, 24 /*BufferDeep*/,
-			AppSettings->SCREEN_DEPTH, AppSettings->SCREEN_NEAR, AppSettings->MSAA_Anisotropic, AppSettings->VSYNC_ENABLED,
-			AppSettings->FULL_SCREEN, AppSettings->UseDoubleBuffering, AppSettings->AllowResize));
 		break;
 #endif
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009 //[3]

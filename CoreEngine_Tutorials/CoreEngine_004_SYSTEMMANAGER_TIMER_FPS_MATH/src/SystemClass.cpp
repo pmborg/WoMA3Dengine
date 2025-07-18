@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Define APIs for systemclass.cpp which is the common OS API
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
@@ -665,34 +665,6 @@ extern android_app* app;
 
 void SystemClass::FrameUpdate()
 {
-
-#if defined LINUX_PLATFORM
-	if (WOMA::game_state == GAME_RUN)
-	{
-		/*
-		int err = XGrabPointer(Win.display, Win.window,
-								True, ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
-								GrabModeAsync, GrabModeAsync,
-								Win.window, None, CurrentTime);
-
-		processXEvents(wm_protocols, wm_delete_window);
-		XUngrabPointer(Win.display, CurrentTime);
-
-		#define mousex event.xbutton.x_root 
-		#define mousey event.xbutton.y_root
-		//if (event.xbutton.button == Button1)
-		//	_tprintf("mousex: %d mouseY: %d\n", (mousex) - WOMA::settings.WINDOW_Xpos, (mousey) -WOMA::settings.WINDOW_Ypos);
-	
-		if ((mousex < 100 && mousey < 100) && (mousex > 0 && mousey > 0))
-		{
-			RENDER_PAGE = 25;
-			WOMA::previous_game_state = GAME_IMGUI;
-			WOMA::game_state = ENGINE_RESTART;
-			return;
-		}
-		*/
-	}
-#endif
 
 	#if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 	  #if !defined ANDROID_PLATFORM

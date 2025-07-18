@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Export APIs for systemclass.cpp which is the common OS API
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 #pragma once
 #ifndef __SYSTEMCLASS_H__
 
@@ -46,6 +46,8 @@ struct resolutionType
 #if defined USE_TINYXML_LOADER
 #include "xml_loader.h"
 #endif
+
+
 
 typedef struct GPU_
 {
@@ -120,7 +122,7 @@ typedef struct SystemSettings_
 class SystemClass
 {
 public:
-    UINT WomaIntegrityCheck = 1234567155;
+    UINT WomaIntegrityCheck = 1234525256;
 	SystemClass();
 	~SystemClass();
 

@@ -401,7 +401,6 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 #endif
 	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
     SetUnhandledExceptionFilter(TopLevelFilter);
-
 #elif defined LINUX_PLATFORM && defined RELEASE
 	#if _DEBUG
 		setpriority(PRIO_PROCESS, 0, 20);	// -20 (highest priority) to +20 (lowest priority). 

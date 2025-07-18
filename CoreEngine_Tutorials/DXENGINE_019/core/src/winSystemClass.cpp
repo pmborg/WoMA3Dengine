@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Define APIs for winSystemClass.cpp which is the WINDOWS OS API
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #include "OSengine.h"
 #include "mem_leak.h"
@@ -59,7 +59,7 @@ WinSystemClass::WinSystemClass() : SystemClass()
 //----------------------------------------------------------------------------------
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567155;
+	WomaIntegrityCheck = 1234525256;
 
 	//public:
 	SystemHandle = this;
@@ -82,10 +82,10 @@ WinSystemClass::WinSystemClass(WOMA::Settings* appSettings): SystemClass() //	Sy
 void WinSystemClass::ProcessFrame()
 //----------------------------------------------------------------------------
 {
-	SystemClass::FrameUpdate();	// Process: (INPUT + PerformanceStats) Only!                                        | PROFILE:(0.4%)
+	SystemClass::FrameUpdate();	// Process: (INPUT & PerformanceStats) Only!                                        | PROFILE:(0.4%)
 
 	if (WOMA::game_state == ENGINE_RESTART)
-		return;
+		return; //Restart so, dont render!
 
 	// Render Setup?
 #if CORE_ENGINE_LEVEL >= 5 && defined CLIENT_SCENE_SETUP
@@ -98,33 +98,34 @@ void WinSystemClass::ProcessFrame()
 			SystemHandle->womaSetup->Initialize(NULL);
 			OS_REDRAW_WINDOW;
 		}
-        return; //dont render!
+        return; //Process win32 setup so, dont render!
 	}
 #endif
 
 	{
-        m_Application->dayLightFade = m_Application->ProcessInputUpdate();	//OS CORE ONLY!  F1, F2, ...
+        //CalculateViewMatrix(s) and check collision(s):
+        m_Application->dayLightFade = m_Application->ProcessInputUpdate();	//and proccess keys:  F1, F2, ...
 
 		#if defined INTRO_DEMO
-		//m_Application->dayLightFade = m_Application->ProcessInputUpdate();	//OS CORE ONLY!  F1, F2, ...
 		if (RENDER_PAGE < 15) 
 		#else
 		if (RENDER_PAGE < 10)
 		#endif
-			return;
+			return; // We are in first win32 demo pages so, dont render!
 
 		// For each Monitor: Render one Application Frame
-		for (int mon = 0; mon < windowsArray.size(); mon++)
+        static int num_monitors = (int)windowsArray.size();
+		for (int monIdx = 0; monIdx < num_monitors; monIdx++)
 		{
 			{
-				m_Driver->BeginScene(mon);								//RESET FRAME                           | PROFILE: 0.08%
-
-				m_Application->RenderScene(mon, m_Driver);				//RENDER ONE FRAME: 100% is done here!  | PROFILE: 44.40%
-                
-				if (!g_contextDriver)									//SHOW FRAME:
-					m_Driver->EndScene(mon);							// [DX]: Present                        | PROFILE: 19.03%
+				m_Driver->BeginScene(monIdx);					// RESET FRAME                           | PROFILE: 0.08%
+                                                               
+				m_Application->RenderScene(monIdx, m_Driver);	// RENDER ONE FRAME: 100% is done here!  | PROFILE: 44.40%
+                                                               
+				if (!g_contextDriver)						// SHOW FRAME:
+					m_Driver->EndScene(monIdx);				// [DX]: Present                         | PROFILE: 19.03%
 				else
-					g_contextDriver->EndScene(mon);						// [OPENGL]: SwapBuffers
+					g_contextDriver->EndScene(monIdx);			// [OPENGL]: SwapBuffers
 			}
 		}
        
@@ -208,10 +209,6 @@ bool WinSystemClass::APPLICATION_AFTER_WINDOW()
 bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 //----------------------------------------------------------------------------
 {
-	//  NOTE: Constructors run, First!
-	//  SystemClass::SystemClass()				Run: 1st - OS common    - WOMA::APP_NAME
-	//	ApplicationClass::ApplicationClass()	Run: 2nd - User: level  - ApplicationClass::Start()
-	//	WinSystemClass::WinSystemClass()		Run: 3th - Start Timers - WinSystemClass::WinSystemClass_init();
 
 #if defined USE_SYSTEM_CHECK                                // BEFORE: APPLICATION_INIT_MAIN_WINDOW()
 	IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());		// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 
@@ -227,7 +224,7 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	if (AppSettings->DRIVER == DRIVER_GL3)
 		IF_NOT_RETURN_FALSE(newDriver());	//Create NEW CONTEXT Class: g_contextDriver
 	#endif
-	LoadAllDrivers();		//NEW DirectX::DX11Class()	(NEW DX9, NEW DX11, NEW DX12, NEW OpenGL): push_back(NEW DirectX::*Class());
+	LoadAllDrivers();		        //NEW DirectX::DX11Class()	(NEW DX9, NEW DX11, NEW DX12, NEW OpenGL): push_back(NEW DirectX::*Class());
 #if defined USE_SYSTEM_CHECK
 	InitializeSystemScreen(10, 10); // SETUP SCREEN: F1,F2,F3,F4,F5,F6 (RUNNING NOW ON: PaintSetup())
 #endif
@@ -297,13 +294,7 @@ int WinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 
 		if (WOMA::game_state > GAME_MINIMIZED && WOMA::game_state <= GAME_RUN) // Active?
 		{
-			try {
-				ProcessFrame();// Render ONE: Application Frame
-			}
-			catch (...) //catch (exception& e)
-			{
-				return -2;
-			}
+            ProcessFrame();// Render ONE: Application Frame
 		}
 		else {
 			if (WOMA::game_state == ENGINE_RESTART)
@@ -491,7 +482,7 @@ bool WinSystemClass::InitOsInput()
 }
 #endif
 
-bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ void* 
+bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ void* 
 										/*OpenGL*/ driver, int& width, int& height)
 //----------------------------------------------------------------------------
 {
@@ -951,13 +942,13 @@ bool WinSystemClass::APPLICATION_INIT_MAIN_WINDOW()
 	if (AppSettings->UseAllMonitors == false) // Are we using a specific Monitor?
 	{
 		//0 (FIXED) Means the Select Monitor: can be 0, 1 ,2...
-		IF_NOT_RETURN_FALSE(CreateMainWindow(0 /*Just one monitor?*/, g_contextDriver, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT));
+		IF_NOT_RETURN_FALSE(CreateWin32MainWindow(0 /*Just one monitor?*/, g_contextDriver, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT));
 	}
 	else
 	{
 		// For each Monitor:
 		for (int i = 0; i < windowsArray.size(); ++i)
-			IF_NOT_RETURN_FALSE(CreateMainWindow(i /* use all these monitors*/, g_contextDriver, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT));
+			IF_NOT_RETURN_FALSE(CreateWin32MainWindow(i /* use all these monitors*/, g_contextDriver, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT));
 	}
 #endif
 

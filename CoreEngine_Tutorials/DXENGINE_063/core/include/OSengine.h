@@ -161,8 +161,9 @@
 #if defined LINUX_PLATFORM
 	#define WOMAOS "LINUX"
 #endif
+#if CORE_ENGINE_LEVEL >= 3
 extern LONG TopLevelFilter(struct _EXCEPTION_POINTERS* pExceptionInfo);
-
+#endif
 extern UINT RENDER_PAGE;
 
 extern int APPLICATION_MAIN(int argc, char* argv[]);

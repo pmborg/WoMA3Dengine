@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Define APIs for winSystemClass.cpp which is the WINDOWS OS API
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #include "OSengine.h"
 #if defined DX_ENGINE
@@ -32,7 +32,7 @@ WinSystemClass::WinSystemClass() : SystemClass()
 //----------------------------------------------------------------------------------
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567155;
+	WomaIntegrityCheck = 1234525256;
 
 	//public:
 	SystemHandle = this;
@@ -91,10 +91,6 @@ bool WinSystemClass::APPLICATION_AFTER_WINDOW()
 bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 //----------------------------------------------------------------------------
 {
-	//  NOTE: Constructors run, First!
-	//  SystemClass::SystemClass()				Run: 1st - OS common    - WOMA::APP_NAME
-	//	ApplicationClass::ApplicationClass()	Run: 2nd - User: level  - ApplicationClass::Start()
-	//	WinSystemClass::WinSystemClass()		Run: 3th - Start Timers - WinSystemClass::WinSystemClass_init();
 
 	IF_NOT_RETURN_FALSE(APPLICATION_BEFORE_WINDOW());
 #if defined USE_SYSTEM_CHECK                                // BEFORE: APPLICATION_INIT_MAIN_WINDOW()

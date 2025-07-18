@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Define APIs for winSystemClass.cpp which is the WINDOWS OS API
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #include "OSengine.h"
 #include "mem_leak.h"
@@ -44,7 +44,7 @@ WinSystemClass::WinSystemClass() : SystemClass()
 //----------------------------------------------------------------------------------
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234567155;
+	WomaIntegrityCheck = 1234525256;
 
 	//public:
 	SystemHandle = this;
@@ -67,10 +67,10 @@ WinSystemClass::WinSystemClass(WOMA::Settings* appSettings): SystemClass() //	Sy
 void WinSystemClass::ProcessFrame()
 //----------------------------------------------------------------------------
 {
-	SystemClass::FrameUpdate();	// Process: (INPUT + PerformanceStats) Only!                                        | PROFILE:(0.4%)
+	SystemClass::FrameUpdate();	// Process: (INPUT & PerformanceStats) Only!                                        | PROFILE:(0.4%)
 
 	if (WOMA::game_state == ENGINE_RESTART)
-		return;
+		return; //Restart so, dont render!
 
 	// Render Setup?
 #if CORE_ENGINE_LEVEL >= 5 && defined CLIENT_SCENE_SETUP
@@ -83,7 +83,7 @@ void WinSystemClass::ProcessFrame()
 			SystemHandle->womaSetup->Initialize(NULL);
 			OS_REDRAW_WINDOW;
 		}
-        return; //dont render!
+        return; //Process win32 setup so, dont render!
 	}
 #endif
 
@@ -168,10 +168,6 @@ bool WinSystemClass::APPLICATION_AFTER_WINDOW()
 bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 //----------------------------------------------------------------------------
 {
-	//  NOTE: Constructors run, First!
-	//  SystemClass::SystemClass()				Run: 1st - OS common    - WOMA::APP_NAME
-	//	ApplicationClass::ApplicationClass()	Run: 2nd - User: level  - ApplicationClass::Start()
-	//	WinSystemClass::WinSystemClass()		Run: 3th - Start Timers - WinSystemClass::WinSystemClass_init();
 
 	IF_NOT_RETURN_FALSE(APPLICATION_BEFORE_WINDOW());
 #if defined USE_SYSTEM_CHECK                                // BEFORE: APPLICATION_INIT_MAIN_WINDOW()
@@ -417,7 +413,7 @@ bool WinSystemClass::InitOsInput()
 }
 #endif
 
-bool WinSystemClass::CreateMainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ void* 
+bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ void* 
 										/*OpenGL*/ driver, int& width, int& height)
 //----------------------------------------------------------------------------
 {
@@ -882,13 +878,13 @@ bool WinSystemClass::APPLICATION_INIT_MAIN_WINDOW()
 	if (AppSettings->UseAllMonitors == false) // Are we using a specific Monitor?
 	{
 		//0 (FIXED) Means the Select Monitor: can be 0, 1 ,2...
-		IF_NOT_RETURN_FALSE(CreateMainWindow(0 /*Just one monitor?*/, g_contextDriver, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT));
+		IF_NOT_RETURN_FALSE(CreateWin32MainWindow(0 /*Just one monitor?*/, g_contextDriver, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT));
 	}
 	else
 	{
 		// For each Monitor:
 		for (int i = 0; i < windowsArray.size(); ++i)
-			IF_NOT_RETURN_FALSE(CreateMainWindow(i /* use all these monitors*/, g_contextDriver, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT));
+			IF_NOT_RETURN_FALSE(CreateWin32MainWindow(i /* use all these monitors*/, g_contextDriver, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT));
 	}
 #endif
 

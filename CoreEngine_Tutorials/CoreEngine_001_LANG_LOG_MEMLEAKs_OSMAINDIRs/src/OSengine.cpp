@@ -16,10 +16,16 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: START and STOP WorldOfMiddleAge 3D ENGINE
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 
 #include "platform.h"
 #include "OSengine.h"
+
+#include <windows.h>
+#include <tchar.h>
+#include <regex>
+#include <filesystem>
+namespace fs = std::filesystem;
 
 #include <inttypes.h>
 
@@ -150,12 +156,11 @@ UINT CLASS_LOAD_N = 1;
 UINT CLASS_DELETE_N = 1;
 
 #if CORE_ENGINE_LEVEL >= 10 & !defined NewWomaEngine
-UINT RENDER_PAGE = DX_ENGINE_LEVEL;
 std::vector<WomaDriverClass*> driverList;
 WomaDriverClass* g_contextDriver = NULL;	// Note: Used only at 20  wGLopenGLclass
-#else
-UINT RENDER_PAGE;
 #endif
+
+UINT RENDER_PAGE = CORE_ENGINE_LEVEL;
 
 // WINDOWS vs LINUX
 // -------------------------------------------------------------------------------------------------------------------------------------
@@ -315,6 +320,45 @@ void DefineConsoleTitle()
 
 }
 
+// Entry point of all WoMA ENGINE Applications all "main's" call this this one (used by: WINDOWS / LINUX / ANDROID)
+int CHECK_IF_WE_ARE_A_RUNNING_DEMO()
+{
+	TCHAR buffer[MAX_PATH];
+	GetModuleFileName(NULL, buffer, MAX_PATH);
+	STRING currentExePath = buffer;
+
+	if (currentExePath.find(TEXT("\\Downloads\\")) != STRING::npos)
+	{
+		STRING exeName = currentExePath.substr(currentExePath.find_last_of(TEXT("\\")) + 1);
+
+		std::regex levelRegex("CoreEngine_(\\d+)");
+		std::smatch match;
+		if (std::regex_search(exeName, match, levelRegex) && match.size() > 1) {
+			STRING levelStr = match[1];
+			std::vector<STRING> prefixes = { TEXT("CoreEngine_"), TEXT("DXENGINE_") };
+			STRING basePath = TEXT("C:\\WoMA3Dengine\\CoreEngine_Tutorials");
+
+			for (const auto& prefix : prefixes) {
+				for (const auto& entry : fs::directory_iterator(basePath)) {
+					if (entry.is_directory()) {
+						STRING folderName = entry.path().filename().string();
+						if (folderName.find(prefix + levelStr) != STRING::npos) {
+							STRING fullPath = basePath + TEXT("\\") + folderName;
+							if (!SetCurrentDirectory(fullPath.c_str())) {
+								MessageBox(NULL, TEXT("Failed to change working directory."), TEXT("WoMA Engine Error"), MB_ICONERROR);
+								return EXIT_FAILURE;
+							}
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return EXIT_SUCCESS;
+}
+
 void APPLICATION_STARTUP(int argc, char* argv[])
 {
     std::cout << "<" << PROJECT_NAME << "> STARTUP" << std::endl;
@@ -338,7 +382,6 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 	//THREAD_PRIORITY_TIME_CRITICAL(+15)
 #endif
 	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
-
 #elif defined LINUX_PLATFORM && defined RELEASE
 	#if _DEBUG
 		setpriority(PRIO_PROCESS, 0, 20);	// -20 (highest priority) to +20 (lowest priority). 
@@ -372,6 +415,8 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 	OutputDebugString(txt);
 	//------------------------------------------------------
 #endif
+
+	ASSERT(CHECK_IF_WE_ARE_A_RUNNING_DEMO() == EXIT_SUCCESS);
 
 #if CORE_ENGINE_LEVEL >= 1 && defined WINDOWS_PLATFORM
 	WOMA::setup_OSmain_dirs();				//1! Keep this order!
@@ -749,3 +794,8 @@ namespace WOMA
 bool firstFrame = true;
 #endif
 
+#if DEMO_LEVEL < 86
+std::string original_files[] = {
+    TEXT("")
+};
+#endif

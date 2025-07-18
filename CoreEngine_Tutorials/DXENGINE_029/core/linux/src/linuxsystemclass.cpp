@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234567155;
+//WomaIntegrityCheck = 1234525256;
 // 
 // Eclipse Installation of C++ development for cygwin
 // http://www.badprog.com/c-eclipse-installation-of-c-c-development-tools-cdt-and-cygwin-for-windows
@@ -308,7 +308,7 @@ void LinuxSystemClass::ProcessFrame() // EQUAL to: WinSystemClass::ProcessFrame(
 	if ((WOMA::game_state >= GAME_RUN && WOMA::game_state < ENGINE_RESTART) || (WOMA::game_state == GAME_SETUP))
 	#endif
 	{
-		m_Application->dayLightFade = m_Application->ProcessInputUpdate();     //OS CORE ONLY!  F1, F2, ...
+		m_Application->dayLightFade = m_Application->ProcessInputUpdate(); //OS CORE ONLY!  F1, F2, ...
 
 	#if defined INTRO_DEMO
 		if (RENDER_PAGE < 15)
