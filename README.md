@@ -1,4 +1,22 @@
-# WoMA3Dengine (DX11, DX12, OPENGL, DX9) Advanced Tutorials
+# WoMA3Dengine
+
+⚙️ A multi-platform, modular 3D game engine written in C++ with support for DirectX 11, Android (OpenGL ES), and Linux (OpenGL).  
+📚 Built for learning and showcasing 3D engine development — from fundamentals to terrain rendering, animation, and PBR.
+
+---
+
+## 🚀 Latest Installer Release
+
+**[📦 WoMA3Dengine v0.90 Installer](https://github.com/pmborg/WoMA3Dengine/releases/tag/v0.90)** — July 2025  
+No need to compile! This zip includes everything pre-packaged:
+
+- 🧰 Downloads the **latest source code**
+- ⚙️ Installs **precompiled demo binaries** (91 levels!)
+- 🌐 Launch the engine instantly via HTML frontend
+
+```plaintext
+C:\WoMA3Dengine\CoreEngine_Tutorials\index.html
+```
 
 **Notes:**<br>
 
@@ -193,7 +211,7 @@ Try to Change the driver on the fly without the need of close and open the Appli
 <h2>3D - ADVANCED MESH TUTORIAL SERIES: BEGIN</h2>
 <hr>
 
-- <b>DX90: Replacing Billboards with advanced gaming like objects(Low Poly). (**SOON!**)</b><br>
+- <b>DX90: Replacing Billboards with advanced gaming like objects(Low Poly)</b><br>
   
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_090.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_090.png)	
 
