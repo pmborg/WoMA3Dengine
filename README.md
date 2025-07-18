@@ -472,7 +472,7 @@ Later: (and much more)
 <hr>
 
 - <b>DX38: WORLD.XML: load OBJ 3D file format, save to W3D Woma 3D fast file FORMAT</b><br> 
-	- Load and Convert the powerfull but slow ".OBJ" 3D file format and to a fast ".W3D" Woma3DFormat.
+	- Load and Convert the powerfull/simple but slow ".OBJ" format 3D file, into to a super fast native WOMA file format: ".W3D" 20x faster!
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_038.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_038.png)	
 
@@ -487,7 +487,7 @@ Later: (and much more)
 <hr>
 
 - <b>DX36: WORLD.XML: load OBJ 3D file format, render a SHADOW MAP</b><br> 
-	- Loading now OBJ with SHADOW MAP,  using render to texture
+	- Loading an OBJ with SHADOW MAP, using a tecnique called: render to texture
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_036.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_036.png)	
 
@@ -495,13 +495,13 @@ Later: (and much more)
 <hr>
 
 - <b>DX35: WORLD.XML: load OBJ 3D file format, with BUMP MAP</b><br> 
-	- Loading now OBJ with BUMP MAP texture
+	- Loading an OBJ with BUMP MAP texture
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_035.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_035.png)	
 
 <hr>
 - <b>DX34: WORLD.XML: load OBJ 3D file format, with SPECULAR and SHININESS</b><br> 
-	- Loading now OBJ with SPECULAR and SHININESS
+	- Adding SPECULAR and SHININESS to OBJ loader and shaders
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_034.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_034.png)	
 
@@ -533,7 +533,8 @@ Later: (and much more)
 	- QuadTree and Frustum<br> 
 	- <b>World</b> and <b>Objects</b>: Loading objects as a descriptor:	<b>World.xml</b><br>
 	- Load <b>obj</b> format<br>
-	
+	<li>Load <b>obj</b> format<br></li><br>
+ 
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_030.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_030.png)	
 
 <hr>
@@ -543,10 +544,11 @@ Later: (and much more)
 <!-- ------------------------------------------------------------------------------------------------ -->
 
 - <b>DX29: INTRO DEMO OF BASIC TUTORIAL SERIES</b><br>
-	-  Adding the Sound Manager<br>
-	-  Adding Play background Music<br>
-	-  Generate the first RELEASE BUILD<br>
-	-  Add the installer of INTRO DEMO OF BASIC TUTORIAL SERIES<br>
+<li>Adding the Sound Manager<br></li>
+<li>Adding Play background Music (Windows, Linux and Android)<br></li>
+<li>Generate the first RELEASE BUILD<br></li>
+<li>Add the installer of INTRO DEMO OF BASIC TUTORIAL SERIES<br></li>
+<li>Adding the first release demo at LEVEL 29m for Windows, Linux and Android.<br></li>
 
 <p align=center>
 Intel/AMD X64 VIDEO:
@@ -566,7 +568,7 @@ Android ARM64/x86 VIDEO:<br>
 
 <hr>
 
-- <b>DX28: Sky dome with a sky sphere</b><br>
+- <b>DX28: Adding the fixed camera Sky and adding take snapshot!</b><br>
 	- Adding the fixed camera Sky<br>
 	- Adding Direct input for DX Drivers<br>
 	- Allow snapshot file dump using "print screen" key, in any of these image formats:<br>
@@ -606,8 +608,9 @@ Android ARM64/x86 VIDEO:<br>
 
 <hr>
 
-- <b>DX27: The Rastertek text font</b>
-	
+- <b>DX27: The Rastertek text font</b><br>
+<li><b>based on my mentor :)</b></li>
+<li>https://rastertek.com/dx11win10tut14.html</li>
 <table>
 <tr>
 <td>WINDOWS:</td>
@@ -635,8 +638,9 @@ Android ARM64/x86 VIDEO:<br>
 
 <hr>
 
-- <b>DX26: The Spheres (COLOR, TEXTURE and LIGHT Shaders)</b>
-	
+- <b>DX26: The Spheres (COLOR, TEXTURE and LIGHT Shaders)</b><br>
+<li><b>One for each shader type: (COLOR, TEXTURE and LIGHT Shaders)</b></li>
+
 <table>
 <tr>
 <td>WINDOWS:</td>
@@ -663,7 +667,8 @@ Android ARM64/x86 VIDEO:<br>
 
 <hr>
 
-- <b>DX25: The CUBEs (COLOR, TEXTURE and LIGHT Shaders)</b>
+- <b>DX25: The CUBEs (the first auto-generated 3D object)<br>
+One for each shader type: (COLOR, TEXTURE and LIGHT Shaders)<br>
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_025.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_025.png)	
 
@@ -698,8 +703,8 @@ Android ARM64/x86 VIDEO:<br>
 
 <hr>
 
-- <b>DX23: The directional LIGHT Shader with environment color</b>	
-
+- <b>DX23: The directional LIGHT Shader with environment color</b><br>	
+<b>Adding the first light, the Directional light.</b><br>
 <table>
 <tr>
 <td>WINDOWS:</td>
@@ -786,21 +791,25 @@ Add third party image readers:<br>
 
 </tr></table>
 <hr>
-- <b>DX20: Resize Main window</b><br>
- Allow alt enter swap
+- <b>DX20: Adding the Resize to Main window</b><br>
+ Allow alt+enter swap<br>
  And allow user to change the window size
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_020.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_020.png)	
 
 <hr>
 
-- <b>DX19: The Main window</b><br>
-	- Add Render Engine for Windows only, with these drivers:<br>
-	- DX9sdk (the original sdk, will be added/revealed later, at least on basic series)<br>
-	- DX9(using 11)<br>
-	- DX11<br>
-	- OPENGL3/4<br>
-	- DX12<br>
+- <b>DX19: The Main 3D simple window</b><br>
+<b>Add Render Engine for "Windows":<br></b>
+<li>DX9sdk (the original sdk, will be added/revealed later, at least on basic series)<br></li>
+<li>DX9(using 11)<br></li>
+<li>DX11<br></li>
+<li>OPENGL3/4<br></li>
+<li>DX12<br></li>
+<b>Add Render Engine for "Linux":<br></b>
+<li>OPENGL3/4<br></li>
+<b>Add Render Engine for "Android":<br></b>
+<li>GLES2/3<br></li>
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_019.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_019.png)	
 
@@ -814,17 +823,21 @@ Add third party image readers:<br>
 <hr>
 
 - <b>009 Get current RealTime Weather using the aviation METAR</b><br>
-	
+<b>METAR and TAF(later)</b><br>
+
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_009_PAINT_METAR_WEATHER_REALTIME.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_009_PAINT_METAR_WEATHER_REALTIME.png)	
 
 <hr>
 
 - <b>008 RealTimeMapGPSPosition</b><br>
-	
+<li>maxminddb_LIB<br></li>
+<li>GeoLite2PP_LIB<br></li>
+
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_008_PAINT_REALTIME_GPS_MAP_LOCATION.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_008_PAINT_REALTIME_GPS_MAP_LOCATION.png)	
 
 <hr>	 
 - <b>007 Add the Real Time Celestial calculations.</b><br>
+<b>These calculations will be used later:</b><br>
 	- Loading files from engine.pck on RELEASE BUILD (explained later in an advanced chapeter with the installer)<br>
 	- Calculate SunRise, SunSet<br>
 	- Calculate Sun altitude angle and azimuth angle<br>
@@ -838,7 +851,8 @@ Add third party image readers:<br>
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_007_PAINT_REALTIMECELESTIAL_ASTROCLASS.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_007_PAINT_REALTIMECELESTIAL_ASTROCLASS.png)	
 
 <hr>	
-- <b>006 PACKmanager + IDEA + MATH + CPU BENCH</b><br>
+- <b>006 Pack manager, the IDEA, the first simple MATH lib and CPU BENCH</b><br>
+        <b>This will be used on bin release LEVEL 29:</b><br>
 	- Create a pack file called <b>engine.pack</b>, which is a zip with the contents of all engine directory.<br>
 	- Cypher the file with IDEA and call it: <b>engine.pck</b><br>
 	- Add the first Math libs for DX and OPENGL<br>
@@ -854,7 +868,7 @@ Add third party image readers:<br>
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_005_PAINT_SETTINGS_XML.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_005_PAINT_SETTINGS_XML.png)	
 
 <hr>
-- <b>004 SystemManager + TIMER + FPS</b><br>
+- <b>004 SystemManager, TIMER and FPS</b><br>
 	- Adding the first version of SystemManager viewer<br>
 	- Adding Precision Timer<br>
 	- Add FPS (Frame per second) calculation<br>
@@ -862,7 +876,7 @@ Add third party image readers:<br>
 ![https://github.com/pmborg/WoMA3Dengine/blob/main/Image_Tutorial_Snapshot/CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH.png](https://github.com/pmborg/WoMA3Dengine/blob/main/Image_Tutorial_Snapshot/CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH.png)	
 	
 <hr>
-- <b>003 EXCEPTION_trace + DUMP_upload</b><br>
+- <b>003 Central EXCEPTION trace + Mini Dumpper and upload (just concept)</b><br>
 	- Exception Stack trace viewer in detail for an _DEBUG build<br>
 	- Exception Stack trace viewer and create  the respective Mini Dump report<br>
 	- Option to Upload the report for an FTP site.<br>
@@ -870,7 +884,7 @@ Add third party image readers:<br>
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_003_MINIDUMPER_STACK_EXCEPTION.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_003_MINIDUMPER_STACK_EXCEPTION.png)	
 
 <hr>
-- <b>002 MAIN_Window</b><br>
+- <b>002 The MAIN_Window</b><br>
 	- Create MAIN OS Window<br>
 	- Handle the OS Windows events<br>
 	- Main Window Paint events<br>
@@ -880,7 +894,7 @@ Add third party image readers:<br>
 
 
 <hr>
-- <b>001 The User International Language</b><br>
+- <b>001 User language detection (later automatic translation), MEM Leaks and LOG.</b><br>
 	- User language detection (later automatic translation)<br>
 	- Log manager, will log on: <b>REPORT.txt</b>, on Visual Studio Console and on Console Window<br>
 	- Memory leak detector level 1 <br>
@@ -894,8 +908,7 @@ Add third party image readers:<br>
  default settings<br>
  SystemClass (common for all platforms)<br>
  <b>WinSystemClass (for windows)</b><br>
- XboxSystemClass<br>
- LinuxSystemClass<br>
+  LinuxSystemClass<br>
  AndroidSystemClass<br>
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_000_OSENGINE_SYSTEM.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/CoreEngine_000_OSENGINE_SYSTEM.png)	
