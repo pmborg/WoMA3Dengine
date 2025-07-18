@@ -554,7 +554,7 @@
 #endif						 
 	
 #if DX_ENGINE_LEVEL >= 90       // From now on DX: Will use W3D + DDS
-    //#undef  USE_MAP_EDITOR
+    #undef  USE_MAP_EDITOR
     #undef USE_INSTANCES_FOR_TREES
 #endif																	 
 	
