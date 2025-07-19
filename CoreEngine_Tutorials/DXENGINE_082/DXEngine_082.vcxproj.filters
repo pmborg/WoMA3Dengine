@@ -672,7 +672,6 @@
     <ClCompile Include="core\src\video.cpp">
       <Filter>src-basic-level\76video</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\Texture.cpp" />
     <ClCompile Include="core\src\womamesh.cpp">
       <Filter>src-basic-level\mesh</Filter>
     </ClCompile>

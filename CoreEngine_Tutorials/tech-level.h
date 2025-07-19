@@ -328,9 +328,9 @@
     #endif
 
     #if DX_ENGINE_LEVEL >= 38   //38-
-        #if defined _DEBUG
+        //#if defined _DEBUG
             #define SAVEW3D
-        #endif
+        //#endif
     #endif
 
     #if DX_ENGINE_LEVEL >= 39
