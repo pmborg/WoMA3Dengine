@@ -550,7 +550,7 @@
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <PreprocessorDefinitions>X64;NDEBUG;_LIB;%(PreprocessorDefinitions);_TIMESPEC_DEFINED;ALUT_BUILD_LIBRARY;AL_LIBTYPE_STATIC;ALUT_API=extern;ALC_API=extern;AL_API=extern;AL_BUILD_LIBRARY;AL_ALEXT_PROTOTYPES;_LARGEFILE_SOURCE;_LARGE_FILES;restrict=;inline=__inline;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;strcasecmp=_stricmp;strncasecmp=_strnicmp;isfinite=_finite;isnan=_isnan;CMAKE_INTDIR="Debug";OpenAL32_EXPORTS</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
       <FloatingPointModel>Fast</FloatingPointModel>
       <OpenMPSupport>
       </OpenMPSupport>
@@ -561,7 +561,7 @@
       </OmitFramePointers>
       <StructMemberAlignment>Default</StructMemberAlignment>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <MinimalRebuild>false</MinimalRebuild>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>

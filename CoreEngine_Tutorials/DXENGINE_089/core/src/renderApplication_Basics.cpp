@@ -213,6 +213,9 @@ void ApplicationClass::RenderModel(UINT monitorIndex, WomaDriverClass* driver, U
     
     DXmodelClass* model = (DXmodelClass*)objModel[modelID];
 
+	if (!model->ready)
+		return; //ASSERT(0); // Model not ready to render!
+
     float positionX, positionY, positionZ;
     positionX = SystemHandle->xml_loader.theWorld[modelID].posX;
     positionY = SystemHandle->xml_loader.theWorld[modelID].translateY;

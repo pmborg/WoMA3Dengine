@@ -686,7 +686,7 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>;_HAS_STD_BYTE=0;ASSIMP;DEMO_LEVEL=86;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);WIN32;_WINDOWS;__ASSIMP_BUILD_NO_VRML_IMPORTER;WIN32_LEAN_AND_MEAN;__ASSIMP_BUILD_NO_C4D_IMPORTER;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING=1;SHADER_PATH="C:/WoMAengine2023/_EXTERNAL_/assimp/samples/SimpleTexturedDirectx11/SimpleTexturedDirectx11/";CMAKE_INTDIR="Debug";ALUT_BUILD_LIBRARY;ALUT_API=extern;MAINENGINE_LINUX;FREEGLUT_STATIC;_HAS_STD_BYTE=0</PreprocessorDefinitions>
       <ConformanceMode>
       </ConformanceMode>
@@ -698,6 +698,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
