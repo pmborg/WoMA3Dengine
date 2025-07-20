@@ -193,10 +193,10 @@ PSIn MyVertexShader022Texture(VSIn input)
     }
 
     
+    //if (isAnimatedBill)
+    //    output.position.x += sin(vsframeTime * 100) * (1 - input.texCoords.y) / 10;
     if (isAnimatedBill)
-    {
-        output.position.x += sin(vsframeTime * 100) * (1 - input.texCoords.y) / 10;
-    }
+        output.position.x += sin(vsframeTime) * (1 - input.texCoords.y) / 100;
     
     output.texCoords = input.texCoords; // TEXTURE: Store the texture coordinates for the pixel shader:
 
@@ -247,5 +247,6 @@ float4 MyPixelShader022Texture(PSIn input) : SV_TARGET
     }
 #endif
     
+    //return float4(1,1,1,1);
     return textureColor;
 }

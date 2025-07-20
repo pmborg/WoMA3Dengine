@@ -151,7 +151,7 @@ enum SHADER_TYPE
 
 		SHADER_MESH,										//80&81
 
-        SHADER_TEXTURE_LIGHT_FAST,
+        SHADER_TEXTURE_LIGHT_FAST,							//83
 
 		//SHADER_SKYTEXTURE,								//90:
 		//SHADER_REALSKYTEXTURE,							//91:

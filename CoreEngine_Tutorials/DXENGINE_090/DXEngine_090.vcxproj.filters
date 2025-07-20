@@ -729,20 +729,40 @@
     <FxCompile Include="hlsl\060Terrain.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
-    <FxCompile Include="hlsl\cbuffer.hlsl">
-      <Filter>HLSL</Filter>
-    </FxCompile>
-    <FxCompile Include="hlsl\light.hlsl">
-      <Filter>HLSL</Filter>
-    </FxCompile>
-    <FxCompile Include="hlsl\rotation.hlsl">
-      <Filter>HLSL</Filter>
-    </FxCompile>
     <FxCompile Include="hlsl\shadows.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
     <FxCompile Include="hlsl\061Terrain.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
+    <FxCompile Include="hlsl\072fire.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="hlsl\077GSinstance.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="hlsl\080Shader.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="hlsl\081Shader.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="hlsl\083Light.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="hlsl\cbuffer.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="hlsl\light.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="hlsl\rotation.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="hlsl\shadows.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
   </ItemGroup>
 </Project>

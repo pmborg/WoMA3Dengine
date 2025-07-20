@@ -84,15 +84,21 @@ void ApplicationClass::RenderScene(UINT monitorIndex, WomaDriverClass* driver)
     totalRendered = 0;
 
 #if defined USE_DIRECT_INPUT
-    sort_cameraX = SystemHandle->m_Application->m_Position[g_NetID]->m_positionX;
-    sort_cameraY = SystemHandle->m_Application->m_Position[g_NetID]->m_positionY;
-    sort_cameraZ = SystemHandle->m_Application->m_Position[g_NetID]->m_positionZ;
+	const float SORT_OFFSET = 5.0f;
+	sort_cameraX -= FAST_sin(SystemHandle->m_Application->m_Position[g_NetID]->m_rotationY) * SORT_OFFSET;
+	sort_cameraZ -= FAST_cos(SystemHandle->m_Application->m_Position[g_NetID]->m_rotationY) * SORT_OFFSET;
 #endif
 
     // [1] sort billboards:
     // --------------------------------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 70  && defined SCENE_BILLBOARDS //SCENE_BILLBOARDS
     std::sort(m_Trees.begin(), m_Trees.end(), BillSortCB_CPP);
+#endif
+
+#if defined USE_DIRECT_INPUT
+	sort_cameraX = SystemHandle->m_Application->m_Position[g_NetID]->m_positionX;
+	sort_cameraY = SystemHandle->m_Application->m_Position[g_NetID]->m_positionY;
+	sort_cameraZ = SystemHandle->m_Application->m_Position[g_NetID]->m_positionZ;
 #endif
 
     // [2] SceneManager: Process/Filter and Create Lists/trees of objects to render from: WORLD.XML
@@ -490,10 +496,11 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight)
 #endif
 
 #if DX_ENGINE_LEVEL >= 73 && defined BILLBOARD_FOR_WINDY_GRASS
-    static DWORD lasttime = 0;
+    static float lasttime = 0;
     shadergrassframeTime += (timeGetTime() - lasttime)/200;
-    if (shadergrassframeTime > PI*2)
+    if (shadergrassframeTime >= PI*2)
         shadergrassframeTime = 0;
+	//printf("shadergrassframeTime: %f\n", shadergrassframeTime);
     lasttime = timeGetTime();
 #endif
 

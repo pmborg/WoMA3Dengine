@@ -453,7 +453,7 @@ namespace DirectX {
 		//	float3 normal		: NORMAL;	//23
 		case SHADER_TEXTURE_LIGHT:				//23
 		case SHADER_TEXTURE_LIGHT_RENDERSHADOW:	//36
-        case SHADER_TEXTURE_LIGHT_FAST:
+        case SHADER_TEXTURE_LIGHT_FAST:			//83
 #if defined DX12
 			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 			{

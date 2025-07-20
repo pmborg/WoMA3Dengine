@@ -93,10 +93,10 @@ PSIn MyVertexShader023Light(VSIn input)
 	    output.position = position;
     }
 
+    //if (isAnimatedBill)
+    //    output.position.x += sin(vsframeTime * 100) * (1 - input.texCoords.y) / 200;
     if (isAnimatedBill)
-    {
-        output.position.x += sin(vsframeTime * 100) * (1 - input.texCoords.y) / 200;
-    }
+        output.position.x += sin(vsframeTime) * (1 - input.texCoords.y) / 100;
     
 	//22: TEXTURE: Store the texture coordinates for the pixel shader:
 	output.texCoords = input.texCoords;

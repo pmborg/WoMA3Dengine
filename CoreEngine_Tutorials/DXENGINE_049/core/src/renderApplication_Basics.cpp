@@ -62,13 +62,19 @@ void ApplicationClass::RenderScene(UINT monitorIndex, WomaDriverClass* driver)
     totalRendered = 0;
 
 #if defined USE_DIRECT_INPUT
-    sort_cameraX = SystemHandle->m_Application->m_Position[g_NetID]->m_positionX;
-    sort_cameraY = SystemHandle->m_Application->m_Position[g_NetID]->m_positionY;
-    sort_cameraZ = SystemHandle->m_Application->m_Position[g_NetID]->m_positionZ;
+	const float SORT_OFFSET = 5.0f;
+	sort_cameraX -= FAST_sin(SystemHandle->m_Application->m_Position[g_NetID]->m_rotationY) * SORT_OFFSET;
+	sort_cameraZ -= FAST_cos(SystemHandle->m_Application->m_Position[g_NetID]->m_rotationY) * SORT_OFFSET;
 #endif
 
     // [1] sort billboards:
     // --------------------------------------------------------------------------------------------
+
+#if defined USE_DIRECT_INPUT
+	sort_cameraX = SystemHandle->m_Application->m_Position[g_NetID]->m_positionX;
+	sort_cameraY = SystemHandle->m_Application->m_Position[g_NetID]->m_positionY;
+	sort_cameraZ = SystemHandle->m_Application->m_Position[g_NetID]->m_positionZ;
+#endif
 
     // [2] SceneManager: Process/Filter and Create Lists/trees of objects to render from: WORLD.XML
     // --------------------------------------------------------------------------------------------
