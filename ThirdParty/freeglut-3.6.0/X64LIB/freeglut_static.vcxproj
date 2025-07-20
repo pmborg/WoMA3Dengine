@@ -97,7 +97,7 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;FREEGLUT_STATIC;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0601;WINVER=0x0601;HAVE_CONFIG_H;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions512</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;FREEGLUT_STATIC;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0601;WINVER=0x0601;HAVE_CONFIG_H;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>

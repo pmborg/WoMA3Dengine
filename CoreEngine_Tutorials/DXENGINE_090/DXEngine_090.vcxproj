@@ -633,7 +633,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;;_HAS_STD_BYTE=0;_HAS_STD_BYTE=0;%(PreprocessorDefinitions);ALUT_BUILD_LIBRARY;ALUT_API=extern;DEMO_LEVEL=90;MAINENGINE_LINUX;FREEGLUT_STATIC</PreprocessorDefinitions>
       <ConformanceMode>
       </ConformanceMode>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions512</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -661,7 +661,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);ALUT_BUILD_LIBRARY;ALUT_API=extern;DEMO_LEVEL=90;MAINENGINE_LINUX;FREEGLUT_STATIC</PreprocessorDefinitions>
       <ConformanceMode>
       </ConformanceMode>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions101</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
       <IntrinsicFunctions>yes</IntrinsicFunctions>
@@ -687,9 +687,9 @@
       <PreprocessorDefinitions>;_HAS_STD_BYTE=0;ASSIMP;DEMO_LEVEL=90;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);WIN32;_WINDOWS;__ASSIMP_BUILD_NO_VRML_IMPORTER;WIN32_LEAN_AND_MEAN;__ASSIMP_BUILD_NO_C4D_IMPORTER;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING=1;SHADER_PATH="C:/WoMAengine2023/_EXTERNAL_/assimp/samples/SimpleTexturedDirectx11/SimpleTexturedDirectx11/";CMAKE_INTDIR="Debug";ALUT_BUILD_LIBRARY;ALUT_API=extern;MAINENGINE_LINUX;FREEGLUT_STATIC;_HAS_STD_BYTE=0</PreprocessorDefinitions>
       <ConformanceMode>
       </ConformanceMode>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DebugInformationFormat>None</DebugInformationFormat>
       <FloatingPointModel>Fast</FloatingPointModel>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions101</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -723,7 +723,7 @@
       </ConformanceMode>
       <DebugInformationFormat>None</DebugInformationFormat>
       <FloatingPointModel>Fast</FloatingPointModel>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions101</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
       <LanguageStandard>stdcpp14</LanguageStandard>

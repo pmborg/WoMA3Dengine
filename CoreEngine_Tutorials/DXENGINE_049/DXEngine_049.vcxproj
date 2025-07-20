@@ -482,7 +482,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;;_HAS_STD_BYTE=0;%(PreprocessorDefinitions);ALUT_BUILD_LIBRARY;ALUT_API=extern;DEMO_LEVEL=49;MAINENGINE_LINUX;FREEGLUT_STATIC</PreprocessorDefinitions>
       <ConformanceMode>
       </ConformanceMode>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions101</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -508,7 +508,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);ALUT_BUILD_LIBRARY;ALUT_API=extern;DEMO_LEVEL=49;MAINENGINE_LINUX;FREEGLUT_STATIC</PreprocessorDefinitions>
       <ConformanceMode>
       </ConformanceMode>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions101</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
       <IntrinsicFunctions>yes</IntrinsicFunctions>
@@ -536,7 +536,7 @@
       </ConformanceMode>
       <DebugInformationFormat>None</DebugInformationFormat>
       <FloatingPointModel>Fast</FloatingPointModel>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions101</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -570,7 +570,7 @@
       </ConformanceMode>
       <DebugInformationFormat>None</DebugInformationFormat>
       <FloatingPointModel>Fast</FloatingPointModel>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions101</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
       <LanguageStandard>stdcpp14</LanguageStandard>

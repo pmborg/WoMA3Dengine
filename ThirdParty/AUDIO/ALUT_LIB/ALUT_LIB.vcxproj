@@ -374,7 +374,7 @@
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>X64;_DEBUG;_LIB;%(PreprocessorDefinitions);ALUT_BUILD_LIBRARY;ALUT_API=extern;ALC_API=extern;AL_API=extern;AL_LIBTYPE_STATIC;HAVE_CONFIG_H=1;HAVE_SLEEP=1;HAVE_WINDOWS_H=1</PreprocessorDefinitions>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions512</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <BrowseInformation>true</BrowseInformation>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
