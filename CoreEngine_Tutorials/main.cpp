@@ -114,9 +114,6 @@ int Command = EXIT_SUCCESS;
 int APPLICATION_MAIN(int argc, char* argv[])
 // -------------------------------------------------------------------------------------------------------------------------------------
 {
-	unsigned ver = __arch_avx10ver();
-
-
     APPLICATION_STARTUP(argc, argv);                      // ENGINE SETUP: |CoInitializeEx|+|OSmain_dirs|+|Memory leaks check|+|Log|+|Mini Dumper|
     if (Command == EXIT_SUCCESS) {                        // If APPLICATION_STARTUP throw an exception, Command will be: EXIT_FAILURE
       do {

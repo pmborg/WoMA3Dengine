@@ -47,3 +47,4 @@ CoreEngine_Tutorials/DXENGINE_082/include
 ThirdParty/freeglut-3.6.0/X64LIB/lib/Debug/freeglut_staticd.*
 hooks
 womamulti.pck
+*.tlog

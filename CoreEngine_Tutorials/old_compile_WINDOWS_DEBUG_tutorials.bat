@@ -1,8 +1,6 @@
 @echo off
 
-for /f "usebackq tokens=1* delims=: " %%i in (`"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest`) do (
-  if /i "%%i"=="productPath" set devenv=%%j
-)
+for /f "usebackq tokens=1* delims=: " %%i in (`"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest`) do (if /i "%%i"=="productPath" set devenv=%%j)
 echo "Using Visual Studio: %devenv%"
 del /S /F /Q ENGINE_*.txt 2> nul
 del /S /F /Q DXENGINE_*.txt 2> nul
