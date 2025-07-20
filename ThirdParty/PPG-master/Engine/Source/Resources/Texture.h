@@ -41,9 +41,9 @@ public:
     ID3D11RenderTargetView* GetRTV(UINT index = 0);
     void UseSRV(ID3D11DeviceContext* deviceContext, UINT startSlot);
 
-	ID3D11Texture2D* m_Texture = NULL;
-	ID3D11ShaderResourceView* m_TextureSRV = NULL;
-	ID3D11DepthStencilView* m_TextureDSV = NULL;
+    ID3D11Texture2D* m_Texture=NULL;
+    ID3D11ShaderResourceView* m_TextureSRV = NULL;
+    ID3D11DepthStencilView* m_TextureDSV = NULL;
 
     std::string m_Name;
 
