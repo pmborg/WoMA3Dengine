@@ -479,7 +479,7 @@ void ApplicationClass::AppPosRender(UINT monitorIndex)
 #endif
 #endif
 
-#if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && !defined RELEASE && !defined TEXT_TEST
+#if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined _DEBUG && !defined TEXT_TEST
         AppTextClass->SetRenderCount(WOMA::sceneManager->quadTree.totalVertexRendered,
             SystemHandle->m_Application->totalRendered,
             (UINT)SystemHandle->xml_loader.theWorld.size());

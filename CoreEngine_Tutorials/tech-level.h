@@ -571,11 +571,4 @@
     #endif
 
     #undef  dx12_upload_old_way
-    //-------------------------------------------------------------------------------------------------------
-#if defined NDEBUG && DX_ENGINE_LEVEL < 29 && defined _MSC_VER && !defined SIMPLE
-#error "WOMA COMPILATION ERROR: RELEASE bin is not Supported before DX_ENGINE_LEVEL 29"
-    #endif
-    //-------------------------------------------------------------------------------------------------------
-    #if NDEBUG
-        #define TEXT_TEST
-    #endif
+

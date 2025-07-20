@@ -1,4 +1,6 @@
 // SOURCE: http://www.codeproject.com/Articles/7530/Zip-Utils-clean-elegant-simple-C-Win32
+#pragma warning( disable : 5033 ) //warning C5033 : 'register' is no longer a supported storage class
+
 #ifndef _unzip_H
 #define _unzip_H
 //

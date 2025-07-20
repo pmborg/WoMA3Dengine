@@ -1,5 +1,6 @@
 #pragma warning( disable : 4996 ) // Disable warning C4996: '': This function or variable may be unsafe.
 #pragma warning( disable : 4311 ) // Disable warning C4311: 'type cast': pointer truncation from 'HWND' to 'unsigned long'
+#pragma warning( disable : 5033 ) // warning C5033 : 'register' is no longer a supported storage class
 
 #ifdef ZIP_STD
 #include < stdio.h >

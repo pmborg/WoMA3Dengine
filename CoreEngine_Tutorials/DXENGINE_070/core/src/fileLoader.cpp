@@ -205,7 +205,7 @@ namespace WOMA
 		file = file_;
 		lastfile = file;
 
-#if defined WINDOWS_PLATFORM && _DEBUG
+#if defined WINDOWS_PLATFORM && defined _DEBUG
 		{
 			HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 			SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE);
