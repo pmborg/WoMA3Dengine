@@ -20,7 +20,7 @@
 //  - Init: PROGRAM_FILES "C:\ProgramFiles(x86)\Pmborg\Woma2017\"
 //  - Init: APPDATA "C:\Users\"username"\AppData\Local\Pmborg\Woma2017\"
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "platform.h"
 
@@ -237,7 +237,7 @@ namespace WOMA
 		}
 #endif
 
-		WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("Current Directory: %s\n"), currentPath);
+		womalogauto((TCHAR*)TEXT("Current Directory: %s\n"), currentPath);
 
 #if _NOT //defined  WINDOWS_PLATFORM && defined RELEASE // In "Debug" we use the local data at disk / At production "Release" we use the default "Dirs"
 	// Check if is a network PATH:
@@ -247,10 +247,10 @@ namespace WOMA
 		Temp = getTemp();
 		Home = getHome();
 
-		WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("PROGRAM_FILES Directory: %s\n"), PROGRAM_FILES);
-		WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("APPDATA Directory: %s\n"), APPDATA);
-		WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("TEMP Directory: %s\n"), Temp);
-		WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("HOME Directory: %s\n"), Home);
+		womalogauto((TCHAR*)TEXT("PROGRAM_FILES Directory: %s\n"), PROGRAM_FILES);
+		womalogauto((TCHAR*)TEXT("APPDATA Directory: %s\n"), APPDATA);
+		womalogauto((TCHAR*)TEXT("TEMP Directory: %s\n"), Temp);
+		womalogauto((TCHAR*)TEXT("HOME Directory: %s\n"), Home);
 
 		return true;
 	}

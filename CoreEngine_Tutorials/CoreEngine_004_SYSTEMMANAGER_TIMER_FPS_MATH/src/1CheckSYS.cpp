@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "OSengine.h"
 
@@ -46,8 +46,8 @@ float SystemManager::GetProcessorSpeed()
 		} while(qwCurrent.QuadPart - qwStart.QuadPart < qwWait.QuadPart);
 
 		float AMD = ((__rdtsc() - Start) << 5) / 1000000.0f; // CPUSpeedMHz
-		WOMA_LOGManager_DebugMSG(TEXT("--%s FAMILY --\n"), FAMILY_NAME.c_str());
-		WOMA_LOGManager_DebugMSGAUTO("Processor Base Frequency:  %f.0 MHz\n", AMD);
+		womalog(TEXT("--%s FAMILY --\n"), FAMILY_NAME.c_str());
+		womalogauto("Processor Base Frequency:  %f.0 MHz\n", AMD);
 		return AMD;
 	} else
 	return Intel;
@@ -86,10 +86,10 @@ float SystemManager::GetProcessorSpeed4Intel(TCHAR* family_name) {
 		//cpuInfo[2] = 0x00000064; //=  100 MHz
 
 		//printf("EAX: 0x%08x EBX: 0x%08x ECX: %08x\r\n", cpuInfo[0], cpuInfo[1], cpuInfo[2]);
-		WOMA_LOGManager_DebugMSG(TEXT("--%s FAMILY --\n"), family_name);
-		WOMA_LOGManager_DebugMSGAUTO("Processor Base Frequency:  %04d MHz\n", cpuInfo[0]);
-		WOMA_LOGManager_DebugMSGAUTO("Maximum Frequency:         %04d MHz\n", cpuInfo[1]);
-		WOMA_LOGManager_DebugMSGAUTO("Bus (Reference) Frequency: %04d MHz\n", cpuInfo[2]);
+		womalog(TEXT("--%s FAMILY --\n"), family_name);
+		womalogauto("Processor Base Frequency:  %04d MHz\n", cpuInfo[0]);
+		womalogauto("Maximum Frequency:         %04d MHz\n", cpuInfo[1]);
+		womalogauto("Bus (Reference) Frequency: %04d MHz\n", cpuInfo[2]);
 		return cpuInfo[0];
 	}
 	else {
@@ -122,8 +122,8 @@ bool SystemManager::checkCPU ()
 	
     StringCchPrintf(SystemHandle->systemDefinitions.processorName, MAX_STR_LEN, TEXT("Processor Name: %s"), processorInfo.processorName);
     StringCchPrintf(SystemHandle->systemDefinitions.processorId, MAX_STR_LEN, TEXT("ID: %s"), processorInfo.processorId);
-	WOMA_LOGManager_DebugMSGAUTO (TEXT("%s\n"), SystemHandle->systemDefinitions.processorName);
-	WOMA_LOGManager_DebugMSGAUTO (TEXT("%s\n"), SystemHandle->systemDefinitions.processorId);
+	womalogauto (TEXT("%s\n"), SystemHandle->systemDefinitions.processorName);
+	womalogauto (TEXT("%s\n"), SystemHandle->systemDefinitions.processorId);
 
 #if defined WINDOWS_PLATFORM
 	ASSERT(processorInfo.cpuCores.processorCoreCount);
@@ -136,7 +136,7 @@ bool SystemManager::checkCPU ()
 	// Get CPU: Page Size
 	SYSTEM_INFO SI;
 	GetSystemInfo(&SI);
-	WOMA_LOGManager_DebugMSGAUTO( TEXT("CPU Page Size: %i\n"), SI.dwPageSize);
+	womalogauto( TEXT("CPU Page Size: %i\n"), SI.dwPageSize);
 
 	CPUSpeedMHz = GetProcessorSpeed();
 #endif
@@ -164,7 +164,7 @@ bool SystemManager::checkCPU ()
 #endif
 
 	StringCchPrintf(SystemHandle->systemDefinitions.clockSpeed, MAX_STR_LEN, TEXT("CPU Base Clock Speed: %02.2f GHz"), (float) CPUSpeedMHz/1000);
-	WOMA_LOGManager_DebugMSGAUTO (TEXT("%s\n"), SystemHandle->systemDefinitions.clockSpeed);
+	womalogauto (TEXT("%s\n"), SystemHandle->systemDefinitions.clockSpeed);
 
     return true;
 }
@@ -178,46 +178,46 @@ DWORDLONG SystemManager::getAvailSystemMemory()
 	status.dwLength = sizeof(status);
 	GlobalMemoryStatusEx(&status);
 	DWORDLONG PhysMemAvail = status.ullAvailPhys;
-	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.dwLength                = %10u\n",			status.dwLength);
-	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.dwMemoryLoad            = %10u%%\n",		    status.dwMemoryLoad);
-	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullTotalPhys            = %10u MBytes\n",	status.ullTotalPhys / MBs);
-	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullAvailPhys            = %10u MBytes\n",	status.ullAvailPhys / MBs);
-	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullTotalPageFile        = %10u MBytes\n",	status.ullTotalPageFile / MBs);
-	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullAvailPageFile        = %10u MBytes\n",	status.ullAvailPageFile / MBs);
-	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullTotalVirtual         = %10u MBytes\n",	status.ullTotalVirtual / MBs);
-	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullAvailVirtual         = %10u MBytes\n",	status.ullAvailVirtual / MBs);
-	WOMA_LOGManager_DebugMSG("\n");
+	womalog("GlobalMemoryStatusEx.dwLength                = %10u\n",			status.dwLength);
+	womalog("GlobalMemoryStatusEx.dwMemoryLoad            = %10u%%\n",		    status.dwMemoryLoad);
+	womalog("GlobalMemoryStatusEx.ullTotalPhys            = %10u MBytes\n",	status.ullTotalPhys / MBs);
+	womalog("GlobalMemoryStatusEx.ullAvailPhys            = %10u MBytes\n",	status.ullAvailPhys / MBs);
+	womalog("GlobalMemoryStatusEx.ullTotalPageFile        = %10u MBytes\n",	status.ullTotalPageFile / MBs);
+	womalog("GlobalMemoryStatusEx.ullAvailPageFile        = %10u MBytes\n",	status.ullAvailPageFile / MBs);
+	womalog("GlobalMemoryStatusEx.ullTotalVirtual         = %10u MBytes\n",	status.ullTotalVirtual / MBs);
+	womalog("GlobalMemoryStatusEx.ullAvailVirtual         = %10u MBytes\n",	status.ullAvailVirtual / MBs);
+	womalog("\n");
 
 	PERFORMANCE_INFORMATION performanceInformation;
 	BOOL res = GetPerformanceInfo(&performanceInformation, sizeof(performanceInformation));
 	DWORDLONG CachedMem = performanceInformation.SystemCache;
-	WOMA_LOGManager_DebugMSG("PerformanceInfo.CommitTotal         		= %10u MBytes\n",	(unsigned int)(performanceInformation.CommitTotal * performanceInformation.PageSize / MBs));
-	WOMA_LOGManager_DebugMSG("PerformanceInfo.CommitLimit         		= %10u MBytes\n",	(unsigned int)(performanceInformation.CommitLimit * performanceInformation.PageSize / MBs));
-	WOMA_LOGManager_DebugMSG("PerformanceInfo.CommitPeak          		= %10u MBytes\n",	(unsigned int)(performanceInformation.CommitPeak * performanceInformation.PageSize / MBs));
-	WOMA_LOGManager_DebugMSG("PerformanceInfo.PhysicalTotal       		= %10u MBytes\n",	(unsigned int)(performanceInformation.PhysicalTotal * performanceInformation.PageSize / MBs));
-	WOMA_LOGManager_DebugMSG("PerformanceInfo.PhysicalAvailable   		= %10u MBytes\n",	(unsigned int)(performanceInformation.PhysicalAvailable * performanceInformation.PageSize / MBs));
-	WOMA_LOGManager_DebugMSG("PerformanceInfo.SystemCache         		= %10u MBytes\n",	(unsigned int)(performanceInformation.SystemCache * performanceInformation.PageSize / MBs));
-	WOMA_LOGManager_DebugMSG("PerformanceInfo.KernelTotal         		= %10u MBytes\n",	(unsigned int)(performanceInformation.KernelTotal * performanceInformation.PageSize / MBs));
-	WOMA_LOGManager_DebugMSG("PerformanceInfo.KernelPaged         		= %10u MBytes\n",	(unsigned int)(performanceInformation.KernelPaged * performanceInformation.PageSize / MBs));
-	WOMA_LOGManager_DebugMSG("PerformanceInfo.KernelNonpaged      		= %10u MBytes\n",	(unsigned int)(performanceInformation.KernelNonpaged * performanceInformation.PageSize / MBs));
-	WOMA_LOGManager_DebugMSG("PerformanceInfo.PageSize            		= %10u MBytes\n",	(unsigned int)(performanceInformation.PageSize / 1024));
-	WOMA_LOGManager_DebugMSG("PerformanceInfo.HandleCount         		= %10u\n",			performanceInformation.HandleCount);
-	WOMA_LOGManager_DebugMSG("PerformanceInfo.ProcessCount        		= %10u\n",			performanceInformation.ProcessCount);
-	WOMA_LOGManager_DebugMSG("PerformanceInfo.ThreadCount         		= %10u\n",			performanceInformation.ThreadCount);
-	WOMA_LOGManager_DebugMSG("\n");
+	womalog("PerformanceInfo.CommitTotal         		= %10u MBytes\n",	(unsigned int)(performanceInformation.CommitTotal * performanceInformation.PageSize / MBs));
+	womalog("PerformanceInfo.CommitLimit         		= %10u MBytes\n",	(unsigned int)(performanceInformation.CommitLimit * performanceInformation.PageSize / MBs));
+	womalog("PerformanceInfo.CommitPeak          		= %10u MBytes\n",	(unsigned int)(performanceInformation.CommitPeak * performanceInformation.PageSize / MBs));
+	womalog("PerformanceInfo.PhysicalTotal       		= %10u MBytes\n",	(unsigned int)(performanceInformation.PhysicalTotal * performanceInformation.PageSize / MBs));
+	womalog("PerformanceInfo.PhysicalAvailable   		= %10u MBytes\n",	(unsigned int)(performanceInformation.PhysicalAvailable * performanceInformation.PageSize / MBs));
+	womalog("PerformanceInfo.SystemCache         		= %10u MBytes\n",	(unsigned int)(performanceInformation.SystemCache * performanceInformation.PageSize / MBs));
+	womalog("PerformanceInfo.KernelTotal         		= %10u MBytes\n",	(unsigned int)(performanceInformation.KernelTotal * performanceInformation.PageSize / MBs));
+	womalog("PerformanceInfo.KernelPaged         		= %10u MBytes\n",	(unsigned int)(performanceInformation.KernelPaged * performanceInformation.PageSize / MBs));
+	womalog("PerformanceInfo.KernelNonpaged      		= %10u MBytes\n",	(unsigned int)(performanceInformation.KernelNonpaged * performanceInformation.PageSize / MBs));
+	womalog("PerformanceInfo.PageSize            		= %10u MBytes\n",	(unsigned int)(performanceInformation.PageSize / 1024));
+	womalog("PerformanceInfo.HandleCount         		= %10u\n",			performanceInformation.HandleCount);
+	womalog("PerformanceInfo.ProcessCount        		= %10u\n",			performanceInformation.ProcessCount);
+	womalog("PerformanceInfo.ThreadCount         		= %10u\n",			performanceInformation.ThreadCount);
+	womalog("\n");
 
 	MEMORYSTATUSEX memoryStatus;
 	memoryStatus.dwLength = sizeof(memoryStatus);
 	res = GlobalMemoryStatusEx(&memoryStatus);
-	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.dwLength                = %10u\n",			memoryStatus.dwLength);
-	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.dwMemoryLoad            = %10u%%\n",		    memoryStatus.dwMemoryLoad);
-	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullTotalPhys            = %10u MBytes\n",	(unsigned int)(memoryStatus.ullTotalPhys / MBs));
-	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullAvailPhys            = %10u MBytes\n",	(unsigned int)(memoryStatus.ullAvailPhys / MBs));
-	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullTotalPageFile        = %10u MBytes\n",	(unsigned int)(memoryStatus.ullTotalPageFile / MBs));
-	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullAvailPageFile        = %10u MBytes\n",	(unsigned int)(memoryStatus.ullAvailPageFile / MBs));
-	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullTotalVirtual         = %10u MBytes\n",	(unsigned int)(memoryStatus.ullTotalVirtual / MBs));
-	WOMA_LOGManager_DebugMSG("GlobalMemoryStatusEx.ullAvailVirtual         = %10u MBytes\n",	(unsigned int)(memoryStatus.ullAvailVirtual / MBs));
-	WOMA_LOGManager_DebugMSG("\n");
+	womalog("GlobalMemoryStatusEx.dwLength                = %10u\n",			memoryStatus.dwLength);
+	womalog("GlobalMemoryStatusEx.dwMemoryLoad            = %10u%%\n",		    memoryStatus.dwMemoryLoad);
+	womalog("GlobalMemoryStatusEx.ullTotalPhys            = %10u MBytes\n",	(unsigned int)(memoryStatus.ullTotalPhys / MBs));
+	womalog("GlobalMemoryStatusEx.ullAvailPhys            = %10u MBytes\n",	(unsigned int)(memoryStatus.ullAvailPhys / MBs));
+	womalog("GlobalMemoryStatusEx.ullTotalPageFile        = %10u MBytes\n",	(unsigned int)(memoryStatus.ullTotalPageFile / MBs));
+	womalog("GlobalMemoryStatusEx.ullAvailPageFile        = %10u MBytes\n",	(unsigned int)(memoryStatus.ullAvailPageFile / MBs));
+	womalog("GlobalMemoryStatusEx.ullTotalVirtual         = %10u MBytes\n",	(unsigned int)(memoryStatus.ullTotalVirtual / MBs));
+	womalog("GlobalMemoryStatusEx.ullAvailVirtual         = %10u MBytes\n",	(unsigned int)(memoryStatus.ullAvailVirtual / MBs));
+	womalog("\n");
 
 	// Real "Free Mem" = PhysMemAvail - Cached Memory
     return PhysMemAvail - CachedMem;
@@ -253,13 +253,13 @@ bool SystemManager::checkRAM ()
 	StringCchPrintf(SystemHandle->systemDefinitions.totalMemoryCapacity, MAX_STR_LEN, TEXT("Total Memory RAM: %d GB\n"), UINT((float)getTotalSystemMemory / ((float)(GBs))));
 #endif
 
-	WOMA_LOGManager_DebugMSGAUTO (TEXT("%s\n"), SystemHandle->systemDefinitions.totalMemoryCapacity);
+	womalogauto (TEXT("%s\n"), SystemHandle->systemDefinitions.totalMemoryCapacity);
 
 #if defined WINDOWS_PLATFORM
 	// Get Free Mem:
 	DWORDLONG availSystemMemory = getAvailSystemMemory(); // in MBs
 	StringCchPrintf(SystemHandle->systemDefinitions.freeMemory, MAX_STR_LEN, TEXT ("Memory Free: %d MBs\n"), (UINT) ((float)availSystemMemory / (float)MBs) );
-	WOMA_LOGManager_DebugMSGAUTO (TEXT ("%s"), SystemHandle->systemDefinitions.freeMemory); // Already include: \n
+	womalogauto (TEXT ("%s"), SystemHandle->systemDefinitions.freeMemory); // Already include: \n
 #endif
 
 	return true;
@@ -281,7 +281,7 @@ char* diskFree()
 
 bool SystemManager::checkDiskFreeSpace ()
 {
-	WOMA_LOGManager_DebugMSGAUTO (TEXT("Disk Free:\n") );
+	womalogauto (TEXT("Disk Free:\n") );
 
 #if defined WINDOWS_PLATFORM
   // Get list of all Drives: [C:\ D:\ ...]
@@ -306,28 +306,28 @@ bool SystemManager::checkDiskFreeSpace ()
 		switch (unittype)
 		{
 			case DRIVE_UNKNOWN:
-				WOMA_LOGManager_DebugMSG("Drive %s of unknown type\n", pszDrive);
+				womalog("Drive %s of unknown type\n", pszDrive);
 			break;
 			case DRIVE_NO_ROOT_DIR:
-				WOMA_LOGManager_DebugMSG("Drive %s is invalid\n", pszDrive);
+				womalog("Drive %s is invalid\n", pszDrive);
 			break;
 			case DRIVE_REMOVABLE:
-				WOMA_LOGManager_DebugMSG("Drive %s is a removable drive\n", pszDrive);
+				womalog("Drive %s is a removable drive\n", pszDrive);
 			break;
 			case DRIVE_FIXED: //3
-				WOMA_LOGManager_DebugMSG("Drive %s is a hard disk\n", pszDrive);
+				womalog("Drive %s is a hard disk\n", pszDrive);
 			break;
 			case DRIVE_REMOTE:
-				WOMA_LOGManager_DebugMSG("Drive %s is a network drive\n", pszDrive);
+				womalog("Drive %s is a network drive\n", pszDrive);
 			break;
 			case DRIVE_CDROM: //5
-				WOMA_LOGManager_DebugMSG("Drive %s is a CD-ROM drive\n", pszDrive);
+				womalog("Drive %s is a CD-ROM drive\n", pszDrive);
 			break;
 			case DRIVE_RAMDISK:
-				WOMA_LOGManager_DebugMSG("Drive %s is a RAM disk\n", pszDrive);
+				womalog("Drive %s is a RAM disk\n", pszDrive);
 			break;
 			default:
-				WOMA_LOGManager_DebugMSG("Drive %s has an unknown %u drive type\n", pszDrive, unittype);
+				womalog("Drive %s has an unknown %u drive type\n", pszDrive, unittype);
 		}
 
 		if (unittype != DRIVE_CDROM)
@@ -363,7 +363,7 @@ bool SystemManager::checkDiskFreeSpace ()
 	{
 		StringCchPrintf(temp, MAX_STR_LEN, TEXT("%c: %02.1f GB"), drivesList[driveLetter].drive , (float) drivesList[driveLetter].freeBytesAvailable / ((float)GBs));
 		SystemHandle->systemDefinitions.drives_List.push_back(temp);
-		WOMA_LOGManager_DebugMSGAUTO (TEXT("%s\n"), temp);
+		womalogauto (TEXT("%s\n"), temp);
     }
 	
 #else
@@ -374,7 +374,7 @@ bool SystemManager::checkDiskFreeSpace ()
 	for (token = strtok((char*)diskFreeAllDisks.c_str(), "\n"); token != 0; token = strtok(NULL, "\n"), i++)
     {
 		SystemHandle->systemDefinitions.drives_List.push_back(token);
-		WOMA_LOGManager_DebugMSGAUTO (TEXT("%s\n"), token);
+		womalogauto (TEXT("%s\n"), token);
 	}
   #endif
 #endif
@@ -402,7 +402,7 @@ bool CheckDEVICEinfo()
 
 	UINT nDevices = 0;
 	PRAWINPUTDEVICELIST pRawInputDeviceList;
-	WOMA_LOGManager_DebugMSG ("-------------------------------------------------------------------------------\n");
+	womalog ("-------------------------------------------------------------------------------\n");
 
 	if (GetRawInputDeviceList(NULL, &nDevices, sizeof(RAWINPUTDEVICELIST)) != 0)
 	{
@@ -448,15 +448,15 @@ bool CheckDEVICEinfo()
 			STRING buf = tBuffer;
 			if ((int)buf.find(TEXT("#VID")) > 0)
 			{
-			//WOMA_LOGManager_DebugMSGAUTO (TEXT("Device Name: %s\n"), tBuffer);
-			WOMA_LOGManager_DebugMSGAUTO (TEXT( "ID for Mouse: %d\n"), rdi.mouse.dwId);
-			WOMA_LOGManager_DebugMSGAUTO (TEXT( "Number of Buttons: %d\n"), rdi.mouse.dwNumberOfButtons);
+			//womalogauto (TEXT("Device Name: %s\n"), tBuffer);
+			womalogauto (TEXT( "ID for Mouse: %d\n"), rdi.mouse.dwId);
+			womalogauto (TEXT( "Number of Buttons: %d\n"), rdi.mouse.dwNumberOfButtons);
 
 			if (rdi.mouse.dwSampleRate > 0)
-			WOMA_LOGManager_DebugMSGAUTO (TEXT( "Sample rate(Number of data points): %d\n"), rdi.mouse.dwSampleRate); //This value is not used for USB devices.
-			WOMA_LOGManager_DebugMSGAUTO (TEXT( "Mouse Speed (1 to 20): %d\n"), mouseSpeed);
+			womalogauto (TEXT( "Sample rate(Number of data points): %d\n"), rdi.mouse.dwSampleRate); //This value is not used for USB devices.
+			womalogauto (TEXT( "Mouse Speed (1 to 20): %d\n"), mouseSpeed);
 
-			WOMA_LOGManager_DebugMSG ("-------------------------------------------------------------------------------\n");
+			womalog ("-------------------------------------------------------------------------------\n");
 			}
 		}
 
@@ -465,14 +465,14 @@ bool CheckDEVICEinfo()
 			STRING buf = tBuffer;
 			if ((int)buf.find(TEXT("#VID")) > 0)
 			{
-				//WOMA_LOGManager_DebugMSGAUTO (TEXT("Device Name: %s\n"), tBuffer);
-				WOMA_LOGManager_DebugMSGAUTO (TEXT( "Keyboard Mode: %d\n"), rdi.keyboard.dwKeyboardMode);
-				WOMA_LOGManager_DebugMSGAUTO (TEXT( "Number of function keys: %d\n"), rdi.keyboard.dwNumberOfFunctionKeys);
-				WOMA_LOGManager_DebugMSGAUTO (TEXT( "Number of indicators: %d\n"), rdi.keyboard.dwNumberOfIndicators);
-				WOMA_LOGManager_DebugMSGAUTO (TEXT( "Number of keys total: %d\n"), rdi.keyboard.dwNumberOfKeysTotal);
-				WOMA_LOGManager_DebugMSGAUTO (TEXT( "Type of the keyboard: %d\n"), rdi.keyboard.dwType);
-				WOMA_LOGManager_DebugMSGAUTO (TEXT( "Subtype of the keyboard: %d\n"), rdi.keyboard.dwSubType);
-				WOMA_LOGManager_DebugMSG ("-------------------------------------------------------------------------------\n");
+				//womalogauto (TEXT("Device Name: %s\n"), tBuffer);
+				womalogauto (TEXT( "Keyboard Mode: %d\n"), rdi.keyboard.dwKeyboardMode);
+				womalogauto (TEXT( "Number of function keys: %d\n"), rdi.keyboard.dwNumberOfFunctionKeys);
+				womalogauto (TEXT( "Number of indicators: %d\n"), rdi.keyboard.dwNumberOfIndicators);
+				womalogauto (TEXT( "Number of keys total: %d\n"), rdi.keyboard.dwNumberOfKeysTotal);
+				womalogauto (TEXT( "Type of the keyboard: %d\n"), rdi.keyboard.dwType);
+				womalogauto (TEXT( "Subtype of the keyboard: %d\n"), rdi.keyboard.dwSubType);
+				womalog ("-------------------------------------------------------------------------------\n");
 			}
 		}
 	}
@@ -503,15 +503,15 @@ bool SystemManager::CheckIO ()
 
 
 	int KeyboardType =  GetKeyboardType(0);
-	WOMA_LOGManager_DebugMSG ("Keyboard - Type: %s\n", KeyboardStrDescription[KeyboardType].c_str());
+	womalog ("Keyboard - Type: %s\n", KeyboardStrDescription[KeyboardType].c_str());
 	//----------------------------------------------------------------------------
 
 	int numberoffunctionkeys =  GetKeyboardType(2);
-	WOMA_LOGManager_DebugMSG ("Keyboard - Number of function keys: %d\n", numberoffunctionkeys);
+	womalog ("Keyboard - Number of function keys: %d\n", numberoffunctionkeys);
 	//----------------------------------------------------------------------------
 	TCHAR pwszKLID[KL_NAMELENGTH];
 	BOOL b = GetKeyboardLayoutName(pwszKLID);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("Keyboard - Layout: %s\n"), pwszKLID);
+	womalogauto(TEXT("Keyboard - Layout: %s\n"), pwszKLID);
 	//----------------------------------------------------------------------------
 
 	HKL lpList[1];
@@ -530,12 +530,12 @@ bool SystemManager::checkBenchMarkSpeed(TimerClass* m_Timer)
 
 	TCHAR txt[MAX_STR_LEN] = {};
 	StringCchPrintf(txt, MAX_STR_LEN, TEXT("Default MATH lib: %.1f ms\n"), delta1);				//Benchmark1 to Run 100M (sqrt/sin/cos)
-	WOMA_LOGManager_DebugMSG(txt);
+	womalog(txt);
 	SystemHandle->systemDefinitions.benchMarkMathSpeed1 = txt;
 
 	TCHAR txt2[MAX_STR_LEN] = {};
 	StringCchPrintf(txt2, MAX_STR_LEN, TEXT("WOMA MATH lib: %.1f ms\n"), delta2);				//Benchmark2 to Run 100M (sqrt/sin/cos)
-	WOMA_LOGManager_DebugMSG(txt2);
+	womalog(txt2);
 	SystemHandle->systemDefinitions.benchMarkMathSpeed2 = txt2;
 
 	return true;

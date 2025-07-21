@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: MAIN PURPOSE:
 // ----------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #pragma once
 
@@ -39,7 +39,7 @@
 class GLmodelClass : public VirtualModelClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234525256;
+	UINT WomaIntegrityCheck = 1234525217;
 	GLmodelClass(bool model3D=true);
 	~GLmodelClass();
 	void Shutdown();

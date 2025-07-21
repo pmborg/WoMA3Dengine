@@ -10,7 +10,7 @@
 // PURPOSE:
 //
 // ********************************************************************************************
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 #pragma once
 
 // ALL Includes to Android: http://mobilepearls.com/labs/native-android-api/
@@ -47,7 +47,7 @@
 class AndroidSystemClass : public SystemClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234525256;
+	UINT WomaIntegrityCheck = 1234525217;
 	AndroidSystemClass(WOMA::Settings* AppSettings);
 	~AndroidSystemClass();
 	void Shutdown();

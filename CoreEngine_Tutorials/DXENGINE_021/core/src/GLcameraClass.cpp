@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "platform.h"
 #include "Math3D.h"
@@ -27,7 +27,7 @@
 GLcameraClass::GLcameraClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525256;
+	WomaIntegrityCheck = 1234525217;
 
 	m_positionX = 0.0f;
 	m_positionY = 0.0f;

@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "OSengine.h"
 #if CORE_ENGINE_LEVEL >= 4
@@ -31,7 +31,7 @@ using namespace std;	//endl
 wmiUtilClass::wmiUtilClass() 
 {
 	CLASSLOADER();
-    WomaIntegrityCheck = 1234525256;
+    WomaIntegrityCheck = 1234525217;
 
 	//public:
 	description = L"";
@@ -50,7 +50,7 @@ wmiUtilClass::wmiUtilClass()
     }
     catch (...) 
     {
-        WOMA_LOGManager_DebugMSGAUTO(TEXT("ERROR ON: GetVideoControllerInfoFromWMI()"));
+        womalogauto(TEXT("ERROR ON: GetVideoControllerInfoFromWMI()"));
     }
 	#endif
 }
@@ -209,7 +209,7 @@ bool wmiUtilClass::GetCpuTemperature()
 		pClassObj->Get(L"MaxReadable", 0, &varProp, NULL, NULL);			// 4 Max read
         int max_read = (int)ConvertToCelsius(varProp.intVal);
 
-		WOMA_LOGManager_DebugMSGW(L"%s | CurrentTemperature: %02.2f (Min: %02.2f / Max: %02.2f)\n",
+		womalogw(L"%s | CurrentTemperature: %02.2f (Min: %02.2f / Max: %02.2f)\n",
 		instanceName.c_str(), temp, min_read, max_read);
 	}
 
@@ -317,8 +317,8 @@ bool wmiUtilClass::GetSystemInfo()
 		pClassObj->Get(L"model", 0, &varProp, NULL, NULL);
 		std::wstring computerModel = varProp.bstrVal;
 
-		WOMA_LOGManager_DebugMSGW(L"Motherboard Manufacture: %s\n", computerManufacturer.c_str());
-		WOMA_LOGManager_DebugMSGW(L"Motherboard Model: %s\n", computerModel.c_str());
+		womalogw(L"Motherboard Manufacture: %s\n", computerManufacturer.c_str());
+		womalogw(L"Motherboard Model: %s\n", computerModel.c_str());
 	}
 
     SAFE_RELEASE(pServices);

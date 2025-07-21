@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Paint the main window depending of engine state screen page.
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "OSengine.h"
 #if defined DX_ENGINE
@@ -48,7 +48,7 @@ namespace DirectX {
 DXmodelClass::DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive, bool computeNormals, bool modelHASshadow, bool modelRENDERshadow)
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525256;
+	WomaIntegrityCheck = 1234525217;
 
 	// VARS:
 	// ----------------------------------------------------------------------
@@ -258,10 +258,10 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
             {
             indices[i] = i;						// Load the index array with data:
 #if (defined _DEBUG || defined  DEBUG) && DX_ENGINE_LEVEL < 29 && false
-            WOMA_LOGManager_DebugMSG("%u ", indices[i]);
+            womalog("%u ", indices[i]);
             if (j++ >= 2) {
                 j = 0;
-                WOMA_LOGManager_DebugMSG("\n");
+                womalog("\n");
             }
 #endif
         }
@@ -282,10 +282,10 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 			for (UINT i = 0; i < m_indexCount; i++) {
 				indices[i] = indexModelList->at(i);	// Load the index array with data:
 #if (defined _DEBUG || defined  DEBUG) && DX_ENGINE_LEVEL < 29
-                WOMA_LOGManager_DebugMSG("%u ", indices[i]);
+                womalog("%u ", indices[i]);
                 if (j++ >= 2) {
                     j = 0;
-                    WOMA_LOGManager_DebugMSG("\n");
+                    womalog("\n");
                 }
 #endif
             }
@@ -357,7 +357,7 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 
 void DXmodelClass::Shutdown()
 {
-	WOMA_LOGManager_DebugMSG("DXmodelClass() DESTROYING: %s\n", MODEL_NAME.c_str());
+	womalog("DXmodelClass() DESTROYING: %s\n", MODEL_NAME.c_str());
 
 #if defined DX11 || defined DX9
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)

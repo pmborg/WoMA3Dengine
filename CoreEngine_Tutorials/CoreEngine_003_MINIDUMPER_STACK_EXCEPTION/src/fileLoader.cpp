@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Get full filename inside diretory or woma.pck files depending DEBUG or RELEASE build
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "OSengine.h"
 #include "fileLoader.h"
@@ -209,7 +209,7 @@ namespace WOMA
 		{
 			HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 			SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE);
-			WOMA_LOGManager_DebugMSG((CHAR*)"[FILE LOAD] %s\n", file_);
+			womalog((CHAR*)"[FILE LOAD] %s\n", file_);
 			SetConsoleTextAttribute(hConsole, FOREGROUND_RED + FOREGROUND_GREEN + FOREGROUND_BLUE);
 		}
 #endif

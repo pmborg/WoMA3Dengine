@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Used to Manage: the Mouse and the Joystick
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
@@ -79,7 +79,7 @@ void processSpecialKeys(int key, int x, int y) {
 DXInputClass::DXInputClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525256;
+	WomaIntegrityCheck = 1234525217;
 
 	// NOTE: rgbButtons holds the state of four of the mouse buttons. 
 	// 0 is for the left button
@@ -142,7 +142,7 @@ HRESULT result;
 	caps.dwSize = sizeof(DIDEVCAPS);
 	m_keyboard->GetCapabilities(&caps);
 
-	//WOMA_LOGManager_DebugMSGAUTO (TEXT("Dx KeyBoard Num. Buttons: %d\n"), caps.dwButtons);
+	//womalogauto (TEXT("Dx KeyBoard Num. Buttons: %d\n"), caps.dwButtons);
 
 	// Set the data format.  In this case since it is a keyboard we can use the predefined data format.
 	result = m_keyboard->SetDataFormat(&c_dfDIKeyboard);
@@ -350,11 +350,11 @@ bool DXInputClass::GetMouseKeyboardState()
 			count ++;
 			char keyName[MAX_STR_LEN]={0};
 			GetKeyName(i, keyName);
-			WOMA_LOGManager_DebugMSG ("%s ", keyName);
+			womalog ("%s ", keyName);
 		}
 	}
 	if (count)
-		WOMA_LOGManager_DebugMSG ("\n");
+		womalog ("\n");
 	#endif
 
 	ProcessInputKeys();

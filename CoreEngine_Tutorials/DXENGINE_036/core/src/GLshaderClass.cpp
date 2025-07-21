@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "platform.h"
 #pragma warning( disable : 4477 )
@@ -38,7 +38,7 @@
 
 GLshaderClass::GLshaderClass() {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525256;
+	WomaIntegrityCheck = 1234525217;
 }
 
 GLshaderClass::~GLshaderClass() {CLASSDELETE();}
@@ -193,7 +193,7 @@ char* GLshaderClass::LoadShaderSourceFile(char* filename)
 
 	// Open the shader source file.
 	fin.open(filename);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("LoadShaderSourceFile: %s\n"), filename);
+	womalogauto(TEXT("LoadShaderSourceFile: %s\n"), filename);
 
 	// If it could not open the file then exit.
 	if (fin.fail())
@@ -205,7 +205,7 @@ char* GLshaderClass::LoadShaderSourceFile(char* filename)
 		file.append(std::to_string(DX_ENGINE_LEVEL));
 		file.append("/");
 		file.append(filename);
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("LoadShaderSourceFile: %s\n"), file);
+		womalogauto(TEXT("LoadShaderSourceFile: %s\n"), file);
 		fin.open(file);
 		if (fin.fail())
 #endif
@@ -217,7 +217,7 @@ char* GLshaderClass::LoadShaderSourceFile(char* filename)
 			file.append(std::to_string(DX_ENGINE_LEVEL));
 			file.append("/bin/x64/Debug/");
 			file.append(filename);
-			WOMA_LOGManager_DebugMSGAUTO(TEXT("LoadShaderSourceFile: %s\n"), file);
+			womalogauto(TEXT("LoadShaderSourceFile: %s\n"), file);
 			fin.open(file);
 			if (fin.fail())
 		#endif
@@ -256,7 +256,7 @@ char* GLshaderClass::LoadShaderSourceFile(char* filename)
 #if !defined ANDROID_PLATFORM
 	// Open the shader source file again.
 	fin.open(filename);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("LoadShaderSourceFile: %s\n"), filename);
+	womalogauto(TEXT("LoadShaderSourceFile: %s\n"), filename);
 
 	// If it could not open the file then exit.
 	if (fin.fail())
@@ -267,7 +267,7 @@ char* GLshaderClass::LoadShaderSourceFile(char* filename)
 		file.append("/");
 		file.append(filename);
 		fin.open(file);
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("LoadShaderSourceFile: %s\n"), file);
+		womalogauto(TEXT("LoadShaderSourceFile: %s\n"), file);
 		if (fin.fail())
 #endif
 		{
@@ -278,7 +278,7 @@ char* GLshaderClass::LoadShaderSourceFile(char* filename)
 			file.append(std::to_string(DX_ENGINE_LEVEL));
 			file.append("/bin/x64/Debug/");
 			file.append(filename);
-			WOMA_LOGManager_DebugMSGAUTO(TEXT("LoadShaderSourceFile: %s\n"), file);
+			womalogauto(TEXT("LoadShaderSourceFile: %s\n"), file);
 			fin.open(file);
 			if (fin.fail())
 		#endif
@@ -322,7 +322,7 @@ void GLshaderClass::OutputShaderErrorMessage(UINT shaderId, char* shaderFilename
 
 	// Get the size of the string containing the information log for the failed shader compilation message.
 	glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &logSize);
-	WOMA_LOGManager_DebugMSG(TEXT("FILE: %s\n"), shaderFilename);
+	womalog(TEXT("FILE: %s\n"), shaderFilename);
 
 	if (logSize > 0) {
 		// Increment the size by one to handle also the null terminator.

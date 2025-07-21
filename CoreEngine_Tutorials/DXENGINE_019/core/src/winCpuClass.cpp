@@ -17,7 +17,7 @@
 //   Get processor benchmark info
 //   Allocate logical processors to different threads
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "main.h"
 
@@ -35,7 +35,7 @@
 WinCpuClass::WinCpuClass()
 {
 	CLASSLOADER();
-    WomaIntegrityCheck = 1234525256;
+    WomaIntegrityCheck = 1234525217;
 
 	//private:
     m_canReadCpu=false;
@@ -170,7 +170,7 @@ void WinCpuClass::SetProcessorAffinity(int cpuNumber)
             CloseHandle(hCurrentThread);
         }
 
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("Set CPU/Core: %d\n"), cpuNumber);
+		womalogauto(TEXT("Set CPU/Core: %d\n"), cpuNumber);
     }
 
     //while (true) {} //To test Thread Alocation...

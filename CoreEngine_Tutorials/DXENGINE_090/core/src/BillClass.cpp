@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "OSengine.h"
 
@@ -389,7 +389,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
         m_Trees[i].scale = 1.0f;
         m_Trees[i].vPos.x = 97;
         m_Trees[i].vPos.z = idx * 2.4f;
-        m_Trees[i].vPos.y = 0.1f; // mainTerrain->getTerrainHeight(TERRAIN_ID, tree.vPos.x, tree.vPos.z);
+        m_Trees[i].vPos.y = 0.1f;
         m_Trees[i].rotY = PI / 2.0f;
 
         xmlobj3d* xmlobj = fillxml(i, m_Trees[i].type);
@@ -407,8 +407,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
         m_Trees[i].scale = 1.0f;
         m_Trees[i].vPos.x = 96-idx * 2.4f-0.2f;
         m_Trees[i].vPos.z = 31 * 2.4f-1.2f;
-        m_Trees[i].vPos.y = 0.1f; // mainTerrain->getTerrainHeight(TERRAIN_ID, tree.vPos.x, tree.vPos.z);
-        //m_Trees[i].rotY = PI / 2.0f;
+        m_Trees[i].vPos.y = 0.1f;
 
         xmlobj3d* xmlobj = fillxml(i, m_Trees[i].type);
         xmlobj->Bill = false;
@@ -417,7 +416,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
     }
 
 	billTotal = i;
-	WOMA_LOGManager_DebugMSG( "Bill Class: Initialized\n" );
+	womalog( "Bill Class: Initialized\n" );
 
 	return true;
 }

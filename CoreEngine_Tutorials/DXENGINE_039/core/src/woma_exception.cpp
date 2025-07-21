@@ -19,7 +19,7 @@
 // 
 //  NOTE: If a constructor throws an Exception ===> the object's destructor do not run. !!!
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "OSengine.h"
 #include "log.h"
@@ -49,7 +49,7 @@ woma_exception::woma_exception(const std::string &arg, const char *file, const c
 			msg.append(TEXT("\n\n"));
 			msg.append(sttrace->to_string().c_str());
 			MessageBoxA(NULL, msg.c_str(), arg.c_str(), 0);
-            WOMA_LOGManager_DebugMSGAUTO(TEXT("WOMA EXCEPTION: %s\n"), msg.c_str());
+            womalogauto(TEXT("WOMA EXCEPTION: %s\n"), msg.c_str());
 		}
         SAFE_DELETE(sttrace);
 		#endif

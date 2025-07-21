@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "OSengine.h"
 #if defined DX_ENGINE
@@ -68,7 +68,7 @@ dxWinSystemClass::dxWinSystemClass(WOMA::Settings* appSettings) : WinSystemClass
 //----------------------------------------------------------------------------------
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525256;
+	WomaIntegrityCheck = 1234525217;
 	WinSystemClass::AppSettings = appSettings;
 	WinSystemClass::mMaximized = WinSystemClass::AppSettings->FULL_SCREEN;
 
@@ -157,7 +157,7 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
         DispatchMessage(&msg);
     }
 
-    WOMA_LOGManager_DebugMSG("msg.wParam: %d\n", msg.wParam);
+    womalog("msg.wParam: %d\n", msg.wParam);
 	return (int)msg.wParam; //return the PostQuitMessage (message code)
 }
 
@@ -205,7 +205,7 @@ void dxWinSystemClass::Shutdown()
 #endif
 
 	// WinSystemClass Shutdown:
-	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("WinSystemClass::Shutdown()\n"));
+	womalogauto((TCHAR*)TEXT("WinSystemClass::Shutdown()\n"));
 }
 
 void dxWinSystemClass::GPH_RESIZE()
@@ -453,7 +453,7 @@ void InitializeObjectsLoaderThreadFunction() // InitializeThread
 {
     SetUnhandledExceptionFilter(TopLevelFilter);
 
-	WOMA_LOGManager_DebugMSG("CreateThread: InitializeObjectsLoaderThreadFunction\n");
+	womalog("CreateThread: InitializeObjectsLoaderThreadFunction\n");
 
 	switch (SystemHandle->systemManager->processorInfo.cpuCores.logicalProcessorCount)
 	{
@@ -476,7 +476,7 @@ void InitializeObjectsLoaderThreadFunction() // InitializeThread
 		WOMA::previous_game_state = GAME_RUN;
 	WOMA::num_running_THREADS--; //InitializeObjectsLoaderThreadFunction
 #if defined _DEBUG
-	WOMA_LOGManager_DebugMSG("WOMA::num_running_THREADS: %d %s %s %d\n", WOMA::num_running_THREADS, __FILE__, __FUNCTION__, __LINE__);
+	womalog("WOMA::num_running_THREADS: %d %s %s %d\n", WOMA::num_running_THREADS, __FILE__, __FUNCTION__, __LINE__);
 #endif
 
 	if (loading)

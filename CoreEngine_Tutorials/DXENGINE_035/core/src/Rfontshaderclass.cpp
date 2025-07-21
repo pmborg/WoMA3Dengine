@@ -100,8 +100,8 @@ bool RFontShaderClass::InitializeShader(char* vsFilename, char* fsFilename)
     const char* fragmentShaderBuffer;
     int status;
 
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("RFontShaderClass::InitializeShader: %s\n"), vsFilename);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("RFontShaderClass::InitializeShader: %s\n"), fsFilename);
+	womalogauto(TEXT("RFontShaderClass::InitializeShader: %s\n"), vsFilename);
+	womalogauto(TEXT("RFontShaderClass::InitializeShader: %s\n"), fsFilename);
 
     // Load the vertex shader source file into a text buffer.
     vertexShaderBuffer = LoadShaderSourceFile(vsFilename);
@@ -271,8 +271,8 @@ void RFontShaderClass::OutputShaderErrorMessage(unsigned int shaderId, char* sha
     // Get the size of the string containing the information log for the failed shader compilation message.
     glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &logSize);
 
-    //WOMA_LOGManager_DebugMSG (TEXT("logSize: %d\n"), logSize);
-    WOMA_LOGManager_DebugMSG(TEXT("FILE: %s\n"), shaderFilename);
+    //womalog (TEXT("logSize: %d\n"), logSize);
+    womalog(TEXT("FILE: %s\n"), shaderFilename);
 
     if (logSize > 0) {
         // Increment the size by one to handle also the null terminator.

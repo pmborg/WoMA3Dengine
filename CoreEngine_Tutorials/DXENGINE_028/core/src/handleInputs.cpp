@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Work as Input Manager, using inputClass as a Direct Driver
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "platform.h"
 #if defined USE_DIRECT_INPUT
@@ -223,7 +223,7 @@ bool ApplicationClass::ProcessUserKeyboardInput(double frameTime)
         {
             m_camYaw += mouseLastState.lX * 0.002f;
             m_camPitch += mouseCurrState.lY * 0.002f;
-            //WOMA_LOGManager_DebugMSGAUTO("m_camYaw: %4.1f - m_camPitch: %4.1f\n", m_camYaw, m_camPitch);
+            //womalogauto("m_camYaw: %4.1f - m_camPitch: %4.1f\n", m_camYaw, m_camPitch);
 
             // Check that the camera doesn't go over the top or under the player
             if (m_camPitch > 0.85f)

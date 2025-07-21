@@ -17,7 +17,7 @@
 // PURPOSE:  Measure the time passed between two TimerClass::Frame() Invocations. 
 //  i.e. Allow to calc FPS (number of Frames Processed per Second)
 // ----------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 // 
 //NOTES:
 //0,000 001 [ millionth ] 	microsecond [ µs ]
@@ -39,7 +39,7 @@ extern double timeGetTime(void);
 TimerClass::TimerClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525256;
+	WomaIntegrityCheck = 1234525217;
 
 	//public:
 	currentTime = m_startEngineTime = NULL;

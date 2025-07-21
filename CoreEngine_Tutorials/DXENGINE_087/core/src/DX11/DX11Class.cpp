@@ -18,7 +18,7 @@
 // PURPOSE: MAIN PURPOSE: Work as a DirectX 11 Driver.
 //
 // ----------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "OSengine.h"
 #include "mem_leak.h"
@@ -60,7 +60,7 @@ DX11Class::DX11Class()
 {
 	// WomaDriverClass / Public: ------------------------------------------------------
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525256;
+	WomaIntegrityCheck = 1234525217;
 
 	// SUPER: 
 	dx11_force_dx9 = false;
@@ -238,7 +238,7 @@ for (UINT i = 0; i < 3; i++)
 	SAFE_RELEASE (m_alphaDisableBlendingState);
 #endif
 
-	WOMA_LOGManager_DebugMSGAUTO (TEXT("Number of Textures: %d\n"), allTextureNameArray.size());
+	womalogauto (TEXT("Number of Textures: %d\n"), allTextureNameArray.size());
 
 	for (UINT i=0; i < allTextureNameArray.size(); i++)
 		SAFE_RELEASE (allTexturePointerArray[i]);	// Free All Textures from our Texture manager
@@ -278,7 +278,7 @@ for (UINT i = 0; i < 3; i++)
     if (count && debugDev)
     {
         debugDev->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_DETAIL);
-        WOMA_LOGManager_DebugMSG("WOMA WARNING: There are %d unreleased references left on the D3D device!\n", count);
+        womalog("WOMA WARNING: There are %d unreleased references left on the D3D device!\n", count);
     }
     SAFE_RELEASE(debugDev);
 #endif
@@ -361,7 +361,7 @@ if (dx11_force_dx9)
 			{
 				m_sCapabilities.CapDX10_11 = TRUE;
 				m_sCapabilities.DXGI10 = true;
-				WOMA_LOGManager_DebugMSG("DXGI1.0: Available\n");
+				womalog("DXGI1.0: Available\n");
 			}
 		}//#endif
 	}
@@ -387,9 +387,9 @@ bool DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, i
 {
 	m_VSYNC_ENABLED = vsync;
 
-	WOMA_LOGManager_DebugMSG("-------------------------\n");
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("INITIALIZING DRIVER: %s\n"), driverName);
-    WOMA_LOGManager_DebugMSG("-------------------------\n");
+	womalog("-------------------------\n");
+	womalogauto(TEXT("INITIALIZING DRIVER: %s\n"), driverName);
+    womalog("-------------------------\n");
 
     //Init Step: 1 - Check Driver for DX9 and DX10 and DX12(=false) on DX11 API
     ASSERT(CheckAPIdriver(/* Use Graph Card 1 */ USE_THIS_GRAPHIC_CARD_ADAPTER));
@@ -675,61 +675,61 @@ void DX11Class::getProfile ( UINT g_USE_MONITOR )
 		case D3D_FEATURE_LEVEL_9_1:	// To Support old Graphic Cards
 			_tcscpy_s(ShaderModel, TEXT("4_0_level_9_1")); // ShaderModel = TEXT("2_0"); // 
 			ShaderVersionH = 2; ShaderVersionL = 0;
-			WOMA_LOGManager_DebugMSGAUTO(TEXT("\nBest Shader Model 2.0 (Best API: DX9.1)\n"));
+			womalogauto(TEXT("\nBest Shader Model 2.0 (Best API: DX9.1)\n"));
 		break;
 
 		case D3D_FEATURE_LEVEL_9_2:	// To Support old Graphic Cards
 			_tcscpy_s(ShaderModel, TEXT("4_0_level_9_2")); //ShaderModel = TEXT("2_0"); // 
             ShaderVersionH = 2; ShaderVersionL = 0;
-			WOMA_LOGManager_DebugMSGAUTO(TEXT("\nBest Shader Model 2.0 (Best API: DX9.2)\n"));
+			womalogauto(TEXT("\nBest Shader Model 2.0 (Best API: DX9.2)\n"));
 		break;
 
 		case D3D_FEATURE_LEVEL_9_3:	// To Support old Graphic Cards
             _tcscpy_s(ShaderModel, TEXT("4_0_level_9_3")); // ShaderModel = TEXT("2_0"); // 
             ShaderVersionH = 2; ShaderVersionL = 0;
-			WOMA_LOGManager_DebugMSGAUTO(TEXT("\nBest Shader Model 2.0 (Best API: DX9.3)\n"));
+			womalogauto(TEXT("\nBest Shader Model 2.0 (Best API: DX9.3)\n"));
 		break;
 
 		//DX 10
 		case D3D_FEATURE_LEVEL_10_0:	// To Support old Graphic Cards
             _tcscpy_s(ShaderModel, TEXT("4_0")); // ShaderModel = TEXT("4_0"); // 
             ShaderVersionH = 4; ShaderVersionL = 0;
-			WOMA_LOGManager_DebugMSG("\nBest Shader Model 4.0 (Best API: DX10)\n");
+			womalog("\nBest Shader Model 4.0 (Best API: DX10)\n");
 		break;
 
 		// DX10.1
 		case D3D_FEATURE_LEVEL_10_1:	// To Support old Graphic Cards
             _tcscpy_s(ShaderModel, TEXT("4_1")); // ShaderModel = TEXT("4_1"); // 
             ShaderVersionH = 4; ShaderVersionL = 1;
-			WOMA_LOGManager_DebugMSG("\nBest Shader Model 4.1 (Best API: DX10.1)\n");
+			womalog("\nBest Shader Model 4.1 (Best API: DX10.1)\n");
 		break;
 
 		case D3D_FEATURE_LEVEL_11_0:
 			_tcscpy_s(ShaderModel, TEXT("5_0")); // ShaderModel = TEXT("5_0"); // 
 			ShaderVersionH = 5; ShaderVersionL = 0;
-			WOMA_LOGManager_DebugMSG("\nBest Shader Model 5.0 (Best API: DX11)\n");
+			womalog("\nBest Shader Model 5.0 (Best API: DX11)\n");
 		break;
 		case D3D_FEATURE_LEVEL_11_1:
 			_tcscpy_s(ShaderModel, TEXT("5_0")); // ShaderModel = TEXT("5_0"); // 
 			ShaderVersionH = 5; ShaderVersionL = 0;
-			WOMA_LOGManager_DebugMSG("\nBest Shader Model 5.0 (Best API: DX11.1)\n");
+			womalog("\nBest Shader Model 5.0 (Best API: DX11.1)\n");
 		break;
 		case D3D_FEATURE_LEVEL_12_0:
 			_tcscpy_s(ShaderModel, TEXT("5_0")); // ShaderModel = TEXT("5_0"); // 
 			ShaderVersionH = 5; ShaderVersionL = 0;
-			WOMA_LOGManager_DebugMSG("\nBest Shader Model 5.0 (Best API: DX11_level_12_0)\n");
+			womalog("\nBest Shader Model 5.0 (Best API: DX11_level_12_0)\n");
 		break;
 
 		default: //For Future DX Versions!	
 		case D3D_FEATURE_LEVEL_12_1:
 			_tcscpy_s(ShaderModel, TEXT("5_0")); // ShaderModel = TEXT("5_0"); // 
 			ShaderVersionH = 5; ShaderVersionL = 0;
-			WOMA_LOGManager_DebugMSG("\nBest Shader Model 5.0 (Best API: DX11_level_12_1)\n");
+			womalog("\nBest Shader Model 5.0 (Best API: DX11_level_12_1)\n");
 			break;
 
 		break;
 	}
-	WOMA_LOGManager_DebugMSG("\n");
+	womalog("\n");
 
 	_tcscpy_s(szShaderModel, ShaderModel); szShaderModel[1] = '.';	// Convert: "x_y" to" x.y"
 }
@@ -772,7 +772,7 @@ bool DX11Class::CreateRenderTargetView (int screenWidth, int screenHeight)
 bool DX11Class::Initialize(float* clearColor)
 // ----------------------------------------------------------------------------------------------
 {
-	WOMA_LOGManager_DebugMSG("DX11Class::Initialize()\n");
+	womalog("DX11Class::Initialize()\n");
 
 	// Set default clear color:
 	driver_ClearColor[0] = *clearColor++;
@@ -826,7 +826,7 @@ void DX11Class::BeginScene(UINT monitorWindow)
 
 void DX11Class::OnDeviceLost() // Our Driver in use was re-installed??
 {
-    WOMA_LOGManager_DebugMSG("Device lost!\n");
+    womalog("Device lost!\n");
 
     WOMA::game_state = ENGINE_RESTART;
 }

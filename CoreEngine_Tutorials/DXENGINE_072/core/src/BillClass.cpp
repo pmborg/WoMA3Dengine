@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "OSengine.h"
 
@@ -299,7 +299,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 	}
 
 	billTotal = i;
-	WOMA_LOGManager_DebugMSG( "Bill Class: Initialized\n" );
+	womalog( "Bill Class: Initialized\n" );
 
 	return true;
 }

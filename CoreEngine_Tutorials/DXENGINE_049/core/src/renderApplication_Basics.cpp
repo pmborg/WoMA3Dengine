@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "platform.h"
 #include "OSengine.h"
@@ -820,7 +820,7 @@ float ApplicationClass::WOMA_APPLICATION_IntroRender(UINT64 passedTotalTime)
 		fade = 0;
 		FadeIn = !FadeIn;
 		SpriteScreenToShow++;
-		WOMA_LOGManager_DebugMSG("SpriteScreenToShow: %d\n", SpriteScreenToShow);
+		womalog("SpriteScreenToShow: %d\n", SpriteScreenToShow);
 	}
 
 	return fade;
@@ -883,7 +883,7 @@ float ApplicationClass::WOMA_APPLICATION_DemoRender(UINT64 passedTotalTime)
 		FadeIn = !FadeIn;
 		if (RENDER_PAGE < DX_ENGINE_LEVEL) {
 			RENDER_PAGE++;
-			WOMA_LOGManager_DebugMSG("RENDER_PAGE: %d\n", RENDER_PAGE);
+			womalog("RENDER_PAGE: %d\n", RENDER_PAGE);
 #if defined ANDROID_PLATFORM
 			ShowFPS(RENDER_PAGE);
 #endif
@@ -898,7 +898,7 @@ float ApplicationClass::WOMA_APPLICATION_DemoRender(UINT64 passedTotalTime)
 				FORCE_RENDER_ALL = false;
 		}
 		else {
-			WOMA_LOGManager_DebugMSG("STOP: WOMA_APPLICATION_DemoRender ()\n");
+			womalog("STOP: WOMA_APPLICATION_DemoRender ()\n");
 			WOMA::main_loop_state = -1;		//WINDOWS
 			WOMA::game_state = GAME_STOP;	//LINUX
 		}

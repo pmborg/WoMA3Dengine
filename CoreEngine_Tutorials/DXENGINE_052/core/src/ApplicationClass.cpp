@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Control all Application main cycles.
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "platform.h"
 #include "OSengine.h"
@@ -82,7 +82,7 @@ float fadeIntro=1;
 ApplicationClass::ApplicationClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525256;
+	WomaIntegrityCheck = 1234525217;
 
 	// ---------------------------------------------------------------------
 	// private:
@@ -98,7 +98,7 @@ ApplicationClass::ApplicationClass()
 #else
 		RENDER_PAGE = DX_ENGINE_LEVEL;
   #if _DEBUG
-	WOMA_LOGManager_DebugMSG("RENDER_PAGE: %d\n", RENDER_PAGE);
+	womalog("RENDER_PAGE: %d\n", RENDER_PAGE);
   #endif
 #endif
 
@@ -175,7 +175,7 @@ ApplicationClass::~ApplicationClass() {
 //	-------------------------------------------------------------------------------------------
 void ApplicationClass::Shutdown()
 {
-	WOMA_LOGManager_DebugMSG("ApplicationClass::Shutdown()\n");
+	womalog("ApplicationClass::Shutdown()\n");
 
 	//3D:
 
@@ -381,7 +381,7 @@ void ApplicationClass::Shutdown()
 void ApplicationClass::WOMA_APPLICATION_Shutdown()
 //-----------------------------------------------------------------------------------------
 {
-	WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_Shutdown()\n");
+	womalog("WOMA_APPLICATION_Shutdown()\n");
 
 #if defined USE_ASTRO_CLASS
 	SAFE_DELETE(initWorld);
@@ -410,7 +410,7 @@ void ApplicationClass::WOMA_APPLICATION_Shutdown()
 bool ApplicationClass::WOMA_APPLICATION_InitGUI()
 //-----------------------------------------------------------------------------------------
 {
-	WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_InitGUI()\n");
+	womalog("WOMA_APPLICATION_InitGUI()\n");
 
 	#ifdef LINUX_PLATFORM
 		// Check User Settings: Auto-Detect Resolution?
@@ -449,12 +449,12 @@ bool ApplicationClass::WOMA_APPLICATION_InitGUI()
 	if (!initWorld)
 	{
 		initWorld = NEW InitWorld;
-		WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_InitGUI()-initWorld created\n");
+		womalog("WOMA_APPLICATION_InitGUI()-initWorld created\n");
 	}
 
 	if (astroClass) {
 		InitializeCelestialInfoScreen(10, 10);
-		WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_InitGUI()-InitializeCelestialInfoScreen created\n");
+		womalog("WOMA_APPLICATION_InitGUI()-InitializeCelestialInfoScreen created\n");
 	}
 #endif
 
@@ -465,7 +465,7 @@ bool ApplicationClass::WOMA_APPLICATION_InitGUI()
 		{
 			WomaMessageBox(TEXT("InitializeWeatherInfoScreen"), TEXT("Error: "));
 		}
-		WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_InitGUI()-InitializeWeatherInfoScreen created\n");
+		womalog("WOMA_APPLICATION_InitGUI()-InitializeWeatherInfoScreen created\n");
 	}
 #endif
 

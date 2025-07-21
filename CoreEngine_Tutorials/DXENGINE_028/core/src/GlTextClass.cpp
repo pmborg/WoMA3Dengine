@@ -17,7 +17,7 @@
 // PURPOSE: 
 // Original DX11 version of the code was inpired on: https://www.rastertek.com/dx11tut12.html
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #pragma once
 
@@ -38,7 +38,7 @@
 GlTextClass::GlTextClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525256;
+	WomaIntegrityCheck = 1234525217;
 
 	//private:
 	m_Font = NULL;

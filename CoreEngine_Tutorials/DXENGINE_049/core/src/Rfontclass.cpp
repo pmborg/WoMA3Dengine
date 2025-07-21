@@ -159,7 +159,7 @@ bool RFontClass::LoadFontData(char* filename)
 	char temp;
 
 	// Read in the font size and spacing between chars.
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("LoadFontData: %s\n"), filename);
+	womalogauto(TEXT("LoadFontData: %s\n"), filename);
 	fin.open(filename);
 	if (fin.fail())
 	{

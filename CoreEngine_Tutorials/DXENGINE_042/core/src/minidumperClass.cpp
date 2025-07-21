@@ -30,7 +30,7 @@ Copyright (C) 2002  Andy Pennell
 //  IMPORTANT NOTE: Compile with "Security Check": NO
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "OSengine.h"
 #if defined USE_MINIDUMPER
@@ -78,7 +78,7 @@ MiniDumper::MiniDumper()
 {
 
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525256;
+	WomaIntegrityCheck = 1234525217;
 }
 
 MiniDumper::~MiniDumper() {CLASSDELETE();}
@@ -86,7 +86,7 @@ MiniDumper::~MiniDumper() {CLASSDELETE();}
 //NOTE: Before Convert to UNICODE due to Macros!
 void WriteError(TCHAR* szDumpPath)
 {
-	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("\nFILE DUMP: %s"), szDumpPath);
+	womalogauto((TCHAR*)TEXT("\nFILE DUMP: %s"), szDumpPath);
 }
 
 // New FEATURE: Allow UNICODE: by Pedro Borges
@@ -98,7 +98,7 @@ LONG TopLevelFilter( struct _EXCEPTION_POINTERS *pExceptionInfo )
 	TCHAR szDumpPath[_MAX_PATH] = { 0 };
 	LONG retval = EXCEPTION_CONTINUE_SEARCH;
 
-	_tprintf(TEXT ("TopLevelFilter()\n")); //NOTE: cant use: WOMA_LOGManager_DebugMSG
+	_tprintf(TEXT ("TopLevelFilter()\n")); //NOTE: cant use: womalog
 
 	//Show extra runtime "Call Stack" frame Debug info on a Generic un-catched exception!
 	stack_trace *sttrace = NEW stack_trace(NULL, 0);

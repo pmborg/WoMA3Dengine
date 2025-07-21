@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "OSengine.h"
 #if defined DX_ENGINE
@@ -208,12 +208,12 @@ namespace DirectX {
 
 			if (result != S_OK  && device_type < numElements - 1)
 			{
-				WOMA_LOGManager_DebugMSG(TEXT("Could not create Direct3D11 device in %s mode - Levels: %d\n"), DriverTypes[device_type].Name.c_str(), num_levels);
+				womalog(TEXT("Could not create Direct3D11 device in %s mode - Levels: %d\n"), DriverTypes[device_type].Name.c_str(), num_levels);
 				PtrfeatureLevels++;
 				num_levels--;
 				if (num_levels > 0)
 					goto retry;
-				WOMA_LOGManager_DebugMSG(TEXT("Could not create Direct3D11 device in %s mode; using driver: %s mode - Levels: %d\n"), DriverTypes[device_type].Name.c_str(), DriverTypes[device_type + 1].Name.c_str(), num_levels);
+				womalog(TEXT("Could not create Direct3D11 device in %s mode; using driver: %s mode - Levels: %d\n"), DriverTypes[device_type].Name.c_str(), DriverTypes[device_type + 1].Name.c_str(), num_levels);
 			}
 			else
 			{
@@ -261,8 +261,8 @@ namespace DirectX {
 		D3D11_FEATURE_DATA_THREADING ThreadingOptions;
 		m_device11->CheckFeatureSupport(D3D11_FEATURE_THREADING, &ThreadingOptions, sizeof(ThreadingOptions));
 
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("Driver Support Concurrent Creates: %s\n"), ThreadingOptions.DriverConcurrentCreates ? TEXT("yes") : TEXT("no"));
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("Driver Support Command Lists: %s\n\n"), ThreadingOptions.DriverCommandLists ? TEXT("yes") : TEXT("no"));
+		womalogauto(TEXT("Driver Support Concurrent Creates: %s\n"), ThreadingOptions.DriverConcurrentCreates ? TEXT("yes") : TEXT("no"));
+		womalogauto(TEXT("Driver Support Command Lists: %s\n\n"), ThreadingOptions.DriverCommandLists ? TEXT("yes") : TEXT("no"));
 
 		// -------------------------------------------------------------------------
 		// Get the best Multi Sample Quality (MSAAmultiSampleCount & MSAAquality)
@@ -295,8 +295,8 @@ namespace DirectX {
 						{
 							m_sCapabilities.MSAAmultiSampleCount = msaaSamples_;
 							m_sCapabilities.MSAAquality = quality;
-							WOMA_LOGManager_DebugMSGAUTO(TEXT("DRIVER MSAAmultiSampleCount: %d\n"), m_sCapabilities.MSAAmultiSampleCount);		// Get the max Sample Count: 8
-							WOMA_LOGManager_DebugMSGAUTO(TEXT("DRIVER multiSampleQuality: %d\n"), m_sCapabilities.MSAAquality);	// Get the max MsaaQuality: 32
+							womalogauto(TEXT("DRIVER MSAAmultiSampleCount: %d\n"), m_sCapabilities.MSAAmultiSampleCount);		// Get the max Sample Count: 8
+							womalogauto(TEXT("DRIVER multiSampleQuality: %d\n"), m_sCapabilities.MSAAquality);	// Get the max MsaaQuality: 32
 
 							// Use Max Setting Supported:
 							MSAA_QUALITY = m_sCapabilities.MSAAquality;
@@ -316,16 +316,16 @@ namespace DirectX {
 
 		// Log It!
 		if (SystemHandle->AppSettings->MSAA_Anisotropic) {
-			WOMA_LOGManager_DebugMSGAUTO(TEXT("MSSA is Enabled with %d Samples\n"), MSAA_COUNT);
+			womalogauto(TEXT("MSSA is Enabled with %d Samples\n"), MSAA_COUNT);
 		}
 		else
 		{
 			if (SystemHandle->AppSettings->MSAA_bilinear)
-				WOMA_LOGManager_DebugMSGAUTO(TEXT("Antialise: bilinear\n"));
+				womalogauto(TEXT("Antialise: bilinear\n"));
 			else if (SystemHandle->AppSettings->MSAA_trilinear)
-				WOMA_LOGManager_DebugMSGAUTO(TEXT("Antialise: trilinear\n"));
+				womalogauto(TEXT("Antialise: trilinear\n"));
 			else
-				WOMA_LOGManager_DebugMSGAUTO(TEXT("Antialise: off\n"));
+				womalogauto(TEXT("Antialise: off\n"));
 		}
 																 
 #endif
@@ -425,7 +425,7 @@ namespace DirectX {
 
 			// Windows 10 and up:
 			//swapChainDesc.OutputWindow = SystemHandle->windowsArray[i].hWnd;						// Set the handle for the window to render to.
-			WOMA_LOGManager_DebugMSGAUTO(TEXT("Try CreateSwapChain settings for Windows 10:\n"));
+			womalogauto(TEXT("Try CreateSwapChain settings for Windows 10:\n"));
 			result = pIDXGIFactory->CreateSwapChainForHwnd(m_device11, SystemHandle->windowsArray[i].hWnd , &swapChainDesc, fulldesc.Windowed ? nullptr : &fulldesc, nullptr, &DXwindow.m_swapChain1); // Turn Screen to Black
 			if (FAILED(result))
 			{

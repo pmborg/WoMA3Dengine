@@ -19,7 +19,7 @@
 //	Original Source Code:
 //	http://msdn.microsoft.com/en-us/library/windows/desktop/ms683194%28v=vs.85%29.aspx
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "WinSystemClass.h"
 #if defined WINDOWS_PLATFORM
@@ -28,7 +28,7 @@
 WinCpuCores::WinCpuCores()
 {
 	CLASSLOADER();
-    WomaIntegrityCheck = 1234525256;
+    WomaIntegrityCheck = 1234525217;
 
 	numaNodeCount = NULL;
 	processorPackageCount = NULL;
@@ -73,7 +73,7 @@ DWORD WinCpuCores::CountBits(ULONG_PTR bitMask)
 // --------------------------------------------------------------------------------------------
 void WinCpuCores::GetProcessorInformation()
 {
-	WOMA_LOGManager_DebugMSG ("GetProcessorInformation()\n");
+	womalog ("GetProcessorInformation()\n");
 
     //static DWORD processorCoreCount = 0;    // Return "0" on any failure.  That'll show them.
 	if (processorCoreCount > 0)
@@ -162,7 +162,7 @@ void WinCpuCores::GetProcessorInformation()
             break;
 
         default:
-            WOMA_LOGManager_DebugMSG ("\nError: Unsupported LOGICAL_PROCESSOR_RELATIONSHIP value.\n");
+            womalog ("\nError: Unsupported LOGICAL_PROCESSOR_RELATIONSHIP value.\n");
             break;
         }
         byteOffset += sizeof(SYSTEM_LOGICAL_PROCESSOR_INFORMATION);
@@ -170,10 +170,10 @@ void WinCpuCores::GetProcessorInformation()
     }
     free(buffer);
 
-    WOMA_LOGManager_DebugMSGAUTO(TEXT("Number of NUMA nodes: %d\n"),						numaNodeCount);
-    WOMA_LOGManager_DebugMSGAUTO(TEXT("Number of physical processor packages: %d\n"),	processorPackageCount);
-    WOMA_LOGManager_DebugMSGAUTO(TEXT("Number of processor cores: %d\n"),				processorCoreCount);
-    WOMA_LOGManager_DebugMSGAUTO(TEXT("Number of logical processors: %d\n"),				logicalProcessorCount);
+    womalogauto(TEXT("Number of NUMA nodes: %d\n"),						numaNodeCount);
+    womalogauto(TEXT("Number of physical processor packages: %d\n"),	processorPackageCount);
+    womalogauto(TEXT("Number of processor cores: %d\n"),				processorCoreCount);
+    womalogauto(TEXT("Number of logical processors: %d\n"),				logicalProcessorCount);
 
 	// CPU Cache:
 	UINT L1DataSize = (processorL1CacheDataSize/KBs)/processorL1CacheDataCount;
@@ -186,7 +186,7 @@ void WinCpuCores::GetProcessorInformation()
 	StringCchPrintf(SystemHandle->systemDefinitions.ProcessorCacheL2,	MAX_STR_LEN, TEXT("Cache L2: %dx%d %s"), processorL2CacheCount, (L2Size>1024)?L2Size/KBs:L2Size, (L2Size>1024)?TEXT("MBs"):TEXT("KBs"));
 	StringCchPrintf(SystemHandle->systemDefinitions.ProcessorCacheL3,	MAX_STR_LEN, TEXT("Cache L3: %dx%d %s"), processorL3CacheCount, (L3Size>1024)?L3Size/KBs:L3Size, (L3Size>1024)?TEXT("MBs"):TEXT("KBs"));
 
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("Processor Cache:\nL1 Data: %dx%d %s\nL1 Inst.: %dx%d %s\nL2: %dx%d %s\nL3: %dx%d %s\n"),	
+	womalogauto(TEXT("Processor Cache:\nL1 Data: %dx%d %s\nL1 Inst.: %dx%d %s\nL2: %dx%d %s\nL3: %dx%d %s\n"),	
 								processorL1CacheDataCount, (L1DataSize>1024)?L1DataSize/KBs:L1DataSize, (L1DataSize>1024)?TEXT("MBs"):TEXT("KBs"),
 								processorL1CacheInstCount, (L1InstSize>1024)?L1InstSize/KBs:L1InstSize, (L1InstSize>1024)?TEXT("MBs"):TEXT("KBs"),
 								processorL2CacheCount, (L2Size>1024)?L2Size/KBs:L2Size, (L2Size>1024)?TEXT("MBs"):TEXT("KBs"),

@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Output - LOG INFO and FATAL ERRORs to "report".txt file
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "main.h"
 
@@ -121,7 +121,7 @@ LogManager::LogManager()
 	UINT errno_t = _tfopen_s(&debugFile, REPORT_FILE.c_str(), TEXT("w"));
 	if (errno_t != 0) {
 		// This means that the file is locked by another Woma APP instance, dont abort because of that!
-		WOMA_LOGManager_DebugMSG(TEXT("[ERROR] WARNING! - LOG MANGER - Cant Open for Write: %s\n"), REPORT_FILE.c_str());
+		womalog(TEXT("[ERROR] WARNING! - LOG MANGER - Cant Open for Write: %s\n"), REPORT_FILE.c_str());
 
 		#if defined WINDOWS_PLATFORM
         //CANT USE WomaMessageBox here so using: MessageBox
@@ -142,13 +142,13 @@ LogManager::~LogManager()
 		CLASSDELETE(); // Exception need to be before...
 
 		if (CLASS_LOAD_N != CLASS_DELETE_N)
-			WOMA_LOGManager_DebugMSG(TEXT("N_CLASS_LOAD != N_CLASS_DELETE\n"));
+			womalog(TEXT("N_CLASS_LOAD != N_CLASS_DELETE\n"));
 
 		if (debugFile)
 		{
-			WOMA_LOGManager_DebugMSG(TEXT("-------------------------------------------------------------------------------\n"));
-			WOMA_LOGManager_DebugMSG(TEXT("THE END! WoMA Author: %s\n"), TEXT(WOMAAUTHOR_ID));
-			WOMA_LOGManager_DebugMSG(TEXT("-------------------------------------------------------------------------------\n"));
+			womalog(TEXT("-------------------------------------------------------------------------------\n"));
+			womalog(TEXT("THE END! WoMA Author: %s\n"), TEXT(WOMAAUTHOR_ID));
+			womalog(TEXT("-------------------------------------------------------------------------------\n"));
 
 			fclose(debugFile);
 			debugFile = NULL;
@@ -260,12 +260,12 @@ void start_log_manager()
 #if defined USE_LOG_MANAGER
 	logManager = ILogManager::CreateInstance();
 #endif
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("LOGMANAGER STARTED\n"));
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("------------------------------------------------------------------------------------------\n"));
+	womalogauto(TEXT("LOGMANAGER STARTED\n"));
+	womalogauto(TEXT("------------------------------------------------------------------------------------------\n"));
 
 	// [3]  PRINT Log Dirs: (After init_os_main_dirs & After logManager)
 	// -------------------------------------------------------------------------------------------
-	//WOMA_LOGManager_DebugMSGAUTO(TEXT("Init: logDirs()\n"));
+	//womalogauto(TEXT("Init: logDirs()\n"));
 #if defined WINDOWS_PLATFORM && ENGINE_LEVEL >= 3
 	logDirs(isXP(), isWow64());
 #else
@@ -277,15 +277,15 @@ void start_log_manager()
 	// ALSO: After logManager!
 #if defined _DEBUG || defined DEBUG
 #ifdef RELEASE
-	WOMA_LOGManager_DebugMSG("Binary Type: [DEBUG RELEASE]\n");
+	womalog("Binary Type: [DEBUG RELEASE]\n");
 #else
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("Binary Type: [DEBUG]\n"));
+	womalogauto(TEXT("Binary Type: [DEBUG]\n"));
 #endif
 #else
 #ifdef RELEASE
-	WOMA_LOGManager_DebugMSG("Binary Type: [RELEASE]\n");
+	womalog("Binary Type: [RELEASE]\n");
 #else
-	WOMA_LOGManager_DebugMSG("Binary Type: [NDEBUG]\n");
+	womalog("Binary Type: [NDEBUG]\n");
 #endif
 #endif
 

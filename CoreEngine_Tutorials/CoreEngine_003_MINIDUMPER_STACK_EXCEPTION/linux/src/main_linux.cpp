@@ -52,11 +52,11 @@ bool createWindow()
 	// [1] Open a connection to the X server on the local computer.
 	Display* display = Win.display = XOpenDisplay(NULL);
 	if (!display) {
-		WOMA_LOGManager_DebugMSG("Cannot open X display\n");
+		womalog("Cannot open X display\n");
 		return false;
 	}
 	if (!glXQueryExtension(display, 0, 0)) {
-		WOMA_LOGManager_DebugMSG("X Server doesn't support GLX extension\n");
+		womalog("X Server doesn't support GLX extension\n");
 		return false;
 	}
 
@@ -106,10 +106,10 @@ bool createWindow()
 	XVisualInfo* visinfo = glXGetVisualFromFBConfig(display, fbconfig);
 	if (!visinfo)
 	{
-		WOMA_LOGManager_DebugMSG("Failed to get XVisualInfo\n");
+		womalog("Failed to get XVisualInfo\n");
 		return false;
 	}
-	WOMA_LOGManager_DebugMSG("X Visual ID = 0x%.2x\n", int(visinfo->visualid));
+	womalog("X Visual ID = 0x%.2x\n", int(visinfo->visualid));
 
 	//----------------------------------------------------------------------------
 	XSetWindowAttributes winAttr;
@@ -226,18 +226,18 @@ void keyboardCB( KeySym sym, unsigned char key, int x, int y,
 		break;
 
 	case 'k':
-		WOMA_LOGManager_DebugMSG( "You hit the 'k' key\n" );
+		womalog( "You hit the 'k' key\n" );
 		break;
 
 	case 0:
 		switch ( sym )
 		{
 		case XK_Left :
-			WOMA_LOGManager_DebugMSG( "You hit the Left Arrow key\n" );
+			womalog( "You hit the Left Arrow key\n" );
 			break;
 
 		case XK_Right :
-			WOMA_LOGManager_DebugMSG( "You hit the Right Arrow key\n" );
+			womalog( "You hit the Right Arrow key\n" );
 			break;
 		}
 		break;
@@ -321,14 +321,14 @@ void processXEvents( Atom wm_protocols, Atom wm_delete_window )
 		{
 			int xpos = (event.xbutton.x_root) - WOMA::settings.WINDOW_Xpos;
 			int ypos = (event.xbutton.y_root) - WOMA::settings.WINDOW_Ypos;
-			WOMA_LOGManager_DebugMSG("mousex: %d mouseY: %d\n", xpos, ypos);
+			womalog("mousex: %d mouseY: %d\n", xpos, ypos);
 
 			if (event.xbutton.button == Button1)
 			{
-				WOMA_LOGManager_DebugMSG("BUTTON1\n");
+				womalog("BUTTON1\n");
 				if ((xpos < 30 && ypos < 60) && (xpos > 0 && ypos > 0))
 				{
-					WOMA_LOGManager_DebugMSG("RENDER_PAGE = 25\n");
+					womalog("RENDER_PAGE = 25\n");
 					RENDER_PAGE = 25;
 					WOMA::previous_game_state = GAME_IMGUI;
 					WOMA::game_state = ENGINE_RESTART;

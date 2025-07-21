@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #pragma once
 
@@ -126,7 +126,7 @@ typedef struct playerType
 class PlayerClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234525256;
+	UINT WomaIntegrityCheck = 1234525217;
 	PlayerClass(UINT id);
 	~PlayerClass();
 

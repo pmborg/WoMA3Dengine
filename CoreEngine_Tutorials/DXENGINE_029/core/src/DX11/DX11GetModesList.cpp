@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "OSengine.h"
 #if defined DX_ENGINE
@@ -82,20 +82,20 @@ bool DX11Class::getModesList(int g_USE_MONITOR, int screenWidth, int screenHeigh
 			StringCchPrintf(GPUINFO.GraphicCard, MAX_STR_LEN, TEXT("\nGraphic Card %d: %s"), AdapterNumber, adapterDesc_Description); //Note: Have to be "wchar"
 		#endif
 		
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("%s\n"), GPUINFO.GraphicCard);
+		womalogauto(TEXT("%s\n"), GPUINFO.GraphicCard);
 
 		#if defined USE_SYSTEM_CHECK
 		if ( (SystemHandle) && (SystemHandle->systemManager)  )
 		{
 				ufreededicatedVideoMem = (UINT) (adapterDesc.DedicatedVideoMemory / (MBs));
 				StringCchPrintf(GPUINFO.DedicatedVideoMemory, MAX_STR_LEN, TEXT("Dedicated Video Mem: %d MB"), ufreededicatedVideoMem);
-				WOMA_LOGManager_DebugMSGAUTO(TEXT("%s\n"), GPUINFO.DedicatedVideoMemory);
+				womalogauto(TEXT("%s\n"), GPUINFO.DedicatedVideoMemory);
 
 				StringCchPrintf(GPUINFO.DedicatedSystemMemory, MAX_STR_LEN, TEXT("Dedicated System Memory: %d MB"), (int) (adapterDesc.DedicatedSystemMemory / (MBs)));
-				WOMA_LOGManager_DebugMSGAUTO(TEXT("%s\n"), GPUINFO.DedicatedSystemMemory);
+				womalogauto(TEXT("%s\n"), GPUINFO.DedicatedSystemMemory);
 
 				StringCchPrintf(GPUINFO.SharedSystemMemory, MAX_STR_LEN, TEXT("Shared System Memory: %d MB"), (int) (adapterDesc.SharedSystemMemory / (MBs)));
-				WOMA_LOGManager_DebugMSGAUTO(TEXT("%s\n"), GPUINFO.SharedSystemMemory);
+				womalogauto(TEXT("%s\n"), GPUINFO.SharedSystemMemory);
 
 				SystemHandle->systemDefinitions.GPUINFO.push_back (GPUINFO);
 		}
@@ -131,14 +131,14 @@ bool DX11Class::getModesList(int g_USE_MONITOR, int screenWidth, int screenHeigh
 	}
 
 	if (MonitorNumber == 0)
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("WARNING: We dont have any monitor, conneted to our Graphic Card (We are in Remote desktop without monitor attached)\n"));
+		womalogauto(TEXT("WARNING: We dont have any monitor, conneted to our Graphic Card (We are in Remote desktop without monitor attached)\n"));
 	
 	// ---------------------------------------------------------------------------------------------
 	// Iterate on all Monitors (might be also only 1!) and get all possible resolutions for them:
 	// ---------------------------------------------------------------------------------------------
 	for (UINT mon = 0; mon < MonitorNumber; mon++)
 	{
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("\nMonitor %d: "), mon);
+		womalogauto(TEXT("\nMonitor %d: "), mon);
 
 		// Get the MONITOR: "mon"
 		IF_FAILED_RETURN_FALSE(adapterGraphicCard->EnumOutputs(mon, &outputMonitor));// MONITOR
@@ -157,7 +157,7 @@ bool DX11Class::getModesList(int g_USE_MONITOR, int screenWidth, int screenHeigh
 					STRING text = SystemHandle->systemManager->wmiUtil.GetMonitorDescription(OutputDesc.Monitor);
 					if (text.length() == 0)
 						text = TEXT("---");
-					WOMA_LOGManager_DebugMSGAUTO(TEXT("%s\n"), text.c_str());
+					womalogauto(TEXT("%s\n"), text.c_str());
 
 					// 1
 					screen.MonitorName = text;
@@ -165,7 +165,7 @@ bool DX11Class::getModesList(int g_USE_MONITOR, int screenWidth, int screenHeigh
             }
 			#endif
 		} else {
-			WOMA_LOGManager_DebugMSGAUTO(TEXT("WARNING: Could not get the description of this Monitor: %d\n"), mon);
+			womalogauto(TEXT("WARNING: Could not get the description of this Monitor: %d\n"), mon);
 		}
 		
 		#if UNICODE
@@ -247,7 +247,7 @@ bool DX11Class::getModesList(int g_USE_MONITOR, int screenWidth, int screenHeigh
 				*denominator = 1;
 			}
 
-			WOMA_LOGManager_DebugMSGAUTO(TEXT("Monitor Using Remote Desktop Connection\n"));
+			womalogauto(TEXT("Monitor Using Remote Desktop Connection\n"));
 			SAFE_RELEASE(outputMonitor);		// Release the adapterGraphicCard output.
 			SAFE_DELETE_ARRAY(displayModeList);
 
@@ -338,8 +338,8 @@ bool DX11Class::getModesList(int g_USE_MONITOR, int screenWidth, int screenHeigh
 		// DEBUG: Write all Best "RefreshRate" Resolutions for this Monitor on "report.txt":
 		for (UINT res = 0; res < screen.ScreenResolution.size(); res++)
 		{
-			WOMA_LOGManager_DebugMSGAUTO(TEXT("%d x %d "), screen.ScreenResolution[res].Width, screen.ScreenResolution[res].Height);
-			WOMA_LOGManager_DebugMSGAUTO(TEXT("(%4.2f Hz)\n"), (float)screen.ScreenResolution[res].RefreshRate_Numerator / (float)screen.ScreenResolution[res].RefreshRate_Denominator);
+			womalogauto(TEXT("%d x %d "), screen.ScreenResolution[res].Width, screen.ScreenResolution[res].Height);
+			womalogauto(TEXT("(%4.2f Hz)\n"), (float)screen.ScreenResolution[res].RefreshRate_Numerator / (float)screen.ScreenResolution[res].RefreshRate_Denominator);
 		}
 
 		SystemHandle->allWindowsArray.push_back(screen);
@@ -352,7 +352,7 @@ bool DX11Class::getModesList(int g_USE_MONITOR, int screenWidth, int screenHeigh
 		return false;
 	}
 
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("\n"));
+	womalogauto(TEXT("\n"));
 
 	// We now have the "numerator" and "denominator" for the refresh rate and the list of all Resolution modes.
 	// Release the structures and interfaces used to get that information:

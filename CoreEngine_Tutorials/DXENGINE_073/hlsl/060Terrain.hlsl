@@ -8,7 +8,7 @@
 *	Downloaded from : http://woma.servegame.com
 *
 /*********************************************************************************************/
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 //case SHADER_Terrain_Texture_DEMO60:
 

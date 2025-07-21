@@ -76,7 +76,7 @@ etc. */
 
 static int ctxErrorHandler( Display *dpy, XErrorEvent *ev )
 {
-    WOMA_LOGManager_DebugMSG("WARNING: at context creation\n");
+    womalog("WARNING: at context creation\n");
     return 0;
 }
 

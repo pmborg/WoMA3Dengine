@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // Extract used packs to: "C:\Users\<user>\AppData\Local\Temp\<temp dir>"
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
@@ -87,7 +87,7 @@ TCHAR FileName[MAX_PATH];
 
 				_tprintf(TEXT("%s\n"), FileName);	// ACTION!
 				ZipAdd(hz,FileName, FileName);		// id, ZIP DEST, Source
-                WOMA_LOGManager_DebugMSGAUTO(TEXT("ZipAdd: %s\n"), FileName);
+                womalogauto(TEXT("ZipAdd: %s\n"), FileName);
 				_tcscpy(FileName,DirPath);
 			}
 		} else {
@@ -279,7 +279,7 @@ bool StartPackLibs()
 #if defined USE_MAIN_THREAD
 	threadLoadPacksAlive = true;
 #endif
-	WOMA_LOGManager_DebugMSGAUTO (TEXT("CreateThread: Initialize LoadPacks ThreadFunction\n"));
+	womalogauto (TEXT("CreateThread: Initialize LoadPacks ThreadFunction\n"));
 
 	#if DX_ENGINE_LEVEL >= 20
 		IF_NOT_RETURN_FALSE (InitPackLib("woma.pck"));	// Need to be CHAR!
@@ -318,7 +318,7 @@ bool StartPackLibs()
 	threadLoadPacksAlive = false;
 	WOMA::num_running_THREADS--; //StartPackLibs
 	#if defined _DEBUG
-	WOMA_LOGManager_DebugMSG("WOMA::num_running_THREADS: %d %s %s %d\n", WOMA::num_running_THREADS, __FILE__, __FUNCTION__, __LINE__);
+	womalog("WOMA::num_running_THREADS: %d %s %s %d\n", WOMA::num_running_THREADS, __FILE__, __FUNCTION__, __LINE__);
 	#endif
 #endif
 

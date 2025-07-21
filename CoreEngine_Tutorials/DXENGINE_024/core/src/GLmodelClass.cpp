@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "platform.h"
 #pragma warning( disable : 4473 )
@@ -34,7 +34,7 @@
 GLmodelClass::GLmodelClass(bool model3d) 
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525256;
+	WomaIntegrityCheck = 1234525217;
 
 	// SUPER: ----------------------------------------------------------------------
 	m_ObjId = 0;
@@ -637,7 +637,7 @@ void GLmodelClass::Render(/*GLopenGLclass WomaDriverClass* Driver,*/ UINT camera
 void GLmodelClass::GetIndices()
 {
     int j = 0;
-    WOMA_LOGManager_DebugMSG("Indices: \n");
+    womalog("Indices: \n");
     if (indexModelList == NULL || indexModelList->size() == 0) // BASIC object, without index? One index per vertice?
     {
         m_indexCount = m_vertexCount;			// Set the number of indices in the index array.
@@ -648,10 +648,10 @@ void GLmodelClass::GetIndices()
         for (UINT i = 0; i < m_indexCount; i++) {
             indices[i] = i;						// Load the index array with data:
 #if (defined _DEBUG || defined  DEBUG) && DX_ENGINE_LEVEL < 29
-            WOMA_LOGManager_DebugMSG("%u ", indices[i]);
+            womalog("%u ", indices[i]);
             if (j++ >= 2) {
                 j = 0;
-                WOMA_LOGManager_DebugMSG("\n");
+                womalog("\n");
             }
 #endif
         }
@@ -666,10 +666,10 @@ void GLmodelClass::GetIndices()
         for (UINT i = 0; i < m_indexCount; i++) {
             indices[i] = indexModelList->at(i);	// Load the index array with data:
 #if (defined _DEBUG || defined  DEBUG) && DX_ENGINE_LEVEL < 29
-            WOMA_LOGManager_DebugMSG("%u ", indices[i]);
+            womalog("%u ", indices[i]);
             if (j++ >= 2) {
                 j = 0;
-                WOMA_LOGManager_DebugMSG("\n");
+                womalog("\n");
             }
 #endif
         }
@@ -702,7 +702,7 @@ bool GLmodelClass::InitializeColorBuffers(/*GLopenGLclass*/ void* OpenGL)
 		vertices[i].a = (*modelColorVertex)[i].a;
 
 	#if (defined _DEBUG || defined  DEBUG) && DX_ENGINE_LEVEL < 29
-		WOMA_LOGManager_DebugMSG("vertices[i].x=%f vertices[i].y=%f vertices[i].z=%f\n", vertices[i].x, vertices[i].y, vertices[i].z);
+		womalog("vertices[i].x=%f vertices[i].y=%f vertices[i].z=%f\n", vertices[i].x, vertices[i].y, vertices[i].z);
 	#endif
 	}
 
@@ -751,7 +751,7 @@ bool GLmodelClass::InitializeTextureBuffers(/*GLopenGLclass*/ void* OpenGL)
 		vertices[i].tv = (*modelTextureVertex)[i].tv;
 
 		#if (defined _DEBUG || defined  DEBUG)
-		WOMA_LOGManager_DebugMSG("vertices: %f %f %f # %f %f \n", vertices[i].x, vertices[i].y, vertices[i].z, vertices[i].tu, vertices[i].tv);
+		womalog("vertices: %f %f %f # %f %f \n", vertices[i].x, vertices[i].y, vertices[i].z, vertices[i].tu, vertices[i].tv);
 		#endif
 	}
 

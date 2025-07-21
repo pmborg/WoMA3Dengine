@@ -8,7 +8,7 @@
 *	Downloaded from : http://woma.servegame.com
 *
 /*********************************************************************************************/
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #define PS_USE_LIGHT			//23
 //#define PS_USE_FADE			//Night/Day

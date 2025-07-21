@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: START and STOP WorldOfMiddleAge 3D ENGINE
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "platform.h"
 #include "OSengine.h"
@@ -288,9 +288,9 @@ void DefineConsoleTitle()
 #endif
 
 	StringCchPrintf(WOMA::strConsoleTitle, sizeof(WOMA::strConsoleTitle), TEXT("%s ENGINE Level: %d - %s [%s] %s\n"), WOMAOS, (int)CORE_ENGINE_LEVEL, charSet, WOMA::BINARY.c_str(), cpu_type);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("------------------------------------------------------------------------------------------\n"));
-	WOMA_LOGManager_DebugMSGAUTO(WOMA::strConsoleTitle);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("------------------------------------------------------------------------------------------\n"));
+	womalogauto(TEXT("------------------------------------------------------------------------------------------\n"));
+	womalogauto(WOMA::strConsoleTitle);
+	womalogauto(TEXT("------------------------------------------------------------------------------------------\n"));
 
 #if defined WINDOWS_PLATFORM 
 #if defined WOMA_CONSOLE_APPLICATION 
@@ -435,14 +435,14 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 	char* value = getenv("DISPLAY");
 	putenv("DISPLAY=:0");
 	value = getenv("DISPLAY");
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("env.DISPLAY: %s\n"), value);
+	womalogauto(TEXT("env.DISPLAY: %s\n"), value);
 
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("Init: INIT_GTK2()\n"));
+	womalogauto(TEXT("Init: INIT_GTK2()\n"));
 	if (!PLATFORM_INIT_GTK2())
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("Could not initialize GTK2!")); // Note: Dont use DEBUG_MSG yet...
+		womalogauto(TEXT("Could not initialize GTK2!")); // Note: Dont use DEBUG_MSG yet...
 #endif
 
-    WOMA_LOGManager_DebugMSGAUTO("<%s> STARTUP ENDED\n", PROJECT_NAME);
+    womalogauto("<%s> STARTUP ENDED\n", PROJECT_NAME);
 }
 
 void APPLICATION_STOP()
@@ -595,7 +595,7 @@ int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption, bool yesORno)
 #if defined WINDOWS_PLATFORM
 	{ HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_INTENSITY); }
 
-	WOMA_LOGManager_DebugMSGAUTO(fullMsg);
+	womalogauto(fullMsg);
 	{ HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED); }
 
 		res = MessageBox(NULL, lpText, lpCaption, (yesORno) ? MB_YESNO : MB_OK);
@@ -734,7 +734,7 @@ bool download(const std::string url, const std::string file)
 #ifdef ANDROID_PLATFORM
 #include <android/log.h>
 
-//WOMA_LOGManager_DebugMSG
+//womalog
 void LogInfo(const char* sTag, const char* fmt, ...)
 {
 	va_list ap;

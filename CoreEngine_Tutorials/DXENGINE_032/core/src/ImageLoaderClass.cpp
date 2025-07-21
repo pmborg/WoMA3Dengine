@@ -18,7 +18,7 @@
 //
 // --------------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "platform.h"
 #include "mem_leak.h"
@@ -61,7 +61,7 @@ using namespace DirectX;
 ImageLoaderClass::ImageLoaderClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525256;
+	WomaIntegrityCheck = 1234525217;
 
 	//private:
 	pixels = NULL;

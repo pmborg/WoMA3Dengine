@@ -17,7 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Get User Language
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "OSengine.h"
 #include "OSmain_dir.h"
@@ -61,7 +61,7 @@ namespace WOMA
 		DWORD dwCount = GetLocaleInfo(lcidLang, LOCALE_SENGLANGUAGE, szLangBuffer, MAX_LANG_LEN);
 		if (!dwCount)
 		{
-			WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("Failed to get locale language information\n"));
+			womalogauto((TCHAR*)TEXT("Failed to get locale language information\n"));
 			return false;
 		}// End if
 
@@ -73,14 +73,14 @@ namespace WOMA
 
 		if (!dwCount)
 		{
-			WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("Failed to get locale country information\n"));
+			womalogauto((TCHAR*)TEXT("Failed to get locale country information\n"));
 			return false;
 		}// End if
 
 		 // Prepare language string
 		TCHAR str_lang[MAX_STR_LEN]; // Will hold country
 		StringCchPrintf(str_lang, sizeof(str_lang), TEXT("Language: %s, %s\n"), szLangBuffer, szCountryBuffer);
-		WOMA_LOGManager_DebugMSGAUTO(str_lang);
+		womalogauto(str_lang);
 #endif
 
 		// Return execution status

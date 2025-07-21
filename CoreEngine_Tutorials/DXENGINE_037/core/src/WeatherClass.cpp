@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 //   Get the nearest airport, based on our IP.
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "OSengine.h"
 #if CORE_ENGINE_LEVEL >= 9 && defined USE_METARCLASS //ENGINE_LEVEL >= 13
@@ -48,7 +48,7 @@ extern bool download(const std::string url, const std::string file);
 
 WeatherClass::WeatherClass()
 {
-    WomaIntegrityCheck = 1234525256;
+    WomaIntegrityCheck = 1234525217;
 	CLASSLOADER();
 
     Metar = TEXT("");
@@ -195,7 +195,7 @@ bool WeatherClass::GetPresentWeather(TCHAR* ICAO)
     StringCchPrintf(downloadFilename, sizeof(downloadFilename), TEXT("https://%s=%s"), TEXT("metar.vatsim.net/metar.php?id"), ICAO);
     //LPPT 011400Z 32008KT 290V360 9999 FEW022 BKN026 23/17 Q1019
 
-    WOMA_LOGManager_DebugMSG("URL: %s\n", downloadFilename);
+    womalog("URL: %s\n", downloadFilename);
 
 #if defined WINDOWS_PLATFORM
     HRESULT hr = URLDownloadToFile(NULL, downloadFilename, WOMA::LoadFile (szFileName), 0, NULL);
@@ -204,7 +204,7 @@ bool WeatherClass::GetPresentWeather(TCHAR* ICAO)
     if (!URLDownloadToFile(NULL, downloadFilename, WOMA::LoadFile(szFileName), 0, NULL))
 #endif
     {
-        WOMA_LOGManager_DebugMSG("Could not comunicate with %s.com Server!", downloadFilename);
+        womalog("Could not comunicate with %s.com Server!", downloadFilename);
         return false;
     }
 #else
@@ -230,7 +230,7 @@ bool WeatherClass::GetPresentWeather(TCHAR* ICAO)
         getline(fileIn, line);
         //i = (int) line.find(TEXT("METAR:")); //look for "METAR:" at html file
         i = (int)line.find(ICAO); //look for "METAR:" at html file
-        WOMA_LOGManager_DebugMSG("%s\n", line.c_str());
+        womalog("%s\n", line.c_str());
         if (i > 1)
             break;
     }

@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // This code was inpired on: https://www.rastertek.com/dx11tut12.html
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 
 #include "platform.h"
@@ -43,7 +43,7 @@
 textFontClass::textFontClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525256;
+	WomaIntegrityCheck = 1234525217;
 
 }
 
@@ -132,7 +132,7 @@ bool textFontClass::LoadFontData(TCHAR* filename)
 	// Read in the font size and spacing between chars.
 	CHAR file[MAX_STR_LEN] = { 0 }; wtoa(file, filename, 100);
 	fin.open(file);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("LoadFontData: %s\n"), file);
+	womalogauto(TEXT("LoadFontData: %s\n"), file);
 	if(fin.fail()){return false;}
 
 	// Read in the 95 used ascii characters for text.

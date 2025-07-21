@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 // 
 // Eclipse Installation of C++ development for cygwin
 // http://www.badprog.com/c-eclipse-installation-of-c-c-development-tools-cdt-and-cygwin-for-windows
@@ -111,7 +111,7 @@ LinuxSystemClass::~LinuxSystemClass()
 void LinuxSystemClass::Shutdown()
 {
 	// LinuxSystemClass Shutdown:
-	WOMA_LOGManager_DebugMSG ("LinuxSystemClass::Stop()\n");
+	womalog ("LinuxSystemClass::Stop()\n");
 
 #if defined USE_SCENE_MANAGER
 	//SceneManager* sceneManager = SceneManager::GetInstance();
@@ -153,7 +153,7 @@ bool LinuxSystemClass::APPLICATION_INIT_SYSTEM() // ApplicationInit()
 	bool result = true;
 	AppSettings->DRIVER = DRIVER_GL3; //Force OpenGL Driver
 
-	WOMA_LOGManager_DebugMSG("LinuxSystemClass::APPLICATION_INIT_SYSTEM()\n");
+	womalog("LinuxSystemClass::APPLICATION_INIT_SYSTEM()\n");
 
 	IF_NOT_RETURN_FALSE(APPLICATION_CORE_SYSTEM());
 

@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 //ANDROID NATIVE APLICATION: http://developer.android.com/reference/android/app/NativeActivity.html
 
@@ -32,7 +32,7 @@
 AndroidSystemClass::AndroidSystemClass(WOMA::Settings* appSettings) : SystemClass()
 {
     CLASSLOADER();
-    WomaIntegrityCheck = 1234525256;
+    WomaIntegrityCheck = 1234525217;
     AppSettings = appSettings; // Super
     SystemHandle = this;
 
@@ -77,7 +77,7 @@ AndroidSystemClass::~AndroidSystemClass()
 void AndroidSystemClass::Shutdown()
 {
     // AndroidSystemClass Shutdown:
-    WOMA_LOGManager_DebugMSG("AndroidSystemClass::Stop()\n");
+    womalog("AndroidSystemClass::Stop()\n");
 
 #if defined USE_SCENE_MANAGER
     //SceneManager* sceneManager = SceneManager::GetInstance();
@@ -97,7 +97,7 @@ bool AndroidSystemClass::APPLICATION_INIT_SYSTEM()
     bool result = true;
     AppSettings->DRIVER = DRIVER_GL3; //Force OpenGL Driver
 
-    WOMA_LOGManager_DebugMSG ("AndroidSystemClass::APPLICATION_INIT_SYSTEM()\n");
+    womalog ("AndroidSystemClass::APPLICATION_INIT_SYSTEM()\n");
 
 #if defined USE_ANDROID_SOUND
 	DownloadFiles(AUDIO_LINK, AUDIO_FILE);
@@ -155,9 +155,9 @@ bool AndroidSystemClass::APPLICATION_INIT_SYSTEM()
     // SYSTEM-CHECK:
 #if CORE_ENGINE_LEVEL >= 4 && defined USE_SYSTEM_CHECK		// BEFORE: APPLICATION_INIT_MAIN_WINDOW()
     IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());		// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 
-    WOMA_LOGManager_DebugMSG("==========================================================\n");
-    WOMA_LOGManager_DebugMSGAUTO(TEXT("BEFORE SYSTEM START - CORE_ENGINE_LEVEL: %d\n"), CORE_ENGINE_LEVEL);
-    WOMA_LOGManager_DebugMSG("==========================================================\n");
+    womalog("==========================================================\n");
+    womalogauto(TEXT("BEFORE SYSTEM START - CORE_ENGINE_LEVEL: %d\n"), CORE_ENGINE_LEVEL);
+    womalog("==========================================================\n");
 #endif
 
 #if (defined USE_PROCESS_OS_KEYS || defined INTRO_DEMO)
@@ -242,7 +242,7 @@ void AndroidSystemClass::ProcessFrame()
 		
 
 		if (m_Driver->RenderfirstTime) {
-			WOMA_LOGManager_DebugMSG("END:  AndroidSystemClass::ProcessFrame()\n");
+			womalog("END:  AndroidSystemClass::ProcessFrame()\n");
 			m_Driver->RenderfirstTime = false;
 		}
 	}

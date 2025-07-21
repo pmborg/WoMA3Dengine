@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: DEFINE COMMON WorldOfMiddleAge 3D ENGINE MACROS
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #pragma once
 #ifndef __WOMA_MACROS_H__
@@ -77,7 +77,7 @@
 
 #if _DEBUG
 	#if defined VERBOSE_MEMORY_DEBUG
-		#define IF_NOT_THROW_EXCEPTION(x) { WOMA_LOGManager_DebugMSG("[MEM_DEBUG] NEW %s CREATED!\n", #x); if (!x) WomaFatalException("Not Enough Memory!"); }
+		#define IF_NOT_THROW_EXCEPTION(x) { womalog("[MEM_DEBUG] NEW %s CREATED!\n", #x); if (!x) WomaFatalException("Not Enough Memory!"); }
 	#else
 		#define IF_NOT_THROW_EXCEPTION(x) { if (!x) throw woma_exception("Exception!", __FILE__, __FUNCTION__, __LINE__); }
 	#endif
@@ -128,24 +128,24 @@ extern const wchar_t* GetWC(const char* c);
 #endif
 
 #if defined USE_LOG_MANAGER
-	#define WOMA_LOGManager_DebugMSGAUTO if (WOMA::logManager) WOMA::logManager->DEBUG_MSG
-	#define WOMA_LOGManager_DebugMSG	 if (WOMA::logManager) WOMA::logManager->DEBUG_MSG
-	#define WOMA_LOGManager_DebugMSGW	 if (WOMA::logManager) WOMA::logManager->DEBUG_MSG
+	#define womalogauto if (WOMA::logManager) WOMA::logManager->DEBUG_MSG
+	#define womalog		if (WOMA::logManager) WOMA::logManager->DEBUG_MSG
+	#define womalogw	if (WOMA::logManager) WOMA::logManager->DEBUG_MSG
 #else
 	#if defined ANDROID_PLATFORM
-	#define WOMA_LOGManager_DebugMSG			_tprintf
+	#define womalog			_tprintf
 	#else
-	#define WOMA_LOGManager_DebugMSG			printf	//CHAR
+	#define womalog			printf	//CHAR
 	#endif
 
 	#if defined UNICODE
-		#define WOMA_LOGManager_DebugMSGAUTO	wprintf	//TCHAR
+		#define womalogauto	wprintf	//TCHAR
 	#else
-		#define WOMA_LOGManager_DebugMSGAUTO	_tprintf //WOMA_LOGManager_DebugMSG	//TCHAR
+		#define womalogauto	_tprintf //womalog	//TCHAR
 	#endif
 
 	#if defined WINDOWS_PLATFORM
-	  #define WOMA_LOGManager_DebugMSGW			wprintf	//WCHAR
+	  #define womalogw			wprintf	//WCHAR
 	#endif
 #endif
 
@@ -160,8 +160,8 @@ extern const wchar_t* GetWC(const char* c);
 #endif
 
 #if _DEBUG && defined WINDOWS_PLATFORM //defined CLASS_DEBUG
-	#define CLASSLOADER() { HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN); WOMA_LOGManager_DebugMSG((CHAR*) "[CLASS_LOAD %d] %s\n", CLASS_LOAD_N++, __FUNCTION__); SetConsoleTextAttribute(hConsole, FOREGROUND_RED + FOREGROUND_GREEN + FOREGROUND_BLUE); }
-	#define CLASSDELETE() { HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_RED); WOMA_LOGManager_DebugMSG((CHAR*) "[CLASS_DELETE %d] %s\n", CLASS_DELETE_N++, __FUNCTION__); SetConsoleTextAttribute(hConsole, FOREGROUND_RED+FOREGROUND_GREEN+FOREGROUND_BLUE); }
+	#define CLASSLOADER() { HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN); womalog((CHAR*) "[CLASS_LOAD %d] %s\n", CLASS_LOAD_N++, __FUNCTION__); SetConsoleTextAttribute(hConsole, FOREGROUND_RED + FOREGROUND_GREEN + FOREGROUND_BLUE); }
+	#define CLASSDELETE() { HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_RED); womalog((CHAR*) "[CLASS_DELETE %d] %s\n", CLASS_DELETE_N++, __FUNCTION__); SetConsoleTextAttribute(hConsole, FOREGROUND_RED+FOREGROUND_GREEN+FOREGROUND_BLUE); }
 #else
 	#define CLASSLOADER() {}
 	#define CLASSDELETE() {}
@@ -187,7 +187,7 @@ extern const wchar_t* GetWC(const char* c);
 
 #ifndef SAFE_SHUTDOWN
 	#if defined VERBOSE_MEMORY_DEBUG
-		#define SAFE_SHUTDOWN(p) { if(p) { (p)->Shutdown(); WOMA_LOGManager_DebugMSGAUTO(TEXT("[MEM_DEBUG] SHUTDOWN %s\n"), #p); delete (p); (p)=NULL; } }
+		#define SAFE_SHUTDOWN(p) { if(p) { (p)->Shutdown(); womalogauto(TEXT("[MEM_DEBUG] SHUTDOWN %s\n"), #p); delete (p); (p)=NULL; } }
 	#else
 		#define SAFE_SHUTDOWN(p) { if(p) { (p)->Shutdown(); delete (p); (p)=NULL; } }
 	#endif
@@ -201,7 +201,7 @@ extern const wchar_t* GetWC(const char* c);
 
 #ifndef SAFE_RELEASE
 	#if defined VERBOSE_MEMORY_DEBUG
-		#define SAFE_RELEASE(p)  { if(p) { WOMA_LOGManager_DebugMSGAUTO(TEXT("[MEM_DEBUG] RELEASE %s\n"), #p); (p)->Release(); (p)=NULL; } }
+		#define SAFE_RELEASE(p)  { if(p) { womalogauto(TEXT("[MEM_DEBUG] RELEASE %s\n"), #p); (p)->Release(); (p)=NULL; } }
 	#else
 #define SAFE_RELEASE(p)  { if((p) && !IS_INVALID_PTR(p)) { (p)->Release(); (p)=NULL; } }
 	#endif
@@ -209,7 +209,7 @@ extern const wchar_t* GetWC(const char* c);
 
 #ifndef SAFE_DELETE
 	#if defined VERBOSE_MEMORY_DEBUG
-		#define SAFE_DELETE(p)   { if(p) {  WOMA_LOGManager_DebugMSGAUTO(TEXT("[MEM_DEBUG] DELETE %s\n"), #p); delete (p); (p)=NULL; } }
+		#define SAFE_DELETE(p)   { if(p) {  womalogauto(TEXT("[MEM_DEBUG] DELETE %s\n"), #p); delete (p); (p)=NULL; } }
 	#else
 		#define SAFE_DELETE(p)   { if(p) {  delete (p); (p)=NULL; } }
 	#endif
@@ -217,7 +217,7 @@ extern const wchar_t* GetWC(const char* c);
 
 #ifndef SAFE_DELETE_ARRAY
 	#if defined VERBOSE_MEMORY_DEBUG
-		#define SAFE_DELETE_ARRAY(p) { if(p) { WOMA_LOGManager_DebugMSGAUTO(TEXT("[MEM_DEBUG] DELETE_ARRAY %s\n"), #p); delete[] (p); (p)=NULL; } }
+		#define SAFE_DELETE_ARRAY(p) { if(p) { womalogauto(TEXT("[MEM_DEBUG] DELETE_ARRAY %s\n"), #p); delete[] (p); (p)=NULL; } }
 	#else
 		#define SAFE_DELETE_ARRAY(p) { if(p) { delete[] (p); (p)=NULL; } }
 	#endif

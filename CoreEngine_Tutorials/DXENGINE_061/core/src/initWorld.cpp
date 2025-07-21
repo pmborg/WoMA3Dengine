@@ -19,7 +19,7 @@
 //  - Get data from AstroClass
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "OSengine.h"
 
@@ -113,7 +113,7 @@ AstroClass* astroClass = NULL;
 InitWorld::InitWorld ()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525256;
+	WomaIntegrityCheck = 1234525217;
 
 	//public:
     LatDir = TEXT("N");
@@ -158,7 +158,7 @@ InitWorld::InitWorld ()
 #if defined NDEBUG || CORE_ENGINE_LEVEL == 8
 		gotLocation = getMyLocation(&latitude, &longitude, ip);
 #endif
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("gotLocation: true\n"));
+		womalogauto(TEXT("gotLocation: true\n"));
 	}
 	gotLocation = false;//
 	if (!gotLocation || latitude==0 || longitude==0) 
@@ -171,14 +171,14 @@ InitWorld::InitWorld ()
 
     // Moon Calc (Moon's age ):
     UINT moonAge = (UINT) astroClass->MoonAge(astroClass->day, astroClass->month, astroClass->year);		// Values from: 1 to 30 (30: New MOON) (15: FULL MOON)
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("moonAge: %d\n"), moonAge);
+	womalogauto(TEXT("moonAge: %d\n"), moonAge);
 
     // Moon 24 Index Images
     moon_image_indx = moonAge * 24 / 30; // We just have 24 images and not 30, do the conversion
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("moon_image_indx: %d\n"), moon_image_indx);
+	womalogauto(TEXT("moon_image_indx: %d\n"), moon_image_indx);
 
     StringCchPrintf(moonFilename, sizeof(moonFilename), TEXT("engine/moon%d.jpg"), moon_image_indx);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("moonFilename: %s\n"), moonFilename);
+	womalogauto(TEXT("moonFilename: %s\n"), moonFilename);
 
     // Get sunRise in Local Time!:
     //-----------------------------------------------------------------------------
@@ -254,7 +254,7 @@ STRING		szFileName = wLOCAL_APPDATA + TEXT("myip.txt");
 #ifdef USE_NETWORK
 	DeleteFile(szFileName.c_str());
 	//URLDownloadToFileA(LPUNKNOWN, _In_ LPCSTR, _In_opt_ LPCSTR, DWORD, _In_opt_ LPBINDSTATUSCALLBACK);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("Download: %s\n"), EXTERNAL_IP); // Note: Dont use DEBUG_MSG yet...
+	womalogauto(TEXT("Download: %s\n"), EXTERNAL_IP); // Note: Dont use DEBUG_MSG yet...
 #if defined WINDOWS_PLATFORM
 	HRESULT hr = URLDownloadToFile(NULL, EXTERNAL_IP, szFileName.c_str(), 0, NULL);
 	if (hr != S_OK) 
@@ -276,7 +276,7 @@ STRING		szFileName = wLOCAL_APPDATA + TEXT("myip.txt");
 		{ WomaMessageBox(TEXT("MyIp File not found, (use: #define USE_NETWORK) at core_engine_level.h"), (TCHAR*)szFileName.c_str()); return TEXT(""); }
 
 	getline(fileIn, str);
-	WOMA_LOGManager_DebugMSG("IP: %s\n", str.c_str()); // Note: Dont use DEBUG_MSG yet...
+	womalog("IP: %s\n", str.c_str()); // Note: Dont use DEBUG_MSG yet...
 	fileIn.close();	// Close the file.
 #endif
 

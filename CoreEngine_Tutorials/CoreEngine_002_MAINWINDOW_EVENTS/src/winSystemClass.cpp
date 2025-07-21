@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Define APIs for winSystemClass.cpp which is the WINDOWS OS API
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "OSengine.h"
 #include "mem_leak.h"
@@ -38,7 +38,7 @@ WinSystemClass::WinSystemClass() : SystemClass()
 //----------------------------------------------------------------------------------
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525256;
+	WomaIntegrityCheck = 1234525217;
 
 	//public:
 	SystemHandle = this;
@@ -97,14 +97,14 @@ WinSystemClass::~WinSystemClass()
 
 bool WinSystemClass::APPLICATION_BEFORE_WINDOW()
 {
-	WOMA_LOGManager_DebugMSG("WinSystemClass::APPLICATION_CORE_SYSTEM()\n");
+	womalog("WinSystemClass::APPLICATION_CORE_SYSTEM()\n");
 
 	return true;
 }
 
 bool WinSystemClass::APPLICATION_AFTER_WINDOW()
 {
-    WOMA_LOGManager_DebugMSG("WinSystemClass::APPLICATION_CORE_INIT_DONE()\n");
+    womalog("WinSystemClass::APPLICATION_CORE_INIT_DONE()\n");
 
     return true;
 }
@@ -189,7 +189,7 @@ void WinSystemClass::Shutdown()
 //----------------------------------------------------------------------------------
 {
 	// WinSystemClass Shutdown:
-	WOMA_LOGManager_DebugMSGAUTO ((TCHAR*)TEXT("WinSystemClass::Shutdown()\n"));
+	womalogauto ((TCHAR*)TEXT("WinSystemClass::Shutdown()\n"));
 
 	// Destroy Drivers:
 	SystemClass::Shutdown();
@@ -331,9 +331,9 @@ bool WinSystemClass::InitOsInput()
 	SystemClass::InitOsInput();	//m_Application->SetPlayerPosition(g_NetID);
 
 	// INIT OS Keyboard (WIN32: This object will be used to handle reading the input from the user)
-	WOMA_LOGManager_DebugMSG("===============================================================================\n");
-	WOMA_LOGManager_DebugMSG("INIT OS BASIC INPUT\n");
-	WOMA_LOGManager_DebugMSG("===============================================================================\n");
+	womalog("===============================================================================\n");
+	womalog("INIT OS BASIC INPUT\n");
+	womalog("===============================================================================\n");
 
 	m_OsInput = NEW InputClass;
 	IF_NOT_THROW_EXCEPTION(m_OsInput);
@@ -341,9 +341,9 @@ bool WinSystemClass::InitOsInput()
 
 #if defined USE_DIRECT_INPUT
 	// Set the Player Position Init Player Class
-	WOMA_LOGManager_DebugMSG("===============================================================================\n");
-	WOMA_LOGManager_DebugMSG("INIT OS ADVANCED DIRECT INPUT\n");
-	WOMA_LOGManager_DebugMSG("===============================================================================\n");
+	womalog("===============================================================================\n");
+	womalog("INIT OS ADVANCED DIRECT INPUT\n");
+	womalog("===============================================================================\n");
 
 	DXsystemHandle->m_Input = (DXInputClass*)&SystemHandle->m_InputManager;
 #endif
@@ -356,9 +356,9 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
 										/*OpenGL*/ driver, int& width, int& height)
 //----------------------------------------------------------------------------
 {
-	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("---------------------------------\n"));
-	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("WinSystemClass::CreateMainWindow()\n"));
-	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("---------------------------------\n"));
+	womalogauto((TCHAR*)TEXT("---------------------------------\n"));
+	womalogauto((TCHAR*)TEXT("WinSystemClass::CreateMainWindow()\n"));
+	womalogauto((TCHAR*)TEXT("---------------------------------\n"));
 
 	if (AppSettings->FULL_SCREEN)
 		AppSettings->AllowResize = true;					// Force: "Allow" User to resize to FullScreen.
@@ -397,15 +397,15 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
 			if (((deviceNum == MONITOR_NUM) && (AppSettings->UseAllMonitors == true)) || (AppSettings->UseAllMonitors == false))
 			{
 				_tcscpy_s(MainDeviceName, 32, displayDevice.DeviceName);
-				WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("Monitor: %s\n"), displayDevice.DeviceName); //WCHAR
-				WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("Card: %s "), displayDevice.DeviceString);
+				womalogauto((TCHAR*)TEXT("Monitor: %s\n"), displayDevice.DeviceName); //WCHAR
+				womalogauto((TCHAR*)TEXT("Card: %s "), displayDevice.DeviceString);
 			}
 
 			// Use the Monitor selected by user:
 			if (((deviceNum == AppSettings->UI_MONITOR) && (AppSettings->UseAllMonitors == false)) ||
 				((deviceNum == MONITOR_NUM) && (AppSettings->UseAllMonitors == true)))
 			{
-				WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("[Using this Monitor!]\n")); //WCHAR
+				womalogauto((TCHAR*)TEXT("[Using this Monitor!]\n")); //WCHAR
 				_tcscpy_s(DeviceNameToUseOnFullScreen, 32, displayDevice.DeviceName);
 
 				//AppSettings->WINDOW_Xpos	windowsArray[MONITOR_NUM].width		AppSettings->BITSPERPEL
@@ -427,13 +427,13 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
 				AppSettings->BITSPERPEL = devMode.dmBitsPerPel;
 			}
 			else
-				WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("\n")); //WCHAR
+				womalogauto((TCHAR*)TEXT("\n")); //WCHAR
 
 			if (((deviceNum == MONITOR_NUM) && (AppSettings->UseAllMonitors == true)) || (AppSettings->UseAllMonitors == false))
 			{
-				WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("X0, Y0 = %d, %d\n"), devMode.dmPosition.x, devMode.dmPosition.y);			// Get X0, Y0 position (of THIS monitor):
-				WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("Current Resolution: %d x %d\n"), devMode.dmPelsWidth, devMode.dmPelsHeight);// Current Resolution (on THIS monitor):
-				WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("Bits Supported: %d Bits\n\n"), devMode.dmBitsPerPel);							// Get num. bits per pixel Supported (on THIS monitor):
+				womalogauto((TCHAR*)TEXT("X0, Y0 = %d, %d\n"), devMode.dmPosition.x, devMode.dmPosition.y);			// Get X0, Y0 position (of THIS monitor):
+				womalogauto((TCHAR*)TEXT("Current Resolution: %d x %d\n"), devMode.dmPelsWidth, devMode.dmPelsHeight);// Current Resolution (on THIS monitor):
+				womalogauto((TCHAR*)TEXT("Bits Supported: %d Bits\n\n"), devMode.dmBitsPerPel);							// Get num. bits per pixel Supported (on THIS monitor):
 			}
 		}
 		else
@@ -454,7 +454,7 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
 	// ----------------------------------------------------------------
 	if (AppSettings->FULL_SCREEN)
 	{
-		WOMA_LOGManager_DebugMSG((TCHAR*)TEXT("Go to FullScreen Mode\n"));
+		womalog((TCHAR*)TEXT("Go to FullScreen Mode\n"));
 
 		// Do we need to update Display Settings, i.e. user is already on this "resolution mode" (AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT) ?
 		{
@@ -466,10 +466,10 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
 			dmScreenSettings.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
 
 			// Change the current "Display Settings" for "Full-Screen" Mode (in the monitor Selected by User)
-			WOMA_LOGManager_DebugMSG((TCHAR*)TEXT("Monitor: %s  --- going ---> to FULLSCREEN: %dx%d %d\n"), DeviceNameToUseOnFullScreen, dmScreenSettings.dmPelsWidth, dmScreenSettings.dmPelsHeight, dmScreenSettings.dmBitsPerPel);
+			womalog((TCHAR*)TEXT("Monitor: %s  --- going ---> to FULLSCREEN: %dx%d %d\n"), DeviceNameToUseOnFullScreen, dmScreenSettings.dmPelsWidth, dmScreenSettings.dmPelsHeight, dmScreenSettings.dmBitsPerPel);
 			if (ChangeDisplaySettingsEx(DeviceNameToUseOnFullScreen, &dmScreenSettings, NULL, CDS_FULLSCREEN, NULL) != DISP_CHANGE_SUCCESSFUL)
 			{
-				WOMA_LOGManager_DebugMSG((TCHAR*)TEXT("Switch to FULLSCREEN: Failed\n"));
+				womalog((TCHAR*)TEXT("Switch to FULLSCREEN: Failed\n"));
 
 				// Used to convert 1500x700 (sample of a "non available size" in Full-Screen) 
 				// Last try - Use current resolution instead once we want Full-Screen Mode:
@@ -480,7 +480,7 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
 				dmScreenSettings.dmPelsWidth = (unsigned long)AppSettings->WINDOW_WIDTH;
 				dmScreenSettings.dmPelsHeight = (unsigned long)AppSettings->WINDOW_HEIGHT;
 
-				WOMA_LOGManager_DebugMSG((TCHAR*)TEXT("Monitor: %s  --- going ---> to FULLSCREEN: %dx%d %d\n"), DeviceNameToUseOnFullScreen, dmScreenSettings.dmPelsWidth, dmScreenSettings.dmPelsHeight, dmScreenSettings.dmBitsPerPel);
+				womalog((TCHAR*)TEXT("Monitor: %s  --- going ---> to FULLSCREEN: %dx%d %d\n"), DeviceNameToUseOnFullScreen, dmScreenSettings.dmPelsWidth, dmScreenSettings.dmPelsHeight, dmScreenSettings.dmBitsPerPel);
 				if (ChangeDisplaySettingsEx(DeviceNameToUseOnFullScreen, &dmScreenSettings, NULL, CDS_FULLSCREEN, NULL) != DISP_CHANGE_SUCCESSFUL)
 					WomaFatalException("ERROR - Switch to FULLSCREEN: Can't use that resolution!");
 			}
@@ -488,7 +488,7 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
 	}
 	else// Windowed: If we will not change the resolution, use current resolution (of THIS monitor)
 	{	// ---------------------------------------------------------------------------------------
-		WOMA_LOGManager_DebugMSG((TCHAR*)TEXT("Go to Windowed Mode\n"));
+		womalog((TCHAR*)TEXT("Go to Windowed Mode\n"));
 		AppSettings->SCREEN_RESOLUTION_WIDTH = Current_Screen_WIDTH;	//GetSystemMetrics(SM_CXSCREEN);
 		AppSettings->SCREEN_RESOLUTION_HEIGHT = Current_Screen_HEIGHT;	//GetSystemMetrics(SM_CYSCREEN);
 	}
@@ -853,7 +853,7 @@ void WinSystemClass::UNPAUSE()
 void WinSystemClass::ONRESIZE()
 {
 	if (SystemHandle) {
-		WOMA_LOGManager_DebugMSG("ONRESIZE()\n");
+		womalog("ONRESIZE()\n");
 		if (SystemHandle->m_Application)
 			SystemHandle->m_Application->WOMA_APPLICATION_InitGUI();
 		#if defined DX_ENGINE //OPENGL TODO

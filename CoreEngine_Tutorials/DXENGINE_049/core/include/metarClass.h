@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 #pragma once
 
 #include "main.h" // STRING
@@ -73,7 +73,7 @@ extern Weather weather;
 class MetarClass
 {
 public:
-    UINT WomaIntegrityCheck = 1234525256;
+    UINT WomaIntegrityCheck = 1234525217;
 	MetarClass();
 	~MetarClass();
 

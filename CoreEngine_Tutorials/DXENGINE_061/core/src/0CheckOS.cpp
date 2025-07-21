@@ -17,7 +17,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "OSengine.h"
 #include "OSmain_dir.h"		//#include "OsDirectories.h"
@@ -31,7 +31,7 @@
 SystemManager::SystemManager()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525256;
+	WomaIntegrityCheck = 1234525217;
 
 	CPUSpeedMHz = 0;
 
@@ -93,7 +93,7 @@ bool SystemManager::CheckOS()
 	//------------------------------------------------------------------
 #if defined WINDOWS_PLATFORM
 	StringCchPrintf(SystemHandle->systemDefinitions.platform, MAX_STR_LEN, TEXT("Platform: %s - %s"), GetOSversionPlatform(), GetOsVersion());
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("%s\n"), SystemHandle->systemDefinitions.platform);
+	womalogauto(TEXT("%s\n"), SystemHandle->systemDefinitions.platform);
 #else
 	IF_NOT_RETURN_FALSE(CheckOSVersion());
 #endif
@@ -108,7 +108,7 @@ bool SystemManager::CheckOS()
 #endif
 		);
 
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("%s\n"), SystemHandle->systemDefinitions.characterSet);
+	womalogauto(TEXT("%s\n"), SystemHandle->systemDefinitions.characterSet);
 
 	// Check Bits Architecture: 32Bits+SSE2 vs 64Bits+AVX
 	//------------------------------------------------------------------
@@ -124,7 +124,7 @@ bool SystemManager::CheckOS()
 #endif
 
 	StringCchPrintf(SystemHandle->systemDefinitions.binaryArchitecture, MAX_STR_LEN, TEXT("Binary Architecture: %d bits"), _BITS_);
-	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.binaryArchitecture);
+	womalogauto((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.binaryArchitecture);
 
 #ifdef WIN10 //NOTE: WIN11 is WIN10 Platform upgraded.
 	#define _BINARY_CODE_ TEXT("Windows 10 Code")
@@ -139,12 +139,12 @@ bool SystemManager::CheckOS()
 #endif
 
 	StringCchPrintf(SystemHandle->systemDefinitions.binaryCode, MAX_STR_LEN, TEXT("Binary Code: %s"), _BINARY_CODE_);
-	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.binaryCode);
+	womalogauto((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.binaryCode);
 
 #if defined WINDOWS_PLATFORM
 
 	StringCchPrintf(SystemHandle->systemDefinitions.windowsVersion, MAX_STR_LEN, TEXT("Windows Version: %d.%d.%d"), MajorVersion, MinorVersion, BuildVersion);
-	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.windowsVersion);
+	womalogauto((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.windowsVersion);
 
 	std::map<CString, CString> mapWindowsVersions
 	{
@@ -178,14 +178,14 @@ bool SystemManager::CheckOS()
 	STRING verstr = mapWindowsVersions[v];
 
 	StringCchPrintf(SystemHandle->systemDefinitions.windowsBuildVersion, MAX_STR_LEN, TEXT("Windows Version: %s"), verstr.c_str());
-	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.windowsBuildVersion);
+	womalogauto((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.windowsBuildVersion);
  
 #else
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("sysname: %s\n"), SystemHandle->systemDefinitions.ver.sysname);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("nodename: %s\n"), SystemHandle->systemDefinitions.ver.nodename);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("release: %s\n"), SystemHandle->systemDefinitions.ver.release);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("version: %s\n"), SystemHandle->systemDefinitions.ver.version);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("machine: %s\n"), SystemHandle->systemDefinitions.ver.machine);
+	womalogauto(TEXT("sysname: %s\n"), SystemHandle->systemDefinitions.ver.sysname);
+	womalogauto(TEXT("nodename: %s\n"), SystemHandle->systemDefinitions.ver.nodename);
+	womalogauto(TEXT("release: %s\n"), SystemHandle->systemDefinitions.ver.release);
+	womalogauto(TEXT("version: %s\n"), SystemHandle->systemDefinitions.ver.version);
+	womalogauto(TEXT("machine: %s\n"), SystemHandle->systemDefinitions.ver.machine);
 #endif
 
 #if defined WINDOWS_PLATFORM
@@ -194,7 +194,7 @@ bool SystemManager::CheckOS()
 	StringCchPrintf(SystemHandle->systemDefinitions.osName, MAX_STR_LEN, TEXT("OS name: %s"), OS_name());
 #endif
 
-	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.osName);
+	womalogauto((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.osName);
 
 	// Command LINE:
 	//------------------------------------------------------------------
@@ -204,7 +204,7 @@ bool SystemManager::CheckOS()
 	else
 		StringCchPrintf(SystemHandle->systemDefinitions.cmdLine, MAX_STR_LEN, TEXT("CMD LINE: %s"), WOMA::filename.c_str());
 
-	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.cmdLine);
+	womalogauto((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.cmdLine);
 #else // LINUX || ANDROID
 	// Remember argv[0] is the "Program fileName":
 	STRING CMD_LINE = TEXT("CMD LINE:");
@@ -214,8 +214,8 @@ bool SystemManager::CheckOS()
 			CMD_LINE += WOMA::ARGv[i];
 		}
 	}
-	WOMA_LOGManager_DebugMSG("%s", CMD_LINE.c_str());
-	WOMA_LOGManager_DebugMSG("\n");
+	womalog("%s", CMD_LINE.c_str());
+	womalog("\n");
 #endif
 
 	return true;
@@ -408,7 +408,7 @@ bool SystemManager::CheckOSVersion()
 	if (!GetVersionEx((OSVERSIONINFO*)&osinfo))
 	{
 		HRESULT hr = HRESULT_FROM_WIN32(GetLastError());
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("GetOsVersionEx failed with HRESULT %x\n"), hr);
+		womalogauto(TEXT("GetOsVersionEx failed with HRESULT %x\n"), hr);
 		return false;
 	}
 
@@ -418,11 +418,11 @@ bool SystemManager::CheckOSVersion()
 	//NT 6.2: WIN8
 	//NT 6.3: WIN8.1
 
-	//WOMA_LOGManager_DebugMSG( TEXT("Windows Version: %d.%d\n"), osinfo.dwMajorVersion, osinfo.dwMinorVersion );
+	//womalog( TEXT("Windows Version: %d.%d\n"), osinfo.dwMajorVersion, osinfo.dwMinorVersion );
 	MajorVersion = osinfo.dwMajorVersion;
 	MinorVersion = osinfo.dwMinorVersion;
 
-	//WOMA_LOGManager_DebugMSG( TEXT("Windows Build Number: %d\n"), osinfo.dwBuildNumber );
+	//womalog( TEXT("Windows Build Number: %d\n"), osinfo.dwBuildNumber );
 	BuildVersion = osinfo.dwBuildNumber;
 
 	BYTE b1 = HIBYTE(_WIN32_WINNT_WINTHRESHOLD);
@@ -431,12 +431,12 @@ bool SystemManager::CheckOSVersion()
 	if (IsWindowsServer())
 	{
 		//printf("Server\n");
-		WOMA_LOGManager_DebugMSG(TEXT("Windows Server WINNT version: %d.%d\n"), b1, b2);
+		womalog(TEXT("Windows Server WINNT version: %d.%d\n"), b1, b2);
 	}
 	else
 	{
 		//printf("Client\n");
-		WOMA_LOGManager_DebugMSG(TEXT("Windows WINNT version: %d.%d\n"), b1, b2);
+		womalog(TEXT("Windows WINNT version: %d.%d\n"), b1, b2);
 	}
 
 	return true;
@@ -445,51 +445,51 @@ bool SystemManager::CheckOSVersion()
 	//IsWindows10OrGreater is never detected...:
 	if (IsWindows10OrGreater())
 	{
-		WOMA_LOGManager_DebugMSG("Windows10OrGreater\n"); return true;
+		womalog("Windows10OrGreater\n"); return true;
 	}
 	if (IsWindows8Point1OrGreater())
 	{
-		WOMA_LOGManager_DebugMSG("Windows8Point1OrGreater\n"); return true;
+		womalog("Windows8Point1OrGreater\n"); return true;
 	}
 	if (IsWindows8OrGreater())
 	{
-		WOMA_LOGManager_DebugMSG("Windows8 OrGreater\n"); return true;
+		womalog("Windows8 OrGreater\n"); return true;
 	}
 	if (IsWindows7SP1OrGreater())
 	{
-		WOMA_LOGManager_DebugMSG("Windows7SP1OrGreater\n"); return true;
+		womalog("Windows7SP1OrGreater\n"); return true;
 	}
 	if (IsWindows7OrGreater())
 	{
-		WOMA_LOGManager_DebugMSG("Windows7OrGreater\n"); return true;
+		womalog("Windows7OrGreater\n"); return true;
 	}
 	if (IsWindowsVistaSP2OrGreater())
 	{
-		WOMA_LOGManager_DebugMSG("VistaSP2OrGreater\n"); return true;
+		womalog("VistaSP2OrGreater\n"); return true;
 	}
 	if (IsWindowsVistaSP1OrGreater())
 	{
-		WOMA_LOGManager_DebugMSG("VistaSP1OrGreater\n"); return true;
+		womalog("VistaSP1OrGreater\n"); return true;
 	}
 	if (IsWindowsVistaOrGreater())
 	{
-		WOMA_LOGManager_DebugMSG("VistaOrGreater\n"); return true;
+		womalog("VistaOrGreater\n"); return true;
 	}
 	if (IsWindowsXPSP3OrGreater())
 	{
-		WOMA_LOGManager_DebugMSG("XPSP3OrGreater\n"); return true;
+		womalog("XPSP3OrGreater\n"); return true;
 	}
 	if (IsWindowsXPSP2OrGreater())
 	{
-		WOMA_LOGManager_DebugMSG("XPSP2OrGreater\n"); return true;
+		womalog("XPSP2OrGreater\n"); return true;
 	}
 	if (IsWindowsXPSP1OrGreater())
 	{
-		WOMA_LOGManager_DebugMSG("XPSP1OrGreater\n"); return true;
+		womalog("XPSP1OrGreater\n"); return true;
 	}
 	if (IsWindowsXPOrGreater())
 	{
-		WOMA_LOGManager_DebugMSG("XPOrGreater\n"); return true;
+		womalog("XPOrGreater\n"); return true;
 	}
 	*/
 	return false;
@@ -537,7 +537,7 @@ bool SystemManager::CheckDXGIVersion(bool *REQUIRES_WINDOWS_VISTA_SP2, bool *REQ
 	if (BuildVersion > 6002)
 	{
 		// Windows Vista/Server 2008 Service Packs after SP2 should already include Direct3D 11
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("Windows Vista/Server 2008 With Service Packs SP2, Checked!\n"));
+		womalogauto(TEXT("Windows Vista/Server 2008 With Service Packs SP2, Checked!\n"));
 		return true;
 	}
 
@@ -545,7 +545,7 @@ bool SystemManager::CheckDXGIVersion(bool *REQUIRES_WINDOWS_VISTA_SP2, bool *REQ
 	if (BuildVersion < 6002)
 	{
 		// Windows Vista/Server 2008 SP2 is required for Direct3D 11
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("Windows Vista/Server 2008 SP2 is required for Direct3D 11!\n"));
+		womalogauto(TEXT("Windows Vista/Server 2008 SP2 is required for Direct3D 11!\n"));
 		*REQUIRES_WINDOWS_VISTA_SP2 = true;
 		return false;
 	}

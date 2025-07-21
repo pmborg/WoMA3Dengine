@@ -8,7 +8,7 @@
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #define PS_USE_ALFACOLOR
 #define PS_USE_ALFA_TEXTURE

@@ -18,7 +18,7 @@
 // --------------------------------------------------------------------------------------------
 // LOAD / SAVE: The fast static 3D object format of Woma.
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "platform.h"
 #include "OSengine.h"		// Get [SystemHandle] Pointer to System Class & define WomaSYSTEM for: WINDOWS, LINUX & ANDROID
@@ -55,7 +55,7 @@ namespace DirectX
 	//ModelTextureLightVertexType
 	//ModelNormalBumpVertexType
 
-#define FIN_WRITE(fullMsg, sizeoffullMsg) { fin.write(fullMsg, sizeoffullMsg); /*WOMA_LOGManager_DebugMSGAUTO(TEXT("WRITE: sizeof(fullMsg): %d\n"), sizeoffullMsg);*/ }
+#define FIN_WRITE(fullMsg, sizeoffullMsg) { fin.write(fullMsg, sizeoffullMsg); /*womalogauto(TEXT("WRITE: sizeof(fullMsg): %d\n"), sizeoffullMsg);*/ }
 
 // --------------------------------------------------------------------------------------------
 	bool DXmodelClass::SaveW3D(STRING filename, void* indices, void* vertices, UINT sizeofMODELvertex)
@@ -79,7 +79,7 @@ namespace DirectX
 			version = version - 0.1f;
 
 		StringCchPrintfA(W3D.version, sizeof(W3D.version), "W3D v%.1f", version);
-		WOMA_LOGManager_DebugMSG("filename: %s W3D.version: %s\n", filename.c_str(), W3D.version);
+		womalog("filename: %s W3D.version: %s\n", filename.c_str(), W3D.version);
 
 #if defined USE_BOUNDING_VOLUMES
 		W3D.min = minVertex;
@@ -102,24 +102,24 @@ namespace DirectX
 		// Check: m_indexCount (too big: to be used in real time rendering...)
 		if (m_indexCount > 65535)
 		{
-			WOMA_LOGManager_DebugMSGAUTO(TEXT("FATAL ERROR SaveW3D: indicesCount > 65535: %d\n"), m_indexCount);
+			womalogauto(TEXT("FATAL ERROR SaveW3D: indicesCount > 65535: %d\n"), m_indexCount);
 			MessageBox(NULL, filename.c_str(), TEXT("SaveW3D: indicesCount > 65535 (i.e. This object is too Big!)"), MB_OK); return false;
 		}
 		// Check: meshSubsetIndexStart (use 3d studio max to optimize mesh!)
 		if (obj3d.meshSubsetIndexStart.size() > 255)
 		{
-			WOMA_LOGManager_DebugMSGAUTO(TEXT("WARNING! SaveW3D: meshSubsetIndexStartCount > 255: %d\n"), obj3d.meshSubsetIndexStart.size());
+			womalogauto(TEXT("WARNING! SaveW3D: meshSubsetIndexStartCount > 255: %d\n"), obj3d.meshSubsetIndexStart.size());
 		}
 		// Check: meshSubsetIndexStart (too complex: to be used in real time rendering...)
 		if (obj3d.meshSubsetIndexStart.size() > 65535)
 		{
-			WOMA_LOGManager_DebugMSGAUTO(TEXT("ERROR SaveW3D: meshSubsetIndexStartCount > 65535: %d\n"), obj3d.meshSubsetIndexStart.size());
+			womalogauto(TEXT("ERROR SaveW3D: meshSubsetIndexStartCount > 65535: %d\n"), obj3d.meshSubsetIndexStart.size());
 			MessageBox(NULL, filename.c_str(), TEXT("SaveW3D: meshSubsetIndexStartCount > 65535"), MB_OK); return false;
 		}
 		//Check: subsetMaterialArray (use too many materials: )
 		if (obj3d.subsetMaterialArray.size() > 65535)
 		{
-			WOMA_LOGManager_DebugMSGAUTO(TEXT("ERROR SaveW3D: subsetMaterialArrayCount > 65535: %d\n"), obj3d.subsetMaterialArray.size());
+			womalogauto(TEXT("ERROR SaveW3D: subsetMaterialArrayCount > 65535: %d\n"), obj3d.subsetMaterialArray.size());
 			MessageBox(NULL, filename.c_str(), TEXT("SaveW3D: subsetMaterialArrayCount > 65535"), MB_OK); return false;
 		}
 
@@ -132,33 +132,33 @@ namespace DirectX
 		// DUMP: HEADER DATA INDX
 		// --------------------------------------------------------------------------------------------------------------------------------
 
-		//WOMA_LOGManager_DebugMSGAUTO(TEXT("sizeof(W3D): %d\n"), sizeof(W3D));
+		//womalogauto(TEXT("sizeof(W3D): %d\n"), sizeof(W3D));
 		FIN_WRITE((char*)&W3D, sizeof(W3D));
 
 		// DUMP: vertices
 		// --------------------------------------------------------------------------------------------------------------------------------
-		//WOMA_LOGManager_DebugMSGAUTO(TEXT("sizeofMODELvertex: %d\n"), sizeofMODELvertex);
+		//womalogauto(TEXT("sizeofMODELvertex: %d\n"), sizeofMODELvertex);
 		FIN_WRITE((char*)vertices, W3D.verticesCount * sizeofMODELvertex);
 
 		// DUMP: indices
 		// --------------------------------------------------------------------------------------------------------------------------------
 		// Scale down all "int" to "short"
-//WOMA_LOGManager_DebugMSGAUTO(TEXT("sizeof(UINT): %d\n"), sizeof(UINT));
+//womalogauto(TEXT("sizeof(UINT): %d\n"), sizeof(UINT));
 		FIN_WRITE((char*)&obj3d.indices32[0], W3D.indicesCount * sizeof(UINT));
 
 		// DUMP: SubsetIndexStart
 		// --------------------------------------------------------------------------------------------------------------------------------
-		//WOMA_LOGManager_DebugMSGAUTO(TEXT("sizeof(int): %d\n"), sizeof(int));
+		//womalogauto(TEXT("sizeof(int): %d\n"), sizeof(int));
 		FIN_WRITE((char*)&obj3d.meshSubsetIndexStart[0], W3D.meshSubsetIndexStartCount * sizeof(int));
 
 		// DUMP: subsetMaterialArray
 		// --------------------------------------------------------------------------------------------------------------------------------
-		//WOMA_LOGManager_DebugMSGAUTO(TEXT("sizeof(int): %d\n"), sizeof(int));
+		//womalogauto(TEXT("sizeof(int): %d\n"), sizeof(int));
 		FIN_WRITE((char*)&obj3d.subsetMaterialArray[0], W3D.subsetMaterialArrayCount * sizeof(int));
 
 		// DUMP: Materials
 		// --------------------------------------------------------------------------------------------------------------------------------
-		//WOMA_LOGManager_DebugMSGAUTO(TEXT("sizeof(SurfaceMaterial): %d\n"), sizeof(SurfaceMaterial));
+		//womalogauto(TEXT("sizeof(SurfaceMaterial): %d\n"), sizeof(SurfaceMaterial));
 		FIN_WRITE((char*)&obj3d.material[0], W3D.materialCount * sizeof(SurfaceMaterial));
 
 		// DUMP: Texture Names
@@ -177,7 +177,7 @@ namespace DirectX
 #endif
 		}
 
-		//WOMA_LOGManager_DebugMSGAUTO(TEXT("sizeof(textureName): %d\n"), sizeof(textureName));
+		//womalogauto(TEXT("sizeof(textureName): %d\n"), sizeof(textureName));
 		FIN_WRITE((char*)&texturename[0], W3D.texturenameCount * sizeof(textureName));
 
 		fin.close();
@@ -205,7 +205,7 @@ namespace DirectX
 		MyObject3D W3D = MyObject3D();
 		fstream obj3dfile;
 
-		WOMA_LOGManager_DebugMSG(TEXT("W3D Loading: %s with shader: [%d]\n"), (TCHAR*)(filename + TEXT(" ")).c_str(), shader_type);
+		womalog(TEXT("W3D Loading: %s with shader: [%d]\n"), (TCHAR*)(filename + TEXT(" ")).c_str(), shader_type);
 		obj3dfile.open(WOMA::LoadFile((TCHAR*)filename.c_str()), fstream::in | fstream::binary);
 		if (!obj3dfile)
 		{

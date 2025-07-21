@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "platform.h"
 
@@ -96,7 +96,7 @@ void QuadTree::CreateTreeNode(NodeType* node, float positionX, float positionZ, 
 	node->width = width;
 
 #if defined yes_please_debug_me && defined _DEBUG
-	WOMA_LOGManager_DebugMSG("SceneManager::QuadTree::CreateTreeNode(): X: %f Y: %f width: %f\n", positionX, positionZ, width);
+	womalog("SceneManager::QuadTree::CreateTreeNode(): X: %f Y: %f width: %f\n", positionX, positionZ, width);
 #endif
 
 	// Create Childs if needed:

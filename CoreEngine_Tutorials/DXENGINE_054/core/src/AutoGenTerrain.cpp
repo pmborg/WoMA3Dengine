@@ -22,7 +22,7 @@
 // -PopulateTerrainModelVertexVector: height[][]		-> POPULATE modelVertexVector
 // 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "platform.h"
 
@@ -178,7 +178,7 @@ bool CTerrain::LoadHeightMapTerrain(TCHAR* file, float xPos, float zPos, bool sk
 			height[y][x] = bitmapImage[k];
 			// Increment the bitmap image data index.
 			k += 3;
-			//WOMA_LOGManager_DebugMSGAUTO("%d ", (int)bitmapImage[k]);
+			//womalogauto("%d ", (int)bitmapImage[k]);
 			//printf("%d %d %d-", (int)m_heightMap[index].x, (int)m_heightMap[index].y, (int)m_heightMap[index].z);
 		}
 	}
@@ -230,8 +230,8 @@ void WorldUnderWaterMapGenerator(MY_TERRAIN_TYPE terrainType)
 	CTerrain* terrain = NEW CTerrain(terrainType);
 
 	// "Initial" Entry Point for: CHAP 14
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("Sizeof terrain: %d KBs\n"), (terrain_squares + 1)*(terrain_squares + 1) / KBs);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("Sizeof terrain: %d MBs\n"), (terrain_squares + 1)*(terrain_squares + 1) / MBs);
+	womalogauto(TEXT("Sizeof terrain: %d KBs\n"), (terrain_squares + 1)*(terrain_squares + 1) / KBs);
+	womalogauto(TEXT("Sizeof terrain: %d MBs\n"), (terrain_squares + 1)*(terrain_squares + 1) / MBs);
 
 #if !defined GOTO_BASICS
 	double delta = 0;
@@ -254,7 +254,7 @@ void WorldUnderWaterMapGenerator(MY_TERRAIN_TYPE terrainType)
 
 	TCHAR txt[MAX_STR_LEN];
 	StringCchPrintf(txt, MAX_STR_LEN, TEXT("\nBenchmark to generate terrain: %f ms\n"), delta);
-	WOMA_LOGManager_DebugMSGW(txt);
+	womalogw(txt);
 #endif
 }
 #endif
@@ -297,8 +297,8 @@ void CTerrain::CalculateMaxMin()
 			minY = MIN(minY, height[y][x]);
 		}
 
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("Terrain MAX Height: %f\n"), maxY);	// 23
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("Terrain MIN Height: %f\n"), minY);	//-29
+	womalogauto(TEXT("Terrain MAX Height: %f\n"), maxY);	// 23
+	womalogauto(TEXT("Terrain MIN Height: %f\n"), minY);	//-29
 }
 
 #if defined SCENE_GENERATEDUNDERWATER
@@ -329,7 +329,7 @@ void CTerrain::GenerateRandomHeightMapTerrain(UINT randValue, bool Move_down_edg
 	float mv, rm;
 	float offset = 0, yscale = 0, maxheight = 0, minheight = 0;
 
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("Terrain Size: %d x %d\n"), (terrain_squares + 1), (terrain_squares + 1));	// 23
+	womalogauto(TEXT("Terrain Size: %d x %d\n"), (terrain_squares + 1), (terrain_squares + 1));	// 23
 
 	// [backterrain]
 	const UINT floatSize = sizeof(float); //4
@@ -349,7 +349,7 @@ void CTerrain::GenerateRandomHeightMapTerrain(UINT randValue, bool Move_down_edg
 	while (currentstep>1)
 	{
 		// Square step:
-		WOMA_LOGManager_DebugMSG("Square Step...\n");
+		womalog("Square Step...\n");
 		i = 0;
 		j = 0;
 
@@ -378,7 +378,7 @@ void CTerrain::GenerateRandomHeightMapTerrain(UINT randValue, bool Move_down_edg
 		UINT index;
 		i = 0;
 		j = 0;
-		WOMA_LOGManager_DebugMSG("Diamond Step...\n");
+		womalog("Diamond Step...\n");
 		while (i<terrain_squares)
 		{
 			j = 0;
@@ -440,7 +440,7 @@ void CTerrain::GenerateRandomHeightMapTerrain(UINT randValue, bool Move_down_edg
 			height[i][j] = backterrain[i + (terrain_squares+1)*j];
 
 
-	WOMA_LOGManager_DebugMSG("Scaling to minheight...\n");
+	womalog("Scaling to minheight...\n");
 	maxheight = height[0][0];
 	minheight = height[0][0];
 	for (i = 0; i<terrain_squares; i++)
@@ -467,7 +467,7 @@ void CTerrain::GenerateRandomHeightMapTerrain(UINT randValue, bool Move_down_edg
 	if (Move_down_edges)
 	{
 		// Moving down edges of heightmap:
-		WOMA_LOGManager_DebugMSG("Moving down edges...\n");
+		womalog("Moving down edges...\n");
 		for (i = 0; i<terrain_squares; i++)
 			for (j = 0; j<terrain_squares; j++)
 			{
@@ -485,7 +485,7 @@ void CTerrain::GenerateRandomHeightMapTerrain(UINT randValue, bool Move_down_edg
 	}
 
 	// Terrain banks:
-	WOMA_LOGManager_DebugMSG("Terrain Banks...\n");
+	womalog("Terrain Banks...\n");
 	for (k = 0; k<10; k++)
 	{
 		for (i = 0; i<terrain_squares; i++)
@@ -503,10 +503,10 @@ void CTerrain::GenerateRandomHeightMapTerrain(UINT randValue, bool Move_down_edg
 	}
 
 	// Smoothing:
-	WOMA_LOGManager_DebugMSG("Smoothing...\n");
+	womalog("Smoothing...\n");
 	for (k = 0; k<terrain_smoothsteps; k++)
 	{
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("Terrain Smoothstep: %d/%d\n"), k, terrain_smoothsteps);
+		womalogauto(TEXT("Terrain Smoothstep: %d/%d\n"), k, terrain_smoothsteps);
 		for (i = 0; i<terrain_squares; i++)
 			for (j = 0; j<terrain_squares; j++)
 			{
@@ -618,7 +618,7 @@ void CTerrain::SaveBMPHeightMapTerrain(CHAR* maps, UINT bmp_type) // NEED TO BE:
 			StringCchPrintfA(dir_txt, MAX_STR_LEN, "engine/%s", maps);		// Create Directory: [C:\WoMAengine2014\woma_developer\SAMPLES\x64\lvl014]\engine\maps
 			CreateDirectoryA(dir_txt, NULL);
 
-			WOMA_LOGManager_DebugMSG("Writing MAP to Disk: %s\n", txt);
+			womalog("Writing MAP to Disk: %s\n", txt);
 
 			// WRITE - Binary (float) version:
 			std::ofstream fileBMP(txt, std::ios::out | std::ios::binary);	//OFSTREAM fileBMP( txt );    //Open file for Write : cpp
@@ -832,7 +832,7 @@ void CTerrain::initUnderWaterDemo(UINT terrainId)
 		modelVertexVector0[i].y = modelVertexVector0[i].y / 3;
 
 #if defined DEBUG_TERRAIN_VERTICES
-		WOMA_LOGManager_DebugMSG("%d = (%d %d %d)\n", i, (int)modelVertexVector[i].x, (int)modelVertexVector[i].y, (int)modelVertexVector[i].z);
+		womalog("%d = (%d %d %d)\n", i, (int)modelVertexVector[i].x, (int)modelVertexVector[i].y, (int)modelVertexVector[i].z);
 #endif
 	}
 
@@ -1288,7 +1288,7 @@ void CTerrain::CreateTerrainModel(UINT id, std::vector<STRING> Textures, SHADER_
 	}
 #endif
 
-	WOMA_LOGManager_DebugMSG("\n");
+	womalog("\n");
 
 
 #if DX_ENGINE_LEVEL >= 52 && (defined SCENE_TERRAIN_WITH_NORMALS && defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX)
@@ -1430,7 +1430,7 @@ void CTerrain::CreateTerrainModel(UINT id, std::vector<STRING> Textures, SHADER_
 #endif
 
 #if _DEBUG
-	WOMA_LOGManager_DebugMSGAUTO( TEXT("TERRAIN %d Shader Type: %d\n"), id, shader_type);
+	womalogauto( TEXT("TERRAIN %d Shader Type: %d\n"), id, shader_type);
 #endif
 
 #if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX

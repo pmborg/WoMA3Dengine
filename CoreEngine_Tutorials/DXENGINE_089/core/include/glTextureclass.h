@@ -15,7 +15,7 @@
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
-// --------------------------------------------------------------------------------------------//WomaIntegrityCheck = 1234525256;
+// --------------------------------------------------------------------------------------------//WomaIntegrityCheck = 1234525217;
 
 #pragma once
 
@@ -34,7 +34,7 @@
 class GLtextureClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234525256;
+	UINT WomaIntegrityCheck = 1234525217;
 	GLtextureClass();
 	~GLtextureClass();
 

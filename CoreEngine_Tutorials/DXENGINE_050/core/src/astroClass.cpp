@@ -23,7 +23,7 @@
 //   - Calculate "Moon Distance": (ans the aparent Size correction: "Moon Scale")
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "platform.h"
 #if defined USE_ASTRO_CLASS
@@ -31,7 +31,7 @@
 
 AstroClass::AstroClass() 
 {
-    WomaIntegrityCheck = 1234525256;
+    WomaIntegrityCheck = 1234525217;
 	CLASSLOADER();
 
 	//public:
@@ -285,7 +285,7 @@ double AstroClass::MoonAge(int day, int month, int year)
 
 	// Moon's age in days
 	ag = floor(ag) + 1;		// convert ag from :"true double age" to "int" age
-    WOMA_LOGManager_DebugMSGAUTO(TEXT("Moon Age test: %f\n"), (float)ag);
+    womalogauto(TEXT("Moon Age test: %f\n"), (float)ag);
 	return ag; // int. value between 1 and 30
 }
 

@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 //
 // ----------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #pragma once
 
@@ -38,7 +38,7 @@
 class TimerClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234525256;
+	UINT WomaIntegrityCheck = 1234525217;
 	TimerClass();
 	~TimerClass();
 

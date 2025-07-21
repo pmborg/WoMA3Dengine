@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #pragma once
 
@@ -59,7 +59,7 @@ extern WCHAR* DEMO_Legends[];
 class dxWinSystemClass : public WinSystemClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234525256;
+	UINT WomaIntegrityCheck = 1234525217;
 	dxWinSystemClass(WOMA::Settings* AppSettings);
 	~dxWinSystemClass();
 

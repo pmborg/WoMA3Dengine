@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #pragma warning ( push )
 #pragma warning ( disable : 4101 ) //warning C4101 : 'cameraPosition' : unreferenced local variable
@@ -154,7 +154,7 @@ namespace DirectX {
 	DXshaderClass::DXshaderClass(UINT ShaderVersion_H, UINT ShaderVersion_L, bool shader_3D)
 	{
 		CLASSLOADER();
-		WomaIntegrityCheck = 1234525256;
+		WomaIntegrityCheck = 1234525217;
 		
 #if defined DX11 || defined DX9
 		m_driver11 = ((DirectX::DX11Class*)m_Driver);
@@ -287,7 +287,7 @@ namespace DirectX {
 		char* compileErrors = (char*)(errorMessage->GetBufferPointer());	// Get a pointer to the error message text buffer
 		//ULONG bufferSize = (ULONG) errorMessage->GetBufferSize();			// Get the length of the message
 
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("LOADING DX SHADER ERROR: %s\n"), compileErrors);
+		womalogauto(TEXT("LOADING DX SHADER ERROR: %s\n"), compileErrors);
 		SAFE_RELEASE(errorMessage);	// Release the error message
 
 		// Pop a message up on the screen to notify the user to check the text file for compile errors.
@@ -326,7 +326,7 @@ namespace DirectX {
 
 	void DXshaderClass::Shutdown()
 	{
-		WOMA_LOGManager_DebugMSG("DXshaderClass() DESTROYING: %s\n", MODEL_NAME.c_str());
+		womalog("DXshaderClass() DESTROYING: %s\n", MODEL_NAME.c_str());
 
 		// 21
 #if defined DX11 || defined DX9
@@ -542,7 +542,7 @@ namespace DirectX {
 #if _DEBUG
 		WCHAR WMODEL_NAME[10 * MAX_STR_LEN] = { 0 };
 		MultiByteToWideChar(CP_ACP, 0, (char*)MODEL_NAME.c_str(), -1, WMODEL_NAME, MAX_STR_LEN);
-		WOMA_LOGManager_DebugMSG(L"START: INIT SHADER MODEL %s - Use HLSL [%s]\n", WMODEL_NAME, vsFilename.c_str());
+		womalog(L"START: INIT SHADER MODEL %s - Use HLSL [%s]\n", WMODEL_NAME, vsFilename.c_str());
 #endif
 
 #if defined DX11 || defined DX9
@@ -616,7 +616,7 @@ namespace DirectX {
 			{
 				if (errorMessage) {
 					WomaMessageBox((TCHAR*)errorMessage->GetBufferPointer(), TEXT("SHADER Error description :"));
-					WOMA_LOGManager_DebugMSG("SHADER Error description:\n%s", (LPCSTR)errorMessage->GetBufferPointer());
+					womalog("SHADER Error description:\n%s", (LPCSTR)errorMessage->GetBufferPointer());
 				}
 				return false;
 			}
@@ -630,7 +630,7 @@ namespace DirectX {
 			{
 				WomaMessageBox((TCHAR*)errorMessage->GetBufferPointer(), TEXT("SHADER Error description :"));
 				if (errorMessage)
-					WOMA_LOGManager_DebugMSG("SHADER Error description:\n%s", (LPCSTR)errorMessage->GetBufferPointer());
+					womalog("SHADER Error description:\n%s", (LPCSTR)errorMessage->GetBufferPointer());
 				return false;
 			}
 #endif
@@ -970,7 +970,7 @@ namespace DirectX {
 			if (FAILED(result))
 			{
 				WomaMessageBox(TEXT("D3D12SerializeRootSignature"), TEXT("DX12 ERROR:"));
-				WOMA_LOGManager_DebugMSGAUTO((char*)error->GetBufferPointer());
+				womalogauto((char*)error->GetBufferPointer());
 				//OutputDXError(error.Get());
 				//ThrowIfFailed(result);
 				return false;
@@ -1038,7 +1038,7 @@ namespace DirectX {
 			if (FAILED(result))
 			{
 				if (errorMessage)
-					WOMA_LOGManager_DebugMSG("SHADER Error description:\n%s", (LPCSTR)errorMessage->GetBufferPointer());
+					womalog("SHADER Error description:\n%s", (LPCSTR)errorMessage->GetBufferPointer());
 				return false;
 			}
 
@@ -1047,7 +1047,7 @@ namespace DirectX {
 			if (FAILED(result))
 			{
 				if (errorMessage)
-					WOMA_LOGManager_DebugMSG("SHADER Error description:\n%s", (LPCSTR)errorMessage->GetBufferPointer());
+					womalog("SHADER Error description:\n%s", (LPCSTR)errorMessage->GetBufferPointer());
 				return false;
 			}
 
@@ -1397,7 +1397,7 @@ namespace DirectX {
 		}
 #endif
 
-		//WOMA_LOGManager_DebugMSG(L"DONE: INIT SHADER MODEL %s - Use HLSL [%s]\n", WMODEL_NAME, vsFilename.c_str());
+		//womalog(L"DONE: INIT SHADER MODEL %s - Use HLSL [%s]\n", WMODEL_NAME, vsFilename.c_str());
 		return true;
 	}
 

@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Paint the main window depending of engine state screen page.
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "OSengine.h"
 #if defined DX_ENGINE
@@ -53,7 +53,7 @@ namespace DirectX {
 DXmodelClass::DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive, bool computeNormals, bool modelHASshadow, bool modelRENDERshadow)
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525256;
+	WomaIntegrityCheck = 1234525217;
 
 	// VARS:
 	// ----------------------------------------------------------------------
@@ -462,7 +462,7 @@ HRESULT DXmodelClass::LoadTextureImage(TCHAR* textureFilename)
 
 #if defined DX11 || defined DX9
 	#if _DEBUG
-	WOMA_LOGManager_DebugMSG("Load TEXTURE/MODEL: %s - %s\n", MODEL_NAME.c_str(), textureFilename);
+	womalog("Load TEXTURE/MODEL: %s - %s\n", MODEL_NAME.c_str(), textureFilename);
 	#endif
 
 	switch (SystemHandle->AppSettings->DRIVER)
@@ -822,7 +822,7 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 
 void DXmodelClass::Shutdown()
 {
-	WOMA_LOGManager_DebugMSG("DXmodelClass() DESTROYING: %s\n", MODEL_NAME.c_str());
+	womalog("DXmodelClass() DESTROYING: %s\n", MODEL_NAME.c_str());
 
 #if defined DX11 || defined DX9
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)

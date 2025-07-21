@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 //  MAIN PURPOSE: Work as a DirectX 12 Driver.
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 // ----------------------------------------------------------------------------------------------
 
@@ -55,7 +55,7 @@ namespace DirectX {
 	{
 		// WomaDriverClass / Public: ------------------------------------------------------
 		CLASSLOADER();
-		WomaIntegrityCheck = 1234525256;
+		WomaIntegrityCheck = 1234525217;
 
 		// SUPER Video Card Info:
 		// ---------------------------------------------------------------------------
@@ -216,7 +216,7 @@ namespace DirectX {
 	BOOL DX12Class::CheckAPIdriver(UINT USE_THIS_ADAPTER)
 		// ----------------------------------------------------------------------------------------------
 	{
-		WOMA_LOGManager_DebugMSG(TEXT("CheckAPIdriver(DX12)\n"));
+		womalog(TEXT("CheckAPIdriver(DX12)\n"));
 		//
 		// LoadPipeline() - PART 1
 		//
@@ -310,12 +310,12 @@ namespace DirectX {
 		*/
 
 	// [*] Create dxgi factory : "CreateDXGIFactory2"
-		WOMA_LOGManager_DebugMSG(TEXT("CreateDXGIFactory2"));
+		womalog(TEXT("CreateDXGIFactory2"));
 		HRESULT HR = CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&dxgiFactory));
 		ThrowIfFailed(HR);// Create a DXGI 1.3 / 1.4 / 1.5 / 1.6 factory Interface with Factory:2
 
 		m_sCapabilities.CapDX12 = false;
-		WOMA_LOGManager_DebugMSG(TEXT("D3D12CreateDevice()"));
+		womalog(TEXT("D3D12CreateDevice()"));
 
 		D3D12EnableExperimentalFeatures(0, nullptr, nullptr, nullptr);
 
@@ -357,7 +357,7 @@ namespace DirectX {
 				//m_sCapabilities.CapDX12_1 = false;
 
 			retry:
-				WOMA_LOGManager_DebugMSG(TEXT("Could not create Direct3D12 num fallbacks available: %d\n"), num_levels);
+				womalog(TEXT("Could not create Direct3D12 num fallbacks available: %d\n"), num_levels);
 				PtrfeatureLevels++;
 				num_levels--;
 
@@ -389,7 +389,7 @@ namespace DirectX {
 #if defined SET_DEVICE_CAPABILITIES
 
 		if (m_sCapabilities.CapDX12 == true)
-			WOMA_LOGManager_DebugMSG(TEXT("m_sCapabilities.CapDX12 = true\n"));
+			womalog(TEXT("m_sCapabilities.CapDX12 = true\n"));
 
 #ifndef RELEASE
 		//m_device->SetStablePowerState(TRUE);	// Prevent the GPU from overclocking or underclocking to get consistent timings
@@ -815,7 +815,7 @@ namespace DirectX {
 		// ----------------------------------------------------------------------------------------------
 	{
 		HRESULT result = S_OK;
-		WOMA_LOGManager_DebugMSG("initDX12Device()\n");
+		womalog("initDX12Device()\n");
 
 		//
 		// LoadAssets()- PART 2
@@ -843,16 +843,16 @@ namespace DirectX {
 
 		// Log It!
 		if (SystemHandle->AppSettings->MSAA_Anisotropic) {
-			WOMA_LOGManager_DebugMSGAUTO(TEXT("MSSA is Enabled with %d Samples\n"), MSAA_COUNT);
+			womalogauto(TEXT("MSSA is Enabled with %d Samples\n"), MSAA_COUNT);
 		}
 		else
 		{
 			if (SystemHandle->AppSettings->MSAA_bilinear)
-				WOMA_LOGManager_DebugMSGAUTO(TEXT("Antialise: bilinear\n"));
+				womalogauto(TEXT("Antialise: bilinear\n"));
 			else if (SystemHandle->AppSettings->MSAA_trilinear)
-				WOMA_LOGManager_DebugMSGAUTO(TEXT("Antialise: trilinear\n"));
+				womalogauto(TEXT("Antialise: trilinear\n"));
 			else
-				WOMA_LOGManager_DebugMSGAUTO(TEXT("Antialise: off\n"));
+				womalogauto(TEXT("Antialise: off\n"));
 		}
 
 		// [*] createSwapChain()

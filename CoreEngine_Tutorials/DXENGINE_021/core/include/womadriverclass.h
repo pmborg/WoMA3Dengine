@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #pragma once
 
@@ -219,7 +219,7 @@ struct Capabilities
 class WomaDriverClass 
 {
 public:
-    UINT WomaIntegrityCheck = 1234525256;
+    UINT WomaIntegrityCheck = 1234525217;
 
 	virtual void Initialize3DCamera()=0;
 	virtual bool Initialize(float* clearColor)=0;

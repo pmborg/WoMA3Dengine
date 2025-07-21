@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "main.h"
 #include "ApplicationClass.h"
@@ -301,7 +301,7 @@ bool ApplicationClass::initCubes3D()
 bool ApplicationClass::DEMO_WOMA_APPLICATION_InitializeSprites2D()
 // --------------------------------------------------------------------------------------------
 {
-	WOMA_LOGManager_DebugMSG("DEMO_WOMA_APPLICATION_InitializeSprites2D()\n");
+	womalog("DEMO_WOMA_APPLICATION_InitializeSprites2D()\n");
 
 #if defined USE_TITLE_BANNER
 	initStatic2D();			//TITLE + MAP + MINI-MAP
@@ -320,7 +320,7 @@ void ApplicationClass::DEMO_WOMA_APPLICATION_Shutdown2D()
 		((DirectX::DX11Class*)driverList[SystemHandle->AppSettings->DRIVER])->Shutdown2D();
 #endif
 
-	WOMA_LOGManager_DebugMSG("WOMA_APPLICATION_Shutdown2D()\n");
+	womalog("WOMA_APPLICATION_Shutdown2D()\n");
 
 	#if (defined DX_ENGINE)
 		if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
@@ -491,8 +491,8 @@ void ApplicationClass::initIntroDemo()
 bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 // --------------------------------------------------------------------------------------------
 {
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("----------------------------------------------------------------------------------------\n"));
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("[%d]: WOMA_APPLICATION_Initialize3D()\n"), gettid());
+	womalogauto(TEXT("----------------------------------------------------------------------------------------\n"));
+	womalogauto(TEXT("[%d]: WOMA_APPLICATION_Initialize3D()\n"), gettid());
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// INIT ASTROs (Sun Moon) /////////////////////////////////////////////////////////////////////////////////////////
@@ -578,7 +578,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 
 	SystemHandle->ProcessPerformanceStats();
 	UINT64 passedTotalTime1 = (UINT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
-	WOMA_LOGManager_DebugMSGAUTO("Time to reach OBJ load: %" PRId64 "\n", passedTotalTime1);
+	womalogauto("Time to reach OBJ load: %" PRId64 "\n", passedTotalTime1);
 
     //=================================================================================================================
 	// INIT TERRAINs //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -617,7 +617,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 
     //-----------------------------------------------------------------------------------------------------------------
     // Log xml objects:
-    //theWorld.size()=11
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// Create Billboard for Trees / Flowers (extra populate WORLD.XML)       /////////////////////////////////////////
@@ -629,7 +628,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 		WomaMessageBox(TEXT("Could not initialize the billboard Class"), TEXT("Create Billboard for Trees / Flowers"));
 		return false;
 	}
-	WOMA_LOGManager_DebugMSGAUTO("Number of billboard objects added %d\n", SystemHandle->xml_loader.theWorld.size()- world_xml_objs);
+	womalogauto("Number of billboard objects added %d\n", SystemHandle->xml_loader.theWorld.size()- world_xml_objs);
 #endif
     //theWorld.size()=3816
 
@@ -680,7 +679,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	//-----------------------------------------------------------------------------------------------------------------
 	SystemHandle->ProcessPerformanceStats();
 	UINT64 passedTotalTime2 = (UINT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
-	WOMA_LOGManager_DebugMSGAUTO("Time spent on OBJ(s) load: %" PRId64 "\n", passedTotalTime2);
+	womalogauto("Time spent on OBJ(s) load: %" PRId64 "\n", passedTotalTime2);
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// RENDER ASTROs //////////////////////////////////////////////////////////////////////////////////////////////////

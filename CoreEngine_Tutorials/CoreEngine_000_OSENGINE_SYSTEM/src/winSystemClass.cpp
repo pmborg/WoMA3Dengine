@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Define APIs for winSystemClass.cpp which is the WINDOWS OS API
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "OSengine.h"
 #if defined DX_ENGINE
@@ -32,7 +32,7 @@ WinSystemClass::WinSystemClass() : SystemClass()
 //----------------------------------------------------------------------------------
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525256;
+	WomaIntegrityCheck = 1234525217;
 
 	//public:
 	SystemHandle = this;
@@ -73,7 +73,7 @@ WinSystemClass::~WinSystemClass()
 
 bool WinSystemClass::APPLICATION_BEFORE_WINDOW()
 {
-	WOMA_LOGManager_DebugMSG("WinSystemClass::APPLICATION_CORE_SYSTEM()\n");
+	womalog("WinSystemClass::APPLICATION_CORE_SYSTEM()\n");
 
 	WomaMessageBox(WOMA::strConsoleTitle, TEXT("WOMA Hello World!"), MB_OK);
 	return false; //false means exit now and dont enter on main loop
@@ -83,7 +83,7 @@ bool WinSystemClass::APPLICATION_BEFORE_WINDOW()
 
 bool WinSystemClass::APPLICATION_AFTER_WINDOW()
 {
-    WOMA_LOGManager_DebugMSG("WinSystemClass::APPLICATION_CORE_INIT_DONE()\n");
+    womalog("WinSystemClass::APPLICATION_CORE_INIT_DONE()\n");
 
     return true;
 }
@@ -153,7 +153,7 @@ void WinSystemClass::Shutdown()
 //----------------------------------------------------------------------------------
 {
 	// WinSystemClass Shutdown:
-	WOMA_LOGManager_DebugMSGAUTO ((TCHAR*)TEXT("WinSystemClass::Shutdown()\n"));
+	womalogauto ((TCHAR*)TEXT("WinSystemClass::Shutdown()\n"));
 
 	// Destroy Drivers:
 	SystemClass::Shutdown();
@@ -183,9 +183,9 @@ bool WinSystemClass::InitOsInput()
 	SystemClass::InitOsInput();	//m_Application->SetPlayerPosition(g_NetID);
 
 	// INIT OS Keyboard (WIN32: This object will be used to handle reading the input from the user)
-	WOMA_LOGManager_DebugMSG("===============================================================================\n");
-	WOMA_LOGManager_DebugMSG("INIT OS BASIC INPUT\n");
-	WOMA_LOGManager_DebugMSG("===============================================================================\n");
+	womalog("===============================================================================\n");
+	womalog("INIT OS BASIC INPUT\n");
+	womalog("===============================================================================\n");
 
 	m_OsInput = NEW InputClass;
 	IF_NOT_THROW_EXCEPTION(m_OsInput);
@@ -193,9 +193,9 @@ bool WinSystemClass::InitOsInput()
 
 #if defined USE_DIRECT_INPUT
 	// Set the Player Position Init Player Class
-	WOMA_LOGManager_DebugMSG("===============================================================================\n");
-	WOMA_LOGManager_DebugMSG("INIT OS ADVANCED DIRECT INPUT\n");
-	WOMA_LOGManager_DebugMSG("===============================================================================\n");
+	womalog("===============================================================================\n");
+	womalog("INIT OS ADVANCED DIRECT INPUT\n");
+	womalog("===============================================================================\n");
 
 	DXsystemHandle->m_Input = (DXInputClass*)&SystemHandle->m_InputManager;
 #endif
@@ -208,7 +208,7 @@ bool WinSystemClass::InitOsInput()
 void WinSystemClass::ONRESIZE()
 {
 	if (SystemHandle) {
-		WOMA_LOGManager_DebugMSG("ONRESIZE()\n");
+		womalog("ONRESIZE()\n");
 		if (SystemHandle->m_Application)
 			SystemHandle->m_Application->WOMA_APPLICATION_InitGUI();
 		#if defined DX_ENGINE //OPENGL TODO

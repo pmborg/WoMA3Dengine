@@ -17,7 +17,7 @@
 // Decode the Dynamic METAR info, from the nearest airport.
 // Source Code: (C) 2000-2016 http://git.xcsoar.org/cgit/jmw/xcsoar.git/plain/src/Weather/METARParser.cpp
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
@@ -38,7 +38,7 @@ Weather weather;
 MetarClass::MetarClass()
 {
     CLASSLOADER();
-    WomaIntegrityCheck = 1234525256;
+    WomaIntegrityCheck = 1234525217;
 }
 
 MetarClass::~MetarClass() { CLASSDELETE(); }

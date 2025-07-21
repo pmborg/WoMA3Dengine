@@ -17,7 +17,7 @@
 // PURPOSE: Add local/3D sound/effects.
 // ORIGINAL VERSION: https://en.wikibooks.org/wiki/DirectX/10.0/Direct3D/Direct_Sound
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "platform.h"
 
@@ -153,7 +153,7 @@ bool SoundClass::InitializeDirectSound(HWND hwnd)
 	m_listener->SetPosition(0.0f, 0.0f, 0.0f, DS3D_IMMEDIATE);
 	#endif
 
-	WOMA_LOGManager_DebugMSG( TEXT("Sound Class: Initialized\n") );
+	womalog( TEXT("Sound Class: Initialized\n") );
 	return true;
 }
 

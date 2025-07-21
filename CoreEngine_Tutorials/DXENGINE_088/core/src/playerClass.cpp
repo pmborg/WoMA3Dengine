@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "platform.h"
 #if defined USE_DIRECT_INPUT// && defined INTRO_DEMO
@@ -29,7 +29,7 @@
 PlayerClass::PlayerClass(UINT id)
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525256;
+	WomaIntegrityCheck = 1234525217;
 
 	//public:
 	ZeroMemory(&p_player, sizeof(p_player));

@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "OSengine.h"
 #if (defined OPENGL3 || defined OPENGL40) && defined WINDOWS_PLATFORM && CORE_ENGINE_LEVEL >= 10  // Initializing Engine && defined WINDOWS_PLATFORM
@@ -36,7 +36,7 @@ wGLopenGLclass::wGLopenGLclass()
 {
 	CLASS_LOAD_N--; 
 	CLASSLOADER();  //dont count super class!
-	WomaIntegrityCheck = 1234525256;
+	WomaIntegrityCheck = 1234525217;
 
 	m_deviceContext = NULL;
 	m_renderingContext1 = NULL;
@@ -59,15 +59,15 @@ wGLopenGLclass::wGLopenGLclass()
 		glGetIntegerv(GL_MINOR_VERSION, &GLMinorVer);
 	}
 
-	WOMA_LOGManager_DebugMSG ( "OpenGL: %s, GLSL: %s\n", glGetString(GL_VERSION), glGetString(GL_SHADING_LANGUAGE_VERSION));
+	womalog ( "OpenGL: %s, GLSL: %s\n", glGetString(GL_VERSION), glGetString(GL_SHADING_LANGUAGE_VERSION));
 
 	// Release the temporary window
 	glFinish();
 	glutDestroyWindow( w );
 	DestroyWindow(wh);
 
-	WOMA_LOGManager_DebugMSG (TEXT("Render Driver: %s\n"), TEXT("wglOpenGL"));
-	WOMA_LOGManager_DebugMSG (TEXT("Open GL version: %d.%d\n"), GLMajorVer, GLMinorVer);
+	womalog (TEXT("Render Driver: %s\n"), TEXT("wglOpenGL"));
+	womalog (TEXT("Open GL version: %d.%d\n"), GLMajorVer, GLMinorVer);
 }
 
 wGLopenGLclass::~wGLopenGLclass() { 

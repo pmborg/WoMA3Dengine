@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "platform.h"
 #if defined DX_ENGINE
@@ -261,7 +261,7 @@ void DX11Class::setDeviceCapabilities(D3D_FEATURE_LEVEL featureLevel)
 {
 	HRESULT result = S_OK;
 
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("SET_DEVICE_CAPABILITIES:\n"));
+	womalogauto(TEXT("SET_DEVICE_CAPABILITIES:\n"));
 
 	// Query DXGI1.1:
 	m_sCapabilities.DXGI11 = false;
@@ -270,7 +270,7 @@ void DX11Class::setDeviceCapabilities(D3D_FEATURE_LEVEL featureLevel)
 	if (!FAILED(result))
 	{
 		m_sCapabilities.DXGI11 = true;
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("DXGI1.1: Available\n"));
+		womalogauto(TEXT("DXGI1.1: Available\n"));
 	}
 	SAFE_RELEASE(dxgiDevice1);
 
@@ -282,11 +282,11 @@ void DX11Class::setDeviceCapabilities(D3D_FEATURE_LEVEL featureLevel)
 	if (!FAILED(result))
 	{
 		m_sCapabilities.DXGI12 = true;
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("DXGI1.2: Available\n"));
+		womalogauto(TEXT("DXGI1.2: Available\n"));
 	}
 	SAFE_RELEASE(dxgiDevice2);
 
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("Device Capabilities:\n"));
+	womalogauto(TEXT("Device Capabilities:\n"));
 
 	//v1:
 	m_sCapabilities.ComputeShadersSupported = (featureLevel >= D3D_FEATURE_LEVEL_11_0);
@@ -296,47 +296,47 @@ void DX11Class::setDeviceCapabilities(D3D_FEATURE_LEVEL featureLevel)
 	m_device11->CheckFeatureSupport(D3D11_FEATURE_D3D10_X_HARDWARE_OPTIONS, &hwopts, sizeof(hwopts));
 	if (!m_sCapabilities.ComputeShadersSupported)
 		m_sCapabilities.ComputeShadersSupported = hwopts.ComputeShaders_Plus_RawAndStructuredBuffers_Via_Shader_4_x;
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("ComputeShadersSupported: %s\n"), m_sCapabilities.ComputeShadersSupported ? TEXT("TRUE") : TEXT("FALSE"));
+	womalogauto(TEXT("ComputeShadersSupported: %s\n"), m_sCapabilities.ComputeShadersSupported ? TEXT("TRUE") : TEXT("FALSE"));
 
 	m_sCapabilities.maxTextureAnisotropy = GetMaximumAnisotropy(featureLevel);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("maxTextureAnisotropy: %f\n"), m_sCapabilities.maxTextureAnisotropy);
+	womalogauto(TEXT("maxTextureAnisotropy: %f\n"), m_sCapabilities.maxTextureAnisotropy);
 
 	m_sCapabilities.occlusionQueryBoolean = GetOcclusionQuerySupport(featureLevel);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("occlusionQueryBoolean: %s\n"), m_sCapabilities.occlusionQueryBoolean?TEXT("TRUE"): TEXT("FALSE"));
+	womalogauto(TEXT("occlusionQueryBoolean: %s\n"), m_sCapabilities.occlusionQueryBoolean?TEXT("TRUE"): TEXT("FALSE"));
 	m_sCapabilities.instancedArraysBoolean = GetInstancingSupport(featureLevel);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("instancedArraysBoolean: %s\n"), m_sCapabilities.instancedArraysBoolean ? TEXT("TRUE") : TEXT("FALSE"));
+	womalogauto(TEXT("instancedArraysBoolean: %s\n"), m_sCapabilities.instancedArraysBoolean ? TEXT("TRUE") : TEXT("FALSE"));
 	m_sCapabilities.framebufferMultisampleBoolean = GetFramebufferMultisampleSupport(featureLevel);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("framebufferMultisampleBoolean: %s\n"), m_sCapabilities.framebufferMultisampleBoolean ? TEXT("TRUE") : TEXT("FALSE"));
+	womalogauto(TEXT("framebufferMultisampleBoolean: %s\n"), m_sCapabilities.framebufferMultisampleBoolean ? TEXT("TRUE") : TEXT("FALSE"));
 	m_sCapabilities.shaderTextureLODBoolean = GetShaderTextureLODSupport(featureLevel);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("shaderTextureLODBoolean: %s\n"), m_sCapabilities.shaderTextureLODBoolean ? TEXT("TRUE") : TEXT("FALSE"));
+	womalogauto(TEXT("shaderTextureLODBoolean: %s\n"), m_sCapabilities.shaderTextureLODBoolean ? TEXT("TRUE") : TEXT("FALSE"));
 
 	m_sCapabilities.MaximumSimultaneousRenderTargets = GetMaximumSimultaneousRenderTargets(featureLevel);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("MaximumSimultaneousRenderTargets: %d\n"), m_sCapabilities.MaximumSimultaneousRenderTargets);
+	womalogauto(TEXT("MaximumSimultaneousRenderTargets: %d\n"), m_sCapabilities.MaximumSimultaneousRenderTargets);
 
 	m_sCapabilities.max2DTextureSize = GetMaximum2DTextureSize(featureLevel);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("max2DTextureSize: %d\n"), m_sCapabilities.max2DTextureSize);
+	womalogauto(TEXT("max2DTextureSize: %d\n"), m_sCapabilities.max2DTextureSize);
 	m_sCapabilities.maxArrayTextureLayers = GetMaximum2DTextureArraySize(featureLevel);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("maxArrayTextureLayers: %d\n"), m_sCapabilities.maxArrayTextureLayers);
+	womalogauto(TEXT("maxArrayTextureLayers: %d\n"), m_sCapabilities.maxArrayTextureLayers);
 
 	m_sCapabilities.max3DTextureSize = GetMaximum3DTextureSize(featureLevel);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("max3DTextureSize: %d\n"), m_sCapabilities.max3DTextureSize);
+	womalogauto(TEXT("max3DTextureSize: %d\n"), m_sCapabilities.max3DTextureSize);
 	m_sCapabilities.maxCubeMapTextureSize = GetMaximumCubeMapTextureSize(featureLevel);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("maxCubeMapTextureSize: %d\n"), m_sCapabilities.maxCubeMapTextureSize);
+	womalogauto(TEXT("maxCubeMapTextureSize: %d\n"), m_sCapabilities.maxCubeMapTextureSize);
 
 	m_sCapabilities.maxViewportWidth = GetMaximumViewportSize(featureLevel);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("maxViewportWidth: %d\n"), m_sCapabilities.maxViewportWidth);
+	womalogauto(TEXT("maxViewportWidth: %d\n"), m_sCapabilities.maxViewportWidth);
 	m_sCapabilities.maxViewportHeight = m_sCapabilities.maxViewportWidth;
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("maxViewportHeight: %d\n"), m_sCapabilities.maxViewportHeight);
+	womalogauto(TEXT("maxViewportHeight: %d\n"), m_sCapabilities.maxViewportHeight);
 
 	m_sCapabilities.maxElementsIndices = GetMaximumDrawIndexedIndexCount(featureLevel);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("maxElementsIndices: %d\n"), m_sCapabilities.maxElementsIndices);
+	womalogauto(TEXT("maxElementsIndices: %d\n"), m_sCapabilities.maxElementsIndices);
 	m_sCapabilities.maxElementsVertices = GetMaximumDrawVertexCount(featureLevel);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("maxElementsVertices: %d\n"), m_sCapabilities.maxElementsVertices);
+	womalogauto(TEXT("maxElementsVertices: %d\n"), m_sCapabilities.maxElementsVertices);
 	
 	m_sCapabilities.maxVertexAttributes = GetMaximumVertexInputSlots(featureLevel);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("maxVertexAttributes: %d\n"), m_sCapabilities.maxVertexAttributes);
+	womalogauto(TEXT("maxVertexAttributes: %d\n"), m_sCapabilities.maxVertexAttributes);
 	m_sCapabilities.MaximumConstantBufferSize = GetMaximumConstantBufferSize(featureLevel);
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("MaximumConstantBufferSize: %d\n"), m_sCapabilities.MaximumConstantBufferSize);
+	womalogauto(TEXT("MaximumConstantBufferSize: %d\n"), m_sCapabilities.MaximumConstantBufferSize);
 #endif
 }
 #endif

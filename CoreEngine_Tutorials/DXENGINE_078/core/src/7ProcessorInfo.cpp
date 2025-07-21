@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "OSengine.h" //#include "WinSystemClass.h"
 #include "OSmain_dir.h"
@@ -56,7 +56,7 @@ void cpuID(unsigned regs[4], unsigned i)
 #if !defined WINDOWS_PLATFORM
 int cpuInfo(int argc, char **argv)
 {
-	WOMA_LOGManager_DebugMSG ("cpuInfo\n");
+	womalog ("cpuInfo\n");
 
 	FILE *cpuinfo = fopen("/proc/cpuinfo", "rb");
 	char *arg = 0;
@@ -64,7 +64,7 @@ int cpuInfo(int argc, char **argv)
 	while(getdelim(&arg, &size, 0, cpuinfo) != -1)
 	{
 		//puts(arg);
-		WOMA_LOGManager_DebugMSGAUTO (TEXT("%s\n"), arg);
+		womalogauto (TEXT("%s\n"), arg);
 	}
 	free(arg);
 	fclose(cpuinfo);
@@ -120,7 +120,7 @@ char* processorSetting(char* setting)
 ProcessorInfo::ProcessorInfo()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525256;
+	WomaIntegrityCheck = 1234525217;
 
     processorName[0] = 0;
     processorId[0] = 0;
@@ -172,12 +172,12 @@ ProcessorInfo::ProcessorInfo()
 														atoi(model.c_str()), 
 														atoi(stepping.c_str()), 
 														vendor_id.c_str());
-	//WOMA_LOGManager_DebugMSG (processorId);
+	//womalog (processorId);
 
 	// processorName:
 	STRING model_name = processorSetting("model name");
 	strcpy_s (processorName, MAX_PATH, model_name.c_str());
-	//WOMA_LOGManager_DebugMSG (processorName);
+	//womalog (processorName);
 #endif
 }
 

@@ -24,7 +24,7 @@
 //		glesOpenGLClass.cpp		OpenGL ES 2.0 --> API "Android 2.2++"
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "platform.h"
 #if (defined OPENGL3 || defined OPENGL4) && DX_ENGINE_LEVEL >= 19 
@@ -338,7 +338,7 @@ bool GLopenGLclass::Initialize(float* clearColor)
 	mathClass = NEW GLmathClass;
 	IF_NOT_THROW_EXCEPTION (mathClass);
 
-	WOMA_LOGManager_DebugMSG ("GLopenGLclass::Initialize()\n");
+	womalog ("GLopenGLclass::Initialize()\n");
 
 	// Set default clear color:
 	driver_ClearColor[0] = *clearColor++;

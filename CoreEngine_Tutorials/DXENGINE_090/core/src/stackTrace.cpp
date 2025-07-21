@@ -16,7 +16,7 @@
 // Original Source Code:
 // http://social.msdn.microsoft.com/Forums/vstudio/en-US/f93a211a-9c95-42f0-8581-50314457b729/generating-the-stack-traces-in-the-c-code
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "platform.h"
 #if defined WINDOWS_PLATFORM
@@ -81,7 +81,7 @@ public:
             } else {
                 #if NDEBUG // This always fail on DEBUG:
 				DWORD err = GetLastError();
-                WOMA_LOGManager_DebugMSGAUTO(TEXT ("ERROR: %d:\n"), err);
+                womalogauto(TEXT ("ERROR: %d:\n"), err);
                 WomaMessageBox(NULL, TEXT("ERROR: SymFromAddr(GetCurrentProcess(), addr, &displacement64, symbol)"));
                 #endif
 			}

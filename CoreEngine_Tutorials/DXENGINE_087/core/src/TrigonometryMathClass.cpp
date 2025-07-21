@@ -19,7 +19,7 @@
 //  Use pre-calculated data to speed-up until 20x, trivial trigonometry Math Calculations.
 //  Precision 2 decimal numbers, i.e. sin(0.12)
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "platform.h"
 #if defined USE_TIMER_CLASS
@@ -46,7 +46,7 @@ float tableSin[360*100], tableCos[360*100];
 TrigonometryMathClass::TrigonometryMathClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525256;
+	WomaIntegrityCheck = 1234525217;
 
 	Initialize();
 }
@@ -55,14 +55,14 @@ TrigonometryMathClass::~TrigonometryMathClass() {CLASSDELETE();}
 
 void TrigonometryMathClass::Initialize()
 {
-    WOMA_LOGManager_DebugMSGAUTO("TrigonometryMathClass::Initialize() - START\n");
+    womalogauto("TrigonometryMathClass::Initialize() - START\n");
 
 	for (UINT deg=0;deg<360*100;deg++) {
 		tableSin[deg] = sin (((float)deg / 100.0f) * 0.0174532925f); //0.0174532925f (PI / 180.0f): Convert degrees to radians.
 		tableCos[deg] = cos (((float)deg / 100.0f) * 0.0174532925f); //0.0174532925f (PI / 180.0f): Convert degrees to radians.
 	}
 
-    WOMA_LOGManager_DebugMSGAUTO("TrigonometryMathClass::Initialize() - END\n");
+    womalogauto("TrigonometryMathClass::Initialize() - END\n");
 }
 
 // --------------------------------------------------------------------------------------------
@@ -149,13 +149,13 @@ void TrigonometryMathClass::testMathSpeed(TimerClass* m_Timer, double &delta1, d
 
 	// SAMPLE:
 	#if defined NDEBUG
-	WOMA_LOGManager_DebugMSG("sqrt (81): %f\n", sqrt(81.0f));// Windows Calculator: 9
-	WOMA_LOGManager_DebugMSG("cos (PI): %f\n", cos(PI));		// Windows Calculator: 0.99849714986386383363576701381654
-	WOMA_LOGManager_DebugMSG("sin (PI): %f\n", sin(PI));		// Windows Calculator: 0.05480366514878953088770264713332
+	womalog("sqrt (81): %f\n", sqrt(81.0f));// Windows Calculator: 9
+	womalog("cos (PI): %f\n", cos(PI));		// Windows Calculator: 0.99849714986386383363576701381654
+	womalog("sin (PI): %f\n", sin(PI));		// Windows Calculator: 0.05480366514878953088770264713332
 
-	WOMA_LOGManager_DebugMSG("FAST_sqrt (81): %f\n", FAST_sqrt(81.0f));
-	WOMA_LOGManager_DebugMSG("FAST_cos (PI): %f\n", FAST_cos(180));
-	WOMA_LOGManager_DebugMSG("FAST_sin (PI): %f\n", FAST_sin(180));
+	womalog("FAST_sqrt (81): %f\n", FAST_sqrt(81.0f));
+	womalog("FAST_cos (PI): %f\n", FAST_cos(180));
+	womalog("FAST_sin (PI): %f\n", FAST_sin(180));
 	#endif
 
 }

@@ -10,7 +10,7 @@
 // PURPOSE:
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "platform.h"
 
@@ -37,7 +37,7 @@
 GLtextureClass::GLtextureClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525256;
+	WomaIntegrityCheck = 1234525217;
 
 	m_textureID = NULL;
 	loaded = false;

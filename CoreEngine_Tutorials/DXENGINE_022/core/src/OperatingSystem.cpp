@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "platform.h"
 #if CORE_ENGINE_LEVEL >= 4 && defined USE_SYSTEM_CHECK
@@ -180,7 +180,7 @@ int GETOS(void)
                 size_t pos = result.find('|');
                 result = result.substr(0, pos);
 
-                WOMA_LOGManager_DebugMSGW(L"OS Name: %s\n", result.c_str());
+                womalogw(L"OS Name: %s\n", result.c_str());
             
 		#if defined UNICODE
 			wcscpy_s(SystemHandle->systemManager->pszOS, BUFSIZE, result.c_str());
@@ -191,25 +191,25 @@ int GETOS(void)
 
 			//
 			if (SUCCEEDED(pclsObj->Get(L"version", 0, &vtProp, 0, 0)))
-				WOMA_LOGManager_DebugMSGW(L"version: %s\n", vtProp.bstrVal);
+				womalogw(L"version: %s\n", vtProp.bstrVal);
 
 			swscanf(vtProp.bstrVal, L"%d.%d", &SystemHandle->systemManager->MajorVersion, &SystemHandle->systemManager->MinorVersion); // Note: Cant use TEXT()
 
 			//
 			if (SUCCEEDED(pclsObj->Get(L"BuildNumber", 0, &vtProp, 0, 0)))
-				WOMA_LOGManager_DebugMSGW(L"BuildNumber: %s\n", vtProp.bstrVal);
+				womalogw(L"BuildNumber: %s\n", vtProp.bstrVal);
 
 			SystemHandle->systemManager->BuildVersion = _wtoi(vtProp.bstrVal);
 		}
 
 		if (SUCCEEDED(pclsObj->Get(L"Manufacturer", 0, &vtProp, 0, 0)))
-			WOMA_LOGManager_DebugMSGW(L"Manufacturer: %s\n", vtProp.bstrVal);
+			womalogw(L"Manufacturer: %s\n", vtProp.bstrVal);
 
 		if (SUCCEEDED(pclsObj->Get(L"OSLanguage", 0, &vtProp, 0, 0)))
-			WOMA_LOGManager_DebugMSGW(L"OSLanguage: %d\n", vtProp.uintVal);
+			womalogw(L"OSLanguage: %d\n", vtProp.uintVal);
 
 		if (SUCCEEDED(pclsObj->Get(L"Locale", 0, &vtProp, 0, 0)))
-			WOMA_LOGManager_DebugMSGW(L"Locale: %s\n", vtProp.bstrVal);
+			womalogw(L"Locale: %s\n", vtProp.bstrVal);
 
 		// etc...
 

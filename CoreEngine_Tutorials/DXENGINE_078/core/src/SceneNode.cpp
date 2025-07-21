@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "platform.h"
 
@@ -31,7 +31,7 @@ SceneNode::SceneNode(float posX, float posY, float posZ, float boundingSphere)
 	width = boundingSphere;
 
 	#if _DEBUG
-	//WOMA_LOGManager_DebugMSG("SceneManager::Node: X,Y,Z - DIM: %d %d %d - %d\n", (int)positionX, (int)positionY, (int)positionZ, (int)width);
+	//womalog("SceneManager::Node: X,Y,Z - DIM: %d %d %d - %d\n", (int)positionX, (int)positionY, (int)positionZ, (int)width);
 	#endif
 }
 

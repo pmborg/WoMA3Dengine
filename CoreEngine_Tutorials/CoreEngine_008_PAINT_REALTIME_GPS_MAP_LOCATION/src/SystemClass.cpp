@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Define APIs for systemclass.cpp which is the common OS API
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
@@ -196,9 +196,9 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 	// Log Title:
 	StringCchPrintf(WOMA::APP_FULLNAME, sizeof(WOMA::APP_FULLNAME), TEXT("%s"), WOMA::APP_NAME);
 
-	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("-------------------------------------------------------------------------------\n"));
-	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)WOMA::APP_FULLNAME);
-	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("\n-------------------------------------------------------------------------------\n"));
+	womalogauto((TCHAR*)TEXT("-------------------------------------------------------------------------------\n"));
+	womalogauto((TCHAR*)WOMA::APP_FULLNAME);
+	womalogauto((TCHAR*)TEXT("\n-------------------------------------------------------------------------------\n"));
 
 	// Reset Vars:
 	// -------------------------------------------------------------------------------------------
@@ -607,22 +607,22 @@ bool SystemClass::SystemCheck()
 	// -------------------------------------------------------------------------------------------
 	WOMA::settings.Endian = WOMA::endian();
 	if (WOMA::settings.Endian == LITTLE_ENDIAN)
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("The machine is Little Endian\n"));	//8008, 8080, 8085, 8086, ...
+		womalogauto(TEXT("The machine is Little Endian\n"));	//8008, 8080, 8085, 8086, ...
 	else
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("The machine is Big Endian\n"));		//Motorola 68000
+		womalogauto(TEXT("The machine is Big Endian\n"));		//Motorola 68000
 
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("\n"));
+	womalogauto(TEXT("\n"));
 
 	LEVELHIGHLIGHT(4);
 	// INIT SYSTEM SETTINGS:
-	WOMA_LOGManager_DebugMSG("------------------------------------SYSTEM CHECK SETTINGS: --------------------------------\n");
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("ENGINE_LEVEL: %d [Function Loader] get_current_dir()\n"), WOMA::ENGINE_LEVEL_USED);
+	womalog("------------------------------------SYSTEM CHECK SETTINGS: --------------------------------\n");
+	womalogauto(TEXT("ENGINE_LEVEL: %d [Function Loader] get_current_dir()\n"), WOMA::ENGINE_LEVEL_USED);
 
 	userName = getUserName(); // Note: Save for later use!
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("User Name: %s\n"), userName.c_str());
+	womalogauto(TEXT("User Name: %s\n"), userName.c_str());
 
 	ComputerName = getComputerName();
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("Computer Name: %s\n"), ComputerName.c_str());
+	womalogauto(TEXT("Computer Name: %s\n"), ComputerName.c_str());
 
 	IF_NOT_RETURN_FALSE(WOMA::getCurrentDir());
 	//LEVELNORMAL();
@@ -637,42 +637,42 @@ bool SystemClass::SystemCheck()
 	// [2] CheckOS: Detect OS Version & DO System Check: DONE
 	//----------------------------------------------------------------------------
 	//LEVELHIGHLIGHT(4);
-	WOMA_LOGManager_DebugMSG("-------------------------------------------------------------------------------\n");
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("ENGINE_LEVEL: %d [Function Loader] systemManager->CheckOS()\n"), WOMA::ENGINE_LEVEL_USED);
+	womalog("-------------------------------------------------------------------------------\n");
+	womalogauto(TEXT("ENGINE_LEVEL: %d [Function Loader] systemManager->CheckOS()\n"), WOMA::ENGINE_LEVEL_USED);
 	IF_NOT_RETURN_FALSE(systemManager->CheckOS()); // Mandatory line for all ENGINE_LEVELs
 
 #if defined DX11 && !defined WIN10
 	// FOR WINDOWS VISTA:
-	WOMA_LOGManager_DebugMSG("-------------------------------------------------------------------------------\n");
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("[Function Loader] systemManager->UpdateOSifNeeded()\n"));
+	womalog("-------------------------------------------------------------------------------\n");
+	womalogauto(TEXT("[Function Loader] systemManager->UpdateOSifNeeded()\n"));
 	IF_NOT_RETURN_FALSE(systemManager->UpdateOSifNeeded());	// TODO: UpdateOSifNeeded: Check if OS need Updates: DONE
 
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("[Function Loader] systemManager->CheckSetup()\n"));
+	womalogauto(TEXT("[Function Loader] systemManager->CheckSetup()\n"));
 	IF_NOT_RETURN_FALSE(systemManager->CheckSetup());		// TODO: CheckSetup: Check if "Setup.exe" is Installed or needed / Download & Install: DONE
 #endif // NOTE: WINDOWS10/DX12: Dont need this checks
 	//LEVELNORMAL();
 
 	//LEVELHIGHLIGHT(4);
-	WOMA_LOGManager_DebugMSG("-------------------------------------------------------------------------------\n");
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("ENGINE_LEVEL: %d [Function Loader] systemManager->checkCPU()\n"), WOMA::ENGINE_LEVEL_USED);
+	womalog("-------------------------------------------------------------------------------\n");
+	womalogauto(TEXT("ENGINE_LEVEL: %d [Function Loader] systemManager->checkCPU()\n"), WOMA::ENGINE_LEVEL_USED);
 	IF_NOT_RETURN_FALSE(systemManager->checkCPU());
 	//LEVELNORMAL();
 
 	//LEVELHIGHLIGHT(5);
-	WOMA_LOGManager_DebugMSG("-------------------------------------------------------------------------------\n");
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("ENGINE_LEVEL: %d [Function Loader] systemManager->checkRAM()\n"), WOMA::ENGINE_LEVEL_USED);
+	womalog("-------------------------------------------------------------------------------\n");
+	womalogauto(TEXT("ENGINE_LEVEL: %d [Function Loader] systemManager->checkRAM()\n"), WOMA::ENGINE_LEVEL_USED);
 	IF_NOT_RETURN_FALSE(systemManager->checkRAM());
 	//LEVELNORMAL();
 
 	//LEVELHIGHLIGHT(6);
-	WOMA_LOGManager_DebugMSG("-------------------------------------------------------------------------------\n");
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("ENGINE_LEVEL: %d [Function Loader] systemManager->checkDiskFreeSpace()\n"), WOMA::ENGINE_LEVEL_USED);
+	womalog("-------------------------------------------------------------------------------\n");
+	womalogauto(TEXT("ENGINE_LEVEL: %d [Function Loader] systemManager->checkDiskFreeSpace()\n"), WOMA::ENGINE_LEVEL_USED);
 	IF_NOT_RETURN_FALSE(systemManager->checkDiskFreeSpace());
 	//LEVELNORMAL();
 
 	//LEVELHIGHLIGHT(7);
-	WOMA_LOGManager_DebugMSG("-------------------------------------------------------------------------------\n");
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("ENGINE_LEVEL: %d [Function Loader] systemManager->checkCPUFeatures()\n"), WOMA::ENGINE_LEVEL_USED);
+	womalog("-------------------------------------------------------------------------------\n");
+	womalogauto(TEXT("ENGINE_LEVEL: %d [Function Loader] systemManager->checkCPUFeatures()\n"), WOMA::ENGINE_LEVEL_USED);
 
 #if defined WINDOWS_PLATFORM
 	IF_NOT_RETURN_FALSE(systemManager->checkCPUFeatures());
@@ -682,8 +682,8 @@ bool SystemClass::SystemCheck()
 	if (Command == 0) {
 #if ((defined USE_TIMER_CLASS && CORE_ENGINE_LEVEL >= 6) || (defined NDEBUG || defined INTRO_DEMO) || CORE_ENGINE_LEVEL == 4) && defined WINDOWS_PLATFORM
 		//LEVELHIGHLIGHT(8);
-		WOMA_LOGManager_DebugMSG("-------------------------------------------------------------------------------\n");
-		WOMA_LOGManager_DebugMSGAUTO(TEXT("ENGINE_LEVEL: %d [Function Loader] systemManager->checkBenchMarkSpeed()\n"), WOMA::ENGINE_LEVEL_USED);
+		womalog("-------------------------------------------------------------------------------\n");
+		womalogauto(TEXT("ENGINE_LEVEL: %d [Function Loader] systemManager->checkBenchMarkSpeed()\n"), WOMA::ENGINE_LEVEL_USED);
 		IF_NOT_RETURN_FALSE(systemManager->checkBenchMarkSpeed(&m_Timer));
 		//LEVELNORMAL();
 #endif
@@ -699,7 +699,7 @@ bool SystemClass::SystemCheck()
 	InitJoyStick();
 #endif
 
-	WOMA_LOGManager_DebugMSG("\n");
+	womalog("\n");
 	//#endif
 
 	return true;
@@ -711,9 +711,9 @@ SystemClass::~SystemClass() { CLASSDELETE(); }
 
 void SystemClass::Shutdown()
 {
-	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("-------------------------------------------------------------------------------\n"));
-	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("SystemClass::Shutdown()\n"));
-	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)TEXT("-------------------------------------------------------------------------------\n"));
+	womalogauto((TCHAR*)TEXT("-------------------------------------------------------------------------------\n"));
+	womalogauto((TCHAR*)TEXT("SystemClass::Shutdown()\n"));
+	womalogauto((TCHAR*)TEXT("-------------------------------------------------------------------------------\n"));
 #if defined USE_PROCESS_OS_KEYS
 	SAFE_DELETE(m_OsInput);
 #endif
@@ -845,16 +845,16 @@ void SystemClass::ParseCommandLineArgs(int argc, char* argv[])
 #if defined USE_TINYXML_LOADER //5
 bool SystemClass::LoadXmlSettings()
 {
-	WOMA_LOGManager_DebugMSG("===============================================================================\n");
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("LOAD XML SETTINGS\n"));
-	WOMA_LOGManager_DebugMSG("===============================================================================\n");
+	womalog("===============================================================================\n");
+	womalogauto(TEXT("LOAD XML SETTINGS\n"));
+	womalog("===============================================================================\n");
 
 	// Load and Parse XML FILE:"settings.xml" the Configuration file
 	//----------------------------------------------------------------------------
 	XML_SETTINGS_FILE = WOMA::PUBLIC_DOCUMENTS;
 	XML_SETTINGS_FILE.append(WOMA::APP_SETTINGS_FILE);
 
-	WOMA_LOGManager_DebugMSGAUTO(TEXT("XML_SETTINGS_FILE: %s\n"), XML_SETTINGS_FILE.c_str());
+	womalogauto(TEXT("XML_SETTINGS_FILE: %s\n"), XML_SETTINGS_FILE.c_str());
 	if (!SystemHandle->xml_loader.initAppicationSettings((TCHAR*)XML_SETTINGS_FILE.c_str()))
 	{
 		STRING err = TEXT("LoadXmlSettings::Settings File not found/Invalid: "); err += XML_SETTINGS_FILE;
@@ -933,16 +933,16 @@ void SystemClass::InitJoyStick()
 		}
 
 		// MORE INFO: https://technet.microsoft.com/pt-br/dd757103%28v=vs.71%29
-		WOMA_LOGManager_DebugMSG("Joystick: Detected\n");
-		WOMA_LOGManager_DebugMSG("Driver: %s\n", joyCaps.szPname);
-		WOMA_LOGManager_DebugMSG("Manufacturer identifier: %X\n", joyCaps.wMid);
-		WOMA_LOGManager_DebugMSG("Product identifier: %X\n", joyCaps.wPid);
+		womalog("Joystick: Detected\n");
+		womalog("Driver: %s\n", joyCaps.szPname);
+		womalog("Manufacturer identifier: %X\n", joyCaps.wMid);
+		womalog("Product identifier: %X\n", joyCaps.wPid);
 
-		WOMA_LOGManager_DebugMSG("Num Buttons: %d\n", joyCaps.wNumButtons);
-		WOMA_LOGManager_DebugMSG("Num Axes: %d\n", joyCaps.wNumAxes);
+		womalog("Num Buttons: %d\n", joyCaps.wNumButtons);
+		womalog("Num Axes: %d\n", joyCaps.wNumAxes);
 	}
 	else {
-		WOMA_LOGManager_DebugMSG("Joystick: Not Detected\n");
+		womalog("Joystick: Not Detected\n");
 	}
 }
 
@@ -989,20 +989,20 @@ void SystemClass::joyStickFrame()
 			onJoystickAxis(5, joyInfo.dwVpos * vScale + vBias);
 			lastVpos = joyInfo.dwVpos;
 		}
-		WOMA_LOGManager_DebugMSGAUTO("lastXpos: %u lastYpos: %u lastZpos: %u lastRpos: %u lastUpos: %u lastVpos: %u\n");
+		womalogauto("lastXpos: %u lastYpos: %u lastZpos: %u lastRpos: %u lastUpos: %u lastVpos: %u\n");
 	}
 }
 
 bool SystemClass::onJoystickButton(int button, bool pressed)
 {
-	WOMA_LOGManager_DebugMSG("button: %d is pressed: %d\n", button, pressed);
+	womalog("button: %d is pressed: %d\n", button, pressed);
 	return true;
 }
 
 void SystemClass::onJoystickAxis(int axis, float value)
 {
 #if defined _DEBUG
-	WOMA_LOGManager_DebugMSG("axis: %d value: %f\n", axis, value);
+	womalog("axis: %d value: %f\n", axis, value);
 #endif
 }
 #endif

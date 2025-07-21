@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "WinSystemClass.h"
 #include "systemFeatures.h"
@@ -25,7 +25,7 @@
 SystemFeatures::SystemFeatures()
 {
 	CLASSLOADER();
-    WomaIntegrityCheck = 1234525256;
+    WomaIntegrityCheck = 1234525217;
 
     displayAllCpuFeactures = TEXT("");
 }
@@ -337,7 +337,7 @@ STRING SystemFeatures::Initialize()
     StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("Hyper-threading: %s"), (htt) ? TEXT("true") : TEXT("false")); //bMultithreading 
     SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
 
-    WOMA_LOGManager_DebugMSGAUTO(TEXT("CUP FEATURES:\n%s"), displayAllCpuFeactures.c_str());
+    womalogauto(TEXT("CUP FEATURES:\n%s"), displayAllCpuFeactures.c_str());
 
     return displayAllCpuFeactures;
 }

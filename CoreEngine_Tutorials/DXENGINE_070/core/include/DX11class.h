@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #pragma once
 
@@ -262,7 +262,7 @@ struct DXTextLine
 class DX11Class : public WomaDriverClass
 {
 public:
-    UINT WomaIntegrityCheck = 1234525256;
+    UINT WomaIntegrityCheck = 1234525217;
     DX11Class();
     ~DX11Class();
 

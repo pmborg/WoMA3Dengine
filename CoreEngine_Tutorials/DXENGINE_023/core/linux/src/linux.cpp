@@ -78,13 +78,13 @@ void strcpy_s(char *strDestination, UINT numberOfElements, const char *strSource
 
 bool PLATFORM_INIT_GTK2() 
 {
-	WOMA_LOGManager_DebugMSG ("INIT: GTK2...");	//DONT USE (need sudo): WOMA_LOGManager_DebugMSG ("INIT: GTK2...");
+	womalog ("INIT: GTK2...");	//DONT USE (need sudo): womalog ("INIT: GTK2...");
 
 	gtk_disable_setlocale();
 	gtk_init(&WOMA::ARGc, &WOMA::ARGv);
 
 	if (!gtk_init_check(&WOMA::ARGc, &WOMA::ARGv)) {
-		WOMA_LOGManager_DebugMSG ("gtk_init_check: Failed!\n");
+		womalog ("gtk_init_check: Failed!\n");
 		return false;
 	}
 
@@ -146,7 +146,7 @@ namespace WOMA
 #ifdef ANDROID_PLATFORM
 #include <android/log.h>
 
-//WOMA_LOGManager_DebugMSG
+//womalog
 void LogInfo(const char *sTag, const char *fmt, ...)
 {
   va_list ap;

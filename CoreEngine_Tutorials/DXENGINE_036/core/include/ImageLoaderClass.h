@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 #pragma once
 
 ///////////////////////
@@ -276,7 +276,7 @@ private:
 	unsigned char* pixels = NULL; //image in 32bits pixels
 
 public:
-	UINT WomaIntegrityCheck = 1234525256;
+	UINT WomaIntegrityCheck = 1234525217;
 	ImageLoaderClass();
 	ImageLoaderClass(FORMAT fmt, int w, int h, int d, int mipMapCount, int arraysize=1);
 	~ImageLoaderClass();

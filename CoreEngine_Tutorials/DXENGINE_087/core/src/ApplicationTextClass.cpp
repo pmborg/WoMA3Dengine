@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "platform.h"
 #if ((defined OPENGL3 || defined OPENGL4) || defined DX_ENGINE || defined INTRO_DEMO) && defined USE_RASTERTEK_TEXT_FONT
@@ -38,7 +38,7 @@ namespace DirectX {
 ApplicationTextClass::ApplicationTextClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525256;
+	WomaIntegrityCheck = 1234525217;
 
 	m_Text = NULL;
 }

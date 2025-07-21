@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Upload the "file".dmp and "report".txt to Woma Server (woma.servegame.com) via FTP
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "platform.h"
 #if defined USE_MINIDUMPER && defined WINDOWS_PLATFORM
@@ -87,7 +87,7 @@ int dumpUploader(STRING file)
 		}
 	}
 
-	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)"\nSend DMP File: %s\n", w_filetosend.c_str());
+	womalogauto((TCHAR*)"\nSend DMP File: %s\n", w_filetosend.c_str());
 
 	//SEND DUMP FILE:
 	{
@@ -106,7 +106,7 @@ int dumpUploader(STRING file)
 	//SEND "report.txt" FILE:
 	w_fileToSave += TEXT("_report.txt");
 
-	WOMA_LOGManager_DebugMSGAUTO((TCHAR*)"\nSend TXT File: %s\n", REPORT_FILE.c_str());
+	womalogauto((TCHAR*)"\nSend TXT File: %s\n", REPORT_FILE.c_str());
 
 	//SEND TXT FILE:
 	#ifdef UNICODE
