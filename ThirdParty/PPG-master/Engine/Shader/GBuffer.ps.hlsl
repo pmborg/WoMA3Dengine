@@ -18,7 +18,7 @@
 // Version inspired: https://github.com/michal-z/SimpleDirectPBR/blob/master/Source/Shaders/SimpleForward.hlsl
 // Free Assets: https://freepbr.com/
 
-// WomaIntegrityCheck = 1234525256;
+// WomaIntegrityCheck = 1234525217;
 
 #define PS_USE_SPECULAR
 

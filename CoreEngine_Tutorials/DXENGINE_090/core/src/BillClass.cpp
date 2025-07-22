@@ -139,8 +139,12 @@ xmlobj3d* BillClass::fillxml(int id, UINT type)
 	xmlobj.instances = 0;			//40
 	xmlobj.castShadow = false;		//41
 	xmlobj.renderShadows = false;	//41
+	xmlobj.meshSRV = NULL;
+
+	xmlobj.Bill = true;
 
 	if (m_Trees[id].type < 100)
+	if (xmlobj.posX <= 98 && xmlobj.posZ <= 51)
 	{
 		// Create the texture object, if not created before
 		if (!billFileLoaded[type])
@@ -161,19 +165,102 @@ xmlobj3d* BillClass::fillxml(int id, UINT type)
 		else
 			if (m_Trees[id].type == 12)
 				strcpy_s(xmlobj.filename, 256, BILLBOARD_BUSH_MODEL);	//engine/data/scene73grass/grass.obj
-
 	}
-	else
-		xmlobj.meshSRV = NULL;
 
 	if (m_Trees[id].type == 100)
 		strcpy_s(xmlobj.filename, 256, BILLBOARD_FENCE_MODEL);		    //100: engine/data/scene70Bill/fence.obj
+
 	if (m_Trees[id].type == 200)
 		strcpy_s(xmlobj.filename, 256, BILLBOARD_FIRE_MODEL);		    //200: engine/data/scene72Fire/072fire.obj
-    if (m_Trees[id].type == 300)
-        strcpy_s(xmlobj.filename, 256, FENCE1_MODEL);	    //engine/data/scene87ForestHuntress.priv/worldMap/woodfence/Fence_module.obj
+
+	if (m_Trees[id].type == 300)
+	{
+		strcpy_s(xmlobj.filename, 256, FENCE1_MODEL);	    //engine/data/scene87ForestHuntress.priv/worldMap/woodfence/Fence_module.obj
+	}
+
+	xmlobj.moveUp = false;
+
+	if (xmlobj.posX > 98 || xmlobj.posZ > 51)
+	{
+		xmlobj.Bill = false;
+		switch (m_Trees[id].type) 
+		{
+			case 0:
+				strcpy_s(xmlobj.filename, 256, "engine/data/scene87ForestHuntress.priv/worldMap/models_plant_bush_shape_spark/Hedge-01.obj");	    //engine/data/scene87ForestHuntress.priv/worldMap/woodfence/Fence_module.obj
+				xmlobj.scale = 0.3f;
+				xmlobj.moveUp = true;
+				break;
+			case 1:
+				strcpy_s(xmlobj.filename, 256, "engine/data/scene87ForestHuntress.priv/worldMap/models_plant_bush_shape_spark/Bush-03.obj");	    //engine/data/scene87ForestHuntress.priv/worldMap/woodfence/Fence_module.obj
+				xmlobj.scale = 0.5f;
+				xmlobj.moveUp = true;
+				break;
+			case 2:
+				strcpy_s(xmlobj.filename, 256, "engine/data/scene87ForestHuntress.priv/worldMap/models_plant_bush_shape_spark/Bush-04.obj");	    //engine/data/scene87ForestHuntress.priv/worldMap/woodfence/Fence_module.obj
+				xmlobj.scale = 0.5f;
+				xmlobj.moveUp = true;
+				break;
+
+			case 3:
+				strcpy_s(xmlobj.filename, 256, "engine/data/scene87ForestHuntress.priv/worldMap/models_plant_bush_shape_spark/Tree-03-1.obj");	    //engine/data/scene87ForestHuntress.priv/worldMap/woodfence/Fence_module.obj
+				xmlobj.scale = 0.8f;
+				xmlobj.moveUp = true;
+				break;
+			case 4:
+				strcpy_s(xmlobj.filename, 256, "engine/data/scene87ForestHuntress.priv/worldMap/models_plant_bush_shape_spark/Tree-03-2.obj");	    //engine/data/scene87ForestHuntress.priv/worldMap/woodfence/Fence_module.obj
+				xmlobj.scale = 0.8f;
+				xmlobj.moveUp = true;
+				break;
+			case 5:
+				strcpy_s(xmlobj.filename, 256, "engine/data/scene87ForestHuntress.priv/worldMap/models_plant_bush_shape_spark/Tree-03-3.obj");	    //engine/data/scene87ForestHuntress.priv/worldMap/woodfence/Fence_module.obj
+				xmlobj.scale = 0.8f;
+				xmlobj.moveUp = true;
+				break;
+
+			case 6:
+				strcpy_s(xmlobj.filename, 256, "engine/data/scene87ForestHuntress.priv/worldMap/models_plant_bush_shape_spark/Flowers-01.obj");	    //engine/data/scene87ForestHuntress.priv/worldMap/woodfence/Fence_module.obj
+				xmlobj.scale = 0.6f;
+				xmlobj.moveUp = true;
+				break;
+			case 7:
+				strcpy_s(xmlobj.filename, 256, "engine/data/scene87ForestHuntress.priv/worldMap/models_plant_bush_shape_spark/Flowers-02.obj");	    //engine/data/scene87ForestHuntress.priv/worldMap/woodfence/Fence_module.obj
+				xmlobj.scale = 0.6f;
+				xmlobj.moveUp = true;
+				break;
+			case 8:
+				strcpy_s(xmlobj.filename, 256, "engine/data/scene87ForestHuntress.priv/worldMap/models_plant_bush_shape_spark/Flowers-03.obj");	    //engine/data/scene87ForestHuntress.priv/worldMap/woodfence/Fence_module.obj
+				xmlobj.scale = 0.6f;
+				xmlobj.moveUp = true;
+				break;
+			case 9:
+				strcpy_s(xmlobj.filename, 256, "engine/data/scene87ForestHuntress.priv/worldMap/models_plant_bush_shape_spark/Flowers-04.obj");	    //engine/data/scene87ForestHuntress.priv/worldMap/woodfence/Fence_module.obj
+				xmlobj.scale = 0.6f;
+				xmlobj.moveUp = true;
+				break;
+			case 10:
+				strcpy_s(xmlobj.filename, 256, "engine/data/scene87ForestHuntress.priv/worldMap/models_plant_bush_shape_spark/Clover-01.obj");	    //engine/data/scene87ForestHuntress.priv/worldMap/woodfence/Fence_module.obj
+				xmlobj.scale = 0.6f;
+				xmlobj.moveUp = true;
+				break;
+
+			case 11:
+				strcpy_s(xmlobj.filename, 256, "engine/data/scene87ForestHuntress.priv/worldMap/models_plant_bush_shape_spark/Grass-02.obj");	    //engine/data/scene87ForestHuntress.priv/worldMap/woodfence/Fence_module.obj
+				xmlobj.scale = 0.6f;
+				xmlobj.moveUp = true;
+				break;
+			case 12:
+				strcpy_s(xmlobj.filename, 256, "engine/data/scene87ForestHuntress.priv/worldMap/models_plant_bush_shape_spark/Grass-03.obj");	    //engine/data/scene87ForestHuntress.priv/worldMap/woodfence/Fence_module.obj
+				xmlobj.scale = 0.5f;
+				xmlobj.moveUp = true;
+				break;
+
+			default:
+				xmlobj.moveUp = false;
+		}
+	}
 
 	xmlobj.WOMA_object = WOMA_OBJECT();
+
     xmlobj.WOMA_object.shaderType = SHADER_TEXTURE_LIGHT_FAST;
 
 	return &xmlobj;
@@ -237,7 +324,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 		m_Trees[i].vPos.y = height;
 
 		xmlobj3d* xmlobj = fillxml(i, m_Trees[i].type);
-        xmlobj->Bill = true;
+
 		SystemHandle->xml_loader.theWorld.push_back(*xmlobj);
 	}
 	//N_BILLBOARD
@@ -324,8 +411,8 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 		while (height <= 0		//not on water
 			|| height > 1.0f	//not above 1m
 			|| (m_Trees[i].vPos.x >= 27 && m_Trees[i].vPos.x <= 53) && (m_Trees[i].vPos.z >= 20 && m_Trees[i].vPos.z <= 38) //out of house (compound)
-			|| (m_Trees[i].vPos.x < borderLimit || m_Trees[i].vPos.x > m_terrainWidth - borderLimit)		//no near limits
-			|| (m_Trees[i].vPos.z < borderLimit || m_Trees[i].vPos.z > 220 /*m_terrainHeight - borderLimit*/)		//no near limits
+			|| (m_Trees[i].vPos.x < borderLimit || m_Trees[i].vPos.x > m_terrainWidth - borderLimit)			//no near limits
+			|| (m_Trees[i].vPos.z < borderLimit || m_Trees[i].vPos.z > 220 /*m_terrainHeight - borderLimit*/)	//no near limits
 			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z) - 1][(UINT)m_Trees[i].vPos.x] > 0			//no grass on main PATH (terrain)
 			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z)][(UINT)m_Trees[i].vPos.x] > 0				//no grass on main PATH (terrain)
 			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z + 1)][(UINT)m_Trees[i].vPos.x] > 0			//no grass on main PATH (terrain)
@@ -357,8 +444,8 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 		while (height <= 0		//not on water
 			|| height > 1.0f	//not above 1m
 			|| (m_Trees[i].vPos.x >= 27 && m_Trees[i].vPos.x <= 53) && (m_Trees[i].vPos.z >= 20 && m_Trees[i].vPos.z <= 38) //out of house (compound)
-			|| (m_Trees[i].vPos.x < borderLimit || m_Trees[i].vPos.x > m_terrainWidth - borderLimit)		//no near limits
-			|| (m_Trees[i].vPos.z < borderLimit || m_Trees[i].vPos.z > 220 /*m_terrainHeight - borderLimit*/)		//no near limits
+			|| (m_Trees[i].vPos.x < borderLimit || m_Trees[i].vPos.x > m_terrainWidth - borderLimit)			//no near limits
+			|| (m_Trees[i].vPos.z < borderLimit || m_Trees[i].vPos.z > 220 /*m_terrainHeight - borderLimit*/)	//no near limits
 			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z) - 1][(UINT)m_Trees[i].vPos.x] > 0			//no grass on main PATH (terrain)
 			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z)][(UINT)m_Trees[i].vPos.x] > 0				//no grass on main PATH (terrain)
 			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z + 1)][(UINT)m_Trees[i].vPos.x] > 0			//no grass on main PATH (terrain)

@@ -565,7 +565,9 @@
     #define FENCE1_MODEL    TEXT("engine/data/scene87ForestHuntress.priv/worldMap/woodfence/Fence_module.obj")
     #define N_INSTANCE_TREES1 10
 #endif
-
+#if DX_ENGINE_LEVEL >= 90
+	#define VIDEO_INTRO TEXT("engine/data/scene.90/movie_nMU5ySdW6W7hye8V.mp4.1920x1080.mp4")
+#endif
 
 
 

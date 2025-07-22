@@ -25,6 +25,7 @@
 #include "dx11Class.h"
 #include "winsystemclass.h"	// SystemHandle
 #include "fileLoader.h"
+#include <filesystem>
 
 // http://directxtk.codeplex.com/wikipage?title=WICTextureLoader&referringTitle=Home
 // #include <WICTextureLoader.h>
@@ -229,12 +230,14 @@ HRESULT DX11Class::LOADTEXTURE_DX11_WIN_SDK8(
 	}
     STRING finalname = pSrcFile;
     finalname = CleanFilePath(finalname);
+	if (!std::filesystem::exists(finalname));
+		finalname = pSrcFile;
 	hr = LoadTexture(pDevice, (TCHAR*)finalname.c_str(), ppShaderResourceView);
 
 	// COMMON:
 	if (FAILED(hr))
 	{
-		WomaMessageBox((TCHAR*)finalname.c_str(), TEXT("Texture File not found"));
+		WomaMessageBox((TCHAR*)finalname.c_str(), TEXT("DX11LoadTexture: Texture File not found"));
 	}
 	else {
 		allTextureNameArray.push_back((TCHAR*)finalname.c_str());

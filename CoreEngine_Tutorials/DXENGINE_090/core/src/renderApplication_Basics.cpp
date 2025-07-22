@@ -388,7 +388,11 @@ void ApplicationClass::RenderModel(UINT monitorIndex, WomaDriverClass* driver, U
                 model->rotateZ(rz);
     }// non-Instancing
 
-	// === SET CURRENT OBJ. WORLD POSITION: ===										   
+	// === SET CURRENT OBJ. WORLD POSITION: ===
+	if (SystemHandle->xml_loader.theWorld[model->m_ObjId].moveUp)
+	{ 
+		positionY += (model->maxVertex.y - model->minVertex.y)/2* model->m_worldMatrix.r[1].m128_f32[1]; //#define _22 r[1].m128_f32[1]
+	}
     model->translation(positionX, positionY, positionZ);
 
     //if (pass == 0)
@@ -509,12 +513,13 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight)
 #if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined MAIN_RENDER_MAIN_OBJ //MAIN-RENDER: MAIN OBJs. (9 ms)
 	for (UINT id = 0; id < WOMA::sceneManager->opacModelList.size(); id++) {
         RenderModel(monitorIndex, m_Driver, id, PASS_OPAC);
-            
-        if (((DXmodelClass*)objModel[id])->obj3d.hasTransparent == true)
-        {
-		    objModel[id]->Render(CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_TRANSPARENT);
-        }
     }
+	for (UINT id = 0; id < WOMA::sceneManager->opacModelList.size(); id++) {
+		if (((DXmodelClass*)objModel[id])->obj3d.hasTransparent == true)
+		{
+			objModel[id]->Render(CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_TRANSPARENT);
+		}
+	}
 #endif
 
     // TERRAIN[1]: Render Mesh for WATER:
