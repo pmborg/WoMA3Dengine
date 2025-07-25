@@ -40,8 +40,8 @@
 #define N_BILLBOARD 1000
 #define N_FENCES      55
 #define N_FIRE         1
-#define N_GRASS_0   2000
-#define N_BUSH_0     750
+#define N_GRASS_0   2000 //11 animated grass 
+#define N_BUSH_0     750 //12 BUSHs
 #endif
 
 extern ID3D11ShaderResourceView* billFileLoaded[];
@@ -65,23 +65,23 @@ public:
 	CTerrain* mainTerrainPath = NULL;
 
 #if DX_ENGINE_LEVEL >= 77 && defined USE_INSTANCES_FOR_TREES
-    void Tree0GS(InstanceType* instances, int m_instanceCount);
+	void Tree0GS(InstanceType* instances, int m_instanceCount);
 #endif
 #if DX_ENGINE_LEVEL >= 90 && defined USE_INSTANCES_FOR_TREES90
-    void Tree1GS(InstanceType* instances, int m_instanceCount);
+	void Tree1GS(InstanceType* instances, int m_instanceCount);
 #endif
 
 public:
-int		BillrenderCount=0;
-UINT	billTotal = 0;
+	int		BillrenderCount = 0;
+	UINT	billTotal = 0;
 
 private:
-VirtualModelClass*  fence = nullptr;
-VirtualModelClass*  fire = nullptr;
-VirtualModelClass*  grass = nullptr;
-FrustumClass*       m_FrustumGrass = nullptr;
+	VirtualModelClass* fence = nullptr;
+	VirtualModelClass* fire = nullptr;
+	VirtualModelClass* grass = nullptr;
+	FrustumClass* m_FrustumGrass = nullptr;
 
-UINT				billNames_length=0;
+	UINT				billNames_length = 0;
 };
 
 extern BillClass* m_billTreeClass;

@@ -477,7 +477,7 @@ HRESULT DXmodelClass::LoadTextureImage(TCHAR* textureFilename)
 
 	if (hr != S_OK)
 	{
-		WomaMessageBox(textureFilename, TEXT("Texture File not found")); return false;
+		WomaMessageBox(textureFilename, TEXT("DXmodelClass: Texture File not found")); return false;
 	}
 	else
 	{
@@ -750,7 +750,8 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 
 				if (fileNamePath.find(TEXT("none")) != 0) //dont load on special cases (like billboards)
 				{
-				HRESULT res = LoadTextureImage(textureFilename);
+					HRESULT res = LoadTextureImage(textureFilename);
+				
 				if (res != S_OK)
 					return false;
 				} 
@@ -2385,20 +2386,20 @@ bool DXmodelClass::LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shad
 
     const TCHAR* extension = _tcsrchr(filename.c_str(), '.');
 
-#if !defined SIMPLE
+	#if !defined SIMPLE
     if ((_tcsicmp(extension, TEXT(".obj")) == 0 || _tcsicmp(extension, TEXT(".OBJ")) == 0) && (filename.find("scene87ForestHuntress.priv") != std::string::npos))
     {
         {
             bool b = LoadW3DfromMEM(shader_type, g_driver, filename, castShadow, renderShadow, instanceCount);
             if (!b)
             {
-                WomaMessageBox((TCHAR*)filename.c_str(), TEXT("Error, Could not load: ")); return false;
+                womalog(TEXT("Error, Could not load: %s W3D\n"), (TCHAR*)filename.c_str() );
             }
             else
             return true;
         }
     }
-#endif
+	#endif
 
 	if (_tcsicmp(extension, TEXT(".obj")) == 0 || _tcsicmp(extension, TEXT(".OBJ")) == 0)
 	{

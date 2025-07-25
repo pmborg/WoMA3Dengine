@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #pragma once
 
@@ -99,7 +99,7 @@
 #endif
 
 #if CORE_ENGINE_LEVEL >= 9 && defined WINDOWS_PLATFORM
-    #define USE_METARCLASS  //9 CoreEngine_009 (PAINT RealTimeWeather) TODO: Android read asset file
+    #define USE_METARCLASS      //9 CoreEngine_009 (PAINT RealTimeWeather) TODO: Android read asset file
     #if CORE_ENGINE_LEVEL >= 9
         #if !defined MAINENGINE
             #define USE_NETWORK //9
@@ -218,7 +218,7 @@
         #define USE_VIEW2D_SPRITES
         #define USE_RASTERIZER_STATE
         #define USE_DSV //DX12
-		#define SENTENCE_MAX_LEN    140							   
+        #define SENTENCE_MAX_LEN    140
     #endif
 
     #if DX_ENGINE_LEVEL >= 25 //WINDOWS ONLY
@@ -370,8 +370,7 @@
             
         #define SCENE_GENERATEDUNDERWATER
         #undef SCENE_TERRAIN_COLLISION
-		
-		#define FIXEDBORDERHEIGHT -5.0f
+        #define FIXEDBORDERHEIGHT -5.0f
     #endif
 
     #if DX_ENGINE_LEVEL >= 50   //50-
@@ -457,10 +456,10 @@
     #if DX_ENGINE_LEVEL >= 73 && defined SCENE_BILLBOARDS
         #define TUTORIAL_CHAP 63
         #define BILLBOARD_FOR_WINDY_GRASS
-   #endif
+    #endif
     #if DX_ENGINE_LEVEL >= 74 && defined SCENE_BILLBOARDS
         #define TUTORIAL_CHAP 64
-    #endif                    
+    #endif
     #if DX_ENGINE_LEVEL >= 75 && defined SCENE_BILLBOARDS
         #define ALLOW_CBIND_PROGRESS_BAR
     #endif
@@ -470,7 +469,7 @@
     #if DX_ENGINE_LEVEL >= 77 && defined SCENE_BILLBOARDS
         #define USE_INSTANCES_FOR_TREES
         #define USE_ANIMATION_VERTEX_FLOAT //AQUIFLOAT                                            
-    #endif    
+    #endif
     #if DX_ENGINE_LEVEL >= 78
         #define USE_BOUNDING_VOLUMES
         #define CHECK_OBJ_COLISION
@@ -489,7 +488,7 @@
     #define MAIN_RENDER_BILLBOARDS      //70/74
     #define MAIN_RENDER_ASSIMP          //82
 
-	//#define DEBUG_MESH					
+    //#define DEBUG_MESH
     #if defined ASSIMP //>= 79
         #if DX_ENGINE_LEVEL == 79
             //FBX/DAE
@@ -501,14 +500,14 @@
         #if DX_ENGINE_LEVEL == 80
             #define USE_MATH3D          //79+80
             #define USE_ASSIMP_GLLIB    //79+80
-            //#undef  USE_ASSIMP_LATEST   //79-undef
+            //#undef  USE_ASSIMP_LATEST //79-undef
         #endif
         #if DX_ENGINE_LEVEL == 81
             //#define USE_MATH3D
-            #define USE_ASSIMP_DXLIB //81
+            #define USE_ASSIMP_DXLIB    //81
         #endif
     #endif
-	
+    
     #if DX_ENGINE_LEVEL >= 79
         #undef  USE_IDEA_PACK
         #define USE_CYPHER_PACK
@@ -543,32 +542,25 @@
         #define USE_MODEL4
       #endif
     #endif
-	
-	#if DX_ENGINE_LEVEL >= 88
-		#define USE_3RD_PERSON_CAMERA
-	#endif
-		
+    
+    #if DX_ENGINE_LEVEL >= 88
+        #define USE_3RD_PERSON_CAMERA
+    #endif
+        
 #if DX_ENGINE_LEVEL >= 89
     #define USE_MAP_EDITOR
-	//#define USE_AABB_COLISION_CHECK // Default: off												 
-#endif						 
-	
+    //#define USE_AABB_COLISION_CHECK // Default: off
+#endif
+    
 #if DX_ENGINE_LEVEL >= 90       // From now on DX: Will use W3D + DDS
     #undef  USE_MAP_EDITOR
     #undef USE_INSTANCES_FOR_TREES
-#endif																	 
-	
-	
-	
-	
+#endif
+    
+    
+    
+    
 
-    //#define USE_MULTI_MONITOR
     //-------------------------------------------------------------------------------------------------------
-    #if !defined USE_LIGHT_RAY          // ON/OFF - Render light ray !!Dep!!: #undef  dx12_upload_old_way
-        #define  dx12_upload_old_way    // DX12 upload method
-    #else
-        #undef  dx12_upload_old_way     // DX12 upload method
-    #endif
-
     #undef  dx12_upload_old_way
 

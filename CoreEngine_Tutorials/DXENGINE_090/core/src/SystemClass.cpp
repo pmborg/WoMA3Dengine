@@ -95,11 +95,6 @@ bool SystemClass::LoadAllGraphicAssets()
 		return false;
 	}
 
-	//Shutdown VIDEO PLAYER:
-#if defined USE_INTRO_VIDEO_DEMO
-	SAFE_DELETE(DXsystemHandle->g_DShowPlayer);
-#endif
-
 	return true;
 }
 #endif

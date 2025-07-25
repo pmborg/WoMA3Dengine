@@ -58,8 +58,14 @@ LRESULT CALLBACK WOMA_PAINT_MessageHandler(HWND hwnd, UINT umessage, WPARAM wpar
     #if defined USE_USER_SETUP
 	case WM_PAINT:
 	{
-		for (UINT i = 0; i < SystemHandle->windowsArray.size(); i++)
-			MainWindowPaint(i);
+#if defined USE_INTRO_VIDEO_DEMO
+		if (DXsystemHandle->g_DShowPlayer == NULL || (DXsystemHandle->g_DShowPlayer->m_state != STATE_RUNNING))
+#endif
+		{
+			for (UINT i = 0; i < SystemHandle->windowsArray.size(); i++)
+				MainWindowPaint(i);
+		}
+
 		break;
 	}
     #endif

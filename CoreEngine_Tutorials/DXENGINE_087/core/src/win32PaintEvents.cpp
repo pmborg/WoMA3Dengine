@@ -86,22 +86,29 @@ LRESULT CALLBACK WOMA_PAINT_MessageHandler(HWND hwnd, UINT umessage, WPARAM wpar
 	case WM_DRAWITEM: // DRAW TEXT FROM PROGRESS BAR
 		// --------------------------------------------------------------------------------------------
 	{
-        if (WOMA::game_state <= GAME_RUN) {
-		try {
-			LPDRAWITEMSTRUCT pDIS = (LPDRAWITEMSTRUCT)lparam;
-			if (pDIS->hwndItem == SystemHandle->settingstext) {
-				SetBkColor(pDIS->hDC, TRANSPARENT);
-				SetTextColor(pDIS->hDC, RGB(200, 200, 200));
-				TCHAR staticText[99];
-				int len = (int)SendMessage(SystemHandle->settingstext, WM_GETTEXT, ARRAYSIZE(staticText), (LPARAM)staticText);
+#if defined USE_INTRO_VIDEO_DEMO
+		if (DXsystemHandle->g_DShowPlayer == NULL || (DXsystemHandle->g_DShowPlayer->m_state != STATE_RUNNING))
+#endif
+		{
+			if (WOMA::game_state <= GAME_RUN)
+			{
+				try {
+					LPDRAWITEMSTRUCT pDIS = (LPDRAWITEMSTRUCT)lparam;
+					if (pDIS->hwndItem == SystemHandle->settingstext) {
+						SetBkColor(pDIS->hDC, TRANSPARENT);
+						SetTextColor(pDIS->hDC, RGB(200, 200, 200));
+						TCHAR staticText[99];
+						int len = (int)SendMessage(SystemHandle->settingstext, WM_GETTEXT, ARRAYSIZE(staticText), (LPARAM)staticText);
 
-				TextOut(pDIS->hDC, pDIS->rcItem.left, pDIS->rcItem.top, staticText, len);
+						TextOut(pDIS->hDC, pDIS->rcItem.left, pDIS->rcItem.top, staticText, len);
+					}
+				}
+				catch (...) {
+					// Log or handle the exception gracefully
+				}
 			}
 		}
-		catch (...) {
-			// Log or handle the exception gracefully
-		}
-        }
+
 		break;
 	}
     #endif
@@ -109,8 +116,14 @@ LRESULT CALLBACK WOMA_PAINT_MessageHandler(HWND hwnd, UINT umessage, WPARAM wpar
     #if defined USE_USER_SETUP
 	case WM_PAINT:
 	{
-		for (UINT i = 0; i < SystemHandle->windowsArray.size(); i++)
-			MainWindowPaint(i);
+#if defined USE_INTRO_VIDEO_DEMO
+		if (DXsystemHandle->g_DShowPlayer == NULL || (DXsystemHandle->g_DShowPlayer->m_state != STATE_RUNNING))
+#endif
+		{
+			for (UINT i = 0; i < SystemHandle->windowsArray.size(); i++)
+				MainWindowPaint(i);
+		}
+
 		break;
 	}
     #endif

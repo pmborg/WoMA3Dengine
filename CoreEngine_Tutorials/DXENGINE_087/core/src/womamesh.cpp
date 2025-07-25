@@ -178,7 +178,7 @@ void UpdateAllMeshAnimations(MeshApplication* demoapp, MyDemo* demo, float delta
 void RenderAllMeshModels(MeshApplication* demoapp, MyDemo* demo)
 {
     demoapp->m_Graphics.m_DeviceContext->RSSetState(demoapp->m_Graphics.m_RasterizerState);
-        // Model 1 ------------------------------------------------------------------------------------------
+        // Model 1 -----------------a-------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 79 && defined USE_MODEL1
     if (womamesh1.assimpSceneModel && womamesh1.assimpSceneModel->loaded)
     {

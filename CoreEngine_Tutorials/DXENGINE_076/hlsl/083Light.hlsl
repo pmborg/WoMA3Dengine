@@ -251,5 +251,6 @@ float4 MyPixelShader083Light(PSIn input) : SV_TARGET
 #endif
     
     //return float4(0, 1, 1, 1);
+    //textureColor.a = 1;
 	return textureColor;
 }

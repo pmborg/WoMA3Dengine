@@ -62,10 +62,11 @@ void DXfrustumClass::ConstructFrustum(float screenDepth, XMMATRIX *ProjectionMat
     XMMATRIX projectionMatrix = *ProjectionMatrix; // Copy Matrix
 	XMMATRIX matrix;
 
-    ////m_screenDepth = screenDepth; // Note: Maybe shorter than: g_SCREEN_DEPTH 
-	float r = screenDepth / (screenDepth - SystemHandle->AppSettings->SCREEN_NEAR);
+	static float SCREEN_NEAR = SystemHandle->AppSettings->SCREEN_NEAR/3;
+
+	float r = screenDepth / (screenDepth - SCREEN_NEAR);
 	projectionMatrix._33 = r;
-	projectionMatrix._43 = -r * SystemHandle->AppSettings->SCREEN_NEAR;
+	projectionMatrix._43 = -r * SCREEN_NEAR;
 
 	// Create the frustum matrix from the view matrix and updated projection matrix.
     matrix = XMMatrixMultiply(*g_viewMatrix, projectionMatrix);

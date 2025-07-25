@@ -137,28 +137,45 @@ void LoadAllMeshModels(UINT this_level, ApplicationClass* app, MeshApplication* 
 #endif
 
 #if defined ALLOW_CBIND_PROGRESS_BAR
-    ::ShowWindow(SystemHandle->settingstext, SW_SHOW);
-    RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);	// Invoke: Window PAINT before end.
+#if defined USE_INTRO_VIDEO_DEMO
+	if (DXsystemHandle->g_DShowPlayer == NULL || (DXsystemHandle->g_DShowPlayer->m_state != STATE_RUNNING))
+#endif
+	{
+		::ShowWindow(SystemHandle->settingstext, SW_SHOW);
+		RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);	// Invoke: Window PAINT before end.
+	}
     MSG msg = { 0 };
     TCHAR title[MAX_STR_LEN] = {};
 #endif
     for (UINT i = 0; i < size_original_files; i++)
     {
 #if defined ALLOW_CBIND_PROGRESS_BAR
-        StringCchPrintf(title, MAX_STR_LEN, TEXT("Loading Mesh: %d / %d       "), (int)i, (int)size_original_files);
-        SetWindowText(SystemHandle->settingstext, title);
+#if defined USE_INTRO_VIDEO_DEMO
+		if (DXsystemHandle->g_DShowPlayer == NULL || (DXsystemHandle->g_DShowPlayer->m_state != STATE_RUNNING))
 #endif
+		{
+			StringCchPrintf(title, MAX_STR_LEN, TEXT("Loading Mesh: %d / %d       "), (int)i, (int)size_original_files);
+			SetWindowText(SystemHandle->settingstext, title);
+		}
+
         //Allow Refresh on Timer:
         while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))	// There is any OS messages to handle?
         {
             TranslateMessage(&msg); // TranslateMessage produces WM_CHAR messages only for keys that are mapped to ASCII characters by the keyboard driver.
             DispatchMessage(&msg);  // Process Msg:  (INVOKE: WinSystemClass::MessageHandler)
         }
+#endif
         womamesh4[i].assimpSceneModel = SceneModel::LoadModelToScene(DX_ENGINE_LEVEL, false, 1+i, WOMA::LoadFile((TCHAR*)TEXT("engine/data/scene87ForestHuntress/")), "", womamesh4[i].scene, demoapp->m_Graphics);
     }
-
-    ::ShowWindow(SystemHandle->settingstext, SW_HIDE);
-    RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);	// Invoke: Window PAINT before end.
+#if defined ALLOW_CBIND_PROGRESS_BAR
+	::ShowWindow(SystemHandle->settingstext, SW_HIDE);
+#if defined USE_INTRO_VIDEO_DEMO
+	if (DXsystemHandle->g_DShowPlayer == NULL || (DXsystemHandle->g_DShowPlayer->m_state != STATE_RUNNING))
+#endif
+	{
+		RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);	// Invoke: Window PAINT before end.
+	}
+#endif
 
 #ifdef DEBUG_MESH
     log("STARTING...");
@@ -189,7 +206,7 @@ void UpdateAllMeshAnimations(MeshApplication* demoapp, MyDemo* demo, float delta
 void RenderAllMeshModels(MeshApplication* demoapp, MyDemo* demo)
 {
     demoapp->m_Graphics.m_DeviceContext->RSSetState(demoapp->m_Graphics.m_RasterizerState);
-        // Model 1 ------------------------------------------------------------------------------------------
+        // Model 1 -----------------a-------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 79 && defined USE_MODEL1
     if (womamesh1.assimpSceneModel && womamesh1.assimpSceneModel->loaded)
     {

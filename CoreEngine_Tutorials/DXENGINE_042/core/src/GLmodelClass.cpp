@@ -182,7 +182,7 @@ bool result=false;
 		result = m_Texture->Initialize(file, 0, /*wrap*/ Model3D);
 	#endif
 		if(!result) { 
-			WomaMessageBox((TCHAR*)(*textureFile)[0].c_str(), TEXT("GLmodelClass::Texture File not found")); 
+			WomaMessageBox((TCHAR*)(*textureFile)[0].c_str(), TEXT("GLmodelClass: Texture File not found")); 
 			return false; 
 		}
 

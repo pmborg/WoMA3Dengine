@@ -202,12 +202,6 @@ void dxWinSystemClass::Shutdown()
 		free(m_player[i]);
 	}
 #endif
-#if defined USE_INTRO_VIDEO_DEMO
-	if (g_DShowPlayer) {
-		g_DShowPlayer->TearDownGraph();
-		SAFE_DELETE(g_DShowPlayer);
-	}
-#endif
 
 #if defined USE_SCENE_MANAGER
 	SAFE_SHUTDOWN(WOMA::sceneManager);
@@ -425,32 +419,6 @@ HRESULT dxWinSystemClass::PlayIntroMovie(TCHAR* movie)
 	RECT rc;
 	GetClientRect(m_hWnd, &rc);
 	g_DShowPlayer->UpdateVideoWindow(&rc);
-
-	MSG msg = { };
-	while (g_DShowPlayer->m_state != STATE_STOPPED && g_DShowPlayer->m_state != STATE_PAUSED)
-	{
-        // Process OS Messages:
-		while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-		{	
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-            
-            // Make Sure that we have aquired the FOCUS and INPUT:
-            if (DXsystemHandle->m_Input->m_mouse && DXsystemHandle->m_Input->m_keyboard)				
-            {
-                IF_NOT_THROW_EXCEPTION(DXsystemHandle->m_Input->GetMouseKeyboardState());
-            }
-            else
-                DXsystemHandle->m_Input->Initialize(SystemHandle->m_hinstance);
-
-            // End Video, when Esc key is pressed:
-            if (SystemHandle->m_player[g_NetID]->p_player.IsEscapePressed) 
-                break;
-
-            Sleep(1); //Give CPU to loader threads.
-		}
-
-	}
 
 	return hr;
 }

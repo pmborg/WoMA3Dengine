@@ -410,7 +410,7 @@ HRESULT DXmodelClass::LoadTextureImage(TCHAR* textureFilename)
 
 	if (hr != S_OK)
 	{
-		WomaMessageBox(textureFilename, TEXT("Texture File not found")); return false;
+		WomaMessageBox(textureFilename, TEXT("DXmodelClass: Texture File not found")); return false;
 	}
 	else
 	{
@@ -669,7 +669,8 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 
 				if (fileNamePath.find(TEXT("none")) != 0) //dont load on special cases (like billboards)
 				{
-				HRESULT res = LoadTextureImage(textureFilename);
+					HRESULT res = LoadTextureImage(textureFilename);
+				
 				if (res != S_OK)
 					return false;
 				} 

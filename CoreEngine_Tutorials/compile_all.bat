@@ -65,3 +65,5 @@ rem     REM echo =====================================
 rem )
 
 endlocal
+
+pause

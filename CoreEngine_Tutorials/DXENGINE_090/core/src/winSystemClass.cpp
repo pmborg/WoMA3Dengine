@@ -253,6 +253,39 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	if (WOMA::game_state >= GAME_STOP)	// Something FATAL on loading "mandatory 2D/3D Stuff"?
 		return false;					// (SAMPLE: misssing 3D/IMAGE/AUDIO file...)
 
+#if defined USE_INTRO_VIDEO_DEMO
+	MSG msg = { };
+	while (DXsystemHandle->g_DShowPlayer && (DXsystemHandle->g_DShowPlayer->m_state != STATE_STOPPED && DXsystemHandle->g_DShowPlayer->m_state != STATE_PAUSED))
+	{
+	    // Process OS Messages:
+		while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+		{	
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+	        
+	        // Make Sure that we have aquired the FOCUS and INPUT:
+	        if (DXsystemHandle->m_Input->m_mouse && DXsystemHandle->m_Input->m_keyboard)				
+	        {
+	            IF_NOT_THROW_EXCEPTION(DXsystemHandle->m_Input->GetMouseKeyboardState());
+	        }
+	        else
+	            DXsystemHandle->m_Input->Initialize(SystemHandle->m_hinstance);
+	
+	        // End Video, when Esc key is pressed:
+	        if (SystemHandle->m_player[g_NetID]->p_player.IsEscapePressed) 
+			{
+				DXsystemHandle->g_DShowPlayer->Stop();
+	            break;
+			}
+
+	        Sleep(1); //Give CPU to loader threads.
+		}
+	}
+
+	//Shutdown VIDEO PLAYER:
+	SAFE_DELETE(DXsystemHandle->g_DShowPlayer);
+#endif
+
 	#if !defined USE_LOADING_THREADS
 	if (WOMA::game_state == GAME_LOADING)
 		WOMA::game_state = GAME_RUN;

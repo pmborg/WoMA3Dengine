@@ -95,7 +95,7 @@ bool textFontClass::Initialize(void* g_driver, TCHAR* fontFilename, TCHAR* textu
 		bool result = gl_Texture->Initialize(WOMA::LoadFile(textureFilename), 0, false/*Model3D*/);
 		if (!result)
 		{
-			WomaMessageBox(textureFilename, TEXT("Texture File not found")); return false;
+			WomaMessageBox(textureFilename, TEXT("textFontClass: Texture File not found")); return false;
 		}
 	}
 #endif	

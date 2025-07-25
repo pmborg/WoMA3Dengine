@@ -139,6 +139,9 @@ xmlobj3d* BillClass::fillxml(int id, UINT type)
 	xmlobj.instances = 0;			//40
 	xmlobj.castShadow = false;		//41
 	xmlobj.renderShadows = false;	//41
+	xmlobj.meshSRV = NULL;
+
+	xmlobj.Bill = true;
 
 	if (m_Trees[id].type < 100)
 	{
@@ -161,17 +164,16 @@ xmlobj3d* BillClass::fillxml(int id, UINT type)
 		else
 			if (m_Trees[id].type == 12)
 				strcpy_s(xmlobj.filename, 256, BILLBOARD_BUSH_MODEL);	//engine/data/scene73grass/grass.obj
-
 	}
-	else
-		xmlobj.meshSRV = NULL;
 
 	if (m_Trees[id].type == 100)
 		strcpy_s(xmlobj.filename, 256, BILLBOARD_FENCE_MODEL);		    //100: engine/data/scene70Bill/fence.obj
+
 	if (m_Trees[id].type == 200)
 		strcpy_s(xmlobj.filename, 256, BILLBOARD_FIRE_MODEL);		    //200: engine/data/scene72Fire/072fire.obj
 
 	xmlobj.WOMA_object = WOMA_OBJECT();
+
     xmlobj.WOMA_object.shaderType = SHADER_TEXTURE_LIGHT_FAST;
 
 	return &xmlobj;
@@ -235,7 +237,10 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 		m_Trees[i].vPos.y = height;
 
 		xmlobj3d* xmlobj = fillxml(i, m_Trees[i].type);
-        xmlobj->Bill = true;
+
+		if (type<= 10)
+			xmlobj->Bill = true;
+
 		SystemHandle->xml_loader.theWorld.push_back(*xmlobj);
 	}
 	//N_BILLBOARD
@@ -318,8 +323,8 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 		while (height <= 0		//not on water
 			|| height > 1.0f	//not above 1m
 			|| (m_Trees[i].vPos.x >= 27 && m_Trees[i].vPos.x <= 53) && (m_Trees[i].vPos.z >= 20 && m_Trees[i].vPos.z <= 38) //out of house (compound)
-			|| (m_Trees[i].vPos.x < borderLimit || m_Trees[i].vPos.x > m_terrainWidth - borderLimit)		//no near limits
-			|| (m_Trees[i].vPos.z < borderLimit || m_Trees[i].vPos.z > 220 /*m_terrainHeight - borderLimit*/)		//no near limits
+			|| (m_Trees[i].vPos.x < borderLimit || m_Trees[i].vPos.x > m_terrainWidth - borderLimit)			//no near limits
+			|| (m_Trees[i].vPos.z < borderLimit || m_Trees[i].vPos.z > 220 /*m_terrainHeight - borderLimit*/)	//no near limits
 			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z) - 1][(UINT)m_Trees[i].vPos.x] > 0			//no grass on main PATH (terrain)
 			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z)][(UINT)m_Trees[i].vPos.x] > 0				//no grass on main PATH (terrain)
 			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z + 1)][(UINT)m_Trees[i].vPos.x] > 0			//no grass on main PATH (terrain)
@@ -350,8 +355,8 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 		while (height <= 0		//not on water
 			|| height > 1.0f	//not above 1m
 			|| (m_Trees[i].vPos.x >= 27 && m_Trees[i].vPos.x <= 53) && (m_Trees[i].vPos.z >= 20 && m_Trees[i].vPos.z <= 38) //out of house (compound)
-			|| (m_Trees[i].vPos.x < borderLimit || m_Trees[i].vPos.x > m_terrainWidth - borderLimit)		//no near limits
-			|| (m_Trees[i].vPos.z < borderLimit || m_Trees[i].vPos.z > 220 /*m_terrainHeight - borderLimit*/)		//no near limits
+			|| (m_Trees[i].vPos.x < borderLimit || m_Trees[i].vPos.x > m_terrainWidth - borderLimit)			//no near limits
+			|| (m_Trees[i].vPos.z < borderLimit || m_Trees[i].vPos.z > 220 /*m_terrainHeight - borderLimit*/)	//no near limits
 			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z) - 1][(UINT)m_Trees[i].vPos.x] > 0			//no grass on main PATH (terrain)
 			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z)][(UINT)m_Trees[i].vPos.x] > 0				//no grass on main PATH (terrain)
 			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z + 1)][(UINT)m_Trees[i].vPos.x] > 0			//no grass on main PATH (terrain)

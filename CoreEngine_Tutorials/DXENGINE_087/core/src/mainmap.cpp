@@ -123,10 +123,11 @@ void ApplicationClass::AppPreRenderMainMapMiniMap(UINT monitorWindow, WomaDriver
 		m_MiniMapBitmapTexture->SetRenderTarget(Driver);							// Set the render target to be the render to texture: pContext->OMSetRenderTargets
 		m_MiniMapBitmapTexture->ClearRenderTarget(Driver, 0.0f, 0.0f, 0.0f, 1.0f);  // Clear the render to texture!
 		TerrainRender(monitorWindow, Driver, fadeLight, &m_CameraMINIMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix);
-#if defined USE_MINIMAP_EXPANSION
+	#if defined USE_MINIMAP_EXPANSION
+		if (world_main_size>=1)
         for (UINT id = 0; id < world_main_size-1; id++)  //TODO: use sceneManager
             RenderModel(monitorWindow, m_Driver, id, PASS_OPAC, &m_CameraMINIMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix);
-#endif
+	#endif
 	}
 #endif
 }

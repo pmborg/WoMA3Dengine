@@ -130,6 +130,9 @@ xmlobj3d* BillClass::fillxml(int id, UINT type)
 	xmlobj.instances = 0;			//40
 	xmlobj.castShadow = false;		//41
 	xmlobj.renderShadows = false;	//41
+	xmlobj.meshSRV = NULL;
+
+	xmlobj.Bill = true;
 
 	if (m_Trees[id].type < 100)
 	{
@@ -146,15 +149,13 @@ xmlobj3d* BillClass::fillxml(int id, UINT type)
 		xmlobj.meshSRV = billFileLoaded[type];
 		if (m_Trees[id].type < 11)
 			strcpy_s(xmlobj.filename, 256, BILLBOARD_MODEL);		    //engine/data/scene70Bill/060square.obj
-
 	}
-	else
-		xmlobj.meshSRV = NULL;
 
 	if (m_Trees[id].type == 100)
 		strcpy_s(xmlobj.filename, 256, BILLBOARD_FENCE_MODEL);		    //100: engine/data/scene70Bill/fence.obj
 
 	xmlobj.WOMA_object = WOMA_OBJECT();
+
     xmlobj.WOMA_object.shaderType = SHADER_TEXTURE_LIGHT;
 
 	return &xmlobj;
@@ -218,7 +219,10 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 		m_Trees[i].vPos.y = height;
 
 		xmlobj3d* xmlobj = fillxml(i, m_Trees[i].type);
-        xmlobj->Bill = true;
+
+		if (type<= 10)
+			xmlobj->Bill = true;
+
 		SystemHandle->xml_loader.theWorld.push_back(*xmlobj);
 	}
 	//N_BILLBOARD

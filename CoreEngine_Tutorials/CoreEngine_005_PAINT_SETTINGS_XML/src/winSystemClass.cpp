@@ -656,7 +656,7 @@ bool WinSystemClass::ShowWindow(int windowLeft, int windowTop)
 		::ShowWindow(SystemHandle->statusbar, SW_HIDE);
 #endif
 	if (!AppSettings->FULL_SCREEN)
-		::ShowWindow(m_hWnd, WOMA::Cmdshow);	// Use from Command line option! NOTE: Don't hardcode:	(default: SW_SHOWDEFAULT) SW_SHOW / SW_SHOWMINIMIZED
+		::ShowWindow(m_hWnd, SW_MAXIMIZE/*WOMA::Cmdshow*/);	// Use from Command line option! NOTE: Don't hardcode:	(default: SW_SHOWDEFAULT) SW_SHOW / SW_SHOWMINIMIZED
 
 	SetForegroundWindow(m_hWnd);    // Slightly "Higher Priority"
 	SetFocus(m_hWnd);               // Force "Focus" to our Window

@@ -720,21 +720,29 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 #if defined ALLOW_CBIND_PROGRESS_BAR
     TCHAR title[MAX_STR_LEN] = {};
 	// --- CREATE PROGRESS BAR:
-	SystemHandle->hwndPrgBar = SystemHandle->WomaCreateWindowEx(0, PROGRESS_CLASS, NULL, WS_CHILD | WS_VISIBLE | PBS_SMOOTH, 50, SystemHandle->AppSettings->WINDOW_HEIGHT - 100,
-		SystemHandle->AppSettings->WINDOW_WIDTH - 100, 20, SystemHandle->m_hWnd, (HMENU)401, SystemHandle->m_hinstance, NULL);
+#if defined USE_INTRO_VIDEO_DEMO
+	if (DXsystemHandle->g_DShowPlayer == NULL || (DXsystemHandle->g_DShowPlayer->m_state != STATE_RUNNING))
+#endif
+	{
+		SystemHandle->hwndPrgBar = SystemHandle->WomaCreateWindowEx(0, PROGRESS_CLASS, NULL, WS_CHILD | WS_VISIBLE | PBS_SMOOTH, 50, SystemHandle->AppSettings->WINDOW_HEIGHT - 100,
+			SystemHandle->AppSettings->WINDOW_WIDTH - 100, 20, SystemHandle->m_hWnd, (HMENU)401, SystemHandle->m_hinstance, NULL);
 
-	SendMessage(SystemHandle->hwndPrgBar, PBM_SETRANGE, 0, (LPARAM)MAKELPARAM(0, 100));
-	SendMessage(SystemHandle->hwndPrgBar, PBM_SETBKCOLOR, 0, RGB(0, 0, 0));
-	SendMessage(SystemHandle->hwndPrgBar, PBM_SETBARCOLOR, 0, RGB(0, 0, 128));
-	SendMessage(SystemHandle->hwndPrgBar, PBM_SETPOS, (WPARAM)(0), 0);
+		SendMessage(SystemHandle->hwndPrgBar, PBM_SETRANGE, 0, (LPARAM)MAKELPARAM(0, 100));
+		SendMessage(SystemHandle->hwndPrgBar, PBM_SETBKCOLOR, 0, RGB(0, 0, 0));
+		SendMessage(SystemHandle->hwndPrgBar, PBM_SETBARCOLOR, 0, RGB(0, 0, 128));
+		SendMessage(SystemHandle->hwndPrgBar, PBM_SETPOS, (WPARAM)(0), 0);
 
-	::ShowWindow(SystemHandle->hwndPrgBar, 1);
+		::ShowWindow(SystemHandle->hwndPrgBar, 1);
+	}
 
 	// --- CREATE PROGRESS TEXT:
 	SystemHandle->settingstext = SystemHandle->WomaCreateWindowEx(WS_EX_TRANSPARENT, TEXT("STATIC"), TEXT(""),
 		WS_CHILD | WS_VISIBLE | SS_LEFT | WS_BORDER | SS_OWNERDRAW, 25, 25, 175, 22, SystemHandle->m_hWnd, 0, SystemHandle->m_hinstance, NULL);
 
-	::ShowWindow(SystemHandle->settingstext, 1);
+#if defined USE_INTRO_VIDEO_DEMO
+	if (DXsystemHandle->g_DShowPlayer == NULL || (DXsystemHandle->g_DShowPlayer->m_state != STATE_RUNNING))
+#endif
+		::ShowWindow(SystemHandle->settingstext, 1);
 #endif
 
 	// Temporarly disable log file (on this loop) due performance:
@@ -819,10 +827,15 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 
 
 #if defined ALLOW_CBIND_PROGRESS_BAR
+#if defined USE_INTRO_VIDEO_DEMO
+		if (DXsystemHandle->g_DShowPlayer == NULL || (DXsystemHandle->g_DShowPlayer->m_state != STATE_RUNNING))
+#endif
+		{
 		UINT progress = ((float)WOMA::num_loading_objects / (float)(objModel_size + theWorld_size)) * 100.0f;
 		SendMessage(SystemHandle->hwndPrgBar, PBM_SETPOS, (WPARAM)progress, 0);
 		StringCchPrintf(title, MAX_STR_LEN, TEXT("Loading: %d / %d"), WOMA::num_loading_objects, objModel_size + theWorld_size);
 		SetWindowText(SystemHandle->settingstext, title);
+		}
 #endif
 
 		//Allow Refresh on Timer:
@@ -838,9 +851,14 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 #endif
 
 #if defined ALLOW_CBIND_PROGRESS_BAR
-    ::ShowWindow(SystemHandle->hwndPrgBar, SW_HIDE);
-    ::ShowWindow(SystemHandle->settingstext, SW_HIDE);
-    RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);	// Invoke: Window PAINT before end.
+#if defined USE_INTRO_VIDEO_DEMO
+	if (DXsystemHandle->g_DShowPlayer == NULL || (DXsystemHandle->g_DShowPlayer->m_state != STATE_RUNNING))
+#endif
+	{
+		::ShowWindow(SystemHandle->hwndPrgBar, SW_HIDE);
+		::ShowWindow(SystemHandle->settingstext, SW_HIDE);
+		RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);	// Invoke: Window PAINT before end.
+	}
 #endif
 
 	//Restore: Temp. Disable log file:
