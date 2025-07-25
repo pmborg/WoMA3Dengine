@@ -113,6 +113,7 @@ public:
 	bool				ModelHASColorMap = false;
 	float				ModelAlfaColor = 0;
 	int					shaderTypeParameter = 0;			//Used by HLSL CODE
+	bool				isBill = false;
 	bool				isAnimatedBill = false;
 
 	float				boundingSphere = 0;

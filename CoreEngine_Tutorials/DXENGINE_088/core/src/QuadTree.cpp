@@ -207,7 +207,7 @@ void QuadTree::RenderNode(NodeType* node)
                _xml_loader->theWorld[modelID].render = true;    //FASTER-AQUI2
         }
 		//This Model have transparent parts?, note it! to render transparent parts later.
-        if (model->ModelHASAlfaColor)
+        if (((DXmodelClass*)model)->isBill)
             SystemHandle->m_Application->billboardRrenderCount++;
 		else
         WOMA::sceneManager->opacModelList.push_back(model);

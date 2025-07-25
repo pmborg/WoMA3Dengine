@@ -53,7 +53,7 @@ bool TryReplaceWithW3D(TCHAR* filename, TCHAR* outPath, size_t outPathSize)
 }
 #endif
 
-#if defined USE_DDS_LOADER_INSTEAD
+#if defined USE_PNG_LOADER_INSTEAD
 bool TryReplaceWithDDS(TCHAR* filename, TCHAR* outPath, size_t outPathSize)
 {
     // Check the current extension
@@ -63,8 +63,8 @@ bool TryReplaceWithDDS(TCHAR* filename, TCHAR* outPath, size_t outPathSize)
     // Allowed extensions (case-insensitive)
     const TCHAR* allowed[] = {
         TEXT(".bmp"), TEXT(".BMP"),
-        TEXT(".jpg"), TEXT(".JPG"),
-        TEXT(".png"), TEXT(".PNG"),
+        //TEXT(".jpg"), TEXT(".JPG"),
+        //TEXT(".png"), TEXT(".PNG"),
         TEXT(".tif"), TEXT(".TIF"),
         nullptr
     };
@@ -131,7 +131,7 @@ namespace WOMA
 
         // Convert from WCHAR to TCHAR (ANSI)
         WideCharToMultiByte(CP_ACP, 0, filename, -1, file, MAX_STR_LEN, NULL, NULL);
-#if defined USE_DDS_LOADER_INSTEAD
+#if defined USE_PNG_LOADER_INSTEAD
         // Try to replace with .dds if it exists
         TCHAR finalddsPath[MAX_STR_LEN] = { 0 };
         if (TryReplaceWithDDS(file, finalddsPath, MAX_STR_LEN))
@@ -215,7 +215,7 @@ namespace WOMA
 #endif
 
 #if DX_ENGINE_LEVEL >= 90
-    #if defined USE_DDS_LOADER_INSTEAD
+    #if defined USE_PNG_LOADER_INSTEAD
         // Try to use .dds if it exists
         TCHAR finalddsPath[MAX_STR_LEN * 2];
         if (TryReplaceWithDDS(file_, finalddsPath, sizeof(finalddsPath)))

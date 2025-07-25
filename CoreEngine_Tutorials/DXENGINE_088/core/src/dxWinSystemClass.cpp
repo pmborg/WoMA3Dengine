@@ -434,6 +434,11 @@ void dxWinSystemClass::ApplicationInitSceneManager()
 }
 #endif
 
+bool threadLoadPacksAlive;
+HANDLE threadLoadPacksHandle;
+unsigned long threadLoadPacksId;
+extern void Startauxcommonfunctions(UINT level);
+
 #if defined USE_INTRO_VIDEO_DEMO 
 
 void CALLBACK OnGraphEvent(HWND hwnd, long evCode, LONG_PTR param1, LONG_PTR param2)
@@ -451,11 +456,6 @@ void CALLBACK OnGraphEvent(HWND hwnd, long evCode, LONG_PTR param1, LONG_PTR par
 		break;
 	}
 }
-
-bool threadLoadPacksAlive;
-HANDLE threadLoadPacksHandle;
-unsigned long threadLoadPacksId;
-extern void Startauxcommonfunctions(UINT level);
 
 HRESULT dxWinSystemClass::PlayIntroMovie(TCHAR* movie)
 //----------------------------------------------------------------------------

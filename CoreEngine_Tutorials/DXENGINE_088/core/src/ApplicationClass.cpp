@@ -651,6 +651,8 @@ int __cdecl CompoundSortCB(const VOID* arg1, const VOID* arg2)
 
 #endif
 
+extern void Startauxcommonfunctions(UINT level);
+
 #if CORE_ENGINE_LEVEL >= 10 && !defined NewWomaEngine
 //-------------------------------------------------------------------------------------------
 bool ApplicationClass::Initialize(WomaDriverClass* Driver)
@@ -671,7 +673,9 @@ bool ApplicationClass::Initialize(WomaDriverClass* Driver)
 #if defined INTRO_DEMO
 	initIntroDemo();
 #endif
-
+#if DX_ENGINE_LEVEL >= 86 && !defined USE_INTRO_VIDEO_DEMO
+	Startauxcommonfunctions(DX_ENGINE_LEVEL);
+#endif
 //########################################### 3D: STUFF ###########################################
 	// (m_Light && xml_loader.theWorld) and SCENE MANAGER: QuadTree object Loader/Render
 	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(Driver));	

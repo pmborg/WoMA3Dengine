@@ -38,9 +38,9 @@
 	#include "DirectXTex.h"
 #endif
 
-#if defined USE_CONVERT_TO_DDS
+#if defined USE_CONVERT_TO_PNG
 extern bool SaveAsDDS(const std::wstring& originalFile, const unsigned char* imageData, UINT width, UINT height);
-extern bool SaveAsDDS_Debug(const STRING& originalFile, const DirectX::ScratchImage& image);
+extern bool SaveAsPNG_Debug(const STRING& originalFile, const DirectX::ScratchImage& image);
 #endif
 
 namespace DirectX {
@@ -80,8 +80,8 @@ HRESULT DX11Class::LoadTexture(ID3D11Device* pDevice, TCHAR* pSrcFile, ID3D11Sha
 			{
 				return hr;
 			}
-    #if defined USE_CONVERT_TO_DDS
-            SaveAsDDS_Debug(pSrcFile, image);
+    #if defined USE_CONVERT_TO_PNG
+            SaveAsPNG_Debug(pSrcFile, image);
     #endif
 		}
 	}

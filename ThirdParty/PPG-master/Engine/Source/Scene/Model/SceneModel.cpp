@@ -81,6 +81,8 @@ SceneModel* SceneModel::LoadModelToScene(UINT dxlevel, bool enginefile, UINT typ
     LOG_FILE << "revision : " << revision << endl;
 #endif
 
+	if (WOMA::main_loop_state < 0)
+		return NULL;
 
     unsigned int DX_ASSIMP_LOAD_FLAGS = 0;
     const TCHAR* extension = _tcsrchr(meshFileName.c_str(), '.');

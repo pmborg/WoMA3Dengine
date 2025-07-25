@@ -273,11 +273,13 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	
 	        // End Video, when Esc key is pressed:
 	        if (SystemHandle->m_player[g_NetID]->p_player.IsEscapePressed) 
+			{
+				DXsystemHandle->g_DShowPlayer->Stop();
 	            break;
-	
+			}
+
 	        Sleep(1); //Give CPU to loader threads.
 		}
-
 	}
 
 	//Shutdown VIDEO PLAYER:

@@ -38,12 +38,12 @@
 	#include "DirectXTex.h"
 #endif
 
-#if defined USE_CONVERT_TO_DDS
+#if defined USE_CONVERT_TO_PNG
 extern bool SaveAsDDS(const std::wstring& originalFile, const unsigned char* imageData, UINT width, UINT height);
-extern bool SaveAsDDS_Debug(const STRING& originalFile, const DirectX::ScratchImage& image);
+extern bool SaveAsPNG_Debug(const STRING& originalFile, const DirectX::ScratchImage& image);
 #endif
 
-extern bool extLoadDatfromMEM(DX11Class* dx11class, ID3D11Device* pDevice, STRING filename, ID3D11ShaderResourceView** ppShaderResourceView);
+extern HRESULT extLoadBinfromMEM(DX11Class* dx11class, ID3D11Device* pDevice, STRING filename, ID3D11ShaderResourceView** ppShaderResourceView);
 
 namespace DirectX {
 
@@ -56,10 +56,13 @@ HRESULT DX11Class::LoadTexture(ID3D11Device* pDevice, TCHAR* pSrcFile, ID3D11Sha
 	const TCHAR *extension = _tcsrchr(pSrcFile, '.');
 	if (extension == NULL) return -1;
 
-    if (_tcsicmp(extension, TEXT(".dat")) == 0) 
+    if  (_tcsicmp(extension, TEXT(".dat")) == 0
+		|| _tcsicmp(extension, TEXT(".bin")) == 0
+		|| _tcsicmp(extension, TEXT(".jet")) == 0
+		) 
     {
         //"../scene87ForestHuntress/worldMap/WALL_wall_BaseColor.dat"
-        return extLoadDatfromMEM (this, pDevice, pSrcFile, ppShaderResourceView);
+        return extLoadBinfromMEM (this, pDevice, pSrcFile, ppShaderResourceView);
     }
 
 	if (_tcsicmp(extension, TEXT(".dds")) == 0) // Use: DirectXTK.lib
@@ -88,8 +91,8 @@ HRESULT DX11Class::LoadTexture(ID3D11Device* pDevice, TCHAR* pSrcFile, ID3D11Sha
 			{
 				return hr;
 			}
-    #if defined USE_CONVERT_TO_DDS
-            SaveAsDDS_Debug(pSrcFile, image);
+    #if defined USE_CONVERT_TO_PNG
+            SaveAsPNG_Debug(pSrcFile, image);
     #endif
 		}
 	}
@@ -108,8 +111,8 @@ HRESULT DX11Class::LoadTexture(ID3D11Device* pDevice, TCHAR* pSrcFile, ID3D11Sha
         if (SUCCEEDED(hr))
         {
             hr = DirectX::CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), image.GetMetadata(), ppShaderResourceView);
-    #if defined USE_CONVERT_TO_DDS
-            if (SUCCEEDED(hr)) SaveAsDDS_Debug(pSrcFile, image);
+    #if defined USE_CONVERT_TO_PNG
+            if (SUCCEEDED(hr)) SaveAsPNG_Debug(pSrcFile, image);
     #endif
         }
 	}

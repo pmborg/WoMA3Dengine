@@ -361,13 +361,13 @@ HRESULT DXmodelClass::LoadTextureImage(TCHAR* textureFilename)
 
 #if defined DX11
 		case DRIVER_DX11:
-			meshSRV11.push_back(m_Texture11);	// Image Converter: *.png to *.dds: C:\WoMAengine2023\ExternalTools\Microsoft_DirectX_SDK_June_2010\Utilities\bin\x64\texconv.exe -ft DDS *.png
+			meshSRV11.push_back(m_Texture11);
 			break;
 #endif
 
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 		case DRIVER_DX12:
-			meshSRV.push_back(m_Texture);		// Image Converter: *.png to *.dds: C:\WoMAengine2023\ExternalTools\Microsoft_DirectX_SDK_June_2010\Utilities\bin\x64\texconv.exe -ft DDS *.png
+			meshSRV.push_back(m_Texture);
 			break;
 #endif
 		}
@@ -562,7 +562,8 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 				STRING fileNamePath = (TCHAR*)(*textureFile)[i].c_str();
 				STRING pathtoengine = TEXT("../");
 
-				if ((fileNamePath.substr(0, 3) != pathtoengine) && (_tcsicmp(fileNamePath.c_str(), TEXT(".dat")) != 0))
+				if ((fileNamePath.substr(0, 3) != pathtoengine) && 
+					(_tcsicmp(fileNamePath.c_str(), TEXT(".dat")) != 0) || (_tcsicmp(fileNamePath.c_str(), TEXT(".bin")) != 0) || (_tcsicmp(fileNamePath.c_str(), TEXT(".jet")) != 0))
 					textureFilename = WOMA::LoadFile((TCHAR*)fileNamePath.c_str());
 				else
 					textureFilename = (TCHAR*)fileNamePath.c_str();

@@ -55,6 +55,19 @@ int __cdecl BillSortCB(const VOID* arg1, const VOID* arg2);
 #endif
 
 float sort_cameraX=0, sort_cameraY=0, sort_cameraZ = 0;
+bool BillSortCB_CPP(const Tree& a, const Tree& b)
+{
+    float dx1 = a.vPos.x - sort_cameraX;
+    float dz1 = a.vPos.z - sort_cameraZ;
+    float dx2 = b.vPos.x - sort_cameraX;
+    float dz2 = b.vPos.z - sort_cameraZ;
+
+    float d1 = dx1 * dx1 + dz1 * dz1;
+    float d2 = dx2 * dx2 + dz2 * dz2;
+
+    return d1 > d2; // Farther first (back-to-front)
+}
+
 //-------------------------------------------------------------------------------------------
 void ApplicationClass::RenderScene(UINT monitorIndex, WomaDriverClass* driver)
 //-------------------------------------------------------------------------------------------
@@ -208,6 +221,7 @@ void ApplicationClass::RenderModel(UINT monitorIndex, WomaDriverClass* driver, U
     }
     
     DXmodelClass* model = (DXmodelClass*)objModel[modelID];
+
     float positionX, positionY, positionZ;
     positionX = SystemHandle->xml_loader.theWorld[modelID].posX;
     positionY = SystemHandle->xml_loader.theWorld[modelID].translateY;
@@ -410,10 +424,14 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight)
 
 	// Render TRANSPARENT Parts of 3D OBJs (like: glass window of (Space Compound), etc...) (last part)
 	// --------------------------------------------------------------------------------------------
+#if defined USE_ALPHA_BLENDING
+	m_Driver->TurnOffAlphaBlending();
+#endif
 #if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined MAIN_RENDER_MAIN_OBJ //MAIN-RENDER: MAIN OBJs. (9 ms)
 	for (UINT id = 0; id < WOMA::sceneManager->opacModelList.size(); id++) {
         RenderModel(monitorIndex, m_Driver, id, PASS_OPAC);
     }
+	m_Driver->TurnOnAlphaBlending();
 	for (UINT id = 0; id < WOMA::sceneManager->opacModelList.size(); id++) {
 		if (((DXmodelClass*)objModel[id])->obj3d.hasTransparent == true)
 		{

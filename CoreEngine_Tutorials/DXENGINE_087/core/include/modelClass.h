@@ -68,9 +68,9 @@ typedef struct
 	//Vertex definition indices
 	std::vector<int> vertPosIndex = {};			//vertPos Indexs
 	std::vector<int> vertTCIndex = {};			//vertTexCoord Indexs
-	std::vector<int> vertNormIndex = {};			//vertNorm Indexs
+	std::vector<int> vertNormIndex = {};		//vertNorm Indexs
 
-	UINT	triangleCount = 0;				//Total Triangles
+	UINT	triangleCount = 0;					//Total Triangles
 	UINT	meshTriangles = 0;
 
 	std::vector<STRING>		meshMaterials = {};
@@ -80,13 +80,13 @@ typedef struct
 	std::vector<XMFLOAT3>	vertNorm = {};		//32
 
 	//Make sure we have a default if no tex coords or normals are defined
-	bool hasTexCoord = false;				//ch07
-	bool hasNorm = false;					//ch12
-	bool hasRenderShadow = false;			//ch35
-	bool hasNormMap = false;				//ch51
-	bool hasTransparent = false;			// has transparent sub-meshes?
+	bool hasTexCoord = false;					//ch07
+	bool hasNorm = false;						//ch12
+	bool hasRenderShadow = false;				//ch35
+	bool hasNormMap = false;					//ch51
+	bool hasTransparent = false;				// has transparent sub-meshes?
 
-	UINT meshSubsets = 0;					// Num. of sub-meshes
+	UINT meshSubsets = 0;						// Num. of sub-meshes
 
 	std::vector<UINT> indices32 = {};			// DX >= 9.2
 	std::vector<WORD> indices16 = {};			// DX >= 9.0 Shader 2.0

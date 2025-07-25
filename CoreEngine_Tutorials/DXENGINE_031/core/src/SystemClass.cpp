@@ -95,8 +95,6 @@ bool SystemClass::LoadAllGraphicAssets()
 		return false;
 	}
 
-
-
 	return true;
 }
 #endif

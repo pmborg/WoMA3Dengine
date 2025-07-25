@@ -46,8 +46,8 @@
 #define N_BILLBOARD 1000
 #define N_FENCES      55
 #define N_FIRE         1
-#define N_GRASS_0   2000
-#define N_BUSH_0     750
+#define N_GRASS_0   2000 //11 animated grass 
+#define N_BUSH_0     750 //12 BUSHs
 #endif
 
 extern ID3D11ShaderResourceView* billFileLoaded[];
@@ -71,13 +71,13 @@ public:
 	CTerrain* mainTerrainPath = NULL;
 
 public:
-int		BillrenderCount=0;
-UINT	billTotal = 0;
+	int		BillrenderCount = 0;
+	UINT	billTotal = 0;
 
 private:
-VirtualModelClass*  fence = nullptr;
+	VirtualModelClass* fence = nullptr;
 
-UINT				billNames_length=0;
+	UINT				billNames_length = 0;
 };
 
 extern BillClass* m_billTreeClass;

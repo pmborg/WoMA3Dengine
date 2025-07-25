@@ -18,7 +18,7 @@
 
 #pragma once
 #include "stdafx.h"
-#include "platform.h"
+#include "OSengine.h"
 
 #include <map>
 #include "SceneModel.h"
@@ -122,6 +122,8 @@ void ModelLoader::ProcessMeshes(UINT this_level, UINT type)
     std::shared_ptr<SceneObject> object = m_Model->m_SceneObject;
     for (UINT meshindex = 0; meshindex < pAssimpScene->mNumMeshes; meshindex++) //MESH-1
     {
+		if (WOMA::main_loop_state < 0)
+			return;
 		LOG_FILE << "MESH id: " << meshindex << std::endl;
         aiMesh* rootMesh = pAssimpScene->mMeshes[meshindex];
         GenerateMesh(type, meshindex, rootMesh);

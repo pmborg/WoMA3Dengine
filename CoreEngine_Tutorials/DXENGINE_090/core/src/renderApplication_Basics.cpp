@@ -65,7 +65,6 @@ extern void UpdateAllMeshAnimations(MeshApplication* demoapp, MyDemo* demo, floa
 extern void RenderAllMeshModels(MeshApplication* demoapp, MyDemo* demo);
 
 float sort_cameraX=0, sort_cameraY=0, sort_cameraZ = 0;
-//#if DX_ENGINE_LEVEL >= 90
 bool BillSortCB_CPP(const Tree& a, const Tree& b)
 {
     float dx1 = a.vPos.x - sort_cameraX;
@@ -78,7 +77,7 @@ bool BillSortCB_CPP(const Tree& a, const Tree& b)
 
     return d1 > d2; // Farther first (back-to-front)
 }
-//#endif
+
 //-------------------------------------------------------------------------------------------
 void ApplicationClass::RenderScene(UINT monitorIndex, WomaDriverClass* driver)
 //-------------------------------------------------------------------------------------------
@@ -401,15 +400,6 @@ void ApplicationClass::RenderModel(UINT monitorIndex, WomaDriverClass* driver, U
     //if (pass == 0)
     totalRendered++;
 
-	//if (SystemHandle->xml_loader.theWorld[model->m_ObjId].Bill)
-	//{
-	//	m_Driver->TurnOnAlphaBlending();
-	//}
-	//else
-	//{
-	//	m_Driver->TurnOffAlphaBlending();
-	//}
-
 	// === RENDER OBJ.: ===					   
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
     if (m_viewMatrix == NULL && m_projectionMatrix == NULL)
@@ -521,7 +511,9 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight)
 
 	// Render TRANSPARENT Parts of 3D OBJs (like: glass window of (Space Compound), etc...) (last part)
 	// --------------------------------------------------------------------------------------------
+#if defined USE_ALPHA_BLENDING
 	m_Driver->TurnOffAlphaBlending();
+#endif
 #if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined MAIN_RENDER_MAIN_OBJ //MAIN-RENDER: MAIN OBJs. (9 ms)
 	for (UINT id = 0; id < WOMA::sceneManager->opacModelList.size(); id++) {
         RenderModel(monitorIndex, m_Driver, id, PASS_OPAC);

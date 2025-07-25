@@ -469,7 +469,6 @@ bool ApplicationClass::Initialize(WomaDriverClass* Driver)
 #if defined INTRO_DEMO
 	initIntroDemo();
 #endif
-
 //########################################### 3D: STUFF ###########################################
 	// (m_Light && xml_loader.theWorld) and SCENE MANAGER: QuadTree object Loader/Render
 	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(Driver));	

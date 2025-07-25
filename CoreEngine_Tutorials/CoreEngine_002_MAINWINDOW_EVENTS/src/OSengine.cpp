@@ -460,6 +460,10 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 		womalogauto(TEXT("Could not initialize GTK2!")); // Note: Dont use DEBUG_MSG yet...
 #endif
 
+#if defined USE_CONVERT_TO_PNG
+	DeleteFile("used_imgs.txt");
+#endif
+
     womalogauto("<%s> STARTUP ENDED\n", PROJECT_NAME);
 }
 

@@ -760,32 +760,35 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	UINT objModel_size = (UINT)objModel.size();
 	WOMA::num_loading_objects = 1;
 
+	static DXmodelClass* model = NULL;
 	for (UINT i = objModel_size; i < objModel_size + theWorld_size; i++)
 	{
 		objModel.push_back(NULL);
+		
+			if (SystemHandle->xml_loader.theWorld[i].type < 200)
+			{ CREATE_MODEL_IF_NOT_EXCEPTION(objModel[i], I_AM_2D, SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows); }
+			else 
+			{ CREATE_MODEL_IF_NOT_EXCEPTION(objModel[i], I_AM_3D, SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows); }
 
-		if (SystemHandle->xml_loader.theWorld[i].type < 200)
-		{ CREATE_MODEL_IF_NOT_EXCEPTION(objModel[i], I_AM_2D, SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows); }
-		else 
-		{ CREATE_MODEL_IF_NOT_EXCEPTION(objModel[i], I_AM_3D, SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows); }
+			objModel[i]->m_ObjId = i; //SYNC-ID: objModel[i] with: xml_loader.theWorld[i]
+			objModel[i]->xmlId = SystemHandle->xml_loader.theWorld[i].id;
 
-		objModel[i]->m_ObjId = i; //SYNC-ID: objModel[i] with: xml_loader.theWorld[i]
-        objModel[i]->xmlId = SystemHandle->xml_loader.theWorld[i].id;
-
-#if   !defined USE_SHADOW_INSTANCES
-		SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows = false;
-		SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows = false;
-		objModel[i]->ModelCastShadow = false;
-		objModel[i]->ModelRenderShadow = false;
-#else
-	#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
-		objModel[i]->ModelCastShadow = SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows = SystemHandle->xml_loader.theWorld[i].castShadow;
-		objModel[i]->ModelRenderShadow = SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows = SystemHandle->xml_loader.theWorld[i].renderShadows;
+	#if   !defined USE_SHADOW_INSTANCES
+			SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows = false;
+			SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows = false;
+			objModel[i]->ModelCastShadow = false;
+			objModel[i]->ModelRenderShadow = false;
+	#else
+		#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
+			objModel[i]->ModelCastShadow = SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows = SystemHandle->xml_loader.theWorld[i].castShadow;
+			objModel[i]->ModelRenderShadow = SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows = SystemHandle->xml_loader.theWorld[i].renderShadows;
+		#endif
 	#endif
-#endif
-		TCHAR wfilename[MAX_STR_LEN] = { 0 }; atow(wfilename, SystemHandle->xml_loader.theWorld[i].filename, MAX_STR_LEN);
-		if (WOMA::game_state == GAME_STOP)
-			return false;
+			TCHAR wfilename[MAX_STR_LEN] = { 0 }; atow(wfilename, SystemHandle->xml_loader.theWorld[i].filename, MAX_STR_LEN);
+			if (WOMA::game_state == GAME_STOP)
+				return false;
+
+			
 
 			//Load OBJ or W3D:
 			if (!(objModel[i]->LoadModel(wfilename, Driver, 
@@ -797,12 +800,14 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 				WomaMessageBox(wfilename, TEXT("Error Loading: "), FALSE); return false;
 			}
 
-		if (SystemHandle->xml_loader.theWorld[i].meshSRV) {
-			((DXmodelClass*)objModel[i])->meshSRV11[0] = SystemHandle->xml_loader.theWorld[i].meshSRV;
-		}
 		if (i >= world_xml_objs) //Are we a Billboard?
-			((DXmodelClass*)objModel[i])->ModelHASAlfaColor = true;
+		{
+			((DXmodelClass*)objModel[i])->isBill = true;
 
+			if (SystemHandle->xml_loader.theWorld[i].meshSRV) {
+				((DXmodelClass*)objModel[i])->meshSRV11[0] = SystemHandle->xml_loader.theWorld[i].meshSRV;
+			}
+		}
 
 #if defined ALLOW_CBIND_PROGRESS_BAR
 #if defined USE_INTRO_VIDEO_DEMO
@@ -816,15 +821,16 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 		}
 #endif
 
+		WOMA::sceneManager->addModel(WOMA::sceneManager->RootNode, objModel[i]);			// Add node to nodesList: RootNode
+
+		WOMA::num_loading_objects++;
+
 		//Allow Refresh on Timer:
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))	// There is any OS messages to handle?
 		{
 			TranslateMessage(&msg); // TranslateMessage produces WM_CHAR messages only for keys that are mapped to ASCII characters by the keyboard driver.
 			DispatchMessage(&msg);  // Process Msg:  (INVOKE: WinSystemClass::MessageHandler)
 		}
-
-		WOMA::sceneManager->addModel(WOMA::sceneManager->RootNode, objModel[i]);			// Add node to nodesList: RootNode
-		WOMA::num_loading_objects++;
 	}
 #endif
 

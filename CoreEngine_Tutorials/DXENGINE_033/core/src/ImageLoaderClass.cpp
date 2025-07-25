@@ -42,6 +42,18 @@ using namespace DirectX;
         #pragma comment(lib, "/WoMA3Dengine/ThirdParty/external/DirectXTK/Bin/Desktop_2022_Win10/x64/Release/DirectXTK.lib")
         #pragma comment(lib, "/WoMA3Dengine/ThirdParty/external/DirectXTex/DirectXTex/Bin/Desktop_2022_Win10/x64/Release/DirectXTex.lib")
     #endif
+
+// Add this include at the top of your file, after other includes
+#include <wincodec.h>
+#include <set>
+#include <fstream>
+#include <sstream>
+#include <iterator>
+
+// If you need to use GUID_ContainerFormatPng, make sure you have this line before its usage:
+#ifndef GUID_ContainerFormatPng
+EXTERN_C const GUID GUID_ContainerFormatPng;
+#endif
 #endif
 #endif
 
@@ -53,7 +65,7 @@ using namespace DirectX;
 #include "ImageLoaderClass.h"
 #include "OSmain_dir.h"
 
-#if defined USE_CONVERT_TO_DDS
+#if defined USE_CONVERT_TO_PNG
 #include <DirectXTex.h>
 #include <filesystem>
 #endif
@@ -1495,52 +1507,118 @@ bool ImageLoaderClass::savePNG(TCHAR *fileName)
 }
 #endif // NO_PNG
 
-#if defined USE_CONVERT_TO_DDS
-bool SaveAsDDS(const std::wstring& originalFile, const unsigned char* imageData, UINT width, UINT height)
+#if defined USE_CONVERT_TO_PNG
+
+bool SaveAsPNG_Debug(const STRING& originalFile, const DirectX::ScratchImage& image)
 {
-    using namespace DirectX;
+	//if (originalFile.find("scene87ForestHuntress.priv") == std::string::npos)
+	if (originalFile.find("scene87ForestHuntress.priv") == std::string::npos && originalFile.find("cwomaengine2023enginedata") == std::string::npos)
+		return false;
+
+	// Log the file
+	//std::ofstream log("used_imgs.txt", std::ios::app); // Append mode
+	//if (log.is_open()) {
+	//	log << originalFile << "\n";
+	//	log.close();
+	//}
+
+	const std::string logFilename = "used_imgs.txt";
+	std::ifstream infile(logFilename);
+	std::set<std::string> existingLines;
+
+	// Read existing lines into the set
+	if (infile.is_open()) {
+		std::string line;
+		while (std::getline(infile, line)) {
+			existingLines.insert(line);
+		}
+		infile.close();
+	}
+
+	// Append only if not already logged
+	if (existingLines.find(originalFile) == existingLines.end()) {
+		std::ofstream outfile(logFilename, std::ios::app);
+		if (outfile.is_open()) {
+			outfile << originalFile << "\n";
+			outfile.close();
+		}
+	}
+
+	//------------------------------------------------------------------------------------------
     std::filesystem::path path(originalFile);
-    if (path.extension() == L".dds" || path.extension() == L".DDS")
-        return false;
+    //if (path.extension() == ".dds" || path.extension() == ".DDS")
+    //    return false;
+	if (path.extension() == ".jpg" || path.extension() == ".JPG")
+		return false;
+	if (path.extension() == ".png" || path.extension() == ".PNG")
+		return false;
 
-    ScratchImage image;
-    HRESULT hr = image.Initialize2D(DXGI_FORMAT_R8G8B8A8_UNORM, width, height, 1, 1);
-    if (FAILED(hr))
-        return false;
+    std::filesystem::path pngPath = path;
+    pngPath.replace_extension(".png");
 
-    memcpy(image.GetImages()->pixels, imageData, width * height * 4); // 4 = RGBA8
-
-    std::filesystem::path ddsPath = path;
-    ddsPath.replace_extension(".dds");
-
-    return SUCCEEDED(SaveToDDSFile(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DDS_FLAGS_NONE, ddsPath.c_str()));
+    //return SUCCEEDED(DirectX::SaveToDDSFile(
+    //    image.GetImages(), image.GetImageCount(), image.GetMetadata(),
+    //    DirectX::DDS_FLAGS_NONE, ddsPath.c_str()));
+	return SUCCEEDED(DirectX::SaveToWICFile(
+		*image.GetImage(0, 0, 0),
+		DirectX::WIC_FLAGS_NONE,
+		GUID_ContainerFormatPng,
+		pngPath.c_str()));
 }
 
-bool SaveAsDDS_Debug(const STRING& originalFile, const DirectX::ScratchImage& image)
+bool SaveAsPNG_Debug(const std::wstring& originalFile, const DirectX::ScratchImage& image)
 {
+	if (originalFile.find(L"scene87ForestHuntress.priv") == std::wstring::npos && originalFile.find(L"cwomaengine2023enginedata") == std::wstring::npos)
+		return false;
+
+	//// Log the file
+	//std::wofstream log("used_imgs.txt", std::ios::app); // Append mode
+	//if (log.is_open()) {
+	//	log << originalFile << "\n";
+	//	log.close();
+	//}
+
+	const std::wstring logFilename = L"used_imgs.txt";
+	std::wifstream infile(logFilename);
+	std::set<std::wstring> existingLines;
+
+	// Read existing lines into the set
+	if (infile.is_open()) {
+		std::wstring line;
+		while (std::getline(infile, line)) {
+			existingLines.insert(line);
+		}
+		infile.close();
+	}
+
+	// Append only if not present
+	if (existingLines.find(originalFile) == existingLines.end()) {
+		std::wofstream outfile(logFilename, std::ios::app);
+		if (outfile.is_open()) {
+			outfile << originalFile << L"\n";
+			outfile.close();
+		}
+	}
+
+	//------------------------------------------------------------------------------------------
     std::filesystem::path path(originalFile);
-    if (path.extension() == ".dds" || path.extension() == ".DDS")
-        return false;
+    //if (path.extension() == L".dds" || path.extension() == L".DDS")
+    //    return false;
+	if (path.extension() == L".jpg" || path.extension() == L".JPG")
+		return false;
+	if (path.extension() == L".png" || path.extension() == L".PNG")
+		return false;
 
-    std::filesystem::path ddsPath = path;
-    ddsPath.replace_extension(".dds");
+    std::filesystem::path pngPath = path;
+    pngPath.replace_extension(L".png");
 
-    return SUCCEEDED(DirectX::SaveToDDSFile(
-        image.GetImages(), image.GetImageCount(), image.GetMetadata(),
-        DirectX::DDS_FLAGS_NONE, ddsPath.c_str()));
-}
-
-bool SaveAsDDS_Debug(const std::wstring& originalFile, const DirectX::ScratchImage& image)
-{
-    std::filesystem::path path(originalFile);
-    if (path.extension() == L".dds" || path.extension() == L".DDS")
-        return false;
-
-    std::filesystem::path ddsPath = path;
-    ddsPath.replace_extension(L".dds");
-
-    return SUCCEEDED(DirectX::SaveToDDSFile(
-        image.GetImages(), image.GetImageCount(), image.GetMetadata(),
-        DirectX::DDS_FLAGS_NONE, ddsPath.c_str()));
+	return SUCCEEDED(DirectX::SaveToWICFile(
+		*image.GetImage(0, 0, 0),
+		DirectX::WIC_FLAGS_NONE,
+		GUID_ContainerFormatPng,
+		pngPath.c_str()));
+    //return SUCCEEDED(DirectX::SaveToDDSFile(
+    //    image.GetImages(), image.GetImageCount(), image.GetMetadata(),
+    //    DirectX::DDS_FLAGS_NONE, ddsPath.c_str()));
 }
 #endif

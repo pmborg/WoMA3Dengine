@@ -399,7 +399,6 @@ bool ApplicationClass::Initialize(WomaDriverClass* Driver)
 #if defined INTRO_DEMO
 	initIntroDemo();
 #endif
-
 //########################################### 3D: STUFF ###########################################
 //########################################### 2D: STUFF ###########################################
  

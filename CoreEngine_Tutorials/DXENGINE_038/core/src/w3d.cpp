@@ -290,7 +290,6 @@ namespace DirectX
 #else
 				obj3d.meshMaterials.push_back(obj3d.material[i].matName);
 #endif
-
 			}
 		}
 
@@ -355,20 +354,19 @@ namespace DirectX
 		if (strcmp(W3D.version, "W3D v1.2") == 0)	//23 LIGHT
 			LoadLight((TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, modelTextureLightVertex, &obj3d.indices32, instanceCount);
 		else
-		if (strcmp(W3D.version, "W3D v1.3") == 0)	//35
+		if (strcmp(W3D.version, "W3D v1.3") == 0)	//35 BUMP
 			LoadBump((TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, modelNormalBumpVertex, &obj3d.indices32, instanceCount);
 		else
 		if (strcmp(W3D.version, "W3D v2.9") == 0)	// FIRE
 			LoadTexture((TCHAR*)filename.c_str(), g_driver, SHADER_FIRE, &obj3d.textureNameArray, modelTextureVertex, &obj3d.indices32, instanceCount);
         else 
-        if (strcmp(W3D.version, "W3D v3.2") == 0)
+        if (strcmp(W3D.version, "W3D v3.2") == 0)	// LIGHT_FAST
             LoadLight((TCHAR*)filename.c_str(), g_driver, SHADER_TEXTURE_LIGHT_FAST, &obj3d.textureNameArray, modelTextureLightVertex, &obj3d.indices32, instanceCount);
 		else
 		{	
             ASSERT(false);
-			return false;
+			//return false;
 		}
-		// "W3D v1.4"	//36
 #endif
 
 		return true;

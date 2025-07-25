@@ -32,32 +32,32 @@ BillClass* m_billTreeClass = NULL;
 
 BillClass::BillClass()
 {
-    CLASSLOADER();
+	CLASSLOADER();
 
-    billNames_length = 0;
-    BillrenderCount = 0;
-    billTotal = 0;
-    fence = nullptr; // Initialize fence  
+	billNames_length = 0;
+	BillrenderCount = 0;
+	billTotal = 0;
+	fence = nullptr; // Initialize fence  
 
-    fire = nullptr; // Initialize fire  
+	fire = nullptr; // Initialize fire  
 
-    grass = nullptr; // Initialize grass  
-    m_FrustumGrass = nullptr; // Initialize m_FrustumGrass  
+	grass = nullptr; // Initialize grass  
+	m_FrustumGrass = nullptr; // Initialize m_FrustumGrass  
 
-    mainTerrainPath = NEW CTerrain(TERRAIN);
-    mainTerrainPath->LoadHeightMapTerrain(BILLBOARD_TERRAIN, 0, 0); //engine/data/scene73grass/t_025TerrainMappingV4.bmp
+	mainTerrainPath = NEW CTerrain(TERRAIN);
+	mainTerrainPath->LoadHeightMapTerrain(BILLBOARD_TERRAIN, 0, 0); //engine/data/scene73grass/t_025TerrainMappingV4.bmp
 }
 
 BillClass::~BillClass()
 {
-    Shutdown();
-    CLASSDELETE();
+	Shutdown();
+	CLASSDELETE();
 }
 
 void BillClass::Shutdown()
 {
-    SAFE_DELETE(mainTerrainPath);
-    return;
+	SAFE_DELETE(mainTerrainPath);
+	return;
 }
 
 #if defined SCENE_BILLBOARDS
@@ -74,7 +74,7 @@ void BillClass::Shutdown()
 
 Tree			m_Trees[N_BILLBOARD + N_FENCES + N_FIRE + N_GRASS_0 + N_BUSH_0];	// Array of tree info.
 
-ID3D11ShaderResourceView* billFileLoaded[] = 
+ID3D11ShaderResourceView* billFileLoaded[] =
 {
 	NULL,//0
 	NULL,//1
@@ -93,9 +93,9 @@ ID3D11ShaderResourceView* billFileLoaded[] =
 
 	NULL,//12
 };
-TCHAR billFileName[][MAX_STR_LEN] = 
+TCHAR billFileName[][MAX_STR_LEN] =
 {
-    // N_BILLBOARD
+	// N_BILLBOARD
 
 	//TREEs: 6      //Type:
 	BILL_TREE_0,	//0 bush
@@ -112,12 +112,12 @@ TCHAR billFileName[][MAX_STR_LEN] =
 	BILL_FLOWER_3,	//9 
 	BILL_FLOWER_4,	//10
 	// N_GRASS_0
-	BILL_GRASS_0,     //11 animated grass 
-    //N_BUSH_0
+	BILL_GRASS_0,   //11 animated grass 
+	//N_BUSH_0
 	BILL_BUSH_0,    //12 cross bush
-                    //Meta Type:
-                    // 100: engine/data/scene70Bill/fence.obj
-                    // 200: engine/data/scene72Fire/072fire.obj
+	//Meta Type:
+	// 100: engine/data/scene70Bill/fence.obj
+	// 200: engine/data/scene72Fire/072fire.obj
 };
 
 xmlobj3d* BillClass::fillxml(int id, UINT type)
@@ -125,7 +125,7 @@ xmlobj3d* BillClass::fillxml(int id, UINT type)
 	DirectX::DX11Class* m_driver11 = (DirectX::DX11Class*)m_Driver;
 
 	static xmlobj3d xmlobj;
-	xmlobj.id = id+ SystemHandle->m_Application->world_xml_objs;
+	xmlobj.id = id + SystemHandle->m_Application->world_xml_objs;
 	xmlobj.type = type;
 	xmlobj.fromPage = 0;
 	xmlobj.toPage = 0;
@@ -135,7 +135,7 @@ xmlobj3d* BillClass::fillxml(int id, UINT type)
 	xmlobj.posZ = m_Trees[id].vPos.z;
 	xmlobj.translateY = m_Trees[id].vPos.y;
 	xmlobj.rotY = m_Trees[id].rotY;
-    xmlobj.shader = SHADER_TEXTURE_LIGHT_FAST;
+	xmlobj.shader = SHADER_TEXTURE_LIGHT_FAST;
 	xmlobj.instances = 0;			//40
 	xmlobj.castShadow = false;		//41
 	xmlobj.renderShadows = false;	//41
@@ -144,27 +144,27 @@ xmlobj3d* BillClass::fillxml(int id, UINT type)
 	xmlobj.Bill = true;
 
 	if (m_Trees[id].type < 100)
-	{
-		// Create the texture object, if not created before
-		if (!billFileLoaded[type])
 		{
-			ID3D11ShaderResourceView* tempMeshSRV = NULL;
-			HRESULT hr = S_OK;
+			// Create the texture object, if not created before
+			if (!billFileLoaded[type])
+			{
+				ID3D11ShaderResourceView* tempMeshSRV = NULL;
+				HRESULT hr = S_OK;
 
-			LOADTEXTURE(WOMA::LoadFile(billFileName[type]), tempMeshSRV);
-			billFileLoaded[type] = tempMeshSRV;
+				LOADTEXTURE(WOMA::LoadFile(billFileName[type]), tempMeshSRV);
+				billFileLoaded[type] = tempMeshSRV;
+			}
+
+			xmlobj.meshSRV = billFileLoaded[type];
+			if (m_Trees[id].type < 11)
+				strcpy_s(xmlobj.filename, 256, BILLBOARD_MODEL);		    //engine/data/scene70Bill/060square.obj
+			else
+				if (m_Trees[id].type == 11)
+					strcpy_s(xmlobj.filename, 256, BILLBOARD_GRASS_MODEL);	//engine/data/scene73grass/grass.obj
+				else
+					if (m_Trees[id].type == 12)
+						strcpy_s(xmlobj.filename, 256, BILLBOARD_BUSH_MODEL);	//engine/data/scene73grass/grass.obj
 		}
-
-		xmlobj.meshSRV = billFileLoaded[type];
-		if (m_Trees[id].type < 11)
-			strcpy_s(xmlobj.filename, 256, BILLBOARD_MODEL);		    //engine/data/scene70Bill/060square.obj
-		else
-			if (m_Trees[id].type == 11)
-				strcpy_s(xmlobj.filename, 256, BILLBOARD_GRASS_MODEL);	//engine/data/scene73grass/grass.obj
-		else
-			if (m_Trees[id].type == 12)
-				strcpy_s(xmlobj.filename, 256, BILLBOARD_BUSH_MODEL);	//engine/data/scene73grass/grass.obj
-	}
 
 	if (m_Trees[id].type == 100)
 		strcpy_s(xmlobj.filename, 256, BILLBOARD_FENCE_MODEL);		    //100: engine/data/scene70Bill/fence.obj
@@ -174,7 +174,7 @@ xmlobj3d* BillClass::fillxml(int id, UINT type)
 
 	xmlobj.WOMA_object = WOMA_OBJECT();
 
-    xmlobj.WOMA_object.shaderType = SHADER_TEXTURE_LIGHT_FAST;
+	xmlobj.WOMA_object.shaderType = SHADER_TEXTURE_LIGHT_FAST;
 
 	return &xmlobj;
 }
@@ -182,15 +182,15 @@ xmlobj3d* BillClass::fillxml(int id, UINT type)
 static Tree tree_ = {};
 
 bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instance)
-{	
+{
 	UNREFERENCED_PARAMETER(instance);
-	ZeroMemory( &m_Trees, sizeof( m_Trees ) );
-	billNames_length = sizeof( billFileName ) / sizeof (billFileName[0]);
+	ZeroMemory(&m_Trees, sizeof(m_Trees));
+	billNames_length = sizeof(billFileName) / sizeof(billFileName[0]);
 	UINT type = 0;
 
 	// BILLBOARDs
 	int i;
-	for (i=0; i< N_BILLBOARD;i++)
+	for (i = 0; i < N_BILLBOARD; i++)
 	{
 		// Tree.vPos:
 		float height = -100; //Initially Invalid
@@ -210,17 +210,17 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 			PosZ = (float)((rand() % (m_terrainHeight * 100)) / 100.0f);
 			m_Trees[i].vPos.x = PosX;
 			m_Trees[i].vPos.z = PosZ;
-			
+
 			height = mainTerrain->getTerrainHeight(TERRAIN_ID, PosX, PosZ);
 		}
 
 		// Tree.type: (type of tree)
-        type = rand() % billNames_length; //random number between 0 and 10
-        ASSERT(type <= billNames_length-1);
+		type = rand() % billNames_length; //random number between 0 and 10
+		ASSERT(type <= billNames_length - 1);
 		// Tree.scale:
 		float scale = 0;
 		if (type >= 6 && type < 11)
-			scale =  0.1f + (rand() % 10)/10.0f;
+			scale = 0.1f + (rand() % 10) / 10.0f;
 		else
 			scale = 0.25f + (rand() % 30) / 10.0f;
 
@@ -229,16 +229,16 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 			height -= 0.5f;
 		}
 		if (type >= 6)					// Make flowers Smaller
-			scale = scale/2;
+			scale = scale / 2;
 
 		m_Trees[i].ID = i;
 		m_Trees[i].type = type;
-		m_Trees[i].scale = scale;		
+		m_Trees[i].scale = scale;
 		m_Trees[i].vPos.y = height;
 
 		xmlobj3d* xmlobj = fillxml(i, m_Trees[i].type);
 
-		if (type<= 10)
+		if (type <= 10)
 			xmlobj->Bill = true;
 
 		SystemHandle->xml_loader.theWorld.push_back(*xmlobj);
@@ -248,11 +248,11 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 	if (N_FENCES > 0)
 	{
 		//Fences in X:
-		for (int z=0; z<2; z++) {
+		for (int z = 0; z < 2; z++) {
 
-			for (int x=0; x<17; x++) {
+			for (int x = 0; x < 17; x++) {
 
-				if ( !(z == 0 && (x == 7 || x == 8)) ) //Exclude: DOOR at Fences
+				if (!(z == 0 && (x == 7 || x == 8))) //Exclude: DOOR at Fences
 				{
 					m_Trees[i].ID = i;
 					m_Trees[i].type = 100; // 100 = Fence
@@ -260,7 +260,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 					m_Trees[i].rotY = 0.0f;
 
 					m_Trees[i].vPos.x = 29.5f + x * 1.33f;
-					m_Trees[i].vPos.z = 21.5f+0.5f*z + z * 14.0f;
+					m_Trees[i].vPos.z = 21.5f + 0.5f * z + z * 14.0f;
 					m_Trees[i].vPos.y = mainTerrain->getTerrainHeight(TERRAIN_ID, m_Trees[i].vPos.x, m_Trees[i].vPos.z);
 
 					xmlobj3d* xmlobj = fillxml(i, 100);
@@ -275,14 +275,14 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 
 		//Fences in Z:	
 		for (int y = 0; y < 11; y++) {
-			for (int x=0; x<2; x++) {
+			for (int x = 0; x < 2; x++) {
 
 				m_Trees[i].ID = i;
 				m_Trees[i].type = 100; // 100 = Fence
 				m_Trees[i].scale = 1.0f;
-				m_Trees[i].rotY = PI/2.0f;
+				m_Trees[i].rotY = PI / 2.0f;
 
-				m_Trees[i].vPos.x = 29.5f+0.5f*x + x * 22.0f;
+				m_Trees[i].vPos.x = 29.5f + 0.5f * x + x * 22.0f;
 				m_Trees[i].vPos.z = 23 + y * 1.33f;
 				m_Trees[i].vPos.y = mainTerrain->getTerrainHeight(TERRAIN_ID, m_Trees[i].vPos.x, m_Trees[i].vPos.z);
 
@@ -316,7 +316,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 			return false;
 	}
 
-	for (UINT b=0;b<N_GRASS_0;b++) 
+	for (UINT b = 0; b < N_GRASS_0; b++)
 	{
 		// Tree.vPos:
 		float height = -100; //Initially Invalid
@@ -330,8 +330,8 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z + 1)][(UINT)m_Trees[i].vPos.x] > 0			//no grass on main PATH (terrain)
 			)
 		{
-			m_Trees[i].vPos.x = (float) (1+(rand() % (m_terrainWidth*30))/100.0f);
-			m_Trees[i].vPos.z = (float) (1+(rand() % (m_terrainHeight*30))/100.0f);
+			m_Trees[i].vPos.x = (float)(1 + (rand() % (m_terrainWidth * 30)) / 100.0f);
+			m_Trees[i].vPos.z = (float)(1 + (rand() % (m_terrainHeight * 30)) / 100.0f);
 			height = mainTerrain->getTerrainHeight(TERRAIN_ID, m_Trees[i].vPos.x, m_Trees[i].vPos.z);
 		}
 
@@ -379,59 +379,59 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 	}
 
 	billTotal = i;
-	womalog( "Bill Class: Initialized\n" );
+	womalog("Bill Class: Initialized\n");
 
 	return true;
 }
 
 inline float Distance2D(const Tree* p, float camX, float camZ) {
-    float dx = p->vPos.x - camX;
-    float dz = p->vPos.z - camZ;
-    return dx * dx + dz * dz;
+	float dx = p->vPos.x - camX;
+	float dz = p->vPos.z - camZ;
+	return dx * dx + dz * dz;
 }
 
 int __cdecl BillSortCB(const void* arg1, const void* arg2)
 {
-    const Tree* p1 = static_cast<const Tree*>(arg1);
-    const Tree* p2 = static_cast<const Tree*>(arg2);
+	const Tree* p1 = static_cast<const Tree*>(arg1);
+	const Tree* p2 = static_cast<const Tree*>(arg2);
 
-    float d1 = Distance2D(p1, sort_cameraX, sort_cameraZ);
-    float d2 = Distance2D(p2, sort_cameraX, sort_cameraZ);
+	float d1 = Distance2D(p1, sort_cameraX, sort_cameraZ);
+	float d2 = Distance2D(p2, sort_cameraX, sort_cameraZ);
 
-    return (d1 < d2) ? +1 : -1;
+	return (d1 < d2) ? +1 : -1;
 }
 #endif
 
 #if DX_ENGINE_LEVEL >= 77 && defined USE_INSTANCES_FOR_TREES
 void BillClass::Tree0GS(InstanceType* instances, int m_instanceCount)
 {
-    int m_terrainWidth = SystemHandle->m_Application->loadedTerrain[2]->m_terrainWidth / 2;
-    int m_terrainHeight = SystemHandle->m_Application->loadedTerrain[2]->m_terrainHeight / 2;
-    Tree tree = { };
+	int m_terrainWidth = SystemHandle->m_Application->loadedTerrain[2]->m_terrainWidth / 2;
+	int m_terrainHeight = SystemHandle->m_Application->loadedTerrain[2]->m_terrainHeight / 2;
+	Tree tree = { };
 
-    for (int i = 0; i < m_instanceCount; i++) 
-    {
-        // Tree.vPos:
-        float height = -100; //Initially Invalid
-        while (height <= 0		//not on water
-            || height > 1.0f	//not above 1m
-            || (tree.vPos.x >= 27 && tree.vPos.x <= 53) && (tree.vPos.z >= 21 && tree.vPos.z <= 38) //out of house (compound)
-            || (tree.vPos.x < borderLimit || tree.vPos.x > m_terrainWidth - borderLimit)		//no near limits
-            || (tree.vPos.z < borderLimit || tree.vPos.z > 220 /*m_terrainHeight - borderLimit*/)		//no near limits
-            || mainTerrainPath->height[(UINT)(tree.vPos.z) - 1][(UINT)tree.vPos.x] > 0			//no grass on main PATH (terrain)
-            || mainTerrainPath->height[(UINT)(tree.vPos.z)][(UINT)tree.vPos.x] > 0				//no grass on main PATH (terrain)
-            || mainTerrainPath->height[(UINT)(tree.vPos.z + 1)][(UINT)tree.vPos.x] > 0			//no grass on main PATH (terrain)
-            )
-        {
-            tree.vPos.x = (float)(1 + (rand() % (m_terrainWidth * 100)) / 100.0f);
-            tree.vPos.z = (float)(1 + (rand() % (m_terrainHeight * 100)) / 100.0f);
-            height = mainTerrain->getTerrainHeight(TERRAIN_ID, tree.vPos.x, tree.vPos.z);
-        }
+	for (int i = 0; i < m_instanceCount; i++)
+	{
+		// Tree.vPos:
+		float height = -100; //Initially Invalid
+		while (height <= 0		//not on water
+			|| height > 1.0f	//not above 1m
+			|| (tree.vPos.x >= 27 && tree.vPos.x <= 53) && (tree.vPos.z >= 21 && tree.vPos.z <= 38) //out of house (compound)
+			|| (tree.vPos.x < borderLimit || tree.vPos.x > m_terrainWidth - borderLimit)		//no near limits
+			|| (tree.vPos.z < borderLimit || tree.vPos.z > 220 /*m_terrainHeight - borderLimit*/)		//no near limits
+			|| mainTerrainPath->height[(UINT)(tree.vPos.z) - 1][(UINT)tree.vPos.x] > 0			//no grass on main PATH (terrain)
+			|| mainTerrainPath->height[(UINT)(tree.vPos.z)][(UINT)tree.vPos.x] > 0				//no grass on main PATH (terrain)
+			|| mainTerrainPath->height[(UINT)(tree.vPos.z + 1)][(UINT)tree.vPos.x] > 0			//no grass on main PATH (terrain)
+			)
+		{
+			tree.vPos.x = (float)(1 + (rand() % (m_terrainWidth * 100)) / 100.0f);
+			tree.vPos.z = (float)(1 + (rand() % (m_terrainHeight * 100)) / 100.0f);
+			height = mainTerrain->getTerrainHeight(TERRAIN_ID, tree.vPos.x, tree.vPos.z);
+		}
 
-        instances[i].position.x = tree.vPos.x;
-        instances[i].position.z = tree.vPos.z;
-        instances[i].position.y = height;
-    }
+		instances[i].position.x = tree.vPos.x;
+		instances[i].position.z = tree.vPos.z;
+		instances[i].position.y = height;
+	}
 }
 #endif
 

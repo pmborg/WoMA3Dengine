@@ -788,13 +788,16 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	UINT objModel_size = (UINT)objModel.size();
 	WOMA::num_loading_objects = 1;
 
+	static DXmodelClass* model = NULL;
 	for (UINT i = objModel_size; i < objModel_size + theWorld_size; i++)
 	{
 		objModel.push_back(NULL);
-
+		
 		if (i > 0
 			&& strcmp(SystemHandle->xml_loader.theWorld[i].filename, SystemHandle->xml_loader.theWorld[i - 1].filename) == 0 
-			&& SystemHandle->xml_loader.theWorld[i].type == 11)
+			&& (SystemHandle->xml_loader.theWorld[i].type == 11			//11 animated grass, Clone it its faster
+				|| SystemHandle->xml_loader.theWorld[i].type == 12)		//12 BUSHs, Clone it its faster
+			) 
 		{
 			objModel[i] = objModel[i - 1];
 			SystemHandle->xml_loader.theWorld[i].CLONE = true;
@@ -802,39 +805,41 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 		else
 		{
 
-		if (SystemHandle->xml_loader.theWorld[i].type < 200)
-		{ CREATE_MODEL_IF_NOT_EXCEPTION(objModel[i], I_AM_2D, SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows); }
-		else 
-		{ CREATE_MODEL_IF_NOT_EXCEPTION(objModel[i], I_AM_3D, SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows); }
+			if (SystemHandle->xml_loader.theWorld[i].type < 200)
+			{ CREATE_MODEL_IF_NOT_EXCEPTION(objModel[i], I_AM_2D, SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows); }
+			else 
+			{ CREATE_MODEL_IF_NOT_EXCEPTION(objModel[i], I_AM_3D, SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows); }
 
-		objModel[i]->m_ObjId = i; //SYNC-ID: objModel[i] with: xml_loader.theWorld[i]
-        objModel[i]->xmlId = SystemHandle->xml_loader.theWorld[i].id;
+			objModel[i]->m_ObjId = i; //SYNC-ID: objModel[i] with: xml_loader.theWorld[i]
+			objModel[i]->xmlId = SystemHandle->xml_loader.theWorld[i].id;
 
-#if   !defined USE_SHADOW_INSTANCES
-		SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows = false;
-		SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows = false;
-		objModel[i]->ModelCastShadow = false;
-		objModel[i]->ModelRenderShadow = false;
-#else
-	#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
-		objModel[i]->ModelCastShadow = SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows = SystemHandle->xml_loader.theWorld[i].castShadow;
-		objModel[i]->ModelRenderShadow = SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows = SystemHandle->xml_loader.theWorld[i].renderShadows;
+	#if   !defined USE_SHADOW_INSTANCES
+			SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows = false;
+			SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows = false;
+			objModel[i]->ModelCastShadow = false;
+			objModel[i]->ModelRenderShadow = false;
+	#else
+		#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
+			objModel[i]->ModelCastShadow = SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows = SystemHandle->xml_loader.theWorld[i].castShadow;
+			objModel[i]->ModelRenderShadow = SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows = SystemHandle->xml_loader.theWorld[i].renderShadows;
+		#endif
 	#endif
-#endif
-		TCHAR wfilename[MAX_STR_LEN] = { 0 }; atow(wfilename, SystemHandle->xml_loader.theWorld[i].filename, MAX_STR_LEN);
-        SystemHandle->xml_loader.theWorld[i].WOMA_object.instances = SystemHandle->xml_loader.theWorld[i].instances;
-		if (WOMA::game_state == GAME_STOP)
-			return false;
+			TCHAR wfilename[MAX_STR_LEN] = { 0 }; atow(wfilename, SystemHandle->xml_loader.theWorld[i].filename, MAX_STR_LEN);
+			SystemHandle->xml_loader.theWorld[i].WOMA_object.instances = SystemHandle->xml_loader.theWorld[i].instances;
+			if (WOMA::game_state == GAME_STOP)
+				return false;
 
-#if DX_ENGINE_LEVEL >= 73 && defined BILLBOARD_FOR_WINDY_GRASS
-		if (i >= world_xml_objs)
-		{
-			if (SystemHandle->xml_loader.theWorld[i].type == 11)
-				((DXmodelClass*)objModel[i])->isAnimatedBill = true;
-			else
-				((DXmodelClass*)objModel[i])->isAnimatedBill = false;
-		}
-#endif
+			
+
+	#if DX_ENGINE_LEVEL >= 73 && defined BILLBOARD_FOR_WINDY_GRASS
+			if (i >= world_xml_objs)
+			{
+				if (SystemHandle->xml_loader.theWorld[i].type == 11)
+					((DXmodelClass*)objModel[i])->isAnimatedBill = true;
+				//else
+				//	((DXmodelClass*)objModel[i])->isAnimatedBill = false;
+			}
+	#endif
 
 			//Load OBJ or W3D:
 			if (!(objModel[i]->LoadModel(wfilename, Driver, 
@@ -848,12 +853,14 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 
 		}
 
-		if (SystemHandle->xml_loader.theWorld[i].meshSRV) {
-			((DXmodelClass*)objModel[i])->meshSRV11[0] = SystemHandle->xml_loader.theWorld[i].meshSRV;
-		}
 		if (i >= world_xml_objs) //Are we a Billboard?
-			((DXmodelClass*)objModel[i])->ModelHASAlfaColor = true;
+		{
+			((DXmodelClass*)objModel[i])->isBill = true;
 
+			if (SystemHandle->xml_loader.theWorld[i].meshSRV) {
+				((DXmodelClass*)objModel[i])->meshSRV11[0] = SystemHandle->xml_loader.theWorld[i].meshSRV;
+			}
+		}
 
 #if defined ALLOW_CBIND_PROGRESS_BAR
 #if defined USE_INTRO_VIDEO_DEMO
@@ -867,16 +874,18 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 		}
 #endif
 
+		((DXmodelClass*)objModel[i])->ready = true;	// Set Model ready to be rendered
+
+		WOMA::sceneManager->addModel(WOMA::sceneManager->RootNode, objModel[i]);			// Add node to nodesList: RootNode
+
+		WOMA::num_loading_objects++;
+
 		//Allow Refresh on Timer:
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))	// There is any OS messages to handle?
 		{
 			TranslateMessage(&msg); // TranslateMessage produces WM_CHAR messages only for keys that are mapped to ASCII characters by the keyboard driver.
 			DispatchMessage(&msg);  // Process Msg:  (INVOKE: WinSystemClass::MessageHandler)
 		}
-
-		WOMA::sceneManager->addModel(WOMA::sceneManager->RootNode, objModel[i]);			// Add node to nodesList: RootNode
-		((DXmodelClass*)objModel[i])->ready = true;	// Set Model ready to be rendered
-		WOMA::num_loading_objects++;
 	}
 #endif
 

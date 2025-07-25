@@ -52,6 +52,7 @@ extern RApplicationClass* r_Application;
 #if defined USE_DIRECT_INPUT || DX_ENGINE_LEVEL >= 63
 float sort_cameraX=0, sort_cameraY=0, sort_cameraZ = 0;
 #endif
+
 //-------------------------------------------------------------------------------------------
 void ApplicationClass::RenderScene(UINT monitorIndex, WomaDriverClass* driver)
 //-------------------------------------------------------------------------------------------
@@ -190,6 +191,9 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight)
 
 	// Render TRANSPARENT Parts of 3D OBJs (like: glass window of (Space Compound), etc...) (last part)
 	// --------------------------------------------------------------------------------------------
+#if defined USE_ALPHA_BLENDING
+	m_Driver->TurnOffAlphaBlending();
+#endif
 
     // TERRAIN[1]: Render Mesh for WATER:
 // --------------------------------------------------------------------------------------------

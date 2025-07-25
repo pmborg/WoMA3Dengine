@@ -56,8 +56,6 @@ using namespace DirectX;
 
 namespace DirectX 
 {
-
-
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: DXmodelClass
 ////////////////////////////////////////////////////////////////////////////////
@@ -176,7 +174,6 @@ public:
 // ----------------------------------------------------------------------
 //private:
 // ----------------------------------------------------------------------
-
 	bool SaveW3D	(STRING filename, void* indices, void* vertices, UINT sizeofMODELvertex);
 
 #if defined LOADW3D
@@ -268,10 +265,7 @@ public:
 	float	m_xTexture=0;
 #endif
 
-
-
 };
 
 }
-
 #endif
