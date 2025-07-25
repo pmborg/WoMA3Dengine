@@ -7,11 +7,11 @@
 
 ## 🚀 Latest Installer Release
 
-**[📦 WoMA3Dengine v0.90 Installer](https://github.com/pmborg/WoMA3Dengine/releases/tag/v0.90)** — July 2025  
+**[📦 WoMA3Dengine v0.901 Installer](https://github.com/pmborg/WoMA3Dengine/releases/tag/v0.901)** — July 2025  
 No need to compile! This zip includes everything pre-packaged:
 
 - 🧰 Downloads the **latest source code**
-- ⚙️ Installs **precompiled demo binaries** (91 levels!)
+- ⚙️ Installs **precompiled demo binaries fore DEBUG/RELEASE** (from level 000 to 090)
 - 🌐 Launch the engine instantly via HTML frontend
 
 ```plaintext
