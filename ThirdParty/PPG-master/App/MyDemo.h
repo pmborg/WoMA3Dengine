@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "platform.h"
+#include "OSengine.h"
 #if _DEBUG
     #pragma comment( lib, "C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin-latest\\Debug\\Assimp-latest-Engine.lib" )
 #else
@@ -34,6 +34,7 @@
 
 #include "../Engine/Source/PPG.h"
 #include <math.h>
+//#define m_Driver  driverList[SystemHandle->AppSettings->DRIVER]
 
 class MyDemo : public Demo
 {
@@ -65,9 +66,11 @@ private:
     }
 
 public:
-    void Start(Graphics& graphics) override
+    void Start(ID3D11DeviceContext* pContext, Graphics& graphics) override
     {
         // Rendering Stuff
+		graphics.m_DeviceContext = pContext;
+
         auto& clientRect = graphics.m_ClientRect;
         unsigned int clientWidth = clientRect.right - clientRect.left;
         unsigned int clientHeight = clientRect.bottom - clientRect.top;
@@ -84,20 +87,7 @@ public:
         linearSampler = std::make_unique<Sampler>(graphics, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
         pointSampler = std::make_unique<Sampler>(graphics, D3D11_FILTER_MIN_MAG_MIP_POINT, D3D11_TEXTURE_ADDRESS_CLAMP);
 
-        auto deviceContext = graphics.m_DeviceContext;
-        linearSampler->Use(deviceContext, 0);
-        pointSampler->Use(deviceContext, 1);
-    }
-    
-    void Update(Graphics& graphics, float deltaTime) override
-    {
-    }
-
-	void Render(Graphics& graphics) 
-	{
-	}
-
-    void End()
-    {
+        linearSampler->Use(pContext, 0);
+        pointSampler->Use(pContext, 1);
     }
 };

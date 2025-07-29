@@ -36,7 +36,7 @@ public:
     Transform& Translate(float x, float y, float z);
     Transform& RotateEulerAngles(float x, float y, float z);
     Transform& UniformScale(float s);
-    void Update(Graphics& graphics, ID3D11Buffer* buffer);
+    void Update(ID3D11DeviceContext* pContext, Graphics& graphics, ID3D11Buffer* buffer);
     XMMATRIX GetModel();
     const XMMATRIX& GetLocalModel();
     const XMVECTOR& GetWorldPosition();

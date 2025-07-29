@@ -35,9 +35,8 @@ BlitPass::~BlitPass()
 {
 }
 
-void BlitPass::Render(Graphics& graphics, Scene& scene)
+void BlitPass::Render(ID3D11DeviceContext* deviceContext, Graphics& graphics, Scene& scene)
 {
-    auto deviceContext = graphics.m_DeviceContext;
     deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
     m_SrcTexture.UseSRV(deviceContext, 0);
     m_Shader->Use(deviceContext);

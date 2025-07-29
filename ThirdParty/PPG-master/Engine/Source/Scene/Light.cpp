@@ -15,6 +15,7 @@
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
 // Original Code Adapted from: https://github.com/nicholaschuayunzhi/PPG
+// WomaIntegrityCheck = 1234525217;
 
 #include "stdafx.h"
 
@@ -31,7 +32,7 @@ LightManager::~LightManager()
    SAFE_RELEASE(m_OneShadowMapCBuffer);
 }
 
-void LightManager::Update(Graphics& graphics)
+void LightManager::Update(ID3D11DeviceContext* pContext, Graphics& graphics)
 {
     if (m_Buffer == nullptr)
     {
@@ -39,7 +40,7 @@ void LightManager::Update(Graphics& graphics)
     }
     else
     {
-        graphics.UpdateBuffer(m_Buffer, &m_LightProps);
+        graphics.UpdateBuffer(pContext, m_Buffer, &m_LightProps);
     }
 }
 
@@ -52,10 +53,6 @@ LightManager& LightManager::AddLight(Light& light)
         m_NumLights++;
         return *this;
     }
-    //else
-    //{
-    //    throw std::exception("LightManager:: Too many lights added");
-    //}
 }
 
 Light& LightManager::GetLight(unsigned int index)
@@ -63,10 +60,6 @@ Light& LightManager::GetLight(unsigned int index)
     if (index < MAX_LIGHTS)
     {
         return m_LightProps.m_Lights[index];
-    }
-    else
-    {
-        throw std::exception("LightManager:: light index out of range");
     }
 }
 
@@ -93,53 +86,3 @@ void LightManager::Use(ID3D11DeviceContext* deviceContext, UINT slot /* = 0*/)
     deviceContext->PSSetConstantBuffers(slot, 1, &m_Buffer);
 }
 
-#if _NOT
-void LightManager::SetLightWithShadows(Graphics& graphics, unsigned int index, ShadowMapRenderDesc& desc)
-{
-    Light& light = GetLight(index);
-    if (light.m_LightType != LightType::DirectionalLight)
-    {
-        throw std::exception("LightManager:: Only support static directional light");
-    }
-
-    if (hasLightWithShadows)
-    {
-        throw std::exception("LightManager:: Only support one shadow map");
-    }
-
-    light.m_Status = LightStatus::Static_Shadows;
-
-    OrthographicCamera shadowMapCamera;
-    shadowMapCamera.m_EyePosition = desc.m_EyePosition;
-    shadowMapCamera.m_LookAt = desc.m_LookAt;
-    shadowMapCamera.m_NearZ = desc.m_NearZ;
-    shadowMapCamera.m_FarZ = desc.m_FarZ;
-    shadowMapCamera.m_ViewHeight = desc.m_ViewHeight;
-    shadowMapCamera.m_ViewWidth = desc.m_ViewWidth;
-
-    RECT& clientRect = graphics.m_ClientRect;
-       ShadowMapConstant shadowMapConstant = {
-         desc.m_TextureWidth,
-         desc.m_TextureHeight,
-         XMMatrixMultiply(shadowMapCamera.CalculateView(), shadowMapCamera.CalculateProjection())
-    };
-    m_OneShadowMapDesc = desc;
-    m_OneShadowMapCBuffer = graphics.CreateBuffer(sizeof(ShadowMapConstant), D3D11_BIND_CONSTANT_BUFFER, &shadowMapConstant);
-    m_ShadowMapPass = std::make_unique<ShadowMapPass>(graphics);
-    Texture* shadowMapTexture = Texture::CreateTexture(graphics, desc.m_TextureWidth, desc.m_TextureHeight, "Shadow Map",
-        DXGI_FORMAT_R32_TYPELESS, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE);
-    shadowMapTexture->CreateRTV(graphics, DXGI_FORMAT_R32_FLOAT);
-    shadowMapTexture->CreateSRV(graphics, DXGI_FORMAT_R32_FLOAT);
-    m_OneShadowMapTexture = std::unique_ptr<Texture>(shadowMapTexture);
-    hasLightWithShadows = true;
-}
-
-void LightManager::RenderAnyShadowMap(Graphics& graphics, Scene& scene)
-{
-    if (hasLightWithShadows)
-    {
-        m_ShadowMapPass->Render(graphics, scene, *m_OneShadowMapTexture, m_OneShadowMapDesc);
-    }
-}
-
-#endif

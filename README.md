@@ -211,6 +211,13 @@ Try to Change the driver on the fly without the need of close and open the Appli
 <h2>3D - ADVANCED MESH TUTORIAL SERIES: BEGIN</h2>
 <hr>
 
+- <b>DX91: Using threads for rendering</b><br>
+Improving from **760** FPS to **815** FPS.<br>
+  
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_090.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_090.png)	
+
+<hr>
+
 - <b>DX90: Replacing Billboards with advanced gaming like objects(Low Poly)</b><br>
   
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_090.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_090.png)	

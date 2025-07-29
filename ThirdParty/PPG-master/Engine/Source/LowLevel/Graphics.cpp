@@ -33,7 +33,7 @@ Graphics::Graphics(HINSTANCE hInstance, BOOL vSync, Window& window)
 {
     HRESULT hr;
 
-    m_ClientRect = window.GetWindowRect();
+	m_ClientRect = window.GetWindowRect();
 
     // Compute the exact client dimensions. This will be used
     // to initialize the render targets for our swap chain.
@@ -42,7 +42,6 @@ Graphics::Graphics(HINSTANCE hInstance, BOOL vSync, Window& window)
 
     #define m_driver11 ((DirectX::DX11Class*)driverList[SystemHandle->AppSettings->DRIVER])
     m_Device = ((DirectX::DX11Class*)m_driver11)->m_device11;
-    m_DeviceContext = ((DirectX::DX11Class*)m_driver11)->m_deviceContext;
 
 
     // Next initialize the back buffer of the swap chain and associate it to a
@@ -115,7 +114,7 @@ ID3D11Buffer* Graphics::CreateBuffer(UINT byteWidth, UINT bindFlags, const void*
     return constantBuffer;
 }
 
-void Graphics::UpdateBuffer(ID3D11Buffer* buffer, const void* resource)
+void Graphics::UpdateBuffer(ID3D11DeviceContext* m_DeviceContext, ID3D11Buffer* buffer, const void* resource)
 {
     m_DeviceContext->UpdateSubresource(buffer, 0, nullptr, resource, 0, 0);
 }

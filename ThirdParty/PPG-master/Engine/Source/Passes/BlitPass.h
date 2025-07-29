@@ -31,7 +31,7 @@ class BlitPass
 public:
     BlitPass(Graphics& graphics, Texture& src, Texture& dest);
     ~BlitPass();
-    void Render(Graphics& graphics, Scene& scene);
+    void Render(ID3D11DeviceContext* pContext, Graphics& graphics, Scene& scene);
 private:
     Texture& m_SrcTexture;
     Texture& m_DestTexture;

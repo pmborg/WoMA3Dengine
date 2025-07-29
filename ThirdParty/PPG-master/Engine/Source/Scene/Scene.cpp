@@ -39,11 +39,11 @@ Scene::~Scene()
     SAFE_RELEASE(m_ProjBuffer);
 }
 
-void Scene::Start(Graphics& graphics)
+void Scene::Start(ID3D11DeviceContext* pContext, Graphics& graphics)
 {
     lightManager
         .SetEyePosition(m_MainCamera.m_EyePosition)
-        .Update(graphics);
+        .Update(pContext, graphics);
 
     auto clientRect = graphics.m_ClientRect;
     float clientWidth = static_cast<float>(clientRect.right - clientRect.left);
@@ -66,11 +66,11 @@ void Scene::UpdateModelRecursive(SceneObject::Index idx, XMMATRIX model)
 
 }
 
-void Scene::Update(Graphics& graphics, float deltaTime)
+void Scene::Update(ID3D11DeviceContext* pContext, Graphics& graphics, float deltaTime)
 {
     //m_MainCamera.HandleMovement(input, deltaTime);
     lightManager.SetEyePosition(m_MainCamera.m_EyePosition);
-    lightManager.Update(graphics);
+    lightManager.Update(pContext, graphics);
 	for (size_t i = 0; i < m_Node[0]->m_ChildrenIndices.size(); ++i)
 	{
 		auto objIndex = m_Node[0]->m_ChildrenIndices[i];
@@ -78,26 +78,24 @@ void Scene::Update(Graphics& graphics, float deltaTime)
 	}
 }
 
-void Scene::UseModel(Graphics& graphics)
+void Scene::UseModel(ID3D11DeviceContext* deviceContext, Graphics& graphics)
 {
-    auto deviceContext = graphics.m_DeviceContext;
     deviceContext->VSSetConstantBuffers(0, 1, &m_ModelBuffer);
 }
 
-void Scene::UpdateWorldMatrixModel(Graphics& graphics, const XMMATRIX& model)
+void Scene::UpdateWorldMatrixModel(ID3D11DeviceContext* deviceContext, Graphics& graphics, const XMMATRIX& model)
 {
-    graphics.UpdateBuffer(m_ModelBuffer, &model);
+    graphics.UpdateBuffer(deviceContext, m_ModelBuffer, &model);
 }
 
-void Scene::UseCamera(Graphics& graphics, Camera& camera)
+void Scene::UseCamera(ID3D11DeviceContext* deviceContext, Graphics& graphics, Camera& camera)
 {
     #define m_driver11 ((DirectX::DX11Class*)driverList[SystemHandle->AppSettings->DRIVER])
     XMMATRIX* cameraP = ((DirectX::DX11Class*)m_driver11)->GetProjectionMatrix(CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_OPAC, NULL, NULL);
     XMMATRIX* cameraV = ((DirectX::DX11Class*)m_driver11)->GetViewMatrix(CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_OPAC, NULL, NULL);
 
-    graphics.UpdateBuffer(m_ViewBuffer, cameraV);
-    graphics.UpdateBuffer(m_ProjBuffer, cameraP);
-    auto deviceContext = graphics.m_DeviceContext;
+    graphics.UpdateBuffer(deviceContext, m_ViewBuffer, cameraV);
+    graphics.UpdateBuffer(deviceContext, m_ProjBuffer, cameraP);
     deviceContext->VSSetConstantBuffers(1, 1, &m_ViewBuffer);
     deviceContext->VSSetConstantBuffers(2, 1, &m_ProjBuffer);
 }

@@ -23,8 +23,8 @@ class Graphics;
 class Demo
 {
 public:
-    virtual void Start(Graphics& graphics) = 0;
-    virtual void Update(Graphics& graphics, float deltaTime) = 0;
-	virtual void Render(Graphics& graphics) = 0;
-    virtual void End() = 0;
+    virtual void Start(ID3D11DeviceContext* pContext, Graphics& graphics) = 0;
+    //virtual void Update(Graphics& graphics, float deltaTime) = 0;
+	//virtual void Render(Graphics& graphics) = 0;
+    //virtual void End() = 0;
 };

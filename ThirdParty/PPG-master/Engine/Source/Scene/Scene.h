@@ -37,11 +37,11 @@ public:
     std::shared_ptr<SceneObject> CreateSceneObject(const std::string& name, SceneObject::Index parentIndex = 0);
     std::shared_ptr<SceneObject> GetSceneObjectByIndex(SceneObject::Index index);
     std::vector<std::shared_ptr<SceneObject>> m_Node;
-    void Start(Graphics& graphics);
-    void Update(Graphics& graphics,float deltaTime);
-    void UseModel(Graphics& graphics);
-    void UpdateWorldMatrixModel(Graphics& graphics, const XMMATRIX& model);
-    void UseCamera(Graphics& graphics, Camera& camera);
+    void Start(ID3D11DeviceContext* pContext, Graphics& graphics);
+    void Update(ID3D11DeviceContext* pContext, Graphics& graphics,float deltaTime);
+    void UseModel(ID3D11DeviceContext* deviceContext, Graphics& graphics);
+    void UpdateWorldMatrixModel(ID3D11DeviceContext* deviceContext, Graphics& graphics, const XMMATRIX& model);
+    void UseCamera(ID3D11DeviceContext* pContext, Graphics& graphics, Camera& camera);
 private:
     void UpdateModelRecursive(SceneObject::Index objIdx, XMMATRIX model);
     ID3D11Buffer* m_ModelBuffer;

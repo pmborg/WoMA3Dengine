@@ -60,9 +60,9 @@ Transform& Transform::UniformScale(float s)
     return *this;
 }
 
-void Transform::Update(Graphics& graphics, ID3D11Buffer* buffer)
+void Transform::Update(ID3D11DeviceContext* pContext, Graphics& graphics, ID3D11Buffer* buffer)
 {
-    graphics.UpdateBuffer(buffer, &model);
+    graphics.UpdateBuffer(pContext, buffer, &model);
 }
 
 XMMATRIX Transform::GetModel()

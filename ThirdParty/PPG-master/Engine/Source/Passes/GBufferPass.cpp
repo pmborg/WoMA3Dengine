@@ -55,15 +55,15 @@ GBufferPass::~GBufferPass()
     SAFE_RELEASE(m_BoneBuffer);
 }
 
-void GBufferPass::Render(Graphics& graphics, Scene& scene)
+void GBufferPass::Render(ID3D11DeviceContext* deviceContext, Graphics& graphics, Scene& scene)
 {
-    auto deviceContext = graphics.m_DeviceContext;
+    //auto deviceContext = graphics.m_DeviceContext;
     static XMMATRIX staticm_FinalTransforms[128] = {};
 
     shader->Use(deviceContext);
 
-    scene.UseModel(graphics);                                    // 0   VERTEX Buffer: World
-    scene.UseCamera(graphics, scene.m_MainCamera);               // 1,2 VERTEX Buffer: VIEW: & PROJ
+    scene.UseModel(deviceContext, graphics);                                    // 0   VERTEX Buffer: World
+    scene.UseCamera(deviceContext, graphics, scene.m_MainCamera);               // 1,2 VERTEX Buffer: VIEW: & PROJ
     deviceContext->VSSetConstantBuffers(3, 1, &m_BoneBuffer);    // 3   VERTEX Buffer: Bones
 
     deviceContext->PSSetConstantBuffers(0, 1, &m_PBRMaterialBuffer);   // 0 Pixel Buffer: 
@@ -82,14 +82,14 @@ void GBufferPass::Render(Graphics& graphics, Scene& scene)
         {
             if (animator != currentAnimator)
             {
-                graphics.UpdateBuffer(m_BoneBuffer, animator->m_FinalTransforms);
+                graphics.UpdateBuffer(deviceContext, m_BoneBuffer, animator->m_FinalTransforms);
                 currentAnimator = animator;
             }
             animator->m_FinalTransforms[127].r->m128_f32[0] = 127;    //AQUI-ANIM
         } 
         else {                                                        //AQUI-ANIM
             staticm_FinalTransforms[127].r->m128_f32[0] = 0;       
-            graphics.UpdateBuffer(m_BoneBuffer, staticm_FinalTransforms);
+            graphics.UpdateBuffer(deviceContext, m_BoneBuffer, staticm_FinalTransforms);
         }
         
         PBRMaterial* mat = meshRenderer.m_Material;
@@ -101,7 +101,7 @@ void GBufferPass::Render(Graphics& graphics, Scene& scene)
         mat->m_MaterialInfo.ambientColor = SystemHandle->m_Application->m_Light->m_ambientColor;
         mat->m_MaterialInfo.lightColor = SystemHandle->m_Application->m_Light->m_diffuseColor;
 
-        graphics.UpdateBuffer(m_PBRMaterialBuffer, &(mat->m_MaterialInfo));
+        graphics.UpdateBuffer(deviceContext, m_PBRMaterialBuffer, &(mat->m_MaterialInfo));
 
         // 0:
         if (mat->m_Albedo)

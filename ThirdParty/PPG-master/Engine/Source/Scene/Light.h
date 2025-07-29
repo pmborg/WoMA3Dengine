@@ -69,7 +69,7 @@ class LightManager
 public:
     LightManager() = default;
     ~LightManager();
-    void Update(Graphics& graphics);
+    void Update(ID3D11DeviceContext* pContext, Graphics& graphics);
     void Use(ID3D11DeviceContext* deviceContext, UINT slot = 0);
     Light& GetLight(unsigned int index);
     XMFLOAT4& GetEyePosition();
