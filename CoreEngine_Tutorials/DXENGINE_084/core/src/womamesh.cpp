@@ -94,10 +94,12 @@ void InitMeshDemo(ID3D11DeviceContext* pContext, ApplicationClass* app, MeshAppl
 void LoadAllMeshModels(UINT this_level, ApplicationClass* app, MeshApplication* demoapp, MyDemo* demo)
 {
 #if DX_ENGINE_LEVEL >= 79 && defined USE_MODEL1
+	if (WOMA::game_state == GAME_STOP) return;
     womamesh1.assimpSceneModel = SceneModel::LoadModelToScene(DX_ENGINE_LEVEL, true, 0, WOMA::LoadFile((TCHAR*)ASSIMP_MODEL_BOBLAMPCLEAN), "", womamesh1.scene, demoapp->m_Graphics);
 #endif
 
 #if DX_ENGINE_LEVEL >= 84 && defined USE_MODEL2
+	if (WOMA::game_state == GAME_STOP) return;
     womamesh2.assimpSceneModel = SceneModel::LoadModelToScene(DX_ENGINE_LEVEL, true, 0, WOMA::LoadFile((TCHAR*)ASSIMP_MODEL_FEMALE), "", womamesh2.scene, demoapp->m_Graphics);
 #if defined SCENE_SKIN
     {
@@ -210,12 +212,17 @@ void RenderAllMeshModels(ID3D11DeviceContext* m_DeviceContext)
 
 DWORD StartMeshLibs(LPVOID lpParam)
 {
+	threadLoadMeshAlive = true;
+
     SetUnhandledExceptionFilter(TopLevelFilter);
     ApplicationClass* app = static_cast<ApplicationClass*>(lpParam);
 
-    // INIT: Model 1,2,3,4...
+	if (WOMA::game_state == GAME_STOP) goto exitThread;
+	// INIT: Model 1,2,3,4...
     LoadAllMeshModels(DX_ENGINE_LEVEL, app, demoapp_, demo_);
 
+exitThread:
+	threadLoadMeshAlive = false;
     return 0;
 };
 

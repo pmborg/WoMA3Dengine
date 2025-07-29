@@ -65,6 +65,8 @@ unsigned long threadInitializeLoaderId = NULL;
 
 dxWinSystemClass* DXsystemHandle = NULL;
 
+extern bool threadLoadMeshAlive;
+
 //----------------------------------------------------------------------------------
 dxWinSystemClass::dxWinSystemClass(WOMA::Settings* appSettings) : WinSystemClass() //	SystemClass::SystemClass() Will Run!
 //----------------------------------------------------------------------------------
@@ -153,7 +155,9 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 		if (WOMA::main_loop_state < 0 || (WOMA::renderOnce && WOMA::woma_timer > 15))
         {
 			WOMA::game_state = GAME_STOP;
-            return EXIT_SUCCESS;                //Controlled Exit for automatic tests.
+			if (WOMA::renderOnce && WOMA::woma_timer > 15)
+				return EXIT_SUCCESS;                // Controlled Exit for Automatic Tests.
+			break;										   
 		}
         if (WOMA::game_state == ENGINE_RESTART)
             PostQuitMessage(WOMA::game_state);  //RESTART ENGINE: return WOMA::game_state;
@@ -161,11 +165,17 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 	} while (msg.message != WM_QUIT);
 
     //Clear all message queue:
-    while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) > 0) 
-    {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-    }
+	const DWORD waitStart = GetTickCount();
+	while ((PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) > 0 || threadLoadMeshAlive) &&
+		(GetTickCount() - waitStart < 5000)) // 5 sec max
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+		Sleep(500);
+	}
+
+	if (threadLoadMeshAlive)
+		womalog("WARNING: Mesh loader thread did not terminate in time.");
 
     womalog("msg.wParam: %d\n", msg.wParam);
 	return (int)msg.wParam; //return the PostQuitMessage (message code)

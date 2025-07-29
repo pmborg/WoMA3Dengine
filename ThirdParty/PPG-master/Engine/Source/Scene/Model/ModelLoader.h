@@ -127,6 +127,8 @@ void ModelLoader::ProcessMeshes(UINT this_level, UINT type)
 		LOG_FILE << "MESH id: " << meshindex << std::endl;
         aiMesh* rootMesh = pAssimpScene->mMeshes[meshindex];
         GenerateMesh(type, meshindex, rootMesh);
+		if (WOMA::main_loop_state < 0)
+			return;
         GenerateMaterial(this_level, type, rootMesh);
     }
 }
@@ -196,6 +198,8 @@ void ModelLoader::GenerateSceneObjectHierarchy(aiNode* node, bool isRoot, int pa
         {
             std::shared_ptr<SceneObject> object = isRoot ? m_Model->m_SceneObject : m_Scene.CreateSceneObject(node->mName.C_Str(), parentIndex);
             unsigned int meshId = node->mMeshes[i];
+			if (m_Model->m_Meshes.size() <= 0)
+				return;
             Mesh* mesh = m_Model->m_Meshes[meshId];
             PBRMaterial* material = m_Model->m_Materials[meshId];
             MeshRenderer& meshRenderer = object->m_MeshRenderer;
@@ -215,6 +219,8 @@ void ModelLoader::GenerateSceneObjectHierarchy(aiNode* node, bool isRoot, int pa
 
     for (UINT i = 0; i < node->mNumChildren; ++i)
     {
+		if (WOMA::game_state == GAME_STOP)
+			return;
         GenerateSceneObjectHierarchy(node->mChildren[i], false, parentIndex);
     }
 }
