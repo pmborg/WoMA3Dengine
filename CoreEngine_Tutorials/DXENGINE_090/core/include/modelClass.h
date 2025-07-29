@@ -117,14 +117,14 @@ public:
 	~ModelClass();
 
 	// Populate: obj3d
-	bool LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow = false, bool renderShadow = false, UINT instanceCount = 0, UINT instanceType = 0);
+	bool LoadOBJ(void* pContext, void* dxmodelClass, SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow = false, bool renderShadow = false, UINT instanceCount = 0, UINT instanceType = 0);
 
 #if DX_ENGINE_LEVEL >= 67 && defined LOADMD5
 	bool LoadMD5(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow = false, bool renderShadow = false, UINT instanceCount = 0);
 #endif
 
 	// Create: DXmodelClass based on obj3D (an advanced model mesh)
-	bool CreateObject(/*DXmodelClass*/ void* dxmodelClass, TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow, bool renderShadow);
+	bool CreateObject(void* pContext, void* dxmodelClass, TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow, bool renderShadow);
 	void CalculateTangentBinormal(ModelNormalBumpVertexType vertex1, ModelNormalBumpVertexType vertex2, ModelNormalBumpVertexType vertex3, VectorType& tangent, VectorType& binormal);
 
 	// OBJ Loader aux vars:

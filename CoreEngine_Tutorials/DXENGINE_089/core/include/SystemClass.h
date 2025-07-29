@@ -276,7 +276,7 @@ public:
 
 	void LoadAllDrivers();
 	bool InitializeDrivers(int screenWidth, int screenHeight, float screenNear, float screenDepth, BOOL vsync, BOOL fullscreen, float* clarColor);
-	bool LoadAllGraphicAssets();
+    bool LoadAllGraphicAssets(void* pContext);
 
 #if defined USE_DIRECT_INPUT
 	#if defined USE_JOY && defined USE_DIRECT_INPUT

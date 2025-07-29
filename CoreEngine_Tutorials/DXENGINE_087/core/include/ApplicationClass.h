@@ -74,8 +74,6 @@
 #define MAX_CLIENTS 1
 #endif
 
-
-
 #define PASS_OPAC			0
 #define PASS_TRANSPARENT	1
 #define PASS_SHADOWS		2
@@ -157,74 +155,44 @@ extern int __cdecl CompoundSortCB(const VOID* arg1, const VOID* arg2);
 #pragma warning( push )
 #pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
 
-#if true //WINDOWS_PLATFORM
+#if defined DX_ENGINE
+	#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {\
+		model = NEW DirectX::DXmodelClass(model3D, TRIANGLELIST, false, renderShadow1); IF_NOT_THROW_EXCEPTION (model); \
+	}
 
-	#if defined DX_ENGINE
-		#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {\
-			model = NEW DirectX::DXmodelClass(model3D, TRIANGLELIST, false, renderShadow1); IF_NOT_THROW_EXCEPTION (model); \
-		}
-
-		#define SAFE_SHUTDOWN_MODELDX(model) {\
-			if(model) { (model)->Shutdown(); delete ((DirectX::DXmodelClass*)model); model=NULL; } \
-		}
-	#else
-		#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1) {}
-		#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {}
-	#endif
-
-	#if (defined OPENGL3 || defined OPENGL4)
-		#define CREATE_MODELGL3_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {\
-			model = NEW GLmodelClass(model3D); IF_NOT_THROW_EXCEPTION (model); \
-		}
-
-		#define SAFE_SHUTDOWN_MODELGL3(model) {\
-			if (model) { (model)->Shutdown(); delete ((GLmodelClass*)model); model=NULL; } \
-		}
-	#else
-		#define CREATE_MODELGL3_IF_NOT_EXCEPTION(model, model3D, renderShadow) {}
-	#endif
-
-
-#define CREATE_MODEL_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2)\
-{\
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)\
-	{\
-		CREATE_MODELGL3_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2);	\
-	}\
-	else\
-	{\
-		CREATE_MODELDX_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2);\
-	}\
-}
-
+	#define SAFE_SHUTDOWN_MODELDX(model) {\
+		if(model) { (model)->Shutdown(); delete ((DirectX::DXmodelClass*)model); model=NULL; } \
+	}
 #else
-	// LINUX & ANDROID
-	//#define CREATE_MODEL_IF_NOT_EXCEPTION(model, model3D) {\
-	//	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) { model = NEW GLmodelClass(model3D); IF_NOT_THROW_EXCEPTION (model); } \
-	//}
-#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1) {}
-#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {}
+	#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1) {}
+	#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {}
+#endif
 
-#define CREATE_MODEL_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2)\
-{\
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)\
-	{\
-		CREATE_MODELGL3_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2);	\
-	}\
-	else\
-	{\
-		CREATE_MODELDX_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2);\
-	}\
-}
+#if (defined OPENGL3 || defined OPENGL4)
+	#define CREATE_MODELGL3_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {\
+		model = NEW GLmodelClass(model3D); IF_NOT_THROW_EXCEPTION (model); \
+	}
 
 	#define SAFE_SHUTDOWN_MODELGL3(model) {\
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) if (model) { (model)->Shutdown(); delete ((GLmodelClass*)model); model=NULL; } \
+		if (model) { (model)->Shutdown(); delete ((GLmodelClass*)model); model=NULL; } \
 	}
-
-	#define CAMERA_RENDER(camera) {\
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) ((GLopenGLclass*)m_Driver)->camera->Render(); \
-	}
+#else
+	#define CREATE_MODELGL3_IF_NOT_EXCEPTION(model, model3D, renderShadow) {}
 #endif
+
+
+#define CREATE_MODEL_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2)\
+{\
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)\
+	{\
+		CREATE_MODELGL3_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2);	\
+	}\
+	else\
+	{\
+		CREATE_MODELDX_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2);\
+	}\
+}
+
 #pragma warning( pop )
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -258,24 +226,27 @@ public:
 	float dayLightFade;
 
 #if CORE_ENGINE_LEVEL >= 10 && !defined NewWomaEngine //#if DX_ENGINE_LEVEL >= 19 && !defined NewWomaEngine
-	void RenderScene(UINT monitorWindow, WomaDriverClass* driver);
+    void SortOutWhatNeedToBeRendered(void* pContext);
+    void RenderScene(UINT monitorWindow, WomaDriverClass* driver);
 	float ProcessInputUpdate();						// PROCESS User Update
-	void AppRender(UINT monitorWindow,  float fadeLight);								// RENDER - 3D
-	bool Initialize(WomaDriverClass* Driver);
+	void AppRender(UINT monitorWindow,  float fadeLight, void * pContext);								// RENDER - 3D
+	bool Initialize(void* pContext, WomaDriverClass* Driver);
 #endif
 #if defined CHECK_OBJ_COLISION
     XMVECTOR prwsPos = {}, prwsDir = {};
 #endif
-    void RenderMeshAnimations(void);
-	void AppPosRender(UINT monitorWindow);																// POS-RENDER - 2D: Render 
+	void StartMeshDemo(ID3D11DeviceContext* ctx);
+    void UpdateMeshAnimations();
+	void AppPosRender(UINT monitorWindow, void* mainCtx);																// POS-RENDER - 2D: Render 
 
     int get_model_id(UINT ID, UINT pass);
-	void RenderModel(UINT monitorWindow, WomaDriverClass* driver, UINT modelID, UINT pass, XMMATRIX* m_viewMatrix=NULL, XMMATRIX* m_projectionMatrix = NULL);
+	void RenderModel(UINT monitorWindow, WomaDriverClass* driver, UINT modelID, UINT pass, void* pContext, XMMATRIX* m_viewMatrix=NULL, XMMATRIX* m_projectionMatrix = NULL);
 	
-	void AppPreRender(UINT monitorWindow, WomaDriverClass* Driver, float fadeLight);	// PRE-RENDER - Shadows
-	void TerrainRender(UINT monitorWindow, WomaDriverClass* Driver, float fadeLight, XMMATRIX* m_viewMatrix, XMMATRIX* m_projectionMatrix);
+	void RenderShadowPass(UINT monitorIndex, WomaDriverClass* Driver, void* pContext, float fadeLight);
+	void AppPreRender(UINT monitorWindow, WomaDriverClass* Driver, float fadeLight, void* mainCtx);	// PRE-RENDER - Shadows
+	void TerrainRender(UINT monitorWindow, WomaDriverClass* Driver, float fadeLight, XMMATRIX* m_viewMatrix, XMMATRIX* m_projectionMatrix, void* ctx);
 
-	virtual bool WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver); // APP_Load
+	virtual bool WOMA_APPLICATION_Initialize3D(void * pContext, WomaDriverClass* Driver); // APP_Load
 
 #if defined USE_LIGHT_RAY
 	void CalculateLightRayVertex (float SunDistance);
@@ -291,7 +262,7 @@ public:
 	float billangle = 0;
 
 #if defined USE_LIGHT_RAY
-	void initLightRay();
+	void initLightRay(void* pContext);
 #endif
 
     UINT world_main_size = 0;
@@ -354,15 +325,15 @@ public:
     std::vector<UINT>						 sky_indexdata;
 #endif
     std::vector<VirtualModelClass*> objModel;
-	void initShadowTextureDemo();
+	void initShadowTextureDemo(void* pContext);
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
     DXrendertextureclass* m_RenderShadowTexture = NULL;	//TO INTERNAL RENDER!
 #endif
     void WOMA_APPLICATION_SetInstancePositions(UINT m_ObjId, int m_instanceCount, InstanceType* instances_, UINT type=0);
     CTerrain* loadedTerrain[MAX_TERRAINS] = { 0 };
 #if DX_ENGINE_LEVEL >= 62 && defined USE_MAIN_MAP
-    void AppPreRenderMainMapMiniMap(UINT monitorWindow, WomaDriverClass* Driver, float fadeLight);
-    void RenderMainMapMiniMap();
+    void RenderMiniMapPass(UINT monitorWindow, WomaDriverClass* Driver, void* pContext, float fadeLight, UINT ThreadID=0);
+    void RenderMainMapMiniMap(void* pContext);
     VirtualModelClass* m_mainMapModel = NULL;
     VirtualModelClass* m_mainMapFrameModel = NULL;
     bool mapKey = false;
@@ -394,7 +365,7 @@ public:
 #endif
 
 #if  defined USE_RASTERTEK_TEXT_FONT
-	bool	initText();
+	bool	initText(void* pContext);
 	DirectX::ApplicationTextClass* AppTextClass = NULL;
 #endif
 
@@ -407,7 +378,7 @@ public:
 	float rescale = 0;
 
 #ifdef INTRO_DEMO
-	void	initIntroDemo();
+	void	initIntroDemo(void* pContext);
 #endif
 
 // ---------------------------------------------------------------------
@@ -481,25 +452,25 @@ public:
 #endif
 
 public:
-	void DemoRender();
-	void RenderDemoIntroSprites();
+	void DemoRender(void* pContext);
+	void RenderDemoIntroSprites(void* pContext);
 
 	// 2D
 	void DEMO_WOMA_APPLICATION_Shutdown2D();
 #if defined INTRO_DEMO || defined USE_VIEW2D_SPRITES
-	bool DEMO_WOMA_APPLICATION_InitializeSprites2D();
+	bool DEMO_WOMA_APPLICATION_InitializeSprites2D(void* pContext);
 #endif
 
 #if defined SCENE_COLOR
-	void initColorDemo();
+	void initColorDemo(void* pContext);
 #endif
-	void initTextureDemo();
-	void initLightDemo();
+	void initTextureDemo(void* pContext);
+	void initLightDemo(void* pContext);
 #if defined USE_TITLE_BANNER	//24
-	void	initStatic2D();
+	void	initStatic2D(void* pContext);
 #endif
 #if defined USE_CUBE // Cubes
-	bool initCubes3D();
+	bool initCubes3D(void*);
 #endif
 
 #if defined INTRO_DEMO // VIDEO+INTRO+DEMO
@@ -562,15 +533,15 @@ public:
 
 	VirtualModelClass* m_SphereModel1 = NULL;
 	VirtualModelClass* m_SphereModel2 = NULL;
-	void	initSphere1(float SPHERE_SIZE);
-	void	initSphere2(float SPHERE_SIZE);
+	void	initSphere1(void* pContext, float SPHERE_SIZE);
+	void	initSphere2(void* pContext, float SPHERE_SIZE);
 #endif
 
 #if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28
 	VirtualModelClass* m_SkyModel = NULL;
 #endif
 #if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28 && defined USE_SKYSPHERE
-	void	initSky(float SPHERE_SIZE);
+	void	initSky(void* pContext, float SPHERE_SIZE);
 #endif
 
     float shadergrassframeTime = 0;
@@ -589,6 +560,7 @@ public:
 	MyAnimationScene* myScene = NULL;
 	bool myScene_has_animation = false;
 #endif
+
 };
 
 #define SunDistance 512

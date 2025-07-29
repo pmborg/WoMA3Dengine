@@ -232,8 +232,9 @@ void DX11Class::addText(int Xpos, int Ypos, TCHAR* printText, float R, float G, 
 }
 
 // 50,100
-void DX11Class::RenderDriverText()
+void DirectX::DX11Class::RenderDriverText(void* ctx)
 {
+	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
 	//if (!keyedMutex11)	//main window might resize
 	//	return;
 
@@ -269,25 +270,25 @@ void DX11Class::RenderDriverText()
 	// -------------------------------------------------------------
 	//Set the blend state for D2D render target texture objects
 	//m_deviceContext->OMSetBlendState(Transparency, NULL, 0xffffffff);		
-	TurnOnAlphaBlending();
+	TurnOnAlphaBlending(pContext);
 
 	//Set the d2d vertex buffer
 	static UINT stride = sizeof( DXtextureVertexType );
 	static UINT offset = 0;
-	m_deviceContext->IASetVertexBuffers( 0, 1, &d2dVertBuffer, &stride, &offset );
+	pContext->IASetVertexBuffers( 0, 1, &d2dVertBuffer, &stride, &offset );
 
 	//Set the d2d Index buffer
-	m_deviceContext->IASetIndexBuffer( d2dIndexBuffer, DXGI_FORMAT_R32_UINT, 0);	
+	pContext->IASetIndexBuffer( d2dIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-	m_deviceContext->PSSetShaderResources( 0, 1, &d2dTexture );
-	m_deviceContext->RSSetState(CWcullMode);
+	pContext->PSSetShaderResources( 0, 1, &d2dTexture );
+	pContext->RSSetState(CWcullMode);
 
 	//Draw TEXT:
 	static XMMATRIX World = XMMatrixIdentity();
-	SystemHandle->m_Application->m_FontV2Shader->Render(NULL, m_deviceContext, 6, &World, &World, &World);
+	SystemHandle->m_Application->m_FontV2Shader->Render(NULL, pContext, 6, &World, &World, &World);
 
 	allTextArray.clear();
-	TurnOffAlphaBlending();
+	TurnOffAlphaBlending(pContext);
 }
 
 #endif

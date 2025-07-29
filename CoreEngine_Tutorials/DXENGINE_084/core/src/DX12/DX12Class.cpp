@@ -208,7 +208,7 @@ namespace DirectX {
 	}
 
 	void DX12Class::addText(int Xpos, int Ypos, TCHAR* text, float R, float G, float B) {}
-	void DX12Class::RenderDriverText() {}
+    void DirectX::DX12Class::RenderDriverText(void* pContext) {}
 	bool DX12Class::InitD2DScreenTexture() { return true; }
 
 	// |Init Step: 1| This is for DIRECTX Driver only!
@@ -608,7 +608,7 @@ namespace DirectX {
 
 	// MAIN INIT - createSwapChain and also "Get the best MultiSampleQuality":
 	//----------------------------------------------------------------------------------------------
-	bool DX12Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, int screenHeight,
+	bool DirectX::DX12Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, int screenHeight,
 		UINT depthBits, float screenDepth, float screenNear, BOOL msaa, bool vsync,
 		BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize)
 		//----------------------------------------------------------------------------------------------
@@ -663,7 +663,7 @@ namespace DirectX {
 		//Init Step: 6 - Cull Back / Front:
 #if defined USE_RASTERIZER_STATE
 		IF_NOT_RETURN_FALSE(populateAllRasterizerStates(false)); // Only applies: if doing "line drawing" and "MultisampleEnable" is false.
-		SetRasterizerState(CULL_NONE, FILL_SOLID);	//Set Default
+		SetRasterizerState(NULL, CULL_NONE, FILL_SOLID);	//Set Default
 #endif
 		//-----------------------------------------------------------------
 
@@ -1123,13 +1123,13 @@ namespace DirectX {
 		m_commandList->ClearRenderTargetView(rtvHandle, driver_ClearColor, 0, nullptr);
 
 #if defined USE_DSV
-		ClearDepthBuffer();															//m_deviceContext->ClearDepthStencilView
+		ClearDepthBuffer(NULL);															//m_deviceContext->ClearDepthStencilView
 #endif
 	}
 
 
 	// ----------------------------------------------------------------------------------------------
-	void DX12Class::ClearDepthBuffer()
+    void DirectX::DX12Class::ClearDepthBuffer(void* pContext)
 		// ----------------------------------------------------------------------------------------------
 	{
 #if defined USE_DSV
@@ -1390,7 +1390,7 @@ namespace DirectX {
 	}
 #if defined USE_RASTERIZER_STATE
 	// ----------------------------------------------------------------------------------------------
-	void DX12Class::SetRasterizerState(UINT CullMode, UINT fillMode)
+    void DirectX::DX12Class::SetRasterizerState(void* pContext, UINT CullMode, UINT fillMode)
 		// ----------------------------------------------------------------------------------------------
 	{
 		m_CullMode = CullMode;
@@ -1417,10 +1417,12 @@ namespace DirectX {
 
 
 
+
+
 #if defined USE_ALPHA_BLENDING
 	//The first new function TurnOnAlphaBlending allows us to turn on alpha blending
 	// ----------------------------------------------------------------------------------------------
-	void DX12Class::TurnOnAlphaBlending()
+    void DirectX::DX12Class::TurnOnAlphaBlending(void* pContext)
 		// ----------------------------------------------------------------------------------------------
 	{
 		//if (g_AlphaBlend) return;
@@ -1430,7 +1432,7 @@ namespace DirectX {
 
 	//The second new function TurnOffAlphaBlending allows us to turn off alpha blending 
 	// ----------------------------------------------------------------------------------------------
-	void DX12Class::TurnOffAlphaBlending()
+    void DirectX::DX12Class::TurnOffAlphaBlending(void* pContext)
 		// ----------------------------------------------------------------------------------------------
 	{
 		//if (!g_AlphaBlend) return;
@@ -1447,7 +1449,7 @@ namespace DirectX {
 
 	static bool g_Zbuffer = false;
 	// ----------------------------------------------------------------------------------------------
-	void DX12Class::TurnZBufferOn()
+    void DirectX::DX12Class::TurnZBufferOn(void* pContext)
 		// ----------------------------------------------------------------------------------------------
 	{
 		if (g_Zbuffer) return;
@@ -1455,7 +1457,7 @@ namespace DirectX {
 	}
 
 	// ----------------------------------------------------------------------------------------------
-	void DX12Class::TurnZBufferOff()
+    void DirectX::DX12Class::TurnZBufferOff(void* pContext)
 		// ----------------------------------------------------------------------------------------------
 	{
 		if (!g_Zbuffer) return;

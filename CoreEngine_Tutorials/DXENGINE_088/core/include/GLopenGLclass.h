@@ -95,7 +95,7 @@ public:
 	void Shutdown2D();
 	void Shutdown();
 
-	void RenderDriverText();
+	void RenderDriverText(void* pContext);
 	void addText(int Xpos, int Ypos, TCHAR* printText, float R, float G, float B);
 
 	void SetCamera2D();
@@ -103,23 +103,23 @@ public:
 	bool Initialize(float* clearColor);
 	void Finalize();
 
-	void TurnZBufferOn();
-	void TurnZBufferOff();
+	void TurnZBufferOn(void* pContext);
+	void TurnZBufferOff(void* pContext);
 
-	bool OnInit(	int g_USE_MONITOR, void* hwnd, int screenWidth, int screenHeight, UINT depthBits,
-					float screenDepth, float screenNear, BOOL msaa, bool vsync, 
-					BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize);
+    bool OnInit(int g_USE_MONITOR, void* hwnd, int screenWidth, int screenHeight, UINT depthBits,
+        float screenDepth, float screenNear, BOOL msaa, bool vsync,
+        BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize);
 	
 	void BeginScene(UINT monitorWindow);
-	void ClearDepthBuffer();
+	void ClearDepthBuffer(void* pContext);
 	void EndScene(UINT monitorWindow);
 
-	void SetRasterizerState(UINT cullMode, UINT fillMode);
+	void SetRasterizerState(void* pContext, UINT cullMode, UINT fillMode);
 
 	#if defined INTRO_DEMO || defined USE_ALPHA_BLENDING
 	//We have two new functions for turning on and off alpha blending:
-	void TurnOnAlphaBlending();
-	void TurnOffAlphaBlending();
+	void TurnOnAlphaBlending(void* pContext);
+	void TurnOffAlphaBlending(void* pContext);
 	#endif
 
 	void GetWorldMatrix(float*);

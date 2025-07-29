@@ -35,7 +35,7 @@ class VirtualTextClass
 public:
 	virtual void Shutdown()=0;
 
-	virtual bool Initialize(void* g_driver)=0;
+	virtual bool Initialize(void* g_driver, ID3D11DeviceContext* pContext)=0;
 	virtual bool InitializeTexture(void* Driver) = 0;
 	virtual bool UpdateSentence(SentenceType*, TCHAR*, int, int, float, float, float)=0;
 	virtual bool InitializeSentence(SentenceType**, int)=0;

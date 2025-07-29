@@ -75,7 +75,7 @@ public:
 
 	void PAUSE();
 	void UNPAUSE();
-	void GPH_RESIZE();
+    void GPH_RESIZE(void* pContext);
 
 #if DX_ENGINE_LEVEL >= 20 && defined USE_LOADING_THREADS
 	bool ApplicationMandatoryLoad();

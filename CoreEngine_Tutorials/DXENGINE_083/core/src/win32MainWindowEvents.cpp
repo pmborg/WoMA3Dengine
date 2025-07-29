@@ -198,7 +198,7 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
                         //if (index == 1 || index == 2) 
                         {
                             int resId = (int)(SendMessage(womaSetup->hWndComboBoxperMonitor[SystemHandle->AppSettings->UI_MONITOR], CB_GETCURSEL, NULL, NULL));
-                            if (SystemHandle->allWindowsArray.size()>0) {
+                            if (resId>0 && SystemHandle->allWindowsArray.size()>0) {
                                 SystemHandle->AppSettings->WINDOW_WIDTH = SystemHandle->allWindowsArray[SystemHandle->AppSettings->UI_MONITOR].ScreenResolution[resId].Width;
                                 SystemHandle->AppSettings->WINDOW_HEIGHT = SystemHandle->allWindowsArray[SystemHandle->AppSettings->UI_MONITOR].ScreenResolution[resId].Height;
                             }
@@ -339,6 +339,9 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 	// -----------------------------------------------------------------------------
 	case WM_SYSKEYDOWN:
 	{
+		ID3D11DeviceContext* pContext = NULL;
+		if (driverList.size() > 0 && driverList[SystemHandle->AppSettings->DRIVER])
+			pContext = ((DX11Class*)m_Driver)->GetDeviceContext();
         if (wParam == VK_RETURN) // ENTER is down
 		{
 			DWORD dwMask = (1 << 29); // Check if ALT key is pressed
@@ -354,7 +357,7 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
                 {
                     SystemHandle->AppSettings->WINDOW_WIDTH = 1920;
                     SystemHandle->AppSettings->WINDOW_HEIGHT = 1080;
-                    ONRESIZE();
+                    ONRESIZE(pContext);
                     BOOL fullscreen;
                     ((DX11Class*)m_Driver)->DX11windowsArray[0].m_swapChain1->GetFullscreenState(&fullscreen, nullptr);
                     ((DX11Class*)m_Driver)->DX11windowsArray[0].m_swapChain1->SetFullscreenState(!fullscreen, nullptr);
@@ -375,6 +378,9 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 
 	case WM_SIZE:
 	{
+		ID3D11DeviceContext* pContext = NULL;
+		if (driverList.size() > 0 && driverList[SystemHandle->AppSettings->DRIVER])
+			pContext = ((DX11Class*)m_Driver)->GetDeviceContext();
 		// Use windows settings!
 		// Save the new client area dimensions.
 		//g_ScreenWidth = LOWORD(lparam);
@@ -402,7 +408,7 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 					DestroyWindow(SystemHandle->statusbar);
 			#endif
 				if (SystemHandle->m_hWnd) 
-					{ ONRESIZE(); }
+					{ ONRESIZE(pContext); }
 			}
 			else if (wParam == SIZE_RESTORED)	// Restore
 			{
@@ -411,7 +417,7 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 				{
 					UNPAUSE();	//Restore State
 					if (SystemHandle->m_hWnd) 
-						{ ONRESIZE(); }
+						{ ONRESIZE(pContext); }
 				}
 
 				// Restoring default, from maximized state?
@@ -428,7 +434,7 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 						GetClientRect(SystemHandle->m_hWnd, &rc);
 						SystemHandle->AppSettings->WINDOW_WIDTH = rc.right - rc.left;
 						SystemHandle->AppSettings->WINDOW_HEIGHT = rc.bottom - rc.top;
-						ONRESIZE(); 
+						ONRESIZE(pContext);
 					}
 				}
 				else if (mResizing)
@@ -511,9 +517,13 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 	// Here we reset everything based on the new window dimensions.
 	case WM_EXITSIZEMOVE:
 	{
+		ID3D11DeviceContext* pContext = NULL;
+		if (driverList.size() > 0 && driverList[SystemHandle->AppSettings->DRIVER])
+			pContext = ((DX11Class*)m_Driver)->GetDeviceContext();
+
 		if (mResizing)
 			if (SystemHandle->m_hWnd) 
-				{ ONRESIZE(); } // Do the Window, "Buffers" & Textures Re-size
+				{ ONRESIZE(pContext); } // Do the Window, "Buffers" & Textures Re-size
 
         UNPAUSE();		// Restore State: "Green" Light to Render Again (after: return 0)
 		mResizing = false;

@@ -181,7 +181,7 @@ bool AndroidSystemClass::APPLICATION_INIT_SYSTEM()
 #endif
 
     //----------------------------------------------------------------------------
-    IF_NOT_RETURN_FALSE(SystemClass::LoadAllGraphicAssets());	// Load all main Graphics, that will be rendered
+    IF_NOT_RETURN_FALSE(SystemClass::LoadAllGraphicAssets(NULL));	// Load all main Graphics, that will be rendered
 
     //----------------------------------------------------------------------------
 

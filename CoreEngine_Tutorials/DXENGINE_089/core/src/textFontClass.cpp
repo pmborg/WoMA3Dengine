@@ -49,9 +49,11 @@ textFontClass::textFontClass()
 
 textFontClass::~textFontClass() { Shutdown(); CLASSDELETE();}
 
-bool textFontClass::Initialize(void* g_driver, TCHAR* fontFilename, TCHAR* textureFilename)
+bool textFontClass::Initialize(void* ctx, void* g_driver, TCHAR* fontFilename, TCHAR* textureFilename)
 {
 	HRESULT hr = S_FALSE;
+	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
+
 	_tprintf(TEXT("textFontClass::Initialize ()\n"));
 
 	if (!LoadFontData(WOMA::LoadFile(fontFilename)))				// Load in the text file containing the font data.

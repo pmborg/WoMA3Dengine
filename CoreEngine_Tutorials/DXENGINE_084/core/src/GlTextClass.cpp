@@ -81,7 +81,7 @@ void GlTextClass::ReleaseSentence(SentenceType** sentence)
 }
 
 //SIMILAR: DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderType)
-bool GlTextClass::Initialize(void* Driver)
+bool GlTextClass::Initialize(void* Driver, ID3D11DeviceContext* pContext)
 {
 	bool result=false;
 
@@ -90,7 +90,7 @@ bool GlTextClass::Initialize(void* Driver)
 	// TextClass: Initialize the font object. PART1
 	m_Font = NEW textFontClass;
 	IF_NOT_THROW_EXCEPTION(m_Font); // Create the font object.
-	IF_NOT_RETURN_FALSE(m_Font->Initialize(Driver, FONT_DATA_FILE, FONT_DATA_TEXTURE));
+	IF_NOT_RETURN_FALSE(m_Font->Initialize(pContext, Driver, FONT_DATA_FILE, FONT_DATA_TEXTURE));
 
 #if (defined OPENGL3 || defined OPENGL4)
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)

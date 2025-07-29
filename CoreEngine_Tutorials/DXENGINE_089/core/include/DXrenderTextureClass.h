@@ -50,8 +50,8 @@ public:
 					float screenDepth, float screenNear);
 	void Shutdown();
 
-	void SetRenderTarget(void* Driver);
-	void ClearRenderTarget(void* Driver, float, float, float, float);
+	void SetRenderTarget(void* Driver, ID3D11DeviceContext* pContext);
+	void ClearRenderTarget(void* Driver, ID3D11DeviceContext* pContext, float red, float green, float blue, float alpha);
 
 	//VARS:
 	// ---------------------------------------------------------------------

@@ -110,13 +110,15 @@ bool DX11Class::createRasterizerStates(bool lineAntialiasing)
 
 
 // ----------------------------------------------------------------------------------------------
-void DX11Class::SetRasterizerState(UINT CullMode, UINT fillMode) 
+void DirectX::DX11Class::SetRasterizerState(void* ctx, UINT CullMode, UINT fillMode) 
 // ----------------------------------------------------------------------------------------------
 {
+	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
+
 	UINT rasterState = CullMode * 10 + fillMode;
 	//if (rasterState != mCurRasterState)
 	{
-		m_deviceContext->RSSetState(m_rasterState[CullMode][fillMode]);
+		pContext->RSSetState(m_rasterState[CullMode][fillMode]);
 		mCurRasterState = rasterState;
 	}
 }

@@ -14,15 +14,16 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #include "level.h"
 #include "tech-level.h"
 
+// Recomended to preview 3D objs on explorer (With extra large icons): https://f3d.app//																						
 //--------------------------------------------------------------------------------------------------------
 #define PROJECT_NAME        TEXT("WoMAengine")
 #define COMPANY_DIRECTORY   TEXT("Pmborg")
-#define PROJECT_DIRECTORY   TEXT("WoMAengine2023")
+#define PROJECT_DIRECTORY   TEXT("WoMAengine2023") // Used by installer level029
 #define ICON_FILE           TEXT("WoMA.ico")
 #define GENERALSETTINGS     "generalsettings"
 
@@ -341,7 +342,7 @@
 
 #if DX_ENGINE_LEVEL >= 49 
     #if DX_ENGINE_LEVEL == 49
-    #define DEMO_TITLE TEXT("49:TERRAIN: Generate under water terrain.")
+    #define DEMO_TITLE TEXT("49: TERRAIN: Generate under water terrain.")
     #define WORLD_XML TEXT("world_49.xml")
     #endif
     //49: Terrain[0]
@@ -349,7 +350,7 @@
 #endif
 #if DX_ENGINE_LEVEL >= 50
     #if DX_ENGINE_LEVEL == 50
-    #define DEMO_TITLE TEXT("50:TERRAIN: the under water terrain.")
+    #define DEMO_TITLE TEXT("50: TERRAIN: the under water terrain.")
     #define WORLD_XML TEXT("world_50.xml")
     #endif
     //50: Terrain[1]
@@ -360,28 +361,28 @@
     #define TERRAIN_LEVEL50_TEXTURE TEXT("engine/data/scene30/grassTexture.jpg")
 #endif
 #if DX_ENGINE_LEVEL == 51
-    #define DEMO_TITLE TEXT("51:TERRAIN: With fog")
+    #define DEMO_TITLE TEXT("51: TERRAIN: With fog")
     #define WORLD_XML TEXT("world_51.xml")
 #endif
 #if DX_ENGINE_LEVEL == 52
-    #define DEMO_TITLE TEXT("52:TERRAIN: With Light Shader + Add Normals + Add Index(s)")
+    #define DEMO_TITLE TEXT("52: TERRAIN: With Light Shader + Add Normals + Add Index(s)")
     #define WORLD_XML TEXT("world_52.xml")
 #endif
 #if DX_ENGINE_LEVEL >= 53
     #if DX_ENGINE_LEVEL == 53
-    #define DEMO_TITLE TEXT("53:TERRAIN: With extra color terrain (with terrain collision)")
+    #define DEMO_TITLE TEXT("53: TERRAIN: With extra color terrain (with terrain collision)")
     #define WORLD_XML TEXT("world_53.xml")
     #endif
     #define TERRAIN_LEVEL53_COLOR_MAP XMFLOAT3 MAP_COLOR(10,35,10);
 #endif
 #if DX_ENGINE_LEVEL == 54
-    #define DEMO_TITLE TEXT("54:TERRAIN: Water waves (with terrain collision)")
+    #define DEMO_TITLE TEXT("54: TERRAIN: Water waves (with terrain collision)")
     #define WORLD_XML TEXT("world_54.xml")
 #endif
 #if DX_ENGINE_LEVEL >= 55
     #define SETTINGS_FILE       TEXT("settings.xml")
     #if DX_ENGINE_LEVEL == 55
-    #define DEMO_TITLE TEXT("55:TERRAIN: 256x256 with Slope Texture Shader")
+    #define DEMO_TITLE TEXT("55: TERRAIN: 256x256 with Slope Texture Shader")
     #define WORLD_XML TEXT("world_55.xml")
     #endif
     //55:
@@ -470,7 +471,7 @@
 #if DX_ENGINE_LEVEL == 73
     #define DEMO_TITLE TEXT("73: WINDY GRASS")
     #define WORLD_XML TEXT("world_73.xml")
-#endif                                                                                                                          
+#endif
 #if DX_ENGINE_LEVEL >= 73
     #define BILLBOARD_GRASS_MODEL TEXT("engine/data/scene73grass/grass.obj")
     #define BILL_GRASS_0 TEXT("engine/data/scene73grass/Grass_Patch_3.png")   //11
@@ -486,7 +487,7 @@
 #if DX_ENGINE_LEVEL == 75
     #define DEMO_TITLE TEXT("75: UTIL: PROGRESS BAR FOR TERRAIN LOADING")
     #define WORLD_XML TEXT("world_75.xml")
-#endif                                                                    
+#endif
 #if DX_ENGINE_LEVEL == 76
     #define DEMO_TITLE TEXT("76: UTIL: INTRO VIDEO DEMO")
     #define WORLD_XML TEXT("world_76.xml")
@@ -500,7 +501,7 @@
 #endif
 #if DX_ENGINE_LEVEL >= 77
     #define BILL_GS TEXT("engine/data/77GS/maple-tree.obj")
-    #define N_INSTANCE_TREES 5                        
+    #define N_INSTANCE_TREES 5
 #endif
 #if DX_ENGINE_LEVEL == 78
     #define DEMO_TITLE TEXT("78: Check 'WORLD.XML' Object collision")
@@ -511,7 +512,7 @@
     #define ASSIMP_MODEL_FBX TEXT("engine\\data\\scene85\\rp_nathan_animated_003_walkingout.dae")                                                                                            
     #define DEMO_TITLE TEXT("79: FBX/DAE")
     #define WORLD_XML TEXT("world_79.xml")
-#endif                       
+#endif
 #if DX_ENGINE_LEVEL == 82
     #define DEMO_TITLE TEXT("82: ASSIMP: Animated mesh")
     #define WORLD_XML TEXT("world_82.xml")
@@ -534,12 +535,12 @@
 #if DX_ENGINE_LEVEL == 85
     #define DEMO_TITLE TEXT("85: MINI-MAP: Expansion")
     #define WORLD_XML TEXT("world_85.xml")
-#endif                   
+#endif
 #if DX_ENGINE_LEVEL == 86
     #define DEMO_TITLE TEXT("86: The main character.")
     #define WORLD_XML TEXT("world_86.xml")
 #endif
-#if DX_ENGINE_LEVEL >= 86
+#if DX_ENGINE_LEVEL >= 86 && DX_ENGINE_LEVEL < 88
     #define MAIN_CHAR_MODEL1 0
 #endif
 #if DX_ENGINE_LEVEL == 87
@@ -549,7 +550,7 @@
 #if DX_ENGINE_LEVEL >= 87 && DX_ENGINE_LEVEL < 88
     #define MAIN_CHAR_MODEL2 1
     #define MAIN_CHAR_MODEL3 2
-#endif						 
+#endif
 #if DX_ENGINE_LEVEL == 88
     #define DEMO_TITLE TEXT("88: 3rd person camera: (W A S D) + left (CTRL or SHIFT) to run + STRAFE (Q E)")
     #define WORLD_XML TEXT("world_88.xml")
@@ -559,17 +560,20 @@
     #define WORLD_XML TEXT("world_89.xml")
 #endif					 
 #if DX_ENGINE_LEVEL == 90
-    #define DEMO_TITLE TEXT("90: OPTIMIZING")
+    #define DEMO_TITLE TEXT("90: World revamp and optimizing")
     #define WORLD_XML   TEXT("world_90.xml")
-    //#define TREE1_GS    TEXT("engine/data/scene87ForestHuntress.priv/worldMap/models_plant_bush_shape_spark/Tree-03-1.obj")
-    #define FENCE1_MODEL    TEXT("engine/data/scene87ForestHuntress.priv/worldMap/woodfence/Fence_module.obj")
     #define N_INSTANCE_TREES1 10
+#endif
+#if DX_ENGINE_LEVEL >= 90
+	#define FENCE1_MODEL    TEXT("engine/data/scene87ForestHuntress.priv/worldMap/woodfence/Fence_module.obj")
 #endif
 #if DX_ENGINE_LEVEL >= 90
 	#define VIDEO_INTRO TEXT("engine/data/scene.90/movie_nMU5ySdW6W7hye8V.mp4.1920x1080.mp4")
 #endif
-
-
+#if DX_ENGINE_LEVEL == 91
+	#define DEMO_TITLE TEXT("91: Using threads for rendering")
+	#define WORLD_XML  TEXT("world_91.xml")
+#endif
 
 
 

@@ -377,8 +377,6 @@ namespace DirectX
 
 		//Sky: 1
 
-		//Sky: 2
-
 		bool bUseGS=false;	// GS
 	};
 

@@ -204,7 +204,7 @@ void ApplicationTextClass::SetLoboRenderCount(int count)
 
 }
 
-bool ApplicationTextClass::Initialize(void* Driver)
+bool ApplicationTextClass::Initialize(ID3D11DeviceContext* pContext, void* Driver)
 {
 	// TODO GL
 #if (defined OPENGL3 || defined OPENGL40) 
@@ -227,7 +227,7 @@ bool ApplicationTextClass::Initialize(void* Driver)
 #endif
 
 	// Initialize the Text object:
-	if (!m_Text->Initialize(Driver))
+    if (!m_Text->Initialize(Driver, pContext))
 	{
 		WomaFatalException(("Could not initialize the Text Object"));
 	}

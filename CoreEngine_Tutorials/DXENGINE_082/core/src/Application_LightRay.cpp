@@ -112,9 +112,14 @@
 		#endif
 	}
 
-void ApplicationClass::initLightRay()
+void ApplicationClass::initLightRay(void* ctx)
 {
 	m_LightVertexVector = &MyLightVertexVector;
+#if defined DX_ENGINE
+	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
+#else
+	#define pContext ctx
+#endif
 
 	// ----------------------------------------------------------------------------
 	#if defined USE_LIGHT_RAY // Where is the Light (Ray of the Light)
@@ -136,7 +141,7 @@ void ApplicationClass::initLightRay()
 		}
 
 		m_lightRayModel->PrimitiveTopology = LINELIST; // Draw just a line
-		ASSERT (m_lightRayModel->LoadColor(TEXT("m_lightRayModel"),m_Driver, SHADER_COLOR, &MyLightVertexVector, NULL));
+		ASSERT (m_lightRayModel->LoadColor(pContext,TEXT("m_lightRayModel"), m_Driver, SHADER_COLOR, &MyLightVertexVector, NULL, 0));
 	}
 	#endif
 }

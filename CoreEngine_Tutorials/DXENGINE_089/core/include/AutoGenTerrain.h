@@ -213,14 +213,14 @@ public:
 
 	//TERRAINs:
 #if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN //24
-	void		initUnderWaterDemo		(UINT terrainId);
+	void		initUnderWaterDemo		(void* ctx, UINT terrainId);
 #endif
 #if defined SCENE_WATER_TERRAIN
-	bool		initTerrainWaterMeshDemo(UINT terrainId);
+	bool		initTerrainWaterMeshDemo(void* pContext, UINT terrainId);
 #endif
 	void		NormalizeHeightMap(float scale, float moveY);
 #if defined SCENE_MAIN_TOPO_TERRAIN
-	bool		initMainTopoTerrainDemo	(UINT terrainId);
+	bool		initMainTopoTerrainDemo(UINT terrainId, ID3D11DeviceContext* pContext);
 	float				m_xPos, m_zPos;
 	float				m_xCenterPos, m_zCenterPos, m_radius;
 	HeightMapType_21*	m_heightMap_21 = NULL;
@@ -229,10 +229,10 @@ public:
 	void		CalculateTerrainVectors();
 	void		CalculateTextureCoordinates(float textureRepeat);
 	bool		LoadColorMap(char* filename);
-	bool		CreateTerrain60(float xPos, float zPos);
+    bool		CreateTerrain60(ID3D11DeviceContext* pContext, float xPos, float zPos);
 #endif
 
-	void		CreateTerrainModel(UINT id, std::vector<STRING> Textures, SHADER_TYPE shader_type);
+    void		CreateTerrainModel(ID3D11DeviceContext* pContext, UINT id, std::vector<STRING> Textures, SHADER_TYPE shader_type);
 
 #if defined SCENE_TERRAIN_COLLISION
 	float	getTerrainHeight(UINT terrainId, float xPos, float zPos);

@@ -74,7 +74,7 @@
 	Textures.push_back(texture);\
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) {CREATE_MODELGL3_IF_NOT_EXCEPTION(model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);}\
 	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) {CREATE_MODELDX_IF_NOT_EXCEPTION(model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);}\
-	if (shader_type == SHADER_TEXTURE) ASSERT(model->LoadTexture(texture, m_Driver, shader_type, &Textures, &vertexVector, &IndexList));\
+	if (shader_type == SHADER_TEXTURE) ASSERT(model->LoadTexture(pContext, texture, m_Driver, shader_type, &Textures, &vertexVector, &IndexList));\
 }
 
 #define initModelwithTexture2D(model, texture, vertexVector, IndexList, shader_type)\
@@ -83,7 +83,7 @@
 	Textures.push_back(texture); \
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) { CREATE_MODELGL3_IF_NOT_EXCEPTION(model, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }\
 	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) { CREATE_MODELDX_IF_NOT_EXCEPTION(model, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }\
-	ASSERT(model->LoadTexture(texture, m_Driver, shader_type, &Textures, &vertexVector, &IndexList)); \
+	ASSERT(model->LoadTexture(pContext, texture, m_Driver, shader_type, &Textures, &vertexVector, &IndexList)); \
 }
 #define initModelwithTexture2DMAP(model, texture, vertexVector, IndexList, shader_type, alfa)\
 {\
@@ -93,7 +93,7 @@
 	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) { CREATE_MODELDX_IF_NOT_EXCEPTION(model, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }\
 	model->ModelHASAlfaColor = true; \
 	model->ModelAlfaColor = alfa; \
-	ASSERT(model->LoadTexture(texture, m_Driver, shader_type, &Textures, &vertexVector, &IndexList)); \
+	ASSERT(model->LoadTexture(pContext, texture, m_Driver, shader_type, &Textures, &vertexVector, &IndexList)); \
 }
 
 #define initLoadTextureLight3D(model, texture, vertexVector, IndexList, shader_type)\
@@ -102,7 +102,7 @@
 	Textures.push_back(texture);\
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) {CREATE_MODELGL3_IF_NOT_EXCEPTION(model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);}\
 	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) {CREATE_MODELDX_IF_NOT_EXCEPTION(model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);}\
-	if (shader_type == SHADER_TEXTURE_LIGHT) ASSERT(model->LoadLight(texture, m_Driver, shader_type, &Textures, &vertexVector, &IndexList));\
+	if (shader_type == SHADER_TEXTURE_LIGHT) ASSERT(model->LoadLight(pContext, texture, m_Driver, shader_type, &Textures, &vertexVector, &IndexList));\
 }
 
 #define initLoadTextureLight2D(model, texture, vertexVector, IndexList, shader_type)\
@@ -111,7 +111,7 @@
 	Textures.push_back(texture); \
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) { CREATE_MODELGL3_IF_NOT_EXCEPTION(model, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }\
 	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) { CREATE_MODELDX_IF_NOT_EXCEPTION(model, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }\
-	if (shader_type == SHADER_TEXTURE_LIGHT) ASSERT(model->LoadLight(texture, m_Driver, shader_type, &Textures, &vertexVector, &IndexList)); \
+	if (shader_type == SHADER_TEXTURE_LIGHT) ASSERT(model->LoadLight(pContext, texture, m_Driver, shader_type, &Textures, &vertexVector, &IndexList)); \
 }
 
 // ----------------------------------------------------------------------------------------------
@@ -271,30 +271,30 @@ public:
 	virtual bool Initialize(float* clearColor)=0;
 	virtual void Finalize()=0;
 
-	virtual bool OnInit(int g_USE_MONITOR, void* hwnd, int screenWidth, int screenHeight, UINT depthBits, 
-						float screenDepth, float screenNear, BOOL msaa, bool vsync, 
-						BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize) = 0;
+    virtual bool OnInit(int g_USE_MONITOR, void* hwnd, int screenWidth, int screenHeight, UINT depthBits,
+        float screenDepth, float screenNear, BOOL msaa, bool vsync,
+        BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize) = 0;
 	virtual void Shutdown()=0;
 	virtual void Shutdown2D()=0;
 
 	virtual void BeginScene(UINT monitorWindow) = 0;
 	virtual void EndScene(UINT monitorWindow) = 0;
-	virtual void ClearDepthBuffer() = 0;
+	virtual void ClearDepthBuffer(void* pContext) = 0;
 
 #if defined USE_RASTERIZER_STATE
-	virtual void SetRasterizerState(UINT cullMode, UINT fillMode) = 0;
+	virtual void SetRasterizerState(void* pContext, UINT cullMode, UINT fillMode) = 0;
 #endif
-	virtual void TurnZBufferOn() = 0;
-	virtual void TurnZBufferOff() = 0;
+	virtual void TurnZBufferOn(void* pContext) = 0;
+	virtual void TurnZBufferOff(void* pContext) = 0;
 
 	#if defined INTRO_DEMO || defined USE_ALPHA_BLENDING
-	virtual void TurnOnAlphaBlending() = 0;
-	virtual void TurnOffAlphaBlending() = 0;
+	virtual void TurnOnAlphaBlending(void* pContext) = 0;
+	virtual void TurnOffAlphaBlending(void* pContext) = 0;
 	#endif
 
 	#if defined USE_DX_DRIVER_FONT // FONT v2
 	virtual void addText(int Xpos, int Ypos, TCHAR* text, float R, float G, float B) = 0;
-	virtual void RenderDriverText() = 0;
+	virtual void RenderDriverText(void* pContext) = 0;
 	#endif
 
 	#if defined ALLOW_PRINT_SCREEN_SAVE_PNG

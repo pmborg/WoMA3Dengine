@@ -37,16 +37,19 @@
 #include "packManager.h"
 #include "idea.h"
 
-#include "womadriverclass.h"
+//#include "womadriverclass.h"
 #include "dxWinSystemClass.h"
 #if (defined OPENGL3 || defined OPENGL40) 
-#include "womadriverclass.h"	//woma
-#include "GLmathClass.h"		//woma	
-#include "GLopenGLclass.h"		//woma
+//#include "womadriverclass.h"	//woma
+//#include "GLmathClass.h"		//woma	
+//#include "GLopenGLclass.h"		//woma
 #if defined WINDOWS_PLATFORM
 #include "wGLopenGLclass.h"		// Windows
 #endif
 #endif
+#include "DX11Class.h"
+
+
 
 /////////////////////
 // Windows GLOBALS //
@@ -112,7 +115,6 @@ void WinSystemClass::ProcessFrame()
 		if (RENDER_PAGE < 10)
 		#endif
 			return; // We are in first win32 demo pages so, dont render!
-
 		// For each Monitor: Render one Application Frame
         static int num_monitors = (int)windowsArray.size();
 		for (int monIdx = 0; monIdx < num_monitors; monIdx++)
@@ -122,8 +124,8 @@ void WinSystemClass::ProcessFrame()
                                                                
 				m_Application->RenderScene(monIdx, m_Driver);	// RENDER ONE FRAME: 100% is done here!  | PROFILE: 44.40%
                                                                
-				if (!g_contextDriver)						// SHOW FRAME:
-					m_Driver->EndScene(monIdx);				// [DX]: Present                         | PROFILE: 19.03%
+				if (!g_contextDriver)							// SHOW FRAME:
+					m_Driver->EndScene(monIdx);					// [DX]: Present                         | PROFILE: 19.03%
 				else
 					g_contextDriver->EndScene(monIdx);			// [OPENGL]: SwapBuffers
 			}
@@ -247,7 +249,8 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
     IF_FAILED_RETURN_FALSE(DXsystemHandle->PlayIntroMovie(WOMA::LoadFile(VIDEO_INTRO)));	// VIDEO DEMO
 #endif
 
-	IF_NOT_RETURN_FALSE(SystemClass::LoadAllGraphicAssets());			// Load all main Graphics, that will be rendered on starting scene.
+	ID3D11DeviceContext* pContext = ((DX11Class*)m_Driver)->GetDeviceContext();
+	IF_NOT_RETURN_FALSE(SystemClass::LoadAllGraphicAssets(pContext));			// Load all main Graphics, that will be rendered on starting scene.
 
 	//---------------------------------------------------------------------------------------------------
 	if (WOMA::game_state >= GAME_STOP)	// Something FATAL on loading "mandatory 2D/3D Stuff"?
@@ -1011,7 +1014,7 @@ void WinSystemClass::UNPAUSE()
 }
 
 #if defined USE_ALLOW_MAINWINDOW_RESIZE //CORE_ENGINE_LEVEL >= 10 // Initializing Engine
-void WinSystemClass::ONRESIZE()
+void WinSystemClass::ONRESIZE(void* pContext)
 {
 	if (SystemHandle) {
 		womalog("ONRESIZE()\n");
@@ -1019,9 +1022,10 @@ void WinSystemClass::ONRESIZE()
 			SystemHandle->m_Application->WOMA_APPLICATION_InitGUI();
 		#if defined DX_ENGINE //OPENGL TODO
 		if (DXsystemHandle)
-			DXsystemHandle->GPH_RESIZE();
+			DXsystemHandle->GPH_RESIZE(pContext);
 		#endif
 	}
 }
 #endif
+
 

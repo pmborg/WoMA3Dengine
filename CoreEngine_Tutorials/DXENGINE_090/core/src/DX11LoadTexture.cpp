@@ -50,7 +50,7 @@ extern std::string CleanFilePath(const std::string& input);
 namespace DirectX {
 
 #if (defined DX11 || defined DX9 ) && D3D11_SPEC_DATE_YEAR > 2009
-HRESULT DX11Class::LoadTexture(ID3D11Device* pDevice, TCHAR* pSrcFile, ID3D11ShaderResourceView**  ppShaderResourceView)
+HRESULT DirectX::DX11Class::LoadTexture(ID3D11DeviceContext* pContext, ID3D11Device* pDevice, TCHAR* pSrcFile, ID3D11ShaderResourceView**  ppShaderResourceView)
 {
 	HRESULT hr = S_OK;
 
@@ -73,7 +73,7 @@ HRESULT DX11Class::LoadTexture(ID3D11Device* pDevice, TCHAR* pSrcFile, ID3D11Sha
 		hr = DirectX::CreateDDSTextureFromFile(pDevice, m_deviceContext, pSrcFile, nullptr, ppShaderResourceView);
 		#else
 		WCHAR DX_pSrcFile[MAX_STR_LEN] = { 0 }; MultiByteToWideChar(CP_ACP, 0, pSrcFile, -1, DX_pSrcFile, MAX_STR_LEN);
-		hr = DirectX::CreateDDSTextureFromFile(pDevice, m_deviceContext, /*pSrcFile*/DX_pSrcFile, nullptr, ppShaderResourceView);
+		hr = DirectX::CreateDDSTextureFromFile(pDevice, pContext, /*pSrcFile*/DX_pSrcFile, nullptr, ppShaderResourceView);
 		#endif
 	}
 	else 
@@ -217,10 +217,8 @@ HRESULT DX11Class::CreateShaderResourceViewFromFileMANAGED(
 	return hr;
 }
 #else
-HRESULT DX11Class::LOADTEXTURE_DX11_WIN_SDK8(
-	ID3D11Device* pDevice,
-	TCHAR* pSrcFile,
-	ID3D11ShaderResourceView** ppShaderResourceView)
+HRESULT DirectX::DX11Class::LOADTEXTURE_DX11_WIN_SDK8(ID3D11DeviceContext* pContext,
+	ID3D11Device* pDevice, TCHAR* pSrcFile, ID3D11ShaderResourceView** ppShaderResourceView)
 {
 	HRESULT hr = S_OK;
 
@@ -235,7 +233,7 @@ HRESULT DX11Class::LOADTEXTURE_DX11_WIN_SDK8(
     finalname = CleanFilePath(finalname);
 	if (!std::filesystem::exists(finalname))
 		finalname = pSrcFile;
-	hr = LoadTexture(pDevice, (TCHAR*)finalname.c_str(), ppShaderResourceView);
+	hr = LoadTexture(pContext, pDevice, (TCHAR*)finalname.c_str(), ppShaderResourceView);
 
 	// COMMON:
 	if (FAILED(hr))

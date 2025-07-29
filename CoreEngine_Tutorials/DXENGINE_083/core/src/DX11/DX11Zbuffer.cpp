@@ -103,20 +103,22 @@ bool DX11Class::createSetDepthStencilState (bool depthTestEnabled)
 
 //static bool g_Zbuffer = false;
 // ----------------------------------------------------------------------------------------------
-void DX11Class::TurnZBufferOn()
+void DirectX::DX11Class::TurnZBufferOn(void* ctx)
 // ----------------------------------------------------------------------------------------------
 {
+	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
     if (g_Zbuffer) return;
-	m_deviceContext->OMSetDepthStencilState(m_depthStencilState, 1);
+	pContext->OMSetDepthStencilState(m_depthStencilState, 1);
     g_Zbuffer = true;
 }
 
 // ----------------------------------------------------------------------------------------------
-void DX11Class::TurnZBufferOff()
+void DirectX::DX11Class::TurnZBufferOff(void* ctx)
 // ----------------------------------------------------------------------------------------------
 {
+	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
     if (!g_Zbuffer) return;
-	m_deviceContext->OMSetDepthStencilState(m_depthDisabledStencilState, 1);
+	pContext->OMSetDepthStencilState(m_depthDisabledStencilState, 1);
     g_Zbuffer = false;
 }
 
@@ -237,12 +239,13 @@ bool DX11Class::createSetDepthStencilView (int screenWidth, int screenHeight)
 }
 
 // ----------------------------------------------------------------------------------------------
-void DX11Class::ClearDepthBuffer()
+void DirectX::DX11Class::ClearDepthBuffer(void* ctx)
 // ----------------------------------------------------------------------------------------------
 {
+	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
 	// For each Monitor: 
 	for (int i = 0; i < DX11windowsArray.size(); i++)
-		m_deviceContext->ClearDepthStencilView(DX11windowsArray[i].m_depthStencilView, D3D10_CLEAR_DEPTH, 1.0f, 0);	// Clear the "depth buffer":
+		pContext->ClearDepthStencilView(DX11windowsArray[i].m_depthStencilView, D3D10_CLEAR_DEPTH, 1.0f, 0);	// Clear the "depth buffer":
 }
 
 }

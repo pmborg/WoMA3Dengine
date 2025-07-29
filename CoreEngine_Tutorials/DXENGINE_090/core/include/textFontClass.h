@@ -99,7 +99,7 @@ public:
 	textFontClass();
 	~textFontClass();
 
-	bool Initialize(void* Driver, TCHAR*, TCHAR*);
+	bool Initialize(void* pContext, void* g_driver, TCHAR*, TCHAR*);
 	void Shutdown();
 
 #if defined DX9 || defined DX11

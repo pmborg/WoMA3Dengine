@@ -31,7 +31,7 @@
 // Number of Billboard Trees
 
 #if false //defined SIMPLE
-#define N_BILLBOARD 100
+#define N_BILLBOARD 1
 #define N_FENCES    55
 #define N_FIRE      1
 #define N_GRASS_0   1
@@ -59,8 +59,8 @@ public:
 	BillClass();
 	~BillClass();
 
-	xmlobj3d* fillxml(int id, UINT type);
-	bool Initialize(int m_terrainWidth, int m_terrainHeight, bool instance);
+    xmlobj3d* fillxml(ID3D11DeviceContext* pContext, int id, UINT type);
+	bool Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, int m_terrainHeight, bool instance);
 	void Shutdown();
 	CTerrain* mainTerrainPath = NULL;
 

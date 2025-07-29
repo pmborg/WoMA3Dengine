@@ -66,7 +66,7 @@ public:
 	wGLopenGLclass();
 	~wGLopenGLclass();
 
-	bool OnInit(	int g_USE_MONITOR, void* hwnd, int screenWidth, int screenHeight, UINT depthBits, 
+	bool OnInit(int g_USE_MONITOR, void* hwnd, int screenWidth, int screenHeight, UINT depthBits, 
 						float screenDepth, float screenNear, BOOL msaa, bool vsync, 
 						BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize);
 	void Shutdown();

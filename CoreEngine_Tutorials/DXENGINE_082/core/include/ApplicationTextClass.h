@@ -90,7 +90,7 @@ public:
 	ApplicationTextClass();
 	~ApplicationTextClass();
 
-	bool Initialize(void* Driver);
+	bool Initialize(ID3D11DeviceContext* pContext, void* Driver);
 	bool Shutdown();
 	void Render();
 

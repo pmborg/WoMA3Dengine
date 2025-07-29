@@ -176,10 +176,10 @@ void DXrendertextureclass::Shutdown()
 	SAFE_RELEASE(m_renderTextureTarget);
 }
 
-void DXrendertextureclass::SetRenderTarget(void* Driver)
+void DXrendertextureclass::SetRenderTarget(void* Driver, ID3D11DeviceContext* pContext)
 {
 	DirectX::DX11Class* m_driver11 = (DirectX::DX11Class*)Driver;
-	ID3D11DeviceContext* pContext = m_driver11->m_deviceContext;
+	//ID3D11DeviceContext* pContext = m_driver11->m_deviceContext;
 
 	// Bind the render target view and depth stencil buffer to the output render pipeline.
 	pContext->OMSetRenderTargets(1, &m_renderTextureTargetView, m_depthStencilTextureView);
@@ -188,13 +188,13 @@ void DXrendertextureclass::SetRenderTarget(void* Driver)
 	pContext->RSSetViewports(1, &m_TextureViewport);
 }
 
-void DXrendertextureclass::ClearRenderTarget(void* Driver, float red, float green, float blue, float alpha)
+void DXrendertextureclass::ClearRenderTarget(void* Driver, ID3D11DeviceContext* pContext, float red, float green, float blue, float alpha)
 {	
 	DirectX::DX11Class* m_driver11 = (DirectX::DX11Class*)Driver;
-	ID3D11DeviceContext* pContext = m_driver11->m_deviceContext;
+	//ID3D11DeviceContext* pContext = m_driver11->m_deviceContext;
 
 	// Setup the color to clear the buffer to.
-	float color[4] = {red, green, blue, alpha};
+	float color[4] = { red, green, blue, alpha };
 
 	// Clear the back buffer.
 	pContext->ClearRenderTargetView(m_renderTextureTargetView, color);

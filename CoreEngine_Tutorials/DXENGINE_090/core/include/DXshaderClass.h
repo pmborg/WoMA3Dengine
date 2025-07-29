@@ -398,8 +398,6 @@ namespace DirectX
 		float secondTranslationZ = 0;
 		float brightness = 0;
 
-		//Sky: 2
-
 		bool bUseGS=false;	// GS
 	};
 

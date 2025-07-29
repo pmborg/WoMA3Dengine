@@ -377,12 +377,11 @@ if (dx11_force_dx9)
 BOOL DX11Class::Check (int* Hi, int* low){return TRUE;}
 // ----------------------------------------------------------------------------------------------
 
-
 // MAIN INIT - CreateDevice and CreateSwapChain and also "Get the best MultiSampleQuality":
 //----------------------------------------------------------------------------------------------
-bool DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, int screenHeight, 
-							  UINT depthBits, float screenDepth, float screenNear, BOOL msaa, bool vsync, 
-							  BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize) 
+bool DirectX::DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, int screenHeight,
+	UINT depthBits, float screenDepth, float screenNear, BOOL msaa, bool vsync,
+	BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize)
 //----------------------------------------------------------------------------------------------
 {
 	m_VSYNC_ENABLED = vsync;
@@ -429,19 +428,19 @@ bool DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, i
 	}
 
 	//Init Step: 5 - Get Best Shader of this Graphic Card: dx10,dx10.1,dx11,etc... OUTPUT: ShaderModel
-	getProfile (g_USE_MONITOR);					
+	getProfile(g_USE_MONITOR);
 
 	//Init Step: 6 Before Resize (SetCamera2D & SetCamera3D)!
 		Initialize3DCamera();
 
 	//Init Step: 7 (Include: 8,9,10,11,12)
 	// Creates a render target view and depth stencil surface/view per swapchain
-	ASSERT (Resize (screenWidth, screenHeight, screenNear, screenDepth, fullscreen, depthBits));
+		ASSERT(Resize(screenWidth, screenHeight, screenNear, screenDepth, fullscreen, depthBits));
    
 #if defined USE_RASTERIZER_STATE
 	//Init Step: 8 - Cull Back / Front:
 	ASSERT( createRasterizerStates (/*lineAntialiasing*/ false)); // Only applies: if doing "line drawing" and "MultisampleEnable" is false.
-	SetRasterizerState (CULL_NONE, FILL_SOLID);	//Set Default
+	SetRasterizerState(m_deviceContext, CULL_NONE, FILL_SOLID);	//Set Default
 #endif
 
   #if defined USE_FRUSTRUM
@@ -456,7 +455,6 @@ bool DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, i
 	//Init Step: 14 - Transparency: To render text on top of 3D
 	ASSERT(CreateBlendState());
   #endif
-
 	return true;
 }
 
@@ -628,7 +626,7 @@ HRESULT result = S_OK;
 		// -----------------------
 		// NOTE: need to be before createSetDepthStencilView()
 		for (int i = 0; i < DX11windowsArray.size(); i++)
-			setViewportDevice(i, screenWidth, screenHeight);  // RSSetViewports: Map Screen clip space coordinates to the render target space
+			setViewportDevice(m_deviceContext, i, screenWidth, screenHeight);  // RSSetViewports: Map Screen clip space coordinates to the render target space
 
 #if defined SET_DEVICE_CAPABILITIES
 		// [3] CreateDepthStencilView / OMSetRenderTargets:
@@ -642,7 +640,7 @@ HRESULT result = S_OK;
 		// OMSetRenderTargets: NOTE: Need to be After [1], [2] and [3]
 		// For each Monitor: 
 		for (int i = 0; i < DX11windowsArray.size(); i++)
-			SetBackBufferRenderTarget(i);
+			SetBackBufferRenderTarget(m_deviceContext, i);
 
 		// #Generate new "ProjectionMatrix" and "OrthoMatrix"
 		// --------------------------------------------------
@@ -736,12 +734,14 @@ void DX11Class::getProfile ( UINT g_USE_MONITOR )
 
 // Bind the render target view and depth stencil buffer to the output render pipeline.
 // ----------------------------------------------------------------------------------------------
-void DX11Class::SetBackBufferRenderTarget(UINT monitorWindow)
+void DirectX::DX11Class::SetBackBufferRenderTarget(void* ctx, UINT monitorWindow)
 // ----------------------------------------------------------------------------------------------
 {
-	m_deviceContext->OMSetRenderTargets(1, &DX11windowsArray[monitorWindow].m_renderTargetView,
-											DX11windowsArray[monitorWindow].m_depthStencilView);
-	m_deviceContext->RSSetViewports(1, &DX11windowsArray[monitorWindow].viewport);
+	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
+
+	pContext->OMSetRenderTargets(1, &DX11windowsArray[monitorWindow].m_renderTargetView,
+		DX11windowsArray[monitorWindow].m_depthStencilView);
+	pContext->RSSetViewports(1, &DX11windowsArray[monitorWindow].viewport);
 }
 
 //Init Step: 6 - Create Rendering Target
@@ -806,7 +806,7 @@ void DX11Class::BeginScene(UINT monitorWindow)
 	m_deviceContext->ClearRenderTargetView(DX11windowsArray[monitorWindow].m_renderTargetView, driver_ClearColor);	// Clear the "back buffer":
 #endif
 #if defined SET_DEVICE_CAPABILITIES
-	ClearDepthBuffer();
+	ClearDepthBuffer(m_deviceContext);
 #endif
 
 }
@@ -831,7 +831,7 @@ void DX11Class::OnDeviceLost() // Our Driver in use was re-installed??
     WOMA::game_state = ENGINE_RESTART;
 }
 
-void DX11Class::ResetResource(UINT monitorWindow)
+void DirectX::DX11Class::ResetResource(ID3D11DeviceContext* pContext, UINT monitorWindow)
 {
     //RESET ShaderResources! to avoid HLSL WARNINGS: Resource being set to OM RenderTarget slot 0 is still bound on input!
     //WHY 3,4,5...? hlsl use 4 registers: MAX
@@ -841,7 +841,7 @@ void DX11Class::ResetResource(UINT monitorWindow)
     //									: register(t3);  t number...
 
     ID3D11ShaderResourceView* const pSRV[15] = { NULL };
-    m_deviceContext->PSSetShaderResources(0, 15, pSRV);
+	pContext->PSSetShaderResources(0, 15, pSRV);
 }
 
 // ----------------------------------------------------------------------------------------------
@@ -864,7 +864,7 @@ void DX11Class::EndScene(UINT monitorWindow)
 		{ if (FAILED(hr)) { WomaFatalException("FATAL: swapChain->Present() error!"); } }
 	}
 
-    ResetResource(monitorWindow);
+	ResetResource(m_deviceContext, monitorWindow);
 }
 
 
@@ -971,6 +971,13 @@ void DX11Class::Initialize3DCamera()
 
 }
 
+
+ID3D11DeviceContext* DX11Class::GetDeviceContext()
+{
+	return m_deviceContext;
+}
+
+
 // TODO: go to Virtual Class?
 XMMATRIX* DX11Class::GetViewMatrix( UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix)
 {
@@ -1031,7 +1038,6 @@ XMMATRIX* DX11Class::GetProjectionMatrix( UINT camera, UINT projection, UINT pas
 
 	ASSERT(FALSE);
 }
-
 
 }
 

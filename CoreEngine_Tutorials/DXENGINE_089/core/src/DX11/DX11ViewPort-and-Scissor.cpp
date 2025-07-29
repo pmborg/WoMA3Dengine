@@ -30,7 +30,7 @@ namespace DirectX {
 // REVIEW - Init Step: 5 - Rasterizer State: Set the Viewport for rendering
 // MORE INFO: https://msdn.microsoft.com/en-us/library/windows/desktop/bb205126%28v=vs.85%29.aspx
 // ----------------------------------------------------------------------------------------------
-void DX11Class::setViewportDevice(UINT monitorWindow, int screenWidth, int screenHeight)
+void DirectX::DX11Class::setViewportDevice(ID3D11DeviceContext* pContext, UINT monitorWindow, int screenWidth, int screenHeight)
 // ----------------------------------------------------------------------------------------------
 {
 	// The viewport also needs to be setup so that Direct3D can map clip space coordinates to the render target space. 
@@ -46,10 +46,10 @@ void DX11Class::setViewportDevice(UINT monitorWindow, int screenWidth, int scree
 	// Create the viewport:
 	ASSERT (DX11windowsArray[monitorWindow].viewport.Width > 0 && 
 			DX11windowsArray[monitorWindow].viewport.Height > 0);
-	m_deviceContext->RSSetViewports(1, &DX11windowsArray[monitorWindow].viewport);
+	pContext->RSSetViewports(1, &DX11windowsArray[monitorWindow].viewport);
 }
 
-void DX11Class::setScissorRectangle(UINT left, UINT right, UINT top, UINT bottom, bool enabled)
+void DirectX::DX11Class::setScissorRectangle(ID3D11DeviceContext* pContext, UINT left, UINT right, UINT top, UINT bottom, bool enabled)
 {
 	ScissorEnable = enabled;
 
@@ -58,7 +58,7 @@ void DX11Class::setScissorRectangle(UINT left, UINT right, UINT top, UINT bottom
 	ScissorRect[0].right = right;
 	ScissorRect[0].top = top;
 	ScissorRect[0].bottom = bottom;
-	m_deviceContext->RSSetScissorRects(1, ScissorRect);
+	pContext->RSSetScissorRects(1, ScissorRect);
 }
 }
 

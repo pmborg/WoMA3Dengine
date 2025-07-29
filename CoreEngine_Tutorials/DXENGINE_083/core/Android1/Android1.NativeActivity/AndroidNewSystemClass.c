@@ -45,7 +45,7 @@ AndroidNewSystemClass::AndroidNewSystemClass(WOMA::Settings* appSettings) : Syst
 
 bool AndroidNewSystemClass::APPLICATION_CORE_SYSTEM()
 {
-	WOMA_LOGManager_DebugMSG("AndroidNewSystemClass::APPLICATION_INIT_SYSTEM()\n");
+	womalog("AndroidNewSystemClass::APPLICATION_INIT_SYSTEM()\n");
 #if CORE_ENGINE_LEVEL == 1
 	UINT* p = NEW UINT[1];
 	//free(p);

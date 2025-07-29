@@ -120,7 +120,7 @@ TCHAR billFileName[][MAX_STR_LEN] =
 	// 200: engine/data/scene72Fire/072fire.obj
 };
 
-xmlobj3d* BillClass::fillxml(int id, UINT type)
+xmlobj3d* BillClass::fillxml(ID3D11DeviceContext* pContext, int id, UINT type)
 {
 	DirectX::DX11Class* m_driver11 = (DirectX::DX11Class*)m_Driver;
 
@@ -181,7 +181,7 @@ xmlobj3d* BillClass::fillxml(int id, UINT type)
 
 static Tree tree_ = {};
 
-bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instance)
+bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, int m_terrainHeight, bool instance)
 {
 	UNREFERENCED_PARAMETER(instance);
 	ZeroMemory(&m_Trees, sizeof(m_Trees));
@@ -236,7 +236,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 		m_Trees[i].scale = scale;
 		m_Trees[i].vPos.y = height;
 
-		xmlobj3d* xmlobj = fillxml(i, m_Trees[i].type);
+		xmlobj3d* xmlobj = fillxml(pContext, i, m_Trees[i].type);
 
 		if (type <= 10)
 			xmlobj->Bill = true;
@@ -263,7 +263,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 					m_Trees[i].vPos.z = 21.5f + 0.5f * z + z * 14.0f;
 					m_Trees[i].vPos.y = mainTerrain->getTerrainHeight(TERRAIN_ID, m_Trees[i].vPos.x, m_Trees[i].vPos.z);
 
-					xmlobj3d* xmlobj = fillxml(i, 100);
+					xmlobj3d* xmlobj = fillxml(pContext, i, 100);
 					xmlobj->Bill = false;
 					SystemHandle->xml_loader.theWorld.push_back(*xmlobj);
 
@@ -286,7 +286,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 				m_Trees[i].vPos.z = 23 + y * 1.33f;
 				m_Trees[i].vPos.y = mainTerrain->getTerrainHeight(TERRAIN_ID, m_Trees[i].vPos.x, m_Trees[i].vPos.z);
 
-				xmlobj3d* xmlobj = fillxml(i, 100);
+				xmlobj3d* xmlobj = fillxml(pContext, i, 100);
 				xmlobj->Bill = false;
 				SystemHandle->xml_loader.theWorld.push_back(*xmlobj);
 
@@ -308,7 +308,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 		m_Trees[i].vPos.z = 239;
 		m_Trees[i].vPos.y = mainTerrain->getTerrainHeight(TERRAIN_ID, m_Trees[i].vPos.x, m_Trees[i].vPos.z);
 
-		xmlobj3d* xmlobj = fillxml(i, 200);
+		xmlobj3d* xmlobj = fillxml(pContext, i, 200);
 		xmlobj->Bill = true;
 		SystemHandle->xml_loader.theWorld.push_back(*xmlobj);
 
@@ -340,7 +340,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 		m_Trees[i].scale = 1.0f;
 		m_Trees[i].vPos.y = height;
 
-		xmlobj3d* xmlobj = fillxml(i, m_Trees[i].type);
+		xmlobj3d* xmlobj = fillxml(pContext, i, m_Trees[i].type);
 		xmlobj->Bill = true;
 		SystemHandle->xml_loader.theWorld.push_back(*xmlobj);
 
@@ -372,7 +372,7 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 		m_Trees[i].scale = 1.0f;
 		m_Trees[i].vPos.y = height;
 
-		xmlobj3d* xmlobj = fillxml(i, 12/*m_Trees[i].type*/);
+		xmlobj3d* xmlobj = fillxml(pContext, i, 12/*m_Trees[i].type*/);
 		xmlobj->Bill = true;
 		SystemHandle->xml_loader.theWorld.push_back(*xmlobj);
 		i++;

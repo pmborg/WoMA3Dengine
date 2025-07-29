@@ -29,6 +29,14 @@
 #include "stdafx.h"
 #include "PPG.h"
 
+
+bool threadLoadMeshAlive = false;
+HANDLE threadLoadMeshHandle = NULL;
+unsigned long threadLoadMeshId = NULL;
+
+MeshApplication* demoapp_ = NULL;
+MyDemo* demo_ = NULL;
+
 struct WomaMesh {
     Scene scene;
     SceneModel* assimpSceneModel = NULL;
@@ -36,13 +44,14 @@ struct WomaMesh {
 
 WomaMesh womamesh1;
 
+
 std::ofstream os_file("log.txt", std::ios::out);
 void log(char* msg)
 {
     LOG_FILE << msg << std::endl;
 }
 
-void InitMeshDemo(ApplicationClass* app, MeshApplication* demoapp, MyDemo* demo)
+void InitMeshDemo(ID3D11DeviceContext* pContext, ApplicationClass* app, MeshApplication* demoapp, MyDemo* demo)
 {
     // Lighting
     auto lightColour = XMFLOAT4(5.0f, 5.0f, 5.0f, 1.0f);
@@ -71,8 +80,9 @@ void InitMeshDemo(ApplicationClass* app, MeshApplication* demoapp, MyDemo* demo)
         .AddLight(spotLight)
         .SetGlobalAmbient(XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f));
 
-    womamesh1.scene.Start(demoapp->m_Graphics);
+    womamesh1.scene.Start(pContext, demoapp->m_Graphics);
 }
+
 void LoadAllMeshModels(UINT this_level, ApplicationClass* app, MeshApplication* demoapp, MyDemo* demo)
 {
 #if DX_ENGINE_LEVEL >= 79 && defined USE_MODEL1
@@ -83,17 +93,26 @@ void LoadAllMeshModels(UINT this_level, ApplicationClass* app, MeshApplication* 
     log("STARTING...");
 #endif
 }
-void UpdateAllMeshAnimations(MeshApplication* demoapp, MyDemo* demo, float deltaTime)
+void UpdateAllMeshAnimations(float deltaTime)
 {
+	MeshApplication* demoapp = demoapp_; 
+	MyDemo* demo = demo_;
+
     //Update animation/bone matrix's and RENDER all MESHs:
 #if DX_ENGINE_LEVEL >= 79 && defined USE_MODEL1
     if (womamesh1.assimpSceneModel && womamesh1.assimpSceneModel->loaded)
         demo->animJob.UpdateTimeElapsed(womamesh1.scene, deltaTime);
 #endif
 }
-void RenderAllMeshModels(MeshApplication* demoapp, MyDemo* demo)
+void RenderAllMeshModels(ID3D11DeviceContext* m_DeviceContext)
 {
-    demoapp->m_Graphics.m_DeviceContext->RSSetState(demoapp->m_Graphics.m_RasterizerState);
+	if (!demoapp_ || !demo_)
+		return; //not ready
+
+	MeshApplication* demoapp = demoapp_; 
+	MyDemo* demo = demo_;
+    m_DeviceContext->RSSetState(demoapp->m_Graphics.m_RasterizerState);
+
         // Model 1 -----------------a-------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 79 && defined USE_MODEL1
     if (womamesh1.assimpSceneModel && womamesh1.assimpSceneModel->loaded)
@@ -115,8 +134,8 @@ void RenderAllMeshModels(MeshApplication* demoapp, MyDemo* demo)
         world.r[3].m128_f32[2] = Z; //_43: Z
         world.r[3].m128_f32[1] = mainTerrain->getTerrainHeight(TERRAIN_ID, world.r[3].m128_f32[0], world.r[3].m128_f32[2]);
 
-        womamesh1.scene.UpdateWorldMatrixModel(demoapp->m_Graphics, world);
-        demo->gBufferPass->Render(demoapp->m_Graphics, womamesh1.scene);
+        womamesh1.scene.UpdateWorldMatrixModel(m_DeviceContext, demoapp->m_Graphics, world);
+        demo->gBufferPass->Render(m_DeviceContext, demoapp->m_Graphics, womamesh1.scene);
     }
 #endif
 
@@ -124,37 +143,32 @@ void RenderAllMeshModels(MeshApplication* demoapp, MyDemo* demo)
 
 }
 
-bool threadLoadMeshAlive=false;
-HANDLE threadLoadMeshHandle=NULL;
-unsigned long threadLoadMeshId=NULL;
-
-static MeshApplication *demoapp_;
-static MyDemo *demo_;
-
 DWORD StartMeshLibs(LPVOID lpParam)
 {
     SetUnhandledExceptionFilter(TopLevelFilter);
     ApplicationClass* app = static_cast<ApplicationClass*>(lpParam);
 
     // INIT: Model 1,2,3,4...
-    InitMeshDemo(app, demoapp_, demo_);
     LoadAllMeshModels(DX_ENGINE_LEVEL, app, demoapp_, demo_);
 
     return 0;
 };
 
-void ApplicationClass::RenderMeshAnimations()
+void ApplicationClass::StartMeshDemo(ID3D11DeviceContext* ctx)
 {
-    static MeshApplication demoapp; demoapp_ = &demoapp;
-    static MyDemo demo; demo_ = &demo;
+	static MeshApplication demoapp;
+	static MyDemo demo;
+	demoapp_ = &demoapp;
+	demo_ = &demo;
+	demo_->Start(ctx, demoapp.m_Graphics);
+	InitMeshDemo(ctx, this, demoapp_, demo_);
+	threadLoadMeshHandle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)StartMeshLibs, (void*)this, 0, &threadLoadMeshId);
+}
+
+void ApplicationClass::UpdateMeshAnimations()
+{
 
 #if defined USE_ASSIMP_LATEST && defined MAIN_RENDER_ASSIMP // ASSIMP: Skin-MESH (0.15ms)
-    if (m_Driver->RenderfirstTime)
-    {
-        demo_->Start(demoapp.m_Graphics);
-        threadLoadMeshHandle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)StartMeshLibs, (void*)this, 0, &threadLoadMeshId);
-    }
-
     static UINT filmeIdx = 0; // 1st line of filme file
     static DWORD m_startTime = timeGetTime();
     static DWORD previousTime = timeGetTime();
@@ -170,8 +184,7 @@ void ApplicationClass::RenderMeshAnimations()
     previousTime = currentTime;
     total_deltaTime = (timeGetTime() - m_startTime);
 
-    UpdateAllMeshAnimations(&demoapp, &demo, deltaTime);
-    RenderAllMeshModels(&demoapp, &demo);
+    UpdateAllMeshAnimations(deltaTime);
 #endif
 }
 

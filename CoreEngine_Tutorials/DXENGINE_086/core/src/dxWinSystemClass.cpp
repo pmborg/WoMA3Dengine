@@ -121,6 +121,7 @@ bool dxWinSystemClass::APPLICATION_INIT_SYSTEM() //LOAD ALL GRAPHICS
 	IF_NOT_RETURN_FALSE(StartSoundManager());	// 29: START-AUDIO: Start Background Music (NOTE: After the INIT "rendering-device")
 #endif
 
+
 	return res;
 }
 
@@ -229,7 +230,7 @@ void dxWinSystemClass::Shutdown()
 	womalogauto((TCHAR*)TEXT("WinSystemClass::Shutdown()\n"));
 }
 
-void dxWinSystemClass::GPH_RESIZE()
+void dxWinSystemClass::GPH_RESIZE(void* pContext)
 {
 	if (!SystemHandle->m_Application)
 		return;
@@ -270,7 +271,7 @@ void dxWinSystemClass::GPH_RESIZE()
 	}
 
   #if DX_ENGINE_LEVEL >= 24 && defined USE_VIEW2D_SPRITES
-	SystemHandle->m_Application->DEMO_WOMA_APPLICATION_InitializeSprites2D();
+	SystemHandle->m_Application->DEMO_WOMA_APPLICATION_InitializeSprites2D(pContext);
   #endif
 	}
 
@@ -376,7 +377,7 @@ bool dxWinSystemClass::SaveScreenshot()
 	GUID_ContainerFormatWmp
 	GUID_ContainerFormatDds
 	*/
-	HRESULT hr = DirectX::SaveWICTextureToFile(Driver->m_deviceContext, Driver->DX11windowsArray[0].m_backBuffer, GUID_ContainerFormatPng, path.c_str());		//op2
+	HRESULT hr = DirectX::SaveWICTextureToFile(Driver->GetDeviceContext(), Driver->DX11windowsArray[0].m_backBuffer, GUID_ContainerFormatPng, path.c_str());		//op2
 	if (hr == S_OK)
 		return true;
 

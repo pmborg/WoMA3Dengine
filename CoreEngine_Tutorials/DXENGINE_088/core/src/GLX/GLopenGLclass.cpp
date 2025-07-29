@@ -95,7 +95,7 @@ void GLopenGLclass::addText(int Xpos, int Ypos, TCHAR* printText, float R, float
 {
 }
 
-void GLopenGLclass::RenderDriverText()
+void GLopenGLclass::RenderDriverText(void* pContext)
 {
 }
 
@@ -180,7 +180,7 @@ void GLopenGLclass::BeginScene(UINT monitorWindow)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);	// Clear the screen and depth buffer.
 }
 
-void GLopenGLclass::ClearDepthBuffer()
+void GLopenGLclass::ClearDepthBuffer(void* pContext)
 {
 	glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
@@ -189,27 +189,27 @@ void GLopenGLclass::EndScene(UINT monitorWindow){} // Not implemented in MAIN DR
 
 #if defined INTRO_DEMO || defined USE_ALPHA_BLENDING
 // MORE INFO: https://www.opengl.org/archives/resources/faq/technical/transparency.htm
-void GLopenGLclass::TurnOnAlphaBlending()
+void GLopenGLclass::TurnOnAlphaBlending(void* pContext)
 {
 	glEnable (GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-void GLopenGLclass::TurnOffAlphaBlending()
+void GLopenGLclass::TurnOffAlphaBlending(void* pContext)
 {
 	glDisable (GL_BLEND);
 }
 #endif
 
 // -----------------------------------------------------------------
-void GLopenGLclass::TurnZBufferOn()
+void GLopenGLclass::TurnZBufferOn(void* pContext)
 {
     if (g_Zbuffer) return;
 	glEnable(GL_DEPTH_TEST);
     g_Zbuffer = true;
 }
 
-void GLopenGLclass::TurnZBufferOff()
+void GLopenGLclass::TurnZBufferOff(void* pContext)
 {
     if (!g_Zbuffer) return;
 	glDisable(GL_DEPTH_TEST);
@@ -289,7 +289,7 @@ void GLopenGLclass::Initialize3DCamera()
 
 
 
-void GLopenGLclass::SetRasterizerState(UINT cullMode, UINT fillMode) 
+void GLopenGLclass::SetRasterizerState(void* pContext, UINT cullMode, UINT fillMode) 
 {
 	/*
 	#define CULL_FRONT	0
@@ -374,7 +374,7 @@ bool GLopenGLclass::Initialize(float* clearColor)
 	glDepthFunc(GL_LESS);
 	#endif
 
-	TurnZBufferOn();
+	TurnZBufferOn(NULL);
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 

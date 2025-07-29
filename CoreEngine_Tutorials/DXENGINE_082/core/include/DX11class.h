@@ -239,7 +239,7 @@ WDDM 2.0->Windows 10				Display Drivers or Creates a DXGI 1.4
         #define LOADTEXTURE(file, pointer) { hr = ((DX_CLASS*)g_driver)->CreateShaderResourceViewFromFileMANAGED(((DX_CLASS*)g_driver)->m_device, (TCHAR*)file, &(((DX_CLASS*)g_driver)->loadInfo), NULL, &pointer, NULL, false); }
     #endif
     #if D3D11_SPEC_DATE_YEAR > 2009
-        #define LOADTEXTURE(file, pointer) { hr = ((DirectX::DX11Class*)m_driver11)->LOADTEXTURE_DX11_WIN_SDK8(((DirectX::DX11Class*)m_driver11)->m_device11, (TCHAR*)file, &pointer);}
+        #define LOADTEXTURE(file, pointer) { hr = ((DirectX::DX11Class*)m_driver11)->LOADTEXTURE_DX11_WIN_SDK8(pContext, ((DirectX::DX11Class*)m_driver11)->m_device11, (TCHAR*)file, &pointer);}
     #endif
 
 #define	MaxTextSizes 24
@@ -271,30 +271,31 @@ public:
     void Finalize();
 
     bool OnInit(int g_USE_MONITOR, void* hwnd, int screenWidth, int screenHeight, UINT depthBits,
-                float screenDepth, float screenNear, BOOL msaa, bool vsync,
-                BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize);
+        float screenDepth, float screenNear, BOOL msaa, bool vsync,
+        BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize);
     void Shutdown();
     void Shutdown2D();
 
     void BeginScene(UINT monitorWindow);
     void EndScene(UINT monitorWindow);
-    void ResetResource(UINT monitorWindow);
+    void ResetResource(ID3D11DeviceContext* pContext, UINT monitorWindow);
     void OnDeviceLost();
-    void ClearDepthBuffer();
+	void ClearDepthBuffer(void* pContext);
 
+	ID3D11DeviceContext* GetDeviceContext();
 #if defined USE_RASTERIZER_STATE
-    void SetRasterizerState(UINT cullMode, UINT fillMode);
+	void SetRasterizerState(void* pContext, UINT cullMode, UINT fillMode);
 #endif
     //We now have two new function in the DX11Class for turning the Z buffer on and off when rendering 2D images:
-    void TurnZBufferOn();
-    void TurnZBufferOff();
+	void TurnZBufferOn(void* pContext);
+	void TurnZBufferOff(void* pContext);
 
 #if defined INTRO_DEMO || defined USE_ALPHA_BLENDING
     bool CreateBlendState();
 
     //We have two new functions for turning on and off alpha blending:
-    void TurnOnAlphaBlending();
-    void TurnOffAlphaBlending();
+    void TurnOnAlphaBlending(void*);
+    void TurnOffAlphaBlending(void*);
 
     //We have two new blending states:
     ID3D11BlendState* m_alphaEnableBlendingState = NULL;	//m_alphaEnableBlendingState is for turning on alpha blending and 
@@ -304,7 +305,7 @@ public:
 #if defined USE_DX_DRIVER_FONT
     std::vector<DXTextLine> allTextArray;
     void addText(int Xpos, int Ypos, TCHAR* printText, float R, float G, float B);
-    void RenderDriverText();
+    void RenderDriverText(void* pContext);
 #endif
 
 #if defined ALLOW_PRINT_SCREEN_SAVE_PNG
@@ -322,7 +323,7 @@ public:
     void SetCamera2D();
 
     //void ResetViewport();
-    void SetBackBufferRenderTarget(UINT monitorWindow);
+	void SetBackBufferRenderTarget(void* pContext, UINT monitorWindow);
 
     XMMATRIX* GetViewMatrix( UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix);
     XMMATRIX* GetProjectionMatrix( UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix);
@@ -339,7 +340,7 @@ public:
     std::vector<ID3D11ShaderResourceView*> allTexturePointerArray;
 
     // Note: No Shrink Textures
-    HRESULT LoadTexture(ID3D11Device* pDevice, TCHAR* pSrcFile, ID3D11ShaderResourceView**  ppShaderResourceView);
+	HRESULT LoadTexture(ID3D11DeviceContext* pContext, ID3D11Device* pDevice, TCHAR* pSrcFile, ID3D11ShaderResourceView** ppShaderResourceView);
 
     #if D3D11_SPEC_DATE_YEAR == 2009
     D3DX11_IMAGE_LOAD_INFO loadInfo;
@@ -353,13 +354,15 @@ public:
             bool shrinkText = false);
 
     #else
-    HRESULT LOADTEXTURE_DX11_WIN_SDK8 ( 
-            ID3D11Device*			    pDevice,
-            TCHAR*					    pSrcFile,
-            ID3D11ShaderResourceView**  ppShaderResourceView
-            );
-    #endif
+	HRESULT LOADTEXTURE_DX11_WIN_SDK8(ID3D11DeviceContext* pContext,
+		ID3D11Device* pDevice,
+		TCHAR* pSrcFile, ID3D11ShaderResourceView** ppShaderResourceView);
+#endif
 
+private:
+	ID3D11DeviceContext* m_deviceContext = nullptr;
+
+public:
     // Public: ------------------------------------------------------------------------
     // VARS:
     // --------------------------------------------------------------------------------
@@ -378,7 +381,6 @@ public:
     IDXGIAdapter1* adapterGraphicCard = NULL;
 
     ID3D11Device*        m_device11 = nullptr;
-    ID3D11DeviceContext* m_deviceContext = nullptr;
 
 #ifdef USE_DX11_3
     ID3D11Device3* pDevice3 = nullptr;
@@ -470,8 +472,8 @@ private:
     bool createRasterizerStates (bool lineAntialiasing);
 #endif
 
-    void setViewportDevice(UINT monitorWindow, int screenWidth, int screenHeight);
-    void setScissorRectangle(UINT left, UINT right, UINT top, UINT bottom, bool enabled);
+	void setViewportDevice(ID3D11DeviceContext* pContext, UINT monitorWindow, int screenWidth, int screenHeight);
+	void setScissorRectangle(ID3D11DeviceContext* pContext, UINT left, UINT right, UINT top, UINT bottom, bool enabled);
 
     bool CreateRenderTargetView (int screenWidth, int screenHeight);
     bool createDepthStencil(int screenWidth, int screenHeight, BOOL fullscreen, UINT depthBits);
@@ -481,12 +483,13 @@ private:
     // ---------------------------------------------------------
 #if defined USE_DX_DRIVER_FONT
     bool InitD2D_D3D101_DWrite(IDXGIAdapter1 *Adapter, WCHAR* fontStyle, int screenWidth, int screenHeight, float R, float G, float B);
-    bool InitD2D_D3D101_DWrite_(IDXGIAdapter1* Adapter, WCHAR* fontStyle, int screenWidth, int screenHeight, float R, float G, float B);
+    //bool InitD2D_D3D101_DWrite_(IDXGIAdapter1* Adapter, WCHAR* fontStyle, int screenWidth, int screenHeight, float R, float G, float B);
     bool InitD2DScreenTexture();
 #endif
 
-
 public:
+
+
     XMMATRIX m_projectionMiniMapMatrix;
 
 };

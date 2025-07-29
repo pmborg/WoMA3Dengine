@@ -151,15 +151,15 @@ public:
 	BOOL CheckAPIdriver (UINT USE_THIS_ADAPTER);
 
 	void SelectDepthFormat(UINT depthBits, BOOL fullscreen);
-	bool OnInit(	int g_USE_MONITOR, void* hwnd, int screenWidth, int screenHeight, UINT depthBits, 
-						float screenDepth, float screenNear, BOOL msaa, bool vsync, 
-						BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize);
+    bool OnInit(int g_USE_MONITOR, void* hwnd, int screenWidth, int screenHeight, UINT depthBits,
+        float screenDepth, float screenNear, BOOL msaa, bool vsync,
+        BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize);
 
 	bool Resize (int screenWidth, int screenHeight,float screenNear, float screenDepth, BOOL fullscreen, UINT depthBits);
 	void SetCamera2D();
 	void BeginScene(UINT monitorWindow);
 	void EndScene(UINT monitorWindow);
-	void ClearDepthBuffer();
+	void ClearDepthBuffer(void* pContext);
 
 	void MoveToNextFrame();
 	void WaitForGpu();
@@ -176,7 +176,7 @@ public:
 
 	bool getModesList(int g_USE_MONITOR, int screenWidth, int screenHeight, BOOL fullscreen, UINT* numerator, UINT* denominator);
 
-	void SetRasterizerState(UINT cullMode, UINT fillMode);
+	void SetRasterizerState(void* pContext, UINT cullMode, UINT fillMode);
 	D3D12_RASTERIZER_DESC m_rasterState[3][2];
 
 	// 3D
@@ -187,11 +187,11 @@ public:
 	void setProjectionMatrixWorldMatrixOrthoMatrix (int screenWidth, int screenHeight,float screenNear, float screenDepth);
 
     //We now have two new function in the DX12Class for turning the Z buffer on and off when rendering 2D images:
-    void TurnZBufferOn();
-    void TurnZBufferOff();
+    void TurnZBufferOn(void* pContext);
+    void TurnZBufferOff(void* pContext);
 
 	void addText(int Xpos, int Ypos, TCHAR* text, float R, float G, float B);
-	void RenderDriverText();
+	void RenderDriverText(void* pContext);
 	//bool InitD2D_D3D101_DWrite(IDXGIAdapter1 *Adapter, WCHAR* fontStyle, int screenWidth, int screenHeight, float R, float G, float B);
 	bool InitD2DScreenTexture();
 
@@ -288,8 +288,8 @@ public:
 
 #if defined USE_ALPHA_BLENDING || defined INTRO_DEMO 
 	//We have two new functions for turning on and off alpha blending:
-	void TurnOnAlphaBlending();
-	void TurnOffAlphaBlending();
+	void TurnOnAlphaBlending(void* pContext);
+	void TurnOffAlphaBlending(void* pContext);
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////

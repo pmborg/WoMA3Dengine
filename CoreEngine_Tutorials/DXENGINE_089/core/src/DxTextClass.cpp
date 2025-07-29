@@ -93,14 +93,15 @@ namespace DirectX {
 	}
 
 	//SIMILAR: DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderType)
-	bool DxTextClass::Initialize(void* Driver)
+	bool DirectX::DxTextClass::Initialize(void* Driver, ID3D11DeviceContext* m_deviceContext11_)
 	{
+		m_deviceContext11 = m_deviceContext11_;
+
 		bool result;
 	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
 		{
 			m_driver11 = (DirectX::DX11Class*)Driver;
-			m_deviceContext11 = m_driver11->m_deviceContext;
 			m_baseViewMatrix = &DXsystemHandle->m_Camera->m_viewmatrix2D;
 		}
 	#endif
@@ -113,7 +114,7 @@ namespace DirectX {
 		// TextClass: Initialize the font object. PART1
 		m_Font = NEW textFontClass;
 		IF_NOT_THROW_EXCEPTION(m_Font); // Create the font object.
-		IF_NOT_RETURN_FALSE(m_Font->Initialize(Driver, FONT_DATA_FILE, FONT_DATA_TEXTURE));
+        IF_NOT_RETURN_FALSE(m_Font->Initialize(m_deviceContext11, Driver, FONT_DATA_FILE, FONT_DATA_TEXTURE));
 
 		// Create the color shader object:
 	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)

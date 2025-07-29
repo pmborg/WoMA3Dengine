@@ -52,7 +52,7 @@ public:
 	~DxTextClass();
 
 	void Shutdown();
-	bool Initialize(void* g_driver);
+	bool Initialize(void* g_driver, ID3D11DeviceContext* pContext);
 	bool InitializeTexture(void* Driver);
 
 	bool UpdateSentence(SentenceType*, TCHAR*, int, int, float, float, float);

@@ -46,33 +46,33 @@ public:
 	~GLmodelClass();
 	void Shutdown();
 
-	void RenderWithFade(float fadeLight = 1, bool FOG = false);
+	void RenderWithFade(void* pContext, float fadeLight = 1, bool FOG = false);
 #if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28 && defined USE_SKYSPHERE
-	void RenderSky(UINT camera, float fadeLight = 1);
+	void RenderSky(void* pContext, UINT camera, float fadeLight = 1);
 #endif
-	void Render(UINT camera = 0, UINT projection = 0, UINT pass = 0, void* lightViewMatrix = NULL, void* ShadowProjectionMatrix = NULL);
+	void Render(void* pContext, UINT camera = 0, UINT projection = 0, UINT pass = 0, void* lightViewMatrix = NULL, void* ShadowProjectionMatrix = NULL);
 
 	bool InitializeVertexIndexBuffers(std::vector <STRING>* textureFile);
 
-	bool LoadColor(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<ModelColorVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0);
-	bool LoadTexture(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0);
-	bool LoadLight(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureLightVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0);
+	bool LoadColor(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<ModelColorVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0);
+	bool LoadTexture(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0);
+	bool LoadLight(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureLightVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0);
 	ModelClass modelClass;
-	bool LoadBump(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelNormalBumpVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount = 0);
-	bool LoadTerrain(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureDouble_Color_TerrainType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount = 0);
+	bool LoadBump(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelNormalBumpVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount = 0);
+	bool LoadTerrain(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureDouble_Color_TerrainType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount = 0);
 
 #if defined USE_VIEW2D_SPRITES		// Sprites
-	bool RenderSprite( int positionX, int positionY, float scale=1.0f, float fade = 1.0f);
-	bool UpdateBuffersRotY( int positionX, int positionY);
-	bool UpdateSpriteBuffersRotY( int positionX, int positionY);
+	bool RenderSprite(void* pContext, int positionX, int positionY, float scale=1.0f, float fade = 1.0f);
+	bool UpdateBuffersRotY(void* pContext, int positionX, int positionY);
+	bool UpdateSpriteBuffersRotY(void* pContext, int positionX, int positionY);
 #endif
 
 #if defined USE_LIGHT_RAY
-	void UpdateDynamic( std::vector<ModelColorVertexType>* lightVertexVector);
+	void UpdateDynamic(void* pContext, std::vector<ModelColorVertexType>* lightVertexVector);
 #endif
 
 	ADVOBJ3D obj3d;
-	bool LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow = false, bool renderShadow=false, UINT instanceCount=0);
+	bool LoadModel(void* pContext, TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow = false, bool renderShadow=false, UINT instanceCount=0);
 	//GLuint linearFiltering;
 	STRING MODEL_NAME;
 

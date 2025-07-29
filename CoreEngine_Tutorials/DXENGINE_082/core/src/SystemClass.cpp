@@ -77,7 +77,7 @@
 
 //----------------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 19 && !defined NewWomaEngine
-bool SystemClass::LoadAllGraphicAssets()
+bool SystemClass::LoadAllGraphicAssets(void* pContext)
 {
 #if defined USE_LOADING_THREADS
 	m_Cpu.SetProcessorAffinity(0);  //Use CPU N.0 to Load
@@ -87,9 +87,11 @@ bool SystemClass::LoadAllGraphicAssets()
 	SystemHandle->m_Application->scaleY = SystemHandle->AppSettings->WINDOW_HEIGHT / 1080.0f;
 	SystemHandle->m_Application->rescale = min(SystemHandle->m_Application->scaleX, SystemHandle->m_Application->scaleY);
 
+	
 	//################################ LOAD ALL INITIAL 3D OBJECTS ##################################
 	// Load all assets that will be rendered@ 1st Frame and START TIMER
-	if (!m_Application->Initialize(m_Driver)) {
+	if (!m_Application->Initialize(pContext, m_Driver))
+	{
 		WOMA::main_loop_state = -1; 
 		WOMA::game_state = GAME_STOP;
 		return false;
@@ -1247,7 +1249,7 @@ bool InitSelectedDriver()
 	{
 #if defined DX11 // [0] Pure DX11
 	case DRIVER_DX11:
-		IF_NOT_RETURN_FALSE(((DirectX::DX11Class*)(driverList[DRIVER_DX11]))->OnInit(AppSettings->UI_MONITOR, SystemHandle->m_hWnd, 
+		IF_NOT_RETURN_FALSE(((DirectX::DX11Class*)(driverList[DRIVER_DX11]))->OnInit(AppSettings->UI_MONITOR, SystemHandle->m_hWnd,
 			AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT, AppSettings->DEPTH_BITS,
 			AppSettings->SCREEN_DEPTH, AppSettings->SCREEN_NEAR, AppSettings->MSAA_Anisotropic, AppSettings->VSYNC_ENABLED,
 			AppSettings->FULL_SCREEN, AppSettings->UseDoubleBuffering, AppSettings->AllowResize));
@@ -1255,21 +1257,20 @@ bool InitSelectedDriver()
 #endif
 #if (defined OPENGL3 || defined OPENGL4) //[1]
 	case DRIVER_GL3:
-		ASSERT(((GLopenGLclass*)(driverList[DRIVER_GL3]))->OnInit(AppSettings->UI_MONITOR, SystemHandle->m_hWnd, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT, 24 /*BufferDeep*/,
-			AppSettings->SCREEN_DEPTH, AppSettings->SCREEN_NEAR, AppSettings->MSAA_Anisotropic, AppSettings->VSYNC_ENABLED,
-			AppSettings->FULL_SCREEN, AppSettings->UseDoubleBuffering, AppSettings->AllowResize));
+        ASSERT(((GLopenGLclass*)(driverList[DRIVER_GL3]))->OnInit(AppSettings->UI_MONITOR, SystemHandle->m_hWnd, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT, 24 /*BufferDeep*/, AppSettings->SCREEN_DEPTH,
+            AppSettings->SCREEN_NEAR, AppSettings->MSAA_Anisotropic, AppSettings->VSYNC_ENABLED, AppSettings->FULL_SCREEN,
+            AppSettings->UseDoubleBuffering, AppSettings->AllowResize));
 #if !defined ANDROID_PLATFORM
-		ASSERT(g_contextDriver->OnInit(AppSettings->UI_MONITOR, SystemHandle->m_hWnd, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT, 24 /*BufferDeep*/,
-			AppSettings->SCREEN_DEPTH, AppSettings->SCREEN_NEAR, AppSettings->MSAA_Anisotropic, AppSettings->VSYNC_ENABLED,
-			AppSettings->FULL_SCREEN, AppSettings->UseDoubleBuffering, AppSettings->AllowResize));
+        ASSERT(g_contextDriver->OnInit(AppSettings->UI_MONITOR, SystemHandle->m_hWnd, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT, 24 /*BufferDeep*/, AppSettings->SCREEN_DEPTH, AppSettings->SCREEN_NEAR, AppSettings->MSAA_Anisotropic,
+            AppSettings->VSYNC_ENABLED, AppSettings->FULL_SCREEN, AppSettings->UseDoubleBuffering, AppSettings->AllowResize));
 #endif
 		break;
 #endif
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009 //[3]
 	case DRIVER_DX12:
-		ASSERT(((DirectX::DX12Class*)(driverList[DRIVER_DX12]))->OnInit(AppSettings->UI_MONITOR, SystemHandle->m_hWnd, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT, 24 /*BufferDeep*/,
-			AppSettings->SCREEN_DEPTH, AppSettings->SCREEN_NEAR, AppSettings->MSAA_Anisotropic, AppSettings->VSYNC_ENABLED,
-			AppSettings->FULL_SCREEN, AppSettings->UseDoubleBuffering, AppSettings->AllowResize));
+        ASSERT(((DirectX::DX12Class*)(driverList[DRIVER_DX12]))->OnInit(AppSettings->UI_MONITOR, SystemHandle->m_hWnd, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT, 24 /*BufferDeep*/, AppSettings->SCREEN_DEPTH,
+            AppSettings->SCREEN_NEAR, AppSettings->MSAA_Anisotropic, AppSettings->VSYNC_ENABLED, AppSettings->FULL_SCREEN,
+            AppSettings->UseDoubleBuffering, AppSettings->AllowResize));
 		break;
 #endif
 };
