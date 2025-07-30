@@ -131,4 +131,3 @@ int APPLICATION_MAIN(int argc, char* argv[])
     APPLICATION_STOP();                                   // ENGINE STOP: |CoUninitialize|+|Free Mini Dumper|+|CLOSE Log|+|DELETE Temp files(RELEASE)
     return Command;                                       // ENGINE RETURN: to OS (Can be: 0, ENGINE_RESTART or "an error" code)
 }
- 

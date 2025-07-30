@@ -112,7 +112,6 @@ void RenderAllMeshModels(ID3D11DeviceContext* m_DeviceContext)
 
 	MeshApplication* demoapp = demoapp_; 
 	MyDemo* demo = demo_;
-    m_DeviceContext->RSSetState(demoapp->m_Graphics.m_RasterizerState);
 
         // Model 1 -----------------a-------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 79 && defined USE_MODEL1

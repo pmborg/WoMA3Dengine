@@ -98,30 +98,25 @@ extern void RenderAllMeshModels(ID3D11DeviceContext* pContext);
 #if defined USE_MAP_REDENRING_THREAD
 std::mutex g_syncMutex;
 std::condition_variable g_syncCV;
-int g_currentMainID = -1;
-int g_currentMiniID = -1;
+std::atomic<int> g_minimapProgress{ -1 }; // highest ID minimap has finished
 
-void CheckAndSync(int id, bool isMinimap) 
+void CheckAndSync(int id, bool isMinimap)
 {
-	std::unique_lock<std::mutex> lock(g_syncMutex);
-
 	if (isMinimap) {
-		g_currentMiniID = id;
-
-		// Wait while main is rendering the same object
-		g_syncCV.wait(lock, [&] { return g_currentMainID != id; });
-
+		// Minimap only marks progress and never waits
+		{
+			std::lock_guard<std::mutex> lock(g_syncMutex);
+			g_minimapProgress = id;  // update progress
+		}
+		g_syncCV.notify_all(); // wake main if waiting
 	}
 	else {
-		g_currentMainID = id;
-
-		// Wait while minimap is rendering the same object
-		g_syncCV.wait(lock, [&] { return g_currentMiniID != id; });
+		// Main waits until minimap has rendered this ID or lower
+		std::unique_lock<std::mutex> lock(g_syncMutex);
+		g_syncCV.wait(lock, [&] { return g_minimapProgress <= id; });
 	}
-
-	// Notify the other thread to continue
-	g_syncCV.notify_all();
 }
+
 #endif
 
 float sort_cameraX=0, sort_cameraY=0, sort_cameraZ = 0;
@@ -265,9 +260,6 @@ void ApplicationClass::RenderMiniMapPass(UINT monitorWindow, WomaDriverClass* Dr
 #if defined USE_MINIMAP_EXPANSION
 		//for (UINT id = 0; id < world_main_size; id++)  //TODO: use sceneManager
 		for (int id = world_main_size - 1; id >= 0; --id) {
-	#if defined USE_MAP_REDENRING_THREAD
-			CheckAndSync(id, false);
-	#endif
 			RenderModel(monitorWindow, m_Driver, id, PASS_OPAC, pContext, &m_CameraMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix);
 		}
 #endif
@@ -299,7 +291,7 @@ void ApplicationClass::RenderMiniMapPass(UINT monitorWindow, WomaDriverClass* Dr
 		//for (UINT id = 0; id < world_main_size-1; id++)  //TODO: use sceneManager
 		for (int id = world_main_size - 1; id >= 0; --id) {
 	#if defined USE_MAP_REDENRING_THREAD
-			CheckAndSync(id, false);
+			CheckAndSync(id, true);
 	#endif
 			RenderModel(monitorWindow, m_Driver, id, PASS_OPAC, pContext, &m_CameraMINIMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix);
 		}
@@ -800,19 +792,16 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 #if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined MAIN_RENDER_MAIN_OBJ //MAIN-RENDER: MAIN OBJs. (9 ms)
 	for (UINT id = 0; id < WOMA::sceneManager->opacModelList.size(); id++)
 	{
+#if defined USE_MAP_REDENRING_THREAD
+		CheckAndSync(id, false);
+#endif
 #if defined USE_ALPHA_BLENDING
 		m_Driver->TurnOffAlphaBlending(pContext);
 #endif
-	#if defined USE_MAP_REDENRING_THREAD
-		CheckAndSync(id, false);
-	#endif
 		RenderModel(monitorIndex, m_Driver, id, PASS_OPAC, pContext, NULL, NULL);
 		if (((DXmodelClass*)objModel[id])->obj3d.hasTransparent == true)
 		{
 			m_Driver->TurnOnAlphaBlending(pContext);
-	#if defined USE_MAP_REDENRING_THREAD
-		CheckAndSync(id, false);
-	#endif
 			objModel[id]->Render(pContext, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_TRANSPARENT, NULL, NULL);
 		}
 	}

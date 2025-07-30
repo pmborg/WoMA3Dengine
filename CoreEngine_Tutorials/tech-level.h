@@ -553,17 +553,18 @@
 #endif
     
 #if DX_ENGINE_LEVEL >= 90       // From now on DX: Will use W3D + DDS
-    #undef  USE_MAP_EDITOR
+	#undef  USE_MAP_EDITOR
 	#undef  ALLOW_CBIND_PROGRESS_BAR								
-    #undef USE_INSTANCES_FOR_TREES
+	#undef USE_INSTANCES_FOR_TREES
 #endif
 #if DX_ENGINE_LEVEL >= 91
     #define USE_MAP_REDENRING_THREAD
     #define USE_SHADOW_THREAD
     #define USE_MESH_THREAD
-  //#if !defined NDEBUG	
-	//#undef USE_INTRO_VIDEO_DEMO
-  //#endif
+  #if !defined NDEBUG	
+	#undef USE_INTRO_VIDEO_DEMO
+	#define ALLOW_CBIND_PROGRESS_BAR
+  #endif
 #endif
     
     
