@@ -31,7 +31,7 @@ Later on I will make path free but for now a few paths are hardcoded there.<br>
 <br>
 <hr>
 
-# cmake version new to be: 
+# cmake version need to be: 
 <b>cmake-3.31.4</b>
 
 ## How did I install all environment from scratch:
