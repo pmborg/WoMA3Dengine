@@ -38,7 +38,9 @@ PS C:\Users\pedro> wsl -l
 (Tested with ubunto 22)
 PS C:\Users\pedro> wsl --unregister Ubuntu
 PS C:\Users\pedro> wsl --install Ubuntu-22.04
-
+or
+                   wsl --install --distribution Ubuntu-22.04
+				   
 PS C:\Users\pedro> wsl -v
 WSL version: 2.2.4.0
 Kernel version: 5.15.153.1-2
