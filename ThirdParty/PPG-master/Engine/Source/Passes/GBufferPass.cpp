@@ -80,12 +80,12 @@ void GBufferPass::Render(ID3D11DeviceContext* deviceContext, Graphics& graphics,
         Animator* animator = meshRenderer.m_Animator;
         if (animator != nullptr && animator->m_IsEnabled)
         {
+            animator->m_FinalTransforms[127].r->m128_f32[0] = 127;    //AQUI-ANIM
             if (animator != currentAnimator)
             {
                 graphics.UpdateBuffer(deviceContext, m_BoneBuffer, animator->m_FinalTransforms);
                 currentAnimator = animator;
             }
-            animator->m_FinalTransforms[127].r->m128_f32[0] = 127;    //AQUI-ANIM
         } 
         else {                                                        //AQUI-ANIM
             staticm_FinalTransforms[127].r->m128_f32[0] = 0;       

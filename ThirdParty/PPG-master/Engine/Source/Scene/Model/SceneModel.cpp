@@ -97,7 +97,6 @@ SceneModel* SceneModel::LoadModelToScene(UINT dxlevel, bool enginefile, UINT typ
                 DX_ASSIMP_LOAD_FLAGS = aiProcess_LimitBoneWeights | aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_MakeLeftHanded | aiProcess_FlipUVs;
             else
                 DX_ASSIMP_LOAD_FLAGS = aiProcess_LimitBoneWeights | aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_MakeLeftHanded | aiProcess_FlipWindingOrder | aiProcessPreset_TargetRealtime_Fast;
-
     }
     else
     {

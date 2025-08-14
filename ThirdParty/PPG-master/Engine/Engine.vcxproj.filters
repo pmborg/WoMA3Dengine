@@ -160,7 +160,7 @@
     <ClCompile Include="Source\Passes\ShadowMapPass.cpp">
       <Filter>PPG-master\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\LowLevel\Application.cpp">
+    <ClCompile Include="Source\LowLevel\MeshApplication.cpp">
       <Filter>PPG-master\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Passes\SSAOPass.cpp">

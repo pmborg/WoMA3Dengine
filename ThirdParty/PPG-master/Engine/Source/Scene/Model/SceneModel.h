@@ -41,6 +41,7 @@ public:
 
     std::vector<const aiAnimation*> m_Animations; // Store pointers to aiAnimation ANIM!
     bool loaded = false;
+    bool readyToRender = false;
 private:
     friend class ModelLoader;
     std::vector<Mesh*> m_Meshes;

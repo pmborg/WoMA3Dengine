@@ -197,7 +197,7 @@ bool Texture::CreateRTV(Graphics& graphics, DXGI_FORMAT texFormat)
 {
 #define m_driver11 ((DirectX::DX11Class*)driverList[SystemHandle->AppSettings->DRIVER])
 
-    ID3D11RenderTargetView* rtv = ((DirectX::DX11Class*)m_driver11)->DX11windowsArray[0].m_renderTargetView;
+    ID3D11RenderTargetView* rtv = DX11windowsArray[0].m_renderTargetView;
     m_TextureRTVs.push_back(rtv);
     return true;
 }
