@@ -48,3 +48,5 @@ ThirdParty/freeglut-3.6.0/X64LIB/lib/Debug/freeglut_staticd.*
 hooks
 womamulti.pck
 *.tlog
+**/int/Debug
+**/int/Release
