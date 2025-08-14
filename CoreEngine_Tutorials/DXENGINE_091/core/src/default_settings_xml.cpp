@@ -24,6 +24,9 @@
 #endif
 #include "OSengine.h"
 #include "main.h"
+#if CORE_ENGINE_LEVEL >= 10
+#include "womadriverclass.h"
+#endif
 #if defined USE_LOG_MANAGER
 #include "log.h"
 #endif

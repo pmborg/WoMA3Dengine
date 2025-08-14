@@ -134,7 +134,11 @@ bool ParseWind(const TCHAR* token)
         weather.windKMh = wind_code * 3600 / 1000;
     //parsed.wind.norm = fixed(wind_code);
     else if (_tcsicmp(endptr, TEXT("KT")) == 0)
+#if defined FORCE_MATH_AVX
         weather.windKMh = (UINT)(wind_code * 1.852);
+#else
+        weather.windKMh = (UINT)(static_cast<int>(wind_code) * 1.852);
+#endif
     //parsed.wind.norm = Units::ToSysUnit(fixed(wind_code), Unit::KNOTS);
     else
         return false;

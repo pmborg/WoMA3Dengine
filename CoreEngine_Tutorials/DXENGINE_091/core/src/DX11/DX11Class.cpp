@@ -42,6 +42,7 @@
 // ----------------------------------------------------------------------------------------------
 // Gloabals:
 // ----------------------------------------------------------------------------------------------
+std::vector<DXwindowDataContainer> DX11windowsArray;
 
 namespace DirectX {
 
@@ -416,7 +417,6 @@ bool DirectX::DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int scree
 	//Init Step: 3, 4
 	ASSERT(createDevice_legacy());
     
-
 #ifdef USE_DX11_3
 	//https://learn.microsoft.com/en-us/windows/win32/api/d3d11_3/nn-d3d11_3-id3d11device3
 	m_device11->QueryInterface(__uuidof(ID3D11Device3), reinterpret_cast<void**>(&pDevice3));
@@ -444,13 +444,13 @@ bool DirectX::DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int scree
 
 	//Init Step: 7 (Include: 8,9,10,11,12)
 	// Creates a render target view and depth stencil surface/view per swapchain
-		ASSERT(Resize(screenWidth, screenHeight, screenNear, screenDepth, fullscreen, depthBits));
+	ASSERT(Resize(screenWidth, screenHeight, screenNear, screenDepth, fullscreen, depthBits));
    
-#if defined USE_RASTERIZER_STATE
+  #if defined USE_RASTERIZER_STATE
 	//Init Step: 8 - Cull Back / Front:
 	ASSERT( createRasterizerStates (/*lineAntialiasing*/ false)); // Only applies: if doing "line drawing" and "MultisampleEnable" is false.
 	SetRasterizerState(m_deviceContext, CULL_NONE, FILL_SOLID);	//Set Default
-#endif
+  #endif
 
   #if defined USE_FRUSTRUM
 	frustum = NEW DXfrustumClass;	// Create Frustum
@@ -464,9 +464,11 @@ bool DirectX::DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int scree
 	//Init Step: 14 - Transparency: To render text on top of 3D
 	ASSERT(CreateBlendState());
   #endif
+
 	#if defined USE_MAP_REDENRING_THREAD
 	CreateDeferedContexts();
 	#endif
+
 	return true;
 }
 
@@ -533,7 +535,6 @@ HRESULT result = S_OK;
 				}
 			}
 		}
-
 		DXGI_SWAP_CHAIN_DESC1 swapChainDesc = { 0 }; //ZeroMemory(&swapChainDesc, sizeof(swapChainDesc));
 
 		// Set to a single back buffer.
@@ -567,7 +568,7 @@ HRESULT result = S_OK;
 		swapChainDesc.Flags = 0;
 #endif
 
-        DXwindowDataContainer DXwindow = {};
+        DXwindowDataContainer DXwindow = {0};
 
 		// First, retrieve the underlying DXGI Device from the D3D Device.
         IDXGIDevice1* dxgiDevice;
@@ -600,7 +601,9 @@ HRESULT result = S_OK;
 		fsSwapChainDesc.Windowed = TRUE;
 
 		if (WOMA::game_state == GAME_LOADING || WOMA::game_state == GAME_SETUP || DX11windowsArray.size() == 0)
+		{
 			DX11windowsArray.push_back(DXwindow);
+		}
 
 		// Create a SwapChain from a Win32 window.
         hr = dxgiFactory->CreateSwapChainForHwnd(
@@ -906,9 +909,16 @@ void DX11Class::setProjectionMatrixWorldMatrixOrthoMatrix (int screenWidth, int 
 	// Create the projection matrix:
 	UINT num_monitors = (UINT)SystemHandle->windowsArray.size();
 
+#if defined FORCE_MATH_AVX
 	fieldOfView =	(float)(PI / 4.0f) / // Or... 90deg => fieldOfView = (90 / 2) * 0,0174532925f;
 					num_monitors;		 // 90: 3(num "Impar" monitors)
 	screenAspect = (float)screenWidth / (float)screenHeight;
+#else
+	fieldOfView = SAFE_FLOAT32(PI / 4.0f) /		// Or... 90deg => fieldOfView = (90 / 2) * 0,0174532925f;
+				  SAFE_FLOAT32(num_monitors);	// 90: 3(num "Impar" monitors)
+	screenAspect = SAFE_FLOAT32((float)screenWidth / (float)screenHeight);
+#endif
+	
 
 	// Create the projection matrix for "3D" rendering.
 	m_projectionMatrix = XMMatrixPerspectiveFovLH( fieldOfView, screenAspect, screenNear, screenDepth);		// 3D PROJECTION

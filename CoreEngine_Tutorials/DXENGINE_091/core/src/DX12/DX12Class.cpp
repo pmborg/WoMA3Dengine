@@ -1491,14 +1491,28 @@ namespace DirectX {
 		// Create the projection matrix:
 		UINT num_monitors = (UINT)SystemHandle->windowsArray.size();
 
-		// Create the projection matrix:
-		fieldOfView = (float)(PI / 4.0f) /				// Or... 90deg => fieldOfView = (90 / 2) * 0,0174532925f;
-			num_monitors;	// 90: 3(num "Impar" monitors)
-		screenAspect = (float)screenWidth / (float)screenHeight;
+//		// Create the projection matrix:
+//		fieldOfView = (float)(PI / 4.0f) /				// Or... 90deg => fieldOfView = (90 / 2) * 0,0174532925f;
+//			num_monitors;	// 90: 3(num "Impar" monitors)
+//		screenAspect = (float)screenWidth / (float)screenHeight;
 
+#if defined FORCE_MATH_AVX
+		fieldOfView = (float)(PI / 4.0f) / // Or... 90deg => fieldOfView = (90 / 2) * 0,0174532925f;
+			num_monitors;		 // 90: 3(num "Impar" monitors)
+		screenAspect = (float)screenWidth / (float)screenHeight;
+#else
+		fieldOfView = SAFE_FLOAT32(PI / 4.0f) /	// Or... 90deg => fieldOfView = (90 / 2) * 0,0174532925f;
+			SAFE_FLOAT32(num_monitors);	// 90: 3(num "Impar" monitors)
+		screenAspect = SAFE_FLOAT32((float)screenWidth / (float)screenHeight);
+#endif
+		
+#if defined FORCE_MATH_AVX
 		// Create the projection matrix for "3D" rendering:
 		// DX11: XMMatrixPerspectiveFovLH
 		m_projectionMatrix = XMMatrixPerspectiveFovLH(fieldOfView, screenAspect, screenNear, screenDepth);    // 3D PROJECTION
+#else
+		m_projectionMatrix = Safe_XMMatrixPerspectiveFovLH(fieldOfView, screenAspect, screenNear, screenDepth);    // 3D PROJECTION
+#endif
 
 #if defined CLIENT_SCENE_TEXT || defined USE_VIEW2D_SPRITES // 26
 		// And the final thing we will setup in the Initialize function is an orthographic projection matrix. 

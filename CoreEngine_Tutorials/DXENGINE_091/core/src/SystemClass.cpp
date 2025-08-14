@@ -50,6 +50,8 @@
 #endif
 
 #if DX_ENGINE_LEVEL >= 19 && !defined NewWomaEngine
+#include "womadriverclass.h"
+
 #if defined DX11 || defined DX9
 #include "Dx11Class.h"
 #endif
@@ -92,6 +94,7 @@ bool SystemClass::LoadAllGraphicAssets(void* pContext)
 	// Load all assets that will be rendered@ 1st Frame and START TIMER
 	if (!m_Application->Initialize(pContext, m_Driver))
 	{
+		womalog("m_Application->Initialize() FAILED!");
 		WOMA::main_loop_state = -1; 
 		WOMA::game_state = GAME_STOP;
 		return false;
@@ -610,6 +613,7 @@ void SystemClass::ProcessOSInput() // This Function will be invoked several time
 			WOMA::game_state = ENGINE_RESTART;
 			return;
 		}
+
 		RENDER_PAGE = 7;
 		WOMA::game_state = GAME_CELESTIAL_INFO; //match*
 		OS_REDRAW_WINDOW;

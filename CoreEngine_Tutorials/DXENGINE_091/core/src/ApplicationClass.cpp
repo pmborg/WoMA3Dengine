@@ -668,7 +668,7 @@ bool ApplicationClass::Initialize(void* pContext, WomaDriverClass* Driver)
 	//imgGui:
 
 #if defined USE_DIRECT_INPUT
-	m_NextPosition = NEW PositionClass(/*ID*/-1);
+	m_NextPosition = NEW PositionClass(-1); // ID=-1 (non valid)
 	if (WOMA::game_state == GAME_STOP) return false;
 #endif
 

@@ -161,6 +161,10 @@ DX12 Versions:
 	#define X64	//CPU: 64bits!
 #endif
 
+#if defined CPU_X86
+static_assert(false, "This HW Target is not valid for WOMA3D Engine");
+#endif
+
 // -------------------------------------------------------------------------------------------------------------------
 // ASSERT: 32bits and 64bits VALID COMPILATION OPTIONS:
 // -------------------------------------------------------------------------------------------------------------------
@@ -495,7 +499,7 @@ static_assert(false, "This code is for a LOWENDIAN CPU");
 #endif
 #endif
 
-// ASSERT corect and valid SDK for WIN10:
+// ASSERT correct and valid SDK for WIN10:
 #if VER_PRODUCTMAJORVERSION == 6 && defined WIN10 && defined X64
 #error "Please Install/Select Windows 10 SDK, in order to compile for WIN10 & DX12 target." 
 // STEP1: Go to VS2015 MENU: File New Project / Visual C++ Windows / Universal Platforms (Install)
@@ -583,8 +587,8 @@ static_assert(false, "WIN6x: X64 or WIN32, must be selected");
 #endif
 #endif
 
-#define BIG_ENDIAN 0    //constexpr int BIG_ENDIAN = 0;
-#define LITTLE_ENDIAN 1 //  constexpr int LITTLE_ENDIAN = 1;
+#define BIG_ENDIAN 0    // constexpr int BIG_ENDIAN = 0
+#define LITTLE_ENDIAN 1 // constexpr int LITTLE_ENDIAN = 1
 
 // -------------------------------------------------------------------------------------------------------------------
 // Windows Platforms Define (Internal API Version):
@@ -659,6 +663,7 @@ static_assert(false, "WIN6x: X64 or WIN32, must be selected");
 #ifdef MIN
 #undef MIN
 #endif
+
 #define MAX(a,b)	(((a) > (b)) ? (a) : (b))
 #define MIN(a,b)	(((a) < (b)) ? (a) : (b))
 

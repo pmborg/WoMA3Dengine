@@ -100,6 +100,8 @@
 
 #include <wrl/client.h>
 
+#define g_driver11 ((DirectX::DX11Class*)driverList[DRIVER_DX11])
+
 //////////////
 // INCLUDES //
 //////////////
@@ -244,6 +246,19 @@ WDDM 2.0->Windows 10				Display Drivers or Creates a DXGI 1.4
 
 #define	MaxTextSizes 24
 
+// For each DX11 Monitor:
+struct DXwindowDataContainer
+{
+    //IDXGISwapChain* m_swapChain=NULL;
+    IDXGISwapChain1* m_swapChain1 = NULL;
+    ID3D11Texture2D* m_backBuffer = NULL;
+    ID3D11RenderTargetView* m_renderTargetView = NULL;
+    ID3D11DepthStencilView* m_depthStencilView = NULL;
+    D3D11_VIEWPORT viewport = { 0 };
+};
+
+extern std::vector<DXwindowDataContainer> DX11windowsArray;
+
 namespace DirectX {
 
 struct DXTextLine
@@ -255,6 +270,7 @@ struct DXTextLine
     float G;
     float B;
 };
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: DX11Class
@@ -396,17 +412,8 @@ public:
     ID3D11Device3* pDevice3 = nullptr;
 #endif
 
-    // For each DX11 Monitor:
-    struct DXwindowDataContainer
-    {
-        //IDXGISwapChain* m_swapChain=NULL;
-        IDXGISwapChain1* m_swapChain1 = NULL;
-        ID3D11Texture2D* m_backBuffer = NULL;
-        ID3D11RenderTargetView* m_renderTargetView = NULL;
-        ID3D11DepthStencilView* m_depthStencilView = NULL;
-        D3D11_VIEWPORT viewport = {0};
-    };
-    std::vector<DXwindowDataContainer> DX11windowsArray;
+
+    
 
     // TODO: Go inside DXwindowDataContainer
     bool ScissorEnable=false;

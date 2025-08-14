@@ -383,8 +383,12 @@ int CHECK_IF_WE_ARE_A_RUNNING_DEMO()
 }
 #endif
 
+bool cpuSupportsAVX512f=false;
+
 void APPLICATION_STARTUP(int argc, char* argv[])
 {
+	srand(time(0));
+
     std::cout << "<" << PROJECT_NAME << "> STARTUP" << std::endl;
 
 #if defined WOMA_CONSOLE_APPLICATION  || !defined WINDOWS_PLATFORM
@@ -518,7 +522,13 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 	DeleteFile("used_imgs.txt");
 #endif
 
-    womalogauto("<%s> STARTUP ENDED\n", PROJECT_NAME);
+	cpuSupportsAVX512f = cpu_supports_avx512f();
+#ifdef __AVX512F__
+	//NOTE: If there an exception here: it's because this/your CPU dont support the fast AVX512, so change project settings to compile in slow AVX2 or AVX only!
+	ASSERT(cpuSupportsAVX512f); // Check for fast WIN11(AVX512) Instructions set support, if not compile for WIN10(AVX2)
+#endif
+
+	womalogauto("<%s> STARTUP ENDED\n", PROJECT_NAME);
 }
 
 void APPLICATION_STOP()
@@ -953,3 +963,16 @@ std::string original_files[] = {
     TEXT("")
 };
 #endif
+
+
+#include <immintrin.h>
+#include <intrin.h>
+bool cpu_supports_avx512f() {
+	int cpuInfo[4];
+	__cpuid(cpuInfo, 0);
+	if (cpuInfo[0] >= 7) {
+		__cpuidex(cpuInfo, 7, 0);
+		return (cpuInfo[1] & (1 << 16)) != 0; // AVX512F = bit 16 of EBX
+	}
+	return false;
+}

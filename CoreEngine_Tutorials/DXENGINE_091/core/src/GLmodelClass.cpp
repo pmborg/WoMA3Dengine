@@ -399,7 +399,7 @@ void GLmodelClass::Shutdown()
 		#undef _43
 		#undef _44
 
-		Render(pContext, CAMERA_NORMAL, PROJECTION_ORTHOGRAPH);
+		Render(pContext, 0, CAMERA_NORMAL, PROJECTION_ORTHOGRAPH);
 
 		return true;
 	}
@@ -611,10 +611,10 @@ void GLmodelClass::RenderSky(void* pContext, UINT camera, float fadeLight)
 {
 	m_Shader->PSfade = fadeLight;
 	m_Shader->isSky = true;
-	Render(pContext, camera, 0, 0, NULL, NULL); //RenderWithFade(driver, fadeLight);
+	Render(pContext, 0, camera, 0, 0, NULL, NULL); //RenderWithFade(driver, fadeLight);
 }
 #endif
-void GLmodelClass::Render(void* pContext, UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix)
+void GLmodelClass::Render(void* pContext, UINT threadID, UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix)
 {
 	GLopenGLclass* driver = (GLopenGLclass*)m_Driver;
 

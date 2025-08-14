@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // Filename: woma_macros.h
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
@@ -250,5 +250,36 @@ extern const wchar_t* GetWC(const char* c);
 #ifndef RAD2DEG
 #define RAD2DEG(x)  ((float)(x) * (180.0f/PI))
 #endif
+
+extern bool cpuSupportsAVX512f;
+
+#define SAFE_FLOAT32(x)  SafeFloat32(x)
+#define SAFE_FLOAT64(x)  SafeFloat(x)
+#define SAFE_DOUBLE32(x) SafeDouble(x)
+#define SAFE_FLOAT64_DIV_TO_UINT64(n, d) (static_cast<UINT64>(SAFE_FLOAT64(n) / (d)))
+
+inline float SafeFloat32(uint32_t value) {
+#if defined(FORCE_MATH_AVX)
+	if (cpuSupportsAVX512f)
+		return static_cast<float>(value);
+#endif
+	return static_cast<float>(static_cast<int32_t>(value));
+}
+
+inline float SafeFloat(uint64_t value) {
+#if defined(FORCE_MATH_AVX)
+	if (cpuSupportsAVX512f)
+		return static_cast<float>(value); // May emit vcvtusi2ss
+#endif
+	return static_cast<float>(static_cast<int64_t>(value)); // Always safe
+}
+
+inline double SafeDouble(uint32_t value) {
+#if defined(FORCE_MATH_AVX)
+	if (cpuSupportsAVX512f)
+		return static_cast<double>(value); // May emit vcvtusi2sd
+#endif
+	return static_cast<double>(static_cast<int32_t>(value)); // Always safe
+}
 
 #endif

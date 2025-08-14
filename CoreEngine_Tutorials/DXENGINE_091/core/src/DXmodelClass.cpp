@@ -1157,17 +1157,18 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 	//DX12
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
-	{
-		ID3D12Device* device = ((ID3D12Device*)Driver_Device);
-
-		//
-		// VERTEX:
+    {
 		//
 		const UINT vertexBufferSize = sizeofMODELvertex * m_vertexCount; // sizeof(triangleVertices);
 
 		// Note: using upload heaps to transfer static data like vert buffers is not 
 		// recommended. Every time the GPU needs it, the upload heap will be marshalled 
-		// over. Please read up on Default Heap usage. An upload heap is used here for 
+		// over. Please read up on Default Heap usage. An upload heap
+	
+		ID3D12Device* device = ((ID3D12Device*)Driver_Device);
+
+		//
+		// VERTEX: is used here for 
 		// code simplicity and because there are very few verts to actually transfer.
 		bool UPLOAD = true;
 		if (Model3D) {
@@ -1360,7 +1361,7 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 		}
 		else {
 			// SPRITE 2D Model
-			vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;		// Store in "Shared RAM" Memory (once we need to update)
+			vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;				// Store in "Shared RAM" Memory (once we need to update)
 			vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;	// CPU Need to re-write after creation.
 		}
 		vertexBufferDesc.ByteWidth = sizeofMODELvertex * m_vertexCount;
@@ -1420,7 +1421,7 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 
 		//The instance buffer description is setup exactly the same as a vertex buffer description.
 		ZeroMemory( &instanceBufferDesc, sizeof( instanceBufferDesc ) );
-		instanceBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+		instanceBufferDesc.Usage = D3D11_USAGE_IMMUTABLE; // D3D11_USAGE_DEFAULT
 		instanceBufferDesc.ByteWidth = sizeof(InstanceType) * m_instanceCount;
 		instanceBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
@@ -1916,7 +1917,7 @@ bool DirectX::DXmodelClass::RenderSprite(void* pContext, int positionX, int posi
 
 	if (fade == -1000)
 	{
-		Render(pContext, CAMERA_NORMAL, PROJECTION_MINIMAP, 0, NULL, NULL);
+		Render(pContext, 0, CAMERA_NORMAL, PROJECTION_MINIMAP, 0, NULL, NULL);
 		return true;
 	}
 
@@ -1935,12 +1936,12 @@ bool DirectX::DXmodelClass::RenderSprite(void* pContext, int positionX, int posi
 	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
 	case DRIVER_DX9:
 	case DRIVER_DX11:
-		Render(pContext, CAMERA_NORMAL, PROJECTION_ORTHOGRAPH, 0, NULL, NULL);
+		Render(pContext, 0, CAMERA_NORMAL, PROJECTION_ORTHOGRAPH, 0, NULL, NULL);
 	break;
 	#endif
 	#if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009
 	case DRIVER_DX12:
-		Render(pContext, CAMERA_NORMAL, PROJECTION_ORTHOGRAPH);
+		Render(pContext, 0, CAMERA_NORMAL, PROJECTION_ORTHOGRAPH);
 	break;
 	#endif
 	}
@@ -2060,8 +2061,7 @@ void DirectX::DXmodelClass::RenderSubMesh(ID3D11DeviceContext* pContext, WomaDri
 						pContext->PSSetShaderResources(1, 1, &obj3d.material[obj3d.subsetMaterialArray[i]].alfaMap11);		// set current alfaMap
 					#endif
 				}
-					
-				useShader->SetShaderParameters(pass, pContext, m_world, viewRender, projectionMatrix, lightViewMatrix, ShadowProjectionMatrix);// UPDATE CONST. BUFFER for TEXTURE
+				useShader->SetShaderParameters(pass, pContext, m_world, viewRender, projectionMatrix, lightViewMatrix, ShadowProjectionMatrix);// UPDATE CONST. BUFFER
 		    }
 
 			// Render:
@@ -2110,7 +2110,7 @@ void DirectX::DXmodelClass::RenderSky(void* pContext, UINT camera, float fadeLig
 	{
 		m_Shader->PSfade = fadeLight;
 		m_Shader->isSky = true;
-		Render(pContext, CAMERA_SKY, PROJECTION_PERSPECTIVE);
+		Render(pContext, 0, CAMERA_SKY, PROJECTION_PERSPECTIVE);
 	}
 #endif
 #if defined DX11 || defined DX9
@@ -2121,7 +2121,7 @@ void DirectX::DXmodelClass::RenderSky(void* pContext, UINT camera, float fadeLig
 		{
 			m_Shader11->isSky = true;
 		}
-		Render(pContext, CAMERA_SKY, PROJECTION_PERSPECTIVE, 0, NULL, NULL);
+		Render(pContext, 0, CAMERA_SKY, PROJECTION_PERSPECTIVE, 0, NULL, NULL);
 	}
 #endif
 	
@@ -2129,7 +2129,7 @@ void DirectX::DXmodelClass::RenderSky(void* pContext, UINT camera, float fadeLig
 #endif
 
 // ----------------------------------------------------------------------------------------
-void DirectX::DXmodelClass::Render(void* ctx, UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix)
+void DirectX::DXmodelClass::Render(void* ctx, UINT threadID, UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix)
 // ----------------------------------------------------------------------------------------
 {
 	if (m_Driver->RenderfirstTime) 

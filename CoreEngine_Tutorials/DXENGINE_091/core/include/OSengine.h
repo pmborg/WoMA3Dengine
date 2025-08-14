@@ -190,6 +190,14 @@ extern int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption, bool yesORno);
 extern int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption, bool yesORno);
 #endif
 
+//NOTE: Sync With: SystemClass::LoadAllDrivers() (keep this order)
+enum WomaDriver {
+	DRIVER_DX11 = 0,	// DRIVER_DX11  = DX10 or DX10.1 or DX11
+	DRIVER_GL3,		// DRIVER_GL3   = OPENGL 3.3+ / OPENGL 4.0
+	DRIVER_DX9,		// DRIVER_DX9   = DX11 with API for DX9
+	DRIVER_DX12		// DRIVER_DX12  = DX12
+};
+
 namespace WOMA
 {
 	// State Vars:
@@ -350,3 +358,4 @@ extern STRING LOAD_ASSET_SAVE_TO_CACHE(TCHAR* XMLFILE);
 
 #endif
 
+bool cpu_supports_avx512f();

@@ -387,7 +387,7 @@ bool dxWinSystemClass::SaveScreenshot()
 	GUID_ContainerFormatWmp
 	GUID_ContainerFormatDds
 	*/
-	HRESULT hr = DirectX::SaveWICTextureToFile(Driver->GetDeviceContext(), Driver->DX11windowsArray[0].m_backBuffer, GUID_ContainerFormatPng, path.c_str());		//op2
+	HRESULT hr = DirectX::SaveWICTextureToFile(Driver->GetDeviceContext(), DX11windowsArray[0].m_backBuffer, GUID_ContainerFormatPng, path.c_str());		//op2
 	if (hr == S_OK)
 		return true;
 

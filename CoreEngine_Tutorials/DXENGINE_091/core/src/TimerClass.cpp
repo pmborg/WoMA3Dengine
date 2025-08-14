@@ -99,7 +99,11 @@ void TimerClass::Frame()
 
 #if !defined ANDROID_PLATFORM
 	QueryPerformanceCounter((LARGE_INTEGER*)& currentTime);
+  #if defined FORCE_MATH_AVX
 	timeDifference = (float)(currentTime - m_startTime);
+  #else
+	timeDifference = (float)SAFE_FLOAT64(currentTime - m_startTime);
+  #endif
 #else
 	currentTime = timeGetTime();
 	timeDifference = (currentTime - m_startTime);

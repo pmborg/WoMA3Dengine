@@ -21,7 +21,6 @@
 #pragma once
 
 #include "platform.h"
-//#include<D3D11.h> //To populate: D3D11_SPEC_DATE_YEAR
 #if defined DX12//  && D3D11_SPEC_DATE_YEAR > 2009
 
 /////////////
@@ -74,17 +73,6 @@
 	#include <d2d1_3.h>
 	#include <dwrite.h>
 	#include <d3d11on12.h>
-	/*
-	#include <d3d12.h>
-	#include <dxgi1_4.h>
-	#include <D3Dcompiler.h>
-	#include <DirectXMath.h>
-	#include "d3dx12.h"
-
-	#include <string>
-	#include <wrl.h>
-	#include <shellapi.h>
-	*/
 #endif
 
 #include "d3dx12.h"	// DX12 UTILS:
@@ -251,25 +239,25 @@ public:
 	ComPtr<IDWriteTextFormat> m_textFormat;
 	ComPtr<ID2D1SolidColorBrush> m_textBrush;
 
-	ID3D11RasterizerState* CWcullMode;
+	ID3D11RasterizerState* CWcullMode = NULL;
 
-	ID3D10Device1 *d3d101Device;
+	ID3D10Device1 *d3d101Device = NULL;
 
-	IDXGIKeyedMutex *keyedMutex11;
-	IDXGIKeyedMutex *keyedMutex10;	
-	ID2D1RenderTarget *D2DRenderTarget;	
-	ID2D1SolidColorBrush *Brush;
+	IDXGIKeyedMutex *keyedMutex11 = NULL;
+	IDXGIKeyedMutex *keyedMutex10 = NULL;
+	ID2D1RenderTarget *D2DRenderTarget = NULL;
+	ID2D1SolidColorBrush *Brush = NULL;
 
-	ID3D11Texture2D *sharedTex11;	
-	ID3D11Buffer *d2dVertBuffer;
-	ID3D11Buffer *d2dIndexBuffer;
+	ID3D11Texture2D *sharedTex11 = NULL;
+	ID3D11Buffer *d2dVertBuffer = NULL;
+	ID3D11Buffer *d2dIndexBuffer = NULL;
 
-	ID3D11ShaderResourceView *d2dTexture;
-	IDWriteFactory *DWriteFactory;
-	IDWriteTextFormat *TextFormat;
+	ID3D11ShaderResourceView *d2dTexture = NULL;
+	IDWriteFactory *DWriteFactory = NULL;
+	IDWriteTextFormat *TextFormat = NULL;
 
-	ID3D11Buffer* cbPerObjectBuffer;
-	ID3D11BlendState* Transparency;
+	ID3D11Buffer* cbPerObjectBuffer = NULL;
+	ID3D11BlendState* Transparency = NULL;
 
 	DXshaderClass* m_FontV2Shader=NULL;
 #endif
@@ -410,5 +398,20 @@ public:
 
 }
 #endif
+
+inline XMMATRIX Safe_XMMatrixPerspectiveFovLH(float fov, float aspect, float zn, float zf)
+{
+	// Assume all inputs are SAFE_FLOAT32'd before calling!
+	float h = 1.0f / tanf(fov * 0.5f);
+	float w = h / aspect;
+
+	XMMATRIX m = {};
+	m.r[0] = XMVectorSet(w, 0.0f, 0.0f, 0.0f);
+	m.r[1] = XMVectorSet(0.0f, h, 0.0f, 0.0f);
+	m.r[2] = XMVectorSet(0.0f, 0.0f, zf / (zf - zn), 1.0f);
+	m.r[3] = XMVectorSet(0.0f, 0.0f, -zn * zf / (zf - zn), 0.0f);
+	return m;
+}
+
 #endif
 

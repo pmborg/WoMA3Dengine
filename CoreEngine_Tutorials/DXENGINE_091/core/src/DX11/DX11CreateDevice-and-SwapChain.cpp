@@ -34,10 +34,11 @@ struct
 }
 DriverTypes[] =
 {
-	{ D3D_DRIVER_TYPE_HARDWARE,	 TEXT("hardware")},
+	{ D3D_DRIVER_TYPE_HARDWARE,	 TEXT("Hardware")},
 	#if !defined USE_DX_DRIVER_FONT
-	{ D3D_DRIVER_TYPE_WARP,	   TEXT("emulator")},
-	{ D3D_DRIVER_TYPE_REFERENCE, TEXT("software")},
+	{ D3D_DRIVER_TYPE_WARP,	   TEXT("Warp Emulator")},
+	{ D3D_DRIVER_TYPE_REFERENCE, TEXT("Software Reference")},
+	{ D3D_DRIVER_TYPE_SOFTWARE, TEXT("Software")},
 	#endif
 };
 

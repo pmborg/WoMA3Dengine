@@ -38,7 +38,11 @@
 
 float FAST_sqrt(float x)
 {
+#if defined FORCE_MATH_AVX
 	return sqrt(x);
+#else
+	return sqrtf(x);
+#endif
 }
 
 float tableSin[360*100], tableCos[360*100];
@@ -57,10 +61,19 @@ void TrigonometryMathClass::Initialize()
 {
     womalogauto("TrigonometryMathClass::Initialize() - START\n");
 
+	//NOTE: If there an exception here: it's because this/your CPU dont support the fast AVX512, so change project settings to compile in slow AVX2 only!
+#if defined FORCE_MATH_AVX
 	for (UINT deg=0;deg<360*100;deg++) {
 		tableSin[deg] = sin (((float)deg / 100.0f) * 0.0174532925f); //0.0174532925f (PI / 180.0f): Convert degrees to radians.
 		tableCos[deg] = cos (((float)deg / 100.0f) * 0.0174532925f); //0.0174532925f (PI / 180.0f): Convert degrees to radians.
 	}
+#else
+	for (UINT deg = 0; deg < 360 * 100; deg++) {
+		float angle = SAFE_FLOAT64(deg) / 100.0f * 0.0174532925f;
+		tableSin[deg] = sinf(angle);
+		tableCos[deg] = cosf(angle);
+	}
+#endif
 
     womalogauto("TrigonometryMathClass::Initialize() - END\n");
 }
@@ -90,10 +103,16 @@ void TrigonometryMathClass::testMathSpeed(TimerClass* m_Timer, double &delta1, d
 #endif
 		for (UINT time = 0; time < 10000000; time++)
 		{
+#if defined FORCE_MATH_AVX
 			// Run these functions 10 Million times:
 			t = sqrt((float)time);
 			t = cos((float)(time % 360));
 			t = sin((float)(time % 360));
+#else
+			t = sqrtf(SAFE_FLOAT32(time));
+			t = cosf(SAFE_FLOAT32(time % 360));
+			t = sinf(SAFE_FLOAT32(time % 360));
+#endif
 		}
 #if !defined ANDROID_PLATFORM
 		QueryPerformanceCounter((LARGE_INTEGER*)&currentTime1);// Measure current Time
@@ -126,10 +145,10 @@ void TrigonometryMathClass::testMathSpeed(TimerClass* m_Timer, double &delta1, d
 			t = cos((float)(time % 360));
 			t = sin((float)(time % 360));
 		#else
-		// These ones are 20x faster...
-		t = FAST_sqrt((float)time);
-		t = FAST_cos((float)(time % 360));
-		t = FAST_sin((float)(time % 360));
+			// These ones are 20x faster...
+			t = FAST_sqrt(SAFE_FLOAT32(time));
+			t = FAST_cos(SAFE_FLOAT32(time % 360));
+			t = FAST_sin(SAFE_FLOAT32(time % 360));
 		#endif
 		}
 

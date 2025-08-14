@@ -1568,7 +1568,7 @@ namespace DirectX {
 	}
 
 	// ----------------------------------------------------------------------------------------
-	void DXshaderClass::SetShaderParameters(UINT pass, /*ID3D11DeviceContext*/ void* Device_Context,
+	void DXshaderClass::SetShaderParameters(UINT pass, void* Device_Context,
 		XMMATRIX* worldMatrix, XMMATRIX* viewMatrix, XMMATRIX* projectionMatrix,
 		XMMATRIX* lightViewMatrix, XMMATRIX* ShadowProjectionMatrix)
 		// ----------------------------------------------------------------------------------------
@@ -1610,10 +1610,10 @@ namespace DirectX {
 			dataVSptr->WV = XMMatrixTranspose(WV);							// Pre compute WV to reuse in all Vertices
 			dataVSptr->WVP = XMMatrixTranspose(WV * (*projectionMatrix));	// Pre compute WVP to reuse in all Vertices
 		}
-		//else {
+		{
 			dataVSptr->view = XMMatrixTranspose(*viewMatrix);
 			dataVSptr->projection = XMMatrixTranspose(*projectionMatrix);
-		//}
+		}
 
 		// BLOCK: VS2
 		dataVSptr->VShasLight = hasLight;
@@ -1825,20 +1825,19 @@ namespace DirectX {
 
 }
 
-	void DXshaderClass::RenderShader(UINT pass, /*ID3D11DeviceContext*/ void* Device_Context, int texture_index, int indexCount, int start)
+void DXshaderClass::RenderShader(UINT pass, void* Device_Context, int texture_index, int indexCount, int start)
 	{
 #if defined DX11 || defined DX9
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 		{
-#define deviceContext ((ID3D11DeviceContext*)Device_Context)
+			#define deviceContext ((ID3D11DeviceContext*)Device_Context)
 			deviceContext->IASetInputLayout(m_layout11);					// Set the vertex input layout
 
 			if (m_shaderType >= SHADER_TEXTURE)
 				deviceContext->PSSetSamplers(0, 1, &m_sampleState11);		// Set the Sampler state in the pixel shader (Bilinear, Trilinear: 2x, Anisotropic: 4x, 8x, 16x, ...)
 #if TUTORIAL_CHAP >= 62 // FIRE
-			if (m_shaderType == SHADER_FIRE) {
+			if (m_shaderType == SHADER_FIRE)
 				deviceContext->PSSetSamplers(1, 1, &m_sampleStateFire);
-			}
 #endif
 			if (castShadow)
 				deviceContext->PSSetSamplers(0, 2, &m_sampleStateClamp11);// Set the Sampler state in the pixel shader (Bilinear, Trilinear: 2x, Anisotropic: 4x, 8x, 16x, ...)
@@ -1856,7 +1855,7 @@ namespace DirectX {
 				deviceContext->GSSetShader(m_geometryShader11, NULL, 0);
 			} else 
 #endif
-            {
+			if (m_Driver->RenderfirstTime) {
 				// [VS] -> HS -> DS -> GS -> [PS]
 				// Set PIPE: VS => PS
 				deviceContext->HSSetShader(NULL, NULL, 0);
@@ -2041,7 +2040,7 @@ namespace DirectX {
 		SystemHandle->TotalVertexCounter += indexCount;
 	}
 
-	void DXshaderClass::Render(UINT pass,/*ID3D11DeviceContext*/ void* Device_Context, int indexCount, XMMATRIX* worldMatrix, XMMATRIX* viewMatrix, XMMATRIX* projectionMatrix)
+	void DXshaderClass::Render(UINT pass,void* Device_Context, int indexCount, XMMATRIX* worldMatrix, XMMATRIX* viewMatrix, XMMATRIX* projectionMatrix)
 	{
 #if _DEBUG
 		ASSERT(indexCount > 0);

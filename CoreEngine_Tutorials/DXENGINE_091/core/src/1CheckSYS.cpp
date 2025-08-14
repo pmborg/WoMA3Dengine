@@ -45,8 +45,11 @@ float SystemManager::GetProcessorSpeed()
 		do {
 			QueryPerformanceCounter(&qwCurrent);
 		} while(qwCurrent.QuadPart - qwStart.QuadPart < qwWait.QuadPart);
-
+#if defined FORCE_MATH_AVX
 		float AMD = ((__rdtsc() - Start) << 5) / 1000000.0f; // CPUSpeedMHz
+#else
+		float AMD = SAFE_FLOAT64(((__rdtsc() - Start) << 5)) / 1000000.0f;
+#endif
 		womalog(TEXT("--%s FAMILY --\n"), FAMILY_NAME.c_str());
 		womalogauto("Processor Base Frequency:  %f.0 MHz\n", AMD);
 		return AMD;
@@ -259,7 +262,16 @@ bool SystemManager::checkRAM ()
 #if defined WINDOWS_PLATFORM
 	// Get Free Mem:
 	DWORDLONG availSystemMemory = getAvailSystemMemory(); // in MBs
+
+#if defined FORCE_MATH_AVX
 	StringCchPrintf(SystemHandle->systemDefinitions.freeMemory, MAX_STR_LEN, TEXT ("Memory Free: %d MBs\n"), (UINT) ((float)availSystemMemory / (float)MBs) );
+#else
+	UINT memFree = (UINT)((SAFE_FLOAT64(availSystemMemory)) / static_cast<float>(MBs));
+	StringCchPrintf(SystemHandle->systemDefinitions.freeMemory, MAX_STR_LEN,
+		TEXT("Memory Free: %d MBs\n"),
+		memFree);
+#endif
+
 	womalogauto (TEXT ("%s"), SystemHandle->systemDefinitions.freeMemory); // Already include: \n
 #endif
 

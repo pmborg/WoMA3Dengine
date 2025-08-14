@@ -339,7 +339,12 @@ bool DX11Class::getModesList(int g_USE_MONITOR, int screenWidth, int screenHeigh
 		for (UINT res = 0; res < screen.ScreenResolution.size(); res++)
 		{
 			womalogauto(TEXT("%d x %d "), screen.ScreenResolution[res].Width, screen.ScreenResolution[res].Height);
-			womalogauto(TEXT("(%4.2f Hz)\n"), (float)screen.ScreenResolution[res].RefreshRate_Numerator / (float)screen.ScreenResolution[res].RefreshRate_Denominator);
+			womalogauto(TEXT("(%4.2f Hz)\n"), 
+#if defined FORCE_MATH_AVX
+				(float)screen.ScreenResolution[res].RefreshRate_Numerator / (float)screen.ScreenResolution[res].RefreshRate_Denominator);
+#else
+				SAFE_FLOAT32(screen.ScreenResolution[res].RefreshRate_Numerator / screen.ScreenResolution[res].RefreshRate_Denominator));
+#endif
 		}
 
 		SystemHandle->allWindowsArray.push_back(screen);

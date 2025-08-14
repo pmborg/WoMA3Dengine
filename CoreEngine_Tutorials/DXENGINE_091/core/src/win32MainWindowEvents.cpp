@@ -359,8 +359,8 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
                     SystemHandle->AppSettings->WINDOW_HEIGHT = 1080;
                     ONRESIZE(pContext);
                     BOOL fullscreen;
-                    ((DX11Class*)m_Driver)->DX11windowsArray[0].m_swapChain1->GetFullscreenState(&fullscreen, nullptr);
-                    ((DX11Class*)m_Driver)->DX11windowsArray[0].m_swapChain1->SetFullscreenState(!fullscreen, nullptr);
+                    DX11windowsArray[0].m_swapChain1->GetFullscreenState(&fullscreen, nullptr);
+                    DX11windowsArray[0].m_swapChain1->SetFullscreenState(!fullscreen, nullptr);
                 }
 
                 break; // return 0; // Prevent further processing of ALT+ENTER

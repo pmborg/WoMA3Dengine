@@ -212,6 +212,8 @@ bool WinSystemClass::APPLICATION_AFTER_WINDOW()
     return true;
 }
 
+DirectX::DX11Class* driver_debug=NULL;
+
 bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 //----------------------------------------------------------------------------
 {
@@ -234,6 +236,7 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 		IF_NOT_RETURN_FALSE(newDriver());	//Create NEW CONTEXT Class: g_contextDriver
 	#endif
 	LoadAllDrivers();		        //NEW DirectX::DX11Class()	(NEW DX9, NEW DX11, NEW DX12, NEW OpenGL): push_back(NEW DirectX::*Class());
+	driver_debug = g_driver11;
 #if defined USE_SYSTEM_CHECK
 	InitializeSystemScreen(10, 10); // SETUP SCREEN: F1,F2,F3,F4,F5,F6 (RUNNING NOW ON: PaintSetup())
 #endif
@@ -433,7 +436,9 @@ bool WinSystemClass::MyRegisterClass(HINSTANCE hInstance)
     wcex.lpszClassName = WOMA_ENGINE_CLASS;
 
 	// ALLOW WIN32 SYSTEM PAINT: (Causes the entire window to redraw if a movement or a size adjustment changes the height of the client area: CS_HREDRAW | CS_VREDRAW)
-	wcex.style = (AppSettings->DRIVER == DRIVER_GL3) ? CS_OWNDC : CS_HREDRAW | CS_VREDRAW; // NOTE: CS_OWNDC is need by OPEN GL: https://www.opengl.org/wiki/Platform_specifics:_Windows
+	wcex.style = CS_HREDRAW | CS_VREDRAW;
+	if (AppSettings->DRIVER == DRIVER_GL3) 
+		wcex.style = CS_OWNDC; // NOTE: CS_OWNDC is need by OPEN GL: https://www.opengl.org/wiki/Platform_specifics:_Windows
 	wcex.lpfnWndProc = WOMA_PAINT_MessageHandler;
 	wcex.hInstance = hInstance;
 
@@ -837,9 +842,13 @@ BOOL CALLBACK MyInfoEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonit
         devMode.dmSize = sizeof(devMode);
         devMode.dmDriverExtra = 0;
         EnumDisplaySettings(monitorInfoEx.szDevice, ENUM_CURRENT_SETTINGS, &devMode);
+#if defined FORCE_MATH_AVX
         cxPhysical = devMode.dmPelsWidth;
         cyPhysical = devMode.dmPelsHeight;
-
+#else
+		cxPhysical = SAFE_DOUBLE32(devMode.dmPelsWidth);
+		cyPhysical = SAFE_DOUBLE32(devMode.dmPelsHeight);
+#endif
         // Calculate the scaling factor
         horizontalScale = ((double)cxPhysical / (double)cxLogical);
         verticalScale = ((double)cyPhysical / (double)cyLogical);

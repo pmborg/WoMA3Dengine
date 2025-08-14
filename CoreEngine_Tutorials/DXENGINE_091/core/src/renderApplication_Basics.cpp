@@ -96,27 +96,6 @@ extern void LoadAllMeshModels(UINT this_level, ApplicationClass* app, MeshApplic
 extern void RenderAllMeshModels(ID3D11DeviceContext* pContext);
 
 #if defined USE_MAP_REDENRING_THREAD
-std::mutex g_syncMutex;
-std::condition_variable g_syncCV;
-std::atomic<int> g_minimapProgress{ -1 }; // highest ID minimap has finished
-
-void CheckAndSync(int id, bool isMinimap)
-{
-	if (isMinimap) {
-		// Minimap only marks progress and never waits
-		{
-			std::lock_guard<std::mutex> lock(g_syncMutex);
-			g_minimapProgress = id;  // update progress
-		}
-		g_syncCV.notify_all(); // wake main if waiting
-	}
-	else {
-		// Main waits until minimap has rendered this ID or lower
-		std::unique_lock<std::mutex> lock(g_syncMutex);
-		g_syncCV.wait(lock, [&] { return g_minimapProgress <= id; });
-	}
-}
-
 #endif
 
 float sort_cameraX=0, sort_cameraY=0, sort_cameraZ = 0;
@@ -138,7 +117,7 @@ void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext)
 	totalRendered = 0;
 
 #if defined USE_DIRECT_INPUT
-	const float SORT_OFFSET = 5.0f;
+	const float SORT_OFFSET = 5.0f; //5 meters behind camera
 	sort_cameraX -= FAST_sin(SystemHandle->m_Application->m_Position[g_NetID]->m_rotationY) * SORT_OFFSET;
 	sort_cameraZ -= FAST_cos(SystemHandle->m_Application->m_Position[g_NetID]->m_rotationY) * SORT_OFFSET;
 #endif
@@ -190,7 +169,7 @@ void ApplicationClass::RenderScene(UINT monitorIndex, WomaDriverClass* driver)
 	// [1] Launch shadow & minimap async work, do not wait
 	AppPreRender(monitorIndex, driver, dayLightFade, mainCtx);
 
-	((DirectX::DX11Class*)driver)->SetBackBufferRenderTarget(mainCtx, monitorIndex);	//MANDATORY! Back to default back buffer
+	((DirectX::DX11Class*)driver)->SetBackBufferRenderTarget(mainCtx, monitorIndex);	// MANDATORY! Back to default back buffer
   #if defined USE_ALPHA_BLENDING
 	m_Driver->TurnOnAlphaBlending(mainCtx);												// restore default blending
   #endif
@@ -205,13 +184,15 @@ void ApplicationClass::RenderScene(UINT monitorIndex, WomaDriverClass* driver)
   #endif
 }
 
-
 //
 // RENDER TO TEXTURE
 //
+#if (defined DX_ENGINE) && (defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 || defined USE_VIEW2D_SPRITES)
 extern DXcameraClass m_CameraMINIMAP;
 extern DXcameraClass m_CameraMAP;
+#endif
 
+#if DX_ENGINE_LEVEL >= 62 && defined USE_MAIN_MAP
 void ApplicationClass::RenderMiniMapPass(UINT monitorWindow, WomaDriverClass* Driver, void* pContext, float fadeLight, UINT ThreadID)
 {
 	//---------------------------------------------------------------------------------------------------------------------------------
@@ -256,13 +237,6 @@ void ApplicationClass::RenderMiniMapPass(UINT monitorWindow, WomaDriverClass* Dr
 		m_RenderMapTexture->SetRenderTarget(Driver, (ID3D11DeviceContext*)pContext);								// Set the render target to be the render to texture.
 		m_RenderMapTexture->ClearRenderTarget(Driver, (ID3D11DeviceContext*)pContext, 0.30f, 0.30f, 0.30f, 1.0f);	// Clear the render to texture!
 		TerrainRender(monitorWindow, Driver, fadeLight, &m_CameraMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix, pContext);
-
-#if defined USE_MINIMAP_EXPANSION
-		//for (UINT id = 0; id < world_main_size; id++)  //TODO: use sceneManager
-		for (int id = world_main_size - 1; id >= 0; --id) {
-			RenderModel(monitorWindow, m_Driver, id, PASS_OPAC, pContext, &m_CameraMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix);
-		}
-#endif
 	}
 #endif
 
@@ -288,18 +262,19 @@ void ApplicationClass::RenderMiniMapPass(UINT monitorWindow, WomaDriverClass* Dr
 		m_MiniMapBitmapTexture->ClearRenderTarget(Driver, (ID3D11DeviceContext*)pContext, 0.0f, 0.0f, 0.0f, 1.0f);  // Clear the render to texture!
 		TerrainRender(monitorWindow, Driver, fadeLight, &m_CameraMINIMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix, pContext);
 #if defined USE_MINIMAP_EXPANSION
-		//for (UINT id = 0; id < world_main_size-1; id++)  //TODO: use sceneManager
-		for (int id = world_main_size - 1; id >= 0; --id) {
-	#if defined USE_MAP_REDENRING_THREAD
-			CheckAndSync(id, true);
-	#endif
-			RenderModel(monitorWindow, m_Driver, id, PASS_OPAC, pContext, &m_CameraMINIMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix);
+		for (UINT id = 0; id < world_main_size-1; id++)  //TODO: use sceneManager
+		{
+			m_MiniMapBitmapTexture->SetRenderTarget(Driver, (ID3D11DeviceContext*)pContext);					// Set the render target to be the render to texture: pContext->OMSetRenderTargets
+			RenderModel(pContext, 1, monitorWindow, m_Driver, id, PASS_OPAC, &m_CameraMINIMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix);
+			m_RenderMapTexture->SetRenderTarget(Driver, (ID3D11DeviceContext*)pContext);								// Set the render target to be the render to texture.
+			RenderModel(pContext, 1, monitorWindow, m_Driver, id, PASS_OPAC, &m_CameraMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix);
 		}
 #endif
 	}
 #endif
 }
 
+#endif
 
 void ApplicationClass::RenderShadowPass(UINT monitorIndex, WomaDriverClass* Driver, void* pContext, float fadeLight)
 {
@@ -328,7 +303,7 @@ void ApplicationClass::RenderShadowPass(UINT monitorIndex, WomaDriverClass* Driv
 					shader_type != SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED &&
 					shader_type != SHADER_NORMAL_BUMP_INSTANCED)
 					if (objModel[id]->ModelCastShadow)
-						RenderModel(monitorIndex, Driver, id, (UINT)PASS_SHADOWS, pContext, NULL, NULL); // Pre-Render Shadows
+						RenderModel(pContext, 0, monitorIndex, Driver, id, (UINT)PASS_SHADOWS, NULL, NULL); // Pre-Render Shadows
 			}
 #endif
 		}
@@ -485,7 +460,7 @@ int ApplicationClass::get_model_id(UINT ID, UINT pass)
     return modelID;
 }
 
-void ApplicationClass::RenderModel(UINT monitorIndex, WomaDriverClass* driver, UINT ID, UINT pass, void* pContext, XMMATRIX* m_viewMatrix, XMMATRIX* m_projectionMatrix)
+void ApplicationClass::RenderModel(void* pContext, UINT threadID, UINT monitorIndex, WomaDriverClass* driver, UINT ID, UINT pass, XMMATRIX* m_viewMatrix, XMMATRIX* m_projectionMatrix)
 {
     
     UINT modelID;
@@ -510,8 +485,13 @@ void ApplicationClass::RenderModel(UINT monitorIndex, WomaDriverClass* driver, U
         ASSERT(0);
     }
     
-    DXmodelClass* model = (DXmodelClass*)objModel[modelID];
-
+	DXmodelClass* model = NULL;
+	if (threadID>0)
+		model = (DXmodelClass*)objModel_minimap[modelID];
+	else
+		model = (DXmodelClass*)objModel[modelID];
+	
+	
 	if (!model->ready)
 		return; //ASSERT(0); // Model not ready to render!
     float positionX, positionY, positionZ;
@@ -683,11 +663,11 @@ void ApplicationClass::RenderModel(UINT monitorIndex, WomaDriverClass* driver, U
 	// === RENDER OBJ.: ===					   
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
 	if (m_viewMatrix == NULL && m_projectionMatrix == NULL)
-		model->Render(pContext, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass, &(m_Light->m_viewMatrix), &(m_Light->m_ligth_orthoMatrix));// Pass 2 (Shadow));
+		model->Render(pContext, threadID, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass, &(m_Light->m_viewMatrix), &(m_Light->m_ligth_orthoMatrix));// Pass 2 (Shadow));
     else
-		model->Render(pContext, CAMERA_NORMAL, PROJECTION_MINIMAP, pass, m_viewMatrix, m_projectionMatrix);// Pass 2 (Shadow));
+		model->Render(pContext, threadID, CAMERA_NORMAL, PROJECTION_MINIMAP, pass, m_viewMatrix, m_projectionMatrix);// Pass 2 (Shadow));
 #else
-	model->Render(pContext, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass);// Pass 2 (Shadow));
+	model->Render(pContext, threadID, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass);// Pass 2 (Shadow));
 #endif
 
 }
@@ -787,27 +767,22 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
     lasttime = (float)timeGetTime();
 #endif
 
-	// Render TRANSPARENT Parts of 3D OBJs (like: glass window of (Space Compound), etc...) (last part)
-	// --------------------------------------------------------------------------------------------
+	// Render 3D OBJs (like: glass window of (Space Compound), etc...) (last part)
+	// ---------------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined MAIN_RENDER_MAIN_OBJ //MAIN-RENDER: MAIN OBJs. (9 ms)
 	for (UINT id = 0; id < WOMA::sceneManager->opacModelList.size(); id++)
 	{
-#if defined USE_MAP_REDENRING_THREAD
-		CheckAndSync(id, false);
-#endif
 #if defined USE_ALPHA_BLENDING
 		m_Driver->TurnOffAlphaBlending(pContext);
 #endif
-		RenderModel(monitorIndex, m_Driver, id, PASS_OPAC, pContext, NULL, NULL);
+		RenderModel(pContext, 0, monitorIndex, m_Driver, id, PASS_OPAC, NULL, NULL);
 		if (((DXmodelClass*)objModel[id])->obj3d.hasTransparent == true)
 		{
 			m_Driver->TurnOnAlphaBlending(pContext);
-			objModel[id]->Render(pContext, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_TRANSPARENT, NULL, NULL);
+			objModel[id]->Render(pContext, 0, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_TRANSPARENT, NULL, NULL);
 		}
 	}
 #endif
-
-
 
     // TERRAIN[1]: Render Mesh for WATER:
 // --------------------------------------------------------------------------------------------
@@ -847,7 +822,14 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 	// TIME Control: Show Debug Info
 	if (m_Driver->RenderfirstTime)
 	{
+#if defined FORCE_MATH_AVX
 		UINT64 passedTotalTime = (UINT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
+#else
+		UINT64 passedTotalTime = SAFE_FLOAT64_DIV_TO_UINT64(
+			SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime,
+			SystemHandle->m_Timer.m_ticksPerMs
+		);
+#endif
 		TCHAR tmp[MAX_STR_LEN]; _stprintf(tmp, TEXT("PASSED TOTAL TIME TO LOAD: %ju ms\n"), passedTotalTime); OutputDebugString(tmp);
 	}
 #endif
@@ -952,7 +934,7 @@ void ApplicationClass::AppPosRender(UINT monitorIndex, void* pContext)
         {
             obj_id = m_Trees[tree_id].ID + world_xml_objs;
             if (SystemHandle->xml_loader.theWorld[obj_id].render)           //TODO: use sceneManager
-				RenderModel(monitorIndex, m_Driver, obj_id, PASS_BILL, pContext, NULL, NULL);    // Render: "Billboards"
+				RenderModel(pContext, 0, monitorIndex, m_Driver, obj_id, PASS_BILL, NULL, NULL);    // Render: "Billboards"
 		}
 #endif
 

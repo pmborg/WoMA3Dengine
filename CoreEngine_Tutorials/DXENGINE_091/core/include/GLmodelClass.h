@@ -50,7 +50,7 @@ public:
 #if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28 && defined USE_SKYSPHERE
 	void RenderSky(void* pContext, UINT camera, float fadeLight = 1);
 #endif
-	void Render(void* pContext, UINT camera = 0, UINT projection = 0, UINT pass = 0, void* lightViewMatrix = NULL, void* ShadowProjectionMatrix = NULL);
+	void Render(void* pContext, UINT threadID=0, UINT camera = 0, UINT projection = 0, UINT pass = 0, void* lightViewMatrix = NULL, void* ShadowProjectionMatrix = NULL);
 
 	bool InitializeVertexIndexBuffers(std::vector <STRING>* textureFile);
 

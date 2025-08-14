@@ -22,6 +22,7 @@
 #if defined CLIENT_SCENE_SETUP
 #include "StateMachine.h"
 #include "WomaSetupManager.h"
+#include "womadriverclass.h"
 #include <algorithm> 
 
 WomaSetupManager::WomaSetupManager() 
