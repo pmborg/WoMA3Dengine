@@ -468,7 +468,7 @@
     #endif
     #if DX_ENGINE_LEVEL >= 77 && defined SCENE_BILLBOARDS
         #define USE_INSTANCES_FOR_TREES
-        #define USE_ANIMATION_VERTEX_FLOAT //AQUIFLOAT                                            
+        //#define USE_ANIMATION_VERTEX_FLOAT //AQUIFLOAT                                            
     #endif
     #if DX_ENGINE_LEVEL >= 78
         #define USE_BOUNDING_VOLUMES
@@ -558,18 +558,20 @@
 	#undef USE_INSTANCES_FOR_TREES
 #endif
 #if DX_ENGINE_LEVEL >= 91
-    #define USE_MAP_REDENRING_THREAD
-    #define USE_SHADOW_THREAD
-    #define USE_MESH_THREAD
+    #define USE_MAP_REDENRING_THREAD    //ON
+  //#define USE_SHADOW_THREAD
+  //  #define USE_MESH_THREAD
   #if !defined NDEBUG	
 	#undef USE_INTRO_VIDEO_DEMO
 	#define ALLOW_CBIND_PROGRESS_BAR
   #endif
 #endif
-    
-    
-    
+
+#if DX_ENGINE_LEVEL >= 92
+	#define USE_FASTER_BILL_SHADER
+#endif
+
+	#define FORCE_MATH_AVX
 
     //-------------------------------------------------------------------------------------------------------
     #undef  dx12_upload_old_way
-
