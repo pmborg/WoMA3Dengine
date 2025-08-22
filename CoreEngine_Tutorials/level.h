@@ -7,18 +7,18 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
-#if defined DEMO_LEVEL //FOR DEMOS LEVEL 1..54 (defined at project level)
+#if defined DEMO_LEVEL
     #define LEVEL DEMO_LEVEL
-    #define SETTINGS_FILE       TEXT("settings.xml")
+    #define SETTINGS_FILE TEXT("settings.xml")
 #else
     //FOR WINDOWS-LEVEL55 or Android or Linux!
     //--------------------------------------------------------------------------------------------------------------------------
@@ -40,7 +40,7 @@
     //#define LEVEL  6 // FOR WINDOWS: [TOOL] IDEA: C:\WoMA3Dengine\windows_engine\windows.pack + windows.pck (IDEA)
     //#define LEVEL  7 // FOR WINDOWS: "F2" Load engine.pck (IDEA+ZIP) use image on background + RealTime Celestial Positions of Sun and Moon
     //#define LEVEL  8 // FOR WINDOWS: "F3" REAL TIME MAP GEOPOSITION (initWorld), test with VPN!
-    //#define LEVEL  9 // FOR WINDOWS: "F4" REAL TIME Wheather
+    //#define LEVEL  9 // FOR WINDOWS: "F4" REAL TIME Weather
 
     #if defined WINDOWS_PLATFORM || defined LINUX_PLATFORM || defined ANDROID_PLATFORM
     //--------------------------------------------------------------------------------------------------------------------------
@@ -78,7 +78,7 @@
     //#define LEVEL 30 // WORLD.XML: load "COLOR" .OBJ from (WORLD.XML) + SceneManager + QuadTree + Frustum
     //#define LEVEL 31 // WORLD.XML: load "with MULTIPLE TEXTURES" .OBJ from (WORLD.XML)
     //#define LEVEL 32 // WORLD.XML: load OBJ 3D file format, the first advanced object, using LIGHT shader
-    //#define LEVEL 33 // WORLD.XML: load OBJ 3D file format, the "compond", using transparent textures ALFA MAP and ALFA COLOR
+    //#define LEVEL 33 // WORLD.XML: load OBJ 3D file format, the "compound", using transparent textures ALFA MAP and ALFA COLOR
     //#define LEVEL 34 // WORLD.XML: load OBJ 3D file format, with SPECULAR and SHININESS
     //#define LEVEL 35 // WORLD.XML: load OBJ 3D file format, with BUMP MAP
     //#define LEVEL 36 // WORLD.XML: load OBJ 3D file format, render a SHADOW MAP
@@ -89,6 +89,8 @@
     //#define LEVEL 41 // WORLD.XML: load W3D and use SHADOW INSTANCES (DX40 + DX39)
     //#define LEVEL 42 // WORLD.XML: load W3D and use SHADOW INSTANCES (with GPU instant ROTATION)
 
+	//#define LEVEL 45 // IMGUI
+	// 
     //--------------------------------------------------------------------------------------------------------------------------
     //BASIC-TERRAIN:
     //#define LEVEL 49 // Terrain : 512 UNDERWATER
@@ -122,10 +124,10 @@
                         // G:\DRIVE_MY_SOURCE_CODE\WorldOfMiddleAge\WorldOfMiddleAge.sln    
     //#define LEVEL 61  // TUTORIAL_CHAP 25  TERRAIN Bigger HEIGHT MAPs 512x512
     //#define LEVEL 62  // TUTORIAL_CHAP 26  TERRAIN MAIN MAP
-    //#define LEVEL 63  // TUTORIAL_CHAP 27  TERRAIN MAIN MAP + MINI MAP 3D Navegation
+    //#define LEVEL 63  // TUTORIAL_CHAP 27  TERRAIN MAIN MAP + MINI MAP 3D Navigation
     //#define LEVEL 64  // Mill + compound
     //#define LEVEL 65  // Walk on Terrain.
-    
+     
     //#define LEVEL 70  // BILLBOARD for Trees / Flowers, (LIGHT and Fog) : 
     //#define LEVEL 71  // BILLBOARD for FENCES, (LIGHT and Fog) : .........
     //#define LEVEL 72  // FIRE ........................................... 
@@ -133,23 +135,24 @@
     //#define LEVEL 74  // CROSS BILLBOARD and CLONES
     //#define LEVEL 75  // UTIL: PROGRESS BAR FOR TERRAIN LOADING                                                             
     //#define LEVEL 76  // UTIL: INTRO VIDEO DEMO
-    //#define LEVEL 77  // USE INSTANCES FOR TREES                                         
+    //#define LEVEL 77  // USE INSTANCES FOR TREES
     //#define LEVEL 78  // COLISION DETECTION: Part I
-    
+
     //#define LEVEL 79  // Advanced DAE/FBX     (not published)
     //#define LEVEL 80  // GL-ASSIMP EXT-PRJ    (not published)
     //#define LEVEL 81  // DX-ASSIMP            (not published)
     
-    //#define LEVEL 82  // ASSIMP-ENGINE                                                                                                   
+    //#define LEVEL 82  // ASSIMP-ENGINE
     //#define LEVEL 83  // Updated billboard shader
-    //#define LEVEL 84  // ASSIMP: Animated / walking mesh on the terrain, following a path                                                
-	//#define LEVEL 85  // EXPAND MINI-MAP									  
+    //#define LEVEL 84  // ASSIMP: Animated / walking mesh on the terrain, following a path
+    //#define LEVEL 85  // EXPAND MINI-MAP
     //#define LEVEL 86  // THE MAIN CHARACTER
     //#define LEVEL 87  // THE MAIN CHARACTER - The other sample variants
 	//#define LEVEL 88  // USE_3RD_PERSON_CAMERA
     //#define LEVEL 89  // PBR Shader + The object Model Map Editor
 	//#define LEVEL 90  // Replacing Billboards with advanced gaming like objects(Low Poly)
-    #define LEVEL 91    // Using threads for rendering
+	//#define LEVEL 91  // Using threads for rendering
+	#define LEVEL 92    // Use Adavanced DX11.1
 	
     #endif
 #endif

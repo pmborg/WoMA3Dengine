@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -182,7 +182,7 @@
         #define USE_IMAGE_BMP       //Mandatory!
 
         #undef SCENE_COLOR
-        //#define NO_SCENE_IMAGE_LOAD // Default: off - un-comment for DEBUG (debuging only!)
+        //#define NO_SCENE_IMAGE_LOAD // Default: off - uncomment for DEBUG (debugging only!)
 
         #if !defined NO_SCENE_IMAGE_LOAD
             #if defined WINDOWS_PLATFORM
@@ -265,6 +265,7 @@
     #endif
 
     #if DX_ENGINE_LEVEL >= 29
+	//---------------------------------------------------------------------------------------																					   
         #define SCENE_COLOR             //FORCE!
         #define SCENE_TEXTURE           //FORCE!
         #define SCENE_TEXTURE_LIGHT     //FORCE!
@@ -323,14 +324,11 @@
     #endif
 
     #if DX_ENGINE_LEVEL >= 37   //37-
-        //#define USE_MAIN_THREAD       // Default: off - MAIN LOOP is a THREAD
-        //#define USE_LOADING_THREADS   // Default: off - Use Thread to load Graphics (Bug! will launch multiple!?)
+        
     #endif
 
     #if DX_ENGINE_LEVEL >= 38   //38-
-        //#if defined _DEBUG
             #define SAVEW3D
-        //#endif
     #endif
 
     #if DX_ENGINE_LEVEL >= 39
@@ -356,13 +354,19 @@
         #define USE_SHADOW_INSTANCES_ROTATION_W_V_P
     #endif
 
+	#if DX_ENGINE_LEVEL == 45
+		#define USE_IMGUI				// ASSIMP (Animated + Character using HLSL)
+		#if !defined ANDROID_PLATFORM
+		#define RUN_ASMAIN true			//#define RUN_ASMAIN false //true
+		#endif
+	#endif
+
     // TERRAINS:
     //--------------------------------------------------------------------------------------------------------------------------
     //TO BE DONE! DEMO - FUTURE 43: TECH AVAILABLE:
     //#define RENDER_OBJ_WITH_ALFA          //--> _DX_ENGINE_LEVEL >= 33    //to be added later!
     #if DX_ENGINE_LEVEL >= 49   //49-
         #if _DEBUG
-        #undef USE_MAIN_THREAD              //MAIN LOOP is a THREAD
         #undef USE_LOADING_THREADS          //Use Thread to load Graphics
         #endif
         #define USE_REAL_SUNLIGHT_DIRECTION //Static light
@@ -375,7 +379,6 @@
 
     #if DX_ENGINE_LEVEL >= 50   //50-
         #if _DEBUG
-        #undef USE_MAIN_THREAD              //MAIN LOOP is a THREAD
         #undef USE_LOADING_THREADS          //Use Thread to load Graphics
         #endif
         #define SCENE_GENERATEDUNDERWATER   //0
@@ -468,7 +471,6 @@
     #endif
     #if DX_ENGINE_LEVEL >= 77 && defined SCENE_BILLBOARDS
         #define USE_INSTANCES_FOR_TREES
-        //#define USE_ANIMATION_VERTEX_FLOAT //AQUIFLOAT                                            
     #endif
     #if DX_ENGINE_LEVEL >= 78
         #define USE_BOUNDING_VOLUMES
@@ -557,15 +559,18 @@
 	#undef  ALLOW_CBIND_PROGRESS_BAR								
 	#undef USE_INSTANCES_FOR_TREES
 #endif
+
 #if DX_ENGINE_LEVEL >= 91
-    #define USE_MAP_REDENRING_THREAD    //ON
-  //#define USE_SHADOW_THREAD
-  //  #define USE_MESH_THREAD
-  #if !defined NDEBUG	
-	#undef USE_INTRO_VIDEO_DEMO
-	#define ALLOW_CBIND_PROGRESS_BAR
-  #endif
+    #define USE_MAP_REDENRING_THREAD
+    //#define USE_SHADOW_THREAD
+    //#define USE_MESH_THREAD
 #endif
+    
+#if DX_ENGINE_LEVEL >= 92
+	#define USE_DX11_1_SETUP
+	#define USE_FASTER_BILL_SHADER
+#endif
+    
 
 #if DX_ENGINE_LEVEL >= 92
 	#define USE_FASTER_BILL_SHADER
@@ -575,3 +580,8 @@
 
     //-------------------------------------------------------------------------------------------------------
     #undef  dx12_upload_old_way
+
+	#if !defined NDEBUG	
+	#undef USE_INTRO_VIDEO_DEMO
+	#define ALLOW_CBIND_PROGRESS_BAR
+	#endif

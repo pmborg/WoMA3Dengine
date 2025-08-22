@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -117,7 +117,7 @@
 #if !defined DEMO_LEVEL
     #define SETTINGS_FILE       TEXT("settings_009.xml")
 #endif
-    #define DEMO_TITLE TEXT("09: From now on: PRESS [F4] for: [REAL Wheather] at user location.")
+    #define DEMO_TITLE TEXT("09: From now on: PRESS [F4] for: [REAL Weather] at user location.")
 #endif
 
 #if DX_ENGINE_LEVEL == 10
@@ -127,7 +127,7 @@
     //#define DEMO_TITLE        TEXT("10: CLEAR SCREEN")
     #define DEMO_TITLE TEXT("10: PRESS [F6] for SETUP and change Driver: OPENGL, DX9, DX11, DX12: Initiate the 3D Graphic Drivers and attache the swapchain to mainwindow.")
 #endif
-#if DX_ENGINE_LEVEL >= 10
+#if DX_ENGINE_LEVEL >= 10 && DX_ENGINE_LEVEL < 92
     #define USE_THIS_GRAPHIC_CARD_ADAPTER 0
 #endif
 
@@ -300,7 +300,7 @@
     #define WORLD_XML TEXT("world_32.xml")
 #endif
 #if DX_ENGINE_LEVEL == 33
-    #define DEMO_TITLE TEXT("33: load OBJ 3D file format, the compond, using transparent textures ALFA MAP and ALFA COLOR")
+    #define DEMO_TITLE TEXT("33: load OBJ 3D file format, the compound, using transparent textures ALFA MAP and ALFA COLOR")
     #define WORLD_XML TEXT("world_33.xml")
 #endif
 #if DX_ENGINE_LEVEL == 34
@@ -338,6 +338,18 @@
 #if DX_ENGINE_LEVEL == 42
     #define DEMO_TITLE TEXT("42: load W3D and use SHADOW INSTANCES with ROTATION per instance")
     #define WORLD_XML TEXT("world_42.xml")
+#endif
+
+#if DX_ENGINE_LEVEL >= 45 //IMGUI!
+  #if DX_ENGINE_LEVEL == 45
+		#define DEMO_TITLE TEXT("45: IMGUI SETUP")
+		#define WORLD_XML TEXT("world_45.xml")
+  #endif
+  #if defined ANDROID_PLATFORM
+      #define DEMO_SETTINGS_ICON TEXT("engine/data/basics/settings_929846-big.png")
+  #else
+      #define DEMO_SETTINGS_ICON TEXT("engine/data/basics/settings_929846.png")
+  #endif
 #endif
 
 #if DX_ENGINE_LEVEL >= 49 
@@ -566,15 +578,16 @@
 #endif
 #if DX_ENGINE_LEVEL >= 90
 	#define FENCE1_MODEL    TEXT("engine/data/scene87ForestHuntress.priv/worldMap/woodfence/Fence_module.obj")
-#endif
-#if DX_ENGINE_LEVEL >= 90
 	#define VIDEO_INTRO TEXT("engine/data/scene.90/movie_nMU5ySdW6W7hye8V.mp4.1920x1080.mp4")
 #endif
 #if DX_ENGINE_LEVEL == 91
 	#define DEMO_TITLE TEXT("91: Using threads for rendering")
 	#define WORLD_XML  TEXT("world_91.xml")
 #endif
-
+#if DX_ENGINE_LEVEL == 92
+	#define DEMO_TITLE TEXT("92: Use faster bill shader")
+	#define WORLD_XML  TEXT("world_92.xml")
+#endif
 
 
 
@@ -617,11 +630,3 @@
 #undef OPENGL40 //Windows: 64bits or Linux: 64bits
 #endif
 
-
-#if DX_ENGINE_LEVEL >= 100 //IMGUI!
-  #if defined ANDROID_PLATFORM
-      #define DEMO_SETTINGS_ICON TEXT("engine/data/basics/settings_929846-big.png")
-  #else
-      #define DEMO_SETTINGS_ICON TEXT("engine/data/basics/settings_929846.png")
-  #endif
-#endif
