@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -38,12 +38,12 @@ void ApplicationClass::TerrainRender(UINT monitorWindow, WomaDriverClass* Driver
 	float t = ((DirectX::DXmodelClass*)m_TerrainModel[WATER_TERRAIN_ID])->m_Shader11->time; //preserve animation time
 	((DirectX::DXmodelClass*)m_TerrainModel[WATER_TERRAIN_ID])->m_Shader11->time = 0;
 	((DirectX::DXmodelClass*)m_TerrainModel[WATER_TERRAIN_ID])->shaderTypeParameter = 1; // Render for Map projection
-	m_TerrainModel[WATER_TERRAIN_ID]->Render(pContext, CAMERA_NORMAL, PROJECTION_MINIMAP, PASS_MINIMAP1, m_viewMatrix, m_projectionMatrix);
+	m_TerrainModel[WATER_TERRAIN_ID]->Render(pContext, 0, CAMERA_NORMAL, PROJECTION_MINIMAP, PASS_MINIMAP1, m_viewMatrix, m_projectionMatrix);
 	((DirectX::DXmodelClass*)m_TerrainModel[WATER_TERRAIN_ID])->m_Shader11->time = t;
 
 	//Terrain Render:
 	((DirectX::DXmodelClass*)m_TerrainModel[MAIN_TERRAIN_ID])->shaderTypeParameter = 1; // Render for Map projection
-	m_TerrainModel[MAIN_TERRAIN_ID]->Render(pContext, CAMERA_NORMAL, PROJECTION_MINIMAP, PASS_MINIMAP1, m_viewMatrix, m_projectionMatrix);
+	m_TerrainModel[MAIN_TERRAIN_ID]->Render(pContext, 0, CAMERA_NORMAL, PROJECTION_MINIMAP, PASS_MINIMAP1, m_viewMatrix, m_projectionMatrix);
 
 	((DirectX::DXmodelClass*)m_TerrainModel[WATER_TERRAIN_ID])->shaderTypeParameter = 
 	((DirectX::DXmodelClass*)m_TerrainModel[MAIN_TERRAIN_ID])->shaderTypeParameter = 0; // Render in normal projection
@@ -94,7 +94,7 @@ void ApplicationClass::RenderMainMapMiniMap(void* pContext)
 				#undef _43
 				//[3] Put the "arrow" bitmap vertex and index buffers on the graphics pipeline to prepare them for drawing.
 				m_Driver->ClearDepthBuffer(pContext);
-				m_miniMapArrowModel->Render(pContext, CAMERA_NORMAL, PROJECTION_ORTHOGRAPH, PASS_OPAC, (void*)&(DXsystemHandle->m_Camera->m_viewmatrix2D), NULL);
+				m_miniMapArrowModel->Render(pContext, 0, CAMERA_NORMAL, PROJECTION_ORTHOGRAPH, PASS_OPAC, (void*)&(DXsystemHandle->m_Camera->m_viewmatrix2D), NULL);
 			}
 		}
 	}
@@ -137,7 +137,7 @@ void ApplicationClass::RenderMainMapMiniMap(void* pContext)
 				#undef _43
 				//[3] Put the "arrow" bitmap vertex and index buffers on the graphics pipeline to prepare them for drawing.
 				m_Driver->ClearDepthBuffer(pContext);
-				m_miniMapArrowModel->Render(pContext, CAMERA_NORMAL, PROJECTION_ORTHOGRAPH, PASS_OPAC, (void*)&(DXsystemHandle->m_Camera->m_viewmatrix2D), NULL);
+				m_miniMapArrowModel->Render(pContext, 0, CAMERA_NORMAL, PROJECTION_ORTHOGRAPH, PASS_OPAC, (void*)&(DXsystemHandle->m_Camera->m_viewmatrix2D), NULL);
 			}
 		}
 	}

@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -746,13 +746,18 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 				STRING fileNamePath = (TCHAR*)(*textureFile)[i].c_str();
 				STRING pathtoengine = TEXT("../");
 
-				if ((fileNamePath.substr(0, 3) != pathtoengine) && 
+				if (((fileNamePath.substr(0, 3) != pathtoengine) && 
 					(_tcsicmp(fileNamePath.c_str(), TEXT(".dat")) != 0) || (_tcsicmp(fileNamePath.c_str(), TEXT(".bin")) != 0) || (_tcsicmp(fileNamePath.c_str(), TEXT(".jet")) != 0))
+					&&
+					(!StartsWithDotDotSlash(fileNamePath))
+					)
+				{
 					textureFilename = WOMA::LoadFile((TCHAR*)fileNamePath.c_str());
+				}
 				else
 					textureFilename = (TCHAR*)fileNamePath.c_str();
 
-				if (fileNamePath.find(TEXT("none")) != 0) //dont load on special cases (like billboards)
+				if (fileNamePath.find(TEXT("none")) != 0) //don't load on special cases (like billboards)
 				{
 					fileNamePath = textureFilename;
 					fileNamePath = CleanFilePath(fileNamePath);
@@ -1157,18 +1162,17 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 	//DX12
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
-    {
+	{
+		ID3D12Device* device = ((ID3D12Device*)Driver_Device);
+
+		//
+		// VERTEX:
 		//
 		const UINT vertexBufferSize = sizeofMODELvertex * m_vertexCount; // sizeof(triangleVertices);
 
 		// Note: using upload heaps to transfer static data like vert buffers is not 
 		// recommended. Every time the GPU needs it, the upload heap will be marshalled 
-		// over. Please read up on Default Heap usage. An upload heap
-	
-		ID3D12Device* device = ((ID3D12Device*)Driver_Device);
-
-		//
-		// VERTEX: is used here for 
+		// over. Please read up on Default Heap usage. An upload heap is used here for 
 		// code simplicity and because there are very few verts to actually transfer.
 		bool UPLOAD = true;
 		if (Model3D) {
@@ -1361,7 +1365,7 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 		}
 		else {
 			// SPRITE 2D Model
-			vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;				// Store in "Shared RAM" Memory (once we need to update)
+			vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;		// Store in "Shared RAM" Memory (once we need to update)
 			vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;	// CPU Need to re-write after creation.
 		}
 		vertexBufferDesc.ByteWidth = sizeofMODELvertex * m_vertexCount;

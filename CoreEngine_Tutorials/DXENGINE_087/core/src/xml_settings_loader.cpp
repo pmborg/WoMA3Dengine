@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -164,6 +164,7 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 	if (res)  // <--- PARSE XML FILE
 	{
 		// Process DATA imported from XML:
+		SystemHandle->AppSettings->ADAPTOR = atoi(GenSettings.adapter);
 		SystemHandle->AppSettings->UI_MONITOR = atoi(GenSettings.uiMonitor);
 		#if defined USE_ALTENTER_SWAP_FULLSCREEN_WINDOWMODE || CORE_ENGINE_LEVEL < 9
 		SystemHandle->AppSettings->FULL_SCREEN = (strcmp (GenSettings.screenFullScreen, "true") == 0) ?  true : false;
@@ -254,13 +255,13 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 		//	------------------------------------------------------------------------------------------------------
 		SystemHandle->AppSettings->UseAllMonitors = (strcmp(GenSettings.UseAllMonitors, "true") == 0) ? true : false;
 		SystemHandle->AppSettings->UseDoubleBuffering = (strcmp(GenSettings.useDoubleBuffering, "true") == 0) ? true : false;
+		SystemHandle->AppSettings->UseTripleBuffering = (strcmp(GenSettings.useTripleBuffering, "true") == 0) ? true : false;
 	#endif
 
 	#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 22 // Texturing	
         SystemHandle->AppSettings->MaxTextureSize = atoi(GenSettings.MaxTextureSize);
 
 		//MSAA_ENABLED = MSAA_point if (MSAA_bilinear = MSAA_trilinear = MSAA_Anisotropic = false)
-		//SystemHandle->AppSettings->MSAA_ENABLED = (strcmp(GenSettings.msaa, "true") == 0) ? true : false;
 		SystemHandle->AppSettings->MSAA_bilinear = (strcmp (GenSettings.Bilinear, "true") == 0) ?  true : false;
 		SystemHandle->AppSettings->MSAA_trilinear	= (strcmp (GenSettings.Trilinear, "true") == 0) ?  true : false;
 
@@ -578,14 +579,18 @@ bool XMLloader::loadXMLsettingsFile (TCHAR* file_) // Note: Have to be char
 		if ( child_screen )
 		{
 			/*Element*//*TiXmlElement*/ tinyxml2::XMLElement* element = child_screen->ToElement();
+			if (element->Attribute("adapter"))
+				strcpy(GenSettings.adapter, element->Attribute("adapter"));
+			else
+				strcpy(GenSettings.adapter, "-1");
+
 			strcpy (GenSettings.uiMonitor, element->Attribute("uiMonitor"));
 			strcpy (GenSettings.screenFullScreen, element->Attribute("fullScreen"));
-            if (element->Attribute("fullScreenWindowed"))
-                strcpy(GenSettings.screenFullScreenWindowed, element->Attribute("fullScreenWindowed"));
 
-			//Moved to WORLD.XML
-			//strcpy (GenSettings.posX, element->Attribute("posX"));
-			//strcpy (GenSettings.posY, element->Attribute("posY"));
+            if (element->Attribute("fullScreenWindowed")) //optional
+                strcpy(GenSettings.screenFullScreenWindowed, element->Attribute("fullScreenWindowed"));
+			else
+				strcpy(GenSettings.screenFullScreenWindowed, "false");
 
 			strcpy (GenSettings.screenWidth, element->Attribute("width"));
 			strcpy (GenSettings.screenHeight, element->Attribute("height"));
@@ -609,6 +614,8 @@ bool XMLloader::loadXMLsettingsFile (TCHAR* file_) // Note: Have to be char
 			#endif
 			strcpy(GenSettings.UseAllMonitors, element->Attribute("UseAllMonitors"));
 			strcpy (GenSettings.useDoubleBuffering, element->Attribute("useDoubleBuffering"));
+			if (element->Attribute("useTripleBuffering")) //optional
+				strcpy(GenSettings.useTripleBuffering, element->Attribute("useTripleBuffering"));
 		}
 		else
 			return false;

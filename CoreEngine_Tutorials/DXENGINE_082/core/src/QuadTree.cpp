@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -162,8 +162,8 @@ void QuadTree::RenderNode(NodeType* node)
 {
 #if !defined USE_MAP_EDITOR
 	// Check to see if the node can be viewed, height doesn't matter in a quad tree.
-	//bool result = frustum->CheckCube(node->positionX, 0.0f, node->positionZ, node->width/2);   // More accurated but slower
-	bool result = _frustum->CheckSphere(node->positionX, 0.0f, node->positionZ, (node->width/2)*1.4142135623730950488016887242097f );   // Faster
+	bool result = _frustum->CheckCube(node->positionX, 0.0f, node->positionZ, node->width/2);   // More accurate but slower
+	//bool result = _frustum->CheckSphere(node->positionX, 0.0f, node->positionZ, (node->width/2)*1.4142135623730950488016887242097f );   // Faster
 	if (!result) return;
 #endif
 
@@ -192,7 +192,7 @@ void QuadTree::RenderNode(NodeType* node)
 
          if (SystemHandle->xml_loader.theWorld[modelID].depend == -1)
          {
-             _xml_loader->theWorld[modelID].render = true;      //FASTER-AQUI2
+             _xml_loader->theWorld[modelID].render = true;     
          }else{
 #if !defined USE_MAP_EDITOR
             float positionX, positionY, positionZ;
@@ -200,11 +200,11 @@ void QuadTree::RenderNode(NodeType* node)
             positionY = _xml_loader->theWorld[modelID].translateY;
             positionZ = _xml_loader->theWorld[modelID].posZ;
             if ((((DXmodelClass*)model)->m_instanceCount == 0) && !_frustum->CheckSphere(positionX, positionY, positionZ, model->boundingSphere*2)) {
-                _xml_loader->theWorld[modelID].render = false;  //FASTER-AQUI2
+                _xml_loader->theWorld[modelID].render = false;  
                 continue;
             } else
 #endif
-               _xml_loader->theWorld[modelID].render = true;    //FASTER-AQUI2
+               _xml_loader->theWorld[modelID].render = true;    
         }
 		//This Model have transparent parts?, note it! to render transparent parts later.
         if (((DXmodelClass*)model)->isBill)

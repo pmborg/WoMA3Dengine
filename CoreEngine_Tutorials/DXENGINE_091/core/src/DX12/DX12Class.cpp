@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -75,7 +75,7 @@ namespace DirectX {
 		// MSAA Used:
 		// ----------------------------------------------------------------------------
 		MSAA_COUNT = MAX(1, SystemHandle->AppSettings->MSAA_AnisotropicLevel);	// Req. Note: DX12 min: 1
-		MSAA_QUALITY = 0;																	// Req. Note: default: 1
+		MSAA_QUALITY = 0;														// Req. Note: default: 1
 
 		// DX12Class()
 		// Public: ------------------------------------------------------------------------
@@ -213,7 +213,7 @@ namespace DirectX {
 
 	// |Init Step: 1| This is for DIRECTX Driver only!
 	// ----------------------------------------------------------------------------------------------
-	BOOL DX12Class::CheckAPIdriver(UINT USE_THIS_ADAPTER)
+	BOOL DX12Class::CheckAPIdriver(int USE_THIS_ADAPTER)
 		// ----------------------------------------------------------------------------------------------
 	{
 		womalog(TEXT("CheckAPIdriver(DX12)\n"));
@@ -369,7 +369,7 @@ namespace DirectX {
 				else
 					m_sCapabilities.CapDX12 = true;
 
-				// Almost punic mode! Last try:
+				// Almost panic mode! Last try:
 				if (num_levels == 0)
 				{
 					ComPtr<IDXGIAdapter> warpAdapter;
@@ -483,7 +483,7 @@ namespace DirectX {
 				m_sCapabilities.featureLevelsLO = (MaxLevel >> 8) & 0xF;
 				WOMA::logManager->DEBUG_MSG("(featureLevelsInfo) query for Adapter: 1 =  %d.%d\n", m_sCapabilities.featureLevelsHI, m_sCapabilities.featureLevelsLO);
 
-				//printf ("(featureLevelsInfo) query for Adapter: 1 =  %04x\n", MaxLevel);
+				//womalog ("(featureLevelsInfo) query for Adapter: 1 =  %04x\n", MaxLevel);
 			}
 		}
 
@@ -624,7 +624,7 @@ namespace DirectX {
 		//
 		// CreateDevice() - Init Step: 0 - Check for DX9, DX10, DX11, DX12 & DX12_1 API
 		//
-		CheckAPIdriver(USE_THIS_GRAPHIC_CARD_ADAPTER);	//USE_THIS_ADAPTER
+		CheckAPIdriver(SystemHandle->AppSettings->ADAPTOR);	//use_this_graphic_card_adapter
 
 		// Get BUFFER_COLOR_FORMAT: Init Step: 1 - [NOT IMPLEMENTED YET FOR DX12] Create Factory: Get list of all MODES for all MONITORS & Get Refresh Rate:
 		////IF_NOT_RETURN_FALSE(getModesList(g_USE_MONITOR, screenWidth, screenHeight, fullscreen, &numerator, &denominator)); //TODO! DX12
@@ -640,7 +640,7 @@ namespace DirectX {
 		//
 		IF_NOT_RETURN_FALSE(initDX12Device((HWND)hwnd));	// Init Step: 2 - Init DX12 Device
 
-		// SelectDepthFormat(depthBits, fullscreen);	// Init Step: 3 Note: need device
+		// SelectDepthFormat(depthBits, fullscreen);		// Init Step: 3 Note: need device
 
 		//Init Step: 9 - CreateTexture2D:
 		IF_NOT_RETURN_FALSE(CreateRenderTargetView(screenWidth, screenHeight));
@@ -737,7 +737,7 @@ namespace DirectX {
 
 			if (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
 			{
-				WOMA::logManager->DEBUG_MSG(L"\nD3D12-Capable Software Adapter Adapter (%d) found: %s (%u MB)\n", adapterIndex, desc.Description, desc.DedicatedVideoMemory >> 20);
+				WOMA::logManager->DEBUG_MSG(L"\nD3D12-Capable Software Adapter (%d) found: %s (%u MB)\n", adapterIndex, desc.Description, desc.DedicatedVideoMemory >> 20);
 				QueryVideoMemoryInfo(adapterIndex, adapter);
 				*ppAdapter = adapter.Detach();
 			}
@@ -786,7 +786,7 @@ namespace DirectX {
 			setProjectionMatrixWorldMatrixOrthoMatrix(screenWidth, screenHeight, screenNear, screenDepth);
 		}
 
-		RenderMapfirstTime = true;  // First time in main map != first time terrain render or mini mao render
+		RenderMapfirstTime = true;  // First time in main map != first time terrain render or mini map render
 
 #if defined CLIENT_SCENE_TEXT || defined USE_VIEW2D_SPRITES // 26
 		Initialize3DCamera();
@@ -910,7 +910,7 @@ namespace DirectX {
 		dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 		ThrowIfFailed(m_device->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&m_pDsvHeap)));
 
-		m_pDsvHeap->SetName(L"Constant Buffer Depth Stensill View");
+		m_pDsvHeap->SetName(L"Constant Buffer Depth Stencil View");
 
 		m_DsvDescriptorSize = m_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 #endif
@@ -1159,7 +1159,7 @@ namespace DirectX {
 		// This ensures we don't waste any cycles rendering frames that will never be displayed to the screen.
 #if defined USE_PRESENT_DXGI_1_0
 	// Direct3D 12++
-		HRESULT hr = m_swapChain->Present(m_VSYNC_ENABLED, 0); // if (m_VSYNC_ENABLED) Sleep a bit, until next motinor Hz
+		HRESULT hr = m_swapChain->Present(m_VSYNC_ENABLED, 0); // if (m_VSYNC_ENABLED) Sleep a bit, until next monitor Hz
 #else
 	// Direct3D 12.1++
 		DXGI_PRESENT_PARAMETERS PresentDesc = { 0 };
@@ -1178,7 +1178,7 @@ namespace DirectX {
 	// Using Double Buffer: (BufferCount = 2)
 	// | 0 | --> | 1 | --> | 0 | ...
 
-	// Using Tripple Buffer: (BufferCount = 3)
+	// Using Triple Buffer: (BufferCount = 3)
 	// | 0 | --> | 1 | --> | 2 | --> | 0 | ...
 
 	void DX12Class::MoveToNextFrame()
@@ -1217,7 +1217,7 @@ namespace DirectX {
 		m_fenceValues[m_currentFrame]++;
 	}
 
-	//Init Step: 5 - Set the best shader availabel: MORE INFO: http://msdn.microsoft.com/en-us/library/windows/desktop/ff476876%28v=vs.85%29.aspx
+	//Init Step: 5 - Set the best shader available: MORE INFO: http://msdn.microsoft.com/en-us/library/windows/desktop/ff476876%28v=vs.85%29.aspx
 	// ----------------------------------------------------------------------------------------------
 	void DX12Class::getProfile()
 		// ----------------------------------------------------------------------------------------------
@@ -1243,7 +1243,7 @@ namespace DirectX {
 		DirectX 11.1																									WIN8
 		DirectX 11.2																									WIN8.1
 
-		D3D_SHADER_MODEL_5_1 = 0x51, WINDOWS10 DX12 Augost 21, 2015 Shader Model 5.1 — GCN 1+, Fermi+, DirectX 12 (11_0+) with WDDM 2.0.
+		D3D_SHADER_MODEL_5_1 = 0x51, WINDOWS10 DX12 August 21, 2015 Shader Model 5.1 — GCN 1+, Fermi+, DirectX 12 (11_0+) with WDDM 2.0.
 		D3D_SHADER_MODEL_6_0 = 0x60, WINDOWS10 DX12	                Shader Model 6.0 — GCN 1+, Kepler+, DirectX 12 (11_0+) with WDDM 2.1.
 		D3D_SHADER_MODEL_6_1 = 0x61, WINDOWS10 DX12	                Shader Model 6.1 — GCN 1+, Kepler+, DirectX 12 (11_0+) with WDDM 2.3.
 		D3D_SHADER_MODEL_6_2 = 0x62, WINDOWS10 DX12	                Shader Model 6.2 — GCN 1+, Kepler+, DirectX 12 (11_0+) with WDDM 2.4.
@@ -1491,28 +1491,14 @@ namespace DirectX {
 		// Create the projection matrix:
 		UINT num_monitors = (UINT)SystemHandle->windowsArray.size();
 
-//		// Create the projection matrix:
-//		fieldOfView = (float)(PI / 4.0f) /				// Or... 90deg => fieldOfView = (90 / 2) * 0,0174532925f;
-//			num_monitors;	// 90: 3(num "Impar" monitors)
-//		screenAspect = (float)screenWidth / (float)screenHeight;
-
-#if defined FORCE_MATH_AVX
-		fieldOfView = (float)(PI / 4.0f) / // Or... 90deg => fieldOfView = (90 / 2) * 0,0174532925f;
-			num_monitors;		 // 90: 3(num "Impar" monitors)
+		// Create the projection matrix:
+		fieldOfView = (float)(PI / 4.0f) /				// Or... 90deg => fieldOfView = (90 / 2) * 0,0174532925f;
+			num_monitors;	// 90: 3(num "Impar" monitors)
 		screenAspect = (float)screenWidth / (float)screenHeight;
-#else
-		fieldOfView = SAFE_FLOAT32(PI / 4.0f) /	// Or... 90deg => fieldOfView = (90 / 2) * 0,0174532925f;
-			SAFE_FLOAT32(num_monitors);	// 90: 3(num "Impar" monitors)
-		screenAspect = SAFE_FLOAT32((float)screenWidth / (float)screenHeight);
-#endif
-		
-#if defined FORCE_MATH_AVX
+
 		// Create the projection matrix for "3D" rendering:
 		// DX11: XMMatrixPerspectiveFovLH
 		m_projectionMatrix = XMMatrixPerspectiveFovLH(fieldOfView, screenAspect, screenNear, screenDepth);    // 3D PROJECTION
-#else
-		m_projectionMatrix = Safe_XMMatrixPerspectiveFovLH(fieldOfView, screenAspect, screenNear, screenDepth);    // 3D PROJECTION
-#endif
 
 #if defined CLIENT_SCENE_TEXT || defined USE_VIEW2D_SPRITES // 26
 		// And the final thing we will setup in the Initialize function is an orthographic projection matrix. 

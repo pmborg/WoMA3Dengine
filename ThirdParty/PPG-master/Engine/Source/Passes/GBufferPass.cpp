@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -80,7 +80,7 @@ void GBufferPass::Render(ID3D11DeviceContext* deviceContext, Graphics& graphics,
         Animator* animator = meshRenderer.m_Animator;
         if (animator != nullptr && animator->m_IsEnabled)
         {
-            animator->m_FinalTransforms[127].r->m128_f32[0] = 127;    //AQUI-ANIM
+			animator->m_FinalTransforms[127].r->m128_f32[0] = 127;    //AQUI-ANIM																	 
             if (animator != currentAnimator)
             {
                 graphics.UpdateBuffer(deviceContext, m_BoneBuffer, animator->m_FinalTransforms);

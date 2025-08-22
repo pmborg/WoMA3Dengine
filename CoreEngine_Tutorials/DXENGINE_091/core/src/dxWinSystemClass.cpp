@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -127,7 +127,6 @@ bool dxWinSystemClass::APPLICATION_INIT_SYSTEM() //LOAD ALL GRAPHICS
 	return res;
 }
 
-
 //----------------------------------------------------------------------------
 int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 //----------------------------------------------------------------------------
@@ -137,7 +136,6 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
     if (WOMA::renderOnce)
         WOMA::woma_timer = 0;
 
-	//MAIN LOOP: (single thread version for DEBUG)
 	do
 	{
         BOOL gResult = TRUE;
@@ -148,9 +146,9 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 		}
 
 		if (WOMA::game_state > GAME_MINIMIZED)
-			ProcessFrame();	// Render ONE: Application Frame!
+			ProcessFrame();	// RENDER ONE: APPLICATION FRAME!
 		else
-			Sleep(100);     // We are in background slow down
+			Sleep(100);     // We are in background? slowdown!
 
 		if (WOMA::main_loop_state < 0 || (WOMA::renderOnce && WOMA::woma_timer > 15))
         {
@@ -160,7 +158,10 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 			break;										   
 		}
         if (WOMA::game_state == ENGINE_RESTART)
-            PostQuitMessage(WOMA::game_state);  //RESTART ENGINE: return WOMA::game_state;
+		{
+            PostQuitMessage(WOMA::game_state);		//RESTART ENGINE: return WOMA::game_state;
+			break;
+		}
 
 	} while (msg.message != WM_QUIT);
 
@@ -171,14 +172,17 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
-		Sleep(500);
+		Sleep(100);
 	}
 
 	if (threadLoadMeshAlive)
 		womalog("WARNING: Mesh loader thread did not terminate in time.");
 
     womalog("msg.wParam: %d\n", msg.wParam);
-	return (int)msg.wParam; //return the PostQuitMessage (message code)
+	if (WOMA::game_state == ENGINE_RESTART)
+		return ENGINE_RESTART;
+	else
+		return (int)msg.wParam; //return the PostQuitMessage (message code)
 }
 
 //----------------------------------------------------------------------------
@@ -515,9 +519,10 @@ void InitializeObjectsLoaderThreadFunction() // InitializeThread
 
 	bool loading = SystemHandle->LoadAllGraphicAssets();	// Load all main Graphics Objects, that will be rendered
 
-	// We were minized ? While in the load thread ?
+	// We were minimized ? While in the load thread ?
 	if (WOMA::game_state == GAME_MINIMIZED)
 		WOMA::previous_game_state = GAME_RUN;
+
 	WOMA::num_running_THREADS--; //InitializeObjectsLoaderThreadFunction
 #if defined _DEBUG
 	womalog("WOMA::num_running_THREADS: %d %s %s %d\n", WOMA::num_running_THREADS, __FILE__, __FUNCTION__, __LINE__);

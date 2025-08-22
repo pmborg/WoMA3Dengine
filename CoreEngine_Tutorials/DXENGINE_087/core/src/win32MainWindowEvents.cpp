@@ -8,7 +8,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -31,7 +31,7 @@
 #endif
 
 #if defined WINDOWS_PLATFORM
-// Start benchamark - TIMER / FPS / CPU Initialize: (Min. Req.: Windows Vista)
+// Start benchmark - TIMER / FPS / CPU Initialize: (Min. Req.: Windows Vista)
 //	-------------------------------------------------------------------------------------------
 void WinSystemClass::StartTimer()
 {
@@ -41,7 +41,7 @@ void WinSystemClass::StartTimer()
     // Start Timer for Window Title
 #define KEYB_TIMES_PER_SECOND 1
 
-// Dont Update on: FullScreen or Full-windowed
+// Don't Update on: FullScreen or Full-windowed
     if ((!AppSettings->FULL_SCREEN) && (windowStyle != 0x96080000))
     {
 #if defined NDEBUG //INTRO_DEMO
@@ -165,10 +165,11 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 		wmEvent = HIWORD(wParam);
 
 		// Parse the menu selections:
-		switch (wmId)
-		{
-			case CBN_SELCHANGE:
-			{
+		//switch (wmId)
+		//{
+		//	//case CBN_SELCHANGE:
+		//	default:
+		//	{
 				if (womaSetup) 
 				{
 					//BUTTON: OK
@@ -183,6 +184,21 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
                         //GET DRIVER:
                         int		previous_DRIVER = SystemHandle->AppSettings->DRIVER;
                         SystemHandle->AppSettings->DRIVER = (int)(SendMessage(womaSetup->hWndComboBox[2], CB_GETCURSEL, NULL, NULL));
+
+						UINT MSAA = (int)(SendMessage(womaSetup->hWndComboBox[3], CB_GETCURSEL, NULL, NULL));
+
+						SystemHandle->AppSettings->MSAA_bilinear = false;
+						SystemHandle->AppSettings->MSAA_trilinear = false;
+						SystemHandle->AppSettings->MSAA_Anisotropic = false;
+						switch(MSAA){
+							case 1:  SystemHandle->AppSettings->MSAA_bilinear = true; break;
+							case 2:  SystemHandle->AppSettings->MSAA_trilinear = true; break;
+
+							case 3:  SystemHandle->AppSettings->MSAA_Anisotropic = true; SystemHandle->AppSettings->MSAA_AnisotropicLevel = 1;  break;
+							case 4:  SystemHandle->AppSettings->MSAA_Anisotropic = true; SystemHandle->AppSettings->MSAA_AnisotropicLevel = 2;  break;
+							case 5:  SystemHandle->AppSettings->MSAA_Anisotropic = true; SystemHandle->AppSettings->MSAA_AnisotropicLevel = 4;  break;
+							case 6:  SystemHandle->AppSettings->MSAA_Anisotropic = true; SystemHandle->AppSettings->MSAA_AnisotropicLevel = 8;  break;
+						}
 
 						//GET FULL_SCREEN COMBOBOX: "Display Mode"
 						int index = (int)SendMessage(womaSetup->hWndComboBox[0], CB_GETCURSEL, NULL, NULL);
@@ -211,7 +227,8 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 						SystemHandle->AppSettings->DRIVER = previous_DRIVER;
 
 						WOMA::game_state = GAME_SETUP;
-						WOMA::previous_game_state = WOMA::game_state;
+						//WOMA::previous_game_state = WOMA::game_state;
+						WOMA::previous_game_state = GAME_RUN; // WOMA::game_state;
 						WOMA::game_state = ENGINE_RESTART;
 					}
 
@@ -222,8 +239,8 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 						SAFE_SHUTDOWN(womaSetup);
 					}
 				}
-			}
-		}
+			//}
+		//}
 		break;
 	#endif
 
@@ -252,7 +269,7 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 	// Check if the window is being closed: (i.e.) 
 	// MainWindow Close: in Task Bar OR Window [X] (top right corner), etc...
 
-	case WM_CLOSE:	// During the shutdown process of the device, the WM_CLOSE message is broadcasted to the applications.
+	case WM_CLOSE:	// During the shutdown process of the device, the WM_CLOSE message is broad-casted to the applications.
 
 		WOMA::main_loop_state = -1;
 		WOMA::game_state = GAME_STOP;
@@ -320,7 +337,7 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 		return 0;
 	}
 
-	// ON Activate windows: Activate our Direct Keyborad System
+	// ON Activate windows: Activate our Direct Keyboard System
 	// -----------------------------------------------------------------------------
 	case WM_ACTIVATEAPP:
 	{
@@ -359,8 +376,10 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
                     SystemHandle->AppSettings->WINDOW_HEIGHT = 1080;
                     ONRESIZE(pContext);
                     BOOL fullscreen;
-                    ((DX11Class*)m_Driver)->DX11windowsArray[0].m_swapChain1->GetFullscreenState(&fullscreen, nullptr);
-                    ((DX11Class*)m_Driver)->DX11windowsArray[0].m_swapChain1->SetFullscreenState(!fullscreen, nullptr);
+					DX11windowsArray[0].m_swapChain1->GetFullscreenState(&fullscreen, nullptr);
+                    DX11windowsArray[0].m_swapChain1->SetFullscreenState(!fullscreen, nullptr);
+                    //((DX11Class*)m_Driver)->DX11windowsArray[0].m_swapChain1->GetFullscreenState(&fullscreen, nullptr);
+                    //((DX11Class*)m_Driver)->DX11windowsArray[0].m_swapChain1->SetFullscreenState(!fullscreen, nullptr);
                 }
 
                 break; // return 0; // Prevent further processing of ALT+ENTER
@@ -398,8 +417,8 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 			}
 			else if (wParam == SIZE_MAXIMIZED)	// [] (go from default to maximize!)
 			{
-				SystemHandle->AppSettings->WINDOW_WIDTH = LOWORD(lparam);	// New Usefull Size
-				SystemHandle->AppSettings->WINDOW_HEIGHT = HIWORD(lparam);	// New Usefull Size
+				SystemHandle->AppSettings->WINDOW_WIDTH = LOWORD(lparam);	// New Useful Size
+				SystemHandle->AppSettings->WINDOW_HEIGHT = HIWORD(lparam);	// New Useful Size
 				mMaximized = true;
 				if (WOMA::game_state == GAME_MINIMIZED)
 					UNPAUSE();	//Restore State

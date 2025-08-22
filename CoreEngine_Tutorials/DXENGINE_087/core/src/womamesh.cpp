@@ -168,6 +168,7 @@ void LoadAllMeshModels(UINT this_level, ApplicationClass* app, MeshApplication* 
     log("STARTING...");
 #endif
 }
+
 void UpdateAllMeshAnimations(float deltaTime)
 {
 	MeshApplication* demoapp = demoapp_; 
@@ -175,16 +176,25 @@ void UpdateAllMeshAnimations(float deltaTime)
 
     //Update animation/bone matrix's and RENDER all MESHs:
 #if DX_ENGINE_LEVEL >= 79 && defined USE_MODEL1
-    if (womamesh1.assimpSceneModel && womamesh1.assimpSceneModel->loaded)
+    if (womamesh1.assimpSceneModel && womamesh1.assimpSceneModel->loaded) 
+    { 
         demo->animJob.UpdateTimeElapsed(womamesh1.scene, deltaTime);
+        womamesh1.assimpSceneModel->readyToRender = true;
+    }
 #endif
 #if DX_ENGINE_LEVEL >= 84 && defined (SCENE_SKIN)
     if (womamesh2.assimpSceneModel && womamesh2.assimpSceneModel->loaded)
+    {
         demo->animJob.UpdateTimeElapsed(womamesh2.scene, deltaTime);
+        womamesh2.assimpSceneModel->readyToRender = true;
+    }
 #endif
 #if DX_ENGINE_LEVEL >= 86 && defined (SCENE_SKIN)
     if (womamesh3.assimpSceneModel && womamesh3.assimpSceneModel->loaded)
+    {
         demo->animJob.UpdateTimeElapsed(womamesh3.scene, deltaTime);
+        womamesh3.assimpSceneModel->readyToRender = true;
+    }
 #endif
 #if DX_ENGINE_LEVEL >= 86 && defined USE_MODEL4
     demo->animJob.UpdateTimeElapsed(womamesh4[MAIN_CHAR_MODEL1].scene, deltaTime);
@@ -194,6 +204,7 @@ void UpdateAllMeshAnimations(float deltaTime)
     demo->animJob.UpdateTimeElapsed(womamesh4[MAIN_CHAR_MODEL3].scene, deltaTime);
 #endif
 }
+
 void RenderAllMeshModels(ID3D11DeviceContext* m_DeviceContext)
 {
 	if (!demoapp_ || !demo_)
@@ -204,7 +215,8 @@ void RenderAllMeshModels(ID3D11DeviceContext* m_DeviceContext)
 
         // Model 1 -----------------a-------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 79 && defined USE_MODEL1
-    if (womamesh1.assimpSceneModel && womamesh1.assimpSceneModel->loaded)
+    if (womamesh1.assimpSceneModel && 
+        womamesh1.assimpSceneModel->readyToRender)
     {
         XMMATRIX world = XMMatrixIdentity();
         //Scale:
@@ -231,7 +243,9 @@ void RenderAllMeshModels(ID3D11DeviceContext* m_DeviceContext)
     // Model 2 ------------------------------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 84 && defined USE_MODEL2
 #if defined SCENE_SKIN
-    if (womamesh2.assimpSceneModel && womamesh2.assimpSceneModel->loaded && SystemHandle->m_Application->m_characterPos)
+    if (womamesh2.assimpSceneModel && womamesh2.assimpSceneModel &&
+        womamesh2.assimpSceneModel && womamesh2.assimpSceneModel->readyToRender && 
+        SystemHandle->m_Application->m_characterPos)
     {
         XMMATRIX world = XMMatrixIdentity();
         //Scale:
@@ -258,7 +272,9 @@ void RenderAllMeshModels(ID3D11DeviceContext* m_DeviceContext)
 
 #if DX_ENGINE_LEVEL >= 86 && defined USE_MODEL3
     // Model 3 ------------------------------------------------------------------------------------------
-    if (womamesh3.assimpSceneModel && womamesh3.assimpSceneModel->loaded && SystemHandle->m_Application->m_characterPos)
+    if (womamesh3.assimpSceneModel && womamesh3.assimpSceneModel && 
+        womamesh3.assimpSceneModel && womamesh3.assimpSceneModel->readyToRender
+        /* && SystemHandle->m_Application->m_characterPos*/)
     {
         XMMATRIX world = XMMatrixIdentity();
         //Scale:
@@ -279,7 +295,7 @@ void RenderAllMeshModels(ID3D11DeviceContext* m_DeviceContext)
 #endif
 #if DX_ENGINE_LEVEL >= 86 && defined USE_MODEL4
     if (womamesh4[MAIN_CHAR_MODEL1].assimpSceneModel &&
-        womamesh4[MAIN_CHAR_MODEL1].assimpSceneModel->loaded)
+        womamesh4[MAIN_CHAR_MODEL1].assimpSceneModel->readyToRender)
     // Model 4 ------------------------------------------------------------------------------------------
     {
         XMMATRIX world = XMMatrixIdentity();
@@ -300,7 +316,7 @@ void RenderAllMeshModels(ID3D11DeviceContext* m_DeviceContext)
 #endif
 #if DX_ENGINE_LEVEL == 87 && defined USE_MODEL4
     if (womamesh4[MAIN_CHAR_MODEL2].assimpSceneModel &&
-        womamesh4[MAIN_CHAR_MODEL2].assimpSceneModel->loaded)
+        womamesh4[MAIN_CHAR_MODEL2].assimpSceneModel->readyToRender)
     // Model 4 ------------------------------------------------------------------------------------------
     {
         XMMATRIX world = XMMatrixIdentity();
@@ -322,7 +338,7 @@ void RenderAllMeshModels(ID3D11DeviceContext* m_DeviceContext)
 
     // Model 4 ------------------------------------------------------------------------------------------
     if (womamesh4[MAIN_CHAR_MODEL3].assimpSceneModel &&
-        womamesh4[MAIN_CHAR_MODEL3].assimpSceneModel->loaded)
+        womamesh4[MAIN_CHAR_MODEL3].assimpSceneModel->readyToRender)
     {
         XMMATRIX world = XMMatrixIdentity();
         //Scale:
@@ -351,6 +367,7 @@ DWORD StartMeshLibs(LPVOID lpParam)
     ApplicationClass* app = static_cast<ApplicationClass*>(lpParam);
 
 	if (WOMA::game_state == GAME_STOP) goto exitThread;
+
 	// INIT: Model 1,2,3,4...
     LoadAllMeshModels(DX_ENGINE_LEVEL, app, demoapp_, demo_);
 

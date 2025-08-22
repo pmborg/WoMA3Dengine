@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 // Filename: woma_macros.h
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -52,7 +52,7 @@
 	extern bool PLATFORM_INIT_GTK2();
 #endif
 
-// Save all aplication entry command line parameter:
+// Save all application entry command line parameter:
 // --------------------------------------------------------------------------------------------
 #if !defined WOMA_WIN32_APPLICATION && !defined ANDROID_PLATFORM
 	#define SYSTEM_SAVE_ARGS() { \
@@ -67,7 +67,7 @@
 	}
 #endif
 
-// Global Statments - WOMA Checks
+// Global Statements - WOMA Checks
 // --------------------------------------------------------------------------------------------
 #if defined WINDOWS_PLATFORM
 	#define IF_FAILED_RETURN_FALSE(x)	{ if( FAILED(x) ) { return false; } }		// Used with "HRESULT" IF FAILED
@@ -230,7 +230,7 @@ extern const wchar_t* GetWC(const char* c);
 #if defined WINDOWS_PLATFORM
 	#define Publish_Quit_Message(){ \
 		for (int i = 0; i < SystemHandle->windowsArray.size(); i++)\
-			::PostMessage(SystemHandle->m_hWnd, WM_CLOSE, 0, 0); /*NOTE: dont use PostQuitMessage(WM_QUIT) on mutiple threads!*/\
+			::PostMessage(SystemHandle->m_hWnd, WM_CLOSE, 0, 0); /*NOTE: don't use PostQuitMessage(WM_QUIT) on multiple threads!*/\
 		WOMA::main_loop_state = -1; \
 		WOMA::game_state = GAME_STOP; \
 	} 
@@ -252,7 +252,7 @@ extern const wchar_t* GetWC(const char* c);
 #endif
 
 extern bool cpuSupportsAVX512f;
-
+/*
 #define SAFE_FLOAT32(x)  SafeFloat32(x)
 #define SAFE_FLOAT64(x)  SafeFloat(x)
 #define SAFE_DOUBLE32(x) SafeDouble(x)
@@ -281,5 +281,5 @@ inline double SafeDouble(uint32_t value) {
 #endif
 	return static_cast<double>(static_cast<int32_t>(value)); // Always safe
 }
-
+*/
 #endif

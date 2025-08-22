@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -62,7 +62,6 @@
 
 	#define FrustumClass DXfrustumClass
 #endif
-
 
 #if defined ALLOW_PRINT_SCREEN_SAVE_PNG && defined DX11
 	#include "ImageLoaderClass.h"
@@ -175,21 +174,19 @@ enum SHADER_TYPE
 		//SHADER_REALSKYTEXTURE,							//91:
 };
 
-
 struct Capabilities 
 {
 	// DX Capabilities:
 	bool CapDX9 = false;
 	bool CapDX10_11 = false;
 	bool CapDX12 = false;
-	//bool CapDX12_1 = false;
 
 	STRING SHADER_TYPE_NAME=TEXT("");
 
 	BOOL   inStereoAdapterMode=false;
 
 	size_t nTotalAvailableGPUMemory;		//< Total available GPU memory in kilobytes, 0 if it was not possible to determine this value, this value may not match your graphics card specification (e.g. "512 MiB" may get you "480 MiB" in here)
-	UINT   SelectedDriverType = 0;
+
 	bool   USE_DXDRIVER_FONTSBoolean = false;
 
 	bool   DXGI10=false;
@@ -292,7 +289,7 @@ public:
 	virtual void TurnOffAlphaBlending(void* pContext) = 0;
 	#endif
 
-	#if defined USE_DX_DRIVER_FONT // FONT v2
+	#if defined USE_DX_DRIVER_FONT
 	virtual void addText(int Xpos, int Ypos, TCHAR* text, float R, float G, float B) = 0;
 	virtual void RenderDriverText(void* pContext) = 0;
 	#endif
@@ -305,7 +302,7 @@ public:
 	// ----------------------------------------------------------------------------
 	Capabilities m_sCapabilities;
 
-	UINT	ShaderVersionH = 0, ShaderVersionL = 0;	// Basics of Refrash rate / Shaver Version:
+	UINT	ShaderVersionH = 0, ShaderVersionL = 0;	// Basics of Refresh rate / Shaver Version:
 	bool	RenderfirstTime = true;
 	bool RenderMapfirstTime = true;
 
@@ -317,17 +314,19 @@ public:
 
 	// Video Card Info:
 	// ----------------------------------------------------------------------------
-	TCHAR driverName[MAX_STR_LEN];		// STRING driverName;
-	TCHAR ShaderModel[MAX_STR_LEN];		// STRING ShaderModel;   // "x_y"
-	TCHAR szShaderModel[MAX_STR_LEN];	// STRING szShaderModel; // "x.y"
+	//UINT use_this_graphic_card_adapter = 0;
+
+	TCHAR driverName[MAX_STR_LEN];			// STRING driverName;
+	TCHAR ShaderModel[MAX_STR_LEN];			// STRING ShaderModel;   // "x_y"
+	TCHAR szShaderModel[MAX_STR_LEN];		// STRING szShaderModel; // "x.y"
 	// ------------------
 	
 	CHAR	m_videoCardDescription[128];	//NEED TO BE CHAR
 	int		m_videoCardMemory = 0;
-	TCHAR	adapterDesc_Description[MAX_STR_LEN];	// Note: have to be wstring
+	TCHAR	adapterDesc_Description[MAX_STR_LEN];
 	UINT	ufreededicatedVideoMem = 0;
 
-	// List of resoltions availabel to Use
+	// List of resolutions available to Use
 	// ----------------------------------------------------------------------------
 	UINT numerator, denominator = 0;
 	UINT MonitorNumber = 0;					// Total number of Monitors
@@ -338,8 +337,8 @@ public:
 
 	// MSAA Used:
 	// ----------------------------------------------------------------------------
-	UINT	MSAA_COUNT = 1;		//Anti-Alising: MultiSample tech. (1 = off, 4, 8, 16)		4	8	16
-	UINT	MSAA_QUALITY = 0;	//Anti-Alising: Texture Filtering tech. (MSAA > 0)			0	0	 0
+	UINT	MSAA_COUNT = 1;					//Anti-Aliasing: MultiSample tech. (1 = off, 4, 8, 16)		4	8	16
+	UINT	MSAA_QUALITY = 0;				//Anti-Aliasing: Texture Filtering tech. (MSAA > 0)			0	0	 0
 
 #if defined USE_FRUSTRUM
 	FrustumClass* frustum=NULL;

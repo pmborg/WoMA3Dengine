@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -134,11 +134,7 @@ bool ParseWind(const TCHAR* token)
         weather.windKMh = wind_code * 3600 / 1000;
     //parsed.wind.norm = fixed(wind_code);
     else if (_tcsicmp(endptr, TEXT("KT")) == 0)
-#if defined FORCE_MATH_AVX
         weather.windKMh = (UINT)(wind_code * 1.852);
-#else
-        weather.windKMh = (UINT)(static_cast<int>(wind_code) * 1.852);
-#endif
     //parsed.wind.norm = Units::ToSysUnit(fixed(wind_code), Unit::KNOTS);
     else
         return false;

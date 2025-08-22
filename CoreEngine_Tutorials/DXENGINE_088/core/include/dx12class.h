@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -21,7 +21,6 @@
 #pragma once
 
 #include "platform.h"
-//#include<D3D11.h> //To populate: D3D11_SPEC_DATE_YEAR
 #if defined DX12//  && D3D11_SPEC_DATE_YEAR > 2009
 
 /////////////
@@ -66,7 +65,7 @@
 //#endif
 
 #if D3D11_SPEC_DATE_YEAR == 2009
-//#include <D3dx9core.h>			//D3DX_SDK_VERSION (Checks for the existance of the correct D3DX library version)
+//#include <D3dx9core.h>			//D3DX_SDK_VERSION (Checks for the existence of the correct D3DX library version)
 #endif
 
 // DX12 2D:
@@ -74,17 +73,6 @@
 	#include <d2d1_3.h>
 	#include <dwrite.h>
 	#include <d3d11on12.h>
-	/*
-	#include <d3d12.h>
-	#include <dxgi1_4.h>
-	#include <D3Dcompiler.h>
-	#include <DirectXMath.h>
-	#include "d3dx12.h"
-
-	#include <string>
-	#include <wrl.h>
-	#include <shellapi.h>
-	*/
 #endif
 
 #include "d3dx12.h"	// DX12 UTILS:
@@ -134,7 +122,7 @@ class DX12Class : public WomaDriverClass
 {
 public:
 	static const auto BufferCount = 2;  // "Use Double Buffer"
-//	static const auto BufferCount = 3;  // "Use Tripple Buffer"
+//	static const auto BufferCount = 3;  // "Use Triple Buffer"
 
 	UINT WomaIntegrityCheck = 1234525217;
 	DX12Class();
@@ -148,7 +136,7 @@ public:
 	void DX12Class::QueryVideoMemoryInfo(UINT adapterIndex, ComPtr<IDXGIAdapter1> adapter);
 	//#endif
 	void GetHardwareAdapter(IDXGIFactory4* pFactory, IDXGIAdapter1** ppAdapter, D3D_FEATURE_LEVEL feacture_level);
-	BOOL CheckAPIdriver (UINT USE_THIS_ADAPTER);
+	BOOL CheckAPIdriver (int USE_THIS_ADAPTER);
 
 	void SelectDepthFormat(UINT depthBits, BOOL fullscreen);
     bool OnInit(int g_USE_MONITOR, void* hwnd, int screenWidth, int screenHeight, UINT depthBits,
@@ -236,7 +224,7 @@ public:
 
 	// ---------------------------------------------------------
 	bool	g_ALLOW_DX9x;
-	//UINT	ShaderVersionH, ShaderVersionL;	// Basics of Refrash rate / Shaver Version:
+	//UINT	ShaderVersionH, ShaderVersionL;	// Basics of Refresh rate / Shaver Version:
 
 	//DXGI_MODE_DESC* displayModeList;
 	
@@ -251,25 +239,25 @@ public:
 	ComPtr<IDWriteTextFormat> m_textFormat;
 	ComPtr<ID2D1SolidColorBrush> m_textBrush;
 
-	ID3D11RasterizerState* CWcullMode;
+	ID3D11RasterizerState* CWcullMode = NULL;
 
-	ID3D10Device1 *d3d101Device;
+	ID3D10Device1 *d3d101Device = NULL;
 
-	IDXGIKeyedMutex *keyedMutex11;
-	IDXGIKeyedMutex *keyedMutex10;	
-	ID2D1RenderTarget *D2DRenderTarget;	
-	ID2D1SolidColorBrush *Brush;
+	IDXGIKeyedMutex *keyedMutex11 = NULL;
+	IDXGIKeyedMutex *keyedMutex10 = NULL;
+	ID2D1RenderTarget *D2DRenderTarget = NULL;
+	ID2D1SolidColorBrush *Brush = NULL;
 
-	ID3D11Texture2D *sharedTex11;	
-	ID3D11Buffer *d2dVertBuffer;
-	ID3D11Buffer *d2dIndexBuffer;
+	ID3D11Texture2D *sharedTex11 = NULL;
+	ID3D11Buffer *d2dVertBuffer = NULL;
+	ID3D11Buffer *d2dIndexBuffer = NULL;
 
-	ID3D11ShaderResourceView *d2dTexture;
-	IDWriteFactory *DWriteFactory;
-	IDWriteTextFormat *TextFormat;
+	ID3D11ShaderResourceView *d2dTexture = NULL;
+	IDWriteFactory *DWriteFactory = NULL;
+	IDWriteTextFormat *TextFormat = NULL;
 
-	ID3D11Buffer* cbPerObjectBuffer;
-	ID3D11BlendState* Transparency;
+	ID3D11Buffer* cbPerObjectBuffer = NULL;
+	ID3D11BlendState* Transparency = NULL;
 
 	DXshaderClass* m_FontV2Shader=NULL;
 #endif

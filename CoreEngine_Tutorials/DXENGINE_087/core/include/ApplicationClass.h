@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -42,11 +42,11 @@
 #include "winCpuClass.h"
 #endif
 
-	#if defined USE_TIMER
-	#include "Math3D.h"
-	#include "fpsClass.h"
-	#include "timerClass.h"
-	#endif
+#if defined USE_TIMER
+#include "Math3D.h"
+#include "fpsClass.h"
+#include "timerClass.h"
+#endif
 
 #if CORE_ENGINE_LEVEL >= 7 && defined USE_ASTRO_CLASS
 #include "initWorld.h"
@@ -88,11 +88,11 @@ extern std::vector<VirtualModelClass*> m_screenShots;
 // -------------------------------------------------------------------------------------------------
 extern bool FORCE_RENDER_ALL;
 
-#if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
+#if defined USE_DIRECT_INPUT
 extern UINT g_NetID;
 #endif
 
-#if defined INTRO_DEMO && CORE_ENGINE_LEVEL >= 10 //29
+#if defined INTRO_DEMO && CORE_ENGINE_LEVEL >= 10
 extern int SpriteScreenToShow;
 extern float fadeIntro;
 #endif
@@ -102,7 +102,7 @@ struct InstanceType
 	WOMA::vec3	position;
 };
 
-#if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
+#if defined USE_DIRECT_INPUT
 #include "positionClass.h"
 #if defined DX_ENGINE
 	#include "DXinputClass.h"
@@ -215,7 +215,7 @@ public:
 	bool Start();
 	void WOMA_APPLICATION_Shutdown();
 
-	#if defined USE_ASTRO_CLASS && defined USE_REAL_SUNLIGHT_DIRECTION //#if ENGINE_LEVEL >= 33
+	#if defined USE_ASTRO_CLASS && defined USE_REAL_SUNLIGHT_DIRECTION
 	float SunX, SunY, SunZ;
 	float MoonX, MoonY, MoonZ;
 	void Calc3DSunMoonPosition();
@@ -225,7 +225,7 @@ public:
 
 	float dayLightFade;
 
-#if CORE_ENGINE_LEVEL >= 10 && !defined NewWomaEngine //#if DX_ENGINE_LEVEL >= 19 && !defined NewWomaEngine
+#if CORE_ENGINE_LEVEL >= 10 && !defined NewWomaEngine
     void SortOutWhatNeedToBeRendered(void* pContext);
     void RenderScene(UINT monitorWindow, WomaDriverClass* driver);
 	float ProcessInputUpdate();						// PROCESS User Update
@@ -240,13 +240,16 @@ public:
 	void AppPosRender(UINT monitorWindow, void* mainCtx);																// POS-RENDER - 2D: Render 
 
     int get_model_id(UINT ID, UINT pass);
-	void RenderModel(UINT monitorWindow, WomaDriverClass* driver, UINT modelID, UINT pass, void* pContext, XMMATRIX* m_viewMatrix=NULL, XMMATRIX* m_projectionMatrix = NULL);
+	void RenderModel(void* pContext, UINT threadID, UINT monitorWindow, WomaDriverClass* driver, UINT modelID, UINT pass, XMMATRIX* m_viewMatrix=NULL, XMMATRIX* m_projectionMatrix = NULL);
 	
 	void RenderShadowPass(UINT monitorIndex, WomaDriverClass* Driver, void* pContext, float fadeLight);
 	void AppPreRender(UINT monitorWindow, WomaDriverClass* Driver, float fadeLight, void* mainCtx);	// PRE-RENDER - Shadows
 	void TerrainRender(UINT monitorWindow, WomaDriverClass* Driver, float fadeLight, XMMATRIX* m_viewMatrix, XMMATRIX* m_projectionMatrix, void* ctx);
 
 	virtual bool WOMA_APPLICATION_Initialize3D(void * pContext, WomaDriverClass* Driver); // APP_Load
+#if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined USE_FRUSTRUM
+	bool WOMA_LOAD_OBJ(void* pContext, UINT threadID, WomaDriverClass* Driver, UINT i, TCHAR* wfilename);
+#endif																			  
 
 #if defined USE_LIGHT_RAY
 	void CalculateLightRayVertex (float SunDistance);
@@ -257,6 +260,8 @@ public:
 	LightClass* m_Light = NULL;
 
     UINT world_xml_objs = 0;
+	UINT theWorld_size=0;
+	UINT objModel_size=0;			  
 
     DWORD total_deltaTime=0;
 	float billangle = 0;
@@ -296,7 +301,7 @@ public:
     PositionClass* m_characterPos = NULL;
 #endif
 
-#if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
+#if defined USE_DIRECT_INPUT
 	std::vector<PositionClass*> m_Position;
 #endif
 
@@ -321,7 +326,7 @@ public:
 #endif
 
 #if defined USE_SKY2D || ENGINE_LEVEL >= 27 // SKY
-    std::vector<ModelTextureLightVertexType> sky_vertexdata; //std::vector<ModelTextureVertexType> sky_vertexdata;
+    std::vector<ModelTextureLightVertexType> sky_vertexdata;
     std::vector<UINT>						 sky_indexdata;
 #endif
     std::vector<VirtualModelClass*> objModel;
@@ -386,6 +391,9 @@ public:
 // ---------------------------------------------------------------------
 
 private:
+#if defined ALLOW_CBIND_PROGRESS_BAR
+	TCHAR title[MAX_STR_LEN] = {};
+#endif
 	void	Render_SKY_SUN_MOON(float);				//30
 
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
@@ -408,18 +416,6 @@ public:
 	void RenderAllTransparentCompounds();
 
 	UINT N_COMPOUNDS;
-	
-
-	/*
-	// Originally: G:\DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64\src\Applicationclass.cpp
-	compoundTree compound[] = {
-
-	//G:\woma2013\trunk\Part1\source\engine\application
-	std::vector <compoundTree>  compound;
-
-	compoundTree compound[];
-	compoundTreeLoadOrder compoundTreeLoadingOrder[];
-	*/
 #endif
 
 	//---------------------------------------------------------------------

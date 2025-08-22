@@ -7,14 +7,14 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-// PURPOSE: SET DEFAULT: "Aplication Settings" (they will be overwritten by "settings.xml" in run-time)
+// PURPOSE: SET DEFAULT: "Application Settings" (they will be overwritten by "settings.xml" in run-time)
 //
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234525217;
@@ -26,14 +26,14 @@
 #include "main.h"
 #if CORE_ENGINE_LEVEL >= 10
 #include "womadriverclass.h"
-#endif
+#endif						   
 #if defined USE_LOG_MANAGER
 #include "log.h"
 #endif
 #include "default_settings_xml.h"			// Settings
 
 // --------------------------------------------------------------------------------------------
-// Global Aplication Settings: ("Release" build only, "Debug" use local files)
+// Global Application Settings: ("Release" build only, "Debug" use local files)
 // --------------------------------------------------------------------------------------------
 namespace WOMA
 {
@@ -54,10 +54,12 @@ namespace WOMA
     #else
         DRIVER_DX11,
     #endif
+		-1,			// USE: ADAPTOR (-1 = auto-detect best)
         0,			// USE: UI_MONITOR
         // -------------------------------------------------------------------------------------------
         false,		// UseAllMonitors
         true,		// Use Double Buffering?
+		true,		// Use Triple Buffering?
         true,		// Start in VSYNC?		(TRUE: Smooth:60FPS | FALSE: To Benchmark)
 
         //	Texture
@@ -73,7 +75,7 @@ namespace WOMA
         // -------------------------------------------------------------------------------------------
         false,	// Start in FULLSCREEN?
         false,  // FULLSCREEN ON WINDOWED?
-        24, //DEPTH_BITS
+        24,		//DEPTH_BITS
 		#if CORE_ENGINE_LEVEL < 10
 		false, 
 		#else
@@ -122,8 +124,8 @@ namespace WOMA
 
 	// ------------------------------------------------------------------------------------------
 		// FOG
-		1,		//nofog
-		1024,	//nofog
+		1,		//no fog
+		1024,	//no fog
 
 	// ------------------------------------------------------------------------------------------
 		// SOUND

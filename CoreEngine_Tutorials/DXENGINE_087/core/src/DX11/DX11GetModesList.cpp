@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -48,8 +48,8 @@ bool DX11Class::getModesList(int g_USE_MONITOR, int screenWidth, int screenHeigh
 	/*******************************************************************
 	* Before we can initialize Direct3D we have to get: 
 		-	the refresh rate from the video card/monitor
-		-	chek all adapters available
-			-	chek all monitors attached to each Adapter
+		-	check all adapters available
+			-	check all monitors attached to each Adapter
 	*******************************************************************/
 
 	IF_FAILED_RETURN_FALSE (CreateDXGIFactory1(__uuidof(IDXGIFactory1), (void**)&pDXGIFactory)); // Use: dxgi.dll
@@ -101,13 +101,16 @@ bool DX11Class::getModesList(int g_USE_MONITOR, int screenWidth, int screenHeigh
 		}
 		#endif
 
-		// Tipically "GraphicCards" Sample Adapters:
+		// Typically "GraphicCards" Sample Adapters:
 		// 0: "Graphic Card" Interface.
 		// 1: "Microsoft Basic Render Driver" Interface.
 		//
 		// SAVE: our Adapter to use later, FREE: The others.
-		if (AdapterNumber == USE_THIS_GRAPHIC_CARD_ADAPTER)
+		if (AdapterNumber == SystemHandle->AppSettings->ADAPTOR || SystemHandle->AppSettings->ADAPTOR == -1)
+		{
+			SystemHandle->AppSettings->ADAPTOR = AdapterNumber;
 			adapterGraphicCard = pAdapter;	// SAVE: our Adapter
+		}
 		else 
 			pAdapter->Release();			// Release the adapters that will not be used.
 
@@ -131,7 +134,7 @@ bool DX11Class::getModesList(int g_USE_MONITOR, int screenWidth, int screenHeigh
 	}
 
 	if (MonitorNumber == 0)
-		womalogauto(TEXT("WARNING: We dont have any monitor, conneted to our Graphic Card (We are in Remote desktop without monitor attached)\n"));
+		womalogauto(TEXT("WARNING: We don't have any monitor, connected to our Graphic Card (We are in Remote desktop without monitor attached)\n"));
 	
 	// ---------------------------------------------------------------------------------------------
 	// Iterate on all Monitors (might be also only 1!) and get all possible resolutions for them:
@@ -262,7 +265,7 @@ bool DX11Class::getModesList(int g_USE_MONITOR, int screenWidth, int screenHeigh
 		}
 
 		// ---------------------------------------------------------------------------------------------
-		// Now go through all the "Display Modes" availabel and find the one that matches the screen width and height.
+		// Now go through all the "Display Modes" available and find the one that matches the screen width and height.
 		// When a match is found store the numerator and denominator of the refresh rate for that monitor.
 		// ---------------------------------------------------------------------------------------------
 		for (int i = (numModes - 1); i >= 0; i--) // New to need Backwards ( once better RefreshRate are the last ones! )

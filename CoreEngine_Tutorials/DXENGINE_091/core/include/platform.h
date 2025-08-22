@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -138,7 +138,7 @@ DX12 Versions:
 10.00.22000.1000 	October 5, 2021 	Windows 11, Added native refresh rate switching[94] and improved graphics capabilities to Windows Subsystem for Linux
 #endif
 
-#define DISABLE_BIN_COMPILE_MESSAGE_FOR_WINDOWS_PLATFORM_X64	//Dont Show: TARGET: CPU_X64 on WINDOWS_PLATFORM
+#define DISABLE_BIN_COMPILE_MESSAGE	//Don't Show: TARGET: CPU_X64 on WINDOWS_PLATFORM
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
@@ -159,10 +159,6 @@ DX12 Versions:
 // Check, if we are compiling in 64bits:
 #if defined(__LP64__) || defined(_WIN64) || (defined(__x86_64__) && !defined(__ILP32__) ) || defined(_M_X64) || defined(__ia64) || defined (_M_IA64) || defined(__aarch64__) || defined(__powerpc64__) || (defined(__arm64__) && defined(__APPLE__)) || __ppc64__
 	#define X64	//CPU: 64bits!
-#endif
-
-#if defined CPU_X86
-static_assert(false, "This HW Target is not valid for WOMA3D Engine");
 #endif
 
 // -------------------------------------------------------------------------------------------------------------------
@@ -251,35 +247,39 @@ static_assert(false, "This HW Target is not valid for WOMA3D Engine");
 // -------------------------------------------------------------------------------------------------------------------
 // LOG WINDOWS:
 #if (defined CPU_X86 || defined X64) && defined WINDOWS_PLATFORM
+#ifndef DISABLE_BIN_COMPILE_MESSAGE
 #if defined X64
-#ifndef DISABLE_BIN_COMPILE_MESSAGE_FOR_WINDOWS_PLATFORM_X64
 	#pragma message( "TARGET: CPU_X64 on WINDOWS_PLATFORM" )  
-#endif
 #else
 	#pragma message("TARGET: CPU_x86 on WINDOWS_PLATFORM")  
+#endif
 #endif
 #endif
 
 // LOG LINUX:
 #if (defined CPU_X86 || defined X64) && defined LINUX_PLATFORM
+#ifndef DISABLE_BIN_COMPILE_MESSAGE
 #if defined X64
-#ifndef DISABLE_BIN_COMPILE_MESSAGE_FOR_WINDOWS_PLATFORM_X64
 	#pragma message ("TARGET: CPU_X64 on LINUX_PLATFORM")
-#endif
 #else
 	#pragma message ("TARGET: CPU_x86 on LINUX_PLATFORM")
 #endif
 #endif
+#endif
 
-// LOG ANDROID:
+// LOG ANDROID x86/x64:
 #if (defined CPU_X86 && defined X64) && defined ANDROID_PLATFORM
+#ifndef DISABLE_BIN_COMPILE_MESSAGE
 #if defined X64
 	#pragma message ("TARGET: CPU_X64 on ANDROID_PLATFORM")
 #else
 	#pragma message ("TARGET: CPU_x86 on ANDROID_PLATFORM")
 #endif
 #endif
+#endif
 
+// LOG ANDROID ARM:
+#ifndef DISABLE_BIN_COMPILE_MESSAGE
 #if defined CPU_ARM32 && defined ANDROID_PLATFORM
 	#pragma message ("TARGET: CPU_ARM32 on ANDROID_PLATFORM")
 #endif
@@ -287,10 +287,11 @@ static_assert(false, "This HW Target is not valid for WOMA3D Engine");
 #if defined CPU_ARM64 && defined ANDROID_PLATFORM
 	#pragma message ("TARGET: CPU_ARM64 on ANDROID_PLATFORM")
 #endif
+#endif
 
 // ASSERT that only one valid PLATFORM id selected:
 #if (!defined (WINDOWS_PLATFORM)) && (!defined (LINUX_PLATFORM)) && (!defined (ANDROID_PLATFORM))
-	#error "WOMA COMPILATION ERROR: Only 1, target Platform can be select to COMPILE!"
+	#error "WOMA COMPILATION ERROR: Only 1, target Platform can be selected to COMPILE!"
 #endif
 
 // -------------------------------------------------------------------------------------------------------------------
@@ -300,7 +301,7 @@ static_assert(false, "This HW Target is not valid for WOMA3D Engine");
 	//mmintrin.h	: MMX(Pentium MMX!)
 	//mm3dnow.h		: 3dnow!(K6 - 2) (deprecated)
 	//xmmintrin.h	: SSE + MMX(Pentium 3, Athlon XP)
-	//emmintrin.h	: SSE2 + SSE + MMX(Pentiuem 4, Ahtlon 64)
+	//emmintrin.h	: SSE2 + SSE + MMX(Pentium 4, Ahtlon 64)
 	//pmmintrin.h	: SSE3 + SSE2 + SSE + MMX(Pentium 4 Prescott, Ahtlon 64 San Diego)
 	//tmmintrin.h	: SSSE3 + SSE3 + SSE2 + SSE + MMX(Core 2, Bulldozer)
 	//popcntintrin.h: POPCNT(Core i7, Phenom subset of SSE4.2 and SSE4A)
@@ -587,8 +588,8 @@ static_assert(false, "WIN6x: X64 or WIN32, must be selected");
 #endif
 #endif
 
-#define BIG_ENDIAN 0    // constexpr int BIG_ENDIAN = 0
-#define LITTLE_ENDIAN 1 // constexpr int LITTLE_ENDIAN = 1
+#define BIG_ENDIAN 0
+#define LITTLE_ENDIAN 1
 
 // -------------------------------------------------------------------------------------------------------------------
 // Windows Platforms Define (Internal API Version):
@@ -663,7 +664,6 @@ static_assert(false, "WIN6x: X64 or WIN32, must be selected");
 #ifdef MIN
 #undef MIN
 #endif
-
 #define MAX(a,b)	(((a) > (b)) ? (a) : (b))
 #define MIN(a,b)	(((a) < (b)) ? (a) : (b))
 
@@ -690,8 +690,4 @@ static_assert(false, "WIN6x: X64 or WIN32, must be selected");
 // -------------------------------------------------------------------------------------------------------------------
 // Define WOMA Project "Settings/Features" that will be COMPILED depending of "ENGINE_LEVEL"
 // -------------------------------------------------------------------------------------------------------------------
-#if defined MAVERICK
-	#include "C:\WoMAengine2023\woma_engine_assets.h"   // MAIN ENGINE
-#else
     #include "../../woma_engine_assets.h"				// PUBLIC (AUTO GENERATED DEMOS): WINDOWS / ANDROID / LINUX
-#endif

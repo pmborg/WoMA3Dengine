@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -23,6 +23,11 @@
 #include "StateMachine.h"
 #include "WomaSetupManager.h"
 #include <algorithm> 
+
+#if CORE_ENGINE_LEVEL >=10
+#include "womadriverclass.h"
+extern std::vector<UINT> FSAA_possibleValues;
+#endif
 
 WomaSetupManager::WomaSetupManager() 
 {
@@ -359,16 +364,43 @@ bool WomaSetupManager::Initialize(void* Driver)
 
 	hWndComboBox.push_back(NULL);
 	hWndComboBox[3] = CreateWindow(TEXT("COMBOBOX"), TEXT("MSAA"), Style,
-									xPos + 150, yPos, 200, 80, windownTOP, HMENU(202), SystemHandle->m_hinstance, NULL);
+									xPos + 150, yPos, 200, 7*40/*80*/, windownTOP, HMENU(202), SystemHandle->m_hinstance, NULL);
 
 	//SendMessage(hWndComboBox[3], CB_ADDSTRING, 1, reinterpret_cast<LPARAM>(TEXT("disable")));
 
+	UINT ID=0;
 	StringCchPrintf(str, sizeof(str), TEXT("Disabled" ));
-	SendMessage(hWndComboBox[3], CB_ADDSTRING, 0, reinterpret_cast<LPARAM>(str));
-	SendMessage(hWndComboBox[3], CB_SETCURSEL, 0, NULL); //Default Value
+	SendMessage(hWndComboBox[3], CB_ADDSTRING, ID++, reinterpret_cast<LPARAM>(str));
 
-	EnableWindow(hWndTitleLabel[hWndTitleLabelIdx-1], false);
-	EnableWindow(hWndComboBox[3], false);
+	StringCchPrintf(str, sizeof(str), TEXT("Bilinear"));
+	SendMessage(hWndComboBox[3], CB_ADDSTRING, ID++, reinterpret_cast<LPARAM>(str));
+
+	StringCchPrintf(str, sizeof(str), TEXT("Trilinear"));
+	SendMessage(hWndComboBox[3], CB_ADDSTRING, ID++, reinterpret_cast<LPARAM>(str));
+
+	SendMessage(hWndComboBox[3], CB_SETCURSEL, 0, NULL);
+
+#if CORE_ENGINE_LEVEL >=10
+	for (size_t i = 0; i < FSAA_possibleValues.size(); i++)
+	{
+		StringCchPrintf(str, sizeof(str), "Anisotropic: x%d", FSAA_possibleValues[i]);
+		SendMessage(hWndComboBox[3], CB_ADDSTRING, ID, reinterpret_cast<LPARAM>(str));
+
+		if (SystemHandle->AppSettings->MSAA_Anisotropic && SystemHandle->AppSettings->MSAA_AnisotropicLevel == FSAA_possibleValues[i])
+			SendMessage(hWndComboBox[3], CB_SETCURSEL, 2+i, NULL);
+	}
+#endif
+
+	if (SystemHandle->AppSettings->MSAA_bilinear)
+		SendMessage(hWndComboBox[3], CB_SETCURSEL, 1, NULL);
+
+	if (SystemHandle->AppSettings->MSAA_trilinear)
+		SendMessage(hWndComboBox[3], CB_SETCURSEL, 2, NULL);
+
+
+
+	//EnableWindow(hWndTitleLabel[hWndTitleLabelIdx-1], false);
+	//EnableWindow(hWndComboBox[3], false);
 
 	//if (!m_driver->mEnable4xMsaa) 
 	//	EnableWindow(hWndComboBox[3], FALSE); // Disable Options if mEnable4xMsaa is false.
@@ -512,9 +544,9 @@ bool WomaSetupManager::Initialize(void* Driver)
 	// Button ON / CANCEL:
 	// ---------------------------------------------------------------------------------------------
 	m_hBtnOK = CreateWindow(TEXT("BUTTON"), TEXT("OK"), WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON | WS_TABSTOP,
-								xPos, yPos, 80, 22, windownTOP, (HMENU) ButtonStart, SystemHandle->m_hinstance, NULL);
+								xPos, yPos, 80, 22, windownTOP, (HMENU)ButtonSetup, SystemHandle->m_hinstance, NULL);
 	m_hBtnCancel = CreateWindow(TEXT("BUTTON"), TEXT("CANCEL"), WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON | WS_TABSTOP,
-		85+xPos, yPos, 80, 22, windownTOP, (HMENU)ButtonStart, SystemHandle->m_hinstance, NULL);
+		85+xPos, yPos, 80, 22, windownTOP, (HMENU)ButtonSetupCancel, SystemHandle->m_hinstance, NULL);
 	// ---------------------------------------------------------------------------------------------
 
 	// Show Setup Window:

@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -213,7 +213,7 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 				if(checkChar == ' ')
 				{
 					face = TEXT("");
-					STRING/*std::wstring*/ VertDef;	//Holds one vertex definition at a time
+					STRING VertDef;	//Holds one vertex definition at a time
 					obj3d.triangleCount = 0;
 
 					checkChar = fileIn.get();
@@ -515,7 +515,7 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 										fileIn >> meshMaterialsTemp; //Get next type (string)
 
 										if (lastToken == 'u') 
-										{	// We have a "usemtl" but we dont have a 'g' for it, so "force" it:
+										{	// We have a "usemtl" but we don't have a 'g' for it, so "force" it:
 											obj3d.meshSubsetIndexStart.push_back(vIndex);		//Start index for this subset
 											obj3d.meshSubsets++;
 										}
@@ -595,7 +595,7 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 	//std::wstring lastStringRead;
 	//bool SKIP_MATERIALS = false;
 #if !defined(STANDALONE)
-	if (meshMatLib_.find(TEXT("none")) == 0) //Special Case for Billboards: dont have a fixed texture.
+	if (meshMatLib_.find(TEXT("none")) == 0) //Special Case for Billboards: don't have a fixed texture.
 	{
 		SurfaceMaterial tempMat;
 		obj3d.material.push_back(tempMat);

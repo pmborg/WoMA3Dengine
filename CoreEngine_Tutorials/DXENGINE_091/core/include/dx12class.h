@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -65,7 +65,7 @@
 //#endif
 
 #if D3D11_SPEC_DATE_YEAR == 2009
-//#include <D3dx9core.h>			//D3DX_SDK_VERSION (Checks for the existance of the correct D3DX library version)
+//#include <D3dx9core.h>			//D3DX_SDK_VERSION (Checks for the existence of the correct D3DX library version)
 #endif
 
 // DX12 2D:
@@ -122,7 +122,7 @@ class DX12Class : public WomaDriverClass
 {
 public:
 	static const auto BufferCount = 2;  // "Use Double Buffer"
-//	static const auto BufferCount = 3;  // "Use Tripple Buffer"
+//	static const auto BufferCount = 3;  // "Use Triple Buffer"
 
 	UINT WomaIntegrityCheck = 1234525217;
 	DX12Class();
@@ -136,7 +136,7 @@ public:
 	void DX12Class::QueryVideoMemoryInfo(UINT adapterIndex, ComPtr<IDXGIAdapter1> adapter);
 	//#endif
 	void GetHardwareAdapter(IDXGIFactory4* pFactory, IDXGIAdapter1** ppAdapter, D3D_FEATURE_LEVEL feacture_level);
-	BOOL CheckAPIdriver (UINT USE_THIS_ADAPTER);
+	BOOL CheckAPIdriver (int USE_THIS_ADAPTER);
 
 	void SelectDepthFormat(UINT depthBits, BOOL fullscreen);
     bool OnInit(int g_USE_MONITOR, void* hwnd, int screenWidth, int screenHeight, UINT depthBits,
@@ -224,7 +224,7 @@ public:
 
 	// ---------------------------------------------------------
 	bool	g_ALLOW_DX9x;
-	//UINT	ShaderVersionH, ShaderVersionL;	// Basics of Refrash rate / Shaver Version:
+	//UINT	ShaderVersionH, ShaderVersionL;	// Basics of Refresh rate / Shaver Version:
 
 	//DXGI_MODE_DESC* displayModeList;
 	
@@ -398,20 +398,5 @@ public:
 
 }
 #endif
-
-inline XMMATRIX Safe_XMMatrixPerspectiveFovLH(float fov, float aspect, float zn, float zf)
-{
-	// Assume all inputs are SAFE_FLOAT32'd before calling!
-	float h = 1.0f / tanf(fov * 0.5f);
-	float w = h / aspect;
-
-	XMMATRIX m = {};
-	m.r[0] = XMVectorSet(w, 0.0f, 0.0f, 0.0f);
-	m.r[1] = XMVectorSet(0.0f, h, 0.0f, 0.0f);
-	m.r[2] = XMVectorSet(0.0f, 0.0f, zf / (zf - zn), 1.0f);
-	m.r[3] = XMVectorSet(0.0f, 0.0f, -zn * zf / (zf - zn), 0.0f);
-	return m;
-}
-
 #endif
 

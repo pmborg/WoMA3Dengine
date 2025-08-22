@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -32,8 +32,7 @@
 #endif
 
 
-
-//NOTE: The defaults settings, are beeing populated on: "main_settings.cpp" (SYNC)
+//NOTE: The defaults settings, are being populated on: "main_settings.cpp" (SYNC)
 namespace WOMA
 {
 	extern int				main_loop_state;
@@ -45,13 +44,15 @@ namespace WOMA
 	#endif
 		int		Endian;
 
-		// driver
+		// Driver:
 		// -------------------------------------------------------------------------------------------
 		int		DRIVER;
+		int		ADAPTOR;
 		int		UI_MONITOR;
 		// -------------------------------------------------------------------------------------------
 		bool	UseAllMonitors;
-		bool	UseDoubleBuffering;
+		bool	UseDoubleBuffering;  // false = 1 buffer | true = 2 buffers
+		bool	UseTripleBuffering; // true  = 3 buffers
 		bool 	VSYNC_ENABLED;
 
 		// Texture
@@ -106,13 +107,13 @@ namespace WOMA
 
 		// Auto Detect:
 		// ------------------------------------------------------------------------------------------
-		int		SCREEN_RESOLUTION_WIDTH;  // Note: 0 eq. Auto detect Current Resolution
-		int		SCREEN_RESOLUTION_HEIGHT; // Note: 0 eq. Auto detect Current Resolution
+		int		SCREEN_RESOLUTION_WIDTH;  // Note: 0 equal Auto detect Current Resolution
+		int		SCREEN_RESOLUTION_HEIGHT; // Note: 0 equal Auto detect Current Resolution
 
 		// ------------------------------------------------------------------------------------------
 		// Networking...
 		bool			NETWORK_ENABLED;
-		char			SERVER_ADDRESS[16]; //Allocate max string lenght possible: ___.___.___.___ 15+1
+		char			SERVER_ADDRESS[16]; //Allocate max string length possible: ___.___.___.___ 15+1
 		unsigned short	SERVER_PORT;
 
 	} Settings;

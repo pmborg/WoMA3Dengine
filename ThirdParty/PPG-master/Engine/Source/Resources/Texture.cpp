@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -52,8 +52,8 @@ Texture* Texture::CreateTexture(Graphics& graphics, int width, int height, const
 Texture* Texture::CreateTextureDepthStencil(Graphics& graphics, int width, int height, const std::string& name,
     DXGI_FORMAT texFormat, UINT bindFlags, D3D11_SUBRESOURCE_DATA* data /*= NULL*/)
 {
-    #define m_driver11 ((DirectX::DX11Class*)driverList[SystemHandle->AppSettings->DRIVER])
-    ID3D11Texture2D* texturePtr = ((DirectX::DX11Class*)m_driver11)->m_depthStencilBuffer;
+
+    ID3D11Texture2D* texturePtr = DX11windowsArray[0].m_depthStencilBuffer;
 
     return new Texture(texturePtr, name);
 }
@@ -197,7 +197,8 @@ bool Texture::CreateRTV(Graphics& graphics, DXGI_FORMAT texFormat)
 {
 #define m_driver11 ((DirectX::DX11Class*)driverList[SystemHandle->AppSettings->DRIVER])
 
-    ID3D11RenderTargetView* rtv = DX11windowsArray[0].m_renderTargetView;
+    //ID3D11RenderTargetView* rtv = ((DirectX::DX11Class*)m_driver11)->DX11windowsArray[0].m_renderTargetView;
+	ID3D11RenderTargetView* rtv = DX11windowsArray[0].m_renderTargetView;
     m_TextureRTVs.push_back(rtv);
     return true;
 }
@@ -232,7 +233,8 @@ bool Texture::CreateDSV(Graphics& graphics, DXGI_FORMAT texFormat)
 {
     D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
     depthStencilViewDesc.Format = texFormat;
-    depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+    //depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	depthStencilViewDesc.ViewDimension = (SystemHandle->AppSettings->MSAA_Anisotropic) ? D3D11_DSV_DIMENSION_TEXTURE2DMS : D3D11_DSV_DIMENSION_TEXTURE2D; //MSAA
     depthStencilViewDesc.Flags = 0;
     depthStencilViewDesc.Texture2D.MipSlice = 0;
 

@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -116,6 +116,7 @@ void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext)
 {
 	totalRendered = 0;
 
+#if DX_ENGINE_LEVEL >= 70  && defined SCENE_BILLBOARDS //SCENE_BILLBOARDS
 #if defined USE_DIRECT_INPUT
 	const float SORT_OFFSET = 5.0f; //5 meters behind camera
 	sort_cameraX -= FAST_sin(SystemHandle->m_Application->m_Position[g_NetID]->m_rotationY) * SORT_OFFSET;
@@ -124,7 +125,6 @@ void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext)
 
 	// [1] sort billboards:
 	// --------------------------------------------------------------------------------------------
-#if DX_ENGINE_LEVEL >= 70  && defined SCENE_BILLBOARDS //SCENE_BILLBOARDS
 	std::sort(m_Trees.begin(), m_Trees.end(), BillSortCB_CPP);
 #endif
 
@@ -148,9 +148,9 @@ void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext)
 #if defined USE_LIGHT_RAY
 	if (RENDER_PAGE >= 23)
 	{
-		CalculateLightRayVertex(SunDistance);					// Calculate Light Source Position
+		CalculateLightRayVertex(SunDistance);							// Calculate Light Source Position
 		m_lightRayModel->UpdateDynamic(pContext, m_LightVertexVector);	// Update LightRay vertex(s)
-		m_lightRayModel->Render(pContext, 0, 0, 0, NULL, NULL);								// Render LightRay
+		m_lightRayModel->Render(pContext, 0, 0, 0, NULL, NULL);			// Render LightRay
 	}
 #endif
 }
@@ -159,30 +159,28 @@ void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext)
 void ApplicationClass::RenderScene(UINT monitorIndex, WomaDriverClass* driver)
 //-------------------------------------------------------------------------------------------
 {
-	void* mainCtx=NULL;
+	static void* mainCtx=NULL;
 #if defined DX_ENGINE
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
 		mainCtx = ((DX11Class*)m_Driver)->GetDeviceContext();
 #endif
+
 	SortOutWhatNeedToBeRendered(mainCtx);
 
-	// [1] Launch shadow & minimap async work, do not wait
-	AppPreRender(monitorIndex, driver, dayLightFade, mainCtx);
+#if DX_ENGINE_LEVEL >= 36 && (defined USE_MAP_REDENRING_THREAD || defined USE_SHADOW_MAP || defined USE_MAIN_MAP)
+	AppPreRender(monitorIndex, driver, dayLightFade, mainCtx);	// [1] Launch shadow & mini-map async work, do not wait
+#endif
+	
+	AppRender(monitorIndex, dayLightFade, mainCtx);				// [2] 3D Render main scene while workers run in parallel
 
-	((DirectX::DX11Class*)driver)->SetBackBufferRenderTarget(mainCtx, monitorIndex);	// MANDATORY! Back to default back buffer
-  #if defined USE_ALPHA_BLENDING
-	m_Driver->TurnOnAlphaBlending(mainCtx);												// restore default blending
-  #endif
+	AppPosRender(monitorIndex, mainCtx);						// [3] 2D: Render TRANSPARENT Parts of 3D OBJs(like: "Glass windows", "Billboards", etc...)
 
-	// [2] Render main scene while workers run in parallel
-	AppRender(monitorIndex, dayLightFade, mainCtx);
-
-	AppPosRender(monitorIndex, mainCtx);
   #if defined USE_MAP_REDENRING_THREAD
-	// [2.5] Wait here (after main scene) before using shadows/minimap results
+	// [2.5] Wait here (after main scene) before using shadows/mini-map results
 	WaitForPreRenderTasks(mainCtx);
   #endif
 }
+
 
 //
 // RENDER TO TEXTURE
@@ -201,14 +199,14 @@ void ApplicationClass::RenderMiniMapPass(UINT monitorWindow, WomaDriverClass* Dr
 	{
 		//Set Camera Position - Render Camera:
 
-		//"viewMatrix": SET Camera Roration and Position to 2D Render: TEXT and SPRITES
+		//"viewMatrix": SET Camera Rotation and Position to 2D Render: TEXT and SPRITES
 		m_CameraMAP.SetRotation(+89.999f, 0, 0);
 		/*       /
 			   /     |
 			/a       | loadedTerrain[2]->m_terrainHeight/2
 			--- h--- |
 		Note:
-			angle a = 21.8f (half of our view frustrum)
+			angle a = 21.8f (half of our view frustum)
 		*/
 
 		// Check which Quadrant we are:
@@ -237,6 +235,7 @@ void ApplicationClass::RenderMiniMapPass(UINT monitorWindow, WomaDriverClass* Dr
 		m_RenderMapTexture->SetRenderTarget(Driver, (ID3D11DeviceContext*)pContext);								// Set the render target to be the render to texture.
 		m_RenderMapTexture->ClearRenderTarget(Driver, (ID3D11DeviceContext*)pContext, 0.30f, 0.30f, 0.30f, 1.0f);	// Clear the render to texture!
 		TerrainRender(monitorWindow, Driver, fadeLight, &m_CameraMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix, pContext);
+
 	}
 #endif
 
@@ -245,7 +244,7 @@ void ApplicationClass::RenderMiniMapPass(UINT monitorWindow, WomaDriverClass* Dr
 	//---------------------------------------------------------------------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 63 && defined USE_MINI_MAP //&& !defined USE_MINIMAP_EXPANSION
 	{
-		//"viewMatrix": SET Camera Roration and Position to 2D Render: TEXT and SPRITES
+		//"viewMatrix": SET Camera Rotation and Position to 2D Render: TEXT and SPRITES
 		m_CameraMINIMAP.SetRotation(+89.999f, 0, 0);
 		m_CameraMINIMAP.SetPosition(sort_cameraX, 100, sort_cameraZ); // 100 Magic number
 
@@ -263,6 +262,7 @@ void ApplicationClass::RenderMiniMapPass(UINT monitorWindow, WomaDriverClass* Dr
 		TerrainRender(monitorWindow, Driver, fadeLight, &m_CameraMINIMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix, pContext);
 #if defined USE_MINIMAP_EXPANSION
 		for (UINT id = 0; id < world_main_size-1; id++)  //TODO: use sceneManager
+		//for (int id = world_main_size - 1; id >= 0; --id) 
 		{
 			m_MiniMapBitmapTexture->SetRenderTarget(Driver, (ID3D11DeviceContext*)pContext);					// Set the render target to be the render to texture: pContext->OMSetRenderTargets
 			RenderModel(pContext, 1, monitorWindow, m_Driver, id, PASS_OPAC, &m_CameraMINIMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix);
@@ -273,7 +273,6 @@ void ApplicationClass::RenderMiniMapPass(UINT monitorWindow, WomaDriverClass* Dr
 	}
 #endif
 }
-
 #endif
 
 void ApplicationClass::RenderShadowPass(UINT monitorIndex, WomaDriverClass* Driver, void* pContext, float fadeLight)
@@ -385,7 +384,7 @@ void ApplicationClass::MinimapWorkerFunc() {
 		if (stopThreads) break;
 		lock.unlock();
 
-		//minimapCtx->ClearState(); // optional
+		minimapCtx->ClearState(); // optional
 		RenderMiniMapDeferred(minimapCtx, driverRef, monitorRef, fadeLightRef);
 		minimapCtx->FinishCommandList(FALSE, &minimapCmdList);
 
@@ -422,12 +421,19 @@ void ApplicationClass::AppPreRender(UINT monitorIndex, WomaDriverClass* Driver, 
 	RenderShadowPass(monitorIndex, Driver, mainCtx, fadeLight);
   #endif
 #else
+#if defined USE_SHADOW_MAP
 	RenderShadowPass(monitorIndex, Driver, mainCtx, fadeLight);
+#endif
 
 	// === RENDER MAP and MINIMAP TO TEXTURE: ===										 
 #if DX_ENGINE_LEVEL >= 62 && defined USE_MAIN_MAP // Render MAP and MINI-MAP, to texture
 	RenderMiniMapPass(monitorIndex, Driver, mainCtx, fadeLight);
 #endif
+#endif
+
+	((DirectX::DX11Class*)Driver)->SetBackBufferRenderTarget(mainCtx, monitorIndex);	//MANDATORY! Back to default back buffer
+#if defined USE_ALPHA_BLENDING
+	m_Driver->TurnOnAlphaBlending(mainCtx);												// restore default blending
 #endif
 }
 
@@ -490,7 +496,6 @@ void ApplicationClass::RenderModel(void* pContext, UINT threadID, UINT monitorIn
 		model = (DXmodelClass*)objModel_minimap[modelID];
 	else
 		model = (DXmodelClass*)objModel[modelID];
-	
 	
 	if (!model->ready)
 		return; //ASSERT(0); // Model not ready to render!
@@ -759,16 +764,18 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 	m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);
 #endif
 
-#if DX_ENGINE_LEVEL >= 73 && defined BILLBOARD_FOR_WINDY_GRASS
+#if defined SCENE_BILLBOARDS
+  #if DX_ENGINE_LEVEL >= 73 && defined BILLBOARD_FOR_WINDY_GRASS
     static float lasttime = 0;
     shadergrassframeTime += (timeGetTime() - lasttime)/200;
     if (shadergrassframeTime >= PI*2)
         shadergrassframeTime = 0;
     lasttime = (float)timeGetTime();
+  #endif
 #endif
 
-	// Render 3D OBJs (like: glass window of (Space Compound), etc...) (last part)
-	// ---------------------------------------------------------------------------
+	// Render TRANSPARENT Parts of 3D OBJs (like: glass window of (Space Compound), etc...) (last part)
+	// --------------------------------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined MAIN_RENDER_MAIN_OBJ //MAIN-RENDER: MAIN OBJs. (9 ms)
 	for (UINT id = 0; id < WOMA::sceneManager->opacModelList.size(); id++)
 	{
@@ -811,28 +818,15 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 
 	// Render Animated meshes:
 	// -----------------------
+#if defined MAIN_RENDER_ASSIMP
 	m_Driver->TurnOffAlphaBlending(pContext);
 #if !defined USE_MESH_THREAD
 	UpdateMeshAnimations();
 #endif
 	RenderAllMeshModels((ID3D11DeviceContext*)pContext);
 	m_Driver->TurnOnAlphaBlending(pContext);
+#endif
 
-#if defined USE_TIMER_CLASS && !defined RELEASE
-	// TIME Control: Show Debug Info
-	if (m_Driver->RenderfirstTime)
-	{
-#if defined FORCE_MATH_AVX
-		UINT64 passedTotalTime = (UINT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
-#else
-		UINT64 passedTotalTime = SAFE_FLOAT64_DIV_TO_UINT64(
-			SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime,
-			SystemHandle->m_Timer.m_ticksPerMs
-		);
-#endif
-		TCHAR tmp[MAX_STR_LEN]; _stprintf(tmp, TEXT("PASSED TOTAL TIME TO LOAD: %ju ms\n"), passedTotalTime); OutputDebugString(tmp);
-	}
-#endif
 }
 
 //#############################################################################################################
@@ -841,7 +835,7 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 void ApplicationClass::AppPosRender(UINT monitorIndex, void* pContext)
 {
     // === AppTextClass-Fill: ===
-#if defined USE_RASTERTEK_TEXT_FONT							
+#if defined USE_RASTERTEK_TEXT_FONT
 
     if (AppTextClass) 
     {
@@ -1084,7 +1078,7 @@ float ApplicationClass::ProcessInputUpdate()
 #endif
 
     UINT	closestObjId = UINT_MAX;
-	for (UINT c = 0; c < MIN (world_main_size, 5); c++)        // We dont need all, right?:)
+	for (UINT c = 0; c < MIN (world_main_size, 5); c++)        // We don't need all, right?:)
 	{
 		UINT i = compoundTreeLoadingOrder[c].compoundTreeId;	// This is the compound[id] to check colisions...
 

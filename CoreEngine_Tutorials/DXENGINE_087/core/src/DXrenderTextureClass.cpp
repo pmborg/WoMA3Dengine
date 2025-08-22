@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -52,8 +52,7 @@ DXrendertextureclass::DXrendertextureclass()
 DXrendertextureclass::~DXrendertextureclass() { Shutdown(); CLASSDELETE(); }
 
 bool DXrendertextureclass::Initialize(void* Driver, int textureWidth, int textureHeight,
-							int viewportX, int viewportY,
-							float screenDepth, float screenNear)
+							int viewportX, int viewportY, float screenDepth, float screenNear)
 {
 	DirectX::DX11Class* m_driver11 = (DirectX::DX11Class*)Driver;
 
@@ -74,11 +73,13 @@ bool DXrendertextureclass::Initialize(void* Driver, int textureWidth, int textur
 	textureDesc.MipLevels = 1;
 	textureDesc.ArraySize = 1;
 	textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; //DXGI_FORMAT_D24_UNORM_S8_UINT; //DXGI_FORMAT_R32G32B32A32_FLOAT;
-
+#if !defined USE_DX11_1_SETUP
 	textureDesc.SampleDesc.Quality = m_driver11->MSAA_QUALITY;
 	textureDesc.SampleDesc.Count = m_driver11->MSAA_COUNT;
-	//textureDesc.SampleDesc.Quality = 1;
-	//textureDesc.SampleDesc.Count = 0;
+#else
+	textureDesc.SampleDesc.Quality = 0;
+	textureDesc.SampleDesc.Count = 1;
+#endif
 
 	textureDesc.Usage = D3D11_USAGE_DEFAULT; // Note: Can't Be D3D11_USAGE_IMMUTABLE
 	textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
@@ -102,7 +103,11 @@ bool DXrendertextureclass::Initialize(void* Driver, int textureWidth, int textur
 
 	// Setup the description of the shader resource view.
 	shaderResourceViewDesc.Format = textureDesc.Format;
+#if !defined USE_DX11_1_SETUP
 	shaderResourceViewDesc.ViewDimension = (SystemHandle->AppSettings->MSAA_Anisotropic) ? D3D11_SRV_DIMENSION_TEXTURE2DMS : D3D11_SRV_DIMENSION_TEXTURE2D; //MSAA
+#else
+	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+#endif
 	shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
 	shaderResourceViewDesc.Texture2D.MipLevels = 1;
 
@@ -122,8 +127,13 @@ bool DXrendertextureclass::Initialize(void* Driver, int textureWidth, int textur
 	depthBufferDesc.MipLevels = 1;
 	depthBufferDesc.ArraySize = 1;
 	depthBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+#if !defined USE_DX11_1_SETUP
 	depthBufferDesc.SampleDesc.Count = m_driver11->MSAA_COUNT;
 	depthBufferDesc.SampleDesc.Quality = m_driver11->MSAA_QUALITY;
+#else
+	depthBufferDesc.SampleDesc.Count = 1;
+	depthBufferDesc.SampleDesc.Quality = 0;
+#endif
 	depthBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	depthBufferDesc.CPUAccessFlags = 0;
@@ -134,19 +144,23 @@ bool DXrendertextureclass::Initialize(void* Driver, int textureWidth, int textur
 	if (FAILED(result)) { WomaMessageBox(TEXT("CreateTexture2D"), TEXT("Error, Could not Create: ")); return false; }
 
 	// CreateDepthStencilView:
-	// Initailze the depth stencil view description.
+	// Initialize the depth stencil view description.
 	ZeroMemory(&depthStencilViewDesc, sizeof(depthStencilViewDesc));
 
 	// Set up the depth stencil view description.
 	depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+#if !defined USE_DX11_1_SETUP
 	depthStencilViewDesc.ViewDimension = (SystemHandle->AppSettings->MSAA_Anisotropic) ? D3D11_DSV_DIMENSION_TEXTURE2DMS : D3D11_DSV_DIMENSION_TEXTURE2D;
+#else
+	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+#endif
 	//depthStencilViewDesc.Texture2D.MipSlice = 0;
 
 	// Create the depth stencil view.
 	result = m_driver11->m_device11->CreateDepthStencilView(m_depthStencilTextureBuffer, &depthStencilViewDesc, &m_depthStencilTextureView);
 	if (FAILED(result)) { WomaMessageBox(TEXT("CreateDepthStencilView"), TEXT("Error, Could not Create: ")); return false; }
 
-	// Setup the viewport for rendering.
+	// Setup the view-port for rendering.
     m_TextureViewport.Width = (float)textureWidth;
     m_TextureViewport.Height = (float)textureHeight;
     m_TextureViewport.MinDepth = 0.0f;
@@ -184,7 +198,7 @@ void DXrendertextureclass::SetRenderTarget(void* Driver, ID3D11DeviceContext* pC
 	// Bind the render target view and depth stencil buffer to the output render pipeline.
 	pContext->OMSetRenderTargets(1, &m_renderTextureTargetView, m_depthStencilTextureView);
 	
-	// Set the viewport.
+	// Set the view-port.
 	pContext->RSSetViewports(1, &m_TextureViewport);
 }
 

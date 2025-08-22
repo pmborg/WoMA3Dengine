@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -72,7 +72,7 @@
 		|ultimateTCP_IP_LIB|
 
 	XML
-		|TinyXMLv2_LIB| (legacy-v1: TinyXML_LIB dont support Android)
+		|TinyXMLv2_LIB| (legacy-v1: TinyXML_LIB don't support Android)
 
 	(D3D11_SPEC_DATE_YEAR > 2009)
 		|DirectXTex|(DX11)
@@ -197,7 +197,6 @@ enum WomaDriver {
 	DRIVER_DX9,		// DRIVER_DX9   = DX11 with API for DX9
 	DRIVER_DX12		// DRIVER_DX12  = DX12
 };
-
 namespace WOMA
 {
 	// State Vars:
@@ -228,7 +227,7 @@ namespace WOMA
 	extern int getTaskBarHeight();
 #endif
 
-#if defined USE_LOADING_THREADS || defined USE_MAIN_THREAD //extern
+#if defined USE_LOADING_THREADS
 	extern UINT		num_running_THREADS;
 #endif
 #if defined USE_LOADING_THREADS || DX_ENGINE_LEVEL >= 30
@@ -236,17 +235,17 @@ namespace WOMA
 #endif
 
 #if CORE_ENGINE_LEVEL >= 1
-	extern TCHAR	APP_NAME[MAX_STR_LEN];	// "Aplication Name"
+	extern TCHAR	APP_NAME[MAX_STR_LEN];	// "Application Name"
 #endif
 
 #if CORE_ENGINE_LEVEL >= 2
 	extern TCHAR	APP_COMPANY_NAME[];	// "Company" Directory Name: 1st lvl
 	extern TCHAR	APP_PROJECT_NAME[];	// "Project" Directory Name: 2nd lvl
-	extern TCHAR	APP_FULLNAME[MAX_STR_LEN];	// "Aplication FullName"
+	extern TCHAR	APP_FULLNAME[MAX_STR_LEN];	// "Application FullName"
 	extern bool		fileExists(STRING Filename);
 
 	#if defined WINDOWS_PLATFORM
-	extern TCHAR	APP_ICO[];					// "Icon" for this aplication
+	extern TCHAR	APP_ICO[];					// "Icon" for this application
 	#endif
 #endif
 
@@ -279,6 +278,11 @@ TCHAR* getUserName();
 #if CORE_ENGINE_LEVEL >= 10
 #define m_Driver  driverList[SystemHandle->AppSettings->DRIVER]
 extern std::vector<WomaDriverClass*> driverList;
+//0: DX11	dx11_force_dx9=false
+//1: OPENGL
+//2: DX9	dx11_force_dx9=true
+//3: DX12
+
 extern WomaDriverClass* g_contextDriver;
 #endif
 
@@ -358,4 +362,6 @@ extern STRING LOAD_ASSET_SAVE_TO_CACHE(TCHAR* XMLFILE);
 
 #endif
 
-bool cpu_supports_avx512f();
+extern bool cpu_supports_avx512f();
+
+extern bool StartsWithDotDotSlash(const std::string& fileNamePath);

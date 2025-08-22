@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -85,10 +85,10 @@ WinSystemClass::WinSystemClass(WOMA::Settings* appSettings): SystemClass() //	Sy
 void WinSystemClass::ProcessFrame()
 //----------------------------------------------------------------------------
 {
-	SystemClass::FrameUpdate();	// Process: (INPUT & PerformanceStats) Only!                                        | PROFILE:(0.4%)
+	SystemClass::FrameUpdate();	// Process: (function keys |ESC and F1 to F6| & PerformanceStats) Only!
 
 	if (WOMA::game_state == ENGINE_RESTART)
-		return; //Restart so, dont render!
+		return; //Restart so, don't render!
 
 	// Render Setup?
 #if CORE_ENGINE_LEVEL >= 5 && defined CLIENT_SCENE_SETUP
@@ -99,22 +99,22 @@ void WinSystemClass::ProcessFrame()
 		{
 			SystemHandle->womaSetup = NEW WomaSetupManager;
 			SystemHandle->womaSetup->Initialize(NULL);
-			OS_REDRAW_WINDOW;
 		}
-        return; //Process win32 setup so, dont render!
+		//OS_REDRAW_WINDOW;
+        return; //Process win32 setup so, don't render!
 	}
 #endif
 
 	{
-        //CalculateViewMatrix(s) and check collision(s):
-        m_Application->dayLightFade = m_Application->ProcessInputUpdate();	//and proccess keys:  F1, F2, ...
+        m_Application->dayLightFade = m_Application->ProcessInputUpdate();	//CalculateViewMatrix(s) and check collision(s):
 
 		#if defined INTRO_DEMO
 		if (RENDER_PAGE < 15) 
 		#else
 		if (RENDER_PAGE < 10)
 		#endif
-			return; // We are in first win32 demo pages so, dont render!
+			return; // We are in first win32 demo pages so, don't render!
+
 	#if defined USE_MAP_REDENRING_THREAD
 		if (m_Driver->RenderfirstTime)
 			SystemHandle->m_Application->CreateRenderThreads();
@@ -124,14 +124,14 @@ void WinSystemClass::ProcessFrame()
 		for (int monIdx = 0; monIdx < num_monitors; monIdx++)
 		{
 			{
-				m_Driver->BeginScene(monIdx);					// RESET FRAME                           | PROFILE: 0.08%
+				m_Driver->BeginScene(monIdx);					// RESET FRAME: ClearRenderTargetView + ClearDepthBuffer                         
                                                                
-				m_Application->RenderScene(monIdx, m_Driver);	// RENDER ONE FRAME: 100% is done here!  | PROFILE: 44.40%
+				m_Application->RenderScene(monIdx, m_Driver);	// RENDER ONE FRAME: 100% is done here!
                                                                
 				if (!g_contextDriver)							// SHOW FRAME:
-					m_Driver->EndScene(monIdx);					// [DX]: Present                         | PROFILE: 19.03%
+					m_Driver->EndScene(monIdx);					//  [DX]: Present                       
 				else
-					g_contextDriver->EndScene(monIdx);			// [OPENGL]: SwapBuffers
+					g_contextDriver->EndScene(monIdx);			//  [OPENGL]: SwapBuffers
 			}
 		}
        
@@ -212,16 +212,19 @@ bool WinSystemClass::APPLICATION_AFTER_WINDOW()
     return true;
 }
 
-DirectX::DX11Class* driver_debug=NULL;
-
 bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 //----------------------------------------------------------------------------
 {
 
+#if defined DX_ENGINE
+	DX11windowsArray.clear();
+	FSAA_possibleValues.clear();
+#endif
+
 #if defined USE_SYSTEM_CHECK                                // BEFORE: APPLICATION_INIT_MAIN_WINDOW()
 	IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());		// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 
 #endif
-	IF_NOT_RETURN_FALSE(APPLICATION_INIT_MAIN_WINDOW());	// CREATE: The/all "MainWindow(s) + INIT DX/GL "rendering-device"
+	IF_NOT_RETURN_FALSE(APPLICATION_INIT_MAIN_WINDOW());	// RegisterClass and Create: MainWindow(s)
     StartTimer();											// START WINDOWS TIMER: ("Window Title" refresh & Real-Time Weather refresh)
 
 #if defined USE_TINYXML_LOADER && DX_ENGINE_LEVEL >= 21
@@ -236,7 +239,6 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 		IF_NOT_RETURN_FALSE(newDriver());	//Create NEW CONTEXT Class: g_contextDriver
 	#endif
 	LoadAllDrivers();		        //NEW DirectX::DX11Class()	(NEW DX9, NEW DX11, NEW DX12, NEW OpenGL): push_back(NEW DirectX::*Class());
-	driver_debug = g_driver11;
 #if defined USE_SYSTEM_CHECK
 	InitializeSystemScreen(10, 10); // SETUP SCREEN: F1,F2,F3,F4,F5,F6 (RUNNING NOW ON: PaintSetup())
 #endif
@@ -261,7 +263,7 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 
 	//---------------------------------------------------------------------------------------------------
 	if (WOMA::game_state >= GAME_STOP)	// Something FATAL on loading "mandatory 2D/3D Stuff"?
-		return false;					// (SAMPLE: misssing 3D/IMAGE/AUDIO file...)
+		return false;					// (SAMPLE: missing 3D/IMAGE/AUDIO file...)
 
 #if defined USE_INTRO_VIDEO_DEMO
 	MSG msg = { };
@@ -273,7 +275,7 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 	        
-	        // Make Sure that we have aquired the FOCUS and INPUT:
+	        // Make Sure that we have acquired the FOCUS and INPUT:
 	        if (DXsystemHandle->m_Input->m_mouse && DXsystemHandle->m_Input->m_keyboard)				
 	        {
 	            IF_NOT_THROW_EXCEPTION(DXsystemHandle->m_Input->GetMouseKeyboardState());
@@ -309,7 +311,7 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 void WinSystemClass::GetInputs()
 {
 #if defined USE_DIRECT_INPUT						// Read the User Input
-	if (DXsystemHandle->m_Input->m_mouse && DXsystemHandle->m_Input->m_keyboard)	// Make Sure that we have aquired the FOCUS and INPUT:
+	if (DXsystemHandle->m_Input->m_mouse && DXsystemHandle->m_Input->m_keyboard)	// Make Sure that we have acquired the FOCUS and INPUT:
 	{
 		ASSERT(DXsystemHandle->m_Input->GetMouseKeyboardState()); // Update "Keyboard State": Process the changes in the Mouse and Keyboard.
 	}
@@ -346,7 +348,7 @@ int WinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 			if (WOMA::game_state == ENGINE_RESTART)
 				return ENGINE_RESTART;
 			else
-				Sleep(50); //we are minized or in background, slow down CPU & GPU.
+				Sleep(50); //we are minimized or in background, slow down CPU & GPU.
 		}
 
 	} while (msg.message != WM_QUIT && WOMA::main_loop_state >= 0);
@@ -436,15 +438,13 @@ bool WinSystemClass::MyRegisterClass(HINSTANCE hInstance)
     wcex.lpszClassName = WOMA_ENGINE_CLASS;
 
 	// ALLOW WIN32 SYSTEM PAINT: (Causes the entire window to redraw if a movement or a size adjustment changes the height of the client area: CS_HREDRAW | CS_VREDRAW)
-	wcex.style = CS_HREDRAW | CS_VREDRAW;
-	if (AppSettings->DRIVER == DRIVER_GL3) 
-		wcex.style = CS_OWNDC; // NOTE: CS_OWNDC is need by OPEN GL: https://www.opengl.org/wiki/Platform_specifics:_Windows
+	wcex.style = (AppSettings->DRIVER == DRIVER_GL3) ? CS_OWNDC : CS_HREDRAW | CS_VREDRAW; // NOTE: CS_OWNDC is need by OPEN GL: https://www.opengl.org/wiki/Platform_specifics:_Windows
 	wcex.lpfnWndProc = WOMA_PAINT_MessageHandler;
 	wcex.hInstance = hInstance;
 
 	//
 	// To Use External Icon: "*.png" -> "*.ico" Converter: http://converticon.com/
-	// NOTE: I am Avoding to use Resource here: //wcex.hIcon = wcex.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
+	// NOTE: I am Avoiding to use Resource here: //wcex.hIcon = wcex.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
 	//
 	// More info WNDCLASSEX: https://msdn.microsoft.com/en-us/library/windows/desktop/ms633577%28v=vs.85%29.aspx
 	//
@@ -467,6 +467,7 @@ bool WinSystemClass::MyRegisterClass(HINSTANCE hInstance)
 
 	
 	wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);	//TO USE THIS COLOR: BLACK
+
 	IF_NOT_RETURN_FALSE (RegisterClassEx(&wcex));
 
 	return true;
@@ -530,8 +531,7 @@ bool WinSystemClass::InitOsInput()
 }
 #endif
 
-bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ void* 
-										/*OpenGL*/ driver, int& width, int& height)
+bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ void* driver, int& width, int& height)
 //----------------------------------------------------------------------------
 {
 	womalogauto((TCHAR*)TEXT("---------------------------------\n"));
@@ -546,7 +546,7 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
 	// --------------------------------------------------------------------------------------------
 	DEVMODE devMode = { 0 };
 	DWORD deviceNum = 0;					// How Many Monitors we have?
-	DWORD Current_Screen_WIDTH = 0;			// NOTE: GetSystemMetrics(SM_CXSCREEN) is not enouf, might not be our current Screen
+	DWORD Current_Screen_WIDTH = 0;			// NOTE: GetSystemMetrics(SM_CXSCREEN) is not enough, might not be our current Screen
 	DWORD Current_Screen_HEIGHT = 0;
 
 	TCHAR   DeviceNameToUseOnFullScreen[MAX_STR_LEN] = { 0 };
@@ -690,7 +690,7 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
 
 			// Define Window Size and Position:
 			
-			AdjustWindowRect(&R, windowStyle, false);	// Compute "window rectangle dimensions" based on "requested client area" dimensions, fot this "style"!
+			AdjustWindowRect(&R, windowStyle, false);	// Compute "window rectangle dimensions" based on "requested client area" dimensions, for this "style"!
 		}
 		else
         // DO NOT ALLOW RESIZE:
@@ -785,27 +785,27 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
     }
 #endif
 
-	ShowWindow(windowLeft, windowTop);
+	ShowWindow(MONITOR_NUM, windowLeft, windowTop);
 
 	return true;
 }
 
-bool WinSystemClass::ShowWindow(int windowLeft, int windowTop) 
+bool WinSystemClass::ShowWindow(UINT MONITOR_NUM, int windowLeft, int windowTop)
 {
 #if defined USE_STATUSBAR
 	if (AppSettings->FULL_SCREEN)
 		::ShowWindow(SystemHandle->statusbar, SW_HIDE);
 #endif
 	if (!AppSettings->FULL_SCREEN)
-		::ShowWindow(m_hWnd, SW_MAXIMIZE/*WOMA::Cmdshow*/);	// Use from Command line option! NOTE: Don't hardcode:	(default: SW_SHOWDEFAULT) SW_SHOW / SW_SHOWMINIMIZED
+		::ShowWindow(m_hWnd, SW_MAXIMIZE);
 
 	SetForegroundWindow(m_hWnd);    // Slightly "Higher Priority"
 	SetFocus(m_hWnd);               // Force "Focus" to our Window
 	UpdateWindow(m_hWnd);           // 1st Window WIN32/"Paint"  NOW!
 
 	// Save window properties
-	GetWindowRect(m_hWnd, &m_rcWindowBounds);	//{top=0 bottom=1057 left=1920	right=3840}
-	GetClientRect(m_hWnd, &m_rcWindowClient);	//{top=0 bottom=1018 left=0		right=1904}	
+	GetWindowRect(m_hWnd, &windowsArray[MONITOR_NUM].m_rcWindowBounds);	//{m_rcWindowBounds = {LT(3832, -21) RB(5768, 1027)  [1936 x 1048]}}
+	GetClientRect(m_hWnd, &windowsArray[MONITOR_NUM].m_rcWindowClient);	//{m_rcWindowClient = {LT(0, 0) RB(1920, 1009)  [1920 x 1009]}}	
 
 	return true;
 }
@@ -842,13 +842,9 @@ BOOL CALLBACK MyInfoEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonit
         devMode.dmSize = sizeof(devMode);
         devMode.dmDriverExtra = 0;
         EnumDisplaySettings(monitorInfoEx.szDevice, ENUM_CURRENT_SETTINGS, &devMode);
-#if defined FORCE_MATH_AVX
         cxPhysical = devMode.dmPelsWidth;
         cyPhysical = devMode.dmPelsHeight;
-#else
-		cxPhysical = SAFE_DOUBLE32(devMode.dmPelsWidth);
-		cyPhysical = SAFE_DOUBLE32(devMode.dmPelsHeight);
-#endif
+
         // Calculate the scaling factor
         horizontalScale = ((double)cxPhysical / (double)cxLogical);
         verticalScale = ((double)cyPhysical / (double)cyLogical);

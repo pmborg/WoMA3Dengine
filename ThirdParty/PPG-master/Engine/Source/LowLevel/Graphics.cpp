@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -28,7 +28,6 @@ using namespace DirectX;
 
 ID3D11ShaderResourceView* nullSRV[] = { nullptr };
 ID3D11RenderTargetView* nullRTV[] = { nullptr };
-extern DirectX::DX11Class* driver_debug;
 
 Graphics::Graphics(HINSTANCE hInstance, BOOL vSync, Window& window)
 {
@@ -41,12 +40,13 @@ Graphics::Graphics(HINSTANCE hInstance, BOOL vSync, Window& window)
     unsigned int clientWidth = m_ClientRect.right - m_ClientRect.left;
     unsigned int clientHeight = m_ClientRect.bottom - m_ClientRect.top;
 
-    m_Device = ((DirectX::DX11Class*)driver_debug)->m_device11;
+    #define m_driver11 ((DirectX::DX11Class*)driverList[SystemHandle->AppSettings->DRIVER])
+    m_Device = ((DirectX::DX11Class*)m_driver11)->m_device11;
 
 
     // Next initialize the back buffer of the swap chain and associate it to a
     // render target view.
-    ID3D11Texture2D* backBuffer = DX11windowsArray[0].m_backBuffer;
+	ID3D11Texture2D* backBuffer = DX11windowsArray[0].m_backBuffer;
 
     m_BackBuffer = std::make_unique<Texture>(backBuffer, "Back Buffer");
     m_BackBuffer->CreateRTV(*this, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
@@ -56,11 +56,11 @@ Graphics::Graphics(HINSTANCE hInstance, BOOL vSync, Window& window)
     depthStencil->CreateSRV(*this, DXGI_FORMAT_R24_UNORM_X8_TYPELESS);
     m_DepthStencilBuffer = std::unique_ptr<Texture>(depthStencil);
 
-    m_DepthStencilState = ((DirectX::DX11Class*)g_driver11)->m_depthStencilState;
+	m_DepthStencilState = ((DirectX::DX11Class*)g_driver11)->m_depthStencilState;
 
-    m_RasterizerState = ((DirectX::DX11Class*)g_driver11)->m_rasterState[CULL_NONE][FILL_SOLID];
+	m_RasterizerState = ((DirectX::DX11Class*)g_driver11)->m_rasterState[CULL_NONE][FILL_SOLID];
 
-    m_Viewport = DX11windowsArray[0].viewport;
+	m_Viewport = DX11windowsArray[0].viewport;
 
     D3D11_BLEND_DESC BlendState;
     ZeroMemory(&BlendState, sizeof(D3D11_BLEND_DESC));

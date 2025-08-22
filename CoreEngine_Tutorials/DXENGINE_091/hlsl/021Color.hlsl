@@ -163,6 +163,7 @@ PSIn MyVertexShader021Color(VSIn input)
     if (VS_USE_WVP)
     {
         output.position = mul(float4(input.position, 1), WVP); // Calculate the position of the vertex against the world, view, and projection matrices
+        //output.color = float4(1,1,1, 0.5f); // Store the vertex color for the pixel shader
     }
     else
     {

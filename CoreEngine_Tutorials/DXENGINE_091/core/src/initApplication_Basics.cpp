@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -683,7 +683,6 @@ bool ApplicationClass::WOMA_LOAD_OBJ(void* pContext, UINT threadID, WomaDriverCl
 }
 #endif
 
-
 // --------------------------------------------------------------------------------------------
 // INIT/LOAD 3D Objects
 // --------------------------------------------------------------------------------------------
@@ -778,6 +777,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	initSky(pContext, size);
 #endif
 
+#if defined MAIN_RENDER_TERRAIN
     //=================================================================================================================
 	// INIT TERRAINs //////////////////////////////////////////////////////////////////////////////////////////////////
     //=================================================================================================================
@@ -807,6 +807,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 #if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX && defined SCENE_TERRAIN_COLLISION
 	loadedTerrain[3] = NEW CTerrain(TERRAIN);
 	loadedTerrain[3]->initMainTopoTerrainDemo(3, (ID3D11DeviceContext*)pContext);
+#endif
 #endif
 
 	//=================================================================================================================
@@ -871,7 +872,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	// PROGRESS BAR		///////////////////////////////////////////////////////////////////////////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
 #if defined ALLOW_CBIND_PROGRESS_BAR
-
 	// --- CREATE PROGRESS BAR:
 #if defined USE_INTRO_VIDEO_DEMO
 	if (DXsystemHandle->g_DShowPlayer == NULL || (DXsystemHandle->g_DShowPlayer->m_state != STATE_RUNNING))
@@ -916,19 +916,20 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 #if defined WINDOWS_PLATFORM
 	MSG msg = { 0 };
 #endif
-
 	// world_xml_objs
 	// theWorld_size
 	// objModel_size
-
 	//static DXmodelClass* model = NULL;
 	for (UINT i = objModel_size; i < objModel_size + theWorld_size; i++)
 	{
 		TCHAR wfilename[MAX_STR_LEN] = { 0 }; atow(wfilename, SystemHandle->xml_loader.theWorld[i].filename, MAX_STR_LEN);
-
+#if defined MAIN_RENDER_MAIN_OBJ
 		WOMA_LOAD_OBJ(pContext, 0, Driver, i, wfilename);
-		WOMA::num_loading_objects++;
 
+		WOMA::num_loading_objects++;
+#endif
+
+#if DX_ENGINE_LEVEL >= 91 && defined USE_MINI_MAP
 	if (i < world_xml_objs)
 	{
 		//MINIMAP OBJECTS: Create 2D objects for minimap
@@ -937,9 +938,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 		CREATE_MODEL_IF_NOT_EXCEPTION(objModel_minimap[i], I_AM_2D, SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows);
 
 		objModel_minimap[i]->m_ObjId = i; //SYNC-ID: objModel[i] with: xml_loader.theWorld[i]
-//#if DX_ENGINE_LEVEL >= 40
 		objModel_minimap[i]->xmlId = SystemHandle->xml_loader.theWorld[i].id;
-//#endif
 
 		//Load OBJ or W3D:
 		if (!(objModel_minimap[i]->LoadModel(pContext, wfilename,
@@ -950,10 +949,8 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 		{
 			WomaMessageBox(wfilename, TEXT("Error Loading: "), FALSE); return false;
 		}
-//#if defined USE_LOADING_THREADS || DX_ENGINE_LEVEL >= 37
-//		WOMA::num_loading_objects++;
-//#endif
 	}
+#endif
 
 		//Allow Refresh on Timer:
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))	// There is any OS messages to handle?
@@ -1018,7 +1015,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	// --------------------------------------------------------------------------------------------
 	//Finally, launch dynamic Load Compound/OBJ Thread ////////////////////////////////////////////
 	// --------------------------------------------------------------------------------------------
-#if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION
+#if defined CHECK_OBJ_COLISION && defined MAIN_RENDER_MAIN_OBJ //CHECK_COMPOUND_COLISION
 	for (UINT i = 0; i < WOMA::num_loading_objects; i++) {
 		compoundTreeLoadingOrder[i].compoundTreeId = i;
 		compoundTreeLoadingOrder[i].order = 0;

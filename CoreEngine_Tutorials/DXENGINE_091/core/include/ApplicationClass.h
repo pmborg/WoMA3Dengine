@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -42,11 +42,11 @@
 #include "winCpuClass.h"
 #endif
 
-	#if defined USE_TIMER
-	#include "Math3D.h"
-	#include "fpsClass.h"
-	#include "timerClass.h"
-	#endif
+#if defined USE_TIMER
+#include "Math3D.h"
+#include "fpsClass.h"
+#include "timerClass.h"
+#endif
 
 #if CORE_ENGINE_LEVEL >= 7 && defined USE_ASTRO_CLASS
 #include "initWorld.h"
@@ -252,7 +252,7 @@ public:
 	virtual bool WOMA_APPLICATION_Initialize3D(void * pContext, WomaDriverClass* Driver); // APP_Load
 #if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined USE_FRUSTRUM
 	bool WOMA_LOAD_OBJ(void* pContext, UINT threadID, WomaDriverClass* Driver, UINT i, TCHAR* wfilename);
-#endif
+#endif																			  
 
 #if defined USE_LIGHT_RAY
 	void CalculateLightRayVertex (float SunDistance);
@@ -264,7 +264,7 @@ public:
 
     UINT world_xml_objs = 0;
 	UINT theWorld_size=0;
-	UINT objModel_size=0;
+	UINT objModel_size=0;			  
 
     DWORD total_deltaTime=0;
 	float billangle = 0;
