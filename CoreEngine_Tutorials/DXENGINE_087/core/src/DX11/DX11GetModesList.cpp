@@ -102,8 +102,9 @@ bool DX11Class::getModesList(int g_USE_MONITOR, int screenWidth, int screenHeigh
 		#endif
 
 		// Typically "GraphicCards" Sample Adapters:
-		// 0: "Graphic Card" Interface.
-		// 1: "Microsoft Basic Render Driver" Interface.
+		// 0: Graphic Card 0: NVIDIA GeForce RTX 4080
+		// 1: Graphic Card 1: AMD Radeon(TM) Graphics
+		// 2: Graphic Card 2: Microsoft Basic Render Driver
 		//
 		// SAVE: our Adapter to use later, FREE: The others.
 		if (AdapterNumber == SystemHandle->AppSettings->ADAPTOR || SystemHandle->AppSettings->ADAPTOR == -1)
@@ -117,7 +118,7 @@ bool DX11Class::getModesList(int g_USE_MONITOR, int screenWidth, int screenHeigh
 		AdapterNumber++;
 	}
 
-	ASSERT (AdapterNumber);
+	ASSERT (AdapterNumber); //Number of Graphic Cards: HW and SW.
 
 	/*******************************************************************
 	// "Advanced": Check how many Monitors we have in our Adapter Card: 

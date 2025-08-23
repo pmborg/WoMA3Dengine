@@ -225,7 +225,7 @@ bool DX11Class::createDepthStencil(int screenWidth, int screenHeight, BOOL fulls
 	}
 
 	// Optional: your old selection helper, but we’ll still override SampleDesc from back buffer
-	SelectDepthFormat(depthBits, fullscreen);
+	//SelectDepthFormat(depthBits, full-screen); // Populate: BUFFER_DEPTH_FORMAT
 
 	// For each window/swap chain
 	for (size_t i = 0; i < DX11windowsArray.size(); ++i)
@@ -270,8 +270,7 @@ bool DX11Class::createDepthStencil(int screenWidth, int screenHeight, BOOL fulls
 			: D3D11_DSV_DIMENSION_TEXTURE2D;
 		dsvDesc.Flags = 0;
 
-		IF_FAILED_RETURN_FALSE(m_device11->CreateDepthStencilView(
-			win.m_depthStencilBuffer, &dsvDesc, &win.m_depthStencilView));
+		IF_FAILED_RETURN_FALSE(m_device11->CreateDepthStencilView(win.m_depthStencilBuffer, &dsvDesc, &win.m_depthStencilView));
 	}
 
 	return true;

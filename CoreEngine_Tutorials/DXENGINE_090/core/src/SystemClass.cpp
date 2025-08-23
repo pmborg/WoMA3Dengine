@@ -1111,7 +1111,8 @@ void SystemClass::LoadAllDrivers()
 #endif
 #endif
 
-} //LoadAllDrivers()
+} 
+//END: LoadAllDrivers()
 
 #if defined USE_JOY && defined USE_DIRECT_INPUT
 

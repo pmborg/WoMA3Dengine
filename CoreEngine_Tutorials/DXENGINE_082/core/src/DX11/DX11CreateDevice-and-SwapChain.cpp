@@ -205,13 +205,13 @@ bool DX11Class::list_resolutions()
 		
 		// From most desired to least desired:
 		D3D_FEATURE_LEVEL featureLevels[] = {
-			//D3D_FEATURE_LEVEL_12_2,
-			D3D_FEATURE_LEVEL_12_1, //DX11_3 (Win-10) A GPU with feature level 12_1 supports all the features of DirectX 11 and also includes features that are available in DirectX 12.1 (though not all DirectX 12.1 features are necessarily supported). 
-			D3D_FEATURE_LEVEL_12_0, //DX11_3 (Win-10) A GPU with feature level 12_0 supports all the features of DirectX 11 and also includes features that are available in DirectX 12 (though not all DirectX 12 features are necessarily supported). 
+			//D3D_FEATURE_LEVEL_12_2,   //not supported on DX11.x
+			D3D_FEATURE_LEVEL_12_1,		//DX11_3 (Win-10) A GPU with feature level 12_1 supports all the features of DirectX 11 and also includes features that are available in DirectX 12.1 (though not all DirectX 12.1 features are necessarily supported). 
+			D3D_FEATURE_LEVEL_12_0,		//DX11_3 (Win-10) A GPU with feature level 12_0 supports all the features of DirectX 11 and also includes features that are available in DirectX 12 (though not all DirectX 12 features are necessarily supported). 
 
-			D3D_FEATURE_LEVEL_11_1, //DX11_1 (Win-8)  Windows Display Driver Model (WDDM) 1.2
+			D3D_FEATURE_LEVEL_11_1,		//DX11_1 (Win-8)  Windows Display Driver Model (WDDM) 1.2
 
-			D3D_FEATURE_LEVEL_11_0, //DX11   (Win-7)
+			D3D_FEATURE_LEVEL_11_0,		//DX11   (Win-7)
 			D3D_FEATURE_LEVEL_10_1, 
 			D3D_FEATURE_LEVEL_10_0, 
 
@@ -267,10 +267,10 @@ bool DX11Class::list_resolutions()
 
 		UINT dxgiFlags = enableDebugLayer ? DXGI_CREATE_FACTORY_DEBUG : 0;
 
-		// Try CreateDXGIFactory2 (gives us Factory6 on newer OS/SDK), else fallback to CreateDXGIFactory1.
+		// Try CreateDXGIFactory2 (gives us Factory6 on newer OS/SDK), else fall-back to CreateDXGIFactory1.
 		HRESULT hr = CreateDXGIFactory2(dxgiFlags, IID_PPV_ARGS(&factory6));
 		if (FAILED(hr) || !factory6) {
-			// Fallback
+			// Fall-back
 			factory6.Reset();
 			hr = CreateDXGIFactory1(IID_PPV_ARGS(&factory1));
 			if (FAILED(hr) || !factory1) {
@@ -278,7 +278,7 @@ bool DX11Class::list_resolutions()
 			}
 		}
 		else {
-			// We also want a Factory1 pointer for EnumAdapters fallback if needed
+			// We also want a Factory1 pointer for EnumAdapters fall-back if needed
 			factory6.As(&factory1);
 		}
 
@@ -423,7 +423,7 @@ bool DX11Class::list_resolutions()
 					{
 						m_sCapabilities.MSAAmultiSampleCount = msaaSamples_;
 						m_sCapabilities.MSAAquality = quality;
-						womalogauto(TEXT("DRIVER MSAAmultiSampleCount: %d\n"), m_sCapabilities.MSAAmultiSampleCount);		// Get the max Sample Count: 8
+						womalogauto(TEXT("DRIVER MSAAmultiSampleCount Supported: x%d\n"), m_sCapabilities.MSAAmultiSampleCount);		// Get the max Sample Count: 8
 						FSAA_possibleValues.push_back(m_sCapabilities.MSAAmultiSampleCount);
 						//womalogauto(TEXT("DRIVER multiSampleQuality: %d\n"), m_sCapabilities.MSAAquality);	// Get the max MsaaQuality: 32
 

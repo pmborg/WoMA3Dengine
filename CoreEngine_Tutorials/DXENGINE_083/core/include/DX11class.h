@@ -281,9 +281,9 @@ struct DXwindowDataContainer
 	ID3D11DepthStencilView* m_depthStencilView = NULL;
 	ID3D11Texture2D* m_depthStencilBuffer = NULL;
 	D3D11_VIEWPORT viewport = { 0 };
-	BOOL DX11_allowTearing = FALSE; // Determines whether tearing support is available for fullscreen borderless windows.
-	BOOL DX11_allowHDR = TRUE;
-	BOOL DX11_allowFLIP = TRUE;
+	BOOL DX11_GPU_supportTearing = FALSE; // Determines whether tearing support is available for fullscreen borderless windows.
+	BOOL DX11_GPU_supportHDR = TRUE;
+	BOOL DX11_GPU_supportFLIP = TRUE;
 	DXGI_COLOR_SPACE_TYPE m_colorSpace; // HDR Support
 	DXGI_FORMAT m_backBufferFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
 };

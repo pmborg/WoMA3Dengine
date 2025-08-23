@@ -520,11 +520,11 @@ void DX11Class::DeleteViewBuffers()
     // For each Monitor: 
     for (int i = 0; i < DX11windowsArray.size(); i++)
     {
-		SAFE_RELEASE(DX11windowsArray[i].m_renderTargetView);	// Init Step: 9	(backBufferRTV)
-		SAFE_RELEASE(DX11windowsArray[i].m_depthStencilBuffer);	// Init Step: 9
-
+		SAFE_RELEASE(DX11windowsArray[i].m_renderTargetView);	// (backBufferRTV)
+		SAFE_RELEASE(DX11windowsArray[i].m_depthStencilView);	// 
+		
         SAFE_RELEASE(DX11windowsArray[i].m_backBuffer);			// m_renderTarget
-        SAFE_RELEASE(DX11windowsArray[i].m_depthStencilView);	// Init Step: 10
+		SAFE_RELEASE(DX11windowsArray[i].m_depthStencilBuffer);	// 
     }
 
     m_deviceContext->Flush();
@@ -598,18 +598,13 @@ bool DX11Class::Resize (int screenWidth, int screenHeight, float screenNear, flo
 {
 	UINT USE_MONITOR = 0;
 
-
-
-
-
-
 HRESULT result = S_OK;
 
 	RenderfirstTime = true;	 // Used on SPRITES!
 
 	if (m_deviceContext)
 	{
-		DeleteViewBuffers();
+		DeleteViewBuffers(); // Clear the previous window size specific context.
 
 		// #Resize: Init Step: 8 - Resize internal Buffers for new Window size:
 		if (DX11windowsArray.size() > 0 && DX11windowsArray[USE_MONITOR].m_swapChain1)
@@ -680,7 +675,7 @@ HRESULT result = S_OK;
 			ComPtr<IDXGIFactory4> factory4;
 			if (FAILED(m_dxgiFactory.As(&factory4)))
 			{
-				DX11windowsArray[USE_MONITOR].DX11_allowFLIP = FALSE;
+				DX11windowsArray[USE_MONITOR].DX11_GPU_supportFLIP = FALSE;
 	#ifdef _DEBUG
 				womalog("INFO: Flip swap effects not supported");
 	#endif
@@ -688,7 +683,7 @@ HRESULT result = S_OK;
 
 			// Discard the back buffer contents after presenting.
 
-			if (swapChainDesc.BufferCount > 1 && !SystemHandle->AppSettings->FULL_SCREEN && DX11windowsArray[USE_MONITOR].DX11_allowFLIP)
+			if (swapChainDesc.BufferCount > 1 && !SystemHandle->AppSettings->FULL_SCREEN && DX11windowsArray[USE_MONITOR].DX11_GPU_supportFLIP)
 			{
 	#if defined(_WIN32_WINNT_WIN10) // Runtime is Win10?
 				swapChainDesc.SwapEffect = IsWindows10OrGreater() ? DXGI_SWAP_EFFECT_FLIP_DISCARD : DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
@@ -719,11 +714,11 @@ HRESULT result = S_OK;
 			ComPtr<IDXGIFactory5> factory5;
 			if (SUCCEEDED(CreateDXGIFactory1(IID_PPV_ARGS(&factory5))))
 			{
-				hr = factory5->CheckFeatureSupport( DXGI_FEATURE_PRESENT_ALLOW_TEARING, &DX11windowsArray[USE_MONITOR].DX11_allowTearing, sizeof(DX11windowsArray[USE_MONITOR].DX11_allowTearing)); //Populate: allowTearing
-				DX11windowsArray[USE_MONITOR].DX11_allowHDR = TRUE;
+				hr = factory5->CheckFeatureSupport( DXGI_FEATURE_PRESENT_ALLOW_TEARING, &DX11windowsArray[USE_MONITOR].DX11_GPU_supportTearing, sizeof(DX11windowsArray[USE_MONITOR].DX11_GPU_supportTearing)); //Populate: allowTearing
+				DX11windowsArray[USE_MONITOR].DX11_GPU_supportHDR = TRUE;
 			}
 	
-			if (DX11windowsArray[USE_MONITOR].DX11_allowTearing)
+			if (DX11windowsArray[USE_MONITOR].DX11_GPU_supportTearing)
 				swapChainDesc.Flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
 	#else
 			// Disable HDR if we are on an OS that can't support FLIP swap effects
@@ -801,8 +796,9 @@ HRESULT result = S_OK;
 				WomaFatalException("Failed to create swap chain for HWND.");
 				return false;
 			}
+
 #if defined USE_DX11_1_SETUP
-			if (DX11windowsArray[USE_MONITOR].DX11_allowHDR)
+			if (DX11windowsArray[USE_MONITOR].DX11_GPU_supportHDR)
 			{
 				UpdateHDRColorSpace(USE_MONITOR);
 			}
@@ -868,9 +864,7 @@ HRESULT result = S_OK;
 	ComPtr<IDXGIFactory2> m_dxgiFactory;
 	ThrowIfFailed(CreateDXGIFactory1(IID_PPV_ARGS(m_dxgiFactory.ReleaseAndGetAddressOf())));
 
-	DXGI_COLOR_SPACE_TYPE colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
-
-	bool isDisplayHDR10 = false;
+	bool isDisplayMonitorHDR10 = false;
 
 	if (DX11windowsArray[USE_MONITOR].m_swapChain1)
 	{
@@ -927,14 +921,17 @@ HRESULT result = S_OK;
 				if (desc.ColorSpace == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020)
 				{
 					// Display output is HDR10.
-					isDisplayHDR10 = true;
+					isDisplayMonitorHDR10 = true;
 				}
 			}
 		}
 	}
 
-	if ((DX11windowsArray[USE_MONITOR].DX11_allowHDR) && isDisplayHDR10)
+	DX11windowsArray[USE_MONITOR].m_colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;	// Default for non HDR Display Monitor
+
+	if ((DX11windowsArray[USE_MONITOR].DX11_GPU_supportHDR) && isDisplayMonitorHDR10)		//GPU support HDR and what about the monitor?
 	{
+		//GPU support HDR and Display monitor too? Great!
 		switch (DX11windowsArray[USE_MONITOR].m_backBufferFormat)
 		{
 		case DXGI_FORMAT_R10G10B10A2_UNORM:
@@ -946,22 +943,19 @@ HRESULT result = S_OK;
 			// The system creates the HDR10 signal; application uses linear values.
 			DX11windowsArray[USE_MONITOR].m_colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709;
 			break;
-
-		default:
-			DX11windowsArray[USE_MONITOR].m_colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
-			break;
 		}
 	}
 
+	// Setup HDR Color Space:
 	ComPtr<IDXGISwapChain1>m_swapChain = DX11windowsArray[USE_MONITOR].m_swapChain1;
 	ComPtr<IDXGISwapChain3> swapChain3;
 	if (m_swapChain && SUCCEEDED(m_swapChain.As(&swapChain3)))
 	{
 		UINT colorSpaceSupport = 0;
-		if (SUCCEEDED(swapChain3->CheckColorSpaceSupport(colorSpace, &colorSpaceSupport))
+		if (SUCCEEDED(swapChain3->CheckColorSpaceSupport(DX11windowsArray[USE_MONITOR].m_colorSpace, &colorSpaceSupport))
 			&& (colorSpaceSupport & DXGI_SWAP_CHAIN_COLOR_SPACE_SUPPORT_FLAG_PRESENT))
 		{
-			ThrowIfFailed(swapChain3->SetColorSpace1(colorSpace));
+			ThrowIfFailed(swapChain3->SetColorSpace1(DX11windowsArray[USE_MONITOR].m_colorSpace));
 		}
 	}
 }
@@ -1170,7 +1164,7 @@ void DX11Class::EndScene(UINT USE_MONITOR)
 	if (DX11windowsArray[USE_MONITOR].m_swapChain1)
 	{
 #if defined USE_DX11_1_SETUP
-		UINT presentFlags = (!m_VSYNC_ENABLED && DX11windowsArray[USE_MONITOR].DX11_allowTearing) ? DXGI_PRESENT_ALLOW_TEARING : 0;
+		UINT presentFlags = (!m_VSYNC_ENABLED && DX11windowsArray[USE_MONITOR].DX11_GPU_supportTearing) ? DXGI_PRESENT_ALLOW_TEARING : 0;
 #else
 		#define presentFlags 0
 #endif
@@ -1272,6 +1266,7 @@ void DX11Class::SetCamera2D()
 void DX11Class::Initialize3DCamera()
 // ----------------------------------------------------------------------------------------------
 {
+	// Set 2D Camera:
 	if (DXsystemHandle->m_Camera) 
 	{
 
@@ -1279,13 +1274,13 @@ void DX11Class::Initialize3DCamera()
 	SetCamera2D();
 #endif
 
-	// Normal Camera: ( After: SetCamera2D() )
+	// Set Normal 3D Camera: ( After: SetCamera2D() )
 	DXsystemHandle->m_Camera->SetPosition(	SystemHandle->AppSettings->INIT_CAMX, SystemHandle->AppSettings->INIT_CAMY, SystemHandle->AppSettings->INIT_CAMZ);
-
 	DXsystemHandle->m_Camera->SetRotation(	SystemHandle->AppSettings->INIT_ROTX, SystemHandle->AppSettings->INIT_ROTY, SystemHandle->AppSettings->INIT_ROTZ);
 	}
 
-#if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28	// Sky Camera:
+	// Set fixed Sky Camera 3D Camera:
+#if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28
 	if (!DXsystemHandle->m_CameraSKY) {
 		DXsystemHandle->m_CameraSKY = NEW DXcameraClass; // DX Implementation
 		IF_NOT_THROW_EXCEPTION (DXsystemHandle->m_CameraSKY);
@@ -1293,10 +1288,8 @@ void DX11Class::Initialize3DCamera()
 
 	DXsystemHandle->m_CameraSKY->SetPosition(0.0f, 0.0f, 0.0f);
 	DXsystemHandle->m_CameraSKY->SetRotation(SystemHandle->AppSettings->INIT_ROTX, SystemHandle->AppSettings->INIT_ROTY, SystemHandle->AppSettings->INIT_ROTZ);
-
 	DXsystemHandle->m_CameraSKY->CalculateViewMatrix();
 #endif
-
 }
 
 
