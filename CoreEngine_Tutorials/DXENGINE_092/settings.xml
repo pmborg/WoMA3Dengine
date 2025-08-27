@@ -1,10 +1,10 @@
 <generalsettings>
-  <screen adapter="-1" uiMonitor="1" fullScreen="false" fullScreenWindowed="true" posX="0" posY="0" width="0" height="0" allowResize="true" vsync="false" bitsPerPixel="32"/>
+  <screen adapter="-1" uiMonitor="0" fullScreen="false" fullScreenWindowed="true" posX="0" posY="0" width="0" height="0" allowResize="true" vsync="false" bitsPerPixel="32"/>
   <driver name="DX11" UseAllMonitors="false" useDoubleBuffering="true" useTripleBuffering="false"/>
   <camera screenNear="0.1" screenDepth="256">
     <initPos x="35" y="1" z="18"/>
     <initRot x="15" y="0" z="0"/>
   </camera>
-  <texture maxTexture="1024" bilinear="false" trilinear="false" Anisotropic="true" AnisotropicLevel="4"/>
+  <texture maxTexture="1024" bilinear="true" trilinear="false" Anisotropic="false" AnisotropicLevel="4"/>
   <sound music="false" effects="false"/>
 </generalsettings>

@@ -68,8 +68,8 @@ bool DX11Class::InitD2D_D3D101_DWrite(IDXGIAdapter1 *Adapter, WCHAR* fontStyle, 
 	sharedTexDesc.MipLevels = 1;	
 	sharedTexDesc.ArraySize = 1;
 	// Dont Use MSAA Here!
-	sharedTexDesc.SampleDesc.Count = 1; // MSAA_COUNT;	//Anti-Alising: MultiSample tech.
-	sharedTexDesc.SampleDesc.Quality = MSAA_QUALITY;	//Anti-Alising: Texture Filtering tech. (MSAA > 0)
+	sharedTexDesc.SampleDesc.Count = 1;		// MSAA_COUNT;		//Anti-Aliasing: MultiSample tech.
+	sharedTexDesc.SampleDesc.Quality = 0;	// MSAA_QUALITY;	//Anti-Aliasing: Texture Filtering tech. (MSAA > 0)
 	sharedTexDesc.Usage = D3D11_USAGE_DEFAULT;
 	sharedTexDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;	
 	sharedTexDesc.MiscFlags = D3D11_RESOURCE_MISC_SHARED_KEYEDMUTEX;	
