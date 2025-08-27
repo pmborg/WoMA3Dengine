@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -111,9 +111,10 @@ ModelClass::~ModelClass()
 
 // Populate: obj3d
 // --------------------------------------------------------------------------------------------
-bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow, bool renderShadow, UINT instanceCount, UINT instanceType)
+bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow, bool renderShadow, UINT instanceCount, UINT instanceType)
 // --------------------------------------------------------------------------------------------
 {	HRESULT hr = 0;
+	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
 
 	//---------------------------------------------------------------------
 	womalog( TEXT("OBJ Loading: %s with shader: [%d]\n"), (TCHAR*)(filename+TEXT(" ")).c_str(), shader_type);
@@ -212,7 +213,7 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 				if(checkChar == ' ')
 				{
 					face = TEXT("");
-					STRING/*std::wstring*/ VertDef;	//Holds one vertex definition at a time
+					STRING VertDef;	//Holds one vertex definition at a time
 					obj3d.triangleCount = 0;
 
 					checkChar = fileIn.get();
@@ -514,7 +515,7 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 										fileIn >> meshMaterialsTemp; //Get next type (string)
 
 										if (lastToken == 'u') 
-										{	// We have a "usemtl" but we dont have a 'g' for it, so "force" it:
+										{	// We have a "usemtl" but we don't have a 'g' for it, so "force" it:
 											obj3d.meshSubsetIndexStart.push_back(vIndex);		//Start index for this subset
 											obj3d.meshSubsets++;
 										}
@@ -594,7 +595,7 @@ bool ModelClass::LoadOBJ(/*DXmodelClass*/ void* dxmodelClass, SHADER_TYPE shader
 	//std::wstring lastStringRead;
 	//bool SKIP_MATERIALS = false;
 #if !defined(STANDALONE)
-	if (meshMatLib_.find(TEXT("none")) == 0) //Special Case for Billboards: dont have a fixed texture.
+	if (meshMatLib_.find(TEXT("none")) == 0) //Special Case for Billboards: don't have a fixed texture.
 	{
 		SurfaceMaterial tempMat;
 		obj3d.material.push_back(tempMat);
@@ -1181,7 +1182,7 @@ void ModelClass::CalculateTangentBinormal(ModelNormalBumpVertexType vertex1, Mod
 }
 
 // Create: DXmodelClass based on obj3D (an advanced model mesh)
-bool ModelClass::CreateObject(void* XmodelClass, TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow, bool renderShadow)
+bool ModelClass::CreateObject(void* pContext, void* XmodelClass, TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow, bool renderShadow)
 {
 	// Make Sure that: "meshSubsets" size are equal to "meshMaterials" size
 	if (obj3d.meshSubsets != obj3d.meshMaterials.size())
@@ -1236,8 +1237,9 @@ bool ModelClass::CreateObject(void* XmodelClass, TCHAR* objectName, void* g_driv
 	//SHADER_NORMAL_BUMP?
 		//SHADER_TEXTURE_LIGHT
 		//SHADER_TEXTURE_LIGHT_RENDERSHADOW
-		if ((obj3d.hasNorm || shader_type == SHADER_TEXTURE_LIGHT) && shader_type != SHADER_FIRE)
+		if ((obj3d.hasNorm || shader_type == SHADER_TEXTURE_LIGHT || shader_type == SHADER_BILLBOARD_ATLAS_FAST) && shader_type != SHADER_FIRE)
 		{
+			{
 			std::vector<ModelTextureLightVertexType> modelTextureLightVertex;
 			ModelTextureLightVertexType tempVert;
 			for (UINT j = 0; j < obj3d.m_vertexCount; ++j)
@@ -1246,9 +1248,9 @@ bool ModelClass::CreateObject(void* XmodelClass, TCHAR* objectName, void* g_driv
 				tempVert.y = obj3d.vertPos[obj3d.vertPosIndex[j]].y;
 				tempVert.z = obj3d.vertPos[obj3d.vertPosIndex[j]].z;
 
-#if defined CHECK_OBJ_COLISION
+			#if defined CHECK_OBJ_COLISION
                 ((DXmodelClass*)XmodelClass)->bottleVertPosArray.push_back(XMFLOAT3(tempVert.x, tempVert.y, tempVert.z));
-#endif
+			#endif
 
 				tempVert.tu = obj3d.vertTexCoord[obj3d.vertTCIndex[j]].x;
 				tempVert.tv = obj3d.vertTexCoord[obj3d.vertTCIndex[j]].y;
@@ -1267,11 +1269,12 @@ bool ModelClass::CreateObject(void* XmodelClass, TCHAR* objectName, void* g_driv
 				shader_type = (renderShadow) ? SHADER_TEXTURE_LIGHT_RENDERSHADOW : SHADER_TEXTURE_LIGHT;
 
 			if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
-				((DXmodelClass*)XmodelClass)->LoadLight((TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, &modelTextureLightVertex, &obj3d.indices32);
-        #if (defined OPENGL3 || defined OPENGL40) 
+                ((DXmodelClass*)XmodelClass)->LoadLight((ID3D11DeviceContext*)pContext, (TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, &modelTextureLightVertex, &obj3d.indices32, 0);
+			#if (defined OPENGL3 || defined OPENGL40) 
 			else
-				((GLmodelClass*)XmodelClass)->LoadLight((TCHAR*)filename.c_str(), g_driver, /*shader_type*/(renderShadow) ? SHADER_TEXTURE_LIGHT_RENDERSHADOW : SHADER_TEXTURE_LIGHT, & obj3d.textureNameArray, & modelTextureLightVertex, & obj3d.indices32);
-		#endif
+				((GLmodelClass*)XmodelClass)->LoadLight(pContext, (TCHAR*)filename.c_str(), g_driver, /*shader_type*/(renderShadow) ? SHADER_TEXTURE_LIGHT_RENDERSHADOW : SHADER_TEXTURE_LIGHT, & obj3d.textureNameArray, & modelTextureLightVertex, & obj3d.indices32);
+			#endif
+			}
 		}
 		else
 			// SHADER_TEXTURE - 31
@@ -1298,10 +1301,10 @@ bool ModelClass::CreateObject(void* XmodelClass, TCHAR* objectName, void* g_driv
 					shader_type = SHADER_TEXTURE;
 
 				if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
-					((DXmodelClass*)XmodelClass)->LoadTexture((TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, &modelTextureVertex, &obj3d.indices32);
+                    ((DXmodelClass*)XmodelClass)->LoadTexture((ID3D11DeviceContext*)pContext, (TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, &modelTextureVertex, &obj3d.indices32, 0);
                 #if (defined OPENGL3 || defined OPENGL40) 
 				else
-					((GLmodelClass*)XmodelClass)->LoadTexture((TCHAR*)filename.c_str(), g_driver, /*shader_type*/ SHADER_TEXTURE, &obj3d.textureNameArray, &modelTextureVertex, &obj3d.indices32);
+					((GLmodelClass*)XmodelClass)->LoadTexture(pContext, (TCHAR*)filename.c_str(), g_driver, /*shader_type*/ SHADER_TEXTURE, &obj3d.textureNameArray, &modelTextureVertex, &obj3d.indices32);
 				#endif
 			}
 			else
@@ -1339,10 +1342,10 @@ bool ModelClass::CreateObject(void* XmodelClass, TCHAR* objectName, void* g_driv
 					shader_type = SHADER_COLOR;
 
 				if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
-					((DXmodelClass*)XmodelClass)->LoadColor((TCHAR*)filename.c_str(), g_driver, shader_type, &modelColorVertex, &obj3d.indices32);
+                    ((DXmodelClass*)XmodelClass)->LoadColor((ID3D11DeviceContext*)pContext, (TCHAR*)filename.c_str(), g_driver, shader_type, &modelColorVertex, &obj3d.indices32, 0);
             #if (defined OPENGL3 || defined OPENGL40) 
 				else
-					((GLmodelClass*)XmodelClass)->LoadColor((TCHAR*)filename.c_str(), g_driver, /*shader_type*/ SHADER_COLOR, &modelColorVertex, &obj3d.indices32);
+					((GLmodelClass*)XmodelClass)->LoadColor(pContext, (TCHAR*)filename.c_str(), g_driver, /*shader_type*/ SHADER_COLOR, &modelColorVertex, &obj3d.indices32);
 			#endif
 			}
 	// VERTICES/INDEXES DONE

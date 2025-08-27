@@ -645,7 +645,7 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 				{
 					SystemHandle->m_Application->initWorld->Calculate(); // Recalculate astros every minute...
 					#if defined USE_ASTRO_CLASS && defined USE_REAL_SUNLIGHT_DIRECTION //#if ENGINE_LEVEL >= 33
-						SystemHandle->m_Application->Calc3DSunMoonPosition();
+						SystemHandle->m_Application->Use3DSunMoonPosition();
 					#endif
 				}
 				return 0;

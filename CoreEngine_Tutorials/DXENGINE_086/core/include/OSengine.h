@@ -362,6 +362,8 @@ extern STRING LOAD_ASSET_SAVE_TO_CACHE(TCHAR* XMLFILE);
 
 #endif
 
+#if defined WINDOWS_PLATFORM
 extern bool cpu_supports_avx512f();
+#endif
 
 extern bool StartsWithDotDotSlash(const std::string& fileNamePath);

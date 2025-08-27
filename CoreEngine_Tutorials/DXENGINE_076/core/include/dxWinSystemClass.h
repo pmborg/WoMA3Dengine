@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -75,7 +75,7 @@ public:
 
 	void PAUSE();
 	void UNPAUSE();
-	void GPH_RESIZE();
+    void GPH_RESIZE(void* pContext);
 
 #if DX_ENGINE_LEVEL >= 20 && defined USE_LOADING_THREADS
 	bool ApplicationMandatoryLoad();

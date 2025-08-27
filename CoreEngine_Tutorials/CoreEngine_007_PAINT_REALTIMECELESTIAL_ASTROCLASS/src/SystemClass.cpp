@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -319,7 +319,7 @@ void SystemClass::InitializeSystemScreen(int x, int y)
 	// ----------------------------------
 	// NEW PAGE
 	// ----------------------------------
-	// BOARD/CPU Feactures (RIGHT SIDE):
+	// BOARD/CPU Features (RIGHT SIDE):
 #if defined WINDOWS_PLATFORM
 	if (AppSettings->WINDOW_WIDTH == 0)
 	{
@@ -468,9 +468,9 @@ void SystemClass::ProcessOSInput() // This Function will be invoked several time
 
 #if defined WINDOWS_PLATFORM
 
-	// "ESC": DX Process Special: key is beeing pressed ? -> EXIT APPLICATION
+	// "ESC": DX Process Special: key is being pressed ? -> EXIT APPLICATION
 
-	// "ESC" OS Process Special: key is beeing pressed ? -> EXIT APPLICATION
+	// "ESC" OS Process Special: key is being pressed ? -> EXIT APPLICATION
 	if (m_OsInput->IsKeyDown(VK_ESCAPE) && WOMA::game_state == GAME_RUN)		// CHECK: if the user pressed 'escape' and wants to exit the application.
 	{
 		WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP; //Publish_Quit_Message();
@@ -496,12 +496,6 @@ void SystemClass::ProcessOSInput() // This Function will be invoked several time
 		if (SystemHandle->womaSetup)
 			SAFE_SHUTDOWN(SystemHandle->womaSetup);
 	#endif
-		if (AppSettings->DRIVER == DRIVER_DX12 && !first_time)
-		{
-			WOMA::previous_game_state = GAME_CELESTIAL_INFO; //match*
-			WOMA::game_state = ENGINE_RESTART;
-			return;
-		}
 		RENDER_PAGE = 7;
 		WOMA::game_state = GAME_CELESTIAL_INFO; //match*
 		OS_REDRAW_WINDOW;
@@ -541,12 +535,6 @@ void SystemClass::ProcessOSInput() // This Function will be invoked several time
 		if (SystemHandle->womaSetup)
 			SAFE_SHUTDOWN(SystemHandle->womaSetup);
 	  #endif
-		if (AppSettings->DRIVER == DRIVER_DX12 && !first_time)
-		{
-			WOMA::previous_game_state = GAME_SYSTEM_SETTINGS; //match*
-			WOMA::game_state = ENGINE_RESTART;
-			return;
-		}
 		RENDER_PAGE = 4;
 		WOMA::game_state = GAME_SYSTEM_SETTINGS; //match*
 		OS_REDRAW_WINDOW;
@@ -631,7 +619,7 @@ bool SystemClass::SystemCheck()
 
 	womalogauto(TEXT("[Function Loader] systemManager->CheckSetup()\n"));
 	IF_NOT_RETURN_FALSE(systemManager->CheckSetup());		// TODO: CheckSetup: Check if "Setup.exe" is Installed or needed / Download & Install: DONE
-#endif // NOTE: WINDOWS10/DX12: Dont need this checks
+#endif // NOTE: WINDOWS10/DX12: Don't need this checks
 	//LEVELNORMAL();
 
 	//LEVELHIGHLIGHT(4);
@@ -731,7 +719,7 @@ void SystemClass::FrameUpdate()
 	#endif
 
 	#if defined USE_PROCESS_OS_KEYS && defined WINDOWS_PLATFORM
-		ProcessOSInput();							    // Proccess Special function keys |ESC and F1 to F6|
+		ProcessOSInput();							    // Process Special function keys |ESC and F1 to F6|
 		if (WOMA::game_state == ENGINE_RESTART)
 			return;
 	#endif

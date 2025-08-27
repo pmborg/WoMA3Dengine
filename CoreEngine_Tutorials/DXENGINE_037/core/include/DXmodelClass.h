@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -69,21 +69,21 @@ public:
 	void Shutdown();
 	void LOADDRIVER(void* driver);
 
-	void RenderWithFade(float fadeLight = 1, bool FOG = false);
+	void RenderWithFade(void* pContext, float fadeLight = 1, bool FOG = false);
 #if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28 && defined USE_SKYSPHERE
-	void RenderSky(UINT camera, float fadeLight = 1);
+	void RenderSky(void* pContext, UINT camera, float fadeLight = 1);
 #endif
-	void Render(UINT camera = 0, UINT projection = 0, UINT pass = 0, void* lightViewMatrix = NULL, void* ShadowProjectionMatrix = NULL);
+	void Render(void* pContext, UINT threadID, UINT camera = 0, UINT projection = 0, UINT pass = 0, void* lightViewMatrix = NULL, void* ShadowProjectionMatrix = NULL);
 
 	// ----------------------------------------------------------------------
 #if defined USE_VIEW2D_SPRITES // Sprites
-	bool RenderSprite( int positionX, int positionY, float scale=1.0f, float fade = 1.0f);
-	bool UpdateBuffersRotY( int positionX, int positionY);
-	bool UpdateSpriteBuffersRotY( int positionX, int positionY);
+	bool RenderSprite(void* pContext, int positionX, int positionY, float scale=1.0f, float fade = 1.0f);
+    bool UpdateBuffersRotY(void* pContext, int positionX, int positionY);
+    bool UpdateSpriteBuffersRotY(void* pContext, int positionX, int positionY);
 #endif
 
 	// BASIC LOAD:
-	bool LoadColor(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<ModelColorVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0);
+    bool LoadColor(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<ModelColorVertexType>* model, std::vector<UINT>* indexList = NULL, UINT instanceCount = 0);
 	
 		// [PATTERN] Image loader:
 	#if defined DX11 || defined DX9
@@ -93,12 +93,12 @@ public:
 		DX12TextureClass* m_Texture = NULL;
 	#endif
 	
-	bool LoadTexture(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0);
-	bool LoadLight(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureLightVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0);
-	bool LoadBump(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelNormalBumpVertexType> *model, std::vector<UINT>* indexList, UINT instanceCount=0);
+        bool LoadTexture(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<ModelTextureVertexType>* model, std::vector<UINT>* indexList = NULL, UINT instanceCount = 0);
+    bool LoadLight(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<ModelTextureLightVertexType>* model, std::vector<UINT>* indexList = NULL, UINT instanceCount = 0);
+    bool LoadBump(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<ModelNormalBumpVertexType>* model, std::vector<UINT>* indexList, UINT instanceCount = 0);
 	// MODEL LOAD:
 	ADVOBJ3D obj3d;
-	bool LoadModel	(TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow = false, bool renderShadow=false, UINT instanceCount=0/*, UINT instanceType = 0*/);
+    bool LoadModel(void* pContext, TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow = false, bool renderShadow = false, UINT instanceCount = 0);
 
 	STRING MODEL_NAME=TEXT("");
 
@@ -150,26 +150,22 @@ public:
 	void CreateBoundingVolumes(std::vector<XMFLOAT3>& vertPosArray);
 #endif
 
-	HRESULT LoadTextureImage(TCHAR* textureFilename);
+    HRESULT LoadTextureImage(ID3D11DeviceContext* pContext, TCHAR* textureFilename);
 
     UINT			m_instanceCount = 0;
 
-// ----------------------------------------------------------------------
-//private:
-// ----------------------------------------------------------------------
-
 #if defined LOADW3D
-	bool LoadW3D	    (SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow=false, bool renderShadow=false, UINT instanceCount=0);
-    bool LoadW3DfromMEM (SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow = false, bool renderShadow = false, UINT instanceCount = 0);
+    bool LoadW3D(void* pContext, SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow = false, bool renderShadow = false, UINT instanceCount = 0);
+    bool LoadW3DfromMEM(void* pContext, SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow = false, bool renderShadow = false, UINT instanceCount = 0);
 #endif
 
 	DXshaderClass* CreateShader(TCHAR* objectName, SHADER_TYPE ShaderType);
-	bool InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* textureFile=NULL);
+    bool InitializeDXbuffers(ID3D11DeviceContext* pContext, TCHAR* objectName, std::vector<STRING>* textureFile = NULL);
 	bool CreateDXbuffers(UINT sizeofMODELvertex, void* device, void* indices, void* vertices);
 	void SetGeometryBuffers(void* deviceContext);	//ID3D11DeviceContext
 
 	#if defined USE_LIGHT_RAY
-	void UpdateDynamic( std::vector<ModelColorVertexType>* lightVertexVector);
+    void UpdateDynamic(void* pContext, std::vector<ModelColorVertexType>* lightVertexVector);
 	#endif
 
 	std::vector<ModelColorVertexType>* modelColorVertex = NULL;			// MODEL!
@@ -193,8 +189,8 @@ public:
 #endif
 
 	ModelClass modelClass;
-	void RenderSubMesh(WomaDriverClass* driver, XMMATRIX* worldMatrix, XMMATRIX* viewMatrix, XMMATRIX* projectionMatrix,
-						UINT pass, XMMATRIX* lightViewMatrix = NULL, XMMATRIX* ShadowProjectionMatrix = NULL);
+    void RenderSubMesh(ID3D11DeviceContext* pContext, WomaDriverClass* driver, XMMATRIX* worldMatrix, XMMATRIX* viewMatrix,
+        XMMATRIX* projectionMatrix, UINT pass, XMMATRIX* lightViewMatrix = NULL, XMMATRIX* ShadowProjectionMatrix = NULL);
 
 	// VARS:
 	// ----------------------------------------------------------------------

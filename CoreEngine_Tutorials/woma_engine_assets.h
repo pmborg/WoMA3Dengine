@@ -19,7 +19,7 @@
 #include "level.h"
 #include "tech-level.h"
 
-// Recomended to preview 3D objs on explorer (With extra large icons): https://f3d.app//																						
+// Recomended to preview 3D objs on explorer (With extra large icons): https://f3d.app//
 //--------------------------------------------------------------------------------------------------------
 #define PROJECT_NAME        TEXT("WoMAengine")
 #define COMPANY_DIRECTORY   TEXT("Pmborg")
@@ -126,9 +126,6 @@
 #endif
     //#define DEMO_TITLE        TEXT("10: CLEAR SCREEN")
     #define DEMO_TITLE TEXT("10: PRESS [F6] for SETUP and change Driver: OPENGL, DX9, DX11, DX12: Initiate the 3D Graphic Drivers and attache the swapchain to mainwindow.")
-#endif
-#if DX_ENGINE_LEVEL >= 10 && DX_ENGINE_LEVEL < 92
-    #define USE_THIS_GRAPHIC_CARD_ADAPTER 0
 #endif
 
 //--------------------------------------------------------------------------------------------------------
@@ -588,7 +585,10 @@
 	#define DEMO_TITLE TEXT("92: Use faster bill shader")
 	#define WORLD_XML  TEXT("world_92.xml")
 #endif
-
+#if DX_ENGINE_LEVEL == 93
+	#define DEMO_TITLE TEXT("93: Billboard Atlas Integration")
+	#define WORLD_XML  TEXT("world_93.xml")
+#endif
 
 
 

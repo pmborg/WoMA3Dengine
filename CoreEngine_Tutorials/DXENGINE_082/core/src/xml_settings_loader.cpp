@@ -50,9 +50,9 @@ XMLloader::XMLloader()
 XMLloader::~XMLloader()
 {
 #if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
-	for (size_t i = 0; i < theWorld.size(); i++)
+	for (size_t i = 0; i < theWorldXML.size(); i++)
 	{
-		SAFE_SHUTDOWN(theWorld[i].audio);
+		SAFE_SHUTDOWN(theWorldXML[i].audio);
 	}
 #endif
 	CLASSDELETE();
@@ -486,7 +486,7 @@ bool XMLloader::loadWorld (TCHAR* file_) // Note: Have to be char
                     }
                 }
 	#endif
-				theWorld.push_back(object3d); // add a new object to our list
+				theWorldXML.push_back(object3d); // add a new object to our list
 				element = element->NextSiblingElement();
 			} while (element != NULL);
 		}

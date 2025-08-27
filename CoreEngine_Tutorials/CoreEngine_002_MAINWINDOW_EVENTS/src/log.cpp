@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -120,7 +120,7 @@ LogManager::LogManager()
 	// OPEN FILE:
 	UINT errno_t = _tfopen_s(&debugFile, REPORT_FILE.c_str(), TEXT("w"));
 	if (errno_t != 0) {
-		// This means that the file is locked by another Woma APP instance, dont abort because of that!
+		// This means that the file is locked by another Woma APP instance, don't abort because of that!
 		womalog(TEXT("[ERROR] WARNING! - LOG MANGER - Cant Open for Write: %s\n"), REPORT_FILE.c_str());
 
 		#if defined WINDOWS_PLATFORM
@@ -188,7 +188,7 @@ void LogManager::DEBUG_MSG(WCHAR* strMsg, ...)
 {
 	WCHAR WstrBuffer[MAXBUFF] = { 0 };
 
-	// Get Full STRING and process STRING patameters:
+	// Get Full STRING and process STRING parameters:
 	va_list args;
 	va_start(args, strMsg);
 	vswprintf_s(WstrBuffer, MAXBUFF, strMsg, args);
@@ -226,7 +226,7 @@ void LogManager::DEBUG_MSG(CHAR* strMsg, ...)
 {
 	CHAR strBuffer[MAXBUFF] = { 0 }; // Force to USE CHAR on UNICODE!
 
-	// Get Full STRING and process STRING patameters:
+	// Get Full STRING and process STRING parameters:
 	va_list args;
 	va_start(args, strMsg);
 	vsprintf_s(strBuffer /*+ strlen(strBuffer)*/, MAXBUFF /*- strlen(strBuffer)*/, strMsg, args);
@@ -265,7 +265,6 @@ void start_log_manager()
 
 	// [3]  PRINT Log Dirs: (After init_os_main_dirs & After logManager)
 	// -------------------------------------------------------------------------------------------
-	//womalogauto(TEXT("Init: logDirs()\n"));
 #if defined WINDOWS_PLATFORM && ENGINE_LEVEL >= 3
 	logDirs(isXP(), isWow64());
 #else
@@ -291,6 +290,7 @@ void start_log_manager()
 
 }
 
-}//namespace
+}
+//namespace
 
 #endif

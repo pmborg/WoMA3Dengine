@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -23,9 +23,10 @@
 #include "platform.h"
 #if defined DX_ENGINE
 #include<D3D11.h>
+
 //SELECT DXGI DX11 version:
 #if defined DX11 || defined DX9
-    #include<D3D11.h>
+
     #if defined WIN10
         #define DXGI1_6	// DX11: Target For: Oct 10, 2017 - WINDOWS 10.0.15063
     #elif defined WIN6x
@@ -99,6 +100,33 @@
 #endif
 
 #include <wrl/client.h>
+
+#define g_driver11 ((DirectX::DX11Class*)driverList[DRIVER_DX11])
+
+#if defined USE_DX11_1_SETUP //DX11_1
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+
+#include <windows.h>
+#include <d3d11_1.h>
+#include <dxgi1_6.h>          // If unavailable in your SDK, you can include dxgi1_5.h and skip the Factory6 path below.
+#include <d3d11sdklayers.h>   // For ID3D11InfoQueue
+#include <d3d11_4.h>
+
+#include <vector>
+#include <algorithm>
+#include <stdexcept>
+#include <string>
+#include <sstream>
+#include <iomanip>
+
+using Microsoft::WRL::ComPtr;
+
+#pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "dxgi.lib")
+#pragma comment(lib, "dxguid.lib")
+#endif
 
 //////////////
 // INCLUDES //
@@ -237,6 +265,27 @@ WDDM 2.0->Windows 10				Display Drivers or Creates a DXGI 1.4
 
 #define	MaxTextSizes 24
 
+// For each DX11 Monitor:
+struct DXwindowDataContainer
+{
+	IDXGISwapChain1* m_swapChain1 = NULL;
+	ID3D11Texture2D* m_backBuffer = NULL;
+	ID3D11RenderTargetView* m_renderTargetView = NULL;
+	ID3D11DepthStencilView* m_depthStencilView = NULL;
+	ID3D11Texture2D* m_depthStencilBuffer = NULL;
+	D3D11_VIEWPORT viewport = { 0 };
+	BOOL DX11_GPU_supportTearing = FALSE; // Determines whether tearing support is available for fullscreen borderless windows.
+	BOOL DX11_GPU_supportHDR = TRUE;
+	BOOL DX11_GPU_supportFLIP = TRUE;
+	DXGI_COLOR_SPACE_TYPE m_colorSpace; // HDR Support
+	DXGI_FORMAT m_backBufferFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
+};
+
+
+
+extern std::vector<DXwindowDataContainer> DX11windowsArray;		
+extern std::vector<UINT> FSAA_possibleValues;
+
 namespace DirectX {
 
 struct DXTextLine
@@ -264,30 +313,31 @@ public:
     void Finalize();
 
     bool OnInit(int g_USE_MONITOR, void* hwnd, int screenWidth, int screenHeight, UINT depthBits,
-                float screenDepth, float screenNear, BOOL msaa, bool vsync,
-                BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize);
+        float screenDepth, float screenNear, BOOL msaa, bool vsync,
+        BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize);
     void Shutdown();
     void Shutdown2D();
 
     void BeginScene(UINT monitorWindow);
     void EndScene(UINT monitorWindow);
-    void ResetResource(UINT monitorWindow);
+    void ResetResource(ID3D11DeviceContext* pContext, UINT monitorWindow);
     void OnDeviceLost();
-    void ClearDepthBuffer();
+	void ClearDepthBuffer(void* pContext);
 
+	ID3D11DeviceContext* GetDeviceContext();
 #if defined USE_RASTERIZER_STATE
-    void SetRasterizerState(UINT cullMode, UINT fillMode);
+	void SetRasterizerState(void* pContext, UINT cullMode, UINT fillMode);
 #endif
     //We now have two new function in the DX11Class for turning the Z buffer on and off when rendering 2D images:
-    void TurnZBufferOn();
-    void TurnZBufferOff();
+	void TurnZBufferOn(void* pContext);
+	void TurnZBufferOff(void* pContext);
 
 #if defined INTRO_DEMO || defined USE_ALPHA_BLENDING
     bool CreateBlendState();
 
     //We have two new functions for turning on and off alpha blending:
-    void TurnOnAlphaBlending();
-    void TurnOffAlphaBlending();
+    void TurnOnAlphaBlending(void*);
+    void TurnOffAlphaBlending(void*);
 
     //We have two new blending states:
     ID3D11BlendState* m_alphaEnableBlendingState = NULL;	//m_alphaEnableBlendingState is for turning on alpha blending and 
@@ -297,7 +347,7 @@ public:
 #if defined USE_DX_DRIVER_FONT
     std::vector<DXTextLine> allTextArray;
     void addText(int Xpos, int Ypos, TCHAR* printText, float R, float G, float B);
-    void RenderDriverText();
+    void RenderDriverText(void* pContext);
 #endif
 
 #if defined ALLOW_PRINT_SCREEN_SAVE_PNG
@@ -305,17 +355,17 @@ public:
 #endif
 
     BOOL Check (int* Hi, int* low);
-    BOOL CheckAPIdriver (UINT USE_THIS_ADAPTER);
+    BOOL CheckAPIdriver (int USE_THIS_ADAPTER);
     bool getModesList(int g_USE_MONITOR, int screenWidth, int screenHeight, BOOL fullscreen, UINT* numerator, UINT* denominator);
 
-    void SelectDepthFormat(UINT depthBits, BOOL fullscreen);
+    DXGI_FORMAT SelectDepthFormat(UINT depthBits, BOOL fullscreen);
 
     bool Resize (int screenWidth, int screenHeight,float screenNear, float screenDepth, BOOL fullscreen, UINT depthBits);
     void DeleteViewBuffers();
     void SetCamera2D();
 
     //void ResetViewport();
-    void SetBackBufferRenderTarget(UINT monitorWindow);
+	void SetBackBufferRenderTarget(void* pContext, UINT monitorWindow);
 
     XMMATRIX* GetViewMatrix( UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix);
     XMMATRIX* GetProjectionMatrix( UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix);
@@ -328,41 +378,49 @@ public:
     //We need to setup our ProjectionMatrix (21) and OrthoMatrix (CH07)
     void setProjectionMatrixWorldMatrixOrthoMatrix (int screenWidth, int screenHeight,float screenNear, float screenDepth);
 
+private:
+	std::vector<std::wstring> list_graphic_cards;
+																													  
+						   
+							
+
+#if defined USE_DX11_1_SETUP
+	ComPtr<ID3D11DeviceContext>    m_Context;
+	ComPtr<ID3D11DeviceContext1>   m_Context1; 
+	ComPtr<ID3D11DeviceContext2>   m_Context2; // DX11.2+ introduces Tiled Resources, allowing you to:
+	ComPtr<ID3D11DeviceContext3>   m_Context3; // Future
+#endif
+	ID3D11DeviceContext* m_deviceContext = nullptr;
+	
+
+public:
     // Public: ------------------------------------------------------------------------
     // VARS:
     // --------------------------------------------------------------------------------
+	bool dx11_force_dx9 = false;
+	UINT swapbufferscount=0;
+
 #if _DEBUG
     IDXGIDebug* debugDev = NULL;
 #endif
+	
 
-    bool dx11_force_dx9=false;
-
-    D3D_FEATURE_LEVEL featureLevel_ = D3D_FEATURE_LEVEL_11_0;	// OUTPUT: (createDevice) The address of the feature level that was selected
+    D3D_FEATURE_LEVEL featureLevel_ = D3D_FEATURE_LEVEL_1_0_CORE;	// OUTPUT: (createDevice) The address of the feature level that was selected
 
     DXGI_FORMAT BUFFER_COLOR_FORMAT= DXGI_FORMAT_R8G8B8A8_UNORM;
     DXGI_FORMAT BUFFER_DEPTH_FORMAT;
 
     // For each DX11 Adapter:
     IDXGIAdapter1* adapterGraphicCard = NULL;
-
-    ID3D11Device*        m_device11 = nullptr;
-    ID3D11DeviceContext* m_deviceContext = nullptr;
+#if defined USE_DX11_1_SETUP
+	ComPtr<ID3D11Device>  m_device = nullptr;
+	ComPtr<ID3D11Device1> m_device1 = nullptr;
+#endif
+	ID3D11Device* m_device11 = nullptr;
 
 #ifdef USE_DX11_3
     ID3D11Device3* pDevice3 = nullptr;
 #endif
-
-    // For each DX11 Monitor:
-    struct DXwindowDataContainer
-    {
-        //IDXGISwapChain* m_swapChain=NULL;
-        IDXGISwapChain1* m_swapChain1 = NULL;
-        ID3D11Texture2D* m_backBuffer = NULL;
-        ID3D11RenderTargetView* m_renderTargetView = NULL;
-        ID3D11DepthStencilView* m_depthStencilView = NULL;
-        D3D11_VIEWPORT viewport = {0};
-    };
-    std::vector<DXwindowDataContainer> DX11windowsArray;
 
     // TODO: Go inside DXwindowDataContainer
     bool ScissorEnable=false;
@@ -411,7 +469,7 @@ public:
 
     // ---------------------------------------------------------
     BYTE dummybuff1[128] = { 0 };
-    ID3D11Texture2D* m_depthStencilBuffer = NULL;
+    
     ID3D11DepthStencilState* m_depthStencilState = NULL;
     ID3D11DepthStencilState* m_depthDisabledStencilState = NULL;
     ID3D11DepthStencilState* testStencilState = NULL;
@@ -424,22 +482,25 @@ public:
 private:
 ////////////////////////////////////////////////////////////////////////////////
     
-    bool createDevice ();
-    bool createDevice_legacy();
+	std::wstring HRtoStr(HRESULT hr);
+	bool list_resolutions();
+    bool createDevice();
 #if defined SET_DEVICE_CAPABILITIES
     void setDeviceCapabilities(D3D_FEATURE_LEVEL featureLevel);
 #endif
+
 #if defined USE_DX11_1
     bool createSwapChainDX11device2(HWND hwnd, int screenWidth, int screenHeight, BOOL vsync, BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize, UINT numerator, UINT denominator);
 #endif
+	VOID UpdateHDRColorSpace(UINT USE_MONITOR);
     void getProfile ( UINT g_USE_MONITOR );
 
 #if defined USE_RASTERIZER_STATE
     bool createRasterizerStates (bool lineAntialiasing);
 #endif
 
-    void setViewportDevice(UINT monitorWindow, int screenWidth, int screenHeight);
-    void setScissorRectangle(UINT left, UINT right, UINT top, UINT bottom, bool enabled);
+	void setViewportDevice(ID3D11DeviceContext* pContext, UINT monitorWindow, int screenWidth, int screenHeight);
+	void setScissorRectangle(ID3D11DeviceContext* pContext, UINT left, UINT right, UINT top, UINT bottom, bool enabled);
 
     bool CreateRenderTargetView (int screenWidth, int screenHeight);
     bool createDepthStencil(int screenWidth, int screenHeight, BOOL fullscreen, UINT depthBits);
@@ -449,12 +510,13 @@ private:
     // ---------------------------------------------------------
 #if defined USE_DX_DRIVER_FONT
     bool InitD2D_D3D101_DWrite(IDXGIAdapter1 *Adapter, WCHAR* fontStyle, int screenWidth, int screenHeight, float R, float G, float B);
-    bool InitD2D_D3D101_DWrite_(IDXGIAdapter1* Adapter, WCHAR* fontStyle, int screenWidth, int screenHeight, float R, float G, float B);
+    //bool InitD2D_D3D101_DWrite_(IDXGIAdapter1* Adapter, WCHAR* fontStyle, int screenWidth, int screenHeight, float R, float G, float B);
     bool InitD2DScreenTexture();
 #endif
 
-
 public:
+
+
     XMMATRIX m_projectionMiniMapMatrix;
 
 };

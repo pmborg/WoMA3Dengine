@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -37,7 +37,7 @@
 
 	#define SPHERE_GRIDPOINTS 25
 extern std::vector<WomaDriverClass*> driverList;
-void ApplicationClass::initSphere1(float SPHERE_SIZE)
+void ApplicationClass::initSphere1(void* pContext, float SPHERE_SIZE)
 {
 	if (Sphere_vertexdata.size() == 0)
 		CreateSphereModel((int)SPHERE_SIZE, SPHERE_GRIDPOINTS);	//(UINT SPHERE_SIZE, int Sphere_gridpoints)
@@ -48,12 +48,12 @@ void ApplicationClass::initSphere1(float SPHERE_SIZE)
 	Textures.push_back(SKY_DOME_DAY_TEXTURE);
 
 	CREATE_MODEL_IF_NOT_EXCEPTION(m_SphereModel1, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);
-	#define m_Driver  driverList[SystemHandle->AppSettings->DRIVER]
+	//#define m_Driver  driverList[SystemHandle->AppSettings->DRIVER]
 	//m_SphereModel1->ModelHASlight = false; // Before Load: Dont Calculate light/shadow for Sky-Dome! 
-	ASSERT(m_SphereModel1->LoadLight(TEXT("m_SphereModel"), m_Driver, SHADER_TEXTURE_LIGHT, &Textures, &Sphere_vertexdata, &Sphere_indexdata));
+	ASSERT(m_SphereModel1->LoadLight(pContext, TEXT("m_SphereModel"), m_Driver, SHADER_TEXTURE_LIGHT, &Textures, &Sphere_vertexdata, &Sphere_indexdata, 0));
 	m_SphereModel1->PrimitiveTopology = TRIANGLESTRIP;
 }
-void ApplicationClass::initSphere2(float SPHERE_SIZE)
+void ApplicationClass::initSphere2(void* pContext, float SPHERE_SIZE)
 {
 	if (Sphere_vertexdata.size() == 0)
 		CreateSphereModel((int)SPHERE_SIZE, SPHERE_GRIDPOINTS);	//(UINT SPHERE_SIZE, int Sphere_gridpoints)
@@ -66,13 +66,13 @@ void ApplicationClass::initSphere2(float SPHERE_SIZE)
 	CREATE_MODEL_IF_NOT_EXCEPTION(m_SphereModel2, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);
 
 	//m_SphereModel2->ModelHASlight = false; // Before Load: Dont Calculate light/shadow for Sky-Dome! 
-	ASSERT(m_SphereModel2->LoadLight(TEXT("m_SphereModel2"), m_Driver, SHADER_TEXTURE_LIGHT, &Textures, &Sphere_vertexdata, &Sphere_indexdata));
+	ASSERT(m_SphereModel2->LoadLight(pContext, TEXT("m_SphereModel2"), m_Driver, SHADER_TEXTURE_LIGHT, &Textures, &Sphere_vertexdata, &Sphere_indexdata, 0));
 	m_SphereModel2->PrimitiveTopology = TRIANGLESTRIP;
 }
 
 #if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28 && defined USE_SKYSPHERE
 // ----------------------------------------------------------------------------
-void ApplicationClass::initSky(float SPHERE_SIZE)
+void ApplicationClass::initSky(void* pContext, float SPHERE_SIZE)
 // ----------------------------------------------------------------------------
 {
 
@@ -86,7 +86,7 @@ void ApplicationClass::initSky(float SPHERE_SIZE)
 	CREATE_MODEL_IF_NOT_EXCEPTION(m_SkyModel, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);
 
 	m_SkyModel->ModelHASlight = true; // Before Load: Dont Calculate light/shadow for Sky-Dome! 
-	ASSERT(m_SkyModel->LoadLight(TEXT("m_SkyModel"), m_Driver, SHADER_TEXTURE_LIGHT, &Textures, &Sphere_vertexdata, &Sphere_indexdata));
+	ASSERT(m_SkyModel->LoadLight(pContext, TEXT("m_SkyModel"), m_Driver, SHADER_TEXTURE_LIGHT, &Textures, &Sphere_vertexdata, &Sphere_indexdata, 0));
 	m_SkyModel->PrimitiveTopology = TRIANGLESTRIP;
 }
 #endif

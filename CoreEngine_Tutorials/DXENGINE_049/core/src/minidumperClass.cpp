@@ -175,7 +175,7 @@ LONG TopLevelFilter( struct _EXCEPTION_POINTERS *pExceptionInfo )
 					szResult = szScratch;
 				}
 			}
-            retval = EXCEPTION_EXECUTE_HANDLER; // FIX: Handle the exception even if user dont want to send feedback, by Pedro Borges
+            retval = EXCEPTION_EXECUTE_HANDLER; // FIX: Handle the exception even if user don't want to send feedback, by Pedro Borges
 		}
 		else
 		{

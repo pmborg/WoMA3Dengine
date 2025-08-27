@@ -84,6 +84,7 @@ namespace DirectX {
 //#endif
 	};
 
+
 	// 36: Shadow
 	// -------------------------------------------------------------------------------------------
 	struct DXShadowMapVertexType

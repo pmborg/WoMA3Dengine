@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -66,8 +66,17 @@ namespace WOMA
 		UINT refreshRate_Denominator=0;
 		// 4
 		HWND hWnd=0;
+		// Window sizes:
+		RECT              m_rcWindowBounds;    // Saved window bounds for mode switches
+		RECT              m_rcWindowClient;    // Saved client area size for mode switches
 	};
 }
+
+#if defined RELEASE && defined WOMA_WIN32_APPLICATION
+	extern bool threadLoadPacksAlive;
+	extern HANDLE threadLoadPacksHandle;
+	extern unsigned long threadLoadPacksId;
+#endif
 
 extern LRESULT CALLBACK WOMA_PAINT_MessageHandler(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam);
 
@@ -99,14 +108,14 @@ public:
 	HWND WomaCreateWindowEx(DWORD dwExStyle, TCHAR* lpClassName, TCHAR* lpWindowName, DWORD dwStyle,
 		int X, int Y, int nWidth, int nHeight, HWND hWndParent, HMENU hMenu, HINSTANCE hInstance, LPVOID lpParam);
 	bool CreateWin32MainWindow(UINT USE_MONITOR_, void*, int&, int&); //wGLopenGLclass
-	bool ShowWindow(int windowLeft, int windowTop);
+	bool ShowWindow(UINT MONITOR_NUM, int windowLeft, int windowTop);
 	LRESULT CALLBACK WOMA_SYSTEM_MessageHandler(HWND, UINT, WPARAM, LPARAM);
 	void ProcessFrame();
 
 	// --------------------------------------------------------------
 	void PAUSE();
 	void UNPAUSE();
-	void ONRESIZE();
+    void ONRESIZE(void* pContext);
 
 	//VARS:
 	// --------------------------------------------------------------
@@ -120,11 +129,9 @@ public:
 	HWND	statusbar=0;
 #endif
 
-	std::vector<WOMA::WindowDataContainer> windowsArray;
-	std::vector<WOMA::WindowDataContainer> allWindowsArray;
-
-	RECT              m_rcWindowBounds;    // Saved window bounds for mode switches
-	RECT              m_rcWindowClient;    // Saved client area size for mode switches
+	std::vector<WOMA::WindowDataContainer> windowsArray;	// All Monitors, that will be used to render, 1 for example.
+	std::vector<WOMA::WindowDataContainer> allWindowsArray; // All hardware Monitors available on system, 3 for example.
+															// NOTE: DX11windowsArray have all DX specific settings for rendering!
 
 	ScreenArrayInfo info;
 	MONITORINFOEX monitorArray[MAX_WIN32_MONITORS];

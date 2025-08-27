@@ -218,7 +218,7 @@ public:
 	#if defined USE_ASTRO_CLASS && defined USE_REAL_SUNLIGHT_DIRECTION
 	float SunX, SunY, SunZ;
 	float MoonX, MoonY, MoonZ;
-	void Calc3DSunMoonPosition();
+	void Use3DSunMoonPosition();
 	#endif
 
 	virtual bool WOMA_APPLICATION_InitGUI();
@@ -263,12 +263,12 @@ public:
 	LightClass* m_Light = NULL;
 
     UINT world_xml_objs = 0;
+	UINT initial_world_xml_objs = 0;
 	UINT theWorld_size=0;
-	UINT objModel_size=0;			  
+	UINT objModel_size=0;
 
     DWORD total_deltaTime=0;
 	float billangle = 0;
-
 #if defined USE_LIGHT_RAY
 	void initLightRay(void* pContext);
 #endif
@@ -366,7 +366,6 @@ public:
     DXrendertextureclass* m_BorderTexture = NULL;
     DXrendertextureclass* m_PointTexture = NULL;
 #endif
-    UINT billboardRrenderCount = 0;
 
 #if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION //float	closestObjDist = FLT_MAX;
 	float	closestObjDist = FLT_MAX;

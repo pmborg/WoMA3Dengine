@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -55,6 +55,9 @@ bool XMLloader::saveXMLsettingsFile (char* file) // Note: Have to be char
 		root->LinkEndChild(child_screen);
 		if ( child_screen )
 		{
+			_itoa(SystemHandle->AppSettings->ADAPTOR, stri, 10);
+			child_screen->SetAttribute("adapter", stri);
+
 			_itoa(SystemHandle->AppSettings->UI_MONITOR, stri, 10);
 			child_screen->SetAttribute("uiMonitor", stri);
 
@@ -113,6 +116,9 @@ bool XMLloader::saveXMLsettingsFile (char* file) // Note: Have to be char
 
 			str = (SystemHandle->AppSettings->UseDoubleBuffering) ? "true" : "false";
 			child_driver->SetAttribute("useDoubleBuffering", str.c_str());
+
+			str = (SystemHandle->AppSettings->UseTripleBuffering) ? "true" : "false";
+			child_driver->SetAttribute("useTripleBuffering", str.c_str());
 		}
 
 		///*<texture>*/tinyxml2::XMLElement* child_texture = root->FirstChildElement("texture");

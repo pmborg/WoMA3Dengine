@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -20,7 +20,7 @@
 //   - the positions of the "Moon" ("Moon Elevation" and "Moon Azimuth") 
 //   - the positions of the "Sun" ("Geometric Elevation") in the sky.
 //   - Calculate: "SunSet" "SunRise"
-//   - Calculate "Moon Distance": (ans the aparent Size correction: "Moon Scale")
+//   - Calculate "Moon Distance": (ans the apparent Size correction: "Moon Scale")
 //
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234525217;
@@ -349,32 +349,6 @@ double Rev2(double number)
 
 double sunangles[24];
 
-/*
-sun_angles:
-document.Angles.SunAzimuth.value=formatvalue(output_angles[1],8);
-
-sunangles[2] = Decl;
-sunangles[3] = sunlon;
-sunangles[4] = RA;
-sunangles[5] = Rev(GMST0);
-sunangles[6] = Rev(M);
-sunangles[7] = Rev(w);
-sunangles[8] = Rev(e);
-sunangles[9] = Rev(oblecl);
-sunangles[10] = GeometricElevation;
-sunangles[11] = L;
-
-document.Angles.SunDeclination.value=formatnumber(output_angles[2],3);
-document.Angles.SunLongitude.value=formatnumber(output_angles[3],3);
-document.Angles.RA.value=formatnumber(output_angles[4],3);
-document.Angles.GMST0.value=formatnumber(output_angles[5],3);
-document.Angles.MeanAnomaly.value=formatnumber(output_angles[6],3);
-document.Angles.Perihelion.value=formatnumber(output_angles[7],3);
-document.Angles.Eccentricity.value=formatnumber(output_angles[8],3);
-document.Angles.Obliquity.value=formatnumber(output_angles[9],3);
-document.Angles.SunGeometricElevation.value=formatnumber(output_angles[10],3);
-*/
-
 void AstroClass::sun_angles(double d, double SiteLon, double SiteLat)
 {
     double HourAngle, SIDEREALTIME;
@@ -463,14 +437,6 @@ void AstroClass::sun_angles(double d, double SiteLon, double SiteLat)
 
     if (SiteLat < 0) sunangles[14] = Rev(360 - HourAngle);
     else sunangles[14] = Rev(HourAngle - 180);
-    /*
-    sunangles[15]=Rev( ((gcHA)*180/PI)-180);
-
-    sunangles[16]=topRA*180/PI;
-
-    sunangles[17]=topDecl*180/PI;
-    sunangles[18]=gclat*180/PI;
-    */
     sunangles[19] = Rev(EarthLon);
     sunangles[20] = EarthLat;
 

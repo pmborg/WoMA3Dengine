@@ -95,9 +95,6 @@ extern void LoadAllMeshModels(UINT this_level, ApplicationClass* app, MeshApplic
 //extern void UpdateAllMeshAnimations(MeshApplication* demoapp, MyDemo* demo, float deltaTime);
 extern void RenderAllMeshModels(ID3D11DeviceContext* pContext);
 
-#if defined USE_MAP_REDENRING_THREAD
-#endif
-
 float sort_cameraX=0, sort_cameraY=0, sort_cameraZ = 0;
 bool BillSortCB_CPP(const Tree& a, const Tree& b)
 {
@@ -116,13 +113,22 @@ void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext)
 {
 	totalRendered = 0;
 
-#if DX_ENGINE_LEVEL >= 70  && defined SCENE_BILLBOARDS //SCENE_BILLBOARDS
 #if defined USE_DIRECT_INPUT
 	const float SORT_OFFSET = 5.0f; //5 meters behind camera
 	sort_cameraX -= FAST_sin(SystemHandle->m_Application->m_Position[g_NetID]->m_rotationY) * SORT_OFFSET;
 	sort_cameraZ -= FAST_cos(SystemHandle->m_Application->m_Position[g_NetID]->m_rotationY) * SORT_OFFSET;
 #endif
 
+	// [2] SceneManager: Process/Filter and Create Lists/trees of objects to render from: WORLD.XML
+	// --------------------------------------------------------------------------------------------
+#if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
+	WOMA::sceneManager->visibleModelList.clear();			//Reset list of opac objects
+	SystemHandle->m_Application->billboardRrenderCount = 0;
+	WOMA::sceneManager->CreateLists();					//Create Lists for all objects to render (from WORLD.XML) and more
+	world_main_size = WOMA::sceneManager->visibleModelList.size();
+#endif
+
+#if DX_ENGINE_LEVEL >= 70  && defined SCENE_BILLBOARDS //SCENE_BILLBOARDS
 	// [1] sort billboards:
 	// --------------------------------------------------------------------------------------------
 	std::sort(m_Trees.begin(), m_Trees.end(), BillSortCB_CPP);
@@ -132,15 +138,6 @@ void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext)
 	sort_cameraX = SystemHandle->m_Application->m_Position[g_NetID]->m_positionX;
 	sort_cameraY = SystemHandle->m_Application->m_Position[g_NetID]->m_positionY;
 	sort_cameraZ = SystemHandle->m_Application->m_Position[g_NetID]->m_positionZ;
-#endif
-
-	// [2] SceneManager: Process/Filter and Create Lists/trees of objects to render from: WORLD.XML
-	// --------------------------------------------------------------------------------------------
-#if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
-	WOMA::sceneManager->opacModelList.clear();			//Reset list of opac objects
-	SystemHandle->m_Application->billboardRrenderCount = 0;
-	WOMA::sceneManager->CreateLists();					//Create Lists for all objects to render (from WORLD.XML) and more
-	world_main_size = WOMA::sceneManager->opacModelList.size();
 #endif
 
 	// [3] LIGHT RAY:
@@ -235,7 +232,6 @@ void ApplicationClass::RenderMiniMapPass(UINT monitorWindow, WomaDriverClass* Dr
 		m_RenderMapTexture->SetRenderTarget(Driver, (ID3D11DeviceContext*)pContext);								// Set the render target to be the render to texture.
 		m_RenderMapTexture->ClearRenderTarget(Driver, (ID3D11DeviceContext*)pContext, 0.30f, 0.30f, 0.30f, 1.0f);	// Clear the render to texture!
 		TerrainRender(monitorWindow, Driver, fadeLight, &m_CameraMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix, pContext);
-
 	}
 #endif
 
@@ -261,7 +257,7 @@ void ApplicationClass::RenderMiniMapPass(UINT monitorWindow, WomaDriverClass* Dr
 		m_MiniMapBitmapTexture->ClearRenderTarget(Driver, (ID3D11DeviceContext*)pContext, 0.0f, 0.0f, 0.0f, 1.0f);  // Clear the render to texture!
 		TerrainRender(monitorWindow, Driver, fadeLight, &m_CameraMINIMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix, pContext);
 #if defined USE_MINIMAP_EXPANSION
-		for (UINT id = 0; id < world_main_size-1; id++)  //TODO: use sceneManager
+		for (UINT id = 0; id < SystemHandle->m_Application->initial_world_xml_objs /*world_main_size - 1*/; id++)  //TODO: use sceneManager
 		//for (int id = world_main_size - 1; id >= 0; --id) 
 		{
 			m_MiniMapBitmapTexture->SetRenderTarget(Driver, (ID3D11DeviceContext*)pContext);					// Set the render target to be the render to texture: pContext->OMSetRenderTargets
@@ -437,72 +433,46 @@ void ApplicationClass::AppPreRender(UINT monitorIndex, WomaDriverClass* Driver, 
 #endif
 }
 
-int ApplicationClass::get_model_id(UINT ID, UINT pass)
-{
-    UINT modelID;
-    if (pass == PASS_OPAC)
-    {
-        if (WOMA::sceneManager->opacModelList.size() == 0)
-            return -1;
-        modelID = WOMA::sceneManager->opacModelList[ID]->m_ObjId;
-    }
-    else if (pass == PASS_SHADOWS) {
-        if (WOMA::sceneManager->opacModelList.size() == 0)
-            return -1;
-        modelID = WOMA::sceneManager->opacModelList[ID]->m_ObjId;
-    }
-    else if (pass == PASS_BILL) {
-        if (SystemHandle->m_Application->billboardRrenderCount == 0)
-            return -1;
-        modelID = ID;
-        pass = PASS_OPAC;
-    }
-#if _DEBUG
-    else {
-        ASSERT(0);
-    }
-#endif
-
-    return modelID;
-}
-
 void ApplicationClass::RenderModel(void* pContext, UINT threadID, UINT monitorIndex, WomaDriverClass* driver, UINT ID, UINT pass, XMMATRIX* m_viewMatrix, XMMATRIX* m_projectionMatrix)
 {
     
-    UINT modelID;
-	if (pass == PASS_OPAC)
-    {
-        if (WOMA::sceneManager->opacModelList.size() == 0)
-            return;
-		modelID = WOMA::sceneManager->opacModelList[ID]->m_ObjId;
-    }
-	else if (pass == PASS_SHADOWS) {
-        if (WOMA::sceneManager->opacModelList.size() == 0)
-            return;
-		modelID = WOMA::sceneManager->opacModelList[ID]->m_ObjId;
-    }
-	else if (pass == PASS_BILL) {
-        if (SystemHandle->m_Application->billboardRrenderCount == 0)
-            return;
-		modelID = ID;
-		pass = PASS_OPAC;
-    }
-    else {
-        ASSERT(0);
-    }
-    
+    UINT modelID = ID;
+	if (threadID == 0)
+	{
+		if (pass == PASS_OPAC)
+		{
+			if (WOMA::sceneManager->visibleModelList.size() == 0)
+				return;
+			modelID = WOMA::sceneManager->visibleModelList[ID]->m_ObjId;
+		}
+		else if (pass == PASS_SHADOWS) {
+			if (WOMA::sceneManager->visibleModelList.size() == 0)
+				return;
+			modelID = WOMA::sceneManager->visibleModelList[ID]->m_ObjId;
+		}
+		else if (pass == PASS_BILL) {
+			if (SystemHandle->m_Application->billboardRrenderCount == 0)
+				return;
+			modelID = ID;
+			pass = PASS_OPAC;
+		}
+		else {
+			ASSERT(0);
+		}
+	}
+
 	DXmodelClass* model = NULL;
 	if (threadID>0)
 		model = (DXmodelClass*)objModel_minimap[modelID];
 	else
 		model = (DXmodelClass*)objModel[modelID];
-	
+
 	if (!model->ready)
 		return; //ASSERT(0); // Model not ready to render!
     float positionX, positionY, positionZ;
-    positionX = SystemHandle->xml_loader.theWorld[modelID].posX;
-    positionY = SystemHandle->xml_loader.theWorld[modelID].translateY;
-    positionZ = SystemHandle->xml_loader.theWorld[modelID].posZ;
+    positionX = SystemHandle->xml_loader.theWorldXML[modelID].posX;
+    positionY = SystemHandle->xml_loader.theWorldXML[modelID].translateY;
+    positionZ = SystemHandle->xml_loader.theWorldXML[modelID].posZ;
 
 #if defined USE_AABB_COLISION_CHECK
     static const float padding = 0.1f;
@@ -522,9 +492,9 @@ void ApplicationClass::RenderModel(void* pContext, UINT threadID, UINT monitorIn
     }
 #else
    // === CHECK IF WE ARE VISIBLE: ===
-    if (SystemHandle->xml_loader.theWorld[modelID].depend != -1)
+    if (SystemHandle->xml_loader.theWorldXML[modelID].depend != -1)
     {
-       if ((((DXmodelClass*)model)->m_instanceCount == 0) && !m_Driver->frustum->CheckSphere(positionX, positionY, positionZ, model->boundingSphere * 2) && ((!m_Driver->RenderfirstTime))) //SYNC with QuadTree.cpp
+       if ((((DXmodelClass*)model)->m_instanceCount == 0) && !m_Driver->frustum->CheckSphere(positionX, positionY, positionZ, MAX(1, model->boundingSphere) * 2) && ((!m_Driver->RenderfirstTime))) //SYNC with QuadTree.cpp
        { 
            ((DXmodelClass*)model)->visible = false;
            return;
@@ -537,7 +507,7 @@ void ApplicationClass::RenderModel(void* pContext, UINT threadID, UINT monitorIn
 	// === SET AUDIO DISTANCE (IF ITS THE CASE) ===											   
     // Set the initial position of the listener to be in the middle of the scene.
 #if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
-    SoundClass* audioEffect = SystemHandle->xml_loader.theWorld[modelID].audio;
+    SoundClass* audioEffect = SystemHandle->xml_loader.theWorldXML[modelID].audio;
     if (audioEffect)
         if (audioEffect->m_listener)
             audioEffect->m_listener->SetPosition(sort_cameraX,
@@ -546,16 +516,16 @@ void ApplicationClass::RenderModel(void* pContext, UINT threadID, UINT monitorIn
 #endif
 
 	// === RESET WORLD MATRIX ===							 
-    if (m_Driver->RenderfirstTime || (SystemHandle->xml_loader.theWorld[model->m_ObjId].rotY != 0 && modelID > world_xml_objs))
+    if (m_Driver->RenderfirstTime || (SystemHandle->xml_loader.theWorldXML[model->m_ObjId].rotY != 0 && modelID > world_xml_objs))
         ((DXmodelClass*)model)->m_worldMatrix = XMMatrixIdentity();
 
 #if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
-    if (SystemHandle->xml_loader.theWorld[modelID].depend == -1 ||
-        SystemHandle->xml_loader.theWorld[modelID].meshSRV ||
-        SystemHandle->xml_loader.theWorld[model->m_ObjId].Bill ||
-        SystemHandle->xml_loader.theWorld[model->m_ObjId].type == 12)
+    if (SystemHandle->xml_loader.theWorldXML[modelID].depend == -1 ||
+        SystemHandle->xml_loader.theWorldXML[modelID].meshSRV ||
+        SystemHandle->xml_loader.theWorldXML[model->m_ObjId].Bill ||
+        SystemHandle->xml_loader.theWorldXML[model->m_ObjId].type == 12)
 #else
-    if (SystemHandle->xml_loader.theWorld[modelID].meshSRV)
+    if (SystemHandle->xml_loader.theWorldXML[modelID].meshSRV)
 #endif
         ((DXmodelClass*)model)->m_worldMatrix = XMMatrixIdentity();
 
@@ -563,21 +533,21 @@ void ApplicationClass::RenderModel(void* pContext, UINT threadID, UINT monitorIn
     model->translation(0, 0, 0);
 
 	// === SET SCALE ===		
-    if (SystemHandle->xml_loader.theWorld[model->m_ObjId].type == 300)
+    if (SystemHandle->xml_loader.theWorldXML[model->m_ObjId].type == 300)
     { 
         model->scale(1, 2, 1);
     }
     else
     {
 #if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
-    if ((m_Driver->RenderfirstTime) || SystemHandle->xml_loader.theWorld[modelID].depend == -1 || (SystemHandle->xml_loader.theWorld[modelID].meshSRV) || 
-        SystemHandle->xml_loader.theWorld[model->m_ObjId].Bill)
+    if ((m_Driver->RenderfirstTime) || SystemHandle->xml_loader.theWorldXML[modelID].depend == -1 || (SystemHandle->xml_loader.theWorldXML[modelID].meshSRV) || 
+        SystemHandle->xml_loader.theWorldXML[model->m_ObjId].Bill)
 #else
-    if ((m_Driver->RenderfirstTime) || (SystemHandle->xml_loader.theWorld[modelID].meshSRV))
+    if ((m_Driver->RenderfirstTime) || (SystemHandle->xml_loader.theWorldXML[modelID].meshSRV))
 #endif
     {
-        float scale = SystemHandle->xml_loader.theWorld[modelID].scale;
-        float scaleY = SystemHandle->xml_loader.theWorld[modelID].scaleY;
+        float scale = SystemHandle->xml_loader.theWorldXML[modelID].scale;
+        float scaleY = SystemHandle->xml_loader.theWorldXML[modelID].scaleY;
         if (scaleY != 1)
             model->scale(scale, scaleY, scale);
         else
@@ -589,7 +559,7 @@ void ApplicationClass::RenderModel(void* pContext, UINT threadID, UINT monitorIn
     if (((DXmodelClass*)model)->m_instanceCount == 0)
 #endif
     {
-        float rx = SystemHandle->xml_loader.theWorld[modelID].rotX;
+        float rx = SystemHandle->xml_loader.theWorldXML[modelID].rotX;
         if (rx == -1000) {
             static float rX = 0.0f;
             rX = (float)dt * (0.005f / 16.66f);	// MOVIMENT FORMULA!
@@ -602,13 +572,13 @@ void ApplicationClass::RenderModel(void* pContext, UINT threadID, UINT monitorIn
 		// === SET ROTATION IN Y AXIS: ===								  
         float ry = 0;
 	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
-        if ((SystemHandle->xml_loader.theWorld[model->m_ObjId].meshSRV || 
-            SystemHandle->xml_loader.theWorld[model->m_ObjId].Bill))
+        if ((SystemHandle->xml_loader.theWorldXML[model->m_ObjId].meshSRV || 
+            SystemHandle->xml_loader.theWorldXML[model->m_ObjId].Bill))
 #else
-        if (SystemHandle->xml_loader.theWorld[model->m_ObjId].meshSRV)
+        if (SystemHandle->xml_loader.theWorldXML[model->m_ObjId].meshSRV)
 #endif
         {
-            if (SystemHandle->xml_loader.theWorld[model->m_ObjId].Bill)
+            if (SystemHandle->xml_loader.theWorldXML[model->m_ObjId].Bill)
             {
                 float cameraPositionX = sort_cameraX;
                 float cameraPositionZ = sort_cameraZ;
@@ -621,18 +591,18 @@ void ApplicationClass::RenderModel(void* pContext, UINT threadID, UINT monitorIn
                 if (distance >= 3.0f) {
                     billangle = atan2(dx, dz) * (180 / PI);
                     ry = billangle / (180 / PI);
-                    if (SystemHandle->xml_loader.theWorld[model->m_ObjId].type == 12)
+                    if (SystemHandle->xml_loader.theWorldXML[model->m_ObjId].type == 12)
                         ry -= PI / 4;
-                    SystemHandle->xml_loader.theWorld[modelID].ry = ry; //save it!
+                    SystemHandle->xml_loader.theWorldXML[modelID].ry = ry; //save it!
                 }
                 else
-                    ry = SystemHandle->xml_loader.theWorld[modelID].ry;
+                    ry = SystemHandle->xml_loader.theWorldXML[modelID].ry;
             } else
-                ry = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotY;
+                ry = SystemHandle->xml_loader.theWorldXML[model->m_ObjId].rotY;
         }
         else
         {
-            ry = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotY;
+            ry = SystemHandle->xml_loader.theWorldXML[model->m_ObjId].rotY;
         }
         if (ry == -1000) {
             static float rY = 0.0f;
@@ -644,7 +614,7 @@ void ApplicationClass::RenderModel(void* pContext, UINT threadID, UINT monitorIn
                 model->rotateY(ry);
 
 		// === SET ROTATION IN Z AXIS: ===								  
-        float rz = SystemHandle->xml_loader.theWorld[model->m_ObjId].rotZ;
+        float rz = SystemHandle->xml_loader.theWorldXML[model->m_ObjId].rotZ;
         if (rz == -1000) {
             static float rZ = 0.0f;
             rZ = (float)dt * (0.005f / 16.66f);	// MOVIMENT FORMULA!
@@ -656,7 +626,7 @@ void ApplicationClass::RenderModel(void* pContext, UINT threadID, UINT monitorIn
     }// non-Instancing
 
 	// === SET CURRENT OBJ. WORLD POSITION: ===
-	if (SystemHandle->xml_loader.theWorld[model->m_ObjId].moveUp)
+	if (SystemHandle->xml_loader.theWorldXML[model->m_ObjId].moveUp)
 	{ 
 		positionY += (model->maxVertex.y - model->minVertex.y)/2* model->m_worldMatrix.r[1].m128_f32[1]; //#define _22 r[1].m128_f32[1]
 	}
@@ -756,16 +726,18 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 
 	// TRANSPARENT and SEMI-TRANSPARENT:
 	// --------------------------------------------------------------------------------------------
+#if defined INTRO_DEMO || defined USE_ALPHA_BLENDING
 	m_Driver->TurnOnAlphaBlending(pContext);
+#endif
 
-// 3D STATIC OPAC OBJECTS on WORLD.XML, that listed in: sceneManager->opacModelList (in front of camera)
-//----------------------------------------------------------------------------------------------------------------------
+	// 3D STATIC OPAC OBJECTS on WORLD.XML, that listed in: sceneManager->visibleModelList (in front of camera)
+	//----------------------------------------------------------------------------------------------------------------------
 #if defined USE_RASTERIZER_STATE && (defined INTRO_DEMO || defined USE_ALPHA_BLENDING)
 	m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);
 #endif
 
+#if DX_ENGINE_LEVEL >= 73 && defined BILLBOARD_FOR_WINDY_GRASS
 #if defined SCENE_BILLBOARDS
-  #if DX_ENGINE_LEVEL >= 73 && defined BILLBOARD_FOR_WINDY_GRASS
     static float lasttime = 0;
     shadergrassframeTime += (timeGetTime() - lasttime)/200;
     if (shadergrassframeTime >= PI*2)
@@ -774,18 +746,18 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
   #endif
 #endif
 
+#if defined INTRO_DEMO || defined USE_ALPHA_BLENDING
+	m_Driver->TurnOnAlphaBlending(pContext);
+#endif
+
 	// Render TRANSPARENT Parts of 3D OBJs (like: glass window of (Space Compound), etc...) (last part)
 	// --------------------------------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined MAIN_RENDER_MAIN_OBJ //MAIN-RENDER: MAIN OBJs. (9 ms)
-	for (UINT id = 0; id < WOMA::sceneManager->opacModelList.size(); id++)
+	for (UINT id = 0; id < WOMA::sceneManager->visibleModelList.size(); id++)
 	{
-#if defined USE_ALPHA_BLENDING
-		m_Driver->TurnOffAlphaBlending(pContext);
-#endif
 		RenderModel(pContext, 0, monitorIndex, m_Driver, id, PASS_OPAC, NULL, NULL);
 		if (((DXmodelClass*)objModel[id])->obj3d.hasTransparent == true)
 		{
-			m_Driver->TurnOnAlphaBlending(pContext);
 			objModel[id]->Render(pContext, 0, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_TRANSPARENT, NULL, NULL);
 		}
 	}
@@ -907,10 +879,10 @@ void ApplicationClass::AppPosRender(UINT monitorIndex, void* pContext)
 #if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined _DEBUG && !defined TEXT_TEST
         AppTextClass->SetRenderCount(WOMA::sceneManager->quadTree.totalVertexRendered,
             SystemHandle->m_Application->totalRendered,
-            (UINT)SystemHandle->xml_loader.theWorld.size());
+            (UINT)SystemHandle->xml_loader.theWorldXML.size());
 #endif
 #if TUTORIAL_CHAP >= 60 && !defined RELEASE // BILLBOARD
-        AppTextClass->SetBillRenderCount(SystemHandle->m_Application->billboardRrenderCount, total_deltaTime);
+		AppTextClass->SetBillRenderCount(SystemHandle->m_Application->billboardRrenderCount, total_deltaTime);
 #endif  
     }
 #endif
@@ -921,19 +893,18 @@ void ApplicationClass::AppPosRender(UINT monitorIndex, void* pContext)
 #if defined USE_RASTERIZER_STATE
 	m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);
 #endif
+#if defined USE_ALPHA_BLENDING
+	m_Driver->TurnOnAlphaBlending(pContext);
+#endif
 
 #if (TUTORIAL_CHAP >= 60 && defined SCENE_BILLBOARDS && defined USE_SCENE_MANAGER && defined DX_ENGINE) && defined MAIN_RENDER_BILLBOARDS // MAIN-RENDER: BILLBOARD + FENCES + FIRE (11.4 ms)
         UINT obj_id;
         for (UINT tree_id = 0; tree_id < m_Trees.size(); tree_id++)
         {
             obj_id = m_Trees[tree_id].ID + world_xml_objs;
-            if (SystemHandle->xml_loader.theWorld[obj_id].render)           //TODO: use sceneManager
+            if (SystemHandle->xml_loader.theWorldXML[obj_id].render)								// TODO: use sceneManager
 				RenderModel(pContext, 0, monitorIndex, m_Driver, obj_id, PASS_BILL, NULL, NULL);    // Render: "Billboards"
 		}
-#endif
-
-#if defined USE_ALPHA_BLENDING
-	m_Driver->TurnOnAlphaBlending(pContext);
 #endif
 
 	m_Driver->ClearDepthBuffer(pContext);
@@ -1606,8 +1577,6 @@ void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickR
 #define _43 r[3].m128_f32[2]
 #define _44 r[3].m128_f32[3]
 
-
-
     int ClientWidth = SystemHandle->AppSettings->WINDOW_WIDTH;   
     int ClientHeight = SystemHandle->AppSettings->WINDOW_HEIGHT; 
     //float ClientWidth = static_cast<float>(SystemHandle->windowsArray[0].width);
@@ -1813,7 +1782,7 @@ void ApplicationClass::anyMouseClickToPick()
 			POINT mousePos;
 
 			GetCursorPos(&mousePos);
-			ScreenToClient(SystemHandle->m_hWnd, &mousePos);
+			//ScreenToClient(SystemHandle->m_hWnd, &mousePos);
 
 			int mousex = mousePos.x;
 			int mousey = mousePos.y;
@@ -1925,7 +1894,7 @@ void ApplicationClass::anyMouseClickToPick()
 #endif
 #endif
 
-#if LEVEL >= 79 && LEVEL <= 85
+#if (DX_ENGINE_LEVEL == 79 || DX_ENGINE_LEVEL >= 82) && LEVEL <= 85
 Texture* LoadTextureFromPathFBX(UINT model_type, Graphics& graphics, LPCWSTR& texture)
 {
     return NULL;
@@ -1972,7 +1941,7 @@ void ApplicationClass::CheckEditor(int hitIndex, int c)
             ((DXmodelClass*)objModel[c])->m_worldMatrix._42, //Y
             ((DXmodelClass*)objModel[c])->m_worldMatrix._43, //Z
             ((DXmodelClass*)objModel[c])->m_worldMatrix._11, //scale
-            SystemHandle->xml_loader.theWorld[c].rotY        //Rot 
+            SystemHandle->xml_loader.theWorldXML[c].rotY        //Rot 
         );
     }
     if (c >= 0)  // An OBJ was selected so we are in EDIT MODE.
@@ -1983,7 +1952,7 @@ void ApplicationClass::CheckEditor(int hitIndex, int c)
         if (DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORLeftPressed && cursorLeft == false)
         {
             cursorLeft = true;
-            SystemHandle->xml_loader.theWorld[c].posX -= deltaMove;
+            SystemHandle->xml_loader.theWorldXML[c].posX -= deltaMove;
         }
         else
             if (!DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORLeftPressed && cursorLeft == true)
@@ -1994,7 +1963,7 @@ void ApplicationClass::CheckEditor(int hitIndex, int c)
         if (DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORRightPressed && cursorRight == false)
         {
             cursorRight = true;
-            SystemHandle->xml_loader.theWorld[c].posX += deltaMove;
+            SystemHandle->xml_loader.theWorldXML[c].posX += deltaMove;
         }
         else
             if (!DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORRightPressed && cursorRight == true)
@@ -2005,7 +1974,7 @@ void ApplicationClass::CheckEditor(int hitIndex, int c)
         if (DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORUpPressed && cursorUp == false)
         {
             cursorUp = true;
-            SystemHandle->xml_loader.theWorld[c].posZ -= deltaMove;
+            SystemHandle->xml_loader.theWorldXML[c].posZ -= deltaMove;
         }
         else
             if (!DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORUpPressed && cursorUp == true)
@@ -2016,7 +1985,7 @@ void ApplicationClass::CheckEditor(int hitIndex, int c)
         if (DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORDownPressed && cursorDown == false)
         {
             cursorDown = true;
-            SystemHandle->xml_loader.theWorld[c].posZ += deltaMove;
+            SystemHandle->xml_loader.theWorldXML[c].posZ += deltaMove;
         }
         else
             if (!DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORDownPressed && cursorDown == true)
@@ -2028,7 +1997,7 @@ void ApplicationClass::CheckEditor(int hitIndex, int c)
         if (DXsystemHandle->m_player[g_NetID]->p_player.IsPgDownPressed && pgDown == false)
         {
             pgDown = true;
-            SystemHandle->xml_loader.theWorld[c].translateY -= deltaMove;
+            SystemHandle->xml_loader.theWorldXML[c].translateY -= deltaMove;
         }
         else
             if (!DXsystemHandle->m_player[g_NetID]->p_player.IsPgDownPressed && pgDown == true)
@@ -2039,7 +2008,7 @@ void ApplicationClass::CheckEditor(int hitIndex, int c)
         if (DXsystemHandle->m_player[g_NetID]->p_player.IsPgUpPressed && pgUp == false)
         {
             pgUp = true;
-            SystemHandle->xml_loader.theWorld[c].translateY += deltaMove;
+            SystemHandle->xml_loader.theWorldXML[c].translateY += deltaMove;
         }
         else
             if (!DXsystemHandle->m_player[g_NetID]->p_player.IsPgUpPressed && pgUp == true)
@@ -2051,7 +2020,7 @@ void ApplicationClass::CheckEditor(int hitIndex, int c)
         if (DXsystemHandle->m_player[g_NetID]->p_player.IsNumPadMinus && numPadMinus == false)
         {
             numPadMinus = true;
-            SystemHandle->xml_loader.theWorld[c].scale -= (deltaMove / 2);
+            SystemHandle->xml_loader.theWorldXML[c].scale -= (deltaMove / 2);
         }
         else
             if (!DXsystemHandle->m_player[g_NetID]->p_player.IsNumPadMinus && numPadMinus == true)
@@ -2063,7 +2032,7 @@ void ApplicationClass::CheckEditor(int hitIndex, int c)
         if (DXsystemHandle->m_player[g_NetID]->p_player.IsNumPadPlus && numPadPlus == false)
         {
             numPadPlus = true;
-            SystemHandle->xml_loader.theWorld[c].scale += (deltaMove / 2);
+            SystemHandle->xml_loader.theWorldXML[c].scale += (deltaMove / 2);
         }
         else
             if (!DXsystemHandle->m_player[g_NetID]->p_player.IsNumPadPlus && numPadPlus == true)
@@ -2075,7 +2044,7 @@ void ApplicationClass::CheckEditor(int hitIndex, int c)
         if (DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORNumPad4 && numPad4Left == false)
         {
             numPad4Left = true;
-            SystemHandle->xml_loader.theWorld[c].rotY -= (deltaMove / 100);
+            SystemHandle->xml_loader.theWorldXML[c].rotY -= (deltaMove / 100);
         }
         else
             if (!DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORNumPad4 && numPad4Left == true)
@@ -2087,7 +2056,7 @@ void ApplicationClass::CheckEditor(int hitIndex, int c)
         if (DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORNumPad6 && numPad6Right == false)
         {
             numPad6Right = true;
-            SystemHandle->xml_loader.theWorld[c].rotY += (deltaMove / 100);
+            SystemHandle->xml_loader.theWorldXML[c].rotY += (deltaMove / 100);
         }
         else
             if (!DXsystemHandle->m_player[g_NetID]->p_player.IsEDITORNumPad6 && numPad6Right == true)

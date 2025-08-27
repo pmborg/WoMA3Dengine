@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -50,6 +50,7 @@
 #endif
 
 #if DX_ENGINE_LEVEL >= 19 && !defined NewWomaEngine
+#include "womadriverclass.h"
 #if defined DX11 || defined DX9
 #include "Dx11Class.h"
 #endif
@@ -66,7 +67,7 @@
 #endif
 
 #if D3D11_SPEC_DATE_YEAR == 2009
-#include <D3dx9core.h>		//D3DX_SDK_VERSION (Checks for the existance of the correct D3DX library version)
+#include <D3dx9core.h>		//D3DX_SDK_VERSION (Checks for the existence of the correct D3DX library version)
 #endif
 
 #include "Math3D.h"
@@ -77,7 +78,7 @@
 
 //----------------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 19 && !defined NewWomaEngine
-bool SystemClass::LoadAllGraphicAssets()
+bool SystemClass::LoadAllGraphicAssets(void* pContext)
 {
 #if defined USE_LOADING_THREADS
 	m_Cpu.SetProcessorAffinity(0);  //Use CPU N.0 to Load
@@ -87,9 +88,12 @@ bool SystemClass::LoadAllGraphicAssets()
 	SystemHandle->m_Application->scaleY = SystemHandle->AppSettings->WINDOW_HEIGHT / 1080.0f;
 	SystemHandle->m_Application->rescale = min(SystemHandle->m_Application->scaleX, SystemHandle->m_Application->scaleY);
 
+	
 	//################################ LOAD ALL INITIAL 3D OBJECTS ##################################
 	// Load all assets that will be rendered@ 1st Frame and START TIMER
-	if (!m_Application->Initialize(m_Driver)) {
+	if (!m_Application->Initialize(pContext, m_Driver))
+	{
+		womalog("m_Application->Initialize() FAILED!");
 		WOMA::main_loop_state = -1; 
 		WOMA::game_state = GAME_STOP;
 		return false;
@@ -364,7 +368,7 @@ void SystemClass::InitializeSystemScreen(int x, int y)
 	// ----------------------------------
 	// NEW PAGE
 	// ----------------------------------
-	// BOARD/CPU Feactures (RIGHT SIDE):
+	// BOARD/CPU Features (RIGHT SIDE):
 #if defined WINDOWS_PLATFORM
 	if (AppSettings->WINDOW_WIDTH == 0)
 	{
@@ -531,7 +535,7 @@ void SystemClass::ProcessOSInput() // This Function will be invoked several time
 
 #if defined WINDOWS_PLATFORM
 
-	// "ESC": DX Process Special: key is beeing pressed ? -> EXIT APPLICATION
+	// "ESC": DX Process Special: key is being pressed ? -> EXIT APPLICATION
 #if CORE_ENGINE_LEVEL >= 10 && defined USE_DIRECT_INPUT
 	if ((WOMA::game_state > GAME_MINIMIZED && WOMA::game_state < GAME_MAP) && (OS_KEY_DOWN(DIK_ESCAPE + 0x35)))
 	{
@@ -540,7 +544,7 @@ void SystemClass::ProcessOSInput() // This Function will be invoked several time
 	}
 #endif
 
-	// "ESC" OS Process Special: key is beeing pressed ? -> EXIT APPLICATION
+	// "ESC" OS Process Special: key is being pressed ? -> EXIT APPLICATION
 	if (m_OsInput->IsKeyDown(VK_ESCAPE) && WOMA::game_state == GAME_RUN)		// CHECK: if the user pressed 'escape' and wants to exit the application.
 	{
 		WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP; //Publish_Quit_Message();
@@ -737,7 +741,7 @@ bool SystemClass::SystemCheck()
 
 	womalogauto(TEXT("[Function Loader] systemManager->CheckSetup()\n"));
 	IF_NOT_RETURN_FALSE(systemManager->CheckSetup());		// TODO: CheckSetup: Check if "Setup.exe" is Installed or needed / Download & Install: DONE
-#endif // NOTE: WINDOWS10/DX12: Dont need this checks
+#endif // NOTE: WINDOWS10/DX12: Don't need this checks
 	//LEVELNORMAL();
 
 	//LEVELHIGHLIGHT(4);
@@ -858,7 +862,7 @@ void SystemClass::FrameUpdate()
 	#endif
 
 	#if defined USE_PROCESS_OS_KEYS && defined WINDOWS_PLATFORM
-		ProcessOSInput();							    // Proccess Special function keys |ESC and F1 to F6|
+		ProcessOSInput();							    // Process Special function keys |ESC and F1 to F6|
 		if (WOMA::game_state == ENGINE_RESTART)
 			return;
 	#endif
@@ -995,10 +999,10 @@ bool SystemClass::LoadXmlWorld()
 		return false;
 	}
 
-	for (size_t i = 0; i < SystemHandle->xml_loader.theWorld.size(); i++)
+	for (size_t i = 0; i < SystemHandle->xml_loader.theWorldXML.size(); i++)
 	{
-		SHADER_TYPE shader = (SHADER_TYPE)SystemHandle->xml_loader.theWorld[i].shader;
-		SystemHandle->xml_loader.theWorld[i].WOMA_object = WOMA_OBJECT(shader, castShadows_false, renderShadows_false, modelHASlight_true, 0/*no instances*/);
+		SHADER_TYPE shader = (SHADER_TYPE)SystemHandle->xml_loader.theWorldXML[i].shader;
+		SystemHandle->xml_loader.theWorldXML[i].WOMA_object = WOMA_OBJECT(shader, castShadows_false, renderShadows_false, modelHASlight_true, 0/*no instances*/);
 	}
 
 	return true;
@@ -1107,7 +1111,8 @@ void SystemClass::LoadAllDrivers()
 #endif
 #endif
 
-} //LoadAllDrivers()
+} 
+//LoadAllDrivers()
 
 #if defined USE_JOY && defined USE_DIRECT_INPUT
 
@@ -1247,7 +1252,7 @@ bool InitSelectedDriver()
 	{
 #if defined DX11 // [0] Pure DX11
 	case DRIVER_DX11:
-		IF_NOT_RETURN_FALSE(((DirectX::DX11Class*)(driverList[DRIVER_DX11]))->OnInit(AppSettings->UI_MONITOR, SystemHandle->m_hWnd, 
+		IF_NOT_RETURN_FALSE(((DirectX::DX11Class*)(driverList[DRIVER_DX11]))->OnInit(AppSettings->UI_MONITOR, SystemHandle->m_hWnd,
 			AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT, AppSettings->DEPTH_BITS,
 			AppSettings->SCREEN_DEPTH, AppSettings->SCREEN_NEAR, AppSettings->MSAA_Anisotropic, AppSettings->VSYNC_ENABLED,
 			AppSettings->FULL_SCREEN, AppSettings->UseDoubleBuffering, AppSettings->AllowResize));
@@ -1255,21 +1260,20 @@ bool InitSelectedDriver()
 #endif
 #if (defined OPENGL3 || defined OPENGL4) //[1]
 	case DRIVER_GL3:
-		ASSERT(((GLopenGLclass*)(driverList[DRIVER_GL3]))->OnInit(AppSettings->UI_MONITOR, SystemHandle->m_hWnd, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT, 24 /*BufferDeep*/,
-			AppSettings->SCREEN_DEPTH, AppSettings->SCREEN_NEAR, AppSettings->MSAA_Anisotropic, AppSettings->VSYNC_ENABLED,
-			AppSettings->FULL_SCREEN, AppSettings->UseDoubleBuffering, AppSettings->AllowResize));
+        ASSERT(((GLopenGLclass*)(driverList[DRIVER_GL3]))->OnInit(AppSettings->UI_MONITOR, SystemHandle->m_hWnd, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT, 24 /*BufferDeep*/, AppSettings->SCREEN_DEPTH,
+            AppSettings->SCREEN_NEAR, AppSettings->MSAA_Anisotropic, AppSettings->VSYNC_ENABLED, AppSettings->FULL_SCREEN,
+            AppSettings->UseDoubleBuffering, AppSettings->AllowResize));
 #if !defined ANDROID_PLATFORM
-		ASSERT(g_contextDriver->OnInit(AppSettings->UI_MONITOR, SystemHandle->m_hWnd, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT, 24 /*BufferDeep*/,
-			AppSettings->SCREEN_DEPTH, AppSettings->SCREEN_NEAR, AppSettings->MSAA_Anisotropic, AppSettings->VSYNC_ENABLED,
-			AppSettings->FULL_SCREEN, AppSettings->UseDoubleBuffering, AppSettings->AllowResize));
+        ASSERT(g_contextDriver->OnInit(AppSettings->UI_MONITOR, SystemHandle->m_hWnd, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT, 24 /*BufferDeep*/, AppSettings->SCREEN_DEPTH, AppSettings->SCREEN_NEAR, AppSettings->MSAA_Anisotropic,
+            AppSettings->VSYNC_ENABLED, AppSettings->FULL_SCREEN, AppSettings->UseDoubleBuffering, AppSettings->AllowResize));
 #endif
 		break;
 #endif
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009 //[3]
 	case DRIVER_DX12:
-		ASSERT(((DirectX::DX12Class*)(driverList[DRIVER_DX12]))->OnInit(AppSettings->UI_MONITOR, SystemHandle->m_hWnd, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT, 24 /*BufferDeep*/,
-			AppSettings->SCREEN_DEPTH, AppSettings->SCREEN_NEAR, AppSettings->MSAA_Anisotropic, AppSettings->VSYNC_ENABLED,
-			AppSettings->FULL_SCREEN, AppSettings->UseDoubleBuffering, AppSettings->AllowResize));
+        ASSERT(((DirectX::DX12Class*)(driverList[DRIVER_DX12]))->OnInit(AppSettings->UI_MONITOR, SystemHandle->m_hWnd, AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT, 24 /*BufferDeep*/, AppSettings->SCREEN_DEPTH,
+            AppSettings->SCREEN_NEAR, AppSettings->MSAA_Anisotropic, AppSettings->VSYNC_ENABLED, AppSettings->FULL_SCREEN,
+            AppSettings->UseDoubleBuffering, AppSettings->AllowResize));
 		break;
 #endif
 };

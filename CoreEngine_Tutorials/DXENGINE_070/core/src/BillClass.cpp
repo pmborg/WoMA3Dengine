@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -51,6 +51,7 @@ BillClass::~BillClass()
 void BillClass::Shutdown()
 {
 	SAFE_DELETE(mainTerrainPath);
+
 	return;
 }
 
@@ -104,7 +105,7 @@ TCHAR billFileName[][MAX_STR_LEN] =
 	// 200: engine/data/scene72Fire/072fire.obj
 };
 
-xmlobj3d* BillClass::fillxml(int id, UINT type)
+xmlobj3d* BillClass::fillxml(ID3D11DeviceContext* pContext, int id, UINT type)
 {
 	DirectX::DX11Class* m_driver11 = (DirectX::DX11Class*)m_Driver;
 
@@ -153,7 +154,7 @@ xmlobj3d* BillClass::fillxml(int id, UINT type)
 
 static Tree tree_ = {};
 
-bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instance)
+bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, int m_terrainHeight, bool instance)
 {
 	UNREFERENCED_PARAMETER(instance);
 	ZeroMemory(&m_Trees, sizeof(m_Trees));
@@ -178,8 +179,26 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z + 1)][(UINT)m_Trees[i].vPos.x] > 0			//no grass on main PATH (terrain)
 			)
 		{
+			if (i == 0)
+			{
+				PosX = 60;
+				PosZ = 60;
+			}
+			else if (i == 1)
+			{
+				PosX = 61;
+				PosZ = 61;
+			}
+			else if (i == 2)
+			{
+				PosX = 62;
+				PosZ = 62;
+			}
+			else
+			{
 			PosX = (float)((rand() % (m_terrainWidth * 100)) / 100.0f);
 			PosZ = (float)((rand() % (m_terrainHeight * 100)) / 100.0f);
+			}
 			m_Trees[i].vPos.x = PosX;
 			m_Trees[i].vPos.z = PosZ;
 
@@ -208,16 +227,17 @@ bool BillClass::Initialize(int m_terrainWidth, int m_terrainHeight, bool instanc
 		m_Trees[i].scale = scale;
 		m_Trees[i].vPos.y = height;
 
-		xmlobj3d* xmlobj = fillxml(i, m_Trees[i].type);
+		xmlobj3d* xmlobj = fillxml(pContext, i, m_Trees[i].type);
 
 		if (type <= 10)
 			xmlobj->Bill = true;
 
-		SystemHandle->xml_loader.theWorld.push_back(*xmlobj);
+		SystemHandle->xml_loader.theWorldXML.push_back(*xmlobj);
 	}
 	//N_BILLBOARD
 
 	billTotal = i;
+
 	womalog("Bill Class: Initialized\n");
 
 	return true;

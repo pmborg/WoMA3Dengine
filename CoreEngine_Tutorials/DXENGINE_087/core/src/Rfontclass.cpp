@@ -23,6 +23,7 @@
 #include "OSengine.h"
 #include "Rfontclass.h"
 #include "OSmain_dir.h"
+#include "fileLoader.h"
 
 RFontClass::RFontClass()
 {
@@ -94,7 +95,7 @@ bool RFontClass::Initialize(OpenGLClass* OpenGL, int fontChoice)
     }
 
 	// Load in the text file containing the font data.
-	result = LoadFontData(fontFilename);
+	result = LoadFontData(WOMA::LoadFile(fontFilename));
 	if(!result)
 	{
 		return false;

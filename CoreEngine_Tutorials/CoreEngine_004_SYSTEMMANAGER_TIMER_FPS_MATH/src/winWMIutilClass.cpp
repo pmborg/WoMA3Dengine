@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -127,7 +127,7 @@ bool wmiUtilClass::initWMI(STRING connectTo)
 //	-------------------------------------------------------------------------------------------
 // https://msdn.microsoft.com/en-us/library/aa394493%28VS.85%29.aspx
 //
-// Note: Aplication MSVS need to run as admin: 
+// Note: Application MSVS need to run as admin: 
 bool wmiUtilClass::GetCpuTemperature()
 {
     CoUninitialize();

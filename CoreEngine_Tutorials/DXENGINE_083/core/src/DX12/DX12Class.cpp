@@ -640,8 +640,6 @@ namespace DirectX {
 		//
 		IF_NOT_RETURN_FALSE(initDX12Device((HWND)hwnd));	// Init Step: 2 - Init DX12 Device
 
-		// SelectDepthFormat(depthBits, fullscreen);		// Init Step: 3 Note: need device
-
 		//Init Step: 9 - CreateTexture2D:
 		IF_NOT_RETURN_FALSE(CreateRenderTargetView(screenWidth, screenHeight));
 

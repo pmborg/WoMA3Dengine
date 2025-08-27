@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -252,7 +252,7 @@ STRING		szFileName = wLOCAL_APPDATA + TEXT("myip.txt");
 #ifdef USE_NETWORK
 	DeleteFile(szFileName.c_str());
 	//URLDownloadToFileA(LPUNKNOWN, _In_ LPCSTR, _In_opt_ LPCSTR, DWORD, _In_opt_ LPBINDSTATUSCALLBACK);
-	womalogauto(TEXT("Download: %s\n"), EXTERNAL_IP); // Note: Dont use DEBUG_MSG yet...
+	womalogauto(TEXT("Download: %s\n"), EXTERNAL_IP); // Note: Don't use DEBUG_MSG yet...
 #if defined WINDOWS_PLATFORM
 	HRESULT hr = URLDownloadToFile(NULL, EXTERNAL_IP, szFileName.c_str(), 0, NULL);
 	if (hr != S_OK) 
@@ -260,7 +260,7 @@ STRING		szFileName = wLOCAL_APPDATA + TEXT("myip.txt");
 	if(!URLDownloadToFile(NULL, EXTERNAL_IP, szFileName.c_str(), 0, NULL))
 #endif
 	{
-		_tprintf(TEXT("Could not comunicate with whatismyipaddress.com Server!"));
+		_tprintf(TEXT("Could not communicate with whatismyipaddress.com Server!"));
 		return TEXT("");
 	}
 #endif
@@ -272,7 +272,7 @@ STRING		szFileName = wLOCAL_APPDATA + TEXT("myip.txt");
 		{ WomaMessageBox(TEXT("MyIp File not found, (use: #define USE_NETWORK) at core_engine_level.h"), (TCHAR*)szFileName.c_str()); return TEXT(""); }
 
 	getline(fileIn, str);
-	womalog("IP: %s\n", str.c_str()); // Note: Dont use DEBUG_MSG yet...
+	womalog("IP: %s\n", str.c_str()); // Note: Don't use DEBUG_MSG yet...
 	fileIn.close();	// Close the file.
 
 	return str;
@@ -303,9 +303,9 @@ bool InitWorld::getMyLocation(double* latitude, double* longitude, STRING ip)
 	WOMA::logManager->DEBUG_MSG((TCHAR*)Wbuffer);				//latitude" : 38.8691
 	WOMA::logManager->DEBUG_MSG(TEXT("\n"));
 
-	/*std::wstring*/STRING str_latitude_float = Wbuffer;
+	STRING str_latitude_float = Wbuffer;
 	std::size_t found_latitude_float = str_latitude_float.find(TEXT(":"));
-	/*std::wstring*/STRING str_latitude = str_latitude_float.substr(found_latitude_float+2, str_latitude_float.length());
+	STRING str_latitude = str_latitude_float.substr(found_latitude_float+2, str_latitude_float.length());
 
 	float ulat = (float)_ttof(str_latitude.c_str());
 	*latitude = ulat;
@@ -318,9 +318,9 @@ bool InitWorld::getMyLocation(double* latitude, double* longitude, STRING ip)
 	WOMA::logManager->DEBUG_MSG((TCHAR*)Wbuffer);				//longitude" : -9.0656
 	WOMA::logManager->DEBUG_MSG(TEXT("\n"));
 
-	/*std::wstring*/STRING str_logitude_float = Wbuffer;
+	STRING str_logitude_float = Wbuffer;
 	std::size_t found_logitude_float = str_logitude_float.find(TEXT(":"));
-	/*std::wstring*/STRING str_logitude = str_logitude_float.substr(found_logitude_float+2, str_logitude_float.length());
+	STRING str_logitude = str_logitude_float.substr(found_logitude_float+2, str_logitude_float.length());
 
 	float ulongi = (float)_ttof(str_logitude.c_str());
 	*longitude = ulongi;

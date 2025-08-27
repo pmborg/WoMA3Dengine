@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -91,6 +91,20 @@ namespace DirectX
 		// NOTE: DONT USE "bool" USE "BOOL"
 
 		// VERTEX CBUFFER:
+		struct VSFASTconstantBufferType
+		{
+			// BLOCK: VS1
+			XMMATRIX world;           // [64]: world
+			XMMATRIX WVP;             // [64]: world * view * projection matrix
+
+			//FIRE:
+			float		vsframeTime = 0;
+			XMFLOAT3	scrollSpeeds;
+			XMFLOAT3	scales;
+			bool		isAnimatedBill;
+		};
+
+		// VERTEX CBUFFER:
 		struct VSconstantBufferType
 		{
 			// BLOCK: VS1
@@ -136,13 +150,11 @@ namespace DirectX
 			float		vsPAD4;
 
 			//FIRE:
-//#if TUTORIAL_CHAP >= 62 // FIRE
-	//VS:
+			//VS:
 			float		vsframeTime = 0;
 			XMFLOAT3	scrollSpeeds;
 			XMFLOAT3	scales;
 			bool		isAnimatedBill;
-//#endif
 		};
 
 		// PIXEL CBUFFER:
@@ -215,12 +227,11 @@ namespace DirectX
 		void Shutdown();
 
 		bool Initialize(INT m_ObjId, TCHAR* objectName, SHADER_TYPE shaderType, /*ID3D11Device*/ void*, HWND, PRIMITIVE_TOPOLOGY PrimitiveTopology, bool useGS = false);
-		void Render(UINT pass,/*ID3D11DeviceContext*/ void*, int, XMMATRIX*, XMMATRIX*, XMMATRIX*);
-		void SetShaderParameters(UINT pass, /*ID3D11DeviceContext*/ void* deviceContext,
+		void Render(UINT pass,void*, int, XMMATRIX*, XMMATRIX*, XMMATRIX*);
+		void SetShaderParameters(UINT pass, void* deviceContext,
 			XMMATRIX* worldMatrix, XMMATRIX* viewMatrix, XMMATRIX* projectionMatrix,
 			XMMATRIX* lightViewMatrix = NULL, XMMATRIX* ShadowProjectionMatrix = NULL);
-
-		void RenderShader(UINT pass, /*ID3D11DeviceContext*/ void*, int texture_index, int, int start = 0);
+		void RenderShader(UINT pass, void*, int texture_index, int, int start = 0);
 
 	private:
 		bool InitializeShader(SHADER_TYPE shaderType, /*ID3D11Device*/ void*, HWND, PRIMITIVE_TOPOLOGY PrimitiveTopology);
@@ -364,8 +375,6 @@ namespace DirectX
 		float		time = 0.1f;
 
 		//Sky: 1
-
-		//Sky: 2
 
 #endif
 

@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -32,6 +32,8 @@
 
 #include "packManager.h"
 #include "idea.h"
+
+
 
 /////////////////////
 // Windows GLOBALS //
@@ -67,10 +69,10 @@ WinSystemClass::WinSystemClass(WOMA::Settings* appSettings): SystemClass() //	Sy
 void WinSystemClass::ProcessFrame()
 //----------------------------------------------------------------------------
 {
-	SystemClass::FrameUpdate();	// Process: (INPUT & PerformanceStats) Only!                                        | PROFILE:(0.4%)
+	SystemClass::FrameUpdate();	// Process: (function keys |ESC and F1 to F6| & PerformanceStats) Only!
 
 	if (WOMA::game_state == ENGINE_RESTART)
-		return; //Restart so, dont render!
+		return; //Restart so, don't render!
 
 	// Render Setup?
 #if CORE_ENGINE_LEVEL >= 5 && defined CLIENT_SCENE_SETUP
@@ -81,9 +83,9 @@ void WinSystemClass::ProcessFrame()
 		{
 			SystemHandle->womaSetup = NEW WomaSetupManager;
 			SystemHandle->womaSetup->Initialize(NULL);
-			OS_REDRAW_WINDOW;
 		}
-        return; //Process win32 setup so, dont render!
+		//OS_REDRAW_WINDOW;
+        return; //Process win32 setup so, don't render!
 	}
 #endif
 
@@ -162,7 +164,7 @@ bool WinSystemClass::APPLICATION_AFTER_WINDOW()
 #if defined USE_IDEA_PACK
     IF_NOT_THROW_EXCEPTION(EncodeIDEA("\\WoMA3Dengine\\windows_engine\\windows.pack", ENCODE));	// windows.pack (zip) --> windows.pck (encoded)
 #endif
-    WomaMessageBox(TEXT("This diretory: \\WoMA3Dengine\\windows_engine\nwas packed(zip) into: \\WoMA3Dengine\\windows.pack\nand then Encoded into: \\WoMA3Dengine\\windows.pck\nPress OK, to close app."), TEXT("Tutorial: 006"));
+    WomaMessageBox(TEXT("This directory: \\WoMA3Dengine\\windows_engine\nwas packed(zip) into: \\WoMA3Dengine\\windows.pack\nand then Encoded into: \\WoMA3Dengine\\windows.pck\nPress OK, to close the Application"), TEXT("Tutorial: 006"));
 
     // 
     //FILE2: woma.pack (zip)
@@ -170,7 +172,7 @@ bool WinSystemClass::APPLICATION_AFTER_WINDOW()
 #if defined USE_IDEA_PACK
     IF_NOT_THROW_EXCEPTION(EncodeIDEA("\\WoMA3Dengine\\woma_engine\\woma.pack", ENCODE));	// woma.pack (zip) --> woma.pck (encoded)
 #endif
-    WomaMessageBox(TEXT("This diretory: \\WoMA3Dengine\\woma_engine\nwas packed(zip) into: \\WoMA3Dengine\\woma.pack\nand then Encoded into: \\WoMA3Dengine\\woma.pck\nPress OK, to close app."), TEXT("Tutorial: 006"));
+    WomaMessageBox(TEXT("This directory: \\WoMA3Dengine\\woma_engine\nwas packed(zip) into: \\WoMA3Dengine\\woma.pack\nand then Encoded into: \\WoMA3Dengine\\woma.pck\nPress OK, to close the Application."), TEXT("Tutorial: 006"));
 
     return false;
 
@@ -181,11 +183,16 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 //----------------------------------------------------------------------------
 {
 
+#if defined DX_ENGINE
+	DX11windowsArray.clear();
+	FSAA_possibleValues.clear();
+#endif
+
 	IF_NOT_RETURN_FALSE(APPLICATION_BEFORE_WINDOW());
 #if defined USE_SYSTEM_CHECK                                // BEFORE: APPLICATION_INIT_MAIN_WINDOW()
 	IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());		// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 
 #endif
-	IF_NOT_RETURN_FALSE(APPLICATION_INIT_MAIN_WINDOW());	// CREATE: The/all "MainWindow(s) + INIT DX/GL "rendering-device"
+	IF_NOT_RETURN_FALSE(APPLICATION_INIT_MAIN_WINDOW());	// RegisterClass and Create: MainWindow(s)
     StartTimer();											// START WINDOWS TIMER: ("Window Title" refresh & Real-Time Weather refresh)
     IF_NOT_RETURN_FALSE(APPLICATION_AFTER_WINDOW());
 
@@ -207,7 +214,7 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 void WinSystemClass::GetInputs()
 {
 #if defined USE_DIRECT_INPUT						// Read the User Input
-	if (DXsystemHandle->m_Input->m_mouse && DXsystemHandle->m_Input->m_keyboard)	// Make Sure that we have aquired the FOCUS and INPUT:
+	if (DXsystemHandle->m_Input->m_mouse && DXsystemHandle->m_Input->m_keyboard)	// Make Sure that we have acquired the FOCUS and INPUT:
 	{
 		ASSERT(DXsystemHandle->m_Input->GetMouseKeyboardState()); // Update "Keyboard State": Process the changes in the Mouse and Keyboard.
 	}
@@ -334,7 +341,7 @@ bool WinSystemClass::MyRegisterClass(HINSTANCE hInstance)
 
 	//
 	// To Use External Icon: "*.png" -> "*.ico" Converter: http://converticon.com/
-	// NOTE: I am Avoding to use Resource here: //wcex.hIcon = wcex.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
+	// NOTE: I am Avoiding to use Resource here: //wcex.hIcon = wcex.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
 	//
 	// More info WNDCLASSEX: https://msdn.microsoft.com/en-us/library/windows/desktop/ms633577%28v=vs.85%29.aspx
 	//
@@ -357,6 +364,7 @@ bool WinSystemClass::MyRegisterClass(HINSTANCE hInstance)
 
 	
 	wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);	//TO USE THIS COLOR: BLACK
+
 	IF_NOT_RETURN_FALSE (RegisterClassEx(&wcex));
 
 	return true;
@@ -420,8 +428,7 @@ bool WinSystemClass::InitOsInput()
 }
 #endif
 
-bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ void* 
-										/*OpenGL*/ driver, int& width, int& height)
+bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ void* driver, int& width, int& height)
 //----------------------------------------------------------------------------
 {
 	womalogauto((TCHAR*)TEXT("---------------------------------\n"));
@@ -436,7 +443,7 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
 	// --------------------------------------------------------------------------------------------
 	DEVMODE devMode = { 0 };
 	DWORD deviceNum = 0;					// How Many Monitors we have?
-	DWORD Current_Screen_WIDTH = 0;			// NOTE: GetSystemMetrics(SM_CXSCREEN) is not enouf, might not be our current Screen
+	DWORD Current_Screen_WIDTH = 0;			// NOTE: GetSystemMetrics(SM_CXSCREEN) is not enough, might not be our current Screen
 	DWORD Current_Screen_HEIGHT = 0;
 
 	TCHAR   DeviceNameToUseOnFullScreen[MAX_STR_LEN] = { 0 };
@@ -580,7 +587,7 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
 
 			// Define Window Size and Position:
 			
-			AdjustWindowRect(&R, windowStyle, false);	// Compute "window rectangle dimensions" based on "requested client area" dimensions, fot this "style"!
+			AdjustWindowRect(&R, windowStyle, false);	// Compute "window rectangle dimensions" based on "requested client area" dimensions, for this "style"!
 		}
 		else
         // DO NOT ALLOW RESIZE:
@@ -675,27 +682,27 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
     }
 #endif
 
-	ShowWindow(windowLeft, windowTop);
+	ShowWindow(MONITOR_NUM, windowLeft, windowTop);
 
 	return true;
 }
 
-bool WinSystemClass::ShowWindow(int windowLeft, int windowTop) 
+bool WinSystemClass::ShowWindow(UINT MONITOR_NUM, int windowLeft, int windowTop)
 {
 #if defined USE_STATUSBAR
 	if (AppSettings->FULL_SCREEN)
 		::ShowWindow(SystemHandle->statusbar, SW_HIDE);
 #endif
 	if (!AppSettings->FULL_SCREEN)
-		::ShowWindow(m_hWnd, SW_MAXIMIZE/*WOMA::Cmdshow*/);	// Use from Command line option! NOTE: Don't hardcode:	(default: SW_SHOWDEFAULT) SW_SHOW / SW_SHOWMINIMIZED
+		::ShowWindow(m_hWnd, WOMA::Cmdshow);	// Use from Command line option! NOTE: Don't hardcode:	(default: SW_SHOWDEFAULT) SW_SHOW / SW_SHOWMINIMIZED
 
 	SetForegroundWindow(m_hWnd);    // Slightly "Higher Priority"
 	SetFocus(m_hWnd);               // Force "Focus" to our Window
 	UpdateWindow(m_hWnd);           // 1st Window WIN32/"Paint"  NOW!
 
 	// Save window properties
-	GetWindowRect(m_hWnd, &m_rcWindowBounds);	//{top=0 bottom=1057 left=1920	right=3840}
-	GetClientRect(m_hWnd, &m_rcWindowClient);	//{top=0 bottom=1018 left=0		right=1904}	
+	GetWindowRect(m_hWnd, &windowsArray[MONITOR_NUM].m_rcWindowBounds);	//{m_rcWindowBounds = {LT(3832, -21) RB(5768, 1027)  [1936 x 1048]}}
+	GetClientRect(m_hWnd, &windowsArray[MONITOR_NUM].m_rcWindowClient);	//{m_rcWindowClient = {LT(0, 0) RB(1920, 1009)  [1920 x 1009]}}	
 
 	return true;
 }
@@ -918,7 +925,7 @@ void WinSystemClass::UNPAUSE()
 }
 
 #if defined USE_ALLOW_MAINWINDOW_RESIZE //CORE_ENGINE_LEVEL >= 10 // Initializing Engine
-void WinSystemClass::ONRESIZE()
+void WinSystemClass::ONRESIZE(void* pContext)
 {
 	if (SystemHandle) {
 		womalog("ONRESIZE()\n");
@@ -926,9 +933,10 @@ void WinSystemClass::ONRESIZE()
 			SystemHandle->m_Application->WOMA_APPLICATION_InitGUI();
 		#if defined DX_ENGINE //OPENGL TODO
 		if (DXsystemHandle)
-			DXsystemHandle->GPH_RESIZE();
+			DXsystemHandle->GPH_RESIZE(pContext);
 		#endif
 	}
 }
 #endif
+
 

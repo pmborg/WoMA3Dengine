@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -71,6 +71,10 @@ static const D3D12_INPUT_ELEMENT_DESC colorPolygonLayout[] =
 //-------------------------------------------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------------------------------------------
+
+
 
 //-------------------------------------------------------------------------------------------------
 
@@ -521,7 +525,7 @@ namespace DirectX {
 			srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 			srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 
-			// IF Failed ?: | Root Signature		| Shader Registers	|   ---> dont match with HLSL code:
+			// IF Failed ?: | Root Signature		| Shader Registers	|   ---> don't match with HLSL code:
 			result = device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&DX12mSrvDescriptorHeap));
 			if (FAILED(result))
 			{
@@ -861,7 +865,7 @@ namespace DirectX {
 	}
 
 	// ----------------------------------------------------------------------------------------
-	void DXshaderClass::SetShaderParameters(UINT pass, /*ID3D11DeviceContext*/ void* Device_Context,
+	void DXshaderClass::SetShaderParameters(UINT pass, void* Device_Context,
 		XMMATRIX* worldMatrix, XMMATRIX* viewMatrix, XMMATRIX* projectionMatrix,
 		XMMATRIX* lightViewMatrix, XMMATRIX* ShadowProjectionMatrix)
 		// ----------------------------------------------------------------------------------------
@@ -901,18 +905,13 @@ namespace DirectX {
 			dataVSptr->WV = XMMatrixTranspose(WV);							// Pre compute WV to reuse in all Vertices
 			dataVSptr->WVP = XMMatrixTranspose(WV * (*projectionMatrix));	// Pre compute WVP to reuse in all Vertices
 		}
-		//else {
+		{
 			dataVSptr->view = XMMatrixTranspose(*viewMatrix);
 			dataVSptr->projection = XMMatrixTranspose(*projectionMatrix);
-		//}
-
+		}
+		
 		// BLOCK: VS4
 
-//#if  DX_ENGINE_LEVEL >= 77
-//        if (m_shaderType == SHADER_TEXTURE_GS_INSTANCED)
-//            dataVSptr->VS_USE_WVP = FALSE;
-//        else
-//#endif
 		dataVSptr->VS_USE_WVP = VS_USE_WVP;
 
 		// BLOCK: VS5
@@ -939,13 +938,13 @@ namespace DirectX {
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 		{
 			deviceContext11->Unmap(m_VertexShaderBuffer11, 0);						// Unlock the constant buffer.
-			deviceContext11->VSSetConstantBuffers(0, 1, &m_VertexShaderBuffer11);	// Finanly set the "Constant" buffer in the vertex shader with the updated values.
+			deviceContext11->VSSetConstantBuffers(0, 1, &m_VertexShaderBuffer11);	// Finally set the "Constant" buffer in the vertex shader with the updated values.
 		}
 #endif
 
 }
 
-	void DXshaderClass::RenderShader(UINT pass, /*ID3D11DeviceContext*/ void* Device_Context, int texture_index, int indexCount, int start)
+	void DXshaderClass::RenderShader(UINT pass, void* Device_Context, int texture_index, int indexCount, int start)
 	{
 #if defined DX11 || defined DX9
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
@@ -962,7 +961,8 @@ namespace DirectX {
 			// VS: Set CODE to Run on Shaders:
 			deviceContext->VSSetShader(m_vertexShader11, NULL, 0);		// Set the vertex code that will be used to process vertices
 
-            {
+            if (m_Driver->RenderfirstTime) 
+			{
 				// [VS] -> HS -> DS -> GS -> [PS]
 				// Set PIPE: VS => PS
 				deviceContext->HSSetShader(NULL, NULL, 0);
@@ -1039,7 +1039,7 @@ namespace DirectX {
 		SystemHandle->TotalVertexCounter += indexCount;
 	}
 
-	void DXshaderClass::Render(UINT pass,/*ID3D11DeviceContext*/ void* Device_Context, int indexCount, XMMATRIX* worldMatrix, XMMATRIX* viewMatrix, XMMATRIX* projectionMatrix)
+	void DXshaderClass::Render(UINT pass,void* Device_Context, int indexCount, XMMATRIX* worldMatrix, XMMATRIX* viewMatrix, XMMATRIX* projectionMatrix)
 	{
 #if _DEBUG
 		ASSERT(indexCount > 0);

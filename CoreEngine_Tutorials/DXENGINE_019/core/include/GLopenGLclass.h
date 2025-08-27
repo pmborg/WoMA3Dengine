@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -36,7 +36,7 @@
 // ==================================
 // more info:						https://www.khronos.org/opengl/wiki/OpenGL_Loading_Library#GL3W
 // 
-// The GL3W library focuses on the core profile of OpenGL 3 and 4. It only loads the core entrypoints for these OpenGL versions.It supports Windows, Mac OS X, Linux, and FreeBSD.
+// The GL3W library focuses on the core profile of OpenGL 3 and 4. It only loads the core entry-points for these OpenGL versions.It supports Windows, Mac OS X, Linux, and FreeBSD.
 // Note: GL3W loads core OpenGL only by default.All OpenGL extensions will be loaded if the --ext flag is specified to gl3w_gen.py.
 //
 // Download Python 2.7.3 or newer:	http://www.python.org/download/releases/2.7.3/
@@ -97,7 +97,7 @@ public:
 	void Shutdown2D();
 	void Shutdown();
 
-	void RenderDriverText();
+	void RenderDriverText(void* pContext);
 	void addText(int Xpos, int Ypos, TCHAR* printText, float R, float G, float B);
 
 	void SetCamera2D();
@@ -105,23 +105,23 @@ public:
 	bool Initialize(float* clearColor);
 	void Finalize();
 
-	void TurnZBufferOn();
-	void TurnZBufferOff();
+	void TurnZBufferOn(void* pContext);
+	void TurnZBufferOff(void* pContext);
 
-	bool OnInit(	int g_USE_MONITOR, void* hwnd, int screenWidth, int screenHeight, UINT depthBits,
-					float screenDepth, float screenNear, BOOL msaa, bool vsync, 
-					BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize);
+    bool OnInit(int g_USE_MONITOR, void* hwnd, int screenWidth, int screenHeight, UINT depthBits,
+        float screenDepth, float screenNear, BOOL msaa, bool vsync,
+        BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize);
 	
 	void BeginScene(UINT monitorWindow);
-	void ClearDepthBuffer();
+	void ClearDepthBuffer(void* pContext);
 	void EndScene(UINT monitorWindow);
 
-	void SetRasterizerState(UINT cullMode, UINT fillMode);
+	void SetRasterizerState(void* pContext, UINT cullMode, UINT fillMode);
 
 	#if defined INTRO_DEMO || defined USE_ALPHA_BLENDING
 	//We have two new functions for turning on and off alpha blending:
-	void TurnOnAlphaBlending();
-	void TurnOffAlphaBlending();
+	void TurnOnAlphaBlending(void* pContext);
+	void TurnOffAlphaBlending(void* pContext);
 	#endif
 
 	void GetWorldMatrix(float*);

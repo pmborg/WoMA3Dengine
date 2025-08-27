@@ -159,7 +159,7 @@ extern const wchar_t* GetWC(const char* c);
 #define LEVELNORMAL() {}
 #endif
 
-#if _DEBUG && defined WINDOWS_PLATFORM //defined CLASS_DEBUG
+#if _DEBUG && defined WINDOWS_PLATFORM && !defined SIMPLE//defined CLASS_DEBUG
 	#define CLASSLOADER() { HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN); womalog((CHAR*) "[CLASS_LOAD %d] %s\n", CLASS_LOAD_N++, __FUNCTION__); SetConsoleTextAttribute(hConsole, FOREGROUND_RED + FOREGROUND_GREEN + FOREGROUND_BLUE); }
 	#define CLASSDELETE() { HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_RED); womalog((CHAR*) "[CLASS_DELETE %d] %s\n", CLASS_DELETE_N++, __FUNCTION__); SetConsoleTextAttribute(hConsole, FOREGROUND_RED+FOREGROUND_GREEN+FOREGROUND_BLUE); }
 #else
@@ -252,7 +252,7 @@ extern const wchar_t* GetWC(const char* c);
 #endif
 
 extern bool cpuSupportsAVX512f;
-/*
+#if _NOT
 #define SAFE_FLOAT32(x)  SafeFloat32(x)
 #define SAFE_FLOAT64(x)  SafeFloat(x)
 #define SAFE_DOUBLE32(x) SafeDouble(x)
@@ -281,5 +281,6 @@ inline double SafeDouble(uint32_t value) {
 #endif
 	return static_cast<double>(static_cast<int32_t>(value)); // Always safe
 }
-*/
+#endif
+
 #endif

@@ -93,8 +93,6 @@ PSIn MyVertexShader023Light(VSIn input)
 	    output.position = position;
     }
 
-    //if (isAnimatedBill)
-    //    output.position.x += sin(vsframeTime * 100) * (1 - input.texCoords.y) / 200;
     if (isAnimatedBill)
         output.position.x += sin(vsframeTime) * (1 - input.texCoords.y) / 100;
     
@@ -113,12 +111,6 @@ PSIn MyVertexShader023Light(VSIn input)
     {
         float _VSfogStart;
         float _VSfogEnd;
-       //if (position.y < 0)
-       //{
-       //    _VSfogStart = 1;
-       //    _VSfogEnd = 5;
-       //}
-       //else
         {
             _VSfogStart = 0;
             _VSfogEnd = 1524;

@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -86,7 +86,7 @@ GLmodelClass::GLmodelClass(bool model3d)
 GLmodelClass::~GLmodelClass(){CLASSDELETE();}
 
 #if defined USE_LIGHT_RAY
-void GLmodelClass::UpdateDynamic( std::vector<ModelColorVertexType>* lightVertexVector)
+void GLmodelClass::UpdateDynamic(void* pContext, std::vector<ModelColorVertexType>* lightVertexVector)
 {
 	static float m_previousPosX = -10000;
 	static float m_previousPosY = -10000;
@@ -207,7 +207,7 @@ bool result=false;
 }
 
 // -------------------	// COLOR
-bool GLmodelClass::LoadColor(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<ModelColorVertexType> *model, std::vector<UINT>* indexList, UINT instanceCount)
+bool GLmodelClass::LoadColor(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<ModelColorVertexType>* model, std::vector<UINT>* indexList, UINT instanceCount)
 {
 	_tprintf(TEXT("--------------------------------------------------------------\n"));
 	_tprintf(TEXT("[%d]: LOADCOLOR(): %s\n"), gettid(), objectName);
@@ -224,7 +224,7 @@ bool GLmodelClass::LoadColor(TCHAR* objectName, void* driver, SHADER_TYPE shader
 	return InitializeVertexIndexBuffers();
 }
 
-bool GLmodelClass::LoadTexture(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureVertexType> *model, std::vector<UINT>* indexList, UINT instanceCount)
+bool GLmodelClass::LoadTexture(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<ModelTextureVertexType>* model, std::vector<UINT>* indexList, UINT instanceCount)
 {
 	_tprintf(TEXT("--------------------------------------------------------------\n"));
 	_tprintf(TEXT("[%d]: LOADTEXTURE(): %s\n"), gettid(), objectName);
@@ -242,7 +242,7 @@ bool GLmodelClass::LoadTexture(TCHAR* objectName, void* driver, SHADER_TYPE shad
 	return InitializeVertexIndexBuffers(textureFile);
 }
 
-bool GLmodelClass::LoadLight(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureLightVertexType> *model, std::vector<UINT>* indexList, UINT instanceCount)
+bool GLmodelClass::LoadLight(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureLightVertexType> *model, std::vector<UINT>* indexList, UINT instanceCount)
 {
 	_tprintf(TEXT("--------------------------------------------------------------\n"));
 	_tprintf(TEXT("[%d]: LOADLIGHT(): %s\n"), gettid(), objectName);
@@ -257,13 +257,13 @@ bool GLmodelClass::LoadLight(TCHAR* objectName, void* driver, SHADER_TYPE shader
 	indexModelList = indexList;
 	return InitializeVertexIndexBuffers(textureFile);
 }
-bool GLmodelClass::LoadBump(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelNormalBumpVertexType> *model, std::vector<UINT>* indexList, UINT instanceCount)
+bool GLmodelClass::LoadBump(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelNormalBumpVertexType> *model, std::vector<UINT>* indexList, UINT instanceCount)
 {
 	///TODO
 	indexModelList = indexList;
 	return InitializeVertexIndexBuffers(textureFile);
 }
-bool GLmodelClass::LoadTerrain(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureDouble_Color_TerrainType> *model, std::vector<UINT>* indexList, UINT instanceCount)
+bool GLmodelClass::LoadTerrain(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureDouble_Color_TerrainType> *model, std::vector<UINT>* indexList, UINT instanceCount)
 {
 	if (shader_type == SHADER_AUTO)
 		ModelShaderType = SHADER_Double_Color_Terrain;
@@ -275,7 +275,7 @@ bool GLmodelClass::LoadTerrain(TCHAR* objectName, void* driver, SHADER_TYPE shad
 	return InitializeVertexIndexBuffers(textureFile);
 }
 
-bool GLmodelClass::LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow, bool renderShadow, UINT instanceCount)
+bool GLmodelClass::LoadModel(void* pContext, TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow, bool renderShadow, UINT instanceCount)
 {
 #if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES // Normal Bump + Instancing 
 	m_instanceCount = instanceCount;
@@ -285,9 +285,9 @@ bool GLmodelClass::LoadModel(TCHAR* objectName, void* g_driver, SHADER_TYPE shad
 
 	if (_tcsicmp(extension, TEXT(".obj")) == 0)
 	{
-		bool b = modelClass.LoadOBJ(this, shader_type, g_driver, filename, castShadow, renderShadow, instanceCount);
+		bool b = modelClass.LoadOBJ(pContext, this, shader_type, g_driver, filename, castShadow, renderShadow, instanceCount);
 		if (b)
-			modelClass.CreateObject(this, (TCHAR*)filename.c_str(), g_driver, shader_type /*SHADER_AUTO*/, filename, castShadow, renderShadow); // Auto Detect Shader Type
+			modelClass.CreateObject(pContext, this, (TCHAR*)filename.c_str(), g_driver, shader_type /*SHADER_AUTO*/, filename, castShadow, renderShadow); // Auto Detect Shader Type
 	}
 #if defined LOADW3D //ENGINE_LEVEL >= 50
 	if (_tcsicmp(extension, TEXT(".obj")) == 0)
@@ -327,7 +327,7 @@ void GLmodelClass::Shutdown()
 }
 
 #if defined INTRO_DEMO || defined USE_VIEW2D_SPRITES // OLD:ENGINE_LEVEL >= 26
-	bool GLmodelClass::RenderSprite( int positionX, int positionY, float scale, float fade)
+	bool GLmodelClass::RenderSprite(void* pContext, int positionX, int positionY, float scale, float fade)
 	{
 		model_fade = fade;
 
@@ -336,7 +336,7 @@ void GLmodelClass::Shutdown()
 		//positionY += 75;
 		#endif
 
-		if (!UpdateBuffersRotY(positionX, positionY))
+		if (!UpdateBuffersRotY(pContext, positionX, positionY))
 			return false;
 
 		#define _11 0
@@ -399,12 +399,12 @@ void GLmodelClass::Shutdown()
 		#undef _43
 		#undef _44
 
-		Render(/*(WomaDriverClass*)Driver,*/ CAMERA_NORMAL, PROJECTION_ORTHOGRAPH);
+		Render(pContext, 0, CAMERA_NORMAL, PROJECTION_ORTHOGRAPH);
 
 		return true;
 	}
 
-	bool GLmodelClass::UpdateBuffersRotY( int positionX, int positionY)
+	bool GLmodelClass::UpdateBuffersRotY(void* pContext, int positionX, int positionY)
 	{
 		static int m_previousPosX = -10000;
 		static int m_previousPosY = -10000;
@@ -498,7 +498,7 @@ void GLmodelClass::Shutdown()
 		return true;
 	}
 
-	bool GLmodelClass::UpdateSpriteBuffersRotY(int positionX, int positionY)
+	bool GLmodelClass::UpdateSpriteBuffersRotY(void* pContext, int positionX, int positionY)
 	{
 		static int m_previousPosX = -10000;
 		static int m_previousPosY = -10000;
@@ -601,20 +601,20 @@ void GLmodelClass::Shutdown()
 #endif
 
 
-void GLmodelClass::RenderWithFade(float fadeLight, bool FOG)
+void GLmodelClass::RenderWithFade(void* pContext, float fadeLight, bool FOG)
 {
 	//m_Shader->fade = fadeLight;
-	Render();
+	Render(pContext);
 }
 #if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28 && defined USE_SKYSPHERE
-void GLmodelClass::RenderSky(UINT camera, float fadeLight)
+void GLmodelClass::RenderSky(void* pContext, UINT camera, float fadeLight)
 {
 	m_Shader->PSfade = fadeLight;
 	m_Shader->isSky = true;
-	Render(camera, 0, 0, NULL, NULL); //RenderWithFade(driver, fadeLight);
+	Render(pContext, 0, camera, 0, 0, NULL, NULL); //RenderWithFade(driver, fadeLight);
 }
 #endif
-void GLmodelClass::Render(/*GLopenGLclass WomaDriverClass* Driver,*/ UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix)
+void GLmodelClass::Render(void* pContext, UINT threadID, UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix)
 {
 	GLopenGLclass* driver = (GLopenGLclass*)m_Driver;
 

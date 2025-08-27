@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // Filename: DXmodelClass.cpp
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
@@ -131,6 +131,7 @@ DXmodelClass::DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive, bool comp
 	m_instanceCount = 0;
 	m_instanceBuffer= NULL;
 #endif
+
 }
 
 void DXmodelClass::LOADDRIVER(void* driver)
@@ -218,12 +219,13 @@ bool DirectX::DXmodelClass::LoadLight(void* pContext, TCHAR* objectName, void* d
 				(ModelShaderType == SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED) ||	// SHADER_TYPE = 10
 			    (ModelShaderType == SHADER_FIRE) ||                                 // SHADER_TYPE = 21
                 (ModelShaderType == SHADER_TEXTURE_GS_INSTANCED) ||                 // SHADER_TYPE = 22
-                (ModelShaderType == SHADER_TEXTURE_LIGHT_FAST)
+                (ModelShaderType == SHADER_TEXTURE_LIGHT_FAST)						// SHADER_TYPE = 24
              );
 
 		indexModelList = indexList;
 	return InitializeDXbuffers((ID3D11DeviceContext*)pContext, objectName, textureFile);
 }
+
 
 bool DirectX::DXmodelClass::LoadBump(void* pContext, TCHAR* objectName, void* driver,
 	SHADER_TYPE shader_type, std::vector<STRING>* textureFile,
@@ -832,6 +834,7 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 	return true;
 }
 
+
 void DXmodelClass::Shutdown()
 {
 	womalog("DXmodelClass() DESTROYING: %s\n", MODEL_NAME.c_str());
@@ -967,6 +970,7 @@ bool DXmodelClass::InitializeTextureLightBuffers(/*ID3D11Device*/ void* device, 
 		vertices[i].position = XMFLOAT3((*modelTextureLightVertex)[i].x, (*modelTextureLightVertex)[i].y, (*modelTextureLightVertex)[i].z);
 		vertices[i].texCoord = XMFLOAT2((*modelTextureLightVertex)[i].tu, (*modelTextureLightVertex)[i].tv);
 		vertices[i].normal = XMFLOAT3((*modelTextureLightVertex)[i].nx, (*modelTextureLightVertex)[i].ny, (*modelTextureLightVertex)[i].nz);
+
 #if defined USE_BOUNDING_VOLUMES
 		CALCULATE_MAX_MIN(vertices[i].position);
 #endif
@@ -1420,8 +1424,8 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 		IF_NOT_RETURN_FALSE (instances = NEW InstanceType[m_instanceCount]);
 		
 		// Call "User" Function:
-		SystemHandle->m_Application->WOMA_APPLICATION_SetInstancePositions (SystemHandle->xml_loader.theWorld[m_ObjId].id, m_instanceCount, instances, 
-                                                                            SystemHandle->xml_loader.theWorld[m_ObjId].type);
+		SystemHandle->m_Application->WOMA_APPLICATION_SetInstancePositions (SystemHandle->xml_loader.theWorldXML[m_ObjId].id, m_instanceCount, instances, 
+                                                                            SystemHandle->xml_loader.theWorldXML[m_ObjId].type);
 
 		//The instance buffer description is setup exactly the same as a vertex buffer description.
 		ZeroMemory( &instanceBufferDesc, sizeof( instanceBufferDesc ) );
@@ -2210,33 +2214,34 @@ void DirectX::DXmodelClass::Render(void* ctx, UINT threadID, UINT camera, UINT p
 
 		// Step 3: Render Complex Mesh (OBJ/W3D):
 		// ----------------------------------------------------------------------------------------
-		if ((obj3d.material.size() > 0) && (ModelShaderType != SHADER_FIRE))
+		if ((obj3d.material.size() > 0) && (ModelShaderType != SHADER_FIRE) && (ModelShaderType != SHADER_TEXTURE_LIGHT_FAST))
 			RenderSubMesh(pContext, m_driver11, &m_worldMatrix, viewMatrix, projectionMatrix, pass, (XMMATRIX*)lightViewMatrix, (XMMATRIX*)ShadowProjectionMatrix); // Multiple Material
 		else
 		{
-			// Step 3: Render Simple Mesh: (Basic Tutorials) include: SKY, MAIN Terrain, Spites
-			// ----------------------------------------------------------------------------------------
-			if (ModelShaderType >= SHADER_TEXTURE)
-				for (UINT i = 0; i < meshSRV11.size(); i++)
-					pContext->PSSetShaderResources(i, 1, &meshSRV11[i]);	// Set shader texture resource(s) in the "Pixel Shader", only!
+			{
+				if (ModelShaderType >= SHADER_TEXTURE)
+					for (UINT i = 0; i < meshSRV11.size(); i++)
+						pContext->PSSetShaderResources(i, 1, &meshSRV11[i]);	// Set shader texture resource(s) in the "Pixel Shader", only!
 
-			#if defined USE_VIEW2D_SPRITES
-			m_Shader11->PSfade = model_fade;
-			#endif
-		#if TUTORIAL_CHAP >= 62 // FIRE
-			if (ModelShaderType == SHADER_FIRE) {
-				static float frameTime = 0.0f;
+				#if defined USE_VIEW2D_SPRITES
+				m_Shader11->PSfade = model_fade;
+				#endif
+			  #if TUTORIAL_CHAP >= 62 // FIRE
+				if (ModelShaderType == SHADER_FIRE) {
+					static float frameTime = 0.0f;
 
-				// Increment the frame time counter.
-				frameTime += 0.01f;
-				if (frameTime > 1000.0f)
-					frameTime = 0.0f;
+					// Increment the frame time counter.
+					frameTime += 0.01f;
+					if (frameTime > 1000.0f)
+						frameTime = 0.0f;
 
-				m_Shader11->shaderfireframeTime = frameTime;
+					m_Shader11->shaderfireframeTime = frameTime;
+				}
+			  #endif
+
+				m_Shader11->shaderTypeParameter = (float)shaderTypeParameter;
 			}
-		#endif
-			m_Shader11->shaderTypeParameter = (float)shaderTypeParameter;
-            
+
             #if defined USE_OPTIMIZING
 			m_Shader11->Render(pass, pContext, m_indexCount, &m_worldMatrix, viewMatrix, &m_driver11->m_projectionMatrix_sky);	// Single Material (Optimized)
             #else

@@ -209,7 +209,7 @@ public:
 	bool loadWorld(TCHAR* file);
 	bool InitWorldLoader(TCHAR* filename);				//Note: Have to be char
 	xmlobj3d object3d;
-	std::vector<xmlobj3d> theWorld;
+	std::vector<xmlobj3d> theWorldXML;
 
 	// --------------------------------------------------------------------------------------------
 	// Globals:

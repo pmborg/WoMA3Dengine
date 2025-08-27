@@ -26,6 +26,7 @@
 #include "SceneManager.h"
 #include "xml_loader.h"
 #include "DXmodelClass.h"
+#include "BillClass.h"
 
 QuadTree::QuadTree() 
 {
@@ -162,8 +163,8 @@ void QuadTree::RenderNode(NodeType* node)
 {
 #if !defined USE_MAP_EDITOR
 	// Check to see if the node can be viewed, height doesn't matter in a quad tree.
-	bool result = _frustum->CheckCube(node->positionX, 0.0f, node->positionZ, node->width/2);   // More accurate but slower
-	//bool result = _frustum->CheckSphere(node->positionX, 0.0f, node->positionZ, (node->width/2)*1.4142135623730950488016887242097f );   // Faster
+	//bool result = _frustum->CheckCube(node->positionX, 0.0f, node->positionZ, (node->width/2)*1.4142135623730950488016887242097f);   // More accurate but slower
+	bool result = _frustum->CheckSphere(node->positionX, 0.0f, node->positionZ, (node->width/2)*1.4142135623730950488016887242097f );   // Faster
 	if (!result) return;
 #endif
 
@@ -182,7 +183,7 @@ void QuadTree::RenderNode(NodeType* node)
 	if (count != 0) return;
 
 	// Not really Render! But List All Models/objects to render, on this Node: (this quad is in front of camera)
-    UINT world_xml_objs = (UINT)_xml_loader->theWorld.size(); //Get 
+    UINT world_xml_objs = (UINT)_xml_loader->theWorldXML.size(); //Get 
     VirtualModelClass* model;
 	for (int i = 0; i < node->sceneNodes.size(); i++)
 	{
@@ -190,27 +191,33 @@ void QuadTree::RenderNode(NodeType* node)
         
          UINT modelID = model->m_ObjId;
 
-         if (SystemHandle->xml_loader.theWorld[modelID].depend == -1)
+         if (SystemHandle->xml_loader.theWorldXML[modelID].depend == -1)
          {
-             _xml_loader->theWorld[modelID].render = true;     
-         }else{
+             _xml_loader->theWorldXML[modelID].render = true;     
+         }else
+		 {
 #if !defined USE_MAP_EDITOR
             float positionX, positionY, positionZ;
-            positionX = _xml_loader->theWorld[modelID].posX;
-            positionY = _xml_loader->theWorld[modelID].translateY;
-            positionZ = _xml_loader->theWorld[modelID].posZ;
-            if ((((DXmodelClass*)model)->m_instanceCount == 0) && !_frustum->CheckSphere(positionX, positionY, positionZ, model->boundingSphere*2)) {
-                _xml_loader->theWorld[modelID].render = false;  
+            positionX = _xml_loader->theWorldXML[modelID].posX;
+            positionY = _xml_loader->theWorldXML[modelID].translateY;
+            positionZ = _xml_loader->theWorldXML[modelID].posZ;
+            if ((((DXmodelClass*)model)->m_instanceCount == 0) && !_frustum->CheckSphere(positionX, positionY, positionZ, MAX (1, model->boundingSphere) * _xml_loader->theWorldXML[modelID].scale*2)) 
+			{
+                _xml_loader->theWorldXML[modelID].render = false;  
                 continue;
             } else
 #endif
-               _xml_loader->theWorld[modelID].render = true;    
+               _xml_loader->theWorldXML[modelID].render = true;    
         }
-		//This Model have transparent parts?, note it! to render transparent parts later.
-        if (((DXmodelClass*)model)->isBill)
-            SystemHandle->m_Application->billboardRrenderCount++;
+		 UINT tree_id = modelID - SystemHandle->m_Application->initial_world_xml_objs;
+        if (((DXmodelClass*)model)->isBill && m_Trees[tree_id].type <= 100)
+		{
+			WOMA::sceneManager->visibleBillboardList.push_back(m_Trees[modelID - SystemHandle->m_Application->initial_world_xml_objs] ); //modelID = world_xml_objs + tree_id
+		}
 		else
-        WOMA::sceneManager->opacModelList.push_back(model);
+
+		// Add model on list to be rendered later.
+        WOMA::sceneManager->visibleModelList.push_back(model);
 
 	#ifdef _DEBUG
 		totalVertexRendered += node->sceneNodes[i]->nodeState.model->m_vertexCount;

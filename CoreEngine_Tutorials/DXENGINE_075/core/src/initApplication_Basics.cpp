@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -26,6 +26,7 @@
 #include "log.h"
 #include <cinttypes>
 #include <string.h>
+#include "fileLoader.h"
 #include "BillClass.h"
 
 #pragma warning(push)
@@ -49,7 +50,7 @@
 
 #if defined SCENE_COLOR
 // ----------------------------------------------------------------------------
-void ApplicationClass::initColorDemo()
+void ApplicationClass::initColorDemo(void* pContext)
 // ----------------------------------------------------------------------------
 {
 	//if (RENDER_PAGE == 21 || RENDER_PAGE == 22 || RENDER_PAGE == 23 || RENDER_PAGE == 24 || FORCE_RENDER_ALL)
@@ -77,7 +78,7 @@ void ApplicationClass::initColorDemo()
 		}
 
 		CREATE_MODEL_IF_NOT_EXCEPTION(m_1stSquare3DColorModel, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);	// Alocate the MODEL
-		ASSERT (m_1stSquare3DColorModel->LoadColor(TEXT("m_1stSquare3DColorModel"), m_Driver, SHADER_COLOR, &SquareColorVertexVector, &IndexSquarList));	// LOAD the Model //UINT IndexSquarList[] = {0,1,2, 0,3,1};
+		ASSERT (m_1stSquare3DColorModel->LoadColor(pContext, TEXT("m_1stSquare3DColorModel"), m_Driver, SHADER_COLOR, &SquareColorVertexVector, &IndexSquarList));	// LOAD the Model //UINT IndexSquarList[] = {0,1,2, 0,3,1};
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	//if (RENDER_PAGE >= 21 || FORCE_RENDER_ALL)
@@ -95,14 +96,14 @@ void ApplicationClass::initColorDemo()
 		}
 		// Step 2: Create a model: NEW GLmodelClass; || NEW DXmodelClass;
 		CREATE_MODEL_IF_NOT_EXCEPTION(m_1stTriangle3DColorModel, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);	// Alocate the MODEL
-		ASSERT(m_1stTriangle3DColorModel->LoadColor(TEXT("m_1stTriangle3DColorModel"), m_Driver, SHADER_COLOR, &TriangleColorVertexVector, &IndexTriangleList));	// LOAD the Model //UINT IndexTriangleList[] = {0,1,2};
+		ASSERT(m_1stTriangle3DColorModel->LoadColor(pContext, TEXT("m_1stTriangle3DColorModel"), m_Driver, SHADER_COLOR, &TriangleColorVertexVector, &IndexTriangleList));	// LOAD the Model //UINT IndexTriangleList[] = {0,1,2};
 	}
 }
 //END: initColorDemo
 #endif
 
 // ----------------------------------------------------------------------------
-void ApplicationClass::initTextureDemo()
+void ApplicationClass::initTextureDemo(void *pContext)
 // ----------------------------------------------------------------------------
 {
 	ModelTextureVertexType vertex;
@@ -177,7 +178,7 @@ void ApplicationClass::initTextureDemo()
 }
 
 // ----------------------------------------------------------------------------
-void ApplicationClass::initLightDemo()
+void ApplicationClass::initLightDemo(void* pContext)
 // ----------------------------------------------------------------------------
 {
 #if defined SCENE_TEXTURE_LIGHT
@@ -247,13 +248,19 @@ void ApplicationClass::initLightDemo()
 }
 
 #if defined USE_TITLE_BANNER	//24 DX_ENGINE_LEVEL >= 24
-void ApplicationClass::initStatic2D()
+void ApplicationClass::initStatic2D(void* ctx)
 {
-		// Step 1: Prepare Vertex(s)
-		std::vector<ModelTextureVertexType> SpriteVertexVector;				// 1 Declare: the Vector with Vertex "TYPE"
-		ModelTextureVertexType vertex = {};									// 2 Use this "VERTEX" on macro
-		CREATE_VERTEXVECTOR_SQUAD_MODEL(SpriteVertexVector, 0, 0, 0);		// 3 Initialize Vertex ARRAY at world center at first
-		std::vector<UINT> emptyIndexList;									// Empty index list.
+#if defined DX_ENGINE
+	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
+#else
+	#define pContext ctx
+#endif
+
+	// Step 1: Prepare Vertex(s)
+	std::vector<ModelTextureVertexType> SpriteVertexVector;				// 1 Declare: the Vector with Vertex "TYPE"
+	ModelTextureVertexType vertex = {};									// 2 Use this "VERTEX" on macro
+	CREATE_VERTEXVECTOR_SQUAD_MODEL(SpriteVertexVector, 0, 0, 0);		// 3 Initialize Vertex ARRAY at world center at first
+	std::vector<UINT> emptyIndexList;									// Empty index list.
 
 	//--------------------------------------------------------------------------------
 	//CreateDXbuffers for 2D:
@@ -303,7 +310,7 @@ void ApplicationClass::initStatic2D()
 			if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) { CREATE_MODELDX_IF_NOT_EXCEPTION(m_mainMapModel, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
 			((DXmodelClass*)m_mainMapModel)->SpriteTextureWidth = 1000;
 			((DXmodelClass*)m_mainMapModel)->SpriteTextureHeight = 1000;
-			ASSERT(m_mainMapModel->LoadTexture(DEMO_MAINMMAP_TEXTURE, m_Driver, SHADER_TEXTURE, &Textures, &SpriteVertexVector, &emptyIndexList));
+			ASSERT(m_mainMapModel->LoadTexture(pContext, DEMO_MAINMMAP_TEXTURE, m_Driver, SHADER_TEXTURE, &Textures, &SpriteVertexVector, &emptyIndexList, 0));
 			}
 
 			((DXmodelClass*)m_mainMapModel)->meshSRV11[0] = m_RenderMapTexture->m_shaderTextureResourceView;
@@ -313,13 +320,13 @@ void ApplicationClass::initStatic2D()
 #endif
 
 #if defined USE_CUBE
-bool ApplicationClass::initCubes3D()
+bool ApplicationClass::initCubes3D(void* pContext)
 {
 	//DEMO1:
 	CCube cube = CCube(0,0,0);
 	{
 		CREATE_MODEL_IF_NOT_EXCEPTION(m_cube1Model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);	// Alocate the MODEL
-		ASSERT(m_cube1Model->LoadColor(TEXT("m_cube1Model"), m_Driver, SHADER_COLOR, &cube.VertexCubeColorModel, &cube.IndexCubeList));
+		ASSERT(m_cube1Model->LoadColor(pContext, TEXT("m_cube1Model"), m_Driver, SHADER_COLOR, &cube.VertexCubeColorModel, &cube.IndexCubeList));
 	}
 
 	//DEMO2:
@@ -348,13 +355,13 @@ bool ApplicationClass::initCubes3D()
 #if defined USE_VIEW2D_SPRITES
 // INIT/LOAD 2D (SPRITE or TEXT) Objects
 // --------------------------------------------------------------------------------------------
-bool ApplicationClass::DEMO_WOMA_APPLICATION_InitializeSprites2D()
+bool ApplicationClass::DEMO_WOMA_APPLICATION_InitializeSprites2D(void* pContext)
 // --------------------------------------------------------------------------------------------
 {
 	womalog("DEMO_WOMA_APPLICATION_InitializeSprites2D()\n");
 
 #if defined USE_TITLE_BANNER
-	initStatic2D();			//TITLE + MAP + MINI-MAP
+	initStatic2D(pContext);			//TITLE + 2D:MAP + 2D:MINI-MAP
 #endif
 
 	return true;
@@ -434,7 +441,7 @@ void ApplicationClass::DEMO_WOMA_APPLICATION_Shutdown2D()
 
 #ifdef USE_RASTERTEK_TEXT_FONT
 
-bool ApplicationClass::initText()
+bool ApplicationClass::initText(void* pContext)
 {
 	_tprintf(TEXT("[%d]: initText()\n"), gettid());
 
@@ -445,20 +452,20 @@ bool ApplicationClass::initText()
 	{
 #if (defined OPENGL3 || defined OPENGL40) 
 	case DRIVER_GL3:
-		ASSERT(AppTextClass->Initialize((GLopenGLclass*)m_Driver));
+		ASSERT(AppTextClass->Initialize((ID3D11DeviceContext*)pContext, (GLopenGLclass*)m_Driver));
 		break;
 #endif
 
 #if defined DX11 || defined DX9
 	case DRIVER_DX9:
 	case DRIVER_DX11:
-		ASSERT(AppTextClass->Initialize((DirectX::DX11Class*)m_Driver));
+		ASSERT(AppTextClass->Initialize((ID3D11DeviceContext*)pContext, (DirectX::DX11Class*)m_Driver));
 		break;
 #endif
 
 #ifdef DX12
 	case DRIVER_DX12:
-		ASSERT(AppTextClass->Initialize((DirectX::DX12Class*)m_Driver));
+		ASSERT(AppTextClass->Initialize((ID3D11DeviceContext*)pContext, (DirectX::DX12Class*)m_Driver));
 		break;
 #endif
 
@@ -477,7 +484,7 @@ bool ApplicationClass::initText()
 #endif
 
 #ifdef INTRO_DEMO
-void ApplicationClass::initIntroDemo()
+void ApplicationClass::initIntroDemo(void* pContext)
 {
 	std::vector<STRING> INTRO_TEXT;
 
@@ -533,9 +540,11 @@ void ApplicationClass::initIntroDemo()
 
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER //FOR SHADOW
 // ----------------------------------------------------------------------------
-void ApplicationClass::initShadowTextureDemo()
+void ApplicationClass::initShadowTextureDemo(void* ctx)
 // ----------------------------------------------------------------------------
 {
+	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
+
 	ModelTextureVertexType vertex = { };
 	float X = 4.0f, Y = 2.0f, Z = 0;
 	CREATE_VERTEXVECTOR_SQUAD_MODEL_OPTIMIZED(SquareTextureVertexVector, X, Y, Z);				// Step 1: Setup all vertices positions: X, Y, Z
@@ -559,10 +568,101 @@ void ApplicationClass::WOMA_APPLICATION_SetInstancePositions(UINT m_ObjId, int m
 }
 #endif
 
+#if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined USE_FRUSTRUM
+bool ApplicationClass::WOMA_LOAD_OBJ(void* pContext, UINT threadID, WomaDriverClass* Driver, UINT i, TCHAR* wfilename)
+{
+	objModel.push_back(NULL);
+
+	if (i > 0
+		&& strcmp(SystemHandle->xml_loader.theWorldXML[i].filename, SystemHandle->xml_loader.theWorldXML[i - 1].filename) == 0
+		&& (SystemHandle->xml_loader.theWorldXML[i].type == 11			//11 animated grass, Clone it its faster
+			|| SystemHandle->xml_loader.theWorldXML[i].type == 12)		//12 BUSHs, Clone it its faster
+		)
+	{
+		objModel[i] = objModel[i - 1];
+		SystemHandle->xml_loader.theWorldXML[i].CLONE = true;
+	}
+	else
+	{
+
+		if (SystemHandle->xml_loader.theWorldXML[i].type < 200)
+		{
+			CREATE_MODEL_IF_NOT_EXCEPTION(objModel[i], I_AM_2D, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.renderShadows);
+		}
+		else
+		{
+			CREATE_MODEL_IF_NOT_EXCEPTION(objModel[i], I_AM_3D, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.renderShadows);
+		}
+
+		objModel[i]->m_ObjId = i; //SYNC-ID: objModel[i] with: xml_loader.theWorldXML[i]
+		objModel[i]->xmlId = SystemHandle->xml_loader.theWorldXML[i].id;
+
+#if   !defined USE_SHADOW_INSTANCES
+		SystemHandle->xml_loader.theWorldXML[i].WOMA_object.castShadows = false;
+		SystemHandle->xml_loader.theWorldXML[i].WOMA_object.renderShadows = false;
+		objModel[i]->ModelCastShadow = false;
+		objModel[i]->ModelRenderShadow = false;
+#else
+#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
+		objModel[i]->ModelCastShadow = SystemHandle->xml_loader.theWorldXML[i].WOMA_object.castShadows = SystemHandle->xml_loader.theWorldXML[i].castShadow;
+		objModel[i]->ModelRenderShadow = SystemHandle->xml_loader.theWorldXML[i].WOMA_object.renderShadows = SystemHandle->xml_loader.theWorldXML[i].renderShadows;
+#endif
+#endif
+		
+		if (WOMA::game_state == GAME_STOP)
+			return false;
+
+#if DX_ENGINE_LEVEL >= 73 && defined BILLBOARD_FOR_WINDY_GRASS
+		if (i >= world_xml_objs)
+		{
+			if (SystemHandle->xml_loader.theWorldXML[i].type == 11)
+				((DXmodelClass*)objModel[i])->isAnimatedBill = true;
+		}
+#endif
+
+		//Load OBJ or W3D:
+		if (!(objModel[i]->LoadModel(pContext, wfilename,
+			Driver,
+			(SHADER_TYPE)SystemHandle->xml_loader.theWorldXML[i].shader,
+			wfilename, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.castShadows,
+			SystemHandle->xml_loader.theWorldXML[i].WOMA_object.renderShadows, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.instances)))
+		{
+			WomaMessageBox(wfilename, TEXT("Error Loading: "), FALSE); return false;
+		}
+
+	}
+
+	if (i >= world_xml_objs) //Are we a Billboard?
+	{
+		((DXmodelClass*)objModel[i])->isBill = true;
+
+		if (SystemHandle->xml_loader.theWorldXML[i].meshSRV) {
+			((DXmodelClass*)objModel[i])->meshSRV11[0] = SystemHandle->xml_loader.theWorldXML[i].meshSRV;
+		}
+	}
+
+#if defined ALLOW_CBIND_PROGRESS_BAR
+#if defined USE_INTRO_VIDEO_DEMO
+	if (DXsystemHandle->g_DShowPlayer == NULL || (DXsystemHandle->g_DShowPlayer->m_state != STATE_RUNNING))
+#endif
+	{
+		UINT progress = ((float)WOMA::num_loading_objects / (float)(objModel_size + theWorld_size)) * 100.0f;
+		SendMessage(SystemHandle->hwndPrgBar, PBM_SETPOS, (WPARAM)progress, 0);
+		StringCchPrintf(title, MAX_STR_LEN, TEXT("Loading: %d / %d"), WOMA::num_loading_objects, objModel_size + theWorld_size);
+		SetWindowText(SystemHandle->settingstext, title);
+	}
+#endif
+
+	WOMA::sceneManager->addModel(WOMA::sceneManager->RootNode, objModel[i]);			// Add node to nodesList: RootNode
+
+	return true;
+}
+#endif
+
 // --------------------------------------------------------------------------------------------
 // INIT/LOAD 3D Objects
 // --------------------------------------------------------------------------------------------
-bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
+bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverClass* Driver)
 // --------------------------------------------------------------------------------------------
 {
 	womalogauto(TEXT("----------------------------------------------------------------------------------------\n"));
@@ -572,11 +672,11 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	// INIT ASTROs (Sun Moon) /////////////////////////////////////////////////////////////////////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
 #if defined USE_ASTRO_CLASS
-	initWorld->Calculate();
+	initWorld->Calculate(); //Calculate Real position of Sun and Moon.
 #endif
 
 #if defined USE_ASTRO_CLASS && defined USE_REAL_SUNLIGHT_DIRECTION
-	Calc3DSunMoonPosition();
+	Use3DSunMoonPosition();
 #endif
 
 	//-----------------------------------------------------------------------------------------------------------------
@@ -586,41 +686,41 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	IF_NOT_THROW_EXCEPTION(m_Light);
 	m_Light->SetAmbientColor(0.55f, 0.55f, 0.55f, 1);	//later in world.xml
 	m_Light->SetDiffuseLightColor(1, 1, 1, 1.0f);			//later in world.xml
-#if defined USE_REAL_SUNLIGHT_DIRECTION
+  #if defined USE_REAL_SUNLIGHT_DIRECTION
 	m_Light->SetDirection(SunX / 1000, SunY / 1000, SunZ / 1000);
-#else
+  #else
 	m_Light->SetDirection(-0.535041273f, -1, 0);		//later in world.xml
-#endif
+  #endif
 
 	//LIGHT_RAY ////////////////////////////////////////////////////////////////////////////////////////////////////
-#if defined USE_LIGHT_RAY	//DO: CalculateLightRayVertex(SunDistance);							  // Calculate Light Source Position
-	initLightRay();			//	  m_lightRayModel->UpdateDynamic(m_Driver, m_LightVertexVector);  // Update LightRay vertex(s)
-#endif						//	  m_lightRayModel->Render(m_Driver);							  // Render LightRay
+  #if defined USE_LIGHT_RAY	//DO: CalculateLightRayVertex(SunDistance);							  // Calculate Light Source Position
+	initLightRay(pContext);	//	  m_lightRayModel->UpdateDynamic(m_Driver, m_LightVertexVector);  // Update LightRay vertex(s)
+  #endif					//	  m_lightRayModel->Render(m_Driver);							  // Render LightRay
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// INIT ALL BASIC DEMOS: //////////////////////////////////////////////////////////////////////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
 #if defined SCENE_COLOR
-	initColorDemo();
+	initColorDemo(pContext);
 
 #endif
 
 #if DX_ENGINE_LEVEL >= 22 && LEVEL < 60	// 22:TEXTURE
-	initTextureDemo();
+	initTextureDemo(pContext);
 
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
-	initShadowTextureDemo();
+	initShadowTextureDemo(pContext);
 #endif
 
 #endif
 
 #if DX_ENGINE_LEVEL >= 23  && LEVEL < 60	// 23:LIGHT
-	initLightDemo();
+	initLightDemo(pContext);
 
 #endif
 
 #if DX_ENGINE_LEVEL >= 25 && defined USE_CUBE
-	IF_NOT_RETURN_FALSE(initCubes3D());
+	IF_NOT_RETURN_FALSE(initCubes3D(pContext));
 #endif
 
     //=================================================================================================================
@@ -636,7 +736,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 		if (RENDER_PAGE >= 55)
 			size = 512;	// SYNC/CHECK AT WOMA_APPLICATION_Initialize3D():
 
-	initSphere1(size);
+	initSphere1(pContext, size);
 #endif
 
 //Sky:
@@ -650,38 +750,40 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 		else
 			size = 48;
 
-	initSky(size);
+	initSky(pContext, size);
 #endif
 
+#if defined MAIN_RENDER_TERRAIN
     //=================================================================================================================
 	// INIT TERRAINs //////////////////////////////////////////////////////////////////////////////////////////////////
     //=================================================================================================================
 	//0
-#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN		// UNDER WATER: Terrain
+ #if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN		// UNDER WATER: Terrain
 	loadedTerrain[0] = NEW CTerrain(TERRAIN);
-	loadedTerrain[0]->initUnderWaterDemo(0);			//UNDERWATER	(populate: modelVertexVector) 2022:LEVEL_ENGINE: 25
-#endif
+	loadedTerrain[0]->initUnderWaterDemo(pContext, 0);			//UNDERWATER	(populate: modelVertexVector) 2022:LEVEL_ENGINE: 25
+  #endif
 
 	//1 WATER TERRAIN MESH: 6 vertex + 6 index
-#if defined SCENE_WATER_TERRAIN
+  #if defined SCENE_WATER_TERRAIN
 	loadedTerrain[1] = NEW CTerrain(TERRAIN);
-	loadedTerrain[1]->initTerrainWaterMeshDemo(1);		//WATER			(populate: modelVertexVector)
-#endif
+	loadedTerrain[1]->initTerrainWaterMeshDemo(pContext, 1);		//WATER			(populate: modelVertexVector)
+  #endif
 
 	//2 MAIN TERRAIN MESH: 4 vertex + 6 index
-#if defined SCENE_MAIN_TOPO_TERRAIN	&& !defined USE_TERRAIN_ALFA_MAP
-#if DX_ENGINE_LEVEL >= 60 && defined USE_TERRAIN_TUTORIAL_CHAP_24
+  #if defined SCENE_MAIN_TOPO_TERRAIN	&& !defined USE_TERRAIN_ALFA_MAP
+  #if DX_ENGINE_LEVEL >= 60 && defined USE_TERRAIN_TUTORIAL_CHAP_24
 	loadedTerrain[2] = NEW CTerrain(TERRAIN_COLOR_QUAD_FOG_SLOP_TEXTURE_Detail_Mapping_TextureMapping_AlphaMapping_BumpMapping_LighMapping_TransparentTexture_MINI_MAP);				//TERRAIN_LIGHT+COLOR
-#else
+  #else
 	loadedTerrain[2] = NEW CTerrain(TERRAIN_COLOR);				//TERRAIN_LIGHT+COLOR
-#endif
-	loadedTerrain[2]->initMainTopoTerrainDemo(2);		//TERRAIN		(populate: modelVertexVector)
-#endif
+  #endif
+	loadedTerrain[2]->initMainTopoTerrainDemo(2, (ID3D11DeviceContext*)pContext);		//TERRAIN		(populate: modelVertexVector)
+  #endif
 
 	//3 TERRAIN:6 vertex + 6 index: TO BE USED BY COLLISION TERRAIN
-#if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX && defined SCENE_TERRAIN_COLLISION
+  #if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX && defined SCENE_TERRAIN_COLLISION
 	loadedTerrain[3] = NEW CTerrain(TERRAIN);
-	loadedTerrain[3]->initMainTopoTerrainDemo(3);
+	loadedTerrain[3]->initMainTopoTerrainDemo(3, (ID3D11DeviceContext*)pContext);
+  #endif
 #endif
 
 	//=================================================================================================================
@@ -694,7 +796,8 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 
     //-----------------------------------------------------------------------------------------------------------------
     // Log xml objects:
-	world_xml_objs = (UINT)SystemHandle->xml_loader.theWorld.size(); //Get 
+	world_xml_objs = (UINT)SystemHandle->xml_loader.theWorldXML.size(); //Get 
+	initial_world_xml_objs = world_xml_objs;
 	womalogauto("Number of objects loaded in: WORLD.XML %d\n", world_xml_objs);
 
 	//-----------------------------------------------------------------------------------------------------------------
@@ -702,23 +805,19 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	//-----------------------------------------------------------------------------------------------------------------
 #if TUTORIAL_CHAP >= 60 && defined (SCENE_MAIN_TOPO_TERRAIN) && defined (SCENE_BILLBOARDS) // BILLBOARD
 	IF_NOT_RETURN_FALSE(m_billTreeClass = NEW BillClass);
-	if (!m_billTreeClass->Initialize(loadedTerrain[2]->m_terrainWidth/2, loadedTerrain[2]->m_terrainHeight/2, false))
+	if (!m_billTreeClass->Initialize((ID3D11DeviceContext*)pContext, loadedTerrain[2]->m_terrainWidth / 2, loadedTerrain[2]->m_terrainHeight / 2, false))
 	{
 		WomaMessageBox(TEXT("Could not initialize the billboard Class"), TEXT("Create Billboard for Trees / Flowers"));
 		return false;
 	}
-	womalogauto("Number of billboard objects added %d\n", SystemHandle->xml_loader.theWorld.size()- world_xml_objs);
+	womalogauto("Number of billboard objects added %d\n", SystemHandle->xml_loader.theWorldXML.size()- world_xml_objs);
 #endif
-    //theWorld.size()=3816
+    //theWorldXML.size()=3854
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// PROGRESS BAR		///////////////////////////////////////////////////////////////////////////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
-#if defined WINDOWS_PLATFORM
-    MSG msg = { 0 };
-#endif
 #if defined ALLOW_CBIND_PROGRESS_BAR
-    TCHAR title[MAX_STR_LEN] = {};
 	// --- CREATE PROGRESS BAR:
 #if defined USE_INTRO_VIDEO_DEMO
 	if (DXsystemHandle->g_DShowPlayer == NULL || (DXsystemHandle->g_DShowPlayer->m_state != STATE_RUNNING))
@@ -756,98 +855,25 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 #if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined USE_FRUSTRUM
 
 	// Load 3D Objects: convert XML "objects" -- Load OBJ or W3D --> VirtualModelClass:
-	UINT theWorld_size = (UINT)SystemHandle->xml_loader.theWorld.size();
-	UINT objModel_size = (UINT)objModel.size();
+	theWorld_size = (UINT)SystemHandle->xml_loader.theWorldXML.size();
+	objModel_size = (UINT)objModel.size();
 	WOMA::num_loading_objects = 1;
 
-	static DXmodelClass* model = NULL;
+#if defined WINDOWS_PLATFORM
+	MSG msg = { 0 };
+#endif
+	// world_xml_objs = 15
+	// theWorld_size  = 3854
+	// objModel_size  = 0
+
 	for (UINT i = objModel_size; i < objModel_size + theWorld_size; i++)
 	{
-		objModel.push_back(NULL);
-		
-		if (i > 0
-			&& strcmp(SystemHandle->xml_loader.theWorld[i].filename, SystemHandle->xml_loader.theWorld[i - 1].filename) == 0 
-			&& (SystemHandle->xml_loader.theWorld[i].type == 11			//11 animated grass, Clone it its faster
-				|| SystemHandle->xml_loader.theWorld[i].type == 12)		//12 BUSHs, Clone it its faster
-			) 
-		{
-			objModel[i] = objModel[i - 1];
-			SystemHandle->xml_loader.theWorld[i].CLONE = true;
-		}
-		else
-		{
-
-			if (SystemHandle->xml_loader.theWorld[i].type < 200)
-			{ CREATE_MODEL_IF_NOT_EXCEPTION(objModel[i], I_AM_2D, SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows); }
-			else 
-			{ CREATE_MODEL_IF_NOT_EXCEPTION(objModel[i], I_AM_3D, SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows); }
-
-			objModel[i]->m_ObjId = i; //SYNC-ID: objModel[i] with: xml_loader.theWorld[i]
-			objModel[i]->xmlId = SystemHandle->xml_loader.theWorld[i].id;
-
-	#if   !defined USE_SHADOW_INSTANCES
-			SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows = false;
-			SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows = false;
-			objModel[i]->ModelCastShadow = false;
-			objModel[i]->ModelRenderShadow = false;
-	#else
-		#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
-			objModel[i]->ModelCastShadow = SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows = SystemHandle->xml_loader.theWorld[i].castShadow;
-			objModel[i]->ModelRenderShadow = SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows = SystemHandle->xml_loader.theWorld[i].renderShadows;
-		#endif
-	#endif
-			TCHAR wfilename[MAX_STR_LEN] = { 0 }; atow(wfilename, SystemHandle->xml_loader.theWorld[i].filename, MAX_STR_LEN);
-			if (WOMA::game_state == GAME_STOP)
-				return false;
-
-			
-
-	#if DX_ENGINE_LEVEL >= 73 && defined BILLBOARD_FOR_WINDY_GRASS
-			if (i >= world_xml_objs)
-			{
-				if (SystemHandle->xml_loader.theWorld[i].type == 11)
-					((DXmodelClass*)objModel[i])->isAnimatedBill = true;
-				//else
-				//	((DXmodelClass*)objModel[i])->isAnimatedBill = false;
-			}
-	#endif
-
-			//Load OBJ or W3D:
-			if (!(objModel[i]->LoadModel(wfilename, Driver, 
-				(SHADER_TYPE)SystemHandle->xml_loader.theWorld[i].shader,
-				wfilename,
-				SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows,
-				SystemHandle->xml_loader.theWorld[i].WOMA_object.instances)))
-			{
-				WomaMessageBox(wfilename, TEXT("Error Loading: "), FALSE); return false;
-			}
-
-		}
-
-		if (i >= world_xml_objs) //Are we a Billboard?
-		{
-			((DXmodelClass*)objModel[i])->isBill = true;
-
-			if (SystemHandle->xml_loader.theWorld[i].meshSRV) {
-				((DXmodelClass*)objModel[i])->meshSRV11[0] = SystemHandle->xml_loader.theWorld[i].meshSRV;
-			}
-		}
-
-#if defined ALLOW_CBIND_PROGRESS_BAR
-#if defined USE_INTRO_VIDEO_DEMO
-		if (DXsystemHandle->g_DShowPlayer == NULL || (DXsystemHandle->g_DShowPlayer->m_state != STATE_RUNNING))
-#endif
-		{
-		UINT progress = ((float)WOMA::num_loading_objects / (float)(objModel_size + theWorld_size)) * 100.0f;
-		SendMessage(SystemHandle->hwndPrgBar, PBM_SETPOS, (WPARAM)progress, 0);
-		StringCchPrintf(title, MAX_STR_LEN, TEXT("Loading: %d / %d"), WOMA::num_loading_objects, objModel_size + theWorld_size);
-		SetWindowText(SystemHandle->settingstext, title);
-		}
-#endif
-
-		WOMA::sceneManager->addModel(WOMA::sceneManager->RootNode, objModel[i]);			// Add node to nodesList: RootNode
+		TCHAR wfilename[MAX_STR_LEN] = { 0 }; atow(wfilename, SystemHandle->xml_loader.theWorldXML[i].filename, MAX_STR_LEN);
+#if defined MAIN_RENDER_MAIN_OBJ
+		WOMA_LOAD_OBJ(pContext, 0, Driver, i, wfilename);
 
 		WOMA::num_loading_objects++;
+#endif
 
 		//Allow Refresh on Timer:
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))	// There is any OS messages to handle?
@@ -912,7 +938,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(WomaDriverClass* Driver)
 	// --------------------------------------------------------------------------------------------
 	//Finally, launch dynamic Load Compound/OBJ Thread ////////////////////////////////////////////
 	// --------------------------------------------------------------------------------------------
-#if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION
+#if defined CHECK_OBJ_COLISION && defined MAIN_RENDER_MAIN_OBJ //CHECK_COMPOUND_COLISION
 	for (UINT i = 0; i < WOMA::num_loading_objects; i++) {
 		compoundTreeLoadingOrder[i].compoundTreeId = i;
 		compoundTreeLoadingOrder[i].order = 0;

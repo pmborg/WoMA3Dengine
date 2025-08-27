@@ -39,8 +39,9 @@ struct PSIn
 Texture2D fireTexture : register(t0);
 Texture2D noiseTexture : register(t1);
 Texture2D alphaTexture : register(t2);
-SamplerState SampleType;
-SamplerState SampleType2;
+
+SamplerState SampleType : register(s0); // Matches PSSetSamplers(0)
+SamplerState SampleType2 : register(s1); // Matches PSSetSamplers(1)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader

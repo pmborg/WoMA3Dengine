@@ -323,10 +323,6 @@
         #define USELIGHTSIZE 10
     #endif
 
-    #if DX_ENGINE_LEVEL >= 37   //37-
-        
-    #endif
-
     #if DX_ENGINE_LEVEL >= 38   //38-
             #define SAVEW3D
     #endif
@@ -441,7 +437,7 @@
         #define SCENE_TERRAIN_COLLISION
         #define EXTRA_INFO
     #endif
-    
+
     //--------------------------------------------------------------------------------------------------------------------------
     #if DX_ENGINE_LEVEL >= 70 //SCENE_BILLBOARDS
         #define TUTORIAL_CHAP 60
@@ -469,14 +465,14 @@
     #if DX_ENGINE_LEVEL == 76 || defined (RELEASE) && DX_ENGINE_LEVEL >= 76
         #define USE_INTRO_VIDEO_DEMO
     #endif
-    #if DX_ENGINE_LEVEL >= 77 && defined SCENE_BILLBOARDS
+    #if DX_ENGINE_LEVEL == 77 && defined SCENE_BILLBOARDS
         #define USE_INSTANCES_FOR_TREES
     #endif
     #if DX_ENGINE_LEVEL >= 78
         #define USE_BOUNDING_VOLUMES
         #define CHECK_OBJ_COLISION
     #endif
-    
+
     //-------------------------------------------------------------------------------------------------------
     //MAIN_RENDER:
     #define MAIN_RENDER_TITLE           //24
@@ -554,10 +550,10 @@
     //#define USE_AABB_COLISION_CHECK // Default: off
 #endif
     
-#if DX_ENGINE_LEVEL >= 90       // From now on DX: Will use W3D + DDS
-	#undef  USE_MAP_EDITOR
-	#undef  ALLOW_CBIND_PROGRESS_BAR								
-	#undef USE_INSTANCES_FOR_TREES
+#if DX_ENGINE_LEVEL >= 90       // Replacing Billboards with advanced gaming like objects(Low-Poly)
+    #undef  USE_MAP_EDITOR
+    #undef  ALLOW_CBIND_PROGRESS_BAR
+    //#define USE_INSTANCES_FOR_TREES90
 #endif
 
 #if DX_ENGINE_LEVEL >= 91
@@ -570,18 +566,23 @@
 	#define USE_DX11_1_SETUP
 	#define USE_FASTER_BILL_SHADER
 #endif
-    
 
-#if DX_ENGINE_LEVEL >= 92
-	#define USE_FASTER_BILL_SHADER
+#if DX_ENGINE_LEVEL >= 93
+	//#define EXPORT_ATLAS_DEBUG_PNG // Internal Debug
+	//#define GENERATE_ATLAS_INTEGRATION_DDS
+	#define USE_GENERATE_ATLAS_INTEGRATION_DDS
 #endif
 
-	#define FORCE_MATH_AVX
+
 
     //-------------------------------------------------------------------------------------------------------
-    #undef  dx12_upload_old_way
-
 	#if !defined NDEBUG	
+	#if DX_ENGINE_LEVEL != 76 && DX_ENGINE_LEVEL != 86
 	#undef USE_INTRO_VIDEO_DEMO
-	#define ALLOW_CBIND_PROGRESS_BAR
 	#endif
+	#if defined WINDOWS_PLATFORM
+		#define ALLOW_CBIND_PROGRESS_BAR
+	#endif
+	#endif
+
+	#undef  dx12_upload_old_way

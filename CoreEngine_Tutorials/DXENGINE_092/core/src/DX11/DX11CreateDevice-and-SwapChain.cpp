@@ -287,7 +287,7 @@ bool DX11Class::list_resolutions()
 		if (factory6) EnumerateAdaptersFactory6(factory6.Get(), adapters);
 		if (adapters.empty()) EnumerateAdaptersFactory1(factory1.Get(), adapters);
 
-		// 5) CreateDevice: TRY HARDWARE FIRST
+		// 5) CreateDevice: TRY HARDWARE FIRST for DX11.0 interfaces
 		hr = E_FAIL;
 		for (size_t i = 0; i < adapters.size(); ++i) 
 		{
@@ -305,9 +305,15 @@ bool DX11Class::list_resolutions()
 			if (SUCCEEDED(hr)) break;
 		}
 
-		// 7) Upgrade to *1 interfaces if available
+		// 6) Upgrade to DX11.1 interfaces if available
 		(void)m_device.As(&m_device1);
 		(void)m_Context.As(&m_Context1);
+
+		// 7) Upgrade to DX11.2 interfaces if available
+		(void)m_Context.As(&m_Context2);
+
+		// 7.1) Upgrade to DX11.3 interfaces if available
+		(void)m_Context.As(&m_Context3);
 
 		m_device11 = m_device.Get();
 		m_deviceContext = m_Context.Get();
@@ -318,9 +324,80 @@ bool DX11Class::list_resolutions()
 			mt->SetMultithreadProtected(TRUE);
 		}
 		
+		// 9) Check Hardware Requirements
+		D3D11_FEATURE_DATA_D3D11_OPTIONS options = {};
+		hr = m_device->CheckFeatureSupport(
+			D3D11_FEATURE_D3D11_OPTIONS,
+			&options,
+			sizeof(options)
+		);
+
+		// OutputMergerLogicOp	1
+		// UAVOnlyRenderingForcedSampleCount	1
+		// DiscardAPIsSeenByDriver	1
+		// FlagsForUpdateAndCopySeenByDriver	1
+		// ClearView	1
+		// CopyWithOverlap	1
+		// ConstantBufferPartialUpdate	1
+		// ConstantBufferOffsetting	1
+		// MapNoOverwriteOnDynamicConstantBuffer	1
+		// MapNoOverwriteOnDynamicBufferSRV	1
+		// MultisampleRTVWithForcedSampleCountOne	1
+		// SAD4ShaderInstructions	1
+		// ExtendedDoublesShaderInstructions	1
+		// ExtendedResourceSharing	1
+
+		D3D11_FEATURE_DATA_D3D11_OPTIONS1 options1 = {};
+		hr = m_device->CheckFeatureSupport(
+			D3D11_FEATURE_D3D11_OPTIONS1,
+			&options1,
+			sizeof(options1)
+		);
+
+		// TiledResourcesTier - D3D11_TILED_RESOURCES_TIER_2
+		// MinMaxFiltering - 1
+		// ClearViewAlsoSupportsDepthOnlyFormats - 1
+		// MapOnDefaultBuffers - 1
+
+		D3D11_FEATURE_DATA_D3D11_OPTIONS2 options2 = {};
+		hr = m_device->CheckFeatureSupport(
+			D3D11_FEATURE_D3D11_OPTIONS2,
+			&options2,
+			sizeof(options2)
+		);
+
+		// PSSpecifiedStencilRefSupported	0
+		// TypedUAVLoadAdditionalFormats	1
+		// ROVsSupported	1
+		// ConservativeRasterizationTier	D3D11_CONSERVATIVE_RASTERIZATION_TIER_3
+		// TiledResourcesTier	D3D11_TILED_RESOURCES_TIER_3
+		// MapOnDefaultTextures	1
+		// StandardSwizzle	0
+		// UnifiedMemoryArchitecture	0
+
+		D3D11_FEATURE_DATA_D3D11_OPTIONS3 options3 = {};
+		hr = m_device->CheckFeatureSupport(
+			D3D11_FEATURE_D3D11_OPTIONS3,
+			&options3,
+			sizeof(options3)
+		);
+
+		// VPAndRTArrayIndexFromAnyShaderFeedingRasterizer	1
+
+		if (SUCCEEDED(hr)) {
+			if (options1.TiledResourcesTier == D3D11_TILED_RESOURCES_NOT_SUPPORTED) {
+				womalog(TEXT("[INFO] Tiled Resources: NOT SUPPORTED on this GPU.\n"));
+			}
+			else {
+				womalog(TEXT("[INFO] Tiled Resources: SUPPORTED - Tier %d\n"), options1.TiledResourcesTier);
+			}
+		}
+		else {
+			womalog(TEXT("[INFO] Tiled Resources: Query failed (old SDK or GPU)\n"));
+		}
 
 #ifdef _DEBUG
-		// 9) Debug info queue setup when debug layer is active
+		// 10) Debug info queue setup when debug layer is active
 		if (DeviceFlags & D3D11_CREATE_DEVICE_DEBUG) {
 			ComPtr<ID3D11Debug> dbg;
 			if (SUCCEEDED(m_device.As(&dbg))) {
@@ -425,7 +502,7 @@ bool DX11Class::list_resolutions()
 						m_sCapabilities.MSAAquality = quality;
 						womalogauto(TEXT("DRIVER MSAAmultiSampleCount Supported: x%d\n"), m_sCapabilities.MSAAmultiSampleCount);		// Get the max Sample Count: 8
 						FSAA_possibleValues.push_back(m_sCapabilities.MSAAmultiSampleCount);
-						//womalogauto(TEXT("DRIVER multiSampleQuality: %d\n"), m_sCapabilities.MSAAquality);	// Get the max MsaaQuality: 32
+						womalogauto(TEXT("DRIVER multiSampleQuality: %d\n"), m_sCapabilities.MSAAquality);	// Get the max MsaaQuality: 32
 
 						// Use Max Setting Supported:
 						if (MSAA_COUNT == 0) // 0 = Auto Detect Max!
@@ -439,6 +516,10 @@ bool DX11Class::list_resolutions()
 			}
 		}
 
+		if (SystemHandle->AppSettings->MSAA_Anisotropic == true && MSAA_COUNT > 1) //Setup defaults!
+		{
+			MSAA_QUALITY = 1;
+		}
 		if (SystemHandle->AppSettings->MSAA_Anisotropic == false) //Setup defaults!
 		{
 			MSAA_QUALITY = 0;

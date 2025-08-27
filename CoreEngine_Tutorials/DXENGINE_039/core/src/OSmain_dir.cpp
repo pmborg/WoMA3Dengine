@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -217,8 +217,8 @@ namespace WOMA
 
 		return strHOMEchar;
 	}
-#if NOTES
-	//LINUX:	/home/pedro/projects/LinuxWoma/bin/x64/Debug
+#if _NOT
+	//LINUX:	/home/[user]/projects/LinuxWoma/bin/x64/Debug
 	//WINDOWS:	C:\WoMAengine2023\DXEngine_055
 #endif
 	//-------------------------------------------------------------------------------------------
@@ -380,8 +380,10 @@ namespace WOMA
 	#endif
 
 	#if CORE_ENGINE_LEVEL >= 2 && defined LINUX_PLATFORM
+#if _NOT
 		// "C:\Program Files\Pmborg\Woma2017\" ==> "/opt/Pmborg/Woma2017"
 		// "C:\Users\"username"\AppData\Local\Pmborg\Woma2017\" ==> ~/.pmborg/Woma2017
+#endif
 		StringCchPrintf(PROGRAM_FILES, MAX_STR_LEN, TEXT("/opt/%s/%s/"), APP_COMPANY_NAME, PROJECT_NAME);
 		StringCchPrintf(APPDATA, MAX_STR_LEN, TEXT("~/.%s/%s/"), APP_COMPANY_NAME, PROJECT_NAME);
 	#endif

@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -42,11 +42,11 @@
 #include "winCpuClass.h"
 #endif
 
-	#if defined USE_TIMER
-	#include "Math3D.h"
-	#include "fpsClass.h"
-	#include "timerClass.h"
-	#endif
+#if defined USE_TIMER
+#include "Math3D.h"
+#include "fpsClass.h"
+#include "timerClass.h"
+#endif
 
 #if defined USE_ASSIMP_LATEST && DEMO_LEVEL >= 79 && DEMO_LEVEL <= 80
 #include "GLAnimationScene.h"
@@ -58,8 +58,6 @@
 #define MAX_CLIENTS 1
 #endif
 
-
-
 #if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
 #include "virtualModelClass.h"
 extern std::vector<VirtualModelClass*> m_screenShots;
@@ -67,11 +65,11 @@ extern std::vector<VirtualModelClass*> m_screenShots;
 
 // -------------------------------------------------------------------------------------------------
 
-#if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
+#if defined USE_DIRECT_INPUT
 extern UINT g_NetID;
 #endif
 
-#if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
+#if defined USE_DIRECT_INPUT
 #include "positionClass.h"
 #if defined DX_ENGINE
 	#include "DXinputClass.h"
@@ -118,74 +116,44 @@ extern int __cdecl CompoundSortCB(const VOID* arg1, const VOID* arg2);
 #pragma warning( push )
 #pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
 
-#if true //WINDOWS_PLATFORM
+#if defined DX_ENGINE
+	#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {\
+		model = NEW DirectX::DXmodelClass(model3D, TRIANGLELIST, false, renderShadow1); IF_NOT_THROW_EXCEPTION (model); \
+	}
 
-	#if defined DX_ENGINE
-		#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {\
-			model = NEW DirectX::DXmodelClass(model3D, TRIANGLELIST, false, renderShadow1); IF_NOT_THROW_EXCEPTION (model); \
-		}
-
-		#define SAFE_SHUTDOWN_MODELDX(model) {\
-			if(model) { (model)->Shutdown(); delete ((DirectX::DXmodelClass*)model); model=NULL; } \
-		}
-	#else
-		#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1) {}
-		#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {}
-	#endif
-
-	#if (defined OPENGL3 || defined OPENGL4)
-		#define CREATE_MODELGL3_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {\
-			model = NEW GLmodelClass(model3D); IF_NOT_THROW_EXCEPTION (model); \
-		}
-
-		#define SAFE_SHUTDOWN_MODELGL3(model) {\
-			if (model) { (model)->Shutdown(); delete ((GLmodelClass*)model); model=NULL; } \
-		}
-	#else
-		#define CREATE_MODELGL3_IF_NOT_EXCEPTION(model, model3D, renderShadow) {}
-	#endif
-
-
-#define CREATE_MODEL_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2)\
-{\
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)\
-	{\
-		CREATE_MODELGL3_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2);	\
-	}\
-	else\
-	{\
-		CREATE_MODELDX_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2);\
-	}\
-}
-
+	#define SAFE_SHUTDOWN_MODELDX(model) {\
+		if(model) { (model)->Shutdown(); delete ((DirectX::DXmodelClass*)model); model=NULL; } \
+	}
 #else
-	// LINUX & ANDROID
-	//#define CREATE_MODEL_IF_NOT_EXCEPTION(model, model3D) {\
-	//	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) { model = NEW GLmodelClass(model3D); IF_NOT_THROW_EXCEPTION (model); } \
-	//}
-#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1) {}
-#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {}
+	#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1) {}
+	#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {}
+#endif
 
-#define CREATE_MODEL_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2)\
-{\
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)\
-	{\
-		CREATE_MODELGL3_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2);	\
-	}\
-	else\
-	{\
-		CREATE_MODELDX_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2);\
-	}\
-}
+#if (defined OPENGL3 || defined OPENGL4)
+	#define CREATE_MODELGL3_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {\
+		model = NEW GLmodelClass(model3D); IF_NOT_THROW_EXCEPTION (model); \
+	}
 
 	#define SAFE_SHUTDOWN_MODELGL3(model) {\
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) if (model) { (model)->Shutdown(); delete ((GLmodelClass*)model); model=NULL; } \
+		if (model) { (model)->Shutdown(); delete ((GLmodelClass*)model); model=NULL; } \
 	}
-
-	#define CAMERA_RENDER(camera) {\
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) ((GLopenGLclass*)m_Driver)->camera->Render(); \
-	}
+#else
+	#define CREATE_MODELGL3_IF_NOT_EXCEPTION(model, model3D, renderShadow) {}
 #endif
+
+
+#define CREATE_MODEL_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2)\
+{\
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)\
+	{\
+		CREATE_MODELGL3_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2);	\
+	}\
+	else\
+	{\
+		CREATE_MODELDX_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2);\
+	}\
+}
+
 #pragma warning( pop )
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -208,10 +176,10 @@ public:
 	bool Start();
 	void WOMA_APPLICATION_Shutdown();
 
-	#if defined USE_ASTRO_CLASS && defined USE_REAL_SUNLIGHT_DIRECTION //#if ENGINE_LEVEL >= 33
+	#if defined USE_ASTRO_CLASS && defined USE_REAL_SUNLIGHT_DIRECTION
 	float SunX, SunY, SunZ;
 	float MoonX, MoonY, MoonZ;
-	void Calc3DSunMoonPosition();
+	void Use3DSunMoonPosition();
 	#endif
 
 	virtual bool WOMA_APPLICATION_InitGUI();
@@ -222,7 +190,7 @@ public:
     XMVECTOR prwsPos = {}, prwsDir = {};
 #endif
 #if DX_ENGINE_LEVEL >= 23 || defined USE_VIEW2D_SPRITES
-	void AppPosRender(UINT monitorWindow);																// POS-RENDER - 2D: Render 
+	void AppPosRender(UINT monitorWindow, void* mainCtx);																// POS-RENDER - 2D: Render 
 #endif
 
 #if defined USE_LIGHT_RAY
@@ -230,7 +198,7 @@ public:
 #endif
 
 #if defined USE_LIGHT_RAY
-	void initLightRay();
+	void initLightRay(void* pContext);
 #endif
 
     UINT world_main_size = 0;
@@ -244,7 +212,7 @@ public:
 
 //83&84:
 
-#if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
+#if defined USE_DIRECT_INPUT
 	std::vector<PositionClass*> m_Position;
 #endif
 
@@ -269,7 +237,7 @@ public:
 #endif
 
 #if defined USE_SKY2D || ENGINE_LEVEL >= 27 // SKY
-    std::vector<ModelTextureLightVertexType> sky_vertexdata; //std::vector<ModelTextureVertexType> sky_vertexdata;
+    std::vector<ModelTextureLightVertexType> sky_vertexdata;
     std::vector<UINT>						 sky_indexdata;
 #endif
 
@@ -283,7 +251,7 @@ public:
 #endif
 
 #if  defined USE_RASTERTEK_TEXT_FONT
-	bool	initText();
+	bool	initText(void* pContext);
 	DirectX::ApplicationTextClass* AppTextClass = NULL;
 #endif
 
@@ -296,7 +264,7 @@ public:
 	float rescale = 0;
 
 #ifdef INTRO_DEMO
-	void	initIntroDemo();
+	void	initIntroDemo(void* pContext);
 #endif
 
 // ---------------------------------------------------------------------
@@ -304,6 +272,9 @@ public:
 // ---------------------------------------------------------------------
 
 private:
+#if defined ALLOW_CBIND_PROGRESS_BAR
+	TCHAR title[MAX_STR_LEN] = {};
+#endif
 
 #if defined USE_DIRECT_INPUT//|| defined INTRO_DEMO
 	PositionClass* m_NextPosition;
@@ -321,18 +292,6 @@ public:
 	void RenderAllTransparentCompounds();
 
 	UINT N_COMPOUNDS;
-	
-
-	/*
-	// Originally: G:\DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64\src\Applicationclass.cpp
-	compoundTree compound[] = {
-
-	//G:\woma2013\trunk\Part1\source\engine\application
-	std::vector <compoundTree>  compound;
-
-	compoundTree compound[];
-	compoundTreeLoadOrder compoundTreeLoadingOrder[];
-	*/
 #endif
 
 	//---------------------------------------------------------------------
@@ -355,25 +314,24 @@ public:
 #endif
 
 public:
-	void DemoRender();
-	void RenderDemoIntroSprites();
+	void RenderDemoIntroSprites(void* pContext);
 
 	// 2D
 #if DX_ENGINE_LEVEL >= 22 || defined USE_VIEW2D_SPRITES
 	void DEMO_WOMA_APPLICATION_Shutdown2D();
 #endif
 #if defined INTRO_DEMO || defined USE_VIEW2D_SPRITES
-	bool DEMO_WOMA_APPLICATION_InitializeSprites2D();
+	bool DEMO_WOMA_APPLICATION_InitializeSprites2D(void* pContext);
 #endif
 
 #if defined SCENE_COLOR
-	void initColorDemo();
+	void initColorDemo(void* pContext);
 #endif
 #if defined USE_TITLE_BANNER	//24
-	void	initStatic2D();
+	void	initStatic2D(void* pContext);
 #endif
 #if defined USE_CUBE // Cubes
-	bool initCubes3D();
+	bool initCubes3D(void*);
 #endif
 
 #if defined INTRO_DEMO // VIDEO+INTRO+DEMO
@@ -398,6 +356,7 @@ public:
 	MyAnimationScene* myScene = NULL;
 	bool myScene_has_animation = false;
 #endif
+
 };
 
 #endif

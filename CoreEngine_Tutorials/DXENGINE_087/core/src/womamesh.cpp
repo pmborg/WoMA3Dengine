@@ -197,11 +197,26 @@ void UpdateAllMeshAnimations(float deltaTime)
     }
 #endif
 #if DX_ENGINE_LEVEL >= 86 && defined USE_MODEL4
-    demo->animJob.UpdateTimeElapsed(womamesh4[MAIN_CHAR_MODEL1].scene, deltaTime);
+	if (womamesh4[MAIN_CHAR_MODEL1].assimpSceneModel &&
+		womamesh4[MAIN_CHAR_MODEL1].assimpSceneModel->loaded)
+	{
+		demo->animJob.UpdateTimeElapsed(womamesh4[MAIN_CHAR_MODEL1].scene, deltaTime);
+		womamesh4[MAIN_CHAR_MODEL1].assimpSceneModel->readyToRender = true;
+	}
 #endif
 #if DX_ENGINE_LEVEL == 87 && defined USE_MODEL4
-    demo->animJob.UpdateTimeElapsed(womamesh4[MAIN_CHAR_MODEL2].scene, deltaTime);
-    demo->animJob.UpdateTimeElapsed(womamesh4[MAIN_CHAR_MODEL3].scene, deltaTime);
+	if (womamesh4[MAIN_CHAR_MODEL2].assimpSceneModel &&
+		womamesh4[MAIN_CHAR_MODEL2].assimpSceneModel->loaded)
+	{
+		demo->animJob.UpdateTimeElapsed(womamesh4[MAIN_CHAR_MODEL2].scene, deltaTime);
+		womamesh4[MAIN_CHAR_MODEL2].assimpSceneModel->readyToRender = true;
+	}
+	if (womamesh4[MAIN_CHAR_MODEL3].assimpSceneModel &&
+		womamesh4[MAIN_CHAR_MODEL3].assimpSceneModel->loaded)
+	{
+		demo->animJob.UpdateTimeElapsed(womamesh4[MAIN_CHAR_MODEL3].scene, deltaTime);
+		womamesh4[MAIN_CHAR_MODEL3].assimpSceneModel->readyToRender = true;
+	}
 #endif
 }
 

@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -194,11 +194,11 @@ int MainWindowPaint(UINT monitor)
 	if (WOMA::game_state == GAME_LOADING)
 	{
 		TCHAR printOnLoading[MAX_STR_LEN] = { 0 };
-		if (WOMA::num_loading_objects < SystemHandle->xml_loader.theWorld.size())
+		if (WOMA::num_loading_objects < SystemHandle->xml_loader.theWorldXML.size())
 	#if defined SAVEW3D
-			StringCchPrintf(printOnLoading, MAX_STR_LEN, TEXT("Loading OBJ -> Saving W3D: [%d/%d] %s"), WOMA::num_loading_objects, SystemHandle->xml_loader.theWorld.size(), SystemHandle->xml_loader.theWorld[WOMA::num_loading_objects-1].filename);
+			StringCchPrintf(printOnLoading, MAX_STR_LEN, TEXT("Loading OBJ -> Saving W3D: [%d/%d] %s"), WOMA::num_loading_objects, SystemHandle->xml_loader.theWorldXML.size(), SystemHandle->xml_loader.theWorldXML[WOMA::num_loading_objects-1].filename);
 	#else
-			StringCchPrintf(printOnLoading, MAX_STR_LEN, TEXT("Loading OBJ: [%d/%d] %s"), WOMA::num_loading_objects, SystemHandle->xml_loader.theWorld.size(), SystemHandle->xml_loader.theWorld[WOMA::num_loading_objects - 1].filename);
+			StringCchPrintf(printOnLoading, MAX_STR_LEN, TEXT("Loading OBJ: [%d/%d] %s"), WOMA::num_loading_objects, SystemHandle->xml_loader.theWorldXML.size(), SystemHandle->xml_loader.theWorldXML[WOMA::num_loading_objects - 1].filename);
 	#endif
 
 		Woma_Label TextToPrintOnLoading;

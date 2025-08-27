@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -40,7 +40,7 @@
 
 //------------------------------------------------------------------------------------------
 #if defined USE_ASTRO_CLASS && defined USE_REAL_SUNLIGHT_DIRECTION //#if ENGINE_LEVEL >= 33
-	void ApplicationClass::Calc3DSunMoonPosition()
+	void ApplicationClass::Use3DSunMoonPosition()
 	{
 		SunX = SunDistance * FAST_sin(initWorld->SunAzimuth);	// Real Sun Position on Sky:
 		SunZ = SunDistance * FAST_cos(initWorld->SunAzimuth);	// Real Sun Position on Sky:
@@ -112,9 +112,14 @@
 		#endif
 	}
 
-void ApplicationClass::initLightRay()
+void ApplicationClass::initLightRay(void* ctx)
 {
 	m_LightVertexVector = &MyLightVertexVector;
+#if defined DX_ENGINE
+	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
+#else
+	#define pContext ctx
+#endif
 
 	// ----------------------------------------------------------------------------
 	#if defined USE_LIGHT_RAY // Where is the Light (Ray of the Light)
@@ -136,7 +141,7 @@ void ApplicationClass::initLightRay()
 		}
 
 		m_lightRayModel->PrimitiveTopology = LINELIST; // Draw just a line
-		ASSERT (m_lightRayModel->LoadColor(TEXT("m_lightRayModel"),m_Driver, SHADER_COLOR, &MyLightVertexVector, NULL));
+		ASSERT (m_lightRayModel->LoadColor(pContext,TEXT("m_lightRayModel"), m_Driver, SHADER_COLOR, &MyLightVertexVector, NULL, 0));
 	}
 	#endif
 }

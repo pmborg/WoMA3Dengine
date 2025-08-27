@@ -521,17 +521,18 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 	DeleteFile("used_imgs.txt");
 #endif
 
+#if defined WINDOWS_PLATFORM
 	cpuSupportsAVX512f = cpu_supports_avx512f();
-#ifdef __AVX512F__
+	#ifdef __AVX512F__
 	//NOTE: If there an exception here: it's because this/your CPU don't support the fast AVX512, so change project settings to compile in slow AVX2 or AVX only!
 	ASSERT(cpuSupportsAVX512f); // Check for fast WIN11(AVX512) Instructions set support, if not compile for WIN10(AVX2)
-#endif										 
+	#endif
 
 	womalogauto(TEXT("Cpu Supports AVX512: %s\n"), cpuSupportsAVX512f ? TEXT("true") : TEXT("false"));
+#endif
 
     womalogauto("<%s> STARTUP ENDED\n", PROJECT_NAME);
 }
-
 void APPLICATION_STOP()
 {
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
@@ -965,6 +966,7 @@ std::string original_files[] = {
 };
 #endif
 
+#if defined WINDOWS_PLATFORM
 #include <immintrin.h>
 #include <intrin.h>
 bool cpu_supports_avx512f() {
@@ -976,6 +978,7 @@ bool cpu_supports_avx512f() {
 	}
 	return false;
 }
+#endif
 
 bool StartsWithDotDotSlash(const std::string& fileNamePath)
 {

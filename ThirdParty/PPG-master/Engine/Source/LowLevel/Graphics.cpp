@@ -104,10 +104,19 @@ ID3D11Buffer* Graphics::CreateBuffer(UINT byteWidth, UINT bindFlags, const void*
     return constantBuffer;
 }
 
-void Graphics::UpdateBuffer(ID3D11DeviceContext* m_DeviceContext, ID3D11Buffer* buffer, const void* resource)
+void Graphics::UpdateBuffer(ID3D11DeviceContext* m_deviceContext, ID3D11Buffer* buffer, const void* resource)
 {
-    m_DeviceContext->UpdateSubresource(buffer, 0, nullptr, resource, 0, 0);
+#if defined USE_DX11_1_SETUP
+	auto deviceContext1 = reinterpret_cast<ID3D11DeviceContext1*>(m_deviceContext);
+
+	//DX11.1
+	deviceContext1->UpdateSubresource1(buffer, 0, nullptr, resource, 0, 0, D3D11_COPY_DISCARD);
+#else
+	// DX11
+	m_deviceContext->UpdateSubresource(buffer, 0, nullptr, resource, 0, 0);
+#endif
 }
+
 void Graphics::UnbindShaderResourceView(UINT startSlot)
 {
     m_DeviceContext->PSSetShaderResources(startSlot, 1, nullSRV);

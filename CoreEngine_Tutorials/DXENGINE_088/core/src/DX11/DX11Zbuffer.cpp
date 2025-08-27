@@ -127,52 +127,51 @@ void DirectX::DX11Class::TurnZBufferOff(void* ctx)
 // ----------------------------------------------------------------------------------------------
 // Select the Depth-Buffer Format (16, 24, 32, 64, or default...)
 //----------------------------------------------------------------------------------------------
-void DX11Class::SelectDepthFormat(UINT depthBits, BOOL fullscreen)
+DXGI_FORMAT DirectX::DX11Class::SelectDepthFormat(UINT depthBits, BOOL fullscreen)
 //----------------------------------------------------------------------------------------------
 {
-	BUFFER_DEPTH_FORMAT = DXGI_FORMAT_UNKNOWN;
+	DXGI_FORMAT buffer_depth_format = DXGI_FORMAT_UNKNOWN;
 
 	switch (depthBits)
 	{
 		// REF: http://developer.download.nvidia.com/presentations/2008/GDC/GDC08-D3DDay-Performance.pdf
 
 	case 16://A buffer that contains 16-bits of depth data:
-		BUFFER_DEPTH_FORMAT = DXGI_FORMAT_D16_UNORM;			// Fastest!
+		buffer_depth_format = DXGI_FORMAT_D16_UNORM;			// Fastest!
 		break;
 
 	case 24:// A 32 bit buffer that contains 24 bits of depth data and 8 bits of stencil data:
-		BUFFER_DEPTH_FORMAT = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		buffer_depth_format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 		break;
 
 	case 32://A buffer that contains 32-bits of depth data:
-		BUFFER_DEPTH_FORMAT = DXGI_FORMAT_D32_FLOAT;			// High-precision but slower
+		buffer_depth_format = DXGI_FORMAT_D32_FLOAT;			// High-precision but slower
 		break;
 
 	default:// Default:"Zero" value => use the Best!
 	case 64:// A double 32 bit buffer that contains 32 bits of depth data and 8 bits padded with 24 zero bits of stencil data:
-		BUFFER_DEPTH_FORMAT = DXGI_FORMAT_D32_FLOAT_S8X24_UINT;	// Best Results but even slower
+		buffer_depth_format = DXGI_FORMAT_D32_FLOAT_S8X24_UINT;	// Best Results but even slower
 		break;
 	}
 
 	// Verify our target format is supported by the current device
 	// Handles WDDM 1.0 or WDDM 1.1 device driver cases as well as DirectX 11.0 Runtime
 	UINT support = 0;
-	HRESULT hr = m_device11->CheckFormatSupport(BUFFER_DEPTH_FORMAT, &support);
+	HRESULT hr = m_device11->CheckFormatSupport(buffer_depth_format, &support);
 
 	// Not Supported? We are forced to use the Default!
 	if (hr != S_OK) {
 		// which is a 32-bit z-buffer format that supports 24 bits for depth buffer and 8 bits for stencil buffer
 		WomaMessageBox(TEXT("WARNING: The specified Depth Buffer Size is invalid!\n Using the default"), TEXT("WARNING"));
-		BUFFER_DEPTH_FORMAT = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		buffer_depth_format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	}
+
+	return buffer_depth_format;
 }
 
 #if !defined USE_DX11_1_SETUP
 bool DX11Class::createDepthStencil(int screenWidth, int screenHeight, BOOL fullscreen, UINT depthBits)
 {
-	//Init Step: 3 Note: need device (DX11)
-	SelectDepthFormat(depthBits, fullscreen);
-
 	// We'll use this to create a depth buffer so that our polygons can be rendered properly in 3D space. 
 	// At the same time we will attach a stencil buffer to our depth buffer. 
 	// The stencil buffer can be used to achieve effects such as motion blur, volumetric shadows, and other things:
@@ -185,10 +184,12 @@ bool DX11Class::createDepthStencil(int screenWidth, int screenHeight, BOOL fulls
 	depthBufferDesc.MipLevels = 1; //FIX ME! With 4 (createSetDepthStencilView Might FAIL!)
 	depthBufferDesc.ArraySize = 1;
 
+	BUFFER_DEPTH_FORMAT = SelectDepthFormat(depthBits, fullscreen);
 	depthBufferDesc.Format = BUFFER_DEPTH_FORMAT; //DXGI_FORMAT_D24_UNORM_S8_UINT; //The formats that support stenciling are: DXGI_FORMAT_D24_UNORM_S8_UINT and DXGI_FORMAT_D32_FLOAT_S8X24_UINT.
-	depthBufferDesc.SampleDesc.Count = MSAA_COUNT;			//Anti-Alising: MultiSample tech.
-	depthBufferDesc.SampleDesc.Quality = MSAA_QUALITY;		//Anti-Alising: Texture Filtering tech. (MSAA > 0)
 	depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+
+	depthBufferDesc.SampleDesc.Count = MSAA_COUNT;			//Anti-Aliasing: MultiSample tech.
+	depthBufferDesc.SampleDesc.Quality = MSAA_QUALITY;		//Anti-Aliasing: Texture Filtering tech. (MSAA > 0)
 
 	//depthBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	//depthBufferDesc.CPUAccessFlags = 0;
@@ -223,9 +224,6 @@ bool DX11Class::createDepthStencil(int screenWidth, int screenHeight, BOOL fulls
 		depthTexFormat = DXGI_FORMAT_R24G8_TYPELESS;
 		dsvFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	}
-
-	// Optional: your old selection helper, but we’ll still override SampleDesc from back buffer
-	//SelectDepthFormat(depthBits, full-screen); // Populate: BUFFER_DEPTH_FORMAT
 
 	// For each window/swap chain
 	for (size_t i = 0; i < DX11windowsArray.size(); ++i)
@@ -270,7 +268,8 @@ bool DX11Class::createDepthStencil(int screenWidth, int screenHeight, BOOL fulls
 			: D3D11_DSV_DIMENSION_TEXTURE2D;
 		dsvDesc.Flags = 0;
 
-		IF_FAILED_RETURN_FALSE(m_device11->CreateDepthStencilView(win.m_depthStencilBuffer, &dsvDesc, &win.m_depthStencilView));
+		IF_FAILED_RETURN_FALSE(m_device11->CreateDepthStencilView(
+			win.m_depthStencilBuffer, &dsvDesc, &win.m_depthStencilView));
 	}
 
 	return true;

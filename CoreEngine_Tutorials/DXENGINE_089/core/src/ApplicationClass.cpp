@@ -404,7 +404,7 @@ void ApplicationClass::Shutdown()
 		else 
 	#endif
 		{
-			if (objModel[i] && !SystemHandle->xml_loader.theWorld[i].CLONE)
+			if (objModel[i] && !SystemHandle->xml_loader.theWorldXML[i].CLONE)
 			{
 				SAFE_SHUTDOWN_MODELDX(objModel[i]);
 			}
@@ -677,7 +677,7 @@ bool ApplicationClass::Initialize(void* pContext, WomaDriverClass* Driver)
 	Startauxcommonfunctions(DX_ENGINE_LEVEL);
 #endif
 //########################################### 3D: STUFF ###########################################
-	// (m_Light && xml_loader.theWorld) and SCENE MANAGER: QuadTree object Loader/Render
+	// (m_Light && xml_loader.theWorldXML) and SCENE MANAGER: QuadTree object Loader/Render
 	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(pContext, Driver));
 //########################################### 2D: STUFF ###########################################
  
@@ -690,8 +690,7 @@ bool ApplicationClass::Initialize(void* pContext, WomaDriverClass* Driver)
 #endif
 	// 2D-FONTS: (Android / Linux)
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
-	r_Application = new RApplicationClass;
-	_tprintf("r_Application->Initialize(m_videoDisplay, m_hwnd, screenWidth, screenHeight)\n");
+	r_Application = NEW RApplicationClass;
 	IF_NOT_RETURN_FALSE(r_Application->Initialize(SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT));
 #endif
 

@@ -19,6 +19,7 @@
 
 #include "SceneNode.h"
 #include "QuadTree.h"
+#include "Tree.h"
 
 class SceneManager
 {
@@ -36,7 +37,8 @@ public:
 
 	SceneNode* RootNode;
 
-	std::vector<VirtualModelClass*> opacModelList;
+	std::vector<VirtualModelClass*> visibleModelList;
+	std::vector<Tree> visibleBillboardList;
 
 	//private:
 	QuadTree quadTree;

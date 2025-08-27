@@ -104,6 +104,10 @@ static const D3D12_INPUT_ELEMENT_DESC lightPolygonLayout[] =
 };
 #endif
 
+//-------------------------------------------------------------------------------------------------------------
+
+
+
 //-------------------------------------------------------------------------------------------------
 static const D3D11_INPUT_ELEMENT_DESC lightNormalPolygonLayout11[] =
 {
@@ -473,7 +477,7 @@ namespace DirectX {
 			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 			{
 				polygonLayout = &lightPolygonLayout[0];
-				numElements = _countof(lightPolygonLayout); //EQ: sizeof(lightPolygonLayout) / sizeof(lightPolygonLayout[0];	// Get a count of the elements in the layout.			
+				numElements = _countof(lightPolygonLayout);
 			}
 #endif
 #if defined DX11 || defined DX9
@@ -1635,11 +1639,6 @@ namespace DirectX {
 
 		dataVSptr->VShasShadowMap = castShadow;
 
-//#if  DX_ENGINE_LEVEL >= 77
-//        if (m_shaderType == SHADER_TEXTURE_GS_INSTANCED)
-//            dataVSptr->VS_USE_WVP = FALSE;
-//        else
-//#endif
 		dataVSptr->VS_USE_WVP = VS_USE_WVP;
 
 		// BLOCK: VS5
@@ -1656,9 +1655,9 @@ namespace DirectX {
 
 		dataVSptr->VSshaderType = VSshaderType;
 
-		if (m_ObjId>=0 && SystemHandle->xml_loader.theWorld.size() > 0)
-			if (SystemHandle->xml_loader.theWorld[m_ObjId].rotY >= 0)
-				dataVSptr->VSrotY = DEG2RAD(SystemHandle->xml_loader.theWorld[m_ObjId].rotY);
+		if (m_ObjId>=0 && SystemHandle->xml_loader.theWorldXML.size() > 0)
+			if (SystemHandle->xml_loader.theWorldXML[m_ObjId].rotY >= 0)
+				dataVSptr->VSrotY = DEG2RAD(SystemHandle->xml_loader.theWorldXML[m_ObjId].rotY);
 #if TUTORIAL_CHAP >= 62 // FIRE
 		if (m_shaderType == SHADER_FIRE)
 		{
@@ -1689,7 +1688,7 @@ namespace DirectX {
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 		{
 			deviceContext11->Unmap(m_VertexShaderBuffer11, 0);						// Unlock the constant buffer.
-			deviceContext11->VSSetConstantBuffers(0, 1, &m_VertexShaderBuffer11);	// Finanly set the "Constant" buffer in the vertex shader with the updated values.
+			deviceContext11->VSSetConstantBuffers(0, 1, &m_VertexShaderBuffer11);	// Finally set the "Constant" buffer in the vertex shader with the updated values.
 		}
 #endif
 
@@ -1828,7 +1827,7 @@ namespace DirectX {
 			}
 #endif
 			if (castShadow)
-				deviceContext->PSSetSamplers(2, 1, &m_sampleStateClamp11);
+				deviceContext->PSSetSamplers(2, 1, &m_sampleStateClamp11); // or 0, 2
 
 			// VS: Set CODE to Run on Shaders:
 			deviceContext->VSSetShader(m_vertexShader11, NULL, 0);		// Set the vertex code that will be used to process vertices

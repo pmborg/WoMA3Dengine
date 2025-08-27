@@ -224,7 +224,12 @@ void UpdateAllMeshAnimations(float deltaTime)
     }
 #endif
 #if DX_ENGINE_LEVEL >= 86 && defined USE_MODEL4
-    demo->animJob.UpdateTimeElapsed(womamesh4[MAIN_CHAR_MODEL1].scene, deltaTime);
+	if (womamesh4[MAIN_CHAR_MODEL1].assimpSceneModel &&
+		womamesh4[MAIN_CHAR_MODEL1].assimpSceneModel->loaded)
+	{
+		demo->animJob.UpdateTimeElapsed(womamesh4[MAIN_CHAR_MODEL1].scene, deltaTime);
+		womamesh4[MAIN_CHAR_MODEL1].assimpSceneModel->readyToRender = true;
+	}
 #endif
     if (womamesh4[USING_CHAR_MODEL_ANIMATION].assimpSceneModel &&
         womamesh4[USING_CHAR_MODEL_ANIMATION].assimpSceneModel->loaded)

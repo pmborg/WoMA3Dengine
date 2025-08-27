@@ -197,7 +197,7 @@ SceneModel* SceneModel::LoadModelToScene(UINT dxlevel, bool enginefile, UINT typ
     ModelLoader ml = ModelLoader(pAssimpScene, scene, graphics, meshFileName, parentIndex);
     // LOAD ASSIMP data to our model:
     // ------------------------------
-    SceneModel* model = ml.LoadModel(DX_ENGINE_LEVEL, type);
+    SceneModel* model = ml.LoadModel(dxlevel/*DX_ENGINE_LEVEL*/, type);
 
     aiScene* assimpScene;
     Assimp::Importer animImporter;

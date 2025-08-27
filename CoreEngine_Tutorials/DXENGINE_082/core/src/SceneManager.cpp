@@ -159,7 +159,7 @@ void SceneManager::CreateRootNode(UINT worldSizeDiameter, float* color)
 void SceneManager::addModel (SceneNode* node, VirtualModelClass* model)
 {
 	// Create SceneNode
-	SceneNode* newNode = NEW SceneNode(model->PosX, model->PosY, model->PosZ, model->boundingSphere);
+	SceneNode* newNode = NEW SceneNode(model->PosX, model->PosY, model->PosZ, MAX(1, model->boundingSphere));
 
 	// addModel to SceneNode
 	newNode->AddStateModel (model);

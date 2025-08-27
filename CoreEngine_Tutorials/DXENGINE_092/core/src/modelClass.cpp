@@ -1346,8 +1346,9 @@ bool ModelClass::CreateObject(void* pContext, void* XmodelClass, TCHAR* objectNa
 	else
 		//SHADER_TEXTURE_LIGHT
 		//SHADER_TEXTURE_LIGHT_RENDERSHADOW
-		if ((obj3d.hasNorm || shader_type == SHADER_TEXTURE_LIGHT) && shader_type != SHADER_FIRE)
+		if ((obj3d.hasNorm || shader_type == SHADER_TEXTURE_LIGHT || shader_type == SHADER_BILLBOARD_ATLAS_FAST) && shader_type != SHADER_FIRE)
 		{
+			{
 			std::vector<ModelTextureLightVertexType> modelTextureLightVertex;
 			ModelTextureLightVertexType tempVert;
 			for (UINT j = 0; j < obj3d.m_vertexCount; ++j)
@@ -1356,9 +1357,9 @@ bool ModelClass::CreateObject(void* pContext, void* XmodelClass, TCHAR* objectNa
 				tempVert.y = obj3d.vertPos[obj3d.vertPosIndex[j]].y;
 				tempVert.z = obj3d.vertPos[obj3d.vertPosIndex[j]].z;
 
-#if defined CHECK_OBJ_COLISION
+			#if defined CHECK_OBJ_COLISION
                 ((DXmodelClass*)XmodelClass)->bottleVertPosArray.push_back(XMFLOAT3(tempVert.x, tempVert.y, tempVert.z));
-#endif
+			#endif
 
 				tempVert.tu = obj3d.vertTexCoord[obj3d.vertTCIndex[j]].x;
 				tempVert.tv = obj3d.vertTexCoord[obj3d.vertTCIndex[j]].y;
@@ -1378,10 +1379,11 @@ bool ModelClass::CreateObject(void* pContext, void* XmodelClass, TCHAR* objectNa
 
 			if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
                 ((DXmodelClass*)XmodelClass)->LoadLight((ID3D11DeviceContext*)pContext, (TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, &modelTextureLightVertex, &obj3d.indices32, 0);
-        #if (defined OPENGL3 || defined OPENGL40) 
+			#if (defined OPENGL3 || defined OPENGL40) 
 			else
 				((GLmodelClass*)XmodelClass)->LoadLight(pContext, (TCHAR*)filename.c_str(), g_driver, /*shader_type*/(renderShadow) ? SHADER_TEXTURE_LIGHT_RENDERSHADOW : SHADER_TEXTURE_LIGHT, & obj3d.textureNameArray, & modelTextureLightVertex, & obj3d.indices32);
-		#endif
+			#endif
+			}
 		}
 		else
 			// SHADER_TEXTURE - 31

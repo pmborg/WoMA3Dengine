@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -18,14 +18,22 @@
 // PURPOSE: MAIN PURPOSE: Work as a DirectX 11 Driver.
 //
 // ----------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234525822;
 
 #include "OSengine.h"
 #include "mem_leak.h"
 #if defined DX_ENGINE
 #include "OSmain_dir.h"
-#include <d3d11.h>
+
 #if defined DX11 || defined DX9
+
+#include <d3d11.h>
+
+#if defined USE_DX11_1_SETUP
+#include <d3d11_1.h>   // For ID3D11DeviceContext1 + OMSetRenderTargets1
+#include <d3d11_3.h>   // For ID3D11DeviceContext3 features (optional, Win10+)
+#include <dxgi1_6.h>
+#endif
 
 #include "InputClass.h"
 
@@ -38,12 +46,19 @@
 #include "dx11Class.h"
 
 #if D3D11_SPEC_DATE_YEAR == 2009 //defined DX9 
-#include <D3dx9core.h>		//D3DX_SDK_VERSION (Checks for the existance of the correct D3DX library version)
+#include <D3dx9core.h>		//D3DX_SDK_VERSION (Checks for the existence of the correct D3DX library version)
+#endif
+
+#if defined(_WIN32_WINNT_WIN8) && _WIN32_WINNT >= _WIN32_WINNT_WIN8
+#include <Windows.h>
+#include <VersionHelpers.h>
 #endif
 
 // ----------------------------------------------------------------------------------------------
-// Gloabals:
+// Globals:
 // ----------------------------------------------------------------------------------------------
+std::vector<DXwindowDataContainer> DX11windowsArray;													
+std::vector<UINT> FSAA_possibleValues;
 
 namespace DirectX {
 
@@ -60,7 +75,7 @@ DX11Class::~DX11Class() // Used for Static Classes
 DX11Class::DX11Class()
 // ----------------------------------------------------------------------------------------------
 {
-	// WomaDriverClass / Public: ------------------------------------------------------
+	// WomaDriverClass / Public: -------------------------------------------------
 	CLASSLOADER();
 	WomaIntegrityCheck = 1234525217;
 
@@ -69,8 +84,13 @@ DX11Class::DX11Class()
 
 	// Video Card Info:
 	// ---------------------------------------------------------------------------
-	if (!WOMA::UseWarpDevice)
-		_tcscpy_s(driverName, sizeof(driverName), TEXT("DX11"));
+	if (!WOMA::UseWarpDevice) {
+#if defined USE_DX11_1_SETUP
+		_tcscpy_s(driverName, sizeof(driverName), TEXT("DX11.1"));
+#else
+		_tcscpy_s(driverName, sizeof(driverName), TEXT("DX11 legacy"));
+#endif
+	}
 	else
 		_tcscpy_s(driverName, sizeof(driverName), TEXT("DX11 WARP"));
 
@@ -82,14 +102,14 @@ DX11Class::DX11Class()
 	ZeroMemory( &adapterDesc_Description, sizeof(adapterDesc_Description) );
 	ufreededicatedVideoMem = NULL;
 
-	// List of resoltions availabel to Use
+	// List of resolutions available to Use
 	// ---------------------------------------------------------------------------
 	numerator = denominator = 1;
 	MonitorNumber = 0;	// <- Will have the number of Monitors
 	numModes = NULL;
 
 	// MSAA Used:
-	// ----------------------------------------------------------------------------
+	// ---------------------------------------------------------------------------
 	if (SystemHandle->AppSettings->MSAA_Anisotropic)
 		MSAA_COUNT = MAX(1, SystemHandle->AppSettings->MSAA_AnisotropicLevel);	// Req. Note: DX12 min: 1
 	else
@@ -97,23 +117,23 @@ DX11Class::DX11Class()
 	MSAA_QUALITY = 0;																	// Req. Note: default: 1
 
 	// DX11Class()
-	// Public: ------------------------------------------------------------------------
+	// Public: -------------------------------------------------------------------
 	m_device11 = NULL;
+	m_deviceContext = NULL;
 
 	adapterGraphicCard = NULL;
-	m_deviceContext = NULL;
 
 	//m_backBuffer = NULL;
 	ScissorEnable = false;
 
 	mCurRasterState = 0;
 
-	// ---------------------------------------------------------
+	// ---------------------------------------------------------------------------
 	g_ALLOW_DX9x = false;
 	ShaderVersionH = ShaderVersionL = 0;
 
 	displayModeList = NULL;
-	// ---------------------------------------------------------
+	// ---------------------------------------------------------------------------
 	#if defined USE_DX_DRIVER_FONT
 	CWcullMode = NULL;
 
@@ -147,9 +167,7 @@ DX11Class::DX11Class()
 		m_alphaDisableBlendingState = NULL;
 	#endif
 
-	// Private: ------------------------------------------------------------------------
-	m_depthStencilBuffer = NULL;
-
+	// Private: ------------------------------------------------------------------
 	//Initialize the new depth stencil state to null in the class constructor.
 	m_depthStencilState = NULL;
 	m_depthDisabledStencilState = NULL;
@@ -176,9 +194,7 @@ DX11Class::DX11Class()
 		loadInfo.pSrcInfo = NULL;  
 	#endif
 
-
 }
-
 
 // The Shutdown function will release and clean up all the pointers used in the Initialize function
 
@@ -258,7 +274,11 @@ for (UINT i = 0; i < 3; i++)
 	SAFE_RELEASE (adapterGraphicCard);
     if (m_deviceContext) {
         m_deviceContext->Flush();
+#if !defined USE_DX11_1_SETUP
         SAFE_RELEASE(m_deviceContext);
+#else
+		m_deviceContext = NULL;
+#endif
     }
 
 	// For each Monitor: 
@@ -272,26 +292,31 @@ for (UINT i = 0; i < 3; i++)
 #endif
 
     ULONG count = 0;
+#if !defined USE_DX11_1_SETUP
     if (m_device11)
     {
         count = m_device11->Release();
-        m_device11 = nullptr;
+        m_device11 = NULL;
     }
+#else
+	m_device11 = NULL;
+#endif
 
 #ifdef _DEBUG
-    if (count && debugDev)
+    if (debugDev)
     {
         debugDev->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_DETAIL);
-        womalog("WOMA WARNING: There are %d unreleased references left on the D3D device!\n", count);
+		if (count>0)
+			womalog("WOMA WARNING: There are %d unreleased references left on the D3D device!\n", count);
     }
     SAFE_RELEASE(debugDev);
 #endif
     
 }
 
-// |Init Step: 1| This is for DIRECTX Driver only!
+// |Init Step: 1| This is for DIRECTX Driver only! (invoked by: LoadAllDrivers())
 // ----------------------------------------------------------------------------------------------
-BOOL DX11Class::CheckAPIdriver(UINT USE_THIS_ADAPTER_CARD)
+BOOL DX11Class::CheckAPIdriver(int USE_THIS_ADAPTER_CARD)
 // ----------------------------------------------------------------------------------------------
 {
 	IDXGIFactory1* pDXGIFactory1 = NULL;
@@ -318,21 +343,21 @@ BOOL DX11Class::CheckAPIdriver(UINT USE_THIS_ADAPTER_CARD)
 	/*******************************************************************
 	// Check for DX9, Load DX 9 DLL if is installed...
 	/******************************************************************/
-if (dx11_force_dx9) 
-{
-	_tcscpy_s(driverName, sizeof(driverName), TEXT("DX9(API_DX11)"));	// driverName = TEXT ("DX11"); // 
-	if (LoadLibrary(TEXT("d3d9.dll")))
-		m_sCapabilities.CapDX9 = TRUE;
-	else
-		if (g_ALLOW_DX9x)
-		{
-			WomaFatalException( "FATAL ERROR: DX9 Device, not supported. Could not load d3d9.dll");
-			return FALSE;
-		}
-}//#endif
+	if (dx11_force_dx9) 
+	{
+		_tcscpy_s(driverName, sizeof(driverName), TEXT("DX9(API_DX11)"));	// driverName = TEXT ("DX11"); // 
+		if (LoadLibrary(TEXT("d3d9.dll")))
+			m_sCapabilities.CapDX9 = TRUE;
+		else
+			if (g_ALLOW_DX9x)
+			{
+				WomaFatalException( "FATAL ERROR: DX9 Device, not supported. Could not load d3d9.dll");
+				return FALSE;
+			}
+	}
 
 	/*******************************************************************
-	// Check for a DX10/11 Instalation (Need to have: dxgi.dll) not present at Window XP
+	// Check for a DX10/11 Installation (Need to have: dxgi.dll) not present at Window XP
 	/******************************************************************/
 	if (!LoadLibrary(TEXT("dxgi.dll"))) // NOTE: Windows XP Can't do this (SO WINDOWS XP NOT SUPPORTED!)
 		{ WomaMessageBox(TEXT("dxgi.dll"), TEXT("Error, Could not load: ")); return FALSE; }
@@ -340,38 +365,74 @@ if (dx11_force_dx9)
 	/******************************************************************/
 	// Create a DirectX 10/11 graphics interface factory.
 	/******************************************************************/
-	IF_FAILED_RETURN_FALSE(CreateDXGIFactory1(__uuidof(IDXGIFactory1), (void**)&pDXGIFactory1));	// Use: dxgi.dll
-	if (!pDXGIFactory1)
+	if (!dx11_force_dx9)
 	{
-		WomaMessageBox(TEXT("Could not create DXGIFactory1"), TEXT("DX11Class")); 
-		return FALSE;
-	}
+#if defined USE_DX11_1_SETUP
+		ComPtr<IDXGIAdapter1> adapter;
+		ComPtr<IDXGIFactory2> m_dxgiFactory;
+		ThrowIfFailed(CreateDXGIFactory1(IID_PPV_ARGS(m_dxgiFactory.ReleaseAndGetAddressOf())));
 
-	/******************************************************************/
-	// Check DX APIs, that can be used on this: "USE_THIS_ADAPTER_CARD"
-	/******************************************************************/
-	IDXGIAdapter1* pAdapter;
-
-	if (pDXGIFactory1->EnumAdapters1(USE_THIS_ADAPTER_CARD, &pAdapter) == S_OK)
-	{
-		if (dx11_force_dx9)
+		for (UINT adapterIndex = 0;
+			SUCCEEDED(m_dxgiFactory->EnumAdapters1(
+				adapterIndex,
+				adapter.ReleaseAndGetAddressOf()));
+			adapterIndex++)
 		{
-			if (&m_sCapabilities.CapDX9)			 // Can Use DX9?
-				g_ALLOW_DX9x = TRUE; // use it!
-			m_sCapabilities.CapDX10_11 = FALSE;
-		} else {//#else
-			m_sCapabilities.DXGI10 = false;
-			if (!FAILED(pAdapter->CheckInterfaceSupport(__uuidof (ID3D10Device), NULL)))
+			DXGI_ADAPTER_DESC1 desc;
+			ThrowIfFailed(adapter->GetDesc1(&desc));
+
+			if (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
 			{
-				m_sCapabilities.CapDX10_11 = TRUE;
-				m_sCapabilities.DXGI10 = true;
-				womalog("DXGI1.0: Available\n");
+				// Don't select the Basic Render Driver adapter.
+				continue;
 			}
-		}//#endif
+
+	#ifdef _DEBUG
+			wchar_t buff[256] = {};
+			swprintf_s(buff, L"Direct3D Adapter (%u): VID:%04X, PID:%04X - %ls\n", adapterIndex, desc.VendorId, desc.DeviceId, desc.Description);
+			womalog(buff);
+	#endif
+			if (SystemHandle->AppSettings->ADAPTOR == -1)
+				USE_THIS_ADAPTER_CARD = adapterIndex;
+
+			list_graphic_cards.push_back(desc.Description);
+		}
+#else
+		USE_THIS_ADAPTER_CARD = 0;
+#endif
 	}
 
-    SAFE_RELEASE(pAdapter);			
-	SAFE_RELEASE(pDXGIFactory1);	
+	/******************************************************************/
+	// Check DX APIs, that can be used on this: USE_THIS_ADAPTER_CARD
+	/******************************************************************/
+	{
+		IDXGIAdapter1* pAdapter;
+
+		IF_FAILED_RETURN_FALSE(CreateDXGIFactory1(__uuidof(IDXGIFactory1), (void**)&pDXGIFactory1));	// Use: dxgi.dll
+		if (!pDXGIFactory1)
+			{ WomaMessageBox(TEXT("Could not create DXGIFactory1"), TEXT("DX11Class")); return FALSE; }
+
+		if (pDXGIFactory1->EnumAdapters1(USE_THIS_ADAPTER_CARD, &pAdapter) == S_OK)
+		{
+			if (dx11_force_dx9)
+			{
+				if (&m_sCapabilities.CapDX9)			 // Can Use DX9?
+					g_ALLOW_DX9x = TRUE; // use it!
+					m_sCapabilities.CapDX10_11 = FALSE;
+			} else {
+				m_sCapabilities.DXGI10 = false;
+				if (!FAILED(pAdapter->CheckInterfaceSupport(__uuidof (ID3D10Device), NULL)))
+				{
+					m_sCapabilities.CapDX10_11 = TRUE;
+					m_sCapabilities.DXGI10 = true;
+					womalog("DXGI1.0: Available\n");
+				}
+			}
+		}
+
+		SAFE_RELEASE(pAdapter);			
+		SAFE_RELEASE(pDXGIFactory1);	
+	}
 
 	return TRUE;
 }
@@ -381,12 +442,11 @@ if (dx11_force_dx9)
 BOOL DX11Class::Check (int* Hi, int* low){return TRUE;}
 // ----------------------------------------------------------------------------------------------
 
-
 // MAIN INIT - CreateDevice and CreateSwapChain and also "Get the best MultiSampleQuality":
 //----------------------------------------------------------------------------------------------
-bool DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, int screenHeight, 
-							  UINT depthBits, float screenDepth, float screenNear, BOOL msaa, bool vsync, 
-							  BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize) 
+bool DirectX::DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, int screenHeight,
+	UINT depthBits, float screenDepth, float screenNear, BOOL msaa, bool vsync,
+	BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize)
 //----------------------------------------------------------------------------------------------
 {
 	m_VSYNC_ENABLED = vsync;
@@ -396,7 +456,7 @@ bool DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, i
     womalog("-------------------------\n");
 
     //Init Step: 1 - Check Driver for DX9 and DX10 and DX12(=false) on DX11 API
-    ASSERT(CheckAPIdriver(/* Use Graph Card 1 */ USE_THIS_GRAPHIC_CARD_ADAPTER));
+    ASSERT(CheckAPIdriver(SystemHandle->AppSettings->ADAPTOR));
    
     /*Init Step: 2 - Create Factory
     Get list of all MODES for all MONITORS
@@ -409,10 +469,11 @@ bool DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, i
         SystemHandle->AppSettings->FULL_SCREEN,
         &numerator, &denominator);
     
-	//Init Step: 3, 4
-	ASSERT(createDevice_legacy());
-    
+	list_resolutions();
 
+	//Init Step: 3, 4
+	ASSERT(createDevice());
+    
 #ifdef USE_DX11_3
 	//https://learn.microsoft.com/en-us/windows/win32/api/d3d11_3/nn-d3d11_3-id3d11device3
 	m_device11->QueryInterface(__uuidof(ID3D11Device3), reinterpret_cast<void**>(&pDevice3));
@@ -426,25 +487,22 @@ bool DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, i
 			printf("LEVEL_11_1 retry on: createSwapChainDX11device()\n");
 			IF_NOT_RETURN_FALSE(createSwapChainDX11device((HWND)hwnd, screenWidth, screenHeight, vsync, fullscreen, g_UseDoubleBuffering, g_AllowResize, numerator, denominator));
 		}
-	} else 
-#endif
-	{
-        ASSERT(true);
 	}
+#endif
 
 	//Init Step: 5 - Get Best Shader of this Graphic Card: dx10,dx10.1,dx11,etc... OUTPUT: ShaderModel
-	getProfile (g_USE_MONITOR);					
+	getProfile(g_USE_MONITOR);
 
 	//Init Step: 6 Before Resize (SetCamera2D & SetCamera3D)!
 
-	//Init Step: 7 (Include: 8,9,10,11,12)
+	//Init Step: 7 - CreateWindowSizeDependentResources
 	// Creates a render target view and depth stencil surface/view per swapchain
-	ASSERT (Resize (screenWidth, screenHeight, screenNear, screenDepth, fullscreen, depthBits));
+	ASSERT(Resize(screenWidth, screenHeight, screenNear, screenDepth, fullscreen, depthBits));
    
 #if defined USE_RASTERIZER_STATE
 	//Init Step: 8 - Cull Back / Front:
 	ASSERT( createRasterizerStates (/*lineAntialiasing*/ false)); // Only applies: if doing "line drawing" and "MultisampleEnable" is false.
-	SetRasterizerState (CULL_NONE, FILL_SOLID);	//Set Default
+	SetRasterizerState(m_deviceContext, CULL_NONE, FILL_SOLID);	//Set Default
 #endif
 
   #if defined USE_FRUSTRUM
@@ -459,7 +517,6 @@ bool DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, i
 	//Init Step: 14 - Transparency: To render text on top of 3D
 	ASSERT(CreateBlendState());
   #endif
-
 	return true;
 }
 
@@ -470,15 +527,11 @@ void DX11Class::DeleteViewBuffers()
     // For each Monitor: 
     for (int i = 0; i < DX11windowsArray.size(); i++)
     {
-        SAFE_RELEASE(DX11windowsArray[i].m_backBuffer);			// Release pointer to the back buffer
-        SAFE_RELEASE(DX11windowsArray[i].m_renderTargetView);	// Init Step: 9	(backBufferRTV)
-    }
-
-    SAFE_RELEASE(m_depthStencilBuffer);								// Init Step: 9
-
-    for (int i = 0; i < DX11windowsArray.size(); i++)
-    {
-        SAFE_RELEASE(DX11windowsArray[i].m_depthStencilView);	// Init Step: 10
+		SAFE_RELEASE(DX11windowsArray[i].m_renderTargetView);	// (backBufferRTV)
+		SAFE_RELEASE(DX11windowsArray[i].m_depthStencilView);	// 
+		
+        SAFE_RELEASE(DX11windowsArray[i].m_backBuffer);			// m_renderTarget
+		SAFE_RELEASE(DX11windowsArray[i].m_depthStencilBuffer);	// 
     }
 
     m_deviceContext->Flush();
@@ -486,137 +539,281 @@ void DX11Class::DeleteViewBuffers()
 	// For each Monitor, Before shutting down set to windowed mode or when you release the swap chain it will throw an exception.
 	for (int i = 0; i < DX11windowsArray.size(); i++)
 	{
-		//if (DX11windowsArray[i].m_swapChain)
-		//	DX11windowsArray[i].m_swapChain->SetFullscreenState(false, NULL);
-
 		if (DX11windowsArray[i].m_swapChain1)
 			DX11windowsArray[i].m_swapChain1->SetFullscreenState(false, NULL);
 	}
-
-
 }
+
+#if defined USE_DX11_1_SETUP
+DXGI_FORMAT getSwapChainFormat(IDXGIFactory* dxgiFactory, IDXGIAdapter* adapter)
+{
+	// Default safe fallback (works everywhere)
+	DXGI_FORMAT fallback = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+	// Step 1: Check if HDR is supported (Win10 1607+, DXGI 1.5+)
+	ComPtr<IDXGIOutput> output;
+	if (adapter && SUCCEEDED(adapter->EnumOutputs(0, &output)))
+	{
+		ComPtr<IDXGIOutput6> output6;
+		if (SUCCEEDED(output.As(&output6)))
+		{
+			DXGI_OUTPUT_DESC1 desc1 = {};
+			if (SUCCEEDED(output6->GetDesc1(&desc1)))
+			{
+				if (desc1.ColorSpace == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020)
+				{
+					// Display supports HDR10
+					return DXGI_FORMAT_R10G10B10A2_UNORM;
+				}
+				if (desc1.ColorSpace == DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709)
+				{
+					// scRGB / HDR capable
+					return DXGI_FORMAT_R16G16B16A16_FLOAT;
+				}
+			}
+		}
+	}
+
+	// Step 2: Otherwise, prefer sRGB for correct gamma presentation
+	return DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+}
+#endif
+
+
+inline DXGI_FORMAT NoSRGB(DXGI_FORMAT fmt) noexcept
+{
+	switch (fmt)
+	{
+	case DXGI_FORMAT_R8G8B8A8_UNORM_SRGB:   return DXGI_FORMAT_R8G8B8A8_UNORM;
+	case DXGI_FORMAT_B8G8R8A8_UNORM_SRGB:   return DXGI_FORMAT_B8G8R8A8_UNORM;
+	case DXGI_FORMAT_B8G8R8X8_UNORM_SRGB:   return DXGI_FORMAT_B8G8R8X8_UNORM;
+	default:                                return fmt;
+	}
+}
+
+inline long ComputeIntersectionArea(
+	long ax1, long ay1, long ax2, long ay2,
+	long bx1, long by1, long bx2, long by2) noexcept
+{
+	return MAX(0l, MIN(ax2, bx2) - MAX(ax1, bx1)) * MAX(0l, MIN(ay2, by2) - MAX(ay1, by1));
+}
+
 
 //----------------------------------------------------------------------------------------------
 bool DX11Class::Resize (int screenWidth, int screenHeight, float screenNear, float screenDepth, BOOL fullscreen, UINT depthBits)
 //----------------------------------------------------------------------------------------------
 {
+	UINT USE_MONITOR = 0;
+
 HRESULT result = S_OK;
 
 	RenderfirstTime = true;	 // Used on SPRITES!
 
 	if (m_deviceContext)
 	{
-		DeleteViewBuffers();
+		DeleteViewBuffers(); // Clear the previous window size specific context.
 
-		for (int i = 0; i < DX11windowsArray.size(); i++)
+		// #Resize: Init Step: 8 - Resize internal Buffers for new Window size:
+		if (DX11windowsArray.size() > 0 && DX11windowsArray[USE_MONITOR].m_swapChain1)
 		{
-			// #Resize: Init Step: 8 - Resize internal Buffers for new Window size:
-			if (DX11windowsArray[i].m_swapChain1)
+			result = (DX11windowsArray[USE_MONITOR].m_swapChain1->ResizeBuffers(swapbufferscount, screenWidth, screenHeight, DXGI_FORMAT_B8G8R8A8_UNORM, 0));
+			// If the device was reset we must completely reinitialize the renderer.
+			if (result == DXGI_ERROR_DEVICE_REMOVED || result == DXGI_ERROR_DEVICE_RESET)
 			{
-				result = (DX11windowsArray[i].m_swapChain1->ResizeBuffers((SystemHandle->AppSettings->UseDoubleBuffering) ? 2 : 1 , screenWidth, screenHeight, DXGI_FORMAT_B8G8R8A8_UNORM, 0));
-				// If the device was reset we must completely reinitialize the renderer.
-				if (result == DXGI_ERROR_DEVICE_REMOVED || result == DXGI_ERROR_DEVICE_RESET)
-				{
-					OnDeviceLost();
-                    return false;
-				}
-				else
-				{
-					{ if (FAILED(result)) { WomaFatalException("FATAL: ResizeBuffers() error!"); } }
-				}
+				OnDeviceLost();
+                return false;
+			}
+			else
+			{
+				return false; //{ if (FAILED(result)) { WomaFatalException("FATAL: ResizeBuffers() error!"); } }
 			}
 		}
+		else
+		{
+			// --------------------
+			// SWAPCHAINDESC.FORMAT
+			// --------------------
+			if (WOMA::game_state == GAME_LOADING || (WOMA::game_state == GAME_SETUP || DX11windowsArray.size() == 0) || DX11windowsArray.size() == 0)
+			{
+				DXwindowDataContainer DXwindow = { 0 };
+				DX11windowsArray.push_back(DXwindow);
+			}
 
-		DXGI_SWAP_CHAIN_DESC1 swapChainDesc = { 0 }; //ZeroMemory(&swapChainDesc, sizeof(swapChainDesc));
+			// ===========================================================
+			// CREATE/RE-CREATE DXGI SWAP CHAIN:
+			// ===========================================================
+			DXGI_SWAP_CHAIN_DESC1 swapChainDesc = { 0 }; //ZeroMemory(&swapChainDesc, sizeof(swapChainDesc));
 
-		// Set to a single back buffer.
-		//swapChainDesc.BufferCount = 1;
-		swapChainDesc.BufferCount = (SystemHandle->AppSettings->UseDoubleBuffering) ? 2 : 1; // Use double-buffering to minimize latency.
+			// Set the usage of the back buffer.
+			swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+			// Set the width and height of the back buffer.
+			swapChainDesc.Width = screenWidth;
+			swapChainDesc.Height = screenHeight;
 
-		// Set the width and height of the back buffer.
-		swapChainDesc.Width = screenWidth;
-		swapChainDesc.Height = screenHeight;
+			// -----------------------------------------------------------
+			// SWAPCHAINDESC.BUFFERCOUNT - Set the number of back-buffers:
+			// -----------------------------------------------------------
+			if (SystemHandle->AppSettings->UseTripleBuffering)
+				swapbufferscount = 3;
+			else
+				swapbufferscount = (SystemHandle->AppSettings->UseDoubleBuffering) ? 2 : 1; // Use double-buffering to minimize latency?
 
-		// Set regular 32-bit surface for the back buffer.
-		swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+			swapChainDesc.BufferCount = swapbufferscount;
 
-		// Set the usage of the back buffer.
-		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+			// -----------------------------------------------------------
+			// SWAPCHAINDESC.SAMPLEDESC - Setup multi-sampling for legacy:
+			// -----------------------------------------------------------
+	#if defined USE_DX11_1_SETUP
+			if (swapChainDesc.BufferCount == 1)
+	#endif
+			{
+				swapChainDesc.SampleDesc.Count = MSAA_COUNT;
+				swapChainDesc.SampleDesc.Quality = MSAA_QUALITY;
+			}
+	#if defined USE_DX11_1_SETUP
+			else
+			{
+				// --- Modern flip-model: requires >= 2 buffers and no MSAA on the chain ---
+				swapChainDesc.SampleDesc.Count = 1;
+				swapChainDesc.SampleDesc.Quality = 0;
+			}
 
-		// Set the handle for the window to render to.
-		//swapChainDesc.OutputWindow = SystemHandle->m_hWnd;
+	
+			// Disable FLIP if not on a supporting OS
+			ComPtr<IDXGIFactory2>               m_dxgiFactory;
+			ThrowIfFailed(CreateDXGIFactory1(IID_PPV_ARGS(m_dxgiFactory.ReleaseAndGetAddressOf())));
+			ComPtr<IDXGIFactory4> factory4;
+			if (FAILED(m_dxgiFactory.As(&factory4)))
+			{
+				DX11windowsArray[USE_MONITOR].DX11_GPU_supportFLIP = FALSE;
+		#ifdef _DEBUG
+				womalog("INFO: Flip swap effects not supported");
+		#endif
+			}
 
-		// Turn multisampling off.
-		swapChainDesc.SampleDesc.Count = MSAA_COUNT;
-		swapChainDesc.SampleDesc.Quality = MSAA_QUALITY;
+			// Discard the back buffer contents after presenting.
 
-		// Discard the back buffer contents after presenting.
-        swapChainDesc.SwapEffect =  DXGI_SWAP_EFFECT_DISCARD;
+			if (swapChainDesc.BufferCount > 1 && !SystemHandle->AppSettings->FULL_SCREEN && DX11windowsArray[USE_MONITOR].DX11_GPU_supportFLIP)
+			{
+		#if defined(_WIN32_WINNT_WIN10) // Runtime is Win10?
+				swapChainDesc.SwapEffect = IsWindows10OrGreater() ? DXGI_SWAP_EFFECT_FLIP_DISCARD : DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
+		#else
+				swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
+		#endif
+				swapChainDesc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
+				swapChainDesc.Scaling = DXGI_SCALING_STRETCH; // or NONE for exact
 
-		// Don't set the advanced flags.
-#if defined USE_ALTENTER_SWAP_FULLSCREEN_WINDOWMODE
-		swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-#else
-		swapChainDesc.Flags = 0;
+				swapChainDesc.Flags = 0;
+			} else 
+	#endif
+			{
+				swapChainDesc.SwapEffect =  DXGI_SWAP_EFFECT_DISCARD;
+
+		#if defined USE_ALTENTER_SWAP_FULLSCREEN_WINDOWMODE
+				swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+		#endif
+			}
+
+			HRESULT hr = E_FAIL;
+
+	#if defined USE_DX11_1_SETUP
+			// --------------------
+			// SWAPCHAINDESC.FLAGS
+			// --------------------
+			// Determines whether tearing support is available for fullscreen borderless windows.
+			ComPtr<IDXGIFactory5> factory5;
+			if (SUCCEEDED(CreateDXGIFactory1(IID_PPV_ARGS(&factory5))))
+			{
+				hr = factory5->CheckFeatureSupport( DXGI_FEATURE_PRESENT_ALLOW_TEARING, &DX11windowsArray[USE_MONITOR].DX11_GPU_supportTearing, sizeof(DX11windowsArray[USE_MONITOR].DX11_GPU_supportTearing)); //Populate: allowTearing
+				DX11windowsArray[USE_MONITOR].DX11_GPU_supportHDR = TRUE;
+			}
+	
+			if (DX11windowsArray[USE_MONITOR].DX11_GPU_supportTearing)
+				swapChainDesc.Flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
+	#else
+			// Disable HDR if we are on an OS that can't support FLIP swap effects
+			DX11windowsArray[USE_MONITOR].DX11_GPU_supportHDR = FALSE;
+	#endif
+
+
+			// First, retrieve the underlying DXGI Device from the D3D Device.
+	#if defined USE_DX11_1_SETUP
+			ComPtr<IDXGIDevice1> dxgiDevice;
+	#else
+			IDXGIDevice1* dxgiDevice;
+	#endif
+			hr = m_device11->QueryInterface(__uuidof(IDXGIDevice), (void**)&dxgiDevice);
+			if (FAILED(hr)) {
+				WomaFatalException("Failed to query IDXGIDevice1 interface.");
+				return false;
+			}
+
+			// Identify the physical adapter (GPU or card) this device is running on.
+	#if defined USE_DX11_1_SETUP
+			ComPtr<IDXGIAdapter>  dxgiAdapter;
+	#else
+			IDXGIAdapter* dxgiAdapter;
+	#endif
+
+			hr = dxgiDevice->GetParent(__uuidof(IDXGIAdapter), (void**)&dxgiAdapter);
+			if (FAILED(hr)) {
+	#if !defined USE_DX11_1_SETUP
+				SAFE_RELEASE(dxgiDevice);
+	#endif
+				WomaFatalException("Failed to get IDXGIAdapter from IDXGIDevice1.");
+				return false;
+			}
+
+			// And obtain the factory object that created it.
+			IDXGIFactory2* dxgiFactory;
+			hr = dxgiAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&dxgiFactory);
+			if (FAILED(hr)) {
+	#if !defined USE_DX11_1_SETUP
+				SAFE_RELEASE(dxgiAdapter);
+				SAFE_RELEASE(dxgiDevice);
+	#endif
+				WomaFatalException("Failed to get IDXGIFactory2 from IDXGIAdapter.");
+				return false;
+			}
+
+			// Set regular 32-bit surface for the back buffer.
+	#if defined USE_DX11_1_SETUP && defined USE_GAMMA
+			swapChainDesc.Format = getSwapChainFormat(dxgiFactory, dxgiAdapter);
+	#else
+			swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	#endif
+
+			DXGI_SWAP_CHAIN_FULLSCREEN_DESC fsSwapChainDesc = {};
+			fsSwapChainDesc.Windowed = TRUE;
+
+			// Create a SwapChain from a Win32 window.
+			hr = dxgiFactory->CreateSwapChainForHwnd(
+				m_device11,
+				SystemHandle->m_hWnd,
+				&swapChainDesc,
+				&fsSwapChainDesc,
+				nullptr,
+				&DX11windowsArray[DX11windowsArray.size()-1].m_swapChain1
+			);
+
+			// Release resources.
+			SAFE_RELEASE(dxgiFactory);
+	#if !defined USE_DX11_1_SETUP
+			SAFE_RELEASE(dxgiAdapter);
+			SAFE_RELEASE(dxgiDevice);
+	#endif
+			if (FAILED(hr)) {
+				WomaFatalException("Failed to create swap chain for HWND.");
+				return false;
+			}
+
+#if defined USE_DX11_1_SETUP
+			if (DX11windowsArray[USE_MONITOR].DX11_GPU_supportHDR)
+			{
+				UpdateHDRColorSpace(USE_MONITOR);
+			}
 #endif
-
-        DXwindowDataContainer DXwindow = {};
-
-		// First, retrieve the underlying DXGI Device from the D3D Device.
-        IDXGIDevice1* dxgiDevice;
-        HRESULT hr = m_device11->QueryInterface(__uuidof(IDXGIDevice), (void**)&dxgiDevice);
-        if (FAILED(hr)) {
-            WomaFatalException("Failed to query IDXGIDevice1 interface.");
-            return false;
-        }
-
-		// Identify the physical adapter (GPU or card) this device is running on.
-        IDXGIAdapter* dxgiAdapter;
-        hr = dxgiDevice->GetParent(__uuidof(IDXGIAdapter), (void**)&dxgiAdapter);
-        if (FAILED(hr)) {
-            SAFE_RELEASE(dxgiDevice);
-            WomaFatalException("Failed to get IDXGIAdapter from IDXGIDevice1.");
-            return false;
-        }
-
-		// And obtain the factory object that created it.
-        IDXGIFactory2* dxgiFactory;
-        hr = dxgiAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&dxgiFactory);
-        if (FAILED(hr)) {
-            SAFE_RELEASE(dxgiAdapter);
-            SAFE_RELEASE(dxgiDevice);
-            WomaFatalException("Failed to get IDXGIFactory2 from IDXGIAdapter.");
-            return false;
-        }
-
-		DXGI_SWAP_CHAIN_FULLSCREEN_DESC fsSwapChainDesc = {};
-		fsSwapChainDesc.Windowed = TRUE;
-
-		if (WOMA::game_state == GAME_LOADING || WOMA::game_state == GAME_SETUP || DX11windowsArray.size() == 0)
-			DX11windowsArray.push_back(DXwindow);
-
-		// Create a SwapChain from a Win32 window.
-        hr = dxgiFactory->CreateSwapChainForHwnd(
-			m_device11,
-			SystemHandle->m_hWnd,
-			&swapChainDesc,
-			&fsSwapChainDesc,
-			nullptr,
-			&DX11windowsArray[DX11windowsArray.size()-1].m_swapChain1
-		);
-
-        if (FAILED(hr)) {
-            SAFE_RELEASE(dxgiFactory);
-            SAFE_RELEASE(dxgiAdapter);
-            SAFE_RELEASE(dxgiDevice);
-            WomaFatalException("Failed to create swap chain for HWND.");
-            return false;
-        }
-
-        // Release resources.
-        SAFE_RELEASE(dxgiFactory);
-        SAFE_RELEASE(dxgiAdapter);
-        SAFE_RELEASE(dxgiDevice);
+		}
 
 		// #CreateViewBuffers:
 		// -------------------
@@ -625,13 +822,13 @@ HRESULT result = S_OK;
 		IF_NOT_RETURN_FALSE (CreateRenderTargetView (screenWidth, screenHeight));
 		
 		// [2] CreateTexture2D
-		IF_FAILED_RETURN_FALSE (createDepthStencil(screenWidth, screenHeight, fullscreen, depthBits));
+		IF_NOT_RETURN_FALSE (createDepthStencil(screenWidth, screenHeight, fullscreen, depthBits));
 
 		// CreateDepthStencilView:
 		// -----------------------
 		// NOTE: need to be before createSetDepthStencilView()
 		for (int i = 0; i < DX11windowsArray.size(); i++)
-			setViewportDevice(i, screenWidth, screenHeight);  // RSSetViewports: Map Screen clip space coordinates to the render target space
+			setViewportDevice(m_deviceContext, i, screenWidth, screenHeight);  // RSSetViewports: Map Screen clip space coordinates to the render target space
 
 #if defined SET_DEVICE_CAPABILITIES
 		// [3] CreateDepthStencilView / OMSetRenderTargets:
@@ -645,7 +842,7 @@ HRESULT result = S_OK;
 		// OMSetRenderTargets: NOTE: Need to be After [1], [2] and [3]
 		// For each Monitor: 
 		for (int i = 0; i < DX11windowsArray.size(); i++)
-			SetBackBufferRenderTarget(i);
+			SetBackBufferRenderTarget(m_deviceContext, i);
 
 		// #Generate new "ProjectionMatrix" and "OrthoMatrix"
 		// --------------------------------------------------
@@ -665,12 +862,121 @@ HRESULT result = S_OK;
 	return true;
 }
 
-//Init Step: 5 - Set the best shader availabel: MORE INFO: http://msdn.microsoft.com/en-us/library/windows/desktop/ff476876%28v=vs.85%29.aspx
+#if defined USE_DX11_1_SETUP
+//For video :
+//	HDR10
+//	HDR10 +
+//	Dolby Vision
+//	HLG(backwards compatible with SDR displays)
+
+VOID DX11Class::UpdateHDRColorSpace(UINT USE_MONITOR)
+{
+	ComPtr<IDXGIFactory2> m_dxgiFactory;
+	ThrowIfFailed(CreateDXGIFactory1(IID_PPV_ARGS(m_dxgiFactory.ReleaseAndGetAddressOf())));
+
+	bool isDisplayMonitorHDR10 = false;
+
+	if (DX11windowsArray[USE_MONITOR].m_swapChain1)
+	{
+		// To detect HDR support, we will need to check the color space in the primary
+		// DXGI output associated with the app at this point in time
+		// (using window/display intersection).
+
+		// Get the rectangle bounds of the app window.
+		RECT windowBounds = SystemHandle->windowsArray[USE_MONITOR].m_rcWindowClient;
+		//if (!GetWindowRect(m_window, &windowBounds))
+		//	throw std::system_error(std::error_code(static_cast<int>(GetLastError()), std::system_category()), "GetWindowRect");
+
+		const long ax1 = windowBounds.left;
+		const long ay1 = windowBounds.top;
+		const long ax2 = windowBounds.right;
+		const long ay2 = windowBounds.bottom;
+
+		ComPtr<IDXGIOutput> bestOutput;
+		long bestIntersectArea = -1;
+
+		ComPtr<IDXGIAdapter> adapter;
+		for (UINT adapterIndex = 0;
+			SUCCEEDED(m_dxgiFactory->EnumAdapters(adapterIndex, adapter.ReleaseAndGetAddressOf()));
+			++adapterIndex)
+		{
+			ComPtr<IDXGIOutput> output;
+			for (UINT outputIndex = 0;
+				SUCCEEDED(adapter->EnumOutputs(outputIndex, output.ReleaseAndGetAddressOf()));
+				++outputIndex)
+			{
+				// Get the rectangle bounds of current output.
+				DXGI_OUTPUT_DESC desc;
+				ThrowIfFailed(output->GetDesc(&desc));
+				const auto& r = desc.DesktopCoordinates;
+
+				// Compute the intersection
+				const long intersectArea = ComputeIntersectionArea(ax1, ay1, ax2, ay2, r.left, r.top, r.right, r.bottom);
+				if (intersectArea > bestIntersectArea)
+				{
+					bestOutput.Swap(output);
+					bestIntersectArea = intersectArea;
+				}
+			}
+		}
+
+		if (bestOutput)
+		{
+			ComPtr<IDXGIOutput6> output6;
+			if (SUCCEEDED(bestOutput.As(&output6)))
+			{
+				DXGI_OUTPUT_DESC1 desc;
+				ThrowIfFailed(output6->GetDesc1(&desc));
+
+				if (desc.ColorSpace == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020)
+				{
+					// Display output is HDR10.
+					isDisplayMonitorHDR10 = true;
+				}
+			}
+		}
+	}
+
+	DX11windowsArray[USE_MONITOR].m_colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;	// Default for non HDR Display Monitor
+
+	if ((DX11windowsArray[USE_MONITOR].DX11_GPU_supportHDR) && isDisplayMonitorHDR10)		//GPU support HDR and what about the monitor?
+	{
+		//GPU support HDR and Display monitor too? Great!
+		switch (DX11windowsArray[USE_MONITOR].m_backBufferFormat)
+		{
+		case DXGI_FORMAT_R10G10B10A2_UNORM:
+			// The application creates the HDR10 signal.
+			DX11windowsArray[USE_MONITOR].m_colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
+			break;
+
+		case DXGI_FORMAT_R16G16B16A16_FLOAT:
+			// The system creates the HDR10 signal; application uses linear values.
+			DX11windowsArray[USE_MONITOR].m_colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709;
+			break;
+		}
+	}
+
+	// Setup HDR Color Space:
+	ComPtr<IDXGISwapChain1>m_swapChain = DX11windowsArray[USE_MONITOR].m_swapChain1;
+	ComPtr<IDXGISwapChain3> swapChain3;
+	if (m_swapChain && SUCCEEDED(m_swapChain.As(&swapChain3)))
+	{
+		UINT colorSpaceSupport = 0;
+		if (SUCCEEDED(swapChain3->CheckColorSpaceSupport(DX11windowsArray[USE_MONITOR].m_colorSpace, &colorSpaceSupport))
+			&& (colorSpaceSupport & DXGI_SWAP_CHAIN_COLOR_SPACE_SUPPORT_FLAG_PRESENT))
+		{
+			ThrowIfFailed(swapChain3->SetColorSpace1(DX11windowsArray[USE_MONITOR].m_colorSpace));
+		}
+	}
+}
+#endif
+
+//Init Step: 5 - Set the best shader available: MORE INFO: http://msdn.microsoft.com/en-us/library/windows/desktop/ff476876%28v=vs.85%29.aspx
 // ----------------------------------------------------------------------------------------------
 void DX11Class::getProfile ( UINT g_USE_MONITOR )
 // ----------------------------------------------------------------------------------------------
 {
-	// Get Best FeatureLevel Availabel:
+	// Get Best FeatureLevel Available:
 	D3D_FEATURE_LEVEL featureLevel = m_device11->GetFeatureLevel();
 	switch (featureLevel) 
 	{
@@ -678,56 +984,59 @@ void DX11Class::getProfile ( UINT g_USE_MONITOR )
 		case D3D_FEATURE_LEVEL_9_1:	// To Support old Graphic Cards
 			_tcscpy_s(ShaderModel, TEXT("4_0_level_9_1")); // ShaderModel = TEXT("2_0"); // 
 			ShaderVersionH = 2; ShaderVersionL = 0;
-			womalogauto(TEXT("\nBest Shader Model 2.0 (Best API: DX9.1)\n"));
+			womalogauto(TEXT("\nUsing Shader Model 2.0 (Best API: DX9.1)\n"));
 		break;
 
 		case D3D_FEATURE_LEVEL_9_2:	// To Support old Graphic Cards
 			_tcscpy_s(ShaderModel, TEXT("4_0_level_9_2")); //ShaderModel = TEXT("2_0"); // 
             ShaderVersionH = 2; ShaderVersionL = 0;
-			womalogauto(TEXT("\nBest Shader Model 2.0 (Best API: DX9.2)\n"));
+			womalogauto(TEXT("\nUsing Shader Model 2.0 (Best API: DX9.2)\n"));
 		break;
 
 		case D3D_FEATURE_LEVEL_9_3:	// To Support old Graphic Cards
             _tcscpy_s(ShaderModel, TEXT("4_0_level_9_3")); // ShaderModel = TEXT("2_0"); // 
             ShaderVersionH = 2; ShaderVersionL = 0;
-			womalogauto(TEXT("\nBest Shader Model 2.0 (Best API: DX9.3)\n"));
+			womalogauto(TEXT("\nUsing Shader Model 2.0 (Best API: DX9.3)\n"));
 		break;
 
 		//DX 10
 		case D3D_FEATURE_LEVEL_10_0:	// To Support old Graphic Cards
             _tcscpy_s(ShaderModel, TEXT("4_0")); // ShaderModel = TEXT("4_0"); // 
             ShaderVersionH = 4; ShaderVersionL = 0;
-			womalog("\nBest Shader Model 4.0 (Best API: DX10)\n");
+			womalog("\nUsing Shader Model 4.0 (Best API: DX10)\n");
 		break;
 
 		// DX10.1
 		case D3D_FEATURE_LEVEL_10_1:	// To Support old Graphic Cards
             _tcscpy_s(ShaderModel, TEXT("4_1")); // ShaderModel = TEXT("4_1"); // 
             ShaderVersionH = 4; ShaderVersionL = 1;
-			womalog("\nBest Shader Model 4.1 (Best API: DX10.1)\n");
+			womalog("\nUsing Shader Model 4.1 (Best API: DX10.1)\n");
 		break;
 
+		//DX11.x
 		case D3D_FEATURE_LEVEL_11_0:
 			_tcscpy_s(ShaderModel, TEXT("5_0")); // ShaderModel = TEXT("5_0"); // 
 			ShaderVersionH = 5; ShaderVersionL = 0;
-			womalog("\nBest Shader Model 5.0 (Best API: DX11)\n");
+			womalog("\nUsing Shader Model 5.0 (Best API: DX11)\n");
 		break;
 		case D3D_FEATURE_LEVEL_11_1:
 			_tcscpy_s(ShaderModel, TEXT("5_0")); // ShaderModel = TEXT("5_0"); // 
 			ShaderVersionH = 5; ShaderVersionL = 0;
-			womalog("\nBest Shader Model 5.0 (Best API: DX11.1)\n");
+			womalog("\nUsing Shader Model 5.0 (Best API: DX11.1)\n");
 		break;
+
+		//DX11+
 		case D3D_FEATURE_LEVEL_12_0:
 			_tcscpy_s(ShaderModel, TEXT("5_0")); // ShaderModel = TEXT("5_0"); // 
 			ShaderVersionH = 5; ShaderVersionL = 0;
-			womalog("\nBest Shader Model 5.0 (Best API: DX11_level_12_0)\n");
+			womalog("\nUsing Shader Model 5.0 (Best API: DX11_level_12_0)\n");
 		break;
 
 		default: //For Future DX Versions!	
 		case D3D_FEATURE_LEVEL_12_1:
 			_tcscpy_s(ShaderModel, TEXT("5_0")); // ShaderModel = TEXT("5_0"); // 
 			ShaderVersionH = 5; ShaderVersionL = 0;
-			womalog("\nBest Shader Model 5.0 (Best API: DX11_level_12_1)\n");
+			womalog("\nUsing Shader Model 5.0 (Best API: DX11_level_12_1)\n");
 			break;
 
 		break;
@@ -739,12 +1048,22 @@ void DX11Class::getProfile ( UINT g_USE_MONITOR )
 
 // Bind the render target view and depth stencil buffer to the output render pipeline.
 // ----------------------------------------------------------------------------------------------
-void DX11Class::SetBackBufferRenderTarget(UINT monitorWindow)
+void DirectX::DX11Class::SetBackBufferRenderTarget(void* ctx, UINT monitorWindow)
 // ----------------------------------------------------------------------------------------------
 {
-	m_deviceContext->OMSetRenderTargets(1, &DX11windowsArray[monitorWindow].m_renderTargetView,
-											DX11windowsArray[monitorWindow].m_depthStencilView);
-	m_deviceContext->RSSetViewports(1, &DX11windowsArray[monitorWindow].viewport);
+	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
+#if defined USE_DX11_1_SETUP
+	if (m_Context1)
+	{
+		m_Context1->OMSetRenderTargetsAndUnorderedAccessViews(1, &DX11windowsArray[monitorWindow].m_renderTargetView, DX11windowsArray[monitorWindow].m_depthStencilView, 0, 0, NULL, NULL);
+		m_Context1->RSSetViewports(1, &DX11windowsArray[monitorWindow].viewport);
+	}
+#else
+	{
+		pContext->OMSetRenderTargets(1, &DX11windowsArray[monitorWindow].m_renderTargetView, DX11windowsArray[monitorWindow].m_depthStencilView);
+		pContext->RSSetViewports(1, &DX11windowsArray[monitorWindow].viewport);
+	}
+#endif
 }
 
 //Init Step: 6 - Create Rendering Target
@@ -757,15 +1076,19 @@ bool DX11Class::CreateRenderTargetView (int screenWidth, int screenHeight)
 	{
 		if (DX11windowsArray[i].m_swapChain1) {
 			IF_FAILED_RETURN_FALSE(DX11windowsArray[i].m_swapChain1->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&DX11windowsArray[i].m_backBuffer));
-		  
-																																				 
 		} 
 		
 		CD3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDescMSAA(D3D11_RTV_DIMENSION_TEXTURE2DMS);			//MSAA_on
 		CD3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc(D3D11_RTV_DIMENSION_TEXTURE2D);					//MSAA_off
+#if defined USE_DX11_1_SETUP
+		IF_FAILED_RETURN_FALSE(m_device11->CreateRenderTargetView(DX11windowsArray[i].m_backBuffer,
+			&renderTargetViewDesc,
+			& DX11windowsArray[i].m_renderTargetView));	//backBufferRTV
+#else
 		IF_FAILED_RETURN_FALSE(m_device11->CreateRenderTargetView	(DX11windowsArray[i].m_backBuffer, 
-																	(SystemHandle->AppSettings->MSAA_Anisotropic) ? &renderTargetViewDescMSAA:&renderTargetViewDesc,
-																	&DX11windowsArray[i].m_renderTargetView));	//backBufferRTV
+								(SystemHandle->AppSettings->MSAA_Anisotropic) ? &renderTargetViewDescMSAA:&renderTargetViewDesc,
+								&DX11windowsArray[i].m_renderTargetView));	//backBufferRTV
+#endif
 	}
 
 	return true;
@@ -806,11 +1129,13 @@ void DX11Class::BeginScene(UINT monitorWindow)
 
 	// Clear Screen
 	m_deviceContext->ClearRenderTargetView(DX11windowsArray[monitorWindow].m_renderTargetView, driver_ClearColor);	// Clear the "back buffer":
-#if defined SET_DEVICE_CAPABILITIES
-	ClearDepthBuffer();
-#endif
 
-	SetBackBufferRenderTarget(monitorWindow);
+#if defined SET_DEVICE_CAPABILITIES
+	ClearDepthBuffer(m_deviceContext);
+#endif
+//#if DX_ENGINE_LEVEL < 36
+	SetBackBufferRenderTarget(m_deviceContext, monitorWindow);
+//#endif
 }
 
 //Steps to Handle Device Loss:
@@ -833,31 +1158,47 @@ void DX11Class::OnDeviceLost() // Our Driver in use was re-installed??
     WOMA::game_state = ENGINE_RESTART;
 }
 
-void DX11Class::ResetResource(UINT monitorWindow)
+void DirectX::DX11Class::ResetResource(ID3D11DeviceContext* pContext, UINT monitorWindow)
 {
 }
 
 // ----------------------------------------------------------------------------------------------
-void DX11Class::EndScene(UINT monitorWindow)
+void DX11Class::EndScene(UINT USE_MONITOR)
 // ----------------------------------------------------------------------------------------------
 {
-	HRESULT hr=S_OK;
+	HRESULT hr = S_OK;
+
+	// vsync = true		Sequential / Flip	OFF	Locked to monitor refresh rate
+	// vsync = false	Flip + Allow Tearing	ON	Unlimited FPS, possible tearing
+	// vsync = false	Sequential	OFF	Unlimited FPS, but lower latency
 
 	// <PRINT THE 3D SCENE TO SCREEN> to Swap Chain (wait from VSYNC refresh rate, if it is the case)
-	if (DX11windowsArray[monitorWindow].m_swapChain1)
-		hr = DX11windowsArray[monitorWindow].m_swapChain1->Present(m_VSYNC_ENABLED, 0);
+	ASSERT_DEBUG(DX11windowsArray[USE_MONITOR].m_swapChain1)
+	{
+		UINT presentFlags = 0;
+#if defined USE_DX11_1_SETUP
+		if (IsWindows10OrGreater() && !m_VSYNC_ENABLED && DX11windowsArray[USE_MONITOR].DX11_GPU_supportTearing)
+			presentFlags = DXGI_PRESENT_ALLOW_TEARING;
+#endif
+		hr = DX11windowsArray[USE_MONITOR].m_swapChain1->Present((m_VSYNC_ENABLED == 0) ? 0 : 1, presentFlags);
+	}
+
+	// Not an error: window is occluded (minimized/fully covered). You can skip work or Sleep(1).
+	if (hr == DXGI_STATUS_OCCLUDED)
+		return;
 
 	// If the device was reset we must completely reinitialize the renderer.
 	if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
 	{
 		OnDeviceLost();
+		return;
 	}
 	else
 	{
-		{ if (FAILED(hr)) { WomaFatalException("FATAL: swapChain->Present() error!"); } }
+		{ if (FAILED(hr)) { WomaFatalException("FATAL: swapChain->Present() error!"); return; } }
 	}
 
-    ResetResource(monitorWindow);
+	ResetResource(m_deviceContext, USE_MONITOR);
 }
 
 
@@ -937,11 +1278,13 @@ void DX11Class::SetCamera2D()
 	DXsystemHandle->m_Camera->m_viewmatrix2D = DX11m_Camera2D.m_viewMatrix;
 #endif
 }
+
 // TODO: go to Virtual Class?
 // ----------------------------------------------------------------------------------------------
 void DX11Class::Initialize3DCamera()
 // ----------------------------------------------------------------------------------------------
 {
+	// Set 2D Camera:
 #if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 || defined USE_DX_DRIVER_FONT
 	if (DXsystemHandle->m_Camera) 
 	{
@@ -950,16 +1293,24 @@ void DX11Class::Initialize3DCamera()
 	SetCamera2D();
 #endif
 
-	// Normal Camera: ( After: SetCamera2D() )
+	// Set Normal 3D Camera: ( After: SetCamera2D() )
 #if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
 	DXsystemHandle->m_Camera->SetPosition(	SystemHandle->AppSettings->INIT_CAMX, SystemHandle->AppSettings->INIT_CAMY, SystemHandle->AppSettings->INIT_CAMZ);
-
 	DXsystemHandle->m_Camera->SetRotation(	SystemHandle->AppSettings->INIT_ROTX, SystemHandle->AppSettings->INIT_ROTY, SystemHandle->AppSettings->INIT_ROTZ);
 #endif
 	}
 #endif
 
+	// Set fixed Sky Camera 3D Camera:
 }
+
+
+
+ID3D11DeviceContext* DX11Class::GetDeviceContext()
+{
+	return m_deviceContext;
+}
+
 
 // TODO: go to Virtual Class?
 

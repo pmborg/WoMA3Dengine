@@ -123,7 +123,7 @@
     //--------------------------------------------------------------------------------------------------------
                         // G:\DRIVE_MY_SOURCE_CODE\WorldOfMiddleAge\WorldOfMiddleAge.sln    
     //#define LEVEL 61  // TUTORIAL_CHAP 25  TERRAIN Bigger HEIGHT MAPs 512x512
-    //#define LEVEL 62  // TUTORIAL_CHAP 26  TERRAIN MAIN MAP
+
     //#define LEVEL 63  // TUTORIAL_CHAP 27  TERRAIN MAIN MAP + MINI MAP 3D Navigation
     //#define LEVEL 64  // Mill + compound
     //#define LEVEL 65  // Walk on Terrain.

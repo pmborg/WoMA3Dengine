@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -190,10 +190,11 @@ namespace DirectX
 
 #if defined LOADW3D //ENGINE_LEVEL >= 50
 	// --------------------------------------------------------------------------------------------
-	bool DXmodelClass::LoadW3D(SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow, bool renderShadow, UINT instanceCount)
+	bool DirectX::DXmodelClass::LoadW3D(void* ctx, SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow, bool renderShadow, UINT instanceCount)
 	// --------------------------------------------------------------------------------------------
 	{
 		LOADDRIVER(g_driver);
+		ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
 
 #ifdef  FORCE_COMPOUNDLOAD_OBJ 
 		//Force to load OBJ original version, instead our W3D
@@ -315,7 +316,7 @@ namespace DirectX
 #if !defined(STANDALONE)
 				ID3D11ShaderResourceView* tempMeshSRV = NULL;
 				HRESULT hr = S_OK;
-				if (textureFilename.find(TEXT("../none")) != 0 /* && textureFilename.find(TEXT("../"))*/) //dont load on special cases (like billboards)
+				if (textureFilename.find(TEXT("../none")) != 0 /* && textureFilename.find(TEXT("../"))*/) //don't load on special cases (like billboards)
 				{
 				LOADTEXTURE(textureFilename.c_str(), tempMeshSRV);
 				//DX11
@@ -334,22 +335,22 @@ namespace DirectX
 
 #if !defined(STANDALONE)
 		if (strcmp(W3D.version, "W3D v1.0") == 0)	//21 COLOR
-			LoadColor((TCHAR*)filename.c_str(), g_driver, shader_type, modelColorVertex, &obj3d.indices32, instanceCount);
+			LoadColor(pContext, (TCHAR*)filename.c_str(), g_driver, shader_type, modelColorVertex, &obj3d.indices32, instanceCount);
 		else
 		if (strcmp(W3D.version, "W3D v1.1") == 0)	//22 TEXTURE
-			LoadTexture((TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, modelTextureVertex, &obj3d.indices32, instanceCount);
+			LoadTexture(pContext, (TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, modelTextureVertex, &obj3d.indices32, instanceCount);
 		else
 		if (strcmp(W3D.version, "W3D v1.2") == 0)	//23 LIGHT
-			LoadLight((TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, modelTextureLightVertex, &obj3d.indices32, instanceCount);
+			LoadLight(pContext, (TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, modelTextureLightVertex, &obj3d.indices32, instanceCount);
 		else
 		if (strcmp(W3D.version, "W3D v1.3") == 0)	//35 BUMP
-			LoadBump((TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, modelNormalBumpVertex, &obj3d.indices32, instanceCount);
+			LoadBump(pContext, (TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, modelNormalBumpVertex, &obj3d.indices32, instanceCount);
 		else
 		if (strcmp(W3D.version, "W3D v2.9") == 0)	// FIRE
-			LoadTexture((TCHAR*)filename.c_str(), g_driver, SHADER_FIRE, &obj3d.textureNameArray, modelTextureVertex, &obj3d.indices32, instanceCount);
+			LoadTexture(pContext, (TCHAR*)filename.c_str(), g_driver, SHADER_FIRE, &obj3d.textureNameArray, modelTextureVertex, &obj3d.indices32, instanceCount);
         else 
         if (strcmp(W3D.version, "W3D v3.2") == 0)	// LIGHT_FAST
-            LoadLight((TCHAR*)filename.c_str(), g_driver, SHADER_TEXTURE_LIGHT_FAST, &obj3d.textureNameArray, modelTextureLightVertex, &obj3d.indices32, instanceCount);
+            LoadLight(pContext, (TCHAR*)filename.c_str(), g_driver, SHADER_TEXTURE_LIGHT_FAST, &obj3d.textureNameArray, modelTextureLightVertex, &obj3d.indices32, instanceCount);
 		else
 		{	
             ASSERT(false);

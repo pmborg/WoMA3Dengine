@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -75,7 +75,7 @@ namespace DirectX {
 		// MSAA Used:
 		// ----------------------------------------------------------------------------
 		MSAA_COUNT = MAX(1, SystemHandle->AppSettings->MSAA_AnisotropicLevel);	// Req. Note: DX12 min: 1
-		MSAA_QUALITY = 0;																	// Req. Note: default: 1
+		MSAA_QUALITY = 0;														// Req. Note: default: 1
 
 		// DX12Class()
 		// Public: ------------------------------------------------------------------------
@@ -208,12 +208,12 @@ namespace DirectX {
 	}
 
 	void DX12Class::addText(int Xpos, int Ypos, TCHAR* text, float R, float G, float B) {}
-	void DX12Class::RenderDriverText() {}
+    void DirectX::DX12Class::RenderDriverText(void* pContext) {}
 	bool DX12Class::InitD2DScreenTexture() { return true; }
 
 	// |Init Step: 1| This is for DIRECTX Driver only!
 	// ----------------------------------------------------------------------------------------------
-	BOOL DX12Class::CheckAPIdriver(UINT USE_THIS_ADAPTER)
+	BOOL DX12Class::CheckAPIdriver(int USE_THIS_ADAPTER)
 		// ----------------------------------------------------------------------------------------------
 	{
 		womalog(TEXT("CheckAPIdriver(DX12)\n"));
@@ -369,7 +369,7 @@ namespace DirectX {
 				else
 					m_sCapabilities.CapDX12 = true;
 
-				// Almost punic mode! Last try:
+				// Almost panic mode! Last try:
 				if (num_levels == 0)
 				{
 					ComPtr<IDXGIAdapter> warpAdapter;
@@ -483,7 +483,7 @@ namespace DirectX {
 				m_sCapabilities.featureLevelsLO = (MaxLevel >> 8) & 0xF;
 				WOMA::logManager->DEBUG_MSG("(featureLevelsInfo) query for Adapter: 1 =  %d.%d\n", m_sCapabilities.featureLevelsHI, m_sCapabilities.featureLevelsLO);
 
-				//printf ("(featureLevelsInfo) query for Adapter: 1 =  %04x\n", MaxLevel);
+				//womalog ("(featureLevelsInfo) query for Adapter: 1 =  %04x\n", MaxLevel);
 			}
 		}
 
@@ -608,7 +608,7 @@ namespace DirectX {
 
 	// MAIN INIT - createSwapChain and also "Get the best MultiSampleQuality":
 	//----------------------------------------------------------------------------------------------
-	bool DX12Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, int screenHeight,
+	bool DirectX::DX12Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, int screenHeight,
 		UINT depthBits, float screenDepth, float screenNear, BOOL msaa, bool vsync,
 		BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize)
 		//----------------------------------------------------------------------------------------------
@@ -624,7 +624,7 @@ namespace DirectX {
 		//
 		// CreateDevice() - Init Step: 0 - Check for DX9, DX10, DX11, DX12 & DX12_1 API
 		//
-		CheckAPIdriver(USE_THIS_GRAPHIC_CARD_ADAPTER);	//USE_THIS_ADAPTER
+		CheckAPIdriver(SystemHandle->AppSettings->ADAPTOR);	//use_this_graphic_card_adapter
 
 		// Get BUFFER_COLOR_FORMAT: Init Step: 1 - [NOT IMPLEMENTED YET FOR DX12] Create Factory: Get list of all MODES for all MONITORS & Get Refresh Rate:
 		////IF_NOT_RETURN_FALSE(getModesList(g_USE_MONITOR, screenWidth, screenHeight, fullscreen, &numerator, &denominator)); //TODO! DX12
@@ -639,8 +639,6 @@ namespace DirectX {
 		// CreateCommandList()
 		//
 		IF_NOT_RETURN_FALSE(initDX12Device((HWND)hwnd));	// Init Step: 2 - Init DX12 Device
-
-		// SelectDepthFormat(depthBits, fullscreen);	// Init Step: 3 Note: need device
 
 		//Init Step: 9 - CreateTexture2D:
 		IF_NOT_RETURN_FALSE(CreateRenderTargetView(screenWidth, screenHeight));
@@ -663,7 +661,7 @@ namespace DirectX {
 		//Init Step: 6 - Cull Back / Front:
 #if defined USE_RASTERIZER_STATE
 		IF_NOT_RETURN_FALSE(populateAllRasterizerStates(false)); // Only applies: if doing "line drawing" and "MultisampleEnable" is false.
-		SetRasterizerState(CULL_NONE, FILL_SOLID);	//Set Default
+		SetRasterizerState(NULL, CULL_NONE, FILL_SOLID);	//Set Default
 #endif
 		//-----------------------------------------------------------------
 
@@ -737,7 +735,7 @@ namespace DirectX {
 
 			if (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
 			{
-				WOMA::logManager->DEBUG_MSG(L"\nD3D12-Capable Software Adapter Adapter (%d) found: %s (%u MB)\n", adapterIndex, desc.Description, desc.DedicatedVideoMemory >> 20);
+				WOMA::logManager->DEBUG_MSG(L"\nD3D12-Capable Software Adapter (%d) found: %s (%u MB)\n", adapterIndex, desc.Description, desc.DedicatedVideoMemory >> 20);
 				QueryVideoMemoryInfo(adapterIndex, adapter);
 				*ppAdapter = adapter.Detach();
 			}
@@ -786,7 +784,7 @@ namespace DirectX {
 			setProjectionMatrixWorldMatrixOrthoMatrix(screenWidth, screenHeight, screenNear, screenDepth);
 		}
 
-		RenderMapfirstTime = true;  // First time in main map != first time terrain render or mini mao render
+		RenderMapfirstTime = true;  // First time in main map != first time terrain render or mini map render
 
 #if defined CLIENT_SCENE_TEXT || defined USE_VIEW2D_SPRITES // 26
 		Initialize3DCamera();
@@ -910,7 +908,7 @@ namespace DirectX {
 		dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 		ThrowIfFailed(m_device->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&m_pDsvHeap)));
 
-		m_pDsvHeap->SetName(L"Constant Buffer Depth Stensill View");
+		m_pDsvHeap->SetName(L"Constant Buffer Depth Stencil View");
 
 		m_DsvDescriptorSize = m_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 #endif
@@ -1123,13 +1121,13 @@ namespace DirectX {
 		m_commandList->ClearRenderTargetView(rtvHandle, driver_ClearColor, 0, nullptr);
 
 #if defined USE_DSV
-		ClearDepthBuffer();															//m_deviceContext->ClearDepthStencilView
+		ClearDepthBuffer(NULL);															//m_deviceContext->ClearDepthStencilView
 #endif
 	}
 
 
 	// ----------------------------------------------------------------------------------------------
-	void DX12Class::ClearDepthBuffer()
+    void DirectX::DX12Class::ClearDepthBuffer(void* pContext)
 		// ----------------------------------------------------------------------------------------------
 	{
 #if defined USE_DSV
@@ -1159,7 +1157,7 @@ namespace DirectX {
 		// This ensures we don't waste any cycles rendering frames that will never be displayed to the screen.
 #if defined USE_PRESENT_DXGI_1_0
 	// Direct3D 12++
-		HRESULT hr = m_swapChain->Present(m_VSYNC_ENABLED, 0); // if (m_VSYNC_ENABLED) Sleep a bit, until next motinor Hz
+		HRESULT hr = m_swapChain->Present(m_VSYNC_ENABLED, 0); // if (m_VSYNC_ENABLED) Sleep a bit, until next monitor Hz
 #else
 	// Direct3D 12.1++
 		DXGI_PRESENT_PARAMETERS PresentDesc = { 0 };
@@ -1178,7 +1176,7 @@ namespace DirectX {
 	// Using Double Buffer: (BufferCount = 2)
 	// | 0 | --> | 1 | --> | 0 | ...
 
-	// Using Tripple Buffer: (BufferCount = 3)
+	// Using Triple Buffer: (BufferCount = 3)
 	// | 0 | --> | 1 | --> | 2 | --> | 0 | ...
 
 	void DX12Class::MoveToNextFrame()
@@ -1217,7 +1215,7 @@ namespace DirectX {
 		m_fenceValues[m_currentFrame]++;
 	}
 
-	//Init Step: 5 - Set the best shader availabel: MORE INFO: http://msdn.microsoft.com/en-us/library/windows/desktop/ff476876%28v=vs.85%29.aspx
+	//Init Step: 5 - Set the best shader available: MORE INFO: http://msdn.microsoft.com/en-us/library/windows/desktop/ff476876%28v=vs.85%29.aspx
 	// ----------------------------------------------------------------------------------------------
 	void DX12Class::getProfile()
 		// ----------------------------------------------------------------------------------------------
@@ -1243,7 +1241,7 @@ namespace DirectX {
 		DirectX 11.1																									WIN8
 		DirectX 11.2																									WIN8.1
 
-		D3D_SHADER_MODEL_5_1 = 0x51, WINDOWS10 DX12 Augost 21, 2015 Shader Model 5.1 — GCN 1+, Fermi+, DirectX 12 (11_0+) with WDDM 2.0.
+		D3D_SHADER_MODEL_5_1 = 0x51, WINDOWS10 DX12 August 21, 2015 Shader Model 5.1 — GCN 1+, Fermi+, DirectX 12 (11_0+) with WDDM 2.0.
 		D3D_SHADER_MODEL_6_0 = 0x60, WINDOWS10 DX12	                Shader Model 6.0 — GCN 1+, Kepler+, DirectX 12 (11_0+) with WDDM 2.1.
 		D3D_SHADER_MODEL_6_1 = 0x61, WINDOWS10 DX12	                Shader Model 6.1 — GCN 1+, Kepler+, DirectX 12 (11_0+) with WDDM 2.3.
 		D3D_SHADER_MODEL_6_2 = 0x62, WINDOWS10 DX12	                Shader Model 6.2 — GCN 1+, Kepler+, DirectX 12 (11_0+) with WDDM 2.4.
@@ -1390,7 +1388,7 @@ namespace DirectX {
 	}
 #if defined USE_RASTERIZER_STATE
 	// ----------------------------------------------------------------------------------------------
-	void DX12Class::SetRasterizerState(UINT CullMode, UINT fillMode)
+    void DirectX::DX12Class::SetRasterizerState(void* pContext, UINT CullMode, UINT fillMode)
 		// ----------------------------------------------------------------------------------------------
 	{
 		m_CullMode = CullMode;
@@ -1417,10 +1415,12 @@ namespace DirectX {
 
 
 
+
+
 #if defined USE_ALPHA_BLENDING
 	//The first new function TurnOnAlphaBlending allows us to turn on alpha blending
 	// ----------------------------------------------------------------------------------------------
-	void DX12Class::TurnOnAlphaBlending()
+    void DirectX::DX12Class::TurnOnAlphaBlending(void* pContext)
 		// ----------------------------------------------------------------------------------------------
 	{
 		//if (g_AlphaBlend) return;
@@ -1430,7 +1430,7 @@ namespace DirectX {
 
 	//The second new function TurnOffAlphaBlending allows us to turn off alpha blending 
 	// ----------------------------------------------------------------------------------------------
-	void DX12Class::TurnOffAlphaBlending()
+    void DirectX::DX12Class::TurnOffAlphaBlending(void* pContext)
 		// ----------------------------------------------------------------------------------------------
 	{
 		//if (!g_AlphaBlend) return;
@@ -1447,7 +1447,7 @@ namespace DirectX {
 
 	static bool g_Zbuffer = false;
 	// ----------------------------------------------------------------------------------------------
-	void DX12Class::TurnZBufferOn()
+    void DirectX::DX12Class::TurnZBufferOn(void* pContext)
 		// ----------------------------------------------------------------------------------------------
 	{
 		if (g_Zbuffer) return;
@@ -1455,7 +1455,7 @@ namespace DirectX {
 	}
 
 	// ----------------------------------------------------------------------------------------------
-	void DX12Class::TurnZBufferOff()
+    void DirectX::DX12Class::TurnZBufferOff(void* pContext)
 		// ----------------------------------------------------------------------------------------------
 	{
 		if (!g_Zbuffer) return;

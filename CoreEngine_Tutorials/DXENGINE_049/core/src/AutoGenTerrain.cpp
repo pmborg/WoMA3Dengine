@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -728,7 +728,7 @@ void CTerrain::SaveBMPHeightMapTerrain(CHAR* maps, UINT bmp_type) // NEED TO BE:
 //0 UNDERWATER
 #if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN
 // ----------------------------------------------------------------------------
-void CTerrain::initUnderWaterDemo(UINT terrainId)
+void CTerrain::initUnderWaterDemo(void* pContext, UINT terrainId)
 // ----------------------------------------------------------------------------
 {
 	//UINT id = 0; // Fix number for center terrain
@@ -769,22 +769,24 @@ void CTerrain::initUnderWaterDemo(UINT terrainId)
 	}
 
 	std::vector<STRING> Textures; Textures.push_back(OCEANFLOOR_TEXTURE);
-	CreateTerrainModel(terrainId,  Textures, SHADER_AUTO);
+	CreateTerrainModel((ID3D11DeviceContext*)pContext, terrainId,  Textures, SHADER_AUTO);
 }
 #endif
 
 //1 WATER
 #if defined SCENE_WATER_TERRAIN
 // ----------------------------------------------------------------------------------
-bool CTerrain::initTerrainWaterMeshDemo(UINT terrainId) // Used to load WATER
+bool CTerrain::initTerrainWaterMeshDemo(void* ctx, UINT terrainId) // Used to load WATER
 // ----------------------------------------------------------------------------------
 {
+	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
+
 		LoadHeightMapTerrain(OCEANWATER_HMAP, 0, 0);	// FLAT WATER!
 
 		PopulateTerrainModelVertexVector(terrainId, 1); //1=terrain_squareSize
 
 		std::vector<STRING> Textures; Textures.push_back(OCEANWATER_TEXTURE);		// WATER: Shader:TEXTURE
-		CreateTerrainModel(terrainId,  Textures, SHADER_TEXTURE);
+		CreateTerrainModel(pContext, terrainId, Textures, SHADER_TEXTURE);
 
 		// FORCE FOR NOW TRANSPARENT:
 #if defined DX11 || defined DX9
@@ -871,7 +873,7 @@ void CTerrain::NormalizeHeightMap(float scale, float moveY)
 //2 MAIN-TERRAIN
 #if defined SCENE_MAIN_TOPO_TERRAIN
 // ----------------------------------------------------------------------------
-bool CTerrain::initMainTopoTerrainDemo(UINT terrainId)
+bool CTerrain::initMainTopoTerrainDemo(UINT terrainId, ID3D11DeviceContext* pContext)
 // ----------------------------------------------------------------------------
 {
 	float xpos = 0, zpos = 0;
@@ -887,11 +889,11 @@ bool CTerrain::initMainTopoTerrainDemo(UINT terrainId)
 		//  Populate:	modelVertexVector2[i] x, y, z
 		//				modelVertexVector2[i].tu
 		//				modelVertexVector2[i].tv
-		PopulateTerrainModelVertexVector(terrainId, 1);	//1=terrain_squareSize // 512x125	to 0 2048,2048
+	PopulateTerrainModelVertexVector(terrainId, 1);	//1=terrain_squareSize // 512x125	to 0 2048,2048
 
 	//------------------------------------------------------------------------------------------
 	// Step 3: ID2 SCALE: modelVertexVector2[i].y |tu tv OPEN GL|
-	if (terrainId == 2)
+		if (terrainId == 2)
 	{
 		// Add TEXTURE MAP: to all vertices
 		for (UINT i = 0; i < modelVertexVector2.size(); i++)				// Num Vertices: 6x256x256 //{ size=6303750 }
@@ -915,11 +917,11 @@ bool CTerrain::initMainTopoTerrainDemo(UINT terrainId)
 
 	// Step 5: Populate: VirtualModelClass* SystemHandle->m_Application->m_TerrainModel[id]
 	//Populate: indices.push_back
-	if (terrainId == 2 || terrainId == 3 || terrainId == 4)
+		if (terrainId == 2 || terrainId == 3 || terrainId == 4)
 	{
 		std::vector<STRING> Textures;
 		Textures.push_back(TERRAIN_LEVEL50_TEXTURE);
-		CreateTerrainModel(terrainId,  Textures, SHADER_AUTO);
+		CreateTerrainModel(pContext, terrainId, Textures, SHADER_AUTO);
 	}
 	return true;
 }
@@ -1124,7 +1126,7 @@ bool CTerrain::CheckHeightOfTrianglev2(float x, float z, float& height, float v0
 
 // Used by TerrainId [0][1][2][3]
 // ----------------------------------------------------------------------------
-void CTerrain::CreateTerrainModel(UINT id, std::vector<STRING> Textures, SHADER_TYPE shader_type)
+void CTerrain::CreateTerrainModel(ID3D11DeviceContext* pContext, UINT id, std::vector<STRING> Textures, SHADER_TYPE shader_type)
 // ----------------------------------------------------------------------------
 {
 	std::vector<UINT> indices; // (2 * (terrain_squares)*(terrain_squares));
@@ -1134,7 +1136,7 @@ void CTerrain::CreateTerrainModel(UINT id, std::vector<STRING> Textures, SHADER_
 	SystemHandle->m_Application->m_TerrainModel[id]->ModelHASfog = true;
 
 #if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX
-	if (id == 2 || id ==4)
+	if (id == 2 || id == 4)
 	{
 		//TRIANGLESTRIP
 		for (int y = 0; y < terrain_squares - 1; y++) {
@@ -1166,12 +1168,12 @@ void CTerrain::CreateTerrainModel(UINT id, std::vector<STRING> Textures, SHADER_
 
 
 #if _DEBUG
-	womalogauto( TEXT("TERRAIN %d Shader Type: %d\n"), id, shader_type);
+	womalogauto(TEXT("TERRAIN %d Shader Type: %d\n"), id, shader_type);
 #endif
 
 #if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX
 #else
-	if (id == 0) ASSERT(SystemHandle->m_Application->m_TerrainModel[id]->LoadTexture(TEXT("id0:under water"), m_Driver, shader_type, &Textures, &modelVertexVector0));
+	if (id == 0) ASSERT(SystemHandle->m_Application->m_TerrainModel[id]->LoadTexture(pContext, TEXT("id0:under water"), m_Driver, shader_type, &Textures, &modelVertexVector0));
 #endif
 
 	#if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX

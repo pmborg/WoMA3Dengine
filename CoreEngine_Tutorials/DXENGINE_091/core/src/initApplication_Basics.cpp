@@ -594,42 +594,42 @@ bool ApplicationClass::WOMA_LOAD_OBJ(void* pContext, UINT threadID, WomaDriverCl
 	objModel.push_back(NULL);
 
 	if (i > 0
-		&& strcmp(SystemHandle->xml_loader.theWorld[i].filename, SystemHandle->xml_loader.theWorld[i - 1].filename) == 0
-		&& (SystemHandle->xml_loader.theWorld[i].type == 11			//11 animated grass, Clone it its faster
-			|| SystemHandle->xml_loader.theWorld[i].type == 12)		//12 BUSHs, Clone it its faster
+		&& strcmp(SystemHandle->xml_loader.theWorldXML[i].filename, SystemHandle->xml_loader.theWorldXML[i - 1].filename) == 0
+		&& (SystemHandle->xml_loader.theWorldXML[i].type == 11			//11 animated grass, Clone it its faster
+			|| SystemHandle->xml_loader.theWorldXML[i].type == 12)		//12 BUSHs, Clone it its faster
 		)
 	{
 		objModel[i] = objModel[i - 1];
-		SystemHandle->xml_loader.theWorld[i].CLONE = true;
+		SystemHandle->xml_loader.theWorldXML[i].CLONE = true;
 	}
 	else
 	{
 
-		if (SystemHandle->xml_loader.theWorld[i].type < 200)
+		if (SystemHandle->xml_loader.theWorldXML[i].type < 200)
 		{
-			CREATE_MODEL_IF_NOT_EXCEPTION(objModel[i], I_AM_2D, SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows);
+			CREATE_MODEL_IF_NOT_EXCEPTION(objModel[i], I_AM_2D, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.renderShadows);
 		}
 		else
 		{
-			CREATE_MODEL_IF_NOT_EXCEPTION(objModel[i], I_AM_3D, SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows);
+			CREATE_MODEL_IF_NOT_EXCEPTION(objModel[i], I_AM_3D, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.renderShadows);
 		}
 
-		objModel[i]->m_ObjId = i; //SYNC-ID: objModel[i] with: xml_loader.theWorld[i]
-		objModel[i]->xmlId = SystemHandle->xml_loader.theWorld[i].id;
+		objModel[i]->m_ObjId = i; //SYNC-ID: objModel[i] with: xml_loader.theWorldXML[i]
+		objModel[i]->xmlId = SystemHandle->xml_loader.theWorldXML[i].id;
 
 #if   !defined USE_SHADOW_INSTANCES
-		SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows = false;
-		SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows = false;
+		SystemHandle->xml_loader.theWorldXML[i].WOMA_object.castShadows = false;
+		SystemHandle->xml_loader.theWorldXML[i].WOMA_object.renderShadows = false;
 		objModel[i]->ModelCastShadow = false;
 		objModel[i]->ModelRenderShadow = false;
 #else
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
-		objModel[i]->ModelCastShadow = SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows = SystemHandle->xml_loader.theWorld[i].castShadow;
-		objModel[i]->ModelRenderShadow = SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows = SystemHandle->xml_loader.theWorld[i].renderShadows;
+		objModel[i]->ModelCastShadow = SystemHandle->xml_loader.theWorldXML[i].WOMA_object.castShadows = SystemHandle->xml_loader.theWorldXML[i].castShadow;
+		objModel[i]->ModelRenderShadow = SystemHandle->xml_loader.theWorldXML[i].WOMA_object.renderShadows = SystemHandle->xml_loader.theWorldXML[i].renderShadows;
 #endif
 #endif
 		
-		SystemHandle->xml_loader.theWorld[i].WOMA_object.instances = SystemHandle->xml_loader.theWorld[i].instances;
+		SystemHandle->xml_loader.theWorldXML[i].WOMA_object.instances = SystemHandle->xml_loader.theWorldXML[i].instances;
 
 		if (WOMA::game_state == GAME_STOP)
 			return false;
@@ -637,7 +637,7 @@ bool ApplicationClass::WOMA_LOAD_OBJ(void* pContext, UINT threadID, WomaDriverCl
 #if DX_ENGINE_LEVEL >= 73 && defined BILLBOARD_FOR_WINDY_GRASS
 		if (i >= world_xml_objs)
 		{
-			if (SystemHandle->xml_loader.theWorld[i].type == 11)
+			if (SystemHandle->xml_loader.theWorldXML[i].type == 11)
 				((DXmodelClass*)objModel[i])->isAnimatedBill = true;
 		}
 #endif
@@ -645,9 +645,9 @@ bool ApplicationClass::WOMA_LOAD_OBJ(void* pContext, UINT threadID, WomaDriverCl
 		//Load OBJ or W3D:
 		if (!(objModel[i]->LoadModel(pContext, wfilename,
 			Driver,
-			(SHADER_TYPE)SystemHandle->xml_loader.theWorld[i].shader,
-			wfilename, SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows,
-			SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.instances)))
+			(SHADER_TYPE)SystemHandle->xml_loader.theWorldXML[i].shader,
+			wfilename, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.castShadows,
+			SystemHandle->xml_loader.theWorldXML[i].WOMA_object.renderShadows, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.instances)))
 		{
 			WomaMessageBox(wfilename, TEXT("Error Loading: "), FALSE); return false;
 		}
@@ -658,8 +658,8 @@ bool ApplicationClass::WOMA_LOAD_OBJ(void* pContext, UINT threadID, WomaDriverCl
 	{
 		((DXmodelClass*)objModel[i])->isBill = true;
 
-		if (SystemHandle->xml_loader.theWorld[i].meshSRV) {
-			((DXmodelClass*)objModel[i])->meshSRV11[0] = SystemHandle->xml_loader.theWorld[i].meshSRV;
+		if (SystemHandle->xml_loader.theWorldXML[i].meshSRV) {
+			((DXmodelClass*)objModel[i])->meshSRV11[0] = SystemHandle->xml_loader.theWorldXML[i].meshSRV;
 		}
 	}
 
@@ -696,11 +696,11 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	// INIT ASTROs (Sun Moon) /////////////////////////////////////////////////////////////////////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
 #if defined USE_ASTRO_CLASS
-	initWorld->Calculate();
+	initWorld->Calculate(); //Calculate Real position of Sun and Moon.
 #endif
 
 #if defined USE_ASTRO_CLASS && defined USE_REAL_SUNLIGHT_DIRECTION
-	Calc3DSunMoonPosition();
+	Use3DSunMoonPosition();
 #endif
 
 	//-----------------------------------------------------------------------------------------------------------------
@@ -710,16 +710,16 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	IF_NOT_THROW_EXCEPTION(m_Light);
 	m_Light->SetAmbientColor(0.55f, 0.55f, 0.55f, 1);	//later in world.xml
 	m_Light->SetDiffuseLightColor(1, 1, 1, 1.0f);			//later in world.xml
-#if defined USE_REAL_SUNLIGHT_DIRECTION
+  #if defined USE_REAL_SUNLIGHT_DIRECTION
 	m_Light->SetDirection(SunX / 1000, SunY / 1000, SunZ / 1000);
-#else
+  #else
 	m_Light->SetDirection(-0.535041273f, -1, 0);		//later in world.xml
-#endif
+  #endif
 
 	//LIGHT_RAY ////////////////////////////////////////////////////////////////////////////////////////////////////
-#if defined USE_LIGHT_RAY	//DO: CalculateLightRayVertex(SunDistance);							  // Calculate Light Source Position
+  #if defined USE_LIGHT_RAY	//DO: CalculateLightRayVertex(SunDistance);							  // Calculate Light Source Position
 	initLightRay(pContext);	//	  m_lightRayModel->UpdateDynamic(m_Driver, m_LightVertexVector);  // Update LightRay vertex(s)
-#endif						//	  m_lightRayModel->Render(m_Driver);							  // Render LightRay
+  #endif					//	  m_lightRayModel->Render(m_Driver);							  // Render LightRay
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// INIT ALL BASIC DEMOS: //////////////////////////////////////////////////////////////////////////////////////////
@@ -782,32 +782,32 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	// INIT TERRAINs //////////////////////////////////////////////////////////////////////////////////////////////////
     //=================================================================================================================
 	//0
-#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN		// UNDER WATER: Terrain
+ #if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN		// UNDER WATER: Terrain
 	loadedTerrain[0] = NEW CTerrain(TERRAIN);
 	loadedTerrain[0]->initUnderWaterDemo(pContext, 0);			//UNDERWATER	(populate: modelVertexVector) 2022:LEVEL_ENGINE: 25
-#endif
+  #endif
 
 	//1 WATER TERRAIN MESH: 6 vertex + 6 index
-#if defined SCENE_WATER_TERRAIN
+  #if defined SCENE_WATER_TERRAIN
 	loadedTerrain[1] = NEW CTerrain(TERRAIN);
 	loadedTerrain[1]->initTerrainWaterMeshDemo(pContext, 1);		//WATER			(populate: modelVertexVector)
-#endif
+  #endif
 
 	//2 MAIN TERRAIN MESH: 4 vertex + 6 index
-#if defined SCENE_MAIN_TOPO_TERRAIN	&& !defined USE_TERRAIN_ALFA_MAP
-#if DX_ENGINE_LEVEL >= 60 && defined USE_TERRAIN_TUTORIAL_CHAP_24
+  #if defined SCENE_MAIN_TOPO_TERRAIN	&& !defined USE_TERRAIN_ALFA_MAP
+  #if DX_ENGINE_LEVEL >= 60 && defined USE_TERRAIN_TUTORIAL_CHAP_24
 	loadedTerrain[2] = NEW CTerrain(TERRAIN_COLOR_QUAD_FOG_SLOP_TEXTURE_Detail_Mapping_TextureMapping_AlphaMapping_BumpMapping_LighMapping_TransparentTexture_MINI_MAP);				//TERRAIN_LIGHT+COLOR
-#else
+  #else
 	loadedTerrain[2] = NEW CTerrain(TERRAIN_COLOR);				//TERRAIN_LIGHT+COLOR
-#endif
+  #endif
 	loadedTerrain[2]->initMainTopoTerrainDemo(2, (ID3D11DeviceContext*)pContext);		//TERRAIN		(populate: modelVertexVector)
-#endif
+  #endif
 
 	//3 TERRAIN:6 vertex + 6 index: TO BE USED BY COLLISION TERRAIN
-#if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX && defined SCENE_TERRAIN_COLLISION
+  #if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX && defined SCENE_TERRAIN_COLLISION
 	loadedTerrain[3] = NEW CTerrain(TERRAIN);
 	loadedTerrain[3]->initMainTopoTerrainDemo(3, (ID3D11DeviceContext*)pContext);
-#endif
+  #endif
 #endif
 
 	//=================================================================================================================
@@ -817,27 +817,12 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	//-----------------------------------------------------------------------------------------------------------------
 	// Add Instanced Billboards to World.xml
 	//-----------------------------------------------------------------------------------------------------------------
-#if defined USE_INSTANCES_FOR_TREES
-    {
-	xmlobj3d XMLobj3D = {};
-
-	    XMLobj3D.id = (int)SystemHandle->xml_loader.theWorld.size();
-	    XMLobj3D.posX = 0; XMLobj3D.translateY = 0; XMLobj3D.posZ = 0;
-	    XMLobj3D.shader = SHADER_TEXTURE_GS_INSTANCED;
-	    XMLobj3D.scale = 0.0215f;
-	    XMLobj3D.instances = N_INSTANCE_TREES;
-        XMLobj3D.type = 0;
-
-	    strcpy_s(XMLobj3D.filename, sizeof(XMLobj3D.filename), BILL_GS);
-	    SystemHandle->xml_loader.theWorld.push_back(XMLobj3D);  //Add obj as xml entry
-    }
-#endif
 
 #if defined USE_INSTANCES_FOR_TREES90
     {
     xmlobj3d XMLobj3D = {};
 
-        XMLobj3D.id = (int)SystemHandle->xml_loader.theWorld.size();
+        XMLobj3D.id = (int)SystemHandle->xml_loader.theWorldXML.size();
         XMLobj3D.posX = 0; XMLobj3D.translateY = 0; XMLobj3D.posZ = 0;
         XMLobj3D.shader = SHADER_TEXTURE_GS_INSTANCED;
         XMLobj3D.scale = 1;
@@ -845,13 +830,14 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
         XMLobj3D.type = 301;
 
         strcpy_s(XMLobj3D.filename, sizeof(XMLobj3D.filename), TREE1_GS);
-        SystemHandle->xml_loader.theWorld.push_back(XMLobj3D);  //Add obj as xml entry
+        SystemHandle->xml_loader.theWorldXML.push_back(XMLobj3D);  //Add obj as xml entry
     }
 #endif
 
     //-----------------------------------------------------------------------------------------------------------------
     // Log xml objects:
-	world_xml_objs = (UINT)SystemHandle->xml_loader.theWorld.size(); //Get 
+	world_xml_objs = (UINT)SystemHandle->xml_loader.theWorldXML.size(); //Get 
+	initial_world_xml_objs = world_xml_objs;
 	womalogauto("Number of objects loaded in: WORLD.XML %d\n", world_xml_objs);
 
 	//-----------------------------------------------------------------------------------------------------------------
@@ -864,9 +850,9 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 		WomaMessageBox(TEXT("Could not initialize the billboard Class"), TEXT("Create Billboard for Trees / Flowers"));
 		return false;
 	}
-	womalogauto("Number of billboard objects added %d\n", SystemHandle->xml_loader.theWorld.size()- world_xml_objs);
+	womalogauto("Number of billboard objects added %d\n", SystemHandle->xml_loader.theWorldXML.size()- world_xml_objs);
 #endif
-    //theWorld.size()=3816
+    //theWorldXML.size()=3854
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// PROGRESS BAR		///////////////////////////////////////////////////////////////////////////////////////////////
@@ -909,20 +895,20 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 #if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined USE_FRUSTRUM
 
 	// Load 3D Objects: convert XML "objects" -- Load OBJ or W3D --> VirtualModelClass:
-	theWorld_size = (UINT)SystemHandle->xml_loader.theWorld.size();
+	theWorld_size = (UINT)SystemHandle->xml_loader.theWorldXML.size();
 	objModel_size = (UINT)objModel.size();
 	WOMA::num_loading_objects = 1;
 
 #if defined WINDOWS_PLATFORM
 	MSG msg = { 0 };
 #endif
-	// world_xml_objs
-	// theWorld_size
-	// objModel_size
-	//static DXmodelClass* model = NULL;
+	// world_xml_objs = 15
+	// theWorld_size  = 3854
+	// objModel_size  = 0
+
 	for (UINT i = objModel_size; i < objModel_size + theWorld_size; i++)
 	{
-		TCHAR wfilename[MAX_STR_LEN] = { 0 }; atow(wfilename, SystemHandle->xml_loader.theWorld[i].filename, MAX_STR_LEN);
+		TCHAR wfilename[MAX_STR_LEN] = { 0 }; atow(wfilename, SystemHandle->xml_loader.theWorldXML[i].filename, MAX_STR_LEN);
 #if defined MAIN_RENDER_MAIN_OBJ
 		WOMA_LOAD_OBJ(pContext, 0, Driver, i, wfilename);
 
@@ -935,17 +921,17 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 		//MINIMAP OBJECTS: Create 2D objects for minimap
 		objModel_minimap.push_back(NULL);	// Create a vector for minimap objects
 
-		CREATE_MODEL_IF_NOT_EXCEPTION(objModel_minimap[i], I_AM_2D, SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows);
+		CREATE_MODEL_IF_NOT_EXCEPTION(objModel_minimap[i], I_AM_2D, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.renderShadows);
 
-		objModel_minimap[i]->m_ObjId = i; //SYNC-ID: objModel[i] with: xml_loader.theWorld[i]
-		objModel_minimap[i]->xmlId = SystemHandle->xml_loader.theWorld[i].id;
+		objModel_minimap[i]->m_ObjId = i; //SYNC-ID: objModel[i] with: xml_loader.theWorldXML[i]
+		objModel_minimap[i]->xmlId = SystemHandle->xml_loader.theWorldXML[i].id;
 
 		//Load OBJ or W3D:
 		if (!(objModel_minimap[i]->LoadModel(pContext, wfilename,
 			Driver,
-			(SHADER_TYPE)SystemHandle->xml_loader.theWorld[i].shader,
-			wfilename, SystemHandle->xml_loader.theWorld[i].WOMA_object.castShadows,
-			SystemHandle->xml_loader.theWorld[i].WOMA_object.renderShadows, SystemHandle->xml_loader.theWorld[i].WOMA_object.instances)))
+			(SHADER_TYPE)SystemHandle->xml_loader.theWorldXML[i].shader,
+			wfilename, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.castShadows,
+			SystemHandle->xml_loader.theWorldXML[i].WOMA_object.renderShadows, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.instances)))
 		{
 			WomaMessageBox(wfilename, TEXT("Error Loading: "), FALSE); return false;
 		}

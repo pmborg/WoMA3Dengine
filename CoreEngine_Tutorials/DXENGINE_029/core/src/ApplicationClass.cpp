@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -511,11 +511,11 @@ int __cdecl CompoundSortCB(const VOID* arg1, const VOID* arg2)
 
 #if CORE_ENGINE_LEVEL >= 10 && !defined NewWomaEngine
 //-------------------------------------------------------------------------------------------
-bool ApplicationClass::Initialize(WomaDriverClass* Driver)
+bool ApplicationClass::Initialize(void* pContext, WomaDriverClass* Driver)
 //-------------------------------------------------------------------------------------------
 {
 #if !defined ANDROID_PLATFORM
-    ASSERT_DEBUG(Driver);
+	ASSERT_DEBUG(Driver);
 #endif
 
 	//imgGui:
@@ -527,24 +527,23 @@ bool ApplicationClass::Initialize(WomaDriverClass* Driver)
 
 	//DEMO:
 #if defined INTRO_DEMO
-	initIntroDemo();
+	initIntroDemo(pContext);
 #endif
 //########################################### 3D: STUFF ###########################################
-	// (m_Light && xml_loader.theWorld) and SCENE MANAGER: QuadTree object Loader/Render
-	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(Driver));	
+	// (m_Light && xml_loader.theWorldXML) and SCENE MANAGER: QuadTree object Loader/Render
+	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(pContext, Driver));
 //########################################### 2D: STUFF ###########################################
  
 #if DX_ENGINE_LEVEL >= 24 && defined USE_VIEW2D_SPRITES
-	DEMO_WOMA_APPLICATION_InitializeSprites2D();				//2D:TITLE + 2D:MAP + 2D:MINI-MAP
+	DEMO_WOMA_APPLICATION_InitializeSprites2D(pContext);		//2D:TITLE + 2D:MAP + 2D:MINI-MAP
 #endif
 	// 2D-FONTS: (Windows)
 #if defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONT //27
-	initText();
+	initText(pContext);
 #endif
 	// 2D-FONTS: (Android / Linux)
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
-	r_Application = new RApplicationClass;
-	_tprintf("r_Application->Initialize(m_videoDisplay, m_hwnd, screenWidth, screenHeight)\n");
+	r_Application = NEW RApplicationClass;
 	IF_NOT_RETURN_FALSE(r_Application->Initialize(SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT));
 #endif
 

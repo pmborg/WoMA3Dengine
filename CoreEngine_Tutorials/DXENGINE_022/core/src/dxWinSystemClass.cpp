@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -114,9 +114,9 @@ bool dxWinSystemClass::APPLICATION_INIT_SYSTEM() //LOAD ALL GRAPHICS
 	//ClassRegister/LoadXMLWorld/InitializeSystemScreen/ApplicationInitMainWindow/InitOsInput/StartTimer
 	bool res = WinSystemClass::APPLICATION_INIT_SYSTEM();	
 
+
 	return res;
 }
-
 
 //----------------------------------------------------------------------------
 int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
@@ -127,7 +127,6 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
     if (WOMA::renderOnce)
         WOMA::woma_timer = 0;
 
-	//MAIN LOOP: (single thread version for DEBUG)
 	do
 	{
         BOOL gResult = TRUE;
@@ -138,29 +137,37 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 		}
 
 		if (WOMA::game_state > GAME_MINIMIZED)
-			ProcessFrame();	// Render ONE: Application Frame!
+			ProcessFrame();	// RENDER ONE: APPLICATION FRAME!
 		else
-			Sleep(100);     // We are in background slow down
+			Sleep(100);     // We are in background? slowdown!
 
 		if (WOMA::main_loop_state < 0 || (WOMA::renderOnce && WOMA::woma_timer > 15))
         {
 			WOMA::game_state = GAME_STOP;
-            return EXIT_SUCCESS;                //Controlled Exit for automatic tests.
+			if (WOMA::renderOnce && WOMA::woma_timer > 15)
+				return EXIT_SUCCESS;                // Controlled Exit for Automatic Tests.
+			break;										   
 		}
         if (WOMA::game_state == ENGINE_RESTART)
-            PostQuitMessage(WOMA::game_state);  //RESTART ENGINE: return WOMA::game_state;
+		{
+            PostQuitMessage(WOMA::game_state);		//RESTART ENGINE: return WOMA::game_state;
+			break;
+		}
 
 	} while (msg.message != WM_QUIT);
 
-    //Clear all message queue:
-    while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) > 0) 
-    {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-    }
+	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) > 0) // 5 sec max
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+		Sleep(100);
+	}
 
     womalog("msg.wParam: %d\n", msg.wParam);
-	return (int)msg.wParam; //return the PostQuitMessage (message code)
+	if (WOMA::game_state == ENGINE_RESTART)
+		return ENGINE_RESTART;
+	else
+		return (int)msg.wParam; //return the PostQuitMessage (message code)
 }
 
 //----------------------------------------------------------------------------
@@ -204,7 +211,7 @@ void dxWinSystemClass::Shutdown()
 	womalogauto((TCHAR*)TEXT("WinSystemClass::Shutdown()\n"));
 }
 
-void dxWinSystemClass::GPH_RESIZE()
+void dxWinSystemClass::GPH_RESIZE(void* pContext)
 {
 	if (!SystemHandle->m_Application)
 		return;
@@ -348,7 +355,7 @@ bool dxWinSystemClass::SaveScreenshot()
 	GUID_ContainerFormatWmp
 	GUID_ContainerFormatDds
 	*/
-	HRESULT hr = DirectX::SaveWICTextureToFile(Driver->m_deviceContext, Driver->DX11windowsArray[0].m_backBuffer, GUID_ContainerFormatPng, path.c_str());		//op2
+	HRESULT hr = DirectX::SaveWICTextureToFile(Driver->GetDeviceContext(), DX11windowsArray[0].m_backBuffer, GUID_ContainerFormatPng, path.c_str());		//op2
 	if (hr == S_OK)
 		return true;
 
@@ -439,9 +446,10 @@ void InitializeObjectsLoaderThreadFunction() // InitializeThread
 
 	bool loading = SystemHandle->LoadAllGraphicAssets();	// Load all main Graphics Objects, that will be rendered
 
-	// We were minized ? While in the load thread ?
+	// We were minimized ? While in the load thread ?
 	if (WOMA::game_state == GAME_MINIMIZED)
 		WOMA::previous_game_state = GAME_RUN;
+
 	WOMA::num_running_THREADS--; //InitializeObjectsLoaderThreadFunction
 #if defined _DEBUG
 	womalog("WOMA::num_running_THREADS: %d %s %s %d\n", WOMA::num_running_THREADS, __FILE__, __FUNCTION__, __LINE__);

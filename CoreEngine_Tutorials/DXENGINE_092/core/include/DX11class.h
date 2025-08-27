@@ -368,7 +368,7 @@ public:
     BOOL CheckAPIdriver (int USE_THIS_ADAPTER);
     bool getModesList(int g_USE_MONITOR, int screenWidth, int screenHeight, BOOL fullscreen, UINT* numerator, UINT* denominator);
 
-    void SelectDepthFormat(UINT depthBits, BOOL fullscreen);
+    DXGI_FORMAT SelectDepthFormat(UINT depthBits, BOOL fullscreen);
 
     bool Resize (int screenWidth, int screenHeight,float screenNear, float screenDepth, BOOL fullscreen, UINT depthBits);
     void DeleteViewBuffers();
@@ -419,7 +419,9 @@ private:
 
 #if defined USE_DX11_1_SETUP
 	ComPtr<ID3D11DeviceContext>    m_Context;
-	ComPtr<ID3D11DeviceContext1>   m_Context1;	// Optional
+	ComPtr<ID3D11DeviceContext1>   m_Context1; 
+	ComPtr<ID3D11DeviceContext2>   m_Context2; // DX11.2+ introduces Tiled Resources, allowing you to:
+	ComPtr<ID3D11DeviceContext3>   m_Context3; // Future
 #endif
 	ID3D11DeviceContext* m_deviceContext = nullptr;
 	

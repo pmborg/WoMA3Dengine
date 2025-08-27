@@ -85,12 +85,29 @@ Texture* Texture::CreateTextureCube(Graphics& graphics, int size, const std::str
 }
 
 extern Texture* LoadTextureFromPathFBX(UINT model_type, Graphics& graphics, LPCWSTR& texture);
-
+/*
 void ReplaceTextureVersionW(std::wstring& path, const std::wstring& from, const std::wstring& to) {
     size_t pos = path.find(from);
     if (pos != std::wstring::npos) {
         path.replace(pos, from.length(), to);
     }
+}
+*/
+void ReplaceTextureVersionW(std::wstring& path, const std::wstring& from, const std::wstring& to)
+{
+	// Create lowercase copies for comparison
+	std::wstring pathLower = path;
+	std::wstring fromLower = from;
+
+	std::transform(pathLower.begin(), pathLower.end(), pathLower.begin(), ::towlower);
+	std::transform(fromLower.begin(), fromLower.end(), fromLower.begin(), ::towlower);
+
+	size_t pos = pathLower.find(fromLower);
+	if (pos != std::wstring::npos)
+	{
+		// Replace in the original string at the correct position
+		path.replace(pos, from.length(), to);
+	}
 }
 #if defined USE_CONVERT_TO_PNG
 extern bool SaveAsPNG_Debug(const std::wstring& originalFile, const DirectX::ScratchImage& image);
@@ -98,11 +115,34 @@ extern bool SaveAsPNG_Debug(const std::wstring& originalFile, const DirectX::Scr
 Texture* Texture::LoadTextureFromPath(UINT this_level, UINT modeltype, Graphics& graphics, LPCWSTR& texturePath)
 {
     std::wstring filetexturePath = texturePath;
+//#if defined MAVERICK && defined SIMPLE
+    if (this_level == 87)
+    {
+        switch (modeltype)
+        {
+        case 2:
+            ReplaceTextureVersionW(filetexturePath, L"Skin_1_Armor_and_Weapon_Albedo", L"Skin_2_Armor_and_Weapon_Albedo");
+            ReplaceTextureVersionW(filetexturePath, L"Skin_1_Body_Albedo", L"Skin_2_Body_Albedo");
+            ReplaceTextureVersionW(filetexturePath, L"Skin_1_Hair_Albedo", L"Skin_2_Hair_Albedo");
+            break;
+        case 3:
+            ReplaceTextureVersionW(filetexturePath, L"Skin_1_Armor_and_Weapon_Albedo", L"Skin_3_Armor_and_Weapon_Albedo");
+            ReplaceTextureVersionW(filetexturePath, L"Skin_1_Body_Albedo", L"Skin_3_Body_Albedo");
+            ReplaceTextureVersionW(filetexturePath, L"Skin_1_Hair_Albedo", L"Skin_3_Hair_Albedo");
+            break;
+        }
+    }
+   //else
+   //{
+   //    modeltype = 1;
+   //}
+//#else
 if (this_level>=86) 
 {
     if (modeltype >=1)
         return LoadTextureFromPathFBX(modeltype, graphics, texturePath);
 }
+//#endif
 
 
     // Find the position of "../../AppData/Local"

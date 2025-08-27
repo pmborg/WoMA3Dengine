@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -186,7 +186,7 @@ void ApplicationTextClass::SetLoboRenderCount(int count)
 
 }
 
-bool ApplicationTextClass::Initialize(void* Driver)
+bool ApplicationTextClass::Initialize(ID3D11DeviceContext* pContext, void* Driver)
 {
 	// TODO GL
 #if (defined OPENGL3 || defined OPENGL40) 
@@ -209,7 +209,7 @@ bool ApplicationTextClass::Initialize(void* Driver)
 #endif
 
 	// Initialize the Text object:
-	if (!m_Text->Initialize(Driver))
+    if (!m_Text->Initialize(Driver, pContext))
 	{
 		WomaFatalException(("Could not initialize the Text Object"));
 	}

@@ -199,7 +199,7 @@ bool GlTextClass::UpdateSentence(SentenceType* sentence, TCHAR* text, int positi
 
 	if (!sentence)
 	{
-		WomaFatalException(("Text: sentece = NULL")); //return false;
+		WomaFatalException(("Text: sentence = NULL")); //return false;
 	}
 
 	// Store the color of the sentence.

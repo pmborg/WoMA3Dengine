@@ -24,8 +24,16 @@
 #include "mem_leak.h"
 #if defined DX_ENGINE
 #include "OSmain_dir.h"
-#include <d3d11.h>
+
 #if defined DX11 || defined DX9
+
+#include <d3d11.h>
+
+#if defined USE_DX11_1_SETUP
+#include <d3d11_1.h>   // For ID3D11DeviceContext1 + OMSetRenderTargets1
+#include <d3d11_3.h>   // For ID3D11DeviceContext3 features (optional, Win10+)
+#include <dxgi1_6.h>
+#endif
 
 #include "InputClass.h"
 
@@ -49,8 +57,6 @@
 // ----------------------------------------------------------------------------------------------
 std::vector<DXwindowDataContainer> DX11windowsArray;													
 std::vector<UINT> FSAA_possibleValues;
-
-
 
 namespace DirectX {
 
@@ -160,8 +166,6 @@ DX11Class::DX11Class()
 	#endif
 
 	// Private: ------------------------------------------------------------------
-	//m_depthStencilBuffer = NULL;
-
 	//Initialize the new depth stencil state to null in the class constructor.
 	m_depthStencilState = NULL;
 	m_depthDisabledStencilState = NULL;
@@ -668,11 +672,14 @@ HRESULT result = S_OK;
 			// -----------------------------------------------------------
 			// SWAPCHAINDESC.SAMPLEDESC - Setup multi-sampling for legacy:
 			// -----------------------------------------------------------
+	#if defined USE_DX11_1_SETUP
 			if (swapChainDesc.BufferCount == 1)
+	#endif
 			{
 				swapChainDesc.SampleDesc.Count = MSAA_COUNT;
 				swapChainDesc.SampleDesc.Quality = MSAA_QUALITY;
 			}
+	#if defined USE_DX11_1_SETUP
 			else
 			{
 				// --- Modern flip-model: requires >= 2 buffers and no MSAA on the chain ---
@@ -680,7 +687,7 @@ HRESULT result = S_OK;
 				swapChainDesc.SampleDesc.Quality = 0;
 			}
 
-	#if defined USE_DX11_1_SETUP
+	
 			// Disable FLIP if not on a supporting OS
 			ComPtr<IDXGIFactory2>               m_dxgiFactory;
 			ThrowIfFailed(CreateDXGIFactory1(IID_PPV_ARGS(m_dxgiFactory.ReleaseAndGetAddressOf())));
@@ -688,20 +695,20 @@ HRESULT result = S_OK;
 			if (FAILED(m_dxgiFactory.As(&factory4)))
 			{
 				DX11windowsArray[USE_MONITOR].DX11_GPU_supportFLIP = FALSE;
-	#ifdef _DEBUG
+		#ifdef _DEBUG
 				womalog("INFO: Flip swap effects not supported");
-	#endif
+		#endif
 			}
 
 			// Discard the back buffer contents after presenting.
 
 			if (swapChainDesc.BufferCount > 1 && !SystemHandle->AppSettings->FULL_SCREEN && DX11windowsArray[USE_MONITOR].DX11_GPU_supportFLIP)
 			{
-	#if defined(_WIN32_WINNT_WIN10) // Runtime is Win10?
+		#if defined(_WIN32_WINNT_WIN10) // Runtime is Win10?
 				swapChainDesc.SwapEffect = IsWindows10OrGreater() ? DXGI_SWAP_EFFECT_FLIP_DISCARD : DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
-	#else
+		#else
 				swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
-	#endif
+		#endif
 				swapChainDesc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
 				swapChainDesc.Scaling = DXGI_SCALING_STRETCH; // or NONE for exact
 
@@ -734,7 +741,7 @@ HRESULT result = S_OK;
 				swapChainDesc.Flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
 	#else
 			// Disable HDR if we are on an OS that can't support FLIP swap effects
-			DX11windowsArray[USE_MONITOR].DX11_allowHDR = FALSE;
+			DX11windowsArray[USE_MONITOR].DX11_GPU_supportHDR = FALSE;
 	#endif
 
 
@@ -871,7 +878,7 @@ HRESULT result = S_OK;
 //	Dolby Vision
 //	HLG(backwards compatible with SDR displays)
 
- VOID DX11Class::UpdateHDRColorSpace(UINT USE_MONITOR)
+VOID DX11Class::UpdateHDRColorSpace(UINT USE_MONITOR)
 {
 	ComPtr<IDXGIFactory2> m_dxgiFactory;
 	ThrowIfFailed(CreateDXGIFactory1(IID_PPV_ARGS(m_dxgiFactory.ReleaseAndGetAddressOf())));
@@ -885,7 +892,7 @@ HRESULT result = S_OK;
 		// (using window/display intersection).
 
 		// Get the rectangle bounds of the app window.
-		RECT windowBounds= SystemHandle->windowsArray[USE_MONITOR].m_rcWindowClient;
+		RECT windowBounds = SystemHandle->windowsArray[USE_MONITOR].m_rcWindowClient;
 		//if (!GetWindowRect(m_window, &windowBounds))
 		//	throw std::system_error(std::error_code(static_cast<int>(GetLastError()), std::system_category()), "GetWindowRect");
 
@@ -1054,9 +1061,18 @@ void DirectX::DX11Class::SetBackBufferRenderTarget(void* ctx, UINT monitorWindow
 // ----------------------------------------------------------------------------------------------
 {
 	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
-
-	pContext->OMSetRenderTargets(1, &DX11windowsArray[monitorWindow].m_renderTargetView, DX11windowsArray[monitorWindow].m_depthStencilView);
-	pContext->RSSetViewports(1, &DX11windowsArray[monitorWindow].viewport);
+#if defined USE_DX11_1_SETUP
+	if (m_Context1)
+	{
+		m_Context1->OMSetRenderTargetsAndUnorderedAccessViews(1, &DX11windowsArray[monitorWindow].m_renderTargetView, DX11windowsArray[monitorWindow].m_depthStencilView, 0, 0, NULL, NULL);
+		m_Context1->RSSetViewports(1, &DX11windowsArray[monitorWindow].viewport);
+	}
+#else
+	{
+		pContext->OMSetRenderTargets(1, &DX11windowsArray[monitorWindow].m_renderTargetView, DX11windowsArray[monitorWindow].m_depthStencilView);
+		pContext->RSSetViewports(1, &DX11windowsArray[monitorWindow].viewport);
+	}
+#endif
 }
 
 //Init Step: 6 - Create Rendering Target
@@ -1170,17 +1186,21 @@ void DirectX::DX11Class::ResetResource(ID3D11DeviceContext* pContext, UINT monit
 void DX11Class::EndScene(UINT USE_MONITOR)
 // ----------------------------------------------------------------------------------------------
 {
-	HRESULT hr=S_OK;
+	HRESULT hr = S_OK;
+
+	// vsync = true		Sequential / Flip	OFF	Locked to monitor refresh rate
+	// vsync = false	Flip + Allow Tearing	ON	Unlimited FPS, possible tearing
+	// vsync = false	Sequential	OFF	Unlimited FPS, but lower latency
 
 	// <PRINT THE 3D SCENE TO SCREEN> to Swap Chain (wait from VSYNC refresh rate, if it is the case)
-	if (DX11windowsArray[USE_MONITOR].m_swapChain1)
+	ASSERT_DEBUG(DX11windowsArray[USE_MONITOR].m_swapChain1)
 	{
+		UINT presentFlags = 0;
 #if defined USE_DX11_1_SETUP
-		UINT presentFlags = (!m_VSYNC_ENABLED && DX11windowsArray[USE_MONITOR].DX11_GPU_supportTearing) ? DXGI_PRESENT_ALLOW_TEARING : 0;
-#else
-		#define presentFlags 0
+		if (IsWindows10OrGreater() && !m_VSYNC_ENABLED && DX11windowsArray[USE_MONITOR].DX11_GPU_supportTearing)
+			presentFlags = DXGI_PRESENT_ALLOW_TEARING;
 #endif
-		hr = DX11windowsArray[USE_MONITOR].m_swapChain1->Present(m_VSYNC_ENABLED, presentFlags);
+		hr = DX11windowsArray[USE_MONITOR].m_swapChain1->Present((m_VSYNC_ENABLED == 0) ? 0 : 1, presentFlags);
 	}
 
 	// Not an error: window is occluded (minimized/fully covered). You can skip work or Sleep(1).
@@ -1273,6 +1293,7 @@ void DX11Class::SetCamera2D()
 
 	DXsystemHandle->m_Camera->m_viewmatrix2D = DX11m_Camera2D.m_viewMatrix;
 }
+
 // TODO: go to Virtual Class?
 // ----------------------------------------------------------------------------------------------
 void DX11Class::Initialize3DCamera()
@@ -1303,6 +1324,7 @@ void DX11Class::Initialize3DCamera()
 	DXsystemHandle->m_CameraSKY->CalculateViewMatrix();
 #endif
 }
+
 
 
 ID3D11DeviceContext* DX11Class::GetDeviceContext()

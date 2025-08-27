@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -63,7 +63,6 @@
 	#define FrustumClass DXfrustumClass
 #endif
 
-
 #if defined ALLOW_PRINT_SCREEN_SAVE_PNG && defined DX11
 	#include "ImageLoaderClass.h"
 #endif
@@ -74,7 +73,7 @@
 	Textures.push_back(texture);\
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) {CREATE_MODELGL3_IF_NOT_EXCEPTION(model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);}\
 	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) {CREATE_MODELDX_IF_NOT_EXCEPTION(model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);}\
-	if (shader_type == SHADER_TEXTURE) ASSERT(model->LoadTexture(texture, m_Driver, shader_type, &Textures, &vertexVector, &IndexList));\
+	if (shader_type == SHADER_TEXTURE) ASSERT(model->LoadTexture(pContext, texture, m_Driver, shader_type, &Textures, &vertexVector, &IndexList));\
 }
 
 #define initModelwithTexture2D(model, texture, vertexVector, IndexList, shader_type)\
@@ -83,7 +82,7 @@
 	Textures.push_back(texture); \
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) { CREATE_MODELGL3_IF_NOT_EXCEPTION(model, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }\
 	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) { CREATE_MODELDX_IF_NOT_EXCEPTION(model, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }\
-	ASSERT(model->LoadTexture(texture, m_Driver, shader_type, &Textures, &vertexVector, &IndexList)); \
+	ASSERT(model->LoadTexture(pContext, texture, m_Driver, shader_type, &Textures, &vertexVector, &IndexList)); \
 }
 #define initModelwithTexture2DMAP(model, texture, vertexVector, IndexList, shader_type, alfa)\
 {\
@@ -93,7 +92,7 @@
 	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) { CREATE_MODELDX_IF_NOT_EXCEPTION(model, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }\
 	model->ModelHASAlfaColor = true; \
 	model->ModelAlfaColor = alfa; \
-	ASSERT(model->LoadTexture(texture, m_Driver, shader_type, &Textures, &vertexVector, &IndexList)); \
+	ASSERT(model->LoadTexture(pContext, texture, m_Driver, shader_type, &Textures, &vertexVector, &IndexList)); \
 }
 
 #define initLoadTextureLight3D(model, texture, vertexVector, IndexList, shader_type)\
@@ -102,7 +101,7 @@
 	Textures.push_back(texture);\
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) {CREATE_MODELGL3_IF_NOT_EXCEPTION(model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);}\
 	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) {CREATE_MODELDX_IF_NOT_EXCEPTION(model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);}\
-	if (shader_type == SHADER_TEXTURE_LIGHT) ASSERT(model->LoadLight(texture, m_Driver, shader_type, &Textures, &vertexVector, &IndexList));\
+	if (shader_type == SHADER_TEXTURE_LIGHT) ASSERT(model->LoadLight(pContext, texture, m_Driver, shader_type, &Textures, &vertexVector, &IndexList));\
 }
 
 #define initLoadTextureLight2D(model, texture, vertexVector, IndexList, shader_type)\
@@ -111,7 +110,7 @@
 	Textures.push_back(texture); \
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) { CREATE_MODELGL3_IF_NOT_EXCEPTION(model, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }\
 	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) { CREATE_MODELDX_IF_NOT_EXCEPTION(model, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }\
-	if (shader_type == SHADER_TEXTURE_LIGHT) ASSERT(model->LoadLight(texture, m_Driver, shader_type, &Textures, &vertexVector, &IndexList)); \
+	if (shader_type == SHADER_TEXTURE_LIGHT) ASSERT(model->LoadLight(pContext, texture, m_Driver, shader_type, &Textures, &vertexVector, &IndexList)); \
 }
 
 // ----------------------------------------------------------------------------------------------
@@ -136,7 +135,7 @@ enum SHADER_TYPE
 /*2*/	SHADER_TEXTURE,										//022Texture.hlsl	 : W3D v1.1	public MAIN (Used by: 22 & Banner & Sky2D & SplashIntro & UnderWater & Font & 3D Obj)
 
 		// Use Material Light
-/*3*/	SHADER_TEXTURE_FONT,								//027Texture.hlsl	 : fade: using alfa color
+/*3*/	SHADER_TEXTURE_FONT,								//027Texture.hlsl	 : fade: using alfa-color
 /*4*/	SHADER_TEXTURE_LIGHT,								//023Light.hlsl		 : W3D v1.2	public MAIN + Pass2: Shadows (Used by: 23 & Sky3D & Sun & Moon & 3D Obj)
 /*5*/	SHADER_NORMAL_BUMP,									//035TextureBump.hlsl: W3D v1.3	public MAIN (Used by: 47 & 3D Obj)
 
@@ -152,29 +151,23 @@ enum SHADER_TYPE
 		SHADER_TEXTURE_WATER,								//054 Water waves - 054Texture.hlsl
 
 		// TERRAINS:
-		SHADER_Double_Color_Terrain,						//053Double_Color_Terrain.hlsl
-															//054 Water waves
-
-		SHADER_Slope_Texture_Terrain,						//055Slope_Texture_Terrain.hlsl
-
-		SHADER_Terrain_Texture_DEMO19,						//056Terrain.hlsl ~ \DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64	#if TUTORIAL_CHAP >= 19 // TERRAIN
-		SHADER_Terrain_Texture_DEMO21,						//057Terrain.hlsl ~ \DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64	#if TUTORIAL_CHAP >= 21 // TERRAIN
-		SHADER_Terrain_Texture_DEMO22,						//058Terrain.hlsl ~ \DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64	#if TUTORIAL_CHAP >= 22 // TERRAIN
-		SHADER_Terrain_Texture_DEMO23,						//059Terrain.hlsl ~ \DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64	#if TUTORIAL_CHAP >= 23 // TERRAIN
-		SHADER_Terrain_Texture_DEMO60,						//060Terrain.hlsl ~ \DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64	#if TUTORIAL_CHAP >= 24 // TERRAIN
-		SHADER_Terrain_Texture_DEMO61,						//061Terrain.hlsl ~ \DRIVE_MY_SOURCE_CODE\WorldOfMiddleAge\WoMA_PartII\engine\024terrain_fog_slope_detail_mapping.hlsl
+		SHADER_Double_Color_Terrain,						//053 Double_Color_Terrain.hlsl
+		SHADER_Slope_Texture_Terrain,						//055 Slope_Texture_Terrain.hlsl
+		SHADER_Terrain_Texture_DEMO19,						//056 TUTORIAL_CHAP >= 19 // TERRAIN
+		SHADER_Terrain_Texture_DEMO21,						//057 TUTORIAL_CHAP >= 21 // TERRAIN
+		SHADER_Terrain_Texture_DEMO22,						//058 TUTORIAL_CHAP >= 22 // TERRAIN
+		SHADER_Terrain_Texture_DEMO23,						//059 TUTORIAL_CHAP >= 23 // TERRAIN
+		SHADER_Terrain_Texture_DEMO60,						//060 TUTORIAL_CHAP >= 24 // TERRAIN
+		SHADER_Terrain_Texture_DEMO61,						//061 MY_SOURCE_CODE\WorldOfMiddleAge\WoMA_PartII\engine\024terrain_fog_slope_detail_mapping.hlsl
 
 		SHADER_FIRE,										//72
 		SHADER_TEXTURE_GS_INSTANCED,						//77
 
-		SHADER_MESH,										//80&81
+		SHADER_MESH,										//80 & 81 Only
 
         SHADER_TEXTURE_LIGHT_FAST,							//83
-
-		//SHADER_SKYTEXTURE,								//90:
-		//SHADER_REALSKYTEXTURE,							//91:
+		SHADER_BILLBOARD_ATLAS_FAST							//93
 };
-
 
 struct Capabilities 
 {
@@ -182,14 +175,13 @@ struct Capabilities
 	bool CapDX9 = false;
 	bool CapDX10_11 = false;
 	bool CapDX12 = false;
-	//bool CapDX12_1 = false;
 
 	STRING SHADER_TYPE_NAME=TEXT("");
 
 	BOOL   inStereoAdapterMode=false;
 
 	size_t nTotalAvailableGPUMemory;		//< Total available GPU memory in kilobytes, 0 if it was not possible to determine this value, this value may not match your graphics card specification (e.g. "512 MiB" may get you "480 MiB" in here)
-	UINT   SelectedDriverType = 0;
+
 	bool   USE_DXDRIVER_FONTSBoolean = false;
 
 	bool   DXGI10=false;
@@ -271,30 +263,30 @@ public:
 	virtual bool Initialize(float* clearColor)=0;
 	virtual void Finalize()=0;
 
-	virtual bool OnInit(int g_USE_MONITOR, void* hwnd, int screenWidth, int screenHeight, UINT depthBits, 
-						float screenDepth, float screenNear, BOOL msaa, bool vsync, 
-						BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize) = 0;
+    virtual bool OnInit(int g_USE_MONITOR, void* hwnd, int screenWidth, int screenHeight, UINT depthBits,
+        float screenDepth, float screenNear, BOOL msaa, bool vsync,
+        BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize) = 0;
 	virtual void Shutdown()=0;
 	virtual void Shutdown2D()=0;
 
 	virtual void BeginScene(UINT monitorWindow) = 0;
 	virtual void EndScene(UINT monitorWindow) = 0;
-	virtual void ClearDepthBuffer() = 0;
+	virtual void ClearDepthBuffer(void* pContext) = 0;
 
 #if defined USE_RASTERIZER_STATE
-	virtual void SetRasterizerState(UINT cullMode, UINT fillMode) = 0;
+	virtual void SetRasterizerState(void* pContext, UINT cullMode, UINT fillMode) = 0;
 #endif
-	virtual void TurnZBufferOn() = 0;
-	virtual void TurnZBufferOff() = 0;
+	virtual void TurnZBufferOn(void* pContext) = 0;
+	virtual void TurnZBufferOff(void* pContext) = 0;
 
 	#if defined INTRO_DEMO || defined USE_ALPHA_BLENDING
-	virtual void TurnOnAlphaBlending() = 0;
-	virtual void TurnOffAlphaBlending() = 0;
+	virtual void TurnOnAlphaBlending(void* pContext) = 0;
+	virtual void TurnOffAlphaBlending(void* pContext) = 0;
 	#endif
 
-	#if defined USE_DX_DRIVER_FONT // FONT v2
+	#if defined USE_DX_DRIVER_FONT
 	virtual void addText(int Xpos, int Ypos, TCHAR* text, float R, float G, float B) = 0;
-	virtual void RenderDriverText() = 0;
+	virtual void RenderDriverText(void* pContext) = 0;
 	#endif
 
 	#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
@@ -305,7 +297,7 @@ public:
 	// ----------------------------------------------------------------------------
 	Capabilities m_sCapabilities;
 
-	UINT	ShaderVersionH = 0, ShaderVersionL = 0;	// Basics of Refrash rate / Shaver Version:
+	UINT	ShaderVersionH = 0, ShaderVersionL = 0;	// Basics of Refresh rate / Shaver Version:
 	bool	RenderfirstTime = true;
 
 #if defined USE_ALPHA_BLENDING
@@ -316,17 +308,19 @@ public:
 
 	// Video Card Info:
 	// ----------------------------------------------------------------------------
-	TCHAR driverName[MAX_STR_LEN];		// STRING driverName;
-	TCHAR ShaderModel[MAX_STR_LEN];		// STRING ShaderModel;   // "x_y"
-	TCHAR szShaderModel[MAX_STR_LEN];	// STRING szShaderModel; // "x.y"
+	//UINT use_this_graphic_card_adapter = 0;
+
+	TCHAR driverName[MAX_STR_LEN];			// STRING driverName;
+	TCHAR ShaderModel[MAX_STR_LEN];			// STRING ShaderModel;   // "x_y"
+	TCHAR szShaderModel[MAX_STR_LEN];		// STRING szShaderModel; // "x.y"
 	// ------------------
 	
 	CHAR	m_videoCardDescription[128];	//NEED TO BE CHAR
 	int		m_videoCardMemory = 0;
-	TCHAR	adapterDesc_Description[MAX_STR_LEN];	// Note: have to be wstring
+	TCHAR	adapterDesc_Description[MAX_STR_LEN];
 	UINT	ufreededicatedVideoMem = 0;
 
-	// List of resoltions availabel to Use
+	// List of resolutions available to Use
 	// ----------------------------------------------------------------------------
 	UINT numerator, denominator = 0;
 	UINT MonitorNumber = 0;					// Total number of Monitors
@@ -337,8 +331,8 @@ public:
 
 	// MSAA Used:
 	// ----------------------------------------------------------------------------
-	UINT	MSAA_COUNT = 1;		//Anti-Alising: MultiSample tech. (1 = off, 4, 8, 16)		4	8	16
-	UINT	MSAA_QUALITY = 0;	//Anti-Alising: Texture Filtering tech. (MSAA > 0)			0	0	 0
+	UINT	MSAA_COUNT = 1;					//Anti-Aliasing: MultiSample tech. (1 = off, 4, 8, 16)		4	8	16
+	UINT	MSAA_QUALITY = 0;				//Anti-Aliasing: Texture Filtering tech. (MSAA > 0)			0	0	 0
 
 #if defined USE_FRUSTRUM
 	FrustumClass* frustum=NULL;

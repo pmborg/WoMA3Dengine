@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -30,8 +30,8 @@
 
 // Number of Billboard Trees
 
-#if false //defined SIMPLE
-#define N_BILLBOARD 100
+#if defined SIMPLE
+#define N_BILLBOARD 1
 #define N_FENCES    55
 #define N_FIRE      1
 #define N_GRASS_0   1
@@ -48,8 +48,6 @@ extern ID3D11ShaderResourceView* billFileLoaded[];
 
 extern Tree			m_Trees[N_BILLBOARD + N_FENCES + N_FIRE + N_GRASS_0 + N_BUSH_0];	// Array of tree info.
 
-
-
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: BillClass
 ////////////////////////////////////////////////////////////////////////////////
@@ -59,8 +57,8 @@ public:
 	BillClass();
 	~BillClass();
 
-	xmlobj3d* fillxml(int id, UINT type);
-	bool Initialize(int m_terrainWidth, int m_terrainHeight, bool instance);
+    xmlobj3d* fillxml(ID3D11DeviceContext* pContext, int id, UINT type);
+	bool Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, int m_terrainHeight, bool instance);
 	void Shutdown();
 	CTerrain* mainTerrainPath = NULL;
 

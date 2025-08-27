@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -69,20 +69,20 @@ class VirtualModelClass
 public:
 	virtual void Shutdown() = 0;
 
-	virtual void RenderWithFade(float fadeLight = 1, bool FOG = false) = 0;
-	virtual void Render(UINT camera = 0, UINT projection = 0, UINT pass = 0, void* lightViewMatrix = NULL, void* ShadowProjectionMatrix = NULL) = 0;
+	virtual void RenderWithFade(void* pContext, float fadeLight = 1, bool FOG = false) = 0;
+	virtual void Render(void* pContext, UINT threadID=0, UINT camera = 0, UINT projection = 0, UINT pass = 0, void* lightViewMatrix = NULL, void* ShadowProjectionMatrix = NULL) = 0;
 
-	virtual bool LoadColor(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<ModelColorVertexType>* model, std::vector<UINT>* indexList = NULL, UINT instanceCount = 0) = 0;
-	virtual bool LoadTexture(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<ModelTextureVertexType>* model, std::vector<UINT>* indexList = NULL, UINT instanceCount = 0) = 0;
-	virtual bool LoadLight(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<ModelTextureLightVertexType>* model, std::vector<UINT>* indexList = NULL, UINT instanceCount = 0) = 0;
+	virtual bool LoadColor(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<ModelColorVertexType>* model, std::vector<UINT>* indexList = NULL, UINT instanceCount = 0) = 0;
+	virtual bool LoadTexture(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<ModelTextureVertexType>* model, std::vector<UINT>* indexList = NULL, UINT instanceCount = 0) = 0;
+	virtual bool LoadLight(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<ModelTextureLightVertexType>* model, std::vector<UINT>* indexList = NULL, UINT instanceCount = 0) = 0;
 
 #if defined USE_VIEW2D_SPRITES // Sprites
-	virtual bool RenderSprite(int positionX, int positionY, float scale = 1.0f, float fade = 1.0f) = 0;
-	virtual bool UpdateBuffersRotY(int positionX, int positionY) = 0;
-	virtual bool UpdateSpriteBuffersRotY(int positionX, int positionY) = 0;
+	virtual bool RenderSprite(void* pContext, int positionX, int positionY, float scale = 1.0f, float fade = 1.0f) = 0;
+	virtual bool UpdateBuffersRotY(void* pContext, int positionX, int positionY) = 0;
+	virtual bool UpdateSpriteBuffersRotY(void* pContext, int positionX, int positionY) = 0;
 #endif
 #if defined USE_LIGHT_RAY
-	virtual void UpdateDynamic(std::vector<ModelColorVertexType>* lightVertexVector) = 0;
+	virtual void UpdateDynamic(void* pContext, std::vector<ModelColorVertexType>* lightVertexVector) = 0;
 #endif
 
 	virtual void Identity() = 0;

@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -162,7 +162,7 @@ void QuadTree::RenderNode(NodeType* node)
 {
 #if !defined USE_MAP_EDITOR
 	// Check to see if the node can be viewed, height doesn't matter in a quad tree.
-	//bool result = frustum->CheckCube(node->positionX, 0.0f, node->positionZ, node->width/2);   // More accurated but slower
+	//bool result = _frustum->CheckCube(node->positionX, 0.0f, node->positionZ, (node->width/2)*1.4142135623730950488016887242097f);   // More accurate but slower
 	bool result = _frustum->CheckSphere(node->positionX, 0.0f, node->positionZ, (node->width/2)*1.4142135623730950488016887242097f );   // Faster
 	if (!result) return;
 #endif
@@ -182,7 +182,7 @@ void QuadTree::RenderNode(NodeType* node)
 	if (count != 0) return;
 
 	// Not really Render! But List All Models/objects to render, on this Node: (this quad is in front of camera)
-    UINT world_xml_objs = (UINT)_xml_loader->theWorld.size(); //Get 
+    UINT world_xml_objs = (UINT)_xml_loader->theWorldXML.size(); //Get 
     VirtualModelClass* model;
 	for (int i = 0; i < node->sceneNodes.size(); i++)
 	{
@@ -190,23 +190,27 @@ void QuadTree::RenderNode(NodeType* node)
         
          UINT modelID = model->m_ObjId;
 
-         if (SystemHandle->xml_loader.theWorld[modelID].depend == -1)
+         if (SystemHandle->xml_loader.theWorldXML[modelID].depend == -1)
          {
-             _xml_loader->theWorld[modelID].render = true;      //FASTER-AQUI2
-         }else{
+             _xml_loader->theWorldXML[modelID].render = true;     
+         }else
+		 {
 #if !defined USE_MAP_EDITOR
             float positionX, positionY, positionZ;
-            positionX = _xml_loader->theWorld[modelID].posX;
-            positionY = _xml_loader->theWorld[modelID].translateY;
-            positionZ = _xml_loader->theWorld[modelID].posZ;
-            if ((((DXmodelClass*)model)->m_instanceCount == 0) && !_frustum->CheckSphere(positionX, positionY, positionZ, model->boundingSphere*2)) {
-                _xml_loader->theWorld[modelID].render = false;  //FASTER-AQUI2
+            positionX = _xml_loader->theWorldXML[modelID].posX;
+            positionY = _xml_loader->theWorldXML[modelID].translateY;
+            positionZ = _xml_loader->theWorldXML[modelID].posZ;
+			if ((((DXmodelClass*)model)->m_instanceCount == 0) && !_frustum->CheckSphere(positionX, positionY, positionZ, MAX(1, model->boundingSphere) * 2))
+			{
+                _xml_loader->theWorldXML[modelID].render = false;  
                 continue;
             } else
 #endif
-               _xml_loader->theWorld[modelID].render = true;    //FASTER-AQUI2
+               _xml_loader->theWorldXML[modelID].render = true;    
         }
-        WOMA::sceneManager->opacModelList.push_back(model);
+
+		// Add model on list to be rendered later.
+        WOMA::sceneManager->visibleModelList.push_back(model);
 
 	#ifdef _DEBUG
 		totalVertexRendered += node->sceneNodes[i]->nodeState.model->m_vertexCount;

@@ -40,7 +40,7 @@
 
 //------------------------------------------------------------------------------------------
 #if defined USE_ASTRO_CLASS && defined USE_REAL_SUNLIGHT_DIRECTION //#if ENGINE_LEVEL >= 33
-	void ApplicationClass::Calc3DSunMoonPosition()
+	void ApplicationClass::Use3DSunMoonPosition()
 	{
 		SunX = SunDistance * FAST_sin(initWorld->SunAzimuth);	// Real Sun Position on Sky:
 		SunZ = SunDistance * FAST_cos(initWorld->SunAzimuth);	// Real Sun Position on Sky:

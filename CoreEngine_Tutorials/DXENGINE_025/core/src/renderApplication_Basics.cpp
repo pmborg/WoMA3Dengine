@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -53,20 +53,22 @@ extern RApplicationClass* r_Application;
 float sort_cameraX=0, sort_cameraY=0, sort_cameraZ = 0;
 #endif
 
-//-------------------------------------------------------------------------------------------
-void ApplicationClass::RenderScene(UINT monitorIndex, WomaDriverClass* driver)
-//-------------------------------------------------------------------------------------------
+void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext)
 {
-    totalRendered = 0;
+	totalRendered = 0;
 
 #if defined USE_DIRECT_INPUT
-	const float SORT_OFFSET = 5.0f;
+	const float SORT_OFFSET = 5.0f; //5 meters behind camera
 	sort_cameraX -= FAST_sin(SystemHandle->m_Application->m_Position[g_NetID]->m_rotationY) * SORT_OFFSET;
 	sort_cameraZ -= FAST_cos(SystemHandle->m_Application->m_Position[g_NetID]->m_rotationY) * SORT_OFFSET;
 #endif
 
-    // [1] sort billboards:
-    // --------------------------------------------------------------------------------------------
+	// [2] SceneManager: Process/Filter and Create Lists/trees of objects to render from: WORLD.XML
+	// --------------------------------------------------------------------------------------------
+#if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
+	WOMA::sceneManager->CreateLists();					//Create Lists for all objects to render (from WORLD.XML) and more
+	world_main_size = WOMA::sceneManager->visibleModelList.size();
+#endif
 
 #if defined USE_DIRECT_INPUT
 	sort_cameraX = SystemHandle->m_Application->m_Position[g_NetID]->m_positionX;
@@ -74,37 +76,50 @@ void ApplicationClass::RenderScene(UINT monitorIndex, WomaDriverClass* driver)
 	sort_cameraZ = SystemHandle->m_Application->m_Position[g_NetID]->m_positionZ;
 #endif
 
-    // [2] SceneManager: Process/Filter and Create Lists/trees of objects to render from: WORLD.XML
-    // --------------------------------------------------------------------------------------------
-#if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
-    WOMA::sceneManager->CreateLists();					//Create Lists for all objects to render (from WORLD.XML) and more
-    world_main_size = WOMA::sceneManager->opacModelList.size();
-#endif
-
-    // [3] LIGHT RAY:
-    // --------------------------------------------------------------------------------------------
+	// [3] LIGHT RAY:
+	// --------------------------------------------------------------------------------------------
 #if defined USE_LIGHT_RAY
-    if (RENDER_PAGE >= 23)
-    {
-        CalculateLightRayVertex(SunDistance);					// Calculate Light Source Position
-        m_lightRayModel->UpdateDynamic(m_LightVertexVector);	// Update LightRay vertex(s)
-        m_lightRayModel->Render();								// Render LightRay
-    }
+	if (RENDER_PAGE >= 23)
+	{
+		CalculateLightRayVertex(SunDistance);							// Calculate Light Source Position
+		m_lightRayModel->UpdateDynamic(pContext, m_LightVertexVector);	// Update LightRay vertex(s)
+		m_lightRayModel->Render(pContext, 0, 0, 0, NULL, NULL);			// Render LightRay
+	}
+#endif
+}
+
+//-------------------------------------------------------------------------------------------
+void ApplicationClass::RenderScene(UINT monitorIndex, WomaDriverClass* driver)
+//-------------------------------------------------------------------------------------------
+{
+	static void* mainCtx=NULL;
+#if defined DX_ENGINE
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
+		mainCtx = ((DX11Class*)m_Driver)->GetDeviceContext();
 #endif
 
-    // [4] Render one Screen:
-    // --------------------------------------------------------------------------------------------
+	SortOutWhatNeedToBeRendered(mainCtx);
 
-    AppRender(monitorIndex, dayLightFade);				// [2] Render: All main 3D scene!
+	AppRender(monitorIndex, dayLightFade, mainCtx);				// [2] 3D Render main scene while workers run in parallel
 
-    AppPosRender(monitorIndex);							// [3] Render:  All 2D (on TOPs): AppTextClass-Fill + Billboards + Title + Map + Minimap + AppTextClass + RENDER NATIVE TEXT
+	AppPosRender(monitorIndex, mainCtx);						// [3] 2D: Render TRANSPARENT Parts of 3D OBJs(like: "Glass windows", "Billboards", etc...)
+
 }
+
+
+//
+// RENDER TO TEXTURE
+//
+#if (defined DX_ENGINE) && (defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 || defined USE_VIEW2D_SPRITES)
+extern DXcameraClass m_CameraMINIMAP;
+extern DXcameraClass m_CameraMAP;
+#endif
 
 #define TERRAIN_SCALE 1
 //#############################################################################################################
 // [2/3] RENDER - 3D
 //#############################################################################################################
-void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight)
+void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pContext)
 {
 	SystemHandle->TotalVertexCounter = 0;
 	#if DX_ENGINE_LEVEL >= 10 && LEVEL <= 21
@@ -123,19 +138,19 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight)
 #if (defined USE_SKY_CAMERA_DOME && defined USE_SKYSPHERE) && defined MAIN_RENDER_SKY	// MAIN-RENDER: "Sky": (0.0ms)
 	if (RENDER_PAGE >= 28 && m_SkyModel)
 	{
-		m_Driver->SetRasterizerState(CULL_NONE/*CULL_BACK*/, FILL_SOLID); // Render the Inside of Sphere
+		m_Driver->SetRasterizerState(pContext, CULL_NONE/*CULL_BACK*/, FILL_SOLID); // Render the Inside of Sphere
 		m_SkyModel->translation(0, 0, 0);
 		m_SkyModel->scale(20, 20, 20);
-		m_SkyModel->RenderSky(CAMERA_SKY); // Camera with fixed position: 0,0,0: (CAMERA_SKY)
+		m_SkyModel->RenderSky(pContext, CAMERA_SKY, 1); // Camera with fixed position: 0,0,0: (CAMERA_SKY)
 	}
 #endif
     
 #if defined USE_ALPHA_BLENDING
-	m_Driver->TurnOffAlphaBlending();
+	m_Driver->TurnOffAlphaBlending(pContext);
 #endif
 
-	if ((RENDER_PAGE >= 21) && (RENDER_PAGE < 30))
-		DemoRender();	// ALL Demos!: page 21: / 22 / 23 / ... 49
+	if ((RENDER_PAGE >= 21) && (RENDER_PAGE < 30) || RENDER_PAGE == 36)
+		DemoRender(pContext);	// ALL Demos!: page 21: / 22 / 23 / ... 49
 
 #if defined USE_SKYSPHERE && defined USE_SUN && defined USE_MOON
 	if (RENDER_PAGE >= 28)				//30: SKY
@@ -153,10 +168,10 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight)
 	// TERRAIN[0]: UNDER WATER
 #if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN || defined SCENE_MAIN_TERRAIN
 #if defined USE_RASTERIZER_STATE
-    m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
+    m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);
 #endif
 	if (RENDER_PAGE == 49)
-		m_TerrainModel[UNDERWATER_TERRAIN_ID]->RenderWithFade();					// New function to replace these 2 line options.
+		m_TerrainModel[UNDERWATER_TERRAIN_ID]->RenderWithFade(pContext);					// New function to replace these 2 line options.
 #endif
 
 	// TERRAIN[2]: Render MAIN Terrain
@@ -166,7 +181,7 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight)
 	if (RENDER_PAGE >= 50)
 	{
 		if (m_TerrainModel[MAIN_TERRAIN_ID])
-			m_TerrainModel[MAIN_TERRAIN_ID]->RenderWithFade(fadeLight, fog);	    // New function to replace these 2 line options.
+			m_TerrainModel[MAIN_TERRAIN_ID]->RenderWithFade(pContext, fadeLight, fog);	    // New function to replace these 2 line options.
 	}
 #endif
 #if defined DEBUG_COLLISION_TERRAIN //For debug collision terrain only!
@@ -177,23 +192,21 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight)
 	//THE "OTHER" NETWORK PLAYERS
 	//----------------------------------------------------------------------------------------------------------------------
 
-    // Render Animated meshes:
-    // -----------------------
-
 	// TRANSPARENT and SEMI-TRANSPARENT:
 	// --------------------------------------------------------------------------------------------
 
-// 3D STATIC OPAC OBJECTS on WORLD.XML, that listed in: sceneManager->opacModelList (in front of camera)
-//----------------------------------------------------------------------------------------------------------------------
+	// 3D STATIC OPAC OBJECTS on WORLD.XML, that listed in: sceneManager->visibleModelList (in front of camera)
+	//----------------------------------------------------------------------------------------------------------------------
 #if defined USE_RASTERIZER_STATE && (defined INTRO_DEMO || defined USE_ALPHA_BLENDING)
-    m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
+	m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);
+#endif
+
+#if defined INTRO_DEMO || defined USE_ALPHA_BLENDING
+	m_Driver->TurnOnAlphaBlending(pContext);
 #endif
 
 	// Render TRANSPARENT Parts of 3D OBJs (like: glass window of (Space Compound), etc...) (last part)
 	// --------------------------------------------------------------------------------------------
-#if defined USE_ALPHA_BLENDING
-	m_Driver->TurnOffAlphaBlending();
-#endif
 
     // TERRAIN[1]: Render Mesh for WATER:
 // --------------------------------------------------------------------------------------------
@@ -210,27 +223,22 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight)
     MyLightVertexVector[1].x = prwsPos.m128_f32[0] + prwsDir.m128_f32[0] * 100;
     MyLightVertexVector[1].y = prwsPos.m128_f32[1] + prwsDir.m128_f32[1] * 100;
     MyLightVertexVector[1].z = prwsPos.m128_f32[2] + prwsDir.m128_f32[2] * 100;
-    m_lightRayModel->UpdateDynamic(&MyLightVertexVector);	
-    m_lightRayModel->Render();								
+    m_lightRayModel->UpdateDynamic(pContext , &MyLightVertexVector);
+    m_lightRayModel->Render(pContext);
 #endif
 
-#if defined USE_TIMER_CLASS && !defined RELEASE
-    // TIME Control: Show Debug Info
-    if (m_Driver->RenderfirstTime)
-    {
-        UINT64 passedTotalTime = (UINT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
-        TCHAR tmp[MAX_STR_LEN]; _stprintf(tmp, TEXT("PASSED TOTAL TIME TO LOAD: %ju ms\n"), passedTotalTime); OutputDebugString(tmp);
-    }
-#endif
+	// Render Animated meshes:
+	// -----------------------
+
 }
 
 //#############################################################################################################
 // [3/3] POS-RENDER - 2D: Render TRANSPARENT Parts of 3D OBJs (like: "Glass windows", "Billboards", etc...)
 //#############################################################################################################
-void ApplicationClass::AppPosRender(UINT monitorIndex)
+void ApplicationClass::AppPosRender(UINT monitorIndex, void* pContext)
 {
     // === AppTextClass-Fill: ===
-#if defined USE_RASTERTEK_TEXT_FONT							
+#if defined USE_RASTERTEK_TEXT_FONT
 
     if (AppTextClass) 
     {
@@ -300,7 +308,7 @@ void ApplicationClass::AppPosRender(UINT monitorIndex)
 #endif
 
 #if TUTORIAL_CHAP >= 60 && !defined RELEASE // BILLBOARD
-        AppTextClass->SetBillRenderCount(SystemHandle->m_Application->billboardRrenderCount, total_deltaTime);
+		AppTextClass->SetBillRenderCount(SystemHandle->m_Application->billboardRrenderCount, total_deltaTime);
 #endif  
     }
 #endif
@@ -309,7 +317,10 @@ void ApplicationClass::AppPosRender(UINT monitorIndex)
     // LIGHT: Get fade (real Sun Position): Show Debug Info
 
 #if defined USE_RASTERIZER_STATE
-	m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
+	m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);
+#endif
+#if defined USE_ALPHA_BLENDING
+	m_Driver->TurnOnAlphaBlending(pContext);
 #endif
 
 #if (TUTORIAL_CHAP >= 60 && defined SCENE_BILLBOARDS && defined USE_SCENE_MANAGER && defined DX_ENGINE) && defined MAIN_RENDER_BILLBOARDS // MAIN-RENDER: BILLBOARD + FENCES + FIRE (11.4 ms)
@@ -317,16 +328,12 @@ void ApplicationClass::AppPosRender(UINT monitorIndex)
 		for (UINT tree_id = 0; tree_id < _countof(m_Trees); tree_id++)
         {
             obj_id = m_Trees[tree_id].ID + world_xml_objs;
-            if (SystemHandle->xml_loader.theWorld[obj_id].render)           //TODO: use sceneManager
-			    RenderModel(monitorIndex, m_Driver, obj_id, PASS_BILL);    // Render: "Billboards"
+            if (SystemHandle->xml_loader.theWorldXML[obj_id].render)								// TODO: use sceneManager
+				RenderModel(pContext, 0, monitorIndex, m_Driver, obj_id, PASS_BILL, NULL, NULL);    // Render: "Billboards"
 		}
 #endif
 
-#if defined USE_ALPHA_BLENDING
-	m_Driver->TurnOnAlphaBlending();
-#endif
-
-	m_Driver->ClearDepthBuffer();
+	m_Driver->ClearDepthBuffer(pContext);
 	// -------------------------
 #if (defined USE_TITLE_BANNER && defined MAIN_RENDER) && defined MAIN_RENDER_TITLE // MAIN-RENDER: TITLE (0.3 ms)
 	if ((RENDER_PAGE >= 24 && m_titleModel) && (WOMA::game_state != GAME_MAP)) //Dont render title, on main map!
@@ -334,12 +341,12 @@ void ApplicationClass::AppPosRender(UINT monitorIndex)
 		float rescale = 1;
 		int X = ((SystemHandle->AppSettings->WINDOW_WIDTH - m_titleModel->SpriteTextureWidth) / 2);
 		int Y = 10;
-		m_titleModel->RenderSprite(X, Y, rescale);
+		m_titleModel->RenderSprite(pContext, X, Y, rescale, 1.0f);
 	}
 #endif
 
 #if (defined USE_MAIN_MAP || defined USE_MINI_MAP) && defined MAIN_RENDER_MINIMAP //MAIN-RENDER: MINI-MAP (0.4)
-	RenderMainMapMiniMap();
+	RenderMainMapMiniMap(pContext);
 #endif
 
 	// RENDER RASTERTEK V1 FONT:
@@ -367,10 +374,10 @@ void ApplicationClass::AppPosRender(UINT monitorIndex)
 	// PRESENTATION SPRITE(s)  - On Top of 3D Rendered stuff:
 	// ---------------------------------------------------------------
 #if defined USE_ALPHA_BLENDING
-	m_Driver->TurnOffAlphaBlending(); // Re assume default
+	m_Driver->TurnOffAlphaBlending(pContext); // Re assume default
 #endif
 #if defined INTRO_DEMO //RenderDemoIntroSprites
-	RenderDemoIntroSprites();
+	RenderDemoIntroSprites(pContext);
 #endif
 
 	// RENDER NATIVE TEXT:
@@ -397,7 +404,7 @@ void ApplicationClass::AppPosRender(UINT monitorIndex)
 		}
 	}
 
-	m_Driver->RenderDriverText();
+	m_Driver->RenderDriverText(pContext);
 #endif
 
 }
@@ -462,7 +469,7 @@ float ApplicationClass::ProcessInputUpdate()
 #endif
 
     UINT	closestObjId = UINT_MAX;
-	for (UINT c = 0; c < MIN (world_main_size, 5); c++)        // We dont need all, right?:)
+	for (UINT c = 0; c < MIN (world_main_size, 5); c++)        // We don't need all, right?:)
 	{
 		UINT i = compoundTreeLoadingOrder[c].compoundTreeId;	// This is the compound[id] to check colisions...
 
@@ -723,7 +730,7 @@ float ApplicationClass::WOMA_APPLICATION_DemoRender(UINT64 passedTotalTime)
 
 static float rY = 0.0f;
 
-void ApplicationClass::DemoRender()
+void ApplicationClass::DemoRender(void* pContext)
 {
 	rY = (float)(dt) * (0.005f / 16.66f);	// MOVIMENT FORMULA!
 
@@ -738,7 +745,7 @@ void ApplicationClass::DemoRender()
 #endif
 	{
 #if defined USE_RASTERIZER_STATE
-		m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID); // Render the Inside of Sphere
+		m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID); // Render the Inside of Sphere
 #endif
 
 		if (RENDER_PAGE < 28) {
@@ -747,12 +754,12 @@ void ApplicationClass::DemoRender()
 			m_1stSquare3DColorModel->translation(0, -3, 0);
 			m_1stSquare3DColorModel->rotateY(rY);
 #endif
-			m_1stSquare3DColorModel->Render();
+			m_1stSquare3DColorModel->Render(pContext);
 		}
 
 		//DEMO-2: Triangle!!{
 		m_1stTriangle3DColorModel->translation(0, 8.75, -5); //>22
-		m_1stTriangle3DColorModel->Render();
+		m_1stTriangle3DColorModel->Render(pContext);
 	}
 #endif
 
@@ -768,26 +775,26 @@ void ApplicationClass::DemoRender()
 	{
 		//Line1:
 #if defined USE_IMAGE_BMP
-		m_bmp3DModel->Render();
+		m_bmp3DModel->Render(pContext);
 #endif
 #if defined USE_IMAGE_PNG
-		m_png3DModel->Render();
+		m_png3DModel->Render(pContext);
 #endif
 
 		//Line2:
 #if defined USE_IMAGE_JPG
-		m_jpg3DModel->Render();
+		m_jpg3DModel->Render(pContext);
 #endif
 #if defined USE_IMAGE_TIFF
-		m_tif3DModel->Render();
+		m_tif3DModel->Render(pContext);
 #endif
 
 		//Line3:
 #if defined USE_IMAGE_DDS
-		m_dds3DModel->Render();
+		m_dds3DModel->Render(pContext);
 #endif
 #if defined SUPPORT_TGA
-		m_tga3DModel->Render();
+		m_tga3DModel->Render(pContext);
 #endif
 	}
 #endif
@@ -799,7 +806,7 @@ void ApplicationClass::DemoRender()
 #endif
 	{
 		m_1stTriangleTextureVertexModel->translation(0, 6.5, -5); //=22
-		m_1stTriangleTextureVertexModel->Render();
+		m_1stTriangleTextureVertexModel->Render(pContext);
 	}
 #endif
 
@@ -818,7 +825,7 @@ void ApplicationClass::DemoRender()
 			m_3th3DModel2->scale(1.25f, 1.25f, 1.25f);
 		}
 
-		m_3th3DModel2->Render();
+		m_3th3DModel2->Render(pContext);
 	}
 #endif
 
@@ -838,7 +845,7 @@ void ApplicationClass::DemoRender()
 		rY = (float)dt * (0.005f / 16.66f);		// MOVIMENT FORMULA!
 		m_cube1Model->rotateY(rY);
 		m_cube1Model->translation(-3.5, Y_pos, 1);
-		m_cube1Model->Render();
+		m_cube1Model->Render(pContext);
 	}
 
 	//DEMO-2
@@ -853,7 +860,7 @@ void ApplicationClass::DemoRender()
 		rY = (float)dt * (0.005f / 16.66f);		// MOVIMENT FORMULA!
 		m_cube2Model->rotateY(rY);
 		m_cube2Model->translation(0, Y_pos, 1);
-		m_cube2Model->Render();
+		m_cube2Model->Render(pContext);
 	}
 
 	//DEMO-3
@@ -864,12 +871,12 @@ void ApplicationClass::DemoRender()
 	if (RENDER_PAGE < 30)
 #endif
 	{
-		m_Driver->SetRasterizerState(CULL_NONE, FILL_SOLID);
+		m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);
 		float rY = 0.0f;
 		rY = (float)dt * (0.005f / 16.66f);		// MOVIMENT FORMULA!
 		m_cube3Model->rotateY(rY);
 		m_cube3Model->translation(3.5, Y_pos, 1);
-		m_cube3Model->Render();
+		m_cube3Model->Render(pContext);
 	}
 #endif
 
@@ -879,7 +886,7 @@ void ApplicationClass::DemoRender()
 }
 
 #if DX_ENGINE_LEVEL >= 21 && defined INTRO_DEMO	//29  DEMO SPRITE TEXT
-void ApplicationClass::RenderDemoIntroSprites()
+void ApplicationClass::RenderDemoIntroSprites(void* pContext)
 {
 	//USING: ModelShaderType = SHADER_TEXTURE_FONT(3)/
 	if (RENDER_PAGE < 21 && (SpriteScreenToShow >= 0 && SpriteScreenToShow < m_screenShots.size()))
@@ -887,7 +894,7 @@ void ApplicationClass::RenderDemoIntroSprites()
 		VirtualModelClass* screenShot = m_screenShots[SpriteScreenToShow];
 
 		//WINDOWS:
-		screenShot->RenderSprite((SystemHandle->AppSettings->WINDOW_WIDTH - screenShot->SpriteTextureWidth) / 2, SystemHandle->AppSettings->WINDOW_HEIGHT / 2, 1, fadeIntro);
+		screenShot->RenderSprite(pContext, (SystemHandle->AppSettings->WINDOW_WIDTH - screenShot->SpriteTextureWidth) / 2, SystemHandle->AppSettings->WINDOW_HEIGHT / 2, 1, fadeIntro);
 	}
 }
 #endif
@@ -954,8 +961,6 @@ void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickR
 #define _42 r[3].m128_f32[1]
 #define _43 r[3].m128_f32[2]
 #define _44 r[3].m128_f32[3]
-
-
 
     int ClientWidth = SystemHandle->AppSettings->WINDOW_WIDTH;   
     int ClientHeight = SystemHandle->AppSettings->WINDOW_HEIGHT; 
@@ -1141,13 +1146,5 @@ bool ApplicationClass::PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTO
 }
 
 #endif
-
-#if LEVEL >= 79 && LEVEL <= 85
-Texture* LoadTextureFromPathFBX(UINT model_type, Graphics& graphics, LPCWSTR& texture)
-{
-    return NULL;
-}
-#endif
-
 
 

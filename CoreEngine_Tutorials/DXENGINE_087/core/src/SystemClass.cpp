@@ -999,10 +999,10 @@ bool SystemClass::LoadXmlWorld()
 		return false;
 	}
 
-	for (size_t i = 0; i < SystemHandle->xml_loader.theWorld.size(); i++)
+	for (size_t i = 0; i < SystemHandle->xml_loader.theWorldXML.size(); i++)
 	{
-		SHADER_TYPE shader = (SHADER_TYPE)SystemHandle->xml_loader.theWorld[i].shader;
-		SystemHandle->xml_loader.theWorld[i].WOMA_object = WOMA_OBJECT(shader, castShadows_false, renderShadows_false, modelHASlight_true, SystemHandle->xml_loader.theWorld[i].instances);
+		SHADER_TYPE shader = (SHADER_TYPE)SystemHandle->xml_loader.theWorldXML[i].shader;
+		SystemHandle->xml_loader.theWorldXML[i].WOMA_object = WOMA_OBJECT(shader, castShadows_false, renderShadows_false, modelHASlight_true, SystemHandle->xml_loader.theWorldXML[i].instances);
 	}
 
 	return true;
@@ -1112,7 +1112,7 @@ void SystemClass::LoadAllDrivers()
 #endif
 
 } 
-//END: LoadAllDrivers()
+//LoadAllDrivers()
 
 #if defined USE_JOY && defined USE_DIRECT_INPUT
 

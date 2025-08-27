@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -98,11 +98,11 @@ typedef struct {
 
 	// Screen Settings:
 	// --------------------------------------------------------------------------------------------
-	char uiMonitor[10], screenFullScreen[10], screenFullScreenWindowed[10], allowResize[10], posX[10], posY[10], screenWidth[10], screenHeight[10], bitsPerPixel[10], screenNear[10], screenDepth[10];
+	char adapter[10], uiMonitor[10], screenFullScreen[10], screenFullScreenWindowed[10], allowResize[10], posX[10], posY[10], screenWidth[10], screenHeight[10], bitsPerPixel[10], screenNear[10], screenDepth[10];
 
 	// Driver Settings:
 	// --------------------------------------------------------------------------------------------
-	char driverName[10], UseAllMonitors[10], useDoubleBuffering[10], vsync[10];// , msaa[10];
+	char driverName[10], UseAllMonitors[10], useDoubleBuffering[10], useTripleBuffering[10], vsync[10];
 
 	// Map Settings:
 	// --------------------------------------------------------------------------------------------
@@ -209,7 +209,7 @@ public:
 	bool loadWorld(TCHAR* file);
 	bool InitWorldLoader(TCHAR* filename);				//Note: Have to be char
 	xmlobj3d object3d;
-	std::vector<xmlobj3d> theWorld;
+	std::vector<xmlobj3d> theWorldXML;
 
 	// --------------------------------------------------------------------------------------------
 	// Globals:

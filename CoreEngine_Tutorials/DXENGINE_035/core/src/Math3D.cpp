@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -72,7 +72,7 @@ WOMA::vec3 vector3dNormalize(const WOMA::vec3 &vec)	//D3DXWOMA::vec3Normalize
     return result;
 }
 
-	#include "virtualModelClass.h" // dont move this ! (before V1 V2 V3)
+	#include "virtualModelClass.h" // don't move this ! (before V1 V2 V3)
 
 // (V2 - V1) X (V3 - V1), where X is the cross product of the 2 vectors
 #define V1 0

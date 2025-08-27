@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -153,7 +153,7 @@ bool ApplicationClass::ProcessUserKeyboardInput(double frameTime)
     // Action Keys HERE:
     //	------------------------------------------------------------------------------------------------------------------------
 
-    // Proccess "F11": GOD MODE SWITCH
+    // Process "F11": GOD MODE SWITCH
     // --------------------------------------------------------------------------------------------
 #if defined DX_ENGINE
     if ((DXsystemHandle->m_player[g_NetID]->p_player.IsGodModePressed) && (!f11GodState)) {
@@ -165,7 +165,7 @@ bool ApplicationClass::ProcessUserKeyboardInput(double frameTime)
     }
 #endif
 
-    // Proccess "EXIT MAP": with "ESC" key
+    // Process "EXIT MAP": with "ESC" key
     // --------------------------------------------------------------------------------------------
 
     //[1] Set the frame time for calculating the updated position:
@@ -283,6 +283,7 @@ bool ApplicationClass::ProcessUserKeyboardInput(double frameTime)
 	#endif
 #endif
 
+	#if defined MAIN_RENDER_TERRAIN
     //Detect colision with terrain LEFT / RIGHT:
     if (!g_GOD_MODE)
     {
@@ -314,15 +315,20 @@ bool ApplicationClass::ProcessUserKeyboardInput(double frameTime)
 			}
 			
 		}
-    } else {
+    }
+    else
+    #endif
+    {
        m_Position[g_NetID]->m_positionZ = m_NextPosition->m_positionZ;
        m_Position[g_NetID]->m_positionX = m_NextPosition->m_positionX;
     }
 
     // Update also "Y" position (Get Height at our position)
     // --------------------------------------------------------------------------------------------
+  #if defined MAIN_RENDER_TERRAIN
     if (!g_GOD_MODE)
         height = mainTerrain->getTerrainHeight(TERRAIN_ID, m_Position[g_NetID]->m_positionX, m_Position[g_NetID]->m_positionZ); // Gravity to Terrain
+  #endif
 #else
     //[4] Get the new allowed positions:
    m_Position[g_NetID]->m_positionZ = m_NextPosition->m_positionZ;

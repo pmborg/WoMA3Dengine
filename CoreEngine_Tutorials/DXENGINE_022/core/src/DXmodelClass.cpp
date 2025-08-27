@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // Filename: DXmodelClass.cpp
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -138,9 +138,9 @@ DXmodelClass::~DXmodelClass() {CLASSDELETE();}
 // Load Model in DX Buffers after any "Format" Read:
 //
 // -------------------	// COLOR
-bool DXmodelClass::LoadColor(TCHAR* objectName, void* driver, SHADER_TYPE shader_type, 
-                            std::vector<ModelColorVertexType> *model, 
-                            std::vector<UINT>* indexList, UINT instanceCount)
+bool DirectX::DXmodelClass::LoadColor(void* pContext, TCHAR* objectName, void* driver,
+	SHADER_TYPE shader_type,
+	std::vector<ModelColorVertexType>* model, std::vector<UINT>* indexList, UINT instanceCount)
 {
 	LOADDRIVER(driver);
 	MODEL_NAME = objectName;
@@ -154,12 +154,12 @@ bool DXmodelClass::LoadColor(TCHAR* objectName, void* driver, SHADER_TYPE shader
 
 	modelColorVertex = model; //*
 	indexModelList = indexList;
-	return InitializeDXbuffers(objectName);
+	return InitializeDXbuffers((ID3D11DeviceContext*)pContext, objectName, NULL);
 }
 
-bool DXmodelClass::LoadTexture(	TCHAR* objectName, void* driver, SHADER_TYPE shader_type, 
-								std::vector<STRING> *textureFile, std::vector<ModelTextureVertexType> *model, 
-								std::vector<UINT>* indexList, UINT instanceCount)
+bool DirectX::DXmodelClass::LoadTexture(void* pContext, TCHAR* objectName, void* driver,
+	SHADER_TYPE shader_type, std::vector<STRING>* textureFile,
+	std::vector<ModelTextureVertexType>* model, std::vector<UINT>* indexList, UINT instanceCount)
 {
 	LOADDRIVER(driver);
 	MODEL_NAME = objectName;
@@ -176,8 +176,9 @@ bool DXmodelClass::LoadTexture(	TCHAR* objectName, void* driver, SHADER_TYPE sha
 
 	modelTextureVertex = model;
 	indexModelList = indexList;
-	return InitializeDXbuffers(objectName, textureFile);
+	return InitializeDXbuffers((ID3D11DeviceContext*)pContext, objectName, textureFile);
 }
+
 
 DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderType)
 {
@@ -249,7 +250,7 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 	return shader;
 }
 
-HRESULT DXmodelClass::LoadTextureImage(TCHAR* textureFilename)
+HRESULT DirectX::DXmodelClass::LoadTextureImage(ID3D11DeviceContext* pContext, TCHAR* textureFilename)
 {
 	HRESULT hr = S_FALSE;
 
@@ -339,7 +340,7 @@ HRESULT DXmodelClass::LoadTextureImage(TCHAR* textureFilename)
 
 // COMMON SHADER FUNCTION: LOAD VERTEX+INDEX DATA ON GRPHX. CARD
 // --------------------------------------------------------------------------------------------
-bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* textureFile)
+bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, TCHAR* objectName, std::vector<STRING>* textureFile)
 {
 	bool result = true;
 
@@ -518,15 +519,20 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 				STRING fileNamePath = (TCHAR*)(*textureFile)[i].c_str();
 				STRING pathtoengine = TEXT("../");
 
-				if ((fileNamePath.substr(0, 3) != pathtoengine) && 
+				if (((fileNamePath.substr(0, 3) != pathtoengine) && 
 					(_tcsicmp(fileNamePath.c_str(), TEXT(".dat")) != 0) || (_tcsicmp(fileNamePath.c_str(), TEXT(".bin")) != 0) || (_tcsicmp(fileNamePath.c_str(), TEXT(".jet")) != 0))
+					&&
+					(!StartsWithDotDotSlash(fileNamePath))
+					)
+				{
 					textureFilename = WOMA::LoadFile((TCHAR*)fileNamePath.c_str());
+				}
 				else
 					textureFilename = (TCHAR*)fileNamePath.c_str();
 
-				if (fileNamePath.find(TEXT("none")) != 0) //dont load on special cases (like billboards)
+				if (fileNamePath.find(TEXT("none")) != 0) //don't load on special cases (like billboards)
 				{
-					HRESULT res = LoadTextureImage(textureFilename);
+					HRESULT res = LoadTextureImage(pContext, textureFilename);
 				
 				if (res != S_OK)
 					return false;
@@ -596,6 +602,7 @@ bool DXmodelClass::InitializeDXbuffers(TCHAR* objectName, std::vector<STRING>* t
 #endif
 	return true;
 }
+
 
 void DXmodelClass::Shutdown()
 {
@@ -1052,13 +1059,9 @@ void DXmodelClass::SetGeometryBuffers(void* deviceContext)
 }
 
 #if defined USE_LIGHT_RAY
-void DXmodelClass::UpdateDynamic(std::vector<ModelColorVertexType>* lightVertexVector)
+void DirectX::DXmodelClass::UpdateDynamic(void* ctx, std::vector<ModelColorVertexType>* lightVertexVector)
 {
-	ID3D11DeviceContext* deviceContext11 = NULL;
-	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
-		deviceContext11 = m_driver11->m_deviceContext;
-	#endif
+	ID3D11DeviceContext* deviceContext11 = (ID3D11DeviceContext*)ctx;
 
 	static float m_previousPosX = -10000;
 	static float m_previousPosY = -10000;
@@ -1135,9 +1138,10 @@ void DXmodelClass::UpdateDynamic(std::vector<ModelColorVertexType>* lightVertexV
 #if defined USE_VIEW2D_SPRITES
 
 //The UpdateBuffers function is called each frame to update the contents of the dynamic vertex buffer to re-position the 2D bitmap image on the screen if need be.
-bool DXmodelClass::UpdateBuffersRotY(int positionX, int positionY)
+bool DirectX::DXmodelClass::UpdateBuffersRotY(void* ctx, int positionX, int positionY)
 // ----------------------------------------------------------------------------------------
 {
+	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
 	static int m_previousPosX = -10000;
 	static int m_previousPosY = -10000;
 
@@ -1235,12 +1239,12 @@ bool DXmodelClass::UpdateBuffersRotY(int positionX, int positionY)
 #if defined DX11 || defined DX9
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 	{
-		result = m_driver11->m_deviceContext->Map(m_vertexBuffer11, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);// Lock the vertex buffer so it can be written to.
+		result = pContext->Map(m_vertexBuffer11, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);// Lock the vertex buffer so it can be written to.
 		if (FAILED(result))return false;
 
 		verticesPtr = (ModelTextureVertexType*)mappedResource.pData;	// Get a pointer to the data in the vertex buffer.
 		memcpy(verticesPtr, (void*)vertices, vertexBufferSize);			// (sizeof(ModelTextureVertexType) * m_vertexCount)
-		m_driver11->m_deviceContext->Unmap(m_vertexBuffer11, 0);		// Unlock the vertex buffer.
+		pContext->Unmap(m_vertexBuffer11, 0);		// Unlock the vertex buffer.
 	}
 #endif
 
@@ -1264,9 +1268,10 @@ bool DXmodelClass::UpdateBuffersRotY(int positionX, int positionY)
 }
 
 
-bool DXmodelClass::UpdateSpriteBuffersRotY(int positionX, int positionY)
+bool DirectX::DXmodelClass::UpdateSpriteBuffersRotY(void* ctx, int positionX, int positionY)
 // ----------------------------------------------------------------------------------------
 {
+ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
 static int m_previousPosX = -10000;
 static int m_previousPosY = -10000;
 
@@ -1297,7 +1302,7 @@ HRESULT result;
 //If the position to render this image has changed then we record the new location for the next time we come through this function.
 
 	// If it has changed then update the position it is being rendered to.
-	m_previousPosX = positionX;
+m_previousPosX = positionX;
 	m_previousPosY = positionY;
 
 	//The four sides of the image need to be calculated. See the diagram at the top of the tutorial for a complete explaination.
@@ -1370,12 +1375,12 @@ HRESULT result;
 #if defined DX11 || defined DX9
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 	{
-		result = m_driver11->m_deviceContext->Map(m_vertexBuffer11, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);// Lock the vertex buffer so it can be written to.
+		result = pContext->Map(m_vertexBuffer11, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);// Lock the vertex buffer so it can be written to.
 		if(FAILED(result))return false;
 
 		verticesPtr = (ModelTextureVertexType*)mappedResource.pData;	// Get a pointer to the data in the vertex buffer.
 		memcpy(verticesPtr, (void*)vertices, vertexBufferSize);			// (sizeof(ModelTextureVertexType) * m_vertexCount)
-		m_driver11->m_deviceContext->Unmap(m_vertexBuffer11, 0);		// Unlock the vertex buffer.
+		pContext->Unmap(m_vertexBuffer11, 0);		// Unlock the vertex buffer.
 	}
 #endif
 
@@ -1399,7 +1404,7 @@ HRESULT result;
 }
 
 
-bool DXmodelClass::RenderSprite( int positionX, int positionY, float scale, float fade)
+bool DirectX::DXmodelClass::RenderSprite(void* pContext, int positionX, int positionY, float scale, float fade)
 // ----------------------------------------------------------------------------------------
 {	
 	model_fade = fade;
@@ -1410,13 +1415,13 @@ bool DXmodelClass::RenderSprite( int positionX, int positionY, float scale, floa
 	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
 	case DRIVER_DX9:
 	case DRIVER_DX11:
-		if (!UpdateBuffersRotY(positionX, positionY))
+		if (!UpdateBuffersRotY(pContext, positionX, positionY))
 			return false;
 	break;
 	#endif
 	#if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009
 	case DRIVER_DX12:
-		if (!UpdateBuffersRotY(positionX, positionY))
+		if (!UpdateBuffersRotY(pContext, positionX, positionY))
 			return false;
 	break;
 	#endif
@@ -1427,7 +1432,7 @@ bool DXmodelClass::RenderSprite( int positionX, int positionY, float scale, floa
 
 	if (fade == -1000)
 	{
-		Render(CAMERA_NORMAL, PROJECTION_MINIMAP);
+		Render(pContext, 0, CAMERA_NORMAL, PROJECTION_MINIMAP, 0, NULL, NULL);
 		return true;
 	}
 
@@ -1446,12 +1451,12 @@ bool DXmodelClass::RenderSprite( int positionX, int positionY, float scale, floa
 	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
 	case DRIVER_DX9:
 	case DRIVER_DX11:
-		Render(CAMERA_NORMAL, PROJECTION_ORTHOGRAPH);
+		Render(pContext, 0, CAMERA_NORMAL, PROJECTION_ORTHOGRAPH, 0, NULL, NULL);
 	break;
 	#endif
 	#if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009
 	case DRIVER_DX12:
-		Render( CAMERA_NORMAL, PROJECTION_ORTHOGRAPH);
+		Render(pContext, 0, CAMERA_NORMAL, PROJECTION_ORTHOGRAPH);
 	break;
 	#endif
 	}
@@ -1461,7 +1466,7 @@ bool DXmodelClass::RenderSprite( int positionX, int positionY, float scale, floa
 #endif
 
 
-void DXmodelClass::RenderWithFade(float fadeLight, bool FOG)
+void DirectX::DXmodelClass::RenderWithFade(void* pContext, float fadeLight, bool FOG)
 {
 #if defined DX11 || defined DX12 || (defined OPENGL3 || defined OPENGL40) 
 		#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
@@ -1477,16 +1482,17 @@ void DXmodelClass::RenderWithFade(float fadeLight, bool FOG)
 			}
 		#endif
 
-		Render();
+			Render(pContext, 0, 0, 0, NULL, NULL);
 #endif
 }
 
 // ----------------------------------------------------------------------------------------
-void DXmodelClass::Render(UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix)
+void DirectX::DXmodelClass::Render(void* ctx, UINT threadID, UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix)
 // ----------------------------------------------------------------------------------------
 {
 	if (m_Driver->RenderfirstTime) 
 		{ LOADDRIVER(m_Driver); }
+	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
 
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
@@ -1508,8 +1514,6 @@ void DXmodelClass::Render(UINT camera, UINT projection, UINT pass, void* lightVi
 #if defined DX11 || defined DX9
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 	{
-		 ID3D11DeviceContext* pContext = m_driver11->m_deviceContext;
-
 		// Step 1 - Put the "vertex", "index" and "instances" (if exist) buffers on the graphics pipeline to prepare them for drawing:
 		// ----------------------------------------------------------------------------------------
 #if defined USE_TERRAIN_QUAD_TREE
@@ -1551,33 +1555,34 @@ void DXmodelClass::Render(UINT camera, UINT projection, UINT pass, void* lightVi
 		}
 
 		{
-			// Step 3: Render Simple Mesh: (Basic Tutorials) include: SKY, MAIN Terrain, Spites
-			// ----------------------------------------------------------------------------------------
-			if (ModelShaderType >= SHADER_TEXTURE)
-				for (UINT i = 0; i < meshSRV11.size(); i++)
-					pContext->PSSetShaderResources(i, 1, &meshSRV11[i]);	// Set shader texture resource(s) in the "Pixel Shader", only!
+			{
+				if (ModelShaderType >= SHADER_TEXTURE)
+					for (UINT i = 0; i < meshSRV11.size(); i++)
+						pContext->PSSetShaderResources(i, 1, &meshSRV11[i]);	// Set shader texture resource(s) in the "Pixel Shader", only!
 
-			#if defined USE_VIEW2D_SPRITES
-			m_Shader11->PSfade = model_fade;
-			#endif
-		#if TUTORIAL_CHAP >= 62 // FIRE
-			if (ModelShaderType == SHADER_FIRE) {
-				static float frameTime = 0.0f;
+				#if defined USE_VIEW2D_SPRITES
+				m_Shader11->PSfade = model_fade;
+				#endif
+			  #if TUTORIAL_CHAP >= 62 // FIRE
+				if (ModelShaderType == SHADER_FIRE) {
+					static float frameTime = 0.0f;
 
-				// Increment the frame time counter.
-				frameTime += 0.01f;
-				if (frameTime > 1000.0f)
-					frameTime = 0.0f;
+					// Increment the frame time counter.
+					frameTime += 0.01f;
+					if (frameTime > 1000.0f)
+						frameTime = 0.0f;
 
-				m_Shader11->shaderfireframeTime = frameTime;
+					m_Shader11->shaderfireframeTime = frameTime;
+				}
+			  #endif
+
+				m_Shader11->shaderTypeParameter = (float)shaderTypeParameter;
 			}
-		#endif
-			m_Shader11->shaderTypeParameter = (float)shaderTypeParameter;
-            
+
             #if defined USE_OPTIMIZING
-            m_Shader11->Render(pass, pContext, m_indexCount, &m_worldMatrix, viewMatrix, &m_driver11->m_projectionMatrix_sky);	// Single Material (Optimized)
+			m_Shader11->Render(pass, pContext, m_indexCount, &m_worldMatrix, viewMatrix, &m_driver11->m_projectionMatrix_sky);	// Single Material (Optimized)
             #else
-            m_Shader11->Render(pass, pContext, m_indexCount, &m_worldMatrix, viewMatrix, projectionMatrix);
+			m_Shader11->Render(pass, pContext, m_indexCount, &m_worldMatrix, viewMatrix, projectionMatrix);
             #endif
 		}
 	}

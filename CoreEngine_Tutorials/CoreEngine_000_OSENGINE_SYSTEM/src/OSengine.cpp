@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -62,8 +62,8 @@ TCHAR* DEMO_NAME[] =
 {
 //{"07:Loading a files from engine.pck and Press[F2] for RealTime Celestial Positions of Sun and Moon accordingly with user Location"},
 //{"08 : From now on : PRESS[F3] for : [REAL TIME MAP] user location."},
-//{"09 : From now on : PRESS[F4] for : [REAL Wheather] at user location."},
-//{"19 : PRESS[F6] for SETUP and change Driver : OPENGL, DX9, DX11, DX12 : Initiate the 3D Graphic Drivers and attache the swapchain to mainwindow."},
+//{"09 : From now on : PRESS[F4] for : [REAL Weather] at user location."},
+//{"19 : PRESS[F6] for SETUP and change Driver : OPENGL, DX9, DX11, DX12 : Initiate the 3D Graphic Drivers and attach the swap-chain to mainwindow."},
 //{"20 : OPENGL, DX9, DX11, DX12 : Allow mainwindow resizing."},
 {TEXT("TUTORIAL 21: The Basic triangle and square using vertexes with indexes - The COLOR shader (try: F1,F2,F3,F4,F5,F6)")},
 {TEXT("TUTORIAL 22: Loading and Rendering Textures - The TEXTURE shader (try: F1,F2,F3,F4,F5,F6)")},
@@ -77,7 +77,7 @@ TCHAR* DEMO_NAME[] =
 {TEXT("TUTORIAL 30: WORLD.XML: load OBJ 3D file format, using COLOR shader")},
 {TEXT("TUTORIAL 31: WORLD.XML: load OBJ 3D file format, with MULTIPLE TEXTURES, using TEXTURE shader")},
 {TEXT("TUTORIAL 32: WORLD.XML: load OBJ 3D file format, the first advanced object, using LIGHT shader")},
-{TEXT("TUTORIAL 33: WORLD.XML: load OBJ 3D file format, the compond, using transparent textures ALFA MAP and ALFA COLOR")},
+{TEXT("TUTORIAL 33: WORLD.XML: load OBJ 3D file format, the compound, using transparent textures ALFA MAP and ALFA COLOR")},
 {TEXT("TUTORIAL 34: WORLD.XML: load OBJ 3D file format, with SPECULAR and SHININESS")},
 {TEXT("TUTORIAL 35: WORLD.XML: load OBJ 3D file format, with BUMP MAP")},
 {TEXT("TUTORIAL 36: WORLD.XML: load OBJ 3D file format, render a SHADOW MAP")},
@@ -88,12 +88,12 @@ TCHAR* DEMO_NAME[] =
 {TEXT("TUTORIAL 40: WORLD.XML: load W3D and use INSTANCES to clone objects using GPU")},
 {TEXT("TUTORIAL 41: WORLD.XML: load W3D and use SHADOW INSTANCES")},
 {TEXT("TUTORIAL 42: WORLD.XML: load W3D and use SHADOW INSTANCES with ROTATION per instance")},
-{TEXT("43")}, //Reserved
-{TEXT("44")}, //Reserved
-{TEXT("45")}, //Reserved
-{TEXT("46")}, //Reserved
-{TEXT("47")}, //Reserved
-{TEXT("48")}, //Reserved
+{DEMO_TITLE}, //Reserved
+{DEMO_TITLE}, //Reserved
+{DEMO_TITLE}, //Reserved
+{DEMO_TITLE}, //Reserved
+{DEMO_TITLE}, //Reserved
+{DEMO_TITLE}, //Reserved
 {TEXT("49: TERRAIN: Generate under water terrain. ModelTextureVertexType (Keys: WASD + RF) F11: God mode/switch")},
 {TEXT("50: TERRAIN: the under water terrain. ModelTextureVertexType (Keys: WASD + RF) F11: God mode/switch")},
 {TEXT("51: TERRAIN: Add fog ModelTextureVertexType (Keys: WASD + RF) F11: God mode/switch")},
@@ -108,7 +108,7 @@ TCHAR* DEMO_NAME[] =
 {DEMO_TITLE},//60 - USE_TERRAIN_TUTORIAL_CHAP_24 
 {DEMO_TITLE},//61 - USE_TERRAIN_512
 {DEMO_TITLE},//62 - TERRAIN MAIN MAP
-{DEMO_TITLE},//63 - TERRAIN MAIN MAP + MINI MAP 3D Navegation
+{DEMO_TITLE},//63 - TERRAIN MAIN MAP + MINI MAP 3D Navigation
 {DEMO_TITLE},//64 - Mill + compound - Animated static object
 {DEMO_TITLE},//65 - Walk on Terrain.
 {DEMO_TITLE},//66  Reserved
@@ -195,7 +195,7 @@ namespace WOMA
 
 	TCHAR	strConsoleTitle[MAX_STR_LEN] = { 0 };
 
-#if defined USE_LOADING_THREADS || defined USE_MAIN_THREAD //vars
+#if defined USE_LOADING_THREADS
 	UINT	num_running_THREADS = 0;
 #endif
 #if defined USE_LOADING_THREADS || DX_ENGINE_LEVEL >= 30
@@ -256,7 +256,8 @@ namespace WOMA
 		return TRUE;
 	}
 #endif
-}//namespace WOMA
+}
+//namespace WOMA
 
 namespace WOMA
 {
@@ -309,14 +310,14 @@ void DefineConsoleTitle()
 #endif
 
 	LEVELNORMAL();
-	//Use printf or OutputDebugString: WOMA_LOGManager dont exist yet
+	//Use printf or OutputDebugString: WOMA_LOGManager don't exist yet
 	OutputDebugString(TEXT("\n"));
 #endif
 
 }
 
 #if defined WINDOWS_PLATFORM
-// Entry point of all WoMA ENGINE Applications all "main's" call this this one (used by: WINDOWS / LINUX / ANDROID)
+// Entry point of all WoMA ENGINE Applications all "main's" call this one (used by: WINDOWS / LINUX / ANDROID)
 int CHECK_IF_WE_ARE_A_RUNNING_DEMO()
 {
 	TCHAR buffer[MAX_PATH];
@@ -355,6 +356,8 @@ int CHECK_IF_WE_ARE_A_RUNNING_DEMO()
 	return EXIT_SUCCESS;
 }
 #endif
+
+bool cpuSupportsAVX512f=false;
 
 void APPLICATION_STARTUP(int argc, char* argv[])
 {
@@ -439,16 +442,25 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 
 	womalogauto(TEXT("Init: INIT_GTK2()\n"));
 	if (!PLATFORM_INIT_GTK2())
-		womalogauto(TEXT("Could not initialize GTK2!")); // Note: Dont use DEBUG_MSG yet...
+		womalogauto(TEXT("Could not initialize GTK2!")); // Note: Don't use DEBUG_MSG yet...
 #endif
 
 #if defined USE_CONVERT_TO_PNG
 	DeleteFile("used_imgs.txt");
 #endif
 
+#if defined WINDOWS_PLATFORM
+	cpuSupportsAVX512f = cpu_supports_avx512f();
+	#ifdef __AVX512F__
+	//NOTE: If there an exception here: it's because this/your CPU don't support the fast AVX512, so change project settings to compile in slow AVX2 or AVX only!
+	ASSERT(cpuSupportsAVX512f); // Check for fast WIN11(AVX512) Instructions set support, if not compile for WIN10(AVX2)
+	#endif
+
+	womalogauto(TEXT("Cpu Supports AVX512: %s\n"), cpuSupportsAVX512f ? TEXT("true") : TEXT("false"));
+#endif
+
     womalogauto("<%s> STARTUP ENDED\n", PROJECT_NAME);
 }
-
 void APPLICATION_STOP()
 {
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
@@ -770,3 +782,23 @@ std::string original_files[] = {
     TEXT("")
 };
 #endif
+
+#if defined WINDOWS_PLATFORM
+#include <immintrin.h>
+#include <intrin.h>
+bool cpu_supports_avx512f() {
+	int cpuInfo[4];
+	__cpuid(cpuInfo, 0);
+	if (cpuInfo[0] >= 7) {
+		__cpuidex(cpuInfo, 7, 0);
+		return (cpuInfo[1] & (1 << 16)) != 0; // AVX512F = bit 16 of EBX
+	}
+	return false;
+}
+#endif
+
+bool StartsWithDotDotSlash(const std::string& fileNamePath)
+{
+	const std::string prefix = "../";
+	return fileNamePath.rfind(prefix, 0) == 0;
+}

@@ -171,9 +171,6 @@ public:
 
 	bool hasTransparent = false;	// has transparent sub-meshes?
 
-// ----------------------------------------------------------------------
-//private:
-// ----------------------------------------------------------------------
 	bool SaveW3D	(STRING filename, void* indices, void* vertices, UINT sizeofMODELvertex);
 
 #if defined LOADW3D

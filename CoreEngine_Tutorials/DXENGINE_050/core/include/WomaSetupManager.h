@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -22,8 +22,9 @@
 #include "platform.h"
 #if defined CLIENT_SCENE_SETUP && defined WINDOWS_PLATFORM
 
-#define ButtonSetup		0
-#define ButtonStart		1
+#define ButtonSetup			0
+#define ButtonStart			1
+#define ButtonSetupCancel	2						   
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: SkyPlaneClass
@@ -39,9 +40,9 @@ public:
 	void Shutdown();
 
 	// VAR:
-	HWND m_setupWnd;
-	HWND m_hBtnOK;
-	HWND m_hBtnCancel;
+	HWND m_setupWnd=NULL;
+	HWND m_hBtnOK = NULL;
+	HWND m_hBtnCancel = NULL;
 
 	std::vector<HWND> hWndTitleLabel;	// hWndTitleLabel[11]
 	std::vector<HWND> hWndComboBox;		// hWndComboBox[7]

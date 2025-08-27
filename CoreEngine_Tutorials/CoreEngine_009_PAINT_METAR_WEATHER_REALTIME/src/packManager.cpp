@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -265,20 +265,15 @@ bool InitPackLibs()
 	WOMA::DeleteDirectory(deleteoldengine.c_str());
 
 	IF_NOT_RETURN_FALSE (InitPackLib("windows.pck"));	// Need to be CHAR!
-
-    #if !defined USE_MAIN_THREAD
 	IF_NOT_RETURN_FALSE(InitPackLib("woma.pck"));		// Need to be CHAR!
-    #endif
-
+  
 	return true;
 }
 
 bool StartPackLibs() 
 {
     SetUnhandledExceptionFilter(TopLevelFilter);
-#if defined USE_MAIN_THREAD
-	threadLoadPacksAlive = true;
-#endif
+
 	womalogauto (TEXT("CreateThread: Initialize LoadPacks ThreadFunction\n"));
 
 	#if DX_ENGINE_LEVEL >= 20
@@ -313,14 +308,6 @@ bool StartPackLibs()
     fs << packCounter;
 	fs.close();
 	}
-
-#if defined USE_MAIN_THREAD
-	threadLoadPacksAlive = false;
-	WOMA::num_running_THREADS--; //StartPackLibs
-	#if defined _DEBUG
-	womalog("WOMA::num_running_THREADS: %d %s %s %d\n", WOMA::num_running_THREADS, __FILE__, __FUNCTION__, __LINE__);
-	#endif
-#endif
 
 	return true;
 }

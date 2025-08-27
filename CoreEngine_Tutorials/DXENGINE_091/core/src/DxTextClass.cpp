@@ -392,7 +392,7 @@ namespace DirectX {
 
 		if (!sentence)
 		{
-			WomaFatalExceptionW(TEXT("Text: sentece = NULL")); //return false;
+			WomaFatalExceptionW(TEXT("Text: sentence = NULL")); //return false;
 		}
 
 		// Store the color of the sentence.

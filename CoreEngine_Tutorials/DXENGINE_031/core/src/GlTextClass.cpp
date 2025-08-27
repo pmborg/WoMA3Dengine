@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -81,7 +81,7 @@ void GlTextClass::ReleaseSentence(SentenceType** sentence)
 }
 
 //SIMILAR: DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderType)
-bool GlTextClass::Initialize(void* Driver)
+bool GlTextClass::Initialize(void* Driver, ID3D11DeviceContext* pContext)
 {
 	bool result=false;
 
@@ -90,7 +90,7 @@ bool GlTextClass::Initialize(void* Driver)
 	// TextClass: Initialize the font object. PART1
 	m_Font = NEW textFontClass;
 	IF_NOT_THROW_EXCEPTION(m_Font); // Create the font object.
-	IF_NOT_RETURN_FALSE(m_Font->Initialize(Driver, FONT_DATA_FILE, FONT_DATA_TEXTURE));
+	IF_NOT_RETURN_FALSE(m_Font->Initialize(pContext, Driver, FONT_DATA_FILE, FONT_DATA_TEXTURE));
 
 #if (defined OPENGL3 || defined OPENGL4)
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
@@ -199,7 +199,7 @@ bool GlTextClass::UpdateSentence(SentenceType* sentence, TCHAR* text, int positi
 
 	if (!sentence)
 	{
-		WomaFatalException(("Text: sentece = NULL")); //return false;
+		WomaFatalException(("Text: sentence = NULL")); //return false;
 	}
 
 	// Store the color of the sentence.
