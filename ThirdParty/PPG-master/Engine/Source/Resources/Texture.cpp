@@ -115,34 +115,11 @@ extern bool SaveAsPNG_Debug(const std::wstring& originalFile, const DirectX::Scr
 Texture* Texture::LoadTextureFromPath(UINT this_level, UINT modeltype, Graphics& graphics, LPCWSTR& texturePath)
 {
     std::wstring filetexturePath = texturePath;
-//#if defined MAVERICK && defined SIMPLE
-    if (this_level == 87)
-    {
-        switch (modeltype)
-        {
-        case 2:
-            ReplaceTextureVersionW(filetexturePath, L"Skin_1_Armor_and_Weapon_Albedo", L"Skin_2_Armor_and_Weapon_Albedo");
-            ReplaceTextureVersionW(filetexturePath, L"Skin_1_Body_Albedo", L"Skin_2_Body_Albedo");
-            ReplaceTextureVersionW(filetexturePath, L"Skin_1_Hair_Albedo", L"Skin_2_Hair_Albedo");
-            break;
-        case 3:
-            ReplaceTextureVersionW(filetexturePath, L"Skin_1_Armor_and_Weapon_Albedo", L"Skin_3_Armor_and_Weapon_Albedo");
-            ReplaceTextureVersionW(filetexturePath, L"Skin_1_Body_Albedo", L"Skin_3_Body_Albedo");
-            ReplaceTextureVersionW(filetexturePath, L"Skin_1_Hair_Albedo", L"Skin_3_Hair_Albedo");
-            break;
-        }
-    }
-   //else
-   //{
-   //    modeltype = 1;
-   //}
-//#else
 if (this_level>=86) 
 {
     if (modeltype >=1)
         return LoadTextureFromPathFBX(modeltype, graphics, texturePath);
 }
-//#endif
 
 
     // Find the position of "../../AppData/Local"
@@ -271,6 +248,7 @@ bool Texture::CreateTextureCubeRTVs(Graphics& graphics, DXGI_FORMAT texFormat, U
 
 bool Texture::CreateDSV(Graphics& graphics, DXGI_FORMAT texFormat)
 {
+  
     D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
     depthStencilViewDesc.Format = texFormat;
     //depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;

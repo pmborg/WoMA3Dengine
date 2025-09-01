@@ -220,7 +220,7 @@ void ModelLoader::GenerateSceneObjectHierarchy(aiNode* node, bool isRoot, int pa
     for (UINT i = 0; i < node->mNumChildren; ++i)
     {
 		if (WOMA::game_state == GAME_STOP)
-			return;
+			return; //we are existing application...
         GenerateSceneObjectHierarchy(node->mChildren[i], false, parentIndex);
     }
 }
