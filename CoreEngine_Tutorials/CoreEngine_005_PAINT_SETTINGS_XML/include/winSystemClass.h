@@ -41,7 +41,6 @@
 extern HWND DoCreateStatusBar(HWND hwndParent, int idStatus, HINSTANCE hinst, int cParts);
 #endif
 
-
 #define check(A)							{}
 
 struct ScreenArrayInfo
@@ -69,8 +68,8 @@ namespace WOMA
 		// 4
 		HWND hWnd=0;
 		// Window sizes:
-		RECT              m_rcWindowBounds;    // Saved window bounds for mode switches
-		RECT              m_rcWindowClient;    // Saved client area size for mode switches
+		RECT m_rcWindowBounds;    // Saved window bounds for mode switches
+		RECT m_rcWindowClient;    // Saved client area size for mode switches
 	};
 }
 
@@ -157,8 +156,6 @@ public:
 
 private:
 	void ShutdownWindows();
-
-
 };
 
 /////////////

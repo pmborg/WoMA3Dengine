@@ -1093,7 +1093,8 @@ void ModelClass::CalculateTangentBinormal(ModelNormalBumpVertexType vertex1, Mod
 }
 
 // Create: DXmodelClass based on obj3D (an advanced model mesh)
-bool ModelClass::CreateObject(void* pContext, void* XmodelClass, TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow, bool renderShadow)
+bool ModelClass::CreateObject(	void* pContext, void* XmodelClass, TCHAR* objectName, 
+								void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow, bool renderShadow)
 {
 	// Make Sure that: "meshSubsets" size are equal to "meshMaterials" size
 	if (obj3d.meshSubsets != obj3d.meshMaterials.size())

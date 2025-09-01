@@ -175,21 +175,26 @@ bool SystemManager::checkCPU ()
 DWORDLONG SystemManager::getAvailSystemMemory()
 {
 	// GET ullAvailPhys:
-	MEMORYSTATUSEX status;
+	MEMORYSTATUSEX status = {0};
 	status.dwLength = sizeof(status);
 	GlobalMemoryStatusEx(&status);
+
 	DWORDLONG PhysMemAvail = status.ullAvailPhys;
 	womalog("GlobalMemoryStatusEx.dwLength                = %10u\n",			status.dwLength);
 	womalog("GlobalMemoryStatusEx.dwMemoryLoad            = %10u%%\n",		    status.dwMemoryLoad);
+
 	womalog("GlobalMemoryStatusEx.ullTotalPhys            = %10u MBytes\n",	status.ullTotalPhys / MBs);
 	womalog("GlobalMemoryStatusEx.ullAvailPhys            = %10u MBytes\n",	status.ullAvailPhys / MBs);
+
+	womalog("GlobalMemoryStatusEx.ullAvailPageFile        = %10u MBytes\n", status.ullAvailPageFile / MBs);
 	womalog("GlobalMemoryStatusEx.ullTotalPageFile        = %10u MBytes\n",	status.ullTotalPageFile / MBs);
-	womalog("GlobalMemoryStatusEx.ullAvailPageFile        = %10u MBytes\n",	status.ullAvailPageFile / MBs);
+	
+	womalog("GlobalMemoryStatusEx.ullAvailVirtual         = %10u MBytes\n", status.ullAvailVirtual / MBs);
 	womalog("GlobalMemoryStatusEx.ullTotalVirtual         = %10u MBytes\n",	status.ullTotalVirtual / MBs);
-	womalog("GlobalMemoryStatusEx.ullAvailVirtual         = %10u MBytes\n",	status.ullAvailVirtual / MBs);
+	
 	womalog("\n");
 
-	PERFORMANCE_INFORMATION performanceInformation;
+	PERFORMANCE_INFORMATION performanceInformation = { 0 };
 	BOOL res = GetPerformanceInfo(&performanceInformation, sizeof(performanceInformation));
 	DWORDLONG CachedMem = performanceInformation.SystemCache;
 	womalog("PerformanceInfo.CommitTotal         		= %10u MBytes\n",	(unsigned int)(performanceInformation.CommitTotal * performanceInformation.PageSize / MBs));
@@ -207,7 +212,7 @@ DWORDLONG SystemManager::getAvailSystemMemory()
 	womalog("PerformanceInfo.ThreadCount         		= %10u\n",			performanceInformation.ThreadCount);
 	womalog("\n");
 
-	MEMORYSTATUSEX memoryStatus;
+	MEMORYSTATUSEX memoryStatus = { 0 };
 	memoryStatus.dwLength = sizeof(memoryStatus);
 	res = GlobalMemoryStatusEx(&memoryStatus);
 	womalog("GlobalMemoryStatusEx.dwLength                = %10u\n",			memoryStatus.dwLength);

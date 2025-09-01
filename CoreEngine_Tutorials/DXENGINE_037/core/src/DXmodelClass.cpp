@@ -927,7 +927,7 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 {
 	sizeofMODELvertex = sizeofMODELvertex_;
 
-	ASSERT(m_vertexCount && m_indexCount && vertices && indices && sizeofMODELvertex > 0);
+	ASSERT_DEBUG(m_vertexCount && m_indexCount && vertices && indices && sizeofMODELvertex > 0);
 
 	//DX12
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
@@ -1130,12 +1130,12 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 		if (Model3D)
 		{
 			// Normal 3D MODEL       
-			vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE; // Store in "Video Card" Memory (NOTE: D3D11_USAGE_DEFAULT = Decided by Driver...)
+			vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;				// Store in "Video Card" Memory (NOTE: D3D11_USAGE_DEFAULT = Decided by Driver...)
 			vertexBufferDesc.CPUAccessFlags = 0;
 		}
 		else {
 			// SPRITE 2D Model
-			vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;		// Store in "Shared RAM" Memory (once we need to update)
+			vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;				// Store in "Shared RAM" Memory (once we need to update)
 			vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;	// CPU Need to re-write after creation.
 		}
 		vertexBufferDesc.ByteWidth = sizeofMODELvertex * m_vertexCount;
@@ -1145,7 +1145,7 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 		//vertexBufferDesc.StructureByteStride = 0;
 
 		D3D11_SUBRESOURCE_DATA vertexData = { 0 };
-		vertexData.pSysMem = vertices;	// Give the subresource structure a pointer to the vertex data.
+		vertexData.pSysMem = vertices;	// Give the sub-resource structure a pointer to the vertex data.
 		//vertexData.SysMemPitch = 0;
 		//vertexData.SysMemSlicePitch = 0;
 
@@ -1157,14 +1157,14 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 		// Set up the description of the static index buffer:
 		// ----------------------------------------------------------------------------------------
 		D3D11_BUFFER_DESC indexBufferDesc = { 0 };
-		indexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE; //D3D11_USAGE_DEFAULT;
+		indexBufferDesc.Usage = (ModelShaderType == SHADER_BILLBOARD_ATLAS_FAST) ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_IMMUTABLE;
 		indexBufferDesc.ByteWidth = sizeof(UINT) * m_indexCount; // DWORD = 32 bits of Indexes
 		indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		//indexBufferDesc.CPUAccessFlags = 0;
+		indexBufferDesc.CPUAccessFlags = (ModelShaderType == SHADER_BILLBOARD_ATLAS_FAST) ? D3D11_CPU_ACCESS_WRITE : 0;
 		//indexBufferDesc.MiscFlags = 0;
 		//indexBufferDesc.StructureByteStride = 0;
 
-		// Give the subresource structure a pointer to the index data.
+		// Give the sub-resource structure a pointer to the index data.
 		D3D11_SUBRESOURCE_DATA indexData = { 0 };
 		indexData.pSysMem = indices;
 		//indexData.SysMemPitch = 0;
@@ -1840,6 +1840,8 @@ void DirectX::DXmodelClass::Render(void* ctx, UINT threadID, UINT camera, UINT p
 		{ LOADDRIVER(m_Driver); }
 	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
 
+	ASSERT_DEBUG(m_Shader11);
+
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 	{
@@ -1907,7 +1909,10 @@ void DirectX::DXmodelClass::Render(void* ctx, UINT threadID, UINT camera, UINT p
 
 		// Step 3: Render Complex Mesh (OBJ/W3D):
 		// ----------------------------------------------------------------------------------------
-		if ((obj3d.material.size() > 0) && (ModelShaderType != SHADER_FIRE) && (ModelShaderType != SHADER_TEXTURE_LIGHT_FAST))
+		if ((obj3d.material.size() > 0) && (ModelShaderType != SHADER_FIRE) 
+			                            && (ModelShaderType != SHADER_TEXTURE_LIGHT_FAST) 
+			                            && (ModelShaderType != SHADER_BILLBOARD_ATLAS_FAST)
+			)
 			RenderSubMesh(pContext, m_driver11, &m_worldMatrix, viewMatrix, projectionMatrix, pass, (XMMATRIX*)lightViewMatrix, (XMMATRIX*)ShadowProjectionMatrix); // Multiple Material
 		else
 		{

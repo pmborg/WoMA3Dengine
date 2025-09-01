@@ -206,7 +206,7 @@ public:
 	float dayLightFade;
 
 #if CORE_ENGINE_LEVEL >= 10 && !defined NewWomaEngine
-    void SortOutWhatNeedToBeRendered(void* pContext);
+    void SortOutWhatNeedToBeRendered(void* pContext, WomaDriverClass* driver);
     void RenderScene(UINT monitorWindow, WomaDriverClass* driver);
 	float ProcessInputUpdate();						// PROCESS User Update
 	void AppRender(UINT monitorWindow,  float fadeLight, void * pContext);								// RENDER - 3D

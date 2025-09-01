@@ -388,20 +388,21 @@ bool ApplicationClass::Initialize(void* pContext, WomaDriverClass* Driver)
 	ASSERT_DEBUG(Driver);
 #endif
 
-	//imgGui:
+	//IMGUI:
 
 #if defined USE_DIRECT_INPUT
 	m_NextPosition = NEW PositionClass(/*ID*/-1);
 	if (WOMA::game_state == GAME_STOP) return false;
 #endif
 
-	//DEMO:
+	//LVL29 - 1st RELEASE DEMO:
 #if defined INTRO_DEMO
 	initIntroDemo(pContext);
 #endif
+
 //########################################### 3D: STUFF ###########################################
+
 //########################################### 2D: STUFF ###########################################
- 
 	// 2D-FONTS: (Windows)
 #if defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONT //27
 	initText(pContext);
@@ -412,13 +413,15 @@ bool ApplicationClass::Initialize(void* pContext, WomaDriverClass* Driver)
 	IF_NOT_RETURN_FALSE(r_Application->Initialize(SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT));
 #endif
 
+//####################################### START MESH THREADS #######################################
+
 #if CORE_ENGINE_LEVEL >= 10 && !defined ANDROID_PLATFORM
-	Driver->Finalize(); //Mostly for DX12
+	Driver->Finalize(); //Specially for DX12 (Finish setup just before start rendering...)
 #endif
 
 	if (WOMA::game_state == GAME_STOP) return false;
 
-	return true;
+	return true; //go-go-go Start Rendering! :)
 }
 
 #endif

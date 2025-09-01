@@ -29,7 +29,7 @@ namespace DirectX {
 #if _NOT
 // https://learn.microsoft.com/en-us/windows/win32/directwrite/getting-started-with-directwrite
 #endif
-bool DX11Class::InitD2D_D3D101_DWrite(IDXGIAdapter1 *Adapter, WCHAR* fontStyle, int screenWidth, int screenHeight, float R, float G, float B)
+bool DX11Class::InitD2D_D3D101_DWrite(IDXGIAdapter1 *Adapter, int screenWidth, int screenHeight, WCHAR* fontStyle, float FontSizeIndex, float R, float G, float B)
 {
 	//Create our Direc3D 10.1 Device///////////////////////////////////////////////////////////////////////////////////////
 	HRESULT hr;
@@ -67,7 +67,7 @@ bool DX11Class::InitD2D_D3D101_DWrite(IDXGIAdapter1 *Adapter, WCHAR* fontStyle, 
 	sharedTexDesc.Format = BUFFER_COLOR_FORMAT;					//DXGI_FORMAT_B8G8R8A8_UNORM;
 	sharedTexDesc.MipLevels = 1;	
 	sharedTexDesc.ArraySize = 1;
-	// Dont Use MSAA Here!
+	// Don't Use MSAA Here!
 	sharedTexDesc.SampleDesc.Count = 1;		// MSAA_COUNT;		//Anti-Aliasing: MultiSample tech.
 	sharedTexDesc.SampleDesc.Quality = 0;	// MSAA_QUALITY;	//Anti-Aliasing: Texture Filtering tech. (MSAA > 0)
 	sharedTexDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -111,7 +111,7 @@ bool DX11Class::InitD2D_D3D101_DWrite(IDXGIAdapter1 *Adapter, WCHAR* fontStyle, 
 	// Create a solid color brush to draw something with:
 	IF_FAILED_RETURN_FALSE (hr = D2DRenderTarget->CreateSolidColorBrush(D2D1::ColorF(R, G, B, 1.0f), &Brush));
 
-	float FontSizeIndex = 22; // MAX(22, 22.0f * MIN(1, 2 * SystemHandle->m_scaleX)); // At least 8, Max: 24 (with this formula Text Scale Better)
+	 // MAX(22, 22.0f * MIN(1, 2 * SystemHandle->m_scaleX)); // At least 8, Max: 24 (with this formula Text Scale Better)
 
 	// Create new font: (DirectWrite)
 	IF_FAILED_RETURN_FALSE(hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&DWriteFactory)));

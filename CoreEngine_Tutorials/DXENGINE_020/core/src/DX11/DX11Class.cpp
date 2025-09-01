@@ -856,7 +856,7 @@ HRESULT result = S_OK;
 #endif
 
 	#if defined USE_DX_DRIVER_FONT
-	m_sCapabilities.USE_DXDRIVER_FONTSBoolean = InitD2D_D3D101_DWrite(adapterGraphicCard, L"Consolas", screenWidth, screenHeight, 1, 1, 1); // RGB
+	m_sCapabilities.USE_DXDRIVER_FONTSBoolean = InitD2D_D3D101_DWrite(adapterGraphicCard, screenWidth, screenHeight, L"Consolas", 22.0f, 1, 1, 1); // RGB
 	#endif
 
 	return true;

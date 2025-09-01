@@ -107,23 +107,26 @@ TCHAR billFileName[][MAX_STR_LEN] =
 	BILL_TREE_5,	//5 tree
 
 	//FLOWERs: 5
-	BILL_FLOWER_0,	//6	
-	BILL_FLOWER_1,	//7
-	BILL_FLOWER_2,	//8
-	BILL_FLOWER_3,	//9 
-	BILL_FLOWER_4,	//10
+	BILL_FLOWER_0,	//6	 flower
+	BILL_FLOWER_1,	//7	 flower
+	BILL_FLOWER_2,	//8	 flower
+	BILL_FLOWER_3,	//9  flower
+	BILL_FLOWER_4,	//10 flower
 	// N_GRASS_0
 	BILL_GRASS_0,   //11 animated grass 
+
 	//Meta Type:
 	// 100: engine/data/scene70Bill/fence.obj
 	// 200: engine/data/scene72Fire/072fire.obj
+	// 300: 3D fence model engine/data/scene87ForestHuntress.priv/worldMap/woodfence/Fence_module.obj
 };
+
+xmlobj3d xmlobj;
 
 xmlobj3d* BillClass::fillxml(ID3D11DeviceContext* pContext, int id, UINT type)
 {
 	DirectX::DX11Class* m_driver11 = (DirectX::DX11Class*)m_Driver;
-
-	static xmlobj3d xmlobj;
+	
 	xmlobj.id = id + SystemHandle->m_Application->world_xml_objs;
 	xmlobj.type = type;
 	xmlobj.fromPage = 0;
@@ -156,10 +159,10 @@ xmlobj3d* BillClass::fillxml(ID3D11DeviceContext* pContext, int id, UINT type)
 
 			xmlobj.meshSRV = billFileLoaded[type];
 			if (m_Trees[id].type < 11)
-				strcpy_s(xmlobj.filename, 256, BILLBOARD_MODEL);		    //engine/data/scene70Bill/060square.obj
+				strcpy_s(xmlobj.filename, 256, BILLBOARD_MODEL);				//engine/data/scene70Bill/060square.obj
 			else
-				if (m_Trees[id].type == 11)
-					strcpy_s(xmlobj.filename, 256, BILLBOARD_GRASS_MODEL);	//engine/data/scene73grass/grass.obj
+				if (m_Trees[id].type == 11)		//Windy
+					strcpy_s(xmlobj.filename, 256, BILLBOARD_GRASS_MODEL);		//11: engine/data/scene73grass/grass.obj
 		}
 
 	if (m_Trees[id].type == 100)
@@ -188,6 +191,9 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 	int i;
 	for (i = 0; i < N_BILLBOARD; i++)
 	{
+		// Tree.type: (type of tree)
+		type = rand() % billNames_length; //random number between 0 and 10
+
 		// Tree.vPos:
 		float height = -100; //Initially Invalid
 		float PosX = 0;
@@ -202,22 +208,17 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 			|| mainTerrainPath->height[(UINT)(m_Trees[i].vPos.z + 1)][(UINT)m_Trees[i].vPos.x] > 0			//no grass on main PATH (terrain)
 			)
 		{
-			if (i == 0)
-			{
-				PosX = 60;
-				PosZ = 60;
-			}
-			else if (i == 1)
-			{
-				PosX = 61;
-				PosZ = 61;
-			}
-			else if (i == 2)
-			{
-				PosX = 62;
-				PosZ = 62;
-			}
-			else
+
+			//TREEs: 6      //Type:
+			//BILL_TREE_0,	//0 bush
+			//BILL_TREE_1,	//1 bush
+			//BILL_TREE_2,	//2 bush
+			//BILL_TREE_3,	//3 tree
+			//BILL_TREE_4,	//4 tree
+			//BILL_TREE_5,	//5 tree
+			//
+			//BILL_FLOWER_0,	//6	
+
 			{
 			PosX = (float)((rand() % (m_terrainWidth * 100)) / 100.0f);
 			PosZ = (float)((rand() % (m_terrainHeight * 100)) / 100.0f);
@@ -228,8 +229,7 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 			height = mainTerrain->getTerrainHeight(TERRAIN_ID, PosX, PosZ);
 		}
 
-		// Tree.type: (type of tree)
-		type = rand() % billNames_length; //random number between 0 and 10
+
 		ASSERT(type <= billNames_length - 1);
 		// Tree.scale:
 		float scale = 0;
@@ -240,10 +240,10 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 
 		if (type >= 3 && type <= 5) {	// Make Trees Bigger (EU)
 			scale += 1.5f;
-			height -= 0.5f;
+			//height -= 0.5f;
 		}
-		if (type >= 6)					// Make flowers Smaller
-			scale = scale / 2;
+		//if (type >= 6)					// Make flowers Smaller
+		//	scale = scale / 2;
 
 		m_Trees[i].ID = i;
 		m_Trees[i].type = type;
@@ -254,6 +254,9 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 
 		if (type <= 10)
 			xmlobj->Bill = true;
+
+		m_Trees[i].bill = xmlobj->Bill;
+
 
 		SystemHandle->xml_loader.theWorldXML.push_back(*xmlobj);
 	}
@@ -279,6 +282,7 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 
 					xmlobj3d* xmlobj = fillxml(pContext, i, 100);
 					xmlobj->Bill = false;
+					m_Trees[i].bill = xmlobj->Bill;
 					SystemHandle->xml_loader.theWorldXML.push_back(*xmlobj);
 
 					if (i++ > N_BILLBOARD + N_FENCES + N_FIRE)
@@ -302,6 +306,7 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 
 				xmlobj3d* xmlobj = fillxml(pContext, i, 100);
 				xmlobj->Bill = false;
+				m_Trees[i].bill = xmlobj->Bill;
 				SystemHandle->xml_loader.theWorldXML.push_back(*xmlobj);
 
 				if (i++ > N_BILLBOARD + N_FENCES)
@@ -324,6 +329,7 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 
 		xmlobj3d* xmlobj = fillxml(pContext, i, 200);
 		xmlobj->Bill = true;
+		m_Trees[i].bill = xmlobj->Bill;
 		SystemHandle->xml_loader.theWorldXML.push_back(*xmlobj);
 
 		if (i++ > N_BILLBOARD + N_FENCES + N_FIRE)
@@ -356,6 +362,7 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 
 		xmlobj3d* xmlobj = fillxml(pContext, i, m_Trees[i].type);
 		xmlobj->Bill = true;
+		m_Trees[i].bill = xmlobj->Bill;
 		SystemHandle->xml_loader.theWorldXML.push_back(*xmlobj);
 
 		i++;

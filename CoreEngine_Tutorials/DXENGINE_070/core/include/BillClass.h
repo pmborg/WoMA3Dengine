@@ -36,11 +36,11 @@
 #define N_BUSH_0  0
 
 #if defined SIMPLE
-#define N_BILLBOARD 1
-#define N_FENCES    55
-#define N_FIRE      1
-#define N_GRASS_0   1
-#define N_BUSH_0    1
+#define N_BILLBOARD 3
+#define N_FENCES    0
+#define N_FIRE      0
+#define N_GRASS_0   0
+#define N_BUSH_0    0
 #else
 #define N_BILLBOARD 1000
 #define N_FENCES      55

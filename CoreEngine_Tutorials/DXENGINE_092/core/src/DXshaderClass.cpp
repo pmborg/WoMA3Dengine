@@ -106,8 +106,6 @@ static const D3D12_INPUT_ELEMENT_DESC lightPolygonLayout[] =
 
 //-------------------------------------------------------------------------------------------------------------
 
-
-
 //-------------------------------------------------------------------------------------------------
 static const D3D11_INPUT_ELEMENT_DESC lightNormalPolygonLayout11[] =
 {
@@ -1442,6 +1440,7 @@ namespace DirectX {
 		// --------------------------------------------------------------------------------------------
 		// Create/Setup Sampler State:
 		// --------------------------------------------------------------------------------------------
+		// [1]: dont change the order:
 #if defined DX11 || defined DX9
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 		{
@@ -1496,6 +1495,25 @@ namespace DirectX {
 			result = device11->CreateSamplerState(&samplerDesc, &m_sampleState11);
 			if (FAILED(result)) { WomaFatalException (TEXT("CreateSamplerState error")); }
 
+			// [2]: dont change the order:
+#if TUTORIAL_CHAP >= 62 // FIRE
+			if (m_shaderType == SHADER_FIRE)
+			{
+				D3D11_SAMPLER_DESC samplerDescFire;
+
+				//FIRE: Create a second texture sampler state description for a Clamp sampler.
+				samplerDescFire = samplerDesc;
+				samplerDescFire.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+				samplerDescFire.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+				samplerDescFire.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+
+				// Create the texture sampler state.
+				result = device11->CreateSamplerState(&samplerDescFire, &m_sampleStateFire);
+				if (FAILED(result)) { WomaFatalException(TEXT("error")); return false; }
+			}
+#endif
+
+			// [3]: dont change the order:
 			// Create a clamp texture sampler state description.
 			samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
 			samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
@@ -1512,19 +1530,6 @@ namespace DirectX {
 			result = device11->CreateSamplerState(&samplerDesc, &m_sampleStateClamp11);
 			if (FAILED(result)) { WomaFatalException (TEXT("CreateSamplerState error")); }
 
-#if TUTORIAL_CHAP >= 62 // FIRE
-			D3D11_SAMPLER_DESC samplerDescFire;
-
-			//FIRE: Create a second texture sampler state description for a Clamp sampler.
-			samplerDescFire = samplerDesc;
-			samplerDescFire.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
-			samplerDescFire.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
-			samplerDescFire.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-
-			// Create the texture sampler state.
-			result = device11->CreateSamplerState(&samplerDescFire, &m_sampleStateFire);
-			if (FAILED(result)) { WomaFatalException (TEXT("error")); return false; }
-#endif
 
 			// --------------------------------------------------------------------------------------------
 			// CREATE Buffer(s) DATA for "Vertex Shader"
@@ -1539,10 +1544,12 @@ namespace DirectX {
 			//BufferDesc.StructureByteStride = 0;
 
 			BufferDesc.ByteWidth = sizeof(VSconstantBufferType);
+
 			ASSERT(BufferDesc.ByteWidth <= D3D11_REQ_CONSTANT_BUFFER_ELEMENT_COUNT && (BufferDesc.ByteWidth % 16) == 0); // Validade Size
 
 			result = device11->CreateBuffer(&BufferDesc, NULL, &m_VertexShaderBuffer11);
 			IF_FAILED_RETURN_FALSE(result);
+
 			// --------------------------------------------------------------------------------------------
 			// CREATE Buffer(s) DATA for "Pixel Shader":
 			// --------------------------------------------------------------------------------------------
@@ -1551,6 +1558,7 @@ namespace DirectX {
 
 			result = device11->CreateBuffer(&BufferDesc, NULL, &m_PixelShaderBuffer11);
 			IF_FAILED_RETURN_FALSE(result);
+
 		}
 #endif
 
@@ -1828,7 +1836,7 @@ namespace DirectX {
 			}
 #endif
 			if (castShadow)
-				deviceContext->PSSetSamplers(2, 1, &m_sampleStateClamp11); // or 0, 2
+				deviceContext->PSSetSamplers(2, 1, &m_sampleStateClamp11); // 2, 1 or 0, 2
 
 			// VS: Set CODE to Run on Shaders:
 			deviceContext->VSSetShader(m_vertexShader11, NULL, 0);		// Set the vertex code that will be used to process vertices
@@ -1862,7 +1870,9 @@ namespace DirectX {
 #endif
 				deviceContext->DrawIndexed(indexCount, start, 0);	// Render Indexed mesh
 
+		#ifdef _DEBUG
 			SystemHandle->TotalVertexCounter += indexCount;
+		#endif
 		}
 #endif
 
@@ -2025,15 +2035,15 @@ namespace DirectX {
 			m_driver->m_commandList->DrawIndexedInstanced(indexCount, 1, start, 0, 0);	// Render Indexed mesh
 		}
 #endif
-
+#if _DEBUG
 		SystemHandle->TotalVertexCounter += indexCount;
+#endif
 	}
 
 	void DXshaderClass::Render(UINT pass,void* Device_Context, int indexCount, XMMATRIX* worldMatrix, XMMATRIX* viewMatrix, XMMATRIX* projectionMatrix)
 	{
-#if _DEBUG
-		ASSERT(indexCount > 0);
-#endif
+		ASSERT_DEBUG(indexCount > 0);
+
 		SetShaderParameters(pass, Device_Context, worldMatrix, viewMatrix, projectionMatrix);	// Set the shader parameters that it will use for rendering
 		RenderShader(pass, Device_Context, /*texture_index*/ 0, indexCount);					// Now render the prepared buffers with the shader
 	}

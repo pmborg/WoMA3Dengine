@@ -655,22 +655,23 @@ bool ApplicationClass::Initialize(void* pContext, WomaDriverClass* Driver)
 	ASSERT_DEBUG(Driver);
 #endif
 
-	//imgGui:
+	//IMGUI:
 
 #if defined USE_DIRECT_INPUT
 	m_NextPosition = NEW PositionClass(/*ID*/-1);
 	if (WOMA::game_state == GAME_STOP) return false;
 #endif
 
-	//DEMO:
+	//LVL29 - 1st RELEASE DEMO:
 #if defined INTRO_DEMO
 	initIntroDemo(pContext);
 #endif
+
 //########################################### 3D: STUFF ###########################################
 	// (m_Light && xml_loader.theWorldXML) and SCENE MANAGER: QuadTree object Loader/Render
-	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(pContext, Driver));
+	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(pContext, Driver)); //Load All: 3D + Billboards
+
 //########################################### 2D: STUFF ###########################################
- 
 #if DX_ENGINE_LEVEL >= 24 && defined USE_VIEW2D_SPRITES
 	DEMO_WOMA_APPLICATION_InitializeSprites2D(pContext);		//2D:TITLE + 2D:MAP + 2D:MINI-MAP
 #endif
@@ -684,15 +685,16 @@ bool ApplicationClass::Initialize(void* pContext, WomaDriverClass* Driver)
 	IF_NOT_RETURN_FALSE(r_Application->Initialize(SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT));
 #endif
 
+//####################################### START MESH THREADS #######################################
 	StartMeshDemo((ID3D11DeviceContext*)pContext);
 
 #if CORE_ENGINE_LEVEL >= 10 && !defined ANDROID_PLATFORM
-	Driver->Finalize(); //Mostly for DX12
+	Driver->Finalize(); //Specially for DX12 (Finish setup just before start rendering...)
 #endif
 
 	if (WOMA::game_state == GAME_STOP) return false;
 
-	return true;
+	return true; //go-go-go Start Rendering! :)
 }
 
 #endif

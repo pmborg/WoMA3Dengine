@@ -694,8 +694,8 @@ bool SystemClass::InitOsInput()
 
 void SystemClass::ParseCommandLineArgs(int argc, char* argv[])
 {
-#if defined USE_TINYXML_LOADER			        // Must be before: APPLICATION_INIT_MAIN_WINDOW()
-    IF_NOT_THROW_EXCEPTION(LoadXmlSettings()); // XML: Load Application Settings: "settings.xml", pickup "Driver" to Use (override default: WOMA::settings)
+#if defined USE_TINYXML_LOADER			        // This settings.xml can be override by command line options!
+    IF_NOT_THROW_EXCEPTION(LoadXmlSettings()); //  XML: Load Application Settings: "settings.xml", pickup "Driver" to Use (override default: WOMA::settings)
 #endif
 
 #if defined UNICODE

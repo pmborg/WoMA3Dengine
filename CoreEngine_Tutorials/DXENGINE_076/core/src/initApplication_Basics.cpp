@@ -77,7 +77,7 @@ void ApplicationClass::initColorDemo(void* pContext)
 			SquareColorVertexVector[i].b = 0.6f;	// Blue
 		}
 
-		CREATE_MODEL_IF_NOT_EXCEPTION(m_1stSquare3DColorModel, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);	// Alocate the MODEL
+		CREATE_MODEL_IF_NOT_EXCEPTION(m_1stSquare3DColorModel, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);	// Allocate the MODEL
 		ASSERT (m_1stSquare3DColorModel->LoadColor(pContext, TEXT("m_1stSquare3DColorModel"), m_Driver, SHADER_COLOR, &SquareColorVertexVector, &IndexSquarList));	// LOAD the Model //UINT IndexSquarList[] = {0,1,2, 0,3,1};
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
@@ -325,7 +325,7 @@ bool ApplicationClass::initCubes3D(void* pContext)
 	//DEMO1:
 	CCube cube = CCube(0,0,0);
 	{
-		CREATE_MODEL_IF_NOT_EXCEPTION(m_cube1Model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);	// Alocate the MODEL
+		CREATE_MODEL_IF_NOT_EXCEPTION(m_cube1Model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);	// Allocate the MODEL
 		ASSERT(m_cube1Model->LoadColor(pContext, TEXT("m_cube1Model"), m_Driver, SHADER_COLOR, &cube.VertexCubeColorModel, &cube.IndexCubeList));
 	}
 
@@ -634,6 +634,7 @@ bool ApplicationClass::WOMA_LOAD_OBJ(void* pContext, UINT threadID, WomaDriverCl
 
 	if (i >= world_xml_objs) //Are we a Billboard?
 	{
+		//if (SystemHandle->xml_loader.theWorldXML[i].Bill && SystemHandle->xml_loader.theWorldXML[i].type <= 10)																								 
 		((DXmodelClass*)objModel[i])->isBill = true;
 
 		if (SystemHandle->xml_loader.theWorldXML[i].meshSRV) {
@@ -685,7 +686,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	m_Light = NEW LightClass;	// Create the light object
 	IF_NOT_THROW_EXCEPTION(m_Light);
 	m_Light->SetAmbientColor(0.55f, 0.55f, 0.55f, 1);	//later in world.xml
-	m_Light->SetDiffuseLightColor(1, 1, 1, 1.0f);			//later in world.xml
+	m_Light->SetDiffuseLightColor(1, 1, 1, 1.0f);		//later in world.xml
   #if defined USE_REAL_SUNLIGHT_DIRECTION
 	m_Light->SetDirection(SunX / 1000, SunY / 1000, SunZ / 1000);
   #else
@@ -801,7 +802,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	womalogauto("Number of objects loaded in: WORLD.XML %d\n", world_xml_objs);
 
 	//-----------------------------------------------------------------------------------------------------------------
-	// Create Billboard for Trees / Flowers (extra populate WORLD.XML)       /////////////////////////////////////////
+	// Create Billboard populate Trees / Flowers (extra populate WORLD.XML)       /////////////////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
 #if TUTORIAL_CHAP >= 60 && defined (SCENE_MAIN_TOPO_TERRAIN) && defined (SCENE_BILLBOARDS) // BILLBOARD
 	IF_NOT_RETURN_FALSE(m_billTreeClass = NEW BillClass);
@@ -812,7 +813,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	}
 	womalogauto("Number of billboard objects added %d\n", SystemHandle->xml_loader.theWorldXML.size()- world_xml_objs);
 #endif
-    //theWorldXML.size()=3854
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// PROGRESS BAR		///////////////////////////////////////////////////////////////////////////////////////////////
@@ -844,7 +844,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 		::ShowWindow(SystemHandle->settingstext, 1);
 #endif
 
-	// Temporarly disable log file (on this loop) due performance:
+	// Temporarily disable log file (on this loop) due performance:
 	//-----------------------------------------------------------------------------------------------------------------
 	WOMA::logManager_bk = WOMA::logManager;
 	WOMA::logManager = 0;
@@ -869,11 +869,11 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	for (UINT i = objModel_size; i < objModel_size + theWorld_size; i++)
 	{
 		TCHAR wfilename[MAX_STR_LEN] = { 0 }; atow(wfilename, SystemHandle->xml_loader.theWorldXML[i].filename, MAX_STR_LEN);
-#if defined MAIN_RENDER_MAIN_OBJ
+//#if defined MAIN_RENDER_MAIN_OBJ
 		WOMA_LOAD_OBJ(pContext, 0, Driver, i, wfilename);
 
 		WOMA::num_loading_objects++;
-#endif
+//#endif
 
 		//Allow Refresh on Timer:
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))	// There is any OS messages to handle?
@@ -885,9 +885,9 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 #endif
 
 #if defined ALLOW_CBIND_PROGRESS_BAR
-#if defined USE_INTRO_VIDEO_DEMO
+	#if defined USE_INTRO_VIDEO_DEMO
 	if (DXsystemHandle->g_DShowPlayer == NULL || (DXsystemHandle->g_DShowPlayer->m_state != STATE_RUNNING))
-#endif
+	#endif
 	{
 		::ShowWindow(SystemHandle->hwndPrgBar, SW_HIDE);
 		::ShowWindow(SystemHandle->settingstext, SW_HIDE);

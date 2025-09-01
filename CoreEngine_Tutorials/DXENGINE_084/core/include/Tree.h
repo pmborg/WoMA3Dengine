@@ -25,14 +25,16 @@
 //-----------------------------------------------------------------------------   
 struct Tree   
 {   
-	XMFLOAT3    vPos;				// Origin of tree   
-	float		rotY;
-	float		scale;
-	UINT        type;
-	UINT        ID;
-	//0-10
-	//100: FENCE
-	//200: FIRE
-};   
-
+	UINT        ID=0;
+	bool		bill=false;
+	XMFLOAT3    vPos = {};	// Origin of tree   
+	float		rotY=0;
+	float		scale=0;
+	UINT        type=0;
+	
+	// type: 0-10 normal billboards
+	// 100: FENCE 2D
+	// 200: FIRE
+	// 300: FENCE 3D
+};
 #endif

@@ -125,7 +125,7 @@ public:
 	// OBJ Loader aux vars:
 	// --------------------
 	TCHAR	checkChar=0;			//The variable we will use to store one char from file at a time
-	STRING	face=TEXT("");				//Holds the string containing our face vertices
+	STRING	face=TEXT("");				//Holds the string containing our face vertices's
 	int		vIndex = 0;				//Keep track of our vertex index count
 	
 	STRING	meshMaterialsTemp = TEXT("");	//Temp variables to store into vectors

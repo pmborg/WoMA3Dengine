@@ -513,6 +513,7 @@
         #define MULTIPACK_PCK   TEXT("womamulti.pck")
     #endif
     #if DX_ENGINE_LEVEL >= 82
+		#define USE_DX11_1_SETUP
         #define USE_ASSIMP_LATEST       //82
     #endif
     #if DX_ENGINE_LEVEL >= 83
@@ -563,19 +564,20 @@
 #endif
     
 #if DX_ENGINE_LEVEL >= 92
-	#define USE_DX11_1_SETUP
 	#define USE_FASTER_BILL_SHADER
 #endif
 
 #if DX_ENGINE_LEVEL >= 93
-	//#define EXPORT_ATLAS_DEBUG_PNG // Internal Debug
-	//#define GENERATE_ATLAS_INTEGRATION_DDS
-	#define USE_GENERATE_ATLAS_INTEGRATION_DDS
+	#undef USE_MAP_REDENRING_THREAD
+	#define EXPORT_ATLAS_DEBUG_PNG // Internal Debug
+	#define GENERATE_ATLAS_INTEGRATION_DDS
 #endif
 
 
 
     //-------------------------------------------------------------------------------------------------------
+	#undef  dx12_upload_old_way
+	
 	#if !defined NDEBUG	
 	#if DX_ENGINE_LEVEL != 76 && DX_ENGINE_LEVEL != 86
 	#undef USE_INTRO_VIDEO_DEMO
@@ -585,4 +587,4 @@
 	#endif
 	#endif
 
-	#undef  dx12_upload_old_way
+	

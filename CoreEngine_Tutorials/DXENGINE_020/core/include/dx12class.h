@@ -184,7 +184,6 @@ public:
 
 	void addText(int Xpos, int Ypos, TCHAR* text, float R, float G, float B);
 	void RenderDriverText(void* pContext);
-	//bool InitD2D_D3D101_DWrite(IDXGIAdapter1 *Adapter, WCHAR* fontStyle, int screenWidth, int screenHeight, float R, float G, float B);
 	bool InitD2DScreenTexture();
 
 #if defined ALLOW_PRINT_SCREEN_SAVE_PNG

@@ -511,8 +511,7 @@ private:
 
     // ---------------------------------------------------------
 #if defined USE_DX_DRIVER_FONT
-    bool InitD2D_D3D101_DWrite(IDXGIAdapter1 *Adapter, WCHAR* fontStyle, int screenWidth, int screenHeight, float R, float G, float B);
-    //bool InitD2D_D3D101_DWrite_(IDXGIAdapter1* Adapter, WCHAR* fontStyle, int screenWidth, int screenHeight, float R, float G, float B);
+	bool InitD2D_D3D101_DWrite(IDXGIAdapter1* Adapter, int screenWidth, int screenHeight, WCHAR* fontStyle, float FontSizeIndex, float R, float G, float B);
     bool InitD2DScreenTexture();
 #endif
 

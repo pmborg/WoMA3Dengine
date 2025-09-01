@@ -41,7 +41,6 @@
 extern HWND DoCreateStatusBar(HWND hwndParent, int idStatus, HINSTANCE hinst, int cParts);
 #endif
 
-
 #define check(A)							{}
 
 #if defined RELEASE && defined WOMA_WIN32_APPLICATION
@@ -77,8 +76,6 @@ public:
 
 private:
 	void ShutdownWindows();
-
-
 };
 
 /////////////

@@ -418,9 +418,7 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 	for (int time = 0; time < 1000000; time++)
 	{
 		//------------------------------------------------------
-
 		float t = FAST_sqrt((float)time); // 50% faster
-		//float t = sqrt((float)time);
 
 		//------------------------------------------------------
 	}
@@ -483,7 +481,7 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 	cpuSupportsAVX512f = cpu_supports_avx512f();
 	#ifdef __AVX512F__
 	//NOTE: If there an exception here: it's because this/your CPU don't support the fast AVX512, so change project settings to compile in slow AVX2 or AVX only!
-	ASSERT(cpuSupportsAVX512f); // Check for fast WIN11(AVX512) Instructions set support, if not compile for WIN10(AVX2)
+	ASSERT(cpuSupportsAVX512f); // Check for fast WIN11(AVX512) Instructions-set support, if fail change settings to WIN10(AVX2 or AVX)
 	#endif
 
 	womalogauto(TEXT("Cpu Supports AVX512: %s\n"), cpuSupportsAVX512f ? TEXT("true") : TEXT("false"));

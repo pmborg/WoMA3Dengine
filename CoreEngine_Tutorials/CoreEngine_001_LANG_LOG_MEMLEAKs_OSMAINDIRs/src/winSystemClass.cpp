@@ -105,11 +105,7 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 //----------------------------------------------------------------------------
 {
 
-#if defined DX_ENGINE
-	DX11windowsArray.clear();
-	FSAA_possibleValues.clear();
-#endif
-
+	// ################################# SYSTEM CHECK + CREATE WINDOW #################################
 	IF_NOT_RETURN_FALSE(APPLICATION_BEFORE_WINDOW());
 #if defined USE_SYSTEM_CHECK                                // BEFORE: APPLICATION_INIT_MAIN_WINDOW()
 	IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());		// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 
@@ -124,9 +120,9 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	InitializeSystemScreen(10, 10); // SETUP SCREEN: F1,F2,F3,F4,F5,F6 (RUNNING NOW ON: PaintSetup())
 #endif
 
- // ################################################# INIT DRIVERS ###################################
+ // ######################################### INIT SELECTED DRIVER ###################################
 
-	return true; // GREEN LIGHT: to Start Rendering! :)
+	return true; // GREEN LIGHT: To Start Rendering! :)
 }
 
 #if defined USE_PROCESS_OS_KEYS //CORE_ENGINE_LEVEL >= 3
@@ -148,11 +144,12 @@ void WinSystemClass::GetInputs()
 #endif
 }
 #endif
+
 //----------------------------------------------------------------------------
 int WinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 //----------------------------------------------------------------------------
 {
-	MSG msg = { 0 };						// Reset msg
+	MSG msg = { 0 };							// Reset msg
 
 	//DEBUG:
 	do

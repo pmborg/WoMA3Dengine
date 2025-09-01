@@ -101,6 +101,10 @@ bool dxWinSystemClass::APPLICATION_INIT_SYSTEM() //LOAD ALL GRAPHICS
 #endif
 
 	driverList.clear();
+#if defined DX_ENGINE
+	DX11windowsArray.clear();
+	FSAA_possibleValues.clear();
+#endif
 
 	//ClassRegister/LoadXMLWorld/InitializeSystemScreen/ApplicationInitMainWindow/InitOsInput/StartTimer
 	bool res = WinSystemClass::APPLICATION_INIT_SYSTEM();	

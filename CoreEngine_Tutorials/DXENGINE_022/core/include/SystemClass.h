@@ -215,9 +215,11 @@ public:
 #endif
 
 		int			fps;
+#ifdef _DEBUG
 		UINT		TotalVertexCounter;
+#endif
 		TCHAR		pstrFPS[300];
-	//#if !defined NewWomaEngine
+
 		#if defined USE_TIMER_CLASS
 		#if !defined WIN_XP
 
@@ -235,7 +237,6 @@ public:
 
 		TrigonometryMathClass	m_math;	// Init Math Class
 		#endif
-	//#endif
 
 #if defined USE_TINYXML_LOADER //5
 	XMLloader		xml_loader;

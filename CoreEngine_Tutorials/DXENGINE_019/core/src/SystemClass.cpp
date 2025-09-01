@@ -82,17 +82,12 @@
 #if DX_ENGINE_LEVEL >= 19 && !defined NewWomaEngine
 bool SystemClass::LoadAllGraphicAssets(void* pContext)
 {
-#if defined USE_LOADING_THREADS
-	m_Cpu.SetProcessorAffinity(0);  //Use CPU N.0 to Load
-#endif
-
 	SystemHandle->m_Application->scaleX = SystemHandle->AppSettings->WINDOW_WIDTH / 1920.0f;
 	SystemHandle->m_Application->scaleY = SystemHandle->AppSettings->WINDOW_HEIGHT / 1080.0f;
 	SystemHandle->m_Application->rescale = min(SystemHandle->m_Application->scaleX, SystemHandle->m_Application->scaleY);
-
 	
 	//################################ LOAD ALL INITIAL 3D OBJECTS ##################################
-	// Load all assets that will be rendered@ 1st Frame and START TIMER
+	// Load all assets that will be rendered on 1ST FRAME
 	if (!m_Application->Initialize(pContext, m_Driver))
 	{
 		womalog("m_Application->Initialize() FAILED!");
@@ -495,10 +490,14 @@ void SystemClass::refreshTitle() // Run once per second.
 	StringCchPrintf(pstrFPS, 300, TEXT("FPS:%d %s "), SystemHandle->fps, WOMA::APP_FULLNAME);
 #else
 #if defined USE_ASTRO_CLASS
-	//(astroClass == NULL) ? 0 : astroClass->hour, (astroClass == NULL) ? 0 : astroClass->minute,
+	#if _DEBUG
 	StringCchPrintf(pstrFPS, 300, TEXT("LVL: %d FPS:%d(%4.1f ms) [%s] %s shader:%s state:%d - TOTAL VERTEX: %d"), RENDER_PAGE, SystemHandle->fps, (SystemHandle->fps==0)?1:1000.0f/SystemHandle->fps,
 		m_Driver->driverName, WOMA::APP_FULLNAME,
 		m_Driver->szShaderModel, WOMA::game_state, SystemHandle->TotalVertexCounter);
+	#else
+	StringCchPrintf(pstrFPS, 300, TEXT("LVL: %d FPS:%d(%4.1f ms) [%s] %s"), RENDER_PAGE, SystemHandle->fps, (SystemHandle->fps == 0) ? 1 : 1000.0f / SystemHandle->fps,
+		m_Driver->driverName, WOMA::APP_FULLNAME);
+	#endif
 #else
 	StringCchPrintf(pstrFPS, 300, TEXT("LVL: %d FPS:%d %s [%s] shader:%s state:%d - TOTAL VERTEX: %d"), 
         RENDER_PAGE, SystemHandle->fps, WOMA::APP_FULLNAME, m_Driver->driverName, m_Driver->szShaderModel, WOMA::game_state, SystemHandle->TotalVertexCounter);
@@ -890,8 +889,8 @@ bool SystemClass::InitOsInput()
 
 void SystemClass::ParseCommandLineArgs(int argc, char* argv[])
 {
-#if defined USE_TINYXML_LOADER			        // Must be before: APPLICATION_INIT_MAIN_WINDOW()
-    IF_NOT_THROW_EXCEPTION(LoadXmlSettings()); // XML: Load Application Settings: "settings.xml", pickup "Driver" to Use (override default: WOMA::settings)
+#if defined USE_TINYXML_LOADER			        // This settings.xml can be override by command line options!
+    IF_NOT_THROW_EXCEPTION(LoadXmlSettings()); //  XML: Load Application Settings: "settings.xml", pickup "Driver" to Use (override default: WOMA::settings)
 #endif
 
 #if defined UNICODE

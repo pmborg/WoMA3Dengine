@@ -37,6 +37,9 @@
 
 float FAST_sqrt(float x)
 {
+#if false //DX_ENGINE_LEVEL >= 60
+	return sqrt(x);
+#else
 	const float xhalf = 0.5f*x;
 
 	union // get bits for floating value
@@ -47,6 +50,7 @@ float FAST_sqrt(float x)
 	u.x = x;
 	u.i = SQRT_MAGIC_F - (u.i >> 1);		// gives initial guess y0
 	return x*u.x*(1.5f - xhalf*u.x*u.x);	// Newton step, repeating increases accuracy
+#endif
 }
 
 float tableSin[360*100], tableCos[360*100];
@@ -80,8 +84,7 @@ void TrigonometryMathClass::Initialize()
 //#define DEFAULT_MATH_FUNCTIONS   // (UN-COMMENT) to test with Normal Math Functions
 
 void TrigonometryMathClass::testMathSpeed(TimerClass* m_Timer, double &delta1, double &delta2)
-    // --------------------------------------------------------------------------------------------
-
+// --------------------------------------------------------------------------------------------
 {
 #if !defined ANDROID_PLATFORM
 	INT64 currentTime=0, currentTime1=0, currentTime2=0;

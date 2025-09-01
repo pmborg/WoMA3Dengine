@@ -212,11 +212,7 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 //----------------------------------------------------------------------------
 {
 
-#if defined DX_ENGINE
-	DX11windowsArray.clear();
-	FSAA_possibleValues.clear();
-#endif
-
+	// ################################# SYSTEM CHECK + CREATE WINDOW #################################
 #if defined USE_SYSTEM_CHECK                                // BEFORE: APPLICATION_INIT_MAIN_WINDOW()
 	IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());		// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 
 #endif
@@ -224,7 +220,7 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
     StartTimer();											// START WINDOWS TIMER: ("Window Title" refresh & Real-Time Weather refresh)
 
 #if defined USE_TINYXML_LOADER && DX_ENGINE_LEVEL >= 21
-	IF_NOT_RETURN_FALSE(LoadXmlWorld());
+	IF_NOT_RETURN_FALSE(LoadXmlWorld());					// Load all static/semi-static objects!
 #endif
 #if defined USE_PROCESS_OS_KEYS
 	IF_NOT_RETURN_FALSE(InitOsInput());						// INIT-INPUT Devices, NOTE: AFTER: APPLICATION_INIT_MAIN_WINDOW()
@@ -239,7 +235,7 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	InitializeSystemScreen(10, 10); // SETUP SCREEN: F1,F2,F3,F4,F5,F6 (RUNNING NOW ON: PaintSetup())
 #endif
 
- // ################################################# INIT DRIVERS ###################################
+ // ######################################### INIT SELECTED DRIVER ###################################
 	if (!InitSelectedDriver())	//"driver"->OnInit(...)
 		return false;			//"driver"->Initialize(clearColor)
 
@@ -255,12 +251,13 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 #endif
 
 	ID3D11DeviceContext* pContext = ((DX11Class*)m_Driver)->GetDeviceContext();
-	IF_NOT_RETURN_FALSE(SystemClass::LoadAllGraphicAssets(pContext));			// Load all main Graphics, that will be rendered on starting scene.
+	IF_NOT_RETURN_FALSE(SystemClass::LoadAllGraphicAssets(pContext));			// Call: m_Application->Initialize(...)
 
 	//---------------------------------------------------------------------------------------------------
-	if (WOMA::game_state >= GAME_STOP)	// Something FATAL on loading "mandatory 2D/3D Stuff"?
-		return false;					// (SAMPLE: missing 3D/IMAGE/AUDIO file...)
+	if (WOMA::game_state >= GAME_STOP)	// Something FATAL on loading for "mandatory 2D/3D Stuff"?
+		return false;					// (For example: 3D/IMAGE/AUDIO file missing!?)
 
+	// WAIT FOR THE END OF THE VIDEO:
 #if defined USE_INTRO_VIDEO_DEMO
 	MSG msg = { };
 	while (DXsystemHandle->g_DShowPlayer && (DXsystemHandle->g_DShowPlayer->m_state != STATE_STOPPED && DXsystemHandle->g_DShowPlayer->m_state != STATE_PAUSED))
@@ -296,10 +293,10 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 
 	#if !defined USE_LOADING_THREADS
 	if (WOMA::game_state == GAME_LOADING)
-		WOMA::game_state = GAME_RUN;
+		WOMA::game_state = GAME_RUN;	// Let it run!
 	#endif
 
-	return true; // GREEN LIGHT: to Start Rendering! :)
+	return true; // GREEN LIGHT: To Start Rendering! :)
 }
 
 #if defined USE_PROCESS_OS_KEYS //CORE_ENGINE_LEVEL >= 3
@@ -321,11 +318,12 @@ void WinSystemClass::GetInputs()
 #endif
 }
 #endif
+
 //----------------------------------------------------------------------------
 int WinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 //----------------------------------------------------------------------------
 {
-	MSG msg = { 0 };						// Reset msg
+	MSG msg = { 0 };							// Reset msg
 
 	//MAIN DEBUG BUILD LOOP:
 	do
@@ -976,10 +974,6 @@ bool WinSystemClass::APPLICATION_INIT_MAIN_WINDOW()
 	info.MaxCount = MAX_WIN32_MONITORS;
 	EnumDisplayMonitors(NULL, NULL, &MyInfoEnumProc, reinterpret_cast<LPARAM>(&info));
     #endif
-
-    if (WOMA::game_state == GAME_SETUP && WOMA::settings.FULL_SCREEN)
-        WOMA::game_state = GAME_RUN;
- 
 	/*******************************************************************
 	// [CREATE the Main WINDOW]:
 	*******************************************************************/
