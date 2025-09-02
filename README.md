@@ -827,6 +827,10 @@ Add third party image readers:<br>
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_019.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_019.png)	
 
+<b>Level 19: System Info image (F1)</b><br>
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_019-F1.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_019-F1.png)	
+
+
 <hr>
 <h2>BASIC 3D ENGINE TUTORIAL LIST: END</h2>
 <hr>
