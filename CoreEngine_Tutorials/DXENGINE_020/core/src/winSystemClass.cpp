@@ -228,13 +228,14 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 		IF_NOT_RETURN_FALSE(newDriver());	//Create NEW CONTEXT Class: g_contextDriver
 	#endif
 	LoadAllDrivers();		        //NEW DirectX::DX11Class()	(NEW DX9, NEW DX11, NEW DX12, NEW OpenGL): push_back(NEW DirectX::*Class());
-#if defined USE_SYSTEM_CHECK
-	InitializeSystemScreen(10, 10); // SETUP SCREEN: F1,F2,F3,F4,F5,F6 (RUNNING NOW ON: PaintSetup())
-#endif
 
  // ######################################### INIT SELECTED DRIVER ###################################
 	if (!InitSelectedDriver())	//"driver"->OnInit(...)
 		return false;			//"driver"->Initialize(clearColor)
+
+#if defined USE_SYSTEM_CHECK
+	InitializeSystemScreen(10, 10); // SETUP SCREEN: F1,F2,F3,F4,F5,F6 (RUNNING NOW ON: PaintSetup())
+#endif
 
   #if defined USE_SCENE_MANAGER							// INIT SCENE-MANAGER:
 	DXsystemHandle->ApplicationInitSceneManager();		// INIT QUAD TREE

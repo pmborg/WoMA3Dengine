@@ -22,6 +22,7 @@
 #include "OSengine.h"
 #include "OSmain_dir.h"
 #include "language.h"
+#include "SystemClass.h"
 
 #if defined ANDROID_PLATFORM
 #include <jni.h>
@@ -49,7 +50,7 @@ namespace WOMA
 	bool GetLangStringFromLangId(DWORD dwLangID_i)
 	{
 #if defined WINDOWS_PLATFORM && !defined ANDROID_PLATFORM 
-		const int MAX_LANG_LEN = 50;
+		
 
 		// Prepare LCID
 		const LCID lcidLang = MAKELCID(dwLangID_i, SORT_DEFAULT);
@@ -65,11 +66,8 @@ namespace WOMA
 			return false;
 		}// End if
 
-		// Will hold country
-		TCHAR szCountryBuffer[MAX_LANG_LEN] = { 0 };
-
 		// Get country
-		dwCount = GetLocaleInfo(lcidLang, LOCALE_SENGCOUNTRY, szCountryBuffer, MAX_LANG_LEN);
+		dwCount = GetLocaleInfo(lcidLang, LOCALE_SENGCOUNTRY, SystemHandle->systemDefinitions.szCountryBuffer, MAX_LANG_LEN);
 
 		if (!dwCount)
 		{
@@ -79,7 +77,7 @@ namespace WOMA
 
 		 // Prepare language string
 		TCHAR str_lang[MAX_STR_LEN]; // Will hold country
-		StringCchPrintf(str_lang, sizeof(str_lang), TEXT("Language: %s, %s\n"), szLangBuffer, szCountryBuffer);
+		StringCchPrintf(str_lang, sizeof(str_lang), TEXT("Language: %s, %s\n"), szLangBuffer, SystemHandle->systemDefinitions.szCountryBuffer);
 		womalogauto(str_lang);
 #endif
 

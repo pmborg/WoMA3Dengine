@@ -481,7 +481,11 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 			result = InitializeTextureBuffers(m_driver->m_device, indices);
 		}
 	#endif
-	break;
+		break;
+
+		break;
+
+			break;
 
 	default:
 		throw woma_exception("WRONG SHADER!", __FILE__, __FUNCTION__, __LINE__);

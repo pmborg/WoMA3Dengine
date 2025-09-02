@@ -474,6 +474,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	//-----------------------------------------------------------------------------------------------------------------
 	// [MAIN OBJ LOAD]: 3D-Load Scene: Create "model OBJECTS" from loaded "XML OBJECTS" in file WORLD.XML     /////////
 	//-----------------------------------------------------------------------------------------------------------------
+// MAIN LOAD: Cycle...
 
 #if defined ALLOW_CBIND_PROGRESS_BAR
 	#if defined USE_INTRO_VIDEO_DEMO

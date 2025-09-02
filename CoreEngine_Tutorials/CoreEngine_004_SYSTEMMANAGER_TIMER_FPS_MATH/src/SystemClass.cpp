@@ -206,8 +206,8 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 
 #if defined USE_SYSTEM_CHECK
 	systemManager = NULL;
-	userName = TEXT("");
-	ComputerName = TEXT("");
+	//userName = TEXT("");
+	//ComputerName = TEXT("");
 #endif
 #if defined USE_TIMER_CLASS
 	fps = NULL;
@@ -225,6 +225,8 @@ void SystemClass::InitializeSystemScreen(int x, int y)
 //-----------------------------------------------------------------------------------------
 {
 	WOMA::logManager->DEBUG_MSG("InitializeSystemScreen...\n");
+
+
 	//v1
 	//float LINE = 24;
 	//float LINE_SPACE=45;
@@ -241,19 +243,22 @@ void SystemClass::InitializeSystemScreen(int x, int y)
 		TextToPrint[0].pop_back();
 
 	// ----------------------------------
-	// Language
-	Woma_Label text = { systemDefinitions.szCountryNameBuffer, x, y };
+	TCHAR szScratch[128] = { 0 };
+
+	// System Language:
+	Woma_Label text = { "", x, y };
+	StringCchPrintf(szScratch, sizeof(szScratch), TEXT("System Language: %s"), systemDefinitions.szCountryBuffer);
+	text.label = szScratch;
 	TextToPrint[0].push_back(text);
 
 	// Username
-	TCHAR szScratch[128] = { 0 };
-	StringCchPrintf(szScratch, sizeof(szScratch), TEXT("User Name: %s"), userName.c_str());
+	StringCchPrintf(szScratch, sizeof(szScratch), TEXT("User Name: %s"), systemDefinitions.userName.c_str());
 	text.y += (int)LINE;
 	text.label = szScratch;
 	TextToPrint[0].push_back(text);
 
 	// Computer name
-	StringCchPrintf(szScratch, sizeof(szScratch), TEXT("Computer Name: %s"), ComputerName.c_str());
+	StringCchPrintf(szScratch, sizeof(szScratch), TEXT("Computer Name: %s"), systemDefinitions.ComputerName.c_str());
 	text.y += (int)LINE;
 	text.label = szScratch;
 	TextToPrint[0].push_back(text);
@@ -273,10 +278,12 @@ void SystemClass::InitializeSystemScreen(int x, int y)
 
 	// ----------------------------------
 	// System:
-	text.y += (int)LINE_SPACE; text.label = systemDefinitions.platform;
-	TextToPrint[0].push_back(text);
+	text.y += (int)LINE_SPACE; 
+	//text.label = systemDefinitions.platform;
+	//TextToPrint[0].push_back(text);
 
-	text.y += (int)LINE; text.label = systemDefinitions.characterSet;
+	//text.y += (int)LINE; 
+	text.label = systemDefinitions.characterSet;
 	TextToPrint[0].push_back(text);
 
 	text.y += (int)LINE; text.label = systemDefinitions.binaryArchitecture;
@@ -303,6 +310,15 @@ void SystemClass::InitializeSystemScreen(int x, int y)
 	TextToPrint[0].push_back(text);
 
 	text.y += (int)LINE; text.label = systemDefinitions.processorId;
+	TextToPrint[0].push_back(text);
+
+	text.y += (int)LINE; text.label = systemDefinitions.ProcessorCacheL1D;
+	TextToPrint[0].push_back(text);
+	text.y += (int)LINE; text.label = systemDefinitions.ProcessorCacheL1I;
+	TextToPrint[0].push_back(text);
+	text.y += (int)LINE; text.label = systemDefinitions.ProcessorCacheL2;
+	TextToPrint[0].push_back(text);
+	text.y += (int)LINE; text.label = systemDefinitions.ProcessorCacheL3;
 	TextToPrint[0].push_back(text);
 
 	int HALF;
@@ -393,7 +409,7 @@ void SystemClass::InitializeSystemScreen(int x, int y)
 		text.y += (int)LINE; text.label = systemDefinitions.GPUINFO[i].SharedSystemMemory;
 		TextToPrint[0].push_back(text);
 	}
-
+#endif
 	text.x = HALF;
 	text.y = 10;
 	// ----------------------------------
@@ -413,7 +429,7 @@ void SystemClass::InitializeSystemScreen(int x, int y)
 		TextToPrint[0].push_back(text);
 	}
 
-#endif
+
 	//WOMA::logManager->DEBUG_MSG(" done\n");
 }
 #endif
@@ -547,11 +563,11 @@ bool SystemClass::SystemCheck()
 	womalog("------------------------------------SYSTEM CHECK SETTINGS: --------------------------------\n");
 	womalogauto(TEXT("ENGINE_LEVEL: %d [Function Loader] get_current_dir()\n"), WOMA::ENGINE_LEVEL_USED);
 
-	userName = getUserName(); // Note: Save for later use!
-	womalogauto(TEXT("User Name: %s\n"), userName.c_str());
+	systemDefinitions.userName = getUserName(); // Note: Save for later use!
+	womalogauto(TEXT("User Name: %s\n"), systemDefinitions.userName.c_str());
 
-	ComputerName = getComputerName();
-	womalogauto(TEXT("Computer Name: %s\n"), ComputerName.c_str());
+	systemDefinitions.ComputerName = getComputerName();
+	womalogauto(TEXT("Computer Name: %s\n"), systemDefinitions.ComputerName.c_str());
 
 	IF_NOT_RETURN_FALSE(WOMA::getCurrentDir());
 	//LEVELNORMAL();

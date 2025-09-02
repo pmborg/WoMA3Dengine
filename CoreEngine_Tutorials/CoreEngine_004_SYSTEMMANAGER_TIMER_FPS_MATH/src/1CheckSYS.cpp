@@ -100,6 +100,187 @@ float SystemManager::GetProcessorSpeed4Intel(TCHAR* family_name) {
 #endif
 
 
+#if defined WINDOWS_PLATFORM
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+#include <thread>
+#include <windows.h>
+#include <pdh.h>
+#include <pdhmsg.h>
+#include <algorithm>
+#include <powerbase.h>
+#pragma comment(lib, "pdh.lib")
+#pragma comment(lib, "PowrProf.lib")
+
+typedef BOOL(WINAPI* PFN_GetSystemCpuSetInformation)(
+	PSYSTEM_CPU_SET_INFORMATION, ULONG, PULONG, HANDLE, ULONG);
+
+// Pseudocode plan:
+// 1. Check if the HighestPerformance field exists in SYSTEM_CPU_SET_INFORMATION::CpuSet.
+// 2. If not, use the Available and documented fields (e.g., Flags) to infer performance.
+// 3. On older Windows SDKs, HighestPerformance is not present, but Flags may contain this info.
+// 4. Use #ifdef to check for the field, otherwise use the bit in Flags (bit 15) as per docs.
+
+// Pseudocode plan:
+// 1. Check the Windows SDK version and the SYSTEM_CPU_SET_INFORMATION structure definition.
+// 2. If the CpuSet struct does not have a 'Flags' member, but has 'Flags' under a different name or not at all, use the available fields.
+// 3. If neither 'Flags' nor 'HighestPerformance' is available, skip the check or fallback to a default value.
+// 4. Use preprocessor checks to select the correct field or fallback logic.
+
+DWORD PickBestLogicalCpu()
+{
+    auto pfn = (PFN_GetSystemCpuSetInformation)
+        GetProcAddress(GetModuleHandleW(L"kernel32.dll"), "GetSystemCpuSetInformation");
+    if (!pfn) return 0;
+
+    DWORD needed = 0;
+    pfn(nullptr, 0, &needed, nullptr, 0);
+    std::vector<BYTE> buf(needed);
+    if (!pfn((PSYSTEM_CPU_SET_INFORMATION)buf.data(), needed, &needed, nullptr, 0)) return 0;
+
+    DWORD best = 0, bestScore = 0;
+    BYTE* p = buf.data();
+    while (p < buf.data() + needed) {
+        auto info = (PSYSTEM_CPU_SET_INFORMATION)p;
+        if (info->Type == CpuSetInformation) {
+            auto& cs = info->CpuSet;
+            // Fix: Use correct field for highest performance detection
+#if defined(_WIN32)
+            bool highestPerf = false;
+            #if defined(__cpp_decltype_auto)
+                // If HighestPerformance exists, use it
+                #ifdef SYSTEM_CPU_SET_INFORMATION_HIGHEST_PERFORMANCE_PRESENT
+                    highestPerf = cs.HighestPerformance != 0;
+                #else
+                    // If Flags exists, use bit 15
+                    #ifdef SYSTEM_CPU_SET_INFORMATION_FLAGS_PRESENT
+                        highestPerf = (cs.Flags & 0x8000) != 0;
+                    #else
+                        // Fallback: assume not highest performance
+                        highestPerf = false;
+                    #endif
+                #endif
+            #else
+                // Most SDKs: try Flags, fallback to false if not present
+                #ifdef SYSTEM_CPU_SET_INFORMATION_FLAGS_PRESENT
+                    highestPerf = (cs.Flags & 0x8000) != 0;
+                #else
+                    highestPerf = false;
+                #endif
+            #endif
+#else
+            bool highestPerf = false;
+#endif
+            DWORD score = (highestPerf ? 2 : 0) + (cs.EfficiencyClass == 0 ? 1 : 0);
+            if (cs.LogicalProcessorIndex != ULONG_MAX && score > bestScore) {
+                bestScore = score;
+                best = cs.LogicalProcessorIndex;
+            }
+        }
+        p += info->Size;
+    }
+    return best; // fallback 0 if none
+}
+
+// Returns current MHz for a given instance, e.g. L"0,0" (NUMA node 0, CPU 0).
+bool ReadCoreFreqMHz_PDH(const wchar_t* instance, DWORD& mhzOut)
+{
+	PDH_HQUERY q{}; PDH_HCOUNTER c{};
+	if (PdhOpenQueryW(nullptr, 0, &q) != ERROR_SUCCESS) return false;
+
+	// Try Processor Frequency first (Win10+)
+	wchar_t path[256];
+	swprintf(path, 256, L"\\Processor Information(%s)\\Processor Frequency", instance);
+	PDH_STATUS st = PdhAddCounterW(q, path, 0, &c);
+
+	// Fallback: % Processor Performance (percent of base clock)
+	swprintf(path, 256, L"\\Processor Information(%s)\\%% Processor Performance", instance);
+	if (PdhAddCounterW(q, path, 0, &c) != ERROR_SUCCESS) { PdhCloseQuery(q); return false; }
+
+	if (PdhCollectQueryData(q) != ERROR_SUCCESS) { PdhCloseQuery(q); return false; }
+	Sleep(200); // counters need two samples
+	if (PdhCollectQueryData(q) != ERROR_SUCCESS) { PdhCloseQuery(q); return false; }
+
+	PDH_FMT_COUNTERVALUE val{};
+	if (PdhGetFormattedCounterValue(c, PDH_FMT_DOUBLE, nullptr, &val) != ERROR_SUCCESS) { PdhCloseQuery(q); return false; }
+
+	// Multiply by your known base (e.g., 4500 MHz)
+	double baseMhz = 4500.0;
+	mhzOut = (DWORD)(val.doubleValue * baseMhz / 100.0 + 0.5);
+	PdhCloseQuery(q);
+
+	return true;
+}
+
+
+// Linear CPU index -> (group, mask) and PDH "g,lp" instance
+struct CpuTarget {
+	WORD  group;        // processor group
+	KAFFINITY mask;     // bitmask inside group (<=64 bits)
+	DWORD lpInGroup;    // logical processor index within group
+	std::wstring pdhInstance; // L"<group>,<lp>"
+};
+struct AffinityGuard {
+	HANDLE thread;
+	GROUP_AFFINITY oldGa{};
+	bool restored = true;
+
+	explicit AffinityGuard(const CpuTarget& t, HANDLE hThread = GetCurrentThread()) : thread(hThread) {
+		GROUP_AFFINITY ga{};
+		ga.Group = t.group;
+		ga.Mask = t.mask;
+		restored = !SetThreadGroupAffinity(thread, &ga, &oldGa) ? true : false;
+		// If SetThreadGroupAffinity is unavailable (pre-Win7 fallback), try classic mask (same group only)
+		if (restored) {
+			restored = false; // reuse flag meaning "we must restore using oldGa" -> not possible here
+			SetThreadAffinityMask(thread, (DWORD_PTR)t.mask);
+		}
+	}
+	~AffinityGuard() {
+		if (!restored) {
+			// If we successfully captured oldGa, restore it
+			SetThreadGroupAffinity(thread, &oldGa, nullptr);
+		}
+	}
+};
+
+inline CpuTarget LinearIndexToCpuTarget(DWORD linearIndex)
+{
+	CpuTarget t{};
+	WORD groups = GetActiveProcessorGroupCount();
+	for (WORD g = 0; g < groups; ++g) {
+		DWORD inGroup = GetActiveProcessorCount(g);
+		if (linearIndex < inGroup) {
+			t.group = g;
+			t.lpInGroup = linearIndex;
+			t.mask = (KAFFINITY)1ull << (linearIndex % 64);
+			t.pdhInstance = std::to_wstring(g) + L"," + std::to_wstring(linearIndex);
+			return t;
+		}
+		linearIndex -= inGroup;
+	}
+	// Fallback: group 0, CPU 0
+	t.group = 0; t.lpInGroup = 0; t.mask = 1;
+	t.pdhInstance = L"0,0";
+	return t;
+}
+
+// Burn exactly one logical processor identified by a *linear* index
+void BurnOneCoreUniversal(DWORD linearIndex, DWORD ms)
+{
+	CpuTarget tgt = LinearIndexToCpuTarget(linearIndex);
+	AffinityGuard pin(tgt); // pins current thread; auto-restores on scope exit
+	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
+
+	const DWORD end = GetTickCount() + ms;
+	volatile double x = 1.0;
+	while (GetTickCount() < end) {
+		x = x * 1.0000001 + 0.0000003;
+		_mm_pause();
+	}
+}
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+#endif
+
 
 //------------------------------------------------------------------
 // PUBLIC FUNCTIONS:
@@ -158,13 +339,27 @@ bool SystemManager::checkCPU ()
     CPUSpeedMHz = (float) atof(Token.c_str()); //clockSpeed in GHz
 #endif
 
-#if defined NDEBUG && !defined ANDROID_PLATFORM
+#if !defined ANDROID_PLATFORM
     if (CPUSpeedMHz < 2)
         WomaMessageBox(TEXT("CPU WARNING: Your Processor is slow (< 2GHz), this application will run very slow also!\n"));
 #endif
 
-	StringCchPrintf(SystemHandle->systemDefinitions.clockSpeed, MAX_STR_LEN, TEXT("CPU Base Clock Speed: %02.2f GHz"), (float) CPUSpeedMHz/1000);
-	womalogauto (TEXT("%s\n"), SystemHandle->systemDefinitions.clockSpeed);
+	DWORD mhz = 0;
+	TCHAR	baseclockSpeed[MAX_STR_LEN] = {};
+	StringCchPrintf(baseclockSpeed, MAX_STR_LEN, TEXT("CPU Base Clock Speed: %02.2f GHz"), (float) CPUSpeedMHz/1000);
+
+#if defined WINDOWS_PLATFORM
+	DWORD best = PickBestLogicalCpu();
+	CpuTarget tgt = LinearIndexToCpuTarget(best);
+
+	std::thread t([&] { BurnOneCoreUniversal(best, 3000); });
+	Sleep(50); // let it ramp
+	ReadCoreFreqMHz_PDH(tgt.pdhInstance.c_str(), mhz); // <-- same core you heated
+	t.join();
+#endif
+
+	StringCchPrintf(SystemHandle->systemDefinitions.clockSpeed, MAX_STR_LEN, TEXT("%s (MAX clock: %.2f GHz)\n"), baseclockSpeed, mhz / 1000.0);
+	womalogauto("%s\n", SystemHandle->systemDefinitions.clockSpeed);
 
     return true;
 }
@@ -542,6 +737,8 @@ bool SystemManager::checkBenchMarkSpeed(TimerClass* m_Timer)
 	StringCchPrintf(txt2, MAX_STR_LEN, TEXT("WOMA MATH lib: %.1f ms\n"), delta2);				//Benchmark2 to Run 100M (sqrt/sin/cos)
 	womalog(txt2);
 	SystemHandle->systemDefinitions.benchMarkMathSpeed2 = txt2;
+
+	womalog("checkBenchMarkSpeed ended.\n");
 
 	return true;
 }

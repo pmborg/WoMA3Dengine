@@ -2875,10 +2875,13 @@ float4 MyPixelShader083Light(PSIn input) : SV_TARGET
 // ------------------------------------------------------------------------------------------------
 struct VS_INPUT
 {
-    float3 position : POSITION; // x, y, z
-    float2 uv       : TEXCOORD0; // tu, tv
-    float3 normal   : NORMAL; // nx, ny, nz
-    uint atlasIndex : TEXCOORD1; // atlas tile index
+    float3 position : POSITION; // quad-local vertex position (-0.5..+0.5)
+    float2 uv : TEXCOORD0; // quad-local UV
+    float3 normal : NORMAL; // normal
+    nointerpolation uint atlasIndex : TEXCOORD1; // atlas index
+    float3 origin : TEXCOORD2; // world-space origin (pivot)
+    float scale : TEXCOORD3; // uniform scale
+    float rotY : TEXCOORD4; // rotation around Y in radians
 };
 
 // ------------------------------------------------------------------------------------------------
@@ -2887,9 +2890,9 @@ struct VS_INPUT
 struct VS_OUTPUT
 {
     float4 position : SV_POSITION;
-    float2 uv       : TEXCOORD0;
-    float3 normal   : NORMAL;
-    uint atlasIndex : TEXCOORD1;
+    float2 uv : TEXCOORD0;
+    float3 normal : NORMAL;
+    nointerpolation uint atlasIndex : TEXCOORD1;
 };
 
 // ------------------------------------------------------------------------------------------------
@@ -2957,27 +2960,32 @@ VS_OUTPUT VS_Main(VS_INPUT input)
 {
     VS_OUTPUT output;
 
-    // Final clip-space position
-    output.position = mul(float4(input.position, 1.0f), WVP);
+// 1) Scale local quad
+    float3 p = input.position * input.scale;
 
-    // Vegetation sway animation
-    if (isAnimatedBill)
-    {
-        // Lower vertices (texCoord.y ~ 1) move less; top vertices (y ~ 0) move more
-        output.position.x += sin(vsframeTime) * (1.0f - input.uv.y) / 100.0f;
-    }
+    // 2) Build rotation matrix around Y
+    //float rot = input.rotY + 1.57079632679; // +PI/2
+    float c = cos(input.rotY);
+    float s = sin(input.rotY);
+    float3 r;
+    r.x = p.x * c - p.z * s;
+    r.y = p.y;
+    r.z = p.x * s + p.z * c;
 
-    // Pass-through normal for lighting
-    output.normal = normalize(mul(input.normal, (float3x3) worldMatrix));
+    // 3) Translate
+    float3 worldPos = input.origin + r;
 
-    // Pass-through UV
+    // 4) Apply WVP for clip-space position
+    output.position = mul(float4(worldPos, 1.0f), WVP);
+
+    // 5) Pass UV and normal through
     output.uv = input.uv;
-
-    // Pass atlas index to pixel shader
+    output.normal = normalize(mul(input.normal, (float3x3) worldMatrix));
     output.atlasIndex = input.atlasIndex;
-    
+
     return output;
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Pixel Shader
@@ -2990,6 +2998,7 @@ float4 PS_Main(VS_OUTPUT input) : SV_TARGET
     // Remap the quad-local UVs into atlas space
     //float2 atlasUV = region.offset + input.uv * region.scale;
     float2 atlasUV = lerp(region.offset, region.scale, input.uv);
+    //float2 atlasUV = region.offset + input.uv * region.scale;
     
     // Sample the correct texture tile
     float4 color = billboardAtlasSRV.Sample(SampleType, atlasUV);
@@ -2998,6 +3007,7 @@ float4 PS_Main(VS_OUTPUT input) : SV_TARGET
     float lightIntensity = saturate(0.6f + PSlightFunc1(input.normal));
     color.rgb *= lightIntensity;
 
+    //return float4(0,1,1,1);
     return color;
 }// --------------------------------------------------------------------------------------------
 // Filename: cbuffer.hlsli

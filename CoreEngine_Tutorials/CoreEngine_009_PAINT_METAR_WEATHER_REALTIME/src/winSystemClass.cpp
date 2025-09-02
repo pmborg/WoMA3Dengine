@@ -184,11 +184,12 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	IF_NOT_RETURN_FALSE(InitOsInput());						// INIT-INPUT Devices, NOTE: AFTER: APPLICATION_INIT_MAIN_WINDOW()
 #endif
 // ########################################### LOAD DRIVERS ###########################################
+
+ // ######################################### INIT SELECTED DRIVER ###################################
+
 #if defined USE_SYSTEM_CHECK
 	InitializeSystemScreen(10, 10); // SETUP SCREEN: F1,F2,F3,F4,F5,F6 (RUNNING NOW ON: PaintSetup())
 #endif
-
- // ######################################### INIT SELECTED DRIVER ###################################
 
 	return true; // GREEN LIGHT: To Start Rendering! :)
 }

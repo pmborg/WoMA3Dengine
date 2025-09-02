@@ -736,13 +736,13 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	for (UINT i = objModel_size; i < objModel_size + theWorld_size; i++)
 	{
 		TCHAR wfilename[MAX_STR_LEN] = { 0 }; atow(wfilename, SystemHandle->xml_loader.theWorldXML[i].filename, MAX_STR_LEN);
-//#if defined MAIN_RENDER_MAIN_OBJ
+
 		WOMA_LOAD_OBJ(pContext, 0, Driver, i, wfilename);
 
 	#if defined USE_LOADING_THREADS || DX_ENGINE_LEVEL >= 37
 		WOMA::num_loading_objects++;
 	#endif
-//#endif
+
 
 		//Allow Refresh on Timer:
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))	// There is any OS messages to handle?
@@ -752,6 +752,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 		}
 	}
 #endif
+// MAIN LOAD: Cycle...
 
 #if defined ALLOW_CBIND_PROGRESS_BAR
 	#if defined USE_INTRO_VIDEO_DEMO

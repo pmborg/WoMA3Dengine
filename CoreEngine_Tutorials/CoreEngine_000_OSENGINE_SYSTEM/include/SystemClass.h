@@ -59,34 +59,39 @@ typedef struct GPU_
 	TCHAR SharedSystemMemory[MAX_STR_LEN] = {};
 } GPU;
 
+const int MAX_LANG_LEN = 50;
+
 typedef struct SystemSettings_
 {
-	TCHAR szCountryNameBuffer[MAX_STR_LEN] = {}; // Will hold country
-	TCHAR cCurrentPath[FILENAME_MAX] = {};
+	// System Language:
+	TCHAR szCountryBuffer[MAX_LANG_LEN] = { 0 };	// Will hold country
 
-	// System
-	TCHAR platform[MAX_STR_LEN] = {};
-	TCHAR characterSet[MAX_STR_LEN] = {};
-	TCHAR binaryArchitecture[MAX_STR_LEN] = {};
-	TCHAR binaryCode[MAX_STR_LEN] = {};
+	// User:
+	STRING			userName;
+	STRING			ComputerName;
 
-	// OS
+	// OS:
+	TCHAR osName[MAX_STR_LEN] = {};
 #if defined WINDOWS_PLATFORM	
 	TCHAR windowsVersion[MAX_STR_LEN] = {};
 	TCHAR windowsBuildVersion[MAX_STR_LEN] = {};
 #else
 	struct utsname ver;
 #endif
-	TCHAR osName[MAX_STR_LEN] = {};
 
-	// Processor
-	TCHAR	processorName[MAX_STR_LEN] = {};
-	TCHAR	processorId[MAX_STR_LEN] = {};
-	TCHAR	clockSpeed[MAX_STR_LEN] = {};
+	// System:
+	//TCHAR platform[MAX_STR_LEN] = {};
+	TCHAR characterSet[MAX_STR_LEN] = {};
+	TCHAR binaryArchitecture[MAX_STR_LEN] = {};
+	TCHAR binaryCode[MAX_STR_LEN] = {};
 
+	// Processor:
 	TCHAR	processorPackageCount[MAX_STR_LEN] = {};
 	TCHAR	NumCoreProcessors[MAX_STR_LEN] = {};
 	TCHAR	logicalProcessorCount[MAX_STR_LEN] = {};
+	TCHAR	clockSpeed[MAX_STR_LEN] = {};
+	TCHAR	processorName[MAX_STR_LEN] = {};
+	TCHAR	processorId[MAX_STR_LEN] = {};
 
 	TCHAR	ProcessorCacheL1D[MAX_STR_LEN] = {};
 	TCHAR	ProcessorCacheL1I[MAX_STR_LEN] = {};
@@ -101,14 +106,15 @@ typedef struct SystemSettings_
 	std::vector<STRING>				cpuFeactures;// = {};
 	STRING							systemFeatures;
 
-	// FreeSpace
+	// DISK: FreeSpace
+	TCHAR cCurrentPath[FILENAME_MAX] = {};
 	std::vector<STRING>				drives_List; // = {};
 
 	// BenchMark MathSpeed
 	STRING							benchMarkMathSpeed1;
 	STRING							benchMarkMathSpeed2;
 
-	// OS
+	// OS-cmdLine
 	TCHAR cmdLine[MAX_STR_LEN] = {};
 
 	//GPU
@@ -132,9 +138,6 @@ public:
 	bool			mMaximized;
 	SystemSettings	systemDefinitions;
 	
-	STRING			userName;
-	STRING			ComputerName;
-
 	void FrameUpdate();
     void ParseCommandLineArgs(int argc, char* argv[]);
 

@@ -323,6 +323,10 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 		}
 	break;
 	
+		break;
+
+			break;
+
 	default:
 		throw woma_exception("WRONG SHADER!", __FILE__, __FUNCTION__, __LINE__);
 	}

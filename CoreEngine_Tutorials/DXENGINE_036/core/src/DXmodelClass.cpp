@@ -555,7 +555,7 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 			result = InitializeTextureBuffers(m_driver->m_device, indices);
 		}
 	#endif
-	break;
+		break;
 
 	case SHADER_TEXTURE_LIGHT:						//23: LIGHT 
 	case SHADER_TEXTURE_LIGHT_RENDERSHADOW:			//36: Draw Shadows
@@ -566,20 +566,22 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
 		{
-			result = InitializeTextureLightBuffers(m_driver11->m_device11, indices); break;
+			result = InitializeTextureLightBuffers(m_driver11->m_device11, indices);
 		}
 	#endif
 	#if defined DX12
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 		{
-			result = InitializeTextureLightBuffers(m_driver->m_device, indices); break;
+			result = InitializeTextureLightBuffers(m_driver->m_device, indices)
 		}
 	#endif
+		break;
 
 	#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
 	case SHADER_TEXTURE_LIGHT_SAVESHADOW:			//36: Aux. Shader (render in texture)
 	case SHADER_TEXTURE_LIGHT_SAVESHADOW_INSTANCED: //40: Aux. Shader (render in texture), but using Instances
-		result = InitializeShadowMapBuffers(m_driver11->m_device11, indices); break;
+		result = InitializeShadowMapBuffers(m_driver11->m_device11, indices); 
+		break;
 	#endif
 
 	case SHADER_NORMAL_BUMP:			//35
@@ -587,10 +589,12 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
 			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
 			{
-				result = InitializeTextureNormalBumpBuffers(m_driver11->m_device11, indices); break;
+				result = InitializeTextureNormalBumpBuffers(m_driver11->m_device11, indices);
 			}
 	#endif
 		
+			break;
+
 	default:
 		throw woma_exception("WRONG SHADER!", __FILE__, __FUNCTION__, __LINE__);
 	}

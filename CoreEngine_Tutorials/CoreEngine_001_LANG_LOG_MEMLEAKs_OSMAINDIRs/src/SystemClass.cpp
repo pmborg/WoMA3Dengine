@@ -56,8 +56,8 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 
 #if defined USE_SYSTEM_CHECK
 	systemManager = NULL;
-	userName = TEXT("");
-	ComputerName = TEXT("");
+	//userName = TEXT("");
+	//ComputerName = TEXT("");
 #endif
 #if defined USE_TIMER_CLASS
 	fps = NULL;
@@ -159,11 +159,11 @@ bool SystemClass::SystemCheck()
 	womalog("------------------------------------SYSTEM CHECK SETTINGS: --------------------------------\n");
 	womalogauto(TEXT("ENGINE_LEVEL: %d [Function Loader] get_current_dir()\n"), WOMA::ENGINE_LEVEL_USED);
 
-	userName = getUserName(); // Note: Save for later use!
-	womalogauto(TEXT("User Name: %s\n"), userName.c_str());
+	systemDefinitions.userName = getUserName(); // Note: Save for later use!
+	womalogauto(TEXT("User Name: %s\n"), systemDefinitions.userName.c_str());
 
-	ComputerName = getComputerName();
-	womalogauto(TEXT("Computer Name: %s\n"), ComputerName.c_str());
+	systemDefinitions.ComputerName = getComputerName();
+	womalogauto(TEXT("Computer Name: %s\n"), systemDefinitions.ComputerName.c_str());
 
 	IF_NOT_RETURN_FALSE(WOMA::getCurrentDir());
 	//LEVELNORMAL();

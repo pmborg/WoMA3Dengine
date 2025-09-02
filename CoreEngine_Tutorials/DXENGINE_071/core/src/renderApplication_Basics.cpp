@@ -584,86 +584,7 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 //#############################################################################################################
 void ApplicationClass::AppPosRender(UINT monitorIndex, void* pContext)
 {
-    // === AppTextClass-Fill: ===
-#if defined USE_RASTERTEK_TEXT_FONT
 
-    if (AppTextClass) 
-    {
-#if defined EXTRA_INFO2
-        AppTextClass->SetInfoA(astroClass->hour, astroClass->minute);
-        AppTextClass->SetInfoB(m_Light->m_lightDirection.x, m_Light->m_lightDirection.y, m_Light->m_lightDirection.z);
-#endif
-        AppTextClass->SetFps(SystemHandle->fps);						// Update the FPS "Value" in the text object.
-
-#if !defined TEXT_TEST
-#if defined WINDOWS_PLATFORM && !defined WIN_XP
-        AppTextClass->SetCpu(SystemHandle->m_Cpu.GetCpuPercentage());	// Update the CPU usage "Value" in the text object.
-#endif
-#endif
-
-#if defined USE_DIRECT_INPUT			// we will use DX input method
-#if !defined TEXT_TEST
-        AppTextClass->SetCameraPosition(m_Position[g_NetID]->m_positionX,
-            m_Position[g_NetID]->m_positionY,
-            m_Position[g_NetID]->m_positionZ);
-
-        AppTextClass->SetCameraRotation(m_Position[g_NetID]->m_rotationX,
-            m_Position[g_NetID]->m_rotationY,
-            m_Position[g_NetID]->m_rotationZ);
-#endif
-#else
-#if !defined TEXT_TEST
-#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
-        if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
-        {
-
-            AppTextClass->SetCameraPosition(DXsystemHandle->m_Camera->m_positionX,
-                DXsystemHandle->m_Camera->m_positionY,
-                DXsystemHandle->m_Camera->m_positionZ);
-
-            AppTextClass->SetCameraRotation(DXsystemHandle->m_Camera->m_rotationX,
-                DXsystemHandle->m_Camera->m_rotationY,
-                DXsystemHandle->m_Camera->m_rotationZ);
-
-        }
-#endif
-#if defined DX12
-        if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
-        {
-            AppTextClass->SetCameraPosition(DXsystemHandle->m_Camera->m_positionX,
-                DXsystemHandle->m_Camera->m_positionY,
-                DXsystemHandle->m_Camera->m_positionZ);
-
-            AppTextClass->SetCameraRotation(DXsystemHandle->m_Camera->m_rotationX,
-                DXsystemHandle->m_Camera->m_rotationY,
-                DXsystemHandle->m_Camera->m_rotationZ);
-        }
-#endif
-#if (defined OPENGL3 || defined OPENGL4)
-        if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
-        {
-            AppTextClass->SetCameraPosition(((GLopenGLclass*)m_Driver)->gl_Camera->m_positionX,
-                ((GLopenGLclass*)m_Driver)->gl_Camera->m_positionY,
-                ((GLopenGLclass*)m_Driver)->gl_Camera->m_positionZ);
-
-            AppTextClass->SetCameraRotation(((GLopenGLclass*)m_Driver)->gl_Camera->m_rotationX,
-                ((GLopenGLclass*)m_Driver)->gl_Camera->m_rotationY,
-                ((GLopenGLclass*)m_Driver)->gl_Camera->m_rotationZ);
-        }
-#endif
-#endif
-#endif
-
-#if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined _DEBUG && !defined TEXT_TEST
-        AppTextClass->SetRenderCount(WOMA::sceneManager->quadTree.totalVertexRendered,
-            SystemHandle->m_Application->totalRendered,
-            (UINT)SystemHandle->xml_loader.theWorldXML.size());
-#endif
-#if TUTORIAL_CHAP >= 60 && !defined RELEASE // BILLBOARD
-		AppTextClass->SetBillRenderCount(SystemHandle->m_Application->billboardRrenderCount, total_deltaTime);
-#endif  
-    }
-#endif
 
     //=============================================================================================================
     // LIGHT: Get fade (real Sun Position): Show Debug Info
@@ -699,6 +620,88 @@ void ApplicationClass::AppPosRender(UINT monitorIndex, void* pContext)
 
 #if (defined USE_MAIN_MAP || defined USE_MINI_MAP) && defined MAIN_RENDER_MINIMAP //MAIN-RENDER: MINI-MAP (0.4)
 	RenderMainMapMiniMap(pContext);
+#endif
+
+
+	// === AppTextClass-Fill: ===
+#if defined USE_RASTERTEK_TEXT_FONT
+
+	if (AppTextClass)
+	{
+#if defined EXTRA_INFO2
+		AppTextClass->SetInfoA(astroClass->hour, astroClass->minute);
+		AppTextClass->SetInfoB(m_Light->m_lightDirection.x, m_Light->m_lightDirection.y, m_Light->m_lightDirection.z);
+#endif
+		AppTextClass->SetFps(SystemHandle->fps);						// Update the FPS "Value" in the text object.
+
+#if !defined TEXT_TEST
+#if defined WINDOWS_PLATFORM && !defined WIN_XP
+		AppTextClass->SetCpu(SystemHandle->m_Cpu.GetCpuPercentage());	// Update the CPU usage "Value" in the text object.
+#endif
+#endif
+
+#if defined USE_DIRECT_INPUT			// we will use DX input method
+#if !defined TEXT_TEST
+		AppTextClass->SetCameraPosition(m_Position[g_NetID]->m_positionX,
+			m_Position[g_NetID]->m_positionY,
+			m_Position[g_NetID]->m_positionZ);
+
+		AppTextClass->SetCameraRotation(m_Position[g_NetID]->m_rotationX,
+			m_Position[g_NetID]->m_rotationY,
+			m_Position[g_NetID]->m_rotationZ);
+#endif
+#else
+#if !defined TEXT_TEST
+#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
+		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+		{
+
+			AppTextClass->SetCameraPosition(DXsystemHandle->m_Camera->m_positionX,
+				DXsystemHandle->m_Camera->m_positionY,
+				DXsystemHandle->m_Camera->m_positionZ);
+
+			AppTextClass->SetCameraRotation(DXsystemHandle->m_Camera->m_rotationX,
+				DXsystemHandle->m_Camera->m_rotationY,
+				DXsystemHandle->m_Camera->m_rotationZ);
+
+		}
+#endif
+#if defined DX12
+		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+		{
+			AppTextClass->SetCameraPosition(DXsystemHandle->m_Camera->m_positionX,
+				DXsystemHandle->m_Camera->m_positionY,
+				DXsystemHandle->m_Camera->m_positionZ);
+
+			AppTextClass->SetCameraRotation(DXsystemHandle->m_Camera->m_rotationX,
+				DXsystemHandle->m_Camera->m_rotationY,
+				DXsystemHandle->m_Camera->m_rotationZ);
+		}
+#endif
+#if (defined OPENGL3 || defined OPENGL4)
+		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+		{
+			AppTextClass->SetCameraPosition(((GLopenGLclass*)m_Driver)->gl_Camera->m_positionX,
+				((GLopenGLclass*)m_Driver)->gl_Camera->m_positionY,
+				((GLopenGLclass*)m_Driver)->gl_Camera->m_positionZ);
+
+			AppTextClass->SetCameraRotation(((GLopenGLclass*)m_Driver)->gl_Camera->m_rotationX,
+				((GLopenGLclass*)m_Driver)->gl_Camera->m_rotationY,
+				((GLopenGLclass*)m_Driver)->gl_Camera->m_rotationZ);
+		}
+#endif
+#endif
+#endif
+
+#if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined _DEBUG && !defined TEXT_TEST
+		AppTextClass->SetRenderCount(WOMA::sceneManager->quadTree.totalVertexRendered,
+			SystemHandle->m_Application->totalRendered,
+			(UINT)SystemHandle->xml_loader.theWorldXML.size());
+#endif
+#if TUTORIAL_CHAP >= 60 && !defined RELEASE // BILLBOARD
+		AppTextClass->SetBillRenderCount(SystemHandle->m_Application->billboardRrenderCount, total_deltaTime);
+#endif  
+	}
 #endif
 
 	// RENDER RASTERTEK V1 FONT:

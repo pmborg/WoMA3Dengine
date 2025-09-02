@@ -83,6 +83,40 @@ char* OS_name()
 #endif
 
 
+#if defined WINDOWS_PLATFORM
+//------------------------------------------------------------------
+struct RTL_OSVERSIONINFOW_EX {
+	ULONG dwOSVersionInfoSize;
+	ULONG dwMajorVersion;
+	ULONG dwMinorVersion;
+	ULONG dwBuildNumber;
+	ULONG dwPlatformId;
+	WCHAR szCSDVersion[128];
+};
+
+typedef LONG(WINAPI* RtlGetVersionPtr)(RTL_OSVERSIONINFOW_EX*);
+
+bool GetRealVersion(DWORD& major, DWORD& minor, DWORD& build)
+{
+	HMODULE ntdll = GetModuleHandleW(L"ntdll.dll");
+	if (!ntdll) return false;
+
+	auto fn = reinterpret_cast<RtlGetVersionPtr>(GetProcAddress(ntdll, "RtlGetVersion"));
+	if (!fn) return false;
+
+	RTL_OSVERSIONINFOW_EX vi{};
+	vi.dwOSVersionInfoSize = sizeof(vi);
+	if (fn(&vi) == 0) {
+		major = vi.dwMajorVersion;
+		minor = vi.dwMinorVersion;
+		build = vi.dwBuildNumber;
+		return true;
+	}
+	return false;
+}
+//------------------------------------------------------------------
+#endif
+
 // PUBLIC FUNCTIONS:
 //------------------------------------------------------------------
 #if defined USE_SYSTEM_CHECK
@@ -92,8 +126,11 @@ bool SystemManager::CheckOS()
 	// Check Platform: WINDOWS / LINUX / ANDROID
 	//------------------------------------------------------------------
 #if defined WINDOWS_PLATFORM
-	StringCchPrintf(SystemHandle->systemDefinitions.platform, MAX_STR_LEN, TEXT("Platform: %s - %s"), GetOSversionPlatform(), GetOsVersion());
-	womalogauto(TEXT("%s\n"), SystemHandle->systemDefinitions.platform);
+	//StringCchPrintf(SystemHandle->systemDefinitions.platform, MAX_STR_LEN, TEXT("Platform: %s - %s"), GetOSversionPlatform(), GetOsVersion());
+	//womalogauto(TEXT("%s\n"), SystemHandle->systemDefinitions.platform);
+  #if _DEBUG
+	IF_NOT_RETURN_FALSE(CheckOSVersion());
+  #endif
 #else
 	IF_NOT_RETURN_FALSE(CheckOSVersion());
 #endif
@@ -127,9 +164,9 @@ bool SystemManager::CheckOS()
 	womalogauto((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.binaryArchitecture);
 
 #ifdef WIN10 //NOTE: WIN11 is WIN10 Platform upgraded.
-	#define _BINARY_CODE_ TEXT("Windows 10 Code")
+	#define _BINARY_CODE_ TEXT("Windows 10+ Code")
 #elif defined WIN6x
-	#define _BINARY_CODE_ TEXT("Windows Vista Code")
+	#define _BINARY_CODE_ TEXT("Windows Vista+ Code")
 #elif defined WIN_XP
 	#define _BINARY_CODE_ TEXT("Windows XP Code")
 #elif defined LINUX_PLATFORM
@@ -143,7 +180,7 @@ bool SystemManager::CheckOS()
 
 #if defined WINDOWS_PLATFORM
 
-	StringCchPrintf(SystemHandle->systemDefinitions.windowsVersion, MAX_STR_LEN, TEXT("Windows Version: %d.%d.%d"), MajorVersion, MinorVersion, BuildVersion);
+	StringCchPrintf(SystemHandle->systemDefinitions.windowsVersion, MAX_STR_LEN, TEXT("Build Version: %d"), BuildVersion);
 	womalogauto((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.windowsVersion);
 
 	std::map<CString, CString> mapWindowsVersions
@@ -169,17 +206,23 @@ bool SystemManager::CheckOS()
 		{ L"22631", L"23H2" }, // Windows11 October 31, 2023 
 		{ L"26100", L"24H2" }, // Windows11 October 1, 2024
 	};
-
 	// Get the Windows Build Version:
-	TCHAR v[MAX_STR_LEN] = { 0 };
-#if !defined ANDROID_PLATFORM
-	_itoa(BuildVersion, v, 10);
-#endif
-	STRING verstr = mapWindowsVersions[v];
+	std::wstring v = std::to_wstring(BuildVersion);
+	auto it = mapWindowsVersions.find(v.c_str());
+	if (it != mapWindowsVersions.end())
+	{
+		DWORD maj, min, bld;
+		bool isWin11 = false;
+		if (GetRealVersion(maj, min, bld)) {
+			// Windows 11 heuristic:
+			isWin11 = (maj == 10 && bld >= 22000);
+		}
+		const TCHAR* family = isWin11 ? "11" : "10";
 
-	StringCchPrintf(SystemHandle->systemDefinitions.windowsBuildVersion, MAX_STR_LEN, TEXT("Windows Version: %s"), verstr.c_str());
-	womalogauto((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.windowsBuildVersion);
- 
+		StringCchPrintf(SystemHandle->systemDefinitions.windowsBuildVersion, MAX_STR_LEN,
+			TEXT("Windows %s Version: %s"), family, it->second);
+		womalogauto(TEXT("%s\n"), SystemHandle->systemDefinitions.windowsBuildVersion);
+	}
 #else
 	womalogauto(TEXT("sysname: %s\n"), SystemHandle->systemDefinitions.ver.sysname);
 	womalogauto(TEXT("nodename: %s\n"), SystemHandle->systemDefinitions.ver.nodename);
@@ -439,9 +482,7 @@ bool SystemManager::CheckOSVersion()
 		womalog(TEXT("Windows WINNT version: %d.%d\n"), b1, b2);
 	}
 
-	return true;
 
-	/*
 	//IsWindows10OrGreater is never detected...:
 	if (IsWindows10OrGreater())
 	{
@@ -491,7 +532,7 @@ bool SystemManager::CheckOSVersion()
 	{
 		womalog("XPOrGreater\n"); return true;
 	}
-	*/
+
 	return false;
 }
 #else // LINUX || ANDROID
