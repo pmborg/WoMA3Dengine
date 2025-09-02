@@ -179,18 +179,18 @@ https://github.com/pmborg/WoMA3Dengine/blob/main/HowTo/HowToWSL2/What%20to%20ins
   - <b>Go Down: 	</b>	F (GOD MODE: true)<br>
   
 <h2>Keys / Hints:</h2> <br>
-<b>[F1]</b> System Info<br>
-<b>[F2]</b> Celestial Info<br>
+<b>[F1]</b> Full system info (CPU, GPU, OS, memory, etc.)<br>
+<b>[F2]</b> Celestial info (Sun, Moon, sunrise/sunset, azimuth)<br>
 Latitude/Longitude<br>
 Calculate Sun Rise / Sun Set<br>
 Moon Distance<br>
 Sun Geometric elevation<br>
 Moon Geometric elevation<br>
 Moon Azimuth<br>
-<b>[F3]</b> Map with current location<br>
-<b>[F4]</b> Get real time weather info (when network option is: ON)<br>
-<b>[F5]</b> Game Rendering page (default page)<br>
-<b>[F6]</b> SETUP<br>
+<b>[F3]</b> World map with real location<br>
+<b>[F4]</b> Weather data (METAR, clouds, temperature, humidity) (when network option is: ON)<br>
+<b>[F5]</b> <b>Game Rendering</b>, Default engine run mode (gameplay / scene view)<br>
+<b>[F6]</b> Engine setup / configuration screen<br>
 Try to Change the driver on the fly without the need of close and open the Application.<br>
 - DirectX 12<br>
 - DirectX 11<br>
