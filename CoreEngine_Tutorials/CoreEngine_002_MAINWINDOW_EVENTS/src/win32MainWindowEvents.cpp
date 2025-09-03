@@ -22,10 +22,17 @@
 #pragma warning( disable : 4312 ) // warning C4312: 'type cast': conversion from 'int' to 'HMENU' of greater size
 #include "OSengine.h"
 #include "OSmain_dir.h"
+#include <windowsx.h>
 
 #define TIMER_TITLE 0
 
 // TIMERS:
+
+#include "winsystemclass.h"
+
+#if defined USE_INTRO_VIDEO_DEMO
+extern void CALLBACK OnGraphEvent(HWND hwnd, long evCode, LONG_PTR param1, LONG_PTR param2);
+#endif
 
 #if defined WINDOWS_PLATFORM
 // Start benchmark - TIMER / FPS / CPU Initialize: (Min. Req.: Windows Vista)
@@ -38,7 +45,7 @@ void WinSystemClass::StartTimer()
     // Start Timer for Window Title
 #define KEYB_TIMES_PER_SECOND 1
 
-// Don't Update on: FullScreen or Full-windowed
+	// Don't Update on: FullScreen or Full-windowed
     if ((!AppSettings->FULL_SCREEN) && (windowStyle != 0x96080000))
     {
 #if defined NDEBUG //INTRO_DEMO
@@ -52,12 +59,6 @@ void WinSystemClass::StartTimer()
 }
 #endif
 
-
-#include "winsystemclass.h"
-
-#if defined USE_INTRO_VIDEO_DEMO
-extern void CALLBACK OnGraphEvent(HWND hwnd, long evCode, LONG_PTR param1, LONG_PTR param2);
-#endif
 
 #if CORE_ENGINE_LEVEL >= 2 && defined USE_STATUSBAR
 #include "dxWinSystemClass.h"
@@ -136,7 +137,6 @@ HWND DoCreateStatusBar(HWND hwndParent, int idStatus, HINSTANCE hinst, int cPart
 }
 #endif
 
-
 #if CORE_ENGINE_LEVEL >= 2 && defined WINDOWS_PLATFORM	
 //----------------------------------------------------------------------------
 LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lparam)
@@ -149,6 +149,16 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 
 	switch (umsg)
 	{
+	case WM_ERASEBKGND:
+		return (DX_ENGINE_LEVEL >= 19) ? 1 : 0;
+	case WM_DPICHANGED: {
+		const RECT* prc = (const RECT*)lparam;
+		SetWindowPos(hwnd, nullptr, prc->left, prc->top,
+			prc->right - prc->left, prc->bottom - prc->top,
+			SWP_NOZORDER | SWP_NOACTIVATE);
+		// re-scale fonts/atlases here
+		return 0;
+	}
 
 	case WM_SETFOCUS:
 		if (WOMA::game_state == GAME_PAUSED)
@@ -189,7 +199,7 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 
 	case WM_DESTROY:	// The main application Window will be destroyed
 
-        break; //return 0;
+        break; //let also default run.
 
 #if defined USE_INTRO_VIDEO_DEMO
 	case WM_GRAPH_EVENT:
@@ -251,7 +261,10 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
   #endif
 #endif
 
-#if defined USE_ALLOW_MAINWINDOW_RESIZE
+#if !defined USE_ALLOW_MAINWINDOW_RESIZE
+	case WM_SIZE:
+		return 0;
+#else
 	// -----------------------------------------------------------------------------
 	// RE-SIZE: is sent when the user resizes the window.  
 	// -----------------------------------------------------------------------------
@@ -338,7 +351,7 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 			}
 		}
 
-        break;// return 0;
+        break; //return 0;
 	}
 
 	#if defined USE_ASPECT_RATIO
@@ -378,9 +391,9 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 	// -----------------------------------------------------------------------------
 	case WM_MOVE:
 	{
-		SystemHandle->AppSettings->WINDOW_Xpos = (int)(short)LOWORD(lparam); //NOTE: (int)(short) --> Allow to receive negative numbers
-		SystemHandle->AppSettings->WINDOW_Ypos = (int)(short)HIWORD(lparam);
-		break;
+		SystemHandle->AppSettings->WINDOW_Xpos = GET_X_LPARAM(lparam);
+		SystemHandle->AppSettings->WINDOW_Ypos = GET_Y_LPARAM(lparam);
+		return 0; //break;
 	}
 	// WM_EXITSIZEMOVE is sent when the user "drag" to resize window:
 	case WM_ENTERSIZEMOVE:
@@ -461,8 +474,9 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 	// POWER: Prevent a powersave mode of monitor or the screensaver
 	case WM_SYSCOMMAND:
 	{
-		if ((wParam & 0xFFF0) == SC_SCREENSAVE || (wParam & 0xFFF0) == SC_MONITORPOWER)
-			return 0;
+		if (WOMA::game_state != GAME_RUN &&
+			((wParam & 0xFFF0) == SC_SCREENSAVE || (wParam & 0xFFF0) == SC_MONITORPOWER))
+			break; // let default handler run
 	}
 
 

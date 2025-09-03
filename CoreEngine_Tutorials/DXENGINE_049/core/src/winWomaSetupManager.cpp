@@ -383,7 +383,7 @@ bool WomaSetupManager::Initialize(void* Driver)
 #if CORE_ENGINE_LEVEL >=10
 	for (size_t i = 0; i < FSAA_possibleValues.size(); i++)
 	{
-		StringCchPrintf(str, sizeof(str), "Anisotropic: x%d", FSAA_possibleValues[i]);
+		StringCchPrintf(str, sizeof(str), TEXT("Anisotropic: x%d"), FSAA_possibleValues[i]);
 		SendMessage(hWndComboBox[3], CB_ADDSTRING, ID, reinterpret_cast<LPARAM>(str));
 
 		if (SystemHandle->AppSettings->MSAA_Anisotropic && SystemHandle->AppSettings->MSAA_AnisotropicLevel == FSAA_possibleValues[i])

@@ -170,7 +170,7 @@ typedef struct xmlobj3d_
     float scaleY = 1;
 	float rotX = 0, rotY = 0, rotZ = 0;
 	int shader = 0;
-	char filename[256];
+	TCHAR filename[256];
 	WOMA_OBJECT WOMA_object;
     bool render = true;
     UINT type = 0;

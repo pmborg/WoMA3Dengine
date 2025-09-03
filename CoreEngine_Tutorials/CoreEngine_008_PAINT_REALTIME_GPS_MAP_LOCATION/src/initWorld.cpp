@@ -286,8 +286,10 @@ bool InitWorld::getMyLocation(double* latitude, double* longitude, STRING ip)
 	STRING		wLOCAL_APPDATA = WOMA::APPDATA;
 	STRING		szFileName = wLOCAL_APPDATA + TEXT("my.location");
 
-	std::string database_filename = WOMA::LoadFile(GEO_DATABASE);	//program file <dir>
-	GeoLite2PP::DB db(database_filename);
+	STRING database_filename = WOMA::LoadFile((TCHAR*) GEO_DATABASE);	//program file <dir>
+	char database_filenameA[MAX_STR_LEN]; wtoa(database_filenameA, database_filename.c_str(), MAX_STR_LEN); //w to a
+
+	GeoLite2PP::DB db(database_filenameA); //Need to be ANSI
 	CHAR ip_str[MAX_STR_LEN] = { 0 };
 	#if defined UNICODE
 		wtoa(ip_str, ip.c_str(), MAX_STR_LEN); // wchar ==> char

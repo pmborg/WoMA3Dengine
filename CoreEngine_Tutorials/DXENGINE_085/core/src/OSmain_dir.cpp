@@ -166,7 +166,8 @@ namespace WOMA
 			return (TCHAR*)TEXT("");
 
         #if defined USE_SYSTEM_CHECK & !defined NewWomaEngine
-        strcpy_s(SystemHandle->systemDefinitions.cCurrentPath, FILENAME_MAX, cCurrentPath);
+        //strcpy_s(SystemHandle->systemDefinitions.cCurrentPath, FILENAME_MAX, cCurrentPath);
+		StringCchPrintf(SystemHandle->systemDefinitions.cCurrentPath, FILENAME_MAX, cCurrentPath);
         #endif
 	#else // Linux / Android
 		char* CurrentPath;

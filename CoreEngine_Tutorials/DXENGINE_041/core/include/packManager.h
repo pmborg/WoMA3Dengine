@@ -109,7 +109,7 @@ extern void PackDir(STRING dir, STRING packName);
 #if CORE_ENGINE_LEVEL >= 7 && defined RELEASE || DX_ENGINE_LEVEL >= 86
 extern bool InitPackLibs();
 extern bool StartPackLibs();
-extern bool InitPackLib(char* packfilename);
+extern bool InitPackLib(TCHAR* packfilename);
 #endif
 
 #ifdef RELEASE

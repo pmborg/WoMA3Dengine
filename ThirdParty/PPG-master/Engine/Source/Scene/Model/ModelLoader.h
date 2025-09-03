@@ -700,4 +700,4 @@ Texture* ModelLoader::loadTexture(UINT this_level, UINT modeltype, aiMaterial* m
     return texture;
 }
 
-extern std::string original_files[];
+extern STRING original_files[];

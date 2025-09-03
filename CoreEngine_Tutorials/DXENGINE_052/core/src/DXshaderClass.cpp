@@ -1041,9 +1041,9 @@ namespace DirectX {
 			};
 
 			// NOTE! The run time compiler support only Shader 5.0, for more use: USE_PRECOMPILED_SHADERS option 
-			std::string vertVer = TEXT("vs_"); //cant be: STRING
-			vertVer.append(driverList[SystemHandle->AppSettings->DRIVER]->szShaderModel);  //TEXT("vs_5_0")
-			vertVer[4] = '_';  //TEXT("vs_5_0")
+			//std::string vertVer = "vs_"; //cant be: STRING
+			//vertVer.append(driverList[SystemHandle->AppSettings->DRIVER]->szShaderModel);  //TEXT("vs_5_0")
+			//vertVer[4] = '_';  //TEXT("vs_5_0")
 			result = D3DCompileFromFile(vsFilename.c_str(), defines/*nullptr*/, nullptr, vertexHLSL.c_str(), ("vs_5_0")/*vertVer.c_str()*/, compileFlags, 0, &vertexShader, &errorMessage);
 			if (FAILED(result))
 			{
@@ -1052,7 +1052,7 @@ namespace DirectX {
 				return false;
 			}
 
-			vertVer[0] = 'p';  //TEXT("ps_5_0")
+			//vertVer[0] = 'p';  //TEXT("ps_5_0")
 			result = D3DCompileFromFile(psFilename.c_str(), defines/*nullptr*/, nullptr, pixelHLSL.c_str(), ("ps_5_0")/*vertVer.c_str()*/, compileFlags, 0, &pixelShader, &errorMessage);
 			if (FAILED(result))
 			{
@@ -1335,7 +1335,7 @@ namespace DirectX {
 
 			// Create the texture sampler state:
 			result = device11->CreateSamplerState(&samplerDesc, &m_sampleState11);
-			if (FAILED(result)) { WomaFatalException (TEXT("CreateSamplerState error")); }
+			if (FAILED(result)) { WomaFatalException ("CreateSamplerState error"); } //dont use TEXT!
 
 			// [2]: dont change the order:
 #if TUTORIAL_CHAP >= 62 // FIRE
@@ -1351,7 +1351,7 @@ namespace DirectX {
 
 				// Create the texture sampler state.
 				result = device11->CreateSamplerState(&samplerDescFire, &m_sampleStateFire);
-				if (FAILED(result)) { WomaFatalException(TEXT("error")); return false; }
+				if (FAILED(result)) { WomaFatalException("error"); return false; }
 			}
 #endif
 
@@ -1370,7 +1370,7 @@ namespace DirectX {
 
 			// Create the texture sampler state.
 			result = device11->CreateSamplerState(&samplerDesc, &m_sampleStateClamp11);
-			if (FAILED(result)) { WomaFatalException (TEXT("CreateSamplerState error")); }
+			if (FAILED(result)) { WomaFatalException ("CreateSamplerState error"); }
 
 
 			// --------------------------------------------------------------------------------------------

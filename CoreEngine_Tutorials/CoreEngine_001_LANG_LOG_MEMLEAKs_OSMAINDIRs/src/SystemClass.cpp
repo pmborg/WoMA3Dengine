@@ -157,6 +157,7 @@ bool SystemClass::SystemCheck()
 	LEVELHIGHLIGHT(4);
 	// INIT SYSTEM SETTINGS:
 	womalog("------------------------------------SYSTEM CHECK SETTINGS: --------------------------------\n");
+	LEVELNORMAL();
 	womalogauto(TEXT("ENGINE_LEVEL: %d [Function Loader] get_current_dir()\n"), WOMA::ENGINE_LEVEL_USED);
 
 	systemDefinitions.userName = getUserName(); // Note: Save for later use!

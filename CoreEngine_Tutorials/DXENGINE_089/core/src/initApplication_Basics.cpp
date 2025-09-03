@@ -589,7 +589,7 @@ bool ApplicationClass::WOMA_LOAD_OBJ(void* pContext, UINT threadID, WomaDriverCl
 	objModel.push_back(NULL);
 
 	if (i > 0
-		&& strcmp(SystemHandle->xml_loader.theWorldXML[i].filename, SystemHandle->xml_loader.theWorldXML[i - 1].filename) == 0
+		&& _tcscmp(SystemHandle->xml_loader.theWorldXML[i].filename, SystemHandle->xml_loader.theWorldXML[i - 1].filename) == 0
 		&& (SystemHandle->xml_loader.theWorldXML[i].type == 11			//11 animated grass, Clone it its faster
 			|| SystemHandle->xml_loader.theWorldXML[i].type == 12)		//12 BUSHs, Clone it its faster
 		)
@@ -887,9 +887,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 
 	for (UINT i = objModel_size; i < objModel_size + theWorld_size; i++)
 	{
-		TCHAR wfilename[MAX_STR_LEN] = { 0 }; atow(wfilename, SystemHandle->xml_loader.theWorldXML[i].filename, MAX_STR_LEN);
-
-		WOMA_LOAD_OBJ(pContext, 0, Driver, i, wfilename);
+		WOMA_LOAD_OBJ(pContext, 0, Driver, i, SystemHandle->xml_loader.theWorldXML[i].filename);
 
 		WOMA::num_loading_objects++;
 

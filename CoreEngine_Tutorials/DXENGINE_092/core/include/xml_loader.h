@@ -175,7 +175,7 @@ typedef struct xmlobj3d_
     float scaleY = 1;
 	float rotX = 0, rotY = 0, rotZ = 0;
 	int shader = 0;
-	char filename[256];
+	TCHAR filename[256];
 	WOMA_OBJECT WOMA_object;
 	int instances = 0;			//40
 #if DX_ENGINE_LEVEL >= 41 && defined USE_SHADOW_INSTANCES
@@ -186,7 +186,7 @@ typedef struct xmlobj3d_
     UINT type = 0;
 	ID3D11ShaderResourceView* meshSRV;
     bool Bill = false;
-	char audioFilename[256];
+	TCHAR audioFilename[256];
 	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
 	SoundClass* audio=NULL;
 	#endif

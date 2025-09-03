@@ -300,7 +300,7 @@ void SystemClass::InitializeSystemScreen(int x, int y)
 	TCHAR szScratch[128] = { 0 };
 
 	// System Language:
-	Woma_Label text = { "", x, y };
+	Woma_Label text = { TEXT(""), x, y };
 	StringCchPrintf(szScratch, sizeof(szScratch), TEXT("System Language: %s"), systemDefinitions.szCountryBuffer);
 	text.label = szScratch;
 	TextToPrint[0].push_back(text);
@@ -723,6 +723,7 @@ bool SystemClass::SystemCheck()
 	LEVELHIGHLIGHT(4);
 	// INIT SYSTEM SETTINGS:
 	womalog("------------------------------------SYSTEM CHECK SETTINGS: --------------------------------\n");
+	LEVELNORMAL();
 	womalogauto(TEXT("ENGINE_LEVEL: %d [Function Loader] get_current_dir()\n"), WOMA::ENGINE_LEVEL_USED);
 
 	systemDefinitions.userName = getUserName(); // Note: Save for later use!

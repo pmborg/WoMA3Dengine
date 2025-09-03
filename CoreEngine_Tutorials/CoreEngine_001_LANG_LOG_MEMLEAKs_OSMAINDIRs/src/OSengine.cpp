@@ -322,52 +322,107 @@ void DefineConsoleTitle()
 
 }
 
-#if defined WINDOWS_PLATFORM
-// Entry point of all WoMA ENGINE Applications all "main's" call this one (used by: WINDOWS / LINUX / ANDROID)
+#if defined(WINDOWS_PLATFORM)
 int CHECK_IF_WE_ARE_A_RUNNING_DEMO()
 {
+	// 1) Get current exe full path as TCHAR/STRING
 	TCHAR buffer[MAX_PATH];
 	GetModuleFileName(NULL, buffer, MAX_PATH);
-	STRING currentExePath = buffer;
+	STRING currentExePath = buffer; // STRING should be std::basic_string<TCHAR>
 
 	if (currentExePath.find(TEXT("\\Downloads\\")) != STRING::npos)
 	{
+		// 2) Extract exe name (TCHAR)
 		STRING exeName = currentExePath.substr(currentExePath.find_last_of(TEXT("\\")) + 1);
 
-		std::regex levelRegex("CoreEngine_(\\d+)");
-		std::smatch match;
-		if (std::regex_search(exeName, match, levelRegex) && match.size() > 1) {
-			STRING levelStr = match[1];
+		// 3) Regex: wide vs narrow
+#if UNICODE
+		std::wregex levelRegex(L"CoreEngine_(\\d+)");
+		std::wsmatch match;
+		if (std::regex_search(exeName, match, levelRegex) && match.size() > 1)
+		{
+			STRING levelStr(match[1].first, match[1].second);
 			std::vector<STRING> prefixes = { TEXT("CoreEngine_"), TEXT("DXENGINE_") };
-			STRING basePath = TEXT("C:\\WoMA3Dengine\\CoreEngine_Tutorials");
 
-			for (const auto& prefix : prefixes) {
-				for (const auto& entry : fs::directory_iterator(basePath)) {
-					if (entry.is_directory()) {
-						STRING folderName = entry.path().filename().string();
-						if (folderName.find(prefix + levelStr) != STRING::npos) {
-							STRING fullPath = basePath + TEXT("\\") + folderName;
-							if (!SetCurrentDirectory(fullPath.c_str())) {
-								MessageBox(NULL, TEXT("Failed to change working directory."), TEXT("WoMA Engine Error"), MB_ICONERROR);
-								return EXIT_FAILURE;
-							}
-							break;
+			// 4) Filesystem: use wide paths
+			std::filesystem::path basePath = std::filesystem::path(L"C:\\WoMA3Dengine\\CoreEngine_Tutorials");
+
+			bool changed = false;
+			for (const auto& prefix : prefixes)
+			{
+				for (const auto& entry : std::filesystem::directory_iterator(basePath))
+				{
+					if (!entry.is_directory()) continue;
+
+					// folderName as wide string
+					std::wstring folderName = entry.path().filename().wstring();
+					if (folderName.find(prefix + levelStr) != std::wstring::npos)
+					{
+						// Full path (wide)
+						std::wstring fullPath = entry.path().wstring();
+						if (!SetCurrentDirectoryW(fullPath.c_str()))
+						{
+							MessageBoxW(NULL, L"Failed to change working directory.",
+								L"WoMA Engine Error", MB_ICONERROR);
+							return EXIT_FAILURE;
 						}
+						changed = true;
+						break;
 					}
 				}
+				if (changed) break;
 			}
 		}
+#else
+		std::regex levelRegex("CoreEngine_(\\d+)");
+		std::smatch match;
+		if (std::regex_search(exeName, match, levelRegex) && match.size() > 1)
+		{
+			STRING levelStr = match[1];
+			std::vector<STRING> prefixes = { TEXT("CoreEngine_"), TEXT("DXENGINE_") };
+
+			// Filesystem: narrow path
+			std::filesystem::path basePath = std::filesystem::path("C:\\WoMA3Dengine\\CoreEngine_Tutorials");
+
+			bool changed = false;
+			for (const auto& prefix : prefixes)
+			{
+				for (const auto& entry : std::filesystem::directory_iterator(basePath))
+				{
+					if (!entry.is_directory()) continue;
+
+					// folderName as narrow string
+					std::string folderName = entry.path().filename().string();
+					if (folderName.find((prefix + levelStr).c_str()) != std::string::npos)
+					{
+						// Full path (narrow)
+						std::string fullPath = entry.path().string();
+						if (!SetCurrentDirectoryA(fullPath.c_str()))
+						{
+							MessageBoxA(NULL, "Failed to change working directory.",
+								"WoMA Engine Error", MB_ICONERROR);
+							return EXIT_FAILURE;
+						}
+						changed = true;
+						break;
+					}
+				}
+				if (changed) break;
+			}
+		}
+#endif
 	}
 
 	return EXIT_SUCCESS;
 }
 #endif
 
+
 bool cpuSupportsAVX512f=false;
 
 void APPLICATION_STARTUP(int argc, char* argv[])
 {
-    std::cout << "<" << PROJECT_NAME << "> STARTUP" << std::endl;
+	STDCOUT << TEXT("<") << PROJECT_NAME << TEXT("> STARTUP") << std::endl;
 
 #if defined WOMA_CONSOLE_APPLICATION  || !defined WINDOWS_PLATFORM
     // Save Command Line Arguments to use later on
@@ -467,7 +522,7 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 	womalogauto(TEXT("Cpu Supports AVX512: %s\n"), cpuSupportsAVX512f ? TEXT("true") : TEXT("false"));
 #endif
 
-    womalogauto("<%s> STARTUP ENDED\n", PROJECT_NAME);
+    womalogauto(TEXT("<%s> STARTUP ENDED\n"), PROJECT_NAME);
 }
 void APPLICATION_STOP()
 {
@@ -814,7 +869,7 @@ bool firstFrame = true;
 #endif
 
 #if DEMO_LEVEL < 86
-std::string original_files[] = {
+STRING original_files[] = {
     TEXT("")
 };
 #endif
@@ -833,8 +888,8 @@ bool cpu_supports_avx512f() {
 }
 #endif
 
-bool StartsWithDotDotSlash(const std::string& fileNamePath)
+bool StartsWithDotDotSlash(const STRING& fileNamePath)
 {
-	const std::string prefix = "../";
+	const STRING prefix = TEXT("../");
 	return fileNamePath.rfind(prefix, 0) == 0;
 }

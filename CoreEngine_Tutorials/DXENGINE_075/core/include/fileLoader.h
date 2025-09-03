@@ -30,6 +30,8 @@ namespace WOMA
 	extern STRING	lastfile;
 #if !defined UNICODE && defined WINDOWS_PLATFORM
 	WCHAR* LoadFileW(WCHAR* filename);
+#else
+	#define LoadFileW LoadFile
 #endif
 	extern TCHAR*	LoadFile(TCHAR* filename, bool shader = false);
 }

@@ -20,6 +20,10 @@
       <Configuration>RelWithDebInfo</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="WDebug|x64">
+      <Configuration>WDebug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DFC0E67A-B30E-3996-83B0-9B7031FB82F2}</ProjectGuid>
@@ -31,6 +35,11 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v143</PlatformToolset>
@@ -60,9 +69,13 @@
   <PropertyGroup>
     <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\WoMA3Dengine\ThirdParty\external\assimp-build\lib\Debug\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'">C:\WoMA3Dengine\ThirdParty\external\assimp-build\lib\Debug\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">assimp.dir\Debug\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'">assimp.dir\Debug\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">assimp-vc143-mtd</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'">assimp-vc143-mtd</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'">.lib</TargetExt>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\WoMA3Dengine\ThirdParty\external\assimp-build\lib\Release\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">assimp.dir\Release\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">assimp-vc143-mt</TargetName>
@@ -77,6 +90,49 @@
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.lib</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\WoMA3Dengine\ThirdParty\external\assimp-build\include;C:\WoMA3Dengine\ThirdParty\external\assimp-build;C:\WoMA3Dengine\ThirdParty\external\assimp\include;C:\WoMA3Dengine\ThirdParty\external\assimp\code;C:\WoMA3Dengine\ThirdParty\external\assimp\.;C:\WoMA3Dengine\ThirdParty\external\assimp\contrib\zlib;C:\WoMA3Dengine\ThirdParty\external\assimp-build\contrib\zlib;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..\contrib\pugixml\src;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..\contrib\utf8cpp\source;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..\contrib\rapidjson\include;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..\contrib;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..\contrib\unzip;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..\contrib\openddlparser\include;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..\include;C:\WoMA3Dengine\ThirdParty\external\assimp-build\code\..\include;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /bigobj /source-charset:utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4244</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild>
+      </MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <SupportJustMyCode>
+      </SupportJustMyCode>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;_DEBUG;OPENDDL_STATIC_LIBARY;P2T_STATIC_EXPORTS;ASSIMP_BUILD_NO_M3D_IMPORTER;ASSIMP_BUILD_NO_M3D_EXPORTER;ASSIMP_BUILD_NO_VRML_IMPORTER;WIN32_LEAN_AND_MEAN;UNICODE;_UNICODE;ASSIMP_BUILD_NO_C4D_IMPORTER;ASSIMP_BUILD_NO_USD_IMPORTER;MINIZ_USE_UNALIGNED_LOADS_AND_STORES=0;ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC=1;RAPIDJSON_HAS_STDSTRING=1;RAPIDJSON_NOMEMBERITERATORCLASS;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;OPENDDLPARSER_BUILD;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>C:\WoMA3Dengine\ThirdParty\external\assimp-build\code\Debug\assimp-vc143-mtd.pdb</ProgramDataBaseFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;OPENDDL_STATIC_LIBARY;P2T_STATIC_EXPORTS;ASSIMP_BUILD_NO_M3D_IMPORTER;ASSIMP_BUILD_NO_M3D_EXPORTER;ASSIMP_BUILD_NO_VRML_IMPORTER;WIN32_LEAN_AND_MEAN;UNICODE;_UNICODE;ASSIMP_BUILD_NO_C4D_IMPORTER;ASSIMP_BUILD_NO_USD_IMPORTER;MINIZ_USE_UNALIGNED_LOADS_AND_STORES=0;ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC=1;RAPIDJSON_HAS_STDSTRING=1;RAPIDJSON_NOMEMBERITERATORCLASS;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;OPENDDLPARSER_BUILD;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\WoMA3Dengine\ThirdParty\external\assimp-build\include;C:\WoMA3Dengine\ThirdParty\external\assimp-build;C:\WoMA3Dengine\ThirdParty\external\assimp\include;C:\WoMA3Dengine\ThirdParty\external\assimp\code;C:\WoMA3Dengine\ThirdParty\external\assimp\.;C:\WoMA3Dengine\ThirdParty\external\assimp\contrib\zlib;C:\WoMA3Dengine\ThirdParty\external\assimp-build\contrib\zlib;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..\contrib\pugixml\src;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..\contrib\utf8cpp\source;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..\contrib\rapidjson\include;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..\contrib;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..\contrib\unzip;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..\contrib\openddlparser\include;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..\include;C:\WoMA3Dengine\ThirdParty\external\assimp-build\code\..\include;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\WoMA3Dengine\ThirdParty\external\assimp-build\include;C:\WoMA3Dengine\ThirdParty\external\assimp-build;C:\WoMA3Dengine\ThirdParty\external\assimp\include;C:\WoMA3Dengine\ThirdParty\external\assimp\code;C:\WoMA3Dengine\ThirdParty\external\assimp\.;C:\WoMA3Dengine\ThirdParty\external\assimp\contrib\zlib;C:\WoMA3Dengine\ThirdParty\external\assimp-build\contrib\zlib;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..\contrib\pugixml\src;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..\contrib\utf8cpp\source;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..\contrib\rapidjson\include;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..\contrib;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..\contrib\unzip;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..\contrib\openddlparser\include;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..\include;C:\WoMA3Dengine\ThirdParty\external\assimp-build\code\..\include;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>C:\WoMA3Dengine\ThirdParty\external\assimp-build\include;C:\WoMA3Dengine\ThirdParty\external\assimp-build;C:\WoMA3Dengine\ThirdParty\external\assimp\include;C:\WoMA3Dengine\ThirdParty\external\assimp\code;C:\WoMA3Dengine\ThirdParty\external\assimp\.;C:\WoMA3Dengine\ThirdParty\external\assimp\contrib\zlib;C:\WoMA3Dengine\ThirdParty\external\assimp-build\contrib\zlib;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..\contrib\pugixml\src;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..\contrib\utf8cpp\source;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..\contrib\rapidjson\include;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..\contrib;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..\contrib\unzip;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..\contrib\openddlparser\include;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..\include;C:\WoMA3Dengine\ThirdParty\external\assimp-build\code\..\include;C:\WoMA3Dengine\ThirdParty\external\assimp\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>%(AdditionalOptions) /bigobj /source-charset:utf-8</AdditionalOptions>
@@ -254,6 +310,7 @@
     <CustomBuild Include="C:\WoMA3Dengine\ThirdParty\external\assimp\code\CMakeLists.txt">
       <UseUtf8Encoding>Always</UseUtf8Encoding>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/WoMA3Dengine/ThirdParty/external/assimp/code/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'">Building Custom Rule C:/WoMA3Dengine/ThirdParty/external/assimp/code/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
 "C:\Program Files\CMake\bin\cmake.exe" -SC:/WoMA3Dengine/ThirdParty/external/assimp -BC:/WoMA3Dengine/ThirdParty/external/assimp-build --check-stamp-file C:/WoMA3Dengine/ThirdParty/external/assimp-build/code/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
@@ -263,9 +320,21 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/WoMA3Dengine/ThirdParty/external/assimp -BC:/WoMA3Dengine/ThirdParty/external/assimp-build --check-stamp-file C:/WoMA3Dengine/ThirdParty/external/assimp-build/code/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'">%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\WoMA3Dengine\ThirdParty\external\assimp-build\code\CMakeFiles\generate.stamp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'">C:\WoMA3Dengine\ThirdParty\external\assimp-build\code\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'">false</LinkObjects>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/WoMA3Dengine/ThirdParty/external/assimp/code/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
 "C:\Program Files\CMake\bin\cmake.exe" -SC:/WoMA3Dengine/ThirdParty/external/assimp -BC:/WoMA3Dengine/ThirdParty/external/assimp-build --check-stamp-file C:/WoMA3Dengine/ThirdParty/external/assimp-build/code/CMakeFiles/generate.stamp

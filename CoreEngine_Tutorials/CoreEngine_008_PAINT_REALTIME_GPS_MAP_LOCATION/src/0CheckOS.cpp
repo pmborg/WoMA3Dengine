@@ -173,6 +173,14 @@ bool SystemManager::CheckOS()
 	womalogauto((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.binaryCode);
 
 #if defined WINDOWS_PLATFORM
+	bool isWin11 = false;
+	DWORD maj, min, bld;
+	if (GetRealVersion(maj, min, bld)) {
+		// Windows 11 heuristic:
+		isWin11 = (maj == 10 && bld >= 22000);
+	}
+	BuildVersion = bld;
+	const TCHAR* family = isWin11 ? "11" : "10";
 
 	StringCchPrintf(SystemHandle->systemDefinitions.windowsVersion, MAX_STR_LEN, TEXT("Build Version: %d"), BuildVersion);
 	womalogauto((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.windowsVersion);
@@ -205,14 +213,6 @@ bool SystemManager::CheckOS()
 	auto it = mapWindowsVersions.find(v.c_str());
 	if (it != mapWindowsVersions.end())
 	{
-		DWORD maj, min, bld;
-		bool isWin11 = false;
-		if (GetRealVersion(maj, min, bld)) {
-			// Windows 11 heuristic:
-			isWin11 = (maj == 10 && bld >= 22000);
-		}
-		const TCHAR* family = isWin11 ? "11" : "10";
-
 		StringCchPrintf(SystemHandle->systemDefinitions.windowsBuildVersion, MAX_STR_LEN,
 			TEXT("Windows %s Version: %s"), family, it->second);
 		womalogauto(TEXT("%s\n"), SystemHandle->systemDefinitions.windowsBuildVersion);

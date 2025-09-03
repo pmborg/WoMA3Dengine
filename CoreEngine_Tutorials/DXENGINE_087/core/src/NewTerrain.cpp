@@ -66,7 +66,7 @@
 #undef TERRAIN_SLOP_NORMAL_TEXTURE			  
 #undef TERRAIN_SLOP_SHADER_TEXTURE			  
 
-#define TERRAIN_COLOR_MAP_TEXTURE			  TEXT("engine/data/scene61DEMO/Grass512.bmp")					 //BMP: COLOR MAP R G B
+#define TERRAIN_COLOR_MAP_TEXTURE			  "engine/data/scene61DEMO/Grass512.bmp"					 //BMP: COLOR MAP R G B
 		 //       VAR NAME: C++:
 #define TERRAIN_SLOP_TEXTURE				  TEXT("engine/data/scene61DEMO/Grass.jpg")						 //reg0:  m_Texture
 #define TERRAIN_SLOP_SLOPE_TEXTURE			  TEXT("engine/data/scene60DEMO/017slope.jpg")					 //reg1:  m_SlopeTexture

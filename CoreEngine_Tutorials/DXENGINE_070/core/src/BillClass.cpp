@@ -144,7 +144,7 @@ xmlobj3d* BillClass::fillxml(ID3D11DeviceContext* pContext, int id, UINT type)
 
 			xmlobj.meshSRV = billFileLoaded[type];
 			if (m_Trees[id].type < 11)
-				strcpy_s(xmlobj.filename, 256, BILLBOARD_MODEL);				//engine/data/scene70Bill/060square.obj
+				_tcscpy_s(xmlobj.filename, 256, BILLBOARD_MODEL);				//engine/data/scene70Bill/060square.obj
 		}
 
 	xmlobj.WOMA_object = WOMA_OBJECT();

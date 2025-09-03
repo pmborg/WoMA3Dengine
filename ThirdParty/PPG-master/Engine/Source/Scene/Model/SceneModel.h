@@ -26,6 +26,8 @@
 
 #include <assimp\anim.h>
 
+#include "standard_platform.h"
+
 class Graphics;
 class SceneObject;
 class ModelLoader;

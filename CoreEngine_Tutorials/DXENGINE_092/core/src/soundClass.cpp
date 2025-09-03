@@ -370,6 +370,8 @@ bool SoundClass::PlayWaveFile(float positionX, float positionY, float positionZ,
 bool SoundClass::PlayWaveFile()
 #endif
 {
+	ASSERT_DEBUG(m_secondaryBuffer1);
+
  	// Set position at the beginning of the sound buffer.
 	if(FAILED(m_secondaryBuffer1->SetCurrentPosition(0)))
 		return false;

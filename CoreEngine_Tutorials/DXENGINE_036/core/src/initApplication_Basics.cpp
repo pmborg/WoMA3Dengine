@@ -771,9 +771,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 
 	for (UINT i = objModel_size; i < objModel_size + theWorld_size; i++)
 	{
-		TCHAR wfilename[MAX_STR_LEN] = { 0 }; atow(wfilename, SystemHandle->xml_loader.theWorldXML[i].filename, MAX_STR_LEN);
-
-		WOMA_LOAD_OBJ(pContext, 0, Driver, i, wfilename);
+		WOMA_LOAD_OBJ(pContext, 0, Driver, i, SystemHandle->xml_loader.theWorldXML[i].filename);
 
 	#if defined USE_LOADING_THREADS || DX_ENGINE_LEVEL >= 37
 		WOMA::num_loading_objects++;

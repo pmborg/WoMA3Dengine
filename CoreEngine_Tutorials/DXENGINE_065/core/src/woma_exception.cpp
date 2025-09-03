@@ -44,9 +44,9 @@ woma_exception::woma_exception(const std::string &arg, const char *file, const c
 		sttrace = NEW stack_trace(NULL, 0);
 		if (sttrace)
 		{
-			std::string msg = file; msg.append(TEXT("\n"));
-			msg.append(function); msg.append(TEXT("\n"));
-			msg.append(TEXT("\n\n"));
+			std::string msg = file; msg.append("\n");	// dont use TEXT
+			msg.append(function); msg.append("\n");		// dont use TEXT
+			msg.append("\n\n");							// dont use TEXT
 			msg.append(sttrace->to_string().c_str());
 			MessageBoxA(NULL, msg.c_str(), arg.c_str(), 0);
             womalogauto(TEXT("WOMA EXCEPTION: %s\n"), msg.c_str());

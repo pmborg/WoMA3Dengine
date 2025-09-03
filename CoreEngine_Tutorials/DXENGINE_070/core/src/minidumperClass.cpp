@@ -100,7 +100,7 @@ LONG TopLevelFilter( struct _EXCEPTION_POINTERS *pExceptionInfo )
 
 	_tprintf(TEXT ("TopLevelFilter()\n")); //NOTE: cant use: womalog
 
-	//Show extra runtime "Call Stack" frame Debug info on a Generic un-catched exception!
+	//Show extra runtime "Call Stack" frame Debug info on a Generic uncatched exception!
 	stack_trace *sttrace = NEW stack_trace(NULL, 0);
 	ASSERT (sttrace);
 
@@ -134,14 +134,14 @@ LONG TopLevelFilter( struct _EXCEPTION_POINTERS *pExceptionInfo )
 			SYSTEMTIME str_t;
 			GetSystemTime(&str_t);
 
-			// NOTE: Dont USE: WOMA::APP_NAME (due special characters)!!!
+			// NOTE: Don't USE: WOMA::APP_NAME (due special characters)!!!
 			StringCchPrintf(szDumpPath, _MAX_PATH, TEXT("%s_%s_%d-%d-%d_%d-%d-%d.%s"), WOMA::PUBLIC_DOCUMENTS, WOMA::APP_PROJECT_NAME, str_t.wYear, str_t.wMonth, str_t.wDay, str_t.wHour, str_t.wMinute, str_t.wSecond, TEXT("dmp"));
 
             // Write Exception Error to log file ON TEMP!
             WriteError( WOMA::LoadFile(szDumpPath) );
-
+#if 0
 			// ask the user if they want to save a dump file
-            if (::MessageBox(NULL, TEXT("A Fatal Exception ocurred in WoMA, would you like to send us this error?"), WOMA::APP_NAME, MB_YESNO) == IDYES)
+            if (::MessageBox(NULL, TEXT("A Fatal Exception occurred in WoMA, would you like to send us this error?"), WOMA::APP_NAME, MB_YESNO) == IDYES)
 			{
 				// create the file
 				HANDLE hFile = ::CreateFile( szDumpPath, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
@@ -175,6 +175,7 @@ LONG TopLevelFilter( struct _EXCEPTION_POINTERS *pExceptionInfo )
 					szResult = szScratch;
 				}
 			}
+#endif
             retval = EXCEPTION_EXECUTE_HANDLER; // FIX: Handle the exception even if user don't want to send feedback, by Pedro Borges
 		}
 		else

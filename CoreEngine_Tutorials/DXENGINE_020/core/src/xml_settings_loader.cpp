@@ -460,6 +460,8 @@ bool XMLloader::loadWorld (TCHAR* file_) // Note: Have to be char
                 object3d.rotZ = (float)atof(element->Attribute("rotZ"));
         
 				object3d.shader = atoi(element->Attribute("shader"));
+
+																						 
 				strcpy(object3d.filename, element->Attribute("filename"));
 	#if DX_ENGINE_LEVEL >= 40
 				object3d.instances = atoi(element->Attribute("instances"));
@@ -475,8 +477,10 @@ bool XMLloader::loadWorld (TCHAR* file_) // Note: Have to be char
                     object3d.soundRange = (float)atof(soundRange);
                     if (object3d.soundRange > 0)
                     {
+																								
                         strcpy(object3d.audioFilename, element->Attribute("audio"));
                         object3d.audio = NEW SoundClass;
+																											 
                         if (!object3d.audio->Initialize(SystemHandle->m_hWnd, WOMA::LoadFile(object3d.audioFilename)))
                         {
                             WomaMessageBox(TEXT("Could not initialize Direct 3D Sound"), TEXT("Error: "));

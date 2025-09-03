@@ -609,7 +609,7 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 	#if defined DX12
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 		{
-			result = InitializeTextureLightBuffers(m_driver->m_device, indices)
+			result = InitializeTextureLightBuffers(m_driver->m_device, indices);
 		}
 	#endif
 		break;

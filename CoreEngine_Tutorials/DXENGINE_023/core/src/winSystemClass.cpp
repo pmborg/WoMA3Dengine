@@ -453,17 +453,22 @@ bool WinSystemClass::MyRegisterClass(HINSTANCE hInstance)
 		gotIconFile = false;
 	}
 
+	HICON bigicon = NULL, smallicon = NULL;
 	if (gotIconFile) {
-		wcex.hIcon = (HICON)LoadImage(hInstance, WOMA::APP_ICO, IMAGE_ICON, ::GetSystemMetrics(SM_CXICON), ::GetSystemMetrics(SM_CYICON), LR_LOADFROMFILE);
-		wcex.hIconSm = (HICON)LoadImage(hInstance, WOMA::APP_ICO, IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), LR_LOADFROMFILE);
+		bigicon = (HICON)LoadImage(hInstance, WOMA::APP_ICO, IMAGE_ICON, ::GetSystemMetrics(SM_CXICON), ::GetSystemMetrics(SM_CYICON), LR_LOADFROMFILE);
+		smallicon = (HICON)LoadImage(hInstance, WOMA::APP_ICO, IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), LR_LOADFROMFILE);
+		wcex.hIcon = bigicon;
+		wcex.hIconSm = smallicon;
 	}
 
 	wcex.hCursor = LoadCursor(NULL, IDC_ARROW); //IDC_CROSS
 
-	
-	wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);	//TO USE THIS COLOR: BLACK
+	wcex.hbrBackground = nullptr;
 
 	IF_NOT_RETURN_FALSE (RegisterClassEx(&wcex));
+
+	if (bigicon)   DestroyIcon(bigicon);
+	if (smallicon) DestroyIcon(smallicon);
 
 	return true;
 }
@@ -684,13 +689,15 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
 #endif
 
 			// Define Window Size and Position:
-			
 			AdjustWindowRect(&R, windowStyle, false);	// Compute "window rectangle dimensions" based on "requested client area" dimensions, for this "style"!
 		}
 		else
-        // DO NOT ALLOW RESIZE:
+        
 		{
-			
+#if !defined USE_ALLOW_MAINWINDOW_RESIZE
+			// DO NOT ALLOW RESIZE:
+			windowStyle = (WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX) & ~WS_THICKFRAME & ~WS_BORDER;
+#else
 			// Allow full-Screen on a Windowed:
 			if (((AppSettings->WINDOW_WIDTH == AppSettings->SCREEN_RESOLUTION_WIDTH) && (AppSettings->WINDOW_HEIGHT == AppSettings->SCREEN_RESOLUTION_HEIGHT)) || FULLSCREEN_ON_WINDOWED)
             { 
@@ -701,7 +708,7 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
             else {
                 windowStyle = WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
             }
-
+#endif
 			// Define Window Size and Position:
 			AdjustWindowRect(&R, windowStyle, false);
 		}
@@ -751,8 +758,10 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
     }
 #endif
 
+	#define DEFAULT_TITLE TEXT("Loading...")
+
 	// [*] Create the window and return the handle to it:
-	HWND hWnd = WomaCreateWindowEx( dwExStyle, (TCHAR*)WOMA_ENGINE_CLASS, TEXT("Loading..."), windowStyle,
+	HWND hWnd = WomaCreateWindowEx( dwExStyle, (TCHAR*)WOMA_ENGINE_CLASS, DEFAULT_TITLE, windowStyle,
                             		windowLeft, windowTop,
                             		AppSettings->WINDOW_WIDTH, AppSettings->WINDOW_HEIGHT,
                             		NULL,	    // We have no parent window
@@ -955,14 +964,14 @@ bool WinSystemClass::APPLICATION_INIT_MAIN_WINDOW()
 	if (FindWindow(WOMA_ENGINE_CLASS, NULL))
 	{
 		WomaMessageBox((TCHAR*)TEXT("Another Process is already Running..."), (TCHAR*)TEXT("FATAL ERROR:"));
-		WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP; //Publish_Quit_Message();
+		WOMA::main_loop_state = -1;
 		return false;
 	}
 	else
 #endif
 	{
 		if (!MyRegisterClass(m_hinstance)) {// Try to Register WOMA Engine WINDOW CLASS
-			WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP; //Publish_Quit_Message();
+			WOMA::main_loop_state = -1;		
 			return false;
 		}
 	}
@@ -975,6 +984,7 @@ bool WinSystemClass::APPLICATION_INIT_MAIN_WINDOW()
 	info.MaxCount = MAX_WIN32_MONITORS;
 	EnumDisplayMonitors(NULL, NULL, &MyInfoEnumProc, reinterpret_cast<LPARAM>(&info));
     #endif
+
 	/*******************************************************************
 	// [CREATE the Main WINDOW]:
 	*******************************************************************/

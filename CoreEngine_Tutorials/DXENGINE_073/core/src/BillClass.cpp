@@ -159,17 +159,17 @@ xmlobj3d* BillClass::fillxml(ID3D11DeviceContext* pContext, int id, UINT type)
 
 			xmlobj.meshSRV = billFileLoaded[type];
 			if (m_Trees[id].type < 11)
-				strcpy_s(xmlobj.filename, 256, BILLBOARD_MODEL);				//engine/data/scene70Bill/060square.obj
+				_tcscpy_s(xmlobj.filename, 256, BILLBOARD_MODEL);				//engine/data/scene70Bill/060square.obj
 			else
 				if (m_Trees[id].type == 11)		//Windy
-					strcpy_s(xmlobj.filename, 256, BILLBOARD_GRASS_MODEL);		//11: engine/data/scene73grass/grass.obj
+					_tcscpy_s(xmlobj.filename, 256, BILLBOARD_GRASS_MODEL);		//11: engine/data/scene73grass/grass.obj
 		}
 
 	if (m_Trees[id].type == 100)
-		strcpy_s(xmlobj.filename, 256, BILLBOARD_FENCE_MODEL);		    //100: engine/data/scene70Bill/fence.obj
+		_tcscpy_s(xmlobj.filename, 256, BILLBOARD_FENCE_MODEL);		    //100: engine/data/scene70Bill/fence.obj
 
 	if (m_Trees[id].type == 200) //FIRE
-		strcpy_s(xmlobj.filename, 256, BILLBOARD_FIRE_MODEL);		    //200: engine/data/scene72Fire/072fire.obj
+		_tcscpy_s(xmlobj.filename, 256, BILLBOARD_FIRE_MODEL);		    //200: engine/data/scene72Fire/072fire.obj
 
 	xmlobj.WOMA_object = WOMA_OBJECT();
 

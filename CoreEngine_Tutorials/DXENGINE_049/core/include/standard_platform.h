@@ -88,6 +88,7 @@ using namespace std;
 #define IFSTREAM		std::wifstream
 #define OFSTREAM		std::wofstream
 #define FSTREAM			std::wfstream
+#define STDCOUT			std::wcout
 #else
 #define ISTRINGSTREAM	std::istringstream
 #define OSTRINGSTREAM	std::ostringstream
@@ -96,6 +97,7 @@ using namespace std;
 #define IFSTREAM		std::ifstream		// Input
 #define OFSTREAM		std::ofstream		// Output
 #define FSTREAM			std::fstream
+#define STDCOUT			std::cout
 #endif
 
 // --------------------------------------------------------------------------------------------

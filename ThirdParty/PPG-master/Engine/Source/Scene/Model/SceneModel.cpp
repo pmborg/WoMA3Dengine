@@ -110,9 +110,11 @@ SceneModel* SceneModel::LoadModelToScene(UINT dxlevel, bool enginefile, UINT typ
     // IMPORT TO ASSIMP:
     Assimp::Importer importer;
 
+	CHAR AmeshFileName[MAX_STR_LEN] = { 0 }; wtoa(AmeshFileName, meshFileName.c_str(), MAX_STR_LEN); // wchar ==> char
+
     if (enginefile)
     {
-        const aiScene* pScene = importer.ReadFile(meshFileName, DX_ASSIMP_LOAD_FLAGS);
+        const aiScene* pScene = importer.ReadFile(AmeshFileName, DX_ASSIMP_LOAD_FLAGS);
         if (pScene == NULL)
             throw woma_exception("ModelLoader::Model file not found", __FILE__, __FUNCTION__, __LINE__);
         pAssimpScene = (aiScene*)pScene;
@@ -194,7 +196,8 @@ SceneModel* SceneModel::LoadModelToScene(UINT dxlevel, bool enginefile, UINT typ
 
     // Create ModelLoader:
     // -------------------
-    ModelLoader ml = ModelLoader(pAssimpScene, scene, graphics, meshFileName, parentIndex);
+	std::string strmeshFileName = AmeshFileName;
+    ModelLoader ml = ModelLoader(pAssimpScene, scene, graphics, strmeshFileName, parentIndex);
     // LOAD ASSIMP data to our model:
     // ------------------------------
     SceneModel* model = ml.LoadModel(dxlevel/*DX_ENGINE_LEVEL*/, type);

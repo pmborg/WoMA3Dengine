@@ -972,9 +972,9 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 										obj3d.material.push_back(tempMat);
 
 										#ifdef UNICODE
-										TCHAR matName[50];
+										TCHAR matName[100];
 										fileMtl >> matName;
-										wtoa(material[matCount].matName, matName, MAX_STR_LEN);
+										wtoa(obj3d.material[matCount].matName, matName, MAX_STR_LEN);
 										#else
 										fileMtl >> obj3d.material[matCount].matName;
 										#endif
@@ -1099,7 +1099,7 @@ bool ModelClass::CreateObject(	void* pContext, void* XmodelClass, TCHAR* objectN
 	// Make Sure that: "meshSubsets" size are equal to "meshMaterials" size
 	if (obj3d.meshSubsets != obj3d.meshMaterials.size())
 	{
-		int fire = (int)obj3d.meshMaterials[0].find_first_of("FireMaterial3");
+		int fire = (int)obj3d.meshMaterials[0].find_first_of(TEXT("FireMaterial3"));
 		if (fire != 0)
 			WomaMessageBox((TCHAR*)filename.c_str(), TEXT("LoadOBJ: Warning meshSubsets != meshMaterials.size"));
 		else
@@ -1113,8 +1113,8 @@ bool ModelClass::CreateObject(	void* pContext, void* XmodelClass, TCHAR* objectN
 		for (UINT j = 0; j < obj3d.material.size(); ++j)
 		{
 #ifdef UNICODE
-			CHAR buffer[MAX_STR_LEN] = { 0 }; wtoa(buffer, meshMaterials[i].c_str(), MAX_STR_LEN);
-			if (strcmp(buffer, material[j].matName) == 0)
+			CHAR buffer[MAX_STR_LEN] = { 0 }; wtoa(buffer, obj3d.meshMaterials[i].c_str(), MAX_STR_LEN);
+			if (strcmp(buffer, obj3d.material[j].matName) == 0)
 #else
 			if (obj3d.meshMaterials[i] == obj3d.material[j].matName)
 #endif

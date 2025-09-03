@@ -175,7 +175,7 @@ void ApplicationTextClass::SetRenderCount(int Count, int compoundCount, UINT tot
 //10
 void DirectX::ApplicationTextClass::SetBillRenderCount(int count, UINT deltaTime)
 {
-	char countString[80];
+	TCHAR countString[80];
 	StringCchPrintf(countString, sizeof(countString), TEXT("N.Bill: %d - Anim.Time: %d ms"), count, (UINT)deltaTime);
 
 	// Update the sentence vertex buffer with the new string information.

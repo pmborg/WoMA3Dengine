@@ -182,7 +182,7 @@ namespace DirectX
 		{
 #if defined UNICODE
 			char textureNameArrayA[MAX_STR_LEN] = { 0 };
-			wtoa(textureNameArrayA, textureNameArray[i].c_str(), MAX_STR_LEN);
+			wtoa(textureNameArrayA, obj3d.textureNameArray[i].c_str(), MAX_STR_LEN);
 			strcpy_s(texturename[i].fileName, sizeof(textureName), &textureNameArrayA[i]); //dest,size,source: WCHAR
 #else
 			strcpy_s(texturename[i].fileName, sizeof(textureName), obj3d.textureNameArray[i].c_str());  //dest,size,source: CHAR
@@ -286,8 +286,8 @@ namespace DirectX
 			for (UINT i = 0; i < W3D.materialCount; i++)
 			{
 #if defined UNICODE
-				TCHAR Wbuffer[MAX_STR_LEN] = { 0 };	atow(Wbuffer, material[i].matName, MAX_STR_LEN);
-				meshMaterials.push_back(Wbuffer);
+				TCHAR Wbuffer[MAX_STR_LEN] = { 0 };	atow(Wbuffer, obj3d.material[i].matName, MAX_STR_LEN);
+				obj3d.meshMaterials.push_back(Wbuffer);
 #else
 				obj3d.meshMaterials.push_back(obj3d.material[i].matName);
 #endif
@@ -302,7 +302,7 @@ namespace DirectX
 			{
 #if defined UNICODE
 				TCHAR filename_[MAX_STR_LEN] = { 0 }; atow(filename_, textureNameArray_[i].fileName, MAX_STR_LEN);
-				textureNameArray.push_back(filename_);								//Write on DX Driver as WCHAR
+				obj3d.textureNameArray.push_back(filename_);								//Write on DX Driver as WCHAR
 #else
 				obj3d.textureNameArray.push_back(textureNameArray_[i].fileName);	//Write on DX Driver as CHAR
 #endif
