@@ -109,7 +109,6 @@ bool dxWinSystemClass::APPLICATION_INIT_SYSTEM() //LOAD ALL GRAPHICS
 	//ClassRegister/LoadXMLWorld/InitializeSystemScreen/ApplicationInitMainWindow/InitOsInput/StartTimer
 	bool res = WinSystemClass::APPLICATION_INIT_SYSTEM();	
 
-
 	return res;
 }
 
@@ -238,15 +237,19 @@ void dxWinSystemClass::GPH_RESIZE(void* pContext)
 	#if defined DX11 || defined DX9
 		case DRIVER_DX9:
 		case DRIVER_DX11:
-			((DirectX::DX11Class*)m_Driver)->Resize(SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT,
+			for (size_t m = 0; m < SystemHandle->allWindowsArray.size(); m++)
+			((DirectX::DX11Class*)m_Driver)->Resize(m, SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT,
 				SystemHandle->AppSettings->SCREEN_NEAR, SystemHandle->AppSettings->SCREEN_DEPTH,
 				SystemHandle->AppSettings->FULL_SCREEN, SystemHandle->AppSettings->BITSPERPEL);
+			break;
 	#endif
 	#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 		case DRIVER_DX12:
-			((DirectX::DX12Class*)m_Driver)->Resize(SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT,
+			for (size_t m = 0; m < SystemHandle->allWindowsArray.size(); m++)
+			((DirectX::DX12Class*)m_Driver)->Resize(m,SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT,
 				SystemHandle->AppSettings->SCREEN_NEAR, SystemHandle->AppSettings->SCREEN_DEPTH,
 				SystemHandle->AppSettings->FULL_SCREEN, SystemHandle->AppSettings->BITSPERPEL);
+			break;
 	#endif
 	}
 

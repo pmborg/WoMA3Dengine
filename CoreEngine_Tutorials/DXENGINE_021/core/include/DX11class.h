@@ -360,8 +360,9 @@ public:
 
     DXGI_FORMAT SelectDepthFormat(UINT depthBits, BOOL fullscreen);
 
-    bool Resize (int screenWidth, int screenHeight,float screenNear, float screenDepth, BOOL fullscreen, UINT depthBits);
-    void DeleteViewBuffers();
+	bool create_or_resize_swap(UINT USE_MONITOR, int screenWidth, int screenHeight);
+    bool Resize (UINT USE_MONITOR, int screenWidth, int screenHeight,float screenNear, float screenDepth, BOOL fullscreen, UINT depthBits);
+    void DeleteViewBuffers(UINT monitorWindow);
     void SetCamera2D();
 
     //void ResetViewport();
@@ -417,10 +418,6 @@ public:
 	ComPtr<ID3D11Device1> m_device1 = nullptr;
 #endif
 	ID3D11Device* m_device11 = nullptr;
-
-#ifdef USE_DX11_3
-    ID3D11Device3* pDevice3 = nullptr;
-#endif
 
     // TODO: Go inside DXwindowDataContainer
     bool ScissorEnable=false;
@@ -489,9 +486,6 @@ private:
     void setDeviceCapabilities(D3D_FEATURE_LEVEL featureLevel);
 #endif
 
-#if defined USE_DX11_1
-    bool createSwapChainDX11device2(HWND hwnd, int screenWidth, int screenHeight, BOOL vsync, BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize, UINT numerator, UINT denominator);
-#endif
 	VOID UpdateHDRColorSpace(UINT USE_MONITOR);
     void getProfile ( UINT g_USE_MONITOR );
 
@@ -502,10 +496,10 @@ private:
 	void setViewportDevice(ID3D11DeviceContext* pContext, UINT monitorWindow, int screenWidth, int screenHeight);
 	void setScissorRectangle(ID3D11DeviceContext* pContext, UINT left, UINT right, UINT top, UINT bottom, bool enabled);
 
-    bool CreateRenderTargetView (int screenWidth, int screenHeight);
-    bool createDepthStencil(int screenWidth, int screenHeight, BOOL fullscreen, UINT depthBits);
+    bool CreateRenderTargetView (UINT USE_MONITOR, int screenWidth, int screenHeight);
+    bool createDepthStencil(UINT USE_MONITOR, int screenWidth, int screenHeight, BOOL fullscreen, UINT depthBits);
     bool createSetDepthStencilState (bool depthEnable);
-    bool createSetDepthStencilView (int screenWidth, int screenHeight);
+    bool createSetDepthStencilView (UINT USE_MONITOR, int screenWidth, int screenHeight);
 
     // ---------------------------------------------------------
 #if defined USE_DX_DRIVER_FONT

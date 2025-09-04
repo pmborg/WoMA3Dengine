@@ -170,7 +170,7 @@ DXGI_FORMAT DirectX::DX11Class::SelectDepthFormat(UINT depthBits, BOOL fullscree
 }
 
 #if !defined USE_DX11_1_SETUP
-bool DX11Class::createDepthStencil(int screenWidth, int screenHeight, BOOL fullscreen, UINT depthBits)
+bool DX11Class::createDepthStencil(UINT USE_MONITOR, int screenWidth, int screenHeight, BOOL fullscreen, UINT depthBits)
 {
 	// We'll use this to create a depth buffer so that our polygons can be rendered properly in 3D space. 
 	// At the same time we will attach a stencil buffer to our depth buffer. 
@@ -198,7 +198,7 @@ bool DX11Class::createDepthStencil(int screenWidth, int screenHeight, BOOL fulls
 	// Then this 2D buffer is drawn to the screen:
 	// ===========================================
 	// Create the texture for the depth buffer using the filled out description.
-	IF_FAILED_RETURN_FALSE (m_device11->CreateTexture2D(&depthBufferDesc, NULL, &DX11windowsArray[0].m_depthStencilBuffer));
+	IF_FAILED_RETURN_FALSE (m_device11->CreateTexture2D(&depthBufferDesc, NULL, &DX11windowsArray[USE_MONITOR].m_depthStencilBuffer));
 
 #if TUTORIAL_PRE_CHAP >= 7
 	IF_FAILED_RETURN_FALSE (m_device11->CreateTexture2D(&depthBufferDesc, NULL, &m_depthStencilWaterBuffer));
@@ -210,7 +210,7 @@ bool DX11Class::createDepthStencil(int screenWidth, int screenHeight, BOOL fulls
 
 // Creates per-window depth+DSV that MATCH the swap chain's back buffer (sample count & size).
 // Call this after (re)creating the swap chain and after CreateRenderTargetView().
-bool DX11Class::createDepthStencil(int screenWidth, int screenHeight, BOOL fullscreen, UINT depthBits)
+bool DX11Class::createDepthStencil(UINT i, int screenWidth, int screenHeight, BOOL fullscreen, UINT depthBits)
 {
 	// Choose formats
 	// Use typeless so you can create DSV and SRV from the same texture if you ever need it.
@@ -226,7 +226,7 @@ bool DX11Class::createDepthStencil(int screenWidth, int screenHeight, BOOL fulls
 	}
 
 	// For each window/swap chain
-	for (size_t i = 0; i < DX11windowsArray.size(); ++i)
+	//for (size_t i = 0; i < DX11windowsArray.size(); ++i)
 	{
 		auto& win = DX11windowsArray[i];
 
@@ -235,7 +235,7 @@ bool DX11Class::createDepthStencil(int screenWidth, int screenHeight, BOOL fulls
 		SAFE_RELEASE(win.m_depthStencilBuffer);
 
 		if (!win.m_swapChain1)
-			continue;
+			return false;
 
 		// Read back buffer desc to MATCH size and SampleDesc
 		ComPtr<ID3D11Texture2D> bb;
@@ -279,7 +279,7 @@ bool DX11Class::createDepthStencil(int screenWidth, int screenHeight, BOOL fulls
 //Init Step: 7
 #if !defined USE_DX11_1_SETUP
 // ----------------------------------------------------------------------------------------------
-bool DX11Class::createSetDepthStencilView (int screenWidth, int screenHeight)
+bool DX11Class::createSetDepthStencilView (UINT i, int screenWidth, int screenHeight)
 // ----------------------------------------------------------------------------------------------
 {
 	HRESULT result;
@@ -301,7 +301,6 @@ bool DX11Class::createSetDepthStencilView (int screenWidth, int screenHeight)
 	//depthStencilViewDesc.Flags = 0;
  
 	// For each Monitor: 
-	for (int i = 0; i < DX11windowsArray.size(); i++)
 	{
 		result = m_device11->CreateDepthStencilView(DX11windowsArray[i].m_depthStencilBuffer, &depthStencilViewDesc, &DX11windowsArray[i].m_depthStencilView); //depthBufferDSV
 		IF_FAILED_RETURN_FALSE(result);
@@ -310,9 +309,8 @@ bool DX11Class::createSetDepthStencilView (int screenWidth, int screenHeight)
 	return true;
 }
 #else
-bool DX11Class::createSetDepthStencilView(int screenWidth, int screenHeight)
+bool DX11Class::createSetDepthStencilView(UINT i, int screenWidth, int screenHeight)
 {
-	for (size_t i = 0; i < DX11windowsArray.size(); ++i)
 	{
 		if (DX11windowsArray[i].m_depthStencilView)
 		{

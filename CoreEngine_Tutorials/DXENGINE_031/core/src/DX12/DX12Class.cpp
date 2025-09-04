@@ -764,7 +764,7 @@ namespace DirectX {
 
 
 	//----------------------------------------------------------------------------------------------
-	bool DX12Class::Resize(int screenWidth, int screenHeight, float screenNear, float screenDepth, BOOL fullscreen, UINT depthBits)
+	bool DX12Class::Resize(UINT USE_MONITOR, int screenWidth, int screenHeight, float screenNear, float screenDepth, BOOL fullscreen, UINT depthBits)
 		//----------------------------------------------------------------------------------------------
 	{
 		HRESULT result = S_OK;

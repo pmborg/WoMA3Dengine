@@ -145,7 +145,7 @@ public:
         float screenDepth, float screenNear, BOOL msaa, bool vsync,
         BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize);
 
-	bool Resize (int screenWidth, int screenHeight,float screenNear, float screenDepth, BOOL fullscreen, UINT depthBits);
+	bool Resize (UINT USE_MONITOR, int screenWidth, int screenHeight,float screenNear, float screenDepth, BOOL fullscreen, UINT depthBits);
 	void SetCamera2D();
 	void BeginScene(UINT monitorWindow);
 	void EndScene(UINT monitorWindow);
