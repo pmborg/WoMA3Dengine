@@ -132,6 +132,8 @@ struct compoundTreeLoadOrder {
 extern int __cdecl CompoundSortCB(const VOID* arg1, const VOID* arg2);
 #endif
 
+inline bool ShouldDrawUI(int monIdx) { return monIdx == 0; /*kPrimaryMon;*/ }
+
 #pragma warning( push )
 #pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
 
@@ -215,17 +217,15 @@ public:
 #if defined CHECK_OBJ_COLISION
     XMVECTOR prwsPos = {}, prwsDir = {};
 #endif
+
 #if DX_ENGINE_LEVEL >= 23 || defined USE_VIEW2D_SPRITES
 	void AppPosRender(UINT monitorWindow, void* mainCtx);																// POS-RENDER - 2D: Render 
 #endif
 
-#if defined USE_LIGHT_RAY
-	void CalculateLightRayVertex (float SunDistance);
-#endif
 
-#if defined USE_LIGHT_RAY
-	void initLightRay(void* pContext);
-#endif
+	// VARS:
+	// ----------------------------------------------------------------
+
 
     UINT world_main_size = 0;
     UINT totalRendered = 0;

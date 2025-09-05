@@ -348,6 +348,9 @@ bool ApplicationClass::ProcessUserKeyboardInput(double frameTime)
     //[5] After the movement for this frame has been calculated we then get the position and rotation 
     //from the PositionObject and update the CameraClass and TextClass object with the new viewing position.
     // Get the view point position/rotation.
+
+
+
     // --------------------------------------------------------------------------------------------
 	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) {
 	#if defined DX_ENGINE

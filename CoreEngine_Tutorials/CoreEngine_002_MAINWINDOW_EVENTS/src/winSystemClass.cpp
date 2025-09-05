@@ -121,7 +121,6 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());		// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 
 #endif
 	IF_NOT_RETURN_FALSE(APPLICATION_INIT_MAIN_WINDOW());	// RegisterClass and Create: MainWindow(s)
-    StartTimer();											// START WINDOWS TIMER: ("Window Title" refresh & Real-Time Weather refresh)
     IF_NOT_RETURN_FALSE(APPLICATION_AFTER_WINDOW());
 
 #if defined USE_PROCESS_OS_KEYS

@@ -142,6 +142,8 @@ struct compoundTreeLoadOrder {
 extern int __cdecl CompoundSortCB(const VOID* arg1, const VOID* arg2);
 #endif
 
+inline bool ShouldDrawUI(int monIdx) { return monIdx == 0; /*kPrimaryMon;*/ }
+
 #pragma warning( push )
 #pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
 
@@ -225,32 +227,32 @@ public:
 #if defined CHECK_OBJ_COLISION
     XMVECTOR prwsPos = {}, prwsDir = {};
 #endif
-	void AppPosRender(UINT monitorWindow, void* mainCtx);																// POS-RENDER - 2D: Render 
 
-    int get_model_id(UINT ID, UINT pass);
-	void RenderModel(void* pContext, UINT threadID, UINT monitorWindow, WomaDriverClass* driver, UINT modelID, UINT pass, XMMATRIX* m_viewMatrix=NULL, XMMATRIX* m_projectionMatrix = NULL);
-	
 	virtual bool WOMA_APPLICATION_Initialize3D(void * pContext, WomaDriverClass* Driver); // APP_Load
+	void AppPosRender(UINT monitorWindow, void* mainCtx);																// POS-RENDER - 2D: Render 
+	std::vector<ModelColorVertexType> MyLightVertexVector;
+	std::vector<ModelColorVertexType>* m_LightVertexVector;
+	LightClass* m_Light = NULL;
+
+	#if defined USE_LIGHT_RAY
+	void CalculateLightRayVertex(float SunDistance);
+	void initLightRay(void* pContext);
+	#endif
+	void RenderHUD_Logo(void* pContext);
+	void RenderModel(void* pContext, UINT threadID, UINT monitorWindow, WomaDriverClass* driver, UINT modelID, UINT pass, XMMATRIX* m_viewMatrix = NULL, XMMATRIX* m_projectionMatrix = NULL);
 #if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined USE_FRUSTRUM
 	bool WOMA_LOAD_OBJ(void* pContext, UINT threadID, WomaDriverClass* Driver, UINT i, TCHAR* wfilename);
 #endif																			  
 
-#if defined USE_LIGHT_RAY
-	void CalculateLightRayVertex (float SunDistance);
-#endif
 
-	std::vector<ModelColorVertexType> MyLightVertexVector;
-	std::vector<ModelColorVertexType>* m_LightVertexVector;
-	LightClass* m_Light = NULL;
+	// VARS:
+	// ----------------------------------------------------------------
 
     UINT world_xml_objs = 0;
 	UINT initial_world_xml_objs = 0;
 	UINT theWorld_size=0;
 	UINT objModel_size=0;
 
-#if defined USE_LIGHT_RAY
-	void initLightRay(void* pContext);
-#endif
 
     UINT world_main_size = 0;
     UINT totalRendered = 0;

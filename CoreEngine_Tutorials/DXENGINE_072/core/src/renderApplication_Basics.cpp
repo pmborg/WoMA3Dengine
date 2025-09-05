@@ -55,6 +55,8 @@ extern RApplicationClass* r_Application;
 
 int __cdecl BillSortCB(const VOID* arg1, const VOID* arg2);
 
+
+
 float sort_cameraX=0, sort_cameraY=0, sort_cameraZ = 0;
 bool BillSortCB_CPP(const Tree& a, const Tree& b)
 {
@@ -68,10 +70,6 @@ bool BillSortCB_CPP(const Tree& a, const Tree& b)
 
     return d1 > d2; // Farther first (back-to-front)
 }
-
-
-
-
 
 void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext, WomaDriverClass* driver)
 {
@@ -604,6 +602,21 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 
 }
 
+void ApplicationClass::RenderHUD_Logo(void* pContext)
+{
+	m_Driver->ClearDepthBuffer(pContext);
+	// -------------------------
+#if (defined USE_TITLE_BANNER && defined MAIN_RENDER) && defined MAIN_RENDER_TITLE // MAIN-RENDER: TITLE (0.3 ms)
+	if ((RENDER_PAGE >= 24 && m_titleModel) && (WOMA::game_state != GAME_MAP)) //Dont render title, on main map!
+	{
+		float rescale = 1;
+		int X = ((SystemHandle->AppSettings->WINDOW_WIDTH - m_titleModel->SpriteTextureWidth) / 2);
+		int Y = 10;
+		m_titleModel->RenderSprite(pContext, X, Y, rescale, 1.0f);
+	}
+#endif
+}
+
 //#############################################################################################################
 // [3/3] POS-RENDER - 2D: Render TRANSPARENT Parts of 3D OBJs (like: "Glass windows", "Billboards", etc...)
 //#############################################################################################################
@@ -631,27 +644,18 @@ void ApplicationClass::AppPosRender(UINT monitorIndex, void* pContext)
 		}
 #endif
 
-	m_Driver->ClearDepthBuffer(pContext);
-	// -------------------------
-#if (defined USE_TITLE_BANNER && defined MAIN_RENDER) && defined MAIN_RENDER_TITLE // MAIN-RENDER: TITLE (0.3 ms)
-	if ((RENDER_PAGE >= 24 && m_titleModel) && (WOMA::game_state != GAME_MAP)) //Dont render title, on main map!
-	{
-		float rescale = 1;
-		int X = ((SystemHandle->AppSettings->WINDOW_WIDTH - m_titleModel->SpriteTextureWidth) / 2);
-		int Y = 10;
-		m_titleModel->RenderSprite(pContext, X, Y, rescale, 1.0f);
-	}
-#endif
+	if (ShouldDrawUI(monitorIndex))
+		RenderHUD_Logo(pContext);
 
 #if (defined USE_MAIN_MAP || defined USE_MINI_MAP) && defined MAIN_RENDER_MINIMAP //MAIN-RENDER: MINI-MAP (0.4)
-	RenderMainMapMiniMap(pContext);
+	if (ShouldDrawUI(monitorIndex))
+		RenderMainMapMiniMap(pContext);
 #endif
-
 
 	// === AppTextClass-Fill: ===
 #if defined USE_RASTERTEK_TEXT_FONT
 
-	if (AppTextClass)
+	if (ShouldDrawUI(monitorIndex) && AppTextClass)
 	{
 #if defined EXTRA_INFO2
 		AppTextClass->SetInfoA(astroClass->hour, astroClass->minute);
@@ -733,10 +737,10 @@ void ApplicationClass::AppPosRender(UINT monitorIndex, void* pContext)
 	// -------------------------
 #if (defined USE_RASTERTEK_TEXT_FONT) && defined MAIN_RENDER_RASTERTEK_FONT //MAIN-RENDER: Raster FONT: v1 (0.4 ms)
 #if !defined INTRO_DEMO //|DEMO|
-	if (RENDER_PAGE >= 27)
+	if (ShouldDrawUI(monitorIndex) && RENDER_PAGE >= 27)
 		AppTextClass->Render();
 #else
-	if (RENDER_PAGE == 27)
+	if (ShouldDrawUI(monitorIndex) && RENDER_PAGE == 27)
 		AppTextClass->Render();
 #endif
 #endif
@@ -745,6 +749,7 @@ void ApplicationClass::AppPosRender(UINT monitorIndex, void* pContext)
 	// -------------------------
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
 	// Do the frame processing for the application object.
+	if (ShouldDrawUI(monitorIndex))
 	if (!r_Application->Frame(NULL))
 	{
 		WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP;
@@ -757,12 +762,14 @@ void ApplicationClass::AppPosRender(UINT monitorIndex, void* pContext)
 	m_Driver->TurnOffAlphaBlending(pContext); // Re assume default
 #endif
 #if defined INTRO_DEMO //RenderDemoIntroSprites
-	RenderDemoIntroSprites(pContext);
+	if (ShouldDrawUI(monitorIndex))
+		RenderDemoIntroSprites(pContext);
 #endif
 
 	// RENDER NATIVE TEXT:
 	// -------------------
 #if defined USE_DX_DRIVER_FONT && defined MAIN_RENDER_DRIVER_FONT //MAIN-RENDER: Driver Font (0.5 ms)
+	if (ShouldDrawUI(monitorIndex)) {
 	#if !defined INTRO_DEMO //|DEMO Force NATIVE TEXT|
 	if ((RENDER_PAGE >= 22) && (m_Driver->m_sCapabilities.USE_DXDRIVER_FONTSBoolean) && (SystemHandle->AppSettings->DRIVER == DRIVER_DX11))
 	#endif
@@ -785,6 +792,7 @@ void ApplicationClass::AppPosRender(UINT monitorIndex, void* pContext)
 	}
 
 	m_Driver->RenderDriverText(pContext);
+	}
 #endif
 
 }
@@ -881,35 +889,6 @@ float ApplicationClass::ProcessInputUpdate()
 	ProcessUserKeyboardInput(dt); //Keyboard keys
 #endif
 
-	// SET CAMERA (for this monitor): Prepare to Take a Shot: Generate the view matrix based on the camera's position.
-
-#if defined DX_ENGINE	
-	if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
-	{
-		if (DXsystemHandle->m_Camera) {
-#if defined USE_3RD_PERSON_CAMERA
-        if (g_GOD_MODE) 
-            DXsystemHandle->m_Camera->CalculateViewMatrix();
-        else
-            DXsystemHandle->m_Camera->CalculateViewMatrix_3rd_PersonCamera(SystemHandle->m_Application->m_camYaw, SystemHandle->m_Application->m_camPitch);
-#else
-         DXsystemHandle->m_Camera->CalculateViewMatrix();
-#endif
-        }
-	}
-#endif
-
-#if (defined OPENGL3 || defined OPENGL4)
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
-	{
-		GLopenGLclass* driver = (GLopenGLclass*)driverList[SystemHandle->AppSettings->DRIVER];
-		if (driver->gl_Camera)
-			driver->gl_Camera->CalculateViewMatrix();
-	}
-#endif
-
-	// Render with Multi-Monitors: (setup camera)
-
 	// [2] CAMERA SKY: Update & Prepare to Take a Shot
 #if defined USE_SKYSPHERE && defined USE_SKY_CAMERA_DOME	
 	if (RENDER_PAGE >= 28)
@@ -942,50 +921,6 @@ float ApplicationClass::ProcessInputUpdate()
 		}
 	#endif
 	}
-#endif
-
-// CONSTRUCT: FRUSTRUM
-#if defined USE_FRUSTRUM
-	#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
-	m_Driver->frustum->ConstructFrustum(SystemHandle->AppSettings->SCREEN_DEPTH / 2.5f,
-		&((DX12Class*)m_Driver)->m_projectionMatrix,
-		&DXsystemHandle->m_Camera->m_viewMatrix);
-	#endif
-
-	#if defined DX11 || defined DX9
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
-	m_Driver->frustum->ConstructFrustum(SystemHandle->AppSettings->SCREEN_DEPTH / 2.5f,
-		&((DX11Class*)m_Driver)->m_projectionMatrix, 
-		&DXsystemHandle->m_Camera->m_viewMatrix);
-	#endif
-
-	#if (defined OPENGL3 || defined OPENGL4)
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) {
-
-		mat4 glPrjMatrix = ((GLopenGLclass*)m_Driver)->m_projectionMatrix;
-		XMMATRIX m_projectionMatrix = XMMatrixSet
-		(
-			glPrjMatrix.m[0], glPrjMatrix.m[1], glPrjMatrix.m[2], glPrjMatrix.m[3],
-			glPrjMatrix.m[4], glPrjMatrix.m[5], glPrjMatrix.m[6], glPrjMatrix.m[7],
-			glPrjMatrix.m[8], glPrjMatrix.m[9], glPrjMatrix.m[10], glPrjMatrix.m[11],
-			glPrjMatrix.m[12], glPrjMatrix.m[13], glPrjMatrix.m[14], glPrjMatrix.m[15]
-		);
-
-		mat4 glvMatrix = ((GLopenGLclass*)m_Driver)->gl_Camera->m_viewMatrix;
-		XMMATRIX m_viewMatrix = XMMatrixSet
-		(
-			glvMatrix.m[0], glvMatrix.m[1], glvMatrix.m[2], glvMatrix.m[3],
-			glvMatrix.m[4], glvMatrix.m[5], glvMatrix.m[6], glvMatrix.m[7],
-			glvMatrix.m[8], glvMatrix.m[9], glvMatrix.m[10], glvMatrix.m[11],
-			glvMatrix.m[12], glvMatrix.m[13], glvMatrix.m[14], glvMatrix.m[15]
-		);
-
-		m_Driver->frustum->ConstructFrustum(SystemHandle->AppSettings->SCREEN_DEPTH / 2.5f,
-			&m_projectionMatrix,
-			&m_viewMatrix);
-	}
-	#endif
 #endif
 
 	//Update Sun and Moon position:

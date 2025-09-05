@@ -71,6 +71,55 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 	#define DIK_ESCAPE 0x01
 	#endif
 
+void SystemClass::CalculateCameraViewAndFrustum() 
+{
+	// SET CAMERA (for this monitor): Prepare to Take a Shot: Generate the view matrix based on the camera's position.
+
+	// CONSTRUCT: FRUSTRUM
+#if defined USE_FRUSTRUM
+#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+		m_Driver->frustum->ConstructFrustum(SystemHandle->AppSettings->SCREEN_DEPTH / 2.5f,
+			&((DX12Class*)m_Driver)->m_projectionMatrix,
+			&DXsystemHandle->m_Camera->m_viewMatrix);
+#endif
+
+#if defined DX11 || defined DX9
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+		m_Driver->frustum->ConstructFrustum(SystemHandle->AppSettings->SCREEN_DEPTH / 2.5f,
+			&((DX11Class*)m_Driver)->m_projectionMatrix,
+			&DXsystemHandle->m_Camera->m_viewMatrix);
+#endif
+
+#if (defined OPENGL3 || defined OPENGL4)
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) {
+
+		mat4 glPrjMatrix = ((GLopenGLclass*)m_Driver)->m_projectionMatrix;
+		XMMATRIX m_projectionMatrix = XMMatrixSet
+		(
+			glPrjMatrix.m[0], glPrjMatrix.m[1], glPrjMatrix.m[2], glPrjMatrix.m[3],
+			glPrjMatrix.m[4], glPrjMatrix.m[5], glPrjMatrix.m[6], glPrjMatrix.m[7],
+			glPrjMatrix.m[8], glPrjMatrix.m[9], glPrjMatrix.m[10], glPrjMatrix.m[11],
+			glPrjMatrix.m[12], glPrjMatrix.m[13], glPrjMatrix.m[14], glPrjMatrix.m[15]
+		);
+
+		mat4 glvMatrix = ((GLopenGLclass*)m_Driver)->gl_Camera->m_viewMatrix;
+		XMMATRIX m_viewMatrix = XMMatrixSet
+		(
+			glvMatrix.m[0], glvMatrix.m[1], glvMatrix.m[2], glvMatrix.m[3],
+			glvMatrix.m[4], glvMatrix.m[5], glvMatrix.m[6], glvMatrix.m[7],
+			glvMatrix.m[8], glvMatrix.m[9], glvMatrix.m[10], glvMatrix.m[11],
+			glvMatrix.m[12], glvMatrix.m[13], glvMatrix.m[14], glvMatrix.m[15]
+		);
+
+		m_Driver->frustum->ConstructFrustum(SystemHandle->AppSettings->SCREEN_DEPTH / 2.5f,
+			&m_projectionMatrix,
+			&m_viewMatrix);
+	}
+#endif
+#endif
+}
+
 //-----------------------------------------------------------------------------------------
 void SystemClass::ProcessOSInput() // This Function will be invoked several times per second
 //-----------------------------------------------------------------------------------------

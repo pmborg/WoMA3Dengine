@@ -437,6 +437,7 @@ public:
 	
 
     D3D_FEATURE_LEVEL featureLevel_ = D3D_FEATURE_LEVEL_1_0_CORE;	// OUTPUT: (createDevice) The address of the feature level that was selected
+	UINT max_texture_size=2048;
 
     DXGI_FORMAT BUFFER_COLOR_FORMAT= DXGI_FORMAT_R8G8B8A8_UNORM;
     DXGI_FORMAT BUFFER_DEPTH_FORMAT;
@@ -512,15 +513,16 @@ private:
 	std::wstring HRtoStr(HRESULT hr);
 	bool list_resolutions();
     bool createDevice();
+	//void ChooseMsaaCaps();
 #if defined SET_DEVICE_CAPABILITIES
-    void setDeviceCapabilities(D3D_FEATURE_LEVEL featureLevel);
+    void InspectDeviceCapabilities(D3D_FEATURE_LEVEL featureLevel);
 #endif
 
 	VOID UpdateHDRColorSpace(UINT USE_MONITOR);
     void getProfile ( UINT g_USE_MONITOR );
 
 #if defined USE_RASTERIZER_STATE
-    bool createRasterizerStates (bool lineAntialiasing);
+    bool createRasterizerStates ();
 #endif
 
 	void setViewportDevice(ID3D11DeviceContext* pContext, UINT monitorWindow, int screenWidth, int screenHeight);

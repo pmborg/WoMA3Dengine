@@ -142,6 +142,8 @@ struct compoundTreeLoadOrder {
 extern int __cdecl CompoundSortCB(const VOID* arg1, const VOID* arg2);
 #endif
 
+inline bool ShouldDrawUI(int monIdx) { return monIdx == 0; /*kPrimaryMon;*/ }
+
 #pragma warning( push )
 #pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
 
@@ -225,21 +227,23 @@ public:
 #if defined CHECK_OBJ_COLISION
     XMVECTOR prwsPos = {}, prwsDir = {};
 #endif
-	void AppPosRender(UINT monitorWindow, void* mainCtx);																// POS-RENDER - 2D: Render 
 
 	virtual bool WOMA_APPLICATION_Initialize3D(void * pContext, WomaDriverClass* Driver); // APP_Load
-
-#if defined USE_LIGHT_RAY
-	void CalculateLightRayVertex (float SunDistance);
-#endif
-
+	void AppPosRender(UINT monitorWindow, void* mainCtx);																// POS-RENDER - 2D: Render 
 	std::vector<ModelColorVertexType> MyLightVertexVector;
 	std::vector<ModelColorVertexType>* m_LightVertexVector;
 	LightClass* m_Light = NULL;
 
-#if defined USE_LIGHT_RAY
+	#if defined USE_LIGHT_RAY
+	void CalculateLightRayVertex(float SunDistance);
 	void initLightRay(void* pContext);
-#endif
+	#endif
+	void RenderHUD_Logo(void* pContext);
+
+
+	// VARS:
+	// ----------------------------------------------------------------
+
 
     UINT world_main_size = 0;
     UINT totalRendered = 0;

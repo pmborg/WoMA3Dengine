@@ -257,7 +257,7 @@ static size_t GetMaximumConstantBufferSize(D3D_FEATURE_LEVEL featureLevel)
 
 namespace DirectX {
 #if defined SET_DEVICE_CAPABILITIES
-void DX11Class::setDeviceCapabilities(D3D_FEATURE_LEVEL featureLevel)
+void DX11Class::InspectDeviceCapabilities(D3D_FEATURE_LEVEL featureLevel)
 {
 	HRESULT result = S_OK;
 

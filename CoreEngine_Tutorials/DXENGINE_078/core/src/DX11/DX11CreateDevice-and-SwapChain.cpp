@@ -190,6 +190,45 @@ bool DX11Class::list_resolutions()
 	}
 #endif
 
+struct MsaaCaps {
+	bool  supported = false;
+	UINT  sampleCount = 1;   // 1,2,4,8,16
+	UINT  qualityIdx = 0;    // 0..(q-1)
+};
+
+// Query RTV & DSV; select the best both support
+static MsaaCaps ChooseMsaaCaps(ID3D11Device* dev, DXGI_FORMAT rtvFormat, DXGI_FORMAT dsvFormat, UINT requestedSamples /* 0=auto,max */)
+{
+	MsaaCaps caps;
+
+	auto probe = [&](DXGI_FORMAT fmt, UINT samples) -> UINT {
+		UINT q = 0;
+		if (SUCCEEDED(dev->CheckMultisampleQualityLevels(fmt, samples, &q)) && q > 0)
+			return q; // number of quality levels
+		return 0;
+		};
+
+	const UINT desired = (requestedSamples == 0) ? 16u : requestedSamples;
+	for (UINT s : {16u, 8u, 4u, 2u}) {
+		if (s > desired) continue;
+		const UINT qRT = probe(rtvFormat, s);
+		const UINT qDS = probe(dsvFormat, s);
+		if (qRT && qDS) {
+			caps.supported = (s > 1);
+			caps.sampleCount = s;
+			caps.qualityIdx = (MIN(qRT, qDS) - 1); // valid range [0..q-1]
+			return caps;
+		}
+	}
+
+	// fallback to 1x
+	caps.supported = false;
+	caps.sampleCount = 1;
+	caps.qualityIdx = 0;
+	return caps;
+}
+
+
 	// ==============================
 	// CREATE DEVICE:
 	// ==============================
@@ -230,7 +269,7 @@ bool DX11Class::list_resolutions()
 
 		if (dx11_force_dx9)
 		{
-			//USE DX9 in DX11
+			//USE DX9 level in DX11:
 			PtrfeatureLevels = featureLevelsDX9;
 			num_levels = sizeof(featureLevelsDX9) / sizeof(D3D_FEATURE_LEVEL);
 		} 
@@ -238,8 +277,8 @@ bool DX11Class::list_resolutions()
 		// 2) Setup Device Flags
 		if (!dx11_force_dx9) 
 		{
-			//USE DX11
-		#if defined DX11_ALLOW_BGRA_SUPPORT
+			//USE DX11:
+		#if defined DX11_ALLOW_BGRA_SUPPORT //It is required for compatibility with Direct2D.
 			DeviceFlags |= D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 		#endif
 
@@ -284,8 +323,8 @@ bool DX11Class::list_resolutions()
 
 		// 4) ENUMERATE HARDWARE ADAPTERS: with factory6 if fail try with legacy factory1
 		std::vector<ComPtr<IDXGIAdapter> > adapters;
-		if (factory6) EnumerateAdaptersFactory6(factory6.Get(), adapters);
-		if (adapters.empty()) EnumerateAdaptersFactory1(factory1.Get(), adapters);
+		if (factory6) EnumerateAdaptersFactory6(factory6.Get(), adapters);				//factory6
+		if (adapters.empty()) EnumerateAdaptersFactory1(factory1.Get(), adapters);		//legacy factory1
 
 		// 5) CreateDevice: TRY HARDWARE FIRST for DX11.0 interfaces
 		hr = E_FAIL;
@@ -305,18 +344,18 @@ bool DX11Class::list_resolutions()
 			if (SUCCEEDED(hr)) break;
 		}
 
-		// 6) Upgrade to DX11.1 interfaces if available
+		// 6) Upgrade to DX11.1 interfaces (device and Context) if available
 		(void)m_device.As(&m_device1);
 		(void)m_Context.As(&m_Context1);
 
-		// 7) Upgrade to DX11.2 interfaces if available
+		// 7) Upgrade to DX11.2 interfaces (device and Context) if available
 		(void)m_Context.As(&m_Context2);
 
-		// 7.1) Upgrade to DX11.3 interfaces if available
+		// 7.1) Upgrade to DX11.3 interfaces (device and Context) if available
 		(void)m_Context.As(&m_Context3);
 
-		m_device11 = m_device.Get();
-		m_deviceContext = m_Context.Get();
+		m_device11 = m_device.Get();		//get default:  DX11.0 device
+		m_deviceContext = m_Context.Get();	//get default:  DX11.0 Context
 
 		// 8) Make the immediate context thread-safe (recommended for multi-threaded engines)
 		ComPtr<ID3D11Multithread> mt;
@@ -435,6 +474,15 @@ bool DX11Class::list_resolutions()
 		}
 #endif
 
+        // Set maximum frame latency:
+		{
+        IDXGIDevice1* dxgiDevice1 = nullptr;
+        HRESULT hr = m_device11->QueryInterface(__uuidof(IDXGIDevice1), (void**)&dxgiDevice1);
+        if (SUCCEEDED(hr) && dxgiDevice1) {
+            dxgiDevice1->SetMaximumFrameLatency(1); // number of frames that are allowed to be stored in a queue before submission for rendering
+            dxgiDevice1->Release();
+        }
+		}
 
 		g_ALLOW_DX9x = dx11_force_dx9;
 
@@ -460,8 +508,41 @@ bool DX11Class::list_resolutions()
 		m_sCapabilities.MSAAmultiSampleCount = 1;
 		m_sCapabilities.MSAAquality = 1;
 
+		//V1:
+		// Get maximum texture size: https://learn.microsoft.com/en-us/windows/win32/direct3d11/overviews-direct3d-11-devices-downlevel-intro?redirectedfrom=MSDN
+
+		switch (featureLevel_) 
+		{
+			default:
+			case D3D_FEATURE_LEVEL_12_2:
+			case D3D_FEATURE_LEVEL_12_1:
+			case D3D_FEATURE_LEVEL_12_0:
+			case D3D_FEATURE_LEVEL_11_1:
+			case D3D_FEATURE_LEVEL_11_0:
+				max_texture_size = 16384;
+				break;
+
+			case D3D_FEATURE_LEVEL_10_1:
+			case D3D_FEATURE_LEVEL_10_0:
+				max_texture_size = 8192;
+				break;
+
+			case D3D_FEATURE_LEVEL_9_3:
+				max_texture_size = 4096;
+				break;
+
+			case D3D_FEATURE_LEVEL_9_2:
+			case D3D_FEATURE_LEVEL_9_1:
+				max_texture_size = 2048;
+				break;
+		}
+
+		SystemHandle->AppSettings->MaxTextureSize = MAX(SystemHandle->AppSettings->MaxTextureSize, max_texture_size);
+
+		womalog(TEXT("DirectX 11: Using Max Texture Size: %u"), SystemHandle->AppSettings->MaxTextureSize);
+
 #if defined SET_DEVICE_CAPABILITIES
-		setDeviceCapabilities(featureLevel_);
+		InspectDeviceCapabilities(featureLevel_);
 
 		// Check DX11 Multi-Threading Capabilities:
 		// -------------------------------------------------------------------------
@@ -471,75 +552,16 @@ bool DX11Class::list_resolutions()
 		womalogauto(TEXT("Driver Support Concurrent Creates: %s\n"), ThreadingOptions.DriverConcurrentCreates ? TEXT("yes") : TEXT("no"));
 		womalogauto(TEXT("Driver Support Command Lists: %s\n\n"), ThreadingOptions.DriverCommandLists ? TEXT("yes") : TEXT("no"));
 
+		// MSAA capability / probing
 		// -------------------------------------------------------------------------
-		// Get the best Multi Sample Quality (MSAAmultiSampleCount & MSAAquality)
-		// -------------------------------------------------------------------------
-		m_sCapabilities.MSAA_SUPPORTBoolean = false; // Lets check this...
+		auto msaa = ChooseMsaaCaps(m_device11, BUFFER_COLOR_FORMAT, BUFFER_DEPTH_FORMAT, 
+									(SystemHandle->AppSettings->MSAA_Anisotropic ) ? SystemHandle->AppSettings->MSAA_AnisotropicLevel: 0);
+		MSAA_COUNT = msaa.sampleCount;
+		MSAA_QUALITY = msaa.qualityIdx;
+		m_sCapabilities.MSAA_SUPPORTBoolean = (MSAA_COUNT > 1);
+		m_sCapabilities.MSAAmultiSampleCount = MSAA_COUNT;
+		m_sCapabilities.MSAAquality = MSAA_QUALITY;
 
-		// Detect Max Capabilities:
-
-		// Check "4X" MSAA quality support for our back buffer format.
-		// All Direct3D 11 capable devices support "4X" MSAA for all render target formats, so we only need to check quality support.
-		if (!FAILED(m_device11->CheckMultisampleQualityLevels(BUFFER_COLOR_FORMAT, 4, &m_sCapabilities.MSAAquality))) //WomaFatalException("Failed to check multisample support!");
-		{
-			if (m_sCapabilities.MSAAquality <= 0)
-			{
-				//SystemHandle->AppSettings->MSAA_ENABLED = FALSE;
-				WomaMessageBox(TEXT("WARNING: This card don't support, MultiSample Anti-Aliasing (MSAA)"), TEXT("WARNING")); // NOTE: Don't make it fatal (just reset setting)
-			}
-			else
-			{
-				// Support at least 4:
-				m_sCapabilities.MSAA_SUPPORTBoolean = true;
-				
-				UINT quality = 0;
-				for (UINT msaaSamples_ = 1; msaaSamples_ <= D3D11_MAX_MULTISAMPLE_SAMPLE_COUNT; msaaSamples_++)
-				{
-					result = m_device11->CheckMultisampleQualityLevels(BUFFER_COLOR_FORMAT, msaaSamples_, &quality);
-					if (result == S_OK && quality != 0)
-					{
-						m_sCapabilities.MSAAmultiSampleCount = msaaSamples_;
-						m_sCapabilities.MSAAquality = quality;
-						womalogauto(TEXT("DRIVER MSAAmultiSampleCount Supported: x%d\n"), m_sCapabilities.MSAAmultiSampleCount);		// Get the max Sample Count: 8
-						FSAA_possibleValues.push_back(m_sCapabilities.MSAAmultiSampleCount);
-						womalogauto(TEXT("DRIVER multiSampleQuality: %d\n"), m_sCapabilities.MSAAquality);	// Get the max MsaaQuality: 32
-
-						// Use Max Setting Supported:
-						if (MSAA_COUNT == 0) // 0 = Auto Detect Max!
-						{
-							MSAA_QUALITY = m_sCapabilities.MSAAquality;
-							MSAA_COUNT = MIN(4, m_sCapabilities.MSAAmultiSampleCount);
-						}
-					}
-				}
-				
-			}
-		}
-
-		if (SystemHandle->AppSettings->MSAA_Anisotropic == true && MSAA_COUNT > 1) //Setup defaults!
-		{
-			MSAA_QUALITY = 1;
-		}
-		if (SystemHandle->AppSettings->MSAA_Anisotropic == false) //Setup defaults!
-		{
-			MSAA_QUALITY = 0;
-			MSAA_COUNT = 1;
-		}
-
-		// Log It!
-		if (SystemHandle->AppSettings->MSAA_Anisotropic) {
-			womalogauto(TEXT("MSSA is Enabled with %d Samples\n"), MSAA_COUNT);
-		}
-		else
-		{
-			if (SystemHandle->AppSettings->MSAA_bilinear)
-				womalogauto(TEXT("Antialise: bilinear\n"));
-			else if (SystemHandle->AppSettings->MSAA_trilinear)
-				womalogauto(TEXT("Antialise: trilinear\n"));
-			else
-				womalogauto(TEXT("Antialise: off\n"));
-		}
-																 
 #endif
 
 		return true;

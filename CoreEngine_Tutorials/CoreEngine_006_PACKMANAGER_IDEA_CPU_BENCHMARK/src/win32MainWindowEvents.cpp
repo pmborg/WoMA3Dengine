@@ -465,7 +465,7 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 	// -----------------------------------------------------------------------------
 
 	// -----------------------------------------------------------------------------
-	// MOVE: The mainwindow is being dragged...
+	// MOVE: The MAINWINDOW is being dragged...
 	// -----------------------------------------------------------------------------
 	case WM_MOVE:
 	{
@@ -523,7 +523,7 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 	{
 		switch (wParam)
 		{
-			// Reject Querys do Suspend or Standby:
+			// Reject Query's do Suspend or Standby:
 		case PBT_APMQUERYSUSPEND:
 		case PBT_APMQUERYSTANDBY:
 			return BROADCAST_QUERY_DENY;
@@ -549,15 +549,6 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 		break;
 	}
 
-	// POWER: Prevent a powersave mode of monitor or the screensaver
-	case WM_SYSCOMMAND:
-	{
-		if (WOMA::game_state != GAME_RUN &&
-			((wParam & 0xFFF0) == SC_SCREENSAVE || (wParam & 0xFFF0) == SC_MONITORPOWER))
-			break; // let default handler run
-	}
-
-
 
 	// -----------------------------------------------------------------------------
 	// TIMERS:
@@ -577,6 +568,13 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 			}
 		}
 
+	// POWER: Prevent a POWERSAVE mode of monitor or the screensaver
+	case WM_SYSCOMMAND:
+	{
+		if (WOMA::game_state != GAME_RUN &&
+			((wParam & 0xFFF0) == SC_SCREENSAVE || (wParam & 0xFFF0) == SC_MONITORPOWER))
+			return 0; // swallow it (prevent screensaver/power-off)
+	}
 	}
 
 	return DefWindowProc(hwnd, umsg, wParam, lparam);

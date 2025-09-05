@@ -149,6 +149,7 @@ public:
 	RInputClass* m_OsInput = NULL;
 #endif
 	void ProcessOSInput();
+	void CalculateCameraViewAndFrustum();
 #endif
 
 #if defined USE_SYSTEM_CHECK

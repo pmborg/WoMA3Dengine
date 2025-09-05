@@ -481,7 +481,7 @@ bool DirectX::DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int scree
    
 #if defined USE_RASTERIZER_STATE
 	//Init Step: 8 - Cull Back / Front:
-	ASSERT( createRasterizerStates (/*lineAntialiasing*/ false)); // Only applies: if doing "line drawing" and "MultisampleEnable" is false.
+	ASSERT( createRasterizerStates ()); // Only applies: if doing "line drawing" and "MultisampleEnable" is false.
 	SetRasterizerState(m_deviceContext, CULL_NONE, FILL_SOLID);	//Set Default
 #endif
 
@@ -1095,6 +1095,8 @@ bool DX11Class::Initialize(float* clearColor)
 	driver_ClearColor[0] = *clearColor++;
 	driver_ClearColor[1] = *clearColor++;
 	driver_ClearColor[2] = *clearColor++;
+
+
 	driver_ClearColor[3] = *clearColor;
 
 	return true;
@@ -1107,24 +1109,39 @@ void DX11Class::BeginScene(UINT monitorWindow)
 // ----------------------------------------------------------------------------------------------
 {
 #if !defined ANDROID_PLATFORM && defined DX_ENGINE && defined USE_MULTI_MONITOR
+	const float totalSpanDeg = 90.0f;            // total horizontal span across all 3
+	const float perMonitorDeg = totalSpanDeg / SystemHandle->windowsArray.size(); // 30°
 	if (SystemHandle->windowsArray.size() == 3)
 	{
 		// TODO: settings.xml define: LEFT/RIGTH: Monitor
 		// Monitors Index:
-		// | 1 | 0 | 2 |
-		if (monitorWindow == 1) DXsystemHandle->m_Camera->m_rotationY -= (90 / 3); //  90:3 = 30deg
-		if (monitorWindow == 0) DXsystemHandle->m_Camera->m_rotationY -= 0;
-		if (monitorWindow == 2) DXsystemHandle->m_Camera->m_rotationY += (90 / 3);	//  90:3 = 30deg
+		// | 2 | 0 | 1 |
+		switch (monitorWindow) {
+		case 1:
+			DXsystemHandle->m_Camera->offsetDeg = +perMonitorDeg; //  90:3 = 30deg
+			break;
+		case 0:
+			DXsystemHandle->m_Camera->offsetDeg = 0;
+			break;
+		case 2:
+			DXsystemHandle->m_Camera->offsetDeg = -perMonitorDeg;	//  90:3 = 30deg
+			break;
+		}
 	}
-#endif
 
+	DXsystemHandle->m_Camera->m_rotationY = SystemHandle->m_Application->m_Position[g_NetID]->m_rotationY + DXsystemHandle->m_Camera->offsetDeg;
+#endif
+	
+
+	//Clear RTV
 #if DX_ENGINE_LEVEL < 30 || !defined MAIN_RENDER_SKY // With Sky Dome we don't need to wait time on clear screen
 	// Clear Screen
 	m_deviceContext->ClearRenderTargetView(DX11windowsArray[monitorWindow].m_renderTargetView, driver_ClearColor);	// Clear the "back buffer":
 #endif
 
+	//Clear DSV
 #if defined SET_DEVICE_CAPABILITIES
-	ClearDepthBuffer(m_deviceContext);
+	ClearDepthBuffer(m_deviceContext); 
 #endif
 
 	SetBackBufferRenderTarget(m_deviceContext, monitorWindow);

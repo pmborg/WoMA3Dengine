@@ -116,12 +116,17 @@ void WinSystemClass::ProcessFrame()
 			return; // We are in first win32 demo pages so, don't render!
 
 		// For each Monitor: Render one Application Frame
-        static int num_monitors = (int)windowsArray.size();
+        int num_monitors = (int)windowsArray.size();
 		for (int monIdx = 0; monIdx < num_monitors; monIdx++)
 		{
+			if (m_Driver->RenderfirstTime && ShouldDrawUI(monIdx))
+				StartTimer();										// START WINDOWS TIMER: ("Window Title" refresh & Real-Time Weather refresh)
+
 			{
 				m_Driver->BeginScene(monIdx);					// RESET FRAME: ClearRenderTargetView + ClearDepthBuffer                         
-                                                               
+                                
+				CalculateCameraViewAndFrustum();
+
 				m_Application->RenderScene(monIdx, m_Driver);	// RENDER ONE FRAME: 100% is done here!
                                                                
 				if (!g_contextDriver)							// SHOW FRAME:
@@ -217,7 +222,6 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());		// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 
 #endif
 	IF_NOT_RETURN_FALSE(APPLICATION_INIT_MAIN_WINDOW());	// RegisterClass and Create: MainWindow(s)
-    StartTimer();											// START WINDOWS TIMER: ("Window Title" refresh & Real-Time Weather refresh)
 
 #if defined USE_TINYXML_LOADER && DX_ENGINE_LEVEL >= 21
 	IF_NOT_RETURN_FALSE(LoadXmlWorld());					// Load all static/semi-static objects!

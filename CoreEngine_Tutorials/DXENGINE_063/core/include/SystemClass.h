@@ -203,6 +203,7 @@ public:
 	RInputClass* m_OsInput = NULL;
 #endif
 	void ProcessOSInput();
+	void CalculateCameraViewAndFrustum();
 #endif
 
 #if CORE_ENGINE_LEVEL >= 2 && defined WINDOWS_PLATFORM	

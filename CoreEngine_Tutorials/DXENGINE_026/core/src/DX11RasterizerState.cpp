@@ -28,7 +28,7 @@
 namespace DirectX {
 //Init Step: 4
 // ----------------------------------------------------------------------------------------------
-bool DX11Class::createRasterizerStates(bool lineAntialiasing)
+bool DX11Class::createRasterizerStates()
 // ----------------------------------------------------------------------------------------------
 {
 	//USE:
@@ -48,9 +48,9 @@ bool DX11Class::createRasterizerStates(bool lineAntialiasing)
     // --------------------------------------------------------------------------------------------
 	rasterDesc.FrontCounterClockwise = false;
 
-	rasterDesc.DepthBias = 0;			//default: D3D11_DEFAULT_DEPTH_BIAS					//to be used shadows
-	rasterDesc.DepthBiasClamp = 0;		//default: D3D11_DEFAULT_DEPTH_BIAS_CLAMP			//to be used shadows
-	rasterDesc.SlopeScaledDepthBias = 0;//default: D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS	//to be used shadows
+	rasterDesc.DepthBias = 0;			
+	rasterDesc.DepthBiasClamp = 0;		
+	rasterDesc.SlopeScaledDepthBias = 0;
 
 	rasterDesc.DepthClipEnable = true;						// Default: TRUE - Enable clipping based on distance: http://technet.microsoft.com/de-de/subscriptions/ff476198%28v=vs.85%29.aspx
 	rasterDesc.ScissorEnable = false; // or ScissorEnable;	// Default: FALSE
@@ -62,11 +62,11 @@ bool DX11Class::createRasterizerStates(bool lineAntialiasing)
 
 	if (SystemHandle->AppSettings->MSAA_Anisotropic) {
 		//Turn on: MSAA ?
-		rasterDesc.MultisampleEnable = true;			// default: FALSE
+		rasterDesc.MultisampleEnable = true;
 	} else {
 		//Turn on: the legacy AntialiasedLine ?
 		if ((SystemHandle->AppSettings->MSAA_bilinear) || (SystemHandle->AppSettings->MSAA_trilinear))
-			rasterDesc.AntialiasedLineEnable = true;	// default: FALSE
+			rasterDesc.AntialiasedLineEnable = true;
 	}
 
     // --------------------------------------------------------------------------------------------
