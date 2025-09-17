@@ -100,40 +100,35 @@ void WinSystemClass::ProcessFrame()
 			SystemHandle->womaSetup = NEW WomaSetupManager;
 			SystemHandle->womaSetup->Initialize(NULL);
 		}
-		//OS_REDRAW_WINDOW;
-        return; //Process win32 setup so, don't render!
+        return; //Process win32 Setup so, don't render!
 	}
 #endif
 
 	{
-        m_Application->dayLightFade = m_Application->ProcessInputUpdate();	//CalculateViewMatrix(s) and check collision(s):
+        m_Application->dayLightFade = m_Application->ProcessInputUpdate();	//CalculateViewMatrix (for Sky) and check collision(s):
+
+		if (m_Driver->RenderfirstTime)
+		{
+		}
 
 		#if defined INTRO_DEMO
 		if (RENDER_PAGE < 15) 
 		#else
 		if (RENDER_PAGE < 10)
 		#endif
-			return; // We are in first win32 demo pages so, don't render!
+			return; // We are in first win32 Demo pages so, don't render!
 
 		// For each Monitor: Render one Application Frame
         int num_monitors = (int)windowsArray.size();
 		for (int monIdx = 0; monIdx < num_monitors; monIdx++)
 		{
-			if (m_Driver->RenderfirstTime && ShouldDrawUI(monIdx))
-				StartTimer();										// START WINDOWS TIMER: ("Window Title" refresh & Real-Time Weather refresh)
-
-			{
-				m_Driver->BeginScene(monIdx);					// RESET FRAME: ClearRenderTargetView + ClearDepthBuffer                         
+			m_Driver->BeginScene(monIdx);										// RESET FRAME: ClearRenderTargetView + ClearDepthBuffer
                                 
-				CalculateCameraViewAndFrustum();
+			CalculateCameraViewAndFrustum();									// CALCULATE: CalculateViewMatrix (to render) and Frustum
 
-				m_Application->RenderScene(monIdx, m_Driver);	// RENDER ONE FRAME: 100% is done here!
+			m_Application->RenderScene(monIdx, m_Driver);						// RENDER 1 FRAME!
                                                                
-				if (!g_contextDriver)							// SHOW FRAME:
-					m_Driver->EndScene(monIdx);					//  [DX]: Present                       
-				else
-					g_contextDriver->EndScene(monIdx);			//  [OPENGL]: SwapBuffers
-			}
+			(g_contextDriver ? g_contextDriver : m_Driver)->EndScene(monIdx);	// SHOW FRAME :)
 		}
        
 		m_Driver->RenderfirstTime = false;
@@ -296,10 +291,12 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	SAFE_DELETE(DXsystemHandle->g_DShowPlayer);
 #endif
 
-	#if !defined USE_LOADING_THREADS
+		StartTimer();	// START WINDOWS TIMER: ("Window Title" refresh & Real-Time Weather refresh)
+
+#if !defined USE_LOADING_THREADS
 	if (WOMA::game_state == GAME_LOADING)
 		WOMA::game_state = GAME_RUN;	// Let it run!
-	#endif
+#endif
 
 	return true; // GREEN LIGHT: To Start Rendering! :)
 }
@@ -438,7 +435,8 @@ bool WinSystemClass::MyRegisterClass(HINSTANCE hInstance)
 
 	// ALLOW WIN32 SYSTEM PAINT: (Causes the entire window to redraw if a movement or a size adjustment changes the height of the client area: CS_HREDRAW | CS_VREDRAW)
 	wcex.style = (AppSettings->DRIVER == DRIVER_GL3) ? CS_OWNDC : CS_HREDRAW | CS_VREDRAW; // NOTE: CS_OWNDC is need by OPEN GL: https://www.opengl.org/wiki/Platform_specifics:_Windows
-	wcex.lpfnWndProc = WOMA_PAINT_MessageHandler;
+	wcex.style |= CS_DBLCLKS;
+	wcex.lpfnWndProc = static_cast<WNDPROC>(WOMA_PAINT_MessageHandler);
 	wcex.hInstance = hInstance;
 
 	//
@@ -542,9 +540,6 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
 	womalogauto((TCHAR*)TEXT("WinSystemClass::CreateMainWindow()\n"));
 	womalogauto((TCHAR*)TEXT("---------------------------------\n"));
 
-	if (AppSettings->FULL_SCREEN)
-		AppSettings->AllowResize = true;					// Force: "Allow" User to resize to FullScreen.
-
 	// --------------------------------------------------------------------------------------------
 	// PURPOSE: Check all Monitors available
 	// --------------------------------------------------------------------------------------------
@@ -562,6 +557,9 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
 	// Current_Screen_WIDTH
 	// Current_Screen_HEIGHT
 	// AppSettings->BITSPERPEL
+
+	if (AppSettings->FULL_SCREEN)
+		AppSettings->AllowResize = true;					// Force: "Allow" User to resize to FullScreen.
 
 	if (windowsArray.size() == 0)
 	{
@@ -740,6 +738,14 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
 		windowTop = AppSettings->WINDOW_Ypos;
 	}
 
+	if (WOMA::renderOnce) //mini-demo windows from test*.bat files.
+	{
+		windowLeft += WOMA::settings.WINDOW_Xpos_ori;
+		windowTop += WOMA::settings.WINDOW_Ypos_ori;
+		AppSettings->WINDOW_WIDTH = WOMA::settings.WINDOW_WIDTH_ori;
+		AppSettings->WINDOW_HEIGHT = WOMA::settings.WINDOW_HEIGHT_ori;
+	}
+
     DWORD dwExStyle = 0;
 
 	if ((AppSettings->WINDOW_WIDTH == 0) && (AppSettings->WINDOW_HEIGHT == 0))
@@ -805,7 +811,7 @@ bool WinSystemClass::ShowWindow(UINT MONITOR_NUM, int windowLeft, int windowTop)
 		::ShowWindow(SystemHandle->statusbar, SW_HIDE);
 #endif
 
-	int Cmdshow;
+	int Cmdshow = WOMA::Cmdshow;
 	Cmdshow = WOMA::Cmdshow;
 	if (AppSettings->UseAllMonitors)
 		Cmdshow = SW_MAXIMIZE;

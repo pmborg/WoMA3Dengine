@@ -37,4 +37,10 @@ struct Tree
 	// 200: FIRE
 	// 300: FENCE 3D
 };
+
+struct compoundTreeLoadOrder {
+	int compoundTreeId = -1;
+	int modelId = -1;
+	UINT order = 0;
+};
 #endif

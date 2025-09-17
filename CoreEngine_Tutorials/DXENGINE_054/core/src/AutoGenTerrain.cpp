@@ -794,7 +794,7 @@ void CTerrain::Terrain_Smooth()
 }
 
 //0 UNDERWATER
-#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN
+#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_REALEARTH_TERRAIN
 // ----------------------------------------------------------------------------
 void CTerrain::initUnderWaterDemo(void* pContext, UINT terrainId)
 // ----------------------------------------------------------------------------
@@ -803,7 +803,7 @@ void CTerrain::initUnderWaterDemo(void* pContext, UINT terrainId)
 
 	// Generate: Random Seed Value: 12 
 
-#if !defined SCENE_UNDERWATER_BATH_TERRAIN
+#if !defined SCENE_UNDERWATER_REALEARTH_TERRAIN
 	GenerateRandomHeightMapTerrain(127);			// Will generate a mesh 512x512 with heightMap
 #else
 	//PORTUGAL NOR: B1 - 8_14
@@ -1047,14 +1047,26 @@ void CTerrain::PopulateTerrainModelVertexVector(UINT id, float unit)
 			}
 			#endif
 			#if defined SCENE_WATER_TERRAIN
-			if (id == 1) {
-				ModelVertexs(vertex1, modelVertexVector1,
+			#if defined USE_MINIMAP_REDENRING_THREAD
+			if (id == 0)
+			{
+				ModelVertexs(vertex0, modelVertexVector0,
 					x0 + x * unit, y0 + (y + 1) * unit, scaleFactor * height[MIN(terrain_squares - 1, y + 1)][x],										// Upper left
 					x0 + x * unit + unit, y0 + (y + 1) * unit, scaleFactor * height[MIN(terrain_squares - 1, y + 1)][MIN(terrain_squares - 1, x + 1)],	// Upper right	
 					x0 + x * unit, y0 + y * unit, scaleFactor * height[y][x],																			// Bottom left
 					x0 + x * unit + unit, y0 + y * unit, scaleFactor * height[y][MIN(terrain_squares - 1, x + 1)]);										// Bottom right
 			}
 			#endif
+			#endif
+			if (id == 1) 
+			{
+				ModelVertexs(vertex1, modelVertexVector1,
+					x0 + x * unit, y0 + (y + 1) * unit, scaleFactor * height[MIN(terrain_squares - 1, y + 1)][x],										// Upper left
+					x0 + x * unit + unit, y0 + (y + 1) * unit, scaleFactor * height[MIN(terrain_squares - 1, y + 1)][MIN(terrain_squares - 1, x + 1)],	// Upper right	
+					x0 + x * unit, y0 + y * unit, scaleFactor * height[y][x],																			// Bottom left
+					x0 + x * unit + unit, y0 + y * unit, scaleFactor * height[y][MIN(terrain_squares - 1, x + 1)]);										// Bottom right
+			}
+			
 			#if !defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX
 			if (id == 2) {
 				ModelVertexs(vertex2, modelVertexVector2,

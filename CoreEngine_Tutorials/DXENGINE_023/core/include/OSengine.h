@@ -230,7 +230,7 @@ namespace WOMA
 #if defined USE_LOADING_THREADS
 	extern UINT		num_running_THREADS;
 #endif
-#if defined USE_LOADING_THREADS || DX_ENGINE_LEVEL >= 30
+#if _NOT //defined USE_LOADING_THREADS || DX_ENGINE_LEVEL >= 30
 	extern UINT		num_loading_objects;
 #endif
 
@@ -239,8 +239,8 @@ namespace WOMA
 #endif
 
 #if CORE_ENGINE_LEVEL >= 2
-	extern TCHAR	APP_COMPANY_NAME[];	// "Company" Directory Name: 1st lvl
-	extern TCHAR	APP_PROJECT_NAME[];	// "Project" Directory Name: 2nd lvl
+	extern TCHAR	APP_COMPANY_NAME[];	// "Company" Directory Name: 1st LVL
+	extern TCHAR	APP_PROJECT_NAME[];	// "Project" Directory Name: 2nd LVL
 	extern TCHAR	APP_FULLNAME[MAX_STR_LEN];	// "Application FullName"
 	extern bool		fileExists(STRING Filename);
 

@@ -190,7 +190,7 @@ int MainWindowPaint(UINT monitor)
 
 	PaintSetup(hdc, hdcMem, font_title, font, scr);
 
-#if (defined USE_LOADING_THREADS || DX_ENGINE_LEVEL >= 37) && ! defined ALLOW_CBIND_PROGRESS_BAR
+#if (defined USE_LOADING_THREADS || DX_ENGINE_LEVEL >= 37) && !defined ALLOW_CBIND_PROGRESS_BAR
 	if (WOMA::game_state == GAME_LOADING)
 	{
 		TCHAR printOnLoading[MAX_STR_LEN] = { 0 };

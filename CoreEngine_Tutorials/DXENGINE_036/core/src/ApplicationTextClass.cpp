@@ -153,12 +153,16 @@ void ApplicationTextClass::SetRenderCount(int Count, int compoundCount, UINT tot
 }
 #endif
 
-#if TUTORIAL_CHAP >= 60 && !defined RELEASE // BILLBOARD
+#if TUTORIAL_CHAP >= 60 && DX_ENGINE_LEVEL <= 92 && !defined RELEASE // BILLBOARD
 //10
 void DirectX::ApplicationTextClass::SetBillRenderCount(int count, UINT deltaTime)
 {
 	TCHAR countString[80];
+	#if defined  NO3DBILL
+	StringCchPrintf(countString, sizeof(countString), TEXT("N.Bill: %d (billangle: %3.1f) - Anim.Time: %d ms"), count, SystemHandle->m_Application->billangle, (UINT)deltaTime);
+	#else
 	StringCchPrintf(countString, sizeof(countString), TEXT("N.Bill: %d - Anim.Time: %d ms"), count, (UINT)deltaTime);
+	#endif
 
 	// Update the sentence vertex buffer with the new string information.
 	ASSERT(m_Text->UpdateSentence(m_sentence[TEXT_BILLRENDERCOUNT], countString, 10, 130, 0.0f, 1.0f, 0.0f));

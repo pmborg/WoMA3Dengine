@@ -17,6 +17,8 @@
 //WomaIntegrityCheck = 1234525217;
 
 #pragma once
+#pragma warning(push)
+#pragma warning( disable : 4005 )		// Disable warning C4005: '' : macro redefinition
 
 #define WOMAENGINE
 #if defined NewWomaEngine
@@ -140,18 +142,17 @@
     #endif
 
     #if DX_ENGINE_LEVEL >= 19 && !defined WOMAENGINE_BASIC
+		#undef USE_ALLOW_MAINWINDOW_RESIZE
+		#define USE_NETWORK
         #if defined WINDOWS_PLATFORM
         #define CLIENT_SCENE_SETUP
         #endif
-        #if defined DX11 //DEFAULT: DX11_0
-        //#define USE_DX11_1    // Default: off
-        //#define USE_DX11_3    // Default: off
-        #endif
+
         #define SET_DEVICE_CAPABILITIES //report.txt
-        #define USE_NORMAL_WINDOW
     #endif
 
     #if DX_ENGINE_LEVEL >= 20 && !defined WOMAENGINE_BASIC
+		#define USE_ALLOW_MAINWINDOW_RESIZE
         #define USE_STATUSBAR
         #define USE_ALLOW_RESIZE
         #define USE_ALTENTER_SWAP_FULLSCREEN_WINDOWMODE //Dep: USE_ALLOW_RESIZE
@@ -159,7 +160,7 @@
     #endif
 
     #if DX_ENGINE_LEVEL >= 21 && !defined WOMAENGINE_BASIC
-        #undef USE_NORMAL_WINDOW
+		//#undef USE_NORMAL_WINDOW						
         #if defined WINDOWS_PLATFORM && defined DX12
         #define USE_RASTERIZER_STATE //Mandatory for DX12
         #endif
@@ -265,7 +266,7 @@
     #endif
 
     #if DX_ENGINE_LEVEL >= 29
-	//---------------------------------------------------------------------------------------																					   
+	//---------------------------------------------------------------------------------------
         #define SCENE_COLOR             //FORCE!
         #define SCENE_TEXTURE           //FORCE!
         #define SCENE_TEXTURE_LIGHT     //FORCE!
@@ -473,19 +474,6 @@
         #define CHECK_OBJ_COLISION
     #endif
 
-    //-------------------------------------------------------------------------------------------------------
-    //MAIN_RENDER:
-    #define MAIN_RENDER_TITLE           //24
-    #define MAIN_RENDER_DRIVER_FONT     //25
-    #define MAIN_RENDER_RASTERTEK_FONT  //27
-    #define MAIN_RENDER_SKY             //28
-    #define MAIN_RENDER_MAIN_OBJ        //30
-    #define MAIN_RENDER_WATER           //50
-    #define MAIN_RENDER_TERRAIN         //55/65
-    #define MAIN_RENDER_MINIMAP         //63
-    #define MAIN_RENDER_BILLBOARDS      //70/74
-    #define MAIN_RENDER_ASSIMP          //82
-
     //#define DEBUG_MESH
     #if defined ASSIMP //>= 79
         #if DX_ENGINE_LEVEL == 79
@@ -505,7 +493,21 @@
             #define USE_ASSIMP_DXLIB    //81
         #endif
     #endif
-    
+//-------------------------------------------------------------------------------------------------------
+	//MAIN_RENDER:
+	//-------------------------------------------------------------------------------------------------------
+	#define MAIN_RENDER_TITLE           //24
+	#define MAIN_RENDER_DRIVER_FONT     //25
+	#define MAIN_RENDER_RASTERTEK_FONT  //27
+	#define MAIN_RENDER_SKY             //28
+	#define MAIN_RENDER_MAIN_OBJ        //30
+	#define MAIN_RENDER_WATER           //50
+	#define MAIN_RENDER_TERRAIN         //55/65
+	#define MAIN_RENDER_MINIMAP         //63
+	#define MAIN_RENDER_BILLBOARDS      //70/74
+	#define MAIN_RENDER_ASSIMP          //82
+	
+	
     #if DX_ENGINE_LEVEL >= 79
         #undef  USE_IDEA_PACK
         #define USE_CYPHER_PACK
@@ -514,14 +516,14 @@
     #endif
     #if DX_ENGINE_LEVEL >= 82
 		#define USE_DX11_1_SETUP
-        #define USE_ASSIMP_LATEST       //82
+        #define USE_ASSIMP_LATEST
     #endif
     #if DX_ENGINE_LEVEL >= 83
         //#define SAVE_WALK // Default: off - Updated billboard shader & SAVE_WALK FILME
     #endif
     #if DX_ENGINE_LEVEL >= 84
         #define LOAD_WALK
-        #define SCENE_SKIN
+        #define SCENE_MOVIN_SKIN
     #endif
     #if DX_ENGINE_LEVEL >= 85
         #define USE_MINIMAP_EXPANSION
@@ -531,7 +533,7 @@
     #define USE_MODEL1
     #define USE_MODEL2
     #ifndef USE_MODEL2
-        #undef SCENE_SKIN
+        #undef SCENE_MOVIN_SKIN
     #endif
 
     #if DX_ENGINE_LEVEL >= 86
@@ -568,23 +570,26 @@
 #endif
 
 #if DX_ENGINE_LEVEL >= 93
-	#undef USE_MAP_REDENRING_THREAD
-	#define EXPORT_ATLAS_DEBUG_PNG // Internal Debug
 	#define GENERATE_ATLAS_INTEGRATION_DDS
+	#if _DEBUG
+	#define EXPORT_ATLAS_DEBUG_PNG			// Internal Debug
+	#endif
+	
 #endif
 
+	//#define USE_MULTI_MONITOR
 
 
     //-------------------------------------------------------------------------------------------------------
 	#undef  dx12_upload_old_way
 	
-	#if !defined NDEBUG	
 	#if DX_ENGINE_LEVEL != 76 && DX_ENGINE_LEVEL != 86
 	#undef USE_INTRO_VIDEO_DEMO
 	#endif
 	#if defined WINDOWS_PLATFORM
 		#define ALLOW_CBIND_PROGRESS_BAR
 	#endif
-	#endif
+
 
 	
+#pragma warning(pop)

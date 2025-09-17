@@ -117,8 +117,13 @@ void PositionClass::MoveForward(bool keydown, bool ctrl, bool water)
 		m_forwardSpeed += m_frameTime * 0.0005f;
         if (g_GOD_MODE)
             maxSpeed = 0.1f;
-        else
-		    maxSpeed = ctrl ? 0.006f : 0.002f; // MAX SPEED (Run / Walk)
+        else{
+#if defined INTRO_DEMO //DEMO fade speed
+		    maxSpeed = ctrl ? 0.003f : 0.002f; // MAX SPEED (Run / Walk)
+#else
+			maxSpeed = ctrl ? 0.006f : 0.002f; // MAX SPEED (Run / Walk)
+#endif
+		}
 		if (water)
 			maxSpeed/=3;
 

@@ -16,10 +16,13 @@
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234525217;
 
+#pragma once
+#pragma warning(push)
+#pragma warning( disable : 4005 )		// Disable warning C4005: '' : macro redefinition
 #include "level.h"
 #include "tech-level.h"
 
-// Recomended to preview 3D objs on explorer (With extra large icons): https://f3d.app//
+// Recommended to preview 3D objs on explorer (With extra large icons): https://f3d.app//
 //--------------------------------------------------------------------------------------------------------
 #define PROJECT_NAME        TEXT("WoMAengine")
 #define COMPANY_DIRECTORY   TEXT("Pmborg")
@@ -518,7 +521,7 @@
 #endif
 
 #if DX_ENGINE_LEVEL == 79
-    #define ASSIMP_MODEL_FBX TEXT("engine\\data\\scene85\\rp_nathan_animated_003_walkingout.dae")                                                                                            
+    #define ASSIMP_MODEL_FBX TEXT("engine\\data\\scene85\\rp_nathan_animated_003_walkingout.dae")
     #define DEMO_TITLE TEXT("79: FBX/DAE")
     #define WORLD_XML TEXT("world_79.xml")
 #endif
@@ -630,3 +633,4 @@
 #undef OPENGL40 //Windows: 64bits or Linux: 64bits
 #endif
 
+#pragma warning(pop)

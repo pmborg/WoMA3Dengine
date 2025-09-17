@@ -138,15 +138,79 @@ DX12 Versions:
 10.00.22000.1000 	October 5, 2021 	Windows 11, Added native refresh rate switching[94] and improved graphics capabilities to Windows Subsystem for Linux
 #endif
 
+#pragma once
+#pragma warning(push)
+#pragma warning( disable : 4005 )		// Disable warning C4005: '' : macro redefinition
+
 #define DISABLE_BIN_COMPILE_MESSAGE	//Don't Show: TARGET: CPU_X64 on WINDOWS_PLATFORM
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
 #endif
-#pragma warning( disable : 4005 )	// Disable warning C4005: '' : macro redefinition
-#pragma warning( disable : 4067 )	// Disable warning C4067: unexpected tokens following preprocessor directive - expected a newline
-#pragma warning( disable : 6262 )	// Disable warning C6262: 
+
+#ifdef COMPILER_MSVC
+#pragma warning( disable : 4005 )	// warning C4005: '' : macro redefinition
+#pragma warning( disable : 4067 )	// warning C4067: unexpected tokens following preprocessor directive - expected a newline
+#pragma warning( disable : 6262 )	// warning C6262: 
 #pragma warning( disable : 4217 )	// LINK : warning LNK4217: symbol
+#endif
+
+// -------------------------------------------------------------------------------------------------------------------
+// DLL STUFF
+// -------------------------------------------------------------------------------------------------------------------
+
+// WOMA_API
+
+// --- DLL export/import handling ---
+#if defined(_WIN32) || defined(_WIN64)
+  #ifdef WOMA_BUILD_DLL
+    #define WOMA_API __declspec(dllexport)
+  #else
+    #define WOMA_API __declspec(dllimport)
+  #endif
+#elif defined(__GNUC__) && __GNUC__ >= 4
+  #define WOMA_API __attribute__((visibility("default")))
+#else
+  #define WOMA_API
+#endif
+
+#if defined(WOMA_STATIC)
+  #undef WOMA_API
+  #define WOMA_API
+#endif
+
+// WOMA_EXTERN
+
+#ifdef __cplusplus
+#define WOMA_EXTERN extern "C"
+#else
+#define WOMA_EXTERN
+#endif
+
+#define WOMA_EXPORT_C   WOMA_EXTERN WOMA_API
+#define WOMA_EXPORT_CPP WOMA_API
+
+// WOMA_INTERFACE
+
+#define WOMA_INTERFACE extern WOMA_API
+
+// DLL Example usage:
+
+#if 0
+	// C ABI function
+	WOMA_EXPORT int Woma_Version();
+
+	// C++ class API
+	class WOMA_API Renderer {
+	public:
+		void Init();
+	};
+	
+	// Global exported variable
+	WOMA_INTERFACE int g_FrameCounter;
+#endif
+
+
 
 // -------------------------------------------------------------------------------------------------------------------
 // === 32bits or 64bits DETECTION for X86 CPUs (for: WINDOWS_PLATFORM or LINUX_PLATFORM)  ===
@@ -177,9 +241,9 @@ static_assert(false, "At least one X86 or X64 need to be defined!");
 // === 32bits or 64bits DETECTION for ARM CPUs (for: ANDROID_PLATFORM) ===
 // -------------------------------------------------------------------------------------------------------------------
 #if defined(__arm__) || defined(__thumb__) || defined(_ARM) || defined(_M_ARM)
-	#define CPU_ARM32	//FOR: ANDROID_PLATFORM
+	#define CPU_ARM32	//FOR: ANDROID_PLATFORM 32bits
 #elif defined(__arm64) || defined(__arm64__) || defined(_M_ARM64) || defined(__aarch64__)
-	#define CPU_ARM64	//FOR: ANDROID_PLATFORM
+	#define CPU_ARM64	//FOR: ANDROID_PLATFORM 64bits
 #endif
 
 #if defined CPU_ARM32
@@ -198,14 +262,14 @@ static_assert(false, "This HW Target is not valid for WOMA3D Engine");
 #if defined(_WIN32) /*MSVC*/ || defined (__WINDOWS__) /*Watcom C/C++*/ || defined (__WIN32__) /*BORLANDC ++*/
 #if defined _XBOX_ONE
 	#define XBOX_ONE_PLATFORM	//BUILD_FOR_XBOX_ONE
-	#error "WOMA COMPILATION ERROR: This platform is not Supported yet."
+	#error "WOMA COMPILATION ERROR: This platform is not Supported."
 #elif defined _XBOX
 #if _XBOX_VER >= 200
 	#define XENON_PLATFORM	//BUILD_FOR_XBOX360 (XENON)
-	#error "WOMA COMPILATION ERROR: This platform is not Supported yet."
+	#error "WOMA COMPILATION ERROR: This platform is not Supported."
 #else
 	#define XBOX_PLATFORM	//BUILD_FOR_XBOX
-	#error "WOMA COMPILATION ERROR: This platform is not Supported yet."
+	#error "WOMA COMPILATION ERROR: This platform is not Supported."
 #endif	
 #endif
 #elif defined(ANDROID) || defined(__ANDROID__)
@@ -213,20 +277,20 @@ static_assert(false, "This HW Target is not valid for WOMA3D Engine");
 	#undef WINDOWS_PLATFORM
 #elif defined(_PS3) || defined(__PS3__) 
 	#define PS3_PLATFORM		//BUILD_FOR_PS3
-	#error "WOMA COMPILATION ERROR: This platform is not Supported yet."
+	#error "WOMA COMPILATION ERROR: This platform is not Supported."
 #elif defined(_PS4) || defined(__PS4__) 
 	#define PS4_PLATFORM		//BUILD_FOR_PS4
-	#error "WOMA COMPILATION ERROR: This platform is not Supported yet."
+	#error "WOMA COMPILATION ERROR: This platform is not Supported."
 #elif defined(_PS5) || defined(__PS5__) 
 	#define PS5_PLATFORM		//BUILD_FOR_PS5
-	#error "WOMA COMPILATION ERROR: This platform is not Supported yet."
+	#error "WOMA COMPILATION ERROR: This platform is not Supported."
 #elif defined(__CYGWIN__) || defined(__CYGWIN32__)
 	#define CYGWIN_PLATFORM		// BUILD_FOR_CYGWIN
 	#define LINUX_PLATFORM		// Note: Using until now same as LINUX
 #elif defined(__OpenBSD__) || defined(__NetBSD__) || defined(__FreeBSD__)
 	#define BSD_PLATFORM		//BUILD_FOR_BSD
-	#error "WOMA COMPILATION ERROR: This platform is not Supported yet."
-#elif defined(__linux__) || defined(__unix__) || defined(__unix) || defined(__LP64__) || defined(_LP64)
+	#error "WOMA COMPILATION ERROR: This platform is not Supported."
+#elif defined(linux) || defined(__linux) || defined(__linux__) || defined(__gnu_linux__) || defined(__LP64__) || defined(_LP64)
 	#define LINUX_PLATFORM		//BUILD_FOR_LINUX
 	#undef WINDOWS_PLATFORM
 #endif
@@ -235,10 +299,10 @@ static_assert(false, "This HW Target is not valid for WOMA3D Engine");
 #include "TargetConditionals.h"
 #if defined TARGET_OS_IPHONE || defined TARGET_IPHONE_SIMULATOR
 	#define OS_IPHONE_PLATFORM	//BUILD_FOR_IOS
-	#error "WOMA COMPILATION ERROR: This platform is not Supported yet."
+	#error "WOMA COMPILATION ERROR: This platform is not Supported."
 #elif defined(__MACH__) || defined(__DARWIN__)
 	#define OSX_PLATFORM		//BUILD_FOR_MAC
-	#error "WOMA COMPILATION ERROR: This platform is not Supported yet."
+	#error "WOMA COMPILATION ERROR: This platform is not Supported."
 #endif
 #endif
 
@@ -421,7 +485,7 @@ static_assert(false, "This HW Target is not valid for WOMA3D Engine");
 // -------------------------------------------------------------------------------------------------------------------
 //	=== DETECT LOW or BIG ENDIAN ===
 // -------------------------------------------------------------------------------------------------------------------
-#if defined(__BYTE_ORDER__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+#if defined(__BYTE_ORDER__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__) || defined( _PS3 )
 #define CPU_BIGENDIAN
 #elif defined(__BYTE_ORDER__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
 #define CPU_LOWENDIAN
@@ -691,3 +755,5 @@ static_assert(false, "WIN6x: X64 or WIN32, must be selected");
 // Define WOMA Project "Settings/Features" that will be COMPILED depending of "ENGINE_LEVEL"
 // -------------------------------------------------------------------------------------------------------------------
     #include "../../woma_engine_assets.h"				// PUBLIC (AUTO GENERATED DEMOS): WINDOWS / ANDROID / LINUX
+
+#pragma warning(pop)

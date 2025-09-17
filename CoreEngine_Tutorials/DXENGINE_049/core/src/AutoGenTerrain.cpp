@@ -726,7 +726,7 @@ void CTerrain::SaveBMPHeightMapTerrain(CHAR* maps, UINT bmp_type) // NEED TO BE:
 #endif
 
 //0 UNDERWATER
-#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN
+#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_REALEARTH_TERRAIN
 // ----------------------------------------------------------------------------
 void CTerrain::initUnderWaterDemo(void* pContext, UINT terrainId)
 // ----------------------------------------------------------------------------
@@ -735,7 +735,7 @@ void CTerrain::initUnderWaterDemo(void* pContext, UINT terrainId)
 
 	// Generate: Random Seed Value: 12 
 
-#if !defined SCENE_UNDERWATER_BATH_TERRAIN
+#if !defined SCENE_UNDERWATER_REALEARTH_TERRAIN
 	GenerateRandomHeightMapTerrain(127);			// Will generate a mesh 512x512 with heightMap
 #else
 	//PORTUGAL NOR: B1 - 8_14

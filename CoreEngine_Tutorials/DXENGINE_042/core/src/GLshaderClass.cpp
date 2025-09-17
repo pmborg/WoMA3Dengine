@@ -417,7 +417,7 @@ bool GLshaderClass::SetShaderParameters(SHADER_TYPE shaderType, mat4* worldMatri
 	}
 	if (shaderType >= SHADER_TEXTURE_LIGHT) 
 	{
-		LightClass* light = SystemHandle->m_Application->m_Light;
+		LightClass* light = SystemHandle->m_Application->app_Light;
 		//GLenum err;
 
 		// Set the light direction in the pixel shader:

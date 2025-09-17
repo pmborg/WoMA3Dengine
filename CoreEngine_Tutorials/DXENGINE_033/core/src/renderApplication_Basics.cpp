@@ -74,6 +74,7 @@ void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext, WomaDriverCla
 	// --------------------------------------------------------------------------------------------
 #if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
 	WOMA::sceneManager->visibleModelList.clear();			//Reset list of opac objects
+
 	WOMA::sceneManager->CreateLists();						//CREATE LISTS: for all objects to render (from WORLD.XML) and more
 	world_main_size = WOMA::sceneManager->visibleModelList.size();
 #endif
@@ -120,7 +121,7 @@ void ApplicationClass::RenderScene(UINT monitorIndex, WomaDriverClass* driver) /
 
 	AppRender(monitorIndex, dayLightFade, mainCtx);				// [2] 3D Render main scene while workers run in parallel
 
-	AppPosRender(monitorIndex, mainCtx);						// [3] 2D: Render TRANSPARENT Parts of 3D OBJs(like: "Glass windows", "Billboards", etc...)
+	AppPosRender(monitorIndex, dayLightFade, mainCtx);						// [3] 2D: Render TRANSPARENT Parts of 3D OBJs(like: "Glass windows", "Billboards", etc...)
 
 }
 
@@ -285,7 +286,7 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 
     //----------------------------------------------------------------------------------------------------------------------
 	// TERRAIN[0]: UNDER WATER
-#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN || defined SCENE_MAIN_TERRAIN
+#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_REALEARTH_TERRAIN || defined SCENE_MAIN_TERRAIN
 #if defined USE_RASTERIZER_STATE
     m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);
 #endif
@@ -308,6 +309,10 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 		m_TerrainModel[DEBUG_COLLISION_TERRAIN_ID]->RenderWithFade(fadeLight, fog);	// New function to replace these 2 line options. 
 #endif
 
+
+	// TERRAIN[1]: Render Mesh for WATER:
+// --------------------------------------------------------------------------------------------
+
 	//THE "OTHER" NETWORK PLAYERS
 	//----------------------------------------------------------------------------------------------------------------------
 
@@ -325,29 +330,28 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 
 	// Render TRANSPARENT Parts of 3D OBJs (like: glass window of (Space Compound), etc...) (last part)
 	// --------------------------------------------------------------------------------------------
-#if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined MAIN_RENDER_MAIN_OBJ //MAIN-RENDER: MAIN OBJs. (9 ms)
+#if DX_ENGINE_LEVEL >= 30 && DX_ENGINE_LEVEL <= 92 && defined USE_SCENE_MANAGER && defined MAIN_RENDER_MAIN_OBJ //MAIN-RENDER: MAIN OBJs. (9 ms)
 	for (UINT id = 0; id < WOMA::sceneManager->visibleModelList.size(); id++)
 	{
 		RenderModel(pContext, 0, monitorIndex, m_Driver, id, PASS_OPAC, NULL, NULL);
-		if (((DXmodelClass*)objModel[id])->obj3d.hasTransparent == true)
+		if (id == 0 && ((DXmodelClass*)objModel[id])->obj3d.hasTransparent == true)
 		{
 			objModel[id]->Render(pContext, 0, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_TRANSPARENT, NULL, NULL);
 		}
 	}
 #endif
 
-    // TERRAIN[1]: Render Mesh for WATER:
-// --------------------------------------------------------------------------------------------
+
 
 #if defined USE_MAP_EDITOR // MAP EDITOR: Render "Red" src/target line:
-    //Src:
+    //SRC:
     MyLightVertexVector[0].r = 1; MyLightVertexVector[0].g = 0; MyLightVertexVector[0].b = 0; MyLightVertexVector[0].a = 1;
     MyLightVertexVector[1].r = 1; MyLightVertexVector[1].g = 0; MyLightVertexVector[1].b = 0; MyLightVertexVector[1].a = 1;
 
     MyLightVertexVector[0].x = prwsPos.m128_f32[0];
     MyLightVertexVector[0].y = prwsPos.m128_f32[1];
     MyLightVertexVector[0].z = prwsPos.m128_f32[2];
-    //Dest:
+    //DEST:
     MyLightVertexVector[1].x = prwsPos.m128_f32[0] + prwsDir.m128_f32[0] * 100;
     MyLightVertexVector[1].y = prwsPos.m128_f32[1] + prwsDir.m128_f32[1] * 100;
     MyLightVertexVector[1].z = prwsPos.m128_f32[2] + prwsDir.m128_f32[2] * 100;
@@ -357,31 +361,17 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 
 	// Render Animated meshes:
 	// -----------------------
-
-}
-
-void ApplicationClass::RenderHUD_Logo(void* pContext)
-{
-	m_Driver->ClearDepthBuffer(pContext);
-	// -------------------------
-#if (defined USE_TITLE_BANNER && defined MAIN_RENDER) && defined MAIN_RENDER_TITLE // MAIN-RENDER: TITLE (0.3 ms)
-	if ((RENDER_PAGE >= 24 && m_titleModel) && (WOMA::game_state != GAME_MAP)) //Dont render title, on main map!
+	if (ShouldDrawUI(monitorIndex)) 
 	{
-		float rescale = 1;
-		int X = ((SystemHandle->AppSettings->WINDOW_WIDTH - m_titleModel->SpriteTextureWidth) / 2);
-		int Y = 10;
-		m_titleModel->RenderSprite(pContext, X, Y, rescale, 1.0f);
 	}
-#endif
+
 }
 
 //#############################################################################################################
 // [3/3] POS-RENDER - 2D: Render TRANSPARENT Parts of 3D OBJs (like: "Glass windows", "Billboards", etc...)
 //#############################################################################################################
-void ApplicationClass::AppPosRender(UINT monitorIndex, void* pContext)
+void ApplicationClass::AppPosRender(UINT monitorIndex, float dayLightFade, void* pContext)
 {
-
-
     //=============================================================================================================
     // LIGHT: Get fade (real Sun Position): Show Debug Info
 
@@ -402,6 +392,7 @@ void ApplicationClass::AppPosRender(UINT monitorIndex, void* pContext)
 		}
 #endif
 
+
 	if (ShouldDrawUI(monitorIndex))
 		RenderHUD_Logo(pContext);
 
@@ -417,7 +408,7 @@ void ApplicationClass::AppPosRender(UINT monitorIndex, void* pContext)
 	{
 #if defined EXTRA_INFO2
 		AppTextClass->SetInfoA(astroClass->hour, astroClass->minute);
-		AppTextClass->SetInfoB(m_Light->m_lightDirection.x, m_Light->m_lightDirection.y, m_Light->m_lightDirection.z);
+		AppTextClass->SetInfoB(app_Light->m_lightDirection.x, app_Light->m_lightDirection.y, app_Light->m_lightDirection.z);
 #endif
 		AppTextClass->SetFps(SystemHandle->fps);						// Update the FPS "Value" in the text object.
 
@@ -563,10 +554,10 @@ float ApplicationClass::ProcessInputUpdate()
 #if defined INTRO_DEMO
 	// TIME Control: Show Debug Info
 	UINT64 passedTotalTime = (UINT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
-    if (m_Driver->RenderfirstTime)
-    {
-        TCHAR tmp[MAX_STR_LEN]; _stprintf(tmp, TEXT("PASSED TOTAL TIME TO LOAD: %ju ms\n"), passedTotalTime); OutputDebugString(tmp);
-    }
+    //if (m_Driver->RenderfirstTime)
+    //{
+    //    TCHAR tmp[MAX_STR_LEN]; _stprintf(tmp, TEXT("PASSED TOTAL TIME TO LOAD: %ju ms\n"), passedTotalTime); OutputDebugString(tmp);
+    //}
 #endif
 #if defined INTRO_DEMO
 	// 5 INTRO DEBUG TEXT: Show time, etc..
@@ -581,9 +572,9 @@ float ApplicationClass::ProcessInputUpdate()
 	if (RENDER_PAGE < 15)
 		return 0;
 
-#if defined USE_DIRECT_INPUT && defined INTRO_DEMO
-	// Animate Camera (INTRO_DEMO)
-	SystemHandle->m_player[g_NetID]->p_player.IsDownPressed = true;
+#if defined USE_DIRECT_INPUT && defined INTRO_DEMO // Animate Camera (INTRO_DEMO)
+	SystemHandle->m_player[g_NetID]->p_player.IsUpPressed = true;
+	SystemHandle->m_player[g_NetID]->p_player.IsLeftCtrlPressed = true;
 #endif
 #endif
 #endif
@@ -597,19 +588,18 @@ float ApplicationClass::ProcessInputUpdate()
 	float camX = m_Position[g_NetID]->m_positionX;
 	float camZ = m_Position[g_NetID]->m_positionZ;
 
-	//for (UINT c = 0; c < world_main_size; c++)
-	for (UINT c = 0; c < WOMA::sceneManager->visibleModelList.size(); c++)																	 
+	for (UINT c = 0; c < world_main_size; c++)
+	//for (UINT c = 0; c < WOMA::sceneManager->visibleModelList.size(); c++)
 	{
-		UINT id = compoundTreeLoadingOrder[c].compoundTreeId;
+		int id = WOMA::sceneManager->visibleModelList[c]->xmlId;
 		X = objModel[id]->PosX - camX; //compound[id].posX
 		Z = objModel[id]->PosZ - camZ; //compound[id].posZ
 		compoundTreeLoadingOrder[c].order = (UINT)(X * X + Z * Z);
 	}
-
 	qsort(compoundTreeLoadingOrder, world_main_size, sizeof(compoundTreeLoadOrder), CompoundSortCB);	// Order compound by distance:
 
-	// [Colision 1] Check Colison with with "10" COMPOUNDS near to us...:
-	// ------------------------------------------------------------------
+	// [Collision 1] Check Collision with "10" COMPOUNDS near to us...:
+	// ----------------------------------------------------------------
     XMVECTOR prwsPos = {}, prwsDir = {};
 	/////////////////////////////////////////  IMPORTANT - Get the Collision Ray /////////////////////////////////////////
 #if defined CHECK_OBJ_COLISION
@@ -619,8 +609,7 @@ float ApplicationClass::ProcessInputUpdate()
     UINT	closestObjId = UINT_MAX;
 	for (UINT c = 0; c < MIN (world_main_size, 5); c++)        // We don't need all, right?:)
 	{
-		UINT i = compoundTreeLoadingOrder[c].compoundTreeId;	// This is the compound[id] to check colisions...
-
+		int i = c;	// This is the compound[id] to check collisions...
 		{
 			closestObjDist = pick(prwsPos, prwsDir, objModel[i]->boundingBoxVerts,
                                                     objModel[i]->boundingBoxIndex,
@@ -633,7 +622,7 @@ float ApplicationClass::ProcessInputUpdate()
 		}
 	}
 
-	// Calculate it with more accurance if we are really close to an object:
+	// Calculate it with more accuracy if we are really close to an object:
 	if (closestObjDist >= 0 && closestObjDist <= 3) 
     {
         closestObjDist = pick(prwsPos, prwsDir, objModel[closestObjId]->bottleVertPosArray,
@@ -648,19 +637,26 @@ float ApplicationClass::ProcessInputUpdate()
 #endif
 
 	// [2] CAMERA SKY: Update & Prepare to Take a Shot
+	// ==============
 #if defined USE_SKYSPHERE && defined USE_SKY_CAMERA_DOME	
 	if (RENDER_PAGE >= 28)
 	{
 		if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
 		{
 	#if defined DX_ENGINE
+			
         #if defined USE_3RD_PERSON_CAMERA
+
             if (g_GOD_MODE) {
                 DXsystemHandle->m_CameraSKY->m_rotationX = DXsystemHandle->m_Camera->m_rotationX;
                 DXsystemHandle->m_CameraSKY->m_rotationY = DXsystemHandle->m_Camera->m_rotationY;
                 DXsystemHandle->m_CameraSKY->CalculateViewMatrix();
             } else {
-                DXsystemHandle->m_CameraSKY->CalculateViewMatrix_3rd_PersonCamera(SystemHandle->m_Application->m_camYaw, SystemHandle->m_Application->m_camPitch, true);
+				#if defined USE_MULTI_MONITOR
+				DXsystemHandle->m_CameraSKY->CalculateViewMatrix_3rd_PersonCamera(main3rdPcamera.m_camYaw, main3rdPcamera.m_camPitch, true);
+				#else
+                DXsystemHandle->m_CameraSKY->CalculateViewMatrix_3rd_PersonCamera(main3rdPcamera.m_camYaw, main3rdPcamera.m_camPitch, true);
+				#endif
             }
         #else
             DXsystemHandle->m_CameraSKY->m_rotationX = DXsystemHandle->m_Camera->m_rotationX;
@@ -689,6 +685,25 @@ if (!astroClass) {
 #endif
 
 return fadeLight;
+}
+
+
+void ApplicationClass::RenderHUD_Logo(void* pContext)
+{
+#if defined USE_ALPHA_BLENDING
+	m_Driver->TurnOnAlphaBlending(pContext);
+#endif
+	m_Driver->ClearDepthBuffer(pContext);
+	// -------------------------
+#if (defined USE_TITLE_BANNER && defined MAIN_RENDER) && defined MAIN_RENDER_TITLE	// MAIN-RENDER: TITLE (0.3 ms)
+	if ((RENDER_PAGE >= 24 && m_titleModel) && (WOMA::game_state != GAME_MAP))		//Don't render title, on main map!
+	{
+		float rescale = 1;
+		int X = ((SystemHandle->AppSettings->WINDOW_WIDTH - m_titleModel->SpriteTextureWidth) / 2);
+		int Y = 10;
+		m_titleModel->RenderSprite(pContext, X, Y, rescale, 1.0f);
+	}
+#endif
 }
 
 // INTRO

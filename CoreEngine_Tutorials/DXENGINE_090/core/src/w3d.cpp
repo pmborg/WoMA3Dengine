@@ -21,6 +21,7 @@
 //WomaIntegrityCheck = 1234525217;
 
 #include "platform.h"
+#pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
 #include "OSengine.h"		// Get [SystemHandle] Pointer to System Class & define WomaSYSTEM for: WINDOWS, LINUX & ANDROID
 #include "OSmain_dir.h"
 #include "DXmodelClass.h"

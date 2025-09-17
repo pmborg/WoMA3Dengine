@@ -101,19 +101,12 @@ ApplicationClass::ApplicationClass()
 
 	// ---------------------------------------------------------------------
 	// public:
-	dt = 0.0f;	// Delta time
-	dayLightFade = false;
 
 #if defined USE_ASTRO_CLASS
 	initWorld =  NULL;    // Get Astro Positions
 #endif
 
-#if defined USE_3RD_PERSON_CAMERA
-    m_camYaw = 0.0f;
-    m_camPitch = 0.0f;
-#endif
-
-#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN //24
+#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_REALEARTH_TERRAIN //24
 	//autoGenUnderWaterTerrain		= NULL;
 #endif
 
@@ -180,7 +173,7 @@ void ApplicationClass::Shutdown()
 	SAFE_SHUTDOWN(TerrainQuadtree);
 #endif
 
-#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN
+#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_REALEARTH_TERRAIN
 	//SAFE_DELETE (autoGenUnderWaterTerrain);
 #endif
 #if defined SCENE_MAIN_TOPO_TERRAIN

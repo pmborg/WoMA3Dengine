@@ -448,9 +448,6 @@ void SystemClass::refreshTitle() // Run once per second.
 #if defined(X64) // Set the new "Window Title"
 	PDWORD_PTR dwResult = 0;// In 64 Bits
 	for (int i = 0; i < SystemHandle->windowsArray.size(); i++)
-		if (ShouldDrawUI(i))
-			SendMessageTimeout(SystemHandle->windowsArray[i].hWnd, WM_SETTEXT, 0, (LPARAM)pstrFPS, SMTO_ABORTIFHUNG, 1000, dwResult);
-		else
 		{
 			StringCchPrintf(title, 300, TEXT("WOMA ENGINE - SCR: %d"), i);
 			SendMessageTimeout(SystemHandle->windowsArray[i].hWnd, WM_SETTEXT, 0, (LPARAM)title, SMTO_ABORTIFHUNG, 1000, dwResult);
@@ -818,25 +815,25 @@ void SystemClass::ParseCommandLineArgs(int argc, char* argv[])
         if (_tcsnicmp(argv[i], "-Xpos", _tcslen(argv[i])) == 0 ||
             _tcsnicmp(argv[i], "/Xpos", _tcslen(argv[i])) == 0)
         {
-            WOMA::settings.WINDOW_Xpos = atoi(argv[i + 1]);
+            WOMA::settings.WINDOW_Xpos_ori = atoi(argv[i + 1]);
             i++;
         }
         if (_tcsnicmp(argv[i], "-Ypos", _tcslen(argv[i])) == 0 ||
             _tcsnicmp(argv[i], "/Ypos", _tcslen(argv[i])) == 0)
         {
-            WOMA::settings.WINDOW_Ypos = atoi(argv[i + 1]);
+            WOMA::settings.WINDOW_Ypos_ori = atoi(argv[i + 1]);
             i++;
         }
         if (_tcsnicmp(argv[i], "-WIDTH", _tcslen(argv[i])) == 0 ||
             _tcsnicmp(argv[i], "/WIDTH", _tcslen(argv[i])) == 0)
         {
-            WOMA::settings.WINDOW_WIDTH = atoi(argv[i + 1]);
+            WOMA::settings.WINDOW_WIDTH_ori = atoi(argv[i + 1]);
             i++;
         }
         if (_tcsnicmp(argv[i], "-HEIGHT", _tcslen(argv[i])) == 0 ||
             _tcsnicmp(argv[i], "/HEIGHT", _tcslen(argv[i])) == 0)
         {
-            WOMA::settings.WINDOW_HEIGHT = atoi(argv[i + 1]);
+            WOMA::settings.WINDOW_HEIGHT_ori = atoi(argv[i + 1]);
             i++;
         }
     }

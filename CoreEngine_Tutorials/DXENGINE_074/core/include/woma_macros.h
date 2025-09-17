@@ -19,6 +19,9 @@
 //WomaIntegrityCheck = 1234525217;
 
 #pragma once
+#pragma warning(push)
+#pragma warning( disable : 4005 )		// Disable warning C4005: '' : macro redefinition
+
 #ifndef __WOMA_MACROS_H__
 // --------------------------------------------------------------------------------------------
 // ENGINE MACROS
@@ -284,3 +287,5 @@ inline double SafeDouble(uint32_t value) {
 #endif
 
 #endif
+
+#pragma warning(pop)

@@ -216,22 +216,22 @@ bool ApplicationClass::ProcessUserKeyboardInput(double frameTime)
     else
     {
         if (
-            ((mouseCurrState.lX != mouseLastState.lX) || 
-             (mouseCurrState.lY != mouseLastState.lY) ) &&
+            ((mouseCurrState.lX != main3rdPcamera.mouseLastState.lX) ||
+             (mouseCurrState.lY != main3rdPcamera.mouseLastState.lY) ) &&
               mouseCurrState.rgbButtons[MOUSE_LEFT] & 0x80
            )
         {
-            m_camYaw += mouseLastState.lX * 0.002f;
-            m_camPitch += mouseCurrState.lY * 0.002f;
-            //womalogauto("m_camYaw: %4.1f - m_camPitch: %4.1f\n", m_camYaw, m_camPitch);
+			main3rdPcamera.m_camYaw += main3rdPcamera.mouseLastState.lX * 0.002f;
+			main3rdPcamera.m_camPitch += mouseCurrState.lY * 0.002f;
+            //womalogauto("m_camYaw: %4.1f - m_camPitch: %4.1f\n", main3rdPcamera.m_camYaw, main3rdPcamera.m_camPitch);
 
             // Check that the camera doesn't go over the top or under the player
-            if (m_camPitch > 0.85f)
-                m_camPitch = 0.85f;
-            if (m_camPitch < -0.85f)
-                m_camPitch = -0.85f;
+            if (main3rdPcamera.m_camPitch > 0.85f)
+				main3rdPcamera.m_camPitch = 0.85f;
+            if (main3rdPcamera.m_camPitch < -0.85f)
+				main3rdPcamera.m_camPitch = -0.85f;
 
-            mouseLastState = mouseCurrState;
+			main3rdPcamera.mouseLastState = mouseCurrState;
         }
     }
 #else

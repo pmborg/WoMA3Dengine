@@ -48,10 +48,10 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
     matrix WVP; //worldMatrix+viewMatrix+projectionMatrix
 
     // 23 BLOCK: VS2
-    bool VShasLight;
-    bool VShasSpecular;
-    bool VShasNormMap;
-    bool VShasFog;
+    bool   VShasLight;
+    bool   VShasSpecular;
+    bool   VShasNormMap;
+    bool   VShasFog;
 
     // 23 BLOCK: VS3
     float3 VSlightDirection; // LIGHT
@@ -61,10 +61,10 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
     float4 VSemissiveColor; // LIGHT: Ke
 
     // 31 BLOCK: VS4
-    float VSfogStart;
-    float VSfogEnd;
-    bool VShasShadowMap;
-    bool VS_USE_WVP;
+    float  VSfogStart;
+    float  VSfogEnd;
+    bool   VShasShadowMap;
+    bool   VS_USE_WVP;
 
     // 45 BLOCK: VS5
     matrix ViewToLightProj;
@@ -72,22 +72,22 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
     float4 vEye; // camera position		
 
     // 42 BLOCK: VS6
-    float VSrotX;
-    float VSrotY;
-    float VSrotZ;
-    float time;
+    float  VSrotX;
+    float  VSrotY;
+    float  VSrotZ;
+    float  time;
 
     // 42 BLOCK: VS7
-    float VSshaderType;
-    float vsPAD2;
-    float vsPAD3;
-    float vsPAD4;
+    float  VSshaderType;
+    float  vsIsSky;
+    float  vsPAD3;
+    float  vsPAD4;
 
     // FIRE:
-    float   vsframeTime;
-    float3  scrollSpeeds;
-    float3  scales;
-    bool    isBill; //float padding6;
+    float  vsframeTime;
+    float3 scrollSpeeds;
+    float3 scales;
+    bool   isBill; //float padding6;
 };
 
 ///////////////
@@ -146,7 +146,7 @@ cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: D
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
 ////////////////////////////////////////////////////////////////////////////////
-PSIn MyVertexShader021Color(VSIn input)
+PSIn VS_Main(VSIn input)
 {
     PSIn output;
 
@@ -183,7 +183,7 @@ PSIn MyVertexShader021Color(VSIn input)
 ////////////////////////////////////////////////////////////////////////////////
 // Pixel Shader
 ////////////////////////////////////////////////////////////////////////////////
-float4 MyPixelShader021Color(PSIn input) : SV_TARGET
+float4 PS_Main(PSIn input) : SV_TARGET
 {
     return input.color; // Use Vertex Color
 }

@@ -45,7 +45,7 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
 	bool	VS_USE_WVP;
 
 	// 45 BLOCK: VS5
-	matrix	ViewToLightProj;
+	matrix	ViewToLightProj;        // For Shadow
 	matrix	WorldInverseTranspose;	// WorldInverseTranspose
 	float4	vEye;					// camera position													   
 
@@ -53,7 +53,7 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
 	float	VSrotX;
 	float	VSrotY;
 	float	VSrotZ;
-	float	time;
+    float   time;   //water animation
 
 	// 42 BLOCK: VS7
 	float	VSshaderType;

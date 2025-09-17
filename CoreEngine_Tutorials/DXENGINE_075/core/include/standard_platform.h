@@ -19,6 +19,9 @@
 //WomaIntegrityCheck = 1234525217;
 
 #pragma once
+#pragma warning(push)
+#pragma warning( disable : 4005 )		// Disable warning C4005: '' : macro redefinition
+
 
 #include "platform.h"
 
@@ -112,3 +115,5 @@ using namespace std;
 #define s32 int32_t
 
 #define _HAS_STD_BYTE 0
+
+#pragma warning(pop)

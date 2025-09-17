@@ -93,13 +93,13 @@ void GBufferPass::Render(ID3D11DeviceContext* deviceContext, Graphics& graphics,
         }
         
         PBRMaterial* mat = meshRenderer.m_Material;
-        mat->m_MaterialInfo.m_LightDirection = SystemHandle->m_Application->m_Light->m_lightDirection;
+        mat->m_MaterialInfo.m_LightDirection = SystemHandle->m_Application->app_Light->m_lightDirection;
         mat->m_MaterialInfo.m_LightPos.x = SystemHandle->m_Application->MyLightVertexVector[1].x;   //USE_LIGHT_RAY
         mat->m_MaterialInfo.m_LightPos.y = SystemHandle->m_Application->MyLightVertexVector[1].y;   //USE_LIGHT_RAY
         mat->m_MaterialInfo.m_LightPos.z = SystemHandle->m_Application->MyLightVertexVector[1].z;   //USE_LIGHT_RAY
 
-        mat->m_MaterialInfo.ambientColor = SystemHandle->m_Application->m_Light->m_ambientColor;
-        mat->m_MaterialInfo.lightColor = SystemHandle->m_Application->m_Light->m_diffuseColor;
+        mat->m_MaterialInfo.ambientColor = SystemHandle->m_Application->app_Light->m_ambientColor;
+        mat->m_MaterialInfo.lightColor = SystemHandle->m_Application->app_Light->m_diffuseColor;
 
         graphics.UpdateBuffer(deviceContext, m_PBRMaterialBuffer, &(mat->m_MaterialInfo));
 

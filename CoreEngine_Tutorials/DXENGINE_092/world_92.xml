@@ -28,7 +28,7 @@
   <!--1-->
   <object id="0" depend="0"   instances=""  fromPage="89" toPage="0" scale="0.75f"  posX="44"    posZ="88"    translateY="9"      rotX="" rotY=""    rotZ=""      shader="" castShadow="" renderShadows="" filename="engine/data/scene64DEMO/windmill/mill_mainV2.obj"         soundRange=""     audio="" />
   <!--2-->
-  <object id="0" depend="0"   instances=""  fromPage="89" toPage="0" scale="0.75f"  posX="44"    posZ="90.5f" translateY="19.1f"  rotX="" rotY=""    rotZ="-1000" shader="" castShadow="" renderShadows="" filename="engine/data/scene64DEMO/windmill/mill_pas.obj"            soundRange=""     audio="" />
+  <object id="0" depend="0"   instances=""  fromPage="89" toPage="0" scale="0.75f"  posX="44"    posZ="90.5f" translateY="22.1f"  rotX="" rotY=""    rotZ="-1000" shader="" castShadow="" renderShadows="" filename="engine/data/scene64DEMO/windmill/mill_pas.obj"            soundRange=""     audio="" />
 
   <!-- WALL: Valid values PI or PI/2 or -PI/2 - Apllies to this case: PI = 3.13f PI/2 = 1.565f -->
   <!--3 south-->

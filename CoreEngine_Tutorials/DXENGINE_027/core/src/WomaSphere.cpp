@@ -146,7 +146,7 @@ void ApplicationClass::CreateSphereModel(UINT SPHERE_SIZE, int Sphere_gridpoints
 void ApplicationClass::Render_SKY_SUN_MOON(float fade)
 {
 	float bright = 0.1f + 0.3f * fade;
-	m_Light->SetAmbientColor(bright, bright, bright, 1);	// Fade: light with sun set
+	app_Light->SetAmbientColor(bright, bright, bright, 1);	// Fade: light with sun set
 
 	// SUN & MOON:
 	// --------------------------------------------------------------------------------------------

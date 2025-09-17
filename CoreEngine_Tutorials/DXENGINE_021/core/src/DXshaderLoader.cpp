@@ -62,14 +62,14 @@ shader 5.1 win10 - DX12
 shaderTree shaderManager_40[] =
 {
 //#if DX_ENGINE_LEVEL >= 21 // SHADER_COLOR
-	/* 00  */{ (void*)MyVertexShader021Color_40, NULL, (void*)MyPixelShader021Color_40, sizeof(MyVertexShader021Color_40), 0, sizeof(MyPixelShader021Color_40) }
+	/* 00  */{ (void*)VS_Main_40, NULL, (void*)PS_Main_40, sizeof(VS_Main_40), 0, sizeof(PS_Main_40) }
 //#endif
 
 };
 
 shaderTree shaderManager_41[] =
 {
-	/* 00 */{ (void*)MyVertexShader021Color_41, NULL, (void*)MyPixelShader021Color_41, sizeof(MyVertexShader021Color_41), 0, sizeof(MyPixelShader021Color_41) }
+	/* 00 */{ (void*)VS_Main_41, NULL, (void*)PS_Main_41, sizeof(VS_Main_41), 0, sizeof(PS_Main_41) }
 
 #if DX_ENGINE_LEVEL >= 40  ShadowMap + Instancing 
 	/* 07 */,{ (void*)MyVertexShader051ShadowMapInstance_41,NULL,(void*)MyPixelShader051ShadowMapInstance_41, sizeof(MyVertexShader051ShadowMapInstance_41),0,sizeof(MyPixelShader051ShadowMapInstance_41) }
@@ -79,14 +79,14 @@ shaderTree shaderManager_41[] =
 
 shaderTree shaderManager_50[] =
 {
-	/* 00 */{ (void*)MyVertexShader021Color_50, NULL, (void*)MyPixelShader021Color_50, sizeof(MyVertexShader021Color_50), 0, sizeof(MyPixelShader021Color_50) }
+	/* 00 */{ (void*)VS_Main_50, NULL, (void*)PS_Main_50, sizeof(VS_Main_50), 0, sizeof(PS_Main_50) }
 
 };
 
 
 shaderTree shaderManager_51[] =
 {
-	/* 00 */{ (void*)MyVertexShader021Color_51, NULL, (void*)MyPixelShader021Color_51, sizeof(MyVertexShader021Color_51), 0, sizeof(MyPixelShader021Color_51) }
+	/* 00 */{ (void*)VS_Main_51, NULL, (void*)PS_Main_51, sizeof(VS_Main_51), 0, sizeof(PS_Main_51) }
 
 };
 

@@ -199,27 +199,34 @@ namespace DirectX {
 		// VERTEX CBUFFER:
 		// --------------------------------------------------------------------------------------------
 		// BLOCK: VS1
-		//world;	// Not Initialixed
-		//WVP;		// Not Initialixed
-		//WV;		// Not Initialixed
+		//-----------
+		//	worldMatrix;	//worldMatrix
+		//	view;			//view
+		//	projection;		//projection
+		//  WV;				//worldMatrix+viewMatrix
+		//  WVP;			//worldMatrix+viewMatrix+projectionMatrix
 
 		// BLOCK2: VS2
+		//------------
 		hasLight = false;
 		hasSpecular = false;
 		hasNormMap = false;
 		hasFog = false;
 
 		// BLOCK: VS3
-		//lightDirection;	// Not Initialixed
+		//-----------
+		//lightDirection;	// Not Initialized
 		ambientColor = XMFLOAT4(0, 0, 0, 0);;	// LIGHT: Ka
 		diffuseColor = XMFLOAT4(1, 1, 1, 0);;	// LIGHT: Kd
 		emissiveColor = XMFLOAT4(0, 0, 0, 0);;	// LIGHT: Ke
 
 		// BLOCK4:
+		//-----------
 		fogStart = SystemHandle->AppSettings->START_FOG;
 		fogEnd = SystemHandle->AppSettings->END_FOG;
 		castShadow = false;
-		//VSpad2
+
+
 
 		// PIXEL CBUFFER:
 		// --------------------------------------------------------------------------------------------
@@ -347,9 +354,6 @@ namespace DirectX {
 	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
 		SAFE_RELEASE(m_sampleStateClamp11);
 	#endif
-#if TUTORIAL_CHAP >= 62 // FIRE
-		SAFE_RELEASE(m_sampleStateFire);
-#endif
 	}
 
 	// ----------------------------------------------------------------------------------------------
@@ -475,8 +479,8 @@ namespace DirectX {
 		std::wstring vsFilename = L"";
 		std::wstring psFilename = vsFilename;
 #if D3D11_SPEC_DATE_YEAR == 2009
-		std::string vertexHLSL = "MyVertexShader021Color";
-		std::string pixelHLSL = "MyPixelShader021Color";
+		std::string vertexHLSL = "VS_Main";
+		std::string pixelHLSL = "PS_Main";
 #else
 		std::string vertexHLSL = "";
 		std::string pixelHLSL = "";
@@ -487,59 +491,59 @@ namespace DirectX {
 		case SHADER_COLOR:
 			vsFilename.append(L"hlsl/021Color.hlsl");
 			psFilename = vsFilename;
-			vertexHLSL.append("MyVertexShader021Color");
-			pixelHLSL.append("MyPixelShader021Color");
+			vertexHLSL.append("VS_Main");
+			pixelHLSL.append("PS_Main");
 			break;
 		case SHADER_TEXTURE:
 			vsFilename.append(L"hlsl/022Texture.hlsl");
 			psFilename = vsFilename;
-			vertexHLSL.append("MyVertexShader022Texture");
-			pixelHLSL.append("MyPixelShader022Texture");
+			vertexHLSL.append("VS_Main");
+			pixelHLSL.append("PS_Main");
 			break;
 		case SHADER_TEXTURE_LIGHT:
 			vsFilename.append(L"hlsl/023Light.hlsl");
 			psFilename = vsFilename;
-			vertexHLSL.append("MyVertexShader023Light");
-			pixelHLSL.append("MyPixelShader023Light");
+			vertexHLSL.append("VS_Main");
+			pixelHLSL.append("PS_Main");
 			break;
 		case SHADER_TEXTURE_FONT:
 			vsFilename.append(L"hlsl/027Texture.hlsl");
 			psFilename = vsFilename;
-			vertexHLSL.append("MyVertexShader027Texture");
-			pixelHLSL.append("MyPixelShader027Texture");
+			vertexHLSL.append("VS_Main");
+			pixelHLSL.append("PS_Main");
 			break;
 		case SHADER_NORMAL_BUMP:
 			vsFilename.append(L"hlsl/035TextureBump.hlsl");
 			psFilename = vsFilename;
-			vertexHLSL.append("MyVertexShader035TextureBump");
-			pixelHLSL.append("MyPixelShader035TextureBump");
+			vertexHLSL.append("VS_Main");
+			pixelHLSL.append("PS_Main");
 			break;
 		case SHADER_TEXTURE_LIGHT_RENDERSHADOW:			//36:			Draw Shadows
 			vsFilename.append(L"hlsl/036LightRenderShadow.hlsl");
 			psFilename = vsFilename;
-			vertexHLSL.append("MyVertexShader036LightRenderShadow");
-			pixelHLSL.append("MyPixelShader036LightRenderShadow");
+			vertexHLSL.append("VS_Main");
+			pixelHLSL.append("PS_Main");
 			break;
 		case SHADER_TEXTURE_LIGHT_SAVESHADOW:			//36:			Aux. Shader (render in texture)
 			vsFilename.append(L"hlsl/036ShadowMap.hlsl");
 			psFilename = vsFilename;
-			vertexHLSL.append("MyVertexShader036ShadowMap");
-			pixelHLSL.append("MyPixelShader036ShadowMap");
+			vertexHLSL.append("VS_Main");
+			pixelHLSL.append("PS_Main");
 			break;
 #if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES
 		case SHADER_TEXTURE_LIGHT_INSTANCED:			//40: INSTANCED like 23 light, but using Instances
 			vsFilename.append(L"hlsl/040LightInstance.hlsl");
 			psFilename = vsFilename;
-			vertexHLSL.append("MyVertexShader040LightInstance");
-			pixelHLSL.append("MyPixelShader040LightInstance");
+			vertexHLSL.append("VS_Main");
+			pixelHLSL.append("PS_Main");
 			break;
 #endif
 #if DX_ENGINE_LEVEL >= 41 && defined USE_SHADOW_INSTANCES
 		case SHADER_TEXTURE_LIGHT_SAVESHADOW_INSTANCED:	//40: Aux. Shader (render in texture), but using Instances
 			vsFilename.append(L"hlsl/041ShadowMapInstance.hlsl");
 			psFilename = vsFilename;
-			vertexHLSL.append("MyVertexShader041ShadowMapInstance");
-			pixelHLSL.append("MyPixelShader041ShadowMapInstance");
+			vertexHLSL.append("VS_Main");
+			pixelHLSL.append("PS_Main");
 			break;
 #endif
 //NEW SHADER:
@@ -1372,7 +1376,6 @@ namespace DirectX {
 			result = device11->CreateSamplerState(&samplerDesc, &m_sampleStateClamp11);
 			if (FAILED(result)) { WomaFatalException ("CreateSamplerState error"); }
 
-
 			// --------------------------------------------------------------------------------------------
 			// CREATE Buffer(s) DATA for "Vertex Shader"
 			// --------------------------------------------------------------------------------------------
@@ -1438,7 +1441,7 @@ namespace DirectX {
 		}
 	#endif
 
-		LightClass* light = SystemHandle->m_Application->m_Light;
+		LightClass* light = SystemHandle->m_Application->app_Light;
 
 		// BOTH: DX11 and DX12
 
@@ -1501,7 +1504,7 @@ namespace DirectX {
 		dataVSptr->VSrotX = 0;
 		dataVSptr->VSrotY = 0;
 		dataVSptr->VSrotZ = 0;
-		dataVSptr->time = time;
+		dataVSptr->time = watertime;
 
 		dataVSptr->VSshaderType = VSshaderType;
 
@@ -1662,8 +1665,10 @@ namespace DirectX {
 #define deviceContext ((ID3D11DeviceContext*)Device_Context)
 			deviceContext->IASetInputLayout(m_layout11);					// Set the vertex input layout
 
-			if (m_shaderType >= SHADER_TEXTURE)
-				deviceContext->PSSetSamplers(0, 1, &m_sampleState11);		// Set the Sampler state in the pixel shader (Bilinear, Trilinear: 2x, Anisotropic: 4x, 8x, 16x, ...)
+			if (m_shaderType >= SHADER_TEXTURE) 
+			{
+					deviceContext->PSSetSamplers(0, 1, &m_sampleState11);		// Set the Sampler state in the pixel shader (Bilinear, Trilinear: 2x, Anisotropic: 4x, 8x, 16x, ...)
+			}
 #if TUTORIAL_CHAP >= 62 // FIRE
 			if (m_shaderType == SHADER_FIRE) {
 				deviceContext->PSSetSamplers(1, 1, &m_sampleStateFire);

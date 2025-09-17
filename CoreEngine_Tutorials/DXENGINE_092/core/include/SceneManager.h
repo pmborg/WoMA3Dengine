@@ -20,6 +20,7 @@
 #include "SceneNode.h"
 #include "QuadTree.h"
 #include "Tree.h"
+#include "ApplicationClass.h"
 
 class SceneManager
 {

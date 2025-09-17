@@ -217,7 +217,6 @@ namespace WOMA
 #if defined USE_LOADING_THREADS
 	UINT	num_running_THREADS = 0;
 #endif
-	UINT	num_loading_objects = 1;
 
 	TCHAR   APP_NAME[MAX_STR_LEN] = { 0 };              // "Application Name"
 
@@ -443,6 +442,7 @@ bool cpuSupportsAVX512f=false;
 
 void APPLICATION_STARTUP(int argc, char* argv[])
 {
+
 	STDCOUT << TEXT("<") << PROJECT_NAME << TEXT("> STARTUP") << std::endl;
 
 #if defined WOMA_CONSOLE_APPLICATION  || !defined WINDOWS_PLATFORM
@@ -473,7 +473,7 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 	#endif
 #endif
 
-#ifdef MATH_BENCH && LEVEL < 60 // Disabled at 60: TrigonometryMathClass.cpp
+#if defined MATH_BENCH && LEVEL < 60 // Disabled at 60: TrigonometryMathClass.cpp
     // Benchmark trigonometric functions:
     // ----------------------------------
 	TimerClass m_Timer;

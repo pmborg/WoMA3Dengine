@@ -19,8 +19,6 @@
 //WomaIntegrityCheck = 1234525217;
 #pragma once
 
-#if defined CORE_ENGINE_LEVEL 4
-
 #include "main.h"
 
 #if defined WINDOWS_PLATFORM
@@ -63,4 +61,3 @@ private:
 
 #endif
 
-#endif

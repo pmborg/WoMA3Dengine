@@ -116,11 +116,11 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
     float VSrotX;
     float VSrotY;
     float VSrotZ;
-    float time;
+    float time;     //water animation
 
 	// 42 BLOCK: VS7
     float VSshaderType;
-    float vsPAD2;
+    float vsIsSky;
     float vsPAD3;
     float vsPAD4;
 
@@ -196,7 +196,7 @@ cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: D
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
 ////////////////////////////////////////////////////////////////////////////////
-PSIn MyVertexShader083Light(VSIn input)
+PSIn VS_Main(VSIn input)
 {
 	PSIn output;
 	float4 cameraPosition;
@@ -225,7 +225,7 @@ PSIn MyVertexShader083Light(VSIn input)
 ////////////////////////////////////////////////////////////////////////////////
 // Pixel Shader
 ////////////////////////////////////////////////////////////////////////////////
-float4 MyPixelShader083Light(PSIn input) : SV_TARGET
+float4 PS_Main(PSIn input) : SV_TARGET
 {
 #if defined PS_USE_FOG
     float4 fogColor = float4(87.0f / 256.0f, 87 / 256.0f, 87.0f / 256.0f, 1.0f);

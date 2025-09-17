@@ -433,7 +433,7 @@ BOOL DX11Class::CheckAPIdriver(int USE_THIS_ADAPTER_CARD)
 // ----------------------------------------------------------------------------------------------
 BOOL DX11Class::Check (int* Hi, int* low){return TRUE;}
 // ----------------------------------------------------------------------------------------------
-#if defined USE_MAP_REDENRING_THREAD
+#if defined USE_MINIMAP_REDENRING_THREAD
 void DX11Class::CreateDeferedContexts() 
 {
 	#if defined USE_SHADOW_THREAD
@@ -475,15 +475,15 @@ bool DirectX::DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int scree
 	//Init Step: 3, 4
 	ASSERT(createDevice());
     
-	//Init Step: 5 - Get Best Shader of this Graphic Card: dx10,dx10.1,dx11,etc... OUTPUT: ShaderModel
+	//Init Step: 5 - Get Best SHADER of this Graphic Card: dx10,dx10.1,dx11,etc... OUTPUT: ShaderModel
 	getProfile(g_USE_MONITOR);
 
 	//Init Step: 6 Before Resize (SetCamera2D & SetCamera3D)!
 		Initialize3DCamera();
 
 	//Init Step: 7 - CreateWindowSizeDependentResources
-	// Creates a render target view and depth stencil surface/view per swapchain
-	for (size_t m = 0; m < SystemHandle->windowsArray.size(); m++)
+	// Creates a render target view and depth stencil surface/view per SWAPCHAIN
+	for (UINT m = 0; m < SystemHandle->windowsArray.size(); m++)
 	{
 		ASSERT(Resize(m, screenWidth, screenHeight, screenNear, screenDepth, fullscreen, depthBits));
 	}
@@ -500,14 +500,14 @@ bool DirectX::DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int scree
 
   #if defined INTRO_DEMO || defined USE_ALPHA_BLENDING // 26
 	//Init Step: 13 Create and Set the depth stencil state: With the created depth stencil state we can now set it so that it takes effect:
-	ASSERT( createSetDepthStencilState (true) );	// Zbuffer on state
-	ASSERT( createSetDepthStencilState (false) );	// Zbuffer off state
+	ASSERT( createSetDepthStencilState (true) );	// ZBUFFER on state
+	ASSERT( createSetDepthStencilState (false) );	// ZBUFFER off state
 
 	//Init Step: 14 - Transparency: To render text on top of 3D
 	ASSERT(CreateBlendState());
   #endif
 
-	#if defined USE_MAP_REDENRING_THREAD
+	#if defined USE_MINIMAP_REDENRING_THREAD
 	CreateDeferedContexts();
 	#endif
 

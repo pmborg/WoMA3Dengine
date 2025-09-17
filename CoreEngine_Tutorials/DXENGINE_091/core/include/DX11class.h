@@ -332,7 +332,7 @@ public:
 	void ClearDepthBuffer(void* pContext);
 
 	ID3D11DeviceContext* GetDeviceContext();
-	#if defined USE_MAP_REDENRING_THREAD
+	#if defined USE_MINIMAP_REDENRING_THREAD
 	void CreateDeferedContexts();
 	#endif
 #if defined USE_RASTERIZER_STATE
@@ -453,7 +453,7 @@ public:
 #endif
 	ID3D11Device* m_device11 = nullptr;
 
-  #if defined USE_MAP_REDENRING_THREAD
+  #if defined USE_MINIMAP_REDENRING_THREAD
 	#if defined USE_SHADOW_THREAD
 	ID3D11DeviceContext* shadowDeferredCtx = nullptr;
 	#endif

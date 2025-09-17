@@ -85,7 +85,7 @@ SamplerState SampleType : register(s0); // 3D (default) WRAP
 // Vertex Shader
 ////////////////////////////////////////////////////////////////////////////////
 
-PSIn MyVertexShader055Slope_Texture_Terrain(VSIn input)
+PSIn VS_Main(VSIn input)
 {
     PSIn output;
     float4 cameraPosition;
@@ -150,7 +150,7 @@ PSIn MyVertexShader055Slope_Texture_Terrain(VSIn input)
 ////////////////////////////////////////////////////////////////////////////////
 // Pixel Shader
 ////////////////////////////////////////////////////////////////////////////////
-float4 MyPixelShader055Slope_Texture_Terrain(PSIn input) : SV_TARGET
+float4 PS_Main(PSIn input) : SV_TARGET
 {
     float4 textureColor;
     float lightIntensity = 0;

@@ -22,6 +22,8 @@
 
 #include "platform.h"
 #include "mem_leak.h"
+#pragma warning(push)
+#pragma warning( disable : 4005 )		// Disable warning C4005: '' : macro redefinition
 
 #if D3D11_SPEC_DATE_YEAR == 2009
     //ON [VS2015 or VS2017 or VS2019] We will use the win10SDK (ALERT SYSTEM ONLY!) --> "D3D11_SPEC_DATE_YEAR = 2011"
@@ -1622,3 +1624,5 @@ bool SaveAsPNG_Debug(const std::wstring& originalFile, const DirectX::ScratchIma
     //    DirectX::DDS_FLAGS_NONE, ddsPath.c_str()));
 }
 #endif
+
+#pragma warning(pop)

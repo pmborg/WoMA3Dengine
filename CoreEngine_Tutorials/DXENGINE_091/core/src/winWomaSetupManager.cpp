@@ -276,7 +276,7 @@ bool WomaSetupManager::Initialize(void* Driver)
 			SendMessage(hWndComboBoxperMonitor[mon], CB_SETCURSEL, 0, NULL); //Default Value: index: 0
 		}
 #endif
-#if _NOT !defined DX_ENGINE
+#if _NOT //!defined DX_ENGINE
 		if (!SystemHandle->AppSettings->FULL_SCREEN)
 		{
 		EnableWindow(hWndTitleLabelperMonitor[mon], false);

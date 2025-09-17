@@ -119,28 +119,28 @@ void LoadAllMeshModels(UINT this_level, ApplicationClass* app, MeshApplication* 
 #if DX_ENGINE_LEVEL >= 84 && defined USE_MODEL2
 	if (WOMA::game_state == GAME_STOP) return;
     womamesh2.assimpSceneModel = SceneModel::LoadModelToScene(DX_ENGINE_LEVEL, true, 0, WOMA::LoadFile((TCHAR*)ASSIMP_MODEL_FEMALE), "", womamesh2.scene, demoapp->m_Graphics);
-#if defined SCENE_SKIN
+#if defined SCENE_MOVIN_SKIN
     {
 #ifdef LOAD_WALK
         std::ifstream fileIn(WOMA::LoadFile((TCHAR*)MODEL_FEMALE_PATH));
         std::string filename;
         while (fileIn)								    // Loop until the end of the file is reached
         {
-            fileIn >> app->filmeKey.timeFrame;			// Get next string from file
+            fileIn >> demo_mesh1.filmeKey.timeFrame;			// Get next string from file
             if (fileIn) {
-                fileIn >> app->filmeKey.X; fileIn >> app->filmeKey.Y; fileIn >> app->filmeKey.Z;
-                fileIn >> app->filmeKey.rotY;
-                app->loadFilme.push_back(app->filmeKey);
+                fileIn >>demo_mesh1.filmeKey.X; fileIn >>demo_mesh1.filmeKey.Y; fileIn >>demo_mesh1.filmeKey.Z;
+                fileIn >>demo_mesh1.filmeKey.rotY;
+               demo_mesh1.loadFilme.push_back(demo_mesh1.filmeKey);
             }
         }
 
         fileIn.close();
 #endif
     }
-    if (!app->m_characterPos)
-        app->m_characterPos = NEW PositionClass(0);
-    if (!app->m_character)
-        app->m_character = NEW PlayerClass(0);
+    if (!demo_mesh1.m_characterPos)
+       demo_mesh1.m_characterPos = NEW PositionClass(0);
+    if (!demo_mesh1.m_character)
+       demo_mesh1.m_character = NEW PlayerClass(0);
 #endif
 #endif
 
@@ -209,14 +209,14 @@ void UpdateAllMeshAnimations(float deltaTime)
         womamesh1.assimpSceneModel->readyToRender = true;
     }
 #endif
-#if DX_ENGINE_LEVEL >= 84 && defined (SCENE_SKIN)
+#if DX_ENGINE_LEVEL >= 84 && defined (SCENE_MOVIN_SKIN)
     if (womamesh2.assimpSceneModel && womamesh2.assimpSceneModel->loaded)
     {
         demo->animJob.UpdateTimeElapsed(womamesh2.scene, deltaTime);
         womamesh2.assimpSceneModel->readyToRender = true;
     }
 #endif
-#if DX_ENGINE_LEVEL >= 86 && defined (SCENE_SKIN)
+#if DX_ENGINE_LEVEL >= 86 && defined (SCENE_MOVIN_SKIN)
     if (womamesh3.assimpSceneModel && womamesh3.assimpSceneModel->loaded)
     {
         demo->animJob.UpdateTimeElapsed(womamesh3.scene, deltaTime);
@@ -276,10 +276,10 @@ void RenderAllMeshModels(ID3D11DeviceContext* m_DeviceContext)
 
     // Model 2 ------------------------------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 84 && defined USE_MODEL2
-#if defined SCENE_SKIN
+#if defined SCENE_MOVIN_SKIN
     if (womamesh2.assimpSceneModel && womamesh2.assimpSceneModel &&
         womamesh2.assimpSceneModel && womamesh2.assimpSceneModel->readyToRender && 
-        SystemHandle->m_Application->m_characterPos)
+		demo_mesh1.m_characterPos)
     {
         XMMATRIX world = XMMatrixIdentity();
         //Scale:
@@ -290,13 +290,13 @@ void RenderAllMeshModels(ID3D11DeviceContext* m_DeviceContext)
 
         XMMATRIX rotX = XMMatrixRotationX(PI / 2);
         world *= rotX;
-        XMMATRIX rotY = XMMatrixRotationY(PI + SystemHandle->m_Application->m_characterPos->m_rotationY);
+        XMMATRIX rotY = XMMatrixRotationY(PI + demo_mesh1.m_characterPos->m_rotationY);
         world *= rotY;
 
         //Translate:
-        world.r[3].m128_f32[0] = SystemHandle->m_Application->m_characterPos->m_positionX;  //_41: X
-        world.r[3].m128_f32[1] = SystemHandle->m_Application->m_characterPos->m_positionY;  //_42: Y 
-        world.r[3].m128_f32[2] = SystemHandle->m_Application->m_characterPos->m_positionZ;  //_43: Z
+        world.r[3].m128_f32[0] = demo_mesh1.m_characterPos->m_positionX;  //_41: X
+        world.r[3].m128_f32[1] = demo_mesh1.m_characterPos->m_positionY;  //_42: Y 
+        world.r[3].m128_f32[2] = demo_mesh1.m_characterPos->m_positionZ;  //_43: Z
 
         womamesh2.scene.UpdateWorldMatrixModel(m_DeviceContext, demoapp->m_Graphics, world);
         demo->gBufferPass->Render(m_DeviceContext, demoapp->m_Graphics, womamesh2.scene);
@@ -308,7 +308,7 @@ void RenderAllMeshModels(ID3D11DeviceContext* m_DeviceContext)
     // Model 3 ------------------------------------------------------------------------------------------
     if (womamesh3.assimpSceneModel && womamesh3.assimpSceneModel && 
         womamesh3.assimpSceneModel && womamesh3.assimpSceneModel->readyToRender
-        /* && SystemHandle->m_Application->m_characterPos*/)
+        /* && demo_mesh1.m_characterPos*/)
     {
         XMMATRIX world = XMMatrixIdentity();
         //Scale:
@@ -421,26 +421,26 @@ void ApplicationClass::UpdateMeshAnimations()
     previousTime = currentTime;
     total_deltaTime = (timeGetTime() - m_startTime);
 
-#if defined ( LOAD_WALK ) && defined (SCENE_SKIN)
+#if defined ( LOAD_WALK ) && defined (SCENE_MOVIN_SKIN)
     // Do the Movement Animation of the "Character"
     // ============================================
-    if (m_characterPos)
+    if (demo_mesh1.m_characterPos)
     {
-        if (filmeIdx < loadFilme.size()) 	// Prepare to read the next movement animation
+        if (filmeIdx < demo_mesh1.loadFilme.size()) 	// Prepare to read the next movement animation
         {
-            m_characterPos->m_positionX = loadFilme[filmeIdx].X;
-            m_characterPos->m_positionZ = loadFilme[filmeIdx].Z;
-            m_characterPos->m_positionY = mainTerrain->getTerrainHeight(TERRAIN_ID, m_characterPos->m_positionX, m_characterPos->m_positionZ);
-            m_characterPos->m_rotationY = DEG2RAD(loadFilme[filmeIdx].rotY);
+            demo_mesh1.m_characterPos->m_positionX = demo_mesh1.loadFilme[filmeIdx].X;
+            demo_mesh1.m_characterPos->m_positionZ = demo_mesh1.loadFilme[filmeIdx].Z;
+            demo_mesh1.m_characterPos->m_positionY = mainTerrain->getTerrainHeight(TERRAIN_ID, demo_mesh1.m_characterPos->m_positionX, demo_mesh1.m_characterPos->m_positionZ);
+            demo_mesh1.m_characterPos->m_rotationY = DEG2RAD(demo_mesh1.loadFilme[filmeIdx].rotY);
 
-            while (filmeIdx < loadFilme.size() && loadFilme[filmeIdx].timeFrame <= total_deltaTime) {
+            while (filmeIdx < demo_mesh1.loadFilme.size() && demo_mesh1.loadFilme[filmeIdx].timeFrame <= total_deltaTime) {
                 filmeIdx++;
             }
         }
         else {
   
-            m_characterPos->m_positionX = 20.0f;
-            m_characterPos->m_positionZ = 20.0f;
+            demo_mesh1.m_characterPos->m_positionX = 20.0f;
+            demo_mesh1.m_characterPos->m_positionZ = 20.0f;
             filmeIdx = 0;
         }
     }

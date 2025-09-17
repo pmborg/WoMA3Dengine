@@ -21,8 +21,6 @@
 #pragma once
 #pragma warning( disable : 5208 ) // warning C5208: unnamed class used in typedef name cannot declare members other than non-static data members, member enumerations, or member classes
 
-// Convert from tyni v1 to v2: https://phabricator.mitk.org/T27985
-
 #include "platform.h"
 #if defined USE_TINYXML_LOADER
 

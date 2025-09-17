@@ -87,12 +87,12 @@ shader 5.1 win10 - DX12
 shaderTree shaderManager_40[] =
 {
 //#if DX_ENGINE_LEVEL >= 21 // SHADER_COLOR
-	/* 00  */{ (void*)MyVertexShader021Color_40, NULL, (void*)MyPixelShader021Color_40, sizeof(MyVertexShader021Color_40), 0, sizeof(MyPixelShader021Color_40) }
+	/* 00  */{ (void*)VS_Main_40, NULL, (void*)PS_Main_40, sizeof(VS_Main_40), 0, sizeof(PS_Main_40) }
 //#endif
 
-	/* 01 */,{ (void*)MyVertexShader022Texture_40, NULL/*(void*)MyGeometryShader022Texture_40*/, (void*)MyPixelShader022Texture_40, sizeof(MyVertexShader022Texture_40), 0 /*sizeof (MyGeometryShader022Texture_40)*/, sizeof(MyPixelShader022Texture_40) }
+	/* 01 */,{ (void*)VS_Main_40, NULL/*(void*)MyGeometryShader022Texture_40*/, (void*)PS_Main_40, sizeof(VS_Main_40), 0 /*sizeof (MyGeometryShader022Texture_40)*/, sizeof(PS_Main_40) }
 
-	/* 02  */,{ (void*)MyVertexShader023Light_40, NULL,(void*)MyPixelShader023Light_40, sizeof(MyVertexShader023Light_40),0,sizeof(MyPixelShader023Light_40) }
+	/* 02  */,{ (void*)VS_Main_40, NULL,(void*)PS_Main_40, sizeof(VS_Main_40),0,sizeof(PS_Main_40) }
 
 	/* 05 */,{ (void*)MyVertexShader047TextureLightNormal_40,NULL,(void*)MyPixelShader047TextureLightNormal_40, sizeof(MyVertexShader047TextureLightNormal_40),0,sizeof(MyPixelShader047TextureLightNormal_40) }
 
@@ -100,11 +100,11 @@ shaderTree shaderManager_40[] =
 
 shaderTree shaderManager_41[] =
 {
-	/* 00 */{ (void*)MyVertexShader021Color_41, NULL, (void*)MyPixelShader021Color_41, sizeof(MyVertexShader021Color_41), 0, sizeof(MyPixelShader021Color_41) }
+	/* 00 */{ (void*)VS_Main_41, NULL, (void*)PS_Main_41, sizeof(VS_Main_41), 0, sizeof(PS_Main_41) }
 
-	/* 01 */,{ (void*)MyVertexShader022Texture_41, NULL /*(void*)MyGeometryShader022Texture_41*/, (void*)MyPixelShader022Texture_41, sizeof(MyVertexShader022Texture_41), 0 /*sizeof (MyGeometryShader022Texture_41)*/, sizeof(MyPixelShader022Texture_41) }
+	/* 01 */,{ (void*)VS_Main_41, NULL /*(void*)MyGeometryShader022Texture_41*/, (void*)PS_Main_41, sizeof(VS_Main_41), 0 /*sizeof (MyGeometryShader022Texture_41)*/, sizeof(PS_Main_41) }
 
-	/* 02 */,{ (void*)MyVertexShader023Light_41,NULL,(void*)MyPixelShader023Light_41, sizeof(MyVertexShader023Light_41),0,sizeof(MyPixelShader023Light_41) }
+	/* 02 */,{ (void*)VS_Main_41,NULL,(void*)PS_Main_41, sizeof(VS_Main_41),0,sizeof(PS_Main_41) }
 
 #if DX_ENGINE_LEVEL >= 40  ShadowMap + Instancing 
 	/* 07 */,{ (void*)MyVertexShader051ShadowMapInstance_41,NULL,(void*)MyPixelShader051ShadowMapInstance_41, sizeof(MyVertexShader051ShadowMapInstance_41),0,sizeof(MyPixelShader051ShadowMapInstance_41) }
@@ -114,22 +114,22 @@ shaderTree shaderManager_41[] =
 
 shaderTree shaderManager_50[] =
 {
-	/* 00 */{ (void*)MyVertexShader021Color_50, NULL, (void*)MyPixelShader021Color_50, sizeof(MyVertexShader021Color_50), 0, sizeof(MyPixelShader021Color_50) }
+	/* 00 */{ (void*)VS_Main_50, NULL, (void*)PS_Main_50, sizeof(VS_Main_50), 0, sizeof(PS_Main_50) }
 
-	/* 01 */,{ (void*)MyVertexShader022Texture_50, NULL /*	(void*)MyGeometryShader022Texture_50*/, (void*)MyPixelShader022Texture_50, sizeof(MyVertexShader022Texture_50), 0/*sizeof (MyGeometryShader022Texture_50)*/, sizeof(MyPixelShader022Texture_50) }
+	/* 01 */,{ (void*)VS_Main_50, NULL /*	(void*)MyGeometryShader022Texture_50*/, (void*)PS_Main_50, sizeof(VS_Main_50), 0/*sizeof (MyGeometryShader022Texture_50)*/, sizeof(PS_Main_50) }
 
-	/* 02 */,{ (void*)MyVertexShader023Light_50,NULL,(void*)MyPixelShader023Light_50, sizeof(MyVertexShader023Light_50),0,sizeof(MyPixelShader023Light_50) }
+	/* 02 */,{ (void*)VS_Main_50,NULL,(void*)PS_Main_50, sizeof(VS_Main_50),0,sizeof(PS_Main_50) }
 
 };
 
 
 shaderTree shaderManager_51[] =
 {
-	/* 00 */{ (void*)MyVertexShader021Color_51, NULL, (void*)MyPixelShader021Color_51, sizeof(MyVertexShader021Color_51), 0, sizeof(MyPixelShader021Color_51) }
+	/* 00 */{ (void*)VS_Main_51, NULL, (void*)PS_Main_51, sizeof(VS_Main_51), 0, sizeof(PS_Main_51) }
 
-	/* 01 */,{ (void*)MyVertexShader022Texture_51,	NULL /*(void*)MyGeometryShader022Texture_51*/, (void*)MyPixelShader022Texture_51, sizeof(MyVertexShader022Texture_51), 0 /*sizeof(MyGeometryShader022Texture_51)*/, sizeof(MyPixelShader022Texture_51) }
+	/* 01 */,{ (void*)VS_Main_51,	NULL /*(void*)MyGeometryShader022Texture_51*/, (void*)PS_Main_51, sizeof(VS_Main_51), 0 /*sizeof(MyGeometryShader022Texture_51)*/, sizeof(PS_Main_51) }
 
-	/* 02 */,{ (void*)MyVertexShader023Light_51,NULL,(void*)MyPixelShader023Light_51, sizeof(MyVertexShader023Light_51),0,sizeof(MyPixelShader023Light_51) }
+	/* 02 */,{ (void*)VS_Main_51,NULL,(void*)PS_Main_51, sizeof(VS_Main_51),0,sizeof(PS_Main_51) }
 
 };
 

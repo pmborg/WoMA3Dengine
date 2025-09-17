@@ -37,6 +37,14 @@
 #define N_BUSH_0  0
 
 #if defined SIMPLE
+#define N_BILLBOARD 1//3
+#define N_FENCES    0
+#define N_FIRE      0
+#define N_GRASS_0   0
+#define N_BUSH_0    0
+#else
+
+#if defined NO3DBILL
 #define N_BILLBOARD 3
 #define N_FENCES    0
 #define N_FIRE      0
@@ -48,6 +56,8 @@
 #define N_FIRE         1
 #define N_GRASS_0   2000 //11 animated grass 
 #define N_BUSH_0     750 //12 BUSHs
+#endif
+
 #endif
 
 extern ID3D11ShaderResourceView* billFileLoaded[];

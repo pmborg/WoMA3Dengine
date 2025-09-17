@@ -227,6 +227,7 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 	{
 		m_Shader11 = CreateShader(objectName, ModelShaderType);
+		ASSERT_DEBUG(m_Shader11);
 		IF_NOT_RETURN_FALSE(m_Shader11);
 	}
 #endif

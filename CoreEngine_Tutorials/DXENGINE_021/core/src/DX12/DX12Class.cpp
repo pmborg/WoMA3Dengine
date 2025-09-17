@@ -648,7 +648,7 @@ namespace DirectX {
 		//DO: setViewportDevice(screenWidth, screenHeight);
 		//DO: setProjectionMatrixWorldMatrixOrthoMatrix(screenWidth, screenHeight, screenNear, screenDepth);
 		//
-		Resize(screenWidth, screenHeight, screenNear, screenDepth, fullscreen, depthBits);		//Init Step: 7 (Include: 8,9,10,11,12) // Get Projection Matrix!
+		Resize(g_USE_MONITOR, screenWidth, screenHeight, screenNear, screenDepth, fullscreen, depthBits);		//Init Step: 7 (Include: 8,9,10,11,12) // Get Projection Matrix!
 
 		//Init Step: 6 - Cull Back / Front:
 #if defined USE_RASTERIZER_STATE

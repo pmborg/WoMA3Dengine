@@ -79,7 +79,7 @@
 		else
 		{
 			// Get Fixed Light:
-			const float* light = SystemHandle->m_Application->m_Light->GetDirection();
+			const float* light = SystemHandle->m_Application->app_Light->GetDirection();
 			vertex.x = MyLightVertexVector[0].x - light[0] * localSunDistance;
 			vertex.y = localSunDistance;
 			vertex.z = MyLightVertexVector[0].z - light[2] * localSunDistance;
@@ -90,22 +90,22 @@
 
 #if defined DX_ENGINE
 		XMVECTOR vec = XMVector3Normalize(XMVectorSet(vertex.x, vertex.y, vertex.z, 1));
-		m_Light->SetDirection(-vec.m128_f32[0], -vec.m128_f32[1], vec.m128_f32[2]);
+		app_Light->SetDirection(-vec.m128_f32[0], -vec.m128_f32[1], vec.m128_f32[2]);
 #else
 		WOMA::vec3 vec = {};
 		WOMA::vec3 Init(vertex.x, vertex.y, vertex.z);
 
 		vec = vector3dNormalize(Init);
 	  #if defined WINDOWS_PLATFORM
-		m_Light->SetDirection(-vec.m128_f32[0], -vec.m128_f32[1], -vec.m128_f32[2]);
+		app_Light->SetDirection(-vec.m128_f32[0], -vec.m128_f32[1], -vec.m128_f32[2]);
 	  #else
-		m_Light->SetDirection(-vec.x, -vec.y, vec.z);
+		app_Light->SetDirection(-vec.x, -vec.y, vec.z);
 	  #endif
 #endif
 
-		//Generate the new m_Light: ViewMatrix NO NEED, for shadows!??
+		//Generate the new app_Light: ViewMatrix NO NEED, for shadows!??
 		#if defined DX_ENGINE //&& future
-		m_Light->GenerateViewMatrix(vertex.x, vertex.y, vertex.z);
+		app_Light->GenerateViewMatrix(vertex.x, vertex.y, vertex.z);
 		#endif
 	}
 

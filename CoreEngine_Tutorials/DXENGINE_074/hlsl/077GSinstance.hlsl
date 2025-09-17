@@ -74,7 +74,7 @@ SamplerState SampleType; //: register(s0);		// 3D (default) WRAP
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
 ////////////////////////////////////////////////////////////////////////////////
-GSIn MyVertexShader077GS(VSIn input, uint instanceID : SV_InstanceID)
+GSIn VS_Main(VSIn input, uint instanceID : SV_InstanceID)
 {
     GSIn output;
 	float4 cameraPosition;
@@ -150,7 +150,7 @@ GSIn MyVertexShader077GS(VSIn input, uint instanceID : SV_InstanceID)
 }
 
 [maxvertexcount(3)]
-void MyGSShader077GS(triangle GSIn input[3], inout TriangleStream<PSIn> triStream)
+void GS_Main(triangle GSIn input[3], inout TriangleStream<PSIn> triStream)
 {
     PSIn output;
     float3 camPos = mul(input[0].position, WV).xyz;
@@ -190,7 +190,7 @@ void MyGSShader077GS(triangle GSIn input[3], inout TriangleStream<PSIn> triStrea
 ////////////////////////////////////////////////////////////////////////////////
 // Pixel Shader
 ////////////////////////////////////////////////////////////////////////////////
-float4 MyPixelShader077GS(GSIn input) : SV_TARGET
+float4 PS_Main(GSIn input) : SV_TARGET
 {
 	float4	textureColor = pixelColor;    // SET PIXEL COLOR
 	float	lightIntensity = 0;

@@ -139,7 +139,7 @@ xmlobj3d* BillClass::fillxml(ID3D11DeviceContext* pContext, int id, UINT type)
 	xmlobj.posZ = m_Trees[id].vPos.z;
 	xmlobj.translateY = m_Trees[id].vPos.y;
 	xmlobj.rotY = m_Trees[id].rotY;
-	xmlobj.shader = SHADER_TEXTURE_LIGHT_FAST;
+	xmlobj.shader = SHADER_TEXTURE_LIGHT_FAST; //83
 	xmlobj.instances = 0;			//40
 	xmlobj.castShadow = false;		//41
 	xmlobj.renderShadows = false;	//41
@@ -208,6 +208,7 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 		float PosZ = 0;
 		while (height <= 0 ||		//not on water
 			height > 1.0f	//not above 1m
+			|| (m_Trees[i].vPos.x >= 93 && m_Trees[i].vPos.x <= 101)
 			|| (m_Trees[i].vPos.x >= 27 && m_Trees[i].vPos.x <= 53) && (m_Trees[i].vPos.z >= 20 && m_Trees[i].vPos.z <= 38) //out of house (compound)
 			|| (m_Trees[i].vPos.x < borderLimit || m_Trees[i].vPos.x > m_terrainWidth - borderLimit)		//no near limits
 			|| (m_Trees[i].vPos.z < borderLimit || m_Trees[i].vPos.z > 220 /*m_terrainHeight - borderLimit*/)		//no near limits
@@ -227,6 +228,27 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 			//
 			//BILL_FLOWER_0,	//6	
 
+#if defined  NO3DBILL
+			if (i == 0)
+			{
+				PosX = 60;
+				PosZ = 60;
+				type = 0;
+			}
+			else if (i == 1)
+			{
+				PosX = 61;
+				PosZ = 61;
+				type = 3;
+			}
+			else if (i == 2)
+			{
+				PosX = 62;
+				PosZ = 62;
+				type = 6;
+			}
+			else
+#endif
 			{
 			PosX = (float)((rand() % (m_terrainWidth * 100)) / 100.0f);
 			PosZ = (float)((rand() % (m_terrainHeight * 100)) / 100.0f);
@@ -250,8 +272,8 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 			scale += 1.5f;
 			//height -= 0.5f;
 		}
-		//if (type >= 6)					// Make flowers Smaller
-		//	scale = scale / 2;
+		if (type >= 6)					// Make flowers Smaller
+			scale = scale / 1.5f;
 
 		m_Trees[i].ID = i;
 		m_Trees[i].type = type;
@@ -350,6 +372,7 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 		float height = -100; //Initially Invalid
 		while (height <= 0		//not on water
 			|| height > 1.0f	//not above 1m
+			|| (m_Trees[i].vPos.x >= 93 && m_Trees[i].vPos.x <= 101)
 			|| (m_Trees[i].vPos.x >= 27 && m_Trees[i].vPos.x <= 53) && (m_Trees[i].vPos.z >= 20 && m_Trees[i].vPos.z <= 38) //out of house (compound)
 			|| (m_Trees[i].vPos.x < borderLimit || m_Trees[i].vPos.x > m_terrainWidth - borderLimit)			//no near limits
 			|| (m_Trees[i].vPos.z < borderLimit || m_Trees[i].vPos.z > 220 /*m_terrainHeight - borderLimit*/)	//no near limits
@@ -383,6 +406,7 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 		float height = -100; //Initially Invalid
 		while (height <= 0		//not on water
 			|| height > 1.0f	//not above 1m
+			|| (m_Trees[i].vPos.x >= 93 && m_Trees[i].vPos.x <= 101)
 			|| (m_Trees[i].vPos.x >= 27 && m_Trees[i].vPos.x <= 53) && (m_Trees[i].vPos.z >= 20 && m_Trees[i].vPos.z <= 38) //out of house (compound)
 			|| (m_Trees[i].vPos.x < borderLimit || m_Trees[i].vPos.x > m_terrainWidth - borderLimit)			//no near limits
 			|| (m_Trees[i].vPos.z < borderLimit || m_Trees[i].vPos.z > 220 /*m_terrainHeight - borderLimit*/)	//no near limits

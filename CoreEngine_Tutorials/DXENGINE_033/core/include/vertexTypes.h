@@ -118,7 +118,7 @@ struct SentenceType
 
 #if defined DX_ENGINE
 	DirectX::DXtextureVertexType* vertices = NULL;
-#endif
+
 #if defined DX9 || defined DX11
 	ID3D11Buffer* vertexBuffer = NULL;	//DX11
 	ID3D11Buffer* indexBuffer = NULL;	//DX11
@@ -131,6 +131,8 @@ struct SentenceType
 	ID3D12Resource*				m_vertexBuffer = NULL;		//DX12
 	ID3D12Resource*				m_indexBuffer = NULL; 		//DX12
 #endif
+#endif
+
 	int vertexCount=0, indexCount=0, maxLength=0;			//Common
 	float red=-1, green = -1, blue = -1;					//Common
 };

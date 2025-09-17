@@ -123,6 +123,13 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	InitializeSystemScreen(10, 10); // SETUP SCREEN: F1,F2,F3,F4,F5,F6 (RUNNING NOW ON: PaintSetup())
 #endif
 
+		StartTimer();	// START WINDOWS TIMER: ("Window Title" refresh & Real-Time Weather refresh)
+
+#if !defined USE_LOADING_THREADS
+	if (WOMA::game_state == GAME_LOADING)
+		WOMA::game_state = GAME_RUN;	// Let it run!
+#endif
+
 	return true; // GREEN LIGHT: To Start Rendering! :)
 }
 

@@ -130,27 +130,34 @@ namespace DirectX {
 		// VERTEX CBUFFER:
 		// --------------------------------------------------------------------------------------------
 		// BLOCK: VS1
-		//world;	// Not Initialixed
-		//WVP;		// Not Initialixed
-		//WV;		// Not Initialixed
+		//-----------
+		//	worldMatrix;	//worldMatrix
+		//	view;			//view
+		//	projection;		//projection
+		//  WV;				//worldMatrix+viewMatrix
+		//  WVP;			//worldMatrix+viewMatrix+projectionMatrix
 
 		// BLOCK2: VS2
+		//------------
 		hasLight = false;
 		hasSpecular = false;
 		hasNormMap = false;
 		hasFog = false;
 
 		// BLOCK: VS3
-		//lightDirection;	// Not Initialixed
+		//-----------
+		//lightDirection;	// Not Initialized
 		ambientColor = XMFLOAT4(0, 0, 0, 0);;	// LIGHT: Ka
 		diffuseColor = XMFLOAT4(1, 1, 1, 0);;	// LIGHT: Kd
 		emissiveColor = XMFLOAT4(0, 0, 0, 0);;	// LIGHT: Ke
 
 		// BLOCK4:
+		//-----------
 		fogStart = 0;
 		fogEnd = 0;
 		castShadow = false;
-		//VSpad2
+
+
 
 		// PIXEL CBUFFER:
 		// --------------------------------------------------------------------------------------------
@@ -271,9 +278,6 @@ namespace DirectX {
 		}
 #endif
 
-#if TUTORIAL_CHAP >= 62 // FIRE
-		SAFE_RELEASE(m_sampleStateFire);
-#endif
 	}
 
 	// ----------------------------------------------------------------------------------------------
@@ -331,8 +335,8 @@ namespace DirectX {
 		std::wstring vsFilename = L"";
 		std::wstring psFilename = vsFilename;
 #if D3D11_SPEC_DATE_YEAR == 2009
-		std::string vertexHLSL = "MyVertexShader021Color";
-		std::string pixelHLSL = "MyPixelShader021Color";
+		std::string vertexHLSL = "VS_Main";
+		std::string pixelHLSL = "PS_Main";
 #else
 		std::string vertexHLSL = "";
 		std::string pixelHLSL = "";
@@ -343,8 +347,8 @@ namespace DirectX {
 		case SHADER_COLOR:
 			vsFilename.append(L"hlsl/021Color.hlsl");
 			psFilename = vsFilename;
-			vertexHLSL.append("MyVertexShader021Color");
-			pixelHLSL.append("MyPixelShader021Color");
+			vertexHLSL.append("VS_Main");
+			pixelHLSL.append("PS_Main");
 			break;
 //NEW SHADER:
 
@@ -821,7 +825,6 @@ namespace DirectX {
 #if defined DX11 || defined DX9
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 		{
-
 
 			// --------------------------------------------------------------------------------------------
 			// CREATE Buffer(s) DATA for "Vertex Shader"

@@ -92,12 +92,12 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
     bool isAnimatedBill;
 };
 
-
+#include "light.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
 ////////////////////////////////////////////////////////////////////////////////
-PSIn MyVertexShader083Light(VSIn input)
+PSIn VS_Main(VSIn input)
 {
 	PSIn output;
 	float4 cameraPosition;
@@ -126,7 +126,7 @@ PSIn MyVertexShader083Light(VSIn input)
 ////////////////////////////////////////////////////////////////////////////////
 // Pixel Shader
 ////////////////////////////////////////////////////////////////////////////////
-float4 MyPixelShader083Light(PSIn input) : SV_TARGET
+float4 PS_Main(PSIn input) : SV_TARGET
 {
 #if defined PS_USE_FOG
     float4 fogColor = float4(87.0f / 256.0f, 87 / 256.0f, 87.0f / 256.0f, 1.0f);
@@ -135,9 +135,9 @@ float4 MyPixelShader083Light(PSIn input) : SV_TARGET
 	//-----------------------------------------------------------------------------------
 	// 21 & 41: TEXTURE: Sample the pixel color from the texture using the sampler at this texture coordinate location
     float4 textureColor = shaderTexture.Sample(SampleType, input.texCoords);
-    //float lightIntensity = PSlightFunc1(input.normal);
+    float lightIntensity = PSlightFunc1(input.normal);
     float4 ambientColor = float4(0.55f, 0.55f, 0.55f, 1);
-    textureColor = textureColor * saturate(ambientColor /*+ lightIntensity*/);
+    textureColor = textureColor * saturate(0.6f + lightIntensity);
 
 #if defined PS_USE_FOG
     if (hasFog)
@@ -151,7 +151,5 @@ float4 MyPixelShader083Light(PSIn input) : SV_TARGET
     }
 #endif
     
-    //return float4(0, 1, 1, 1);
-    //textureColor.a = 1;
 	return textureColor;
 }

@@ -21,7 +21,10 @@
 #pragma once
 
 // -------------------------------------------------------------------------------------------------
-#pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
+#pragma warning( push )
+#pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
+#pragma warning( disable : 4002 ) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
+
 #include "main.h"
 
 #if defined WINDOWS_PLATFORM && defined DX_ENGINE
@@ -46,6 +49,10 @@
 #include "Math3D.h"
 #include "fpsClass.h"
 #include "timerClass.h"
+#endif
+
+#if defined CHECK_OBJ_COLISION
+#include "Tree.h"
 #endif
 
 #if defined USE_ASSIMP_LATEST && DEMO_LEVEL >= 79 && DEMO_LEVEL <= 80
@@ -104,19 +111,10 @@ extern UINT g_NetID;
 #endif
 
 #if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION
-struct compoundTreeLoadOrder {
-    UINT compoundTreeId=0;
-    UINT order=0;
-    bool ready=false;
-};
-
 extern int __cdecl CompoundSortCB(const VOID* arg1, const VOID* arg2);
 #endif
 
 inline bool ShouldDrawUI(int monIdx) { return monIdx == 0; /*kPrimaryMon;*/ }
-
-#pragma warning( push )
-#pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
 
 #if defined DX_ENGINE
 	#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {\
@@ -170,7 +168,7 @@ public:
 	
 	void Shutdown();
 	// --------------------------------------------------------------
-	#ifdef WINDOWS_PLATFORM && defined USE_TIMER_CLASS
+	#if defined WINDOWS_PLATFORM && defined USE_TIMER_CLASS
 	void Benchmark();
 	#endif
 
@@ -193,7 +191,7 @@ public:
 #endif
 
 #if DX_ENGINE_LEVEL >= 23 || defined USE_VIEW2D_SPRITES
-	void AppPosRender(UINT monitorWindow, void* mainCtx);																// POS-RENDER - 2D: Render 
+	void AppPosRender(UINT monitorWindow, float dayLightFade, void* mainCtx);																// POS-RENDER - 2D: Render 
 #endif
 
 
@@ -212,14 +210,10 @@ public:
 
 //83&84:
 
+
+
 #if defined USE_DIRECT_INPUT
 	std::vector<PositionClass*> m_Position;
-#endif
-
-#if defined USE_3RD_PERSON_CAMERA
-    float m_camYaw = 0.0f;
-    float m_camPitch = 0.0f;
-    DIMOUSESTATE2 mouseLastState = {};
 #endif
 
 #if defined CHECK_OBJ_COLISION
@@ -233,7 +227,7 @@ public:
                 bool getPoligon = false);
     bool PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTOR& triV3, XMVECTOR& point);
     
-    compoundTreeLoadOrder compoundTreeLoadingOrder[10000] = {}; // MAX 10000 Objs on Scene
+    compoundTreeLoadOrder compoundTreeLoadingOrder[10000] = {}; // MAX: 10000 OBJs on Scene
 #endif
 
 #if defined USE_SKY2D || ENGINE_LEVEL >= 27 // SKY
@@ -281,7 +275,7 @@ private:
 #endif
 
 public:
-	double	dt=0;	// Delta time
+	float	dt=0;	// Delta time
 
 #if defined SCENE_COMPOUND
 	void LoadCompound(int i, WomaDriverClass* Driver);
@@ -358,6 +352,8 @@ public:
 #endif
 
 };
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #endif
 

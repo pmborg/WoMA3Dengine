@@ -212,7 +212,7 @@ public:
 	#endif
 
 	//TERRAINs:
-#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN //24
+#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_REALEARTH_TERRAIN //24
 	void		initUnderWaterDemo		(void* ctx, UINT terrainId);
 #endif
 #if defined SCENE_WATER_TERRAIN

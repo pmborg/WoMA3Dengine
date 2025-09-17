@@ -56,9 +56,9 @@
 #if defined USE_FRUSTRUM
 	#if defined DX11 || defined DX9 || defined DX12
 	#include "DXfrustumClass.h"
-	#endif
 
 	#define FrustumClass DXfrustumClass
+	#endif
 #endif
 
 #if defined ALLOW_PRINT_SCREEN_SAVE_PNG && defined DX11
@@ -100,7 +100,7 @@ enum SHADER_TYPE
 		SHADER_TEXTURE_LIGHT_SAVESHADOW_INSTANCED,			//040: Aux. Shader (render in texture), but using Instances (used on 41,42)
 		SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED,			//041ShadowMapInstance.hlsl: INSTANCED like 36 shadow, but using Instances
 		SHADER_NORMAL_BUMP_INSTANCED,						//099: INSTANCED like 35 bump, but using Instances
-		SHADER_TEXTURE_WATER,								//054 Water waves - 054Texture.hlsl
+		SHADER_TEXTURE_WATER,								//054 Water waves - hlsl\054Texture.hlsl
 
 		// TERRAINS:
 		SHADER_Double_Color_Terrain,						//053 Double_Color_Terrain.hlsl

@@ -139,7 +139,7 @@ namespace DirectX
 			XMMATRIX	WorldInverseTranspose;
 			XMFLOAT4	vEye;
 
-			// 42 BLOCK: VS6	DX_ENGINE_LEVEL >= 42
+			// 42 BLOCK: VS6
 			float		VSrotX;
 			float		VSrotY;
 			float		VSrotZ;
@@ -202,14 +202,11 @@ namespace DirectX
 			float		nShininess;
 
 			//FIRE:
-//#if TUTORIAL_CHAP >= 62 // FIRE
-	//PS:
 			XMFLOAT2	distortion1;
 			XMFLOAT2	distortion2;
 			XMFLOAT2	distortion3;
 			float		distortionScale;
 			float		distortionBias;
-//#endif
 		};
 
 
@@ -266,6 +263,9 @@ namespace DirectX
 #if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009
 		DirectX::DX12Class* m_driver = NULL;
 #endif
+
+		bool VS_USE_WVP = true; //by default use already multiplied matrix*matrix*matrix
+
 	private:
 		UINT ShaderVersionH, ShaderVersionL;
 
@@ -311,16 +311,12 @@ namespace DirectX
 		SHADER_TYPE		m_shaderType;
 		bool			shader2D;
 
-		bool VS_USE_WVP = true; //by default use already multiplied matrix*matrix*matrix
-
 #if defined DX11 || defined DX9
 		ID3D11Buffer* m_PixelShaderBuffer11 = NULL;
 		ID3D11SamplerState* m_sampleState11 = NULL;	// Resource: "Textures" States
 
 		ID3D11SamplerState* m_sampleStateClamp11 = NULL;
-#if TUTORIAL_CHAP >= 62 // FIRE
-		ID3D11SamplerState* m_sampleStateFire;
-#endif
+		ID3D11SamplerState* m_sampleStateFire = NULL;;
 
 		ID3D11ShaderResourceView* texture11 = NULL;	// 21
 		ID3D11ShaderResourceView* texture11_2 = NULL;	// 43: Alfa Map
@@ -332,6 +328,23 @@ namespace DirectX
 
 		// --------------------------------------------------------------------------------------------
 		// Internal Shader VARs to Copy to Buffers: VS/PS
+		// --------------------------------------------------------------------------------------------
+
+		// VS7
+		float		VSshaderType = 0;	// Future
+		BOOL		isSky = false;
+		//float		vsPAD3;				// Future
+		//float		vsPAD4;				// Future
+
+		//VS FIRE:
+//#if TUTORIAL_CHAP >= 62 // FIRE
+		//VS:
+		float shaderfireframeTime = 0;
+		XMFLOAT3 scrollSpeeds, scales;
+	#if DX_ENGINE_LEVEL >= 73 && defined BILLBOARD_FOR_WINDY_GRASS
+		bool isAnimatedBill = false;
+	#endif
+
 		// --------------------------------------------------------------------------------------------
 		// BLOCK1:
 		XMFLOAT4	pixelColor = {};
@@ -358,50 +371,39 @@ namespace DirectX
 		bool		hasAlfaColor = 0;
 		float		alfaColor = 0;
 		float		PSfade = 0;			// Fade from 0 to 1
-#if defined INTRO_DEMO
+	#if defined INTRO_DEMO
 		float		frameTime = 0;		// For animations
-#endif
+	#endif
 
 		// BLOCK6:
 		BOOL		hasFog = false;
-		BOOL		isSky = false;
+		//			isSky
 		BOOL		hasAlfaMap = false;	// 43
 		BOOL		hasNormMap = false;
 
 		// BLOCK7:
-		// cameraPosition (AUTO)
+		//			cameraPosition (AUTO)
 		BOOL		castShadow = false;
 		XMFLOAT3	specularColor = {};	// 44:
 		float		nShininess = 0;		// 44:
 
-		float		VSshaderType = 0;	// Future
-		//float		vsPAD2;				// Future
-		//float		vsPAD3;				// Future
-		//float		vsPAD4;				// Future
-
-		//FIRE:
-#if TUTORIAL_CHAP >= 62 // FIRE
-		//VS:
-		float shaderfireframeTime = 0;
-		XMFLOAT3 scrollSpeeds, scales;
+		// --------------------------------------------------------------------------------------------
 		//PS
 		XMFLOAT2 distortion1, distortion2, distortion3;
 		float distortionScale, distortionBias;
-#endif
-#if DX_ENGINE_LEVEL >= 73 && defined BILLBOARD_FOR_WINDY_GRASS
-		bool isAnimatedBill = false;
-#endif
+//#endif
+
 		// --------------------------------------------------------------------------------------------
 		// Internal Shader VARs to Copy to Buffers: VS
 		// --------------------------------------------------------------------------------------------
 		float		fogStart;
 		float		fogEnd;
 
-		float		time = 0.1f;
+		float		watertime = 0.1f;
 
-#if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES // Normal Bump + Instancing 
+	#if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES // Normal Bump + Instancing 
 		UINT		m_instanceCount = 0;
-#endif
+	#endif
 
 		//Sky: 1
 	//CH90: SKY .........................

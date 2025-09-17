@@ -7,7 +7,7 @@
 //
 // This file is part of the WorldOfMiddleAge project.
 //
-// The WorldOfMiddleAge project files can not be copied or distributed for comercial use 
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
 // without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
 // You may not alter or remove any copyright or other notice from copies of the content.
 // The content contained in this file is provided only for educational and informational purposes.
@@ -20,7 +20,7 @@
 // KEY FEATURES:
 //
 // • PLATFORM ABSTRACTION :
-//      The file uses preprocessor directives to select the appropriate entry point(WinMain for Windows GUI, main for console / Linux, and android_main for Android), ensuring compatibility across different operating systems.
+//      The file uses pre-processor directives to select the appropriate entry point(WinMain for Windows GUI, main for console / Linux, and android_main for Android), ensuring compatibility across different operating systems.
 // 
 // • CENTRALIZED APPLICATION LOGIC :
 //      All platform - specific entry points delegate to a single function, APPLICATION_MAIN, which encapsulates the core engine startup, main loop, and shutdown logic.
@@ -35,15 +35,16 @@
 //      The design anticipates exceptions during startup, allowing for centralized error reporting and graceful application termination.
 // 
 // • EXTENSIBILITY :
-//      The structure supports integration with external libraries(such as Assimp for model loading) and can be easily extended for new platforms or features.
+//      The structure supports integration with external libraries(such as ASSIMP for model loading) and can be easily extended for new platforms or features.
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525256;
+//WomaIntegrityCheck = 1234525217;
 
 #if NOTES
 #include "notes.h"
 #endif
 #include "OSengine.h"
-#pragma warning(disable : 6387)				   
+#pragma warning(disable : 6387)
+int Command = EXIT_SUCCESS;
 
 #if defined WINDOWS_PLATFORM
 // -------------------------------------------------------------------------------------------------------------------------------------
@@ -51,19 +52,10 @@
 // -------------------------------------------------------------------------------------------------------------------------------------
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
-    int argc = 0;
-    char* argv[MAX_PARAMS] = { };
-    
     WOMA::Scmdline = lpCmdLine;
     WOMA::Cmdshow = nShowCmd;                        
-    COMMANDLINE_TO_ARGC_ARGV();                 // POPULATE: argc & argv
-    
-    int res = APPLICATION_MAIN(argc, argv); // ENTRY POINT!
-
-    for (int i = 0; i < MAX_PARAMS; i++)
-        SAFE_DELETE(argv[i]);
-
-    return res;
+	
+    return APPLICATION_MAIN(__argc, __argv); // ENTRY-POINT: WINDOWS (RELEASE)!
 }
 #endif
 
@@ -107,7 +99,7 @@ void android_main(android_app* state)           // ENTRY-POINT: ANDROID
 
 #endif
 
-int Command = EXIT_SUCCESS;
+
 
 // Entry point of all WoMA ENGINE Applications all "main's" call this this one (used by: WINDOWS / LINUX / ANDROID)
 // -------------------------------------------------------------------------------------------------------------------------------------

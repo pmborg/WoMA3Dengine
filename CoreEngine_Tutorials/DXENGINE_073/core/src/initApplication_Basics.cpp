@@ -624,7 +624,8 @@ bool ApplicationClass::WOMA_LOAD_OBJ(void* pContext, UINT threadID, WomaDriverCl
 		((DXmodelClass*)objModel[i])->isBill = true;
 
 		if (SystemHandle->xml_loader.theWorldXML[i].meshSRV) {
-			((DXmodelClass*)objModel[i])->meshSRV11[0] = SystemHandle->xml_loader.theWorldXML[i].meshSRV;
+			if (((DXmodelClass*)objModel[i])->meshSRV11.size() > 0)
+				((DXmodelClass*)objModel[i])->meshSRV11[0] = SystemHandle->xml_loader.theWorldXML[i].meshSRV;
 		}
 	}
 
@@ -633,9 +634,9 @@ bool ApplicationClass::WOMA_LOAD_OBJ(void* pContext, UINT threadID, WomaDriverCl
 	if (DXsystemHandle->g_DShowPlayer == NULL || (DXsystemHandle->g_DShowPlayer->m_state != STATE_RUNNING))
 #endif
 	{
-		UINT progress = ((float)WOMA::num_loading_objects / (float)(objModel_size + theWorld_size)) * 100.0f;
+		UINT progress = ((float)num_loading_objects / (float)(objModel_size + theWorld_size)) * 100.0f;
 		SendMessage(SystemHandle->hwndPrgBar, PBM_SETPOS, (WPARAM)progress, 0);
-		StringCchPrintf(title, MAX_STR_LEN, TEXT("Loading: %d / %d"), WOMA::num_loading_objects, objModel_size + theWorld_size);
+		StringCchPrintf(title, MAX_STR_LEN, TEXT("Loading: %d / %d"), num_loading_objects, objModel_size + theWorld_size);
 		SetWindowText(SystemHandle->settingstext, title);
 	}
 #endif
@@ -669,14 +670,14 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	//-----------------------------------------------------------------------------------------------------------------
 	// INIT LIGHT /////////////////////////////////////////////////////////////////////////////////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
-	m_Light = NEW LightClass;	// Create the light object
-	IF_NOT_THROW_EXCEPTION(m_Light);
-	m_Light->SetAmbientColor(0.55f, 0.55f, 0.55f, 1);	//later in world.xml
-	m_Light->SetDiffuseLightColor(1, 1, 1, 1.0f);		//later in world.xml
+	app_Light = NEW LightClass;	// Create the light object
+	IF_NOT_THROW_EXCEPTION(app_Light);
+	app_Light->SetAmbientColor(0.55f, 0.55f, 0.55f, 1);	//later in world.xml
+	app_Light->SetDiffuseLightColor(1, 1, 1, 1.0f);		//later in world.xml
   #if defined USE_REAL_SUNLIGHT_DIRECTION
-	m_Light->SetDirection(SunX / 1000, SunY / 1000, SunZ / 1000);
+	app_Light->SetDirection(SunX / 1000, SunY / 1000, SunZ / 1000);
   #else
-	m_Light->SetDirection(-0.535041273f, -1, 0);		//later in world.xml
+	app_Light->SetDirection(-0.535041273f, -1, 0);		//later in world.xml
   #endif
 
 	//LIGHT_RAY ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -748,6 +749,11 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
  #if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN		// UNDER WATER: Terrain
 	loadedTerrain[0] = NEW CTerrain(TERRAIN);
 	loadedTerrain[0]->initUnderWaterDemo(pContext, 0);			//UNDERWATER	(populate: modelVertexVector) 2022:LEVEL_ENGINE: 25
+  #endif
+
+  #if defined USE_MINIMAP_REDENRING_THREAD
+	loadedTerrain[0] = NEW CTerrain(TERRAIN);
+	loadedTerrain[0]->initTerrainWaterMeshDemo(pContext, 0);
   #endif
 
 	//1 WATER TERRAIN MESH: 6 vertex + 6 index
@@ -843,7 +849,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	// Load 3D Objects: convert XML "objects" -- Load OBJ or W3D --> VirtualModelClass:
 	theWorld_size = (UINT)SystemHandle->xml_loader.theWorldXML.size();
 	objModel_size = (UINT)objModel.size();
-	WOMA::num_loading_objects = 1;
+	num_loading_objects = 1;
 
 #if defined WINDOWS_PLATFORM
 	MSG msg = { 0 };
@@ -856,7 +862,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	{
 		WOMA_LOAD_OBJ(pContext, 0, Driver, i, SystemHandle->xml_loader.theWorldXML[i].filename);
 
-		WOMA::num_loading_objects++;
+		num_loading_objects++;
 
 
 		//Allow Refresh on Timer:
@@ -896,19 +902,19 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	// SHADOWMAP //////////////////////////////////////////////////////////////////////////////////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
-	m_Light->GenerateOrthoMatrix(15, 15, 20, 0.1f);						// Control Zoom in Shadow Map here! 15, 15
+	app_Light->GenerateOrthoMatrix(15, 15, 20, 0.1f);						// Control Zoom in Shadow Map here! 15, 15
 
-#if defined USE_REAL_SUNLIGHT_DIRECTION || !defined USE_LIGHT_RAY
+  #if defined USE_REAL_SUNLIGHT_DIRECTION || !defined USE_LIGHT_RAY
 	float LightX = USELIGHTSIZE * FAST_sin(initWorld->SunAzimuth);		// Real Sun Position on Sky:
 	float LightZ = USELIGHTSIZE * FAST_cos(initWorld->SunAzimuth);		// Real Sun Position on Sky:
 	float LightY = USELIGHTSIZE * FAST_sin(initWorld->SunElevation);	// Sun Elevation
-#else
+  #else
 	CalculateLightRayVertex(SunDistance);
 	float LightX = MyLightVertexVector[1].x;
 	float LightY = MyLightVertexVector[1].y;
 	float LightZ = MyLightVertexVector[1].z;
-#endif
-	m_Light->GenerateViewMatrix(LightX, LightY, LightZ);
+  #endif
+	app_Light->GenerateViewMatrix(LightX, LightY, LightZ);
 
 	m_RenderShadowTexture = NEW DXrendertextureclass;
 	const int SHADOWMAP_WIDTH = SystemHandle->AppSettings->MaxTextureSize;  //2048;
@@ -924,10 +930,13 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	//Finally, launch dynamic Load Compound/OBJ Thread ////////////////////////////////////////////
 	// --------------------------------------------------------------------------------------------
 #if defined CHECK_OBJ_COLISION && defined MAIN_RENDER_MAIN_OBJ //CHECK_COMPOUND_COLISION
-	for (UINT i = 0; i < WOMA::num_loading_objects; i++) {
-		compoundTreeLoadingOrder[i].compoundTreeId = i;
+/*#else
+	for (UINT i = 0; i < num_loading_objects; i++) {
+		compoundTreeLoadingOrder[i].compoundTreeId = -1;
+		compoundTreeLoadingOrder[i].modelId = i;
 		compoundTreeLoadingOrder[i].order = 0;
 	}
+*/
 #endif
 
 #if defined SAVEW3D && DX_ENGINE_LEVEL < 89

@@ -201,12 +201,7 @@ ApplicationClass::ApplicationClass()
 	metarClass = NULL;
 #endif
 
-#if defined USE_3RD_PERSON_CAMERA
-    m_camYaw = 0.0f;
-    m_camPitch = 0.0f;
-#endif
-
-#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN //24
+#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_REALEARTH_TERRAIN //24
 	//autoGenUnderWaterTerrain		= NULL;
 #endif
 
@@ -218,7 +213,7 @@ ApplicationClass::ApplicationClass()
 	TerrainQuadtree = NULL;
 #endif
 
-	m_Light = NULL;
+	app_Light = NULL;
 
 #if defined USE_LIGHT_RAY
 	m_lightRayModel = NULL;
@@ -429,7 +424,7 @@ void ApplicationClass::Shutdown()
 	for (UINT id = 0; id < MAX_TERRAINS; id++)
 		SAFE_DELETE(loadedTerrain[id]);
 
-#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN
+#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_REALEARTH_TERRAIN
 	//SAFE_DELETE (autoGenUnderWaterTerrain);
 #endif
 #if defined SCENE_MAIN_TOPO_TERRAIN
@@ -444,7 +439,7 @@ void ApplicationClass::Shutdown()
 	SAFE_DELETE (m_NextPosition);
 #endif
 
-	SAFE_DELETE (m_Light);
+	SAFE_DELETE (app_Light);
 
 #if defined USE_RASTERTEK_TEXT_FONT //27
 	SAFE_SHUTDOWN(AppTextClass);
@@ -661,7 +656,7 @@ bool ApplicationClass::Initialize(void* pContext, WomaDriverClass* Driver)
 #endif
 
 //########################################### 3D: STUFF ###########################################
-	// (m_Light && xml_loader.theWorldXML) and SCENE MANAGER: QuadTree object Loader/Render
+	// (app_Light && xml_loader.theWorldXML) and SCENE MANAGER: QuadTree object Loader/Render
 	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(pContext, Driver)); //Load All: 3D + Billboards
 
 //########################################### 2D: STUFF ###########################################

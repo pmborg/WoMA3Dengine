@@ -54,7 +54,7 @@ float rand_1_05(in float2 uv)
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
 ////////////////////////////////////////////////////////////////////////////////
-PSIn MyVertexShader054Texture(VSIn input)
+PSIn VS_Main(VSIn input)
 {
     PSIn output;
 #if defined PS_USE_FOG
@@ -115,7 +115,7 @@ PSIn MyVertexShader054Texture(VSIn input)
     return output;
 }
 
-float4 MyPixelShader054Texture(PSIn input) : SV_TARGET
+float4 PS_Main(PSIn input) : SV_TARGET
 {
     float4 textureColor = input.Color;
     textureColor[2] += (rand_1_05(float2(input.Pos[2], input.Pos[2]))) * 0.1;

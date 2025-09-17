@@ -21,7 +21,10 @@
 #pragma once
 
 // -------------------------------------------------------------------------------------------------
-#pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
+#pragma warning( push )
+#pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
+#pragma warning( disable : 4002 ) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
+
 #include "main.h"
 
 #if defined WINDOWS_PLATFORM && defined DX_ENGINE
@@ -62,7 +65,11 @@
 #include "womadriverclass.h"
 #endif
 #include "playerClass.h"
-#include "AutoGenTerrain.h"			
+#include "AutoGenTerrain.h"
+
+#if defined CHECK_OBJ_COLISION
+#include "Tree.h"
+#endif
 
 #if defined USE_ASSIMP_LATEST && DEMO_LEVEL >= 79 && DEMO_LEVEL <= 80
 #include "GLAnimationScene.h"
@@ -143,19 +150,10 @@ struct InstanceType
 #endif
 
 #if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION
-struct compoundTreeLoadOrder {
-    UINT compoundTreeId=0;
-    UINT order=0;
-    bool ready=false;
-};
-
 extern int __cdecl CompoundSortCB(const VOID* arg1, const VOID* arg2);
 #endif
 
 inline bool ShouldDrawUI(int monIdx) { return monIdx == 0; /*kPrimaryMon;*/ }
-
-#pragma warning( push )
-#pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
 
 #if defined DX_ENGINE
 	#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {\
@@ -197,6 +195,42 @@ inline bool ShouldDrawUI(int monIdx) { return monIdx == 0; /*kPrimaryMon;*/ }
 
 #pragma warning( pop )
 
+#if defined (SCENE_MOVIN_SKIN)
+struct MESH 
+{
+	// =======================
+	// SAVE WALK
+	// =======================
+	struct Filme
+	{
+		INT64 timeFrame;
+		float X, Y, Z;
+		float rotY;
+	}Filme_;
+
+	Filme filmeKey;
+
+	static std::vector<Filme> saveFilme; //SAVE_WALK
+
+	std::vector<Filme> loadFilme;
+	PlayerClass* m_character = NULL;
+	PositionClass* m_characterPos = NULL;
+};
+
+extern MESH demo_mesh1;
+#endif
+
+#if defined USE_3RD_PERSON_CAMERA
+struct MAIN_3RD_PERSON_CAMERA
+{
+	float m_camYaw = 0.0f;
+	float m_camPitch = 0.0f;
+	DIMOUSESTATE2 mouseLastState = {};
+};
+
+extern MAIN_3RD_PERSON_CAMERA main3rdPcamera;
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: ApplicationClass
 ////////////////////////////////////////////////////////////////////////////////
@@ -209,7 +243,7 @@ public:
 	
 	void Shutdown();
 	// --------------------------------------------------------------
-	#ifdef WINDOWS_PLATFORM && defined USE_TIMER_CLASS
+	#if defined WINDOWS_PLATFORM && defined USE_TIMER_CLASS
 	void Benchmark();
 	#endif
 
@@ -239,10 +273,10 @@ public:
 #endif
 
 	virtual bool WOMA_APPLICATION_Initialize3D(void * pContext, WomaDriverClass* Driver); // APP_Load
-	void AppPosRender(UINT monitorWindow, void* mainCtx);																// POS-RENDER - 2D: Render 
+	void AppPosRender(UINT monitorWindow, float dayLightFade, void* mainCtx);																// POS-RENDER - 2D: Render 
 	std::vector<ModelColorVertexType> MyLightVertexVector;
 	std::vector<ModelColorVertexType>* m_LightVertexVector;
-	LightClass* m_Light = NULL;
+	LightClass* app_Light = NULL;
 
 	#if defined USE_LIGHT_RAY
 	void CalculateLightRayVertex(float SunDistance);
@@ -255,12 +289,9 @@ public:
 #endif																			  
 	void RenderShadowPass(UINT monitorIndex, WomaDriverClass* Driver, void* pContext, float fadeLight);
 	void AppPreRender(UINT monitorWindow, WomaDriverClass* Driver, float fadeLight, void* mainCtx);	// PRE-RENDER - Shadows
-	void TerrainRender(UINT monitorWindow, WomaDriverClass* Driver, float fadeLight, XMMATRIX* m_viewMatrix, XMMATRIX* m_projectionMatrix, void* ctx);
+	void TerrainRender(UINT ThreadID, UINT monitorWindow, WomaDriverClass* Driver, float fadeLight, XMMATRIX* m_viewMatrix, XMMATRIX* m_projectionMatrix, void* ctx);
 	void StartMeshDemo(ID3D11DeviceContext* ctx);
 	void UpdateMeshAnimations();
-#if DX_ENGINE_LEVEL >= 89 && defined USE_MAP_EDITOR
-	void CheckEditor(int hitIndex, int c);
-#endif
 
 
 	// VARS:
@@ -270,6 +301,7 @@ public:
 	UINT initial_world_xml_objs = 0;
 	UINT theWorld_size=0;
 	UINT objModel_size=0;
+	UINT num_loading_objects = 1;
 
     DWORD total_deltaTime=0;
 	float billangle = 0;
@@ -285,35 +317,11 @@ public:
 #endif
 
 //83&84:
-    // =======================
-    // SAVE WALK
-    // =======================
-    struct Filme
-    {
-        INT64 timeFrame;
-        float X, Y, Z;
-        float rotY;
-    }Filme_;
 
-    Filme filmeKey;
 
-#ifdef SAVE_WALK
-    static std::vector<Filme> saveFilme;
-#endif
-#if defined (SCENE_SKIN)
-    std::vector<Filme> loadFilme;
-    PlayerClass* m_character=NULL;
-    PositionClass* m_characterPos = NULL;
-#endif
 
 #if defined USE_DIRECT_INPUT
 	std::vector<PositionClass*> m_Position;
-#endif
-
-#if defined USE_3RD_PERSON_CAMERA
-    float m_camYaw = 0.0f;
-    float m_camPitch = 0.0f;
-    DIMOUSESTATE2 mouseLastState = {};
 #endif
 
 #if defined CHECK_OBJ_COLISION
@@ -327,11 +335,7 @@ public:
                 bool getPoligon = false);
     bool PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTOR& triV3, XMVECTOR& point);
     
-    compoundTreeLoadOrder compoundTreeLoadingOrder[10000] = {}; // MAX 10000 Objs on Scene
-#endif
-
-#if DX_ENGINE_LEVEL >= 89 && defined USE_MAP_EDITOR
-    void anyMouseClickToPick();
+    compoundTreeLoadOrder compoundTreeLoadingOrder[10000] = {}; // MAX: 10000 OBJs on Scene
 #endif
 
 #if defined USE_SKY2D || ENGINE_LEVEL >= 27 // SKY
@@ -406,16 +410,12 @@ private:
 #endif
 	void	Render_SKY_SUN_MOON(float);				//30
 
-#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
-	void	RenderSceneToShadowMap(void* Driver);	//45
-#endif
-
 #if defined USE_DIRECT_INPUT//|| defined INTRO_DEMO
 	PositionClass* m_NextPosition;
 #endif
 
 public:
-	double	dt=0;	// Delta time
+	float	dt=0;	// Delta time
 
 #if defined SCENE_COMPOUND
 	void LoadCompound(int i, WomaDriverClass* Driver);
@@ -567,7 +567,14 @@ public:
 	bool myScene_has_animation = false;
 #endif
 
+#if DX_ENGINE_LEVEL >= 89 && defined USE_MAP_EDITOR
+	void anyMouseClickToPick();
+	void CheckEditor(int hitIndex, int c);
+#endif
+
 };
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #define SunDistance 512
 

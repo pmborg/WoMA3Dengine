@@ -184,6 +184,7 @@ void QuadTree::RenderNode(NodeType* node)
 	// Not really Render! But List All Models/objects to render, on this Node: (this quad is in front of camera)
     UINT world_xml_objs = (UINT)_xml_loader->theWorldXML.size(); //Get 
     VirtualModelClass* model;
+	
 	for (int i = 0; i < node->sceneNodes.size(); i++)
 	{
 		 model = node->sceneNodes[i]->nodeState.model;
@@ -208,9 +209,10 @@ void QuadTree::RenderNode(NodeType* node)
 #endif
                _xml_loader->theWorldXML[modelID].render = true;    
         }
-
+		{
 		// Add model on list to be rendered later.
         WOMA::sceneManager->visibleModelList.push_back(model);
+		}
 
 	#ifdef _DEBUG
 		totalVertexRendered += node->sceneNodes[i]->nodeState.model->m_vertexCount;

@@ -102,11 +102,10 @@ VS_OUTPUT VS_Main(VS_INPUT input)
 {
     VS_OUTPUT output;
 
-// 1) Scale local quad
+    // 1) Scale local quad
     float3 p = input.position * input.scale;
 
     // 2) Build rotation matrix around Y
-    //float rot = input.rotY + 1.57079632679; // +PI/2
     float c = cos(input.rotY);
     float s = sin(input.rotY);
     float3 r;
@@ -138,17 +137,19 @@ float4 PS_Main(VS_OUTPUT input) : SV_TARGET
     AtlasRegion region = billboardAtlasRegions[input.atlasIndex];
 
     // Remap the quad-local UVs into atlas space
-    //float2 atlasUV = region.offset + input.uv * region.scale;
-    float2 atlasUV = lerp(region.offset, region.scale, input.uv);
-    //float2 atlasUV = region.offset + input.uv * region.scale;
+    float2 atlasUV = region.offset + input.uv * region.scale;
     
     // Sample the correct texture tile
     float4 color = billboardAtlasSRV.Sample(SampleType, atlasUV);
 
+    // --- CUTOUT: don't write color *or depth* where alpha is low
+    // (prevents the "square holes / wrong order" issues)
+    const float AlphaCutoff = 0.33f; // tweak 0.25–0.5 to taste
+    clip(color.a - AlphaCutoff);
+    
     // Apply lighting (if needed)
     float lightIntensity = saturate(0.6f + PSlightFunc1(input.normal));
     color.rgb *= lightIntensity;
 
-    //return float4(0,1,1,1);
     return color;
 }
