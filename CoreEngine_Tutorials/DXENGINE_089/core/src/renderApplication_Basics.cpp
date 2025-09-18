@@ -154,7 +154,7 @@ void ApplicationClass::RenderScene(UINT monitorIndex, WomaDriverClass* driver) /
 	
 	AppRender(monitorIndex, dayLightFade, mainCtx);				// [2] 3D Render main scene while workers run in parallel
 
-	AppPosRender(monitorIndex, dayLightFade, mainCtx);						// [3] 2D: Render TRANSPARENT Parts of 3D OBJs(like: "Glass windows", "Billboards", etc...)
+	AppPosRender(monitorIndex, dayLightFade, mainCtx);			// [3] 2D: Render TRANSPARENT Parts of 3D OBJs(like: "Glass windows", "Billboards", etc...)
 
 }
 
@@ -230,14 +230,9 @@ void ApplicationClass::RenderMiniMapPass(UINT monitorWindow, WomaDriverClass* Dr
 			m_CameraMINIMAP.CalculateViewMatrix();
 		}
 #endif
-
-		// Render Water/Terrain in: to texture: m_MiniMapBitmapTexture
-		m_MiniMapBitmapTexture->SetRenderTarget(Driver, (ID3D11DeviceContext*)pContext);					// Set the render target to be the render to texture: pContext->OMSetRenderTargets
-		m_MiniMapBitmapTexture->ClearRenderTarget(Driver, (ID3D11DeviceContext*)pContext, 0.0f, 0.0f, 0.0f, 1.0f);  // Clear the render to texture!
-		TerrainRender(ThreadID, monitorWindow, Driver, fadeLight, &m_CameraMINIMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix, pContext);
 #if defined USE_MINIMAP_EXPANSION
 		for (UINT id = 0; id < SystemHandle->m_Application->initial_world_xml_objs /*world_main_size - 1*/; id++)  //TODO: use sceneManager
-		//for (int id = world_main_size - 1; id >= 0; --id) 
+			//for (int id = world_main_size - 1; id >= 0; --id) 
 		{
 			m_MiniMapBitmapTexture->SetRenderTarget(Driver, (ID3D11DeviceContext*)pContext);					// Set the render target to be the render to texture: pContext->OMSetRenderTargets
 			RenderModel(pContext, 1, monitorWindow, m_Driver, id, PASS_OPAC, &m_CameraMINIMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix);
@@ -245,6 +240,11 @@ void ApplicationClass::RenderMiniMapPass(UINT monitorWindow, WomaDriverClass* Dr
 			RenderModel(pContext, 1, monitorWindow, m_Driver, id, PASS_OPAC, &m_CameraMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix);
 		}
 #endif
+		m_Driver->TurnOnAlphaBlending(pContext);
+		// Render Water/Terrain in: to texture: m_MiniMapBitmapTexture
+		m_MiniMapBitmapTexture->SetRenderTarget(Driver, (ID3D11DeviceContext*)pContext);					// Set the render target to be the render to texture: pContext->OMSetRenderTargets
+		m_MiniMapBitmapTexture->ClearRenderTarget(Driver, (ID3D11DeviceContext*)pContext, 0.0f, 0.0f, 0.0f, 1.0f);  // Clear the render to texture!
+		TerrainRender(ThreadID, monitorWindow, Driver, fadeLight, &m_CameraMINIMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix, pContext);
 	}
 #endif
 }
@@ -592,6 +592,11 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 		m_TerrainModel[DEBUG_COLLISION_TERRAIN_ID]->RenderWithFade(fadeLight, fog);	// New function to replace these 2 line options. 
 #endif
 
+	// TRANSPARENT and SEMI-TRANSPARENT:
+	// --------------------------------------------------------------------------------------------
+#if defined INTRO_DEMO || defined USE_ALPHA_BLENDING
+	m_Driver->TurnOnAlphaBlending(pContext);
+#endif
 
 	// TERRAIN[1]: Render Mesh for WATER:
 // --------------------------------------------------------------------------------------------
@@ -609,11 +614,6 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 	//THE "OTHER" NETWORK PLAYERS
 	//----------------------------------------------------------------------------------------------------------------------
 
-	// TRANSPARENT and SEMI-TRANSPARENT:
-	// --------------------------------------------------------------------------------------------
-#if defined INTRO_DEMO || defined USE_ALPHA_BLENDING
-	m_Driver->TurnOnAlphaBlending(pContext);
-#endif
 
 	// 3D STATIC OPAC OBJECTS on WORLD.XML, that listed in: sceneManager->visibleModelList (in front of camera)
 	//----------------------------------------------------------------------------------------------------------------------

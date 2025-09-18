@@ -118,7 +118,7 @@ void ApplicationClass::RenderScene(UINT monitorIndex, WomaDriverClass* driver) /
 	AppRender(monitorIndex, dayLightFade, mainCtx);				// [2] 3D Render main scene while workers run in parallel
 
 #if DX_ENGINE_LEVEL >= 23 || defined USE_VIEW2D_SPRITES
-	AppPosRender(monitorIndex, dayLightFade, mainCtx);						// [3] 2D: Render TRANSPARENT Parts of 3D OBJs(like: "Glass windows", "Billboards", etc...)
+	AppPosRender(monitorIndex, dayLightFade, mainCtx);			// [3] 2D: Render TRANSPARENT Parts of 3D OBJs(like: "Glass windows", "Billboards", etc...)
 #endif
 
 }
@@ -204,6 +204,8 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 		m_TerrainModel[DEBUG_COLLISION_TERRAIN_ID]->RenderWithFade(fadeLight, fog);	// New function to replace these 2 line options. 
 #endif
 
+	// TRANSPARENT and SEMI-TRANSPARENT:
+	// --------------------------------------------------------------------------------------------
 
 	// TERRAIN[1]: Render Mesh for WATER:
 // --------------------------------------------------------------------------------------------
@@ -211,8 +213,6 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 	//THE "OTHER" NETWORK PLAYERS
 	//----------------------------------------------------------------------------------------------------------------------
 
-	// TRANSPARENT and SEMI-TRANSPARENT:
-	// --------------------------------------------------------------------------------------------
 
 	// 3D STATIC OPAC OBJECTS on WORLD.XML, that listed in: sceneManager->visibleModelList (in front of camera)
 	//----------------------------------------------------------------------------------------------------------------------
