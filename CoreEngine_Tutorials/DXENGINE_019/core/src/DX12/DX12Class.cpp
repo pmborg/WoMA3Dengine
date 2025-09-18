@@ -776,7 +776,7 @@ namespace DirectX {
 		}
 
 #if defined CLIENT_SCENE_TEXT || defined USE_VIEW2D_SPRITES // 26
-		Initialize3DCamera();
+		Initialize2Dand3DCamera();
 #endif
 
 		return true;
@@ -1521,7 +1521,7 @@ namespace DirectX {
 
 	// TODO: go to Virtual Class?
 	// ----------------------------------------------------------------------------------------------
-	void DX12Class::Initialize3DCamera()
+	void DX12Class::Initialize2Dand3DCamera()
 		// ----------------------------------------------------------------------------------------------
 	{
 #if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 || defined USE_DX_DRIVER_FONT

@@ -647,15 +647,8 @@ bool ApplicationClass::WOMA_LOAD_OBJ(void* pContext, UINT threadID, WomaDriverCl
 }
 #endif
 
-// --------------------------------------------------------------------------------------------
-// INIT/LOAD 3D Objects
-// --------------------------------------------------------------------------------------------
-bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverClass* Driver)
-// --------------------------------------------------------------------------------------------
+bool ApplicationClass::InitLightandDemos(void* pContext, WomaDriverClass* Driver)
 {
-	womalogauto(TEXT("----------------------------------------------------------------------------------------\n"));
-	womalogauto(TEXT("[%d]: WOMA_APPLICATION_Initialize3D()\n"), gettid());
-
 	//-----------------------------------------------------------------------------------------------------------------
 	// INIT ASTROs (Sun Moon) /////////////////////////////////////////////////////////////////////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
@@ -711,7 +704,13 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	IF_NOT_RETURN_FALSE(initCubes3D(pContext));
 #endif
 
-    //=================================================================================================================
+
+	return true;
+}
+
+void ApplicationClass::InitMainSky(void* pContext, WomaDriverClass* Driver)
+{
+	//=================================================================================================================
 	// INIT SKY ///////////////////////////////////////////////////////////////////////////////////////////////////////
     //=================================================================================================================
 	
@@ -740,61 +739,89 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 
 	initSky(pContext, size);
 #endif
+}
+
+void ApplicationClass::InitTerrainandWaterSurfaces(void* pContext, WomaDriverClass* Driver)
+{
 
 #if defined MAIN_RENDER_TERRAIN
-    //=================================================================================================================
+	//=================================================================================================================
 	// INIT TERRAINs //////////////////////////////////////////////////////////////////////////////////////////////////
-    //=================================================================================================================
+	//=================================================================================================================
 	//0
- #if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN		// UNDER WATER: Terrain
+#if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN		// UNDER WATER: Terrain
 	loadedTerrain[0] = NEW CTerrain(TERRAIN);
 	loadedTerrain[0]->initUnderWaterDemo(pContext, 0);			//UNDERWATER	(populate: modelVertexVector) 2022:LEVEL_ENGINE: 25
-  #endif
+#endif
 
-  #if defined USE_MINIMAP_REDENRING_THREAD
+	//0 WATER on MINIMAP TERRAIN MESH
+	//------------------
+#if defined USE_MINIMAP_REDENRING_THREAD
 	loadedTerrain[0] = NEW CTerrain(TERRAIN);
 	loadedTerrain[0]->initTerrainWaterMeshDemo(pContext, 0);
-  #endif
+#endif
 
 	//1 WATER TERRAIN MESH: 6 vertex + 6 index
-  #if defined SCENE_WATER_TERRAIN
+	//---------------------
+#if defined SCENE_WATER_TERRAIN
 	loadedTerrain[1] = NEW CTerrain(TERRAIN);
 	loadedTerrain[1]->initTerrainWaterMeshDemo(pContext, 1);		//WATER			(populate: modelVertexVector)
-  #endif
+#endif
 
 	//2 MAIN TERRAIN MESH: 4 vertex + 6 index
-  #if defined SCENE_MAIN_TOPO_TERRAIN	&& !defined USE_TERRAIN_ALFA_MAP
-  #if DX_ENGINE_LEVEL >= 60 && defined USE_TERRAIN_TUTORIAL_CHAP_24
+	//--------------------
+#if defined SCENE_MAIN_TOPO_TERRAIN	&& !defined USE_TERRAIN_ALFA_MAP
+#if DX_ENGINE_LEVEL >= 60 && defined USE_TERRAIN_TUTORIAL_CHAP_24
 	loadedTerrain[2] = NEW CTerrain(TERRAIN_COLOR_QUAD_FOG_SLOP_TEXTURE_Detail_Mapping_TextureMapping_AlphaMapping_BumpMapping_LighMapping_TransparentTexture_MINI_MAP);				//TERRAIN_LIGHT+COLOR
-  #else
+#else
 	loadedTerrain[2] = NEW CTerrain(TERRAIN_COLOR);				//TERRAIN_LIGHT+COLOR
-  #endif
+#endif
 	loadedTerrain[2]->initMainTopoTerrainDemo(2, (ID3D11DeviceContext*)pContext);		//TERRAIN		(populate: modelVertexVector)
-  #endif
+#endif
 
-	//3 TERRAIN:6 vertex + 6 index: TO BE USED BY COLLISION TERRAIN
-  #if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX && defined SCENE_TERRAIN_COLLISION
+	//3  COLLISION TERRAIN:6 vertex + 6 index: TO BE USED BY COLLISION TERRAIN
+	//---------------------
+#if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX && defined SCENE_TERRAIN_COLLISION
 	loadedTerrain[3] = NEW CTerrain(TERRAIN);
 	loadedTerrain[3]->initMainTopoTerrainDemo(3, (ID3D11DeviceContext*)pContext);
-  #endif
 #endif
+#endif
+
+}
+
+void ApplicationClass::InitObjInstances(void* pContext, WomaDriverClass* Driver)
+{
+	//-----------------------------------------------------------------------------------------------------------------
+	// Add Instanced Billboards to World.xml
+	//-----------------------------------------------------------------------------------------------------------------
+
+}
+
+// --------------------------------------------------------------------------------------------
+// INIT/LOAD ALL 3D Objects
+// --------------------------------------------------------------------------------------------
+bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverClass* Driver)
+// --------------------------------------------------------------------------------------------
+{
+	womalogauto(TEXT("----------------------------------------------------------------------------------------\n"));
+	womalogauto(TEXT("[%d]: WOMA_APPLICATION_Initialize3D()\n"), gettid());
+
+	// Log xml objects:
+	world_xml_objs = (UINT)SystemHandle->xml_loader.theWorldXML.size(); //15 @lvl:93
+	initial_world_xml_objs = world_xml_objs;
+	womalogauto("Number of objects loaded in: WORLD.XML %d\n", world_xml_objs);
+
+	InitLightandDemos(pContext, Driver);
+	InitMainSky(pContext, Driver);
+	InitTerrainandWaterSurfaces(pContext, Driver);
+	InitObjInstances(pContext, Driver);
 
 	//=================================================================================================================
 	// Init MAIN 3D Scene       ///////////////////////////////////////////////////////////////////////////////////////
 	//=================================================================================================================
 
 	//-----------------------------------------------------------------------------------------------------------------
-	// Add Instanced Billboards to World.xml
-	//-----------------------------------------------------------------------------------------------------------------
-
-    //-----------------------------------------------------------------------------------------------------------------
-    // Log xml objects:
-	world_xml_objs = (UINT)SystemHandle->xml_loader.theWorldXML.size(); //Get 
-	initial_world_xml_objs = world_xml_objs;
-	womalogauto("Number of objects loaded in: WORLD.XML %d\n", world_xml_objs);
-
-	//-----------------------------------------------------------------------------------------------------------------
-	// Create Billboard populate Trees / Flowers (extra populate WORLD.XML)       /////////////////////////////////////
+	// CREATE BILLBOARDs (populate Trees[]) (extra populate WORLD.XML)
 	//-----------------------------------------------------------------------------------------------------------------
 #if TUTORIAL_CHAP >= 60 && defined (SCENE_MAIN_TOPO_TERRAIN) && defined (SCENE_BILLBOARDS) // BILLBOARD
 	IF_NOT_RETURN_FALSE(m_billTreeClass = NEW BillClass);
@@ -807,7 +834,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 #endif
 
 	//-----------------------------------------------------------------------------------------------------------------
-	// PROGRESS BAR		///////////////////////////////////////////////////////////////////////////////////////////////
+	// LOAD PROGRESS BAR
 	//-----------------------------------------------------------------------------------------------------------------
 #if defined ALLOW_CBIND_PROGRESS_BAR
 	// --- CREATE PROGRESS BAR:
@@ -860,10 +887,13 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 
 	for (UINT i = objModel_size; i < objModel_size + theWorld_size; i++)
 	{
+		//LOAD OBJECTS:
 		WOMA_LOAD_OBJ(pContext, 0, Driver, i, SystemHandle->xml_loader.theWorldXML[i].filename);
 
 		num_loading_objects++;
 
+
+	//MINIMAP OBJECTS: Create 2D objects for mini-map
 
 		//Allow Refresh on Timer:
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))	// There is any OS messages to handle?
@@ -873,7 +903,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 		}
 	}
 #endif
-// MAIN LOAD: Cycle...
+// END MAIN LOAD: Cycle...
 
 #if defined ALLOW_CBIND_PROGRESS_BAR
 	#if defined USE_INTRO_VIDEO_DEMO
@@ -886,8 +916,8 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	}
 #endif
 
-	//Restore: Temp. Disable log file:
-	//-----------------------------------------------------------------------------------------------------------------
+	// Restore: Temp. disabled log file:
+	// ----------------------------------------------------------------------------------------------------------------
 	WOMA::logManager = WOMA::logManager_bk;
 
 	//-----------------------------------------------------------------------------------------------------------------
@@ -927,7 +957,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 #endif
 
 	// --------------------------------------------------------------------------------------------
-	//Finally, launch dynamic Load Compound/OBJ Thread ////////////////////////////////////////////
+	// Finally, launch dynamic Load Compound/OBJ Thread ////////////////////////////////////////////
 	// --------------------------------------------------------------------------------------------
 #if defined CHECK_OBJ_COLISION && defined MAIN_RENDER_MAIN_OBJ //CHECK_COMPOUND_COLISION
 /*#else

@@ -80,6 +80,7 @@
 #if DX_ENGINE_LEVEL >= 19 && !defined NewWomaEngine
 bool SystemClass::LoadAllGraphicAssets(void* pContext)
 {
+	//To preserve later the aspect ratio:
 	SystemHandle->m_Application->scaleX = SystemHandle->AppSettings->WINDOW_WIDTH / 1920.0f;
 	SystemHandle->m_Application->scaleY = SystemHandle->AppSettings->WINDOW_HEIGHT / 1080.0f;
 	SystemHandle->m_Application->rescale = min(SystemHandle->m_Application->scaleX, SystemHandle->m_Application->scaleY);

@@ -99,7 +99,7 @@ public:
 	void addText(int Xpos, int Ypos, TCHAR* printText, float R, float G, float B);
 
 	void SetCamera2D();
-	void Initialize3DCamera();
+	void Initialize2Dand3DCamera();
 	bool Initialize(float* clearColor);
 	void Finalize();
 

@@ -650,7 +650,7 @@ namespace DirectX {
 
 		// Populate some VARS ONLY! Init Step: 6 Before Resize (SetCamera2D & SetCamera3D)!
 		// -----------------------------------------------------------------
-		Initialize3DCamera();		// Get View Matrix!
+		Initialize2Dand3DCamera();		// Get View Matrix!
 
 		//
 		//DO: setViewportDevice(screenWidth, screenHeight);
@@ -785,7 +785,7 @@ namespace DirectX {
 		}
 
 #if defined CLIENT_SCENE_TEXT || defined USE_VIEW2D_SPRITES // 26
-		Initialize3DCamera();
+		Initialize2Dand3DCamera();
 #endif
 
 		return true;
@@ -1535,7 +1535,7 @@ namespace DirectX {
 
 	// TODO: go to Virtual Class?
 	// ----------------------------------------------------------------------------------------------
-	void DX12Class::Initialize3DCamera()
+	void DX12Class::Initialize2Dand3DCamera()
 		// ----------------------------------------------------------------------------------------------
 	{
 		if (DXsystemHandle->m_Camera) {

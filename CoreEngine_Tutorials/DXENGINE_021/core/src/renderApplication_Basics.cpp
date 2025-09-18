@@ -275,6 +275,9 @@ void ApplicationClass::AppPosRender(UINT monitorIndex, float dayLightFade, void*
 		}
 #endif
 
+#if defined USE_ALPHA_BLENDING
+	m_Driver->TurnOnAlphaBlending(pContext);
+#endif
 
 #if (defined USE_MAIN_MAP || defined USE_MINI_MAP) && defined MAIN_RENDER_MINIMAP //MAIN-RENDER: MINI-MAP (0.4)
 	if (ShouldDrawUI(monitorIndex))

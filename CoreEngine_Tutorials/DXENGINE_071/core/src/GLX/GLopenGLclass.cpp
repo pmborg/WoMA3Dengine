@@ -255,7 +255,7 @@ void GLopenGLclass::SetCamera2D()
 }
 
 // ------------------------------------------------------------------
-void GLopenGLclass::Initialize3DCamera()
+void GLopenGLclass::Initialize2Dand3DCamera()
 // ------------------------------------------------------------------
 {
 #if defined USE_VIEW2D_SPRITES // 26
@@ -354,7 +354,7 @@ bool GLopenGLclass::Initialize(float* clearColor)
 		IF_NOT_THROW_EXCEPTION (gl_Camera);
 	}
 
-	Initialize3DCamera();
+	Initialize2Dand3DCamera();
 
 	// Init OpenGL:
 #if !defined ANDROID_PLATFORM

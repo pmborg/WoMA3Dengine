@@ -315,7 +315,7 @@ public:
     DX11Class();
     ~DX11Class();
 
-    void Initialize3DCamera();
+    void Initialize2Dand3DCamera();
     bool Initialize(float* clearColor);	//bool Initialize();
     void Finalize();
 
@@ -447,6 +447,8 @@ public:
 #if defined USE_DX11_1_SETUP
 	ComPtr<ID3D11Device>  m_device = nullptr;
 	ComPtr<ID3D11Device1> m_device1 = nullptr;
+	ComPtr<ID3D11Device2> m_device2 = nullptr;
+	ComPtr<ID3D11Device3> m_device3 = nullptr;
 #endif
 	ID3D11Device* m_device11 = nullptr;
 
@@ -512,14 +514,14 @@ private:
     
 	std::wstring HRtoStr(HRESULT hr);
 	bool list_resolutions();
-    bool createDevice();
+    bool CreateDeviceAndContext();
 	//void ChooseMsaaCaps();
 #if defined SET_DEVICE_CAPABILITIES
     void InspectDeviceCapabilities(D3D_FEATURE_LEVEL featureLevel);
 #endif
 
 	VOID UpdateHDRColorSpace(UINT USE_MONITOR);
-    void getProfile ( UINT g_USE_MONITOR );
+    void getShaderCodeProfile ( UINT g_USE_MONITOR );
 
 #if defined USE_RASTERIZER_STATE
     bool createRasterizerStates ();

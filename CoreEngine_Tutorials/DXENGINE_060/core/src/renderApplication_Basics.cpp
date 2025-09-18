@@ -474,6 +474,9 @@ void ApplicationClass::AppPosRender(UINT monitorIndex, float dayLightFade, void*
 		}
 #endif
 
+#if defined USE_ALPHA_BLENDING
+	m_Driver->TurnOnAlphaBlending(pContext);
+#endif
 
 	if (ShouldDrawUI(monitorIndex))
 		RenderHUD_Logo(pContext);

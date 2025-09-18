@@ -473,15 +473,15 @@ bool DirectX::DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int scree
 	list_resolutions();
 
 	//Init Step: 3, 4
-	ASSERT(createDevice());
+	ASSERT(CreateDeviceAndContext());
     
 	//Init Step: 5 - Get Best SHADER of this Graphic Card: dx10,dx10.1,dx11,etc... OUTPUT: ShaderModel
-	getProfile(g_USE_MONITOR);
+	getShaderCodeProfile(g_USE_MONITOR);
 
 	//Init Step: 6 Before Resize (SetCamera2D & SetCamera3D)!
-		Initialize3DCamera();
+		Initialize2Dand3DCamera();
 
-	//Init Step: 7 - CreateWindowSizeDependentResources
+	//Init Step: 7 - CreateWindowSizeDependentResources including SwapChain.
 	// Creates a render target view and depth stencil surface/view per SWAPCHAIN
 	for (UINT m = 0; m < SystemHandle->windowsArray.size(); m++)
 	{
@@ -495,18 +495,21 @@ bool DirectX::DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int scree
 #endif
 
   #if defined USE_FRUSTRUM
+	if (frustum)
+		SAFE_DELETE(frustum);
 	frustum = NEW DXfrustumClass;	// Create Frustum
   #endif
 
   #if defined INTRO_DEMO || defined USE_ALPHA_BLENDING // 26
 	//Init Step: 13 Create and Set the depth stencil state: With the created depth stencil state we can now set it so that it takes effect:
-	ASSERT( createSetDepthStencilState (true) );	// ZBUFFER on state
+	ASSERT( createSetDepthStencilState (true) );	// ZBUFFER  on state
 	ASSERT( createSetDepthStencilState (false) );	// ZBUFFER off state
 
-	//Init Step: 14 - Transparency: To render text on top of 3D
+	//Init Step: 14 - Transparency: To render text on top of 3D (for example.)
 	ASSERT(CreateBlendState());
   #endif
 
+	//Allow multiple threads:
 	#if defined USE_MINIMAP_REDENRING_THREAD
 	CreateDeferedContexts();
 	#endif
@@ -857,7 +860,7 @@ if (m_deviceContext)
 		RenderMapfirstTime = true;  // First time in main map != first time terrain render or mini mao render
 
 #if defined CLIENT_SCENE_TEXT || defined USE_VIEW2D_SPRITES
-	Initialize3DCamera();
+	Initialize2Dand3DCamera();
 #endif
 
 	#if defined USE_DX_DRIVER_FONT
@@ -978,7 +981,7 @@ VOID DX11Class::UpdateHDRColorSpace(UINT USE_MONITOR)
 
 //Init Step: 5 - Set the best shader available: MORE INFO: http://msdn.microsoft.com/en-us/library/windows/desktop/ff476876%28v=vs.85%29.aspx
 // ----------------------------------------------------------------------------------------------
-void DX11Class::getProfile ( UINT g_USE_MONITOR )
+void DX11Class::getShaderCodeProfile ( UINT g_USE_MONITOR )
 // ----------------------------------------------------------------------------------------------
 {
 	// Get Best FeatureLevel Available:
@@ -986,60 +989,60 @@ void DX11Class::getProfile ( UINT g_USE_MONITOR )
 	switch (featureLevel) 
 	{
 		//DX 9.x
-		case D3D_FEATURE_LEVEL_9_1:	// To Support old Graphic Cards
-			_tcscpy_s(ShaderModel, TEXT("4_0_level_9_1")); // ShaderModel = TEXT("2_0"); // 
+		case D3D_FEATURE_LEVEL_9_1:							// To Support old Graphic Cards
+			_tcscpy_s(ShaderModel, TEXT("4_0_level_9_1"));	// ShaderModel = TEXT("2_0"); // 
 			ShaderVersionH = 2; ShaderVersionL = 0;
 			womalogauto(TEXT("\nUsing Shader Model 2.0 (Best API: DX9.1)\n"));
 		break;
 
-		case D3D_FEATURE_LEVEL_9_2:	// To Support old Graphic Cards
-			_tcscpy_s(ShaderModel, TEXT("4_0_level_9_2")); //ShaderModel = TEXT("2_0"); // 
+		case D3D_FEATURE_LEVEL_9_2:							// To Support old Graphic Cards
+			_tcscpy_s(ShaderModel, TEXT("4_0_level_9_2"));	//ShaderModel = TEXT("2_0"); // 
             ShaderVersionH = 2; ShaderVersionL = 0;
 			womalogauto(TEXT("\nUsing Shader Model 2.0 (Best API: DX9.2)\n"));
 		break;
 
-		case D3D_FEATURE_LEVEL_9_3:	// To Support old Graphic Cards
-            _tcscpy_s(ShaderModel, TEXT("4_0_level_9_3")); // ShaderModel = TEXT("2_0"); // 
+		case D3D_FEATURE_LEVEL_9_3:							// To Support old Graphic Cards
+            _tcscpy_s(ShaderModel, TEXT("4_0_level_9_3"));	// ShaderModel = TEXT("2_0"); // 
             ShaderVersionH = 2; ShaderVersionL = 0;
 			womalogauto(TEXT("\nUsing Shader Model 2.0 (Best API: DX9.3)\n"));
 		break;
 
 		//DX 10
-		case D3D_FEATURE_LEVEL_10_0:	// To Support old Graphic Cards
-            _tcscpy_s(ShaderModel, TEXT("4_0")); // ShaderModel = TEXT("4_0"); // 
+		case D3D_FEATURE_LEVEL_10_0:				// To Support old Graphic Cards
+            _tcscpy_s(ShaderModel, TEXT("4_0"));	// ShaderModel = TEXT("4_0"); // 
             ShaderVersionH = 4; ShaderVersionL = 0;
 			womalog("\nUsing Shader Model 4.0 (Best API: DX10)\n");
 		break;
 
 		// DX10.1
-		case D3D_FEATURE_LEVEL_10_1:	// To Support old Graphic Cards
-            _tcscpy_s(ShaderModel, TEXT("4_1")); // ShaderModel = TEXT("4_1"); // 
+		case D3D_FEATURE_LEVEL_10_1:				// To Support old Graphic Cards
+            _tcscpy_s(ShaderModel, TEXT("4_1"));	// ShaderModel = TEXT("4_1"); // 
             ShaderVersionH = 4; ShaderVersionL = 1;
 			womalog("\nUsing Shader Model 4.1 (Best API: DX10.1)\n");
 		break;
 
 		//DX11.x
 		case D3D_FEATURE_LEVEL_11_0:
-			_tcscpy_s(ShaderModel, TEXT("5_0")); // ShaderModel = TEXT("5_0"); // 
+			_tcscpy_s(ShaderModel, TEXT("5_0")); // ShaderModel = TEXT("5_0");
 			ShaderVersionH = 5; ShaderVersionL = 0;
 			womalog("\nUsing Shader Model 5.0 (Best API: DX11)\n");
 		break;
 		case D3D_FEATURE_LEVEL_11_1:
-			_tcscpy_s(ShaderModel, TEXT("5_0")); // ShaderModel = TEXT("5_0"); // 
+			_tcscpy_s(ShaderModel, TEXT("5_0")); // ShaderModel = TEXT("5_0");
 			ShaderVersionH = 5; ShaderVersionL = 0;
 			womalog("\nUsing Shader Model 5.0 (Best API: DX11.1)\n");
 		break;
 
 		//DX11+
 		case D3D_FEATURE_LEVEL_12_0:
-			_tcscpy_s(ShaderModel, TEXT("5_0")); // ShaderModel = TEXT("5_0"); // 
+			_tcscpy_s(ShaderModel, TEXT("5_0")); // ShaderModel = TEXT("5_0");
 			ShaderVersionH = 5; ShaderVersionL = 0;
 			womalog("\nUsing Shader Model 5.0 (Best API: DX11_level_12_0)\n");
 		break;
 
 		default: //For Future DX Versions!	
 		case D3D_FEATURE_LEVEL_12_1:
-			_tcscpy_s(ShaderModel, TEXT("5_0")); // ShaderModel = TEXT("5_0"); // 
+			_tcscpy_s(ShaderModel, TEXT("5_0")); // ShaderModel = TEXT("5_0");
 			ShaderVersionH = 5; ShaderVersionL = 0;
 			womalog("\nUsing Shader Model 5.0 (Best API: DX11_level_12_1)\n");
 			break;
@@ -1108,7 +1111,6 @@ bool DX11Class::Initialize(float* clearColor)
 	driver_ClearColor[0] = *clearColor++;
 	driver_ClearColor[1] = *clearColor++;
 	driver_ClearColor[2] = *clearColor++;
-
 
 	driver_ClearColor[3] = *clearColor;
 
@@ -1204,7 +1206,7 @@ void DX11Class::EndScene(UINT USE_MONITOR)
 	// vsync = false	Sequential	OFF	Unlimited FPS, but lower latency
 
 	// <PRINT THE 3D SCENE TO SCREEN> to Swap Chain (wait from VSYNC refresh rate, if it is the case)
-	ASSERT_DEBUG(DX11windowsArray[USE_MONITOR].m_swapChain1)
+	ASSERT_DEBUG(DX11windowsArray[USE_MONITOR].m_swapChain1);
 	{
 		UINT presentFlags = 0;
 #if defined USE_DX11_1_SETUP
@@ -1299,7 +1301,7 @@ void DX11Class::SetCamera2D()
 	DX11m_Camera2D.SetPosition(0.0f, 0.0f, -1.0f);	// NOTE: On 2D This values have always these values!
 
 	// Calculate: 2D ViewMatrix
-	DX11m_Camera2D.CalculateViewMatrix();						// ((OpenGLClass*)m_Driver)->m_Camera->Render(); || ((DX_CLASS*)m_Driver)->m_Camera->Render();
+	DX11m_Camera2D.CalculateViewMatrix();			// ((OpenGLClass*)m_Driver)->m_Camera->Render(); || ((DX_CLASS*)m_Driver)->m_Camera->Render();
 	DX11m_Camera2D.Use2DViewMatrix();				// Get the view from the camera and 2D objects.
 
 	DXsystemHandle->m_Camera->m_viewmatrix2D = DX11m_Camera2D.m_viewMatrix;
@@ -1307,7 +1309,7 @@ void DX11Class::SetCamera2D()
 
 // TODO: go to Virtual Class?
 // ----------------------------------------------------------------------------------------------
-void DX11Class::Initialize3DCamera()
+void DX11Class::Initialize2Dand3DCamera()
 // ----------------------------------------------------------------------------------------------
 {
 	// Set 2D Camera:

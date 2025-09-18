@@ -259,7 +259,7 @@ class WomaDriverClass
 public:
     UINT WomaIntegrityCheck = 1234525217;
 
-	virtual void Initialize3DCamera()=0;
+	virtual void Initialize2Dand3DCamera()=0;
 	virtual bool Initialize(float* clearColor)=0;
 	virtual void Finalize()=0;
 

@@ -157,7 +157,7 @@ public:
 	//void ResetViewport();
 	void SetBackBufferRenderTarget();
 
-	void Initialize3DCamera();
+	void Initialize2Dand3DCamera();
 	bool Initialize(float* clearColor);	//bool Initialize();
 	void Finalize();
 

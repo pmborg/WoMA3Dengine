@@ -108,7 +108,7 @@ public:
 #endif
 
 #if defined USE_SCENE_MANAGER
-	void ApplicationInitSceneManager();
+	void InitSceneManager();
 #endif
 
 #if defined USE_INTRO_VIDEO_DEMO

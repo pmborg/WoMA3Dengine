@@ -114,9 +114,8 @@ void DirectX::DX11Class::TurnOnAlphaBlending(void* ctx)
 {
 	//if (g_AlphaBlend) return;
 	// Turn on the alpha blending.
-	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
-	pContext->OMSetBlendState(m_alphaEnableBlendingState, blendFactor, 0xffffffff);
-	g_AlphaBlend = true;
+	((ID3D11DeviceContext*)ctx)->OMSetBlendState(m_alphaEnableBlendingState, blendFactor, 0xffffffff);
+	//g_AlphaBlend = true;
 }
 
 //The second new function TurnOffAlphaBlending allows us to turn off alpha blending by using the OMSetBlendState function with 
@@ -127,9 +126,8 @@ void DirectX::DX11Class::TurnOffAlphaBlending(void* ctx)
 {
 	//if (!g_AlphaBlend) return;
 	// Turn off the alpha blending.
-	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
-	pContext->OMSetBlendState(m_alphaDisableBlendingState, blendFactor, 0xffffffff);
-	g_AlphaBlend = false;
+	((ID3D11DeviceContext*)ctx)->OMSetBlendState(m_alphaDisableBlendingState, blendFactor, 0xffffffff);
+	//g_AlphaBlend = false;
 }
 #endif
 

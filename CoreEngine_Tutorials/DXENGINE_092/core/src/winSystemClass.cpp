@@ -243,7 +243,7 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 #endif
 
   #if defined USE_SCENE_MANAGER							// INIT SCENE-MANAGER:
-	DXsystemHandle->ApplicationInitSceneManager();		// INIT QUAD TREE
+	DXsystemHandle->InitSceneManager();		// INIT QUAD TREE
   #endif
 
 //################################ LOAD LoadAllGraphicAssets STUFF ##################################

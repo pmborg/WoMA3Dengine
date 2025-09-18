@@ -105,21 +105,33 @@ dxWinSystemClass::~dxWinSystemClass()
 bool dxWinSystemClass::APPLICATION_INIT_SYSTEM() //LOAD ALL GRAPHICS
 //----------------------------------------------------------------------------
 {
+	// UNPACK Resources for DEMO:
 #if CORE_ENGINE_LEVEL >= 7 && defined RELEASE
-	InitPackLibs();											// UNPACK Resources
+	InitPackLibs();											
 #endif
 
+	// RESET:
 	driverList.clear();
 #if defined DX_ENGINE
 	DX11windowsArray.clear();
 	FSAA_possibleValues.clear();
 #endif
 
-	//ClassRegister/LoadXMLWorld/InitializeSystemScreen/ApplicationInitMainWindow/InitOsInput/StartTimer
+	// SystemCheck
+	// ClassRegister
+	// ApplicationInitMainWindow
+	// LoadXMLWorld
+	// InitOsInput
+	// InitSelectedDriver
+	// InitializeSystemScreen
+	// InitSceneManager
+	// LoadAllGraphicAssets
+	// StartTimer
 	bool res = WinSystemClass::APPLICATION_INIT_SYSTEM();	
 
+	// START-AUDIO: Start Background Music
 #if DX_ENGINE_LEVEL >= 29 && defined USE_WIN32_SOUND_MANAGER	
-	IF_NOT_RETURN_FALSE(StartSoundManager());	// 29: START-AUDIO: Start Background Music (NOTE: After the INIT "rendering-device")
+	IF_NOT_RETURN_FALSE(StartSoundManager());	 // (NOTE: After the INIT "rendering-device")
 #endif
 
 	return res;
@@ -423,7 +435,7 @@ bool dxWinSystemClass::StartSoundManager()
 #endif
 
 #if defined USE_SCENE_MANAGER
-void dxWinSystemClass::ApplicationInitSceneManager()
+void dxWinSystemClass::InitSceneManager()
 //----------------------------------------------------------------------------
 {
 	//  QUADTREE:

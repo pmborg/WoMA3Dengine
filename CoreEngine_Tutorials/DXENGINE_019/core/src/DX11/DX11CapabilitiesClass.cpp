@@ -261,8 +261,6 @@ void DX11Class::InspectDeviceCapabilities(D3D_FEATURE_LEVEL featureLevel)
 {
 	HRESULT result = S_OK;
 
-	womalogauto(TEXT("SET_DEVICE_CAPABILITIES:\n"));
-
 	// Query DXGI1.1:
 	m_sCapabilities.DXGI11 = false;
 	IDXGIDevice1 *dxgiDevice1 = NULL;
@@ -286,7 +284,7 @@ void DX11Class::InspectDeviceCapabilities(D3D_FEATURE_LEVEL featureLevel)
 	}
 	SAFE_RELEASE(dxgiDevice2);
 
-	womalogauto(TEXT("Device Capabilities:\n"));
+	womalogauto(TEXT("DEVICE_CAPABILITIES:\n"));
 
 	//v1:
 	m_sCapabilities.ComputeShadersSupported = (featureLevel >= D3D_FEATURE_LEVEL_11_0);

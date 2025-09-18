@@ -233,7 +233,7 @@ static MsaaCaps ChooseMsaaCaps(ID3D11Device* dev, DXGI_FORMAT rtvFormat, DXGI_FO
 	// CREATE DEVICE:
 	// ==============================
 	// ----------------------------------------------------------------------------------------------
-	bool DX11Class::createDevice()
+	bool DX11Class::CreateDeviceAndContext()
 	// ----------------------------------------------------------------------------------------------
 	{
 		HRESULT result = S_OK;
@@ -302,7 +302,7 @@ static MsaaCaps ChooseMsaaCaps(ID3D11Device* dev, DXGI_FORMAT rtvFormat, DXGI_FO
 
 		// 3) CREATE DXGI FACTORY: factory1 & factory6
 		ComPtr<IDXGIFactory1> factory1;
-		ComPtr<IDXGIFactory6> factory6; // optional
+		ComPtr<IDXGIFactory6> factory6;
 
 		UINT dxgiFlags = enableDebugLayer ? DXGI_CREATE_FACTORY_DEBUG : 0;
 
@@ -344,18 +344,29 @@ static MsaaCaps ChooseMsaaCaps(ID3D11Device* dev, DXGI_FORMAT rtvFormat, DXGI_FO
 			if (SUCCEEDED(hr)) break;
 		}
 
-		// 6) Upgrade to DX11.1 interfaces (device and Context) if available
+		// 6) Get DX11.3 interfaces (device and Context) if available
+		(void)m_device.As(&m_device3);
+		(void)m_Context.As(&m_Context3);
+		if (m_device3 && m_Context3)
+			womalog("Can use: DX11.3 API\n");
+
+		// 6.1) Get DX11.2 interfaces (device and Context) if available
+		(void)m_device.As(&m_device2);
+		(void)m_Context.As(&m_Context2);
+		if (m_device2 && m_Context2)
+			womalog("Can use: DX11.2 API\n");
+
+		// 6.2) Get DX11.1 interfaces (device and Context) if available
 		(void)m_device.As(&m_device1);
 		(void)m_Context.As(&m_Context1);
+		if (m_device1 && m_Context1)
+			womalog("Can use: DX11.1 API\n");
 
-		// 7) Upgrade to DX11.2 interfaces (device and Context) if available
-		(void)m_Context.As(&m_Context2);
-
-		// 7.1) Upgrade to DX11.3 interfaces (device and Context) if available
-		(void)m_Context.As(&m_Context3);
-
+		// 7)
 		m_device11 = m_device.Get();		//get default:  DX11.0 device
 		m_deviceContext = m_Context.Get();	//get default:  DX11.0 Context
+		if (m_device11 && m_deviceContext)
+			womalog("Can use: DX11.0 API\n");
 
 		// 8) Make the immediate context thread-safe (recommended for multi-threaded engines)
 		ComPtr<ID3D11Multithread> mt;
@@ -539,7 +550,7 @@ static MsaaCaps ChooseMsaaCaps(ID3D11Device* dev, DXGI_FORMAT rtvFormat, DXGI_FO
 
 		SystemHandle->AppSettings->MaxTextureSize = MAX(SystemHandle->AppSettings->MaxTextureSize, max_texture_size);
 
-		womalog(TEXT("DirectX 11: Using Max Texture Size: %u"), SystemHandle->AppSettings->MaxTextureSize);
+		womalog(TEXT("DirectX 11: Using Max Texture Size: %u\n"), SystemHandle->AppSettings->MaxTextureSize);
 
 #if defined SET_DEVICE_CAPABILITIES
 		InspectDeviceCapabilities(featureLevel_);

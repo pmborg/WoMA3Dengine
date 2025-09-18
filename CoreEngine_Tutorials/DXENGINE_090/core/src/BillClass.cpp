@@ -526,7 +526,7 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 		i++;
 	}
 
-#if DX_ENGINE_LEVEL >= 90 && !defined SIMPLE && !defined NO3DBILL
+#if DX_ENGINE_LEVEL >= 90 && !defined SIMPLE// && !defined NO3DBILL
 	for (int idx = 0; idx < 31; idx++)
 	{
 		m_Trees.push_back(tree_);

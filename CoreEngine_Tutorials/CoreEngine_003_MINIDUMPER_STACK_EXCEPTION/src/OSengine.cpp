@@ -427,7 +427,6 @@ bool cpuSupportsAVX512f=false;
 
 void APPLICATION_STARTUP(int argc, char* argv[])
 {
-
 	STDCOUT << TEXT("<") << PROJECT_NAME << TEXT("> STARTUP") << std::endl;
 
 #if defined WOMA_CONSOLE_APPLICATION  || !defined WINDOWS_PLATFORM
@@ -439,7 +438,7 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 	// Changes the Process Priority:
 	// -----------------------------
 #if defined WINDOWS_PLATFORM
-#if NOTES
+	#if NOTES
 	//THREAD_PRIORITY_IDLE(-15)
 	//THREAD_PRIORITY_LOWEST(-2)
 	//THREAD_PRIORITY_BELOW_NORMAL(-1)
@@ -447,8 +446,12 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 	//THREAD_PRIORITY_ABOVE_NORMAL(+1)
 	//THREAD_PRIORITY_HIGHEST(+2)
 	//THREAD_PRIORITY_TIME_CRITICAL(+15)
+	#endif
+
+#if defined NDEBUG
+	SetThreadPriority(GetCurrentThread(), 10/*THREAD_PRIORITY_HIGHEST*/);
 #endif
-	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
+
     SetUnhandledExceptionFilter(TopLevelFilter);
 #elif defined LINUX_PLATFORM && defined RELEASE
 	#if _DEBUG
@@ -483,23 +486,23 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 #endif
 
 #if defined WINDOWS_PLATFORM
-	ASSERT(CHECK_IF_WE_ARE_A_RUNNING_DEMO() == EXIT_SUCCESS);
+	ASSERT(CHECK_IF_WE_ARE_A_RUNNING_DEMO() == EXIT_SUCCESS);	//0!
 #endif
 
 #if CORE_ENGINE_LEVEL >= 1 && defined WINDOWS_PLATFORM
-	WOMA::setup_OSmain_dirs();				//1! Keep this order!
-	WOMA::activate_mem_leak_detection();	//2!
+	WOMA::setup_OSmain_dirs();									//1! Keep this order!
+	WOMA::activate_mem_leak_detection();						//2!
 #endif
 	#if defined USE_LOG_MANAGER
-	WOMA::start_log_manager();				//3!
+	WOMA::start_log_manager();									//3!
 	#endif
 
 	// Set A Top level "Exception handler" for all Exceptions. Catch, Dump & Send Report WOMA ENGINE HOME using FTP!
 #if defined USE_MINIDUMPER 
-	WOMA::miniDumper = NEW MiniDumper();	//4! (NOTE: After logManager!)
+	WOMA::miniDumper = NEW MiniDumper();						//4! (NOTE: After logManager!)
 #endif
 
-    DefineConsoleTitle();
+    DefineConsoleTitle();										//5
 
 #if defined WINDOWS_PLATFORM && CORE_ENGINE_LEVEL >= 3
     //Returns true if the DirectXMath Library supports this WH: (HW before Pentium 4 will return false!)
@@ -536,11 +539,12 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 	ASSERT(cpuSupportsAVX512f); // Check for fast WIN11(AVX512) Instructions-set support, if fail change settings to WIN10(AVX2 or AVX)
 	#endif
 
-	womalogauto(TEXT("Cpu Supports AVX512: %s\n"), cpuSupportsAVX512f ? TEXT("true") : TEXT("false"));
+	womalogauto(TEXT("CPU Supports AVX512: %s\n"), cpuSupportsAVX512f ? TEXT("true") : TEXT("false"));
 #endif
 
     womalogauto(TEXT("<%s> STARTUP ENDED\n"), PROJECT_NAME);
 }
+
 void APPLICATION_STOP()
 {
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
