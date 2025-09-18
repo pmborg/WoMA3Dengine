@@ -19,7 +19,6 @@
 //WomaIntegrityCheck = 1234525217;
 
 #include "OSengine.h"
-#if DX_ENGINE_LEVEL >= 36 ShadowMap
 #include "main.h"
 #include "DXrendertextureclass.h"
 #if defined DX11
@@ -217,4 +216,3 @@ void DXrendertextureclass::ClearRenderTarget(void* Driver, ID3D11DeviceContext* 
 	pContext->ClearDepthStencilView(m_depthStencilTextureView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
-#endif

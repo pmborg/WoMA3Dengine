@@ -944,7 +944,7 @@ void SystemClass::ProcessPerformanceStats() // Run every frame
 	m_Fps.Frame();			// Increase the frame counter, calculate FPS once per second
 	fps = m_Fps.GetFps();	// Get current FPS (updated by "m_Fps.Frame()" every second)
 
-	m_Application->dt = m_Timer.GetTime();		// Calculate dT for animations & camera movements (in Mili Seconds)
+	m_Application->dt = (float)m_Timer.GetTime();		// Calculate dT for animations & camera movements (in Mili Seconds)
 	//womalog("dt: %.2f:\n", m_Application->dt);
 
   #if defined WINDOWS_PLATFORM && !defined WIN_XP

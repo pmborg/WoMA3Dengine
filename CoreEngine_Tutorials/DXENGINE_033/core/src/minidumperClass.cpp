@@ -129,8 +129,6 @@ LONG TopLevelFilter( struct _EXCEPTION_POINTERS *pExceptionInfo )
 		MINIDUMPWRITEDUMP pDump = (MINIDUMPWRITEDUMP)::GetProcAddress( hDll, "MiniDumpWriteDump" );
 		if (pDump)
 		{
-			char szScratch [_MAX_PATH];
-
 			SYSTEMTIME str_t;
 			GetSystemTime(&str_t);
 
@@ -140,6 +138,8 @@ LONG TopLevelFilter( struct _EXCEPTION_POINTERS *pExceptionInfo )
             // Write Exception Error to log file ON TEMP!
             WriteError( WOMA::LoadFile(szDumpPath) );
 #if 0
+			char szScratch[_MAX_PATH];
+
 			// ask the user if they want to save a dump file
             if (::MessageBox(NULL, TEXT("A Fatal Exception occurred in WoMA, would you like to send us this error?"), WOMA::APP_NAME, MB_YESNO) == IDYES)
 			{

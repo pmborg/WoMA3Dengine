@@ -28,6 +28,8 @@
 
 #include "platform.h"
 #if (defined OPENGL3 || defined OPENGL4) && DX_ENGINE_LEVEL >= 19 
+#pragma warning(push)
+#pragma warning( disable : 4005 )		// Disable warning C4005: '' : macro redefinition
 #include "mem_leak.h"
 #include "stateMachine.h"
 #include "womadriverclass.h"
@@ -388,4 +390,5 @@ ImageLoaderClass* GLopenGLclass::CaptureScreenShot(int screenWidth, int screenHe
 }
 #endif
 
+#pragma warning(pop)
 #endif

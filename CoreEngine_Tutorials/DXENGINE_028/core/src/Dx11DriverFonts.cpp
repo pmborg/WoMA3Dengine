@@ -17,7 +17,7 @@
 //WomaIntegrityCheck = 1234525217;
 
 #include "OSengine.h"
-#ifdef DX11 && ENGINE_LEVEL >= 20		// Initializing Engine && defined DX11
+#if defined DX11 && ENGINE_LEVEL >= 20		// Initializing Engine && defined DX11
 #include "mem_leak.h"
 #include "dx11Class.h"
 #include "winsystemclass.h"	// SystemHandle
