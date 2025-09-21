@@ -560,9 +560,9 @@
 #endif
 
 #if DX_ENGINE_LEVEL >= 91
-    #define USE_MAP_REDENRING_THREAD
-    //#define USE_SHADOW_THREAD
-    //#define USE_MESH_THREAD
+	#define USE_SHADOW_THREAD	//Allow the other 2:
+	#define USE_MINIMAP_REDENRING_THREAD
+	#define USE_MESH_THREAD
 #endif
     
 #if DX_ENGINE_LEVEL >= 92
@@ -570,11 +570,8 @@
 #endif
 
 #if DX_ENGINE_LEVEL >= 93
+	#define  NO3DBILL			  
 	#define GENERATE_ATLAS_INTEGRATION_DDS
-	#if _DEBUG
-	#define EXPORT_ATLAS_DEBUG_PNG			// Internal Debug
-	#endif
-	
 #endif
 
 	//#define USE_MULTI_MONITOR

@@ -42,8 +42,10 @@
 #if NOTES
 #include "notes.h"
 #endif
-#include "OSengine.h"
 #pragma warning(disable : 6387)
+#pragma warning(disable : 6262)
+#include "OSengine.h"
+
 int Command = EXIT_SUCCESS;
 
 #if defined WINDOWS_PLATFORM
@@ -52,8 +54,10 @@ int Command = EXIT_SUCCESS;
 // -------------------------------------------------------------------------------------------------------------------------------------
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
+	UNREFERENCED_PARAMETER(hInstance);
+	UNREFERENCED_PARAMETER(hPrevInstance);
     WOMA::Scmdline = lpCmdLine;
-    WOMA::Cmdshow = nShowCmd;                        
+    WOMA::Cmdshow = nShowCmd;
 	
     return APPLICATION_MAIN(__argc, __argv); // ENTRY-POINT: WINDOWS (RELEASE)!
 }
@@ -65,7 +69,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 // -------------------------------------------------------------------------------------------------------------------------------------
 int main(int argc, char* argv[])
 {
-    return APPLICATION_MAIN(argc, argv);        // ENTRY-POINT: WINDOWS DEBUG or LINUX!
+    return APPLICATION_MAIN(argc, argv);        // ENTRY-POINT: WINDOWS CONSOLE(DEBUG) or LINUX!
 }
 #endif
 
@@ -74,7 +78,7 @@ android_app* app;
 struct womaengine engine = { 0 };
 
 #if defined WOMAENGINE
-void android_main(android_app* state)           // ENTRY-POINT: ANDROID
+void android_main(android_app* state)           // ENTRY-POINT: ANDROID(DEBUG/RELEASE)!
 {
     app = state;
 
@@ -99,8 +103,6 @@ void android_main(android_app* state)           // ENTRY-POINT: ANDROID
 
 #endif
 
-
-
 // Entry point of all WoMA ENGINE Applications all "main's" call this this one (used by: WINDOWS / LINUX / ANDROID)
 // -------------------------------------------------------------------------------------------------------------------------------------
 int APPLICATION_MAIN(int argc, char* argv[])
@@ -119,7 +121,7 @@ int APPLICATION_MAIN(int argc, char* argv[])
           if (Command == ENGINE_RESTART)                  // The User set new settings?
               Sleep(2000);                                // Need to be 2secs to change resources between drivers
       } while (Command == ENGINE_RESTART);                // Try to restart the Engine with new settings then! (if fail! goto VectoredExceptionHandler())
-    }                                                     
+    }
     APPLICATION_STOP();                                   // ENGINE STOP: |CoUninitialize|+|Free Mini Dumper|+|CLOSE Log|+|DELETE Temp files(RELEASE)
-    return Command;                                       // ENGINE RETURN: to OS (Can be: 0, ENGINE_RESTART or "an error" code)
+    return Command;                                       // ENGINE RETURN: to OS (Can be: 0 or "an error" code)
 }
