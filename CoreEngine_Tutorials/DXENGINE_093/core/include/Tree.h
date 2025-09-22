@@ -31,7 +31,7 @@ struct Tree
 	XMFLOAT3    vPos = {};	// Origin of tree   
 	float		rotY=0;
 	float		scale=0;
-	BYTE        type=0;
+	WORD        type=0;
 	// type: 0-10 normal billboards
 	// 100: FENCE 2D
 	// 200: FIRE

@@ -176,7 +176,7 @@ xmlobj3d* BillClass::fillxml(ID3D11DeviceContext* pContext, int id, UINT type)
 	}
 #endif
 
-	//womalog("xmlobj(%d) TYPE:%d x:%d,y:%d\n", (int)xmlobj.id, (int)xmlobj.type, (int)xmlobj.posX, (int)xmlobj.posX);																											 
+	womalog("xmlobj(%d) TYPE:%d x:%d,y:%d\n", (int)xmlobj.id, (int)xmlobj.type, (int)xmlobj.posX, (int)xmlobj.posX);																											 
 	return &xmlobj;
 }
 

@@ -61,7 +61,7 @@ float sort_cameraX=0, sort_cameraY=0, sort_cameraZ = 0;
 void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext, WomaDriverClass* driver)
 {
 	totalRendered = 0;
-	
+
 	// SET A SPECIFIC CAMERA POSITION FOR BILLBOARD SORT:
 #if defined USE_DIRECT_INPUT
 	const float SORT_OFFSET = 5.0f; // 5 METERS BEHIND CAMERA

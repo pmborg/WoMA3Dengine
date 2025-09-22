@@ -292,9 +292,9 @@ xmlobj3d* BillClass::fillxml(ID3D11DeviceContext* pContext, int id, UINT type)
 
 #if defined GENERATE_ATLAS_INTEGRATION_DDS
 	#if defined  NO3DBILL
-	if (xmlobj.Bill && m_Trees[id].type <= 10)
-	#else
 	if (xmlobj.Bill && m_Trees[id].type <= 12)
+	#else
+	if (xmlobj.Bill && m_Trees[id].type <= 10)
 	#endif
 		xmlobj.shader = SHADER_BILLBOARD_ATLAS_FAST;
 #endif
@@ -306,7 +306,7 @@ xmlobj3d* BillClass::fillxml(ID3D11DeviceContext* pContext, int id, UINT type)
 	}
 #endif
 
-	//womalog("xmlobj(%d) TYPE:%d x:%d,y:%d\n", (int)xmlobj.id, (int)xmlobj.type, (int)xmlobj.posX, (int)xmlobj.posX);																											 
+	womalog("xmlobj(%d) TYPE:%d x:%d,y:%d\n", (int)xmlobj.id, (int)xmlobj.type, (int)xmlobj.posX, (int)xmlobj.posX);																											 
 	return &xmlobj;
 }
 

@@ -215,7 +215,7 @@ void QuadTree::RenderNode(NodeType* node)
 		if (((DXmodelClass*)model)->isBill)
 		{
 #if defined  NO3DBILL
-			 if (m_Trees[tree_id].type == 300)
+			if (m_Trees[tree_id].type > 12)
 #endif
 			 {
 

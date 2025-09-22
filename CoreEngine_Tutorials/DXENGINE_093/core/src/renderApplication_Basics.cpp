@@ -95,8 +95,6 @@ extern void InitMeshDemo(ID3D11DeviceContext* pContext, ApplicationClass* app, M
 extern void LoadAllMeshModels(UINT this_level, ApplicationClass* app, MeshApplication* demoapp, MyDemo* demo);
 extern void RenderAllMeshModels(ID3D11DeviceContext* pContext);
 
-size_t AtlasobjModel_outVertsCount = 0, AtlasobjModel_outIdxCount = 0;
-
 float sort_cameraX=0, sort_cameraY=0, sort_cameraZ = 0;
 
 bool BillSortCB_CPP(const Tree& a, const Tree& b)
@@ -213,7 +211,7 @@ void UpdateBills(ID3D11DeviceContext* ctx,
 void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext, WomaDriverClass* driver)
 {
 	totalRendered = 0;
-	
+
 	// SET A SPECIFIC CAMERA POSITION FOR BILLBOARD SORT:
 #if defined USE_DIRECT_INPUT
 	const float SORT_OFFSET = 5.0f; // 5 METERS BEHIND CAMERA
@@ -263,7 +261,7 @@ void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext, WomaDriverCla
 
 		const UINT xmlid = m_Trees[i].ID + SystemHandle->m_Application->initial_world_xml_objs;
 #if defined  NO3DBILL
-		if (m_Trees[i].type <= 12) 
+		if (m_Trees[i].type <= 12)  //Use all from 0..12
 #else
 		if (m_Trees[i].type <= 10)
 #endif
