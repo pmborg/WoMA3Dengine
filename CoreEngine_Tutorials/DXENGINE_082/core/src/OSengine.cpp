@@ -462,9 +462,7 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 	//THREAD_PRIORITY_TIME_CRITICAL(+15)
 	#endif
 
-#if defined NDEBUG
 	SetThreadPriority(GetCurrentThread(), 10/*THREAD_PRIORITY_HIGHEST*/);
-#endif
 
     SetUnhandledExceptionFilter(TopLevelFilter);
 #elif defined LINUX_PLATFORM && defined RELEASE

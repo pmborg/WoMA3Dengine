@@ -229,6 +229,8 @@ public:
     void SortOutWhatNeedToBeRendered(void* pContext, WomaDriverClass* driver);
     void RenderScene(UINT monitorWindow, WomaDriverClass* driver);
 	float ProcessInputUpdate();						// PROCESS User Update
+	void SkyAndDemos(UINT monitorWindow, float fadeLight, void* pContext);
+	void WaterTerrain(UINT monitorWindow, float fadeLight, void* pContext);
 	void AppRender(UINT monitorWindow,  float fadeLight, void * pContext);								// RENDER - 3D
 	bool Initialize(void* pContext, WomaDriverClass* Driver);
 #endif
@@ -301,7 +303,7 @@ public:
                 bool getPoligon = false);
     bool PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTOR& triV3, XMVECTOR& point);
     
-    compoundTreeLoadOrder compoundTreeLoadingOrder[10000] = {}; // MAX: 10000 OBJs on Scene
+	compoundTreeLoadOrder compoundLoadingOrder[5000] = {}; // MAX: 5000 OBJs on Scene
 #endif
 
 #if defined USE_SKY2D || ENGINE_LEVEL >= 27 // SKY

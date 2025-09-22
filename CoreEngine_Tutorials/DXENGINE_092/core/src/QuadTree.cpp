@@ -123,7 +123,6 @@ bool checkIfPointIsInsideSquare (float p_x, float p_z, float square_left, float 
 	return  ((p_x >= square_left && p_x <= square_right) && (p_z >= square_bottom && p_z <= square_top));
 }
 
-
 //Used by: void SceneManager::addModel (SceneNode* node, VirtualModelClass* model)
 void QuadTree::AddSceneNode(NodeType* quadNode, SceneNode* node)
 {
@@ -210,20 +209,34 @@ void QuadTree::RenderNode(NodeType* node)
 #endif
                _xml_loader->theWorldXML[modelID].render = true;    
         }
+
 		 UINT tree_id = modelID - SystemHandle->m_Application->initial_world_xml_objs;
-        if (((DXmodelClass*)model)->isBill/* && m_Trees[tree_id].type <= 100*/)
+
+		if (((DXmodelClass*)model)->isBill)
 		{
-			WOMA::sceneManager->visibleBillboardList.push_back(m_Trees[modelID - SystemHandle->m_Application->initial_world_xml_objs] ); //modelID = world_xml_objs + tree_id
+#if defined  NO3DBILL
+			 if (m_Trees[tree_id].type == 300)
+#endif
+			 {
+
+			WOMA::sceneManager->visibleBillboardList.push_back(m_Trees[tree_id] ); //modelID = world_xml_objs + tree_id
+
+			SystemHandle->m_Application->billboardRrenderCount++;
+#ifdef _DEBUG
+			totalVertexRendered += node->sceneNodes[i]->nodeState.model->m_vertexCount;
+#endif
+			 }
 		}
 		else
 		{
 		// Add model on list to be rendered later.
         WOMA::sceneManager->visibleModelList.push_back(model);
+
+#ifdef _DEBUG
+		totalVertexRendered += node->sceneNodes[i]->nodeState.model->m_vertexCount;
+#endif
 		}
 
-	#ifdef _DEBUG
-		totalVertexRendered += node->sceneNodes[i]->nodeState.model->m_vertexCount;
-	#endif
 	}
 }
 #endif

@@ -187,8 +187,6 @@ static const D3D11_INPUT_ELEMENT_DESC mappingDetailligthcolorBumpPolygonLayout11
 	{ "BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT,   0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },//BUMP MAP
 };
 
-
-
 namespace DirectX {
 
 	DXshaderClass::DXshaderClass(UINT ShaderVersion_H, UINT ShaderVersion_L, bool shader_3D)
@@ -1818,8 +1816,9 @@ namespace DirectX {
 				deviceContext->DrawIndexedInstanced(indexCount, m_instanceCount, start, 0, 0);	// Use: Instancing
 			else
 #endif
-				deviceContext->DrawIndexed(indexCount, start, 0);	// Render Indexed mesh
-
+			{
+				  deviceContext->DrawIndexed(indexCount, start, 0);	// Render Indexed mesh
+			}
 		#ifdef _DEBUG
 			SystemHandle->TotalVertexCounter += indexCount;
 		#endif

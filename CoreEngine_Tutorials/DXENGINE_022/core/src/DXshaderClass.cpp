@@ -96,8 +96,6 @@ static const D3D12_INPUT_ELEMENT_DESC texturePolygonLayout[] =
 
 //-------------------------------------------------------------------------------------------------
 
-
-
 namespace DirectX {
 
 	DXshaderClass::DXshaderClass(UINT ShaderVersion_H, UINT ShaderVersion_L, bool shader_3D)
@@ -1274,8 +1272,9 @@ namespace DirectX {
             // PS: Set CODE to Run on Shaders:
             deviceContext->PSSetShader(m_pixelShader11, NULL, 0);		// Set the pixel code that will be used to process pixels
 
-				deviceContext->DrawIndexed(indexCount, start, 0);	// Render Indexed mesh
-
+			{
+				  deviceContext->DrawIndexed(indexCount, start, 0);	// Render Indexed mesh
+			}
 		#ifdef _DEBUG
 			SystemHandle->TotalVertexCounter += indexCount;
 		#endif

@@ -586,7 +586,7 @@ inline long ComputeIntersectionArea(
 	return MAX(0l, MIN(ax2, bx2) - MAX(ax1, bx1)) * MAX(0l, MIN(ay2, by2) - MAX(ay1, by1));
 }
 
-bool DX11Class::create_or_resize_swap(UINT USE_MONITOR, int screenWidth, int screenHeight)
+bool DirectX::DX11Class::create_or_resize_swap(UINT USE_MONITOR, int screenWidth, int screenHeight, BOOL fullscreen)
 {
 	HRESULT result = S_OK;
 
@@ -713,7 +713,7 @@ bool DX11Class::create_or_resize_swap(UINT USE_MONITOR, int screenWidth, int scr
 				DX11windowsArray[USE_MONITOR].DX11_GPU_supportHDR = TRUE;
 			}
 
-			if (DX11windowsArray[USE_MONITOR].DX11_GPU_supportTearing)
+			if (DX11windowsArray[USE_MONITOR].DX11_GPU_supportTearing && (swapChainDesc.BufferCount > 1 && !SystemHandle->AppSettings->FULL_SCREEN && DX11windowsArray[USE_MONITOR].DX11_GPU_supportFLIP))
 				swapChainDesc.Flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
 #else
 			// Disable HDR if we are on an OS that can't support FLIP swap effects
@@ -751,7 +751,7 @@ bool DX11Class::create_or_resize_swap(UINT USE_MONITOR, int screenWidth, int scr
 
 			// And obtain the factory object that created it.
 			IDXGIFactory2* dxgiFactory;
-			//AQUI
+
 			hr = dxgiAdapter->GetParent(__uuidof(IDXGIFactory2), (void**)&dxgiFactory);
 			//hr = dxgiAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&dxgiFactory);
 			if (FAILED(hr)) {
@@ -771,7 +771,7 @@ bool DX11Class::create_or_resize_swap(UINT USE_MONITOR, int screenWidth, int scr
 #endif
 
 			DXGI_SWAP_CHAIN_FULLSCREEN_DESC fsSwapChainDesc = {};
-			fsSwapChainDesc.Windowed = TRUE;
+			fsSwapChainDesc.Windowed = !fullscreen;
 
 			// Create a SwapChain from a Win32 window.
 			hr = dxgiFactory->CreateSwapChainForHwnd(
@@ -812,7 +812,7 @@ bool DX11Class::Resize (UINT USE_MONITOR, int screenWidth, int screenHeight, flo
 {
 	RenderfirstTime = true;	 // Used on SPRITES!
 	//SystemHandle->allWindowsArray
-	IF_NOT_RETURN_FALSE(create_or_resize_swap(USE_MONITOR, screenWidth, screenHeight));
+	IF_NOT_RETURN_FALSE(create_or_resize_swap(USE_MONITOR, screenWidth, screenHeight, fullscreen));
 	
 if (m_deviceContext)
 		{

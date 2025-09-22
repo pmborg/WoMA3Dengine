@@ -158,8 +158,6 @@ static const D3D11_INPUT_ELEMENT_DESC ligthcolorPolygonLayout11[] =
 };
 // Get a count of the elements in the layout.
 
-
-
 namespace DirectX {
 
 	DXshaderClass::DXshaderClass(UINT ShaderVersion_H, UINT ShaderVersion_L, bool shader_3D)
@@ -1723,8 +1721,9 @@ namespace DirectX {
 				deviceContext->DrawIndexedInstanced(indexCount, m_instanceCount, start, 0, 0);	// Use: Instancing
 			else
 #endif
-				deviceContext->DrawIndexed(indexCount, start, 0);	// Render Indexed mesh
-
+			{
+				  deviceContext->DrawIndexed(indexCount, start, 0);	// Render Indexed mesh
+			}
 		#ifdef _DEBUG
 			SystemHandle->TotalVertexCounter += indexCount;
 		#endif

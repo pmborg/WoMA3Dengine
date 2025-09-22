@@ -300,7 +300,6 @@ namespace DirectX
 
 		ID3D11SamplerState* m_sampleStateClamp11 = NULL;
 		ID3D11SamplerState* m_sampleStateFire = NULL;;
-
 		ID3D11ShaderResourceView* texture11 = NULL;	// 21
 		ID3D11ShaderResourceView* texture11_2 = NULL;	// 43: Alfa Map
 #endif

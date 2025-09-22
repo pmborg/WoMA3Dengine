@@ -19,8 +19,9 @@
 //WomaIntegrityCheck = 1234525217;
 
 #include "platform.h"
-#include "OSengine.h"
 #pragma warning(disable : 4267) // warning C4267: 'initializing': conversion from 'size_t' to 'UINT', possible loss of data
+
+#include "OSengine.h"
 #include "OSmain_dir.h"
 #include "ApplicationClass.h"
 #include "fileLoader.h"
@@ -50,8 +51,6 @@ extern RApplicationClass* r_Application;
 #include "BillClass.h"	//[ch60]
 #endif
 
-
-
 #if defined USE_DIRECT_INPUT || DX_ENGINE_LEVEL >= 63
 float sort_cameraX=0, sort_cameraY=0, sort_cameraZ = 0;
 #endif
@@ -59,7 +58,7 @@ float sort_cameraX=0, sort_cameraY=0, sort_cameraZ = 0;
 void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext, WomaDriverClass* driver)
 {
 	totalRendered = 0;
-
+	
 	// SET A SPECIFIC CAMERA POSITION FOR BILLBOARD SORT:
 #if defined USE_DIRECT_INPUT
 	const float SORT_OFFSET = 5.0f; // 5 METERS BEHIND CAMERA
@@ -72,6 +71,7 @@ void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext, WomaDriverCla
 #if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
 
 	WOMA::sceneManager->CreateLists();						//CREATE LISTS: for all objects to render (from WORLD.XML) and more
+
 	world_main_size = WOMA::sceneManager->visibleModelList.size();
 #endif
 
@@ -82,11 +82,7 @@ void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext, WomaDriverCla
 	sort_cameraZ = SystemHandle->m_Application->m_Position[g_NetID]->m_positionZ;
 #endif
 
-
-
-
-
-
+	// Rotate Bills:
 
 	// LIGHT RAY:
 	// --------------------------------------------------------------------------------------------
@@ -132,24 +128,22 @@ extern DXcameraClass m_CameraMAP;
 #endif
 
 #define TERRAIN_SCALE 1
-//#############################################################################################################
-// [2/3] RENDER - 3D
-//#############################################################################################################
-void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pContext)
+
+void ApplicationClass::SkyAndDemos(UINT monitorWindow, float fadeLight, void* pContext)
 {
-	#if DX_ENGINE_LEVEL >= 10 && LEVEL <= 21
+#if DX_ENGINE_LEVEL >= 10 && LEVEL <= 21
 	{
-		#define cor driverList[SystemHandle->AppSettings->DRIVER]->driver_ClearColor
+#define cor driverList[SystemHandle->AppSettings->DRIVER]->driver_ClearColor
 		cor[2] += ((float)dt / 10000);
 		cor[2] = cor[2] + 0.001f;
 		if (cor[2] >= 1)
 			cor[2] = 0;
-		#undef cor
+#undef cor
 	}
-	#endif
+#endif
 
 	// RENDER: SKY Sphere:
-    //----------------------------------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------------------------------
 #if (defined USE_SKY_CAMERA_DOME && defined USE_SKYSPHERE) && defined MAIN_RENDER_SKY	// MAIN-RENDER: "Sky": (0.0ms)
 	if (RENDER_PAGE >= 28 && m_SkyModel)
 	{
@@ -159,7 +153,7 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 		m_SkyModel->RenderSky(pContext, CAMERA_SKY, 1); // Camera with fixed position: 0,0,0: (CAMERA_SKY)
 	}
 #endif
-    
+
 #if defined USE_ALPHA_BLENDING
 	m_Driver->TurnOffAlphaBlending(pContext);
 #endif
@@ -175,19 +169,23 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 			(SystemHandle->AppSettings->WINDOW_HEIGHT - m_Sky2DModel->SpriteTextureHeight) / 2);
 	m_Driver->ClearDepthBuffer(); // Need to Be Right after: m_Sky2DModel->RenderSprite 
 #endif
+}
 
-    //----------------------------------------------------------------------------------------------------------------------
+
+void ApplicationClass::WaterTerrain(UINT monitorWindow, float fadeLight, void* pContext)
+{
+	//----------------------------------------------------------------------------------------------------------------------
 	// TERRAIN[0]: UNDER WATER
 #if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_REALEARTH_TERRAIN || defined SCENE_MAIN_TERRAIN
 #if defined USE_RASTERIZER_STATE
-    m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);
+	m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);
 #endif
 	if (RENDER_PAGE == 49)
 		m_TerrainModel[UNDERWATER_TERRAIN_ID]->RenderWithFade(pContext);					// New function to replace these 2 line options.
 #endif
 
 	// TERRAIN[2]: Render MAIN Terrain
-    //----------------------------------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------------------------------
 #if (defined SCENE_MAIN_TOPO_TERRAIN && !defined USE_TERRAIN_ALFA_MAP) && defined MAIN_RENDER_TERRAIN //MAIN-RENDER TERRAIN (0.3 ms)
 	static bool fog = (RENDER_PAGE == 51 || RENDER_PAGE >= 60) ? true : false;
 	if (RENDER_PAGE >= 50)
@@ -206,10 +204,16 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 
 	// TERRAIN[1]: Render Mesh for WATER:
 // --------------------------------------------------------------------------------------------
+}
 
-	//THE "OTHER" NETWORK PLAYERS
-	//----------------------------------------------------------------------------------------------------------------------
+//#############################################################################################################
+// [2/3] RENDER - 3D
+//#############################################################################################################
+void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pContext)
+{
+	SkyAndDemos(monitorIndex, fadeLight, pContext);
 
+	WaterTerrain(monitorIndex, fadeLight, pContext);
 
 	// 3D STATIC OPAC OBJECTS on WORLD.XML, that listed in: sceneManager->visibleModelList (in front of camera)
 	//----------------------------------------------------------------------------------------------------------------------
@@ -219,8 +223,6 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 
 	// Render TRANSPARENT Parts of 3D OBJs (like: glass window of (Space Compound), etc...) (last part)
 	// --------------------------------------------------------------------------------------------
-
-
 
 #if defined USE_MAP_EDITOR // MAP EDITOR: Render "Red" src/target line:
     //SRC:
@@ -270,10 +272,6 @@ void ApplicationClass::AppPosRender(UINT monitorIndex, float dayLightFade, void*
             if (SystemHandle->xml_loader.theWorldXML[obj_id].render)								// TODO: use sceneManager
 				RenderModel(pContext, 0, monitorIndex, m_Driver, obj_id, PASS_BILL, NULL, NULL);    // Render: "Billboards"
 		}
-#endif
-
-#if defined USE_ALPHA_BLENDING
-	m_Driver->TurnOnAlphaBlending(pContext);
 #endif
 
 #if (defined USE_MAIN_MAP || defined USE_MINI_MAP) && defined MAIN_RENDER_MINIMAP //MAIN-RENDER: MINI-MAP (0.4)
@@ -464,14 +462,13 @@ float ApplicationClass::ProcessInputUpdate()
 	float camZ = m_Position[g_NetID]->m_positionZ;
 
 	for (UINT c = 0; c < world_main_size; c++)
-	//for (UINT c = 0; c < WOMA::sceneManager->visibleModelList.size(); c++)
 	{
 		int id = WOMA::sceneManager->visibleModelList[c]->xmlId;
 		X = objModel[id]->PosX - camX; //compound[id].posX
 		Z = objModel[id]->PosZ - camZ; //compound[id].posZ
-		compoundTreeLoadingOrder[c].order = (UINT)(X * X + Z * Z);
+		compoundLoadingOrder[c].order = (UINT)(X * X + Z * Z);
 	}
-	qsort(compoundTreeLoadingOrder, world_main_size, sizeof(compoundTreeLoadOrder), CompoundSortCB);	// Order compound by distance:
+	qsort(compoundLoadingOrder, world_main_size, sizeof(compoundTreeLoadOrder), CompoundSortCB);	// Order compound by distance:
 
 	// [Collision 1] Check Collision with "10" COMPOUNDS near to us...:
 	// ----------------------------------------------------------------

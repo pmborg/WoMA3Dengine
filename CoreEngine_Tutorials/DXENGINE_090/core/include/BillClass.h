@@ -38,13 +38,6 @@
 #define N_BUSH_0    0
 #else
 
-#if defined NO3DBILL
-#define N_BILLBOARD 1000
-#define N_FENCES    55
-#define N_FIRE      1
-#define N_GRASS_0   0
-#define N_BUSH_0    0
-#else
 #define N_BILLBOARD 1000
 #define N_FENCES      55
 #define N_FIRE         1
@@ -52,11 +45,11 @@
 #define N_BUSH_0     750 //12 BUSHs
 #endif
 
-#endif
-
 extern ID3D11ShaderResourceView* billFileLoaded[];
 
 extern std::vector<Tree> m_Trees;
+
+#define MAX_BILLBOARDS (N_BILLBOARD + N_FENCES + N_FIRE + N_GRASS_0 + N_BUSH_0)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: BillClass

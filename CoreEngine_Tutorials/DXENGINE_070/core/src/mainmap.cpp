@@ -35,25 +35,16 @@ void ApplicationClass::TerrainRender(UINT ThreadID, UINT monitorWindow, WomaDriv
 	m_Driver->TurnOffAlphaBlending(pContext); // Re assume default
 
 	//Water Render:
-	 if (ThreadID==0) {
-		float t = ((DirectX::DXmodelClass*)m_TerrainModel[WATER_TERRAIN_ID])->m_Shader11->watertime; //preserve animation time
-		((DirectX::DXmodelClass*)m_TerrainModel[WATER_TERRAIN_ID])->m_Shader11->watertime = 0;
-		((DirectX::DXmodelClass*)m_TerrainModel[WATER_TERRAIN_ID])->shaderTypeParameter = 1; // Render for Map projection
-		m_TerrainModel[WATER_TERRAIN_ID]->Render(pContext, 0, CAMERA_NORMAL, PROJECTION_MINIMAP, PASS_MINIMAP1, m_viewMatrix, m_projectionMatrix);
-		((DirectX::DXmodelClass*)m_TerrainModel[WATER_TERRAIN_ID])->m_Shader11->watertime = t;
-	 }
-	 else
-	 {
-		 ((DirectX::DXmodelClass*)m_TerrainModel[0])->shaderTypeParameter = 1; // Render for Map projection
-		 m_TerrainModel[0]->Render(pContext, 0, CAMERA_NORMAL, PROJECTION_MINIMAP, PASS_MINIMAP1, m_viewMatrix, m_projectionMatrix);
-	 }
+	 ((DirectX::DXmodelClass*)m_TerrainModel[WATER_TERRAIN_ID])->shaderTypeParameter = 1; // Render for Map projection
+	 m_TerrainModel[WATER_TERRAIN_ID]->Render(pContext, 0, CAMERA_NORMAL, PROJECTION_MINIMAP, PASS_MINIMAP1, m_viewMatrix, m_projectionMatrix);
 
 	//Terrain Render:
 	((DirectX::DXmodelClass*)m_TerrainModel[MAIN_TERRAIN_ID])->shaderTypeParameter = 1; // Render for Map projection
 	m_TerrainModel[MAIN_TERRAIN_ID]->Render(pContext, 0, CAMERA_NORMAL, PROJECTION_MINIMAP, PASS_MINIMAP1, m_viewMatrix, m_projectionMatrix);
 
-	((DirectX::DXmodelClass*)m_TerrainModel[WATER_TERRAIN_ID])->shaderTypeParameter = 
-	((DirectX::DXmodelClass*)m_TerrainModel[MAIN_TERRAIN_ID])->shaderTypeParameter = 0; // Render in normal projection
+	//RESET:
+	//((DirectX::DXmodelClass*)m_TerrainModel[WATER_TERRAIN_ID])->shaderTypeParameter = 
+	//((DirectX::DXmodelClass*)m_TerrainModel[MAIN_TERRAIN_ID])->shaderTypeParameter = 0; // Render in normal projection
 }
 
 

@@ -360,7 +360,7 @@ public:
 
     DXGI_FORMAT SelectDepthFormat(UINT depthBits, BOOL fullscreen);
 
-	bool create_or_resize_swap(UINT USE_MONITOR, int screenWidth, int screenHeight);
+    bool create_or_resize_swap(UINT USE_MONITOR, int screenWidth, int screenHeight, BOOL fullscreen);
     bool Resize (UINT USE_MONITOR, int screenWidth, int screenHeight,float screenNear, float screenDepth, BOOL fullscreen, UINT depthBits);
     void DeleteViewBuffers(UINT monitorWindow);
     void SetCamera2D();

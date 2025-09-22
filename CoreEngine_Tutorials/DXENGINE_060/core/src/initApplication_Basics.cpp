@@ -671,7 +671,6 @@ void ApplicationClass::InitMainSky(void* pContext, WomaDriverClass* Driver)
 
 void ApplicationClass::InitTerrainandWaterSurfaces(void* pContext, WomaDriverClass* Driver)
 {
-
 #if defined MAIN_RENDER_TERRAIN
 	//=================================================================================================================
 	// INIT TERRAINs //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -680,13 +679,6 @@ void ApplicationClass::InitTerrainandWaterSurfaces(void* pContext, WomaDriverCla
 #if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN		// UNDER WATER: Terrain
 	loadedTerrain[0] = NEW CTerrain(TERRAIN);
 	loadedTerrain[0]->initUnderWaterDemo(pContext, 0);			//UNDERWATER	(populate: modelVertexVector) 2022:LEVEL_ENGINE: 25
-#endif
-
-	//0 WATER on MINIMAP TERRAIN MESH
-	//------------------
-#if defined USE_MINIMAP_REDENRING_THREAD
-	loadedTerrain[0] = NEW CTerrain(TERRAIN);
-	loadedTerrain[0]->initTerrainWaterMeshDemo(pContext, 0);
 #endif
 
 	//1 WATER TERRAIN MESH: 6 vertex + 6 index
@@ -885,13 +877,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	// Finally, launch dynamic Load Compound/OBJ Thread ////////////////////////////////////////////
 	// --------------------------------------------------------------------------------------------
 #if defined CHECK_OBJ_COLISION && defined MAIN_RENDER_MAIN_OBJ //CHECK_COMPOUND_COLISION
-/*#else
-	for (UINT i = 0; i < num_loading_objects; i++) {
-		compoundTreeLoadingOrder[i].compoundTreeId = -1;
-		compoundTreeLoadingOrder[i].modelId = i;
-		compoundTreeLoadingOrder[i].order = 0;
-	}
-*/
 #endif
 
 #if defined SAVEW3D && DX_ENGINE_LEVEL < 89
@@ -900,9 +885,8 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	return false;
 #endif
 
-	// --------------------------------------------------------------------------------------------
-	//INIT CLIENT/SERVER NETWORK COMS /////////////////////////////////////////////////////////////
-	// --------------------------------------------------------------------------------------------
+	WOMA::sceneManager->visibleBillboardList.reserve(MAX_BILLBOARDS);
+
 
 	return true;
 }

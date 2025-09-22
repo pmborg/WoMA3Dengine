@@ -122,7 +122,6 @@ bool checkIfPointIsInsideSquare (float p_x, float p_z, float square_left, float 
 	return  ((p_x >= square_left && p_x <= square_right) && (p_z >= square_bottom && p_z <= square_top));
 }
 
-
 //Used by: void SceneManager::addModel (SceneNode* node, VirtualModelClass* model)
 void QuadTree::AddSceneNode(NodeType* quadNode, SceneNode* node)
 {
@@ -209,14 +208,16 @@ void QuadTree::RenderNode(NodeType* node)
 #endif
                _xml_loader->theWorldXML[modelID].render = true;    
         }
+
 		{
 		// Add model on list to be rendered later.
         WOMA::sceneManager->visibleModelList.push_back(model);
+
+#ifdef _DEBUG
+		totalVertexRendered += node->sceneNodes[i]->nodeState.model->m_vertexCount;
+#endif
 		}
 
-	#ifdef _DEBUG
-		totalVertexRendered += node->sceneNodes[i]->nodeState.model->m_vertexCount;
-	#endif
 	}
 }
 #endif

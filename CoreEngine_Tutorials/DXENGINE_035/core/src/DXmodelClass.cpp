@@ -101,7 +101,7 @@ DXmodelClass::DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive, bool comp
 #endif
 
 	// Private ----------------------------------------------------------------------
-	#ifdef DX11 || defined DX9
+	#if defined DX11 || defined DX9
 		m_vertexBuffer11	= m_indexBuffer11	= NULL;
 	#endif
 
@@ -680,7 +680,6 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 #endif
 	return true;
 }
-
 
 void DXmodelClass::Shutdown()
 {

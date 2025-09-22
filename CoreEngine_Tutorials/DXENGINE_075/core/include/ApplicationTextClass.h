@@ -122,7 +122,7 @@ public:
 	void SetLoboRenderCount(int count);
 	#endif
 
-#if TUTORIAL_CHAP >= 60 && DX_ENGINE_LEVEL <= 92 && !defined RELEASE // BILLBOARD
+#if TUTORIAL_CHAP >= 60 && !defined RELEASE // BILLBOARD
 	void SetBillRenderCount(int count, UINT deltaTime);
 	#endif
 

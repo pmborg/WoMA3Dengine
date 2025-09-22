@@ -103,11 +103,13 @@ HRESULT DirectX::DX11Class::LoadTexture(ID3D11DeviceContext* pContext, ID3D11Dev
         DirectX::ScratchImage image;
         DirectX::TexMetadata info;
 
+		#define loadFlags DirectX::WIC_FLAGS_NONE
+
         #ifdef UNICODE
-        hr = DirectX::LoadFromWICFile(pSrcFile, DirectX::WIC_FLAGS_NONE, &info, image);
+        hr = DirectX::LoadFromWICFile(pSrcFile, loadFlags, &info, image);
         #else
         WCHAR DX_pSrcFile[MAX_STR_LEN] = { 0 }; MultiByteToWideChar(CP_ACP, 0, pSrcFile, -1, DX_pSrcFile, MAX_STR_LEN);
-        hr = DirectX::LoadFromWICFile(DX_pSrcFile, DirectX::WIC_FLAGS_NONE, &info, image);
+        hr = DirectX::LoadFromWICFile(DX_pSrcFile, loadFlags, &info, image);
         #endif
 
         if (SUCCEEDED(hr))

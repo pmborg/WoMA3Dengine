@@ -112,7 +112,7 @@ DXmodelClass::DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive, bool comp
 #endif
 
 	// Private ----------------------------------------------------------------------
-	#ifdef DX11 || defined DX9
+	#if defined DX11 || defined DX9
 		m_vertexBuffer11	= m_indexBuffer11	= NULL;
 	#endif
 
@@ -716,7 +716,6 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 	return true;
 }
 
-
 void DXmodelClass::Shutdown()
 {
 	womalog("DXmodelClass() DESTROYING: %s\n", MODEL_NAME.c_str());
@@ -863,7 +862,6 @@ bool DXmodelClass::InitializeTextureLightBuffers(/*ID3D11Device*/ void* device, 
 
 	return true;
 }
-
 
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
 //Ver: 1 + COLOR

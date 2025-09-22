@@ -236,7 +236,7 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	InitializeSystemScreen(10, 10); // SETUP SCREEN: F1,F2,F3,F4,F5,F6 (RUNNING NOW ON: PaintSetup())
 #endif
 
-  #if defined USE_SCENE_MANAGER							// INIT SCENE-MANAGER:
+  #if defined USE_SCENE_MANAGER				// INIT SCENE-MANAGER:
 	DXsystemHandle->InitSceneManager();		// INIT QUAD TREE
   #endif
 

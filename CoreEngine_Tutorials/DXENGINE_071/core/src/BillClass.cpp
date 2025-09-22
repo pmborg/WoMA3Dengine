@@ -119,7 +119,7 @@ xmlobj3d xmlobj;
 xmlobj3d* BillClass::fillxml(ID3D11DeviceContext* pContext, int id, UINT type)
 {
 	DirectX::DX11Class* m_driver11 = (DirectX::DX11Class*)m_Driver;
-	
+
 	xmlobj.id = id + SystemHandle->m_Application->world_xml_objs;
 	xmlobj.type = type;
 	xmlobj.fromPage = 0;
@@ -140,6 +140,7 @@ xmlobj3d* BillClass::fillxml(ID3D11DeviceContext* pContext, int id, UINT type)
 
 	if (m_Trees[id].type < 100)
 		{
+#if !defined GENERATE_ATLAS_INTEGRATION_DDS
 			// Create the texture object, if not created before
 			if (!billFileLoaded[type])
 			{
@@ -151,6 +152,7 @@ xmlobj3d* BillClass::fillxml(ID3D11DeviceContext* pContext, int id, UINT type)
 			}
 
 			xmlobj.meshSRV = billFileLoaded[type];
+#endif
 			if (m_Trees[id].type < 11)
 				_tcscpy_s(xmlobj.filename, 256, BILLBOARD_MODEL);				//engine/data/scene70Bill/060square.obj
 		}
@@ -162,6 +164,14 @@ xmlobj3d* BillClass::fillxml(ID3D11DeviceContext* pContext, int id, UINT type)
 
 	xmlobj.WOMA_object.shaderType = SHADER_TEXTURE_LIGHT;
 
+#ifdef _DEBUG
+	if (xmlobj.filename[0] == '\0') {
+		// filename is empty
+		ASSERT_DEBUG(false);
+	}
+#endif
+
+	//womalog("xmlobj(%d) TYPE:%d x:%d,y:%d\n", (int)xmlobj.id, (int)xmlobj.type, (int)xmlobj.posX, (int)xmlobj.posX);																											 
 	return &xmlobj;
 }
 
@@ -175,6 +185,7 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 	UINT type = 0;
 
 	// BILLBOARDs
+	{
 	int i;
 	for (i = 0; i < N_BILLBOARD; i++)
 	{
@@ -207,30 +218,9 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 			//
 			//BILL_FLOWER_0,	//6	
 
-#if defined  NO3DBILL
-			if (i == 0)
 			{
-				PosX = 60;
-				PosZ = 60;
-				type = 0;
-			}
-			else if (i == 1)
-			{
-				PosX = 61;
-				PosZ = 61;
-				type = 3;
-			}
-			else if (i == 2)
-			{
-				PosX = 62;
-				PosZ = 62;
-				type = 6;
-			}
-			else
-#endif
-			{
-			PosX = (float)((rand() % (m_terrainWidth * 100)) / 100.0f);
-			PosZ = (float)((rand() % (m_terrainHeight * 100)) / 100.0f);
+				PosX = (float)((rand() % (m_terrainWidth * 100)) / 100.0f);
+				PosZ = (float)((rand() % (m_terrainHeight * 100)) / 100.0f);
 			}
 			m_Trees[i].vPos.x = PosX;
 			m_Trees[i].vPos.z = PosZ;
@@ -239,7 +229,8 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 		}
 
 
-		ASSERT(type <= billNames_length - 1);
+		ASSERT_DEBUG(type <= billNames_length - 1);
+
 		// Tree.scale:
 		float scale = 0;
 		if (type >= 6 && type < 11)
@@ -254,7 +245,7 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 		if (type >= 6)					// Make flowers Smaller
 			scale = scale / 1.5f;
 
-		m_Trees[i].ID = i;
+		m_Trees[i].ID = (UINT)m_Trees.size()-1;
 		m_Trees[i].type = type;
 		m_Trees[i].scale = scale;
 		m_Trees[i].vPos.y = height;
@@ -266,10 +257,11 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 
 		m_Trees[i].bill = xmlobj->Bill;
 
-
 		SystemHandle->xml_loader.theWorldXML.push_back(*xmlobj);
+
 	}
 	//N_BILLBOARD
+	}
 
 	if (N_FENCES > 0)
 	{
@@ -280,21 +272,23 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 
 				if (!(z == 0 && (x == 7 || x == 8))) //Exclude: DOOR at Fences
 				{
-					m_Trees[i].ID = i;
-					m_Trees[i].type = 100; // 100 = Fence
-					m_Trees[i].scale = 1.0f;
-					m_Trees[i].rotY = 0.0f;
+					//m_Trees[i].ID = i;
+					UINT nx = (UINT)m_Trees.size() - 1;
+					m_Trees[nx].ID = nx;
+					m_Trees[nx].type = 100; // 100 = Fence
+					m_Trees[nx].scale = 1.0f;
+					m_Trees[nx].rotY = 0.0f;
 
-					m_Trees[i].vPos.x = 29.5f + x * 1.33f;
-					m_Trees[i].vPos.z = 21.5f + 0.5f * z + z * 14.0f;
-					m_Trees[i].vPos.y = mainTerrain->getTerrainHeight(TERRAIN_ID, m_Trees[i].vPos.x, m_Trees[i].vPos.z);
+					m_Trees[nx].vPos.x = 29.5f + x * 1.33f;
+					m_Trees[nx].vPos.z = 21.5f + 0.5f * z + z * 14.0f;
+					m_Trees[nx].vPos.y = mainTerrain->getTerrainHeight(TERRAIN_ID, m_Trees[nx].vPos.x, m_Trees[nx].vPos.z);
 
-					xmlobj3d* xmlobj = fillxml(pContext, i, 100);
+					xmlobj3d* xmlobj = fillxml(pContext, nx, 100);
 					xmlobj->Bill = false;
-					m_Trees[i].bill = xmlobj->Bill;
+					m_Trees[nx].bill = xmlobj->Bill;
 					SystemHandle->xml_loader.theWorldXML.push_back(*xmlobj);
 
-					if (i++ > N_BILLBOARD + N_FENCES + N_FIRE)
+					if (nx > N_BILLBOARD + N_FENCES + N_FIRE)
 						return false;
 				}
 			}
@@ -304,29 +298,46 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 		for (int y = 0; y < 11; y++) {
 			for (int x = 0; x < 2; x++) {
 
-				m_Trees[i].ID = i;
-				m_Trees[i].type = 100; // 100 = Fence
-				m_Trees[i].scale = 1.0f;
-				m_Trees[i].rotY = PI / 2.0f;
 
-				m_Trees[i].vPos.x = 29.5f + 0.5f * x + x * 22.0f;
-				m_Trees[i].vPos.z = 23 + y * 1.33f;
-				m_Trees[i].vPos.y = mainTerrain->getTerrainHeight(TERRAIN_ID, m_Trees[i].vPos.x, m_Trees[i].vPos.z);
 
-				xmlobj3d* xmlobj = fillxml(pContext, i, 100);
+				//m_Trees[i].ID = i;
+				UINT nx = (UINT)m_Trees.size() - 1;
+				m_Trees[nx].ID = nx;
+				m_Trees[nx].type = 100; // 100 = Fence
+				m_Trees[nx].scale = 1.0f;
+				m_Trees[nx].rotY = PI / 2.0f;
+
+				m_Trees[nx].vPos.x = 29.5f + 0.5f * x + x * 22.0f;
+				m_Trees[nx].vPos.z = 23 + y * 1.33f;
+				m_Trees[nx].vPos.y = mainTerrain->getTerrainHeight(TERRAIN_ID, m_Trees[nx].vPos.x, m_Trees[nx].vPos.z);
+
+				xmlobj3d* xmlobj = fillxml(pContext, nx, 100);
 				xmlobj->Bill = false;
-				m_Trees[i].bill = xmlobj->Bill;
+				m_Trees[nx].bill = xmlobj->Bill;
 				SystemHandle->xml_loader.theWorldXML.push_back(*xmlobj);
 
-				if (i++ > N_BILLBOARD + N_FENCES)
+				if (nx > N_BILLBOARD + N_FENCES + N_FIRE)
 					return false;
+
 			}
 		}
 	}
 
-	billTotal = i;
+	billTotal = (UINT)m_Trees.size();
 
 	womalog("Bill Class: Initialized\n");
+
+#if _DEBUG
+	{
+		auto countthis = 0;
+		for (auto i = 0; i < m_Trees.size(); i++)
+		{
+			if (m_Trees[i].ID == 0)
+				countthis++;
+		}
+		ASSERT_DEBUG(countthis == 1);
+	}
+#endif
 
 	return true;
 }
