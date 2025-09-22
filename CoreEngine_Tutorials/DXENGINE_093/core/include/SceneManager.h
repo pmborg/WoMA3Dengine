@@ -39,6 +39,7 @@ public:
 	SceneNode* RootNode;
 
 	std::vector<VirtualModelClass*> visibleModelList;
+
 	std::vector<Tree> visibleBillboardList;
 
 	//private:

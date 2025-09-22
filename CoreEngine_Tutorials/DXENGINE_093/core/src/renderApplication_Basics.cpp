@@ -95,19 +95,21 @@ extern void InitMeshDemo(ID3D11DeviceContext* pContext, ApplicationClass* app, M
 extern void LoadAllMeshModels(UINT this_level, ApplicationClass* app, MeshApplication* demoapp, MyDemo* demo);
 extern void RenderAllMeshModels(ID3D11DeviceContext* pContext);
 
+size_t AtlasobjModel_outVertsCount = 0, AtlasobjModel_outIdxCount = 0;
+
 float sort_cameraX=0, sort_cameraY=0, sort_cameraZ = 0;
 
 bool BillSortCB_CPP(const Tree& a, const Tree& b)
 {
-    float dx1 = a.vPos.x - sort_cameraX;
-    float dz1 = a.vPos.z - sort_cameraZ;
-    float dx2 = b.vPos.x - sort_cameraX;
-    float dz2 = b.vPos.z - sort_cameraZ;
+	float dx1 = a.vPos.x - sort_cameraX;
+	float dz1 = a.vPos.z - sort_cameraZ;
+	float dx2 = b.vPos.x - sort_cameraX;
+	float dz2 = b.vPos.z - sort_cameraZ;
 
-    float d1 = dx1 * dx1 + dz1 * dz1;
-    float d2 = dx2 * dx2 + dz2 * dz2;
+	float d1 = dx1 * dx1 + dz1 * dz1;
+	float d2 = dx2 * dx2 + dz2 * dz2;
 
-    return d1 > d2; // Farther first (back-to-front)
+	return d1 > d2; // Farther first (back-to-front)
 }
 
 #if defined GENERATE_ATLAS_INTEGRATION_DDS
@@ -182,14 +184,13 @@ void BuildBillboardAtlasMesh_FromTrees(
 	}
 }
 
-
 // Create once (sizes big enough for your typical worst case), e.g. 10k verts / 15k indices.
 ID3D11Buffer* gBillVB = nullptr;
 ID3D11Buffer* gBillIB = nullptr;
-
 void UpdateBills(ID3D11DeviceContext* ctx,
 	const std::vector<ModelBillboardAtlasVertexType>& verts,
-	const std::vector<uint32_t>& idx)
+	const std::vector<uint32_t>& idx
+)
 {
 	if (verts.empty() || idx.empty()) return;
 
@@ -198,7 +199,7 @@ void UpdateBills(ID3D11DeviceContext* ctx,
 	ctx->Map(gBillVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &m);
 	memcpy(m.pData, verts.data(), verts.size() * sizeof(verts[0]));
 	ctx->Unmap(gBillVB, 0);
-	
+
 	// Update IB
 	ctx->Map(gBillIB, 0, D3D11_MAP_WRITE_DISCARD, 0, &m);
 	memcpy(m.pData, idx.data(), idx.size() * sizeof(idx[0]));
@@ -206,12 +207,13 @@ void UpdateBills(ID3D11DeviceContext* ctx,
 
 	((DXmodelClass*)AtlasobjModel)->m_indexCount = idx.size();
 }
+
 #endif
 
 void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext, WomaDriverClass* driver)
 {
 	totalRendered = 0;
-
+	
 	// SET A SPECIFIC CAMERA POSITION FOR BILLBOARD SORT:
 #if defined USE_DIRECT_INPUT
 	const float SORT_OFFSET = 5.0f; // 5 METERS BEHIND CAMERA
@@ -234,8 +236,10 @@ void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext, WomaDriverCla
 #if DX_ENGINE_LEVEL >= 70 && defined SCENE_BILLBOARDS //SCENE_BILLBOARDS
 	// SORT BILLBOARDS:
 	// --------------------------------------------------------------------------------------------
+
 	// Sort: farthest → nearest						  
 	std::sort(WOMA::sceneManager->visibleBillboardList.begin(), WOMA::sceneManager->visibleBillboardList.end(), BillSortCB_CPP);	//obj: Tree
+
 #endif
 
 	// RESTORE DEFAULT CAMERA POSITION:
@@ -301,7 +305,6 @@ void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext, WomaDriverCla
 
 		if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
 		{
-
 			bool resb = ((DXmodelClass*)AtlasobjModel)->LoadBillboardAtlas(
 				pContext, TEXT("m_1stSquare3DColorModel"),
 				driver, SHADER_BILLBOARD_ATLAS_FAST,
@@ -309,6 +312,7 @@ void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext, WomaDriverCla
 				&outVerts, &outIdx);
 
 			ASSERT_DEBUG(resb);
+
 			//Populate: 
 			// m_vertexBuffer11
 			// m_indexBuffer11
@@ -316,10 +320,14 @@ void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext, WomaDriverCla
 
 			gBillVB = ((DXmodelClass*)AtlasobjModel)->m_vertexBuffer11;
 			gBillIB = ((DXmodelClass*)AtlasobjModel)->m_indexBuffer11;
+
+			((DXmodelClass*)AtlasobjModel)->m_worldMatrix = XMMatrixIdentity();
+
 		}
 	}
-	
+
 	UpdateBills((ID3D11DeviceContext*)pContext, outVerts, outIdx);
+
 	((DXmodelClass*)AtlasobjModel)->ready = true;
 #endif
 
@@ -962,7 +970,6 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 #endif
 	if (AtlasobjModel && ((DXmodelClass*)AtlasobjModel)->ready)
 	{
-		((DXmodelClass*)AtlasobjModel)->m_worldMatrix = XMMatrixIdentity();
 		((DXmodelClass*)AtlasobjModel)->Render(pContext, 0, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_BILL, &(app_Light->m_viewMatrix), &(app_Light->m_ligth_orthoMatrix));
 	}
 #endif

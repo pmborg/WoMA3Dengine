@@ -23,24 +23,27 @@
 // Name: Tree   
 // Desc: Simple structure to hold data for rendering a tree   
 //-----------------------------------------------------------------------------   
+#pragma pack(push, 1)
 struct Tree   
 {   
-	UINT        ID=0;
+	WORD        ID=0;
 	bool		bill=false;
 	XMFLOAT3    vPos = {};	// Origin of tree   
 	float		rotY=0;
 	float		scale=0;
-	UINT        type=0;
-	
+	BYTE        type=0;
 	// type: 0-10 normal billboards
 	// 100: FENCE 2D
 	// 200: FIRE
 	// 300: FENCE 3D
 };
+#pragma pack(pop)
 
+#pragma pack(push, 1)
 struct compoundTreeLoadOrder {
-	int TreeId = -1;
-	int modelId = -1;
-	UINT order = 0;
+	SHORT TreeId = -1;
+	SHORT modelId = -1;
+	WORD order = 0;
 };
+#pragma pack(pop)
 #endif

@@ -49,6 +49,8 @@ extern ID3D11ShaderResourceView* billFileLoaded[];
 
 extern std::vector<Tree> m_Trees;
 
+#define MAX_BILLBOARDS (N_BILLBOARD + N_FENCES + N_FIRE + N_GRASS_0 + N_BUSH_0)
+
 #if defined GENERATE_ATLAS_INTEGRATION_DDS
 #include "AtlasGenerator.h"
 

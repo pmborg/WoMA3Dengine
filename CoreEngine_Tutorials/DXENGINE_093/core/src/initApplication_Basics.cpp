@@ -1028,18 +1028,10 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	// Finally, launch dynamic Load Compound/OBJ Thread ////////////////////////////////////////////
 	// --------------------------------------------------------------------------------------------
 #if defined CHECK_OBJ_COLISION && defined MAIN_RENDER_MAIN_OBJ //CHECK_COMPOUND_COLISION
-/*#else
-	for (UINT i = 0; i < num_loading_objects; i++) {
-		compoundLoadingOrder[i].TreeId = -1;
-		compoundLoadingOrder[i].modelId = i;
-		compoundLoadingOrder[i].order = 0;
-	}
-*/
 #endif
 
-	// --------------------------------------------------------------------------------------------
-	//INIT CLIENT/SERVER NETWORK COMS /////////////////////////////////////////////////////////////
-	// --------------------------------------------------------------------------------------------
+	WOMA::sceneManager->visibleBillboardList.reserve(MAX_BILLBOARDS);
+
 
 	return true;
 }
