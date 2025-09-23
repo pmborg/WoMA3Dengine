@@ -1,0 +1,68 @@
+DO:
+
+cd /D C:\WoMA3Dengine\ThirdParty\external\curl
+cmake . -DBUILD_SHARED_LIBS=OFF -DCURL_STATICLIB=ON -DCURL_USE_SCHANNEL=ON -DCURL_DISABLE_FTP=ON -DCURL_DISABLE_LDAP=ON -DCURL_DISABLE_TELNET=ON -DCURL_DISABLE_DICT=ON -DCURL_DISABLE_FILE=ON -DCURL_DISABLE_TFTP=ON -DBUILD_CURL_EXE=OFF -DBUILD_TESTING=OFF -DBUILD_MANUAL=OFF -DCURL_USE_LIBPSL=OFF -DCURL_USE_ZLIB=OFF -DCURL_USE_BROTLI=OFF -DUSE_ZSTD=OFF -DUSE_NGHTTP2=OFF
+
+OUTPUT:
+-- Building for: Visual Studio 17 2022
+-- Using CMake version 3.31.4
+-- curl version=[8.17.0-DEV]
+-- The C compiler identification is MSVC 19.44.35217.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- CMake platform flags: WIN32 MSVC-1944
+-- Performing Test HAVE_WIN32_WINNT
+-- Performing Test HAVE_WIN32_WINNT - Success
+-- Found _WIN32_WINNT=0x0a00
+-- Picky compiler options: -W4 -Wall -wd4061 -wd4191 -wd4255 -wd4464 -wd4548 -wd4574 -wd4668 -wd4710 -wd4711 -wd4746 -wd4774 -wd4820 -wd5045
+-- Could NOT find Perl (missing: PERL_EXECUTABLE)
+CMake Warning at CMakeLists.txt:564 (message):
+  Perl not found.  Will not build manuals.
+
+
+-- Could NOT find ZLIB (missing: ZLIB_LIBRARY ZLIB_INCLUDE_DIR)
+-- Could NOT find Brotli (missing: BROTLI_INCLUDE_DIR BROTLIDEC_LIBRARY BROTLICOMMON_LIBRARY)
+-- Could NOT find Zstd (missing: ZSTD_INCLUDE_DIR ZSTD_LIBRARY)
+-- Could NOT find Libidn2 (missing: LIBIDN2_INCLUDE_DIR LIBIDN2_LIBRARY)
+-- Could NOT find Libssh2 (missing: LIBSSH2_INCLUDE_DIR LIBSSH2_LIBRARY)
+-- Check size of size_t
+-- Check size of size_t - done
+-- Check size of time_t
+-- Check size of time_t - done
+-- Check size of curl_socket_t
+-- Check size of curl_socket_t - done
+-- Protocols: gopher gophers http https imap imaps ipfs ipns mqtt pop3 pop3s rtsp smb smbs smtp smtps ws wss
+-- Features: alt-svc AsynchDNS HSTS HTTPS-proxy IPv6 Kerberos Largefile NTLM SPNEGO SSL SSPI threadsafe UnixSockets
+-- Enabled SSL backends: Schannel
+-- Configuring done (3.5s)
+-- Generating done (0.6s)
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    BUILD_MANUAL
+    CURL_STATICLIB
+    CURL_USE_BROTLI
+    CURL_USE_ZLIB
+    USE_ZSTD
+
+
+-- Build files have been written to: C:/WoMA3Dengine/ThirdParty/external/curl
+
+C:\WoMA3Dengine\ThirdParty\external\curl>
+
+-------------------------------------------------------------------------------------------------------
+
+OPEN: C:\WoMA3Dengine\ThirdParty\external\curl\CURL.sln
+compile project: (x86 and x64)
+libcurl_static
+
+-------------------------------------------------------------------------------------------------------
+And then copy:
+copy C:\WoMA3Dengine\ThirdParty\external\curl\lib\libcurl_object.dir\Debug\libcurl_object.lib C:\WoMA3Dengine\ThirdParty\external\
+copy C:\WoMA3Dengine\ThirdParty\external\curl\lib\Release\libcurl.lib C:\WoMA3Dengine\ThirdParty\external\
+
+
+
