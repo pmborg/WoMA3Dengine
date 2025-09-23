@@ -89,8 +89,17 @@ The **WoMA3Dengine** is a modular, cross-platform 3D graphics engine that showca
 
 <hr>
 <h1>WoMA3Dengine at Level 29 INTRO DEMO</h1>
-
-<h2>Movement Keys: (at level28)</h2> <br>
+<table>
+<tr>
+	<td>
+		<h2>Movement Keys: (at level28)</h2>
+	</td>
+	<td>
+		<h2>Keys / Hints:</h2>
+	</td>
+</tr>
+<tr>
+<td>
   - <b>Left:		</b> arrow or a<br>
   - <b>Right:	 	</b>	arrow or d<br>
   - <b>Front:		</b> arrow or w<br>
@@ -99,8 +108,8 @@ The **WoMA3Dengine** is a modular, cross-platform 3D graphics engine that showca
   - <b>Look Down:	</b>	pg. Down<br>
   - <b>Go Up: 		</b>	R (GOD MODE: true)<br>
   - <b>Go Down: 	</b>	F (GOD MODE: true)<br>
-  
-<h2>Keys / Hints:</h2> <br>
+</td>
+<td>
 <b>[F1]</b> Full system info (CPU, GPU, OS, memory, etc.)<br>
 <b>[F2]</b> Celestial info (Sun, Moon, sunrise/sunset, azimuth)<br>
 Latitude/Longitude<br>
@@ -120,6 +129,9 @@ Try to Change the driver on the fly without the need of close and open the Appli
 - OPENGL 4<br>
 
 <b>[F11]</b> Switch God Mode (on debug only: flying fast over the terrain)<br>
+</td>
+</tr>
+</table>
 
 <h1>HTTP WOMA 3D ENGINE TUTORIAL LIST</h1>
 
