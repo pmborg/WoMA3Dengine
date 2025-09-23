@@ -261,7 +261,6 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 			xmlobj->Bill = true;
 
 		m_Trees[i].bill = xmlobj->Bill;
-
 		SystemHandle->xml_loader.theWorldXML.push_back(*xmlobj);
 
 	}

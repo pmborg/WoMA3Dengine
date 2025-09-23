@@ -160,7 +160,7 @@
     #endif
 
     #if DX_ENGINE_LEVEL >= 21 && !defined WOMAENGINE_BASIC
-		//#undef USE_NORMAL_WINDOW						
+		//#undef USE_NORMAL_WINDOW
         #if defined WINDOWS_PLATFORM && defined DX12
         #define USE_RASTERIZER_STATE //Mandatory for DX12
         #endif
@@ -570,9 +570,16 @@
 #endif
 
 #if DX_ENGINE_LEVEL >= 93
-	#define  NO3DBILL			  
+	#define  NO3DBILL
 	#define GENERATE_ATLAS_INTEGRATION_DDS
 #endif
+
+#if DX_ENGINE_LEVEL >= 94
+	// Try nothing and...:		//RELEASE: 906FPS
+	//#define USE_TREE_POINTER	//v1: RELEASE: 900FPS
+	#define USE_TREE_POINTERV2	//v2: RELEASE: 911FPS
+#endif
+
 
 	//#define USE_MULTI_MONITOR
 

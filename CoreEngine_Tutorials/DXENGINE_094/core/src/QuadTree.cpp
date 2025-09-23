@@ -1,0 +1,252 @@
+// --------------------------------------------------------------------------------------------
+// Filename: QuadTree.cpp
+// --------------------------------------------------------------------------------------------
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// --------------------------------------------------------------------------------------------
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+//
+// This file is part of the WorldOfMiddleAge project.
+//
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
+// without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
+// You may not alter or remove any copyright or other notice from copies of the content.
+// The content contained in this file is provided only for educational and informational purposes.
+// 
+// Downloaded from : https://github.com/pmborg/WoMA3Dengine
+// --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234525217;
+
+#include "platform.h"
+
+#if defined USE_SCENE_MANAGER
+#include "ApplicationClass.h"
+#include "OSengine.h"		// Get [SystemHandle] Pointer to System Class: WINDOWS, LINUX & ANDROID
+#include "mem_leak.h"
+#include "QuadTree.h"
+#include "SceneManager.h"
+#include "xml_loader.h"
+#include "DXmodelClass.h"
+#include "BillClass.h"
+
+QuadTree::QuadTree() 
+{
+	CLASSLOADER();
+#if defined USE_TINYXML_LOADER //5
+    _xml_loader = &SystemHandle->xml_loader;
+#endif
+	// public:
+	m_QuadRootNode = NULL;
+
+	// private:
+	_frustum = NULL;
+
+#ifdef _DEBUG
+	totalLoaded = totalVertexRendered = 0;
+#endif
+}
+
+QuadTree::~QuadTree() { Shutdown(); CLASSDELETE(); }
+
+void QuadTree::Shutdown()
+{
+	//Shutdown calls the ReleaseNode function which recursively traces down the tree and removes all the nodes.
+	if(m_QuadRootNode)
+	{
+		ReleaseNode(m_QuadRootNode);
+		SAFE_DELETE (m_QuadRootNode);
+	}
+}
+
+//The ReleaseNode function is used for releasing all the nodes in the quad tree as well as the data inside each node. The function is recursive and will call itself to traverse the entire node tree.
+void QuadTree::ReleaseNode(NodeType* node)
+{
+	UINT i;
+
+	// Recursively go down the tree and release the bottom nodes first.
+	for(i=0; i<4; i++)
+	{
+		if(node->nodes[i] != 0)
+			ReleaseNode(node->nodes[i]);
+	}
+
+	// Release the four child nodes.
+	for(i=0; i<4; i++)
+	{
+		if(node->nodes[i])
+			SAFE_DELETE (node->nodes[i]);
+	}
+}
+
+void QuadTree::Initialize(SceneNode* worldRootNode)
+{
+	_frustum = m_Driver->frustum;	// Save: Application Frustum
+
+	m_QuadRootNode = NEW NodeType();			// Create QUAD-ROOT Node:
+
+    float width = (float)worldRootNode->width;
+	float centerX = width/2-1;
+	float centerZ = width/2-1;
+
+	CreateTreeNode(m_QuadRootNode, centerX, centerZ,  width);
+}
+
+void QuadTree::CreateTreeNode(NodeType* node, float positionX, float positionZ, float width)
+{
+	node->positionX = positionX;
+	node->positionZ = positionZ;
+	node->width = width;
+
+#if defined yes_please_debug_me && defined _DEBUG
+	womalog("SceneManager::QuadTree::CreateTreeNode(): X: %f Y: %f width: %f\n", positionX, positionZ, width);
+#endif
+
+	// Create Childs if needed:
+	for(UINT i=0; i<4; i++)
+	{
+		// Calculate the position offsets for the new child node.
+		float offsetX = (((i % 2) < 1) ? -1.0f : 1.0f) * (width / 4.0f);
+		float offsetZ = (((i % 4) < 2) ? -1.0f : 1.0f) * (width / 4.0f);
+
+		if (width > MAX_NODE_SIZE)
+		{
+			// If there are triangles inside where this new node would be then create the child node.
+			node->nodes[i] = NEW NodeType;
+
+			// Extend the tree starting from this new child node now.
+			CreateTreeNode(node->nodes[i], (positionX + offsetX), (positionZ + offsetZ), (width / 2.0f));
+		}
+	}
+}
+
+bool checkIfPointIsInsideSquare (float p_x, float p_z, float square_left, float square_right, float square_top, float square_bottom)
+{
+	return  ((p_x >= square_left && p_x <= square_right) && (p_z >= square_bottom && p_z <= square_top));
+}
+
+extern float sort_cameraX, sort_cameraY, sort_cameraZ;
+
+//Used by: void SceneManager::addModel (SceneNode* node, VirtualModelClass* model)
+void QuadTree::AddSceneNode(NodeType* quadNode, SceneNode* node)
+{
+	// Check if the SceneNode (point) is inside a Quad:
+	float square_left	= quadNode->positionX - quadNode->width/2+1;
+	float square_right	= quadNode->positionX + quadNode->width/2+1;
+	float square_top	= quadNode->positionZ + quadNode->width/2+1;
+	float square_bottom	= quadNode->positionZ - quadNode->width/2+1;
+
+	bool result = checkIfPointIsInsideSquare (node->positionX, node->positionZ, 
+										square_left, square_right, square_top, square_bottom);
+	if (!result) return;
+
+	// If it can be seen then check all four child nodes to see if they can also be seen.
+	int count = 0;
+	for(UINT i=0; i<4; i++)
+	{
+		if(quadNode->nodes[i] != NULL)
+		{
+			count++;
+		    AddSceneNode(quadNode->nodes[i], node);
+		}
+	}
+
+	// If there were any children nodes then there is no need to continue as parent nodes won't contain anything to render.
+	if (count != 0) return;
+
+	// Add Scene Node
+	quadNode->sceneNodes.push_back (node);
+#ifdef _DEBUG
+	totalLoaded++;
+#endif
+}
+
+//void SceneManager::Render()
+void QuadTree::RenderNode(NodeType* node)
+{
+#if !defined USE_MAP_EDITOR
+	// Check to see if the node can be viewed, height doesn't matter in a quad tree.
+	//bool result = _frustum->CheckCube(node->positionX, 0.0f, node->positionZ, (node->width/2)*1.4142135623730950488016887242097f);   // More accurate but slower
+	bool result = _frustum->CheckSphere(node->positionX, 0.0f, node->positionZ, (node->width/2)*1.4142135623730950488016887242097f );   // Faster
+	if (!result) return;
+#endif
+
+	// If it can be seen then check all four child nodes to see if they can also be seen.
+	int count = 0;
+	for(UINT i=0; i<4; i++)
+	{
+		if(node->nodes[i] != 0)
+		{
+			count++;
+		    RenderNode(node->nodes[i]);
+		}
+	}
+
+	// If there were any children nodes then there is no need to continue as parent nodes won't contain any triangles to render.
+	if (count != 0) return;
+
+	// Not really Render! But List All Models/objects to render, on this Node: (this quad is in front of camera)
+    UINT world_xml_objs = (UINT)_xml_loader->theWorldXML.size(); //Get 
+    VirtualModelClass* model;
+	
+	for (int i = 0; i < node->sceneNodes.size(); i++)
+	{
+		 model = node->sceneNodes[i]->nodeState.model;
+        
+         UINT modelID = model->m_ObjId;
+
+         if (SystemHandle->xml_loader.theWorldXML[modelID].depend == -1)
+         {
+             _xml_loader->theWorldXML[modelID].render = true;     
+         }else
+		 {
+#if !defined USE_MAP_EDITOR
+            float positionX, positionY, positionZ;
+            positionX = _xml_loader->theWorldXML[modelID].posX;
+            positionY = _xml_loader->theWorldXML[modelID].translateY;
+            positionZ = _xml_loader->theWorldXML[modelID].posZ;
+            if ((((DXmodelClass*)model)->m_instanceCount == 0) && !_frustum->CheckSphere(positionX, positionY, positionZ, MAX (1, model->boundingSphere) * _xml_loader->theWorldXML[modelID].scale*2)) 
+			{
+                _xml_loader->theWorldXML[modelID].render = false;  
+                continue;
+            } else
+#endif
+               _xml_loader->theWorldXML[modelID].render = true;    
+        }
+
+		 UINT tree_id = modelID - SystemHandle->m_Application->initial_world_xml_objs;
+
+		if (((DXmodelClass*)model)->isBill)
+		{
+#if defined  NO3DBILL
+			if (m_Trees[tree_id].type > 12)
+#endif
+			 {
+
+		#if DX_ENGINE_LEVEL >= 94 && defined USE_TREE_POINTER
+			// Precompute sort key (distance squared)
+			float dx = m_Trees[tree_id].vPos.x - sort_cameraX;
+			float dz = m_Trees[tree_id].vPos.z - sort_cameraZ;
+			m_Trees[tree_id].sortKey = dx * dx + dz * dz;
+			WOMA::sceneManager->visibleBillboardList.push_back(&m_Trees[tree_id]); //modelID = world_xml_objs + tree_id
+		#else
+			WOMA::sceneManager->visibleBillboardList.push_back(m_Trees[tree_id] ); //modelID = world_xml_objs + tree_id
+		#endif
+
+			SystemHandle->m_Application->billboardRrenderCount++;
+#ifdef _DEBUG
+			totalVertexRendered += node->sceneNodes[i]->nodeState.model->m_vertexCount;
+#endif
+			 }
+		}
+		else
+		{
+		// Add model on list to be rendered later.
+        WOMA::sceneManager->visibleModelList.push_back(model);
+
+#ifdef _DEBUG
+		totalVertexRendered += node->sceneNodes[i]->nodeState.model->m_vertexCount;
+#endif
+		}
+
+	}
+}
+#endif

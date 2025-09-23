@@ -592,7 +592,10 @@
 	#define DEMO_TITLE TEXT("93: Billboard Atlas Integration")
 	#define WORLD_XML  TEXT("world_93.xml")
 #endif
-
+#if DX_ENGINE_LEVEL == 94
+	#define DEMO_TITLE TEXT("94: ASSETS download with progress bar")
+	#define WORLD_XML  TEXT("world_94.xml")
+#endif
 
 
 #include "stateMachine.h"

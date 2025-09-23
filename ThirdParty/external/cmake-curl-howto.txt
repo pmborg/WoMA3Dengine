@@ -1,7 +1,7 @@
 DO:
 
 cd /D C:\WoMA3Dengine\ThirdParty\external\curl
-cmake . -DBUILD_SHARED_LIBS=OFF -DCURL_STATICLIB=ON -DCURL_USE_SCHANNEL=ON -DCURL_DISABLE_FTP=ON -DCURL_DISABLE_LDAP=ON -DCURL_DISABLE_TELNET=ON -DCURL_DISABLE_DICT=ON -DCURL_DISABLE_FILE=ON -DCURL_DISABLE_TFTP=ON -DBUILD_CURL_EXE=OFF -DBUILD_TESTING=OFF -DBUILD_MANUAL=OFF -DCURL_USE_LIBPSL=OFF -DCURL_USE_ZLIB=OFF -DCURL_USE_BROTLI=OFF -DUSE_ZSTD=OFF -DUSE_NGHTTP2=OFF
+cmake . -DBUILD_SHARED_LIBS=OFF -DCURL_STATICLIB=ON -DCURL_USE_SCHANNEL=ON -DCURL_DISABLE_FTP=ON -DCURL_DISABLE_LDAP=ON -DCURL_DISABLE_TELNET=ON -DCURL_DISABLE_DICT=ON -DCURL_DISABLE_FILE=ON -DCURL_DISABLE_TFTP=ON -DBUILD_CURL_EXE=OFF -DBUILD_TESTING=OFF -DBUILD_MANUAL=OFF -DCURL_USE_LIBPSL=OFF -DCURL_USE_ZLIB=OFF -DCURL_USE_BROTLI=OFF -DUSE_ZSTD=OFF -DUSE_NGHTTP2=OFF -DBUILD_SHARED_LIBS=OFF
 
 OUTPUT:
 -- Building for: Visual Studio 17 2022
@@ -61,7 +61,7 @@ libcurl_static
 
 -------------------------------------------------------------------------------------------------------
 And then copy:
-copy C:\WoMA3Dengine\ThirdParty\external\curl\lib\libcurl_object.dir\Debug\libcurl_object.lib C:\WoMA3Dengine\ThirdParty\external\
+copy C:\WoMA3Dengine\ThirdParty\external\curl\lib\Debug\libcurl-d.lib C:\WoMA3Dengine\ThirdParty\external\
 copy C:\WoMA3Dengine\ThirdParty\external\curl\lib\Release\libcurl.lib C:\WoMA3Dengine\ThirdParty\external\
 
 

@@ -388,7 +388,6 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 		xmlobj3d* xmlobj = fillxml(pContext, i, m_Trees[i].type);
 
 		m_Trees[i].bill = xmlobj->Bill;
-
 		SystemHandle->xml_loader.theWorldXML.push_back(*xmlobj);
 
 	}
@@ -515,7 +514,6 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 		m_Trees[nx].bill = xmlobj->Bill;
 		SystemHandle->xml_loader.theWorldXML.push_back(*xmlobj);
 
-		//i++;
 	}
 
 	for (UINT b = 0; b < N_BUSH_0; b++)
@@ -550,7 +548,6 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 		xmlobj->Bill = true;
 		m_Trees[nx].bill = xmlobj->Bill;
 		SystemHandle->xml_loader.theWorldXML.push_back(*xmlobj);
-		//i++;
 	}
 
 #if DX_ENGINE_LEVEL >= 90 && !defined SIMPLE
@@ -572,7 +569,6 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 		xmlobj->Bill = false;
 		m_Trees[nx].bill = xmlobj->Bill;
 		SystemHandle->xml_loader.theWorldXML.push_back(*xmlobj);
-		//i++;
 	}
 
 	for (int idx = 0; idx < 3; idx++)
@@ -592,7 +588,6 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 		xmlobj->Bill = false;
 		m_Trees[nx].bill = xmlobj->Bill;
 		SystemHandle->xml_loader.theWorldXML.push_back(*xmlobj);
-		//i++;
 	}
 #endif
 
