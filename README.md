@@ -1,51 +1,15 @@
 # WoMA3Dengine
 
-⚙️ A multi-platform, modular 3D game engine written in C++ with support for DirectX 11, Android (OpenGL ES), and Linux (OpenGL).  
+⚙️ A multi-platform, modular 3D game engine written in C++ with support for DirectX 11, DirectX 12, Android (OpenGL ES), and Linux (OpenGL).  
 📚 Built for learning and showcasing 3D engine development — from fundamentals to terrain rendering, animation, and PBR.
 
 ---
-
-## 🚀 Latest Installer Release
-
-**[📦 WoMA3Dengine v0.901 Installer](https://github.com/pmborg/WoMA3Dengine/releases/tag/v0.901)** — July 2025  
-No need to compile! This zip includes everything pre-packaged:
-
-- 🧰 Downloads the **latest source code**
-- ⚙️ Installs **precompiled demo binaries fore DEBUG/RELEASE** (from level 000 to 090)
-- 🌐 Launch the engine instantly via HTML frontend
-
-```plaintext
-C:\WoMA3Dengine\CoreEngine_Tutorials\index.html
-```
-
-**Notes:**<br>
-
-**Use:**<br>
-Microsoft Visual Studio Community **2022 (64-bit)** - Version **17.14.8**<br>
-<br>
-For now please just clone all content at (From this path all Platforms will compile using "Visual Studio", **Windows**, **Linux** and **Android**):<br>
-C:\> **git clone --recursive https://github.com/pmborg/WoMA3Dengine.git**<br>
-Clone to: **C:\WoMA3Dengine**<br>
-<br>
-Later on I will make path free but for now a few paths are hardcoded there.<br>
-<br>
-<hr>
-
-# cmake version need to be: 
-<b>cmake-3.31.4</b>
-
-## How did I install all environment from scratch:
-[INSTALL_ALL_FROM_SCRATCH.md](https://github.com/pmborg/WoMA3Dengine/blob/main/HowTo/INSTALL_ALL_FROM_SCRATCH/INSTALL_ALL_FROM_SCRATCH.md)
-
-
-<hr>
 
 ## Platforms
 [![Platform: Windows](https://img.shields.io/badge/platform-Windows-blue)]()
 [![Platform: Linux](https://img.shields.io/badge/platform-Linux-yellow)]()
 [![Platform: Android](https://img.shields.io/badge/platform-Android-green)]()
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)]()
-
 
 <details>
 <summary>📘 Table of Contents</summary>
@@ -72,7 +36,6 @@ Later on I will make path free but for now a few paths are hardcoded there.<br>
   - [⚙️ Core System Tutorials](#3d---core-tutorial-series-begin)
 
 </details>
-
 
 ## ✨ Features
 
@@ -125,47 +88,6 @@ The **WoMA3Dengine** is a modular, cross-platform 3D graphics engine that showca
 - Editor toolkits planned (map/scene builder)
 
 <hr>
-## 🧪 Which Project to Build?
-
-WoMA3Dengine is divided into tutorial levels across three platforms:
-
-### 🪟 Windows (Visual Studio 2022)
-Choose the solution depending on your level of interest or tutorial stage:
-
-| Solution | Tutorials | Description |
-|----------|-----------|-------------|
-| `WindowsEngine_000-009-Core.sln`         | 000–009 | Engine startup, math, debug, sun/moon |
-| `WindowsEngine_019-029-Basic.sln`        | 019–029 | Texture mapping, camera, models, intro to terrain |
-| `WindowsEngine_030-045-Intermediate.sln` | 030–045 | Billboards, instancing, lighting, input |
-| `WindowsEngine_049-089-Terrain.sln`      | 049–089 | Full terrain system, weather, PBR, animation |
-
-🔹 To explore the latest and most complete version, open and build:  
-`WindowsEngine_049-089-Terrain.sln` → `CoreEngine_089`
-
-<hr>
-
-### 🤖 Android (Visual Studio 2022)
-To build the Android version using NDK:<br>
-`ANDROID1_engine_ALL.sln`
-
-**Android-SDK:**<br>
-C:\Program Files (x86)\Android\AndroidSDK\25<br>
-**Android-NDK:**<br>
-C:\Program Files (x86)\Android\AndroidNDK\android-ndk-r15c<br>
-**Java:**<br>
-C:\Java\jdk1.8.0_202<br>
-**Ant:**<br>
-C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\Apps\apache-ant-1.9.3<br>
-
-<hr>
-
-### 🐧 Linux (Visual Studio 2022)
-`LINUX_engine_ALL.sln`<br>
-**Check this file for more information about how to setup WSL:**<br>
-https://github.com/pmborg/WoMA3Dengine/blob/main/HowTo/HowToWSL2/What%20to%20install%20on%20WSL%20LINUX.txt
-
-
-<hr>
 <h1>WoMA3Dengine at Level 29 INTRO DEMO</h1>
 
 <h2>Movement Keys: (at level28)</h2> <br>
@@ -203,11 +125,9 @@ Try to Change the driver on the fly without the need of close and open the Appli
 
 <hr>
 <h2>3D - ADVANCED TUTORIAL SERIES</h2>
-<hr>
 
 <!-- ------------------------------------------------------------------------------------------------ -->
 
-<hr>
 <h2>3D - ADVANCED MESH TUTORIAL SERIES: BEGIN</h2>
 <hr>
 
@@ -953,3 +873,81 @@ Add third party image readers:<br>
 <hr>
 <h2>3D - CORE TUTORIAL SERIES: END</h2>
 <hr>
+
+
+## 🚀 Latest Installer Release
+
+**[📦 WoMA3Dengine v0.901 Installer](https://github.com/pmborg/WoMA3Dengine/releases/tag/v0.901)** — July 2025  
+No need to compile! This zip includes everything pre-packaged:
+
+- 🧰 Downloads the **latest source code**
+- ⚙️ Installs **precompiled demo binaries fore DEBUG/RELEASE** (from level 000 to 090)
+- 🌐 Launch the engine instantly via HTML frontend
+
+```plaintext
+C:\WoMA3Dengine\CoreEngine_Tutorials\index.html
+```
+
+**Notes:**<br>
+
+**Use:**<br>
+Microsoft Visual Studio Community **2022 (64-bit)** - Version **17.14.8**<br>
+<br>
+For now please just clone all content at (From this path all Platforms will compile using "Visual Studio", **Windows**, **Linux** and **Android**):<br>
+C:\> **git clone --recursive https://github.com/pmborg/WoMA3Dengine.git**<br>
+Clone to: **C:\WoMA3Dengine**<br>
+<br>
+Later on I will make path free but for now a few paths are hardcoded there.<br>
+<br>
+<hr>
+
+# cmake version need to be: 
+<b>cmake-3.31.4</b>
+
+## How did I install all environment from scratch:
+[INSTALL_ALL_FROM_SCRATCH.md](https://github.com/pmborg/WoMA3Dengine/blob/main/HowTo/INSTALL_ALL_FROM_SCRATCH/INSTALL_ALL_FROM_SCRATCH.md)
+
+<hr>
+## 🧪 Which Project to Build?
+
+WoMA3Dengine is divided into tutorial levels across three platforms:
+
+### 🪟 Windows (Visual Studio 2022)
+Choose the solution depending on your level of interest or tutorial stage:
+
+| Solution | Tutorials | Description |
+|----------|-----------|-------------|
+| `WindowsEngine_000-009-Core.sln`         | 000–009 | Engine startup, math, debug, sun/moon |
+| `WindowsEngine_019-029-Basic.sln`        | 019–029 | Texture mapping, camera, models, intro to terrain |
+| `WindowsEngine_030-045-Intermediate.sln` | 030–045 | Billboards, instancing, lighting, input |
+| `WindowsEngine_049-089-Terrain.sln`      | 049–089 | Full terrain system, weather, PBR, animation |
+
+🔹 To explore the latest and most complete version, open and build:  
+`WindowsEngine_049-089-Terrain.sln` → `CoreEngine_089`
+
+<hr>
+
+### 🤖 Android (Visual Studio 2022)
+To build the Android version using NDK:<br>
+`ANDROID1_engine_ALL.sln`
+
+**Android-SDK:**<br>
+C:\Program Files (x86)\Android\AndroidSDK\25<br>
+**Android-NDK:**<br>
+C:\Program Files (x86)\Android\AndroidNDK\android-ndk-r15c<br>
+**Java:**<br>
+C:\Java\jdk1.8.0_202<br>
+**Ant:**<br>
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\Apps\apache-ant-1.9.3<br>
+
+<hr>
+
+### 🐧 Linux (Visual Studio 2022)
+`LINUX_engine_ALL.sln`<br>
+**Check this file for more information about how to setup WSL:**<br>
+https://github.com/pmborg/WoMA3Dengine/blob/main/HowTo/HowToWSL2/What%20to%20install%20on%20WSL%20LINUX.txt
+
+
+
+<hr>
+
