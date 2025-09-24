@@ -276,10 +276,19 @@ void dxWinSystemClass::GPH_RESIZE(void* pContext)
 	#if defined DX11 || defined DX9
 		case DRIVER_DX9:
 		case DRIVER_DX11:
-			for (UINT m = 0; m < SystemHandle->allWindowsArray.size(); m++)
-			((DirectX::DX11Class*)m_Driver)->Resize(m, SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT,
-				SystemHandle->AppSettings->SCREEN_NEAR, SystemHandle->AppSettings->SCREEN_DEPTH,
-				SystemHandle->AppSettings->FULL_SCREEN, SystemHandle->AppSettings->BITSPERPEL);
+			{
+				UINT m = 0;
+				if (SystemHandle->windowsArray.size() == SystemHandle->allWindowsArray.size())
+					for (m = 0; m < SystemHandle->allWindowsArray.size(); m++)
+						((DirectX::DX11Class*)m_Driver)->Resize(m, SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT,
+							SystemHandle->AppSettings->SCREEN_NEAR, SystemHandle->AppSettings->SCREEN_DEPTH,
+							SystemHandle->AppSettings->FULL_SCREEN, SystemHandle->AppSettings->BITSPERPEL);
+				else {
+					((DirectX::DX11Class*)m_Driver)->Resize(m, SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT,
+						SystemHandle->AppSettings->SCREEN_NEAR, SystemHandle->AppSettings->SCREEN_DEPTH,
+						SystemHandle->AppSettings->FULL_SCREEN, SystemHandle->AppSettings->BITSPERPEL);
+				}
+			}
 			break;
 	#endif
 	#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009

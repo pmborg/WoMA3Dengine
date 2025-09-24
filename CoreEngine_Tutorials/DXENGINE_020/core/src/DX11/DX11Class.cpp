@@ -595,7 +595,7 @@ bool DirectX::DX11Class::create_or_resize_swap(UINT USE_MONITOR, int screenWidth
 		DeleteViewBuffers(USE_MONITOR); // Clear the previous window size specific context.
 
 		// #Resize: Init Step: 8 - Resize internal Buffers for new Window size:
-		if (DX11windowsArray.size() == SystemHandle->allWindowsArray.size() && DX11windowsArray[USE_MONITOR].m_swapChain1)
+		if (/*DX11windowsArray.size() == SystemHandle->allWindowsArray.size() &&*/USE_MONITOR+1 <= DX11windowsArray.size() && DX11windowsArray[USE_MONITOR].m_swapChain1)
 		{
 			result = (DX11windowsArray[USE_MONITOR].m_swapChain1->ResizeBuffers(swapbufferscount, screenWidth, screenHeight, DXGI_FORMAT_R8G8B8A8_UNORM, 0));
 			// If the device was reset we must completely reinitialize the renderer.
@@ -773,15 +773,30 @@ bool DirectX::DX11Class::create_or_resize_swap(UINT USE_MONITOR, int screenWidth
 			DXGI_SWAP_CHAIN_FULLSCREEN_DESC fsSwapChainDesc = {};
 			fsSwapChainDesc.Windowed = !fullscreen;
 
-			// Create a SwapChain from a Win32 window.
-			hr = dxgiFactory->CreateSwapChainForHwnd(
-				m_device11,
-				SystemHandle->windowsArray[USE_MONITOR].hWnd,
-				&swapChainDesc,
-				&fsSwapChainDesc,
-				nullptr,
-				&DX11windowsArray[USE_MONITOR].m_swapChain1
-			);
+			if (SystemHandle->windowsArray.size() == SystemHandle->allWindowsArray.size())
+			{
+				// Create a SwapChain from a Win32 window.
+				hr = dxgiFactory->CreateSwapChainForHwnd(
+					m_device11,
+					SystemHandle->windowsArray[USE_MONITOR].hWnd,
+					&swapChainDesc,
+					&fsSwapChainDesc,
+					nullptr,
+					&DX11windowsArray[USE_MONITOR].m_swapChain1
+				);
+			}
+			else
+			{
+				// Create a SwapChain from a Win32 window.
+				hr = dxgiFactory->CreateSwapChainForHwnd(
+					m_device11,
+					SystemHandle->m_hWnd,
+					&swapChainDesc,
+					&fsSwapChainDesc,
+					nullptr,
+					&DX11windowsArray[USE_MONITOR].m_swapChain1
+				);
+			}
 
 			// Release resources.
 			SAFE_RELEASE(dxgiFactory);
