@@ -286,7 +286,7 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 		KillTimer(hwnd, TIMER_TITLE);
         KillTimer(hwnd, TIMER_ASTRO);
 	#endif
-		PostMessage(hwnd, WM_CLOSE, 0, 0); //Close Console
+		PostMessage(GetConsoleWindow(), WM_CLOSE, 0, 0); //Close Console
         break; //let also default run.
 
 #if defined USE_INTRO_VIDEO_DEMO

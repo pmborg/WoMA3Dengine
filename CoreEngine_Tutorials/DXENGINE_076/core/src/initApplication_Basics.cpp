@@ -968,9 +968,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	return false;
 #endif
 
-	WOMA::sceneManager->visibleBillboardList.reserve(MAX_BILLBOARDS);
-
-
 	return true;
 }
 

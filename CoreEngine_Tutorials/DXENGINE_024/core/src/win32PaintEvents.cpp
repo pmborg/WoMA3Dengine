@@ -209,7 +209,8 @@ int MainWindowPaint(UINT monitor)
 		{
 			//
 				SystemHandle->womaSetup = NEW WomaSetupManager;
-				SystemHandle->womaSetup->Initialize(SystemHandle->m_Driver);
+				if (!SystemHandle->womaSetup->m_setupWnd)
+					SystemHandle->womaSetup->Initialize(NULL);
 		}
 		#endif
 

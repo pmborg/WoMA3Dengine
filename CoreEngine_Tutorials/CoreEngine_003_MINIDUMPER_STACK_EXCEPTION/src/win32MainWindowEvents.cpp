@@ -198,7 +198,7 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 
 	case WM_DESTROY:	// The main application Window will be destroyed
 
-		PostMessage(hwnd, WM_CLOSE, 0, 0); //Close Console
+		PostMessage(GetConsoleWindow(), WM_CLOSE, 0, 0); //Close Console
         break; //let also default run.
 
 #if defined USE_INTRO_VIDEO_DEMO
