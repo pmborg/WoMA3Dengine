@@ -246,6 +246,8 @@ void dxWinSystemClass::GPH_RESIZE(void* pContext)
 	if (!SystemHandle->m_Application)
 		return;
 
+
+
 	// Used for OS: ...
 	//Recalculated AT WOMA_APPLICATION_InitGUI()
 	//SystemHandle->m_scaleX = MIN(1, SystemHandle->AppSettings->WINDOW_WIDTH / 1920.0f);
@@ -273,13 +275,19 @@ void dxWinSystemClass::GPH_RESIZE(void* pContext)
 				UINT m = 0;
 				if (SystemHandle->windowsArray.size() == SystemHandle->allWindowsArray.size())
 					for (m = 0; m < SystemHandle->allWindowsArray.size(); m++)
+					{
+						BOOL full_screen;
+						DX11windowsArray[0].m_swapChain1->GetFullscreenState(&full_screen, nullptr);
 						((DirectX::DX11Class*)m_Driver)->Resize(m, SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT,
 							SystemHandle->AppSettings->SCREEN_NEAR, SystemHandle->AppSettings->SCREEN_DEPTH,
-							SystemHandle->AppSettings->FULL_SCREEN, SystemHandle->AppSettings->BITSPERPEL);
+							full_screen, SystemHandle->AppSettings->BITSPERPEL);
+					}
 				else {
+					BOOL full_screen;
+					DX11windowsArray[0].m_swapChain1->GetFullscreenState(&full_screen, nullptr);
 					((DirectX::DX11Class*)m_Driver)->Resize(m, SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT,
 						SystemHandle->AppSettings->SCREEN_NEAR, SystemHandle->AppSettings->SCREEN_DEPTH,
-						SystemHandle->AppSettings->FULL_SCREEN, SystemHandle->AppSettings->BITSPERPEL);
+						full_screen, SystemHandle->AppSettings->BITSPERPEL);
 				}
 			}
 			break;

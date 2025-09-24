@@ -1024,7 +1024,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	// --------------------------------------------------------------------------------------------
 #endif
 
-#if USE_SCENE_MANAGER && DX_ENGINE_LEVEL >= 92
+#if defined USE_SCENE_MANAGER && DX_ENGINE_LEVEL >= 92
 	WOMA::sceneManager->visibleBillboardList.reserve(MAX_BILLBOARDS);
 #endif
 

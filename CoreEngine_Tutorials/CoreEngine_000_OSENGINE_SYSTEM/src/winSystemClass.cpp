@@ -40,7 +40,6 @@ WinSystemClass::WinSystemClass() : SystemClass()
 	SystemHandle = this;
 	WinSystemClass_init();
 }
-
 //----------------------------------------------------------------------------------
 WinSystemClass::WinSystemClass(WOMA::Settings* appSettings): SystemClass() //	SystemClass::SystemClass() Will Run!
 //----------------------------------------------------------------------------------

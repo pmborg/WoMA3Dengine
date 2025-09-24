@@ -68,7 +68,7 @@ WinSystemClass::WinSystemClass() : SystemClass()
 	SystemHandle = this;
 	WinSystemClass_init();
 }
-
+extern ID3D11DeviceContext* shadowCtx;
 //----------------------------------------------------------------------------------
 WinSystemClass::WinSystemClass(WOMA::Settings* appSettings): SystemClass() //	SystemClass::SystemClass() Will Run!
 //----------------------------------------------------------------------------------
@@ -101,7 +101,7 @@ void WinSystemClass::ProcessFrame()
 	{
         m_Application->dayLightFade = m_Application->ProcessInputUpdate();	//CalculateViewMatrix (for Sky) and check collision(s):
 
-		if (m_Driver->RenderfirstTime)
+		if (m_Driver->RenderfirstTime && shadowCtx == NULL)
 		{
 			#if defined USE_MINIMAP_REDENRING_THREAD
 			SystemHandle->m_Application->CreateRenderThreads();
@@ -716,6 +716,8 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
                 windowStyle = WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
             }
 #endif
+			windowStyle = windowStyle & (~WS_EX_TOPMOST);
+
 			// Define Window Size and Position:
 			AdjustWindowRect(&R, windowStyle, false);
 		}

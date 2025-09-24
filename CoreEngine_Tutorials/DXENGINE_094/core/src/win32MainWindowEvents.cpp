@@ -351,45 +351,6 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
   #endif
 #endif
 
-#if CORE_ENGINE_LEVEL >= 10 && defined USE_ALTENTER_SWAP_FULLSCREEN_WINDOWMODE
-	// -----------------------------------------------------------------------------
-	// "ALT-ENTER" command: Toggle "g_FULL_SCREEN" Variable upon 
-	// -----------------------------------------------------------------------------
-	case WM_SYSKEYDOWN:
-	{
-		ID3D11DeviceContext* pContext = NULL;
-		if (driverList.size() > 0 && driverList[SystemHandle->AppSettings->DRIVER])
-			pContext = ((DX11Class*)m_Driver)->GetDeviceContext();
-        if (wParam == VK_RETURN) // ENTER is down
-		{
-			DWORD dwMask = (1 << 29); // Check if ALT key is pressed
-			if (lparam & dwMask)      // key: ALT is down also
-			{
-                if ((SystemHandle->AppSettings->WINDOW_WIDTH == 1920) &&
-                    (SystemHandle->AppSettings->WINDOW_HEIGHT == 1080) &&
-                    (SystemHandle->AppSettings->FULL_SCREEN == true))
-                    SystemHandle->AppSettings->FULL_SCREEN = false;
-                else
-                SystemHandle->AppSettings->FULL_SCREEN = !SystemHandle->AppSettings->FULL_SCREEN;
-
-                if (SystemHandle->AppSettings->FULL_SCREEN)
-                {
-                    SystemHandle->AppSettings->WINDOW_WIDTH = 1920;
-                    SystemHandle->AppSettings->WINDOW_HEIGHT = 1080;
-                    ONRESIZE(pContext);
-                    BOOL fullscreen;
-					DX11windowsArray[0].m_swapChain1->GetFullscreenState(&fullscreen, nullptr);
-                    DX11windowsArray[0].m_swapChain1->SetFullscreenState(!fullscreen, nullptr);
-                }
-
-                break;
-			}
-		}
-
-	break;
-	}
-#endif
-
 #if !defined USE_ALLOW_MAINWINDOW_RESIZE
 	case WM_SIZE:
 		return 0;

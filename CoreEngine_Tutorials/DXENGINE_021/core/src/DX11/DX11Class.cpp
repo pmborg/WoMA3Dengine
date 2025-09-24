@@ -524,11 +524,11 @@ void DX11Class::DeleteViewBuffers(UINT i)
     m_deviceContext->Flush();
 
 	// For each Monitor, Before shutting down set to windowed mode or when you release the swap chain it will throw an exception.
-	if (i < DX11windowsArray.size())
-	{
-		if (DX11windowsArray[i].m_swapChain1)
-			DX11windowsArray[i].m_swapChain1->SetFullscreenState(false, NULL);
-	}
+	//if (i < DX11windowsArray.size())
+	//{
+	//	if (DX11windowsArray[i].m_swapChain1)
+	//		DX11windowsArray[i].m_swapChain1->SetFullscreenState(false, NULL);
+	//}
 }
 
 #if defined USE_DX11_1_SETUP
@@ -594,7 +594,7 @@ bool DirectX::DX11Class::create_or_resize_swap(UINT USE_MONITOR, int screenWidth
 		DeleteViewBuffers(USE_MONITOR); // Clear the previous window size specific context.
 
 		// #Resize: Init Step: 8 - Resize internal Buffers for new Window size:
-		if (/*DX11windowsArray.size() == SystemHandle->allWindowsArray.size() &&*/USE_MONITOR+1 <= DX11windowsArray.size() && DX11windowsArray[USE_MONITOR].m_swapChain1)
+		if (USE_MONITOR + 1 <= DX11windowsArray.size() && DX11windowsArray[USE_MONITOR].m_swapChain1 != NULL)
 		{
 			result = (DX11windowsArray[USE_MONITOR].m_swapChain1->ResizeBuffers(swapbufferscount, screenWidth, screenHeight, DXGI_FORMAT_R8G8B8A8_UNORM, 0));
 			// If the device was reset we must completely reinitialize the renderer.
@@ -711,9 +711,9 @@ bool DirectX::DX11Class::create_or_resize_swap(UINT USE_MONITOR, int screenWidth
 				hr = factory5->CheckFeatureSupport(DXGI_FEATURE_PRESENT_ALLOW_TEARING, &DX11windowsArray[USE_MONITOR].DX11_GPU_supportTearing, sizeof(DX11windowsArray[USE_MONITOR].DX11_GPU_supportTearing)); //Populate: allowTearing
 				DX11windowsArray[USE_MONITOR].DX11_GPU_supportHDR = TRUE;
 			}
-
-			if (DX11windowsArray[USE_MONITOR].DX11_GPU_supportTearing && (swapChainDesc.BufferCount > 1 && !SystemHandle->AppSettings->FULL_SCREEN && DX11windowsArray[USE_MONITOR].DX11_GPU_supportFLIP))
-				swapChainDesc.Flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
+			// This don't allow the alt-enter switch:
+			//if (DX11windowsArray[USE_MONITOR].DX11_GPU_supportTearing && (swapChainDesc.BufferCount > 1 && !SystemHandle->AppSettings->FULL_SCREEN && DX11windowsArray[USE_MONITOR].DX11_GPU_supportFLIP))
+			//	swapChainDesc.Flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
 #else
 			// Disable HDR if we are on an OS that can't support FLIP swap effects
 			DX11windowsArray[USE_MONITOR].DX11_GPU_supportHDR = FALSE;
@@ -752,7 +752,6 @@ bool DirectX::DX11Class::create_or_resize_swap(UINT USE_MONITOR, int screenWidth
 			IDXGIFactory2* dxgiFactory;
 
 			hr = dxgiAdapter->GetParent(__uuidof(IDXGIFactory2), (void**)&dxgiFactory);
-			//hr = dxgiAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&dxgiFactory);
 			if (FAILED(hr)) {
 #if !defined USE_DX11_1_SETUP
 				SAFE_RELEASE(dxgiAdapter);
@@ -1227,7 +1226,9 @@ void DX11Class::EndScene(UINT USE_MONITOR)
 	}
 	else
 	{
-		{ if (FAILED(hr)) { WomaFatalException("FATAL: swapChain->Present() error!"); return; } }
+		{ if (FAILED(hr)) { 
+			WomaFatalException("FATAL: swapChain->Present() error!"); return; } 
+		}
 	}
 
 	ResetResource(m_deviceContext, USE_MONITOR);

@@ -46,7 +46,6 @@ WinSystemClass::WinSystemClass() : SystemClass()
 	SystemHandle = this;
 	WinSystemClass_init();
 }
-
 //----------------------------------------------------------------------------------
 WinSystemClass::WinSystemClass(WOMA::Settings* appSettings): SystemClass() //	SystemClass::SystemClass() Will Run!
 //----------------------------------------------------------------------------------
@@ -551,6 +550,8 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
                 windowStyle = WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
             }
 #endif
+			windowStyle = windowStyle & (~WS_EX_TOPMOST);
+
 			// Define Window Size and Position:
 			AdjustWindowRect(&R, windowStyle, false);
 		}
