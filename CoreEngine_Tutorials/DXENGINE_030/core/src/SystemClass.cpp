@@ -276,11 +276,10 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 
 
 #if CORE_ENGINE_LEVEL >= 4 && defined USE_SYSTEM_CHECK
-void SystemClass::InitializeSystemScreen(int x, int y)
+void SystemClass::InitializeSystemScreenF1(int x, int y)
 //-----------------------------------------------------------------------------------------
 {
-	WOMA::logManager->DEBUG_MSG("InitializeSystemScreen...\n");
-
+	WOMA::logManager->DEBUG_MSG("InitializeSystemScreenF1...\n");
 
 	//v1
 	//float LINE = 24;
@@ -408,7 +407,6 @@ void SystemClass::InitializeSystemScreen(int x, int y)
 	else
 #endif
 
-
 	// BenchMark totalMemoryCapacity
 	text.y += (int)LINE_SPACE; text.label = TEXT("MEMORY:");
 	TextToPrint[0].push_back(text);
@@ -448,15 +446,7 @@ void SystemClass::InitializeSystemScreen(int x, int y)
 		text.y += (int)LINE_SPACE;
 		text.label = systemDefinitions.GPUINFO[i].GraphicCard;
 		TextToPrint[0].push_back(text);
-		/*
-		if (i + 1 < systemDefinitions.GPUINFO.size())
-		{
-			text.y += (int)LINE; text.label = systemDefinitions.GPUINFO[i].AdapterDACType;
-			TextToPrint[0].push_back(text);
-			text.y += (int)LINE; text.label = systemDefinitions.GPUINFO[i].AdapterRAM;
-			TextToPrint[0].push_back(text);
-		}
-		*/
+
 		text.y += (int)LINE; text.label = systemDefinitions.GPUINFO[i].DedicatedVideoMemory;
 		TextToPrint[0].push_back(text);
 		text.y += (int)LINE; text.label = systemDefinitions.GPUINFO[i].DedicatedSystemMemory;
@@ -468,6 +458,7 @@ void SystemClass::InitializeSystemScreen(int x, int y)
 	text.x = HALF;
 	text.y = 10;
 	// ----------------------------------
+
 	// BenchMark MathSpeed
 	text.y += (int)LINE; text.label = systemDefinitions.benchMarkMathSpeed1;
 	TextToPrint[0].push_back(text);
@@ -483,9 +474,6 @@ void SystemClass::InitializeSystemScreen(int x, int y)
 		text.y += (int)LINE; text.label = systemDefinitions.drives_List[driveLetter];
 		TextToPrint[0].push_back(text);
 	}
-
-
-	//WOMA::logManager->DEBUG_MSG(" done\n");
 }
 #endif
 

@@ -789,7 +789,8 @@ bool DirectX::DX11Class::create_or_resize_swap(UINT USE_MONITOR, int screenWidth
 			SAFE_RELEASE(dxgiAdapter);
 			SAFE_RELEASE(dxgiDevice);
 #endif
-			if (FAILED(hr)) {
+			if (FAILED(hr)) 
+			{
 				WomaFatalException("Failed to create swap chain for HWND.");
 				return false;
 			}
@@ -811,7 +812,7 @@ bool DX11Class::Resize (UINT USE_MONITOR, int screenWidth, int screenHeight, flo
 //----------------------------------------------------------------------------------------------
 {
 	RenderfirstTime = true;	 // Used on SPRITES!
-	//SystemHandle->allWindowsArray
+
 	IF_NOT_RETURN_FALSE(create_or_resize_swap(USE_MONITOR, screenWidth, screenHeight, fullscreen));
 	
 if (m_deviceContext)
@@ -985,13 +986,11 @@ void DX11Class::getShaderCodeProfile ( UINT g_USE_MONITOR )
 			ShaderVersionH = 2; ShaderVersionL = 0;
 			womalogauto(TEXT("\nUsing Shader Model 2.0 (Best API: DX9.1)\n"));
 		break;
-
 		case D3D_FEATURE_LEVEL_9_2:							// To Support old Graphic Cards
 			_tcscpy_s(ShaderModel, TEXT("4_0_level_9_2"));	//ShaderModel = TEXT("2_0"); // 
             ShaderVersionH = 2; ShaderVersionL = 0;
 			womalogauto(TEXT("\nUsing Shader Model 2.0 (Best API: DX9.2)\n"));
 		break;
-
 		case D3D_FEATURE_LEVEL_9_3:							// To Support old Graphic Cards
             _tcscpy_s(ShaderModel, TEXT("4_0_level_9_3"));	// ShaderModel = TEXT("2_0"); // 
             ShaderVersionH = 2; ShaderVersionL = 0;
@@ -1004,7 +1003,6 @@ void DX11Class::getShaderCodeProfile ( UINT g_USE_MONITOR )
             ShaderVersionH = 4; ShaderVersionL = 0;
 			womalog("\nUsing Shader Model 4.0 (Best API: DX10)\n");
 		break;
-
 		// DX10.1
 		case D3D_FEATURE_LEVEL_10_1:				// To Support old Graphic Cards
             _tcscpy_s(ShaderModel, TEXT("4_1"));	// ShaderModel = TEXT("4_1"); // 
@@ -1114,7 +1112,7 @@ void DX11Class::Finalize() {} //not used on DX11
 void DX11Class::BeginScene(UINT monitorWindow)
 // ----------------------------------------------------------------------------------------------
 {
-#if !defined ANDROID_PLATFORM && defined DX_ENGINE && defined USE_MULTI_MONITOR
+#if !defined ANDROID_PLATFORM && defined DX_ENGINE && defined USE_MULTI_MONITOR && defined USE_DIRECT_INPUT
 	const float totalSpanDeg = 90.0f;            // total horizontal span across all 3
 	const float perMonitorDeg = totalSpanDeg / SystemHandle->windowsArray.size(); // 30°
 	if (SystemHandle->windowsArray.size() == 3)

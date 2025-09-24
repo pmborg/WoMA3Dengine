@@ -94,12 +94,6 @@ void WinSystemClass::ProcessFrame()
 #if CORE_ENGINE_LEVEL >= 5 && defined CLIENT_SCENE_SETUP
 	if (WOMA::game_state == GAME_SETUP)
 	{
-		// F6: Init WOMA Setup:
-		if (!SystemHandle->womaSetup)
-		{
-			SystemHandle->womaSetup = NEW WomaSetupManager;
-			SystemHandle->womaSetup->Initialize(NULL);
-		}
         return; //Process win32 Setup so, don't render!
 	}
 #endif
@@ -217,13 +211,13 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	IF_NOT_RETURN_FALSE(SystemClass::SystemCheck());		// SYSTEM INFO: HW (OS, CPU, RAM, DiskFreeSpace, CPUFeatures) 
 #endif
 	IF_NOT_RETURN_FALSE(APPLICATION_INIT_MAIN_WINDOW());	// RegisterClass and Create: MainWindow(s)
-
 #if defined USE_TINYXML_LOADER && DX_ENGINE_LEVEL >= 21
 	IF_NOT_RETURN_FALSE(LoadXmlWorld());					// Load all static/semi-static objects!
 #endif
 #if defined USE_PROCESS_OS_KEYS
 	IF_NOT_RETURN_FALSE(InitOsInput());						// INIT-INPUT Devices, NOTE: AFTER: APPLICATION_INIT_MAIN_WINDOW()
 #endif
+
 // ########################################### LOAD DRIVERS ###########################################
 	#if CORE_ENGINE_LEVEL >= 10 && (defined OPENGL3 || defined OPENGL40)
 	if (AppSettings->DRIVER == DRIVER_GL3)
@@ -232,11 +226,11 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	LoadAllDrivers();		        //NEW DirectX::DX11Class()	(NEW DX9, NEW DX11, NEW DX12, NEW OpenGL): push_back(NEW DirectX::*Class());
 
  // ######################################### INIT SELECTED DRIVER ###################################
-	if (!InitSelectedDriver())	//"driver"->OnInit(...)
-		return false;			//"driver"->Initialize(clearColor)
+	if (!InitSelectedDriver())	// "driver"->OnInit (...)
+		return false;			// "driver"->Initialize (clearColor)
 
 #if defined USE_SYSTEM_CHECK
-	InitializeSystemScreen(10, 10); // SETUP SCREEN: F1,F2,F3,F4,F5,F6 (RUNNING NOW ON: PaintSetup())
+	InitializeSystemScreenF1(10, 10); // SETUP SCREEN: F1,F2,F3,F4,F5,F6 (RUNNING NOW ON: PaintSetup())
 #endif
 
   #if defined USE_SCENE_MANAGER				// INIT SCENE-MANAGER:
@@ -258,38 +252,41 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 		return false;					// (For example: 3D/IMAGE/AUDIO file missing!?)
 
 	// WAIT FOR THE END OF THE VIDEO:
-#if defined USE_INTRO_VIDEO_DEMO
-	MSG msg = { };
-	while (DXsystemHandle->g_DShowPlayer && (DXsystemHandle->g_DShowPlayer->m_state != STATE_STOPPED && DXsystemHandle->g_DShowPlayer->m_state != STATE_PAUSED))
+	#if defined USE_INTRO_VIDEO_DEMO
+	if (playvideo)
 	{
-	    // Process OS Messages:
-		while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-		{	
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
+		MSG msg = { };
+		while (DXsystemHandle->g_DShowPlayer && DXsystemHandle->g_DShowPlayer->m_state != STATE_NO_GRAPH && (DXsystemHandle->g_DShowPlayer->m_state != STATE_STOPPED && DXsystemHandle->g_DShowPlayer->m_state != STATE_PAUSED))
+		{
+			// Process OS Messages:
+			while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+			{	
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
 	        
-	        // Make Sure that we have acquired the FOCUS and INPUT:
-	        if (DXsystemHandle->m_Input->m_mouse && DXsystemHandle->m_Input->m_keyboard)				
-	        {
-	            IF_NOT_THROW_EXCEPTION(DXsystemHandle->m_Input->GetMouseKeyboardState());
-	        }
-	        else
-	            DXsystemHandle->m_Input->Initialize(SystemHandle->m_hinstance);
+				// Make Sure that we have acquired the FOCUS and INPUT:
+				if (DXsystemHandle->m_Input->m_mouse && DXsystemHandle->m_Input->m_keyboard)				
+				{
+					IF_NOT_THROW_EXCEPTION(DXsystemHandle->m_Input->GetMouseKeyboardState());
+				}
+				else
+					DXsystemHandle->m_Input->Initialize(SystemHandle->m_hinstance);
 	
-	        // End Video, when Esc key is pressed:
-	        if (SystemHandle->m_player[g_NetID]->p_player.IsEscapePressed) 
-			{
-				DXsystemHandle->g_DShowPlayer->Stop();
-	            break;
+				// End Video, when ESC key is pressed:
+				if (SystemHandle->m_player[g_NetID]->p_player.IsEscapePressed) 
+				{
+					DXsystemHandle->g_DShowPlayer->Stop();
+					break;
+				}
+
+				Sleep(1); //Give CPU to loader threads.
 			}
-
-	        Sleep(1); //Give CPU to loader threads.
 		}
-	}
 
-	//Shutdown VIDEO PLAYER:
-	SAFE_DELETE(DXsystemHandle->g_DShowPlayer);
-#endif
+		//Shutdown VIDEO PLAYER:
+		SAFE_DELETE(DXsystemHandle->g_DShowPlayer);
+	}
+	#endif
 
 		StartTimer();	// START WINDOWS TIMER: ("Window Title" refresh & Real-Time Weather refresh)
 
@@ -297,6 +294,9 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	if (WOMA::game_state == GAME_LOADING)
 		WOMA::game_state = GAME_RUN;	// Let it run!
 #endif
+
+	if (WOMA::game_state == ENGINE_RESTART)
+		return false;
 
 	return true; // GREEN LIGHT: To Start Rendering! :)
 }
@@ -466,6 +466,8 @@ bool WinSystemClass::MyRegisterClass(HINSTANCE hInstance)
 	wcex.hCursor = LoadCursor(NULL, IDC_ARROW); //IDC_CROSS
 
 	wcex.hbrBackground = nullptr;
+//#elif CORE_ENGINE_LEVEL >= 4
+//	wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);	//TO USE THIS COLOR: BLACK
 
 	IF_NOT_RETURN_FALSE (RegisterClassEx(&wcex));
 

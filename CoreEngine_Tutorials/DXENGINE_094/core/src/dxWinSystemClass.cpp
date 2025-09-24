@@ -146,7 +146,7 @@ bool dxWinSystemClass::APPLICATION_INIT_SYSTEM() //LOAD ALL GRAPHICS
 int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 //----------------------------------------------------------------------------
 {
-	MSG msg = { 0 };						// Reset msg
+	MSG msg = { 0 };						// Reset MSG
 
     if (WOMA::renderOnce)
         WOMA::woma_timer = 0;
@@ -157,7 +157,7 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 		if ((gResult = PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) > 0)	// There is any OS messages to handle?
 		{
 			TranslateMessage(&msg); // TranslateMessage produces WM_CHAR messages only for keys that are mapped to ASCII characters by the keyboard driver.
-			DispatchMessage(&msg);  // Process Msg:  (INVOKE: WinSystemClass::MessageHandler)
+			DispatchMessage(&msg);  // Process MSG:  (INVOKE: WinSystemClass::MessageHandler)
 		}
 
 		if (WOMA::game_state > GAME_MINIMIZED)
@@ -471,7 +471,7 @@ void dxWinSystemClass::InitSceneManager()
 bool threadLoadPacksAlive;
 HANDLE threadLoadPacksHandle;
 unsigned long threadLoadPacksId;
-extern void Startauxcommonfunctions(UINT level);
+extern bool Startauxcommonfunctions(UINT level);
 
 #if defined USE_INTRO_VIDEO_DEMO 
 
@@ -494,20 +494,26 @@ void CALLBACK OnGraphEvent(HWND hwnd, long evCode, LONG_PTR param1, LONG_PTR par
 HRESULT dxWinSystemClass::PlayIntroMovie(TCHAR* movie)
 //----------------------------------------------------------------------------
 {
-	HRESULT hr = g_DShowPlayer->OpenFile(movie);
-	IF_FAILED_RETURN_FALSE(hr);
+	HRESULT hr = S_OK;
+	STRING movie_file = movie;
 
-	InvalidateRect(m_hWnd, NULL, FALSE);
-	g_DShowPlayer->Play();
-
-	RECT rc;
-	GetClientRect(m_hWnd, &rc);
-	g_DShowPlayer->UpdateVideoWindow(&rc);
-
-    Startauxcommonfunctions(DX_ENGINE_LEVEL);
+    playvideo = Startauxcommonfunctions(DX_ENGINE_LEVEL);
     #ifdef GENERATE_PACK
     return -1;
     #endif
+
+	if (playvideo)
+	{
+		hr = g_DShowPlayer->OpenFile((TCHAR*)movie_file.c_str());
+		IF_FAILED_RETURN_FALSE(hr);
+
+		InvalidateRect(m_hWnd, NULL, FALSE);
+		g_DShowPlayer->Play();
+
+		RECT rc;
+		GetClientRect(m_hWnd, &rc);
+		g_DShowPlayer->UpdateVideoWindow(&rc);
+	}
 
 	return hr;
 }

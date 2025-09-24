@@ -53,7 +53,6 @@ void WinSystemClass::StartTimer()
 #else
         SetTimer(m_hWnd, TIMER_TITLE, 2000 / KEYB_TIMES_PER_SECOND, NULL);	// 2000ms = 2 seconds! (1000ms = 1 second!)
 #endif
-
     }
 
 }
@@ -199,6 +198,7 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 
 	case WM_DESTROY:	// The main application Window will be destroyed
 
+		PostMessage(hwnd, WM_CLOSE, 0, 0); //Close Console
         break; //let also default run.
 
 #if defined USE_INTRO_VIDEO_DEMO

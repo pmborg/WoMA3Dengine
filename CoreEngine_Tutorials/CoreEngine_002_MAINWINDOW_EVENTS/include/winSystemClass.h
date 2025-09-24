@@ -133,7 +133,6 @@ public:
 	std::vector<WOMA::WindowDataContainer> windowsArray;	// All Monitors, that will be used to render, 1 for example.
 	std::vector<WOMA::WindowDataContainer> allWindowsArray; // All hardware Monitors available on system, 3 for example.
 															// NOTE: DX11windowsArray have all DX specific settings for rendering!
-
 	ScreenArrayInfo info;
 	MONITORINFOEX monitorArray[MAX_WIN32_MONITORS];
 

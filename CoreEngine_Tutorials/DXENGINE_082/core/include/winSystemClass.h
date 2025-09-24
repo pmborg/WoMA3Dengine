@@ -131,7 +131,6 @@ public:
 	std::vector<WOMA::WindowDataContainer> windowsArray;	// All Monitors, that will be used to render, 1 for example.
 	std::vector<WOMA::WindowDataContainer> allWindowsArray; // All hardware Monitors available on system, 3 for example.
 															// NOTE: DX11windowsArray have all DX specific settings for rendering!
-
 	ScreenArrayInfo info;
 	MONITORINFOEX monitorArray[MAX_WIN32_MONITORS];
 
@@ -144,7 +143,7 @@ public:
 	void StartTimer();
 
 #if CORE_ENGINE_LEVEL >= 5 && defined CLIENT_SCENE_SETUP
-	WomaSetupManager* womaSetup;
+	WomaSetupManager* womaSetup = NULL;
 #endif
 
 #if CORE_ENGINE_LEVEL >= 8 && defined USE_GPS_MAP

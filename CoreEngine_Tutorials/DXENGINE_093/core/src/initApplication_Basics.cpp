@@ -1024,12 +1024,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	// --------------------------------------------------------------------------------------------
 #endif
 
-	// --------------------------------------------------------------------------------------------
-	// Finally, launch dynamic Load Compound/OBJ Thread ////////////////////////////////////////////
-	// --------------------------------------------------------------------------------------------
-#if defined CHECK_OBJ_COLISION && defined MAIN_RENDER_MAIN_OBJ //CHECK_COMPOUND_COLISION
-#endif
-
 	WOMA::sceneManager->visibleBillboardList.reserve(MAX_BILLBOARDS);
 
 

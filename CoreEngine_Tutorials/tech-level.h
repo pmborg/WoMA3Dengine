@@ -586,9 +586,11 @@
 
     //-------------------------------------------------------------------------------------------------------
 	#undef  dx12_upload_old_way
-	
+
+	#if DX_ENGINE_LEVEL < 94
 	#if DX_ENGINE_LEVEL != 76 && DX_ENGINE_LEVEL != 86
 	#undef USE_INTRO_VIDEO_DEMO
+	#endif
 	#endif
 	#if defined WINDOWS_PLATFORM
 		#define ALLOW_CBIND_PROGRESS_BAR

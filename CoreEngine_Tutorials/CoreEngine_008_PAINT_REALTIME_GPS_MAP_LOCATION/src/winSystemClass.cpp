@@ -78,12 +78,6 @@ void WinSystemClass::ProcessFrame()
 #if CORE_ENGINE_LEVEL >= 5 && defined CLIENT_SCENE_SETUP
 	if (WOMA::game_state == GAME_SETUP)
 	{
-		// F6: Init WOMA Setup:
-		if (!SystemHandle->womaSetup)
-		{
-			SystemHandle->womaSetup = NEW WomaSetupManager;
-			SystemHandle->womaSetup->Initialize(NULL);
-		}
         return; //Process win32 Setup so, don't render!
 	}
 #endif
@@ -177,16 +171,16 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 #endif
 	IF_NOT_RETURN_FALSE(APPLICATION_INIT_MAIN_WINDOW());	// RegisterClass and Create: MainWindow(s)
     IF_NOT_RETURN_FALSE(APPLICATION_AFTER_WINDOW());
-
 #if defined USE_PROCESS_OS_KEYS
 	IF_NOT_RETURN_FALSE(InitOsInput());						// INIT-INPUT Devices, NOTE: AFTER: APPLICATION_INIT_MAIN_WINDOW()
 #endif
+
 // ########################################### LOAD DRIVERS ###########################################
 
  // ######################################### INIT SELECTED DRIVER ###################################
 
 #if defined USE_SYSTEM_CHECK
-	InitializeSystemScreen(10, 10); // SETUP SCREEN: F1,F2,F3,F4,F5,F6 (RUNNING NOW ON: PaintSetup())
+	InitializeSystemScreenF1(10, 10); // SETUP SCREEN: F1,F2,F3,F4,F5,F6 (RUNNING NOW ON: PaintSetup())
 #endif
 
 		StartTimer();	// START WINDOWS TIMER: ("Window Title" refresh & Real-Time Weather refresh)
@@ -195,6 +189,9 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 	if (WOMA::game_state == GAME_LOADING)
 		WOMA::game_state = GAME_RUN;	// Let it run!
 #endif
+
+	if (WOMA::game_state == ENGINE_RESTART)
+		return false;
 
 	return true; // GREEN LIGHT: To Start Rendering! :)
 }
@@ -362,7 +359,7 @@ bool WinSystemClass::MyRegisterClass(HINSTANCE hInstance)
 
 	wcex.hCursor = LoadCursor(NULL, IDC_ARROW); //IDC_CROSS
 
-	wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);	//TO USE THIS COLOR: BLACK
+	wcex.hbrBackground	= (HBRUSH)GetStockObject(WHITE_BRUSH);	//TO USE THIS COLOR: WHITE
 
 	IF_NOT_RETURN_FALSE (RegisterClassEx(&wcex));
 

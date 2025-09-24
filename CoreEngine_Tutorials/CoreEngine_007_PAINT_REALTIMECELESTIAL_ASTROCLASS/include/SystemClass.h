@@ -185,7 +185,7 @@ public:
 	void refreshTitle();
 
 	#if defined USE_SYSTEM_CHECK
-	void InitializeSystemScreen(int x, int y);
+	void InitializeSystemScreenF1(int x, int y);
 	#endif
 
 #if defined USE_SYSTEM_CHECK

@@ -712,12 +712,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	// SHADOWMAP //////////////////////////////////////////////////////////////////////////////////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
 
-	// --------------------------------------------------------------------------------------------
-	// Finally, launch dynamic Load Compound/OBJ Thread ////////////////////////////////////////////
-	// --------------------------------------------------------------------------------------------
-#if defined CHECK_OBJ_COLISION && defined MAIN_RENDER_MAIN_OBJ //CHECK_COMPOUND_COLISION
-#endif
-
 #if defined SAVEW3D && DX_ENGINE_LEVEL < 89
 	WomaMessageBox(TEXT("Conversion from OBJ to W3D, ended."), TEXT("SAVEW3D"));
 	WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP; //Publish_Quit_Message();

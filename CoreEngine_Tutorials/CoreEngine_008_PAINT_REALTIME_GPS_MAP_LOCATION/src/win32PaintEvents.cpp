@@ -113,7 +113,11 @@ void PaintSetup(HDC hdc, HDC hdcMem, HFONT font_title, HFONT font, int scr)
 		const TCHAR SETUP[] = TEXT("S E T U P");
 		TextOut(hdcMem, 25, 25, SETUP, (int)_tcslen(SETUP));
 
+	//#if CORE_ENGINE_LEVEL == 5
+		//BitBlt(hdc, 0, 0, SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT, hdcMem, 0, 0, SRCCOPY);
+	//#else
 		BitBlt(hdc, 0, 0, SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT, hdcMem, 0, 0, SRCPAINT);
+	//#endif
 	} else {
 		HGDIOBJ obj = SelectObject(hdcMem, font);		//Select the Font to Render
 
@@ -123,7 +127,7 @@ void PaintSetup(HDC hdc, HDC hdcMem, HFONT font_title, HFONT font, int scr)
 
 			#if CORE_ENGINE_LEVEL >= 4 && defined USE_SYSTEM_CHECK // BEFORE need to be: APPLICATION_INIT_MAIN_WINDOW() & AFTER need to be: InitSelectedDriver()
 			if (TextToPrintSize == 0)
-				SystemHandle->InitializeSystemScreen(10, 10);		// SETUP SCREEN: F1,F2,F3,F4,F5,F6
+				SystemHandle->InitializeSystemScreenF1(10, 10);		// SETUP SCREEN: F1,F2,F3,F4,F5,F6
 			#endif
 
 			TextToPrintSize = (int)SystemHandle->TextToPrint[scr].size();
@@ -200,14 +204,15 @@ int MainWindowPaint(UINT monitor)
 	#endif
 
 		case GAME_SETUP:			//F6
-	#if defined CLIENT_SCENE_SETUP
+		#if CORE_ENGINE_LEVEL >= 5 && defined CLIENT_SCENE_SETUP
 		if (!SystemHandle->womaSetup)
+		{
 			//
 				SystemHandle->womaSetup = NEW WomaSetupManager;
 				if (!SystemHandle->womaSetup->m_setupWnd)
 					SystemHandle->womaSetup->Initialize(NULL);
-
-	#endif
+		}
+		#endif
 
 			break;
 	}//switch

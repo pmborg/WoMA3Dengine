@@ -654,7 +654,7 @@ int __cdecl CompoundSortCB(const VOID* arg1, const VOID* arg2)
 
 #endif
 
-extern void Startauxcommonfunctions(UINT level);
+extern bool Startauxcommonfunctions(UINT level);
 
 #if CORE_ENGINE_LEVEL >= 10 && !defined NewWomaEngine
 //-------------------------------------------------------------------------------------------
