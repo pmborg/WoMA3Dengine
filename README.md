@@ -141,6 +141,15 @@ Try to Change the driver on the fly without the need of close and open the Appli
 <!-- ------------------------------------------------------------------------------------------------ -->
 
 <h2>3D - ADVANCED MESH TUTORIAL SERIES: BEGIN</h2>
+
+<hr>
+
+- <b>DX96: Use curved real sky plane</b><br>
+Level/Sample about how to add an external code from Rastertek.<br>
+https://rastertek.com/tertut12.html<br>
+
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_096.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_096.png)	
+
 <hr>
 
 - <b>DX94: Optimizing Dynamic memory allocation for Billboard vertices - Atlas Texture - Part 2</b><br>
@@ -149,6 +158,7 @@ Improving  from **900** FPS to **930** FPS (soon)<br>
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_094.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_094.png)	
 
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_094B.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_094B.png)	
+
 
 <hr>
 
