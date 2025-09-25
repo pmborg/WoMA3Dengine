@@ -74,6 +74,7 @@
 #include "GLAnimationScene.h"
 #endif
 
+
 #if TUTORIAL_CHAP >= 140
 #include "../network/NetworkClass.h"
 #else
@@ -243,8 +244,6 @@ public:
 	void initLightRay(void* pContext);
 	#endif
 	void RenderHUD_Logo(void* pContext);
-
-
 	// VARS:
 	// ----------------------------------------------------------------
 

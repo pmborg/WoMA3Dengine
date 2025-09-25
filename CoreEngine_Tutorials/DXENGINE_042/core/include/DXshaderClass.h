@@ -209,12 +209,6 @@ namespace DirectX
 			float		distortionBias;
 		};
 
-
-		//PIXEL SKY:
-		struct ConstantBufferSkyType
-		{
-		};
-
 		// FUNCTIONS:
 		// ---------------------------------------------------------------------
 	public:
@@ -383,7 +377,6 @@ namespace DirectX
 		UINT		m_instanceCount = 0;
 	#endif
 
-		//Sky: 1
 
 		bool bUseGS=false;	// GS
 	};

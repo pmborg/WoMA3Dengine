@@ -148,7 +148,7 @@ xmlobj3d* BillClass::fillxml(ID3D11DeviceContext* pContext, int id, UINT type)
 	xmlobj.Bill = true;
 
 	if (m_Trees[id].type < 100)
-#if DX_ENGINE_LEVEL >= 90 && !defined NO3DBILL
+#if DX_ENGINE_LEVEL >= 70/*90*/ && !defined NO3DBILL
 		if (xmlobj.posX <= 98 && xmlobj.posZ <= 51)
 #endif
 		{

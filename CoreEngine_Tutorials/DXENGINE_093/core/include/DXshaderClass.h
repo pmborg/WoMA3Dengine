@@ -237,24 +237,6 @@ namespace DirectX
 			float		distortionBias;
 		};
 
-
-		//PIXEL SKY:
-		struct ConstantBufferSkyType
-		{
-			//CH90: SKY .........................
-			float firstTranslationX;
-			float firstTranslationZ;
-			float secondTranslationX;
-			float secondTranslationZ;
-
-			float brightness;
-			float padding3;		// 8xfloat
-
-			//CH91: SKY .........................
-			float translation;
-			float scale;
-		};
-
 		// FUNCTIONS:
 		// ---------------------------------------------------------------------
 	public:
@@ -435,13 +417,6 @@ namespace DirectX
 		UINT		m_instanceCount = 0;
 	#endif
 
-		//Sky: 1
-	//CH90: SKY .........................
-		float firstTranslationX = 0;
-		float firstTranslationZ = 0;
-		float secondTranslationX = 0;
-		float secondTranslationZ = 0;
-		float brightness = 0;
 
 		bool bUseGS=false;	// GS
 	};

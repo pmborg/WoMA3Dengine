@@ -596,7 +596,14 @@
 	#define DEMO_TITLE TEXT("94: ASSETS download with progress bar")
 	#define WORLD_XML  TEXT("world_94.xml")
 #endif
-
+#if DX_ENGINE_LEVEL == 96
+	#define DEMO_TITLE TEXT("96: Use curved real sky plane")
+	#define WORLD_XML  TEXT("world_96.xml")
+	#if DX_ENGINE_LEVEL >= 96
+	#define CLOUDTEXTUREFILENAME   TEXT("engine/data/scene96/cloud001.dds")
+	#define PERTURBTEXTUREFILENAME TEXT("engine/data/scene96/perturb001.dds")
+	#endif
+#endif
 
 #include "stateMachine.h"
 

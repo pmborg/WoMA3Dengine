@@ -24,7 +24,7 @@ SpritePass::SpritePass(Graphics& graphics, Texture& renderTarget) :
 
     if (FAILED(hr))
     {
-        throw std::exception("Faied to create Depth stencil state in Sprite Pass");
+        throw std::exception("Failed to create Depth stencil state in Sprite Pass");
     }
 }
 

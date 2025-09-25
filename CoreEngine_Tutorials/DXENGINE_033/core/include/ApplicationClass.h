@@ -74,6 +74,7 @@
 #include "GLAnimationScene.h"
 #endif
 
+
 #if TUTORIAL_CHAP >= 140
 #include "../network/NetworkClass.h"
 #else
@@ -247,8 +248,6 @@ public:
 #if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined USE_FRUSTRUM
 	bool WOMA_LOAD_OBJ(void* pContext, UINT threadID, WomaDriverClass* Driver, UINT i, TCHAR* wfilename);
 #endif																			  
-
-
 	// VARS:
 	// ----------------------------------------------------------------
 

@@ -35,9 +35,9 @@ struct PSIn
 {
 	float4 position				: SV_POSITION;			// 21
 	float2 texCoords			: TEXCOORD;				// 22
-	float3 normal				: NORMAL;				// 23 LIGHT
+	float3 normal				: TEXCOORD1;				// 23 LIGHT
 #if defined PS_USE_SPECULAR
-	float3 viewDirection		: TEXCOORD1;			// 34 Specular
+	float3 viewDirection		: TEXCOORD2;			// 34 Specular
 	float4 cameraPosition		: WS;					// 34 Specular
 #endif
 #if defined PS_USE_FOG

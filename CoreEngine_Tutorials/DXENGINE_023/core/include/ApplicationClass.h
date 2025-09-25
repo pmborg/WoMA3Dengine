@@ -73,6 +73,7 @@
 #include "GLAnimationScene.h"
 #endif
 
+
 #if TUTORIAL_CHAP >= 140
 #include "../network/NetworkClass.h"
 #else
@@ -241,8 +242,6 @@ public:
 	void CalculateLightRayVertex(float SunDistance);
 	void initLightRay(void* pContext);
 	#endif
-
-
 	// VARS:
 	// ----------------------------------------------------------------
 

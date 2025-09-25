@@ -75,6 +75,7 @@
 #include "GLAnimationScene.h"
 #endif
 
+
 #if TUTORIAL_CHAP >= 140
 #include "../network/NetworkClass.h"
 #else
@@ -287,8 +288,7 @@ public:
 	void TerrainRender(UINT ThreadID, UINT monitorWindow, WomaDriverClass* Driver, float fadeLight, XMMATRIX* m_viewMatrix, XMMATRIX* m_projectionMatrix, void* ctx);
 	void StartMeshDemo(ID3D11DeviceContext* ctx);
 	void UpdateMeshAnimations();
-
-
+	VirtualModelClass* model_skyPlane = NULL;
 	// VARS:
 	// ----------------------------------------------------------------
 

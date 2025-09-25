@@ -75,6 +75,7 @@
 #include "GLAnimationScene.h"
 #endif
 
+
 #if TUTORIAL_CHAP >= 140
 #include "../network/NetworkClass.h"
 #else
@@ -259,8 +260,6 @@ public:
 #endif																			  
 	void RenderShadowPass(UINT monitorIndex, WomaDriverClass* Driver, void* pContext, float fadeLight);
 	void AppPreRender(UINT monitorWindow, WomaDriverClass* Driver, float fadeLight, void* mainCtx);	// PRE-RENDER - Shadows
-
-
 	// VARS:
 	// ----------------------------------------------------------------
 

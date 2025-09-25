@@ -35,18 +35,18 @@ struct VSIn
 // PIXEL:
 struct PSIn
 {
-    float4 position : SV_POSITION;	 //CH04
-	float4 tex : TEXCOORD0;			 //CH04 - TEXTURE
-	float3 normal : NORMAL;			 //CH12 - LIGHT	
+    float4 position      : SV_POSITION;	//CH04
+	float4 tex           : TEXCOORD0;	//CH04 - TEXTURE
+	float3 normal        : NORMAL;		//CH12 - LIGHT	
+                         
+	float4 color         : COLOR;		//CH13 - MIX COLOR
+	float4 texMapping    : TEXCOORD1;	//CH19
 
-	float4 color : COLOR;			 //CH13 - MIX COLOR
-	float4 texMapping : TEXCOORD1;	 //CH19
-
-	float fogFactor : FOG;			 //CH16 - FOG
-	float4 depthPosition : TEXCOORD2;//CH18
-	float4 inputPosition : TEXCOORD3;//CH40: for below water...
-    float3 tangent : TANGENT;		 //CH21
-    float3 binormal : BINORMAL;		 //CH21
+	float fogFactor      : FOG;			//CH16 - FOG
+	float4 depthPosition : TEXCOORD2;   //CH18
+	float4 inputPosition : TEXCOORD3;   //CH40: for below water...
+    float3 tangent       : TANGENT;		//CH21
+    float3 binormal      : BINORMAL;	//CH21
 };
 
 /////////////

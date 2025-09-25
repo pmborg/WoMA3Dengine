@@ -17,7 +17,6 @@
 
 #include "OSengine.h"
 
-#include "platform.h"
 #if defined OPENGL3 && defined LINUX_PLATFORM && DX_ENGINE_LEVEL >= 19 // Initializing Engine 
 
 //////////////

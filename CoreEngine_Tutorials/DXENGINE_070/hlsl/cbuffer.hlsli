@@ -126,4 +126,10 @@ cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: D
     float2  distortion3;
     float   distortionScale;
     float   distortionBias;
+
+	////SKY:
+    //float firstTranslationX;
+    //float firstTranslationZ;
+    //float secondTranslationX;
+    //float secondTranslationZ;
 };

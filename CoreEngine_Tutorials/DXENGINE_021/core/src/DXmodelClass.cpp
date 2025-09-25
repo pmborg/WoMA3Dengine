@@ -706,6 +706,7 @@ void DXmodelClass::SetGeometryBuffers(void* deviceContext)
 		case SHADER_TEXTURE_FONT:
 		case SHADER_TEXTURE_WATER:
 		case SHADER_FIRE:
+		case SHADER_USE_CURVED_REAL_SKY_PLANE:
 			stride[0] = sizeof(DXtextureVertexType); break;
 
 		case SHADER_TEXTURE_LIGHT:						//23

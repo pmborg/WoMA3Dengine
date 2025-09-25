@@ -59,6 +59,7 @@
 #include "GLAnimationScene.h"
 #endif
 
+
 #if TUTORIAL_CHAP >= 140
 #include "../network/NetworkClass.h"
 #else
@@ -193,8 +194,6 @@ public:
 #if DX_ENGINE_LEVEL >= 23 || defined USE_VIEW2D_SPRITES
 	void AppPosRender(UINT monitorWindow, float dayLightFade, void* mainCtx);																// POS-RENDER - 2D: Render 
 #endif
-
-
 	// VARS:
 	// ----------------------------------------------------------------
 

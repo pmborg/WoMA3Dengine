@@ -169,10 +169,12 @@ bool DirectX::DXmodelClass::LoadTexture(void* pContext, TCHAR* objectName, void*
 	else
 		ModelShaderType = shader_type;
 
-	ASSERT(	ModelShaderType == SHADER_TEXTURE || 
-			ModelShaderType == SHADER_TEXTURE_FONT || 
-			ModelShaderType == SHADER_TEXTURE_WATER ||
-			ModelShaderType == SHADER_FIRE);
+	ASSERT	(	ModelShaderType == SHADER_TEXTURE || 
+				ModelShaderType == SHADER_TEXTURE_FONT || 
+				ModelShaderType == SHADER_TEXTURE_WATER ||
+				ModelShaderType == SHADER_FIRE || 
+				ModelShaderType == SHADER_USE_CURVED_REAL_SKY_PLANE
+			);
 
 	modelTextureVertex = model;
 	indexModelList = indexList;
@@ -226,6 +228,7 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 	case SHADER_TEXTURE_FONT:
 	case SHADER_TEXTURE_WATER:
 	case SHADER_FIRE:
+	case SHADER_USE_CURVED_REAL_SKY_PLANE:
 		m_vertexCount = (UINT) (*modelTextureVertex).size();	// Set the number of vertices in the vertex array.
 		if (m_vertexCount == 0)									// Better check, if object is empty...
 			return false;		
@@ -454,6 +457,7 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 	case SHADER_TEXTURE_FONT:
 	case SHADER_TEXTURE_WATER:
 	case SHADER_FIRE:
+	case SHADER_USE_CURVED_REAL_SKY_PLANE:
 	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
 		{
@@ -1011,6 +1015,7 @@ void DXmodelClass::SetGeometryBuffers(void* deviceContext)
 		case SHADER_TEXTURE_FONT:
 		case SHADER_TEXTURE_WATER:
 		case SHADER_FIRE:
+		case SHADER_USE_CURVED_REAL_SKY_PLANE:
 			stride[0] = sizeof(DXtextureVertexType); break;
 
 		case SHADER_TEXTURE_LIGHT:						//23

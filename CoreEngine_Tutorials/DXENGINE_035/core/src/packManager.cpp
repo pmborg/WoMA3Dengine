@@ -288,7 +288,7 @@ bool StartPackLibs()
     #endif
   #endif
 
-  #if TUTORIAL_PRE_CHAP >= 30
+  #if _NOT //TUTORIAL_PRE_CHAP >= 30
 	IF_NOT_RETURN_FALSE(InitPackLib(L"Clouds.pack"));
   #endif
 

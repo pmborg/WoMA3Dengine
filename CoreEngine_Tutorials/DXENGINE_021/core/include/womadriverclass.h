@@ -120,7 +120,11 @@ enum SHADER_TYPE
 		SHADER_MESH,										//80 & 81 Only
 
         SHADER_TEXTURE_LIGHT_FAST,							//83
-		SHADER_BILLBOARD_ATLAS_FAST							//93
+		SHADER_BILLBOARD_ATLAS_FAST,						//93
+
+		SHADER_USE_CURVED_SKY_PLANE,						//95
+		SHADER_USE_CURVED_REAL_SKY_PLANE					//96
+
 };
 
 struct Capabilities 

@@ -69,15 +69,6 @@ bool DX11Class::CreateBlendState()
     blendStateDescription.RenderTarget[0].BlendOpAlpha =	D3D11_BLEND_OP_ADD;
     blendStateDescription.RenderTarget[0].RenderTargetWriteMask = D3D10_COLOR_WRITE_ENABLE_ALL;
 
-	/*
-	blendStateDescription.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA; //D3D11_BLEND_SRC_COLOR; // 
-	blendStateDescription.RenderTarget[0].DestBlend =  D3D11_BLEND_BLEND_FACTOR; // D3D11_BLEND_INV_SRC_ALPHA;
-	blendStateDescription.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	blendStateDescription.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-	blendStateDescription.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-	blendStateDescription.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	blendStateDescription.RenderTarget[0].RenderTargetWriteMask = 0x0f; //D3D10_COLOR_WRITE_ENABLE_ALL; // 
-	*/
 	//We then create an alpha enabled blending state using the description we just setup.
 
 	// Create the blend state using the description.

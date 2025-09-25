@@ -96,7 +96,7 @@ void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext, WomaDriverCla
 #if DX_ENGINE_LEVEL >= 70 && defined SCENE_BILLBOARDS //SCENE_BILLBOARDS
 	// SORT BILLBOARDS:
 	// --------------------------------------------------------------------------------------------
-	qsort(m_Trees, _countof(m_Trees), sizeof(Tree), BillSortCB);
+	std::sort(m_Trees.begin(), m_Trees.end(), BillSortCB_CPP);
 #endif
 
 	// RESTORE DEFAULT CAMERA POSITION:
@@ -503,11 +503,16 @@ void ApplicationClass::SkyAndDemos(UINT monitorWindow, float fadeLight, void* pC
 	if (RENDER_PAGE >= 28 && m_SkyModel)
 	{
 		m_Driver->SetRasterizerState(pContext, CULL_NONE/*CULL_BACK*/, FILL_SOLID); // Render the Inside of Sphere
-		m_SkyModel->translation(0, 0, 0);
-		m_SkyModel->scale(20, 20, 20);
+		if (m_Driver->RenderfirstTime)
+		{
+			m_SkyModel->translation(0, 0, 0);
+			m_SkyModel->scale(20, 20, 20);
+		}
 		m_SkyModel->RenderSky(pContext, CAMERA_SKY, 1); // Camera with fixed position: 0,0,0: (CAMERA_SKY)
 	}
 #endif
+
+
 
 #if defined USE_ALPHA_BLENDING
 	m_Driver->TurnOffAlphaBlending(pContext);
@@ -533,7 +538,7 @@ void ApplicationClass::WaterTerrain(UINT monitorWindow, float fadeLight, void* p
 	// TERRAIN[0]: UNDER WATER
 #if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_REALEARTH_TERRAIN || defined SCENE_MAIN_TERRAIN
 #if defined USE_RASTERIZER_STATE
-	m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);
+	//m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);
 #endif
 	if (RENDER_PAGE == 49)
 		m_TerrainModel[UNDERWATER_TERRAIN_ID]->RenderWithFade(pContext);					// New function to replace these 2 line options.
@@ -586,7 +591,7 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 	// 3D STATIC OPAC OBJECTS on WORLD.XML, that listed in: sceneManager->visibleModelList (in front of camera)
 	//----------------------------------------------------------------------------------------------------------------------
 #if defined USE_RASTERIZER_STATE && (defined INTRO_DEMO || defined USE_ALPHA_BLENDING)
-	m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);
+	//m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);
 #endif
 
 #if DX_ENGINE_LEVEL >= 73 && defined BILLBOARD_FOR_WINDY_GRASS
@@ -645,7 +650,7 @@ void ApplicationClass::AppPosRender(UINT monitorIndex, float dayLightFade, void*
     // LIGHT: Get fade (real Sun Position): Show Debug Info
 
 #if defined USE_RASTERIZER_STATE
-	m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);
+	//m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);
 #endif
 #if defined USE_ALPHA_BLENDING
 	m_Driver->TurnOnAlphaBlending(pContext);
@@ -653,7 +658,7 @@ void ApplicationClass::AppPosRender(UINT monitorIndex, float dayLightFade, void*
 
 #if (TUTORIAL_CHAP >= 60 && defined SCENE_BILLBOARDS && defined USE_SCENE_MANAGER && defined DX_ENGINE) && defined MAIN_RENDER_BILLBOARDS // MAIN-RENDER: BILLBOARD + FENCES + FIRE (11.4 ms)
         UINT obj_id;
-		for (UINT tree_id = 0; tree_id < _countof(m_Trees); tree_id++)
+        for (UINT tree_id = 0; tree_id < m_Trees.size(); tree_id++)
         {
             obj_id = m_Trees[tree_id].ID + world_xml_objs;
             if (SystemHandle->xml_loader.theWorldXML[obj_id].render)								// TODO: use sceneManager
@@ -1102,7 +1107,7 @@ void ApplicationClass::DemoRender(void* pContext)
 #endif
 	{
 #if defined USE_RASTERIZER_STATE
-		m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID); // Render the Inside of Sphere
+		//m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID); // Render the Inside of Sphere
 #endif
 
 		if (RENDER_PAGE < 28) {
@@ -1228,7 +1233,7 @@ void ApplicationClass::DemoRender(void* pContext)
 	if (RENDER_PAGE < 30)
 #endif
 	{
-		m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);
+		//m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);
 		float rY = 0.0f;
 		rY = (float)dt * (0.005f / 16.66f);		// MOVIMENT FORMULA!
 		m_cube3Model->rotateY(rY);
@@ -1247,7 +1252,7 @@ void ApplicationClass::DemoRender(void* pContext)
 		if (RENDER_PAGE < 30)
 #endif
 		{
-			m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);
+			//m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);
 			float rY = 0.0f;
 			rY = (float)dt * (0.005f / 16.66f);		// MOVIMENT FORMULA!
 			m_SphereModel1->rotateY(rY);
@@ -1262,7 +1267,7 @@ void ApplicationClass::DemoRender(void* pContext)
 		if (RENDER_PAGE < 30)
 #endif
 		{
-			m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);
+			//m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);
 			float rY = 0.0f;
 			rY = (float)dt * (0.005f / 16.66f);		// MOVIMENT FORMULA!
 			m_SphereModel2->rotateY(rY);

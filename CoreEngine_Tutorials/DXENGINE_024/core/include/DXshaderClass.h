@@ -209,12 +209,6 @@ namespace DirectX
 			float		distortionBias;
 		};
 
-
-		//PIXEL SKY:
-		struct ConstantBufferSkyType
-		{
-		};
-
 		// FUNCTIONS:
 		// ---------------------------------------------------------------------
 	public:
@@ -378,7 +372,6 @@ namespace DirectX
 
 		float		watertime = 0.1f;
 
-		//Sky: 1
 
 		bool bUseGS=false;	// GS
 	};

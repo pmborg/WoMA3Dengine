@@ -96,6 +96,7 @@
 
 #pragma once
 #include "platform.h"
+#include <algorithm> 
 
 #if !defined NewWomaEngine
 #if defined WINDOWS_PLATFORM

@@ -249,7 +249,6 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 
 	// WAIT FOR THE END OF THE VIDEO:
 	#if defined USE_INTRO_VIDEO_DEMO
-	if (playvideo)
 	{
 		MSG msg = { };
 		while (DXsystemHandle->g_DShowPlayer && DXsystemHandle->g_DShowPlayer->m_state != STATE_NO_GRAPH && (DXsystemHandle->g_DShowPlayer->m_state != STATE_STOPPED && DXsystemHandle->g_DShowPlayer->m_state != STATE_PAUSED))

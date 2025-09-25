@@ -120,11 +120,15 @@
         #define DX12            //(defined DX12 && D3D11_SPEC_DATE_YEAR > 2009)     
     #endif
 
-    #if defined WINDOWS_PLATFORM && (defined DX9sdk || defined DX9 || defined DX11 || defined DX12)
-        #define DX_ENGINE       //Turn on: #include "DXengine.h"
-    #endif
+	#define OPENGL3 //WINDOWS_PLATFORM + LINUX_PLATFORM + ANDROID_PLATFORM
 
-    #define OPENGL3 //WINDOWS_PLATFORM + LINUX_PLATFORM + ANDROID_PLATFORM
+  #if defined WINDOWS_PLATFORM && (defined DX9sdk || defined DX9 || defined DX11 || defined DX12)
+        #define DX_ENGINE       //Turn on: #include "DXengine.h"
+		#ifndef DX_ENGINE
+			#undef DX9
+			#undef DX11
+			#undef DX12
+    #endif
 
     #if defined DX12 //SELECT DXGI_API version:
         //#define DX12_DXGI_API 3   // Default: off - IDXGIFactory3
@@ -132,7 +136,7 @@
         //#define DX12_DXGI_API 5   // Default: off - IDXGIFactory5
         #define DX12_DXGI_API 6     //IDXGIFactory6
     #endif
-#endif
+  #endif
 
 //--------------------------------------------------------------------------------------------------------
 //WINDOWS_PLATFORM + LINUX_PLATFORM + ANDROID_PLATFORM
@@ -463,7 +467,7 @@
     #if DX_ENGINE_LEVEL >= 75 && defined SCENE_BILLBOARDS
         #define ALLOW_CBIND_PROGRESS_BAR
     #endif
-    #if DX_ENGINE_LEVEL == 76 || defined (RELEASE) && DX_ENGINE_LEVEL >= 76
+    #if DX_ENGINE_LEVEL == 76 || defined RELEASE && DX_ENGINE_LEVEL >= 76
         #define USE_INTRO_VIDEO_DEMO
     #endif
     #if DX_ENGINE_LEVEL == 77 && defined SCENE_BILLBOARDS
@@ -580,22 +584,36 @@
 	#define USE_TREE_POINTERV2	//v2: RELEASE: 911FPS
 #endif
 
+#if DX_ENGINE_LEVEL >= 95
+	#define USE_CURVED_SKY_PLANE
+#endif
+#if DX_ENGINE_LEVEL >= 96
+	#define USE_CURVED_REAL_SKY_PLANE
+#endif						 
 
 	//#define USE_MULTI_MONITOR
 
+#endif
 
     //-------------------------------------------------------------------------------------------------------
 	#undef  dx12_upload_old_way
 
 	#if DX_ENGINE_LEVEL < 94
-	#if DX_ENGINE_LEVEL != 76 && DX_ENGINE_LEVEL != 86
+	#if DX_ENGINE_LEVEL != 76
 	#undef USE_INTRO_VIDEO_DEMO
 	#endif
 	#endif
 	#if defined WINDOWS_PLATFORM
 		#define ALLOW_CBIND_PROGRESS_BAR
 	#endif
+	#if DX_ENGINE_LEVEL == 26
+	#define SPHERE_GRIDPOINTS 100
+	#else
+	#if DX_ENGINE_LEVEL >= 94
+		#define SPHERE_GRIDPOINTS 10
+		#else
+		#define SPHERE_GRIDPOINTS 25
+	#endif
+	#endif
 
-
-	
 #pragma warning(pop)

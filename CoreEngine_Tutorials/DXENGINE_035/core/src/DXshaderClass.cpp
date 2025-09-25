@@ -371,6 +371,7 @@ namespace DirectX {
 		case SHADER_TEXTURE:		//22
 		case SHADER_TEXTURE_FONT:	//27
 		case SHADER_FIRE:			//072fire.hlsl
+		case SHADER_USE_CURVED_REAL_SKY_PLANE:
 #if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009
 			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 			{

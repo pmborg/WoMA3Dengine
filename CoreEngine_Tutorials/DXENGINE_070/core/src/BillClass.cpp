@@ -67,7 +67,7 @@ void BillClass::Shutdown()
 #include "DXmodelClass.h"
 #endif
 
-Tree			m_Trees[N_BILLBOARD];						                // Array of tree info. 
+std::vector<Tree> m_Trees;
 
 ID3D11ShaderResourceView* billFileLoaded[] =
 {
@@ -131,6 +131,9 @@ xmlobj3d* BillClass::fillxml(ID3D11DeviceContext* pContext, int id, UINT type)
 	xmlobj.Bill = true;
 
 	if (m_Trees[id].type < 100)
+#if DX_ENGINE_LEVEL >= 70/*90*/ && !defined NO3DBILL
+		if (xmlobj.posX <= 98 && xmlobj.posZ <= 51)
+#endif
 		{
 #if !defined GENERATE_ATLAS_INTEGRATION_DDS
 			// Create the texture object, if not created before
@@ -181,6 +184,7 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 		// Tree.type: (type of tree)
 		type = rand() % billNames_length; //random number between 0 and 10
 
+		m_Trees.push_back(tree_);
 		// Tree.vPos:
 		float height = -100; //Initially Invalid
 		float PosX = 0;

@@ -35,7 +35,6 @@
 #endif
 #pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
 
-	#define SPHERE_GRIDPOINTS 100
 extern std::vector<WomaDriverClass*> driverList;
 void ApplicationClass::initSphere1(void* pContext, float SPHERE_SIZE)
 {

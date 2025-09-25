@@ -557,7 +557,11 @@ bool ApplicationClass::WOMA_LOAD_OBJ(void* pContext, UINT threadID, WomaDriverCl
 	{
 		UINT progress = ((float)num_loading_objects / (float)(objModel_size + theWorld_size)) * 100.0f;
 		SendMessage(SystemHandle->hwndPrgBar, PBM_SETPOS, (WPARAM)progress, 0);
+#if defined USE_MINIMAP_EXPANSION
+		StringCchPrintf(title, MAX_STR_LEN, TEXT("Loading: %d / %d"), num_loading_objects, objModel_size + theWorld_size+ initial_world_xml_objs);
+#else
 		StringCchPrintf(title, MAX_STR_LEN, TEXT("Loading: %d / %d"), num_loading_objects, objModel_size + theWorld_size);
+#endif
 		SetWindowText(SystemHandle->settingstext, title);
 	}
 #endif

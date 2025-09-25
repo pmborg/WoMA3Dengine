@@ -52,7 +52,7 @@
 
 extern ID3D11ShaderResourceView* billFileLoaded[];
 
-extern Tree			m_Trees[N_BILLBOARD];						        // Array of tree info.
+extern std::vector<Tree> m_Trees;
 
 #define MAX_BILLBOARDS (N_BILLBOARD + N_FENCES + N_FIRE + N_GRASS_0 + N_BUSH_0)
 

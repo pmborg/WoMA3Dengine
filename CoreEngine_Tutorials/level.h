@@ -154,7 +154,9 @@
 	//#define LEVEL 91  // Using threads for rendering
 	//#define LEVEL 92  // Use Adavanced DX11.1
 	//#define LEVEL 93  // Use Generate atlas integration (dds)
-	#define LEVEL 94			 
+	//#define LEVEL 94  // ASSETS download with progress bar
+	#define LEVEL 96	// Use curved real sky plane
+	
     #endif
 #endif
 
