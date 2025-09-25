@@ -103,7 +103,7 @@ void android_main(android_app* state)           // ENTRY-POINT: ANDROID(DEBUG/RE
 
 #endif
 
-// Entry point of all WoMA ENGINE Applications all "main's" call this this one (used by: WINDOWS / LINUX / ANDROID)
+// Entry point of all WoMA ENGINE Applications all "main's" call this one (used by: WINDOWS / LINUX / ANDROID)
 // -------------------------------------------------------------------------------------------------------------------------------------
 int APPLICATION_MAIN(int argc, char* argv[])
 // -------------------------------------------------------------------------------------------------------------------------------------

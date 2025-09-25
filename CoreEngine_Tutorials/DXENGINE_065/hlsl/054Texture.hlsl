@@ -129,10 +129,10 @@ float4 PS_Main(PSIn input) : SV_TARGET
     {
         //river
         textureColor = (textureColor + color) / 2.0;
-        //#if defined PS_USE_ALFACOLOR	// 33: Alfa Color
-        //    //if (hasAlfaColor)
-        //    textureColor.a = alfaColor;
-        //#endif
+        #if defined PS_USE_ALFACOLOR	// 33: Alfa Color
+            //if (hasAlfaColor)
+            textureColor.a = alfaColor;
+        #endif
     }
     else
     {

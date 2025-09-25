@@ -42,7 +42,18 @@ RealSkyPlaneClass::~RealSkyPlaneClass()
 
 void RealSkyPlaneClass::Shutdown()
 {
-
+#if (defined DX_ENGINE)
+	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+	{
+		SAFE_SHUTDOWN_MODELDX(SystemHandle->m_Application->model_skyPlane);
+	}
+#endif
+#if (defined OPENGL3 || defined OPENGL4)
+	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+	{
+		SAFE_SHUTDOWN_MODELGL3(SystemHandle->m_Application->model_skyPlane);
+	}
+#endif
 }
 
 bool RealSkyPlaneClass::Initialize(void* ctx, void* Driver)

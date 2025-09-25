@@ -457,7 +457,6 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 
 	SetThreadPriority(GetCurrentThread(), 10/*THREAD_PRIORITY_HIGHEST*/);
 
-    SetUnhandledExceptionFilter(TopLevelFilter);
 #elif defined LINUX_PLATFORM && defined RELEASE
 	#if _DEBUG
 		setpriority(PRIO_PROCESS, 0, 20);	// -20 (highest priority) to +20 (lowest priority). 
@@ -465,6 +464,8 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 		setpriority(PRIO_PROCESS, 0, -19);	// Be nice to other processes, helps reduce mouse lag
 	#endif
 #endif
+
+		SetUnhandledExceptionFilter(TopLevelFilter);
 
 #if defined MATH_BENCH && LEVEL < 60 // Disabled at 60: TrigonometryMathClass.cpp
     // Benchmark trigonometric functions:
