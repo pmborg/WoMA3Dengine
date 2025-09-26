@@ -196,7 +196,6 @@ static Tree tree_ = {};
 bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, int m_terrainHeight, bool instance)
 {
 	UNREFERENCED_PARAMETER(instance);
-	ZeroMemory(&m_Trees, sizeof(m_Trees));
 	billNames_length = sizeof(billFileName) / sizeof(billFileName[0]);
 	UINT type = 0;
 
