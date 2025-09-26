@@ -145,7 +145,7 @@ float nShininess;
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
 ////////////////////////////////////////////////////////////////////////////////
-PSIn MyVertexShader027Texture(VSIn input)
+PSIn VS_Main(VSIn input)
 {
     PSIn output;
 
@@ -178,7 +178,7 @@ PSIn MyVertexShader027Texture(VSIn input)
     return output;
 }
 
-float4 MyPixelShader027Texture(PSIn input) : SV_TARGET
+float4 PS_Main(PSIn input) : SV_TARGET
 {
     float4 color = shaderTexture.Sample(SampleType, input.texCoords);
 

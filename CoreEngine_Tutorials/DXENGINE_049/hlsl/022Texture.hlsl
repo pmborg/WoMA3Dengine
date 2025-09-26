@@ -149,7 +149,7 @@ float nShininess;
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
 ////////////////////////////////////////////////////////////////////////////////
-PSIn MyVertexShader022Texture(VSIn input)
+PSIn VS_Main(VSIn input)
 {
     PSIn output;
 #if defined PS_USE_FOG
@@ -183,7 +183,7 @@ PSIn MyVertexShader022Texture(VSIn input)
     return output;
 }
 
-float4 MyPixelShader022Texture(PSIn input) : SV_TARGET
+float4 PS_Main(PSIn input) : SV_TARGET
 {
 	// Sample the pixel color from the texture using the sampler at this texture coordinate location:
     float4 textureColor = shaderTexture.Sample(SampleType, input.texCoords);

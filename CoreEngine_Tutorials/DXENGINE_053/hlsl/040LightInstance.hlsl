@@ -62,7 +62,7 @@ SamplerState SampleType;		//: register(s0);		// 3D (default) WRAP
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
 ////////////////////////////////////////////////////////////////////////////////
-PSIn MyVertexShader040LightInstance(VSIn input, uint instanceID : SV_InstanceID)
+PSIn VS_Main(VSIn input, uint instanceID : SV_InstanceID)
 {
 	PSIn output;
 	float4 cameraPosition;
@@ -143,7 +143,7 @@ PSIn MyVertexShader040LightInstance(VSIn input, uint instanceID : SV_InstanceID)
 ////////////////////////////////////////////////////////////////////////////////
 // Pixel Shader
 ////////////////////////////////////////////////////////////////////////////////
-float4 MyPixelShader040LightInstance(PSIn input) : SV_TARGET
+float4 PS_Main(PSIn input) : SV_TARGET
 {
 	float4	textureColor = pixelColor;    // SET PIXEL COLOR
 	float	lightIntensity = 0;

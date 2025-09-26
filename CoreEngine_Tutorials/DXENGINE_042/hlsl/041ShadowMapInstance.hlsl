@@ -38,7 +38,7 @@ struct PSIn
 // Vertex Shader
 ////////////////////////////////////////////////////////////////////////////////
 
-PSIn MyVertexShader041ShadowMapInstance(VSIn input, uint instanceID : SV_InstanceID)
+PSIn VS_Main(VSIn input, uint instanceID : SV_InstanceID)
 {
     PSIn output;
 	/*
@@ -90,7 +90,7 @@ PSIn MyVertexShader041ShadowMapInstance(VSIn input, uint instanceID : SV_Instanc
 // Pixel Shader
 ////////////////////////////////////////////////////////////////////////////////
 
-float4 MyPixelShader041ShadowMapInstance(PSIn input) : SV_TARGET
+float4 PS_Main(PSIn input) : SV_TARGET
 {
 	// Depth is z / w
 	return  float4 (input.fDepth, 0, 0, 1);		// Get the depth value of the pixel by dividing the Z pixel depth by the homogeneous W coordinate.

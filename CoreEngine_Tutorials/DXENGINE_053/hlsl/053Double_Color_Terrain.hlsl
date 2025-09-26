@@ -79,7 +79,7 @@ SamplerState SampleType				: register(s0);// 3D (default) WRAP
 // Vertex Shader
 ////////////////////////////////////////////////////////////////////////////////
 
-PSIn MyVertexShader066Double_Color_Terrain(VSIn input)
+PSIn VS_Main(VSIn input)
 {
 	PSIn output;
 #if defined PS_USE_FOG
@@ -143,7 +143,7 @@ PSIn MyVertexShader066Double_Color_Terrain(VSIn input)
 ////////////////////////////////////////////////////////////////////////////////
 // Pixel Shader
 ////////////////////////////////////////////////////////////////////////////////
-float4 MyPixelShader066Double_Color_Terrain(PSIn input) : SV_TARGET
+float4 PS_Main(PSIn input) : SV_TARGET
 {
     float4	textureColor = shaderTexture.Sample(SampleType, input.texCoords);
 	float	lightIntensity = 0;

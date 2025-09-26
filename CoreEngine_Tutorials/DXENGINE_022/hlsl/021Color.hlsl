@@ -11,8 +11,8 @@
     ...
 	    vsFilename.append(L"hlsl/021Color.hlsl");
 	    psFilename = vsFilename;
-	    vertexHLSL.append("MyVertexShader021Color");
-	    pixelHLSL.append("MyPixelShader021Color");
+	    vertexHLSL.append("VS_Main");
+	    pixelHLSL.append("PS_Main");
      ...
 **********************************************************************************************/
 //#define WITHOUT_CONSTANT_BUFFER
@@ -132,7 +132,7 @@ cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: D
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
 ////////////////////////////////////////////////////////////////////////////////
-PSIn MyVertexShader021Color(VSIn input)
+PSIn VS_Main(VSIn input)
 {
     PSIn output;
 
@@ -168,7 +168,7 @@ PSIn MyVertexShader021Color(VSIn input)
 ////////////////////////////////////////////////////////////////////////////////
 // Pixel Shader
 ////////////////////////////////////////////////////////////////////////////////
-float4 MyPixelShader021Color(PSIn input) : SV_TARGET
+float4 PS_Main(PSIn input) : SV_TARGET
 {
     return input.color; // Use Vertex Color
 }

@@ -11,8 +11,8 @@
     ...
 		vsFilename.append(L"hlsl/022Texture.hlsl");
 		psFilename = vsFilename;
-		vertexHLSL.append("MyVertexShader022Texture");
-		pixelHLSL.append("MyPixelShader022Texture");
+		vertexHLSL.append("VS_Main");
+		pixelHLSL.append("PS_Main");
      ...
 **********************************************************************************************/
 
@@ -186,7 +186,7 @@ SamplerState SampleType: register(s0);
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
 ////////////////////////////////////////////////////////////////////////////////
-PSIn MyVertexShader022Texture(VSIn input)
+PSIn VS_Main(VSIn input)
 {
     PSIn output;
 #if defined PS_USE_FOG
@@ -287,7 +287,7 @@ float4 GetShaderTexture(Texture2D tex, float2 texCoords, uint mipLevel)
 }
 
 
-float4 MyPixelShader022Texture(PSIn input) : SV_TARGET
+float4 PS_Main(PSIn input) : SV_TARGET
 {
 	// Sample the pixel color from the texture using the sampler at this texture coordinate location:
     float4 textureColor = GetShaderTexture(shaderTexture, input.texCoords, 0);
