@@ -71,27 +71,21 @@ bool RealSkyPlaneClass::Initialize(void* ctx, void* Driver)
 	// Create the sky plane.
 	IF_NOT_RETURN_FALSE(InitializeSkyPlane(ctx, Driver, skyPlaneResolution, skyPlaneWidth, skyPlaneTop, skyPlaneBottom, textureRepeat));
 
-	return false;
+	return true;
 }
-
-struct SkyPlaneType
-{
-	float x, y, z;
-	float tu, tv;
-};
 
 bool RealSkyPlaneClass::InitializeSkyPlane(void* ctx, void* Driver, int skyPlaneResolution, float skyPlaneWidth, float skyPlaneTop, float skyPlaneBottom, int textureRepeat)
 {
-	float quadSize, radius, constant, textureDelta;
-	int i, j, index;
-	float positionX, positionY, positionZ, tu, tv;
+	float quadSize=0, radius = 0, constant = 0, textureDelta = 0;
+	int i = 0, j = 0, index = 0;
+	float positionX = 0, positionY = 0, positionZ = 0, tu = 0, tv = 0;
 
 	DX11Class* m_driver11 = (DirectX::DX11Class*)Driver;
 	ID3D11DeviceContext* pContext11 = (ID3D11DeviceContext*)ctx;
 
 	// Create the array to hold the sky plane coordinates.
 	SkyPlaneType* m_skyPlane = NEW SkyPlaneType[(skyPlaneResolution + 1) * (skyPlaneResolution + 1)];
-	if (!m_skyPlane)return false;
+	IF_NOT_RETURN_FALSE(m_skyPlane);
 
 	// Determine the size of each quad on the sky plane.
 	quadSize = skyPlaneWidth / (float)skyPlaneResolution;
@@ -104,7 +98,6 @@ bool RealSkyPlaneClass::InitializeSkyPlane(void* ctx, void* Driver, int skyPlane
 
 	// Calculate the texture coordinate increment value.
 	textureDelta = (float)textureRepeat / (float)skyPlaneResolution;
-
 	
 	// Loop through the sky plane and build the coordinates based on the increment values given.
 	for (j = 0; j <= skyPlaneResolution; j++)
@@ -180,7 +173,7 @@ bool RealSkyPlaneClass::InitializeSkyPlane(void* ctx, void* Driver, int skyPlane
 		}
 	}
 
-	SAFE_DELETE(m_skyPlane);
+	SAFE_DELETE_ARRAY(m_skyPlane);
 
 	std::vector<STRING> sky_plane_textures;
 	sky_plane_textures.push_back(CLOUDTEXTUREFILENAME);
@@ -190,7 +183,7 @@ bool RealSkyPlaneClass::InitializeSkyPlane(void* ctx, void* Driver, int skyPlane
 	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) {CREATE_MODELDX_IF_NOT_EXCEPTION(SystemHandle->m_Application->model_skyPlane, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);}
 	ASSERT(SystemHandle->m_Application->model_skyPlane->LoadTexture(pContext11, TEXT("sky_plane_textures"), m_driver11, SHADER_USE_CURVED_REAL_SKY_PLANE, &sky_plane_textures, &woma_skyPlane, NULL));
 
-	return false;
+	return true;
 }
 
 void RealSkyPlaneClass::Render(void* pContext)
@@ -206,6 +199,5 @@ void RealSkyPlaneClass::Render(void* pContext)
 		SystemHandle->m_Application->model_skyPlane->scale(SystemHandle->AppSettings->SCREEN_DEPTH-1, SystemHandle->AppSettings->SCREEN_DEPTH-1, SystemHandle->AppSettings->SCREEN_DEPTH-1);
 	}
 	SystemHandle->m_Application->model_skyPlane->RenderSky(pContext, CAMERA_SKY, 1); // Camera with fixed position: 0,0,0: (CAMERA_SKY)
-	return;
 }
 #endif

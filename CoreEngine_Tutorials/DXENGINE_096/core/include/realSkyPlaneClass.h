@@ -21,6 +21,12 @@
 #include "OSengine.h"
 #if defined USE_CURVED_REAL_SKY_PLANE
 
+struct SkyPlaneType
+{
+	float x, y, z;
+	float tu, tv;
+};
+
 class RealSkyPlaneClass
 {
 private:
