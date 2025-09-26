@@ -52,14 +52,18 @@ struct ModelColorVertexType
 	float x, y, z;
 	float r, g, b, a; // This will allow a dif. color per vertice
 };
+#pragma pack(pop)
 
+#pragma pack(push, 1)
 union Vector3 {
 	Vector3(float x_, float y_, float z_) { x = x_; y = y_; z = z_; }
 	struct {
 		float x, y, z;
 	};
 };
+#pragma pack(pop)
 
+#pragma pack(push, 1)
 union Vector2 {
 	Vector2(float u_, float v_) { u = u_; v = v_; }
 	struct {
@@ -105,11 +109,13 @@ struct ModelNormalBumpVertexType
 };
 #pragma pack(pop)
 
+#pragma pack(push, 1)
 struct ModelShadowMapVertexType
 	//	-------------------------------------------------------------------------------------------
 {
 	float x, y, z;
 };
+#pragma pack(pop)
 
 struct SentenceType
 {

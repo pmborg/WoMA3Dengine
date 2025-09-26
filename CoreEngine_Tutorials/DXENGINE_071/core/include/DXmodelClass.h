@@ -97,6 +97,7 @@ public:
     bool LoadLight(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<ModelTextureLightVertexType>* model, std::vector<UINT>* indexList = NULL, UINT instanceCount = 0);
     bool LoadBump(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<ModelNormalBumpVertexType>* model, std::vector<UINT>* indexList, UINT instanceCount = 0);
     bool LoadTerrain(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<ModelTextureDouble_Color_TerrainType>* model, std::vector<UINT>* indexList, UINT instanceCount = 0);
+
 #if DX_ENGINE_LEVEL >= 60 && defined USE_TERRAIN_TUTORIAL_CHAP_24
     bool LoadTerrain(void* pContext,
         TCHAR* objectName, void* driver,
@@ -206,7 +207,6 @@ public:
 
 	std::vector<ModelTextureDouble_Color_TerrainType>* modelTextureDouble_Color_Terrain = NULL;
 	bool InitializeTextureDouble_Color_Terrain(void* g_driver, UINT* indices);
-
 	std::vector<ModelTextureDouble_Color_TexMapping_TerrainType>* modelTextureDouble_Color_Terrain_TexMapping = NULL;
 	bool InitializeTextureDouble_Color_Terrain_TexMapping(void* g_driver, UINT* indices);
 

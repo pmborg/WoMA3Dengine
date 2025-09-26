@@ -153,4 +153,22 @@ namespace DirectX {
 		XMFLOAT2 texCoord2;
 	};
 
+	// 97
+	// -------------------------------------------------------------------------------------------
+	struct DXTextureTextureWaterfallType
+	{
+		DXTextureTextureWaterfallType() {}
+		DXTextureTextureWaterfallType(
+			float x, float y, float z,
+			float u, float v,
+			float r, float g, float b, float a)
+			: position(x, y, z), texCoord(u, v), color(r, g, b, a) 
+		{
+		}
+
+		XMFLOAT3 position;
+		XMFLOAT2 texCoord;
+		XMFLOAT4 color;
+	};
+
 }

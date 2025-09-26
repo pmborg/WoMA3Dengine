@@ -328,7 +328,9 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 		RenderModel(pContext, 0, monitorIndex, m_Driver, id, PASS_OPAC, NULL, NULL);
 		if (id == 0 && ((DXmodelClass*)objModel[id])->obj3d.hasTransparent == true)
 		{
+			m_Driver->TurnOnAlphaBlending(pContext);
 			objModel[id]->Render(pContext, 0, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_TRANSPARENT, NULL, NULL);
+			m_Driver->TurnOffAlphaBlending(pContext);
 		}
 	}
 #endif

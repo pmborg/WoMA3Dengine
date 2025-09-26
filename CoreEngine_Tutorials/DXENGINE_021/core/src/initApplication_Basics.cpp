@@ -45,6 +45,7 @@
 	#include "WomaCube.h"
 #endif
 
+
 #if defined SCENE_COLOR
 // ----------------------------------------------------------------------------
 void ApplicationClass::initColorDemo(void* pContext)

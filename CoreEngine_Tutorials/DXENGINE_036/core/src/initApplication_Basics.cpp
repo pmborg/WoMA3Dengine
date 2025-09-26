@@ -47,6 +47,7 @@
 
 	#include "SceneManager.h"
 
+
 #if defined SCENE_COLOR
 // ----------------------------------------------------------------------------
 void ApplicationClass::initColorDemo(void* pContext)

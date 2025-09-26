@@ -31,8 +31,6 @@
 // "OBJ" MATERIAL FORMAT:
 // --------------------------
 #pragma pack(push, 1)
-//Without pragma pack the above struct takes 16 bytes, with the pragma pack instructions, same struct takes 14 bytes!
-
 typedef struct
 {
 	char matName[100] = {};					//size:100 100xchar

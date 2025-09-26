@@ -475,9 +475,9 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 		setpriority(PRIO_PROCESS, 0, -19);	// Be nice to other processes, helps reduce mouse lag
 	#endif
 #endif
-
+#if defined WINDOWS_PLATFORM
 		SetUnhandledExceptionFilter(TopLevelFilter);
-
+#endif
 #if defined MATH_BENCH && LEVEL < 60 // Disabled at 60: TrigonometryMathClass.cpp
     // Benchmark trigonometric functions:
     // ----------------------------------
