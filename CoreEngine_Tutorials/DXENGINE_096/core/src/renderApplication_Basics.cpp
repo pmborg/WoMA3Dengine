@@ -97,7 +97,7 @@ extern void RenderAllMeshModels(ID3D11DeviceContext* pContext);
 
 size_t AtlasobjModel_outVertsCount = 0, AtlasobjModel_outIdxCount = 0;
 
-#if defined USE_CURVED_REAL_SKY_PLANE && DX_ENGINE_LEVEL >= 96
+#if defined USE_CURVED_REAL_SKY_PLANE
 #include "realSkyPlaneClass.h"
 extern RealSkyPlaneClass realSkyPlaneClass;
 #endif
@@ -638,6 +638,7 @@ void ApplicationClass::MinimapWorkerFunc() {
 		lock.lock();
 		minimapThreadDone = true;
 		minimapWork = false;
+
 		cv.notify_all();
 	}
 }
@@ -1060,7 +1061,9 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 		RenderModel(pContext, 0, monitorIndex, m_Driver, id, PASS_OPAC, NULL, NULL);
 		if (id == 0 && ((DXmodelClass*)objModel[id])->obj3d.hasTransparent == true)
 		{
+			m_Driver->TurnOnAlphaBlending(pContext);
 			objModel[id]->Render(pContext, 0, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_TRANSPARENT, NULL, NULL);
+			m_Driver->TurnOffAlphaBlending(pContext);
 		}
 	}
 #endif
@@ -1099,6 +1102,7 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 	((DX11Class*)driverList[SystemHandle->AppSettings->DRIVER])->EnableSecondBlendState();
 	realSkyPlaneClass.Render(pContext);
 #endif
+
 }
 
 //#############################################################################################################

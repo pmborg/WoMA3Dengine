@@ -48,13 +48,11 @@
 
 	#include "SceneManager.h"
 
-#if defined USE_CURVED_REAL_SKY_PLANE && DX_ENGINE_LEVEL >= 96
+#if defined USE_CURVED_REAL_SKY_PLANE
 #include "realSkyPlaneClass.h"
-#endif
-
-#if defined USE_CURVED_REAL_SKY_PLANE && DX_ENGINE_LEVEL >= 96
 extern RealSkyPlaneClass realSkyPlaneClass;
 #endif
+
 
 #if defined SCENE_COLOR
 // ----------------------------------------------------------------------------

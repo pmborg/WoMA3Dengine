@@ -596,13 +596,21 @@
 	#define DEMO_TITLE TEXT("94: ASSETS download with progress bar")
 	#define WORLD_XML  TEXT("world_94.xml")
 #endif
-#if DX_ENGINE_LEVEL == 96
+#if DX_ENGINE_LEVEL == 95
+	#define DEMO_TITLE TEXT("95: Day and Night")
+	#define WORLD_XML  TEXT("world_95.xml")
+#endif
+#if DX_ENGINE_LEVEL >= 96
+	#if DX_ENGINE_LEVEL == 96
 	#define DEMO_TITLE TEXT("96: Use curved real sky plane")
 	#define WORLD_XML  TEXT("world_96.xml")
-	#if DX_ENGINE_LEVEL >= 96
+	#endif
 	#define CLOUDTEXTUREFILENAME   TEXT("engine/data/scene96/cloud001.dds")
 	#define PERTURBTEXTUREFILENAME TEXT("engine/data/scene96/perturb001.dds")
-	#endif
+#endif
+#if DX_ENGINE_LEVEL == 97
+	#define DEMO_TITLE TEXT("97: The Waterfall")
+	#define WORLD_XML  TEXT("world_97.xml")
 #endif
 
 #include "stateMachine.h"
@@ -639,7 +647,7 @@
 #undef GLES2    //Android: x64|ARM64 (c++: API:26) (Packaging: API:25)
 #undef GLES3
 
-#undef OPENGL3  //Windows: 32bits
+#undef OPENGL3  //Linux64 / Windows: 32bits
 #undef OPENGL40 //Windows: 64bits or Linux: 64bits
 #endif
 

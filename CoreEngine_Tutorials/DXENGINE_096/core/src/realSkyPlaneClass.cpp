@@ -25,9 +25,7 @@
 #include "mem_leak.h"
 #include "DXmodelClass.h"
 
-#if defined USE_CURVED_REAL_SKY_PLANE && DX_ENGINE_LEVEL >= 96
 RealSkyPlaneClass realSkyPlaneClass;
-#endif
 
 RealSkyPlaneClass::RealSkyPlaneClass()
 {
@@ -180,7 +178,7 @@ bool RealSkyPlaneClass::InitializeSkyPlane(void* ctx, void* Driver, int skyPlane
 
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) {CREATE_MODELGL3_IF_NOT_EXCEPTION(SystemHandle->m_Application->model_skyPlane, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);}
 	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) {CREATE_MODELDX_IF_NOT_EXCEPTION(SystemHandle->m_Application->model_skyPlane, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);}
-	ASSERT(SystemHandle->m_Application->model_skyPlane->LoadTexture(pContext11, TEXT("sky_plane_textures"), m_driver11, SHADER_USE_CURVED_REAL_SKY_PLANE, &sky_plane_textures, &woma_skyPlane, NULL));
+	ASSERT(SystemHandle->m_Application->model_skyPlane->LoadTexture(pContext11, TEXT("sky_plane"), m_driver11, SHADER_USE_CURVED_REAL_SKY_PLANE, &sky_plane_textures, &woma_skyPlane, NULL));
 
 	return true;
 }

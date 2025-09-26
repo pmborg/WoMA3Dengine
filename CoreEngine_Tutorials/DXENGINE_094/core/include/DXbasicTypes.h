@@ -84,42 +84,6 @@ namespace DirectX {
 //#endif
 	};
 
-#if defined GENERATE_ATLAS_INTEGRATION_DDS
-#pragma pack(push, 1)
-	struct DXbillboardAtlasVertexType
-	{
-		DXbillboardAtlasVertexType() {}
-
-		DXbillboardAtlasVertexType(
-			float x, float y, float z,      // vertex position
-			float u, float v,               // quad-local UV
-			float nx, float ny, float nz,   // normal
-			UINT atlasIdx,                  // atlas index
-			float ox, float oy, float oz,   // billboard world-space origin
-			float sc,                       // uniform scale
-			float rot                       // rotation around Y in radians
-		)
-			: position(x, y, z)
-			, texCoord(u, v)
-			, normal(nx, ny, nz)
-			, atlasIndex(atlasIdx)
-			, origin(ox, oy, oz)
-			, scale(sc)
-			, rotY(rot)
-		{
-		}
-
-		DirectX::XMFLOAT3 position = {};    // POSITION
-		DirectX::XMFLOAT2 texCoord = {};    // TEXCOORD0
-		DirectX::XMFLOAT3 normal = {};      // NORMAL
-		UINT              atlasIndex = {};  // TEXCOORD1
-		DirectX::XMFLOAT3 origin = {};      // TEXCOORD2 (pivot/origin)
-		float             scale = {};       // TEXCOORD3
-		float             rotY = {};        // TEXCOORD4
-	};
-#pragma pack(pop)
-#endif
-
 	// 36: Shadow
 	// -------------------------------------------------------------------------------------------
 	struct DXShadowMapVertexType
@@ -187,6 +151,60 @@ namespace DirectX {
 		XMFLOAT3 normal;
 		XMFLOAT4 color;
 		XMFLOAT2 texCoord2;
+	};
+
+#if defined GENERATE_ATLAS_INTEGRATION_DDS
+#pragma pack(push, 1)
+	struct DXbillboardAtlasVertexType
+	{
+		DXbillboardAtlasVertexType() {}
+
+		DXbillboardAtlasVertexType(
+			float x, float y, float z,      // vertex position
+			float u, float v,               // quad-local UV
+			float nx, float ny, float nz,   // normal
+			UINT atlasIdx,                  // atlas index
+			float ox, float oy, float oz,   // billboard world-space origin
+			float sc,                       // uniform scale
+			float rot                       // rotation around Y in radians
+		)
+			: position(x, y, z)
+			, texCoord(u, v)
+			, normal(nx, ny, nz)
+			, atlasIndex(atlasIdx)
+			, origin(ox, oy, oz)
+			, scale(sc)
+			, rotY(rot)
+		{
+		}
+
+		DirectX::XMFLOAT3 position = {};    // POSITION
+		DirectX::XMFLOAT2 texCoord = {};    // TEXCOORD0
+		DirectX::XMFLOAT3 normal = {};      // NORMAL
+		UINT              atlasIndex = {};  // TEXCOORD1
+		DirectX::XMFLOAT3 origin = {};      // TEXCOORD2 (pivot/origin)
+		float             scale = {};       // TEXCOORD3
+		float             rotY = {};        // TEXCOORD4
+	};
+#pragma pack(pop)
+#endif
+
+	// 97
+	// -------------------------------------------------------------------------------------------
+	struct DXTextureTextureWaterfallType
+	{
+		DXTextureTextureWaterfallType() {}
+		DXTextureTextureWaterfallType(
+			float x, float y, float z,
+			float u, float v,
+			float r, float g, float b, float a)
+			: position(x, y, z), texCoord(u, v), color(r, g, b, a) 
+		{
+		}
+
+		XMFLOAT3 position;
+		XMFLOAT2 texCoord;
+		XMFLOAT4 color;
 	};
 
 #if DX_ENGINE_LEVEL >= 60 && defined USE_TERRAIN_TUTORIAL_CHAP_24

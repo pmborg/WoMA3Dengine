@@ -178,7 +178,7 @@ inline bool ShouldDrawUI(int monIdx) { return monIdx == 0; /*kPrimaryMon;*/ }
 		if (model) { (model)->Shutdown(); delete ((GLmodelClass*)model); model=NULL; } \
 	}
 #else
-	#define CREATE_MODELGL3_IF_NOT_EXCEPTION(model, model3D, renderShadow) {}
+	#define CREATE_MODELGL3_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {}
 #endif
 
 

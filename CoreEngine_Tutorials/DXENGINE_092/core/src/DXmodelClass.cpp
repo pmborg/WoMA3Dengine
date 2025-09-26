@@ -1120,7 +1120,6 @@ bool DXmodelClass::InitializeTextureDouble_Color_Terrain_TexMapping(/*ID3D11Devi
 	return true;
 }
 
-
 #if DX_ENGINE_LEVEL >= 60 && defined USE_TERRAIN_TUTORIAL_CHAP_24 // SHADER_Terrain_Texture_DEMO60
 bool DXmodelClass::InitializeTextureHeightMapType_24_Terrain(/*ID3D11Device*/ void* device, UINT* indices)
 {

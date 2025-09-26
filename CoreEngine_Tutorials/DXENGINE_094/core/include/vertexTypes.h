@@ -52,14 +52,18 @@ struct ModelColorVertexType
 	float x, y, z;
 	float r, g, b, a; // This will allow a dif. color per vertice
 };
+#pragma pack(pop)
 
+#pragma pack(push, 1)
 union Vector3 {
 	Vector3(float x_, float y_, float z_) { x = x_; y = y_; z = z_; }
 	struct {
 		float x, y, z;
 	};
 };
+#pragma pack(pop)
 
+#pragma pack(push, 1)
 union Vector2 {
 	Vector2(float u_, float v_) { u = u_; v = v_; }
 	struct {
@@ -105,13 +109,16 @@ struct ModelNormalBumpVertexType
 };
 #pragma pack(pop)
 
+#pragma pack(push, 1)
 struct ModelShadowMapVertexType
 	//	-------------------------------------------------------------------------------------------
 {
 	float x, y, z;
 };
+#pragma pack(pop)
 
 //	-------------------------------------------------------------------------------------------
+#pragma pack(push, 1)
 struct ModelTextureDouble_Color_TerrainType
 {
 	float x, y, z;
@@ -119,8 +126,10 @@ struct ModelTextureDouble_Color_TerrainType
 	float nx, ny, nz;
 	float r, g, b, a;
 };
+#pragma pack(pop)
 
 //	-------------------------------------------------------------------------------------------
+#pragma pack(push, 1)
 struct ModelTextureDouble_Color_TexMapping_TerrainType
 {
 	float x, y, z;		//POSITION
@@ -129,8 +138,10 @@ struct ModelTextureDouble_Color_TexMapping_TerrainType
 	float r, g, b, a;	//COLOR
 	float tu2, tv2;		//TEXCOORD1
 };
+#pragma pack(pop)
 
 #if DX_ENGINE_LEVEL >= 60 && defined USE_TERRAIN_TUTORIAL_CHAP_24
+#pragma pack(push, 1)
 struct HeightMapType_24						//vertex2 = {};
 {											//modelVertexVector2;
 	HeightMapType_24() 
@@ -174,6 +185,7 @@ struct HeightMapType_24						//vertex2 = {};
 	float tx, ty, tz;		//TANGENT
 	float bx, by, bz;		//BINORMAL
 };
+#pragma pack(pop)
 #endif
 
 #if defined GENERATE_ATLAS_INTEGRATION_DDS

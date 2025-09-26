@@ -120,6 +120,7 @@ namespace DirectX
 			AtlasRegion billboardAtlasRegions[MAX_ATLAS_REGIONS];
 		};
 #endif
+
 		// VERTEX CBUFFER:
 		struct VSFASTconstantBufferType
 		{

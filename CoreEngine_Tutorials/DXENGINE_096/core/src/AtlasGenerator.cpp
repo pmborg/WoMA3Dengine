@@ -102,8 +102,8 @@ HRESULT GenerateBillboardAtlasDDS(
 	for (UINT i = 0; i < texCount; ++i)
 	{
 		const Image* src = imgPtrs[i];
-		UINT w = src->width;
-		UINT h = src->height;
+		UINT w = (UINT)src->width;
+		UINT h = (UINT)src->height;
 
 		// place at cell (gx, gy)
 		UINT gx = i % grid;

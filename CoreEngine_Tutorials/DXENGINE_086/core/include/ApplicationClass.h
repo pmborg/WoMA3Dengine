@@ -178,7 +178,7 @@ inline bool ShouldDrawUI(int monIdx) { return monIdx == 0; /*kPrimaryMon;*/ }
 		if (model) { (model)->Shutdown(); delete ((GLmodelClass*)model); model=NULL; } \
 	}
 #else
-	#define CREATE_MODELGL3_IF_NOT_EXCEPTION(model, model3D, renderShadow) {}
+	#define CREATE_MODELGL3_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {}
 #endif
 
 
@@ -288,7 +288,6 @@ public:
 	void TerrainRender(UINT ThreadID, UINT monitorWindow, WomaDriverClass* Driver, float fadeLight, XMMATRIX* m_viewMatrix, XMMATRIX* m_projectionMatrix, void* ctx);
 	void StartMeshDemo(ID3D11DeviceContext* ctx);
 	void UpdateMeshAnimations();
-	VirtualModelClass* model_skyPlane = NULL;
 	// VARS:
 	// ----------------------------------------------------------------
 

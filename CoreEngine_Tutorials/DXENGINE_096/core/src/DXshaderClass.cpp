@@ -767,7 +767,6 @@ namespace DirectX {
 			pixelHLSL.append("PS_Main");
 			break;
 #endif
-
 		default:
 			WomaFatalExceptionW(TEXT("This Shader type is not supported yet!"));
 			break;
