@@ -39,12 +39,12 @@ public:
 
 	RealSkyPlaneClass();
 	~RealSkyPlaneClass();
-	void Render(void* pContext);
 
+	void Shutdown();
+	void Render(void* pContext);
 	bool Initialize(void* ctx, void* Driver);
 
 private:
-	void Shutdown();
 
 	bool InitializeSkyPlane(void* ctx, void* Driver, int skyPlaneResolution, float skyPlaneWidth, float skyPlaneTop, float skyPlaneBottom, int textureRepeat);
 };

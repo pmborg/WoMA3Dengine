@@ -38,6 +38,11 @@ extern MyWin Win;
 #pragma warning(push)
 #pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
 
+#if defined USE_CURVED_REAL_SKY_PLANE
+#include "realSkyPlaneClass.h"
+extern RealSkyPlaneClass realSkyPlaneClass;
+#endif
+
 #if DX_ENGINE_LEVEL >= 63 && defined USE_MINI_MAP
 void ApplicationClass::PositionUpdate(int playerId, float positionX, float positionZ)
 {
@@ -457,6 +462,10 @@ void ApplicationClass::Shutdown()
 
 #if TUTORIAL_CHAP >= 60 && defined SCENE_BILLBOARDS
 	SAFE_SHUTDOWN(m_billTreeClass);
+#endif
+
+#if defined USE_CURVED_REAL_SKY_PLANE
+	realSkyPlaneClass.Shutdown();
 #endif
 
 #if defined (SCENE_COMPOUND)//TUTORIAL_CHAP >= 55 && 

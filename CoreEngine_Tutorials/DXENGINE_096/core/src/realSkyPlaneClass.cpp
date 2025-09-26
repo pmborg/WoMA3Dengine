@@ -36,7 +36,6 @@ RealSkyPlaneClass::RealSkyPlaneClass()
 
 RealSkyPlaneClass::~RealSkyPlaneClass()
 {
-	Shutdown();
 	CLASSDELETE();
 }
 
