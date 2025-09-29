@@ -145,11 +145,11 @@ Try to Change the driver on the fly without the need of close and open the Appli
 <hr>
 
 - <b>DX97: The Waterfall (soon)</b><br>
-	- The Water waterfall
-	- The Smoke of waterfall
-	- The Sound of waterfall
-	- Dungeon gate
-	- The Sound of Ocean Waves
+	- The water Waterfall
+	- The smoke of Waterfall
+	- The sound of Waterfall
+	- The Dungeon Gate
+	- The Sound of ocean waves
 
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_097.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_097.png)	
 
