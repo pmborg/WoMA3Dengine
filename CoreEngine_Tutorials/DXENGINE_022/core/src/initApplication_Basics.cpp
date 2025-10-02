@@ -500,7 +500,7 @@ void ApplicationClass::InitTerrainandWaterSurfaces(void* pContext, WomaDriverCla
 
 }
 
-void ApplicationClass::InitObjInstances(void* pContext, WomaDriverClass* Driver)
+void ApplicationClass::AddObjsWithInstancesToXML()
 {
 	//-----------------------------------------------------------------------------------------------------------------
 	// Add Instanced Billboards to World.xml
@@ -517,12 +517,12 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	womalogauto(TEXT("----------------------------------------------------------------------------------------\n"));
 	womalogauto(TEXT("[%d]: WOMA_APPLICATION_Initialize3D()\n"), gettid());
 
-	// Log xml objects:
+	// Log XML objects:
 
 	InitLightandDemos(pContext, Driver);
 	InitMainSky(pContext, Driver);
 	InitTerrainandWaterSurfaces(pContext, Driver);
-	InitObjInstances(pContext, Driver);
+
 
 	//=================================================================================================================
 	// Init MAIN 3D Scene       ///////////////////////////////////////////////////////////////////////////////////////
@@ -540,6 +540,8 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	}
 	womalogauto("Number of billboard objects added %d\n", SystemHandle->xml_loader.theWorldXML.size()- world_xml_objs);
 #endif
+
+
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// LOAD PROGRESS BAR

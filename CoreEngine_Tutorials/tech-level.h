@@ -297,10 +297,10 @@
         #undef USE_WIN32_SOUND_MANAGER
         #undef USE_WIN32_PLAY_MUSIC
         #undef INTRO_DEMO
-        #define SUN_LIGHT_DEMO_ANIMATION true //back
-        #define USE_SCENE_MANAGER       //30-
-        #define USE_FRUSTRUM            //30-
-        #undef DX12                     //to be added later
+        #define SUN_LIGHT_DEMO_ANIMATION true	//back
+        #define USE_SCENE_MANAGER				//30-
+        #define USE_FRUSTUM						//30-
+        #undef DX12								//to be added later
     #endif
 
     #if DX_ENGINE_LEVEL >= 31
@@ -497,7 +497,7 @@
             #define USE_ASSIMP_DXLIB    //81
         #endif
     #endif
-//-------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------------------------------------
 	//MAIN_RENDER:
 	//-------------------------------------------------------------------------------------------------------
 	#define MAIN_RENDER_TITLE           //24
@@ -523,7 +523,7 @@
         #define USE_ASSIMP_LATEST
     #endif
     #if DX_ENGINE_LEVEL >= 83
-        //#define SAVE_WALK // Default: off - Updated billboard shader & SAVE_WALK FILME
+        //#define SAVE_WALK // Default: off - Updated billboard SHADER & SAVE_WALK FILME
     #endif
     #if DX_ENGINE_LEVEL >= 84
         #define LOAD_WALK
@@ -570,12 +570,12 @@
 #endif
     
 #if DX_ENGINE_LEVEL >= 92
-	#define USE_FASTER_BILL_SHADER
+	#define USE_FASTER_BILL_SHADER			//Faster bills: v1
 #endif
 
 #if DX_ENGINE_LEVEL >= 93
-	#define  NO3DBILL
-	#define GENERATE_ATLAS_INTEGRATION_DDS
+	#define  NO3DBILL						// No 3D Trees
+	#define GENERATE_ATLAS_INTEGRATION_DDS  // Faster bills: v2
 #endif
 
 #if DX_ENGINE_LEVEL >= 94
@@ -591,6 +591,20 @@
 	#define USE_CURVED_REAL_SKY_PLANE
 #endif						 
 
+#if DX_ENGINE_LEVEL >= 97
+	#define USE_WATER_FALL
+#endif
+
+#if DX_ENGINE_LEVEL >= 98
+	#define USE_DAY_AND_NIGHT
+	#define USE_INSTANCES_FOR_LAMP
+	#define USE_INSTANCES_FOR_LAMP_ROWS  2
+	#define USE_INSTANCES_FOR_LAMP_LINES 13
+#endif
+
+
+
+		
 	//#define USE_MULTI_MONITOR
 
 #endif

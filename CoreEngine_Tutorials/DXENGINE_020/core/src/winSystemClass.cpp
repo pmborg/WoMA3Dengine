@@ -98,7 +98,7 @@ void WinSystemClass::ProcessFrame()
 #endif
 
 	{
-        m_Application->dayLightFade = m_Application->ProcessInputUpdate();	//CalculateViewMatrix (for Sky) and check collision(s):
+        m_Application->dayLightFade = m_Application->ProcessInputUpdate();	//CalculateViewMatrix (for Sky) and check collision(s):part I
 
 		if (m_Driver->RenderfirstTime)
 		{
@@ -240,7 +240,8 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
     IF_FAILED_RETURN_FALSE(DXsystemHandle->PlayIntroMovie(WOMA::LoadFile(VIDEO_INTRO)));	// VIDEO DEMO
 #endif
 
-	ID3D11DeviceContext* pContext = ((DX11Class*)m_Driver)->GetDeviceContext();
+	void* pContext = getvoidcontext();
+	ASSERT_DEBUG(pContext);
 	IF_NOT_RETURN_FALSE(SystemClass::LoadAllGraphicAssets(pContext));			// Call: m_Application->Initialize(...)
 
 	//---------------------------------------------------------------------------------------------------

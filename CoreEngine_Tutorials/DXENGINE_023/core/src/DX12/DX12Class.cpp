@@ -95,7 +95,7 @@ namespace DirectX {
 		DX12viewDesc.Format = BUFFER_COLOR_FORMAT;
 		DX12viewDesc.Texture2D.MipLevels = 1;
 		DX12viewDesc.Texture2D.MostDetailedMip = 0;
-#if defined USE_FRUSTRUM
+#if defined USE_FRUSTUM
 		frustum = NULL;
 #endif
 
@@ -152,7 +152,7 @@ namespace DirectX {
 			for (UINT i = 0; i < BufferCount; ++i)
 				m_renderTargets[i].Reset();
 
-#if defined USE_FRUSTRUM
+#if defined USE_FRUSTUM
 			SAFE_DELETE(frustum);
 #endif
 #if defined USE_DSV
@@ -662,7 +662,7 @@ namespace DirectX {
 #endif
 		//-----------------------------------------------------------------
 
-#if defined USE_FRUSTRUM
+#if defined USE_FRUSTUM
 		frustum = NEW DXfrustumClass;	// Create Frustum
 #endif
 

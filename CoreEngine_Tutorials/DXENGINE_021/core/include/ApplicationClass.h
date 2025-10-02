@@ -221,7 +221,7 @@ public:
 	bool InitLightandDemos(void* pContext, WomaDriverClass* Driver);
 	void InitMainSky(void* pContext, WomaDriverClass* Driver);
 	void InitTerrainandWaterSurfaces(void* pContext, WomaDriverClass* Driver);
-	void InitObjInstances(void* pContext, WomaDriverClass* Driver);
+	void AddObjsWithInstancesToXML();
 	virtual bool WOMA_APPLICATION_Initialize3D(void * pContext, WomaDriverClass* Driver); // APP_Load
 #if DX_ENGINE_LEVEL >= 23 || defined USE_VIEW2D_SPRITES
 	void AppPosRender(UINT monitorWindow, float dayLightFade, void* mainCtx);																// POS-RENDER - 2D: Render 
@@ -407,6 +407,8 @@ public:
 };
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+extern void* getvoidcontext();
 
 #endif
 

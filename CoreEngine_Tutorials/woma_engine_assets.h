@@ -608,10 +608,44 @@
 	#define CLOUDTEXTUREFILENAME   TEXT("engine/data/scene96/cloud001.dds")
 	#define PERTURBTEXTUREFILENAME TEXT("engine/data/scene96/perturb001.dds")
 #endif
+#if DX_ENGINE_LEVEL >= 97
 #if DX_ENGINE_LEVEL == 97
 	#define DEMO_TITLE TEXT("97: The Waterfall")
 	#define WORLD_XML  TEXT("world_97.xml")
 #endif
+
+#define WATERFALLTEXTUREWATERFILENAME TEXT("engine/data/scene97/waterfall_RGBA_originalv2.png")
+#define WATERFALLTEXTURENOISEFILENAME TEXT("engine/data/scene97/noiseTex.png")
+#define WATERFALLTEXTUREFOAMFILENAME  TEXT("engine/data/scene97/foamTex.png")
+#define SMOKETEXTUREFILENAME  TEXT("engine/data/scene97/smoke.png")
+#endif
+
+#if DX_ENGINE_LEVEL >= 98
+  #if DX_ENGINE_LEVEL == 98
+	#define DEMO_TITLE TEXT("98: Day and Night")
+	#define WORLD_XML  TEXT("world_98.xml")
+  #endif
+  #define LAMP_GS TEXT("engine/data/scene98/oldWoodLamp.obj")
+#endif
+
+#if DX_ENGINE_LEVEL == 99
+	#define DEMO_TITLE TEXT("99: ")
+	#define WORLD_XML  TEXT("world_99.xml")
+#endif
+
+#if DX_ENGINE_LEVEL == 100
+	#define DEMO_TITLE TEXT("100: ")
+	#define WORLD_XML  TEXT("world_100.xml")
+#endif
+
+
+
+
+
+
+
+
+
 
 #include "stateMachine.h"
 

@@ -95,7 +95,7 @@ void QuadTree::CreateTreeNode(NodeType* node, float positionX, float positionZ, 
 	node->positionZ = positionZ;
 	node->width = width;
 
-#if defined yes_please_debug_me && defined _DEBUG
+#if true && defined _DEBUG
 	womalog("SceneManager::QuadTree::CreateTreeNode(): X: %f Y: %f width: %f\n", positionX, positionZ, width);
 #endif
 

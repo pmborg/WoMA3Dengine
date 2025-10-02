@@ -150,10 +150,13 @@ static const D3D11_INPUT_ELEMENT_DESC lightNormalInstancedPolygonLayout11[] =
 //-------------------------------------------------------------------------------------------------
 static const D3D11_INPUT_ELEMENT_DESC lightGSNormalPolygonLayout11[] =
 {
+	// ----------- Vertex Buffer (slot 0) -----------
     { "POSITION", 0,DXGI_FORMAT_R32G32B32_FLOAT,     0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
     { "TEXCOORD", 0,DXGI_FORMAT_R32G32_FLOAT,	     0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
     { "NORMAL", 0,	DXGI_FORMAT_R32G32B32_FLOAT,     0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	// ----------- Instance Buffer (slot 1) -----------
     { "INSTANCEPOS", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 0,  D3D11_INPUT_PER_INSTANCE_DATA, 1 }, //Instance Position
+	{ "TEXCOORD",    1, DXGI_FORMAT_R32_FLOAT,       1, D3D11_APPEND_ALIGNED_ELEMENT,   D3D11_INPUT_PER_INSTANCE_DATA, 1 }, // rotY
     //{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT,     0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
     //{ "BINORMAL", 0,DXGI_FORMAT_R32G32B32_FLOAT,     0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
@@ -292,7 +295,7 @@ namespace DirectX {
 		// BLOCK5:
 		hasAlfaColor = false;
 		alfaColor = 1;
-		PSfade = true;	// Time since Beg.
+		PSfade = 1;		// Time since Beg.
 #if defined INTRO_DEMO
 		frameTime = 0;	//29: Fadeout / Fadein
 #endif
@@ -1527,7 +1530,7 @@ namespace DirectX {
 	// ----------------------------------------------------------------------------------------
 	void DXshaderClass::SetShaderParameters(UINT pass, void* Device_Context,
 		XMMATRIX* worldMatrix, XMMATRIX* viewMatrix, XMMATRIX* projectionMatrix,
-		XMMATRIX* lightViewMatrix, XMMATRIX* ShadowProjectionMatrix)
+		XMMATRIX* lightViewMatrix, XMMATRIX* ShadowProjectionMatrix, float m_particleAlpha)
 		// ----------------------------------------------------------------------------------------
 	{
 		HRESULT result;
@@ -1630,7 +1633,6 @@ namespace DirectX {
 			dataVSptr->vsframeTime = shaderfireframeTime;
 			dataVSptr->scrollSpeeds = scrollSpeeds;
 			dataVSptr->scales = scales;
-			//dataVSptr->padding6 = 0.0f;
 		}
 #endif
 
@@ -1797,7 +1799,7 @@ namespace DirectX {
 			if (castShadow)
 				deviceContext->PSSetSamplers(2, 1, &m_sampleStateClamp11); // 2, 1 or 0, 2
 
-			// VS: Set CODE to Run on Shaders:
+			// VS: Set CODE to Run on SHADERS:
 			deviceContext->VSSetShader(m_vertexShader11, NULL, 0);		// Set the vertex code that will be used to process vertices
 
             if (m_Driver->RenderfirstTime) 
@@ -1809,7 +1811,7 @@ namespace DirectX {
 				deviceContext->GSSetShader(NULL, NULL, 0);
 			}
 
-            // PS: Set CODE to Run on Shaders:
+            // PS: Set CODE to Run on SHADERS:
             deviceContext->PSSetShader(m_pixelShader11, NULL, 0);		// Set the pixel code that will be used to process pixels
 
 #if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES // Normal Bump + Instancing 

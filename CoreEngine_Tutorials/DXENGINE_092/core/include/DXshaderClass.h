@@ -92,21 +92,24 @@ namespace DirectX
 	private:
 		// NOTE: DONT USE "bool" USE "BOOL"
 
-		// VERTEX CBUFFER:
+	#if defined USE_FASTER_BILL_SHADER
+		// 92: VERTEX CBUFFER:
 		struct VSFASTconstantBufferType
 		{
 			// BLOCK: VS1
 			XMMATRIX world;           // [64]: world
 			XMMATRIX WVP;             // [64]: world * view * projection matrix
 
-			//FIRE:
 			float		vsframeTime = 0;
 			XMFLOAT3	scrollSpeeds;
 			XMFLOAT3	scales;
 			bool		isAnimatedBill;
+			float		fade;
+			XMFLOAT3	pad;
 		};
+	#endif
 
-		// VERTEX CBUFFER:
+		// 21: VERTEX CBUFFER:
 		struct VSconstantBufferType
 		{
 			// BLOCK: VS1
@@ -159,7 +162,7 @@ namespace DirectX
 			bool		isAnimatedBill;
 		};
 
-		// PIXEL CBUFFER:
+		// 22: PIXEL CBUFFER:
 		struct PSconstantBufferType
 		{
 			// BLOCK1:
@@ -221,7 +224,7 @@ namespace DirectX
 		void Render(UINT pass,void*, int, XMMATRIX*, XMMATRIX*, XMMATRIX*);
 		void SetShaderParameters(UINT pass, void* deviceContext,
 			XMMATRIX* worldMatrix, XMMATRIX* viewMatrix, XMMATRIX* projectionMatrix,
-			XMMATRIX* lightViewMatrix = NULL, XMMATRIX* ShadowProjectionMatrix = NULL);
+			XMMATRIX* lightViewMatrix = NULL, XMMATRIX* ShadowProjectionMatrix = NULL, float m_particleAlpha = 0);
 		void SetFASTShaderParameters(UINT pass, void* deviceContext,
 			XMMATRIX* worldMatrix, XMMATRIX* viewMatrix, XMMATRIX* projectionMatrix);
 		void RenderShader(UINT pass, void*, int texture_index, int, int start = 0);
@@ -318,7 +321,6 @@ namespace DirectX
 		//float		vsPAD4;				// Future
 
 		//VS FIRE:
-//#if TUTORIAL_CHAP >= 62 // FIRE
 		//VS:
 		float shaderfireframeTime = 0;
 		XMFLOAT3 scrollSpeeds, scales;

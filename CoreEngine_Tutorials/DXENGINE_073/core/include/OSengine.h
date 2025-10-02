@@ -264,11 +264,14 @@ namespace WOMA
 #endif
 }
 
+#if DX_ENGINE_LEVEL >= 28
+extern bool g_GOD_MODE;
+#endif
+
 #if CORE_ENGINE_LEVEL >= 1 && !defined NewWomaEngine
 extern int Command;
 
 extern TCHAR* DEMO_NAME[];
-extern bool g_GOD_MODE;
 extern TCHAR DEMO_NAME_SHOW[MAX_STR_LEN];
 
 #if CORE_ENGINE_LEVEL >= 4
@@ -367,4 +370,9 @@ extern STRING LOAD_ASSET_SAVE_TO_CACHE(TCHAR* XMLFILE);
 extern bool cpu_supports_avx512f();
 #endif
 
+#if defined WINDOWS_PLATFORM && DX_ENGINE_LEVEL < 28
+#define g_GOD_MODE false
+#endif
+
 extern bool StartsWithDotDotSlash(const STRING& fileNamePath);
+

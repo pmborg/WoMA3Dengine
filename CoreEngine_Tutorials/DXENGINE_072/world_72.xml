@@ -17,7 +17,7 @@
 
   <object id="0" depend="0" instances="" fromPage="72" toPage="0" scale="0.25"  posX="40"    posZ="25"   translateY="0.5f"   rotX="" rotY="PI"  rotZ=""      shader="" castShadow="" renderShadows="" filename="engine/data/scene30/spaceCompound.obj"            soundRange=""     audio="" />
   <object id="0" depend="0" instances="" fromPage="72" toPage="0" scale="0.75f" posX="44"    posZ="88"   translateY="9"      rotX="" rotY=""    rotZ=""      shader="" castShadow="" renderShadows="" filename="engine/data/scene64DEMO/windmill/mill_mainV2.obj" soundRange=""     audio="" />
-  <object id="0" depend="0" instances="" fromPage="72" toPage="0" scale="0.75f" posX="44"    posZ="91.5f"   translateY="22.5f"     rotX="" rotY=""    rotZ="-1000" shader="" castShadow="" renderShadows="" filename="engine/data/scene64DEMO/windmill/mill_pas.obj"    soundRange=""     audio="" />
+  <object id="0" depend="0" instances="" fromPage="72" toPage="0" scale="0.75f" posX="44"    posZ="91"   translateY="19"     rotX="" rotY=""    rotZ="-1000" shader="" castShadow="" renderShadows="" filename="engine/data/scene64DEMO/windmill/mill_pas.obj"    soundRange=""     audio="" />
   <object id="0" depend="0" instances="" fromPage="72" toPage="0" scale="0.05f" posX="112"   posZ="228"  translateY="0.45f"  rotX="" rotY=""    rotZ=""      shader="" castShadow="" renderShadows="" filename="engine/data/scene72Fire/fire_rocks.obj"           soundRange="1.0f" audio="engine/audio/fogo_30322_pcaeldries_fireburning-v2.wav" />
 
 </woma>

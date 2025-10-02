@@ -231,7 +231,7 @@ public:
 	bool InitLightandDemos(void* pContext, WomaDriverClass* Driver);
 	void InitMainSky(void* pContext, WomaDriverClass* Driver);
 	void InitTerrainandWaterSurfaces(void* pContext, WomaDriverClass* Driver);
-	void InitObjInstances(void* pContext, WomaDriverClass* Driver);
+	void AddObjsWithInstancesToXML();
 	virtual bool WOMA_APPLICATION_Initialize3D(void * pContext, WomaDriverClass* Driver); // APP_Load
 	void AppPosRender(UINT monitorWindow, float dayLightFade, void* mainCtx);																// POS-RENDER - 2D: Render 
 	std::vector<ModelColorVertexType> MyLightVertexVector;
@@ -468,6 +468,8 @@ public:
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #define SunDistance 512
+
+extern void* getvoidcontext();
 
 #endif
 

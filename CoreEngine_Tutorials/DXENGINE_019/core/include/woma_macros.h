@@ -76,6 +76,8 @@
 	#define IF_FAILED_RETURN_FALSE(x)	{ if( FAILED(x) ) { return false; } }		// Used with "HRESULT" IF FAILED
 #endif
 
+#define IF_FAILED_THROW_EXCEPTION(x) { if( FAILED(x) ) throw woma_exception("Exception!", __FILE__, __FUNCTION__, __LINE__); }
+
 #define IF_NOT_RETURN_FALSE(x)			{ if( (!(x)) ) { return false; } }			// Used with "bool" IF NOT
 
 #if _DEBUG

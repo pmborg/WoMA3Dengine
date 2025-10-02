@@ -488,7 +488,9 @@ bool XMLloader::loadWorld (TCHAR* file_) // Note: Have to be char
 
                         IF_NOT_RETURN_FALSE(object3d.audio->PlayWaveFile(object3d.posX, 1, object3d.posZ, /*loop?*/true, object3d.soundRange));
                     }
-                }
+				}
+				else
+					object3d.audio = NULL;
 	#endif
 				theWorldXML.push_back(object3d); // add a new object to our list
 				element = element->NextSiblingElement();

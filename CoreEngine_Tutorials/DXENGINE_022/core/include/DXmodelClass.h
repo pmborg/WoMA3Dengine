@@ -52,6 +52,8 @@ using namespace DirectX;
 #include "virtualModelClass.h"
 #include "DXbasicTypes.h"
 
+
+
 namespace DirectX 
 {
 ////////////////////////////////////////////////////////////////////////////////

@@ -157,7 +157,7 @@ DX11Class::DX11Class()
 	#endif
 
 
-	#if defined USE_FRUSTRUM
+	#if defined USE_FRUSTUM
 		frustum				= NULL;
 	#endif
 
@@ -263,7 +263,7 @@ for (UINT i = 0; i < 3; i++)
 		SAFE_RELEASE (allTexturePointerArray[i]);	// Free All Textures from our Texture manager
 #endif
 
-#if defined USE_FRUSTRUM
+#if defined USE_FRUSTUM
 	SAFE_DELETE(frustum);
 #endif
 
@@ -488,7 +488,7 @@ bool DirectX::DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int scree
 	SetRasterizerState(m_deviceContext, CULL_NONE, FILL_SOLID);	//Set Default
 #endif
 
-  #if defined USE_FRUSTRUM
+  #if defined USE_FRUSTUM
 	if (frustum)
 		SAFE_DELETE(frustum);
 	frustum = NEW DXfrustumClass;	// Create Frustum

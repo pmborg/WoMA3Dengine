@@ -73,23 +73,23 @@ void BillClass::Shutdown()
 std::vector<Tree> m_Trees;
 
 ID3D11ShaderResourceView* billFileLoaded[] =
-{
-	NULL,//0
-	NULL,//1
-	NULL,//2
-	NULL,//3
-	NULL,//4
-	NULL,//5
+{			//Type:
+	NULL,	//0 bush
+	NULL,	//1 bush
+	NULL,	//2 bush
+	NULL,	//3 tree
+	NULL,	//4 tree
+	NULL,	//5 tree		
+							
+	NULL,	//6	 flower	
+	NULL,	//7	 flower	
+	NULL,	//8	 flower	
+	NULL,	//9  flower	
+	NULL,	//10 flower	
 
-	NULL,//6
-	NULL,//7
-	NULL,//8
-	NULL,//9 
-	NULL,//10
+	NULL,	//11 animated grass 
 
-	NULL,//11
-
-	NULL,//12
+	NULL,	//12 cross bush
 };
 TCHAR billFileName[][MAX_STR_LEN] =
 {

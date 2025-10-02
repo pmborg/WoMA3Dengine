@@ -21,21 +21,22 @@
 struct VSIn
 {
 	float3 position         : POSITION;				//21
-	float2 texCoords        : TEXCOORD; 			//22
+	float2 texCoords        : TEXCOORD0; 			//22
 	float3 normal	        : NORMAL;				//23
     float3 instancePosition : INSTANCEPOS;
+    float  rotY             : TEXCOORD1;
 };
 
 //GEOMETRY:
 struct GSIn
 {
-    float4 position         : SV_POSITION; // 21
+    float4 position         : SV_POSITION;  // 21
 	//float4 worldPos 		: POSITION;
-    float2 texCoords        : TEXCOORD0; // 22
-    float3 normal           : NORMAL; // 23 & 47: LIGHT+BUMP
+    float2 texCoords        : TEXCOORD0;    // 22
+    float3 normal           : NORMAL;       // 23 & 47: LIGHT+BUMP
 	//float3 tangent 		: TANGENT;
 #if defined PS_USE_SPECULAR
-    float3 viewDirection    : TEXCOORD1; // 44 Specular: SHADER_TEXTURE_LIGHT_INSTANCED
+    float3 viewDirection    : TEXCOORD1;    // 44 Specular: SHADER_TEXTURE_LIGHT_INSTANCED
 #endif
     float4 cameraPosition   : WS; // FOG & SPECULAR
 };
@@ -72,7 +73,7 @@ SamplerState SampleType; //: register(s0);		// 3D (default) WRAP
 #include "light.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
-// Vertex Shader
+// VERTEX SHADER
 ////////////////////////////////////////////////////////////////////////////////
 GSIn VS_Main(VSIn input, uint instanceID : SV_InstanceID)
 {
@@ -91,10 +92,15 @@ GSIn VS_Main(VSIn input, uint instanceID : SV_InstanceID)
 		{ 0, 0, 1, 0 },		// sin(VSrotY),     0.0f,   cos(VSrotY),  0.0f,
 		{ 0, 0, 0, 1 }		// 0.0f,            0.0f,   0.0f,         1.0f
 	};
-	rotationAroundY[0].x = cos(VSrotY);
-	rotationAroundY[0].z = -sin(VSrotY);
-	rotationAroundY[2].x = sin(VSrotY);
-	rotationAroundY[2].z = cos(VSrotY);
+   
+    float rY = VSrotY;
+    if (input.rotY != 0)
+        rY = input.rotY;
+    
+    rotationAroundY[0].x =  cos(rY);
+	rotationAroundY[0].z = -sin(rY);
+	rotationAroundY[2].x =  sin(rY);
+    rotationAroundY[2].z =  cos(rY);
     
 	//[1st] ROTATE the instance
 	float4 position = float4(input.position, 1);
@@ -188,7 +194,7 @@ void GS_Main(triangle GSIn input[3], inout TriangleStream<PSIn> triStream)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Pixel Shader
+// PIXEL SHADER
 ////////////////////////////////////////////////////////////////////////////////
 float4 PS_Main(GSIn input) : SV_TARGET
 {
@@ -250,6 +256,9 @@ float4 PS_Main(GSIn input) : SV_TARGET
 #endif
     
     //return float4(1,1,1,1);
+    
+    if (fade < 1)
+        textureColor.rgb *= fade;
     return textureColor;
 }
     

@@ -464,8 +464,8 @@ void SystemClass::CalculateCameraViewAndFrustum()
 {
 	// SET CAMERA (for this monitor): Prepare to Take a Shot: Generate the view matrix based on the camera's position.
 
-	// CONSTRUCT: FRUSTRUM
-#if defined USE_FRUSTRUM
+	// CONSTRUCT: FRUSTUM
+#if defined USE_FRUSTUM
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 		m_Driver->frustum->ConstructFrustum(SystemHandle->AppSettings->SCREEN_DEPTH / 2.5f,
@@ -597,13 +597,13 @@ bool SystemClass::SystemCheck()
 	WOMA::GetLangStringFromLangId(WOMA::settings.id);
 #endif
 
-	// [10] Check Endian = LITTLE_ENDIAN or BIG_ENDIAN  (Used in some libs)
+	// [10] Check ENDIAN = LITTLE_ENDIAN or BIG_ENDIAN  (Used in some libs)
 	// -------------------------------------------------------------------------------------------
 	WOMA::settings.Endian = WOMA::endian();
 	if (WOMA::settings.Endian == LITTLE_ENDIAN)
-		womalogauto(TEXT("The machine is Little Endian\n"));	//8008, 8080, 8085, 8086, ...
+		womalogauto(TEXT("The machine is Little ENDIAN\n"));	//8008, 8080, 8085, 8086, ...
 	else
-		womalogauto(TEXT("The machine is Big Endian\n"));		//Motorola 68000
+		womalogauto(TEXT("The machine is Big ENDIAN\n"));		//Motorola 68000
 
 	womalogauto(TEXT("\n"));
 

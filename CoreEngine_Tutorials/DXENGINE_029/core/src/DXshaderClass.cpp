@@ -216,7 +216,7 @@ namespace DirectX {
 		// BLOCK5:
 		hasAlfaColor = false;
 		alfaColor = 1;
-		PSfade = true;	// Time since Beg.
+		PSfade = 1;		// Time since Beg.
 #if defined INTRO_DEMO
 		frameTime = 0;	//29: Fadeout / Fadein
 #endif
@@ -1289,7 +1289,7 @@ namespace DirectX {
 	// ----------------------------------------------------------------------------------------
 	void DXshaderClass::SetShaderParameters(UINT pass, void* Device_Context,
 		XMMATRIX* worldMatrix, XMMATRIX* viewMatrix, XMMATRIX* projectionMatrix,
-		XMMATRIX* lightViewMatrix, XMMATRIX* ShadowProjectionMatrix)
+		XMMATRIX* lightViewMatrix, XMMATRIX* ShadowProjectionMatrix, float m_particleAlpha)
 		// ----------------------------------------------------------------------------------------
 	{
 		HRESULT result;
@@ -1372,7 +1372,6 @@ namespace DirectX {
 			dataVSptr->vsframeTime = shaderfireframeTime;
 			dataVSptr->scrollSpeeds = scrollSpeeds;
 			dataVSptr->scales = scales;
-			//dataVSptr->padding6 = 0.0f;
 		}
 #endif
 
@@ -1530,7 +1529,7 @@ namespace DirectX {
 			}
 #endif
 
-			// VS: Set CODE to Run on Shaders:
+			// VS: Set CODE to Run on SHADERS:
 			deviceContext->VSSetShader(m_vertexShader11, NULL, 0);		// Set the vertex code that will be used to process vertices
 
             if (m_Driver->RenderfirstTime) 
@@ -1542,7 +1541,7 @@ namespace DirectX {
 				deviceContext->GSSetShader(NULL, NULL, 0);
 			}
 
-            // PS: Set CODE to Run on Shaders:
+            // PS: Set CODE to Run on SHADERS:
             deviceContext->PSSetShader(m_pixelShader11, NULL, 0);		// Set the pixel code that will be used to process pixels
 
 			{

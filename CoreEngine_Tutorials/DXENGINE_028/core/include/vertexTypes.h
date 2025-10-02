@@ -56,15 +56,20 @@ struct ModelColorVertexType
 
 #pragma pack(push, 1)
 union Vector3 {
+	Vector3() { x = 0; y = 0; z = 0; }
 	Vector3(float x_, float y_, float z_) { x = x_; y = y_; z = z_; }
 	struct {
 		float x, y, z;
 	};
 };
 #pragma pack(pop)
+extern Vector3 operator+(const Vector3 vec, const Vector3& vec1);
+extern Vector3 operator-(const Vector3 vec, const Vector3& vec1);
+extern Vector3 operator*(const Vector3& vec, const float scale);
 
 #pragma pack(push, 1)
 union Vector2 {
+	Vector2() { u = 0; v = 0; }
 	Vector2(float u_, float v_) { u = u_; v = v_; }
 	struct {
 		float u, v;
@@ -96,6 +101,7 @@ struct ModelTextureLightVertexType
 	float nx, ny, nz;
 };
 #pragma pack(pop)
+
 
 struct SentenceType
 {

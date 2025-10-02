@@ -686,7 +686,8 @@ bool ApplicationClass::Initialize(void* pContext, WomaDriverClass* Driver)
 	Driver->Finalize(); //Specially for DX12 (Finish setup just before start rendering...)
 #endif
 
-	if (WOMA::game_state == GAME_STOP) return false;
+	if (WOMA::game_state == GAME_STOP) 
+		return false;
 
 	return true; //go-go-go Start Rendering! :)
 }

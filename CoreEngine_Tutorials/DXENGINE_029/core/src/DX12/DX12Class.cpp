@@ -98,7 +98,7 @@ namespace DirectX {
 #if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28
 		DXsystemHandle->m_CameraSKY = NULL;
 #endif
-#if defined USE_FRUSTRUM
+#if defined USE_FRUSTUM
 		frustum = NULL;
 #endif
 
@@ -155,7 +155,7 @@ namespace DirectX {
 			for (UINT i = 0; i < BufferCount; ++i)
 				m_renderTargets[i].Reset();
 
-#if defined USE_FRUSTRUM
+#if defined USE_FRUSTUM
 			SAFE_DELETE(frustum);
 #endif
 #if defined USE_DSV
@@ -665,7 +665,7 @@ namespace DirectX {
 #endif
 		//-----------------------------------------------------------------
 
-#if defined USE_FRUSTRUM
+#if defined USE_FRUSTUM
 		frustum = NEW DXfrustumClass;	// Create Frustum
 #endif
 

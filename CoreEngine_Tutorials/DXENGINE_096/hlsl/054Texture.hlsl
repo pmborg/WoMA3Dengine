@@ -7,6 +7,7 @@
 *	code by : Pedro Borges - pmborg@yahoo.com
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
+*   Water Waves
 **********************************************************************************************/
 //WomaIntegrityCheck = 1234525217;
 
@@ -52,7 +53,7 @@ float rand_1_05(in float2 uv)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Vertex Shader
+// VERTEX SHADER
 ////////////////////////////////////////////////////////////////////////////////
 PSIn VS_Main(VSIn input)
 {
@@ -141,5 +142,7 @@ float4 PS_Main(PSIn input) : SV_TARGET
         textureColor.a = 1;
     }
     
+    if (fade < 1)
+        textureColor.rgb *= fade;
     return textureColor;
 }

@@ -1129,6 +1129,8 @@ SKIP:
 	if (WOMA::game_state == GAME_STOP)
 		return true; // Stop the loading immediately
 
+	((DXmodelClass*)dxmodelClass)->m_instanceCount = instanceCount;
+
 	return true;
 }
 
@@ -1352,8 +1354,11 @@ bool ModelClass::CreateObject(	void* pContext, void* XmodelClass, TCHAR* objectN
 	else
 		//SHADER_TEXTURE_LIGHT
 		//SHADER_TEXTURE_LIGHT_RENDERSHADOW
-		if ((obj3d.hasNorm || shader_type == SHADER_TEXTURE_LIGHT || shader_type == SHADER_BILLBOARD_ATLAS_FAST) && shader_type != SHADER_FIRE)
+		if ((obj3d.hasNorm || shader_type == SHADER_TEXTURE_LIGHT || shader_type == SHADER_BILLBOARD_ATLAS_FAST) && shader_type != SHADER_FIRE || shader_type == SHADER_TEXTURE_GS_INSTANCED)
 		{
+			//if (shader_type == SHADER_TEXTURE_GS_INSTANCED)
+			//	Sleep(1); //AQUI
+
 		#if defined GENERATE_ATLAS_INTEGRATION_DDS
 			if (shader_type == SHADER_BILLBOARD_ATLAS_FAST)  // NEW BILLBOARD ATLAS PATH
 			{
@@ -1387,7 +1392,6 @@ bool ModelClass::CreateObject(	void* pContext, void* XmodelClass, TCHAR* objectN
 					ASSERT_DEBUG(type < billboardAtlasRegions.size());
 
 					// Fetch atlas UV mapping from billboardAtlasRegions
-					//const AtlasRegion& region = billboardAtlasRegions[type];
 					tempVert.atlasIndex = type;
 
 					// === NEW FIELDS for per-billboard transform ===

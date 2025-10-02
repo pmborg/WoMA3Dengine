@@ -1124,6 +1124,8 @@ SKIP:
 	if (WOMA::game_state == GAME_STOP)
 		return true; // Stop the loading immediately
 
+	((DXmodelClass*)dxmodelClass)->m_instanceCount = instanceCount;
+
 	return true;
 }
 
@@ -1238,8 +1240,11 @@ bool ModelClass::CreateObject(	void* pContext, void* XmodelClass, TCHAR* objectN
 	//SHADER_NORMAL_BUMP?
 		//SHADER_TEXTURE_LIGHT
 		//SHADER_TEXTURE_LIGHT_RENDERSHADOW
-		if ((obj3d.hasNorm || shader_type == SHADER_TEXTURE_LIGHT || shader_type == SHADER_BILLBOARD_ATLAS_FAST) && shader_type != SHADER_FIRE)
+		if ((obj3d.hasNorm || shader_type == SHADER_TEXTURE_LIGHT || shader_type == SHADER_BILLBOARD_ATLAS_FAST) && shader_type != SHADER_FIRE || shader_type == SHADER_TEXTURE_GS_INSTANCED)
 		{
+			//if (shader_type == SHADER_TEXTURE_GS_INSTANCED)
+			//	Sleep(1); //AQUI
+
 			{
 			std::vector<ModelTextureLightVertexType> modelTextureLightVertex;
 			ModelTextureLightVertexType tempVert;

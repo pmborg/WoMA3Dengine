@@ -53,7 +53,7 @@
 	#define SUPPORT_TGA
 #endif
 
-#if defined USE_FRUSTRUM
+#if defined USE_FRUSTUM // frustum
 	#if defined DX11 || defined DX9 || defined DX12
 	#include "DXfrustumClass.h"
 
@@ -122,8 +122,8 @@ enum SHADER_TYPE
 
 		SHADER_USE_CURVED_SKY_PLANE,						//95
 		SHADER_USE_CURVED_REAL_SKY_PLANE,					//96
-		SHADER_USE_WATERFALL								//97
-
+		SHADER_USE_WATERFALL,								//97
+		SHADER_USE_SMOKE
 };
 
 struct Capabilities 
@@ -291,7 +291,7 @@ public:
 	UINT	MSAA_COUNT = 1;					//Anti-Aliasing: MultiSample tech. (1 = off, 4, 8, 16)		4	8	16
 	UINT	MSAA_QUALITY = 0;				//Anti-Aliasing: Texture Filtering tech. (MSAA > 0)			0	0	 0
 
-#if defined USE_FRUSTRUM
+#if defined USE_FRUSTUM
 	FrustumClass* frustum=NULL;
 #endif
 };

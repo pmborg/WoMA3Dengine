@@ -85,7 +85,7 @@ void ApplicationClass::initSky(void* pContext, float SPHERE_SIZE)
 
 	CREATE_MODEL_IF_NOT_EXCEPTION(m_SkyModel, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);
 
-	m_SkyModel->ModelHASlight = true; // Before Load: Dont Calculate light/shadow for Sky-Dome! 
+	m_SkyModel->ModelHASlight = true; // Before Load: don't auto calculate light/shadow for Sky Dome! 
 	ASSERT(m_SkyModel->LoadLight(pContext, TEXT("m_SkyModel"), m_Driver, SHADER_TEXTURE_LIGHT, &Textures, &Sphere_vertexdata, &Sphere_indexdata, 0));
 	m_SkyModel->PrimitiveTopology = TRIANGLESTRIP;
 }

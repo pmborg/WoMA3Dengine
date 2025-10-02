@@ -58,9 +58,9 @@
 #include "Dx12Class.h"
 #endif
 #if (defined OPENGL3 || defined OPENGL4)
-#include "womadriverclass.h"	//woma
-#include "GLmathClass.h"		//woma	
-#include "GLopenGLclass.h"		//woma
+#include "womadriverclass.h"	// WOMA
+#include "GLmathClass.h"		// WOMA	
+#include "GLopenGLclass.h"		// WOMA
 #if defined WINDOWS_PLATFORM
 #include "wGLopenGLclass.h"		// Windows
 #endif
@@ -569,8 +569,8 @@ void SystemClass::CalculateCameraViewAndFrustum()
 	}
 #endif
 
-	// CONSTRUCT: FRUSTRUM
-#if defined USE_FRUSTRUM
+	// CONSTRUCT: FRUSTUM
+#if defined USE_FRUSTUM
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 		m_Driver->frustum->ConstructFrustum(SystemHandle->AppSettings->SCREEN_DEPTH / 2.5f,
@@ -788,13 +788,13 @@ bool SystemClass::SystemCheck()
 	WOMA::GetLangStringFromLangId(WOMA::settings.id);
 #endif
 
-	// [10] Check Endian = LITTLE_ENDIAN or BIG_ENDIAN  (Used in some libs)
+	// [10] Check ENDIAN = LITTLE_ENDIAN or BIG_ENDIAN  (Used in some libs)
 	// -------------------------------------------------------------------------------------------
 	WOMA::settings.Endian = WOMA::endian();
 	if (WOMA::settings.Endian == LITTLE_ENDIAN)
-		womalogauto(TEXT("The machine is Little Endian\n"));	//8008, 8080, 8085, 8086, ...
+		womalogauto(TEXT("The machine is Little ENDIAN\n"));	//8008, 8080, 8085, 8086, ...
 	else
-		womalogauto(TEXT("The machine is Big Endian\n"));		//Motorola 68000
+		womalogauto(TEXT("The machine is Big ENDIAN\n"));		//Motorola 68000
 
 	womalogauto(TEXT("\n"));
 
@@ -1070,9 +1070,6 @@ bool SystemClass::LoadXmlSettings()
 	}
 
 #if DX_ENGINE_LEVEL == 29 && defined INTRO_DEMO // Force Full Screen
-	//#if defined WINDOWS_PLATFORM
-	//	SystemHandle->AppSettings->WINDOW_WIDTH = SystemHandle->AppSettings->WINDOW_HEIGHT = 0;
-	//#endif
 	#ifdef RELEASE
 		SystemHandle->AppSettings->FULL_SCREEN = true;
 	#endif
@@ -1103,6 +1100,8 @@ bool SystemClass::LoadXmlWorld()
 		WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "));
 		return false;
 	}
+	
+	SystemHandle->m_Application->AddObjsWithInstancesToXML();			//77 || 90 || 98
 
 	return true;
 }
@@ -1172,7 +1171,6 @@ void SystemClass::LoadAllDrivers()
 	// [0] DX11 (or DX11 with Downgrade: DX10)
 	// -------------------------------------------------------------------------------------------
 #if defined ( DX11 )
-	//if (WOMA::CapDX10_11)
 	{
 		womalog("LoadDriver[0]: DX11Class\n");//driver = g_contextDriver;	// Re-Use the same driver ( Context Driver )
 		driverList.push_back(NEW DirectX::DX11Class());
@@ -1200,7 +1198,6 @@ void SystemClass::LoadAllDrivers()
 	// [3] DX 12
 	// -------------------------------------------------------------------------------------------
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-	//if (WOMA::CapDX12)
 	{
 		driverList.push_back(NEW DirectX::DX12Class());
 		//driver = g_contextDriver;	// Re-Use the same driver ( Context Driver )
@@ -1212,7 +1209,8 @@ void SystemClass::LoadAllDrivers()
 #endif
 
 } 
-//LoadAllDrivers()
+
+//END: LoadAllDrivers()
 
 #if defined USE_JOY && defined USE_DIRECT_INPUT
 
@@ -1416,6 +1414,7 @@ bool InitSelectedDriver()
 
 	return true;
 }
+
 bool newDriver()
 {
 	WOMA::Settings* AppSettings = SystemHandle->AppSettings;

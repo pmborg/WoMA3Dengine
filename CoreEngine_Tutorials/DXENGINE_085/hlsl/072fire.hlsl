@@ -44,7 +44,7 @@ SamplerState SampleType : register(s0); // Matches PSSetSamplers(0)
 SamplerState SampleType2 : register(s1); // Matches PSSetSamplers(1)
 
 ////////////////////////////////////////////////////////////////////////////////
-// Vertex Shader
+// VERTEX SHADER
 ////////////////////////////////////////////////////////////////////////////////
 PSIn VS_Main(VSIn input)
 {
@@ -72,7 +72,7 @@ PSIn VS_Main(VSIn input)
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Pixel Shader
+// PIXEL SHADER
 ////////////////////////////////////////////////////////////////////////////////
 float4 PS_Main(PSIn input) : SV_TARGET
 {
@@ -123,5 +123,7 @@ float4 PS_Main(PSIn input) : SV_TARGET
 	// Set the alpha blending of the fire to the perturbed and distored alpha texture value.
 	fireColor.a = alphaColor;
 	
+    if (fade < 1)
+        fireColor.rgb *= fade;
     return fireColor;
 }

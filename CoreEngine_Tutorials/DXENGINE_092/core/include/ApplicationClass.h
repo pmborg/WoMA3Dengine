@@ -108,6 +108,7 @@ extern float fadeIntro;
 struct InstanceType
 {
 	WOMA::vec3	position;
+	float		rotY=0;
 };
 
 #if defined USE_DIRECT_INPUT
@@ -278,7 +279,7 @@ public:
 	bool InitLightandDemos(void* pContext, WomaDriverClass* Driver);
 	void InitMainSky(void* pContext, WomaDriverClass* Driver);
 	void InitTerrainandWaterSurfaces(void* pContext, WomaDriverClass* Driver);
-	void InitObjInstances(void* pContext, WomaDriverClass* Driver);
+	void AddObjsWithInstancesToXML();
 	virtual bool WOMA_APPLICATION_Initialize3D(void * pContext, WomaDriverClass* Driver); // APP_Load
 	void AppPosRender(UINT monitorWindow, float dayLightFade, void* mainCtx);																// POS-RENDER - 2D: Render 
 	std::vector<ModelColorVertexType> MyLightVertexVector;
@@ -290,8 +291,8 @@ public:
 	void initLightRay(void* pContext);
 	#endif
 	void RenderHUD_Logo(void* pContext);
-	void RenderModel(void* pContext, UINT threadID, UINT monitorWindow, WomaDriverClass* driver, UINT modelID, UINT pass, XMMATRIX* m_viewMatrix = NULL, XMMATRIX* m_projectionMatrix = NULL);
-#if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined USE_FRUSTRUM
+	void RenderModel(void* pContext, UINT threadID, UINT monitorWindow, WomaDriverClass* driver, UINT modelID, UINT pass, XMMATRIX* m_viewMatrix = NULL, XMMATRIX* m_projectionMatrix = NULL, float fadeLight = 1);
+#if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined USE_FRUSTUM
 	bool WOMA_LOAD_OBJ(void* pContext, UINT threadID, WomaDriverClass* Driver, UINT i, TCHAR* wfilename);
 #endif																			  
 	void RenderShadowPass(UINT monitorIndex, WomaDriverClass* Driver, void* pContext, float fadeLight);
@@ -599,6 +600,8 @@ extern void Shutdownauxcommonfunctions();
 extern float sort_cameraX;
 extern float sort_cameraY;
 extern float sort_cameraZ;
+
+extern void* getvoidcontext();
 
 #endif
 

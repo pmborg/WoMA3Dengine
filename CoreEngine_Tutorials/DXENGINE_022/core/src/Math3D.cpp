@@ -18,6 +18,7 @@
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234525217;
 
+#include "platform.h"
 #include "Math3D.h"
 #include "TrigonometryMathClass.h"
 

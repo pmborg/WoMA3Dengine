@@ -459,14 +459,17 @@ void dxWinSystemClass::InitSceneManager()
 //----------------------------------------------------------------------------
 {
 	//  QUADTREE:
-	// ||338|338||
+	// ||64|64||
 	// -----------
-	// ||338|338||
+	// ||64|64||
 
 	DXsystemHandle->world.size = terrain_squares;
+	//FPS : 867 / 2
+	//FPS : 887 / 8
+	//FPS : 882 / 16
 	DXsystemHandle->world.patchSize = terrain_squares/2;
 
-	// SCENE MANAGER: Create SceneManager Engine: (Driver will use Frustrum to filter)
+	// SCENE MANAGER: Create SceneManager Engine: (Driver will use Frustum to filter)
 #if defined USE_SCENE_MANAGER
     if (WOMA::sceneManager == NULL)
         WOMA::sceneManager = SceneManager::GetInstance();

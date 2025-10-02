@@ -59,7 +59,9 @@ struct PSIn
 //Set on: DXmodelClass::RenderSubMesh
 #if DXAPI11 == 1
 Texture2D shaderTexture;	// 22: Texture
+Texture2D NightTexture;     // 98:
 Texture2D AlfaMapTexture;	// 33: AlfaMap
+
 #endif
 #if DXAPI12 == 1
 Texture2D AlfaMapTexture:	register(t0); // 33: AlfaMap	//DX12: Descriptor: 2
@@ -75,7 +77,7 @@ SamplerState SampleType: register(s0);
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Vertex Shader
+// VERTEX SHADER
 ////////////////////////////////////////////////////////////////////////////////
 PSIn VS_Main(VSIn input)
 {
@@ -96,7 +98,7 @@ PSIn VS_Main(VSIn input)
     if (isAnimatedBill)
         output.position.x += sin(vsframeTime) * (1 - input.texCoords.y) / 100;
     
-	//22: TEXTURE: Store the texture coordinates for the pixel shader:
+	//22: TEXTURE: Store the texture coordinates for the pixel SHADER:
 	output.texCoords = input.texCoords;
 
 	cameraPosition = mul(float4(input.position, 1), WV);
@@ -138,7 +140,7 @@ PSIn VS_Main(VSIn input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Pixel Shader
+// PIXEL SHADER
 ////////////////////////////////////////////////////////////////////////////////
 float4 PS_Main(PSIn input) : SV_TARGET
 {
@@ -150,12 +152,16 @@ float4 PS_Main(PSIn input) : SV_TARGET
 	
 	//-----------------------------------------------------------------------------------
 	// 21 & 41: TEXTURE: Sample the pixel color from the texture using the sampler at this texture coordinate location
-    if (hasTexture) 
-        textureColor = shaderTexture.Sample(SampleType, input.texCoords);
-
+    if (hasTexture)
+    {
+        if (fade < 0.5f && isSky)
+            textureColor = NightTexture.Sample(SampleType, input.texCoords);    // Night Texture
+        else
+            textureColor = shaderTexture.Sample(SampleType, input.texCoords);   // Day Texture
+    }
 	// 23: LIGHT
 	//if (hasLight) 
-	{
+    {
         if (isSky)
             lightIntensity = PSlightFunc2(input.normal);
         else
@@ -171,12 +177,12 @@ float4 PS_Main(PSIn input) : SV_TARGET
         }
     }
 
-#if defined PS_USE_ALFA_TEXTURE // 33: Alfa Map: (Optional AlfaMap for blending textutres)
+#if defined PS_USE_ALFA_TEXTURE // 33: ALFA MAP: (Optional AlfaMap for blending textures)
     if (hasAlfaMap)
         textureColor.a = AlfaMapTexture.Sample(SampleType, input.texCoords).r;
 #endif
 
-#if defined PS_USE_ALFACOLOR	// 33: Alfa Color
+#if defined PS_USE_ALFACOLOR	// 33: ALFA COLOR
     if (hasAlfaColor)
         textureColor.a = alfaColor;
 #endif
@@ -216,5 +222,7 @@ float4 PS_Main(PSIn input) : SV_TARGET
 #endif
     
     //return float4(0, 1, 1, 1);
+    if (fade < 1)
+        textureColor.rgb *= fade;
 	return textureColor;
 }

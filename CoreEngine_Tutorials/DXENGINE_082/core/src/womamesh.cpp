@@ -110,7 +110,7 @@ void UpdateAllMeshAnimations(float deltaTime)
 #endif
 }
 
-void RenderAllMeshModels(ID3D11DeviceContext* m_DeviceContext)
+void RenderAllMeshModels(ID3D11DeviceContext* m_DeviceContext, float fadeLight=1)
 {
 	if (!demoapp_ || !demo_)
 		return; //not ready
@@ -141,7 +141,7 @@ void RenderAllMeshModels(ID3D11DeviceContext* m_DeviceContext)
         world.r[3].m128_f32[1] = mainTerrain->getTerrainHeight(TERRAIN_ID, world.r[3].m128_f32[0], world.r[3].m128_f32[2]);
 
         womamesh1.scene.UpdateWorldMatrixModel(m_DeviceContext, demoapp->m_Graphics, world);
-        demo->gBufferPass->Render(m_DeviceContext, demoapp->m_Graphics, womamesh1.scene);
+        demo->gBufferPass->Render(m_DeviceContext, demoapp->m_Graphics, womamesh1.scene, fadeLight);
     }
 #endif
 

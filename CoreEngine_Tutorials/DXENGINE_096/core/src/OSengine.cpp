@@ -1044,3 +1044,5 @@ bool StartsWithDotDotSlash(const STRING& fileNamePath)
 	const STRING prefix = TEXT("../");
 	return fileNamePath.rfind(prefix, 0) == 0;
 }
+
+

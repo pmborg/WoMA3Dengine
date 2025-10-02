@@ -76,16 +76,18 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
     matrix WVP; //worldMatrix+viewMatrix+projectionMatrix
  
     // FIRE:
-    float vsframeTime;
-    float3 scrollSpeeds;
-    float3 scales;
-    bool isAnimatedBill;
+    float   vsframeTime;
+    float3  scrollSpeeds;
+    float3  scales;
+    bool    isAnimatedBill;
+    float   fade;
+    float3  pad;
 };
 
 #include "light.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
-// Vertex Shader
+// VERTEX SHADER
 ////////////////////////////////////////////////////////////////////////////////
 PSIn VS_Main(VSIn input)
 {
@@ -114,7 +116,7 @@ PSIn VS_Main(VSIn input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Pixel Shader
+// PIXEL SHADER
 ////////////////////////////////////////////////////////////////////////////////
 float4 PS_Main(PSIn input) : SV_TARGET
 {
@@ -140,6 +142,8 @@ float4 PS_Main(PSIn input) : SV_TARGET
         textureColor.rgb = lerp(textureColor.rgb, fogColor.rgb, fog4.rgb);
     }
 #endif
-    
+
+    if (fade < 1)
+        textureColor.rgb *= fade;
 	return textureColor;
 }

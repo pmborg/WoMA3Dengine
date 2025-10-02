@@ -31,9 +31,6 @@ namespace DirectX {
 bool DX11Class::createRasterizerStates()
 // ----------------------------------------------------------------------------------------------
 {
-	//USE:
-	//SetRasterizerState(UINT cullMode, UINT fillMode)
-
     HRESULT result;
 
 	D3D11_RASTERIZER_DESC rasterDesc;	// Note: = {0} don't work here

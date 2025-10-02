@@ -170,7 +170,7 @@ cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: D
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-// Vertex Shader
+// VERTEX SHADER
 ////////////////////////////////////////////////////////////////////////////////
 PSIn VS_Main(VSIn input)
 {
@@ -248,5 +248,7 @@ float4 PS_Main(PSIn input) : SV_TARGET
 #endif
     
     //return float4(1,1,1,1);
+    if (fade < 1)
+        textureColor.rgb *= fade;
     return textureColor;
 }

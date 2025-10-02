@@ -74,7 +74,7 @@ void GLopenGLclass::Shutdown()
 	if(gl_Camera) { delete ((GLcameraClass*)gl_Camera); gl_Camera=NULL; }	//Cant use: SAFE_DELETE (m_Camera);
 	Shutdown2D();
 
-#if defined USE_FRUSTRUM
+#if defined USE_FRUSTUM
 	SAFE_DELETE (frustum);
 #endif
 }
@@ -161,7 +161,7 @@ bool GLopenGLclass::OnInit(int _USE_MONITOR, /*HWND*/void* hwnd, int screenWidth
 
 	BuildOrthoMatrix(&m_orthoMatrix, (float)screenWidth, (float)screenHeight, screenNear, screenDepth, true /*leftHand*/);
 
-#if defined USE_FRUSTRUM
+#if defined USE_FRUSTUM
 	frustum = NEW DXfrustumClass;	// Create Frustum
 #endif
 

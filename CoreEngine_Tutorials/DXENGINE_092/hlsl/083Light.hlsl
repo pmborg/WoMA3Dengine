@@ -7,6 +7,7 @@
 *	code by : Pedro Borges - pmborg@yahoo.com
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
+*   IMPLEMENT: SHADER_TEXTURE_LIGHT_FAST
 **********************************************************************************************/
 //WomaIntegrityCheck = 1234525256;
 
@@ -194,7 +195,7 @@ cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: D
 //#include "light.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
-// Vertex Shader
+// VERTEX SHADER
 ////////////////////////////////////////////////////////////////////////////////
 PSIn VS_Main(VSIn input)
 {
@@ -223,7 +224,7 @@ PSIn VS_Main(VSIn input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Pixel Shader
+// PIXEL SHADER
 ////////////////////////////////////////////////////////////////////////////////
 float4 PS_Main(PSIn input) : SV_TARGET
 {
@@ -251,6 +252,8 @@ float4 PS_Main(PSIn input) : SV_TARGET
 #endif
     
     //return float4(0, 1, 1, 1);
-						 
+
+    //if (fade < 1)
+    //    textureColor.rgb *= fade;
 	return textureColor;
 }

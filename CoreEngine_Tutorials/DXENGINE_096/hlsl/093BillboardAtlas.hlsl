@@ -77,7 +77,7 @@ cbuffer VSShaderParametersBuffer
 #if DXAPI12 == 1
 cbuffer VSShaderParametersBuffer : register(b0)
 #endif
-{
+{   //c++: struct VSBillboardAtlasConstantBufferType
     matrix worldMatrix;
     matrix WVP;
 
@@ -85,10 +85,13 @@ cbuffer VSShaderParametersBuffer : register(b0)
     float4 lightDirection;
 
     // Vegetation / Wind (optional)
-    float vsframeTime;
-    float3 scrollSpeeds;
-    float3 scales;
-    bool isAnimatedBill;
+    float   vsframeTime;
+    float3  scrollSpeeds;
+    float3  scales;
+    bool    isAnimatedBill;
+    
+    float   fade;
+    float3  pad;
     
     AtlasRegion billboardAtlasRegions[MAX_ATLAS_REGIONS];
 };
@@ -96,7 +99,7 @@ cbuffer VSShaderParametersBuffer : register(b0)
 #include "light.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
-// Vertex Shader
+// VERTEX SHADER
 ////////////////////////////////////////////////////////////////////////////////
 VS_OUTPUT VS_Main(VS_INPUT input)
 {
@@ -129,7 +132,7 @@ VS_OUTPUT VS_Main(VS_INPUT input)
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Pixel Shader
+// PIXEL SHADER
 ////////////////////////////////////////////////////////////////////////////////
 float4 PS_Main(VS_OUTPUT input) : SV_TARGET
 {
@@ -150,6 +153,8 @@ float4 PS_Main(VS_OUTPUT input) : SV_TARGET
     // Apply lighting (if needed)
     float lightIntensity = saturate(0.6f + PSlightFunc1(input.normal));
     color.rgb *= lightIntensity;
-
+	
+    if (fade < 1)
+        color.rgb *= fade;
     return color;
 }

@@ -51,7 +51,7 @@ SamplerState SampleType: register(s0);
 #include "cbuffer.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
-// Vertex Shader
+// VERTEX SHADER
 ////////////////////////////////////////////////////////////////////////////////
 PSIn VS_Main(VSIn input)
 {
@@ -98,7 +98,6 @@ float4 PS_Main(PSIn input) : SV_TARGET
 			color.rgb = pixelColor.rgb;							// If the color is other than black on the texture then this is a pixel in the font so draw it using the font pixel color.
 	} 
 
-	color.rgb*=fade;
-	
+	//color.rgb*=fade;
 	return color;
 }

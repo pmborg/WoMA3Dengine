@@ -90,7 +90,7 @@ namespace DirectX {
 		BUFFER_COLOR_FORMAT = DXGI_FORMAT_B8G8R8A8_UNORM; // "Loader Image" use this format.
 
 		//m_Camera = NULL;
-#if defined USE_FRUSTRUM
+#if defined USE_FRUSTUM
 		frustum = NULL;
 #endif
 
@@ -147,7 +147,7 @@ namespace DirectX {
 			for (UINT i = 0; i < BufferCount; ++i)
 				m_renderTargets[i].Reset();
 
-#if defined USE_FRUSTRUM
+#if defined USE_FRUSTUM
 			SAFE_DELETE(frustum);
 #endif
 #if defined USE_DSV
@@ -657,7 +657,7 @@ namespace DirectX {
 #endif
 		//-----------------------------------------------------------------
 
-#if defined USE_FRUSTRUM
+#if defined USE_FRUSTUM
 		frustum = NEW DXfrustumClass;	// Create Frustum
 #endif
 

@@ -422,7 +422,7 @@ void dxWinSystemClass::InitSceneManager()
     DXsystemHandle->world.size = 512;
     DXsystemHandle->world.patchSize = 256;
 
-	// SCENE MANAGER: Create SceneManager Engine: (Driver will use Frustrum to filter)
+	// SCENE MANAGER: Create SceneManager Engine: (Driver will use Frustum to filter)
 #if defined USE_SCENE_MANAGER
     if (WOMA::sceneManager == NULL)
         WOMA::sceneManager = SceneManager::GetInstance();

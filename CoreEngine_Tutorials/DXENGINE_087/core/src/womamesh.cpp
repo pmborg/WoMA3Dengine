@@ -220,7 +220,7 @@ void UpdateAllMeshAnimations(float deltaTime)
 #endif
 }
 
-void RenderAllMeshModels(ID3D11DeviceContext* m_DeviceContext)
+void RenderAllMeshModels(ID3D11DeviceContext* m_DeviceContext, float fadeLight=1)
 {
 	if (!demoapp_ || !demo_)
 		return; //not ready
@@ -251,7 +251,7 @@ void RenderAllMeshModels(ID3D11DeviceContext* m_DeviceContext)
         world.r[3].m128_f32[1] = mainTerrain->getTerrainHeight(TERRAIN_ID, world.r[3].m128_f32[0], world.r[3].m128_f32[2]);
 
         womamesh1.scene.UpdateWorldMatrixModel(m_DeviceContext, demoapp->m_Graphics, world);
-        demo->gBufferPass->Render(m_DeviceContext, demoapp->m_Graphics, womamesh1.scene);
+        demo->gBufferPass->Render(m_DeviceContext, demoapp->m_Graphics, womamesh1.scene, fadeLight);
     }
 #endif
 
@@ -280,7 +280,7 @@ void RenderAllMeshModels(ID3D11DeviceContext* m_DeviceContext)
         world.r[3].m128_f32[2] = demo_mesh1.m_characterPos->m_positionZ;  //_43: Z
 
         womamesh2.scene.UpdateWorldMatrixModel(m_DeviceContext, demoapp->m_Graphics, world);
-        demo->gBufferPass->Render(m_DeviceContext, demoapp->m_Graphics, womamesh2.scene);
+        demo->gBufferPass->Render(m_DeviceContext, demoapp->m_Graphics, womamesh2.scene, fadeLight);
     }
 #endif
 #endif
@@ -305,7 +305,7 @@ void RenderAllMeshModels(ID3D11DeviceContext* m_DeviceContext)
         world.r[3].m128_f32[1] = mainTerrain->getTerrainHeight(TERRAIN_ID, world.r[3].m128_f32[0], world.r[3].m128_f32[2]);
 
         womamesh3.scene.UpdateWorldMatrixModel(m_DeviceContext, demoapp->m_Graphics, world);
-        gBufferPass->Render(m_DeviceContext, demoapp->m_Graphics, womamesh3.scene);
+        gBufferPass->Render(m_DeviceContext, demoapp->m_Graphics, womamesh3.scene, fadeLight);
     }
 #endif
 #if DX_ENGINE_LEVEL >= 86 && defined USE_MODEL4
@@ -326,7 +326,7 @@ void RenderAllMeshModels(ID3D11DeviceContext* m_DeviceContext)
         world.r[3].m128_f32[1] = mainTerrain->getTerrainHeight(TERRAIN_ID, world.r[3].m128_f32[0], world.r[3].m128_f32[2]);
 
         womamesh4[MAIN_CHAR_MODEL1].scene.UpdateWorldMatrixModel(m_DeviceContext, demoapp->m_Graphics, world);
-        demo->gBufferPass->Render(m_DeviceContext, demoapp->m_Graphics, womamesh4[MAIN_CHAR_MODEL1].scene);
+        demo->gBufferPass->Render(m_DeviceContext, demoapp->m_Graphics, womamesh4[MAIN_CHAR_MODEL1].scene, fadeLight);
     }
 #endif
 #if DX_ENGINE_LEVEL == 87 && defined USE_MODEL4
@@ -348,7 +348,7 @@ void RenderAllMeshModels(ID3D11DeviceContext* m_DeviceContext)
         world.r[3].m128_f32[1] = mainTerrain->getTerrainHeight(TERRAIN_ID, world.r[3].m128_f32[0], world.r[3].m128_f32[2]);
 
         womamesh4[MAIN_CHAR_MODEL2].scene.UpdateWorldMatrixModel(m_DeviceContext, demoapp->m_Graphics, world);
-        demo->gBufferPass->Render(m_DeviceContext, demoapp->m_Graphics, womamesh4[MAIN_CHAR_MODEL2].scene);
+        demo->gBufferPass->Render(m_DeviceContext, demoapp->m_Graphics, womamesh4[MAIN_CHAR_MODEL2].scene, fadeLight);
     }
 
     // Model 4 ------------------------------------------------------------------------------------------
@@ -369,7 +369,7 @@ void RenderAllMeshModels(ID3D11DeviceContext* m_DeviceContext)
         world.r[3].m128_f32[1] = mainTerrain->getTerrainHeight(TERRAIN_ID, world.r[3].m128_f32[0], world.r[3].m128_f32[2]);
 
         womamesh4[MAIN_CHAR_MODEL3].scene.UpdateWorldMatrixModel(m_DeviceContext, demoapp->m_Graphics, world);
-        demo->gBufferPass->Render(m_DeviceContext, demoapp->m_Graphics, womamesh4[MAIN_CHAR_MODEL3].scene);
+        demo->gBufferPass->Render(m_DeviceContext, demoapp->m_Graphics, womamesh4[MAIN_CHAR_MODEL3].scene, fadeLight);
     }
 #endif
 }

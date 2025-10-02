@@ -1,0 +1,235 @@
+// ----------------------------------------------------------------------------------------------
+// Filename: DXbasicTypes.h
+// --------------------------------------------------------------------------------------------
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// --------------------------------------------------------------------------------------------
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+//
+// This file is part of the WorldOfMiddleAge project.
+//
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
+// without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
+// You may not alter or remove any copyright or other notice from copies of the content.
+// The content contained in this file is provided only for educational and informational purposes.
+// 
+// Downloaded from : https://github.com/pmborg/WoMA3Dengine
+// --------------------------------------------------------------------------------------------
+// PURPOSE: 
+// ----------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234525217;
+
+#pragma once
+
+#include "platform.h"
+#include "DXdrivers.h"
+#include "standard_platform.h"
+#include <DirectXMath.h>// Use Math
+#include <fstream>
+
+//#if defined DX_ENGINE
+using namespace std;
+
+typedef struct
+{
+	void *blobVS, *blobGS, *blobPS;
+	UINT sizeVS, sizeGS, sizePS;
+} shaderTree;
+
+namespace DirectX {
+	//private:
+
+	//21:
+	// -------------------------------------------------------------------------------------------
+	#pragma pack(push, 1)
+	struct DXcolorVertexType
+	{
+	DXcolorVertexType(){}
+	DXcolorVertexType(float x, float y, float z,
+		float r, float g, float b, float a)
+		: position(x, y, z), color(r, g, b, a) {}
+		XMFLOAT3 position = {};
+	    XMFLOAT4 color = {};
+
+	};
+	#pragma pack(pop)
+
+	//22:
+	// -------------------------------------------------------------------------------------------
+	#pragma pack(push, 1)
+	struct DXtextureVertexType
+	{
+	DXtextureVertexType(){}
+
+	DXtextureVertexType(float x, float y, float z, 
+						float u, float v)
+						: position(x,y,z), texCoord(u, v){}
+		XMFLOAT3 position;
+	    XMFLOAT2 texCoord;
+
+	};
+	#pragma pack(pop)
+
+	//23:
+	// -------------------------------------------------------------------------------------------
+	#pragma pack(push, 1)
+	struct DXtextureLightVertexType
+	{
+	DXtextureLightVertexType(){}
+
+	DXtextureLightVertexType(	float x, float y, float z,
+								float u, float v,
+								float nx, float ny, float nz)
+								: position(x,y,z), texCoord(u, v), normal(nx, ny, nz){}
+		XMFLOAT3 position;
+	    XMFLOAT2 texCoord;
+		XMFLOAT3 normal;
+
+	};
+	#pragma pack(pop)
+
+	// 36: Shadow
+	// -------------------------------------------------------------------------------------------
+	#pragma pack(push, 1)
+	struct DXShadowMapVertexType
+	{
+	DXShadowMapVertexType(){}
+	DXShadowMapVertexType(	float x, float y, float z, 
+							float r, float g, float b, float a)
+							: position(x,y,z){}
+
+		XMFLOAT3 position;
+	};
+	#pragma pack(pop)
+
+	// 35: NormalBump
+	// -------------------------------------------------------------------------------------------
+	#pragma pack(push, 1)
+	struct DXNormalBumpVertexType
+	{
+	DXNormalBumpVertexType(){}
+	DXNormalBumpVertexType(	float x, float y, float z, 
+							float u, float v, 
+							float nx, float ny, float nz, 
+							float tx, float ty, float tz,
+							float bx, float by, float bz)
+							: position(x,y,z), texCoord(u, v), normal(nx, ny, nz), tangent(tx, ty, tz), binormal(bx, by, bz) {}
+
+		XMFLOAT3 position;
+		XMFLOAT2 texCoord;
+		XMFLOAT3 normal;
+		XMFLOAT3 tangent;
+		XMFLOAT3 binormal;
+	};
+	#pragma pack(pop)
+
+	// 53: SHADER_Double_Color_Terrain
+	// -------------------------------------------------------------------------------------------
+	#pragma pack(push, 1)
+	struct DXTextureDouble_Color_TerrainType
+	{
+		DXTextureDouble_Color_TerrainType() {}
+		DXTextureDouble_Color_TerrainType(
+			float x, float y, float z,
+			float u, float v,
+			float nx, float ny, float nz,
+			float r, float g, float b, float a)
+			: position(x, y, z), texCoord(u, v), normal(nx, ny, nz), color(r, g, b, a) {}
+
+		XMFLOAT3 position;
+		XMFLOAT2 texCoord;
+		XMFLOAT3 normal;
+		XMFLOAT4 color;
+	};
+	#pragma pack(pop)
+
+	// 56: SHADER_Double_Color_Terrain
+	// -------------------------------------------------------------------------------------------
+	#pragma pack(push, 1)
+	struct DXTextureDouble_Color_Terrain_TexMappingType
+	{
+		DXTextureDouble_Color_Terrain_TexMappingType() {}
+		DXTextureDouble_Color_Terrain_TexMappingType(
+			float x, float y, float z,
+			float u, float v,
+			float nx, float ny, float nz,
+			float r, float g, float b, float a,
+			float u2, float v2)
+			: position(x, y, z), texCoord(u, v), normal(nx, ny, nz), color(r, g, b, a), texCoord2(u2, v2) {}
+
+		XMFLOAT3 position;
+		XMFLOAT2 texCoord;
+		XMFLOAT3 normal;
+		XMFLOAT4 color;
+		XMFLOAT2 texCoord2;
+	};
+	#pragma pack(pop)
+
+#if defined GENERATE_ATLAS_INTEGRATION_DDS
+#pragma pack(push, 1)
+	struct DXbillboardAtlasVertexType
+	{
+		DXbillboardAtlasVertexType() {}
+
+		DXbillboardAtlasVertexType(
+			float x, float y, float z,      // vertex position
+			float u, float v,               // quad-local UV
+			float nx, float ny, float nz,   // normal
+			UINT atlasIdx,                  // atlas index
+			float ox, float oy, float oz,   // billboard world-space origin
+			float sc,                       // uniform scale
+			float rot                       // rotation around Y in radians
+		)
+			: position(x, y, z)
+			, texCoord(u, v)
+			, normal(nx, ny, nz)
+			, atlasIndex(atlasIdx)
+			, origin(ox, oy, oz)
+			, scale(sc)
+			, rotY(rot)
+		{
+		}
+
+		DirectX::XMFLOAT3 position = {};    // POSITION
+		DirectX::XMFLOAT2 texCoord = {};    // TEXCOORD0
+		DirectX::XMFLOAT3 normal = {};      // NORMAL
+		UINT              atlasIndex = {};  // TEXCOORD1
+		DirectX::XMFLOAT3 origin = {};      // TEXCOORD2 (pivot/origin)
+		float             scale = {};       // TEXCOORD3
+		float             rotY = {};        // TEXCOORD4
+	};
+#pragma pack(pop)
+#endif
+
+#pragma pack(push, 1)
+	struct DXTextureTextureWaterfallType
+	{
+		DXTextureTextureWaterfallType() {}
+		DXTextureTextureWaterfallType(
+			float x, float y, float z,
+			float u, float v,
+			float r, float g, float b, float a)
+			: position(x, y, z), texCoord(u, v), color(r, g, b, a) 
+		{
+		}
+
+		XMFLOAT3 position;
+		XMFLOAT2 texCoord;
+		XMFLOAT4 color;
+	};
+#pragma pack(pop)
+
+#if DX_ENGINE_LEVEL >= 60 && defined USE_TERRAIN_TUTORIAL_CHAP_24
+	typedef struct
+	{
+		XMFLOAT3 position;			// POSITION
+		XMFLOAT4 texture;			// TEXCOORD0
+		XMFLOAT3 normal;			// NORMAL
+		XMFLOAT4 color;				// COLOR
+		XMFLOAT4 mappingTexture;	// TEXCOORD1
+		XMFLOAT3 tangent;
+		XMFLOAT3 binormal;
+
+	} DXVertexTerrainType_21; //VertexType
+#endif
+
+}

@@ -152,7 +152,7 @@ void ApplicationTextClass::SetCompoundPosition(CHAR* file, float dist, UINT id, 
     ASSERT(m_Text->UpdateSentence(m_sentence[TEXT_COMPOUND_ID], dataString, 10, 180, 1.0f, 0.0f, 1.0f));
 
     // Setup the X, Y, Z position and (scale) string:
-    StringCchPrintf(dataString, sizeof(dataString), TEXT("OBJ xyz: %4.2f, %4.2f, %4.2f (Scale: %4.2f) (rotY: %f)"), posX, posY, posZ, scale, rotY);
+    StringCchPrintf(dataString, sizeof(dataString), TEXT("OBJ xyz: %4.3f, %4.3f, %4.3f (Scale: %4.3f) (rotY: %4.3f)"), posX, posY, posZ, scale, rotY);
     ASSERT(m_Text->UpdateSentence(m_sentence[TEXT_COMPOUND], dataString, 10, 200, 1.0f, 0.0f, 1.0f));
 }
 #endif

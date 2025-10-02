@@ -998,6 +998,8 @@ SKIP:
 	if (WOMA::game_state == GAME_STOP)
 		return true; // Stop the loading immediately
 
+	((DXmodelClass*)dxmodelClass)->m_instanceCount = instanceCount;
+
 	return true;
 }
 

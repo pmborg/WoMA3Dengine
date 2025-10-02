@@ -280,7 +280,7 @@ bool StartPackLibs()
 		IF_NOT_RETURN_FALSE (InitPackLib("woma.pck"));	// Need to be CHAR!
 	#endif
 
-  #if TUTORIAL_PRE_CHAP >= 11
+  #if _NOT //TUTORIAL_PRE_CHAP >= 11
     IF_NOT_RETURN_FALSE(InitPackLib(L"Terrain.pack"));
 
     #ifdef CHECK_COMPOUND_COLISION //ALLData.pack
@@ -292,7 +292,7 @@ bool StartPackLibs()
 	IF_NOT_RETURN_FALSE(InitPackLib(L"Clouds.pack"));
   #endif
 
-  #if TUTORIAL_PRE_CHAP >= 55
+  #if _NOT //TUTORIAL_PRE_CHAP >= 55
 	IF_NOT_RETURN_FALSE(InitPackLib(L"Mesh.pack"));
   #endif
 

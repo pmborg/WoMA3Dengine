@@ -156,7 +156,7 @@ struct WOMA_OBJECT
 	BOOL		castShadows=false;
 	BOOL		renderShadows = false;
 	BOOL		modelHASlight = false;
-	UINT		instances=0;
+	int		instances=0;
 };
 
 //<world>

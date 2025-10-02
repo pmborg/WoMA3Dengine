@@ -71,7 +71,7 @@
 #define MAX_CLIENTS 1
 #endif
 
-#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // COLOR SHADER
 #include "virtualModelClass.h"
 extern std::vector<VirtualModelClass*> m_screenShots;
 #endif

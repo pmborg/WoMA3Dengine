@@ -19,7 +19,7 @@
 
 #include "main.h"
 #include "SceneNode.h"
-#include "DXFrustumClass.h"
+//#include "DXFrustumClass.h"
 #include "xml_loader.h"
 
 #define MAX_NODE_SIZE DXsystemHandle->world.patchSize
@@ -68,7 +68,7 @@ private:
 #if defined USE_TINYXML_LOADER //5
     XMLloader* _xml_loader = NULL;
 #endif
-#if defined USE_FRUSTRUM
+#if defined USE_FRUSTUM
     DXfrustumClass* _frustum = NULL;
 #endif
 };

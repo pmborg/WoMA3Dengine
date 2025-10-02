@@ -40,20 +40,22 @@ namespace DirectX {
 
 	//21:
 	// -------------------------------------------------------------------------------------------
+	#pragma pack(push, 1)
 	struct DXcolorVertexType
 	{
 	DXcolorVertexType(){}
-#if defined DX11 || defined DX12 || defined DX9
 	DXcolorVertexType(float x, float y, float z,
 		float r, float g, float b, float a)
 		: position(x, y, z), color(r, g, b, a) {}
 		XMFLOAT3 position = {};
 	    XMFLOAT4 color = {};
-#endif
+
 	};
+	#pragma pack(pop)
 
 	//22:
 	// -------------------------------------------------------------------------------------------
+	#pragma pack(push, 1)
 	struct DXtextureVertexType
 	{
 	DXtextureVertexType(){}
@@ -61,14 +63,15 @@ namespace DirectX {
 	DXtextureVertexType(float x, float y, float z, 
 						float u, float v)
 						: position(x,y,z), texCoord(u, v){}
-//#if defined DX11 || defined DX12 || defined DX9
 		XMFLOAT3 position;
 	    XMFLOAT2 texCoord;
-//#endif
+
 	};
+	#pragma pack(pop)
 
 	//23:
 	// -------------------------------------------------------------------------------------------
+	#pragma pack(push, 1)
 	struct DXtextureLightVertexType
 	{
 	DXtextureLightVertexType(){}
@@ -77,15 +80,16 @@ namespace DirectX {
 								float u, float v,
 								float nx, float ny, float nz)
 								: position(x,y,z), texCoord(u, v), normal(nx, ny, nz){}
-//#if defined DX11 || defined DX12 || defined DX9
 		XMFLOAT3 position;
 	    XMFLOAT2 texCoord;
 		XMFLOAT3 normal;
-//#endif
+
 	};
+	#pragma pack(pop)
 
 	// 36: Shadow
 	// -------------------------------------------------------------------------------------------
+	#pragma pack(push, 1)
 	struct DXShadowMapVertexType
 	{
 	DXShadowMapVertexType(){}
@@ -95,9 +99,11 @@ namespace DirectX {
 
 		XMFLOAT3 position;
 	};
-	
+	#pragma pack(pop)
+
 	// 35: NormalBump
 	// -------------------------------------------------------------------------------------------
+	#pragma pack(push, 1)
 	struct DXNormalBumpVertexType
 	{
 	DXNormalBumpVertexType(){}
@@ -114,9 +120,11 @@ namespace DirectX {
 		XMFLOAT3 tangent;
 		XMFLOAT3 binormal;
 	};
+	#pragma pack(pop)
 
 	// 53: SHADER_Double_Color_Terrain
 	// -------------------------------------------------------------------------------------------
+	#pragma pack(push, 1)
 	struct DXTextureDouble_Color_TerrainType
 	{
 		DXTextureDouble_Color_TerrainType() {}
@@ -132,9 +140,11 @@ namespace DirectX {
 		XMFLOAT3 normal;
 		XMFLOAT4 color;
 	};
+	#pragma pack(pop)
 
 	// 56: SHADER_Double_Color_Terrain
 	// -------------------------------------------------------------------------------------------
+	#pragma pack(push, 1)
 	struct DXTextureDouble_Color_Terrain_TexMappingType
 	{
 		DXTextureDouble_Color_Terrain_TexMappingType() {}
@@ -152,6 +162,7 @@ namespace DirectX {
 		XMFLOAT4 color;
 		XMFLOAT2 texCoord2;
 	};
+	#pragma pack(pop)
 
 #if defined GENERATE_ATLAS_INTEGRATION_DDS
 #pragma pack(push, 1)
@@ -188,24 +199,6 @@ namespace DirectX {
 	};
 #pragma pack(pop)
 #endif
-
-	// 97
-	// -------------------------------------------------------------------------------------------
-	struct DXTextureTextureWaterfallType
-	{
-		DXTextureTextureWaterfallType() {}
-		DXTextureTextureWaterfallType(
-			float x, float y, float z,
-			float u, float v,
-			float r, float g, float b, float a)
-			: position(x, y, z), texCoord(u, v), color(r, g, b, a) 
-		{
-		}
-
-		XMFLOAT3 position;
-		XMFLOAT2 texCoord;
-		XMFLOAT4 color;
-	};
 
 #if DX_ENGINE_LEVEL >= 60 && defined USE_TERRAIN_TUTORIAL_CHAP_24
 	typedef struct

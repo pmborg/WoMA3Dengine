@@ -549,7 +549,7 @@ void ApplicationClass::initShadowTextureDemo(void* ctx)
 	ModelTextureVertexType vertex = { };
 	float X = 4.0f, Y = 2.0f, Z = 0;
 	CREATE_VERTEXVECTOR_SQUAD_MODEL_OPTIMIZED(SquareTextureVertexVector, X, Y, Z);				// Step 1: Setup all vertices positions: X, Y, Z
-	MAP_XZtoUV(SquareTextureVertexVector, X, Y, Z);												// Step 2: ADD TEXTURING: Auto-Map textures to all vertices: tu, tv
+	MAP_XZtoUV(SquareTextureVertexVector, X, Y, Z);												// Step 2: ADD TEXTURING: Auto-Map textures to all vertices: TU, TV
 	initLoadTexture3D(m_2nd3DModel, TEXT("engine/data/basics/Earth_Diffuse.bmp"), SquareTextureVertexVector, IndexSquarList, SHADER_TEXTURE);
 
 	m_2nd3DModel->rotateX(-3.14f / 2.0f);
@@ -568,7 +568,6 @@ void ApplicationClass::WOMA_APPLICATION_SetInstancePositions(UINT m_ObjId, int m
 
     BillClass bill;
 
-#if defined USE_INSTANCES_FOR_TREES || defined USE_INSTANCES_FOR_TREES90
     switch (type)
     {
 #if defined USE_INSTANCES_FOR_TREES
@@ -576,15 +575,15 @@ void ApplicationClass::WOMA_APPLICATION_SetInstancePositions(UINT m_ObjId, int m
             bill.Tree0GS(instances, m_instanceCount);
             break;
 #endif
+
         default:
             break;
     }
-#endif
 
 }
 #endif
 
-#if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined USE_FRUSTRUM
+#if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined USE_FRUSTUM
 bool ApplicationClass::WOMA_LOAD_OBJ(void* pContext, UINT threadID, WomaDriverClass* Driver, UINT i, TCHAR* wfilename)
 {
 	objModel.push_back(NULL);
@@ -817,7 +816,7 @@ void ApplicationClass::InitTerrainandWaterSurfaces(void* pContext, WomaDriverCla
 
 }
 
-void ApplicationClass::InitObjInstances(void* pContext, WomaDriverClass* Driver)
+void ApplicationClass::AddObjsWithInstancesToXML()
 {
 	//-----------------------------------------------------------------------------------------------------------------
 	// Add Instanced Billboards to World.xml
@@ -834,7 +833,7 @@ void ApplicationClass::InitObjInstances(void* pContext, WomaDriverClass* Driver)
 		XMLobj3D.type = 0;
 
 		strcpy_s(XMLobj3D.filename, sizeof(XMLobj3D.filename), BILL_GS);
-		SystemHandle->xml_loader.theWorldXML.push_back(XMLobj3D);  //Add obj as xml entry
+		SystemHandle->xml_loader.theWorldXML.push_back(XMLobj3D);  //Add obj as XML entry
 	}
 #endif
 
@@ -849,7 +848,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	womalogauto(TEXT("----------------------------------------------------------------------------------------\n"));
 	womalogauto(TEXT("[%d]: WOMA_APPLICATION_Initialize3D()\n"), gettid());
 
-	// Log xml objects:
+	// Log XML objects:
 	world_xml_objs = (UINT)SystemHandle->xml_loader.theWorldXML.size(); //15 @lvl:93
 	initial_world_xml_objs = world_xml_objs;
 	womalogauto("Number of objects loaded in: WORLD.XML %d\n", world_xml_objs);
@@ -857,7 +856,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	InitLightandDemos(pContext, Driver);
 	InitMainSky(pContext, Driver);
 	InitTerrainandWaterSurfaces(pContext, Driver);
-	InitObjInstances(pContext, Driver);
+
 
 	//=================================================================================================================
 	// Init MAIN 3D Scene       ///////////////////////////////////////////////////////////////////////////////////////
@@ -875,6 +874,8 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	}
 	womalogauto("Number of billboard objects added %d\n", SystemHandle->xml_loader.theWorldXML.size()- world_xml_objs);
 #endif
+
+
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// LOAD PROGRESS BAR
@@ -914,7 +915,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	//-----------------------------------------------------------------------------------------------------------------
 	// [MAIN OBJ LOAD]: 3D-Load Scene: Create "model OBJECTS" from loaded "XML OBJECTS" in file WORLD.XML     /////////
 	//-----------------------------------------------------------------------------------------------------------------
-#if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined USE_FRUSTRUM
+#if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined USE_FRUSTUM
 
 	// Load 3D Objects: convert XML "objects" -- Load OBJ or W3D --> VirtualModelClass:
 	theWorld_size = (UINT)SystemHandle->xml_loader.theWorldXML.size();
@@ -942,7 +943,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))	// There is any OS messages to handle?
 		{
 			TranslateMessage(&msg); // TranslateMessage produces WM_CHAR messages only for keys that are mapped to ASCII characters by the keyboard driver.
-			DispatchMessage(&msg);  // Process Msg:  (INVOKE: WinSystemClass::MessageHandler)
+			DispatchMessage(&msg);  // Process MSG:  (INVOKE: WinSystemClass::MessageHandler)
 		}
 	}
 #endif

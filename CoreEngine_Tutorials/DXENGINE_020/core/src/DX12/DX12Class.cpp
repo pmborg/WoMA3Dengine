@@ -94,7 +94,7 @@ namespace DirectX {
 #if DX_ENGINE_LEVEL >= 21 || defined CLIENT_SCENE_TEXT //21
 		//m_Camera = NULL;
 #endif
-#if defined USE_FRUSTRUM
+#if defined USE_FRUSTUM
 		frustum = NULL;
 #endif
 
@@ -151,7 +151,7 @@ namespace DirectX {
 			for (UINT i = 0; i < BufferCount; ++i)
 				m_renderTargets[i].Reset();
 
-#if defined USE_FRUSTRUM
+#if defined USE_FRUSTUM
 			SAFE_DELETE(frustum);
 #endif
 #if defined USE_DSV
@@ -654,7 +654,7 @@ namespace DirectX {
 #endif
 		//-----------------------------------------------------------------
 
-#if defined USE_FRUSTRUM
+#if defined USE_FRUSTUM
 		frustum = NEW DXfrustumClass;	// Create Frustum
 #endif
 

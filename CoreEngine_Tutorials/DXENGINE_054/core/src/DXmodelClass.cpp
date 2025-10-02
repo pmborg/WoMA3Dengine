@@ -199,7 +199,7 @@ bool DirectX::DXmodelClass::LoadTexture(void* pContext, TCHAR* objectName, void*
 }
 
 bool DirectX::DXmodelClass::LoadLight(void* pContext, TCHAR* objectName, void* driver,
-	SHADER_TYPE shader_type, std::vector<STRING>* textureFile,
+	SHADER_TYPE shader_type, std::vector<STRING>* textureFiles,
 	std::vector<ModelTextureLightVertexType>* model, std::vector<UINT>* indexList, UINT instanceCount)
 {
 	LOADDRIVER(driver);
@@ -222,7 +222,7 @@ bool DirectX::DXmodelClass::LoadLight(void* pContext, TCHAR* objectName, void* d
              );
 
 		indexModelList = indexList;
-	return InitializeDXbuffers((ID3D11DeviceContext*)pContext, objectName, textureFile);
+	return InitializeDXbuffers((ID3D11DeviceContext*)pContext, objectName, textureFiles);
 }
 
 
@@ -280,7 +280,9 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 		// Create the SHADER object / LOAD HLSL ---> return shader as pointer!!
 		shader = NEW DXshaderClass(m_driver11->ShaderVersionH, m_driver11->ShaderVersionL, Model3D);
 		IF_NOT_THROW_EXCEPTION(shader);
-		result = shader->Initialize(m_ObjId, objectName, ShaderType, ((DirectX::DX11Class*)m_driver11)->m_device11, SystemHandle->m_hWnd, PrimitiveTopology, (ShaderType == SHADER_TEXTURE_GS_INSTANCED)?true:false);
+		result = shader->Initialize(m_ObjId, objectName, ShaderType, ((DirectX::DX11Class*)m_driver11)->m_device11, 
+									SystemHandle->m_hWnd, PrimitiveTopology, 
+									(ShaderType == SHADER_TEXTURE_GS_INSTANCED)?true:false);
 	break;
   #endif
 
@@ -1305,7 +1307,7 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 		// Create the instance array.
 		IF_NOT_RETURN_FALSE (instances = NEW InstanceType[m_instanceCount]);
 		
-		// Call "User" Function:
+		// Call "User" Function to setup all instances:
 		SystemHandle->m_Application->WOMA_APPLICATION_SetInstancePositions (SystemHandle->xml_loader.theWorldXML[m_ObjId].id, m_instanceCount, instances, 
                                                                             SystemHandle->xml_loader.theWorldXML[m_ObjId].type);
 
@@ -1963,6 +1965,7 @@ void DirectX::DXmodelClass::RenderWithFade(void* pContext, float fadeLight, bool
 		#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
 			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 				m_Shader11->PSfade = fadeLight;
+			    model_fade = fadeLight;
 
 			if (RENDER_PAGE >= 51) {
 				if (m_Driver->RenderfirstTime) {
@@ -1979,6 +1982,7 @@ void DirectX::DXmodelClass::RenderWithFade(void* pContext, float fadeLight, bool
 			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
 			{
 				m_Shader->PSfade = fadeLight;
+			    model_fade = fadeLight;
 			}
 		#endif
 
@@ -2001,6 +2005,7 @@ void DirectX::DXmodelClass::RenderSky(void* pContext, UINT camera, float fadeLig
 	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
 	{
 		m_Shader11->PSfade = fadeLight;
+		model_fade = fadeLight;
 		if (m_Driver->RenderfirstTime) 
 		{
 			m_Shader11->isSky = true;
@@ -2123,7 +2128,7 @@ void DirectX::DXmodelClass::Render(void* ctx, UINT threadID, UINT camera, UINT p
             #if defined USE_OPTIMIZING
 			m_Shader11->Render(pass, pContext, m_indexCount, &m_worldMatrix, viewMatrix, &m_driver11->m_projectionMatrix_sky);	// Single Material (Optimized)
             #else
-			m_Shader11->Render(pass, pContext, m_indexCount, &m_worldMatrix, viewMatrix, projectionMatrix);
+				m_Shader11->Render(pass, pContext, m_indexCount, &m_worldMatrix, viewMatrix, projectionMatrix);
             #endif
 		}
 	}

@@ -182,7 +182,7 @@ bool DirectX::DXmodelClass::LoadTexture(void* pContext, TCHAR* objectName, void*
 }
 
 bool DirectX::DXmodelClass::LoadLight(void* pContext, TCHAR* objectName, void* driver,
-	SHADER_TYPE shader_type, std::vector<STRING>* textureFile,
+	SHADER_TYPE shader_type, std::vector<STRING>* textureFiles,
 	std::vector<ModelTextureLightVertexType>* model, std::vector<UINT>* indexList, UINT instanceCount)
 {
 	LOADDRIVER(driver);
@@ -205,7 +205,7 @@ bool DirectX::DXmodelClass::LoadLight(void* pContext, TCHAR* objectName, void* d
              );
 
 		indexModelList = indexList;
-	return InitializeDXbuffers((ID3D11DeviceContext*)pContext, objectName, textureFile);
+	return InitializeDXbuffers((ID3D11DeviceContext*)pContext, objectName, textureFiles);
 }
 
 
@@ -223,7 +223,9 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 		// Create the SHADER object / LOAD HLSL ---> return shader as pointer!!
 		shader = NEW DXshaderClass(m_driver11->ShaderVersionH, m_driver11->ShaderVersionL, Model3D);
 		IF_NOT_THROW_EXCEPTION(shader);
-		result = shader->Initialize(m_ObjId, objectName, ShaderType, ((DirectX::DX11Class*)m_driver11)->m_device11, SystemHandle->m_hWnd, PrimitiveTopology, (ShaderType == SHADER_TEXTURE_GS_INSTANCED)?true:false);
+		result = shader->Initialize(m_ObjId, objectName, ShaderType, ((DirectX::DX11Class*)m_driver11)->m_device11, 
+									SystemHandle->m_hWnd, PrimitiveTopology, 
+									(ShaderType == SHADER_TEXTURE_GS_INSTANCED)?true:false);
 	break;
   #endif
 
@@ -1679,7 +1681,7 @@ void DirectX::DXmodelClass::Render(void* ctx, UINT threadID, UINT camera, UINT p
             #if defined USE_OPTIMIZING
 			m_Shader11->Render(pass, pContext, m_indexCount, &m_worldMatrix, viewMatrix, &m_driver11->m_projectionMatrix_sky);	// Single Material (Optimized)
             #else
-			m_Shader11->Render(pass, pContext, m_indexCount, &m_worldMatrix, viewMatrix, projectionMatrix);
+				m_Shader11->Render(pass, pContext, m_indexCount, &m_worldMatrix, viewMatrix, projectionMatrix);
             #endif
 		}
 	}

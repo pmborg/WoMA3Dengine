@@ -76,7 +76,7 @@ SamplerState SampleType; //CH05 - TEXTURE
 #include "light.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
-// Vertex Shader
+// VERTEX SHADER
 ////////////////////////////////////////////////////////////////////////////////
 PSIn VS_Main(VSIn input)
 {
@@ -158,7 +158,7 @@ inline float4 lightFunc(float3 bumpNormal, float4 textureColor)
 */
 
 ////////////////////////////////////////////////////////////////////////////////
-// Pixel Shader
+// PIXEL SHADER
 ////////////////////////////////////////////////////////////////////////////////
 float4 PS_Main(PSIn input) : SV_TARGET
 {
@@ -318,6 +318,8 @@ float4 PS_Main(PSIn input) : SV_TARGET
             textureColor *= 1.5;
         }
         
+        if (fade < 1)
+            textureColor.rgb *= fade;
         return textureColor;
         //return float4(1,1,1,1);
     }

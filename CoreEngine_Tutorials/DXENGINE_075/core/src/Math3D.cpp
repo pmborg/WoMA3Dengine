@@ -18,11 +18,30 @@
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234525217;
 
+#include "platform.h"
+#if defined DX_ENGINE && DX_ENGINE_LEVEL >= 23
+#include "vertexTypes.h"
+#endif
 #include "Math3D.h"
 #include "TrigonometryMathClass.h"
 
 #ifndef INFINITY
 #define INFINITY	1e+8f
+#endif
+
+#if defined DX_ENGINE && DX_ENGINE_LEVEL >= 23
+Vector3 operator+(const Vector3 vec, const Vector3& vec1)
+{
+	return Vector3(vec.x + vec1.x, vec.y + vec1.y, vec.z + vec1.z);
+}
+Vector3 operator-(const Vector3 vec, const Vector3& vec1)
+{
+	return Vector3(vec.x - vec1.x, vec.y - vec1.y, vec.z - vec1.z);
+}
+Vector3 operator*(const Vector3& vec, const float scale)
+{
+	return  Vector3(vec.x * scale, vec.y * scale, vec.z * scale);
+}
 #endif
 
 WOMA::vec3 operator + (const WOMA::vec3 &u, const WOMA::vec3 &v){
