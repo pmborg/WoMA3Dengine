@@ -39,40 +39,42 @@ Texture2D BumpMap       : register(t8);
 cbuffer PBRMaterial : register(b0)
 {
      // 0: Albedo/BaseColor
-    float4 gAlbedo; 
-    int gUseAlbedoMap;
+    float4  gAlbedo; 
+    int     gUseAlbedoMap;
     
     // 1: Normal
-    int gNormalState; //gNormalState=1 means DO Normal | 2: means DO Bump | 3: means DO both
+    int     gNormalState; //gNormalState=1 means DO Normal | 2: means DO Bump | 3: means DO both
     
     // 3: Ambient Occlusion
-    int gUseAoMap;
+    int     gUseAoMap;
     
     // 4: Emissive
-    int gUseEmissiveMap;
+    int     gUseEmissiveMap;
     
     // -------------------------------------
-    float4 ambientColor;
-    float4 lightColor;
-    float4 lightDirection;
-    float3 gLightPos;
+    float4  ambientColor;
+    float4  lightColor;
+    float4  lightDirection;
+    float3  gLightPos;
     // 5: Opacity/Alpha
-    int gUseAlphaMap;
+    int     gUseAlphaMap;
     
     // -------------------------------------
     //6: Metallic
-    float  gMetallic;
-    int gUseMetallicMap;
-    float  gRoughness;
-    int gUseRoughnessMap;
+    float   gMetallic;
+    int     gUseMetallicMap;
+    float   gRoughness;
+    int     gUseRoughnessMap;
     
     // -------------------------------------
     // 8: Emissive color
-    int gUseEmissiveColor;
+    int     gUseEmissiveColor;
     
-    int gUseOccMetalRough;  //Type::GLTF
-    int gConvertToLinear;   //Type::GLTF
-    int gUseGLTF;           //Type::GLTF
+    int     gUseOccMetalRough;  //Type::GLTF
+    int     gConvertToLinear;   //Type::GLTF
+    int     gUseGLTF;           //Type::GLTF
+    
+    float   fade;
 }
 
 struct PixelShaderInput
@@ -242,7 +244,8 @@ float4 main(PixelShaderInput input) : SV_TARGET
     float rim = pow(1.0 - max(dot(N, V), 0.0), 2.0);
     Color += albedo * rim * 0.1;
         
-    textureColor.rgb = float4(Color, 1.0f);
+    //textureColor.rgb = float4(Color*fade, 1.0f);
+    textureColor.rgb = Color * fade;
 
 	// Output alpha (if used)
     if (gUseAlphaMap)
@@ -250,5 +253,6 @@ float4 main(PixelShaderInput input) : SV_TARGET
         float alpha = AlphaMap.Sample(LinearSampler, input.texCoord).r;
         textureColor.a = alpha;
     }
+    
     return textureColor;
 }

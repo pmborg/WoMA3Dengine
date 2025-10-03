@@ -927,8 +927,8 @@ void ApplicationClass::RenderModel(void* pContext, UINT threadID, UINT monitorIn
 	}
     model->translation(positionX, positionY, positionZ);
 
-	if (SystemHandle->xml_loader.theWorldXML[model->m_ObjId].type >= 400)
-		Sleep(1);
+	//if (SystemHandle->xml_loader.theWorldXML[model->m_ObjId].type >= 400)
+	//	Sleep(1);
 
 	// === RENDER OBJ.: ===					   
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP

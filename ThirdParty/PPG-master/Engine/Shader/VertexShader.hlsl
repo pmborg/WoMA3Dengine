@@ -52,15 +52,15 @@ struct VertexShaderInput
 
 struct VertexShaderOutput
 {
-    float4 position : SV_POSITION;
-    float3 normal : NORMAL;
-    float2 texCoord : TEXCOORD0;
+    float4 position             : SV_POSITION;
+    float3 normal               : NORMAL;
+    float2 texCoord             : TEXCOORD0;
 #if defined PS_USE_SPECULAR
 	float3 viewDirection		: TEXCOORD1;			// 34 Specular
 	float4 cameraPosition		: WS;					// 34 Specular
-    float4 wPosition : POSITION1;
+    float4 wPosition            : POSITION1;
 #endif
-    float3x3 TBN : TBN_MATRIX;
+    float3x3 TBN                : TBN_MATRIX;
 };
 
 VertexShaderOutput main(VertexShaderInput input)

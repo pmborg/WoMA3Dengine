@@ -251,8 +251,8 @@ void ApplicationClass::RenderModel(void* pContext, UINT threadID, UINT monitorIn
 	// ------------------------------------------------------------------------------------------------------------------------------
     model->translation(positionX, positionY, positionZ);
 
-	if (SystemHandle->xml_loader.theWorldXML[model->m_ObjId].type >= 400)
-		Sleep(1);
+	//if (SystemHandle->xml_loader.theWorldXML[model->m_ObjId].type >= 400)
+	//	Sleep(1);
 
 	// === RENDER OBJ.: ===					   
 	model->Render(pContext, threadID, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass);

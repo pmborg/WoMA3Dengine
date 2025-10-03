@@ -65,6 +65,8 @@ _declspec(align(16)) struct PBRMaterialInfo
     int   m_UseGLTF = 0;            //Future: Type::GLTF
     int   m_UseOccRoughMetal = 0;   //Future: Type::GLTF
     int   m_ConvertToLinear = 0;    //Future: Type::GLTF
+
+	float fade=1;
 };
 
 class PBRMaterial

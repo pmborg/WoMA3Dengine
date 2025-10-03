@@ -31,7 +31,7 @@ class GBufferPass
 public:
     GBufferPass(Graphics& graphics, Texture& diffuse, Texture& metalRough, Texture& normals, Texture& emissive);
     ~GBufferPass();
-    void Render(ID3D11DeviceContext* pContext, Graphics& graphics, Scene& scene);
+    void Render(ID3D11DeviceContext* pContext, Graphics& graphics, Scene& scene, float fadeLight);
 
     Texture& m_Diffuse;
     Texture& m_MetalRough;

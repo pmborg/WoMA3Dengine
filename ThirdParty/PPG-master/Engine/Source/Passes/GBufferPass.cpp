@@ -55,7 +55,7 @@ GBufferPass::~GBufferPass()
     SAFE_RELEASE(m_BoneBuffer);
 }
 
-void GBufferPass::Render(ID3D11DeviceContext* deviceContext, Graphics& graphics, Scene& scene)
+void GBufferPass::Render(ID3D11DeviceContext* deviceContext, Graphics& graphics, Scene& scene, float fadeLight=1)
 {
     //auto deviceContext = graphics.m_DeviceContext;
     static XMMATRIX staticm_FinalTransforms[128] = {};
@@ -80,7 +80,7 @@ void GBufferPass::Render(ID3D11DeviceContext* deviceContext, Graphics& graphics,
         Animator* animator = meshRenderer.m_Animator;
         if (animator != nullptr && animator->m_IsEnabled)
         {
-			animator->m_FinalTransforms[127].r->m128_f32[0] = 127;    //AQUI-ANIM																	 
+			animator->m_FinalTransforms[127].r->m128_f32[0] = 127;			//AQUI-ANIM
             if (animator != currentAnimator)
             {
                 graphics.UpdateBuffer(deviceContext, m_BoneBuffer, animator->m_FinalTransforms);
@@ -100,7 +100,7 @@ void GBufferPass::Render(ID3D11DeviceContext* deviceContext, Graphics& graphics,
 
         mat->m_MaterialInfo.ambientColor = SystemHandle->m_Application->app_Light->m_ambientColor;
         mat->m_MaterialInfo.lightColor = SystemHandle->m_Application->app_Light->m_diffuseColor;
-
+		mat->m_MaterialInfo.fade = fadeLight;
         graphics.UpdateBuffer(deviceContext, m_PBRMaterialBuffer, &(mat->m_MaterialInfo));
 
         // 0:

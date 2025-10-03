@@ -1017,4 +1017,4 @@ bool StartsWithDotDotSlash(const STRING& fileNamePath)
 	return fileNamePath.rfind(prefix, 0) == 0;
 }
 
-
+bool g_GOD_MODE = false;

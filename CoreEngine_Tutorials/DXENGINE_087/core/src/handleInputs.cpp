@@ -19,6 +19,7 @@
 //WomaIntegrityCheck = 1234525217;
 
 #include "platform.h"
+
 #if defined USE_DIRECT_INPUT
 #if defined DX_ENGINE
 #include "WinSystemClass.h"
@@ -39,7 +40,6 @@
 #include "OSengine.h"
 
 bool f11GodState = false;
-bool g_GOD_MODE = false;
 
 #if defined DX_ENGINE
 UINT Key1[] = { DIK_1 }; //bow

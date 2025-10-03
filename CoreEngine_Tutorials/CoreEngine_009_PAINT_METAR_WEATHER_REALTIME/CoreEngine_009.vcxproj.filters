@@ -161,6 +161,15 @@
     <ClInclude Include="include\weatherClass.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="..\level.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tech-level.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\woma_engine_assets.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
