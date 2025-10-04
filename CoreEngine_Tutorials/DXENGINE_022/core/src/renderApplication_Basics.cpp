@@ -850,40 +850,6 @@ void ApplicationClass::RenderDemoIntroSprites(void* pContext)
 
 #if defined CHECK_OBJ_COLISION
 // Calculate the world space pick ray from the 2D coordinates
-#if false
-void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickRayInWorldSpacePos, XMVECTOR& pickRayInWorldSpaceDir)
-{
-#define m_driver11 ((DirectX::DX11Class*)driverList[SystemHandle->AppSettings->DRIVER])
-
-    // [1] Get dimensions
-    float width = static_cast<float>(SystemHandle->windowsArray[0].width);
-    float height = static_cast<float>(SystemHandle->windowsArray[0].height);
-
-    // [2] Convert mouse to Normalized Device Coordinates (NDC)
-    float ndcX = (2.0f * mouseX / width) - 1.0f;
-    float ndcY = 1.0f - (2.0f * mouseY / height); // invert Y
-
-    // [3] View-space ray in clip space (Z=1 for far plane, W=1)
-    XMVECTOR rayClip = XMVectorSet(ndcX, ndcY, 1.0f, 1.0f);
-
-    // [4] Inverse projection transform (clip -> view space)
-    XMMATRIX projMatrix = m_driver11->m_projectionMatrix;
-    XMMATRIX invProj = XMMatrixInverse(nullptr, projMatrix);
-    XMVECTOR rayEye = XMVector4Transform(rayClip, invProj);
-
-    // THIS IS IMPORTANT: rayEye is homogeneous; convert to direction
-    rayEye = XMVectorSet(rayEye.m128_f32[0], rayEye.m128_f32[1], rayEye.m128_f32[2], 0.0f);
-
-    // [5] Inverse view transform (view -> world space)
-    XMMATRIX viewMatrix = DXsystemHandle->m_Camera->m_viewMatrix;
-    XMMATRIX invView = XMMatrixInverse(nullptr, viewMatrix);
-    pickRayInWorldSpaceDir = XMVector3TransformNormal(rayEye, invView);
-    pickRayInWorldSpaceDir = XMVector3Normalize(pickRayInWorldSpaceDir);
-
-    // [6] Ray origin = camera position
-    pickRayInWorldSpacePos = XMLoadFloat3(&DXsystemHandle->m_Camera->GetPosition());
-}
-#else
 // ==================================================================================================================================
 void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickRayInWorldSpacePos, XMVECTOR& pickRayInWorldSpaceDir)
 // ==================================================================================================================================
@@ -912,8 +878,6 @@ void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickR
 
     int ClientWidth = SystemHandle->AppSettings->WINDOW_WIDTH;   
     int ClientHeight = SystemHandle->AppSettings->WINDOW_HEIGHT; 
-    //float ClientWidth = static_cast<float>(SystemHandle->windowsArray[0].width);
-    //float ClientHeight = static_cast<float>(SystemHandle->windowsArray[0].height);
 
     XMVECTOR pickRayInViewSpaceDir = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
     XMVECTOR pickRayInViewSpacePos = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
@@ -963,7 +927,6 @@ void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickR
 #undef _43
 #undef _44
 }
-#endif
 
 
 // Calculates whether the object was picked or not | getPoligon = true (detect colision)

@@ -219,6 +219,7 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 	// GET: m_vertexCount
 	switch (ShaderType) 
 	{
+	// ----------------------------------------------------------------------------------------------
 	case SHADER_COLOR:
 		m_vertexCount = (UINT) (*modelColorVertex).size();	// Set the number of vertices in the vertex array.
 		if (m_vertexCount == 0)								// Better check, if object is empty...
@@ -244,7 +245,11 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 
 	// ----------------------------------------------------------------------------------------------
 
-		// ----------------------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------------------
+
+	// ----------------------------------------------------------------------------------------------
+
+	// ----------------------------------------------------------------------------------------------
 
 	default:
 		throw woma_exception("WRONG SHADER!", __FILE__, __FUNCTION__, __LINE__);
@@ -376,7 +381,7 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 	#if defined DX11 || defined DX12 || defined DX9
 		UINT*	indices = NULL;	//DX10/11/12
 	#else
-		WORD*	indices9 = NULL;//DX9/12
+		WORD*	indices9 = NULL;//DX9sdk
 	#endif
 
         int j = 0;

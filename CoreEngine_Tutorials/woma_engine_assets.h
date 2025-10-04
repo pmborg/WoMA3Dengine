@@ -625,7 +625,7 @@
 	#define DEMO_TITLE TEXT("98: Day and Night")
 	#define WORLD_XML  TEXT("world_98.xml")
   #endif
-  #define LAMP_GS TEXT("engine/data/scene98/oldWoodLamp.obj")
+  #define LAMP_GS TEXT("engine/data/scene98/oldWoodLamp.w3d")
 #endif
 
 #if DX_ENGINE_LEVEL == 99

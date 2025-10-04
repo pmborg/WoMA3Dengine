@@ -60,7 +60,7 @@ SamplerState SampleType;		//: register(s0);		// 3D (default) WRAP
 #include "light.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
-// Vertex Shader
+// VERTEX SHADER
 ////////////////////////////////////////////////////////////////////////////////
 PSIn VS_Main(VSIn input, uint instanceID : SV_InstanceID)
 {
@@ -99,15 +99,17 @@ PSIn VS_Main(VSIn input, uint instanceID : SV_InstanceID)
 	//[3th] PRESPECTIVE the instance
 	//21: POSITION: Calculate the position of the vertex against the world, view, and projection matrices
 	if (VS_USE_WVP) {
-		output.position = mul(float4(input.position, 1), WVP);	// Calculate the position of the vertex against the world, view, and projection matrices
+		position = mul(position, WVP);	// Calculate the position of the vertex against the world, view, and projection matrices
 	}
-	else {
+	else 
+    {
 		position = mul(position, worldMatrix);
 		position = mul(position, view);			//viewMatrix
 		position = mul(position, projection);	//projectionMatrix
-		output.position = position;
 	}
 
+    output.position = position;
+    
 	//22: TEXTURE: Store the texture coordinates for the pixel shader:
 	output.texCoords = input.texCoords;
 
@@ -141,7 +143,7 @@ PSIn VS_Main(VSIn input, uint instanceID : SV_InstanceID)
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Pixel Shader
+// PIXEL SHADER
 ////////////////////////////////////////////////////////////////////////////////
 float4 PS_Main(PSIn input) : SV_TARGET
 {
@@ -199,5 +201,6 @@ float4 PS_Main(PSIn input) : SV_TARGET
 
 #endif
 
+    //return float4(1,1,1,1);
     return textureColor;
 }

@@ -601,13 +601,6 @@ void ApplicationClass::WOMA_APPLICATION_SetInstancePositions(UINT m_ObjId, int m
 			int i = 0;
 			for (int x = 0; x < USE_INSTANCES_FOR_LAMP_ROWS; x++)			// 00..01 2 total
 			{
-				if (x == 0) {
-					instances[i].rotY = -90;	// -PI / 2;
-				}
-				else {
-					instances[i].rotY = +90;	// +PI / 2;
-				}
-
 				for (int z = 0; z < USE_INSTANCES_FOR_LAMP_LINES; z++)	// 00..12 13 total
 				{
 					instances[i].position.x = iniX +  3.0f * x;
@@ -630,6 +623,10 @@ void ApplicationClass::WOMA_APPLICATION_SetInstancePositions(UINT m_ObjId, int m
 bool ApplicationClass::WOMA_LOAD_OBJ(void* pContext, UINT threadID, WomaDriverClass* Driver, UINT i, TCHAR* wfilename)
 {
 	objModel.push_back(NULL);
+
+
+	if (SystemHandle->xml_loader.theWorldXML[i].type == 401)
+		Sleep(1);
 
 	if (i > 0
 		&& _tcscmp(SystemHandle->xml_loader.theWorldXML[i].filename, SystemHandle->xml_loader.theWorldXML[i - 1].filename) == 0
@@ -889,8 +886,8 @@ void ApplicationClass::AddObjsWithInstancesToXML()
 
 		XMLobj3D.id = (int)SystemHandle->xml_loader.theWorldXML.size();
 		XMLobj3D.posX = 0; XMLobj3D.translateY = 0; XMLobj3D.posZ = 0;
-		XMLobj3D.shader = SHADER_TEXTURE_GS_INSTANCED;
-		XMLobj3D.scale = 1; // 0.0215f;
+		XMLobj3D.shader = SHADER_TEXTURE_LIGHT_INSTANCED; //SHADER_TEXTURE_GS_INSTANCED
+		XMLobj3D.scale = 0.0215f;
 		XMLobj3D.instances = (USE_INSTANCES_FOR_LAMP_LINES * USE_INSTANCES_FOR_LAMP_ROWS);
 		XMLobj3D.type = 401;
 

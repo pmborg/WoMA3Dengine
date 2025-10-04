@@ -248,7 +248,7 @@ public:
 	void initLightRay(void* pContext);
 	#endif
 	void RenderHUD_Logo(void* pContext);
-	void RenderModel(void* pContext, UINT threadID, UINT monitorWindow, WomaDriverClass* driver, UINT modelID, UINT pass, XMMATRIX* m_viewMatrix = NULL, XMMATRIX* m_projectionMatrix = NULL, float fadeLight = 1);
+	void RenderModel(void* pContext, UINT threadID, UINT monitorWindow, WomaDriverClass* driver, UINT modelID, UINT pass, XMMATRIX* m_viewMatrix = NULL, XMMATRIX* m_projectionMatrix = NULL, float fadeLight = 1, UINT op = 0);
 #if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined USE_FRUSTUM
 	bool WOMA_LOAD_OBJ(void* pContext, UINT threadID, WomaDriverClass* Driver, UINT i, TCHAR* wfilename);
 #endif																			  

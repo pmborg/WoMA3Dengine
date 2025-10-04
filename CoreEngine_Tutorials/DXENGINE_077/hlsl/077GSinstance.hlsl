@@ -24,7 +24,7 @@ struct VSIn
 	float2 texCoords        : TEXCOORD0; 			//22
 	float3 normal	        : NORMAL;				//23
     float3 instancePosition : INSTANCEPOS;
-    float  rotY             : TEXCOORD1;
+    //float  rotY             : TEXCOORD1;
 };
 
 //GEOMETRY:
@@ -94,8 +94,8 @@ GSIn VS_Main(VSIn input, uint instanceID : SV_InstanceID)
 	};
    
     float rY = VSrotY;
-    if (input.rotY != 0)
-        rY = input.rotY;
+    //if (input.rotY != 0)
+    //    rY = input.rotY;
     
     rotationAroundY[0].x =  cos(rY);
 	rotationAroundY[0].z = -sin(rY);

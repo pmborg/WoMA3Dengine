@@ -282,6 +282,7 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 	// GET: m_vertexCount
 	switch (ShaderType) 
 	{
+	// ----------------------------------------------------------------------------------------------
 	case SHADER_COLOR:
 		m_vertexCount = (UINT) (*modelColorVertex).size();	// Set the number of vertices in the vertex array.
 		if (m_vertexCount == 0)								// Better check, if object is empty...
@@ -300,22 +301,24 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 		break;
 
 	// ----------------------------------------------------------------------------------------------
-#if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES
-	case SHADER_TEXTURE_LIGHT_INSTANCED:	//40: INSTANCED like 23 light, but using Instances
+
+	#if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES
+	case SHADER_TEXTURE_LIGHT_INSTANCED:			//40: INSTANCED like 23 light, but using Instances
 	#endif
-	case SHADER_TEXTURE_LIGHT:			    //23
-	case SHADER_TEXTURE_LIGHT_RENDERSHADOW: //36
-    case SHADER_TEXTURE_GS_INSTANCED:       //77
-    case SHADER_TEXTURE_LIGHT_FAST:         //83
+
+	case SHADER_TEXTURE_LIGHT:						//23
+	case SHADER_TEXTURE_LIGHT_RENDERSHADOW:			//36
+    case SHADER_TEXTURE_GS_INSTANCED:				//77
+    case SHADER_TEXTURE_LIGHT_FAST:					//83
 		m_vertexCount = (UINT) (*modelTextureLightVertex).size();	// Set the number of vertices in the vertex array.
 		if (m_vertexCount == 0)										// Better check, if object is empty...
 			return false;	
 		break;
 
 	// ----------------------------------------------------------------------------------------------
-#if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES // Normal Bump + Instancing 
+	// Normal Bump + Instancing 
 	case SHADER_TEXTURE_LIGHT_SAVESHADOW_INSTANCED:
-	#endif
+
 	#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
 	case SHADER_TEXTURE_LIGHT_SAVESHADOW:
 		shader->castShadow = true;
@@ -323,7 +326,6 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 	#endif
 
 	// ----------------------------------------------------------------------------------------------
-
 	case SHADER_NORMAL_BUMP:
 		m_vertexCount = (UINT) (*modelNormalBumpVertex).size();	// Set the number of vertices in the vertex array.
 		if (m_vertexCount == 0)									// Better check, if object is empty...
@@ -332,7 +334,13 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 
 	// ----------------------------------------------------------------------------------------------
 
-		// ----------------------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------------------
+
+	// ----------------------------------------------------------------------------------------------
+
+	// ----------------------------------------------------------------------------------------------
+
+	// ----------------------------------------------------------------------------------------------
 
 	default:
 		throw woma_exception("WRONG SHADER!", __FILE__, __FUNCTION__, __LINE__);
@@ -350,7 +358,6 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
         ShaderType == SHADER_TEXTURE_GS_INSTANCED)
 		shader->m_instanceCount = m_instanceCount;
 	#endif
-
 #endif
 
 	return shader;
@@ -498,7 +505,7 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 	#if defined DX11 || defined DX12 || defined DX9
 		UINT*	indices = NULL;	//DX10/11/12
 	#else
-		WORD*	indices9 = NULL;//DX9/12
+		WORD*	indices9 = NULL;//DX9sdk
 	#endif
 
         int j = 0;

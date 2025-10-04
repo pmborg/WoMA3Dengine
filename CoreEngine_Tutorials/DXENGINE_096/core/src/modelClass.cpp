@@ -1127,7 +1127,7 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 SKIP:
 	fileMtl.close();
 	if (WOMA::game_state == GAME_STOP)
-		return true; // Stop the loading immediately
+		return false; // Stop the loading immediately
 
 	((DXmodelClass*)dxmodelClass)->m_instanceCount = instanceCount;
 

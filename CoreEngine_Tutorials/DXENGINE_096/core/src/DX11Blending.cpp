@@ -101,7 +101,12 @@ bool DX11Class::CreateBlendState()
 	blendStateDescription.RenderTarget[0].RenderTargetWriteMask = 0x0f;
 
 	// Create the blend state using the description.
+#if defined USE_DX11_1_SETUP
 	result = m_device->CreateBlendState(&blendStateDescription, &m_alphaBlendState2);
+#else
+	result = m_device11->CreateBlendState(&blendStateDescription, &m_alphaBlendState2);
+#endif
+
 	if(FAILED(result)){ WomaFatalException("error"); }
 
 	return true;

@@ -518,6 +518,10 @@ bool ApplicationClass::WOMA_LOAD_OBJ(void* pContext, UINT threadID, WomaDriverCl
 {
 	objModel.push_back(NULL);
 
+
+	if (SystemHandle->xml_loader.theWorldXML[i].type == 401)
+		Sleep(1);
+
 		{
 			CREATE_MODEL_IF_NOT_EXCEPTION(objModel[i], I_AM_3D, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.renderShadows);
 		}

@@ -414,8 +414,8 @@
 
     #if DX_ENGINE_LEVEL >= 54
     //world.xml
+	//Water waves
     #endif
-
 
     #if DX_ENGINE_LEVEL >= 60
         #define SCENE_SLOPE_MAP_TEXTURE //55 use 4 textures
@@ -497,6 +497,9 @@
             #define USE_ASSIMP_DXLIB    //81
         #endif
     #endif
+	
+	
+	
 	//-------------------------------------------------------------------------------------------------------
 	//MAIN_RENDER:
 	//-------------------------------------------------------------------------------------------------------
@@ -589,7 +592,7 @@
 #endif
 #if DX_ENGINE_LEVEL >= 96
 	#define USE_CURVED_REAL_SKY_PLANE
-#endif						 
+#endif
 
 #if DX_ENGINE_LEVEL >= 97
 	#define USE_WATER_FALL
@@ -597,21 +600,30 @@
 
 #if DX_ENGINE_LEVEL >= 98
 	#define USE_DAY_AND_NIGHT
-	//#define USE_INSTANCES_FOR_LAMP
-	//#define USE_INSTANCES_FOR_LAMP_ROWS  2
-	//#define USE_INSTANCES_FOR_LAMP_LINES 13
+	#define USE_INSTANCES_FOR_LAMP
+	#define USE_INSTANCES_FOR_LAMP_ROWS  1
+	#define USE_INSTANCES_FOR_LAMP_LINES 13
+#endif
+
+#if DX_ENGINE_LEVEL >= 99
+	#define USE_PLANET_EARTH
+#endif
+
 #endif
 
 
 
-		
-	//#define USE_MULTI_MONITOR
 
-#endif
+
+
+
 
     //-------------------------------------------------------------------------------------------------------
 	#undef  dx12_upload_old_way
 
+	#if DX_ENGINE_LEVEL >= 19
+		#define USE_MULTI_MONITOR
+	#endif
 	#if DX_ENGINE_LEVEL < 94
 	#if DX_ENGINE_LEVEL != 76
 	#undef USE_INTRO_VIDEO_DEMO

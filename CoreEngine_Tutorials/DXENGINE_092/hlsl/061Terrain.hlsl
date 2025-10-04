@@ -49,23 +49,23 @@ struct PSIn
 //Texture2D shaderTexture;  //CH05 - TEXTURE
 
 //CH17&CH18 - There are three textures we will be using for the three different degrees of slope that we want to handle.
-Texture2D grassTexture : register(t0); //CH17 - T 017grass             (Dirty Grass)         N normal001*
-Texture2D slopeTexture : register(t1); //CH17 - T 017slope             (Mixture Slop)        N normal001*
-Texture2D rockTexture : register(t2); //CH17 - T rock02_savdf         (Black Rock)          N normal001*
+Texture2D grassTexture : register(t0);          //CH17 - T 017grass             (Dirty Grass)         N normal001*
+Texture2D slopeTexture : register(t1);          //CH17 - T 017slope             (Mixture Slop)        N normal001*
+Texture2D rockTexture : register(t2);           //CH17 - T rock02_savdf         (Black Rock)          N normal001*
 
-Texture2D detailTexture : register(t3); //CH18 - TN grassTexture        (Grass with BUMP)     t11*
+Texture2D detailTexture : register(t3);         //CH18 - TN grassTexture        (Grass with BUMP)     t11*
 Texture2D textureMappingTexture : register(t4); //CH19 - MAP t_019TerrainMapping(General Mapping)     -
-Texture2D stonePathTexture : register(t5); //CH19 - T stone001             (Stone walk path)     t9*
-Texture2D sandTexture : register(t6); //CH19 - T 019sandV2            (Sand to beach)       N normal001*
-Texture2D mudTexture : register(t7); //CH19 - T CrackedMudV2         (Mud for "Estabulo")  N normal001*
-Texture2D detailMappingTexture : register(t8); //CH20 - MAP t_019TerrainMappingV2
-Texture2D normalTexture : register(t9); //CH21 - N stone001normal       t9*
+Texture2D stonePathTexture : register(t5);      //CH19 - T stone001             (Stone walk path)     t9*
+Texture2D sandTexture : register(t6);           //CH19 - T 019sandV2            (Sand to beach)       N normal001*
+Texture2D mudTexture : register(t7);            //CH19 - T CrackedMudV2         (Mud for "Estabulo")  N normal001*
+Texture2D detailMappingTexture : register(t8);  //CH20 - MAP t_019TerrainMappingV2
+Texture2D normalTexture : register(t9);         //CH21 - N stone001normal       t9*
 
 Texture2D generalNormalTexture : register(t10); //CH22 - N normal001            *
 
-Texture2D bigPathMappingTexture : register(t11); //CH22 - N grassNormal          t11*
-Texture2D smallstonePathTexture : register(t12); //CH22 - T 056B_castle.jpg
-Texture2D shaderTexture         : register(t13); //CH23 - MAP colorLightMapTexture
+Texture2D bigPathMappingTexture: register(t11); //CH22 - N grassNormal          t11*
+Texture2D smallstonePathTexture: register(t12); //CH22 - T 056B_castle.jpg
+Texture2D shaderTexture        : register(t13); //CH23 - MAP colorLightMapTexture
 
 SamplerState SampleType; //CH05 - TEXTURE
 

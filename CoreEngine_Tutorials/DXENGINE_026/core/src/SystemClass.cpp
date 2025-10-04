@@ -1082,7 +1082,7 @@ bool SystemClass::LoadXmlWorld()
 	womalogauto(TEXT("LOAD XML WORLD: %s\n"), (TCHAR*)XML_WORLD_FILE.c_str());
 	womalog("===============================================================================\n");
 
-	// Load and Parse XML FILE:"world.xml" the Configuration file
+	// Load and Parse XML FILE:"world.xml" the WORLD file
 	//----------------------------------------------------------------------------
 	XML_WORLD_FILE = WOMA::PUBLIC_DOCUMENTS;
 	XML_WORLD_FILE += WORLD_XML;
@@ -1092,8 +1092,8 @@ bool SystemClass::LoadXmlWorld()
 		WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "));
 		return false;
 	}
-	
-	SystemHandle->m_Application->AddObjsWithInstancesToXML();			//77 || 90 || 98
+
+	//Create object for all loaded objects
 
 	return true;
 }

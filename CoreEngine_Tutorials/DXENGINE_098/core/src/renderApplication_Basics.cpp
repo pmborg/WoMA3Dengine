@@ -728,7 +728,7 @@ void ApplicationClass::AppPreRender(UINT monitorIndex, WomaDriverClass* Driver, 
 }
 
 void ApplicationClass::RenderModel(void* pContext, UINT threadID, UINT monitorIndex, WomaDriverClass* driver, UINT ID, UINT pass, 
-									XMMATRIX* m_viewMatrix, XMMATRIX* m_projectionMatrix, float fadeLight)
+									XMMATRIX* m_viewMatrix, XMMATRIX* m_projectionMatrix, float fadeLight, UINT op)
 {
     
     UINT modelID = ID;
@@ -771,6 +771,21 @@ void ApplicationClass::RenderModel(void* pContext, UINT threadID, UINT monitorIn
     positionX = SystemHandle->xml_loader.theWorldXML[modelID].posX;
     positionY = SystemHandle->xml_loader.theWorldXML[modelID].translateY;
     positionZ = SystemHandle->xml_loader.theWorldXML[modelID].posZ;
+
+	if (SystemHandle->xml_loader.theWorldXML[modelID].type == 401)
+	{
+		if (threadID == 1)
+			return; //minimap
+		if (op == 0)
+		{
+			SystemHandle->xml_loader.theWorldXML[modelID].rotY = 90*3;
+		}
+		if (op == 1)
+		{
+			positionX += 3;
+			SystemHandle->xml_loader.theWorldXML[modelID].rotY = 90;
+		}
+	}
 
 #if defined USE_AABB_COLISION_CHECK
     static const float padding = 0.1f;
@@ -900,6 +915,7 @@ void ApplicationClass::RenderModel(void* pContext, UINT threadID, UINT monitorIn
         {
             ry = SystemHandle->xml_loader.theWorldXML[model->m_ObjId].rotY;
         }
+
         if (ry == -1000) {
             static float rY = 0.0f;
             rY = (float)dt * (0.005f / 16.66f);	// MOVIMENT FORMULA!
@@ -920,7 +936,7 @@ void ApplicationClass::RenderModel(void* pContext, UINT threadID, UINT monitorIn
         else
             if (rz)
                 model->rotateZ(rz);
-    }// non-Instancing
+    }// non-Instancing END
 
 	// === Adjust current OBJ. height in MAP for WORLD POSITION: ===
 	// ------------------------------------------------------------------------------------------------------------------------------
@@ -929,9 +945,6 @@ void ApplicationClass::RenderModel(void* pContext, UINT threadID, UINT monitorIn
 		positionY += (model->maxVertex.y - model->minVertex.y)/2* model->m_worldMatrix.r[1].m128_f32[1]; //#define _22 r[1].m128_f32[1]
 	}
     model->translation(positionX, positionY, positionZ);
-
-	//if (SystemHandle->xml_loader.theWorldXML[model->m_ObjId].type >= 400)
-	//	Sleep(1);
 
 	// === RENDER OBJ.: ===					   
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
@@ -1034,7 +1047,7 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 
 	WaterTerrain(monitorIndex, fadeLight, pContext);
 
-#if defined GENERATE_ATLAS_INTEGRATION_DDS
+  #if defined GENERATE_ATLAS_INTEGRATION_DDS
 	#if defined USE_ALPHA_BLENDING
 	m_Driver->TurnOffAlphaBlending(pContext);
 	#endif
@@ -1043,7 +1056,7 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 		((DXmodelClass*)AtlasobjModel)->model_fade = fadeLight;
 		((DXmodelClass*)AtlasobjModel)->Render(pContext, 0, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_BILL, &(app_Light->m_viewMatrix), &(app_Light->m_ligth_orthoMatrix));
 	}
-#endif
+  #endif
 
 	// 3D STATIC OPAC OBJECTS on WORLD.XML, that listed in: sceneManager->visibleModelList (in front of camera)
 	//----------------------------------------------------------------------------------------------------------------------
@@ -1062,13 +1075,25 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 #if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined MAIN_RENDER_MAIN_OBJ //MAIN-RENDER: MAIN OBJs. (9 ms)
 	for (UINT id = 0; id < WOMA::sceneManager->visibleModelList.size(); id++)
 	{
-		RenderModel(pContext, 0, monitorIndex, m_Driver, id, PASS_OPAC, NULL, NULL, fadeLight);
-		if (id == 0 && ((DXmodelClass*)objModel[id])->obj3d.hasTransparent == true)
+		
+		switch(SystemHandle->xml_loader.theWorldXML[WOMA::sceneManager->visibleModelList[id]->m_ObjId].type)
 		{
-			m_Driver->TurnOnAlphaBlending(pContext);
-			((DXmodelClass*)objModel[id])->m_Shader11->PSfade = fadeLight;
-			objModel[id]->Render(pContext, 0, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_TRANSPARENT, NULL, NULL);
-			m_Driver->TurnOffAlphaBlending(pContext);
+			case 401:
+				//((DXmodelClass*)WOMA::sceneManager->visibleModelList[id])->m_worldMatrix = XMMatrixIdentity();
+				RenderModel(pContext, 0, monitorIndex, m_Driver, id, PASS_OPAC, NULL, NULL, fadeLight, 0);
+				RenderModel(pContext, 0, monitorIndex, m_Driver, id, PASS_OPAC, NULL, NULL, fadeLight, 1);
+				//objModel[id]->Render(pContext, 0, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_OPAC, NULL, NULL);
+				break;
+				default:
+					RenderModel(pContext, 0, monitorIndex, m_Driver, id, PASS_OPAC, NULL, NULL, fadeLight);
+					if (id == 0 && ((DXmodelClass*)objModel[id])->obj3d.hasTransparent == true)
+					{
+						m_Driver->TurnOnAlphaBlending(pContext);
+						((DXmodelClass*)objModel[id])->m_Shader11->PSfade = fadeLight;
+						objModel[id]->Render(pContext, 0, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_TRANSPARENT, NULL, NULL);
+						m_Driver->TurnOffAlphaBlending(pContext);
+					}
+				break;
 		}
 	}
 #endif
@@ -1796,40 +1821,6 @@ void ApplicationClass::RenderDemoIntroSprites(void* pContext)
 
 #if defined CHECK_OBJ_COLISION
 // Calculate the world space pick ray from the 2D coordinates
-#if false
-void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickRayInWorldSpacePos, XMVECTOR& pickRayInWorldSpaceDir)
-{
-#define m_driver11 ((DirectX::DX11Class*)driverList[SystemHandle->AppSettings->DRIVER])
-
-    // [1] Get dimensions
-    float width = static_cast<float>(SystemHandle->windowsArray[0].width);
-    float height = static_cast<float>(SystemHandle->windowsArray[0].height);
-
-    // [2] Convert mouse to Normalized Device Coordinates (NDC)
-    float ndcX = (2.0f * mouseX / width) - 1.0f;
-    float ndcY = 1.0f - (2.0f * mouseY / height); // invert Y
-
-    // [3] View-space ray in clip space (Z=1 for far plane, W=1)
-    XMVECTOR rayClip = XMVectorSet(ndcX, ndcY, 1.0f, 1.0f);
-
-    // [4] Inverse projection transform (clip -> view space)
-    XMMATRIX projMatrix = m_driver11->m_projectionMatrix;
-    XMMATRIX invProj = XMMatrixInverse(nullptr, projMatrix);
-    XMVECTOR rayEye = XMVector4Transform(rayClip, invProj);
-
-    // THIS IS IMPORTANT: rayEye is homogeneous; convert to direction
-    rayEye = XMVectorSet(rayEye.m128_f32[0], rayEye.m128_f32[1], rayEye.m128_f32[2], 0.0f);
-
-    // [5] Inverse view transform (view -> world space)
-    XMMATRIX viewMatrix = DXsystemHandle->m_Camera->m_viewMatrix;
-    XMMATRIX invView = XMMatrixInverse(nullptr, viewMatrix);
-    pickRayInWorldSpaceDir = XMVector3TransformNormal(rayEye, invView);
-    pickRayInWorldSpaceDir = XMVector3Normalize(pickRayInWorldSpaceDir);
-
-    // [6] Ray origin = camera position
-    pickRayInWorldSpacePos = XMLoadFloat3(&DXsystemHandle->m_Camera->GetPosition());
-}
-#else
 // ==================================================================================================================================
 void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickRayInWorldSpacePos, XMVECTOR& pickRayInWorldSpaceDir)
 // ==================================================================================================================================
@@ -1858,8 +1849,6 @@ void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickR
 
     int ClientWidth = SystemHandle->AppSettings->WINDOW_WIDTH;   
     int ClientHeight = SystemHandle->AppSettings->WINDOW_HEIGHT; 
-    //float ClientWidth = static_cast<float>(SystemHandle->windowsArray[0].width);
-    //float ClientHeight = static_cast<float>(SystemHandle->windowsArray[0].height);
 
     XMVECTOR pickRayInViewSpaceDir = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
     XMVECTOR pickRayInViewSpacePos = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
@@ -1909,7 +1898,6 @@ void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickR
 #undef _43
 #undef _44
 }
-#endif
 
 
 // Calculates whether the object was picked or not | getPoligon = true (detect colision)
