@@ -144,9 +144,9 @@ extern const wchar_t* GetWC(const char* c);
 	#endif
 
 	#if defined UNICODE
-		#define womalogauto	wprintf	//TCHAR
+		#define womalogauto	wprintf		//TCHAR
 	#else
-		#define womalogauto	_tprintf //womalog	//TCHAR
+		#define womalogauto	_tprintf	//TCHAR
 	#endif
 
 	#if defined WINDOWS_PLATFORM

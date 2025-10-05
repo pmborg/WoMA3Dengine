@@ -220,9 +220,8 @@ float4 PS_Main(PSIn input) : SV_TARGET
         textureColor.rgb = lerp(textureColor.rgb, fogColor.rgb, fog4.rgb);
     }
 #endif
-    
-    //return float4(0, 1, 1, 1);
-    if (fade < 1)
+    if (fade < 1 && !isSky)
         textureColor.rgb *= fade;
+    
 	return textureColor;
 }

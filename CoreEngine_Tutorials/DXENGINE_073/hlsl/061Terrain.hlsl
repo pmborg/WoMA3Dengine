@@ -322,7 +322,7 @@ float4 PS_Main(PSIn input) : SV_TARGET
         
         if (fade < 1)
         {
-            textureColor.rgb *= fade;                                                                   //98
+            textureColor.rgb *= fade*2;                                                                   //98
             float4 m_LightMapTexture = LightMapTexture.Sample(SampleType, input.texMapping.xy); //x1    //98
             return textureColor * m_LightMapTexture;                                                    //98
         }
