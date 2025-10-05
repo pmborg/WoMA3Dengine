@@ -16,7 +16,7 @@
          waterTexture="engine/data/Terrain/008water_tex04.jpg"
          mainTexture="engine/data/scene61DEMO/WorldHM.bmp"
          skyDayTexture="engine/data/sky/NEW_SKY_DOME.jpg"
-         skyNightTexture="engine/data/sky/NEW_SKY_NIGHT.jpg"/>
+         skyNightTexture="engine/data/sky/98b9cd04-2e71-4e04-8b2b-ff3355f26cd0.png"/>
 
   <!-- Depend: -1 will force obj to "scale" -->
   <!--0-->
