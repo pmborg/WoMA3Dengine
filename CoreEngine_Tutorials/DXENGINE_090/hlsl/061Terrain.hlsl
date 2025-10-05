@@ -67,6 +67,8 @@ Texture2D bigPathMappingTexture: register(t11); //CH22 - N grassNormal          
 Texture2D smallstonePathTexture: register(t12); //CH22 - T 056B_castle.jpg
 Texture2D shaderTexture        : register(t13); //CH23 - MAP colorLightMapTexture
 
+Texture2D LightMapTexture      : register(t14); //LIGHTMAP LightMapTexture
+
 SamplerState SampleType; //CH05 - TEXTURE
 
 ////////////////
@@ -319,15 +321,19 @@ float4 PS_Main(PSIn input) : SV_TARGET
         }
         
         if (fade < 1)
-            textureColor.rgb *= fade;
-        return textureColor;
-        //return float4(1,1,1,1);
-    }
-#if defined (FOGGED)
-        else
         {
-            clip(-1.0);
-            return (float4) 0; // this pixel is too far away (on fog), SKIP it! CLIP IF: (x is less than zero)
+            textureColor.rgb *= fade;                                                                   //98
+            float4 m_LightMapTexture = LightMapTexture.Sample(SampleType, input.texMapping.xy); //x1    //98
+            return textureColor * m_LightMapTexture;                                                    //98
         }
+        
+        return textureColor;
+	}
+#if defined (FOGGED)
+    else
+    {
+        clip(-1.0);
+        return (float4) 0; // this pixel is too far away (on fog), SKIP it! CLIP IF: (x is less than zero)
+    }
 #endif
 }

@@ -66,7 +66,7 @@
 #undef TERRAIN_SLOP_NORMAL_TEXTURE			  
 #undef TERRAIN_SLOP_SHADER_TEXTURE			  
 
-#define TERRAIN_COLOR_MAP_TEXTURE			  "engine/data/scene61DEMO/Grass512.bmp"					 //BMP: COLOR MAP R G B
+#define TERRAIN_COLOR_MAP_TEXTURE			  "engine/data/scene61DEMO/Grass512.bmp"						//BMP: COLOR MAP R G B
 		 //       VAR NAME: C++:
 #define TERRAIN_SLOP_TEXTURE				  TEXT("engine/data/scene61DEMO/Grass.jpg")						 //reg0:  m_Texture
 #define TERRAIN_SLOP_SLOPE_TEXTURE			  TEXT("engine/data/scene60DEMO/017slope.jpg")					 //reg1:  m_SlopeTexture
@@ -85,6 +85,8 @@
 #define TERRAIN_grassNormalTexture            TEXT("engine/data/scene61DEMO/t_025TerrainMappingV3.png")		 //reg11: m_grassNormalTexture
 #define TERRAIN_smallstonePathTexture		  TEXT("engine/data/scene61DEMO/011map1_dirt01.jpg")			 //reg12: m_smallstonePathTexture
 #define TERRAIN_colorLightMapTexture		  TEXT("engine/data/scene61DEMO/t_023TerrainMappingV2.jpg")		 //reg13: m_colorLightMapTexture
+
+#define TERRAIN_LightMapTexture				  TEXT("engine/data/scene98/_023TerrainMapping.jpg")			//reg14: m_LightMapTexture
 
 /* world_60.xml
   <world hVisibility="128" seaLevel="0" size="512" patchSize="64"
@@ -616,6 +618,7 @@ bool CTerrain::CreateTerrain60(ID3D11DeviceContext* pContext, float xPos, float 
 	Terrain60Textures.push_back(TERRAIN_grassNormalTexture);			//11
 	Terrain60Textures.push_back(TERRAIN_smallstonePathTexture);			//12
 	Terrain60Textures.push_back(TERRAIN_colorLightMapTexture);			//13
+	Terrain60Textures.push_back(TERRAIN_LightMapTexture);				//14
 
 	//Populate m_heightMap_21[index].b...g...r
 	LoadColorMap(TERRAIN_COLOR_MAP_TEXTURE);

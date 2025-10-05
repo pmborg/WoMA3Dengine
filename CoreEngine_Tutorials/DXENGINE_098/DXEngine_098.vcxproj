@@ -135,7 +135,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\WoMAengine2023\DXEngine_055\src\93\AtlasGenerator.cpp" />
     <ClCompile Include="core\src\ParticlesystemClass.cpp" />
-	<ClCompile Include="core\src\SmokeEmitterClass.cpp" />
+    <ClCompile Include="core\src\SmokeEmitterClass.cpp" />
     <ClCompile Include="core\src\ApplicationClass.cpp" />
     <ClCompile Include="core\src\AutoGenTerrain.cpp" />
     <ClCompile Include="core\src\BillClass.cpp" />
@@ -410,6 +410,18 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="hlsl\083Light.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='WRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="hlsl\097smoke.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='WRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="hlsl\097waterfall.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='WRelease|x64'">true</ExcludedFromBuild>

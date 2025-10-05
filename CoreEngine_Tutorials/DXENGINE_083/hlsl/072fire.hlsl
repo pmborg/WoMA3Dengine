@@ -120,10 +120,10 @@ float4 PS_Main(PSIn input) : SV_TARGET
 	// Use the clamping sample state instead of the wrap sample state to prevent flames wrapping around.
     alphaColor = alphaTexture.Sample(SampleType2, noiseCoords.xy);
 
-	// Set the alpha blending of the fire to the perturbed and distored alpha texture value.
+	// Set the alpha blending of the fire to the perturbed and distorted alpha texture value.
 	fireColor.a = alphaColor;
 	
-    if (fade < 1)
-        fireColor.rgb *= fade;
+    //if (fade < 1)
+    //    fireColor.rgb *= fade;
     return fireColor;
 }

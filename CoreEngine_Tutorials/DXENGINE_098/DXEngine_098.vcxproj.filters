@@ -783,6 +783,12 @@
     <FxCompile Include="hlsl\083Light.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
+    <FxCompile Include="hlsl\097smoke.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="hlsl\097waterfall.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="hlsl\cbuffer.hlsli">

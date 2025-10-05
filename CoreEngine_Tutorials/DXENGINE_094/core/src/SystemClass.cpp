@@ -1094,7 +1094,7 @@ bool SystemClass::LoadXmlWorld()
 	}
 
 	// ADD INSTANCES:
-	SystemHandle->m_Application->AddObjsWithInstancesToXML();			//77 || 90 || 98
+	SystemHandle->m_Application->AddObjsWithInstancesToXML();			//77 || 90 || 98(add lamps)
 
 	//Create object for all loaded objects
 	for (size_t i = 0; i < SystemHandle->xml_loader.theWorldXML.size(); i++)

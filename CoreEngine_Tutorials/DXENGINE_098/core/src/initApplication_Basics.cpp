@@ -887,7 +887,7 @@ void ApplicationClass::AddObjsWithInstancesToXML()
 		XMLobj3D.id = (int)SystemHandle->xml_loader.theWorldXML.size();
 		XMLobj3D.posX = 0; XMLobj3D.translateY = 0; XMLobj3D.posZ = 0;
 		XMLobj3D.shader = SHADER_TEXTURE_LIGHT_INSTANCED; //SHADER_TEXTURE_GS_INSTANCED
-		XMLobj3D.scale = 0.0215f;
+		XMLobj3D.scale = 0.0215f/3;
 		XMLobj3D.instances = (USE_INSTANCES_FOR_LAMP_LINES * USE_INSTANCES_FOR_LAMP_ROWS);
 		XMLobj3D.type = 401;
 
