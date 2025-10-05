@@ -100,18 +100,18 @@ void DXcameraClass::CalculateViewMatrix_3rd_PersonCamera(float camYaw, float cam
     camPosition = XMVector3TransformNormal(DefaultForward, camRotationMatrix);
     camPosition = XMVector3Normalize(camPosition);
 
-    // Set our cameras position to rotate around the character. We need to add 5 to the characters
-    // position's y axis because i'm stupid and modeled the character in the 3d modeling program
-    // to be "standing" on (0,0,0), instead of centered around it ;) Well target her head here though
+    // Set our cameras position to rotate around the character. 
     camPosition = (camPosition * charCamDist) + camTarget;
 
     // We need to set our cameras forward and right vectors to lay
     // in the worlds xz plane, since they are the vectors we will
     // be using to determine the direction our character is running
     camForward = XMVector3Normalize(camTarget - camPosition);	// Get forward vector based on target
-    camForward = XMVectorSetY(camForward, 0.0f);	// set forwards y component to 0 so it lays only on
+    camForward = XMVectorSetY(camForward, 0.0f);				// set forwards y component to 0 so it lays only on
+
     // the xz plane
     camForward = XMVector3Normalize(camForward);
+
     // To get our camera's Right vector, we set it's x component to the negative z component from the
     // camera's forward vector, and the z component to the camera forwards x component
     camRight = XMVectorSet(-XMVectorGetZ(camForward), 0.0f, XMVectorGetX(camForward), 0.0f);
