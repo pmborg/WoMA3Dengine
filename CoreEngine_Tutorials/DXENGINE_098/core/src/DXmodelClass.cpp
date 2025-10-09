@@ -229,11 +229,13 @@ bool DirectX::DXmodelClass::LoadLight(void* pContext, TCHAR* objectName, void* d
 
 		ASSERT( (ModelShaderType == SHADER_TEXTURE_LIGHT) ||						// SHADER_TYPE =  4
 				(ModelShaderType == SHADER_TEXTURE_LIGHT_RENDERSHADOW) ||			// SHADER_TYPE =  6
-				(ModelShaderType == SHADER_TEXTURE_LIGHT_INSTANCED) ||				// SHADER_TYPE =  8
+				(ModelShaderType == SHADER_TEXTURE_LIGHT_INSTANCED) ||				// SHADER_TYPE =  8	//lvl40
 				(ModelShaderType == SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED) ||	// SHADER_TYPE = 10
 			    (ModelShaderType == SHADER_FIRE) ||                                 // SHADER_TYPE = 21
                 (ModelShaderType == SHADER_TEXTURE_GS_INSTANCED) ||                 // SHADER_TYPE = 22
-                (ModelShaderType == SHADER_TEXTURE_LIGHT_FAST)						// SHADER_TYPE = 24
+                (ModelShaderType == SHADER_TEXTURE_LIGHT_FAST) ||					// SHADER_TYPE = 24
+				(ModelShaderType == SHADER_TEXTURE_POINTS_OF_LIGHT_INSTANCED ) ||	// SHADER_TYPE = 30	//lvl98
+				(ModelShaderType == SHADER_TEXTURE_LIGHT98)							// SHADER_TYPE = 31	//lvl98
              );
 
 		indexModelList = indexList;
@@ -430,8 +432,12 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 	#if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES
 	case SHADER_TEXTURE_LIGHT_INSTANCED:			//40: INSTANCED like 23 light, but using Instances
 	#endif
+	#if DX_ENGINE_LEVEL >= 98 && defined USE_POINTS_OF_LIGHT_FOR_LAMP
+	case SHADER_TEXTURE_POINTS_OF_LIGHT_INSTANCED:	//98
+	#endif
 
 	case SHADER_TEXTURE_LIGHT:						//23
+	case SHADER_TEXTURE_LIGHT98:					//98
 	case SHADER_TEXTURE_LIGHT_RENDERSHADOW:			//36
     case SHADER_TEXTURE_GS_INSTANCED:				//77
     case SHADER_TEXTURE_LIGHT_FAST:					//83
@@ -442,7 +448,7 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 
 	// ----------------------------------------------------------------------------------------------
 	// Normal Bump + Instancing 
-	case SHADER_TEXTURE_LIGHT_SAVESHADOW_INSTANCED:
+	case SHADER_TEXTURE_LIGHT_SAVESHADOW_INSTANCED: //40
 
 	#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
 	case SHADER_TEXTURE_LIGHT_SAVESHADOW:
@@ -516,8 +522,10 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 	if	(ShaderType == SHADER_TEXTURE_LIGHT_INSTANCED ||			//40: INSTANCED like 23 light, but using Instances
 		ShaderType == SHADER_TEXTURE_LIGHT_SAVESHADOW_INSTANCED ||	//40: Aux. Shader (render in texture), but using Instances (used on 40,41,42)
 		ShaderType == SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED ||  //41: INSTANCED like 36 shadow, but using Instances
-		ShaderType == SHADER_NORMAL_BUMP_INSTANCED || 					//99: INSTANCED like 35 bump, but using Instances
-        ShaderType == SHADER_TEXTURE_GS_INSTANCED)
+		ShaderType == SHADER_NORMAL_BUMP_INSTANCED || 				//--: INSTANCED like 35 bump, but using Instances
+        ShaderType == SHADER_TEXTURE_GS_INSTANCED ||				//77
+		ShaderType == SHADER_TEXTURE_POINTS_OF_LIGHT_INSTANCED		//98
+		)
 		shader->m_instanceCount = m_instanceCount;
 	#endif
 	if (ShaderType >= SHADER_Double_Color_Terrain)
@@ -654,7 +662,7 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 	{
 		m_Shader11->castShadow = true; // Use Shadow Map Result!
 
-		// Create Shadow Map:
+		// Create AUX Shadow Map:
 		#if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES // Normal Bump + Instancing 
 		if (m_instanceCount > 0)
 			m_ShaderShadowMap = CreateShader(objectName, SHADER_TEXTURE_LIGHT_SAVESHADOW_INSTANCED);
@@ -773,11 +781,13 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 		break;
 
 	case SHADER_TEXTURE_LIGHT:						//23: LIGHT 
+	case SHADER_TEXTURE_LIGHT98:					//98
 	case SHADER_TEXTURE_LIGHT_RENDERSHADOW:			//36: Draw Shadows
 	case SHADER_TEXTURE_LIGHT_INSTANCED:			//40: INSTANCED like 23 light, but using Instances
 	case SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED: //41
     case SHADER_TEXTURE_GS_INSTANCED:               //77
     case SHADER_TEXTURE_LIGHT_FAST:					//83: LIGHT 
+	case SHADER_TEXTURE_POINTS_OF_LIGHT_INSTANCED:  //98
 	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
 		{
@@ -878,7 +888,7 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 	#endif
 
 		//3D: Create the texture object for this model:
-		if (meshSRV_size == 0)
+		if (meshSRV_size == 0 && textureFile)
 		{
 			for (UINT i = 0; i < (*textureFile).size(); i++)
 			{
@@ -1788,13 +1798,16 @@ void DXmodelClass::SetGeometryBuffers(void* deviceContext)
 			stride[0] = sizeof(DXtextureVertexType); break;
 
 		case SHADER_TEXTURE_LIGHT:						//23
+		case SHADER_TEXTURE_LIGHT98:					//98
 		case SHADER_TEXTURE_LIGHT_RENDERSHADOW:			//36
 		case SHADER_TEXTURE_LIGHT_INSTANCED:			//40
 		case SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED: //41
         case SHADER_TEXTURE_GS_INSTANCED:               //77
         case SHADER_TEXTURE_LIGHT_FAST:					//83
+		case SHADER_TEXTURE_POINTS_OF_LIGHT_INSTANCED:  //98
 			stride[0] = sizeof(DXtextureLightVertexType); break;
 
+		//AUX SHADOW SHADER::
 		case SHADER_TEXTURE_LIGHT_SAVESHADOW:			//36
 		case SHADER_TEXTURE_LIGHT_SAVESHADOW_INSTANCED: //40
 			stride[0] = sizeof(DXShadowMapVertexType); break;
@@ -1837,7 +1850,8 @@ void DXmodelClass::SetGeometryBuffers(void* deviceContext)
 			ModelShaderType == SHADER_TEXTURE_LIGHT_SAVESHADOW_INSTANCED ||
 			ModelShaderType == SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED ||
 			ModelShaderType == SHADER_NORMAL_BUMP_INSTANCED ||
-            ModelShaderType == SHADER_TEXTURE_GS_INSTANCED
+            ModelShaderType == SHADER_TEXTURE_GS_INSTANCED ||
+			ModelShaderType == SHADER_TEXTURE_POINTS_OF_LIGHT_INSTANCED
             )
 		{
 			bufferPointer[1] = m_instanceBuffer;
@@ -1850,8 +1864,8 @@ void DXmodelClass::SetGeometryBuffers(void* deviceContext)
 		D3D_PRIMITIVE_TOPOLOGY_POINTLIST = 1,
 		D3D_PRIMITIVE_TOPOLOGY_LINELIST = 2,
 		D3D_PRIMITIVE_TOPOLOGY_LINESTRIP = 3,
-		D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST = 4,	1 Triang. = 3 Vert.--> DrawPrimitive( D3DPT_TRIANGLELIST, 0, 1 );
-		D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP = 5,	4 Triang. = 6 Vert.--> DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, 4 );
+		D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST = 4,	1 Triangle = 3 Vert.--> DrawPrimitive( D3DPT_TRIANGLELIST, 0, 1 );
+		D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP = 5,	4 Triangle = 6 Vert.--> DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, 4 );
 		*/
 		// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
 		context->IASetPrimitiveTopology((D3D11_PRIMITIVE_TOPOLOGY)(PrimitiveTopology));
@@ -2758,7 +2772,24 @@ bool DirectX::DXmodelClass::LoadModel(void* pContext, TCHAR* objectName, void* g
     }
 	#endif
 
-	if (_tcsicmp(extension, TEXT(".obj")) == 0 || _tcsicmp(extension, TEXT(".OBJ")) == 0)
+	bool res = false;
+#if defined LOADW3D
+	if (_tcsicmp(extension, TEXT(".w3d")) == 0 || _tcsicmp(extension, TEXT(".W3D")) == 0)
+	{
+		bool res = LoadW3D(pContext, shader_type, g_driver, filename, castShadow, renderShadow, instanceCount);
+		if (res)
+		{
+			ready = true;
+			return res;
+		}
+		else {
+			womalog("WARNING: file not found: %s", filename);
+			filename.replace(filename.find(".w3d"), 4, ".obj");
+		}
+	}
+#endif
+
+	if (res == false || _tcsicmp(extension, TEXT(".obj")) == 0 || _tcsicmp(extension, TEXT(".OBJ")) == 0)
 	{
 		bool b = modelClass.LoadOBJ(pContext, this, shader_type, g_driver, filename, castShadow, renderShadow, instanceCount, 0);
         if (!b)
@@ -2766,22 +2797,13 @@ bool DirectX::DXmodelClass::LoadModel(void* pContext, TCHAR* objectName, void* g
 			WomaMessageBox((TCHAR*)filename.c_str(), TEXT("Error, Could not load: ")); ASSERT(false);
 		}
 		if (b) {
-			bool res = modelClass.CreateObject(pContext, this, (TCHAR*)filename.c_str(), g_driver, shader_type /*SHADER_AUTO*/, filename, castShadow, renderShadow); // Auto Detect Shader Type
+			res = modelClass.CreateObject(pContext, this, (TCHAR*)filename.c_str(), g_driver, shader_type /*SHADER_AUTO*/, filename, castShadow, renderShadow); // Auto Detect Shader Type
             if (res)
                 ready = true;
             return res;
         }
 	}
 
-#if defined LOADW3D
-	else if (_tcsicmp(extension, TEXT(".w3d")) == 0 || _tcsicmp(extension, TEXT(".W3D")) == 0)
-    {
-		bool res = LoadW3D(pContext, shader_type, g_driver, filename, castShadow, renderShadow, instanceCount);
-        if (res)
-            ready = true;
-        return res;
-    }
-#endif
 
     return false;
 }

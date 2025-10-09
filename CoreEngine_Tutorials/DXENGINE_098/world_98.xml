@@ -1,7 +1,7 @@
 <woma>
   <camera screenNear="0.1f" screenDepth="200" >
-    <initPos x="125" y="1" z="61"/>
-    <initRot x="1" y="104" z="0"/>
+    <initPos x="128" y="1" z="152"/>
+    <initRot x="1" y="1" z="0"/>
   </camera>
 
   <!-- ENGINE LVL 31-->
@@ -20,11 +20,11 @@
 
   <!-- Depend: -1 will force obj to "scale" -->
   <!--0-->
-  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0" scale="0.25"   posX="40"    posZ="25"    translateY="0.5f"   rotX="" rotY="PI"  rotZ=""      shader="" castShadow="" renderShadows="" filename="engine/data/scene30/spaceCompound.obj"                    soundRange=""     audio="" />
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0" scale="0.25"   posX="40"    posZ="25"    translateY="0.5f"   rotX="" rotY="PI"  rotZ=""      shader="" castShadow="" renderShadows="" filename="engine/data/scene30/spaceCompound.w3d"                    soundRange=""     audio="" />
   <!--1-->
-  <object id="0" depend="0"   instances=""  fromPage="89" toPage="0" scale="0.75f"  posX="44"    posZ="88"    translateY="9"      rotX="" rotY=""    rotZ=""      shader="" castShadow="" renderShadows="" filename="engine/data/scene64DEMO/windmill/mill_mainV2.obj"         soundRange=""     audio="" />
+  <object id="0" depend="0"   instances=""  fromPage="89" toPage="0" scale="0.75f"  posX="44"    posZ="88"    translateY="9"      rotX="" rotY=""    rotZ=""      shader="" castShadow="" renderShadows="" filename="engine/data/scene64DEMO/windmill/mill_mainV2.w3d"         soundRange=""     audio="" />
   <!--2-->
-  <object id="0" depend="0"   instances=""  fromPage="89" toPage="0" scale="0.75f"  posX="44"    posZ="91" translateY="22.1f"  rotX="" rotY=""    rotZ="-1000" shader="" castShadow="" renderShadows="" filename="engine/data/scene64DEMO/windmill/mill_pas.obj"            soundRange=""     audio="" />
+  <object id="0" depend="1"   instances=""  fromPage="89" toPage="0" scale="0.75f"  posX="44"    posZ="91" translateY="22.1f"  rotX="" rotY=""    rotZ="-1000" shader="" castShadow="" renderShadows="" filename="engine/data/scene64DEMO/windmill/mill_pas.w3d"            soundRange=""     audio="" />
 
   <!-- WALL: Valid values PI or PI/2 or -PI/2 - Applies to this case: PI = 3.13f PI/2 = 1.565f -->
   <!--3 south-->
@@ -88,21 +88,41 @@
   <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
   posX="168.1f"    posZ="30.8f"   translateY="0.5f" scale="0.425f" rotY="-1.578f" rotX=""    rotZ=""      shader="" castShadow="" renderShadows=""
   filename="engine/data/scene97/DungeonGate/DungeonGate0.4.w3d" soundRange="" audio="" />
-  
-  <!-- AUDIO -->
 
-  <!-- 18 water stone -->
+ 
+  <!--18 barrel_b1 -->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
+  posX="130"    posZ="158"   translateY="" scale="0.02f" rotY="" rotX=""    rotZ=""      shader="31" castShadow="" renderShadows=""
+  filename="engine/data/scene98/barrel_b1.w3d" soundRange="" audio="" />
+  <!--19 barrel_b1_open -->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
+  posX="131"    posZ="160"   translateY="0.2f" scale="0.02F" rotY="" rotX=""    rotZ=""      shader="31" castShadow="" renderShadows=""
+  filename="engine/data/scene98/barrel_b1_open.w3d" soundRange="" audio="" />
+  <!--20 BOX barrel_k1  -->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
+  posX="127.5f"    posZ="159"   translateY="0.2f" scale="0.02" rotY="" rotX=""    rotZ=""      shader="31" castShadow="" renderShadows=""
+  filename="engine/data/scene98/barrel_k1.w3d" soundRange="" audio="" />
+  <!--21 BOX barrel_k_open-->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
+  posX="127"    posZ="157"   translateY="" scale="0.02f" rotY="" rotX=""    rotZ=""      shader="31" castShadow="" renderShadows=""
+  filename="engine/data/scene98/barrel_k_open.w3d" soundRange="" audio="" />
+  <!--22 CartonBox -->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
+  posX="131"    posZ="162.1f"   translateY="0.7f" scale="0.001" rotY="" rotX=""    rotZ=""      shader="" castShadow="" renderShadows=""
+  filename="engine/data/scene98/CartonBox.w3d" soundRange="" audio="" />
+
+  <!-- AUDIO 23 water stone -->
   <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
   posX="142"    posZ="57"   translateY="15.0f" scale="0.021f" rotY="PI/2" rotX=""    rotZ=""      shader="" castShadow="" renderShadows=""
   filename="engine/data/scene97/waterStone.w3d" soundRange="3.0f" audio="engine/data/scene97/mixkit-waterfall-flowing-water-2518.wav" />
   
-  <!-- 19 Ocean -->
+  <!-- 24 Ocean -->
   <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
   posX="130"    posZ="260"   translateY="-3.3f" scale="0.011f" rotY="PI/2" rotX=""    rotZ=""      shader="" castShadow="" renderShadows=""
   filename="engine/data/scene97/waterStone.w3d" soundRange="15.0f" audio="engine/data/scene97/mixkit-sea-waves-loop-1196.wav" />
 
   <!-- FIRE: -->
-  <!--20-->
+  <!-- 25 -->
   <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0" scale="0.05f"  posX="112"    posZ="239"   translateY="0.55f" rotX="" rotY=""    rotZ=""      shader="" castShadow="" renderShadows="" filename="engine/data/scene72Fire/fire_rocks.obj"                   soundRange="1.0f" audio="engine/audio/fogo_30322_pcaeldries_fireburning-v2.wav" />
 
 </woma>

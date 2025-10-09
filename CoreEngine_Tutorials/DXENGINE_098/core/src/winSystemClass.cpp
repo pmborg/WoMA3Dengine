@@ -215,7 +215,7 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 #endif
 	IF_NOT_RETURN_FALSE(APPLICATION_INIT_MAIN_WINDOW());	// RegisterClass and Create: MainWindow(s)
 #if defined USE_TINYXML_LOADER && DX_ENGINE_LEVEL >= 21
-	IF_NOT_RETURN_FALSE(LoadXmlWorld());					// Load all static/semi-static objects!
+	IF_NOT_RETURN_FALSE(LoadXmlWorld());					// Load all static and semi-static from WORLD.XML and add Instances!
 #endif
 #if defined USE_PROCESS_OS_KEYS
 	IF_NOT_RETURN_FALSE(InitOsInput());						// INIT-INPUT Devices, NOTE: AFTER: APPLICATION_INIT_MAIN_WINDOW()

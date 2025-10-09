@@ -950,9 +950,9 @@ void ApplicationClass::RenderModel(void* pContext, UINT threadID, UINT monitorIn
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
 	((DXmodelClass*)model)->m_Shader11->PSfade = fadeLight;
 	if (m_viewMatrix == NULL && m_projectionMatrix == NULL)
-		model->Render(pContext, threadID, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass, &(app_Light->m_viewMatrix), &(app_Light->m_ligth_orthoMatrix));
+		model->Render(pContext, threadID, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass, &(app_Light->m_viewMatrix), &(app_Light->m_ligth_orthoMatrix));	// RENDER
     else
-		model->Render(pContext, threadID, CAMERA_NORMAL, PROJECTION_MINIMAP, pass, m_viewMatrix, m_projectionMatrix);
+		model->Render(pContext, threadID, CAMERA_NORMAL, PROJECTION_MINIMAP, pass, m_viewMatrix, m_projectionMatrix);									// RENDER MINI MAP
 #else
 	model->Render(pContext, threadID, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass);
 #endif

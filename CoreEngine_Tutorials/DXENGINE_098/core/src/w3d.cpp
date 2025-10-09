@@ -66,6 +66,12 @@ namespace DirectX
 
 		MyObject3D W3D;
 		//------------------------------------------------------------------------------------------------------------------
+		if (ModelShaderType = SHADER_TEXTURE_LIGHT98)
+		{
+			ModelShaderType = SHADER_TEXTURE_LIGHT;
+			//Sleep(1);//Debug
+		}
+
 		if (ModelShaderType == SHADER_TEXTURE_LIGHT_RENDERSHADOW ||
 			ModelShaderType == SHADER_TEXTURE_LIGHT_INSTANCED ||
 			ModelShaderType == SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED  ||
@@ -211,6 +217,7 @@ namespace DirectX
 		obj3dfile.open(WOMA::LoadFile((TCHAR*)filename.c_str()), fstream::in | fstream::binary);
 		if (!obj3dfile)
 		{
+			return false;
 			MessageBox(NULL, filename.c_str(), TEXT("W3D file not found"), MB_OK); return false;
 		}
 
@@ -334,6 +341,11 @@ namespace DirectX
 
 		obj3dfile.close();
 
+	#if defined USE_POINTS_OF_LIGHT_FOR_LAMP
+		if (filename._Equal(LAMP_GS))
+			shader_type = SHADER_TEXTURE_POINTS_OF_LIGHT_INSTANCED; //23 LIGHT
+	#endif
+
 #if !defined(STANDALONE)
 		if (strcmp(W3D.version, "W3D v1.0") == 0)	//21 COLOR
 			LoadColor(pContext, (TCHAR*)filename.c_str(), g_driver, shader_type, modelColorVertex, &obj3d.indices32, instanceCount);
@@ -354,8 +366,7 @@ namespace DirectX
             LoadLight(pContext, (TCHAR*)filename.c_str(), g_driver, SHADER_TEXTURE_LIGHT_FAST, &obj3d.textureNameArray, modelTextureLightVertex, &obj3d.indices32, instanceCount);
 		else
 		{	
-            ASSERT(false);
-			//return false;
+            ASSERT(false); //This should never happen!
 		}
 #endif
 

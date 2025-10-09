@@ -10,17 +10,6 @@
 **********************************************************************************************/
 //WomaIntegrityCheck = 1234525217;
 
-
-#define MAX_POINT_LIGHTS 26      // enough for all lamps
-
-struct PointLight
-{
-    float3 position;
-    float radius;
-    float3 color;
-    float intensity;
-};
-
 // SYNC: DXshaderClass.h -- DX12: CBV
 #if DXAPI11 == 1
 cbuffer VSShaderParametersBuffer	//DX11
@@ -77,6 +66,16 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
     float3  scrollSpeeds;
     float3  scales;
     bool    isAnimatedBill;
+};
+
+#define MAX_POINT_LIGHTS 26      // enough for all lamps
+
+struct PointLight
+{
+    float3 position;
+    float radius;
+    float3 color;
+    float intensity;
 };
 
 ///////////////
@@ -136,7 +135,6 @@ cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: D
     float2  distortion2;
     float2  distortion3;
     float   distortionScale;
-    float   distortionBias;
 
 	// POINT OF LIGHTS:
     int         numPointLights;

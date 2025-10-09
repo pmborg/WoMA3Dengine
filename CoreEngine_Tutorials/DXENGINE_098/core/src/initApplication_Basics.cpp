@@ -28,6 +28,7 @@
 #include <string.h>
 #include "fileLoader.h"
 #include "BillClass.h"
+#include "DxshaderClass.h"
 
 #pragma warning(push)
 #pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
@@ -595,22 +596,50 @@ void ApplicationClass::WOMA_APPLICATION_SetInstancePositions(UINT m_ObjId, int m
 #if defined USE_INSTANCES_FOR_LAMP
 		case 401:
 		{
+		#if defined USE_POINTS_OF_LIGHT_FOR_LAMP
+			streetLamps.clear();    // add this line before the outer loop
+		#endif
+
 			float iniX = 127.5f;
 			float iniZ = 158;
 
 			int i = 0;
-			for (int x = 0; x < USE_INSTANCES_FOR_LAMP_ROWS; x++)			// 00..01 2 total
+			for (int x = 0; x < USE_INSTANCES_FOR_LAMP_ROWS; x++)		// 00..01 1 total
 			{
 				for (int z = 0; z < USE_INSTANCES_FOR_LAMP_LINES; z++)	// 00..12 13 total
 				{
 					instances[i].position.x = iniX +  3.0f * x;
 					instances[i].position.z = iniZ +  6.0f * z;
 					instances[i].position.y = mainTerrain->getTerrainHeight(TERRAIN_ID, instances[i].position.x, instances[i].position.z);
+
+					i++;
+				}
+			}
+
+			for (int x = 0; x < USE_INSTANCES_FOR_LAMP_ROWS+1; x++)		// 00..02 2 total
+			{
+				for (int z = 0; z < USE_INSTANCES_FOR_LAMP_LINES; z++)	// 00..12 13 total
+				{
+					float posx = iniX + 3.0f * x;
+					float posz = iniZ + 6.0f * z;
+					float posy = mainTerrain->getTerrainHeight(TERRAIN_ID, posx, posz);
+
+				#if defined USE_POINTS_OF_LIGHT_FOR_LAMP
+					// --- matching light source for each lamp ---
+					Lamp lamp;
+					lamp.pos = { posx,
+								 posy + 3.0f,  // lifted to bulb height
+								 posz };
+					lamp.radius = 12.0f;                          // fall-off distance
+					lamp.color = { 1.0f, 0.95f, 0.7f };           // warm yellow
+					lamp.intensity = 2.5f;                        // brightness
+					streetLamps.push_back(lamp);
+				#endif
 					i++;
 				}
 			}
 		}
-			break;
+		break;
 #endif
         default:
             break;
@@ -623,11 +652,6 @@ void ApplicationClass::WOMA_APPLICATION_SetInstancePositions(UINT m_ObjId, int m
 bool ApplicationClass::WOMA_LOAD_OBJ(void* pContext, UINT threadID, WomaDriverClass* Driver, UINT i, TCHAR* wfilename)
 {
 	objModel.push_back(NULL);
-
-
-	if (SystemHandle->xml_loader.theWorldXML[i].type == 401)
-		Sleep(1);
-
 	if (i > 0
 		&& _tcscmp(SystemHandle->xml_loader.theWorldXML[i].filename, SystemHandle->xml_loader.theWorldXML[i - 1].filename) == 0
 		&& (SystemHandle->xml_loader.theWorldXML[i].type == 11			//11 animated grass, Clone it its faster
@@ -864,6 +888,9 @@ void ApplicationClass::AddObjsWithInstancesToXML()
 	// Add Instanced Billboards to World.xml
 	//-----------------------------------------------------------------------------------------------------------------
 
+	//-----------------------------------------------------------------------------------------------------------------
+	// Add Instanced TREES90 to World.xml
+	//-----------------------------------------------------------------------------------------------------------------
 #if defined USE_INSTANCES_FOR_TREES90
 	{
 		xmlobj3d XMLobj3D = {};
@@ -880,14 +907,21 @@ void ApplicationClass::AddObjsWithInstancesToXML()
 	}
 #endif
 
+	//-----------------------------------------------------------------------------------------------------------------
+	// Add Instanced LAMPs to World.xml
+	//-----------------------------------------------------------------------------------------------------------------
 	#if defined USE_INSTANCES_FOR_LAMP
 	{
 		xmlobj3d XMLobj3D = {};
 
 		XMLobj3D.id = (int)SystemHandle->xml_loader.theWorldXML.size();
 		XMLobj3D.posX = 0; XMLobj3D.translateY = 0; XMLobj3D.posZ = 0;
-		XMLobj3D.shader = SHADER_TEXTURE_LIGHT_INSTANCED; //SHADER_TEXTURE_GS_INSTANCED
-		XMLobj3D.scale = 0.0215f/3;
+		#if !defined USE_POINTS_OF_LIGHT_FOR_LAMP
+		XMLobj3D.shader = SHADER_TEXTURE_LIGHT_INSTANCED;
+		#else
+		XMLobj3D.shader = SHADER_TEXTURE_POINTS_OF_LIGHT_INSTANCED;
+		#endif
+		XMLobj3D.scale = 0.0215f/2;
 		XMLobj3D.instances = (USE_INSTANCES_FOR_LAMP_LINES * USE_INSTANCES_FOR_LAMP_ROWS);
 		XMLobj3D.type = 401;
 
@@ -915,7 +949,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	InitMainSky(pContext, Driver);
 	InitTerrainandWaterSurfaces(pContext, Driver);
 
-
 	//=================================================================================================================
 	// Init MAIN 3D Scene       ///////////////////////////////////////////////////////////////////////////////////////
 	//=================================================================================================================
@@ -933,16 +966,14 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	womalogauto("Number of billboard objects added %d\n", SystemHandle->xml_loader.theWorldXML.size()- world_xml_objs);
 #endif
 
-
-
 	//-----------------------------------------------------------------------------------------------------------------
 	// LOAD PROGRESS BAR
 	//-----------------------------------------------------------------------------------------------------------------
 #if defined ALLOW_CBIND_PROGRESS_BAR
 	// --- CREATE PROGRESS BAR:
-#if defined USE_INTRO_VIDEO_DEMO
+	#if defined USE_INTRO_VIDEO_DEMO
 	if (DXsystemHandle->g_DShowPlayer == NULL || (DXsystemHandle->g_DShowPlayer->m_state != STATE_RUNNING))
-#endif
+	#endif
 	{
 		SystemHandle->hwndPrgBar = SystemHandle->WomaCreateWindowEx(0, PROGRESS_CLASS, NULL, WS_CHILD | WS_VISIBLE | PBS_SMOOTH, 50, SystemHandle->AppSettings->WINDOW_HEIGHT - 100,
 			SystemHandle->AppSettings->WINDOW_WIDTH - 100, 20, SystemHandle->m_hWnd, (HMENU)401, SystemHandle->m_hinstance, NULL);
@@ -989,38 +1020,39 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 
 	for (UINT i = objModel_size; i < objModel_size + theWorld_size; i++)
 	{
-		//LOAD OBJECTS:
+		// LOAD MAIN OBJECTS:
+		// ---------------------------------------------------------------------------------------------------------
 		WOMA_LOAD_OBJ(pContext, 0, Driver, i, SystemHandle->xml_loader.theWorldXML[i].filename);
 
 		num_loading_objects++;
 
-
-	//MINIMAP OBJECTS: Create 2D objects for mini-map
-#if DX_ENGINE_LEVEL >= 91 && defined USE_MINI_MAP
-	if (i < world_xml_objs)
-	{
-		objModel_minimap.push_back(NULL);	// Create a vector for mini-map objects
-
-		CREATE_MODEL_IF_NOT_EXCEPTION(objModel_minimap[i], I_AM_2D, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.renderShadows);
-
-		objModel_minimap[i]->m_ObjId = i; //SYNC-ID: objModel[i] with: xml_loader.theWorldXML[i]
-		objModel_minimap[i]->xmlId = SystemHandle->xml_loader.theWorldXML[i].id;
-
-		//Load OBJ or W3D:
-		if (!(objModel_minimap[i]->LoadModel(pContext, SystemHandle->xml_loader.theWorldXML[i].filename,
-			Driver,
-			(SHADER_TYPE)SystemHandle->xml_loader.theWorldXML[i].shader,
-			SystemHandle->xml_loader.theWorldXML[i].filename, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.castShadows,
-			SystemHandle->xml_loader.theWorldXML[i].WOMA_object.renderShadows, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.instances)))
+		// LOAD MINIMAP OBJECTS: Create 2D objects for mini-map
+		// ---------------------------------------------------------------------------------------------------------
+		#if DX_ENGINE_LEVEL >= 91 && defined USE_MINI_MAP
+		if (i < world_xml_objs)
 		{
-			WomaMessageBox(SystemHandle->xml_loader.theWorldXML[i].filename, TEXT("Error Loading: "), FALSE); return false;
+			objModel_minimap.push_back(NULL);	// Create a vector for mini-map objects
+
+			CREATE_MODEL_IF_NOT_EXCEPTION(objModel_minimap[i], I_AM_2D, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.renderShadows);
+
+			objModel_minimap[i]->m_ObjId = i; //SYNC-ID: objModel[i] with: xml_loader.theWorldXML[i]
+			objModel_minimap[i]->xmlId = SystemHandle->xml_loader.theWorldXML[i].id;
+
+			//Load OBJ or W3D:
+			if (!(objModel_minimap[i]->LoadModel(pContext, SystemHandle->xml_loader.theWorldXML[i].filename,
+				Driver,
+				(SHADER_TYPE)SystemHandle->xml_loader.theWorldXML[i].shader,
+				SystemHandle->xml_loader.theWorldXML[i].filename, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.castShadows,
+				SystemHandle->xml_loader.theWorldXML[i].WOMA_object.renderShadows, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.instances)))
+			{
+				WomaMessageBox(SystemHandle->xml_loader.theWorldXML[i].filename, TEXT("Error Loading: "), FALSE); return false;
+			}
+
+			num_loading_objects++;
 		}
+		#endif
 
-		num_loading_objects++;
-	}
-#endif
-
-		//Allow Refresh on Timer:
+		// Allow Refresh:
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))	// There is any OS messages to handle?
 		{
 			TranslateMessage(&msg); // TranslateMessage produces WM_CHAR messages only for keys that are mapped to ASCII characters by the keyboard driver.

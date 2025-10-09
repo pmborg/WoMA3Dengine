@@ -156,7 +156,8 @@
 	//#define LEVEL 93  // Use Generate atlas integration (dds)
 	//#define LEVEL 94  // ASSETS download with progress bar
     //#define LEVEL 96	// Use curved real sky plane
-	#define LEVEL 97	// Day and Night
+	//#define LEVEL 97	// The Waterfall
+	#define LEVEL 98	// Day and Night
 	
     #endif
 #endif

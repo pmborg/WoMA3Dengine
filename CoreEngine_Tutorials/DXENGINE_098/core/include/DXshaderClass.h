@@ -25,7 +25,7 @@
 //////////////
 #include "platform.h"
 
-#if (defined DX_ENGINE)
+#if defined DX_ENGINE
 
 #include "DXbasicTypes.h"
 #include "womadriverclass.h"
@@ -77,6 +77,27 @@ using namespace Microsoft::WRL;
 #include <fstream>
 using namespace std;
 
+#if defined USE_POINTS_OF_LIGHT_FOR_LAMP
+// Must match the HLSL PointLight struct layout
+struct PointLightCPU
+{
+	DirectX::XMFLOAT3 position;  float radius;
+	DirectX::XMFLOAT3 color;     float intensity;
+};
+
+struct Lamp
+{
+	DirectX::XMFLOAT3 pos;       // world-space position of the lamp bulb
+	float             radius;    // light reach (e.g. 15.0f)
+
+	DirectX::XMFLOAT3 color;     // warm lamp color (e.g. {1.0f, 0.9f, 0.7f})
+	float             intensity; // brightness multiplier (e.g. 2.0f)
+};
+
+
+extern std::vector<Lamp> streetLamps;
+#endif
+
 namespace DirectX
 {
 #define 	SOLID_PIPELINE_STATES		0
@@ -96,8 +117,10 @@ namespace DirectX
 	private:
 		// NOTE: DONT USE "bool" USE "BOOL"
 
-	#if defined USE_FASTER_BILL_SHADER
-		// 92: VERTEX CBUFFER:
+
+
+#if defined USE_FASTER_BILL_SHADER
+// 92: VERTEX CBUFFER:
 		struct VSFASTconstantBufferType
 		{
 			// BLOCK: VS1
@@ -111,7 +134,7 @@ namespace DirectX
 			float		fade;
 			XMFLOAT3	pad;
 		};
-	#endif
+#endif
 
 #if defined GENERATE_ATLAS_INTEGRATION_DDS
 		// --------------------------------------------------------------------------------------
@@ -141,7 +164,7 @@ namespace DirectX
 		};
 #endif
 
-	#if defined USE_WATER_FALL
+#if defined USE_WATER_FALL
 		// --------------------------------------------------------------------------------------
 		// 97: VERTEX CBUFFER: Billboard Atlas (DX_ENGINE_LEVEL >= 93)
 		// Supports atlas UVs, lighting, and wind animation for vegetation
@@ -160,7 +183,7 @@ namespace DirectX
 			XMFLOAT3 pad;
 		};
 		ID3D11Buffer* m_particleAlphaCB = nullptr;
-	#endif
+#endif
 
 		// 21: VERTEX CBUFFER:
 		struct VSconstantBufferType
@@ -199,7 +222,7 @@ namespace DirectX
 			float		VSrotX;
 			float		VSrotY;
 			float		VSrotZ;
-			float		time;
+			float		time;				// Water animation
 
 			// 42 BLOCK: VS7
 			float		VSshaderType;
@@ -263,7 +286,11 @@ namespace DirectX
 			XMFLOAT2	distortion3;
 			float		distortionScale;
 			float		distortionBias;
+			int			numPointLights;
+			float		pad[3];								// padding to keep next array 16-aligned
+			PointLightCPU pointLights[MAX_POINT_LIGHTS];    // same MAX_POINT_LIGHTS as shader
 		};
+
 
 		// FUNCTIONS:
 		// ---------------------------------------------------------------------
@@ -353,6 +380,10 @@ namespace DirectX
 #if defined DX11 || defined DX9
 		ID3D11Buffer* m_PixelShaderBuffer11 = NULL;
 		ID3D11SamplerState* m_sampleState11 = NULL;	// Resource: "Textures" States
+
+#if DX_ENGINE_LEVEL >= 98 && defined USE_POINTS_OF_LIGHT_FOR_LAMP
+		ID3D11Buffer* m_PointLightBuffer11 = nullptr;     // b2 in Pixel Shader
+#endif
 
 		ID3D11SamplerState* m_sampleStateClamp11 = NULL;
 		ID3D11SamplerState* m_sampleStateFire = NULL;;

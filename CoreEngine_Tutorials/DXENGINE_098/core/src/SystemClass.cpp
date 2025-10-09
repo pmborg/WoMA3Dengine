@@ -1093,10 +1093,9 @@ bool SystemClass::LoadXmlWorld()
 		return false;
 	}
 
-	// ADD INSTANCES:
-	SystemHandle->m_Application->AddObjsWithInstancesToXML();			//77 || 90 || 98(add lamps)
+	SystemHandle->m_Application->AddObjsWithInstancesToXML();	//77 || 90 || 98 (add lamps)
 
-	//Create object for all loaded objects
+	//Create WOMA_OBJECTs for all these loaded XML objects:
 	for (size_t i = 0; i < SystemHandle->xml_loader.theWorldXML.size(); i++)
 	{
 		SHADER_TYPE shader = (SHADER_TYPE)SystemHandle->xml_loader.theWorldXML[i].shader;

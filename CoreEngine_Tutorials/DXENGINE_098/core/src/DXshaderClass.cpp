@@ -236,6 +236,11 @@ static const D3D11_INPUT_ELEMENT_DESC mappingDetailligthcolorBumpPolygonLayout11
 
 extern size_t AtlasobjModel_outIdxCount;
 
+#if defined USE_POINTS_OF_LIGHT_FOR_LAMP
+std::vector<Lamp> streetLamps;
+#endif
+
+
 namespace DirectX {
 
 	DXshaderClass::DXshaderClass(UINT ShaderVersion_H, UINT ShaderVersion_L, bool shader_3D)
@@ -521,10 +526,11 @@ namespace DirectX {
 #endif
 			break;
 
-		//	float3 position		: POSITION;	//21
-		//	float2 texCoords	: TEXCOORD; //22
-		//	float3 normal		: NORMAL;	//23
+		// float3 position	: POSITION;			//21
+		// float2 texCoords	: TEXCOORD;			//22
+		// float3 normal	: NORMAL;			//23
 		case SHADER_TEXTURE_LIGHT:				//23
+		case SHADER_TEXTURE_LIGHT98:			//98
 		case SHADER_TEXTURE_LIGHT_RENDERSHADOW:	//36
         case SHADER_TEXTURE_LIGHT_FAST:			//83
 #if defined DX12
@@ -620,6 +626,7 @@ namespace DirectX {
 #if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES // Normal Bump + Instancing 
 		case SHADER_TEXTURE_LIGHT_INSTANCED:			//40
 		case SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED: //41
+		case SHADER_TEXTURE_POINTS_OF_LIGHT_INSTANCED:	//98
 			polygonLayout11 = &lightInstancedPolygonLayout11[0];
 			numElements = sizeof(lightInstancedPolygonLayout11) / sizeof(lightInstancedPolygonLayout11[0]);
 			break;
@@ -686,6 +693,12 @@ namespace DirectX {
 			break;
 		case SHADER_TEXTURE_LIGHT:
 			vsFilename.append(L"hlsl/023Light.hlsl");
+			psFilename = vsFilename;
+			vertexHLSL.append("VS_Main");
+			pixelHLSL.append("PS_Main");
+			break;
+		case SHADER_TEXTURE_LIGHT98:
+			vsFilename.append(L"hlsl/098Light.hlsl");
 			psFilename = vsFilename;
 			vertexHLSL.append("VS_Main");
 			pixelHLSL.append("PS_Main");
@@ -828,6 +841,16 @@ namespace DirectX {
 			pixelHLSL.append("PS_Main");
 			break;
 #endif
+
+#if DX_ENGINE_LEVEL >= 98 && defined USE_POINTS_OF_LIGHT_FOR_LAMP
+		case SHADER_TEXTURE_POINTS_OF_LIGHT_INSTANCED:			//40: INSTANCED like 23 light, but using Instances
+			vsFilename.append(L"hlsl/098LightInstance.hlsl");
+			psFilename = vsFilename;
+			vertexHLSL.append("VS_Main");
+			pixelHLSL.append("PS_Main");
+			break;
+#endif
+
 		default:
 			WomaFatalExceptionW(TEXT("This Shader type is not supported yet!"));
 			break;
@@ -1715,14 +1738,14 @@ namespace DirectX {
 			//BufferDesc.MiscFlags = 0;
 			//BufferDesc.StructureByteStride = 0;
 
-#if defined GENERATE_ATLAS_INTEGRATION_DDS
+		#if defined GENERATE_ATLAS_INTEGRATION_DDS
 			if (m_shaderType == SHADER_BILLBOARD_ATLAS_FAST)
 			BufferDesc.ByteWidth = sizeof(VSBillboardAtlasConstantBufferType);
 			else
-#endif
-			BufferDesc.ByteWidth = sizeof(VSconstantBufferType);
+		#endif
 
-			ASSERT(BufferDesc.ByteWidth <= D3D11_REQ_CONSTANT_BUFFER_ELEMENT_COUNT && (BufferDesc.ByteWidth % 16) == 0); // Validade Size
+			BufferDesc.ByteWidth = sizeof(VSconstantBufferType);
+			ASSERT(BufferDesc.ByteWidth <= D3D11_REQ_CONSTANT_BUFFER_ELEMENT_COUNT && (BufferDesc.ByteWidth % 16) == 0); // Validate Size
 
 			result = device11->CreateBuffer(&BufferDesc, NULL, &m_VertexShaderBuffer11);
 			IF_FAILED_RETURN_FALSE(result);
@@ -1731,11 +1754,10 @@ namespace DirectX {
 			// CREATE Buffer(s) DATA for "Pixel Shader":
 			// --------------------------------------------------------------------------------------------
 			BufferDesc.ByteWidth = sizeof(PSconstantBufferType);
-			ASSERT(BufferDesc.ByteWidth <= D3D11_REQ_CONSTANT_BUFFER_ELEMENT_COUNT && (BufferDesc.ByteWidth % 16) == 0); // Validade Size
+			ASSERT(BufferDesc.ByteWidth <= D3D11_REQ_CONSTANT_BUFFER_ELEMENT_COUNT && (BufferDesc.ByteWidth % 16) == 0); // Validate Size
 
 			result = device11->CreateBuffer(&BufferDesc, NULL, &m_PixelShaderBuffer11);
 			IF_FAILED_RETURN_FALSE(result);
-
 		}
 #endif
 
@@ -2112,6 +2134,32 @@ namespace DirectX {
 			dataPSptr->distortionBias = realSkyPlaneClass.m_translation;
 		}
 #endif
+
+
+#if DX_ENGINE_LEVEL >= 98 && defined USE_POINTS_OF_LIGHT_FOR_LAMP
+		if (m_shaderType == SHADER_TEXTURE_POINTS_OF_LIGHT_INSTANCED || 
+			m_shaderType == SHADER_TEXTURE_LIGHT ||
+			m_shaderType == SHADER_TEXTURE_LIGHT98
+			)
+		{
+			dataPSptr->numPointLights = MAX_POINT_LIGHTS;
+
+			for (int i = 0; i < MAX_POINT_LIGHTS; ++i)
+			{
+				dataPSptr->pointLights[i].position = streetLamps[i].pos;
+				dataPSptr->pointLights[i].radius = streetLamps[i].radius;
+
+				dataPSptr->pointLights[i].color = streetLamps[i].color;
+				dataPSptr->pointLights[i].intensity = streetLamps[i].intensity;
+
+				//womalog(TEXT("Lamp:%i pos=(%f,%f,%f) radius=%f intensity=%f\n"), i,
+				//		streetLamps[i].pos.x, streetLamps[i].pos.y, streetLamps[i].pos.z,
+				//		streetLamps[i].radius, streetLamps[i].intensity);
+			}
+		}
+#endif
+
+
 		// ----------------------------------------------------------------------------
 #if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009 && DX_ENGINE_LEVEL >= 23
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
@@ -2132,6 +2180,8 @@ namespace DirectX {
 
 		}
 #endif
+
+
 
 }
 
