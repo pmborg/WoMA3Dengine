@@ -1272,6 +1272,10 @@ float CTerrain::getTerrainHeight(UINT id, float xPos, float zPos)
 {
 	float height = 0;
 
+	#ifndef MAIN_RENDER_TERRAIN         //55/65
+		return  0;
+	#endif
+
 	float realXpos, realZpos, v1[3], v2[3], v3[3], v4[3], v5[3], v6[3];
 	int index;
 

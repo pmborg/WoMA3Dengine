@@ -49,8 +49,18 @@ struct ModelColorVertexType
 						 float R, float G, float B, float A)
 						{x=X; y=Y; z=Z; r=R; g=G; b=B; a=A;}
 #endif
-	float x, y, z;
-	float r, g, b, a; // This will allow a dif. color per vertice
+	float x, y, z;				// Legacy (<99)
+	float r, g, b, a;			// RGBA color per vertex (full alpha support)
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+union Vector4 {
+	Vector4() { x = 0; y = 0; z = 0; w = 0; }
+	Vector4(float x_, float y_, float z_, float w_) { x = x_; y = y_; z = z_; w = w_; }
+	struct {
+		float x, y, z, w;
+	};
 };
 #pragma pack(pop)
 

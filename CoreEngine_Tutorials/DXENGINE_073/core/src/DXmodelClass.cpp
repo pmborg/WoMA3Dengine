@@ -162,15 +162,18 @@ bool DirectX::DXmodelClass::LoadColor(void* pContext, TCHAR* objectName, void* d
 	LOADDRIVER(driver);
 	MODEL_NAME = objectName;
 
+	ASSERT_DEBUG(model);
+
 	if (shader_type == SHADER_AUTO)
 		ModelShaderType = SHADER_COLOR;
 	else
 		ModelShaderType = shader_type;
 
-	ASSERT(ModelShaderType == SHADER_COLOR);
+	ASSERT_DEBUG(ModelShaderType == SHADER_COLOR);
 
 	modelColorVertex = model; //*
 	indexModelList = indexList;
+
 	return InitializeDXbuffers((ID3D11DeviceContext*)pContext, objectName, NULL);
 }
 
@@ -186,12 +189,13 @@ bool DirectX::DXmodelClass::LoadTexture(void* pContext, TCHAR* objectName, void*
 	else
 		ModelShaderType = shader_type;
 
-	ASSERT	(	ModelShaderType == SHADER_TEXTURE || 
-				ModelShaderType == SHADER_TEXTURE_FONT || 
-				ModelShaderType == SHADER_TEXTURE_WATER ||
-				ModelShaderType == SHADER_FIRE || 
-				ModelShaderType == SHADER_USE_CURVED_REAL_SKY_PLANE
-			);
+	ASSERT_DEBUG(
+		ModelShaderType == SHADER_TEXTURE ||
+		ModelShaderType == SHADER_TEXTURE_FONT ||
+		ModelShaderType == SHADER_TEXTURE_WATER ||
+		ModelShaderType == SHADER_FIRE ||
+		ModelShaderType == SHADER_USE_CURVED_REAL_SKY_PLANE
+	);
 
 	modelTextureVertex = model;
 	indexModelList = indexList;
@@ -211,17 +215,18 @@ bool DirectX::DXmodelClass::LoadLight(void* pContext, TCHAR* objectName, void* d
 		ModelShaderType = shader_type;
 
 	modelTextureLightVertex = model;
-
-		ASSERT( (ModelShaderType == SHADER_TEXTURE_LIGHT) ||						// SHADER_TYPE =  4
+	ASSERT_DEBUG( (ModelShaderType == SHADER_TEXTURE_LIGHT) ||						// SHADER_TYPE =  4
 				(ModelShaderType == SHADER_TEXTURE_LIGHT_RENDERSHADOW) ||			// SHADER_TYPE =  6
-				(ModelShaderType == SHADER_TEXTURE_LIGHT_INSTANCED) ||				// SHADER_TYPE =  8
+				(ModelShaderType == SHADER_TEXTURE_LIGHT_INSTANCED) ||				// SHADER_TYPE =  8	//lvl40
 				(ModelShaderType == SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED) ||	// SHADER_TYPE = 10
 			    (ModelShaderType == SHADER_FIRE) ||                                 // SHADER_TYPE = 21
                 (ModelShaderType == SHADER_TEXTURE_GS_INSTANCED) ||                 // SHADER_TYPE = 22
-                (ModelShaderType == SHADER_TEXTURE_LIGHT_FAST)						// SHADER_TYPE = 24
+                (ModelShaderType == SHADER_TEXTURE_LIGHT_FAST) ||					// SHADER_TYPE = 24
+				(ModelShaderType == SHADER_TEXTURE_POINTS_OF_LIGHT_INSTANCED ) ||	// SHADER_TYPE = 30	//lvl98
+				(ModelShaderType == SHADER_TEXTURE_LIGHT98)							// SHADER_TYPE = 31	//lvl98
              );
 
-		indexModelList = indexList;
+	indexModelList = indexList;
 	return InitializeDXbuffers((ID3D11DeviceContext*)pContext, objectName, textureFiles);
 }
 
@@ -344,15 +349,16 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 		break;
 
 	// ----------------------------------------------------------------------------------------------
-	#if DX_ENGINE_LEVEL >= 41 && defined USE_SHADOW_INSTANCES
+#if DX_ENGINE_LEVEL >= 41 && defined USE_SHADOW_INSTANCES
 	case SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED:	//41: INSTANCED like 36 shadow, but using Instances
-	#endif
+#endif
 
-	#if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES
+#if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES
 	case SHADER_TEXTURE_LIGHT_INSTANCED:			//40: INSTANCED like 23 light, but using Instances
-	#endif
+#endif
 
 	case SHADER_TEXTURE_LIGHT:						//23
+	case SHADER_TEXTURE_LIGHT98:					//98
 	case SHADER_TEXTURE_LIGHT_RENDERSHADOW:			//36
     case SHADER_TEXTURE_GS_INSTANCED:				//77
     case SHADER_TEXTURE_LIGHT_FAST:					//83
@@ -363,7 +369,7 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 
 	// ----------------------------------------------------------------------------------------------
 	// Normal Bump + Instancing 
-	case SHADER_TEXTURE_LIGHT_SAVESHADOW_INSTANCED:
+	case SHADER_TEXTURE_LIGHT_SAVESHADOW_INSTANCED: //40
 
 	#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
 	case SHADER_TEXTURE_LIGHT_SAVESHADOW:
@@ -413,18 +419,26 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 
 	if (ShaderType >= SHADER_TEXTURE_LIGHT)
 		shader->hasLight	= ModelHASlight;	// COLOR AND TEXTURE = FALSE
+
 	if (ShaderType >= SHADER_TEXTURE)			
 		shader->hasFog		= ModelHASfog;
 	if (ShaderType >= SHADER_TEXTURE_LIGHT)		// COLOR AND TEXTURE = FALSE
 		shader->hasNormMap	= ModelHASNormals;
+
 	#if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES
 	if	(ShaderType == SHADER_TEXTURE_LIGHT_INSTANCED ||			//40: INSTANCED like 23 light, but using Instances
 		ShaderType == SHADER_TEXTURE_LIGHT_SAVESHADOW_INSTANCED ||	//40: Aux. Shader (render in texture), but using Instances (used on 40,41,42)
 		ShaderType == SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED ||  //41: INSTANCED like 36 shadow, but using Instances
-		ShaderType == SHADER_NORMAL_BUMP_INSTANCED || 					//99: INSTANCED like 35 bump, but using Instances
-        ShaderType == SHADER_TEXTURE_GS_INSTANCED)
+		ShaderType == SHADER_NORMAL_BUMP_INSTANCED || 				//--: INSTANCED like 35 bump, but using Instances
+        ShaderType == SHADER_TEXTURE_GS_INSTANCED ||				//77
+		ShaderType == SHADER_TEXTURE_POINTS_OF_LIGHT_INSTANCED		//98
+	//#if DX_ENGINE_LEVEL >= 99
+	//	|| ShaderType >= SHADER_TYPE_COLOR_LINE
+	//#endif
+		)
 		shader->m_instanceCount = m_instanceCount;
 	#endif
+
 	if (ShaderType >= SHADER_Double_Color_Terrain)
 		shader->hasColorMap = ModelHASColorMap;	// COLOR AND TEXTURE = FALSE
 #endif
@@ -541,9 +555,9 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 			m_Shader11->hasAlfaColor = ModelHASAlfaColor;			//IMPORTANT LEVEL 62!
 			m_Shader11->alfaColor = ModelAlfaColor;					//IMPORTANT LEVEL 62!
 			m_Shader11->hasFog = ModelHASfog;						//IMPORTANT LEVEL 62!
-#if DX_ENGINE_LEVEL >= 73 && defined BILLBOARD_FOR_WINDY_GRASS
+	#if DX_ENGINE_LEVEL >= 73 && defined BILLBOARD_FOR_WINDY_GRASS
 			m_Shader11->isAnimatedBill = isAnimatedBill;
-#endif
+	#endif
 	}
 #endif
 #if defined DX12
@@ -559,7 +573,7 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 	{
 		m_Shader11->castShadow = true; // Use Shadow Map Result!
 
-		// Create Shadow Map:
+		// Create AUX Shadow Map:
 		#if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES // Normal Bump + Instancing 
 		if (m_instanceCount > 0)
 			m_ShaderShadowMap = CreateShader(objectName, SHADER_TEXTURE_LIGHT_SAVESHADOW_INSTANCED);
@@ -623,7 +637,7 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 	// ----------------------------------------------------------------------------------------------
 	switch (ModelShaderType)
 	{
-	case SHADER_COLOR: 
+	case SHADER_COLOR:
 		switch (SystemHandle->AppSettings->DRIVER)
 		{
 
@@ -652,6 +666,8 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 		{
 			result = InitializeTextureBuffers(m_driver11->m_device11, indices);
 		#if TUTORIAL_CHAP >= 62 // FIRE
+			if (ModelShaderType == SHADER_FIRE)
+			{
 				// Set the three scrolling speeds for the three different noise textures.
 				m_Shader11->scrollSpeeds = XMFLOAT3(1.3f, 2.1f, 2.3f);
 
@@ -666,6 +682,7 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 				// The the scale and bias of the texture coordinate sampling perturbation.
 				m_Shader11->distortionScale = 0.8f;
 				m_Shader11->distortionBias = 0.5f;
+			}
 		#endif
 		}
 	#endif
@@ -677,12 +694,14 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 	#endif
 		break;
 
-	case SHADER_TEXTURE_LIGHT:						//23: LIGHT 
-	case SHADER_TEXTURE_LIGHT_RENDERSHADOW:			//36: Draw Shadows
-	case SHADER_TEXTURE_LIGHT_INSTANCED:			//40: INSTANCED like 23 light, but using Instances
+	case SHADER_TEXTURE_LIGHT:						//23 LIGHT 
+	case SHADER_TEXTURE_LIGHT98:					//98
+	case SHADER_TEXTURE_LIGHT_RENDERSHADOW:			//36 Draw Shadows
+	case SHADER_TEXTURE_LIGHT_INSTANCED:			//40 INSTANCED like 23 light, but using Instances
 	case SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED: //41
     case SHADER_TEXTURE_GS_INSTANCED:               //77
-    case SHADER_TEXTURE_LIGHT_FAST:					//83: LIGHT 
+    case SHADER_TEXTURE_LIGHT_FAST:					//83 LIGHT 
+	case SHADER_TEXTURE_POINTS_OF_LIGHT_INSTANCED:  //98
 	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
 		{
@@ -756,7 +775,7 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 		#endif
 
 		//3D: Create the texture object for this model:
-		if (meshSRV_size == 0)
+		if (meshSRV_size == 0 && textureFile)
 		{
 			for (UINT i = 0; i < (*textureFile).size(); i++)
 			{
@@ -920,7 +939,9 @@ bool DXmodelClass::InitializeColorBuffers(/*ID3D11Device*/ void* device, void* i
 	for (UINT i = 0; i < m_vertexCount; i++)
 	{
 #if defined DX11 || defined DX12 || defined DX9
+
 		vertices[i].position = XMFLOAT3((*modelColorVertex)[i].x, (*modelColorVertex)[i].y, (*modelColorVertex)[i].z);
+
 		vertices[i].color	 = XMFLOAT4((*modelColorVertex)[i].r, (*modelColorVertex)[i].g, (*modelColorVertex)[i].b, (*modelColorVertex)[i].a);
 #endif
 #if defined USE_BOUNDING_VOLUMES
@@ -951,7 +972,12 @@ bool DXmodelClass::InitializeTextureBuffers(/*ID3D11Device*/ void* device, void*
 		for (UINT i = 0; i < m_vertexCount; i++)
 		{
 			// Load the vertex array with data.
-			vertices[i].position = XMFLOAT3((*modelTextureVertex)[i].x, (*modelTextureVertex)[i].y, (*modelTextureVertex)[i].z);
+
+			// Legacy (<99)
+			vertices[i].position = XMFLOAT3(
+				(*modelTextureVertex)[i].x,
+				(*modelTextureVertex)[i].y,
+				(*modelTextureVertex)[i].z);
 			vertices[i].texCoord = XMFLOAT2((*modelTextureVertex)[i].tu, (*modelTextureVertex)[i].tv);
 
 #if defined USE_BOUNDING_VOLUMES
@@ -1193,7 +1219,7 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 		bool UPLOAD = true;
 		if (Model3D) {
 			// [*] CreateCommittedResource - VERTEX - ALOCATE SPACE ON GPU RAM
-#if defined USE_LIGHT_RAY
+#if defined MAIN_RENDER_LIGHT_RAY
 			ThrowIfFailed(device->CreateCommittedResource(
 				&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 				D3D12_HEAP_FLAG_NONE,
@@ -1214,7 +1240,7 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 			m_vertexBuffer->SetName(L"Vertex Buffer Resource");
 			UPLOAD = false;
 #endif
-#if defined USE_LIGHT_RAY
+#if defined MAIN_RENDER_LIGHT_RAY
 			ThrowIfFailed(device->CreateCommittedResource(
 				&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), //D3D12_HEAP_TYPE_UPLOAD
 				D3D12_HEAP_FLAG_NONE,
@@ -1282,7 +1308,7 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 		// The upload resource must not be released until after the GPU has finished using it.
 		UPLOAD = true;
 		if (Model3D) {
-#if defined USE_LIGHT_RAY
+#if defined MAIN_RENDER_LIGHT_RAY
 			ThrowIfFailed(device->CreateCommittedResource(
 				&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 				D3D12_HEAP_FLAG_NONE,
@@ -1302,7 +1328,7 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 			m_indexBuffer->SetName(L"Index Buffer Resource");
 			UPLOAD = false;
 #endif
-#if defined USE_LIGHT_RAY
+#if defined MAIN_RENDER_LIGHT_RAY
 			ThrowIfFailed(device->CreateCommittedResource(
 				&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), //D3D12_HEAP_TYPE_UPLOAD
 				D3D12_HEAP_FLAG_NONE,
@@ -1436,8 +1462,11 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 		IF_NOT_RETURN_FALSE (instances = NEW InstanceType[m_instanceCount]);
 		
 		// Call "User" Function to setup all instances:
-		SystemHandle->m_Application->WOMA_APPLICATION_SetInstancePositions (SystemHandle->xml_loader.theWorldXML[m_ObjId].id, m_instanceCount, instances, 
-                                                                            SystemHandle->xml_loader.theWorldXML[m_ObjId].type);
+		SystemHandle->m_Application->WOMA_APPLICATION_SetInstancePositions(
+			SystemHandle->xml_loader.theWorldXML[m_ObjId].id,
+			m_instanceCount,
+			instances,
+			SystemHandle->xml_loader.theWorldXML[m_ObjId].type);
 
 		//The instance buffer description is setup exactly the same as a vertex buffer description.
 		ZeroMemory( &instanceBufferDesc, sizeof( instanceBufferDesc ) );
@@ -1484,6 +1513,7 @@ void DXmodelClass::SetGeometryBuffers(void* deviceContext)
 		{
 		case SHADER_COLOR:
 			stride[0] = sizeof(DXcolorVertexType); break;
+
 		case SHADER_TEXTURE:
 		case SHADER_TEXTURE_FONT:
 		case SHADER_TEXTURE_WATER:
@@ -1492,13 +1522,16 @@ void DXmodelClass::SetGeometryBuffers(void* deviceContext)
 			stride[0] = sizeof(DXtextureVertexType); break;
 
 		case SHADER_TEXTURE_LIGHT:						//23
+		case SHADER_TEXTURE_LIGHT98:					//98
 		case SHADER_TEXTURE_LIGHT_RENDERSHADOW:			//36
 		case SHADER_TEXTURE_LIGHT_INSTANCED:			//40
 		case SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED: //41
         case SHADER_TEXTURE_GS_INSTANCED:               //77
         case SHADER_TEXTURE_LIGHT_FAST:					//83
+		case SHADER_TEXTURE_POINTS_OF_LIGHT_INSTANCED:  //98
 			stride[0] = sizeof(DXtextureLightVertexType); break;
 
+		//AUX SHADOW SHADER::
 		case SHADER_TEXTURE_LIGHT_SAVESHADOW:			//36
 		case SHADER_TEXTURE_LIGHT_SAVESHADOW_INSTANCED: //40
 			stride[0] = sizeof(DXShadowMapVertexType); break;
@@ -1528,7 +1561,11 @@ void DXmodelClass::SetGeometryBuffers(void* deviceContext)
 			ModelShaderType == SHADER_TEXTURE_LIGHT_SAVESHADOW_INSTANCED ||
 			ModelShaderType == SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED ||
 			ModelShaderType == SHADER_NORMAL_BUMP_INSTANCED ||
-            ModelShaderType == SHADER_TEXTURE_GS_INSTANCED
+            ModelShaderType == SHADER_TEXTURE_GS_INSTANCED ||
+			ModelShaderType == SHADER_TEXTURE_POINTS_OF_LIGHT_INSTANCED
+	//#if DX_ENGINE_LEVEL >= 99
+	//		|| ModelShaderType >= SHADER_TYPE_COLOR_LINE
+	//#endif
             )
 		{
 			bufferPointer[1] = m_instanceBuffer;
@@ -1541,8 +1578,8 @@ void DXmodelClass::SetGeometryBuffers(void* deviceContext)
 		D3D_PRIMITIVE_TOPOLOGY_POINTLIST = 1,
 		D3D_PRIMITIVE_TOPOLOGY_LINELIST = 2,
 		D3D_PRIMITIVE_TOPOLOGY_LINESTRIP = 3,
-		D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST = 4,	1 Triang. = 3 Vert.--> DrawPrimitive( D3DPT_TRIANGLELIST, 0, 1 );
-		D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP = 5,	4 Triang. = 6 Vert.--> DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, 4 );
+		D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST = 4,	1 Triangle = 3 Vert.--> DrawPrimitive( D3DPT_TRIANGLELIST, 0, 1 );
+		D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP = 5,	4 Triangle = 6 Vert.--> DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, 4 );
 		*/
 		// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
 		context->IASetPrimitiveTopology((D3D11_PRIMITIVE_TOPOLOGY)(PrimitiveTopology));
@@ -1564,7 +1601,7 @@ void DXmodelClass::SetGeometryBuffers(void* deviceContext)
 #endif
 }
 
-#if defined USE_LIGHT_RAY
+#if defined MAIN_RENDER_LIGHT_RAY
 void DirectX::DXmodelClass::UpdateDynamic(void* ctx, std::vector<ModelColorVertexType>* lightVertexVector)
 {
 	ID3D11DeviceContext* deviceContext11 = (ID3D11DeviceContext*)ctx;
@@ -1594,10 +1631,8 @@ void DirectX::DXmodelClass::UpdateDynamic(void* ctx, std::vector<ModelColorVerte
 
 	//Now that the coordinates are calculated create a temporary vertex array and fill it with the new six vertex points.
     m_vertexCount = (UINT)(*modelColorVertex).size();
-    //m_vertexCount = 2;
      
 	DXcolorVertexType*	vertices = NEW DXcolorVertexType[m_vertexCount];
-    //DXcolorVertexType vertices[2] = {};
 
 	IF_NOT_THROW_EXCEPTION (vertices);//
 
@@ -2207,25 +2242,36 @@ void DirectX::DXmodelClass::Render(void* ctx, UINT threadID, UINT camera, UINT p
 			SetGeometryBuffers(pContext);
 		}
 
-		// Step 2 - Get "view" and "projection" matrices from the "driver" and "camera" objects
-		// ----------------------------------------------------------------------------------------
-		XMMATRIX* projectionMatrix; 
-		XMMATRIX* viewMatrix;
 
-		if (projection == PROJECTION_MINIMAP) {
-			projectionMatrix = (XMMATRIX*)ShadowProjectionMatrix;	//Use provided projection: MINI-MAP
-			viewMatrix = (XMMATRIX*)lightViewMatrix;				//Use provided view
-		} else
-		{
-		if (camera != CAMERA_MINIMAP)
-        {
-			projectionMatrix = m_driver11->GetProjectionMatrix(camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
-        }
-		else
-			projectionMatrix = (XMMATRIX*)ShadowProjectionMatrix;   //Use provided projection: for Shadows
+
+
+	// ----------------------------------------------------------------------------------------
+	// Step 2 - Setup matrices (Unified CBUFFER path for Level 99)
+	// ----------------------------------------------------------------------------------------
+	XMMATRIX* projectionMatrix=NULL;
+	XMMATRIX* viewMatrix = NULL;
+
+	//#if DX_ENGINE_LEVEL >= 99 && defined USE_WOMA_ENGINE_ONE_CBUFFER
+	//		viewMatrix = m_driver11->GetViewMatrix(camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
+	//		projectionMatrix = m_driver11->GetProjectionMatrix(camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
+	//#else   // ─── Legacy (pre-99) path ────────────────────────────────────────────────
+
+			if (projection == PROJECTION_MINIMAP) {
+				projectionMatrix = (XMMATRIX*)ShadowProjectionMatrix;	//Use provided projection: MINI-MAP
+				viewMatrix = (XMMATRIX*)lightViewMatrix;				//Use provided view
+			} else
+			{
+			if (camera != CAMERA_MINIMAP)
+			{
+				projectionMatrix = m_driver11->GetProjectionMatrix(camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
+			}
+			else
+				projectionMatrix = (XMMATRIX*)ShadowProjectionMatrix;   //Use provided projection: for Shadows
 		
-			viewMatrix = m_driver11->GetViewMatrix(camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
-		}
+				viewMatrix = m_driver11->GetViewMatrix(camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
+			}
+
+	//#endif  // USE_WOMA_ENGINE_ONE_CBUFFER
 
 		// Step 3: Render Complex Mesh (OBJ/W3D):
 		// ----------------------------------------------------------------------------------------
@@ -2266,7 +2312,11 @@ void DirectX::DXmodelClass::Render(void* ctx, UINT threadID, UINT camera, UINT p
 				m_Shader11->Render(pass, pContext, m_indexCount, &m_worldMatrix, viewMatrix, projectionMatrix);
             #endif
 		}
+
+	//#endif
+
 	}
+	//END: DX11 Driver
 #endif
 }
 
@@ -2417,7 +2467,27 @@ bool DirectX::DXmodelClass::LoadModel(void* pContext, TCHAR* objectName, void* g
 
 	const TCHAR* extension = _tcsrchr(filename.c_str(), '.');
 
-	if (_tcsicmp(extension, TEXT(".obj")) == 0 || _tcsicmp(extension, TEXT(".OBJ")) == 0)
+	bool res = false;
+#if defined LOADW3D
+	if (_tcsicmp(extension, TEXT(".w3d")) == 0 || _tcsicmp(extension, TEXT(".W3D")) == 0)
+	{
+		bool res = LoadW3D(pContext, shader_type, g_driver, filename, castShadow, renderShadow, instanceCount);
+		if (res)
+		{
+			return res;
+		}
+		else {
+			womalog("WARNING: file not found: %s", filename);
+			const size_t pos = filename.find_last_of(TEXT('.'));
+			if (pos != STRING::npos)
+				filename.replace(pos, filename.length() - pos, TEXT(".obj"));
+			else
+				filename += TEXT(".obj");
+		}
+	}
+#endif
+
+	if (res == false || _tcsicmp(extension, TEXT(".obj")) == 0 || _tcsicmp(extension, TEXT(".OBJ")) == 0)
 	{
 		bool b = modelClass.LoadOBJ(pContext, this, shader_type, g_driver, filename, castShadow, renderShadow, instanceCount, 0);
         if (!b)
@@ -2425,18 +2495,11 @@ bool DirectX::DXmodelClass::LoadModel(void* pContext, TCHAR* objectName, void* g
 			WomaMessageBox((TCHAR*)filename.c_str(), TEXT("Error, Could not load: ")); ASSERT(false);
 		}
 		if (b) {
-			bool res = modelClass.CreateObject(pContext, this, (TCHAR*)filename.c_str(), g_driver, shader_type /*SHADER_AUTO*/, filename, castShadow, renderShadow); // Auto Detect Shader Type
+			res = modelClass.CreateObject(pContext, this, (TCHAR*)filename.c_str(), g_driver, shader_type /*SHADER_AUTO*/, filename, castShadow, renderShadow); // Auto Detect Shader Type
             return res;
         }
 	}
 
-#if defined LOADW3D
-	else if (_tcsicmp(extension, TEXT(".w3d")) == 0 || _tcsicmp(extension, TEXT(".W3D")) == 0)
-    {
-		bool res = LoadW3D(pContext, shader_type, g_driver, filename, castShadow, renderShadow, instanceCount);
-        return res;
-    }
-#endif
 
     return false;
 }

@@ -46,6 +46,7 @@
 	#include "glxOpenGLclass.h"	// Linux
 
 extern MyWin Win;
+extern bool createWindow();
 
 #if CORE_ENGINE_LEVEL >= 7 && defined USE_ASTRO_CLASS
 #include "initWorld.h"	//TIMER 2
@@ -227,9 +228,9 @@ bool LinuxSystemClass::APPLICATION_INIT_SYSTEM() // ApplicationInit()
 	womalog("WOMA_APPLICATION_InitGUI() - DONE\n");
 
 	// WINDOWS with CONTEXT:
-	IF_NOT_RETURN_FALSE(APPLICATION_INIT_MAIN_WINDOW(g_contextDriver));	// Create the window the application will be using and also initialize OpenGL.
+	IF_NOT_RETURN_FALSE(APPLICATION_INIT_MAIN_WINDOW());	// Create the window the application will be using and also initialize OpenGL.
 
-	InitializeSystemScreenF1(10, 10);			// SETUP SCREEN: F1,F2,F3,F4
+	InitializeSystemScreenF1(10, 10);		// SETUP SCREEN: F1,F2,F3,F4
 
 #if defined USE_PROCESS_OS_KEYS
 	IF_NOT_RETURN_FALSE(InitOsInput());			// INIT-INPUT Devices, NOTE: After "Create MainWindow(s)"
@@ -287,6 +288,18 @@ void LinuxSystemClass::ProcessInput()
 }
 #endif
 
+//----------------------------------------------------------------------------
+// Source: http://www.opengl.org/discussion_boards/archive/index.php/t-177999.html
+// D:\WoMAengine2014\woma_developer\SAMPLES\Sample020_StartEngine\Src\original_sample_code.cxx
+// C:\WoMAengine2023\LinuxWoma\LinuxWoma\main_linux.cppcreateWindow();
+//----------------------------------------------------------------------------
+bool LinuxSystemClass::APPLICATION_INIT_MAIN_WINDOW()
+{
+	bool res = createWindow();
+
+	return res;
+}
+
 // Frame() --> ProcessFrame();
 void LinuxSystemClass::ProcessFrame() // EQUAL to: WinSystemClass::ProcessFrame()
 //-------------------------------------------------------------------------------
@@ -296,7 +309,7 @@ void LinuxSystemClass::ProcessFrame() // EQUAL to: WinSystemClass::ProcessFrame(
 	if (WOMA::game_state == ENGINE_RESTART)
 		return;
 
-	#define mon 0
+	#define monIdx 0
 
 	#if !defined INTRO_DEMO
 	if ((WOMA::game_state >= GAME_RUN && WOMA::game_state < ENGINE_RESTART) || (WOMA::game_state == GAME_SETUP))
@@ -311,33 +324,15 @@ void LinuxSystemClass::ProcessFrame() // EQUAL to: WinSystemClass::ProcessFrame(
 	#endif
 			return;
 
-		{
-		m_Driver->BeginScene(mon);					//RESET FRAME: glClear
+		
+		m_Driver->BeginScene(monIdx);						//RESET FRAME: glClear
 
-		m_Application->RenderScene(mon, m_Driver);	//RENDER ONE FRAME: 100% is done here!
+		m_Application->RenderScene(NULL, monIdx, m_Driver);	//RENDER ONE FRAME: 100% is done here!
 
-		if (!g_contextDriver)						//PRESENT FRAME
-			m_Driver->EndScene(mon);				//[DX]
-		else
-			g_contextDriver->EndScene(mon);			//[OPENGL/linux]: glXSwapBuffers( Win.display, Win.window);
-		}
+		(g_contextDriver ? g_contextDriver : m_Driver)->EndScene(monIdx);	// SHOW FRAME :)
 
 		m_Driver->RenderfirstTime = false;
 	}
-}
-
-extern bool createWindow();
-
-//----------------------------------------------------------------------------
-// Source: http://www.opengl.org/discussion_boards/archive/index.php/t-177999.html
-// D:\WoMAengine2014\woma_developer\SAMPLES\Sample020_StartEngine\Src\original_sample_code.cxx
-// C:\WoMAengine2023\LinuxWoma\LinuxWoma\main_linux.cppcreateWindow();
-//----------------------------------------------------------------------------
-bool LinuxSystemClass::APPLICATION_INIT_MAIN_WINDOW(void* OpenGL)
-{
-	bool res = createWindow();
-
-	return res;
 }
 
 #endif

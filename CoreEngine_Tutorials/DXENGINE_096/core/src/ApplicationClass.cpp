@@ -38,7 +38,7 @@ extern MyWin Win;
 #pragma warning(push)
 #pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
 
-#if defined USE_CURVED_REAL_SKY_PLANE
+#if defined MAIN_RENDER_CURVED_REAL_SKY_PLANE
 #include "realSkyPlaneClass.h"
 extern RealSkyPlaneClass realSkyPlaneClass;
 #endif
@@ -53,8 +53,14 @@ void ApplicationClass::PositionUpdate(int playerId, float positionX, float posit
 	float percentX, percentY;
 	float percentMapX, percentMapY;
 
+#ifdef MAIN_RENDER_TERRAIN
 	#define m_terrainWidth	loadedTerrain[2]->m_terrainWidth
 	#define m_terrainHeight loadedTerrain[2]->m_terrainHeight
+#else
+	#define m_terrainWidth	512
+	#define m_terrainHeight 512
+#endif
+
 	#define g_ScreenWidth	SystemHandle->AppSettings->WINDOW_WIDTH
 	#define g_ScreenHeight	SystemHandle->AppSettings->WINDOW_HEIGHT
 
@@ -220,7 +226,7 @@ ApplicationClass::ApplicationClass()
 
 	app_Light = NULL;
 
-#if defined USE_LIGHT_RAY
+#if defined MAIN_RENDER_LIGHT_RAY
 	m_lightRayModel = NULL;
 #endif
 
@@ -464,7 +470,7 @@ void ApplicationClass::Shutdown()
 	SAFE_SHUTDOWN(m_billTreeClass);
 #endif
 
-#if defined USE_CURVED_REAL_SKY_PLANE
+#if defined MAIN_RENDER_CURVED_REAL_SKY_PLANE
 	realSkyPlaneClass.Shutdown();
 #endif
 
@@ -495,7 +501,7 @@ void ApplicationClass::WOMA_APPLICATION_Shutdown()
 	SAFE_DELETE(metarClass);
 #endif
 
-#if defined USE_LIGHT_RAY
+#if defined MAIN_RENDER_LIGHT_RAY
 #if (defined DX_ENGINE)
 	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
 		SAFE_SHUTDOWN_MODELDX(m_lightRayModel);
@@ -711,7 +717,9 @@ bool ApplicationClass::Initialize(void* pContext, WomaDriverClass* Driver)
 #endif
 
 //####################################### START MESH THREADS #######################################
+#if DX_ENGINE_LEVEL >= 79 && defined MAIN_RENDER_ASSIMP
 	StartMeshDemo((ID3D11DeviceContext*)pContext);
+#endif
 
 #if CORE_ENGINE_LEVEL >= 10 && !defined ANDROID_PLATFORM
 	Driver->Finalize(); //Specially for DX12 (Finish setup just before start rendering...)
@@ -722,7 +730,6 @@ bool ApplicationClass::Initialize(void* pContext, WomaDriverClass* Driver)
 
 	return true; //go-go-go Start Rendering! :)
 }
-
 #endif
 
 #pragma warning(pop)

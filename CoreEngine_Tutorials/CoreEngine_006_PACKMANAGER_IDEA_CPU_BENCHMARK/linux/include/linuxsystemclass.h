@@ -57,10 +57,10 @@ public:
 	int xbutton_x = -1, xbutton_y = -1;
 	int xbutton = 0;
 
+	bool APPLICATION_INIT_MAIN_WINDOW();
+
 private:
 	bool mResizing;
-
-	bool APPLICATION_INIT_MAIN_WINDOW(/*glxOpenGLClass*/ void* OpenGL);
 
 public:
 };

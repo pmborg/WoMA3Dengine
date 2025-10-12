@@ -74,6 +74,9 @@
 #endif
     #define DEMO_TITLE TEXT("05: From now on: PRESS [F6] for: [GAME SETUP] and added FILE: C:\\Users\\Public\\Documents\\<user>\\<core-level>\\<dx-level>\\settings.xml")
 #endif
+#if CORE_ENGINE_LEVEL >= 5
+#define BACKGROUND_IMAGE TEXT("engine/data/basics/logotipo_small_backgroundV2.bmp")
+#endif
 #if CORE_ENGINE_LEVEL == 6
   #if defined LINUX_PLATFORM
     #define DEMO_ROOT_DIR TEXT("/projects/LinuxWoma006/CoreEngine_Tutorials/CoreEngine_006_PACKMANAGER_IDEA_CPU_BENCHMARK")
@@ -94,7 +97,6 @@
     #define SETTINGS_FILE       TEXT("settings_007.xml")
 #endif
     #define DEMO_TITLE TEXT("07: Loading a files from engine.pck and Press [F2] for RealTime Celestial Positions of Sun and Moon accordingly with user Location")
-    #define BACKGROUND_IMAGE TEXT("engine/data/basics/logotipo_small_backgroundV2.bmp")
 #endif
 #if CORE_ENGINE_LEVEL >= 7
     #define GEO_DATABASE TEXT("engine/data/GeoLite2-City.mmdb")
@@ -109,7 +111,6 @@
   #endif
     #define DEMO_TITLE TEXT("08: From now on: PRESS [F3] for: [REAL TIME MAP] user location.")
     #endif
-    #define BACKGROUND_IMAGE TEXT("engine/data/basics/logotipo_small_backgroundV2.bmp")
     #define POSITION_TARGET_IMAGE TEXT("engine/data/basics/target.bmp")
     #define WORLD_IP_TARGET_IMAGE TEXT("engine/data/original/Earth_Diffuse.bmp")
 #endif

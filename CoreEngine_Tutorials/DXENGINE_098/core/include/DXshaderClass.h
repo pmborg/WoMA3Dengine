@@ -117,10 +117,12 @@ namespace DirectX
 	private:
 		// NOTE: DONT USE "bool" USE "BOOL"
 
+	//#if DX_ENGINE_LEVEL >= 99 && defined USE_WOMA_ENGINE_ONE_CBUFFER
+	//	bool RenderfirstTime = true;
+	//#endif
 
-
-#if defined USE_FASTER_BILL_SHADER
-// 92: VERTEX CBUFFER:
+	#if defined USE_FASTER_BILL_SHADER
+	// 92: VERTEX CBUFFER:
 		struct VSFASTconstantBufferType
 		{
 			// BLOCK: VS1
@@ -134,7 +136,7 @@ namespace DirectX
 			float		fade;
 			XMFLOAT3	pad;
 		};
-#endif
+	#endif
 
 #if defined GENERATE_ATLAS_INTEGRATION_DDS
 		// --------------------------------------------------------------------------------------
@@ -164,7 +166,7 @@ namespace DirectX
 		};
 #endif
 
-#if defined USE_WATER_FALL
+#if defined MAIN_RENDER_WATER_FALL
 		// --------------------------------------------------------------------------------------
 		// 97: VERTEX CBUFFER: Billboard Atlas (DX_ENGINE_LEVEL >= 93)
 		// Supports atlas UVs, lighting, and wind animation for vegetation
@@ -321,7 +323,6 @@ namespace DirectX
 		// VARS:
 		// ----------------------------------------------------------------------
 		STRING MODEL_NAME;
-		INT    m_ObjId = 0;
 
 #if defined DX11 || defined DX9
 		DirectX::DX11Class* m_driver11 = NULL;
@@ -351,7 +352,7 @@ namespace DirectX
 #endif
 
 	public:
-
+		INT    m_ObjId = 0;
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 		ComPtr<ID3D12RootSignature>		m_rootSignature = NULL;
 		ComPtr<ID3D12PipelineState>		m_pipelineState[2][3][2][MAXNUM_PIPELINE_STATES] = { 0 };

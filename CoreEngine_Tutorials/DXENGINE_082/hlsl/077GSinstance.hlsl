@@ -36,7 +36,7 @@ struct GSIn
     float3 normal           : NORMAL;       // 23 & 47: LIGHT+BUMP
 	//float3 tangent 		: TANGENT;
 #if defined PS_USE_SPECULAR
-    float3 viewDirection    : TEXCOORD1;    // 44 Specular: SHADER_TEXTURE_LIGHT_INSTANCED
+    float3 viewDirection    : TEXCOORD1;    // 44 Specular
 #endif
     float4 cameraPosition   : WS; // FOG & SPECULAR
 };
@@ -50,7 +50,7 @@ struct PSIn
 	float3 normal			: NORMAL;				// 23 & 47: LIGHT+BUMP
 	//float3 tangent 		: TANGENT;
 #if defined PS_USE_SPECULAR
-	float3 viewDirection	: TEXCOORD1;			// 44 Specular: SHADER_TEXTURE_LIGHT_INSTANCED
+	float3 viewDirection	: TEXCOORD1;			// 44 Specular
 #endif
 	float4 cameraPosition	: WS;					// FOG & SPECULAR
 };

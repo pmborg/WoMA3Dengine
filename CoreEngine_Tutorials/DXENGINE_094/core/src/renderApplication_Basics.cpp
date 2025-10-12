@@ -398,30 +398,16 @@ void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext, WomaDriverCla
 	((DXmodelClass*)AtlasobjModel)->ready = true;
 #endif
 
-	// UPDATE DYN. LIGHT RAY:
-	// --------------------------------------------------------------------------------------------
-#if defined USE_LIGHT_RAY && DX_ENGINE_LEVEL != 98
-	if (RENDER_PAGE >= 23)
-	{
-		CalculateLightRayVertex(SunDistance);							// Calculate Light Source Position
-		m_lightRayModel->UpdateDynamic(pContext, m_LightVertexVector);	// Update LightRay vertex(s)
-		m_lightRayModel->Render(pContext, 0, 0, 0, NULL, NULL);			// Render LightRay
-	}
+#if defined _DEBUG
+	//womalogauto(TEXT("[FRAME] Sorted visible objects, ready to render (Monitor %d)\n"), monIdx);
 #endif
 }
 
 //----------------------------------------------------------------------------------------------------
-void ApplicationClass::RenderScene(UINT monitorIndex, WomaDriverClass* driver) // RENDER A FULL FRAME!
+void ApplicationClass::RenderScene(void* mainCtx, UINT monitorIndex, WomaDriverClass* driver) // RENDER A FULL FRAME!
 //----------------------------------------------------------------------------------------------------
 {
-	static void* mainCtx = NULL;
-
 	SystemHandle->TotalVertexCounter = 0;
-	
-	if (m_Driver->RenderfirstTime) 
-		mainCtx = getvoidcontext();
-
-	SortOutWhatNeedToBeRendered(mainCtx, driver);
 
 #if !defined INTRO_DEMO
   #if defined USE_DAY_AND_NIGHT
@@ -549,7 +535,7 @@ void ApplicationClass::RenderShadowPass(UINT monitorIndex, WomaDriverClass* Driv
 			m_RenderShadowTexture->SetRenderTarget(Driver, (ID3D11DeviceContext*)pContext);								// Set the render target to be the render to texture.
 			m_RenderShadowTexture->ClearRenderTarget(Driver, (ID3D11DeviceContext*)pContext, 1.0f, 1.0f, 1.0f, 1.0f);	// Clear the render to texture!
 
-#if defined  USE_LIGHT_RAY && defined USE_SHADOW_MAP
+#if defined  MAIN_RENDER_LIGHT_RAY && defined USE_SHADOW_MAP
 			app_Light->GenerateViewMatrix(MyLightVertexVector[1].x / 100, MyLightVertexVector[1].y / 100, MyLightVertexVector[1].z / 100);
 #endif
 
@@ -666,6 +652,29 @@ void ApplicationClass::AppPreRender(UINT monitorIndex, WomaDriverClass* Driver, 
 {
 	DirectX::DX11Class* m_driver11 = (DirectX::DX11Class*)Driver;
 
+
+	// UPDATE DYN. LIGHT RAY:
+	// --------------------------------------------------------------------------------------------
+#if defined MAIN_RENDER_LIGHT_RAY && DX_ENGINE_LEVEL != 98
+	if (RENDER_PAGE >= 23)
+	{
+		CalculateLightRayVertex(SunDistance);							// Calculate Light Source Position
+
+#if false //DX_ENGINE_LEVEL >= 99 && defined _DEBUG
+		static bool printedLightRayLog = false;
+		if (!printedLightRayLog && m_Driver->RenderfirstTime &&
+			m_lightRayModel->ModelShaderType == SHADER_TYPE_COLOR_LINE)
+		{
+			womalogauto(TEXT("[DXBuffers] Created dynamic vertex buffer for COLOR_LINE model (%d verts)\n"), m_lightRayModel->m_vertexCount);
+			printedLightRayLog = true;
+		}
+#endif
+
+		m_lightRayModel->UpdateDynamic(mainCtx, m_LightVertexVector);	// Update LightRay vertex(s)
+		m_lightRayModel->Render(mainCtx, 0, 0, 0, NULL, NULL);			// Render LightRay
+	}
+#endif
+
 #if defined USE_MINIMAP_REDENRING_THREAD
 	//FIRE AND FORGET:
 	monitorRef = monitorIndex;
@@ -707,7 +716,7 @@ void ApplicationClass::AppPreRender(UINT monitorIndex, WomaDriverClass* Driver, 
 #endif
 
 	// === RENDER MAP and MINIMAP TO TEXTURE: ===										 
-#if DX_ENGINE_LEVEL >= 62 && defined USE_MAIN_MAP // Render MAP and MINI-MAP, to texture
+#if DX_ENGINE_LEVEL >= 62 && defined USE_MAIN_MAP && defined MAIN_RENDER_TERRAIN // Render MAP and MINI-MAP, to texture
 	RenderMiniMapPass(monitorIndex, Driver, mainCtx, fadeLight);
 
 	((DirectX::DX11Class*)Driver)->SetBackBufferRenderTarget(mainCtx, monitorIndex);	//MANDATORY! Back to default back buffer
@@ -926,9 +935,9 @@ void ApplicationClass::RenderModel(void* pContext, UINT threadID, UINT monitorIn
 	// === RENDER OBJ.: ===					   
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
 	if (m_viewMatrix == NULL && m_projectionMatrix == NULL)
-		model->Render(pContext, threadID, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass, &(app_Light->m_viewMatrix), &(app_Light->m_ligth_orthoMatrix));
+		model->Render(pContext, threadID, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass, &(app_Light->m_viewMatrix), &(app_Light->m_ligth_orthoMatrix));	// RENDER
     else
-		model->Render(pContext, threadID, CAMERA_NORMAL, PROJECTION_MINIMAP, pass, m_viewMatrix, m_projectionMatrix);
+		model->Render(pContext, threadID, CAMERA_NORMAL, PROJECTION_MINIMAP, pass, m_viewMatrix, m_projectionMatrix);									// RENDER MINI MAP
 #else
 	model->Render(pContext, threadID, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass);
 #endif
@@ -959,7 +968,7 @@ void ApplicationClass::SkyAndDemos(UINT monitorWindow, float fadeLight, void* pC
 #if (defined USE_SKY_CAMERA_DOME && defined USE_SKYSPHERE) && defined MAIN_RENDER_SKY	// MAIN-RENDER: "Sky": (0.0ms)
 	if (RENDER_PAGE >= 28 && m_SkyModel)
 	{
-		m_Driver->SetRasterizerState(pContext, CULL_NONE/*CULL_BACK*/, FILL_SOLID); // Render the Inside of Sphere
+		m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID); // Render the Inside of Sphere
 		if (m_Driver->RenderfirstTime)
 		{
 			m_SkyModel->translation(0, 0, 0);
@@ -1021,9 +1030,11 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 {
 	SkyAndDemos(monitorIndex, fadeLight, pContext);
 
+#if defined MAIN_RENDER_TERRAIN
 	WaterTerrain(monitorIndex, fadeLight, pContext);
+#endif
 
-  #if defined GENERATE_ATLAS_INTEGRATION_DDS
+  #if defined GENERATE_ATLAS_INTEGRATION_DDS && defined MAIN_RENDER_MAIN_XML_OBJ
 	#if defined USE_ALPHA_BLENDING
 	m_Driver->TurnOffAlphaBlending(pContext);
 	#endif
@@ -1035,7 +1046,7 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 
 	// 3D STATIC OPAC OBJECTS on WORLD.XML, that listed in: sceneManager->visibleModelList (in front of camera)
 	//----------------------------------------------------------------------------------------------------------------------
-#if DX_ENGINE_LEVEL >= 73 && defined BILLBOARD_FOR_WINDY_GRASS
+#if DX_ENGINE_LEVEL >= 73 && defined BILLBOARD_FOR_WINDY_GRASS && defined MAIN_RENDER_MAIN_XML_OBJ
 #if defined SCENE_BILLBOARDS
     static float lasttime = 0;
     shadergrassframeTime += (timeGetTime() - lasttime)/200;
@@ -1047,10 +1058,9 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 
 	// Render TRANSPARENT Parts of 3D OBJs (like: glass window of (Space Compound), etc...) (last part)
 	// --------------------------------------------------------------------------------------------
-#if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined MAIN_RENDER_MAIN_OBJ //MAIN-RENDER: MAIN OBJs. (9 ms)
+#if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined MAIN_RENDER_MAIN_XML_OBJ //MAIN-RENDER: MAIN OBJs. (9 ms)
 	for (UINT id = 0; id < WOMA::sceneManager->visibleModelList.size(); id++)
 	{
-		
 		switch(SystemHandle->xml_loader.theWorldXML[WOMA::sceneManager->visibleModelList[id]->m_ObjId].type)
 		{
 				default:
@@ -1084,16 +1094,16 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 
 	// Render Animated meshes:
 	// -----------------------
+#if defined MAIN_RENDER_ASSIMP
 	if (ShouldDrawUI(monitorIndex) && !g_GOD_MODE)
 	{
-  #if defined MAIN_RENDER_ASSIMP
-	m_Driver->TurnOffAlphaBlending(pContext);
-	#if !defined USE_MESH_THREAD
-	UpdateMeshAnimations();
-	#endif
-	RenderAllMeshModels((ID3D11DeviceContext*)pContext, fadeLight);
-  #endif
+		m_Driver->TurnOffAlphaBlending(pContext);
+		#if !defined USE_MESH_THREAD
+		UpdateMeshAnimations();
+		#endif
+		RenderAllMeshModels((ID3D11DeviceContext*)pContext, fadeLight);
 	}
+#endif
 
 	// TRANSPARENT and SEMI-TRANSPARENT:
 	// --------------------------------------------------------------------------------------------
@@ -1131,6 +1141,7 @@ void ApplicationClass::AppPosRender(UINT monitorIndex, float dayLightFade, void*
 	m_Driver->TurnOnAlphaBlending(pContext);
 #endif
 
+#if DX_ENGINE_LEVEL >= 92 && defined MAIN_RENDER_BILLBOARDS
 	UINT obj_id;
 	for (UINT tree_id = 0; tree_id < WOMA::sceneManager->visibleBillboardList.size(); tree_id++)
 	{
@@ -1144,9 +1155,22 @@ void ApplicationClass::AppPosRender(UINT monitorIndex, float dayLightFade, void*
 			RenderModel(pContext, 0, monitorIndex, m_Driver, obj_id, PASS_BILL, NULL, NULL, dayLightFade);    // Render: "Billboards"
 		#endif
 	}
+#else
+#if (TUTORIAL_CHAP >= 60 && defined SCENE_BILLBOARDS && defined USE_SCENE_MANAGER && defined DX_ENGINE) && defined MAIN_RENDER_BILLBOARDS // MAIN-RENDER: BILLBOARD + FENCES + FIRE (11.4 ms)
+        UINT obj_id;
+        for (UINT tree_id = 0; tree_id < m_Trees.size(); tree_id++)
+        {
+            obj_id = m_Trees[tree_id].ID + world_xml_objs;
+            if (SystemHandle->xml_loader.theWorldXML[obj_id].render)											// TODO: use sceneManager
+				RenderModel(pContext, 0, monitorIndex, m_Driver, obj_id, PASS_BILL, NULL, NULL, dayLightFade);  // Render: "Billboards"
+		}
+#endif
+#endif
 
+#if DX_ENGINE_LEVEL >= 24 && defined MAIN_RENDER_TITLE
 	if (ShouldDrawUI(monitorIndex))
 		RenderHUD_Logo(pContext);
+#endif
 
 #if (defined USE_MAIN_MAP || defined USE_MINI_MAP) && defined MAIN_RENDER_MINIMAP //MAIN-RENDER: MINI-MAP (0.4)
 	if (ShouldDrawUI(monitorIndex))
@@ -1154,7 +1178,7 @@ void ApplicationClass::AppPosRender(UINT monitorIndex, float dayLightFade, void*
 #endif
 
 	// === AppTextClass-Fill: ===
-#if defined USE_RASTERTEK_TEXT_FONT
+#if defined USE_RASTERTEK_TEXT_FONT && defined MAIN_RENDER_RASTERTEK_FONT
 
 	if (ShouldDrawUI(monitorIndex) && AppTextClass)
 	{

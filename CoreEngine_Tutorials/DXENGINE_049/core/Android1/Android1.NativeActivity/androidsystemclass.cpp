@@ -229,7 +229,7 @@ void AndroidSystemClass::ProcessFrame()
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-		m_Application->RenderScene(0, m_Driver);//RENDER ONE FRAME: 100% is done here!
+		m_Application->RenderScene(NULL, 0, m_Driver);//RENDER ONE FRAME: 100% is done here!
 
 		// ------------------------------
 		//if (!m_contextDriver)															//PRESENT FRAME

@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // Filename: initApplication_Basics.cpp
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
@@ -193,8 +193,8 @@ void ApplicationClass::initStatic2D(void* ctx)
 	//--------------------------------------------------------------------------------
 	//CreateDXbuffers for 2D:
 	#if defined USE_TITLE_BANNER
-		// # Title #
-		initModelwithTexture2D(m_titleModel, DEMO_TITLE_TEXTURE, SpriteVertexVector, emptyIndexList, SHADER_TEXTURE);
+		const SHADER_TYPE shadertype = SHADER_TEXTURE;
+		initModelwithTexture2D(m_titleModel, DEMO_TITLE_TEXTURE, SpriteVertexVector, emptyIndexList, shadertype);
 	#endif
 
 }
@@ -506,6 +506,18 @@ void ApplicationClass::AddObjsWithInstancesToXML()
 	// Add Instanced Billboards to World.xml
 	//-----------------------------------------------------------------------------------------------------------------
 
+	//-----------------------------------------------------------------------------------------------------------------
+	// Add Instanced TREES90 to World.xml
+	//-----------------------------------------------------------------------------------------------------------------
+
+	//-----------------------------------------------------------------------------------------------------------------
+	// Add Instanced LAMPs to World.xml
+	//-----------------------------------------------------------------------------------------------------------------
+
+
+	// ----------------------------------------------------------------------------------------
+	// 1️st ADD SPECIAL COLOR LINE (used for Sun Direction visualization)
+	// ----------------------------------------------------------------------------------------
 }
 
 // --------------------------------------------------------------------------------------------
@@ -519,11 +531,15 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 
 	// Log XML objects:
 
-	InitLightandDemos(pContext, Driver);
+	InitLightandDemos(pContext, Driver); //objid=0
+
+	#ifdef MAIN_RENDER_SKY
 	InitMainSky(pContext, Driver);
+	#endif
+
+	#ifdef MAIN_RENDER_TERRAIN
 	InitTerrainandWaterSurfaces(pContext, Driver);
-
-
+	#endif
 	//=================================================================================================================
 	// Init MAIN 3D Scene       ///////////////////////////////////////////////////////////////////////////////////////
 	//=================================================================================================================
@@ -531,7 +547,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	//-----------------------------------------------------------------------------------------------------------------
 	// CREATE BILLBOARDs (populate Trees[]) (extra populate WORLD.XML)
 	//-----------------------------------------------------------------------------------------------------------------
-#if TUTORIAL_CHAP >= 60 && defined (SCENE_MAIN_TOPO_TERRAIN) && defined (SCENE_BILLBOARDS) // BILLBOARD
+#if TUTORIAL_CHAP >= 60 && defined SCENE_MAIN_TOPO_TERRAIN && defined SCENE_BILLBOARDS && defined MAIN_RENDER_TERRAIN
 	IF_NOT_RETURN_FALSE(m_billTreeClass = NEW BillClass);
 	if (!m_billTreeClass->Initialize((ID3D11DeviceContext*)pContext, loadedTerrain[2]->m_terrainWidth / 2, loadedTerrain[2]->m_terrainHeight / 2, false))
 	{
@@ -541,16 +557,14 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	womalogauto("Number of billboard objects added %d\n", SystemHandle->xml_loader.theWorldXML.size()- world_xml_objs);
 #endif
 
-
-
 	//-----------------------------------------------------------------------------------------------------------------
 	// LOAD PROGRESS BAR
 	//-----------------------------------------------------------------------------------------------------------------
 #if defined ALLOW_CBIND_PROGRESS_BAR
 	// --- CREATE PROGRESS BAR:
-#if defined USE_INTRO_VIDEO_DEMO
+	#if defined USE_INTRO_VIDEO_DEMO
 	if (DXsystemHandle->g_DShowPlayer == NULL || (DXsystemHandle->g_DShowPlayer->m_state != STATE_RUNNING))
-#endif
+	#endif
 	{
 		SystemHandle->hwndPrgBar = SystemHandle->WomaCreateWindowEx(0, PROGRESS_CLASS, NULL, WS_CHILD | WS_VISIBLE | PBS_SMOOTH, 50, SystemHandle->AppSettings->WINDOW_HEIGHT - 100,
 			SystemHandle->AppSettings->WINDOW_WIDTH - 100, 20, SystemHandle->m_hWnd, (HMENU)401, SystemHandle->m_hinstance, NULL);

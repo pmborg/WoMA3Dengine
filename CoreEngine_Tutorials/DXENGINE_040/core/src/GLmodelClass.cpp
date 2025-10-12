@@ -85,7 +85,7 @@ GLmodelClass::GLmodelClass(bool model3d)
 
 GLmodelClass::~GLmodelClass(){CLASSDELETE();}
 
-#if defined USE_LIGHT_RAY
+#if defined MAIN_RENDER_LIGHT_RAY
 void GLmodelClass::UpdateDynamic(void* pContext, std::vector<ModelColorVertexType>* lightVertexVector)
 {
 	static float m_previousPosX = -10000;

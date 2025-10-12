@@ -19,7 +19,7 @@
 //WomaIntegrityCheck = 1234525217;
 
 #include "OSengine.h"
-#if defined USE_CURVED_REAL_SKY_PLANE
+#if defined MAIN_RENDER_CURVED_REAL_SKY_PLANE
 
 struct SkyPlaneType
 {

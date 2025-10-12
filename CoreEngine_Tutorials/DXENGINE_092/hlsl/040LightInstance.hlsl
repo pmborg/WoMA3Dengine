@@ -38,7 +38,7 @@ struct PSIn
     float4 position			: SV_POSITION;			// 21
     float2 texCoords		: TEXCOORD0;			// 22
 	float3 normal			: NORMAL;				// 23 & 47: LIGHT+BUMP
-	float3 viewDirection	: TEXCOORD1;			// 44 Specular: SHADER_TEXTURE_LIGHT_INSTANCED
+	float3 viewDirection	: TEXCOORD1;			// 44 Specular
 	float4 cameraPosition	: WS;					// FOG & SPECULAR
 };
 

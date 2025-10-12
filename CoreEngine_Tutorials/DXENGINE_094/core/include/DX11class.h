@@ -1,4 +1,4 @@
-// ----------------------------------------------------------------------------------------------
+﻿// ----------------------------------------------------------------------------------------------
 // Filename: DX11Class.h
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
@@ -288,11 +288,13 @@ struct DXwindowDataContainer
 	DXGI_FORMAT m_backBufferFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
 };
 
-
-
+// ----------------------------------------------------------------------------------------------
+// Globals:
+// ----------------------------------------------------------------------------------------------
 extern std::vector<DXwindowDataContainer> DX11windowsArray;		
 extern std::vector<UINT> FSAA_possibleValues;
 
+// ----------------------------------------------------------------------------------------------
 namespace DirectX {
 
 struct DXTextLine
@@ -304,6 +306,7 @@ struct DXTextLine
     float G;
     float B;
 };
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: DX11Class
@@ -355,7 +358,6 @@ public:
 #endif
 
 #if defined USE_DX_DRIVER_FONT
-    std::vector<DXTextLine> allTextArray;
     void addText(int Xpos, int Ypos, TCHAR* printText, float R, float G, float B);
     void RenderDriverText(void* pContext);
 #endif

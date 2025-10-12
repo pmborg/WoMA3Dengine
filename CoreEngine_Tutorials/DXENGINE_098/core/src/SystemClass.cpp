@@ -507,21 +507,14 @@ void SystemClass::refreshTitle() // Run once per second.
 #endif
 #endif
 
-	TCHAR		title[MAX_STR_LEN];
-
 #if defined WINDOWS_PLATFORM && !defined ANDROID_PLATFORM
 #if defined(X64) // Set the new "Window Title"
 	PDWORD_PTR dwResult = 0;// In 64 Bits
 	for (int i = 0; i < SystemHandle->windowsArray.size(); i++)
 		if (ShouldDrawUI(i))
 			SendMessageTimeout(SystemHandle->windowsArray[i].hWnd, WM_SETTEXT, 0, (LPARAM)pstrFPS, SMTO_ABORTIFHUNG, 1000, dwResult);
-		else
-		{
-			StringCchPrintf(title, 300, TEXT("WOMA ENGINE - SCR: %d"), i);
-			SendMessageTimeout(SystemHandle->windowsArray[i].hWnd, WM_SETTEXT, 0, (LPARAM)title, SMTO_ABORTIFHUNG, 1000, dwResult);
-		}
-			
-#else				
+#else
+	TCHAR		title[MAX_STR_LEN];
 	DWORD dwResult = 0;		// In 32 Bits
 	for (int i = 0; i < SystemHandle->windowsArray.size(); i++)
 		if (ShouldDrawUI(i)) 
@@ -540,7 +533,7 @@ void SystemClass::refreshTitle() // Run once per second.
 	#define DIK_ESCAPE 0x01
 	#endif
 
-void SystemClass::CalculateCameraViewAndFrustum() 
+void SystemClass::CalculateCameraViewAndFrustum(void* pContext)
 {
 	// SET CAMERA (for this monitor): Prepare to Take a Shot: Generate the view matrix based on the camera's position.
 
@@ -612,6 +605,9 @@ void SystemClass::CalculateCameraViewAndFrustum()
 	}
 #endif
 #endif
+
+	//AFTER: CalculateCameraViewAndFrustum:
+
 }
 
 //-----------------------------------------------------------------------------------------
@@ -1084,6 +1080,7 @@ bool SystemClass::LoadXmlWorld()
 
 	// Load and Parse XML FILE:"world.xml" the WORLD file
 	//----------------------------------------------------------------------------
+	#if defined MAIN_RENDER_MAIN_XML_OBJ
 	XML_WORLD_FILE = WOMA::PUBLIC_DOCUMENTS;
 	XML_WORLD_FILE += WORLD_XML;
 	if (!SystemHandle->xml_loader.InitWorldLoader((TCHAR*)XML_WORLD_FILE.c_str()))
@@ -1092,6 +1089,7 @@ bool SystemClass::LoadXmlWorld()
 		WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "));
 		return false;
 	}
+	#endif
 
 	SystemHandle->m_Application->AddObjsWithInstancesToXML();	//77 || 90 || 98 (add lamps)
 
