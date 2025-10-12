@@ -18,7 +18,7 @@
 
 #pragma once
 #pragma warning(push)
-#pragma warning( disable : 4005 )		// Disable warning C4005: '' : macro redefinition
+#pragma warning( disable : 4005 )       // Disable warning C4005: '' : macro redefinition
 
 #define WOMAENGINE
 #if defined NewWomaEngine
@@ -75,6 +75,9 @@
     #if defined WINDOWS_PLATFORM
     #define CLIENT_SCENE_SETUP      //5 (PAINT+settings.xml)
     #endif
+    #if defined WINDOWS_PLATFORM
+        #define ALLOW_LOADING_SPLASH        //7 
+    #endif
 #endif
 
 #if CORE_ENGINE_LEVEL >= 6 && defined WINDOWS_PLATFORM
@@ -88,7 +91,6 @@
     #define USE_NETWORK
     #endif
     #if defined WINDOWS_PLATFORM
-        #define ALLOW_LOADING_SPLASH        //7 
         #define USE_ALLOW_MAINWINDOW_RESIZE //7 Allow main Window to Resize
     #endif
 #endif
@@ -120,14 +122,14 @@
         #define DX12            //(defined DX12 && D3D11_SPEC_DATE_YEAR > 2009)     
     #endif
 
-	#define OPENGL3 //WINDOWS_PLATFORM + LINUX_PLATFORM + ANDROID_PLATFORM
+    #define OPENGL3 //WINDOWS_PLATFORM + LINUX_PLATFORM + ANDROID_PLATFORM
 
   #if defined WINDOWS_PLATFORM && (defined DX9sdk || defined DX9 || defined DX11 || defined DX12)
         #define DX_ENGINE       //Turn on: #include "DXengine.h"
-		#ifndef DX_ENGINE
-			#undef DX9
-			#undef DX11
-			#undef DX12
+        #ifndef DX_ENGINE
+            #undef DX9
+            #undef DX11
+            #undef DX12
     #endif
 
     #if defined DX12 //SELECT DXGI_API version:
@@ -146,8 +148,8 @@
     #endif
 
     #if DX_ENGINE_LEVEL >= 19 && !defined WOMAENGINE_BASIC
-		#undef USE_ALLOW_MAINWINDOW_RESIZE
-		#define USE_NETWORK
+        #undef USE_ALLOW_MAINWINDOW_RESIZE
+        #define USE_NETWORK
         #if defined WINDOWS_PLATFORM
         #define CLIENT_SCENE_SETUP
         #endif
@@ -156,7 +158,7 @@
     #endif
 
     #if DX_ENGINE_LEVEL >= 20 && !defined WOMAENGINE_BASIC
-		#define USE_ALLOW_MAINWINDOW_RESIZE
+        #define USE_ALLOW_MAINWINDOW_RESIZE
         #define USE_STATUSBAR
         #define USE_ALLOW_RESIZE
         #define USE_ALTENTER_SWAP_FULLSCREEN_WINDOWMODE //Dep: USE_ALLOW_RESIZE
@@ -164,7 +166,7 @@
     #endif
 
     #if DX_ENGINE_LEVEL >= 21 && !defined WOMAENGINE_BASIC
-		//#undef USE_NORMAL_WINDOW
+        //#undef USE_NORMAL_WINDOW
         #if defined WINDOWS_PLATFORM && defined DX12
         #define USE_RASTERIZER_STATE //Mandatory for DX12
         #endif
@@ -206,7 +208,7 @@
         #undef SCENE_TEXTURE
         #define SCENE_TEXTURE_LIGHT             
             
-        #define USE_LIGHT_RAY                   // ON/OFF - Render light ray !!Dep!!: #undef  dx12_upload_old_way
+        #define MAIN_RENDER_LIGHT_RAY                   // ON/OFF - Render light ray !!Dep!!: #undef  dx12_upload_old_way
         #define SUN_LIGHT_DEMO_ANIMATION true   // Animate the beam of light
     #endif
 
@@ -215,7 +217,7 @@
             #undef SCENE_COLOR
             #undef SCENE_TEXTURE
             #undef SCENE_TEXTURE_LIGHT
-            #undef USE_LIGHT_RAY
+            #undef MAIN_RENDER_LIGHT_RAY
             #define NO_SCENE_IMAGE_LOAD //(for debuging only!)
         #endif
         #define USE_TITLE_BANNER
@@ -270,7 +272,7 @@
     #endif
 
     #if DX_ENGINE_LEVEL >= 29
-	//---------------------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------------
         #define SCENE_COLOR             //FORCE!
         #define SCENE_TEXTURE           //FORCE!
         #define SCENE_TEXTURE_LIGHT     //FORCE!
@@ -297,10 +299,10 @@
         #undef USE_WIN32_SOUND_MANAGER
         #undef USE_WIN32_PLAY_MUSIC
         #undef INTRO_DEMO
-        #define SUN_LIGHT_DEMO_ANIMATION true	//back
-        #define USE_SCENE_MANAGER				//30-
-        #define USE_FRUSTUM						//30-
-        #undef DX12								//to be added later
+        #define SUN_LIGHT_DEMO_ANIMATION true   //back
+        #define USE_SCENE_MANAGER               //30-
+        #define USE_FRUSTUM                     //30-
+        #undef DX12                             //to be added later
     #endif
 
     #if DX_ENGINE_LEVEL >= 31
@@ -342,25 +344,25 @@
     #if DX_ENGINE_LEVEL >= 40   //40-
         #define USE_INSTANCES
         #define USE_REAL_SUNLIGHT_DIRECTION //FOR DEBUG ONLY!
-        #undef USE_LIGHT_RAY
+        #undef MAIN_RENDER_LIGHT_RAY
     #endif
 
     #if DX_ENGINE_LEVEL >= 41   //41-
         #define USE_SHADOW_INSTANCES
         #undef USE_REAL_SUNLIGHT_DIRECTION
-        #define USE_LIGHT_RAY
+        #define MAIN_RENDER_LIGHT_RAY
     #endif
 
     #if DX_ENGINE_LEVEL >= 42   //42-
         #define USE_SHADOW_INSTANCES_ROTATION_W_V_P
     #endif
 
-	#if DX_ENGINE_LEVEL == 45
-		#define USE_IMGUI				// ASSIMP (Animated + Character using HLSL)
-		#if !defined ANDROID_PLATFORM
-		#define RUN_ASMAIN true			//#define RUN_ASMAIN false //true
-		#endif
-	#endif
+    #if DX_ENGINE_LEVEL == 45
+        #define USE_IMGUI               // ASSIMP (Animated + Character using HLSL)
+        #if !defined ANDROID_PLATFORM
+        #define RUN_ASMAIN true         //#define RUN_ASMAIN false //true
+        #endif
+    #endif
 
     // TERRAINS:
     //--------------------------------------------------------------------------------------------------------------------------
@@ -371,7 +373,7 @@
         #undef USE_LOADING_THREADS          //Use Thread to load Graphics
         #endif
         #define USE_REAL_SUNLIGHT_DIRECTION //Static light
-        #undef USE_LIGHT_RAY                //Static light
+        #undef MAIN_RENDER_LIGHT_RAY        //Static light
             
         #define SCENE_GENERATEDUNDERWATER
         #undef SCENE_TERRAIN_COLLISION
@@ -394,12 +396,12 @@
     #endif
 
     #if DX_ENGINE_LEVEL >= 52   //52-
-        #undef SCENE_GENERATEDUNDERWATER        //WITH BE USED AS "HEIGHT"
+        #undef SCENE_GENERATEDUNDERWATER    //WITH BE USED AS "HEIGHT"
         #define SCENE_MAIN_TOPO_TERRAIN_USE_INDEX
         #define SCENE_TERRAIN_WITH_NORMALS
 
         #undef USE_REAL_SUNLIGHT_DIRECTION  //Static light
-        #define USE_LIGHT_RAY               //Static light
+        #define MAIN_RENDER_LIGHT_RAY       //Static light
         #undef SCENE_TERRAIN_COLLISION
         //#define DEBUG_TERRAIN_VERTICES    // Default: off
     #endif
@@ -414,7 +416,7 @@
 
     #if DX_ENGINE_LEVEL >= 54
     //world.xml
-	//Water waves
+    //Water waves
     #endif
 
     #if DX_ENGINE_LEVEL >= 60
@@ -497,24 +499,22 @@
             #define USE_ASSIMP_DXLIB    //81
         #endif
     #endif
-	
-	
-	
-	//-------------------------------------------------------------------------------------------------------
-	//MAIN_RENDER:
-	//-------------------------------------------------------------------------------------------------------
-	#define MAIN_RENDER_TITLE           //24
-	#define MAIN_RENDER_DRIVER_FONT     //25
-	#define MAIN_RENDER_RASTERTEK_FONT  //27
-	#define MAIN_RENDER_SKY             //28
-	#define MAIN_RENDER_MAIN_OBJ        //30
-	#define MAIN_RENDER_WATER           //50
-	#define MAIN_RENDER_TERRAIN         //55/65
-	#define MAIN_RENDER_MINIMAP         //63
-	#define MAIN_RENDER_BILLBOARDS      //70/74
-	#define MAIN_RENDER_ASSIMP          //82
-	
-	
+
+    //-------------------------------------------------------------------------------------------------------
+    //MAIN_RENDER:
+    //-------------------------------------------------------------------------------------------------------
+    #define MAIN_RENDER_TITLE           //24
+    #define MAIN_RENDER_DRIVER_FONT     //25
+    #define MAIN_RENDER_RASTERTEK_FONT  //27
+    #define MAIN_RENDER_SKY             //28
+    #define MAIN_RENDER_MAIN_XML_OBJ    //30
+    #define MAIN_RENDER_WATER           //50
+    #define MAIN_RENDER_TERRAIN         //55/65
+    #define MAIN_RENDER_MINIMAP         //63
+    #define MAIN_RENDER_BILLBOARDS      //70/74
+    #define MAIN_RENDER_ASSIMP          //82
+    //-------------------------------------------------------------------------------------------------------
+    
     #if DX_ENGINE_LEVEL >= 79
         #undef  USE_IDEA_PACK
         #define USE_CYPHER_PACK
@@ -522,7 +522,7 @@
         #define MULTIPACK_PCK   TEXT("womamulti.pck")
     #endif
     #if DX_ENGINE_LEVEL >= 82
-		#define USE_DX11_1_SETUP
+        #define USE_DX11_1_SETUP
         #define USE_ASSIMP_LATEST
     #endif
     #if DX_ENGINE_LEVEL >= 83
@@ -567,51 +567,51 @@
 #endif
 
 #if DX_ENGINE_LEVEL >= 91
-	#define USE_SHADOW_THREAD	//Allow the other 2:
-	#define USE_MINIMAP_REDENRING_THREAD
-	#define USE_MESH_THREAD
+    #define USE_SHADOW_THREAD   //Allow the other 2:
+    #define USE_MINIMAP_REDENRING_THREAD
+    #define USE_MESH_THREAD
 #endif
     
 #if DX_ENGINE_LEVEL >= 92
-	#define USE_FASTER_BILL_SHADER			//Faster bills: v1
+    #define USE_FASTER_BILL_SHADER          //Faster bills: v1
 #endif
 
 #if DX_ENGINE_LEVEL >= 93
-	#define  NO3DBILL						// No 3D Trees
-	#define GENERATE_ATLAS_INTEGRATION_DDS  // Faster bills: v2
+    #define  NO3DBILL                       // No 3D Trees
+    #define GENERATE_ATLAS_INTEGRATION_DDS  // Faster bills: v2
 #endif
 
 #if DX_ENGINE_LEVEL >= 94
-	// Try nothing and...:		//RELEASE: 906FPS
-	//#define USE_TREE_POINTER	//v1: RELEASE: 900FPS
-	#define USE_TREE_POINTERV2	//v2: RELEASE: 911FPS
+    // Try nothing and...:      //RELEASE: 906FPS
+    //#define USE_TREE_POINTER  //v1: RELEASE: 900FPS
+    #define USE_TREE_POINTERV2  //v2: RELEASE: 911FPS
 #endif
 
 #if DX_ENGINE_LEVEL >= 95
-	#define USE_CURVED_SKY_PLANE
+    #define USE_CURVED_SKY_PLANE
 #endif
 #if DX_ENGINE_LEVEL >= 96
-	#define USE_CURVED_REAL_SKY_PLANE
+    #define MAIN_RENDER_CURVED_REAL_SKY_PLANE
 #endif
 
 #if DX_ENGINE_LEVEL >= 97
-	#define USE_WATER_FALL
+    #define MAIN_RENDER_WATER_FALL
 #endif
 
 #if DX_ENGINE_LEVEL >= 98
-	#define USE_DAY_AND_NIGHT
-	
-	#define USE_INSTANCES_FOR_LAMP
-	#define USE_INSTANCES_FOR_LAMP_ROWS  1
-	#define USE_INSTANCES_FOR_LAMP_LINES 13
-	
-	#define USE_POINTS_OF_LIGHT_FOR_LAMP
-	#define MAX_POINT_LIGHTS 26
-	#define ACTIVELAMPCOUNT USE_INSTANCES_FOR_LAMP_ROWS * USE_INSTANCES_FOR_LAMP_LINES																	   
+    #define USE_DAY_AND_NIGHT
+    
+    #define USE_INSTANCES_FOR_LAMP
+    #define USE_INSTANCES_FOR_LAMP_ROWS  1
+    #define USE_INSTANCES_FOR_LAMP_LINES 13
+    
+    #define USE_POINTS_OF_LIGHT_FOR_LAMP
+    #define MAX_POINT_LIGHTS 26
+    #define ACTIVELAMPCOUNT USE_INSTANCES_FOR_LAMP_ROWS * USE_INSTANCES_FOR_LAMP_LINES
 #endif
 
 #if DX_ENGINE_LEVEL >= 99
-	#define USE_PLANET_EARTH
+    #define USE_WOMA_ENGINE_ONE_CBUFFER
 #endif
 
 #endif
@@ -624,27 +624,27 @@
 
 
     //-------------------------------------------------------------------------------------------------------
-	#undef  dx12_upload_old_way
+    #undef  dx12_upload_old_way
 
-	#if DX_ENGINE_LEVEL >= 19
-		#define USE_MULTI_MONITOR
-	#endif
-	#if DX_ENGINE_LEVEL < 94
-	#if DX_ENGINE_LEVEL != 76
-	#undef USE_INTRO_VIDEO_DEMO
-	#endif
-	#endif
-	#if defined WINDOWS_PLATFORM
-		#define ALLOW_CBIND_PROGRESS_BAR
-	#endif
-	#if DX_ENGINE_LEVEL == 26
-	#define SPHERE_GRIDPOINTS 100
-	#else
-	#if DX_ENGINE_LEVEL >= 94
-		#define SPHERE_GRIDPOINTS 10
-		#else
-		#define SPHERE_GRIDPOINTS 25
-	#endif
-	#endif
+    #if DX_ENGINE_LEVEL >= 19
+        #define USE_MULTI_MONITOR
+    #endif
+    #if DX_ENGINE_LEVEL < 94
+    #if DX_ENGINE_LEVEL != 76
+    #undef USE_INTRO_VIDEO_DEMO
+    #endif
+    #endif
+    #if defined WINDOWS_PLATFORM
+        #define ALLOW_CBIND_PROGRESS_BAR
+    #endif
+    #if DX_ENGINE_LEVEL == 26
+    #define SPHERE_GRIDPOINTS 100
+    #else
+    #if DX_ENGINE_LEVEL >= 94
+        #define SPHERE_GRIDPOINTS 10
+        #else
+        #define SPHERE_GRIDPOINTS 25
+    #endif
+    #endif
 
 #pragma warning(pop)

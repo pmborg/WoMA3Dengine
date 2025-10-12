@@ -87,6 +87,35 @@ extern std::vector<VirtualModelClass*> m_screenShots;
 extern UINT g_NetID;
 #endif
 
+#if false //DX_ENGINE_LEVEL >= 99
+struct InstanceType
+{
+	DirectX::XMMATRIX worldMatrix;   // Per-instance world transform
+	DirectX::XMMATRIX WVP;           // Precomputed World * View * Projection (optional)
+
+	BOOL  VShasLight;
+	BOOL  VShasSpecular;
+	BOOL  VShasNormMap;
+	BOOL  VShasShadowMap;
+
+	UINT  VSshaderType;				// 0=2D, 1=Sky, 2=3D, etc.
+	BOOL  vsIsSky;
+	DirectX::XMFLOAT2 pad;
+
+	float VSrotX;
+	float VSrotY;
+	float VSrotZ;
+	BOOL  isAnimatedBill;
+
+	DirectX::XMFLOAT4 VSambientColor;
+	DirectX::XMFLOAT4 VSdiffuseColor;
+	DirectX::XMFLOAT4 VSemissiveColor;
+	DirectX::XMMATRIX ViewToLightProj;
+	DirectX::XMMATRIX WorldInverseTranspose;
+};
+#else
+#endif
+
 #if defined USE_DIRECT_INPUT
 #include "positionClass.h"
 #if defined DX_ENGINE
@@ -125,7 +154,7 @@ extern UINT g_NetID;
 extern int __cdecl CompoundSortCB(const VOID* arg1, const VOID* arg2);
 #endif
 
-inline bool ShouldDrawUI(int monIdx) { return monIdx == 0; /*kPrimaryMon;*/ }
+
 
 #if defined DX_ENGINE
 	#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {\
@@ -309,7 +338,7 @@ public:
 	MetarClass*		metarClass = NULL;
 #endif
 
-#if defined USE_LIGHT_RAY
+#if defined MAIN_RENDER_LIGHT_RAY
 	VirtualModelClass* m_lightRayModel = NULL;
 #endif
 

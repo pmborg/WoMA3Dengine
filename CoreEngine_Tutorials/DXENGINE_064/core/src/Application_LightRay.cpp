@@ -48,7 +48,7 @@
 	}
 #endif
 
-#if defined USE_LIGHT_RAY
+#if defined MAIN_RENDER_LIGHT_RAY
 	void ApplicationClass::CalculateLightRayVertex(float localSunDistance)
 	{
 		ModelColorVertexType vertex = { 0 };
@@ -122,28 +122,28 @@ void ApplicationClass::initLightRay(void* ctx)
 #endif
 
 	// ----------------------------------------------------------------------------
-	#if defined USE_LIGHT_RAY // Where is the Light (Ray of the Light)
+	#if defined MAIN_RENDER_LIGHT_RAY // Where is the Light (Ray of the Light)
 	// ----------------------------------------------------------------------------
 	{
 		ModelColorVertexType vertex = {0};
-		MyLightVertexVector.push_back(vertex); //2 Fake inital Vertices!
+		MyLightVertexVector.push_back(vertex); //2 Fake initial Vertices!
 		MyLightVertexVector.push_back(vertex);
 
 		// Step 2: Create a model: NEW GLmodelClass; || NEW DXmodelClass;
 	#if (defined OPENGL3 || defined OPENGL4)
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
 		{ 
-			CREATE_MODELGL3_IF_NOT_EXCEPTION(m_lightRayModel,  /*Fake*/I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);	// Alocate the MODEL
+			CREATE_MODELGL3_IF_NOT_EXCEPTION(m_lightRayModel,  /*Fake*/I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);	// Allocate the MODEL
 		} else
 	#endif
 		{
-			CREATE_MODELDX_IF_NOT_EXCEPTION(m_lightRayModel,  /*Fake*/I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);	// Alocate the MODEL
+			CREATE_MODELDX_IF_NOT_EXCEPTION(m_lightRayModel,  /*Fake*/I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);	// Allocate the MODEL
 		}
-
+		
 		m_lightRayModel->PrimitiveTopology = LINELIST; // Draw just a line
 		ASSERT (m_lightRayModel->LoadColor(pContext,TEXT("m_lightRayModel"), m_Driver, SHADER_COLOR, &MyLightVertexVector, NULL, 0));
+
 	}
 	#endif
 }
-
 #endif

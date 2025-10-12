@@ -156,11 +156,11 @@ struct WOMA_OBJECT
 		instances = instances_;
 	}
 
-	SHADER_TYPE shaderType= SHADER_AUTO;
-	BOOL		castShadows=false;
-	BOOL		renderShadows = false;
-	BOOL		modelHASlight = false;
-	int		instances=0;
+	SHADER_TYPE shaderType		= SHADER_AUTO;
+	BOOL		castShadows		= false;
+	BOOL		renderShadows	= false;
+	BOOL		modelHASlight	= false;
+	int			instances		= 0;
 };
 
 //<world>

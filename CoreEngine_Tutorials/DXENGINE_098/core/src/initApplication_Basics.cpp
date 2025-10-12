@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // Filename: initApplication_Basics.cpp
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
@@ -49,12 +49,12 @@
 
 	#include "SceneManager.h"
 
-#if defined USE_CURVED_REAL_SKY_PLANE
+#if defined MAIN_RENDER_CURVED_REAL_SKY_PLANE
 #include "realSkyPlaneClass.h"
 extern RealSkyPlaneClass realSkyPlaneClass;
 #endif
 
-#if defined USE_WATER_FALL 
+#if defined MAIN_RENDER_WATER_FALL 
 #include "ParticlesystemClass.h"
 extern ParticlesystemClass particlesystemClass;
 #include "SmokeEmitterClass.h"
@@ -279,8 +279,8 @@ void ApplicationClass::initStatic2D(void* ctx)
 	//--------------------------------------------------------------------------------
 	//CreateDXbuffers for 2D:
 	#if defined USE_TITLE_BANNER
-		// # Title #
-		initModelwithTexture2D(m_titleModel, DEMO_TITLE_TEXTURE, SpriteVertexVector, emptyIndexList, SHADER_TEXTURE);
+		const SHADER_TYPE shadertype = SHADER_TEXTURE;
+		initModelwithTexture2D(m_titleModel, DEMO_TITLE_TEXTURE, SpriteVertexVector, emptyIndexList, shadertype);
 	#endif
 
 #if DX_ENGINE_LEVEL >= 63 && defined USE_MINI_MAP
@@ -579,71 +579,107 @@ void ApplicationClass::WOMA_APPLICATION_SetInstancePositions(UINT m_ObjId, int m
 {
 	InstanceType* instances = instances_;
 
-    switch (type)
-    {
+	switch (type)
+	{
 #if defined USE_INSTANCES_FOR_TREES
-        case 0:
-            bill.Tree0GS(instances, m_instanceCount);
-            break;
+	case 0:
+		bill.Tree0GS(instances, m_instanceCount);
+		break;
 #endif
 
 #if DX_ENGINE_LEVEL >= 90 && defined USE_INSTANCES_FOR_TREES90
-        case 301:
-            bill.Tree1GS(instances, m_instanceCount);
-            break;
+	case 301:
+		bill.Tree1GS(instances, m_instanceCount);
+		break;
 #endif
 
 #if defined USE_INSTANCES_FOR_LAMP
-		case 401:
+	case 401:
+	{
+#if defined USE_POINTS_OF_LIGHT_FOR_LAMP
+		streetLamps.clear();    // add this line before the outer loop
+#endif
+
+		float iniX = 127.5f;
+		float iniZ = 158;
+
+		int i = 0;
+		for (int x = 0; x < USE_INSTANCES_FOR_LAMP_ROWS; x++)		// 00..01 1 total
 		{
-		#if defined USE_POINTS_OF_LIGHT_FOR_LAMP
-			streetLamps.clear();    // add this line before the outer loop
-		#endif
-
-			float iniX = 127.5f;
-			float iniZ = 158;
-
-			int i = 0;
-			for (int x = 0; x < USE_INSTANCES_FOR_LAMP_ROWS; x++)		// 00..01 1 total
+			for (int z = 0; z < USE_INSTANCES_FOR_LAMP_LINES; z++)	// 00..12 13 total
 			{
-				for (int z = 0; z < USE_INSTANCES_FOR_LAMP_LINES; z++)	// 00..12 13 total
-				{
-					instances[i].position.x = iniX +  3.0f * x;
-					instances[i].position.z = iniZ +  6.0f * z;
-					instances[i].position.y = mainTerrain->getTerrainHeight(TERRAIN_ID, instances[i].position.x, instances[i].position.z);
+				instances[i].position.x = iniX + 3.0f * x;
+				instances[i].position.z = iniZ + 6.0f * z;
+				instances[i].position.y = mainTerrain->getTerrainHeight(TERRAIN_ID, instances[i].position.x, instances[i].position.z);
 
-					i++;
-				}
-			}
-
-			for (int x = 0; x < USE_INSTANCES_FOR_LAMP_ROWS+1; x++)		// 00..02 2 total
-			{
-				for (int z = 0; z < USE_INSTANCES_FOR_LAMP_LINES; z++)	// 00..12 13 total
-				{
-					float posx = iniX + 3.0f * x;
-					float posz = iniZ + 6.0f * z;
-					float posy = mainTerrain->getTerrainHeight(TERRAIN_ID, posx, posz);
-
-				#if defined USE_POINTS_OF_LIGHT_FOR_LAMP
-					// --- matching light source for each lamp ---
-					Lamp lamp;
-					lamp.pos = { posx,
-								 posy + 3.0f,  // lifted to bulb height
-								 posz };
-					lamp.radius = 12.0f;                          // fall-off distance
-					lamp.color = { 1.0f, 0.95f, 0.7f };           // warm yellow
-					lamp.intensity = 2.5f;                        // brightness
-					streetLamps.push_back(lamp);
-				#endif
-					i++;
-				}
+				i++;
 			}
 		}
-		break;
+
+		for (int x = 0; x < USE_INSTANCES_FOR_LAMP_ROWS + 1; x++)		// 00..02 2 total
+		{
+			for (int z = 0; z < USE_INSTANCES_FOR_LAMP_LINES; z++)	// 00..12 13 total
+			{
+				float posx = iniX + 3.0f * x;
+				float posz = iniZ + 6.0f * z;
+				float posy = mainTerrain->getTerrainHeight(TERRAIN_ID, posx, posz);
+
+#if defined USE_POINTS_OF_LIGHT_FOR_LAMP
+				// --- matching light source for each lamp ---
+				Lamp lamp;
+				lamp.pos = { posx,
+							 posy + 3.0f,  // lifted to bulb height
+							 posz };
+				lamp.radius = 12.0f;                          // fall-off distance
+				lamp.color = { 1.0f, 0.95f, 0.7f };           // warm yellow
+				lamp.intensity = 2.5f;                        // brightness
+				streetLamps.push_back(lamp);
 #endif
-        default:
-            break;
-    }
+				i++;
+			}
+		}
+	}
+	break;
+#endif
+
+#if false //DX_ENGINE_LEVEL >= 99 && defined USE_WOMA_ENGINE_ONE_CBUFFER
+	// ----------------------------------------------------------
+	// NEW UNIFIED INSTANCE SYSTEM (Level 99+)
+	// ----------------------------------------------------------
+	case 1001: // SHADER_TYPE_COLOR_LINE
+	{
+		for (int i = 0; i < m_instanceCount; i++)
+		{
+			instances[i].worldMatrix = XMMatrixIdentity();
+			instances[i].WVP = XMMatrixIdentity();
+
+			instances[i].VShasLight = FALSE;
+			instances[i].VShasSpecular = FALSE;
+			instances[i].VShasNormMap = FALSE;
+			instances[i].VShasShadowMap = FALSE;
+
+			instances[i].VSshaderType = SHADER_TYPE_COLOR_LINE;
+			instances[i].vsIsSky = FALSE;
+			instances[i].isAnimatedBill = FALSE;
+
+			instances[i].VSrotX = 0.0f;
+			instances[i].VSrotY = 0.0f;
+			instances[i].VSrotZ = 0.0f;
+
+			instances[i].VSambientColor = { 1.0f, 1.0f, 0.0f, 1.0f }; // yellow
+			instances[i].VSdiffuseColor = { 1.0f, 1.0f, 0.0f, 1.0f };
+			instances[i].VSemissiveColor = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+			instances[i].ViewToLightProj = XMMatrixIdentity();
+			instances[i].WorldInverseTranspose = XMMatrixIdentity();
+		}
+		break;
+	}
+#endif
+
+	default:
+		break;
+	}
 
 }
 #endif
@@ -775,7 +811,7 @@ bool ApplicationClass::InitLightandDemos(void* pContext, WomaDriverClass* Driver
   #endif
 
 	//LIGHT_RAY ////////////////////////////////////////////////////////////////////////////////////////////////////
-  #if defined USE_LIGHT_RAY	//DO: CalculateLightRayVertex(SunDistance);							  // Calculate Light Source Position
+  #if defined MAIN_RENDER_LIGHT_RAY	//DO: CalculateLightRayVertex(SunDistance);							  // Calculate Light Source Position
 	initLightRay(pContext);	//	  m_lightRayModel->UpdateDynamic(m_Driver, m_LightVertexVector);  // Update LightRay vertex(s)
   #endif					//	  m_lightRayModel->Render(m_Driver);							  // Render LightRay
 
@@ -824,7 +860,9 @@ void ApplicationClass::InitMainSky(void* pContext, WomaDriverClass* Driver)
 		if (RENDER_PAGE >= 55)
 			size = 512;	// SYNC/CHECK AT WOMA_APPLICATION_Initialize3D():
 
-	initSphere1(pContext, size);
+	if (Sphere_vertexdata.size() == 0)
+		CreateSphereModel(size, SPHERE_GRIDPOINTS);	//(UINT SPHERE_SIZE, int Sphere_gridpoints)
+	
 #endif
 
 //Sky:
@@ -929,6 +967,11 @@ void ApplicationClass::AddObjsWithInstancesToXML()
 		SystemHandle->xml_loader.theWorldXML.push_back(XMLobj3D);  //Add obj as XML entry
 	}
 	#endif
+
+
+	// ----------------------------------------------------------------------------------------
+	// 1️st ADD SPECIAL COLOR LINE (used for Sun Direction visualization)
+	// ----------------------------------------------------------------------------------------
 }
 
 // --------------------------------------------------------------------------------------------
@@ -945,10 +988,15 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	initial_world_xml_objs = world_xml_objs;
 	womalogauto("Number of objects loaded in: WORLD.XML %d\n", world_xml_objs);
 
-	InitLightandDemos(pContext, Driver);
-	InitMainSky(pContext, Driver);
-	InitTerrainandWaterSurfaces(pContext, Driver);
+	InitLightandDemos(pContext, Driver); //objid=0
 
+	#ifdef MAIN_RENDER_SKY
+	InitMainSky(pContext, Driver);
+	#endif
+
+	#ifdef MAIN_RENDER_TERRAIN
+	InitTerrainandWaterSurfaces(pContext, Driver);
+	#endif
 	//=================================================================================================================
 	// Init MAIN 3D Scene       ///////////////////////////////////////////////////////////////////////////////////////
 	//=================================================================================================================
@@ -956,7 +1004,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	//-----------------------------------------------------------------------------------------------------------------
 	// CREATE BILLBOARDs (populate Trees[]) (extra populate WORLD.XML)
 	//-----------------------------------------------------------------------------------------------------------------
-#if TUTORIAL_CHAP >= 60 && defined (SCENE_MAIN_TOPO_TERRAIN) && defined (SCENE_BILLBOARDS) // BILLBOARD
+#if TUTORIAL_CHAP >= 60 && defined SCENE_MAIN_TOPO_TERRAIN && defined SCENE_BILLBOARDS && defined MAIN_RENDER_TERRAIN
 	IF_NOT_RETURN_FALSE(m_billTreeClass = NEW BillClass);
 	if (!m_billTreeClass->Initialize((ID3D11DeviceContext*)pContext, loadedTerrain[2]->m_terrainWidth / 2, loadedTerrain[2]->m_terrainHeight / 2, false))
 	{
@@ -1020,6 +1068,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 
 	for (UINT i = objModel_size; i < objModel_size + theWorld_size; i++)
 	{
+
 		// LOAD MAIN OBJECTS:
 		// ---------------------------------------------------------------------------------------------------------
 		WOMA_LOAD_OBJ(pContext, 0, Driver, i, SystemHandle->xml_loader.theWorldXML[i].filename);
@@ -1091,7 +1140,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
 	app_Light->GenerateOrthoMatrix(15, 15, 20, 0.1f);						// Control Zoom in Shadow Map here! 15, 15
 
-  #if defined USE_REAL_SUNLIGHT_DIRECTION || !defined USE_LIGHT_RAY
+  #if defined USE_REAL_SUNLIGHT_DIRECTION || !defined MAIN_RENDER_LIGHT_RAY
 	float LightX = USELIGHTSIZE * FAST_sin(initWorld->SunAzimuth);		// Real Sun Position on Sky:
 	float LightZ = USELIGHTSIZE * FAST_cos(initWorld->SunAzimuth);		// Real Sun Position on Sky:
 	float LightY = USELIGHTSIZE * FAST_sin(initWorld->SunElevation);	// Sun Elevation
@@ -1117,11 +1166,11 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	WOMA::sceneManager->visibleBillboardList.reserve(MAX_BILLBOARDS);
 #endif
 
-#if defined USE_CURVED_REAL_SKY_PLANE && DX_ENGINE_LEVEL >= 96
+#if defined MAIN_RENDER_CURVED_REAL_SKY_PLANE && DX_ENGINE_LEVEL >= 96
 	realSkyPlaneClass.Initialize(pContext, Driver);
 #endif
 
-#if defined USE_WATER_FALL && DX_ENGINE_LEVEL >= 97
+#if defined MAIN_RENDER_WATER_FALL && DX_ENGINE_LEVEL >= 97
 	particlesystemClass.Initialize(pContext, Driver);
 	smokeEmitterClass.Initialize(pContext, Driver, SMOKETEXTUREFILENAME, Vector3 (137, -1, 57), 2);
 #endif

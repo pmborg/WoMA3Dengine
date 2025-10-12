@@ -40,6 +40,7 @@ namespace DirectX {
 
 	//21:
 	// -------------------------------------------------------------------------------------------
+
 	#pragma pack(push, 1)
 	struct DXcolorVertexType
 	{
@@ -47,6 +48,7 @@ namespace DirectX {
 	DXcolorVertexType(float x, float y, float z,
 		float r, float g, float b, float a)
 		: position(x, y, z), color(r, g, b, a) {}
+
 		XMFLOAT3 position = {};
 	    XMFLOAT4 color = {};
 
@@ -60,13 +62,15 @@ namespace DirectX {
 	{
 	DXtextureVertexType(){}
 
-	DXtextureVertexType(float x, float y, float z, 
-						float u, float v)
-						: position(x,y,z), texCoord(u, v){}
-		XMFLOAT3 position;
-	    XMFLOAT2 texCoord;
+	DXtextureVertexType(float x, float y, float z,
+		float u, float v)
+		: position(x, y, z), texCoord(u, v) {
+	}
+	XMFLOAT3 position;
+	XMFLOAT2 texCoord;
 
-	};
+};
+
 	#pragma pack(pop)
 
 	//23:
@@ -76,13 +80,14 @@ namespace DirectX {
 	{
 	DXtextureLightVertexType(){}
 
-	DXtextureLightVertexType(	float x, float y, float z,
-								float u, float v,
-								float nx, float ny, float nz)
-								: position(x,y,z), texCoord(u, v), normal(nx, ny, nz){}
-		XMFLOAT3 position;
-	    XMFLOAT2 texCoord;
-		XMFLOAT3 normal;
+	DXtextureLightVertexType(float x, float y, float z,
+		float u, float v,
+		float nx, float ny, float nz)
+		: position(x, y, z), texCoord(u, v), normal(nx, ny, nz) {
+	}
+	XMFLOAT3 position;
+	XMFLOAT2 texCoord;
+	XMFLOAT3 normal;
 
 	};
 	#pragma pack(pop)

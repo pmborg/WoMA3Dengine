@@ -22,6 +22,10 @@
 #include "dx11Class.h"
 #include "winsystemclass.h"	// SystemHandle
 
+#if defined USE_DX_DRIVER_FONT
+extern std::vector<DXTextLine> allTextArray;
+#endif
+
 namespace DirectX {
 #if defined USE_DX_DRIVER_FONT // FONT v2
 
@@ -134,10 +138,17 @@ bool DX11Class::InitD2DScreenTexture()
 	DXtextureVertexType v[] =
 	{
 		// Front Face
+#if DX_ENGINE_LEVEL >= 99 && defined USE_WOMA_ENGINE_ONE_CBUFFER
+		DXtextureVertexType(-1.0f, -1.0f, -1.0f, 0, 0.0f, 1.0f),
+		DXtextureVertexType(-1.0f,  1.0f, -1.0f, 0, 0.0f, 0.0f),
+		DXtextureVertexType( 1.0f,  1.0f, -1.0f, 0, 1.0f, 0.0f),
+		DXtextureVertexType( 1.0f, -1.0f, -1.0f, 0, 1.0f, 1.0f),
+#else
 		DXtextureVertexType(-1.0f, -1.0f, -1.0f, 0.0f, 1.0f),
 		DXtextureVertexType(-1.0f,  1.0f, -1.0f, 0.0f, 0.0f),
 		DXtextureVertexType( 1.0f,  1.0f, -1.0f, 1.0f, 0.0f),
 		DXtextureVertexType( 1.0f, -1.0f, -1.0f, 1.0f, 1.0f),
+#endif
 	};
 
 	// DEFINE: index buffer -------------------------------------------------------------
@@ -150,7 +161,7 @@ bool DX11Class::InitD2DScreenTexture()
 	D3D11_BUFFER_DESC indexBufferDesc = {0}; //ZeroMemory( &indexBufferDesc, sizeof(indexBufferDesc) );
 
 	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	indexBufferDesc.ByteWidth = sizeof(DWORD) * 2 * 3;
+	indexBufferDesc.ByteWidth = sizeof(DWORD) * _countof(indices);
 	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	//indexBufferDesc.CPUAccessFlags = 0;
 	//indexBufferDesc.MiscFlags = 0;
@@ -164,7 +175,7 @@ bool DX11Class::InitD2DScreenTexture()
 	D3D11_BUFFER_DESC vertexBufferDesc = {0}; //ZeroMemory( &vertexBufferDesc, sizeof(vertexBufferDesc) );
 
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	vertexBufferDesc.ByteWidth = sizeof( DXtextureLightVertexType ) * 4;
+	vertexBufferDesc.ByteWidth = sizeof( DXtextureLightVertexType ) * _countof(v);
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	//vertexBufferDesc.CPUAccessFlags = 0;
 	//vertexBufferDesc.MiscFlags = 0;
@@ -178,12 +189,20 @@ bool DX11Class::InitD2DScreenTexture()
 	// CREATE Texture -------------------------------------------------------------
 	//Create A shader resource view from the texture D2D will render to,
 	//So we can use it to texture a square which overlays our scene
-	IF_FAILED_RETURN_FALSE (hr = m_device11->CreateShaderResourceView(sharedTex11, NULL, &d2dTexture));
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvd = {};
+	srvd.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	srvd.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	srvd.Texture2D.MostDetailedMip = 0;
+	srvd.Texture2D.MipLevels = 1;
+	IF_FAILED_RETURN_FALSE (hr = m_device11->CreateShaderResourceView(sharedTex11, &srvd, &d2dTexture));
 
 	// CREATE BlendState: "Color Blending" Transparency -------------------------------------------------------------
 	D3D11_BLEND_DESC blendDesc = {0};			//ZeroMemory( &blendDesc, sizeof(blendDesc) );
 	D3D11_RENDER_TARGET_BLEND_DESC rtbd = {0};	//ZeroMemory( &rtbd, sizeof(rtbd) );
 
+	/*
+	//v1:
 	rtbd.BlendEnable			 = true;
 	rtbd.SrcBlend				 = D3D11_BLEND_SRC_COLOR;
 	rtbd.DestBlend				 = D3D11_BLEND_INV_SRC_ALPHA;
@@ -195,15 +214,30 @@ bool DX11Class::InitD2DScreenTexture()
 
 	blendDesc.AlphaToCoverageEnable = false;
 	blendDesc.RenderTarget[0] = rtbd;
+	*/
+
+	//v2:
+	blendDesc.AlphaToCoverageEnable = FALSE;
+	auto& rt = blendDesc.RenderTarget[0];
+	rt.BlendEnable = TRUE;
+	rt.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	// Premultiplied: Src = ONE, Dest = 1 - SrcA
+	rt.SrcBlend = D3D11_BLEND_ONE;
+	rt.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	rt.BlendOp = D3D11_BLEND_OP_ADD;
+	rt.SrcBlendAlpha = D3D11_BLEND_ONE;
+	rt.DestBlendAlpha = D3D11_BLEND_INV_SRC_ALPHA;
+	rt.BlendOpAlpha = D3D11_BLEND_OP_ADD;
 	
-	IF_FAILED_RETURN_FALSE (hr = m_device11->CreateBlendState(&blendDesc, &Transparency));
+	IF_FAILED_RETURN_FALSE(hr = m_device11->CreateBlendState(&blendDesc, &Transparency));
 
 	// CREATE -------------------------------------------------------------
 	D3D11_RASTERIZER_DESC cmdesc;
 
 	ZeroMemory(&cmdesc, sizeof(D3D11_RASTERIZER_DESC));
 	cmdesc.FillMode = D3D11_FILL_SOLID;
-	cmdesc.CullMode = D3D11_CULL_BACK;
+	cmdesc.CullMode = D3D11_CULL_NONE;   // <- safer for a fullscreen quad
 	cmdesc.FrontCounterClockwise = false;
 	hr = m_device11->CreateRasterizerState(&cmdesc, &CWcullMode);
 
@@ -211,7 +245,13 @@ bool DX11Class::InitD2DScreenTexture()
 	SystemHandle->m_Application->m_FontV2Shader = NEW DXshaderClass (ShaderVersionH, ShaderVersionL, false/*2D*/);
 	IF_NOT_THROW_EXCEPTION (SystemHandle->m_Application->m_FontV2Shader);
 
-	bool result = SystemHandle->m_Application->m_FontV2Shader->Initialize(NULL, TEXT("m_FontV2Shader"), SHADER_TEXTURE, m_device11, SystemHandle->m_hWnd, TRIANGLELIST);
+#if DX_ENGINE_LEVEL >= 99 && defined USE_WOMA_ENGINE_ONE_CBUFFER
+	SHADER_TYPE shadertype = SHADER_TYPE_TEXTUREFONT25; //99
+#else
+	SHADER_TYPE shadertype = SHADER_TEXTURE;
+#endif
+	bool result = SystemHandle->m_Application->m_FontV2Shader->Initialize(NULL, TEXT("m_FontV2Shader"), shadertype, m_device11, SystemHandle->m_hWnd, TRIANGLELIST);
+
 	if(!result)
 		{ WomaFatalExceptionW(TEXT("Could not initialize the m_FontV2Shader")); /*return false;*/ }
 
@@ -223,7 +263,7 @@ void DX11Class::addText(int Xpos, int Ypos, TCHAR* printText, float R, float G, 
 	DXTextLine lineText;
 	lineText.Xpos = Xpos;
 	lineText.Ypos = Ypos;
-	lineText.printText = STRING (printText);
+	lineText.printText = printText;
 	lineText.R = R;
 	lineText.G = G;
 	lineText.B = B;

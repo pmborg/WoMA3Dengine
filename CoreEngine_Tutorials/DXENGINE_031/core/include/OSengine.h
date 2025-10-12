@@ -370,3 +370,4 @@ extern bool cpu_supports_avx512f();
 
 extern bool StartsWithDotDotSlash(const STRING& fileNamePath);
 
+inline bool ShouldDrawUI(int monIdx) { return monIdx == 0; /*kPrimaryMon;*/ }

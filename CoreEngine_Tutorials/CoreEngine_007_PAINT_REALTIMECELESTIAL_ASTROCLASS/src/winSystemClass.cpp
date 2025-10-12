@@ -68,6 +68,7 @@ WinSystemClass::WinSystemClass(WOMA::Settings* appSettings): SystemClass() //	Sy
 void WinSystemClass::ProcessFrame()
 //----------------------------------------------------------------------------
 {
+
 	SystemClass::FrameUpdate();	// Process: (function keys |ESC and F1 to F6| & PerformanceStats) Only!
 
 	if (WOMA::game_state == ENGINE_RESTART)
@@ -649,11 +650,12 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
     if (!AppSettings->FULL_SCREEN)
     {
 	    TaskBarHeigth = WOMA::getTaskBarHeight();
-		AppSettings->WINDOW_HEIGHT = AppSettings->WINDOW_HEIGHT - TaskBarHeigth - TaskBarHeigth;
+		AppSettings->WINDOW_HEIGHT = AppSettings->WINDOW_HEIGHT; // -TaskBarHeigth - TaskBarHeigth;
     }
 #endif
 
-	#define DEFAULT_TITLE TEXT("WOMA ENGINE")
+	STRING TITLE = TEXT("WOMA ENGINE CORE LEVEL: "); TITLE.append(to_string(CORE_ENGINE_LEVEL));
+	#define DEFAULT_TITLE (TCHAR*)TITLE.c_str()
 
 	// [*] Create the window and return the handle to it:
 	HWND hWnd = WomaCreateWindowEx( dwExStyle, (TCHAR*)WOMA_ENGINE_CLASS, DEFAULT_TITLE, windowStyle,

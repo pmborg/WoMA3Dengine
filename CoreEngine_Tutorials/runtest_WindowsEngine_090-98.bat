@@ -9,8 +9,8 @@ start C:\WoMA3Dengine\CoreEngine_Tutorials\x64\Debug\CoreEngine_093_d.exe /rende
 
 cd C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_094
 start C:\WoMA3Dengine\CoreEngine_Tutorials\x64\Debug\CoreEngine_094_d.exe /renderOnce /Xpos 000  /Ypos 360 /WIDTH 640 /HEIGHT 360
-cd C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_095
-start C:\WoMA3Dengine\CoreEngine_Tutorials\x64\Debug\CoreEngine_095_d.exe /renderOnce /Xpos 640  /Ypos 360 /WIDTH 640 /HEIGHT 360
+rem cd C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_095
+rem start C:\WoMA3Dengine\CoreEngine_Tutorials\x64\Debug\CoreEngine_095_d.exe /renderOnce /Xpos 640  /Ypos 360 /WIDTH 640 /HEIGHT 360
 cd C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_096
 start C:\WoMA3Dengine\CoreEngine_Tutorials\x64\Debug\CoreEngine_096_d.exe /renderOnce /Xpos 1280 /Ypos 360 /WIDTH 640 /HEIGHT 360
 _
@@ -18,7 +18,7 @@ cd C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_097
 start C:\WoMA3Dengine\CoreEngine_Tutorials\x64\Debug\CoreEngine_097_d.exe /renderOnce /Xpos 000  /Ypos 720 /WIDTH 640 /HEIGHT 360
 cd C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_098
 start C:\WoMA3Dengine\CoreEngine_Tutorials\x64\Debug\CoreEngine_098_d.exe /renderOnce /Xpos 640  /Ypos 720 /WIDTH 640 /HEIGHT 360
-cd C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_099
-start C:\WoMA3Dengine\CoreEngine_Tutorials\x64\Debug\CoreEngine_099_d.exe /renderOnce /Xpos 1280 /Ypos 720 /WIDTH 640 /HEIGHT 360
+rem cd C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_099
+rem start C:\WoMA3Dengine\CoreEngine_Tutorials\x64\Debug\CoreEngine_099_d.exe /renderOnce /Xpos 1280 /Ypos 720 /WIDTH 640 /HEIGHT 360
 
 cd C:\WoMA3Dengine\CoreEngine_Tutorials

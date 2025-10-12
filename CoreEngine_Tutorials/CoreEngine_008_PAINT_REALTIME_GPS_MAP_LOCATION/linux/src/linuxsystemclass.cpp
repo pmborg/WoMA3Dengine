@@ -40,6 +40,7 @@
 	#define g_contextDriver NULL
 
 extern MyWin Win;
+extern bool createWindow();
 
 #if CORE_ENGINE_LEVEL >= 7 && defined USE_ASTRO_CLASS
 #include "initWorld.h"	//TIMER 2
@@ -180,9 +181,9 @@ bool LinuxSystemClass::APPLICATION_INIT_SYSTEM() // ApplicationInit()
 	womalog("WOMA_APPLICATION_InitGUI() - DONE\n");
 
 	// WINDOWS with CONTEXT:
-	IF_NOT_RETURN_FALSE(APPLICATION_INIT_MAIN_WINDOW(g_contextDriver));	// Create the window the application will be using and also initialize OpenGL.
+	IF_NOT_RETURN_FALSE(APPLICATION_INIT_MAIN_WINDOW());	// Create the window the application will be using and also initialize OpenGL.
 
-	InitializeSystemScreenF1(10, 10);			// SETUP SCREEN: F1,F2,F3,F4
+	InitializeSystemScreenF1(10, 10);		// SETUP SCREEN: F1,F2,F3,F4
 
 #if defined USE_PROCESS_OS_KEYS
 	IF_NOT_RETURN_FALSE(InitOsInput());			// INIT-INPUT Devices, NOTE: After "Create MainWindow(s)"
@@ -201,6 +202,18 @@ void LinuxSystemClass::ProcessInput()
 }
 #endif
 
+//----------------------------------------------------------------------------
+// Source: http://www.opengl.org/discussion_boards/archive/index.php/t-177999.html
+// D:\WoMAengine2014\woma_developer\SAMPLES\Sample020_StartEngine\Src\original_sample_code.cxx
+// C:\WoMAengine2023\LinuxWoma\LinuxWoma\main_linux.cppcreateWindow();
+//----------------------------------------------------------------------------
+bool LinuxSystemClass::APPLICATION_INIT_MAIN_WINDOW()
+{
+	bool res = createWindow();
+
+	return res;
+}
+
 // Frame() --> ProcessFrame();
 void LinuxSystemClass::ProcessFrame() // EQUAL to: WinSystemClass::ProcessFrame()
 //-------------------------------------------------------------------------------
@@ -210,20 +223,6 @@ void LinuxSystemClass::ProcessFrame() // EQUAL to: WinSystemClass::ProcessFrame(
 	if (WOMA::game_state == ENGINE_RESTART)
 		return;
 
-}
-
-extern bool createWindow();
-
-//----------------------------------------------------------------------------
-// Source: http://www.opengl.org/discussion_boards/archive/index.php/t-177999.html
-// D:\WoMAengine2014\woma_developer\SAMPLES\Sample020_StartEngine\Src\original_sample_code.cxx
-// C:\WoMAengine2023\LinuxWoma\LinuxWoma\main_linux.cppcreateWindow();
-//----------------------------------------------------------------------------
-bool LinuxSystemClass::APPLICATION_INIT_MAIN_WINDOW(void* OpenGL)
-{
-	bool res = createWindow();
-
-	return res;
 }
 
 #endif

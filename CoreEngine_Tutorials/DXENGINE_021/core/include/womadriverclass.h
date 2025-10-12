@@ -85,47 +85,53 @@ enum PROJECTION_TYPE
 enum SHADER_TYPE
 {
 		SHADER_AUTO = 0, 
-/*1*/	SHADER_COLOR,										//021Color.hlsl		 : W3D v1.0	public MAIN (Used by: 21 & Sun Ray & 3D Obj)
-/*2*/	SHADER_TEXTURE,										//022Texture.hlsl	 : W3D v1.1	public MAIN (Used by: 22 & Banner & Sky2D & SplashIntro & UnderWater & Font & 3D Obj)
+/*1*/	SHADER_COLOR,								//021 Color.hlsl		: W3D v1.0	public MAIN (Used by: 21 & Sun Ray & 3D Obj)
+/*2*/	SHADER_TEXTURE,								//022 Texture.hlsl		: W3D v1.1	public MAIN (Used by: 22 & Banner & Sky2D & SplashIntro & UnderWater & Font & 3D Obj)
 
 		// Use Material Light
-/*3*/	SHADER_TEXTURE_FONT,								//027Texture.hlsl	 : fade: using alfa-color
-/*4*/	SHADER_TEXTURE_LIGHT,								//023Light.hlsl		 : W3D v1.2	public MAIN + Pass2: Shadows (Used by: 23 & Sky3D & Sun & Moon & 3D Obj)
-/*5*/	SHADER_NORMAL_BUMP,									//035TextureBump.hlsl: W3D v1.3	public MAIN (Used by: 47 & 3D Obj)
+/*3*/	SHADER_TEXTURE_FONT,						//027 Texture.hlsl		: fade: using alfa-color
+/*4*/	SHADER_TEXTURE_LIGHT,						//023 Light.hlsl		: W3D v1.2	public MAIN + Pass2: Shadows (Used by: 23 & Sky3D & Sun & Moon & 3D Obj)
+
+// ---- LEVEL >= 30
+/*5*/	SHADER_NORMAL_BUMP,							//035 TextureBump.hlsl	: W3D v1.3	public MAIN (Used by: 47 & 3D Obj)
 
 		// Use Global: Light
-/*6*/	SHADER_TEXTURE_LIGHT_RENDERSHADOW,					//036LightRenderShadow.hlsl:	Render Shadows
-/*7*/	SHADER_TEXTURE_LIGHT_SAVESHADOW,					//036ShadowMap.hlsl  :			Aux. Shader (render in texture)
+/*6*/	SHADER_TEXTURE_LIGHT_RENDERSHADOW,			//036 LightRenderShadow.hlsl: Render Shadows
+/*7*/	SHADER_TEXTURE_LIGHT_SAVESHADOW,			//036 ShadowMap.hlsl        : Aux. Shader (render in texture)
 
 		// Have to be last:
-		SHADER_TEXTURE_LIGHT_INSTANCED,						//040LightInstance.hlsl: INSTANCED like 23 light, but using Instances
-		SHADER_TEXTURE_LIGHT_SAVESHADOW_INSTANCED,			//040: Aux. Shader (render in texture), but using Instances (used on 41,42)
-		SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED,			//041ShadowMapInstance.hlsl: INSTANCED like 36 shadow, but using Instances
-		SHADER_NORMAL_BUMP_INSTANCED,						//099: INSTANCED like 35 bump, but using Instances
-		SHADER_TEXTURE_WATER,								//054 Water waves - hlsl\054Texture.hlsl
+		SHADER_TEXTURE_LIGHT_INSTANCED,				//040 LightInstance.hlsl: like 23 but INSTANCED
+		SHADER_TEXTURE_LIGHT_SAVESHADOW_INSTANCED,	//040 Aux. Shader (render in texture), but using Instances (used on 41,42)
+		SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED,	//041 ShadowMapInstance.hlsl: like 36 but INSTANCED shadow
+		SHADER_NORMAL_BUMP_INSTANCED,				//099 INSTANCED like 35 bump, but using Instances
+		SHADER_TEXTURE_WATER,						//054 Water waves - hlsl\054Texture.hlsl
 
 		// TERRAINS:
-		SHADER_Double_Color_Terrain,						//053 Double_Color_Terrain.hlsl
-		SHADER_Slope_Texture_Terrain,						//055 Slope_Texture_Terrain.hlsl
-		SHADER_Terrain_Texture_DEMO19,						//056 TUTORIAL_CHAP >= 19 // TERRAIN
-		SHADER_Terrain_Texture_DEMO21,						//057 TUTORIAL_CHAP >= 21 // TERRAIN
-		SHADER_Terrain_Texture_DEMO22,						//058 TUTORIAL_CHAP >= 22 // TERRAIN
-		SHADER_Terrain_Texture_DEMO23,						//059 TUTORIAL_CHAP >= 23 // TERRAIN
-		SHADER_Terrain_Texture_DEMO60,						//060 TUTORIAL_CHAP >= 24 // TERRAIN
-		SHADER_Terrain_Texture_DEMO61,						//061 MY_SOURCE_CODE\WorldOfMiddleAge\WoMA_PartII\engine\024terrain_fog_slope_detail_mapping.hlsl
+		SHADER_Double_Color_Terrain,				//053 Double_Color_Terrain.hlsl
+		SHADER_Slope_Texture_Terrain,				//055 Slope_Texture_Terrain.hlsl
+		SHADER_Terrain_Texture_DEMO19,				//056 TUTORIAL_CHAP >= 19 // TERRAIN
+		SHADER_Terrain_Texture_DEMO21,				//057 TUTORIAL_CHAP >= 21 // TERRAIN
+		SHADER_Terrain_Texture_DEMO22,				//058 TUTORIAL_CHAP >= 22 // TERRAIN
+		SHADER_Terrain_Texture_DEMO23,				//059 TUTORIAL_CHAP >= 23 // TERRAIN
+		SHADER_Terrain_Texture_DEMO60,				//060 TUTORIAL_CHAP >= 24 // TERRAIN
+		SHADER_Terrain_Texture_DEMO61,				//061 MY_SOURCE_CODE\WorldOfMiddleAge\WoMA_PartII\engine\024terrain_fog_slope_detail_mapping.hlsl
 
-		SHADER_FIRE,										//72
-		SHADER_TEXTURE_GS_INSTANCED,						//77
+		SHADER_FIRE,								//72
+		SHADER_TEXTURE_GS_INSTANCED,				//77
 
-		SHADER_MESH,										//80 & 81 Only
+		SHADER_MESH,								//80 & 81 Only
 
-        SHADER_TEXTURE_LIGHT_FAST,							//83
-		SHADER_BILLBOARD_ATLAS_FAST,						//93
+        SHADER_TEXTURE_LIGHT_FAST,					//83
+		SHADER_BILLBOARD_ATLAS_FAST,				//93
 
-		SHADER_USE_CURVED_SKY_PLANE,						//95
-		SHADER_USE_CURVED_REAL_SKY_PLANE,					//96
-		SHADER_USE_WATERFALL,								//97
-		SHADER_USE_SMOKE
+		SHADER_USE_CURVED_SKY_PLANE,				//95
+		SHADER_USE_CURVED_REAL_SKY_PLANE,			//96
+
+		SHADER_USE_WATERFALL,						//97
+		SHADER_USE_SMOKE,							//98
+		SHADER_TEXTURE_POINTS_OF_LIGHT_INSTANCED,	//98
+		SHADER_TEXTURE_LIGHT98 						//98
+#
 };
 
 struct Capabilities 

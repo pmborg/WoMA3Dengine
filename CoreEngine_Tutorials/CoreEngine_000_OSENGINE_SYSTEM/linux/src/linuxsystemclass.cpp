@@ -37,6 +37,7 @@
 	#define g_contextDriver NULL
 
 extern MyWin Win;
+extern bool createWindow();
 
 #if defined USE_SCENE_MANAGER
 #include "SceneManager.h"
@@ -181,8 +182,6 @@ void LinuxSystemClass::ProcessFrame() // EQUAL to: WinSystemClass::ProcessFrame(
 {
 
 }
-
-extern bool createWindow();
 
 #endif
 

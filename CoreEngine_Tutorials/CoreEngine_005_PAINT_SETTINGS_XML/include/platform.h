@@ -671,8 +671,11 @@ static_assert(false, "WIN6x: X64 or WIN32, must be selected");
 #endif
 
 // -------------------------------------------------------------------------------------------------------------------
-// Define Compilation Time:
+// Define Compilation Time: (to attach title)
 // -------------------------------------------------------------------------------------------------------------------
+// USED:
+//   BUILD_YEAR_CH0, BUILD_YEAR_CH1, BUILD_YEAR_CH2, BUILD_YEAR_CH3, / , BUILD_MONTH_CH0, BUILD_MONTH_CH1, / ,BUILD_DAY_CH0, BUILD_DAY_CH1
+
 #define BUILD_YEAR_CH0 (__DATE__[ 7])
 #define BUILD_YEAR_CH1 (__DATE__[ 8])
 #define BUILD_YEAR_CH2 (__DATE__[ 9])
@@ -714,6 +717,11 @@ static_assert(false, "WIN6x: X64 or WIN32, must be selected");
 #define BUILD_DAY_CH0 ((__DATE__[4] >= '0') ? (__DATE__[4]) : '0')
 #define BUILD_DAY_CH1 (__DATE__[ 5])
 
+#define MAKE_DATE(y1, y2, y3, y4, m1, m2, m3, d1, d2) y1##y2##y3##y4##m1##m2##m3##d1##D2
+
+
+
+// -------------------------------------------------------------------------------------------------------------------
 #if defined LINUX_PLATFORM
 #define WOMA_CONSOLE_APPLICATION	// Allow: OS "CMD Line Console" VS Native "WINDOWS" or "X-WINDOWS"
 #endif

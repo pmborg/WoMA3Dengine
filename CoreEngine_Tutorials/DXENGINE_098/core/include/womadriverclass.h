@@ -75,7 +75,6 @@
 	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) {CREATE_MODELDX_IF_NOT_EXCEPTION(model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);}\
 	if (shader_type == SHADER_TEXTURE) ASSERT(model->LoadTexture(pContext, texture, m_Driver, shader_type, &Textures, &vertexVector, &IndexList));\
 }
-
 #define initModelwithTexture2D(model, texture, vertexVector, IndexList, shader_type)\
 {\
 	std::vector<STRING> Textures; \
@@ -84,6 +83,7 @@
 	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) { CREATE_MODELDX_IF_NOT_EXCEPTION(model, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }\
 	ASSERT(model->LoadTexture(pContext, texture, m_Driver, shader_type, &Textures, &vertexVector, &IndexList)); \
 }
+
 #define initModelwithTexture2DMAP(model, texture, vertexVector, IndexList, shader_type, alfa)\
 {\
 	std::vector<STRING> Textures; \
@@ -137,6 +137,8 @@ enum SHADER_TYPE
 		// Use Material Light
 /*3*/	SHADER_TEXTURE_FONT,						//027 Texture.hlsl		: fade: using alfa-color
 /*4*/	SHADER_TEXTURE_LIGHT,						//023 Light.hlsl		: W3D v1.2	public MAIN + Pass2: Shadows (Used by: 23 & Sky3D & Sun & Moon & 3D Obj)
+
+// ---- LEVEL >= 30
 /*5*/	SHADER_NORMAL_BUMP,							//035 TextureBump.hlsl	: W3D v1.3	public MAIN (Used by: 47 & 3D Obj)
 
 		// Use Global: Light
@@ -174,7 +176,8 @@ enum SHADER_TYPE
 		SHADER_USE_WATERFALL,						//97
 		SHADER_USE_SMOKE,							//98
 		SHADER_TEXTURE_POINTS_OF_LIGHT_INSTANCED,	//98
-		SHADER_TEXTURE_LIGHT98						//98
+		SHADER_TEXTURE_LIGHT98 						//98
+#
 };
 
 struct Capabilities 

@@ -172,7 +172,7 @@ namespace WOMA
 		return (TCHAR*)file.c_str();
 #else
 		if (filename[0] != '.') {
-    #if CORE_ENGINE_LEVEL >= 8 && !defined RELEASE
+    #if CORE_ENGINE_LEVEL >= 5 && !defined RELEASE
 			if (shader) {
 				StringCchPrintf(file_, sizeof(file_), TEXT("%s%s"), TEXT("./"), filename);
             }

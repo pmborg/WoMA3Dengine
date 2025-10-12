@@ -1,4 +1,4 @@
-// ----------------------------------------------------------------------------------------------
+ï»¿// ----------------------------------------------------------------------------------------------
 // Filename: DX11Class.cpp
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
@@ -52,9 +52,14 @@
 #include <VersionHelpers.h>
 #endif
 
+#if defined USE_DX_DRIVER_FONT
+std::vector<DXTextLine> allTextArray;
+#endif
+
 // ----------------------------------------------------------------------------------------------
 // Globals:
 // ----------------------------------------------------------------------------------------------
+
 std::vector<DXwindowDataContainer> DX11windowsArray;													
 std::vector<UINT> FSAA_possibleValues;
 
@@ -150,8 +155,6 @@ DX11Class::DX11Class()
 
 	cbPerObjectBuffer = NULL;
 	Transparency = NULL;
-
-	//m_FontV2Shader = NULL;
 	#endif
 
 
@@ -1123,7 +1126,7 @@ void DX11Class::BeginScene(UINT monitorWindow)
 {
 #if !defined ANDROID_PLATFORM && defined DX_ENGINE && defined USE_MULTI_MONITOR && defined USE_DIRECT_INPUT
 	const float totalSpanDeg = 90.0f;            // total horizontal span across all 3
-	const float perMonitorDeg = totalSpanDeg / SystemHandle->windowsArray.size(); // 30°
+	const float perMonitorDeg = totalSpanDeg / SystemHandle->windowsArray.size(); // 30Â°
 	if (SystemHandle->windowsArray.size() == 3)
 	{
 		// TODO: settings.xml define: LEFT/RIGTH: Monitor
@@ -1144,10 +1147,8 @@ void DX11Class::BeginScene(UINT monitorWindow)
 
 	DXsystemHandle->m_Camera->m_rotationY = SystemHandle->m_Application->m_Position[g_NetID]->m_rotationY + DXsystemHandle->m_Camera->offsetDeg;
 #endif
-	
 
-	//Clear RTV
-	// Clear Screen
+	// Clear Screen (RTV)
 	m_deviceContext->ClearRenderTargetView(DX11windowsArray[monitorWindow].m_renderTargetView, driver_ClearColor);	// Clear the "back buffer":
 
 	//Clear DSV
@@ -1156,20 +1157,33 @@ void DX11Class::BeginScene(UINT monitorWindow)
 #endif
 
 	SetBackBufferRenderTarget(m_deviceContext, monitorWindow);
+
+//#if DX_ENGINE_LEVEL >= 99 && defined USE_WOMA_ENGINE_ONE_CBUFFER
+//	if (RenderfirstTime)
+//	{
+//		// Map buffer for writing
+//		D3D11_MAPPED_SUBRESOURCE mappedResource = { 0 };
+//		HRESULT result = m_deviceContext->Map(m_cbStaticWorldCPU11, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+//		if (FAILED(result))
+//			throw woma_exception("Map failed", __FILE__, __FUNCTION__, __LINE__);
+//
+//		globaldataVSptr = (CB_STATICWORLDCPU*)mappedResource.pData;
+//	}
+//#endif
 }
 
 //Steps to Handle Device Loss:
 //    1.	Release All Resources Tied to the Device
-//    •	Release all Direct3D resources(e.g., buffers, textures, shaders, views) that are tied to the device.
-//    •	This includes render targets, depth - stencil views, and swap chains.
+//    â€¢	Release all Direct3D resources(e.g., buffers, textures, shaders, views) that are tied to the device.
+//    â€¢	This includes render targets, depth - stencil views, and swap chains.
 //    2.	Reset the Device
-//    •	Recreate the Direct3D device and its associated context.
-//    •	Reinitialize the swap chain and other resources.
+//    â€¢	Recreate the Direct3D device and its associated context.
+//    â€¢	Reinitialize the swap chain and other resources.
 //    3.	Reinitialize Resources
-//    •	Recreate all resources that were released earlier.
-//    •	This includes shaders, textures, buffers, and any other GPU resources.
+//    â€¢	Recreate all resources that were released earlier.
+//    â€¢	This includes shaders, textures, buffers, and any other GPU resources.
 //    4.	Log the Event
-//    •	Log the device loss and recovery process for debugging purposes.
+//    â€¢	Log the device loss and recovery process for debugging purposes.
 
 void DX11Class::OnDeviceLost() // Our Driver in use was re-installed??
 {

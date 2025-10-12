@@ -208,11 +208,13 @@ bool SystemManager::CheckOS()
 		{ L"19044", L"21H2" }, // November 2021 Update
 		{ L"19045", L"22H2" }, // Windows10 (October 2023 Update)
 
+		// https://en.wikipedia.org/wiki/Windows_11_version_history
 		//---------------------------------------------------------------------
 		{ L"22000", L"21H2" }, // Windows11 (Original  version) October 5, 2021 
 		{ L"22621", L"22H2" }, // Windows11 September 20, 2022 
 		{ L"22631", L"23H2" }, // Windows11 October 31, 2023 
 		{ L"26100", L"24H2" }, // Windows11 October 1, 2024
+		{ L"26200", L"25H2" }, // Windows11 September 30, 2025 
 	};
 	// Get the Windows Build Version:
 	std::wstring v = std::to_wstring(BuildVersion);

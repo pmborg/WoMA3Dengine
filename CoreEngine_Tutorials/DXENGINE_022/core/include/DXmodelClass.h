@@ -154,7 +154,7 @@ public:
 	bool CreateDXbuffers(UINT sizeofMODELvertex, void* device, void* indices, void* vertices);
 	void SetGeometryBuffers(void* deviceContext);	//ID3D11DeviceContext
 
-	#if defined USE_LIGHT_RAY
+	#if defined MAIN_RENDER_LIGHT_RAY
     void UpdateDynamic(void* pContext, std::vector<ModelColorVertexType>* lightVertexVector);
 	#endif
 

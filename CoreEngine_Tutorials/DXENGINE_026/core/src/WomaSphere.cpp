@@ -36,6 +36,7 @@
 #pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
 
 extern std::vector<WomaDriverClass*> driverList;
+
 void ApplicationClass::initSphere1(void* pContext, float SPHERE_SIZE)
 {
 	if (Sphere_vertexdata.size() == 0)
@@ -47,8 +48,6 @@ void ApplicationClass::initSphere1(void* pContext, float SPHERE_SIZE)
 	Textures.push_back(SKY_DOME_DAY_TEXTURE);
 
 	CREATE_MODEL_IF_NOT_EXCEPTION(m_SphereModel1, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);
-	//#define m_Driver  driverList[SystemHandle->AppSettings->DRIVER]
-	//m_SphereModel1->ModelHASlight = false; // Before Load: Dont Calculate light/shadow for Sky-Dome! 
 	ASSERT(m_SphereModel1->LoadLight(pContext, TEXT("m_SphereModel"), m_Driver, SHADER_TEXTURE_LIGHT, &Textures, &Sphere_vertexdata, &Sphere_indexdata, 0));
 	m_SphereModel1->PrimitiveTopology = TRIANGLESTRIP;
 }

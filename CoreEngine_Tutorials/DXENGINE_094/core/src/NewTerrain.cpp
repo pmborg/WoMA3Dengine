@@ -85,8 +85,7 @@
 #define TERRAIN_grassNormalTexture            TEXT("engine/data/scene61DEMO/t_025TerrainMappingV3.png")		 //reg11: m_grassNormalTexture
 #define TERRAIN_smallstonePathTexture		  TEXT("engine/data/scene61DEMO/011map1_dirt01.jpg")			 //reg12: m_smallstonePathTexture
 #define TERRAIN_colorLightMapTexture		  TEXT("engine/data/scene61DEMO/t_023TerrainMappingV2.jpg")		 //reg13: m_colorLightMapTexture
-
-#define TERRAIN_LightMapTexture				  TEXT("engine/data/scene98/_023TerrainMapping.jpg")			//reg14: m_LightMapTexture
+#define TERRAIN_LightMapTexture				  TEXT("engine/data/scene98/_023TerrainMapping.jpg")			 //reg14: m_LightMapTexture
 
 /* world_60.xml
   <world hVisibility="128" seaLevel="0" size="512" patchSize="64"

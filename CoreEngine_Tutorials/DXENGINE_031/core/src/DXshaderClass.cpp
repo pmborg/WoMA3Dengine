@@ -56,8 +56,8 @@ extern shaderTree shaderManager_51[];
         // 54: SHADER_TEXTURE_WATER:
 static const D3D11_INPUT_ELEMENT_DESC colorPolygonLayout11[] =
 {
-	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,	0, 0,							 D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,		0, 0,							 D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
 #endif
 #if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009
@@ -71,6 +71,7 @@ static const D3D12_INPUT_ELEMENT_DESC colorPolygonLayout[] =
 //-------------------------------------------------------------------------------------------------------------
                             // 27: SHADER_TEXTURE_FONT :	//27
 							// 72: SHADER_FIRE
+
 #if defined DX11 || defined DX9
 static const D3D11_INPUT_ELEMENT_DESC texturePolygonLayout11[] =
 {
@@ -87,6 +88,7 @@ static const D3D12_INPUT_ELEMENT_DESC texturePolygonLayout[] =
 #endif
 
 //-------------------------------------------------------------------------------------------------------------
+
 #if defined DX11 || defined DX9 // 36: SHADER_TEXTURE_LIGHT_RENDERSHADOW (Render: 3D + Shadow)
 static const D3D11_INPUT_ELEMENT_DESC lightPolygonLayout11[] =
 {
@@ -186,8 +188,6 @@ namespace DirectX {
 		fogEnd = 0;
 		castShadow = false;
 
-
-
 		// PIXEL CBUFFER:
 		// --------------------------------------------------------------------------------------------
 		// BLOCK: PS1
@@ -270,8 +270,7 @@ namespace DirectX {
         bUseGS = useGS;
 
 		//GLOBAL:
-
-#ifdef USE_PRECOMPILED_SHADERS
+	#ifdef USE_PRECOMPILED_SHADERS
 		if (ShaderVersionH == 4 && ShaderVersionL == 0)
 			shaderManager = shaderManager_40; // 4.0
 		else
@@ -282,9 +281,11 @@ namespace DirectX {
 					shaderManager = shaderManager_50; // 5.0
 				else
 					shaderManager = shaderManager_51; // 5.1 or Future?
-#endif
+	#endif
 
-		hasTexture = (shaderType != SHADER_COLOR) && (shaderType != SHADER_TEXTURE_LIGHT_SAVESHADOW);
+		hasTexture =	(shaderType != SHADER_COLOR && 
+						shaderType != SHADER_TEXTURE_LIGHT_SAVESHADOW)
+						;
 		result = InitializeShader(shaderType, device, hwnd, PrimitiveTopology); //LOAD: HLSL code
 
 		return result;
@@ -338,7 +339,7 @@ namespace DirectX {
 	// Initialize the vertex and pixel shaders.
 		switch (shaderType)
 		{
-			//#if ENGINE_LEVEL >= 21
+
 		case SHADER_COLOR:
 		case SHADER_TEXTURE_WATER:
 #if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009
@@ -356,7 +357,7 @@ namespace DirectX {
 			}
 #endif
 			break;
-			//#endif
+
 
 		//	float3 position		: POSITION;
 		//	float2 texCoords	: TEXCOORD0; //22
@@ -380,10 +381,11 @@ namespace DirectX {
 #endif
 			break;
 
-		//	float3 position		: POSITION;	//21
-		//	float2 texCoords	: TEXCOORD; //22
-		//	float3 normal		: NORMAL;	//23
+		// float3 position	: POSITION;			//21
+		// float2 texCoords	: TEXCOORD;			//22
+		// float3 normal	: NORMAL;			//23
 		case SHADER_TEXTURE_LIGHT:				//23
+		case SHADER_TEXTURE_LIGHT98:			//98
 		case SHADER_TEXTURE_LIGHT_RENDERSHADOW:	//36
         case SHADER_TEXTURE_LIGHT_FAST:			//83
 #if defined DX12
@@ -443,6 +445,8 @@ namespace DirectX {
 			pixelHLSL.append("PS_Main");
 			break;
 //NEW SHADER:
+
+//93
 
 		default:
 			WomaFatalExceptionW(TEXT("This Shader type is not supported yet!"));
@@ -1258,6 +1262,13 @@ namespace DirectX {
 			// [3]: dont change the order:
 
 			// --------------------------------------------------------------------------------------------
+			// CREATE unified Constant Buffer for "cbufferONE.hlsli"
+			// --------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
+// LEGACY PATH – for backward shaders before level 99
+// --------------------------------------------------------------------------------------------
+
+			// --------------------------------------------------------------------------------------------
 			// CREATE Buffer(s) DATA for "Vertex Shader"
 			// --------------------------------------------------------------------------------------------
 			// Setup the description of the dynamic matrix constant buffer that is in the vertex shader:
@@ -1270,8 +1281,7 @@ namespace DirectX {
 			//BufferDesc.StructureByteStride = 0;
 
 			BufferDesc.ByteWidth = sizeof(VSconstantBufferType);
-
-			ASSERT(BufferDesc.ByteWidth <= D3D11_REQ_CONSTANT_BUFFER_ELEMENT_COUNT && (BufferDesc.ByteWidth % 16) == 0); // Validade Size
+			ASSERT(BufferDesc.ByteWidth <= D3D11_REQ_CONSTANT_BUFFER_ELEMENT_COUNT && (BufferDesc.ByteWidth % 16) == 0); // Validate Size
 
 			result = device11->CreateBuffer(&BufferDesc, NULL, &m_VertexShaderBuffer11);
 			IF_FAILED_RETURN_FALSE(result);
@@ -1280,11 +1290,10 @@ namespace DirectX {
 			// CREATE Buffer(s) DATA for "Pixel Shader":
 			// --------------------------------------------------------------------------------------------
 			BufferDesc.ByteWidth = sizeof(PSconstantBufferType);
-			ASSERT(BufferDesc.ByteWidth <= D3D11_REQ_CONSTANT_BUFFER_ELEMENT_COUNT && (BufferDesc.ByteWidth % 16) == 0); // Validade Size
+			ASSERT(BufferDesc.ByteWidth <= D3D11_REQ_CONSTANT_BUFFER_ELEMENT_COUNT && (BufferDesc.ByteWidth % 16) == 0); // Validate Size
 
 			result = device11->CreateBuffer(&BufferDesc, NULL, &m_PixelShaderBuffer11);
 			IF_FAILED_RETURN_FALSE(result);
-
 		}
 #endif
 
@@ -1494,6 +1503,7 @@ namespace DirectX {
 		}
 #endif
 
+
 		// ----------------------------------------------------------------------------
 #if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009 && DX_ENGINE_LEVEL >= 23
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
@@ -1517,7 +1527,7 @@ namespace DirectX {
 
 }
 
-	void DXshaderClass::RenderShader(UINT pass, void* Device_Context, int texture_index, int indexCount, int start)
+void DXshaderClass::RenderShader(UINT pass, void* Device_Context, int texture_index, int indexCount, int start)
 	{
 #if defined DX11 || defined DX9
 		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
@@ -1525,16 +1535,19 @@ namespace DirectX {
 #define deviceContext ((ID3D11DeviceContext*)Device_Context)
 			deviceContext->IASetInputLayout(m_layout11);					// Set the vertex input layout
 
-			if (m_shaderType >= SHADER_TEXTURE) 
+			if (m_shaderType >= SHADER_TEXTURE)
 			{
 					deviceContext->PSSetSamplers(0, 1, &m_sampleState11);		// Set the Sampler state in the pixel shader (Bilinear, Trilinear: 2x, Anisotropic: 4x, 8x, 16x, ...)
-			}
-#if TUTORIAL_CHAP >= 62 // FIRE
+
+	#if TUTORIAL_CHAP >= 62 // FIRE
 			if (m_shaderType == SHADER_FIRE) {
 				deviceContext->PSSetSamplers(1, 1, &m_sampleStateFire);
 			}
-#endif
-
+	#endif
+			}
+			// ---------------------------------------------------
+			// Set Shader code to RUN:
+			// ---------------------------------------------------
 			// VS: Set CODE to Run on SHADERS:
 			deviceContext->VSSetShader(m_vertexShader11, NULL, 0);		// Set the vertex code that will be used to process vertices
 
@@ -1553,9 +1566,6 @@ namespace DirectX {
 			{
 				  deviceContext->DrawIndexed(indexCount, start, 0);	// Render Indexed mesh
 			}
-		#ifdef _DEBUG
-			SystemHandle->TotalVertexCounter += indexCount;
-		#endif
 		}
 #endif
 
@@ -1726,9 +1736,12 @@ namespace DirectX {
 	void DXshaderClass::Render(UINT pass,void* Device_Context, int indexCount, XMMATRIX* worldMatrix, XMMATRIX* viewMatrix, XMMATRIX* projectionMatrix)
 	{
 		ASSERT_DEBUG(indexCount > 0);
-
+		//#if DX_ENGINE_LEVEL >= 99 && defined USE_WOMA_ENGINE_ONE_CBUFFER
+		//if (m_shaderType < SHADER_TYPE_COLOR_LINE || /*m_Driver->*/RenderfirstTime)
+		//#endif
 		SetShaderParameters(pass, Device_Context, worldMatrix, viewMatrix, projectionMatrix);	// Set the shader parameters that it will use for rendering
-		RenderShader(pass, Device_Context, /*texture_index*/ 0, indexCount);					// Now render the prepared buffers with the shader
+
+		RenderShader(pass, Device_Context, /*texture_index*/ 0, indexCount);						// Now render the prepared buffers with the shader
 	}
 
 } // DirectX

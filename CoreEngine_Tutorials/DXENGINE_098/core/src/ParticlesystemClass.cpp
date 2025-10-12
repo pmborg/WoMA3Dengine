@@ -18,7 +18,7 @@
 // --------------------------------------------------------------------------------------------
 
 #include "platform.h"
-#if defined USE_WATER_FALL
+#if defined MAIN_RENDER_WATER_FALL
 #include "ParticlesystemClass.h"
 #include "vertexTypes.h"
 #include "mem_leak.h"

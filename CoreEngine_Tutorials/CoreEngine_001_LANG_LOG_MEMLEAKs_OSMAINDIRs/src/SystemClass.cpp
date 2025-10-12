@@ -76,7 +76,7 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 	#define DIK_ESCAPE 0x01
 	#endif
 
-void SystemClass::CalculateCameraViewAndFrustum() 
+void SystemClass::CalculateCameraViewAndFrustum(void* pContext)
 {
 	// SET CAMERA (for this monitor): Prepare to Take a Shot: Generate the view matrix based on the camera's position.
 
@@ -123,6 +123,9 @@ void SystemClass::CalculateCameraViewAndFrustum()
 	}
 #endif
 #endif
+
+	//AFTER: CalculateCameraViewAndFrustum:
+
 }
 
 //-----------------------------------------------------------------------------------------

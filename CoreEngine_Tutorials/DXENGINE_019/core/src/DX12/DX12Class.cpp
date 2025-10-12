@@ -334,10 +334,10 @@ namespace DirectX {
 			//D3D_FEATURE_LEVEL feacture_level = D3D_FEATURE_LEVEL_12_1;					// Target DX 12.1
 
 			D3D_FEATURE_LEVEL featureLevels[] = {
-			#if defined USE_DX11_3
+			//#if defined USE_DX11_3
 				D3D_FEATURE_LEVEL_12_2,
 				D3D_FEATURE_LEVEL_12_1,
-			#endif
+			//#endif
 				D3D_FEATURE_LEVEL_12_0,
 				D3D_FEATURE_LEVEL_11_1,
 				D3D_FEATURE_LEVEL_11_0,
@@ -454,10 +454,10 @@ namespace DirectX {
 			//D3D_FEATURE_LEVEL MaxFeatureLevel = features.MaxSupportedFeatureLevel();
 
 			D3D_FEATURE_LEVEL featureLevels[] = {
-												#if defined USE_DX11_3
+												//#if defined USE_DX11_3
 													D3D_FEATURE_LEVEL_12_2, // check D3D 12.2 support 
 													D3D_FEATURE_LEVEL_12_1, // check D3D 12.1 support 
-												#endif
+												//#endif
 													D3D_FEATURE_LEVEL_12_0, // check D3D 12 support 
 													D3D_FEATURE_LEVEL_11_1, // check D3D 11.1 support 
 													D3D_FEATURE_LEVEL_11_0, // check D3D 11 support 

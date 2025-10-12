@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // Filename: initApplication_Basics.cpp
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
@@ -265,8 +265,8 @@ void ApplicationClass::initStatic2D(void* ctx)
 	//--------------------------------------------------------------------------------
 	//CreateDXbuffers for 2D:
 	#if defined USE_TITLE_BANNER
-		// # Title #
-		initModelwithTexture2D(m_titleModel, DEMO_TITLE_TEXTURE, SpriteVertexVector, emptyIndexList, SHADER_TEXTURE);
+		const SHADER_TYPE shadertype = SHADER_TEXTURE;
+		initModelwithTexture2D(m_titleModel, DEMO_TITLE_TEXTURE, SpriteVertexVector, emptyIndexList, shadertype);
 	#endif
 
 }
@@ -518,10 +518,6 @@ bool ApplicationClass::WOMA_LOAD_OBJ(void* pContext, UINT threadID, WomaDriverCl
 {
 	objModel.push_back(NULL);
 
-
-	if (SystemHandle->xml_loader.theWorldXML[i].type == 401)
-		Sleep(1);
-
 		{
 			CREATE_MODEL_IF_NOT_EXCEPTION(objModel[i], I_AM_3D, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.renderShadows);
 		}
@@ -604,7 +600,7 @@ bool ApplicationClass::InitLightandDemos(void* pContext, WomaDriverClass* Driver
   #endif
 
 	//LIGHT_RAY ////////////////////////////////////////////////////////////////////////////////////////////////////
-  #if defined USE_LIGHT_RAY	//DO: CalculateLightRayVertex(SunDistance);							  // Calculate Light Source Position
+  #if defined MAIN_RENDER_LIGHT_RAY	//DO: CalculateLightRayVertex(SunDistance);							  // Calculate Light Source Position
 	initLightRay(pContext);	//	  m_lightRayModel->UpdateDynamic(m_Driver, m_LightVertexVector);  // Update LightRay vertex(s)
   #endif					//	  m_lightRayModel->Render(m_Driver);							  // Render LightRay
 
@@ -653,6 +649,9 @@ void ApplicationClass::InitMainSky(void* pContext, WomaDriverClass* Driver)
 		if (RENDER_PAGE >= 55)
 			size = 512;	// SYNC/CHECK AT WOMA_APPLICATION_Initialize3D():
 
+	if (Sphere_vertexdata.size() == 0)
+		CreateSphereModel(size, SPHERE_GRIDPOINTS);	//(UINT SPHERE_SIZE, int Sphere_gridpoints)
+	
 	initSphere1(pContext, size);
 	initSphere2(pContext, size);
 #endif
@@ -714,6 +713,18 @@ void ApplicationClass::AddObjsWithInstancesToXML()
 	// Add Instanced Billboards to World.xml
 	//-----------------------------------------------------------------------------------------------------------------
 
+	//-----------------------------------------------------------------------------------------------------------------
+	// Add Instanced TREES90 to World.xml
+	//-----------------------------------------------------------------------------------------------------------------
+
+	//-----------------------------------------------------------------------------------------------------------------
+	// Add Instanced LAMPs to World.xml
+	//-----------------------------------------------------------------------------------------------------------------
+
+
+	// ----------------------------------------------------------------------------------------
+	// 1️st ADD SPECIAL COLOR LINE (used for Sun Direction visualization)
+	// ----------------------------------------------------------------------------------------
 }
 
 // --------------------------------------------------------------------------------------------
@@ -730,11 +741,15 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	initial_world_xml_objs = world_xml_objs;
 	womalogauto("Number of objects loaded in: WORLD.XML %d\n", world_xml_objs);
 
-	InitLightandDemos(pContext, Driver);
+	InitLightandDemos(pContext, Driver); //objid=0
+
+	#ifdef MAIN_RENDER_SKY
 	InitMainSky(pContext, Driver);
+	#endif
+
+	#ifdef MAIN_RENDER_TERRAIN
 	InitTerrainandWaterSurfaces(pContext, Driver);
-
-
+	#endif
 	//=================================================================================================================
 	// Init MAIN 3D Scene       ///////////////////////////////////////////////////////////////////////////////////////
 	//=================================================================================================================
@@ -742,7 +757,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	//-----------------------------------------------------------------------------------------------------------------
 	// CREATE BILLBOARDs (populate Trees[]) (extra populate WORLD.XML)
 	//-----------------------------------------------------------------------------------------------------------------
-#if TUTORIAL_CHAP >= 60 && defined (SCENE_MAIN_TOPO_TERRAIN) && defined (SCENE_BILLBOARDS) // BILLBOARD
+#if TUTORIAL_CHAP >= 60 && defined SCENE_MAIN_TOPO_TERRAIN && defined SCENE_BILLBOARDS && defined MAIN_RENDER_TERRAIN
 	IF_NOT_RETURN_FALSE(m_billTreeClass = NEW BillClass);
 	if (!m_billTreeClass->Initialize((ID3D11DeviceContext*)pContext, loadedTerrain[2]->m_terrainWidth / 2, loadedTerrain[2]->m_terrainHeight / 2, false))
 	{
@@ -752,16 +767,14 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	womalogauto("Number of billboard objects added %d\n", SystemHandle->xml_loader.theWorldXML.size()- world_xml_objs);
 #endif
 
-
-
 	//-----------------------------------------------------------------------------------------------------------------
 	// LOAD PROGRESS BAR
 	//-----------------------------------------------------------------------------------------------------------------
 #if defined ALLOW_CBIND_PROGRESS_BAR
 	// --- CREATE PROGRESS BAR:
-#if defined USE_INTRO_VIDEO_DEMO
+	#if defined USE_INTRO_VIDEO_DEMO
 	if (DXsystemHandle->g_DShowPlayer == NULL || (DXsystemHandle->g_DShowPlayer->m_state != STATE_RUNNING))
-#endif
+	#endif
 	{
 		SystemHandle->hwndPrgBar = SystemHandle->WomaCreateWindowEx(0, PROGRESS_CLASS, NULL, WS_CHILD | WS_VISIBLE | PBS_SMOOTH, 50, SystemHandle->AppSettings->WINDOW_HEIGHT - 100,
 			SystemHandle->AppSettings->WINDOW_WIDTH - 100, 20, SystemHandle->m_hWnd, (HMENU)401, SystemHandle->m_hinstance, NULL);
@@ -806,17 +819,19 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 
 	for (UINT i = objModel_size; i < objModel_size + theWorld_size; i++)
 	{
-		//LOAD OBJECTS:
+
+		// LOAD MAIN OBJECTS:
+		// ---------------------------------------------------------------------------------------------------------
 		WOMA_LOAD_OBJ(pContext, 0, Driver, i, SystemHandle->xml_loader.theWorldXML[i].filename);
 
 	#if defined USE_LOADING_THREADS || DX_ENGINE_LEVEL >= 37
 		num_loading_objects++;
 	#endif
 
+		// LOAD MINIMAP OBJECTS: Create 2D objects for mini-map
+		// ---------------------------------------------------------------------------------------------------------
 
-	//MINIMAP OBJECTS: Create 2D objects for mini-map
-
-		//Allow Refresh on Timer:
+		// Allow Refresh:
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))	// There is any OS messages to handle?
 		{
 			TranslateMessage(&msg); // TranslateMessage produces WM_CHAR messages only for keys that are mapped to ASCII characters by the keyboard driver.
@@ -854,7 +869,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
 	app_Light->GenerateOrthoMatrix(15, 15, 20, 0.1f);						// Control Zoom in Shadow Map here! 15, 15
 
-  #if defined USE_REAL_SUNLIGHT_DIRECTION || !defined USE_LIGHT_RAY
+  #if defined USE_REAL_SUNLIGHT_DIRECTION || !defined MAIN_RENDER_LIGHT_RAY
 	float LightX = USELIGHTSIZE * FAST_sin(initWorld->SunAzimuth);		// Real Sun Position on Sky:
 	float LightZ = USELIGHTSIZE * FAST_cos(initWorld->SunAzimuth);		// Real Sun Position on Sky:
 	float LightY = USELIGHTSIZE * FAST_sin(initWorld->SunElevation);	// Sun Elevation

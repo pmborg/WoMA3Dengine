@@ -25,7 +25,7 @@
 //////////////
 #include "platform.h"
 
-#if (defined DX_ENGINE)
+#if defined DX_ENGINE
 
 #include "DXbasicTypes.h"
 #include "womadriverclass.h"
@@ -92,6 +92,10 @@ namespace DirectX
 	private:
 		// NOTE: DONT USE "bool" USE "BOOL"
 
+	//#if DX_ENGINE_LEVEL >= 99 && defined USE_WOMA_ENGINE_ONE_CBUFFER
+	//	bool RenderfirstTime = true;
+	//#endif
+
 		// 21: VERTEX CBUFFER:
 		struct VSconstantBufferType
 		{
@@ -129,7 +133,7 @@ namespace DirectX
 			float		VSrotX;
 			float		VSrotY;
 			float		VSrotZ;
-			float		time;
+			float		time;				// Water animation
 
 			// 42 BLOCK: VS7
 			float		VSshaderType;
@@ -195,6 +199,7 @@ namespace DirectX
 			float		distortionBias;
 		};
 
+
 		// FUNCTIONS:
 		// ---------------------------------------------------------------------
 	public:
@@ -221,7 +226,6 @@ namespace DirectX
 		// VARS:
 		// ----------------------------------------------------------------------
 		STRING MODEL_NAME;
-		INT    m_ObjId = 0;
 
 #if defined DX11 || defined DX9
 		DirectX::DX11Class* m_driver11 = NULL;
@@ -248,7 +252,7 @@ namespace DirectX
 #endif
 
 	public:
-
+		INT    m_ObjId = 0;
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 		ComPtr<ID3D12RootSignature>		m_rootSignature = NULL;
 		ComPtr<ID3D12PipelineState>		m_pipelineState[2][3][2][MAXNUM_PIPELINE_STATES] = { 0 };

@@ -440,18 +440,14 @@ void SystemClass::refreshTitle() // Run once per second.
 
 	StringCchPrintf(pstrFPS, 300, TEXT("FPS:%d %s "), SystemHandle->fps, WOMA::APP_FULLNAME);
 
-	TCHAR		title[MAX_STR_LEN];
-
 #if defined WINDOWS_PLATFORM && !defined ANDROID_PLATFORM
 #if defined(X64) // Set the new "Window Title"
 	PDWORD_PTR dwResult = 0;// In 64 Bits
 	for (int i = 0; i < SystemHandle->windowsArray.size(); i++)
-		{
-			StringCchPrintf(title, 300, TEXT("WOMA ENGINE - SCR: %d"), i);
-			SendMessageTimeout(SystemHandle->windowsArray[i].hWnd, WM_SETTEXT, 0, (LPARAM)title, SMTO_ABORTIFHUNG, 1000, dwResult);
-		}
-			
-#else				
+		if (ShouldDrawUI(i))
+			SendMessageTimeout(SystemHandle->windowsArray[i].hWnd, WM_SETTEXT, 0, (LPARAM)pstrFPS, SMTO_ABORTIFHUNG, 1000, dwResult);
+#else
+	TCHAR		title[MAX_STR_LEN];
 	DWORD dwResult = 0;		// In 32 Bits
 	for (int i = 0; i < SystemHandle->windowsArray.size(); i++)
 		if (ShouldDrawUI(i)) 
@@ -470,7 +466,7 @@ void SystemClass::refreshTitle() // Run once per second.
 	#define DIK_ESCAPE 0x01
 	#endif
 
-void SystemClass::CalculateCameraViewAndFrustum() 
+void SystemClass::CalculateCameraViewAndFrustum(void* pContext)
 {
 	// SET CAMERA (for this monitor): Prepare to Take a Shot: Generate the view matrix based on the camera's position.
 
@@ -517,6 +513,9 @@ void SystemClass::CalculateCameraViewAndFrustum()
 	}
 #endif
 #endif
+
+	//AFTER: CalculateCameraViewAndFrustum:
+
 }
 
 //-----------------------------------------------------------------------------------------

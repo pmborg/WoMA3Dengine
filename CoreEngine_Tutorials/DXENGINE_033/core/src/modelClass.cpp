@@ -1151,7 +1151,7 @@ bool ModelClass::CreateObject(	void* pContext, void* XmodelClass, TCHAR* objectN
 	//SHADER_NORMAL_BUMP?
 		//SHADER_TEXTURE_LIGHT
 		//SHADER_TEXTURE_LIGHT_RENDERSHADOW
-		if ((obj3d.hasNorm || shader_type == SHADER_TEXTURE_LIGHT || shader_type == SHADER_BILLBOARD_ATLAS_FAST) && shader_type != SHADER_FIRE || shader_type == SHADER_TEXTURE_GS_INSTANCED)
+		if ((obj3d.hasNorm || shader_type == SHADER_TEXTURE_LIGHT || shader_type == SHADER_TEXTURE_LIGHT98 || shader_type == SHADER_BILLBOARD_ATLAS_FAST) && shader_type != SHADER_FIRE || shader_type == SHADER_TEXTURE_GS_INSTANCED)
 		{
 			//if (shader_type == SHADER_TEXTURE_GS_INSTANCED)
 			//	Sleep(1); //AQUI

@@ -119,7 +119,7 @@ ApplicationClass::ApplicationClass()
 	TerrainQuadtree = NULL;
 #endif
 
-#if defined USE_LIGHT_RAY
+#if defined MAIN_RENDER_LIGHT_RAY
 	m_lightRayModel = NULL;
 #endif
 
@@ -227,7 +227,7 @@ void ApplicationClass::WOMA_APPLICATION_Shutdown()
 	SAFE_DELETE(metarClass);
 #endif
 
-#if defined USE_LIGHT_RAY
+#if defined MAIN_RENDER_LIGHT_RAY
 #if (defined DX_ENGINE)
 	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
 		SAFE_SHUTDOWN_MODELDX(m_lightRayModel);

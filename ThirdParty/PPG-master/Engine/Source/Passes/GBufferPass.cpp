@@ -62,12 +62,12 @@ void GBufferPass::Render(ID3D11DeviceContext* deviceContext, Graphics& graphics,
 
     shader->Use(deviceContext);
 
-    scene.UseModel(deviceContext, graphics);                                    // 0   VERTEX Buffer: World
-    scene.UseCamera(deviceContext, graphics, scene.m_MainCamera);               // 1,2 VERTEX Buffer: VIEW: & PROJ
-    deviceContext->VSSetConstantBuffers(3, 1, &m_BoneBuffer);    // 3   VERTEX Buffer: Bones
+    scene.UseModel(deviceContext, graphics);                            // 0   VERTEX Buffer: World
+    scene.UseCamera(deviceContext, graphics, scene.m_MainCamera);       // 1,2 VERTEX Buffer: VIEW: & PROJ
+    deviceContext->VSSetConstantBuffers(3, 1, &m_BoneBuffer);			// 3   VERTEX Buffer: Bones
 
-    deviceContext->PSSetConstantBuffers(0, 1, &m_PBRMaterialBuffer);   // 0 Pixel Buffer: 
-    scene.lightManager.Use(deviceContext, 1);     //need!?               
+    deviceContext->PSSetConstantBuffers(0, 1, &m_PBRMaterialBuffer);	// 0 Pixel Buffer: 
+    scene.lightManager.Use(deviceContext, 1);							//need!?
 
     Animator* currentAnimator = nullptr;
 
@@ -94,9 +94,9 @@ void GBufferPass::Render(ID3D11DeviceContext* deviceContext, Graphics& graphics,
         
         PBRMaterial* mat = meshRenderer.m_Material;
         mat->m_MaterialInfo.m_LightDirection = SystemHandle->m_Application->app_Light->m_lightDirection;
-        mat->m_MaterialInfo.m_LightPos.x = SystemHandle->m_Application->MyLightVertexVector[1].x;   //USE_LIGHT_RAY
-        mat->m_MaterialInfo.m_LightPos.y = SystemHandle->m_Application->MyLightVertexVector[1].y;   //USE_LIGHT_RAY
-        mat->m_MaterialInfo.m_LightPos.z = SystemHandle->m_Application->MyLightVertexVector[1].z;   //USE_LIGHT_RAY
+        mat->m_MaterialInfo.m_LightPos.x = SystemHandle->m_Application->MyLightVertexVector[1].x;   //MAIN_RENDER_LIGHT_RAY
+        mat->m_MaterialInfo.m_LightPos.y = SystemHandle->m_Application->MyLightVertexVector[1].y;   //MAIN_RENDER_LIGHT_RAY
+        mat->m_MaterialInfo.m_LightPos.z = SystemHandle->m_Application->MyLightVertexVector[1].z;   //MAIN_RENDER_LIGHT_RAY
 
         mat->m_MaterialInfo.ambientColor = SystemHandle->m_Application->app_Light->m_ambientColor;
         mat->m_MaterialInfo.lightColor = SystemHandle->m_Application->app_Light->m_diffuseColor;

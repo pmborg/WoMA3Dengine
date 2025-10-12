@@ -84,7 +84,7 @@ public:
 	virtual bool UpdateBuffersRotY(void* pContext, int positionX, int positionY) = 0;
 	virtual bool UpdateSpriteBuffersRotY(void* pContext, int positionX, int positionY) = 0;
 #endif
-#if defined USE_LIGHT_RAY
+#if defined MAIN_RENDER_LIGHT_RAY
 	virtual void UpdateDynamic(void* pContext, std::vector<ModelColorVertexType>* lightVertexVector) = 0;
 #endif
 

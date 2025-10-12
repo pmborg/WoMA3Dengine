@@ -105,30 +105,16 @@ void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext, WomaDriverCla
 
 	// Rotate Bills:
 
-	// UPDATE DYN. LIGHT RAY:
-	// --------------------------------------------------------------------------------------------
-#if defined USE_LIGHT_RAY && DX_ENGINE_LEVEL != 98
-	if (RENDER_PAGE >= 23)
-	{
-		CalculateLightRayVertex(SunDistance);							// Calculate Light Source Position
-		m_lightRayModel->UpdateDynamic(pContext, m_LightVertexVector);	// Update LightRay vertex(s)
-		m_lightRayModel->Render(pContext, 0, 0, 0, NULL, NULL);			// Render LightRay
-	}
+#if defined _DEBUG
+	//womalogauto(TEXT("[FRAME] Sorted visible objects, ready to render (Monitor %d)\n"), monIdx);
 #endif
 }
 
 //----------------------------------------------------------------------------------------------------
-void ApplicationClass::RenderScene(UINT monitorIndex, WomaDriverClass* driver) // RENDER A FULL FRAME!
+void ApplicationClass::RenderScene(void* mainCtx, UINT monitorIndex, WomaDriverClass* driver) // RENDER A FULL FRAME!
 //----------------------------------------------------------------------------------------------------
 {
-	static void* mainCtx = NULL;
-
 	SystemHandle->TotalVertexCounter = 0;
-	
-	if (m_Driver->RenderfirstTime) 
-		mainCtx = getvoidcontext();
-
-	SortOutWhatNeedToBeRendered(mainCtx, driver);
 
 #if !defined INTRO_DEMO
   #if defined USE_DAY_AND_NIGHT
@@ -278,7 +264,7 @@ void ApplicationClass::SkyAndDemos(UINT monitorWindow, float fadeLight, void* pC
 #if (defined USE_SKY_CAMERA_DOME && defined USE_SKYSPHERE) && defined MAIN_RENDER_SKY	// MAIN-RENDER: "Sky": (0.0ms)
 	if (RENDER_PAGE >= 28 && m_SkyModel)
 	{
-		m_Driver->SetRasterizerState(pContext, CULL_NONE/*CULL_BACK*/, FILL_SOLID); // Render the Inside of Sphere
+		m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID); // Render the Inside of Sphere
 		if (m_Driver->RenderfirstTime)
 		{
 			m_SkyModel->translation(0, 0, 0);
@@ -343,7 +329,9 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 {
 	SkyAndDemos(monitorIndex, fadeLight, pContext);
 
+#if defined MAIN_RENDER_TERRAIN
 	WaterTerrain(monitorIndex, fadeLight, pContext);
+#endif
 
 	// 3D STATIC OPAC OBJECTS on WORLD.XML, that listed in: sceneManager->visibleModelList (in front of camera)
 	//----------------------------------------------------------------------------------------------------------------------
@@ -354,10 +342,9 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 
 	// Render TRANSPARENT Parts of 3D OBJs (like: glass window of (Space Compound), etc...) (last part)
 	// --------------------------------------------------------------------------------------------
-#if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined MAIN_RENDER_MAIN_OBJ //MAIN-RENDER: MAIN OBJs. (9 ms)
+#if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined MAIN_RENDER_MAIN_XML_OBJ //MAIN-RENDER: MAIN OBJs. (9 ms)
 	for (UINT id = 0; id < WOMA::sceneManager->visibleModelList.size(); id++)
 	{
-		
 		switch(SystemHandle->xml_loader.theWorldXML[WOMA::sceneManager->visibleModelList[id]->m_ObjId].type)
 		{
 				default:
@@ -391,9 +378,11 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 
 	// Render Animated meshes:
 	// -----------------------
+#if defined MAIN_RENDER_ASSIMP
 	if (ShouldDrawUI(monitorIndex) && !g_GOD_MODE)
 	{
 	}
+#endif
 
 	// TRANSPARENT and SEMI-TRANSPARENT:
 	// --------------------------------------------------------------------------------------------
@@ -431,8 +420,10 @@ void ApplicationClass::AppPosRender(UINT monitorIndex, float dayLightFade, void*
 		}
 #endif
 
+#if DX_ENGINE_LEVEL >= 24 && defined MAIN_RENDER_TITLE
 	if (ShouldDrawUI(monitorIndex))
 		RenderHUD_Logo(pContext);
+#endif
 
 #if (defined USE_MAIN_MAP || defined USE_MINI_MAP) && defined MAIN_RENDER_MINIMAP //MAIN-RENDER: MINI-MAP (0.4)
 	if (ShouldDrawUI(monitorIndex))
@@ -440,7 +431,7 @@ void ApplicationClass::AppPosRender(UINT monitorIndex, float dayLightFade, void*
 #endif
 
 	// === AppTextClass-Fill: ===
-#if defined USE_RASTERTEK_TEXT_FONT
+#if defined USE_RASTERTEK_TEXT_FONT && defined MAIN_RENDER_RASTERTEK_FONT
 
 	if (ShouldDrawUI(monitorIndex) && AppTextClass)
 	{

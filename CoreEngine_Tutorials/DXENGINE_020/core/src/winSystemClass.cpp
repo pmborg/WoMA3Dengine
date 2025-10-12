@@ -84,6 +84,10 @@ WinSystemClass::WinSystemClass(WOMA::Settings* appSettings): SystemClass() //	Sy
 void WinSystemClass::ProcessFrame()
 //----------------------------------------------------------------------------
 {
+	static void* mainCtx=NULL;
+	if (m_Driver->RenderfirstTime)
+		mainCtx = getvoidcontext();
+
 	SystemClass::FrameUpdate();	// Process: (function keys |ESC and F1 to F6| & PerformanceStats) Only!
 
 	if (WOMA::game_state == ENGINE_RESTART)
@@ -117,9 +121,10 @@ void WinSystemClass::ProcessFrame()
 		{
 			m_Driver->BeginScene(monIdx);										// RESET FRAME: ClearRenderTargetView + ClearDepthBuffer
                                 
-			CalculateCameraViewAndFrustum();									// CALCULATE: CalculateViewMatrix (to render) and Frustum
+			CalculateCameraViewAndFrustum(mainCtx);								// CALCULATE: CalculateViewMatrix (to render) and Frustum
+			m_Application->SortOutWhatNeedToBeRendered(mainCtx, m_Driver);
 
-			m_Application->RenderScene(monIdx, m_Driver);						// RENDER 1 FRAME!
+			m_Application->RenderScene(mainCtx, monIdx, m_Driver);				// RENDER 1 FRAME!
                                                                
 			(g_contextDriver ? g_contextDriver : m_Driver)->EndScene(monIdx);	// SHOW FRAME :)
 		}
@@ -764,7 +769,7 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
     if (!AppSettings->FULL_SCREEN)
     {
 	    TaskBarHeigth = WOMA::getTaskBarHeight();
-		AppSettings->WINDOW_HEIGHT = AppSettings->WINDOW_HEIGHT - TaskBarHeigth - TaskBarHeigth;
+		AppSettings->WINDOW_HEIGHT = AppSettings->WINDOW_HEIGHT; // -TaskBarHeigth - TaskBarHeigth;
     }
 #endif
 

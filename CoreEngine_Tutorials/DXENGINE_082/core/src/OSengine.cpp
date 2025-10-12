@@ -525,6 +525,10 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 	WOMA::start_log_manager();									//3!
 	#endif
 
+	TCHAR COMPILATION_DATE[MAX_STR_LEN] = {};
+	StringCchPrintf(COMPILATION_DATE, MAX_STR_LEN, TEXT("%c%c%c%c.%c%c.%c%c\n"), BUILD_YEAR_CH0, BUILD_YEAR_CH1, BUILD_YEAR_CH2, BUILD_YEAR_CH3, BUILD_MONTH_CH0, BUILD_MONTH_CH1, BUILD_DAY_CH0, BUILD_DAY_CH1);
+	womalog("COMPILATION_DATE: %s\n", COMPILATION_DATE);
+
 	// Set A Top level "Exception handler" for all Exceptions. Catch, Dump & Send Report WOMA ENGINE HOME using FTP!
 #if defined USE_MINIDUMPER 
 	WOMA::miniDumper = NEW MiniDumper();						//4! (NOTE: After logManager!)

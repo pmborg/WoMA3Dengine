@@ -140,15 +140,18 @@ bool DirectX::DXmodelClass::LoadColor(void* pContext, TCHAR* objectName, void* d
 	LOADDRIVER(driver);
 	MODEL_NAME = objectName;
 
+	ASSERT_DEBUG(model);
+
 	if (shader_type == SHADER_AUTO)
 		ModelShaderType = SHADER_COLOR;
 	else
 		ModelShaderType = shader_type;
 
-	ASSERT(ModelShaderType == SHADER_COLOR);
+	ASSERT_DEBUG(ModelShaderType == SHADER_COLOR);
 
 	modelColorVertex = model; //*
 	indexModelList = indexList;
+
 	return InitializeDXbuffers((ID3D11DeviceContext*)pContext, objectName, NULL);
 }
 
@@ -312,7 +315,7 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 	// ----------------------------------------------------------------------------------------------
 	switch (ModelShaderType)
 	{
-	case SHADER_COLOR: 
+	case SHADER_COLOR:
 		switch (SystemHandle->AppSettings->DRIVER)
 		{
 
@@ -411,7 +414,9 @@ bool DXmodelClass::InitializeColorBuffers(/*ID3D11Device*/ void* device, void* i
 	for (UINT i = 0; i < m_vertexCount; i++)
 	{
 #if defined DX11 || defined DX12 || defined DX9
+
 		vertices[i].position = XMFLOAT3((*modelColorVertex)[i].x, (*modelColorVertex)[i].y, (*modelColorVertex)[i].z);
+
 		vertices[i].color	 = XMFLOAT4((*modelColorVertex)[i].r, (*modelColorVertex)[i].g, (*modelColorVertex)[i].b, (*modelColorVertex)[i].a);
 #endif
 #if defined USE_BOUNDING_VOLUMES
@@ -455,7 +460,7 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 		bool UPLOAD = true;
 		if (Model3D) {
 			// [*] CreateCommittedResource - VERTEX - ALOCATE SPACE ON GPU RAM
-#if defined USE_LIGHT_RAY
+#if defined MAIN_RENDER_LIGHT_RAY
 			ThrowIfFailed(device->CreateCommittedResource(
 				&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 				D3D12_HEAP_FLAG_NONE,
@@ -476,7 +481,7 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 			m_vertexBuffer->SetName(L"Vertex Buffer Resource");
 			UPLOAD = false;
 #endif
-#if defined USE_LIGHT_RAY
+#if defined MAIN_RENDER_LIGHT_RAY
 			ThrowIfFailed(device->CreateCommittedResource(
 				&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), //D3D12_HEAP_TYPE_UPLOAD
 				D3D12_HEAP_FLAG_NONE,
@@ -544,7 +549,7 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 		// The upload resource must not be released until after the GPU has finished using it.
 		UPLOAD = true;
 		if (Model3D) {
-#if defined USE_LIGHT_RAY
+#if defined MAIN_RENDER_LIGHT_RAY
 			ThrowIfFailed(device->CreateCommittedResource(
 				&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 				D3D12_HEAP_FLAG_NONE,
@@ -564,7 +569,7 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 			m_indexBuffer->SetName(L"Index Buffer Resource");
 			UPLOAD = false;
 #endif
-#if defined USE_LIGHT_RAY
+#if defined MAIN_RENDER_LIGHT_RAY
 			ThrowIfFailed(device->CreateCommittedResource(
 				&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), //D3D12_HEAP_TYPE_UPLOAD
 				D3D12_HEAP_FLAG_NONE,
@@ -709,6 +714,7 @@ void DXmodelClass::SetGeometryBuffers(void* deviceContext)
 		{
 		case SHADER_COLOR:
 			stride[0] = sizeof(DXcolorVertexType); break;
+
 		case SHADER_TEXTURE:
 		case SHADER_TEXTURE_FONT:
 		case SHADER_TEXTURE_WATER:
@@ -717,13 +723,16 @@ void DXmodelClass::SetGeometryBuffers(void* deviceContext)
 			stride[0] = sizeof(DXtextureVertexType); break;
 
 		case SHADER_TEXTURE_LIGHT:						//23
+		case SHADER_TEXTURE_LIGHT98:					//98
 		case SHADER_TEXTURE_LIGHT_RENDERSHADOW:			//36
 		case SHADER_TEXTURE_LIGHT_INSTANCED:			//40
 		case SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED: //41
         case SHADER_TEXTURE_GS_INSTANCED:               //77
         case SHADER_TEXTURE_LIGHT_FAST:					//83
+		case SHADER_TEXTURE_POINTS_OF_LIGHT_INSTANCED:  //98
 			stride[0] = sizeof(DXtextureLightVertexType); break;
 
+		//AUX SHADOW SHADER::
 		case SHADER_TEXTURE_LIGHT_SAVESHADOW:			//36
 		case SHADER_TEXTURE_LIGHT_SAVESHADOW_INSTANCED: //40
 			stride[0] = sizeof(DXShadowMapVertexType); break;
@@ -742,8 +751,8 @@ void DXmodelClass::SetGeometryBuffers(void* deviceContext)
 		D3D_PRIMITIVE_TOPOLOGY_POINTLIST = 1,
 		D3D_PRIMITIVE_TOPOLOGY_LINELIST = 2,
 		D3D_PRIMITIVE_TOPOLOGY_LINESTRIP = 3,
-		D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST = 4,	1 Triang. = 3 Vert.--> DrawPrimitive( D3DPT_TRIANGLELIST, 0, 1 );
-		D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP = 5,	4 Triang. = 6 Vert.--> DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, 4 );
+		D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST = 4,	1 Triangle = 3 Vert.--> DrawPrimitive( D3DPT_TRIANGLELIST, 0, 1 );
+		D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP = 5,	4 Triangle = 6 Vert.--> DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, 4 );
 		*/
 		// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
 		context->IASetPrimitiveTopology((D3D11_PRIMITIVE_TOPOLOGY)(PrimitiveTopology));
@@ -765,7 +774,7 @@ void DXmodelClass::SetGeometryBuffers(void* deviceContext)
 #endif
 }
 
-#if defined USE_LIGHT_RAY
+#if defined MAIN_RENDER_LIGHT_RAY
 void DirectX::DXmodelClass::UpdateDynamic(void* ctx, std::vector<ModelColorVertexType>* lightVertexVector)
 {
 	ID3D11DeviceContext* deviceContext11 = (ID3D11DeviceContext*)ctx;
@@ -795,10 +804,8 @@ void DirectX::DXmodelClass::UpdateDynamic(void* ctx, std::vector<ModelColorVerte
 
 	//Now that the coordinates are calculated create a temporary vertex array and fill it with the new six vertex points.
     m_vertexCount = (UINT)(*modelColorVertex).size();
-    //m_vertexCount = 2;
      
 	DXcolorVertexType*	vertices = NEW DXcolorVertexType[m_vertexCount];
-    //DXcolorVertexType vertices[2] = {};
 
 	IF_NOT_THROW_EXCEPTION (vertices);//
 
@@ -1229,25 +1236,36 @@ void DirectX::DXmodelClass::Render(void* ctx, UINT threadID, UINT camera, UINT p
 			SetGeometryBuffers(pContext);
 		}
 
-		// Step 2 - Get "view" and "projection" matrices from the "driver" and "camera" objects
-		// ----------------------------------------------------------------------------------------
-		XMMATRIX* projectionMatrix; 
-		XMMATRIX* viewMatrix;
 
-		if (projection == PROJECTION_MINIMAP) {
-			projectionMatrix = (XMMATRIX*)ShadowProjectionMatrix;	//Use provided projection: MINI-MAP
-			viewMatrix = (XMMATRIX*)lightViewMatrix;				//Use provided view
-		} else
-		{
-		if (camera != CAMERA_MINIMAP)
-        {
-			projectionMatrix = m_driver11->GetProjectionMatrix(camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
-        }
-		else
-			projectionMatrix = (XMMATRIX*)ShadowProjectionMatrix;   //Use provided projection: for Shadows
+
+
+	// ----------------------------------------------------------------------------------------
+	// Step 2 - Setup matrices (Unified CBUFFER path for Level 99)
+	// ----------------------------------------------------------------------------------------
+	XMMATRIX* projectionMatrix=NULL;
+	XMMATRIX* viewMatrix = NULL;
+
+	//#if DX_ENGINE_LEVEL >= 99 && defined USE_WOMA_ENGINE_ONE_CBUFFER
+	//		viewMatrix = m_driver11->GetViewMatrix(camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
+	//		projectionMatrix = m_driver11->GetProjectionMatrix(camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
+	//#else   // ─── Legacy (pre-99) path ────────────────────────────────────────────────
+
+			if (projection == PROJECTION_MINIMAP) {
+				projectionMatrix = (XMMATRIX*)ShadowProjectionMatrix;	//Use provided projection: MINI-MAP
+				viewMatrix = (XMMATRIX*)lightViewMatrix;				//Use provided view
+			} else
+			{
+			if (camera != CAMERA_MINIMAP)
+			{
+				projectionMatrix = m_driver11->GetProjectionMatrix(camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
+			}
+			else
+				projectionMatrix = (XMMATRIX*)ShadowProjectionMatrix;   //Use provided projection: for Shadows
 		
-			viewMatrix = m_driver11->GetViewMatrix(camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
-		}
+				viewMatrix = m_driver11->GetViewMatrix(camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
+			}
+
+	//#endif  // USE_WOMA_ENGINE_ONE_CBUFFER
 
 		{
 			{
@@ -1259,7 +1277,11 @@ void DirectX::DXmodelClass::Render(void* ctx, UINT threadID, UINT camera, UINT p
 				m_Shader11->Render(pass, pContext, m_indexCount, &m_worldMatrix, viewMatrix, projectionMatrix);
             #endif
 		}
+
+	//#endif
+
 	}
+	//END: DX11 Driver
 #endif
 }
 

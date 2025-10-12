@@ -10,6 +10,17 @@
 **********************************************************************************************/
 //WomaIntegrityCheck = 1234525217;
 
+
+#define MAX_POINT_LIGHTS 26      // enough for all lamps
+
+struct PointLight
+{
+    float3 position;
+    float radius;
+    float3 color;
+    float intensity;
+};
+
 // SYNC: DXshaderClass.h -- DX12: CBV
 #if DXAPI11 == 1
 cbuffer VSShaderParametersBuffer	//DX11
@@ -127,9 +138,8 @@ cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: D
     float   distortionScale;
     float   distortionBias;
 
-	////SKY:
-    //float firstTranslationX;
-    //float firstTranslationZ;
-    //float secondTranslationX;
-    //float secondTranslationZ;
+	// POINT OF LIGHTS:
+    int         numPointLights;
+    float3      pad;
+    PointLight  pointLights[MAX_POINT_LIGHTS];
 };
