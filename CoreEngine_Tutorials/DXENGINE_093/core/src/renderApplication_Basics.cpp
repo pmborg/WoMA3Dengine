@@ -899,7 +899,7 @@ extern MyDemo* demo_;
 
 #define TERRAIN_SCALE 1
 
-void ApplicationClass::SkyAndDemos(UINT monitorWindow, float fadeLight, void* pContext)
+void ApplicationClass::SkyAndCoreDemos(UINT monitorWindow, float fadeLight, void* pContext)
 {
 #if defined USE_RASTERIZER_STATE
 	m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);
@@ -928,7 +928,6 @@ void ApplicationClass::SkyAndDemos(UINT monitorWindow, float fadeLight, void* pC
 		{
 			m_SkyModel->translation(0, 0, 0);
 			m_SkyModel->scale(20, 20, 20);
-			//m_SkyModel->scale(2, 2, 2);
 		}
 
 		m_SkyModel->RenderSky(pContext, CAMERA_SKY, fadeLight); // Camera with fixed position: 0,0,0: (CAMERA_SKY)
@@ -980,7 +979,7 @@ void ApplicationClass::WaterTerrain(UINT monitorWindow, float fadeLight, void* p
 //#############################################################################################################
 void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pContext)
 {
-	SkyAndDemos(monitorIndex, fadeLight, pContext);
+	SkyAndCoreDemos(monitorIndex, fadeLight, pContext);
 
 #if defined MAIN_RENDER_TERRAIN
 	WaterTerrain(monitorIndex, fadeLight, pContext);

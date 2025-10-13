@@ -67,9 +67,8 @@ extern SmokeEmitterClass smokeEmitterClass;
 void ApplicationClass::initColorDemo(void* pContext)
 // ----------------------------------------------------------------------------
 {
-	//if (RENDER_PAGE == 21 || RENDER_PAGE == 22 || RENDER_PAGE == 23 || RENDER_PAGE == 24 || FORCE_RENDER_ALL)
 	{
-		//DEMO-1:
+		// --- DEMO-1 ---
 		// Step 1: Prepare Vertex(s)
 		float X = 4, Y = 4, Z = 0;
 		ModelColorVertexType vertex = {0};
@@ -95,9 +94,8 @@ void ApplicationClass::initColorDemo(void* pContext)
 		ASSERT (m_1stSquare3DColorModel->LoadColor(pContext, TEXT("m_1stSquare3DColorModel"), m_Driver, SHADER_COLOR, &SquareColorVertexVector, &IndexSquarList));	// LOAD the Model //UINT IndexSquarList[] = {0,1,2, 0,3,1};
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	//if (RENDER_PAGE >= 21 || FORCE_RENDER_ALL)
 	{
-		//DEMO-2:
+		// --- DEMO-2 ---
 		// Step 1: Prepare Vertex(s)
 		float X = 1, Y = 1, Z = 1;
 		ModelColorVertexType vertex = { 0 };
@@ -109,7 +107,7 @@ void ApplicationClass::initColorDemo(void* pContext)
 			TriangleColorVertexVector[i].g = 1.0f; 	// Green
 		}
 		// Step 2: Create a model: NEW GLmodelClass; || NEW DXmodelClass;
-		CREATE_MODEL_IF_NOT_EXCEPTION(m_1stTriangle3DColorModel, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);	// Alocate the MODEL
+		CREATE_MODEL_IF_NOT_EXCEPTION(m_1stTriangle3DColorModel, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);	// Allocate the MODEL
 		ASSERT(m_1stTriangle3DColorModel->LoadColor(pContext, TEXT("m_1stTriangle3DColorModel"), m_Driver, SHADER_COLOR, &TriangleColorVertexVector, &IndexTriangleList));	// LOAD the Model //UINT IndexTriangleList[] = {0,1,2};
 	}
 }

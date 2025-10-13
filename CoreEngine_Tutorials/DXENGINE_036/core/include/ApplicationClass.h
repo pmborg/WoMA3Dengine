@@ -253,7 +253,7 @@ public:
     void SortOutWhatNeedToBeRendered(void* pContext, WomaDriverClass* driver);
     void RenderScene(void* mainCtx, UINT monitorWindow, WomaDriverClass* driver);
 	float ProcessInputUpdate();						// PROCESS User Update
-	void SkyAndDemos(UINT monitorWindow, float fadeLight, void* pContext);
+	void SkyAndCoreDemos(UINT monitorWindow, float fadeLight, void* pContext);
 	void WaterTerrain(UINT monitorWindow, float fadeLight, void* pContext);
 	void AppRender(UINT monitorWindow,  float fadeLight, void * pContext);								// RENDER - 3D
 	bool Initialize(void* pContext, WomaDriverClass* Driver);

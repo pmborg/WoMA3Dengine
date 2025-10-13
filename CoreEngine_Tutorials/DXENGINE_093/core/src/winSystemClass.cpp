@@ -341,28 +341,6 @@ int WinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 {
 	MSG msg = { 0 };							// Reset msg
 
-	//MAIN DEBUG BUILD LOOP:
-	do
-	{
-		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))	// There is any OS messages to handle?
-		{
-			TranslateMessage(&msg); // TranslateMessage produces WM_CHAR messages only for keys that are mapped to ASCII characters by the keyboard driver.
-			DispatchMessage(&msg);  // Process Msg:  (INVOKE: WinSystemClass::MessageHandler)
-		}
-
-		if (WOMA::game_state > GAME_MINIMIZED && WOMA::game_state <= GAME_RUN) // Active?
-		{
-            ProcessFrame();// Render ONE: Application Frame
-		}
-		else {
-			if (WOMA::game_state == ENGINE_RESTART)
-				return ENGINE_RESTART;
-			else
-				Sleep(50); //we are minimized or in background, slow down CPU & GPU.
-		}
-
-	} while (msg.message != WM_QUIT && WOMA::main_loop_state >= 0);
-
 	return S_OK;
 }
 
