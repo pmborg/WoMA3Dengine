@@ -201,7 +201,7 @@ bool DX11Class::InitD2DScreenTexture()
 	D3D11_BLEND_DESC blendDesc = {0};			//ZeroMemory( &blendDesc, sizeof(blendDesc) );
 	D3D11_RENDER_TARGET_BLEND_DESC rtbd = {0};	//ZeroMemory( &rtbd, sizeof(rtbd) );
 
-	/*
+	
 	//v1:
 	rtbd.BlendEnable			 = true;
 	rtbd.SrcBlend				 = D3D11_BLEND_SRC_COLOR;
@@ -214,8 +214,8 @@ bool DX11Class::InitD2DScreenTexture()
 
 	blendDesc.AlphaToCoverageEnable = false;
 	blendDesc.RenderTarget[0] = rtbd;
-	*/
-
+	
+	/*
 	//v2:
 	blendDesc.AlphaToCoverageEnable = FALSE;
 	auto& rt = blendDesc.RenderTarget[0];
@@ -229,7 +229,7 @@ bool DX11Class::InitD2DScreenTexture()
 	rt.SrcBlendAlpha = D3D11_BLEND_ONE;
 	rt.DestBlendAlpha = D3D11_BLEND_INV_SRC_ALPHA;
 	rt.BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	
+	*/
 	IF_FAILED_RETURN_FALSE(hr = m_device11->CreateBlendState(&blendDesc, &Transparency));
 
 	// CREATE -------------------------------------------------------------

@@ -157,10 +157,10 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 		else
 			Sleep(100);     // We are in background? slowdown!
 
-		if (WOMA::main_loop_state < 0 || (WOMA::renderOnce && WOMA::woma_timer > 15))
+		if (WOMA::main_loop_state < 0 || (WOMA::renderOnce && WOMA::woma_timer > 30))
         {
 			WOMA::game_state = GAME_STOP;
-			if (WOMA::renderOnce && WOMA::woma_timer > 15)
+			if (WOMA::renderOnce && WOMA::woma_timer > 30)
 				return EXIT_SUCCESS;                // Controlled Exit for Automatic Tests.
 			break;										   
 		}

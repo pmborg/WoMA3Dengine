@@ -547,12 +547,15 @@ void ApplicationClass::RenderShadowPass(UINT monitorIndex, WomaDriverClass* Driv
 			//for (UINT id = 0; id < world_main_size; id++)//TODO: use sceneManager
 			for (UINT id = 0; id < WOMA::sceneManager->visibleModelList.size(); id++)																
 			{
+				if (objModel[id])
+				{
 				shader_type = objModel[id]->ModelShaderType;
 				if (shader_type != SHADER_TEXTURE_LIGHT_RENDERSHADOW &&
 					shader_type != SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED &&
 					shader_type != SHADER_NORMAL_BUMP_INSTANCED)
 					if (objModel[id]->ModelCastShadow)
 						RenderModel(pContext, 0, monitorIndex, Driver, id, (UINT)PASS_SHADOWS, NULL, NULL); // Pre-Render Shadows
+				}
 			}
 #endif
 		}
@@ -764,7 +767,7 @@ void ApplicationClass::RenderModel(void* pContext, UINT threadID, UINT monitorIn
 	else
 		model = (DXmodelClass*)objModel[modelID];
 
-	if (!model->ready)
+	if (!model || !model->ready)
 		return; // Model not ready to render (come back later!)
 
 	//----------------------------------------------------------------------------------------------------------------------------------
@@ -952,6 +955,13 @@ extern MyDemo* demo_;
 
 void ApplicationClass::SkyAndDemos(UINT monitorWindow, float fadeLight, void* pContext)
 {
+#if defined USE_RASTERIZER_STATE
+	m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);
+#endif
+#if defined USE_ALPHA_BLENDING
+	m_Driver->TurnOffAlphaBlending(pContext);
+#endif
+
 #if DX_ENGINE_LEVEL >= 10 && LEVEL <= 21
 	{
 		#define cor driverList[SystemHandle->AppSettings->DRIVER]->driver_ClearColor
@@ -968,19 +978,15 @@ void ApplicationClass::SkyAndDemos(UINT monitorWindow, float fadeLight, void* pC
 #if (defined USE_SKY_CAMERA_DOME && defined USE_SKYSPHERE) && defined MAIN_RENDER_SKY	// MAIN-RENDER: "Sky": (0.0ms)
 	if (RENDER_PAGE >= 28 && m_SkyModel)
 	{
-		m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID); // Render the Inside of Sphere
 		if (m_Driver->RenderfirstTime)
 		{
 			m_SkyModel->translation(0, 0, 0);
 			m_SkyModel->scale(20, 20, 20);
+			//m_SkyModel->scale(2, 2, 2);
 		}
 
 		m_SkyModel->RenderSky(pContext, CAMERA_SKY, fadeLight); // Camera with fixed position: 0,0,0: (CAMERA_SKY)
 	}
-#endif
-
-#if defined USE_ALPHA_BLENDING
-	m_Driver->TurnOffAlphaBlending(pContext);
 #endif
 
 #if defined USE_SKYSPHERE && defined USE_SUN && defined USE_MOON
@@ -1064,12 +1070,15 @@ void ApplicationClass::AppRender(UINT monitorIndex, float fadeLight, void* pCont
 		switch(SystemHandle->xml_loader.theWorldXML[WOMA::sceneManager->visibleModelList[id]->m_ObjId].type)
 		{
 				default:
-					RenderModel(pContext, 0, monitorIndex, m_Driver, id, PASS_OPAC, NULL, NULL, fadeLight);
-					if (id == 0 && ((DXmodelClass*)objModel[id])->obj3d.hasTransparent == true)
+					if (objModel[id])
 					{
-						m_Driver->TurnOnAlphaBlending(pContext);
-						objModel[id]->Render(pContext, 0, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_TRANSPARENT, NULL, NULL);
-						m_Driver->TurnOffAlphaBlending(pContext);
+						RenderModel(pContext, 0, monitorIndex, m_Driver, id, PASS_OPAC, NULL, NULL, fadeLight);
+						if (id == 0 && ((DXmodelClass*)objModel[id])->obj3d.hasTransparent == true)
+						{
+							m_Driver->TurnOnAlphaBlending(pContext);
+							objModel[id]->Render(pContext, 0, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_TRANSPARENT, NULL, NULL);
+							m_Driver->TurnOffAlphaBlending(pContext);
+						}
 					}
 				break;
 		}
@@ -1372,8 +1381,16 @@ float ApplicationClass::ProcessInputUpdate()
 	for (UINT c = 0; c < world_main_size; c++)
 	{
 		int id = WOMA::sceneManager->visibleModelList[c]->xmlId;
-		X = objModel[id]->PosX - camX; //compound[id].posX
-		Z = objModel[id]->PosZ - camZ; //compound[id].posZ
+		if (objModel[id])
+		{
+			X = objModel[id]->PosX - camX; //compound[id].posX
+			Z = objModel[id]->PosZ - camZ; //compound[id].posZ
+		}
+		else
+		{
+			X = 0.0f; 
+			Z = 0.0f;
+		}
 		compoundLoadingOrder[c].order = (UINT)(X * X + Z * Z);
 	}
 	qsort(compoundLoadingOrder, world_main_size, sizeof(compoundTreeLoadOrder), CompoundSortCB);	// Order compound by distance:
@@ -1391,6 +1408,8 @@ float ApplicationClass::ProcessInputUpdate()
 	{
 		int i = c;	// This is the compound[id] to check collisions...
 		{
+			if (!objModel[i])
+				continue;
 			closestObjDist = pick(prwsPos, prwsDir, objModel[i]->boundingBoxVerts,
                                                     objModel[i]->boundingBoxIndex,
                                                     ((DXmodelClass*)objModel[i])->m_worldMatrix, false);	// Use Bounding Boxes, Faster!

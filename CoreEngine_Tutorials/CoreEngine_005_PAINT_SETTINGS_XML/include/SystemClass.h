@@ -17,6 +17,7 @@
 // PURPOSE: Export APIs for systemclass.cpp which is the common OS API
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234525217;
+
 #pragma once
 #ifndef __SYSTEMCLASS_H__
 

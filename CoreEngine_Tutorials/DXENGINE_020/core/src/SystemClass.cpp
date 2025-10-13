@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // Filename: SystemClass.cpp
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
@@ -281,7 +281,7 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 void SystemClass::InitializeSystemScreenF1(int x, int y)
 //-----------------------------------------------------------------------------------------
 {
-	WOMA::logManager->DEBUG_MSG("InitializeSystemScreenF1...\n");
+	womalog("InitializeSystemScreenF1...\n");
 
 	//v1
 	//float LINE = 24;
@@ -584,7 +584,6 @@ void SystemClass::CalculateCameraViewAndFrustum(void* pContext)
 #endif
 
 	//AFTER: CalculateCameraViewAndFrustum:
-
 }
 
 //-----------------------------------------------------------------------------------------

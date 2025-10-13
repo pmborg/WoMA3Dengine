@@ -132,6 +132,9 @@ extern const wchar_t* GetWC(const char* c);
 	#endif
 #endif
 
+//
+// For WINDOWS, LINUX and ANDROID:
+//
 #if defined USE_LOG_MANAGER
 	#define womalogauto if (WOMA::logManager) WOMA::logManager->DEBUG_MSG
 	#define womalog		if (WOMA::logManager) WOMA::logManager->DEBUG_MSG
@@ -153,6 +156,36 @@ extern const wchar_t* GetWC(const char* c);
 	  #define womalogw			wprintf	//WCHAR
 	#endif
 #endif
+
+#if CORE_ENGINE_LEVEL >=10
+
+#if defined _DEBUG && defined USE_LOG_MANAGER 
+	#define womalogATfirstframe if (m_Driver->RenderfirstTime) WOMA::logManager->DEBUG_MSG
+#else
+	#define womalogATfirstframe {}
+#endif
+
+
+#if defined _DEBUG && defined USE_LOG_MANAGER
+#define DX11_LOG_MATRIX(pMat) \
+{ \
+    if (pMat) { \
+        WOMA::logManager->DEBUG_MSG(TEXT("[%.3f %.3f %.3f %.3f]\n"), \
+            ((DirectX::XMMATRIX)(*pMat)).r[0].m128_f32[0], ((DirectX::XMMATRIX)(*pMat)).r[0].m128_f32[1], ((DirectX::XMMATRIX)(*pMat)).r[0].m128_f32[2], ((DirectX::XMMATRIX)(*pMat)).r[0].m128_f32[3]); \
+        WOMA::logManager->DEBUG_MSG(TEXT("[%.3f %.3f %.3f %.3f]\n"), \
+            ((DirectX::XMMATRIX)(*pMat)).r[1].m128_f32[0], ((DirectX::XMMATRIX)(*pMat)).r[1].m128_f32[1], ((DirectX::XMMATRIX)(*pMat)).r[1].m128_f32[2], ((DirectX::XMMATRIX)(*pMat)).r[1].m128_f32[3]); \
+        WOMA::logManager->DEBUG_MSG(TEXT("[%.3f %.3f %.3f %.3f]\n"), \
+            ((DirectX::XMMATRIX)(*pMat)).r[2].m128_f32[0], ((DirectX::XMMATRIX)(*pMat)).r[2].m128_f32[1], ((DirectX::XMMATRIX)(*pMat)).r[2].m128_f32[2], ((DirectX::XMMATRIX)(*pMat)).r[2].m128_f32[3]); \
+        WOMA::logManager->DEBUG_MSG(TEXT("[%.3f %.3f %.3f %.3f]\n\n"), \
+            ((DirectX::XMMATRIX)(*pMat)).r[3].m128_f32[0], ((DirectX::XMMATRIX)(*pMat)).r[3].m128_f32[1], ((DirectX::XMMATRIX)(*pMat)).r[3].m128_f32[2], ((DirectX::XMMATRIX)(*pMat)).r[3].m128_f32[3]); \
+    } \
+}
+#else
+#define DX11_LOG_MATRIX(pMat)
+#endif
+
+#endif
+
 
 // Class Loaders - for automatic class load log
 // --------------------------------------------------------------------------------------------

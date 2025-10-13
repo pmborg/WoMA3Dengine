@@ -388,7 +388,7 @@ BOOL DX11Class::CheckAPIdriver(int USE_THIS_ADAPTER_CARD)
 	#ifdef _DEBUG
 			wchar_t buff[256] = {};
 			swprintf_s(buff, L"Direct3D Adapter (%u): VID:%04X, PID:%04X - %ls\n", adapterIndex, desc.VendorId, desc.DeviceId, desc.Description);
-			womalog(buff);
+			womalogw(buff);
 	#endif
 			if (SystemHandle->AppSettings->ADAPTOR == -1)
 				USE_THIS_ADAPTER_CARD = adapterIndex;

@@ -24,6 +24,7 @@
 #include "OSengine.h"
 #if CORE_ENGINE_LEVEL >= 1
 #include "mem_leak.h"
+#include "log.h"
 #endif
 #if defined WINDOWS_PLATFORM
 #include <shlwapi.h>

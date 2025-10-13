@@ -223,10 +223,6 @@ namespace WOMA
 	extern CHAR**	ARGv;
 
 	extern TCHAR strConsoleTitle[MAX_STR_LEN];
-#if defined USE_LOG_MANAGER //1
-	extern bool dirExists(STRING& dirName_in);
-	extern int getTaskBarHeight();
-#endif
 
 #if defined USE_LOADING_THREADS
 	extern UINT		num_running_THREADS;
@@ -236,6 +232,8 @@ namespace WOMA
 #endif
 
 #if CORE_ENGINE_LEVEL >= 1
+	extern bool dirExists(STRING& dirName_in);
+	extern int getTaskBarHeight();
 	extern TCHAR	APP_NAME[MAX_STR_LEN];	// "Application Name"
 #endif
 

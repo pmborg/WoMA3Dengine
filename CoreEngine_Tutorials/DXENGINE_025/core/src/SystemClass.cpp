@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // Filename: SystemClass.cpp
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
@@ -279,7 +279,7 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 void SystemClass::InitializeSystemScreenF1(int x, int y)
 //-----------------------------------------------------------------------------------------
 {
-	WOMA::logManager->DEBUG_MSG("InitializeSystemScreenF1...\n");
+	womalog("InitializeSystemScreenF1...\n");
 
 	//v1
 	//float LINE = 24;
@@ -607,7 +607,6 @@ void SystemClass::CalculateCameraViewAndFrustum(void* pContext)
 #endif
 
 	//AFTER: CalculateCameraViewAndFrustum:
-
 }
 
 //-----------------------------------------------------------------------------------------
@@ -1077,6 +1076,10 @@ bool SystemClass::LoadXmlWorld()
 	womalog("===============================================================================\n");
 	womalogauto(TEXT("LOAD XML WORLD: %s\n"), (TCHAR*)XML_WORLD_FILE.c_str());
 	womalog("===============================================================================\n");
+
+	// ----------------------------------------------------------------------------------------
+	// 1️st ADD SPECIAL COLOR LINE (used for Sun Direction visualization)
+	// ----------------------------------------------------------------------------------------
 
 	// Load and Parse XML FILE:"world.xml" the WORLD file
 	//----------------------------------------------------------------------------

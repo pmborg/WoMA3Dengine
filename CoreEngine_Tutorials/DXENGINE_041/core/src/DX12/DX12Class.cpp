@@ -201,7 +201,7 @@ namespace DirectX {
 			{
 				TCHAR str[MAX_STR_LEN];
 				StringCchPrintf(str, sizeof(str), TEXT("DEBUG WARNING: There are %d unreleased references left on the D3D device!\n"), count);
-				WOMA::logManager->DEBUG_MSG(str);
+				womalog(str);
 			}
 		}
 
@@ -254,11 +254,11 @@ namespace DirectX {
 
 			// Apply the filter
 			dxgiInfoQueue->AddStorageFilterEntries(DXGI_DEBUG_DXGI, &filter);
-			WOMA::logManager->DEBUG_MSG("Debug message filter applied.\n");
+			womalog("Debug message filter applied.\n");
 		}
 		else
 		{
-			WOMA::logManager->DEBUG_MSG("Failed to get ID3D12InfoQueue interface.\n");
+			womalog("Failed to get ID3D12InfoQueue interface.\n");
 		}
 #endif
 
@@ -433,11 +433,11 @@ namespace DirectX {
 				if (FAILED(m_device->CheckFeatureSupport(D3D12_FEATURE_ARCHITECTURE, &arch, sizeof(arch))))
 				{
 					m_sCapabilities.multiAdapterSupport = false;
-					WOMA::logManager->DEBUG_MSG(TEXT("Failed to query (the architecture) for Adapter: 1\n"));
+					womalog(TEXT("Failed to query (the architecture) for Adapter: 1\n"));
 				}
 				else {
 					m_sCapabilities.multiAdapterSupport = true;
-					WOMA::logManager->DEBUG_MSG("Node % 2d: TileBasedRenderer %d, UMA %d, CacheCoherentUMA %d\n"
+					womalog("Node % 2d: TileBasedRenderer %d, UMA %d, CacheCoherentUMA %d\n"
 						, i
 						, arch.TileBasedRenderer
 						, arch.UMA
@@ -475,13 +475,13 @@ namespace DirectX {
 
 			if (FAILED(m_device->CheckFeatureSupport(D3D12_FEATURE_FEATURE_LEVELS, &featureLevelsInfo, sizeof(featureLevelsInfo))))
 			{
-				WOMA::logManager->DEBUG_MSG(TEXT("Failed to query (featureLevelsInfo) for Adapter: 1\n"));
+				womalog(TEXT("Failed to query (featureLevelsInfo) for Adapter: 1\n"));
 			}
 			else {
 				WORD MaxLevel = featureLevelsInfo.MaxSupportedFeatureLevel;
 				m_sCapabilities.featureLevelsHI = (MaxLevel >> 8) >> 4;
 				m_sCapabilities.featureLevelsLO = (MaxLevel >> 8) & 0xF;
-				WOMA::logManager->DEBUG_MSG("(featureLevelsInfo) query for Adapter: 1 =  %d.%d\n", m_sCapabilities.featureLevelsHI, m_sCapabilities.featureLevelsLO);
+				womalog("(featureLevelsInfo) query for Adapter: 1 =  %d.%d\n", m_sCapabilities.featureLevelsHI, m_sCapabilities.featureLevelsLO);
 
 				//womalog ("(featureLevelsInfo) query for Adapter: 1 =  %04x\n", MaxLevel);
 			}
@@ -520,16 +520,16 @@ namespace DirectX {
 
 				if (FAILED(m_device->CheckFeatureSupport(D3D12_FEATURE_MULTISAMPLE_QUALITY_LEVELS, &data, sizeof(D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS))))
 				{
-					WOMA::logManager->DEBUG_MSG(TEXT("Failed to query (MSAA) for Adapter: 1\n"));
+					womalog(TEXT("Failed to query (MSAA) for Adapter: 1\n"));
 				}
 				else
 				{
-					WOMA::logManager->DEBUG_MSG("(MSAA) query for Adapter: 1 =  %dX Quality: %d\n", data.SampleCount, data.NumQualityLevels);
+					womalog("(MSAA) query for Adapter: 1 =  %dX Quality: %d\n", data.SampleCount, data.NumQualityLevels);
 				}
 			}
 			else
 			{
-				WOMA::logManager->DEBUG_MSG(TEXT("Requested Settings for MSAA: Disabled for Adapter: 1\n"));
+				womalog(TEXT("Requested Settings for MSAA: Disabled for Adapter: 1\n"));
 			}
 		}
 
@@ -539,11 +539,11 @@ namespace DirectX {
 			D3D12_FEATURE_DATA_FORMAT_INFO formatInfo = { BUFFER_COLOR_FORMAT };
 			if (FAILED(m_device->CheckFeatureSupport(D3D12_FEATURE_FORMAT_INFO, &formatInfo, sizeof(formatInfo))))
 			{
-				WOMA::logManager->DEBUG_MSG(TEXT("Failed to query (Format Info) for Adapter: 1\n"));
+				womalog(TEXT("Failed to query (Format Info) for Adapter: 1\n"));
 			}
 			else
 			{
-				WOMA::logManager->DEBUG_MSG("(Format Info) query for Adapter: 1 PlaneCount: %d\n", formatInfo.PlaneCount);
+				womalog("(Format Info) query for Adapter: 1 PlaneCount: %d\n", formatInfo.PlaneCount);
 			}
 		}
 
@@ -554,11 +554,11 @@ namespace DirectX {
 
 			if (FAILED(m_device->CheckFeatureSupport(D3D12_FEATURE_GPU_VIRTUAL_ADDRESS_SUPPORT, &m_GpuVaSupport, sizeof(m_GpuVaSupport))))
 			{
-				WOMA::logManager->DEBUG_MSG("Failed to acquire GPU virtual address support for Adapter: 1");
+				womalog("Failed to acquire GPU virtual address support for Adapter: 1");
 			}
 			else
 			{
-				WOMA::logManager->DEBUG_MSG("MaxGPUVirtualAddressBitsPerResource: %d\nMaxGPUVirtualAddressBitsPerProcess: %d\n",
+				womalog("MaxGPUVirtualAddressBitsPerResource: %d\nMaxGPUVirtualAddressBitsPerProcess: %d\n",
 					m_GpuVaSupport.MaxGPUVirtualAddressBitsPerResource,
 					m_GpuVaSupport.MaxGPUVirtualAddressBitsPerProcess);
 			}
@@ -574,7 +574,7 @@ namespace DirectX {
 		D3D12_FEATURE_DATA_D3D12_OPTIONS1 d3d12Options;
 		if (FAILED(m_device->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS1, &d3d12Options, sizeof(d3d12Options))))
 		{
-			WOMA::logManager->DEBUG_MSG(TEXT("Failed to query (d3d12Options) for Adapter: 1\n"));
+			womalog(TEXT("Failed to query (d3d12Options) for Adapter: 1\n"));
 		}
 		//
 		// Check [10] D3D12_FEATURE_DATA_ROOT_SIGNATURE
@@ -587,16 +587,16 @@ namespace DirectX {
 		if (FAILED(m_device->CheckFeatureSupport(D3D12_FEATURE_ROOT_SIGNATURE, &featureData, sizeof(featureData))))
 		{
 			featureData.HighestVersion = D3D_ROOT_SIGNATURE_VERSION_1_0;
-			WOMA::logManager->DEBUG_MSG(TEXT("Failed to query (rootSignature) for Adapter: 1\n"));
+			womalog(TEXT("Failed to query (rootSignature) for Adapter: 1\n"));
 		}
 		else
 		{
 			// D3D_ROOT_SIGNATURE_VERSION_1_0 = 0x1,
 			// D3D_ROOT_SIGNATURE_VERSION_1_1 = 0x2
 			if (featureData.HighestVersion == 1)
-				WOMA::logManager->DEBUG_MSG("(featureData) query for Adapter: 1 HighestVersion: %d.%d\n", 1, 0);
+				womalog("(featureData) query for Adapter: 1 HighestVersion: %d.%d\n", 1, 0);
 			if (featureData.HighestVersion == 2)
-				WOMA::logManager->DEBUG_MSG("(featureData) query for Adapter: 1 HighestVersion: %d.%d\n", 1, 1);
+				womalog("(featureData) query for Adapter: 1 HighestVersion: %d.%d\n", 1, 1);
 		}
 		*/
 
@@ -615,9 +615,9 @@ namespace DirectX {
 	{
 		m_VSYNC_ENABLED = vsync;
 
-		WOMA::logManager->DEBUG_MSG(TEXT("-------------------------\n"));
-		WOMA::logManager->DEBUG_MSG(TEXT("Initializing Driver: %s\n"), driverName);
-		WOMA::logManager->DEBUG_MSG(TEXT("-------------------------\n"));
+		womalog(TEXT("-------------------------\n"));
+		womalog(TEXT("Initializing Driver: %s\n"), driverName);
+		womalog(TEXT("-------------------------\n"));
 
 		//
 		// CreateDXGIFactory2
@@ -709,15 +709,15 @@ namespace DirectX {
 		// USE DXGI 1.3 API: QueryVideoMemoryInfo
 #if DX12_DXGI_API >= 3	
 
-		WOMA::logManager->DEBUG_MSG("QueryVideoMemoryInfo()\n");
+		womalog("QueryVideoMemoryInfo()\n");
 		if (adapter->QueryInterface(IID_PPV_ARGS(&DXGIadapter3)) == S_OK)		// Try to Get: IDXGIAdapter3 from IDXGIAdapter1
 		{
 			DXGI_QUERY_VIDEO_MEMORY_INFO videoMemoryInfo;
 			DXGIadapter3->QueryVideoMemoryInfo(0, DXGI_MEMORY_SEGMENT_GROUP_LOCAL, &videoMemoryInfo);
 
-			WOMA::logManager->DEBUG_MSG("videoMemory Budget for Adapter %d: (%d) MB\n", adapterIndex, (videoMemoryInfo.Budget / MBs));
-			WOMA::logManager->DEBUG_MSG("videoMemory CurrentReservation for Adapter (%d): %d MB\n", adapterIndex, (videoMemoryInfo.CurrentReservation / MBs));
-			WOMA::logManager->DEBUG_MSG("videoMemory CurrentUsage for Adapter (%d): %d MB\n", adapterIndex, (videoMemoryInfo.CurrentUsage / MBs));
+			womalog("videoMemory Budget for Adapter %d: (%d) MB\n", adapterIndex, (videoMemoryInfo.Budget / MBs));
+			womalog("videoMemory CurrentReservation for Adapter (%d): %d MB\n", adapterIndex, (videoMemoryInfo.CurrentReservation / MBs));
+			womalog("videoMemory CurrentUsage for Adapter (%d): %d MB\n", adapterIndex, (videoMemoryInfo.CurrentUsage / MBs));
 		}
 #endif
 	}
@@ -727,7 +727,7 @@ namespace DirectX {
 		ComPtr<IDXGIAdapter1> adapter;
 		*ppAdapter = nullptr;
 
-		WOMA::logManager->DEBUG_MSG(L"\nGetHardwareAdapter()");
+		womalogw(L"\nGetHardwareAdapter()");
 		for (UINT adapterIndex = 0; DXGI_ERROR_NOT_FOUND != pFactory->EnumAdapters1(adapterIndex, &adapter); ++adapterIndex)
 		{
 			DXGI_ADAPTER_DESC1 desc;
@@ -735,7 +735,7 @@ namespace DirectX {
 
 			if (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
 			{
-				WOMA::logManager->DEBUG_MSG(L"\nD3D12-Capable Software Adapter (%d) found: %s (%u MB)\n", adapterIndex, desc.Description, desc.DedicatedVideoMemory >> 20);
+				womalogw(L"\nD3D12-Capable Software Adapter (%d) found: %s (%u MB)\n", adapterIndex, desc.Description, desc.DedicatedVideoMemory >> 20);
 				QueryVideoMemoryInfo(adapterIndex, adapter);
 				*ppAdapter = adapter.Detach();
 			}
@@ -744,13 +744,13 @@ namespace DirectX {
 				// Check to see if the adapter supports Direct3D 12, but don't create the actual device yet.
 				if (SUCCEEDED(D3D12CreateDevice(adapter.Get(), feacture_level, _uuidof(ID3D12Device), nullptr)))
 				{
-					WOMA::logManager->DEBUG_MSG(L"\nD3D12-Capable Hardware Adapter (%d) found: %s (%u MB)\n", adapterIndex, desc.Description, desc.DedicatedVideoMemory >> 20);
+					womalogw(L"\nD3D12-Capable Hardware Adapter (%d) found: %s (%u MB)\n", adapterIndex, desc.Description, desc.DedicatedVideoMemory >> 20);
 					QueryVideoMemoryInfo(adapterIndex, adapter);
 					*ppAdapter = adapter.Detach();
 				}
 			}
 		}
-		WOMA::logManager->DEBUG_MSG(L"\n");
+		womalogw(L"\n");
 		ASSERT(*ppAdapter);
 	}
 
@@ -1036,7 +1036,7 @@ namespace DirectX {
 	bool DX12Class::Initialize(float* clearColor) //void D3D12HelloWindow::LoadAssets()
 		// ----------------------------------------------------------------------------------------------
 	{
-		WOMA::logManager->DEBUG_MSG("DX12Class::Initialize()\n");
+		womalog("DX12Class::Initialize()\n");
 
 		// Set default clear color:
 		driver_ClearColor[0] = *clearColor++;
@@ -1256,7 +1256,7 @@ namespace DirectX {
 			{
 				ShaderVersionH = shaderModel.HighestShaderModel >> 4;
 				ShaderVersionL = shaderModel.HighestShaderModel & 0xF;
-				WOMA::logManager->DEBUG_MSG(TEXT("Failed to query (shaderModel: %d.%d) for Adapter: 1\n"), ShaderVersionH, ShaderVersionL);
+				womalog(TEXT("Failed to query (shaderModel: %d.%d) for Adapter: 1\n"), ShaderVersionH, ShaderVersionL);
 				int i = shaderModel.HighestShaderModel;
 				i--;
 				shaderModel.HighestShaderModel = (D3D_SHADER_MODEL)i;
@@ -1267,7 +1267,7 @@ namespace DirectX {
 
 		ShaderVersionH = shaderModel.HighestShaderModel >> 4;
 		ShaderVersionL = shaderModel.HighestShaderModel & 0xF;
-		WOMA::logManager->DEBUG_MSG("(shaderModel) query for Adapter: 1 HighestShaderModel: %d.%d\n", ShaderVersionH, ShaderVersionL);
+		womalog("(shaderModel) query for Adapter: 1 HighestShaderModel: %d.%d\n", ShaderVersionH, ShaderVersionL);
 
 		szShaderModel[0] = '0' + ShaderVersionH;
 		szShaderModel[1] = '.';

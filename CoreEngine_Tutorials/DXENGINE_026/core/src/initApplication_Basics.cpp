@@ -565,8 +565,8 @@ void ApplicationClass::InitMainSky(void* pContext, WomaDriverClass* Driver)
 		if (RENDER_PAGE >= 55)
 			size = 512;	// SYNC/CHECK AT WOMA_APPLICATION_Initialize3D():
 
-	if (Sphere_vertexdata.size() == 0)
-		CreateSphereModel(size, SPHERE_GRIDPOINTS);	//(UINT SPHERE_SIZE, int Sphere_gridpoints)
+	//if (Sphere_vertexdata.size() == 0)
+	//	CreateSphereModel(size, SPHERE_GRIDPOINTS);	//(UINT SPHERE_SIZE, int Sphere_gridpoints)
 	
 	initSphere1(pContext, size);
 	initSphere2(pContext, size);
@@ -626,9 +626,7 @@ void ApplicationClass::AddObjsWithInstancesToXML()
 	//-----------------------------------------------------------------------------------------------------------------
 
 
-	// ----------------------------------------------------------------------------------------
-	// 1️st ADD SPECIAL COLOR LINE (used for Sun Direction visualization)
-	// ----------------------------------------------------------------------------------------
+
 }
 
 // --------------------------------------------------------------------------------------------

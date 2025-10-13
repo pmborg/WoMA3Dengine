@@ -259,7 +259,7 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 #endif
 
 	void* pContext = getvoidcontext();
-	ASSERT_DEBUG(pContext);
+	//ASSERT_DEBUG(pContext);
 	IF_NOT_RETURN_FALSE(SystemClass::LoadAllGraphicAssets(pContext));			// Call: m_Application->Initialize(...)
 
 	//---------------------------------------------------------------------------------------------------

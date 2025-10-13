@@ -24,6 +24,7 @@
 #if defined USE_LOG_MANAGER
 #include "OSengine.h"
 #include "mem_leak.h"
+#include "log.h"
 #if defined WINDOWS_PLATFORM
 #include <shlwapi.h>
 #endif

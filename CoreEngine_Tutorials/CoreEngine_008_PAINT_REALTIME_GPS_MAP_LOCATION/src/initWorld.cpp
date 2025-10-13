@@ -302,8 +302,8 @@ bool InitWorld::getMyLocation(double* latitude, double* longitude, STRING ip)
 	std::size_t found_latitude = json.find("latitude");
 	TCHAR Wbuffer[5000] = { 0 };
 	atow(Wbuffer, (CHAR*)json.substr(found_latitude, 19).c_str(), 5000);
-	WOMA::logManager->DEBUG_MSG((TCHAR*)Wbuffer);				//latitude" : 38.8691
-	WOMA::logManager->DEBUG_MSG(TEXT("\n"));
+	womalog((TCHAR*)Wbuffer);				//latitude" : 38.8691
+	womalog(TEXT("\n"));
 
 	STRING str_latitude_float = Wbuffer;
 	std::size_t found_latitude_float = str_latitude_float.find(TEXT(":"));
@@ -317,8 +317,8 @@ bool InitWorld::getMyLocation(double* latitude, double* longitude, STRING ip)
 	std::size_t found_longitude = json.find("longitude");	
 	TCHAR Wbuffer[5000] = { 0 };
 	atow(Wbuffer, (CHAR*)json.substr(found_longitude, 20).c_str(), 5000);
-	WOMA::logManager->DEBUG_MSG((TCHAR*)Wbuffer);				//longitude" : -9.0656
-	WOMA::logManager->DEBUG_MSG(TEXT("\n"));
+	womalog((TCHAR*)Wbuffer);				//longitude" : -9.0656
+	womalog(TEXT("\n"));
 
 	STRING str_logitude_float = Wbuffer;
 	std::size_t found_logitude_float = str_logitude_float.find(TEXT(":"));
@@ -331,11 +331,11 @@ bool InitWorld::getMyLocation(double* latitude, double* longitude, STRING ip)
 	TCHAR Wbuffer[5000] = { 0 };
 	atow(Wbuffer, (CHAR*)json.c_str(), 5000);
 #if UNICODE
-	WOMA::logManager->DEBUG_MSG((WCHAR*)Wbuffer);	//std::cout << json << std::endl;
-	WOMA::logManager->DEBUG_MSG(L"\n");				// Add ENTER to finish the
+	womalog((WCHAR*)Wbuffer);	//std::cout << json << std::endl;
+	womalog(L"\n");				// Add ENTER to finish the
 #else
-	WOMA::logManager->DEBUG_MSG((CHAR*)json.c_str());	//std::cout << json << std::endl;
-	WOMA::logManager->DEBUG_MSG("\n");					// Add ENTER to finish the
+	womalog((CHAR*)json.c_str());	//std::cout << json << std::endl;
+	womalog("\n");					// Add ENTER to finish the
 #endif
 	return true;
 }
@@ -348,7 +348,7 @@ bool InitWorld::getMyLocation(double* latitude, double* longitude, STRING ip)
 void InitializeCelestialInfoScreen(int x, int y)
 //-----------------------------------------------------------------------------------------
 {
-	if (WOMA::logManager) WOMA::logManager->DEBUG_MSG("InitializeCelestialInfoScreen...");
+	womalog("InitializeCelestialInfoScreen...");
 
 	TCHAR str[50];
 
@@ -423,7 +423,7 @@ void InitializeCelestialInfoScreen(int x, int y)
 		text.label = str;
 		SystemHandle->TextToPrint[1].push_back(text);
 
-		if (WOMA::logManager) WOMA::logManager->DEBUG_MSG(" done\n");
+		womalog(" done\n");
 	}
 }
 #endif

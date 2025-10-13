@@ -860,7 +860,7 @@ namespace DirectX {
 #if _DEBUG
 		WCHAR WMODEL_NAME[10 * MAX_STR_LEN] = { 0 };
 		MultiByteToWideChar(CP_ACP, 0, (char*)MODEL_NAME.c_str(), -1, WMODEL_NAME, MAX_STR_LEN);
-		womalog(L"START: INIT SHADER MODEL %s - Use HLSL [%s]\n", WMODEL_NAME, vsFilename.c_str());
+		womalogw(L"START: INIT SHADER MODEL %s - Use HLSL [%s]\n", WMODEL_NAME, vsFilename.c_str());
 #endif
 
 #if defined DX11 || defined DX9
@@ -1781,12 +1781,13 @@ namespace DirectX {
 	{
 		HRESULT result;
 		ID3D11DeviceContext* deviceContext11 = ((ID3D11DeviceContext*)Device_Context);
+		#define device11 ((ID3D11Device*)m_driver11->m_device11)
+
+// END 99 TYPEs
 
 #if defined GENERATE_ATLAS_INTEGRATION_DDS
 		if (m_shaderType == SHADER_BILLBOARD_ATLAS_FAST)
 		{
-			ID3D11DeviceContext* deviceContext11 = ((ID3D11DeviceContext*)Device_Context);
-
 			VSBillboardAtlasConstantBufferType* dataVSptr = nullptr;
 
 			// Map buffer for writing
@@ -1827,12 +1828,11 @@ namespace DirectX {
 			return; // FAST PATH DONE
 		}
 #endif
+// END: SHADER_BILLBOARD_ATLAS_FAST
 
 	#if defined MAIN_RENDER_WATER_FALL
 		if (m_shaderType == SHADER_USE_WATERFALL)
 		{
-			ID3D11DeviceContext* deviceContext11 = ((ID3D11DeviceContext*)Device_Context);
-
 			VSWaterfallConstantBufferType* dataVSptr = nullptr;
 
 			// Map buffer for writing
@@ -1891,9 +1891,6 @@ namespace DirectX {
 			// --- 2) Bind the particle-alpha constant-buffer to PS:b1 ---
 			if (!m_particleAlphaCB)
 			{
-				ID3D11DeviceContext* deviceContext11 = (ID3D11DeviceContext*)Device_Context;
-				#define device11 ((ID3D11Device*)m_driver11->m_device11)
-
 				D3D11_BUFFER_DESC cbd{};
 				cbd.Usage = D3D11_USAGE_DEFAULT;
 				cbd.ByteWidth = ((sizeof(float) + 15) / 16) * 16; // -> 16
@@ -1914,7 +1911,11 @@ namespace DirectX {
 		}
 
 	#endif
+//END: SHADER_USE_WATERFALL
 
+	// ----------------------------------------------------------------------------
+	// ALL LEGACY <99 SHADERS:
+	// ----------------------------------------------------------------------------
 	#if defined DX12 || defined DX11 || defined DX9 /*defined DX9*/
 		VSconstantBufferType* dataVSptr = NULL;		// Reset Pointer, only once:
 	#endif

@@ -792,8 +792,8 @@ void ApplicationClass::InitMainSky(void* pContext, WomaDriverClass* Driver)
 		if (RENDER_PAGE >= 55)
 			size = 512;	// SYNC/CHECK AT WOMA_APPLICATION_Initialize3D():
 
-	if (Sphere_vertexdata.size() == 0)
-		CreateSphereModel(size, SPHERE_GRIDPOINTS);	//(UINT SPHERE_SIZE, int Sphere_gridpoints)
+	//if (Sphere_vertexdata.size() == 0)
+	//	CreateSphereModel(size, SPHERE_GRIDPOINTS);	//(UINT SPHERE_SIZE, int Sphere_gridpoints)
 	
 #endif
 
@@ -808,6 +808,10 @@ void ApplicationClass::InitMainSky(void* pContext, WomaDriverClass* Driver)
 		else
 			size = 48;
 
+	#ifndef MAIN_RENDER_MAIN_XML_OBJ
+	size = 30;
+	#endif
+	ASSERT_DEBUG(size > 0);
 	initSky(pContext, size);
 #endif
 }
@@ -882,9 +886,7 @@ void ApplicationClass::AddObjsWithInstancesToXML()
 	//-----------------------------------------------------------------------------------------------------------------
 
 
-	// ----------------------------------------------------------------------------------------
-	// 1️st ADD SPECIAL COLOR LINE (used for Sun Direction visualization)
-	// ----------------------------------------------------------------------------------------
+
 }
 
 // --------------------------------------------------------------------------------------------
@@ -959,8 +961,10 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 
 	// Temporarily disable log file (on this loop) due performance:
 	//-----------------------------------------------------------------------------------------------------------------
+#if DX_ENGINE_LEVEL >= 70 && defined USE_LOG_MANAGER //SCENE_BILLBOARDS
 	WOMA::logManager_bk = WOMA::logManager;
 	WOMA::logManager = 0;
+#endif
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// [MAIN OBJ LOAD]: 3D-Load Scene: Create "model OBJECTS" from loaded "XML OBJECTS" in file WORLD.XML     /////////
@@ -1014,7 +1018,9 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 
 	// Restore: Temp. disabled log file:
 	// ----------------------------------------------------------------------------------------------------------------
+#if DX_ENGINE_LEVEL >= 70 && defined USE_LOG_MANAGER //SCENE_BILLBOARDS
 	WOMA::logManager = WOMA::logManager_bk;
+#endif
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// DEMO-29                  ///////////////////////////////////////////////////////////////////////////////////////

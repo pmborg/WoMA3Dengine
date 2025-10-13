@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // Filename: SystemClass.cpp
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
@@ -279,7 +279,7 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 void SystemClass::InitializeSystemScreenF1(int x, int y)
 //-----------------------------------------------------------------------------------------
 {
-	WOMA::logManager->DEBUG_MSG("InitializeSystemScreenF1...\n");
+	womalog("InitializeSystemScreenF1...\n");
 
 	//v1
 	//float LINE = 24;
@@ -607,7 +607,53 @@ void SystemClass::CalculateCameraViewAndFrustum(void* pContext)
 #endif
 
 	//AFTER: CalculateCameraViewAndFrustum:
+}
 
+void SystemClass::LogAllMatrix() 
+{
+	//if (WOMA::logManager)
+	{
+		// Log all active camera & projection matrices
+		DirectX::DX11Class* m_driver11 = (DirectX::DX11Class*)m_Driver;
+
+#if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28
+		XMMATRIX* camNormalView = &DXsystemHandle->m_Camera->m_viewMatrix;
+		XMMATRIX* camSkyView = &DXsystemHandle->m_CameraSKY->m_viewMatrix;
+#else
+		XMMATRIX* camNormalView = &DXsystemHandle->m_Camera->m_viewMatrix;
+		XMMATRIX* camSkyView = nullptr;
+#endif
+
+#if defined USE_MINIMAP_CAMERA && DX_ENGINE_LEVEL >= 63
+		XMMATRIX* camMiniView = &DXsystemHandle->m_CameraMINIMAP->m_viewMatrix;
+#else
+		XMMATRIX* camMiniView = nullptr;
+#endif
+
+		womalog(TEXT("[View Matrices before BuildGlobalVPArray]\n"));
+		womalog(TEXT("CAMERA_NORMAL View:\n"));
+
+		DX11_LOG_MATRIX(camNormalView);
+
+		if (camSkyView)
+		{
+			womalog(TEXT("CAMERA_SKY View:\n"));
+			DX11_LOG_MATRIX(camSkyView);
+		}
+
+		if (camMiniView)
+		{
+			womalog(TEXT("CAMERA_MINIMAP View:\n"));
+			DX11_LOG_MATRIX(camMiniView);
+		}
+
+		womalog(TEXT("Projection Matrices:\n"));
+		DX11_LOG_MATRIX(&m_driver11->m_projectionMatrix);
+		DX11_LOG_MATRIX(&m_driver11->m_projectionMatrix_sky);
+#if DX_ENGINE_LEVEL >= 63 && defined USE_MINIMAP_CAMERA
+		DX11_LOG_MATRIX(&m_driver11->m_orthoMatrix);
+#endif
+	}
 }
 
 //-----------------------------------------------------------------------------------------
@@ -1077,6 +1123,10 @@ bool SystemClass::LoadXmlWorld()
 	womalog("===============================================================================\n");
 	womalogauto(TEXT("LOAD XML WORLD: %s\n"), (TCHAR*)XML_WORLD_FILE.c_str());
 	womalog("===============================================================================\n");
+
+	// ----------------------------------------------------------------------------------------
+	// 1️st ADD SPECIAL COLOR LINE (used for Sun Direction visualization)
+	// ----------------------------------------------------------------------------------------
 
 	// Load and Parse XML FILE:"world.xml" the WORLD file
 	//----------------------------------------------------------------------------

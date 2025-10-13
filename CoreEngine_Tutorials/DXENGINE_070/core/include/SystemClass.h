@@ -17,6 +17,7 @@
 // PURPOSE: Export APIs for systemclass.cpp which is the common OS API
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234525217;
+
 #pragma once
 #ifndef __SYSTEMCLASS_H__
 
@@ -204,6 +205,7 @@ public:
 #endif
 	void ProcessOSInput();
 	void CalculateCameraViewAndFrustum(void* pContext);
+	void LogAllMatrix();
 #endif
 
 #if CORE_ENGINE_LEVEL >= 2 && defined WINDOWS_PLATFORM	

@@ -586,7 +586,7 @@ namespace DirectX {
 #if _DEBUG
 		WCHAR WMODEL_NAME[10 * MAX_STR_LEN] = { 0 };
 		MultiByteToWideChar(CP_ACP, 0, (char*)MODEL_NAME.c_str(), -1, WMODEL_NAME, MAX_STR_LEN);
-		womalog(L"START: INIT SHADER MODEL %s - Use HLSL [%s]\n", WMODEL_NAME, vsFilename.c_str());
+		womalogw(L"START: INIT SHADER MODEL %s - Use HLSL [%s]\n", WMODEL_NAME, vsFilename.c_str());
 #endif
 
 #if defined DX11 || defined DX9
@@ -1454,7 +1454,17 @@ namespace DirectX {
 	{
 		HRESULT result;
 		ID3D11DeviceContext* deviceContext11 = ((ID3D11DeviceContext*)Device_Context);
+		#define device11 ((ID3D11Device*)m_driver11->m_device11)
 
+// END 99 TYPEs
+
+// END: SHADER_BILLBOARD_ATLAS_FAST
+
+//END: SHADER_USE_WATERFALL
+
+	// ----------------------------------------------------------------------------
+	// ALL LEGACY <99 SHADERS:
+	// ----------------------------------------------------------------------------
 	#if defined DX12 || defined DX11 || defined DX9 /*defined DX9*/
 		VSconstantBufferType* dataVSptr = NULL;		// Reset Pointer, only once:
 	#endif
