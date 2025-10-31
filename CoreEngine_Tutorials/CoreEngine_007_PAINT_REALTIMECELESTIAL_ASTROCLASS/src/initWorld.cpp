@@ -155,12 +155,12 @@ InitWorld::InitWorld ()
 	bool gotLocation = false;
 
 	if (ip.length() > 0) {
-#if defined NDEBUG || CORE_ENGINE_LEVEL == 8
+#if defined USE_NETWORK|| CORE_ENGINE_LEVEL == 8
 		gotLocation = getMyLocation(&latitude, &longitude, ip);
 #endif
 		womalogauto(TEXT("gotLocation: true\n"));
 	}
-	gotLocation = false;//
+	//gotLocation = false;//
 	if (!gotLocation || latitude==0 || longitude==0) 
 	{							// Default: Lisbon Location:
 		latitude  = 38.7167;	// Latitude:	38.7167  (38° 43′ 0.12″ N)
@@ -251,7 +251,7 @@ STRING		szFileName = wLOCAL_APPDATA + TEXT("myip.txt");
 #define EXTERNAL_IP TEXT("https://myexternalip.com/raw")
 //#define EXTERNAL_IP TEXT("https://myexternalip.com")
 
-#if defined USE_NETWORK && !defined MAVERICK
+#if defined USE_NETWORK //&& !defined MAVERICK
 	DeleteFile(szFileName.c_str());
 	//URLDownloadToFileA(LPUNKNOWN, _In_ LPCSTR, _In_opt_ LPCSTR, DWORD, _In_opt_ LPBINDSTATUSCALLBACK);
 	womalogauto(TEXT("Download: %s\n"), EXTERNAL_IP); // Note: Don't use DEBUG_MSG yet...
@@ -269,7 +269,7 @@ STRING		szFileName = wLOCAL_APPDATA + TEXT("myip.txt");
 
 	STRING str=TEXT("127.0.0.1");
 
-#if defined NDEBUG || CORE_ENGINE_LEVEL == 8 || defined ANDROID_PLATFORM
+#if defined USE_NETWORK || CORE_ENGINE_LEVEL == 8 || defined ANDROID_PLATFORM
 	
     IFSTREAM fileIn(szFileName.c_str());
 	if (!fileIn) 

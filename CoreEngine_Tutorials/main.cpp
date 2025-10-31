@@ -50,7 +50,7 @@ int Command = EXIT_SUCCESS;
 
 #if defined WINDOWS_PLATFORM
 // -------------------------------------------------------------------------------------------------------------------------------------
-// SUBSYSTEM:WINDOWS                                    //FOR: WOMA_WIN32_APPLICATION (WINDOWS)
+// SUBSYSTEM:WINDOWS                        //FOR: WOMA_WIN32_APPLICATION (WINDOWS for RELEASE)
 // -------------------------------------------------------------------------------------------------------------------------------------
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
@@ -95,7 +95,7 @@ void android_main(android_app* state)           // ENTRY-POINT: ANDROID(DEBUG/RE
 
     int argc = 0;
     char* argv[1] = { nullptr };
-    APPLICATION_MAIN(argc, argv);
+    APPLICATION_MAIN(argc, argv);				// ENTRY-POINT: ANDROID(DEBUG/RELEASE)!
 
     engine.has_focus_ = false;
 }

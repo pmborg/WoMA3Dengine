@@ -158,7 +158,7 @@ InitWorld::InitWorld ()
 		gotLocation = getMyLocation(&latitude, &longitude, ip);
 		womalogauto(TEXT("gotLocation: true\n"));
 	}
-	gotLocation = false;//
+	//gotLocation = false;//
 	if (!gotLocation || latitude==0 || longitude==0) 
 	{							// Default: Lisbon Location:
 		latitude  = 38.7167;	// Latitude:	38.7167  (38° 43′ 0.12″ N)
@@ -249,7 +249,7 @@ STRING		szFileName = wLOCAL_APPDATA + TEXT("myip.txt");
 #define EXTERNAL_IP TEXT("https://myexternalip.com/raw")
 //#define EXTERNAL_IP TEXT("https://myexternalip.com")
 
-#if defined USE_NETWORK && !defined MAVERICK
+#if defined USE_NETWORK //&& !defined MAVERICK
 	DeleteFile(szFileName.c_str());
 	//URLDownloadToFileA(LPUNKNOWN, _In_ LPCSTR, _In_opt_ LPCSTR, DWORD, _In_opt_ LPBINDSTATUSCALLBACK);
 	womalogauto(TEXT("Download: %s\n"), EXTERNAL_IP); // Note: Don't use DEBUG_MSG yet...
