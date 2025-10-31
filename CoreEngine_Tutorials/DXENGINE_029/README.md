@@ -1,4 +1,4 @@
-- <b>DX29: INTRO DEMO OF BASIC TUTORIAL SERIES</b><br>
+- <b>LEVEL-29: INTRO DEMO OF BASIC TUTORIAL SERIES</b><br>
 	-  Adding the Sound Manager<br>
 	-  Adding Play background Music<br>
 	-  Generate the first RELEASE BUILD<br>

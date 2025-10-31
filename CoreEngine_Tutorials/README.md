@@ -211,7 +211,7 @@ Try to Change the driver on the fly without the need of close and open the Appli
 <h2>3D - ADVANCED MESH TUTORIAL SERIES: BEGIN</h2>
 <hr>
 
-- <b>DX93: Optimizing the objects render all in 1 obj using Atlas Texture - Part 1</b><br>
+- <b>LEVEL-93: Optimizing the objects render all in 1 obj using Atlas Texture - Part 1</b><br>
 Improving  from **850** FPS to **900** FPS.<br>
 
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_093.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_093.png)	
@@ -221,27 +221,27 @@ Billboard Atlas (Automatic generated:)<br>
 
 <hr>
 
-- <b>DX92: Use from now on the **modern**: **DX11.1**</b><br>
+- <b>LEVEL-92: Use from now on the **modern**: **DX11.1**</b><br>
 There is a Huge list of improvements<br>
 Improving with DX11.1 from **815** FPS to **850** FPS.<br>
 
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_092.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_092.png)	
 
 <hr>
-- <b>DX91: Using threads for rendering</b><br>
+- <b>LEVEL-91: Using threads for rendering</b><br>
 Improving from **760** FPS to **815** FPS.<br>
   
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_091.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_091.png)	
 
 <hr>
 
-- <b>DX90: Replacing Billboards with advanced gaming like objects(Low Poly)</b><br>
+- <b>LEVEL-90: Replacing Billboards with advanced gaming like objects(Low Poly)</b><br>
   
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_090.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_090.png)	
 
 <hr>
 
-- <b>DX89: The object Model Map Editor</b><br>
+- <b>LEVEL-89: The object Model Map Editor</b><br>
 **Editor Keys/Controls:**<br>
 	- **Mouse**, select the object<br>
 	- **Arrow Keys**, move left and right, front and back. (NOTE: use shift to do a minor movements)<br>
@@ -254,7 +254,7 @@ NOTE: Use GodMode toggle: **F11** to have a better view.<br>
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_089.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_089.png)	
 
 <hr>
-- <b>DX88: USE_3RD_PERSON_CAMERA</b><br>
+- <b>LEVEL-88: USE_3RD_PERSON_CAMERA</b><br>
     3rd person camera: (W A S D) + left (CTRL or SHIFT) to run + STRAFE (Q E):<br>
     Key 1: Draw sword<br>
   
@@ -262,7 +262,7 @@ NOTE: Use GodMode toggle: **F11** to have a better view.<br>
 
 <hr>
 
-- <b>DX87: THE MAIN CHARACTER - The other sample variants</b><br>
+- <b>LEVEL-87: THE MAIN CHARACTER - The other sample variants</b><br>
     Using animation:<br>
     - Idle, Idle2, Idle3 for each variant.
  
@@ -270,7 +270,7 @@ NOTE: Use GodMode toggle: **F11** to have a better view.<br>
 
 <hr>
 
-- <b>DX86: The main character (With idle animation)</b><br>
+- <b>LEVEL-86: The main character (With idle animation)</b><br>
 Later: (and much more)
  Multi animation Character: 33
     - Attack(3)
@@ -292,18 +292,18 @@ Later: (and much more)
 
 <hr>
 
-- <b>DX85: Expand MiniMap</b><br>
+- <b>LEVEL-85: Expand MiniMap</b><br>
  
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_085.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_085.png)	
 
 <hr>
-- <b>DX84: ASSIMP: Animated / walking mesh on the terrain, following a path:</b><br>
+- <b>LEVEL-84: ASSIMP: Animated / walking mesh on the terrain, following a path:</b><br>
  
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_084.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_084.png)	
 
 <hr>
 
-- <b>DX83: ASSIMP: Update billboard shader:</b><br>
+- <b>LEVEL-83: ASSIMP: Update billboard shader:</b><br>
  
 <b>RELEASE version (1920x1080 Fullscreen) - about 1070 FPS (using AVX2) @target WIN10</b><br>
 <b>RELEASE version (1920x1080 Fullscreen) - about 1321 FPS (using AVX512) @target WIN11</b>
@@ -311,7 +311,7 @@ Later: (and much more)
 
 <hr>
 
-- <b>DX82: ASSIMP: Loading an animated mesh:</b><br>
+- <b>LEVEL-82: ASSIMP: Loading an animated mesh:</b><br>
  
 <b>DEBUG version:</b>
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_082.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_082.png)	
@@ -334,55 +334,55 @@ Later: (and much more)
 <h2>3D - BILLBOARD TUTORIAL SERIES: BEGIN</h2>
 <hr>
 
-- <b>DX78: Colision detection with objects</b><br>
+- <b>LEVEL-78: Colision detection with objects</b><br>
 
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_078.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_078.png)
 
 <hr> 
 
-- <b>DX77: Using instances for TREEs</b><br>
+- <b>LEVEL-77: Using instances for TREEs</b><br>
 
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_077.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_077.png)
 
 <hr> 
 
-- <b>DX76: UTIL: INTRO VIDEO DEMO (Play: MP4)</b><br>
+- <b>LEVEL-76: UTIL: INTRO VIDEO DEMO (Play: MP4)</b><br>
 
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_076.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_076.png)
 
 <hr> 
 
-- <b>DX75: UTIL: PROGRESS BAR FOR TERRAIN LOADING</b><br>
+- <b>LEVEL-75: UTIL: PROGRESS BAR FOR TERRAIN LOADING</b><br>
 
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_075.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_075.png)
  
 <hr> 
 
-- <b>DX74: CROSS BILLBOARDs and CLONEs</b><br>
+- <b>LEVEL-74: CROSS BILLBOARDs and CLONEs</b><br>
 
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_074.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_074.png)
   
 <hr> 
 
-- <b>DX73: GRASS - TYPE I</b><br>
+- <b>LEVEL-73: GRASS - TYPE I</b><br>
  
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_073.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_073.png)	
 
 <hr> 
 
-- <b>DX72: FIRE (Add 3D Sound / Effects.)</b><br>
+- <b>LEVEL-72: FIRE (Add 3D Sound / Effects.)</b><br>
 
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_072.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_072.png)	
   
 <hr> 
 
-- <b>DX71: BILLBOARD for FENCES</b><br>
+- <b>LEVEL-71: BILLBOARD for FENCES</b><br>
 
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_071.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_071.png)	 
 
 <hr> 
 
-- <b>DX70: BILLBOARD for Trees / Flowers</b><br> 
+- <b>LEVEL-70: BILLBOARD for Trees / Flowers</b><br> 
 
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_070.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_070.png)	 
 
@@ -398,57 +398,57 @@ Later: (and much more)
 <h2>3D - TERRAIN TUTORIAL SERIES: START</h2>
 <hr>
 
-- <b>DX65: WORLD.XML: TERRAIN: Walking on Terrain.</b><br> 
+- <b>LEVEL-65: WORLD.XML: TERRAIN: Walking on Terrain.</b><br> 
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_065.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_065.png)	 
 
 <hr> 
-- <b>DX64: WORLD.XML: TERRAIN: Add a model with 2 pass and add a 3D static animated model</b><br> 
+- <b>LEVEL-64: WORLD.XML: TERRAIN: Add a model with 2 pass and add a 3D static animated model</b><br> 
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_064.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_064.png)	 
 
 <hr> 
-- <b>DX63: WORLD.XML: TERRAIN: MAIN-MAP and MINI-MAP</b><br> 
+- <b>LEVEL-63: WORLD.XML: TERRAIN: MAIN-MAP and MINI-MAP</b><br> 
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_063.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_063.png)	 
 
 <hr> 
-- <b>DX61: WORLD.XML: TERRAIN: 256x256 MULTI-LAYER DEMO</b><br> 
+- <b>LEVEL-61: WORLD.XML: TERRAIN: 256x256 MULTI-LAYER DEMO</b><br> 
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_061.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_061.png)	 
 
 <hr> 
-- <b>DX60: WORLD.XML: TERRAIN: 256x256 MULTI-LAYER DEMO</b><br> 
+- <b>LEVEL-60: WORLD.XML: TERRAIN: 256x256 MULTI-LAYER DEMO</b><br> 
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_060.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_060.png)	 
 
 <hr> 
-- <b>DX54: WORLD.XML: TERRAIN: Add <b>Water waves</b> ModelTextureVertexType</b><br> 
+- <b>LEVEL-54: WORLD.XML: TERRAIN: Add <b>Water waves</b> ModelTextureVertexType</b><br> 
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_054.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_054.png)	 
 
 <hr> 
-- <b>DX53: WORLD.XML: TERRAIN: Add extra color terrain(extra Green in this example) ModelTextureVertexType</b><br> 
+- <b>LEVEL-53: WORLD.XML: TERRAIN: Add extra color terrain(extra Green in this example) ModelTextureVertexType</b><br> 
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_053.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_053.png)	 
 
 <hr> 
-- <b>DX52: WORLD.XML: TERRAIN: Use Light Shader + Add Normals + Add Index(s) ModelTextureVertexType.</b><br> 
+- <b>LEVEL-52: WORLD.XML: TERRAIN: Use Light Shader + Add Normals + Add Index(s) ModelTextureVertexType.</b><br> 
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_052.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_052.png)	 
 
 <hr> 
-- <b>DX51: WORLD.XML: Add <b>fog</b> (ModelTextureVertexType). </b><br> 
+- <b>LEVEL-51: WORLD.XML: Add <b>fog</b> (ModelTextureVertexType). </b><br> 
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_051.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_051.png)	 
 
 <hr> 
-- <b>DX50: WORLD.XML: The water and terrain above. </b><br> 
+- <b>LEVEL-50: WORLD.XML: The water and terrain above. </b><br> 
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_050.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_050.png)	 
 
 <hr> 
-- <b>DX49: WORLD.XML: Generate under water terrain. </b><br> 
+- <b>LEVEL-49: WORLD.XML: Generate under water terrain. </b><br> 
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_049.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_049.png)	 
 
@@ -466,13 +466,13 @@ Later: (and much more)
 <h2>BASIC 3D ENGINE TUTORIAL LIST</h2>
 <hr>
 
-- <b>DX42: WORLD.XML: load W3D and use SHADOW INSTANCES but now with GPU ROTATION on (BLACK_BISHOPs and BLACK_KNIGHTs)</b><br> 
+- <b>LEVEL-42: WORLD.XML: load W3D and use SHADOW INSTANCES but now with GPU ROTATION on (BLACK_BISHOPs and BLACK_KNIGHTs)</b><br> 
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_042.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_042.png)	 
 
 <hr>
 
-- <b>DX41: WORLD.XML: load W3D and use SHADOW INSTANCES</b><br> 
+- <b>LEVEL-41: WORLD.XML: load W3D and use SHADOW INSTANCES</b><br> 
 	- This is a join of DX40 with DX39 now all together.
 	- 041ShadowMapInstance.hlsl is equivalent to 036ShadowMap.hlsl but with instances.
 	
@@ -480,7 +480,7 @@ Later: (and much more)
 
 <hr>
 
-- <b>DX40: WORLD.XML: load W3D and use INSTANCES to clone objects using GPU</b><br> 
+- <b>LEVEL-40: WORLD.XML: load W3D and use INSTANCES to clone objects using GPU</b><br> 
 	- This is a very powerful tool, with less we can do more, using Shader INSTANCES to clone objects into different positions
 	- 040LightInstance.hlsl is equivalent to 023Light.hlsl but with instances
 	
@@ -488,21 +488,21 @@ Later: (and much more)
 
 <hr>
 
-- <b>DX39: WORLD.XML: load W3D (the Woma 3D file format) files up to 30x faster than OBJ files in DX LEVEL 38</b><br> 
+- <b>LEVEL-39: WORLD.XML: load W3D (the Woma 3D file format) files up to 30x faster than OBJ files in DX LEVEL 38</b><br> 
 	- Loading the generated files (in DX38) ".W3D" Woma3DFormat. in 0.5 seconds vs 13.5 seconds using the ".OBJ" 3D file format
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_039.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_039.png)	
 
 <hr>
 
-- <b>DX38: WORLD.XML: load OBJ 3D file format, save to W3D Woma 3D fast file FORMAT</b><br> 
+- <b>LEVEL-38: WORLD.XML: load OBJ 3D file format, save to W3D Woma 3D fast file FORMAT</b><br> 
 	- Load and Convert the powerfull/simple but slow ".OBJ" format 3D file, into to a super fast native WOMA file format: ".W3D" 20x faster!
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_038.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_038.png)	
 
 <hr>
 
-- <b>DX37: WORLD.XML: load OBJ 3D file format, render chess board pieces</b><br> 
+- <b>LEVEL-37: WORLD.XML: load OBJ 3D file format, render chess board pieces</b><br> 
 	- Adding MAIN THREAD and the LOADER THREAD
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_037.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_037.png)	
@@ -510,7 +510,7 @@ Later: (and much more)
 
 <hr>
 
-- <b>DX36: WORLD.XML: load OBJ 3D file format, render a SHADOW MAP</b><br> 
+- <b>LEVEL-36: WORLD.XML: load OBJ 3D file format, render a SHADOW MAP</b><br> 
 	- Loading an OBJ with SHADOW MAP, using a tecnique called: render to texture
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_036.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_036.png)	
@@ -518,19 +518,19 @@ Later: (and much more)
 
 <hr>
 
-- <b>DX35: WORLD.XML: load OBJ 3D file format, with BUMP MAP</b><br> 
+- <b>LEVEL-35: WORLD.XML: load OBJ 3D file format, with BUMP MAP</b><br> 
 	- Loading an OBJ with BUMP MAP texture
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_035.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_035.png)	
 
 <hr>
-- <b>DX34: WORLD.XML: load OBJ 3D file format, with SPECULAR and SHININESS</b><br> 
+- <b>LEVEL-34: WORLD.XML: load OBJ 3D file format, with SPECULAR and SHININESS</b><br> 
 	- Adding SPECULAR and SHININESS to OBJ loader and shaders
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_034.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_034.png)	
 
 <hr>
-- <b>DX33: WORLD.XML: load OBJ 3D file format, the compond, using transparent textures ALFA MAP and ALFA COLOR</b><br> 
+- <b>LEVEL-33: WORLD.XML: load OBJ 3D file format, the compond, using transparent textures ALFA MAP and ALFA COLOR</b><br> 
 	- Loading now OBJ with alfa color and alfamap
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_033.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_033.png)	
@@ -538,13 +538,13 @@ Later: (and much more)
 
 <hr>
 	
-- <b>DX32: WORLD.XML: load OBJ 3D file format, the first advanced object, using LIGHT shader</b><br> 
+- <b>LEVEL-32: WORLD.XML: load OBJ 3D file format, the first advanced object, using LIGHT shader</b><br> 
 	- Loading more complex objects with light, the: OLD HOUSE.
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_032.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_032.png)	
 
 <hr>
-- <b>DX31: WORLD.XML: load OBJ 3D file format, with MULTIPLE TEXTURES, using TEXTURE shader</b><br> 
+- <b>LEVEL-31: WORLD.XML: load OBJ 3D file format, with MULTIPLE TEXTURES, using TEXTURE shader</b><br> 
 	- Loading Multiple Textures in one object
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_031.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_031.png)	
@@ -552,7 +552,7 @@ Later: (and much more)
 
 <hr>
 
-- <b>DX30: WORLD.XML: load OBJ 3D file format, using COLOR shader</b><br> 
+- <b>LEVEL-30: WORLD.XML: load OBJ 3D file format, using COLOR shader</b><br> 
 	- SceneManager and SceneNode<br> 
 	- QuadTree and Frustum<br> 
 	- <b>World</b> and <b>Objects</b>: Loading objects as a descriptor:	<b>World.xml</b><br>
@@ -567,7 +567,7 @@ Later: (and much more)
 
 <!-- ------------------------------------------------------------------------------------------------ -->
 
-- <b>DX29: INTRO DEMO OF BASIC TUTORIAL SERIES</b><br>
+- <b>LEVEL-29: INTRO DEMO OF BASIC TUTORIAL SERIES</b><br>
 <li>Adding the Sound Manager<br></li>
 <li>Adding Play background Music (Windows, Linux and Android)<br></li>
 <li>Generate the first RELEASE BUILD<br></li>
@@ -592,7 +592,7 @@ Android ARM64/x86 VIDEO:<br>
 
 <hr>
 
-- <b>DX28: Adding the fixed camera Sky and adding take snapshot!</b><br>
+- <b>LEVEL-28: Adding the fixed camera Sky and adding take snapshot!</b><br>
 	- Adding the fixed camera Sky<br>
 	- Adding Direct input for DX Drivers<br>
 	- Allow snapshot file dump using "print screen" key, in any of these image formats:<br>
@@ -632,7 +632,7 @@ Android ARM64/x86 VIDEO:<br>
 
 <hr>
 
-- <b>DX27: The Rastertek text font</b><br>
+- <b>LEVEL-27: The Rastertek text font</b><br>
 <li><b>based on my mentor :)</b></li>
 <li>https://rastertek.com/dx11win10tut14.html</li>
 <table>
@@ -662,7 +662,7 @@ Android ARM64/x86 VIDEO:<br>
 
 <hr>
 
-- <b>DX26: The Spheres (COLOR, TEXTURE and LIGHT Shaders)</b><br>
+- <b>LEVEL-26: The Spheres (COLOR, TEXTURE and LIGHT Shaders)</b><br>
 <li><b>One for each shader type: (COLOR, TEXTURE and LIGHT Shaders)</b></li>
 
 <table>
@@ -691,7 +691,7 @@ Android ARM64/x86 VIDEO:<br>
 
 <hr>
 
-- <b>DX25: The CUBEs (the first auto-generated 3D object)<br>
+- <b>LEVEL-25: The CUBEs (the first auto-generated 3D object)<br>
 One for each shader type: (COLOR, TEXTURE and LIGHT Shaders)<br>
 	
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_025.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_025.png)	
@@ -699,7 +699,7 @@ One for each shader type: (COLOR, TEXTURE and LIGHT Shaders)<br>
 
 <hr>
 
-- <b>DX24: The 2D Rendering (Sprite)</b>
+- <b>LEVEL-24: The 2D Rendering (Sprite)</b>
 	
 <table>
 <tr>
@@ -727,7 +727,7 @@ One for each shader type: (COLOR, TEXTURE and LIGHT Shaders)<br>
 
 <hr>
 
-- <b>DX23: The directional LIGHT Shader with environment color</b><br>	
+- <b>LEVEL-23: The directional LIGHT Shader with environment color</b><br>	
 <b>Adding the first light, the Directional light.</b><br>
 <table>
 <tr>
@@ -755,7 +755,7 @@ One for each shader type: (COLOR, TEXTURE and LIGHT Shaders)<br>
 
 <hr>
 
-- <b>DX22: The TEXTURE Shader</b><br>
+- <b>LEVEL-22: The TEXTURE Shader</b><br>
 Add third party image readers:<br>
 	- BMP (WINDOWS, LINUX and ANDROID)<br>
 	- JPG (WINDOWS, LINUX and ANDROID)<br>
@@ -789,7 +789,7 @@ Add third party image readers:<br>
 </tr></table>
 
 <hr>
-- <b>DX21: The COLOR Shader</b><br>
+- <b>LEVEL-21: The COLOR Shader</b><br>
  Introduction to the: Rasterizer State
 <table>
 <tr>
@@ -815,7 +815,7 @@ Add third party image readers:<br>
 
 </tr></table>
 <hr>
-- <b>DX20: Adding the Resize to Main window</b><br>
+- <b>LEVEL-20: Adding the Resize to Main window</b><br>
  Allow alt+enter swap<br>
  And allow user to change the window size
 	
@@ -823,7 +823,7 @@ Add third party image readers:<br>
 
 <hr>
 
-- <b>DX19: The Main 3D simple window</b><br>
+- <b>LEVEL-19: The Main 3D simple window</b><br>
 <b>Add Render Engine for "Windows":<br></b>
 <li>DX9sdk (the original sdk, will be added/revealed later, at least on basic series)<br></li>
 <li>DX9(using 11)<br></li>

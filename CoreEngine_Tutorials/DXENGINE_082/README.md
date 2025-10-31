@@ -1,5 +1,5 @@
 <hr>
-- <b>DX82: ASSIMP: Loading an animated mesh:</b><br>
+- <b>LEVEL-82: ASSIMP: Loading an animated mesh:</b><br>
  
 <b>DEBUG version:</b>
 ![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_082.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_082.png)	

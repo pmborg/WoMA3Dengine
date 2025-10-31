@@ -1,6 +1,6 @@
 <hr>
 
-- <b>DX86: The main character (With idle animation)</b><br>
+- <b>LEVEL-86: The main character (With idle animation)</b><br>
 Later: (and much more)
  Multi animation Character: 33
     - Attack(3)

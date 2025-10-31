@@ -1,5 +1,5 @@
 <hr>
-- <b>DX83: ASSIMP: Update billboard shader:</b><br>
+- <b>LEVEL-83: ASSIMP: Update billboard shader:</b><br>
  
 <b>RELEASE version (1920x1080 Fullscreen) - about 1070 FPS (using AVX2) @target WIN10</b><br>
 <b>RELEASE version (1920x1080 Fullscreen) - about 1321 FPS (using AVX512) @target WIN11</b>

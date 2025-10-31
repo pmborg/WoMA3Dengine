@@ -1,6 +1,6 @@
 <hr>
 
-- <b>DX89: The object Model Map Editor</b><br>
+- <b>LEVEL-89: The object Model Map Editor</b><br>
 **Editor Keys/Controls:**<br>
 	- **Mouse**, select the object<br>
 	- **Arrow Keys**, move left and right, front and back. (NOTE: use shift to do a minor movements)<br>

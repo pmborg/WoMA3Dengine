@@ -1,5 +1,5 @@
 <hr>
-- <b>DX87: THE MAIN CHARACTER - The other sample variants</b><br>
+- <b>LEVEL-87: THE MAIN CHARACTER - The other sample variants</b><br>
     Using animation:<br>
     - Idle, Idle2, Idle3 for each variant.
  

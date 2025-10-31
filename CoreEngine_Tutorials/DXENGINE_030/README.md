@@ -1,4 +1,4 @@
-- <b>DX30: WORLD.XML: load OBJ 3D file format, using COLOR shader</b><br> 
+- <b>LEVEL-30: WORLD.XML: load OBJ 3D file format, using COLOR shader</b><br> 
 	- SceneManager and SceneNode<br> 
 	- QuadTree and Frustum<br> 
 	- <b>World</b> and <b>Objects</b>: Loading objects as a descriptor:	<b>World.xml</b><br>

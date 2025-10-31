@@ -1,5 +1,5 @@
 <hr>
-- <b>DX40: WORLD.XML: load W3D and use INSTANCES to clone objects using GPU</b><br> 
+- <b>LEVEL-40: WORLD.XML: load W3D and use INSTANCES to clone objects using GPU</b><br> 
 	- This is a very powerful tool, with less we can do more, using Shader INSTANCES to clone objects into different positions
 	- 040LightInstance.hlsl is equivalent to 023Light.hlsl but with instances
 	

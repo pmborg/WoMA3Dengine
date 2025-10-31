@@ -1,4 +1,4 @@
-- <b>DX97: The Waterfall</b><br>
+- <b>LEVEL-97: The Waterfall</b><br>
 	- The water Waterfall
 	- The smoke of Waterfall
 	- The sound of Waterfall

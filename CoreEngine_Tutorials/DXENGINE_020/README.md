@@ -1,4 +1,4 @@
-- <b>DX20: Resize Main window</b><br>
+- <b>LEVEL-20: Resize Main window</b><br>
  Allow alt enter swap
  And allow user to change the window size
 	

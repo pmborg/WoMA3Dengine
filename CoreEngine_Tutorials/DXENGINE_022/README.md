@@ -1,4 +1,4 @@
-- <b>DX22: The TEXTURE Shader</b><br>
+- <b>LEVEL-22: The TEXTURE Shader</b><br>
 Add third party image readers:<br>
 	- BMP<br>
 	- JPG<br>
