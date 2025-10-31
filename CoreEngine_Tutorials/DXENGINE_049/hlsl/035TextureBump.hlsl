@@ -73,8 +73,8 @@ SamplerState SampleType: register(s0);
 ////////////////
 // CBUFFERS
 ////////////////
-#include "cbuffer.hlsl"
-#include "light.hlsl"
+#include "cbuffer.hlsli"
+#include "light.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
@@ -140,7 +140,8 @@ if (VS_USE_WVP) {
     //if (VShasNormMap)
     {
 		// Calculate the tangent vector against the world matrix only and then normalize the final value.
-        output.tangent = mul(input.tangent, worldMatrix);
+        //output.tangent = mul(input.tangent, worldMatrix);
+		output.tangent = mul(input.tangent, (float3x3) WV);
         output.tangent = normalize(output.tangent);
 		
 		// Calculate the binormal vector against the world matrix only and then normalize the final value.

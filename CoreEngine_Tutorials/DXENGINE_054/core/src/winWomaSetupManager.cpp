@@ -155,9 +155,9 @@ bool WomaSetupManager::Initialize(void* Driver)
 	SendMessage(hWndComboBox[0], CB_ADDSTRING, 1, reinterpret_cast<LPARAM>(TEXT("Full Screen")));
 	SendMessage(hWndComboBox[0], CB_ADDSTRING, 2, reinterpret_cast<LPARAM>(TEXT("Windowed Fullscreen")));
 
-    if (SystemHandle->AppSettings->FULLSCREEN_ON_WINDOWED)
+    if (WOMA::AppSettings->FULLSCREEN_ON_WINDOWED)
         SendMessage(hWndComboBox[0], CB_SETCURSEL, 2, NULL); //Default Value
-    else if (SystemHandle->AppSettings->FULL_SCREEN)
+    else if (WOMA::AppSettings->FULL_SCREEN)
 		SendMessage(hWndComboBox[0], CB_SETCURSEL, 1, NULL); //Default Value
 	else
 		SendMessage(hWndComboBox[0], CB_SETCURSEL, 0, NULL); //Default Value
@@ -179,7 +179,7 @@ bool WomaSetupManager::Initialize(void* Driver)
 	hWndComboBox[1] = CreateWindow(TEXT("COMBOBOX"), TEXT("UI Monitor"), Style,
 									xPos + 150, yPos, 200, 80, windownTOP, HMENU(201), SystemHandle->m_hinstance, NULL);
 
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
 		EnableWindow(hWndComboBox[1], false);
 
 	TCHAR str[50];
@@ -191,7 +191,7 @@ bool WomaSetupManager::Initialize(void* Driver)
 		SendMessage(hWndComboBox[1], CB_ADDSTRING, mon, reinterpret_cast<LPARAM>(str));
 	}
 
-	SendMessage(hWndComboBox[1], CB_SETCURSEL, SystemHandle->AppSettings->UI_MONITOR, NULL); //Default Value
+	SendMessage(hWndComboBox[1], CB_SETCURSEL, WOMA::AppSettings->UI_MONITOR, NULL); //Default Value
     // ---------------------------------------------------------------------------------------------
 
 	{
@@ -277,7 +277,7 @@ bool WomaSetupManager::Initialize(void* Driver)
 		}
 #endif
 #if _NOT //!defined DX_ENGINE
-		if (!SystemHandle->AppSettings->FULL_SCREEN)
+		if (!WOMA::AppSettings->FULL_SCREEN)
 		{
 		EnableWindow(hWndTitleLabelperMonitor[mon], false);
 		EnableWindow(hWndComboBoxperMonitor[mon], false);
@@ -303,7 +303,7 @@ bool WomaSetupManager::Initialize(void* Driver)
         xPos + 150, yPos + 4, 12, 12, windownTOP, HMENU(300), SystemHandle->m_hinstance, NULL);
 
     //SET default value:
-    if (SystemHandle->AppSettings->VSYNC_ENABLED)
+    if (WOMA::AppSettings->VSYNC_ENABLED)
         SendMessage(hWndCheckBox[0], BM_SETCHECK, BST_CHECKED, 0);
 
 #if CORE_ENGINE_LEVEL < 10
@@ -334,7 +334,7 @@ bool WomaSetupManager::Initialize(void* Driver)
 #else
     SendMessage(hWndComboBox[2], CB_ADDSTRING, 1, reinterpret_cast<LPARAM>(TEXT("GL3 (not suppported)")));
 #endif
-#if _NOT //defined DX9sdk
+#if defined DX9sdk
     SendMessage(hWndComboBox[2], CB_ADDSTRING, 2, reinterpret_cast<LPARAM>(TEXT("DX9")));
 #elif defined DX9 && D3D11_SPEC_DATE_YEAR > 2009
     SendMessage(hWndComboBox[2], CB_ADDSTRING, 2, reinterpret_cast<LPARAM>(TEXT("DX9(onDX11)")));
@@ -347,7 +347,7 @@ bool WomaSetupManager::Initialize(void* Driver)
     SendMessage(hWndComboBox[2], CB_ADDSTRING, 3, reinterpret_cast<LPARAM>(TEXT("DX12 (not suppported)")));
 #endif
 
-    SendMessage(hWndComboBox[2], CB_SETCURSEL, SystemHandle->AppSettings->DRIVER, NULL); //Default Value
+    SendMessage(hWndComboBox[2], CB_SETCURSEL, WOMA::AppSettings->DRIVER, NULL); //Default Value
 #if !defined DX_ENGINE
     EnableWindow(hWndTitleLabel[hWndTitleLabelIdx - 1], false);
     EnableWindow(hWndComboBox[2], false);
@@ -386,15 +386,15 @@ bool WomaSetupManager::Initialize(void* Driver)
 		StringCchPrintf(str, sizeof(str), TEXT("Anisotropic: x%d"), FSAA_possibleValues[i]);
 		SendMessage(hWndComboBox[3], CB_ADDSTRING, ID, reinterpret_cast<LPARAM>(str));
 
-		if (SystemHandle->AppSettings->MSAA_Anisotropic && SystemHandle->AppSettings->MSAA_AnisotropicLevel == FSAA_possibleValues[i])
+		if (WOMA::AppSettings->MSAA_Anisotropic && WOMA::AppSettings->MSAA_AnisotropicLevel == FSAA_possibleValues[i])
 			SendMessage(hWndComboBox[3], CB_SETCURSEL, 2+i, NULL);
 	}
 #endif
 
-	if (SystemHandle->AppSettings->MSAA_bilinear)
+	if (WOMA::AppSettings->MSAA_bilinear)
 		SendMessage(hWndComboBox[3], CB_SETCURSEL, 1, NULL);
 
-	if (SystemHandle->AppSettings->MSAA_trilinear)
+	if (WOMA::AppSettings->MSAA_trilinear)
 		SendMessage(hWndComboBox[3], CB_SETCURSEL, 2, NULL);
 
 

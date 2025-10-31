@@ -40,7 +40,7 @@ Graphics::Graphics(HINSTANCE hInstance, BOOL vSync, Window& window)
     unsigned int clientWidth = m_ClientRect.right - m_ClientRect.left;
     unsigned int clientHeight = m_ClientRect.bottom - m_ClientRect.top;
 
-    #define m_driver11 ((DirectX::DX11Class*)driverList[SystemHandle->AppSettings->DRIVER])
+    #define m_driver11 ((DirectX::DX11Class*)driverList[WOMA::AppSettings->DRIVER])
     m_Device = ((DirectX::DX11Class*)m_driver11)->m_device11;
 
 

@@ -823,7 +823,7 @@ void CTerrain::initUnderWaterDemo(void* pContext, UINT terrainId)
 	UINT modelVertexVectorSize = (UINT)modelVertexVector0.size();
 	for (UINT i = 0; i < modelVertexVectorSize; i++)			// Num Vertices: 6x256x256 = 393216
 	{
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+		if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
 		{
 			float aux = modelVertexVector0[i].tu;
 			modelVertexVector0[i].tu = modelVertexVector0[i].tv;
@@ -847,12 +847,12 @@ bool CTerrain::initTerrainWaterMeshDemo(void* ctx, UINT terrainId) // Used to lo
 {
 	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
 
-		TCHAR water[MAX_STR_LEN] = { 0 };	atow(water, SystemHandle->world.water.c_str(), MAX_STR_LEN);
+		TCHAR water[MAX_STR_LEN] = { 0 };	atow(water, get_world_water().c_str(), MAX_STR_LEN);
 		IF_NOT_RETURN_FALSE(LoadHeightMapTerrain(water, 0, 0));	// FLAT WATER!
 
 		PopulateTerrainModelVertexVector(terrainId, 1); //1=terrain_squareSize
 
-		TCHAR waterTexture[MAX_STR_LEN] = { 0 };	atow(waterTexture, SystemHandle->world.waterTexture.c_str(), MAX_STR_LEN);
+		TCHAR waterTexture[MAX_STR_LEN] = { 0 };	atow(waterTexture, get_world_waterTexture().c_str(), MAX_STR_LEN);
 		std::vector<STRING> Textures; Textures.push_back(waterTexture);		// WATER: Shader:TEXTURE
 		CreateTerrainModel(pContext, terrainId, Textures, SHADER_TEXTURE_WATER);		// m_TerrainModel[id]->Load
 
@@ -950,7 +950,7 @@ bool CTerrain::initMainTopoTerrainDemo(UINT terrainId, ID3D11DeviceContext* pCon
 	// m_heightMap[index]
 	// height[y][x]
 	//[1]RASTER LoadHeightMap()
-	TCHAR HeightMapMainTexture[MAX_STR_LEN] = { 0 }; atow(HeightMapMainTexture, SystemHandle->world.mainTexture.c_str(), MAX_STR_LEN);
+	TCHAR HeightMapMainTexture[MAX_STR_LEN] = { 0 }; atow(HeightMapMainTexture, get_world_mainTexture().c_str(), MAX_STR_LEN);
 
 	//Populate m_heightMap_21[index].x...y...z
 	IF_NOT_RETURN_FALSE(LoadHeightMapTerrain(HeightMapMainTexture, xpos, zpos))
@@ -970,7 +970,7 @@ bool CTerrain::initMainTopoTerrainDemo(UINT terrainId, ID3D11DeviceContext* pCon
 		// Add TEXTURE MAP: to all vertices
 		for (UINT i = 0; i < modelVertexVector2.size(); i++)				// Num Vertices: 6x256x256 //{ size=6303750 }
 		{
-			if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)			// FOR: OPENGL(U, V MAP)!
+			if (WOMA::AppSettings->DRIVER == DRIVER_GL3)			// FOR: OPENGL(U, V MAP)!
 			{
 				float aux = modelVertexVector2[i].tu;
 				modelVertexVector2[i].tu = modelVertexVector2[i].tv;
@@ -990,7 +990,7 @@ bool CTerrain::initMainTopoTerrainDemo(UINT terrainId, ID3D11DeviceContext* pCon
 			// Add TEXTURE MAP: to all vertices
 			for (UINT i = 0; i < modelVertexVector3.size(); i++)			// Num Vertices: 6x256x256
 			{
-				if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+				if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
 				{
 					float aux = modelVertexVector3[i].tu;
 					modelVertexVector3[i].tu = modelVertexVector3[i].tv;

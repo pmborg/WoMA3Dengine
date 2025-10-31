@@ -62,7 +62,7 @@ namespace DirectX {
 
 	void DxTextClass::ReleaseSentence(SentenceType** sentence)
 	{
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX9 || WOMA::AppSettings->DRIVER == DRIVER_DX11)
 		{
 			if (*sentence)
 			{
@@ -99,14 +99,14 @@ namespace DirectX {
 
 		bool result;
 	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX9 || WOMA::AppSettings->DRIVER == DRIVER_DX11)
 		{
 			m_driver11 = (DirectX::DX11Class*)Driver;
 			m_baseViewMatrix = &DXsystemHandle->m_Camera->m_viewmatrix2D;
 		}
 	#endif
 	#if defined DX12
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12) {
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12) {
 			m_driver = (DirectX::DX12Class*)Driver;
 			m_baseViewMatrix = &DXsystemHandle->m_Camera->m_viewmatrix2D;
 		}
@@ -118,21 +118,21 @@ namespace DirectX {
 
 		// Create the color shader object:
 	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX9 || WOMA::AppSettings->DRIVER == DRIVER_DX11)
 			m_spriteShader = NEW DXshaderClass(m_driver11->ShaderVersionH, m_driver11->ShaderVersionL, true);
 	#endif
 	#if defined DX12
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 			m_spriteShader = NEW DXshaderClass(m_driver->ShaderVersionH, m_driver->ShaderVersionL, true);
 	#endif
 		IF_NOT_THROW_EXCEPTION(m_spriteShader);
 
 	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX9 || WOMA::AppSettings->DRIVER == DRIVER_DX11)
 			result = m_spriteShader->Initialize(-1, TEXT("Dx11TextClass"), SHADER_TEXTURE_FONT, m_driver11->m_device11, SystemHandle->m_hWnd, TRIANGLELIST);
 	#endif
 	#if defined DX12
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 			result = m_spriteShader->Initialize(-1,TEXT("Dx12TextClass"), SHADER_TEXTURE_FONT, m_driver->m_device, SystemHandle->m_hWnd, TRIANGLELIST);
 	#endif
 		if (!result)
@@ -145,12 +145,12 @@ namespace DirectX {
 		m_spriteShader->hasTexture = false; // Will use Pixel Color
 
 #if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX9 || WOMA::AppSettings->DRIVER == DRIVER_DX11)
 			m_spriteShader->texture11 = m_Font->GetTexture11();
 #endif
 
 #if defined DX12
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 			m_spriteShader->texture = m_Font->GetTexture();
 #endif
 		return true;
@@ -159,7 +159,7 @@ namespace DirectX {
 	bool DxTextClass::InitializeTexture(void* Driver)
 	{
 #if defined DX12
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 		{
 			//SHADER_TEXTURE:
 			// | Root Signature		| Shader Registers	|
@@ -187,13 +187,13 @@ namespace DirectX {
 
 #ifdef DX11
 		ID3D11Device* device11 = NULL;
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11) {
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX9 || WOMA::AppSettings->DRIVER == DRIVER_DX11) {
 			device11 = m_driver11->m_device11;
 		}
 #endif
 #ifdef DX12
 		ID3D12Device* device = NULL;
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12) {
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12) {
 			device = m_driver->m_device;
 		}
 #endif
@@ -239,7 +239,7 @@ namespace DirectX {
 
 		// SIMILAR: DXmodelClass::CreateDirectXBuffers
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 		{
 			ASSERT((*sentence)->vertexCount && (*sentence)->indexCount && (*sentence)->vertices && (*sentence)->indices && sizeofMODELvertex > 0);
 
@@ -329,7 +329,7 @@ namespace DirectX {
 #endif
 
 #if defined DX11 || defined DX9
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 		{
 		// Set up the description of the dynamic vertex buffer.
 		vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
@@ -388,7 +388,7 @@ namespace DirectX {
 		HRESULT result;
 		D3D11_MAPPED_SUBRESOURCE mappedResource;
 		DXtextureVertexType* verticesPtr;
-		//WomaDriverClass* m_Driver = driverList[SystemHandle->AppSettings->DRIVER];
+		//WomaDriverClass* m_Driver = driverList[WOMA::AppSettings->DRIVER];
 
 		if (!sentence)
 		{
@@ -417,15 +417,15 @@ namespace DirectX {
 		memset(vertices, 0, (sizeof(DXtextureVertexType) * sentence->vertexCount));
 
 		// Calculate the X and Y pixel position on the screen to start drawing to.
-		drawX = (float)(((SystemHandle->AppSettings->WINDOW_WIDTH / 2) * -1) + positionX);
-		drawY = (float)((SystemHandle->AppSettings->WINDOW_HEIGHT / 2) - positionY);
+		drawX = (float)(((WOMA::AppSettings->WINDOW_WIDTH / 2) * -1) + positionX);
+		drawY = (float)((WOMA::AppSettings->WINDOW_HEIGHT / 2) - positionY);
 
 		// Use the font class to build the vertex array from the sentence text and sentence draw location.
 		//if (m_Driver->RenderfirstTime)
 			m_Font->BuildVertexArray((void*)vertices, text, drawX, drawY);
 
 #if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX9 || WOMA::AppSettings->DRIVER == DRIVER_DX11)
 		{
 			// Lock the vertex buffer so it can be written to.
 			result = m_deviceContext11->Map((ID3D11Buffer*)sentence->vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -443,7 +443,7 @@ namespace DirectX {
 #endif
 
 #ifdef DX12	
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12) {
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12) {
 			// VERTEX:
 			const UINT vertexBufferSize = sizeofMODELvertex * (*sentence).vertexCount; //  m_vertexCount sizeof(triangleVertices);
 
@@ -472,7 +472,7 @@ namespace DirectX {
 
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 		{
 			orthoMatrix = &m_driver->m_orthoMatrix;
 
@@ -492,7 +492,7 @@ namespace DirectX {
 #endif
 
 #if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX9 || WOMA::AppSettings->DRIVER == DRIVER_DX11)
 		{
 			orthoMatrix = &m_driver11->m_orthoMatrix;	
 			ID3D11Buffer* vertexBuffer = (ID3D11Buffer*)sentence->vertexBuffer;

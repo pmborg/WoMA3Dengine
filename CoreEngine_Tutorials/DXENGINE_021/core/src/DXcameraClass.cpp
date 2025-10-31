@@ -76,7 +76,7 @@ XMFLOAT3 DXcameraClass::GetRotation()
 }
 
 //The Render function uses the position and rotation of the camera to build and update the view matrix. We first setup our variables for up, position, rotation, and so forth. Then at the origin of the scene we first rotate the camera based on the x, y, and z rotation of the camera. Once it is properly rotated when then translate the camera to the position in 3D space. With the correct values in the position, lookAt, and up we can then use the D3DXMatrixLookAtLH function to create the view matrix to represent the current camera rotation and translation.
-#if defined USE_3RD_PERSON_CAMERA
+#if defined USE_3RD_PERSON_CAMERA || defined USE_DEMO99
 void DXcameraClass::CalculateViewMatrix_3rd_PersonCamera(float camYaw, float camPitch, bool sky)
 {
     static float charCamDist = 2.0f; // 15.0f This is the distance between the camera and the character

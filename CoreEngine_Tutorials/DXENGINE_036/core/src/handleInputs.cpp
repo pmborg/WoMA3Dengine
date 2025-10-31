@@ -80,7 +80,7 @@ float nextHeight = 0;
 //Even if the user keeps moving the mouse to the left we will just keep the cursor at the zero position until they start 
 //moving it to the right again.
 
-void DXInputClass::ProcessInputKeys()
+void DXInputClass::GetDirectInputKeys()
 {
 	// Update the location of the mouse cursor based on the change of the mouse location during the frame.
 	#define m_ourPlayer DXsystemHandle->m_player[g_NetID]
@@ -200,7 +200,7 @@ bool ApplicationClass::ProcessUserKeyboardInput(double frameTime)
 	// --------------------------------------------------------------------------------------------
     // [3] MOUSE: Process Mouse Movement for Camera :
     // --------------------------------------------------------------------------------------------
-	float height = SystemHandle->AppSettings->INIT_CAMY;
+	float height = WOMA::AppSettings->INIT_CAMY;
 
 #if defined DX_ENGINE
 #if defined USE_3RD_PERSON_CAMERA
@@ -335,7 +335,9 @@ bool ApplicationClass::ProcessUserKeyboardInput(double frameTime)
    m_Position[g_NetID]->m_positionX = m_NextPosition->m_positionX;
 #endif
 
-   m_Position[g_NetID]->m_positionY = height;
+   if (RENDER_PAGE >= 30)
+		m_Position[g_NetID]->m_positionY = height;
+
    posX =m_Position[g_NetID]->m_positionX;
    posZ =m_Position[g_NetID]->m_positionZ;
 
@@ -352,9 +354,11 @@ bool ApplicationClass::ProcessUserKeyboardInput(double frameTime)
 
 
     // --------------------------------------------------------------------------------------------
-	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) {
+	if (WOMA::AppSettings->DRIVER != DRIVER_GL3) {
 	#if defined DX_ENGINE
-		DXsystemHandle->m_Camera->m_positionY = height + 1.25f; // Camera are: "x.xf" above our feets.
+		IF_RENDER_PAGE(RENDER_PAGE >= 30)
+			DXsystemHandle->m_Camera->m_positionY = height + 1.25f; // Camera are: "x.xf" above our feets.
+
 		DXsystemHandle->m_Camera->m_positionX = posX;
 		DXsystemHandle->m_Camera->m_positionZ = posZ;
 
@@ -365,7 +369,7 @@ bool ApplicationClass::ProcessUserKeyboardInput(double frameTime)
     #if (defined OPENGL3 || defined OPENGL40) 
 	else
 	{
-		GLopenGLclass* driver = (GLopenGLclass*) driverList[SystemHandle->AppSettings->DRIVER];
+		GLopenGLclass* driver = (GLopenGLclass*) driverList[WOMA::AppSettings->DRIVER];
 
 		driver->gl_Camera->m_positionY = height + 1.25f; // Camera are: "x.xf" above our feets.
 		driver->gl_Camera->m_positionX = posX;

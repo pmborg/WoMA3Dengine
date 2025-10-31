@@ -96,13 +96,13 @@ extern bool download(const std::string url, const std::string file_path);
 		#include <urlmon.h>
 		#pragma comment( lib, "urlmon.lib" )
         #include <winsock2.h>
-        #include <iphlpapi.h>
-		// Link with Iphlpapi.lib
-		#pragma comment(lib, "IPHLPAPI.lib")
 	#endif
 #endif
-
-
+#if defined WINDOWS_PLATFORM //getMyIp
+	#include <iphlpapi.h>
+	// Link with Iphlpapi.lib
+	#pragma comment(lib, "IPHLPAPI.lib")
+#endif
 
 // --------------------------------------------------------------------------------------------
 // Globals:
@@ -251,7 +251,7 @@ STRING		szFileName = wLOCAL_APPDATA + TEXT("myip.txt");
 #define EXTERNAL_IP TEXT("https://myexternalip.com/raw")
 //#define EXTERNAL_IP TEXT("https://myexternalip.com")
 
-#ifdef USE_NETWORK
+#if defined USE_NETWORK && !defined MAVERICK
 	DeleteFile(szFileName.c_str());
 	//URLDownloadToFileA(LPUNKNOWN, _In_ LPCSTR, _In_opt_ LPCSTR, DWORD, _In_opt_ LPBINDSTATUSCALLBACK);
 	womalogauto(TEXT("Download: %s\n"), EXTERNAL_IP); // Note: Don't use DEBUG_MSG yet...
@@ -367,7 +367,7 @@ void InitializeCelestialInfoScreen(int x, int y)
 			SystemHandle->TextToPrint[1].pop_back();
 
 		// CelestialInfo:
-#ifdef USE_NETWORK //at: main.h
+#if defined USE_NETWORK  && !defined MAVERICK //at: main.h
 		STRING infomode = TEXT("online");
 #else
 		STRING infomode = TEXT("offline");

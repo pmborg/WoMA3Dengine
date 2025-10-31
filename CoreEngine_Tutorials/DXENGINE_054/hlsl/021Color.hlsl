@@ -7,6 +7,13 @@
 *	code by : Pedro Borges - pmborg@yahoo.com
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
+    DXshaderClass::InitializeShader(...)
+    ...
+	    vsFilename.append(L"hlsl/021Color.hlsl");
+	    psFilename = vsFilename;
+	    vertexHLSL.append("VS_Main");
+	    pixelHLSL.append("PS_Main");
+     ...
 **********************************************************************************************/
 //WomaIntegrityCheck = 1234525217;
 
@@ -15,7 +22,8 @@
 // TYPEDEFS //
 //////////////
 
-// VERTEX:
+// VERTEX: need to match: 
+// [DXshaderClass.cpp] colorPolygonLayout11 / colorPolygonLayout
 struct VSIn
 {
     float3 position : POSITION;
@@ -29,6 +37,9 @@ struct PSIn
     float4 color : COLOR;
 };
 
+////////////////
+// CBUFFERS
+////////////////
 // SYNC: DXshaderClass.h -- DX12: CBV
 #if DXAPI11 == 1
 cbuffer VSShaderParametersBuffer	//DX11
@@ -87,9 +98,9 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
     float  vsframeTime;
     float3 scrollSpeeds;
     float3 scales;
-    bool   isBill; //float padding6;
+    bool   isBill;
 };
-
+/*
 ///////////////
 // PIXEL BUFFER
 ///////////////
@@ -142,7 +153,7 @@ cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: D
     float3 specularColor;
     float nShininess;
 };
-
+*/
 ////////////////////////////////////////////////////////////////////////////////
 // VERTEX SHADER
 ////////////////////////////////////////////////////////////////////////////////
@@ -158,12 +169,12 @@ PSIn VS_Main(VSIn input)
 		0.000000008f, -0.216930464f, 0.976187050f, 8.24335766f,	// row 4
 	};
 
+	//HLSL dif. GLSL:
 	output.position = mul(float4(input.position, 1), transpose(WVPMatrix));	// Calculate the position of the vertex against the world, view, and projection matrices
 #else
     if (VS_USE_WVP)
     {
         output.position = mul(float4(input.position, 1), WVP); // Calculate the position of the vertex against the world, view, and projection matrices
-        //output.color = float4(1,1,1, 0.5f); // Store the vertex color for the pixel shader
     }
     else
     {

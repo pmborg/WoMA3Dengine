@@ -53,7 +53,7 @@ void WinSystemClass::StartTimer()
 #define KEYB_TIMES_PER_SECOND 1
 
 	// Don't Update on: FullScreen or Full-windowed
-    if ((!AppSettings->FULL_SCREEN) && (windowStyle != 0x96080000))
+    if ((!WOMA::AppSettings->FULL_SCREEN) && (windowStyle != 0x96080000))
     {
 #if defined NDEBUG //INTRO_DEMO
         SetTimer(m_hWnd, TIMER_TITLE, 100 / KEYB_TIMES_PER_SECOND, NULL);	// 100ms = 10 x per second!
@@ -97,7 +97,7 @@ HWND DoCreateStatusBar(HWND hwndParent, int idStatus, HINSTANCE hinst, int cPart
 	// Ensure that the common control DLL is loaded.
 	InitCommonControls();
 
-	DWORD windowStyle = ((SystemHandle->AppSettings->AllowResize) && (LEVEL >= 20)) ?
+	DWORD windowStyle = ((WOMA::AppSettings->AllowResize) && (LEVEL >= 20)) ?
 		SBARS_SIZEGRIP |        // includes a sizing grip
 		WS_CHILD | WS_VISIBLE	// creates a visible child window
 		:
@@ -180,47 +180,47 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 			if (HWND(lparam) == womaSetup->m_hBtnOK)
 			{
                 //GET VSYNC CheckBox:
-                SystemHandle->AppSettings->VSYNC_ENABLED = (SendMessage(womaSetup->hWndCheckBox[0], BM_GETCHECK, 0, 0) == BST_CHECKED);
+                WOMA::AppSettings->VSYNC_ENABLED = (SendMessage(womaSetup->hWndCheckBox[0], BM_GETCHECK, 0, 0) == BST_CHECKED);
 
                 //GET UI_MONITOR COMBOBOX:
-                SystemHandle->AppSettings->UI_MONITOR = (int)(SendMessage(womaSetup->hWndComboBox[1], CB_GETCURSEL, NULL, NULL));
+                WOMA::AppSettings->UI_MONITOR = (int)(SendMessage(womaSetup->hWndComboBox[1], CB_GETCURSEL, NULL, NULL));
 
                 //GET DRIVER:
-                int		previous_DRIVER = SystemHandle->AppSettings->DRIVER;
-                SystemHandle->AppSettings->DRIVER = (int)(SendMessage(womaSetup->hWndComboBox[2], CB_GETCURSEL, NULL, NULL));
+                int		previous_DRIVER = WOMA::AppSettings->DRIVER;
+                WOMA::AppSettings->DRIVER = (int)(SendMessage(womaSetup->hWndComboBox[2], CB_GETCURSEL, NULL, NULL));
 
 				UINT MSAA = (int)(SendMessage(womaSetup->hWndComboBox[3], CB_GETCURSEL, NULL, NULL));
 
-				SystemHandle->AppSettings->MSAA_bilinear = false;
-				SystemHandle->AppSettings->MSAA_trilinear = false;
-				SystemHandle->AppSettings->MSAA_Anisotropic = false;
+				WOMA::AppSettings->MSAA_bilinear = false;
+				WOMA::AppSettings->MSAA_trilinear = false;
+				WOMA::AppSettings->MSAA_Anisotropic = false;
 				switch(MSAA){
-					case 1:  SystemHandle->AppSettings->MSAA_bilinear = true;  break;
-					case 2:  SystemHandle->AppSettings->MSAA_trilinear = true; break;
+					case 1:  WOMA::AppSettings->MSAA_bilinear = true;  break;
+					case 2:  WOMA::AppSettings->MSAA_trilinear = true; break;
 
-					case 3:  SystemHandle->AppSettings->MSAA_Anisotropic = true; SystemHandle->AppSettings->MSAA_AnisotropicLevel = 1;  break;
-					case 4:  SystemHandle->AppSettings->MSAA_Anisotropic = true; SystemHandle->AppSettings->MSAA_AnisotropicLevel = 2;  break;
-					case 5:  SystemHandle->AppSettings->MSAA_Anisotropic = true; SystemHandle->AppSettings->MSAA_AnisotropicLevel = 4;  break;
-					case 6:  SystemHandle->AppSettings->MSAA_Anisotropic = true; SystemHandle->AppSettings->MSAA_AnisotropicLevel = 8;  break;
+					case 3:  WOMA::AppSettings->MSAA_Anisotropic = true; WOMA::AppSettings->MSAA_AnisotropicLevel = 1;  break;
+					case 4:  WOMA::AppSettings->MSAA_Anisotropic = true; WOMA::AppSettings->MSAA_AnisotropicLevel = 2;  break;
+					case 5:  WOMA::AppSettings->MSAA_Anisotropic = true; WOMA::AppSettings->MSAA_AnisotropicLevel = 4;  break;
+					case 6:  WOMA::AppSettings->MSAA_Anisotropic = true; WOMA::AppSettings->MSAA_AnisotropicLevel = 8;  break;
 				}
 
 				//GET FULL_SCREEN COMBOBOX: "Display Mode"
 				int index = (int)SendMessage(womaSetup->hWndComboBox[0], CB_GETCURSEL, NULL, NULL);
                 // (index == 0)     // Windowed
-				SystemHandle->AppSettings->FULL_SCREEN = false;
-                SystemHandle->AppSettings->FULLSCREEN_ON_WINDOWED = false;
+				WOMA::AppSettings->FULL_SCREEN = false;
+                WOMA::AppSettings->FULLSCREEN_ON_WINDOWED = false;
 				if (index == 1) {   // Fullscreen
-					SystemHandle->AppSettings->FULL_SCREEN = true;
+					WOMA::AppSettings->FULL_SCREEN = true;
                 } else
                 if (index == 2)     // Windowed(Fullscreen)
-                    SystemHandle->AppSettings->FULLSCREEN_ON_WINDOWED = true;
+                    WOMA::AppSettings->FULLSCREEN_ON_WINDOWED = true;
 
                 //if (index == 1 || index == 2) 
                 {
-                    int resId = (int)(SendMessage(womaSetup->hWndComboBoxperMonitor[SystemHandle->AppSettings->UI_MONITOR], CB_GETCURSEL, NULL, NULL));
+                    int resId = (int)(SendMessage(womaSetup->hWndComboBoxperMonitor[WOMA::AppSettings->UI_MONITOR], CB_GETCURSEL, NULL, NULL));
                     if (resId>0 && SystemHandle->allWindowsArray.size()>0) {
-                        SystemHandle->AppSettings->WINDOW_WIDTH = SystemHandle->allWindowsArray[SystemHandle->AppSettings->UI_MONITOR].ScreenResolution[resId].Width;
-                        SystemHandle->AppSettings->WINDOW_HEIGHT = SystemHandle->allWindowsArray[SystemHandle->AppSettings->UI_MONITOR].ScreenResolution[resId].Height;
+                        WOMA::AppSettings->WINDOW_WIDTH = SystemHandle->allWindowsArray[WOMA::AppSettings->UI_MONITOR].ScreenResolution[resId].Width;
+                        WOMA::AppSettings->WINDOW_HEIGHT = SystemHandle->allWindowsArray[WOMA::AppSettings->UI_MONITOR].ScreenResolution[resId].Height;
                     }
                 }
 
@@ -228,7 +228,7 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 				#if defined CLIENT_SCENE_SETUP
 				SystemHandle->xml_loader.saveXMLsettingsFile(str);
 				#endif
-				SystemHandle->AppSettings->DRIVER = previous_DRIVER;
+				WOMA::AppSettings->DRIVER = previous_DRIVER;
 
 				WOMA::previous_game_state = GAME_RUN;
 				WOMA::game_state = ENGINE_RESTART;
@@ -362,7 +362,7 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 	case WM_SIZE:
 	{
 		ID3D11DeviceContext* pContext = NULL;
-		if (driverList.size() > 0 && driverList[SystemHandle->AppSettings->DRIVER])
+		if (driverList.size() > 0 && driverList[WOMA::AppSettings->DRIVER])
 			pContext = ((DX11Class*)m_Driver)->GetDeviceContext();
 		// Use windows settings!
 		// Save the new client area dimensions.
@@ -381,8 +381,8 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 			}
 			else if (wParam == SIZE_MAXIMIZED)	// [] (go from default to maximize!)
 			{
-				SystemHandle->AppSettings->WINDOW_WIDTH = LOWORD(lparam);	// New Useful Size
-				SystemHandle->AppSettings->WINDOW_HEIGHT = HIWORD(lparam);	// New Useful Size
+				WOMA::AppSettings->WINDOW_WIDTH = LOWORD(lparam);	// New Useful Size
+				WOMA::AppSettings->WINDOW_HEIGHT = HIWORD(lparam);	// New Useful Size
 				mMaximized = true;
 				if (WOMA::game_state == GAME_MINIMIZED)
 					UNPAUSE();	//Restore State
@@ -415,8 +415,8 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 					{ 
 						RECT rc;
 						GetClientRect(SystemHandle->m_hWnd, &rc);
-						SystemHandle->AppSettings->WINDOW_WIDTH = rc.right - rc.left;
-						SystemHandle->AppSettings->WINDOW_HEIGHT = rc.bottom - rc.top;
+						WOMA::AppSettings->WINDOW_WIDTH = rc.right - rc.left;
+						WOMA::AppSettings->WINDOW_HEIGHT = rc.bottom - rc.top;
 						ONRESIZE(pContext);
 					}
 				}
@@ -483,8 +483,8 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 	// -----------------------------------------------------------------------------
 	case WM_MOVE:
 	{
-		SystemHandle->AppSettings->WINDOW_Xpos = GET_X_LPARAM(lparam);
-		SystemHandle->AppSettings->WINDOW_Ypos = GET_Y_LPARAM(lparam);
+		WOMA::AppSettings->WINDOW_Xpos = GET_X_LPARAM(lparam);
+		WOMA::AppSettings->WINDOW_Ypos = GET_Y_LPARAM(lparam);
 		return 0; //break;
 	}
 	// WM_EXITSIZEMOVE is sent when the user "drag" to resize window:
@@ -501,7 +501,7 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 	case WM_EXITSIZEMOVE:
 	{
 		ID3D11DeviceContext* pContext = NULL;
-		if (driverList.size() > 0 && driverList[SystemHandle->AppSettings->DRIVER])
+		if (driverList.size() > 0 && driverList[WOMA::AppSettings->DRIVER])
 			pContext = ((DX11Class*)m_Driver)->GetDeviceContext();
 
 		if (mResizing)
@@ -512,7 +512,7 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 		mResizing = false;
 
 #if defined USE_STATUSBAR
-        if (!AppSettings->FULL_SCREEN) 
+        if (!WOMA::AppSettings->FULL_SCREEN)
         {
             SystemHandle->statusbar = DoCreateStatusBar(SystemHandle->m_hWnd, 0, m_hinstance, 1);
             SendMessage(SystemHandle->statusbar, SB_SETTEXT, 0, (LPARAM)DEMO_TITLE);
@@ -576,7 +576,7 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 			{
 			case TIMER_TITLE:
                 WOMA::woma_timer++;
-				if (!SystemHandle->AppSettings->FULL_SCREEN)
+				if (!WOMA::AppSettings->FULL_SCREEN)
 					SystemHandle->refreshTitle();
 
 				return 0;

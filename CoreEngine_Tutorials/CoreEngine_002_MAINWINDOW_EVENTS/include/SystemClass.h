@@ -50,6 +50,8 @@ struct resolutionType
 
 
 
+
+
 typedef struct GPU_
 {
 	TCHAR GraphicCard[MAX_STR_LEN] = {};
@@ -123,6 +125,11 @@ typedef struct SystemSettings_
 
 } SystemSettings;
 
+namespace WOMA
+{
+	extern WOMA::Settings* AppSettings;
+};
+
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: SystemClass
 ////////////////////////////////////////////////////////////////////////////////
@@ -134,13 +141,13 @@ public:
 	~SystemClass();
 
 	void Shutdown();
-	WOMA::Settings* AppSettings = NULL;
+	
 
 	bool			mMaximized;
 	SystemSettings	systemDefinitions;
 	
 	void FrameUpdate();
-    void ParseCommandLineArgs(int argc, char* argv[]);
+    void ParseCommandLineAndApplySettings(int argc, char* argv[]);
 
 	resolutionType		resolution;
 
@@ -155,7 +162,7 @@ public:
 #else
 	RInputClass* m_OsInput = NULL;
 #endif
-	void ProcessOSInput();
+	void ProcessOS_Fx_Keys_Input();
 	void CalculateCameraViewAndFrustum(void* pContext);
 #endif
 

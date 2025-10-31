@@ -74,7 +74,7 @@ namespace DirectX {
 
 		// MSAA Used:
 		// ----------------------------------------------------------------------------
-		MSAA_COUNT = MAX(1, SystemHandle->AppSettings->MSAA_AnisotropicLevel);	// Req. Note: DX12 min: 1
+		MSAA_COUNT = MAX(1, WOMA::AppSettings->MSAA_AnisotropicLevel);	// Req. Note: DX12 min: 1
 		MSAA_QUALITY = 0;														// Req. Note: default: 1
 
 		// DX12Class()
@@ -621,7 +621,7 @@ namespace DirectX {
 		//
 		// CreateDevice() - Init Step: 0 - Check for DX9, DX10, DX11, DX12 & DX12_1 API
 		//
-		CheckAPIdriver(SystemHandle->AppSettings->ADAPTOR);	//use_this_graphic_card_adapter
+		CheckAPIdriver(WOMA::AppSettings->ADAPTOR);	//use_this_graphic_card_adapter
 
 		// Get BUFFER_COLOR_FORMAT: Init Step: 1 - [NOT IMPLEMENTED YET FOR DX12] Create Factory: Get list of all MODES for all MONITORS & Get Refresh Rate:
 		////IF_NOT_RETURN_FALSE(getModesList(g_USE_MONITOR, screenWidth, screenHeight, fullscreen, &numerator, &denominator)); //TODO! DX12
@@ -828,21 +828,21 @@ namespace DirectX {
 		// LoadAssets()- PART 3
 		//
 
-		if (SystemHandle->AppSettings->MSAA_Anisotropic == false) //Setup defaults!
+		if (WOMA::AppSettings->MSAA_Anisotropic == false) //Setup defaults!
 		{
 			MSAA_QUALITY = 0;
 			MSAA_COUNT = 1;
 		}
 
 		// Log It!
-		if (SystemHandle->AppSettings->MSAA_Anisotropic) {
+		if (WOMA::AppSettings->MSAA_Anisotropic) {
 			womalogauto(TEXT("MSSA is Enabled with %d Samples\n"), MSAA_COUNT);
 		}
 		else
 		{
-			if (SystemHandle->AppSettings->MSAA_bilinear)
+			if (WOMA::AppSettings->MSAA_bilinear)
 				womalogauto(TEXT("Antialise: bilinear\n"));
-			else if (SystemHandle->AppSettings->MSAA_trilinear)
+			else if (WOMA::AppSettings->MSAA_trilinear)
 				womalogauto(TEXT("Antialise: trilinear\n"));
 			else
 				womalogauto(TEXT("Antialise: off\n"));
@@ -852,11 +852,11 @@ namespace DirectX {
 		// ----------------------------------------------------------------------------------------------
 #define oldway_
 #if defined oldway_
-		IF_NOT_RETURN_FALSE(createSwapChainDX12device(hwnd, SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT, SystemHandle->AppSettings->VSYNC_ENABLED,
-			SystemHandle->AppSettings->FULL_SCREEN, SystemHandle->AppSettings->UseDoubleBuffering, SystemHandle->AppSettings->AllowResize,
+		IF_NOT_RETURN_FALSE(createSwapChainDX12device(hwnd, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT, WOMA::AppSettings->VSYNC_ENABLED,
+			WOMA::AppSettings->FULL_SCREEN, WOMA::AppSettings->UseDoubleBuffering, WOMA::AppSettings->AllowResize,
 			numerator, denominator));
 
-		if (!SystemHandle->AppSettings->AllowResize)
+		if (!WOMA::AppSettings->AllowResize)
 			ThrowIfFailed(dxgiFactory->MakeWindowAssociation(hwnd, DXGI_MWA_NO_ALT_ENTER));
 
 		ThrowIfFailed(s_PrimarySwapChain.As(&m_swapChain)); // m_swapChain = (IDXGISwapChain3*)s_PrimarySwapChain;
@@ -864,8 +864,8 @@ namespace DirectX {
 	// Describe and create the swap chain.
 		DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
 		swapChainDesc.BufferCount = BufferCount;
-		swapChainDesc.Width = SystemHandle->AppSettings->WINDOW_WIDTH;
-		swapChainDesc.Height = SystemHandle->AppSettings->WINDOW_HEIGHT;
+		swapChainDesc.Width = WOMA::AppSettings->WINDOW_WIDTH;
+		swapChainDesc.Height = WOMA::AppSettings->WINDOW_HEIGHT;
 		swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
@@ -875,7 +875,7 @@ namespace DirectX {
 		ComPtr<IDXGISwapChain1> swapChain;
 		ThrowIfFailed(dxgiFactory->CreateSwapChainForHwnd(m_commandQueue.Get(), hwnd, &swapChainDesc, nullptr, nullptr, &swapChain));
 
-		if (!SystemHandle->AppSettings->AllowResize)
+		if (!WOMA::AppSettings->AllowResize)
 			ThrowIfFailed(dxgiFactory->MakeWindowAssociation(hwnd, DXGI_MWA_NO_ALT_ENTER));
 
 		ThrowIfFailed(swapChain.As(&m_swapChain)); // m_swapChain = (IDXGISwapChain3*)s_PrimarySwapChain;
@@ -1300,13 +1300,13 @@ namespace DirectX {
 
 				m_rasterState[cullMode][fillMode].DepthClipEnable = TRUE;	// Enable clipping based on distance: http://technet.microsoft.com/de-de/subscriptions/ff476198%28v=vs.85%29.aspx
 
-				if (SystemHandle->AppSettings->MSAA_Anisotropic) {
+				if (WOMA::AppSettings->MSAA_Anisotropic) {
 					//Turn on: MSAA ?
 					m_rasterState[cullMode][fillMode].MultisampleEnable = true;			// default: FALSE
 				}
 				else {
 					//Turn on: the legacy AntialiasedLine ?
-					if ((SystemHandle->AppSettings->MSAA_bilinear) || (SystemHandle->AppSettings->MSAA_trilinear))
+					if ((WOMA::AppSettings->MSAA_bilinear) || (WOMA::AppSettings->MSAA_trilinear))
 						m_rasterState[cullMode][fillMode].AntialiasedLineEnable = true;	// default: FALSE
 				}
 
@@ -1543,8 +1543,8 @@ namespace DirectX {
 #endif
 
 			// SETUP 3D Normal Camera:
-			DXsystemHandle->m_Camera->SetPosition(SystemHandle->AppSettings->INIT_CAMX, SystemHandle->AppSettings->INIT_CAMY, SystemHandle->AppSettings->INIT_CAMZ);
-			DXsystemHandle->m_Camera->SetRotation(SystemHandle->AppSettings->INIT_ROTX, SystemHandle->AppSettings->INIT_ROTY, SystemHandle->AppSettings->INIT_ROTZ);
+			DXsystemHandle->m_Camera->SetPosition(WOMA::AppSettings->INIT_CAMX, WOMA::AppSettings->INIT_CAMY, WOMA::AppSettings->INIT_CAMZ);
+			DXsystemHandle->m_Camera->SetRotation(WOMA::AppSettings->INIT_ROTX, WOMA::AppSettings->INIT_ROTY, WOMA::AppSettings->INIT_ROTZ);
 			DXsystemHandle->m_Camera->CalculateViewMatrix();
 		}
 

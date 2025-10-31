@@ -92,7 +92,7 @@ bool DXrendertextureclass::Initialize(void* Driver, int textureWidth, int textur
 
 	// Setup the description of the render target view.
 	renderTargetViewDesc.Format = textureDesc.Format;
-	renderTargetViewDesc.ViewDimension = (SystemHandle->AppSettings->MSAA_Anisotropic) ? D3D11_RTV_DIMENSION_TEXTURE2DMS : D3D11_RTV_DIMENSION_TEXTURE2D; //MSAA
+	renderTargetViewDesc.ViewDimension = (WOMA::AppSettings->MSAA_Anisotropic) ? D3D11_RTV_DIMENSION_TEXTURE2DMS : D3D11_RTV_DIMENSION_TEXTURE2D; //MSAA
 	renderTargetViewDesc.Texture2D.MipSlice = 0;
 
 	// CreateRenderTargetView: Create the render target view.
@@ -103,7 +103,7 @@ bool DXrendertextureclass::Initialize(void* Driver, int textureWidth, int textur
 	// Setup the description of the shader resource view.
 	shaderResourceViewDesc.Format = textureDesc.Format;
 #if !defined USE_DX11_1_SETUP
-	shaderResourceViewDesc.ViewDimension = (SystemHandle->AppSettings->MSAA_Anisotropic) ? D3D11_SRV_DIMENSION_TEXTURE2DMS : D3D11_SRV_DIMENSION_TEXTURE2D; //MSAA
+	shaderResourceViewDesc.ViewDimension = (WOMA::AppSettings->MSAA_Anisotropic) ? D3D11_SRV_DIMENSION_TEXTURE2DMS : D3D11_SRV_DIMENSION_TEXTURE2D; //MSAA
 #else
 	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 #endif
@@ -149,7 +149,7 @@ bool DXrendertextureclass::Initialize(void* Driver, int textureWidth, int textur
 	// Set up the depth stencil view description.
 	depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 #if !defined USE_DX11_1_SETUP
-	depthStencilViewDesc.ViewDimension = (SystemHandle->AppSettings->MSAA_Anisotropic) ? D3D11_DSV_DIMENSION_TEXTURE2DMS : D3D11_DSV_DIMENSION_TEXTURE2D;
+	depthStencilViewDesc.ViewDimension = (WOMA::AppSettings->MSAA_Anisotropic) ? D3D11_DSV_DIMENSION_TEXTURE2DMS : D3D11_DSV_DIMENSION_TEXTURE2D;
 #else
 	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 #endif

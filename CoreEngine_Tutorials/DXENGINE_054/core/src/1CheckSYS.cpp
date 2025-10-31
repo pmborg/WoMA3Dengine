@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: 1CheckSYS.cpp
 // --------------------------------------------------------------------------------------------
@@ -340,7 +339,7 @@ bool SystemManager::checkCPU ()
     CPUSpeedMHz = (float) atof(Token.c_str()); //clockSpeed in GHz
 #endif
 
-#if !defined ANDROID_PLATFORM
+#if defined WINDOWS_PLATFORM
     if (CPUSpeedMHz < 2)
         WomaMessageBox(TEXT("CPU WARNING: Your Processor is slow (< 2GHz), this application will run very slow also!\n"));
 #endif

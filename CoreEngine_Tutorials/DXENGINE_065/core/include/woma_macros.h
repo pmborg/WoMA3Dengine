@@ -92,6 +92,11 @@
 
 #if defined ANDROID_PLATFORM
 	#define ASSERT(x) { if (!(x)) _tprintf("ASSERT FAILED: FILE: %s LINE: %s - %s()\n", __FILE__, __LINE__, __func__); }
+  #if _DEBUG
+	#define ASSERT_DEBUG(x) { if (!(x)) _tprintf("ASSERT FAILED: FILE: %s LINE: %s - %s()\n", __FILE__, __LINE__, __func__); }
+  #else
+    #define ASSERT_DEBUG(x) {}
+  #endif
 #else
 	#define ASSERT(x) { if (!(x)) WomaFatalException("Assert failed!"); }
   #if _DEBUG
@@ -165,23 +170,23 @@ extern const wchar_t* GetWC(const char* c);
 	#define womalogATfirstframe {}
 #endif
 
-
+// PRINT MATRIX:
 #if defined _DEBUG && defined USE_LOG_MANAGER
-#define DX11_LOG_MATRIX(pMat) \
+#define DX_LOG_MATRIX(pMat) \
 { \
     if (pMat) { \
-        WOMA::logManager->DEBUG_MSG(TEXT("[%.3f %.3f %.3f %.3f]\n"), \
+        womalog(TEXT("[%.3f %.3f %.3f %.3f]\n"), \
             ((DirectX::XMMATRIX)(*pMat)).r[0].m128_f32[0], ((DirectX::XMMATRIX)(*pMat)).r[0].m128_f32[1], ((DirectX::XMMATRIX)(*pMat)).r[0].m128_f32[2], ((DirectX::XMMATRIX)(*pMat)).r[0].m128_f32[3]); \
-        WOMA::logManager->DEBUG_MSG(TEXT("[%.3f %.3f %.3f %.3f]\n"), \
+        womalog(TEXT("[%.3f %.3f %.3f %.3f]\n"), \
             ((DirectX::XMMATRIX)(*pMat)).r[1].m128_f32[0], ((DirectX::XMMATRIX)(*pMat)).r[1].m128_f32[1], ((DirectX::XMMATRIX)(*pMat)).r[1].m128_f32[2], ((DirectX::XMMATRIX)(*pMat)).r[1].m128_f32[3]); \
-        WOMA::logManager->DEBUG_MSG(TEXT("[%.3f %.3f %.3f %.3f]\n"), \
+        womalog(TEXT("[%.3f %.3f %.3f %.3f]\n"), \
             ((DirectX::XMMATRIX)(*pMat)).r[2].m128_f32[0], ((DirectX::XMMATRIX)(*pMat)).r[2].m128_f32[1], ((DirectX::XMMATRIX)(*pMat)).r[2].m128_f32[2], ((DirectX::XMMATRIX)(*pMat)).r[2].m128_f32[3]); \
-        WOMA::logManager->DEBUG_MSG(TEXT("[%.3f %.3f %.3f %.3f]\n\n"), \
+        womalog(TEXT("[%.3f %.3f %.3f %.3f]\n\n"), \
             ((DirectX::XMMATRIX)(*pMat)).r[3].m128_f32[0], ((DirectX::XMMATRIX)(*pMat)).r[3].m128_f32[1], ((DirectX::XMMATRIX)(*pMat)).r[3].m128_f32[2], ((DirectX::XMMATRIX)(*pMat)).r[3].m128_f32[3]); \
     } \
 }
 #else
-#define DX11_LOG_MATRIX(pMat)
+#define DX_LOG_MATRIX(pMat)
 #endif
 
 #endif
@@ -319,6 +324,12 @@ inline double SafeDouble(uint32_t value) {
 #endif
 	return static_cast<double>(static_cast<int32_t>(value)); // Always safe
 }
+#endif
+
+#if defined INTRO_DEMO
+#define IF_RENDER_PAGE(condition) if (condition)
+#else
+#define IF_RENDER_PAGE(condition)
 #endif
 
 #endif

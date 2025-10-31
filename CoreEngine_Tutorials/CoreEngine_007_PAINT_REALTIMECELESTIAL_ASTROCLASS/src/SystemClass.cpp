@@ -60,7 +60,7 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 	// STARTING POINT of WOMA ENGINE!
 	CLASSLOADER();
 
-	AppSettings = NULL;
+	WOMA::AppSettings = NULL;
 
 	if (WOMA::game_state < ENGINE_RESTART)
 		WOMA::game_state = GAME_LOADING;
@@ -79,7 +79,7 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 #elif defined  (_MSC_VER)
 	StringCchPrintf(COMPILER, MAX_STR_LEN, TEXT("Visual C++ %d.%02d"), _MSC_VER / 100, _MSC_VER % 100);
 #elif defined  (ANDROID_PLATFORM)
-	StringCchPrintf(COMPILER, MAX_STR_LEN, TEXT("TODO %s.%s"), GET_VERSION(__GNUC__), GET_VERSION(__GNUC_MINOR__));
+	StringCchPrintf(COMPILER, MAX_STR_LEN, TEXT("Visual C++ %s.%s"), GET_VERSION(__GNUC__), GET_VERSION(__GNUC_MINOR__));
 #elif defined  (__GNUC__)
 	StringCchPrintf(COMPILER, MAX_STR_LEN, TEXT("GCC %s.%s.%s"), GET_VERSION(__GNUC__), GET_VERSION(__GNUC_MINOR__), GET_VERSION(__GNUC_PATCHLEVEL__));
 #endif	
@@ -92,7 +92,8 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 #endif
 
 	StringCchPrintf(WOMA::APP_NAME, MAX_STR_LEN,
-		TEXT("%s v%c%c%c%c.%c%c.%c%c BIN:%s OS:%s %s BUILD:%s BIN:%dbit %s CHAR:%s Lvl: %d"),
+		TEXT("Lvl: %d %s v%c%c%c%c.%c%c.%c%c BIN:%s OS:%s %s BUILD:%s BIN:%dbit %s CHAR:%s"),
+		LEVEL, 
 		PROJECT_NAME,
 		BUILD_YEAR_CH0, BUILD_YEAR_CH1, BUILD_YEAR_CH2, BUILD_YEAR_CH3,
 		BUILD_MONTH_CH0, BUILD_MONTH_CH1, BUILD_DAY_CH0, BUILD_DAY_CH1,
@@ -104,7 +105,15 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 #elif defined WIN10
 		TEXT("Win10/11") //SystemHandle->systemManager->pszOS
 #elif WINVER == _WIN32_WINNT_WIN7
+	#if defined ANDROID_PLATFORM
+		#if defined X64	
+			TEXT("Android-x64")
+		#else
+			TEXT("Android-x86")
+		#endif
+	#else
 		TEXT("WIN7")
+	#endif
 #elif defined WINDOWS_PLATFORM
 		TEXT("Windows")
 #elif defined CYGWIN_PLATFORM
@@ -188,8 +197,6 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 #else
 		TEXT("Ansi")
 #endif
-		,
-		LEVEL
 		//TEXT(__DATE__)
 	);
 	
@@ -336,7 +343,7 @@ void SystemClass::InitializeSystemScreenF1(int x, int y)
 	// ----------------------------------
 	// BOARD/CPU Features (RIGHT SIDE):
 #if defined WINDOWS_PLATFORM
-	if (AppSettings->WINDOW_WIDTH == 0)
+	if (WOMA::AppSettings->WINDOW_WIDTH == 0)
 	{
 		// --------------------------------------------------------------------------------------------
 		DEVMODE devMode = { 0 };
@@ -350,8 +357,8 @@ void SystemClass::InitializeSystemScreenF1(int x, int y)
 			if (EnumDisplaySettings(displayDevice.DeviceName, ENUM_CURRENT_SETTINGS, &devMode))
 			{
 				// Use the Monitor selected by user:
-				if (((deviceNum == AppSettings->UI_MONITOR) && (AppSettings->UseAllMonitors == false)) ||
-					((deviceNum == MONITOR_NUM) && (AppSettings->UseAllMonitors == true)))
+				if (((deviceNum == WOMA::AppSettings->UI_MONITOR) && (WOMA::AppSettings->UseAllMonitors == false)) ||
+					((deviceNum == MONITOR_NUM) && (WOMA::AppSettings->UseAllMonitors == true)))
 				{
 					HALF = (devMode.dmPelsWidth / 5) * 3;
 					break;
@@ -372,7 +379,7 @@ void SystemClass::InitializeSystemScreenF1(int x, int y)
 	text.y += (int)LINE; text.label = systemDefinitions.freeMemory;
 	TextToPrint[0].push_back(text);
 
-	HALF = (AppSettings->WINDOW_WIDTH / 5) * 3;
+	HALF = (WOMA::AppSettings->WINDOW_WIDTH / 5) * 3;
 
 	// ----------------------------------
 	// CPU FEATURES:
@@ -438,7 +445,7 @@ void SystemClass::InitializeSystemScreenF1(int x, int y)
 void SystemClass::refreshTitle() // Run once per second.
 {
 
-	StringCchPrintf(pstrFPS, 300, TEXT("FPS:%d %s "), SystemHandle->fps, WOMA::APP_FULLNAME);
+	StringCchPrintf(pstrFPS, 300, TEXT("%s"), WOMA::APP_FULLNAME);
 
 #if defined WINDOWS_PLATFORM && !defined ANDROID_PLATFORM
 #if defined(X64) // Set the new "Window Title"
@@ -468,26 +475,34 @@ void SystemClass::refreshTitle() // Run once per second.
 
 void SystemClass::CalculateCameraViewAndFrustum(void* pContext)
 {
+#if defined USE_WOMA_ENGINE_ONE_CBUFFER
+	womalogATfirstframe(TEXT("[DEBUG] BuildGlobalVPArray check: DX_ENGINE_LEVEL=%d  RenderPage=%u\n"), DX_ENGINE_LEVEL, RENDER_PAGE);
+#endif
+
 	// SET CAMERA (for this monitor): Prepare to Take a Shot: Generate the view matrix based on the camera's position.
 
-	// CONSTRUCT: FRUSTUM
+	// ----------------------------------------------------------------------------
+	// CONSTRUCT VIEW FRUSTUM (for visibility testing)
+	// ----------------------------------------------------------------------------
 #if defined USE_FRUSTUM
-#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
-		m_Driver->frustum->ConstructFrustum(SystemHandle->AppSettings->SCREEN_DEPTH / 2.5f,
+	IF_RENDER_PAGE(RENDER_PAGE >= 30)
+	{
+	#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
+		m_Driver->frustum->ConstructFrustum(WOMA::AppSettings->SCREEN_DEPTH / 2.5f,
 			&((DX12Class*)m_Driver)->m_projectionMatrix,
 			&DXsystemHandle->m_Camera->m_viewMatrix);
-#endif
+	#endif
 
-#if defined DX11 || defined DX9
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
-		m_Driver->frustum->ConstructFrustum(SystemHandle->AppSettings->SCREEN_DEPTH / 2.5f,
+	#if defined DX11 || defined DX9
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
+		m_Driver->frustum->ConstructFrustum(WOMA::AppSettings->SCREEN_DEPTH / 2.5f,
 			&((DX11Class*)m_Driver)->m_projectionMatrix,
 			&DXsystemHandle->m_Camera->m_viewMatrix);
-#endif
+	#endif
 
-#if (defined OPENGL3 || defined OPENGL4)
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) {
+	#if (defined OPENGL3 || defined OPENGL4)
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3) {
 
 		mat4 glPrjMatrix = ((GLopenGLclass*)m_Driver)->m_projectionMatrix;
 		XMMATRIX m_projectionMatrix = XMMatrixSet
@@ -507,18 +522,21 @@ void SystemClass::CalculateCameraViewAndFrustum(void* pContext)
 			glvMatrix.m[12], glvMatrix.m[13], glvMatrix.m[14], glvMatrix.m[15]
 		);
 
-		m_Driver->frustum->ConstructFrustum(SystemHandle->AppSettings->SCREEN_DEPTH / 2.5f,
+		m_Driver->frustum->ConstructFrustum(WOMA::AppSettings->SCREEN_DEPTH / 2.5f,
 			&m_projectionMatrix,
 			&m_viewMatrix);
 	}
-#endif
+	#endif
+	}
 #endif
 
-	//AFTER: CalculateCameraViewAndFrustum:
+	// ----------------------------------------------------------------------------
+	// AFTER CAMERA CALCULATION – build global VP buffer, log matrices if needed
+	// ----------------------------------------------------------------------------
 }
 
 //-----------------------------------------------------------------------------------------
-void SystemClass::ProcessOSInput() // This Function will be invoked several times per second
+void SystemClass::ProcessOS_Fx_Keys_Input() // This Function will be invoked several times per second
 //-----------------------------------------------------------------------------------------
 {
 	//LEVEL 4 System
@@ -574,9 +592,9 @@ void SystemClass::ProcessOSInput() // This Function will be invoked several time
 		OS_REDRAW_WINDOW;
 
 		// Toggle the full screen/window mode
-		if (SystemHandle->AppSettings->FULL_SCREEN)
+		if (WOMA::AppSettings->FULL_SCREEN)
 		{
-			SystemHandle->AppSettings->FULL_SCREEN = false;
+			WOMA::AppSettings->FULL_SCREEN = false;
 			CHAR str[MAX_STR_LEN] = { 0 }; wtoa(str, (TCHAR*)SystemHandle->XML_SETTINGS_FILE.c_str(), MAX_STR_LEN); // wchar ==> char
 			#if defined CLIENT_SCENE_SETUP
 			SystemHandle->xml_loader.saveXMLsettingsFile(str);
@@ -764,7 +782,6 @@ void SystemClass::Shutdown()
 	SAFE_DELETE(systemManager);
 #endif
 
-	AppSettings = NULL;				// Pointer to Static object, no need to free.
 }
 #if defined ANDROID_PLATFORM
 extern android_app* app;
@@ -775,21 +792,21 @@ void SystemClass::FrameUpdate()
 
 	#if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 	  #if !defined ANDROID_PLATFORM
-		DXsystemHandle->GetInputs();				    // READ-INPUT: WinSystemClass::ProcessInput() + DXInputClass::Frame()
+		DXsystemHandle->GetInputs();					// READ-INPUT: WinSystemClass::ProcessInput() + DXInputClass::Frame()
 	  #endif
 	  #if defined DX_ENGINE
-		DXsystemHandle->m_Input->ProcessInputKeys();	// Process Keyboard keys / (DXInputClass)
+		DXsystemHandle->m_Input->GetDirectInputKeys();	// Process Keyboard keys / (DXInputClass)
 	  #endif
 	#endif
 
 	#if defined USE_PROCESS_OS_KEYS && defined WINDOWS_PLATFORM
-		ProcessOSInput();							    // Process Special function keys |ESC and F1 to F6|
+		ProcessOS_Fx_Keys_Input();						// Process Special function keys |ESC and F1 to F6|
 		if (WOMA::game_state == ENGINE_RESTART)
 			return;
 	#endif
 	
 	#if CORE_ENGINE_LEVEL >= 4 && defined USE_TIMER_CLASS
-		ProcessPerformanceStats();					    // ProcessPerformanceStats-FPS: m_Timer.Frame(); m_Fps.Frame(); m_Cpu.Frame();
+		ProcessPerformanceStats();					    // Run every: FPS: m_Timer.Frame(); m_Fps.Frame(); m_Cpu.Frame();
 	#endif
 }
 
@@ -804,8 +821,15 @@ bool SystemClass::InitOsInput()
 }
 #endif
 
-
-void SystemClass::ParseCommandLineArgs(int argc, char* argv[])
+// Used by: runtest_WindowsEngine_002-009-Core.bat
+// Used by: runtest_WindowsEngine_020-028.bat
+// Used by: runtest_WindowsEngine_030-038.bat
+// Used by: runtest_WindowsEngine_039-053.bat
+// Used by: runtest_WindowsEngine_054-065.bat
+// Used by: runtest_WindowsEngine_070-078.bat
+// Used by: runtest_WindowsEngine_082-90.bat
+// Used by: runtest_WindowsEngine_090-98.bat
+void SystemClass::ParseCommandLineAndApplySettings(int argc, char* argv[])
 {
 #if defined USE_TINYXML_LOADER			        // This settings.xml can be override by command line options!
     IF_NOT_THROW_EXCEPTION(LoadXmlSettings()); //  XML: Load Application Settings: "settings.xml", pickup "Driver" to Use (override default: WOMA::settings)
@@ -873,6 +897,13 @@ void SystemClass::ParseCommandLineArgs(int argc, char* argv[])
         }
     }
 #endif
+
+	//FORCE VSYNC on short demos:
+	if (WOMA::renderOnce)
+	{
+		WOMA::AppSettings->VSYNC_ENABLED = true;
+		WOMA::AppSettings->UseAllMonitors = false;
+	}
 }
 
 
@@ -896,7 +927,15 @@ bool SystemClass::LoadXmlSettings()
 		return false;
 	}
 
-	SystemHandle->LandScape = (SystemHandle->AppSettings->WINDOW_WIDTH >= SystemHandle->AppSettings->WINDOW_HEIGHT) ? true : false;
+#if DX_ENGINE_LEVEL == 29 || defined INTRO_DEMO // Force Full Screen
+	#ifdef RELEASE
+		WOMA::AppSettings->FULL_SCREEN = true;
+	#endif
+	WOMA::AppSettings->INIT_CAMZ = -20;
+	WOMA::AppSettings->NETWORK_ENABLED = true;
+#endif
+
+	SystemHandle->LandScape = (WOMA::AppSettings->WINDOW_WIDTH >= WOMA::AppSettings->WINDOW_HEIGHT) ? true : false;
 
 	//FORCE LANDSCAPE:
 
@@ -906,7 +945,7 @@ bool SystemClass::LoadXmlSettings()
 #endif
 
 #if CORE_ENGINE_LEVEL >= 4 && defined USE_TIMER_CLASS
-void SystemClass::ProcessPerformanceStats() // Run every frame
+void SystemClass::ProcessPerformanceStats()
 {
 	// Update the system stats: (BEFORE: HandleUserInput)
 	m_Timer.Frame();		// Calculate dT for animations (Measure last frame time)

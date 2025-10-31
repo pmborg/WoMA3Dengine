@@ -126,14 +126,16 @@ void ApplicationClass::CreateSphereModel(UINT SPHERE_SIZE, int Sphere_gridpoints
 		ShaderVertices.ny = -1 * vertices[i].y;
 		ShaderVertices.nz = -1 * vertices[i].z;
 
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 			ShaderVertices.tu = 1 - vertices[i].tu/2;
 		else
 			ShaderVertices.tu = 1 - vertices[i].tu;
 
+#if true //DX_ENGINE_LEVEL < 98
 		ShaderVertices.tv = 1 - (asinf(vertices[i].y) / PI + 0.5f);	// Map full Sphere
-		//ShaderVertices.tv = 1 - (asinf(vertices[i].y) / (PI/2));	// Map half Sphere
-
+#else
+		ShaderVertices.tv = 1 - (asinf(vertices[i].y) / (PI/2));	// Map half Sphere
+#endif
 		Sphere_vertexdata.push_back(ShaderVertices);
 	}
 }

@@ -296,7 +296,7 @@ bool DX11Class::createSetDepthStencilView (UINT i, int screenWidth, int screenHe
 
 	// Set up the depth stencil view description:
 	depthStencilViewDesc.Format = BUFFER_DEPTH_FORMAT; //DXGI_FORMAT_D24_UNORM_S8_UINT; The formats that support stenciling are: DXGI_FORMAT_D24_UNORM_S8_UINT and DXGI_FORMAT_D32_FLOAT_S8X24_UINT.
-	depthStencilViewDesc.ViewDimension = (SystemHandle->AppSettings->MSAA_Anisotropic) ? D3D11_DSV_DIMENSION_TEXTURE2DMS: D3D11_DSV_DIMENSION_TEXTURE2D; //MSAA
+	depthStencilViewDesc.ViewDimension = (WOMA::AppSettings->MSAA_Anisotropic) ? D3D11_DSV_DIMENSION_TEXTURE2DMS: D3D11_DSV_DIMENSION_TEXTURE2D; //MSAA
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
 	//depthStencilViewDesc.Flags = 0;
  

@@ -181,10 +181,10 @@ HRESULT DX11Class::CreateShaderResourceViewFromFileMANAGED(
 			// Reload if too bigger, checking Our XML Texture Setting:
 			//
 			// TextureWidth:
-			if (m_iTextureWidth > SystemHandle->AppSettings->MaxTextureSize && (m_iTextureWidth >= m_iTextureHeight)) 
+			if (m_iTextureWidth > WOMA::AppSettings->MaxTextureSize && (m_iTextureWidth >= m_iTextureHeight)) 
 			{
-				loadInfo.Width = SystemHandle->AppSettings->MaxTextureSize;
-				loadInfo.Height = SystemHandle->AppSettings->MaxTextureSize * m_iTextureHeight / m_iTextureWidth;
+				loadInfo.Width = WOMA::AppSettings->MaxTextureSize;
+				loadInfo.Height = WOMA::AppSettings->MaxTextureSize * m_iTextureHeight / m_iTextureWidth;
 				SAFE_RELEASE (*ppShaderResourceView);
 				if (ibuf)
 					hr = D3DX11CreateShaderResourceViewFromMemory(pDevice, ibuf, SrcDataSize, (shrinkTexture) ? pLoadInfo:NULL, pPump, ppShaderResourceView, pHResult);
@@ -192,10 +192,10 @@ HRESULT DX11Class::CreateShaderResourceViewFromFileMANAGED(
 					hr = D3DX11CreateShaderResourceViewFromFile(pDevice, pSrcFile, (shrinkTexture) ? pLoadInfo:NULL, (shrinkTexture) ? pPump:NULL, ppShaderResourceView, pHResult);
 			}
 			// TextureHeight:
-			if (m_iTextureHeight > SystemHandle->AppSettings->MaxTextureSize && (m_iTextureWidth < m_iTextureHeight)) 
+			if (m_iTextureHeight > WOMA::AppSettings->MaxTextureSize && (m_iTextureWidth < m_iTextureHeight)) 
 			{
-				loadInfo.Height = SystemHandle->AppSettings->MaxTextureSize;
-				loadInfo.Width =  SystemHandle->AppSettings->MaxTextureSize * m_iTextureWidth / m_iTextureHeight;
+				loadInfo.Height = WOMA::AppSettings->MaxTextureSize;
+				loadInfo.Width =  WOMA::AppSettings->MaxTextureSize * m_iTextureWidth / m_iTextureHeight;
 		
 				SAFE_RELEASE (*ppShaderResourceView);
 				if (ibuf)

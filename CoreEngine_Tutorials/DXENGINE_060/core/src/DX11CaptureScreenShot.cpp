@@ -56,7 +56,7 @@ ImageLoaderClass* DX11Class::CaptureScreenShot(int screenWidth, int screenHeight
 	ID3D11Texture2D *texture;
 	if (SUCCEEDED(m_device11->CreateTexture2D(&desc, NULL, &texture)))
 	{
-		if (SystemHandle->AppSettings->MSAA_Anisotropic)
+		if (WOMA::AppSettings->MSAA_Anisotropic)
 		{
 			ID3D11Texture2D *resolved = NULL;
 			desc.Usage = D3D11_USAGE_DEFAULT;

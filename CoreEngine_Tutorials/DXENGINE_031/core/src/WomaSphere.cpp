@@ -79,8 +79,8 @@ void ApplicationClass::initSky(void* pContext, float SPHERE_SIZE)
 
 	std::vector<STRING> Textures;
 
-#ifdef MAIN_RENDER_MAIN_XML_OBJ
-	TCHAR wskyDayTexture[MAX_STR_LEN] = { 0 }; atow(wskyDayTexture, SystemHandle->world.skyDayTexture.c_str(), MAX_STR_LEN);
+#if defined MAIN_RENDER_MAIN_XML_OBJ && !defined USE_DEMO99
+	TCHAR wskyDayTexture[MAX_STR_LEN] = { 0 }; atow(wskyDayTexture, get_world_skyDayTexture().c_str(), MAX_STR_LEN);
 	Textures.push_back(wskyDayTexture);
 
 #else
@@ -157,14 +157,16 @@ void ApplicationClass::CreateSphereModel(UINT SPHERE_SIZE, int Sphere_gridpoints
 		ShaderVertices.ny = -1 * vertices[i].y;
 		ShaderVertices.nz = -1 * vertices[i].z;
 
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 			ShaderVertices.tu = 1 - vertices[i].tu/2;
 		else
 			ShaderVertices.tu = 1 - vertices[i].tu;
 
+#if true //DX_ENGINE_LEVEL < 98
 		ShaderVertices.tv = 1 - (asinf(vertices[i].y) / PI + 0.5f);	// Map full Sphere
-		//ShaderVertices.tv = 1 - (asinf(vertices[i].y) / (PI/2));	// Map half Sphere
-
+#else
+		ShaderVertices.tv = 1 - (asinf(vertices[i].y) / (PI/2));	// Map half Sphere
+#endif
 		Sphere_vertexdata.push_back(ShaderVertices);
 	}
 }

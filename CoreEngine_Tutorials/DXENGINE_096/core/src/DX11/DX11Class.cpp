@@ -113,8 +113,8 @@ DX11Class::DX11Class()
 
 	// MSAA Used:
 	// ---------------------------------------------------------------------------
-	if (SystemHandle->AppSettings->MSAA_Anisotropic)
-		MSAA_COUNT = MAX(1, SystemHandle->AppSettings->MSAA_AnisotropicLevel);	// Req. Note: DX12 min: 1
+	if (WOMA::AppSettings->MSAA_Anisotropic)
+		MSAA_COUNT = MAX(1, WOMA::AppSettings->MSAA_AnisotropicLevel);	// Req. Note: DX12 min: 1
 	else
 		MSAA_COUNT = 1;
 	MSAA_QUALITY = 0;																	// Req. Note: default: 1
@@ -390,7 +390,7 @@ BOOL DX11Class::CheckAPIdriver(int USE_THIS_ADAPTER_CARD)
 			swprintf_s(buff, L"Direct3D Adapter (%u): VID:%04X, PID:%04X - %ls\n", adapterIndex, desc.VendorId, desc.DeviceId, desc.Description);
 			womalogw(buff);
 	#endif
-			if (SystemHandle->AppSettings->ADAPTOR == -1)
+			if (WOMA::AppSettings->ADAPTOR == -1)
 				USE_THIS_ADAPTER_CARD = adapterIndex;
 
 			list_graphic_cards.push_back(desc.Description);
@@ -463,17 +463,17 @@ bool DirectX::DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int scree
     womalog("-------------------------\n");
 
     //Init Step: 1 - Check Driver for DX9 and DX10 and DX12(=false) on DX11 API
-    ASSERT(CheckAPIdriver(SystemHandle->AppSettings->ADAPTOR));
+    ASSERT(CheckAPIdriver(WOMA::AppSettings->ADAPTOR));
    
     /*Init Step: 2 - Create Factory
     Get list of all MODES for all MONITORS
     Get Refresh Rate
     Get BUFFER_COLOR_FORMAT
     */
-    getModesList(SystemHandle->AppSettings->UI_MONITOR,
-        SystemHandle->AppSettings->WINDOW_WIDTH,
-        SystemHandle->AppSettings->WINDOW_HEIGHT,
-        SystemHandle->AppSettings->FULL_SCREEN,
+    getModesList(WOMA::AppSettings->UI_MONITOR,
+        WOMA::AppSettings->WINDOW_WIDTH,
+        WOMA::AppSettings->WINDOW_HEIGHT,
+        WOMA::AppSettings->FULL_SCREEN,
         &numerator, &denominator);
     
 	list_resolutions();
@@ -645,10 +645,10 @@ bool DirectX::DX11Class::create_or_resize_swap(UINT USE_MONITOR, int screenWidth
 			// -----------------------------------------------------------
 			// SWAPCHAINDESC.BUFFERCOUNT - Set the number of back-buffers:
 			// -----------------------------------------------------------
-			if (SystemHandle->AppSettings->UseTripleBuffering)
+			if (WOMA::AppSettings->UseTripleBuffering)
 				swapbufferscount = 3;
 			else
-				swapbufferscount = (SystemHandle->AppSettings->UseDoubleBuffering) ? 2 : 1; // Use double-buffering to minimize latency?
+				swapbufferscount = (WOMA::AppSettings->UseDoubleBuffering) ? 2 : 1; // Use double-buffering to minimize latency?
 
 			swapChainDesc.BufferCount = swapbufferscount;
 
@@ -693,7 +693,7 @@ bool DirectX::DX11Class::create_or_resize_swap(UINT USE_MONITOR, int screenWidth
 	#endif
 
 			// Discard the back buffer contents after presenting.
-			if (swapChainDesc.BufferCount > 1 && !SystemHandle->AppSettings->FULL_SCREEN && DX11windowsArray[USE_MONITOR].DX11_GPU_supportFLIP)
+			if (swapChainDesc.BufferCount > 1 && !WOMA::AppSettings->FULL_SCREEN && DX11windowsArray[USE_MONITOR].DX11_GPU_supportFLIP)
 			{
 				bool flipDiscardSupported = IsWindows10OrGreater();
 				swapChainDesc.SwapEffect = flipDiscardSupported ? DXGI_SWAP_EFFECT_FLIP_DISCARD
@@ -728,7 +728,7 @@ bool DirectX::DX11Class::create_or_resize_swap(UINT USE_MONITOR, int screenWidth
 				DX11windowsArray[USE_MONITOR].DX11_GPU_supportHDR = TRUE;
 			}
 			// This don't allow the alt-enter switch:
-			//if (DX11windowsArray[USE_MONITOR].DX11_GPU_supportTearing && (swapChainDesc.BufferCount > 1 && !SystemHandle->AppSettings->FULL_SCREEN && DX11windowsArray[USE_MONITOR].DX11_GPU_supportFLIP))
+			//if (DX11windowsArray[USE_MONITOR].DX11_GPU_supportTearing && (swapChainDesc.BufferCount > 1 && !WOMA::AppSettings->FULL_SCREEN && DX11windowsArray[USE_MONITOR].DX11_GPU_supportFLIP))
 			//	swapChainDesc.Flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
 #else
 			// Disable HDR if we are on an OS that can't support FLIP swap effects
@@ -1118,7 +1118,7 @@ bool DX11Class::CreateRenderTargetView (UINT i, int screenWidth, int screenHeigh
 			& DX11windowsArray[i].m_renderTargetView));	//backBufferRTV
 #else
 		IF_FAILED_RETURN_FALSE(m_device11->CreateRenderTargetView	(DX11windowsArray[i].m_backBuffer, 
-								(SystemHandle->AppSettings->MSAA_Anisotropic) ? &renderTargetViewDescMSAA:&renderTargetViewDesc,
+								(WOMA::AppSettings->MSAA_Anisotropic) ? &renderTargetViewDescMSAA:&renderTargetViewDesc,
 								&DX11windowsArray[i].m_renderTargetView));	//backBufferRTV
 #endif
 	}
@@ -1142,7 +1142,12 @@ bool DX11Class::Initialize(float* clearColor)
 	return true;
 }
 
-void DX11Class::Finalize() {} //not used on DX11
+void DX11Class::Finalize() 
+{
+#if defined USE_RASTERIZER_STATE
+	m_Driver->SetRasterizerState(m_deviceContext, CULL_NONE, FILL_SOLID);
+#endif
+} //not used on DX11
 
 // ----------------------------------------------------------------------------------------------
 void DX11Class::BeginScene(UINT monitorWindow)
@@ -1173,7 +1178,8 @@ void DX11Class::BeginScene(UINT monitorWindow)
 #endif
 
 	// Clear Screen (RTV)
-#if DX_ENGINE_LEVEL < 30 || !defined MAIN_RENDER_SKY // With Sky Dome we don't need to wait time on clear screen
+#if defined INTRO_DEMO || (DX_ENGINE_LEVEL < 30 || !defined MAIN_RENDER_SKY) // With Sky Dome we don't need to wait time on clear screen
+	IF_RENDER_PAGE(RENDER_PAGE < 30)
 	m_deviceContext->ClearRenderTargetView(DX11windowsArray[monitorWindow].m_renderTargetView, driver_ClearColor);	// Clear the "back buffer":
 #endif
 
@@ -1183,33 +1189,8 @@ void DX11Class::BeginScene(UINT monitorWindow)
 #endif
 
 	SetBackBufferRenderTarget(m_deviceContext, monitorWindow);
-
-//#if DX_ENGINE_LEVEL >= 99 && defined USE_WOMA_ENGINE_ONE_CBUFFER
-//	if (RenderfirstTime)
-//	{
-//		// Map buffer for writing
-//		D3D11_MAPPED_SUBRESOURCE mappedResource = { 0 };
-//		HRESULT result = m_deviceContext->Map(m_cbStaticWorldCPU11, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-//		if (FAILED(result))
-//			throw woma_exception("Map failed", __FILE__, __FUNCTION__, __LINE__);
-//
-//		globaldataVSptr = (CB_STATICWORLDCPU*)mappedResource.pData;
-//	}
-//#endif
 }
 
-//Steps to Handle Device Loss:
-//    1.	Release All Resources Tied to the Device
-//    •	Release all Direct3D resources(e.g., buffers, textures, shaders, views) that are tied to the device.
-//    •	This includes render targets, depth - stencil views, and swap chains.
-//    2.	Reset the Device
-//    •	Recreate the Direct3D device and its associated context.
-//    •	Reinitialize the swap chain and other resources.
-//    3.	Reinitialize Resources
-//    •	Recreate all resources that were released earlier.
-//    •	This includes shaders, textures, buffers, and any other GPU resources.
-//    4.	Log the Event
-//    •	Log the device loss and recovery process for debugging purposes.
 
 void DX11Class::OnDeviceLost() // Our Driver in use was re-installed??
 {
@@ -1368,8 +1349,8 @@ void DX11Class::Initialize2Dand3DCamera()
 #endif
 
 	// Set Normal 3D Camera: ( After: SetCamera2D() )
-	DXsystemHandle->m_Camera->SetPosition(	SystemHandle->AppSettings->INIT_CAMX, SystemHandle->AppSettings->INIT_CAMY, SystemHandle->AppSettings->INIT_CAMZ);
-	DXsystemHandle->m_Camera->SetRotation(	SystemHandle->AppSettings->INIT_ROTX, SystemHandle->AppSettings->INIT_ROTY, SystemHandle->AppSettings->INIT_ROTZ);
+	DXsystemHandle->m_Camera->SetPosition(	WOMA::AppSettings->INIT_CAMX, WOMA::AppSettings->INIT_CAMY, WOMA::AppSettings->INIT_CAMZ);
+	DXsystemHandle->m_Camera->SetRotation(	WOMA::AppSettings->INIT_ROTX, WOMA::AppSettings->INIT_ROTY, WOMA::AppSettings->INIT_ROTZ);
 	}
 
 	// Set fixed Sky Camera 3D Camera:
@@ -1380,7 +1361,7 @@ void DX11Class::Initialize2Dand3DCamera()
 	}
 
 	DXsystemHandle->m_CameraSKY->SetPosition(0.0f, 0.0f, 0.0f);
-	DXsystemHandle->m_CameraSKY->SetRotation(SystemHandle->AppSettings->INIT_ROTX, SystemHandle->AppSettings->INIT_ROTY, SystemHandle->AppSettings->INIT_ROTZ);
+	DXsystemHandle->m_CameraSKY->SetRotation(WOMA::AppSettings->INIT_ROTX, WOMA::AppSettings->INIT_ROTY, WOMA::AppSettings->INIT_ROTZ);
 	DXsystemHandle->m_CameraSKY->CalculateViewMatrix();
 #endif
 }

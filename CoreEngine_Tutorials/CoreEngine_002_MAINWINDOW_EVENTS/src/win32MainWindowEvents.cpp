@@ -46,7 +46,7 @@ void WinSystemClass::StartTimer()
 #define KEYB_TIMES_PER_SECOND 1
 
 	// Don't Update on: FullScreen or Full-windowed
-    if ((!AppSettings->FULL_SCREEN) && (windowStyle != 0x96080000))
+    if ((!WOMA::AppSettings->FULL_SCREEN) && (windowStyle != 0x96080000))
     {
 #if defined NDEBUG //INTRO_DEMO
         SetTimer(m_hWnd, TIMER_TITLE, 100 / KEYB_TIMES_PER_SECOND, NULL);	// 100ms = 10 x per second!
@@ -87,7 +87,7 @@ HWND DoCreateStatusBar(HWND hwndParent, int idStatus, HINSTANCE hinst, int cPart
 	// Ensure that the common control DLL is loaded.
 	InitCommonControls();
 
-	DWORD windowStyle = ((SystemHandle->AppSettings->AllowResize) && (LEVEL >= 20)) ?
+	DWORD windowStyle = ((WOMA::AppSettings->AllowResize) && (LEVEL >= 20)) ?
 		SBARS_SIZEGRIP |        // includes a sizing grip
 		WS_CHILD | WS_VISIBLE	// creates a visible child window
 		:
@@ -289,8 +289,8 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 			}
 			else if (wParam == SIZE_MAXIMIZED)	// [] (go from default to maximize!)
 			{
-				SystemHandle->AppSettings->WINDOW_WIDTH = LOWORD(lparam);	// New Useful Size
-				SystemHandle->AppSettings->WINDOW_HEIGHT = HIWORD(lparam);	// New Useful Size
+				WOMA::AppSettings->WINDOW_WIDTH = LOWORD(lparam);	// New Useful Size
+				WOMA::AppSettings->WINDOW_HEIGHT = HIWORD(lparam);	// New Useful Size
 				mMaximized = true;
 				if (WOMA::game_state == GAME_MINIMIZED)
 					UNPAUSE();	//Restore State
@@ -323,8 +323,8 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 					{ 
 						RECT rc;
 						GetClientRect(SystemHandle->m_hWnd, &rc);
-						SystemHandle->AppSettings->WINDOW_WIDTH = rc.right - rc.left;
-						SystemHandle->AppSettings->WINDOW_HEIGHT = rc.bottom - rc.top;
+						WOMA::AppSettings->WINDOW_WIDTH = rc.right - rc.left;
+						WOMA::AppSettings->WINDOW_HEIGHT = rc.bottom - rc.top;
 						ONRESIZE(pContext);
 					}
 				}
@@ -391,8 +391,8 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 	// -----------------------------------------------------------------------------
 	case WM_MOVE:
 	{
-		SystemHandle->AppSettings->WINDOW_Xpos = GET_X_LPARAM(lparam);
-		SystemHandle->AppSettings->WINDOW_Ypos = GET_Y_LPARAM(lparam);
+		WOMA::AppSettings->WINDOW_Xpos = GET_X_LPARAM(lparam);
+		WOMA::AppSettings->WINDOW_Ypos = GET_Y_LPARAM(lparam);
 		return 0; //break;
 	}
 	// WM_EXITSIZEMOVE is sent when the user "drag" to resize window:
@@ -418,7 +418,7 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 		mResizing = false;
 
 #if defined USE_STATUSBAR
-        if (!AppSettings->FULL_SCREEN) 
+        if (!WOMA::AppSettings->FULL_SCREEN)
         {
             SystemHandle->statusbar = DoCreateStatusBar(SystemHandle->m_hWnd, 0, m_hinstance, 1);
             SendMessage(SystemHandle->statusbar, SB_SETTEXT, 0, (LPARAM)DEMO_TITLE);

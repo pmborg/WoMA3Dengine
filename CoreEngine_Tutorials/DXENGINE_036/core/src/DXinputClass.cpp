@@ -159,7 +159,7 @@ HRESULT result;
 	
 	// Set the cooperative level of the keyboard to not share with other programs.
 
-	if ( SystemHandle->AppSettings->FULL_SCREEN )
+	if ( WOMA::AppSettings->FULL_SCREEN )
 		result = m_keyboard->SetCooperativeLevel(SystemHandle->m_hWnd, DISCL_FOREGROUND | DISCL_EXCLUSIVE);
 	else {
 		result = m_keyboard->SetCooperativeLevel(SystemHandle->m_hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
@@ -357,7 +357,7 @@ bool DXInputClass::GetMouseKeyboardState()
 		womalog ("\n");
 	#endif
 
-	ProcessInputKeys();
+	GetDirectInputKeys();
 
 	return true;
 }

@@ -61,7 +61,7 @@ void GlTextClass::Shutdown()
 
 void GlTextClass::ReleaseSentence(SentenceType** sentence)
 {
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX9 || WOMA::AppSettings->DRIVER == DRIVER_DX11)
 	{
 		if (*sentence)
 		{
@@ -93,7 +93,7 @@ bool GlTextClass::Initialize(void* Driver, ID3D11DeviceContext* pContext)
 	IF_NOT_RETURN_FALSE(m_Font->Initialize(pContext, Driver, FONT_DATA_FILE, FONT_DATA_TEXTURE));
 
 #if (defined OPENGL3 || defined OPENGL4)
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
 		m_spriteShader = NEW GLshaderClass;
 #endif
 	IF_NOT_THROW_EXCEPTION(m_spriteShader);
@@ -193,7 +193,7 @@ bool GlTextClass::UpdateSentence(SentenceType* sentence, TCHAR* text, int positi
 	int numLetters;
 	ModelTextureVertexType* vertices;
 	float drawX, drawY;
-	//WomaDriverClass* m_Driver = driverList[SystemHandle->AppSettings->DRIVER];
+	//WomaDriverClass* m_Driver = driverList[WOMA::AppSettings->DRIVER];
 
 	positionY += 36;
 
@@ -224,8 +224,8 @@ bool GlTextClass::UpdateSentence(SentenceType* sentence, TCHAR* text, int positi
 	memset(vertices, 0, (sizeof(ModelTextureVertexType) * sentence->vertexCount));
 
 	// Calculate the X and Y pixel position on the screen to start drawing to.
-	drawX = (float)(((SystemHandle->AppSettings->WINDOW_WIDTH / 2) * -1) + positionX);
-	drawY = (float)((SystemHandle->AppSettings->WINDOW_HEIGHT / 2) - positionY);
+	drawX = (float)(((WOMA::AppSettings->WINDOW_WIDTH / 2) * -1) + positionX);
+	drawY = (float)((WOMA::AppSettings->WINDOW_HEIGHT / 2) - positionY);
 
 	// Use the font class to build the vertex array from the sentence text and sentence draw location.
 	m_Font->BuildVertexArray((void*)vertices, text, drawX, drawY);
@@ -257,7 +257,7 @@ bool GlTextClass::UpdateSentence(SentenceType* sentence, TCHAR* text, int positi
 //
 //m_worldMatrix = XMMatrixIdentity();
 //m_worldMatrix._11 = m_worldMatrix._22 = m_worldMatrix._33 = scale;
-//m_worldMatrix._42 = +SystemHandle->AppSettings->WINDOW_HEIGHT / 2 - m_worldMatrix._33 * SpriteTextureHeight / 2;
+//m_worldMatrix._42 = +WOMA::AppSettings->WINDOW_HEIGHT / 2 - m_worldMatrix._33 * SpriteTextureHeight / 2;
 //
 //Render(m_driver, CAMERA_NORMAL, PROJECTION_ORTHOGRAPH);
 //	SetBuffers(driver->m_device);
@@ -271,7 +271,7 @@ void GlTextClass::RenderSentence(SentenceType* sentence)
 #if (defined OPENGL3 || defined OPENGL4)
 	m_spriteShader->SetShader();
 
-	GLopenGLclass* driver = (GLopenGLclass*)driverList[SystemHandle->AppSettings->DRIVER];
+	GLopenGLclass* driver = (GLopenGLclass*)driverList[WOMA::AppSettings->DRIVER];
 
 	static mat4 m_worldMatrix = m_worldMatrix.mat4identity();
 	static mat4 m_viewMatrix = m_viewMatrix.mat4identity();

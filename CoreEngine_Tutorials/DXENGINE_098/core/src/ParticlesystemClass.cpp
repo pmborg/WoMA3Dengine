@@ -103,8 +103,8 @@ bool ParticlesystemClass::InitializeParticleSystem(void* ctx, void* Driver)
 	waterfall_textures.push_back(WATERFALLTEXTURENOISEFILENAME);
 	waterfall_textures.push_back(WATERFALLTEXTUREFOAMFILENAME);
 
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) { CREATE_MODELGL3_IF_NOT_EXCEPTION(SystemHandle->m_Application->model_waterfall, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
-	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) { CREATE_MODELDX_IF_NOT_EXCEPTION (SystemHandle->m_Application->model_waterfall, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3) { CREATE_MODELGL3_IF_NOT_EXCEPTION(SystemHandle->m_Application->model_waterfall, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
+	if (WOMA::AppSettings->DRIVER != DRIVER_GL3) { CREATE_MODELDX_IF_NOT_EXCEPTION (SystemHandle->m_Application->model_waterfall, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
 	ASSERT(SystemHandle->m_Application->model_waterfall->LoadWaterFall(pContext11, TEXT("waterfall"),
 																	m_driver11, SHADER_USE_WATERFALL,
 																	&waterfall_textures, &model_waterfall, NULL));

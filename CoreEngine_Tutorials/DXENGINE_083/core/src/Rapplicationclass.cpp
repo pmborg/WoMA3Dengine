@@ -101,8 +101,8 @@ bool RApplicationClass::Render()
     // Create and initialize the first text object.
     m_TextString1 = new RTextClass;
     //_tprintf("m_TextString1->Initialize()\n");
-    IF_NOT_RETURN_FALSE(m_TextString1->Initialize(m_OpenGL, SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT, MAX_STR_LEN/4, m_Font, FPSString,
-                        SystemHandle->AppSettings->WINDOW_WIDTH - 180, 40,             // Position
+    IF_NOT_RETURN_FALSE(m_TextString1->Initialize(m_OpenGL, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT, MAX_STR_LEN/4, m_Font, FPSString,
+                        WOMA::AppSettings->WINDOW_WIDTH - 180, 40,             // Position
                         0.0f, 1.0f, 0.0f)); // Color
 
 	// Clear the buffers to begin the scene.

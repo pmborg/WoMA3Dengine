@@ -71,8 +71,8 @@ dxWinSystemClass::dxWinSystemClass(WOMA::Settings* appSettings) : WinSystemClass
 {
 	CLASSLOADER();
 	WomaIntegrityCheck = 1234525217;
-	WinSystemClass::AppSettings = appSettings;
-	WinSystemClass::mMaximized = WinSystemClass::AppSettings->FULL_SCREEN;
+	WOMA::AppSettings = appSettings;
+	WinSystemClass::mMaximized = WOMA::AppSettings->FULL_SCREEN;
 
 	mResizing = false;
 	DXsystemHandle = this;
@@ -124,10 +124,12 @@ bool dxWinSystemClass::APPLICATION_INIT_SYSTEM() //LOAD ALL GRAPHICS
 	// ClassRegister
 	// ApplicationInitMainWindow
 	// LoadXMLWorld
-	// InitOsInput
-	// InitSelectedDriver
-	// InitializeSystemScreen
+	// InitOsInput(m_OsInput and m_InputManager)
+	// LoadAllDrivers
+	// InitSelectedDriver("driver"->OnInit (...) and "driver"->Initialize (clearColor))
+	// InitializeSystemScreen(SETUP SCREENs: F1,F2,F3,F4,F5,F6)
 	// InitSceneManager
+	// PlayIntroMovie
 	// LoadAllGraphicAssets
 	// StartTimer
 	bool res = WinSystemClass::APPLICATION_INIT_SYSTEM();	
@@ -178,7 +180,7 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 
 	} while (msg.message != WM_QUIT);
 
-	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) > 0) // 5 sec max
+	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) > 0) 
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
@@ -192,6 +194,10 @@ int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 		return (int)msg.wParam; //return the PostQuitMessage (message code)
 }
 
+#if defined ALLOW_PRINT_SCREEN_SAVE_PNG || defined USE_DEMO99 && defined MAVERICK
+bool take_shot = false;
+#endif
+
 //----------------------------------------------------------------------------
 void dxWinSystemClass::ProcessFrame() //RENDER ALL GRAPHICS
 //----------------------------------------------------------------------------
@@ -201,8 +207,14 @@ void dxWinSystemClass::ProcessFrame() //RENDER ALL GRAPHICS
 
 	// Process Special: "PRINT SCREEN" key or F10, the "Back-Buffer" have 1 frame rendered, so now we can dump it:
 #if defined ALLOW_PRINT_SCREEN_SAVE_PNG && defined DX11
-	if ((WOMA::game_state > GAME_MINIMIZED) && (OS_KEY_DOWN(DIK_SYSRQ + 0x35) || OS_KEY_DOWN(DIK_F10 + 0x35)))
+	if (take_shot || (WOMA::game_state > GAME_MINIMIZED) && (OS_KEY_DOWN(DIK_SYSRQ + 0x35) || OS_KEY_DOWN(DIK_F10 + 0x35)))
+	{
 		ASSERT(SaveScreenshot());
+		take_shot = false;
+
+		womalog(TEXT("DXsystemHandle->m_Camera->m_viewMatrix"));
+		DX_LOG_MATRIX(&DXsystemHandle->m_Camera->m_viewMatrix);
+	}
 #endif
 }
 
@@ -260,13 +272,13 @@ void dxWinSystemClass::GPH_RESIZE(void* pContext)
 
 	// Used for OS: ...
 	//Recalculated AT WOMA_APPLICATION_InitGUI()
-	//SystemHandle->m_scaleX = MIN(1, SystemHandle->AppSettings->WINDOW_WIDTH / 1920.0f);
-	//SystemHandle->m_scaleY = MIN(1, SystemHandle->AppSettings->WINDOW_HEIGHT / 1080.0f);
+	//SystemHandle->m_scaleX = MIN(1, WOMA::AppSettings->WINDOW_WIDTH / 1920.0f);
+	//SystemHandle->m_scaleY = MIN(1, WOMA::AppSettings->WINDOW_HEIGHT / 1080.0f);
 
 	// Used for DX: ...
-	SystemHandle->m_Application->scaleX = SystemHandle->AppSettings->WINDOW_WIDTH / 1920.0f;
-	//SystemHandle->m_Application->scaleY = SystemHandle->AppSettings->WINDOW_HEIGHT / (1080.0f - 65);
-	SystemHandle->m_Application->scaleY = SystemHandle->AppSettings->WINDOW_HEIGHT / 1080.0f;
+	SystemHandle->m_Application->scaleX = WOMA::AppSettings->WINDOW_WIDTH / 1920.0f;
+	//SystemHandle->m_Application->scaleY = WOMA::AppSettings->WINDOW_HEIGHT / (1080.0f - 65);
+	SystemHandle->m_Application->scaleY = WOMA::AppSettings->WINDOW_HEIGHT / 1080.0f;
 	SystemHandle->m_Application->rescale = min(SystemHandle->m_Application->scaleX, SystemHandle->m_Application->scaleY);
 
 	if (driverList.size() < 4)
@@ -276,7 +288,7 @@ void dxWinSystemClass::GPH_RESIZE(void* pContext)
 	{
 		SystemHandle->m_Application->DEMO_WOMA_APPLICATION_Shutdown2D();
 
-	switch (AppSettings->DRIVER)
+	switch (WOMA::AppSettings->DRIVER)
 	{
 	#if defined DX11 || defined DX9
 		case DRIVER_DX9:
@@ -288,16 +300,16 @@ void dxWinSystemClass::GPH_RESIZE(void* pContext)
 					{
 						BOOL full_screen;
 						DX11windowsArray[0].m_swapChain1->GetFullscreenState(&full_screen, nullptr);
-						((DirectX::DX11Class*)m_Driver)->Resize(m, SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT,
-							SystemHandle->AppSettings->SCREEN_NEAR, SystemHandle->AppSettings->SCREEN_DEPTH,
-							full_screen, SystemHandle->AppSettings->BITSPERPEL);
+						((DirectX::DX11Class*)m_Driver)->Resize(m, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT,
+							WOMA::AppSettings->SCREEN_NEAR, WOMA::AppSettings->SCREEN_DEPTH,
+							full_screen, WOMA::AppSettings->BITSPERPEL);
 					}
 				else {
 					BOOL full_screen;
 					DX11windowsArray[0].m_swapChain1->GetFullscreenState(&full_screen, nullptr);
-					((DirectX::DX11Class*)m_Driver)->Resize(m, SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT,
-						SystemHandle->AppSettings->SCREEN_NEAR, SystemHandle->AppSettings->SCREEN_DEPTH,
-						full_screen, SystemHandle->AppSettings->BITSPERPEL);
+					((DirectX::DX11Class*)m_Driver)->Resize(m, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT,
+						WOMA::AppSettings->SCREEN_NEAR, WOMA::AppSettings->SCREEN_DEPTH,
+						full_screen, WOMA::AppSettings->BITSPERPEL);
 				}
 			}
 			break;
@@ -305,9 +317,9 @@ void dxWinSystemClass::GPH_RESIZE(void* pContext)
 	#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 		case DRIVER_DX12:
 			for (UINT m = 0; m < SystemHandle->allWindowsArray.size(); m++)
-			((DirectX::DX12Class*)m_Driver)->Resize(m,SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT,
-				SystemHandle->AppSettings->SCREEN_NEAR, SystemHandle->AppSettings->SCREEN_DEPTH,
-				SystemHandle->AppSettings->FULL_SCREEN, SystemHandle->AppSettings->BITSPERPEL);
+			((DirectX::DX12Class*)m_Driver)->Resize(m,WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT,
+				WOMA::AppSettings->SCREEN_NEAR, WOMA::AppSettings->SCREEN_DEPTH,
+				WOMA::AppSettings->FULL_SCREEN, WOMA::AppSettings->BITSPERPEL);
 			break;
 	#endif
 	}
@@ -337,7 +349,7 @@ bool dxWinSystemClass::ApplicationInitMainWindow()
 void dxWinSystemClass::PAUSE()
 {
 #if defined USE_WIN32_PLAY_MUSIC || defined INTRO_DEMO
-	if (SystemHandle->AppSettings->MUSIC_ENABLED)
+	if (WOMA::AppSettings->MUSIC_ENABLED)
 		if (audio) 
 			audio->pause(MusicSourceID);	
 #endif
@@ -346,7 +358,7 @@ void dxWinSystemClass::PAUSE()
 void dxWinSystemClass::UNPAUSE()
 {
 #if defined USE_WIN32_PLAY_MUSIC || defined INTRO_DEMO
-	if (SystemHandle->AppSettings->MUSIC_ENABLED)
+	if (WOMA::AppSettings->MUSIC_ENABLED)
 		if (audio) 
 			audio->play(MusicSourceID);
 #endif
@@ -434,7 +446,7 @@ bool dxWinSystemClass::StartSoundManager()
 #if DX_ENGINE_LEVEL >= 29 && (defined USE_WIN32_SOUND_MANAGER || defined USE_WIN32_PLAY_MUSIC)
 	audio = NEW AudioClass;
   #if defined USE_WIN32_PLAY_MUSIC || defined INTRO_DEMO
-	if (SystemHandle->AppSettings->MUSIC_ENABLED)
+	if (WOMA::AppSettings->MUSIC_ENABLED)
 	{
 		if (audio) {
 			MusicID = audio->addSound(WOMA::LoadFile(TEXT(AUDIO_FILE)), NULL);	// Load Sound
@@ -463,18 +475,18 @@ void dxWinSystemClass::InitSceneManager()
 	// -----------
 	// ||64|64||
 
-	DXsystemHandle->world.size = terrain_squares;
+	set_world_size(terrain_squares); //world.size
 	//FPS : 867 / 2
 	//FPS : 887 / 8
 	//FPS : 882 / 16
-	DXsystemHandle->world.patchSize = terrain_squares/2;
+	set_world_patchSize(terrain_squares/2);
 
 	// SCENE MANAGER: Create SceneManager Engine: (Driver will use Frustum to filter)
 #if defined USE_SCENE_MANAGER
     if (WOMA::sceneManager == NULL)
         WOMA::sceneManager = SceneManager::GetInstance();
 
-	WOMA::sceneManager->CreateRootNode(world.size, m_Application->ClearColor); // 256 x 8 --> //-512,-512, 512, 512
+	WOMA::sceneManager->CreateRootNode( get_world_size(), m_Application->ClearColor); // 256 x 8 --> //-512,-512, 512, 512
     WOMA::sceneManager->quadTree.Initialize(WOMA::sceneManager->RootNode);
 #endif
 }

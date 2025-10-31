@@ -85,8 +85,8 @@ bool DX11Class::list_resolutions()
 		DXGI_MODE_DESC* displayModeList = nullptr;
 		DXGI_ADAPTER_DESC adapterDesc;
 
-		#define screenWidth		SystemHandle->AppSettings->WINDOW_WIDTH
-		#define screenHeight	SystemHandle->AppSettings->WINDOW_HEIGHT
+		#define screenWidth		WOMA::AppSettings->WINDOW_WIDTH
+		#define screenHeight	WOMA::AppSettings->WINDOW_HEIGHT
 
 #if _DEBUG
 		result = DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debugDev));
@@ -548,9 +548,9 @@ static MsaaCaps ChooseMsaaCaps(ID3D11Device* dev, DXGI_FORMAT rtvFormat, DXGI_FO
 				break;
 		}
 
-		SystemHandle->AppSettings->MaxTextureSize = MAX(SystemHandle->AppSettings->MaxTextureSize, max_texture_size);
+		WOMA::AppSettings->MaxTextureSize = MAX(WOMA::AppSettings->MaxTextureSize, max_texture_size);
 
-		womalog(TEXT("DirectX 11: Using Max Texture Size: %u\n"), SystemHandle->AppSettings->MaxTextureSize);
+		womalog(TEXT("DirectX 11: Using Max Texture Size: %u\n"), WOMA::AppSettings->MaxTextureSize);
 
 #if defined SET_DEVICE_CAPABILITIES
 		InspectDeviceCapabilities(featureLevel_);
@@ -566,7 +566,7 @@ static MsaaCaps ChooseMsaaCaps(ID3D11Device* dev, DXGI_FORMAT rtvFormat, DXGI_FO
 		// MSAA capability / probing
 		// -------------------------------------------------------------------------
 		auto msaa = ChooseMsaaCaps(m_device11, BUFFER_COLOR_FORMAT, BUFFER_DEPTH_FORMAT, 
-									(SystemHandle->AppSettings->MSAA_Anisotropic ) ? SystemHandle->AppSettings->MSAA_AnisotropicLevel: 0);
+									(WOMA::AppSettings->MSAA_Anisotropic ) ? WOMA::AppSettings->MSAA_AnisotropicLevel: 0);
 		MSAA_COUNT = msaa.sampleCount;
 		MSAA_QUALITY = msaa.qualityIdx;
 		m_sCapabilities.MSAA_SUPPORTBoolean = (MSAA_COUNT > 1);

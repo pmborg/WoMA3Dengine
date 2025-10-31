@@ -9,8 +9,6 @@
 *
 *   is equivalent to 036ShadowMap.hlsl but with instances.
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
-
 #define DESKTOP_GL 1
 
 //////////////

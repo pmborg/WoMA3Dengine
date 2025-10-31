@@ -82,7 +82,7 @@ void ApplicationTextClass::SetFps(int fps)
 		green = 1.0f;	// If fps is between 30 and 60 set the fps color to "yellow."
 
 	// Update the sentence vertex buffer with the new string information.
-	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_FPS], strBuffer, SystemHandle->AppSettings->WINDOW_WIDTH - 180, Y_INIT+20, red, green, blue));
+	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_FPS], strBuffer, WOMA::AppSettings->WINDOW_WIDTH - 180, Y_INIT+20, red, green, blue));
 }
 
 #if !defined TEXT_TEST
@@ -97,7 +97,7 @@ void ApplicationTextClass::SetCpu(int cpu)
     StringCchPrintf (cpuString, sizeof(cpuString), TEXT("Cpu: %d %%"), cpu);
 
 	// Update the sentence vertex buffer with the new string information.
-	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_CPU], cpuString, SystemHandle->AppSettings->WINDOW_WIDTH - 180, Y_INIT+40, 0.0f, 1.0f, 0.0f));
+	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_CPU], cpuString, WOMA::AppSettings->WINDOW_WIDTH - 180, Y_INIT+40, 0.0f, 1.0f, 0.0f));
 }
 
 //02-----------------------------------------------------------------------------------------
@@ -118,24 +118,6 @@ void ApplicationTextClass::SetCameraRotation(float rotX, float rotY, float rotZ)
 	// Setup the X rotation string: ((float) ((int)(rotX*10))/10), ((float) ((int)(rotY*10))/10)
 	StringCchPrintf (dataString, sizeof(dataString), TEXT("rX:%5.1f rY:%5.1f"), rotX, rotY);
 	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_ROT], dataString, 10, Y_INIT+40, 0.0f, 1.0f, 0.0f));
-}
-#endif
-
-#if defined EXTRA_INFO2
-void ApplicationTextClass::SetInfoA(UINT h, UINT m)
-{
-	static TCHAR dataString[40];
-
-	StringCchPrintf(dataString, sizeof(dataString), TEXT("nx: %5.2f nz: %5.2f"), terrain_nx, terrain_nz);
-	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_CLOCK], dataString, 10, Y_INIT + 120, 0.0f, 1.0f, 0.0f));
-}
-
-void ApplicationTextClass::SetInfoB(float rotX, float rotY, float rotZ)
-{
-	static TCHAR dataString[40];
-	StringCchPrintf(dataString, sizeof(dataString), TEXT("nextHeight: %5.2f - m_positionY: %5.2f"), nextHeight, SystemHandle->m_Application->m_Position[g_NetID]->m_positionY);
-	float nextHeight = 0;
-	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_LIGHT_DIR], dataString, 10, Y_INIT + 60, 0.0f, 1.0f, 0.0f));
 }
 #endif
 
@@ -196,19 +178,19 @@ bool ApplicationTextClass::Initialize(ID3D11DeviceContext* pContext, void* Drive
 {
 	// TODO GL
 #if (defined OPENGL3 || defined OPENGL40) 
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
 	{
 		m_Text = NEW GlTextClass(); IF_NOT_THROW_EXCEPTION(m_Text);
 	}
 #endif
 #if defined DX9 || defined DX11
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX9 || WOMA::AppSettings->DRIVER == DRIVER_DX11)
 	{
 		m_Text = NEW DxTextClass(); IF_NOT_THROW_EXCEPTION(m_Text);
 	}
 #endif
 #ifdef DX12
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 	{
 		m_Text = NEW DxTextClass(); IF_NOT_THROW_EXCEPTION(m_Text);
 	}
@@ -228,7 +210,7 @@ bool ApplicationTextClass::Initialize(ID3D11DeviceContext* pContext, void* Drive
 		IF_NOT_RETURN_FALSE(m_Text->InitializeSentence(&m_sentence[i], SENTENCE_MAX_LEN));
 
 #if defined DX12
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 	{
 		m_Text->InitializeTexture(Driver);
 	}
@@ -242,7 +224,7 @@ bool ApplicationTextClass::Shutdown()
 	if (m_Text)
 	{
 #if (defined OPENGL3 || defined OPENGL4) && defined USE_RASTERTEK_TEXT_FONT
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+		if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
 		{
 			for (UINT i = 0; i < _countof(m_sentence); i++)
 			{
@@ -268,7 +250,7 @@ bool ApplicationTextClass::Shutdown()
 			SAFE_DELETE(m_sentence[i]);
 		}
 
-		switch (SystemHandle->AppSettings->DRIVER)
+		switch (WOMA::AppSettings->DRIVER)
 		{
 #if (defined OPENGL3 || defined OPENGL40) 
 		case DRIVER_GL3:

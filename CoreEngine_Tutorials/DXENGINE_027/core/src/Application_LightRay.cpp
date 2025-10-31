@@ -128,7 +128,7 @@ void ApplicationClass::initLightRay(void* ctx)
 
 		// Step 2: Create a model: NEW GLmodelClass; || NEW DXmodelClass;
 	#if (defined OPENGL3 || defined OPENGL4)
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+		if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
 		{ 
 			CREATE_MODELGL3_IF_NOT_EXCEPTION(m_lightRayModel,  /*Fake*/I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);	// Allocate the MODEL
 		} else

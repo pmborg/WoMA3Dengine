@@ -38,6 +38,8 @@ extern MyWin Win;
 #pragma warning(push)
 #pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
 
+bool FORCE_RENDER_ALL = false;
+
 #if (defined DX_ENGINE)
 #include "DXmodelClass.h"
 #endif
@@ -63,12 +65,6 @@ void CompoundReadFunction(WomaDriverClass* Driver);
 
 #include <inttypes.h>
 
-#if defined INTRO_DEMO
-bool FORCE_RENDER_ALL = true;
-#else
-bool FORCE_RENDER_ALL = false;
-#endif
-
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 UINT g_NetID = 0;
 #endif
@@ -87,10 +83,10 @@ ApplicationClass::ApplicationClass()
 	// ---------------------------------------------------------------------
 	// private:
 
-#if defined INTRO_DEMO	// VIDEO+INTRO+DEMO
+#if defined INTRO_DEMO								// VIDEO+INTRO+DEMO START
 	#if defined WINDOWS_PLATFORM
-		RENDER_PAGE = 10;	// INTRO_DEMO START!!!
-		SpriteScreenToShow = -5;
+		RENDER_PAGE = INTRO_DEMO_INITIAL_PAGE;		// default is: 10
+		SpriteScreenToShow = SPRITE_SCREEN_TO_SHOW;	// default is: -5;
 	#else
 		RENDER_PAGE = 20;	// FOR DEBUG ONLY| INTRO START ON:
 		SpriteScreenToShow = 0;
@@ -171,7 +167,7 @@ void ApplicationClass::Shutdown()
 	//3D:
 
 #if (defined OPENGL3 || defined OPENGL4)
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
 	{
 		SAFE_SHUTDOWN_MODELGL3(m_1stSquare3DColorModel);			//DEMO1:
 		SAFE_SHUTDOWN_MODELGL3(m_1stTriangle3DColorModel);		//DEMO2:
@@ -195,7 +191,7 @@ void ApplicationClass::Shutdown()
 		SAFE_SHUTDOWN_MODELDX(m_1stSquare3DColorModel);
 		SAFE_SHUTDOWN_MODELDX(m_1stTriangle3DColorModel);
 			SAFE_SHUTDOWN_MODELDX(m_2nd3DModel);
-		#if !defined NO_SCENE_IMAGE_LOAD
+		#if (!defined  NO_SCENE_IMAGE_LOAD) || defined INTRO_DEMO
 			SAFE_SHUTDOWN_MODELDX(m_bmp3DModel);	//DEMO1:
 			SAFE_SHUTDOWN_MODELDX(m_jpg3DModel);	//DEMO1:
 			SAFE_SHUTDOWN_MODELDX(m_png3DModel);	//DEMO1:
@@ -211,7 +207,7 @@ void ApplicationClass::Shutdown()
 
 
 #if (defined DX_ENGINE)
-	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+	if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
 	{
 		SAFE_SHUTDOWN_MODELDX(m_3th3DModel1);
 		SAFE_SHUTDOWN_MODELDX(m_3th3DModel2);
@@ -219,7 +215,7 @@ void ApplicationClass::Shutdown()
 #endif
 
 #if (defined OPENGL3 || defined OPENGL4)
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
 	{
 		SAFE_SHUTDOWN_MODELGL3(m_3th3DModel1);
 		SAFE_SHUTDOWN_MODELGL3(m_3th3DModel2);
@@ -227,7 +223,7 @@ void ApplicationClass::Shutdown()
 #endif
 
 #if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28
-	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+	if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
 	{
 	#if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28 && defined DX_ENGINE
 		SAFE_SHUTDOWN_MODELDX(m_SkyModel);
@@ -241,7 +237,7 @@ void ApplicationClass::Shutdown()
 
 #if defined USE_CUBE // Cubes
 #if (defined DX_ENGINE)
-	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+	if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
 	{
 		SAFE_SHUTDOWN_MODELDX(m_cube1Model);
 		SAFE_SHUTDOWN_MODELDX(m_cube2Model);
@@ -250,7 +246,7 @@ void ApplicationClass::Shutdown()
 #endif
 
 #if (defined OPENGL3 || defined OPENGL4)
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
 	{
 		SAFE_SHUTDOWN_MODELGL3(m_cube1Model);
 		SAFE_SHUTDOWN_MODELGL3(m_cube2Model);
@@ -262,7 +258,7 @@ void ApplicationClass::Shutdown()
 
 #if defined USE_SPHERE && DX_ENGINE_LEVEL >= 26
 #if (defined DX_ENGINE)
-	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+	if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
 	{
 	#if defined USE_SPHERE && DX_ENGINE_LEVEL >= 26
 		SAFE_SHUTDOWN_MODELDX(m_SphereModel1);
@@ -272,7 +268,7 @@ void ApplicationClass::Shutdown()
 #endif
 
 #if (defined OPENGL3 || defined OPENGL4)
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
 	{
 	#if defined USE_SPHERE && DX_ENGINE_LEVEL >= 26
 		SAFE_SHUTDOWN_MODELGL3(m_SphereModel1);
@@ -295,7 +291,7 @@ void ApplicationClass::Shutdown()
 
 	for (int i = 0; i < objModel.size(); i++) {
 	#if (defined OPENGL3 || defined OPENGL4)
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) {
+		if (WOMA::AppSettings->DRIVER == DRIVER_GL3) {
 			//SAFE_SHUTDOWN_MODELGL3(objModel[i]); //Buggy: GL3+
 		} 
 		else 
@@ -364,12 +360,12 @@ void ApplicationClass::WOMA_APPLICATION_Shutdown()
 
 #if defined MAIN_RENDER_LIGHT_RAY
 #if (defined DX_ENGINE)
-	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+	if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
 		SAFE_SHUTDOWN_MODELDX(m_lightRayModel);
 #endif
 
 #if (defined OPENGL3 || defined OPENGL4)
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
 		SAFE_SHUTDOWN_MODELGL3(m_lightRayModel);
 #endif
 #endif
@@ -389,9 +385,9 @@ bool ApplicationClass::WOMA_APPLICATION_InitGUI()
 
 		// Set the Window width and height, for requested screen mode:
 		//----------------------------------------------------------------------------
-		if (SystemHandle->AppSettings->FULL_SCREEN) {
-			SystemHandle->AppSettings->WINDOW_WIDTH = SystemHandle->AppSettings->SCREEN_RESOLUTION_WIDTH;
-			SystemHandle->AppSettings->WINDOW_HEIGHT = SystemHandle->AppSettings->SCREEN_RESOLUTION_HEIGHT;
+		if (WOMA::AppSettings->FULL_SCREEN) {
+			WOMA::AppSettings->WINDOW_WIDTH = WOMA::AppSettings->SCREEN_RESOLUTION_WIDTH;
+			WOMA::AppSettings->WINDOW_HEIGHT = WOMA::AppSettings->SCREEN_RESOLUTION_HEIGHT;
 		}
 	#endif
 
@@ -399,13 +395,13 @@ bool ApplicationClass::WOMA_APPLICATION_InitGUI()
 	#if CORE_ENGINE_LEVEL >= 4 && defined WINDOWS_PLATFORM
 	if (SystemHandle->LandScape)
 	{
-		SystemHandle->m_scaleX = MIN(1, SystemHandle->AppSettings->WINDOW_WIDTH / 1920.0f);
-		SystemHandle->m_scaleY = MIN(1, SystemHandle->AppSettings->WINDOW_HEIGHT / 1080.0f);
+		SystemHandle->m_scaleX = MIN(1, WOMA::AppSettings->WINDOW_WIDTH / 1920.0f);
+		SystemHandle->m_scaleY = MIN(1, WOMA::AppSettings->WINDOW_HEIGHT / 1080.0f);
 	}
 	else
 	{
-		SystemHandle->m_scaleX = MIN(1, SystemHandle->AppSettings->WINDOW_HEIGHT / 1080.0f);
-		SystemHandle->m_scaleY = MIN(1, SystemHandle->AppSettings->WINDOW_WIDTH / 1920.0f);
+		SystemHandle->m_scaleX = MIN(1, WOMA::AppSettings->WINDOW_HEIGHT / 1080.0f);
+		SystemHandle->m_scaleY = MIN(1, WOMA::AppSettings->WINDOW_WIDTH / 1920.0f);
 	}
 
 	if (SystemHandle->m_scaleY > 0.9f)
@@ -492,12 +488,11 @@ void ApplicationClass::SetPlayerPosition(UINT netID)
        m_Position[netID]->SetRotation(0, 0, 0);
     } else {
 		// This is for "US" (the position of our Player)
-       m_Position[netID]->SetPosition(SystemHandle->AppSettings->INIT_CAMX, SystemHandle->AppSettings->INIT_CAMY, SystemHandle->AppSettings->INIT_CAMZ);
-       m_Position[netID]->SetRotation(SystemHandle->AppSettings->INIT_ROTX, SystemHandle->AppSettings->INIT_ROTY, SystemHandle->AppSettings->INIT_ROTZ);
+       m_Position[netID]->SetPosition(WOMA::AppSettings->INIT_CAMX, WOMA::AppSettings->INIT_CAMY, WOMA::AppSettings->INIT_CAMZ);
+       m_Position[netID]->SetRotation(WOMA::AppSettings->INIT_ROTX, WOMA::AppSettings->INIT_ROTY, WOMA::AppSettings->INIT_ROTZ);
     }
 }
 #endif
-
 
 
 #if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION
@@ -536,25 +531,25 @@ bool ApplicationClass::Initialize(void* pContext, WomaDriverClass* Driver)
 
 	//LVL29 - 1st RELEASE DEMO:
 #if defined INTRO_DEMO
-	initIntroDemo(pContext);
+	initIntroCreditsDemo(pContext);
 #endif
 
 //########################################### 3D: STUFF ###########################################
 	// (app_Light && xml_loader.theWorldXML) and SCENE MANAGER: QuadTree object Loader/Render
-	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(pContext, Driver)); //Load All: 3D + Billboards
+	IF_NOT_RETURN_FALSE(WOMA_APPLICATION_Initialize3D(pContext, Driver, DX_ENGINE_LEVEL)); //Load All: 3D + Billboards
 
 //########################################### 2D: STUFF ###########################################
 #if DX_ENGINE_LEVEL >= 24 && defined USE_VIEW2D_SPRITES
-	DEMO_WOMA_APPLICATION_InitializeSprites2D(pContext);		//2D:TITLE + 2D:MAP + 2D:MINI-MAP
+	DEMO_WOMA_APPLICATION_InitializeSprites2D(pContext);			//2D:TITLE + 2D:MINI-MAP + 2D:MAIN-MAP
 #endif
 	// 2D-FONTS: (Windows)
-#if defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONT //27
+#if defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONT		//27
 	initText(pContext);
 #endif
 	// 2D-FONTS: (Android / Linux)
-#if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
+#if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2	//27
 	r_Application = NEW RApplicationClass;
-	IF_NOT_RETURN_FALSE(r_Application->Initialize(SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT));
+	IF_NOT_RETURN_FALSE(r_Application->Initialize(WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT));
 #endif
 
 //####################################### START MESH THREADS #######################################

@@ -66,8 +66,8 @@ void SmokeEmitterClass::Initialize(void* ctx, void* driver, const char* textureF
 
 	std::vector<UINT> indexList = { 0,2,1,  1,2,3 };
 
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) { CREATE_MODELGL3_IF_NOT_EXCEPTION(SystemHandle->m_Application->m_smokeModel, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
-	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) { CREATE_MODELDX_IF_NOT_EXCEPTION(SystemHandle->m_Application->m_smokeModel, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3) { CREATE_MODELGL3_IF_NOT_EXCEPTION(SystemHandle->m_Application->m_smokeModel, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
+	if (WOMA::AppSettings->DRIVER != DRIVER_GL3) { CREATE_MODELDX_IF_NOT_EXCEPTION(SystemHandle->m_Application->m_smokeModel, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
 	ASSERT(SystemHandle->m_Application->m_smokeModel->LoadSmoke(pContext11, TEXT("Smoke"),
 		m_Driver_, SHADER_USE_SMOKE,
 		&smoke_textures, &SmokeVertexModel, &indexList));

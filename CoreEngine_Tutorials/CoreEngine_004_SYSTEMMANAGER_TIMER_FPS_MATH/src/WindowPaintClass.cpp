@@ -54,10 +54,10 @@ void PaintSplashScreen(HDC hdc)
     GetObject(bmpExercising, sizeof(bm), &bm);
 
     // COPY: the bits from the memory DC into the current dc
-    //BitBlt(hdc, (SystemHandle->AppSettings->WINDOW_WIDTH -bm.bmWidth)/2, (SystemHandle->AppSettings->WINDOW_HEIGHT -bm.bmHeight)/2, bm.bmWidth, bm.bmHeight, hdcMem, 0, 0, SRCCOPY);
+    //BitBlt(hdc, (WOMA::AppSettings->WINDOW_WIDTH -bm.bmWidth)/2, (WOMA::AppSettings->WINDOW_HEIGHT -bm.bmHeight)/2, bm.bmWidth, bm.bmHeight, hdcMem, 0, 0, SRCCOPY);
 	// 
     // SCALE: Stretch the bits from the memory DC into the current dc
-    StretchBlt(	hdc, 0, 0, SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT, hdcMem, 0, 0, bm.bmWidth, bm.bmHeight, SRCAND | SRCCOPY);
+    StretchBlt(	hdc, 0, 0, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT, hdcMem, 0, 0, bm.bmWidth, bm.bmHeight, SRCAND | SRCCOPY);
 
 	// ---------------------------------------------------------------------------------------------
     // Restore the old bitmap

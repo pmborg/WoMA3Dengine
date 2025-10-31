@@ -1,4 +1,3 @@
-// NOTE!: This code was automatically generated/extracted by WOMA3DENGINE
 // --------------------------------------------------------------------------------------------
 // Filename: log.cpp
 // --------------------------------------------------------------------------------------------
@@ -247,6 +246,10 @@ void LogManager::DEBUG_MSG(CHAR* strMsg, ...)
 	// OUTPUT: OS CONSOLE & FILE ".txt":
 	if (ON)
 		OutputDebugStringReport(strBuffer);
+
+#if defined ANDROID_PLATFORM
+	LOGE(strBuffer);
+#endif
 
 #ifdef _DEBUG
 	fflush(debugFile);

@@ -62,7 +62,7 @@ void DXfrustumClass::ConstructFrustum(float screenDepth, XMMATRIX *ProjectionMat
     XMMATRIX projectionMatrix = *ProjectionMatrix; // Copy Matrix
 	XMMATRIX matrix;
 
-	static float SCREEN_NEAR = SystemHandle->AppSettings->SCREEN_NEAR/3;
+	static float SCREEN_NEAR = WOMA::AppSettings->SCREEN_NEAR/3;
 
 	float r = screenDepth / (screenDepth - SCREEN_NEAR);
 	projectionMatrix._33 = r;

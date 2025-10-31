@@ -19,15 +19,14 @@
 
 #include "main.h"
 #include "SceneNode.h"
-//#include "DXFrustumClass.h"
 #include "xml_loader.h"
 
-#define MAX_NODE_SIZE DXsystemHandle->world.patchSize
+#define MAX_NODE_SIZE get_world_patchSize() //DXsystemHandle->world.patchSize
 
 //Each node in the quad tree will be defined as follows with position, size, triangle count, buffers, and four child nodes:
 typedef struct Node_Type
 {
-	// Reset Childs by default
+	// Reset Child nodes by default
 	Node_Type()
 	{
 		nodes[0]=nodes[1]=nodes[2]=nodes[3]=0;
@@ -56,7 +55,7 @@ public:
 	void CreateTreeNode(NodeType* node, float positionX, float positionZ, float width);
 	void AddSceneNode(NodeType* node, SceneNode* sceneNode);
 
-	void RenderNode(NodeType* m_parentNode);
+    void RenderNode(NodeType* m_parentNode, UINT level);
 
 	NodeType* m_QuadRootNode = NULL;
 

@@ -40,13 +40,13 @@ RealSkyPlaneClass::~RealSkyPlaneClass()
 void RealSkyPlaneClass::Shutdown()
 {
 #if (defined DX_ENGINE)
-	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+	if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
 	{
 		SAFE_SHUTDOWN_MODELDX(SystemHandle->m_Application->model_skyPlane);
 	}
 #endif
 #if (defined OPENGL3 || defined OPENGL4)
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
 	{
 		SAFE_SHUTDOWN_MODELGL3(SystemHandle->m_Application->model_skyPlane);
 	}
@@ -176,8 +176,8 @@ bool RealSkyPlaneClass::InitializeSkyPlane(void* ctx, void* Driver, int skyPlane
 	sky_plane_textures.push_back(CLOUDTEXTUREFILENAME);
 	sky_plane_textures.push_back(PERTURBTEXTUREFILENAME);
 
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) {CREATE_MODELGL3_IF_NOT_EXCEPTION(SystemHandle->m_Application->model_skyPlane, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);}
-	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) {CREATE_MODELDX_IF_NOT_EXCEPTION(SystemHandle->m_Application->model_skyPlane, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);}
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3) {CREATE_MODELGL3_IF_NOT_EXCEPTION(SystemHandle->m_Application->model_skyPlane, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);}
+	if (WOMA::AppSettings->DRIVER != DRIVER_GL3) {CREATE_MODELDX_IF_NOT_EXCEPTION(SystemHandle->m_Application->model_skyPlane, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);}
 	ASSERT(SystemHandle->m_Application->model_skyPlane->LoadTexture(pContext11, TEXT("sky_plane"), m_driver11, SHADER_USE_CURVED_REAL_SKY_PLANE, &sky_plane_textures, &woma_skyPlane, NULL));
 
 	return true;
@@ -193,7 +193,7 @@ void RealSkyPlaneClass::Render(void* pContext)
 	if (m_Driver->RenderfirstTime)
 	{
 		SystemHandle->m_Application->model_skyPlane->translation(0, 0, 0);
-		SystemHandle->m_Application->model_skyPlane->scale(SystemHandle->AppSettings->SCREEN_DEPTH-1, SystemHandle->AppSettings->SCREEN_DEPTH-1, SystemHandle->AppSettings->SCREEN_DEPTH-1);
+		SystemHandle->m_Application->model_skyPlane->scale(WOMA::AppSettings->SCREEN_DEPTH-1, WOMA::AppSettings->SCREEN_DEPTH-1, WOMA::AppSettings->SCREEN_DEPTH-1);
 	}
 	SystemHandle->m_Application->model_skyPlane->RenderSky(pContext, CAMERA_SKY, 1); // Camera with fixed position: 0,0,0: (CAMERA_SKY)
 }

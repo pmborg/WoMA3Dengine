@@ -7,6 +7,13 @@
 *	code by : Pedro Borges - pmborg@yahoo.com
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
+    DXshaderClass::InitializeShader(...)
+    ...
+		vsFilename.append(L"hlsl/022Texture.hlsl");
+		psFilename = vsFilename;
+		vertexHLSL.append("VS_Main");
+		pixelHLSL.append("PS_Main");
+     ...
 **********************************************************************************************/
 //WomaIntegrityCheck = 1234525217;
 

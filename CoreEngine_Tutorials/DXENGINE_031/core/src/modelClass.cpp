@@ -867,19 +867,19 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 
                             #if !defined(STANDALONE)
 							  #if defined DX11 || defined DX9
-							  if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9) 
+							  if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9) 
 							  {
 								//[TEMMPLATE] LOAD TEXTURE DX11:
-								#define m_driver11 ((DirectX::DX11Class*)driverList[SystemHandle->AppSettings->DRIVER])
+								#define m_driver11 ((DirectX::DX11Class*)driverList[WOMA::AppSettings->DRIVER])
 								LOADTEXTURE((TCHAR*)fileNamePath.c_str(), tempMeshSRV);
 								obj3d.material[matCount - 1].alfaMap11 = tempMeshSRV;
 							  }
 							  #endif
 
 							  #if defined DX12
-								if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+								if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 								{
-									#define m_driver ((DirectX::DX12Class*)driverList[SystemHandle->AppSettings->DRIVER])
+									#define m_driver ((DirectX::DX12Class*)driverList[WOMA::AppSettings->DRIVER])
 									DX12TextureClass* alfaMap = NEW DX12TextureClass;
 									obj3d.material[matCount - 1].alfaMap = alfaMap;
 									IF_NOT_THROW_EXCEPTION(alfaMap);
@@ -1100,7 +1100,7 @@ bool ModelClass::CreateObject(	void* pContext, void* XmodelClass, TCHAR* objectN
 	//MATERIALS DONE!
 	////////////////////////////////////////////////////////////////////
 	//Move data to advanced model types:
-	if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+	if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
 		((DXmodelClass*)XmodelClass)->obj3d = obj3d;
     #if (defined OPENGL3 || defined OPENGL40) 
 	else
@@ -1137,7 +1137,7 @@ bool ModelClass::CreateObject(	void* pContext, void* XmodelClass, TCHAR* objectN
 				if (shader_type == 0)
 					shader_type = SHADER_TEXTURE;
 
-				if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+				if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
                     ((DXmodelClass*)XmodelClass)->LoadTexture((ID3D11DeviceContext*)pContext, (TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, &modelTextureVertex, &obj3d.indices32, 0);
                 #if (defined OPENGL3 || defined OPENGL40) 
 				else
@@ -1178,7 +1178,7 @@ bool ModelClass::CreateObject(	void* pContext, void* XmodelClass, TCHAR* objectN
 				if (shader_type == 0)
 					shader_type = SHADER_COLOR;
 
-				if (DXsystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+				if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
                     ((DXmodelClass*)XmodelClass)->LoadColor((ID3D11DeviceContext*)pContext, (TCHAR*)filename.c_str(), g_driver, shader_type, &modelColorVertex, &obj3d.indices32, 0);
             #if (defined OPENGL3 || defined OPENGL40) 
 				else

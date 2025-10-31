@@ -83,4 +83,7 @@ private:
 
 extern BillClass* m_billTreeClass;
 
+
+extern void RunBillboardSortDemo(UINT RENDER_PAGE, std::vector<Tree>& m_Trees);
+
 #endif

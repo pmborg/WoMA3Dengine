@@ -48,7 +48,7 @@
 #endif
 
 #if CORE_ENGINE_LEVEL >= 2 && !defined WOMAENGINE_BASIC
-    //#define WOMA_SKIP_CREATE_MAIN_WINDOW  // Default: off - for command line application only!
+    //#define WOMA_SKIP_CREATE_MAIN_WINDOW  // Default: off - for command line applications only!
 #endif
 
 #if CORE_ENGINE_LEVEL >= 3
@@ -61,7 +61,7 @@
 #if CORE_ENGINE_LEVEL >= 4
     #define USE_USER_SETUP          //4
     #if !defined ANDROID_PLATFORM
-        #define USE_PROCESS_OS_KEYS //4 - NOTE: Madatory at 4
+        #define USE_PROCESS_OS_KEYS //4 - NOTE: Mandatory at 4
         #define USE_SYSTEM_CHECK    //4
     #endif
     #define USE_CHECK_IO            //4
@@ -119,18 +119,18 @@
         //#define DX9sdk        //(ORIGINAL DX9SDK) not fully recovered/implemented
         #define DX9             //Using DX11 API
         #define DX11
-        #define DX12            //(defined DX12 && D3D11_SPEC_DATE_YEAR > 2009)     
+        #define DX12            //(defined DX12 && D3D11_SPEC_DATE_YEAR > 2009)
     #endif
 
     #define OPENGL3 //WINDOWS_PLATFORM + LINUX_PLATFORM + ANDROID_PLATFORM
 
   #if defined WINDOWS_PLATFORM && (defined DX9sdk || defined DX9 || defined DX11 || defined DX12)
-        #define DX_ENGINE       //Turn on: #include "DXengine.h"
+        #define DX_ENGINE       //Turn on/off: #include "DXengine.h"
         #ifndef DX_ENGINE
             #undef DX9
             #undef DX11
             #undef DX12
-    #endif
+		#endif
 
     #if defined DX12 //SELECT DXGI_API version:
         //#define DX12_DXGI_API 3   // Default: off - IDXGIFactory3
@@ -208,7 +208,7 @@
         #undef SCENE_TEXTURE
         #define SCENE_TEXTURE_LIGHT             
             
-        #define MAIN_RENDER_LIGHT_RAY                   // ON/OFF - Render light ray !!Dep!!: #undef  dx12_upload_old_way
+        #define MAIN_RENDER_LIGHT_RAY           // ON/OFF - Render light ray !!Dep!!: #undef  dx12_upload_old_way
         #define SUN_LIGHT_DEMO_ANIMATION true   // Animate the beam of light
     #endif
 
@@ -218,7 +218,7 @@
             #undef SCENE_TEXTURE
             #undef SCENE_TEXTURE_LIGHT
             #undef MAIN_RENDER_LIGHT_RAY
-            #define NO_SCENE_IMAGE_LOAD //(for debuging only!)
+            #define NO_SCENE_IMAGE_LOAD //(for debugging only!)
         #endif
         #define USE_TITLE_BANNER
         #define USE_ALPHA_BLENDING
@@ -271,6 +271,9 @@
         #endif
     #endif
 
+	#if DX_ENGINE_LEVEL == 29
+		#define USE_DEMO29
+	#endif
     #if DX_ENGINE_LEVEL >= 29
     //---------------------------------------------------------------------------------------
         #define SCENE_COLOR             //FORCE!
@@ -278,14 +281,17 @@
         #define SCENE_TEXTURE_LIGHT     //FORCE!
         #define INTRO_DEMO              // 29-Close the Intro / Demo of what was learned so far.
 
+		#define INTRO_DEMO_INITIAL_PAGE 10	//10 is default
+		#define SPRITE_SCREEN_TO_SHOW   -5
+
         #if defined ANDROID_PLATFORM
             #define USE_ANDROID_SOUND
         #endif
         #if defined WINDOWS_PLATFORM
-            #define USE_WIN32_SOUND_MANAGER // 29-SOUND: Sound Manager/"ogg" Loader
-            #define USE_WIN32_PLAY_MUSIC    // 29-MUSIC: "ogg" Loader
+            #define USE_WIN32_SOUND_MANAGER	// 29-SOUND: Sound Manager/"ogg" Loader
+            #define USE_WIN32_PLAY_MUSIC	// 29-MUSIC: "ogg" Loader
             #if DX_ENGINE_LEVEL == 29
-            #define USE_DX_DRIVER_FONT  //FORCE!       
+            #define USE_DX_DRIVER_FONT		//FORCE!       
             #endif
         #endif
     #endif
@@ -299,10 +305,11 @@
         #undef USE_WIN32_SOUND_MANAGER
         #undef USE_WIN32_PLAY_MUSIC
         #undef INTRO_DEMO
+
         #define SUN_LIGHT_DEMO_ANIMATION true   //back
-        #define USE_SCENE_MANAGER               //30-
-        #define USE_FRUSTUM                     //30-
-        #undef DX12                             //to be added later
+        #define USE_SCENE_MANAGER               //30
+        #define USE_FRUSTUM                     //30
+        #undef DX12                             //To be added later
     #endif
 
     #if DX_ENGINE_LEVEL >= 31
@@ -314,7 +321,7 @@
     #endif
 
     #if DX_ENGINE_LEVEL >= 33
-        #define RENDER_OBJ_WITH_ALFA                   
+        #define RENDER_OBJ_WITH_ALFA
     #endif
 
     #if DX_ENGINE_LEVEL >= 34
@@ -391,6 +398,8 @@
     #endif
 
     #if DX_ENGINE_LEVEL >= 51   //51-
+		// FOG = ON  whenever fog_start < 32
+		// FOG = OFF otherwise
         #define SCENE_FOG
         #undef SCENE_TERRAIN_COLLISION
     #endif
@@ -522,18 +531,18 @@
         #define MULTIPACK_PCK   TEXT("womamulti.pck")
     #endif
     #if DX_ENGINE_LEVEL >= 82
-        #define USE_DX11_1_SETUP
-        #define USE_ASSIMP_LATEST
+        #define USE_DX11_1_SETUP        //cant be undef
+        #define USE_ASSIMP_LATEST       //CANT BE UNDEF
     #endif
     #if DX_ENGINE_LEVEL >= 83
         //#define SAVE_WALK // Default: off - Updated billboard SHADER & SAVE_WALK FILME
     #endif
     #if DX_ENGINE_LEVEL >= 84
-        #define LOAD_WALK
-        #define SCENE_MOVIN_SKIN
+        #define LOAD_WALK               //cant be undef
+        #define SCENE_MOVIN_SKIN        //cant be undef
     #endif
     #if DX_ENGINE_LEVEL >= 85
-        #define USE_MINIMAP_EXPANSION
+        #define USE_MINIMAP_EXPANSION   //cant be undef
     #endif
 
     //-------------------------------------------------

@@ -9,13 +9,11 @@
 *
 **********************************************************************************************/
 
-//case SHADER_NORMAL_BUMP:
-
-#define PS_USE_LIGHT		//23
-#define PS_USE_ALFA_TEXTURE	//33
-#define PS_USE_ALFACOLOR 	//33
-#define PS_USE_SPECULAR		//34
-#define PS_USE_BUMP		 	//35		NEW!!
+#define PS_USE_LIGHT			//23
+//#define PS_USE_ALFA_TEXTURE	//33
+//#define PS_USE_ALFACOLOR 		//33
+//#define PS_USE_SPECULAR		//34
+#define PS_USE_BUMP		 		//35		NEW!!
 
 //////////////
 // TYPEDEFS //
@@ -27,8 +25,8 @@ struct VSIn
 	float3 position : POSITION;	//21
 	float2 texCoords: TEXCOORD; //22
 	float3 normal	: NORMAL;	//23
-	float3 tangent	: TANGENT;	//35		NEW:BUMPv2!!
-    float3 binormal : BINORMAL; //35		NEW:BUMPv2!!
+	float3 tangent	: TANGENT;	//35		NEW!!
+    float3 binormal : BINORMAL; //35		NEW!!
 };
 
 // PIXEL:
@@ -73,8 +71,8 @@ SamplerState SampleType: register(s0);
 ////////////////
 // CBUFFERS
 ////////////////
-#include "cbuffer.hlsl"
-#include "light.hlsl"
+#include "cbuffer.hlsli"
+#include "light.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
@@ -136,15 +134,17 @@ if (VS_USE_WVP) {
 #endif
 
 	//35: BUMP NEW!!
-#if defined PS_USE_BUMP
+#if defined PS_USE_BUMP_
     //if (VShasNormMap)
     {
 		// Calculate the tangent vector against the world matrix only and then normalize the final value.
-        output.tangent = mul(input.tangent, worldMatrix);
+        //output.tangent = mul(input.tangent, worldMatrix);
+		output.tangent = mul(input.tangent, (float3x3) WV);
         output.tangent = normalize(output.tangent);
 		
 		// Calculate the binormal vector against the world matrix only and then normalize the final value.
-        output.binormal = mul(input.binormal, worldMatrix);
+        //output.binormal = mul(input.binormal, worldMatrix);
+        output.binormal = mul(input.binormal, (float3x3) WV);
         output.binormal = normalize(output.binormal);
     }
 #endif

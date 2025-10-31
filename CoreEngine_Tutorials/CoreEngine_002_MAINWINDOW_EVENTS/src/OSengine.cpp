@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // Filename: OSengine.cpp
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
@@ -59,6 +59,10 @@ WinSystemClass* SystemHandle = NULL;
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
 #include "Rapplicationclass.h"
 	RApplicationClass* r_Application;
+#endif
+
+#if defined USE_TINYXML_LOADER //5
+	XMLloader		xml_loader;
 #endif
 
 TCHAR DEMO_NAME_SHOW[MAX_STR_LEN] = {};
@@ -478,7 +482,7 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 	QueryPerformanceCounter((LARGE_INTEGER*)&currentTime2);
 	INT64 delta = (INT64)((((float)currentTime2 - (float)currentTime) / m_Timer.m_ticksPerUs) / 1000.0f);
 	TCHAR txt[100];
-	sprintf_s(txt, 100, "1 000 000 times took: %" PRIu64 " �s(micro Seconds)\n", delta); //_INT64
+	sprintf_s(txt, 100, "1 000 000 times took: %" PRIu64 " µs(micro Seconds)\n", delta); //_INT64
 	OutputDebugString(txt);
 	//------------------------------------------------------
 #endif
@@ -911,3 +915,9 @@ bool StartsWithDotDotSlash(const STRING& fileNamePath)
 }
 
 bool g_GOD_MODE = false;
+
+namespace WOMA
+{
+	WOMA::Settings* AppSettings = NULL;
+};
+

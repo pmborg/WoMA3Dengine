@@ -296,7 +296,7 @@ void GLmodelClass::Shutdown()
 			m_worldMatrix.m[_11] = m_worldMatrix.m[_22] = m_worldMatrix.m[_33] = scale;
 		}
 		*/
-		//float Ypos = (SystemHandle->AppSettings->WINDOW_HEIGHT) / 2 - m_worldMatrix.m[_33] * SpriteTextureHeight/2;
+		//float Ypos = (WOMA::AppSettings->WINDOW_HEIGHT) / 2 - m_worldMatrix.m[_33] * SpriteTextureHeight/2;
 		//float Ypos = - m_worldMatrix.m[_33] * SpriteTextureHeight / 2;
 		//m_worldMatrix.m[_42] = Ypos;
 
@@ -351,9 +351,9 @@ void GLmodelClass::Shutdown()
 		m_previousPosY = positionY;
 
 		//The four sides of the image need to be calculated. See the diagram at the top of the tutorial for a complete explaination.
-		left = (float)((SystemHandle->AppSettings->WINDOW_WIDTH / 2) * -1) + (float)positionX;	// Calculate the screen coordinates of the left side of the bitmap.
+		left = (float)((WOMA::AppSettings->WINDOW_WIDTH / 2) * -1) + (float)positionX;	// Calculate the screen coordinates of the left side of the bitmap.
 		right = left + (float)SpriteTextureWidth;												// Calculate the screen coordinates of the right side of the bitmap.
-		top = (float)(SystemHandle->AppSettings->WINDOW_HEIGHT / 2) - (float)positionY;			// Calculate the screen coordinates of the top of the bitmap.
+		top = (float)(WOMA::AppSettings->WINDOW_HEIGHT / 2) - (float)positionY;			// Calculate the screen coordinates of the top of the bitmap.
 		bottom = top - (float)SpriteTextureHeight;												// Calculate the screen coordinates of the bottom of the bitmap.
 
 		//Now that the coordinates are calculated create a temporary vertex array and fill it with the new six vertex points.
@@ -445,9 +445,9 @@ void GLmodelClass::Shutdown()
 		m_previousPosY = positionY;
 
 		//The four sides of the image need to be calculated. See the diagram at the top of the tutorial for a complete explaination.
-		left = (float)((SystemHandle->AppSettings->WINDOW_WIDTH / 2) * -1) + (float)positionX;	// Calculate the screen coordinates of the left side of the bitmap.
+		left = (float)((WOMA::AppSettings->WINDOW_WIDTH / 2) * -1) + (float)positionX;	// Calculate the screen coordinates of the left side of the bitmap.
 		right = left + (float)SpriteTextureWidth;												// Calculate the screen coordinates of the right side of the bitmap.
-		top = (float)(SystemHandle->AppSettings->WINDOW_HEIGHT / 2) - (float)positionY;			// Calculate the screen coordinates of the top of the bitmap.
+		top = (float)(WOMA::AppSettings->WINDOW_HEIGHT / 2) - (float)positionY;			// Calculate the screen coordinates of the top of the bitmap.
 		bottom = top - (float)SpriteTextureHeight;												// Calculate the screen coordinates of the bottom of the bitmap.
 
 		//Now that the coordinates are calculated create a temporary vertex array and fill it with the new six vertex points.

@@ -51,16 +51,16 @@ void PaintMapLocation(HDC hdc)
 		GetObject(SystemHandle->bmpWorldMap, sizeof(bm), &bm);
 
 		// COPY: the bits from the memory DC into the current dc
-		//BitBlt(hdc, (SystemHandle->AppSettings->WINDOW_WIDTH-bm.bmWidth)/2, (SystemHandle->AppSettings->WINDOW_HEIGHT-bm.bmHeight)/2, bm.bmWidth, bm.bmHeight, hdcMem, 0, 0, SRCCOPY);
+		//BitBlt(hdc, (WOMA::AppSettings->WINDOW_WIDTH-bm.bmWidth)/2, (WOMA::AppSettings->WINDOW_HEIGHT-bm.bmHeight)/2, bm.bmWidth, bm.bmHeight, hdcMem, 0, 0, SRCCOPY);
 		// SCALE: Stretch the bits from the memory DC into the current dc
-		StretchBlt(hdc, 0, 0, SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT, hdcMem, 0, 0, bm.bmWidth, bm.bmHeight, SRCAND | SRCCOPY);
+		StretchBlt(hdc, 0, 0, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT, hdcMem, 0, 0, bm.bmWidth, bm.bmHeight, SRCAND | SRCCOPY);
 
 		SelectObject(hdcMem, SystemHandle->bmpTarget);	// Get old and Select the new bitmap
 		GetObject(SystemHandle->bmpTarget, sizeof(target), &target);
 
 		// Center of Screen:
-		long TargetX = (SystemHandle->AppSettings->WINDOW_WIDTH / 2);
-		long TargetY = (SystemHandle->AppSettings->WINDOW_HEIGHT / 2);
+		long TargetX = (WOMA::AppSettings->WINDOW_WIDTH / 2);
+		long TargetY = (WOMA::AppSettings->WINDOW_HEIGHT / 2);
 
 		// Center Target Image center as 0,0
 		TargetX -= (target.bmWidth / 2);
@@ -71,18 +71,18 @@ void PaintMapLocation(HDC hdc)
 
 		// Transform actual Longitude in Screen Coords:
 		if (initWorld->LonDir == TEXT("W"))
-			TargetX -= (longi * (SystemHandle->AppSettings->WINDOW_WIDTH / 360));
+			TargetX -= (longi * (WOMA::AppSettings->WINDOW_WIDTH / 360));
 		else
-			TargetX += (longi * (SystemHandle->AppSettings->WINDOW_WIDTH / 360));
+			TargetX += (longi * (WOMA::AppSettings->WINDOW_WIDTH / 360));
 
 		double lat = initWorld->latitude;
 		if (lat > 180) lat -= 360;
 
 		// Transform actual Latitude in Screen Coords.
 		if (initWorld->LatDir == TEXT("N"))
-			TargetY -= (long)((lat * (SystemHandle->AppSettings->WINDOW_HEIGHT / 2)) / 90);
+			TargetY -= (long)((lat * (WOMA::AppSettings->WINDOW_HEIGHT / 2)) / 90);
 		else
-			TargetY += (long)((lat * (SystemHandle->AppSettings->WINDOW_HEIGHT / 2)) / 90);
+			TargetY += (long)((lat * (WOMA::AppSettings->WINDOW_HEIGHT / 2)) / 90);
 
 		BitBlt(hdc, TargetX, TargetY, target.bmWidth, target.bmHeight, hdcMem, 0, 0, SRCPAINT);
 	}
@@ -118,10 +118,10 @@ void PaintSplashScreen(HDC hdc)
     GetObject(bmpExercising, sizeof(bm), &bm);
 
     // COPY: the bits from the memory DC into the current dc
-    //BitBlt(hdc, (SystemHandle->AppSettings->WINDOW_WIDTH -bm.bmWidth)/2, (SystemHandle->AppSettings->WINDOW_HEIGHT -bm.bmHeight)/2, bm.bmWidth, bm.bmHeight, hdcMem, 0, 0, SRCCOPY);
+    //BitBlt(hdc, (WOMA::AppSettings->WINDOW_WIDTH -bm.bmWidth)/2, (WOMA::AppSettings->WINDOW_HEIGHT -bm.bmHeight)/2, bm.bmWidth, bm.bmHeight, hdcMem, 0, 0, SRCCOPY);
 	// 
     // SCALE: Stretch the bits from the memory DC into the current dc
-    StretchBlt(	hdc, 0, 0, SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT, hdcMem, 0, 0, bm.bmWidth, bm.bmHeight, SRCAND | SRCCOPY);
+    StretchBlt(	hdc, 0, 0, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT, hdcMem, 0, 0, bm.bmWidth, bm.bmHeight, SRCAND | SRCCOPY);
 
 	// ---------------------------------------------------------------------------------------------
     // Restore the old bitmap

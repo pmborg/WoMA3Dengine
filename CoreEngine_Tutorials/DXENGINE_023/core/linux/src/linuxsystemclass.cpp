@@ -97,13 +97,13 @@ LinuxSystemClass::LinuxSystemClass(WOMA::Settings* appSettings) : SystemClass()
 	// STARTING POINT of WOMA ENGINE!
 	CLASSLOADER();
 
-	AppSettings = appSettings; // Super
+	WOMA::AppSettings = appSettings; // Super
 	SystemHandle = this;
 
 	//public:
 	mResizing = false;
 
-	mMaximized = SystemHandle->AppSettings->FULL_SCREEN;
+	mMaximized = WOMA::AppSettings->FULL_SCREEN;
 	WOMA::game_state = WOMA::previous_game_state;
 	//WOMA::previous_game_state = WOMA::game_state;
 
@@ -194,7 +194,7 @@ bool LinuxSystemClass::APPLICATION_CORE_SYSTEM()
 bool LinuxSystemClass::APPLICATION_INIT_SYSTEM() // ApplicationInit()
 {
 	bool result = true;
-	AppSettings->DRIVER = DRIVER_GL3; //Force OpenGL Driver
+	WOMA::AppSettings->DRIVER = DRIVER_GL3; //Force OpenGL Driver
 
 	womalog("LinuxSystemClass::APPLICATION_INIT_SYSTEM()\n");
 
@@ -237,7 +237,7 @@ bool LinuxSystemClass::APPLICATION_INIT_SYSTEM() // ApplicationInit()
 #endif
 
 #if CORE_ENGINE_LEVEL >= 10 && defined OPENGL3	//Create NEW CONTEXT Class: g_contextDriver
-	if (AppSettings->DRIVER == DRIVER_GL3)
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
 		IF_NOT_RETURN_FALSE(newDriver());
 #endif
 
@@ -315,7 +315,7 @@ void LinuxSystemClass::ProcessFrame() // EQUAL to: WinSystemClass::ProcessFrame(
 	if ((WOMA::game_state >= GAME_RUN && WOMA::game_state < ENGINE_RESTART) || (WOMA::game_state == GAME_SETUP))
 	#endif
 	{
-		m_Application->dayLightFade = m_Application->ProcessInputUpdate(); //OS CORE ONLY!  F1, F2, ...
+		m_Application->dayLightFade = m_Application->ProcessMovementInput_and_UpdateDemos(); //OS CORE ONLY!  F1, F2, ...
 
 	#if defined INTRO_DEMO
 		if (RENDER_PAGE < 15)

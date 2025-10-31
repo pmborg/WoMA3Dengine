@@ -256,13 +256,13 @@ void GLopenGLclass::Initialize2Dand3DCamera()
 	SetCamera2D();
 #endif
 
-	gl_Camera->SetPosition(	SystemHandle->AppSettings->INIT_CAMX, 
-							SystemHandle->AppSettings->INIT_CAMY+0.35f,
-							SystemHandle->AppSettings->INIT_CAMZ);
+	gl_Camera->SetPosition(	WOMA::AppSettings->INIT_CAMX, 
+							WOMA::AppSettings->INIT_CAMY+0.35f,
+							WOMA::AppSettings->INIT_CAMZ);
 
-	gl_Camera->SetRotation(	SystemHandle->AppSettings->INIT_ROTX, 
-							SystemHandle->AppSettings->INIT_ROTY,
-							SystemHandle->AppSettings->INIT_ROTZ);
+	gl_Camera->SetRotation(	WOMA::AppSettings->INIT_ROTX, 
+							WOMA::AppSettings->INIT_ROTY,
+							WOMA::AppSettings->INIT_ROTZ);
 
 	gl_Camera->CalculateViewMatrix();
 
@@ -339,7 +339,7 @@ bool GLopenGLclass::Initialize(float* clearColor)
 
 	// Init OpenGL:
 #if !defined ANDROID_PLATFORM
-	glViewport  ( 0, 0, SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT); 
+	glViewport  ( 0, 0, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT); 
 	//glClearColor(driver_ClearColor[0], driver_ClearColor[1], driver_ClearColor[2], driver_ClearColor[3]);
 #endif
 
@@ -363,10 +363,10 @@ bool GLopenGLclass::Initialize(float* clearColor)
 
 	// Set the field of view and screen aspect ratio.
 	float fieldOfView = 3.14159265358979323846f / 4.0f;
-	float screenAspect = (float)SystemHandle->AppSettings->WINDOW_WIDTH / (float)SystemHandle->AppSettings->WINDOW_HEIGHT;
+	float screenAspect = (float)WOMA::AppSettings->WINDOW_WIDTH / (float)WOMA::AppSettings->WINDOW_HEIGHT;
 
 	// Build the perspective projection matrix.
-	m_projectionMatrix = mathClass->BuildPerspectiveFovLHMatrix(fieldOfView, screenAspect, SystemHandle->AppSettings->SCREEN_NEAR, SystemHandle->AppSettings->SCREEN_DEPTH);
+	m_projectionMatrix = mathClass->BuildPerspectiveFovLHMatrix(fieldOfView, screenAspect, WOMA::AppSettings->SCREEN_NEAR, WOMA::AppSettings->SCREEN_DEPTH);
 
 	return true;
 }

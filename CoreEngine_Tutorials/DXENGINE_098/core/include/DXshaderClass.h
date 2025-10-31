@@ -117,10 +117,6 @@ namespace DirectX
 	private:
 		// NOTE: DONT USE "bool" USE "BOOL"
 
-	//#if DX_ENGINE_LEVEL >= 99 && defined USE_WOMA_ENGINE_ONE_CBUFFER
-	//	bool RenderfirstTime = true;
-	//#endif
-
 	#if defined USE_FASTER_BILL_SHADER
 	// 92: VERTEX CBUFFER:
 		struct VSFASTconstantBufferType

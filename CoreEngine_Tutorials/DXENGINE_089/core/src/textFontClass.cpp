@@ -61,7 +61,7 @@ bool textFontClass::Initialize(void* ctx, void* g_driver, TCHAR* fontFilename, T
 
 	// [PATTERN] Image loader:
 #if defined DX12
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 	{
 		m_driver = (DirectX::DX12Class*)g_driver;
 		m_Texture = NEW DX12TextureClass;
@@ -72,7 +72,7 @@ bool textFontClass::Initialize(void* ctx, void* g_driver, TCHAR* fontFilename, T
 	}
 #endif
 #if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX9 || WOMA::AppSettings->DRIVER == DRIVER_DX11)
 	{
 		m_driver11 = (DirectX::DX11Class*)g_driver;
 		//[TEMMPLATE] LOAD TEXTURE DX11:
@@ -87,7 +87,7 @@ bool textFontClass::Initialize(void* ctx, void* g_driver, TCHAR* fontFilename, T
 	}
 #endif
 #if (defined OPENGL3 || defined OPENGL4)
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
 	{
 		// Create the texture object for this model:
 		gl_Texture = NEW GLtextureClass;
@@ -185,7 +185,7 @@ void textFontClass::BuildVertexArray(void* vertices, TCHAR* sentence, float draw
 {
 	VertexType* vertexPtr;
 	int numLetters, index, i, letter;
-	//WomaDriverClass* m_Driver = driverList[SystemHandle->AppSettings->DRIVER];
+	//WomaDriverClass* m_Driver = driverList[WOMA::AppSettings->DRIVER];
 
 	if (m_Driver->RenderfirstTime)
 		_tprintf(TEXT("[%d]: BuildVertexArray(%s, drawX: %f, drawY: %f)\n"), gettid(), sentence, drawX, drawY);

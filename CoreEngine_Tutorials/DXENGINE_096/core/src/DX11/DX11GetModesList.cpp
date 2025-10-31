@@ -107,9 +107,9 @@ bool DX11Class::getModesList(int g_USE_MONITOR, int screenWidth, int screenHeigh
 		// 2: Graphic Card 2: Microsoft Basic Render Driver
 		//
 		// SAVE: our Adapter to use later, FREE: The others.
-		if (AdapterNumber == SystemHandle->AppSettings->ADAPTOR || SystemHandle->AppSettings->ADAPTOR == -1)
+		if (AdapterNumber == WOMA::AppSettings->ADAPTOR || WOMA::AppSettings->ADAPTOR == -1)
 		{
-			SystemHandle->AppSettings->ADAPTOR = AdapterNumber;
+			WOMA::AppSettings->ADAPTOR = AdapterNumber;
 			adapterGraphicCard = pAdapter;	// SAVE: our Adapter
 		}
 		else 
@@ -301,7 +301,7 @@ bool DX11Class::getModesList(int g_USE_MONITOR, int screenWidth, int screenHeigh
 
 			// [2] If user want to go on fullscreen (XML Settings) on this monitor: 
 			// Get the Best "RefreshRate" for that resolution (XML Settings)!
-			if ((mon == g_USE_MONITOR && fullscreen) || (SystemHandle->AppSettings->UseAllMonitors == true))
+			if ((mon == g_USE_MONITOR && fullscreen) || (WOMA::AppSettings->UseAllMonitors == true))
 			{
 				if (((displayModeList[i].Width == (unsigned int) screenWidth)) &&
 					((displayModeList[i].Height == (unsigned int) screenHeight)))

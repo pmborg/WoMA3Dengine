@@ -15,9 +15,19 @@
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
 //  MAIN PURPOSE: Define WoMA Vertices:
-//
-//	vertexTypes.h
-//		DXshaderClass.h
+// 
+//    21	Color	ModelColorVertexType
+//    22	Texture	ModelTextureVertexType
+//    23	Lighting	ModelTextureLightVertexType
+//    30 + Bump / Normal	ModelNormalBumpVertexType
+//    36 + Shadow Map	ModelShadowMapVertexType
+//    53 + Terrain	ModelTextureDouble_Color_TerrainType
+//    60 + MultiTex Terrain	HeightMapType_24
+//    93 + Billboard Atlas	ModelBillboardAtlasVertexType
+//    97 + Waterfall / Smoke	ModelTextureWaterfall
+//    100 + One - CBuffer(modern)	unified structs with.w position
+// 
+//	NOTE: Align vertexTypes.h with  DXshaderClass.h
 //
 // ----------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234525217;

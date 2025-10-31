@@ -104,8 +104,7 @@ void ApplicationClass::initTextureDemo(void *pContext)
 {
 	ModelTextureVertexType vertex;
 
-#if !defined  NO_SCENE_IMAGE_LOAD
-	//if (RENDER_PAGE == 22 || RENDER_PAGE == 28 || FORCE_RENDER_ALL)
+#if (!defined  NO_SCENE_IMAGE_LOAD) || defined INTRO_DEMO
 	{
 		//DEMO-1:
 		float X = 2.5f, Y = 1.5f, Z = 0;
@@ -152,14 +151,11 @@ void ApplicationClass::initTextureDemo(void *pContext)
 		m_tif3DModel->rotateX(-3.14f / 2.0f);
 		m_tif3DModel->translation(X_pos, Y_pos + 1, 5);
 	#endif
-
-
 	}
 #endif
 
 #if defined SCENE_TEXTURE
 	//--------------------------------------------------------------------------------------------------------------------------
-	//if ((RENDER_PAGE >= 22 && RENDER_PAGE < 24) || FORCE_RENDER_ALL)
 	{
 		//DEMO-2:
 		// Step 1: Prepare Vertex(s)
@@ -178,48 +174,9 @@ void ApplicationClass::initLightDemo(void* pContext)
 // ----------------------------------------------------------------------------
 {
 #if defined SCENE_TEXTURE_LIGHT
-/*
-	//DEMO-1:
-	//if ((RENDER_PAGE >= 23 && RENDER_PAGE <= 25) || FORCE_RENDER_ALL)
-	{
-		ModelTextureLightVertexType vertex = { 0 };
-		float X = 2.0f, Y = 1.0f, Z = 0;
-		if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
-		{
-			CREATE_VERTEXVECTOR_SQUAD_MODEL_OPTIMIZED(My3thModelVertexVector1, X, Y, Z);	// Step 1: Setup all vertices positions: X, Y, Z
-		}
-		else {
-			CREATE_VERTEXVECTOR_SQUAD_MODEL(My3thModelVertexVector1, X, Y, Z);
-		}
-		MAP_XZtoUV(My3thModelVertexVector1, X, Y, Z);								// Step 2: ADD TEXTURING: Auto-Map textures to all vertices: tu, tv			
 
-		// Calculate Normals, only once per triangle, (i.e. each 3 vertices):
-		vec3 normal; // "static": to preserve the value in all iterations
-		normal = CalcNormals(&My3thModelVertexVector1[0]);
-
-		for (UINT i = 0; i < My3thModelVertexVector1.size(); i++)					// Step 3: Add normals to all vertices
-		{
-			My3thModelVertexVector1[i].nx = normal.x;
-			My3thModelVertexVector1[i].ny = -normal.y;
-			My3thModelVertexVector1[i].nz = normal.z;
-		}
-
-		if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
-		{
-			initLoadTextureLight3D(m_3th3DModel1, TEXT("engine/data/original/Earth_Diffuse.bmp"), My3thModelVertexVector1, IndexSquarList, SHADER_TEXTURE_LIGHT);
-		}
-		else {
-			std::vector<UINT> empty;
-			initLoadTextureLight3D(m_3th3DModel1, TEXT("engine/data/original/Earth_Diffuse.bmp"), My3thModelVertexVector1, empty, SHADER_TEXTURE_LIGHT);
-		}
-
-		m_3th3DModel1->scale(3, 3, 3);
-	}
-*/
 	//DEMO-2:
-
 	//--------------------------------------------------------------------------------------------------------------------------
-	//if ((RENDER_PAGE >= 23 && RENDER_PAGE < 24) || FORCE_RENDER_ALL)
 	{
 		// Step 1: Prepare Vertex(s)
 		float X = 1, Y = 1, Z = 1;
@@ -278,22 +235,21 @@ bool ApplicationClass::initCubes3D(void* pContext)
 		ASSERT(m_cube1Model->LoadColor(pContext, TEXT("m_cube1Model"), m_Driver, SHADER_COLOR, &cube.VertexCubeColorModel, &cube.IndexCubeList));
 	}
 
-	//DEMO2:
-	{
+#if NOTES
+	//#define initLoadTexture3D(model, texture, vertexVector, IndexList, shader_type)
+	//{
+	//	std::vector<STRING> Textures;
+	//	Textures.push_back(TEXT("engine/data/seafloor.dds"));
+	//	if (WOMA::AppSettings->DRIVER == DRIVER_GL3) { CREATE_MODELGL3_IF_NOT_EXCEPTION(m_cube2Model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
+	//	if (WOMA::AppSettings->DRIVER != DRIVER_GL3) { CREATE_MODELDX_IF_NOT_EXCEPTION(m_cube2Model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
+	//	ASSERT(m_cube2Model->LoadTexture(TEXT("engine/data/seafloor.dds"), SystemHandle->m_Driver, SHADER_TEXTURE, &Textures, &cube.VertexCube2, &cube.IndexCubeList));
+	//}
+#endif
+	
+	{	//DEMO2:
 		initLoadTexture3D(m_cube2Model, LEVEL22_DEMO_TEXTURE, cube.VertexCubeTextureModel, cube.IndexCubeList, SHADER_TEXTURE);
-		#if NOTES
-		//#define initLoadTexture3D(model, texture, vertexVector, IndexList, shader_type)
-		//{
-		//	std::vector<STRING> Textures;
-		//	Textures.push_back(TEXT("engine/data/seafloor.dds"));
-		//	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) { CREATE_MODELGL3_IF_NOT_EXCEPTION(m_cube2Model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
-		//	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) { CREATE_MODELDX_IF_NOT_EXCEPTION(m_cube2Model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
-		//	ASSERT(m_cube2Model->LoadTexture(TEXT("engine/data/seafloor.dds"), SystemHandle->m_Driver, SHADER_TEXTURE, &Textures, &cube.VertexCube2, &cube.IndexCubeList));
-		//}
-		#endif
 	}
-	//DEMO3:
-	{
+	{	//DEMO3:
 		initLoadTextureLight3D(m_cube3Model, LEVEL22_DEMO_TEXTURE, cube.VertexCubeTextureLightModel, cube.IndexCubeList, SHADER_TEXTURE_LIGHT);
 	}
 
@@ -323,13 +279,13 @@ void ApplicationClass::DEMO_WOMA_APPLICATION_Shutdown2D()
 {
 #if defined USE_DX_DRIVER_FONT
 	if ((DirectX::DX11Class*)driverList.size() > 0)
-		((DirectX::DX11Class*)driverList[SystemHandle->AppSettings->DRIVER])->Shutdown2D();
+		((DirectX::DX11Class*)driverList[WOMA::AppSettings->DRIVER])->Shutdown2D();
 #endif
 
 	womalog("WOMA_APPLICATION_Shutdown2D()\n");
 
 	#if (defined DX_ENGINE)
-		if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+		if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
 		{
 		#if defined USE_TITLE_BANNER // TITLE-SHUTDOWN
 			SAFE_SHUTDOWN_MODELDX(m_titleModel);
@@ -346,7 +302,7 @@ void ApplicationClass::DEMO_WOMA_APPLICATION_Shutdown2D()
 		}
 	#endif
 	#if (defined OPENGL3 || defined OPENGL4)
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+		if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
 		{
 		#if defined USE_TITLE_BANNER // TITLE-SHUTDOWN
 			SAFE_SHUTDOWN_MODELGL3(m_titleModel);
@@ -366,7 +322,7 @@ void ApplicationClass::DEMO_WOMA_APPLICATION_Shutdown2D()
 
 #if defined INTRO_DEMO //29
 	for (int i = 0; i < m_screenShots.size(); i++) {
-		if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+		if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
 		{
 			#if defined DX_ENGINE
 			SAFE_SHUTDOWN_MODELDX(m_screenShots[i]);
@@ -397,7 +353,7 @@ bool ApplicationClass::initText(void* pContext)
 	AppTextClass = NEW DirectX::ApplicationTextClass();
 	IF_NOT_THROW_EXCEPTION(AppTextClass);
 
-	switch (SystemHandle->AppSettings->DRIVER)
+	switch (WOMA::AppSettings->DRIVER)
 	{
 #if (defined OPENGL3 || defined OPENGL40) 
 	case DRIVER_GL3:
@@ -433,7 +389,7 @@ bool ApplicationClass::initText(void* pContext)
 #endif
 
 #ifdef INTRO_DEMO
-void ApplicationClass::initIntroDemo(void* pContext)
+void ApplicationClass::initIntroCreditsDemo(void* pContext)
 {
 	std::vector<STRING> INTRO_TEXT;
 
@@ -455,7 +411,7 @@ void ApplicationClass::initIntroDemo(void* pContext)
 		VirtualModelClass* m_spriteModel = NULL;
 		initModelwithTexture2D(m_spriteModel, (TCHAR*)INTRO_TEXT[i].c_str(), SpriteVertexVector, emptyIndexList, SHADER_TEXTURE_FONT);
 
-		switch (SystemHandle->AppSettings->DRIVER)
+		switch (WOMA::AppSettings->DRIVER)
 		{
 
 		#if defined DX11
@@ -530,14 +486,13 @@ bool ApplicationClass::InitLightandDemos(void* pContext, WomaDriverClass* Driver
 
 #endif
 
-#if DX_ENGINE_LEVEL >= 22 && LEVEL < 60	// 22:TEXTURE
+#if (DX_ENGINE_LEVEL >= 22 && LEVEL < 60) || defined INTRO_DEMO// 22:TEXTURE
 	initTextureDemo(pContext);
 
 #endif
 
-#if DX_ENGINE_LEVEL >= 23  && LEVEL < 60	// 23:LIGHT
+#if (DX_ENGINE_LEVEL >= 23  && LEVEL < 60) || defined INTRO_DEMO	// 23:LIGHT
 	initLightDemo(pContext);
-
 #endif
 
 
@@ -604,15 +559,12 @@ void ApplicationClass::AddObjsWithInstancesToXML()
 	//-----------------------------------------------------------------------------------------------------------------
 	// Add Instanced LAMPs to World.xml
 	//-----------------------------------------------------------------------------------------------------------------
-
-
-
 }
 
 // --------------------------------------------------------------------------------------------
 // INIT/LOAD ALL 3D Objects
 // --------------------------------------------------------------------------------------------
-bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverClass* Driver)
+bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverClass* Driver, UINT level)
 // --------------------------------------------------------------------------------------------
 {
 	womalogauto(TEXT("----------------------------------------------------------------------------------------\n"));
@@ -620,7 +572,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 
 	// Log XML objects:
 
-	InitLightandDemos(pContext, Driver); //objid=0
+	InitLightandDemos(pContext, Driver);
 
 	#ifdef MAIN_RENDER_SKY
 	InitMainSky(pContext, Driver);
@@ -629,6 +581,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	#ifdef MAIN_RENDER_TERRAIN
 	InitTerrainandWaterSurfaces(pContext, Driver);
 	#endif
+
 	//=================================================================================================================
 	// Init MAIN 3D Scene       ///////////////////////////////////////////////////////////////////////////////////////
 	//=================================================================================================================
@@ -655,8 +608,8 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	if (DXsystemHandle->g_DShowPlayer == NULL || (DXsystemHandle->g_DShowPlayer->m_state != STATE_RUNNING))
 	#endif
 	{
-		SystemHandle->hwndPrgBar = SystemHandle->WomaCreateWindowEx(0, PROGRESS_CLASS, NULL, WS_CHILD | WS_VISIBLE | PBS_SMOOTH, 50, SystemHandle->AppSettings->WINDOW_HEIGHT - 100,
-			SystemHandle->AppSettings->WINDOW_WIDTH - 100, 20, SystemHandle->m_hWnd, (HMENU)401, SystemHandle->m_hinstance, NULL);
+		SystemHandle->hwndPrgBar = SystemHandle->WomaCreateWindowEx(0, PROGRESS_CLASS, NULL, WS_CHILD | WS_VISIBLE | PBS_SMOOTH, 50, WOMA::AppSettings->WINDOW_HEIGHT - 100,
+			WOMA::AppSettings->WINDOW_WIDTH - 100, 20, SystemHandle->m_hWnd, (HMENU)401, SystemHandle->m_hinstance, NULL);
 
 		SendMessage(SystemHandle->hwndPrgBar, PBM_SETRANGE, 0, (LPARAM)MAKELPARAM(0, 100));
 		SendMessage(SystemHandle->hwndPrgBar, PBM_SETBKCOLOR, 0, RGB(0, 0, 0));

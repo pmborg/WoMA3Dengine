@@ -206,13 +206,13 @@ Texture::Texture(ID3D11Texture2D* texture, const std::string& name) :
 
 bool Texture::CreateSRV(Graphics& graphics, DXGI_FORMAT texFormat, D3D11_SRV_DIMENSION viewDimension /*= D3D11_SRV_DIMENSION_TEXTURE2D*/, UINT mipLevels /*= 1*/)
 {
-    #define m_driver11 ((DirectX::DX11Class*)driverList[SystemHandle->AppSettings->DRIVER])
+    #define m_driver11 ((DirectX::DX11Class*)driverList[WOMA::AppSettings->DRIVER])
     return true;
 }
 
 bool Texture::CreateRTV(Graphics& graphics, DXGI_FORMAT texFormat)
 {
-#define m_driver11 ((DirectX::DX11Class*)driverList[SystemHandle->AppSettings->DRIVER])
+#define m_driver11 ((DirectX::DX11Class*)driverList[WOMA::AppSettings->DRIVER])
 
     //ID3D11RenderTargetView* rtv = ((DirectX::DX11Class*)m_driver11)->DX11windowsArray[0].m_renderTargetView;
 	ID3D11RenderTargetView* rtv = DX11windowsArray[0].m_renderTargetView;
@@ -252,7 +252,7 @@ bool Texture::CreateDSV(Graphics& graphics, DXGI_FORMAT texFormat)
     D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
     depthStencilViewDesc.Format = texFormat;
     //depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-	depthStencilViewDesc.ViewDimension = (SystemHandle->AppSettings->MSAA_Anisotropic) ? D3D11_DSV_DIMENSION_TEXTURE2DMS : D3D11_DSV_DIMENSION_TEXTURE2D; //MSAA
+	depthStencilViewDesc.ViewDimension = (WOMA::AppSettings->MSAA_Anisotropic) ? D3D11_DSV_DIMENSION_TEXTURE2DMS : D3D11_DSV_DIMENSION_TEXTURE2D; //MSAA
     depthStencilViewDesc.Flags = 0;
     depthStencilViewDesc.Texture2D.MipSlice = 0;
 

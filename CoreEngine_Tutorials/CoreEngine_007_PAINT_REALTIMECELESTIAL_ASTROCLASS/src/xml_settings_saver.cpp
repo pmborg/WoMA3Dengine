@@ -55,37 +55,37 @@ bool XMLloader::saveXMLsettingsFile (char* file) // Note: Have to be char
 		root->LinkEndChild(child_screen);
 		if ( child_screen )
 		{
-			_itoa(SystemHandle->AppSettings->ADAPTOR, stri, 10);
+			_itoa(WOMA::AppSettings->ADAPTOR, stri, 10);
 			child_screen->SetAttribute("adapter", stri);
 
-			_itoa(SystemHandle->AppSettings->UI_MONITOR, stri, 10);
+			_itoa(WOMA::AppSettings->UI_MONITOR, stri, 10);
 			child_screen->SetAttribute("uiMonitor", stri);
 
-			str = (SystemHandle->AppSettings->FULL_SCREEN) ? "true" : "false";
+			str = (WOMA::AppSettings->FULL_SCREEN) ? "true" : "false";
 			child_screen->SetAttribute("fullScreen", str.c_str());
 
-            str = (SystemHandle->AppSettings->FULLSCREEN_ON_WINDOWED) ? "true" : "false";
+            str = (WOMA::AppSettings->FULLSCREEN_ON_WINDOWED) ? "true" : "false";
             child_screen->SetAttribute("fullScreenWindowed", str.c_str());
 
-			_itoa(SystemHandle->AppSettings->WINDOW_Xpos_ori, stri, 10);
+			_itoa(WOMA::AppSettings->WINDOW_Xpos_ori, stri, 10);
 			child_screen->SetAttribute("posX", stri);
 
-			_itoa(SystemHandle->AppSettings->WINDOW_Ypos_ori, stri, 10);
+			_itoa(WOMA::AppSettings->WINDOW_Ypos_ori, stri, 10);
 			child_screen->SetAttribute("posY", stri);
 
-			_itoa(SystemHandle->AppSettings->WINDOW_WIDTH_ori, stri, 10);
+			_itoa(WOMA::AppSettings->WINDOW_WIDTH_ori, stri, 10);
 			child_screen->SetAttribute("width", stri);
 
-			_itoa(SystemHandle->AppSettings->WINDOW_HEIGHT_ori, stri, 10);
+			_itoa(WOMA::AppSettings->WINDOW_HEIGHT_ori, stri, 10);
 			child_screen->SetAttribute("height", stri);
 				 
-			str = (SystemHandle->AppSettings->AllowResize) ? "true" : "false";
+			str = (WOMA::AppSettings->AllowResize) ? "true" : "false";
 			child_screen->SetAttribute("allowResize", str.c_str());
 
-			str = (SystemHandle->AppSettings->VSYNC_ENABLED) ? "true" : "false";
+			str = (WOMA::AppSettings->VSYNC_ENABLED) ? "true" : "false";
 			child_screen->SetAttribute("vsync", str.c_str());
 
-			_itoa(SystemHandle->AppSettings->BITSPERPEL, stri, 10);
+			_itoa(WOMA::AppSettings->BITSPERPEL, stri, 10);
 			child_screen->SetAttribute("bitsPerPixel", stri);
 		}
 
@@ -94,19 +94,19 @@ bool XMLloader::saveXMLsettingsFile (char* file) // Note: Have to be char
 		root->LinkEndChild(child_texture);
 		if (child_texture)
 		{
-			_itoa(SystemHandle->AppSettings->MaxTextureSize, stri, 10);
+			_itoa(WOMA::AppSettings->MaxTextureSize, stri, 10);
 			child_texture->SetAttribute("maxTexture", stri);
 
-			str = (SystemHandle->AppSettings->MSAA_bilinear) ? "true" : "false";
+			str = (WOMA::AppSettings->MSAA_bilinear) ? "true" : "false";
 			child_texture->SetAttribute("bilinear", str.c_str());
 
-			str = (SystemHandle->AppSettings->MSAA_trilinear) ? "true" : "false";
+			str = (WOMA::AppSettings->MSAA_trilinear) ? "true" : "false";
 			child_texture->SetAttribute("trilinear", str.c_str());
 
-			str = (SystemHandle->AppSettings->MSAA_Anisotropic) ? "true" : "false";
+			str = (WOMA::AppSettings->MSAA_Anisotropic) ? "true" : "false";
 			child_texture->SetAttribute("Anisotropic", str.c_str());
 
-			_itoa(SystemHandle->AppSettings->MSAA_AnisotropicLevel, stri, 10);
+			_itoa(WOMA::AppSettings->MSAA_AnisotropicLevel, stri, 10);
 			child_texture->SetAttribute("AnisotropicLevel", stri);
 		}
 

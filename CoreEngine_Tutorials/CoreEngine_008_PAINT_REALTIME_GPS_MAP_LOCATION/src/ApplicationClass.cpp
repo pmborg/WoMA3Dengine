@@ -55,12 +55,6 @@ void CompoundReadFunction(WomaDriverClass* Driver);
 
 #include <inttypes.h>
 
-#if defined INTRO_DEMO
-bool FORCE_RENDER_ALL = true;
-#else
-bool FORCE_RENDER_ALL = false;
-#endif
-
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 UINT g_NetID = 0;
 #endif
@@ -79,10 +73,10 @@ ApplicationClass::ApplicationClass()
 	// ---------------------------------------------------------------------
 	// private:
 
-#if defined INTRO_DEMO	// VIDEO+INTRO+DEMO
+#if defined INTRO_DEMO								// VIDEO+INTRO+DEMO START
 	#if defined WINDOWS_PLATFORM
-		RENDER_PAGE = 10;	// INTRO_DEMO START!!!
-		SpriteScreenToShow = -5;
+		RENDER_PAGE = INTRO_DEMO_INITIAL_PAGE;		// default is: 10
+		SpriteScreenToShow = SPRITE_SCREEN_TO_SHOW;	// default is: -5;
 	#else
 		RENDER_PAGE = 20;	// FOR DEBUG ONLY| INTRO START ON:
 		SpriteScreenToShow = 0;
@@ -140,7 +134,7 @@ void ApplicationClass::Shutdown()
 
 #if defined USE_CUBE // Cubes
 #if (defined DX_ENGINE)
-	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+	if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
 	{
 		SAFE_SHUTDOWN_MODELDX(m_cube1Model);
 		SAFE_SHUTDOWN_MODELDX(m_cube2Model);
@@ -149,7 +143,7 @@ void ApplicationClass::Shutdown()
 #endif
 
 #if (defined OPENGL3 || defined OPENGL4)
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
 	{
 		SAFE_SHUTDOWN_MODELGL3(m_cube1Model);
 		SAFE_SHUTDOWN_MODELGL3(m_cube2Model);
@@ -219,12 +213,12 @@ void ApplicationClass::WOMA_APPLICATION_Shutdown()
 
 #if defined MAIN_RENDER_LIGHT_RAY
 #if (defined DX_ENGINE)
-	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+	if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
 		SAFE_SHUTDOWN_MODELDX(m_lightRayModel);
 #endif
 
 #if (defined OPENGL3 || defined OPENGL4)
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
 		SAFE_SHUTDOWN_MODELGL3(m_lightRayModel);
 #endif
 #endif
@@ -244,9 +238,9 @@ bool ApplicationClass::WOMA_APPLICATION_InitGUI()
 
 		// Set the Window width and height, for requested screen mode:
 		//----------------------------------------------------------------------------
-		if (SystemHandle->AppSettings->FULL_SCREEN) {
-			SystemHandle->AppSettings->WINDOW_WIDTH = SystemHandle->AppSettings->SCREEN_RESOLUTION_WIDTH;
-			SystemHandle->AppSettings->WINDOW_HEIGHT = SystemHandle->AppSettings->SCREEN_RESOLUTION_HEIGHT;
+		if (WOMA::AppSettings->FULL_SCREEN) {
+			WOMA::AppSettings->WINDOW_WIDTH = WOMA::AppSettings->SCREEN_RESOLUTION_WIDTH;
+			WOMA::AppSettings->WINDOW_HEIGHT = WOMA::AppSettings->SCREEN_RESOLUTION_HEIGHT;
 		}
 	#endif
 
@@ -254,13 +248,13 @@ bool ApplicationClass::WOMA_APPLICATION_InitGUI()
 	#if CORE_ENGINE_LEVEL >= 4 && defined WINDOWS_PLATFORM
 	if (SystemHandle->LandScape)
 	{
-		SystemHandle->m_scaleX = MIN(1, SystemHandle->AppSettings->WINDOW_WIDTH / 1920.0f);
-		SystemHandle->m_scaleY = MIN(1, SystemHandle->AppSettings->WINDOW_HEIGHT / 1080.0f);
+		SystemHandle->m_scaleX = MIN(1, WOMA::AppSettings->WINDOW_WIDTH / 1920.0f);
+		SystemHandle->m_scaleY = MIN(1, WOMA::AppSettings->WINDOW_HEIGHT / 1080.0f);
 	}
 	else
 	{
-		SystemHandle->m_scaleX = MIN(1, SystemHandle->AppSettings->WINDOW_HEIGHT / 1080.0f);
-		SystemHandle->m_scaleY = MIN(1, SystemHandle->AppSettings->WINDOW_WIDTH / 1920.0f);
+		SystemHandle->m_scaleX = MIN(1, WOMA::AppSettings->WINDOW_HEIGHT / 1080.0f);
+		SystemHandle->m_scaleY = MIN(1, WOMA::AppSettings->WINDOW_WIDTH / 1920.0f);
 	}
 
 	if (SystemHandle->m_scaleY > 0.9f)
@@ -308,7 +302,6 @@ bool ApplicationClass::Start()
 
 	return true;
 }
-
 
 
 #if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION

@@ -120,7 +120,7 @@ public:
 	bool				ModelHASlight = false;
 	bool				ModelHASAlfaColor = false;
 	bool				ModelHASColorMap = false;
-	float				ModelAlfaColor = 0;
+	float				ModelAlfaColor = 1;
 	int					shaderTypeParameter = 0;			//Used by HLSL CODE
 	bool				isBill = false;
 	bool				isAnimatedBill = false;
@@ -147,7 +147,6 @@ public:
     XMFLOAT4                bottleCenterOffset;     //SPHERE
     float                   bottleBoundingSphere;
     std::vector<XMFLOAT3>   bottleVertPosArray;     //Allow: X,Y,Z without a verticeType
-    
 #endif
 
 };

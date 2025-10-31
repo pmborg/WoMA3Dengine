@@ -83,9 +83,9 @@ void PaintSetup(HDC hdc, HDC hdcMem, HFONT font_title, HFONT font, int scr)
 		TextOut(hdcMem, 25, 25, SETUP, (int)_tcslen(SETUP));
 
 	//#if CORE_ENGINE_LEVEL == 5
-		//BitBlt(hdc, 0, 0, SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT, hdcMem, 0, 0, SRCCOPY);
+		//BitBlt(hdc, 0, 0, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT, hdcMem, 0, 0, SRCCOPY);
 	//#else
-		BitBlt(hdc, 0, 0, SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT, hdcMem, 0, 0, SRCPAINT);
+		BitBlt(hdc, 0, 0, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT, hdcMem, 0, 0, SRCPAINT);
 	//#endif
 	} else {
 		HGDIOBJ obj = SelectObject(hdcMem, font);		//Select the Font to Render
@@ -104,7 +104,7 @@ void PaintSetup(HDC hdc, HDC hdcMem, HFONT font_title, HFONT font, int scr)
 			{
 				TextOut(hdcMem, SystemHandle->TextToPrint[scr][i].x, SystemHandle->TextToPrint[scr][i].y,
 					SystemHandle->TextToPrint[scr][i].label.c_str(), (int)_tcslen(SystemHandle->TextToPrint[scr][i].label.c_str()));
-				BitBlt(hdc, 0, 0, SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT, hdcMem, 0, 0, SRCPAINT);
+				BitBlt(hdc, 0, 0, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT, hdcMem, 0, 0, SRCPAINT);
 			}
 		}
 	}
@@ -181,7 +181,7 @@ int MainWindowPaint(UINT monitor)
 	static COLORREF color = RGB(200, 200, 200);
 
 	HDC hdcMem = CreateCompatibleDC(hdc);
-	HBITMAP hBmp = CreateCompatibleBitmap(hdc, SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT);
+	HBITMAP hBmp = CreateCompatibleBitmap(hdc, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT);
 	HANDLE hbmOld = SelectObject(hdcMem, hBmp);
 	SetBkColor(hdcMem, TRANSPARENT);
 	SetTextColor(hdcMem, color);
@@ -206,7 +206,7 @@ int MainWindowPaint(UINT monitor)
 
 		TextOut(hdcMem, TextToPrintOnLoading.x, TextToPrintOnLoading.y,
 			TextToPrintOnLoading.label.c_str(), (int)_tcslen(TextToPrintOnLoading.label.c_str()));
-		BitBlt(hdc, 0, 0, SystemHandle->AppSettings->WINDOW_WIDTH, SystemHandle->AppSettings->WINDOW_HEIGHT, hdcMem, 0, 0, SRCPAINT);
+		BitBlt(hdc, 0, 0, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT, hdcMem, 0, 0, SRCPAINT);
 	}
 #endif
 

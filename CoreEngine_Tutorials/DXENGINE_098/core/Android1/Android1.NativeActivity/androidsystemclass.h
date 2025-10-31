@@ -85,7 +85,7 @@ private:
 	// --------------------------------------------------------------
 public:
 	//SystemSettings	systemDefinitions;
-#if DX_ENGINE_LEVEL >= 21
+#if DX_ENGINE_LEVEL >= 21 && defined USE_TINYXML_LOADER
 	World			world;
 #endif
 	void*			m_hWnd = NULL;

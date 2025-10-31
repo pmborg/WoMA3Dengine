@@ -167,8 +167,10 @@ void LoadAllMeshModels(UINT this_level, ApplicationClass* app, MeshApplication* 
 		if (DXsystemHandle->g_DShowPlayer == NULL || (DXsystemHandle->g_DShowPlayer->m_state != STATE_RUNNING))
 #endif
 		{
+		#if !defined INTRO_DEMO
 			StringCchPrintf(title, MAX_STR_LEN, TEXT("Loading Mesh: %d / %d       "), (int)i, (int)size_original_files);
 			SetWindowText(SystemHandle->settingstext, title);
+		#endif
 		}
 
         //Allow Refresh on Timer:

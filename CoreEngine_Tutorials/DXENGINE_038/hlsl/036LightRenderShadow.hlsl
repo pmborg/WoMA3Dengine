@@ -75,9 +75,9 @@ SamplerState SampleType: register(s0);
 ////////////////
 // CBUFFERS
 ////////////////
-#include "cbuffer.hlsl"
-#include "light.hlsl"
-#include "shadows.hlsl"
+#include "cbuffer.hlsli"
+#include "light.hlsli"
+#include "shadows.hlsli"
 
 
 ////////////////////////////////////////////////////////////////////////////////

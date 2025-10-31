@@ -35,13 +35,13 @@ PositionClass::PositionClass(UINT id)
 	CLASSLOADER();
 	WomaIntegrityCheck = 1234525217;
 
-	m_positionX = SystemHandle->AppSettings->INIT_CAMX;
-	m_positionY = SystemHandle->AppSettings->INIT_CAMY;
-	m_positionZ = SystemHandle->AppSettings->INIT_CAMZ;
+	m_positionX = WOMA::AppSettings->INIT_CAMX;
+	m_positionY = WOMA::AppSettings->INIT_CAMY;
+	m_positionZ = WOMA::AppSettings->INIT_CAMZ;
 	
-	m_rotationX = SystemHandle->AppSettings->INIT_ROTX;
-	m_rotationY = SystemHandle->AppSettings->INIT_ROTY;
-	m_rotationZ = SystemHandle->AppSettings->INIT_ROTZ;
+	m_rotationX = WOMA::AppSettings->INIT_ROTX;
+	m_rotationY = WOMA::AppSettings->INIT_ROTY;
+	m_rotationZ = WOMA::AppSettings->INIT_ROTZ;
 
 	m_frameTime      = 0.0f;
 

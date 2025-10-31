@@ -37,6 +37,39 @@
 
 extern std::vector<WomaDriverClass*> driverList;
 
+#if DX_ENGINE_LEVEL < 60|| defined INTRO_DEMO
+void ApplicationClass::initSphere1(void* pContext, float SPHERE_SIZE)
+{
+	if (Sphere_vertexdata.size() == 0)
+		CreateSphereModel((int)SPHERE_SIZE, SPHERE_GRIDPOINTS);	//(UINT SPHERE_SIZE, int Sphere_gridpoints)
+
+	std::vector<STRING> Textures;
+
+	//DAY:
+	Textures.push_back(SKY_DOME_DAY_TEXTURE);
+
+	CREATE_MODEL_IF_NOT_EXCEPTION(m_SphereModel1, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);
+	ASSERT(m_SphereModel1->LoadLight(pContext, TEXT("m_SphereModel"), m_Driver, SHADER_TEXTURE_LIGHT, &Textures, &Sphere_vertexdata, &Sphere_indexdata, 0));
+	m_SphereModel1->PrimitiveTopology = TRIANGLESTRIP;
+}
+void ApplicationClass::initSphere2(void* pContext, float SPHERE_SIZE)
+{
+	if (Sphere_vertexdata.size() == 0)
+		CreateSphereModel((int)SPHERE_SIZE, SPHERE_GRIDPOINTS);	//(UINT SPHERE_SIZE, int Sphere_gridpoints)
+
+	std::vector<STRING> Textures;
+
+	//NIGHT:
+	Textures.push_back(SKY_DOME_NIGHT_TEXTURE);
+
+	CREATE_MODEL_IF_NOT_EXCEPTION(m_SphereModel2, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);
+
+	//m_SphereModel2->ModelHASlight = false; // Before Load: Dont Calculate light/shadow for Sky-Dome! 
+	ASSERT(m_SphereModel2->LoadLight(pContext, TEXT("m_SphereModel2"), m_Driver, SHADER_TEXTURE_LIGHT, &Textures, &Sphere_vertexdata, &Sphere_indexdata, 0));
+	m_SphereModel2->PrimitiveTopology = TRIANGLESTRIP;
+}
+#endif
+
 #if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28 && defined USE_SKYSPHERE //MAIN_RENDER_SKY
 // ----------------------------------------------------------------------------
 void ApplicationClass::initSky(void* pContext, float SPHERE_SIZE)
@@ -48,11 +81,11 @@ void ApplicationClass::initSky(void* pContext, float SPHERE_SIZE)
 
 	std::vector<STRING> Textures;
 
-#ifdef MAIN_RENDER_MAIN_XML_OBJ
-	TCHAR wskyDayTexture[MAX_STR_LEN] = { 0 }; atow(wskyDayTexture, SystemHandle->world.skyDayTexture.c_str(), MAX_STR_LEN);
+#if defined MAIN_RENDER_MAIN_XML_OBJ && !defined USE_DEMO99
+	TCHAR wskyDayTexture[MAX_STR_LEN] = { 0 }; atow(wskyDayTexture, get_world_skyDayTexture().c_str(), MAX_STR_LEN);
 	Textures.push_back(wskyDayTexture);
 
-	TCHAR wskyNightTexture[MAX_STR_LEN] = { 0 }; atow(wskyNightTexture, SystemHandle->world.skyNightTexture.c_str(), MAX_STR_LEN);
+	TCHAR wskyNightTexture[MAX_STR_LEN] = { 0 }; atow(wskyNightTexture,get_world_skyNightTexture().c_str(), MAX_STR_LEN);
 	Textures.push_back(wskyNightTexture);
 #else
 	TCHAR wskyDayTexture[MAX_STR_LEN] = "engine/data/sky/NEW_SKY_DOME.jpg";
@@ -130,14 +163,16 @@ void ApplicationClass::CreateSphereModel(UINT SPHERE_SIZE, int Sphere_gridpoints
 		ShaderVertices.ny = -1 * vertices[i].y;
 		ShaderVertices.nz = -1 * vertices[i].z;
 
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 			ShaderVertices.tu = 1 - vertices[i].tu/2;
 		else
 			ShaderVertices.tu = 1 - vertices[i].tu;
 
+#if true //DX_ENGINE_LEVEL < 98
 		ShaderVertices.tv = 1 - (asinf(vertices[i].y) / PI + 0.5f);	// Map full Sphere
-		//ShaderVertices.tv = 1 - (asinf(vertices[i].y) / (PI/2));	// Map half Sphere
-
+#else
+		ShaderVertices.tv = 1 - (asinf(vertices[i].y) / (PI/2));	// Map half Sphere
+#endif
 		Sphere_vertexdata.push_back(ShaderVertices);
 	}
 }

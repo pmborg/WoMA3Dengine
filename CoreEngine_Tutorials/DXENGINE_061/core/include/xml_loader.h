@@ -85,7 +85,6 @@ using namespace std;
 
 #include "womadriverclass.h"
 
-
 // -------------------------------------------------------------------------------------------
 //<generalsettings>
 typedef struct {
@@ -127,6 +126,87 @@ typedef struct {
 
 } generalsettings;
 
+typedef struct {
+	int			hVisibility;
+	int			seaLevel;
+	int			size;
+	int			patchSize;
+	int			skySize;
+	float		clearColorR, clearColorG, clearColorB;
+	std::string	water;				//Note: have to be char! not STRING, due multi OS support.
+	std::string	waterTexture;		//Note: have to be char! not STRING, due multi OS support.
+	std::string	mainTexture;		//Note: have to be char! not STRING, due multi OS support.
+	std::string	skyDayTexture;		//Note: have to be char! not STRING, due multi OS support.
+	std::string	skyNightTexture;	//Note: have to be char! not STRING, due multi OS support.
+} World;
+
+#if defined USE_TINYXML_LOADER
+extern World		world_map;
+#endif
+
+int get_world_hVisibility(int level = -1);
+int get_world_seaLevel(int level = -1);
+int get_world_size(int level = -1); //world.size
+int get_world_patchSize(int level = -1);
+int get_world_skySize(int level = -1);
+
+float get_world_clearColorR(int level = -1);	//SystemHandle->world.clearColorR;
+float get_world_clearColorG(int level = -1);	//SystemHandle->world.clearColorG;
+float get_world_clearColorB(int level = -1);	//SystemHandle->world.clearColorB;
+
+std::string get_world_water(int level = -1);
+std::string get_world_waterTexture(int level = -1);	//get_world_waterTexture().c_str()
+std::string get_world_mainTexture(int level = -1);		//SystemHandle->world.mainTexture
+std::string get_world_skyDayTexture(int level = -1);	//SystemHandle->world.skyDayTexture
+std::string get_world_skyNightTexture(int level = -1);	//SystemHandle->world.skyNightTexture
+
+void set_world_hVisibility(int var, int level = -1);
+void set_world_seaLevel(int var, int level = -1);
+void set_world_size(int var, int level = -1);			//world.size	DXsystemHandle->world.size
+void set_world_patchSize(int var, int level = -1);		//world.patchSize
+void set_world_skySize(int var, int level = -1);
+
+void set_world_clearColorR(float var, int level = -1);
+void set_world_clearColorG(float var, int level = -1);
+void set_world_clearColorB(float var, int level = -1);
+
+void set_world_water(std::string var, int level = -1);
+void set_world_waterTexture(std::string var, int level = -1);
+void set_world_mainTexture(std::string var, int level = -1);		//
+void set_world_skyDayTexture(std::string var, int level = -1);	//SystemHandle->world.skyDayTexture
+void set_world_skyNightTexture(std::string var, int level = -1);	//SystemHandle->world.skyNightTexture
+
+extern int get_world_hVisibility(int level);
+extern int get_world_seaLevel(int level);
+extern int get_world_size(int level); //world.size
+extern int get_world_patchSize(int level);
+extern int get_world_skySize(int level);
+
+extern float get_world_clearColorR(int level);	//SystemHandle->world.clearColorR;
+extern float get_world_clearColorG(int level);	//SystemHandle->world.clearColorG;
+extern float get_world_clearColorB(int level);	//SystemHandle->world.clearColorB;
+
+extern std::string get_world_water(int level);
+extern std::string get_world_waterTexture(int level);	//get_world_waterTexture().c_str()
+extern std::string get_world_mainTexture(int level);		//SystemHandle->world.mainTexture
+extern std::string get_world_skyDayTexture(int level);	//SystemHandle->world.skyDayTexture
+extern std::string get_world_skyNightTexture(int level);	//SystemHandle->world.skyNightTexture
+
+extern void set_world_hVisibility(int var, int level);
+extern void set_world_seaLevel(int var, int level);
+extern void set_world_size(int var, int level);			//world.size	DXsystemHandle->world.size
+extern void set_world_patchSize(int var, int level);		//world.patchSize
+extern void set_world_skySize(int var, int level);
+
+extern void set_world_clearColorR(float var, int level);
+extern void set_world_clearColorG(float var, int level);
+extern void set_world_clearColorB(float var, int level);
+
+extern void set_world_water(std::string var, int level);
+extern void set_world_waterTexture(std::string var, int level);
+extern void set_world_mainTexture(std::string var, int level);		//
+extern void set_world_skyDayTexture(std::string var, int level);	//SystemHandle->world.skyDayTexture
+extern void set_world_skyNightTexture(std::string var, int level);	//SystemHandle->world.skyNightTexture
 
 // -------------------------------------------------------------------------------------------
 typedef struct {
@@ -192,21 +272,23 @@ public:
 	bool loadXMLsettingsFile(TCHAR* file); //Note: Have to be char
 	bool initAppicationSettings(TCHAR* filename); //Note: Have to be char
 
-	bool loadWorld(TCHAR* file);
-	bool InitWorldLoader(TCHAR* filename);				//Note: Have to be char
-	xmlobj3d object3d;
-	std::vector<xmlobj3d> theWorldXML;
+	bool loadWorld(UINT level, TCHAR* file, void* outObjects = NULL);
+	bool InitWorldLoader(UINT level, TCHAR* filename);
 
 	// --------------------------------------------------------------------------------------------
-	// Globals:
+	// GLOBALS:
 	// --------------------------------------------------------------------------------------------
-	generalsettings GenSettings;
+	generalsettings GenSettings;			//1
+
+	worldsettings worldSettings;			//2
+		std::vector<xmlobj3d> theWorldXML;
+  	xmlobj3d object3d;
+
+
 
 	/*TiXmlElement*/ tinyxml2::XMLDocument* child_screen = NULL;
 	/*TiXmlElement*/ tinyxml2::XMLElement* child_world = NULL;
 	/*TiXmlElement*/ tinyxml2::XMLNode* child_object = NULL;
-
-	worldsettings worldSettings;
 };
 
 #endif

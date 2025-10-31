@@ -755,7 +755,7 @@ void CTerrain::initUnderWaterDemo(void* pContext, UINT terrainId)
 	UINT modelVertexVectorSize = (UINT)modelVertexVector0.size();
 	for (UINT i = 0; i < modelVertexVectorSize; i++)			// Num Vertices: 6x256x256 = 393216
 	{
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+		if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
 		{
 			float aux = modelVertexVector0[i].tu;
 			modelVertexVector0[i].tu = modelVertexVector0[i].tv;
@@ -898,7 +898,7 @@ bool CTerrain::initMainTopoTerrainDemo(UINT terrainId, ID3D11DeviceContext* pCon
 		// Add TEXTURE MAP: to all vertices
 		for (UINT i = 0; i < modelVertexVector2.size(); i++)				// Num Vertices: 6x256x256 //{ size=6303750 }
 		{
-			if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)			// FOR: OPENGL(U, V MAP)!
+			if (WOMA::AppSettings->DRIVER == DRIVER_GL3)			// FOR: OPENGL(U, V MAP)!
 			{
 				float aux = modelVertexVector2[i].tu;
 				modelVertexVector2[i].tu = modelVertexVector2[i].tv;

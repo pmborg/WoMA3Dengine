@@ -97,6 +97,7 @@ float4 PS_Main(PSIn input) : SV_TARGET
 			color.rgb = pixelColor.rgb;							// If the color is other than black on the texture then this is a pixel in the font so draw it using the font pixel color.
 	} 
 
-	//color.rgb*=fade;
+	//USED BY INTRO DEMO:
+	color.rgb*=fade;
 	return color;
 }

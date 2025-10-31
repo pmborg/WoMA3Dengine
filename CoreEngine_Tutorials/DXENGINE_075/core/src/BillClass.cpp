@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // Filename: BillClass.cpp
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
@@ -476,3 +476,56 @@ int __cdecl BillSortCB(const void* arg1, const void* arg2)
 }
 #endif
 
+
+#if (DX_ENGINE_LEVEL >= 94 && defined USE_TREE_POINTERV2) || defined INTRO_DEMO
+bool BillSortCB_CPP_key(const Tree& a, const Tree& b)
+{
+	return a.sortKey > b.sortKey; // Farther first (back-to-front)
+}
+#endif
+
+bool BillSortCB_CPP(const Tree& a, const Tree& b)
+{
+	float dx1 = a.vPos.x - sort_cameraX;
+	float dz1 = a.vPos.z - sort_cameraZ;
+	float dx2 = b.vPos.x - sort_cameraX;
+	float dz2 = b.vPos.z - sort_cameraZ;
+
+	float d1 = dx1 * dx1 + dz1 * dz1;
+	float d2 = dx2 * dx2 + dz2 * dz2;
+
+	return d1 > d2; // Farther first (back-to-front)
+}
+
+// =============================================================================================
+// Function: RunBillboardSortDemo
+// Purpose : Central dispatcher for all historical billboard sort variants (v70–v98)
+// =============================================================================================
+
+void RunBillboardSortDemo(UINT RENDER_PAGE, std::vector<Tree>& m_Trees)
+{
+	// Skip if before billboards
+	if (RENDER_PAGE < 70)
+		return;
+
+	// Only log once at first frame
+	womalogATfirstframe(TEXT("[DEMO99] Billboard sort replay for level %d\n"), RENDER_PAGE);
+
+	switch (RENDER_PAGE)
+	{
+		// ---------------------------------------------------------
+		// 70–91 : Legacy m_Trees (AQUICHECKv4)
+		// ---------------------------------------------------------
+	case 70: case 71: case 72: case 73: case 74: case 75:
+	case 76: case 77: case 78: case 82: case 83: case 84:
+	case 85: case 86: case 87: case 88: case 89: case 90:
+	case 91:
+		std::sort(m_Trees.begin(), m_Trees.end(), BillSortCB_CPP);
+		break;
+
+	}
+
+	womalogATfirstframe(TEXT("[DEMO99] Billboard sort completed for level %d\n"), RENDER_PAGE);
+}
+
+//#endif

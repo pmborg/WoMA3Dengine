@@ -112,8 +112,8 @@ int APPLICATION_MAIN(int argc, char* argv[])
     if (Command == EXIT_SUCCESS) {                        // If APPLICATION_STARTUP throw an exception, Command will be: EXIT_FAILURE
       do {
           {
-              SYSTEM demo(&WOMA::settings);               // NEW |SystemClass()::WinSystemClass()::DxWinSystemClass() for Specific OS|+|WOMA::APP_NAME|+|NEW ApplicationClass()"|
-              demo.ParseCommandLineArgs(argc, argv);      // LoadXmlSettings + Parse the command line parameters: -warp /warp, ... (that will override: settings.xml)
+              SYSTEM demo(&WOMA::settings);						// NEW |SystemClass()::WinSystemClass()::DxWinSystemClass() for Specific OS|+|WOMA::APP_NAME|+|NEW ApplicationClass()"|
+              demo.ParseCommandLineAndApplySettings(argc, argv);// LoadXmlSettings + Parse the command line parameters: -warp /warp, ... (that will override: settings.xml)
       
               if (demo.APPLICATION_INIT_SYSTEM())         // INIT Woma Engine: |SOUND|+|Register|+|XML|+|Sys.Chk|+|Window|+|OS-Input|+|Timer|+|Drivers|+|Load Assets|
                   Command = demo.APPLICATION_MAIN_LOOP(); // RUN: OS MAIN LOOP -> PROCESS FRAMES: (UPDATE + RENDER)!

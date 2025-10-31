@@ -85,7 +85,7 @@ LinuxSystemClass::LinuxSystemClass(WOMA::Settings* appSettings) : SystemClass()
 	// STARTING POINT of WOMA ENGINE!
 	CLASSLOADER();
 
-	AppSettings = appSettings; // Super
+	WOMA::AppSettings = appSettings; // Super
 	SystemHandle = this;
 
 	//public:
@@ -159,7 +159,7 @@ bool LinuxSystemClass::APPLICATION_CORE_SYSTEM()
 bool LinuxSystemClass::APPLICATION_INIT_SYSTEM() // ApplicationInit()
 {
 	bool result = true;
-	AppSettings->DRIVER = DRIVER_GL3; //Force OpenGL Driver
+	WOMA::AppSettings->DRIVER = DRIVER_GL3; //Force OpenGL Driver
 
 	womalog("LinuxSystemClass::APPLICATION_INIT_SYSTEM()\n");
 

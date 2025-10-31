@@ -70,7 +70,7 @@ public:
 	void Shutdown();
 
 	bool GetMouseKeyboardState();
-	void ProcessInputKeys();
+	void GetDirectInputKeys();
 
 	// Mouse
 	void mouseWheelIn(WPARAM wParam);

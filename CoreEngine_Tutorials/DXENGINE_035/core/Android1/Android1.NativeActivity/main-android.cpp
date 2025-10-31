@@ -201,8 +201,8 @@ void updateRenderArea(struct womaengine* engine)
 	}
 
 	if (SystemHandle) {
-		SystemHandle->AppSettings->WINDOW_WIDTH = engine->width;
-		SystemHandle->AppSettings->WINDOW_HEIGHT = engine->height;
+		WOMA::AppSettings->WINDOW_WIDTH = engine->width;
+		WOMA::AppSettings->WINDOW_HEIGHT = engine->height;
 	}
 }
 

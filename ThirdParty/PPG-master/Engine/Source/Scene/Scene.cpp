@@ -90,7 +90,7 @@ void Scene::UpdateWorldMatrixModel(ID3D11DeviceContext* deviceContext, Graphics&
 
 void Scene::UseCamera(ID3D11DeviceContext* deviceContext, Graphics& graphics, Camera& camera)
 {
-    #define m_driver11 ((DirectX::DX11Class*)driverList[SystemHandle->AppSettings->DRIVER])
+    #define m_driver11 ((DirectX::DX11Class*)driverList[WOMA::AppSettings->DRIVER])
     XMMATRIX* cameraP = ((DirectX::DX11Class*)m_driver11)->GetProjectionMatrix(CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_OPAC, NULL, NULL);
     XMMATRIX* cameraV = ((DirectX::DX11Class*)m_driver11)->GetViewMatrix(CAMERA_NORMAL, PROJECTION_PERSPECTIVE, PASS_OPAC, NULL, NULL);
 

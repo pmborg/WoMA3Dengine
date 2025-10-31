@@ -132,8 +132,6 @@ public:
 	int		vertNormIndexTemp = 0;
 	int		vertTCIndexTemp = 0;
 	STRING	meshMatLib;				//String to hold our obj material library filename
-
-
 };
 
 #pragma warning(pop)

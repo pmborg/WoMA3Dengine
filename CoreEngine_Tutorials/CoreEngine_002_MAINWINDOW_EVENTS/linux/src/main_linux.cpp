@@ -44,8 +44,8 @@ bool createWindow()
 	//bool LinuxSystemClass::APPLICATION_INIT_MAIN_WINDOW(void* OpenGL)
 	// 
 	// Init globals:
-	Win.width = SystemHandle->AppSettings->WINDOW_WIDTH;	// screenWidth;
-	Win.height = SystemHandle->AppSettings->WINDOW_HEIGHT;	//screenHeight;
+	Win.width = WOMA::AppSettings->WINDOW_WIDTH;	// screenWidth;
+	Win.height = WOMA::AppSettings->WINDOW_HEIGHT;	//screenHeight;
 	Win.ready = false;										// No Render yet!
 	Screen* defaultScreen;
 
@@ -125,7 +125,7 @@ bool createWindow()
 	unsigned int mask = CWBackPixmap | CWBorderPixel | CWColormap | CWEventMask;
 
 	// [4] Get the size of the default screen.
-	if (SystemHandle->AppSettings->FULL_SCREEN)
+	if (WOMA::AppSettings->FULL_SCREEN)
 	{
 		defaultScreen = XDefaultScreenOfDisplay(display);
 		Win.width = XWidthOfScreen(defaultScreen);
@@ -156,7 +156,7 @@ bool createWindow()
 	Atom wmState, fullScreenState, motifHints;
 	long motifHintList[5];
 	XEvent fullScreenEvent;
-	if (SystemHandle->AppSettings->FULL_SCREEN)
+	if (WOMA::AppSettings->FULL_SCREEN)
 	{
 		// Setup the full screen states. 
 		wmState = XInternAtom(display, "_NET_WM_STATE", False);
@@ -249,8 +249,8 @@ void keyboardCB( KeySym sym, unsigned char key, int x, int y,
 //----------------------------------------------------------------------------
 void reshapeCB( int width, int height )
 {
-	Win.width = SystemHandle->AppSettings->WINDOW_WIDTH = width;
-	Win.height = SystemHandle->AppSettings->WINDOW_HEIGHT = height;
+	Win.width = WOMA::AppSettings->WINDOW_WIDTH = width;
+	Win.height = WOMA::AppSettings->WINDOW_HEIGHT = height;
 }
 
 GLXFBConfig main_chooseFBConfig(Display *display, int screen)

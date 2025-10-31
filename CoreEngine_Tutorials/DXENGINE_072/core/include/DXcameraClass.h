@@ -91,7 +91,7 @@ public:
     XMFLOAT3 GetRotation();
 
 	void CalculateViewMatrix();
-#if defined USE_3RD_PERSON_CAMERA
+#if defined USE_3RD_PERSON_CAMERA || defined USE_DEMO99
     XMVECTOR camPosition;
     XMVECTOR camTarget;
     XMVECTOR camUp;

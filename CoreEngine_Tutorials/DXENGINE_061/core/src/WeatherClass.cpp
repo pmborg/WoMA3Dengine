@@ -182,7 +182,7 @@ bool WeatherClass::GetPresentWeather(TCHAR* ICAO)
     IFSTREAM	fin;
     TCHAR		szFileName[80] = TEXT("present.weather");
 
-#ifdef USE_NETWORK
+#if defined USE_NETWORK  && !defined MAVERICK
     DeleteFile(WOMA::LoadFile (szFileName));
 
     TCHAR downloadFilename[100] = { 0 };

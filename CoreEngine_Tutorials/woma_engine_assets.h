@@ -176,7 +176,7 @@
     //22:
     #define LEVEL22_DEMO_TEXTURE TEXT("engine/data/basics/seafloor.bmp")
 
-    #if !defined NO_SCENE_IMAGE_LOAD
+	#if (!defined  NO_SCENE_IMAGE_LOAD) || defined INTRO_DEMO
         #define LEVEL22_IMAGE_bmp TEXT("engine/data/basics/Earth_Diffuse.bmp")
         #define LEVEL22_IMAGE_jpg TEXT("engine/data/basics/Earth_Diffuse.jpg")
         #define LEVEL22_IMAGE_png TEXT("engine/data/basics/Earth_Diffuse.png")
@@ -638,8 +638,6 @@
 	#define DEMO_TITLE TEXT("100: ")
 	#define WORLD_XML  TEXT("world_100.xml")
 #endif
-
-
 
 
 

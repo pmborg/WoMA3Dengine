@@ -249,6 +249,10 @@ void LogManager::DEBUG_MSG(CHAR* strMsg, ...)
 	if (ON)
 		OutputDebugStringReport(strBuffer);
 
+#if defined ANDROID_PLATFORM
+	LOGE(strBuffer);
+#endif
+
 #ifdef _DEBUG
 	fflush(debugFile);
 #endif

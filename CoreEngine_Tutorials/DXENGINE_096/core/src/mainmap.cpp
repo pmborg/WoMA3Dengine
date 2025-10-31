@@ -57,8 +57,8 @@ void ApplicationClass::RenderMainMapMiniMap(void* pContext)
 #if defined USE_MAIN_MAP 
 	if ((RENDER_PAGE >= 62 && m_mainMapModel) && (WOMA::game_state == GAME_MAP))
 	{
-		int X = ((SystemHandle->AppSettings->WINDOW_WIDTH - m_mainMapModel->SpriteTextureWidth) / 2);
-		int Y = ((SystemHandle->AppSettings->WINDOW_HEIGHT - m_mainMapModel->SpriteTextureHeight) / 2);
+		int X = ((WOMA::AppSettings->WINDOW_WIDTH - m_mainMapModel->SpriteTextureWidth) / 2);
+		int Y = ((WOMA::AppSettings->WINDOW_HEIGHT - m_mainMapModel->SpriteTextureHeight) / 2);
 
         //[1] Render background MAP.
 		m_Driver->TurnOffAlphaBlending(pContext); // Re assume default
@@ -84,8 +84,8 @@ void ApplicationClass::RenderMainMapMiniMap(void* pContext)
 				#define _41 r[3].m128_f32[0]
 				#define _42 r[3].m128_f32[1]
 				#define _43 r[3].m128_f32[2]
-				worldMatrix->_41 = (float)-SystemHandle->AppSettings->WINDOW_WIDTH / 2 + m_miniMapArrowModel->SpriteTextureWidth / 2 + m_pointMapLocationX[i];
-				worldMatrix->_42 = (float)SystemHandle->AppSettings->WINDOW_HEIGHT / 2 - m_miniMapArrowModel->SpriteTextureHeight / 2 - m_pointMapLocationY[i];
+				worldMatrix->_41 = (float)-WOMA::AppSettings->WINDOW_WIDTH / 2 + m_miniMapArrowModel->SpriteTextureWidth / 2 + m_pointMapLocationX[i];
+				worldMatrix->_42 = (float)WOMA::AppSettings->WINDOW_HEIGHT / 2 - m_miniMapArrowModel->SpriteTextureHeight / 2 - m_pointMapLocationY[i];
 				worldMatrix->_43 = -0.1f; //Make sure that arrow is on top of map
 				#undef _41
 				#undef _42
@@ -127,8 +127,8 @@ void ApplicationClass::RenderMainMapMiniMap(void* pContext)
 				#define _41 r[3].m128_f32[0]
 				#define _42 r[3].m128_f32[1]
 				#define _43 r[3].m128_f32[2]
-				worldMatrix->_41 = (float)-SystemHandle->AppSettings->WINDOW_WIDTH / 2 + m_miniMapArrowModel->SpriteTextureWidth / 2 + m_pointLocationX[i];
-				worldMatrix->_42 = (float)SystemHandle->AppSettings->WINDOW_HEIGHT / 2 - m_miniMapArrowModel->SpriteTextureHeight / 2 - m_pointLocationY[i];
+				worldMatrix->_41 = (float)-WOMA::AppSettings->WINDOW_WIDTH / 2 + m_miniMapArrowModel->SpriteTextureWidth / 2 + m_pointLocationX[i];
+				worldMatrix->_42 = (float)WOMA::AppSettings->WINDOW_HEIGHT / 2 - m_miniMapArrowModel->SpriteTextureHeight / 2 - m_pointLocationY[i];
 				worldMatrix->_43 = -0.1f; //Make sure that arrow is on top of map
 				#undef _41
 				#undef _42

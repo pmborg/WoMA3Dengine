@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // Filename: BillClass.cpp
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
@@ -645,3 +645,228 @@ int __cdecl BillSortCB(const void* arg1, const void* arg2)
 }
 #endif
 
+
+#if defined GENERATE_ATLAS_INTEGRATION_DDS
+#include <array>
+
+static const ModelTextureVertexType kBaseQuad[4] = {
+	// x, y, z | tu, tv
+	{ {  0.5f, 0.0f, 0.0f }, {1.0f, 0.0f} }, // v1
+	{ { -0.5f, 0.0f, 0.0f }, {0.0f, 0.0f} }, // v2
+	{ { -0.5f, 1.0f, 0.0f }, {0.0f, 1.0f} }, // v3
+	{ {  0.5f, 1.0f, 0.0f }, {1.0f, 1.0f} }, // v4
+};
+
+std::vector<ModelBillboardAtlasVertexType> outVerts;
+std::vector<uint32_t> outIdx;
+
+VirtualModelClass* AtlasobjModel;
+
+#define MAX_BILLBOARD_VERTS (MAX_BILLBOARDS * 4)
+#define MAX_BILLBOARD_IDX   (MAX_BILLBOARDS * 6)
+
+void BuildBillboardAtlasMesh_FromTrees(
+	std::vector<ModelBillboardAtlasVertexType>& outVerts,
+	std::vector<uint32_t>& outIdx,
+	const std::vector<Tree>& treesSorted,
+	size_t& outVertsCount,
+	size_t& outIdxCount
+)
+{
+	// Reserve memory up front to avoid repeated reallocations in push_back
+	size_t billCount = 0;
+	for (const Tree& t : treesSorted) {
+		if (!t.sortKey) continue;
+#if defined  NO3DBILL
+		if (t.type > 12) continue; //Use all from 0..12
+#else
+		if (t.type > 10) continue;
+#endif
+		if (t.type >= billboardAtlasRegions.size()) continue;
+		++billCount;
+	}
+
+	if (m_Driver->RenderfirstTime)
+	{
+		//outVerts.clear();
+		//outIdx.clear();
+		outVerts.reserve(MAX_BILLBOARDS * 4);
+		outIdx.reserve(MAX_BILLBOARDS * 6);
+		ModelBillboardAtlasVertexType v;
+		for (size_t i = 0; i < MAX_BILLBOARDS * 4; i++)
+			outVerts.push_back(v);
+		for (size_t i = 0; i < MAX_BILLBOARDS * 6; i++)
+			outIdx.push_back(0);
+	}
+
+	int v = 0, i = 0;
+	for (const Tree& t : treesSorted)
+	{
+		if (!t.sortKey) continue;
+#if defined  NO3DBILL
+		if (t.type > 12) continue; //Use all from 0..12
+#else
+		if (t.type > 10) continue;
+#endif
+		if (t.type >= billboardAtlasRegions.size()) continue;
+
+		const uint32_t base = v; // (uint32_t)outVerts.size();
+
+		// Unroll the loop for 4 vertices for better performance
+		{
+			ModelBillboardAtlasVertexType out0{}, out1{}, out2{}, out3{};
+			out0.x = kBaseQuad[0].x; out0.y = kBaseQuad[0].y; out0.z = kBaseQuad[0].z;
+			out1.x = kBaseQuad[1].x; out1.y = kBaseQuad[1].y; out1.z = kBaseQuad[1].z;
+			out2.x = kBaseQuad[2].x; out2.y = kBaseQuad[2].y; out2.z = kBaseQuad[2].z;
+			out3.x = kBaseQuad[3].x; out3.y = kBaseQuad[3].y; out3.z = kBaseQuad[3].z;
+
+			out0.tu = kBaseQuad[0].tu; out0.tv = 1.0f - kBaseQuad[0].tv;
+			out1.tu = kBaseQuad[1].tu; out1.tv = 1.0f - kBaseQuad[1].tv;
+			out2.tu = kBaseQuad[2].tu; out2.tv = 1.0f - kBaseQuad[2].tv;
+			out3.tu = kBaseQuad[3].tu; out3.tv = 1.0f - kBaseQuad[3].tv;
+
+			out0.nx = out1.nx = out2.nx = out3.nx = 0.0f;
+			out0.ny = out1.ny = out2.ny = out3.ny = 1.0f;
+			out0.nz = out1.nz = out2.nz = out3.nz = 0.0f;
+			out0.atlasIndex = out1.atlasIndex = out2.atlasIndex = out3.atlasIndex = t.type;
+
+			out0.ox = out1.ox = out2.ox = out3.ox = t.vPos.x;
+			out0.oy = out1.oy = out2.oy = out3.oy = t.vPos.y;
+			out0.oz = out1.oz = out2.oz = out3.oz = t.vPos.z;
+			out0.scale = out1.scale = out2.scale = out3.scale = t.scale;
+			out0.rotY = out1.rotY = out2.rotY = out3.rotY = t.rotY;
+
+			outVerts[v++] = out0;
+			outVerts[v++] = out1;
+			outVerts[v++] = out2;
+			outVerts[v++] = out3;
+		}
+
+		// 2 triangles
+		outIdx[i++] = (base + 0);
+		outIdx[i++] = (base + 1);
+		outIdx[i++] = (base + 2);
+		outIdx[i++] = (base + 2);
+		outIdx[i++] = (base + 3);
+		outIdx[i++] = (base + 0);
+	}
+
+	outVertsCount = v;
+	outIdxCount = i;
+}
+
+// Create once (sizes big enough for your typical worst case), e.g. 10k verts / 15k indices.
+ID3D11Buffer* gBillVB = nullptr;
+ID3D11Buffer* gBillIB = nullptr;
+void UpdateBills(ID3D11DeviceContext* ctx,
+	const std::vector<ModelBillboardAtlasVertexType>& verts,
+	const std::vector<uint32_t>& idx,
+	size_t& outVertsCount,
+	size_t& outIdxCount
+)
+{
+	if (verts.empty() || idx.empty()) return;
+
+	// Update VB
+	D3D11_MAPPED_SUBRESOURCE m;
+	ctx->Map(gBillVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &m);
+	memcpy(m.pData, verts.data(), outVertsCount /*verts.size()*/ * sizeof(verts[0]));
+	ctx->Unmap(gBillVB, 0);
+
+	// Update IB
+	ctx->Map(gBillIB, 0, D3D11_MAP_WRITE_DISCARD, 0, &m);
+	memcpy(m.pData, idx.data(), outIdxCount /*idx.size()*/ * sizeof(idx[0]));
+	ctx->Unmap(gBillIB, 0);
+
+	((DXmodelClass*)AtlasobjModel)->m_indexCount = (UINT)outIdxCount; // idx.size();
+}
+
+#endif
+
+#if (DX_ENGINE_LEVEL >= 94 && defined USE_TREE_POINTERV2) || defined INTRO_DEMO
+bool BillSortCB_CPP_key(const Tree& a, const Tree& b)
+{
+	return a.sortKey > b.sortKey; // Farther first (back-to-front)
+}
+#endif
+
+bool BillSortCB_CPP(const Tree& a, const Tree& b)
+{
+	float dx1 = a.vPos.x - sort_cameraX;
+	float dz1 = a.vPos.z - sort_cameraZ;
+	float dx2 = b.vPos.x - sort_cameraX;
+	float dz2 = b.vPos.z - sort_cameraZ;
+
+	float d1 = dx1 * dx1 + dz1 * dz1;
+	float d2 = dx2 * dx2 + dz2 * dz2;
+
+	return d1 > d2; // Farther first (back-to-front)
+}
+
+// =============================================================================================
+// Function: RunBillboardSortDemo
+// Purpose : Central dispatcher for all historical billboard sort variants (v70–v98)
+// =============================================================================================
+
+void RunBillboardSortDemo(UINT RENDER_PAGE, std::vector<Tree>& m_Trees)
+{
+	// Skip if before billboards
+	if (RENDER_PAGE < 70)
+		return;
+
+	// Only log once at first frame
+	womalogATfirstframe(TEXT("[DEMO99] Billboard sort replay for level %d\n"), RENDER_PAGE);
+
+	switch (RENDER_PAGE)
+	{
+		// ---------------------------------------------------------
+		// 70–91 : Legacy m_Trees (AQUICHECKv4)
+		// ---------------------------------------------------------
+	case 70: case 71: case 72: case 73: case 74: case 75:
+	case 76: case 77: case 78: case 82: case 83: case 84:
+	case 85: case 86: case 87: case 88: case 89: case 90:
+	case 91:
+		std::sort(m_Trees.begin(), m_Trees.end(), BillSortCB_CPP);
+		break;
+
+		// ---------------------------------------------------------
+		// 92–93 : SceneManager list (AQUICHECKv3)
+		// ---------------------------------------------------------
+	case 92:
+	case 93:
+		std::sort(
+			WOMA::sceneManager->visibleBillboardList.begin(),
+			WOMA::sceneManager->visibleBillboardList.end(),
+			BillSortCB_CPP);
+		break;
+
+
+		// ---------------------------------------------------------
+		// 94+ : Pointer-based versions (AQUICHECKv1 / v2)
+		// ---------------------------------------------------------
+	case 94:
+	default:
+#if defined USE_TREE_POINTER
+		std::sort(
+			WOMA::sceneManager->visibleBillboardList.begin(),
+			WOMA::sceneManager->visibleBillboardList.end(),
+			[](const Tree* a, const Tree* b) { return a->sortKey > b->sortKey; });
+#elif defined USE_TREE_POINTERV2
+		std::sort(
+			WOMA::sceneManager->visibleBillboardList.begin(),
+			WOMA::sceneManager->visibleBillboardList.end(),
+			BillSortCB_CPP_key);
+#else
+		std::sort(
+			WOMA::sceneManager->visibleBillboardList.begin(),
+			WOMA::sceneManager->visibleBillboardList.end(),
+			BillSortCB_CPP);
+#endif
+		break;
+
+	}
+
+	womalogATfirstframe(TEXT("[DEMO99] Billboard sort completed for level %d\n"), RENDER_PAGE);
+}
+
+//#endif

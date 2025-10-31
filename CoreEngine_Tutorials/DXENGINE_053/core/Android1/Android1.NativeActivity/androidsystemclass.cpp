@@ -33,14 +33,14 @@ AndroidSystemClass::AndroidSystemClass(WOMA::Settings* appSettings) : SystemClas
 {
     CLASSLOADER();
     WomaIntegrityCheck = 1234525217;
-    AppSettings = appSettings; // Super
+    WOMA::AppSettings = appSettings; // Super
     SystemHandle = this;
 
     //public:
     mResizing = false;
 
 #if CORE_ENGINE_LEVEL >= 10
-    mMaximized = SystemHandle->AppSettings->FULL_SCREEN;
+    mMaximized = WOMA::AppSettings->FULL_SCREEN;
     WOMA::previous_game_state = WOMA::game_state;
 #endif
 
@@ -95,7 +95,7 @@ void AndroidSystemClass::Shutdown()
 bool AndroidSystemClass::APPLICATION_INIT_SYSTEM()
 {
     bool result = true;
-    AppSettings->DRIVER = DRIVER_GL3; //Force OpenGL Driver
+    WOMA::AppSettings->DRIVER = DRIVER_GL3; //Force OpenGL Driver
 
     womalog ("AndroidSystemClass::APPLICATION_INIT_SYSTEM()\n");
 
@@ -106,8 +106,8 @@ bool AndroidSystemClass::APPLICATION_INIT_SYSTEM()
 
 #if defined ANDROID_PLATFORM && !defined NewWomaEngine
     if (SystemHandle) {
-        SystemHandle->AppSettings->WINDOW_WIDTH = engine.width;
-        SystemHandle->AppSettings->WINDOW_HEIGHT = engine.height;
+        WOMA::AppSettings->WINDOW_WIDTH = engine.width;
+        WOMA::AppSettings->WINDOW_HEIGHT = engine.height;
 }
 #endif
 
@@ -166,7 +166,7 @@ bool AndroidSystemClass::APPLICATION_INIT_SYSTEM()
 
     //Create Context:
 #if CORE_ENGINE_LEVEL >= 10 && (defined OPENGL3 || defined OPENGL4)	//Create NEW CONTEXT Class: m_contextDriver
-    if (AppSettings->DRIVER == DRIVER_GL3)
+    if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
         IF_NOT_RETURN_FALSE(newDriver());
 #endif
 #if CORE_ENGINE_LEVEL >= 10
@@ -211,7 +211,7 @@ void AndroidSystemClass::ProcessFrame()
 
 #if CORE_ENGINE_LEVEL >= 10
 	{
-		m_Application->dayLightFade = m_Application->ProcessInputUpdate();					//OS CORE ONLY!  F1, F2, ...
+		m_Application->dayLightFade = m_Application->ProcessMovementInput_and_UpdateDemos();					//OS CORE ONLY!  F1, F2, ...
 
 		#if defined INTRO_DEMO
 		if (RENDER_PAGE < 15) 
@@ -223,7 +223,7 @@ void AndroidSystemClass::ProcessFrame()
 		// -----------------------
 		//m_Driver->BeginScene(0);				//RESET FRAME
 		// -----------------------
-		#define cor driverList[SystemHandle->AppSettings->DRIVER]->driver_ClearColor
+		#define cor driverList[WOMA::AppSettings->DRIVER]->driver_ClearColor
 		glClearColor(cor[0], cor[1], cor[2], cor[3]);
 		#undef cor
 		glEnable(GL_DEPTH_TEST);

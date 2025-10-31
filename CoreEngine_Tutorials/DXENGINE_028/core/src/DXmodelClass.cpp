@@ -116,7 +116,7 @@ DXmodelClass::DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive, bool comp
 
 void DXmodelClass::LOADDRIVER(void* driver)
 {
-	switch (SystemHandle->AppSettings->DRIVER)
+	switch (WOMA::AppSettings->DRIVER)
 	{
 
 	#if defined DX11
@@ -220,7 +220,7 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 	DXshaderClass*	shader=NULL;
 
 	// LOAD HLSL CODE:
-	switch (SystemHandle->AppSettings->DRIVER)
+	switch (WOMA::AppSettings->DRIVER)
 	{
 
   #if defined DX11 // Pure DX11
@@ -316,7 +316,7 @@ HRESULT DirectX::DXmodelClass::LoadTextureImage(ID3D11DeviceContext* pContext, T
 //#if  DX_ENGINE_LEVEL >= 22 // Texturing 
 
 #if defined DX12
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 	{
 		m_Texture = NEW DX12TextureClass;
 		IF_NOT_THROW_EXCEPTION(m_Texture);
@@ -361,7 +361,7 @@ HRESULT DirectX::DXmodelClass::LoadTextureImage(ID3D11DeviceContext* pContext, T
 	womalog("Load TEXTURE/MODEL: %s - %s\n", MODEL_NAME.c_str(), textureFilename);
 	#endif
 
-	switch (SystemHandle->AppSettings->DRIVER)
+	switch (WOMA::AppSettings->DRIVER)
 	{
 	#if defined DX11
 	case DRIVER_DX11:
@@ -377,7 +377,7 @@ HRESULT DirectX::DXmodelClass::LoadTextureImage(ID3D11DeviceContext* pContext, T
 	}
 	else
 	{
-		switch (SystemHandle->AppSettings->DRIVER)
+		switch (WOMA::AppSettings->DRIVER)
 		{
 
 #if defined DX11
@@ -406,18 +406,22 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 #if defined DX11 || defined DX12 || defined DX9
 	
 #if defined DX11 || defined DX9
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 	{
 		m_Shader11 = CreateShader(objectName, ModelShaderType);
 		ASSERT_DEBUG(m_Shader11);
 		IF_NOT_RETURN_FALSE(m_Shader11);
+
+		if (ModelShaderType > SHADER_COLOR)
+		{
 			m_Shader11->hasAlfaColor = ModelHASAlfaColor;			//IMPORTANT LEVEL 62!
 			m_Shader11->alfaColor = ModelAlfaColor;					//IMPORTANT LEVEL 62!
 			m_Shader11->hasFog = ModelHASfog;						//IMPORTANT LEVEL 62!
+		}
 	}
 #endif
 #if defined DX12
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 	{
 		m_Shader = CreateShader(objectName, ModelShaderType);
 		IF_NOT_RETURN_FALSE(m_Shader);
@@ -438,19 +442,19 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
         {
             m_indexCount = m_vertexCount;			// Set the number of indices in the index array.
 
-#if defined DX11 || defined DX12 || defined DX9
+		#if defined DX11 || defined DX12 || defined DX9
             indices = NEW UINT[m_indexCount];		// Create the index array: DX10/11
             IF_NOT_THROW_EXCEPTION(indices);
             for (UINT i = 0; i < m_indexCount; i++) 
             {
             indices[i] = i;						// Load the index array with data:
-#if (defined _DEBUG || defined  DEBUG) && DX_ENGINE_LEVEL < 29 && false
+			#if (defined _DEBUG || defined  DEBUG) && DX_ENGINE_LEVEL < 29 && false
             womalog("%u ", indices[i]);
             if (j++ >= 2) {
                 j = 0;
                 womalog("\n");
             }
-#endif
+			#endif
         }
 		#else
 			indices9 = NEW WORD[m_indexCount];		// Create the index array: DX9/12
@@ -468,13 +472,13 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 
 			for (UINT i = 0; i < m_indexCount; i++) {
 				indices[i] = indexModelList->at(i);	// Load the index array with data:
-#if (defined _DEBUG || defined  DEBUG) && DX_ENGINE_LEVEL < 29
+				#if (defined _DEBUG || defined  DEBUG) && DX_ENGINE_LEVEL < 29 && false
                 womalog("%u ", indices[i]);
                 if (j++ >= 2) {
                     j = 0;
                     womalog("\n");
                 }
-#endif
+				#endif
             }
 		#else
 			indices9 = NEW WORD[m_indexCount];		// Create the index array: DX9/12
@@ -491,7 +495,7 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 	switch (ModelShaderType)
 	{
 	case SHADER_COLOR:
-		switch (SystemHandle->AppSettings->DRIVER)
+		switch (WOMA::AppSettings->DRIVER)
 		{
 
 #if defined DX11 // Pure DX11
@@ -515,7 +519,7 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 	case SHADER_FIRE:
 	case SHADER_USE_CURVED_REAL_SKY_PLANE:
 	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX9 || WOMA::AppSettings->DRIVER == DRIVER_DX11)
 		{
 			result = InitializeTextureBuffers(m_driver11->m_device11, indices);
 		#if TUTORIAL_CHAP >= 62 // FIRE
@@ -540,7 +544,7 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 		}
 	#endif
 	#if defined DX12
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 		{
 			result = InitializeTextureBuffers(m_driver->m_device, indices);
 		}
@@ -556,13 +560,13 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
     case SHADER_TEXTURE_LIGHT_FAST:					//83 LIGHT 
 	case SHADER_TEXTURE_POINTS_OF_LIGHT_INSTANCED:  //98
 	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX9 || WOMA::AppSettings->DRIVER == DRIVER_DX11)
 		{
 			result = InitializeTextureLightBuffers(m_driver11->m_device11, indices);
 		}
 	#endif
 	#if defined DX12
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 		{
 			result = InitializeTextureLightBuffers(m_driver->m_device, indices);
 		}
@@ -585,13 +589,13 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 
 		UINT meshSRV_size = 0;
 		#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX9 || SystemHandle->AppSettings->DRIVER == DRIVER_DX11)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX9 || WOMA::AppSettings->DRIVER == DRIVER_DX11)
 		{
 			meshSRV_size = (UINT) meshSRV11.size();
 		}
 		#endif
 		#if defined DX12
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 		{
 			meshSRV_size = (UINT) meshSRV.size();
 		}
@@ -637,7 +641,7 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 			if (!Model3D)	// SPRITE? Get Size...
 			{
 				#if defined DX12
-				if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+				if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 				{
 					SpriteTextureWidth = m_Texture->width;
 					SpriteTextureHeight = m_Texture->height;
@@ -645,7 +649,7 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 				#endif
 
 				#if defined DX11 || defined DX9
-				if (m_Texture11 && (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9))
+				if (m_Texture11 && (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9))
 				{
 					// Get Sprite Size:
 					ID3D11Resource* textureResource;
@@ -670,6 +674,7 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 	SAFE_DELETE_ARRAY (indices);
 
 #if defined USE_BOUNDING_VOLUMES
+	IF_RENDER_PAGE(RENDER_PAGE >= 78) //AQUI
 	{
 		// Compute distance between maxVertex and minVertex
 		float distX = (maxVertex.x - minVertex.x) / 2.0f;
@@ -696,7 +701,7 @@ void DXmodelClass::Shutdown()
 	womalog("DXmodelClass() DESTROYING: %s\n", MODEL_NAME.c_str());
 
 #if defined DX11 || defined DX9
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 	{
 		SAFE_RELEASE(m_indexBuffer11);	// Release the index buffer.
 		SAFE_RELEASE(m_vertexBuffer11);	// Release the vertex buffer.
@@ -704,7 +709,7 @@ void DXmodelClass::Shutdown()
 #endif
 
 #if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 	{
 	#if defined NOTES
 		//DX11 no need to clean, like in DX12!
@@ -716,7 +721,7 @@ void DXmodelClass::Shutdown()
 #endif
 
 #if defined DX12
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 	{
 		for (UINT i = 0; i < meshSRV.size(); i++)
 			SAFE_DELETE(meshSRV[i]);
@@ -727,14 +732,14 @@ void DXmodelClass::Shutdown()
 #if defined DX12 || defined DX11 || defined DX9
 
 	#if defined DX11 || defined DX9
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 	{
 		SAFE_SHUTDOWN(m_Shader11);
 	}
 	#endif
 
 	#if defined DX12
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 	{
 		SAFE_SHUTDOWN(m_Shader);
 	}
@@ -857,7 +862,7 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 
 	//DX12
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 	{
 		ID3D12Device* device = ((ID3D12Device*)Driver_Device);
 
@@ -1044,7 +1049,7 @@ bool DXmodelClass::CreateDXbuffers(UINT sizeofMODELvertex_, /*ID3D11Device*/ voi
 #endif
 
 #if defined DX11 || defined DX9
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 	{
 #define device ((ID3D11Device*)Driver_Device)
 		HRESULT result;
@@ -1112,7 +1117,7 @@ void DXmodelClass::SetGeometryBuffers(void* deviceContext)
 // ----------------------------------------------------------------------------------------
 {
 #if defined DX11 || defined DX9
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 	{
 		ID3D11DeviceContext* context = ((ID3D11DeviceContext*)deviceContext);
 		UINT				stride[2];
@@ -1162,22 +1167,24 @@ void DXmodelClass::SetGeometryBuffers(void* deviceContext)
 		/*
 		D3D_PRIMITIVE_TOPOLOGY_UNDEFINED = 0,
 		D3D_PRIMITIVE_TOPOLOGY_POINTLIST = 1,
-		D3D_PRIMITIVE_TOPOLOGY_LINELIST = 2,
+		D3D_PRIMITIVE_TOPOLOGY_LINELIST = 2,		// LightRay 
 		D3D_PRIMITIVE_TOPOLOGY_LINESTRIP = 3,
-		D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST = 4,	1 Triangle = 3 Vert.--> DrawPrimitive( D3DPT_TRIANGLELIST, 0, 1 );
-		D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP = 5,	4 Triangle = 6 Vert.--> DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, 4 );
+		D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST = 4,	// 1 Triangle = 3 Vert.--> DrawPrimitive( D3DPT_TRIANGLELIST, 0, 1 );
+													m_TerrainModel(level>=60+)
+		D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP = 5,	// 4 Triangle = 6 Vert.--> DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, 4 );
+													m_TerrainModel(level49-59), m_SphereModel, m_SkyModel, m_SunModel, m_MoonModel
 		*/
 		// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
 		context->IASetPrimitiveTopology((D3D11_PRIMITIVE_TOPOLOGY)(PrimitiveTopology));
 
-		// Set the Geometric Data to be sent to Vertex Shader:
+		// Set the Geometric Data to be sent to VERTEX SHADER:
 		context->IASetVertexBuffers(0, numBuffers, bufferPointer, stride, offset);			// Set the vertex buffer to active in the input assembler so it can be rendered.
 		context->IASetIndexBuffer(m_indexBuffer11, DXGI_FORMAT_R32_UINT, 0);					// Set the index buffer to active in the input assembler so it can be rendered.
 	}
 #endif
 
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 	{
 		// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles:
 		((DirectX::DX12Class*)m_driver)->m_commandList->IASetPrimitiveTopology((D3D12_PRIMITIVE_TOPOLOGY)(PrimitiveTopology)); //D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST
@@ -1229,7 +1236,7 @@ void DirectX::DXmodelClass::UpdateDynamic(void* ctx, std::vector<ModelColorVerte
 	}
 
 	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 	{
 		//Now copy the contents of the vertex array into the vertex buffer using the Map and memcpy functions:
 		result = deviceContext11->Map(m_vertexBuffer11, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);// Lock the vertex buffer so it can be written to.
@@ -1242,7 +1249,7 @@ void DirectX::DXmodelClass::UpdateDynamic(void* ctx, std::vector<ModelColorVerte
 	#endif
 
 	#ifdef DX12	
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12) {
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX12) {
 		// VERTEX:
 		const UINT vertexBufferSize = sizeofMODELvertex * m_vertexCount; // sizeof(triangleVertices);
 
@@ -1286,11 +1293,11 @@ bool DirectX::DXmodelClass::UpdateBuffersRotY(void* ctx, int positionX, int posi
 
 		static bool RenderfirstTime=true;
 #if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 		RenderfirstTime = m_driver11->RenderfirstTime;
 #endif
 #if defined DX12
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 		RenderfirstTime = m_driver->RenderfirstTime;
 #endif
 	if (((positionX == m_previousPosX) && (positionY == m_previousPosY)) && !RenderfirstTime)
@@ -1303,9 +1310,9 @@ bool DirectX::DXmodelClass::UpdateBuffersRotY(void* ctx, int positionX, int posi
 	m_previousPosY = positionY;
 
 	//The four sides of the image need to be calculated. See the diagram at the top of the tutorial for a complete explaination.
-	left = (float)((SystemHandle->AppSettings->WINDOW_WIDTH / 2) * -1) + (float)positionX;	// Calculate the screen coordinates of the left side of the bitmap.
+	left = (float)((WOMA::AppSettings->WINDOW_WIDTH / 2) * -1) + (float)positionX;	// Calculate the screen coordinates of the left side of the bitmap.
 	right = left + (float)SpriteTextureWidth;												// Calculate the screen coordinates of the right side of the bitmap.
-	top = (float)(SystemHandle->AppSettings->WINDOW_HEIGHT / 2) - (float)positionY;			// Calculate the screen coordinates of the top of the bitmap.
+	top = (float)(WOMA::AppSettings->WINDOW_HEIGHT / 2) - (float)positionY;			// Calculate the screen coordinates of the top of the bitmap.
 	bottom = top - (float)SpriteTextureHeight;												// Calculate the screen coordinates of the bottom of the bitmap.
 
 	//Now that the coordinates are calculated create a temporary vertex array and fill it with the new six vertex points.
@@ -1364,7 +1371,7 @@ bool DirectX::DXmodelClass::UpdateBuffersRotY(void* ctx, int positionX, int posi
 
 	//Now copy the contents of the vertex array into the vertex buffer using the Map and memcpy functions:
 #if defined DX11 || defined DX9
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 	{
 		result = pContext->Map(m_vertexBuffer11, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);// Lock the vertex buffer so it can be written to.
 		if (FAILED(result))return false;
@@ -1376,7 +1383,7 @@ bool DirectX::DXmodelClass::UpdateBuffersRotY(void* ctx, int positionX, int posi
 #endif
 
 #ifdef DX12	
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 	{
 		// EQUIVALENT (upper code): Upload the vertex buffer to the GPU.
 		D3D12_SUBRESOURCE_DATA vertexData = {};
@@ -1416,11 +1423,11 @@ HRESULT result;
 
 	//static bool RenderfirstTime=true;
 #if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
-	//if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+	//if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 	//	RenderfirstTime = m_driver11->RenderfirstTime;
 #endif
 #if defined DX12
-	//if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+	//if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 	//	RenderfirstTime = m_driver->RenderfirstTime;
 #endif
 	//if (((positionX == m_previousPosX) && (positionY == m_previousPosY)) && !RenderfirstTime)
@@ -1433,9 +1440,9 @@ m_previousPosX = positionX;
 	m_previousPosY = positionY;
 
 	//The four sides of the image need to be calculated. See the diagram at the top of the tutorial for a complete explaination.
-	left = (float)((SystemHandle->AppSettings->WINDOW_WIDTH / 2) * -1) + (float)positionX;	// Calculate the screen coordinates of the left side of the bitmap.
+	left = (float)((WOMA::AppSettings->WINDOW_WIDTH / 2) * -1) + (float)positionX;	// Calculate the screen coordinates of the left side of the bitmap.
 	right = left + (float)SpriteTextureWidth;												// Calculate the screen coordinates of the right side of the bitmap.
-	top = (float)(SystemHandle->AppSettings->WINDOW_HEIGHT / 2) - (float)positionY;			// Calculate the screen coordinates of the top of the bitmap.
+	top = (float)(WOMA::AppSettings->WINDOW_HEIGHT / 2) - (float)positionY;			// Calculate the screen coordinates of the top of the bitmap.
 	bottom = top - (float)SpriteTextureHeight;												// Calculate the screen coordinates of the bottom of the bitmap.
 
 	//Now that the coordinates are calculated create a temporary vertex array and fill it with the new six vertex points.
@@ -1500,7 +1507,7 @@ m_previousPosX = positionX;
 
 	//Now copy the contents of the vertex array into the vertex buffer using the Map and memcpy functions:
 #if defined DX11 || defined DX9
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 	{
 		result = pContext->Map(m_vertexBuffer11, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);// Lock the vertex buffer so it can be written to.
 		if(FAILED(result))return false;
@@ -1512,7 +1519,7 @@ m_previousPosX = positionX;
 #endif
 
 #ifdef DX12	
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 	{
 		// EQUIVALENT (upper code): Upload the vertex buffer to the GPU.
 		D3D12_SUBRESOURCE_DATA vertexData = {};
@@ -1537,7 +1544,7 @@ bool DirectX::DXmodelClass::RenderSprite(void* pContext, int positionX, int posi
 	model_fade = fade;
 
 	// Re-build the dynamic vertex buffer for rendering to possibly a different location on the screen.
-	switch (SystemHandle->AppSettings->DRIVER)
+	switch (WOMA::AppSettings->DRIVER)
 	{
 	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
 	case DRIVER_DX9:
@@ -1573,7 +1580,7 @@ bool DirectX::DXmodelClass::RenderSprite(void* pContext, int positionX, int posi
 	// - PROJECTION_PERSPECTIVE	//3D
 	// - PROJECTION_ORTHOGRAPH	//2D
 
-	switch (SystemHandle->AppSettings->DRIVER)
+	switch (WOMA::AppSettings->DRIVER)
 	{
 	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
 	case DRIVER_DX9:
@@ -1597,14 +1604,14 @@ void DirectX::DXmodelClass::RenderWithFade(void* pContext, float fadeLight, bool
 {
 #if defined DX11 || defined DX12 || (defined OPENGL3 || defined OPENGL40) 
 		#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
-			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+			if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 				m_Shader11->PSfade = fadeLight;
 			    model_fade = fadeLight;
 
 		#endif
 
 		#if defined DX12
-			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+			if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 			{
 				m_Shader->PSfade = fadeLight;
 			    model_fade = fadeLight;
@@ -1619,7 +1626,7 @@ void DirectX::DXmodelClass::RenderWithFade(void* pContext, float fadeLight, bool
 void DirectX::DXmodelClass::RenderSky(void* pContext, UINT camera, float fadeLight)
 {
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 	{
 		m_Shader->PSfade = fadeLight;
 		m_Shader->isSky = true;
@@ -1627,7 +1634,7 @@ void DirectX::DXmodelClass::RenderSky(void* pContext, UINT camera, float fadeLig
 	}
 #endif
 #if defined DX11 || defined DX9
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 	{
 		m_Shader11->PSfade = fadeLight;
 		model_fade = fadeLight;
@@ -1650,10 +1657,8 @@ void DirectX::DXmodelClass::Render(void* ctx, UINT threadID, UINT camera, UINT p
 		{ LOADDRIVER(m_Driver); }
 	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
 
-	ASSERT_DEBUG(m_Shader11);
-
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 	{
 		// Step 1 - Put the "vertex", "index" and "instances"(if exist) buffers on the graphics pipeline to prepare them for drawing:
 		// ----------------------------------------------------------------------------------------
@@ -1670,8 +1675,10 @@ void DirectX::DXmodelClass::Render(void* ctx, UINT threadID, UINT camera, UINT p
 	}
 #endif
 #if defined DX11 || defined DX9
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 	{
+		ASSERT_DEBUG(m_Shader11);
+
 		// Step 1 - Put the "vertex", "index" and "instances" (if exist) buffers on the graphics pipeline to prepare them for drawing:
 		// ----------------------------------------------------------------------------------------
 #if defined USE_TERRAIN_QUAD_TREE
@@ -1701,27 +1708,21 @@ void DirectX::DXmodelClass::Render(void* ctx, UINT threadID, UINT camera, UINT p
 	XMMATRIX* projectionMatrix=NULL;
 	XMMATRIX* viewMatrix = NULL;
 
-	//#if DX_ENGINE_LEVEL >= 99 && defined USE_WOMA_ENGINE_ONE_CBUFFER
-	//		viewMatrix = m_driver11->GetViewMatrix(camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
-	//		projectionMatrix = m_driver11->GetProjectionMatrix(camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
-	//#else   // ─── Legacy (pre-99) path ────────────────────────────────────────────────
-
-			if (projection == PROJECTION_MINIMAP) {
-				projectionMatrix = (XMMATRIX*)ShadowProjectionMatrix;	//Use provided projection: MINI-MAP
-				viewMatrix = (XMMATRIX*)lightViewMatrix;				//Use provided view
-			} else
-			{
-			if (camera != CAMERA_MINIMAP)
-			{
-				projectionMatrix = m_driver11->GetProjectionMatrix(camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
-			}
-			else
-				projectionMatrix = (XMMATRIX*)ShadowProjectionMatrix;   //Use provided projection: for Shadows
+	if (projection == PROJECTION_MINIMAP) {
+		projectionMatrix = (XMMATRIX*)ShadowProjectionMatrix;	//Use provided projection: MINI-MAP
+		viewMatrix = (XMMATRIX*)lightViewMatrix;				//Use provided view
+	} else
+	{
+	if (camera != CAMERA_MINIMAP)
+	{
+		projectionMatrix = m_driver11->GetProjectionMatrix(camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
+	}
+	else
+		projectionMatrix = (XMMATRIX*)ShadowProjectionMatrix;   //Use provided projection: for Shadows
 		
-				viewMatrix = m_driver11->GetViewMatrix(camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
-			}
+		viewMatrix = m_driver11->GetViewMatrix(camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
+	}
 
-	//#endif  // USE_WOMA_ENGINE_ONE_CBUFFER
 
 		{
 			{

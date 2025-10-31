@@ -94,4 +94,24 @@ private:
 
 extern BillClass* m_billTreeClass;
 
+
+extern void RunBillboardSortDemo(UINT RENDER_PAGE, std::vector<Tree>& m_Trees);
+
+extern std::vector<ModelBillboardAtlasVertexType> outVerts;
+extern std::vector<uint32_t> outIdx;
+extern ID3D11Buffer* gBillVB;
+extern ID3D11Buffer* gBillIB;
+extern VirtualModelClass* AtlasobjModel;
+void BuildBillboardAtlasMesh_FromTrees(
+	std::vector<ModelBillboardAtlasVertexType>& outVerts,
+	std::vector<uint32_t>& outIdx,
+	const std::vector<Tree>& treesSorted
+);
+
+void UpdateBills(ID3D11DeviceContext* ctx,
+	const std::vector<ModelBillboardAtlasVertexType>& verts,
+	const std::vector<uint32_t>& idx
+);
+
+
 #endif

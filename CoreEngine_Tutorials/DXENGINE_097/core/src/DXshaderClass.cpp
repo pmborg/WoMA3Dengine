@@ -312,8 +312,8 @@ namespace DirectX {
 
 		// BLOCK4:
 		//-----------
-		fogStart = SystemHandle->AppSettings->START_FOG;
-		fogEnd = SystemHandle->AppSettings->END_FOG;
+		fogStart = WOMA::AppSettings->START_FOG;
+		fogEnd = WOMA::AppSettings->END_FOG;
 		castShadow = false;
 
 		// PIXEL CBUFFER:
@@ -428,7 +428,7 @@ namespace DirectX {
 
 		// 21
 #if defined DX11 || defined DX9
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 		{
 			SAFE_RELEASE(m_layout11);				// Release the layout.
 			SAFE_RELEASE(m_VertexShaderBuffer11);	// Release the VS constant buffer.
@@ -484,14 +484,14 @@ namespace DirectX {
 		case SHADER_COLOR:
 		case SHADER_TEXTURE_WATER:
 #if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009
-			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+			if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 			{
 				polygonLayout = &colorPolygonLayout[0];
 				numElements = _countof(colorPolygonLayout);
 			}
 #endif
 #if defined DX11 || defined DX9
-			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+			if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 			{
 				polygonLayout11 = &colorPolygonLayout11[0];
 				numElements = _countof(colorPolygonLayout11);
@@ -507,14 +507,14 @@ namespace DirectX {
 		case SHADER_FIRE:			//072fire.hlsl
 		case SHADER_USE_CURVED_REAL_SKY_PLANE:
 #if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009
-			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+			if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 			{
 				polygonLayout = &texturePolygonLayout[0];
 				numElements = _countof(texturePolygonLayout);
 			}
 #endif
 #if defined DX11 || defined DX9
-			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+			if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 			{
 				polygonLayout11 = &texturePolygonLayout11[0];
 				numElements = _countof(texturePolygonLayout11);
@@ -530,14 +530,14 @@ namespace DirectX {
 		case SHADER_TEXTURE_LIGHT_RENDERSHADOW:	//36
         case SHADER_TEXTURE_LIGHT_FAST:			//83
 #if defined DX12
-			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+			if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 			{
 				polygonLayout = &lightPolygonLayout[0];
 				numElements = _countof(lightPolygonLayout);
 			}
 #endif
 #if defined DX11 || defined DX9
-			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+			if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 			{
 				polygonLayout11 = &lightPolygonLayout11[0];
 				numElements = _countof(lightPolygonLayout11);
@@ -552,14 +552,14 @@ namespace DirectX {
 			//  uint atlasIndex   : ATLASINDEX; // 3
 #if defined DX12
 		case SHADER_BILLBOARD_ATLAS_FAST:    // 93
-			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+			if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 			{
 				polygonLayout = &billboardAtlasLayout[0];
 				numElements = _countof(billboardAtlasLayout);
 			}
 #endif
 #if defined DX11 || defined DX9
-			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+			if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 			{
 				polygonLayout11 = &billboardAtlasLayout11[0];
 				numElements = _countof(billboardAtlasLayout11);
@@ -571,14 +571,14 @@ namespace DirectX {
 	#if defined MAIN_RENDER_WATER_FALL
 		case SHADER_USE_WATERFALL:
 	#if defined DX12
-			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+			if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 			{
 				polygonLayout = &waterfallLayout[0];
 				numElements = _countof(waterfallLayout);
 			}
 	#endif
 	#if defined DX11 || defined DX9
-			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+			if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 			{
 				polygonLayout11 = &waterfallLayout11[0];
 				numElements = _countof(waterfallLayout11);
@@ -588,14 +588,14 @@ namespace DirectX {
 
 		case SHADER_USE_SMOKE:
 	#if defined DX12
-			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+			if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 			{
 				polygonLayout = &texturePolygonLayout[0];
 				numElements = _countof(texturePolygonLayout);
 			}
 	#endif
 	#if defined DX11 || defined DX9
-			if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+			if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 			{
 				polygonLayout11 = &texturePolygonLayout11[0];
 				numElements = _countof(texturePolygonLayout11);
@@ -846,7 +846,7 @@ namespace DirectX {
 #endif
 
 #if defined DX11 || defined DX9
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 		{
 			// GET SHADER CODE:
 			// --------------------------------------------------------------------------------------------
@@ -861,7 +861,7 @@ namespace DirectX {
 #if D3D11_SPEC_DATE_YEAR == 2009
 			// Compile the vertex shader code:
 			STRING vertVer = TEXT("vs_");
-			vertVer.append(driverList[SystemHandle->AppSettings->DRIVER]->ShaderModel);  //TEXT("vs_5_0")
+			vertVer.append(driverList[WOMA::AppSettings->DRIVER]->ShaderModel);  //TEXT("vs_5_0")
 			result = D3DX11CompileFromFile(vsFilename.c_str(), NULL, NULL, vertexHLSL.c_str(), "vs_5_0"/*vertVer.c_str()*/, D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL,
 				&vertexShaderBuffer, &errorMessage, NULL);
 			if (FAILED(result))
@@ -906,10 +906,10 @@ namespace DirectX {
 
 			std::string vertVer = "vs_";
 #if UNICODE
-			CHAR str[MAX_STR_LEN] = { 0 }; wtoa(str, (TCHAR*)driverList[SystemHandle->AppSettings->DRIVER]->ShaderModel, MAX_STR_LEN); // wchar ==> char
+			CHAR str[MAX_STR_LEN] = { 0 }; wtoa(str, (TCHAR*)driverList[WOMA::AppSettings->DRIVER]->ShaderModel, MAX_STR_LEN); // wchar ==> char
 			vertVer.append(str);  //TEXT("vs_5_0")
 #else
-			vertVer.append(driverList[SystemHandle->AppSettings->DRIVER]->ShaderModel);  //TEXT("vs_5_0")
+			vertVer.append(driverList[WOMA::AppSettings->DRIVER]->ShaderModel);  //TEXT("vs_5_0")
 #endif
 			LPCWSTR file = (LPCWSTR)WOMA::LoadFileW((WCHAR*)vsFilename.c_str());
 
@@ -1009,7 +1009,7 @@ namespace DirectX {
 	// [*] Describe and create a shader resource view (SRV) heap for the texture.
 
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 		{
 
 			//
@@ -1358,7 +1358,7 @@ namespace DirectX {
 
 			// NOTE! The run time compiler support only Shader 5.0, for more use: USE_PRECOMPILED_SHADERS option 
 			//std::string vertVer = "vs_"; //cant be: STRING
-			//vertVer.append(driverList[SystemHandle->AppSettings->DRIVER]->szShaderModel);  //TEXT("vs_5_0")
+			//vertVer.append(driverList[WOMA::AppSettings->DRIVER]->szShaderModel);  //TEXT("vs_5_0")
 			//vertVer[4] = '_';  //TEXT("vs_5_0")
 			result = D3DCompileFromFile(vsFilename.c_str(), defines/*nullptr*/, nullptr, vertexHLSL.c_str(), ("vs_5_0")/*vertVer.c_str()*/, compileFlags, 0, &vertexShader, &errorMessage);
 			if (FAILED(result))
@@ -1576,11 +1576,7 @@ namespace DirectX {
 					cbvDesc[1].BufferLocation = mPS_constantBuffer->GetGPUVirtualAddress();
 					cbvDesc[1].SizeInBytes = c_alignedPSConstantBufferSize; 	// CB size is required to be 256-byte aligned.
 
-					//#if DX_ENGINE_LEVEL >= 31
-					//int slot = 1;
-					//#else
 					int slot = (shaderType == SHADER_TEXTURE_FONT) ? 2 : 1;
-					//#endif
 
 					CD3DX12_CPU_DESCRIPTOR_HANDLE cbvHandle2(DX12mSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), m_CbvSrvDescriptorSize, slot); // C1 at: 2
 					device->CreateConstantBufferView(&cbvDesc[1], cbvHandle2);
@@ -1600,59 +1596,61 @@ namespace DirectX {
 		// --------------------------------------------------------------------------------------------
 		// [1]: dont change the order:
 #if defined DX11 || defined DX9
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 		{
 			D3D11_SAMPLER_DESC samplerDesc;
 			ZeroMemory(&samplerDesc, sizeof(samplerDesc));
+			if (m_shaderType > SHADER_COLOR)
 			{
-				if (shader2D)
-				{   //2D
-					samplerDesc.AddressU = samplerDesc.AddressV = samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_MIRROR;
+				{
+					if (shader2D)
+					{   //2D
+						samplerDesc.AddressU = samplerDesc.AddressV = samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_MIRROR;
+					}
+					else
+					{   //3D
+						samplerDesc.AddressU = samplerDesc.AddressV = samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+					}
+
+					samplerDesc.BorderColor[0] = 1;
+					samplerDesc.BorderColor[1] = 1;
+					samplerDesc.BorderColor[2] = 1;
+					samplerDesc.BorderColor[3] = 1;
+
+					/*
+					--------------------------------------------------------------------------------------------
+					1    Point filtering (least expensive, worst visual quality)    D3D11_FILTER_MIN_MAG_MIP_POINT;
+					2    Bilinear filtering                                         D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
+					3    Trilinear filtering                                        D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+					4    Anisotropic filtering (most expensive, best visual quality)sampler_description.Filter = D3D11_FILTER_ANISOTROPIC;
+																					sampler_description.MaxAnisotropy = 16; (Valid values are between 1 and 16)
+					*/
+
+					// Defaults:
+					samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+					samplerDesc.MipLODBias = 0.0f;
+					samplerDesc.MinLOD = 0.0f;
+					samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;								// hasMipmaps(filter)? D3D11_FLOAT32_MAX : 0;
+
+					samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;				// Point filtering: Faster
+					samplerDesc.MaxAnisotropy = 1;
+
+					if (WOMA::AppSettings->MSAA_bilinear)
+						samplerDesc.Filter = D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT; // Bilinear: (Rastertek default)
+
+					else if (WOMA::AppSettings->MSAA_trilinear)
+						samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;		// Trilinear: 2x
+
+					else if (WOMA::AppSettings->MSAA_Anisotropic) {
+						samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;				// Anisotropic: 4x, 8x, 16x
+						samplerDesc.MaxAnisotropy = MAX (1, MIN(WOMA::AppSettings->MSAA_AnisotropicLevel,16)); //value: between 1 and 16.
+					}
 				}
-				else
-				{   //3D
-					samplerDesc.AddressU = samplerDesc.AddressV = samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-				}
 
-				samplerDesc.BorderColor[0] = 1;
-				samplerDesc.BorderColor[1] = 1;
-				samplerDesc.BorderColor[2] = 1;
-				samplerDesc.BorderColor[3] = 1;
-
-				/*
-				--------------------------------------------------------------------------------------------
-				1    Point filtering (least expensive, worst visual quality)    D3D11_FILTER_MIN_MAG_MIP_POINT;
-				2    Bilinear filtering                                         D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
-				3    Trilinear filtering                                        D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-				4    Anisotropic filtering (most expensive, best visual quality)sampler_description.Filter = D3D11_FILTER_ANISOTROPIC;
-																				sampler_description.MaxAnisotropy = 16; (Valid values are between 1 and 16)
-				*/
-
-				// Defaults:
-				samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-				samplerDesc.MipLODBias = 0.0f;
-				samplerDesc.MinLOD = 0.0f;
-				samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;								// hasMipmaps(filter)? D3D11_FLOAT32_MAX : 0;
-
-				samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;				// Point filtering: Faster
-				samplerDesc.MaxAnisotropy = 1;
-
-				if (SystemHandle->AppSettings->MSAA_bilinear)
-					samplerDesc.Filter = D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT; // Bilinear: (Rastertek default)
-
-				else if (SystemHandle->AppSettings->MSAA_trilinear)
-					samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;		// Trilinear: 2x
-
-				else if (SystemHandle->AppSettings->MSAA_Anisotropic) {
-					samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;				// Anisotropic: 4x, 8x, 16x
-					samplerDesc.MaxAnisotropy = MAX (1, MIN(SystemHandle->AppSettings->MSAA_AnisotropicLevel,16)); //value: between 1 and 16.
-				}
+				// Create the texture sampler state:
+				result = device11->CreateSamplerState(&samplerDesc, &m_sampleState11);
+				if (FAILED(result)) { WomaFatalException ("CreateSamplerState error"); } //dont use TEXT!
 			}
-
-			// Create the texture sampler state:
-			result = device11->CreateSamplerState(&samplerDesc, &m_sampleState11);
-			if (FAILED(result)) { WomaFatalException ("CreateSamplerState error"); } //dont use TEXT!
-
 			// [2]: dont change the order:
 #if TUTORIAL_CHAP >= 62 // FIRE
 			if (m_shaderType == SHADER_FIRE)
@@ -1672,6 +1670,10 @@ namespace DirectX {
 #endif
 
 			// [3]: dont change the order:
+			if ((m_shaderType == SHADER_TEXTURE_LIGHT_RENDERSHADOW || m_shaderType == SHADER_TEXTURE_LIGHT_SAVESHADOW) ||
+				(m_shaderType == SHADER_TEXTURE_LIGHT_SAVESHADOW_INSTANCED || m_shaderType == SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED)
+			)
+		{
 			// Create a clamp texture sampler state description.
 			samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
 			samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
@@ -1687,18 +1689,21 @@ namespace DirectX {
 			// Create the texture sampler state.
 			result = device11->CreateSamplerState(&samplerDesc, &m_sampleStateClamp11);
 			if (FAILED(result)) { WomaFatalException ("CreateSamplerState error"); }
+		}
 
 #if defined GENERATE_ATLAS_INTEGRATION_DDS
+		IF_RENDER_PAGE(RENDER_PAGE >= 93) //AQUI
+		{
 			// existing default sampler (wrap / user settings)...
 			// ... your old code that creates m_sampleState11 ...
 
 			// --- Atlas-only sampler: CLAMP to avoid tile bleeding ---
 			D3D11_SAMPLER_DESC s = {};
-			s.Filter = SystemHandle->AppSettings->MSAA_Anisotropic
+			s.Filter = WOMA::AppSettings->MSAA_Anisotropic
 				? D3D11_FILTER_ANISOTROPIC
 				: D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-			s.MaxAnisotropy = SystemHandle->AppSettings->MSAA_Anisotropic
-				? MAX(1, MIN(SystemHandle->AppSettings->MSAA_AnisotropicLevel, 16))
+			s.MaxAnisotropy = WOMA::AppSettings->MSAA_Anisotropic
+				? MAX(1, MIN(WOMA::AppSettings->MSAA_AnisotropicLevel, 16))
 				: 1;
 			s.AddressU = s.AddressV = s.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
 			s.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
@@ -1707,6 +1712,7 @@ namespace DirectX {
 
 			HRESULT hr = device11->CreateSamplerState(&s, &m_samplerClamp);
 			IF_FAILED_RETURN_FALSE(hr);   // or your error path
+		}
 #endif
 
 			// --------------------------------------------------------------------------------------------
@@ -1743,11 +1749,14 @@ namespace DirectX {
 			// --------------------------------------------------------------------------------------------
 			// CREATE Buffer(s) DATA for "Pixel Shader":
 			// --------------------------------------------------------------------------------------------
-			BufferDesc.ByteWidth = sizeof(PSconstantBufferType);
-			ASSERT(BufferDesc.ByteWidth <= D3D11_REQ_CONSTANT_BUFFER_ELEMENT_COUNT && (BufferDesc.ByteWidth % 16) == 0); // Validate Size
+			if (m_shaderType > SHADER_COLOR)
+			{
+				BufferDesc.ByteWidth = sizeof(PSconstantBufferType);
+				ASSERT(BufferDesc.ByteWidth <= D3D11_REQ_CONSTANT_BUFFER_ELEMENT_COUNT && (BufferDesc.ByteWidth % 16) == 0); // Validate Size
 
-			result = device11->CreateBuffer(&BufferDesc, NULL, &m_PixelShaderBuffer11);
-			IF_FAILED_RETURN_FALSE(result);
+				result = device11->CreateBuffer(&BufferDesc, NULL, &m_PixelShaderBuffer11);
+				IF_FAILED_RETURN_FALSE(result);
+			}
 		}
 #endif
 
@@ -1902,13 +1911,13 @@ namespace DirectX {
 		VSconstantBufferType* dataVSptr = NULL;		// Reset Pointer, only once:
 	#endif
 	#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 			dataVSptr = &mVS_constantBufferData;	// Pointer to Static Buffer
 	#endif
 
 	#if defined DX11 || defined DX9
 		D3D11_MAPPED_SUBRESOURCE mappedResource = { 0 };
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 		{
 			// VERTEX SHADER: Lock the constant buffer so it can be written to
 			// ----------------------------------------------------------------------------
@@ -1926,7 +1935,7 @@ namespace DirectX {
 		// Copy the matrices into the constant buffer.
 		dataVSptr->world = XMMatrixTranspose(*worldMatrix);
 
-		if (VS_USE_WVP || bUseGS)
+		if (VS_USE_WVP || bUseGS || RENDER_PAGE == 35)
         {
 			XMMATRIX WV = (*worldMatrix) * (*viewMatrix);
 			dataVSptr->WV = XMMatrixTranspose(WV);							// Pre compute WV to reuse in all Vertices
@@ -1937,7 +1946,7 @@ namespace DirectX {
 			dataVSptr->view = XMMatrixTranspose(*viewMatrix);
 			dataVSptr->projection = XMMatrixTranspose(*projectionMatrix);
 		}
-		
+
 		// BLOCK: VS2
 		dataVSptr->VShasLight = hasLight;
 		dataVSptr->VShasSpecular = hasSpecular;
@@ -2008,7 +2017,7 @@ namespace DirectX {
 #endif
         dataVSptr->vsIsSky = isSky;
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 		{
 			// Update the constant buffer resource:
 			memcpy(m_pMappedVSConstantBuffer, &mVS_constantBufferData, sizeof(mVS_constantBufferData));
@@ -2016,7 +2025,7 @@ namespace DirectX {
 #endif
 
 #if defined DX11 || defined DX9
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 		{
 			deviceContext11->Unmap(m_VertexShaderBuffer11, 0);						// Unlock the constant buffer.
 			deviceContext11->VSSetConstantBuffers(0, 1, &m_VertexShaderBuffer11);	// Finally set the "Constant" buffer in the vertex shader with the updated values.
@@ -2035,7 +2044,7 @@ namespace DirectX {
 		PSconstantBufferType* dataPSptr = NULL; // Use a Unique ConstantBuffer
 
 #if defined DX11 || defined DX9
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 		{
 			// Lock the constant buffer so it can be written to.
 			result = deviceContext11->Map(m_PixelShaderBuffer11, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -2046,7 +2055,7 @@ namespace DirectX {
 #endif
 
 #ifdef DX12
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 			dataPSptr = &mPS_constantBufferData; // Pointer to Static Buffer
 #endif
 
@@ -2129,7 +2138,7 @@ namespace DirectX {
 
 		// ----------------------------------------------------------------------------
 #if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009 && DX_ENGINE_LEVEL >= 23
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 		{
 			if (m_shaderType >= SHADER_TEXTURE_FONT)
 			{
@@ -2140,7 +2149,7 @@ namespace DirectX {
 #endif
 
 #if defined DX11 || defined DX9
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 		{
 			deviceContext11->Unmap(m_PixelShaderBuffer11, 0);	// Unlock the constant buffer.
 			deviceContext11->PSSetConstantBuffers(0, 1, &m_PixelShaderBuffer11);
@@ -2153,7 +2162,7 @@ namespace DirectX {
 void DXshaderClass::RenderShader(UINT pass, void* Device_Context, int texture_index, int indexCount, int start)
 	{
 #if defined DX11 || defined DX9
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 		{
 #define deviceContext ((ID3D11DeviceContext*)Device_Context)
 			deviceContext->IASetInputLayout(m_layout11);					// Set the vertex input layout
@@ -2218,7 +2227,7 @@ void DXshaderClass::RenderShader(UINT pass, void* Device_Context, int texture_in
 #endif
 
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 		{
 			// Set necessary state:
 			m_driver->m_commandList->SetGraphicsRootSignature(m_rootSignature.Get());
@@ -2384,9 +2393,6 @@ void DXshaderClass::RenderShader(UINT pass, void* Device_Context, int texture_in
 	void DXshaderClass::Render(UINT pass,void* Device_Context, int indexCount, XMMATRIX* worldMatrix, XMMATRIX* viewMatrix, XMMATRIX* projectionMatrix)
 	{
 		ASSERT_DEBUG(indexCount > 0);
-		//#if DX_ENGINE_LEVEL >= 99 && defined USE_WOMA_ENGINE_ONE_CBUFFER
-		//if (m_shaderType < SHADER_TYPE_COLOR_LINE || /*m_Driver->*/RenderfirstTime)
-		//#endif
 		SetShaderParameters(pass, Device_Context, worldMatrix, viewMatrix, projectionMatrix);	// Set the shader parameters that it will use for rendering
 
 		RenderShader(pass, Device_Context, /*texture_index*/ 0, indexCount);						// Now render the prepared buffers with the shader
@@ -2413,13 +2419,13 @@ void DXshaderClass::RenderShader(UINT pass, void* Device_Context, int texture_in
 		VSFASTconstantBufferType* dataVSptr = NULL;		// Reset Pointer, only once:
 #endif
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 			dataVSptr = &mVS_constantBufferData;	// Pointer to Static Buffer
 #endif
 
 #if defined DX11 || defined DX9
 		D3D11_MAPPED_SUBRESOURCE mappedResource = { 0 };
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 		{
 			// VERTEX SHADER: Lock the constant buffer so it can be written to
 			// ----------------------------------------------------------------------------
@@ -2440,7 +2446,7 @@ void DXshaderClass::RenderShader(UINT pass, void* Device_Context, int texture_in
 		dataVSptr->fade = PSfade;
 
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX12)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 		{
 			// Update the constant buffer resource:
 			memcpy(m_pMappedVSConstantBuffer, &mVS_constantBufferData, sizeof(mVS_constantBufferData));
@@ -2448,7 +2454,7 @@ void DXshaderClass::RenderShader(UINT pass, void* Device_Context, int texture_in
 #endif
 
 #if defined DX11 || defined DX9
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_DX11 || SystemHandle->AppSettings->DRIVER == DRIVER_DX9)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 		{
 			deviceContext11->Unmap(m_VertexShaderBuffer11, 0);						// Unlock the constant buffer.
 			deviceContext11->VSSetConstantBuffers(0, 1, &m_VertexShaderBuffer11);	// Finanly set the "Constant" buffer in the vertex shader with the updated values.

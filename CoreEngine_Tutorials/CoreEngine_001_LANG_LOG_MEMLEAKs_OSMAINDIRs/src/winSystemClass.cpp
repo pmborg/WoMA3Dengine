@@ -27,7 +27,7 @@
 #include "OSmain_dir.h"
 #include "language.h"
 
-
+#include "SystemClass.h"
 
 /////////////////////
 // Windows GLOBALS //
@@ -51,7 +51,7 @@ WinSystemClass::WinSystemClass(WOMA::Settings* appSettings): SystemClass() //	Sy
 	CLASSLOADER();
 
 	//public:
-	AppSettings		= appSettings; // Super
+	WOMA::AppSettings		= appSettings; // Super
 	SystemHandle	= this;
 	WinSystemClass_init();
 }
@@ -119,7 +119,7 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
  // ######################################### INIT SELECTED DRIVER ###################################
 
 #if defined USE_SYSTEM_CHECK
-	InitializeSystemScreenF1(10, 10); // SETUP SCREEN: F1,F2,F3,F4,F5,F6 (RUNNING NOW ON: PaintSetup())
+	InitializeSystemScreenF1(10, 10); // SETUP SCREENs: F1,F2,F3,F4,F5,F6 (RUNNING NOW ON: PaintSetup())
 #endif
 
 #if !defined USE_LOADING_THREADS

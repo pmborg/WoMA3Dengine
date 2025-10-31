@@ -124,6 +124,7 @@
 	extern AndroidSystemClass* SystemHandle;
 
 	#include "AndroidEngine.h"
+	#include "math.h"
 	void process_events(struct womaengine* engine, struct android_app* app);
 	void ShowAlert(const char* message);
 #endif
@@ -165,12 +166,11 @@
 #if CORE_ENGINE_LEVEL >= 3
 extern LONG TopLevelFilter(struct _EXCEPTION_POINTERS* pExceptionInfo);
 #endif
-extern UINT RENDER_PAGE;
 
+extern UINT RENDER_PAGE;
 extern int APPLICATION_MAIN(int argc, char* argv[]);
 extern void APPLICATION_STOP();
 extern void APPLICATION_STARTUP(int argc, char* argv[]);
-
 extern void ShowFPS(float fFPS);
 
 #if defined NewWomaEngine
@@ -189,6 +189,12 @@ extern int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption);
 extern int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption, bool yesORno);
 #else
 extern int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption, bool yesORno);
+#endif
+
+#if DX_ENGINE_LEVEL >= 31
+#if defined USE_DEMO99
+#include "WorldRegistry.h"
+#endif
 #endif
 
 //NOTE: Sync With: SystemClass::LoadAllDrivers() (keep this order)
@@ -276,7 +282,7 @@ TCHAR* getUserName();
 #endif
 
 #if CORE_ENGINE_LEVEL >= 10
-#define m_Driver  driverList[SystemHandle->AppSettings->DRIVER]
+#define m_Driver  driverList[WOMA::AppSettings->DRIVER]
 extern std::vector<WomaDriverClass*> driverList;
 //0: DX11	dx11_force_dx9=false
 //1: OPENGL
@@ -369,3 +375,9 @@ extern bool cpu_supports_avx512f();
 extern bool StartsWithDotDotSlash(const STRING& fileNamePath);
 
 inline bool ShouldDrawUI(int monIdx) { return monIdx == 0; /*kPrimaryMon;*/ }
+
+#if DX_ENGINE_LEVEL >= 31
+#if defined USE_DEMO99
+extern WorldRegistry* worldRegistry;
+#endif
+#endif

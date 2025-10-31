@@ -133,22 +133,21 @@ bool ApplicationClass::initCubes3D(void* pContext)
 		ASSERT(m_cube1Model->LoadColor(pContext, TEXT("m_cube1Model"), m_Driver, SHADER_COLOR, &cube.VertexCubeColorModel, &cube.IndexCubeList));
 	}
 
-	//DEMO2:
-	{
+#if NOTES
+	//#define initLoadTexture3D(model, texture, vertexVector, IndexList, shader_type)
+	//{
+	//	std::vector<STRING> Textures;
+	//	Textures.push_back(TEXT("engine/data/seafloor.dds"));
+	//	if (WOMA::AppSettings->DRIVER == DRIVER_GL3) { CREATE_MODELGL3_IF_NOT_EXCEPTION(m_cube2Model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
+	//	if (WOMA::AppSettings->DRIVER != DRIVER_GL3) { CREATE_MODELDX_IF_NOT_EXCEPTION(m_cube2Model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
+	//	ASSERT(m_cube2Model->LoadTexture(TEXT("engine/data/seafloor.dds"), SystemHandle->m_Driver, SHADER_TEXTURE, &Textures, &cube.VertexCube2, &cube.IndexCubeList));
+	//}
+#endif
+	
+	{	//DEMO2:
 		initLoadTexture3D(m_cube2Model, LEVEL22_DEMO_TEXTURE, cube.VertexCubeTextureModel, cube.IndexCubeList, SHADER_TEXTURE);
-		#if NOTES
-		//#define initLoadTexture3D(model, texture, vertexVector, IndexList, shader_type)
-		//{
-		//	std::vector<STRING> Textures;
-		//	Textures.push_back(TEXT("engine/data/seafloor.dds"));
-		//	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3) { CREATE_MODELGL3_IF_NOT_EXCEPTION(m_cube2Model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
-		//	if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3) { CREATE_MODELDX_IF_NOT_EXCEPTION(m_cube2Model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
-		//	ASSERT(m_cube2Model->LoadTexture(TEXT("engine/data/seafloor.dds"), SystemHandle->m_Driver, SHADER_TEXTURE, &Textures, &cube.VertexCube2, &cube.IndexCubeList));
-		//}
-		#endif
 	}
-	//DEMO3:
-	{
+	{	//DEMO3:
 		initLoadTextureLight3D(m_cube3Model, LEVEL22_DEMO_TEXTURE, cube.VertexCubeTextureLightModel, cube.IndexCubeList, SHADER_TEXTURE_LIGHT);
 	}
 
@@ -179,13 +178,13 @@ void ApplicationClass::DEMO_WOMA_APPLICATION_Shutdown2D()
 {
 #if defined USE_DX_DRIVER_FONT
 	if ((DirectX::DX11Class*)driverList.size() > 0)
-		((DirectX::DX11Class*)driverList[SystemHandle->AppSettings->DRIVER])->Shutdown2D();
+		((DirectX::DX11Class*)driverList[WOMA::AppSettings->DRIVER])->Shutdown2D();
 #endif
 
 	womalog("WOMA_APPLICATION_Shutdown2D()\n");
 
 	#if (defined DX_ENGINE)
-		if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+		if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
 		{
 		#if defined USE_TITLE_BANNER // TITLE-SHUTDOWN
 			SAFE_SHUTDOWN_MODELDX(m_titleModel);
@@ -202,7 +201,7 @@ void ApplicationClass::DEMO_WOMA_APPLICATION_Shutdown2D()
 		}
 	#endif
 	#if (defined OPENGL3 || defined OPENGL4)
-		if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)
+		if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
 		{
 		#if defined USE_TITLE_BANNER // TITLE-SHUTDOWN
 			SAFE_SHUTDOWN_MODELGL3(m_titleModel);
@@ -222,7 +221,7 @@ void ApplicationClass::DEMO_WOMA_APPLICATION_Shutdown2D()
 
 #if defined INTRO_DEMO //29
 	for (int i = 0; i < m_screenShots.size(); i++) {
-		if (SystemHandle->AppSettings->DRIVER != DRIVER_GL3)
+		if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
 		{
 			#if defined DX_ENGINE
 			SAFE_SHUTDOWN_MODELDX(m_screenShots[i]);
@@ -254,7 +253,7 @@ bool ApplicationClass::initText(void* pContext)
 	AppTextClass = NEW DirectX::ApplicationTextClass();
 	IF_NOT_THROW_EXCEPTION(AppTextClass);
 
-	switch (SystemHandle->AppSettings->DRIVER)
+	switch (WOMA::AppSettings->DRIVER)
 	{
 #if (defined OPENGL3 || defined OPENGL40) 
 	case DRIVER_GL3:
@@ -290,7 +289,7 @@ bool ApplicationClass::initText(void* pContext)
 #endif
 
 #ifdef INTRO_DEMO
-void ApplicationClass::initIntroDemo(void* pContext)
+void ApplicationClass::initIntroCreditsDemo(void* pContext)
 {
 	std::vector<STRING> INTRO_TEXT;
 
@@ -312,7 +311,7 @@ void ApplicationClass::initIntroDemo(void* pContext)
 		VirtualModelClass* m_spriteModel = NULL;
 		initModelwithTexture2D(m_spriteModel, (TCHAR*)INTRO_TEXT[i].c_str(), SpriteVertexVector, emptyIndexList, SHADER_TEXTURE_FONT);
 
-		switch (SystemHandle->AppSettings->DRIVER)
+		switch (WOMA::AppSettings->DRIVER)
 		{
 
 		#if defined DX11
@@ -367,6 +366,15 @@ bool ApplicationClass::InitLightandDemos(void* pContext, WomaDriverClass* Driver
 #if defined SCENE_COLOR
 	initColorDemo(pContext);
 
+#endif
+
+#if (DX_ENGINE_LEVEL >= 22 && LEVEL < 60) || defined INTRO_DEMO// 22:TEXTURE
+	initTextureDemo(pContext);
+
+#endif
+
+#if (DX_ENGINE_LEVEL >= 23  && LEVEL < 60) || defined INTRO_DEMO	// 23:LIGHT
+	initLightDemo(pContext);
 #endif
 
 
@@ -433,15 +441,12 @@ void ApplicationClass::AddObjsWithInstancesToXML()
 	//-----------------------------------------------------------------------------------------------------------------
 	// Add Instanced LAMPs to World.xml
 	//-----------------------------------------------------------------------------------------------------------------
-
-
-
 }
 
 // --------------------------------------------------------------------------------------------
 // INIT/LOAD ALL 3D Objects
 // --------------------------------------------------------------------------------------------
-bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverClass* Driver)
+bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverClass* Driver, UINT level)
 // --------------------------------------------------------------------------------------------
 {
 	womalogauto(TEXT("----------------------------------------------------------------------------------------\n"));
@@ -449,7 +454,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 
 	// Log XML objects:
 
-	InitLightandDemos(pContext, Driver); //objid=0
+	InitLightandDemos(pContext, Driver);
 
 	#ifdef MAIN_RENDER_SKY
 	InitMainSky(pContext, Driver);
@@ -458,6 +463,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	#ifdef MAIN_RENDER_TERRAIN
 	InitTerrainandWaterSurfaces(pContext, Driver);
 	#endif
+
 	//=================================================================================================================
 	// Init MAIN 3D Scene       ///////////////////////////////////////////////////////////////////////////////////////
 	//=================================================================================================================
@@ -484,8 +490,8 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	if (DXsystemHandle->g_DShowPlayer == NULL || (DXsystemHandle->g_DShowPlayer->m_state != STATE_RUNNING))
 	#endif
 	{
-		SystemHandle->hwndPrgBar = SystemHandle->WomaCreateWindowEx(0, PROGRESS_CLASS, NULL, WS_CHILD | WS_VISIBLE | PBS_SMOOTH, 50, SystemHandle->AppSettings->WINDOW_HEIGHT - 100,
-			SystemHandle->AppSettings->WINDOW_WIDTH - 100, 20, SystemHandle->m_hWnd, (HMENU)401, SystemHandle->m_hinstance, NULL);
+		SystemHandle->hwndPrgBar = SystemHandle->WomaCreateWindowEx(0, PROGRESS_CLASS, NULL, WS_CHILD | WS_VISIBLE | PBS_SMOOTH, 50, WOMA::AppSettings->WINDOW_HEIGHT - 100,
+			WOMA::AppSettings->WINDOW_WIDTH - 100, 20, SystemHandle->m_hWnd, (HMENU)401, SystemHandle->m_hinstance, NULL);
 
 		SendMessage(SystemHandle->hwndPrgBar, PBM_SETRANGE, 0, (LPARAM)MAKELPARAM(0, 100));
 		SendMessage(SystemHandle->hwndPrgBar, PBM_SETBKCOLOR, 0, RGB(0, 0, 0));

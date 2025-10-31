@@ -26,9 +26,9 @@
 /////////////
 #include "OSengine.h"
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
-#define VSYNC_ENABLED SystemHandle->AppSettings->VSYNC_ENABLED
-#define SCREEN_NEAR SystemHandle->AppSettings->SCREEN_NEAR
-#define SCREEN_DEPTH SystemHandle->AppSettings->SCREEN_DEPTH
+#define VSYNC_ENABLED WOMA::AppSettings->VSYNC_ENABLED
+#define SCREEN_NEAR WOMA::AppSettings->SCREEN_NEAR
+#define SCREEN_DEPTH WOMA::AppSettings->SCREEN_DEPTH
 
 ///////////////////////
 // MY CLASS INCLUDES //

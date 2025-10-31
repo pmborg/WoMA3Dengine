@@ -86,6 +86,7 @@ extern std::vector<VirtualModelClass*> m_screenShots;
 #endif
 
 // -------------------------------------------------------------------------------------------------
+extern bool FORCE_RENDER_ALL;
 
 #if defined USE_DIRECT_INPUT
 extern UINT g_NetID;
@@ -193,7 +194,7 @@ extern int __cdecl CompoundSortCB(const VOID* arg1, const VOID* arg2);
 
 #define CREATE_MODEL_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2)\
 {\
-	if (SystemHandle->AppSettings->DRIVER == DRIVER_GL3)\
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)\
 	{\
 		CREATE_MODELGL3_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2);	\
 	}\
@@ -238,18 +239,17 @@ public:
 #if CORE_ENGINE_LEVEL >= 10 && !defined NewWomaEngine
     void SortOutWhatNeedToBeRendered(void* pContext, WomaDriverClass* driver);
     void RenderScene(void* mainCtx, UINT monitorWindow, WomaDriverClass* driver);
-	float ProcessInputUpdate();						// PROCESS User Update
-	void SkyAndCoreDemos(UINT monitorWindow, float fadeLight, void* pContext);
+	float ProcessMovementInput_and_UpdateDemos();						// PROCESS User Update
+	void RenderMainSky(UINT monitorWindow, float fadeLight, void* pContext);
 	void WaterTerrain(UINT monitorWindow, float fadeLight, void* pContext);
-	void AppRender(UINT monitorWindow,  float fadeLight, void * pContext);								// RENDER - 3D
+	void AppRender(UINT monitorWindow, UINT level, float fadeLight, void * pContext);								// RENDER - 3D
 	bool Initialize(void* pContext, WomaDriverClass* Driver);
 #endif
 #if defined CHECK_OBJ_COLISION
     XMVECTOR prwsPos = {}, prwsDir = {};
 #endif
-
-#if DX_ENGINE_LEVEL >= 23 || defined USE_VIEW2D_SPRITES
-	void AppPosRender(UINT monitorWindow, float dayLightFade, void* mainCtx);																// POS-RENDER - 2D: Render 
+#if DX_ENGINE_LEVEL >= 24 || defined USE_VIEW2D_SPRITES
+	void AppPosRender(UINT monitorWindow, UINT level, float dayLightFade, void* mainCtx);																// POS-RENDER - 2D: Render 
 #endif
 	// VARS:
 	// ----------------------------------------------------------------
@@ -314,7 +314,7 @@ public:
 	float rescale = 0;
 
 #ifdef INTRO_DEMO
-	void	initIntroDemo(void* pContext);
+	void	initIntroCreditsDemo(void* pContext);
 #endif
 
 // ---------------------------------------------------------------------
@@ -370,6 +370,7 @@ public:
 #endif
 
 public:
+	void DemoRender(void* pContext);
 	void RenderDemoIntroSprites(void* pContext);
 
 	// 2D

@@ -35,7 +35,7 @@ struct PSIn
 	float2 texCoords			: TEXCOORD;				// 22
 	float3 normal				: NORMAL;				// 23 LIGHT
 	float3 viewDirection		: TEXCOORD1;			// 34 Specular
-	float4 cameraPosition		: WS;					// 34 Specular
+	float4 cameraPosition		: WS;					// 34 WS
 	float3 tangent				: TANGENT;				// 35 BUMP		 NEW!!
 };
 
@@ -48,7 +48,7 @@ struct PSIn
 //#if DXAPI11 == 1
 Texture2D shaderTexture;		// 22: Texture
 Texture2D AlfaMapTexture;		// 33: AlfaMap
-Texture2D normalMapTexture;	// 35: TangentMap NEW!!
+Texture2D normalMapTexture;	    // 35: TangentMap NEW!!
 //#endif
 #if DXAPI12 == 1
 Texture2D AlfaMapTexture:		register(t0); // 33: AlfaMap	//DX12: Descriptor: 2
@@ -66,8 +66,8 @@ SamplerState SampleType: register(s0);
 ////////////////
 // CBUFFERS
 ////////////////
-#include "cbuffer.hlsl"
-#include "light.hlsl"
+#include "cbuffer.hlsli"
+#include "light.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
@@ -113,7 +113,11 @@ if (VS_USE_WVP) {
 	//35: BUMP NEW!!
 #if defined PS_USE_BUMP
     if (VShasNormMap)
-        output.tangent = mul(input.tangent, worldMatrix);
+    {
+        //output.tangent = mul(input.tangent, (float3x3) worldMatrix);
+        output.tangent = mul(input.tangent, (float3x3) WV);
+    }
+        
 #endif
 
 	return output;
@@ -138,19 +142,29 @@ float4 PS_Main(PSIn input) : SV_TARGET
     {                                                                                              // Load normal from normal map
         float3 normalMap = normalMapTexture.Sample(SampleType, input.texCoords).xyz * 2.0f - 1.0f; // Change normal map range from [0, 1] to [-1, 1]
         //V1:
-        //float3 normal = normalize(input.normal + normalMap);
+        float3 normal = normalize(normalMap * input.cameraPosition);
         //V2:
-		float3 tangent = normalize(input.tangent - dot(input.tangent, input.normal) * input.normal); //Make sure tangent is completely orthogonal to normal
-		float3 biTangent = cross(input.normal, input.tangent); // Create the biTangent
-		float3x3 texSpace = float3x3(tangent, biTangent, input.normal); // Create the "Texture Space"
-		normal = normalize(mul(normalMap, texSpace)); // BUMP: Convert normal from normal map to texture space and store in input.normal
+		//float3 tangent = normalize(input.tangent - dot(input.tangent, input.normal) * input.normal); //Make sure tangent is completely orthogonal to normal
+		//float3 biTangent = cross(input.normal, input.tangent); // Create the biTangent
+		//float3x3 texSpace = float3x3(tangent, biTangent, input.normal); // Create the "Texture Space"
+		//normal = normalize(mul(normalMap, texSpace)); // BUMP: Convert normal from normal map to texture space and store in input.normal
     }
 	
 	// 23: LIGHT
     if (isSky)
-        lightIntensity = PSlightFunc2(/*input.normal*/ normal);
+    {
+					   
+        lightIntensity = PSlightFunc2(normal);
+			
+														 
+    }
     else
-        lightIntensity = PSlightFunc1(/*input.normal*/ normal);
+    {
+					   
+        lightIntensity = PSlightFunc1(normal);
+			
+														 
+    }
 
     if (hasTexture) {
         textureColor = textureColor * saturate(emissiveColor + ambientColor + lightIntensity);
@@ -158,7 +172,7 @@ float4 PS_Main(PSIn input) : SV_TARGET
         textureColor = textureColor * saturate(emissiveColor + ambientColor + (lightIntensity * diffuseColor));
     }
 	
-#if defined PS_USE_ALFA_TEXTURE // 33: Alfa Map: (Optional AlfaMap for blending textutres)
+#if defined PS_USE_ALFA_TEXTURE // 33: Alfa Map: (Optional AlfaMap for blending textures)
 	if (hasAlfaMap)
 		textureColor.a = AlfaMapTexture.Sample(SampleType, input.texCoords).r;
 #endif

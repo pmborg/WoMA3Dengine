@@ -57,12 +57,12 @@ bool DX11Class::createRasterizerStates()
 	//Alpha antialiased 			FALSE 				TRUE
 	//Quadrilateral 4x 8x 16		TRUE 				-
 
-	if (SystemHandle->AppSettings->MSAA_Anisotropic) {
+	if (WOMA::AppSettings->MSAA_Anisotropic) {
 		//Turn on: MSAA ?
 		rasterDesc.MultisampleEnable = true;
 	} else {
 		//Turn on: the legacy AntialiasedLine ?
-		if ((SystemHandle->AppSettings->MSAA_bilinear) || (SystemHandle->AppSettings->MSAA_trilinear))
+		if ((WOMA::AppSettings->MSAA_bilinear) || (WOMA::AppSettings->MSAA_trilinear))
 			rasterDesc.AntialiasedLineEnable = true;
 	}
 

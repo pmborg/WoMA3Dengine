@@ -136,14 +136,14 @@ SceneManager* SceneManager::GetInstance()
 	return WOMA::sceneManager;
 }
 
-void SceneManager::CreateLists()
+void SceneManager::CreateLists(UINT level)
 {
 #ifdef _DEBUG
 	quadTree.totalVertexRendered = 0;
 	//quadTree.totalRendered = 0;
 #endif	
 
-	quadTree.RenderNode(quadTree.m_QuadRootNode);
+	quadTree.RenderNode(quadTree.m_QuadRootNode, level);
 }
 
 //Default Original World Size: -512,-512, 512, 512

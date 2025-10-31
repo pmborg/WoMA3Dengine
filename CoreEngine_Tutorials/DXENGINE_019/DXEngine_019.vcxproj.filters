@@ -259,9 +259,6 @@
     <ClCompile Include="core\src\log.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\main.cpp">
-      <Filter>core\src</Filter>
-    </ClCompile>
     <ClCompile Include="core\src\Math3D.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
@@ -376,6 +373,7 @@
     <ClCompile Include="core\src\OperatingSystem.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="settings.xml" />

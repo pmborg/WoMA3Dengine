@@ -158,12 +158,12 @@ void QuadTree::AddSceneNode(NodeType* quadNode, SceneNode* node)
 }
 
 //void SceneManager::Render()
-void QuadTree::RenderNode(NodeType* node)
+void QuadTree::RenderNode(NodeType* node, UINT level)
 {
 #if !defined USE_MAP_EDITOR
 	// Check to see if the node can be viewed, height doesn't matter in a quad tree.
 	//bool result = _frustum->CheckCube(node->positionX, 0.0f, node->positionZ, (node->width/2)*1.4142135623730950488016887242097f);   // More accurate but slower
-	bool result = _frustum->CheckSphere(node->positionX, 0.0f, node->positionZ, (node->width/2)*1.4142135623730950488016887242097f );   // Faster
+	bool result = _frustum->CheckSphere(node->positionX, 0.0f, node->positionZ, (node->width / 2) * 1.4142135623730950488016887242097f);   // Faster
 	if (!result) return;
 #endif
 
@@ -171,10 +171,10 @@ void QuadTree::RenderNode(NodeType* node)
 	int count = 0;
 	for(UINT i=0; i<4; i++)
 	{
-		if(node->nodes[i] != 0)
+		if (node->nodes[i] != 0)
 		{
 			count++;
-		    RenderNode(node->nodes[i]);
+			RenderNode(node->nodes[i], level);
 		}
 	}
 
@@ -187,11 +187,11 @@ void QuadTree::RenderNode(NodeType* node)
 	
 	for (int i = 0; i < node->sceneNodes.size(); i++)
 	{
-		 model = node->sceneNodes[i]->nodeState.model;
+		model = node->sceneNodes[i]->nodeState.model;
         
          UINT modelID = model->m_ObjId;
 
-         if (SystemHandle->xml_loader.theWorldXML[modelID].depend == -1)
+         if (_xml_loader->theWorldXML[modelID].depend == -1)
          {
              _xml_loader->theWorldXML[modelID].render = true;     
          }else

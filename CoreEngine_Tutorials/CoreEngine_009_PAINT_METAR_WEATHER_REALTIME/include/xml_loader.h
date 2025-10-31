@@ -83,7 +83,6 @@ using namespace std;
 #include "main.h"
 #include <vector>
 
-
 // -------------------------------------------------------------------------------------------
 //<generalsettings>
 typedef struct {
@@ -125,7 +124,6 @@ typedef struct {
 
 } generalsettings;
 
-
 // -------------------------------------------------------------------------------------------
 
 class XMLloader
@@ -140,14 +138,15 @@ public:
 	bool initAppicationSettings(TCHAR* filename); //Note: Have to be char
 
 	// --------------------------------------------------------------------------------------------
-	// Globals:
+	// GLOBALS:
 	// --------------------------------------------------------------------------------------------
-	generalsettings GenSettings;
+	generalsettings GenSettings;			//1
+
+
 
 	/*TiXmlElement*/ tinyxml2::XMLDocument* child_screen = NULL;
 	/*TiXmlElement*/ tinyxml2::XMLElement* child_world = NULL;
 	/*TiXmlElement*/ tinyxml2::XMLNode* child_object = NULL;
-
 };
 
 #endif

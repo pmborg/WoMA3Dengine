@@ -34,7 +34,7 @@
 
 #include "../Engine/Source/PPG.h"
 #include <math.h>
-//#define m_Driver  driverList[SystemHandle->AppSettings->DRIVER]
+//#define m_Driver  driverList[WOMA::AppSettings->DRIVER]
 
 class MyDemo : public Demo
 {
