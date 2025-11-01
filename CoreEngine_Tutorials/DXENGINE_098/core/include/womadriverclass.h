@@ -272,7 +272,7 @@ public:
 
 	virtual void Initialize2Dand3DCamera()=0;
 	virtual bool Initialize(float* clearColor)=0;
-	virtual void Finalize()=0;
+	virtual void FinalizeInitialization()=0;
 
     virtual bool OnInit(int g_USE_MONITOR, void* hwnd, int screenWidth, int screenHeight, UINT depthBits,
         float screenDepth, float screenNear, BOOL msaa, bool vsync,

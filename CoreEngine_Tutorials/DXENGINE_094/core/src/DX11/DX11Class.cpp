@@ -1139,7 +1139,7 @@ bool DX11Class::Initialize(float* clearColor)
 	return true;
 }
 
-void DX11Class::Finalize() 
+void DX11Class::FinalizeInitialization()
 {
 #if defined USE_RASTERIZER_STATE
 	m_Driver->SetRasterizerState(m_deviceContext, CULL_NONE, FILL_SOLID);

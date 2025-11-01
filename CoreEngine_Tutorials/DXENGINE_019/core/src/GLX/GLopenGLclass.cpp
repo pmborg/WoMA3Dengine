@@ -65,7 +65,7 @@ GLopenGLclass::~GLopenGLclass() {
 	CLASSDELETE(); 
 }
 
-void GLopenGLclass::Finalize() {} //not used on OPENGL
+void GLopenGLclass::FinalizeInitialization() {} //not used on OPENGL
 
 void GLopenGLclass::Shutdown2D() {}
 

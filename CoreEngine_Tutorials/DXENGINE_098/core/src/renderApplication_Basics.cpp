@@ -20,6 +20,7 @@
 
 #include "platform.h"
 #pragma warning(disable : 4267) // warning C4267: 'initializing': conversion from 'size_t' to 'UINT', possible loss of data
+#pragma warning(disable : 4065) // warning C4065: switch statement contains 'default' but no 'case' labels
 
 #include "OSengine.h"
 #include "OSmain_dir.h"
@@ -115,7 +116,6 @@ void ApplicationClass::RenderScene(void* mainCtx, UINT monitorIndex, WomaDriverC
 //----------------------------------------------------------------------------------------------------
 {
 	SystemHandle->TotalVertexCounter = 0;
-
 
 	// UPDATE DYN. LIGHT RAY:
 	// --------------------------------------------------------------------------------------------
@@ -1059,7 +1059,7 @@ void ApplicationClass::AppPosRender(UINT monitorIndex, UINT level, float dayLigh
 
 #if DX_ENGINE_LEVEL >= 24 && defined MAIN_RENDER_TITLE
 		if (ShouldDrawUI(monitorIndex))
-		RenderHUD_Logo(pContext);
+			RenderHUD_Logo(pContext);
 #endif
 
 #if (defined USE_MAIN_MAP || defined USE_MINI_MAP) && defined MAIN_RENDER_MINIMAP //MAIN-RENDER: MINI-MAP (0.4)

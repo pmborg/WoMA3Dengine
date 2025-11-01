@@ -20,6 +20,7 @@
 
 #include "platform.h"
 #pragma warning(disable : 4267) // warning C4267: 'initializing': conversion from 'size_t' to 'UINT', possible loss of data
+#pragma warning(disable : 4065) // warning C4065: switch statement contains 'default' but no 'case' labels
 
 #include "OSengine.h"
 #include "OSmain_dir.h"
@@ -57,7 +58,6 @@ void ApplicationClass::RenderScene(void* mainCtx, UINT monitorIndex, WomaDriverC
 //----------------------------------------------------------------------------------------------------
 {
 	SystemHandle->TotalVertexCounter = 0;
-
 
 	// UPDATE DYN. LIGHT RAY:
 	// --------------------------------------------------------------------------------------------

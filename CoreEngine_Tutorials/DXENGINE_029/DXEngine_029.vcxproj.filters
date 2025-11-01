@@ -564,7 +564,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="settings.xml" />
+    <Xml Include="settings_029.xml" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="WoMA.ico">

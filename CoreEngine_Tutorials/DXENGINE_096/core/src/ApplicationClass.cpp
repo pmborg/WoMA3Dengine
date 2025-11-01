@@ -718,7 +718,7 @@ bool ApplicationClass::Initialize(void* pContext, WomaDriverClass* Driver)
 #endif
 
 #if CORE_ENGINE_LEVEL >= 10 && !defined ANDROID_PLATFORM
-	Driver->Finalize(); //Specially for DX12 (Finish setup just before start rendering...)
+	Driver->FinalizeInitialization(); //Specially for DX12 (Finish setup just before start rendering...)
 #endif
 
 	if (WOMA::game_state == GAME_STOP) 

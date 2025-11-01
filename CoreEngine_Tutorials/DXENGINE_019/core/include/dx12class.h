@@ -151,7 +151,9 @@ public:
 	void EndScene(UINT monitorWindow);
 	void ClearDepthBuffer(void* pContext);
 
+	inline void SignalAndWait(UINT64 fenceValue);
 	void MoveToNextFrame();
+	void MoveToNextFrameAndWaitVSYNC();
 	void WaitForGpu();
 
 	//void ResetViewport();
@@ -159,7 +161,7 @@ public:
 
 	void Initialize2Dand3DCamera();
 	bool Initialize(float* clearColor);	//bool Initialize();
-	void Finalize();
+	void FinalizeInitialization();
 
 	XMMATRIX* GetViewMatrix( UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix);
 	XMMATRIX* GetProjectionMatrix( UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix);
@@ -202,43 +204,8 @@ public:
 
 	// ---------------------------------------------------------
 	bool	g_ALLOW_DX9x;
-	//UINT	ShaderVersionH, ShaderVersionL;	// Basics of Refresh rate / Shaver Version:
 
-	//DXGI_MODE_DESC* displayModeList;
-	
 // ---------------------------------------------------------
-#if defined USE_DX10DRIVER_FONTS_ // FONT v2
-	ComPtr<ID3D11On12Device> m_d3d11On12Device;
-	ComPtr<ID2D1DeviceContext2> m_d2dDeviceContext;
-	ComPtr<ID3D11Resource> m_wrappedBackBuffers[BufferCount];
-	ComPtr<ID2D1Bitmap1> m_d2dRenderTargets[BufferCount];
-
-	ComPtr<ID3D11DeviceContext> m_d3d11DeviceContext;
-	ComPtr<IDWriteTextFormat> m_textFormat;
-	ComPtr<ID2D1SolidColorBrush> m_textBrush;
-
-	ID3D11RasterizerState* CWcullMode = NULL;
-
-	ID3D10Device1 *d3d101Device = NULL;
-
-	IDXGIKeyedMutex *keyedMutex11 = NULL;
-	IDXGIKeyedMutex *keyedMutex10 = NULL;
-	ID2D1RenderTarget *D2DRenderTarget = NULL;
-	ID2D1SolidColorBrush *Brush = NULL;
-
-	ID3D11Texture2D *sharedTex11 = NULL;
-	ID3D11Buffer *d2dVertBuffer = NULL;
-	ID3D11Buffer *d2dIndexBuffer = NULL;
-
-	ID3D11ShaderResourceView *d2dTexture = NULL;
-	IDWriteFactory *DWriteFactory = NULL;
-	IDWriteTextFormat *TextFormat = NULL;
-
-	ID3D11Buffer* cbPerObjectBuffer = NULL;
-	ID3D11BlendState* Transparency = NULL;
-
-	DXshaderClass* m_FontV2Shader=NULL;
-#endif
 
 #if defined INTRO_DEMO || defined USE_ALPHA_BLENDING
 	bool CreateBlendState();
@@ -300,7 +267,7 @@ public:
 	//ComPtr<IDXGISwapChain1>	m_swapChain1;		//IDXGISwapChain3* m_swapChain;
 	ID3D12Device*				m_device;
 
-	UINT m_currentFrame;
+	UINT m_currentFrame=0;
 	ComPtr<ID3D12Resource>			m_renderTargets[BufferCount];
 
 	ComPtr<ID3D12CommandAllocator>	m_commandAllocator;
@@ -367,8 +334,11 @@ public:
 
 	// Asset objects:
 	ComPtr<ID3D12Fence>					m_fence;
-	//UINT64							m_fenceValue;
+
+	// per-frame objects
+	ComPtr<ID3D12CommandAllocator>		m_commandAllocators[BufferCount];
 	UINT64								m_fenceValues[BufferCount] = {0};
+	UINT64								m_fenceValue = 0;
 	ComPtr<ID3D12GraphicsCommandList>	m_commandList;
 };
 

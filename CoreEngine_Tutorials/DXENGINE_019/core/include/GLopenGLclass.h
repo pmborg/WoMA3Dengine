@@ -103,7 +103,7 @@ public:
 	void SetCamera2D();
 	void Initialize2Dand3DCamera();
 	bool Initialize(float* clearColor);
-	void Finalize();
+	void FinalizeInitialization();
 
 	void TurnZBufferOn(void* pContext);
 	void TurnZBufferOff(void* pContext);

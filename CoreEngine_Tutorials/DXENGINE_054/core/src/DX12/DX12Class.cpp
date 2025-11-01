@@ -149,6 +149,8 @@ namespace DirectX {
 		if (m_device)
 		{
 			// Wait for the GPU to be done with all resources.
+			WaitForGpu();
+
 			CloseHandle(m_fenceEvent);
 			m_fenceEvent = nullptr;
 
@@ -162,36 +164,11 @@ namespace DirectX {
 			m_pDepthStencil.Reset();
 #endif
 
-#if defined USE_DX10DRIVER_FONTS_
-			SAFE_RELEASE(CWcullMode);
-
-			SAFE_RELEASE(keyedMutex11);
-			SAFE_RELEASE(keyedMutex10);
-			SAFE_RELEASE(D2DRenderTarget);
-			SAFE_RELEASE(Brush);
-
-			SAFE_RELEASE(sharedTex11);
-			SAFE_RELEASE(d2dVertBuffer);
-			SAFE_RELEASE(d2dIndexBuffer);
-
-			SAFE_RELEASE(d2dTexture);
-			SAFE_RELEASE(DWriteFactory);
-			SAFE_RELEASE(TextFormat);
-
-			SAFE_RELEASE(cbPerObjectBuffer);
-			SAFE_RELEASE(Transparency);
-
-			SAFE_SHUTDOWN(m_FontV2Shader);
-			SAFE_RELEASE(d3d101Device);
-#endif
-
 			m_swapChain.Reset();
 			m_fence.Reset();
 			m_commandList.Reset();
 			m_commandAllocator.Reset();
 			m_commandQueue.Reset();
-
-			//Release the two new blending states.
 
 			// The Last one!
 			ULONG count = m_device->Release();
@@ -808,7 +785,7 @@ namespace DirectX {
 	//Init Step: 3
 // ----------------------------------------------------------------------------------------------
 	bool DX12Class::initDX12Device(HWND hwnd)
-		// ----------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------
 	{
 		HRESULT result = S_OK;
 		womalog("initDX12Device()\n");
@@ -853,8 +830,8 @@ namespace DirectX {
 
 		// [*] createSwapChain()
 		// ----------------------------------------------------------------------------------------------
-#define oldway_
-#if defined oldway_
+#define USE_DX12_OLDWAY
+#if defined USE_DX12_OLDWAY
 		IF_NOT_RETURN_FALSE(createSwapChainDX12device(hwnd, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT, WOMA::AppSettings->VSYNC_ENABLED,
 			WOMA::AppSettings->FULL_SCREEN, WOMA::AppSettings->UseDoubleBuffering, WOMA::AppSettings->AllowResize,
 			numerator, denominator));
@@ -885,6 +862,19 @@ namespace DirectX {
 #endif
 
 		m_currentFrame = m_swapChain->GetCurrentBackBufferIndex(); // 0
+		// Ensure fence values are defined for every buffer
+		for (UINT i = 0; i < BufferCount; ++i)
+			m_fenceValues[i] = 0;
+
+		// right after m_swapChain = ... and after creating the command allocators
+		womalog(TEXT("[DX12 INIT] BufferCount=%u, SwapChainBuffers=%u, InitialFrame=%u"),
+			BufferCount, (UINT)BufferCount /*placeholder*/, m_currentFrame);
+
+		// Print addresses of allocators we created:
+		for (UINT i = 0; i < BufferCount; ++i) {
+			womalog(TEXT("[DX12 INIT] m_commandAllocators[%u] = %p"), i, m_commandAllocators[i].Get());
+		}
+
 
 		// [*] render target view: "Describe" the render target view (RTV) descriptor heap:
 		// ----------------------------------------------------------------------------
@@ -1031,10 +1021,9 @@ namespace DirectX {
 	}
 #endif
 
-
 	// ----------------------------------------------------------------------------------------------
 	bool DX12Class::Initialize(float* clearColor) //void D3D12HelloWindow::LoadAssets()
-		// ----------------------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------------------
 	{
 		womalog("DX12Class::Initialize()\n");
 
@@ -1047,79 +1036,89 @@ namespace DirectX {
 		return true;
 	}
 
-	void DX12Class::Finalize() //::LoadAssets()
-		// ----------------------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------------------
+	void DX12Class::FinalizeInitialization() //::LoadAssets()
+	// ----------------------------------------------------------------------------------------------
 	{
-		// [3]
-		//
-		// Create synchronization objects:
-
+		ThrowIfFailed(m_device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_fence)));
+		m_fenceValue = 1;                   // <-- start from 1
 		for (UINT n = 0; n < BufferCount; n++)
-		{
-			ThrowIfFailed(m_device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_fence)));
-			m_fenceValues[n] = 1; // ++;
-		}
+			m_fenceValues[n] = 0; // initialize per-buffer fence value
 
 		// Create an event handle to use for frame synchronization.
 		m_fenceEvent = CreateEventEx(nullptr, FALSE, FALSE, EVENT_ALL_ACCESS);
 		ASSERT(m_fenceEvent);
 
-		// [1]
-		// Close the command list and execute it to begin the vertex buffer copy into
-		// the default heap.
-		ThrowIfFailed(m_commandList->Close());
+		// Create allocators: one per swapchain backbuffer
+		for (UINT n = 0; n < BufferCount; n++)
+		{
+			ThrowIfFailed(m_device->CreateCommandAllocator(
+				D3D12_COMMAND_LIST_TYPE_DIRECT,
+				IID_PPV_ARGS(&m_commandAllocators[n])
+			));
 
-		// [2]
+#if defined _DEBUG
+			womalog(TEXT("[DX12 INIT] Created allocator[%u] = %p"), n, m_commandAllocators[n].Get());
+#endif
+		}
+
+		// Close initial command list after resource uploads
+		ThrowIfFailed(m_commandList->Close());
 		ID3D12CommandList* ppCommandLists[] = { m_commandList.Get() };
 		m_commandQueue->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
 
-		// [4]
-		// Wait for the command list to execute; we are reusing the same command 
-		// list in our main loop but for now, we just want to wait for setup to 
-		// complete before continuing.
+		// Wait for GPU to finish uploading resources before starting the main loop
 		WaitForGpu();
 	}
 
 	// ----------------------------------------------------------------------------------------------
 	void DX12Class::BeginScene(UINT monitorWindow)
-		// ----------------------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------------------
 	{
-		// Command list allocators can only be reset when the associated 
-		// command lists have finished execution on the GPU; apps should use 
-		// fences to determine GPU execution progress:
+		// 1) wait if THIS backbuffer still has GPU work in flight
+		const UINT64 fenceForThisBackbuffer = m_frameFenceValues[m_currentFrame];
+		if (m_fence->GetCompletedValue() < fenceForThisBackbuffer)
+		{
+			ThrowIfFailed(m_fence->SetEventOnCompletion(fenceForThisBackbuffer, m_fenceEvent));
+			WaitForSingleObjectEx(m_fenceEvent, INFINITE, FALSE);
+		}
+#if defined _DEBUG && defined USE_VERBOSEFRAMELOGGING
+		UINT64 gpuCompleted = m_fence->GetCompletedValue();
+		womalog(TEXT("[DX12] BeginScene - Frame=%u Alloc=%p GPU=%llu FrameFence=%llu"),
+			m_currentFrame,
+			m_commandAllocators[m_currentFrame].Get(),
+			gpuCompleted,
+			fenceForThisBackbuffer);
+#endif
+		// Reset the allocator and command list for this frame
+		ThrowIfFailed(m_commandAllocators[m_currentFrame]->Reset());
+		ThrowIfFailed(m_commandList->Reset(m_commandAllocators[m_currentFrame].Get(), nullptr));
 
-		ThrowIfFailed(m_commandAllocator->Reset());
+		// Transition the back buffer from "present" to "render target"
+		m_commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
+			m_renderTargets[m_currentFrame].Get(),
+			D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
 
-		ThrowIfFailed(m_commandList->Reset(m_commandAllocator.Get(), nullptr /*m_pipelineInitialState.Get()*/));
 
-		// Indicate that the back buffer will be used as a render target.
-		//																		m_deviceResources->GetRenderTarget()	
-		m_commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_renderTargets[m_currentFrame].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
-
-		// Record drawing commands:
-		// ------------------------
-		// Set necessary state.
+		// Set the viewport and scissor rect
 		m_commandList->RSSetViewports(1, &m_viewport);
 		m_commandList->RSSetScissorRects(1, &m_scissorRect);
 
+		// Get handle for current back buffer
 		CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_rtvHeap->GetCPUDescriptorHandleForHeapStart(), m_currentFrame, m_rtvDescriptorSize);
 
-		// EQUAL TO:
-		//auto handleRTV = m_rtvHeap->GetCPUDescriptorHandleForHeapStart();
-		//rtvHandle.ptr += (m_currentFrame * m_rtvDescriptorSize);
-
-#if !defined USE_DSV
+	#if !defined USE_DSV
 		m_commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
-#else
+	#else
 		auto handleDSV = m_pDsvHeap->GetCPUDescriptorHandleForHeapStart();
 		m_commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, &handleDSV);
-#endif
+	#endif
 
-		// Clear Screen
+		// Clear the render target and depth buffer
 		m_commandList->ClearRenderTargetView(rtvHandle, driver_ClearColor, 0, nullptr);
 
 #if defined USE_DSV
-		ClearDepthBuffer(NULL);															//m_deviceContext->ClearDepthStencilView
+		ClearDepthBuffer(NULL);
 #endif
 	}
 
@@ -1128,17 +1127,18 @@ namespace DirectX {
     void DirectX::DX12Class::ClearDepthBuffer(void* pContext)
 		// ----------------------------------------------------------------------------------------------
 	{
-#if defined USE_DSV
+	#if defined USE_DSV
 		// Clear the depth stencil buffer in preparation for rendering the shadow map.
 		m_commandList->ClearDepthStencilView(m_pDsvHeap->GetCPUDescriptorHandleForHeapStart(), D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);	//DX11: m_deviceContext->ClearDepthStencilView(m_depthBufferDepthStencilView, D3D10_CLEAR_DEPTH, 1.0f, 0);	// Clear the "depth buffer":
-#endif
+	#endif
 	}
 
-#define USE_PRESENT_DXGI_1_0
 
+//NOTE: using: USE_DX12_PRESENT_DXGI_1_0
+//NOTE: m_VSYNC_ENABLED is false
 // ----------------------------------------------------------------------------------------------
 	void DX12Class::EndScene(UINT monitorWindow)
-		// ----------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------
 	{
 		// Indicate that the "back-buffer" will now be used to present.
 		m_commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_renderTargets[m_currentFrame].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
@@ -1153,9 +1153,9 @@ namespace DirectX {
 
 		// The first argument instructs DXGI to block execution, until VSync (if VSync ON), putting the application to sleep until the next VSync. 
 		// This ensures we don't waste any cycles rendering frames that will never be displayed to the screen.
-#if defined USE_PRESENT_DXGI_1_0
+#if defined USE_DX12_PRESENT_DXGI_1_0
 	// Direct3D 12++
-		HRESULT hr = m_swapChain->Present(m_VSYNC_ENABLED, 0); // if (m_VSYNC_ENABLED) Sleep a bit, until next monitor Hz
+		HRESULT hr = m_swapChain->Present(WOMA::AppSettings->VSYNC_ENABLED ? 1 : 0, 0);
 #else
 	// Direct3D 12.1++
 		DXGI_PRESENT_PARAMETERS PresentDesc = { 0 };
@@ -1168,16 +1168,60 @@ namespace DirectX {
 		if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
 			return;
 
-		MoveToNextFrame();
+		// advance frame
+		if (m_VSYNC_ENABLED)
+			MoveToNextFrameAndWaitVSYNC();
+		else
+			MoveToNextFrame();
 	}
+
+
+	// ----------------------------------------------------------------------------------------------
+	// Wait until GPU finishes all work for the current frame
+	// ----------------------------------------------------------------------------------------------
+	inline void DX12Class::SignalAndWait(UINT64 fenceValue)
+	{
+		ThrowIfFailed(m_commandQueue->Signal(m_fence.Get(), fenceValue));
+		if (m_fence->GetCompletedValue() < fenceValue)
+		{
+			ThrowIfFailed(m_fence->SetEventOnCompletion(fenceValue, m_fenceEvent));
+			WaitForSingleObjectEx(m_fenceEvent, INFINITE, FALSE);
+		}
+	}
+
 
 	// Using Double Buffer: (BufferCount = 2)
 	// | 0 | --> | 1 | --> | 0 | ...
 
 	// Using Triple Buffer: (BufferCount = 3)
 	// | 0 | --> | 1 | --> | 2 | --> | 0 | ...
-
+	
+	// ----------------------------------------------------------------------------------------------
+	// Move to next frame (called at end of EndScene())
+	// ----------------------------------------------------------------------------------------------
 	void DX12Class::MoveToNextFrame()
+	{
+		const UINT currentFrame = m_currentFrame;
+		const UINT64 fenceToSignal = m_fenceValue;
+		ThrowIfFailed(m_commandQueue->Signal(m_fence.Get(), fenceToSignal));
+
+		m_frameFenceValues[currentFrame] = fenceToSignal;
+		m_fenceValue++;
+
+		// Advance to the next back buffer
+		m_currentFrame = m_swapChain->GetCurrentBackBufferIndex();
+
+		// 🔥 DO NOT WAIT HERE unless the next frame’s allocator is still busy!
+		const UINT64 fenceForNextFrame = m_frameFenceValues[m_currentFrame];
+		if (m_fence->GetCompletedValue() < fenceForNextFrame)
+		{
+			// Optional: Wait only if the GPU is too far behind (rare)
+			ThrowIfFailed(m_fence->SetEventOnCompletion(fenceForNextFrame, m_fenceEvent));
+			WaitForSingleObjectEx(m_fenceEvent, INFINITE, FALSE);
+		}
+	}
+
+	void DX12Class::MoveToNextFrameAndWaitVSYNC()
 	{
 		// Schedule a Signal command in the queue.
 		const UINT64 currentFenceValue = m_fenceValues[m_currentFrame];
@@ -1196,21 +1240,22 @@ namespace DirectX {
 		// Set the fence value for the next frame.
 		m_fenceValues[m_currentFrame] = currentFenceValue + 1;
 	}
-
-	//
-	// Wait for GPU to Load all Objects/Textures and so on, before start rendering:
-	//
 	void DX12Class::WaitForGpu()
 	{
-		// Schedule a Signal command in the queue.
-		ThrowIfFailed(m_commandQueue->Signal(m_fence.Get(), m_fenceValues[m_currentFrame]));
-		ThrowIfFailed(m_fence->SetEventOnCompletion(m_fenceValues[m_currentFrame], m_fenceEvent));
+		// use the running fence
+		const UINT64 fenceToWaitFor = m_fenceValue;
+		ThrowIfFailed(m_commandQueue->Signal(m_fence.Get(), fenceToWaitFor));
+		m_fenceValue++;
 
-		// Wait until the fence has been processed.
-		WaitForSingleObjectEx(m_fenceEvent, INFINITE, FALSE);
+		if (m_fence->GetCompletedValue() < fenceToWaitFor)
+		{
+			ThrowIfFailed(m_fence->SetEventOnCompletion(fenceToWaitFor, m_fenceEvent));
+			WaitForSingleObjectEx(m_fenceEvent, INFINITE, FALSE);
+		}
 
-		// Increment the fence value for the current frame.
-		m_fenceValues[m_currentFrame]++;
+		// after a full wait we can safely mark all frame-fence slots as completed
+		for (UINT i = 0; i < BufferCount; ++i)
+			m_frameFenceValues[i] = m_fence->GetCompletedValue();
 	}
 
 	//Init Step: 5 - Set the best shader available: MORE INFO: http://msdn.microsoft.com/en-us/library/windows/desktop/ff476876%28v=vs.85%29.aspx

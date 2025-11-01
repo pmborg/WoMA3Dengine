@@ -22,9 +22,6 @@
 #include "OSengine.h"
 #include "Math3D.h"
 #include "mem_leak.h"
-#if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28 && defined DXENGINE_LEVEL >= 28
-	#include "SKY_30.h"					// Get SunDistance
-#endif
 
 #if (defined DX_ENGINE)
 	#include "DXmodelClass.h"

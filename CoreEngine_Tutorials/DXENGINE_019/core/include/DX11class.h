@@ -313,7 +313,7 @@ public:
 
     void Initialize2Dand3DCamera();
     bool Initialize(float* clearColor);	//bool Initialize();
-    void Finalize();
+    void FinalizeInitialization();
 
     bool OnInit(int g_USE_MONITOR, void* hwnd, int screenWidth, int screenHeight, UINT depthBits,
         float screenDepth, float screenNear, BOOL msaa, bool vsync,

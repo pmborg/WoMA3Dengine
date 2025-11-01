@@ -202,7 +202,7 @@
     <ClCompile Include="core\src\WomaSphere.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="settings.xml" />
+    <Xml Include="settings_029.xml" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DXEngine_029.rc" />
