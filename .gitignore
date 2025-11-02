@@ -1,3 +1,47 @@
+################################################################################
+# WoMA3Dengine .gitignore
+# ------------------------------------------------------------------------------
+# This repository only tracks reproducible source code and configuration files.
+# The following are intentionally excluded:
+#   • All compiled binaries (.exe, .dll, .so, .lib, .a, .pdb)
+#   • Intermediate build directories (bin/, obj/, x64/, Debug/, Release/)
+#   • Logs, cache, runtime files (*.log, *.tmp, *.ip, *.weather, etc.)
+#   • Local environment outputs (PulseAudio, temporary assets)
+# ------------------------------------------------------------------------------
+
+
+# ==============================================================================
+# Engine Solutions
+# ==============================================================================
+
+## Windows
+#  - Levels 000–099 (feature progression)
+WindowsEngine_000-009-Core.sln
+WindowsEngine_019-029-Basic.sln
+WindowsEngine_030-045-Intermediate.sln
+WindowsEngine_049-089-Terrain.sln
+WindowsEngine_082-099-Mesh.sln
+
+## Android
+ANDROID1_engine_ALL.sln #(levels 000–029)
+
+## Linux
+LINUX_engine_ALL.sln #(levels 000–029)
+
+
+# ==============================================================================
+# Typical Workflow
+# ==============================================================================
+# 1️ Open Visual Studio → Batch Build → select desired solutions/configs (Debug + Release).
+# 2️ Run validation scripts: runtest*.bat (render, input, and audio checks).
+# 3️ For WSL2 audio: start the PulseAudio bridge before running Linux builds:
+#        ThirdParty/pulse/bin/pulseaudio.exe --start
+################################################################################
+
+
+# ==============================================================================
+# Ignored Paths
+# ==============================================================================
 ThirdParty/.vs/
 ThirdParty/Output/
 ThirdParty/x64/
