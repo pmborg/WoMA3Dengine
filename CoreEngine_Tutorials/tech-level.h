@@ -25,6 +25,9 @@
     #define WOMAENGINE_BASIC
 #endif
 
+#define WOMA_ENGINE_BUILD_TAG "v2025.11.02 - Linux Audio+GTK stable"
+//#define USE_NETWORK
+
 //------------------------------------------------------------------------------------------------------------
 //#define CORE_ENGINE_LEVEL 10
 //------------------------------------------------------------------------------------------------------------
@@ -148,16 +151,20 @@
     #endif
 
     #if DX_ENGINE_LEVEL >= 19 && !defined WOMAENGINE_BASIC
+		#define USE_DX12_OLDWAY		//DX12: keep it
+		//#define USE_DX12_DEBUG	//DX12: keep it
+		
         #undef USE_ALLOW_MAINWINDOW_RESIZE
         #define USE_NETWORK
         #if defined WINDOWS_PLATFORM
         #define CLIENT_SCENE_SETUP
         #endif
 
-        #define SET_DEVICE_CAPABILITIES //report.txt
+        #define SET_DEVICE_CAPABILITIES		//Add info on: report.txt
+		#define USE_DX12_PRESENT_DXGI_1_0	//for: DX12!
     #endif
 
-    #if DX_ENGINE_LEVEL >= 20 && !defined WOMAENGINE_BASIC
+    #if DX_ENGINE_LEVEL >= 20 && !defined WOMAENGINE_BASIC //settings.xml (UseAllMonitors="true")
         #define USE_ALLOW_MAINWINDOW_RESIZE
         #define USE_STATUSBAR
         #define USE_ALLOW_RESIZE
@@ -255,10 +262,13 @@
     #if DX_ENGINE_LEVEL >= 28
         #if defined WINDOWS_PLATFORM
             #if defined DX_ENGINE && defined NDEBUG
-                #define ALLOW_PRINT_SCREEN_SAVE_PNG // Level:22
+                #define ALLOW_PRINT_SCREEN_SAVE_PNG
             #endif
-            #define USE_DIRECT_INPUT                //28-we will use DX input method
+            #define USE_DIRECT_INPUT                // 28 We will use DX input method
             //#define USE_JOY                       // Default: off - Need to be tested...
+			
+			#if defined USE_DIRECT_INPUT
+				#define USE_MULTI_MONITOR
         #endif
 
         #define SUN_LIGHT_DEMO_ANIMATION true
@@ -364,17 +374,18 @@
         #define USE_SHADOW_INSTANCES_ROTATION_W_V_P
     #endif
 
-    #if DX_ENGINE_LEVEL == 45
-        #define USE_IMGUI               // ASSIMP (Animated + Character using HLSL)
-        #if !defined ANDROID_PLATFORM
-        #define RUN_ASMAIN true         //#define RUN_ASMAIN false //true
-        #endif
-    #endif
+	// USE_IMGUI:
+	//--------------------------------------------------------------------------------------------------------------------------
+	#if DX_ENGINE_LEVEL >= 45
+		#define USE_IMGUI
+
+		#if !defined ANDROID_PLATFORM
+			#define RUN_ASMAIN true
+		#endif
+	#endif
 
     // TERRAINS:
     //--------------------------------------------------------------------------------------------------------------------------
-    //TO BE DONE! DEMO - FUTURE 43: TECH AVAILABLE:
-    //#define RENDER_OBJ_WITH_ALFA          //--> _DX_ENGINE_LEVEL >= 33    //to be added later!
     #if DX_ENGINE_LEVEL >= 49   //49-
         #if _DEBUG
         #undef USE_LOADING_THREADS          //Use Thread to load Graphics
@@ -620,7 +631,7 @@
 #endif
 
 #if DX_ENGINE_LEVEL >= 99
-    #define USE_WOMA_ENGINE_ONE_CBUFFER
+
 #endif
 
 #endif
@@ -635,9 +646,6 @@
     //-------------------------------------------------------------------------------------------------------
     #undef  dx12_upload_old_way
 
-    #if DX_ENGINE_LEVEL >= 19
-        #define USE_MULTI_MONITOR
-    #endif
     #if DX_ENGINE_LEVEL < 94
     #if DX_ENGINE_LEVEL != 76
     #undef USE_INTRO_VIDEO_DEMO
