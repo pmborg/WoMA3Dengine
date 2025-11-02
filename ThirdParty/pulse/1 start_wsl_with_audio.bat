@@ -1,0 +1,3 @@
+@echo off
+echo [INFO] Launching WSL...
+wsl

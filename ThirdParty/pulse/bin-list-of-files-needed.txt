@@ -1,0 +1,45 @@
+# WoMA3Dengine - PulseAudio for WSL2 (Windows Bridge)
+# ----------------------------------------------------
+# This folder contains the minimal PulseAudio runtime required
+# for WSL2 Linux → Windows audio bridging.
+#
+# If any of these files are missing, run:
+#   install_pulse_win.bat
+#
+# Path: ThirdParty/pulse/bin/
+
+
+config.pa
+libcli.dll
+libFLAC-8.dll
+libintl-8.dll
+libjson-0.dll
+libltdl-7.dll
+libogg-0.dll
+liborc-0.4-0.dll
+libpcre-0.dll
+libpcreposix-0.dll
+libprotocol-cli.dll
+libprotocol-esound.dll
+libprotocol-http.dll
+libprotocol-native.dll
+libprotocol-simple.dll
+libpulse-0.dll
+libpulse-simple-0.dll
+libpulsecommon-1.1.dll
+libpulsecore-1.1.dll
+libsamplerate-0.dll
+libsndfile-1.dll
+libspeex-1.dll
+libspeexdsp-1.dll
+libvorbis-0.dll
+libvorbisenc-2.dll
+libvorbisfile-3.dll
+
+pacat.exe
+pactl.exe
+pamon.exe
+paplay.exe
+parec.exe
+parecord.exe
+pulseaudio.exe
