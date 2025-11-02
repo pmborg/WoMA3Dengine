@@ -20,6 +20,8 @@
 
 #include "soundclass.h"
 #include "woma_macros.h"
+#include "linux.h"
+
 
 SoundClass::SoundClass()
 {
@@ -35,7 +37,9 @@ bool SoundClass::LoadTrack(char* filename, float volume)
     bool result;
     
     // Initialize the error state through a reset.
-    alGetError();
+	ALenum err = alGetError();
+	if (err != AL_NO_ERROR)
+		womalogauto(TEXT("AL Error: %d\n"), err);
 
     // Generate an audio buffer.
     alGenBuffers(1, &m_audioBufferId);

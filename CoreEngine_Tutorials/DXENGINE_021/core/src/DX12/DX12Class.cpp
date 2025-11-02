@@ -193,7 +193,7 @@ namespace DirectX {
 
 		// [*] Enable the debug layer (requires the Graphics Tools "optional feature").
 		// NOTE: Enabling the debug layer after device creation will invalidate the active device.
-#ifdef _DEBUG
+#if defined _DEBUG && defined USE_DX12_DEBUG
 		ComPtr<ID3D12Debug> debugController = NULL;
 		if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
 		{
@@ -204,7 +204,7 @@ namespace DirectX {
 		}
 #endif
 
-#if _DEBUG && false
+#if _DEBUG// && false
 		// Get the debug message queue
 		ComPtr<IDXGIInfoQueue> dxgiInfoQueue;
 		if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(dxgiInfoQueue.GetAddressOf()))))
@@ -548,7 +548,7 @@ namespace DirectX {
 		//
 		// Check [10] D3D12_FEATURE_DATA_ROOT_SIGNATURE
 
-	// [*] Check featureData version:
+		// [*] Check featureData version:
 		featureData.HighestVersion = D3D_ROOT_SIGNATURE_VERSION_1_0;
 
 		/*
@@ -822,7 +822,7 @@ namespace DirectX {
 
 		// [*] createSwapChain()
 		// ----------------------------------------------------------------------------------------------
-#define USE_DX12_OLDWAY
+
 #if defined USE_DX12_OLDWAY
 		IF_NOT_RETURN_FALSE(createSwapChainDX12device(hwnd, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT, WOMA::AppSettings->VSYNC_ENABLED,
 			WOMA::AppSettings->FULL_SCREEN, WOMA::AppSettings->UseDoubleBuffering, WOMA::AppSettings->AllowResize,
@@ -1028,6 +1028,7 @@ namespace DirectX {
 		return true;
 	}
 
+	// Last call before start render cycle:
 	// ----------------------------------------------------------------------------------------------
 	void DX12Class::FinalizeInitialization() //::LoadAssets()
 	// ----------------------------------------------------------------------------------------------
@@ -1067,22 +1068,26 @@ namespace DirectX {
 	void DX12Class::BeginScene(UINT monitorWindow)
 	// ----------------------------------------------------------------------------------------------
 	{
-		// 1) wait if THIS backbuffer still has GPU work in flight
-		const UINT64 fenceForThisBackbuffer = m_frameFenceValues[m_currentFrame];
-		if (m_fence->GetCompletedValue() < fenceForThisBackbuffer)
-		{
-			ThrowIfFailed(m_fence->SetEventOnCompletion(fenceForThisBackbuffer, m_fenceEvent));
-			WaitForSingleObjectEx(m_fenceEvent, INFINITE, FALSE);
-		}
 #if defined _DEBUG && defined USE_VERBOSEFRAMELOGGING
 		UINT64 gpuCompleted = m_fence->GetCompletedValue();
 		womalog(TEXT("[DX12] BeginScene - Frame=%u Alloc=%p GPU=%llu FrameFence=%llu"),
 			m_currentFrame,
 			m_commandAllocators[m_currentFrame].Get(),
 			gpuCompleted,
-			fenceForThisBackbuffer);
+			m_fenceValues[m_currentFrame]);
 #endif
-		// Reset the allocator and command list for this frame
+
+		// If the GPU hasn't finished the work for this back-buffer (allocator), wait.
+		const UINT64 fenceForThisBackbuffer = m_fenceValues[m_currentFrame];
+		const UINT64 completed = m_fence->GetCompletedValue();
+		if (completed < fenceForThisBackbuffer)
+		{
+			// We must wait for the GPU to finish with this allocator before resetting it.
+			ThrowIfFailed(m_fence->SetEventOnCompletion(fenceForThisBackbuffer, m_fenceEvent));
+			WaitForSingleObjectEx(m_fenceEvent, INFINITE, FALSE);
+		}
+
+		// Reset the allocator and command list for this frame (safe now).
 		ThrowIfFailed(m_commandAllocators[m_currentFrame]->Reset());
 		ThrowIfFailed(m_commandList->Reset(m_commandAllocators[m_currentFrame].Get(), nullptr));
 
@@ -1099,12 +1104,18 @@ namespace DirectX {
 		// Get handle for current back buffer
 		CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_rtvHeap->GetCPUDescriptorHandleForHeapStart(), m_currentFrame, m_rtvDescriptorSize);
 
-	#if !defined USE_DSV
+#if NOTES
+		// EQUAL TO:
+		//auto handleRTV = m_rtvHeap->GetCPUDescriptorHandleForHeapStart();
+		//rtvHandle.ptr += (m_currentFrame * m_rtvDescriptorSize);
+#endif
+
+#if !defined USE_DSV
 		m_commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
-	#else
+#else
 		auto handleDSV = m_pDsvHeap->GetCPUDescriptorHandleForHeapStart();
 		m_commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, &handleDSV);
-	#endif
+#endif
 
 		// Clear the render target and depth buffer
 		m_commandList->ClearRenderTargetView(rtvHandle, driver_ClearColor, 0, nullptr);
@@ -1113,7 +1124,6 @@ namespace DirectX {
 		ClearDepthBuffer(NULL);
 #endif
 	}
-
 
 	// ----------------------------------------------------------------------------------------------
     void DirectX::DX12Class::ClearDepthBuffer(void* pContext)
@@ -1133,40 +1143,37 @@ namespace DirectX {
 // ----------------------------------------------------------------------------------------------
 	{
 		// Indicate that the "back-buffer" will now be used to present.
-		m_commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_renderTargets[m_currentFrame].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
+		m_commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
+			m_renderTargets[m_currentFrame].Get(),
+			D3D12_RESOURCE_STATE_RENDER_TARGET,
+			D3D12_RESOURCE_STATE_PRESENT));
 
-		// Command lists are created in the recording state, but there is nothing
-		// to record yet. The main loop expects it to be closed, so close it now.
+		// Close the command list for this frame.
 		ThrowIfFailed(m_commandList->Close());
 
-		// Execute all the command list -> GPU will now RENDER ALL SCREEN: on "back-buffer"(m_currentFrame)
+		// Execute command list(s)
 		ID3D12CommandList* ppCommandLists[] = { m_commandList.Get() };
 		m_commandQueue.Get()->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
 
-		// The first argument instructs DXGI to block execution, until VSync (if VSync ON), putting the application to sleep until the next VSync. 
-		// This ensures we don't waste any cycles rendering frames that will never be displayed to the screen.
+		// Present (use your existing preprocessor path)
 #if defined USE_DX12_PRESENT_DXGI_1_0
-	// Direct3D 12++
 		HRESULT hr = m_swapChain->Present(WOMA::AppSettings->VSYNC_ENABLED ? 1 : 0, 0);
 #else
-	// Direct3D 12.1++
 		DXGI_PRESENT_PARAMETERS PresentDesc = { 0 };
 		UINT Flags = DXGI_PRESENT_DO_NOT_WAIT;
 		HRESULT hr = m_swapChain->Present1(m_VSYNC_ENABLED, Flags, &PresentDesc);
 #endif
 
-		// If the device was removed either by a "Full-Screen Switch" or a "driver upgrade", 
-		// We must wait for all device resources re-load:
+		// Device removed / reset handling
 		if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
 			return;
 
-		// advance frame
+		// Advance frame: uses the ring-buffer fence system (no unconditional full-frame stall)
 		if (m_VSYNC_ENABLED)
 			MoveToNextFrameAndWaitVSYNC();
 		else
 			MoveToNextFrame();
 	}
-
 
 	// ----------------------------------------------------------------------------------------------
 	// Wait until GPU finishes all work for the current frame
@@ -1181,7 +1188,6 @@ namespace DirectX {
 		}
 	}
 
-
 	// Using Double Buffer: (BufferCount = 2)
 	// | 0 | --> | 1 | --> | 0 | ...
 
@@ -1191,27 +1197,40 @@ namespace DirectX {
 	// ----------------------------------------------------------------------------------------------
 	// Move to next frame (called at end of EndScene())
 	// ----------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------
 	void DX12Class::MoveToNextFrame()
+		// ----------------------------------------------------------------------------------------------
 	{
 		const UINT currentFrame = m_currentFrame;
+
+		// Signal the queue with the next fence value for the current frame index
 		const UINT64 fenceToSignal = m_fenceValue;
 		ThrowIfFailed(m_commandQueue->Signal(m_fence.Get(), fenceToSignal));
 
-		m_frameFenceValues[currentFrame] = fenceToSignal;
+		// Record the fence value associated with this backbuffer index
+		m_fenceValues[currentFrame] = fenceToSignal;
+
+		// Increment the global fence value for next use
 		m_fenceValue++;
 
-		// Advance to the next back buffer
+		// Advance to the next back buffer index from the swapchain
 		m_currentFrame = m_swapChain->GetCurrentBackBufferIndex();
 
-		// 🔥 DO NOT WAIT HERE unless the next frame’s allocator is still busy!
-		const UINT64 fenceForNextFrame = m_frameFenceValues[m_currentFrame];
-		if (m_fence->GetCompletedValue() < fenceForNextFrame)
+		// If the next backbuffer (the one we've just advanced to) is still in use by GPU, wait for it.
+		const UINT64 fenceForNextFrame = m_fenceValues[m_currentFrame];
+		const UINT64 completed = m_fence->GetCompletedValue();
+
+		if (completed < fenceForNextFrame)
 		{
-			// Optional: Wait only if the GPU is too far behind (rare)
+			// Log (optional)
+			// womalog(TEXT("[DX12] Waiting on fence %llu (GPU=%llu) for frame %u\n"), fenceForNextFrame, completed, m_currentFrame);
+
 			ThrowIfFailed(m_fence->SetEventOnCompletion(fenceForNextFrame, m_fenceEvent));
 			WaitForSingleObjectEx(m_fenceEvent, INFINITE, FALSE);
 		}
 	}
+
 
 	void DX12Class::MoveToNextFrameAndWaitVSYNC()
 	{
@@ -1232,22 +1251,17 @@ namespace DirectX {
 		// Set the fence value for the next frame.
 		m_fenceValues[m_currentFrame] = currentFenceValue + 1;
 	}
+
 	void DX12Class::WaitForGpu()
 	{
-		// use the running fence
-		const UINT64 fenceToWaitFor = m_fenceValue;
-		ThrowIfFailed(m_commandQueue->Signal(m_fence.Get(), fenceToWaitFor));
+		// Signal and wait for the current fence value
+		const UINT64 fenceToWait = m_fenceValue;
+		ThrowIfFailed(m_commandQueue->Signal(m_fence.Get(), fenceToWait));
+		ThrowIfFailed(m_fence->SetEventOnCompletion(fenceToWait, m_fenceEvent));
+		WaitForSingleObjectEx(m_fenceEvent, INFINITE, FALSE);
+
+		// bump fence value so next use is unique
 		m_fenceValue++;
-
-		if (m_fence->GetCompletedValue() < fenceToWaitFor)
-		{
-			ThrowIfFailed(m_fence->SetEventOnCompletion(fenceToWaitFor, m_fenceEvent));
-			WaitForSingleObjectEx(m_fenceEvent, INFINITE, FALSE);
-		}
-
-		// after a full wait we can safely mark all frame-fence slots as completed
-		for (UINT i = 0; i < BufferCount; ++i)
-			m_frameFenceValues[i] = m_fence->GetCompletedValue();
 	}
 
 	//Init Step: 5 - Set the best shader available: MORE INFO: http://msdn.microsoft.com/en-us/library/windows/desktop/ff476876%28v=vs.85%29.aspx

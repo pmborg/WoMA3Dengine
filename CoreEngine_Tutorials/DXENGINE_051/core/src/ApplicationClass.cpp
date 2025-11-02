@@ -168,6 +168,10 @@ void ApplicationClass::Shutdown()
 {
 	womalog("ApplicationClass::Shutdown()\n");
 
+#if defined USE_DX_DRIVER_FONT
+	SAFE_DELETE(m_FontV2Shader);
+#endif
+
 	//3D:
 
 #if (defined OPENGL3 || defined OPENGL4)
@@ -281,10 +285,6 @@ void ApplicationClass::Shutdown()
 
 	}
 #endif
-#endif
-
-#if defined USE_DX_DRIVER_FONT
-	SAFE_SHUTDOWN(m_FontV2Shader);
 #endif
 
 	//2D:

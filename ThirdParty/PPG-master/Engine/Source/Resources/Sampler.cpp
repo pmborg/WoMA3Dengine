@@ -20,6 +20,7 @@
 #include "stdafx.h"
 #include "Sampler.h"
 #include "LowLevel/Graphics.h"
+#include "OSengine.h"
 
 Sampler::Sampler(Graphics& graphics, D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE addressMode)
 {

@@ -25,6 +25,7 @@
 #include "Passes/ShadowMapPass.h"
 #include "Resources/Shader.h"
 #include "Scene/Camera.h"
+#include "OSengine.h"
 
 LightManager::~LightManager()
 {

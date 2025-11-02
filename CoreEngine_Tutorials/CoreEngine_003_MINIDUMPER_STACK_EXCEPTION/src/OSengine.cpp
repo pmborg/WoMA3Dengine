@@ -504,6 +504,8 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 	StringCchPrintf(COMPILATION_DATE, MAX_STR_LEN, TEXT("%c%c%c%c.%c%c.%c%c\n"), BUILD_YEAR_CH0, BUILD_YEAR_CH1, BUILD_YEAR_CH2, BUILD_YEAR_CH3, BUILD_MONTH_CH0, BUILD_MONTH_CH1, BUILD_DAY_CH0, BUILD_DAY_CH1);
 	womalog("COMPILATION_DATE: %s\n", COMPILATION_DATE);
 
+	womalogauto(TEXT("ENGINE BUILD TAG: %hs\n"), WOMA_ENGINE_BUILD_TAG);
+
 	// Set A Top level "Exception handler" for all Exceptions. Catch, Dump & Send Report WOMA ENGINE HOME using FTP!
 #if defined USE_MINIDUMPER 
 	WOMA::miniDumper = NEW MiniDumper();						//4! (NOTE: After logManager!)
@@ -937,3 +939,28 @@ namespace WOMA
 	WOMA::Settings* AppSettings = NULL;
 };
 
+
+#if defined WINDOWS_PLATFORM
+// safe_release_seh.cpp
+#include <windows.h>
+#include <unknwn.h>   // IUnknown
+#include <stdio.h>
+
+// Export as C so name mangling won't cause issues
+extern "C" void SafeRelease_SEH(void** pp)
+{
+	if (!pp || !*pp) return;
+
+	// Defensive: protect driver faults during Release()
+	__try {
+		IUnknown* unk = (IUnknown*)(*pp);
+		// If pointer is bogus this can still fault, that's what SEH catches
+		unk->Release();
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER) {
+		// optional: log the exception via your logging method
+		// e.g. womalogauto(TEXT("[SAFE_RELEASE_SEH] exception during Release ptr=%p\n"), *pp);
+	}
+	*pp = nullptr;
+}
+#endif

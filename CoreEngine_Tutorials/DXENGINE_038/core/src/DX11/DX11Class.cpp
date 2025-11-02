@@ -1129,7 +1129,7 @@ void DX11Class::FinalizeInitialization()
 void DX11Class::BeginScene(UINT monitorWindow)
 // ----------------------------------------------------------------------------------------------
 {
-#if !defined ANDROID_PLATFORM && defined DX_ENGINE && defined USE_MULTI_MONITOR && defined USE_DIRECT_INPUT
+#if defined USE_MULTI_MONITOR //!defined ANDROID_PLATFORM && defined DX_ENGINE && defined USE_MULTI_MONITOR && defined USE_DIRECT_INPUT
 	const float totalSpanDeg = 90.0f;            // total horizontal span across all 3
 	const float perMonitorDeg = totalSpanDeg / SystemHandle->windowsArray.size(); // 30°
 	if (SystemHandle->windowsArray.size() == 3)

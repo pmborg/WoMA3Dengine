@@ -27,6 +27,8 @@
 #include <dxgiformat.h>
 #include "dx11Class.h"
 
+#include "OSengine.h"
+
 #if D3D11_SPEC_DATE_YEAR > 2009
 	#include <d3d11_1.h>
 

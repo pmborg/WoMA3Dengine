@@ -159,6 +159,7 @@ namespace WOMA
 		static TCHAR file_[MAX_STR_LEN * 2];
 		ZeroMemory(&file_, sizeof(file));
 
+#if !defined ANDROID_PLATFORM
 #ifdef RELEASE
 		if (shader) {
 			file = WOMA::APP_PROJECT_NAME;
@@ -173,7 +174,8 @@ namespace WOMA
 #else
 		if (filename[0] != '.') {
     #if CORE_ENGINE_LEVEL >= 5 && !defined RELEASE
-			if (shader) {
+			if (shader) 
+			{
 				StringCchPrintf(file_, sizeof(file_), TEXT("%s%s"), TEXT("./"), filename);
             }
             else {
@@ -228,8 +230,11 @@ namespace WOMA
             _tcscpy_s(file_, sizeof(file_), finalw3dPath);
     #endif
 #endif
+#endif
 
 		return (TCHAR*)&file_;
+#else
+		return filename;
 #endif
 	}
 }

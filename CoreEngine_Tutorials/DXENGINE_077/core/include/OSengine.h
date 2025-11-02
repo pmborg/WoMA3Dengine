@@ -381,3 +381,18 @@ inline bool ShouldDrawUI(int monIdx) { return monIdx == 0; /*kPrimaryMon;*/ }
 extern WorldRegistry* worldRegistry;
 #endif
 #endif
+
+
+#if defined WINDOWS_PLATFORM
+// safe_release_seh.h
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+	void SafeRelease_SEH(void** pp);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif

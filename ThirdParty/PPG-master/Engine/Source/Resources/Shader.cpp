@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------
+#include "OSengine.h"// --------------------------------------------------------------------------------------------
 // Filename: Shader.cpp
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
@@ -20,6 +20,7 @@
 #include "stdafx.h"
 #include "Shader.h"
 #include "LowLevel/Graphics.h"
+#include "OSengine.h"
 
 //C:\WoMAengine2023\PPG-master\Bin\Debug\VertexShader.cso
 //C:\WoMAengine2023\PPG-master\Bin\Debug\GBuffer.ps.cso

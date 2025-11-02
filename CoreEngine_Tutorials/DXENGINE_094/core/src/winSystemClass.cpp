@@ -123,6 +123,8 @@ void WinSystemClass::ProcessFrame()
 			return; // We are in first win32 Demo pages so, don't render!
 
 		// For each Monitor: Render one Application Frame
+		//0 – 27	Primary monitor only Ignore extra outputs; no multi-monitor logic needed
+		//28 +		Full multi-monitor	Use adapter/output detection and per-monitor swapchains
         int num_monitors = (int)windowsArray.size();
 		for (int monIdx = 0; monIdx < num_monitors; monIdx++)
 		{

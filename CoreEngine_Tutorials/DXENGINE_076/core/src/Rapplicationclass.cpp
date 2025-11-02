@@ -46,26 +46,27 @@ bool RApplicationClass::Initialize(int screenWidth, int screenHeight)
 {
     // Create and initialize the OpenGL object.
     m_OpenGL = new OpenGLClass;
-	_tprintf("m_OpenGL->Initialize()\n");
+	womalogauto("m_OpenGL->Initialize()\n");
     IF_NOT_RETURN_FALSE (m_OpenGL->Initialize(screenWidth, screenHeight, SCREEN_NEAR, SCREEN_DEPTH, VSYNC_ENABLED));
 
     // Create and initialize the camera object.
     m_Camera = new RCameraClass;
-	_tprintf("new RCameraClass\n");
+	womalogauto("new RCameraClass\n");
     m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
     m_Camera->Render();
 
     // Create and initialize the font shader object.
     m_FontShader = new RFontShaderClass;
 	
-	_tprintf("m_FontShader->Initialize(m_OpenGL)\n");
+	womalogauto("m_FontShader->Initialize(m_OpenGL)\n");
     IF_NOT_RETURN_FALSE(m_FontShader->Initialize(m_OpenGL));
 
     // Create and initialize the font object.
     m_Font = new RFontClass;
-	_tprintf("m_Font->Initialize(m_OpenGL, 0)\n");
+	womalogauto("m_Font->Initialize(m_OpenGL, 0)\n");
     IF_NOT_RETURN_FALSE(m_Font->Initialize(m_OpenGL, 0));
 
+	womalogauto(TEXT("RApplicationClass::Initialize: THE END!\n"));
     return true;
 }
 

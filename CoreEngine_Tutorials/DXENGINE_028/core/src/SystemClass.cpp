@@ -1013,6 +1013,7 @@ extern android_app* app;
 void SystemClass::FrameUpdate()
 {
 
+
 	#if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 	  #if !defined ANDROID_PLATFORM
 		DXsystemHandle->GetInputs();					// READ-INPUT: WinSystemClass::ProcessInput() + DXInputClass::Frame()
@@ -1127,6 +1128,8 @@ void SystemClass::ParseCommandLineAndApplySettings(int argc, char* argv[])
 		WOMA::AppSettings->VSYNC_ENABLED = true;
 		WOMA::AppSettings->UseAllMonitors = false;
 	}
+
+	WOMA::AppSettings->VSYNC_ENABLED = false;
 }
 
 

@@ -107,6 +107,7 @@ bool RFontShaderClass::InitializeShader(char* vsFilename, char* fsFilename)
     vertexShaderBuffer = LoadShaderSourceFile(vsFilename);
     if(!vertexShaderBuffer)
     {
+		womalogauto(TEXT("RFontShaderClass::vertexShaderBuffer: ERROR! %s\n"), vsFilename);
         return false;
     }
 
@@ -114,13 +115,17 @@ bool RFontShaderClass::InitializeShader(char* vsFilename, char* fsFilename)
     fragmentShaderBuffer = LoadShaderSourceFile(fsFilename);
     if(!fragmentShaderBuffer)
     {
+		womalogauto(TEXT("RFontShaderClass::vertexShaderBuffer: ERROR! %s\n"), fsFilename);
         return false;
     }
+
+	womalogauto(TEXT("RFontShaderClass::vertexShaderBuffer: OK1!\n"));
 
     // Create a vertex and fragment shader object.
     m_vertexShader = glCreateShader(GL_VERTEX_SHADER);
     m_fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
+	womalogauto(TEXT("RFontShaderClass::vertexShaderBuffer: OK2.1!\n"));
     // Copy the shader source code strings into the vertex and fragment shader objects.
     glShaderSource(m_vertexShader, 1, &vertexShaderBuffer, NULL);
     glShaderSource(m_fragmentShader, 1, &fragmentShaderBuffer, NULL);
@@ -136,6 +141,7 @@ bool RFontShaderClass::InitializeShader(char* vsFilename, char* fsFilename)
     glCompileShader(m_vertexShader);
     glCompileShader(m_fragmentShader);
 
+	womalogauto(TEXT("RFontShaderClass::vertexShaderBuffer: OK2.2!\n"));
     // Check to see if the vertex shader compiled successfully.
     glGetShaderiv(m_vertexShader, GL_COMPILE_STATUS, &status);
     if(status != 1)
@@ -153,7 +159,7 @@ bool RFontShaderClass::InitializeShader(char* vsFilename, char* fsFilename)
         OutputShaderErrorMessage(m_fragmentShader, fsFilename);
         return false;
     }
-
+	womalogauto(TEXT("RFontShaderClass::vertexShaderBuffer: OK2.3!\n"));
     // Create a shader program object.
     m_shaderProgram = glCreateProgram();
 
@@ -177,6 +183,7 @@ bool RFontShaderClass::InitializeShader(char* vsFilename, char* fsFilename)
         return false;
     }
 
+	womalogauto(TEXT("RFontShaderClass::vertexShaderBuffer: OK AT THE END!\n"));
     return true;
 }
 

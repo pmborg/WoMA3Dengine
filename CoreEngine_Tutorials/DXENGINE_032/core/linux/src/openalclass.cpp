@@ -19,6 +19,8 @@
 //WomaIntegrityCheck = 1234525217;
 
 #include "openalclass.h"
+#include "linux.h"
+#include "woma_macros.h"
 
 OpenALClass::OpenALClass()
 {
@@ -52,8 +54,10 @@ bool OpenALClass::Initialize()
     position[1] = 0.0f;
     position[2] = 0.0f;
 
-    // Clear any previous unaddressed error codes.
-    alGetError();
+	// Clear any previous unaddressed error codes.
+	ALenum err = alGetError();
+	if (err != AL_NO_ERROR)
+		womalogauto(TEXT("AL Error: %d\n"), err);
     
     // Set the listener position.
     alListenerfv(AL_POSITION, position);

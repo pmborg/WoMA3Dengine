@@ -49,8 +49,7 @@ SoundClass* linux_play_wav(std::string filename)
 	STRING fullfilename = WOMA::Home;
 	fullfilename.append("/projects/LinuxWoma0");
 	fullfilename.append(std::to_string(DX_ENGINE_LEVEL));
-	fullfilename.append("/WoMA3Dengine/CoreEngine_Tutorials/DXENGINE_0");
-	fullfilename.append(std::to_string(DX_ENGINE_LEVEL));
+	fullfilename.append("/CoreEngine_Tutorials");
 	fullfilename.append("/");
 	fullfilename.append(filename);
 

@@ -624,7 +624,11 @@ void ApplicationClass::DemoRender(void* pContext)
 	else
 		FORCE_RENDER_ALL = false;
 
+	#if defined INTRO_DEMO
+	IF_RENDER_PAGE(RENDER_PAGE >= 21 && RENDER_PAGE <= 23)
+	#else
 	IF_RENDER_PAGE(RENDER_PAGE >= 19 && RENDER_PAGE <= 23)
+	#endif
 	{
 		#define cor driverList[WOMA::AppSettings->DRIVER]->driver_ClearColor
 

@@ -572,6 +572,7 @@
   <ItemGroup>
     <Xml Include="..\world_29.xml" />
     <Xml Include="..\settings_029.xml" />
+    <Xml Include="..\settings.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\GLengine\color.ps">

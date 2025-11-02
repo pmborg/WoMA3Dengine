@@ -38,6 +38,9 @@ bool DX11Class::InitD2D_D3D101_DWrite(IDXGIAdapter1 *Adapter, int screenWidth, i
 	//Create our Direc3D 10.1 Device///////////////////////////////////////////////////////////////////////////////////////
 	HRESULT hr;
 
+	if (d3d101Device)
+		return false;
+
 	D3D10_FEATURE_LEVEL1 featureLevelsDX10 [] =	// NOTE: For this device, just to render the fonts, any level is possible:
 												{	
 													D3D10_FEATURE_LEVEL_10_1, D3D10_FEATURE_LEVEL_10_0,

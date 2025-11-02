@@ -49,15 +49,17 @@ bool RFontClass::Initialize(OpenGLClass* OpenGL, int fontChoice)
     char fontTextureFilename[128];
 	bool result;
 
-
+	womalogauto(TEXT("RFontClass::Initialize\n"));
     // Store a pointer to the OpenGL object.
     m_OpenGLPtr = OpenGL;
 
     // Choose one of the available fonts, and default to the first font otherwise.
     switch(fontChoice)
     {
+		
         case 0:
         {
+			womalogauto(TEXT("RApplicationClass::Initialize: 0!\n"));
             strcpy(fontFilename, "engine/data/fonts/font01.txt");
             strcpy(fontTextureFilename, "engine/data/fonts/font01.tga");
 		#if defined ANDROID_PLATFORM
@@ -70,6 +72,7 @@ bool RFontClass::Initialize(OpenGLClass* OpenGL, int fontChoice)
         }
         case 1:
         {
+			womalogauto(TEXT("RApplicationClass::Initialize: 1!\n"));
             strcpy(fontFilename, "engine/data/fonts/008fontdata.txt");
             strcpy(fontTextureFilename, "engine/data/fonts/008font.tga");
             m_fontHeight = 16.0f;
@@ -78,6 +81,7 @@ bool RFontClass::Initialize(OpenGLClass* OpenGL, int fontChoice)
         }		
         case 2:
         {
+			womalogauto(TEXT("RApplicationClass::Initialize: 2!\n"));
             strcpy(fontFilename, "engine/data/fonts/008fontdata2.txt");
             strcpy(fontTextureFilename, "engine/data/fonts/008font2.tga");
             m_fontHeight = 32.0f;
@@ -86,6 +90,7 @@ bool RFontClass::Initialize(OpenGLClass* OpenGL, int fontChoice)
         }				
         default:
         {
+			womalogauto(TEXT("RApplicationClass::Initialize: default!\n"));
             strcpy(fontFilename, "engine/data/fonts/font01.txt");
             strcpy(fontTextureFilename, "engine/data/fonts/font01.tga");
             m_fontHeight = 32.0f;
@@ -94,12 +99,14 @@ bool RFontClass::Initialize(OpenGLClass* OpenGL, int fontChoice)
         }
     }
 
+	womalogauto(TEXT("LoadFontData: ...\n"));
 	// Load in the text file containing the font data.
 	result = LoadFontData(WOMA::LoadFile(fontFilename));
 	if(!result)
 	{
 		return false;
 	}
+	womalogauto(TEXT("LoadFontData: OK!\n"));
 
 	// Load the texture that has the font characters on it.
 	result = LoadTexture(fontTextureFilename);
@@ -199,7 +206,12 @@ bool RFontClass::LoadFontData(char* filename)
 	fin.close();
 #else
 	AAssetManager* manager = engine.app->activity->assetManager;
+	womalogauto(TEXT("manager: %d\n"), manager);
+
+	womalogauto(TEXT("filename: %s\n"), filename);
 	AAsset* asset = AAssetManager_open(manager, filename, AASSET_MODE_BUFFER);
+	womalogauto(TEXT("asset: %d\n"), asset);
+
 	asset_streambuf sb(asset);
 	std::istream fin(&sb);
 	char temp;

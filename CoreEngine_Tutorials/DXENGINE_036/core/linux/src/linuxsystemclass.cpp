@@ -273,11 +273,11 @@ bool LinuxSystemClass::APPLICATION_INIT_SYSTEM() // ApplicationInit()
 #if DX_ENGINE_LEVEL >= 20 && defined USE_LOADING_THREADS
 	IF_NOT_RETURN_FALSE(ApplicationMandatoryLoad());		// START-THREAD LOAD-ALL: "mandatory 2D/3D Stuff", before "start rendering":
 #else
-	IF_NOT_RETURN_FALSE(SystemClass::LoadAllGraphicAssets(NULL));	// Load all main Graphics, that will be rendered
+	IF_NOT_RETURN_FALSE(SystemClass::LoadAllGraphicAssets(g_contextDriver));	// Load all main Graphics, that will be rendered
 #endif
 
 	if (WOMA::game_state >= GAME_STOP)	// Something FATAL on loading "mandatory 2D/3D Stuff"?
-		return false;					// (SAMPLE: misssing 3D/IMAGE/AUDIO file...)
+		return false;					// (SAMPLE: missing 3D/IMAGE/AUDIO file...)
 
 #if !defined USE_LOADING_THREADS
 	if (WOMA::game_state == GAME_LOADING)

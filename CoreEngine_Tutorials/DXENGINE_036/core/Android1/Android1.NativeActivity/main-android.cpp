@@ -163,6 +163,20 @@ bool engine_init_display(struct womaengine* engine)
 		return false;
 	}
 
+	//=============================================================================
+	// [WOMA]: Configure VSync according to AppSettings
+	//=============================================================================
+	if (WOMA::AppSettings && WOMA::AppSettings->VSYNC_ENABLED)
+	{
+		eglSwapInterval(display, 1);   // Wait for vertical refresh (VSync ON)
+		LOGE("VSync: ENABLED (eglSwapInterval = 1)");
+	}
+	else
+	{
+		eglSwapInterval(display, 0);   // Disable VSync (uncapped FPS)
+		LOGE("VSync: DISABLED (eglSwapInterval = 0)");
+	}
+
 	eglQuerySurface(display, surface, EGL_WIDTH, &w);
 	eglQuerySurface(display, surface, EGL_HEIGHT, &h);
 

@@ -21,6 +21,7 @@
 #include "LowLevel/Graphics.h"
 #include "Mesh.h"
 #include "Texture.h"
+#include "OSengine.h"
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<WORD> indices, Graphics& graphics, bool calcTangents /*= true*/) :
     m_Vertices(std::move(vertices)),

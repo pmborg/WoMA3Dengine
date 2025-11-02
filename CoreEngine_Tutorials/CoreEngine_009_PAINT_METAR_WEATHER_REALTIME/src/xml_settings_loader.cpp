@@ -442,7 +442,11 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 #endif
 
 		//	------------------------------------------------------------------------------------------------------
+	#if DX_ENGINE_LEVEL < 28
+		WOMA::AppSettings->UseAllMonitors = false;
+	#else
 		WOMA::AppSettings->UseAllMonitors = (strcmp(GenSettings.UseAllMonitors, "true") == 0) ? true : false;
+	#endif
 		WOMA::AppSettings->UseDoubleBuffering = (strcmp(GenSettings.useDoubleBuffering, "true") == 0) ? true : false;
 		WOMA::AppSettings->UseTripleBuffering = (strcmp(GenSettings.useTripleBuffering, "true") == 0) ? true : false;
 	#endif

@@ -123,9 +123,6 @@ namespace DirectX {
 class DX12Class : public WomaDriverClass
 {
 public:
-	static const auto BufferCount = 2;  // "Use Double Buffer"
-//	static const auto BufferCount = 3;  // "Use Triple Buffer"
-
 	UINT WomaIntegrityCheck = 1234525217;
 	DX12Class();
 	~DX12Class();
@@ -267,11 +264,7 @@ public:
 	//ComPtr<IDXGISwapChain1>	m_swapChain1;		//IDXGISwapChain3* m_swapChain;
 	ID3D12Device*				m_device;
 
-	UINT m_currentFrame=0;
-	ComPtr<ID3D12Resource>			m_renderTargets[BufferCount];
 
-	ComPtr<ID3D12CommandAllocator>	m_commandAllocator;
-	ComPtr<ID3D12CommandQueue>		m_commandQueue;
 
 //#if defined USE_RTV
 	ComPtr<ID3D12DescriptorHeap>	m_rtvHeap;
@@ -321,16 +314,16 @@ public:
 	UINT m_widthInstances;
 #endif
 
-	// Synchronization objects:
-	HANDLE				m_swapChainEvent = NULL;
-	ComPtr<ID3D12Fence> m_renderContextFence;
-	UINT64				m_renderContextFenceValue = NULL;
-	HANDLE				m_renderContextFenceEvent = NULL;
-	UINT64				m_frameFenceValues[BufferCount];
 
-	UINT				m_CullMode= NULL, m_fillMode = NULL;
-	HANDLE				m_fenceEvent = NULL;
 	
+	//	static const auto BufferCount = 2;  // "Use Double Buffer"
+	static const auto BufferCount = 3;  // "Use Triple Buffer"
+
+	UINT m_currentFrame = 0;
+	ComPtr<ID3D12Resource>			m_renderTargets[BufferCount];
+
+	ComPtr<ID3D12CommandAllocator>	m_commandAllocator;
+	ComPtr<ID3D12CommandQueue>		m_commandQueue;
 
 	// Asset objects:
 	ComPtr<ID3D12Fence>					m_fence;
@@ -340,6 +333,16 @@ public:
 	UINT64								m_fenceValues[BufferCount] = {0};
 	UINT64								m_fenceValue = 0;
 	ComPtr<ID3D12GraphicsCommandList>	m_commandList;
+
+	// Synchronization objects:
+	HANDLE				m_swapChainEvent = NULL;
+	ComPtr<ID3D12Fence> m_renderContextFence;
+	UINT64				m_renderContextFenceValue = NULL;
+	HANDLE				m_renderContextFenceEvent = NULL;
+	UINT64				m_frameFenceValues[BufferCount];
+
+	UINT				m_CullMode = NULL, m_fillMode = NULL;
+	HANDLE				m_fenceEvent = NULL;
 };
 
 }

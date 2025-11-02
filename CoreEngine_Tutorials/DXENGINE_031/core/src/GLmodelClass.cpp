@@ -670,7 +670,7 @@ void GLmodelClass::Render(void* pContext, UINT threadID, UINT camera, UINT proje
 void GLmodelClass::GetIndices()
 {
     int j = 0;
-    womalog("Indices: \n");
+    //womalog("Indices: \n");
     if (indexModelList == NULL || indexModelList->size() == 0) // BASIC object, without index? One index per vertice?
     {
         m_indexCount = m_vertexCount;			// Set the number of indices in the index array.
