@@ -269,6 +269,7 @@
 			
 			#if defined USE_DIRECT_INPUT
 				#define USE_MULTI_MONITOR
+			#endif
         #endif
 
         #define SUN_LIGHT_DEMO_ANIMATION true
