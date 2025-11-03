@@ -85,6 +85,9 @@
         <fileset dir="${jar.libs.dir}">
           <include name="*.jar"/>
         </fileset>
+        <fileset dir="C:\\WoMAengine2023\\Android-WomaEngine\\Android2\\Android2.Packaging\\jars">
+          <include name="*.jar"/>
+        </fileset>		
       </path>
     </target>
 </project>
