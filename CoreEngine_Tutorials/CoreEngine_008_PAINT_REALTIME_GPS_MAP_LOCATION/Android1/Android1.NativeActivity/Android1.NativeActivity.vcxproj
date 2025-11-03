@@ -71,7 +71,7 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>Clang_5_0</PlatformToolset>
-    <AndroidAPILevel>android-27</AndroidAPILevel>
+    <AndroidAPILevel>android-26</AndroidAPILevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -120,7 +120,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
-    <IncludePath>.;$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include;C:\WoMAengine2023\SOURCE_CODE\CoreEngine_000_OSENGINE_SYSTEM\include;C:\WoMAengine2023\SOURCE_CODE\CoreEngine_001_LANG_LOG_MEMLEAK_OSMAINDIRs\include;C:\WoMAengine2023\SOURCE_CODE\CoreEngine_002_MAINWINDOW_EVENTS\include;C:\WoMAengine2023\SOURCE_CODE\CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH\include;C:\WoMAengine2023\SOURCE_CODE\CoreEngine_006_PACKMANAGER_IDEA_CPU_BENCHMARK\include</IncludePath>
+    <IncludePath>C:\Program Files (x86)\Android\AndroidNDK64\android-ndk-r15c\platforms\android-26\arch-arm64\usr\include;.;..;../..;../../include;$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
@@ -144,7 +144,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <CompileAs>CompileAsCpp</CompileAs>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
-      <PreprocessorDefinitions>__ANDROID_API__=$(AndroidAPILevelNumber);%(PreprocessorDefinitions);NewWomaEngine</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__ANDROID_API__=$(AndroidAPILevelNumber);%(PreprocessorDefinitions);NewWomaEngine;DEMO_LEVEL=8;MAINENGINE_LINUX</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <LibraryDependencies>%(LibraryDependencies);GLESv1_CM;EGL;m</LibraryDependencies>
