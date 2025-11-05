@@ -132,8 +132,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <JavaCompile Include="src\com\woma\AudioKit.java" />
-    <JavaCompile Include="src\com\woma\MyActivity.java" />
+    <JavaCompile Include="src\com\woma\lvl21\MyActivity.java" />
   </ItemGroup>
   <Import Project="$(AndroidTargetsPath)\Android.targets" />
   <ImportGroup Label="ExtensionTargets" />

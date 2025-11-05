@@ -435,6 +435,65 @@ int CHECK_IF_WE_ARE_A_RUNNING_DEMO()
 
 bool cpuSupportsAVX512f=false;
 
+// platformUtils.cpp (or other common platform file)
+// Add required headers at top of file as needed.
+#if defined(ANDROID_PLATFORM)
+#include <android/log.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+#endif
+#include <stdio.h>
+#include <stdlib.h>
+
+// Call this very early in APPLICATION_STARTUP()
+// It intentionally keeps logic minimal and non-intrusive.
+void WOMA_InitLogSystem()
+{
+#if defined(ANDROID_PLATFORM)
+	// Ensure public folder exists (silently ignore errors)
+	// 0777 is fine for debug/dev logs; production can change perms if needed.
+	mkdir("/sdcard/WOMA", 0777);
+
+	// Open the file for writing (overwrite each run).
+	// Use "w+" to ensure the file is created and ready.
+	const char* publicLog = "/sdcard/WOMA/report.txt";
+	FILE* f = fopen(publicLog, "w+");
+	if (f) {
+		// Redirect stdout/stderr to this file.
+		// We keep the FILE* open to allow standard fprintf/printf to work.
+		fflush(stdout);
+		fflush(stderr);
+		freopen(publicLog, "w+", stdout);
+		freopen(publicLog, "w+", stderr);
+
+		// Also write one initial message and mirror to logcat.
+		fprintf(stdout, "WOMA: Log initialized at %s\n", publicLog);
+		fflush(stdout);
+
+		__android_log_print(ANDROID_LOG_INFO, "WOMA", "Log initialized at %s", publicLog);
+	}
+	else {
+		// If public file can't be opened, still send to logcat so we have visibility.
+		__android_log_print(ANDROID_LOG_WARN, "WOMA", "Failed to open %s for writing", publicLog);
+	}
+#else
+	// Non-Android: keep existing behaviour (report.txt in working dir)
+	const char* localLog = "report.txt";
+	// Use fopen first to ensure file is creatable, then redirect.
+	FILE* f = fopen(localLog, "w+");
+	if (f) {
+		fflush(stdout);
+		fflush(stderr);
+		freopen(localLog, "w+", stdout);
+		freopen(localLog, "w+", stderr);
+		fprintf(stdout, "WOMA: Log initialized at %s\n", localLog);
+		fflush(stdout);
+	}
+#endif
+}
+
+
 void APPLICATION_STARTUP(int argc, char* argv[])
 {
 	STDCOUT << TEXT("<") << PROJECT_NAME << TEXT("> STARTUP") << std::endl;
@@ -581,6 +640,20 @@ void APPLICATION_STARTUP(int argc, char* argv[])
     womalogauto(TEXT("<%s> STARTUP ENDED\n"), PROJECT_NAME);
 }
 
+#if defined ANDROID_PLATFORM
+void CallJavaVoidMethod(android_app* app, const char* methodName)
+{
+	JNIEnv* env = nullptr;
+	app->activity->vm->AttachCurrentThread(&env, nullptr);
+	jclass activityClass = env->GetObjectClass(app->activity->clazz);
+	jmethodID method = env->GetMethodID(activityClass, methodName, "()V");
+	if (method)
+		env->CallVoidMethod(app->activity->clazz, method);
+	app->activity->vm->DetachCurrentThread();
+}
+#endif
+
+
 void APPLICATION_STOP()
 {
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
@@ -602,13 +675,45 @@ void APPLICATION_STOP()
     womalogauto("Exit Command: %d\n", Command);
 #endif
 
+#if defined ANDROID_PLATFORM
+	// ------------------------------------------------------------------
+	// Stop background music (from Java side) before closing Activity
+	// ------------------------------------------------------------------
+#if defined USE_ANDROID_SOUND
+	if (m_main_music_id >= 0)
+	{
+		womalog("[ANDROID]: Stopping main music...\n");
+		stopAudio(m_main_music_id);
+		m_main_music_id = -1;
+	}
+#endif
+
+	// ------------------------------------------------------------------
+	// Auto-close Android Activity (same as pressing Back)
+	// ------------------------------------------------------------------
+	if (engine.app && engine.app->activity)
+	{
+		womalog("[ANDROID]: Auto-closing application...\n");
+
+		JNIEnv* env = nullptr;
+		engine.app->activity->vm->AttachCurrentThread(&env, nullptr);
+		jclass activityClass = env->GetObjectClass(engine.app->activity->clazz);
+		jmethodID finishMethod = env->GetMethodID(activityClass, "finish", "()V");
+		if (finishMethod)
+			env->CallVoidMethod(engine.app->activity->clazz, finishMethod);
+		engine.app->activity->vm->DetachCurrentThread();
+	}
+#endif
+
 #if defined USE_LOG_MANAGER
 	if (WOMA::logManager)
 		WOMA::logManager->ShutdownInstance();	// Write, Close & Free: The logManager.
 	WOMA::logManager = NULL;				    // Because its a STATIC Class Shutdown and do not log
 #endif
 
-#if defined ANDROID_PLATFORM
+#if defined(ANDROID_PLATFORM)
+	CallJavaVoidMethod(engine.app, "copyReportToPublic");
+
 	engine.has_focus_ = false;
 #endif
 }

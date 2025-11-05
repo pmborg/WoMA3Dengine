@@ -37,6 +37,13 @@
 #include "OSmain_dir.h"
 #include "language.h"
 
+#if defined(ANDROID_PLATFORM)
+#include <sys/stat.h>   // mkdir(), stat()
+#include <sys/types.h>
+#include <unistd.h>     // access(), unlink(), etc.
+#include <android/log.h>
+#endif
+
 namespace WOMA
 {
 class LogManager : public ILogManager
@@ -100,14 +107,14 @@ std::string android_temp_folder(struct android_app* app)
 	return temp_folder;
 }
 #endif
+
 //-------------------------------------------------------------------------------------------
 LogManager::LogManager()
 //-------------------------------------------------------------------------------------------
 {
-	//private:
-	debugFile = NULL; // Our "debug file" pointer
+	// private:
+	debugFile = NULL; // Our debug file pointer
 
-	//public:
 #if defined ANDROID_PLATFORM
 	REPORT_FILE = android_temp_folder(engine.app);
 	REPORT_FILE.append(FILE_REPORT_LOG);

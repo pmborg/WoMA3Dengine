@@ -39,6 +39,13 @@
 #include "OSmain_dir.h"
 #include "language.h"
 
+#if defined(ANDROID_PLATFORM)
+#include <sys/stat.h>   // mkdir(), stat()
+#include <sys/types.h>
+#include <unistd.h>     // access(), unlink(), etc.
+#include <android/log.h>
+#endif
+
 namespace WOMA
 {
 class LogManager : public ILogManager
@@ -102,20 +109,63 @@ std::string android_temp_folder(struct android_app* app)
 	return temp_folder;
 }
 #endif
+
 //-------------------------------------------------------------------------------------------
 LogManager::LogManager()
 //-------------------------------------------------------------------------------------------
 {
-	//private:
-	debugFile = NULL; // Our "debug file" pointer
+	// private:
+	debugFile = NULL; // Our debug file pointer
 
-	//public:
+#if _NOT
+#if defined(ANDROID_PLATFORM)
+	// ----------------------------------------------------------------------------------
+	// Primary log: app-private folder (always writable, works on all Android versions)
+	// ----------------------------------------------------------------------------------
+	REPORT_FILE = android_temp_folder(engine.app);
+	REPORT_FILE.append(FILE_REPORT_LOG);
+
+	// ----------------------------------------------------------------------------------
+	// Optional mirror: try to copy to /Documents/WOMA/ for user-visible access
+	// ----------------------------------------------------------------------------------
+	std::string publicDir = "/storage/emulated/0/Documents/WOMA/";
+	mkdir(publicDir.c_str(), 0777);
+
+	std::string mirror = publicDir + "report.txt";
+	FILE* f = fopen(mirror.c_str(), "w");
+	if (f) {
+		fprintf(f, "Mirror log initialized from WoMA\n");
+		fclose(f);
+		__android_log_print(ANDROID_LOG_INFO, "WOMA",
+			"Created visible mirror: %s", mirror.c_str());
+	}
+	else {
+		__android_log_print(ANDROID_LOG_WARN, "WOMA",
+			"Mirror creation failed — likely scoped-storage blocked");
+	}
+
+	// Log to confirm actual private path
+	__android_log_print(ANDROID_LOG_INFO, "WOMA",
+		"Android private log path: %s", REPORT_FILE.c_str());
+
+#else
+	// ----------------------------------------------------------------------------------
+	// Non-Android (Windows/Linux)
+	// ----------------------------------------------------------------------------------
+	REPORT_FILE = PUBLIC_DOCUMENTS;
+	REPORT_FILE.append(FILE_REPORT_LOG);
+#endif
+
+#else
+
 #if defined ANDROID_PLATFORM
 	REPORT_FILE = android_temp_folder(engine.app);
 	REPORT_FILE.append(FILE_REPORT_LOG);
 #else
 	REPORT_FILE = PUBLIC_DOCUMENTS;
 	REPORT_FILE.append(FILE_REPORT_LOG);
+#endif
+
 #endif
 
 	// OPEN FILE:

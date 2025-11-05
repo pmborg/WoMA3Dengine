@@ -25,7 +25,12 @@
     #define WOMAENGINE_BASIC
 #endif
 
-#define WOMA_ENGINE_BUILD_TAG "v2025.11.02 - Linux Audio+GTK stable"
+// 2025-11-03: Android ARM64 audio link restored (Dropbox fallback)
+//             Level 29 fully validated.
+//       
+#define WOMA_ENGINE_BUILD_TAG \
+"v2025.11.03 - Windows x64, Linux x64 Audio+GTK stable and Android ARM64 tested @lvl29"
+
 //#define USE_NETWORK
 
 //------------------------------------------------------------------------------------------------------------
@@ -153,7 +158,7 @@
     #if DX_ENGINE_LEVEL >= 19 && !defined WOMAENGINE_BASIC
 		#define USE_DX12_OLDWAY		//DX12: keep it
 		//#define USE_DX12_DEBUG	//DX12: keep it
-		
+
         #undef USE_ALLOW_MAINWINDOW_RESIZE
         #define USE_NETWORK
         #if defined WINDOWS_PLATFORM
@@ -266,7 +271,7 @@
             #endif
             #define USE_DIRECT_INPUT                // 28 We will use DX input method
             //#define USE_JOY                       // Default: off - Need to be tested...
-			
+
 			#if defined USE_DIRECT_INPUT
 				#define USE_MULTI_MONITOR
 			#endif
@@ -635,15 +640,6 @@
 
 #endif
 
-#endif
-
-
-
-
-
-
-
-
     //-------------------------------------------------------------------------------------------------------
     #undef  dx12_upload_old_way
 
@@ -665,4 +661,10 @@
     #endif
     #endif
 
+	#define MAX_ENGINE_LEVEL 100						 
 #pragma warning(pop)
+
+//-------------------------------------------------
+// THE END
+//-------------------------------------------------												   
+#endif

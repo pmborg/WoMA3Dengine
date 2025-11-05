@@ -929,8 +929,6 @@ void SystemClass::ParseCommandLineAndApplySettings(int argc, char* argv[])
 		WOMA::AppSettings->VSYNC_ENABLED = true;
 		WOMA::AppSettings->UseAllMonitors = false;
 	}
-
-	WOMA::AppSettings->VSYNC_ENABLED = false;
 }
 
 

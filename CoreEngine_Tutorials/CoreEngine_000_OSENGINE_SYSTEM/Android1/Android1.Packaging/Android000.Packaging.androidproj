@@ -132,7 +132,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <JavaCompile Include="src\com\Android1\MyActivity.java" />
+    <JavaCompile Include="src\com\woma\lvl0\MyActivity.java" />
   </ItemGroup>
   <Import Project="$(AndroidTargetsPath)\Android.targets" />
   <ImportGroup Label="ExtensionTargets" />

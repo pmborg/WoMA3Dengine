@@ -121,6 +121,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <IncludePath>C:\Program Files (x86)\Android\AndroidNDK64\android-ndk-r15c\platforms\android-26\arch-arm64\usr\include;.;..;../..;../../include;$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include;C:\WoMA3Dengine\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0</IncludePath>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)_0\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)_0\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
