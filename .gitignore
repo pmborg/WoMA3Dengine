@@ -96,3 +96,17 @@ womamulti.pck
 **/int/Release
 **/billboard_atlas.dds
 **/billboard_atlas_preview.png
+**/*.a
+**/*.o
+**/*.so
+**/*.so.recipe
+**/*.gch
+**/*.iml
+**/*.log
+**/*.apk
+**/*.apk.recipe
+**/gdbserver
+**/R.java.d
+**/*.merged
+**/*.incremental
+**/*.FileListAbsolute.txt

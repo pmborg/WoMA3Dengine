@@ -1,11 +1,32 @@
+// --------------------------------------------------------------------------------------------
+// Filename: MyActivity.java
+// --------------------------------------------------------------------------------------------
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// --------------------------------------------------------------------------------------------
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+//
+// This file is part of the WorldOfMiddleAge project.
+//
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
+// without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
+// You may not alter or remove any copyright or other notice from copies of the content.
+// The content contained in this file is provided only for educational and informational purposes.
+// 
+// Downloaded from : https://github.com/pmborg/WoMA3Dengine
+// --------------------------------------------------------------------------------------------
+// PURPOSE: 
+// --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234525256;
+
+
 // https://www.tutorialspoint.com/android/android_hello_world_example.htm
 
 // https://github.com/codepath/android_hello_world
-// C:\Users\pedro\Downloads\android_hello_world-master\android_hello_world-master
+// ...\android_hello_world-master\android_hello_world-master
 
 // Android 8.1 	            27 	    Oreo_MR1
-// Android 8.0 	 NDK        26 	    Oreo 	
-// Android 7.1 	 PACKAGING  25 	    Nougat_MR1
+// Android 8.0 	 NDK        26 	    Oreo 		<----c++ on this demo
+// Android 7.1 	 PACKAGING  25 	    Nougat_MR1	<----java on this demo
 // Android 7.0 	            24 	    Nougat 	
 // Android 6.0 	            23 	    MARSHMALLOW 	
 // Android 5.1 	            22 	    LOLLIPOP_MR1 	
@@ -128,27 +149,44 @@ import java.io.InputStreamReader;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
-//import com.woma.R;
+//import com.woma.R;					
+import android.app.NativeActivity;
+import android.os.Bundle;
+import android.util.Log;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.io.BufferedOutputStream;
 
-//https://www.cnblogs.com/MMLoveMeMM/articles/3610386.html  
+//AUDIO SAMPLE: https://www.cnblogs.com/MMLoveMeMM/articles/3610386.html  
 public class MyActivity extends NativeActivity
 {
 Toast toast;
+int RENDER_PAGE;
 
     protected void onCreate(Bundle savedInstanceState) {                                                                                                                                  
-        //Log.w("[WOMA]Java", "JAVA:onCreate()");
+        //Log.w("[WOMA]", "JAVA:onCreate()");
         super.onCreate(savedInstanceState);    
 
         toast = Toast.makeText(MyActivity.this, "message", Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER  , 0, 0);
-        //toast.show();
     }       
+
+    // updateFPS:
+    //--------------------------------------------------------
+	public void updateFPS(final float fFPS)
+    {
+		RENDER_PAGE = (int)fFPS;
+        //Log.w("[WOMA]", "RENDER_PAGE: "+fFPS);
+    }
 
     // ShowAlert
     //--------------------------------------------------------
     public void ShowAlert(final String message)
     {
-        Log.w("[WOMA]Java", "Toast showAlert(): "+message);
+        Log.w("[WOMA]", "Toast showAlert(): "+message);
 
         toast.setText(message);
         toast.show();

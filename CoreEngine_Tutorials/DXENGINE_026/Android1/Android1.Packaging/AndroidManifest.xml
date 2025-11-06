@@ -40,7 +40,7 @@
       <!-- Tell NativeActivity the name of our .so -->
       <!--meta-data android:name="android.app.lib_name" android:value="$(AndroidAppLibName)" /-->
       <!-- libAndroid2.so -->
-      <meta-data android:name="android.app.lib_name" android:value="Android2" />
+      <meta-data android:name="android.app.lib_name" android:value="Android1" />
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
