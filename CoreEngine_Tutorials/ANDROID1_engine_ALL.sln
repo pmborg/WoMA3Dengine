@@ -101,14 +101,8 @@ Project("{39E2626F-3545-4960-A6E8-258AD8476CE5}") = "Android029.Packaging", "DXE
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|ARM = Debug|ARM
 		Debug|ARM64 = Debug|ARM64
-		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
-		Release|ARM = Release|ARM
 		Release|ARM64 = Release|ARM64
-		Release|x64 = Release|x64
-		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{418A0855-A6DE-4E98-969D-1E98D1A76066}.Debug|ARM.ActiveCfg = Debug|ARM

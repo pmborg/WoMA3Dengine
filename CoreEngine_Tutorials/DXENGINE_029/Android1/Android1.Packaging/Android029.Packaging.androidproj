@@ -129,6 +129,9 @@
     <Content Include="AndroidManifest.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="res\drawable-hdpi\ic_launcher.png" />
+    <Content Include="res\drawable-ldpi\ic_launcher.png" />
+    <Content Include="res\drawable-mdpi\ic_launcher.png" />
     <Content Include="res\layout\main.xml" />
     <Content Include="res\values\ids.xml" />
     <Content Include="res\values\strings.xml" />
