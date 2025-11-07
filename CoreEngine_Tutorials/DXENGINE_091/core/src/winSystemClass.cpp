@@ -107,7 +107,7 @@ void WinSystemClass::ProcessFrame()
 	#if DX_ENGINE_LEVEL >= 91 && defined USE_MINIMAP_REDENRING_THREAD
 		// Create secondary render threads only once when entering page 91+
 		static bool RenderThreadsCreated = false;
-		IF_RENDER_PAGE(RENDER_PAGE >= 91 && !RenderThreadsCreated)
+		if (!RenderThreadsCreated)
 		{
 			SystemHandle->m_Application->CreateRenderThreads();
 			RenderThreadsCreated = true;

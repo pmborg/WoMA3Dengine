@@ -981,6 +981,7 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 #if defined USE_BOUNDING_VOLUMES
 	IF_RENDER_PAGE(RENDER_PAGE >= 78) //AQUI
 	{
+	/*
 		// Compute distance between maxVertex and minVertex
 		float distX = (maxVertex.x - minVertex.x) / 2.0f;
 		float distY = (maxVertex.y - minVertex.y) / 2.0f;
@@ -991,13 +992,32 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 
 		// Compute bounding sphere (distance between min and max bounding box vertices)
 		boundingSphere = XMVectorGetX(XMVector3Length(XMVectorSet(distX, distY, distZ, 0.0f)));	
+	*/
 
-		#if defined BOUNDINGVOLUMES
+
+		// Compute the model-space bounding box center
+		XMFLOAT3 center;
+		center.x = (minVertex.x + maxVertex.x) * 0.5f;
+		center.y = (minVertex.y + maxVertex.y) * 0.5f;
+		center.z = (minVertex.z + maxVertex.z) * 0.5f;
+
+		// Store center offset (distance from (0,0,0) to the real model center)
+		objectCenterOffset = XMFLOAT4(center.x, center.y, center.z, 0.0f);
+
+		// Compute bounding sphere radius (half diagonal of the box)
+		XMVECTOR size = XMVectorSubtract(XMLoadFloat3(&maxVertex), XMLoadFloat3(&minVertex));
+		boundingSphere = 0.5f * XMVectorGetX(XMVector3Length(size));
+
+
+
+
+		//#if defined BOUNDINGVOLUMES
 		//if (Model3D) 
-			CreateBoundingVolumes();
-		#endif
+		//	CreateBoundingVolumes();
+		//#endif
 	}
 #endif
+
 	return true;
 }
 

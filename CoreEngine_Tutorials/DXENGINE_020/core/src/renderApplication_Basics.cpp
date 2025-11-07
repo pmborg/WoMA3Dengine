@@ -208,6 +208,8 @@ void ApplicationClass::AppRender(UINT monitorIndex, UINT level, float fadeLight,
 		m_Driver->TurnOffAlphaBlending(pContext);
 #endif
 
+	m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);	//Set Default
+
 	// Render TRANSPARENT Parts of 3D OBJs (like: glass window of (Space Compound), etc...) (last part)
 	// --------------------------------------------------------------------------------------------
 

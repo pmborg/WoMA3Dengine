@@ -314,6 +314,8 @@ void ApplicationClass::AppRender(UINT monitorIndex, UINT level, float fadeLight,
 	IF_RENDER_PAGE(RENDER_PAGE == 34 || RENDER_PAGE == 40 || RENDER_PAGE == 41 || RENDER_PAGE == 42)
 		m_Driver->TurnOffAlphaBlending(pContext);
 
+	m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);	//Set Default
+
 	// Render TRANSPARENT Parts of 3D OBJs (like: glass window of (Space Compound), etc...) (last part)
 	// --------------------------------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined MAIN_RENDER_MAIN_XML_OBJ //MAIN-RENDER: MAIN OBJs. (9 ms)

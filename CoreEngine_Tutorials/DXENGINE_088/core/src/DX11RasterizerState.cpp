@@ -112,11 +112,11 @@ void DirectX::DX11Class::SetRasterizerState(void* ctx, UINT CullMode, UINT fillM
 {
 	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
 
-	UINT rasterState = CullMode * 10 + fillMode;
+	//UINT rasterState = CullMode * 10 + fillMode;
 	//if (rasterState != mCurRasterState)
 	{
 		pContext->RSSetState(m_rasterState[CullMode][fillMode]);
-		mCurRasterState = rasterState;
+		//mCurRasterState = rasterState;
 	}
 }
 
