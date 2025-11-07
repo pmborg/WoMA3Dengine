@@ -364,6 +364,7 @@ public:
 
 #if defined CHECK_OBJ_COLISION
     void pickRayVector(float mouseX, float mouseY, XMVECTOR& pickRayInWorldSpacePos, XMVECTOR& pickRayInWorldSpaceDir);
+	XMVECTOR faceNormalClosestObject = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
     float pick(
                 XMVECTOR pickRayInWorldSpacePos, 
                 XMVECTOR pickRayInWorldSpaceDir,
@@ -418,7 +419,7 @@ public:
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
 	void	SetPlayerPosition(UINT netID);
-	bool	ProcessUserKeyboardInput(double frameTime);
+	bool	ProcessUserKeyboardInputAndTerrainCollision(double frameTime);
 #endif
 
 #if  defined USE_RASTERTEK_TEXT_FONT

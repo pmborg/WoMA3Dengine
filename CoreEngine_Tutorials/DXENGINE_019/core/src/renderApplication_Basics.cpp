@@ -207,9 +207,9 @@ void ApplicationClass::AppRender(UINT monitorIndex, UINT level, float fadeLight,
 	IF_RENDER_PAGE(RENDER_PAGE == 34 || RENDER_PAGE == 40 || RENDER_PAGE == 41 || RENDER_PAGE == 42)
 		m_Driver->TurnOffAlphaBlending(pContext);
 #endif
-
+#if defined USE_RASTERIZER_STATE
 	m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);	//Set Default
-
+#endif
 	// Render TRANSPARENT Parts of 3D OBJs (like: glass window of (Space Compound), etc...) (last part)
 	// --------------------------------------------------------------------------------------------
 
@@ -902,22 +902,22 @@ float ApplicationClass::pick(XMVECTOR pickRayInWorldSpacePos, XMVECTOR pickRayIn
 		//Find the normal using U, V coordinates (two edges)
 		XMVECTOR U = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 		XMVECTOR V = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-		XMVECTOR faceNormal = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+		//XMVECTOR faceNormalClosestObject = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 
 		U = tri1V2 - tri1V1;
 		V = tri1V3 - tri1V1;
 
 		//Compute face normal by crossing U, V
-		faceNormal = XMVector3Cross(U, V);
-		faceNormal = XMVector3Normalize(faceNormal);
+		faceNormalClosestObject = XMVector3Cross(U, V);
+		faceNormalClosestObject = XMVector3Normalize(faceNormalClosestObject);
 
 		//Calculate a point on the triangle for the plane equation
 		XMVECTOR triPoint = tri1V1;
 
 		//Get plane equation ("Ax + By + Cz + D = 0") Variables
-		float tri1A = XMVectorGetX(faceNormal);
-		float tri1B = XMVectorGetY(faceNormal);
-		float tri1C = XMVectorGetZ(faceNormal);
+		float tri1A = XMVectorGetX(faceNormalClosestObject);
+		float tri1B = XMVectorGetY(faceNormalClosestObject);
+		float tri1C = XMVectorGetZ(faceNormalClosestObject);
 		float tri1D = (-tri1A * XMVectorGetX(triPoint) - tri1B * XMVectorGetY(triPoint) - tri1C * XMVectorGetZ(triPoint));
 
 		//Now we find where (on the ray) the ray intersects with the triangles plane

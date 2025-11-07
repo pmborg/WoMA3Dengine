@@ -37,6 +37,9 @@
 	#define wtoa(strA,strW,lenA) strcpy_s(strA,lenA,strW)	// USE SAMPLE: CHAR Aip[MAX_STR_LEN]={ 0 };			wtoa(Aip, ip, MAX_STR_LEN);
 #endif
 
+#define DEG_TO_RAD ((float) 0.0174532925)
+#define RAD_TO_DEG ((float) 57.2957795)
+
 #if _NOT
 // int to TCHAR*
 // --------------------------------------------------------------------------------------------

@@ -181,7 +181,7 @@ void DXInputClass::GetDirectInputKeys()
 #if defined USE_DIRECT_INPUT
 // The HandleUserInput function does all the processing related to the user input from the keyboard and mouse.
 // ==================================================================================================================================
-bool ApplicationClass::ProcessUserKeyboardInput(double frameTime)
+bool ApplicationClass::ProcessUserKeyboardInputAndTerrainCollision(double frameTime)
 // ==================================================================================================================================
 {
     float posX, posZ;
@@ -241,18 +241,44 @@ bool ApplicationClass::ProcessUserKeyboardInput(double frameTime)
     m_NextPosition->m_rotationX =m_Position[g_NetID]->m_rotationX;
 
 
-#if defined CHECK_OBJ_COLISION //Check Compound Colision: STOP!
+#if defined CHECK_OBJ_COLISION //Check Compound Collision: STOP!
 	bool CompoundXnormalOK = true;
 	bool CompoundZnormalOK = true;
-	
-	if (!g_GOD_MODE) {
-		if (DXsystemHandle->m_player[g_NetID]->p_player.IsUpPressed && (DXsystemHandle->m_Application->closestObjDist > -1) && (DXsystemHandle->m_Application->closestObjDist <= 1)) {
-			CompoundXnormalOK = false;
-			CompoundZnormalOK = false;
-			m_NextPosition->m_forwardSpeed = 0; //Stop immediately
+
+	if (!g_GOD_MODE)
+	{
+		// Only check when moving forward
+		if (DXsystemHandle->m_player[g_NetID]->p_player.IsUpPressed &&
+			(DXsystemHandle->m_Application->closestObjDist > -1) &&
+			(DXsystemHandle->m_Application->closestObjDist <= 1.0f))
+		{
+			// Get surface normal from last detected object
+			XMFLOAT3 n;
+			XMStoreFloat3(&n, faceNormalClosestObject);
+			float nX = n.x;
+			float nZ = n.z;
+
+			// Player facing direction
+			float dirX = sinf(m_NextPosition->m_rotationY * DEG_TO_RAD);
+			float dirZ = cosf(m_NextPosition->m_rotationY * DEG_TO_RAD);
+
+			// How much are we moving into the object?
+			float dot = dirX * nX + dirZ * nZ;
+
+			if (dot > 0.0f)
+			{
+				// Block only the axis that mostly aligns with the collision normal
+				CompoundXnormalOK = (fabsf(nX) < 0.7f);
+				CompoundZnormalOK = (fabsf(nZ) < 0.7f);
+
+				// Optionally reduce forward speed a bit instead of killing it completely
+				m_NextPosition->m_forwardSpeed *= 0.3f;
+			}
 		}
 	}
 #endif
+
+
 
 	// --------------------------------------------------------------------------------------------
     //[2] KEYBOARD & MOUSE WHELL: Handle the "USER Input" and get a "possible" next position:
