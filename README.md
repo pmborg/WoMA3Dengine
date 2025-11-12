@@ -1004,3 +1004,58 @@ https://github.com/pmborg/WoMA3Dengine/blob/main/HowTo/HowToWSL2/What%20to%20ins
 
 <hr>
 
+---
+
+## 🧩 Third-Party Components and License Information
+*(This section summarizes all external dependencies used by the engine)*
+
+The **WoMA3Dengine** integrates several external open-source and third-party libraries.  
+Each component retains its original license, and all attributions are included for transparency and compliance.
+
+📘 **Documentation:**
+- [ThirdParty_Licenses.md](https://github.com/pmborg/WoMA3Dengine/blob/main/ThirdParty/ThirdParty_Licenses.md) —  
+  Full list of external libraries, licenses, and copyright notices.
+- [Dependency_Map.md](https://github.com/pmborg/WoMA3Dengine/blob/main/ThirdParty/Dependency_Map.md) —  
+  Structured overview of where each dependency is used within the engine.
+
+### 🔍 Summary by License Type
+
+| License Type | Examples | Notes |
+|---------------|-----------|-------|
+| 🟢 **MIT / BSD** | TinyXMLv2, DirectXTex, DirectXTK, Assimp, PPG-master, libcurl | Open & permissive licenses |
+| 🟣 **LGPL / BSD** | OpenAL, ALUT, Vorbis, VorbisFile | Audio codecs and sound engines |
+| 🟠 **Apache 2.0 / CC BY-SA** | GeoLite2PP, MaxMindDB | IP geolocation libraries |
+| 🔴 **Commercial** | UltimateTCP/IP SDK | Requires separate license |
+| 🟡 **Educational / Tutorial** | Rastertek text fonts | Based on Rastertek DirectX tutorials |
+
+🧾 These dependencies enable features such as:
+- Asset importing (Assimp, PPG)
+- Advanced PBR rendering (PPG + DirectXTK)
+- 3D sound (OpenAL + Vorbis)
+- XML parsing (TinyXMLv2)
+- Network data (libcurl, UltimateTCP/IP)
+- Geolocation services (GeoLite2PP, MaxMindDB)
+
+---
+
+<p align="center"><sub>End of README — see <a href="https://github.com/pmborg/WoMA3Dengine/tree/main/ThirdParty">/ThirdParty</a> for full details.</sub></p>
+
+
+## 📘 Developer Documentation Index
+
+The WoMA3Dengine project includes in-depth technical documentation for developers and contributors.
+
+| 📄 Document | Description |
+|-------------|-------------|
+| [**ThirdParty_Licenses.md**](https://github.com/pmborg/WoMA3Dengine/blob/main/ThirdParty/ThirdParty_Licenses.md) | Complete overview of all third-party libraries, their licenses, and legal attributions. |
+| [**Dependency_Map.md**](https://github.com/pmborg/WoMA3Dengine/blob/main/ThirdParty/Dependency_Map.md) | Visual map of engine dependencies by module, including internal utilities and cross-platform relations. |
+| [**INSTALL_ALL_FROM_SCRATCH.md**](https://github.com/pmborg/WoMA3Dengine/blob/main/HowTo/INSTALL_ALL_FROM_SCRATCH/INSTALL_ALL_FROM_SCRATCH.md) | Step-by-step installation and build environment setup guide. |
+
+📁 *All files are located under* [`/ThirdParty`](https://github.com/pmborg/WoMA3Dengine/tree/main/ThirdParty) *and* [`/HowTo`](https://github.com/pmborg/WoMA3Dengine/tree/main/HowTo).  
+
+---
+
+<p align="center">
+<sub>© 2012–2025 Pedro Borges — WoMA3Dengine. All rights reserved.  
+Open-source components remain property of their respective authors under their stated licenses.</sub>
+</p>
