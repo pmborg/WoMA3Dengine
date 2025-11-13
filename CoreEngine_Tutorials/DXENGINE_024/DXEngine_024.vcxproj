@@ -41,7 +41,6 @@
     <ClInclude Include="core\include\ApplicationClass.h" />
     <ClInclude Include="core\include\astroClass.h" />
     <ClInclude Include="core\include\default_settings_xml.h" />
-    <ClInclude Include="core\include\dumpUploader.h" />
     <ClInclude Include="core\include\fileLoader.h" />
     <ClInclude Include="core\include\fpsClass.h" />
     <ClInclude Include="core\include\GLmathClass.h" />
@@ -107,6 +106,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core\src\ApplicationClass.cpp" />
+    <ClCompile Include="core\src\corelib0.cpp" />
+    <ClCompile Include="core\src\corelib6.cpp" />
     <ClCompile Include="core\src\OperatingSystem.cpp" />
     <ClCompile Include="core\src\winWomaSetupManager.cpp" />
     <ClCompile Include="..\main.cpp" />
@@ -119,7 +120,6 @@
     <ClCompile Include="core\src\8SystemFeatures.cpp" />
     <ClCompile Include="core\src\astroClass.cpp" />
     <ClCompile Include="core\src\default_settings_xml.cpp" />
-    <ClCompile Include="core\src\dumpUploader.cpp" />
     <ClCompile Include="core\src\fileLoader.cpp" />
     <ClCompile Include="core\src\fpsClass.cpp" />
     <ClCompile Include="core\src\GLmathClass.cpp" />

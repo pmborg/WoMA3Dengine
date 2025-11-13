@@ -37,19 +37,6 @@
 #include <assimp/version.h>
 #include <assimp/revision.h>
 
-//FBX: SceneModel.h
-unsigned char* Forest_Huntress_idle_fbx_Model_LOD0_fbxBuffer = NULL;            //==86 & 87
-unsigned char* Forest_Huntress_idle2_fbx_Model_LOD0_fbxBuffer = NULL;           //==87 & 88
-unsigned char* Forest_Huntress_idle3_fbx_Model_LOD0_fbxBuffer = NULL;           //==87
-
-//unsigned char* Forest_Huntress_idle2_fbx_Model_LOD0_fbxBuffer = NULL;         // >= 88
-unsigned char* Forest_Huntress_Walk_fbx_Model_LOD0_fbxBuffer = NULL;            // >= 88
-unsigned char* Forest_Huntress_Walk_back_fbx_Model_LOD0_fbxBuffer = NULL;       // >= 88
-unsigned char* Forest_Huntress_Run2_fbx_Model_LOD0_fbxBuffer = NULL;            // >= 88
-
-unsigned char* Forest_Huntress_Strafe_left_fbx_Model_LOD0_fbxBuffer = NULL;     // >= 88
-unsigned char* Forest_Huntress_Strafe_right_fbx_Model_LOD0_fbxBuffer = NULL;    // >= 88
-unsigned char* Forest_Huntress_Draw_sword_fbx_Model_LOD0_fbxBuffer = NULL;      // >= 88
 
 #ifdef DEBUG_MESH
 void showNodeName(aiNode* node, UINT i = 0);

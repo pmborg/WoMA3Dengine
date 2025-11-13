@@ -72,16 +72,16 @@ private:
 #endif
 
 //DX_ENGINE_LEVEL >= 86:
-extern unsigned char* Forest_Huntress_idle_fbx_Model_LOD0_fbxBuffer;
+extern COMMON_API unsigned char* Forest_Huntress_idle_fbx_Model_LOD0_fbxBuffer;
 //DX_ENGINE_LEVEL >= 87:
-extern unsigned char* Forest_Huntress_idle2_fbx_Model_LOD0_fbxBuffer;
-extern unsigned char* Forest_Huntress_idle3_fbx_Model_LOD0_fbxBuffer;
+extern COMMON_API unsigned char* Forest_Huntress_idle2_fbx_Model_LOD0_fbxBuffer;
+extern COMMON_API unsigned char* Forest_Huntress_idle3_fbx_Model_LOD0_fbxBuffer;
 //DX_ENGINE_LEVEL >= 88:
-extern unsigned char* Forest_Huntress_idle2_fbx_Model_LOD0_fbxBuffer;           // >= 88
-extern unsigned char* Forest_Huntress_Walk_fbx_Model_LOD0_fbxBuffer;            // >= 88
-extern unsigned char* Forest_Huntress_Walk_back_fbx_Model_LOD0_fbxBuffer;       // >= 88
-extern unsigned char* Forest_Huntress_Run2_fbx_Model_LOD0_fbxBuffer;            // >= 88
+extern COMMON_API unsigned char* Forest_Huntress_idle2_fbx_Model_LOD0_fbxBuffer;           // >= 88
+extern COMMON_API unsigned char* Forest_Huntress_Walk_fbx_Model_LOD0_fbxBuffer;            // >= 88
+extern COMMON_API unsigned char* Forest_Huntress_Walk_back_fbx_Model_LOD0_fbxBuffer;       // >= 88
+extern COMMON_API unsigned char* Forest_Huntress_Run2_fbx_Model_LOD0_fbxBuffer;            // >= 88
 
-extern unsigned char* Forest_Huntress_Strafe_left_fbx_Model_LOD0_fbxBuffer;     // >= 88
-extern unsigned char* Forest_Huntress_Strafe_right_fbx_Model_LOD0_fbxBuffer;    // >= 88
-extern unsigned char* Forest_Huntress_Draw_sword_fbx_Model_LOD0_fbxBuffer;      // >= 88
+extern COMMON_API unsigned char* Forest_Huntress_Strafe_left_fbx_Model_LOD0_fbxBuffer;     // >= 88
+extern COMMON_API unsigned char* Forest_Huntress_Strafe_right_fbx_Model_LOD0_fbxBuffer;    // >= 88
+extern COMMON_API unsigned char* Forest_Huntress_Draw_sword_fbx_Model_LOD0_fbxBuffer;      // >= 88

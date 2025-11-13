@@ -651,7 +651,7 @@ int __cdecl CompoundSortCB(const VOID* arg1, const VOID* arg2)
 
 #endif
 
-extern bool Startauxcommonfunctions(UINT level);
+#include "commonfunctionsInterfaces.h"
 
 #if CORE_ENGINE_LEVEL >= 10 && !defined NewWomaEngine
 //-------------------------------------------------------------------------------------------
@@ -675,7 +675,7 @@ bool ApplicationClass::Initialize(void* pContext, WomaDriverClass* Driver)
 #endif
 
 #if DX_ENGINE_LEVEL >= 86 && !defined USE_INTRO_VIDEO_DEMO
-	Startauxcommonfunctions(DX_ENGINE_LEVEL);
+	Startauxcommonfunctions(DX_ENGINE_LEVEL, SystemHandle->m_hWnd);
 #endif
 
 //########################################### 3D: STUFF ###########################################

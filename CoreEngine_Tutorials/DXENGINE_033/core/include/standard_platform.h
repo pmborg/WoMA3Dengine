@@ -22,6 +22,13 @@
 #pragma warning(push)
 #pragma warning( disable : 4005 )		// Disable warning C4005: '' : macro redefinition
 
+#ifndef WINDOWS_PLATFORM
+#ifndef LINUX_PLATFORM
+#ifndef ANDROID_PLATFORM
+#error "Include platform.h first — do not include standard_platform.h directly."
+#endif
+#endif
+#endif
 
 #include "platform.h"
 

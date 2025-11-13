@@ -60,7 +60,6 @@ std::vector<DXTextLine> allTextArray;
 // Globals:
 // ----------------------------------------------------------------------------------------------
 
-std::vector<DXwindowDataContainer> DX11windowsArray;													
 std::vector<UINT> FSAA_possibleValues;
 
 namespace DirectX {

@@ -18,21 +18,150 @@
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234525217;
 
+#if NOTES
+#Core System(Multi - OS foundations)
+--------------------------------------------------------------------
+level00		- MultiOS WomaMessageBox
+level01		- MultiOS womalog
+level02		- MultiOS mainwindow
+level03		- MultiOS woma_exception + mini_dumper
++ ThirdParty: UltimateTCPIP_LIBX64_d.lib
+
+level04		- OS Keys + System_check + Timers + FPS + Math
+level05		- Read settings.xml
++ ThirdParty: TinyXMLv2_LIBX64_d.lib
+
+level06		- Generate woma_data_files + basic IDEA + ZIP
++ ThirdParty: ZipUtils_LIBX64_d.lib
+
+level07		- Get real calculations for sun and moon postion
+level08		- GPS user using location on MAP
++ ThirdParty: maxminddb_LIBX64_d.lib
++ ThirdParty: GeoLite2PP_LIBX64_d.lib
+
+level09 - Get real time Weather.
+
+#Rendering System
+--------------------------------------------------------------------
+level19		- The mainwindow to render
+level20		- mainwindow_resizing
+level21		- Color Shader + 3D Camera
+level22		- Texture Shader + Load Images Libs (ImageLoaderClass.cpp) (Native: BMP)
++ ThirdParty: TIFF_LIBX64_d.lib
++ ThirdParty: ZLIB_LIBX64_d.lib
++ ThirdParty: PNG_LIBX64_d.lib
++ ThirdParty: JPG_LIBX64_d.lib
++ ThirdParty: DirectXTex (read tga)
++ ThirdParty: DirectXTK (read dds + write: BMP, JPG, PNG, TIF)
+
+level23		- Light Shader + Line of Light Animation
+level24		- 2D Sprites + 2D Camera + Rasterizer + Alfa Blending
+level25		- DX Native fonts 
+level26		- Adding Cubes and Spheres
+level27		- rastertek_text_fonts:v1 (windows) + v2(Linux + Android)
+level28		- Adding Sky as sphere + Direct Input
+
+#Audio System
+--------------------------------------------------------------------
+level29		- Adding 3D Sound(wav) and Music(ogg)
++ ThirdParty: OpenAL32_LIBX64_d.lib
++ ThirdParty: ALUT_LIBX64_d.lib
++ ThirdParty: OGG_LIBX64_d.lib
++ ThirdParty: VORBIS_LIBX64_d.lib
++ ThirdParty: VORBISFILE_LIBX64_d.lib
+
+#Scene Management
+--------------------------------------------------------------------
+level30		- Wavefront OBJ format COLOR
+level31		- Wavefront OBJ format TEXTURE
+level32		- Wavefront OBJ format LIGHT
+level33		- Wavefront OBJ format ALFAMAP_ALFACOLOR
+level34		- Wavefront OBJ format SPECULAR_SHININESS
+level35		- Wavefront OBJ format BUMP_MAP
+level36		- Wavefront OBJ format SHADOW_MAP
+level37		- MAIN_LOADER_THREADS
+level38		- Wavefront OBJ to W3D FORMAT(woma fast format) tool
+level39		- LOAD W3D (20x faster)
+level40		- Uinsg Instances
+level41		- Shadow Instances
+level42		- Shadow Instances with Shader Rotation
+--------------------------------------------------------------------
+
+#Terrain Rendering
+--------------------------------------------------------------------
+level49		- Generate under water terrain.
+level50		- the under water terrain.
+level51		- With fog
+level52		- With Light Shader + Add Normals + Add Index(s)
+level53		- With extra color terrain(with terrain collision)
+level54		- Water waves(with terrain collision)
+level55		- 256x256 with Slope Texture Shader
+level60		- 256x256 multi - layer
+level61		- 512x512 advanced multi - layer
+
+#Terrain Maps
+--------------------------------------------------------------------
+level62		- The MAIN MAP key : M
+level63		- The MINI - MAP
+
+#Terrain (Adding Objects)
+--------------------------------------------------------------------
+level64		- Add a model with 2 pass (solid and transparent) + Add a 3D static animated model (wind mill)
+level65		- Terrain Colision + Walking on Terrain
+
+#Terrain (Adding Billboards)
+--------------------------------------------------------------------
+level70		- Billboard for Trees / Flowers, (LIGHT and Fog)
+level71		- Billboard for FENCES, (LIGHT and Fog)
+level72		- Fire(Add 3D Sound Effect)
+level73		- Windy grass effect
+level74		- Add Cross BIllboards and Add Clone Billboards
+level75		- UTIL : Progress bar for terrain loading
+
+#Util: Rendering the woma logo MPG video
+--------------------------------------------------------------------
+level76		- INTRO VIDEO DEMO
+
+#Terrain (adding instances)
+--------------------------------------------------------------------
+level77		- Use instances for TREEs
+level78		- Check camera collision with 'WORLD.XML' Objects
+
+#Animated meshs ( Advanced Rendering System with PBR materials )
+--------------------------------------------------------------------
+"Debug:"
+level82		- Loading boblampclean.md5mesh
++ LIB       : CoreEngine82_LIB_d.lib (shared by exe and commonfunctions)
++ LIB       : commonfunctionsX64_d.lib (by Pedro Borges) (use: AssimpEngine_local)
++ ThirdParty: AssimpEngine_local.lib "PPG - master(MIT, heavily modified fork by Pedro Borges)" (use: assimp-vc143-mtd)
++ ThirdParty: assimp-vc143-mtd.lib
+
+#endif
+
+//* Priv.*CoreEngine82_LIB_d.lib
+
 #include "platform.h"
 #include "OSengine.h"
-
 #include <inttypes.h>
+#include <regex>
 
 #if defined WINDOWS_PLATFORM
 #include <windows.h>
 #include <tchar.h>
 #include <regex>
 #include <filesystem>
+#include <filesystem>
 namespace fs = std::filesystem;
 
 #include <DirectXMath.h>
 WinSystemClass* SystemHandle = NULL;
+#pragma comment(lib, "iphlpapi.lib")
+
+
 #endif
+
+
+
 
 #if defined ANDROID_PLATFORM 
 #if !defined NewWomaEngine
@@ -91,7 +220,6 @@ TCHAR* DEMO_NAME[] =
 {TEXT("TUTORIAL 36: WORLD.XML: load OBJ 3D file format, render a SHADOW MAP")},
 {TEXT("TUTORIAL 37: WORLD.XML: load OBJ 3D file format, render chess board pieces, adding MAIN THREAD and the LOADER THREAD")},
 {TEXT("TUTORIAL 38: WORLD.XML: load OBJ 3D file format, save to W3D Woma 3D fast file FORMAT")},
-{TEXT("TUTORIAL 39: WORLD.XML: load W3D(the Woma 3D file format) files up to 30x faster than OBJ files in DX LEVEl38")},
 {TEXT("TUTORIAL 39: WORLD.XML: load W3D(the Woma 3D file format) files up to 30x faster than OBJ files in DX LEVEl38")},
 {TEXT("TUTORIAL 40: WORLD.XML: load W3D and use INSTANCES to clone objects using GPU")},
 {TEXT("TUTORIAL 41: WORLD.XML: load W3D and use SHADOW INSTANCES")},
@@ -156,10 +284,6 @@ TCHAR* DEMO_NAME[] =
 {DEMO_TITLE},//100 This DEMO: ADVANCED PRESENTATION DEMO (Animated water, characters, grass and buildings, etc...)
 };
 
-// Global Public:
-UINT CLASS_LOAD_N = 1;
-UINT CLASS_DELETE_N = 1;
-
 #if CORE_ENGINE_LEVEL >= 10 & !defined NewWomaEngine
 std::vector<WomaDriverClass*> driverList;
 WomaDriverClass* g_contextDriver = NULL;	// Note: Used only at 20  wGLopenGLclass
@@ -180,11 +304,6 @@ namespace WOMA
 	//---------------------------------------------------
 	int		game_state = GAME_LOADING;
 	int		previous_game_state = GAME_LOADING;
-
-#if defined USE_LOG_MANAGER
-	ILogManager* logManager = NULL;	// Global Log Manager
-	ILogManager* logManager_bk = NULL;	// Global Log Manager
-#endif
 
 	UINT ENGINE_LEVEL_USED = 0;
 	int  main_loop_state = 0;
@@ -897,85 +1016,6 @@ void stopAudio(const int audioFileIdx)
 }
 #endif
 
-
-#if !defined LINUX_PLATFORM
-int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption, bool yesORno)
-//----------------------------------------------------------------------------------
-{
-	int res = yesORno ? 1 : 0;
-	TCHAR fullMsg[5000] = { 0 };
-	StringCchPrintf(fullMsg, sizeof(fullMsg), TEXT("%s %s\n"), lpCaption, lpText);
-
-#if defined WINDOWS_PLATFORM
-	{ HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_INTENSITY); }
-
-	womalogauto(fullMsg);
-	{ HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED); }
-
-	if (SystemHandle)
-		res = MessageBox(SystemHandle->m_hWnd, lpText, lpCaption, (yesORno) ? MB_YESNO : MB_OK);
-	else
-		res = MessageBox(NULL, lpText, lpCaption, (yesORno) ? MB_YESNO : MB_OK);
-#endif
-
-#if defined ANDROID_PLATFORM
-	ShowAlert(lpCaption);
-#endif
-
-	return res;
-}
-#else//LINUX
-int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption = WOMA::APP_FULLNAME, bool yesORno = false)
-{
-	// MORE INFO: http://stackoverflow.com/questions/263/gtk-implementation-of-messagebox
-	char text[MAX_STR_LEN]; wtoa(text, lpText, MAX_STR_LEN); //w to a
-	GtkWidget* dialog = gtk_message_dialog_new(
-		GTK_WINDOW(Win.window), GTK_DIALOG_MODAL,
-		(fatal) ? GTK_MESSAGE_ERROR : GTK_MESSAGE_WARNING,
-		(yesORno) ? GTK_BUTTONS_YES_NO : GTK_BUTTONS_OK, text);
-
-	char caption[MAX_STR_LEN]; wtoa(caption, lpCaption, MAX_STR_LEN);	// wide to ansi
-	gtk_window_set_title(GTK_WINDOW(dialog), caption);					// Title
-
-	while (gtk_events_pending())			// Wait for all gtk events to be consumed ...
-		gtk_main_iteration_do(FALSE);
-
-	gint result = gtk_dialog_run(GTK_DIALOG(dialog));	// Run Dialog
-
-	gtk_widget_destroy(dialog);			// Destroy
-
-	while (gtk_events_pending())			// Wait for all gtk events to be consumed ...
-		gtk_main_iteration_do(FALSE);
-
-	if (yesORno)
-	{
-		switch (result)
-		{
-		default:
-		case GTK_RESPONSE_DELETE_EVENT:
-		case GTK_RESPONSE_NO:
-			return 0; //NO
-
-		case GTK_RESPONSE_ACCEPT:
-		case GTK_RESPONSE_YES:
-			return 1; //YES
-		}
-	}
-
-	return result;
-}
-#endif
-
-int WomaMessageBox(TCHAR* lpText)
-{
-	return WomaMessageBox(lpText, TEXT("ERROR:"), false);
-}
-
-int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption)
-{
-	return WomaMessageBox(lpText, lpCaption, false);
-}
-
 #if defined ANDROID_PLATFORM && defined USE_LOG_MANAGER
 STRING LOAD_ASSET_SAVE_TO_CACHE (TCHAR* XMLFILE) 
 {
@@ -1078,11 +1118,11 @@ namespace WOMA
 bool firstFrame = true;
 #endif
 
-#if DEMO_LEVEL < 86
-STRING original_files[] = {
-    TEXT("")
-};
-#endif
+//#if DEMO_LEVEL < 86
+//STRING original_files[] = {
+//    TEXT("")
+//};
+//#endif
 
 #if defined WINDOWS_PLATFORM
 #include <immintrin.h>
@@ -1106,33 +1146,151 @@ bool StartsWithDotDotSlash(const STRING& fileNamePath)
 
 bool g_GOD_MODE = false;
 
+
 namespace WOMA
 {
-	WOMA::Settings* AppSettings = NULL;
-};
+	TCHAR* LoadFile(TCHAR* filename, bool shader);
+}
 
+
+
+namespace WOMA
+{
+	TCHAR cCurrentPath[FILENAME_MAX]; //Use now: APPDATA
+	//-------------------------------------------------------------------------------------------
+	TCHAR* getCurrentDir()
+	//-------------------------------------------------------------------------------------------
+	{
+#if defined WINDOWS_PLATFORM
+		if (!GetCurrentDirectory(FILENAME_MAX, cCurrentPath))
+			return (TCHAR*)TEXT("");
+
+#if defined USE_SYSTEM_CHECK & !defined NewWomaEngine
+		StringCchPrintf(SystemHandle->systemDefinitions.cCurrentPath, FILENAME_MAX, cCurrentPath);
+#endif
+#else // Linux / Android
+		char* CurrentPath;
+
+		CurrentPath = getcwd(NULL, 0); // or _getcwd
+		if (CurrentPath == NULL)
+			return TEXT("");
+
+#if defined USE_SYSTEM_CHECK & !defined NewWomaEngine
+		strcpy_s(SystemHandle->systemDefinitions.cCurrentPath, FILENAME_MAX, CurrentPath);
+#endif
+#endif
+
+		return SystemHandle->systemDefinitions.cCurrentPath;
+	}
+}
+
+
+int WomaMessageBox(TCHAR* lpText)
+{
+	return WomaMessageBox(lpText, TEXT("ERROR:"), false);
+}
+
+int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption)
+{
+	return WomaMessageBox(lpText, lpCaption, false);
+}
+
+#if !defined LINUX_PLATFORM
+int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption, bool yesORno)
+//----------------------------------------------------------------------------------
+{
+	int res = yesORno ? 1 : 0;
+	TCHAR fullMsg[5000] = { 0 };
+	StringCchPrintf(fullMsg, sizeof(fullMsg), TEXT("%s %s\n"), lpCaption, lpText);
 
 #if defined WINDOWS_PLATFORM
-// safe_release_seh.cpp
-#include <windows.h>
-#include <unknwn.h>   // IUnknown
-#include <stdio.h>
+	{ HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_INTENSITY); }
 
-// Export as C so name mangling won't cause issues
-extern "C" void SafeRelease_SEH(void** pp)
-{
-	if (!pp || !*pp) return;
+	womalogauto(fullMsg);
+	{ HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED); }
 
-	// Defensive: protect driver faults during Release()
-	__try {
-		IUnknown* unk = (IUnknown*)(*pp);
-		// If pointer is bogus this can still fault, that's what SEH catches
-		unk->Release();
-	}
-	__except (EXCEPTION_EXECUTE_HANDLER) {
-		// optional: log the exception via your logging method
-		// e.g. womalogauto(TEXT("[SAFE_RELEASE_SEH] exception during Release ptr=%p\n"), *pp);
-	}
-	*pp = nullptr;
+	if (SystemHandle)
+		res = MessageBox(SystemHandle->m_hWnd, lpText, lpCaption, (yesORno) ? MB_YESNO : MB_OK);
+	else
+		res = MessageBox(NULL, lpText, lpCaption, (yesORno) ? MB_YESNO : MB_OK);
+#endif
+
+#if defined ANDROID_PLATFORM
+	ShowAlert(lpCaption);
+#endif
+
+	return res;
 }
+#else//LINUX
+int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption = WOMA::APP_FULLNAME, bool yesORno = false)
+{
+	// MORE INFO: http://stackoverflow.com/questions/263/gtk-implementation-of-messagebox
+	char text[MAX_STR_LEN]; wtoa(text, lpText, MAX_STR_LEN); //w to a
+	GtkWidget* dialog = gtk_message_dialog_new(
+		GTK_WINDOW(Win.window), GTK_DIALOG_MODAL,
+		(fatal) ? GTK_MESSAGE_ERROR : GTK_MESSAGE_WARNING,
+		(yesORno) ? GTK_BUTTONS_YES_NO : GTK_BUTTONS_OK, text);
+
+	char caption[MAX_STR_LEN]; wtoa(caption, lpCaption, MAX_STR_LEN);	// wide to ansi
+	gtk_window_set_title(GTK_WINDOW(dialog), caption);					// Title
+
+	while (gtk_events_pending())			// Wait for all gtk events to be consumed ...
+		gtk_main_iteration_do(FALSE);
+
+	gint result = gtk_dialog_run(GTK_DIALOG(dialog));	// Run Dialog
+
+	gtk_widget_destroy(dialog);			// Destroy
+
+	while (gtk_events_pending())			// Wait for all gtk events to be consumed ...
+		gtk_main_iteration_do(FALSE);
+
+	if (yesORno)
+	{
+		switch (result)
+		{
+		default:
+		case GTK_RESPONSE_DELETE_EVENT:
+		case GTK_RESPONSE_NO:
+			return 0; //NO
+
+		case GTK_RESPONSE_ACCEPT:
+		case GTK_RESPONSE_YES:
+			return 1; //YES
+		}
+	}
+
+	return result;
+}
+#endif
+
+
+
+#if defined WOMA_DLL
+#if _DEBUG
+#pragma comment( lib, "C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\Assimp-latest-Engine.lib" )
+#else
+#pragma comment( lib, "C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Release\\Assimp-latest-Engine.lib" )
+#endif
+#endif
+
+
+#if (!defined(WOMA_DLL) || (defined(WOMA_DLL) && DX_ENGINE_LEVEL < 82))
+// ==========================================================
+// EXE builds and pre-82 DLLs → globals live in OSengine
+// ==========================================================
+
+namespace WOMA {
+	Settings* AppSettings = NULL;
+}
+UINT CLASS_LOAD_N = 1;
+UINT CLASS_DELETE_N = 1;
+#if defined WINDOWS_PLATFORM
+bool threadLoadMeshAlive = false;
+HANDLE threadLoadMeshHandle = NULL;
+unsigned long threadLoadMeshId = NULL;
+#endif
+int numZipItems = 0;
+int zipIndx = 0;
+UINT packCounter = 0, totalPackCounter = 0;
+int Command = EXIT_SUCCESS;
 #endif

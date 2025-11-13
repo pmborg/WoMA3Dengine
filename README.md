@@ -1025,7 +1025,6 @@ Each component retains its original license, and all attributions are included f
 | 🟢 **MIT / BSD** | TinyXMLv2, DirectXTex, DirectXTK, Assimp, PPG-master, libcurl | Open & permissive licenses |
 | 🟣 **LGPL / BSD** | OpenAL, ALUT, Vorbis, VorbisFile | Audio codecs and sound engines |
 | 🟠 **Apache 2.0 / CC BY-SA** | GeoLite2PP, MaxMindDB | IP geolocation libraries |
-| 🔴 **Commercial** | UltimateTCP/IP SDK | Requires separate license |
 | 🟡 **Educational / Tutorial** | Rastertek text fonts | Based on Rastertek DirectX tutorials |
 
 🧾 These dependencies enable features such as:
@@ -1033,7 +1032,7 @@ Each component retains its original license, and all attributions are included f
 - Advanced PBR rendering (PPG + DirectXTK)
 - 3D sound (OpenAL + Vorbis)
 - XML parsing (TinyXMLv2)
-- Network data (libcurl, UltimateTCP/IP)
+- Network data (libcurl)
 - Geolocation services (GeoLite2PP, MaxMindDB)
 
 ---

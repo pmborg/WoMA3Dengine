@@ -40,7 +40,7 @@ void	PaintSplashScreen(HDC hdc);
 
 
 // ---------------------------------------------------------------------------------------------
-LRESULT CALLBACK WOMA_PAINT_MessageHandler(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
+LRESULT CALLBACK WOMA_PAINT_Message_event_handler(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 // ---------------------------------------------------------------------------------------------
 {
 	switch (umessage)
@@ -50,6 +50,7 @@ LRESULT CALLBACK WOMA_PAINT_MessageHandler(HWND hwnd, UINT umessage, WPARAM wpar
 
 		break;
 	}
+
 
     #if defined USE_USER_SETUP
 	case WM_PAINT:

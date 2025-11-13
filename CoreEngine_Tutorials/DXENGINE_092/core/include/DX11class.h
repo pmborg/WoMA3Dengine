@@ -291,7 +291,8 @@ struct DXwindowDataContainer
 // ----------------------------------------------------------------------------------------------
 // Globals:
 // ----------------------------------------------------------------------------------------------
-extern std::vector<DXwindowDataContainer> DX11windowsArray;		
+extern COMMON_API std::vector<DXwindowDataContainer> DX11windowsArray;
+
 extern std::vector<UINT> FSAA_possibleValues;
 
 // ----------------------------------------------------------------------------------------------

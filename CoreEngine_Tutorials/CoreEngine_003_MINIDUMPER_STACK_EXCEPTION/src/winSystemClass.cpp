@@ -18,6 +18,8 @@
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234525217;
 
+#include "platform.h"
+#include "standard_platform.h"
 #include "OSengine.h"
 #include "mem_leak.h"
 #if defined DX_ENGINE
@@ -73,7 +75,7 @@ void WinSystemClass::ProcessFrame()
 
 	// Render Setup?
 
-	Sleep(16.66f);
+	Sleep((DWORD)16.66f);
 }
 
 void WinSystemClass::WinSystemClass_init()
@@ -146,7 +148,6 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 #endif
 
 // ########################################### LOAD DRIVERS ###########################################
-
  // ######################################### INIT SELECTED DRIVER ###################################
 
 #if defined USE_SYSTEM_CHECK
@@ -197,8 +198,10 @@ int WinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 	{
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))	// There is any OS messages to handle?
 		{
+		#if !defined USE_DIRECT_INPUT
 			TranslateMessage(&msg); // TranslateMessage produces WM_CHAR messages only for keys that are mapped to ASCII characters by the keyboard driver.
-			DispatchMessage(&msg);  // Process Msg:  (INVOKE: WinSystemClass::MessageHandler)
+		#endif
+			DispatchMessage(&msg);  // Process MSGs: INVOKE: WOMA_PAINT_Message_event_handler(...)
 		}
 		else
 		{	// Active?
@@ -213,6 +216,7 @@ int WinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
             if (WOMA::renderOnce && WOMA::woma_timer > 5)
                 break;
 		}
+
 	} while (msg.message != WM_QUIT && WOMA::main_loop_state >= 0);
 
 	return S_OK;
@@ -286,7 +290,7 @@ namespace WOMA
 // --------------------------------------------------------------------------------------------
 // [*] Register the Window Class.
 // --------------------------------------------------------------------------------------------
-bool WinSystemClass::MyRegisterClass(HINSTANCE hInstance)
+bool WinSystemClass::WomaRegisterClass(HINSTANCE hInstance)
 {
 	WNDCLASSEX wcex = { 0 };
 	wcex.cbSize = sizeof(WNDCLASSEX);
@@ -295,7 +299,7 @@ bool WinSystemClass::MyRegisterClass(HINSTANCE hInstance)
 	// ALLOW WIN32 SYSTEM PAINT: (Causes the entire window to redraw if a movement or a size adjustment changes the height of the client area: CS_HREDRAW | CS_VREDRAW)
 	wcex.style = (WOMA::AppSettings->DRIVER == DRIVER_GL3) ? CS_OWNDC : CS_HREDRAW | CS_VREDRAW; // NOTE: CS_OWNDC is need by OPEN GL: https://www.opengl.org/wiki/Platform_specifics:_Windows
 	wcex.style |= CS_DBLCLKS;
-	wcex.lpfnWndProc = static_cast<WNDPROC>(WOMA_PAINT_MessageHandler);
+	wcex.lpfnWndProc = static_cast<WNDPROC>(WOMA_PAINT_Message_event_handler);
 	wcex.hInstance = hInstance;
 
 	//
@@ -780,7 +784,7 @@ bool WinSystemClass::APPLICATION_INIT_MAIN_WINDOW()
 	else
 #endif
 	{
-		if (!MyRegisterClass(m_hinstance)) {// Try to Register WOMA Engine WINDOW CLASS
+		if (!WomaRegisterClass(m_hinstance)) {// Try to Register WOMA Engine WINDOW CLASS
 			WOMA::main_loop_state = -1;		
 			return false;
 		}

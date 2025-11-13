@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\SOURCE_CODE\CoreEngine_000_OSENGINE_SYSTEM\include\.editorconfig" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Include">
+      <UniqueIdentifier>{45bd0d31-b807-48d7-a21a-a61b38e6efc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src_82">
+      <UniqueIdentifier>{8fe17e0d-2b89-42d4-9f57-8ac3883ed3c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src_1">
+      <UniqueIdentifier>{9830b4df-43bc-4885-8c6d-0af4554dd407}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\DXENGINE_082\core\src\log.cpp">
+      <Filter>src_1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DXENGINE_082\core\src\OSmain_dir.cpp" />
+    <ClCompile Include="..\..\DXENGINE_082\core\src\fileLoader.cpp" />
+    <ClCompile Include="..\..\DXENGINE_082\core\src\stackTrace.cpp" />
+    <ClCompile Include="..\..\DXENGINE_082\core\src\woma_exception.cpp" />
+    <ClCompile Include="..\..\DXENGINE_082\core\src\corelib6.cpp">
+      <Filter>Src_82</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\DXENGINE_082\core\src\corelib0.cpp">
+      <Filter>Src_82</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\DXENGINE_082\core\include\log.h" />
+    <ClInclude Include="..\..\DXENGINE_082\core\include\OSmain_dir.h" />
+    <ClInclude Include="..\..\DXENGINE_082\core\include\fileLoader.h" />
+    <ClInclude Include="..\..\DXENGINE_082\core\include\stackTrace.h" />
+    <ClInclude Include="..\..\DXENGINE_082\core\include\woma_exception.h" />
+  </ItemGroup>
+</Project>

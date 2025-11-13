@@ -20,6 +20,7 @@
 
 #include "platform.h"
 
-extern void Shutdownauxcommonfunctions();
+//extern void Shutdownauxcommonfunctions();
+#include "commonfunctionsInterfaces.h"
 extern std::string original_files[];
 

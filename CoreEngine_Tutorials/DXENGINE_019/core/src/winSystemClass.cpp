@@ -18,6 +18,8 @@
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234525217;
 
+#include "platform.h"
+#include "standard_platform.h"
 #include "OSengine.h"
 #include "mem_leak.h"
 #if defined DX_ENGINE
@@ -217,7 +219,6 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 		IF_NOT_RETURN_FALSE(newDriver());	//Create NEW CONTEXT Class: g_contextDriver
 	#endif
 	LoadAllDrivers();		        //NEW DirectX::DX11Class()	(NEW DX9, NEW DX11, NEW DX12, NEW OpenGL): push_back(NEW DirectX::*Class());
-
  // ######################################### INIT SELECTED DRIVER ###################################
 	if (!InitSelectedDriver())	// "driver"->OnInit (...)
 		return false;			// "driver"->Initialize (clearColor)
@@ -393,7 +394,7 @@ namespace WOMA
 // --------------------------------------------------------------------------------------------
 // [*] Register the Window Class.
 // --------------------------------------------------------------------------------------------
-bool WinSystemClass::MyRegisterClass(HINSTANCE hInstance)
+bool WinSystemClass::WomaRegisterClass(HINSTANCE hInstance)
 {
 	WNDCLASSEX wcex = { 0 };
 	wcex.cbSize = sizeof(WNDCLASSEX);
@@ -402,7 +403,7 @@ bool WinSystemClass::MyRegisterClass(HINSTANCE hInstance)
 	// ALLOW WIN32 SYSTEM PAINT: (Causes the entire window to redraw if a movement or a size adjustment changes the height of the client area: CS_HREDRAW | CS_VREDRAW)
 	wcex.style = (WOMA::AppSettings->DRIVER == DRIVER_GL3) ? CS_OWNDC : CS_HREDRAW | CS_VREDRAW; // NOTE: CS_OWNDC is need by OPEN GL: https://www.opengl.org/wiki/Platform_specifics:_Windows
 	wcex.style |= CS_DBLCLKS;
-	wcex.lpfnWndProc = static_cast<WNDPROC>(WOMA_PAINT_MessageHandler);
+	wcex.lpfnWndProc = static_cast<WNDPROC>(WOMA_PAINT_Message_event_handler);
 	wcex.hInstance = hInstance;
 
 	//
@@ -432,8 +433,7 @@ bool WinSystemClass::MyRegisterClass(HINSTANCE hInstance)
 	wcex.hCursor = LoadCursor(NULL, IDC_ARROW); //IDC_CROSS
 
 	wcex.hbrBackground = nullptr;
-//#elif CORE_ENGINE_LEVEL >= 4
-//	wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);	//TO USE THIS COLOR: BLACK
+	//wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);	//TO USE THIS COLOR: BLACK
 
 	IF_NOT_RETURN_FALSE (RegisterClassEx(&wcex));
 
@@ -883,7 +883,7 @@ bool WinSystemClass::APPLICATION_INIT_MAIN_WINDOW()
 	else
 #endif
 	{
-		if (!MyRegisterClass(m_hinstance)) {// Try to Register WOMA Engine WINDOW CLASS
+		if (!WomaRegisterClass(m_hinstance)) {// Try to Register WOMA Engine WINDOW CLASS
 			WOMA::main_loop_state = -1;		
 			return false;
 		}

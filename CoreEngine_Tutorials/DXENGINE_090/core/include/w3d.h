@@ -63,4 +63,5 @@ namespace DirectX
     } textureName;
 };
 
-extern bool extLoadW3DfromMEM(void* pContext, DirectX::DXmodelClass* dxmodelClass, SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow, bool renderShadow, UINT instanceCount);
+//extern bool extLoadW3DfromMEM(void* pContext, DirectX::DXmodelClass* dxmodelClass, SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow, bool renderShadow, UINT instanceCount);
+#include "commonfunctionsInterfaces.h"

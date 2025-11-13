@@ -1625,8 +1625,9 @@ bool ApplicationClass::PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTO
 
 #endif
 
+//NOTE: LoadTextureFromPathFBX work on DLL (on level >= 86)
 #if (DX_ENGINE_LEVEL == 79 || DX_ENGINE_LEVEL >= 82) && LEVEL <= 85
-Texture* LoadTextureFromPathFBX(UINT model_type, Graphics& graphics, LPCWSTR& texture)
+Texture* LoadTextureFromPathFBX(UINT model_type, Graphics& graphics, LPCWSTR& texture) //LEVEL <= 85
 {
     return NULL;
 }

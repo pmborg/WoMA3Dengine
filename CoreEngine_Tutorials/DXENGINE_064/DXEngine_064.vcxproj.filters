@@ -129,9 +129,6 @@
     <ClInclude Include="core\include\win32InputClass.h">
       <Filter>src-basic-level\core\002-Windows</Filter>
     </ClInclude>
-    <ClInclude Include="core\include\dumpUploader.h">
-      <Filter>src-basic-level\core\003-Exceptions</Filter>
-    </ClInclude>
     <ClInclude Include="core\include\fileLoader.h">
       <Filter>src-basic-level\core\003-Exceptions</Filter>
     </ClInclude>
@@ -479,9 +476,6 @@
     <ClCompile Include="core\src\minidumperClass.cpp">
       <Filter>src-basic-level\core\003-Exceptions</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\dumpUploader.cpp">
-      <Filter>src-basic-level\core\003-Exceptions</Filter>
-    </ClCompile>
     <ClCompile Include="core\src\stackTrace.cpp">
       <Filter>src-basic-level\core\003-Exceptions</Filter>
     </ClCompile>
@@ -629,6 +623,8 @@
     <ClCompile Include="core\src\NewTerrain.cpp">
       <Filter>src-basic-level\060-Advanced-Terrains</Filter>
     </ClCompile>
+    <ClCompile Include="core\src\corelib6.cpp" />
+    <ClCompile Include="core\src\corelib0.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="settings.xml" />

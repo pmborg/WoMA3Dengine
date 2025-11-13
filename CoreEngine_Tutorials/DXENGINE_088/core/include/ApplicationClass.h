@@ -608,7 +608,7 @@ public:
 
 #define SunDistance 512
 
-extern void Shutdownauxcommonfunctions();
+#include "commonfunctionsInterfaces.h"
 
 extern float sort_cameraX;
 extern float sort_cameraY;

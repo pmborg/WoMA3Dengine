@@ -43,9 +43,11 @@ extern bool SaveAsDDS(const std::wstring& originalFile, const unsigned char* ima
 extern bool SaveAsPNG_Debug(const STRING& originalFile, const DirectX::ScratchImage& image);
 #endif
 
-extern HRESULT extLoadBinfromMEM(DX11Class* dx11class, ID3D11Device* pDevice, STRING filename, ID3D11ShaderResourceView** ppShaderResourceView);
+#include "commonfunctionsInterfaces.h"
+//extern HRESULT extLoadBinfromMEM(DX11Class* dx11class, ID3D11Device* pDevice, STRING filename, ID3D11ShaderResourceView** ppShaderResourceView);
+#include "commonfunctionsInterfaces.h"
 #include <shlwapi.h>  // for PathFindFileName
-extern std::string CleanFilePath(const std::string& input);
+//extern std::string CleanFilePath(const std::string& input);
 
 namespace DirectX {
 

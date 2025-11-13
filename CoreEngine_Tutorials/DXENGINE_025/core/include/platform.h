@@ -148,12 +148,12 @@ DX12 Versions:
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#ifdef COMPILER_MSVC
 #pragma warning( disable : 4005 )	// warning C4005: '' : macro redefinition
 #pragma warning( disable : 4067 )	// warning C4067: unexpected tokens following preprocessor directive - expected a newline
 #pragma warning( disable : 6262 )	// warning C6262: 
 #pragma warning( disable : 4217 )	// LINK : warning LNK4217: symbol
-#endif
+#pragma warning( disable : 4099 )
+
 
 // -------------------------------------------------------------------------------------------------------------------
 // DLL STUFF

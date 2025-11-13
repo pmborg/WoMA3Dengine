@@ -20,8 +20,9 @@
 
 #include "platform.h"
 
-extern void Shutdownauxcommonfunctions();
+//extern void Shutdownauxcommonfunctions();
+#include "commonfunctionsInterfaces.h"
 extern std::string original_files[];
 
 extern UINT USING_CHAR_MODEL_ANIMATION;
-extern UINT size_original_files;
+//extern UINT size_original_files;

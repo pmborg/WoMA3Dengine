@@ -471,10 +471,10 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 		break;
 	}
 
-
 	// -----------------------------------------------------------------------------
 	// TIMERS:
 	// -----------------------------------------------------------------------------
+
 	case WM_TIMER: // Once per second:
 		if (WOMA::game_state < GAME_STOP)
 		{

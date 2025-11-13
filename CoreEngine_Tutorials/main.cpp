@@ -36,6 +36,21 @@
 // 
 // • EXTENSIBILITY :
 //      The structure supports integration with external libraries(such as ASSIMP for model loading) and can be easily extended for new platforms or features.
+// 
+// --------------------------------------------------------------------------------------------
+// For Android:
+//	Make VS2022 detect your Cellphone:
+// --------------------------------------------------------------------------------------------
+// 1 Enable Developer Mode
+//	Settings → About phone → Software information.
+//	Tap Build number 7 times until you see “Developer mode has been enabled.”
+//	Go back → open Developer options.
+// 
+// 2 Turn on USB Debugging:
+//	In Developer options, scroll to the Debugging section and enable:
+//		USB debugging
+// 
+// (Optional but useful) Wireless debugging
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234525217;
 
@@ -46,7 +61,7 @@
 #pragma warning(disable : 6262)
 #include "OSengine.h"
 
-int Command = EXIT_SUCCESS;
+
 
 #if defined WINDOWS_PLATFORM
 // -------------------------------------------------------------------------------------------------------------------------------------

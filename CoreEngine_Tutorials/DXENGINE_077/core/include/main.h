@@ -56,16 +56,22 @@
 #include "log.h"
 #endif
 
-//	-------------------------------------------------------------------------------------------
-// Global WOMA RUN-TIME SETTINGS:
-//	-------------------------------------------------------------------------------------------
-extern UINT CLASS_LOAD_N;
-extern UINT CLASS_DELETE_N;
-
 #if defined USE_ASTRO_CLASS
 extern void InitializeCelestialInfoScreen(int x, int y);
 #endif
 
 #if defined USE_METARCLASS
 extern bool InitializeWeatherInfoScreen(int x, int y);
+#endif
+
+
+#if ((!defined(WOMA_DLL) && !defined COMMONFUNCTIONS_DLL_EXPORTS) || (defined(WOMA_DLL) && DX_ENGINE_LEVEL < 82))
+//	-------------------------------------------------------------------------------------------
+// Global WOMA RUN-TIME SETTINGS:
+//	-------------------------------------------------------------------------------------------
+extern UINT CLASS_LOAD_N;
+extern UINT CLASS_DELETE_N;
+
+#else
+#include "commonfunctionsInterfaces.h"
 #endif

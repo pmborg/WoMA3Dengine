@@ -27,51 +27,7 @@ using namespace std;//endl
 #include <sstream>	//wstring
 #include <fstream>	//wifstream/wofstream
 
-// --------------------------------------------------------------------------------------------
-// LINKS:
-// --------------------------------------------------------------------------------------------
-#if defined USE_MINIDUMPER
 
-#if UNICODE
-	#ifdef X64
-		#if defined(_DEBUG) & !defined(NDEBUG)
-			#pragma comment( lib, "x64/WDebug/UltimateTCPIP_LIBX64_d.lib" )		//DEBUG
-		#elif !defined _DEBUG && defined NDEBUG
-			//#pragma comment( lib, "x64/WRelease/UltimateTCPIP_LIBX64.lib" )	//RELEASE
-			#pragma comment( lib, "x64/Release/UltimateTCPIP_LIBX64.lib" )		//RELEASE
-		#else
-			#pragma comment( lib, "x64/WDebug/UltimateTCPIP_LIBX64_d.lib" )		//DBGREL
-		#endif
-		#else
-		#if defined(_DEBUG) & !defined(NDEBUG)
-			#pragma comment( lib, "Win32/WDebug/UltimateTCPIP_LIB_d.lib" )		//DEBUG
-		#elif !defined _DEBUG && defined NDEBUG
-			#pragma comment( lib, "Win32/WRelease/UltimateTCPIP_LIB.lib" )		//RELEASE
-		#else
-			#pragma comment( lib, "Win32/WDebug/UltimateTCPIP_LIB_d.lib" )		//DBGREL
-		#endif
-	#endif
-#else
-	#ifdef X64
-		#if defined(_DEBUG) & !defined(NDEBUG)
-			#pragma comment( lib, "x64/Debug/UltimateTCPIP_LIBX64_d.lib" )		//DEBUG
-		#elif !defined _DEBUG && defined NDEBUG
-			#pragma comment( lib, "x64/Release/UltimateTCPIP_LIBX64.lib" )		//RELEASE
-		#else
-			#pragma comment( lib, "x64/Debug/UltimateTCPIP_LIBX64_d.lib" )		//DBGREL
-		#endif
-		#else
-		#if defined(_DEBUG) & !defined(NDEBUG)
-			#pragma comment( lib, "Win32/Debug/UltimateTCPIP_LIB_d.lib" )		//DEBUG
-		#elif !defined _DEBUG && defined NDEBUG
-			#pragma comment( lib, "Win32/Release/UltimateTCPIP_LIB.lib" )		//RELEASE
-		#else
-			#pragma comment( lib, "Win32/Debug/UltimateTCPIP_LIB_d.lib" )		//DBGREL
-		#endif
-	#endif
-#endif
-
-#endif
 
 // --------------------------------------------------------------------------------------------
 // CLASS:

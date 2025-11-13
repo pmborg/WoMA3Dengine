@@ -25,13 +25,13 @@
     #define WOMAENGINE_BASIC
 #endif
 
-// 2025-11-03: Android ARM64 audio link restored (Dropbox fallback)
-//             Level 29 fully validated.
+// 2025-11-13: Remove UltimateTCP/IP
 //       
-#define WOMA_ENGINE_BUILD_TAG \
-"v2025.11.03 - Windows x64, Linux x64 Audio+GTK stable and Android ARM64 tested @lvl29"
+#define WOMA_ENGINE_BUILD_TAG "v2025.11.13 - Remove UltimateTCP/IP"
 
-//#define USE_NETWORK
+#if CORE_ENGINE_LEVEL < 10 && defined WINDOWS_PLATFORM
+	#define USE_NETWORK
+#endif
 
 //------------------------------------------------------------------------------------------------------------
 //#define CORE_ENGINE_LEVEL 10
@@ -56,6 +56,7 @@
 #endif
 
 #if CORE_ENGINE_LEVEL >= 2 && !defined WOMAENGINE_BASIC
+	//"First Window with mouse click: "
     //#define WOMA_SKIP_CREATE_MAIN_WINDOW  // Default: off - for command line applications only!
 #endif
 
@@ -380,15 +381,6 @@
         #define USE_SHADOW_INSTANCES_ROTATION_W_V_P
     #endif
 
-	// USE_IMGUI:
-	//--------------------------------------------------------------------------------------------------------------------------
-	#if DX_ENGINE_LEVEL >= 45
-		#define USE_IMGUI
-
-		#if !defined ANDROID_PLATFORM
-			#define RUN_ASMAIN true
-		#endif
-	#endif
 
     // TERRAINS:
     //--------------------------------------------------------------------------------------------------------------------------
@@ -626,11 +618,11 @@
 
 #if DX_ENGINE_LEVEL >= 98
     #define USE_DAY_AND_NIGHT
-    
+
     #define USE_INSTANCES_FOR_LAMP
     #define USE_INSTANCES_FOR_LAMP_ROWS  1
     #define USE_INSTANCES_FOR_LAMP_LINES 13
-    
+
     #define USE_POINTS_OF_LIGHT_FOR_LAMP
     #define MAX_POINT_LIGHTS 26
     #define ACTIVELAMPCOUNT USE_INSTANCES_FOR_LAMP_ROWS * USE_INSTANCES_FOR_LAMP_LINES
@@ -662,6 +654,16 @@
     #endif
 
 	#define MAX_ENGINE_LEVEL 100						 
+
+// DLL import/export handling:
+#if defined(COMMONFUNCTIONS_DLL_EXPORTS)
+	#define COMMON_API __declspec(dllexport)
+#elif defined(WOMA_DLL)
+	#define COMMON_API __declspec(dllimport)
+#else
+	#define COMMON_API
+#endif
+
 #pragma warning(pop)
 
 //-------------------------------------------------

@@ -149,9 +149,15 @@ bool SoundClass::InitializeDirectSound(HWND hwnd)
 	if(FAILED(result))
 		return false;
 
+	ASSERT_DEBUG(m_listener);
+
 	// Set the initial position of the listener to be in the middle of the scene.
-	m_listener->SetPosition(0.0f, 0.0f, 0.0f, DS3D_IMMEDIATE);
+	if (m_listener)
+		m_listener->SetPosition(0.0f, 0.0f, 0.0f, DS3D_IMMEDIATE);
 	#endif
+
+	if (m_listener)
+		m_listener->CommitDeferredSettings();
 
 	womalog( TEXT("Sound Class: Initialized\n") );
 	return true;
@@ -203,27 +209,27 @@ bool SoundClass::LoadWaveFile(char* filename, IDirectSoundBuffer8** secondaryBuf
 	// Open the wave file in binary.
 	error = fopen_s(&filePtr, filename, "rb");
 	if(error != 0)
-		return false;
+		goto FAILED_WITH_ERROR;
 	 
 	// Read in the wave file header.
 	count = fread(&waveFileHeader, sizeof(waveFileHeader), 1, filePtr);
 	if(count != 1)
-		return false;
+		goto FAILED_WITH_ERROR;
  
 	// Check that the chunk ID is the RIFF format.
 	if((waveFileHeader.chunkId[0] != 'R') || (waveFileHeader.chunkId[1] != 'I') || 
 	   (waveFileHeader.chunkId[2] != 'F') || (waveFileHeader.chunkId[3] != 'F'))
-		return false;
+		goto FAILED_WITH_ERROR;
  
 	// Check that the file format is the WAVE format.
 	if((waveFileHeader.format[0] != 'W') || (waveFileHeader.format[1] != 'A') ||
 	   (waveFileHeader.format[2] != 'V') || (waveFileHeader.format[3] != 'E'))
-		return false;
+		goto FAILED_WITH_ERROR;
  
 	// Check that the sub chunk ID is the fmt format.
 	if((waveFileHeader.subChunkId[0] != 'f') || (waveFileHeader.subChunkId[1] != 'm') ||
 	   (waveFileHeader.subChunkId[2] != 't') || (waveFileHeader.subChunkId[3] != ' '))
-		return false;
+		goto FAILED_WITH_ERROR;
  
 	// Check that the audio format is WAVE_FORMAT_PCM.
 	ASSERT(waveFileHeader.audioFormat == WAVE_FORMAT_PCM);
@@ -279,12 +285,12 @@ bool SoundClass::LoadWaveFile(char* filename, IDirectSoundBuffer8** secondaryBuf
 	// [3] Create a temporary sound buffer with the specific buffer settings.
 	result = m_DirectSound->CreateSoundBuffer(&bufferDesc, &tempBuffer, NULL);
 	if(FAILED(result))
-		return false;
+		goto FAILED_WITH_ERROR;
  
 	// Test the buffer format against the direct sound 8 interface and create the secondary buffer.
 	result = tempBuffer->QueryInterface(IID_IDirectSoundBuffer8, (void**)&*secondaryBuffer);	
 	if(FAILED(result))
-		return false;
+		goto FAILED_WITH_ERROR;
 
 	// Release the temporary buffer.
 	SAFE_RELEASE (tempBuffer);
@@ -303,7 +309,8 @@ bool SoundClass::LoadWaveFile(char* filename, IDirectSoundBuffer8** secondaryBuf
  
 	// Create a temporary buffer to hold the wave file data.
 	waveData = NEW unsigned char[bufferDesc.dwBufferBytes];
-	if(!waveData)return false;
+	if(!waveData)
+		goto FAILED_WITH_ERROR;
  
 	// Read in the wave file data into the newly created buffer.
 	count = fread(waveData, 1, bufferDesc.dwBufferBytes, filePtr);
@@ -311,15 +318,20 @@ bool SoundClass::LoadWaveFile(char* filename, IDirectSoundBuffer8** secondaryBuf
 	//	return false;
 	 
 	// Close the file once done reading.
-	if (filePtr)
+	if (filePtr) {
 		error = fclose(filePtr);
+		filePtr = NULL;
+	}
+	else
+		goto FAILED_WITH_ERROR;
+
 	if(error != 0)
-		return false;
+		goto FAILED_WITH_ERROR;
  
 	// Lock the secondary buffer to write wave data into it.
 	result = (*secondaryBuffer)->Lock(0, bufferDesc.dwBufferBytes, (void**)&bufferPtr, (DWORD*)&bufferSize, NULL, 0, 0);
 	if(FAILED(result))
-		return false;
+		goto FAILED_WITH_ERROR;
  
 	// Copy the wave data into the buffer. (waveData -> bufferPtr)
 	memcpy(bufferPtr, waveData, bufferDesc.dwBufferBytes);
@@ -327,7 +339,7 @@ bool SoundClass::LoadWaveFile(char* filename, IDirectSoundBuffer8** secondaryBuf
 	// Unlock the secondary buffer after the data has been written to it.
 	result = (*secondaryBuffer)->Unlock((void*)bufferPtr, bufferSize, NULL, 0);
 	if(FAILED(result))
-		return false;
+		goto FAILED_WITH_ERROR;
 	
 	// Release the wave data since it was copied into the secondary buffer.
 	SAFE_DELETE_ARRAY ( waveData);
@@ -335,11 +347,17 @@ bool SoundClass::LoadWaveFile(char* filename, IDirectSoundBuffer8** secondaryBuf
 	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
 	// Get the 3D interface to the secondary sound buffer.
 	result = (*secondaryBuffer)->QueryInterface(IID_IDirectSound3DBuffer8, (void**)&*secondary3DBuffer);
-	if(FAILED(result))
-		return false;
+	if (FAILED(result))
+		goto FAILED_WITH_ERROR;
 	#endif
 
 	return true;
+
+FAILED_WITH_ERROR:
+	womalog("WAV FILE WITH ERROR: %s\n", filename);
+	if (filePtr) fclose(filePtr);
+	SAFE_DELETE_ARRAY(waveData);
+	return false;
 }
 
 //ShutdownWaveFile just does a release of the secondary buffer.
@@ -370,14 +388,16 @@ bool SoundClass::PlayWaveFile(float positionX, float positionY, float positionZ,
 bool SoundClass::PlayWaveFile()
 #endif
 {
-	ASSERT_DEBUG(m_secondaryBuffer1);
+	if (!m_secondaryBuffer1)
+		return false;
 
  	// Set position at the beginning of the sound buffer.
 	if(FAILED(m_secondaryBuffer1->SetCurrentPosition(0)))
 		return false;
  
-	if(FAILED(m_secondary3DBuffer1->SetMinDistance(range, DS3D_IMMEDIATE)))
-		return false;
+	if (m_secondary3DBuffer1)
+		if(FAILED(m_secondary3DBuffer1->SetMinDistance(range, DS3D_IMMEDIATE)))
+			return false;
 	
 	// Set volume of the buffer to 100%.
 	// DSBVOLUME_MIN               -10000

@@ -1,179 +1,118 @@
-# 🧭 WoMA3Dengine – Dependency Map
+# 🧩 Engine Dependency Map
 
-This document provides an overview of all third-party and internal dependencies integrated into the **WoMA3Dengine**, grouped by system and showing where each dependency is used.
-
-Each entry includes:  
-- **Library or File**  
-- **Used In (Engine Levels / Modules)**  
-- **Purpose**  
-- **Dependencies (if any)**
+This document shows how each module of the **WoMA Multi-Platform Engine** depends on internal code and external libraries.  
+Useful for contributors, maintainers, and portability analysis.
 
 ---
 
-## ⚙️ Core System Dependencies
-<details>
-<summary>Click to expand</summary>
+## 📘 Legend
 
-| Library | Used In | Purpose | Dependencies |
-|----------|----------|----------|---------------|
-| **UltimateTCPIP_LIBX64_d.lib** | Levels 03+ | Cross-platform networking and socket communication | — |
-| **TinyXMLv2_LIBX64_d.lib** | Levels 05+ | XML parsing (settings.xml) and configuration loader | — |
-| **ZipUtils_LIBX64_d.lib** | Levels 06+ | ZIP compression/decompression utilities | ZLIB |
-| **GeoLite2PP_LIBX64_d.lib** | Level 08+ | IP-based geolocation interface | maxminddb |
-| **maxminddb_LIBX64_d.lib** | Level 08+ | Low-level MaxMind database reader | — |
-
-</details>
+- **Engine Module** — Internal subsystem or tutorial level  
+- **Depends On** — Internal or external component it requires  
+- **Platform** — Windows / Linux / Android  
+- **Notes** — Additional info  
 
 ---
 
-## 🖼️ Image & Texture System
-<details>
-<summary>Click to expand</summary>
+## 🔧 Core System
 
-| Library | Used In | Purpose | Dependencies |
-|----------|----------|----------|---------------|
-| **TIFF_LIBX64_d.lib** | Level 22+ | TIFF image decoding | ZLIB |
-| **ZLIB_LIBX64_d.lib** | Level 22+ | Compression backend (PNG, ZIP, TIFF) | — |
-| **PNG_LIBX64_d.lib** | Level 22+ | PNG image decoding | ZLIB |
-| **JPG_LIBX64_d.lib** | Level 22+ | JPEG image decoding | ZLIB |
-| **DirectXTex** | Level 22+ | Texture import (TGA) and conversion utilities | DirectX 11 SDK |
-| **DirectXTK** | Level 22+ | Texture handling (DDS, BMP, PNG, JPG, TIF) and WIC export | DirectX 11 SDK |
+| Module | Depends On | Platform | Notes |
+|--------|-------------|----------|-------|
+| **Level 01 – MessageBox** | — | All | Multi-OS dialog wrapper |
+| **Level 02 – WomaLog** | — | All | Logging system |
+| **Level 03 – Exception + Minidumper** | `minidumperClass.cpp` | All | Crash handling (no external libs) |
+| **Level 04 – System Check + Timers** | — | All | CPU, memory, OS checks |
+| **Level 05 – Settings Loader** | TinyXMLv2 | All | Loads `settings.xml` |
+| **Level 06 – File Packaging + IDEA + ZIP** | ZipUtils, idea.cpp | All | Asset packaging/encryption |
+| **Level 07 – Sun/Moon Position** | Math only | All | Astro calculations |
+| **Level 08 – Geolocation** | GeoLite2PP, MaxMindDB | All | IP-based geolocation |
+| **Level 09 – Weather** | libcurl | All | HTTP requests |
 
-</details>
+---
+
+## 🎨 Rendering System
+
+| Module | Depends On | Platform | Notes |
+|--------|-------------|----------|-------|
+| **Level 19 – Renderer Window** | — | All | OS-specific |
+| **Level 20 – Window Resizing** | — | All | — |
+| **Level 21 – Color Shader + 3D Camera** | — | All | — |
+| **Level 22 – Texture Shader + Image Loading** | TIFF, PNG, JPG, ZLIB, DirectXTex, DirectXTK | Win/Linux | Loads all major formats |
+| **Level 23 – Light Shader** | — | All | Basic lighting |
+| **Level 24 – Sprites + Rasterizer** | — | All | 2D support |
+| **Level 25 – DX Native Fonts** | DirectXTK | Windows | — |
+| **Level 27 – Rastertek Text Fonts** | Rastertek text fonts | All | Customized font renderer |
+| **Level 28 – Direct Input** | — | Windows | Keyboard/mouse |
 
 ---
 
 ## 🔊 Audio System
-<details>
-<summary>Click to expand</summary>
 
-| Library | Used In | Purpose | Dependencies |
-|----------|----------|----------|---------------|
-| **OpenAL32_LIBX64_d.lib** | Level 29+ | 3D positional sound | — |
-| **ALUT_LIBX64_d.lib** | Level 29+ | OpenAL utility functions | OpenAL |
-| **OGG_LIBX64_d.lib** | Level 29+ | OGG file decoding | — |
-| **VORBIS_LIBX64_d.lib** | Level 29+ | Vorbis audio codec | OGG |
-| **VORBISFILE_LIBX64_d.lib** | Level 29+ | File I/O for Vorbis streams | VORBIS |
-
-</details>
+| Module | Depends On | Platform | Notes |
+|--------|-------------|----------|-------|
+| **Level 29 – 3D Sound & Music** | OpenAL, ALUT, Vorbis, VorbisFile | All | WAV/OGG audio playback |
 
 ---
 
-## 🪟 OpenGL & Cross-Platform Rendering
-<details>
-<summary>Click to expand</summary>
+## 🗺 Scene Management
 
-| Library | Used In | Purpose | Dependencies |
-|----------|----------|----------|---------------|
-| **freeglut** | Linux builds | Window/context management + input | OpenGL |
-| **GL3Plus** | Linux builds | OpenGL rendering layer abstraction | OpenGL |
-
-</details>
-
----
-
-## 💡 Rendering / PBR System
-<details>
-<summary>Click to expand</summary>
-
-| Library | Used In | Purpose | Dependencies |
-|----------|----------|----------|---------------|
-| **PPG-master** | Level 82+ | Physically-Based Rendering Engine (DX11) | Assimp, DirectXTK |
-| **Assimp** | Level 82+ | Asset import (OBJ, FBX, glTF, COLLADA, MD5, etc.) | ZLIB, DirectXTex |
-| **rastertek_text_fonts** | Levels 25–27 | Font rendering (based on Rastertek tutorials) | DirectXTK |
-
-</details>
+| Level | Depends On | Notes |
+|-------|--------------|-------|
+| 30–36 | Wavefront OBJ loader | Color, UVs, light, specular, bump, shadows |
+| 37 | Threaded Loader | Parallel model loading |
+| 38 | W3D Export Tool | Fast binary format |
+| 39 | W3D Importer | 20× faster loading |
+| 40–42 | Instances + Shadows | Efficient rendering |
 
 ---
 
-## 🌐 Networking / Online Features
-<details>
-<summary>Click to expand</summary>
+## 🏞 Terrain System
 
-| Library | Used In | Purpose | Dependencies |
-|----------|----------|----------|---------------|
-| **libcurl** | CoreEngine_000_OSENGINE_SYSTEM | HTTP/HTTPS file download (Dropbox data & music) | OpenSSL (static) |
-
-</details>
-
----
-
-## 🧠 Utility Libraries (Internal Tools)
-<details>
-<summary>Click to expand</summary>
-
-| File | Used In | Purpose | Origin / Attribution |
-|------|----------|----------|----------------------|
-| **minidumperClass.cpp** | CoreEngine crash handler | Generate `.dmp` crash dump files | Concept by Andy Pennell (CodeProject, 2002) |
-| **stackTrace.cpp** | CoreEngine debug layer | Runtime stack trace capture | Inspired by MSDN example |
-| **idea.cpp** | Tools / Encryption utilities | IDEA cipher implementation | Algorithm by Lai & Massey (ETH Zürich, 1990) |
-
-</details>
+| Level | Depends On | Notes |
+|-------|--------------|-------|
+| 49–55 | Heightmap terrain | Underwater, fog, normals, collision |
+| 60–61 | Advanced multilayer | 256×256 → 512×512 |
+| 62–63 | Main Map / Mini-Map | — |
+| 64–65 | Objects + Collision | Animated windmill |
+| 70–75 | Billboards, fire, grass, progress bar | — |
+| 76 | MPG Video Intro | Uses native video loader |
 
 ---
 
-## 🧭 Platform-Specific Dependencies
-<details>
-<summary>Click to expand</summary>
+## 🌲 Instances
 
-### 🪟 Windows
-- DirectXTex  
-- DirectXTK  
-- TinyXMLv2  
-- ZipUtils  
-- Assimp  
-- PPG-master  
-- OpenAL  
-- Vorbis  
-- libcurl  
-- UltimateTCP/IP  
-
-### 🐧 Linux
-- freeglut  
-- GL3Plus  
-- TinyXMLv2  
-- ZipUtils  
-- OpenAL  
-- Vorbis  
-- GeoLite2PP  
-- maxminddb  
-
-### 🤖 Android
-- TinyXMLv2  
-- ZipUtils  
-- OpenAL  
-- Vorbis  
-- rastertek_text_fonts  
-
-</details>
+| Level | Depends On | Notes |
+|-------|--------------|-------|
+| 77 | Tree Instances | High-performance forest rendering |
+| 78 | Collision with XML Objects | Physics + navigation |
 
 ---
 
-## 🔗 Dependency Tree Overview
-```text
-CoreEngine
- ├── TinyXMLv2
- ├── ZipUtils ──┬── ZLIB
- │              └── PNG/JPG/TIFF
- ├── GeoLite2PP ──> maxminddb
- ├── DirectXTK ──> DirectXTex
- ├── PPG-master ──┬── Assimp
- │                ├── DirectXTK
- │                └── WoMA scene manager
- ├── AudioSystem ─┬── OpenAL ─── ALUT
- │                └── Vorbis ─── OGG ─── VORBISFILE
- ├── Network ────> libcurl
- └── Utilities ──> minidumperClass.cpp, stackTrace.cpp, idea.cpp
-```
+## 🦴 Advanced Mesh System (PBR)
+
+| Level | Depends On | Notes |
+|-------|--------------|-------|
+| **82 – MD5 Mesh Loading** | Assimp, PPG-master, DirectXTK | PBR renderer + animation |
 
 ---
 
-## 📘 Notes
-- Libraries marked as “MIT” or “BSD” are open for commercial redistribution, provided attributions are included.  
-- Educational/tutorial sources (like Rastertek) are used **only as learning material fragments**.  
-- Commercial SDKs (like UltimateTCP/IP) must be acquired separately for legal use in distributed binaries.
+## 🔗 Summary of External Libraries
+
+TinyXMLv2
+Assimp
+DirectXTex
+DirectXTK
+PPG-master (PPG modified fork)
+libcurl
+OpenAL / ALUT
+Vorbis / OvFile
+GeoLite2PP
+MaxMindDB
+Rastertek Text Fonts
+ZLib / PNG / JPG / TIFF loaders
+ZipUtils
+
 
 ---
 
-**End of Dependency Map**
-
+<sub>All dependencies listed above follow their respective open-source licenses.</sub>

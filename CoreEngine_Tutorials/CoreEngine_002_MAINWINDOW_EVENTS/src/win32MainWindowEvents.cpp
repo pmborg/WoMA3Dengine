@@ -471,10 +471,26 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 		break;
 	}
 
-
 	// -----------------------------------------------------------------------------
 	// TIMERS:
 	// -----------------------------------------------------------------------------
+
+	case WM_LBUTTONDOWN:
+	{
+		POINTS p = MAKEPOINTS(lparam);
+		STRING str = TEXT("WOMA ENGINE CORE LEVEL: "); str.append(to_string(CORE_ENGINE_LEVEL));
+		str.append( TEXT(" - with mouse click: "));
+		str += " x: " + std::to_string(p.x);
+		str += " y: " + std::to_string(p.y);
+		PDWORD_PTR dwResult = 0;// In 64 Bits
+		for (int i = 0; i < SystemHandle->windowsArray.size(); i++)
+		{
+			if (ShouldDrawUI(i))
+				SendMessageTimeout(SystemHandle->windowsArray[i].hWnd, WM_SETTEXT, 0, (LPARAM)str.c_str(), SMTO_ABORTIFHUNG, 1000, dwResult);
+		}
+	}
+	break;
+
 	case WM_TIMER: // Once per second:
 		if (WOMA::game_state < GAME_STOP)
 		{

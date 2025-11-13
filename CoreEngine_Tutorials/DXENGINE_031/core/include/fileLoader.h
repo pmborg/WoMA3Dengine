@@ -20,6 +20,8 @@
 
 #pragma once
 
+#if !defined(fileLoader_cpp_defined)
+#define fileLoader_cpp_defined
 #include "main.h"
 
 // --------------------------------------------------------------------------------------------
@@ -35,3 +37,4 @@ namespace WOMA
 #endif
 	extern TCHAR*	LoadFile(TCHAR* filename, bool shader = false);
 }
+#endif

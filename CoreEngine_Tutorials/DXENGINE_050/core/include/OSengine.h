@@ -269,10 +269,9 @@ namespace WOMA
 }
 
 extern bool g_GOD_MODE;
-
-#if CORE_ENGINE_LEVEL >= 1 && !defined NewWomaEngine
 extern int Command;
 
+#if CORE_ENGINE_LEVEL >= 1 && !defined NewWomaEngine
 extern TCHAR* DEMO_NAME[];
 extern TCHAR DEMO_NAME_SHOW[MAX_STR_LEN];
 
@@ -396,3 +395,4 @@ extern "C" {
 #endif
 
 #endif
+

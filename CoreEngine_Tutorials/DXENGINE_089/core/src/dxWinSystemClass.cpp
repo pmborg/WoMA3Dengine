@@ -65,7 +65,7 @@ unsigned long threadInitializeLoaderId = NULL;
 
 dxWinSystemClass* DXsystemHandle = NULL;
 
-extern bool threadLoadMeshAlive;
+
 
 //----------------------------------------------------------------------------------
 dxWinSystemClass::dxWinSystemClass(WOMA::Settings* appSettings) : WinSystemClass() //	SystemClass::SystemClass() Will Run!
@@ -502,10 +502,11 @@ void dxWinSystemClass::InitSceneManager()
 }
 #endif
 
+
+#include "commonfunctionsInterfaces.h"
 bool threadLoadPacksAlive;
 HANDLE threadLoadPacksHandle;
 unsigned long threadLoadPacksId;
-extern bool Startauxcommonfunctions(UINT level);
 
 #if defined USE_INTRO_VIDEO_DEMO 
 
@@ -531,7 +532,7 @@ HRESULT dxWinSystemClass::PlayIntroMovie(TCHAR* movie)
 	HRESULT hr = S_OK;
 	STRING movie_file = movie;
 
-    playvideo = Startauxcommonfunctions(DX_ENGINE_LEVEL);
+    playvideo = Startauxcommonfunctions(DX_ENGINE_LEVEL, SystemHandle->m_hWnd);
     #ifdef GENERATE_PACK
     return -1;
     #endif

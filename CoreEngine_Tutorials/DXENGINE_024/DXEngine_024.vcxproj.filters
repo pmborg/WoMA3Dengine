@@ -53,9 +53,6 @@
     <ClInclude Include="core\include\default_settings_xml.h">
       <Filter>core\include</Filter>
     </ClInclude>
-    <ClInclude Include="core\include\dumpUploader.h">
-      <Filter>core\include</Filter>
-    </ClInclude>
     <ClInclude Include="core\include\fileLoader.h">
       <Filter>core\include</Filter>
     </ClInclude>
@@ -273,9 +270,6 @@
     <ClCompile Include="core\src\default_settings_xml.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
-    <ClCompile Include="core\src\dumpUploader.cpp">
-      <Filter>core\src</Filter>
-    </ClCompile>
     <ClCompile Include="core\src\fileLoader.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
@@ -458,6 +452,12 @@
     </ClCompile>
     <ClCompile Include="core\src\OperatingSystem.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\corelib6.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\corelib0.cpp">
+      <Filter>core\src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

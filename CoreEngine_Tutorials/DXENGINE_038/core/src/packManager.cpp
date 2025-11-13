@@ -40,71 +40,7 @@ extern int EncodeIDEA(char* filename, int whatTOdo);
 STRING REPORT_FILE;
 
 
-namespace WOMA
-{
-	extern BOOL IsDots(const TCHAR* str);
-}
 
-//
-//
-BOOL PackDirectory(HZIP hz, const TCHAR* sPath) 
-{
-HANDLE hFind; // file handle
-WIN32_FIND_DATA FindFileData;
-     
-TCHAR DirPath[MAX_PATH];
-TCHAR FileName[MAX_PATH];
-     
-	_tcscpy(DirPath,sPath);
-	_tcscat(DirPath, TEXT("\\*")); // searching all files
-	_tcscpy(FileName,sPath);
-	_tcscat(FileName, TEXT("\\"));
-     
-	// find the first file
-	hFind = FindFirstFile(DirPath,&FindFileData);
-	if(hFind == INVALID_HANDLE_VALUE) return FALSE;
-	_tcscpy(DirPath,FileName);
-     
-	bool bSearch = true;
-	while(bSearch) 
-	{ // until we find an entry
-		if(FindNextFile(hFind,&FindFileData)) 
-		{
-			if(WOMA::IsDots(FindFileData.cFileName)) continue;
-			_tcscat(FileName,FindFileData.cFileName);
-			if((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) 
-			{
-				// we have found a directory, recurse:
-				if(!PackDirectory(hz, FileName)) 
-				{
-					FindClose(hFind);
-					return FALSE; // directory couldn't be deleted
-				}
-
-				// empty directory:
-				_tcscpy(FileName,DirPath);
-			} else {
-
-				_tprintf(TEXT("%s\n"), FileName);	// ACTION!
-				ZipAdd(hz,FileName, FileName);		// id, ZIP DEST, Source
-                womalogauto(TEXT("ZipAdd: %s\n"), FileName);
-				_tcscpy(FileName,DirPath);
-			}
-		} else {
-			// no more files there
-			if(GetLastError() == ERROR_NO_MORE_FILES)
-				bSearch = false;
-			else {
-				// some error occurred; close the handle and return FALSE
-				FindClose(hFind);
-				return FALSE;
-			}
-		}
-	}
-	FindClose(hFind); // close the file handle
-     
-	return TRUE;
-}
 
 #if defined RELEASE  || DX_ENGINE_LEVEL >= 86
 #include <sys/types.h>
@@ -119,11 +55,10 @@ TCHAR FileName[MAX_PATH];
 // --------------------------------------------------------------------------------------------
 // Globals:
 // --------------------------------------------------------------------------------------------
-int numZipItems=0;
-int zipIndx=0;
+
 
 #define PACK_COUNTER_FILE "counter.dat"
-UINT packCounter = 0, totalPackCounter = 0;
+
 
 // wildcmp SOURCE: Written by Jack Handy - <A href="mailto:jakkhandy@hotmail.com">jakkhandy@hotmail.com</A>
 //
@@ -249,7 +184,7 @@ bool InitPackLib(char* packfilename)				// Need to be CHAR!
 	return true;
 }
 #endif
-
+#ifdef RELEASE
 bool InitPackLibs() 
 {
 	// Read the Total Number of Files that will be Uncompressed:
@@ -269,7 +204,7 @@ bool InitPackLibs()
   
 	return true;
 }
-
+#endif
 bool StartPackLibs() 
 {
     SetUnhandledExceptionFilter(TopLevelFilter);

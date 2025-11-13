@@ -71,9 +71,6 @@
     <ClInclude Include="include\stateMachine.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\dumpUploader.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="include\fileLoader.h">
       <Filter>include</Filter>
     </ClInclude>
@@ -164,9 +161,6 @@
     <ClCompile Include="src\woma_exception.cpp">
       <Filter>src\002</Filter>
     </ClCompile>
-    <ClCompile Include="src\dumpUploader.cpp">
-      <Filter>src\003</Filter>
-    </ClCompile>
     <ClCompile Include="src\fileLoader.cpp">
       <Filter>src\003</Filter>
     </ClCompile>
@@ -256,6 +250,12 @@
     </ClCompile>
     <ClCompile Include="src\winSystemClass.cpp">
       <Filter>src\000</Filter>
+    </ClCompile>
+    <ClCompile Include="src\corelib0.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\corelib6.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

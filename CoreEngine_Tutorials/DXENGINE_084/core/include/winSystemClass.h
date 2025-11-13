@@ -77,7 +77,7 @@ namespace WOMA
 	extern unsigned long threadLoadPacksId;
 #endif
 
-extern LRESULT CALLBACK WOMA_PAINT_MessageHandler(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam);
+extern LRESULT CALLBACK WOMA_PAINT_Message_event_handler(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam);
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: WinSystemClass
@@ -103,7 +103,7 @@ public:
 	bool InitOsInput();
 	#endif
 	bool APPLICATION_INIT_MAIN_WINDOW();
-	bool MyRegisterClass(HINSTANCE hInstance);
+	bool WomaRegisterClass(HINSTANCE hInstance);
 	HWND WomaCreateWindowEx(DWORD dwExStyle, TCHAR* lpClassName, TCHAR* lpWindowName, DWORD dwStyle,
 		int X, int Y, int nWidth, int nHeight, HWND hWndParent, HMENU hMenu, HINSTANCE hInstance, LPVOID lpParam);
 	bool CreateWin32MainWindow(UINT USE_MONITOR_, void*, int&, int&); //wGLopenGLclass

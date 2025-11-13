@@ -18,6 +18,8 @@
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234525217;
 
+#include "platform.h"
+#include "standard_platform.h"
 #include "OSengine.h"
 #include "mem_leak.h"
 #if defined DX_ENGINE
@@ -115,7 +117,6 @@ bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 #endif
 
 // ########################################### LOAD DRIVERS ###########################################
-
  // ######################################### INIT SELECTED DRIVER ###################################
 
 #if defined USE_SYSTEM_CHECK
@@ -164,9 +165,12 @@ int WinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 	{
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))	// There is any OS messages to handle?
 		{
+		#if !defined USE_DIRECT_INPUT
 			TranslateMessage(&msg); // TranslateMessage produces WM_CHAR messages only for keys that are mapped to ASCII characters by the keyboard driver.
-			DispatchMessage(&msg);  // Process Msg:  (INVOKE: WinSystemClass::MessageHandler)
+		#endif
+			DispatchMessage(&msg);  // Process MSGs: INVOKE: WOMA_PAINT_Message_event_handler(...)
 		}
+
 	} while (msg.message != WM_QUIT && WOMA::main_loop_state >= 0);
 
 	return S_OK;

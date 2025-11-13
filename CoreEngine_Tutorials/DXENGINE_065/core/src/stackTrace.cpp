@@ -171,9 +171,6 @@ private:
 
 stack_trace::stack_trace(CONTEXT* context, size_t skip)  
 {  
-	//for (size_t i = 0; i < max_frame_ptrs;  ++i)
-	//	m_frame_ptrs[i]=0;
-	
     sym_handler::get_instance().capture_stack_trace(context, m_frame_ptrs, max_frame_ptrs, skip);  
   
 }  

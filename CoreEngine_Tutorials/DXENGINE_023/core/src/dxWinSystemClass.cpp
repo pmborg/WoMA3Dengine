@@ -65,6 +65,8 @@ unsigned long threadInitializeLoaderId = NULL;
 
 dxWinSystemClass* DXsystemHandle = NULL;
 
+
+
 //----------------------------------------------------------------------------------
 dxWinSystemClass::dxWinSystemClass(WOMA::Settings* appSettings) : WinSystemClass() //	SystemClass::SystemClass() Will Run!
 //----------------------------------------------------------------------------------
@@ -434,6 +436,7 @@ void dxWinSystemClass::InitSceneManager()
 #endif
 }
 #endif
+
 
 #if defined USE_INTRO_VIDEO_DEMO 
 

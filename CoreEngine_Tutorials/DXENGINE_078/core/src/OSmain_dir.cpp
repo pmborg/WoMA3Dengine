@@ -28,7 +28,10 @@
 #include "AndroidSystemClass.h"
 #endif
 
+#ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include "OSengine.h" //#include "WinSystemClass.h"
 #include "OSmain_dir.h"
 #include <algorithm>
@@ -62,7 +65,6 @@ namespace WOMA
 	TCHAR PROGRAM_FILES[MAX_STR_LEN];
 	TCHAR APPDATA1[MAX_STR_LEN];
 	TCHAR APPDATA[MAX_STR_LEN];
-	TCHAR cCurrentPath[FILENAME_MAX]; //Use now: APPDATA
 	STRING womaTempPATH;
 	TCHAR* Temp;
 	TCHAR* Home;
@@ -157,32 +159,7 @@ namespace WOMA
 	}
 #endif
 
-	//-------------------------------------------------------------------------------------------
-	TCHAR* getCurrentDir()
-	//-------------------------------------------------------------------------------------------
-	{
-	#if defined WINDOWS_PLATFORM
-		if (!GetCurrentDirectory(MAX_STR_LEN, cCurrentPath))
-			return (TCHAR*)TEXT("");
 
-        #if defined USE_SYSTEM_CHECK & !defined NewWomaEngine
-        //strcpy_s(SystemHandle->systemDefinitions.cCurrentPath, FILENAME_MAX, cCurrentPath);
-		StringCchPrintf(SystemHandle->systemDefinitions.cCurrentPath, FILENAME_MAX, cCurrentPath);
-        #endif
-	#else // Linux / Android
-		char* CurrentPath;
-
-		CurrentPath = getcwd(NULL, 0); // or _getcwd
-		if (CurrentPath == NULL)
-			return TEXT("");
-
-		#if defined USE_SYSTEM_CHECK & !defined NewWomaEngine
-		strcpy_s(SystemHandle->systemDefinitions.cCurrentPath, FILENAME_MAX, CurrentPath);
-		#endif
-	#endif
-
-		return SystemHandle->systemDefinitions.cCurrentPath;
-	}
 
 	//-------------------------------------------------------------------------------------------
 	TCHAR* getTemp()
@@ -240,11 +217,6 @@ namespace WOMA
 
 		womalogauto((TCHAR*)TEXT("Current Directory: %s\n"), currentPath);
 
-#if _NOT //defined  WINDOWS_PLATFORM && defined RELEASE // In "Debug" we use the local data at disk / At production "Release" we use the default "Dirs"
-	// Check if is a network PATH:
-	//if (PathIsNetworkPath  (SystemHandle->systemDefinitions.cCurrentPath)) 
-	//	{WomaFatalException( TEXT("On Release version, no NETWORK PATH is allowed!") ); return false;}
-#endif
 		Temp = getTemp();
 		Home = getHome();
 

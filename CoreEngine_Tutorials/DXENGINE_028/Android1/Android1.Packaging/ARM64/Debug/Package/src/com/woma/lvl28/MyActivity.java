@@ -17,8 +17,6 @@
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234525256;
-
-
 // https://www.tutorialspoint.com/android/android_hello_world_example.htm
 
 // https://github.com/codepath/android_hello_world
@@ -149,16 +147,7 @@ import java.io.InputStreamReader;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
-//import com.woma.R;					
-import android.app.NativeActivity;
-import android.os.Bundle;
-import android.util.Log;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.io.BufferedOutputStream;
+//import com.woma.R;
 
 //AUDIO SAMPLE: https://www.cnblogs.com/MMLoveMeMM/articles/3610386.html  
 public class MyActivity extends NativeActivity

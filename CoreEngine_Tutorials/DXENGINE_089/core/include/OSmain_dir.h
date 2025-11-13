@@ -22,8 +22,6 @@
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234525217;
 
-#pragma once
-
 #include "standard_platform.h"
 
 // [ON DEBUG] APPDATA & PROGRAM_FILES are defined here:
@@ -71,3 +69,9 @@ namespace WOMA
 
   	extern BOOL DeleteDirectory(const TCHAR* sPath);
 }
+
+#if defined WINDOWS_PLATFORM
+extern bool threadLoadMeshAlive;
+extern HANDLE threadLoadMeshHandle;
+extern unsigned long threadLoadMeshId;
+#endif

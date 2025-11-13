@@ -24,41 +24,51 @@
 #include "OSengine.h"
 #include "log.h"
 #include "mem_leak.h"
+
 #if defined USE_WOMA_EXCEPTION
 
 #if defined WINDOWS_PLATFORM
 #include "stackTrace.h"
-stack_trace* sttrace;
+static stack_trace* sttrace = nullptr;
+#endif
 
-woma_exception::woma_exception(const std::string &arg, const char *file, const char *function, int line) : std::runtime_error(arg) 
+
+
+woma_exception::woma_exception(const std::string& arg,
+	const char* file,
+	const char* function,
+	int line)
+#if defined WINDOWS_PLATFORM
+	: std::runtime_error(arg)
 #else
-woma_exception::woma_exception(const std::string &arg, const char *file, const char *function, int line) : exception() 
+	: exception()
 #endif
 {
-	#if defined USE_WOMA_EXCEPTION
-		std::string msg;
-        Command = EXIT_FAILURE;
+	std::string msg;
+    Command = EXIT_FAILURE;
 
-		#if defined WINDOWS_PLATFORM
-		//Show extra runtime "Call Stack" frame Debug info on a "woma_exception":
-		sttrace = NEW stack_trace(NULL, 0);
-		if (sttrace)
-		{
-			std::string msg = file; msg.append("\n");	// dont use TEXT
-			msg.append(function); msg.append("\n");		// dont use TEXT
-			msg.append("\n\n");							// dont use TEXT
-			msg.append(sttrace->to_string().c_str());
-			MessageBoxA(NULL, msg.c_str(), arg.c_str(), 0);
-            womalogauto(TEXT("WOMA EXCEPTION: %s\n"), msg.c_str());
-		}
-        SAFE_DELETE(sttrace);
-		#endif
+	#if defined WINDOWS_PLATFORM
+	//Show extra runtime "Call Stack" frame Debug info on a "woma_exception":
+	sttrace = NEW stack_trace(NULL, 0);
+	if (sttrace)
+	{
+		std::string msg = file; 
+		msg.append("\n");		// dont use TEXT
+		msg.append(function); 
+		msg.append("\n");		// dont use TEXT
+		msg.append("\n\n");		// dont use TEXT
+		msg.append(sttrace->to_string().c_str());
+
+		MessageBoxA(NULL, msg.c_str(), arg.c_str(), 0);
+        womalogauto(TEXT("WOMA EXCEPTION: %s\n"), msg.c_str());
+	}
+    SAFE_DELETE(sttrace);
 	#endif
 }
 
 woma_exception::~woma_exception() throw() 
 {
-#if CORE_ENGINE_LEVEL >= 3 && defined WINDOWS_PLATFORM
+#if defined WINDOWS_PLATFORM //CORE_ENGINE_LEVEL >= 3 && defined WINDOWS_PLATFORM
 	SAFE_DELETE (sttrace);
 #endif
 }

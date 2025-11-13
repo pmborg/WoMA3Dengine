@@ -38,7 +38,6 @@ Copyright (C) 2002  Andy Pennell
 #include "minidumperClass.h"
 #include "log.h"
 
-#include "dumpUploader.h"
 #include "fileLoader.h"
 #include "OSmain_dir.h"
 
@@ -193,16 +192,6 @@ LONG TopLevelFilter( struct _EXCEPTION_POINTERS *pExceptionInfo )
 	{
 		::MessageBox(NULL, szResult, WOMA::APP_FULLNAME, MB_OK);
 	}
-
-    // PB NOTE, new FEATURE: Upload DUMP Result
-	if (WOMA::dumpUploader(szDumpPath) == 0)
-    {
-        ::MessageBox(NULL, szResult, WOMA::APP_FULLNAME, MB_OK);
-    }
-    else {
-        ::MessageBox(NULL, TEXT("WARNING: Error Sending the report!"), WOMA::APP_FULLNAME, MB_OK);
-    }
-
 	return EXCEPTION_CONTINUE_SEARCH;
 }
 

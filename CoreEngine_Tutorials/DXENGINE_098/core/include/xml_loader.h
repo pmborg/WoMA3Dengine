@@ -45,43 +45,7 @@ using namespace std;
 #endif
 	
 
-#if UNICODE
-#ifdef X64
-	#if defined(_DEBUG) & !defined(NDEBUG)
-		#pragma comment( lib, "x64/WDebug/TinyXMLv2_LIBX64_d.lib" )	//DEBUG
-	#elif !defined _DEBUG && defined NDEBUG
-		#pragma comment( lib, "x64/WRelease/TinyXMLv2_LIBX64.lib" )	//RELEASE
-	#else
-		#pragma comment( lib, "x64/WRelease/TinyXMLv2_LIBX64.lib" )	//DBGREL
-	#endif
-#else
-	#if defined(_DEBUG) & !defined(NDEBUG)
-		#pragma comment( lib, "Win32/WDebug/TinyXMLv2_LIB_d.lib" )	//DEBUG
-	#elif !defined _DEBUG && defined NDEBUG
-		#pragma comment( lib, "Win32/WRelease/TinyXMLv2_LIB.lib" )	//RELEASE
-	#else
-		#pragma comment( lib, "Win32/WRelease/TinyXMLv2_LIB.lib" )	//DBGREL
-	#endif
-#endif
-#else
-#ifdef X64
-	#if defined(_DEBUG)// && !defined(NDEBUG)
-		#pragma comment( lib, "x64/Debug/TinyXMLv2_LIBX64_d.lib" )	//DEBUG
-	#elif !defined _DEBUG && defined NDEBUG
-		#pragma comment( lib, "x64/Release/TinyXMLv2_LIBX64.lib" )	//RELEASE
-	#else
-		#pragma comment( lib, "x64/Release/TinyXMLv2_LIBX64.lib" )	//DBGREL
-	#endif
-#else
-	#if defined(_DEBUG) & !defined(NDEBUG)
-		#pragma comment( lib, "Win32/Debug/TinyXMLv2_LIB_d.lib" )		//DEBUG
-	#elif !defined _DEBUG && defined NDEBUG
-		#pragma comment( lib, "Win32/Release/TinyXMLv2_LIB.lib" )		//RELEASE
-	#else
-		#pragma comment( lib, "Win32/Release/TinyXMLv2_LIB.lib" )		//DBGREL
-	#endif
-#endif
-#endif
+
 
 
 #include "main.h"

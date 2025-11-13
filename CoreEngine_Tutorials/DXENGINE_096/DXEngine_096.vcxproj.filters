@@ -147,9 +147,6 @@
     <ClInclude Include="core\include\win32InputClass.h">
       <Filter>src-basic-level\core\002-Windows</Filter>
     </ClInclude>
-    <ClInclude Include="core\include\dumpUploader.h">
-      <Filter>src-basic-level\core\003-Exceptions</Filter>
-    </ClInclude>
     <ClInclude Include="core\include\fileLoader.h">
       <Filter>src-basic-level\core\003-Exceptions</Filter>
     </ClInclude>
@@ -519,9 +516,6 @@
       <Filter>src-basic-level\core\003-Exceptions</Filter>
     </ClCompile>
     <ClCompile Include="core\src\minidumperClass.cpp">
-      <Filter>src-basic-level\core\003-Exceptions</Filter>
-    </ClCompile>
-    <ClCompile Include="core\src\dumpUploader.cpp">
       <Filter>src-basic-level\core\003-Exceptions</Filter>
     </ClCompile>
     <ClCompile Include="core\src\stackTrace.cpp">

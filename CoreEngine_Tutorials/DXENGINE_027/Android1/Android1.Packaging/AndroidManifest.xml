@@ -24,7 +24,7 @@
   <!-- This .apk has no Java code itself, so set hasCode to false. -->
   <!--android:theme="@android:style/Theme.Holo.Dialog"-->
   <!--android:icon="@drawable/ic_launcher"-->
-  
+
   <application  
     android:label="@string/app_name"
      android:icon="@drawable/ic_launcher"

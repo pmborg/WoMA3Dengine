@@ -18,6 +18,7 @@
 // --------------------------------------------------------------------------------------------
 //WomaIntegrityCheck = 1234525217;
 
+#include "platform.h"
 #include "standard_platform.h"
 #include "ApplicationClass.h"
 #include "womamesh.h"
@@ -25,14 +26,19 @@
 #include "mem_leak.h"
 #include "OSengine.h"
 #include "fileLoader.h"
-
+#include "OSmain_dir.h"
 #include "stdafx.h"
 #include "PPG.h"
 
 
-bool threadLoadMeshAlive = false;
-HANDLE threadLoadMeshHandle = NULL;
-unsigned long threadLoadMeshId = NULL;
+#if !defined WOMA_DLL && !defined COMMONFUNCTIONS_DLL_EXPORTS
+#if _DEBUG
+#pragma comment( lib, "C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\Assimp-latest-Engine.lib" )
+#else
+#pragma comment( lib, "C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Release\\Assimp-latest-Engine.lib" )
+#endif
+#endif
+
 
 MeshApplication* demoapp_ = NULL;
 MyDemo* demo_ = NULL;

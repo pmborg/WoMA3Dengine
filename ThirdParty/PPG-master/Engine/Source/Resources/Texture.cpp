@@ -84,15 +84,12 @@ Texture* Texture::CreateTextureCube(Graphics& graphics, int size, const std::str
     return new Texture(texturePtr, name);
 }
 
-extern Texture* LoadTextureFromPathFBX(UINT model_type, Graphics& graphics, LPCWSTR& texture);
-/*
-void ReplaceTextureVersionW(std::wstring& path, const std::wstring& from, const std::wstring& to) {
-    size_t pos = path.find(from);
-    if (pos != std::wstring::npos) {
-        path.replace(pos, from.length(), to);
-    }
-}
-*/
+#if defined WOMA_DLL || defined COMMONFUNCTIONS_DLL_EXPORTS
+	__declspec(dllimport) Texture* LoadTextureFromPathFBX86(UINT model_type, Graphics& graphics, LPCWSTR& texture);
+#else
+	extern Texture* LoadTextureFromPathFBX86(UINT model_type, Graphics& graphics, LPCWSTR& texture);
+#endif
+
 void ReplaceTextureVersionW(std::wstring& path, const std::wstring& from, const std::wstring& to)
 {
 	// Create lowercase copies for comparison
@@ -118,7 +115,7 @@ Texture* Texture::LoadTextureFromPath(UINT this_level, UINT modeltype, Graphics&
 if (this_level>=86) 
 {
     if (modeltype >=1)
-        return LoadTextureFromPathFBX(modeltype, graphics, texturePath);
+        return LoadTextureFromPathFBX86(modeltype, graphics, texturePath);
 }
 
 

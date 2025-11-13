@@ -37,7 +37,8 @@
 #include "DXrendertextureclass.h"
 
 #include <shlwapi.h>  // for PathFindFileName
-extern std::string CleanFilePath(const std::string& input);
+#include "commonfunctionsInterfaces.h"
+//extern std::string CleanFilePath(const std::string& input);
 
 #if defined GENERATE_ATLAS_INTEGRATION_DDS
 #include "BillClass.h"

@@ -44,7 +44,6 @@
     <ClInclude Include="core\include\AutoGenTerrain.h" />
     <ClInclude Include="core\include\BillClass.h" />
     <ClInclude Include="core\include\default_settings_xml.h" />
-    <ClInclude Include="core\include\dumpUploader.h" />
     <ClInclude Include="core\include\DXrenderTextureClass.h" />
     <ClInclude Include="core\include\fileLoader.h" />
     <ClInclude Include="core\include\fpsClass.h" />
@@ -162,7 +161,6 @@
     <ClCompile Include="core\src\8SystemFeatures.cpp" />
     <ClCompile Include="core\src\astroClass.cpp" />
     <ClCompile Include="core\src\default_settings_xml.cpp" />
-    <ClCompile Include="core\src\dumpUploader.cpp" />
     <ClCompile Include="core\src\fileLoader.cpp" />
     <ClCompile Include="core\src\fpsClass.cpp" />
     <ClCompile Include="core\src\GLmathClass.cpp" />

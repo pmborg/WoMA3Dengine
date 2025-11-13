@@ -1,0 +1,26 @@
+#version 300 es
+//#ifdef GL_ES
+precision highp float;
+//#endif
+
+in vec2 texCoord;
+
+out vec4 outputColor;
+
+uniform sampler2D shaderTexture;
+
+////////////////////////////////////////////////////////////////////////////////
+// Pixel Shader
+////////////////////////////////////////////////////////////////////////////////
+void main(void)
+{
+	vec4 textureColor;
+	textureColor = texture(shaderTexture, texCoord);
+	outputColor = textureColor;
+	
+	//outputColor = vec4(1.0f, 0.5f, 0.2f, 1.0f); 
+	//outputColor.r=1.0f;
+	//outputColor.g=1.0f;
+	//outputColor.b=1.0f;
+	//outputColor.a=0.5f;
+}
