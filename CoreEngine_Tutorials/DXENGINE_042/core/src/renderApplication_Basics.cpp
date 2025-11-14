@@ -1077,7 +1077,8 @@ void ApplicationClass::RenderDemoIntroSprites(void* pContext)
 		VirtualModelClass* screenShot = m_screenShots[SpriteScreenToShow];
 
 		//WINDOWS:
-		screenShot->RenderSprite(pContext, (WOMA::AppSettings->WINDOW_WIDTH - screenShot->SpriteTextureWidth) / 2, WOMA::AppSettings->WINDOW_HEIGHT / 2, 1, fadeIntro);
+		screenShot->RenderSprite(pContext, (WOMA::AppSettings->WINDOW_WIDTH - screenShot->SpriteTextureWidth) / 2, 
+			(WOMA::settings.WINDOW_WIDTH > (1920 + 100))? WOMA::AppSettings->WINDOW_HEIGHT / 3: WOMA::AppSettings->WINDOW_HEIGHT / 4, 1, fadeIntro);
 	}
 }
 #endif

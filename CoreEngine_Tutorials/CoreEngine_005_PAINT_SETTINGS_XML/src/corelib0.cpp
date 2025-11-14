@@ -94,6 +94,3 @@ extern "C" void SafeRelease_SEH(void** pp)
 #ifdef COMMONFUNCTIONS_DLL_EXPORTS
 #pragma message("NOTE: Building commonfunctions DLL — self-link disabled.")
 #endif
-
-
-

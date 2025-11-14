@@ -70,8 +70,3 @@ namespace WOMA
   	extern BOOL DeleteDirectory(const TCHAR* sPath);
 }
 
-#if defined WINDOWS_PLATFORM
-extern bool threadLoadMeshAlive;
-extern HANDLE threadLoadMeshHandle;
-extern unsigned long threadLoadMeshId;
-#endif

@@ -269,7 +269,6 @@ namespace WOMA
 }
 
 extern bool g_GOD_MODE;
-extern int Command;
 
 #if CORE_ENGINE_LEVEL >= 1 && !defined NewWomaEngine
 extern TCHAR* DEMO_NAME[];
@@ -396,3 +395,19 @@ extern "C" {
 
 #endif
 
+#if DX_ENGINE_LEVEL >= 86 && defined WOMA_DLL
+#else
+extern int Command;
+namespace WOMA
+{
+	extern WOMA::Settings* AppSettings;
+};
+#if defined WINDOWS_PLATFORM
+extern bool threadLoadMeshAlive;
+extern HANDLE threadLoadMeshHandle;
+extern unsigned long threadLoadMeshId;
+#endif
+extern int numZipItems;
+extern int zipIndx;
+extern UINT packCounter, totalPackCounter;
+#endif

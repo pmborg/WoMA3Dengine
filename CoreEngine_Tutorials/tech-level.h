@@ -290,6 +290,7 @@
 
 	#if DX_ENGINE_LEVEL == 29
 		#define USE_DEMO29
+		//#define USE_DEMO29_v2 //Need also: USE_DEMO29									   
 	#endif
     #if DX_ENGINE_LEVEL >= 29
     //---------------------------------------------------------------------------------------
@@ -299,7 +300,7 @@
         #define INTRO_DEMO              // 29-Close the Intro / Demo of what was learned so far.
 
 		#define INTRO_DEMO_INITIAL_PAGE 10	//10 is default
-		#define SPRITE_SCREEN_TO_SHOW   -5
+		#define SPRITE_SCREEN_TO_SHOW   -5  //-5 is default
 
         #if defined ANDROID_PLATFORM
             #define USE_ANDROID_SOUND
@@ -629,9 +630,20 @@
 #endif
 
 #if DX_ENGINE_LEVEL >= 99
-
+	#define USE_TERRAIN_SHADOWS
+	#define USE_WOMA_ENGINE_ONE_CBUFFER
 #endif
 
+#if DX_ENGINE_LEVEL >= 100
+	#define USE_SSAO
+#endif
+
+#if DX_ENGINE_LEVEL >= 101
+	#define USE_PLANET_EARTH
+#endif
+	
+	//-------------------------------------------------------------------------------------------------------
+	// Final Defines:
     //-------------------------------------------------------------------------------------------------------
     #undef  dx12_upload_old_way
 
@@ -643,6 +655,7 @@
     #if defined WINDOWS_PLATFORM
         #define ALLOW_CBIND_PROGRESS_BAR
     #endif
+	
     #if DX_ENGINE_LEVEL == 26
     #define SPHERE_GRIDPOINTS 100
     #else
@@ -653,20 +666,27 @@
     #endif
     #endif
 
-	#define MAX_ENGINE_LEVEL 100						 
+	#define MAX_ENGINE_LEVEL 100
+	
+	#if DX_ENGINE_LEVEL >= 82 && !defined USE_ASSIMP_LATEST
+		#error "USE_ASSIMP_LATEST need to be ON"
+	#endif
+	
+	// DLL import/export handling:
+	#if defined(COMMONFUNCTIONS_DLL_EXPORTS)
+		#define COMMON_API __declspec(dllexport)
+		#pragma message( "BUILD: dllexport" )  
+	#elif defined(WOMA_DLL)
+		#define COMMON_API __declspec(dllimport)
+		#pragma message( "BUILD: dllimport" )  
+	#else
+		#define COMMON_API
+		//#pragma message( "BUILD: export" )  
+	#endif
 
-// DLL import/export handling:
-#if defined(COMMONFUNCTIONS_DLL_EXPORTS)
-	#define COMMON_API __declspec(dllexport)
-#elif defined(WOMA_DLL)
-	#define COMMON_API __declspec(dllimport)
-#else
-	#define COMMON_API
-#endif
-
-#pragma warning(pop)
+	#pragma warning(pop)
 
 //-------------------------------------------------
 // THE END
-//-------------------------------------------------												   
+//-------------------------------------------------
 #endif

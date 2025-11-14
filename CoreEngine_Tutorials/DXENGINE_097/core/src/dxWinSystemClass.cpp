@@ -532,7 +532,7 @@ HRESULT dxWinSystemClass::PlayIntroMovie(TCHAR* movie)
 	HRESULT hr = S_OK;
 	STRING movie_file = movie;
 
-    playvideo = Startauxcommonfunctions(DX_ENGINE_LEVEL, SystemHandle->m_hWnd);
+    playvideo = Startauxcommonfunctions(WOMA::logManager, DX_ENGINE_LEVEL, SystemHandle->m_hWnd);
     #ifdef GENERATE_PACK
     return -1;
     #endif
@@ -549,6 +549,8 @@ HRESULT dxWinSystemClass::PlayIntroMovie(TCHAR* movie)
 		GetClientRect(m_hWnd, &rc);
 		g_DShowPlayer->UpdateVideoWindow(&rc);
 	}
+	else
+		return E_FAIL;
 
 	return hr;
 }

@@ -692,7 +692,7 @@ bool ApplicationClass::Initialize(void* pContext, WomaDriverClass* Driver)
 #endif
 
 #if DX_ENGINE_LEVEL >= 86 && !defined USE_INTRO_VIDEO_DEMO
-	Startauxcommonfunctions(DX_ENGINE_LEVEL, SystemHandle->m_hWnd);
+	IF_NOT_RETURN_FALSE(Startauxcommonfunctions(WOMA::logManager, DX_ENGINE_LEVEL, SystemHandle->m_hWnd));
 #endif
 
 //########################################### 3D: STUFF ###########################################

@@ -25,7 +25,7 @@
 
 #include "platform.h"
 #include "standard_platform.h"
-
+#include "log.h"
 #include <string>
 #include <d3d11.h>
 
@@ -35,7 +35,7 @@ namespace DirectX {
 }
 enum SHADER_TYPE;
 
-COMMON_API bool Startauxcommonfunctions(UINT this_level, HWND hWnd);
+extern "C" COMMON_API bool Startauxcommonfunctions(WOMA::ILogManager* logManager, UINT this_level, HWND hWnd);
 COMMON_API void Shutdownauxcommonfunctions(void);
 COMMON_API std::string CleanFilePath(const std::string& input);
 COMMON_API HRESULT extLoadBinfromMEM(DirectX::DX11Class* dx11class, ID3D11Device* pDevice,
