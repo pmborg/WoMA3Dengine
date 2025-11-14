@@ -255,6 +255,20 @@
     #define WORLD_XML TEXT("world_29.xml")
     #endif
 
+#if defined USE_DEMO29_v2
+	#define DEMO1_BANNER1_TEXTURE TEXT("engine/data/banners/v2/1.png")
+	#define DEMO1_BANNER2_TEXTURE TEXT("engine/data/banners/v2/2.png")
+	#define DEMO1_BANNER3_TEXTURE TEXT("engine/data/banners/v2/3.png")
+	#define DEMO1_BANNER4_TEXTURE TEXT("engine/data/banners/v2/4.png")
+	#define DEMO1_BANNER5_TEXTURE TEXT("engine/data/banners/v2/5.png")
+  #if defined WINDOWS_PLATFORM
+	#define DEMO1_BANNER6L_TEXTURE TEXT("engine/data/banners/v2/6L.png")
+	#define DEMO1_BANNER6M_TEXTURE TEXT("engine/data/banners/v2/6M.png")
+	#define DEMO1_BANNER6_TEXTURE TEXT("engine/data/banners/v2/6.png")
+  #else
+	#define DEMO1_BANNER6_TEXTURE TEXT("engine/data/banners/v2/6.png")
+  #endif
+#else
     #if defined WINDOWS_PLATFORM
         #define DEMO1_BANNER1_TEXTURE TEXT("engine/data/banners/TEXT1_WoMA_Muti_Platform_Engine_.png")
     #else
@@ -270,6 +284,7 @@
     #else
         #define DEMO1_BANNER6_TEXTURE TEXT("engine/data/banners/TEXT6_Deceased_Superior_Technician.png")
     #endif
+#endif
     #if defined WINDOWS_PLATFORM
         #define AUDIO_FILE "engine/audio/DST-Aircord.ogg"
     #endif
@@ -341,17 +356,20 @@
     #define WORLD_XML TEXT("world_42.xml")
 #endif
 
-#if DX_ENGINE_LEVEL >= 45 //IMGUI!
-  #if DX_ENGINE_LEVEL == 45
-		#define DEMO_TITLE TEXT("45: IMGUI SETUP")
-		#define WORLD_XML TEXT("world_45.xml")
-  #endif
-  #if defined ANDROID_PLATFORM
-      #define DEMO_SETTINGS_ICON TEXT("engine/data/basics/settings_929846-big.png")
-  #else
-      #define DEMO_SETTINGS_ICON TEXT("engine/data/basics/settings_929846.png")
-  #endif
-#endif
+	// USE_IMGUI:
+	//--------------------------------------------------------------------------------------------------------------------------
+//#if DX_ENGINE_LEVEL >= 45 //IMGUI!
+//  #if DX_ENGINE_LEVEL == 45
+//		#define DEMO_TITLE TEXT("45: IMGUI SETUP")
+//		#define WORLD_XML TEXT("world_45.xml")
+//  #endif
+//
+//  #if defined ANDROID_PLATFORM
+//      #define DEMO_SETTINGS_ICON TEXT("engine/data/basics/settings_929846-big.png")
+//  #else
+//      #define DEMO_SETTINGS_ICON TEXT("engine/data/basics/settings_929846.png")
+//  #endif
+//#endif
 
 	// TERRAINS:
 	//--------------------------------------------------------------------------------------------------------------------------
@@ -519,7 +537,7 @@
     #define N_INSTANCE_TREES 5
 #endif
 #if DX_ENGINE_LEVEL == 78
-    #define DEMO_TITLE TEXT("78: Check 'WORLD.XML' Object collision")
+    #define DEMO_TITLE TEXT("78: Check camera collision with 'WORLD.XML' Objects")
     #define WORLD_XML TEXT("world_78.xml")
 #endif
 
@@ -641,13 +659,16 @@
 	#define WORLD_XML  TEXT("world_100.xml")
 #endif
 
+#if DX_ENGINE_LEVEL == 101
+	#define DEMO_TITLE TEXT("101: ")
+	#define WORLD_XML  TEXT("world_101.xml")
+#endif
 
 
 
 
 
-
-
+//--------------------------------------------------------------------------------------------------------------------------
 #include "stateMachine.h"
 
 #if CORE_ENGINE_LEVEL < 10

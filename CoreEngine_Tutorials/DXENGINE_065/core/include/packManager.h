@@ -41,6 +41,4 @@ extern bool InitPackLib(const TCHAR* packfilename);
 
 #endif
 
-extern int numZipItems;
-extern int zipIndx;
-extern UINT packCounter, totalPackCounter;
+

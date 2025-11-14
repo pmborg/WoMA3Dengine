@@ -149,7 +149,7 @@ import java.io.InputStreamReader;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
-//import com.woma.R;
+//import com.woma.R;					
 import android.app.NativeActivity;
 import android.os.Bundle;
 import android.util.Log;

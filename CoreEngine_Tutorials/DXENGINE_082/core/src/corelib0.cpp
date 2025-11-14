@@ -132,11 +132,3 @@ extern "C" void SafeRelease_SEH(void** pp)
 #ifdef COMMONFUNCTIONS_DLL_EXPORTS
 #pragma message("NOTE: Building commonfunctions DLL — self-link disabled.")
 #endif
-
-
-
-#if defined WOMA_DLL
-#pragma comment( lib, "C:\\WoMAengine2023\\x64\\Debug_DLL\\commonfunctionsX64_d.lib" )	//DEBUG_DLL
-#else
-#pragma comment( lib, "C:\\WoMAengine2023\\x64\\Debug\\commonfunctionsX64_d.lib" )	//DEBUG
-#endif

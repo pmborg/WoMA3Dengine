@@ -1359,3 +1359,10 @@ int zipIndx = 0;
 UINT packCounter = 0, totalPackCounter = 0;
 int Command = EXIT_SUCCESS;
 #endif
+
+#if DX_ENGINE_LEVEL >= 86 && defined WOMA_DLL
+#pragma comment( lib, "C:\\WoMAengine2023\\x64\\Debug_DLL\\commonfunctionsX64_d.lib" )	//DEBUG_DLL link dll
+#endif
+#if DX_ENGINE_LEVEL >= 82 && !defined WOMA_DLL
+#pragma comment( lib, "C:\\WoMAengine2023\\x64\\Debug\\commonfunctionsX64_d.lib" )		//DEBUG link lib
+#endif

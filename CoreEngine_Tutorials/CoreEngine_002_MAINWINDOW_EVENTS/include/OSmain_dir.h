@@ -69,8 +69,3 @@ namespace WOMA
 
 }
 
-#if defined WINDOWS_PLATFORM
-extern bool threadLoadMeshAlive;
-extern HANDLE threadLoadMeshHandle;
-extern unsigned long threadLoadMeshId;
-#endif

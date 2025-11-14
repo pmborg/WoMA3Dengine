@@ -451,7 +451,14 @@ void ApplicationClass::initIntroCreditsDemo(void* pContext)
 	INTRO_TEXT.push_back(DEMO1_BANNER3_TEXTURE);
 	INTRO_TEXT.push_back(DEMO1_BANNER4_TEXTURE);
 	INTRO_TEXT.push_back(DEMO1_BANNER5_TEXTURE);
+#if defined USE_DEMO29_v2
+	if (WOMA::settings.WINDOW_WIDTH > (1920 + 100))
+		INTRO_TEXT.push_back(DEMO1_BANNER6_TEXTURE);
+	else
+		INTRO_TEXT.push_back(DEMO1_BANNER6L_TEXTURE);
+#else
 	INTRO_TEXT.push_back(DEMO1_BANNER6_TEXTURE);
+#endif
 
 	//1way
 	for (int i = 0; i < INTRO_TEXT.size(); i++)
