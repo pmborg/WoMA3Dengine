@@ -25,9 +25,12 @@
     #define WOMAENGINE_BASIC
 #endif
 
-// 2025-11-13: Remove UltimateTCP/IP
+//------------------------------------------------------------------------------------------------------------
+// Log:
+//------------------------------------------------------------------------------------------------------------
+// 2025-11-14: Hot fix.
 //       
-#define WOMA_ENGINE_BUILD_TAG "v2025.11.13 - Remove UltimateTCP/IP"
+#define WOMA_ENGINE_BUILD_TAG "v2025.11.14: Hot fix."
 
 #if CORE_ENGINE_LEVEL < 10 && defined WINDOWS_PLATFORM
 	#define USE_NETWORK

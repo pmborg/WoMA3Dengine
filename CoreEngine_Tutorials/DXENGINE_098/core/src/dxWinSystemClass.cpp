@@ -549,8 +549,6 @@ HRESULT dxWinSystemClass::PlayIntroMovie(TCHAR* movie)
 		GetClientRect(m_hWnd, &rc);
 		g_DShowPlayer->UpdateVideoWindow(&rc);
 	}
-	else
-		return E_FAIL;
 
 	return hr;
 }

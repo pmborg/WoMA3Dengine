@@ -504,7 +504,7 @@ void ApplicationClass::initIntroCreditsDemo(void* pContext)
 }
 #endif
 
-#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER //FOR SHADOW
+#if (DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER) || DX_ENGINE_LEVEL == 99//FOR SHADOW
 // ----------------------------------------------------------------------------
 void ApplicationClass::initShadowTextureDemo(void* ctx)
 // ----------------------------------------------------------------------------
@@ -711,7 +711,7 @@ bool ApplicationClass::InitLightandDemos(void* pContext, WomaDriverClass* Driver
 
 #endif
 
-#if (DX_ENGINE_LEVEL >= 22 && LEVEL < 60) || defined INTRO_DEMO// 22:TEXTURE
+#if (DX_ENGINE_LEVEL >= 22 && LEVEL < 60) || defined INTRO_DEMO || DX_ENGINE_LEVEL == 99// 22:TEXTURE
 	initTextureDemo(pContext);
 
   #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
@@ -986,7 +986,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	//-----------------------------------------------------------------------------------------------------------------
 	// SHADOWMAP //////////////////////////////////////////////////////////////////////////////////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
-#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
+#if (DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER) || DX_ENGINE_LEVEL == 99
 	app_Light->GenerateOrthoMatrix(15, 15, 20, 0.1f);						// Control Zoom in Shadow Map here! 15, 15
 
   #if defined USE_REAL_SUNLIGHT_DIRECTION || !defined MAIN_RENDER_LIGHT_RAY
