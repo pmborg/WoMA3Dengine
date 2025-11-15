@@ -632,5 +632,23 @@
     <FxCompile Include="hlsl\027Texture.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
+    <FxCompile Include="hlsl\035TextureBump.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="hlsl\036LightRenderShadow.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="hlsl\036ShadowMap.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="hlsl\cbuffer.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="hlsl\light.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="hlsl\shadows.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

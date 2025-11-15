@@ -12,7 +12,7 @@ float4 HasShadows(float4 lightViewPosition)
     float depthValue = ShadowMapTextureTexture.Sample(SampleType, projectTexCoord).r;
 
     // is on a shadow?
-    if (depthValue > 0)
+    //if (depthValue > 0)
     {
         // Calculate the depth of the pixel
         float lightDepthValue = lightViewPosition.z / lightViewPosition.w;
