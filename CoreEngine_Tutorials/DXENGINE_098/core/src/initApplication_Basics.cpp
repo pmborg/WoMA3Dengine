@@ -576,7 +576,7 @@ void ApplicationClass::WOMA_APPLICATION_SetInstancePositions(UINT m_ObjId, int m
 #endif
 
 #if defined USE_INSTANCES_FOR_LAMP
-	case 401:
+	case 401: //STREET_LAMP
 	{
 #if defined USE_POINTS_OF_LIGHT_FOR_LAMP
 		streetLamps.clear();    // add this line before the outer loop
@@ -635,6 +635,7 @@ void ApplicationClass::WOMA_APPLICATION_SetInstancePositions(UINT m_ObjId, int m
 bool ApplicationClass::WOMA_LOAD_OBJ(void* pContext, UINT threadID, UINT level, WomaDriverClass* Driver, UINT i, TCHAR* wfilename)
 {
 	objModel.push_back(NULL);
+
 	if (i > 0
 		&& _tcscmp(SystemHandle->xml_loader.theWorldXML[i].filename, SystemHandle->xml_loader.theWorldXML[i - 1].filename) == 0
 		&& (SystemHandle->xml_loader.theWorldXML[i].type == 11			//11 animated grass, Clone it its faster
@@ -912,7 +913,7 @@ void ApplicationClass::AddObjsWithInstancesToXML()
 		#endif
 		XMLobj3D.scale = 0.0215f/2;
 		XMLobj3D.instances = (USE_INSTANCES_FOR_LAMP_LINES * USE_INSTANCES_FOR_LAMP_ROWS);
-		XMLobj3D.type = 401;
+		XMLobj3D.type = 401; //STREET_LAMP
 
 		strcpy_s(XMLobj3D.filename, sizeof(XMLobj3D.filename), LAMP_GS);
 		SystemHandle->xml_loader.theWorldXML.push_back(XMLobj3D);  //Add obj as XML entry

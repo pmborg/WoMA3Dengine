@@ -76,10 +76,10 @@ void ApplicationClass::RenderScene(void* mainCtx, UINT monitorIndex, WomaDriverC
 
 		dayLightFade = 1; //levels < 98
 
-	AppRender(monitorIndex, RENDER_PAGE, dayLightFade, mainCtx);			// [2] 3D Render main scene while workers run in parallel
+	AppRender(monitorIndex, RENDER_PAGE, dayLightFade, mainCtx);	// [2] 3D Render main scene while workers run in parallel
 
-																			//IF_RENDER_PAGE(RENDER_PAGE >= 29) NOTE: (we need it before 20 at INTRO)
-	AppPosRender(monitorIndex, RENDER_PAGE, dayLightFade, mainCtx);			// [3] 2D: Render TRANSPARENT Parts of 3D OBJs(like: "Glass windows", "Billboards", etc...)
+																	//IF_RENDER_PAGE(RENDER_PAGE >= 29) NOTE: (we need it before 20 at INTRO)
+	AppPosRender(monitorIndex, RENDER_PAGE, dayLightFade, mainCtx);	// [3] 2D: Render TRANSPARENT Parts of 3D OBJs(like: "Glass windows", "Billboards", etc...)
 
 }
 
@@ -969,7 +969,6 @@ void ApplicationClass::DemoRender(void* pContext)
 			m_SphereModel2->Render(pContext, 0, 0, 0, NULL, NULL);
 		}
 #endif
-
 }
 
 #if DX_ENGINE_LEVEL >= 21 && defined INTRO_DEMO	//29  DEMO SPRITE TEXT

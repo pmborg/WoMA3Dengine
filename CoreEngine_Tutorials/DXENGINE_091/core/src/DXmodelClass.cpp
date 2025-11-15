@@ -2131,7 +2131,7 @@ void DirectX::DXmodelClass::RenderSubMesh(ID3D11DeviceContext* pContext, WomaDri
 
 						// [2] Set: ShadowMapTextureTexture
 					#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
-					if (ModelRenderShadow) 
+					if (ModelRenderShadow && m_Shader11->m_shaderType == SHADER_TEXTURE_LIGHT_RENDERSHADOW)
 						pContext->PSSetShaderResources(2, 1, &SystemHandle->m_Application->m_RenderShadowTexture->m_shaderTextureResourceView);			// set current alfaMap
 					#endif
 

@@ -573,6 +573,7 @@ void ApplicationClass::WOMA_APPLICATION_SetInstancePositions(UINT m_ObjId, int m
 bool ApplicationClass::WOMA_LOAD_OBJ(void* pContext, UINT threadID, UINT level, WomaDriverClass* Driver, UINT i, TCHAR* wfilename)
 {
 	objModel.push_back(NULL);
+
 	if (i > 0
 		&& _tcscmp(SystemHandle->xml_loader.theWorldXML[i].filename, SystemHandle->xml_loader.theWorldXML[i - 1].filename) == 0
 		&& (SystemHandle->xml_loader.theWorldXML[i].type == 11			//11 animated grass, Clone it its faster

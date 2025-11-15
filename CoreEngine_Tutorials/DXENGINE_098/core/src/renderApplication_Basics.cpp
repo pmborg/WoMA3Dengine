@@ -120,21 +120,23 @@ void ApplicationClass::RenderScene(void* mainCtx, UINT monitorIndex, WomaDriverC
 	// UPDATE DYN. LIGHT RAY:
 	// --------------------------------------------------------------------------------------------
 
-	if(RENDER_PAGE >= 98) //NO: IF_RENDER_PAGE(RENDER_PAGE >= 98)
+#if DX_ENGINE_LEVEL >= 98 && defined USE_DAY_AND_NIGHT
+	if(RENDER_PAGE >= 98)
 		dayLightFade = 0.4f;
 	else
+#endif
 		dayLightFade = 1; //levels < 98
 
 #if DX_ENGINE_LEVEL >= 36 && (defined USE_MINIMAP_REDENRING_THREAD || defined USE_SHADOW_MAP || defined USE_MAIN_MAP)
-																			//IF_RENDER_PAGE(RENDER_PAGE >= 29)  NOTE: (we need it before 20 at INTRO)
-	AppPreRender(monitorIndex, driver, dayLightFade, mainCtx);				// [1] Launch shadow & mini-map async work, (do not wait for render on level>=91)
-																			// Re-Start aux threads on this frame:
+																	//IF_RENDER_PAGE(RENDER_PAGE >= 29)  NOTE: (we need it before 20 at INTRO)
+	AppPreRender(monitorIndex, driver, dayLightFade, mainCtx);		// [1] Launch shadow & mini-map async work, (do not wait for render on level>=91)
+																	// Re-Start aux threads on this frame:
 #endif
 
-	AppRender(monitorIndex, RENDER_PAGE, dayLightFade, mainCtx);			// [2] 3D Render main scene while workers run in parallel
+	AppRender(monitorIndex, RENDER_PAGE, dayLightFade, mainCtx);	// [2] 3D Render main scene while workers run in parallel
 
-																			//IF_RENDER_PAGE(RENDER_PAGE >= 29) NOTE: (we need it before 20 at INTRO)
-	AppPosRender(monitorIndex, RENDER_PAGE, dayLightFade, mainCtx);			// [3] 2D: Render TRANSPARENT Parts of 3D OBJs(like: "Glass windows", "Billboards", etc...)
+																	//IF_RENDER_PAGE(RENDER_PAGE >= 29) NOTE: (we need it before 20 at INTRO)
+	AppPosRender(monitorIndex, RENDER_PAGE, dayLightFade, mainCtx);	// [3] 2D: Render TRANSPARENT Parts of 3D OBJs(like: "Glass windows", "Billboards", etc...)
 
 #if DX_ENGINE_LEVEL >= 91 && defined USE_MINIMAP_REDENRING_THREAD
 	// [2.5] Wait here (after main scene) before using shadows/mini-map results
@@ -606,7 +608,7 @@ void ApplicationClass::RenderModel(void* pContext, UINT level, UINT threadID, UI
     positionY = SystemHandle->xml_loader.theWorldXML[modelID].translateY;
     positionZ = SystemHandle->xml_loader.theWorldXML[modelID].posZ;
 
-	if (SystemHandle->xml_loader.theWorldXML[modelID].type == 401)
+	if (SystemHandle->xml_loader.theWorldXML[modelID].type == 401)	//STREET_LAMP
 	{
 		if (threadID == 1)
 			return; //minimap
@@ -858,6 +860,11 @@ void ApplicationClass::AppRender(UINT monitorIndex, UINT level, float fadeLight,
 #if (DX_ENGINE_LEVEL >= 19 && DX_ENGINE_LEVEL < 50) || defined INTRO_DEMO
 	if ((RENDER_PAGE >= 19) && (RENDER_PAGE < 30) || RENDER_PAGE == 36)
 		DemoRender(pContext);	// ALL Demos!: page 21: / 22 / 23 / ... 49
+#endif
+
+#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
+	if (RENDER_PAGE == 36 || RENDER_PAGE == 41 || RENDER_PAGE == 42 || RENDER_PAGE == 99) // Debug Shadow
+		m_2nd3DModel->Render(pContext, 0, 0, 0, NULL, NULL);
 #endif
 
 #if defined MAIN_RENDER_TERRAIN
@@ -1740,11 +1747,6 @@ void ApplicationClass::DemoRender(void* pContext)
 			m_SphereModel2->translation(3.2f, -4, 5.0f);
 			m_SphereModel2->Render(pContext, 0, 0, 0, NULL, NULL);
 		}
-#endif
-
-#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
-	if (RENDER_PAGE == 36 || RENDER_PAGE == 41 || RENDER_PAGE == 42) // Debug Shadow
-		m_2nd3DModel->Render(pContext, 0, 0, 0, NULL, NULL);
 #endif
 }
 
