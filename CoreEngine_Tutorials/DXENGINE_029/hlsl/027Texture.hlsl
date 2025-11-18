@@ -198,11 +198,9 @@ float4 PS_Main(PSIn input) : SV_TARGET
 
 	if (isFont > 0)	// isFont? clip by color... LINE NEEDED FOR INTRO DEMO
 	{
-		
 		if (color.r <= 0.01f && color.g <= 0.01f && color.b <= 0.01f)	// If the color is black on the texture then treat this pixel as transparent.
 			discard; // Black is transparent: = clip (-1.0); return (float4)0;
 		else
-			//if (!hasTexture)
 				color.rgb = pixelColor.rgb;							// If the color is other than black on the texture then this is a pixel in the font so draw it using the font pixel color.
 	} 
 
