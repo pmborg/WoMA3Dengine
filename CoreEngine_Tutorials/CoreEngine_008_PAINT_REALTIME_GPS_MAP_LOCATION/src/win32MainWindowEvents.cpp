@@ -167,6 +167,16 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 		return 0;
 	}
 
+#if defined INTRO_DEMO
+	case WM_SETCURSOR:
+		if (LOWORD(lparam) == HTCLIENT)
+		{
+			SetCursor(NULL);
+			return TRUE;
+		}
+		break;
+#endif
+
 	#if CORE_ENGINE_LEVEL >= 5 && defined CLIENT_SCENE_SETUP
 	case WM_COMMAND: // Process WoMA Start Button
 		wmId = LOWORD(wParam);

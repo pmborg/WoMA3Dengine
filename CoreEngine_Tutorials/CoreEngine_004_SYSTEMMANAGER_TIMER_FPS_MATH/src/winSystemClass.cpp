@@ -638,6 +638,8 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
 	STRING TITLE = TEXT("WOMA ENGINE CORE LEVEL: "); TITLE.append(to_string(CORE_ENGINE_LEVEL));
 	#define DEFAULT_TITLE (TCHAR*)TITLE.c_str()
 
+
+	womalog("WINDOW_WIDTH: %d, WINDOW_HEIGHT: %d1n", WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT);
 	// [*] Create the window and return the handle to it:
 	HWND hWnd = WomaCreateWindowEx( dwExStyle, (TCHAR*)WOMA_ENGINE_CLASS, DEFAULT_TITLE, windowStyle,
                             		windowLeft, windowTop,

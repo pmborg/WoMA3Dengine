@@ -375,7 +375,7 @@ bool ApplicationClass::InitLightandDemos(void* pContext, WomaDriverClass* Driver
 
 #endif
 
-#if (DX_ENGINE_LEVEL >= 22 && LEVEL < 60) || defined INTRO_DEMO || DX_ENGINE_LEVEL == 99// 22:TEXTURE
+#if (DX_ENGINE_LEVEL >= 22 && DX_ENGINE_LEVEL != 23 && LEVEL < 60) || defined INTRO_DEMO || DX_ENGINE_LEVEL == 99// 22:TEXTURE
 	initTextureDemo(pContext);
 
 #endif

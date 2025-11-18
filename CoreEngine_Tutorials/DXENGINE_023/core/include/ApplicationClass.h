@@ -390,6 +390,7 @@ public:
 
 	ModelColorVertexType colorVertex = { 0 };					// Use this "VERTEX" on macro
 	std::vector<UINT> IndexSquarList;							// COLOR-DEMO-1: UINT indexList[6] = {0,1,2, 0,3,1};
+	std::vector<UINT> IndexSquarList2;							// COLOR-DEMO-1: UINT indexList[6] = {0,1,2, 0,3,1};
 	std::vector<UINT> IndexTriangleList;						// COLOR-DEMO-2: UINT indexList[6] = {0,1,2};
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
@@ -409,7 +410,6 @@ public:
 #if defined SCENE_COLOR
 	void initColorDemo(void* pContext);
 #endif
-	void initTextureDemo(void* pContext);
 	void initLightDemo(void* pContext);
 #if defined USE_TITLE_BANNER	//24
 	void	initStatic2D(void* pContext);
@@ -456,9 +456,9 @@ public:
 	VirtualModelClass* m_1stTriangleTextureVertexModel = NULL;			// TEXTURE-DEMO-2: initLoadTexture()
 
 	//DEMO-1:
-	ModelTextureLightVertexType lightVertex1 = { 0 };					// Use this "VERTEX" on macro
-	std::vector<ModelTextureLightVertexType> My3thModelVertexVector1;	// Declare: the Vector with Vertex "TYPE"
-	VirtualModelClass* m_3th3DModel1 = NULL;							// Model
+	//ModelTextureVertexType lightVertex1 = { 0 };					// Use this "VERTEX" on macro
+	std::vector<ModelTextureVertexType> My3thModelVertexVector1;	// Declare: the Vector with Vertex "TYPE"
+	VirtualModelClass* m_3th3DModel1 = NULL;						// Model
 
 	//DEMO-2:
 	std::vector<ModelTextureLightVertexType> TriangleLightVertexVector;	// TEXTURE-DEMO-2: CREATE_VERTEXVECTOR_TRIANGLE_MODEL_OPTIMIZED

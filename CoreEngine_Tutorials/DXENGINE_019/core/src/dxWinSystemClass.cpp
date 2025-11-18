@@ -126,6 +126,11 @@ bool dxWinSystemClass::APPLICATION_INIT_SYSTEM() //LOAD ALL GRAPHICS
 
 	// START-AUDIO: Start Background Music
 
+#if defined WINDOWS_PLATFORM && defined INTRO_DEMO
+	ShowCursor(FALSE);
+	SetCursor(NULL);
+#endif
+
 	return res;
 }
 

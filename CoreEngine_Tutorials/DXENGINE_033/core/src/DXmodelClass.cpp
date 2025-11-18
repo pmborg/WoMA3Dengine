@@ -443,6 +443,13 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
             for (UINT i = 0; i < m_indexCount; i++) 
             {
             indices[i] = i;						// Load the index array with data:
+			#if (defined _DEBUG || defined  DEBUG) && DX_ENGINE_LEVEL <= 35// && false
+            womalog("%u ", indices[i]);
+            if (j++ >= 2) {
+                j = 0;
+                womalog("\n");
+            }
+			#endif
         }
 		#else
 			indices9 = NEW WORD[m_indexCount];		// Create the index array: DX9/12
@@ -460,6 +467,13 @@ bool DirectX::DXmodelClass::InitializeDXbuffers(ID3D11DeviceContext* pContext, T
 
 			for (UINT i = 0; i < m_indexCount; i++) {
 				indices[i] = indexModelList->at(i);	// Load the index array with data:
+				#if (defined _DEBUG || defined  DEBUG) && DX_ENGINE_LEVEL <= 35// && false
+                womalog("%u ", indices[i]);
+                if (j++ >= 2) {
+                    j = 0;
+                    womalog("\n");
+                }
+				#endif
             }
 		#else
 			indices9 = NEW WORD[m_indexCount];		// Create the index array: DX9/12
@@ -1276,7 +1290,6 @@ bool DirectX::DXmodelClass::UpdateBuffersRotY(void* ctx, int positionX, int posi
 	static int m_previousPosY = -10000;
 
 	float left, right, top, bottom;
-	ModelTextureVertexType* vertices;
 	ModelTextureVertexType* verticesPtr;
 	D3D11_MAPPED_SUBRESOURCE	mappedResource;
 	HRESULT result;
@@ -1309,59 +1322,24 @@ bool DirectX::DXmodelClass::UpdateBuffersRotY(void* ctx, int positionX, int posi
 	left = (float)((WOMA::AppSettings->WINDOW_WIDTH / 2) * -1) + (float)positionX;	// Calculate the screen coordinates of the left side of the bitmap.
 	right = left + (float)SpriteTextureWidth;												// Calculate the screen coordinates of the right side of the bitmap.
 	top = (float)(WOMA::AppSettings->WINDOW_HEIGHT / 2) - (float)positionY;			// Calculate the screen coordinates of the top of the bitmap.
-	bottom = top - (float)SpriteTextureHeight;												// Calculate the screen coordinates of the bottom of the bitmap.
+	bottom = top - (float)SpriteTextureHeight;		
+	// Calculate the screen coordinates of the bottom of the bitmap.
 
+#if _DEBUG
+	if (m_vertexCount != 6)
+		return false;
+#endif
+/*
+	//op1:
 	//Now that the coordinates are calculated create a temporary vertex array and fill it with the new six vertex points.
+	ModelTextureVertexType* vertices;
 	vertices = NEW ModelTextureVertexType[m_vertexCount];
 	IF_NOT_THROW_EXCEPTION(vertices);
+*/
+	//static ModelTextureVertexType vertices[6];
 
 	// Load the vertex array with data:
-/*
-	------
-	|t1 / |
-	|  /  |
-	| / t2|
-	|/----|
-*/
-// First triangle (t1):
-// --------------------
-	vertices[0].x = left;
-	vertices[0].y = top;
-	vertices[0].z = 0;
-	vertices[0].tu = 0;
-	vertices[0].tv = 0;
 
-	vertices[1].x = right;
-	vertices[1].y = bottom;
-	vertices[1].z = 0;
-	vertices[1].tu = m_xTexture;
-	vertices[1].tv = 1;
-
-	vertices[2].x = left;
-	vertices[2].y = bottom;
-	vertices[2].z = 0;
-	vertices[2].tu = 0;
-	vertices[2].tv = 1;
-
-	// Second triangle (t2)
-	// --------------------
-	vertices[3].x = left;
-	vertices[3].y = top;
-	vertices[3].z = 0;
-	vertices[3].tu = 0;
-	vertices[3].tv = 0;
-
-	vertices[4].x = right;
-	vertices[4].y = top;
-	vertices[4].z = 0;
-	vertices[4].tu = m_xTexture;
-	vertices[4].tv = 0;
-
-	vertices[5].x = right;
-	vertices[5].y = bottom;
-	vertices[5].z = 0;
-	vertices[5].tu = m_xTexture;
-	vertices[5].tv = 1;
 
 	UINT vertexBufferSize = sizeofMODELvertex * m_vertexCount; // sizeof(triangleVertices);
 
@@ -1373,7 +1351,56 @@ bool DirectX::DXmodelClass::UpdateBuffersRotY(void* ctx, int positionX, int posi
 		if (FAILED(result))return false;
 
 		verticesPtr = (ModelTextureVertexType*)mappedResource.pData;	// Get a pointer to the data in the vertex buffer.
-		memcpy(verticesPtr, (void*)vertices, vertexBufferSize);			// (sizeof(ModelTextureVertexType) * m_vertexCount)
+		//memcpy(verticesPtr, (void*)vertices, vertexBufferSize);			// (sizeof(ModelTextureVertexType) * m_vertexCount)
+
+		/*
+			------
+			|t1 / |
+			|  /  |
+			| / t2|
+			|/----|
+		*/
+		// First triangle (t1):
+		// --------------------
+		verticesPtr[0].x = left;
+		verticesPtr[0].y = top;
+		verticesPtr[0].z = 0;
+		verticesPtr[0].tu = 0;
+		verticesPtr[0].tv = 0;
+		
+		verticesPtr[1].x = right;
+		verticesPtr[1].y = bottom;
+		verticesPtr[1].z = 0;
+		verticesPtr[1].tu = m_xTexture;
+		verticesPtr[1].tv = 1;
+		
+		verticesPtr[2].x = left;
+		verticesPtr[2].y = bottom;
+		verticesPtr[2].z = 0;
+		verticesPtr[2].tu = 0;
+		verticesPtr[2].tv = 1;
+
+		// Second triangle (t2)
+		// --------------------
+		verticesPtr[3].x = left;
+		verticesPtr[3].y = top;
+		verticesPtr[3].z = 0;
+		verticesPtr[3].tu = 0;
+		verticesPtr[3].tv = 0;
+		
+		verticesPtr[4].x = right;
+		verticesPtr[4].y = top;
+		verticesPtr[4].z = 0;
+		verticesPtr[4].tu = m_xTexture;
+		verticesPtr[4].tv = 0;
+		
+		verticesPtr[5].x = right;
+		verticesPtr[5].y = bottom;
+		verticesPtr[5].z = 0;
+		verticesPtr[5].tu = m_xTexture;
+		verticesPtr[5].tv = 1;
+
+
 		pContext->Unmap(m_vertexBuffer11, 0);		// Unlock the vertex buffer.
 	}
 #endif
@@ -1381,6 +1408,54 @@ bool DirectX::DXmodelClass::UpdateBuffersRotY(void* ctx, int positionX, int posi
 #ifdef DX12	
 	if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 	{
+		static ModelTextureVertexType vertices[6];
+		/*
+			------
+			|t1 / |
+			|  /  |
+			| / t2|
+			|/----|
+		*/
+		// First triangle (t1):
+		// --------------------
+		vertices[0].x = left;
+		vertices[0].y = top;
+		vertices[0].z = 0;
+		vertices[0].tu = 0;
+		vertices[0].tv = 0;
+
+		vertices[1].x = right;
+		vertices[1].y = bottom;
+		vertices[1].z = 0;
+		vertices[1].tu = m_xTexture;
+		vertices[1].tv = 1;
+
+		vertices[2].x = left;
+		vertices[2].y = bottom;
+		vertices[2].z = 0;
+		vertices[2].tu = 0;
+		vertices[2].tv = 1;
+
+		// Second triangle (t2)
+		// --------------------
+		vertices[3].x = left;
+		vertices[3].y = top;
+		vertices[3].z = 0;
+		vertices[3].tu = 0;
+		vertices[3].tv = 0;
+
+		vertices[4].x = right;
+		vertices[4].y = top;
+		vertices[4].z = 0;
+		vertices[4].tu = m_xTexture;
+		vertices[4].tv = 0;
+
+		vertices[5].x = right;
+		vertices[5].y = bottom;
+		vertices[5].z = 0;
+		vertices[5].tu = m_xTexture;
+		vertices[5].tv = 1;
+
 		// EQUIVALENT (upper code): Upload the vertex buffer to the GPU.
 		D3D12_SUBRESOURCE_DATA vertexData = {};
 		vertexData.pData = vertices;
@@ -1391,8 +1466,8 @@ bool DirectX::DXmodelClass::UpdateBuffersRotY(void* ctx, int positionX, int posi
 		m_driver->m_commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_vertexBuffer.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER));
 	}
 #endif	
-
-	SAFE_DELETE_ARRAY(vertices);				// Release the vertex array as it is no longer needed.
+	//op1:
+	//SAFE_DELETE_ARRAY(vertices);				// Release the vertex array as it is no longer needed.
 
 	return true;
 }
@@ -1417,17 +1492,9 @@ HRESULT result;
 	// If the position we are rendering this bitmap to has not changed then don't update the vertex buffer since it
 	// currently has the correct parameters.
 
-	//static bool RenderfirstTime=true;
-#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
-	//if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
-	//	RenderfirstTime = m_driver11->RenderfirstTime;
-#endif
-#if defined DX12
-	//if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
-	//	RenderfirstTime = m_driver->RenderfirstTime;
-#endif
-	//if (((positionX == m_previousPosX) && (positionY == m_previousPosY)) && !RenderfirstTime)
-	//	return true;
+	/*no static*/bool RenderfirstTime = ((WomaDriverClass*)m_Driver)->RenderfirstTime;
+	if (((positionX == m_previousPosX) && (positionY == m_previousPosY)) && !RenderfirstTime)
+		return true;
 
 //If the position to render this image has changed then we record the new location for the next time we come through this function.
 

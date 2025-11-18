@@ -159,6 +159,16 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 		return 0;
 	}
 
+#if defined INTRO_DEMO
+	case WM_SETCURSOR:
+		if (LOWORD(lparam) == HTCLIENT)
+		{
+			SetCursor(NULL);
+			return TRUE;
+		}
+		break;
+#endif
+
 	case WM_SETFOCUS:
 		if (WOMA::game_state == GAME_PAUSED)
 			UNPAUSE();

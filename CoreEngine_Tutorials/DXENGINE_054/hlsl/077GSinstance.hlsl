@@ -161,14 +161,14 @@ void GS_Main(triangle GSIn input[3], inout TriangleStream<PSIn> triStream)
     PSIn output;
     float3 camPos = mul(input[0].position, WV).xyz;
 
-    //1: Instance, too distante dont render:
+    //1: Instance, too distant don't render:
     // Compute average distance of the triangle from the camera
     float3 triCenter = (input[0].position.xyz + input[1].position.xyz + input[2].position.xyz) / 3.0f;
     float dist = distance(camPos, triCenter);
     if (dist > 2000.0f)
         return; // Do not emit this triangle
 
-    //2: Instance, Out of camera dont Render:
+    //2: Instance, Out of camera don't Render:
 	//take the cross product of the input triangle edges in world space: 
     float3 wV0 = input[1].position.xyz - input[0].position.xyz;
     float3 wV1 = input[2].position.xyz - input[0].position.xyz;
@@ -244,12 +244,20 @@ float4 PS_Main(GSIn input) : SV_TARGET
 			
 			color += (diffuseColor * lightIntensity);
 			color = saturate(color);
-			float3 Reflection = normalize(2 * lightIntensity * input.normal + lightDirection);
-			float  fPhoneValue = saturate(dot(Reflection, input.viewDirection));	// (R.V)
-			float4 specular = pow(fPhoneValue, nShininess);							// Ls = (R.V)^alfa (alfa Determine the amount of specular light based on the reflection vector, viewing direction, and specular power.)
+			//float3 Reflection = normalize(2 * lightIntensity * input.normal + lightDirection);
+			//float  fPhoneValue = saturate(dot(Reflection, input.viewDirection));	// (R.V)
+			//float4 specular = pow(fPhoneValue, nShininess);							// Ls = (R.V)^alfa (alfa Determine the amount of specular light based on the reflection vector, viewing direction, and specular power.)
+            //
+			//color = color * textureColor;
+			//textureColor = saturate(textureColor + specular);		// specular = Ls (contribution of the light source) * Ks (specular component of the material)
+    
+            float3 L = normalize(-lightDirection);				// from pixel → light
+            float3 N = normalize(input.normal);					// replace with bump-normal later if needed
+            float3 R = reflect(L, N);							// reflection direction
+            float  fPhoneValue = saturate(dot(R, input.viewDirection));
+            float4 specular = pow(fPhoneValue, nShininess);
 
-			color = color * textureColor;
-			textureColor = saturate(textureColor + specular);		// specular = Ls (contribution of the light source) * Ks (specular component of the material)
+            textureColor = saturate(textureColor + specular);
 		}
 	}
 

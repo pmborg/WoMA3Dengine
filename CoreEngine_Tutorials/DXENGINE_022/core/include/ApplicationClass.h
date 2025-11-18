@@ -371,6 +371,7 @@ public:
 
 	ModelColorVertexType colorVertex = { 0 };					// Use this "VERTEX" on macro
 	std::vector<UINT> IndexSquarList;							// COLOR-DEMO-1: UINT indexList[6] = {0,1,2, 0,3,1};
+	std::vector<UINT> IndexSquarList2;							// COLOR-DEMO-1: UINT indexList[6] = {0,1,2, 0,3,1};
 	std::vector<UINT> IndexTriangleList;						// COLOR-DEMO-2: UINT indexList[6] = {0,1,2};
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO

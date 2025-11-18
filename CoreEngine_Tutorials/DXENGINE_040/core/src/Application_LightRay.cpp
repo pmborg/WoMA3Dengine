@@ -46,8 +46,8 @@
 #endif
 
 #if defined MAIN_RENDER_LIGHT_RAY
-	void ApplicationClass::CalculateLightRayVertex(float localSunDistance)
-	{
+void ApplicationClass::CalculateLightRayVertex(float localSunDistance)
+{
 		ModelColorVertexType vertex = { 0 };
 		MyLightVertexVector.clear(); // Clean Vector
 
@@ -88,9 +88,30 @@
 
 		MyLightVertexVector.push_back(vertex);
 
+		WOMA::vec3 lightDirTemp = {};
+
 #if defined DX_ENGINE
 		XMVECTOR vec = XMVector3Normalize(XMVectorSet(vertex.x, vertex.y, vertex.z, 1));
-		app_Light->SetDirection(-vec.m128_f32[0], -vec.m128_f32[1], -vec.m128_f32[2]);
+
+		// Keep old logic by storing the old result
+		lightDirTemp = WOMA::vec3(-vec.m128_f32[0], -vec.m128_f32[1], -vec.m128_f32[2]);
+
+		// Now apply final correction:
+		{
+			float lx = lightDirTemp.x;
+			float ly = lightDirTemp.y;
+			float lz = lightDirTemp.z;
+
+			float len = sqrtf(lx * lx + ly * ly + lz * lz);
+			if (len > 0.0001f) {
+				lx /= len; ly /= len; lz /= len;
+			}
+
+			//if (ly > 0.0f)
+			//	ly = -ly;
+
+			app_Light->SetDirection(lx, ly, lz);
+		}
 #else
 		WOMA::vec3 vec = {};
 		WOMA::vec3 Init(vertex.x, vertex.y, vertex.z);
@@ -107,7 +128,7 @@
 		#if defined DX_ENGINE //&& future
 		app_Light->GenerateViewMatrix(vertex.x, vertex.y, vertex.z);
 		#endif
-	}
+}
 
 void ApplicationClass::initLightRay(void* ctx)
 {
