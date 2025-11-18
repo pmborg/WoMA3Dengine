@@ -14,15 +14,6 @@
     #define DXAPI11 1
 #endif
 
-#define MAX_POINT_LIGHTS 26      // enough for all lamps
-
-struct PointLight
-{
-    float3 position;
-    float radius;
-    float3 color;
-    float intensity;
-};
 
 // SYNC: DXshaderClass.h -- DX12: CBV
 #if DXAPI11 == 1
@@ -46,11 +37,11 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
 	bool	VShasFog;
 
 	// 23 BLOCK: VS3
-    float3  VSlightDirection;   // LIGHT (XMVECTOR = XMFLOAT4)
+	float3	VSlightDirection;	// LIGHT
 	float   VSlightPAD;         // 3+1=XMFLOAT4
-	float4	VSambientColor;		// LIGHT: Ka
-	float4	VSdiffuseColor;		// LIGHT: Kd
-    float4  VSemissiveColor;    // LIGHT: Ke
+	float4	VSambientColor;		// LIGHT
+	float4	VSdiffuseColor;		// LIGHT
+	float4	VSemissiveColor;	// LIGHT: Ke
 
 	// 31 BLOCK: VS4
 	float	VSfogStart;
@@ -59,27 +50,20 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
 	bool	VS_USE_WVP;
 
 	// 45 BLOCK: VS5
-	matrix	ViewToLightProj;        // For Shadow
+	matrix	ViewToLightProj;
 	matrix	WorldInverseTranspose;	// WorldInverseTranspose
 	float4	vEye;					// camera position													   
-
 	// 42 BLOCK: VS6
 	float	VSrotX;
 	float	VSrotY;
 	float	VSrotZ;
-    float   time;   //water animation
+	float	time;
 
 	// 42 BLOCK: VS7
 	float	VSshaderType;
-	bool	vsIsSky;
+	float	vsPAD2;
 	float	vsPAD3;
 	float	vsPAD4;
-
-    // FIRE:
-    float   vsframeTime;
-    float3  scrollSpeeds;
-    float3  scales;
-    bool    isAnimatedBill;
 };
 
 ///////////////
@@ -113,7 +97,7 @@ cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: D
 	// BLOCK4:
 	bool	hasColorMap;		// 66
 	float	lightType;			// Future
-    bool    isDay;
+	bool    isDay;				// Future
 	float	shaderTypeParameter;// Future
 
 	// BLOCK5:
@@ -133,16 +117,4 @@ cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: D
 	bool	castShadow;
 	float3	specularColor;
 	float	nShininess;
-
-    // FIRE:
-    float2  distortion1;
-    float2  distortion2;
-    float2  distortion3;
-    float   distortionScale;
-    float   distortionBias;
-
-	// POINT OF LIGHTS:
-    int         numPointLights;
-    float3      pad;
-    PointLight  pointLights[MAX_POINT_LIGHTS];
 };

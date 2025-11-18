@@ -72,8 +72,8 @@ SamplerState SampleType				: register(s0);// 3D (default) WRAP
 ////////////////
 // CBUFFERS
 ////////////////
-#include "cbuffer.hlsl"
-#include "light.hlsl"
+#include "cbuffer.hlsli"
+#include "light.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader

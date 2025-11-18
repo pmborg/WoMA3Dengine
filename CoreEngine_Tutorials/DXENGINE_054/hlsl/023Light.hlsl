@@ -113,7 +113,6 @@ PSIn VS_Main(VSIn input)
     if (VShasFog) 
         output.fogFactor = saturate((VSfogEnd - cameraPosition.z) / (VSfogEnd - VSfogStart)); // Calculate linear fog.  
 #endif
-
 	//23: LIGHT: NORMAL
     if (VShasLight || VShasSpecular) 
         output.normal = normalize(mul(input.normal, (float3x3) worldMatrix)); // Calculate the normal vector against the world matrix only
@@ -178,7 +177,6 @@ float4 PS_Main(PSIn input) : SV_TARGET
 #if defined PS_USE_FOG
     float4 fogColor = float4(87.0f / 256.0f, 87 / 256.0f, 87.0f / 256.0f, 1.0f);
 #endif
-
 	//-----------------------------------------------------------------------------------
 	// lvl >=21: TEXTURE: Sample the pixel color from the texture using the sampler at this texture coordinate location
     //replace:
