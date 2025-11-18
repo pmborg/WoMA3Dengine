@@ -8,6 +8,20 @@
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
+//WomaIntegrityCheck = 1234525217;
+
+#if (!defined DXAPI11 && !defined DXAPI12)
+    #define DXAPI11 1
+#endif
+
+// mode:
+// -1 = hardware sampler
+//  0 = nearest
+//  1 = bilinear
+//  2 = trilinear
+//  3 = cubic
+
+#define TEXTURE_MODE -1 //Default is -1
 
 //////////////
 // TYPEDEFS //
@@ -33,21 +47,6 @@ struct PSIn
 // GLOBALS //
 /////////////
 
-//Set on: DXmodelClass::RenderSubMesh
-#if DXAPI11 == 1
-Texture2D shaderTexture;
-#endif
-#if DXAPI12 == 1
-Texture2D shaderTexture:	register(t0);
-#endif
-
-#if DXAPI11 == 1
-SamplerState SampleType;
-#endif
-#if DXAPI12 == 1
-SamplerState SampleType: register(s0);
-#endif
-
 ////////////////
 // CBUFFERS
 ////////////////
@@ -59,34 +58,51 @@ cbuffer VSShaderParametersBuffer	//DX11
 cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: Descriptor: 0
 #endif
 {
-	// BLOCK: VS1
-matrix worldMatrix; //worldMatrix
-matrix view; //view
-matrix projection; //projection
-matrix WV; //worldMatrix+viewMatrix
-matrix WVP; //worldMatrix+viewMatrix+projectionMatrix
+    // VERTEX: need to match: 
+    // [DXshaderClass.h] VSconstantBufferType
 
-	// 23 BLOCK: VS2
-bool VShasLight;
-bool VShasSpecular;
-bool VShasNormMap;
-bool VShasFog;
+    // BLOCK: VS1
+    matrix worldMatrix; //worldMatrix
+    matrix view;        //view
+    matrix projection;  //projection
+    matrix WV;          //worldMatrix+viewMatrix
+    matrix WVP;         //worldMatrix+viewMatrix+projectionMatrix
 
-	// 23 BLOCK: VS3
-float3 VSlightDirection; // LIGHT
-float VSPad1;
-float4 VSambientColor; // LIGHT
-float4 VSdiffuseColor; // LIGHT
-float4 VSemissiveColor; // LIGHT: Ke
-
-	// 31 BLOCK: VS4
-float VSfogStart;
-float VSfogEnd;
-bool VShasShadowMap;
-bool VS_USE_WVP;
-
-	// 45 BLOCK: VS5
-matrix ViewToLightProj;
+    //// 23 BLOCK: VS2
+    //bool VShasLight;
+    //bool VShasSpecular;
+    //bool VShasNormMap;
+    //bool VShasFog;
+    //
+    //// 23 BLOCK: VS3
+    //float3 VSlightDirection;// LIGHT
+    //float VSlightPAD;       // 3+1=XMFLOAT4
+    //float4 VSambientColor;  // LIGHT
+    //float4 VSdiffuseColor;  // LIGHT
+    //float4 VSemissiveColor; // LIGHT: Ke
+    //
+    //// 31 BLOCK: VS4
+    //float VSfogStart;
+    //float VSfogEnd;
+    //bool VShasShadowMap;
+    //bool VS_USE_WVP;
+    //
+    //// 45 BLOCK: VS5
+    //matrix ViewToLightProj;
+    //matrix WorldInverseTranspose;   // WorldInverseTranspose
+    //float4 vEye;                    // camera position		
+    //
+    //// 42 BLOCK: VS6
+    //float VSrotX;
+    //float VSrotY;
+    //float VSrotZ;
+    //float time;
+    //
+    //// 42 BLOCK: VS7
+    //float VSshaderType;
+    //float vsPAD2;
+    //float vsPAD3;
+    //float vsPAD4;
 };
 
 ///////////////
@@ -102,48 +118,63 @@ cbuffer PSShaderParametersBuffer	//DX11
 cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: Descriptor: 1
 #endif
 {
-	// BLOCK1:
-float4 pixelColor;
+    // BLOCK1:
+    float4 pixelColor;
 
-	// BLOCK2:
-bool hasTexture; // No? Use pixelColor, then.
-bool hasLight; // Future Load Obj. Engine Level
-bool hasSpecular; // Future Load Obj. Engine Level
-bool isFont; // Future Load Obj. Engine Level
+    // BLOCK2:
+    bool hasTexture; // No? Use pixelColor, then.
+    bool hasLight; // Future Load Obj. Engine Level
+    bool hasSpecular; // Future Load Obj. Engine Level
+    bool isFont; // Future Load Obj. Engine Level
 
-	// BLOCK3:
-float4 ambientColor; // LIGHT: Ka
-float4 diffuseColor; // LIGHT: Kd
-float4 emissiveColor; // LIGHT: Ke 
-float4 lightDirection; // LIGHT
-
-	// BLOCK4:
-bool hasColorMap; // 66
-float lightType; // Future
-float shaderType; // Future
-float shaderTypeParameter; // Future
-
-	// BLOCK5:
-bool hasAlfaColor;
-float alfaColor;
-float fade; // Fade from 0 to 1
-float frameTime; // For animations
-
-	// BLOCK6:
-bool hasFog;
-bool isSky;
-bool hasAlfaMap;
-bool hasNormMap;
-
-	// BLOCK7:
-float3 cameraPosition; // Future
-bool castShadow;
-float3 specularColor;
-float nShininess;
+    // BLOCK3:
+    float4 ambientColor; // LIGHT: Ka
+    float4 diffuseColor; // LIGHT: Kd
+    float4 emissiveColor; // LIGHT: Ke 
+    float4 lightDirection; // LIGHT
+    
+    //// BLOCK4:
+    //bool hasColorMap; // 66
+    //float lightType; // Future
+    //float shaderType; // Future
+    //float shaderTypeParameter; // Future
+    //
+    //// BLOCK5:
+    //bool hasAlfaColor;
+    //float alfaColor;
+    //float fade; // Fade from 0 to 1
+    //float frameTime; // For animations
+    //
+    //// BLOCK6:
+    //bool hasFog;
+    //bool isSky;
+    //bool hasAlfaMap;
+    //bool hasNormMap;
+    //
+    //// BLOCK7:
+    //float3 cameraPosition; // Future
+    //bool castShadow;
+    //float3 specularColor;
+    //float nShininess;
 };
 
+//Set on: DXmodelClass::RenderSubMesh
+#if DXAPI11 == 1
+Texture2D shaderTexture;
+#endif
+#if DXAPI12 == 1
+Texture2D shaderTexture:	register(t0);
+#endif
+
+#if DXAPI11 == 1
+SamplerState SampleType;
+#endif
+#if DXAPI12 == 1
+SamplerState SampleType: register(s0);
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////
-float4 PSlightFunc(float3 Normal)
+float4 PSlightFunc1(float3 Normal)
 ////////////////////////////////////////////////////////////////////////////////
 {
     return saturate(dot(Normal, lightDirection)); // Calculate the amount of light on this pixel
@@ -162,58 +193,83 @@ PSIn VS_Main(VSIn input)
 {
     PSIn output;
 
-    if (VS_USE_WVP)
+    //if (VS_USE_WVP)
     {
         output.position = mul(float4(input.position, 1), WVP); // Calculate the position of the vertex against the world, view, and projection matrices
     }
-    else
-    {
-        float4 position = float4(input.position, 1);
-        position = mul(position, worldMatrix);
-        position = mul(position, view); //viewMatrix
-        position = mul(position, projection); //projectionMatrix
-        output.position = position;
-    }
+    //else
+    //{
+    //    float4 position = float4(input.position, 1);
+    //    position = mul(position, worldMatrix);
+    //    position = mul(position, view);         //viewMatrix
+    //    position = mul(position, projection);   //projectionMatrix
+    //    output.position = position;
+    //}
 
 	//22: TEXTURE: Store the texture coordinates for the pixel shader:
     output.texCoords = input.texCoords;
 
 	//23: LIGHT: NORMAL
-    if (VShasLight || VShasSpecular) 
+    //if (VShasLight || VShasSpecular) 
         output.normal = normalize(mul(input.normal, (float3x3) worldMatrix)); // Calculate the normal vector against the world matrix only
 
     return output;
 }
 
+#include "TextureSampling.hlsli"
+// mode:
+// 0 = nearest
+// 1 = bilinear
+// 2 = trilinear
+// 3 = cubic
+// 4 = hardware sampler
+
+//Mode	Filter Type	    FPS
+//0	    Nearest	        13111 FPS
+//1	    Bilinear	    12945 FPS
+//2	    Trilinear	    12989 FPS
+//3	    Cubic 	        13141 FPS
+
+float4 GetShaderTexture(Texture2D tex, float2 texCoords, uint mipLevel, int mode)
+{
+    switch (mode)
+    {
+        case 0:
+            return NearestInterpolation(SampleType, tex, texCoords);
+        case 1:
+            return BilinearInterpolation(SampleType, tex, texCoords);
+        case 2:
+            return TrilinearInterpolation(SampleType, tex, texCoords, mipLevel);
+        case 3:
+            return CubicInterpolation(SampleType, tex, texCoords);
+        
+        default:
+            return tex.Sample(SampleType, texCoords);
+    }
+
+    // fallback
+    return tex.Sample(SampleType, texCoords);
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Pixel Shader
 ////////////////////////////////////////////////////////////////////////////////
 float4 PS_Main(PSIn input) : SV_TARGET
 {
-    float4 textureColor = pixelColor; // SET PIXEL COLOR
+    float4 textureColor = 0;
     float lightIntensity = 0;
 
 	//-----------------------------------------------------------------------------------
-	// 21 & 41: TEXTURE: Sample the pixel color from the texture using the sampler at this texture coordinate location
-    if (hasTexture)
-    {
-        textureColor = shaderTexture.Sample(SampleType, input.texCoords);
-    }
+	// lvl >=21: TEXTURE: Sample the pixel color from the texture using the sampler at this texture coordinate location
+    //replace:
+        //textureColor = shaderTexture.Sample(SampleType, input.texCoords);    
+    //with:
+    #define TEXTURE_MODE 0
+    textureColor = GetShaderTexture(shaderTexture, input.texCoords, 0, TEXTURE_MODE);
 
-	// 23 & 43: LIGHT
-    if (hasLight)
-    {
-        if (isSky)
-            lightIntensity = PSlightFunc(input.normal);
-        else
-            lightIntensity = PSlightFunc2(input.normal);
+    lightIntensity = PSlightFunc2(input.normal);
+    textureColor = textureColor * saturate(emissiveColor + ambientColor + (lightIntensity * diffuseColor));
 
-        if (hasTexture)
-            textureColor = textureColor * saturate(emissiveColor + ambientColor + lightIntensity);
-        else
-            textureColor = textureColor * saturate(emissiveColor + ambientColor + (lightIntensity * diffuseColor));
-    }
-
+    textureColor.a = 1;
     return textureColor;
 }

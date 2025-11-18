@@ -2,10 +2,10 @@
 // Filename: 041ShadowMapInstance.hlsl
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
-*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2024
+*	World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 *	-------------------------------------------------------------------------------------------
 *	code by : Pedro Borges - pmborg@yahoo.com
-*	Downloaded from : http://woma.servegame.com
+*	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 *   is equivalent to 036ShadowMap.hlsl but with instances.
 **********************************************************************************************/
@@ -32,7 +32,7 @@ struct PSIn
 ////////////////
 // CBUFFERS
 ////////////////
-#include "cbuffer.hlsl"
+#include "cbuffer.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader

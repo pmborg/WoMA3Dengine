@@ -1,3 +1,8 @@
+#if (!defined DXAPI11 && !defined DXAPI12)
+    #define DXAPI11 1
+#endif
+
+
 // SYNC: DXshaderClass.h -- DX12: CBV
 #if DXAPI11 == 1
 cbuffer VSShaderParametersBuffer	//DX11
@@ -20,11 +25,11 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
 	bool	VShasFog;
 
 	// 23 BLOCK: VS3
-	float3	VSlightDirection;	// LIGHT	LightDirection[3]
+	float3	VSlightDirection;	// LIGHT
 	float   VSPad1;
 	float4	VSambientColor;		// LIGHT
-	float4	VSdiffuseColor;		// LIGHT	DiffuseColor
-	float4	VSemissiveColor;	// LIGHT	EmissiveColor
+	float4	VSdiffuseColor;		// LIGHT
+	float4	VSemissiveColor;	// LIGHT: Ke
 
 	// 31 BLOCK: VS4
 	float	VSfogStart;
@@ -34,8 +39,6 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
 
 	// 45 BLOCK: VS5
 	matrix	ViewToLightProj;
-	matrix	WorldInverseTranspose;	// WorldInverseTranspose
-	float4	vEye;					// camera position
 };
 
 ///////////////
