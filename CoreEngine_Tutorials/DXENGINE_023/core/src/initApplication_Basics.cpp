@@ -99,103 +99,55 @@ void ApplicationClass::initColorDemo(void* pContext)
 #endif
 
 // ----------------------------------------------------------------------------
-void ApplicationClass::initTextureDemo(void *pContext)
-// ----------------------------------------------------------------------------
-{
-	ModelTextureVertexType vertex;
-
-#if (!defined  NO_SCENE_IMAGE_LOAD) || defined INTRO_DEMO
-	{
-		//DEMO-1:
-		float X = 2.5f, Y = 1.5f, Z = 0;
-		CREATE_VERTEXVECTOR_SQUAD_MODEL_OPTIMIZED(SquareTextureVertexVector, X, Y, Z);	// Step 1: Setup all vertices positions: X, Y, Z
-		MAP_XZtoUV(SquareTextureVertexVector, X, Y, Z);				                    // Step 2: ADD TEXTURING: Auto-Map textures to all vertices: tu, tv
-
-		// Image Converter: \WoMA3Dengine\ExternalTools\Microsoft_DirectX_SDK_June_2010\Utilities\bin\x86\texconv.exe -ft PNG Earth_Diffuse.bmp
-
-		//Line1:
-		#define X_pos 4.1f
-		#define Y_pos +3
-
-	#if defined USE_IMAGE_BMP
-		initLoadTexture3D(m_bmp3DModel, LEVEL22_IMAGE_bmp, SquareTextureVertexVector, IndexSquarList, SHADER_TEXTURE);
-		m_bmp3DModel->rotateX(-3.14f / 2.0f);
-		m_bmp3DModel->translation(-X_pos, Y_pos+8, 5);
-	#endif
-	#if defined USE_IMAGE_PNG
-		initLoadTexture3D(m_png3DModel, LEVEL22_IMAGE_png, SquareTextureVertexVector, IndexSquarList, SHADER_TEXTURE);
-		m_png3DModel->rotateX(-3.14f / 2.0f);
-		m_png3DModel->translation(X_pos, Y_pos + 8, 5);
-	#endif
-
-		//Line2:
-	#if defined USE_IMAGE_JPG
-		initLoadTexture3D(m_jpg3DModel, LEVEL22_IMAGE_jpg, SquareTextureVertexVector, IndexSquarList, SHADER_TEXTURE); // Color: OPENGL
-		m_jpg3DModel->rotateX(-3.14f / 2.0f);
-		m_jpg3DModel->translation(-X_pos, Y_pos + 4.5, 5);
-	#endif
-	#if defined SUPPORT_TGA
-		initLoadTexture3D(m_tga3DModel, LEVEL22_IMAGE_tga, SquareTextureVertexVector, IndexSquarList, SHADER_TEXTURE);
-		m_tga3DModel->rotateX(-3.14f / 2.0f);
-		m_tga3DModel->translation(X_pos, Y_pos + 4.5, 5);
-	#endif
-
-		//Line3:
-	#if defined USE_IMAGE_DDS
-		initLoadTexture3D(m_dds3DModel, LEVEL22_IMAGE_dds, SquareTextureVertexVector, IndexSquarList, SHADER_TEXTURE); // Color: OPENGL
-		m_dds3DModel->rotateX(-3.14f / 2.0f);
-		m_dds3DModel->translation(-X_pos, Y_pos + 1, 5);
-	#endif
-	#if defined USE_IMAGE_TIFF
-		initLoadTexture3D(m_tif3DModel, LEVEL22_IMAGE_tif, SquareTextureVertexVector, IndexSquarList, SHADER_TEXTURE); // Inverted+Color: OPENGL
-		m_tif3DModel->rotateX(-3.14f / 2.0f);
-		m_tif3DModel->translation(X_pos, Y_pos + 1, 5);
-	#endif
-	}
-#endif
-
-#if defined SCENE_TEXTURE
-	//--------------------------------------------------------------------------------------------------------------------------
-	{
-		//DEMO-2:
-		// Step 1: Prepare Vertex(s)
-		float X = 1, Y = 1, Z = 1;
-		ModelTextureVertexType vertex;
-		CREATE_VERTEXVECTOR_TRIANGLE_MODEL_OPTIMIZED(TriangleTextureVertexVector, X, Y, Z);	// Step 1: Setup all vertices positions: X, Y, Z
-		MAP_XYtoUV(TriangleTextureVertexVector, X, Y, Z);				// Step 2: ADD TEXTURING: Auto-Map textures to all vertices: tu, tv
-
-		initLoadTexture3D(m_1stTriangleTextureVertexModel, LEVEL22_DEMO_TEXTURE, TriangleTextureVertexVector, IndexTriangleList, SHADER_TEXTURE);
-	}
-#endif
-}
-
-// ----------------------------------------------------------------------------
 void ApplicationClass::initLightDemo(void* pContext)
 // ----------------------------------------------------------------------------
 {
 #if defined SCENE_TEXTURE_LIGHT
-
-	//DEMO-2:
-	//--------------------------------------------------------------------------------------------------------------------------
+	womalog("initLightDemo: DEMO-1\n");
+	//DEMO-1:
 	{
-		// Step 1: Prepare Vertex(s)
-		float X = 1, Y = 1, Z = 1;
-		ModelTextureLightVertexType vertex = { 0 };
-		CREATE_VERTEXVECTOR_TRIANGLE_MODEL_OPTIMIZED(TriangleLightVertexVector, X, Y, Z);	// Step 1: Setup all vertices positions: X, Y, Z
-		MAP_XYtoUV(TriangleLightVertexVector, X, Y, Z);										// Step 2: ADD TEXTURING: Auto-Map textures to all vertices: tu, tv
-
-		// Calculate Normals, only once per triangle, (i.e. each 3 vertices):
-		WOMA::vec3 normal; // "static": to preserve the value in all iterations
-		normal = CalcNormals(&TriangleLightVertexVector[0]);
-
-		for (UINT i = 0; i < TriangleLightVertexVector.size(); i++)							// Step 3: Add normals to all vertices
+		
+		// TEXTURE SQUAR!
+		if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
 		{
-			TriangleLightVertexVector[i].nx = normal.x;
-			TriangleLightVertexVector[i].ny = -normal.y;
-			TriangleLightVertexVector[i].nz = normal.z;
+			ModelTextureVertexType vertex;
+			float X = 2.0f, Y = 1.0f, Z = 0;
+			if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
+			{
+				CREATE_VERTEXVECTOR_SQUAD_MODEL_VERTICAL(My3thModelVertexVector1, X, Y, Z);	// Step 1: Setup all vertices positions: X, Y, Z
+			}
+			else {
+				CREATE_VERTEXVECTOR_SQUAD_MODEL(My3thModelVertexVector1, X, Y, Z);
+			}
+			MAP_XYtoUV_vertical(My3thModelVertexVector1, X, Y, Z);								// Step 2: ADD TEXTURING: Auto-Map textures to all vertices: tu, tv			
+		
+			initLoadTexture3D(m_3th3DModel1, TEXT("engine/data/basics/Earth_Diffuse-LO2.png"), My3thModelVertexVector1, IndexSquarList2, SHADER_TEXTURE);
 		}
 
-		initLoadTextureLight3D(m_3th3DModel2, LEVEL22_DEMO_TEXTURE, TriangleLightVertexVector, IndexTriangleList, SHADER_TEXTURE_LIGHT);
+		// LIGHT TRIAGLE!
+		//DEMO-2:
+		womalog("initLightDemo: DEMO-2\n");
+		//--------------------------------------------------------------------------------------------------------------------------
+		{
+			// Step 1: Prepare Vertex(s)
+			ModelTextureLightVertexType vertex = { 0 };
+			float X = 1, Y = 1, Z = 1;
+			CREATE_VERTEXVECTOR_TRIANGLE_MODEL_OPTIMIZED(TriangleLightVertexVector, X, Y, Z);	// Step 1: Setup all vertices positions: X, Y, Z
+			MAP_XYtoUV(TriangleLightVertexVector, X, Y, Z);										// Step 2: ADD TEXTURING: Auto-Map textures to all vertices: tu, tv
+
+			// Calculate Normals, only once per triangle, (i.e. each 3 vertices):
+			WOMA::vec3 normal; // "static": to preserve the value in all iterations
+			normal = CalcNormals(&TriangleLightVertexVector[0]);
+
+			for (UINT i = 0; i < TriangleLightVertexVector.size(); i++)							// Step 3: Add normals to all vertices
+			{
+				TriangleLightVertexVector[i].nx = normal.x;
+				TriangleLightVertexVector[i].ny = -normal.y;
+				TriangleLightVertexVector[i].nz = normal.z;
+			}
+
+			initLoadTextureLight3D(m_3th3DModel2, LEVEL22_DEMO_TEXTURE, TriangleLightVertexVector, IndexTriangleList, SHADER_TEXTURE_LIGHT);
+		}
 	}
 #endif
 }
@@ -493,7 +445,7 @@ bool ApplicationClass::InitLightandDemos(void* pContext, WomaDriverClass* Driver
 
 #endif
 
-#if (DX_ENGINE_LEVEL >= 22 && LEVEL < 60) || defined INTRO_DEMO || DX_ENGINE_LEVEL == 99// 22:TEXTURE
+#if (DX_ENGINE_LEVEL >= 22 && DX_ENGINE_LEVEL != 23 && LEVEL < 60) || defined INTRO_DEMO || DX_ENGINE_LEVEL == 99// 22:TEXTURE
 	initTextureDemo(pContext);
 
 #endif

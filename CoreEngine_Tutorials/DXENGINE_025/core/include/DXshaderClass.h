@@ -73,6 +73,17 @@ using namespace Microsoft::WRL;
 #include <fstream>
 using namespace std;
 
+//DX_ENGINE_LEVEL >= 98
+// Must match the HLSL PointLight struct layout
+struct PointLightCPU
+{
+	DirectX::XMFLOAT3 position;  float radius;
+	DirectX::XMFLOAT3 color;     float intensity;
+};
+
+#if defined USE_POINTS_OF_LIGHT_FOR_LAMP
+#endif
+
 namespace DirectX
 {
 #define 	SOLID_PIPELINE_STATES		0
@@ -193,6 +204,12 @@ namespace DirectX
 			XMFLOAT2	distortion3;
 			float		distortionScale;
 			float		distortionBias;
+
+		//#if DX_ENGINE_LEVEL >= 98	//Cant use this on cbuffer: after 55
+			int			numPointLights;
+			float		pad[3];								// padding to keep next array 16-aligned
+			PointLightCPU pointLights[MAX_POINT_LIGHTS];    // same MAX_POINT_LIGHTS as shader
+		//#endif
 		};
 
 

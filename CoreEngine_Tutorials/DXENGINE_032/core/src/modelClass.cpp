@@ -352,10 +352,27 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 							{				
 								    lastVIndex = obj3d.indices32[vIndex];	//The last vertex index of this TRIANGLE
 							}
+							//{
+							//	int base = obj3d.indices32.size() - 3;
+							//	if (base >= 0)
+							//	{
+							//		// swap the last two triangle indices -> CCW guaranteed
+							//		std::swap(obj3d.indices32[base + 1], obj3d.indices32[base + 2]);
+							//	}
+							//}
 							vIndex++;	//Increment index count
 						}
 
 						obj3d.meshTriangles++;	//One triangle down
+
+						// ----------------------------
+						// Correct CCW fix goes here:
+						// ----------------------------
+						int base = obj3d.indices32.size() - 3;
+						if (base >= 0)
+						{
+							std::swap(obj3d.indices32[base + 1], obj3d.indices32[base + 2]);
+						}
 
 						//If there are more than three vertices in the face definition, we need to make sure
 						//we convert the face to triangles. We created our first triangle above, now we will
@@ -1087,6 +1104,8 @@ bool ModelClass::CreateObject(	void* pContext, void* XmodelClass, TCHAR* objectN
 					obj3d.subsetMaterialArray.push_back(j);
 		}
 	}
+
+
 
 	// --------------------------------------------------------------------------------------------
 	// Post Read Actions:

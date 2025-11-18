@@ -731,12 +731,30 @@ void ApplicationClass::DemoRender(void* pContext)
 	if (RENDER_PAGE == 23 || FORCE_RENDER_ALL)
 #endif
 	{
+		//Square:
+		if (m_3th3DModel1 && WOMA::AppSettings->DRIVER != DRIVER_GL3)
 		{
-			m_3th3DModel2->translation(0, 4.75f, 1);
-			m_3th3DModel2->scale(1.25f, 1.25f, 1.25f);
-		}
+			if (m_Driver->RenderfirstTime)
+			{
+				float w = 8.0f;         // choose desired width
+				float h = w / 1.39f;    // keep perfect aspect ratio
+				m_3th3DModel1->Identity();
+				m_3th3DModel1->scale(w, h, 1);
+				m_3th3DModel1->translation(0, 0, -5);
+			}
 
-		m_3th3DModel2->Render(pContext);
+			m_3th3DModel1->Render(pContext);
+		}
+		//Triangle:
+		if (m_3th3DModel2)
+		{
+			if (m_Driver->RenderfirstTime)
+			{
+				m_3th3DModel2->translation(0, 10, 0);
+				m_3th3DModel2->scale(3, 3, 3);
+			}
+			m_3th3DModel2->Render(pContext);
+		}
 	}
 #endif
 

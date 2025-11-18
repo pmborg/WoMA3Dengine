@@ -775,6 +775,10 @@ void CallJavaVoidMethod(android_app* app, const char* methodName)
 
 void APPLICATION_STOP()
 {
+#if defined WINDOWS_PLATFORM
+	ShowCursor(TRUE);
+#endif
+
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
 	SAFE_SHUTDOWN(r_Application);
 #endif
@@ -832,7 +836,6 @@ void APPLICATION_STOP()
 
 #if defined(ANDROID_PLATFORM)
 	CallJavaVoidMethod(engine.app, "copyReportToPublic");
-
 	engine.has_focus_ = false;
 #endif
 }

@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------
-// Filename: 053Double_Color_Terrain.hlsl
+// Filename: 066Double_Color_Terrain.hlsl
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
 *	World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
@@ -8,7 +8,6 @@
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 /*********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
 
 #define PS_USE_LIGHT			//23
 //#define PS_USE_FADE			//Night/Day
@@ -39,15 +38,15 @@ struct PSIn
 {
 	float4 position			: SV_POSITION;			
 	float2 texCoords		: TEXCOORD0;			
-	float3 normal			: TEXCOORD1;
+	float3 normal			: NORMAL;
     float4 color			: COLOR;
 #if defined PS_USE_FOG
     float fogFactor			: FOG; // 51 FOG
-    float4 cameraPosition   : TEXCOORD2;
+    float4 cameraPosition : WS;
 #endif
 
 #if defined PS_USE_SPECULAR
-	float3 viewDirection	: TEXCOORD3;
+	float3 viewDirection	: TEXCOORD1;			
 #endif
 #if defined PS_USE_SHADOWMAP_TEXTURE//45
 	float4 lightViewPosition: LIGHT_VIEW_POSITION;	
@@ -77,7 +76,7 @@ SamplerState SampleType				: register(s0);// 3D (default) WRAP
 #include "light.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
-// VERTEX SHADER
+// Vertex Shader
 ////////////////////////////////////////////////////////////////////////////////
 
 PSIn VS_Main(VSIn input)
@@ -142,7 +141,7 @@ PSIn VS_Main(VSIn input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// PIXEL SHADER
+// Pixel Shader
 ////////////////////////////////////////////////////////////////////////////////
 float4 PS_Main(PSIn input) : SV_TARGET
 {

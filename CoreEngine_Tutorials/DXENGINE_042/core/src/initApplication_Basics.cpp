@@ -176,28 +176,51 @@ void ApplicationClass::initLightDemo(void* pContext)
 // ----------------------------------------------------------------------------
 {
 #if defined SCENE_TEXTURE_LIGHT
-
-	//DEMO-2:
-	//--------------------------------------------------------------------------------------------------------------------------
+	womalog("initLightDemo: DEMO-1\n");
+	//DEMO-1:
 	{
-		// Step 1: Prepare Vertex(s)
-		float X = 1, Y = 1, Z = 1;
-		ModelTextureLightVertexType vertex = { 0 };
-		CREATE_VERTEXVECTOR_TRIANGLE_MODEL_OPTIMIZED(TriangleLightVertexVector, X, Y, Z);	// Step 1: Setup all vertices positions: X, Y, Z
-		MAP_XYtoUV(TriangleLightVertexVector, X, Y, Z);										// Step 2: ADD TEXTURING: Auto-Map textures to all vertices: tu, tv
-
-		// Calculate Normals, only once per triangle, (i.e. each 3 vertices):
-		WOMA::vec3 normal; // "static": to preserve the value in all iterations
-		normal = CalcNormals(&TriangleLightVertexVector[0]);
-
-		for (UINT i = 0; i < TriangleLightVertexVector.size(); i++)							// Step 3: Add normals to all vertices
+		
+		// TEXTURE SQUAR!
+		if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
 		{
-			TriangleLightVertexVector[i].nx = normal.x;
-			TriangleLightVertexVector[i].ny = -normal.y;
-			TriangleLightVertexVector[i].nz = normal.z;
+			ModelTextureVertexType vertex;
+			float X = 2.0f, Y = 1.0f, Z = 0;
+			if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
+			{
+				CREATE_VERTEXVECTOR_SQUAD_MODEL_VERTICAL(My3thModelVertexVector1, X, Y, Z);	// Step 1: Setup all vertices positions: X, Y, Z
+			}
+			else {
+				CREATE_VERTEXVECTOR_SQUAD_MODEL(My3thModelVertexVector1, X, Y, Z);
+			}
+			MAP_XYtoUV_vertical(My3thModelVertexVector1, X, Y, Z);								// Step 2: ADD TEXTURING: Auto-Map textures to all vertices: tu, tv			
+		
+			initLoadTexture3D(m_3th3DModel1, TEXT("engine/data/basics/Earth_Diffuse-LO2.png"), My3thModelVertexVector1, IndexSquarList2, SHADER_TEXTURE);
 		}
 
-		initLoadTextureLight3D(m_3th3DModel2, LEVEL22_DEMO_TEXTURE, TriangleLightVertexVector, IndexTriangleList, SHADER_TEXTURE_LIGHT);
+		// LIGHT TRIAGLE!
+		//DEMO-2:
+		womalog("initLightDemo: DEMO-2\n");
+		//--------------------------------------------------------------------------------------------------------------------------
+		{
+			// Step 1: Prepare Vertex(s)
+			ModelTextureLightVertexType vertex = { 0 };
+			float X = 1, Y = 1, Z = 1;
+			CREATE_VERTEXVECTOR_TRIANGLE_MODEL_OPTIMIZED(TriangleLightVertexVector, X, Y, Z);	// Step 1: Setup all vertices positions: X, Y, Z
+			MAP_XYtoUV(TriangleLightVertexVector, X, Y, Z);										// Step 2: ADD TEXTURING: Auto-Map textures to all vertices: tu, tv
+
+			// Calculate Normals, only once per triangle, (i.e. each 3 vertices):
+			WOMA::vec3 normal; // "static": to preserve the value in all iterations
+			normal = CalcNormals(&TriangleLightVertexVector[0]);
+
+			for (UINT i = 0; i < TriangleLightVertexVector.size(); i++)							// Step 3: Add normals to all vertices
+			{
+				TriangleLightVertexVector[i].nx = normal.x;
+				TriangleLightVertexVector[i].ny = -normal.y;
+				TriangleLightVertexVector[i].nz = normal.z;
+			}
+
+			initLoadTextureLight3D(m_3th3DModel2, LEVEL22_DEMO_TEXTURE, TriangleLightVertexVector, IndexTriangleList, SHADER_TEXTURE_LIGHT);
+		}
 	}
 #endif
 }
@@ -666,7 +689,7 @@ bool ApplicationClass::InitLightandDemos(void* pContext, WomaDriverClass* Driver
 
 #endif
 
-#if (DX_ENGINE_LEVEL >= 22 && LEVEL < 60) || defined INTRO_DEMO || DX_ENGINE_LEVEL == 99// 22:TEXTURE
+#if (DX_ENGINE_LEVEL >= 22 && DX_ENGINE_LEVEL != 23 && LEVEL < 60) || defined INTRO_DEMO || DX_ENGINE_LEVEL == 99// 22:TEXTURE
 	initTextureDemo(pContext);
 
   #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER

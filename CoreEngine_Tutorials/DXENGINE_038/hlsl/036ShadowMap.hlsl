@@ -5,11 +5,14 @@
 *	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2023
 *	-------------------------------------------------------------------------------------------
 *	code by : Pedro Borges - pmborg@yahoo.com
-*	Downloaded from : http://woma.servegame.com
+*	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
+//WomaIntegrityCheck = 1234525217;
 
-//case SHADER_TEXTURE_LIGHT_CASTSHADOW:
+#if (!defined DXAPI11 && !defined DXAPI12)
+    #define DXAPI11 1
+#endif
 
 //////////////
 // TYPEDEFS //

@@ -386,11 +386,9 @@ void GLmodelClass::Shutdown()
 	{
 		static int m_previousPosX = -10000;
 		static int m_previousPosY = -10000;
-		static bool RenderfirstTime = ((WomaDriverClass*)m_Driver)->RenderfirstTime;
-
 		float left, right, top, bottom;
-		ModelTextureVertexType* vertices;
 
+		/*no static*/bool RenderfirstTime = ((WomaDriverClass*)m_Driver)->RenderfirstTime;
 		if (((positionX == m_previousPosX) && (positionY == m_previousPosY)) && !RenderfirstTime)
 			return true;
 
@@ -398,15 +396,26 @@ void GLmodelClass::Shutdown()
 		m_previousPosX = positionX;
 		m_previousPosY = positionY;
 
-		//The four sides of the image need to be calculated. See the diagram at the top of the tutorial for a complete explaination.
+		//The four sides of the image need to be calculated. See the diagram at the top of the tutorial for a complete explanation.
 		left = (float)((WOMA::AppSettings->WINDOW_WIDTH / 2) * -1) + (float)positionX;	// Calculate the screen coordinates of the left side of the bitmap.
-		right = left + (float)SpriteTextureWidth;												// Calculate the screen coordinates of the right side of the bitmap.
-		top = (float)(WOMA::AppSettings->WINDOW_HEIGHT / 2) - (float)positionY;			// Calculate the screen coordinates of the top of the bitmap.
-		bottom = top - (float)SpriteTextureHeight;												// Calculate the screen coordinates of the bottom of the bitmap.
+		right = left + (float)SpriteTextureWidth;										// Calculate the screen coordinates of the right side of the bitmap.
 
+		//LINUX & ANDROID:
+		top = (float)(WOMA::AppSettings->WINDOW_HEIGHT / 2) - (float)positionY;			// Calculate the screen coordinates of the top of the bitmap.
+		bottom = top - (float)SpriteTextureHeight;
+#if defined WINDOWS_PLATFORM //FIX OPENGL ON WINDOWS
+		#define winTopOffset 20
+		top -= winTopOffset + positionY;
+		bottom = (WOMA::AppSettings->WINDOW_HEIGHT / 2) - (winTopOffset + positionY+SpriteTextureHeight*2);
+#endif
+
+		//op1:
 		//Now that the coordinates are calculated create a temporary vertex array and fill it with the new six vertex points.
-		vertices = NEW ModelTextureVertexType[m_vertexCount];
-		IF_NOT_THROW_EXCEPTION(vertices);
+		//ModelTextureVertexType* vertices;
+		//vertices = NEW ModelTextureVertexType[m_vertexCount];
+		//IF_NOT_THROW_EXCEPTION(vertices);
+
+		static ModelTextureVertexType vertices[6];
 
 		// Load the vertex array with data:
 	/*
@@ -416,6 +425,7 @@ void GLmodelClass::Shutdown()
 		| / t2|
 		|/----|
 	*/
+
 	// First triangle (t1):
 	// --------------------
 		vertices[0].x = left;
@@ -458,20 +468,10 @@ void GLmodelClass::Shutdown()
 
 		// Bind the vertex buffer.
 		glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
-		glBufferData(GL_ARRAY_BUFFER, m_vertexCount * sizeof(ModelTextureVertexType), vertices, GL_STATIC_DRAW);	// Bind the vertex
-/*
-		// Get a pointer to the buffer's actual location in memory.
-		void* dataPtr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+		glBufferData(GL_ARRAY_BUFFER, sizeof (vertices) /*m_vertexCount * sizeof(ModelTextureVertexType)*/, vertices, GL_STATIC_DRAW);	// Bind the vertex
 
-		// Copy the vertex data into memory.
-		memcpy(dataPtr, vertices, m_vertexCount * sizeof(ModelColorVertexType));
-
-		// Unlock the vertex buffer.
-		glUnmapBuffer(GL_ARRAY_BUFFER);
-*/
-
-
-		SAFE_DELETE_ARRAY(vertices);				// Release the vertex array as it is no longer needed.
+		//op1:
+		//SAFE_DELETE_ARRAY(vertices);				// Release the vertex array as it is no longer needed.
 
 		return true;
 	}

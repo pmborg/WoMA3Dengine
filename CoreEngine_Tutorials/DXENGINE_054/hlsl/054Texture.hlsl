@@ -7,9 +7,13 @@
 *	code by : Pedro Borges - pmborg@yahoo.com
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
-*   Water Waves
+*   water_waves
 **********************************************************************************************/
 //WomaIntegrityCheck = 1234525217;
+
+#if (!defined DXAPI11 && !defined DXAPI12)
+    #define DXAPI11 1
+#endif
 
 //////////////
 // TYPEDEFS //
@@ -53,7 +57,7 @@ float rand_1_05(in float2 uv)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// VERTEX SHADER
+// Vertex Shader
 ////////////////////////////////////////////////////////////////////////////////
 PSIn VS_Main(VSIn input)
 {
@@ -66,6 +70,8 @@ PSIn VS_Main(VSIn input)
     float s_X = 0;
     float s_Y = 0;
     float s_Z = 0;
+    
+    //output.worldPos = mul(float4(input.position, 1), worldMatrix).xyz;
     
    //51:
     cameraPosition = mul(float4(input.position, 1), WV);
@@ -98,19 +104,19 @@ PSIn VS_Main(VSIn input)
         // float h = 0.01 * sin(dot(K, X0) + w*time*3);
     }
 
-    Pos[0] = s_X; //convert to DX: x
-    Pos[1] = s_Z; //convert to DX: y
-    Pos[2] = s_Y; //convert to DX: z
+    Pos[0] = s_X;
+    Pos[2] = s_Y;
+    Pos[1] = s_Z;
     Pos *= 7.5f;
     Pos[3] /= 7.5f;
-    
+
     // Set world position AFTER all math, before projection
     output.worldPos = Pos.xyz;
     
     output.Pos = mul(Pos, WVP); // Calculate the position of the vertex against the world, view, and projection matrices
     
     output.Color = 0.9;
-    output.Color += float4(0.1, 0.4, 0.5, 1);
+    output.Color += float4(0.1, 0.2, 0.5, 1);
     output.Color /= 1.75;
     
     return output;
@@ -126,23 +132,15 @@ float4 PS_Main(PSIn input) : SV_TARGET
     color[1] = text[1];
     color[2] = text[2];
  
-    if ((input.worldPos.x > 0.5f && input.worldPos.z > 0.5f) && (input.worldPos.x < 51.5f && input.worldPos.z < 49))
-    {
-        //river
+    if ((input.worldPos.x > 0.5f && input.worldPos.z > 0.5f) && (input.worldPos.x < 128 && input.worldPos.z < 128))
         textureColor = (textureColor + color) / 2.0;
-        #if defined PS_USE_ALFACOLOR	// 33: Alfa Color
-            //if (hasAlfaColor)
-            textureColor.a = alfaColor;
-        #endif
-    }
     else
-    {
-        //ocean:
         textureColor = textureColor * color;
-        textureColor.a = 1;
-    }
+
+#if defined PS_USE_ALFACOLOR	// 33: Alfa Color
+    if (hasAlfaColor)
+        textureColor.a = alfaColor;
+#endif
     
-    if (fade < 1)
-        textureColor.rgb *= fade;
     return textureColor;
 }

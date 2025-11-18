@@ -1078,7 +1078,7 @@ namespace DirectX {
 			//std::string vertVer = "vs_"; //cant be: STRING
 			//vertVer.append(driverList[WOMA::AppSettings->DRIVER]->szShaderModel);  //TEXT("vs_5_0")
 			//vertVer[4] = '_';  //TEXT("vs_5_0")
-			result = D3DCompileFromFile(vsFilename.c_str(), defines/*nullptr*/, nullptr, vertexHLSL.c_str(), ("vs_5_0")/*vertVer.c_str()*/, compileFlags, 0, &vertexShader, &errorMessage);
+			result = D3DCompileFromFile(vsFilename.c_str(), defines/*nullptr*/, D3D_COMPILE_STANDARD_FILE_INCLUDE, vertexHLSL.c_str(), ("vs_5_0")/*vertVer.c_str()*/, compileFlags, 0, &vertexShader, &errorMessage);
 			if (FAILED(result))
 			{
 				if (errorMessage)
@@ -1087,7 +1087,7 @@ namespace DirectX {
 			}
 
 			//vertVer[0] = 'p';  //TEXT("ps_5_0")
-			result = D3DCompileFromFile(psFilename.c_str(), defines/*nullptr*/, nullptr, pixelHLSL.c_str(), ("ps_5_0")/*vertVer.c_str()*/, compileFlags, 0, &pixelShader, &errorMessage);
+			result = D3DCompileFromFile(psFilename.c_str(), defines/*nullptr*/, D3D_COMPILE_STANDARD_FILE_INCLUDE, pixelHLSL.c_str(), ("ps_5_0")/*vertVer.c_str()*/, compileFlags, 0, &pixelShader, &errorMessage);
 			if (FAILED(result))
 			{
 				if (errorMessage)

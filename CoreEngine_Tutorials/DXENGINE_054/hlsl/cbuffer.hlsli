@@ -10,6 +10,9 @@
 **********************************************************************************************/
 //WomaIntegrityCheck = 1234525217;
 
+#if (!defined DXAPI11 && !defined DXAPI12)
+    #define DXAPI11 1
+#endif
 
 #define MAX_POINT_LIGHTS 26      // enough for all lamps
 

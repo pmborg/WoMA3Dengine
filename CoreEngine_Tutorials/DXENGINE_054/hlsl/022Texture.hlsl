@@ -17,167 +17,68 @@
 **********************************************************************************************/
 //WomaIntegrityCheck = 1234525217;
 
+#if (!defined DXAPI11 && !defined DXAPI12)
+    #define DXAPI11 1
+#endif
+
+// mode:
+// -1 = hardware sampler
+//  0 = nearest
+//  1 = bilinear
+//  2 = trilinear
+//  3 = cubic
+
+#define TEXTURE_MODE -1 //Default is -1
+
+//#define   PS_USE_FOG           //51
+#define   PS_USE_ALFACOLOR
+#define   PS_USE_FADE
+
+
 //////////////
 // TYPEDEFS //
 //////////////
-#define DXAPI11             1   //force
-#define PS_USE_FOG           	//51 
-#define PS_USE_ALFACOLOR		//50 water
-//#if defined PS_USE_FADE
 
-// VERTEX:
+// VERTEX: need to match: 
+// [DXshaderClass.cpp] texturePolygonLayout11 / texturePolygonLayout
 struct VSIn
 {
     float3 position : POSITION;
-    float2 texCoords : TEXCOORD0; //22
+    float2 texCoords : TEXCOORD; //TEXCOORD0
 };
 
 // PIXEL:
 struct PSIn
 {
     float4 position : SV_POSITION;
-    float2 texCoords : TEXCOORD0;
-#if defined PS_USE_FOG && DXAPI11 == 1
+    float2 texCoords : TEXCOORD; //TEXCOORD0
+#if defined PS_USE_FOG
     float fogFactor : FOG; // 51 FOG
 #endif	
 };
 
 //Set on: DXmodelClass::RenderSubMesh
-Texture2D shaderTexture : register(t0); //DX12: SRV
-SamplerState SampleType; //3D (default) WRAP
+#if DXAPI11 == 1
+Texture2D shaderTexture;
+#endif
+#if DXAPI12 == 1
+Texture2D shaderTexture:	register(t0);
+#endif
 
-SamplerState samAnisotropic
-{
-    Filter = ANISOTROPIC;
-    MaxAnisotropy = 16;
-
-    AddressU = WRAP;
-    AddressV = WRAP;
-};
-
+#if DXAPI11 == 1
+SamplerState SampleType;
+#endif
+#if DXAPI12 == 1
+SamplerState SampleType: register(s0);
+#endif
 
 ////////////////
 // CBUFFERS
 ////////////////
-////////////////
-// CBUFFERS
-////////////////
-// SYNC: DXshaderClass.h -- DX12: CBV
-#if DXAPI11 == 1
-cbuffer VSShaderParametersBuffer	//DX11
-#endif
-#if DXAPI12 == 1
-cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: Descriptor: 0
-#endif
-{
-    // VERTEX: need to match: 
-    // [DXshaderClass.h] VSconstantBufferType
-
-    // BLOCK: VS1
-    matrix worldMatrix; //worldMatrix
-    matrix view; //view
-    matrix projection; //projection
-    matrix WV; //worldMatrix+viewMatrix
-    matrix WVP; //worldMatrix+viewMatrix+projectionMatrix
-
-    // 23 BLOCK: VS2
-    bool VShasLight;
-    bool VShasSpecular;
-    bool VShasNormMap;
-    bool VShasFog;
-
-    // 23 BLOCK: VS3
-    float3 VSlightDirection; // LIGHT
-    float  VSlightPAD; // 3+1=XMFLOAT4
-    float4 VSambientColor; // LIGHT
-    float4 VSdiffuseColor; // LIGHT
-    float4 VSemissiveColor; // LIGHT: Ke
-
-    // 31 BLOCK: VS4
-    float VSfogStart;
-    float VSfogEnd;
-    bool VShasShadowMap;
-    bool VS_USE_WVP;
-
-    // 45 BLOCK: VS5
-    matrix ViewToLightProj;
-    matrix WorldInverseTranspose; // WorldInverseTranspose
-    float4 vEye; // camera position		
-
-    // 42 BLOCK: VS6
-    float VSrotX;
-    float VSrotY;
-    float VSrotZ;
-    float time;
-
-    // 42 BLOCK: VS7
-    float VSshaderType;
-    float vsIsSky;
-    float vsPAD3;
-    float vsPAD4;
-    
-    // FIRE:
-    float vsframeTime;
-    float3 scrollSpeeds;
-    float3 scales;
-    bool isAnimatedBill;
-};
-
-///////////////
-// PIXEL BUFFER
-///////////////
-//Note: on DX11 dont use: register()
-
-// SYNC: DXshaderClass.h -- DX12: CBV
-#if DXAPI11 == 1
-cbuffer PSShaderParametersBuffer	//DX11
-#endif
-#if DXAPI12 == 1
-cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: Descriptor: 1
-#endif
-{
-    // BLOCK1:
-    float4 pixelColor;
-
-    // BLOCK2:
-    bool hasTexture; // No? Use pixelColor, then.
-    bool hasLight; // Future Load Obj. Engine Level
-    bool hasSpecular; // Future Load Obj. Engine Level
-    bool isFont; // Future Load Obj. Engine Level
-
-    // BLOCK3:
-    float4 ambientColor; // LIGHT: Ka
-    float4 diffuseColor; // LIGHT: Kd
-    float4 emissiveColor; // LIGHT: Ke 
-    float4 lightDirection; // LIGHT
-
-    // BLOCK4:
-    bool hasColorMap; // 66
-    float lightType; // Future
-    float shaderType; // Future
-    float shaderTypeParameter; // Future
-
-    // BLOCK5:
-    bool hasAlfaColor;
-    float alfaColor;
-    float fade; // Fade from 0 to 1
-    float frameTime; // For animations
-
-    // BLOCK6:
-    bool hasFog;
-    bool isSky;
-    bool hasAlfaMap;
-    bool hasNormMap;
-
-    // BLOCK7:
-    float3 cameraPosition; // Future
-    bool castShadow;
-    float3 specularColor;
-    float nShininess;
-};
+#include "cbuffer.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
-// VERTEX SHADER
+// Vertex Shader
 ////////////////////////////////////////////////////////////////////////////////
 PSIn VS_Main(VSIn input)
 {
@@ -185,33 +86,22 @@ PSIn VS_Main(VSIn input)
 #if defined PS_USE_FOG
     float4 cameraPosition;
 #endif
-    
-    if (VS_USE_WVP)
-    {
-        output.position = mul(float4(input.position, 1), WVP); // Calculate the position of the vertex against the world, view, and projection matrices
-    }
-    else
-    {
-        float4 position = float4(input.position, 1);
-        position = mul(position, worldMatrix);
-        position = mul(position, view); //viewMatrix
-        position = mul(position, projection); //projectionMatrix
-        output.position = position;
-    }
 
-    
-    //if (isAnimatedBill)
-    //    output.position.x += sin(vsframeTime * 100) * (1 - input.texCoords.y) / 10;
-    if (isAnimatedBill)
-        output.position.x += sin(vsframeTime) * (1 - input.texCoords.y) / 100;
-    
-    output.texCoords = input.texCoords; // TEXTURE: Store the texture coordinates for the pixel shader:
+if (VS_USE_WVP) {
+	output.position = mul(float4(input.position, 1), WVP);	// Calculate the position of the vertex against the world, view, and projection matrices
+} else {
+	float4 position = float4(input.position, 1);
+	position = mul(position, worldMatrix);
+	position = mul(position, view);			//viewMatrix
+	position = mul(position, projection);	//projectionMatrix
+	output.position = position;
+}
+
+    output.texCoords = input.texCoords;						// TEXTURE: Store the texture coordinates for the pixel shader:
 
     //51:
 #if defined PS_USE_FOG
     cameraPosition = mul(float4(input.position, 1), WV);
-#endif
-#if defined PS_USE_FOG && DXAPI11 == 1
     if (VShasFog)
         output.fogFactor = saturate((VSfogEnd - cameraPosition.z) / (VSfogEnd - VSfogStart)); // Calculate linear fog.  
 #endif
@@ -219,22 +109,62 @@ PSIn VS_Main(VSIn input)
     return output;
 }
 
+#include "TextureSampling.hlsli"
+// mode:
+// 0 = nearest
+// 1 = bilinear
+// 2 = trilinear
+// 3 = cubic
+// 4 = hardware sampler
+
+//Mode	Filter Type	    FPS
+//0	    Nearest	        13111 FPS
+//1	    Bilinear	    12945 FPS
+//2	    Trilinear	    12989 FPS
+//3	    Cubic 	        13141 FPS
+
+float4 GetShaderTexture(Texture2D tex, float2 texCoords, uint mipLevel, int mode)
+{
+    switch (mode)
+    {
+        case 0:
+            return NearestInterpolation(SampleType, tex, texCoords);
+        case 1:
+            return BilinearInterpolation(SampleType, tex, texCoords);
+        case 2:
+            return TrilinearInterpolation(SampleType, tex, texCoords, mipLevel);
+        case 3:
+            return CubicInterpolation(SampleType, tex, texCoords);
+        
+        default:
+            return tex.Sample(SampleType, texCoords);
+    }
+
+    // fallback
+    return tex.Sample(SampleType, texCoords);
+}
+
+
 float4 PS_Main(PSIn input) : SV_TARGET
 {
-	// Sample the pixel color from the texture using the sampler at this texture coordinate location:
-    float4 textureColor = shaderTexture.Sample(SampleType, input.texCoords);
+	//-----------------------------------------------------------------------------------
+	// lvl >=21: TEXTURE: Sample the pixel color from the texture using the sampler at this texture coordinate location
+    //replace:
+        //textureColor = shaderTexture.Sample(SampleType, input.texCoords);    
+    //with:
+    #define TEXTURE_MODE 0
+    float4 textureColor = GetShaderTexture(shaderTexture, input.texCoords, 0, TEXTURE_MODE);
+    
 #if defined PS_USE_FOG
     float4 fogColor = float4(87.0f / 256.0f, 87 / 256.0f, 87.0f / 256.0f, 1.0f);
 #endif
     
-    textureColor.rgb *= fade;
-
 #if defined PS_USE_ALFACOLOR	// 33: Alfa Color
-    if (hasAlfaColor)
+	if (hasAlfaColor)
         textureColor.a = alfaColor;
 #endif
 
-#if defined PS_USE_FOG && DXAPI11 == 1
+#if defined PS_USE_FOG
     if (hasFog)
     {
         float4 fog4 = 0;
@@ -249,13 +179,13 @@ float4 PS_Main(PSIn input) : SV_TARGET
         fog4.g = fog4.r;
         fog4.b = fog4.r;
         textureColor.rgb = lerp(textureColor.rgb, fogColor.rgb, fog4.rgb);
-        //textureColor = fog4;
-
     }
 #endif
-    
-    //return float4(1,1,1,1);
-    if (fade < 1)
-        textureColor.rgb *= fade;
+
+#if defined PS_USE_FADE
+     textureColor.rgb *= fade;
+#endif
+
+    textureColor.rgb = pow(textureColor.rgb, 1.0 / 2.2); //Apply sRGB workflow
     return textureColor;
 }
