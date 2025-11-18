@@ -175,7 +175,9 @@
 
     #if DX_ENGINE_LEVEL >= 20 && !defined WOMAENGINE_BASIC //settings.xml (UseAllMonitors="true")
         #define USE_ALLOW_MAINWINDOW_RESIZE
+		#if defined _DEBUG
         #define USE_STATUSBAR
+		#endif
         #define USE_ALLOW_RESIZE
         #define USE_ALTENTER_SWAP_FULLSCREEN_WINDOWMODE //Dep: USE_ALLOW_RESIZE
         //#define USE_ASPECT_RATIO // Default: off - Dep: USE_ALLOW_RESIZE
@@ -234,7 +236,7 @@
             #undef SCENE_TEXTURE
             #undef SCENE_TEXTURE_LIGHT
             #undef MAIN_RENDER_LIGHT_RAY
-            #define NO_SCENE_IMAGE_LOAD //(for debugging only!)
+            //#define NO_SCENE_IMAGE_LOAD //(for debugging only!)
         #endif
         #define USE_TITLE_BANNER
         #define USE_ALPHA_BLENDING
@@ -255,11 +257,23 @@
     #endif
 
     #if DX_ENGINE_LEVEL >= 26
+		#if DX_ENGINE_LEVEL == 26
+			#undef SCENE_COLOR
+			#undef SCENE_TEXTURE
+			#undef SCENE_TEXTURE_LIGHT
+		#endif
         #define USE_CUBE                    //26-
         #define USE_SPHERE                  //26-
     #endif
 
     #if DX_ENGINE_LEVEL >= 27
+		#if DX_ENGINE_LEVEL == 27
+			#undef SCENE_COLOR
+			#undef SCENE_TEXTURE
+			#undef SCENE_TEXTURE_LIGHT
+			#undef USE_CUBE                 //26-
+			#undef USE_SPHERE               //26-
+		#endif
         #if defined WINDOWS_PLATFORM
         #define USE_RASTERTEK_TEXT_FONT     //27-Allow Legends for all Levels since 20: with "techno" of 28 (Text Fonts)
         //#define TEXT_TEST                 // Default: off - (debug only!)
@@ -269,6 +283,13 @@
     #endif
 
     #if DX_ENGINE_LEVEL >= 28
+		#if DX_ENGINE_LEVEL == 28
+			#undef SCENE_COLOR
+			#undef SCENE_TEXTURE
+			#undef SCENE_TEXTURE_LIGHT
+			#undef USE_CUBE                 //26-
+			//#undef USE_SPHERE               //26-
+		#endif
         #if defined WINDOWS_PLATFORM
             #if defined DX_ENGINE && defined NDEBUG
                 #define ALLOW_PRINT_SCREEN_SAVE_PNG
@@ -506,15 +527,19 @@
     //MAIN_RENDER:
     //-------------------------------------------------------------------------------------------------------
     #define MAIN_RENDER_TITLE           //24
+#if DX_ENGINE_LEVEL >= 25
     #define MAIN_RENDER_DRIVER_FONT     //25
     #define MAIN_RENDER_RASTERTEK_FONT  //27
     #define MAIN_RENDER_SKY             //28
     #define MAIN_RENDER_MAIN_XML_OBJ    //30
+#endif
+#if DX_ENGINE_LEVEL >= 49
     #define MAIN_RENDER_WATER           //50
     #define MAIN_RENDER_TERRAIN         //55/65
     #define MAIN_RENDER_MINIMAP         //63
     #define MAIN_RENDER_BILLBOARDS      //70/74
     #define MAIN_RENDER_ASSIMP          //82
+#endif
     //-------------------------------------------------------------------------------------------------------
     
     #if DX_ENGINE_LEVEL >= 79
@@ -613,8 +638,14 @@
 #endif
 
 #if DX_ENGINE_LEVEL >= 99
-	#define USE_TERRAIN_SHADOWS
-	#define USE_WOMA_ENGINE_ONE_CBUFFER
+	#define USE_TERRAIN_SHADOWS //TODO
+	//#define USE_WOMA_ENGINE_ONE_CBUFFER
+
+	#undef USE_DAY_AND_NIGHT
+
+	#undef USE_SHADOW_THREAD   //Allow the other 2:
+	#undef USE_MINIMAP_REDENRING_THREAD
+	#undef USE_MESH_THREAD
 #endif
 
 #if DX_ENGINE_LEVEL >= 100
@@ -667,6 +698,10 @@
 		//#pragma message( "BUILD: export" )  
 	#endif
 
+	#ifndef MAX_POINT_LIGHTS
+		#define MAX_POINT_LIGHTS 26
+	#endif
+	
 	#pragma warning(pop)
 
 //-------------------------------------------------
