@@ -3,62 +3,56 @@
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
 *	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2023
-*	-------------------------------------------------------------------------------------------
 *	code by : Pedro Borges - pmborg@yahoo.com
-*	Downloaded from : https://github.com/pmborg/WoMA3Dengine
-*
 **********************************************************************************************/
 
-#define PS_USE_LIGHT		 //23
-#define PS_USE_ALFA_TEXTURE	 //33
-#define PS_USE_ALFACOLOR 	 //33
-#define PS_USE_SPECULAR		 //34
-#define PS_USE_BUMP		 	 //35		NEW!!
+#if (!defined DXAPI11 && !defined DXAPI12)
+    #define DXAPI11 1
+#endif
+
+#define PS_USE_LIGHT
+#define PS_USE_ALFA_TEXTURE
+#define PS_USE_ALFACOLOR
+#define PS_USE_SPECULAR
+#define PS_USE_BUMP
+
+#define TEXTURE_MODE -1 //Default is -1
 
 //////////////
 // TYPEDEFS //
 //////////////
 
-// VERTEX:
-struct VSIn						
+struct VSIn
 {
-	float3 position : POSITION;	//21
-	float2 texCoords: TEXCOORD; //22
-	float3 normal	: NORMAL;	//23
-    float3 tangent : TANGENT; //35		NEW:BUMPv1!!
+	float3 position : POSITION;
+	float2 texCoords: TEXCOORD;
+	float3 normal	: NORMAL;
+    float3 tangent : TANGENT;
 };
 
-// PIXEL:
-struct PSIn						
+struct PSIn
 {
-	float4 position				: SV_POSITION;			// 21
-	float2 texCoords			: TEXCOORD;				// 22
-	float3 normal				: NORMAL;				// 23 LIGHT
-	float3 viewDirection		: TEXCOORD1;			// 34 Specular
-	float4 cameraPosition		: WS;					// 34 WS
-	float3 tangent				: TANGENT;				// 35 BUMP		 NEW!!
+	float4 position				: SV_POSITION;
+	float2 texCoords			: TEXCOORD;
+	float3 normal				: NORMAL;
+	float3 viewDirection		: TEXCOORD1;
+	float4 cameraPosition		: WS;
+	float3 tangent				: TANGENT;
 };
-
 
 /////////////
 // GLOBALS //
 /////////////
 
-//Set on: DXmodelClass::RenderSubMesh
-//#if DXAPI11 == 1
-Texture2D shaderTexture;		// 22: Texture
-Texture2D AlfaMapTexture;		// 33: AlfaMap
-Texture2D normalMapTexture;	    // 35: TangentMap NEW!!
-//#endif
-#if DXAPI12 == 1
-Texture2D AlfaMapTexture:		register(t0); // 33: AlfaMap	//DX12: Descriptor: 2
-Texture2D shaderTexture:		register(t1); // 22: Texture	//DX12: Descriptor: 3
-Texture2D normalMapTexture:	register(t1); // 35: TangentMap //DX12: Descriptor: 4
-#endif
+Texture2D shaderTexture : register(t0);     // albedo
+Texture2D AlfaMapTexture : register(t1);    // alpha map (optional)
+Texture2D shadowTexture : register(t2);     // shadow map (optional)
+Texture2D normalMapTexture : register(t3);  // NORMAL MAP
 
-//#if DXAPI11 == 1
+
+#if DXAPI11 == 1
 SamplerState SampleType;
-//#endif
+#endif
 #if DXAPI12 == 1
 SamplerState SampleType: register(s0);
 #endif
@@ -68,6 +62,7 @@ SamplerState SampleType: register(s0);
 ////////////////
 #include "cbuffer.hlsli"
 #include "light.hlsli"
+#include "TextureSampling.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
@@ -77,50 +72,56 @@ PSIn VS_Main(VSIn input)
 	PSIn output;
 	float4 cameraPosition;
 
-	//21: POSITION: Calculate the position of the vertex against the world, view, and projection matrices
-if (VS_USE_WVP) {
-	output.position = mul(float4(input.position, 1), WVP);	// Calculate the position of the vertex against the world, view, and projection matrices
-} else {
-	float4 position = float4(input.position, 1);
-	position = mul(position, worldMatrix);
-	position = mul(position, view);			//viewMatrix
-	position = mul(position, projection);	//projectionMatrix
-	output.position = position;
-}
+	if (VS_USE_WVP) {
+		output.position = mul(float4(input.position, 1), WVP);
+	} else {
+		float4 position = float4(input.position, 1);
+		position = mul(position, worldMatrix);
+		position = mul(position, view);
+		position = mul(position, projection);
+		output.position = position;
+	}
 
-	//22: TEXTURE: Store the texture coordinates for the pixel shader:
 	output.texCoords = input.texCoords;
 
-	//Used by PS_USE_SPECULAR and PS_USE_FOG
 	cameraPosition = mul(float4(input.position, 1), WV);
 
-	//23: LIGHT: NORMAL
-	if (VShasLight || VShasSpecular) 
-		output.normal = normalize(mul(input.normal, (float3x3)worldMatrix));// Calculate the normal vector against the world matrix only
-	
-	//34: SPECULAR
-#if defined PS_USE_SPECULAR
-	
-	output.cameraPosition = cameraPosition;
+	if (VShasLight || VShasSpecular)
+		output.normal = normalize(mul(input.normal, (float3x3)worldMatrix));
 
-	if (VShasSpecular)	// If enabled on material, calculate the Specular LIGHT
+#if defined PS_USE_SPECULAR
+	output.cameraPosition = cameraPosition;
+	if (VShasSpecular)
 	{
-		float4 worldPosition = mul(float4(input.position, 1), worldMatrix);			// P
-		output.viewDirection = normalize(cameraPosition.xyz - worldPosition.xyz);	// L = Lp - p (L = lightDirection)
+		float4 worldPosition = mul(float4(input.position, 1), worldMatrix);
+		output.viewDirection = normalize(cameraPosition.xyz - worldPosition.xyz);
 	}
 #endif
 
-	//35: BUMP NEW!!
 #if defined PS_USE_BUMP
     if (VShasNormMap)
     {
-        //output.tangent = mul(input.tangent, (float3x3) worldMatrix);
-        output.tangent = mul(input.tangent, (float3x3) WV);
+        // Transform tangent to world space (worldMatrix only)
+        output.tangent = normalize(mul(input.tangent, (float3x3)worldMatrix));
     }
-        
 #endif
 
 	return output;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Helpers - reuse your sampling function for consistency
+////////////////////////////////////////////////////////////////////////////////
+float4 GetShaderTexture(Texture2D tex, float2 texCoords, uint mipLevel, int mode)
+{
+    switch (mode)
+    {
+        case 0: return NearestInterpolation(SampleType, tex, texCoords);
+        case 1: return BilinearInterpolation(SampleType, tex, texCoords);
+        case 2: return TrilinearInterpolation(SampleType, tex, texCoords, mipLevel);
+        case 3: return CubicInterpolation(SampleType, tex, texCoords);
+        default: return tex.Sample(SampleType, texCoords);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -128,78 +129,100 @@ if (VS_USE_WVP) {
 ////////////////////////////////////////////////////////////////////////////////
 float4 PS_Main(PSIn input) : SV_TARGET
 {
-	float4	textureColor = pixelColor;    // SET PIXEL COLOR
-	float	lightIntensity = 0;
+	float4 textureColor = pixelColor;
+	float lightIntensity = 0;
+    
+	// Sample base albedo
+	if (hasTexture)
+	{
+		textureColor = GetShaderTexture(shaderTexture, input.texCoords, 0, TEXTURE_MODE);
+	}
 
-	//-----------------------------------------------------------------------------------
-	// 21 & 41: TEXTURE: Sample the pixel color from the texture using the sampler at this texture coordinate location
-	if (hasTexture) 
-		textureColor = shaderTexture.Sample(SampleType, input.texCoords);
+	// === BUMP / NORMAL MAPPING ===
+	// start with the interpolated (world-space) normal from VS
+	float3 normal = normalize(input.normal);
 
-	//35: BUMP NEW!!
-    float3 normal = input.normal;
+#if defined PS_USE_BUMP
 	if (hasNormMap)
-    {                                                                                              // Load normal from normal map
-        float3 normalMap = normalMapTexture.Sample(SampleType, input.texCoords).xyz * 2.0f - 1.0f; // Change normal map range from [0, 1] to [-1, 1]
-        //V1:
-        float3 normal = normalize(normalMap * input.cameraPosition);
-        //V2:
-		//float3 tangent = normalize(input.tangent - dot(input.tangent, input.normal) * input.normal); //Make sure tangent is completely orthogonal to normal
-		//float3 biTangent = cross(input.normal, input.tangent); // Create the biTangent
-		//float3x3 texSpace = float3x3(tangent, biTangent, input.normal); // Create the "Texture Space"
-		//normal = normalize(mul(normalMap, texSpace)); // BUMP: Convert normal from normal map to texture space and store in input.normal
-    }
-	
-	// 23: LIGHT
-    if (isSky)
+	{
+		// Sample the normal map using your texture sampling helper (consistent filtering)
+		float3 nmap = GetShaderTexture(normalMapTexture, input.texCoords, 0, TEXTURE_MODE).xyz * 2.0f - 1.0f;
+        // Fix for OpenGL-style normal maps in a DirectX engine:
+        nmap.g = -nmap.g;
+        
+		// Optional: normal strength parameter for tuning/debugging
+		float normalStrength = 1.0f; // <---- tune this or expose in cbuffer
+		nmap = saturate(nmap * normalStrength);
+
+		// Ensure tangent is orthogonal to the (transformed) normal
+		float3 T = normalize(input.tangent - dot(input.tangent, normal) * normal);
+
+		// Compute bitangent consistently (handedness depends on exporter - this is standard)
+		float3 B = normalize(cross(normal, T));
+
+		// Build TBN (columns = T, B, N)
+		float3x3 TBN = float3x3(T, B, normal);
+
+		// Transform normal from tangent space to world space
+		normal = normalize(mul(nmap, TBN));
+	}
+#endif
+    
+    //return float4(normalize(normal) * 0.5f + 0.5f, 1);
+    
+	// === LIGHTING ===
+	if (isSky)
     {
-					   
         lightIntensity = PSlightFunc2(normal);
-			
-														 
     }
     else
     {
-					   
         lightIntensity = PSlightFunc1(normal);
-			
-														 
     }
 
+    //return float4(lightIntensity, lightIntensity, lightIntensity, 1);
+    
     if (hasTexture) {
         textureColor = textureColor * saturate(emissiveColor + ambientColor + lightIntensity);
     } else {
         textureColor = textureColor * saturate(emissiveColor + ambientColor + (lightIntensity * diffuseColor));
     }
-	
-#if defined PS_USE_ALFA_TEXTURE // 33: Alfa Map: (Optional AlfaMap for blending textures)
+
+#if defined PS_USE_ALFA_TEXTURE
 	if (hasAlfaMap)
-		textureColor.a = AlfaMapTexture.Sample(SampleType, input.texCoords).r;
+		textureColor.a = GetShaderTexture(AlfaMapTexture, input.texCoords, 0, TEXTURE_MODE).r;
 #endif
 
-#if defined PS_USE_ALFACOLOR	// 33: Alfa Color
+#if defined PS_USE_ALFACOLOR
 	if (hasAlfaColor)
 		textureColor.a = alfaColor;
 #endif
 
-#if defined PS_USE_SPECULAR //34: If enabled on material, calculate the Specular LIGHT
-	if (hasSpecular)	
+#if defined PS_USE_SPECULAR
+	if (hasSpecular)
 	{
 		if (lightIntensity > 0.0f)
 		{
 			float4 color = ambientColor;
-			
 			color += (diffuseColor * lightIntensity);
 			color = saturate(color);
-			float3 Reflection = normalize(2 * lightIntensity * input.normal + lightDirection);
-			float  fPhoneValue = saturate(dot(Reflection, input.viewDirection));	// (R.V)
-			float4 specular = pow(fPhoneValue, nShininess);							// Ls = (R.V)^alfa (alfa Determine the amount of specular light based on the reflection vector, viewing direction, and specular power.)
+
+			// Use bumped normal here for specular (was using unbumped input.normal previously)
+            // Keep your reflect convention: reflect(lightDirection, normal) if that matched earlier levels,
+            // otherwise consider reflect(-lightDirection, normal) depending on how you define lightDirection.
+			float3 Reflection = normalize(reflect(lightDirection, normal));
+			float fPhoneValue = max(dot(Reflection, input.viewDirection), 0.0f);
+			float4 specular = pow(fPhoneValue, nShininess);
+
+			// Optionally multiply by material specular color (diffuseColor or separate specular color)
+			// specular *= specularColor;
 
 			color = color * textureColor;
-			textureColor = saturate(textureColor + specular);		// specular = Ls (contribution of the light source) * Ks (specular component of the material)
+			textureColor = saturate(textureColor + specular);
 		}
 	}
 #endif
-
+    
+    textureColor.rgb = pow(textureColor.rgb, 1.0 / 2.2); //Apply sRGB workflow
 	return textureColor;
 }
