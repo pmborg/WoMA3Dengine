@@ -357,10 +357,27 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 							{				
 								    lastVIndex = obj3d.indices32[vIndex];	//The last vertex index of this TRIANGLE
 							}
+							//{
+							//	int base = obj3d.indices32.size() - 3;
+							//	if (base >= 0)
+							//	{
+							//		// swap the last two triangle indices -> CCW guaranteed
+							//		std::swap(obj3d.indices32[base + 1], obj3d.indices32[base + 2]);
+							//	}
+							//}
 							vIndex++;	//Increment index count
 						}
 
 						obj3d.meshTriangles++;	//One triangle down
+
+						// ----------------------------
+						// Correct CCW fix goes here:
+						// ----------------------------
+						int base = obj3d.indices32.size() - 3;
+						if (base >= 0)
+						{
+							std::swap(obj3d.indices32[base + 1], obj3d.indices32[base + 2]);
+						}
 
 						//If there are more than three vertices in the face definition, we need to make sure
 						//we convert the face to triangles. We created our first triangle above, now we will
@@ -1219,6 +1236,8 @@ bool ModelClass::CreateObject(	void* pContext, void* XmodelClass, TCHAR* objectN
 		}
 	}
 
+
+
 	// --------------------------------------------------------------------------------------------
 	// Post Read Actions:
 	// --------------------------------------------------------------------------------------------
@@ -1247,8 +1266,159 @@ bool ModelClass::CreateObject(	void* pContext, void* XmodelClass, TCHAR* objectN
 	if (obj3d.ModelHASNormals) // Forced to be TRUE on CH51!
 	{
 		std::vector<ModelNormalBumpVertexType> vertices;
-		ModelNormalBumpVertexType tempVert1, tempVert2, tempVert3;
+		ModelNormalBumpVertexType tempVert, tempVert1, tempVert2, tempVert3;
 
+		//v1
+#if false //_NOT
+		//Create our vertices using the information we got 
+		//from the file and store them in a vector
+		XMVECTOR min, max;
+
+		min = XMVectorSet(FLT_MAX, FLT_MAX, FLT_MAX, 0.0f);
+		max = XMVectorSet(-FLT_MAX, -FLT_MAX, -FLT_MAX, 0.0f);
+
+		for (UINT j = 0; j < obj3d.m_vertexCount; ++j)
+		{
+			tempVert.x = obj3d.vertPos[obj3d.vertPosIndex[j]].x;
+			tempVert.y = obj3d.vertPos[obj3d.vertPosIndex[j]].y;
+			tempVert.z = obj3d.vertPos[obj3d.vertPosIndex[j]].z;
+
+			if (tempVert.x > max.m128_f32[0] /*max.x*/) max.m128_f32[0] /*max.x*/ = tempVert.x;
+			if (tempVert.y > max.m128_f32[1] /*max.y*/) max.m128_f32[1] /*max.y*/ = tempVert.y;
+			if (tempVert.z > max.m128_f32[2] /*max.z*/) max.m128_f32[2] /*max.z*/ = tempVert.z;
+
+			if (tempVert.x < min.m128_f32[0] /*min.x*/) min.m128_f32[0] /*min.x*/ = tempVert.x;
+			if (tempVert.y < min.m128_f32[1] /*min.y*/) min.m128_f32[1] /*min.x*/ = tempVert.y;
+			if (tempVert.z < min.m128_f32[2] /*min.z*/) min.m128_f32[2] /*min.x*/ = tempVert.z;
+
+			tempVert.tu = obj3d.vertTexCoord[obj3d.vertTCIndex[j]].x;
+			tempVert.tv = obj3d.vertTexCoord[obj3d.vertTCIndex[j]].y;
+
+			if (obj3d.vertNormIndex[j] < (int)obj3d.vertNorm.size())				//Make it more rubust
+			{
+				tempVert.nx = obj3d.vertNorm[obj3d.vertNormIndex[j]].x;
+				tempVert.ny = obj3d.vertNorm[obj3d.vertNormIndex[j]].y;
+				tempVert.nz = obj3d.vertNorm[obj3d.vertNormIndex[j]].z;
+			}
+
+			vertices.push_back(tempVert);
+		}
+
+		std::vector<XMFLOAT3> tempNormal;
+
+		//normalized and unnormalized normals
+		XMFLOAT3 unnormalized = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
+		//tangent stuff
+		std::vector<XMFLOAT3> tempTangent;
+		XMFLOAT3 tangent = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		float tcU1, tcV1, tcU2, tcV2;
+
+		//Used to get vectors (sides) from the position of the verts
+		float vecX, vecY, vecZ;
+
+		//Two edges of our triangle
+		XMVECTOR edge1 = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+		XMVECTOR edge2 = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+
+		//Compute face normals
+		for (UINT i = 0; i < obj3d.meshTriangles; ++i)
+		{
+			//Get the vector describing one edge of our triangle (edge 0,2)
+			vecX = vertices[obj3d.indices32[(i * 3)]].x - vertices[obj3d.indices32[(i * 3) + 2]].x;
+			vecY = vertices[obj3d.indices32[(i * 3)]].y - vertices[obj3d.indices32[(i * 3) + 2]].y;
+			vecZ = vertices[obj3d.indices32[(i * 3)]].z - vertices[obj3d.indices32[(i * 3) + 2]].z;
+			edge1 = XMVectorSet(vecX, vecY, vecZ, 0.0f);	//Create our first edge
+
+			//Get the vector describing another edge of our triangle (edge 2,1)
+			vecX = vertices[obj3d.indices32[(i * 3) + 2]].x - vertices[obj3d.indices32[(i * 3) + 1]].x;
+			vecY = vertices[obj3d.indices32[(i * 3) + 2]].y - vertices[obj3d.indices32[(i * 3) + 1]].y;
+			vecZ = vertices[obj3d.indices32[(i * 3) + 2]].z - vertices[obj3d.indices32[(i * 3) + 1]].z;
+			edge2 = XMVectorSet(vecX, vecY, vecZ, 0.0f);	//Create our second edge
+
+			//Cross multiply the two edge vectors to get the un-normalized face normal
+			XMStoreFloat3(&unnormalized, XMVector3Cross(edge1, edge2));
+
+			tempNormal.push_back(unnormalized);			//Save unormalized normal (for normal averaging)
+
+			////////////////////////////
+			//Find first texture coordinate edge 2d vector
+			tcU1 = vertices[obj3d.indices32[(i * 3)]].tu - vertices[obj3d.indices32[(i * 3) + 2]].tu;
+			tcV1 = vertices[obj3d.indices32[(i * 3)]].tv - vertices[obj3d.indices32[(i * 3) + 2]].tv;
+
+			//Find second texture coordinate edge 2d vector
+			tcU2 = vertices[obj3d.indices32[(i * 3) + 2]].tu - vertices[obj3d.indices32[(i * 3) + 1]].tu;
+			tcV2 = vertices[obj3d.indices32[(i * 3) + 2]].tv - vertices[obj3d.indices32[(i * 3) + 1]].tv;
+
+			//Find tangent using both tex coord edges and position edges
+			tangent.x = (tcV1 * XMVectorGetX(edge1) - tcV2 * XMVectorGetX(edge2)) * (1.0f / (tcU1 * tcV2 - tcU2 * tcV1));
+			tangent.y = (tcV1 * XMVectorGetY(edge1) - tcV2 * XMVectorGetY(edge2)) * (1.0f / (tcU1 * tcV2 - tcU2 * tcV1));
+			tangent.z = (tcV1 * XMVectorGetZ(edge1) - tcV2 * XMVectorGetZ(edge2)) * (1.0f / (tcU1 * tcV2 - tcU2 * tcV1));
+
+			tempTangent.push_back(tangent);
+		}
+
+		//Compute vertex normals (normal Averaging)
+		XMVECTOR normalSum = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+		XMVECTOR tangentSum = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+
+		int facesUsing = 0;
+		float tX, tY, tZ;	//temp axis variables
+
+		//Go through each vertex
+		for (UINT i = 0; i < /*totalVerts*/obj3d.m_vertexCount; ++i)
+		{
+			//Check which triangles use this vertex
+			for (UINT j = 0; j < obj3d.meshTriangles; ++j)
+			{
+				if (obj3d.indices32[j * 3] == i ||
+					obj3d.indices32[(j * 3) + 1] == i ||
+					obj3d.indices32[(j * 3) + 2] == i)
+				{
+					tX = XMVectorGetX(normalSum) + tempNormal[j].x;
+					tY = XMVectorGetY(normalSum) + tempNormal[j].y;
+					tZ = XMVectorGetZ(normalSum) + tempNormal[j].z;
+
+					normalSum = XMVectorSet(tX, tY, tZ, 0.0f);	//If a face is using the vertex, add the unormalized face normal to the normalSum
+
+					//We can reuse tX, tY, tZ to sum up tangents
+					tX = XMVectorGetX(tangentSum) + tempTangent[j].x;
+					tY = XMVectorGetY(tangentSum) + tempTangent[j].y;
+					tZ = XMVectorGetZ(tangentSum) + tempTangent[j].z;
+
+					tangentSum = XMVectorSet(tX, tY, tZ, 0.0f); //sum up face tangents using this vertex
+
+					facesUsing++;
+				}
+			}
+
+			normalSum = normalSum / (float)facesUsing;	//Get the actual normal by dividing the normalSum by the number of faces sharing the vertex
+			normalSum = XMVector3Normalize(normalSum);	//Normalize the normalSum vector
+
+			tangentSum = tangentSum / (float)facesUsing;		//Get the actual normal by dividing the normalSum by the number of faces sharing the vertex
+			tangentSum = XMVector3Normalize(tangentSum);//Normalize the normalSum vector and tangent
+
+			//Store the normal in our current vertex
+			vertices[i].nx = XMVectorGetX(normalSum);
+			vertices[i].ny = XMVectorGetY(normalSum);
+			vertices[i].nz = XMVectorGetZ(normalSum);
+
+			////////////////////////////
+			vertices[i].tx = XMVectorGetX(tangentSum);
+			vertices[i].ty = XMVectorGetY(tangentSum);
+			vertices[i].tz = XMVectorGetZ(tangentSum);
+
+			//Clear normalSum, tangentSum and facesUsing for next vertex
+			normalSum = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+
+			tangentSum = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+
+			facesUsing = 0;
+		}
+#endif
+
+		//v2
+#if false
 		for (UINT j = 0; j < obj3d.m_vertexCount; j+=3)
 		{
 			//1
@@ -1301,6 +1471,7 @@ bool ModelClass::CreateObject(	void* pContext, void* XmodelClass, TCHAR* objectN
 					tempVert3.nz = obj3d.vertNorm[obj3d.vertNormIndex[obj3d.indices32[j+2]]].z;
 				}
 			}
+
 			VectorType tangent, binormal;
 			CalculateTangentBinormal(tempVert1, tempVert2, tempVert3, tangent, binormal);
 
@@ -1339,6 +1510,142 @@ bool ModelClass::CreateObject(	void* pContext, void* XmodelClass, TCHAR* objectN
 #endif
 
 		}
+#endif
+
+
+/*
+		struct OBJVertex {
+			XMFLOAT3 pos;
+			XMFLOAT2 uv;
+			XMFLOAT3 norm;
+			XMFLOAT3 tan;
+			XMFLOAT3 bin;
+		};
+
+		std::vector<OBJVertex> finalVerts;
+
+		for (size_t i = 0; i < obj3d.indices32.size(); i += 3)
+		{
+			// For each triangle: v0, v1, v2
+			UINT i0 = obj3d.indices32[i + 0];
+			UINT i1 = obj3d.indices32[i + 1];
+			UINT i2 = obj3d.indices32[i + 2];
+
+			OBJVertex v0, v1, v2;
+
+			// === Position ===
+			v0.pos = obj3d.vertPos[obj3d.vertPosIndex[i0]];
+			v1.pos = obj3d.vertPos[obj3d.vertPosIndex[i1]];
+			v2.pos = obj3d.vertPos[obj3d.vertPosIndex[i2]];
+
+			// === Texcoords ===
+			v0.uv = XMFLOAT2(obj3d.vertTexCoord[obj3d.vertTCIndex[i0]].x,
+				obj3d.vertTexCoord[obj3d.vertTCIndex[i0]].y);
+
+			v1.uv = XMFLOAT2(obj3d.vertTexCoord[obj3d.vertTCIndex[i1]].x,
+				obj3d.vertTexCoord[obj3d.vertTCIndex[i1]].y);
+
+			v2.uv = XMFLOAT2(obj3d.vertTexCoord[obj3d.vertTCIndex[i2]].x,
+				obj3d.vertTexCoord[obj3d.vertTCIndex[i2]].y);
+
+			// === Normals ===
+			v0.norm = obj3d.vertNorm[obj3d.vertNormIndex[i0]];
+			v1.norm = obj3d.vertNorm[obj3d.vertNormIndex[i1]];
+			v2.norm = obj3d.vertNorm[obj3d.vertNormIndex[i2]];
+
+			// === Tangent & Binormal from your function ===
+			VectorType T, B;
+			CalculateTangentBinormal(
+				ModelNormalBumpVertexType{ v0.pos.x, v0.pos.y, v0.pos.z, v0.uv.x, v0.uv.y, v0.norm.x, v0.norm.y, v0.norm.z },
+				ModelNormalBumpVertexType{ v1.pos.x, v1.pos.y, v1.pos.z, v1.uv.x, v1.uv.y, v1.norm.x, v1.norm.y, v1.norm.z },
+				ModelNormalBumpVertexType{ v2.pos.x, v2.pos.y, v2.pos.z, v2.uv.x, v2.uv.y, v2.norm.x, v2.norm.y, v2.norm.z },
+				T, B
+			);
+
+			v0.tan = XMFLOAT3(T.x, T.y, T.z);
+			v1.tan = XMFLOAT3(T.x, T.y, T.z);
+			v2.tan = XMFLOAT3(T.x, T.y, T.z);
+
+			v0.bin = XMFLOAT3(B.x, B.y, B.z);
+			v1.bin = XMFLOAT3(B.x, B.y, B.z);
+			v2.bin = XMFLOAT3(B.x, B.y, B.z);
+
+			// === Store ===
+			finalVerts.push_back(v0);
+			finalVerts.push_back(v1);
+			finalVerts.push_back(v2);
+		}
+*/
+
+		//std::vector<ModelNormalBumpVertexType> finalVerts;
+
+		for (size_t i = 0; i < obj3d.indices32.size(); i += 3)
+		{
+			UINT i0 = obj3d.indices32[i + 0];
+			UINT i1 = obj3d.indices32[i + 1];
+			UINT i2 = obj3d.indices32[i + 2];
+
+			ModelNormalBumpVertexType v0, v1, v2;
+
+			// --------------------
+			// POSITIONS
+			// --------------------
+			auto& p0 = obj3d.vertPos[obj3d.vertPosIndex[i0]];
+			auto& p1 = obj3d.vertPos[obj3d.vertPosIndex[i1]];
+			auto& p2 = obj3d.vertPos[obj3d.vertPosIndex[i2]];
+
+			v0.x = p0.x;  v0.y = p0.y;  v0.z = p0.z;
+			v1.x = p1.x;  v1.y = p1.y;  v1.z = p1.z;
+			v2.x = p2.x;  v2.y = p2.y;  v2.z = p2.z;
+
+			// --------------------
+			// UV
+			// --------------------
+			auto& t0 = obj3d.vertTexCoord[obj3d.vertTCIndex[i0]];
+			auto& t1 = obj3d.vertTexCoord[obj3d.vertTCIndex[i1]];
+			auto& t2 = obj3d.vertTexCoord[obj3d.vertTCIndex[i2]];
+
+			v0.tu = t0.x;  v0.tv = t0.y;
+			v1.tu = t1.x;  v1.tv = t1.y;
+			v2.tu = t2.x;  v2.tv = t2.y;
+
+			// --------------------
+			// NORMALS
+			// --------------------
+			auto& n0 = obj3d.vertNorm[obj3d.vertNormIndex[i0]];
+			auto& n1 = obj3d.vertNorm[obj3d.vertNormIndex[i1]];
+			auto& n2 = obj3d.vertNorm[obj3d.vertNormIndex[i2]];
+
+			v0.nx = n0.x;  v0.ny = n0.y;  v0.nz = n0.z;
+			v1.nx = n1.x;  v1.ny = n1.y;  v1.nz = n1.z;
+			v2.nx = n2.x;  v2.ny = n2.y;  v2.nz = n2.z;
+
+			// --------------------
+			// TANGENT + BINORMAL
+			// --------------------
+			VectorType T, B;
+			CalculateTangentBinormal(
+				v0, v1, v2,
+				T, B
+			);
+
+			// All 3 vertices share the same tangent/binormal for flat-shaded OBJ
+			v0.tx = T.x;  v0.ty = T.y;  v0.tz = T.z;
+			v1.tx = T.x;  v1.ty = T.y;  v1.tz = T.z;
+			v2.tx = T.x;  v2.ty = T.y;  v2.tz = T.z;
+
+			v0.bx = B.x;  v0.by = B.y;  v0.bz = B.z;
+			v1.bx = B.x;  v1.by = B.y;  v1.bz = B.z;
+			v2.bx = B.x;  v2.by = B.y;  v2.bz = B.z;
+
+			// --------------------
+			// STORE IN FINAL VERTEX LIST
+			// --------------------
+			vertices.push_back(v0);
+			vertices.push_back(v1);
+			vertices.push_back(v2);
+		}
+
 
 		if (shader_type == 0)
 			shader_type = SHADER_NORMAL_BUMP;

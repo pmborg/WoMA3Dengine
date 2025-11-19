@@ -568,6 +568,11 @@ bool ApplicationClass::Start()
 		IndexSquarList.push_back(0); IndexSquarList.push_back(1); IndexSquarList.push_back(2);
 		IndexSquarList.push_back(0); IndexSquarList.push_back(3); IndexSquarList.push_back(1);
 	}
+	if (IndexSquarList2.size() == 0)
+	{
+		IndexSquarList2.push_back(0); IndexSquarList2.push_back(1); IndexSquarList2.push_back(2);
+		IndexSquarList2.push_back(0); IndexSquarList2.push_back(2); IndexSquarList2.push_back(3);
+	}
 	if (IndexTriangleList.size() == 0)
 	{
 		IndexTriangleList.push_back(0); IndexTriangleList.push_back(1); IndexTriangleList.push_back(2);

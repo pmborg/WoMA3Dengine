@@ -67,6 +67,9 @@ _declspec(align(16)) struct PBRMaterialInfo
     int   m_ConvertToLinear = 0;    //Future: Type::GLTF
 
 	float fade=1;
+	int   lightType;      // 0 = directional, 1 = point, 2 = spot
+	float lightRange;     // for point/spot (0 for directional)
+	float lightInnerCone; // optional (0 if unused)
 };
 
 class PBRMaterial

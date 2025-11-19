@@ -296,9 +296,10 @@ void ApplicationClass::RenderShadowPass(UINT monitorIndex, WomaDriverClass* Driv
 			m_RenderShadowTexture->SetRenderTarget(Driver, (ID3D11DeviceContext*)pContext);								// Set the render target to be the render to texture.
 			m_RenderShadowTexture->ClearRenderTarget(Driver, (ID3D11DeviceContext*)pContext, 1.0f, 1.0f, 1.0f, 1.0f);	// Clear the render to texture!
 
-#if defined  MAIN_RENDER_LIGHT_RAY && defined USE_SHADOW_MAP
+			//Update light position for shadows:
+		#if defined  MAIN_RENDER_LIGHT_RAY && defined USE_SHADOW_MAP
 			app_Light->GenerateViewMatrix(MyLightVertexVector[1].x / 100, MyLightVertexVector[1].y / 100, MyLightVertexVector[1].z / 100);
-#endif
+		#endif
 
 			// RENDER SHADOWS for all these 3D STATIC OBJECTS, to texture
 			// --------------------------------------------------------------------------------------------
@@ -445,6 +446,8 @@ void ApplicationClass::AppPreRender(UINT monitorIndex, WomaDriverClass* Driver, 
 #endif
   #endif
 #else
+	// NO-THREAD version for SHADOWS TO TEXTURE
+	// ----------------------------------------
 #if defined USE_SHADOW_MAP
 	RenderShadowPass(monitorIndex, Driver, mainCtx, fadeLight);
 
@@ -455,15 +458,16 @@ void ApplicationClass::AppPreRender(UINT monitorIndex, WomaDriverClass* Driver, 
 #endif
 #endif
 
-	// === RENDER MAP and MINIMAP TO TEXTURE: ===										 
-#if DX_ENGINE_LEVEL >= 62 && defined USE_MAIN_MAP && defined MAIN_RENDER_TERRAIN // Render MAP and MINI-MAP, to texture
+	// NO-THREAD version for RENDER MAP and MINIMAP TO TEXTURE
+	// -------------------------------------------------------
+#if DX_ENGINE_LEVEL >= 62 && defined USE_MAIN_MAP && defined MAIN_RENDER_TERRAIN		// Render MAP and MINI-MAP, to texture
 	RenderMiniMapPass(monitorIndex, Driver, mainCtx, fadeLight);
 
 	((DirectX::DX11Class*)Driver)->SetBackBufferRenderTarget(mainCtx, monitorIndex);	//MANDATORY! Back to default back buffer
 
-#if defined USE_ALPHA_BLENDING
+  #if defined USE_ALPHA_BLENDING
 	m_Driver->TurnOnAlphaBlending(mainCtx);												// restore default blending
-#endif
+  #endif
 #endif
 #endif
 }
@@ -1493,12 +1497,30 @@ void ApplicationClass::DemoRender(void* pContext)
 	if (RENDER_PAGE == 23 || FORCE_RENDER_ALL)
 #endif
 	{
+		//Square:
+		if (m_3th3DModel1 && WOMA::AppSettings->DRIVER != DRIVER_GL3)
 		{
-			m_3th3DModel2->translation(0, 4.75f, 1);
-			m_3th3DModel2->scale(1.25f, 1.25f, 1.25f);
-		}
+			if (m_Driver->RenderfirstTime)
+			{
+				float w = 8.0f;         // choose desired width
+				float h = w / 1.39f;    // keep perfect aspect ratio
+				m_3th3DModel1->Identity();
+				m_3th3DModel1->scale(w, h, 1);
+				m_3th3DModel1->translation(0, 0, -5);
+			}
 
-		m_3th3DModel2->Render(pContext);
+			m_3th3DModel1->Render(pContext);
+		}
+		//Triangle:
+		if (m_3th3DModel2)
+		{
+			if (m_Driver->RenderfirstTime)
+			{
+				m_3th3DModel2->translation(0, 10, 0);
+				m_3th3DModel2->scale(3, 3, 3);
+			}
+			m_3th3DModel2->Render(pContext);
+		}
 	}
 #endif
 

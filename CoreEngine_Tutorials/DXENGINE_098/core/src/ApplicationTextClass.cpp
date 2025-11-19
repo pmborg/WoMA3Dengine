@@ -113,10 +113,11 @@ void ApplicationTextClass::SetCameraPosition(float posX, float posY, float posZ)
 //03-----------------------------------------------------------------------------------------
 void ApplicationTextClass::SetCameraRotation(float rotX, float rotY, float rotZ)
 {
-	static TCHAR dataString[40];
-
+	static TCHAR dataString[50];
+	static LightClass* light = SystemHandle->m_Application->app_Light;
 	// Setup the X rotation string: ((float) ((int)(rotX*10))/10), ((float) ((int)(rotY*10))/10)
-	StringCchPrintf (dataString, sizeof(dataString), TEXT("rX:%5.1f rY:%5.1f"), rotX, rotY);
+	StringCchPrintf (dataString, sizeof(dataString), TEXT("rX:%5.1f rY:%5.1f Light: %5.1f, %5.1f, %5.1f"), rotX, rotY, 
+			light->m_lightDirection.x, light->m_lightDirection.y, light->m_lightDirection.z );
 	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_ROT], dataString, 10, Y_INIT+40, 0.0f, 1.0f, 0.0f));
 }
 #endif

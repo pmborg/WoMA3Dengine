@@ -573,6 +573,17 @@ struct SentenceType
 	model.push_back(vertex);\
 }
 
+#define CREATE_VERTEXVECTOR_SQUAD_MODEL_OPTIMIZED2(model, X,Z,Y){\
+    /* v0: left-top */\
+    vertex.x = -X; vertex.y =  Y; vertex.z =  Z; model.push_back(vertex);\
+    /* v1: right-top */\
+    vertex.x =  X; vertex.y =  Y; vertex.z =  Z; model.push_back(vertex);\
+    /* v2: right-bottom */\
+    vertex.x =  X; vertex.y =  Y; vertex.z = -Z; model.push_back(vertex);\
+    /* v3: left-bottom */\
+    vertex.x = -X; vertex.y =  Y; vertex.z = -Z; model.push_back(vertex);\
+}
+
 //	-------------------------------------------------------------------------------------------
 // ---
 // |\|
@@ -585,6 +596,7 @@ struct SentenceType
 //
 // Used by Demo: 21: Color, 22: Texture, 23 Light (with Index: indexList[6] = {0,1,2, 0,3,1};)
 //
+//Horizontal Quad:
 #define CREATE_VERTEXVECTOR_SQUAD_MODEL_OPTIMIZED(model, X,Z,Y){\
 	/* v1 Left Top: */\
 	vertex.x =-X;\
@@ -606,6 +618,26 @@ struct SentenceType
 	vertex.z =  Z;\
 	vertex.y =  Y;\
 	model.push_back(vertex);\
+}
+
+//Vertical Quad:
+// Vertical Quad facing +Z
+#define CREATE_VERTEXVECTOR_SQUAD_MODEL_VERTICAL(model, X, Y, Z){\
+    /* v0 Left Top */ \
+    vertex.x = -X;  vertex.y =  Y;  vertex.z = Z; \
+    model.push_back(vertex); \
+    \
+    /* v1 Right Top */ \
+    vertex.x =  X;  vertex.y =  Y;  vertex.z = Z; \
+    model.push_back(vertex); \
+    \
+    /* v2 Right Bottom */ \
+    vertex.x =  X;  vertex.y = -Y; vertex.z = Z; \
+    model.push_back(vertex); \
+    \
+    /* v3 Left Bottom */ \
+    vertex.x = -X;  vertex.y = -Y; vertex.z = Z; \
+    model.push_back(vertex); \
 }
 
 //   v1
@@ -643,6 +675,23 @@ for (UINT i = 0; i < model.size(); i++)\
 	else\
 		model[i].tv = 1.0f;\
 }\
+}
+
+#define MAP_XYtoUV_vertical(model,X,Y,Z) {\
+    for (UINT i = 0; i < model.size(); i++)\
+    {\
+        /* U coordinate based on X position */\
+        if (model[i].x == X) \
+            model[i].tu = 1.0f; \
+        else \
+            model[i].tu = 0.0f; \
+\
+        /* V coordinate based on Y position */\
+        if (model[i].y == Y) \
+            model[i].tv = 0.0f; \
+        else \
+            model[i].tv = 1.0f; \
+    }\
 }
 
 //	-------------------------------------------------------------------------------------------

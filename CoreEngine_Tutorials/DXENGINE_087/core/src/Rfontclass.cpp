@@ -156,6 +156,7 @@ void read_feature(std::istream& feature_file, float* features) {
 	feature_file.read((char*)features, sizeof(float));
 }
 
+//filename = "../engine/data/fonts/font01.txt"
 bool RFontClass::LoadFontData(char* filename)
 {
 	// Create the font spacing buffer.
@@ -171,11 +172,17 @@ bool RFontClass::LoadFontData(char* filename)
 	fin.open(filename);
 	if (fin.fail())
 	{
+#if defined LINUX_MAVERICK
+		STRING dir = "/home/pedro/projects/LinuxWoma029/CoreEngine_Tutorials/engine/";
+		dir.append(filename);
+#else
 		STRING dir = WOMA::getCurrentDir();
 		dir.append("/../../WoMA3Dengine/CoreEngine_Tutorials/DXENGINE_0");
 		dir.append(std::to_string(DX_ENGINE_LEVEL));
 		dir.append("/");
 		dir.append(filename);
+#endif
+
 		fin.open(dir);
 		if (fin.fail())
 		{

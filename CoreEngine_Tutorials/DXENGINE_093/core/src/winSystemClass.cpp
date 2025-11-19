@@ -781,6 +781,8 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
 
 	#define DEFAULT_TITLE TEXT("Loading...")
 
+
+	womalog("WINDOW_WIDTH: %d, WINDOW_HEIGHT: %d1n", WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT);
 	// [*] Create the window and return the handle to it:
 	HWND hWnd = WomaCreateWindowEx( dwExStyle, (TCHAR*)WOMA_ENGINE_CLASS, DEFAULT_TITLE, windowStyle,
                             		windowLeft, windowTop,

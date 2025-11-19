@@ -637,10 +637,7 @@ void ApplicationClass::InitMainSky(void* pContext, WomaDriverClass* Driver)
 //Sky:
 #if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28 && defined USE_SKYSPHERE  // 28: SPHEREs
 	size = 48;
-		if (RENDER_PAGE >= 55)
-			size = 512;	// SYNC/CHECK AT WOMA_APPLICATION_Initialize3D():
-		else
-			size = 48;
+	size = 48;
 
 	#ifndef MAIN_RENDER_MAIN_XML_OBJ
 	size = 30;

@@ -141,6 +141,11 @@ bool dxWinSystemClass::APPLICATION_INIT_SYSTEM() //LOAD ALL GRAPHICS
 	IF_NOT_RETURN_FALSE(StartSoundManager());	 // (NOTE: After the INIT "rendering-device")
 #endif
 
+#if defined WINDOWS_PLATFORM && defined INTRO_DEMO
+	ShowCursor(FALSE);
+	SetCursor(NULL);
+#endif
+
 	return res;
 }
 
