@@ -261,8 +261,9 @@
 	#define DEMO1_BANNER3_TEXTURE TEXT("engine/data/banners/v2/3.png")
 	#define DEMO1_BANNER4_TEXTURE TEXT("engine/data/banners/v2/4.png")
 	#define DEMO1_BANNER5_TEXTURE TEXT("engine/data/banners/v2/5.png")
-  #if defined WINDOWS_PLATFORM
+
 	#define DEMO1_BANNER6L_TEXTURE TEXT("engine/data/banners/v2/6L.png")
+  #if defined WINDOWS_PLATFORM
 	#define DEMO1_BANNER6M_TEXTURE TEXT("engine/data/banners/v2/6M.png")
 	#define DEMO1_BANNER6_TEXTURE TEXT("engine/data/banners/v2/6.png")
   #else

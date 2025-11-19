@@ -243,7 +243,7 @@
         #define USE_VIEW2D_SPRITES
         #define USE_RASTERIZER_STATE
         #define USE_DSV //DX12
-        #define SENTENCE_MAX_LEN    140
+        #define SENTENCE_MAX_LEN    200
     #endif
 
     #if DX_ENGINE_LEVEL >= 25 //WINDOWS ONLY
@@ -314,7 +314,9 @@
 
 	#if DX_ENGINE_LEVEL == 29
 		#define USE_DEMO29
-		//#define USE_DEMO29_v2 //Need also: USE_DEMO29									   
+		#if defined WINDOWS_PLATFORM
+		#define USE_DEMO29_v2 //NOTE: Need also: USE_DEMO29
+		#endif
 	#endif
     #if DX_ENGINE_LEVEL >= 29
     //---------------------------------------------------------------------------------------
