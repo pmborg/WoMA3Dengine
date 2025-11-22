@@ -142,6 +142,10 @@ Try to Change the driver on the fly without the need of close and open the Appli
 
 <h2>3D - ADVANCED MESH TUTORIAL SERIES: BEGIN</h2>
 
+- <b>LEVEL-99: Terrain with object shadows.</b><br>
+
+![https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_099.png](https://raw.githubusercontent.com/pmborg/WoMA3Dengine/main/Image_Tutorial_Snapshot/DXEngine_099.png)	
+
 <hr>
 
 - <b>LEVEL-98: Day and Night</b><br>
