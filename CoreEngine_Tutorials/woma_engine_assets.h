@@ -651,7 +651,7 @@
 #endif
 
 #if DX_ENGINE_LEVEL == 99
-	#define DEMO_TITLE TEXT("99: ")
+	#define DEMO_TITLE TEXT("99: Terrain with object shadows")
 	#define WORLD_XML  TEXT("world_99.xml")
 #endif
 
@@ -665,8 +665,15 @@
 	#define WORLD_XML  TEXT("world_101.xml")
 #endif
 
+#if DX_ENGINE_LEVEL == 102
+	#define DEMO_TITLE TEXT("102: ")
+	#define WORLD_XML  TEXT("world_102.xml")
+#endif
 
-
+#if DX_ENGINE_LEVEL == 103
+	#define DEMO_TITLE TEXT("103: ")
+	#define WORLD_XML  TEXT("world_103.xml")
+#endif
 
 
 //--------------------------------------------------------------------------------------------------------------------------

@@ -220,7 +220,7 @@ ApplicationClass::ApplicationClass()
 #endif
 
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
-	m_RenderShadowTexture		= NULL;
+	m_TextureWithShadows		= NULL;
 #endif
 
 #if defined SCENE_TERRAIN_QUAD_TREE
@@ -431,7 +431,7 @@ void ApplicationClass::Shutdown()
 	}
 
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
-	SAFE_SHUTDOWN(m_RenderShadowTexture);
+	SAFE_SHUTDOWN(m_TextureWithShadows);
 #endif
 #if DX_ENGINE_LEVEL >= 62 && defined USE_MAIN_MAP
 	SAFE_SHUTDOWN(m_RenderMapTexture);
@@ -709,7 +709,7 @@ bool ApplicationClass::Initialize(void* pContext, WomaDriverClass* Driver)
 #endif
 
 #if DX_ENGINE_LEVEL >= 86 && !defined USE_INTRO_VIDEO_DEMO
-	IF_NOT_RETURN_FALSE(Startauxcommonfunctions(WOMA::logManager, DX_ENGINE_LEVEL, SystemHandle->m_hWnd));
+	Startauxcommonfunctions(WOMA::logManager, DX_ENGINE_LEVEL, SystemHandle->m_hWnd); //ignore result at this level
 #endif
 
 //########################################### 3D: STUFF ###########################################

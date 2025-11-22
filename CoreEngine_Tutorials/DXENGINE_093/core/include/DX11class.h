@@ -459,8 +459,8 @@ public:
 	ID3D11Device* m_device11 = nullptr;
 
   #if defined USE_MINIMAP_REDENRING_THREAD
-	#if defined USE_SHADOW_THREAD
-	ID3D11DeviceContext* shadowDeferredCtx = nullptr;
+	#if defined USE_UPDATEMESHANIMATIONS_THREAD
+	ID3D11DeviceContext* UpdateMeshAnimationsDeferredCtx = nullptr;
 	#endif
 	ID3D11DeviceContext* minimapDeferredCtx = nullptr;
   #endif

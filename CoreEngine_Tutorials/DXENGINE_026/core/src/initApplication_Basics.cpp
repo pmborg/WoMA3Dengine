@@ -505,7 +505,7 @@ bool ApplicationClass::InitLightandDemos(void* pContext, WomaDriverClass* Driver
 
 	//LIGHT_RAY ////////////////////////////////////////////////////////////////////////////////////////////////////
   #if defined MAIN_RENDER_LIGHT_RAY	//DO: CalculateLightRayVertex(SunDistance);							  // Calculate Light Source Position
-	initLightRay(pContext);	//	  m_lightRayModel->UpdateDynamic(m_Driver, m_LightVertexVector);  // Update LightRay vertex(s)
+	initLightRay(pContext);	//	  m_lightRayModel->UpdateLightRayVertices(m_Driver, m_LightVertexVector);  // Update LightRay vertex(s)
   #endif					//	  m_lightRayModel->Render(m_Driver);							  // Render LightRay
 
 	//-----------------------------------------------------------------------------------------------------------------
@@ -614,7 +614,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 
 	// Log XML objects:
 
-	InitLightandDemos(pContext, Driver);
+	InitLightandDemos(pContext, Driver);	//Init Demos from 21 to 29
 
 	#ifdef MAIN_RENDER_SKY
 	InitMainSky(pContext, Driver);
@@ -699,10 +699,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// RENDER ASTROs //////////////////////////////////////////////////////////////////////////////////////////////////
-	//-----------------------------------------------------------------------------------------------------------------
-
-	//-----------------------------------------------------------------------------------------------------------------
-	// SHADOWMAP //////////////////////////////////////////////////////////////////////////////////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
 
 #if defined SAVEW3D && DX_ENGINE_LEVEL < 89

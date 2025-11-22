@@ -33,8 +33,8 @@
 
 #if defined DX11
 	#include <d3d11.h>
-	#pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
-	#include <d3d11.h>		//#include "DX11Class.h"
+	#pragma warning( disable : 4005 )	// Disable warning C4005: '' : macro redefinition
+	#include <d3d11.h>					//#include "DX11Class.h"
 
 	#if D3D11_SPEC_DATE_YEAR == 2009 // #if defined USE_OLD_DirectX_SDK_June2010
 		#pragma warning( disable : 4324 ) // 4324: '': structure was padded due to __declspec(align())
@@ -75,6 +75,11 @@ public:
 #endif
 
 	void GenerateOrthoMatrix(float width, float height, float depthPlane, float nearPlane);
+
+#if defined USE_LEVEL_36V2 //ON/OFF
+	void GenerateCameraCenteredShadowMatrices(const XMFLOAT3& cameraPos, float orthoHalfSize, float nearZ, float farZ, float lightDistanceMultiplier = 3.0f);
+	void GenerateSmallSceneShadowMatrices(float azimuth, float elevation, float useLightSize);
+#endif
 
 #if defined RENDER_OBJ_WITH_SPECULAR_SHININESS
 	void SetSpecularColor(float, float, float, float);

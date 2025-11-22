@@ -1293,7 +1293,7 @@ void DXmodelClass::SetGeometryBuffers(void* deviceContext)
 }
 
 #if defined MAIN_RENDER_LIGHT_RAY
-void DirectX::DXmodelClass::UpdateDynamic(void* ctx, std::vector<ModelColorVertexType>* lightVertexVector)
+void DirectX::DXmodelClass::UpdateLightRayVertices(void* ctx, std::vector<ModelColorVertexType>* lightVertexVector)
 {
 	ID3D11DeviceContext* deviceContext11 = (ID3D11DeviceContext*)ctx;
 
@@ -1838,7 +1838,7 @@ void DirectX::DXmodelClass::RenderSubMesh(ID3D11DeviceContext* pContext, WomaDri
 						// [1] Set: AlfaMapTexture
 						// below...
 
-						// [2] Set: ShadowMapTextureTexture
+						// [2] Set: ShadowMapTexture
 
 						// [3] Set: TangentMapTexture
 					useShader->hasNormMap = obj3d.material[obj3d.subsetMaterialArray[i]].hasNormMap;
@@ -1865,7 +1865,7 @@ void DirectX::DXmodelClass::RenderSubMesh(ID3D11DeviceContext* pContext, WomaDri
 }
 
 
-void DirectX::DXmodelClass::RenderWithFade(void* pContext, float fadeLight, bool FOG)
+void DirectX::DXmodelClass::RenderWithFade(void* pContext, float fadeLight, bool FOG, UINT pass, void* lightViewMatrix, void* lightProjectionMatrix)
 {
 #if defined DX11 || defined DX12 || (defined OPENGL3 || defined OPENGL40) 
 		#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
@@ -1883,7 +1883,7 @@ void DirectX::DXmodelClass::RenderWithFade(void* pContext, float fadeLight, bool
 			}
 		#endif
 
-			Render(pContext, 0, 0, 0, NULL, NULL);
+		Render(pContext, 0, 0, 0, pass, lightViewMatrix, lightProjectionMatrix);
 #endif
 }
 
@@ -2004,13 +2004,11 @@ void DirectX::DXmodelClass::Render(void* ctx, UINT threadID, UINT camera, UINT p
 		else
 		{
 			{
-				if (ModelShaderType >= SHADER_TEXTURE)
-					for (UINT i = 0; i < meshSRV11.size(); i++)
-						pContext->PSSetShaderResources(i, 1, &meshSRV11[i]);	// Set shader texture resource(s) in the "Pixel Shader", only!
 
-				#if defined USE_VIEW2D_SPRITES
-				m_Shader11->PSfade = model_fade;
-				#endif
+			#if defined USE_VIEW2D_SPRITES
+					m_Shader11->PSfade = model_fade;
+			#endif
+
 			  #if TUTORIAL_CHAP >= 62 // FIRE
 				if (ModelShaderType == SHADER_FIRE) {
 					static float frameTime = 0.0f;
@@ -2025,6 +2023,11 @@ void DirectX::DXmodelClass::Render(void* ctx, UINT threadID, UINT camera, UINT p
 			  #endif
 
 				m_Shader11->shaderTypeParameter = (float)shaderTypeParameter;
+
+				if (ModelShaderType >= SHADER_TEXTURE)
+					for (UINT i = 0; i < meshSRV11.size(); i++)
+						pContext->PSSetShaderResources(i, 1, &meshSRV11[i]);	// Set shader texture resource(s) in the "Pixel Shader", only!
+
 			}
 
             #if defined USE_OPTIMIZING
@@ -2033,8 +2036,6 @@ void DirectX::DXmodelClass::Render(void* ctx, UINT threadID, UINT camera, UINT p
 				m_Shader11->Render(pass, pContext, m_indexCount, &m_worldMatrix, viewMatrix, projectionMatrix);
             #endif
 		}
-
-	//#endif
 
 	}
 	//END: DX11 Driver

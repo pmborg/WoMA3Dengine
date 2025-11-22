@@ -76,7 +76,7 @@ WinSystemClass::~WinSystemClass()
 
 bool WinSystemClass::APPLICATION_BEFORE_WINDOW()
 {
-	womalog("WinSystemClass::APPLICATION_CORE_SYSTEM()\n");
+	womalog("WinSystemClass::APPLICATION_BEFORE_WINDOW()\n");
 
 	WomaMessageBox(WOMA::strConsoleTitle, TEXT("WOMA Hello World!"), MB_OK);
 	return false; //false means exit now and don't enter on main loop

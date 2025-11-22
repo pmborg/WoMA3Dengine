@@ -85,7 +85,7 @@ GLmodelClass::GLmodelClass(bool model3d)
 GLmodelClass::~GLmodelClass(){CLASSDELETE();}
 
 #if defined MAIN_RENDER_LIGHT_RAY
-void GLmodelClass::UpdateDynamic(void* pContext, std::vector<ModelColorVertexType>* lightVertexVector)
+void GLmodelClass::UpdateLightRayVertices(void* pContext, std::vector<ModelColorVertexType>* lightVertexVector)
 {
 	static float m_previousPosX = -10000;
 	static float m_previousPosY = -10000;
@@ -553,7 +553,7 @@ void GLmodelClass::Shutdown()
 #endif
 
 
-void GLmodelClass::RenderWithFade(void* pContext, float fadeLight, bool FOG)
+void GLmodelClass::RenderWithFade(void* pContext, float fadeLight, bool FOG, UINT pass, void* lightViewMatrix, void* lightProjectionMatrix)
 {
 	//m_Shader->fade = fadeLight;
 	Render(pContext);

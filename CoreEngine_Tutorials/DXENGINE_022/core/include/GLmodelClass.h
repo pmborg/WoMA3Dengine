@@ -44,7 +44,7 @@ public:
 	~GLmodelClass();
 	void Shutdown();
 
-	void RenderWithFade(void* pContext, float fadeLight = 1, bool FOG = false);
+	void RenderWithFade(void* pContext, float fadeLight = 1, bool FOG = false, UINT pass = 0, void* lightViewMatrix = NULL, void* lightProjectionMatrix = NULL);
 	void Render(void* pContext, UINT threadID=0, UINT camera = 0, UINT projection = 0, UINT pass = 0, void* lightViewMatrix = NULL, void* ShadowProjectionMatrix = NULL);
 
 	bool InitializeVertexIndexBuffers(std::vector <STRING>* textureFile);
@@ -59,7 +59,7 @@ public:
 #endif
 
 #if defined MAIN_RENDER_LIGHT_RAY
-	void UpdateDynamic(void* pContext, std::vector<ModelColorVertexType>* lightVertexVector);
+	void UpdateLightRayVertices(void* pContext, std::vector<ModelColorVertexType>* lightVertexVector);
 #endif
 
 	//GLuint linearFiltering;

@@ -68,7 +68,7 @@ public:
 	void Shutdown();
 	void LOADDRIVER(void* driver);
 
-	void RenderWithFade(void* pContext, float fadeLight = 1, bool FOG = false);
+	void RenderWithFade(void* pContext, float fadeLight = 1, bool FOG = false, UINT pass=0, void* lightViewMatrix=NULL, void* lightProjectionMatrix = NULL);
 	void Render(void* pContext, UINT threadID, UINT camera = 0, UINT projection = 0, UINT pass = 0, void* lightViewMatrix = NULL, void* ShadowProjectionMatrix = NULL);
 
 	// ----------------------------------------------------------------------
@@ -148,7 +148,7 @@ public:
 	void SetGeometryBuffers(void* deviceContext);	//ID3D11DeviceContext
 
 	#if defined MAIN_RENDER_LIGHT_RAY
-    void UpdateDynamic(void* pContext, std::vector<ModelColorVertexType>* lightVertexVector);
+    void UpdateLightRayVertices(void* pContext, std::vector<ModelColorVertexType>* lightVertexVector);
 	#endif
 
 	std::vector<ModelColorVertexType>* modelColorVertex = NULL;			// MODEL!

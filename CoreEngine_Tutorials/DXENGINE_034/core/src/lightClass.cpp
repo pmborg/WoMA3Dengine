@@ -21,6 +21,10 @@
 #include "platform.h"
 
 #include "lightClass.h"
+#include "TrigonometryMathClass.h"
+#include "OSengine.h"
+#include "ApplicationClass.h"
+#include "DXinputclass.h"
 
 LightClass::LightClass() 
 {
@@ -76,7 +80,6 @@ void LightClass::GenerateViewMatrix(float SunX, float SunY, float SunZ)
 	XMVECTOR position = XMVectorSet(SunX, SunY, SunZ, 0.0f);
 
 	// Create the view matrix from the three vectors.
-	//D3DXMatrixLookAtLH(&m_viewMatrix, &m_position, &m_lookAt, &up);
 	XMVECTOR lightDirection = XMVectorSet(m_lightDirection.x, m_lightDirection.y, m_lightDirection.z, m_lightDirection.w);
 	m_viewMatrix = XMMatrixLookAtLH(position, lightDirection, up);
 }
@@ -85,7 +88,7 @@ void LightClass::GenerateViewMatrix(float SunX, float SunY, float SunZ)
 /*const*/ float* LightClass::GetDiffuseColor()
 {
 #if defined DX_ENGINE
-	static float diffuseColor[4];		// Alocate static memory for result
+	static float diffuseColor[4];		// Allocate static memory for result
 	diffuseColor[0] = m_diffuseColor.x;
 	diffuseColor[1] = m_diffuseColor.y;
 	diffuseColor[2] = m_diffuseColor.z;
@@ -98,7 +101,7 @@ void LightClass::GenerateViewMatrix(float SunX, float SunY, float SunZ)
 
 /*const*/ float* LightClass::GetDirection()
 {
-	static float lightDirection[4];		// Alocate static memory for result
+	static float lightDirection[4];		// Allocate static memory for result
 #if defined _XM_NO_INTRINSICS_
 	lightDirection[0] = m_lightDirection.vector4_f32[0];
 	lightDirection[1] = m_lightDirection.vector4_f32[1];
@@ -121,4 +124,105 @@ void LightClass::GenerateViewMatrix(float SunX, float SunY, float SunZ)
 
 	return &lightDirection[0];				// Convert to be used by OPEN GL
 }
+
+#if defined USE_LEVEL_36V2 //ON/OFF
+// Minimal camera-centered light view/proj generator
+
+void LightClass::GenerateCameraCenteredShadowMatrices(
+	const XMFLOAT3& cameraPos,
+	float orthoHalfSize,
+	float nearZ,
+	float farZ,
+	float lightDistanceMultiplier)
+{
+	//----------------------------------------------------------
+	// 1. Raise camera to avoid terrain clipping
+	//----------------------------------------------------------
+	float terrainHeight = mainTerrain->getTerrainHeight(TERRAIN_ID,
+		cameraPos.x,
+		cameraPos.z);
+
+	// Always keep shadow camera at least +10 above terrain
+	float safeY = terrainHeight + 10.0f;
+
+	// Apply only if camera is lower than terrain+10
+	float camY = max(cameraPos.y, safeY);
+
+	XMFLOAT3 camRaised = cameraPos;
+	camRaised.y = camY;
+
+	//----------------------------------------------------------
+	// 2. Calculate sun direction
+	//----------------------------------------------------------
+	XMVECTOR sunDir = XMVector3Normalize(
+		XMVectorSet(-m_lightDirection.x, -m_lightDirection.y,
+			-m_lightDirection.z, 0.0f));
+
+	XMVECTOR centerWS = XMVectorSet(camRaised.x, camRaised.y, camRaised.z, 1.0f);
+
+	//----------------------------------------------------------
+	// 3. Offset the light backwards along the sun direction
+	//----------------------------------------------------------
+	float lightDist = orthoHalfSize * lightDistanceMultiplier;
+
+	XMVECTOR lightEyeWS =
+		XMVectorSubtract(centerWS, XMVectorScale(sunDir, lightDist));
+
+	//----------------------------------------------------------
+	// 4. Build view matrix
+	//----------------------------------------------------------
+	XMVECTOR up = XMVectorSet(0, 1, 0, 0);
+	m_viewMatrix = XMMatrixLookAtLH(lightEyeWS, centerWS, up);
+
+	//----------------------------------------------------------
+	// 5. Build orthographic projection
+	//----------------------------------------------------------
+	float L = -orthoHalfSize;
+	float R = orthoHalfSize;
+	float B = -orthoHalfSize;
+	float T = orthoHalfSize;
+
+	m_ligth_orthoMatrix =
+		XMMatrixOrthographicOffCenterLH(L, R, B, T, nearZ, farZ);
+}
+
+
+
+// V1-compatible shadow region for small scenes
+//#if defined USE_SMALL_SHADOWS   // Levels 36–39
+
+void LightClass::GenerateSmallSceneShadowMatrices(float sunAzimuthDeg, float sunElevationDeg, float useLightSize)
+{
+	//
+	// --- 1. Compute sun position EXACTLY like original Level 36 ---
+	//
+	float LightX = useLightSize * FAST_sin(sunAzimuthDeg);
+	float LightZ = useLightSize * FAST_cos(sunAzimuthDeg);
+	float LightY = useLightSize * FAST_sin(sunElevationDeg);
+
+	XMVECTOR lightEye = XMVectorSet(LightX, LightY, LightZ, 0.0f);
+
+	//
+	// --- 2. ALWAYS LOOK AT ORIGIN like original Level 36 ---
+	//
+	XMVECTOR lookAt = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+	m_viewMatrix = XMMatrixLookAtLH(lightEye, lookAt, up);
+
+	//
+	// --- 3. ORIGINAL ORTHOGRAPHIC PROJECTION ---
+	//
+	float width = 15.0f;
+	float height = 15.0f;
+	float nearZ = 0.1f;
+	float farZ = 20.0f;
+
+	m_ligth_orthoMatrix = XMMatrixOrthographicLH(width, height, nearZ, farZ);
+}
+
+#endif
+
+
+
 

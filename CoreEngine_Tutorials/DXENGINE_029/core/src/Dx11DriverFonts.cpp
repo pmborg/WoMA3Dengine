@@ -141,7 +141,7 @@ bool DX11Class::InitD2DScreenTexture()
 	DXtextureVertexType v[] =
 	{
 		// Front Face
-#if DX_ENGINE_LEVEL >= 100 && defined USE_WOMA_ENGINE_ONE_CBUFFER
+#if DX_ENGINE_LEVEL >= 102 && defined USE_WOMA_ENGINE_ONE_CBUFFER
 		DXtextureVertexType(-1.0f, -1.0f, -1.0f, 0, 0.0f, 1.0f),
 		DXtextureVertexType(-1.0f,  1.0f, -1.0f, 0, 0.0f, 0.0f),
 		DXtextureVertexType( 1.0f,  1.0f, -1.0f, 0, 1.0f, 0.0f),
@@ -248,7 +248,7 @@ bool DX11Class::InitD2DScreenTexture()
 	SystemHandle->m_Application->m_FontV2Shader = NEW DXshaderClass (ShaderVersionH, ShaderVersionL, false/*2D*/);
 	IF_NOT_THROW_EXCEPTION (SystemHandle->m_Application->m_FontV2Shader);
 
-#if DX_ENGINE_LEVEL >= 100 && defined USE_WOMA_ENGINE_ONE_CBUFFER
+#if DX_ENGINE_LEVEL >= 102 && defined USE_WOMA_ENGINE_ONE_CBUFFER
 	SHADER_TYPE shadertype = SHADER_TYPE_TEXTUREFONT25; //99
 #else
 	SHADER_TYPE shadertype = SHADER_TEXTURE;

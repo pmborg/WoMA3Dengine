@@ -555,7 +555,7 @@ bool ApplicationClass::InitLightandDemos(void* pContext, WomaDriverClass* Driver
 
 	//LIGHT_RAY ////////////////////////////////////////////////////////////////////////////////////////////////////
   #if defined MAIN_RENDER_LIGHT_RAY	//DO: CalculateLightRayVertex(SunDistance);							  // Calculate Light Source Position
-	initLightRay(pContext);	//	  m_lightRayModel->UpdateDynamic(m_Driver, m_LightVertexVector);  // Update LightRay vertex(s)
+	initLightRay(pContext);	//	  m_lightRayModel->UpdateLightRayVertices(m_Driver, m_LightVertexVector);  // Update LightRay vertex(s)
   #endif					//	  m_lightRayModel->Render(m_Driver);							  // Render LightRay
 
 	//-----------------------------------------------------------------------------------------------------------------
@@ -677,7 +677,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	initial_world_xml_objs = world_xml_objs;
 	womalogauto("Number of objects loaded in: WORLD.XML %d\n", world_xml_objs);
 
-	InitLightandDemos(pContext, Driver);
+	InitLightandDemos(pContext, Driver);	//Init Demos from 21 to 29
 
 	#ifdef MAIN_RENDER_SKY
 	InitMainSky(pContext, Driver);
@@ -756,6 +756,10 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 
 	for (UINT i = objModel_size; i < objModel_size + theWorld_size; i++) //theWorld_size
 	{
+#if defined USE_LOG_MANAGER
+		if (i >= world_xml_objs)
+			WOMA::logManager = 0;
+#endif
 
 		// LOAD MAIN OBJECTS:
 		// ---------------------------------------------------------------------------------------------------------
@@ -798,10 +802,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// RENDER ASTROs //////////////////////////////////////////////////////////////////////////////////////////////////
-	//-----------------------------------------------------------------------------------------------------------------
-
-	//-----------------------------------------------------------------------------------------------------------------
-	// SHADOWMAP //////////////////////////////////////////////////////////////////////////////////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
 
 #if defined SAVEW3D && DX_ENGINE_LEVEL < 89

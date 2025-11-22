@@ -71,7 +71,7 @@ public:
 	void Shutdown();
 	void LOADDRIVER(void* driver);
 
-	void RenderWithFade(void* pContext, float fadeLight = 1, bool FOG = false);
+	void RenderWithFade(void* pContext, float fadeLight = 1, bool FOG = false, UINT pass=0, void* lightViewMatrix=NULL, void* lightProjectionMatrix = NULL);
 #if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28 && defined USE_SKYSPHERE
 	void RenderSky(void* pContext, UINT camera, float fadeLight = 1);
 #endif
@@ -175,7 +175,7 @@ public:
 	void SetGeometryBuffers(void* deviceContext);	//ID3D11DeviceContext
 
 	#if defined MAIN_RENDER_LIGHT_RAY
-    void UpdateDynamic(void* pContext, std::vector<ModelColorVertexType>* lightVertexVector);
+    void UpdateLightRayVertices(void* pContext, std::vector<ModelColorVertexType>* lightVertexVector);
 	#endif
 
 	std::vector<ModelColorVertexType>* modelColorVertex = NULL;			// MODEL!

@@ -80,7 +80,7 @@ WinSystemClass::~WinSystemClass()
 
 bool WinSystemClass::APPLICATION_BEFORE_WINDOW()
 {
-	womalog("WinSystemClass::APPLICATION_CORE_SYSTEM()\n");
+	womalog("WinSystemClass::APPLICATION_BEFORE_WINDOW()\n");
 
 	int yes = IDYES;
 

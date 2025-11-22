@@ -158,7 +158,7 @@
     //#define LEVEL 96	// Use curved real sky plane
 	//#define LEVEL 97	// The Waterfall
 	//#define LEVEL 98	// Day and Night
-	#define LEVEL 99	// Demo99
+	#define LEVEL 99	// Terrain with object shadows.
 	
     #endif
 #endif

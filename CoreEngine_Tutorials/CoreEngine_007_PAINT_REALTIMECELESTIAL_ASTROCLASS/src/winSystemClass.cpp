@@ -74,17 +74,17 @@ void WinSystemClass::ProcessFrame()
 	SystemClass::FrameUpdate();	// Process: (Fx keys |ESC and F1 to F6| & get FPS)
 
 	if (WOMA::game_state == ENGINE_RESTART)
-		return; //Restart so, don't render!
+		return; //Restart? so, don't render, restart now.
 
 	// Render Setup?
 #if CORE_ENGINE_LEVEL >= 5 && defined CLIENT_SCENE_SETUP
 	if (WOMA::game_state == GAME_SETUP)
 	{
-        return; //Process win32 Setup so, don't render!
+        return; //Process win32 Setup/pages so, don't render!
 	}
 #endif
 
-	Sleep((DWORD)16.66f);
+	Sleep((DWORD)16.66f);														// Do nothing for 16.66 ms (60 FPS)
 }
 
 void WinSystemClass::WinSystemClass_init()
@@ -143,7 +143,7 @@ WinSystemClass::~WinSystemClass()
 
 bool WinSystemClass::APPLICATION_BEFORE_WINDOW()
 {
-	womalog("WinSystemClass::APPLICATION_CORE_SYSTEM()\n");
+	womalog("WinSystemClass::APPLICATION_BEFORE_WINDOW()\n");
 
 	if (WOMA::game_state == GAME_LOADING)
 		WOMA::game_state = GAME_MENU;	// Force first frame to read key

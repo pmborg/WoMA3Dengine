@@ -68,7 +68,7 @@ int __cdecl BillSortCB(const VOID* arg1, const VOID* arg2);
 #include <mutex>
 #include <condition_variable>
 
-std::thread shadowWorker, minimapWorker;
+std::thread UpdateMeshAnimationsWorker, minimapWorker;
 
 std::mutex mtx;
 std::condition_variable cv;
@@ -80,11 +80,11 @@ bool stopThreads = false;
 ID3D11DeviceContext* minimapCtx = nullptr;
 ID3D11CommandList* minimapCmdList = nullptr;
 
-#if defined USE_SHADOW_THREAD
-bool shadowWork = false;
-bool shadowThreadDone = false;
-ID3D11DeviceContext* shadowCtx = nullptr;
-ID3D11CommandList* shadowCmdList = nullptr;
+#if defined USE_UPDATEMESHANIMATIONS_THREAD
+bool UpdateMeshAnimationsWork = false;
+bool UpdateMeshAnimationsThreadDone = false;
+ID3D11DeviceContext* UpdateMeshAnimationsCtx = nullptr;
+ID3D11CommandList* UpdateMeshAnimationsCmdList = nullptr;
 #endif
 
 DirectX::DX11Class* driver11Ref = nullptr;
@@ -108,7 +108,7 @@ extern RealSkyPlaneClass realSkyPlaneClass;
 void ApplicationClass::RenderScene(void* mainCtx, UINT monitorIndex, WomaDriverClass* driver) // RENDER A FULL FRAME!
 //----------------------------------------------------------------------------------------------------
 {
-	SystemHandle->TotalVertexCounter = 0;
+	SystemHandle->TotalVertexCounter = 0;	// Reset total vertex counter
 
 	// UPDATE DYN. LIGHT RAY:
 	// --------------------------------------------------------------------------------------------
@@ -117,23 +117,23 @@ void ApplicationClass::RenderScene(void* mainCtx, UINT monitorIndex, WomaDriverC
 	{
 		CalculateLightRayVertex(SunDistance);							// Calculate Light Source Position
 
-		m_lightRayModel->UpdateDynamic(mainCtx, m_LightVertexVector);	// Update LightRay vertex(s)
-		m_lightRayModel->Render(mainCtx, 0, 0, 0, NULL, NULL);			// Render LightRay
+	#if defined MAIN_RENDER_LIGHT_RAY
+		m_lightRayModel->UpdateLightRayVertices(mainCtx, m_LightVertexVector);	// Update LightRay vertex(s)
+		m_lightRayModel->Render(mainCtx, 0, 0, 0, NULL, NULL);					// Render LightRay
+	#endif
 	}
 #endif
 
-		dayLightFade = 1; //levels < 98
+		dayLightFade = 1;
 
 #if DX_ENGINE_LEVEL >= 36 && (defined USE_MINIMAP_REDENRING_THREAD || defined USE_SHADOW_MAP || defined USE_MAIN_MAP)
-																	//IF_RENDER_PAGE(RENDER_PAGE >= 29)  NOTE: (we need it before 20 at INTRO)
-	AppPreRender(monitorIndex, driver, dayLightFade, mainCtx);		// [1] Launch shadow & mini-map async work, (do not wait for render on level>=91)
-																	// Re-Start aux threads on this frame:
+	AppPreRender(monitorIndex, driver, dayLightFade, mainCtx);		// [1]	Launch shadow & mini-map async work, (do not wait for render on level>=91)
+																	//		Start aux threads on this frame
 #endif
 
-	AppRender(monitorIndex, RENDER_PAGE, dayLightFade, mainCtx);	// [2] 3D Render main scene while workers run in parallel
+	AppRender(monitorIndex, RENDER_PAGE, dayLightFade, mainCtx);	// [2] 3D Render "main scene" while workers run in parallel!
 
-																	//IF_RENDER_PAGE(RENDER_PAGE >= 29) NOTE: (we need it before 20 at INTRO)
-	AppPosRender(monitorIndex, RENDER_PAGE, dayLightFade, mainCtx);	// [3] 2D: Render TRANSPARENT Parts of 3D OBJs(like: "Glass windows", "Billboards", etc...)
+	AppPosRender(monitorIndex, RENDER_PAGE, dayLightFade, mainCtx);	// [3] 2D: Render TRANSPARENT and ontop Parts: (like: "Billboards", "Glass windows", logo, main-map and minimap, text, driver-text)
 
 #if DX_ENGINE_LEVEL >= 91 && defined USE_MINIMAP_REDENRING_THREAD
 	// [2.5] Wait here (after main scene) before using shadows/mini-map results
@@ -381,48 +381,61 @@ void ApplicationClass::RenderShadowPass(UINT monitorIndex, WomaDriverClass* Driv
 		//RENDER SHADOWS TO TEXTURE:
 		if (fadeLight > 0.1f)
 		{
-			m_RenderShadowTexture->SetRenderTarget(Driver, (ID3D11DeviceContext*)pContext);								// Set the render target to be the render to texture.
-			m_RenderShadowTexture->ClearRenderTarget(Driver, (ID3D11DeviceContext*)pContext, 1.0f, 1.0f, 1.0f, 1.0f);	// Clear the render to texture!
+			m_TextureWithShadows->SetRenderTarget(Driver, (ID3D11DeviceContext*)pContext);								// Set the render target to be the render to texture.
+			m_TextureWithShadows->ClearRenderTarget(Driver, (ID3D11DeviceContext*)pContext, 1.0f, 1.0f, 1.0f, 1.0f);	// Clear the render to texture!
 
 			//Update light position for shadows:
-		#if defined  MAIN_RENDER_LIGHT_RAY && defined USE_SHADOW_MAP
-			app_Light->GenerateViewMatrix(MyLightVertexVector[1].x / 100, MyLightVertexVector[1].y / 100, MyLightVertexVector[1].z / 100);
+		#if defined MAIN_RENDER_LIGHT_RAY && defined USE_SHADOW_MAP
+			app_Light->GenerateViewMatrix(	MyLightVertexVector[1].x / 100, 
+											MyLightVertexVector[1].y / 100, 
+											MyLightVertexVector[1].z / 100); //SunX, SunY, SunZ
 		#endif
 
 			// RENDER SHADOWS for all these 3D STATIC OBJECTS, to texture
 			// --------------------------------------------------------------------------------------------
-#if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
-		// OPAC Parts:
+		#if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
 			SHADER_TYPE shader_type = SHADER_AUTO;
 			for (UINT id = 0; id < WOMA::sceneManager->visibleModelList.size(); id++)																
 			{
 				if (objModel[id])
 				{
-				shader_type = objModel[id]->ModelShaderType;
-				if (shader_type != SHADER_TEXTURE_LIGHT_RENDERSHADOW &&
-					shader_type != SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED &&
-					shader_type != SHADER_NORMAL_BUMP_INSTANCED)
-					if (objModel[id]->ModelCastShadow)
-						RenderModel(pContext, RENDER_PAGE, 0, monitorIndex, Driver, id, (UINT)PASS_SHADOWS, NULL, NULL); // Pre-Render Shadows
+					if (SystemHandle->xml_loader.theWorldXML[WOMA::sceneManager->visibleModelList[id]->m_ObjId].type == 401)  // STREET_LAMP
+					{
+						// Render left row (op = 0)
+						RenderModel(pContext, RENDER_PAGE, 0, monitorIndex, Driver, id,
+							PASS_SHADOWS, NULL, NULL, 0, 0);
+
+						// Render right row (op = 1)
+						RenderModel(pContext, RENDER_PAGE, 0, monitorIndex, Driver, id,
+							PASS_SHADOWS, NULL, NULL, 0, 1);
+
+						continue; // done with this lamp
+					}
+
+					shader_type = objModel[id]->ModelShaderType;
+					if (shader_type != SHADER_TEXTURE_LIGHT_RENDERSHADOW &&
+						shader_type != SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED &&
+						shader_type != SHADER_NORMAL_BUMP_INSTANCED)
+					{
+						if (objModel[id]->ModelCastShadow)
+							RenderModel(pContext, RENDER_PAGE, 0, monitorIndex, Driver, id, (UINT)PASS_SHADOWS, NULL, NULL); // Pre-Render Shadows to Texture
+					}
 				}
 			}
-#endif
+		#endif
+
 		}
 	}
 #endif
 }
 
+
 #if defined USE_MINIMAP_REDENRING_THREAD
-#if defined USE_SHADOW_THREAD
-void RenderShadowsDeferred(ID3D11DeviceContext* ctx, WomaDriverClass* driver, UINT monitorIndex, float fadeLight) 
+#if defined USE_UPDATEMESHANIMATIONS_THREAD
+void UpdateMeshAnimationsDeferred(ID3D11DeviceContext* ctx, WomaDriverClass* driver, UINT monitorIndex, float fadeLight) 
 {
-	// Disable alpha before rendering shadows
-	m_Driver->TurnOffAlphaBlending(ctx);
 
-	ctx->ClearState();  // optional: reset state
-	SystemHandle->m_Application->RenderShadowPass(monitorIndex, driver, ctx, fadeLight);  // custom function using ctx instead of mainContext
-
-#if defined USE_MESH_THREAD
+#if defined USE_MESH_LOADING_THREAD
 	if (!g_GOD_MODE)
 		SystemHandle->m_Application->UpdateMeshAnimations();
 #endif
@@ -440,17 +453,17 @@ void ApplicationClass::WaitForPreRenderTasks(void* ctx)
 
 	// Wait for both workers to finish recording
 	std::unique_lock<std::mutex> lock(mtx);
-#if defined USE_SHADOW_THREAD
-	cv.wait(lock, [&] { return shadowThreadDone && minimapThreadDone; });
+#if defined USE_UPDATEMESHANIMATIONS_THREAD
+	cv.wait(lock, [&] { return UpdateMeshAnimationsThreadDone && minimapThreadDone; });
 #else
 	cv.wait(lock, [&] { return minimapThreadDone; });
 #endif
 
-#if defined USE_SHADOW_THREAD
+#if defined USE_UPDATEMESHANIMATIONS_THREAD
 	// Execute command lists
-	if (shadowCmdList) {
-		mainCtx->ExecuteCommandList(shadowCmdList, FALSE);
-		SAFE_RELEASE (shadowCmdList);
+	if (UpdateMeshAnimationsCmdList) {
+		mainCtx->ExecuteCommandList(UpdateMeshAnimationsCmdList, FALSE);
+		SAFE_RELEASE (UpdateMeshAnimationsCmdList);
 	}
 #endif
 	if (minimapCmdList) {
@@ -459,22 +472,22 @@ void ApplicationClass::WaitForPreRenderTasks(void* ctx)
 	}
 }
 
-#if defined USE_SHADOW_THREAD
-void ApplicationClass::ShadowWorkerFunc() {
+#if defined USE_UPDATEMESHANIMATIONS_THREAD
+void ApplicationClass::UpdateMeshAnimationsWorkerFunc() {
 	while (true) {
 		std::unique_lock<std::mutex> lock(mtx);
 
-		cv.wait(lock, [&] { return shadowWork || stopThreads; });
+		cv.wait(lock, [&] { return UpdateMeshAnimationsWork || stopThreads; });
 		if (stopThreads) break;
 		lock.unlock();
 
-		//shadowCtx->ClearState(); // optional
-		RenderShadowsDeferred(shadowCtx, driverRef, monitorRef, fadeLightRef);
-		shadowCtx->FinishCommandList(FALSE, &shadowCmdList);
+		//UpdateMeshAnimationsCtx->ClearState(); // optional
+		UpdateMeshAnimationsDeferred(UpdateMeshAnimationsCtx, driverRef, monitorRef, fadeLightRef);
+		UpdateMeshAnimationsCtx->FinishCommandList(FALSE, &UpdateMeshAnimationsCmdList);
 
 		lock.lock();
-		shadowThreadDone = true;
-		shadowWork = false;
+		UpdateMeshAnimationsThreadDone = true;
+		UpdateMeshAnimationsWork = false;
 		cv.notify_all();
 	}
 }
@@ -516,15 +529,14 @@ void ApplicationClass::AppPreRender(UINT monitorIndex, WomaDriverClass* Driver, 
 		minimapWork = true;
 		minimapThreadDone = false;
 
-  #if defined USE_SHADOW_THREAD
-		shadowWork = true;
-		shadowThreadDone = false;
+  #if defined USE_UPDATEMESHANIMATIONS_THREAD
+		UpdateMeshAnimationsWork = true;
+		UpdateMeshAnimationsThreadDone = false;
   #endif
 	}
 
 	cv.notify_all(); //Re-Start aux threads on this frame
-  #if !defined USE_SHADOW_THREAD
-	//WAIT FOR RENDER:
+  //#if !defined USE_UPDATEMESHANIMATIONS_THREAD
 	RenderShadowPass(monitorIndex, Driver, mainCtx, fadeLight);
 
 	((DirectX::DX11Class*)Driver)->SetBackBufferRenderTarget(mainCtx, monitorIndex);	//MANDATORY! Back to default back buffer
@@ -532,18 +544,19 @@ void ApplicationClass::AppPreRender(UINT monitorIndex, WomaDriverClass* Driver, 
 #if defined USE_ALPHA_BLENDING
 	m_Driver->TurnOnAlphaBlending(mainCtx);												// restore default blending
 #endif
-  #endif
+  //#endif
+
 #else
-	// NO-THREAD version for SHADOWS TO TEXTURE
-	// ----------------------------------------
+	// NO-THREAD version RENDER SHADOWS TO TEXTURE
+	// -------------------------------------------
 #if defined USE_SHADOW_MAP
 	RenderShadowPass(monitorIndex, Driver, mainCtx, fadeLight);
 
 	((DirectX::DX11Class*)Driver)->SetBackBufferRenderTarget(mainCtx, monitorIndex);	//MANDATORY! Back to default back buffer
 
-#if defined USE_ALPHA_BLENDING
+  #if defined USE_ALPHA_BLENDING
 	m_Driver->TurnOnAlphaBlending(mainCtx);												// restore default blending
-#endif
+  #endif
 #endif
 
 	// NO-THREAD version for RENDER MAP and MINIMAP TO TEXTURE
@@ -767,11 +780,11 @@ void ApplicationClass::RenderModel(void* pContext, UINT level, UINT threadID, UI
 	// === RENDER OBJ.: ===					   
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
 	if (m_viewMatrix == NULL && m_projectionMatrix == NULL)
-		model->Render(pContext, threadID, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass, &(app_Light->m_viewMatrix), &(app_Light->m_ligth_orthoMatrix));	// RENDER
+		model->Render(pContext, threadID, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass, &(app_Light->m_viewMatrix), &(app_Light->m_ligth_orthoMatrix));	// RENDER process shadows if obj use it.
     else
 		model->Render(pContext, threadID, CAMERA_NORMAL, PROJECTION_MINIMAP, pass, m_viewMatrix, m_projectionMatrix);									// RENDER MINI MAP
 #else
-	model->Render(pContext, threadID, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass);
+	model->Render(pContext, threadID, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass); //RENDER don't process shadows
 #endif
 
 	totalRendered++; //One done, next...
@@ -821,7 +834,7 @@ void ApplicationClass::WaterTerrain(UINT monitorWindow, float fadeLight, void* p
 	if (RENDER_PAGE >= 50)
 	{
 		if (m_TerrainModel[MAIN_TERRAIN_ID])
-			m_TerrainModel[MAIN_TERRAIN_ID]->RenderWithFade(pContext, fadeLight, fog);	    // New function to replace these 2 line options.
+			m_TerrainModel[MAIN_TERRAIN_ID]->RenderWithFade(pContext, fadeLight, fog, 0, &(app_Light->m_viewMatrix), &(app_Light->m_ligth_orthoMatrix));	    // New function to replace these 2 line options.
 	}
 #endif
 #if defined DEBUG_COLLISION_TERRAIN //For debug collision terrain only!
@@ -840,13 +853,17 @@ void ApplicationClass::AppRender(UINT monitorIndex, UINT level, float fadeLight,
 #endif
 #if (DX_ENGINE_LEVEL >= 19 && DX_ENGINE_LEVEL < 50) || defined INTRO_DEMO
 	if ((RENDER_PAGE >= 19) && (RENDER_PAGE < 30) || RENDER_PAGE == 36)
-		DemoRender(pContext);	// ALL Demos!: page 21: / 22 / 23 / ... 49
+		DemoRender(pContext);	// ALL Demos!: page [19, 20, 21, 22, 23 ... 49]
 #endif
 
-#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
-	if (RENDER_PAGE == 36 || RENDER_PAGE == 41 || RENDER_PAGE == 42 || RENDER_PAGE == 99) // Debug Shadow
-		m_2nd3DModel->Render(pContext, 0, 0, 0, NULL, NULL);
-#endif
+//#define show_debug_2nd3DModel
+
+	#if defined _DEBUG && (DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER)
+	if (RENDER_PAGE == 36 || RENDER_PAGE == 37 || RENDER_PAGE == 41 || RENDER_PAGE == 42) // Debug Shadow
+	{
+		m_2nd3DModel->Render(pContext, 0, 0, 0, NULL, NULL); //Render Debug Shadow Texture
+	}
+	#endif
 
 #if defined MAIN_RENDER_TERRAIN
 	if (RENDER_PAGE >= 49)
@@ -929,7 +946,7 @@ void ApplicationClass::AppRender(UINT monitorIndex, UINT level, float fadeLight,
     MyLightVertexVector[1].x = prwsPos.m128_f32[0] + prwsDir.m128_f32[0] * 100;
     MyLightVertexVector[1].y = prwsPos.m128_f32[1] + prwsDir.m128_f32[1] * 100;
     MyLightVertexVector[1].z = prwsPos.m128_f32[2] + prwsDir.m128_f32[2] * 100;
-	m_lightRayModel->UpdateDynamic(pContext, &MyLightVertexVector);
+	m_lightRayModel->UpdateLightRayVertices(pContext, &MyLightVertexVector);
 	m_lightRayModel->Render(pContext);
 #endif
 
@@ -942,7 +959,7 @@ void ApplicationClass::AppRender(UINT monitorIndex, UINT level, float fadeLight,
 		if (RENDER_PAGE == 79 || RENDER_PAGE >= 82) //NO: IF_RENDER_PAGE
 		{
 			m_Driver->TurnOffAlphaBlending(pContext);
-		#if !defined USE_MESH_THREAD
+		#if !defined USE_MESH_LOADING_THREAD
 			UpdateMeshAnimations();
 		#endif
 			RenderAllMeshModels((ID3D11DeviceContext*)pContext, fadeLight);
@@ -956,9 +973,9 @@ void ApplicationClass::AppRender(UINT monitorIndex, UINT level, float fadeLight,
 	m_Driver->TurnOnAlphaBlending(pContext);
 #endif
 
-	// TERRAIN[1]: Render Mesh for WATER:
-// --------------------------------------------------------------------------------------------
 #if (DX_ENGINE_LEVEL >= 50 && defined SCENE_WATER_TERRAIN) && defined MAIN_RENDER_WATER //MAIN-RENDER: WATER (0.3 ms)
+	// TERRAIN[1]: Render Mesh for WATER:
+	// --------------------------------------------------------------------------------------------
 	IF_RENDER_PAGE(RENDER_PAGE >= 50)
 	{
 		DXshaderClass* shader11 = ((DirectX::DXmodelClass*)m_TerrainModel[WATER_TERRAIN_ID])->m_Shader11;
@@ -972,9 +989,7 @@ void ApplicationClass::AppRender(UINT monitorIndex, UINT level, float fadeLight,
 	}
 #endif
 
-
-//	IN THE END:
-
+	// IN THE END:
 	#if defined MAIN_RENDER_CURVED_REAL_SKY_PLANE
 	IF_RENDER_PAGE(RENDER_PAGE >= 96)
 	{
@@ -2285,9 +2300,9 @@ void ApplicationClass::CreateRenderThreads()
 {
 	driver11Ref = (DirectX::DX11Class*)m_Driver;
 
-#if defined USE_SHADOW_THREAD
-	shadowCtx = driver11Ref->shadowDeferredCtx;
-	shadowWorker = std::thread(&ApplicationClass::ShadowWorkerFunc, this);
+#if defined USE_UPDATEMESHANIMATIONS_THREAD
+	UpdateMeshAnimationsCtx = driver11Ref->UpdateMeshAnimationsDeferredCtx;
+	UpdateMeshAnimationsWorker = std::thread(&ApplicationClass::UpdateMeshAnimationsWorkerFunc, this);
 #endif
 
 	minimapCtx = driver11Ref->minimapDeferredCtx;
@@ -2302,8 +2317,8 @@ void ApplicationClass::StopRenderThreads()
 		cv.notify_all();
 	}
 
-	if (shadowWorker.joinable()) {
-		shadowWorker.join();
+	if (UpdateMeshAnimationsWorker.joinable()) {
+		UpdateMeshAnimationsWorker.join();
 	}
 
 	if (minimapWorker.joinable()) {

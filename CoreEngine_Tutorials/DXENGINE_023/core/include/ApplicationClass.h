@@ -37,6 +37,7 @@
 
 #define I_HAVE_NO_SHADOWS	/*NoShadow*/false
 #define I_HAVE_SHADOWS		/*Shadow*/	true
+#define I_RENDER_SHADOWS	/*Shadow*/	true
 
 ///////////////////////
 // MY CLASS INCLUDES //

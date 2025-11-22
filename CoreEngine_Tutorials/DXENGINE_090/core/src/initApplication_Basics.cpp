@@ -529,7 +529,7 @@ void ApplicationClass::initIntroCreditsDemo(void* pContext)
 
 #if (DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER) || DX_ENGINE_LEVEL == 99//FOR SHADOW
 // ----------------------------------------------------------------------------
-void ApplicationClass::initShadowTextureDemo(void* ctx)
+void ApplicationClass::initShadowDebugTextureDemo(void* ctx)
 // ----------------------------------------------------------------------------
 {
 	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
@@ -724,7 +724,7 @@ bool ApplicationClass::InitLightandDemos(void* pContext, WomaDriverClass* Driver
 
 	//LIGHT_RAY ////////////////////////////////////////////////////////////////////////////////////////////////////
   #if defined MAIN_RENDER_LIGHT_RAY	//DO: CalculateLightRayVertex(SunDistance);							  // Calculate Light Source Position
-	initLightRay(pContext);	//	  m_lightRayModel->UpdateDynamic(m_Driver, m_LightVertexVector);  // Update LightRay vertex(s)
+	initLightRay(pContext);	//	  m_lightRayModel->UpdateLightRayVertices(m_Driver, m_LightVertexVector);  // Update LightRay vertex(s)
   #endif					//	  m_lightRayModel->Render(m_Driver);							  // Render LightRay
 
 	//-----------------------------------------------------------------------------------------------------------------
@@ -739,7 +739,7 @@ bool ApplicationClass::InitLightandDemos(void* pContext, WomaDriverClass* Driver
 	initTextureDemo(pContext);
 
   #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
-	initShadowTextureDemo(pContext);
+	initShadowDebugTextureDemo(pContext);
   #endif
 #endif
 
@@ -876,7 +876,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	initial_world_xml_objs = world_xml_objs;
 	womalogauto("Number of objects loaded in: WORLD.XML %d\n", world_xml_objs);
 
-	InitLightandDemos(pContext, Driver);
+	InitLightandDemos(pContext, Driver);	//Init Demos from 21 to 29
 
 	#ifdef MAIN_RENDER_SKY
 	InitMainSky(pContext, Driver);
@@ -937,7 +937,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	//-----------------------------------------------------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 70 && defined USE_LOG_MANAGER //SCENE_BILLBOARDS
 	WOMA::logManager_bk = WOMA::logManager;
-	WOMA::logManager = 0;
 #endif
 
 	//-----------------------------------------------------------------------------------------------------------------
@@ -959,6 +958,10 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 
 	for (UINT i = objModel_size; i < objModel_size + theWorld_size; i++) //theWorld_size
 	{
+#if defined USE_LOG_MANAGER
+		if (i >= world_xml_objs)
+			WOMA::logManager = 0;
+#endif
 
 		// LOAD MAIN OBJECTS:
 		// ---------------------------------------------------------------------------------------------------------
@@ -1004,10 +1007,62 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	// RENDER ASTROs //////////////////////////////////////////////////////////////////////////////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
 
+#if (DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER) || DX_ENGINE_LEVEL == 99
 	//-----------------------------------------------------------------------------------------------------------------
 	// SHADOWMAP //////////////////////////////////////////////////////////////////////////////////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
-#if (DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER) || DX_ENGINE_LEVEL == 99
+
+#if defined USE_LEVEL_36V2 //ON/OFF
+
+	#if defined USE_SMALL_SHADOWS
+		//
+		// ============================
+		//  SMALL-SCENE SHADOW MODE (V1)
+		// ============================
+		// Equivalent to original Level 36 logic
+		//
+		// Uses:
+		//  • SunAzimuth / SunElevation (degrees)
+		//  • USELIGHTSIZE = 15
+		//  • LookAt = world origin
+		//
+		// Produces IDENTICAL results to V1.
+		//
+
+		app_Light->GenerateSmallSceneShadowMatrices(
+			initWorld->SunAzimuth,      // degrees (FAST_sin OK)
+			initWorld->SunElevation,    // degrees (FAST_sin OK)
+			USELIGHTSIZE                // 15 → same as original approx
+		);
+
+	#else
+		//
+		// ================================
+		//  CAMERA-CENTERED SHADOW MODE
+		//  (for big worlds, Level 99+)
+		// ================================
+		//
+		XMFLOAT3 camPos = DXsystemHandle->m_Camera->GetPosition();
+
+		float orthoHalfSize = USELIGHTSIZE;   // 15
+		float nearZ = 0.1f;
+		float farZ = 50.0f;
+		float lightDistanceMultiplier = 3.0f;
+
+		farZ = 20.0f;
+		lightDistanceMultiplier = 1.0f;
+
+		app_Light->GenerateCameraCenteredShadowMatrices(
+			camPos,
+			orthoHalfSize,
+			nearZ,
+			farZ,
+			lightDistanceMultiplier
+		);
+	#endif 
+	// USE_SMALL_SHADOWS
+
+#else
 	app_Light->GenerateOrthoMatrix(15, 15, 20, 0.1f);						// Control Zoom in Shadow Map here! 15, 15
 
   #if defined USE_REAL_SUNLIGHT_DIRECTION || !defined MAIN_RENDER_LIGHT_RAY
@@ -1021,15 +1076,18 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	float LightZ = MyLightVertexVector[1].z;
   #endif
 	app_Light->GenerateViewMatrix(LightX, LightY, LightZ);
+#endif
 
-	m_RenderShadowTexture = NEW DXrendertextureclass;
-	const int SHADOWMAP_WIDTH = WOMA::AppSettings->MaxTextureSize;  //2048;
-	const int SHADOWMAP_HEIGHT = WOMA::AppSettings->MaxTextureSize; //2048; 
-	IF_NOT_RETURN_FALSE(m_RenderShadowTexture->Initialize(Driver, SHADOWMAP_WIDTH, SHADOWMAP_HEIGHT, 0, 0, WOMA::AppSettings->SCREEN_DEPTH, WOMA::AppSettings->SCREEN_NEAR));
+	m_TextureWithShadows = NEW DXrendertextureclass;
+	const int SHADOWMAP_WIDTH = MIN(WOMA::AppSettings->MaxTextureSize, 2*4096);
+	const int SHADOWMAP_HEIGHT = MIN(WOMA::AppSettings->MaxTextureSize, 2*4096);
+	IF_NOT_RETURN_FALSE(m_TextureWithShadows->Initialize(Driver, SHADOWMAP_WIDTH, SHADOWMAP_HEIGHT, 0, 0, WOMA::AppSettings->SCREEN_DEPTH, WOMA::AppSettings->SCREEN_NEAR));
 
 	// --------------------------------------------------------------------------------------------
 	// Optionally: DEBUG SPRITE Model: (m_2nd3DModel) Render Shadows on a texture:
 	// --------------------------------------------------------------------------------------------
+
+	// END: SHADOWMAP
 #endif
 
 	return true;

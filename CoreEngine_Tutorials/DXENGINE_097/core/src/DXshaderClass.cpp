@@ -645,6 +645,7 @@ namespace DirectX {
 #if DX_ENGINE_LEVEL >= 60 && defined USE_TERRAIN_TUTORIAL_CHAP_24// #if TUTORIAL_CHAP >= 24
 		case SHADER_Terrain_Texture_DEMO60:			//060Terrain.hlsl
 		case SHADER_Terrain_Texture_DEMO61:			//061Terrain.hlsl
+		case SHADER_Terrain_Texture_DEMO99:			//099Terrain.hlsl
 			polygonLayout11 = &mappingDetailligthcolorBumpPolygonLayout11[0];
 			numElements = sizeof(mappingDetailligthcolorBumpPolygonLayout11) / sizeof(mappingDetailligthcolorBumpPolygonLayout11[0]);
 			break;
@@ -768,6 +769,7 @@ namespace DirectX {
 			pixelHLSL.append("PS_Main");
 			break;
 #endif
+
 #if DX_ENGINE_LEVEL >= 61 && defined USE_TERRAIN_TUTORIAL_CHAP_24
 		case SHADER_Terrain_Texture_DEMO61:
 			vsFilename.append(L"hlsl/061Terrain.hlsl");
@@ -776,6 +778,7 @@ namespace DirectX {
 			pixelHLSL.append("PS_Main");
 			break;
 #endif
+		
 		case SHADER_FIRE:
 			vsFilename.append(L"hlsl/072fire.hlsl");
 			psFilename = vsFilename;
@@ -1670,8 +1673,12 @@ namespace DirectX {
 #endif
 
 			// [3]: dont change the order:
-			if ((m_shaderType == SHADER_TEXTURE_LIGHT_RENDERSHADOW || m_shaderType == SHADER_TEXTURE_LIGHT_SAVESHADOW) ||
-				(m_shaderType == SHADER_TEXTURE_LIGHT_SAVESHADOW_INSTANCED || m_shaderType == SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED)
+			if (m_shaderType == SHADER_TEXTURE_LIGHT_RENDERSHADOW || 
+				m_shaderType == SHADER_TEXTURE_LIGHT_SAVESHADOW ||
+				m_shaderType == SHADER_TEXTURE_LIGHT_SAVESHADOW_INSTANCED || 
+				m_shaderType == SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED || 
+				/*m_shaderType == SHADER_Terrain_Texture_DEMO61 ||*/
+				m_shaderType == SHADER_Terrain_Texture_DEMO99
 			)
 		{
 			// Create a clamp texture sampler state description.
@@ -1983,11 +1990,16 @@ namespace DirectX {
 		dataVSptr->VS_USE_WVP = VS_USE_WVP;
 
 		// BLOCK: VS5
-		if (!lightViewMatrix && !ShadowProjectionMatrix)
+		// disable shadow transform for shadow pass or when both pointers are NULL
+		if ((!lightViewMatrix && !ShadowProjectionMatrix) || pass == PASS_SHADOWS)
 			castShadow = false;
 
-		if (castShadow)
+		// terrain also needs shadows
+		if ((castShadow || m_shaderType == SHADER_Terrain_Texture_DEMO99) &&
+			lightViewMatrix && ShadowProjectionMatrix)
+		{
 			dataVSptr->ViewToLightProj = XMMatrixTranspose((*lightViewMatrix) * (*ShadowProjectionMatrix));
+		}
 
 		dataVSptr->VSrotX = 0;
 		dataVSptr->VSrotY = 0;
@@ -2033,8 +2045,8 @@ namespace DirectX {
 #endif
 
 		if (m_shaderType == SHADER_COLOR || 
-            m_shaderType == SHADER_TEXTURE_LIGHT_FAST ||
-            m_shaderType == SHADER_Terrain_Texture_DEMO61
+            m_shaderType == SHADER_TEXTURE_LIGHT_FAST 
+			|| m_shaderType == SHADER_Terrain_Texture_DEMO61
             )
 			return;
 
@@ -2183,6 +2195,7 @@ void DXshaderClass::RenderShader(UINT pass, void* Device_Context, int texture_in
 	#endif
 			if (castShadow)
 				deviceContext->PSSetSamplers(2, 1, &m_sampleStateClamp11); // 2, 1 or 0, 2
+
 			}
 			// ---------------------------------------------------
 			// Set Shader code to RUN:

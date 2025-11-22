@@ -1,0 +1,1450 @@
+﻿// --------------------------------------------------------------------------------------------
+// Filename: OSengine.cpp
+// --------------------------------------------------------------------------------------------
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// --------------------------------------------------------------------------------------------
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+//
+// This file is part of the WorldOfMiddleAge project.
+//
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
+// without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
+// You may not alter or remove any copyright or other notice from copies of the content.
+// The content contained in this file is provided only for educational and informational purposes.
+// 
+// Downloaded from : https://github.com/pmborg/WoMA3Dengine
+// --------------------------------------------------------------------------------------------
+// PURPOSE: START and STOP WorldOfMiddleAge 3D ENGINE
+// --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234525217;
+
+#if NOTES
+#Core System(Multi - OS foundations)
+--------------------------------------------------------------------
+level00		- MultiOS WomaMessageBox
+level01		- MultiOS womalog
+level02		- MultiOS mainwindow
+level03		- MultiOS woma_exception + mini_dumper
++ ThirdParty: UltimateTCPIP_LIBX64_d.lib
+
+level04		- OS Keys + System_check + Timers + FPS + Math
+level05		- Read settings.xml
++ ThirdParty: TinyXMLv2_LIBX64_d.lib
+
+level06		- Generate woma_data_files + basic IDEA + ZIP
++ ThirdParty: ZipUtils_LIBX64_d.lib
+
+level07		- Get real calculations for sun and moon postion
+level08		- GPS user using location on MAP
++ ThirdParty: maxminddb_LIBX64_d.lib
++ ThirdParty: GeoLite2PP_LIBX64_d.lib
+
+level09 - Get real time Weather.
+
+#Rendering System
+--------------------------------------------------------------------
+level19		- The mainwindow to render
+level20		- mainwindow_resizing
+level21		- Color Shader + 3D Camera
+level22		- Texture Shader + Load Images Libs (ImageLoaderClass.cpp) (Native: BMP)
++ ThirdParty: TIFF_LIBX64_d.lib
++ ThirdParty: ZLIB_LIBX64_d.lib
++ ThirdParty: PNG_LIBX64_d.lib
++ ThirdParty: JPG_LIBX64_d.lib
++ ThirdParty: DirectXTex (read tga)
++ ThirdParty: DirectXTK (read dds + write: BMP, JPG, PNG, TIF)
+
+level23		- Light Shader + Line of Light Animation
+level24		- 2D Sprites + 2D Camera + Rasterizer + Alfa Blending
+level25		- DX Native fonts 
+level26		- Adding Cubes and Spheres
+level27		- rastertek_text_fonts:v1 (windows) + v2(Linux + Android)
+level28		- Adding Sky as sphere + Direct Input
+
+#Audio System
+--------------------------------------------------------------------
+level29		- Adding 3D Sound(wav) and Music(ogg)
++ ThirdParty: OpenAL32_LIBX64_d.lib
++ ThirdParty: ALUT_LIBX64_d.lib
++ ThirdParty: OGG_LIBX64_d.lib
++ ThirdParty: VORBIS_LIBX64_d.lib
++ ThirdParty: VORBISFILE_LIBX64_d.lib
+
+#Scene Management
+--------------------------------------------------------------------
+level30		- Wavefront OBJ format COLOR
+level31		- Wavefront OBJ format TEXTURE
+level32		- Wavefront OBJ format LIGHT
+level33		- Wavefront OBJ format ALFAMAP_ALFACOLOR
+level34		- Wavefront OBJ format SPECULAR_SHININESS
+level35		- Wavefront OBJ format BUMP_MAP
+level36		- Wavefront OBJ format SHADOW_MAP
+level37		- MAIN_LOADER_THREADS
+level38		- Wavefront OBJ to W3D FORMAT(woma fast format) tool
+level39		- LOAD W3D (20x faster)
+level40		- Uinsg Instances
+level41		- Shadow Instances
+level42		- Shadow Instances with Shader Rotation
+--------------------------------------------------------------------
+
+#Terrain Rendering
+--------------------------------------------------------------------
+level49		- Generate under water terrain.
+level50		- the under water terrain.
+level51		- With fog
+level52		- With Light Shader + Add Normals + Add Index(s)
+level53		- With extra color terrain(with terrain collision)
+level54		- Water waves(with terrain collision)
+level55		- 256x256 with Slope Texture Shader
+level60		- 256x256 multi - layer
+level61		- 512x512 advanced multi - layer
+
+#Terrain Maps
+--------------------------------------------------------------------
+level62		- The MAIN MAP key : M
+level63		- The MINI - MAP
+
+#Terrain (Adding Objects)
+--------------------------------------------------------------------
+level64		- Add a model with 2 pass (solid and transparent) + Add a 3D static animated model (wind mill)
+level65		- Terrain Colision + Walking on Terrain
+
+#Terrain (Adding Billboards)
+--------------------------------------------------------------------
+level70		- Billboard for Trees / Flowers, (LIGHT and Fog)
+level71		- Billboard for FENCES, (LIGHT and Fog)
+level72		- Fire(Add 3D Sound Effect)
+level73		- Windy grass effect
+level74		- Add Cross BIllboards and Add Clone Billboards
+level75		- UTIL : Progress bar for terrain loading
+
+#Util: Rendering the woma logo MPG video
+--------------------------------------------------------------------
+level76		- INTRO VIDEO DEMO
+
+#Terrain (adding instances)
+--------------------------------------------------------------------
+level77		- Use instances for TREEs
+level78		- Check camera collision with 'WORLD.XML' Objects
+
+#Animated meshs ( Advanced Rendering System with PBR materials )
+--------------------------------------------------------------------
+"Debug:"
+level82		- Loading boblampclean.md5mesh
++ LIB       : CoreEngine82_LIB_d.lib (shared by exe and commonfunctions)
++ LIB       : commonfunctionsX64_d.lib (by Pedro Borges) (use: AssimpEngine_local)
++ ThirdParty: AssimpEngine_local.lib "PPG - master(MIT, heavily modified fork by Pedro Borges)" (use: assimp-vc143-mtd)
++ ThirdParty: assimp-vc143-mtd.lib
+
+#endif
+
+//* Priv.*CoreEngine82_LIB_d.lib
+
+#include "platform.h"
+#include "OSengine.h"
+#include <inttypes.h>
+#include <regex>
+
+#if defined WINDOWS_PLATFORM
+#include <windows.h>
+#include <tchar.h>
+#include <regex>
+#include <filesystem>
+#include <filesystem>
+namespace fs = std::filesystem;
+
+#include <DirectXMath.h>
+WinSystemClass* SystemHandle = NULL;
+#pragma comment(lib, "iphlpapi.lib")
+
+
+#ifdef X64
+#if defined(_DEBUG)
+#pragma comment(lib, "CoreEngine82_LIB_d.lib")
+#else
+#pragma comment(lib, "CoreEngine82_LIB.lib")
+#endif
+#endif
+#endif
+
+
+
+
+#if defined ANDROID_PLATFORM 
+#if !defined NewWomaEngine
+	AndroidSystemClass* SystemHandle = NULL;
+#else
+	AndroidNewSystemClass* SystemHandle = NULL;
+	#endif
+#endif
+
+#if defined LINUX_PLATFORM
+	LinuxSystemClass* SystemHandle = NULL;
+
+	extern MyWin Win;
+	#include <gtk/gtk.h>		//libgtk4
+	#if RUN_ASMAIN
+	#include <GL/freeglut.h>
+	#endif
+#endif
+
+#include "mem_leak.h"
+#include "OSmain_dir.h"
+#include "log.h"
+
+#if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
+#include "Rapplicationclass.h"
+	RApplicationClass* r_Application;
+#endif
+
+#if CORE_ENGINE_LEVEL >= 10 && !defined NewWomaEngine
+	#include "womadriverclass.h"
+	#include "GLmathClass.h"
+	#include "GLopenGLclass.h"
+#endif
+
+#if DX_ENGINE_LEVEL >= 22 && defined WINDOWS_PLATFORM 
+    #include <DirectXTex.h>
+#endif
+#include "ImageLoaderClass.h"
+
+#include <assimp/version.h>
+#include <assimp/revision.h>
+
+#if defined USE_TINYXML_LOADER //5
+	XMLloader		xml_loader;
+#endif
+
+TCHAR DEMO_NAME_SHOW[MAX_STR_LEN] = {};
+TCHAR* DEMO_NAME[] =
+{
+//{"07:Loading a files from engine.pck and Press[F2] for RealTime Celestial Positions of Sun and Moon accordingly with user Location"},
+//{"08 : From now on : PRESS[F3] for : [REAL TIME MAP] user location."},
+//{"09 : From now on : PRESS[F4] for : [REAL Weather] at user location."},
+//{"19 : PRESS[F6] for SETUP and change Driver : OPENGL, DX9, DX11, DX12 : Initiate the 3D Graphic Drivers and attach the swap-chain to mainwindow."},
+//{"20 : OPENGL, DX9, DX11, DX12 : Allow mainwindow resizing."},
+{TEXT("TUTORIAL 21: The Basic triangle and square using vertexes with indexes - The COLOR shader (try: F1,F2,F3,F4,F5,F6)")},
+{TEXT("TUTORIAL 22: Loading and Rendering Textures - The TEXTURE shader (try: F1,F2,F3,F4,F5,F6)")},
+{TEXT("TUTORIAL 23: Adding the first light, 'Diffuse Lighting'. - The LIGHT shader (try: F1,F2,F3,F4,F5,F6)")},
+{TEXT("TUTORIAL 24: Adding Orthogonal Projection - Used on 2D Orthogonal Sprites")},
+{TEXT("TUTORIAL 25: DX10DRIVER_FONTS (Windows Only!)")},
+{TEXT("TUTORIAL 26: The first 3D objects: the CUBEs and SPHEREs - COLOR Shader, TEXTURE Shader and LIGHT Shader")},
+{TEXT("TUTORIAL 27: The rastertek fonts on DX9, DX11, DX12 and OPENGL")},
+{TEXT("TUTORIAL 28: The DX direct input, the Sky Camera and the Sphere Skydome")},
+{TEXT("TUTORIAL 29: This DEMO: Use music (ogg loader for Windows and wav loader for Android) and the sound effects")},
+{TEXT("TUTORIAL 30: WORLD.XML: load OBJ 3D file format, using COLOR shader")},
+{TEXT("TUTORIAL 31: WORLD.XML: load OBJ 3D file format, with MULTIPLE TEXTURES, using TEXTURE shader")},
+{TEXT("TUTORIAL 32: WORLD.XML: load OBJ 3D file format, the first advanced object, using LIGHT shader")},
+{TEXT("TUTORIAL 33: WORLD.XML: load OBJ 3D file format, the compound, using transparent textures ALFA MAP and ALFA COLOR")},
+{TEXT("TUTORIAL 34: WORLD.XML: load OBJ 3D file format, with SPECULAR and SHININESS")},
+{TEXT("TUTORIAL 35: WORLD.XML: load OBJ 3D file format, with BUMP MAP")},
+{TEXT("TUTORIAL 36: WORLD.XML: load OBJ 3D file format, render a SHADOW MAP")},
+{TEXT("TUTORIAL 37: WORLD.XML: load OBJ 3D file format, render chess board pieces, adding MAIN THREAD and the LOADER THREAD")},
+{TEXT("TUTORIAL 38: WORLD.XML: load OBJ 3D file format, save to W3D Woma 3D fast file FORMAT")},
+{TEXT("TUTORIAL 39: WORLD.XML: load W3D(the Woma 3D file format) files up to 30x faster than OBJ files in DX LEVEl38")},
+{TEXT("TUTORIAL 40: WORLD.XML: load W3D and use INSTANCES to clone objects using GPU")},
+{TEXT("TUTORIAL 41: WORLD.XML: load W3D and use SHADOW INSTANCES")},
+{TEXT("TUTORIAL 42: WORLD.XML: load W3D and use SHADOW INSTANCES with ROTATION per instance")},
+{DEMO_TITLE}, //Reserved
+{DEMO_TITLE}, //Reserved
+{DEMO_TITLE}, //Reserved
+{DEMO_TITLE}, //Reserved
+{DEMO_TITLE}, //Reserved
+{DEMO_TITLE}, //Reserved
+{TEXT("49: TERRAIN: Generate under water terrain. ModelTextureVertexType (Keys: WASD + RF) F11: God mode/switch")},
+{TEXT("50: TERRAIN: the under water terrain. ModelTextureVertexType (Keys: WASD + RF) F11: God mode/switch")},
+{TEXT("51: TERRAIN: Add fog ModelTextureVertexType (Keys: WASD + RF) F11: God mode/switch")},
+{TEXT("52: TERRAIN: Use Light Shader + Add Normals + Add Index(s) ModelTextureVertexType")},
+{TEXT("53: TERRAIN: Add extra color terrain(extra Green in this example) ModelTextureVertexType")},
+{TEXT("54: TERRAIN: Add Water waves ModelTextureVertexType")},
+{TEXT("55: TERRAIN: 256x256 with Slope Texture Shader[0]ModelTextureVertexType")},
+{TEXT("56: TERRAIN: 256x256 Terrain Texture Multi Layers ")},
+{DEMO_TITLE},//57  Reserved
+{DEMO_TITLE},//58  Reserved
+{DEMO_TITLE},//59  Reserved
+{DEMO_TITLE},//60 - USE_TERRAIN_TUTORIAL_CHAP_24 
+{DEMO_TITLE},//61 - USE_TERRAIN_512
+{DEMO_TITLE},//62 - TERRAIN MAIN MAP
+{DEMO_TITLE},//63 - TERRAIN MAIN MAP + MINI MAP 3D Navigation
+{DEMO_TITLE},//64 - Mill + compound - Animated static object
+{DEMO_TITLE},//65 - Walk on Terrain.
+{DEMO_TITLE},//66  Reserved
+{DEMO_TITLE},//67  Reserved
+{DEMO_TITLE},//68  Reserved
+{DEMO_TITLE},//69  Reserved
+{DEMO_TITLE},//70 - BILLBOARD for Trees / Flowers, (LIGHT and Fog) : 
+{DEMO_TITLE},//71 - BILLBOARD for FENCES, (LIGHT and Fog)
+{DEMO_TITLE},//72 - FIRE
+{DEMO_TITLE},//73 - WINDY GRAS
+{DEMO_TITLE},//74 - CROSS BILLBOARD and CLONES
+{DEMO_TITLE},//75 - UTIL: PROGRESS BAR FOR TERRAIN LOADING      
+{DEMO_TITLE},//76 - UTIL: INTRO VIDEO DEMO
+{DEMO_TITLE},//77 - USE INSTANCES FOR TREES
+{DEMO_TITLE},//78 - COLISION DETECTION: Part I
+{DEMO_TITLE},//79 - Advanced DAE/FBX      (not published)
+{DEMO_TITLE},//80 - OPENGL-ASSIMP EXT-PRJ (not published)
+{DEMO_TITLE},//81 - DX-ASSIMP             (not published)
+{DEMO_TITLE},//82 - ASSIMP-ENGINE (Latest Version)
+{DEMO_TITLE},//83 - Updated billboard shader
+{DEMO_TITLE},//84 - ASSIMP: Animated / walking mesh on the terrain, following a path   
+{DEMO_TITLE},//85 - EXPAND MINI-MAP    
+{DEMO_TITLE},//86 - THE MAIN CHARACTER
+{DEMO_TITLE},//87 - THE MAIN CHARACTER - The other sample variants
+{DEMO_TITLE},//88
+{DEMO_TITLE},//89
+{DEMO_TITLE},//90
+{DEMO_TITLE},//91
+{DEMO_TITLE},//92
+{DEMO_TITLE},//93
+{DEMO_TITLE},//94
+{DEMO_TITLE},//95
+{DEMO_TITLE},//96
+{DEMO_TITLE},//97
+{DEMO_TITLE},//98
+{DEMO_TITLE},//99
+{DEMO_TITLE},//100 This DEMO: ADVANCED PRESENTATION DEMO (Animated water, characters, grass and buildings, etc...)
+};
+
+#if CORE_ENGINE_LEVEL >= 10 & !defined NewWomaEngine
+std::vector<WomaDriverClass*> driverList;
+WomaDriverClass* g_contextDriver = NULL;	// Note: Used only at 20  wGLopenGLclass
+#endif
+
+UINT RENDER_PAGE = DX_ENGINE_LEVEL;
+
+// WINDOWS vs LINUX
+// -------------------------------------------------------------------------------------------------------------------------------------
+// "C:\Program Files\APP_PROJECT_NAME\"										==> "/opt/APP_PROJECT_NAME"
+// "C:\Users\[username]\AppData\Local\APP_COMPANY_NAME\APP_PROJECT_NAME\"   ==> ~/.APP_COMPANY_NAME/APP_PROJECT_NAME
+// -------------------------------------------------------------------------------------------------------------------------------------
+namespace WOMA
+{
+	BOOL DeleteDirectory(const TCHAR* sPath);
+
+	// State Vars:
+	//---------------------------------------------------
+	int		game_state = GAME_LOADING;
+	int		previous_game_state = GAME_LOADING;
+
+	UINT ENGINE_LEVEL_USED = 0;
+	int  main_loop_state = 0;
+
+#if defined WINDOWS_PLATFORM // SUBSYSTEM:WINDOWS
+	PSTR    Scmdline = { 0 };
+	int     Cmdshow = SW_SHOWDEFAULT;           //Useful when using: WOMA_CONSOLE_APPLICATION
+#endif
+	// SUBSYSTEM:CONSOLE
+	BOOL	UseWarpDevice = FALSE;
+    BOOL	renderOnce = FALSE;
+    UINT    woma_timer = 0;
+
+	int     ARGc = 0;
+	CHAR**	ARGv = { 0 };
+
+	TCHAR	strConsoleTitle[MAX_STR_LEN] = { 0 };
+
+#if defined USE_LOADING_THREADS
+	UINT	num_running_THREADS = 0;
+#endif
+
+	TCHAR   APP_NAME[MAX_STR_LEN] = { 0 };              // "Application Name"
+
+	TCHAR   APP_COMPANY_NAME[MAX_STR_LEN] = COMPANY_DIRECTORY;	// "Company" Directory Name: 1st lvl
+	TCHAR   APP_PROJECT_NAME[MAX_STR_LEN] = PROJECT_DIRECTORY;	// "Project" Directory Name: 2nd lvl
+	TCHAR   APP_FULLNAME[MAX_STR_LEN] = { 0 };					// "Application FullName"
+
+	#if defined WINDOWS_PLATFORM
+	TCHAR	APP_ICO[] = ICON_FILE;			// "Define" Main Window: Icon 
+	#endif
+
+#if defined USE_TINYXML_LOADER
+	TCHAR   APP_SETTINGS_FILE[] = SETTINGS_FILE; // SETUP/Configuration file name
+#endif
+
+#if defined USE_MINIDUMPER
+	MiniDumper* miniDumper = NULL;
+#endif
+
+#if defined NOTES
+// More Info MessageBox: http://msdn.microsoft.com/en-us/library/windows/desktop/ms645505%28v=vs.85%29.aspx
+#endif
+
+// LINUX:
+#if defined LINUX_PLATFORM
+#define fatal false
+#endif
+
+	extern TCHAR	APP_FULLNAME[MAX_STR_LEN];
+
+// --------------------------------------------------------------------------------------------
+// GLOBAL - MACROS:
+// --------------------------------------------------------------------------------------------
+#if !defined(_DEBUG) && defined(NDEBUG) // Get String of the Build Type: Debug / Release
+#define BUILD "RELEASE"
+#else
+#define BUILD "DEBUG"
+#endif
+
+#if (defined _DEBUG || defined DEBUG || defined ANDROID_PLATFORM) && !defined NDEBUG	//_DEBUG;_CONSOLE
+	STRING BINARY = TEXT("DEBUG");
+#elif !defined _DEBUG && defined NDEBUG
+	STRING BINARY = TEXT("RELEASE");	//NDEBUG
+#else
+	STRING BINARY = TEXT("DBGREL");		//_DEBUG;NDEBUG
+#endif
+
+#if defined WINDOWS_PLATFORM
+	int getTaskBarHeight()
+	{
+		RECT rect;
+		HWND taskBar = FindWindow(TEXT("Shell_traywnd"), NULL);
+		return (taskBar && GetWindowRect(taskBar, &rect)) ? (rect.bottom - rect.top) : 0;
+	}
+#endif
+
+#if defined WINDOWS_PLATFORM && defined WOMA_CONSOLE_APPLICATION 
+	// "Console Window": Set handler:
+	static BOOL WINAPI console_ctrl_handler(DWORD dwCtrlType)
+	{
+		//if (SystemHandle)
+			::PostMessage(NULL, WM_QUIT, 0, 0); // NOTE: (SystemHandle->m_hWnd) CANT be used!
+		return TRUE;
+	}
+#endif
+}
+//namespace WOMA
+
+namespace WOMA
+{
+	int endian()
+	{
+		short int word = 0x0001;
+		CHAR* byte_ = (CHAR*)&word;
+		return (byte_[0] ? LITTLE_ENDIAN : BIG_ENDIAN);
+	}
+}
+
+void DefineConsoleTitle() 
+{
+	// -------------------------------------------------------------------------------------------
+	// SETUP: "Console Window":
+	// -------------------------------------------------------------------------------------------
+	TCHAR cpu_type[256] = { 0 };
+#if defined CPU_X86
+	#define cpu_type TEXT("32 bits")
+#elif defined X64
+	#define cpu_type TEXT("64 bits")
+#endif
+
+	TCHAR charSet[256] = { 0 };
+#if defined UNICODE
+	#define charSet TEXT("UNICODE")
+#else
+	#define charSet TEXT("MultiByte")
+#endif
+
+	StringCchPrintf(WOMA::strConsoleTitle, sizeof(WOMA::strConsoleTitle), TEXT("DXENGINE Level: %d - %s [%s] %s\n"), DX_ENGINE_LEVEL, charSet, WOMA::BINARY.c_str(), cpu_type);
+	womalogauto(TEXT("------------------------------------------------------------------------------------------\n"));
+	womalogauto(WOMA::strConsoleTitle);
+	womalogauto(TEXT("------------------------------------------------------------------------------------------\n"));
+
+#if defined WINDOWS_PLATFORM 
+#if defined WOMA_CONSOLE_APPLICATION 
+	// "Console Window": Set handler:
+	SetConsoleCtrlHandler(WOMA::console_ctrl_handler, TRUE);
+
+	// "Console Window": Move away... :)
+	int Bar = WOMA::getTaskBarHeight();
+	HWND hConsole = GetConsoleWindow();
+	MoveWindow(hConsole, GetSystemMetrics(SM_CXSCREEN) - CONSOLE_LOG_WIDTH, 0, CONSOLE_LOG_WIDTH, GetSystemMetrics(SM_CYSCREEN) - Bar, TRUE);
+
+	// "Console Window": Set Title
+	SetConsoleTitle(TEXT("WOMA ENGINE - Console Window"));
+
+	LEVELHIGHLIGHT(CORE_ENGINE_LEVEL);
+#endif
+
+	LEVELNORMAL();
+	//Use printf or OutputDebugString: WOMA_LOGManager don't exist yet
+	OutputDebugString(TEXT("\n"));
+#endif
+
+}
+
+#if defined(WINDOWS_PLATFORM)
+int CHECK_IF_WE_ARE_A_RUNNING_DEMO()
+{
+	// 1) Get current exe full path as TCHAR/STRING
+	TCHAR buffer[MAX_PATH];
+	GetModuleFileName(NULL, buffer, MAX_PATH);
+	STRING currentExePath = buffer; // STRING should be std::basic_string<TCHAR>
+
+	if (currentExePath.find(TEXT("\\Downloads\\")) != STRING::npos)
+	{
+		// 2) Extract exe name (TCHAR)
+		STRING exeName = currentExePath.substr(currentExePath.find_last_of(TEXT("\\")) + 1);
+
+		// 3) Regex: wide vs narrow
+#if UNICODE
+		std::wregex levelRegex(L"CoreEngine_(\\d+)");
+		std::wsmatch match;
+		if (std::regex_search(exeName, match, levelRegex) && match.size() > 1)
+		{
+			STRING levelStr(match[1].first, match[1].second);
+			std::vector<STRING> prefixes = { TEXT("CoreEngine_"), TEXT("DXENGINE_") };
+
+			// 4) Filesystem: use wide paths
+			std::filesystem::path basePath = std::filesystem::path(L"C:\\WoMA3Dengine\\CoreEngine_Tutorials");
+
+			bool changed = false;
+			for (const auto& prefix : prefixes)
+			{
+				for (const auto& entry : std::filesystem::directory_iterator(basePath))
+				{
+					if (!entry.is_directory()) continue;
+
+					// folderName as wide string
+					std::wstring folderName = entry.path().filename().wstring();
+					if (folderName.find(prefix + levelStr) != std::wstring::npos)
+					{
+						// Full path (wide)
+						std::wstring fullPath = entry.path().wstring();
+						if (!SetCurrentDirectoryW(fullPath.c_str()))
+						{
+							MessageBoxW(NULL, L"Failed to change working directory.",
+								L"WoMA Engine Error", MB_ICONERROR);
+							return EXIT_FAILURE;
+						}
+						changed = true;
+						break;
+					}
+				}
+				if (changed) break;
+			}
+		}
+#else
+		std::regex levelRegex("CoreEngine_(\\d+)");
+		std::smatch match;
+		if (std::regex_search(exeName, match, levelRegex) && match.size() > 1)
+		{
+			STRING levelStr = match[1];
+			std::vector<STRING> prefixes = { TEXT("CoreEngine_"), TEXT("DXENGINE_") };
+
+			// Filesystem: narrow path
+			std::filesystem::path basePath = std::filesystem::path("C:\\WoMA3Dengine\\CoreEngine_Tutorials");
+
+			bool changed = false;
+			for (const auto& prefix : prefixes)
+			{
+				for (const auto& entry : std::filesystem::directory_iterator(basePath))
+				{
+					if (!entry.is_directory()) continue;
+
+					// folderName as narrow string
+					std::string folderName = entry.path().filename().string();
+					if (folderName.find((prefix + levelStr).c_str()) != std::string::npos)
+					{
+						// Full path (narrow)
+						std::string fullPath = entry.path().string();
+						if (!SetCurrentDirectoryA(fullPath.c_str()))
+						{
+							MessageBoxA(NULL, "Failed to change working directory.",
+								"WoMA Engine Error", MB_ICONERROR);
+							return EXIT_FAILURE;
+						}
+						changed = true;
+						break;
+					}
+				}
+				if (changed) break;
+			}
+		}
+#endif
+	}
+
+	return EXIT_SUCCESS;
+}
+#endif
+
+
+bool cpuSupportsAVX512f=false;
+
+// platformUtils.cpp (or other common platform file)
+// Add required headers at top of file as needed.
+#if defined(ANDROID_PLATFORM)
+#include <android/log.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+#endif
+#include <stdio.h>
+#include <stdlib.h>
+
+// Call this very early in APPLICATION_STARTUP()
+// It intentionally keeps logic minimal and non-intrusive.
+void WOMA_InitLogSystem()
+{
+#if defined(ANDROID_PLATFORM)
+	// Ensure public folder exists (silently ignore errors)
+	// 0777 is fine for debug/dev logs; production can change perms if needed.
+	mkdir("/sdcard/WOMA", 0777);
+
+	// Open the file for writing (overwrite each run).
+	// Use "w+" to ensure the file is created and ready.
+	const char* publicLog = "/sdcard/WOMA/report.txt";
+	FILE* f = fopen(publicLog, "w+");
+	if (f) {
+		// Redirect stdout/stderr to this file.
+		// We keep the FILE* open to allow standard fprintf/printf to work.
+		fflush(stdout);
+		fflush(stderr);
+		freopen(publicLog, "w+", stdout);
+		freopen(publicLog, "w+", stderr);
+
+		// Also write one initial message and mirror to logcat.
+		fprintf(stdout, "WOMA: Log initialized at %s\n", publicLog);
+		fflush(stdout);
+
+		__android_log_print(ANDROID_LOG_INFO, "WOMA", "Log initialized at %s", publicLog);
+	}
+	else {
+		// If public file can't be opened, still send to logcat so we have visibility.
+		__android_log_print(ANDROID_LOG_WARN, "WOMA", "Failed to open %s for writing", publicLog);
+	}
+#else
+	// Non-Android: keep existing behaviour (report.txt in working dir)
+	const char* localLog = "report.txt";
+	// Use fopen first to ensure file is creatable, then redirect.
+	FILE* f = fopen(localLog, "w+");
+	if (f) {
+		fflush(stdout);
+		fflush(stderr);
+		freopen(localLog, "w+", stdout);
+		freopen(localLog, "w+", stderr);
+		fprintf(stdout, "WOMA: Log initialized at %s\n", localLog);
+		fflush(stdout);
+	}
+#endif
+}
+
+
+void APPLICATION_STARTUP(int argc, char* argv[])
+{
+	STDCOUT << TEXT("<") << PROJECT_NAME << TEXT("> STARTUP") << std::endl;
+
+	//srand((unsigned int)time(0));
+	srand(12345);   // Fixed seed!
+
+#if defined WOMA_CONSOLE_APPLICATION  || !defined WINDOWS_PLATFORM
+    // Save Command Line Arguments to use later on
+    WOMA::ARGc = argc;
+    WOMA::ARGv = argv;
+#endif
+
+	// Changes the Process Priority:
+	// -----------------------------
+#if defined WINDOWS_PLATFORM
+	#if NOTES
+	//THREAD_PRIORITY_IDLE(-15)
+	//THREAD_PRIORITY_LOWEST(-2)
+	//THREAD_PRIORITY_BELOW_NORMAL(-1)
+	//THREAD_PRIORITY_NORMAL(0)
+	//THREAD_PRIORITY_ABOVE_NORMAL(+1)
+	//THREAD_PRIORITY_HIGHEST(+2)
+	//THREAD_PRIORITY_TIME_CRITICAL(+15)
+	#endif
+
+	SetThreadPriority(GetCurrentThread(), 10/*THREAD_PRIORITY_HIGHEST*/);
+
+#elif defined LINUX_PLATFORM && defined RELEASE
+	#if _DEBUG
+		setpriority(PRIO_PROCESS, 0, 20);	// -20 (highest priority) to +20 (lowest priority). 
+	#else
+		setpriority(PRIO_PROCESS, 0, -19);	// Be nice to other processes, helps reduce mouse lag
+	#endif
+#endif
+#if defined WINDOWS_PLATFORM
+		SetUnhandledExceptionFilter(TopLevelFilter);
+#endif
+#if defined MATH_BENCH && LEVEL < 60 // Disabled at 60: TrigonometryMathClass.cpp
+    // Benchmark trigonometric functions:
+    // ----------------------------------
+	TimerClass m_Timer;
+	m_Timer.Initialize();	// Initialize the timer object.
+
+	//------------------------------------------------------
+	INT64 currentTime, currentTime2;
+	QueryPerformanceCounter((LARGE_INTEGER*)&currentTime);
+	for (int time = 0; time < 1000000; time++)
+	{
+		//------------------------------------------------------
+		float t = FAST_sqrt((float)time); // 50% faster
+
+		//------------------------------------------------------
+	}
+	QueryPerformanceCounter((LARGE_INTEGER*)&currentTime2);
+	INT64 delta = (INT64)((((float)currentTime2 - (float)currentTime) / m_Timer.m_ticksPerUs) / 1000.0f);
+	TCHAR txt[100];
+	sprintf_s(txt, 100, "1 000 000 times took: %" PRIu64 " µs(micro Seconds)\n", delta); //_INT64
+	OutputDebugString(txt);
+	//------------------------------------------------------
+#endif
+
+#if (defined OPENGL3 || defined OPENGL4) && CORE_ENGINE_LEVEL >= 10
+	// Start LINUX Platform: "OpenGL" (LoadExtensions)
+	// -------------------------------------------------------------------------------------------
+	#if defined WINDOWS_PLATFORM || (defined LINUX_PLATFORM && RUN_ASMAIN)
+	//NOTE: (Standard Xlib "-display") options. Also it may support the "-geometry"
+	// 
+	//-display DISPLAY
+	//	Specify the X server to connect to.If not specified, the value of the DISPLAY environment variable is used.
+	//
+	//-geometry W x H + X + Y
+	//	Determines where window's should be created on the screen. The parameter following -geometry should be formatted as a standard X geometry specification. The effect of using this option is to change the GLUT initial size and initial position the same as if glutInitWindowSize or glutInitWindowPosition were called directly. 
+	//
+	glutInit(&argc, argv);
+	#endif
+#endif
+
+#if defined WINDOWS_PLATFORM
+	ASSERT(CHECK_IF_WE_ARE_A_RUNNING_DEMO() == EXIT_SUCCESS);	//0!
+#endif
+
+#if CORE_ENGINE_LEVEL >= 1 && defined WINDOWS_PLATFORM
+	WOMA::setup_OSmain_dirs();									//1! Keep this order!
+#endif
+	#if defined USE_LOG_MANAGER
+	WOMA::start_log_manager();									//3!
+	#endif
+
+	TCHAR COMPILATION_DATE[MAX_STR_LEN] = {};
+	StringCchPrintf(COMPILATION_DATE, MAX_STR_LEN, TEXT("%c%c%c%c.%c%c.%c%c\n"), BUILD_YEAR_CH0, BUILD_YEAR_CH1, BUILD_YEAR_CH2, BUILD_YEAR_CH3, BUILD_MONTH_CH0, BUILD_MONTH_CH1, BUILD_DAY_CH0, BUILD_DAY_CH1);
+	womalog("COMPILATION_DATE: %s\n", COMPILATION_DATE);
+
+	womalogauto(TEXT("ENGINE BUILD TAG: %hs\n"), WOMA_ENGINE_BUILD_TAG);
+
+	// Set A Top level "Exception handler" for all Exceptions. Catch, Dump & Send Report WOMA ENGINE HOME using FTP!
+#if defined USE_MINIDUMPER 
+	WOMA::miniDumper = NEW MiniDumper();						//4! (NOTE: After logManager!)
+#endif
+
+    DefineConsoleTitle();										//5
+
+#if defined WINDOWS_PLATFORM && CORE_ENGINE_LEVEL >= 3
+    //Returns true if the DirectXMath Library supports this WH: (HW before Pentium 4 will return false!)
+    //MIN REQ: (Nov 2000) TARGET CODE: Pentium 4 - 32b+SSE2 API:DX9 / API:OPENGL 3.3+
+    IF_NOT_THROW_EXCEPTION(DirectX::XMVerifyCPUSupport());
+
+    // Init Windows COM services:
+    HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+    if (FAILED(hr)) WomaFatalException("CoInitializeEx Failed!");
+#endif
+
+#ifdef LINUX_PLATFORM 
+	// [6-1] Start LINUX Platform GUI: Settings
+	// -------------------------------------------------------------------------------------------
+	// ALSO: After logManager!
+	char* value = getenv("DISPLAY");
+	putenv("DISPLAY=:0");
+	value = getenv("DISPLAY");
+	womalogauto(TEXT("env.DISPLAY: %s\n"), value);
+
+	womalogauto(TEXT("Init: INIT_GTK2()\n"));
+	if (!PLATFORM_INIT_GTK2())
+		womalogauto(TEXT("Could not initialize GTK2!")); // Note: Don't use DEBUG_MSG yet...
+#endif
+
+#if DX_ENGINE_LEVEL >= 19 && defined WINDOWS_PLATFORM
+    womalogauto(TEXT("--- USING LIBs ---\n"));
+    womalogauto(TEXT("LIB D3D11_SDK_VERSION: %d\n"), D3D11_SDK_VERSION);   //<d3d11.h>
+#endif
+#if DX_ENGINE_LEVEL >= 22 && defined WINDOWS_PLATFORM
+    womalogauto(TEXT("LIB DIRECTXTEX_VERSION: %d\n"), DIRECTX_TEX_VERSION);//<DirectXTex.h>
+#endif
+
+    //ASSIMP VERSION:
+    UINT versionMajor = aiGetVersionMajor();
+    UINT versionMinor = aiGetVersionMinor();
+    UINT revision = aiGetVersionRevision();
+    womalogauto(TEXT("LIB ASSIMP version: %d.%d\n"), versionMajor, versionMinor);
+    womalogauto(TEXT("LIB ASSIMP revision: %u\n"), revision);
+
+#if defined USE_CONVERT_TO_PNG
+	DeleteFile("used_imgs.txt");
+#endif
+
+#if defined WINDOWS_PLATFORM
+	cpuSupportsAVX512f = cpu_supports_avx512f();
+	#ifdef __AVX512F__
+	//NOTE: If there an exception here: it's because this/your CPU don't support the fast AVX512, so change project settings to compile in slow AVX2 or AVX only!
+	ASSERT(cpuSupportsAVX512f); // Check for fast WIN11(AVX512) Instructions-set support, if fail change settings to WIN10(AVX2 or AVX)
+	#endif
+
+	womalogauto(TEXT("CPU Supports AVX512: %s\n"), cpuSupportsAVX512f ? TEXT("true") : TEXT("false"));
+#endif
+
+    womalogauto(TEXT("<%s> STARTUP ENDED\n"), PROJECT_NAME);
+}
+
+#if defined ANDROID_PLATFORM
+void CallJavaVoidMethod(android_app* app, const char* methodName)
+{
+	JNIEnv* env = nullptr;
+	app->activity->vm->AttachCurrentThread(&env, nullptr);
+	jclass activityClass = env->GetObjectClass(app->activity->clazz);
+	jmethodID method = env->GetMethodID(activityClass, methodName, "()V");
+	if (method)
+		env->CallVoidMethod(app->activity->clazz, method);
+	app->activity->vm->DetachCurrentThread();
+}
+#endif
+
+
+void APPLICATION_STOP()
+{
+#if defined WINDOWS_PLATFORM
+	ShowCursor(TRUE);
+#endif
+
+#if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
+	SAFE_SHUTDOWN(r_Application);
+#endif
+
+#if defined USE_MINIDUMPER
+	SAFE_DELETE(WOMA::miniDumper); // Free Top level Exception handler & Mini-Dumper.
+#endif
+
+#if CORE_ENGINE_LEVEL >= 4 && defined WINDOWS_PLATFORM
+#ifdef RELEASE
+	WOMA::DeleteDirectory(WOMA::womaTempPATH.c_str());	// Delete TEMP files
+#endif
+#endif
+
+#if defined WINDOWS_PLATFORM && CORE_ENGINE_LEVEL >= 3
+    CoUninitialize();
+    womalogauto("Exit Command: %d\n", Command);
+#endif
+
+#if defined ANDROID_PLATFORM
+	// ------------------------------------------------------------------
+	// Stop background music (from Java side) before closing Activity
+	// ------------------------------------------------------------------
+#if defined USE_ANDROID_SOUND
+	if (m_main_music_id >= 0)
+	{
+		womalog("[ANDROID]: Stopping main music...\n");
+		stopAudio(m_main_music_id);
+		m_main_music_id = -1;
+	}
+#endif
+
+	// ------------------------------------------------------------------
+	// Auto-close Android Activity (same as pressing Back)
+	// ------------------------------------------------------------------
+	if (engine.app && engine.app->activity)
+	{
+		womalog("[ANDROID]: Auto-closing application...\n");
+
+		JNIEnv* env = nullptr;
+		engine.app->activity->vm->AttachCurrentThread(&env, nullptr);
+		jclass activityClass = env->GetObjectClass(engine.app->activity->clazz);
+		jmethodID finishMethod = env->GetMethodID(activityClass, "finish", "()V");
+		if (finishMethod)
+			env->CallVoidMethod(engine.app->activity->clazz, finishMethod);
+		engine.app->activity->vm->DetachCurrentThread();
+	}
+#endif
+
+#if defined USE_LOG_MANAGER
+	if (WOMA::logManager)
+		WOMA::logManager->ShutdownInstance();	// Write, Close & Free: The logManager.
+	WOMA::logManager = NULL;				    // Because its a STATIC Class Shutdown and do not log
+#endif
+
+#if defined(ANDROID_PLATFORM)
+	CallJavaVoidMethod(engine.app, "copyReportToPublic");
+	engine.has_focus_ = false;
+#endif
+}
+
+TCHAR* getComputerName()
+{
+	static TCHAR buf[MAX_STR_LEN];
+	DWORD dwCompNameLen = MAX_STR_LEN;
+
+#if defined WINDOWS_PLATFORM
+	if (GetComputerName(buf, &dwCompNameLen))
+		return buf;
+	else
+#endif
+		return TEXT("127.0.0.1");
+}
+
+
+TCHAR* getUserName()
+{
+#if defined WINDOWS_PLATFORM
+	static TCHAR userName[MAX_STR_LEN];
+	//v1
+	_tcscpy_s(userName, _tgetenv(TEXT("USERNAME")));
+
+	//v2
+	if (_tcslen(userName) == 0)
+	{
+		DWORD Size = sizeof(userName);
+		GetUserName(userName, &Size);
+	}
+#endif
+
+#if defined LINUX_PLATFORM
+	static TCHAR userName[MAX_STR_LEN];
+	FILE* fp = NULL;
+	fp = popen("/bin/bash -c set | grep 'USER=' | awk -F= '{print $2}'", "r");
+	fread(userName, 1, sizeof(userName) - 1, fp);
+	fclose(fp);
+
+	for (int i = 0; userName[i] != 0; i++)
+		if (userName[i] == 10)
+			userName[i] = ' ';
+#endif
+
+#if defined ANDROID_PLATFORM
+	FILE* fp = NULL;
+	fp = popen("/bin/sh -c set | grep 'USER'", "r");
+
+	char* userName = NULL;
+	size_t len = 0;
+	while ((getline(&userName, &len, fp)) != -1) {
+		_tprintf("%s\n", userName);
+	}
+
+	fclose(fp);
+
+	for (int i = 0; userName[i] != 0; i++)
+		if (userName[i] == 10)
+			userName[i] = ' ';
+#endif
+
+	return userName;
+}
+
+#if CORE_ENGINE_LEVEL >= 1 && defined ANDROID_PLATFORM  && !defined NewWomaEngine
+#include <android/asset_manager.h>
+
+//file.cpp
+#define g_pAssetManager engine.app->activity->assetManager
+
+bool File::open(const char* path, const char* mode) {
+	if (strchr(mode, 'w')) {
+		_File = fopen(path, mode);
+		return true;
+	}
+	_A = AAssetManager_open(g_pAssetManager, path, 0);
+	if (_A) {
+		_File = funopen(_A,
+			androidRead,
+			androidWrite,
+			androidSeek,
+			androidClose);
+	}
+	if (_File != nullptr) {
+		return true;
+	}
+
+	return false;
+}
+
+#endif
+
+#if defined ANDROID_PLATFORM
+int m_main_music_id = 0;
+JNIEnv* jni=NULL;
+
+void ShowFPS(float fFPS)
+{
+	//FILE: ...\Android-WomaEngine\Android2\Android2.Packaging\src\com\woma\MyActivity.java
+	//JAVA: public void updateFPS(final float fFPS)
+	{
+		if (!jni)
+			engine.app->activity->vm->AttachCurrentThread(&jni, NULL);
+		jclass clazz = jni->GetObjectClass(engine.app->activity->clazz);
+
+		// Signature has to match java implementation 
+		jmethodID methodID = jni->GetMethodID(clazz, "updateFPS", "(F)V");
+
+		jni->CallVoidMethod(engine.app->activity->clazz, methodID, fFPS);
+		//engine_state.app->activity->vm->DetachCurrentThread();
+	}
+}
+
+void ShowAlert(const char* message)
+{
+	//JAVA: public void ShowAlert(final String message)
+	{
+		if (!jni)
+			engine.app->activity->vm->AttachCurrentThread(&jni, NULL);
+		jclass clazz = jni->GetObjectClass(engine.app->activity->clazz);
+
+		// Signature has to match java implementation (second string hints a t a java string parameter)
+		jmethodID methodID = jni->GetMethodID(clazz, "ShowAlert", "(Ljava/lang/String;)V");
+
+		// Strings passed to the function need to be converted to a java string object
+		jstring jmessage = jni->NewStringUTF(message);
+		jni->CallVoidMethod(engine.app->activity->clazz, methodID, jmessage);
+		jni->DeleteLocalRef(jmessage);
+
+		//engine_state.app->activity->vm->DetachCurrentThread();
+	}
+}
+
+void finish_activity(UINT res) {
+
+	JNIEnv* jni = NULL;
+	if (!jni)
+		engine.app->activity->vm->AttachCurrentThread(&jni, NULL);
+	jclass clazz = jni->GetObjectClass(engine.app->activity->clazz);
+
+	// Signature has to match java implementation
+	jmethodID methodID = jni->GetMethodID(clazz, "finishActivity", "(I)V");
+
+	jni->CallVoidMethod(engine.app->activity->clazz, methodID, 0);
+	engine.app->activity->vm->DetachCurrentThread();
+
+}
+
+void DownloadFiles(const char* url, const char* file)
+{
+	//JAVA: public void DownloadFiles(final String file)
+	{
+		if (!jni)
+			engine.app->activity->vm->AttachCurrentThread(&jni, NULL);
+		jclass clazz = jni->GetObjectClass(engine.app->activity->clazz);
+		jmethodID methodID = jni->GetMethodID(clazz, "DownloadFiles", "(Ljava/lang/String;Ljava/lang/String;)V");
+
+		jstring jurl = jni->NewStringUTF(url);
+		jstring jfile = jni->NewStringUTF(file);
+		jni->CallVoidMethod(engine.app->activity->clazz, methodID, jurl, jfile);
+		//_tprintf("DownloadFiles(%s, %s)\n", jurl, jfile);
+		jni->DeleteLocalRef(jurl);
+		jni->DeleteLocalRef(jfile);
+		//engine_state.app->activity->vm->DetachCurrentThread();
+	}
+}
+
+
+int playAudio(const char* audioFile)
+{
+	jint id;
+
+	//JAVA: public void playAudio(final String audioFile)
+	{
+		if (!jni)
+			engine.app->activity->vm->AttachCurrentThread(&jni, NULL);
+		jclass clazz = jni->GetObjectClass(engine.app->activity->clazz);
+
+		// Signature has to match java implementation (second string hints a t a java string parameter)
+		jmethodID methodID = jni->GetMethodID(clazz, "playAudio", "(Ljava/lang/String;)I");
+
+		// Strings passed to the function need to be converted to a java string object
+		jstring jaudioFile = jni->NewStringUTF(audioFile);
+		id = jni->CallIntMethod(engine.app->activity->clazz, methodID, jaudioFile);
+		_tprintf("[%d]: playAudio()\n", id);
+		jni->DeleteLocalRef(jaudioFile);
+		//engine_state.app->activity->vm->DetachCurrentThread();
+	}
+
+	return id;
+}
+
+void stopAudio(const int audioFileIdx)
+{
+	//JAVA: public void stopAudio(final Integer audioFileIdx)
+	{
+		if (!jni)
+			engine.app->activity->vm->AttachCurrentThread(&jni, NULL);
+		jclass clazz = jni->GetObjectClass(engine.app->activity->clazz);
+
+		// Signature has to match java implementation 
+		jmethodID methodID = jni->GetMethodID(clazz, "stopAudio", "(I)V");
+
+		jni->CallVoidMethod(engine.app->activity->clazz, methodID, audioFileIdx);
+		//engine_state.app->activity->vm->DetachCurrentThread();
+	}
+}
+#endif
+
+#if defined ANDROID_PLATFORM && defined USE_LOG_MANAGER
+STRING LOAD_ASSET_SAVE_TO_CACHE (TCHAR* XMLFILE) 
+{
+	//LOAD FROM: C:\WoMAengine2023\Android-WomaEngine\Android2\Android2.Packaging\ARM64\Debug\Package\assets
+	AAssetManager* manager = engine.app->activity->assetManager;
+	AAsset* thisxmlFile = AAssetManager_open(manager, XMLFILE, AASSET_MODE_BUFFER);
+	const char* fileBuffer = (char*)AAsset_getBuffer(thisxmlFile);
+	off_t fileSize = AAsset_getLength(thisxmlFile);
+
+	//SAVE TO: /data/user/0/com.woma/cache/
+	FILE* saveXmlFile = NULL;
+	STRING XML_FILE = WOMA::android_temp_folder(engine.app);
+	XML_FILE.append(TEXT("/"));
+	XML_FILE.append(XMLFILE);
+	UINT errno_t = _tfopen_s(&saveXmlFile, XML_FILE.c_str(), TEXT("w"));
+	fwrite(fileBuffer, sizeof(char), fileSize, saveXmlFile);
+#if DEBUG
+	__android_log_print(ANDROID_LOG_ERROR, "[WOMA]", fileBuffer);
+#endif
+	AAsset_close(thisxmlFile);
+	fclose(saveXmlFile);
+
+	return XML_FILE;
+}
+#endif
+
+#if defined LINUX_PLATFORM //|| defined ANDROID_PLATFORM
+#include <curl/curl.h>
+#include <curl/easy.h>
+
+#include <cstdio>
+#include <iostream>
+#include <stdexcept>
+#include <string>
+
+static size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp)
+{
+	((std::string*)userp)->append((char*)contents, size * nmemb);
+	return size * nmemb;
+}
+
+bool download(const std::string url, const std::string file)
+{
+	FILE* fp;
+	CURLcode res;
+	CURL* curl = curl_easy_init();
+	//std::string readBuffer;
+	if (curl)
+	{
+		fp = fopen(file.c_str(), "wb");
+		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+		//curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
+
+		// Perform a file transfer synchronously.
+		res = curl_easy_perform(curl);
+		curl_easy_cleanup(curl);
+		fclose(fp);
+	}
+
+	if (res == CURLE_OK)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+#endif
+
+// ---------------------------------------------------------------------------
+#ifdef ANDROID_PLATFORM
+#include <android/log.h>
+
+//womalog
+void LogInfo(const char* sTag, const char* fmt, ...)
+{
+	va_list ap;
+	va_start(ap, fmt);
+	__android_log_vprint(ANDROID_LOG_INFO, sTag, fmt, ap);
+	va_end(ap);
+}
+
+#define  LOG_TAG    "testjni"
+#define  MY_LOG(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
+
+namespace WOMA
+{
+	int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption, bool yesORno = false)
+	{
+		MY_LOG("%s", lpText);
+	}
+}
+#endif
+
+#if defined ANDROID_PLATFORM  
+bool download(const std::string url, const std::string filename)
+{
+	DownloadFiles(url.c_str(), filename.c_str());
+	return true;
+}
+#endif
+
+
+#if DEMO_LEVEL >= 79 && DEMO_LEVEL <= 81
+#include "stdafx.h"
+bool firstFrame = true;
+#endif
+
+//#if DEMO_LEVEL < 86
+//STRING original_files[] = {
+//    TEXT("")
+//};
+//#endif
+
+#if defined WINDOWS_PLATFORM
+#include <immintrin.h>
+#include <intrin.h>
+bool cpu_supports_avx512f() {
+	int cpuInfo[4];
+	__cpuid(cpuInfo, 0);
+	if (cpuInfo[0] >= 7) {
+		__cpuidex(cpuInfo, 7, 0);
+		return (cpuInfo[1] & (1 << 16)) != 0; // AVX512F = bit 16 of EBX
+	}
+	return false;
+}
+#endif
+
+bool StartsWithDotDotSlash(const STRING& fileNamePath)
+{
+	const STRING prefix = TEXT("../");
+	return fileNamePath.rfind(prefix, 0) == 0;
+}
+
+bool g_GOD_MODE = false;
+
+
+namespace WOMA
+{
+	TCHAR* LoadFile(TCHAR* filename, bool shader);
+}
+
+
+
+#if defined USE_W3D_LOADER_INSTEAD
+bool TryReplaceWithW3D(TCHAR* filename, TCHAR* outPath, size_t outPathSize)
+{
+	// Only apply for .obj files
+	TCHAR* ext = _tcsrchr(filename, '.');
+	if (!ext || _tcsicmp(ext, TEXT(".obj")) != 0)
+		return false;
+
+	// Replace .obj with .W3D
+	TCHAR w3dPath[MAX_STR_LEN * 2];
+	_tcscpy_s(w3dPath, filename);
+	TCHAR* lastDot = _tcsrchr(w3dPath, '.');
+	if (lastDot)
+		_tcscpy_s(lastDot, MAX_STR_LEN, TEXT(".W3D"));
+	else
+		return false;
+
+	// Check if the .W3D file exists
+	FILE* fp = _tfopen(w3dPath, TEXT("rb"));
+	if (fp) {
+		fclose(fp);
+		_tcscpy_s(outPath, outPathSize, w3dPath);
+		return true;
+	}
+
+	return false;
+}
+#endif
+
+#if defined USE_PNG_LOADER_INSTEAD
+bool TryReplaceWithDDS(TCHAR* filename, TCHAR* outPath, size_t outPathSize)
+{
+	// Check the current extension
+	TCHAR* ext = _tcsrchr(filename, '.');
+	if (!ext) return false;
+
+	// Allowed extensions (case-insensitive)
+	const TCHAR* allowed[] = {
+		TEXT(".bmp"), TEXT(".BMP"),
+		//TEXT(".jpg"), TEXT(".JPG"),
+		//TEXT(".png"), TEXT(".PNG"),
+		TEXT(".tif"), TEXT(".TIF"),
+		nullptr
+	};
+
+	bool allowedExt = false;
+	for (int i = 0; allowed[i]; ++i)
+	{
+		if (_tcsicmp(ext, allowed[i]) == 0) {
+			allowedExt = true;
+			break;
+		}
+	}
+	if (!allowedExt) return false;
+
+	// Replace extension with .dds
+	TCHAR ddsPath[MAX_STR_LEN * 2];
+	_tcscpy_s(ddsPath, filename);
+	TCHAR* lastDot = _tcsrchr(ddsPath, '.');
+	if (lastDot)
+		_tcscpy_s(lastDot, MAX_STR_LEN, TEXT(".dds"));
+	else
+		return false;
+
+	// Check if the .dds file exists
+	FILE* fp = _tfopen(ddsPath, TEXT("rb"));
+	if (fp) {
+		fclose(fp);
+		_tcscpy_s(outPath, outPathSize, ddsPath);
+		return true;
+	}
+
+	return false;
+}
+#endif
+
+namespace WOMA
+{
+	TCHAR cCurrentPath[FILENAME_MAX]; //Use now: APPDATA
+	//-------------------------------------------------------------------------------------------
+	TCHAR* getCurrentDir()
+	//-------------------------------------------------------------------------------------------
+	{
+#if defined WINDOWS_PLATFORM
+		if (!GetCurrentDirectory(FILENAME_MAX, cCurrentPath))
+			return (TCHAR*)TEXT("");
+
+#if defined USE_SYSTEM_CHECK & !defined NewWomaEngine
+		StringCchPrintf(SystemHandle->systemDefinitions.cCurrentPath, FILENAME_MAX, cCurrentPath);
+#endif
+#else // Linux / Android
+		char* CurrentPath;
+
+		CurrentPath = getcwd(NULL, 0); // or _getcwd
+		if (CurrentPath == NULL)
+			return TEXT("");
+
+#if defined USE_SYSTEM_CHECK & !defined NewWomaEngine
+		strcpy_s(SystemHandle->systemDefinitions.cCurrentPath, FILENAME_MAX, CurrentPath);
+#endif
+#endif
+
+		return SystemHandle->systemDefinitions.cCurrentPath;
+	}
+}
+
+
+int WomaMessageBox(TCHAR* lpText)
+{
+	return WomaMessageBox(lpText, TEXT("ERROR:"), false);
+}
+
+int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption)
+{
+	return WomaMessageBox(lpText, lpCaption, false);
+}
+
+#if !defined LINUX_PLATFORM
+int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption, bool yesORno)
+//----------------------------------------------------------------------------------
+{
+	int res = yesORno ? 1 : 0;
+	TCHAR fullMsg[5000] = { 0 };
+	StringCchPrintf(fullMsg, sizeof(fullMsg), TEXT("%s %s\n"), lpCaption, lpText);
+
+#if defined WINDOWS_PLATFORM
+	{ HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_INTENSITY); }
+
+	womalogauto(fullMsg);
+	{ HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED); }
+
+	if (SystemHandle)
+		res = MessageBox(SystemHandle->m_hWnd, lpText, lpCaption, (yesORno) ? MB_YESNO : MB_OK);
+	else
+		res = MessageBox(NULL, lpText, lpCaption, (yesORno) ? MB_YESNO : MB_OK);
+#endif
+
+#if defined ANDROID_PLATFORM
+	ShowAlert(lpCaption);
+#endif
+
+	return res;
+}
+#else//LINUX
+int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption = WOMA::APP_FULLNAME, bool yesORno = false)
+{
+	// MORE INFO: http://stackoverflow.com/questions/263/gtk-implementation-of-messagebox
+	char text[MAX_STR_LEN]; wtoa(text, lpText, MAX_STR_LEN); //w to a
+	GtkWidget* dialog = gtk_message_dialog_new(
+		GTK_WINDOW(Win.window), GTK_DIALOG_MODAL,
+		(fatal) ? GTK_MESSAGE_ERROR : GTK_MESSAGE_WARNING,
+		(yesORno) ? GTK_BUTTONS_YES_NO : GTK_BUTTONS_OK, text);
+
+	char caption[MAX_STR_LEN]; wtoa(caption, lpCaption, MAX_STR_LEN);	// wide to ansi
+	gtk_window_set_title(GTK_WINDOW(dialog), caption);					// Title
+
+	while (gtk_events_pending())			// Wait for all gtk events to be consumed ...
+		gtk_main_iteration_do(FALSE);
+
+	gint result = gtk_dialog_run(GTK_DIALOG(dialog));	// Run Dialog
+
+	gtk_widget_destroy(dialog);			// Destroy
+
+	while (gtk_events_pending())			// Wait for all gtk events to be consumed ...
+		gtk_main_iteration_do(FALSE);
+
+	if (yesORno)
+	{
+		switch (result)
+		{
+		default:
+		case GTK_RESPONSE_DELETE_EVENT:
+		case GTK_RESPONSE_NO:
+			return 0; //NO
+
+		case GTK_RESPONSE_ACCEPT:
+		case GTK_RESPONSE_YES:
+			return 1; //YES
+		}
+	}
+
+	return result;
+}
+#endif
+
+
+
+#if defined WOMA_DLL
+#if _DEBUG
+#pragma comment( lib, "C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\Assimp-latest-Engine.lib" )
+#else
+#pragma comment( lib, "C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Release\\Assimp-latest-Engine.lib" )
+#endif
+#endif
+
+#if defined WOMA_DLL && DX_ENGINE_LEVEL >= 86
+#include "commonfunctionsInterfaces.h"
+#include "C:\\WoMAengine2023\\PPG-master\\Engine\\Source\\Resources\\Texture.h"
+__declspec(dllimport) Texture* LoadTextureFromPathFBX86(UINT model_type, Graphics& graphics, LPCWSTR& texture); //LEVEL >= 86
+#endif
+
+
+#if (!defined(WOMA_DLL) || (defined(WOMA_DLL) && DX_ENGINE_LEVEL < 82))
+// ==========================================================
+// EXE builds and pre-82 DLLs → globals live in OSengine
+// ==========================================================
+
+namespace WOMA {
+	Settings* AppSettings = NULL;
+}
+UINT CLASS_LOAD_N = 1;
+UINT CLASS_DELETE_N = 1;
+#if defined WINDOWS_PLATFORM
+bool threadLoadMeshAlive = false;
+HANDLE threadLoadMeshHandle = NULL;
+unsigned long threadLoadMeshId = NULL;
+#endif
+int numZipItems = 0;
+int zipIndx = 0;
+UINT packCounter = 0, totalPackCounter = 0;
+int Command = EXIT_SUCCESS;
+#endif
+
+#if DX_ENGINE_LEVEL >= 86 && defined WOMA_DLL
+#pragma comment( lib, "C:\\WoMAengine2023\\x64\\Debug_DLL\\commonfunctionsX64_d.lib" )	//DEBUG_DLL link dll
+#endif
+#if DX_ENGINE_LEVEL >= 82 && !defined WOMA_DLL
+#pragma comment( lib, "C:\\WoMAengine2023\\x64\\Debug\\commonfunctionsX64_d.lib" )		//DEBUG link lib
+#endif

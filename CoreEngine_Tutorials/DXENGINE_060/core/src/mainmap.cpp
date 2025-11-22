@@ -26,5 +26,5 @@ DXcameraClass m_CameraMINIMAP; // DX Implementation
 DXcameraClass m_CameraMAP; // DX Implementation
 
 //#############################################################################################################
-// PRE-RENDER - MAP
+// RENDER - WATER & TERRAIN (Used for main terrain and MINIMAP texture)
 //#############################################################################################################

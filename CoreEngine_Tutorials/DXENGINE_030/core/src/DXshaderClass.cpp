@@ -1409,8 +1409,8 @@ namespace DirectX {
 #endif
 
 		if (m_shaderType == SHADER_COLOR || 
-            m_shaderType == SHADER_TEXTURE_LIGHT_FAST ||
-            m_shaderType == SHADER_Terrain_Texture_DEMO61
+            m_shaderType == SHADER_TEXTURE_LIGHT_FAST 
+			|| m_shaderType == SHADER_Terrain_Texture_DEMO61
             )
 			return;
 
@@ -1545,6 +1545,7 @@ void DXshaderClass::RenderShader(UINT pass, void* Device_Context, int texture_in
 				deviceContext->PSSetSamplers(1, 1, &m_sampleStateFire);
 			}
 	#endif
+
 			}
 			// ---------------------------------------------------
 			// Set Shader code to RUN:

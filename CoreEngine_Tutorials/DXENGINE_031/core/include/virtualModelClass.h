@@ -69,7 +69,7 @@ class VirtualModelClass
 public:
 	virtual void Shutdown() = 0;
 
-	virtual void RenderWithFade(void* pContext, float fadeLight = 1, bool FOG = false) = 0;
+	virtual void RenderWithFade(void* pContext, float fadeLight = 1, bool FOG = false, UINT pass = 0, void* lightViewMatrix = NULL, void* lightProjectionMatrix = NULL) = 0;
 #if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28 && defined USE_SKYSPHERE
 	virtual void RenderSky(void* pContext, UINT camera, float fadeLight = 1) = 0;
 #endif
@@ -85,7 +85,7 @@ public:
 	virtual bool UpdateSpriteBuffersRotY(void* pContext, int positionX, int positionY) = 0;
 #endif
 #if defined MAIN_RENDER_LIGHT_RAY
-	virtual void UpdateDynamic(void* pContext, std::vector<ModelColorVertexType>* lightVertexVector) = 0;
+	virtual void UpdateLightRayVertices(void* pContext, std::vector<ModelColorVertexType>* lightVertexVector) = 0;
 #endif
 	virtual bool LoadModel(void* pContext, TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow = false, bool renderShadow = false, UINT instanceCount = 0) = 0;
 

@@ -71,7 +71,7 @@ WinSystemClass::WinSystemClass() : SystemClass()
 	WinSystemClass_init();
 }
 #if DX_ENGINE_LEVEL >= 91 && defined USE_MINIMAP_REDENRING_THREAD
-extern ID3D11DeviceContext* shadowCtx;
+extern ID3D11DeviceContext* UpdateMeshAnimationsCtx;
 #endif
 //----------------------------------------------------------------------------------
 WinSystemClass::WinSystemClass(WOMA::Settings* appSettings): SystemClass() //	SystemClass::SystemClass() Will Run!
@@ -96,18 +96,17 @@ void WinSystemClass::ProcessFrame()
 	SystemClass::FrameUpdate();	// Process: (Fx keys |ESC and F1 to F6| & get FPS)
 
 	if (WOMA::game_state == ENGINE_RESTART)
-		return; //Restart so, don't render!
+		return; //Restart? so, don't render, restart now.
 
 	// Render Setup?
 #if CORE_ENGINE_LEVEL >= 5 && defined CLIENT_SCENE_SETUP
 	if (WOMA::game_state == GAME_SETUP)
 	{
-        return; //Process win32 Setup so, don't render!
+        return; //Process win32 Setup/pages so, don't render!
 	}
 #endif
 
 	{
-		//FADE INTRO PAGES
         m_Application->dayLightFade = m_Application->ProcessMovementInput_and_UpdateDemos();	//CalculateViewMatrix (for Sky) and check collision(s):part I
 
 	#if DX_ENGINE_LEVEL >= 91 && defined USE_MINIMAP_REDENRING_THREAD
@@ -126,11 +125,11 @@ void WinSystemClass::ProcessFrame()
 		#else
 		if (RENDER_PAGE < 10)
 		#endif
-			return; // We are in first win32 Demo pages so, don't render!
+			return; // We are in first win32 Demo pages? So, don't render yet!
 
 		// For each Monitor: Render one Application Frame
-		//0 – 27	Primary monitor only Ignore extra outputs; no multi-monitor logic needed
-		//28 +		Full multi-monitor	Use adapter/output detection and per-monitor swapchains
+		//0–27	Primary monitor only Ignore extra outputs; no multi-monitor logic needed
+		//28+	Full multi-monitor	Use adapter/output detection and per-monitor SWAPCHAINS
         int num_monitors = (int)windowsArray.size();
 		for (int monIdx = 0; monIdx < num_monitors; monIdx++)
 		{
@@ -138,14 +137,14 @@ void WinSystemClass::ProcessFrame()
         
 			CalculateCameraViewAndFrustum(mainCtx);								// CALCULATE: CalculateViewMatrix (to render) and Frustum
 			IF_RENDER_PAGE(RENDER_PAGE >= 30)
-				m_Application->SortOutWhatNeedToBeRendered(mainCtx, m_Driver);
+				m_Application->SortOutWhatNeedToBeRendered(mainCtx, m_Driver);	// 30+: SORT OBJECTS: Sort out what need to be rendered (filter only objects in front of camera)
 
 			m_Application->RenderScene(mainCtx, monIdx, m_Driver);				// RENDER 1 FRAME!
                                                                
 			(g_contextDriver ? g_contextDriver : m_Driver)->EndScene(monIdx);	// SHOW FRAME :)
 		}
        
-		m_Driver->RenderfirstTime = false;
+		m_Driver->RenderfirstTime = false;										// 1st frame rendered.
 	}
 }
 
@@ -210,7 +209,7 @@ WinSystemClass::~WinSystemClass()
 
 bool WinSystemClass::APPLICATION_BEFORE_WINDOW()
 {
-	womalog("WinSystemClass::APPLICATION_CORE_SYSTEM()\n");
+	womalog("WinSystemClass::APPLICATION_BEFORE_WINDOW()\n");
 
 	return true;
 }

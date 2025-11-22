@@ -122,7 +122,7 @@ ApplicationClass::ApplicationClass()
 #endif
 
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
-	m_RenderShadowTexture		= NULL;
+	m_TextureWithShadows		= NULL;
 #endif
 
 #if defined SCENE_TERRAIN_QUAD_TREE
@@ -308,7 +308,7 @@ void ApplicationClass::Shutdown()
 	}
 
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
-	SAFE_SHUTDOWN(m_RenderShadowTexture);
+	SAFE_SHUTDOWN(m_TextureWithShadows);
 #endif
 
 #if defined SCENE_TERRAIN_QUAD_TREE

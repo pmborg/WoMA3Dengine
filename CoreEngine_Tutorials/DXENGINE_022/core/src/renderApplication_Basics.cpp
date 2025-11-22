@@ -57,7 +57,7 @@ extern RApplicationClass* r_Application;
 void ApplicationClass::RenderScene(void* mainCtx, UINT monitorIndex, WomaDriverClass* driver) // RENDER A FULL FRAME!
 //----------------------------------------------------------------------------------------------------
 {
-	SystemHandle->TotalVertexCounter = 0;
+	SystemHandle->TotalVertexCounter = 0;	// Reset total vertex counter
 
 	// UPDATE DYN. LIGHT RAY:
 	// --------------------------------------------------------------------------------------------
@@ -66,18 +66,19 @@ void ApplicationClass::RenderScene(void* mainCtx, UINT monitorIndex, WomaDriverC
 	{
 		CalculateLightRayVertex(SunDistance);							// Calculate Light Source Position
 
-		m_lightRayModel->UpdateDynamic(mainCtx, m_LightVertexVector);	// Update LightRay vertex(s)
-		m_lightRayModel->Render(mainCtx, 0, 0, 0, NULL, NULL);			// Render LightRay
+	#if defined MAIN_RENDER_LIGHT_RAY
+		m_lightRayModel->UpdateLightRayVertices(mainCtx, m_LightVertexVector);	// Update LightRay vertex(s)
+		m_lightRayModel->Render(mainCtx, 0, 0, 0, NULL, NULL);					// Render LightRay
+	#endif
 	}
 #endif
 
-		dayLightFade = 1; //levels < 98
+		dayLightFade = 1;
 
-	AppRender(monitorIndex, RENDER_PAGE, dayLightFade, mainCtx);	// [2] 3D Render main scene while workers run in parallel
+	AppRender(monitorIndex, RENDER_PAGE, dayLightFade, mainCtx);	// [2] 3D Render "main scene" while workers run in parallel!
 
 #if DX_ENGINE_LEVEL >= 24 || defined USE_VIEW2D_SPRITES
-																	//IF_RENDER_PAGE(RENDER_PAGE >= 29) NOTE: (we need it before 20 at INTRO)
-	AppPosRender(monitorIndex, RENDER_PAGE, dayLightFade, mainCtx);	// [3] 2D: Render TRANSPARENT Parts of 3D OBJs(like: "Glass windows", "Billboards", etc...)
+	AppPosRender(monitorIndex, RENDER_PAGE, dayLightFade, mainCtx);	// [3] 2D: Render TRANSPARENT and ontop Parts: (like: "Billboards", "Glass windows", logo, main-map and minimap, text, driver-text)
 #endif
 
 }
@@ -175,7 +176,7 @@ void ApplicationClass::WaterTerrain(UINT monitorWindow, float fadeLight, void* p
 	if (RENDER_PAGE >= 50)
 	{
 		if (m_TerrainModel[MAIN_TERRAIN_ID])
-			m_TerrainModel[MAIN_TERRAIN_ID]->RenderWithFade(pContext, fadeLight, fog);	    // New function to replace these 2 line options.
+			m_TerrainModel[MAIN_TERRAIN_ID]->RenderWithFade(pContext, fadeLight, fog, 0, &(app_Light->m_viewMatrix), &(app_Light->m_ligth_orthoMatrix));	    // New function to replace these 2 line options.
 	}
 #endif
 #if defined DEBUG_COLLISION_TERRAIN //For debug collision terrain only!
@@ -193,7 +194,9 @@ void ApplicationClass::AppRender(UINT monitorIndex, UINT level, float fadeLight,
 	RenderMainSky(monitorIndex, fadeLight, pContext);
 #endif
 	if ((RENDER_PAGE >= 19) && (RENDER_PAGE < 30) || RENDER_PAGE == 36)
-		DemoRender(pContext);	// ALL Demos!: page 21: / 22 / 23 / ... 49
+		DemoRender(pContext);	// ALL Demos!: page [19, 20, 21, 22, 23 ... 49]
+
+//#define show_debug_2nd3DModel
 
 #if defined MAIN_RENDER_TERRAIN
 	if (RENDER_PAGE >= 49)
@@ -225,7 +228,7 @@ void ApplicationClass::AppRender(UINT monitorIndex, UINT level, float fadeLight,
     MyLightVertexVector[1].x = prwsPos.m128_f32[0] + prwsDir.m128_f32[0] * 100;
     MyLightVertexVector[1].y = prwsPos.m128_f32[1] + prwsDir.m128_f32[1] * 100;
     MyLightVertexVector[1].z = prwsPos.m128_f32[2] + prwsDir.m128_f32[2] * 100;
-	m_lightRayModel->UpdateDynamic(pContext, &MyLightVertexVector);
+	m_lightRayModel->UpdateLightRayVertices(pContext, &MyLightVertexVector);
 	m_lightRayModel->Render(pContext);
 #endif
 
@@ -236,15 +239,6 @@ void ApplicationClass::AppRender(UINT monitorIndex, UINT level, float fadeLight,
 	{
 	}
 #endif
-
-	// TRANSPARENT and SEMI-TRANSPARENT:
-	// --------------------------------------------------------------------------------------------
-
-	// TERRAIN[1]: Render Mesh for WATER:
-// --------------------------------------------------------------------------------------------
-
-
-//	IN THE END:
 
 }
 

@@ -225,12 +225,13 @@
     #if DX_ENGINE_LEVEL >= 23 && !defined GOTO_BASICS
         #undef SCENE_TEXTURE
         #define SCENE_TEXTURE_LIGHT             
-            
+        //#define DEBUG_LOG_MAIN_RENDER_LIGHT_RAY    
         #define MAIN_RENDER_LIGHT_RAY           // ON/OFF - Render light ray !!Dep!!: #undef  dx12_upload_old_way
         #define SUN_LIGHT_DEMO_ANIMATION true   // Animate the beam of light
     #endif
 
     #if DX_ENGINE_LEVEL >= 24
+		#undef DEBUG_LOG_MAIN_RENDER_LIGHT_RAY								
         #if DX_ENGINE_LEVEL == 24
             #undef SCENE_COLOR
             #undef SCENE_TEXTURE
@@ -378,7 +379,12 @@
 
     #if DX_ENGINE_LEVEL >= 36   //36-
         #define USE_SHADOW_MAP
-        #define USELIGHTSIZE 10
+        #define USELIGHTSIZE 15
+
+		#define USE_LEVEL_36V2 //ON/OFF
+		#if DX_ENGINE_LEVEL < 99
+			#define USE_SMALL_SHADOWS
+		#endif
     #endif
 
     #if DX_ENGINE_LEVEL >= 38   //38-
@@ -596,9 +602,9 @@
 #endif
 
 #if DX_ENGINE_LEVEL >= 91
-    #define USE_SHADOW_THREAD   //Allow the other 2:
-    #define USE_MINIMAP_REDENRING_THREAD
-    #define USE_MESH_THREAD
+    #define USE_UPDATEMESHANIMATIONS_THREAD	// Allow the other 2: Shadow threads will also do:
+    #define USE_MINIMAP_REDENRING_THREAD	// Minimap rendering thread
+    #define USE_MESH_LOADING_THREAD			// Mesh loading thread
 #endif
     
 #if DX_ENGINE_LEVEL >= 92
@@ -640,22 +646,24 @@
 #endif
 
 #if DX_ENGINE_LEVEL >= 99
-	#define USE_TERRAIN_SHADOWS //TODO
-	//#define USE_WOMA_ENGINE_ONE_CBUFFER
-
+	#define USE_TERRAIN_SHADOWS
 	#undef USE_DAY_AND_NIGHT
-
-	#undef USE_SHADOW_THREAD   //Allow the other 2:
-	#undef USE_MINIMAP_REDENRING_THREAD
-	#undef USE_MESH_THREAD
 #endif
 
 #if DX_ENGINE_LEVEL >= 100
-	#define USE_SSAO
+	#define USE_MESH_SHADOWS
 #endif
 
 #if DX_ENGINE_LEVEL >= 101
+	#define USE_SSAO
+#endif
+
+#if DX_ENGINE_LEVEL >= 102
 	#define USE_PLANET_EARTH
+#endif
+
+#if DX_ENGINE_LEVEL >= 103
+#define USE_WOMA_ENGINE_ONE_CBUFFER
 #endif
 	
 	//-------------------------------------------------------------------------------------------------------

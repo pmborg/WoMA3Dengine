@@ -26,31 +26,28 @@ DXcameraClass m_CameraMINIMAP; // DX Implementation
 DXcameraClass m_CameraMAP; // DX Implementation
 
 //#############################################################################################################
-// PRE-RENDER - MAP
+// RENDER - WATER & TERRAIN (Used for main terrain and MINIMAP texture)
 //#############################################################################################################
 #if DX_ENGINE_LEVEL >= 62 && defined USE_MAIN_MAP
 void ApplicationClass::TerrainRender(UINT ThreadID, UINT monitorWindow, WomaDriverClass* Driver, float fadeLight, XMMATRIX* m_viewMatrix, XMMATRIX* m_projectionMatrix, void* pContext)
 {
-	//MACRO/FUNCTIONAQUI1
+	//MACRO/FUNCTION
 	m_Driver->TurnOffAlphaBlending(pContext); // Re assume default
 
 	//Water Render:
 	 ((DirectX::DXmodelClass*)m_TerrainModel[WATER_TERRAIN_ID])->shaderTypeParameter = 1; // Render for Map projection
 	 m_TerrainModel[WATER_TERRAIN_ID]->Render(pContext, 0, CAMERA_NORMAL, PROJECTION_MINIMAP, PASS_MINIMAP1, m_viewMatrix, m_projectionMatrix);
 
-	//Terrain Render:
-	((DirectX::DXmodelClass*)m_TerrainModel[MAIN_TERRAIN_ID])->shaderTypeParameter = 1; // Render for Map projection
-	m_TerrainModel[MAIN_TERRAIN_ID]->Render(pContext, 0, CAMERA_NORMAL, PROJECTION_MINIMAP, PASS_MINIMAP1, m_viewMatrix, m_projectionMatrix);
+	 // Before level 99 -> always use MAIN terrain
+	 UINT terrainID = MAIN_TERRAIN_ID;
 
-	//RESET:
-	//((DirectX::DXmodelClass*)m_TerrainModel[WATER_TERRAIN_ID])->shaderTypeParameter = 
-	//((DirectX::DXmodelClass*)m_TerrainModel[MAIN_TERRAIN_ID])->shaderTypeParameter = 0; // Render in normal projection
+	//Terrain Render:
+	((DirectX::DXmodelClass*)m_TerrainModel[terrainID])->shaderTypeParameter = 1; // Render for Map projection
+	m_TerrainModel[terrainID]->Render(pContext, 0, CAMERA_NORMAL, PROJECTION_MINIMAP, PASS_MINIMAP1, m_viewMatrix, m_projectionMatrix);
 }
 
-
-
 //
-// RENDER
+// RENDER: MAP & MINIMAP
 //
 void ApplicationClass::RenderMainMapMiniMap(void* pContext) 
 {
@@ -79,6 +76,7 @@ void ApplicationClass::RenderMainMapMiniMap(void* pContext)
 				XMMATRIX* worldMatrix = &((DXmodelClass*)m_miniMapArrowModel)->m_worldMatrix;
 
 				*worldMatrix = XMMatrixIdentity();
+
 				m_miniMapArrowModel->rotateZ(-m_pointRotation[i] * 0.0174532925f);
 
 				#define _41 r[3].m128_f32[0]
@@ -90,6 +88,7 @@ void ApplicationClass::RenderMainMapMiniMap(void* pContext)
 				#undef _41
 				#undef _42
 				#undef _43
+
 				//[3] Put the "arrow" bitmap vertex and index buffers on the graphics pipeline to prepare them for drawing.
 				m_Driver->ClearDepthBuffer(pContext);
 				m_miniMapArrowModel->Render(pContext, 0, CAMERA_NORMAL, PROJECTION_ORTHOGRAPH, PASS_OPAC, (void*)&(DXsystemHandle->m_Camera->m_viewmatrix2D), NULL);
@@ -120,8 +119,8 @@ void ApplicationClass::RenderMainMapMiniMap(void* pContext)
 
 				XMMATRIX* worldMatrix = &((DXmodelClass*)m_miniMapArrowModel)->m_worldMatrix;
 
-				//D3DXMATRIXA16 worldMatrix = g_identMatrix;;
 				*worldMatrix = XMMatrixIdentity();
+
 				m_miniMapArrowModel->rotateZ(-m_pointRotation[i] * 0.0174532925f);
 
 				#define _41 r[3].m128_f32[0]
@@ -133,6 +132,7 @@ void ApplicationClass::RenderMainMapMiniMap(void* pContext)
 				#undef _41
 				#undef _42
 				#undef _43
+
 				//[3] Put the "arrow" bitmap vertex and index buffers on the graphics pipeline to prepare them for drawing.
 				m_Driver->ClearDepthBuffer(pContext);
 				m_miniMapArrowModel->Render(pContext, 0, CAMERA_NORMAL, PROJECTION_ORTHOGRAPH, PASS_OPAC, (void*)&(DXsystemHandle->m_Camera->m_viewmatrix2D), NULL);

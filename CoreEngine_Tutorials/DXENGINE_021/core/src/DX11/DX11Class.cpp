@@ -1182,11 +1182,11 @@ void DirectX::DX11Class::ResetResource(ID3D11DeviceContext* pContext, UINT monit
     //WHY 3,4,5...? hlsl use 4 registers: MAX
     //Texture2D shaderTexture			: register(t0);	// 21: Texture
     //Texture2D AlfaMapTexture			: register(t1);	// 33: AlfaMap
-    //Texture2D ShadowMapTextureTexture : register(t2);	// 36: ShadowMap
+    //Texture2D ShadowMapTexture : register(t2);	// 36: ShadowMap
     //									: register(t3);  t number...
 
-    ID3D11ShaderResourceView* const pSRV[15] = { NULL };
-	pContext->PSSetShaderResources(0, 15, pSRV);
+    ID3D11ShaderResourceView* const pSRV[16] = { NULL };
+	pContext->PSSetShaderResources(0, 16, pSRV);
 }
 
 // ----------------------------------------------------------------------------------------------

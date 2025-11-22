@@ -48,20 +48,27 @@
 #if defined MAIN_RENDER_LIGHT_RAY
 void ApplicationClass::CalculateLightRayVertex(float localSunDistance)
 {
+		//1. Initialize a temporary vertex + clear previous list:
 		ModelColorVertexType vertex = { 0 };
-		MyLightVertexVector.clear(); // Clean Vector
+		MyLightVertexVector.clear(); // Clean previous Vector
 
-		// Ray Sun Color:
-		vertex.r = 255.0f / 255;
-		vertex.g = 201.0f / 255;
-		vertex.b = 14.0f / 255;
-		vertex.a = 1;
+		// 2. Set ray color with: Sun Color:
+		vertex.r = 255.0f / 255.0f;
+		vertex.g = 201.0f / 255.0f;
+		vertex.b = 14.0f / 255.0f;
+		vertex.a = 1.0f;
 
-		// [1] DEST: 0,0,0
+		// 3 DEST: 0,-7,0 - vert1
+		// ------------------------------------------------------------------------------------------------------
 		vertex.x = 0; vertex.y = -7; vertex.z = 0;
-		MyLightVertexVector.push_back(vertex);
+		MyLightVertexVector.push_back(vertex);	//VERTICE1: Dest.
+#if defined DEBUG_LOG_MAIN_RENDER_LIGHT_RAY
+		womalog("LightVertex[0] %5.1f %5.1f %5.1f - ", MyLightVertexVector[0].x, MyLightVertexVector[0].y, MyLightVertexVector[0].z);
+#endif
+		// ------------------------------------------------------------------------------------------------------
 
-		// [2]  SRC
+		// 4. SRC = sunlight origin - vert2
+		// ------------------------------------------------------------------------------------------------------
 #if defined USE_REAL_SUNLIGHT_DIRECTION
 		// Real Sun Position on Light:
 		vertex.x = SunX; // SunDistance* FAST_sin(initWorld->SunAzimuth);	// Real Sun Position on Sky:
@@ -73,7 +80,7 @@ void ApplicationClass::CalculateLightRayVertex(float localSunDistance)
 			static double rY = 0.0f;
 			rY += dt * (0.010f / 16.66f);		// MOVIMENT FORMULA!
 			vertex.x = (float)cos(rY) * localSunDistance;
-			vertex.y = 400;
+			vertex.y = localSunDistance;
 			vertex.z = (float)sin(rY) * localSunDistance;
 		}
 		else
@@ -81,19 +88,27 @@ void ApplicationClass::CalculateLightRayVertex(float localSunDistance)
 			// Get Fixed Light:
 			const float* light = SystemHandle->m_Application->app_Light->GetDirection();
 			vertex.x = MyLightVertexVector[0].x - light[0] * localSunDistance;
-			vertex.y = localSunDistance;
+			vertex.y = MyLightVertexVector[0].y - light[1] * localSunDistance;
 			vertex.z = MyLightVertexVector[0].z - light[2] * localSunDistance;
 		}
 #endif
 
-		MyLightVertexVector.push_back(vertex);
+		MyLightVertexVector.push_back(vertex);	//VERTICE1: Source.
+#if defined DEBUG_LOG_MAIN_RENDER_LIGHT_RAY
+		womalog("LightVertex[1]: %5.1f %5.1f %5.1f\n", MyLightVertexVector[1].x, MyLightVertexVector[1].y, MyLightVertexVector[1].z);
+		//LightVertex[0]   0.0  -7.0   0.0 - LightVertex[1]: -473.8 512.0 194.2
+#endif
+
+		// ------------------------------------------------------------------------------------------------------
 
 		WOMA::vec3 lightDirTemp = {};
 
 #if defined DX_ENGINE
-		XMVECTOR vec = XMVector3Normalize(XMVectorSet(vertex.x, vertex.y, vertex.z, 1));
+		//vec = {-0.654295921, 0.707106709, 0.268135875, 0.00138106779}
+		XMVECTOR vec = XMVector3Normalize(XMVectorSet(vertex.x, vertex.y, vertex.z, 1));	//SRC
 
 		// Keep old logic by storing the old result
+		// lightDirTemp = { x = 0.654295921 y = -0.707106709 z = 0.268135875 }
 		lightDirTemp = WOMA::vec3(-vec.m128_f32[0], -vec.m128_f32[1], -vec.m128_f32[2]);
 
 		// Now apply final correction:
@@ -107,9 +122,9 @@ void ApplicationClass::CalculateLightRayVertex(float localSunDistance)
 				lx /= len; ly /= len; lz /= len;
 			}
 
-			//if (ly > 0.0f)
-			//	ly = -ly;
-
+			// lx  0.654295981
+			// ly -0.707106769
+			// lz  0.268135905
 			app_Light->SetDirection(lx, ly, lz);
 		}
 #else
@@ -124,8 +139,8 @@ void ApplicationClass::CalculateLightRayVertex(float localSunDistance)
 	  #endif
 #endif
 
-		//Generate the new app_Light: ViewMatrix NO NEED, for shadows!??
-		#if defined DX_ENGINE //&& future
+		// Generate the new app_Light: ViewMatrix
+		#if defined DX_ENGINE
 		app_Light->GenerateViewMatrix(vertex.x, vertex.y, vertex.z);
 		#endif
 }
@@ -151,11 +166,11 @@ void ApplicationClass::initLightRay(void* ctx)
 	#if (defined OPENGL3 || defined OPENGL4)
 		if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
 		{ 
-			CREATE_MODELGL3_IF_NOT_EXCEPTION(m_lightRayModel,  /*Fake*/I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);	// Allocate the MODEL
+			CREATE_MODELGL3_IF_NOT_EXCEPTION(m_lightRayModel,  /*Fake*/I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);	// Create MODEL
 		} else
 	#endif
 		{
-			CREATE_MODELDX_IF_NOT_EXCEPTION(m_lightRayModel,  /*Fake*/I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);	// Allocate the MODEL
+			CREATE_MODELDX_IF_NOT_EXCEPTION(m_lightRayModel,  /*Fake*/I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);	// Create MODEL
 		}
 		
 		m_lightRayModel->PrimitiveTopology = LINELIST; // Draw just a line

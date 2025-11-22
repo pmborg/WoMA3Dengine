@@ -1,0 +1,128 @@
+<woma>
+  <camera screenNear="0.1f" screenDepth="200" >
+    <initPos x="128" y="1" z="152"/>
+    <initRot x="1" y="1" z="0"/>
+  </camera>
+
+  <!-- ENGINE LVL 31-->
+  <fog start="0" end="200"/>
+  <!--NO FOG-->
+  <!--fog start="32" end="128"/-->
+  <!--FOG-->
+
+  <world hVisibility="128" seaLevel="0" size="512" patchSize="64" skySize="25"
+         clearColorR="0" clearColorG="0" clearColorB="0"
+         water="engine/data/Terrain/heightmap512x512.bmp"
+         waterTexture="engine/data/Terrain/008water_tex04.jpg"
+         mainTexture="engine/data/scene61DEMO/WorldHM.bmp"
+         skyDayTexture="engine/data/sky/NEW_SKY_DOME.jpg"
+         skyNightTexture="engine/data/sky/98b9cd04-2e71-4e04-8b2b-ff3355f26cd0.png"/>
+
+  <!-- Depend: -1 will force obj to "scale" -->
+  <!--0-->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0" scale="0.25"   posX="40"    posZ="25"    translateY="0.5f"   rotX="" rotY="PI"  rotZ=""      shader="" castShadow="" renderShadows="" filename="engine/data/scene30/spaceCompound.w3d"                    soundRange=""     audio="" />
+  <!--1-->
+  <object id="0" depend="0"   instances=""  fromPage="89" toPage="0" scale="0.75f"  posX="44"    posZ="88"    translateY="9"      rotX="" rotY=""    rotZ=""      shader="" castShadow="" renderShadows="" filename="engine/data/scene64DEMO/windmill/mill_mainV2.w3d"         soundRange=""     audio="" />
+  <!--2-->
+  <object id="0" depend="1"   instances=""  fromPage="89" toPage="0" scale="0.75f"  posX="44"    posZ="91" translateY="22.1f"  rotX="" rotY=""    rotZ="-1000" shader="" castShadow="" renderShadows="" filename="engine/data/scene64DEMO/windmill/mill_pas.w3d"            soundRange=""     audio="" />
+
+  <!-- WALL: Valid values PI or PI/2 or -PI/2 - Applies to this case: PI = 3.13f PI/2 = 1.565f -->
+  <!--3 south-->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0" scale="21.5f" posX="132"     translateY="7"  posZ="3"        rotX="" rotY="3.12f"  rotZ=""      shader="" castShadow="" renderShadows="" filename="engine/data/scene87ForestHuntress.priv/worldMap/WALL/LONG_WALL_centered.obj"              soundRange=""     audio="" />
+  <!--4 dir.-->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0" scale="21.5f"  posX="258.1f"  translateY="7"  posZ="135.8f"   rotX="" rotY="1.55f"  rotZ=""    shader="" castShadow="" renderShadows="" filename="engine/data/scene87ForestHuntress.priv/worldMap/WALL/LONG_WALL_centered.obj"              soundRange=""     audio="" />
+  <!--5 esq.-->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0" scale="21.5f"  posX="7.5f"    translateY="7"  posZ="138.2f"   rotX="" rotY="-1.6"  rotZ=""   shader="" castShadow="" renderShadows="" filename="engine/data/scene87ForestHuntress.priv/worldMap/WALL/LONG_WALL_centered.obj"              soundRange=""     audio="" />
+  <!--6 front. esq.-->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0" scale="21.5f"
+          posX="34.2f"    translateY="12.1f"  posZ="265.4f"   rotX="" rotY=""  rotZ=""   shader="" castShadow="" renderShadows="" filename="engine/data/scene87ForestHuntress.priv/worldMap/WALL/WALL_centered.obj"              soundRange=""     audio="" />
+  <!--7 front. dir.-->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0" scale="21.5f"
+          posX="232.7f"    translateY="12.1f"  posZ="263.3f"   rotX="" rotY=""  rotZ=""   shader="" castShadow="" renderShadows="" filename="engine/data/scene87ForestHuntress.priv/worldMap/WALL/WALL_centered.obj"              soundRange=""     audio="" />
+
+  <!-- 8 Arvore velha -->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
+  posX="29"    posZ="76"   translateY="0" scale="0.04f" rotY="0.76f" rotX=""    rotZ=""      shader="" castShadow="" renderShadows=""
+  filename="engine/data/scene87ForestHuntress.priv/worldMap/MossyTtreeStumpFalls/MossyTtreeStumpFalls_V4_01.obj" soundRange="" audio="" />
+
+  <!-- 9 gate -->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
+  posX="88.1f"    posZ="73.2f"   translateY="0.1f" scale="1" scaleY="2" rotY="-1.25f" rotX=""    rotZ=""      shader="" castShadow="" renderShadows=""
+  filename="engine/data/scene87ForestHuntress.priv/worldMap/woodfence/gate.obj" soundRange="" audio="" />
+
+  <!-- 10 gate post -->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
+  posX="88.6f"    posZ="73.2f"   translateY="0.1f" scale="1" scaleY="2" rotY="" rotX=""    rotZ=""      shader="" castShadow="" renderShadows=""
+  filename="engine/data/scene87ForestHuntress.priv/worldMap/woodfence/Gate_post.obj" soundRange="" audio="" />
+
+  <!-- 11 post -->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
+  posX="87.3f"    posZ="73.2f"   translateY="0.1f" scale="1" scaleY="2" rotY="" rotX=""    rotZ=""      shader="" castShadow="" renderShadows=""
+  filename="engine/data/scene87ForestHuntress.priv/worldMap/woodfence/post.obj" soundRange="" audio="" />
+  <!-- 12 post -->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
+  posX="87.1f"    posZ="73.2f"   translateY="0.1f" scale="1" scaleY="2" rotY="" rotX=""    rotZ=""      shader="" castShadow="" renderShadows=""
+  filename="engine/data/scene87ForestHuntress.priv/worldMap/woodfence/post.obj" soundRange="" audio="" />
+
+  <!-- 13 ponte -->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
+  posX="44.1f"    posZ="74.1f"   translateY="-1" scale="44.5f" scaleY="20" rotY="" rotX=""    rotZ=""      shader="" castShadow="" renderShadows=""
+  filename="engine/data/scene87ForestHuntress.priv/worldMap/ponte/Japan_Bridge/Japan_Bridge_LOD2.obj" soundRange="" audio="" />
+
+  <!-- 14 old boat-->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
+  posX="60"    posZ="70"   translateY="-0.2f" scale="2" rotY="1.04f" rotX=""    rotZ=""      shader="" castShadow="" renderShadows=""
+  filename="engine/data/scene97/oldBoat.w3d" soundRange="" audio="" />
+
+  <!--15 Tunnel, NULL, L"engine/data/tunnelv2.m3d",		0.12f,	155.0f,	37.2f,	-12.40f,PI/2},-->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
+  posX="155.5f"    posZ="36.8f"   translateY="0.5f" scale="0.13f" rotY="1.58f" rotX=""    rotZ=""      shader="" castShadow="" renderShadows=""
+  filename="engine/data/scene97/DungeonGate/tunnelv2_LOD0.w3d" soundRange="" audio="" />
+
+  <!--16 dungeon gate -->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
+  posX="143"    posZ="39.3f"   translateY="0.5f" scale="0.325f" rotY="0" rotX=""    rotZ=""      shader="" castShadow="" renderShadows=""
+  filename="engine/data/scene97/DungeonGate/DungeonGate0.4.w3d" soundRange="" audio="" />
+
+  <!--17 dungeon gate -->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
+  posX="168.1f"    posZ="30.8f"   translateY="0.5f" scale="0.425f" rotY="-1.578f" rotX=""    rotZ=""      shader="" castShadow="" renderShadows=""
+  filename="engine/data/scene97/DungeonGate/DungeonGate0.4.w3d" soundRange="" audio="" />
+
+ 
+  <!--18 barrel_b1 -->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
+  posX="130"    posZ="158"   translateY="" scale="0.02f" rotY="" rotX=""    rotZ=""      shader="31" castShadow="" renderShadows=""
+  filename="engine/data/scene98/barrel_b1.w3d" soundRange="" audio="" />
+  <!--19 barrel_b1_open -->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
+  posX="131"    posZ="160"   translateY="0.2f" scale="0.02F" rotY="" rotX=""    rotZ=""      shader="31" castShadow="" renderShadows=""
+  filename="engine/data/scene98/barrel_b1_open.w3d" soundRange="" audio="" />
+  <!--20 BOX barrel_k1  -->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
+  posX="127.5f"    posZ="159"   translateY="0.2f" scale="0.02" rotY="" rotX=""    rotZ=""      shader="31" castShadow="" renderShadows=""
+  filename="engine/data/scene98/barrel_k1.w3d" soundRange="" audio="" />
+  <!--21 BOX barrel_k_open-->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
+  posX="127"    posZ="157"   translateY="" scale="0.02f" rotY="" rotX=""    rotZ=""      shader="31" castShadow="" renderShadows=""
+  filename="engine/data/scene98/barrel_k_open.w3d" soundRange="" audio="" />
+  <!--22 CartonBox -->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
+  posX="131"    posZ="162.1f"   translateY="0.7f" scale="0.001" rotY="" rotX=""    rotZ=""      shader="" castShadow="" renderShadows=""
+  filename="engine/data/scene98/CartonBox.w3d" soundRange="" audio="" />
+
+  <!-- AUDIO 23 water stone -->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
+  posX="142"    posZ="57"   translateY="15.0f" scale="0.021f" rotY="PI/2" rotX=""    rotZ=""      shader="" castShadow="" renderShadows=""
+  filename="engine/data/scene97/waterStone.w3d" soundRange="3.0f" audio="engine/data/scene97/mixkit-waterfall-flowing-water-2518.wav" />
+  
+  <!-- 24 Ocean -->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
+  posX="130"    posZ="260"   translateY="-3.3f" scale="0.011f" rotY="PI/2" rotX=""    rotZ=""      shader="" castShadow="" renderShadows=""
+  filename="engine/data/scene97/waterStone.w3d" soundRange="15.0f" audio="engine/data/scene97/mixkit-sea-waves-loop-1196.wav" />
+
+  <!-- FIRE: -->
+  <!-- 25 -->
+  <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0" scale="0.05f"  posX="112"    posZ="239"   translateY="0.55f" rotX="" rotY=""    rotZ=""      shader="" castShadow="" renderShadows="" filename="engine/data/scene72Fire/fire_rocks.obj"                   soundRange="1.0f" audio="engine/audio/fogo_30322_pcaeldries_fireburning-v2.wav" />
+
+</woma>

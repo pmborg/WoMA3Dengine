@@ -673,9 +673,7 @@ bool CTerrain::CreateTerrain60(ID3D11DeviceContext* pContext, float xPos, float 
 	CREATE_MODEL_IF_NOT_EXCEPTION(SystemHandle->m_Application->m_TerrainModel[MAIN_TERRAIN_ID], I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);  // m_TerrainModel[id] = NEW
 	SystemHandle->m_Application->m_TerrainModel[MAIN_TERRAIN_ID]->ModelHASfog = true;
 	
-#if   LEVEL >= 60
 	ASSERT(SystemHandle->m_Application->m_TerrainModel[MAIN_TERRAIN_ID]->LoadTerrain(pContext, TEXT("Terrain 60"), m_Driver, SHADER_Terrain_Texture_DEMO60, &Terrain60Textures, &modelVertexVector2, &Terrain60indices));
-#endif
 
 	return true;
 }

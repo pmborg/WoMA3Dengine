@@ -37,6 +37,7 @@
 
 #define I_HAVE_NO_SHADOWS	/*NoShadow*/false
 #define I_HAVE_SHADOWS		/*Shadow*/	true
+#define I_RENDER_SHADOWS	/*Shadow*/	true
 
 ///////////////////////
 // MY CLASS INCLUDES //
@@ -333,9 +334,9 @@ public:
     std::vector<UINT>						 sky_indexdata;
 #endif
     std::vector<VirtualModelClass*> objModel;
-	void initShadowTextureDemo(void* pContext);
+	void initShadowDebugTextureDemo(void* pContext);
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
-    DXrendertextureclass* m_RenderShadowTexture = NULL;	//TO INTERNAL RENDER!
+    DXrendertextureclass* m_TextureWithShadows = NULL;	//TO INTERNAL RENDER!
 #endif
     void WOMA_APPLICATION_SetInstancePositions(UINT m_ObjId, int m_instanceCount, InstanceType* instances_, UINT type=0);
 

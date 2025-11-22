@@ -68,11 +68,11 @@ void WinSystemClass::ProcessFrame()
 	SystemClass::FrameUpdate();	// Process: (Fx keys |ESC and F1 to F6| & get FPS)
 
 	if (WOMA::game_state == ENGINE_RESTART)
-		return; //Restart so, don't render!
+		return; //Restart? so, don't render, restart now.
 
 	// Render Setup?
 
-	Sleep((DWORD)16.66f);
+	Sleep((DWORD)16.66f);														// Do nothing for 16.66 ms (60 FPS)
 }
 
 void WinSystemClass::WinSystemClass_init()
@@ -102,7 +102,7 @@ WinSystemClass::~WinSystemClass()
 
 bool WinSystemClass::APPLICATION_BEFORE_WINDOW()
 {
-	womalog("WinSystemClass::APPLICATION_CORE_SYSTEM()\n");
+	womalog("WinSystemClass::APPLICATION_BEFORE_WINDOW()\n");
 
 	return true;
 }
