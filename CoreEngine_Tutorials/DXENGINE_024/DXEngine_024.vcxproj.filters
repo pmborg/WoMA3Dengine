@@ -42,6 +42,9 @@
     <Filter Include="GLSL">
       <UniqueIdentifier>{4f2db719-43cf-489e-9ba4-351fe03d363f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Vulkan">
+      <UniqueIdentifier>{3c92bdf5-b36b-4472-afae-c0ec69b04d25}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\include\ApplicationClass.h">
@@ -240,6 +243,15 @@
     <ClInclude Include="..\tech-level.h" />
     <ClInclude Include="core\include\platform.h" />
     <ClInclude Include="..\woma_engine_assets.h" />
+    <ClInclude Include="core\include\vkShaderClass.h">
+      <Filter>Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\vkModelClass.h">
+      <Filter>Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\vkClass.h">
+      <Filter>Vulkan</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
@@ -458,6 +470,15 @@
     </ClCompile>
     <ClCompile Include="core\src\corelib0.cpp">
       <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\vkShaderClass.cpp">
+      <Filter>Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\vkModelClass.cpp">
+      <Filter>Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\vkClass.cpp">
+      <Filter>Vulkan</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,0 +1,1012 @@
+﻿// --------------------------------------------------------------------------------------------
+// Filename: vkModelClass.cpp
+// --------------------------------------------------------------------------------------------
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
+// --------------------------------------------------------------------------------------------
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
+//
+// This file is part of the WorldOfMiddleAge project.
+//
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
+// without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
+// You may not alter or remove any copyright or other notice from copies of the content.
+// The content contained in this file is provided only for educational and informational purposes.
+// 
+// Downloaded from : https://github.com/pmborg/WoMA3Dengine
+// --------------------------------------------------------------------------------------------
+// PURPOSE: 
+// --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234526920;
+
+#include "platform.h"
+
+#if DX_ENGINE_LEVEL >= 21 && defined VULKAN
+#include "OSengine.h"
+#if defined VULKAN
+#include "vkModelClass.h"
+#endif
+
+#include "GLmathClass.h" // Shared OPENGL / Vulkan
+
+extern GLtextureClass* GetOrCreateTexture(WomaDriverClass* driver, const STRING& filename, void* pContext, bool Model3D);
+
+vkModelClass::vkModelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive, bool computeNormals, bool modelHASshadow, bool modelRENDERshadow)
+{
+	CLASSLOADER();
+
+	// SUPER: ----------------------------------------------------------------------
+	m_ObjId = -1;
+	ModelShaderType = SHADER_AUTO;
+
+	Model3D = model3d;
+	ModelHASfog = false;
+	ModelHASlight = true; // Have to be true!
+	ModelHASColorMap = false;
+	PrimitiveTopology = primitive;
+
+	PosX = PosY = PosZ = 0;
+
+	SpriteTextureWidth = NULL;
+	SpriteTextureHeight = NULL;
+
+#if defined USE_VIEW2D_SPRITES
+	m_xTexture = 1.0f;
+#endif
+
+	ModelHASNormals = false;
+	ModelcomputeNormals = computeNormals;
+
+	// Initialize the world/model matrix to the identity matrix:
+	m_worldMatrix = m_worldMatrix.mat4identity();  //Identity();
+	m_viewMatrix = m_viewMatrix.mat4identity();
+}
+
+vkModelClass::~vkModelClass() 
+{ 
+	//Shutdown();
+	CLASSDELETE(); 
+}
+
+void vkModelClass::Shutdown()
+{
+	VkDevice vkDevice = ((vkClass*)m_Driver)->m_device;
+
+	SAFE_SHUTDOWN(m_Shader);
+
+	if (m_vertexBuffer != VK_NULL_HANDLE)
+	{
+		vkDestroyBuffer(vkDevice, m_vertexBuffer, nullptr);
+		m_vertexBuffer = VK_NULL_HANDLE;
+	}
+
+	if (m_vertexBufferMemory != VK_NULL_HANDLE)
+	{
+		vkFreeMemory(vkDevice, m_vertexBufferMemory, nullptr);
+		m_vertexBufferMemory = VK_NULL_HANDLE;
+	}
+
+	if (m_indexBuffer != VK_NULL_HANDLE)
+	{
+		vkDestroyBuffer(vkDevice, m_indexBuffer, nullptr);
+		m_indexBuffer = VK_NULL_HANDLE;
+	}
+
+	if (m_indexBufferMemory != VK_NULL_HANDLE)
+	{
+		vkFreeMemory(vkDevice, m_indexBufferMemory, nullptr);
+		m_indexBufferMemory = VK_NULL_HANDLE;
+	}
+
+	for (UINT i = 0; i < vertexBuffers.size(); i++)
+	{
+		if (vertexBuffers[i] != VK_NULL_HANDLE)
+		{
+			vkDestroyBuffer(vkDevice, vertexBuffers[i], nullptr);
+			vertexBuffers[i] = VK_NULL_HANDLE;
+		}
+	}
+
+	for (UINT i = 0; i < vertexMemories.size(); i++)
+	{
+		if (vertexMemories[i] != VK_NULL_HANDLE)
+		{
+			vkFreeMemory(vkDevice, vertexMemories[i], nullptr);
+			vertexMemories[i] = VK_NULL_HANDLE;
+		}
+	}
+
+	vertexBuffers.clear();
+	vertexMemories.clear();
+
+	for (UINT i = 0; i < meshSRV.size(); i++)
+		meshSRV[i] = NULL;
+
+	meshSRV.clear();
+	m_Texture = NULL;
+
+}
+
+void vkModelClass::RenderWithFade(void* pContext, float fadeLight, bool FOG, UINT pass, void* lightViewMatrix, void* lightProjectionMatrix)
+{
+	m_Shader->PSfade = fadeLight;
+
+	model_fade = fadeLight;
+
+	Render(pContext, 0, 0, 0, pass, lightViewMatrix, lightProjectionMatrix);
+}
+
+// ----------------------------------------------------------------------------------------
+void vkModelClass::SetGeometryBuffers(void* pContext, UINT pass)
+// ----------------------------------------------------------------------------------------
+{
+	VkCommandBuffer commandBuffer = (VkCommandBuffer)pContext;
+	VkBuffer		vertexBuffer = m_vertexBuffer;
+
+	{
+		// --------------------------------------------------------------------
+		// RENDER: 1 - Vertex Buffer
+		// --------------------------------------------------------------------
+		VkDeviceSize offset = 0;
+		vkCmdBindVertexBuffers(commandBuffer, 0, 1, &vertexBuffer, &offset);
+	}
+
+	// --------------------------------------------------------------------
+	// RENDER: 2 Index Buffer
+	// --------------------------------------------------------------------
+	vkCmdBindIndexBuffer(commandBuffer, m_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+}
+
+void vkModelClass::Render(/*VkCommandBuffer*/void* pContext, UINT threadID, UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix, bool disableFog)
+{
+	VkDevice vkDevice = m_driver->m_device;
+
+	if (ModelShaderType > SHADER_COLOR)
+	{
+		m_Shader->hasAlfaColor = ModelHASAlfaColor;			//IMPORTANT LEVEL 62!
+		m_Shader->alfaColor = ModelAlfaColor;					//IMPORTANT LEVEL 62!
+	}
+
+	// ----------------------------------------------------------------------------------------
+	// Step 1 - Put the "vertex", "index" and "instances" (if exist) buffers on the graphics pipeline to prepare them for drawing:
+	// ----------------------------------------------------------------------------------------
+	// Render 1 ├── Bind VB
+	// Render 2 ├── Bind IB
+	SetGeometryBuffers(pContext, pass);
+
+	// ----------------------------------------------------------------------------------------
+	// Step 2 - Setup matrices (Unified CBUFFER path)
+	// Use caller-provided View/Projection for MiniMap and Shadow-style passes.
+	// ----------------------------------------------------------------------------------------
+	{
+		if (camera != CAMERA_MINIMAP)
+		{
+			projectionMatrix = m_driver->GetProjectionMatrix(camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
+		} else {
+			projectionMatrix = *(mat4*)ShadowProjectionMatrix;   //Use provided projection: for Shadows
+		}
+		m_viewMatrix = m_driver->GetViewMatrix(camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
+	}
+
+	// ----------------------------------------------------------------------------------------
+	// Step 3: Render Complex Mesh (OBJ/W3D):
+	// ----------------------------------------------------------------------------------------
+	//
+	// Pass Extra Parameters:
+	//
+	//Single-Material in limit meshSRV size =1
+#if defined USE_VIEW2D_SPRITES
+	m_Shader->PSfade = model_fade;
+#endif
+
+	{
+		//==================================================================================================
+		// WOMA Graphics API Rosetta Stone
+		// Equivalent concepts across DX11, DX12 and Vulkan.
+		//--------------------------------------------------------------------------------------------------
+		// GOAL                DX11                      DX12                           VULKAN
+		//--------------------------------------------------------------------------------------------------
+		// Create Texture      CreateTexture2D          CreateCommittedResource        vkCreateImage
+		// Create SRV          CreateShaderResourceView CreateShaderResourceView       VkDescriptorImageInfo
+		//
+		// Bind Shader->Texture
+		//                     PSSetShaderResources     CreateShaderResourceView*      vkUpdateDescriptorSets
+		//
+		// Activate for Draw
+		//                     PSSetShaderResources     SetGraphicsRootDescriptorTable vkCmdBindDescriptorSets
+		//--------------------------------------------------------------------------------------------------
+		// * DX12 creates the SRV in a descriptor heap; binding happens later through the root descriptor
+		//   table. Vulkan separates descriptor update (CPU-side) from descriptor binding (command buffer).
+		//==================================================================================================
+		UINT frame = m_driver->VKwindowsToRenderArray[0].m_currentFrame; //m_driver->m_frameIndex; 
+		if (ModelShaderType >= SHADER_TEXTURE) 
+		{
+			if (!FRAME[frame]) 
+			{
+				FRAME[frame] = true;
+				VkDescriptorImageInfo textureDescriptor = {};
+
+				textureDescriptor.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+
+				VkWriteDescriptorSet textureWrite = {};
+				textureWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+				textureWrite.dstBinding = 1;
+				textureWrite.descriptorCount = 1;
+				textureWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+				textureWrite.pImageInfo = &textureDescriptor;
+
+				if (m_Shader->singleDescriptorSubset)
+					textureWrite.dstSet = m_Shader->m_descriptorSet30[frame];	//monitor
+				else
+					textureWrite.dstSet = m_Shader->GetDescriptorSet(frame, 0); //Index = 0
+
+				for (UINT i = 0; i < meshSRV.size(); i++)
+				{
+					uint32_t binding = i + 1;
+					switch(m_Shader->m_shaderType)
+					{
+					case SHADER_Terrain_Texture_DEMO60:
+					case SHADER_Terrain_Texture_DEMO61:
+						if(binding>=2)
+							binding++;
+						break;
+					}
+
+					textureDescriptor.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+					textureDescriptor.imageView = meshSRV[i]->m_vkImageView;
+
+					textureDescriptor.sampler = m_driver->m_vkSampler[meshSRV[i]->m_wrap];
+
+					VkWriteDescriptorSet textureWrite{};
+					textureWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+
+					//textureWrite.dstSet = m_Shader->GetDescriptorSet(frame, 0);
+				if (m_Shader->singleDescriptorSubset)
+					textureWrite.dstSet = m_Shader->m_descriptorSet30[frame];	//monitor
+				else
+					textureWrite.dstSet = m_Shader->GetDescriptorSet(frame, 0); //Index = 0
+
+					textureWrite.dstBinding = binding;              // binding 1..11
+					textureWrite.descriptorCount = 1;
+					textureWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+					textureWrite.pImageInfo = &textureDescriptor;
+
+					vkUpdateDescriptorSets(vkDevice, 1, &textureWrite, 0, nullptr);
+				}
+			}
+		}
+
+		m_Shader->Render(pass, pContext, m_indexCount, &m_worldMatrix, &m_viewMatrix, &projectionMatrix);
+	}
+}
+
+bool vkModelClass::LoadColor(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type,
+							 std::vector<ModelColorVertexType>* model, std::vector<UINT>* indexList, 
+							 UINT instanceCount)
+{
+#if defined _DEBUG || defined LINUX_PLATFORM //|| defined ANDROID_PLATFORM
+	womalogATfirstframe(TEXT("--------------------------------------------------------------\n[%d]: LOADCOLOR(): %s\n"), gettid(), objectName);
+#endif
+
+	//LOADDRIVER
+	m_driver = (vkClass*)driver;
+	ASSERT_DEBUG(driver);
+
+	MODEL_NAME = objectName;
+	ASSERT_DEBUG(model);
+
+	m_vertexCount = (UINT)(*model).size();
+
+	if (shader_type == SHADER_AUTO)
+		ModelShaderType = SHADER_COLOR;
+	else
+		ModelShaderType = shader_type;
+
+	ASSERT_DEBUG(ModelShaderType == SHADER_COLOR);
+
+	modelColorVertex = model;
+	indexModelList = indexList;
+
+	return InitializeVkBuffers(pContext, objectName, NULL);
+}
+
+vkShaderClass* vkModelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderType, UINT monitor)
+{
+	bool result = true;
+	vkShaderClass* shader = NEW vkShaderClass();
+	IF_NOT_THROW_EXCEPTION(shader);
+	
+#if defined WINDOWS_PLATFORM
+	#define pass_m_hWnd SystemHandle->m_hWnd
+#else
+	#define pass_m_hWnd NULL
+#endif
+
+	result = shader->Initialize(m_ObjId, objectName, ShaderType, ((vkClass*)m_Driver)->m_device, pass_m_hWnd, PrimitiveTopology, monitor);
+	IF_NOT_THROW_EXCEPTION(result);
+
+	if (ShaderType >= SHADER_TEXTURE_LIGHT)
+		shader->hasLight = ModelHASlight;	// COLOR AND TEXTURE = FALSE
+
+	return shader;
+}
+
+// --------------------------------------------------------------------------------------------
+bool vkModelClass::InitializeColorBuffers(void* pContext, TCHAR* objectName, void* indices)
+// --------------------------------------------------------------------------------------------
+{
+	IF_NOT_RETURN_FALSE(CreateVKbuffers(pContext, objectName, NULL));
+
+	return true;
+}
+
+bool vkModelClass::InitializeTextureBuffers(void* pContext, TCHAR* objectName, std::vector<STRING>* textureFile)
+{
+	
+	IF_NOT_RETURN_FALSE(CreateVKbuffers(pContext, objectName, textureFile));
+
+	return true;
+}
+
+bool vkModelClass::LoadTexture(void* pContext, TCHAR* objectName, void* driver,
+	SHADER_TYPE shader_type, std::vector<STRING>* textureFile,
+	std::vector<ModelTextureVertexType>* model, std::vector<UINT>* indexList, UINT instanceCount)
+{
+	//LOADDRIVER
+	m_driver = (vkClass*)driver;
+	ASSERT_DEBUG(driver);
+
+	MODEL_NAME = objectName;
+	m_vertexCount = (UINT)(*model).size();
+
+	if (shader_type == SHADER_AUTO)
+		ModelShaderType = SHADER_TEXTURE;
+	else
+		ModelShaderType = shader_type;
+
+	ASSERT_DEBUG(
+		ModelShaderType == SHADER_TEXTURE ||					//22
+		ModelShaderType == SHADER_TEXTURE_FONT ||				//27
+		ModelShaderType == SHADER_TEXTURE_WATER ||				//54
+		ModelShaderType == SHADER_FIRE ||						//72
+		ModelShaderType == SHADER_USE_CURVED_REAL_SKY_PLANE 	//96
+	);
+
+	modelTextureVertex = model;
+	indexModelList = indexList;
+
+	return InitializeVkBuffers(pContext, objectName, textureFile);
+}
+
+
+void vkModelClass::GetIndices()
+{
+	womalog("\nGetIndices()\n");
+
+	int j = 0;
+	if (!indexModelList || indexModelList->empty())
+	{
+		m_indexCount = m_vertexCount;
+
+		indices = NEW UINT[m_indexCount];
+		IF_NOT_THROW_EXCEPTION(indices);
+
+		for (UINT i = 0; i < m_indexCount; i++)
+		{
+			indices[i] = i;						// Load the index array with data:
+		}
+	}
+	else
+	{
+		m_indexCount = (UINT)indexModelList->size();
+
+		indices = NEW UINT[m_indexCount];
+		IF_NOT_THROW_EXCEPTION(indices);
+
+		for (UINT i = 0; i < m_indexCount; i++)
+		{
+			indices[i] = (*indexModelList)[i];
+		}
+	}
+}
+
+void vkModelClass::Identity()
+{
+	m_worldMatrix = m_worldMatrix.mat4identity();
+}
+
+void vkModelClass::multiply(void* m) // in radians!!
+{
+	m_worldMatrix = m_worldMatrix * *(mat4*)m;;
+}
+
+void vkModelClass::rotateX(float xZrad) // in radians!!
+{
+	mat4 m = mathClass.rotateX(xZrad);
+	m_worldMatrix = m_worldMatrix * m;
+}
+void vkModelClass::rotateY(float yZrad) // in radians!!
+{
+	mat4 m = mathClass.rotateY(-yZrad);
+	m_worldMatrix = m_worldMatrix * m;
+}
+void vkModelClass::rotateZ(float rZrad) // in radians!!
+{
+	mat4 m = mathClass.rotateZ(rZrad);
+	m_worldMatrix = m_worldMatrix * m;
+}
+
+void vkModelClass::scale(float x, float y, float z)
+{
+	m_worldMatrix.m[4 * 0 + 0] = x;
+	m_worldMatrix.m[4 * 1 + 1] = y;
+	m_worldMatrix.m[4 * 2 + 2] = z;
+}
+void vkModelClass::translation(float x, float y, float z)
+{
+	m_worldMatrix.m[4 * 3 + 0] = x;
+	m_worldMatrix.m[4 * 3 + 1] = y;
+	m_worldMatrix.m[4 * 3 + 2] = z;
+}
+
+#if defined MAIN_RENDER_LIGHT_RAY
+void vkModelClass::UpdateLightRayVertices(void* pContext, std::vector<ModelColorVertexType>* lightVertexVector)
+{
+	static float m_previousPosX = -10000;
+	static float m_previousPosY = -10000;
+	static float m_previousPosZ = -10000;
+
+	VkDevice vkDevice = ((vkClass*)m_Driver)->m_device;
+
+	if (!lightVertexVector || lightVertexVector->size() < 2)
+		return;
+
+	// --------------------------------------------------------------------
+	// The LightRay is defined by the position of its second vertex.
+	// --------------------------------------------------------------------
+	float positionX = (*lightVertexVector)[1].x;
+	float positionY = (*lightVertexVector)[1].y;
+	float positionZ = (*lightVertexVector)[1].z;
+
+	// Nothing changed -> vertex buffer does not need to be updated.
+	if ((positionX == m_previousPosX) &&
+		(positionY == m_previousPosY) &&
+		(positionZ == m_previousPosZ))
+	{
+		return;
+	}
+
+	// Remember the new position.
+	m_previousPosX = positionX;
+	m_previousPosY = positionY;
+	m_previousPosZ = positionZ;
+
+	// --------------------------------------------------------------------
+	// Save Vulkan: vertex data on model class:
+	// --------------------------------------------------------------------
+	m_vertexCount = (UINT)lightVertexVector->size();
+
+	modelColorVertex = lightVertexVector;
+
+	// --------------------------------------------------------------------
+	// Update Vulkan Vertex Buffer
+	// --------------------------------------------------------------------
+	const VkDeviceSize vertexBufferSize = sizeof(ModelColorVertexType) * m_vertexCount;
+
+	void* data = nullptr;
+
+	VkResult vkResult = vkMapMemory(vkDevice, m_vertexBufferMemory, 0, vertexBufferSize, 0, &data);
+	ASSERT(vkResult == VK_SUCCESS);
+
+	memcpy(data, modelColorVertex->data(), (size_t)vertexBufferSize);
+
+	vkUnmapMemory(vkDevice, m_vertexBufferMemory);
+}
+#endif
+
+
+bool vkModelClass::LoadLight(void* pContext, TCHAR* objectName, void* driver,
+	SHADER_TYPE shader_type, std::vector<STRING>* textureFiles,
+	std::vector<ModelTextureLightVertexType>* model, std::vector<UINT>* indexList, UINT instanceCount)
+{
+	//LOADDRIVER:
+	m_driver = (vkClass*)driver;
+	ASSERT_DEBUG(driver);
+
+	MODEL_NAME = objectName;
+	m_vertexCount = (UINT)(*model).size();
+
+	if (shader_type == SHADER_AUTO)
+		ModelShaderType = SHADER_TEXTURE_LIGHT;
+	else
+		ModelShaderType = shader_type;
+
+	ASSERT_DEBUG((ModelShaderType == SHADER_TEXTURE_LIGHT) ||				// SHADER_TYPE =  4
+		(ModelShaderType == SHADER_TEXTURE_LIGHT_RENDERSHADOW) ||			// SHADER_TYPE =  6
+		(ModelShaderType == SHADER_TEXTURE_LIGHT_ALPHAMAP) ||				// SHADER_TYPE =  8
+		(ModelShaderType == SHADER_TEXTURE_LIGHT_INSTANCED) ||				// SHADER_TYPE =  9	//lvl40
+		(ModelShaderType == SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED) ||	// SHADER_TYPE = 11
+		(ModelShaderType == SHADER_FIRE) ||                                 // SHADER_TYPE = 22
+		(ModelShaderType == SHADER_TEXTURE_GS_INSTANCED) ||                 // SHADER_TYPE = 23
+		(ModelShaderType == SHADER_TEXTURE_LIGHT_FAST) ||					// SHADER_TYPE = 25
+		(ModelShaderType == SHADER_TEXTURE_POINTS_OF_LIGHT_INSTANCED) ||	// SHADER_TYPE = 31	//lvl98
+		(ModelShaderType == SHADER_TEXTURE_LIGHT98)							// SHADER_TYPE = 32	//lvl98
+	);
+
+	modelTextureLightVertex = model;
+	indexModelList = indexList;
+
+
+	return InitializeVkBuffers(pContext, objectName, textureFiles);
+}
+
+bool vkModelClass::InitializeTextureLightBuffers(void* pContext, TCHAR* objectName, std::vector<STRING>* textureFile)
+{
+	IF_NOT_RETURN_FALSE(CreateVKbuffers(pContext, objectName, textureFile));
+	return true;
+}
+
+
+
+bool vkModelClass::InitializeVkBuffers(void* pContext, TCHAR* objectName, std::vector<STRING>* textureFile)
+{
+	bool result = true;
+
+	GetIndices();
+
+	// Create the shader to this object:
+	// ------------------------------------------------------------------------------------------------
+	m_Shader = CreateShader(objectName, ModelShaderType);
+	ASSERT_DEBUG(m_Shader);
+	IF_NOT_RETURN_FALSE(m_Shader);
+
+	if (ModelShaderType > SHADER_COLOR)
+	{
+		m_Shader->hasAlfaColor = ModelHASAlfaColor;			//IMPORTANT LEVEL 62!
+		m_Shader->alfaColor = ModelAlfaColor;				//IMPORTANT LEVEL 62!
+		m_Shader->hasFog = ModelHASfog;						//IMPORTANT LEVEL 62!
+	}
+
+	// ----------------------------------------------------------------------------------------------
+	// Send Buffers to "Grph. Card.": The vertex and index buffer that hold the geometry for the triangles
+	// ----------------------------------------------------------------------------------------------
+	IF_NOT_RETURN_FALSE(result);
+	switch (ModelShaderType)
+	{
+	case SHADER_COLOR:
+		result = InitializeColorBuffers(pContext, objectName, indices);
+		break;
+
+	case SHADER_TEXTURE:
+	case SHADER_TEXTURE_FONT:
+	case SHADER_TEXTURE_WATER:
+	case SHADER_FIRE:
+	case SHADER_USE_CURVED_REAL_SKY_PLANE:
+
+		result = InitializeTextureBuffers(pContext, objectName, textureFile);
+		break;
+
+	case SHADER_TEXTURE_LIGHT:						//23 LIGHT 
+	case SHADER_TEXTURE_LIGHT_ALPHAMAP:				//34
+	case SHADER_TEXTURE_LIGHT98:					//98
+	case SHADER_TEXTURE_LIGHT_RENDERSHADOW:			//36 Draw Shadows
+	case SHADER_TEXTURE_LIGHT_INSTANCED:			//40 INSTANCED like 23 light, but using Instances
+	case SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED: //41
+	case SHADER_TEXTURE_GS_INSTANCED:               //77
+	case SHADER_TEXTURE_LIGHT_FAST:					//83 LIGHT 
+	case SHADER_TEXTURE_POINTS_OF_LIGHT_INSTANCED:  //98
+		result = InitializeTextureLightBuffers(pContext, objectName, textureFile);
+		IF_NOT_RETURN_FALSE(result);
+			break;
+		// Fall through: also create the auxiliary shadow buffer.
+
+		//NOTE: After: SHADER_TEXTURE_LIGHT
+
+	default:
+		WomaFatalException("WRONG SHADER!"); // Multi OS support
+	}
+
+	womalog("InitializeVkBuffers() - BEFORE SAFE_DELETE_ARRAY(indices)\n");
+
+	SAFE_DELETE_ARRAY(indices);
+
+	womalog("InitializeVkBuffers() - AFTER SAFE_DELETE_ARRAY(indices)\n");
+
+#if defined USE_BOUNDING_VOLUMES
+	IF_RENDER_PAGE(RENDER_PAGE >= 78) //AQUI
+	{
+		// Compute the model-space bounding box center
+		XMFLOAT3 center;
+		center.x = (minVertex.x + maxVertex.x) * 0.5f;
+		center.y = (minVertex.y + maxVertex.y) * 0.5f;
+		center.z = (minVertex.z + maxVertex.z) * 0.5f;
+
+		// Store center offset (distance from (0,0,0) to the real model center)
+		objectCenterOffset = XMFLOAT4(center.x, center.y, center.z, 0.0f);
+
+		// Compute bounding sphere radius (half diagonal of the box)
+		XMVECTOR size = XMVectorSubtract(XMLoadFloat3(&maxVertex), XMLoadFloat3(&minVertex));
+		boundingSphere = 0.5f * XMVectorGetX(XMVector3Length(size));
+	}
+#endif
+
+	return true;
+}
+
+// Static 3D geometry is uploaded once through a staging buffer and kept in
+// DEVICE_LOCAL memory. This is the Vulkan equivalent of
+// D3D11_USAGE_IMMUTABLE and avoids reading millions of vertices each frame
+// from HOST_VISIBLE memory.
+// --------------------------------------------------------------------------------------------
+bool vkModelClass::CreateVKbuffers(void* pContext, TCHAR* objectName, std::vector<STRING>* textureFile, SHADER_TYPE shaderType)
+// --------------------------------------------------------------------------------------------
+{
+	VkResult vkResult;
+	vkClass* driver = (vkClass*)m_Driver;
+	ASSERT_DEBUG(driver);
+
+	VkDevice vkDevice = driver->m_device;
+	ASSERT_DEBUG(vkDevice);
+
+	womalog("vkModelClass::CreateVKbuffers() - START %s %p m_indexBuffer: %p m_indexBufferMemory: %p\n", objectName, this, m_indexBuffer, m_indexBufferMemory);
+
+	if (shaderType == SHADER_AUTO)
+		shaderType = ModelShaderType;
+
+	// ========================================================================
+	// INDEX BUFFER
+	// ========================================================================
+	ASSERT_DEBUG(m_indexCount);
+	indexBufferSize = sizeof(UINT) * m_indexCount;
+
+	if (Model3D) 
+	{
+		if (!m_indexBuffer && !m_indexBufferMemory)
+			driver->CreateAndUploadBuffer(indexBufferSize, indices, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, m_indexBuffer, m_indexBufferMemory);
+	}
+	else
+	{
+		//
+		// 2D: [Sprites / 2D MODEL] - Store in CPU-visible shared memory (HOST_VISIBLE)
+		//
+
+		// Create Index Buffer
+		VkBufferCreateInfo indexBufferInfo{};
+		indexBufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+		indexBufferInfo.size = indexBufferSize;
+		indexBufferInfo.usage = VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
+		indexBufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+		if (!m_indexBuffer)
+			VK_CHECK(vkCreateBuffer(vkDevice, &indexBufferInfo, nullptr, &m_indexBuffer));
+
+		// Get memory requirements
+		VkMemoryRequirements indexMemRequirements{};
+		vkGetBufferMemoryRequirements(vkDevice, m_indexBuffer, &indexMemRequirements);
+
+		// Allocate memory
+		VkMemoryAllocateInfo indexAllocInfo{};
+		indexAllocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+		indexAllocInfo.allocationSize = indexMemRequirements.size;
+		indexAllocInfo.memoryTypeIndex = driver->FindMemoryType(indexMemRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+
+		if (!m_indexBufferMemory)
+		{
+			VK_CHECK(vkAllocateMemory(vkDevice, &indexAllocInfo, nullptr, &m_indexBufferMemory));
+
+			// Bind memory to buffer
+			VK_CHECK(vkBindBufferMemory(vkDevice, m_indexBuffer, m_indexBufferMemory, 0));
+
+			// Copy WOMA index data directly into the Vulkan buffer
+			void* mappedIndexMemory = nullptr;
+			VK_CHECK(vkMapMemory(vkDevice, m_indexBufferMemory, 0, indexBufferSize, 0, &mappedIndexMemory));
+			memcpy(mappedIndexMemory, indices, (size_t)indexBufferSize);
+			vkUnmapMemory(vkDevice, m_indexBufferMemory);
+		}
+	}
+
+	//
+	// ========================================================================
+	// VERTEX BUFFER
+	// ========================================================================
+	//
+	vertexBufferSize = 0;
+
+	switch (shaderType)
+	{
+	case SHADER_COLOR:
+		m_vertexCount = (uint32_t)modelColorVertex->size();
+		vertexBufferSize = sizeof(ModelColorVertexType) * m_vertexCount;
+		break;
+
+	case SHADER_TEXTURE:		//22
+	case SHADER_FIRE:
+	case SHADER_USE_CURVED_REAL_SKY_PLANE:
+		m_vertexCount = (uint32_t)modelTextureVertex->size();
+		vertexBufferSize = sizeof(ModelTextureVertexType) * m_vertexCount;
+		break;
+
+	case SHADER_TEXTURE_LIGHT:				//23
+	case SHADER_TEXTURE_LIGHT_ALPHAMAP:		//34
+	case SHADER_TEXTURE_LIGHT_RENDERSHADOW:	//36
+	case SHADER_TEXTURE_LIGHT_INSTANCED:	//40
+	case SHADER_TEXTURE_GS_INSTANCED:		//77
+	case SHADER_TEXTURE_LIGHT_FAST:			//83
+	case SHADER_TEXTURE_LIGHT98:			//98
+		m_vertexCount = (uint32_t)modelTextureLightVertex->size();
+		vertexBufferSize = sizeof(ModelTextureLightVertexType) * m_vertexCount;
+		break;
+
+	default:
+		womalog("FATAL ERROR: %s %s() %d\n", __FILE__, __FUNCTION__, __LINE__);
+		ASSERT(false); //Shader not supported yet.
+		return false;
+	}
+
+	currentVertexBufferSize = vertexBufferSize;
+
+	ASSERT_DEBUG(m_vertexCount > 0);						// Better check, if object is empty...
+	womalog("ASSERT_DEBUG(m_vertexCount > 0); ok!\n");
+	ASSERT_DEBUG(currentVertexBufferSize > 0);				// Better check, if object is empty...
+	womalog("ASSERT_DEBUG(currentVertexBufferSize > 0); ok!\n");
+
+	//---------------------------------------------------------------------------------------------------------
+	void* data = nullptr;
+
+	if (Model3D)
+	{
+	}
+	else
+	{
+		VkBufferCreateInfo bufferInfo{};
+
+		bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+		bufferInfo.size = currentVertexBufferSize;
+		bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+		bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	
+
+		{
+			// 1. Create Vertex Buffer
+			if (!m_vertexBuffer)
+			{
+				vkResult = vkCreateBuffer(vkDevice, &bufferInfo, nullptr, &m_vertexBuffer);
+				if (vkResult != VK_SUCCESS)
+				{
+					WomaFatalException(("Could not create Vulkan vertex buffer."));
+					return false;
+				}
+
+				// 2. Get memory requirements
+				VkMemoryRequirements memRequirements{};
+				vkGetBufferMemoryRequirements(vkDevice, m_vertexBuffer, &memRequirements);
+		
+				// 3. Allocate Vertex Buffer memory
+				VkMemoryAllocateInfo allocInfo{};
+				allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+				allocInfo.allocationSize = memRequirements.size;
+				allocInfo.memoryTypeIndex = driver->FindMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+				VK_CHECK( vkAllocateMemory(vkDevice, &allocInfo, nullptr, &m_vertexBufferMemory));
+		
+				// 4. Bind memory to Vertex Buffer
+				VK_CHECK(vkBindBufferMemory(vkDevice, m_vertexBuffer, m_vertexBufferMemory, 0));
+		
+				// 5. Upload WOMA vertices directly into Vulkan memory
+				VK_CHECK(vkMapMemory(vkDevice, m_vertexBufferMemory, 0, currentVertexBufferSize, 0, &data));
+			}
+		}
+	}
+
+	const void* srcVertices = nullptr;
+	switch (shaderType)
+	{
+	case SHADER_COLOR:
+		srcVertices = modelColorVertex->data();
+		break;
+
+	case SHADER_TEXTURE:
+		srcVertices = modelTextureVertex->data();
+		break;
+
+	case SHADER_TEXTURE_LIGHT:              //23
+	case SHADER_TEXTURE_LIGHT_ALPHAMAP:     //34
+	case SHADER_TEXTURE_LIGHT_RENDERSHADOW: //36
+	case SHADER_TEXTURE_LIGHT_INSTANCED:    //40
+	case SHADER_TEXTURE_GS_INSTANCED:       //77
+	case SHADER_TEXTURE_LIGHT_FAST:         //83
+	case SHADER_TEXTURE_LIGHT98:            //98
+		srcVertices = modelTextureLightVertex->data();
+		break;
+
+	default:
+		womalog("FATAL ERROR: %s %s() %d\n", __FILE__, __FUNCTION__, __LINE__);
+		ASSERT(false); //Shader not supported yet.
+		return false;
+	}
+		
+	if (Model3D) 
+	{
+		{
+			driver->CreateAndUploadBuffer(currentVertexBufferSize, srcVertices, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, m_vertexBuffer, m_vertexBufferMemory);
+		}
+	} 
+	else
+	{
+
+	memcpy(data, srcVertices, (size_t)currentVertexBufferSize);
+
+	if (shaderType != SHADER_TEXTURE_LIGHT_SAVESHADOW)
+		vkUnmapMemory(vkDevice, m_vertexBufferMemory);
+	}
+
+
+	//
+	// LOAD IMAGES:
+	//
+	// ------------------------------------------------------------------------------------------------
+	if (/*ModelShaderType*/ shaderType >= SHADER_TEXTURE)
+	{
+		bool result = false;
+
+		UINT meshSRV_size = (UINT)meshSRV.size();
+
+		if (meshSRV_size == 0 && textureFile)
+		{
+			for (UINT i = 0; i < textureFile->size(); i++)
+			{
+				// Initialize the texture object: ###: AddTexture(pixels, width, height, wrap);
+				TCHAR* file = (TCHAR*)(*textureFile)[i].c_str();
+
+				// Create the texture object for this model:
+				m_Texture = GetOrCreateTexture(m_Driver, file, pContext, Model3D);// NEW GLtextureClass;
+				IF_NOT_THROW_EXCEPTION(m_Texture);
+
+#if defined USE_VIEW2D_SPRITES //LEVEL24
+				if (!Model3D)
+				{
+					if (m_Texture)
+					{
+						if (SpriteTextureWidth == 0)
+							SpriteTextureWidth = m_Texture->width;
+
+						if (SpriteTextureHeight == 0)
+							SpriteTextureHeight = m_Texture->height;
+					}
+				}
+#endif
+				meshSRV.push_back(m_Texture);
+				m_Texture = NULL; // Ownership is now in meshSRV.
+			}
+		}
+
+		womalog("m_indexBuffer created: %p\n", m_indexBuffer);
+	}
+
+	womalog("vkModelClass::CreateVKbuffers() - END\n");
+
+	return true;
+}
+
+#if defined USE_VIEW2D_SPRITES // Sprites:24
+bool vkModelClass::RenderSprite(void* pContext, int positionX, int positionY, float scale, float fade)
+{
+	model_fade = fade;
+
+	if (!UpdateBuffersRotY(pContext, positionX, positionY))
+		return false;
+
+	m_worldMatrix.mat4identity();
+	m_worldMatrix.m[0] = scale;
+	m_worldMatrix.m[5] = scale;
+	m_worldMatrix.m[10]= scale;
+
+	Render(pContext, 0, CAMERA_NORMAL, PROJECTION_ORTHOGRAPH);
+
+	return true;
+}
+
+bool vkModelClass::UpdateBuffersRotY(void* pContext, int positionX, int positionY)
+{
+	static int previousPosX = -10000;
+	static int previousPosY = -10000;
+
+	bool RenderfirstTime = m_driver->RenderfirstTime;
+
+	if (((positionX == previousPosX) && (positionY == previousPosY)) && !RenderfirstTime)
+		return true;
+
+	previousPosX = positionX;
+	previousPosY = positionY;
+
+	ASSERT_DEBUG(SpriteTextureWidth);  // MANDATORY: SpriteTextureWidth >0
+	ASSERT_DEBUG(SpriteTextureHeight); // MANDATORY: SpriteTextureHeight >0
+
+	float left = (float)(WOMA::AppSettings->WINDOW_WIDTH / 2) * -1.0f + (float)positionX;
+	float right = left + (float)SpriteTextureWidth;
+
+	//LINUX & ANDROID:
+	float top = (float)(WOMA::AppSettings->WINDOW_HEIGHT / 2) - (float)positionY;
+	float bottom = top - (float)SpriteTextureHeight;
+
+	/*
+		------
+		|t1 / |
+		|  /  |
+		| / t2|
+		|/----|
+	*/	
+	static ModelTextureVertexType vertices[6];
+
+	// First triangle (t1)
+	vertices[0].x = left;
+	vertices[0].y = top;
+	vertices[0].z = 0;
+	vertices[0].tu = 0;
+	vertices[0].tv = 0;
+
+	vertices[1].x = right;
+	vertices[1].y = bottom;
+	vertices[1].z = 0;
+	vertices[1].tu = m_xTexture;
+	vertices[1].tv = 1;
+
+	vertices[2].x = left;
+	vertices[2].y = bottom;
+	vertices[2].z = 0;
+	vertices[2].tu = 0;
+	vertices[2].tv = 1;
+
+	// Second triangle (t2)
+	vertices[3].x = left;
+	vertices[3].y = top;
+	vertices[3].z = 0;
+	vertices[3].tu = 0;
+	vertices[3].tv = 0;
+
+	vertices[4].x = right;
+	vertices[4].y = top;
+	vertices[4].z = 0;
+	vertices[4].tu = m_xTexture;
+	vertices[4].tv = 0;
+
+	vertices[5].x = right;
+	vertices[5].y = bottom;
+	vertices[5].z = 0;
+	vertices[5].tu = m_xTexture;
+	vertices[5].tv = 1;
+
+	// upload para o Vulkan vertex buffer...
+	const VkDeviceSize vertexBufferSize = sizeof(ModelTextureVertexType) * 6;
+
+	VkDevice vkDevice = m_driver->m_device;
+
+	void* data = nullptr;
+
+	VkResult vkResult = vkMapMemory(vkDevice, m_vertexBufferMemory, 0, vertexBufferSize, 0, &data);
+	ASSERT(vkResult == VK_SUCCESS);
+
+	memcpy(data, vertices, (size_t)vertexBufferSize);
+
+	vkUnmapMemory(vkDevice, m_vertexBufferMemory);
+
+	return true;
+}
+bool vkModelClass::UpdateSpriteBuffersRotY(void* pContext, int positionX, int positionY)
+{
+
+	return true;
+}
+#endif
+
+////#if DX_ENGINE_LEVEL >= 97
+bool vkModelClass::LoadWaterFall(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<ModelTextureWaterfall>* model, std::vector<UINT>* indexList, UINT instanceCount)
+{
+	return false;
+}
+
+bool vkModelClass::LoadSmoke(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<SmokeVertexType>* model, std::vector<UINT>* indexList, UINT instanceCount)
+{
+	return false;
+}
+void vkModelClass::SetAlpha(float a) {};
+////#endif
+#endif

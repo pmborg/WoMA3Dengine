@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: GLshaderClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: MAIN PURPOSE:
 // ----------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
@@ -35,7 +35,6 @@ using namespace std;
 class GLshaderClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234525217;
 	GLshaderClass();
 	~GLshaderClass();
 
@@ -79,10 +78,10 @@ public:
 	//			lightDirection (AUTO)
 
 	// BLOCK4:
-	bool		hasColorMap;		// 66
-	int			lightType;			// Future
-	float		shaderType;			// Future
-	float		shaderTypeParameter;// Future
+	bool		hasColorMap = false;	// 66
+	float		lightType = 0;			// Light Type
+	bool		isDay = 0;				// level98
+	float		shaderTypeParameter = 0;// level62
 
 	// BLOCK5:
 	bool		hasAlfaColor;
@@ -103,6 +102,7 @@ public:
 	BOOL		castShadow;
 	float		specularColor[3];	// 44:
 	float		nShininess;		// 44:
+
 };
 
 	#include "lightClass.h"	

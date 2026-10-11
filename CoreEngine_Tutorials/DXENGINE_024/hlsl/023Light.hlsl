@@ -2,16 +2,16 @@
 // Filename: 023Light.hlsl
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
-*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2017
+*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2026
 *	-------------------------------------------------------------------------------------------
 *	code by : Pedro Borges - pmborg@yahoo.com
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
-#if (!defined DXAPI11 && !defined DXAPI12)
-    #define DXAPI11 1
+#if DXAPI11 != 1 && DXAPI12 != 1
+    #define DXAPI9 1
 #endif
 
 // mode:
@@ -23,6 +23,11 @@
 
 #define TEXTURE_MODE -1 //Default is -1
 
+//#define   PS_USE_FOG          //not sup. at this level
+//#define   PS_USE_ALFACOLOR	//not sup. at this level
+//#define   PS_USE_FADE			//not sup. at this level
+
+
 //////////////
 // TYPEDEFS //
 //////////////
@@ -30,17 +35,17 @@
 // VERTEX:
 struct VSIn
 {
-    float3 position : POSITION; //21
+    float3 position : POSITION;  //21
     float2 texCoords : TEXCOORD; //22
-    float3 normal : NORMAL; //23
+    float3 normal : NORMAL; 	 //23
 };
 
 // PIXEL:
 struct PSIn
 {
     float4 position : SV_POSITION; // 21
-    float2 texCoords : TEXCOORD; // 22
-    float3 normal : NORMAL; // 23 LIGHT
+    float2 texCoords : TEXCOORD;   // 22
+    float3 normal : NORMAL;        // 23 LIGHT
 };
 
 /////////////
@@ -51,7 +56,7 @@ struct PSIn
 // CBUFFERS
 ////////////////
 // SYNC: DXshaderClass.h -- DX12: CBV
-#if DXAPI11 == 1
+#if DXAPI9 == 1 || DXAPI11 == 1
 cbuffer VSShaderParametersBuffer	//DX11
 #endif
 #if DXAPI12 == 1
@@ -69,40 +74,17 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
     matrix WVP;         //worldMatrix+viewMatrix+projectionMatrix
 
     //// 23 BLOCK: VS2
-    //bool VShasLight;
-    //bool VShasSpecular;
-    //bool VShasNormMap;
-    //bool VShasFog;
-    //
-    //// 23 BLOCK: VS3
-    //float3 VSlightDirection;// LIGHT
-    //float VSlightPAD;       // 3+1=XMFLOAT4
-    //float4 VSambientColor;  // LIGHT
-    //float4 VSdiffuseColor;  // LIGHT
-    //float4 VSemissiveColor; // LIGHT: Ke
-    //
-    //// 31 BLOCK: VS4
-    //float VSfogStart;
-    //float VSfogEnd;
-    //bool VShasShadowMap;
-    //bool VS_USE_WVP;
-    //
-    //// 45 BLOCK: VS5
-    //matrix ViewToLightProj;
-    //matrix WorldInverseTranspose;   // WorldInverseTranspose
-    //float4 vEye;                    // camera position		
-    //
-    //// 42 BLOCK: VS6
-    //float VSrotX;
-    //float VSrotY;
-    //float VSrotZ;
-    //float time;
-    //
-    //// 42 BLOCK: VS7
-    //float VSshaderType;
-    //float vsPAD2;
-    //float vsPAD3;
-    //float vsPAD4;
+    bool VShasLight;
+    bool VShasSpecular;
+    bool VShasNormMap;
+    bool VShasFog;
+    
+    // 23 BLOCK: VS3
+    float3 VSlightDirection;// LIGHT
+    float  VSlightPAD;      // 3+1=XMFLOAT4
+    float4 VSambientColor;  // LIGHT
+    float4 VSdiffuseColor;  // LIGHT
+    float4 VSemissiveColor; // LIGHT: Ke
 };
 
 ///////////////
@@ -111,7 +93,7 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
 //Note: on DX11 dont use: register()
 
 // SYNC: DXshaderClass.h -- DX12: CBV
-#if DXAPI11 == 1
+#if DXAPI9 == 1 || DXAPI11 == 1
 cbuffer PSShaderParametersBuffer	//DX11
 #endif
 #if DXAPI12 == 1
@@ -132,41 +114,17 @@ cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: D
     float4 diffuseColor; // LIGHT: Kd
     float4 emissiveColor; // LIGHT: Ke 
     float4 lightDirection; // LIGHT
-    
-    //// BLOCK4:
-    //bool hasColorMap; // 66
-    //float lightType; // Future
-    //float shaderType; // Future
-    //float shaderTypeParameter; // Future
-    //
-    //// BLOCK5:
-    //bool hasAlfaColor;
-    //float alfaColor;
-    //float fade; // Fade from 0 to 1
-    //float frameTime; // For animations
-    //
-    //// BLOCK6:
-    //bool hasFog;
-    //bool isSky;
-    //bool hasAlfaMap;
-    //bool hasNormMap;
-    //
-    //// BLOCK7:
-    //float3 cameraPosition; // Future
-    //bool castShadow;
-    //float3 specularColor;
-    //float nShininess;
-};
+ };
 
 //Set on: DXmodelClass::RenderSubMesh
-#if DXAPI11 == 1
+#if DXAPI9 == 1 || DXAPI11 == 1
 Texture2D shaderTexture;
 #endif
 #if DXAPI12 == 1
 Texture2D shaderTexture:	register(t0);
 #endif
 
-#if DXAPI11 == 1
+#if DXAPI9 == 1 || DXAPI11 == 1
 SamplerState SampleType;
 #endif
 #if DXAPI12 == 1
@@ -193,29 +151,18 @@ PSIn VS_Main(VSIn input)
 {
     PSIn output;
 
-    //if (VS_USE_WVP)
-    {
-        output.position = mul(float4(input.position, 1), WVP); // Calculate the position of the vertex against the world, view, and projection matrices
-    }
-    //else
-    //{
-    //    float4 position = float4(input.position, 1);
-    //    position = mul(position, worldMatrix);
-    //    position = mul(position, view);         //viewMatrix
-    //    position = mul(position, projection);   //projectionMatrix
-    //    output.position = position;
-    //}
+    output.position = mul(float4(input.position, 1), WVP); // Calculate the position of the vertex against the world, view, and projection matrices
 
 	//22: TEXTURE: Store the texture coordinates for the pixel shader:
     output.texCoords = input.texCoords;
 
 	//23: LIGHT: NORMAL
-    //if (VShasLight || VShasSpecular) 
-        output.normal = normalize(mul(input.normal, (float3x3) worldMatrix)); // Calculate the normal vector against the world matrix only
+    output.normal = normalize(mul(input.normal, (float3x3) worldMatrix)); // Calculate the normal vector against the world matrix only
 
     return output;
 }
 
+#if DXAPI9 == 0
 #include "TextureSampling.hlsli"
 // mode:
 // 0 = nearest
@@ -223,6 +170,7 @@ PSIn VS_Main(VSIn input)
 // 2 = trilinear
 // 3 = cubic
 // 4 = hardware sampler
+#endif
 
 //Mode	Filter Type	    FPS
 //0	    Nearest	        13111 FPS
@@ -232,6 +180,7 @@ PSIn VS_Main(VSIn input)
 
 float4 GetShaderTexture(Texture2D tex, float2 texCoords, uint mipLevel, int mode)
 {
+#if DXAPI9 == 0
     switch (mode)
     {
         case 0:
@@ -246,8 +195,9 @@ float4 GetShaderTexture(Texture2D tex, float2 texCoords, uint mipLevel, int mode
         default:
             return tex.Sample(SampleType, texCoords);
     }
+#endif
 
-    // fallback
+    // Legacy fallback (DX9 / ps_4_0_level_9_3)
     return tex.Sample(SampleType, texCoords);
 }
 
@@ -260,13 +210,33 @@ float4 PS_Main(PSIn input) : SV_TARGET
     float lightIntensity = 0;
 
 	//-----------------------------------------------------------------------------------
-	// lvl >=21: TEXTURE: Sample the pixel color from the texture using the sampler at this texture coordinate location
-    //replace:
-        //textureColor = shaderTexture.Sample(SampleType, input.texCoords);    
-    //with:
-    #define TEXTURE_MODE 0
-    textureColor = GetShaderTexture(shaderTexture, input.texCoords, 0, TEXTURE_MODE);
-
+    //Mode	Filter Type	    FULL-HD     4K
+    //0	    Nearest	        13111 FPS   8949FPS
+    //1	    Bilinear	    12945 FPS   9334FPS
+    //2	    Trilinear	    12989 FPS   8913FPS
+    //3	    Cubic 	        13141 FPS   9940FPS
+    
+    // NOTES:
+    // - Cubic (Catmull–Rom 16 taps) is surprisingly fast due to cache coherence.
+    // - Default hardware sampler = same as mode 0 (nearest) unless sampler state says otherwise.
+    // - At this engine level (22), all filters have similar performance.
+    
+    //-----------------------------------------------------------------------------------
+    // Demo: split the quad in 5 vertical bands for 5 filters
+    //-----------------------------------------------------------------------------------
+    
+    int mode = int(saturate(input.texCoords.x) * 5.0); // 0..4
+    textureColor = GetShaderTexture(shaderTexture, input.texCoords, 0, mode);
+    
+    //texCoord.x range	mode	column
+    //[0.00–0.199]	    0	    Nearest
+    //[0.20–0.399]	    1	    Bilinear
+    //[0.40–0.599]	    2	    Trilinear
+    //[0.60–0.799]	    3	    Cubic
+    //[0.80–1.00 ]	    4       DEFAULT	hardware sampler (equal to nearest by default)
+    
+    // NOTE: mode 4 automatically uses tex.Sample(SampleType, uv)
+    //       because GetShaderTexture() falls back to the default case.
     lightIntensity = PSlightFunc2(input.normal);
     textureColor = textureColor * saturate(emissiveColor + ambientColor + (lightIntensity * diffuseColor));
 
