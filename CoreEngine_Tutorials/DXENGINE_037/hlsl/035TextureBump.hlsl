@@ -2,16 +2,16 @@
 // Filename: 035TextureBump.hlsl
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
-*   DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2023
+*   DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2026
 *   -------------------------------------------------------------------------------------------
 *   code by : Pedro Borges - pmborg@yahoo.com
 *   Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
-#if (!defined DXAPI11 && !defined DXAPI12)
-    #define DXAPI11 1
+#if DXAPI11 != 1 && DXAPI12 != 1
+    #define DXAPI9 1
 #endif
 
 #define PS_USE_LIGHT            //23
@@ -74,7 +74,7 @@ SamplerState SampleType: register(s0);
 PSIn VS_Main(VSIn input)
 {
 	PSIn output;
-	float4 cameraPosition;
+	//float4 cameraPosition;
 
 	if (VS_USE_WVP) {
 		output.position = mul(float4(input.position, 1), WVP);
@@ -88,9 +88,6 @@ PSIn VS_Main(VSIn input)
 	
 	//22: TEXTURE: Store the texture coordinates for the pixel shader:
 	output.texCoords = input.texCoords;
-	
-	// FOG: Calculate the camera position.
-	cameraPosition = mul(float4(input.position, 1), WV);
 
     //23: LIGHT: NORMAL
     if (VShasLight || VShasSpecular) 
@@ -102,11 +99,11 @@ PSIn VS_Main(VSIn input)
     }
 
 #if defined PS_USE_SPECULAR
-	output.cameraPosition = cameraPosition;
+	output.cameraPosition = VSCameraPosition;									  
 	if (VShasSpecular)
 	{
 		float4 worldPosition = mul(float4(input.position, 1), worldMatrix);
-		output.viewDirection = normalize(cameraPosition.xyz - worldPosition.xyz);
+		output.viewDirection = normalize(VSCameraPosition.xyz - worldPosition.xyz);
 	}
 #endif
 
@@ -134,6 +131,9 @@ float4 GetShaderTexture(Texture2D tex, float2 texCoords, uint mipLevel, int mode
         case 3: return CubicInterpolation(SampleType, tex, texCoords);
         default: return tex.Sample(SampleType, texCoords);
     }
+	
+    // fallback
+    return tex.Sample(SampleType, texCoords);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -165,7 +165,9 @@ float4 PS_Main(PSIn input) : SV_TARGET
         
 		// Optional: normal strength parameter for tuning/debugging
 		float normalStrength = 1.0f; // <---- tune this or expose in cbuffer
-		nmap = saturate(nmap * normalStrength);
+		//nmap = saturate(nmap * normalStrength);
+		nmap.xy *= normalStrength;
+		nmap = normalize(nmap);	 
 
 		// Ensure tangent is orthogonal to the (transformed) normal
 		float3 T = normalize(input.tangent - dot(input.tangent, normal) * normal);

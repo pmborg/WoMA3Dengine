@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // ORIGINAL: Rastertek Tutorial 14: Font Engine : https://www.rastertek.com/gl4linuxtut14.html
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #ifndef _APPLICATIONCLASS_H_
 #define _APPLICATIONCLASS_H_
@@ -56,10 +56,9 @@ public:
 #endif
     void Shutdown();
     bool Frame(RInputClass*);
+	bool Render();
 
-private:
-    bool Render();
-
+    
 private:
     OpenGLClass* m_OpenGL;
     RCameraClass* m_Camera;

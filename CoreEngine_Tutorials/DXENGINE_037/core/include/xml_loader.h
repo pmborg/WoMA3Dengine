@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: xml_loader.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,12 +16,29 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 #pragma warning( disable : 5208 ) // warning C5208: unnamed class used in typedef name cannot declare members other than non-static data members, member enumerations, or member classes
 
 #include "platform.h"
+
+typedef struct {
+	int			hVisibility;
+	int			seaLevel;
+	int			size;
+	int			patchSize;
+	int			skySize;
+	float		clearColorR, clearColorG, clearColorB;
+	std::string	water;				//Note: have to be char! not STRING, due multi OS support.
+	std::string	waterTexture;		//Note: have to be char! not STRING, due multi OS support.
+	std::string	mainTexture;		//Note: have to be char! not STRING, due multi OS support.
+	std::string	skyDayTexture;		//Note: have to be char! not STRING, due multi OS support.
+	std::string	skyNightTexture;	//Note: have to be char! not STRING, due multi OS support.
+} World;
+
+int get_world_patchSize(int level = -1);
+
 #if defined USE_TINYXML_LOADER
 
 #include "tinyxml2.h"
@@ -90,20 +107,6 @@ typedef struct {
 
 } generalsettings;
 
-typedef struct {
-	int			hVisibility;
-	int			seaLevel;
-	int			size;
-	int			patchSize;
-	int			skySize;
-	float		clearColorR, clearColorG, clearColorB;
-	std::string	water;				//Note: have to be char! not STRING, due multi OS support.
-	std::string	waterTexture;		//Note: have to be char! not STRING, due multi OS support.
-	std::string	mainTexture;		//Note: have to be char! not STRING, due multi OS support.
-	std::string	skyDayTexture;		//Note: have to be char! not STRING, due multi OS support.
-	std::string	skyNightTexture;	//Note: have to be char! not STRING, due multi OS support.
-} World;
-
 #if defined USE_TINYXML_LOADER
 extern World		world_map;
 #endif
@@ -111,7 +114,6 @@ extern World		world_map;
 int get_world_hVisibility(int level = -1);
 int get_world_seaLevel(int level = -1);
 int get_world_size(int level = -1); //world.size
-int get_world_patchSize(int level = -1);
 int get_world_skySize(int level = -1);
 
 float get_world_clearColorR(int level = -1);	//SystemHandle->world.clearColorR;
@@ -212,7 +214,7 @@ typedef struct xmlobj3d_
     float scaleY = 1;
 	float rotX = 0, rotY = 0, rotZ = 0;
 	int shader = 0;
-	TCHAR filename[256];
+	CHAR filename[256];			//Note: CANT BE TCHAR, due multi OS support.
 	WOMA_OBJECT WOMA_object;
     bool render = true;
     UINT type = 0;
