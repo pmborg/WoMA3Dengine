@@ -1,9 +1,9 @@
 // -------------------------------------------------------------------------------------------------------------------------------------
 // Filename: mem_leak.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,10 +17,20 @@
 // PURPOSE: Handle properly all Out of Memory Exceptions
 //			Enable run-time memory leaks check for all "new" memory allocations
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "OSengine.h"
 #include "mem_leak.h"
+#include "OSmain_dir.h"
+
+#if defined DX_ENGINE
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 || defined USE_DX_DRIVER_FONT
+extern DXcameraClass* DX_Camera;
+#endif
+#if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28
+extern DXcameraClass* DX_CameraSKY;
+#endif
+#endif
 
 namespace WOMA
 {
@@ -43,6 +53,11 @@ namespace WOMA
 		return 1;												// Retry again the memory allocation...
 	}
 
+#if defined(_DEBUG) && defined(WINDOWS_PLATFORM)
+	static HANDLE gWarnLogFile = INVALID_HANDLE_VALUE;
+	static HANDLE gAssertLogFile = INVALID_HANDLE_VALUE;
+#endif
+
 	void activate_mem_leak_detection() 
 	{
 		// Enable run-time memory leaks check for all "new" memory allocations
@@ -60,19 +75,19 @@ namespace WOMA
 	  #endif
 
 	  //FILE:	Warnlog.txt
-	  _CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDERR);
 	  #if false && defined _DEBUG
-		HANDLE hWarnLogFile = CreateFile("Warnlog.txt", GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+		_CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDERR);
+		 gWarnLogFile = CreateFile("Warnlog.txt", GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 		_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
-		_CrtSetReportFile(_CRT_WARN, hWarnLogFile);
+		_CrtSetReportFile(_CRT_WARN, gWarnLogFile);
 	  #endif
 
 	  //FILE:	Assertlog.txt
-		_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
 	  #if false && defined _DEBUG
-		HANDLE hAssertLogFile = CreateFile("Assertlog.txt", GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+		 _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
+		 gAssertLogFile = CreateFile("Assertlog.txt", GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 		_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
-		_CrtSetReportFile(_CRT_ASSERT, hAssertLogFile);
+		_CrtSetReportFile(_CRT_ASSERT, gAssertLogFile);
 	  #endif
 	#endif
 #endif
@@ -83,6 +98,21 @@ namespace WOMA
 		_set_new_handler(handle_out_of_memory);		// Set the a handler for "new" out of Memory
 		_set_new_mode(1);							// Sets the new handler mode for "malloc" also!
 	#endif
+	}
+
+	void shutdown_mem_leak_detection()
+	{
+#if defined(_DEBUG) && defined(WINDOWS_PLATFORM)
+		if (gWarnLogFile != INVALID_HANDLE_VALUE) {
+			CloseHandle(gWarnLogFile);
+			gWarnLogFile = INVALID_HANDLE_VALUE;
+		}
+
+		if (gAssertLogFile != INVALID_HANDLE_VALUE) {
+			CloseHandle(gAssertLogFile);
+			gAssertLogFile = INVALID_HANDLE_VALUE;
+		}
+#endif
 	}
 
 #if (defined(_DEBUG) && !defined(NDEBUG)) && defined WINDOWS_PLATFORM
@@ -97,4 +127,39 @@ namespace WOMA
 		return p;
 	}
 #endif
+
+	MemoryLeakGuard::MemoryLeakGuard()
+	{
+	#if CORE_ENGINE_LEVEL >= 1
+		WOMA::setup_OSmain_dirs();									//1! Setup OS main dirs.
+	#endif
+	#if CORE_ENGINE_LEVEL >= 1 && defined WINDOWS_PLATFORM
+		WOMA::activate_mem_leak_detection();						//2! Activate mem leak detection!
+	#endif
+
+	// START LOG:
+	#if defined USE_LOG_MANAGER
+		WOMA::start_log_manager();									//3! NOTE: Keep this order!
+	#endif
+
+#if defined DX_ENGINE
+	#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 || defined USE_DX_DRIVER_FONT
+		DX_Camera = NEW DXcameraClass;
+	#endif
+	#if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28
+		DX_CameraSKY = NEW DXcameraClass;
+	#endif
+#endif
+
+		//_CrtSetBreakAlloc(193);
+	}
+
+	MemoryLeakGuard::~MemoryLeakGuard()
+	{
+		shutdown_mem_leak_detection();
+	}
+
+	// Instância única global.
+	static MemoryLeakGuard gMemoryLeakGuard;
 }
+

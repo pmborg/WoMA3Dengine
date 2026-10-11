@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: win32InputClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,23 +16,25 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: A basic input used in first WOMA LEVELs using OS functions.
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 //#define GENERATE //(Airports List)
 
 #include "main.h"
 
-#if defined USE_PROCESS_OS_KEYS && defined WINDOWS_PLATFORM
+#if defined USE_PROCESS_OS_KEYS && defined WINDOWS_PLATFORM //LEVEL 4
 
 #include "InputClass.h"
 #if CORE_ENGINE_LEVEL >= 10
-#include "dxWinSystemClass.h"
+	#if defined USE_DIRECT_INPUT
+	#include "dxWinSystemClass.h"
+	#endif
 #endif
 
 InputClass::InputClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525217;
+
 
 	ZeroMemory (&m_keys, sizeof(m_keys));
 }

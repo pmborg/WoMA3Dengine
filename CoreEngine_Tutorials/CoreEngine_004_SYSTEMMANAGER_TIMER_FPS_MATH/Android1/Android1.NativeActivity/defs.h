@@ -1,3 +1,22 @@
+// -------------------------------------------------------------------------------------------------------------------------------------
+// Filename: defs.h
+// --------------------------------------------------------------------------------------------
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// --------------------------------------------------------------------------------------------
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+//
+// This file is part of the WorldOfMiddleAge project.
+//
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
+// without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
+// You may not alter or remove any copyright or other notice from copies of the content.
+// The content contained in this file is provided only for educational and informational purposes.
+// 
+// Downloaded from : https://github.com/pmborg/WoMA3Dengine
+// 
+// --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234526920;
+
 #pragma once
 
 #include "platform.h"
@@ -13,6 +32,7 @@
 
 #define _tprintf(...)						(void)__android_log_print(ANDROID_LOG_ERROR,"[WOMA]", __VA_ARGS__)
 #define StringCchPrintf(A,B,...)			_stprintf(A,__VA_ARGS__)
+#define StringCchPrintfA StringCchPrintf
 #define _stprintf							sprintf
 #define strcpy_s(a,n,b)						strcpy(a,b)
 #define _tcscpy_s							strcpy
@@ -23,17 +43,16 @@
 
 #define ZeroMemory(Destination,Length)		memset((Destination),0,(Length))
 #define DeleteFile(a) std::remove(a)
-//extern bool download(const std::string url, const std::string file_path);
 #define URLDownloadToFile(a,url, file_path, d, e) download(url, file_path)
 
 #define Sleep(x)							sleep(x/1000)
-
+ 
 #define NULL								0
 #define HWND UINT
 #define UNREFERENCED_PARAMETER				{}
 #define check(A)							{}
 
-/* Standard data types. These are the same for emulator and library. */
+// Standard data types. These are the same for emulator and library.
 typedef void				VOID;
 
 #ifndef FALSE
@@ -46,7 +65,7 @@ typedef void				VOID;
 
 #if !defined UNICODE
 typedef char				TCHAR;
-#define TEXT(quote)			(quote)   // r_winnt
+#define TEXT(quote)			(quote)
 #else
 typedef wchar				TCHAR;
 #endif
@@ -82,11 +101,12 @@ typedef unsigned long long  UINT64;
 #define GLCLEARCOLOR(...) { _tprintf ("%s", "glClearColor"); glClearColor (__VA_ARGS__);}
 #define GLCLEAR(...) { _tprintf ("%s", "glClear"); glClear (__VA_ARGS__);}
 
-//extern void ItoA(int value, char* dest, int _Radix = 10);
-
 #ifndef _countof
 #define _countof(x) ((sizeof(x)/sizeof(0[x])) / ((size_t)(!(sizeof(x) % sizeof(0[x])))))
 #endif
+
+#define SUCCEEDED(hr) (((HRESULT)(hr)) >= 0)
+typedef LONG            HRESULT;
 
 #ifndef S_OK
 #define S_OK         ((HRESULT)0L)
@@ -100,7 +120,6 @@ typedef LONG         HRESULT;
 
 #define _tcslen strlen
 
-//#define WomaMessageBox ShowAlert
 #define _stscanf		sscanf
 #define _strnicmp		strncasecmp
 #define _stricmp		strcasecmp
@@ -118,4 +137,3 @@ typedef LONG         HRESULT;
 
 #define _tcstod			strtod
 #define _tcstol			strtol
-

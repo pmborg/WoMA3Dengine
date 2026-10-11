@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: Math3D.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
@@ -28,6 +28,9 @@ extern float FAST_sqrt(float x);
 #ifndef PI
 	#define PI 3.14159265358979323846f
 #endif
+
+#define ToRadian(x) (float)(((x) * PI / 180.0f))
+#define ToDegree(x) (float)(((x) * 180.0f / PI))
 
 namespace WOMA
 {

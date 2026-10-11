@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: fileLoader.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Get full filename inside directory or woma.pck files depending DEBUG or RELEASE build
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "OSengine.h"
 #include "fileLoader.h"
@@ -61,7 +61,7 @@ namespace WOMA
 	TCHAR* LoadFile(TCHAR* filename, bool shader)
 	{
 		static TCHAR file_[MAX_STR_LEN * 2];
-		ZeroMemory(&file_, sizeof(file));
+		ZeroMemory(&file_, sizeof(file_));
 
 #if !defined ANDROID_PLATFORM
 #ifdef RELEASE
@@ -77,34 +77,11 @@ namespace WOMA
 		return (TCHAR*)file.c_str();
 #else
 		if (filename[0] != '.') {
-    #if CORE_ENGINE_LEVEL >= 5 && !defined RELEASE
-			if (shader) 
-			{
-				StringCchPrintf(file_, sizeof(file_), TEXT("%s%s"), TEXT("./"), filename);
-            }
-            else {
-				StringCchPrintf(file_, sizeof(file_), TEXT("%s%s"), TEXT("../"), filename);
-            }
-    #else
 			StringCchPrintf(file_, sizeof(file_), TEXT("%s%s"), TEXT("./"), filename);
-    #endif
 		}
 		else {
 #if defined UNICODE
-    #if CORE_ENGINE_LEVEL >= 8 && defined _DEBUG
-			if (shader)
-				_tcscpy_s(file_, sizeof(file_), filename);
-			else
-				StringCchPrintf(file_, sizeof(file_), TEXT("%s%s"), TEXT("../"), filename);
-    #endif
 #else
-    #if CORE_ENGINE_LEVEL >= 8 && !defined RELEASE
-			if (shader) {
-				strcpy_s(file_, sizeof(file_), filename);
-            } else {
-				StringCchPrintf(file_, sizeof(file_), TEXT("%s%s"), TEXT("../"), filename);
-            }
-    #endif
 #endif
 		}
 
@@ -136,7 +113,35 @@ namespace WOMA
 
 		return (TCHAR*)&file_;
 #else
-		return filename;
+
+	if (shader && WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+	{
+		UINT shaderLevel = RENDER_PAGE;
+		if (shaderLevel > 55)
+			shaderLevel = 55;
+
+		StringCchPrintf(file_, sizeof(file_), TEXT("VK/DXEngine_0%d/%s"), shaderLevel, filename);
+
+		return file_;
+	}
+
+	return filename;
 #endif
 	}
+
+
+	CHAR* LoadFileA(TCHAR* filename, bool shader)
+	{
+#if defined UNICODE && defined WINDOWS_PLATFORM
+		static CHAR result[MAX_STR_LEN * 2];
+		ZeroMemory(&result, sizeof(result));
+
+		wtoa(result, LoadFile(filename, shader), MAX_STR_LEN * 2);
+		return result;
+#else
+		return LoadFile(filename, shader);
+#endif
+	}
+
+
 }
