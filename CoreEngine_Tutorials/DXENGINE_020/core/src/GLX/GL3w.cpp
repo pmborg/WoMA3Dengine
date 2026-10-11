@@ -13,7 +13,7 @@
 
 
 #include "platform.h"
-#if CORE_ENGINE_LEVEL >= 10 && (defined OPENGL3 || defined OPENGL40) 
+#if CORE_ENGINE_LEVEL >= 10 && (defined OPENGL3 || defined OPENGL40 || defined VULKAN) 
 //-----------------------------------------------------------------------------
 #include <GL/gl3w.h>
 

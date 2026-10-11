@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: OSmain_dir.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -20,7 +20,7 @@
 //  - Init: PROGRAM_FILES "C:\ProgramFiles(x86)\Pmborg\Woma2017\"
 //  - Init: APPDATA "C:\Users\"username"\AppData\Local\Pmborg\Woma2017\"
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
 
@@ -32,12 +32,10 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "OSengine.h" //#include "WinSystemClass.h"
+#include "OSengine.h"
 #include "OSmain_dir.h"
 #include <algorithm>
 #include <string>
-#include <iostream>
-#include <map>
 
 #ifndef _MSC_VER
 #include <unistd.h>
@@ -58,14 +56,15 @@ namespace WOMA
 
 	// Directory Vars:
 	//---------------------------------------------------
-	STRING HOME;
+	//STRING HOME;
 	TCHAR PUBLIC_DOCUMENTS0[MAX_STR_LEN];
 	TCHAR PUBLIC_DOCUMENTS1[MAX_STR_LEN];
 	TCHAR PUBLIC_DOCUMENTS[MAX_STR_LEN];
 	TCHAR PROGRAM_FILES[MAX_STR_LEN];
 	TCHAR APPDATA1[MAX_STR_LEN];
 	TCHAR APPDATA[MAX_STR_LEN];
-	STRING womaTempPATH;
+	//STRING womaTempPATH;
+	TCHAR womaTempPATH[MAX_STR_LEN];
 	TCHAR* Temp;
 	TCHAR* Home;
 
@@ -172,6 +171,7 @@ namespace WOMA
 	#endif
 
 	#ifdef RELEASE
+		STRING womaTempPATH;
 		womaTempPATH = strTEMPchar;
 		womaTempPATH.append(TEXT("\\"));			// "C:\Users\"username"\AppData\Local\temp\"
 		womaTempPATH.append(APP_COMPANY_NAME);		// "C:\Users\"username"\AppData\Local\temp\<pmborg>"
@@ -195,7 +195,7 @@ namespace WOMA
 
 		return strHOMEchar;
 	}
-#if _NOT
+#if defined _NOT
 	//LINUX:	/home/[user]/projects/LinuxWoma/bin/x64/Debug
 	//WINDOWS:	C:\WoMAengine2023\DXEngine_055
 #endif
@@ -353,7 +353,7 @@ namespace WOMA
 	#endif
 
 	#if CORE_ENGINE_LEVEL >= 2 && defined LINUX_PLATFORM
-#if _NOT
+#if defined _NOT
 		// "C:\Program Files\Pmborg\Woma2017\" ==> "/opt/Pmborg/Woma2017"
 		// "C:\Users\"username"\AppData\Local\Pmborg\Woma2017\" ==> ~/.pmborg/Woma2017
 #endif
@@ -387,7 +387,7 @@ namespace WOMA
 
 		// [1] init_os_main_dirs!
 		// -------------------------------------------------------------------------------------------
-		_tprintf(TEXT("Init: init_os_main_dirs()\n"));
+		womalog(TEXT("Init: init_os_main_dirs()\n"));
 		#if defined WINDOWS_PLATFORM
 			#if defined UNICODE
 				TCHAR WDirbuffer[MAX_STR_LEN] = { 0 };

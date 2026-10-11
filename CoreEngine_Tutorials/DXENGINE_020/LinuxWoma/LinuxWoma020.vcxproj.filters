@@ -109,10 +109,17 @@
     <ClInclude Include="..\core\include\xml_loader.h">
       <Filter>Include</Filter>
     </ClInclude>
-    <ClInclude Include="..\core\include\glxOpenGLclass.h" />
     <ClInclude Include="..\core\linux\include\linuxsystemclass.h" />
     <ClInclude Include="..\core\linux\include\linux.h" />
-    <ClInclude Include="..\core\linux\include\Rinputclass.h" />
+    <ClInclude Include="..\core\include\glxOpenGLclass.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\linux\include\Rinputclass.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\include\vkClass.h">
+      <Filter>Include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Include">
@@ -286,9 +293,18 @@
     <ClCompile Include="..\core\linux\src\linux.cpp" />
     <ClCompile Include="..\core\linux\src\linuxsystemclass.cpp" />
     <ClCompile Include="..\core\linux\src\main_linux.cpp" />
-    <ClCompile Include="..\core\linux\src\Rinputclass.cpp" />
-    <ClCompile Include="..\core\src\GLX\glxOpenGLclass.cpp" />
-    <ClCompile Include="..\core\src\renderApplication_Basics.cpp" />
+    <ClCompile Include="..\core\src\GLX\glxOpenGLclass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\renderApplication_Basics.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\linux\src\Rinputclass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\core\src\vkClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\settings.xml" />

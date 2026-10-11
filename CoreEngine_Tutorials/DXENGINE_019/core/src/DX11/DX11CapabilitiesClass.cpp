@@ -43,6 +43,11 @@ static size_t GetMaximum3DTextureSize(D3D_FEATURE_LEVEL featureLevel)
 	case D3D_FEATURE_LEVEL_11_0: return D3D11_REQ_TEXTURE3D_U_V_OR_W_DIMENSION;
 	case D3D_FEATURE_LEVEL_10_1:
 	case D3D_FEATURE_LEVEL_10_0: return D3D10_REQ_TEXTURE3D_U_V_OR_W_DIMENSION;
+#if defined DX9
+	case D3D_FEATURE_LEVEL_9_3:
+	case D3D_FEATURE_LEVEL_9_2:
+	case D3D_FEATURE_LEVEL_9_1:  return D3D_FL9_1_REQ_TEXTURE3D_U_V_OR_W_DIMENSION;
+#endif
 	}
 }
 
@@ -57,6 +62,11 @@ static size_t GetMaximum2DTextureSize(D3D_FEATURE_LEVEL featureLevel)
 	case D3D_FEATURE_LEVEL_11_0: return D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION;
 	case D3D_FEATURE_LEVEL_10_1:
 	case D3D_FEATURE_LEVEL_10_0: return D3D10_REQ_TEXTURE2D_U_OR_V_DIMENSION;
+#if defined DX9
+	case D3D_FEATURE_LEVEL_9_3:  return D3D_FL9_3_REQ_TEXTURE2D_U_OR_V_DIMENSION;
+	case D3D_FEATURE_LEVEL_9_2:
+	case D3D_FEATURE_LEVEL_9_1:  return D3D_FL9_1_REQ_TEXTURE2D_U_OR_V_DIMENSION;
+#endif
 	}
 }
 
@@ -71,6 +81,11 @@ static size_t GetMaximumCubeMapTextureSize(D3D_FEATURE_LEVEL featureLevel)
 	case D3D_FEATURE_LEVEL_11_0: return D3D11_REQ_TEXTURECUBE_DIMENSION;
 	case D3D_FEATURE_LEVEL_10_1:
 	case D3D_FEATURE_LEVEL_10_0: return D3D10_REQ_TEXTURECUBE_DIMENSION;
+#if defined DX9
+	case D3D_FEATURE_LEVEL_9_3:  return D3D_FL9_3_REQ_TEXTURECUBE_DIMENSION;
+	case D3D_FEATURE_LEVEL_9_2:
+	case D3D_FEATURE_LEVEL_9_1:  return D3D_FL9_1_REQ_TEXTURECUBE_DIMENSION;
+#endif
 	}
 }
 
@@ -85,6 +100,11 @@ static size_t GetMaximum2DTextureArraySize(D3D_FEATURE_LEVEL featureLevel)
 	case D3D_FEATURE_LEVEL_11_0: return D3D11_REQ_TEXTURE2D_ARRAY_AXIS_DIMENSION;
 	case D3D_FEATURE_LEVEL_10_1:
 	case D3D_FEATURE_LEVEL_10_0: return D3D10_REQ_TEXTURE2D_ARRAY_AXIS_DIMENSION;
+#if defined DX9
+	case D3D_FEATURE_LEVEL_9_3:
+	case D3D_FEATURE_LEVEL_9_2:
+	case D3D_FEATURE_LEVEL_9_1:  return 0;
+#endif
 	}
 }
 
@@ -104,6 +124,11 @@ static size_t GetMaximumDrawIndexedIndexCount(D3D_FEATURE_LEVEL featureLevel)
 	case D3D_FEATURE_LEVEL_11_0:
 	case D3D_FEATURE_LEVEL_10_1:
 	case D3D_FEATURE_LEVEL_10_0: return INT_MAX;
+#if defined DX9
+	case D3D_FEATURE_LEVEL_9_3:
+	case D3D_FEATURE_LEVEL_9_2:  return D3D_FL9_2_IA_PRIMITIVE_MAX_COUNT;
+	case D3D_FEATURE_LEVEL_9_1:  return D3D_FL9_1_IA_PRIMITIVE_MAX_COUNT;
+#endif
 	}
 }
 
@@ -122,6 +147,11 @@ static size_t GetMaximumDrawVertexCount(D3D_FEATURE_LEVEL featureLevel)
 	case D3D_FEATURE_LEVEL_11_0:
 	case D3D_FEATURE_LEVEL_10_1:
 	case D3D_FEATURE_LEVEL_10_0: return INT_MAX;
+#if defined DX9
+	case D3D_FEATURE_LEVEL_9_3:
+	case D3D_FEATURE_LEVEL_9_2:  return D3D_FL9_2_IA_PRIMITIVE_MAX_COUNT;
+	case D3D_FEATURE_LEVEL_9_1:  return D3D_FL9_1_IA_PRIMITIVE_MAX_COUNT;
+#endif
 	}
 }
 
@@ -136,6 +166,11 @@ static bool GetShaderTextureLODSupport(D3D_FEATURE_LEVEL featureLevel)
 	case D3D_FEATURE_LEVEL_11_0:
 	case D3D_FEATURE_LEVEL_10_1:
 	case D3D_FEATURE_LEVEL_10_0: return true;
+#if defined DX9
+	case D3D_FEATURE_LEVEL_9_3:
+	case D3D_FEATURE_LEVEL_9_2:
+	case D3D_FEATURE_LEVEL_9_1:  return false;
+#endif
 	}
 }
 
@@ -150,6 +185,12 @@ static float GetMaximumAnisotropy(D3D_FEATURE_LEVEL featureLevel)
 	case D3D_FEATURE_LEVEL_11_0: return D3D11_MAX_MAXANISOTROPY;
 	case D3D_FEATURE_LEVEL_10_1:
 	case D3D_FEATURE_LEVEL_10_0: return D3D10_MAX_MAXANISOTROPY;
+#if defined DX9
+	// From http://msdn.microsoft.com/en-us/library/windows/desktop/ff476876.aspx
+	case D3D_FEATURE_LEVEL_9_3:
+	case D3D_FEATURE_LEVEL_9_2:  return 16;
+	case D3D_FEATURE_LEVEL_9_1:  return D3D_FL9_1_DEFAULT_MAX_ANISOTROPY;
+#endif
 	}
 }
 
@@ -164,6 +205,12 @@ static bool GetOcclusionQuerySupport(D3D_FEATURE_LEVEL featureLevel)
 	case D3D_FEATURE_LEVEL_11_0:
 	case D3D_FEATURE_LEVEL_10_1:
 	case D3D_FEATURE_LEVEL_10_0: return true;
+#if defined DX9
+	// From http://msdn.microsoft.com/en-us/library/windows/desktop/ff476150.aspx ID3D11Device::CreateQuery
+	case D3D_FEATURE_LEVEL_9_3:
+	case D3D_FEATURE_LEVEL_9_2:  return true;
+	case D3D_FEATURE_LEVEL_9_1:  return false;
+#endif
 	}
 }
 
@@ -179,6 +226,16 @@ static bool GetInstancingSupport(D3D_FEATURE_LEVEL featureLevel)
 	case D3D_FEATURE_LEVEL_11_0:
 	case D3D_FEATURE_LEVEL_10_1:
 	case D3D_FEATURE_LEVEL_10_0: return true;
+#if defined DX9
+	// Feature Level 9_3 supports instancing, but slot 0 in the input layout must not be instanced.
+	// D3D9 has a similar restriction, where stream 0 must not be instanced.
+	// This restriction can be worked around by remapping any non-instanced slot to slot 0.
+	// This works because HLSL uses shader semantics to match the vertex inputs to the elements in the input layout, rather than the slots.
+	// Note that we only support instancing via ANGLE_instanced_array on 9_3, since 9_3 doesn't support OpenGL ES 3.0
+	case D3D_FEATURE_LEVEL_9_3:  return true;
+	case D3D_FEATURE_LEVEL_9_2:
+	case D3D_FEATURE_LEVEL_9_1:  return false;
+#endif
 	}
 }
 static bool GetFramebufferMultisampleSupport(D3D_FEATURE_LEVEL featureLevel)
@@ -192,6 +249,11 @@ static bool GetFramebufferMultisampleSupport(D3D_FEATURE_LEVEL featureLevel)
 	case D3D_FEATURE_LEVEL_11_0:
 	case D3D_FEATURE_LEVEL_10_1:
 	case D3D_FEATURE_LEVEL_10_0: return true;
+#if defined DX9
+	case D3D_FEATURE_LEVEL_9_3:
+	case D3D_FEATURE_LEVEL_9_2:
+	case D3D_FEATURE_LEVEL_9_1:  return false;
+#endif
 	}
 }
 
@@ -207,6 +269,11 @@ static size_t GetMaximumSimultaneousRenderTargets(D3D_FEATURE_LEVEL featureLevel
 	case D3D_FEATURE_LEVEL_11_0: return D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT;
 	case D3D_FEATURE_LEVEL_10_1:
 	case D3D_FEATURE_LEVEL_10_0: return D3D10_SIMULTANEOUS_RENDER_TARGET_COUNT;
+#if defined DX9
+	case D3D_FEATURE_LEVEL_9_3:  return D3D_FL9_3_SIMULTANEOUS_RENDER_TARGET_COUNT;
+	case D3D_FEATURE_LEVEL_9_2:
+	case D3D_FEATURE_LEVEL_9_1:  return D3D_FL9_1_SIMULTANEOUS_RENDER_TARGET_COUNT;
+#endif
 	}
 }
 
@@ -221,6 +288,12 @@ static size_t GetMaximumViewportSize(D3D_FEATURE_LEVEL featureLevel)
 	case D3D_FEATURE_LEVEL_11_0: return D3D11_VIEWPORT_BOUNDS_MAX;
 	case D3D_FEATURE_LEVEL_10_1:
 	case D3D_FEATURE_LEVEL_10_0: return D3D10_VIEWPORT_BOUNDS_MAX;
+#if defined DX9
+	// No constants for D3D11 Feature Level 9 viewport size limits, use the maximum texture sizes
+	case D3D_FEATURE_LEVEL_9_3:  return D3D_FL9_3_REQ_TEXTURE2D_U_OR_V_DIMENSION;
+	case D3D_FEATURE_LEVEL_9_2:
+	case D3D_FEATURE_LEVEL_9_1:  return D3D_FL9_1_REQ_TEXTURE2D_U_OR_V_DIMENSION;
+#endif
 	}
 }
 
@@ -235,6 +308,12 @@ static size_t GetMaximumVertexInputSlots(D3D_FEATURE_LEVEL featureLevel)
 	case D3D_FEATURE_LEVEL_11_0: return D3D11_STANDARD_VERTEX_ELEMENT_COUNT;
 	case D3D_FEATURE_LEVEL_10_1: return D3D10_1_STANDARD_VERTEX_ELEMENT_COUNT;
 	case D3D_FEATURE_LEVEL_10_0: return D3D10_STANDARD_VERTEX_ELEMENT_COUNT;
+#if defined DX9
+	// From http://http://msdn.microsoft.com/en-us/library/windows/desktop/ff476876.aspx "Max Input Slots"
+	case D3D_FEATURE_LEVEL_9_3:
+	case D3D_FEATURE_LEVEL_9_2:
+	case D3D_FEATURE_LEVEL_9_1:  return 16;
+#endif
 	}
 }
 
@@ -252,6 +331,12 @@ static size_t GetMaximumConstantBufferSize(D3D_FEATURE_LEVEL featureLevel)
 	case D3D_FEATURE_LEVEL_11_0: return D3D11_REQ_CONSTANT_BUFFER_ELEMENT_COUNT * bytesPerComponent;
 	case D3D_FEATURE_LEVEL_10_1:
 	case D3D_FEATURE_LEVEL_10_0: return D3D10_REQ_CONSTANT_BUFFER_ELEMENT_COUNT * bytesPerComponent;
+#if defined DX9
+	// Limits from http://msdn.microsoft.com/en-us/library/windows/desktop/ff476501.aspx remarks section
+	case D3D_FEATURE_LEVEL_9_3:
+	case D3D_FEATURE_LEVEL_9_2:
+	case D3D_FEATURE_LEVEL_9_1:  return 4096 * bytesPerComponent;
+#endif
 	}
 }
 

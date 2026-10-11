@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: ApplicationClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,17 +16,30 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Control all Application main cycles.
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
+#pragma warning(push)
+#pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
+
 #include "OSengine.h"
 #include "main.h"
 #include "ApplicationClass.h"
 #include "OSmain_dir.h"
 #include "mem_leak.h"
-#if TUTORIAL_CHAP >= 60 // BILLBOARD
-#include "BillClass.h"				//[ch60]
+
+#include "vkClass.h"
+
+
+#if defined DX_ENGINE
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 || defined USE_DX_DRIVER_FONT
+DXcameraClass* DX_Camera = NULL;
 #endif
+#endif
+
+#if defined USE_SCENE_MANAGER
+#include "SceneManager.h"
+#include "xml_loader.h"
 
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
 #include "Rapplicationclass.h"
@@ -35,14 +48,16 @@ extern RApplicationClass* r_Application;
 #if defined LINUX_PLATFORM
 extern MyWin Win;
 #endif
-#pragma warning(push)
-#pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
 
-bool FORCE_RENDER_ALL = false;
+#if defined (SCENE_COMPOUND)
+#include "compound.h"
+void CompoundReadFunction(WomaDriverClass* Driver);
+#endif
 
-#if defined USE_SCENE_MANAGER
-#include "SceneManager.h"
-#include "xml_loader.h"
+#include <inttypes.h>
+
+
+
 
 namespace WOMA
 {
@@ -50,14 +65,8 @@ SceneManager* sceneManager=NULL;
 }
 #endif
 
-#if defined (SCENE_COMPOUND) //TUTORIAL_CHAP >= 55
-#include "compound.h"
-void CompoundReadFunction(WomaDriverClass* Driver);
-#endif
 
-#include <inttypes.h>
-
-#if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
+#if defined USE_DIRECT_INPUT
 UINT g_NetID = 0;
 #endif
 
@@ -70,7 +79,7 @@ float fadeIntro=1;
 ApplicationClass::ApplicationClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525217;
+
 
 	// ---------------------------------------------------------------------
 	// private:
@@ -85,9 +94,8 @@ ApplicationClass::ApplicationClass()
 	#endif
 #else
 		RENDER_PAGE = DX_ENGINE_LEVEL;
-  #if _DEBUG
+
 	womalog("RENDER_PAGE: %d\n", RENDER_PAGE);
-  #endif
 #endif
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
@@ -142,29 +150,13 @@ void ApplicationClass::Shutdown()
 	SAFE_DELETE(m_FontV2Shader);
 #endif
 
-	//3D:
-
 
 #if defined USE_CUBE // Cubes
-#if (defined DX_ENGINE)
-	if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
-	{
-		SAFE_SHUTDOWN_MODELDX(m_cube1Model);
-		SAFE_SHUTDOWN_MODELDX(m_cube2Model);
-		SAFE_SHUTDOWN_MODELDX(m_cube3Model);
-	}
+	SAFE_SHUTDOWN_MODEL(m_cube1Model);
+	SAFE_SHUTDOWN_MODEL(m_cube2Model);
+	SAFE_SHUTDOWN_MODEL(m_cube3Model);
 #endif
 
-#if (defined OPENGL3 || defined OPENGL4)
-	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
-	{
-		SAFE_SHUTDOWN_MODELGL3(m_cube1Model);
-		SAFE_SHUTDOWN_MODELGL3(m_cube2Model);
-		SAFE_SHUTDOWN_MODELGL3(m_cube3Model);
-
-	}
-#endif
-#endif
 
 	//2D:
 #if defined INTRO_DEMO || defined USE_VIEW2D_SPRITES
@@ -183,7 +175,7 @@ void ApplicationClass::Shutdown()
 	//SAFE_DELETE (mainTerrain);
 #endif
 
-#if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
+#if defined USE_DIRECT_INPUT
 	for (UINT i = 0; i <m_Position.size(); i++) {
 		SAFE_DELETE(m_Position[i]);
 	}
@@ -226,15 +218,30 @@ void ApplicationClass::WOMA_APPLICATION_Shutdown()
 #endif
 
 #if defined MAIN_RENDER_LIGHT_RAY
-#if (defined DX_ENGINE)
-	if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
+
+#if defined WINDOWS_PLATFORM
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX11 ||
+		WOMA::AppSettings->DRIVER == DRIVER_DX9 ||
+		WOMA::AppSettings->DRIVER == DRIVER_DX12)
+	{
 		SAFE_SHUTDOWN_MODELDX(m_lightRayModel);
+	}
 #endif
 
-#if (defined OPENGL3 || defined OPENGL4)
+#if defined OPENGL3 || defined OPENGL4
 	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
+	{
 		SAFE_SHUTDOWN_MODELGL3(m_lightRayModel);
+	}
 #endif
+
+#if defined VULKAN
+	if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+	{
+		SAFE_SHUTDOWN_MODELVK(m_lightRayModel);
+	}
+#endif
+
 #endif
 
 }
@@ -243,6 +250,9 @@ void ApplicationClass::WOMA_APPLICATION_Shutdown()
 bool ApplicationClass::WOMA_APPLICATION_InitGUI()
 //-----------------------------------------------------------------------------------------
 {
+	if (WOMA::game_state >= GAME_STOP)
+		return true;
+
 	womalog("WOMA_APPLICATION_InitGUI()\n");
 
 	#ifdef LINUX_PLATFORM
@@ -262,19 +272,19 @@ bool ApplicationClass::WOMA_APPLICATION_InitGUI()
 	#if CORE_ENGINE_LEVEL >= 4 && defined WINDOWS_PLATFORM
 	if (SystemHandle->LandScape)
 	{
-		SystemHandle->m_scaleX = MIN(1, WOMA::AppSettings->WINDOW_WIDTH / 1920.0f);
-		SystemHandle->m_scaleY = MIN(1, WOMA::AppSettings->WINDOW_HEIGHT / 1080.0f);
+		SystemHandle->m_scaleX = MAX(1, WOMA::AppSettings->WINDOW_WIDTH  / 1920.0f);
+		SystemHandle->m_scaleY = MAX(1, WOMA::AppSettings->WINDOW_HEIGHT / 1080.0f);
 	}
 	else
 	{
-		SystemHandle->m_scaleX = MIN(1, WOMA::AppSettings->WINDOW_HEIGHT / 1080.0f);
-		SystemHandle->m_scaleY = MIN(1, WOMA::AppSettings->WINDOW_WIDTH / 1920.0f);
+		SystemHandle->m_scaleX = MAX(1, WOMA::AppSettings->WINDOW_HEIGHT / 1080.0f);
+		SystemHandle->m_scaleY = MAX(1, WOMA::AppSettings->WINDOW_WIDTH / 1920.0f);
 	}
 
-	if (SystemHandle->m_scaleY > 0.9f)
-		SystemHandle->m_scaleY = 1;
+	//if (SystemHandle->m_scaleY > 0.9f)
+	//	SystemHandle->m_scaleY = 1;
 
-	SystemHandle->fontSizeX = MIN(MIN_WIN32_FONT_X, 48 * SystemHandle->m_scaleX);	//To use on win32 window not DX
+	SystemHandle->fontSizeX = MIN(MIN_WIN32_FONT_X, 48 * SystemHandle->m_scaleX); //To use on win32 window not DX
 	SystemHandle->fontSizeY = MIN(MIN_WIN32_FONT_Y, 40 * SystemHandle->m_scaleY); //To use on win32 window not DX
 	#endif
 
@@ -322,7 +332,6 @@ bool ApplicationClass::Start()
 #if defined USE_DIRECT_INPUT
 void ApplicationClass::SetPlayerPosition(UINT netID)
 {
-	//OutputDebugString("SetPlayerPosition(%d)\n", netID);
 	if (HowManyPlayers == 0) 
 	{
 		// "m_player"
@@ -330,14 +339,11 @@ void ApplicationClass::SetPlayerPosition(UINT netID)
 		IF_NOT_THROW_EXCEPTION (player);
 		SystemHandle->m_player.push_back(player);
 		player = NULL;
-		//OutputDebugString("SystemHandle->m_player.size()=%d\n", SystemHandle->m_player.size());
 	}
 	
-	// "m_Position"
 	PositionClass* position = NEW PositionClass (netID);
 	IF_NOT_THROW_EXCEPTION (position);
 	m_Position.push_back(position);
-	//OutputDebugString("m_Position.size()=%d\n", m_Position.size());
 
     if (netID != g_NetID) {
        m_Position[netID]->SetPosition(0, 0, 0);		// All other players, at same Position when offline (Have to be before CH90)
@@ -393,21 +399,11 @@ bool ApplicationClass::Initialize(void* pContext, WomaDriverClass* Driver)
 //########################################### 3D: STUFF ###########################################
 
 //########################################### 2D: STUFF ###########################################
-	// 2D-FONTS: (Windows)
-#if defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONT		//27
-	initText(pContext);
-#endif
-	// 2D-FONTS: (Android / Linux)
-#if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2	//27
-	r_Application = NEW RApplicationClass;
-	IF_NOT_RETURN_FALSE(r_Application->Initialize(WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT));
-#endif
 
-//####################################### START MESH THREADS #######################################
+//##################################### 82: START MESH THREADS ####################################
 
-#if CORE_ENGINE_LEVEL >= 10 && !defined ANDROID_PLATFORM
-	Driver->FinalizeInitialization(); //Specially for DX12 (Finish setup just before start rendering...)
-#endif
+	womalog("[ASSETS] Driver->FinalizeInitialization()\n");
+	Driver->FinalizeInitialization();
 
 	if (WOMA::game_state == GAME_STOP) 
 		return false;
@@ -415,6 +411,68 @@ bool ApplicationClass::Initialize(void* pContext, WomaDriverClass* Driver)
 	return true; //go-go-go Start Rendering! :)
 }
 #endif
+
+//----------------------------------------------------------------------------------------------------
+void ApplicationClass::RenderScene(void* /*unused*/, UINT monIdx, WomaDriverClass* driver) // RENDER A FULL FRAME!
+//----------------------------------------------------------------------------------------------------
+{
+	void* mainCtx = NULL;
+
+#if defined VULKAN 
+	vkClass* vkDriver = ((vkClass*)m_Driver);
+#endif
+
+	womalogATfirstframe("firstframe: ApplicationClass::RenderScene()\n-------------------------------\n");
+
+	SystemHandle->TotalVertexCounter = 0;	// Reset total vertex counter
+
+	//
+	// mainCtx
+	//
+	m_Driver->BeginScene(monIdx);								// RESET FRAME: ClearRenderTargetView + ClearDepthBuffer
+
+	mainCtx = getvoidcontext();									// GET FRAME CONTEXT: For this monitor (monIdx)
+
+	//
+	// DX & OPENGL (NON VULKAN) after level 36
+	//
+	{
+
+	}
+
+
+	//
+	// PASS: 0 & 1
+	//
+
+	// UPDATE DYN. LIGHT RAY:
+	// --------------------------------------------------------------------------------------------
+
+		dayLightFade = 1;
+
+	AppRender(monIdx, RENDER_PAGE, dayLightFade, mainCtx);		// [2] 3D Render "main scene" while workers run in parallel!
+
+#if DX_ENGINE_LEVEL >= 24 || defined USE_VIEW2D_SPRITES
+	AppPosRender(monIdx, RENDER_PAGE, dayLightFade, mainCtx);	// [3] 2D: TITLE:24 + FONTS:27 + DEMOINTROSPRITES:29 + DXFONTS:26 + MINI-MAP:63 & MAIN-MAP:63 + 2D:SPRITES:24
+#endif
+
+#if !defined ANDROID_PLATFORM
+	(g_contextDriver ? g_contextDriver : m_Driver)->EndScene(monIdx);	// SHOW FRAME: For this monitor (monIdx)
+#else
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
+	{
+		bool swapResult = eglSwapBuffers(engine.display, engine.surface);
+		assert(swapResult == EGL_TRUE);
+	}
+	else if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+	{
+		m_Driver->EndScene(0);
+	}
+#endif
+#if defined _DEBUG || defined LINUX_PLATFORM //|| defined ANDROID_PLATFORM
+	womalogATfirstframe(TEXT("TotalVertexCounter: %d\n"), SystemHandle->TotalVertexCounter);
+#endif
+}
 
 #pragma warning(pop)
 

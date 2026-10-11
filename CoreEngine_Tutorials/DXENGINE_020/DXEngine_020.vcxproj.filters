@@ -33,6 +33,9 @@
     <Filter Include="src\OPENGL">
       <UniqueIdentifier>{90fc141a-752b-484a-9263-fe967f52690c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Vulkan">
+      <UniqueIdentifier>{354e43d4-3620-43b8-9096-afecbfa2c23c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\include\ApplicationClass.h">
@@ -181,6 +184,9 @@
     </ClInclude>
     <ClInclude Include="core\include\womadriverclass.h">
       <Filter>core\include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\vkClass.h">
+      <Filter>Vulkan</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -352,6 +358,9 @@
     </ClCompile>
     <ClCompile Include="core\src\corelib0.cpp">
       <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\vkClass.cpp">
+      <Filter>Vulkan</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

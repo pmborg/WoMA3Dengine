@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------------------------------------
 // Filename: openglclass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -24,10 +24,10 @@
 //		glesOpenGLClass.cpp		OpenGL ES 2.0 --> API "Android 2.2++"
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
-#if (defined OPENGL3 || defined OPENGL4) && DX_ENGINE_LEVEL >= 19 
+#if (defined OPENGL3 || defined OPENGL4 || defined VULKAN) && DX_ENGINE_LEVEL >= 19 
 #pragma warning(push)
 #pragma warning( disable : 4005 )		// Disable warning C4005: '' : macro redefinition
 #include "mem_leak.h"
@@ -49,7 +49,6 @@ GLmathClass* mathClass;
 GLopenGLclass::GLopenGLclass()
 {
 	CLASSLOADER();
-	
 
 	mathClass = NULL;
 	_tcscpy_s(driverName, TEXT("GL3+")); // driverName = TEXT ("GL3+");
@@ -74,7 +73,7 @@ void GLopenGLclass::Shutdown()
 	SAFE_DELETE(mathClass);
 
 #if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
-	if(gl_Camera) { delete ((GLcameraClass*)gl_Camera); gl_Camera=NULL; }	//Cant use: SAFE_DELETE (m_Camera);
+	if(gl_Camera!=NULL && gl_Camera != (GLcameraClass*)0xcdcdcdcdcdcdcdcd) { delete ((GLcameraClass*)gl_Camera); gl_Camera=NULL; }	//Cant use: SAFE_DELETE (m_Camera);
 #endif
 	Shutdown2D();
 
@@ -90,6 +89,11 @@ void GLopenGLclass::GetWorldMatrix(float* matrix)
 	return;
 }
 #endif
+
+bool GLopenGLclass::Resize(UINT USE_MONITOR, int screenWidth, int screenHeight, float screenNear, float screenDepth, BOOL fullscreen, UINT depthBits)
+{
+	return true;
+}
 
 void GLopenGLclass::addText(int Xpos, int Ypos, TCHAR* printText, float R, float G, float B)
 {
@@ -159,14 +163,32 @@ void GLopenGLclass::BuildOrthoMatrix(mat4* matrix, float screenWidth, float scre
 
 	return;
 }
-//NOT USED: But need to be declared!
+
 bool GLopenGLclass::OnInit(int _USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, int screenHeight, UINT depthBits, float screenDepth, float screenNear, 
 								BOOL msaa, bool vsync, BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize)  { 
 
+#if defined WINDOWS_PLATFORM
+	constexpr UINT PRIMARY_MONITOR = 0;
+
+	RECT& rc = WOMA::windowsToRenderArray[PRIMARY_MONITOR].m_rcWindowClient;
+	screenWidth = rc.right - rc.left;
+	screenHeight = rc.bottom - rc.top;
+#endif
+
+#if defined _DEBUG && defined WINDOWS_PLATFORM
+	RECT rc_debug;
+	GetClientRect(WOMA::windowsToRenderArray[0].hWnd, &rc_debug);
+
+	womalog("GL ORTHO ClientRect : %ld x %ld\n", rc_debug.right - rc_debug.left, rc_debug.bottom - rc_debug.top);
+
+	womalog("AppSettings         : %d x %d\n",
+		WOMA::AppSettings->WINDOW_WIDTH,
+		WOMA::AppSettings->WINDOW_HEIGHT);
+#endif
 	BuildOrthoMatrix(&m_orthoMatrix, (float)screenWidth, (float)screenHeight, screenNear, screenDepth, true /*leftHand*/);
 
 #if defined USE_FRUSTUM
-	frustum = NEW DXfrustumClass;	// Create Frustum
+	frustum = NEW FrustumClass;	// Create Frustum
 #endif
 
 	return true; 
@@ -228,7 +250,7 @@ void GLopenGLclass::SetCamera2D()
 	GLm_Camera.SetPosition(0.0f, 0.0f, -1.0f);	// NOTE: On 2D This values have always these values!
 
 	// Calculate: 2D ViewMatrix
-	GLm_Camera.CalculateViewMatrix();						// ((OpenGLClass*)m_Driver)->m_Camera->Render(); || ((DX_CLASS*)m_Driver)->m_Camera->Render();
+	GLm_Camera.CalculateViewMatrix();						// ((OpenGLClass*)m_Driver)->DX_Camera->Render(); || ((DX_CLASS*)m_Driver)->DX_Camera->Render();
 
 	//GLm_Camera.Use2DViewMatrix();				// Get the view from the camera and 2D objects.
 	gl_Camera->m_viewmatrix2D.m[0]  = GLm_Camera.m_viewMatrix.m[0];
@@ -264,7 +286,7 @@ void GLopenGLclass::Initialize2Dand3DCamera()
 
 #if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 // Color Shader
 	gl_Camera->SetPosition(	WOMA::AppSettings->INIT_CAMX, 
-							WOMA::AppSettings->INIT_CAMY+0.35f,
+							WOMA::AppSettings->INIT_CAMY,//+0.35f,
 							WOMA::AppSettings->INIT_CAMZ);
 
 	gl_Camera->SetRotation(	WOMA::AppSettings->INIT_ROTX, 
@@ -323,7 +345,7 @@ void GLopenGLclass::SetRasterizerState(void* pContext, UINT cullMode, UINT fillM
 }
 
 // ------------------------------------------------------------------
-bool GLopenGLclass::Initialize(float* clearColor)
+bool GLopenGLclass::Initialize(float* clearColor, void* pContext)
 // ------------------------------------------------------------------
 {
 	mathClass = NEW GLmathClass;
@@ -348,10 +370,18 @@ bool GLopenGLclass::Initialize(float* clearColor)
 #endif
 
 	// Init OpenGL:
-#if !defined ANDROID_PLATFORM
-	glViewport  ( 0, 0, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT); 
-	//glClearColor(driver_ClearColor[0], driver_ClearColor[1], driver_ClearColor[2], driver_ClearColor[3]);
+#if defined WINDOWS_PLATFORM
+	constexpr UINT PRIMARY_MONITOR = 0; // OpenGL backend currently supports only one window (Level 28+ multi-monitor is DX11/Vulkan only).
+
+	RECT& rc = WOMA::windowsToRenderArray[PRIMARY_MONITOR].m_rcWindowClient;
+	UINT screenWidth= rc.right - rc.left, screenHeight= rc.bottom - rc.top;
+#else
+	UINT screenWidth = WOMA::AppSettings->WINDOW_WIDTH, screenHeight = WOMA::AppSettings->WINDOW_HEIGHT;
 #endif
+
+	womalog("GL Viewport: %d x %d\n", screenWidth, screenHeight);
+	womalog("WINDOW_WIDTH: %d WINDOW_HEIGHT: %d\n", WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT);
+	glViewport(0, 0, screenWidth, screenHeight);
 
 	// OpenGL settings:
 	glFrontFace(GL_CW);	// Set the polygon winding to front facing for the left handed system.

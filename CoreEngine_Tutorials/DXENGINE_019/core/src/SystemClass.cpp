@@ -917,6 +917,12 @@ void SystemClass::Shutdown()
 			driverList[DRIVER_DX11] = NULL;
 		}
 #endif
+#if defined DX9 && D3D11_SPEC_DATE_YEAR > 2009 && defined DX_ENGINE
+		if (driverList[DRIVER_DX9]) {
+			delete ((DirectX::DX11Class*)driverList[DRIVER_DX9]);
+			driverList[DRIVER_DX9] = NULL;
+		}
+#endif
 #if defined VULKAN
 	if (driverList[DRIVER_VULKAN]) {
 		delete ((vkClass*)driverList[DRIVER_VULKAN]);
@@ -1222,7 +1228,14 @@ void SystemClass::LoadAllDrivers()
 	// -------------------------------------------------------------------------------------------
 	// [2] DX 9 (or DX11 with Downgrade: DX9)
 	// -------------------------------------------------------------------------------------------
+#if   defined DX9 && D3D11_SPEC_DATE_YEAR > 2009 && defined DX_ENGINE
+	womalog("LoadDriver[2]: DX9(DX11)Class\n");
+	driverList.push_back(NEW DirectX::DX11Class());
+	((DirectX::DX11Class*)driverList[2])->dx11_force_dx9 = true;
+	((DirectX::DX11Class*)driverList[2])->CheckAPIdriver(WOMA::AppSettings->ADAPTOR); // Recalculate the capabilities for DX9
+#else
 	driverList.push_back(NULL);
+#endif
 
 	// -------------------------------------------------------------------------------------------
 	// [3] DX 12
@@ -1403,6 +1416,13 @@ bool InitSelectedDriver()
         ASSERT(g_contextDriver->OnInit(WOMA::AppSettings->UI_MONITOR, SystemHandle->m_hWnd, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT, 24 /*BufferDeep*/, WOMA::AppSettings->SCREEN_DEPTH, WOMA::AppSettings->SCREEN_NEAR, WOMA::AppSettings->MSAA_Anisotropic,
             WOMA::AppSettings->VSYNC_ENABLED, WOMA::AppSettings->FULL_SCREEN, WOMA::AppSettings->UseDoubleBuffering, WOMA::AppSettings->AllowResize));
 #endif
+		break;
+#endif
+#if defined DX9 && D3D11_SPEC_DATE_YEAR > 2009 && defined DX_ENGINE//[2]
+	case DRIVER_DX9:
+		ASSERT(((DirectX::DX11Class*)(driverList[DRIVER_DX9]))->OnInit(WOMA::AppSettings->UI_MONITOR, SystemHandle->m_hWnd, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT, 24 /*BufferDeep*/,
+			WOMA::AppSettings->SCREEN_DEPTH, WOMA::AppSettings->SCREEN_NEAR, WOMA::AppSettings->MSAA_Anisotropic, WOMA::AppSettings->VSYNC_ENABLED,
+			WOMA::AppSettings->FULL_SCREEN, WOMA::AppSettings->UseDoubleBuffering, WOMA::AppSettings->AllowResize));
 		break;
 #endif
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009 && defined DX_ENGINE//[3]

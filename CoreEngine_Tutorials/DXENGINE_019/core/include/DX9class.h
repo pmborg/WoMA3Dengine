@@ -24,3 +24,6 @@
 
 #include "platform.h"
 
+#if defined DX9
+//#include<D3D11.h>
+#endif

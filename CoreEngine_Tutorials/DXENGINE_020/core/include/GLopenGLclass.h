@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: GLopenGLclass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Define OPEN GL engine interfaces
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
@@ -24,7 +24,7 @@
 #define GLopenGLclass_h_
 
 #include "platform.h"
-#if (defined OPENGL3 || defined OPENGL40) && DX_ENGINE_LEVEL >= 19
+#if (defined OPENGL3 || defined OPENGL40 || defined VULKAN) && DX_ENGINE_LEVEL >= 19
 
 //////////////
 // INCLUDES //
@@ -97,12 +97,13 @@ public:
 	void Shutdown2D();
 	void Shutdown();
 
+	bool Resize(UINT USE_MONITOR, int screenWidth, int screenHeight, float screenNear, float screenDepth, BOOL fullscreen, UINT depthBits);
 	void RenderDriverText(void* pContext);
 	void addText(int Xpos, int Ypos, TCHAR* printText, float R, float G, float B);
 
 	void SetCamera2D();
 	void Initialize2Dand3DCamera();
-	bool Initialize(float* clearColor);
+	bool Initialize(float* clearColor, void* pContext=NULL);
 	void FinalizeInitialization();
 
 	void TurnZBufferOn(void* pContext);

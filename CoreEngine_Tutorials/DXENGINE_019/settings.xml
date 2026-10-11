@@ -1,5 +1,5 @@
 <generalsettings>
     <screen adapter="0" uiMonitor="1" fullScreen="false" fullScreenWindowed="false" posX="0" posY="0" width="1920" height="1080" allowResize="false" vsync="false" bitsPerPixel="32"/>
-    <driver name="VULKAN" UseAllMonitors="false" useDoubleBuffering="true" useTripleBuffering="false"/>
+    <driver name="DX11" UseAllMonitors="false" useDoubleBuffering="true" useTripleBuffering="false"/>
     <texture maxTexture="16384" bilinear="false" trilinear="false" Anisotropic="false" AnisotropicLevel="4"/>
 </generalsettings>

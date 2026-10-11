@@ -1,9 +1,9 @@
-// --------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------
 // Filename: dxWinSystemClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,10 +16,9 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "OSengine.h"
-#if defined DX_ENGINE
 
 #include "mem_leak.h"
 #if defined WINDOWS_PLATFORM
@@ -29,20 +28,30 @@
 #include "OSmain_dir.h"
 #include "fileLoader.h"
 
-  #if defined DX11 || defined DX9
-	#include "Dx11Class.h"
-  #endif
-  #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009 //Use: WIN10SDK
-	#include "Dx12Class.h"
-  #endif
-    #if (defined OPENGL3 || defined OPENGL40) 
-	#include "womadriverclass.h"	//woma
-	#include "GLmathClass.h"		//woma	
-	#include "GLopenGLclass.h"		//woma
-    #if defined WINDOWS_PLATFORM
-	#include "wGLopenGLclass.h"		// Windows
-    #endif
-  #endif
+//
+// Declare Drivers:
+//
+#include "womadriverclass.h"	//woma
+
+#if defined DX11 || defined DX9
+#include "Dx11Class.h"
+#endif
+
+#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009 //Use: WIN10SDK
+#include "Dx12Class.h"
+#endif
+
+#if (defined OPENGL3 || defined OPENGL4)
+#include "GLmathClass.h"		//woma	
+#include "GLopenGLclass.h"		//woma
+#if defined WINDOWS_PLATFORM
+#include "wGLopenGLclass.h"		// Windows
+#endif
+#endif
+
+#if defined VULKAN
+#include "vkClass.h"
+#endif
 
 #if defined ALLOW_PRINT_SCREEN_SAVE_PNG && defined DX11
 #include <wincodec.h>
@@ -68,12 +77,18 @@ dxWinSystemClass::dxWinSystemClass(WOMA::Settings* appSettings) : WinSystemClass
 //----------------------------------------------------------------------------------
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525217;
 	WOMA::AppSettings = appSettings;
 	WinSystemClass::mMaximized = WOMA::AppSettings->FULL_SCREEN;
 
 	mResizing = false;
 	DXsystemHandle = this;
+
+//#if DX_ENGINE_LEVEL >= 21
+//	if (!m_Camera) {
+//		m_Camera = NEW DXcameraClass; // DX Implementation
+//		IF_NOT_THROW_EXCEPTION(m_Camera);
+//}
+//#endif
 
 #if defined USE_DIRECT_INPUT
 	joyFlags = NULL;
@@ -94,6 +109,29 @@ dxWinSystemClass::~dxWinSystemClass()
 	CLASSDELETE();
 }
 
+// ---------------------------------------------------------------------------
+// APPLICATION_INIT_SYSTEM()
+//
+// Creates the complete runtime environment required by the engine.
+//
+// Responsibilities:
+//
+//  • System validation
+//  • Window creation
+//  • Input initialization
+//  • Graphics driver creation
+//  • Screen initialization
+//  • Scene manager creation
+//  • Asset loading
+//  • Timer startup
+//  • Audio startup
+//
+// After this function returns successfully,
+// the application has created all mandatory runtime resources required
+// to render the first frame.
+// 
+// Additional assets may continue loading asynchronously in the background.
+//
 //----------------------------------------------------------------------------
 bool dxWinSystemClass::APPLICATION_INIT_SYSTEM() //LOAD ALL GRAPHICS
 //----------------------------------------------------------------------------
@@ -105,28 +143,32 @@ bool dxWinSystemClass::APPLICATION_INIT_SYSTEM() //LOAD ALL GRAPHICS
 
 	// RESET:
 	driverList.clear();
-#if defined DX_ENGINE
-	DX11windowsArray.clear();
+#if defined WINDOWS_PLATFORM && (defined DX11 || defined DX9)
+	DX11windowsToRenderArray.clear();
 	FSAA_possibleValues.clear();
 #endif
 
-	// SystemCheck
-	// ClassRegister
-	// ApplicationInitMainWindow
-	// LoadXMLWorld
-	// InitOsInput(m_OsInput and m_InputManager)
-	// LoadAllDrivers
-	// InitSelectedDriver("driver"->OnInit (...) and "driver"->Initialize (clearColor))
-	// InitializeSystemScreen(SETUP SCREENs: F1,F2,F3,F4,F5,F6)
-	// InitSceneManager
-	// PlayIntroMovie
-	// LoadAllGraphicAssets
-	// StartTimer
+	//
+	//	Runtime initialization sequence: APPLICATION_INIT_SYSTEM()
+	//
+	//	├── System validation        → SystemCheck()
+	//	├── Register classes         → ClassRegister()
+	//	├── Create main window       → ApplicationInitMainWindow()
+	//	├── Load World.xml           → LoadXMLWorld()
+	//	├── Initialize input         → InitOsInput()
+	//	├── Enumerate drivers        → LoadAllDrivers()
+	//	├── Create graphics driver   → InitSelectedDriver()
+	//	├── Create screens           → InitializeSystemScreen()
+	//	├── Create scene manager     → InitSceneManager()
+	//	├── Play intro               → PlayIntroMovie()
+	//	├── Load graphic assets      → LoadAllGraphicAssets()
+	//	└── Start timer              → StartTimer()
+	//
 	bool res = WinSystemClass::APPLICATION_INIT_SYSTEM();	
 
 	// START-AUDIO: Start Background Music
 
-#if defined WINDOWS_PLATFORM && defined INTRO_DEMO
+#if defined INTRO_DEMO //LEVEL29
 	ShowCursor(FALSE);
 	SetCursor(NULL);
 #endif
@@ -134,59 +176,7 @@ bool dxWinSystemClass::APPLICATION_INIT_SYSTEM() //LOAD ALL GRAPHICS
 	return res;
 }
 
-//----------------------------------------------------------------------------
-int dxWinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
-//----------------------------------------------------------------------------
-{
-	MSG msg = { 0 };						// Reset MSG
-
-    if (WOMA::renderOnce)
-        WOMA::woma_timer = 0;
-
-	do
-	{
-        BOOL gResult = TRUE;
-		if ((gResult = PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) > 0)	// There is any OS messages to handle?
-		{
-			TranslateMessage(&msg); // TranslateMessage produces WM_CHAR messages only for keys that are mapped to ASCII characters by the keyboard driver.
-			DispatchMessage(&msg);  // Process MSG:  (INVOKE: WinSystemClass::MessageHandler)
-		}
-
-		if (WOMA::game_state > GAME_MINIMIZED)
-			ProcessFrame();	// RENDER ONE: APPLICATION FRAME!
-		else
-			Sleep(100);     // We are in background? slowdown!
-
-		if (WOMA::main_loop_state < 0 || (WOMA::renderOnce && WOMA::woma_timer > 30))
-        {
-			WOMA::game_state = GAME_STOP;
-			if (WOMA::renderOnce && WOMA::woma_timer > 30)
-				return EXIT_SUCCESS;                // Controlled Exit for Automatic Tests.
-			break;										   
-		}
-        if (WOMA::game_state == ENGINE_RESTART)
-		{
-            PostQuitMessage(WOMA::game_state);		//RESTART ENGINE: return WOMA::game_state;
-			break;
-		}
-
-	} while (msg.message != WM_QUIT);
-
-	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) > 0) 
-	{
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
-		Sleep(100);
-	}
-
-    womalog("msg.wParam: %d\n", msg.wParam);
-	if (WOMA::game_state == ENGINE_RESTART)
-		return ENGINE_RESTART;
-	else
-		return (int)msg.wParam; //return the PostQuitMessage (message code)
-}
-
-#if defined ALLOW_PRINT_SCREEN_SAVE_PNG || defined USE_DEMO99 && defined MAVERICK
+#if defined ALLOW_PRINT_SCREEN_SAVE_PNG
 bool take_shot = false;
 #endif
 
@@ -204,8 +194,8 @@ void dxWinSystemClass::ProcessFrame() //RENDER ALL GRAPHICS
 		ASSERT(SaveScreenshot());
 		take_shot = false;
 
-		womalog(TEXT("DXsystemHandle->m_Camera->m_viewMatrix"));
-		DX_LOG_MATRIX(&DXsystemHandle->m_Camera->m_viewMatrix);
+		womalog(TEXT("DX_Camera->m_viewMatrix"));
+		DX_LOG_MATRIX(&DX_Camera->m_viewMatrix);
 	}
 #endif
 }
@@ -217,17 +207,10 @@ void dxWinSystemClass::Shutdown()
 {
 	//WinSystemClass::Shutdown();
 
-#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21
-	if (m_Camera)
-	{
-		delete ((DXcameraClass*)m_Camera); 
-		m_Camera = NULL;
-	}
-#endif
-#if defined USE_DIRECT_INPUT
-	for (UINT i = 0; i < HowManyPlayers; i++)
-	{
-		free(m_player[i]);
+#if defined USE_INTRO_VIDEO_DEMO
+	if (g_DShowPlayer) {
+		g_DShowPlayer->TearDownGraph();
+		SAFE_DELETE(g_DShowPlayer);
 	}
 #endif
 
@@ -241,67 +224,49 @@ void dxWinSystemClass::Shutdown()
 
 void dxWinSystemClass::GPH_RESIZE(void* pContext)
 {
-	if (!SystemHandle->m_Application)
+	// Return if Application was not yet created:
+	if (!SystemHandle->m_Application || driverList.size() == 0)
 		return;
 
-
-
-	// Used for OS: ...
-	//Recalculated AT WOMA_APPLICATION_InitGUI()
-	//SystemHandle->m_scaleX = MIN(1, WOMA::AppSettings->WINDOW_WIDTH / 1920.0f);
-	//SystemHandle->m_scaleY = MIN(1, WOMA::AppSettings->WINDOW_HEIGHT / 1080.0f);
-
-	// Used for DX: ...
+	//-------------------------------------
+	// Update application scaling
+	//-------------------------------------
 	SystemHandle->m_Application->scaleX = WOMA::AppSettings->WINDOW_WIDTH / 1920.0f;
-	//SystemHandle->m_Application->scaleY = WOMA::AppSettings->WINDOW_HEIGHT / (1080.0f - 65);
 	SystemHandle->m_Application->scaleY = WOMA::AppSettings->WINDOW_HEIGHT / 1080.0f;
 	SystemHandle->m_Application->rescale = min(SystemHandle->m_Application->scaleX, SystemHandle->m_Application->scaleY);
 
-	if (driverList.size() < 4)
-		return;
-
 	if (m_Driver) 
 	{
-#if DX_ENGINE_LEVEL >= 22 || defined USE_VIEW2D_SPRITES
-		SystemHandle->m_Application->DEMO_WOMA_APPLICATION_Shutdown2D();
-#endif
-
-	switch (WOMA::AppSettings->DRIVER)
-	{
-	#if defined DX11 || defined DX9
-		case DRIVER_DX9:
-		case DRIVER_DX11:
-			{
-				UINT m = 0;
-				if (SystemHandle->windowsArray.size() == SystemHandle->allWindowsArray.size())
-					for (m = 0; m < SystemHandle->allWindowsArray.size(); m++)
-					{
-						BOOL full_screen;
-						DX11windowsArray[0].m_swapChain1->GetFullscreenState(&full_screen, nullptr);
-						((DirectX::DX11Class*)m_Driver)->Resize(m, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT,
-							WOMA::AppSettings->SCREEN_NEAR, WOMA::AppSettings->SCREEN_DEPTH,
-							full_screen, WOMA::AppSettings->BITSPERPEL);
-					}
-				else {
-					BOOL full_screen;
-					DX11windowsArray[0].m_swapChain1->GetFullscreenState(&full_screen, nullptr);
-					((DirectX::DX11Class*)m_Driver)->Resize(m, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT,
-						WOMA::AppSettings->SCREEN_NEAR, WOMA::AppSettings->SCREEN_DEPTH,
-						full_screen, WOMA::AppSettings->BITSPERPEL);
-				}
-			}
-			break;
-	#endif
-	#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-		case DRIVER_DX12:
-			for (UINT m = 0; m < SystemHandle->allWindowsArray.size(); m++)
-			((DirectX::DX12Class*)m_Driver)->Resize(m,WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT,
+	//-------------------------------------
+	// Driver resize
+	//-------------------------------------
+	UINT m = 0;
+	if (WOMA::windowsToRenderArray.size() == WOMA::allWindowsHwArray.size())
+		for (m = 0; m < WOMA::allWindowsHwArray.size(); m++)
+		{
+			m_Driver->Resize(m, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT,
 				WOMA::AppSettings->SCREEN_NEAR, WOMA::AppSettings->SCREEN_DEPTH,
-				WOMA::AppSettings->FULL_SCREEN, WOMA::AppSettings->BITSPERPEL);
-			break;
-	#endif
+				false, WOMA::AppSettings->BITSPERPEL);
+		}
+	else {
+		m_Driver->Resize(m, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT,
+			WOMA::AppSettings->SCREEN_NEAR, WOMA::AppSettings->SCREEN_DEPTH,
+			false, WOMA::AppSettings->BITSPERPEL);
 	}
 
+	womalog("AppSettings: %ux%u\n", WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT);
+
+#ifdef VULKAN
+	if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+	{
+		auto& vkWindow = ((vkClass*)m_Driver)->VKwindowsToRenderArray[0];
+		womalog("CurrentExtent: %ux%u\n",
+			vkWindow.surfCapabilities.currentExtent.width,
+			vkWindow.surfCapabilities.currentExtent.height);
+	}
+#endif
+
+	m_Driver->Pending2DResize = true;
 	}
 
 }
@@ -323,20 +288,26 @@ bool dxWinSystemClass::ApplicationInitMainWindow()
 //----------------------------------------------------------------------------
 void dxWinSystemClass::PAUSE()
 {
+	womalog("dxWinSystemClass::PAUSE()\n");
 #if defined USE_WIN32_PLAY_MUSIC || defined INTRO_DEMO
 	if (WOMA::AppSettings->MUSIC_ENABLED)
 		if (audio) 
 			audio->pause(MusicSourceID);	
 #endif
+
+	WinSystemClass::PAUSE();
 }
 
 void dxWinSystemClass::UNPAUSE()
 {
+	womalog("dxWinSystemClass::UNPAUSE()\n");
 #if defined USE_WIN32_PLAY_MUSIC || defined INTRO_DEMO
 	if (WOMA::AppSettings->MUSIC_ENABLED)
 		if (audio) 
 			audio->play(MusicSourceID);
 #endif
+
+	WinSystemClass::UNPAUSE();
 }
 
 
@@ -406,37 +377,13 @@ bool dxWinSystemClass::SaveScreenshot()
 	GUID_ContainerFormatWmp
 	GUID_ContainerFormatDds
 	*/
-	HRESULT hr = DirectX::SaveWICTextureToFile(Driver->GetDeviceContext(), DX11windowsArray[0].m_backBuffer, GUID_ContainerFormatPng, path.c_str());		//op2
+	HRESULT hr = DirectX::SaveWICTextureToFile(Driver->GetDeviceContext(), DX11windowsToRenderArray[0].m_backBuffer, GUID_ContainerFormatPng, path.c_str());		//op2
 	if (hr == S_OK)
 		return true;
 
 	return result;
 }
 #endif
-
-#if defined USE_SCENE_MANAGER
-void dxWinSystemClass::InitSceneManager()
-//----------------------------------------------------------------------------
-{
-	//  QUADTREE:
-	// ||256|256||
-	// -----------
-	// ||256|256||
-
-	set_world_size(512);
-	set_world_patchSize(256);
-
-	// SCENE MANAGER: Create SceneManager Engine: (Driver will use Frustum to filter)
-#if defined USE_SCENE_MANAGER
-    if (WOMA::sceneManager == NULL)
-        WOMA::sceneManager = SceneManager::GetInstance();
-
-	WOMA::sceneManager->CreateRootNode( get_world_size(), m_Application->ClearColor); // 256 x 8 --> //-512,-512, 512, 512
-    WOMA::sceneManager->quadTree.Initialize(WOMA::sceneManager->RootNode);
-#endif
-}
-#endif
-
 
 #if defined USE_INTRO_VIDEO_DEMO 
 
@@ -553,4 +500,3 @@ bool dxWinSystemClass::ApplicationMandatoryLoad()
 
 #endif
 
-#endif
