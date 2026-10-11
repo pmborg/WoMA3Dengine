@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dummy ID to avoid Invalid resource ID warnings -->
+    <item type="id" name="woma_engine_3d"/>
+</resources>

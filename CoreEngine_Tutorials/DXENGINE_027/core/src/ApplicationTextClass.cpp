@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: ApplicationTextClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,37 +16,37 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
-#if ((defined OPENGL3 || defined OPENGL4) || defined DX_ENGINE || defined INTRO_DEMO) && defined USE_RASTERTEK_TEXT_FONT
+#if ((defined VULKAN || defined OPENGL3 || defined OPENGL4) || defined DX_ENGINE || defined INTRO_DEMO) && defined USE_RASTERTEK_TEXT_FONT
 #include "OSengine.h"
 #include "mem_leak.h"
 #include "ApplicationTextClass.h"
 #include "GlTextClass.h"
 #include "GLopenGLclass.h"
+
 #if defined DX_ENGINE
 #include "DxTextClass.h"
+#endif
+
+#if defined VULKAN
+#include "VkTextClass.h"
 #endif
 
 extern float terrain_nx;
 extern float terrain_nz;
 extern float nextHeight;
 
-namespace DirectX {
-
 ApplicationTextClass::ApplicationTextClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525217;
+
 
 	m_Text = NULL;
 }
 
 ApplicationTextClass::~ApplicationTextClass() { CLASSDELETE();}
-
-
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //The SetFps function takes the fps integer value given to it and then converts it to a string. 
@@ -55,40 +55,10 @@ ApplicationTextClass::~ApplicationTextClass() { CLASSDELETE();}
 //The SetFps function also sets the color of the fps string to green if above 60 fps, yellow if below 60 fps, and 
 //red if below 30 fps.
 
-#define Y_INIT 20
-
-//00-----------------------------------------------------------------------------------------
-void ApplicationTextClass::SetFps(int fps)
-{
-	static TCHAR strBuffer[30];
-	float red=0.0f, green=0.0f, blue=0.0f;
-
-	// avoid division by zero:
-	if (fps == 0)
-		fps=1;
-
-#if defined EXTRA_INFO
-    StringCchPrintf(strBuffer, sizeof(strBuffer), TEXT("Fps: %d"), fps);
-#else
-    StringCchPrintf(strBuffer, sizeof(strBuffer), TEXT("Fps: %d  - ms: %4.2f"), fps, 1000.0f/fps);
-#endif
-
-	if(fps >= 60)
-		green = 1.0f;	// If fps is 60 or above set the fps color to green.
-	else 
-		red = 1.0f;		// If fps is below 30 set the fps color to red.
-
-	if(fps > 30)
-		green = 1.0f;	// If fps is between 30 and 60 set the fps color to "yellow."
-
-	// Update the sentence vertex buffer with the new string information.
-	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_FPS], strBuffer, WOMA::AppSettings->WINDOW_WIDTH - 180, Y_INIT+20, red, green, blue));
-}
-
 #if !defined TEXT_TEST
 //The SetCpu function is similar to the SetFps function. It takes the cpu value and converts it to a string which is then 
 //stored in the sentence structure and rendered.
-//01-----------------------------------------------------------------------------------------
+
 void ApplicationTextClass::SetCpu(int cpu)
 {
 	static TCHAR cpuString[20];
@@ -100,31 +70,11 @@ void ApplicationTextClass::SetCpu(int cpu)
 	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_CPU], cpuString, WOMA::AppSettings->WINDOW_WIDTH - 180, Y_INIT+40, 0.0f, 1.0f, 0.0f));
 }
 
-//02-----------------------------------------------------------------------------------------
-void ApplicationTextClass::SetCameraPosition(float posX, float posY, float posZ)
-{
-	static TCHAR dataString[40];
-
-	// Setup the position string.
-	StringCchPrintf (dataString, sizeof(dataString), TEXT("X:%5.1f Z:%5.1f Y:%5.1f"), posX, posZ, posY);
-	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_POS], dataString, 10, Y_INIT+20, 0.0f, 1.0f, 0.0f));
-}
-
-//03-----------------------------------------------------------------------------------------
-void ApplicationTextClass::SetCameraRotation(float rotX, float rotY, float rotZ)
-{
-	static TCHAR dataString[50];
-	static LightClass* light = SystemHandle->m_Application->app_Light;
-	// Setup the X rotation string: ((float) ((int)(rotX*10))/10), ((float) ((int)(rotY*10))/10)
-	StringCchPrintf (dataString, sizeof(dataString), TEXT("rX:%5.1f rY:%5.1f Light: %5.1f, %5.1f, %5.1f"), rotX, rotY, 
-			light->m_lightDirection.x, light->m_lightDirection.y, light->m_lightDirection.z );
-	ASSERT (m_Text->UpdateSentence(m_sentence[TEXT_ROT], dataString, 10, Y_INIT+40, 0.0f, 1.0f, 0.0f));
-}
 #endif
 
 #if TUTORIAL_CHAP >= 60 && DX_ENGINE_LEVEL <= 92 && !defined RELEASE // BILLBOARD
 //10
-void DirectX::ApplicationTextClass::SetBillRenderCount(int count, UINT deltaTime)
+void ApplicationTextClass::SetBillRenderCount(int count, UINT deltaTime)
 {
 	TCHAR countString[80];
 	#if defined  NO3DBILL
@@ -138,7 +88,7 @@ void DirectX::ApplicationTextClass::SetBillRenderCount(int count, UINT deltaTime
 }
 #endif
 
-#if TUTORIAL_CHAP >= 85 && _DEBUG
+#if TUTORIAL_CHAP >= 85 && defined _DEBUG
 //09
 void ApplicationTextClass::SetLoboRenderCount(int count)
 {
@@ -157,9 +107,7 @@ void ApplicationTextClass::SetLoboRenderCount(int count)
 }
 #endif
 
-}
-
-bool ApplicationTextClass::Initialize(ID3D11DeviceContext* pContext, void* Driver)
+bool ApplicationTextClass::Initialize(void* pContext, void* Driver)
 {
 	// TODO GL
 #if (defined OPENGL3 || defined OPENGL40) 
@@ -168,6 +116,15 @@ bool ApplicationTextClass::Initialize(ID3D11DeviceContext* pContext, void* Drive
 		m_Text = NEW GlTextClass(); IF_NOT_THROW_EXCEPTION(m_Text);
 	}
 #endif
+
+#if defined(VULKAN)
+	if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+	{
+		m_Text = NEW VkTextClass();
+		IF_NOT_THROW_EXCEPTION(m_Text);
+	}
+#endif
+
 #if defined DX9 || defined DX11
 	if (WOMA::AppSettings->DRIVER == DRIVER_DX9 || WOMA::AppSettings->DRIVER == DRIVER_DX11)
 	{
@@ -183,9 +140,7 @@ bool ApplicationTextClass::Initialize(ID3D11DeviceContext* pContext, void* Drive
 
 	// Initialize the Text object:
     if (!m_Text->Initialize(Driver, pContext))
-	{
 		WomaFatalException(("Could not initialize the Text Object"));
-	}
 
 	// TextClass: PART2
 	for (UINT i = (UINT)_countof(m_sentence); i < N_TEXT_MAX_SENTENCE; i++)
@@ -194,11 +149,9 @@ bool ApplicationTextClass::Initialize(ID3D11DeviceContext* pContext, void* Drive
 	for (UINT i = 0; i < (UINT)_countof(m_sentence); i++) //Init used slots
 		IF_NOT_RETURN_FALSE(m_Text->InitializeSentence(&m_sentence[i], SENTENCE_MAX_LEN));
 
-#if defined DX12
-	if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
-	{
+#if defined DX12 || defined VULKAN
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX12 || WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
 		m_Text->InitializeTexture(Driver);
-	}
 #endif
 
 	return true;
@@ -271,11 +224,21 @@ bool ApplicationTextClass::Shutdown()
 			break;
 #endif
 
+#if defined(VULKAN)
+			case DRIVER_VULKAN:
+			{
+				((VkTextClass*)m_Text)->Shutdown();
+				delete ((VkTextClass*)m_Text);
+				m_Text = NULL;
+			}
+			break;
+#endif
+
 		default:
 #if defined USE_WOMA_EXCEPTION
-			throw woma_exception("Not Enough Memory!", __FILE__, __FUNCTION__, __LINE__);
+			throw woma_exception("No driver support, yet!", __FILE__, __FUNCTION__, __LINE__);
 #else
-			WomaFatalException("Not Enough Memory!");
+			WomaFatalException("No driver support, yet!");
 #endif
 			break;
 		}
@@ -284,12 +247,22 @@ bool ApplicationTextClass::Shutdown()
 	return true;
 }
 
-void ApplicationTextClass::Render()		// Render the text user interface elements:
+//#define DEBUG_SETSHADERPARAMETERS
+
+void ApplicationTextClass::Render(void* pContext)		// Render the text user interface elements:
 {
+#if defined _DEBUG || defined DEBUG_SETSHADERPARAMETERS
+	if (m_Driver->RenderfirstTime)
+	{
+		womalog("APPLICATIONTEXTCLASS::RENDER() START\n");
+	}
+#endif
+
 	for (UINT i = 0; i < _countof(m_sentence); i++) {
 		if (m_sentence[i]->red > -1)
-			m_Text->RenderSentence(m_sentence[i]);
+			m_Text->RenderSentence(pContext, m_sentence[i]);
 	}
+
 }
 
 #endif

@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: ImageLoaderClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 #pragma once
 
 ///////////////////////
@@ -276,7 +276,6 @@ private:
 	unsigned char* pixels = NULL; //image in 32bits pixels
 
 public:
-	UINT WomaIntegrityCheck = 1234525217;
 	ImageLoaderClass();
 	ImageLoaderClass(FORMAT fmt, int w, int h, int d, int mipMapCount, int arraysize=1);
 	~ImageLoaderClass();
