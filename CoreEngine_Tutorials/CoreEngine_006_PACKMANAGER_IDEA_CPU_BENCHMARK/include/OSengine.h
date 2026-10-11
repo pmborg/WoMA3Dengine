@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: OSengine.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,12 +16,27 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Add OS engine interfaces
 // 
+// ARCHITECTURE:
+//
+// This header defines the public operating-system abstraction layer
+// of the WoMA Engine.
+//
+// Responsibilities:
+//
+//  • Select the platform-specific SYSTEM implementation.
+//  • Expose the engine lifecycle entry points.
+//  • Define shared engine state.
+//  • Declare platform-independent engine interfaces.
+//
+// The Application layer never interacts directly with platform-specific
+// implementations. It communicates exclusively through the SYSTEM interface.
+// 
 // This file shows the full file version for:
 //   WINDOWS_PLATFORM
 //   LINUX_PLATFORM
 //   ANDROID_PLATFORM
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #if NOTES
                   ----------------  ---------                       ----------------
@@ -72,12 +87,12 @@
 		|ultimateTCP_IP_LIB|
 
 	XML
-		|TinyXMLv2_LIB| (legacy-v1: TinyXML_LIB don't support Android)
+		|TinyXMLv2_LIB| (legacy-v1: TinyXML_LIB dont support Android)
 
 	(D3D11_SPEC_DATE_YEAR > 2009)
 		|DirectXTex|(DX11)
 			DX11LoadTexture.cpp
-				// TGA:
+			 TGA:
 				DirectX::ScratchImage
 				DirectX::LoadFromTGAFile
 				DirectX::CreateShaderResourceView
@@ -86,30 +101,38 @@
 			ALLOW_PRINT_SCREEN_SAVE_PNG
 				SaveWICTextureToFile    
 			DX11LoadTexture.cpp
-				// DDS:
+			 DDS:
 				DirectX::CreateDDSTextureFromFile
-				// BMP, JPG, PNG, TIF -> Use: DirectXTK.lib
+			 BMP, JPG, PNG, TIF -> Use: DirectXTK.lib
 				DirectX::CreateWICTextureFromFile
 
 	ZipUtils_LIB
 #endif
 
 #pragma once
+#ifndef osengine_h
+#define osengine_h
+
+#ifndef _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include "platform.h"
 #include <algorithm> 
 
+
 #if !defined NewWomaEngine
 #if defined WINDOWS_PLATFORM
-	#if CORE_ENGINE_LEVEL < 10 || !defined DX_ENGINE
+	#if CORE_ENGINE_LEVEL < 10// || !defined DX_ENGINE
 	#include "winsystemclass.h"
 	#define SYSTEM WinSystemClass	        // Are we a Basic Windows Instance?
 	#else
 
-	#if defined DX_ENGINE
-	#include "dxwinsystemclass.h"
+	//#if defined DX_ENGINE
+	#include "dxWinSystemClass.h"
 	#define SYSTEM dxWinSystemClass         // Are we a DX Instance?
 	#endif
-	#endif
+	//#endif
 #endif
 
 #ifdef LINUX_PLATFORM
@@ -136,7 +159,6 @@
 
 #if defined WINDOWS_PLATFORM
 	#define WOMAOS TEXT("WINDOWS")
-
 	#pragma warning(push)
 	#pragma warning(disable : 6387)
 	#define COMMANDLINE_TO_ARGC_ARGV() {                \
@@ -163,14 +185,15 @@
 #if defined LINUX_PLATFORM
 	#define WOMAOS "LINUX"
 #endif
+
 #if CORE_ENGINE_LEVEL >= 3
 extern LONG TopLevelFilter(struct _EXCEPTION_POINTERS* pExceptionInfo);
 #endif
 
 extern UINT RENDER_PAGE;
-extern int APPLICATION_MAIN(int argc, char* argv[]);
-extern void APPLICATION_STOP();
-extern void APPLICATION_STARTUP(int argc, char* argv[]);
+extern int ENGINE_MAIN(int argc, char* argv[]);
+extern void PROCESS_SHUTDOWN();
+extern void PROCESS_BOOTSTRAP(int argc, char* argv[]);
 extern void ShowFPS(float fFPS);
 
 #if defined NewWomaEngine
@@ -197,12 +220,15 @@ extern int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption, bool yesORno);
 #endif
 #endif
 
-//NOTE: Sync With: SystemClass::LoadAllDrivers() (keep this order)
-enum WomaDriver {
-	DRIVER_DX11 = 0,	// DRIVER_DX11  = DX10 or DX10.1 or DX11
+enum WomaDriver //NOTE: Sync With: SystemClass::LoadAllDrivers() (keep this order)
+{
+	DRIVER_DX11 = 0,// DRIVER_DX11  = DX10 or DX10.1 or DX11
 	DRIVER_GL3,		// DRIVER_GL3   = OPENGL 3.3+ / OPENGL 4.0
 	DRIVER_DX9,		// DRIVER_DX9   = DX11 with API for DX9
-	DRIVER_DX12		// DRIVER_DX12  = DX12
+	DRIVER_DX12,	// DRIVER_DX12  = DX12
+	DRIVER_VULKAN,
+
+	DRIVER_COUNT
 };
 namespace WOMA
 {
@@ -230,10 +256,10 @@ namespace WOMA
 
 	extern TCHAR strConsoleTitle[MAX_STR_LEN];
 
-#if defined USE_LOADING_THREADS
+#if defined USE_LOADING_THREADS || defined USE_MAIN_THREAD
 	extern UINT		num_running_THREADS;
 #endif
-#if _NOT //defined USE_LOADING_THREADS || DX_ENGINE_LEVEL >= 30
+#if defined _NOT //defined USE_LOADING_THREADS || DX_ENGINE_LEVEL >= 30
 	extern UINT		num_loading_objects;
 #endif
 
@@ -254,7 +280,7 @@ namespace WOMA
 	#endif
 #endif
 
-#if defined USE_MINIDUMPER	//3
+#if defined _NOT //#if defined USE_MINIDUMPER	//3
 	extern MiniDumper* miniDumper;
 #endif
 
@@ -280,13 +306,22 @@ TCHAR* getUserName();
 #endif
 
 #if CORE_ENGINE_LEVEL >= 10
-#define m_Driver  driverList[WOMA::AppSettings->DRIVER]
-extern std::vector<WomaDriverClass*> driverList;
-//0: DX11	dx11_force_dx9=false
-//1: OPENGL
-//2: DX9	dx11_force_dx9=true
-//3: DX12
+// Current active rendering driver.
+// Maps to driverList[WOMA::AppSettings->DRIVER].
+//
+// NOTE:
+// Used throughout the engine. Do not replace lightly;
+// referenced in hundreds of source files.
+#define m_Driver driverList[WOMA::AppSettings->DRIVER]
 
+// INDICE:
+// 0: DX11	dx11_force_dx9=false
+// 1: OPENGL
+// 2: DX9	dx11_force_dx9=true
+// 3: DX12
+// 4: VULKAN
+
+extern std::vector<WomaDriverClass*> driverList;
 extern WomaDriverClass* g_contextDriver;
 #endif
 
@@ -300,7 +335,7 @@ namespace WOMA
 #endif
 
 #if defined ANDROID_PLATFORM
-#define FCLOSE(A) file.close()
+#define FCLOSE(A) A.close()
 #else
 #define FCLOSE(A) fclose(A)
 #endif
@@ -315,6 +350,8 @@ extern int playAudio(const char* message);
 extern void stopAudio(const int audioFileIdx);
 void DownloadFiles(const char* url, const char* file);
 #endif
+
+extern void AndroidSetLandscape(struct womaengine* engine);
 
 static int androidRead(void* cookie, char* buf, int size) {
 	return AAsset_read((AAsset*)cookie, buf, size);
@@ -410,4 +447,13 @@ extern unsigned long threadLoadMeshId;
 extern int numZipItems;
 extern int zipIndx;
 extern UINT packCounter, totalPackCounter;
+#endif
+
+//#define woma_exception(X, FILE, FUNCTION, LINE){womalog(X, FILE, FUNCTION, LINE); ASSERT(false);}
+#if defined WINDOWS_PLATFORM
+#define throwwoma_exception(X){throw woma_exception(X, __FILE__, __FUNCTION__, __LINE__);};
+#else
+#define throwwoma_exception(X){womalog("FATAL ERROR: %s %s %s() %d\n", X, __FILE__, __FUNCTION__, __LINE__); WomaMessageBox(X); ASSERT(false);};
+#endif
+
 #endif

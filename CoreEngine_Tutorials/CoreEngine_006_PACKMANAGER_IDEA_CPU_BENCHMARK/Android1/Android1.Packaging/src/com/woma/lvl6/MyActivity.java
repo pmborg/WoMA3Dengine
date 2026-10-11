@@ -1,11 +1,32 @@
+// --------------------------------------------------------------------------------------------
+// Filename: MyActivity.java
+// --------------------------------------------------------------------------------------------
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// --------------------------------------------------------------------------------------------
+// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+//
+// This file is part of the WorldOfMiddleAge project.
+//
+// The WorldOfMiddleAge project files can not be copied or distributed for commercial use 
+// without the express written permission of Pedro Miguel Borges [pmborg@yahoo.com]
+// You may not alter or remove any copyright or other notice from copies of the content.
+// The content contained in this file is provided only for educational and informational purposes.
+// 
+// Downloaded from : https://github.com/pmborg/WoMA3Dengine
+// --------------------------------------------------------------------------------------------
+// PURPOSE: 
+// --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234526920;
+
+
 // https://www.tutorialspoint.com/android/android_hello_world_example.htm
 
 // https://github.com/codepath/android_hello_world
-// C:\Users\pedro\Downloads\android_hello_world-master\android_hello_world-master
+// ...\android_hello_world-master\android_hello_world-master
 
 // Android 8.1 	            27 	    Oreo_MR1
-// Android 8.0 	 NDK        26 	    Oreo 	
-// Android 7.1 	 PACKAGING  25 	    Nougat_MR1
+// Android 8.0 	 NDK        26 	    Oreo 		<----c++ on this demo
+// Android 7.1 	 PACKAGING  25 	    Nougat_MR1	<----java on this demo
 // Android 7.0 	            24 	    Nougat 	
 // Android 6.0 	            23 	    MARSHMALLOW 	
 // Android 5.1 	            22 	    LOLLIPOP_MR1 	
@@ -99,7 +120,7 @@
 //      6 	Build.gradle
 //      This is an auto generated file which contains compileSdkVersion, buildToolsVersion, applicationId, minSdkVersion, targetSdkVersion, versionCode and versionName
 
-package com.woma.lvl6;
+package com.woma.mainengine;
 
 //LIBS: C:\WoMAengine2023\Android-WomaEngine\Android2\Android2.Packaging\jars
 import android.util.Log;
@@ -129,32 +150,191 @@ import java.io.FileWriter;
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 //import com.woma.R;
+import android.app.NativeActivity;
+import android.os.Bundle;
+import android.util.Log;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.io.BufferedOutputStream;
 
-//https://www.cnblogs.com/MMLoveMeMM/articles/3610386.html  
+//AUDIO SAMPLE: https://www.cnblogs.com/MMLoveMeMM/articles/3610386.html  
 public class MyActivity extends NativeActivity
 {
 Toast toast;
-
-//public native String getSystemLanguage();
+int RENDER_PAGE;
 
     protected void onCreate(Bundle savedInstanceState) {                                                                                                                                  
-        Log.w("[WOMA]Java", "JAVA:onCreate()");
+        //Log.w("[WOMA]", "JAVA:onCreate()");
         super.onCreate(savedInstanceState);    
 
         toast = Toast.makeText(MyActivity.this, "message", Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER  , 0, 0);
-
-        //String language = getSystemLanguage();
-        //Log.w("System Language", language); // This will log the system language
     }       
+
+    // AUDIO:
+    //--------------------------------------------------------
+    private AudioKit[] aKit = new AudioKit[10];
+    int idx=0;
+
+    public int playAudio(final String audioFile) { 
+        if (idx>=10)
+            idx=0;
+        aKit[idx] = new AudioKit();
+        Log.w("[WOMA]", "MyActivity::playAudio(): "+audioFile);
+		Thread t = new Thread(new PlayThread(audioFile, idx), "play");
+		t.start();
+
+        return idx++;
+    }
+	
+    public void stopAudio(int idx_) { 
+        Log.w("[WOMA]", "MyActivity::stopAudio()");
+        aKit[idx_].stopAudio();
+        aKit[idx_]=null;
+    }
+
+    //--------------------------------------------------------
+    private class PlayThread implements Runnable {
+    final String m_audioFile;
+    int m_idx=0;
+
+        public PlayThread(final String audioFile_, int idx_) {
+           m_audioFile = audioFile_;
+           m_idx = idx_;
+        }
+
+        @Override
+        public void run() {
+            aKit[m_idx].playAudio(m_audioFile);
+			if (RENDER_PAGE <= 29)
+				aKit[m_idx].playAudio(m_audioFile);
+			else
+				aKit[m_idx].stopAudio();
+        }
+    }
+
+    // updateFPS:
+    //--------------------------------------------------------
+	public void updateFPS(final float fFPS)
+    {
+		RENDER_PAGE = (int)fFPS;
+        //Log.w("[WOMA]", "RENDER_PAGE: "+fFPS);
+    }
 
     // ShowAlert
     //--------------------------------------------------------
     public void ShowAlert(final String message)
     {
-        Log.w("[WOMA]Java", "Toast showAlert(): "+message);
+        //Log.w("[WOMA]", "Toast showAlert(): "+message);
 
         toast.setText(message);
         toast.show();
     }
+
+    // DownloadFiles
+    //--------------------------------------------------------
+	public void DownloadFiles(String urlStr, String file) {
+        Log.w("[WOMA]1", "JAVA: DownloadFilesv2()");
+        Log.w("[WOMA]2", urlStr);
+        Log.w("[WOMA]3", file);
+
+		//String baseDir = "/storage/emulated/0";
+        //String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+		//Log.w("[WOMA]", "baseDir: "+baseDir);
+        //String filePath = baseDir + "/Android/data/com.woma.mainengine/files/"+ file;
+		//Log.w("[WOMA]", "filePath: "+filePath);
+
+		File baseDir = getApplicationContext().getExternalFilesDir(null);
+		Log.e("[WOMA]", "baseDir: "+baseDir);
+		String filePath = baseDir.getAbsolutePath() + "/" + file;
+		Log.e("[WOMA]", "filePath: "+filePath);
+
+       try{
+            java.io.BufferedInputStream in = new java.io.BufferedInputStream(new java.net.URL(urlStr).openStream());
+            java.io.FileOutputStream fos = new java.io.FileOutputStream(filePath);
+            java.io.BufferedOutputStream bout = new BufferedOutputStream(fos,1024);
+            byte[] data = new byte[1024];
+                int x=0;
+                while((x=in.read(data,0,1024))>=0){
+                    bout.write(data,0,x);               
+                }
+            fos.flush();
+            bout.flush();
+            fos.close();
+            bout.close();
+            in.close();
+
+        }catch (Exception e){
+             Log.e("Download Error", "Error downloading the WAV file", e);
+        }
+
+		File f = new File(filePath);
+		if(f.exists()){
+			Log.w("[WOMA]", "The file " + f.getName() + " exists!");
+		}else{
+			Log.w("[WOMA]", "The file no longer exists!");
+		}
+		Log.w("[WOMA]", "file.length()="+f.length());
+
+		//playAudio(filePath);
+
+		Log.w("[WOMA]", "DownloadFilesv2:END");
+    }
+	
+    // copyReportToPublic - Copy report in the end at application stop.
+    //-----------------------------------------------------------------
+	// Copy the internal "report.txt" file to a public folder (e.g., Downloads)
+	public void copyReportToPublic() {
+		try {
+			// Actual source: internal cache path where report.txt is generated
+			java.io.File src = new java.io.File(getCacheDir(), "report.txt");
+
+			// Destination: app’s external files directory (safe & visible in Android Studio)
+			java.io.File dstDir = getExternalFilesDir(null);
+			if (dstDir == null) {
+				android.util.Log.e("WOMA", "No external files directory available!");
+				return;
+			}
+
+			java.io.File dst = new java.io.File(dstDir, "report.txt");
+			dst.getParentFile().mkdirs();
+
+			java.io.InputStream in = new java.io.FileInputStream(src);
+			java.io.OutputStream out = new java.io.FileOutputStream(dst);
+
+			byte[] buf = new byte[4096];
+			int len;
+			while ((len = in.read(buf)) > 0)
+				out.write(buf, 0, len);
+
+			in.close();
+			out.close();
+
+			android.util.Log.i("WOMA", "Report successfully copied to: " + dst.getAbsolutePath());
+		} catch (Exception e) {
+			android.util.Log.e("WOMA", "Failed to copy report.txt: " + e.getMessage(), e);
+		}
+	}
+
+	// ============================================================================================
+    // OBRIGATÓRIO PARA CORRER NO VISUAL STUDIO (CROSS-PLATFORM DEPLOY)
+    // ============================================================================================
+    static {
+        try {
+            // 1. Injetar primeiro a biblioteca de Áudio da Google na RAM
+            System.loadLibrary("oboe");
+            Log.w("[WOMA]", "JAVA: liboboe.so carregada com sucesso.");
+
+            // 2. Injetar o binário principal do teu motor WOMA
+            System.loadLibrary("Android2");
+            Log.w("[WOMA]", "JAVA: libAndroid2.so carregada com sucesso.");
+        } 
+        catch (UnsatisfiedLinkError e) {
+            Log.e("[WOMA]", "ERRO CRÍTICO: Falha ao carregar as bibliotecas nativas C++: " + e.getMessage());
+        }
+    }
+
 } 
