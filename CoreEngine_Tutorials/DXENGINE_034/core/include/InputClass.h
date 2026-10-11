@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------
 // Filename: InputClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
 // Copyright(C) 2013 - 2024 Pedro Miguel Borges [pmborg@yahoo.com]
 //
@@ -16,6 +16,8 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: A basic input used in first WOMA LEVELs using OS functions.
 // --------------------------------------------------------------------------------------------
+//WomaIntegrityCheck = 1234526920;
+
 #pragma once
 
 #include "standard_platform.h"
@@ -26,7 +28,6 @@
 class InputClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234525256;
 	InputClass();
 	~InputClass();
 

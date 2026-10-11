@@ -1,13 +1,16 @@
 // --------------------------------------------------------------------------------------------
-// Filename: 022Texture.hlsl [LATEST]
+// Filename: 027Texture.hlsl [LATEST]
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
-*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2017
+*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2026 [LATEST]
 *	-------------------------------------------------------------------------------------------
 *	code by : Pedro Borges - pmborg@yahoo.com
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
+#if DXAPI11 != 1 && DXAPI12 != 1
+    #define DXAPI9 1
+#endif
 
 //#define WITHOUT_CONSTANT_BUFFER
 
@@ -37,7 +40,7 @@ struct PSIn
 // CBUFFERS
 ////////////////
 // SYNC: DXshaderClass.h -- DX12: CBV
-#if DXAPI11 == 1
+#if DXAPI9 == 1 || DXAPI11 == 1
 cbuffer VSShaderParametersBuffer	//DX11
 #endif
 #if DXAPI12 == 1
@@ -97,7 +100,7 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
 //Note: on DX11 dont use: register()
 
 // SYNC: DXshaderClass.h -- DX12: CBV
-#if DXAPI11 == 1
+#if DXAPI9 == 1 || DXAPI11 == 1
 cbuffer PSShaderParametersBuffer	//DX11
 #endif
 #if DXAPI12 == 1
@@ -144,15 +147,15 @@ cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: D
 	float nShininess;
 };
 
-//Set on: DXmodelClass::RenderSubMesh
-#if DXAPI11 == 1
+//Set on: DX_modelClass::RenderSubMesh
+#if DXAPI9 == 1 || DXAPI11 == 1
 Texture2D shaderTexture;
 #endif
 #if DXAPI12 == 1
 Texture2D shaderTexture:	register(t0);
 #endif
 
-#if DXAPI11 == 1
+#if DXAPI9 == 1 || DXAPI11 == 1
 SamplerState SampleType;
 #endif
 #if DXAPI12 == 1
@@ -201,10 +204,14 @@ float4 PS_Main(PSIn input) : SV_TARGET
 		if (color.r <= 0.01f && color.g <= 0.01f && color.b <= 0.01f)	// If the color is black on the texture then treat this pixel as transparent.
 			discard; // Black is transparent: = clip (-1.0); return (float4)0;
 		else
-				color.rgb = pixelColor.rgb;							// If the color is other than black on the texture then this is a pixel in the font so draw it using the font pixel color.
+			color.rgb = pixelColor.rgb;							// If the color is other than black on the texture then this is a pixel in the font so draw it using the font pixel color.
 	} 
 
 	color.rgb*=fade;
 	
+#if DXAPI12 != 1
+    color.rgb = pow(color.rgb, 1.0 / 2.2); //Apply sRGB workflow: NEW 2026 review!
+#endif
+    
 	return color;
 }

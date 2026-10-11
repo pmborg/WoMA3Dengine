@@ -1,23 +1,42 @@
 // --------------------------------------------------------------------------------------------
-// Filename: 023Light.hlsl
+// Filename: 034Light.hlsl
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
-*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2017
+*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2026 [LATEST]
 *	-------------------------------------------------------------------------------------------
 *	code by : Pedro Borges - pmborg@yahoo.com
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//
+// Level 33 upgrade:
+// - BLOCK4 activated
+// - BLOCK5 activated
+// - BLOCK6 activated
+// - BLOCK7 introduced (cameraPosition, castShadow, specularColor, nShininess)
+// - Restores conditional VS/PS lighting logic
+// --------------------------------------------------------------------------------------------
 
-#if (!defined DXAPI11 && !defined DXAPI12)
-    #define DXAPI11 1
+//WomaIntegrityCheck = 1234526920;
+
+#if DXAPI11 != 1 && DXAPI12 != 1
+    #define DXAPI9 1
 #endif
 
-#define PS_USE_LIGHT		 //23
-#define PS_USE_ALFA_TEXTURE	 //33
-#define PS_USE_ALFACOLOR 	 //33
-#define PS_USE_SPECULAR		 //34
+#if DXAPI9 == 1
+    #define PS_POSITION POSITION
+    #define PS_TARGET   COLOR0
+#else
+    #define PS_POSITION SV_POSITION
+    #define PS_TARGET   SV_TARGET
+#endif
+#if DXAPI9 == 1
+    #define PS_NORMAL TEXCOORD1
+#else
+    #define PS_NORMAL NORMAL
+#endif
+
+#define PS_USE_SPECULAR
 
 // mode:
 // -1 = hardware sampler
@@ -54,8 +73,14 @@ struct PSIn
 // GLOBALS //
 /////////////
 
-//Set on: DXmodelClass::RenderSubMesh
-#if DXAPI11 == 1
+////////////////
+// CBUFFERS
+////////////////
+#include "cbuffer.hlsli"
+#include "light.hlsli"											 
+
+//Set on: DX_modelClass::RenderSubMesh
+#if DXAPI9 == 1 || DXAPI11 == 1
 Texture2D shaderTexture;	// 22: Texture
 Texture2D AlfaMapTexture;	// 33: AlfaMap
 #endif
@@ -64,18 +89,14 @@ Texture2D AlfaMapTexture:	register(t0); // 33: AlfaMap	//DX12: Descriptor: 2
 Texture2D shaderTexture:	register(t1); // 22: Texture	//DX12: Descriptor: 3
 #endif
 
-#if DXAPI11 == 1
+#if DXAPI9 == 1 || DXAPI11 == 1
 SamplerState SampleType;
 #endif
 #if DXAPI12 == 1
 SamplerState SampleType: register(s0);
 #endif
 
-////////////////
-// CBUFFERS
-////////////////
-#include "cbuffer.hlsli"
-#include "light.hlsli"
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
@@ -101,7 +122,7 @@ PSIn VS_Main(VSIn input)
 	//22: TEXTURE: Store the texture coordinates for the pixel shader:
     output.texCoords = input.texCoords;
 	
-	cameraPosition = mul(float4(input.position, 1), WV);												 
+	cameraPosition = mul(float4(input.position, 1), WV);
 
 	//23: LIGHT: NORMAL
     if (VShasLight || VShasSpecular) 
@@ -109,19 +130,19 @@ PSIn VS_Main(VSIn input)
 
 	//34: SPECULAR
 #if defined PS_USE_SPECULAR
-	
 	output.cameraPosition = cameraPosition;
 
 	if (VShasSpecular)	// If enabled on material, calculate the Specular LIGHT
 	{
 		float4 worldPosition = mul(float4(input.position, 1), worldMatrix);			// P
-		output.viewDirection = normalize(cameraPosition.xyz - worldPosition.xyz);	// L = Lp - p (L = lightDirection)
-	}
+        output.viewDirection = normalize(VSCameraPosition.xyz - worldPosition.xyz); // L = Lp - p (L = lightDirection)
+    }
 #endif
 
     return output;
 }
 
+#if DXAPI9 == 0
 #include "TextureSampling.hlsli"
 // mode:
 // 0 = nearest
@@ -129,6 +150,7 @@ PSIn VS_Main(VSIn input)
 // 2 = trilinear
 // 3 = cubic
 // 4 = hardware sampler
+#endif
 
 //Mode	Filter Type	    FPS
 //0	    Nearest	        13111 FPS
@@ -138,6 +160,7 @@ PSIn VS_Main(VSIn input)
 
 float4 GetShaderTexture(Texture2D tex, float2 texCoords, uint mipLevel, int mode)
 {
+#if DXAPI9 == 0
     switch (mode)
     {
         case 0:
@@ -152,32 +175,26 @@ float4 GetShaderTexture(Texture2D tex, float2 texCoords, uint mipLevel, int mode
         default:
             return tex.Sample(SampleType, texCoords);
     }
-
-    // fallback
+#endif
+    
+    // Legacy fallback (DX9 / ps_4_0_level_9_3)
     return tex.Sample(SampleType, texCoords);
 }
-
 ////////////////////////////////////////////////////////////////////////////////
 // Pixel Shader
 ////////////////////////////////////////////////////////////////////////////////
-float4 PS_Main(PSIn input) : SV_TARGET
+float4 PS_Main(PSIn input) : PS_TARGET
 {
     float4 textureColor = pixelColor; // 21: SET PIXEL COLOR
     float lightIntensity = 0;
 
-	//-----------------------------------------------------------------------------------
-	// lvl >=21: TEXTURE: Sample the pixel color from the texture using the sampler at this texture coordinate location
-    //replace:
-        //textureColor = shaderTexture.Sample(SampleType, input.texCoords);    
-    //with:
-    #define TEXTURE_MODE 0
 	 if (hasTexture)
 		textureColor = GetShaderTexture(shaderTexture, input.texCoords, 0, TEXTURE_MODE);
 		
 	// 23: LIGHT
     if (hasLight)
     {
-        if (!isSky)
+        if (lightType == 1)//(!isSky)
             lightIntensity = PSlightFunc1(input.normal);
         else
             lightIntensity = PSlightFunc2(input.normal);
@@ -218,6 +235,10 @@ float4 PS_Main(PSIn input) : SV_TARGET
 		}
     }
 #endif
-   	
+    
+#if DXAPI12 != 1
+    textureColor.rgb = pow(textureColor.rgb, 1.0 / 2.2); //Apply sRGB workflow: NEW 2026 review!
+#endif
+    
     return textureColor;
 }

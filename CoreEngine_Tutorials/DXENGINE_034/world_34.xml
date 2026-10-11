@@ -9,5 +9,8 @@
   <fog start="32" end="256"/>
   
   <world hVisibility="128" seaLevel="0" size="512" patchSize="64" skyDayTexture="engine/data/sky/NEW_SKY_DOME.jpg" skyNightTexture=""/>
-  <object fromPage="34" toPage="34" depend="0" scale="2" posX="-3" posZ="-6" translateY="-34.5" rotX="" rotY="-1000" rotZ="" shader="" filename="engine/data/scene30/Elementalsit.obj"/>
+
+  <!--object id ="0" depend="-1000" instances="" fromPage=""   toPage=""   posX="4"  posZ="0"  translateY="3"     scale="8" rotY="" rotX=""      rotZ="" shader="8" castShadow="" renderShadows="" filename="engine/data/scene87ForestHuntress.priv/worldMap/models_plant_bush_shape_spark/Bush-04.obj" soundRange="" audio="" /-->
+  <object id ="0" depend="0"                  fromPage="34" toPage="34" posX="-3" posZ="-7" translateY="-34.5" scale="2" rotX="" rotY="-1000" rotZ="" shader="8" filename="engine/data/scene30/Elementalsit.obj"/>
+
 </woma>
