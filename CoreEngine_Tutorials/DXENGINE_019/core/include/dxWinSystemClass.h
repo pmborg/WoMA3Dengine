@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------------------------------------
 // Filename: dxWinSystemClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,13 +16,13 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
 #include "platform.h"
 
-#if defined DX_ENGINE
+//#if defined DX_ENGINE
 
 #include "WinSystemClass.h"
 
@@ -45,7 +45,7 @@ extern PSTR Scmdline;
 extern WCHAR* DEMO_Legends[];
 #endif
 
-#endif
+//#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: WinSystemClass
@@ -53,12 +53,11 @@ extern WCHAR* DEMO_Legends[];
 class dxWinSystemClass : public WinSystemClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234525217;
 	dxWinSystemClass(WOMA::Settings* AppSettings);
 	~dxWinSystemClass();
 
 	bool APPLICATION_INIT_SYSTEM();
-	int	 APPLICATION_MAIN_LOOP();
+	//int	 APPLICATION_MAIN_LOOP();
 	void ProcessFrame();
 
 	void ProcessOSInput();
@@ -71,9 +70,7 @@ public:
 	void UNPAUSE();
     void GPH_RESIZE(void* pContext);
 
-#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 || defined USE_DX_DRIVER_FONT
-	DXcameraClass* m_Camera = NULL;
-#endif
+
 #if defined ALLOW_PRINT_SCREEN_SAVE_PNG && defined DX11
 	bool SaveScreenshot();
 #endif

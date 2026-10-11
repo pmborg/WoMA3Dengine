@@ -36,6 +36,9 @@
     <Filter Include="src\OPENGL">
       <UniqueIdentifier>{90fc141a-752b-484a-9263-fe967f52690c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Vulkan">
+      <UniqueIdentifier>{0bf2edd9-c7da-4459-9a5f-8cb6b1846b82}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\ThirdParty\GL3Plus\GL\gl3w.h">
@@ -202,6 +205,9 @@
     </ClInclude>
     <ClInclude Include="core\include\womadriverclass.h">
       <Filter>core\include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\vkClass.h">
+      <Filter>Vulkan</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -373,6 +379,9 @@
     </ClCompile>
     <ClCompile Include="core\src\corelib0.cpp">
       <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\vkClass.cpp">
+      <Filter>Vulkan</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

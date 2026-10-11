@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
@@ -50,7 +50,7 @@ public:
 	LinuxSystemClass(WOMA::Settings* appSettings);
 	~LinuxSystemClass();
 	void Shutdown();
-
+	void ONRESIZE(void* pContext);
 	int	 APPLICATION_MAIN_LOOP();
 
 	void ProcessFrame();

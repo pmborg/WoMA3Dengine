@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: packManager.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,19 +16,19 @@
 // --------------------------------------------------------------------------------------------
 // Extract used packs to: "C:\Users\<user>\AppData\Local\Temp\<temp dir>"
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 #include "OSengine.h"
-#include "mem_leak.h"
+//#include "mem_leak.h"
 
 #if defined WINDOWS_PLATFORM
-#include "stateMachine.h"
-#include "systemManager.h" // isXP & isWow64
+//#include "stateMachine.h"
+//#include "systemManager.h" // isXP & isWow64
 #include "packManager.h"
-#include "OSmain_dir.h"
+//#include "OSmain_dir.h"
 #include "winSystemClass.h"
 
 #include "idea.h"
@@ -141,7 +141,7 @@ bool InitPackLib(char* packfilename)				// Need to be CHAR!
 
 			CHAR psz[MAX_STR_LEN] = {0};
 			wtoa(psz, ze.name, 100);
-            #if _NOT //#ifdef ZIP_MEM
+            #if defined _NOT //#ifdef ZIP_MEM
 				if (wildcmp("*.obj", psz) || 
 					wildcmp("*.wav", psz) ||
 					wildcmp("*.mp3", psz) ||
@@ -157,7 +157,7 @@ bool InitPackLib(char* packfilename)				// Need to be CHAR!
 
 			packCounter++;
 
-            #if _NOT //#ifdef _DEBUG
+            #if defined _NOT //#ifdef _DEBUG
 				if ((zipIndx % 10) == 0)				// Update every 10 files... (to avoid a massive update!)
                     RedrawWindow(SystemHandle->m_hWnd, NULL, NULL, RDW_UPDATENOW|RDW_INVALIDATE);// Invoke: Window PAINT
 			#endif
@@ -165,9 +165,9 @@ bool InitPackLib(char* packfilename)				// Need to be CHAR!
 	
 		CloseZip(hz);
 		if (numZipItems == 0)
-			{WomaFatalExceptionW(TEXT("Could not open the pack file")); /*return false;*/}
+			{WomaFatalExceptionW(TEXT("Could not open the pack file")); }
 
-		#if _NOT //defined ALLOW_CBIND_PROGRESS_BAR
+		#if defined _NOT //defined ALLOW_CBIND_PROGRESS_BAR
         //RedrawWindow(g_hwnd, NULL, NULL, RDW_UPDATENOW|RDW_INVALIDATE);// Invoke: Window PAINT
 		#endif
 
@@ -215,7 +215,7 @@ bool StartPackLibs()
 		IF_NOT_RETURN_FALSE (InitPackLib("woma.pck"));	// Need to be CHAR!
 	#endif
 
-  #if _NOT //TUTORIAL_PRE_CHAP >= 11
+  #if defined _NOT //TUTORIAL_PRE_CHAP >= 11
     IF_NOT_RETURN_FALSE(InitPackLib(L"Terrain.pack"));
 
     #ifdef CHECK_COMPOUND_COLISION //ALLData.pack
@@ -223,11 +223,11 @@ bool StartPackLibs()
     #endif
   #endif
 
-  #if _NOT //TUTORIAL_PRE_CHAP >= 30
+  #if defined _NOT //TUTORIAL_PRE_CHAP >= 30
 	IF_NOT_RETURN_FALSE(InitPackLib(L"Clouds.pack"));
   #endif
 
-  #if _NOT //TUTORIAL_PRE_CHAP >= 55
+  #if defined _NOT //TUTORIAL_PRE_CHAP >= 55
 	IF_NOT_RETURN_FALSE(InitPackLib(L"Mesh.pack"));
   #endif
 

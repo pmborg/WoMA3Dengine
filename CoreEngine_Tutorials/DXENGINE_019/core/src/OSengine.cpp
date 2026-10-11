@@ -1,9 +1,9 @@
 ﻿// --------------------------------------------------------------------------------------------
 // Filename: OSengine.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: START and STOP WorldOfMiddleAge 3D ENGINE
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #if NOTES
 #Core System(Multi - OS foundations)
@@ -147,6 +147,9 @@ level82		- Loading boblampclean.md5mesh
 
 #if defined WINDOWS_PLATFORM
 #include <windows.h>
+
+#include <ShellScalingApi.h> //#pragma comment(lib, "Shcore.lib")
+
 #include <tchar.h>
 #include <regex>
 #include <filesystem>
@@ -157,11 +160,24 @@ namespace fs = std::filesystem;
 WinSystemClass* SystemHandle = NULL;
 #pragma comment(lib, "iphlpapi.lib")
 
-
 #endif
 
+std::vector<UINT> FSAA_possibleValues;
 
+#if defined VULKAN
+#if defined WINDOWS_PLATFORM
+#define VK_USE_PLATFORM_WIN32_KHR
+#endif
+#ifdef LINUX_PLATFORM
+#define VK_USE_PLATFORM_XLIB_KHR 
+#endif
+#if defined ANDROID_PLATFORM
+#define VK_USE_PLATFORM_ANDROID_KHR
+#endif
+#include <vulkan/vulkan.h>
 
+#pragma comment( lib, "vulkan-1.lib" )
+#endif
 
 #if defined ANDROID_PLATFORM 
 #if !defined NewWomaEngine
@@ -185,15 +201,14 @@ WinSystemClass* SystemHandle = NULL;
 #include "OSmain_dir.h"
 #include "log.h"
 
-#if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
-#include "Rapplicationclass.h"
-	RApplicationClass* r_Application;
-#endif
-
 #if CORE_ENGINE_LEVEL >= 10 && !defined NewWomaEngine
 	#include "womadriverclass.h"
 	#include "GLmathClass.h"
 	#include "GLopenGLclass.h"
+#endif
+
+#if defined WINDOWS_PLATFORM
+#include <Psapi.h>
 #endif
 
 #if defined USE_TINYXML_LOADER //5
@@ -275,19 +290,20 @@ TCHAR* DEMO_NAME[] =
 {DEMO_TITLE},//85 - EXPAND MINI-MAP    
 {DEMO_TITLE},//86 - THE MAIN CHARACTER
 {DEMO_TITLE},//87 - THE MAIN CHARACTER - The other sample variants
-{DEMO_TITLE},//88
-{DEMO_TITLE},//89
-{DEMO_TITLE},//90
-{DEMO_TITLE},//91
-{DEMO_TITLE},//92
-{DEMO_TITLE},//93
-{DEMO_TITLE},//94
+{DEMO_TITLE},//88 - USE_3RD_PERSON_CAMERA
+{DEMO_TITLE},//89 - The object Model Map Editor
+{DEMO_TITLE},//90 - Replacing Billboards with advanced gaming like objects(Low Poly)
+{DEMO_TITLE},//91 - Using threads for rendering
+{DEMO_TITLE},//92 - Use from now on the modern: DX11.1 on DX11 Driver
+{DEMO_TITLE},//93 - Optimizing the Billboard objects render all in 1 obj, using - Atlas Texture - Part 1
+{DEMO_TITLE},//94 - Optimizing Dynamic memory allocation for Billboard vertices - Atlas Texture - Part 2
 {DEMO_TITLE},//95
-{DEMO_TITLE},//96
-{DEMO_TITLE},//97
-{DEMO_TITLE},//98
-{DEMO_TITLE},//99
-{DEMO_TITLE},//100 This DEMO: ADVANCED PRESENTATION DEMO (Animated water, characters, grass and buildings, etc...)
+{DEMO_TITLE},//96 - Use curved real sky plane
+{DEMO_TITLE},//97 - The Waterfall
+{DEMO_TITLE},//98 - Day and Night
+{DEMO_TITLE},//99 - Terrain with object shadows.
+{DEMO_TITLE},
+//200 This DEMO: ADVANCED PRESENTATION DEMO (Animated water, characters, grass and buildings, etc...)
 };
 
 #if CORE_ENGINE_LEVEL >= 10 & !defined NewWomaEngine
@@ -328,13 +344,13 @@ namespace WOMA
 
 	TCHAR	strConsoleTitle[MAX_STR_LEN] = { 0 };
 
-#if defined USE_LOADING_THREADS
+#if defined USE_LOADING_THREADS || defined USE_MAIN_THREAD
 	UINT	num_running_THREADS = 0;
 #endif
 
 	TCHAR   APP_NAME[MAX_STR_LEN] = { 0 };              // "Application Name"
-
 	TCHAR   APP_COMPANY_NAME[MAX_STR_LEN] = COMPANY_DIRECTORY;	// "Company" Directory Name: 1st lvl
+
 	TCHAR   APP_PROJECT_NAME[MAX_STR_LEN] = PROJECT_DIRECTORY;	// "Project" Directory Name: 2nd lvl
 	TCHAR   APP_FULLNAME[MAX_STR_LEN] = { 0 };					// "Application FullName"
 
@@ -344,14 +360,6 @@ namespace WOMA
 
 #if defined USE_TINYXML_LOADER
 	TCHAR   APP_SETTINGS_FILE[] = SETTINGS_FILE; // SETUP/Configuration file name
-#endif
-
-#if defined USE_MINIDUMPER
-	MiniDumper* miniDumper = NULL;
-#endif
-
-#if defined NOTES
-// More Info MessageBox: http://msdn.microsoft.com/en-us/library/windows/desktop/ms645505%28v=vs.85%29.aspx
 #endif
 
 // LINUX:
@@ -371,11 +379,11 @@ namespace WOMA
 #endif
 
 #if (defined _DEBUG || defined DEBUG || defined ANDROID_PLATFORM) && !defined NDEBUG	//_DEBUG;_CONSOLE
-	STRING BINARY = TEXT("DEBUG");
+	#define WOMA_BINARY TEXT("DEBUG")
 #elif !defined _DEBUG && defined NDEBUG
-	STRING BINARY = TEXT("RELEASE");	//NDEBUG
+	#define WOMA_BINARY TEXT("RELEASE")	//NDEBUG
 #else
-	STRING BINARY = TEXT("DBGREL");		//_DEBUG;NDEBUG
+	#define WOMA_BINARY TEXT("DBGREL")		//_DEBUG;NDEBUG
 #endif
 
 #if defined WINDOWS_PLATFORM
@@ -396,11 +404,7 @@ namespace WOMA
 		return TRUE;
 	}
 #endif
-}
-//namespace WOMA
 
-namespace WOMA
-{
 	int endian()
 	{
 		short int word = 0x0001;
@@ -414,12 +418,6 @@ void DefineConsoleTitle()
 	// -------------------------------------------------------------------------------------------
 	// SETUP: "Console Window":
 	// -------------------------------------------------------------------------------------------
-	TCHAR cpu_type[256] = { 0 };
-#if defined CPU_X86
-	#define cpu_type TEXT("32 bits")
-#elif defined X64
-	#define cpu_type TEXT("64 bits")
-#endif
 
 	TCHAR charSet[256] = { 0 };
 #if defined UNICODE
@@ -428,32 +426,113 @@ void DefineConsoleTitle()
 	#define charSet TEXT("MultiByte")
 #endif
 
-	StringCchPrintf(WOMA::strConsoleTitle, sizeof(WOMA::strConsoleTitle), TEXT("DXENGINE Level: %d - %s [%s] %s\n"), DX_ENGINE_LEVEL, charSet, WOMA::BINARY.c_str(), cpu_type);
+#if defined CPU_X86
+	#define cpu_type "x86"
+#elif defined CPU_ARM32
+	#define cpu_type "ARM32"
+#elif defined CPU_ARM64
+	#define cpu_type "ARM64"
+#elif defined X64
+	#define cpu_type "X64"
+#endif
+
+	StringCchPrintf(WOMA::strConsoleTitle, sizeof(WOMA::strConsoleTitle), TEXT("DXENGINE Level: %d - %s [%s] %s"), DX_ENGINE_LEVEL, charSet, WOMA_BINARY, cpu_type);
 	womalogauto(TEXT("------------------------------------------------------------------------------------------\n"));
-	womalogauto(WOMA::strConsoleTitle);
+	womalogauto("strConsoleTitle: %s\n", WOMA::strConsoleTitle);
 	womalogauto(TEXT("------------------------------------------------------------------------------------------\n"));
 
 #if defined WINDOWS_PLATFORM 
-#if defined WOMA_CONSOLE_APPLICATION 
+  #if defined WOMA_CONSOLE_APPLICATION 
 	// "Console Window": Set handler:
 	SetConsoleCtrlHandler(WOMA::console_ctrl_handler, TRUE);
 
 	// "Console Window": Move away... :)
 	int Bar = WOMA::getTaskBarHeight();
 	HWND hConsole = GetConsoleWindow();
-	MoveWindow(hConsole, GetSystemMetrics(SM_CXSCREEN) - CONSOLE_LOG_WIDTH, 0, CONSOLE_LOG_WIDTH, GetSystemMetrics(SM_CYSCREEN) - Bar, TRUE);
 
-	// "Console Window": Set Title
-	SetConsoleTitle(TEXT("WOMA ENGINE - Console Window"));
+	if (hConsole) 
+	{
+		// Get real top-level parent window
+		HWND hRoot = GetAncestor(hConsole, GA_ROOT);
+		if (hRoot)
+			hConsole = hRoot;
 
-	LEVELHIGHLIGHT(CORE_ENGINE_LEVEL);
+		UINT X = GetSystemMetrics(SM_CXSCREEN);
+		UINT Y = GetSystemMetrics(SM_CYSCREEN);
+
+		// NOTE:
+		// Under Visual Studio hosted consoles (VsDebugConsole.exe),
+		// MoveWindow() updates the console HWND and reports success,
+		// but the visible debug console may remain unchanged.
+		// The host controls the actual presentation layer.
+		// 
+		// NOTE: Only with Elevation (ADMIN): MoveWindow will actually move it!
+		bool moved = MoveWindow(hConsole, X - CONSOLE_LOG_WIDTH, 0, CONSOLE_LOG_WIDTH, Y - Bar, TRUE);
+
+		womalogauto(TEXT("Console HWND=%p Root=%p\n"), GetConsoleWindow(), hConsole);
+
+		DWORD consolePID = 0;
+		if (hConsole)
+			GetWindowThreadProcessId(hConsole, &consolePID);
+
+		HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, consolePID);
+		if (hProcess)
+		{
+			TCHAR processName[MAX_PATH] = {};
+			GetModuleBaseName(hProcess,
+				NULL,
+				processName,
+				MAX_PATH
+			);
+
+			womalogauto(TEXT("Console Host Process=%s\n"), processName);
+			CloseHandle(hProcess);
+		}
+
+		//
+		DWORD pid = 0;
+		GetWindowThreadProcessId(hConsole, &pid);
+
+		womalogauto(TEXT("Current PID=%u Console PID=%u\n"), GetCurrentProcessId(), pid);
+
+		// Requested = (1660, 0, 900, 1392)
+		// Actual = (L = 1660 T = 0 R = 2560 B = 1392)
+		RECT r;
+		GetWindowRect(hConsole, &r);
+
+		womalogauto(TEXT("Requested=(%d,%d,%d,%d)\n"),
+			X - CONSOLE_LOG_WIDTH, 0,
+			CONSOLE_LOG_WIDTH, Y - Bar
+		);
+
+		womalogauto(TEXT("Actual=(L=%d T=%d R=%d B=%d)\n"), r.left, r.top, r.right, r.bottom);
+
+		LEVELHIGHLIGHT(CORE_ENGINE_LEVEL);
+		// "Console Window": Set Title
+		SetConsoleTitle(TEXT("WOMA Engine DebugWindow"));
+
+
+		TCHAR title[256] = {};
+		GetConsoleTitle(title, 256);
+		womalogauto(TEXT("ConsoleTitle=%s\n"), title);
+
+		
+
+		LEVELNORMAL();
+		//Use printf or OutputDebugString: WOMA_LOGManager don't exist yet
+		OutputDebugString(TEXT("\n"));
+
+		GetWindowThreadProcessId(hConsole, &pid);
+
+		womalogauto(TEXT("Console HWND=%p PID=%u\n"), hConsole, pid);
+
+		TCHAR debugtitle[256] = {};
+		GetWindowText(hConsole, debugtitle, 256);
+		womalogauto(TEXT("Title=%s\n"), debugtitle);
+	}
+  #endif
+
 #endif
-
-	LEVELNORMAL();
-	//Use printf or OutputDebugString: WOMA_LOGManager don't exist yet
-	OutputDebugString(TEXT("\n"));
-#endif
-
 }
 
 #if defined(WINDOWS_PLATFORM)
@@ -565,7 +644,7 @@ bool cpuSupportsAVX512f=false;
 #include <stdio.h>
 #include <stdlib.h>
 
-// Call this very early in APPLICATION_STARTUP()
+// Call this very early in PROCESS_BOOTSTRAP()
 // It intentionally keeps logic minimal and non-intrusive.
 void WOMA_InitLogSystem()
 {
@@ -612,19 +691,36 @@ void WOMA_InitLogSystem()
 #endif
 }
 
-
-void APPLICATION_STARTUP(int argc, char* argv[])
+// ---------------------------------------------------------------------------
+// PROCESS_BOOTSTRAP
+//
+// Performs process-level initialization before any SYSTEM instance exists.
+//
+// Responsibilities:
+//   • Process diagnostics
+//   • Logging
+//   • Exception handling
+//   • COM / GTK initialization
+//   • Directory setup
+//   • Runtime environment preparation
+//
+// This function is executed only once per process.
+// ---------------------------------------------------------------------------
+void PROCESS_BOOTSTRAP(int argc, char* argv[])
 {
-	STDCOUT << TEXT("<") << PROJECT_NAME << TEXT("> STARTUP") << std::endl;
 
+	STDCOUT << TEXT("==========================================================================================") << std::endl;
+	STDCOUT << TEXT("<") << PROJECT_NAME << TEXT("> STARTUP - \n");
+
+	// Fixed seed!
+
+	// Save Command Line Arguments to use later on
 #if defined WOMA_CONSOLE_APPLICATION  || !defined WINDOWS_PLATFORM
-    // Save Command Line Arguments to use later on
     WOMA::ARGc = argc;
     WOMA::ARGv = argv;
 #endif
 
 	// Changes the Process Priority:
-	// -----------------------------
 #if defined WINDOWS_PLATFORM
 	#if NOTES
 	//THREAD_PRIORITY_IDLE(-15)
@@ -636,21 +732,49 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 	//THREAD_PRIORITY_TIME_CRITICAL(+15)
 	#endif
 
-	SetThreadPriority(GetCurrentThread(), 10/*THREAD_PRIORITY_HIGHEST*/);
+#ifndef _DEBUG
+  #ifdef INTRO_DEMO
+	SetThreadPriority(GetCurrentThread(), 12);
+  #else
+	SetThreadPriority(GetCurrentThread(), 10);
+  #endif
+#endif
 
 #elif defined LINUX_PLATFORM && defined RELEASE
-	#if _DEBUG
+	#if defined _DEBUG
 		setpriority(PRIO_PROCESS, 0, 20);	// -20 (highest priority) to +20 (lowest priority). 
 	#else
 		setpriority(PRIO_PROCESS, 0, -19);	// Be nice to other processes, helps reduce mouse lag
 	#endif
 #endif
+
+	// Centralize Exception Handler:
 #if defined WINDOWS_PLATFORM
 		SetUnhandledExceptionFilter(TopLevelFilter);
 #endif
-#if defined MATH_BENCH && LEVEL < 60 // Disabled at 60: TrigonometryMathClass.cpp
-    // Benchmark trigonometric functions:
-    // ----------------------------------
+	
+// Remove Multi-Monitor High DPI Awareness:
+#if false //defined WINDOWS_PLATFORM
+		HMODULE hShcore = LoadLibraryA("shcore.dll");
+		if (hShcore) {
+			typedef HRESULT(WINAPI* PFN_SetProcessDpiAwareness)(PROCESS_DPI_AWARENESS);
+			PFN_SetProcessDpiAwareness pfnSetProcessDpiAwareness =
+				(PFN_SetProcessDpiAwareness)GetProcAddress(hShcore, "SetProcessDpiAwareness");
+
+			if (pfnSetProcessDpiAwareness) {
+				//pfnSetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
+				pfnSetProcessDpiAwareness(PROCESS_SYSTEM_DPI_AWARE);
+			}
+			FreeLibrary(hShcore);
+		}
+		else {
+			// Fallback para Windows 7 ou anterior
+			SetProcessDPIAware();
+		}
+#endif
+
+	// Benchmark trigonometric functions: (Disabled at 60: TrigonometryMathClass.cpp)
+#if defined MATH_BENCH && LEVEL < 60
 	TimerClass m_Timer;
 	m_Timer.Initialize();	// Initialize the timer object.
 
@@ -672,6 +796,12 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 	//------------------------------------------------------
 #endif
 
+#if defined(_DEBUG) && defined(WINDOWS_PLATFORM)
+	int crtDbgFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
+	_CrtSetDbgFlag(crtDbgFlag & ~_CRTDBG_ALLOC_MEM_DF);
+#endif
+
+	//PER-SETUP OPENGL DRIVER:
 #if (defined OPENGL3 || defined OPENGL4) && CORE_ENGINE_LEVEL >= 10
 	// Start LINUX Platform: "OpenGL" (LoadExtensions)
 	// -------------------------------------------------------------------------------------------
@@ -688,34 +818,53 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 	#endif
 #endif
 
-#if defined WINDOWS_PLATFORM
-	ASSERT(CHECK_IF_WE_ARE_A_RUNNING_DEMO() == EXIT_SUCCESS);	//0!
+#if defined(_DEBUG) && defined(WINDOWS_PLATFORM)
+	_CrtSetDbgFlag(crtDbgFlag);
 #endif
 
-#if CORE_ENGINE_LEVEL >= 1 && defined WINDOWS_PLATFORM
-	WOMA::setup_OSmain_dirs();									//1! Keep this order!
-	WOMA::activate_mem_leak_detection();						//2!
+	for (int i = 1; i < argc; ++i)
+	{
+		if (strlen(argv[i]) == 0)
+			continue;
+
+		if (_strnicmp(argv[i], "-DRIVER", strlen(argv[i])) == 0 ||		//NOTE: Cant be: _tcslen
+			_strnicmp(argv[i], "/DRIVER", strlen(argv[i])) == 0)		//NOTE: Cant be: _tcsnicmp
+		{
+			WOMA::settings.DRIVER = atoi(argv[i + 1]);
+			i++;
+		}
+	}
+
+#if defined WINDOWS_PLATFORM && !defined MAINENGINE
+	ASSERT(CHECK_IF_WE_ARE_A_RUNNING_DEMO() == EXIT_SUCCESS);	//0! Setup default path
 #endif
-	#if defined USE_LOG_MANAGER
-	WOMA::start_log_manager();									//3!
+
+#if defined ANDROID_PLATFORM
+	WOMA::setup_OSmain_dirs();									//1! Setup OS main dirs.
+	#if CORE_ENGINE_LEVEL >= 1 && defined WINDOWS_PLATFORM
+    //#if DX_ENGINE_LEVEL < 79
+	WOMA::activate_mem_leak_detection();						//2! Activate mem leak detection!
+    //#endif
 	#endif
 
-	TCHAR COMPILATION_DATE[MAX_STR_LEN] = {};
-	StringCchPrintf(COMPILATION_DATE, MAX_STR_LEN, TEXT("%c%c%c%c.%c%c.%c%c\n"), BUILD_YEAR_CH0, BUILD_YEAR_CH1, BUILD_YEAR_CH2, BUILD_YEAR_CH3, BUILD_MONTH_CH0, BUILD_MONTH_CH1, BUILD_DAY_CH0, BUILD_DAY_CH1);
-	womalog("COMPILATION_DATE: %s\n", COMPILATION_DATE);
-
-	womalogauto(TEXT("ENGINE BUILD TAG: %hs\n"), WOMA_ENGINE_BUILD_TAG);
-
-	// Set A Top level "Exception handler" for all Exceptions. Catch, Dump & Send Report WOMA ENGINE HOME using FTP!
-#if defined USE_MINIDUMPER 
-	WOMA::miniDumper = NEW MiniDumper();						//4! (NOTE: After logManager!)
+	// START LOG:
+	#if defined USE_LOG_MANAGER
+	WOMA::start_log_manager();									//3! NOTE: Keep this order!
+	#endif
 #endif
 
-    DefineConsoleTitle();										//5
+	//GET COMPILATION_DATE:
+	TCHAR COMPILATION_DATE[MAX_STR_LEN] = {};
+	StringCchPrintf(COMPILATION_DATE, MAX_STR_LEN, TEXT("%c%c%c%c.%c%c.%c%c\n"), BUILD_YEAR_CH0, BUILD_YEAR_CH1, BUILD_YEAR_CH2, BUILD_YEAR_CH3, BUILD_MONTH_CH0, BUILD_MONTH_CH1, BUILD_DAY_CH0, BUILD_DAY_CH1);
+	womalogauto(TEXT("COMPILATION_DATE: %s\n"), COMPILATION_DATE);
 
+	// Set A Top level "Exception handler" for all Exceptions. Catch, Dump & Send Report WOMA ENGINE HOME using FTP!
+
+    DefineConsoleTitle();										//5 Keep this order!
+
+	//Check basic MIN REQ: (Nov 2000) TARGET CODE: Pentium 4 - 32b+SSE2 API:DX9 / API:OPENGL 3.3+
 #if defined WINDOWS_PLATFORM && CORE_ENGINE_LEVEL >= 3
     //Returns true if the DirectXMath Library supports this WH: (HW before Pentium 4 will return false!)
-    //MIN REQ: (Nov 2000) TARGET CODE: Pentium 4 - 32b+SSE2 API:DX9 / API:OPENGL 3.3+
     IF_NOT_THROW_EXCEPTION(DirectX::XMVerifyCPUSupport());
 
     // Init Windows COM services:
@@ -726,7 +875,7 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 #ifdef LINUX_PLATFORM 
 	// [6-1] Start LINUX Platform GUI: Settings
 	// -------------------------------------------------------------------------------------------
-	// ALSO: After logManager!
+	// NOTE: After logManager!
 	char* value = getenv("DISPLAY");
 	putenv("DISPLAY=:0");
 	value = getenv("DISPLAY");
@@ -737,7 +886,8 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 		womalogauto(TEXT("Could not initialize GTK2!")); // Note: Don't use DEBUG_MSG yet...
 #endif
 
-#if DX_ENGINE_LEVEL >= 19 && defined WINDOWS_PLATFORM
+	// Check lib(s) versions used:
+#if DX_ENGINE_LEVEL >= 19 && defined WINDOWS_PLATFORM && defined DX_ENGINE
     womalogauto(TEXT("--- USING LIBs ---\n"));
     womalogauto(TEXT("LIB D3D11_SDK_VERSION: %d\n"), D3D11_SDK_VERSION);   //<d3d11.h>
 #endif
@@ -746,17 +896,32 @@ void APPLICATION_STARTUP(int argc, char* argv[])
 	DeleteFile("used_imgs.txt");
 #endif
 
+	//Check for avx512 support:
 #if defined WINDOWS_PLATFORM
 	cpuSupportsAVX512f = cpu_supports_avx512f();
-	#ifdef __AVX512F__
+	#if defined __AVX512F__  && _MSC_VER > 1929
 	//NOTE: If there an exception here: it's because this/your CPU don't support the fast AVX512, so change project settings to compile in slow AVX2 or AVX only!
 	ASSERT(cpuSupportsAVX512f); // Check for fast WIN11(AVX512) Instructions-set support, if fail change settings to WIN10(AVX2 or AVX)
 	#endif
+	
+	womalogauto(TEXT("CPU Supports AVX512? : %s\n"), cpuSupportsAVX512f ? TEXT("true") : TEXT("false"));
+#endif
 
-	womalogauto(TEXT("CPU Supports AVX512: %s\n"), cpuSupportsAVX512f ? TEXT("true") : TEXT("false"));
+	womalogauto(TEXT("Code Compiled for AVX512? : %s\n"), CODE_COMPILED_AVX512 ? TEXT("true") : TEXT("false"));
+
+#if defined VULKAN
+	#ifdef VK_HEADER_VERSION_COMPLETE
+		womalog("LIB Vulkan Header API: %d.%d.%d\n",
+			VK_API_VERSION_MAJOR(VK_HEADER_VERSION_COMPLETE),
+			VK_API_VERSION_MINOR(VK_HEADER_VERSION_COMPLETE),
+			VK_API_VERSION_PATCH(VK_HEADER_VERSION_COMPLETE));
+	#else
+		womalog("LIB Vulkan Header Version: %d\n", VK_HEADER_VERSION);
+	#endif
 #endif
 
     womalogauto(TEXT("<%s> STARTUP ENDED\n"), PROJECT_NAME);
+	womalogauto(TEXT("==========================================================================================\n"));
 }
 
 #if defined ANDROID_PLATFORM
@@ -771,74 +936,6 @@ void CallJavaVoidMethod(android_app* app, const char* methodName)
 	app->activity->vm->DetachCurrentThread();
 }
 #endif
-
-
-void APPLICATION_STOP()
-{
-#if defined WINDOWS_PLATFORM
-	ShowCursor(TRUE);
-#endif
-
-#if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
-	SAFE_SHUTDOWN(r_Application);
-#endif
-
-#if defined USE_MINIDUMPER
-	SAFE_DELETE(WOMA::miniDumper); // Free Top level Exception handler & Mini-Dumper.
-#endif
-
-#if CORE_ENGINE_LEVEL >= 4 && defined WINDOWS_PLATFORM
-#ifdef RELEASE
-	WOMA::DeleteDirectory(WOMA::womaTempPATH.c_str());	// Delete TEMP files
-#endif
-#endif
-
-#if defined WINDOWS_PLATFORM && CORE_ENGINE_LEVEL >= 3
-    CoUninitialize();
-    womalogauto("Exit Command: %d\n", Command);
-#endif
-
-#if defined ANDROID_PLATFORM
-	// ------------------------------------------------------------------
-	// Stop background music (from Java side) before closing Activity
-	// ------------------------------------------------------------------
-#if defined USE_ANDROID_SOUND
-	if (m_main_music_id >= 0)
-	{
-		womalog("[ANDROID]: Stopping main music...\n");
-		stopAudio(m_main_music_id);
-		m_main_music_id = -1;
-	}
-#endif
-
-	// ------------------------------------------------------------------
-	// Auto-close Android Activity (same as pressing Back)
-	// ------------------------------------------------------------------
-	if (engine.app && engine.app->activity)
-	{
-		womalog("[ANDROID]: Auto-closing application...\n");
-
-		JNIEnv* env = nullptr;
-		engine.app->activity->vm->AttachCurrentThread(&env, nullptr);
-		jclass activityClass = env->GetObjectClass(engine.app->activity->clazz);
-		jmethodID finishMethod = env->GetMethodID(activityClass, "finish", "()V");
-		if (finishMethod)
-			env->CallVoidMethod(engine.app->activity->clazz, finishMethod);
-		engine.app->activity->vm->DetachCurrentThread();
-	}
-#endif
-
-#if defined USE_LOG_MANAGER
-	if (WOMA::logManager)
-		WOMA::logManager->ShutdownInstance();	// Write, Close & Free: The logManager.
-	WOMA::logManager = NULL;				    // Because its a STATIC Class Shutdown and do not log
-#endif
-
-#if defined(ANDROID_PLATFORM)
-	CallJavaVoidMethod(engine.app, "copyReportToPublic");
-	engine.has_focus_ = false;
-#endif
-}
 
 TCHAR* getComputerName()
 {
@@ -952,22 +1049,27 @@ void ShowFPS(float fFPS)
 
 void ShowAlert(const char* message)
 {
-	//JAVA: public void ShowAlert(final String message)
-	{
-		if (!jni)
-			engine.app->activity->vm->AttachCurrentThread(&jni, NULL);
-		jclass clazz = jni->GetObjectClass(engine.app->activity->clazz);
+	//womalog("ShowAlert() message='%s'\n", message);
 
-		// Signature has to match java implementation (second string hints a t a java string parameter)
-		jmethodID methodID = jni->GetMethodID(clazz, "ShowAlert", "(Ljava/lang/String;)V");
+	JNIEnv* env = nullptr;
 
-		// Strings passed to the function need to be converted to a java string object
-		jstring jmessage = jni->NewStringUTF(message);
-		jni->CallVoidMethod(engine.app->activity->clazz, methodID, jmessage);
-		jni->DeleteLocalRef(jmessage);
+	jint result = engine.app->activity->vm->AttachCurrentThread(&env, NULL);
 
-		//engine_state.app->activity->vm->DetachCurrentThread();
-	}
+	//womalog("AttachCurrentThread result=%d env=%p\n", result, env);
+
+	jclass clazz = env->GetObjectClass(engine.app->activity->clazz);
+
+	//womalog("clazz=%p\n", clazz);
+
+	jmethodID methodID = env->GetMethodID(clazz, "ShowAlert", "(Ljava/lang/String;)V");
+
+	//womalog("methodID=%p\n", methodID);
+
+	jstring jmessage = env->NewStringUTF(message);
+
+	env->CallVoidMethod(engine.app->activity->clazz, methodID, jmessage);
+
+	env->DeleteLocalRef(jmessage);
 }
 
 void finish_activity(UINT res) {
@@ -1044,12 +1146,13 @@ void stopAudio(const int audioFileIdx)
 		//engine_state.app->activity->vm->DetachCurrentThread();
 	}
 }
+
 #endif
+
 
 #if defined ANDROID_PLATFORM && defined USE_LOG_MANAGER
 STRING LOAD_ASSET_SAVE_TO_CACHE (TCHAR* XMLFILE) 
 {
-	//LOAD FROM: C:\WoMAengine2023\Android-WomaEngine\Android2\Android2.Packaging\ARM64\Debug\Package\assets
 	AAssetManager* manager = engine.app->activity->assetManager;
 	AAsset* thisxmlFile = AAssetManager_open(manager, XMLFILE, AASSET_MODE_BUFFER);
 	const char* fileBuffer = (char*)AAsset_getBuffer(thisxmlFile);
@@ -1143,17 +1246,6 @@ namespace WOMA
 #endif
 
 
-#if DEMO_LEVEL >= 79 && DEMO_LEVEL <= 81
-#include "stdafx.h"
-bool firstFrame = true;
-#endif
-
-//#if DEMO_LEVEL < 86
-//STRING original_files[] = {
-//    TEXT("")
-//};
-//#endif
-
 #if defined WINDOWS_PLATFORM
 #include <immintrin.h>
 #include <intrin.h>
@@ -1181,7 +1273,6 @@ namespace WOMA
 {
 	TCHAR* LoadFile(TCHAR* filename, bool shader);
 }
-
 
 
 namespace WOMA
@@ -1214,7 +1305,6 @@ namespace WOMA
 	}
 }
 
-
 int WomaMessageBox(TCHAR* lpText)
 {
 	return WomaMessageBox(lpText, TEXT("ERROR:"), false);
@@ -1226,19 +1316,13 @@ int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption)
 }
 
 #if !defined LINUX_PLATFORM
+
 int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption, bool yesORno)
 //----------------------------------------------------------------------------------
 {
 	int res = yesORno ? 1 : 0;
-	TCHAR fullMsg[5000] = { 0 };
-	StringCchPrintf(fullMsg, sizeof(fullMsg), TEXT("%s %s\n"), lpCaption, lpText);
 
 #if defined WINDOWS_PLATFORM
-	{ HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_INTENSITY); }
-
-	womalogauto(fullMsg);
-	{ HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED); }
-
 	if (SystemHandle)
 		res = MessageBox(SystemHandle->m_hWnd, lpText, lpCaption, (yesORno) ? MB_YESNO : MB_OK);
 	else
@@ -1246,7 +1330,7 @@ int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption, bool yesORno)
 #endif
 
 #if defined ANDROID_PLATFORM
-	ShowAlert(lpCaption);
+	ShowAlert(lpText);
 #endif
 
 	return res;
@@ -1255,14 +1339,23 @@ int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption, bool yesORno)
 int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption = WOMA::APP_FULLNAME, bool yesORno = false)
 {
 	// MORE INFO: http://stackoverflow.com/questions/263/gtk-implementation-of-messagebox
+#if defined UNICODE
 	char text[MAX_STR_LEN]; wtoa(text, lpText, MAX_STR_LEN); //w to a
+	char caption[MAX_STR_LEN]; wtoa(caption, lpCaption, MAX_STR_LEN);	// wide to ansi
 	GtkWidget* dialog = gtk_message_dialog_new(
 		GTK_WINDOW(Win.window), GTK_DIALOG_MODAL,
 		(fatal) ? GTK_MESSAGE_ERROR : GTK_MESSAGE_WARNING,
 		(yesORno) ? GTK_BUTTONS_YES_NO : GTK_BUTTONS_OK, text);
 
-	char caption[MAX_STR_LEN]; wtoa(caption, lpCaption, MAX_STR_LEN);	// wide to ansi
 	gtk_window_set_title(GTK_WINDOW(dialog), caption);					// Title
+#else
+	GtkWidget* dialog = gtk_message_dialog_new(
+		NULL /*GTK_WINDOW(Win.window)*/, GTK_DIALOG_MODAL,
+		(fatal) ? GTK_MESSAGE_ERROR : GTK_MESSAGE_WARNING,
+		(yesORno) ? GTK_BUTTONS_YES_NO : GTK_BUTTONS_OK, lpText);
+
+	gtk_window_set_title(GTK_WINDOW(dialog), lpCaption);					// Title
+#endif
 
 	while (gtk_events_pending())			// Wait for all gtk events to be consumed ...
 		gtk_main_iteration_do(FALSE);
@@ -1294,23 +1387,14 @@ int WomaMessageBox(TCHAR* lpText, TCHAR* lpCaption = WOMA::APP_FULLNAME, bool ye
 #endif
 
 
-
-#if defined WOMA_DLL
-#if _DEBUG
-#pragma comment( lib, "C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\Assimp-latest-Engine.lib" )
-#else
-#pragma comment( lib, "C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Release\\Assimp-latest-Engine.lib" )
-#endif
-#endif
-
-
 #if (!defined(WOMA_DLL) || (defined(WOMA_DLL) && DX_ENGINE_LEVEL < 82))
 // ==========================================================
 // EXE builds and pre-82 DLLs → globals live in OSengine
 // ==========================================================
 
 namespace WOMA {
-	Settings* AppSettings = NULL;
+	//Settings* AppSettings = NULL;
+	Settings* AppSettings = &WOMA::settings;
 }
 UINT CLASS_LOAD_N = 1;
 UINT CLASS_DELETE_N = 1;
@@ -1325,3 +1409,84 @@ UINT packCounter = 0, totalPackCounter = 0;
 int Command = EXIT_SUCCESS;
 #endif
 
+#if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
+#include "Rapplicationclass.h"
+RApplicationClass* r_Application=NULL;
+#endif
+
+
+// ---------------------------------------------------------------------------
+// PROCESS_SHUTDOWN
+//
+// Releases every resource allocated during PROCESS_BOOTSTRAP().
+//
+// Executed once after the last SYSTEM instance has been destroyed.
+// ---------------------------------------------------------------------------
+void PROCESS_SHUTDOWN()
+{
+#if defined WINDOWS_PLATFORM
+	ShowCursor(TRUE);
+#endif
+
+#if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
+	SAFE_SHUTDOWN(r_Application);
+#endif
+
+#if CORE_ENGINE_LEVEL >= 4 && defined WINDOWS_PLATFORM
+#ifdef RELEASE
+	//WOMA::DeleteDirectory(WOMA::womaTempPATH.c_str());	// Delete TEMP files
+	WOMA::DeleteDirectory(getTemp());	// Delete TEMP files
+#endif
+#endif
+
+#if defined WINDOWS_PLATFORM && CORE_ENGINE_LEVEL >= 3
+	CoUninitialize();
+	womalogauto("Exit Command: %d\n", Command);
+#endif
+
+#if defined ANDROID_PLATFORM
+	// ------------------------------------------------------------------
+	// Stop background music (from Java side) before closing Activity
+	// ------------------------------------------------------------------
+#if defined USE_ANDROID_SOUND
+	if (m_main_music_id >= 0)
+	{
+		womalog("[ANDROID]: Stopping main music...\n");
+		stopAudio(m_main_music_id);
+		m_main_music_id = -1;
+	}
+#endif
+
+	// ------------------------------------------------------------------
+	// Auto-close Android Activity (same as pressing Back)
+	// ------------------------------------------------------------------
+	if (engine.app && engine.app->activity)
+	{
+		womalog("[ANDROID]: Auto-closing application...\n");
+
+		JNIEnv* env = nullptr;
+		engine.app->activity->vm->AttachCurrentThread(&env, nullptr);
+		jclass activityClass = env->GetObjectClass(engine.app->activity->clazz);
+		jmethodID finishMethod = env->GetMethodID(activityClass, "finish", "()V");
+		if (finishMethod)
+			env->CallVoidMethod(engine.app->activity->clazz, finishMethod);
+		engine.app->activity->vm->DetachCurrentThread();
+	}
+#endif
+
+#if defined USE_LOG_MANAGER
+	if (WOMA::logManager_bk != NULL && WOMA::logManager == NULL) // is just LOG disabled?
+	{
+		WOMA::logManager = WOMA::logManager_bk;
+		WOMA::logManager_bk = NULL;
+	}
+	if (WOMA::logManager)
+		WOMA::logManager->ShutdownInstance();	// Write, Close & Free: The logManager.
+	WOMA::logManager = NULL;				    // Because its a STATIC Class Shutdown and do not log
+#endif
+
+#if defined(ANDROID_PLATFORM)
+	CallJavaVoidMethod(engine.app, "copyReportToPublic");
+	engine.has_focus_ = false;
+#endif
+}
