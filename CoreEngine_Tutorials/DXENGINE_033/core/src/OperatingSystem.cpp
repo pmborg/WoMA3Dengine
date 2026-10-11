@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: OperatingSystem.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
 #if CORE_ENGINE_LEVEL >= 4 && defined USE_SYSTEM_CHECK
@@ -29,7 +29,7 @@ using namespace std;
 #include <iostream>
 #include <comdef.h>
 #include <Wbemidl.h>
-#include <wincred.h>
+//#include <wincred.h>
 #include <strsafe.h>
 
 #pragma comment(lib, "wbemuuid.lib")

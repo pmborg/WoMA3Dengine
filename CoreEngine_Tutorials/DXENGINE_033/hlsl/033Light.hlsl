@@ -1,19 +1,40 @@
 // --------------------------------------------------------------------------------------------
-// Filename: 023Light.hlsl
+// Filename: 033Light.hlsl
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
-*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2017
+*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2026 [LATEST]
 *	-------------------------------------------------------------------------------------------
 *	code by : Pedro Borges - pmborg@yahoo.com
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//
+// Level 33 upgrade:
+// - BLOCK4 activated
+// - BLOCK5 activated
+// - BLOCK6 activated
+// - BLOCK7 introduced (cameraPosition, castShadow, specularColor, nShininess)
+// - Restores conditional VS/PS lighting logic
+// --------------------------------------------------------------------------------------------
 
-#if (!defined DXAPI11 && !defined DXAPI12)
-    #define DXAPI11 1
+//WomaIntegrityCheck = 1234526920;
+
+#if DXAPI11 != 1 && DXAPI12 != 1
+    #define DXAPI9 1
 #endif
 
+#if DXAPI9 == 1
+    #define PS_POSITION POSITION
+    #define PS_TARGET   COLOR0
+#else
+    #define PS_POSITION SV_POSITION
+    #define PS_TARGET   SV_TARGET
+#endif
+#if DXAPI9 == 1
+    #define PS_NORMAL TEXCOORD1
+#else
+    #define PS_NORMAL NORMAL
+#endif
 // mode:
 // -1 = hardware sampler
 //  0 = nearest
@@ -30,18 +51,19 @@
 // VERTEX:
 struct VSIn
 {
-    float3 position : POSITION; //21
+    float3 position : POSITION;  //21
     float2 texCoords : TEXCOORD; //22
-    float3 normal : NORMAL; //23
+    float3 normal : NORMAL; 	 //23
 };
 
 // PIXEL:
 struct PSIn
 {
     float4 position : SV_POSITION; // 21
-    float2 texCoords : TEXCOORD; // 22
-    float3 normal : NORMAL; // 23 LIGHT
+    float2 texCoords : TEXCOORD;   // 22
+    float3 normal : NORMAL;        // 23 LIGHT
 };
+
 
 /////////////
 // GLOBALS //
@@ -51,7 +73,7 @@ struct PSIn
 // CBUFFERS
 ////////////////
 // SYNC: DXshaderClass.h -- DX12: CBV
-#if DXAPI11 == 1
+#if DXAPI9 == 1 || DXAPI11 == 1
 cbuffer VSShaderParametersBuffer	//DX11
 #endif
 #if DXAPI12 == 1
@@ -61,48 +83,31 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
     // VERTEX: need to match: 
     // [DXshaderClass.h] VSconstantBufferType
 
-    // BLOCK: VS1
-    matrix worldMatrix; //worldMatrix
-    matrix view;        //view
-    matrix projection;  //projection
-    matrix WV;          //worldMatrix+viewMatrix
-    matrix WVP;         //worldMatrix+viewMatrix+projectionMatrix
+	// BLOCK: VS1
+	matrix	worldMatrix;	//worldMatrix
+	matrix	view;			//view
+	matrix	projection;		//projection
+	matrix  WV;				//worldMatrix+viewMatrix
+	matrix  WVP;			//worldMatrix+viewMatrix+projectionMatrix
 
-    // 23 BLOCK: VS2
-    bool VShasLight;
-    bool VShasSpecular;
-    bool VShasNormMap;
-    bool VShasFog;
-    
-    // 23 BLOCK: VS3
-    float3 VSlightDirection;// LIGHT
-    float VSlightPAD;       // 3+1=XMFLOAT4
-    float4 VSambientColor;  // LIGHT
-    float4 VSdiffuseColor;  // LIGHT
-    float4 VSemissiveColor; // LIGHT: Ke
-    
-    // 31 BLOCK: VS4
-    float VSfogStart;
-    float VSfogEnd;
-    bool VShasShadowMap;
-    bool VS_USE_WVP;
-    
-    //// 45 BLOCK: VS5
-    //matrix ViewToLightProj;
-    //matrix WorldInverseTranspose;   // WorldInverseTranspose
-    //float4 vEye;                    // camera position		
-    //
-    //// 42 BLOCK: VS6
-    //float VSrotX;
-    //float VSrotY;
-    //float VSrotZ;
-    //float time;
-    //
-    //// 42 BLOCK: VS7
-    //float VSshaderType;
-    //float vsPAD2;
-    //float vsPAD3;
-    //float vsPAD4;
+	// 23 BLOCK: VS2
+	bool	VShasLight;
+	bool	VShasSpecular;
+	bool	VShasNormMap;
+	bool	VShasFog;
+
+	// 23 BLOCK: VS3
+    float3  VSlightDirection;   // LIGHT (XMVECTOR = XMFLOAT4)
+	float   VSlightPAD;         // 3+1=XMFLOAT4
+	float4	VSambientColor;		// LIGHT: Ka
+	float4	VSdiffuseColor;		// LIGHT: Kd
+    float4  VSemissiveColor;    // LIGHT: Ke
+
+	// 31 BLOCK: VS4
+	float	VSfogStart;
+	float	VSfogEnd;
+	bool	VShasShadowMap;
+	bool	VS_USE_WVP;
 };
 
 ///////////////
@@ -111,7 +116,7 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
 //Note: on DX11 dont use: register()
 
 // SYNC: DXshaderClass.h -- DX12: CBV
-#if DXAPI11 == 1
+#if DXAPI9 == 1 || DXAPI11 == 1
 cbuffer PSShaderParametersBuffer	//DX11
 #endif
 #if DXAPI12 == 1
@@ -122,28 +127,28 @@ cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: D
     float4 pixelColor;
 
     // BLOCK2:
-    bool hasTexture; // No? Use pixelColor, then.
-    bool hasLight; // Future Load Obj. Engine Level
-    bool hasSpecular; // Future Load Obj. Engine Level
-    bool isFont; // Future Load Obj. Engine Level
+    bool hasTexture; 	// No? Use pixelColor, then.
+    bool hasLight; 		// Future Load Obj. Engine Level
+    bool hasSpecular; 	// Future Load Obj. Engine Level
+    bool isFont; 		// Future Load Obj. Engine Level
 
     // BLOCK3:
-    float4 ambientColor; // LIGHT: Ka
-    float4 diffuseColor; // LIGHT: Kd
-    float4 emissiveColor; // LIGHT: Ke 
-    float4 lightDirection; // LIGHT
+    float4 ambientColor; 	// LIGHT: Ka
+    float4 diffuseColor; 	// LIGHT: Kd
+    float4 emissiveColor; 	// LIGHT: Ke 
+    float4 lightDirection; 	// LIGHT
     
     //// BLOCK4:
-    bool hasColorMap; // 66
-    float lightType; // Future
-    float shaderType; // Future
-    float shaderTypeParameter; // Future
+    bool  hasColorMap; 			// 66
+    float lightType; 			// Future
+    bool  isDay;
+    float shaderTypeParameter; 	// Future
     
     // BLOCK5:
-    bool hasAlfaColor;
+    bool  hasAlfaColor;
     float alfaColor;
-    float fade; // Fade from 0 to 1
-    float frameTime; // For animations
+    float fade; 		// Fade from 0 to 1
+    float frameTime; 	// For animations
 
     // BLOCK6:
     bool hasFog;
@@ -151,22 +156,22 @@ cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: D
     bool hasAlfaMap;
     bool hasNormMap;
     
-    // BLOCK7:
+    // BLOCK7:-LEVEL33
     float3 cameraPosition; // Future
-    bool castShadow;
+    bool   castShadow;
     float3 specularColor;
-    float nShininess;
+    float  nShininess;
 };
 
 //Set on: DXmodelClass::RenderSubMesh
-#if DXAPI11 == 1
+#if DXAPI9 == 1 || DXAPI11 == 1
 Texture2D shaderTexture;
 #endif
 #if DXAPI12 == 1
 Texture2D shaderTexture:	register(t0);
 #endif
 
-#if DXAPI11 == 1
+#if DXAPI9 == 1 || DXAPI11 == 1
 SamplerState SampleType;
 #endif
 #if DXAPI12 == 1
@@ -216,6 +221,7 @@ PSIn VS_Main(VSIn input)
     return output;
 }
 
+#if DXAPI9 == 0
 #include "TextureSampling.hlsli"
 // mode:
 // 0 = nearest
@@ -223,15 +229,16 @@ PSIn VS_Main(VSIn input)
 // 2 = trilinear
 // 3 = cubic
 // 4 = hardware sampler
+#endif
 
 //Mode	Filter Type	    FPS
 //0	    Nearest	        13111 FPS
 //1	    Bilinear	    12945 FPS
 //2	    Trilinear	    12989 FPS
 //3	    Cubic 	        13141 FPS
-
 float4 GetShaderTexture(Texture2D tex, float2 texCoords, uint mipLevel, int mode)
 {
+#if DXAPI9 == 0
     switch (mode)
     {
         case 0:
@@ -246,34 +253,29 @@ float4 GetShaderTexture(Texture2D tex, float2 texCoords, uint mipLevel, int mode
         default:
             return tex.Sample(SampleType, texCoords);
     }
-
-    // fallback
+#endif
+    
+    // Legacy fallback (DX9 / ps_4_0_level_9_3)
     return tex.Sample(SampleType, texCoords);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Pixel Shader
 ////////////////////////////////////////////////////////////////////////////////
-float4 PS_Main(PSIn input) : SV_TARGET
+float4 PS_Main(PSIn input) : PS_TARGET
 {
     float4 textureColor = pixelColor; // 21: SET PIXEL COLOR
     float lightIntensity = 0;
 
-	//-----------------------------------------------------------------------------------
-	// lvl >=21: TEXTURE: Sample the pixel color from the texture using the sampler at this texture coordinate location
-    //replace:
-        //textureColor = shaderTexture.Sample(SampleType, input.texCoords);    
-    //with:
-    #define TEXTURE_MODE 0
-	 if (hasTexture)
+	if (hasTexture)
 		textureColor = GetShaderTexture(shaderTexture, input.texCoords, 0, TEXTURE_MODE);
 		
 	// 23: LIGHT
     if (hasLight)
     {
-        if (!isSky)
-            lightIntensity = PSlightFunc1(input.normal);
-        else
+        //if (!isSky)//(lightType)
+        //    lightIntensity = PSlightFunc2(input.normal);
+        //else
             lightIntensity = PSlightFunc2(input.normal);
 
         if (hasTexture)
@@ -285,9 +287,6 @@ float4 PS_Main(PSIn input) : SV_TARGET
             textureColor = textureColor * saturate(emissiveColor + ambientColor + (lightIntensity * diffuseColor));
         }
     }
-
-    lightIntensity = PSlightFunc2(input.normal);
-    textureColor = textureColor * saturate(emissiveColor + ambientColor + (lightIntensity * diffuseColor));
 
     if (hasAlfaColor)
         textureColor.a = alfaColor;
