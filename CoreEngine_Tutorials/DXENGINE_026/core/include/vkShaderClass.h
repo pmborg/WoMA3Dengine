@@ -208,17 +208,10 @@ public:
 		BOOL VShasFog;
 
 		// BLOCK VS3: 64 bytes
-//#ifdef WINDOWS_PLATFORM
 		XMFLOAT4 VSlightDirection;
 		XMFLOAT4 VSambientColor;
 		XMFLOAT4 VSdiffuseColor;
 		XMFLOAT4 VSemissiveColor;
-//#else
-//		Vector4 VSlightDirection;
-//		Vector4 VSambientColor;
-//		Vector4 VSdiffuseColor;
-//		Vector4 VSemissiveColor;
-//#endif
 
 		// BLOCK VS4: 16 bytes
 		float		VSfogStart;

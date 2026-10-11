@@ -170,7 +170,7 @@ void main()
 	}
 	
     // 2 LIGHT: Level 23 Difuse and Ambient Light
-	if (pc.hasLight>0)
+	//if (pc.hasLight>0)
 	{
         //if (pc.isSky==0)
         //    lightIntensity = PSlightFunc2(inNormal).x;
@@ -202,9 +202,9 @@ void main()
     }
 	
     // 5. SPECULAR LIGHT (LEVEL 34)
-    if (pc.hasSpecular > 0) 
+    //if (pc.hasSpecular > 0) 
 	{
-        if (lightIntensity > 0) 
+        //if (lightIntensity > 0) 
 		{
             vec3 reflection = reflect(normalize(ps.lightDirection.xyz), inNormal);
 			

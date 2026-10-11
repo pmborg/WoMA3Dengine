@@ -269,6 +269,24 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='WRelease|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'">true</ExcludedFromBuild>
     </FxCompile>
+    <FxCompile Include="hlsl\034Light.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='WRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="VK\021color.frag" />
+    <None Include="VK\021color.vert" />
+    <None Include="VK\022texture.frag" />
+    <None Include="VK\022texture.vert" />
+    <None Include="VK\023light.frag" />
+    <None Include="VK\023light.vert" />
+    <None Include="VK\027font.frag" />
+    <None Include="VK\027font.vert" />
+    <None Include="VK\034light.frag" />
+    <None Include="VK\034light.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

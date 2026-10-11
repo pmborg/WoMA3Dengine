@@ -236,9 +236,9 @@ float4 PS_Main(PSIn input) : PS_TARGET
     }
 #endif
     
-#if DXAPI12 != 1
-    textureColor.rgb = pow(textureColor.rgb, 1.0 / 2.2); //Apply sRGB workflow: NEW 2026 review!
-#endif
+//#if DXAPI12 != 1
+//    textureColor.rgb = pow(textureColor.rgb, 1.0 / 2.2); //Apply sRGB workflow: NEW 2026 review!
+//#endif
     
     return textureColor;
 }

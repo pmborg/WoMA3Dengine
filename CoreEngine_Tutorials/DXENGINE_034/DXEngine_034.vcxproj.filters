@@ -79,6 +79,9 @@
     <Filter Include="Vulkan">
       <UniqueIdentifier>{1643767d-4d5d-4165-b2e9-e8a2177e4fb8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="VK">
+      <UniqueIdentifier>{e8aff7f1-28ba-43fb-b3d9-c52f6304452f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\include\main.h">
@@ -641,5 +644,40 @@
     <FxCompile Include="hlsl\027Texture.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
+    <FxCompile Include="hlsl\034Light.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="VK\021color.frag">
+      <Filter>VK</Filter>
+    </None>
+    <None Include="VK\021color.vert">
+      <Filter>VK</Filter>
+    </None>
+    <None Include="VK\022texture.frag">
+      <Filter>VK</Filter>
+    </None>
+    <None Include="VK\022texture.vert">
+      <Filter>VK</Filter>
+    </None>
+    <None Include="VK\023light.frag">
+      <Filter>VK</Filter>
+    </None>
+    <None Include="VK\023light.vert">
+      <Filter>VK</Filter>
+    </None>
+    <None Include="VK\027font.frag">
+      <Filter>VK</Filter>
+    </None>
+    <None Include="VK\027font.vert">
+      <Filter>VK</Filter>
+    </None>
+    <None Include="VK\034light.frag">
+      <Filter>VK</Filter>
+    </None>
+    <None Include="VK\034light.vert">
+      <Filter>VK</Filter>
+    </None>
   </ItemGroup>
 </Project>
