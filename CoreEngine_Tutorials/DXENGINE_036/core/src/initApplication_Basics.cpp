@@ -636,7 +636,6 @@ bool ApplicationClass::WOMA_LOAD_OBJ(void* pContext, UINT threadID, UINT level, 
 	}
 #endif
 
-	if (objModel[i]->m_instanceCount == 0)
 		WOMA::sceneManager->addModel(WOMA::sceneManager->RootNode, objModel[i]);	// Add node to nodesList: RootNode
 
 	return true;

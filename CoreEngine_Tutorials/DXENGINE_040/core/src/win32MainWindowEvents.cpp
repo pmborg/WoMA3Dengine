@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: win32MainWindowEvents.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,25 +17,30 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma warning( disable : 4312 ) // warning C4312: 'type cast': conversion from 'int' to 'HMENU' of greater size
 #include "OSengine.h"
-#include "OSmain_dir.h"
-#include <windowsx.h>
+//#include "OSmain_dir.h"
 
 #define TIMER_TITLE 0
 
 // TIMERS:
-#if CORE_ENGINE_LEVEL >= 7 && defined USE_ASTRO_CLASS
-#define TIMER_ASTRO 1
+#include <windowsx.h>
+#if defined USE_ASTRO_CLASS
+	#define TIMER_ASTRO 1
 #endif
 
 #include "winsystemclass.h"
 
 #include "xml_loader.h"
 
-#include "DX11Class.h"
+#if defined DX11 || defined DX9
+#include "Dx11Class.h"
+#endif
+#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009 //Use: WIN10SDK
+#include "Dx12Class.h"
+#endif
 
 #if defined USE_INTRO_VIDEO_DEMO
 extern void CALLBACK OnGraphEvent(HWND hwnd, long evCode, LONG_PTR param1, LONG_PTR param2);
@@ -55,8 +60,12 @@ void WinSystemClass::StartTimer()
 	// Don't Update on: FullScreen or Full-windowed
     if ((!WOMA::AppSettings->FULL_SCREEN) && (windowStyle != 0x96080000))
     {
-#if defined NDEBUG //INTRO_DEMO
-        SetTimer(m_hWnd, TIMER_TITLE, 100 / KEYB_TIMES_PER_SECOND, NULL);	// 100ms = 10 x per second!
+		// Automatic regression test mode
+		// ------------------------------
+		// Debug:   60 s (TIMER_TITLE = 2 s × 30 ticks)
+		// Release: 3 s  (TIMER_TITLE = 100 ms × 30 ticks)
+#if defined NDEBUG
+        SetTimer(m_hWnd, TIMER_TITLE, 1000 / KEYB_TIMES_PER_SECOND, NULL);	// 0100ms = 1 x per second!
 #else
         SetTimer(m_hWnd, TIMER_TITLE, 2000 / KEYB_TIMES_PER_SECOND, NULL);	// 2000ms = 2 seconds! (1000ms = 1 second!)
 #endif
@@ -196,7 +205,7 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
                 WOMA::AppSettings->UI_MONITOR = (int)(SendMessage(womaSetup->hWndComboBox[1], CB_GETCURSEL, NULL, NULL));
 
                 //GET DRIVER:
-                int		previous_DRIVER = WOMA::AppSettings->DRIVER;
+                int		runningDriver = WOMA::AppSettings->DRIVER;
                 WOMA::AppSettings->DRIVER = (int)(SendMessage(womaSetup->hWndComboBox[2], CB_GETCURSEL, NULL, NULL));
 
 				UINT MSAA = (int)(SendMessage(womaSetup->hWndComboBox[3], CB_GETCURSEL, NULL, NULL));
@@ -228,9 +237,9 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
                 //if (index == 1 || index == 2) 
                 {
                     int resId = (int)(SendMessage(womaSetup->hWndComboBoxperMonitor[WOMA::AppSettings->UI_MONITOR], CB_GETCURSEL, NULL, NULL));
-                    if (resId>0 && SystemHandle->allWindowsArray.size()>0) {
-                        WOMA::AppSettings->WINDOW_WIDTH = SystemHandle->allWindowsArray[WOMA::AppSettings->UI_MONITOR].ScreenResolution[resId].Width;
-                        WOMA::AppSettings->WINDOW_HEIGHT = SystemHandle->allWindowsArray[WOMA::AppSettings->UI_MONITOR].ScreenResolution[resId].Height;
+                    if (resId>0 && WOMA::allWindowsHwArray.size()>0) {
+                        WOMA::AppSettings->WINDOW_WIDTH = WOMA::allWindowsHwArray[WOMA::AppSettings->UI_MONITOR].ScreenResolution[resId].Width;
+                        WOMA::AppSettings->WINDOW_HEIGHT = WOMA::allWindowsHwArray[WOMA::AppSettings->UI_MONITOR].ScreenResolution[resId].Height;
                     }
                 }
 
@@ -238,16 +247,16 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 				#if defined CLIENT_SCENE_SETUP
 				SystemHandle->xml_loader.saveXMLsettingsFile(str);
 				#endif
-				WOMA::AppSettings->DRIVER = previous_DRIVER;
+				WOMA::AppSettings->DRIVER = runningDriver;
 
-				WOMA::previous_game_state = GAME_RUN;
+				//WOMA::previous_game_state = GAME_MENU;
 				WOMA::game_state = ENGINE_RESTART;
 			}
 
 			//BUTTON: Cancel
 			if (HWND(lparam) == womaSetup->m_hBtnCancel)
 			{
-				WOMA::game_state = GAME_RUN;
+				WOMA::game_state = WOMA::previous_game_state;
 				SAFE_SHUTDOWN(womaSetup);
 			}
 		}
@@ -282,6 +291,7 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 
 	case WM_CLOSE:	// During the shutdown process of the device, the WM_CLOSE message is broad-casted to the applications.
 
+		womalog("WinSystemClass::WindowProc() - CLOSE requested by user.\n");
 		WOMA::main_loop_state = -1;
 		WOMA::game_state = GAME_STOP;
 		::PostMessage(hwnd, WM_QUIT, 0, 0);
@@ -298,7 +308,11 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 		KillTimer(hwnd, TIMER_TITLE);
         KillTimer(hwnd, TIMER_ASTRO);
 	#endif
+
+	#ifndef _DEBUG
 		PostMessage(GetConsoleWindow(), WM_CLOSE, 0, 0); //Close Console
+	#endif
+
         break; //let also default run.
 
 #if defined USE_INTRO_VIDEO_DEMO
@@ -371,9 +385,11 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 
 	case WM_SIZE:
 	{
-		ID3D11DeviceContext* pContext = NULL;
-		if (driverList.size() > 0 && driverList[WOMA::AppSettings->DRIVER])
-			pContext = ((DX11Class*)m_Driver)->GetDeviceContext();
+		//ID3D11DeviceContext* pContext = NULL;
+		//if (driverList.size() > 0 && driverList[WOMA::AppSettings->DRIVER])
+		//	pContext = ((DX11Class*)m_Driver)->GetDeviceContext();
+		void* pContext = getvoidcontext();
+
 		// Use windows settings!
 		// Save the new client area dimensions.
 		//g_ScreenWidth = LOWORD(lparam);
@@ -397,8 +413,10 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 				if (WOMA::game_state == GAME_MINIMIZED)
 					UNPAUSE();	//Restore State
 			#if defined USE_STATUSBAR
-				if (SystemHandle->statusbar)
+				if (SystemHandle->statusbar) {
 					DestroyWindow(SystemHandle->statusbar);
+					SystemHandle->statusbar = nullptr;
+				}
 			#endif
 				if (SystemHandle->m_hWnd) 
 					{ ONRESIZE(pContext); }
@@ -418,8 +436,10 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 				{
 					mMaximized = false;
 				#if defined USE_STATUSBAR
-					if (SystemHandle->statusbar)
+					if (SystemHandle->statusbar) {
 						DestroyWindow(SystemHandle->statusbar);
+						SystemHandle->statusbar = nullptr;
+					}
 				#endif
 					if (SystemHandle->m_hWnd) 
 					{ 
@@ -443,8 +463,14 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 
 					//mResizing = true;
                 #if defined USE_STATUSBAR
-                    if (SystemHandle->statusbar)
-                		DestroyWindow(SystemHandle->statusbar);
+					if (SystemHandle->statusbar) {
+						DestroyWindow(SystemHandle->statusbar);
+						SystemHandle->statusbar = nullptr;
+					}
+					RECT rc;
+					GetClientRect(SystemHandle->m_hWnd, &rc);
+					WOMA::AppSettings->WINDOW_WIDTH = rc.right - rc.left;
+					WOMA::AppSettings->WINDOW_HEIGHT = rc.bottom - rc.top;
                 #endif
 				}
 				else // API call such as SetWindowPos or mSwapChain->SetFullscreenState.
@@ -453,7 +479,7 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 			}
 		}
 
-        break; //return 0;
+        break;
 	}
 
 	#if defined USE_ASPECT_RATIO
@@ -510,9 +536,7 @@ LRESULT CALLBACK WinSystemClass::WOMA_SYSTEM_MessageHandler(HWND hwnd, UINT umsg
 	// Here we reset everything based on the new window dimensions.
 	case WM_EXITSIZEMOVE:
 	{
-		ID3D11DeviceContext* pContext = NULL;
-		if (driverList.size() > 0 && driverList[WOMA::AppSettings->DRIVER])
-			pContext = ((DX11Class*)m_Driver)->GetDeviceContext();
+		void* pContext = getvoidcontext();
 
 		if (mResizing)
 			if (SystemHandle->m_hWnd) 
