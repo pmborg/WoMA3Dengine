@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: main.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -24,14 +24,11 @@
 // 	DEFINE minidumperClass
 // 	DEFINE logManager
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
 #define WOMAAUTHOR_ID		"Pedro Borges (pmborg@yahoo.com)"						// WoMA Engine: Author
-#if _NOT
-#define WOMASERVER			"woma.servegame.com"									// Define: WOMA ENGINE HOME: (Server)
-#endif
 
 // -----------------------------------------------------------------------------------------
 // DEFINE PLATFORM: Defaults
@@ -46,12 +43,10 @@
 // -------------------------------------------------------------------------------------------
 // Include: COMMON TRASNVERSAL WoMA Util Libs:
 // -------------------------------------------------------------------------------------------
-#if defined USE_MINIDUMPER
-#include "minidumperClass.h"
-#endif
 #if defined USE_WOMA_EXCEPTION
 #include "woma_exception.h"
 #endif
+
 #if defined USE_LOG_MANAGER
 #include "log.h"
 #endif
@@ -59,11 +54,6 @@
 #if defined USE_ASTRO_CLASS
 extern void InitializeCelestialInfoScreen(int x, int y);
 #endif
-
-#if defined USE_METARCLASS
-extern bool InitializeWeatherInfoScreen(int x, int y);
-#endif
-
 
 #if ((!defined(WOMA_DLL) && !defined COMMONFUNCTIONS_DLL_EXPORTS) || (defined(WOMA_DLL) && DX_ENGINE_LEVEL < 82))
 //	-------------------------------------------------------------------------------------------

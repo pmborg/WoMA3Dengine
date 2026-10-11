@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: winSystemClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Export APIs for winSystemClass.cpp which is the WINDOWS OS API
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
@@ -50,29 +50,6 @@ struct ScreenArrayInfo
 	int MaxCount;
 };
 
-namespace WOMA
-{
-	struct WindowDataContainer
-	{
-		// 1
-		STRING MonitorName=TEXT("");
-		CHAR deviceName[MAX_STR_LEN] = {};
-		UINT deviceIndex=0;
-		// 2
-		std::vector<resolutionType> ScreenResolution = {};
-		// 3
-		UINT width=0;
-		UINT height=0;
-		UINT refreshRate_Numerator=0;
-		UINT refreshRate_Denominator=0;
-		// 4
-		HWND hWnd=0;
-		// Window sizes:
-		RECT m_rcWindowBounds;    // Saved window bounds for mode switches
-		RECT m_rcWindowClient;    // Saved client area size for mode switches
-	};
-}
-
 #if defined RELEASE && defined WOMA_WIN32_APPLICATION
 	extern bool threadLoadPacksAlive;
 	extern HANDLE threadLoadPacksHandle;
@@ -87,7 +64,6 @@ extern LRESULT CALLBACK WOMA_PAINT_Message_event_handler(HWND hwnd, UINT umessag
 class WinSystemClass : public SystemClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234525217;
 	WinSystemClass();
 	WinSystemClass(WOMA::Settings* AppSettings);
 	void WinSystemClass_init();
@@ -98,6 +74,7 @@ public:
     bool APPLICATION_AFTER_WINDOW();
 	bool APPLICATION_INIT_SYSTEM();
 	int	 APPLICATION_MAIN_LOOP();
+	inline void WaitSpaceRelease();
 
 	HWND	m_hWnd;
 	#if defined USE_PROCESS_OS_KEYS //CORE_ENGINE_LEVEL >= 3
@@ -130,9 +107,6 @@ public:
 	HWND	statusbar=0;
 #endif
 
-	std::vector<WOMA::WindowDataContainer> windowsArray;	// All Monitors, that will be used to render, 1 for example.
-	std::vector<WOMA::WindowDataContainer> allWindowsArray; // All hardware Monitors available on system, 3 for example.
-															// NOTE: DX11windowsArray have all DX specific settings for rendering!
 	ScreenArrayInfo info;
 	MONITORINFOEX monitorArray[MAX_WIN32_MONITORS];
 
