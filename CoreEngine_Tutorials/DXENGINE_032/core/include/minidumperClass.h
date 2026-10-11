@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------------------------------------
 // Filename: minidumperClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // PURPOSE: Intercept a Fatal Exception and get the "file".dmp
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 #pragma once
 
 
@@ -25,29 +25,3 @@
 ///////////////////////////////
 
 #include "platform.h"
-#if defined USE_MINIDUMPER && defined WINDOWS_PLATFORM
-
-#include <dbghelp.h>	// VC7: ships with updated headers
-#include <assert.h>		// For UniCode
-
-// based on dbghelp.h
-typedef BOOL (WINAPI *MINIDUMPWRITEDUMP)(HANDLE hProcess, DWORD dwPid, HANDLE hFile, MINIDUMP_TYPE DumpType,
-									CONST PMINIDUMP_EXCEPTION_INFORMATION ExceptionParam,
-									CONST PMINIDUMP_USER_STREAM_INFORMATION UserStreamParam,
-									CONST PMINIDUMP_CALLBACK_INFORMATION CallbackParam);
-
-///////////////////////////////////////////////////////////////////////////////
-// Class name: MiniDumper
-///////////////////////////////////////////////////////////////////////////////
-class MiniDumper
-{
-private:
-	static LONG WINAPI TopLevelFilter( struct _EXCEPTION_POINTERS *pExceptionInfo );
-
-public:
-	UINT WomaIntegrityCheck = 1234525217;
-	MiniDumper();
-	~MiniDumper();
-};
-
-#endif
