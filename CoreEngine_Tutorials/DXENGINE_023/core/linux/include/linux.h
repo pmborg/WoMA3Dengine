@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
@@ -78,13 +78,13 @@ typedef unsigned long long   ULONGLONG;
 
 typedef struct MyWin
 {
-    Display* display;
-    Window		window;
-    int			width;
-    int			height;
-    GLXContext	context;
+    Display*	display = {};
+	Window		window = {};
+    int			width = {};
+    int			height = {};
+    GLXContext	context = {};
 
-    bool		ready;
+    bool		ready = {};
 };
 extern MyWin Win;
 
@@ -138,6 +138,7 @@ extern bool download(const std::string url, const std::string file_path);
 #define _stprintf _tprintf
 #define vsprintf_s(b,l,f,v) vsprintf(b,f,v);
 #define StringCchPrintf(a,b,format, ...) sprintf (a,format, __VA_ARGS__);
+#define StringCchPrintfA StringCchPrintf
 #define _tcslen strlen
 #define _tgetenv getenv
 #define _tcscpy_s strcpy
@@ -242,6 +243,9 @@ void check(const char hdr[] = "");
 #ifndef _countof
 #define _countof(x) ((sizeof(x)/sizeof(0[x])) / ((size_t)(!(sizeof(x) % sizeof(0[x])))))
 #endif
+
+#define SUCCEEDED(hr) (((HRESULT)(hr)) >= 0)
+typedef LONG            HRESULT;
 
 #ifndef S_OK
 #define S_OK         ((HRESULT)0L)

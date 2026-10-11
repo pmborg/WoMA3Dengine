@@ -9,7 +9,7 @@
 *
 *   Woma engine unified texture sampling library (Nearest / Bilinear / Trilinear / Cubic)
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 // Return texture dimensions
 float2 functiongetTextureWidth(Texture2D tex)
@@ -114,7 +114,7 @@ float4 CubicInterpolation(SamplerState smp, Texture2D tex, float2 uv)
     float2 base = floor(uvGrid - 0.5);
     float2 f = frac(uvGrid - 0.5);
 
-    // 4 rows Ã— 4 columns
+    // 4 rows × 4 columns
     float4 rows[4];
 
     // For j = -1 to 2 -> 4 vertical offsets

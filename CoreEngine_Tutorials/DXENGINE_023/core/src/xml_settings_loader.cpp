@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: xml_settings_loader.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -20,13 +20,30 @@
 //  - Debug use local: "settings".xml
 //  - Release use:     C:\Users\<user>\AppData\Local\Pmborg\Woma2017\"settings".xml (WOMA::APPDATA)
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
  
 //#define _CRT_SECURE_NO_WARNINGS
 
 #include "OSengine.h"
 #include "OSmain_dir.h"
 #include "fileLoader.h"
+
+#if DX_ENGINE_LEVEL >= 21
+#if defined USE_DEMO99
+World		world_map[100];
+#else
+World		world_map;
+#endif
+
+int get_world_patchSize(int level) {
+#if defined USE_DEMO99
+	return world_map[level].patchSize;
+#else
+	return world_map.patchSize;
+#endif
+}
+#endif
+
 #if defined USE_TINYXML_LOADER
 #if defined ANDROID_PLATFORM
 #include "AndroidEngine.h"
@@ -45,11 +62,6 @@
 
 #if DX_ENGINE_LEVEL >= 21
 #if defined USE_TINYXML_LOADER
-#if defined USE_DEMO99
-	World		world_map[100];
-#else
-	World		world_map;
-#endif
 
 #if DX_ENGINE_LEVEL >= 31
 #if defined USE_DEMO99
@@ -76,13 +88,6 @@ int get_world_size(int level) {
 	return world_map[level].size;
 #else
 	return world_map.size;
-#endif
-}
-int get_world_patchSize(int level) {
-#if defined USE_DEMO99
-	return world_map[level].patchSize;
-#else
-	return world_map.patchSize;
 #endif
 }
 int get_world_skySize(int level) {
@@ -277,6 +282,11 @@ bool XMLloader::InitWorldLoader(UINT level, TCHAR* filename)
 		WOMA::AppSettings->INIT_ROTX = (float)atof(GenSettings.initRotX);
 		WOMA::AppSettings->INIT_ROTY = (float)atof(GenSettings.initRotY);
 		WOMA::AppSettings->INIT_ROTZ = (float)atof(GenSettings.initRotZ);
+
+	#if DX_ENGINE_LEVEL >= 51
+		WOMA::AppSettings->START_FOG = (float)atoi(GenSettings.fogStart);
+		WOMA::AppSettings->END_FOG = (float)atoi(GenSettings.fogEnd); //NOTE: SCREEN_DEPTH = END_FOG;
+	#endif
 #endif
 #endif
 
@@ -317,10 +327,10 @@ int OPENGL_defaultMonitor()
 
 	// Output the result
 	if (monitorIndex != -1) {
-		std::cout << "Default monitor index: " << monitorIndex << std::endl;
+		womalogauto("Default monitor index: %d\n", monitorIndex);
 	}
 	else {
-		std::cout << "Primary monitor not found!" << std::endl;
+		womalogauto("Primary monitor not found!\n");
 	}
 #endif
 	return monitorIndex;
@@ -333,9 +343,12 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 // -------------------------------------------------------------------------------------------
 {
 	bool res = false;
+#if !defined ANDROID_PLATFORM
 	try
 	{
+#endif
 		res = loadXMLsettingsFile(filename);
+#if !defined ANDROID_PLATFORM
 	}
 	catch (const std::exception& e)
 	{
@@ -343,6 +356,10 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 		WomaMessageBox(TEXT("XMLloader::initAppicationSettings exception!"), TEXT("FATAL ERROR"), MB_OK);
 		return EXIT_FAILURE;
 	}
+#else
+		womalog("XMLloader::initAppicationSettings exception!\n");
+		IF_NOT_RETURN_FALSE(res);
+#endif
 
 	if (res)  // <--- PARSE XML FILE
 	{
@@ -362,8 +379,8 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 		WOMA::AppSettings->WINDOW_Ypos_ori = WOMA::AppSettings->WINDOW_Ypos;
 	#endif
 	#if defined LINUX_PLATFORM
-		WOMA::AppSettings->WINDOW_WIDTH = 500;
-		WOMA::AppSettings->WINDOW_HEIGHT = 1000;
+		WOMA::AppSettings->WINDOW_WIDTH = 1920/2;
+		WOMA::AppSettings->WINDOW_HEIGHT = 1080/2;
 	#else
 		WOMA::AppSettings->WINDOW_WIDTH = atoi(GenSettings.screenWidth);
 		WOMA::AppSettings->WINDOW_HEIGHT = atoi(GenSettings.screenHeight);
@@ -384,20 +401,28 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 		#if defined DX9
 			WOMA::AppSettings->DRIVER = (strcmp(GenSettings.driverName, "DX9") == 0) ? DRIVER_DX9 : -1;
 	    #endif
+
 		#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009 // defined WIN10
 			if (WOMA::AppSettings->DRIVER<0)
 				WOMA::AppSettings->DRIVER = (strcmp(GenSettings.driverName, "DX12") == 0) ? DRIVER_DX12 : -1;
 	    #endif
+
         #if (defined OPENGL3 || defined OPENGL40)  //defined WIN6x || defined WIN10 || defined LINUX_PLATFORM
 			if (WOMA::AppSettings->DRIVER < 0)
 				WOMA::AppSettings->DRIVER = (strcmp (GenSettings.driverName, "GL3+") == 0) ? DRIVER_GL3: -1;
 		#endif
+
 		#if defined DX11 //defined WIN6x || defined WIN10 || defined LINUX_PLATFORM
 			if (WOMA::AppSettings->DRIVER < 0)
 				WOMA::AppSettings->DRIVER = (strcmp(GenSettings.driverName, "DX11") == 0) ? DRIVER_DX11 : -1;
 		#endif
 
-		//NOTE: OPENGL Only work wiht main monitor, so force it!:
+		#if defined VULKAN
+			if (WOMA::AppSettings->DRIVER < 0)
+				WOMA::AppSettings->DRIVER = (strcmp(GenSettings.driverName, "VULKAN") == 0) ? DRIVER_VULKAN : -1;
+		#endif
+
+		//NOTE: OPENGL Only work with main monitor, so force it!:
 		if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
 		{
 			WOMA::AppSettings->UI_MONITOR = OPENGL_defaultMonitor();
@@ -438,8 +463,18 @@ bool XMLloader::initAppicationSettings(TCHAR* filename) //Note: Have to be char
 			if (WOMA::AppSettings->DRIVER == -1)
 				WOMA::AppSettings->DRIVER = DRIVER_DX9;
 	#endif
+	#if defined VULKAN
+			if (WOMA::AppSettings->DRIVER == -1)
+				WOMA::AppSettings->DRIVER = DRIVER_VULKAN;
+	#endif
 	}
 #endif
+
+	if (WOMA::AppSettings->DRIVER < 0)
+	{
+		womalogauto(TEXT("Unknown graphics driver: %S\n"), GenSettings.driverName);
+		return false;
+	}
 
 		//	------------------------------------------------------------------------------------------------------
 	#if DX_ENGINE_LEVEL < 28
@@ -510,14 +545,14 @@ bool XMLloader::loadWorld(UINT level, TCHAR* file_, void* outObjects) // Note: H
 	//STRING XML_FILE = LOAD_ASSET_SAVE_TO_CACHE(XMLFILE);
 	// 
 	//LOAD FROM: C:\WoMAengine2023\Android-WomaEngine\Android2\Android2.Packaging\ARM64\Debug\Package\assets
-	AAssetManager* manager = engine_state.app->activity->assetManager;
+	AAssetManager* manager = engine.app->activity->assetManager;
 	AAsset* thisxmlFile = AAssetManager_open(manager, XMLFILE, AASSET_MODE_BUFFER);
 	const char* fileBuffer = (char*)AAsset_getBuffer(thisxmlFile);
 	off_t fileSize = AAsset_getLength(thisxmlFile);
 
 	//SAVE TO: /data/user/0/com.woma/cache/
 	FILE* saveXmlFile = NULL;
-	STRING XML_FILE = WOMA::android_temp_folder(engine_state.app);
+	STRING XML_FILE = WOMA::android_temp_folder(engine.app);
 	XML_FILE.append(TEXT("/"));
 	XML_FILE.append(XMLFILE);
 	_tprintf("FILE: %s", XML_FILE.c_str());
@@ -618,10 +653,11 @@ bool XMLloader::loadWorld(UINT level, TCHAR* file_, void* outObjects) // Note: H
 				strcpy(worldSettings.waterTexture, child_world->ToElement()->Attribute("waterTexture"));
 			}
 		#endif
-		#if DX_ENGINE_LEVEL >= 50
-			if (level >= 50)
+		#if DX_ENGINE_LEVEL >= 49
+			if (level >= 49)
 			{
-				strcpy(worldSettings.mainTexture, child_world->ToElement()->Attribute("mainTexture"));
+				if (child_world->ToElement()->Attribute("mainTexture"))
+					strcpy(worldSettings.mainTexture, child_world->ToElement()->Attribute("mainTexture"));
 			}
 		#endif
 			strcpy(worldSettings.skyDayTexture, child_world->ToElement()->Attribute("skyDayTexture"));
@@ -636,7 +672,8 @@ bool XMLloader::loadWorld(UINT level, TCHAR* file_, void* outObjects) // Note: H
 			do {
 	#if DX_ENGINE_LEVEL >= 40
 				if (level >= 40)
-				object3d.id = atoi(element->Attribute("id"));
+					if (element->Attribute("id"))
+						object3d.id = atoi(element->Attribute("id"));
 	#endif
 				object3d.fromPage = atoi(element->Attribute("fromPage"));
 				object3d.toPage = atoi(element->Attribute("toPage"));
@@ -658,34 +695,58 @@ bool XMLloader::loadWorld(UINT level, TCHAR* file_, void* outObjects) // Note: H
         
 				object3d.shader = atoi(element->Attribute("shader"));
 
-																						 
 				strcpy(object3d.filename, element->Attribute("filename"));
 	#if DX_ENGINE_LEVEL >= 40
 				if (level >= 40)
-				object3d.instances = atoi(element->Attribute("instances"));
+					if (element->Attribute("instances"))
+						object3d.instances = atoi(element->Attribute("instances"));
 	#endif
 	#if DX_ENGINE_LEVEL >= 41 && defined USE_SHADOW_INSTANCES
 				if (level >= 41)
 				{
-				object3d.castShadow = atoi(element->Attribute("castShadow"));
-				object3d.renderShadows = atoi(element->Attribute("renderShadows"));
+				if (element->Attribute("castShadow"))
+					object3d.castShadow = atoi(element->Attribute("castShadow"));
+
+				if (element->Attribute("renderShadows"))
+					object3d.renderShadows = atoi(element->Attribute("renderShadows"));
 				}
 	#endif
 	#if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
-				const TCHAR* soundRange=NULL;
+				#if defined UNICODE || defined _UNICODE
+					CHAR soundRange[11];
+				#else
+					const TCHAR* soundRange = NULL;
+					
+				#endif
 				if (level >= 72)
-                soundRange = element->Attribute("soundRange");
+				{
+				#if defined UNICODE || defined _UNICODE
+					atow((TCHAR*)soundRange, (CHAR*)element->Attribute("soundRange"), 11);
+				#else
+					soundRange = element->Attribute("soundRange");
+				#endif
+				}
 
                 if (soundRange) 
                 {
-                    object3d.soundRange = (float)atof(soundRange);
+                    object3d.soundRange = (float)atof(element->Attribute("soundRange"));
                     if (object3d.soundRange > 0)
                     {
-																								
+					#if defined UNICODE || defined _UNICODE										
+						atow((TCHAR*)object3d.audioFilename, (CHAR*)element->Attribute("audio"), 256);
+					#else
                         strcpy(object3d.audioFilename, element->Attribute("audio"));
+					#endif
+
                         object3d.audio = NEW SoundClass;
-																											 
+																
+				#if defined UNICODE || defined _UNICODE										
+						CHAR audioFilename[MAX_STR_LEN] = { 0 };
+						wtoa(audioFilename, WOMA::LoadFile(object3d.audioFilename), MAX_STR_LEN); // tchar ==> char
+						if (!object3d.audio->Initialize(SystemHandle->m_hWnd, audioFilename))
+				#else
                         if (!object3d.audio->Initialize(SystemHandle->m_hWnd, WOMA::LoadFile(object3d.audioFilename)))
+				#endif
                         {
                             WomaMessageBox(TEXT("Could not initialize Direct 3D Sound"), TEXT("Error: "));
                         }
@@ -742,14 +803,14 @@ bool XMLloader::loadXMLsettingsFile (TCHAR* file_) // Note: Have to be char
 	//STRING XML_FILE = LOAD_ASSET_SAVE_TO_CACHE(XMLFILE);
 
 	//LOAD FROM: C:\WoMAengine2023\Android-WomaEngine\Android2\Android2.Packaging\ARM64\Debug\Package\assets
-	AAssetManager* manager = engine_state.app->activity->assetManager;
+	AAssetManager* manager = engine.app->activity->assetManager;
 	AAsset* thisxmlFile = AAssetManager_open(manager, XMLFILE, AASSET_MODE_BUFFER);
 	const char* fileBuffer = (char*)AAsset_getBuffer(thisxmlFile);
 	off_t fileSize = AAsset_getLength(thisxmlFile);
 
 	//SAVE TO: /data/user/0/com.woma/cache/
 	FILE* saveXmlFile = NULL;
-	STRING XML_FILE = WOMA::android_temp_folder(engine_state.app);
+	STRING XML_FILE = WOMA::android_temp_folder(engine.app);
 	XML_FILE.append(TEXT("/"));
 	XML_FILE.append(XMLFILE);
 	_tprintf("FILE: %s", XML_FILE.c_str());
@@ -828,7 +889,7 @@ bool XMLloader::loadXMLsettingsFile (TCHAR* file_) // Note: Have to be char
 		if ( child_driver )
 		{
 			/*Element*//*TiXmlElement*/ tinyxml2::XMLElement* element = child_driver->ToElement();
-			#if defined LINUX_PLATFORM
+			#if false //defined LINUX_PLATFORM
 				strcpy(GenSettings.driverName, TEXT("GL3+"));
 			#else
 				strcpy(GenSettings.driverName, element->Attribute("name"));

@@ -2,7 +2,7 @@
 // Filename: ImageLoaderClass.cpp
 // --------------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------------
-// World of Middle Age  - 3D Multi-Platform ENGINE 2025
+// World of Middle Age  - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
 // code by : Pedro Borges - pmborg@yahoo.com
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
@@ -18,32 +18,33 @@
 //
 // --------------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
+
 #pragma warning(push)
 #pragma warning( disable : 4005 )		// Disable warning C4005: '' : macro redefinition
 #include "mem_leak.h"
 
 #if D3D11_SPEC_DATE_YEAR == 2009
-    //ON [VS2015 or VS2017 or VS2019] We will use the win10SDK (ALERT SYSTEM ONLY!) --> "D3D11_SPEC_DATE_YEAR = 2011"
-    #pragma warning( disable : 4324 )	// 4324: '': structure was padded due to __declspec(align())
-    #pragma warning( disable : 4838 )
-    #include <DirectXMath.h> //#include <xnamath.h>				//#include <d3dx10math.h>
-    #include <d3dx11tex.h>
-    #pragma comment(lib, "/WoMA3Dengine/ThirdParty/Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\d3dx11.lib")	// DONT NEED THIS AT WIN8 SDK BUT NEED WITH OLD JUN 2010 SDK
-    #pragma comment(lib, "/WoMA3Dengine/ThirdParty/Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\d3dx10.lib")	// DONT NEED THIS AT WIN8 SDK BUT NEED WITH OLD JUN 2010 SDK
+//ON [VS2015 or VS2017 or VS2019] We will use the win10SDK (ALERT SYSTEM ONLY!) --> "D3D11_SPEC_DATE_YEAR = 2011"
+#pragma warning( disable : 4324 )	// 4324: '': structure was padded due to __declspec(align())
+#pragma warning( disable : 4838 )
+#include <DirectXMath.h> //#include <xnamath.h>				//#include <d3dx10math.h>
+#include <d3dx11tex.h>
+#pragma comment(lib, "/WoMA3Dengine/ThirdParty/Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\d3dx11.lib")	// DONT NEED THIS AT WIN8 SDK BUT NEED WITH OLD JUN 2010 SDK
+#pragma comment(lib, "/WoMA3Dengine/ThirdParty/Microsoft_DirectX_SDK_June_2010\\Lib\\x64\\d3dx10.lib")	// DONT NEED THIS AT WIN8 SDK BUT NEED WITH OLD JUN 2010 SDK
 #else
 #if defined WINDOWS_PLATFORM && DX_ENGINE_LEVEL >= 22
 #include <DirectXMath.h> 
 using namespace DirectX;
-    #if _DEBUG
-        #pragma comment(lib, "/WoMA3Dengine/ThirdParty/external/DirectXTK/Bin/Desktop_2022_Win10/x64/Debug/DirectXTK.lib")
-        #pragma comment(lib, "/WoMA3Dengine/ThirdParty/external/DirectXTex/DirectXTex/Bin/Desktop_2022_Win10/x64/Debug/DirectXTex.lib")
-    #else
-        #pragma comment(lib, "/WoMA3Dengine/ThirdParty/external/DirectXTK/Bin/Desktop_2022_Win10/x64/Release/DirectXTK.lib")
-        #pragma comment(lib, "/WoMA3Dengine/ThirdParty/external/DirectXTex/DirectXTex/Bin/Desktop_2022_Win10/x64/Release/DirectXTex.lib")
-    #endif
+#if defined _DEBUG
+#pragma comment(lib, "/WoMA3Dengine/ThirdParty/external/DirectXTK/Bin/Desktop_2022_Win10/x64/Debug/DirectXTK.lib")
+#pragma comment(lib, "/WoMA3Dengine/ThirdParty/external/DirectXTex/DirectXTex/Bin/Desktop_2022_Win10/x64/Debug/DirectXTex.lib")
+#else
+#pragma comment(lib, "/WoMA3Dengine/ThirdParty/external/DirectXTK/Bin/Desktop_2022_Win10/x64/Release/DirectXTK.lib")
+#pragma comment(lib, "/WoMA3Dengine/ThirdParty/external/DirectXTex/DirectXTex/Bin/Desktop_2022_Win10/x64/Release/DirectXTex.lib")
+#endif
 
 // Add this include at the top of your file, after other includes
 #include <wincodec.h>
@@ -75,7 +76,7 @@ EXTERN_C const GUID GUID_ContainerFormatPng;
 ImageLoaderClass::ImageLoaderClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525217;
+
 
 	//private:
 	pixels = NULL;
@@ -98,10 +99,10 @@ ImageLoaderClass::ImageLoaderClass(const FORMAT fmt, const int w, const int h, c
 	//public:
 	m_textureID = NULL;
 
-	pixels = NEW unsigned char[w*h * 3];
+	pixels = NEW unsigned char[w * h * 3];
 }
 
-ImageLoaderClass::~ImageLoaderClass(){ CLASSDELETE(); }
+ImageLoaderClass::~ImageLoaderClass() { CLASSDELETE(); }
 
 unsigned char* Convert24to32bits(unsigned char* src, UINT imageSize32bits, bool fixEndian, bool fixTarga = false)
 {
@@ -206,11 +207,11 @@ unsigned char* ImageLoaderClass::loadTIF(TCHAR* filename, UINT* width, UINT* hei
 
 	TIFF* tif = TIFFStreamOpen("MemTIFF", &input_TIFF_stream);
 #else
-  #if defined UNICODE
+#if defined UNICODE
 	TIFF* tif = TIFFOpenW(filename, "r");
-  #else
+#else
 	TIFF* tif = TIFFOpen(filename, "r");
-  #endif
+#endif
 #endif
 
 	if (tif)
@@ -243,15 +244,16 @@ unsigned char* ImageLoaderClass::loadTIF(TCHAR* filename, UINT* width, UINT* hei
 		return Convert32to24bits(pixels, *imageSize);
 	}
 
-	//fixEndian: // BGRA: --> RGBA
-	for (UINT i = 0; i < *imageSize; i += 4)
+	if (WOMA::AppSettings->DRIVER != DRIVER_VULKAN)
 	{
-		char color = pixels[i];
-		pixels[i] = pixels[i + 2];			// R
-		//pixels[i + 1] = src[channel++];	// G
-		pixels[i + 2] = color;				// B
-		//pixels[i + 3] = 0;				// Add Alfa channel: 0 = no transparent
+		for (UINT i = 0; i < *imageSize; i += 4)
+		{
+			char color = pixels[i];
+			pixels[i] = pixels[i + 2];        // R
+			pixels[i + 2] = color;            // B
+		}
 	}
+
 
 	// Invert the Image:
 	unsigned char* bottomUpImage = NEW unsigned char[*imageSize];
@@ -289,31 +291,34 @@ unsigned char* ImageLoaderClass::loadJPEG(TCHAR* filename, UINT* width, UINT* he
 	AAsset* imageFile = AAssetManager_open(manager, filename, AASSET_MODE_BUFFER);
 	unsigned char* inbuffer = (unsigned char*)AAsset_getBuffer(imageFile);
 	off_t fileSize = AAsset_getLength(imageFile);
-	jpeg_mem_src (&cinfo, inbuffer, fileSize);
+	jpeg_mem_src(&cinfo, inbuffer, fileSize);
 #else
-	FILE *file;
+	FILE* file;
 	if ((file = _tfopen(filename, TEXT("rb"))) == NULL)
 	{
 		STRING dir = WOMA::Home;
-	#if defined LINUX_PLATFORM
-        dir.append("/projects/LinuxWoma0");
-        dir.append(std::to_string(DX_ENGINE_LEVEL));
-        dir.append("/CoreEngine_Tutorials/");
-        //dir.append("/WoMA3Dengine/CoreEngine_Tutorials/DXENGINE_0");
-        //dir.append(std::to_string(DX_ENGINE_LEVEL));
-        //dir.append("/");
-        dir.append(filename);
-        if ((file = fopen(dir.c_str(), TEXT("rb"))) == NULL)
-	#endif
+#if defined LINUX_PLATFORM
+		{
+			dir.append("/projects/LinuxWoma0");
+			dir.append(std::to_string(DX_ENGINE_LEVEL));
+			dir.append("/CoreEngine_Tutorials/");
+		}
+		dir.append(filename);
+		if ((file = fopen(dir.c_str(), TEXT("rb"))) == NULL)
+#endif
 		{
 			STRING err = TEXT("File not found: "); err += dir;
 			WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "), /*Fatal*/TRUE);
+			ASSERT(true);
 		}
 	}
 	jpeg_stdio_src(&cinfo, file);
 #endif
 
 	jpeg_read_header(&cinfo, TRUE);
+	// Force grayscale JPEGs to expand to RGB.
+	if (cinfo.num_components==1)
+		cinfo.out_color_space = JCS_RGB;
 	jpeg_start_decompress(&cinfo);
 
 	bool FORMAT_RGB8 = false;
@@ -322,28 +327,29 @@ unsigned char* ImageLoaderClass::loadJPEG(TCHAR* filename, UINT* width, UINT* he
 	{
 	case 1:
 		//format = FORMAT_I8;
-		WomaMessageBox(TEXT("FORMAT_I8: Error reading file!"), TEXT("Error: "), /*Fatal*/TRUE);
+		//WomaMessageBox(TEXT("FORMAT_I8: Error reading file!"), TEXT("Error: "), /*Fatal*/TRUE);
+		FORMAT_RGB8 = true;
 		break;
 	case 3:
 		FORMAT_RGB8 = true;
 		break;
-	case 4:
-		FORMAT_RGBA8 = true;
-		break;
+	//case 4:
+		//FORMAT_RGBA8 = true;
+		//break;
 	}
 
 	*width = cinfo.output_width;
 	*height = cinfo.output_height;
 
-	*imageSize = (*width) * (*height) * cinfo.num_components;
+	*imageSize = (*width) * (*height) * cinfo.output_components;
 	pixels = NEW unsigned char[*imageSize];
 	IF_NOT_THROW_EXCEPTION(pixels);
 
-	unsigned char *curr_scanline = pixels;
+	unsigned char* curr_scanline = pixels;
 
 	while (cinfo.output_scanline < cinfo.output_height) {
 		jpeg_read_scanlines(&cinfo, &curr_scanline, 1);
-		curr_scanline += (*width) * cinfo.num_components;
+		curr_scanline += (*width) * cinfo.output_components;
 	}
 
 	jpeg_finish_decompress(&cinfo);
@@ -365,6 +371,14 @@ unsigned char* ImageLoaderClass::loadJPEG(TCHAR* filename, UINT* width, UINT* he
 #if defined LINUX_PLATFORM || defined ANDROID_PLATFORM
 	* imageSize = (*width) * (*height) * 4;
 	pixels = fixTOGBRA(pixels, *imageSize, false, true); //32 bits image!
+#else
+#if defined VULKAN
+	if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+	{
+		*imageSize = (*width) * (*height) * 4;
+		pixels = fixTOGBRA(pixels, *imageSize, false, true); //32 bits image!
+	}
+#endif
 #endif
 
 	return pixels; //24 or 32 bits image!
@@ -383,7 +397,7 @@ unsigned char* ImageLoaderClass::loadJPEG(TCHAR* filename, UINT* width, UINT* he
 
 #define png_memcmp		memcmp
 typedef unsigned char	png_byte;
-typedef png_byte FAR *	png_bytep;
+typedef png_byte FAR* png_bytep;
 typedef size_t			png_size_t;
 #define png_sizeof(x)	sizeof (x)
 
@@ -411,21 +425,21 @@ int png_sig_cmp(png_bytep sig, png_size_t start, png_size_t num_to_check)
 #include "png.h"
 
 void user_write_data(png_structp png_ptr, png_bytep data, png_size_t length) {
-	fwrite(data, length, 1, (FILE *)png_get_io_ptr(png_ptr));
+	fwrite(data, length, 1, (FILE*)png_get_io_ptr(png_ptr));
 }
 
 void user_flush_data(png_structp png_ptr) {
-	fflush((FILE *)png_get_io_ptr(png_ptr));
+	fflush((FILE*)png_get_io_ptr(png_ptr));
 }
 
 void user_read_data(png_structp png_ptr, png_bytep data, png_size_t length) {
-	fread(data, length, 1, (FILE *)png_get_io_ptr(png_ptr));
+	fread(data, length, 1, (FILE*)png_get_io_ptr(png_ptr));
 }
 
 #if defined ANDROID_PLATFORM
 void user_read_data_from_memory(png_structp png_ptr, png_bytep data, png_size_t byteCountToRead)
 {
-	File* file=(File*)png_get_io_ptr(png_ptr);
+	File* file = (File*)png_get_io_ptr(png_ptr);
 	file->read(data, byteCountToRead);
 }
 #endif
@@ -458,14 +472,13 @@ unsigned char* ImageLoaderClass::loadPNG(TCHAR* filename, UINT* width, UINT* hei
 	{
 		STRING dir = WOMA::Home;
 #if defined LINUX_PLATFORM
-        dir.append("/projects/LinuxWoma0");
-        dir.append(std::to_string(DX_ENGINE_LEVEL));
-        dir.append("/CoreEngine_Tutorials/");
-        //dir.append("/WoMA3Dengine/CoreEngine_Tutorials/DXENGINE_0");
-        //dir.append(std::to_string(DX_ENGINE_LEVEL));
-        //dir.append("/");
-        dir.append(filename);
-        if ((file = fopen(dir.c_str(), TEXT("rb"))) == NULL)
+		{
+			dir.append("/projects/LinuxWoma0");
+			dir.append(std::to_string(DX_ENGINE_LEVEL));
+			dir.append("/CoreEngine_Tutorials/");
+		}
+		dir.append(filename);
+		if ((file = fopen(dir.c_str(), TEXT("rb"))) == NULL)
 #endif
 		{
 			STRING err = TEXT("File not found: "); err += dir;
@@ -477,7 +490,7 @@ unsigned char* ImageLoaderClass::loadPNG(TCHAR* filename, UINT* width, UINT* hei
 	enum { pngSignatureLength = 8 };
 	png_byte pbSig[pngSignatureLength];
 #if defined ANDROID_PLATFORM
-	file.read((char*)pbSig, sizeof(pbSig) );
+	file.read((char*)pbSig, sizeof(pbSig));
 #else
 	fread(pbSig, 1, sizeof(pbSig), (FILE*)file);
 #endif
@@ -534,7 +547,7 @@ unsigned char* ImageLoaderClass::loadPNG(TCHAR* filename, UINT* width, UINT* hei
 	IF_NOT_THROW_EXCEPTION(pixels);
 
 	// set the individual row-pointers to point at the correct offsets
-	png_byte **ppbRowPointers = NEW png_bytep[*height];
+	png_byte** ppbRowPointers = NEW png_bytep[*height];
 
 	for (UINT i = 0; i < *height; i++)
 		ppbRowPointers[i] = pixels + i * rowSize;
@@ -597,13 +610,21 @@ unsigned char* ImageLoaderClass::loadPNG(TCHAR* filename, UINT* width, UINT* hei
 	}
 
 #if defined LINUX_PLATFORM || defined ANDROID_PLATFORM
-	*imageSize = (*width) * (*height) * 4;
+	* imageSize = (*width) * (*height) * 4;
 	pixels = fixTOGBRA(pixels, *imageSize, false, true); //32 bits image!
+#else
+#if defined VULKAN
+	if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+	{
+		*imageSize = (*width) * (*height) * 4;
+		pixels = fixTOGBRA(pixels, *imageSize, false, true); //32 bits image!
+	}
+#endif
 #endif
 
-//#define _INVERT_TAG_IMAGE_
+	//#define _INVERT_TAG_IMAGE_
 
-	// Invert the Image:
+		// Invert the Image:
 #if defined _INVERT_TAG_IMAGE_
 	unsigned char* bottomUpImage = NEW unsigned char[*imageSize];
 	{
@@ -641,13 +662,12 @@ unsigned char* ImageLoaderClass::loadBMP(TCHAR* filename, UINT* width, UINT* hei
 	FILE* file = NULL;
 #endif
 
-	int error;
 	unsigned int count;
 	BITMAPFILEHEADER bitmapFileHeader;
 	BITMAPINFOHEADER bitmapInfoHeader;
-	#if defined ANDROID_PLATFORM
+#if defined ANDROID_PLATFORM
 	size_t res;
-	#endif
+#endif
 	//https://solarianprogrammer.com/2018/11/19/cpp-reading-writing-bmp-images/
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -666,14 +686,13 @@ unsigned char* ImageLoaderClass::loadBMP(TCHAR* filename, UINT* width, UINT* hei
 	{
 		STRING dir = WOMA::Home;
 #if defined LINUX_PLATFORM
-        dir.append("/projects/LinuxWoma0");
-        dir.append(std::to_string(DX_ENGINE_LEVEL));
-        dir.append("/CoreEngine_Tutorials/");
-        //dir.append("/WoMA3Dengine/CoreEngine_Tutorials/DXENGINE_0");
-        //dir.append(std::to_string(DX_ENGINE_LEVEL));
-        //dir.append("/");
-        dir.append(filename);
-        if ((file = fopen(dir.c_str(), TEXT("rb"))) == NULL)
+		{
+			dir.append("/projects/LinuxWoma0");
+			dir.append(std::to_string(DX_ENGINE_LEVEL));
+			dir.append("/CoreEngine_Tutorials/");
+		}
+		dir.append(filename);
+		if ((file = fopen(dir.c_str(), TEXT("rb"))) == NULL)
 #endif
 		{
 			STRING err = TEXT("File not found: "); err += dir;
@@ -696,13 +715,13 @@ unsigned char* ImageLoaderClass::loadBMP(TCHAR* filename, UINT* width, UINT* hei
 
 	//[2] Read in the "file header".
 	UINT sizeFileHeader = sizeof(BITMAPFILEHEADER);
-	#if defined ANDROID_PLATFORM
+#if defined ANDROID_PLATFORM
 	res = file.read((char*)&bitmapFileHeader, sizeof(BITMAPFILEHEADER));
 	if (!res)
-	#else
+#else
 	count = (UINT)fread(&bitmapFileHeader, sizeof(BITMAPFILEHEADER), 1, file);//14byes
 	if (count != 1)
-	#endif
+#endif
 	{
 		WomaMessageBox(filename, TEXT("Error reading file!"), /*Fatal*/TRUE);
 	}
@@ -743,13 +762,13 @@ unsigned char* ImageLoaderClass::loadBMP(TCHAR* filename, UINT* width, UINT* hei
 
 	//[4] Read in the "bitmap info header".
 	UINT sizeInfoHeader = sizeof(BITMAPINFOHEADER);
-	#if defined ANDROID_PLATFORM
+#if defined ANDROID_PLATFORM
 	res = file.read((char*)&bitmapInfoHeader, sizeof(BITMAPINFOHEADER));
 	if (!res)
-	#else
+#else
 	count = (UINT)fread(&bitmapInfoHeader, sizeof(BITMAPINFOHEADER), 1, file); //40
 	if (count != 1)
-	#endif
+#endif
 	{
 		WomaMessageBox(filename, TEXT("Error reading file!"), /*Fatal*/TRUE);
 	}
@@ -775,11 +794,11 @@ unsigned char* ImageLoaderClass::loadBMP(TCHAR* filename, UINT* width, UINT* hei
 	IF_NOT_THROW_EXCEPTION(bottomUpImage);
 
 	// Move to the beginning of the bitmap data.
-	#if defined ANDROID_PLATFORM
+#if defined ANDROID_PLATFORM
 	file.seek(bitmapFileHeader.bfOffBits);
-	#else
+#else
 	fseek(file, bitmapFileHeader.bfOffBits, SEEK_SET);
-	#endif
+#endif
 
 	// Read in the bitmap "image data".
 #if defined ANDROID_PLATFORM
@@ -793,16 +812,8 @@ unsigned char* ImageLoaderClass::loadBMP(TCHAR* filename, UINT* width, UINT* hei
 #endif
 
 	// Close the file.
-#if defined ANDROID_PLATFORM
 	FCLOSE(file);
-#else
-	if (file)
-		error = fclose(file);
 
-	if (error != 0) {
-		WomaMessageBox(filename, TEXT("Error reading file!"), /*Fatal*/TRUE);
-	}
-#endif
 	// Invert the BMP Image
 	pixels = NEW unsigned char[*imageSize]; //512:{786432} 512x512x3
 	IF_NOT_THROW_EXCEPTION(pixels);
@@ -814,7 +825,6 @@ unsigned char* ImageLoaderClass::loadBMP(TCHAR* filename, UINT* width, UINT* hei
 	//	memcpy (pixels + i * rowSize, bottomUpImage + ((*height) - i - 1) * rowSize, rowSize);
 	//------------------------------------------------------------------------------------
 	//V2:
-	//printf("BEGIN:\n");
 	// Read the image data into the height map array.
 	// Bitmaps are upside down so load bottom to top into the height map array.
 	if (invertImage)
@@ -831,11 +841,7 @@ unsigned char* ImageLoaderClass::loadBMP(TCHAR* filename, UINT* width, UINT* hei
 				pixels[k++] = bottomUpImage[index]; //Height;
 				pixels[k++] = bottomUpImage[index + 1]; //Height;
 				pixels[k++] = bottomUpImage[index + 2]; //Height;
-
-				// Increment the bitmap image data index.
-				//printf("%d ", (int)Height);
 			}
-			//printf("\n");
 		}
 	}
 	else {
@@ -851,30 +857,35 @@ unsigned char* ImageLoaderClass::loadBMP(TCHAR* filename, UINT* width, UINT* hei
 				pixels[k++] = bottomUpImage[index]; //Height;
 				pixels[k++] = bottomUpImage[index + 1]; //Height;
 				pixels[k++] = bottomUpImage[index + 2]; //Height;
-
-				// Increment the bitmap image data index.
-				//printf("%d ", (int)Height);
 			}
-			//printf("\n");
 		}
 	}
 
-	//printf("END!\n");
 	//------------------------------------------------------------------------------------
 	free(bottomUpImage);
 
+	UINT nBytes = 3;
 	if (loadimagebits == LOAD_IMAGE_32bits) // Convert 24 bits to 32 bits ?
 	{
 		if (bitmapInfoHeader.biBitCount == 24)
 		{
-			*imageSize = (*width) * (*height) * 4;
+			nBytes = 4;
+			*imageSize = (*width) * (*height) * nBytes;
 			pixels = Convert24to32bits(pixels, *imageSize, false);	//32 bits image!
 		}
 	}
 
 #if defined LINUX_PLATFORM || defined ANDROID_PLATFORM 
-	* imageSize = (*width) * (*height) * 4;
+	* imageSize = (*width) * (*height) * nBytes;
 	pixels = fixTOGBRA(pixels, *imageSize, false, true); //32 bits image!
+#else
+  #if defined VULKAN
+	if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+	{
+		*imageSize = (*width) * (*height) * nBytes;
+		pixels = fixTOGBRA(pixels, *imageSize, false, true); //32 bits image!
+	}
+  #endif
 #endif
 
 	return pixels; //24 or 32 bits image!
@@ -899,9 +910,9 @@ unsigned char* ImageLoaderClass::loadTGA(TCHAR* filename, UINT* width, UINT* hei
 #endif
 	UINT count;
 	TargaHeader targaFileHeader;
-	#if defined ANDROID_PLATFORM
+#if defined ANDROID_PLATFORM
 	bool res;
-	#endif
+#endif
 	pixels = NULL; // Reset before load
 
 #if defined ANDROID_PLATFORM
@@ -914,14 +925,14 @@ unsigned char* ImageLoaderClass::loadTGA(TCHAR* filename, UINT* width, UINT* hei
 	{
 		STRING dir = WOMA::Home;
 #if defined LINUX_PLATFORM
-        dir.append("/projects/LinuxWoma0");
-        dir.append(std::to_string(DX_ENGINE_LEVEL));
-        dir.append("/CoreEngine_Tutorials/");
-        //dir.append("/WoMA3Dengine/CoreEngine_Tutorials/DXENGINE_0");
-        //dir.append(std::to_string(DX_ENGINE_LEVEL));
-        //dir.append("/");
-        dir.append(filename);
-        if ((file = fopen(dir.c_str(), TEXT("rb"))) == NULL)
+		dir.append("/projects/LinuxWoma0");
+		dir.append(std::to_string(DX_ENGINE_LEVEL));
+		dir.append("/CoreEngine_Tutorials/");
+		//dir.append("/WoMA3Dengine/CoreEngine_Tutorials/DXENGINE_0");
+		//dir.append(std::to_string(DX_ENGINE_LEVEL));
+		//dir.append("/");
+		dir.append(filename);
+		if ((file = fopen(dir.c_str(), TEXT("rb"))) == NULL)
 #endif
 		{
 			STRING err = TEXT("File not found: "); err += dir;
@@ -935,7 +946,7 @@ unsigned char* ImageLoaderClass::loadTGA(TCHAR* filename, UINT* width, UINT* hei
 	if (!res)
 #else
 	count = (UINT)fread(&targaFileHeader, sizeof(TargaHeader), 1, file);
-	if (count != 1) 
+	if (count != 1)
 #endif
 	{
 		WomaMessageBox(TEXT("ImageLoaderClass::File not found!"), TEXT("Error: "), /*Fatal*/TRUE);
@@ -967,18 +978,18 @@ unsigned char* ImageLoaderClass::loadTGA(TCHAR* filename, UINT* width, UINT* hei
 	//	throw woma_exception("Error reading file!", __FILE__, __FUNCTION__, __LINE__);
 
 	// Close the file.
-#if defined ANDROID_PLATFORM
+//#if defined ANDROID_PLATFORM
 	FCLOSE(file);
-#else
-	error = fclose(file);
-	if (error != 0) {
-		WomaMessageBox(filename, TEXT("Error reading file!"), /*Fatal*/TRUE);
-	}
-#endif
+//#else
+//	error = fclose(file);
+//	if (error != 0) {
+//		WomaMessageBox(filename, TEXT("Error reading file!"), /*Fatal*/TRUE);
+//	}
+//#endif
 
-//#define _INVERT_TAG_IMAGE_
+	//#define _INVERT_TAG_IMAGE_
 
-	// Invert the Image:
+		// Invert the Image:
 #if defined _INVERT_TAG_IMAGE_
 	unsigned char* bottomUpImage = NEW unsigned char[*imageSize];
 	IF_NOT_THROW_EXCEPTION(bottomUpImage);
@@ -992,19 +1003,29 @@ unsigned char* ImageLoaderClass::loadTGA(TCHAR* filename, UINT* width, UINT* hei
 #endif
 
 	// Convert 24 bits to 32 bits ?
+	UINT nBytes = 3;
 	if (loadimagebits == LOAD_IMAGE_32bits)
 	{
 		if (bpp == 24)
 		{
-			*imageSize = (*width) * (*height) * 4;
+			nBytes = 4;
+			*imageSize = (*width) * (*height) * nBytes;
 			pixels = Convert24to32bits(bottomUpImage, *imageSize, false, true); //32 bits image!
 		}
 	}
 
 #if defined LINUX_PLATFORM || defined ANDROID_PLATFORM
 	bottomUpImage = pixels;
-	* imageSize = (*width) * (*height) * 4;
+	*imageSize = (*width) * (*height) * nBytes;
 	pixels = fixTOGBRA(bottomUpImage, *imageSize, false, true); //32 bits image!
+#else
+#if defined VULKAN
+	if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+	{
+		*imageSize = (*width) * (*height) * nBytes;
+		pixels = fixTOGBRA(pixels, *imageSize, false, true); //32 bits image!
+	}
+#endif
 #endif
 
 	return pixels;
@@ -1104,7 +1125,7 @@ struct DDSHeaderDX10 {
 
 struct FormatString {
 	FORMAT format;
-	const char *string;
+	const char* string;
 };
 
 static const FormatString formatStrings[] = {
@@ -1149,11 +1170,11 @@ static const FormatString formatStrings[] = {
 #define MCHAR2(a, b) (a | (b << 8))
 #define MCHAR4(a, b, c, d) (a | (b << 8) | (c << 16) | (d << 24))
 
-unsigned char *ImageLoaderClass::getPixels(const int mipMapLevel) const {
+unsigned char* ImageLoaderClass::getPixels(const int mipMapLevel) const {
 	return (mipMapLevel < nMipMaps) ? pixels + getMipMappedSize(0, mipMapLevel) : NULL;
 }
 
-unsigned char *ImageLoaderClass::getPixels(const int mipMapLevel, const int arraySlice) const {
+unsigned char* ImageLoaderClass::getPixels(const int mipMapLevel, const int arraySlice) const {
 	if (mipMapLevel >= nMipMaps || arraySlice >= arraySize) return NULL;
 
 	return pixels + getMipMappedSize(0, nMipMaps) * arraySlice + getMipMappedSize(0, mipMapLevel);
@@ -1272,7 +1293,7 @@ int ImageLoaderClass::getMipMappedSize(const int firstMipMapLevel, int nMipMapLe
 }
 
 template <typename DATA_TYPE>
-inline void swapChannels(DATA_TYPE *pixels, int nPixels, const int channels, const int ch0, const int ch1) {
+inline void swapChannels(DATA_TYPE* pixels, int nPixels, const int channels, const int ch0, const int ch1) {
 	do {
 		DATA_TYPE tmp = pixels[ch1];
 		pixels[ch1] = pixels[ch0];
@@ -1283,21 +1304,33 @@ inline void swapChannels(DATA_TYPE *pixels, int nPixels, const int channels, con
 
 unsigned char* ImageLoaderClass::loadDDS(TCHAR* filename, UINT* Width, UINT* Height, UINT* imageSize, UINT flags, UINT loadimagebits)
 {
-	FILE *file;
+#if defined ANDROID_PLATFORM
+	File file;
+#else
+	FILE* file = NULL;
+#endif
+
+#if defined ANDROID_PLATFORM
+	if (!file.open(filename, TEXT("rb")))
+#else
 	if ((file = _tfopen(filename, TEXT("rb"))) == NULL)
+#endif
 	{
 		STRING err = TEXT("File not found: "); err += filename;
 		WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "), /*Fatal*/TRUE);
-		//WomaFatalExceptionW((TCHAR*)err.c_str());
 	}
 
 	DDSHeader header;
-	fread(&header, sizeof(header), 1, file);
+#if defined ANDROID_PLATFORM
+	if (file.read(&header, sizeof(header)) != sizeof(header)) 
+		goto END;
+#else
+	if (fread(&header, 1, sizeof(header), file) != sizeof(header))
+		goto END;
+#endif
+
 	if (header.dwMagic != MCHAR4('D', 'D', 'S', ' '))
-	{
-		fclose(file);
-		return NULL; // false;
-	}
+		goto END;
 
 	width = header.dwWidth;
 	height = header.dwHeight;
@@ -1310,7 +1343,13 @@ unsigned char* ImageLoaderClass::loadDDS(TCHAR* filename, UINT* Width, UINT* Hei
 
 	if (header.ddpfPixelFormat.dwFourCC == MCHAR4('D', 'X', '1', '0')) {
 		DDSHeaderDX10 dx10Header;
-		fread(&dx10Header, sizeof(dx10Header), 1, file);
+#if defined ANDROID_PLATFORM
+		if (file.read(&dx10Header, sizeof(dx10Header)) != sizeof(dx10Header))
+			goto END;
+#else
+		if (fread(&dx10Header, 1, sizeof(dx10Header), file) != sizeof(dx10Header))
+			goto END;
+#endif
 
 		switch (dx10Header.dxgiFormat) {
 		case 61: format = FORMAT_R8; break;
@@ -1344,7 +1383,7 @@ unsigned char* ImageLoaderClass::loadDDS(TCHAR* filename, UINT* Width, UINT* Hei
 		case 83: format = FORMAT_ATI2N; break;
 		case 98: format = FORMAT_BC7; break;
 		default:
-			fclose(file);
+			FCLOSE(file);
 			return NULL; // false;
 		}
 
@@ -1378,7 +1417,7 @@ unsigned char* ImageLoaderClass::loadDDS(TCHAR* filename, UINT* Width, UINT* Hei
 				format = (header.ddpfPixelFormat.dwRBitMask == 0x3FF00000) ? FORMAT_RGB10A2 : FORMAT_RGBA8;
 				break;
 			default:
-				fclose(file);
+				FCLOSE(file);
 				return NULL; // false;
 			}
 		}
@@ -1390,17 +1429,29 @@ unsigned char* ImageLoaderClass::loadDDS(TCHAR* filename, UINT* Width, UINT* Hei
 		for (int face = 0; face < 6; face++) {
 			for (int mipMapLevel = 0; mipMapLevel < nMipMaps; mipMapLevel++) {
 				int faceSize = getMipMappedSize(mipMapLevel, 1) / 6;
-				unsigned char *src = getPixels(mipMapLevel) + face * faceSize;
+				unsigned char* src = getPixels(mipMapLevel) + face * faceSize;
 
+			#if defined ANDROID_PLATFORM
+				file.read(src, faceSize);
+			#else
 				fread(src, 1, faceSize, file);
+			#endif
 			}
 			if ((flags & DONT_LOAD_MIPMAPS) && header.dwMipMapCount > 1) {
+		#if defined ANDROID_PLATFORM
+				androidSeek(file._A, getMipMappedSize(1, header.dwMipMapCount - 1) / 6, SEEK_CUR);
+		#else
 				fseek(file, getMipMappedSize(1, header.dwMipMapCount - 1) / 6, SEEK_CUR);
+		#endif
 			}
 		}
 	}
 	else {
-		fread(pixels, 1, *imageSize, file);
+		#if defined ANDROID_PLATFORM
+			file.read(pixels, *imageSize);
+		#else
+			fread(pixels, 1, *imageSize, file);
+		#endif
 	}
 	/*
 	if ((format == FORMAT_RGB8 || format == FORMAT_RGBA8) && header.ddpfPixelFormat.dwBBitMask == 0xFF){
@@ -1408,13 +1459,23 @@ unsigned char* ImageLoaderClass::loadDDS(TCHAR* filename, UINT* Width, UINT* Hei
 		swapChannels(pixels, (*imageSize) / nChannels, nChannels, 0, 2);
 	}
 	*/
-	fclose(file);
+
+#if defined VULKAN
+	if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+	{
+		*imageSize = (width) * (height) * 4;
+		pixels = fixTOGBRA(pixels, *imageSize, false, true); //32 bits image!
+	}
+#endif
+
+END:
+	FCLOSE(file);
 	return pixels; //32 bits image!
 }
 #endif
 
 #if !defined NO_PNG_SAVE && defined USE_IMAGE_PNG
-bool ImageLoaderClass::savePNG(TCHAR *fileName)
+bool ImageLoaderClass::savePNG(TCHAR* fileName)
 {
 	int type;
 
@@ -1441,13 +1502,12 @@ bool ImageLoaderClass::savePNG(TCHAR *fileName)
 
 	png_structp png_ptr;
 	png_infop info_ptr;
-	FILE *file;
+	FILE* file = NULL;			// Normal file pointer
 
 	if ((file = _tfopen(fileName, TEXT("wb"))) == NULL)
 	{
 		STRING err = TEXT("Error Saving: "); err += fileName;
 		WomaMessageBox((TCHAR*)err.c_str(), TEXT("Error: "), /*Fatal*/TRUE);
-		//WomaFatalExceptionW((TCHAR*)err.c_str());
 	}
 
 	if ((png_ptr = png_create_write_struct_2(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL, NULL, malloc_fn, free_fn)) == NULL) {
@@ -1471,14 +1531,14 @@ bool ImageLoaderClass::savePNG(TCHAR *fileName)
 
 	int nElements = width * getChannelCount(format);
 	if (format >= FORMAT_I16) {
-		ushort *line = NEW ushort[nElements];
+		ushort* line = NEW ushort[nElements];
 		for (int y = 0; y < height; y++) {
-			ushort *src = ((ushort *)pixels) + y * nElements;
+			ushort* src = ((ushort*)pixels) + y * nElements;
 			// Swap endian
 			for (int x = 0; x < nElements; x++) {
 				line[x] = (src[x] >> 8) | (src[x] << 8);
 			}
-			png_write_row(png_ptr, (ubyte *)line);
+			png_write_row(png_ptr, (ubyte*)line);
 		}
 		delete[] line;
 	}
@@ -1487,7 +1547,7 @@ bool ImageLoaderClass::savePNG(TCHAR *fileName)
 		//if (bitDepth == 8)
 		{
 			// Fix endian
-			for (int i = 0; i < nElements*height; i += 3)
+			for (int i = 0; i < nElements * height; i += 3)
 			{
 				unsigned char tmp = pixels[i];
 				pixels[i] = pixels[i + 2];
@@ -1547,20 +1607,20 @@ bool SaveAsPNG_Debug(const STRING& originalFile, const DirectX::ScratchImage& im
 	}
 
 	//------------------------------------------------------------------------------------------
-    std::filesystem::path path(originalFile);
-    //if (path.extension() == ".dds" || path.extension() == ".DDS")
-    //    return false;
+	std::filesystem::path path(originalFile);
+	//if (path.extension() == ".dds" || path.extension() == ".DDS")
+	//    return false;
 	if (path.extension() == ".jpg" || path.extension() == ".JPG")
 		return false;
 	if (path.extension() == ".png" || path.extension() == ".PNG")
 		return false;
 
-    std::filesystem::path pngPath = path;
-    pngPath.replace_extension(".png");
+	std::filesystem::path pngPath = path;
+	pngPath.replace_extension(".png");
 
-    //return SUCCEEDED(DirectX::SaveToDDSFile(
-    //    image.GetImages(), image.GetImageCount(), image.GetMetadata(),
-    //    DirectX::DDS_FLAGS_NONE, ddsPath.c_str()));
+	//return SUCCEEDED(DirectX::SaveToDDSFile(
+	//    image.GetImages(), image.GetImageCount(), image.GetMetadata(),
+	//    DirectX::DDS_FLAGS_NONE, ddsPath.c_str()));
 	return SUCCEEDED(DirectX::SaveToWICFile(
 		*image.GetImage(0, 0, 0),
 		DirectX::WIC_FLAGS_NONE,
@@ -1603,25 +1663,25 @@ bool SaveAsPNG_Debug(const std::wstring& originalFile, const DirectX::ScratchIma
 	}
 
 	//------------------------------------------------------------------------------------------
-    std::filesystem::path path(originalFile);
-    //if (path.extension() == L".dds" || path.extension() == L".DDS")
-    //    return false;
+	std::filesystem::path path(originalFile);
+	//if (path.extension() == L".dds" || path.extension() == L".DDS")
+	//    return false;
 	if (path.extension() == L".jpg" || path.extension() == L".JPG")
 		return false;
 	if (path.extension() == L".png" || path.extension() == L".PNG")
 		return false;
 
-    std::filesystem::path pngPath = path;
-    pngPath.replace_extension(L".png");
+	std::filesystem::path pngPath = path;
+	pngPath.replace_extension(L".png");
 
 	return SUCCEEDED(DirectX::SaveToWICFile(
 		*image.GetImage(0, 0, 0),
 		DirectX::WIC_FLAGS_NONE,
 		GUID_ContainerFormatPng,
 		pngPath.c_str()));
-    //return SUCCEEDED(DirectX::SaveToDDSFile(
-    //    image.GetImages(), image.GetImageCount(), image.GetMetadata(),
-    //    DirectX::DDS_FLAGS_NONE, ddsPath.c_str()));
+	//return SUCCEEDED(DirectX::SaveToDDSFile(
+	//    image.GetImages(), image.GetImageCount(), image.GetMetadata(),
+	//    DirectX::DDS_FLAGS_NONE, ddsPath.c_str()));
 }
 #endif
 

@@ -15,20 +15,11 @@
 		pixelHLSL.append("PS_Main");
      ...
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
-#if (!defined DXAPI11 && !defined DXAPI12)
-    #define DXAPI11 1
+#if DXAPI11 != 1 && DXAPI12 != 1
+    #define DXAPI9 1
 #endif
-
-// mode:
-// -1 = hardware sampler
-//  0 = nearest
-//  1 = bilinear
-//  2 = trilinear
-//  3 = cubic
-
-#define TEXTURE_MODE -1 //Default is -1
 
 //#define   PS_USE_FOG           //51
 //#define   PS_USE_ALFACOLOR
@@ -57,15 +48,11 @@ struct PSIn
 #endif	
 };
 
-
-////////////////
-// CBUFFERS
-////////////////
 ////////////////
 // CBUFFERS
 ////////////////
 // SYNC: DXshaderClass.h -- DX12: CBV
-#if DXAPI11 == 1
+#if DXAPI9 == 1 || DXAPI11 == 1
 cbuffer VSShaderParametersBuffer	//DX11
 #endif
 #if DXAPI12 == 1
@@ -81,42 +68,6 @@ cbuffer VSShaderParametersBuffer : register(b0)
     matrix projection;  //projection
     matrix WV;          //worldMatrix+viewMatrix
     matrix WVP;         //worldMatrix+viewMatrix+projectionMatrix
-
-    //// 23 BLOCK: VS2
-    //bool VShasLight;
-    //bool VShasSpecular;
-    //bool VShasNormMap;
-    //bool VShasFog;
-	//
-    //// 23 BLOCK: VS3
-    //float3 VSlightDirection;// LIGHT
-    //float VSlightPAD;       // 3+1=XMFLOAT4
-    //float4 VSambientColor;  // LIGHT
-    //float4 VSdiffuseColor;  // LIGHT
-    //float4 VSemissiveColor; // LIGHT: Ke
-	//
-    //// 31 BLOCK: VS4
-    //float VSfogStart;
-    //float VSfogEnd;
-    //bool VShasShadowMap;
-    //bool VS_USE_WVP;
-	//
-    //// 45 BLOCK: VS5
-    //matrix ViewToLightProj;
-    //matrix WorldInverseTranspose;   // WorldInverseTranspose
-    //float4 vEye;                    // camera position		
-	//
-    //// 42 BLOCK: VS6
-    //float VSrotX;
-    //float VSrotY;
-    //float VSrotZ;
-    //float time;
-	//
-    //// 42 BLOCK: VS7
-    //float VSshaderType;
-    //float vsPAD2;
-    //float vsPAD3;
-    //float vsPAD4;
 };
 
 ///////////////
@@ -125,17 +76,15 @@ cbuffer VSShaderParametersBuffer : register(b0)
 // Note: Color shader dont have it!
 // 022Texture.hlsl at level 22 dont have it!
 
-
-
 //Set on: DXmodelClass::RenderSubMesh
-#if DXAPI11 == 1
+#if DXAPI9 == 1 || DXAPI11 == 1
 Texture2D shaderTexture;
 #endif
 #if DXAPI12 == 1
 Texture2D shaderTexture:	register(t0);
 #endif
 
-#if DXAPI11 == 1
+#if DXAPI9 == 1 || DXAPI11 == 1
 SamplerState SampleType;
 #endif
 #if DXAPI12 == 1
@@ -152,15 +101,7 @@ PSIn VS_Main(VSIn input)
     float4 cameraPosition;
 #endif
 
-//if (VS_USE_WVP) {
 	output.position = mul(float4(input.position, 1), WVP);	// Calculate the position of the vertex against the world, view, and projection matrices
-//} else {
-//	float4 position = float4(input.position, 1);
-//	position = mul(position, worldMatrix);
-//	position = mul(position, view);			//viewMatrix
-//	position = mul(position, projection);	//projectionMatrix
-//	output.position = position;
-//}
 
     output.texCoords = input.texCoords;						// TEXTURE: Store the texture coordinates for the pixel shader:
 
@@ -174,6 +115,7 @@ PSIn VS_Main(VSIn input)
     return output;
 }
 
+#if DXAPI9 == 0
 #include "TextureSampling.hlsli"
 // mode:
 // 0 = nearest
@@ -181,15 +123,11 @@ PSIn VS_Main(VSIn input)
 // 2 = trilinear
 // 3 = cubic
 // 4 = hardware sampler
-
-//Mode	Filter Type	    FPS
-//0	    Nearest	        13111 FPS
-//1	    Bilinear	    12945 FPS
-//2	    Trilinear	    12989 FPS
-//3	    Cubic 	        13141 FPS
+#endif
 
 float4 GetShaderTexture(Texture2D tex, float2 texCoords, uint mipLevel, int mode)
 {
+#if DXAPI9 == 0
     switch (mode)
     {
         case 0:
@@ -204,8 +142,9 @@ float4 GetShaderTexture(Texture2D tex, float2 texCoords, uint mipLevel, int mode
         default:
             return tex.Sample(SampleType, texCoords);
     }
-
-    // fallback
+#endif
+    
+    // Legacy fallback (DX9 / ps_4_0_level_9_3)
     return tex.Sample(SampleType, texCoords);
 }
 
@@ -213,28 +152,9 @@ float4 GetShaderTexture(Texture2D tex, float2 texCoords, uint mipLevel, int mode
 float4 PS_Main(PSIn input) : SV_TARGET
 {
 	//-----------------------------------------------------------------------------------
-	// lvl >=21: TEXTURE: Sample the pixel color from the texture using the sampler at this texture coordinate location
-    //replace:
-        //textureColor = shaderTexture.Sample(SampleType, input.texCoords);    
-    //with:
-        //#define TEXTURE_MODE 0
-        //float4 textureColor = GetShaderTexture(shaderTexture, input.texCoords, 0, TEXTURE_MODE);
-    
-    //Mode	Filter Type	    FULL-HD     4K
-    //0	    Nearest	        13111 FPS   8949FPS
-    //1	    Bilinear	    12945 FPS   9334FPS
-    //2	    Trilinear	    12989 FPS   8913FPS
-    //3	    Cubic 	        13141 FPS   9940FPS
-    
-    // NOTES:
-    // - Cubic (Catmull–Rom 16 taps) is surprisingly fast due to cache coherence.
-    // - Default hardware sampler = same as mode 0 (nearest) unless sampler state says otherwise.
-    // - At this engine level (22), all filters have similar performance.
-    
     //-----------------------------------------------------------------------------------
     // Demo: split the quad in 5 vertical bands for 5 filters
     //-----------------------------------------------------------------------------------
-    
     int mode = int(saturate(input.texCoords.x) * 5.0); // 0..4
     float4 textureColor = GetShaderTexture(shaderTexture, input.texCoords, 0, mode);
     
@@ -279,7 +199,5 @@ float4 PS_Main(PSIn input) : SV_TARGET
     }
 #endif
     
-    textureColor.a = 1;
-    textureColor.rgb = pow(textureColor.rgb, 1.0 / 2.2); //Apply sRGB workflow
     return textureColor;
 }
