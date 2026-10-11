@@ -1,9 +1,9 @@
 ﻿// --------------------------------------------------------------------------------------------
 // Filename: initApplication_Basics.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "main.h"
 #include "ApplicationClass.h"
@@ -27,25 +27,68 @@
 #include <cinttypes>
 #include <string.h>
 #include "fileLoader.h"
+#include "OSmain_dir.h"
 
 #pragma warning(push)
-#pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
-#pragma warning(disable : 4244) // warning C4244: '=': conversion from 'int' to 'float', possible
+#pragma warning(disable : 4002)		// warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
+#pragma warning(disable : 4244)		// warning C4244: '=': conversion from 'int' to 'float', possible
+#pragma warning( disable : 4065 )	//warning C4065: switch statement contains 'default' but no 'case' labels
+
+#if defined DX_ENGINE
+	#include "DXmodelClass.h"
+#endif
 
 #if (defined OPENGL3 || defined OPENGL40) 
 	#include "GLopenGLclass.h"
 	#include "GLmodelClass.h"
 #endif
 
-#if defined DX_ENGINE
-	#include "DXmodelClass.h"
+#if defined VULKAN
+	#include "vkClass.h"
+	#include "vkModelClass.h"
 #endif
 
 #if defined USE_CUBE // Cubes
 	#include "WomaCube.h"
 #endif
 
+#if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
+#include "Rapplicationclass.h"
+extern RApplicationClass* r_Application;
+#endif
+
 	#include "SceneManager.h"
+
+#if DX_ENGINE_LEVEL >= 36 && defined USE_RENDER_TO_TEXTURE
+#include "VKrenderTextureClass.h"
+#endif
+
+
+#if defined CHECK_OBJ_COLISION	//lvl:78
+compoundTreeLoadOrder compoundLoadingOrder[5000] = {}; // MAX: 5000 OBJs on Scene
+#endif
+#if defined USE_DIRECT_INPUT	//lvl28
+std::vector<PositionClass*> m_Position;
+#endif
+
+UINT world_visibleModelList_size = 0;
+
+std::vector<VirtualModelClass*> objModel;
+#if defined CHECK_OBJ_COLISION	//lvl:78
+float	closestObjDist = FLT_MAX;
+#endif
+
+// ----------------------------------------------------------------
+// DONT USE #IF after level 82
+// ----------------------------------------------------------------
+#if defined SCENE_TERRAIN_QUAD_TREE //67
+TerrainQuadtreeClass* TerrainQuadtree;
+#endif
+#if defined USE_ASSIMP_LATEST && DEMO_LEVEL >= 79 && DEMO_LEVEL <= 80
+//The Scene
+MyAnimationScene* myScene = NULL;
+bool myScene_has_animation = false;
+#endif
 
 
 #if defined SCENE_COLOR
@@ -60,20 +103,49 @@ void ApplicationClass::initColorDemo(void* pContext)
 		ModelColorVertexType vertex = {0};
 		CREATE_VERTEXVECTOR_SQUAD_MODEL_OPTIMIZED(SquareColorVertexVector, X,Y,Z);			// Step 1: Populate SquareColorVertexVector with, all vertices positions: X, Y, Z
 
-		float color;
 		float Start = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/1));	// Float between 0..1
 		float End = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/1));		// Float between 0..1
 
-		for (UINT i = 0; i < SquareColorVertexVector.size(); i++)	// Step 2: Add a color to all vertices
-		{															
-			if ( i == 0 || i == 3 /*|| i == 4*/ )					//  |\            \|
-				color = End;										//  1  v0		  1  v0 v3
-			else                                                    // -1  v2 v1	 -1     v1
-				color = Start;										//  x: -1  1	  x: -1  1
+		//float color;
+		//for (UINT i = 0; i < SquareColorVertexVector.size(); i++)	// Step 2: Add a color to all vertices
+		//{															
+		//	if ( i == 0 || i == 3 /*|| i == 4*/ )					//  |\            \|
+		//		color = End;										//  1  v0		  1  v0 v3
+		//	else                                                    // -1  v2 v1	 -1     v1
+		//		color = Start;										//  x: -1  1	  x: -1  1
+		//
+		//	SquareColorVertexVector[i].r = color;// Red
+		//	SquareColorVertexVector[i].g = color;// Green
+		//	SquareColorVertexVector[i].b = 0.6f;	// Blue
+		//}
 
-			SquareColorVertexVector[i].r = color;// Red
-			SquareColorVertexVector[i].g = color;// Green
-			SquareColorVertexVector[i].b = 0.6f;	// Blue
+		for (UINT i = 0; i < SquareColorVertexVector.size(); i++)
+		{
+			float color;
+
+			switch (i)
+			{
+			case 0:
+			case 3:
+				color = End;
+				break;
+
+			case 1:
+				color = Start;
+				break;
+
+			case 2:
+				color = 0.6f;
+				break;
+
+			default:
+				color = Start;
+				break;
+			}
+
+			SquareColorVertexVector[i].r = color;
+			SquareColorVertexVector[i].g = color;
+			SquareColorVertexVector[i].b = 0.6f;
 		}
 
 		CREATE_MODEL_IF_NOT_EXCEPTION(m_1stSquare3DColorModel, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);	// Allocate the MODEL
@@ -166,7 +238,7 @@ void ApplicationClass::initTextureDemo(void *pContext)
 		CREATE_VERTEXVECTOR_TRIANGLE_MODEL_OPTIMIZED(TriangleTextureVertexVector, X, Y, Z);	// Step 1: Setup all vertices positions: X, Y, Z
 		MAP_XYtoUV(TriangleTextureVertexVector, X, Y, Z);				// Step 2: ADD TEXTURING: Auto-Map textures to all vertices: tu, tv
 
-		initLoadTexture3D(m_1stTriangleTextureVertexModel, LEVEL22_DEMO_TEXTURE, TriangleTextureVertexVector, IndexTriangleList, SHADER_TEXTURE);
+		initLoadTexture3D(m_1stTriangleTextureVertexModel, LEVEL22_DEMO2_TEXTURE, TriangleTextureVertexVector, IndexTriangleList, SHADER_TEXTURE);
 	}
 #endif
 }
@@ -181,20 +253,15 @@ void ApplicationClass::initLightDemo(void* pContext)
 	{
 		
 		// TEXTURE SQUAR!
-		if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
 		{
 			ModelTextureVertexType vertex;
 			float X = 2.0f, Y = 1.0f, Z = 0;
-			if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
 			{
 				CREATE_VERTEXVECTOR_SQUAD_MODEL_VERTICAL(My3thModelVertexVector1, X, Y, Z);	// Step 1: Setup all vertices positions: X, Y, Z
 			}
-			else {
-				CREATE_VERTEXVECTOR_SQUAD_MODEL(My3thModelVertexVector1, X, Y, Z);
-			}
 			MAP_XYtoUV_vertical(My3thModelVertexVector1, X, Y, Z);								// Step 2: ADD TEXTURING: Auto-Map textures to all vertices: tu, tv			
 		
-			initLoadTexture3D(m_3th3DModel1, TEXT("engine/data/basics/Earth_Diffuse-LO2.png"), My3thModelVertexVector1, IndexSquarList2, SHADER_TEXTURE);
+			initLoadTexture3D(m_3th3DModel1, LEVEL22_DEMO1_TEXTURE, My3thModelVertexVector1, IndexSquarList2, SHADER_TEXTURE);
 		}
 
 		// LIGHT TRIAGLE!
@@ -219,7 +286,7 @@ void ApplicationClass::initLightDemo(void* pContext)
 				TriangleLightVertexVector[i].nz = normal.z;
 			}
 
-			initLoadTextureLight3D(m_3th3DModel2, LEVEL22_DEMO_TEXTURE, TriangleLightVertexVector, IndexTriangleList, SHADER_TEXTURE_LIGHT);
+			initLoadTextureLight3D(m_3th3DModel2, LEVEL22_DEMO2_TEXTURE, TriangleLightVertexVector, IndexTriangleList, SHADER_TEXTURE_LIGHT);
 		}
 	}
 #endif
@@ -228,7 +295,7 @@ void ApplicationClass::initLightDemo(void* pContext)
 #if defined USE_TITLE_BANNER	//24 DX_ENGINE_LEVEL >= 24
 void ApplicationClass::initStatic2D(void* ctx)
 {
-#if defined DX_ENGINE
+#if defined DX11
 	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
 #else
 	#define pContext ctx
@@ -243,9 +310,12 @@ void ApplicationClass::initStatic2D(void* ctx)
 	//--------------------------------------------------------------------------------
 	//CreateDXbuffers for 2D:
 	#if defined USE_TITLE_BANNER
-		const SHADER_TYPE shadertype = SHADER_TEXTURE;
+		const SHADER_TYPE shadertype = SHADER_TEXTURE_FONT;
+		WOMA::logDirs();
 		initModelwithTexture2D(m_titleModel, DEMO_TITLE_TEXTURE, SpriteVertexVector, emptyIndexList, shadertype);
+		m_titleModel->ModelHASfog = false;
 	#endif
+
 
 }
 #endif
@@ -259,23 +329,12 @@ bool ApplicationClass::initCubes3D(void* pContext)
 		CREATE_MODEL_IF_NOT_EXCEPTION(m_cube1Model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);	// Allocate the MODEL
 		ASSERT(m_cube1Model->LoadColor(pContext, TEXT("m_cube1Model"), m_Driver, SHADER_COLOR, &cube.VertexCubeColorModel, &cube.IndexCubeList));
 	}
-
-#if NOTES
-	//#define initLoadTexture3D(model, texture, vertexVector, IndexList, shader_type)
-	//{
-	//	std::vector<STRING> Textures;
-	//	Textures.push_back(TEXT("engine/data/seafloor.dds"));
-	//	if (WOMA::AppSettings->DRIVER == DRIVER_GL3) { CREATE_MODELGL3_IF_NOT_EXCEPTION(m_cube2Model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
-	//	if (WOMA::AppSettings->DRIVER != DRIVER_GL3) { CREATE_MODELDX_IF_NOT_EXCEPTION(m_cube2Model, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
-	//	ASSERT(m_cube2Model->LoadTexture(TEXT("engine/data/seafloor.dds"), SystemHandle->m_Driver, SHADER_TEXTURE, &Textures, &cube.VertexCube2, &cube.IndexCubeList));
-	//}
-#endif
 	
 	{	//DEMO2:
-		initLoadTexture3D(m_cube2Model, LEVEL22_DEMO_TEXTURE, cube.VertexCubeTextureModel, cube.IndexCubeList, SHADER_TEXTURE);
+		initLoadTexture3D(m_cube2Model, LEVEL22_DEMO2_TEXTURE, cube.VertexCubeTextureModel, cube.IndexCubeList, SHADER_TEXTURE);
 	}
 	{	//DEMO3:
-		initLoadTextureLight3D(m_cube3Model, LEVEL22_DEMO_TEXTURE, cube.VertexCubeTextureLightModel, cube.IndexCubeList, SHADER_TEXTURE_LIGHT);
+		initLoadTextureLight3D(m_cube3Model, LEVEL22_DEMO2_TEXTURE, cube.VertexCubeTextureLightModel, cube.IndexCubeList, SHADER_TEXTURE_LIGHT);
 	}
 
 	return true;
@@ -290,8 +349,30 @@ bool ApplicationClass::DEMO_WOMA_APPLICATION_InitializeSprites2D(void* pContext)
 {
 	womalog("DEMO_WOMA_APPLICATION_InitializeSprites2D()\n");
 
+	//womalog("InitSprites2D: %ux%u scale=(%.3f %.3f)\n",
+	//	WOMA::AppSettings->WINDOW_WIDTH,
+	//	WOMA::AppSettings->WINDOW_HEIGHT,
+	//	SystemHandle->m_Application->scaleX,
+	//	SystemHandle->m_Application->scaleY);
+
 #if defined USE_TITLE_BANNER
 	initStatic2D(pContext);			//TITLE + 2D:MAP + 2D:MINI-MAP
+#endif
+
+	// 2D-FONTS: (Windows)
+#if defined USE_RASTERTEK_TEXT_FONT		// Level 27: DX9, DX11, DX12, OpenGL and Vulkan
+#if !defined WINDOWS_PLATFORM
+	if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+#endif
+	initText(pContext);
+#endif
+	// 2D-FONTS: (Android / Linux)
+#if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2	// Level 27: Common Android/Linux OPENGL
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
+	{
+		r_Application = NEW RApplicationClass;
+		IF_NOT_RETURN_FALSE(r_Application->Initialize(WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT));
+	}
 #endif
 
 	return true;
@@ -309,59 +390,30 @@ void ApplicationClass::DEMO_WOMA_APPLICATION_Shutdown2D()
 
 	womalog("WOMA_APPLICATION_Shutdown2D()\n");
 
-	#if (defined DX_ENGINE)
-		if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
-		{
-		#if defined USE_TITLE_BANNER // TITLE-SHUTDOWN
-			SAFE_SHUTDOWN_MODELDX(m_titleModel);
-		#endif
-		#if defined USE_MAIN_MAP
-			SAFE_SHUTDOWN_MODELDX(m_mainMapFrameModel);
-			SAFE_SHUTDOWN_MODELDX(m_mainMapModel);
-		#endif
-		#if defined USE_MINI_MAP
-			SAFE_SHUTDOWN_MODELDX(m_miniMapModel);
-			SAFE_SHUTDOWN_MODELDX(m_miniMapBorderModel);
-			SAFE_SHUTDOWN_MODELDX(m_miniMapArrowModel);
-		#endif
-		}
-	#endif
-	#if (defined OPENGL3 || defined OPENGL4)
-		if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
-		{
-		#if defined USE_TITLE_BANNER // TITLE-SHUTDOWN
-			SAFE_SHUTDOWN_MODELGL3(m_titleModel);
-		#endif
-		#if defined USE_MAIN_MAP
-			SAFE_SHUTDOWN_MODELGL3(m_mainMapFrameModel);
-			SAFE_SHUTDOWN_MODELGL3(m_mainMapModel);
-		#endif
-		#if defined USE_MINI_MAP
-			SAFE_SHUTDOWN_MODELGL3(m_miniMapModel);
-			SAFE_SHUTDOWN_MODELGL3(m_miniMapBorderModel);
-			SAFE_SHUTDOWN_MODELGL3(m_miniMapArrowModel);
-		#endif
-		}
-	#endif
+	// 2D-FONTS (Windows)
+#if defined USE_RASTERTEK_TEXT_FONT
+#if !defined WINDOWS_PLATFORM
+	if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+#endif
+	SAFE_SHUTDOWN(AppTextClass);
+#endif
 
+	// 2D-FONTS (Android/Linux): OPENGL
+#if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
+	if (r_Application)
+	{
+		r_Application->Shutdown();
+		SAFE_DELETE(r_Application);
+	}
+#endif
+
+#if defined USE_TITLE_BANNER // TITLE-SHUTDOWN
+	SAFE_SHUTDOWN_MODEL(m_titleModel);
+#endif
 
 #if defined INTRO_DEMO //29
 	for (int i = 0; i < m_screenShots.size(); i++) {
-		if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
-		{
-			#if defined DX_ENGINE
-			SAFE_SHUTDOWN_MODELDX(m_screenShots[i]);
-			#endif
-		} 
-		else
-		#if (defined OPENGL3 || defined OPENGL4)
-		{
-			SAFE_SHUTDOWN_MODELGL3(m_screenShots[i]);
-		}
-		#else
-		{
-		}
-		#endif
+			SAFE_SHUTDOWN_MODEL(m_screenShots[i]);
 	}
 
 	while (!m_screenShots.empty())
@@ -371,31 +423,42 @@ void ApplicationClass::DEMO_WOMA_APPLICATION_Shutdown2D()
 
 #ifdef USE_RASTERTEK_TEXT_FONT
 
+extern ApplicationTextClass* g_AppTextClass;
+
 bool ApplicationClass::initText(void* pContext)
 {
-	_tprintf(TEXT("[%d]: initText()\n"), gettid());
+#ifdef DEBUG_TEXT_FONT
+	womalog(TEXT("[%d]: initText()\n"), gettid());
+#endif
 
-	AppTextClass = NEW DirectX::ApplicationTextClass();
+	AppTextClass = NEW ApplicationTextClass();
 	IF_NOT_THROW_EXCEPTION(AppTextClass);
+	g_AppTextClass = AppTextClass;
 
 	switch (WOMA::AppSettings->DRIVER)
 	{
 #if (defined OPENGL3 || defined OPENGL40) 
 	case DRIVER_GL3:
-		ASSERT(AppTextClass->Initialize((ID3D11DeviceContext*)pContext, (GLopenGLclass*)m_Driver));
+		ASSERT(AppTextClass->Initialize(pContext, (GLopenGLclass*)m_Driver));
 		break;
 #endif
 
-#if defined DX11 || defined DX9
+#if defined(VULKAN)
+	case DRIVER_VULKAN:
+		ASSERT(AppTextClass->Initialize(pContext, (vkClass*)m_Driver));
+		break;
+#endif
+
+#if (defined DX11 || defined DX9) && defined DX_ENGINE
 	case DRIVER_DX9:
 	case DRIVER_DX11:
-		ASSERT(AppTextClass->Initialize((ID3D11DeviceContext*)pContext, (DirectX::DX11Class*)m_Driver));
+		ASSERT(AppTextClass->Initialize(pContext, (DirectX::DX11Class*)m_Driver));
 		break;
 #endif
 
-#ifdef DX12
+#if defined DX12 && defined DX_ENGINE
 	case DRIVER_DX12:
-		ASSERT(AppTextClass->Initialize((ID3D11DeviceContext*)pContext, (DirectX::DX12Class*)m_Driver));
+		ASSERT(AppTextClass->Initialize(pContext, (DirectX::DX12Class*)m_Driver));
 		break;
 #endif
 
@@ -446,15 +509,21 @@ void ApplicationClass::initIntroCreditsDemo(void* pContext)
 		switch (WOMA::AppSettings->DRIVER)
 		{
 
+		#if defined DX9 && D3D11_SPEC_DATE_YEAR > 2009
+		case DRIVER_DX9:
+			((DXmodelClass*)m_spriteModel)->m_Shader11->isFontShader = false;
+			break;
+		#endif
+
 		#if defined DX11
 		case DRIVER_DX11:
-			((DirectX::DXmodelClass*)m_spriteModel)->m_Shader11->isFontShader = false;
+			((DXmodelClass*)m_spriteModel)->m_Shader11->isFontShader = false;
 			break;
 		#endif
 
 		#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 		case DRIVER_DX12:
-			((DirectX::DXmodelClass*)m_spriteModel)->m_Shader->isFontShader = false;
+			((DXmodelClass*)m_spriteModel)->m_Shader->isFontShader = false;
 			break;
 		#endif
 
@@ -475,17 +544,15 @@ void ApplicationClass::initIntroCreditsDemo(void* pContext)
 }
 #endif
 
-#if (DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER) || DX_ENGINE_LEVEL == 99//FOR SHADOW
+#if defined render_debug_2nd3DModel && (DX_ENGINE_LEVEL >= 36 && defined USE_SCENE_MANAGER) //FOR SHADOW
 // ----------------------------------------------------------------------------
-void ApplicationClass::initShadowDebugTextureDemo(void* ctx)
+void ApplicationClass::initShadowDebugTextureDemo(void* pContext)
 // ----------------------------------------------------------------------------
 {
-	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
-
 	ModelTextureVertexType vertex = { };
-	float X = 4.0f, Y = 2.0f, Z = 0;
-	CREATE_VERTEXVECTOR_SQUAD_MODEL_OPTIMIZED(SquareTextureVertexVector, X, Y, Z);				// Step 1: Setup all vertices positions: X, Y, Z
-	MAP_XZtoUV(SquareTextureVertexVector, X, Y, Z);												// Step 2: ADD TEXTURING: Auto-Map textures to all vertices: TU, TV
+	float X = 2.0f, Y = 2.0f, Z = 0;
+	CREATE_VERTEXVECTOR_SQUAD_MODEL_OPTIMIZED(SquareTextureVertexVector, X, Y, Z);	// Step 1: Setup all vertices positions: X, Y, Z
+	MAP_XZtoUV(SquareTextureVertexVector, X, Y, Z);									// Step 2: ADD TEXTURING: Auto-Map textures to all vertices: TU, TV
 	initLoadTexture3D(m_2nd3DModel, TEXT("engine/data/basics/Earth_Diffuse.bmp"), SquareTextureVertexVector, IndexSquarList, SHADER_TEXTURE);
 
 	m_2nd3DModel->rotateX(-3.14f / 2.0f);
@@ -498,9 +565,16 @@ void ApplicationClass::initShadowDebugTextureDemo(void* ctx)
 // ----------------------------------------------------------------------------
 
 #if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined USE_FRUSTUM
-bool ApplicationClass::WOMA_LOAD_OBJ(void* pContext, UINT threadID, UINT level, WomaDriverClass* Driver, UINT i, TCHAR* wfilename)
+bool ApplicationClass::WOMA_LOAD_OBJ(void* pContext, UINT threadID, UINT level, WomaDriverClass* Driver, UINT i, CHAR* filename) //NOTE: Cant be TCHAR
 {
 	objModel.push_back(NULL);
+
+#if defined UNICODE || defined _UNICODE
+	TCHAR wfilename[MAX_STR_LEN] = { 0 };
+	atow(wfilename, filename, MAX_STR_LEN);
+#else
+	#define wfilename filename
+#endif
 
 		{
 			CREATE_MODEL_IF_NOT_EXCEPTION(objModel[i], I_AM_3D, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.castShadows, SystemHandle->xml_loader.theWorldXML[i].WOMA_object.renderShadows);
@@ -508,24 +582,33 @@ bool ApplicationClass::WOMA_LOAD_OBJ(void* pContext, UINT threadID, UINT level, 
 
 		objModel[i]->m_ObjId = i; //SYNC-ID: objModel[i] with: xml_loader.theWorldXML[i]
 
+	#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP // Engine decide who does what:
 		if ((SHADER_TYPE)SystemHandle->xml_loader.theWorldXML[i].shader != SHADER_TEXTURE_LIGHT_RENDERSHADOW) {
 			SystemHandle->xml_loader.theWorldXML[i].WOMA_object.castShadows = true;
 			SystemHandle->xml_loader.theWorldXML[i].WOMA_object.renderShadows = false;
-			objModel[i]->ModelCastShadow = true;
-			objModel[i]->ModelRenderShadow = false;
+			objModel[i]->ModelCastShadow = true;	//is a shadow shader
+			objModel[i]->ModelRenderShadow = false; //I cast shadows
 		}
 		else
 		{
 			SystemHandle->xml_loader.theWorldXML[i].WOMA_object.castShadows = true;
 			SystemHandle->xml_loader.theWorldXML[i].WOMA_object.renderShadows = true;
-			objModel[i]->ModelCastShadow = true;
-			objModel[i]->ModelRenderShadow = true;
+			objModel[i]->ModelCastShadow = true;	//is a shadow shader
+			objModel[i]->ModelRenderShadow = true;	//I render shadows on me
 		}
+	#endif
 		
+		//if (SystemHandle->xml_loader.theWorldXML[i].type == 200) //FIRE
+		//if (i >= world_xml_objs) //Are we a Billboard?
+		if (RENDER_PAGE > 70)
+		{
+			objModel[i]->PosX = SystemHandle->xml_loader.theWorldXML[i].posX;
+			objModel[i]->PosY = SystemHandle->xml_loader.theWorldXML[i].translateY;
+			objModel[i]->PosZ = SystemHandle->xml_loader.theWorldXML[i].posZ;
+		}
+
 		if (WOMA::game_state == GAME_STOP)
 			return false;
-
-		
 
 		//Load OBJ or W3D:
 		if (!(objModel[i]->LoadModel(pContext, wfilename,
@@ -553,7 +636,8 @@ bool ApplicationClass::WOMA_LOAD_OBJ(void* pContext, UINT threadID, UINT level, 
 	}
 #endif
 
-	WOMA::sceneManager->addModel(WOMA::sceneManager->RootNode, objModel[i]);			// Add node to nodesList: RootNode
+	if (objModel[i]->m_instanceCount == 0)
+		WOMA::sceneManager->addModel(WOMA::sceneManager->RootNode, objModel[i]);	// Add node to nodesList: RootNode
 
 	return true;
 }
@@ -582,38 +666,34 @@ bool ApplicationClass::InitLightandDemos(void* pContext, WomaDriverClass* Driver
   #if defined USE_REAL_SUNLIGHT_DIRECTION
 	app_Light->SetDirection(SunX / 1000, SunY / 1000, SunZ / 1000);
   #else
-	app_Light->SetDirection(-0.535041273f, -1, 0);		//later in world.xml
+	app_Light->SetDirection(0.535041273f, -1, 0);		//later in world.xml
   #endif
 
 	//LIGHT_RAY ////////////////////////////////////////////////////////////////////////////////////////////////////
-  #if defined MAIN_RENDER_LIGHT_RAY	//DO: CalculateLightRayVertex(SunDistance);							  // Calculate Light Source Position
-	initLightRay(pContext);	//	  m_lightRayModel->UpdateLightRayVertices(m_Driver, m_LightVertexVector);  // Update LightRay vertex(s)
-  #endif					//	  m_lightRayModel->Render(m_Driver);							  // Render LightRay
+	initLightRay(pContext);	
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// INIT ALL BASIC DEMOS: //////////////////////////////////////////////////////////////////////////////////////////
 	//-----------------------------------------------------------------------------------------------------------------
 #if defined SCENE_COLOR
 	initColorDemo(pContext);
-
 #endif
 
-#if (DX_ENGINE_LEVEL >= 22 && DX_ENGINE_LEVEL != 23 && LEVEL < 60) || defined INTRO_DEMO || DX_ENGINE_LEVEL == 99// 22:TEXTURE
+#if (DX_ENGINE_LEVEL >= 22 && DX_ENGINE_LEVEL != 23 && LEVEL < 60) && defined SCENE_TEXTURE || defined INTRO_DEMO || DX_ENGINE_LEVEL == 99// 22:TEXTURE
 	initTextureDemo(pContext);
-
-  #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
-	initShadowDebugTextureDemo(pContext);
-  #endif
 #endif
 
-#if (DX_ENGINE_LEVEL >= 23  && LEVEL < 60) || defined INTRO_DEMO	// 23:LIGHT
+#if defined render_debug_2nd3DModel && (DX_ENGINE_LEVEL >= 36 && defined USE_SCENE_MANAGER) //FOR SHADOW
+	initShadowDebugTextureDemo(pContext);
+#endif
+
+#if (DX_ENGINE_LEVEL >= 23  && LEVEL < 60) && defined SCENE_TEXTURE_LIGHT || defined INTRO_DEMO 	// 23:LIGHT
 	initLightDemo(pContext);
 #endif
 
-#if DX_ENGINE_LEVEL >= 25 && defined USE_CUBE
+#if defined USE_CUBE
 	IF_NOT_RETURN_FALSE(initCubes3D(pContext));
 #endif
-
 
 	return true;
 }
@@ -656,31 +736,30 @@ void ApplicationClass::InitTerrainandWaterSurfaces(void* pContext, WomaDriverCla
 	//0
 #if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_BATH_TERRAIN		// UNDER WATER: Terrain
 	loadedTerrain[0] = NEW CTerrain(TERRAIN);
-	loadedTerrain[0]->initUnderWaterDemo(pContext, 0);			//UNDERWATER	(populate: modelVertexVector) 2022:LEVEL_ENGINE: 25
+	loadedTerrain[0]->initUnderWaterDemo(pContext, 0);			//0: UNDERWATER	(populate: modelVertexVector) 2022:LEVEL_ENGINE: 25
 #endif
 
 	//1 WATER TERRAIN MESH: 6 vertex + 6 index
 	//---------------------
 #if defined SCENE_WATER_TERRAIN
 	loadedTerrain[1] = NEW CTerrain(TERRAIN);
-	loadedTerrain[1]->initTerrainWaterMeshDemo(pContext, 1);		//WATER			(populate: modelVertexVector)
+	loadedTerrain[1]->initTerrainWaterMeshDemo(pContext, 1);	//1: WATER			(populate: modelVertexVector)
 #endif
 
 	//2 MAIN TERRAIN MESH: 4 vertex + 6 index
 	//--------------------
 #if defined SCENE_MAIN_TOPO_TERRAIN	&& !defined USE_TERRAIN_ALFA_MAP
 	loadedTerrain[2] = NEW CTerrain(TERRAIN);
-	loadedTerrain[2]->initMainTopoTerrainDemo(2, (ID3D11DeviceContext*)pContext);		//TERRAIN		(populate: modelVertexVector)
+	loadedTerrain[2]->initMainTopoTerrainDemo(2, pContext);	//2: TERRAIN		(populate: modelVertexVector)
 #endif
 
 	//3  COLLISION TERRAIN:6 vertex + 6 index: TO BE USED BY COLLISION TERRAIN
 	//---------------------
 #if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX && defined SCENE_TERRAIN_COLLISION
 	loadedTerrain[3] = NEW CTerrain(TERRAIN);
-	loadedTerrain[3]->initMainTopoTerrainDemo(3, (ID3D11DeviceContext*)pContext);
+	loadedTerrain[3]->initMainTopoTerrainDemo(3, pContext);
 #endif
 #endif
-
 }
 
 void ApplicationClass::AddObjsWithInstancesToXML()
@@ -714,10 +793,12 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 
 	InitLightandDemos(pContext, Driver);	//Init Demos from 21 to 29
 
+	// **** SKY **** 
 	#ifdef MAIN_RENDER_SKY
 	InitMainSky(pContext, Driver);
 	#endif
 
+	// **** LOAD TERRAIN and WATER **** 
 	#ifdef MAIN_RENDER_TERRAIN
 	InitTerrainandWaterSurfaces(pContext, Driver);
 	#endif
@@ -727,23 +808,27 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	//=================================================================================================================
 
 	//-----------------------------------------------------------------------------------------------------------------
-	// CREATE BILLBOARDs (populate Trees[]) (extra populate WORLD.XML)
+	// CREATE BILLBOARDs (1st: populate Trees[]) (populate theWorldXML with billboard data)
 	//-----------------------------------------------------------------------------------------------------------------
-#if TUTORIAL_CHAP >= 60 && defined SCENE_MAIN_TOPO_TERRAIN && defined SCENE_BILLBOARDS && defined MAIN_RENDER_TERRAIN
+#if TUTORIAL_CHAP >= 60
+#if defined SCENE_MAIN_TOPO_TERRAIN && defined SCENE_BILLBOARDS && defined MAIN_RENDER_TERRAIN
 	IF_NOT_RETURN_FALSE(m_billTreeClass = NEW BillClass);
 	if (!m_billTreeClass->Initialize((ID3D11DeviceContext*)pContext, loadedTerrain[2]->m_terrainWidth / 2, loadedTerrain[2]->m_terrainHeight / 2, false))
 	{
 		WomaMessageBox(TEXT("Could not initialize the billboard Class"), TEXT("Create Billboard for Trees / Flowers"));
 		return false;
 	}
-	womalogauto("Number of billboard objects added %d\n", SystemHandle->xml_loader.theWorldXML.size()- world_xml_objs);
+	womalogauto("Number of billboard added: %d\n", SystemHandle->xml_loader.theWorldXML.size() - world_xml_objs);
+#endif
 #endif
 
 	//-----------------------------------------------------------------------------------------------------------------
-	// LOAD PROGRESS BAR
+	// PROGRESS BAR to: LOAD 2D/3D DATA
 	//-----------------------------------------------------------------------------------------------------------------
 #if defined ALLOW_CBIND_PROGRESS_BAR
+	// ------------------------
 	// --- CREATE PROGRESS BAR:
+	// ------------------------
 	#if defined USE_INTRO_VIDEO_DEMO
 	if (DXsystemHandle->g_DShowPlayer == NULL || (DXsystemHandle->g_DShowPlayer->m_state != STATE_RUNNING))
 	#endif
@@ -759,61 +844,71 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 		::ShowWindow(SystemHandle->hwndPrgBar, 1);
 	}
 
+	// ------------------------
 	// --- CREATE PROGRESS TEXT:
+	// ------------------------
 	SystemHandle->settingstext = SystemHandle->WomaCreateWindowEx(WS_EX_TRANSPARENT, TEXT("STATIC"), TEXT(""),
 		WS_CHILD | WS_VISIBLE | SS_LEFT | WS_BORDER | SS_OWNERDRAW, 25, 25, 175, 22, SystemHandle->m_hWnd, 0, SystemHandle->m_hinstance, NULL);
 
-#if defined USE_INTRO_VIDEO_DEMO
+	#if defined USE_INTRO_VIDEO_DEMO
 	if (DXsystemHandle->g_DShowPlayer == NULL || (DXsystemHandle->g_DShowPlayer->m_state != STATE_RUNNING))
-#endif
+	#endif
 		::ShowWindow(SystemHandle->settingstext, 1);
 #endif
 
 	// Temporarily disable log file (on this loop) due performance:
 	//-----------------------------------------------------------------------------------------------------------------
 
+
 	//-----------------------------------------------------------------------------------------------------------------
-	// [MAIN OBJ LOAD]: 3D-Load Scene: Create "model OBJECTS" from loaded "XML OBJECTS" in file WORLD.XML     /////////
+	// --- [MAIN LOAD CICLE]:
 	//-----------------------------------------------------------------------------------------------------------------
-#if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined USE_FRUSTUM
+	float benchmarktime = (float)timeGetTime();
+#if defined USE_SCENE_MANAGER && defined USE_FRUSTUM
 
 	// Load 3D Objects: convert XML "objects" -- Load OBJ or W3D --> VirtualModelClass:
 	theWorld_size = (UINT)SystemHandle->xml_loader.theWorldXML.size();
 	objModel_size = (UINT)objModel.size();
 	num_loading_objects = 1;
 
-#if defined WINDOWS_PLATFORM
+	#if defined WINDOWS_PLATFORM
 	MSG msg = { 0 };
-#endif
-	// world_xml_objs = 15
-	// theWorld_size  = 3854
+	#endif
+
+	//LVL98(sample):
+	// world_xml_objs = 27		
+	// theWorld_size  = 3866
 	// objModel_size  = 0
 
 	for (UINT i = objModel_size; i < objModel_size + theWorld_size; i++) //theWorld_size
 	{
-#if defined USE_LOG_MANAGER
+	#if defined USE_LOG_MANAGER
 		if (i >= world_xml_objs)
 			WOMA::logManager = 0;
-#endif
+	#endif
 
-		// LOAD MAIN OBJECTS:
+		
+		// LOAD MAIN OBJECTS: for 3D
 		// ---------------------------------------------------------------------------------------------------------
 		WOMA_LOAD_OBJ(pContext, 0, RENDER_PAGE, Driver, i, SystemHandle->xml_loader.theWorldXML[i].filename);
-
 		num_loading_objects++;
 
-		// LOAD MINIMAP OBJECTS: Create 2D objects for mini-map
+		// LOAD MINIMAP OBJECTS: for 2D MAP & mini-map
 		// ---------------------------------------------------------------------------------------------------------
 
-		// Allow Refresh:
-		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))	// There is any OS messages to handle?
+		#if defined WINDOWS_PLATFORM
+		// Load Bar Refresh:
+		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg); // TranslateMessage produces WM_CHAR messages only for keys that are mapped to ASCII characters by the keyboard driver.
 			DispatchMessage(&msg);  // Process MSG:  (INVOKE: WinSystemClass::MessageHandler)
 		}
+		#endif
 	}
 #endif
 // END MAIN LOAD: Cycle...
+
+	womalog("[benchmarktime]: %d ms to Load WORLD objects\n", (UINT)((float)timeGetTime() - (float)benchmarktime));
 
 #if defined ALLOW_CBIND_PROGRESS_BAR
 	#if defined USE_INTRO_VIDEO_DEMO
@@ -828,10 +923,6 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 
 	// Restore: Temp. disabled log file:
 	// ----------------------------------------------------------------------------------------------------------------
-
-	//-----------------------------------------------------------------------------------------------------------------
-	// DEMO-29                  ///////////////////////////////////////////////////////////////////////////////////////
-	//-----------------------------------------------------------------------------------------------------------------
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// RENDER ASTROs //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -872,7 +963,7 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 		//  (for big worlds, Level 99+)
 		// ================================
 		//
-		XMFLOAT3 camPos = DXsystemHandle->m_Camera->GetPosition();
+		XMFLOAT3 camPos = DX_Camera->GetPosition();
 
 		float orthoHalfSize = USELIGHTSIZE;   // 15
 		float nearZ = 0.1f;
@@ -900,26 +991,57 @@ bool ApplicationClass::WOMA_APPLICATION_Initialize3D(void* pContext, WomaDriverC
 	float LightZ = USELIGHTSIZE * FAST_cos(initWorld->SunAzimuth);		// Real Sun Position on Sky:
 	float LightY = USELIGHTSIZE * FAST_sin(initWorld->SunElevation);	// Sun Elevation
   #else
-	CalculateLightRayVertex(SunDistance);
+	//CalculateLightRayVertex(SunDistance);
 	float LightX = MyLightVertexVector[1].x;
 	float LightY = MyLightVertexVector[1].y;
 	float LightZ = MyLightVertexVector[1].z;
   #endif
+
+	#if defined USE_SHADOW_MAP
 	app_Light->GenerateViewMatrix(LightX, LightY, LightZ);
+	#endif
 #endif
 
-	m_TextureWithShadows = NEW DXrendertextureclass;
+	
 	const int SHADOWMAP_WIDTH = MIN(WOMA::AppSettings->MaxTextureSize, 2*4096);
 	const int SHADOWMAP_HEIGHT = MIN(WOMA::AppSettings->MaxTextureSize, 2*4096);
-	IF_NOT_RETURN_FALSE(m_TextureWithShadows->Initialize(Driver, SHADOWMAP_WIDTH, SHADOWMAP_HEIGHT, 0, 0, WOMA::AppSettings->SCREEN_DEPTH, WOMA::AppSettings->SCREEN_NEAR));
+
+#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
+  #ifdef VULKAN
+	if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+	{
+		m_TextureWithShadows = NEW VKrenderTextureClass;
+		IF_NOT_RETURN_FALSE(((VKrenderTextureClass*)m_TextureWithShadows)->Initialize(Driver, SHADOWMAP_WIDTH, SHADOWMAP_HEIGHT, 0, 0, WOMA::AppSettings->SCREEN_DEPTH, WOMA::AppSettings->SCREEN_NEAR));
+	}
+  #endif
+
+  #ifdef DX_ENGINE
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX9 || WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX12)
+	{
+		m_TextureWithShadows = NEW DXrendertextureclass;
+		IF_NOT_RETURN_FALSE(((DXrendertextureclass*)m_TextureWithShadows)->Initialize(Driver, SHADOWMAP_WIDTH, SHADOWMAP_HEIGHT, 0, 0, WOMA::AppSettings->SCREEN_DEPTH, WOMA::AppSettings->SCREEN_NEAR));
+	}
+  #endif
+#endif
 
 	// --------------------------------------------------------------------------------------------
 	// Optionally: DEBUG SPRITE Model: (m_2nd3DModel) Render Shadows on a texture:
 	// --------------------------------------------------------------------------------------------
-  #if (DX_ENGINE_LEVEL >= 36 && DX_ENGINE_LEVEL < 51 && defined USE_SHADOW_MAP) || DX_ENGINE_LEVEL == 99
+  #if (DX_ENGINE_LEVEL >= 36 && DX_ENGINE_LEVEL < 51  && defined render_debug_2nd3DModel) || DX_ENGINE_LEVEL == 99
 	if (RENDER_PAGE >= 36 && m_Driver->RenderfirstTime)
 	{
-		((DXmodelClass*)m_2nd3DModel)->meshSRV11[0] = m_TextureWithShadows->m_shaderTextureResourceView;
+#if defined VULKAN
+		if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+		{
+			((vkModelClass*)m_2nd3DModel)->meshSRV[0] = (((VKrenderTextureClass*)m_TextureWithShadows)->m_shaderTextureResourceView);
+		}
+#endif
+#if defined DX_ENGINE && defined render_debug_2nd3DModel
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX9 || WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX12)
+		{
+			((DXmodelClass*)m_2nd3DModel)->meshSRV11[0] = ((DXrendertextureclass*)m_TextureWithShadows)->m_shaderTextureResourceView;
+		}
+#endif
 	}
   #endif
 

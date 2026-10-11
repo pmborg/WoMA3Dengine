@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
-#include "main.h"
+#include "platform.h"
 #if defined OPENGL3 && defined LINUX_PLATFORM && DX_ENGINE_LEVEL >= 19 // Initializing Engine 
 
 #include <stdio.h>
@@ -34,23 +34,20 @@ public:
 	bool OnInit(	int g_USE_MONITOR, void* hwnd, int screenWidth, int screenHeight, UINT depthBits, 
 						float screenDepth, float screenNear, BOOL msaa, bool vsync, 
 						BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize);
+
 	void Shutdown();
 	void EndScene(UINT monitorWindow);
 
-	MyWin        Win_;
-	//HDC m_deviceContext;
-	GLXContext m_deviceContext;
-
-	//
-	Display* Xdisplay;
-	int screen;
+	MyWin       Win_;
+	GLXContext	m_deviceContext;
+	Display*	Xdisplay;
+	int			screen;
 	GLXFBConfig fbconfig;
 	XVisualInfo *visinfo;
-	Window window;
+	Window		window;
 
 private:
-	bool LoadExtensionList();
-	//HGLRC m_renderingContext1;
+	//bool LoadExtensionList();
 
 public:
 
