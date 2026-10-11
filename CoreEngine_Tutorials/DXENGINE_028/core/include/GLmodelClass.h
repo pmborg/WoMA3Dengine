@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: GLmodelClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: MAIN PURPOSE:
 // ----------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
@@ -39,8 +39,7 @@
 class GLmodelClass : public VirtualModelClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234525217;
-	GLmodelClass(bool model3D=true);
+	GLmodelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive = TRIANGLELIST, bool computeNormals = false, bool modelHASshadow = false, bool modelRENDERshadow = false);
 	~GLmodelClass();
 	void Shutdown();
 
@@ -48,9 +47,13 @@ public:
 #if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28 && defined USE_SKYSPHERE
 	void RenderSky(void* pContext, UINT camera, float fadeLight = 1);
 #endif
-	void Render(void* pContext, UINT threadID=0, UINT camera = 0, UINT projection = 0, UINT pass = 0, void* lightViewMatrix = NULL, void* ShadowProjectionMatrix = NULL);
+	void Render(void* pContext, UINT threadID=0, UINT camera = 0, UINT projection = 0, UINT pass = 0, void* lightViewMatrix = NULL, void* ShadowProjectionMatrix = NULL, bool disableFog = false);
 
 	bool InitializeVertexIndexBuffers(std::vector <STRING>* textureFile);
+
+	bool LoadWaterFall(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<ModelTextureWaterfall>* model, std::vector<UINT>* indexList, UINT instanceCount);
+	bool LoadSmoke(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<SmokeVertexType>* model, std::vector<UINT>* indexList, UINT instanceCount);
+	void SetAlpha(float a);
 
 	bool LoadColor(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<ModelColorVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0);
 	bool LoadTexture(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING> *textureFile, std::vector<ModelTextureVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0);
@@ -67,7 +70,7 @@ public:
 #endif
 
 	//GLuint linearFiltering;
-	STRING MODEL_NAME;
+	//STRING MODEL_NAME;
 
 	// Math Aux Functions //
 	void Identity();
@@ -83,6 +86,9 @@ public:
 	// ----------------------------------------------------------------------
 	int GetIndexCount();
 	GLshaderClass* m_Shader = NULL;
+
+	GLtextureClass* m_Texture = NULL;			// Image loader
+	std::vector<GLtextureClass*> meshSRV;	// meshSRV
 
 private:
 	GLmathClass	mathClass;
@@ -117,9 +123,6 @@ private:
 	mat4			m_viewMatrix;
 	mat4			projectionMatrix;
 	
-	GLtextureClass* m_Texture=NULL;			// Image loader
-	std::vector<GLtextureClass*> meshSRV;	// meshSRV
-
 };
 
 #endif

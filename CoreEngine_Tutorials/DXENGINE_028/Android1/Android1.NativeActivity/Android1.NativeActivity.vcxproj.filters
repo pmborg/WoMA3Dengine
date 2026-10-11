@@ -178,6 +178,10 @@
     <ClInclude Include="..\..\core\include\Ropenglclass.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\core\include\vkTextClass.h" />
+    <ClInclude Include="..\..\core\include\vkShaderClass.h" />
+    <ClInclude Include="..\..\core\include\vkModelClass.h" />
+    <ClInclude Include="..\..\core\include\vkClass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="android_native_app_glue.c">
@@ -505,6 +509,10 @@
     <ClCompile Include="..\..\core\src\Rfontshaderclass.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\core\src\VkTextClass.cpp" />
+    <ClCompile Include="..\..\core\src\vkShaderClass.cpp" />
+    <ClCompile Include="..\..\core\src\vkModelClass.cpp" />
+    <ClCompile Include="..\..\core\src\vkClass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Include">

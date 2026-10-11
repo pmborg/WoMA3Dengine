@@ -55,17 +55,19 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>Clang_5_0</PlatformToolset>
+	<AndroidAPILevel>android-26</AndroidAPILevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>Clang_5_0</PlatformToolset>
-    <AndroidAPILevel>android-27</AndroidAPILevel>
+    <AndroidAPILevel>android-26</AndroidAPILevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>Clang_5_0</PlatformToolset>
+	<AndroidAPILevel>android-26</AndroidAPILevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -77,17 +79,19 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>Clang_5_0</PlatformToolset>
+	<AndroidAPILevel>android-26</AndroidAPILevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>Clang_5_0</PlatformToolset>
-    <AndroidAPILevel>android-27</AndroidAPILevel>
+    <AndroidAPILevel>android-26</AndroidAPILevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>Clang_5_0</PlatformToolset>
+	<AndroidAPILevel>android-26</AndroidAPILevel>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -149,7 +153,9 @@
       <PreprocessorDefinitions>__ANDROID_API__=$(AndroidAPILevelNumber);%(PreprocessorDefinitions);DEMO_LEVEL=28;MAINENGINE_LINUX;GL_KHR_debug</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <LibraryDependencies>%(LibraryDependencies);GLESv1_CM;GLESv3;EGL;m;z</LibraryDependencies>
+      <LibraryDependencies>%(LibraryDependencies);GLESv1_CM;GLESv3;EGL;m;z;vulkan</LibraryDependencies>
+      <SharedLibrarySearchPath>%(SharedLibrarySearchPath);$(SysrootLink)\usr\lib\$(AndroidHeaderTriple);$(SysrootLink)\usr\lib\$(AndroidHeaderTriple)\$(AndroidAPILevelNumber)</SharedLibrarySearchPath>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(ToolchainPrebuiltPath)\lib\gcc\$(ToolchainName)\$(ToolchainFullVersionName);$(StlLibraryPath);C:\WoMAengine2023_GOLD_INFO_BOOKs\___WoMAengine2023__EXT_LIBS___\oboe-1.5.0-LIBS\prefab\modules\oboe\libs\android.arm64-v8a</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
@@ -159,7 +165,12 @@
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
-      <LibraryDependencies>%(LibraryDependencies);GLESv1_CM;EGL;</LibraryDependencies>
+      <LibraryDependencies>%(LibraryDependencies);EGL;GLESv1_CM;GLESv2;GLESv3;m;z;jnigraphics;vulkan</LibraryDependencies>
+	  <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(ToolchainPrebuiltPath)\lib\gcc\$(ToolchainName)\$(ToolchainFullVersionName);$(StlLibraryPath);C:\WoMAengine2023_GOLD_INFO_BOOKs\___WoMAengine2023__EXT_LIBS___\oboe-1.5.0-LIBS\prefab\modules\oboe\libs\android.arm64-v8a</AdditionalLibraryDirectories>
+      <SharedLibrarySearchPath>%(SharedLibrarySearchPath);$(SysrootLink)\usr\lib\$(AndroidHeaderTriple);$(SysrootLink)\usr\lib\$(AndroidHeaderTriple)\$(AndroidAPILevelNumber)</SharedLibrarySearchPath>
+      <AdditionalOptions>-Wl,-z,max-page-size=16384 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
@@ -192,7 +203,9 @@
       <PreprocessorDefinitions>__ANDROID_API__=$(AndroidAPILevelNumber);%(PreprocessorDefinitions);DEMO_LEVEL=28;MAINENGINE_LINUX;GL_KHR_debug</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <LibraryDependencies>%(LibraryDependencies);GLESv1_CM;GLESv3;EGL;m;z</LibraryDependencies>
+      <LibraryDependencies>%(LibraryDependencies);GLESv1_CM;GLESv3;EGL;m;z;vulkan;oboe</LibraryDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(ToolchainPrebuiltPath)\lib\gcc\x86_64-linux-android\$(ToolchainFullVersionName);$(StlLibraryPath);C:\WoMAengine2023_GOLD_INFO_BOOKs\___WoMAengine2023__EXT_LIBS___\oboe-1.5.0-LIBS\prefab\modules\oboe\libs\android.x86_64</AdditionalLibraryDirectories>
+      <SharedLibrarySearchPath>%(SharedLibrarySearchPath);$(SysrootLink)\usr\lib;C:\WoMAengine2023_GOLD_INFO_BOOKs\___WoMAengine2023__EXT_LIBS___\oboe-1.5.0-LIBS\prefab\modules\oboe\libs\android.arm64-v8a</SharedLibrarySearchPath>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -246,10 +259,12 @@
     <ClInclude Include="..\..\..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0\tinyxml2.h" />
     <ClInclude Include="..\..\..\level.h" />
     <ClInclude Include="..\..\core\Android1\Android1.NativeActivity\androidsystemclass.h" />
+	<ClInclude Include="..\..\core\include\ApplicationTextClass.h" />
     <ClInclude Include="..\..\core\include\default_settings_xml.h" />
     <ClInclude Include="..\..\core\include\dumpUploader.h" />
     <ClInclude Include="..\..\core\include\fileLoader.h" />
     <ClInclude Include="..\..\core\include\fpsClass.h" />
+	<ClInclude Include="..\..\core\include\GlTextClass.h" />
     <ClInclude Include="..\..\core\include\InputClass.h" />
     <ClInclude Include="..\..\core\include\language.h" />
     <ClInclude Include="..\..\core\include\lightClass.h" />
@@ -277,6 +292,10 @@
     <ClInclude Include="..\..\core\include\systemManager.h" />
     <ClInclude Include="..\..\core\include\timerClass.h" />
     <ClInclude Include="..\..\core\include\TrigonometryMathClass.h" />
+    <ClInclude Include="..\..\core\include\vkClass.h" />
+    <ClInclude Include="..\..\core\include\vkModelClass.h" />
+    <ClInclude Include="..\..\core\include\vkShaderClass.h" />
+    <ClInclude Include="..\..\core\include\vkTextClass.h" />
     <ClInclude Include="..\..\core\include\WomaSetupManager.h" />
     <ClInclude Include="..\..\core\include\woma_exception.h" />
     <ClInclude Include="..\..\core\include\woma_macros.h" />
@@ -363,6 +382,7 @@
     <ClCompile Include="..\..\core\src\5LaunchEngine.cpp" />
     <ClCompile Include="..\..\core\src\7ProcessorInfo.cpp" />
     <ClCompile Include="..\..\core\src\ApplicationClass.cpp" />
+	<ClCompile Include="..\..\core\src\ApplicationTextClass.cpp" />
     <ClCompile Include="..\..\core\src\Application_LightRay.cpp" />
     <ClCompile Include="..\..\core\src\default_settings_xml.cpp" />
     <ClCompile Include="..\..\core\src\fileLoader.cpp" />
@@ -371,6 +391,7 @@
     <ClCompile Include="..\..\core\src\GLmathClass.cpp" />
     <ClCompile Include="..\..\core\src\GLmodelClass.cpp" />
     <ClCompile Include="..\..\core\src\GLshaderClass.cpp" />
+	<ClCompile Include="..\..\core\src\GlTextClass.cpp" />
     <ClCompile Include="..\..\core\src\GLTextureclass.cpp" />
     <ClCompile Include="..\..\core\src\GLX\GLopenGLclass.cpp" />
     <ClCompile Include="..\..\core\src\ImageLoaderClass.cpp" />
@@ -390,8 +411,13 @@
     <ClCompile Include="..\..\core\src\Rtextclass.cpp" />
     <ClCompile Include="..\..\core\src\Rtextureclass.cpp" />
     <ClCompile Include="..\..\core\src\SystemClass.cpp" />
+	<ClCompile Include="..\..\core\src\textFontClass.cpp" />
     <ClCompile Include="..\..\core\src\TimerClass.cpp" />
     <ClCompile Include="..\..\core\src\TrigonometryMathClass.cpp" />
+    <ClCompile Include="..\..\core\src\vkClass.cpp" />
+    <ClCompile Include="..\..\core\src\vkModelClass.cpp" />
+    <ClCompile Include="..\..\core\src\vkShaderClass.cpp" />
+    <ClCompile Include="..\..\core\src\VkTextClass.cpp" />
     <ClCompile Include="..\..\core\src\WindowPaintClass.cpp" />
     <ClCompile Include="..\..\core\src\WomaCube.cpp" />
     <ClCompile Include="..\..\core\src\WomaSphere.cpp" />

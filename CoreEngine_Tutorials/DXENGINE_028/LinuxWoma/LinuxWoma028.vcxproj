@@ -89,6 +89,12 @@
     <ClInclude Include="..\core\include\vertexTypes.h" />
     <ClInclude Include="..\core\include\virtualCameraClass.h" />
     <ClInclude Include="..\core\include\virtualModelClass.h" />
+    <ClInclude Include="..\core\include\virtualShaderClass.h" />
+    <ClInclude Include="..\core\include\virtualTextClass.h" />
+    <ClInclude Include="..\core\include\vkClass.h" />
+    <ClInclude Include="..\core\include\vkModelClass.h" />
+    <ClInclude Include="..\core\include\vkShaderClass.h" />
+    <ClInclude Include="..\core\include\vkTextClass.h" />
     <ClInclude Include="..\core\include\weatherClass.h" />
     <ClInclude Include="..\core\include\winCpuCores.h" />
     <ClInclude Include="..\core\include\wmiUtilClass.h" />
@@ -152,6 +158,10 @@
     <ClCompile Include="..\core\src\SystemClass.cpp" />
     <ClCompile Include="..\core\src\TimerClass.cpp" />
     <ClCompile Include="..\core\src\TrigonometryMathClass.cpp" />
+    <ClCompile Include="..\core\src\vkClass.cpp" />
+    <ClCompile Include="..\core\src\vkModelClass.cpp" />
+    <ClCompile Include="..\core\src\vkShaderClass.cpp" />
+    <ClCompile Include="..\core\src\VkTextClass.cpp" />
     <ClCompile Include="..\core\src\WeatherClass.cpp" />
     <ClCompile Include="..\core\src\WomaCube.cpp" />
     <ClCompile Include="..\core\src\WomaSphere.cpp" />
@@ -281,7 +291,7 @@
       <CppLanguageStandard>c++11</CppLanguageStandard>
     </ClCompile>
     <Link>
-      <LibraryDependencies>Xrandr;EGL;m;z;GL;GLU;X11;gtk-x11-2.0;gdk-x11-2.0;pangocairo-1.0;atk-1.0;cairo;gdk_pixbuf-2.0;gio-2.0;pangoft2-1.0;pango-1.0;gobject-2.0;glib-2.0;harfbuzz;fontconfig;freetype;glfw;glut;curl</LibraryDependencies>
+      <LibraryDependencies>openal;asound;Xrandr;EGL;m;z;GL;GLU;X11;gtk-x11-2.0;gdk-x11-2.0;pangocairo-1.0;atk-1.0;cairo;gdk_pixbuf-2.0;gio-2.0;pangoft2-1.0;pango-1.0;gobject-2.0;glib-2.0;harfbuzz;fontconfig;freetype;glfw;glut;curl;vulkan</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
