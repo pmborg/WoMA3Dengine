@@ -19,7 +19,7 @@
   <object fromPage="34" toPage="34" depend="0" scale="2" posX="-3" posZ="-6" translateY="-34.5" rotX="" rotY="-0.75f" rotZ="" shader="" filename="engine/data/scene30/Elementalsit.obj"/>
   <object fromPage="35" toPage="35" depend="0" scale="1" posX="0" posZ="0" translateY="" rotX="" rotY="" rotZ="" shader="" filename="engine/data/scene30/squareBump.obj"/>
   
-  <object fromPage="38" toPage="38" depend="0" scale="1.15"   posX="-0.55f" translateY="-0.2" posZ="0.5f" rotX="" rotY="" rotZ="" shader="6" filename="engine/data/Chess/Chess.obj"/>
+  <object fromPage="36" toPage="36" depend="0" scale="1.15"   posX="-0.55f" translateY="-0.2" posZ="0.5f" rotX="" rotY="" rotZ="" shader="6" filename="engine/data/Chess/Chess.obj"/>
 
   <object fromPage="38" toPage="38" depend="0" scale="0.004f" posX=" 1"  translateY="0.2" posZ="4" rotX="" rotY="" rotZ="" shader="" filename="engine/data/Chess/branco-bispo.obj"/>
   <object fromPage="38" toPage="38" depend="0" scale="0.004f" posX=" 0" translateY="0.2" posZ= "4" rotX="" rotY="" rotZ="" shader="" filename="engine/data/Chess/branco-cavalo.obj"/>

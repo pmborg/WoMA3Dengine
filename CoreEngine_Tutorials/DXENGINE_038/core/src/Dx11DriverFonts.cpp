@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: Dx11DriverFonts.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "OSengine.h"
 #if defined DX11 //&& ENGINE_LEVEL >= 20		// Initializing Engine && defined DX11
@@ -30,7 +30,7 @@ namespace DirectX {
 #if defined USE_DX_DRIVER_FONT // FONT v2
 
 // invoked@: DX11Class::Resize
-#if _NOT
+#if defined _NOT
 // https://learn.microsoft.com/en-us/windows/win32/directwrite/getting-started-with-directwrite
 #endif
 bool DX11Class::InitD2D_D3D101_DWrite(IDXGIAdapter1 *Adapter, int screenWidth, int screenHeight, WCHAR* fontStyle, float FontSizeIndex, float R, float G, float B)
@@ -256,7 +256,7 @@ bool DX11Class::InitD2DScreenTexture()
 	bool result = SystemHandle->m_Application->m_FontV2Shader->Initialize(NULL, TEXT("m_FontV2Shader"), shadertype, m_device11, SystemHandle->m_hWnd, TRIANGLELIST);
 
 	if(!result)
-		{ WomaFatalExceptionW(TEXT("Could not initialize the m_FontV2Shader")); /*return false;*/ }
+		{ WomaFatalExceptionW(TEXT("Could not initialize the m_FontV2Shader"));  }
 
 	return true;
 }
@@ -311,10 +311,11 @@ void DirectX::DX11Class::RenderDriverText(void* ctx)
 	SystemHandle->m_Application->keyedMutex11->AcquireSync(1, 5);	//Use the D3D11 Device
 
 	// -------------------------------------------------------------
+#ifdef USE_ALPHA_BLENDING
 	//Set the blend state for D2D render target texture objects
 	//m_deviceContext->OMSetBlendState(Transparency, NULL, 0xffffffff);		
 	TurnOnAlphaBlending(pContext);
-
+#endif
 	//Set the d2d vertex buffer
 	static UINT stride = sizeof( DXtextureVertexType );
 	static UINT offset = 0;
@@ -332,7 +333,9 @@ void DirectX::DX11Class::RenderDriverText(void* ctx)
 	SystemHandle->m_Application->m_FontV2Shader->Render(NULL, pContext, 6, &World, &World, &World);
 
 	allTextArray.clear();
+#ifdef USE_ALPHA_BLENDING
 	TurnOffAlphaBlending(pContext);
+#endif
 }
 
 #endif
