@@ -8,7 +8,7 @@
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 //
 // ********************************************************************************************
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
@@ -19,10 +19,10 @@
 #if DX_ENGINE_LEVEL >= 22 && defined DX12
 
 // DX12 includes
-#include <dxgi1_4.h>	// Always 1st!	(Select Driver)
+//#include <dxgi1_4.h>	// Always 1st!	(Select Driver)
 #include <d3d12.h>		// DX12			(Select Device)
-#include <D3Dcompiler.h>// Use Compiler
-#include <DirectXMath.h>// Use Math
+//#include <D3Dcompiler.h>// Use Compiler
+//#include <DirectXMath.h>// Use Math
 using namespace DirectX;
 
 #include "ImageLoaderClass.h"
@@ -38,7 +38,6 @@ using namespace DirectX;
 class DX12TextureClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234525217;
 	DX12TextureClass();
 	~DX12TextureClass();
 
@@ -49,7 +48,7 @@ private:
 	bool loaded;
 	ImageLoaderClass ImageLoader;
 
-	bool loadImage(void* g_driver, TCHAR *fileName, bool=true);
+	bool loadImage(void* pContext, void* g_driver, TCHAR *fileName, bool=true);
 	void AddTexture(void* g_driver, unsigned char* image32b, int width, int height, int depth, bool wrap);
 
 public:

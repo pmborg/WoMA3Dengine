@@ -2,7 +2,7 @@
 // Filename: 023Light.hlsl
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
-*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2017
+*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2026
 *	-------------------------------------------------------------------------------------------
 *	code by : Pedro Borges - pmborg@yahoo.com
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
@@ -10,8 +10,8 @@
 **********************************************************************************************/
 //WomaIntegrityCheck = 1234525217;
 
-#if (!defined DXAPI11 && !defined DXAPI12)
-    #define DXAPI11 1
+#if DXAPI11 != 1 && DXAPI12 != 1
+    #define DXAPI9 1
 #endif
 
 // mode:
@@ -23,6 +23,11 @@
 
 #define TEXTURE_MODE -1 //Default is -1
 
+//#define   PS_USE_FOG          //not sup. at this level
+//#define   PS_USE_ALFACOLOR	//not sup. at this level
+//#define   PS_USE_FADE			//not sup. at this level
+
+
 //////////////
 // TYPEDEFS //
 //////////////
@@ -30,17 +35,17 @@
 // VERTEX:
 struct VSIn
 {
-    float3 position : POSITION; //21
+    float3 position : POSITION;  //21
     float2 texCoords : TEXCOORD; //22
-    float3 normal : NORMAL; //23
+    float3 normal : NORMAL; 	 //23
 };
 
 // PIXEL:
 struct PSIn
 {
     float4 position : SV_POSITION; // 21
-    float2 texCoords : TEXCOORD; // 22
-    float3 normal : NORMAL; // 23 LIGHT
+    float2 texCoords : TEXCOORD;   // 22
+    float3 normal : NORMAL;        // 23 LIGHT
 };
 
 /////////////
@@ -51,7 +56,7 @@ struct PSIn
 // CBUFFERS
 ////////////////
 // SYNC: DXshaderClass.h -- DX12: CBV
-#if DXAPI11 == 1
+#if DXAPI9 == 1 || DXAPI11 == 1
 cbuffer VSShaderParametersBuffer	//DX11
 #endif
 #if DXAPI12 == 1
@@ -111,7 +116,7 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
 //Note: on DX11 dont use: register()
 
 // SYNC: DXshaderClass.h -- DX12: CBV
-#if DXAPI11 == 1
+#if DXAPI9 == 1 || DXAPI11 == 1
 cbuffer PSShaderParametersBuffer	//DX11
 #endif
 #if DXAPI12 == 1
@@ -159,14 +164,14 @@ cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: D
 };
 
 //Set on: DXmodelClass::RenderSubMesh
-#if DXAPI11 == 1
+#if DXAPI9 == 1 || DXAPI11 == 1
 Texture2D shaderTexture;
 #endif
 #if DXAPI12 == 1
 Texture2D shaderTexture:	register(t0);
 #endif
 
-#if DXAPI11 == 1
+#if DXAPI9 == 1 || DXAPI11 == 1
 SamplerState SampleType;
 #endif
 #if DXAPI12 == 1
@@ -216,6 +221,7 @@ PSIn VS_Main(VSIn input)
     return output;
 }
 
+#if DXAPI9 == 0
 #include "TextureSampling.hlsli"
 // mode:
 // 0 = nearest
@@ -223,6 +229,7 @@ PSIn VS_Main(VSIn input)
 // 2 = trilinear
 // 3 = cubic
 // 4 = hardware sampler
+#endif
 
 //Mode	Filter Type	    FPS
 //0	    Nearest	        13111 FPS
@@ -232,6 +239,7 @@ PSIn VS_Main(VSIn input)
 
 float4 GetShaderTexture(Texture2D tex, float2 texCoords, uint mipLevel, int mode)
 {
+#if DXAPI9 == 0
     switch (mode)
     {
         case 0:
@@ -246,8 +254,9 @@ float4 GetShaderTexture(Texture2D tex, float2 texCoords, uint mipLevel, int mode
         default:
             return tex.Sample(SampleType, texCoords);
     }
+#endif
 
-    // fallback
+    // Legacy fallback (DX9 / ps_4_0_level_9_3)
     return tex.Sample(SampleType, texCoords);
 }
 
@@ -260,11 +269,6 @@ float4 PS_Main(PSIn input) : SV_TARGET
     float lightIntensity = 0;
 
 	//-----------------------------------------------------------------------------------
-	// lvl >=21: TEXTURE: Sample the pixel color from the texture using the sampler at this texture coordinate location
-    //replace:
-        //textureColor = shaderTexture.Sample(SampleType, input.texCoords);    
-    //with:
-    #define TEXTURE_MODE 0
     textureColor = GetShaderTexture(shaderTexture, input.texCoords, 0, TEXTURE_MODE);
 
     lightIntensity = PSlightFunc2(input.normal);

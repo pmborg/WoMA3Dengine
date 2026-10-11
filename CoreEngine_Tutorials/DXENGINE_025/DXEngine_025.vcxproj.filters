@@ -39,6 +39,9 @@
     <Filter Include="HLSL">
       <UniqueIdentifier>{02cf4361-82e3-4b9e-b007-b8cc7608edc4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Vulkan">
+      <UniqueIdentifier>{3b6efeab-2f40-44bf-a268-2a21d5df26b8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\include\ApplicationClass.h">
@@ -237,6 +240,18 @@
       <Filter>core\include</Filter>
     </ClInclude>
     <ClInclude Include="core\include\womadriverclass.h">
+      <Filter>core\include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\vkShaderClass.h">
+      <Filter>core\include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\vkModelClass.h">
+      <Filter>core\include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\vkClass.h">
+      <Filter>core\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tech-level.h">
       <Filter>core\include</Filter>
     </ClInclude>
   </ItemGroup>
@@ -462,6 +477,15 @@
       <Filter>core\src</Filter>
     </ClCompile>
     <ClCompile Include="core\src\corelib0.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\vkShaderClass.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\vkModelClass.cpp">
+      <Filter>core\src</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\vkClass.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
   </ItemGroup>
