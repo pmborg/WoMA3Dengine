@@ -79,6 +79,9 @@
     <Filter Include="src-basic-level\036-Advanced">
       <UniqueIdentifier>{8b852649-81ab-49c6-bb3e-4d3476d58812}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Vulkan">
+      <UniqueIdentifier>{c04e69b1-e4f3-40d0-90db-a0fa4336cb2c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\include\main.h">
@@ -322,6 +325,18 @@
     <ClInclude Include="..\tech-level.h" />
     <ClInclude Include="core\include\DXrenderTextureClass.h">
       <Filter>src-basic-level\036-Advanced</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\vkTextClass.h">
+      <Filter>Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\vkShaderClass.h">
+      <Filter>Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\vkModelClass.h">
+      <Filter>Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\vkClass.h">
+      <Filter>Vulkan</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -595,6 +610,21 @@
     </ClCompile>
     <ClCompile Include="core\src\corelib6.cpp" />
     <ClCompile Include="core\src\corelib0.cpp" />
+    <ClCompile Include="core\src\VkTextClass.cpp">
+      <Filter>Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\vkShaderClass.cpp">
+      <Filter>Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\vkModelClass.cpp">
+      <Filter>Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\vkClass.cpp">
+      <Filter>Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\VKrenderTextureClass.cpp">
+      <Filter>Vulkan</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="settings.xml" />

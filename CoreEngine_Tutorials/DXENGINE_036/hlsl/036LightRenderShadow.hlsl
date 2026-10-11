@@ -2,24 +2,24 @@
 // Filename: 036LightRenderShadow.hlsl
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
-*   DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2023
+*   DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2026
 *   -------------------------------------------------------------------------------------------
 *   code by : Pedro Borges - pmborg@yahoo.com
 *   Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
-#if (!defined DXAPI11 && !defined DXAPI12)
-    #define DXAPI11 1
+#if DXAPI11 != 1 && DXAPI12 != 1
+    #define DXAPI9 1
 #endif
 
-#define PS_USE_LIGHT            //23
-#define PS_USE_ALFA_TEXTURE     //33
-#define PS_USE_ALFACOLOR        //33
-#define PS_USE_SPECULAR         //34
-//#define PS_USE_BUMP			//35 not available on this version/level
-#define PS_USE_SHADOWMAP_TEXTURE//36
+#define PS_USE_LIGHT            	//23
+#define PS_USE_ALFA_TEXTURE     	//33
+#define PS_USE_ALFACOLOR        	//33
+#define PS_USE_SPECULAR         	//34
+//#define PS_USE_BUMP				//35 not available on this version/level
+#define PS_USE_SHADOWMAP_TEXTURE	//36
 
 //#define PS_USE_FOG	//not available on this version/level
 //#define PS_USE_FADE	//not available on this version/level
@@ -56,7 +56,7 @@ struct PSIn
 // GLOBALS //
 /////////////
 
-//Set on: DXmodelClass::RenderSubMesh
+//Set on: DX_modelClass::RenderSubMesh
 #if DXAPI11 == 1
 Texture2D shaderTexture             : register(t0); 	// 21:
 Texture2D AlfaMapTexture 	        : register(t1);    	// alpha map (optional)
@@ -116,9 +116,6 @@ if (VS_USE_WVP) {
     //23: LIGHT: NORMAL
     if (VShasLight || VShasSpecular) 
     {
-        //----- 2 Lines in 1 -----
-        //normal = mul(input.normal, (float3x3)worldMatrix);
-        //normal = normalize(output.normal);
         output.normal = normalize(mul(input.normal, (float3x3)worldMatrix));// Calculate the normal vector against the world matrix only
     }
 
@@ -139,7 +136,7 @@ if (VS_USE_WVP) {
 	if (VShasSpecular)
 	{
 		float4 worldPosition = mul(float4(input.position, 1), worldMatrix);
-		output.viewDirection = normalize(cameraPosition.xyz - worldPosition.xyz);
+		output.viewDirection = normalize(VSCameraPosition - worldPosition.xyz);
 	}
 #endif
 
@@ -257,6 +254,26 @@ float4 PS_Main(PSIn input) : SV_TARGET
     } else {
         textureColor = textureColor * saturate(emissiveColor + ambientColor + (lightIntensity * diffuseColor));
     }
+    
+    #if defined PS_USE_SPECULAR         //44
+    // http://3dgep.com/texturing-lighting-directx-11/#Specular
+    if (hasSpecular)    // If enabled on material, calculate the Specular LIGHT
+    {
+        if (lightIntensity > 0.0f)
+        {
+            float4 color = ambientColor;
+            color += (VSdiffuseColor * lightIntensity);
+            color = saturate(color);
+
+            float3 Reflection = normalize(2 * lightIntensity * input.normal + lightDirection);
+            float  fPhoneValue = saturate(dot(Reflection, input.viewDirection));    // (R.V)
+            float4 specular = pow(fPhoneValue, nShininess);                         // Ls = (R.V)^alfa (alfa Determine the amount of specular light based on the reflection vector, viewing direction, and specular power.)
+
+            color = color * textureColor;
+            textureColor = saturate(textureColor + specular);       // specular = Ls (contribution of the light source) * Ks (specular component of the material)
+        }
+    } 
+    #endif
 
 #if defined PS_USE_FOG
     // 31: FOG: Calculate the final color using the fog effect equation.

@@ -10,7 +10,7 @@
 // PURPOSE:
 //
 // ********************************************************************************************
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 #pragma once
 
 // ALL Includes to Android: http://mobilepearls.com/labs/native-android-api/
@@ -47,11 +47,14 @@
 class AndroidSystemClass : public SystemClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234525217;
 	AndroidSystemClass(WOMA::Settings* AppSettings);
 	~AndroidSystemClass();
 	void Shutdown();
 
+	void ONRESIZE(void* pContext);
+	void GPH_RESIZE(void* pContext);
+
+	bool APPLICATION_CORE_SYSTEM();
 	bool APPLICATION_INIT_SYSTEM();
 	int	 APPLICATION_MAIN_LOOP();
 #if CORE_ENGINE_LEVEL >= 2
@@ -84,12 +87,8 @@ private:
 	// VARS
 	// --------------------------------------------------------------
 public:
-	//SystemSettings	systemDefinitions;
-#if DX_ENGINE_LEVEL >= 21 && defined USE_TINYXML_LOADER
-	World			world;
-#endif
 	void*			m_hWnd = NULL;
-	//int				game_state;
+	//int			game_state;
 
 	STRING			userName;
 	STRING			ComputerName;
