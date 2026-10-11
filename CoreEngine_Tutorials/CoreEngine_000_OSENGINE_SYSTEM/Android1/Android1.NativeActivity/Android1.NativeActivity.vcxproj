@@ -246,7 +246,12 @@
     <ClCompile Include="..\..\..\main.cpp" />
     <ClCompile Include="..\..\src\default_settings_xml.cpp" />
     <ClCompile Include="..\..\src\SystemClass.cpp" />
-    <ClCompile Include="AndroidMain.cpp" />
+    <ClCompile Include="AndroidMain.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+      </ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="AndroidNewSystemClass.c" />
     <ClCompile Include="..\..\src\OSengine.cpp" />
     <ClCompile Include="Android.cpp" />

@@ -41,10 +41,8 @@
     <ClInclude Include="..\level.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\tech-level.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="..\woma_engine_assets.h" />
+    <ClInclude Include="..\tech-level.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\default_settings_xml.cpp">

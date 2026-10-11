@@ -55,6 +55,9 @@ void mainLoop()
 	long value = XInternAtom(Win.display, "_NET_WM_WINDOW_TYPE_DESKTOP", False);
 	XChangeProperty(Win.display, Win.window, window_type, XA_ATOM, 32, PropModeReplace, (unsigned char*)&value, 1);
 
+	//
+	// Main loop
+	//
 	while (WOMA::game_state != ENGINE_RESTART)
 	{
 		if (WOMA::main_loop_state < 0) {

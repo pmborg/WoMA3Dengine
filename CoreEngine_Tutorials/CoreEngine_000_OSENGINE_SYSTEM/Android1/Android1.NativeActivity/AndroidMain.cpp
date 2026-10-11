@@ -128,7 +128,7 @@ void android_main(struct android_app* state) {
 	int argc = 0;
 	char* argv[0];
 
-	APPLICATION_MAIN(argc, argv);
+	ENGINE_MAIN(argc, argv);           // ENTRY-POINT: ANDROID(DEBUG/RELEASE)!
 
 	return;
 }
