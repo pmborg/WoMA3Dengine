@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: modelClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,19 +16,36 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: MAIN PURPOSE:
 // ----------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "OSengine.h"
 #include "womadriverclass.h"
 #include "modelClass.h"
+
+#ifdef WINDOWS_PLATFORM
 #include "DXmodelClass.h"
-#include "GLmodelClass.h"
 #include "DXshaderClass.h"
 #include "DX11Class.h"
+#include "dxWinSystemClass.h"
+#endif
+
+#ifdef LINUX_PLATFORM
+#include "linux.h"
+#endif
+
+#include "GLmodelClass.h"
 #include "fileLoader.h"
 #include "OSmain_dir.h"
-#include "dxWinSystemClass.h"
 #include "mem_leak.h"
+#if defined VULKAN
+#include "vkModelClass.h"
+#endif
+
+
+#include "glTextureclass.h"
+extern GLtextureClass* GetOrCreateTexture(WomaDriverClass* driver, const STRING& filename, void* pContext, bool Model3D);
+
+#pragma warning( disable : 4065 )	//warning C4065: switch statement contains 'default' but no 'case' labels
 
 #ifdef NOTES
 GEOMETRY
@@ -109,28 +126,61 @@ ModelClass::~ModelClass()
 	CLASSDELETE();
 }
 
+#define CHECKCHAR_EQ_FILEIN_GET \
+    do { \
+        checkChar = fileIn.get(); \
+        while (checkChar == '\r') \
+            checkChar = fileIn.get(); \
+    } while (0)
+
 // Populate: obj3d
 // --------------------------------------------------------------------------------------------
-bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow, bool renderShadow, UINT instanceCount, UINT instanceType)
+bool ModelClass::LoadOBJ(void* ctx, VirtualModelClass* dxmodelClass, SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow, bool renderShadow, UINT instanceCount, UINT instanceType)
 // --------------------------------------------------------------------------------------------
-{	HRESULT hr = 0;
+{
+#if defined WINDOWS_PLATFORM
 	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
+#else
+	void* pContext = ctx;
+#endif
+	HRESULT hr = 0;
 
 	//---------------------------------------------------------------------
-	womalog( TEXT("OBJ Loading: %s with shader: [%d]\n"), (TCHAR*)(filename+TEXT(" ")).c_str(), shader_type);
-	obj3d.fileNameOnly=filename;
+	womalog(TEXT("OBJ Loading: %s with shader: [%d]\n"), (TCHAR*)(filename + TEXT(" ")).c_str(), shader_type);
+	obj3d.fileNameOnly = filename;
 
 	// Add full path:
 	STRING newfilename = WOMA::LoadFile((TCHAR*)filename.c_str());
+
+	womalog(TEXT("OPEN FILE: %s\n"), newfilename.c_str());
 
 	// Get path to Mat. Lib.
 	STRING MathLibPath = newfilename;
 
 	//Open file: filename
 	// ---------------------
-	IFSTREAM fileIn ((TCHAR*)newfilename.c_str());
-    if (!fileIn)
-        return FALSE;
+#if defined ANDROID_PLATFORM
+	AAssetManager* manager = engine.app->activity->assetManager;
+	AAsset* asset = AAssetManager_open(manager, newfilename.c_str(), AASSET_MODE_BUFFER);
+	if (!asset)
+	{
+		womalog("FATAL ERROR: %s %s() %d\n", __FILE__, __FUNCTION__, __LINE__);
+		return FALSE;
+	}
+
+	const char* buffer = (const char*)AAsset_getBuffer(asset);
+	size_t size = AAsset_getLength(asset);
+
+	std::istringstream fileIn(std::string(buffer, size));
+
+#else
+	IFSTREAM fileIn((TCHAR*)newfilename.c_str());
+	if (!fileIn)
+	{
+		womalog("FATAL ERROR: %s %s() %d\n", __FILE__, __FUNCTION__, __LINE__);
+		return FALSE;
+	}
+#endif
 
 	obj3d.m_vertexCount = 0;		//totalVerts
 	TCHAR lastToken = 0;
@@ -142,38 +192,38 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 	//Check to see if the file was opened
 	if (fileIn)
 	{
-		while( fileIn && (WOMA::game_state < GAME_STOP) )
-		{			
-			checkChar = fileIn.get();	//Get next char
+		while (fileIn && (WOMA::game_state < GAME_STOP))
+		{
+			CHECKCHAR_EQ_FILEIN_GET;	//Get next char
 
 			switch (checkChar)
-			{		
+			{
 			case '#':	// Comment
-				checkChar = fileIn.get();
-				while(checkChar != '\n')
-					checkChar = fileIn.get();
+				CHECKCHAR_EQ_FILEIN_GET;
+				while (checkChar != '\n')
+					CHECKCHAR_EQ_FILEIN_GET;
 				break;
 
 			case 'v':	//Get Vertex Descriptions
-				checkChar = fileIn.get();
-				if(checkChar == ' ')			//v - vert position
+				CHECKCHAR_EQ_FILEIN_GET;
+				if (checkChar == ' ')			//v - vert position
 				{
 					float vz, vy, vx;
 					fileIn >> vx >> vy >> vz;	//Store the next three types
 
-					if(isRHCoordSys)			//If model is from an RH Coord System
-						obj3d.vertPos.push_back(XMFLOAT3( vx, vy, vz * -1.0f));	//Invert the Z axis
+					if (isRHCoordSys)			//If model is from an RH Coord System
+						obj3d.vertPos.push_back(XMFLOAT3(vx, vy, vz * -1.0f));	//Invert the Z axis
 					else
-						obj3d.vertPos.push_back(XMFLOAT3( vx, vy, vz));
+						obj3d.vertPos.push_back(XMFLOAT3(vx, vy, vz));
 				}
 				//41
-				if(checkChar == 't')			//vt - vert tex coords
-				{			
+				if (checkChar == 't')			//vt - vert tex coords
+				{
 					float vtcu, vtcv;
 					fileIn >> vtcu >> vtcv;		//Store next two types
 
-					if(isRHCoordSys)			//If model is from an RH Coord System
-						obj3d.vertTexCoord.push_back(XMFLOAT2(vtcu, 1.0f-vtcv));	//Reverse the "v" axis
+					if (isRHCoordSys)			//If model is from an RH Coord System
+						obj3d.vertTexCoord.push_back(XMFLOAT2(vtcu, 1.0f - vtcv));	//Reverse the "v" axis
 					else
 						obj3d.vertTexCoord.push_back(XMFLOAT2(vtcu, vtcv));
 
@@ -182,15 +232,15 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 				//99
 				//Since we compute the normals later, we don't need to check for normals
 				//In the file, but i'll do it here anyway
-				if(checkChar == 'n')				//vn - vert normal
+				if (checkChar == 'n')				//vn - vert normal
 				{
 					float vnx, vny, vnz;
 					fileIn >> vnx >> vny >> vnz;	//Store next three types
 
-					if(isRHCoordSys)	//If model is from an RH Coord System
-						obj3d.vertNorm.push_back(XMFLOAT3( vnx, vny, vnz * -1.0f ));	//Invert the Z axis
+					if (isRHCoordSys)	//If model is from an RH Coord System
+						obj3d.vertNorm.push_back(XMFLOAT3(vnx, vny, vnz * -1.0f));	//Invert the Z axis
 					else
-						obj3d.vertNorm.push_back(XMFLOAT3( vnx, vny, vnz ));
+						obj3d.vertNorm.push_back(XMFLOAT3(vnx, vny, vnz));
 
 					obj3d.hasNorm = true;	//We know the model defines normals
 				}
@@ -198,8 +248,8 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 
 				//New group (Subset)
 			case 'g':	//g - defines a group
-				checkChar = fileIn.get();
-				if(checkChar == ' ')
+				CHECKCHAR_EQ_FILEIN_GET;
+				if (checkChar == ' ')
 				{
 					obj3d.meshSubsetIndexStart.push_back(vIndex);		//Start index for this subset
 					obj3d.meshSubsets++;
@@ -209,35 +259,35 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 
 				//Get Face Index
 			case 'f':	//f - defines the faces
-				checkChar = fileIn.get();
-				if(checkChar == ' ')
+				CHECKCHAR_EQ_FILEIN_GET;
+				if (checkChar == ' ')
 				{
 					face = TEXT("");
 					STRING VertDef;	//Holds one vertex definition at a time
 					obj3d.triangleCount = 0;
 
-					checkChar = fileIn.get();
-					while(checkChar != '\n')
+					CHECKCHAR_EQ_FILEIN_GET;
+					while (checkChar != '\n')
 					{
 						face += checkChar;			//Add the char to our face string
-						checkChar = fileIn.get();	//Get the next Character
-						if(checkChar == ' ')		//If its a space...
+						CHECKCHAR_EQ_FILEIN_GET;	//Get the next Character
+						if (checkChar == ' ')		//If its a space...
 							obj3d.triangleCount++;		//Increase our triangle count
 					}
 
 					//Check for space at the end of our face string
-					if(face[face.length()-1] == ' ')
+					if (face[face.length() - 1] == ' ')
 						obj3d.triangleCount--;	//Each space adds to our triangle count
 
 					obj3d.triangleCount -= 1;		//Ever vertex in the face AFTER the first two are new faces
 
 					STRINGSTREAM ss(face);
 
-					if(face.length() > 0)
+					if (face.length() > 0)
 					{
 						int firstVIndex = 0, lastVIndex = 0;	//Holds the first and last vertice's index
 
-						for(int i = 0; i < 3; ++i)		//First three vertices (first triangle)
+						for (int i = 0; i < 3; ++i)		//First three vertices (first triangle)
 						{
 							ss >> VertDef;	//Get vertex definition (vPos/vTexCoord/vNorm)
 
@@ -245,32 +295,32 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 							int whichPart = 0;		//#(vPos, vTexCoord, or vNorm)
 
 							//Parse this string
-							for(UINT j = 0; j < VertDef.length(); ++j)
+							for (UINT j = 0; j < VertDef.length(); ++j)
 							{
-								if(VertDef[j] != '/')	//If there is no divider "/", add a char to our vertPart
+								if (VertDef[j] != '/')	//If there is no divider "/", add a char to our vertPart
 									vertPart += VertDef[j];
 
 								//If the current char is a divider "/", or its the last character in the string
-								if(VertDef[j] == '/' || j ==  VertDef.length()-1)
+								if (VertDef[j] == '/' || j == VertDef.length() - 1)
 								{
 									STRINGSTREAM wstringToInt(vertPart);	//Used to convert wstring to int
 									// -----------------------------------------------
-									if(whichPart == 0)	//#If vPos
+									if (whichPart == 0)	//#If vPos
 									{
 										wstringToInt >> vertPosIndexTemp;
 										vertPosIndexTemp -= 1;		//subtract one since c++ arrays start with 0, and obj start with 1
 
 										//Check to see if the vert pos was the only thing specified
-										if(j == VertDef.length()-1)
+										if (j == VertDef.length() - 1)
 										{
 											vertNormIndexTemp = 0;
 											vertTCIndexTemp = 0;
 										}
 									}
 									// -----------------------------------------------
-									else if(whichPart == 1)	//#If vTexCoord
+									else if (whichPart == 1)	//#If vTexCoord
 									{
-										if(vertPart != TEXT(""))	//Check to see if there even is a tex coord
+										if (vertPart != TEXT(""))	//Check to see if there even is a tex coord
 										{
 											wstringToInt >> vertTCIndexTemp;
 											vertTCIndexTemp -= 1;	//subtract one since c++ arrays start with 0, and obj start with 1
@@ -280,11 +330,11 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 
 										//If the cur. char is the second to last in the string, then
 										//there must be no normal, so set a default normal
-										if(j == VertDef.length()-1)
+										if (j == VertDef.length() - 1)
 											vertNormIndexTemp = 0;
-									}								
+									}
 									// -----------------------------------------------
-									else if(whichPart == 2)	//#If vNorm
+									else if (whichPart == 2)	//#If vNorm
 									{
 										STRINGSTREAM /*std::wstringstream*/ wstringToInt(vertPart);
 
@@ -298,7 +348,7 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 							}
 
 							//Check to make sure there is at least one subset
-							if(obj3d.meshSubsets == 0)
+							if (obj3d.meshSubsets == 0)
 							{
 								obj3d.meshSubsetIndexStart.push_back(vIndex);		//Start index for this subset
 								obj3d.meshSubsets++;
@@ -306,20 +356,20 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 
 							//Avoid duplicate vertices
 							bool vertAlreadyExists = false;
-							if(obj3d.m_vertexCount >= 3)	//Make sure we at least have one triangle to check
+							if (obj3d.m_vertexCount >= 3)	//Make sure we at least have one triangle to check
 							{
 								//Loop through all the vertices
-								for(UINT iCheck = 0; iCheck < obj3d.m_vertexCount; ++iCheck)
+								for (UINT iCheck = 0; iCheck < obj3d.m_vertexCount; ++iCheck)
 								{
 									//If the vertex position and texture coordinate in memory are the same
 									//As the vertex position and texture coordinate we just now got out
 									//of the obj file, we will set this faces vertex index to the vertex's
 									//index value in memory. This makes sure we don't create duplicate vertices
-									if(vertPosIndexTemp == obj3d.vertPosIndex[iCheck] && !vertAlreadyExists)
+									if (vertPosIndexTemp == obj3d.vertPosIndex[iCheck] && !vertAlreadyExists)
 									{
-										if(vertTCIndexTemp == obj3d.vertTCIndex[iCheck])
+										if (vertTCIndexTemp == obj3d.vertTCIndex[iCheck])
 										{
-											obj3d.indices32.push_back(iCheck);		//Set index for this vertex
+												obj3d.indices32.push_back(iCheck);		//Set index for this vertex
 											vertAlreadyExists = true;		//If we've made it here, the vertex already exists
 										}
 										obj3d.m_indexCount++;
@@ -328,29 +378,29 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 							}
 
 							//If this vertex is not already in our vertex arrays, put it there
-							if(!vertAlreadyExists)
+							if (!vertAlreadyExists)
 							{
 								obj3d.vertPosIndex.push_back(vertPosIndexTemp);
 								obj3d.vertTCIndex.push_back(vertTCIndexTemp);
 								obj3d.vertNormIndex.push_back(vertNormIndexTemp);
 								obj3d.m_vertexCount++;	//We created a new vertex
-									obj3d.indices32.push_back(obj3d.m_vertexCount-1);	//Set index for this vertex
+									obj3d.indices32.push_back(obj3d.m_vertexCount - 1);	//Set index for this vertex
 								obj3d.m_indexCount++;
-							}							
+							}
 
 							//If this is the very first vertex in the face, we need to
 							//make sure the rest of the triangles use this vertex
-							if(i == 0)
+							if (i == 0)
 							{
-								    firstVIndex = obj3d.indices32[vIndex];	//The first vertex index of this FACE
+									firstVIndex = obj3d.indices32[vIndex];	//The first vertex index of this FACE
 
 							}
 
 							//If this was the last vertex in the first triangle, we will make sure
 							//the next triangle uses this one (eg. tri1(1,2,3) tri2(1,3,4) tri3(1,4,5))
-							if(i == 2)
-							{				
-								    lastVIndex = obj3d.indices32[vIndex];	//The last vertex index of this TRIANGLE
+							if (i == 2)
+							{
+									lastVIndex = obj3d.indices32[vIndex];	//The last vertex index of this TRIANGLE
 							}
 							//{
 							//	int base = obj3d.indices32.size() - 3;
@@ -368,7 +418,7 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 						// ----------------------------
 						// Correct CCW fix goes here:
 						// ----------------------------
-						int base = obj3d.indices32.size() - 3;
+						int base = (int)obj3d.indices32.size() - 3;
 						if (base >= 0)
 						{
 							std::swap(obj3d.indices32[base + 1], obj3d.indices32[base + 2]);
@@ -378,7 +428,7 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 						//we convert the face to triangles. We created our first triangle above, now we will
 						//create a new triangle for every new vertex in the face, using the very first vertex
 						//of the face, and the last vertex from the triangle before the current triangle
-						for(UINT l = 0; l < obj3d.triangleCount-1; ++l)	//Loop through the next vertices to create new triangles
+						for (UINT l = 0; l < obj3d.triangleCount - 1; ++l)	//Loop through the next vertices to create new triangles
 						{
 							//First vertex of this triangle (the very first vertex of the face too)
 								obj3d.indices32.push_back(firstVIndex);			//Set index for this vertex
@@ -395,40 +445,40 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 							int whichPart = 0;
 
 							//Parse this string (same as above)
-							for(UINT j = 0; j < VertDef.length(); ++j)
+							for (UINT j = 0; j < VertDef.length(); ++j)
 							{
-								if(VertDef[j] != '/')
+								if (VertDef[j] != '/')
 									vertPart += VertDef[j];
-								if(VertDef[j] == '/' || j ==  VertDef.length()-1)
+								if (VertDef[j] == '/' || j == VertDef.length() - 1)
 								{
 									STRINGSTREAM /*std::wistringstream*/ wstringToInt(vertPart);
 
-									if(whichPart == 0)
+									if (whichPart == 0)
 									{
 										wstringToInt >> vertPosIndexTemp;
 										vertPosIndexTemp -= 1;
 
 										//Check to see if the vert pos was the only thing specified
-										if(j == VertDef.length()-1)
+										if (j == VertDef.length() - 1)
 										{
 											vertTCIndexTemp = 0;
 											vertNormIndexTemp = 0;
 										}
 									}
-									else if(whichPart == 1)
+									else if (whichPart == 1)
 									{
-										if(vertPart != TEXT(""))
+										if (vertPart != TEXT(""))
 										{
 											wstringToInt >> vertTCIndexTemp;
 											vertTCIndexTemp -= 1;
 										}
 										else
 											vertTCIndexTemp = 0;
-										if(j == VertDef.length()-1)
+										if (j == VertDef.length() - 1)
 											vertNormIndexTemp = 0;
 
-									}								
-									else if(whichPart == 2)
+									}
+									else if (whichPart == 2)
 									{
 										STRINGSTREAM /*std::wistringstream*/ wstringToInt(vertPart);
 
@@ -437,19 +487,19 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 									}
 
 									vertPart = TEXT("");
-									whichPart++;							
+									whichPart++;
 								}
-							}					
+							}
 
 							//Check for duplicate vertices
 							bool vertAlreadyExists = false;
-							if(obj3d.m_vertexCount >= 3)	//Make sure we at least have one triangle to check
+							if (obj3d.m_vertexCount >= 3)	//Make sure we at least have one triangle to check
 							{
-								for(UINT iCheck = 0; iCheck < obj3d.m_vertexCount; ++iCheck)
+								for (UINT iCheck = 0; iCheck < obj3d.m_vertexCount; ++iCheck)
 								{
-									if(vertPosIndexTemp == obj3d.vertPosIndex[iCheck] && !vertAlreadyExists)
+									if (vertPosIndexTemp == obj3d.vertPosIndex[iCheck] && !vertAlreadyExists)
 									{
-										if(vertTCIndexTemp == obj3d.vertTCIndex[iCheck])
+										if (vertTCIndexTemp == obj3d.vertTCIndex[iCheck])
 										{
 												obj3d.indices32.push_back(iCheck);			//Set index for this vertex
 											vertAlreadyExists = true;		//If we've made it here, the vertex already exists
@@ -459,44 +509,44 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 								}
 							}
 
-							if(!vertAlreadyExists)
+							if (!vertAlreadyExists)
 							{
 								obj3d.vertPosIndex.push_back(vertPosIndexTemp);
 								obj3d.vertTCIndex.push_back(vertTCIndexTemp);
 								obj3d.vertNormIndex.push_back(vertNormIndexTemp);
 								obj3d.m_vertexCount++;					//New vertex created, add to total verts
-									obj3d.indices32.push_back(obj3d.m_vertexCount-1);		//Set index for this vertex
+									obj3d.indices32.push_back(obj3d.m_vertexCount - 1);		//Set index for this vertex
 								obj3d.m_indexCount++;
 							}
 
 							//Set the second vertex for the next triangle to the last vertex we got		
-							    lastVIndex = obj3d.indices32[vIndex];	//The last vertex index of this TRIANGLE
+								lastVIndex = obj3d.indices32[vIndex];	//The last vertex index of this TRIANGLE
 
 							obj3d.meshTriangles++;	//New triangle defined
-							vIndex++;		
+							vIndex++;
 						}
 					}
 				}
 				break;
 
 			case 'm':	//mtllib - material library filename
-				checkChar = fileIn.get();
-				if(checkChar == 't')
+				CHECKCHAR_EQ_FILEIN_GET;
+				if (checkChar == 't')
 				{
-					checkChar = fileIn.get();
-					if(checkChar == 'l')
+					CHECKCHAR_EQ_FILEIN_GET;
+					if (checkChar == 'l')
 					{
-						checkChar = fileIn.get();
-						if(checkChar == 'l')
+						CHECKCHAR_EQ_FILEIN_GET;
+						if (checkChar == 'l')
 						{
-							checkChar = fileIn.get();
-							if(checkChar == 'i')
+							CHECKCHAR_EQ_FILEIN_GET;
+							if (checkChar == 'i')
 							{
-								checkChar = fileIn.get();
-								if(checkChar == 'b')
+								CHECKCHAR_EQ_FILEIN_GET;
+								if (checkChar == 'b')
 								{
-									checkChar = fileIn.get();
-									if(checkChar == ' ')
+									CHECKCHAR_EQ_FILEIN_GET;
+									if (checkChar == ' ')
 									{
 										//Store the material libraries file name
 										fileIn >> meshMatLib;
@@ -510,28 +560,28 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 				break;
 
 			case 'u':	//usemtl - which material to use
-				checkChar = fileIn.get();
-				if(checkChar == 's')
+				CHECKCHAR_EQ_FILEIN_GET;
+				if (checkChar == 's')
 				{
-					checkChar = fileIn.get();
-					if(checkChar == 'e')
+					CHECKCHAR_EQ_FILEIN_GET;
+					if (checkChar == 'e')
 					{
-						checkChar = fileIn.get();
-						if(checkChar == 'm')
+						CHECKCHAR_EQ_FILEIN_GET;
+						if (checkChar == 'm')
 						{
-							checkChar = fileIn.get();
-							if(checkChar == 't')
+							CHECKCHAR_EQ_FILEIN_GET;
+							if (checkChar == 't')
 							{
-								checkChar = fileIn.get();
-								if(checkChar == 'l')
+								CHECKCHAR_EQ_FILEIN_GET;
+								if (checkChar == 'l')
 								{
-									checkChar = fileIn.get();
-									if(checkChar == ' ')
+									CHECKCHAR_EQ_FILEIN_GET;
+									if (checkChar == ' ')
 									{
 										meshMaterialsTemp = TEXT("");	//Make sure this is cleared
 										fileIn >> meshMaterialsTemp; //Get next type (string)
 
-										if (lastToken == 'u') 
+										if (lastToken == 'u')
 										{	// We have a "usemtl" but we don't have a 'g' for it, so "force" it:
 											obj3d.meshSubsetIndexStart.push_back(vIndex);		//Start index for this subset
 											obj3d.meshSubsets++;
@@ -547,7 +597,7 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 				}
 				break;
 
-			default:				
+			default:
 				break;
 			}
 		}
@@ -558,56 +608,79 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 		STRING message = TEXT("Could not open: ");
 		message += filename;
 
+		womalog("ERROR: %s\n", message.c_str());
+		womalog("FATAL ERROR: %s %s() %d\n", __FILE__, __FUNCTION__, __LINE__);
 		return false;
 	}
 
 	////////////////////////////////////////////////////////////////////
 	// VERTEX LOAD DONE!
 	////////////////////////////////////////////////////////////////////
+	int matCount = 0;
+	bool kdset = false;
 
 	if (WOMA::game_state == GAME_STOP)
 		return true; // Stop the loading immediately
 
 	obj3d.meshSubsetIndexStart.push_back(vIndex); //There won't be another index start after our last subset, so set it here
 
-	ASSERT (obj3d.meshSubsetIndexStart.size() >= 2); // If fail... wrong OBJ format!
+	ASSERT(obj3d.meshSubsetIndexStart.size() >= 2); // If fail... wrong OBJ format!
 
 	//sometimes "g" is defined at the very top of the file, then again before the first group of faces.
 	//This makes sure the first subset does not conatain "0" indices.
-	if(obj3d.meshSubsetIndexStart[1] == 0)
+	if (obj3d.meshSubsetIndexStart[1] == 0)
 	{
-		obj3d.meshSubsetIndexStart.erase(obj3d.meshSubsetIndexStart.begin()+1);
+		obj3d.meshSubsetIndexStart.erase(obj3d.meshSubsetIndexStart.begin() + 1);
 		obj3d.meshSubsets--;
 	}
 
 	//Make sure we have a default for the tex coord and normal
 	//if one or both are not specified
-	if(!obj3d.hasNorm)
+	if (!obj3d.hasNorm)
 		obj3d.vertNorm.push_back(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	if(!obj3d.hasTexCoord)
+	if (!obj3d.hasTexCoord)
 		obj3d.vertTexCoord.push_back(XMFLOAT2(0.0f, 0.0f));
 
+#if defined ANDROID_PLATFORM
+	AAsset_close(asset);
+#else
 	//Close the obj file, and open the mtl file
 	fileIn.close();
+#endif
 
 	// Get Path to Mat. Lib.
 	// ---------------------
 	STRING meshMatLib_ = meshMatLib;
 	{
-	STRING temp = MathLibPath;
-	int indexCh = (int)temp.find_last_of('\\');
-	if (indexCh == -1)
-		indexCh = (int)temp.find_last_of('/');
-	indexCh++;
-	STRING path = MathLibPath;
-	path = path.substr(0, indexCh);
-	//_tcscpy_s((TCHAR*)&MathLibPath[0], sizeof(MathLibPath), (TCHAR*)path.c_str());
-	MathLibPath = path;
+		STRING temp = MathLibPath;
+		int indexCh = (int)temp.find_last_of('\\');
+		if (indexCh == -1)
+			indexCh = (int)temp.find_last_of('/');
+		indexCh++;
+		STRING path = MathLibPath;
+		path = path.substr(0, indexCh);
+		//_tcscpy_s((TCHAR*)&MathLibPath[0], sizeof(MathLibPath), (TCHAR*)path.c_str());
+		MathLibPath = path;
 
-	meshMatLib = MathLibPath + meshMatLib;
+		meshMatLib = MathLibPath + meshMatLib;
 	}
 
+#if defined ANDROID_PLATFORM
+	//AAssetManager* manager = engine.app->activity->assetManager;
+	AAsset* assetMtl = AAssetManager_open(manager, meshMatLib.c_str(), AASSET_MODE_BUFFER);
+	if (!assetMtl)
+	{
+		womalog("FATAL ERROR: %s %s() %d\n", __FILE__, __FUNCTION__, __LINE__);
+		return FALSE;
+	}
+
+	const char* bufferMtl = (const char*)AAsset_getBuffer(assetMtl);
+	size = AAsset_getLength(assetMtl);
+
+	std::istringstream fileMtl(std::string(bufferMtl, size));
+#else
 	IFSTREAM fileMtl((TCHAR*)meshMatLib.c_str());
+#endif
 
 	//std::wstring lastStringRead;
 	//bool SKIP_MATERIALS = false;
@@ -617,7 +690,7 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 		SurfaceMaterial tempMat;
 		obj3d.material.push_back(tempMat);
 
-		strcpy_s(obj3d.material[0].matName, "none");
+		strcpy(obj3d.material[0].matName, "none");
 
 		obj3d.material[0].hasTexture = false;
 		obj3d.material[0].texArrayIndex = 0;
@@ -646,6 +719,7 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 		obj3d.material[0].hasTexture = true;
 
 		//SKIP_MATERIALS = true;
+		matCount = (int)obj3d.material.size();	//total materials
 		goto SKIP;
 	}
 
@@ -662,11 +736,11 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 	//fileMtl.open(fullname.c_str());
 #endif
 
-	int matCount = (int)obj3d.material.size();	//total materials
+	matCount = (int)obj3d.material.size();	//total materials
 
 	//kdset - If our diffuse color was not set, we can use the ambient color (which is usually the same)
 	//If the diffuse color WAS set, then we don't need to set our diffuse color to ambient
-	bool kdset = false;
+	
 
 	if (fileMtl) //if ((fileMtl) && (!SKIP_MATERIALS))
 	{
@@ -826,12 +900,13 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 									//if the texture is not already loaded, load it now
 									if(!alreadyLoaded)
 									{
-										ID3D11ShaderResourceView* tempMeshSRV = NULL;
+										/* ID3D11ShaderResourceView* */ void* tempMeshSRV = NULL;
 										fileNamePath = MathLibPath + fileNamePath;	// TO Support TEMP:
 										STRING pathtoengine = TEXT("../");
 										if (fileNamePath.substr(0, 3) != pathtoengine)
 											fileNamePath = WOMA::LoadFile ((TCHAR*)fileNamePath.c_str());
 										
+										// DX_ENGINE_LEVEL < 34
 										obj3d.material[matCount - 1].texArrayIndex = (int)obj3d.textureNameArray.size();  //matCount - 1;
 										obj3d.material[matCount - 1].hasTexture = true;
 										obj3d.textureNameArray.push_back(fileNamePath.c_str());
@@ -877,13 +952,12 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
                                 STRING pathtoengine = TEXT("../");
                                 if (fileNamePath.substr(0, 3) != pathtoengine)
                                     fileNamePath = WOMA::LoadFile((TCHAR*)fileNamePath.c_str());
-                                //fileNamePath = WOMA::LoadFile((TCHAR*) fileNamePath.c_str());
-                                hr = S_OK;
 
-                                ID3D11ShaderResourceView* tempMeshSRV=NULL;
+                                hr = S_OK;
 
                             #if !defined(STANDALONE)
 							  #if defined DX11 || defined DX9
+							  ID3D11ShaderResourceView* tempMeshSRV = NULL;
 							  if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9) 
 							  {
 								//[TEMMPLATE] LOAD TEXTURE DX11:
@@ -949,7 +1023,7 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 									if(checkChar == ' ')
 									{
 										//New material, set its defaults
-										SurfaceMaterial tempMat = { 0 };
+										SurfaceMaterial tempMat = { };
 										obj3d.material.push_back(tempMat);
 
 										#ifdef UNICODE
@@ -1007,75 +1081,31 @@ bool ModelClass::LoadOBJ(void* ctx, void* dxmodelClass, SHADER_TYPE shader_type,
 		STRING message = TEXT("Could not open: ");
 		message += meshMatLib;
 
+		womalog("ERROR: %s\n", message.c_str());
+		womalog("FATAL ERROR: %s %s() %d\n", __FILE__, __FUNCTION__, __LINE__);
 		return false;
 	}
 
 SKIP:
-	fileMtl.close();
-	if (WOMA::game_state == GAME_STOP)
-		return false; // Stop the loading immediately
+#if defined ANDROID_PLATFORM
+    AAsset_close(assetMtl);
+#else
+    fileMtl.close();
+#endif
 
-	((DXmodelClass*)dxmodelClass)->m_instanceCount = instanceCount;
+	if (WOMA::game_state == GAME_STOP)
+	{
+		womalog("WOMA::game_state == GAME_STOP: %s %s() %d\n", __FILE__, __FUNCTION__, __LINE__);
+		return false; // Stop the loading immediately
+	}
+
+	dxmodelClass->m_instanceCount = instanceCount;
 
 	return true;
 }
 
-void ModelClass::CalculateTangentBinormal(ModelNormalBumpVertexType vertex1, ModelNormalBumpVertexType vertex2, ModelNormalBumpVertexType vertex3, VectorType& tangent, VectorType& binormal)
-{
-	float vector1[3], vector2[3];
-	float tuVector[2], tvVector[2];
-	float den;
-	float length;
-
-	// Calculate the two vectors for this face.
-	vector1[0] = vertex2.x - vertex1.x;
-	vector1[1] = vertex2.y - vertex1.y;
-	vector1[2] = vertex2.z - vertex1.z;
-
-	vector2[0] = vertex3.x - vertex1.x;
-	vector2[1] = vertex3.y - vertex1.y;
-	vector2[2] = vertex3.z - vertex1.z;
-
-	// Calculate the tu and tv texture space vectors.
-	tuVector[0] = vertex2.tu - vertex1.tu;
-	tvVector[0] = vertex2.tv - vertex1.tv;
-
-	tuVector[1] = vertex3.tu - vertex1.tu;
-	tvVector[1] = vertex3.tv - vertex1.tv;
-
-	// Calculate the denominator of the tangent/binormal equation.
-	den = 1.0f / (tuVector[0] * tvVector[1] - tuVector[1] * tvVector[0]);
-
-	// Calculate the cross products and multiply by the coefficient to get the tangent and binormal.
-	tangent.x = (tvVector[1] * vector1[0] - tvVector[0] * vector2[0]) * den;
-	tangent.y = (tvVector[1] * vector1[1] - tvVector[0] * vector2[1]) * den;
-	tangent.z = (tvVector[1] * vector1[2] - tvVector[0] * vector2[2]) * den;
-
-	binormal.x = (tuVector[0] * vector2[0] - tuVector[1] * vector1[0]) * den;
-	binormal.y = (tuVector[0] * vector2[1] - tuVector[1] * vector1[1]) * den;
-	binormal.z = (tuVector[0] * vector2[2] - tuVector[1] * vector1[2]) * den;
-
-	// Calculate the length of this normal.
-	length = sqrt((tangent.x * tangent.x) + (tangent.y * tangent.y) + (tangent.z * tangent.z));
-
-	// Normalize the normal and then store it
-	tangent.x = tangent.x / length;
-	tangent.y = tangent.y / length;
-	tangent.z = tangent.z / length;
-
-	// Calculate the length of this normal.
-	length = sqrt((binormal.x * binormal.x) + (binormal.y * binormal.y) + (binormal.z * binormal.z));
-
-	// Normalize the normal and then store it
-	binormal.x = binormal.x / length;
-	binormal.y = binormal.y / length;
-	binormal.z = binormal.z / length;
-
-	return;
-}
-
 // Create: DXmodelClass based on obj3D (an advanced model mesh)
-bool ModelClass::CreateObject(	void* pContext, void* XmodelClass, TCHAR* objectName, 
+bool ModelClass::CreateObject(	void* pContext, VirtualModelClass* XmodelClass, TCHAR* objectName,
 								void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow, bool renderShadow)
 {
 	// Make Sure that: "meshSubsets" size are equal to "meshMaterials" size
@@ -1118,13 +1148,7 @@ bool ModelClass::CreateObject(	void* pContext, void* XmodelClass, TCHAR* objectN
 	////////////////////////////////////////////////////////////////////
 	//MATERIALS DONE!
 	////////////////////////////////////////////////////////////////////
-	//Move data to advanced model types:
-	if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
-		((DXmodelClass*)XmodelClass)->obj3d = obj3d;
-    #if (defined OPENGL3 || defined OPENGL40) 
-	else
-		((GLmodelClass*)XmodelClass)->obj3d = obj3d;
-	#endif
+	XmodelClass->obj3d = obj3d; // std::move(obj3d);
 
 	///////////////////////// COMPUTE NORMALS //////////////////////////
 	// If computeNormals was set to true then we will create our own
@@ -1148,7 +1172,7 @@ bool ModelClass::CreateObject(	void* pContext, void* XmodelClass, TCHAR* objectN
 					tempVert.tv = obj3d.vertTexCoord[obj3d.vertTCIndex[j]].y;
 
 #if defined CHECK_OBJ_COLISION
-                    ((DXmodelClass*)XmodelClass)->bottleVertPosArray.push_back(XMFLOAT3(tempVert.x, tempVert.y, tempVert.z));
+                    XmodelClass->bottleVertPosArray.push_back(XMFLOAT3(tempVert.x, tempVert.y, tempVert.z));
 #endif
 					modelTextureVertex.push_back(tempVert);
 				}
@@ -1156,12 +1180,27 @@ bool ModelClass::CreateObject(	void* pContext, void* XmodelClass, TCHAR* objectN
 				if (shader_type == 0)
 					shader_type = SHADER_TEXTURE;
 
-				if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
-                    ((DXmodelClass*)XmodelClass)->LoadTexture((ID3D11DeviceContext*)pContext, (TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, &modelTextureVertex, &obj3d.indices32, 0);
-                #if (defined OPENGL3 || defined OPENGL40) 
-				else
+				switch (WOMA::AppSettings->DRIVER)
+				{
+#if defined DX_ENGINE
+				default:
+					((DXmodelClass*)XmodelClass)->LoadTexture(pContext, (TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, &modelTextureVertex, &obj3d.indices32, 0);
+					break;
+#endif
+
+#if defined VULKAN
+				case DRIVER_VULKAN:
+					((vkModelClass*)XmodelClass)->LoadTexture(pContext, (TCHAR*)filename.c_str(), g_driver, shader_type, &obj3d.textureNameArray, &modelTextureVertex, &obj3d.indices32, 0);
+					break;
+#endif
+
+#if defined OPENGL3 || defined OPENGL40
+				case DRIVER_GL3:
 					((GLmodelClass*)XmodelClass)->LoadTexture(pContext, (TCHAR*)filename.c_str(), g_driver, /*shader_type*/ SHADER_TEXTURE, &obj3d.textureNameArray, &modelTextureVertex, &obj3d.indices32);
-				#endif
+					break;
+#endif
+				}
+
 			}
 			else
 			// SHADER_COLOR - 30
@@ -1181,7 +1220,7 @@ bool ModelClass::CreateObject(	void* pContext, void* XmodelClass, TCHAR* objectN
 						tempVert.z = obj3d.vertPos[obj3d.vertPosIndex[obj3d.indices32[indexStart + j]]].z;
 
 #if defined CHECK_OBJ_COLISION
-                        ((DXmodelClass*)XmodelClass)->bottleVertPosArray.push_back(XMFLOAT3(tempVert.x, tempVert.y, tempVert.z));
+                        XmodelClass->bottleVertPosArray.push_back(XMFLOAT3(tempVert.x, tempVert.y, tempVert.z));
 #endif
 
 						//Color:
@@ -1197,18 +1236,54 @@ bool ModelClass::CreateObject(	void* pContext, void* XmodelClass, TCHAR* objectN
 				if (shader_type == 0)
 					shader_type = SHADER_COLOR;
 
-				if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
-                    ((DXmodelClass*)XmodelClass)->LoadColor((ID3D11DeviceContext*)pContext, (TCHAR*)filename.c_str(), g_driver, shader_type, &modelColorVertex, &obj3d.indices32, 0);
-            #if (defined OPENGL3 || defined OPENGL40) 
-				else
+				switch (WOMA::AppSettings->DRIVER)
+				{
+#if defined DX_ENGINE
+				default:
+					((DXmodelClass*)XmodelClass)->LoadColor(pContext, (TCHAR*)filename.c_str(), g_driver, shader_type, &modelColorVertex, &obj3d.indices32, 0);
+					break;
+#endif
+
+#if defined VULKAN
+				case DRIVER_VULKAN:
+					((vkModelClass*)XmodelClass)->LoadColor(pContext, (TCHAR*)filename.c_str(), g_driver, shader_type, &modelColorVertex, &obj3d.indices32, 0);
+					break;
+#endif
+
+#if defined OPENGL3 || defined OPENGL40
+				case DRIVER_GL3:
 					((GLmodelClass*)XmodelClass)->LoadColor(pContext, (TCHAR*)filename.c_str(), g_driver, /*shader_type*/ SHADER_COLOR, &modelColorVertex, &obj3d.indices32);
-			#endif
+					break;
+#endif
+				}
 			}
 	// VERTICES/INDEXES DONE
 
-#if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION TUTORIAL_CHAP >= 96 && false
+#if defined CHECK_OBJ_COLISION
     // Get bounding volume information from "bottleVertPosArray":
     ((DXmodelClass*)XmodelClass)->CreateBoundingVolumes( ((DXmodelClass*)XmodelClass)->bottleVertPosArray );				//Output CenterOffset
+#endif
+
+#ifdef VULKAN
+	//
+	// Vulkan Level 31+
+	//
+	// Descriptor sets cannot be finalized during OBJ loading because the shader
+	// does not exist yet and meshSubsets is only known after CreateObject()
+	// finishes constructing the model.
+	//
+	// Levels 21-30 create descriptors during shader creation.
+	// Levels 31+ finalize them here using the final subset count.
+	//
+	if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+	{
+		auto* vkModel = static_cast<vkModelClass*>(XmodelClass);
+		if (vkModel->m_Shader)
+		{
+			const UINT subsetCount = vkModel->m_Shader->singleDescriptorSubset ? 1 : obj3d.meshSubsets;
+			vkModel->m_Shader->AllocateSubsetDescriptors(subsetCount, ((vkClass*)m_Driver)->m_device);
+		}
+	}
 #endif
 
 	return true;

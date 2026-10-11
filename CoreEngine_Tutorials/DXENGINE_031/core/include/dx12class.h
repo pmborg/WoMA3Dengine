@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------------------------------------
 // Filename: DX12Class.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
@@ -121,7 +121,6 @@ namespace DirectX {
 class DX12Class : public WomaDriverClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234525217;
 	DX12Class();
 	~DX12Class();
 	void Shutdown2D();
@@ -132,7 +131,7 @@ public:
 	ComPtr<IDXGIAdapter3> DXGIadapter3 = NULL;
 	void DX12Class::QueryVideoMemoryInfo(UINT adapterIndex, ComPtr<IDXGIAdapter1> adapter);
 	//#endif
-	void GetHardwareAdapter(IDXGIFactory4* pFactory, IDXGIAdapter1** ppAdapter, D3D_FEATURE_LEVEL feacture_level);
+	void GetHardwareAdapter(IDXGIFactory4* pFactory, IDXGIAdapter1** ppAdapter, D3D_FEATURE_LEVEL featureLevel, bool requestHighPerformanceAdapter = true);
 	BOOL CheckAPIdriver (int USE_THIS_ADAPTER);
 
 	void SelectDepthFormat(UINT depthBits, BOOL fullscreen);
@@ -143,6 +142,7 @@ public:
 	bool Resize (UINT USE_MONITOR, int screenWidth, int screenHeight,float screenNear, float screenDepth, BOOL fullscreen, UINT depthBits);
 	void SetCamera2D();
 	void BeginScene(UINT monitorWindow);
+	void OnDeviceLost();
 	void EndScene(UINT monitorWindow);
 	void ClearDepthBuffer(void* pContext);
 
@@ -155,7 +155,7 @@ public:
 	void SetBackBufferRenderTarget();
 
 	void Initialize2Dand3DCamera();
-	bool Initialize(float* clearColor);	//bool Initialize();
+	bool Initialize(float* clearColor, void* pContext=NULL);
 	void FinalizeInitialization();
 
 	XMMATRIX* GetViewMatrix( UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix);
@@ -180,6 +180,8 @@ public:
 	void addText(int Xpos, int Ypos, TCHAR* text, float R, float G, float B);
 	void RenderDriverText(void* pContext);
 	bool InitD2DScreenTexture();
+
+	void* GetDeviceContext();
 
 #if defined ALLOW_PRINT_SCREEN_SAVE_PNG
 	ImageLoaderClass* CaptureScreenShot(int screenWidth, int screenHeight);

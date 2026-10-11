@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: WomaSphere.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
 #if defined USE_SPHERE
@@ -25,11 +25,20 @@
 #include "Math3D.h"
 #include "mem_leak.h"
 #include "womadriverclass.h"	//woma
+
+#if (defined OPENGL3 || defined OPENGL4)
 #include "GLmodelClass.h"
+#endif
+
 #if (defined DX_ENGINE)
 #include "dxWinSystemClass.h"
 #include "DXmodelClass.h"
 #endif
+
+#if defined VULKAN
+#include "vkModelClass.h"
+#endif
+
 #if defined ANDROID_PLATFORM
 #include "math.h"
 #endif
@@ -47,9 +56,8 @@ void ApplicationClass::initSphere1(void* pContext, float SPHERE_SIZE)
 	//DAY:
 	Textures.push_back(SKY_DOME_DAY_TEXTURE);
 
-	CREATE_MODEL_IF_NOT_EXCEPTION(m_SphereModel1, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);
+	CREATE_MODEL_WITH_TOPOLOGY_IF_NOT_EXCEPTION(m_SphereModel1, I_AM_3D, TRIANGLESTRIP, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);
 	ASSERT(m_SphereModel1->LoadLight(pContext, TEXT("m_SphereModel"), m_Driver, SHADER_TEXTURE_LIGHT, &Textures, &Sphere_vertexdata, &Sphere_indexdata, 0));
-	m_SphereModel1->PrimitiveTopology = TRIANGLESTRIP;
 }
 void ApplicationClass::initSphere2(void* pContext, float SPHERE_SIZE)
 {
@@ -61,11 +69,8 @@ void ApplicationClass::initSphere2(void* pContext, float SPHERE_SIZE)
 	//NIGHT:
 	Textures.push_back(SKY_DOME_NIGHT_TEXTURE);
 
-	CREATE_MODEL_IF_NOT_EXCEPTION(m_SphereModel2, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);
-
-	//m_SphereModel2->ModelHASlight = false; // Before Load: Dont Calculate light/shadow for Sky-Dome! 
+	CREATE_MODEL_WITH_TOPOLOGY_IF_NOT_EXCEPTION(m_SphereModel2, I_AM_3D, TRIANGLESTRIP, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);
 	ASSERT(m_SphereModel2->LoadLight(pContext, TEXT("m_SphereModel2"), m_Driver, SHADER_TEXTURE_LIGHT, &Textures, &Sphere_vertexdata, &Sphere_indexdata, 0));
-	m_SphereModel2->PrimitiveTopology = TRIANGLESTRIP;
 }
 
 #if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28 && defined USE_SKYSPHERE //MAIN_RENDER_SKY
@@ -81,6 +86,7 @@ void ApplicationClass::initSky(void* pContext, float SPHERE_SIZE)
 
 #if defined MAIN_RENDER_MAIN_XML_OBJ && !defined USE_DEMO99
 	TCHAR wskyDayTexture[MAX_STR_LEN] = { 0 }; atow(wskyDayTexture, get_world_skyDayTexture().c_str(), MAX_STR_LEN);
+	ASSERT_DEBUG(strlen(wskyDayTexture) > 0);
 	Textures.push_back(wskyDayTexture);
 
 #else
@@ -94,8 +100,8 @@ void ApplicationClass::initSky(void* pContext, float SPHERE_SIZE)
 
 	SHADER_TYPE shadertype = SHADER_TEXTURE_LIGHT;
 	
-	ASSERT(m_SkyModel->LoadLight(pContext, TEXT("m_SkyModel"), m_Driver, shadertype, &Textures, &Sphere_vertexdata, &Sphere_indexdata, 0));
 	m_SkyModel->PrimitiveTopology = TRIANGLESTRIP;
+	ASSERT(m_SkyModel->LoadLight(pContext, TEXT("m_SkyModel"), m_Driver, shadertype, &Textures, &Sphere_vertexdata, &Sphere_indexdata, 0));
 }
 #endif
 
@@ -157,7 +163,7 @@ void ApplicationClass::CreateSphereModel(UINT SPHERE_SIZE, int Sphere_gridpoints
 		ShaderVertices.ny = -1 * vertices[i].y;
 		ShaderVertices.nz = -1 * vertices[i].z;
 
-		if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12 || WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
 			ShaderVertices.tu = 1 - vertices[i].tu/2;
 		else
 			ShaderVertices.tu = 1 - vertices[i].tu;

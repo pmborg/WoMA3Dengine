@@ -731,6 +731,9 @@
     #endif
 
     #if DX_ENGINE_LEVEL >= 31
+		#undef OPENGL3
+		#undef OPENGL40
+
         #define RENDER_MULTIPLE_TEXTURES
 		#define MAX_VULKAN_TEXTURES_MODEL 24 // Per-model maximum Vulkan texture slots (texArrayIndex 0..23).
     #endif

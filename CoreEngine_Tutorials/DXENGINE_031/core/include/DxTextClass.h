@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: DxTextClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
@@ -47,23 +47,20 @@ namespace DirectX {
 class DxTextClass : public VirtualTextClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234525217;
 	DxTextClass();
 	~DxTextClass();
 
 	void Shutdown();
-	bool Initialize(void* g_driver, ID3D11DeviceContext* pContext);
+	bool Initialize(void* g_driver, void* pContext);
 	bool InitializeTexture(void* Driver);
 
 	bool UpdateSentence(SentenceType*, TCHAR*, int, int, float, float, float);
 	bool InitializeSentence(SentenceType**, int);
 	
 	void ReleaseSentence(SentenceType**);
-	void RenderSentence(SentenceType*);
+	void RenderSentence(void* pContext, SentenceType*);
 
-//#if defined DX_ENGINE
 	DXshaderClass* m_spriteShader = NULL;
-//#endif
 
 #if defined DX11 || defined DX9
 	DirectX::DX11Class* m_driver11 = NULL;

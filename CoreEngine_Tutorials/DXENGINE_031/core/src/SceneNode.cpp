@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: SceneNode.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
 
@@ -30,7 +30,7 @@ SceneNode::SceneNode(float posX, float posY, float posZ, float boundingSphere)
 	positionZ = posZ;
 	width = boundingSphere;
 
-	#if _DEBUG
+	#if defined _DEBUG
 	//womalog("SceneManager::Node: X,Y,Z - DIM: %d %d %d - %d\n", (int)positionX, (int)positionY, (int)positionZ, (int)width);
 	#endif
 }

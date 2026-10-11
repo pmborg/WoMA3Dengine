@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: QuadTree.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
 
@@ -25,7 +25,10 @@
 #include "QuadTree.h"
 #include "SceneManager.h"
 #include "xml_loader.h"
+
+#if defined WINDOWS_PLATFORM
 #include "DXmodelClass.h"
+#endif
 
 QuadTree::QuadTree() 
 {
@@ -95,7 +98,7 @@ void QuadTree::CreateTreeNode(NodeType* node, float positionX, float positionZ, 
 	node->positionZ = positionZ;
 	node->width = width;
 
-#if true && defined _DEBUG
+#if false && defined _DEBUG
 	womalog("SceneManager::QuadTree::CreateTreeNode(): X: %f Y: %f width: %f\n", positionX, positionZ, width);
 #endif
 
@@ -156,14 +159,15 @@ void QuadTree::AddSceneNode(NodeType* quadNode, SceneNode* node)
 #endif
 }
 
-//void SceneManager::Render()
+//INVOKED BY: void SceneManager::Render()
 void QuadTree::RenderNode(NodeType* node, UINT level)
 {
 #if !defined USE_MAP_EDITOR
 	// Check to see if the node can be viewed, height doesn't matter in a quad tree.
-	//bool result = _frustum->CheckCube(node->positionX, 0.0f, node->positionZ, (node->width/2)*1.4142135623730950488016887242097f);   // More accurate but slower
-	bool result = _frustum->CheckSphere(node->positionX, 0.0f, node->positionZ, (node->width / 2) * 1.4142135623730950488016887242097f);   // Faster
-	if (!result) return;
+	//bool result = _frustum->CheckCube(node->positionX, 0.0f, node->positionZ, (node->width/2)*1.4142135623730950488016887242097f);		// More accurate but slower
+	bool result = _frustum->CheckSphere(node->positionX, 0.0f, node->positionZ, (node->width / 2) * 1.4142135623730950488016887242097f);	// Faster
+	if (!result) 
+		return;
 #endif
 
 	// If it can be seen then check all four child nodes to see if they can also be seen.
@@ -190,28 +194,28 @@ void QuadTree::RenderNode(NodeType* node, UINT level)
         
          UINT modelID = model->m_ObjId;
 
-         if (_xml_loader->theWorldXML[modelID].depend == -1)
-         {
-             _xml_loader->theWorldXML[modelID].render = true;     
-         }else
+		 _xml_loader->theWorldXML[modelID].render = true;
+
+         if (_xml_loader->theWorldXML[modelID].depend != -1)
 		 {
-#if !defined USE_MAP_EDITOR
+	#if !defined USE_MAP_EDITOR
             float positionX, positionY, positionZ;
             positionX = _xml_loader->theWorldXML[modelID].posX;
             positionY = _xml_loader->theWorldXML[modelID].translateY;
             positionZ = _xml_loader->theWorldXML[modelID].posZ;
-			if ((((DXmodelClass*)model)->m_instanceCount == 0) && !_frustum->CheckSphere(positionX, positionY, positionZ, MAX(1, model->boundingSphere) * 2))
+
+            if (!_frustum->CheckSphere(positionX, positionY, positionZ, MAX (1, model->boundingSphere)))
 			{
                 _xml_loader->theWorldXML[modelID].render = false;  
                 continue;
-            } else
-#endif
-               _xml_loader->theWorldXML[modelID].render = true;    
+            }
+	#endif
         }
 
 		{
-		// Add model on list to be rendered later.
+
         WOMA::sceneManager->visibleModelList.push_back(model);
+
 
 #ifdef _DEBUG
 		totalVertexRendered += node->sceneNodes[i]->nodeState.model->m_vertexCount;
@@ -220,4 +224,5 @@ void QuadTree::RenderNode(NodeType* node, UINT level)
 
 	}
 }
+
 #endif
