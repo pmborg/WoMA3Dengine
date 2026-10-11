@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: ApplicationClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,17 +16,28 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Control all Application main cycles.
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
+#pragma warning(push)
+#pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
+
 #include "OSengine.h"
 #include "main.h"
 #include "ApplicationClass.h"
 #include "OSmain_dir.h"
 #include "mem_leak.h"
-#if TUTORIAL_CHAP >= 60 // BILLBOARD
-#include "BillClass.h"				//[ch60]
+
+
+#if defined DX_ENGINE
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 || defined USE_DX_DRIVER_FONT
+DXcameraClass* DX_Camera = NULL;
 #endif
+#endif
+
+#if defined USE_SCENE_MANAGER
+#include "SceneManager.h"
+#include "xml_loader.h"
 
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
 #include "Rapplicationclass.h"
@@ -35,12 +46,16 @@ extern RApplicationClass* r_Application;
 #if defined LINUX_PLATFORM
 extern MyWin Win;
 #endif
-#pragma warning(push)
-#pragma warning(disable : 4002) // warning C4002: too many arguments for function-like macro invocation 'CREATE_MODELGL3_IF_NOT_EXCEPTION'
 
-#if defined USE_SCENE_MANAGER
-#include "SceneManager.h"
-#include "xml_loader.h"
+#if defined (SCENE_COMPOUND)
+#include "compound.h"
+void CompoundReadFunction(WomaDriverClass* Driver);
+#endif
+
+#include <inttypes.h>
+
+
+
 
 namespace WOMA
 {
@@ -48,14 +63,8 @@ SceneManager* sceneManager=NULL;
 }
 #endif
 
-#if defined (SCENE_COMPOUND) //TUTORIAL_CHAP >= 55
-#include "compound.h"
-void CompoundReadFunction(WomaDriverClass* Driver);
-#endif
 
-#include <inttypes.h>
-
-#if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
+#if defined USE_DIRECT_INPUT
 UINT g_NetID = 0;
 #endif
 
@@ -68,7 +77,7 @@ float fadeIntro=1;
 ApplicationClass::ApplicationClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525217;
+
 
 	// ---------------------------------------------------------------------
 	// private:
@@ -83,9 +92,8 @@ ApplicationClass::ApplicationClass()
 	#endif
 #else
 		RENDER_PAGE = (int)CORE_ENGINE_LEVEL;
-  #if _DEBUG
+
 	womalog("RENDER_PAGE: %d\n", RENDER_PAGE);
-  #endif
 #endif
 
 #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
@@ -138,29 +146,13 @@ void ApplicationClass::Shutdown()
 	SAFE_DELETE(m_FontV2Shader);
 #endif
 
-	//3D:
-
 
 #if defined USE_CUBE // Cubes
-#if (defined DX_ENGINE)
-	if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
-	{
-		SAFE_SHUTDOWN_MODELDX(m_cube1Model);
-		SAFE_SHUTDOWN_MODELDX(m_cube2Model);
-		SAFE_SHUTDOWN_MODELDX(m_cube3Model);
-	}
+	SAFE_SHUTDOWN_MODEL(m_cube1Model);
+	SAFE_SHUTDOWN_MODEL(m_cube2Model);
+	SAFE_SHUTDOWN_MODEL(m_cube3Model);
 #endif
 
-#if (defined OPENGL3 || defined OPENGL4)
-	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
-	{
-		SAFE_SHUTDOWN_MODELGL3(m_cube1Model);
-		SAFE_SHUTDOWN_MODELGL3(m_cube2Model);
-		SAFE_SHUTDOWN_MODELGL3(m_cube3Model);
-
-	}
-#endif
-#endif
 
 	//2D:
 #if defined INTRO_DEMO || defined USE_VIEW2D_SPRITES
@@ -179,7 +171,7 @@ void ApplicationClass::Shutdown()
 	//SAFE_DELETE (mainTerrain);
 #endif
 
-#if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
+#if defined USE_DIRECT_INPUT
 	for (UINT i = 0; i <m_Position.size(); i++) {
 		SAFE_DELETE(m_Position[i]);
 	}
@@ -222,15 +214,30 @@ void ApplicationClass::WOMA_APPLICATION_Shutdown()
 #endif
 
 #if defined MAIN_RENDER_LIGHT_RAY
-#if (defined DX_ENGINE)
-	if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
+
+#if defined WINDOWS_PLATFORM
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX11 ||
+		WOMA::AppSettings->DRIVER == DRIVER_DX9 ||
+		WOMA::AppSettings->DRIVER == DRIVER_DX12)
+	{
 		SAFE_SHUTDOWN_MODELDX(m_lightRayModel);
+	}
 #endif
 
-#if (defined OPENGL3 || defined OPENGL4)
+#if defined OPENGL3 || defined OPENGL4
 	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
+	{
 		SAFE_SHUTDOWN_MODELGL3(m_lightRayModel);
+	}
 #endif
+
+#if defined VULKAN
+	if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+	{
+		SAFE_SHUTDOWN_MODELVK(m_lightRayModel);
+	}
+#endif
+
 #endif
 
 }
@@ -239,6 +246,9 @@ void ApplicationClass::WOMA_APPLICATION_Shutdown()
 bool ApplicationClass::WOMA_APPLICATION_InitGUI()
 //-----------------------------------------------------------------------------------------
 {
+	if (WOMA::game_state >= GAME_STOP)
+		return true;
+
 	womalog("WOMA_APPLICATION_InitGUI()\n");
 
 	#ifdef LINUX_PLATFORM
@@ -258,19 +268,19 @@ bool ApplicationClass::WOMA_APPLICATION_InitGUI()
 	#if CORE_ENGINE_LEVEL >= 4 && defined WINDOWS_PLATFORM
 	if (SystemHandle->LandScape)
 	{
-		SystemHandle->m_scaleX = MIN(1, WOMA::AppSettings->WINDOW_WIDTH / 1920.0f);
-		SystemHandle->m_scaleY = MIN(1, WOMA::AppSettings->WINDOW_HEIGHT / 1080.0f);
+		SystemHandle->m_scaleX = MAX(1, WOMA::AppSettings->WINDOW_WIDTH  / 1920.0f);
+		SystemHandle->m_scaleY = MAX(1, WOMA::AppSettings->WINDOW_HEIGHT / 1080.0f);
 	}
 	else
 	{
-		SystemHandle->m_scaleX = MIN(1, WOMA::AppSettings->WINDOW_HEIGHT / 1080.0f);
-		SystemHandle->m_scaleY = MIN(1, WOMA::AppSettings->WINDOW_WIDTH / 1920.0f);
+		SystemHandle->m_scaleX = MAX(1, WOMA::AppSettings->WINDOW_HEIGHT / 1080.0f);
+		SystemHandle->m_scaleY = MAX(1, WOMA::AppSettings->WINDOW_WIDTH / 1920.0f);
 	}
 
-	if (SystemHandle->m_scaleY > 0.9f)
-		SystemHandle->m_scaleY = 1;
+	//if (SystemHandle->m_scaleY > 0.9f)
+	//	SystemHandle->m_scaleY = 1;
 
-	SystemHandle->fontSizeX = MIN(MIN_WIN32_FONT_X, 48 * SystemHandle->m_scaleX);	//To use on win32 window not DX
+	SystemHandle->fontSizeX = MIN(MIN_WIN32_FONT_X, 48 * SystemHandle->m_scaleX); //To use on win32 window not DX
 	SystemHandle->fontSizeY = MIN(MIN_WIN32_FONT_Y, 40 * SystemHandle->m_scaleY); //To use on win32 window not DX
 	#endif
 

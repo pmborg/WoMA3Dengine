@@ -1,9 +1,9 @@
 ﻿// --------------------------------------------------------------------------------------------
 // Filename: SystemClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Define APIs for systemclass.cpp which is the common OS API
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
@@ -24,7 +24,7 @@
 #pragma warning( disable : 4477 )
 #pragma warning( disable : 4838 )
 
-#include "SystemClass.h"
+//#include "SystemClass.h"
 #include "OSengine.h" //#include "WinSystemClass.h"
 #include "default_settings_xml.h"
 #include "woma_macros.h"
@@ -36,12 +36,19 @@
 #include "language.h"
 #endif
 
+namespace WOMA
+{
+	std::vector<WOMA::WindowDataContainer> windowsToRenderArray;// All Monitors, that will be used to render, 1 for example.
+	std::vector<WOMA::WindowDataContainer> allWindowsHwArray;	// All hardware Monitors available on system, 3 for example.
+}
+
 #if CORE_ENGINE_LEVEL >= 4 && defined USE_SYSTEM_CHECK
 #include "systemManager.h"
 #endif
 
 #if CORE_ENGINE_LEVEL >= 5 && defined WINDOWS_PLATFORM && defined USE_TINYXML_LOADER
 #include "xml_loader.h"
+#include "timerClass.h"
 #endif
 
 #if CORE_ENGINE_LEVEL >= 6 && defined USE_TIMER
@@ -53,6 +60,10 @@
 #define GET_VERSION(VERSION) GET_NAME(VERSION)
 
 //----------------------------------------------------------------------------
+
+#if defined _DEBUG || defined LINUX_PLATFORM || defined ANDROID_PLATFORM
+UINT vkShaderClass_RenderShader_Calls = 0;
+#endif
 
 //----------------------------------------------------------------------------
 SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
@@ -148,7 +159,7 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 	#endif
 #endif
 		,
-#if defined WINDOWS_PLATFORM
+#if false //defined WINDOWS_PLATFORM
 		// https://en.wikipedia.org/wiki/Ver_(command)
 		//VER_PRODUCTBUILD
 		Wbuffer
@@ -390,7 +401,7 @@ void SystemClass::InitializeSystemScreenF1(int x, int y)
 
 	for (UINT i = 0; i < systemDefinitions.cpuFeactures.size(); i++)
 	{
-		if (i == 10)
+		if (i == 11) //after 11 change column: 2
 		{
 			text.y = initial_y;
 			text.x = HALF;
@@ -400,7 +411,7 @@ void SystemClass::InitializeSystemScreenF1(int x, int y)
 		TextToPrint[0].push_back(text);
 	}
 
-#if defined DX_ENGINE
+#if defined WINDOWS_PLATFORM//DX_ENGINE
 	// GPU:
 	text.x = x;
 	for (UINT i = 0; i < systemDefinitions.GPUINFO.size(); i++)
@@ -442,7 +453,7 @@ void SystemClass::InitializeSystemScreenF1(int x, int y)
 
 
 //-----------------------------------------------------------------------------
-void SystemClass::refreshTitle() // Run once per second.
+void SystemClass::refreshTitle() // Run once or 2 times per second. (RELEASE / DEBUG)
 {
 
 	StringCchPrintf(pstrFPS, 300, TEXT("%s"), WOMA::APP_FULLNAME);
@@ -450,90 +461,28 @@ void SystemClass::refreshTitle() // Run once per second.
 #if defined WINDOWS_PLATFORM && !defined ANDROID_PLATFORM
 #if defined(X64) // Set the new "Window Title"
 	PDWORD_PTR dwResult = 0;// In 64 Bits
-	for (int i = 0; i < SystemHandle->windowsArray.size(); i++)
+	for (int i = 0; i < WOMA::windowsToRenderArray.size(); i++)
 		if (ShouldDrawUI(i))
-			SendMessageTimeout(SystemHandle->windowsArray[i].hWnd, WM_SETTEXT, 0, (LPARAM)pstrFPS, SMTO_ABORTIFHUNG, 1000, dwResult);
+			SendMessageTimeout(WOMA::windowsToRenderArray[i].hWnd, WM_SETTEXT, 0, (LPARAM)pstrFPS, SMTO_ABORTIFHUNG, 1000, dwResult);
 #else
 	TCHAR		title[MAX_STR_LEN];
 	DWORD dwResult = 0;		// In 32 Bits
-	for (int i = 0; i < SystemHandle->windowsArray.size(); i++)
+	for (int i = 0; i < WOMA::windowsToRenderArray.size(); i++)
 		if (ShouldDrawUI(i)) 
-			SendMessageTimeout(SystemHandle->windowsArray[i].hWnd, WM_SETTEXT, 0, (LPARAM)pstrFPS, SMTO_ABORTIFHUNG, 1000, &dwResult);
+			SendMessageTimeout(WOMA::windowsToRenderArray[i].hWnd, WM_SETTEXT, 0, (LPARAM)pstrFPS, SMTO_ABORTIFHUNG, 1000, &dwResult);
 		else
 		{
 			StringCchPrintf(title, 300, TEXT("WOMA ENGINE - SCR: %d"), i);
-			SendMessageTimeout(SystemHandle->windowsArray[i].hWnd, WM_SETTEXT, 0, (LPARAM)title, SMTO_ABORTIFHUNG, 1000, &dwResult);
+			SendMessageTimeout(WOMA::windowsToRenderArray[i].hWnd, WM_SETTEXT, 0, (LPARAM)title, SMTO_ABORTIFHUNG, 1000, &dwResult);
 		}
 #endif
 #endif
 }
 
-#if defined USE_PROCESS_OS_KEYS //CORE_ENGINE_LEVEL >= 3
+#if defined USE_PROCESS_OS_KEYS && CORE_ENGINE_LEVEL >= 4
 	#ifndef DIK_ESCAPE					// Will be defined @ ENGINE_LEVEL >= 24
 	#define DIK_ESCAPE 0x01
 	#endif
-
-void SystemClass::CalculateCameraViewAndFrustum(void* pContext)
-{
-#if defined USE_WOMA_ENGINE_ONE_CBUFFER
-	womalogATfirstframe(TEXT("[DEBUG] BuildGlobalVPArray check: DX_ENGINE_LEVEL=%d  RenderPage=%u\n"), DX_ENGINE_LEVEL, RENDER_PAGE);
-#endif
-
-	// SET CAMERA (for this monitor): Prepare to Take a Shot: Generate the view matrix based on the camera's position.
-
-	// ----------------------------------------------------------------------------
-	// CONSTRUCT VIEW FRUSTUM (for visibility testing)
-	// ----------------------------------------------------------------------------
-#if defined USE_FRUSTUM
-	IF_RENDER_PAGE(RENDER_PAGE >= 30)
-	{
-	#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-	if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
-		m_Driver->frustum->ConstructFrustum(WOMA::AppSettings->SCREEN_DEPTH / 2.5f,
-			&((DX12Class*)m_Driver)->m_projectionMatrix,
-			&DXsystemHandle->m_Camera->m_viewMatrix);
-	#endif
-
-	#if defined DX11 || defined DX9
-	if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
-		m_Driver->frustum->ConstructFrustum(WOMA::AppSettings->SCREEN_DEPTH / 2.5f,
-			&((DX11Class*)m_Driver)->m_projectionMatrix,
-			&DXsystemHandle->m_Camera->m_viewMatrix);
-	#endif
-
-	#if (defined OPENGL3 || defined OPENGL4)
-	if (WOMA::AppSettings->DRIVER == DRIVER_GL3) {
-
-		mat4 glPrjMatrix = ((GLopenGLclass*)m_Driver)->m_projectionMatrix;
-		XMMATRIX m_projectionMatrix = XMMatrixSet
-		(
-			glPrjMatrix.m[0], glPrjMatrix.m[1], glPrjMatrix.m[2], glPrjMatrix.m[3],
-			glPrjMatrix.m[4], glPrjMatrix.m[5], glPrjMatrix.m[6], glPrjMatrix.m[7],
-			glPrjMatrix.m[8], glPrjMatrix.m[9], glPrjMatrix.m[10], glPrjMatrix.m[11],
-			glPrjMatrix.m[12], glPrjMatrix.m[13], glPrjMatrix.m[14], glPrjMatrix.m[15]
-		);
-
-		mat4 glvMatrix = ((GLopenGLclass*)m_Driver)->gl_Camera->m_viewMatrix;
-		XMMATRIX m_viewMatrix = XMMatrixSet
-		(
-			glvMatrix.m[0], glvMatrix.m[1], glvMatrix.m[2], glvMatrix.m[3],
-			glvMatrix.m[4], glvMatrix.m[5], glvMatrix.m[6], glvMatrix.m[7],
-			glvMatrix.m[8], glvMatrix.m[9], glvMatrix.m[10], glvMatrix.m[11],
-			glvMatrix.m[12], glvMatrix.m[13], glvMatrix.m[14], glvMatrix.m[15]
-		);
-
-		m_Driver->frustum->ConstructFrustum(WOMA::AppSettings->SCREEN_DEPTH / 2.5f,
-			&m_projectionMatrix,
-			&m_viewMatrix);
-	}
-	#endif
-	}
-#endif
-
-	// ----------------------------------------------------------------------------
-	// AFTER CAMERA CALCULATION – build global VP buffer, log matrices if needed
-	// ----------------------------------------------------------------------------
-}
 
 //-----------------------------------------------------------------------------------------
 void SystemClass::ProcessOS_Fx_Keys_Input() // This Function will be invoked several times per second
@@ -575,7 +524,7 @@ void SystemClass::ProcessOS_Fx_Keys_Input() // This Function will be invoked sev
 			SAFE_SHUTDOWN(SystemHandle->womaSetup);
 	#endif
 		RENDER_PAGE = 9;
-		WOMA::game_state = GAME_WEATHER_INFO; //match*
+		WOMA::previous_game_state = WOMA::game_state = GAME_WEATHER_INFO; //match*
 		OS_REDRAW_WINDOW;
 	}
 	first_time = false;
@@ -589,7 +538,7 @@ void SystemClass::ProcessOS_Fx_Keys_Input() // This Function will be invoked sev
 			SAFE_SHUTDOWN(SystemHandle->womaSetup);
 	#endif
 		RENDER_PAGE = 8;
-		WOMA::game_state = GAME_SHOW_POSITION; //match*
+		WOMA::previous_game_state = WOMA::game_state = GAME_SHOW_POSITION; //match*
 		OS_REDRAW_WINDOW;
 	}
 	first_time = false;
@@ -602,7 +551,7 @@ void SystemClass::ProcessOS_Fx_Keys_Input() // This Function will be invoked sev
 			SAFE_SHUTDOWN(SystemHandle->womaSetup);
 	#endif
 		RENDER_PAGE = 7;
-		WOMA::game_state = GAME_CELESTIAL_INFO; //match*
+		WOMA::previous_game_state = WOMA::game_state = GAME_CELESTIAL_INFO; //match*
 		OS_REDRAW_WINDOW;
 	}
 	first_time = false;
@@ -655,7 +604,7 @@ void SystemClass::ProcessOS_Fx_Keys_Input() // This Function will be invoked sev
 			SAFE_SHUTDOWN(SystemHandle->womaSetup);
 		if (OS_KEY_DOWN(VK_F5)) {
 			RENDER_PAGE = LEVEL;
-			WOMA::game_state = GAME_RUN;
+			WOMA::previous_game_state = WOMA::game_state = GAME_RUN;
 			OS_REDRAW_WINDOW;
 		}
 	}
@@ -682,9 +631,13 @@ bool SystemClass::SystemCheck()
 	// -------------------------------------------------------------------------------------------
 	WOMA::settings.Endian = WOMA::endian();
 	if (WOMA::settings.Endian == LITTLE_ENDIAN)
+	{
 		womalogauto(TEXT("The machine is Little ENDIAN\n"));	//8008, 8080, 8085, 8086, ...
+	}
 	else
+	{
 		womalogauto(TEXT("The machine is Big ENDIAN\n"));		//Motorola 68000
+	}
 
 	womalogauto(TEXT("\n"));
 
@@ -790,9 +743,20 @@ void SystemClass::Shutdown()
 	womalogauto((TCHAR*)TEXT("-------------------------------------------------------------------------------\n"));
 	womalogauto((TCHAR*)TEXT("SystemClass::Shutdown()\n"));
 	womalogauto((TCHAR*)TEXT("-------------------------------------------------------------------------------\n"));
+
+#if defined USE_DIRECT_INPUT
+	for (UINT i = 0; i < m_player.size(); i++)
+	{
+		SAFE_DELETE(((PlayerClass*)m_player[i]));
+	}
+	m_player.clear();
+#endif
+
 #if defined USE_PROCESS_OS_KEYS
 	SAFE_DELETE(m_OsInput);
 #endif
+
+
 
 	if (m_Application) {
 		m_Application->WOMA_APPLICATION_Shutdown();
@@ -806,7 +770,19 @@ void SystemClass::Shutdown()
 	SAFE_DELETE(systemManager);
 #endif
 
+#if defined DX_ENGINE
+	#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21
+	if (DX_Camera)
+	{
+		delete ((DXcameraClass*)DX_Camera);
+		DX_Camera = NULL;
+	}
+	#endif
+
+#endif
+
 }
+
 #if defined ANDROID_PLATFORM
 extern android_app* app;
 #endif
@@ -814,22 +790,33 @@ extern android_app* app;
 void SystemClass::FrameUpdate()
 {
 
-
-	#if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
+	#if defined USE_DIRECT_INPUT
 	  #if !defined ANDROID_PLATFORM
-		DXsystemHandle->GetInputs();					// READ-INPUT: WinSystemClass::ProcessInput() + DXInputClass::Frame()
+		DXsystemHandle->GetInputs();					// READ-INPUTs: WinSystemClass::ProcessInput() + DXInputClass::Frame()
 	  #endif
-	  #if defined DX_ENGINE
-		DXsystemHandle->m_Input->GetDirectInputKeys();	// Process Keyboard keys / (DXInputClass)
+	  #if defined WINDOWS_PLATFORM //DX_ENGINE
+		DXsystemHandle->m_Input->GetDirectInputKeys();	// Process DX Keyboard keys / (DXInputClass)
 	  #endif
 	#endif
 
 	#if defined USE_PROCESS_OS_KEYS && defined WINDOWS_PLATFORM
-		ProcessOS_Fx_Keys_Input();						// Process Special function keys |ESC and F1 to F6|
+		ProcessOS_Fx_Keys_Input();						// Process Special win32 function keys |ESC and F1 to F6|
 		if (WOMA::game_state == ENGINE_RESTART)
 			return;
 	#endif
 	
+	#if defined USE_DIRECT_INPUT
+		if (DXsystemHandle->m_player[g_NetID]->p_player.IsSpacePressed)
+		{
+			// Wait for space key up: (one-shot)
+			if (DXsystemHandle->m_player[g_NetID]->p_player.IsSpacePressed && WOMA::game_state != GAME_PAUSED)
+			{
+				SystemHandle->WaitSpaceRelease();
+				DXsystemHandle->PAUSE();
+			}
+		}
+	#endif
+
 	#if CORE_ENGINE_LEVEL >= 4 && defined USE_TIMER_CLASS
 		ProcessPerformanceStats();					    // Run every: FPS: m_Timer.Frame(); m_Fps.Frame(); m_Cpu.Frame();
 	#endif
@@ -838,7 +825,7 @@ void SystemClass::FrameUpdate()
 #if CORE_ENGINE_LEVEL >= 2 && (defined USE_PROCESS_OS_KEYS || defined INTRO_DEMO)
 bool SystemClass::InitOsInput()
 {
-  #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
+  #if defined USE_DIRECT_INPUT
 	g_NetID = (UINT)0; // Just Us on the world? So WE will be the index: zero...
 	m_Application->SetPlayerPosition(g_NetID);
   #endif
@@ -846,45 +833,47 @@ bool SystemClass::InitOsInput()
 }
 #endif
 
+//
+// Runtime configuration precedence:
+//
+// 1. Built-in engine defaults.
+// 2. settings.xml overrides.
+// 3. Command-line overrides (highest priority).
+//
+// Each stage only overrides values explicitly provided,
+// preserving all previous settings.
+//
 // Used by: runtest_WindowsEngine_002-009-Core.bat
-// Used by: runtest_WindowsEngine_020-028.bat
-// Used by: runtest_WindowsEngine_030-038.bat
-// Used by: runtest_WindowsEngine_039-053.bat
-// Used by: runtest_WindowsEngine_054-065.bat
-// Used by: runtest_WindowsEngine_070-078.bat
-// Used by: runtest_WindowsEngine_082-90.bat
-// Used by: runtest_WindowsEngine_090-98.bat
+//			runtest_WindowsEngine_020-028.bat
+//			runtest_WindowsEngine_030-038.bat
+//			runtest_WindowsEngine_039-053.bat
+//			runtest_WindowsEngine_054-065.bat
+//			runtest_WindowsEngine_070-078.bat
+//			runtest_WindowsEngine_082-90.bat
+//			runtest_WindowsEngine_090-98.bat
+//			runtest_WindowsEngine_099-107.bat
+
 void SystemClass::ParseCommandLineAndApplySettings(int argc, char* argv[])
 {
 #if defined USE_TINYXML_LOADER			        // This settings.xml can be override by command line options!
     IF_NOT_THROW_EXCEPTION(LoadXmlSettings()); //  XML: Load Application Settings: "settings.xml", pickup "Driver" to Use (override default: WOMA::settings)
 #endif
 
-#if defined UNICODE
-    for (int i = 1; i < argc; ++i)
-    {
-        CHAR* parameter = argv[i];
-        TCHAR* wparameter = NULL;
-        atow(wparameter, parameter, (int)_tcslen(wparameter)); //VER_PRODUCTVERSION_STRING_FOUR_PARTS
+	WOMA::windowsToRenderArray.clear();// All Monitors, that will be used to render, 1 for example.
+	WOMA::allWindowsHwArray.clear();	// All hardware Monitors available on system, 3 for example.
 
-        if (_tcsnicmp(wparameter, TEXT("-warp"), _tcslen(wparameter)) == 0 ||
-            _tcsnicmp(wparameter, TEXT("/warp"), _tcslen(wparameter)) == 0)
-        {
-            WOMA::UseWarpDevice = true;
-        }
-    }
-#else
     for (int i = 1; i < argc; ++i)
     {
         if (strlen(argv[i]) == 0)
             continue;
-        if (_tcsnicmp(argv[i], "-warp", _tcslen(argv[i])) == 0 ||
-            _tcsnicmp(argv[i], "/warp", _tcslen(argv[i])) == 0)
+        if (_strnicmp(argv[i], "-warp", strlen(argv[i])) == 0 ||	//NOTE: Cant be: _tcslen
+			_strnicmp(argv[i], "/warp", strlen(argv[i])) == 0)		//NOTE: Cant be: _tcsnicmp
         {
             WOMA::UseWarpDevice = true;
         }
-        if (_tcsnicmp(argv[i], "-renderOnce", _tcslen(argv[i])) == 0 ||
-            _tcsnicmp(argv[i], "/renderOnce", _tcslen(argv[i])) == 0)
+
+        if (_strnicmp(argv[i], "-renderOnce", strlen(argv[i])) == 0 ||
+            _strnicmp(argv[i], "/renderOnce", strlen(argv[i])) == 0)
         {
             WOMA::renderOnce = true;
             WOMA::settings.FULLSCREEN_ON_WINDOWED = false;
@@ -896,39 +885,61 @@ void SystemClass::ParseCommandLineAndApplySettings(int argc, char* argv[])
             }
 #endif
         }
-        if (_tcsnicmp(argv[i], "-Xpos", _tcslen(argv[i])) == 0 ||
-            _tcsnicmp(argv[i], "/Xpos", _tcslen(argv[i])) == 0)
+
+        if (_strnicmp(argv[i], "-Xpos", strlen(argv[i])) == 0 ||
+            _strnicmp(argv[i], "/Xpos", strlen(argv[i])) == 0)
         {
             WOMA::settings.WINDOW_Xpos_ori = atoi(argv[i + 1]);
             i++;
         }
-        if (_tcsnicmp(argv[i], "-Ypos", _tcslen(argv[i])) == 0 ||
-            _tcsnicmp(argv[i], "/Ypos", _tcslen(argv[i])) == 0)
+        if (_strnicmp(argv[i], "-Ypos", strlen(argv[i])) == 0 ||
+            _strnicmp(argv[i], "/Ypos", strlen(argv[i])) == 0)
         {
             WOMA::settings.WINDOW_Ypos_ori = atoi(argv[i + 1]);
             i++;
         }
-        if (_tcsnicmp(argv[i], "-WIDTH", _tcslen(argv[i])) == 0 ||
-            _tcsnicmp(argv[i], "/WIDTH", _tcslen(argv[i])) == 0)
+        if (_strnicmp(argv[i], "-WIDTH", strlen(argv[i])) == 0 ||
+            _strnicmp(argv[i], "/WIDTH", strlen(argv[i])) == 0)
         {
             WOMA::settings.WINDOW_WIDTH_ori = atoi(argv[i + 1]);
             i++;
         }
-        if (_tcsnicmp(argv[i], "-HEIGHT", _tcslen(argv[i])) == 0 ||
-            _tcsnicmp(argv[i], "/HEIGHT", _tcslen(argv[i])) == 0)
+        if (_strnicmp(argv[i], "-HEIGHT", strlen(argv[i])) == 0 ||
+            _strnicmp(argv[i], "/HEIGHT", strlen(argv[i])) == 0)
         {
             WOMA::settings.WINDOW_HEIGHT_ori = atoi(argv[i + 1]);
             i++;
         }
+
+		if (_strnicmp(argv[i], "-DRIVER", strlen(argv[i])) == 0 ||
+			_strnicmp(argv[i], "/DRIVER", strlen(argv[i])) == 0)	
+		{
+			WOMA::settings.DRIVER = atoi(argv[i + 1]);
+			i++;
+		}
+
+		if (_strnicmp(argv[i], "-MONITOR", strlen(argv[i])) == 0 ||		//NOTE: Cant be: _tcslen or _tcsnicmp
+			_strnicmp(argv[i], "/MONITOR", strlen(argv[i])) == 0)
+		{
+			WOMA::settings.UI_MONITOR = atoi(argv[i + 1]);
+			i++;
+		}
     }
-#endif
 
 	//FORCE VSYNC on short demos:
 	if (WOMA::renderOnce)
 	{
+		womalog("DEMO renderOnce\n");
 		WOMA::AppSettings->VSYNC_ENABLED = true;
 		WOMA::AppSettings->UseAllMonitors = false;
 	}
+
+#if defined LINUX_PLATFORM
+	//WOMA::AppSettings->DRIVER = DRIVER_GL3; //Force OpenGL Driver
+	WOMA::AppSettings->DRIVER = DRIVER_VULKAN; //Force OpenGL Driver
+#endif
+
+	womalog("VSYNC_ENABLED=%d\n", WOMA::AppSettings->VSYNC_ENABLED);
 }
 
 
@@ -938,6 +949,10 @@ bool SystemClass::LoadXmlSettings()
 	womalog("===============================================================================\n");
 	womalogauto(TEXT("LOAD XML SETTINGS\n"));
 	womalog("===============================================================================\n");
+
+	#if defined ANDROID_PLATFORM
+		return true;
+	#endif
 
 	// Load and Parse XML FILE:"settings.xml" the Configuration file
 	//----------------------------------------------------------------------------
@@ -984,6 +999,7 @@ void SystemClass::ProcessPerformanceStats()
 	m_Cpu.Frame();					// Collect CPU usage percentage, once per second!
 	cpu = m_Cpu.GetCpuPercentage(); // Get current CPU use  (updated by "m_Cpu.Frame()" every second)
   #endif
+
 }
 #endif
 
@@ -1025,8 +1041,6 @@ void SystemClass::InitJoyStick()
 				vBias = 1.0f - joyCaps.wVmax * vScale;
 			}
 		}
-
-		// MORE INFO: https://technet.microsoft.com/pt-br/dd757103%28v=vs.71%29
 		womalog("Joystick: Detected\n");
 		womalog("Driver: %s\n", joyCaps.szPname);
 		womalog("Manufacturer identifier: %X\n", joyCaps.wMid);
@@ -1101,3 +1115,25 @@ void SystemClass::onJoystickAxis(int axis, float value)
 }
 #endif
 
+#if defined USE_SCENE_MANAGER
+void SystemClass::InitSceneManager()
+//----------------------------------------------------------------------------
+{
+	//  QUADTREE:
+	// ||256|256||
+	// -----------
+	// ||256|256||
+
+	set_world_size(512);
+	set_world_patchSize(256);
+
+	// SCENE MANAGER: Create SceneManager Engine: (Driver will use Frustum to filter)
+#if defined USE_SCENE_MANAGER
+	if (WOMA::sceneManager == NULL)
+		WOMA::sceneManager = SceneManager::GetInstance();
+
+	WOMA::sceneManager->CreateRootNode(get_world_size(), m_Application->ClearColor); // 256 x 8 --> //-512,-512, 512, 512
+	WOMA::sceneManager->quadTree.Initialize(WOMA::sceneManager->RootNode);
+#endif
+}
+#endif

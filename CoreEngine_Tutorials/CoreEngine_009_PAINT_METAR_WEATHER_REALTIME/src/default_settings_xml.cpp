@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: default_settings_xml.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,16 +17,11 @@
 // PURPOSE: SET DEFAULT: "Application Settings" (they will be overwritten by "settings.xml" in run-time)
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
-#ifndef _CRT_SECURE_NO_WARNINGS
-#define _CRT_SECURE_NO_WARNINGS
-#endif
+
 #include "OSengine.h"
 #include "main.h"
-#if CORE_ENGINE_LEVEL >= 10
-#include "womadriverclass.h"
-#endif						   
 #if defined USE_LOG_MANAGER
 #include "log.h"
 #endif
@@ -60,7 +55,7 @@ namespace WOMA
         false,		// UseAllMonitors
         true,		// Use Double Buffering?
 		true,		// Use Triple Buffering?
-        true,		// Start in VSYNC?		(TRUE: Smooth:60FPS | FALSE: To Benchmark)
+        false,		// Start in VSYNC?		(TRUE: Smooth:60FPS | FALSE: To Benchmark)
 
         //	Texture
         // -------------------------------------------------------------------------------------------
@@ -76,11 +71,7 @@ namespace WOMA
         false,	// Start in FULLSCREEN?
         false,  // FULLSCREEN ON WINDOWED?
         24,		//DEPTH_BITS
-		#if CORE_ENGINE_LEVEL < 10
 		false, 
-		#else
-		true,	// AllowResize and FULLSCREEN Switch?
-		#endif
 		// -------------------------------------------------------------------------------------------
 	#if defined LINUX_PLATFORM
 		600,	// PosX:		Note: 0 = (AUTO) Bottom Right Corner.
@@ -143,7 +134,5 @@ namespace WOMA
 		0,
 	};
 
-#if CORE_ENGINE_LEVEL >= 4
 	STRING	filename;					
-#endif
 }

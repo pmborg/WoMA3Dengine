@@ -4,7 +4,9 @@
     <ShowAllFiles>false</ShowAllFiles>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>/renderOnce /Xpos 000  /Ypos 720 /WIDTH 640 /HEIGHT 360</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>
+    </LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerCommandArgumentsHistory>/renderOnce /Xpos 000  /Ypos 720 /WIDTH 640 /HEIGHT 360|</LocalDebuggerCommandArgumentsHistory>
   </PropertyGroup>
 </Project>
