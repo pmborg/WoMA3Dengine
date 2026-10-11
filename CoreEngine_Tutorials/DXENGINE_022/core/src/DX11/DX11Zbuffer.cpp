@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: DX11Zbuffer.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "OSengine.h"
 #if defined DX_ENGINE
@@ -77,13 +77,13 @@ bool DX11Class::createSetDepthStencilState (bool depthTestEnabled)
 	{
 		// Create the state using the device.
 		result = m_device11->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState);		// true
-		if(FAILED(result)){WomaFatalException(("Error: CreateDepthStencilState")); /*return false;*/}
+		if(FAILED(result)){WomaFatalException(("Error: CreateDepthStencilState")); }
 
 	} else {
 		// With the description filled out we can now create a depth stencil state:
 		// (Create the depth stencil state)
 		result = m_device11->CreateDepthStencilState(&depthStencilDesc, &m_depthDisabledStencilState);// false
-		if(FAILED(result)){WomaFatalException(("Error: CreateDepthStencilState")); /*return false;*/}
+		if(FAILED(result)){WomaFatalException(("Error: CreateDepthStencilState")); }
 	}
 
     if (!testStencilState)
@@ -162,7 +162,7 @@ DXGI_FORMAT DirectX::DX11Class::SelectDepthFormat(UINT depthBits, BOOL fullscree
 	// Not Supported? We are forced to use the Default!
 	if (hr != S_OK) {
 		// which is a 32-bit z-buffer format that supports 24 bits for depth buffer and 8 bits for stencil buffer
-		WomaMessageBox(TEXT("WARNING: The specified Depth Buffer Size is invalid!\n Using the default"), TEXT("WARNING"));
+		//WomaMessageBox(TEXT("WARNING: The specified Depth Buffer Size is invalid!\n Using the default"), TEXT("WARNING"));
 		buffer_depth_format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	}
 
@@ -198,7 +198,7 @@ bool DX11Class::createDepthStencil(UINT USE_MONITOR, int screenWidth, int screen
 	// Then this 2D buffer is drawn to the screen:
 	// ===========================================
 	// Create the texture for the depth buffer using the filled out description.
-	IF_FAILED_RETURN_FALSE (m_device11->CreateTexture2D(&depthBufferDesc, NULL, &DX11windowsArray[USE_MONITOR].m_depthStencilBuffer));
+	IF_FAILED_RETURN_FALSE (m_device11->CreateTexture2D(&depthBufferDesc, NULL, &DX11windowsToRenderArray[USE_MONITOR].m_depthStencilBuffer));
 
 #if TUTORIAL_PRE_CHAP >= 7
 	IF_FAILED_RETURN_FALSE (m_device11->CreateTexture2D(&depthBufferDesc, NULL, &m_depthStencilWaterBuffer));
@@ -226,9 +226,9 @@ bool DX11Class::createDepthStencil(UINT i, int screenWidth, int screenHeight, BO
 	}
 
 	// For each window/swap chain
-	//for (size_t i = 0; i < DX11windowsArray.size(); ++i)
+	//for (size_t i = 0; i < DX11windowsToRenderArray.size(); ++i)
 	{
-		auto& win = DX11windowsArray[i];
+		auto& win = DX11windowsToRenderArray[i];
 
 		// Release old (safe if null)
 		SAFE_RELEASE(win.m_depthStencilView);
@@ -302,7 +302,7 @@ bool DX11Class::createSetDepthStencilView (UINT i, int screenWidth, int screenHe
  
 	// For each Monitor: 
 	{
-		result = m_device11->CreateDepthStencilView(DX11windowsArray[i].m_depthStencilBuffer, &depthStencilViewDesc, &DX11windowsArray[i].m_depthStencilView); //depthBufferDSV
+		result = m_device11->CreateDepthStencilView(DX11windowsToRenderArray[i].m_depthStencilBuffer, &depthStencilViewDesc, &DX11windowsToRenderArray[i].m_depthStencilView); //depthBufferDSV
 		IF_FAILED_RETURN_FALSE(result);
 	}
 
@@ -312,13 +312,13 @@ bool DX11Class::createSetDepthStencilView (UINT i, int screenWidth, int screenHe
 bool DX11Class::createSetDepthStencilView(UINT i, int screenWidth, int screenHeight)
 {
 	{
-		if (DX11windowsArray[i].m_depthStencilView)
+		if (DX11windowsToRenderArray[i].m_depthStencilView)
 		{
 			// Already created in createDepthStencil()
 			m_deviceContext->OMSetRenderTargets(
 				1,
-				&DX11windowsArray[i].m_renderTargetView,
-				DX11windowsArray[i].m_depthStencilView);
+				&DX11windowsToRenderArray[i].m_renderTargetView,
+				DX11windowsToRenderArray[i].m_depthStencilView);
 		}
 	}
 	return true;
@@ -333,8 +333,8 @@ void DirectX::DX11Class::ClearDepthBuffer(void* ctx)
 {
 	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
 	// For each Monitor: 
-	for (int i = 0; i < DX11windowsArray.size(); i++)
-		pContext->ClearDepthStencilView(DX11windowsArray[i].m_depthStencilView, D3D10_CLEAR_DEPTH, 1.0f, 0);	// Clear the "depth buffer":
+	for (int i = 0; i < DX11windowsToRenderArray.size(); i++)
+		pContext->ClearDepthStencilView(DX11windowsToRenderArray[i].m_depthStencilView, D3D10_CLEAR_DEPTH, 1.0f, 0);	// Clear the "depth buffer":
 }
 
 }

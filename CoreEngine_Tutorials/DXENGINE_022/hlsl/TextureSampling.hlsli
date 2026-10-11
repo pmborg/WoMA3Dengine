@@ -9,7 +9,7 @@
 *
 *   Woma engine unified texture sampling library (Nearest / Bilinear / Trilinear / Cubic)
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 // Return texture dimensions
 float2 functiongetTextureWidth(Texture2D tex)

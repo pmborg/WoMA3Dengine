@@ -1358,11 +1358,25 @@ void DXmodelClass::Render(void* ctx, UINT threadID, UINT camera, UINT projection
 #if defined USE_VIEW2D_SPRITES || DX_ENGINE_LEVEL >= 22
 	if (disableFog)
 	{
-		m_Shader11->shaderTypeParameter = 1;
-	}
+	#if defined DX9 || defined DX11
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
+			m_Shader11->shaderTypeParameter = 1;
+	#endif
+	#if defined DX12
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
+			m_Shader->shaderTypeParameter = 1;
+	#endif
+	}	
 	else
 	{
-		m_Shader11->shaderTypeParameter = (float)shaderTypeParameter;
+	#if defined DX9 || defined DX11
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
+			m_Shader11->shaderTypeParameter = (float)shaderTypeParameter;
+	#endif
+	#if defined DX12
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
+			m_Shader->shaderTypeParameter = (float)shaderTypeParameter;
+	#endif
 	}
 #endif
 
