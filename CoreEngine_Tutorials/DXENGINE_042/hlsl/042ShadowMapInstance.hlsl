@@ -72,7 +72,7 @@ PSIn VS_Main(VSIn input, uint instanceID : SV_InstanceID)
 
 	//21: POSITION: Calculate the position of the vertex against the world, view, and projection matrices
 	if (VS_USE_WVP) {
-		output.position = mul(float4(input.position, 1), WVP);	// Calculate the position of the vertex against the world, view, and projection matrices
+		output.position = mul(position, WVP);	// Calculate the position of the vertex against the world, view, and projection matrices
 	}
 	else {
 		position = mul(position, worldMatrix);

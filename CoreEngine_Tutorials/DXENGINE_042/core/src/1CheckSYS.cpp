@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: 1CheckSYS.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "OSengine.h"
 
@@ -53,9 +53,9 @@ float SystemManager::GetProcessorSpeed()
 	return Intel;
 }
 
-#include <iostream>
+//#include <iostream>
 #include <vector>
-#include <bitset>
+//#include <bitset>
 #include <array>
 #include <string>
 #include <intrin.h>
@@ -292,7 +292,7 @@ bool SystemManager::checkCPU ()
 	processorInfo.cpuCores.GetProcessorInformation();
 #endif
 
-	#if defined NDEBUG && !defined ANDROID_PLATFORM
+	#if defined NDEBUG && defined WINDOWS_PLATFORM
     if (processorInfo.cpuCores.processorCoreCount <= 1)
         WomaMessageBox(TEXT("CPU CORE WARNING: Your Processor just have 1 core, this application will run very slow!\n"));
 	#endif
@@ -352,7 +352,7 @@ bool SystemManager::checkCPU ()
 	DWORD best = PickBestLogicalCpu();
 	CpuTarget tgt = LinearIndexToCpuTarget(best);
 
-	std::thread t([&] { BurnOneCoreUniversal(best, 3000); });
+	std::thread t([&] { BurnOneCoreUniversal(best, 1000); });
 	Sleep(50); // let it ramp
 	ReadCoreFreqMHz_PDH(tgt.pdhInstance.c_str(), mhz); // <-- same core you heated
 	t.join();
