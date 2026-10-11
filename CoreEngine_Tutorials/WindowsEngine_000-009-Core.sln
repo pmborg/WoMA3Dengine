@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.4.33213.308
+# Visual Studio Version 18
+VisualStudioVersion = 18.6.11723.189 insiders
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CoreEngine_004", "CoreEngine_004_SYSTEMMANAGER_TIMER_FPS_MATH\CoreEngine_004.vcxproj", "{B0041EC4-E72B-49B3-9F78-25F97B26553F}"
 EndProject
@@ -178,8 +178,8 @@ Global
 		{BD428073-55B2-4406-A4D1-2772D1E48B0F}.WDebug|x64.Build.0 = WDebug|x64
 		{BD428073-55B2-4406-A4D1-2772D1E48B0F}.WDebug|x86.ActiveCfg = WDebug|Win32
 		{BD428073-55B2-4406-A4D1-2772D1E48B0F}.WDebug|x86.Build.0 = WDebug|Win32
-		{BD428073-55B2-4406-A4D1-2772D1E48B0F}.WRelease|x64.ActiveCfg = Release|x64
-		{BD428073-55B2-4406-A4D1-2772D1E48B0F}.WRelease|x64.Build.0 = Release|x64
+		{BD428073-55B2-4406-A4D1-2772D1E48B0F}.WRelease|x64.ActiveCfg = WRelease|x64
+		{BD428073-55B2-4406-A4D1-2772D1E48B0F}.WRelease|x64.Build.0 = WRelease|x64
 		{BD428073-55B2-4406-A4D1-2772D1E48B0F}.WRelease|x86.ActiveCfg = Release|Win32
 		{BD428073-55B2-4406-A4D1-2772D1E48B0F}.WRelease|x86.Build.0 = Release|Win32
 		{AA2D8B6C-542E-4372-BDF4-C4B945C6E5E0}.Debug|x64.ActiveCfg = Debug|x64
@@ -258,8 +258,8 @@ Global
 		{0BDF6BA9-3A46-4E8A-B996-12F51D2FB632}.WDebug|x64.Build.0 = WDebug|x64
 		{0BDF6BA9-3A46-4E8A-B996-12F51D2FB632}.WDebug|x86.ActiveCfg = WDebug|Win32
 		{0BDF6BA9-3A46-4E8A-B996-12F51D2FB632}.WDebug|x86.Build.0 = WDebug|Win32
-		{0BDF6BA9-3A46-4E8A-B996-12F51D2FB632}.WRelease|x64.ActiveCfg = Release|x64
-		{0BDF6BA9-3A46-4E8A-B996-12F51D2FB632}.WRelease|x64.Build.0 = Release|x64
+		{0BDF6BA9-3A46-4E8A-B996-12F51D2FB632}.WRelease|x64.ActiveCfg = WRelease|x64
+		{0BDF6BA9-3A46-4E8A-B996-12F51D2FB632}.WRelease|x64.Build.0 = WRelease|x64
 		{0BDF6BA9-3A46-4E8A-B996-12F51D2FB632}.WRelease|x86.ActiveCfg = Release|Win32
 		{0BDF6BA9-3A46-4E8A-B996-12F51D2FB632}.WRelease|x86.Build.0 = Release|Win32
 		{C2ECE45C-3C70-42C5-BDE1-E06DDAF7D7AE}.Debug|x64.ActiveCfg = Debug|x64

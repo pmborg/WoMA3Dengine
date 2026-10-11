@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: woma_engine_assets.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 #pragma warning(push)
@@ -184,7 +184,10 @@
         #define LEVEL22_IMAGE_dds TEXT("engine/data/basics/Earth_Diffuse.dds")
         #define LEVEL22_IMAGE_tga TEXT("engine/data/basics/Earth_Diffuse.tga")
     #endif
+
+	#define LEVEL22_DEMO2_TEXTURE TEXT("engine/data/basics/seafloor.png")
 #endif
+
 #if DX_ENGINE_LEVEL == 23
 #if !defined DEMO_LEVEL
     #define SETTINGS_FILE       TEXT("settings_023.xml")
@@ -192,7 +195,7 @@
     #define DEMO_TITLE TEXT("23: Adding the first light, 'Diffuse Lighting'. HLSL: The LIGHT shader")
 #endif
 #if DX_ENGINE_LEVEL >= 23
-    #define LEVEL22_DEMO_TEXTURE TEXT("engine/data/basics/seafloor.png")
+	#define LEVEL22_DEMO1_TEXTURE TEXT("engine/data/basics/Earth_Diffuse-LO2.png")
 #endif
 #if DX_ENGINE_LEVEL == 24
 #if !defined DEMO_LEVEL
@@ -286,6 +289,7 @@
         #define DEMO1_BANNER6_TEXTURE TEXT("engine/data/banners/TEXT6_Deceased_Superior_Technician.png")
     #endif
 #endif
+
     #if defined WINDOWS_PLATFORM
         #define AUDIO_FILE "engine/audio/DST-Aircord.ogg"
     #endif
@@ -294,7 +298,7 @@
     #endif
     #if defined ANDROID_PLATFORM
         #define AUDIO_FILE TEXT("DST-Aircord.wav")
-        #define AUDIO_LINK TEXT("https://www.dropbox.com/scl/fi/9v96c8iahl626la85lvyd/DST-Aircord.wav?rlkey=t8ulsxad881ysuvisygw3rvp6&st=uyqgyz5b&dl=1")
+		#define AUDIO_LINK TEXT("https://www.dropbox.com/scl/fi/9v96c8iahl626la85lvyd/DST-Aircord.wav?rlkey=t8ulsxad881ysuvisygw3rvp6&st=uyqgyz5b&dl=1")
     #endif
 #endif
 
@@ -380,7 +384,7 @@
     #define WORLD_XML TEXT("world_49.xml")
     #endif
     //49: Terrain[0]
-    #define OCEANFLOOR_TEXTURE TEXT("engine/data/terrain/OceanFloor.jpg")
+    #define OCEANFLOOR_TEXTURE TEXT("engine/data/Terrain/OceanFloor.jpg")
 #endif
 #if DX_ENGINE_LEVEL >= 50
     #if DX_ENGINE_LEVEL == 50
@@ -394,7 +398,7 @@
     #define TERRAIN_LEVEL50_HMAP TEXT("engine/data/Terrain/011map1_heightmap01_v7.bmp")
     #define TERRAIN_LEVEL50_TEXTURE TEXT("engine/data/scene30/grassTexture.jpg")
 #endif
-#if DX_ENGINE_LEVEL == 51
+#if DX_ENGINE_LEVEL == 51 || DX_ENGINE_LEVEL == 48
     #define DEMO_TITLE TEXT("51: TERRAIN: With fog")
     #define WORLD_XML TEXT("world_51.xml")
 #endif
@@ -444,6 +448,7 @@
 #endif
 #if DX_ENGINE_LEVEL >= 62
     #define DEMO_MAINMMAP_TEXTURE TEXT("engine/data/scene62MAP/mapFramev4.bmp")
+	#define DEMO_MINIMMAP_ARROW_TEXTURE TEXT("engine/data/scene63MAP/015ArrowV3.png")
 #endif
 #if DX_ENGINE_LEVEL == 63
     #define DEMO_TITLE TEXT("63: The MINI-MAP")
@@ -452,9 +457,8 @@
 #if DX_ENGINE_LEVEL >= 63
     #define DEMO_MINIMMAP_TEXTURE TEXT("engine/data/scene63MAP/015MiniMap.png")
     #define DEMO_MINIMMAP_BORDER_TEXTURE TEXT("engine/data/scene63MAP/015MiniMap.png")
-    #define DEMO_MINIMMAP_ARROW_TEXTURE TEXT("engine/data/scene63MAP/015ArrowV2.png")
 #endif
-//----------------------------------------------------------------------------------------------------------------------------------                                
+//----------------------------------------------------------------------------------------------------------------------------------
 #if DX_ENGINE_LEVEL == 64
     #define DEMO_TITLE TEXT("64: Add a model with 2 pass and add a 3D static animated model")
     #define WORLD_XML TEXT("world_64.xml")
@@ -473,7 +477,7 @@
 
 #if DX_ENGINE_LEVEL >= 70 //SCENE_BILLBOARDS
     #define BILLBOARD_TERRAIN TEXT("engine/data/scene73grass/t_025TerrainMappingV4.bmp")
-    #define BILLBOARD_MODEL TEXT("engine/data/scene70Bill/060square.obj")
+    #define BILLBOARD_MODEL "engine/data/scene70Bill/060square.obj"
 
     #define BILL_TREE_0 TEXT("engine/data/scene70Bill/060SH10_1bill.tif")   // 0 TREEs
     #define BILL_TREE_1 TEXT("engine/data/scene70Bill/060SH10_2bill.tif")   // 1
@@ -493,21 +497,21 @@
     #define WORLD_XML TEXT("world_71.xml")
 #endif
 #if DX_ENGINE_LEVEL >= 71
-    #define BILLBOARD_FENCE_MODEL TEXT("engine/data/scene70Bill/fence.obj")
+    #define BILLBOARD_FENCE_MODEL "engine/data/scene70Bill/fence.obj"
 #endif
 #if DX_ENGINE_LEVEL == 72
     #define DEMO_TITLE TEXT("72: FIRE (Add 3D Sound / Effects)")
     #define WORLD_XML TEXT("world_72.xml")
 #endif
 #if DX_ENGINE_LEVEL >= 72
-    #define BILLBOARD_FIRE_MODEL TEXT("engine/data/scene72Fire/072fire.obj")
+    #define BILLBOARD_FIRE_MODEL "engine/data/scene72Fire/072fire.obj"
 #endif
 #if DX_ENGINE_LEVEL == 73
     #define DEMO_TITLE TEXT("73: WINDY GRASS")
     #define WORLD_XML TEXT("world_73.xml")
 #endif
 #if DX_ENGINE_LEVEL >= 73
-    #define BILLBOARD_GRASS_MODEL TEXT("engine/data/scene73grass/grass.obj")
+    #define BILLBOARD_GRASS_MODEL "engine/data/scene73grass/grass.obj"
     #define BILL_GRASS_0 TEXT("engine/data/scene73grass/Grass_Patch_3.png")   //11
 #endif
 #if DX_ENGINE_LEVEL == 74
@@ -515,7 +519,7 @@
     #define WORLD_XML TEXT("world_74.xml")
 #endif
 #if DX_ENGINE_LEVEL >= 74
-    #define BILLBOARD_BUSH_MODEL TEXT("engine/data/scene74bush/bush.obj")
+    #define BILLBOARD_BUSH_MODEL "engine/data/scene74bush/bush.obj"
     #define BILL_BUSH_0 TEXT("engine/data/scene74bush/billboardgrass0001.png")      //21
 #endif
 #if DX_ENGINE_LEVEL == 75
@@ -526,7 +530,7 @@
     #define DEMO_TITLE TEXT("76: UTIL: INTRO VIDEO DEMO")
     #define WORLD_XML TEXT("world_76.xml")
 #endif
-#if DX_ENGINE_LEVEL >= 76
+#if DX_ENGINE_LEVEL >= 76 || defined INTRO_DEMO
     #define VIDEO_INTRO TEXT("engine/data/76video/Logo.mp4")
 #endif
 #if DX_ENGINE_LEVEL == 77
@@ -534,7 +538,7 @@
     #define WORLD_XML TEXT("world_77.xml")
 #endif
 #if DX_ENGINE_LEVEL >= 77
-    #define BILL_GS TEXT("engine/data/77GS/maple-tree.obj")
+    #define BILL_GS "engine/data/77GS/maple-tree.obj"
     #define N_INSTANCE_TREES 5
 #endif
 #if DX_ENGINE_LEVEL == 78
@@ -647,7 +651,7 @@
 	#define DEMO_TITLE TEXT("98: Day and Night")
 	#define WORLD_XML  TEXT("world_98.xml")
   #endif
-  #define LAMP_GS TEXT("engine/data/scene98/oldWoodLamp.w3d")
+  #define LAMP_GS "engine/data/scene98/oldWoodLamp.w3d"
 #endif
 
 #if DX_ENGINE_LEVEL == 99
@@ -683,7 +687,7 @@
 	#define WOMA_CONSOLE_APPLICATION
 	#define WomaDriverClass void
 #else
-#if _DEBUG
+#if defined _DEBUG
 	//#define RELEASE					// TO FORCE the DEBUG of a RELEASE bin!
 	#define WOMA_CONSOLE_APPLICATION
 #else
@@ -699,20 +703,6 @@
 
 #if DX_ENGINE_LEVEL >= 79 && defined DEBUG_MESH
 #define LOG_FILE os_file
-#endif
-
-#if _NOT
-#undef DX9sdk   //Original DX9
-#undef DX9      //DX9 Using modern API: DX11
-#undef DX10     
-#undef DX11
-#undef DX12
-
-#undef GLES2    //Android: x64|ARM64 (c++: API:26) (Packaging: API:25)
-#undef GLES3
-
-#undef OPENGL3  //Linux64 / Windows: 32bits
-#undef OPENGL40 //Windows: 64bits or Linux: 64bits
 #endif
 
 #pragma warning(pop)

@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: level.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #if defined DEMO_LEVEL
     #define LEVEL DEMO_LEVEL
@@ -109,6 +109,19 @@
     //#define LEVEL 53 // Terrain : 512 with : Indices and Terrain Slop Color shader
     //#define LEVEL 54 // Terrain : 256 Water waves
 
+#if NOTES
+    //{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+    //{ "TEXCOORD", 0, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+    //{ "NORMAL",     0, DXGI_FORMAT_R32G32B32_FLOAT,   0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+    //{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+    //{ "TEXCOORD", 1, DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },//Mapping
+
+    //#define LEVEL 56 // 56 ~ G:\DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64     #if TUTORIAL_CHAP >= 19     // TODO!!!!!!!!!!!!!!!!!!
+    //#define LEVEL 57 // 57 ~ G:\DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64     #if TUTORIAL_CHAP >= 21     // TODO!!!!!!!!!!!!!!!!!!
+    //#define LEVEL 58 // 58 ~ G:\DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64     #if TUTORIAL_CHAP >= 22     // TODO!!!!!!!!!!!!!!!!!!
+    //#define LEVEL 59 // 59 ~ G:\DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64     #if TUTORIAL_CHAP >= 23     // TODO!!!!!!!!!!!!!!!!!!
+#endif
+
     //--------------------------------------------------------------------------------------------------------
 #if NOTES
     //{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -158,8 +171,8 @@
     //#define LEVEL 96	// Use curved real sky plane
 	//#define LEVEL 97	// The Waterfall
 	//#define LEVEL 98	// Day and Night
-	#define LEVEL 99	// Terrain with object shadows.
-	
+	//#define LEVEL 99	// Terrain with object shadows.
+	#define LEVEL 100   // Mesh Shadows
     #endif
 #endif
 
