@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: GLcameraClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,23 +16,24 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: MAIN PURPOSE:
 // ----------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
+#ifndef glcameraclass_h
+#define glcameraclass_h
 
 //////////////
 // INCLUDES //
 //////////////
-#include "virtualCameraClass.h"
-//#include <math.h>
+
 #include "GLmathClass.h"
+
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: GLcameraClass
 ////////////////////////////////////////////////////////////////////////////////
 class GLcameraClass : public VirtualCameraClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234525217;
 	GLcameraClass();
 	~GLcameraClass();
 
@@ -51,10 +52,10 @@ public:
 	float m_positionX, m_positionY, m_positionZ;
 	float m_rotationX, m_rotationY, m_rotationZ;
 
-	mat4 m_viewMatrix; // [16] ;
+	mat4 m_viewMatrix;
 
 	#if  DX_ENGINE_LEVEL >= 22 || defined USE_VIEW2D_SPRITES
-	mat4 m_viewmatrix2D; // [16] ;
+	mat4 m_viewmatrix2D;
 	#endif
 
 private:
@@ -62,3 +63,5 @@ private:
 	void TransformCoord(VectorType&, float*);
 	void BuildViewMatrix(VectorType, VectorType, VectorType);
 };
+
+#endif

@@ -42,6 +42,12 @@
     <Filter Include="GLSL">
       <UniqueIdentifier>{b19408ed-110b-41a7-9d98-e07b472a5c2c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Vulkan">
+      <UniqueIdentifier>{75c7360c-6dd5-4a0f-9e51-c0a863f90be4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VK">
+      <UniqueIdentifier>{e16448c6-8fcd-437c-af22-f380dc6b55c3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\include\ApplicationClass.h">
@@ -190,6 +196,15 @@
     </ClInclude>
     <ClInclude Include="core\include\womadriverclass.h">
       <Filter>core\include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\vkShaderClass.h">
+      <Filter>Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\vkModelClass.h">
+      <Filter>Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\vkClass.h">
+      <Filter>Vulkan</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -389,6 +404,15 @@
     <ClCompile Include="core\src\corelib0.cpp">
       <Filter>core\src</Filter>
     </ClCompile>
+    <ClCompile Include="core\src\vkShaderClass.cpp">
+      <Filter>Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\vkModelClass.cpp">
+      <Filter>Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\vkClass.cpp">
+      <Filter>Vulkan</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="settings.xml" />
@@ -406,5 +430,13 @@
     <None Include="GLengine\color.vs">
       <Filter>GLSL</Filter>
     </None>
+    <None Include="VK\021color.vert">
+      <Filter>VK</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="VK\021color.frag">
+      <Filter>VK</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>

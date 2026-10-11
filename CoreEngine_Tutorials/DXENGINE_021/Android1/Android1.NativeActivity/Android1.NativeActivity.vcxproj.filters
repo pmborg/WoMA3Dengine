@@ -103,6 +103,15 @@
     <ClInclude Include="..\..\..\tech-level.h" />
     <ClInclude Include="..\..\..\woma_engine_assets.h" />
     <ClInclude Include="..\..\..\level.h" />
+    <ClInclude Include="..\..\core\include\vkShaderClass.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\vkModelClass.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\core\include\vkClass.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="android_native_app_glue.c">
@@ -205,6 +214,15 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\main.cpp" />
+    <ClCompile Include="..\..\core\src\vkShaderClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\core\src\vkModelClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\core\src\vkClass.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Include">

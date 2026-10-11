@@ -2,7 +2,7 @@
 // Filename: 021Color.hlsl
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
-*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2023
+*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2026
 *	-------------------------------------------------------------------------------------------
 *	code by : Pedro Borges - pmborg@yahoo.com
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
@@ -15,7 +15,7 @@
 	    pixelHLSL.append("PS_Main");
      ...
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 //For Debug only!:
 //#define WITHOUT_CONSTANT_BUFFER
@@ -33,14 +33,14 @@
 struct VSIn
 {
     float3 position : POSITION;
-    float4 color : COLOR; //21
+    float4 color    : COLOR; //21
 };
 
 // PIXEL:
 struct PSIn
 {
     float4 position : SV_POSITION;
-    float4 color : COLOR;
+    float4 color    : COLOR;
 };
 
 ////////////////

@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
-// Filename: GLmodelClass.cpp
+// Filename: GLshaderClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
 #pragma warning( disable : 4477 )
@@ -38,7 +38,7 @@
 
 GLshaderClass::GLshaderClass() {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525217;
+
 }
 
 GLshaderClass::~GLshaderClass() {CLASSDELETE();}
@@ -46,7 +46,7 @@ GLshaderClass::~GLshaderClass() {CLASSDELETE();}
 bool GLshaderClass::Initialize(SHADER_TYPE shaderType)
 {
 	bool result = false;
-	_tprintf(TEXT("GLshaderClass::Initialize (shaderType:%d)\n"), shaderType);
+	womalog(TEXT("GLshaderClass::Initialize (shaderType:%d)\n"), shaderType);
 
 	// Initialize the vertex and pixel shaders.
 	switch (shaderType)
@@ -104,7 +104,7 @@ bool GLshaderClass::InitializeShader(SHADER_TYPE shaderType, TCHAR* vsFilename, 
 	const char* fragmentShaderBuffer = NULL;
 	GLenum  err;
 
-	_tprintf(TEXT("[%d]: InitializeShader(VS:%s PS:%s)\n"), gettid(), vsFilename, fsFilename);
+	womalog(TEXT("[%d]: InitializeShader(VS:%s PS:%s)\n"), gettid(), vsFilename, fsFilename);
 
 	// Load the vertex shader source file into a text buffer.
 	CHAR AvsFilename[MAX_STR_LEN] = { 0 }; wtoa(AvsFilename, vsFilename, MAX_STR_LEN);
@@ -144,17 +144,17 @@ bool GLshaderClass::InitializeShader(SHADER_TYPE shaderType, TCHAR* vsFilename, 
 #endif
 
 	m_shaderProgram = glCreateProgram();				// Create a shader program object.
-	err = glGetError(); if (err != GL_NO_ERROR) { _tprintf(TEXT("ERROR! glCreateProgram err: %04x"), err); }
+	err = glGetError(); if (err != GL_NO_ERROR) { womalog(TEXT("ERROR! glCreateProgram err: %04x"), err); }
 	ASSERT(m_shaderProgram);
 
 	glAttachShader(m_shaderProgram, m_vertexShader);	// Attach a vertex shader to the program
-	err = glGetError(); if (err != GL_NO_ERROR) { _tprintf(TEXT("ERROR! glAttachShader m_vertexShader: %d"), err); }
+	err = glGetError(); if (err != GL_NO_ERROR) { womalog(TEXT("ERROR! glAttachShader m_vertexShader: %d"), err); }
 
 	glAttachShader(m_shaderProgram, m_fragmentShader);	// Attach the fragment shader to the program
-	err = glGetError(); if (err != GL_NO_ERROR) { _tprintf(TEXT("ERROR! glAttachShader m_fragmentShader: %d"), err); }
+	err = glGetError(); if (err != GL_NO_ERROR) { womalog(TEXT("ERROR! glAttachShader m_fragmentShader: %d"), err); }
 
 	glLinkProgram(m_shaderProgram);	// Link the shader program.
-	err = glGetError(); if (err != GL_NO_ERROR) { _tprintf(TEXT("ERROR! glLinkProgram err: %04x"), err); }
+	err = glGetError(); if (err != GL_NO_ERROR) { womalog(TEXT("ERROR! glLinkProgram err: %04x"), err); }
 
 	// Check the program
 	GLint Result = GL_FALSE;
@@ -338,7 +338,7 @@ void GLshaderClass::OutputLinkerErrorMessage(UINT m_shaderProgram)
 	glGetProgramiv(m_shaderProgram, GL_INFO_LOG_LENGTH, &InfoLogLength);
 	std::vector<char> ProgramErrorMessage(max(InfoLogLength, int(1)));
 	glGetProgramInfoLog(m_shaderProgram, InfoLogLength, NULL, &ProgramErrorMessage[0]);
-	_tprintf(TEXT("%s\n"), &ProgramErrorMessage[0]);
+	womalog(TEXT("%s\n"), &ProgramErrorMessage[0]);
 }
 
 

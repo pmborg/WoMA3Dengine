@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------------------------------------
 // Filename: vertexTypes.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -30,13 +30,20 @@
 //	NOTE: Align vertexTypes.h with  DXshaderClass.h
 //
 // ----------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
+#ifndef vertextypes_h
+#define vertextypes_h
 
 #include "platform.h"
 
-#if defined DX_ENGINE //defined WINDOWS_PLATFORM && 
+#if defined WINDOWS_PLATFORM
+#include <DirectXMath.h> 
+using namespace DirectX;
+#endif
+
+#if defined DX_ENGINE 
 #include <D3D11.h>
 #include <d3d12.h>		// DX12
 #include "DXbasicTypes.h"
@@ -71,6 +78,10 @@ union Vector4 {
 	struct {
 		float x, y, z, w;
 	};
+	struct {
+		float a, b, c, d;
+	};
+	float v[4];
 };
 #pragma pack(pop)
 
@@ -94,10 +105,13 @@ union Vector2 {
 	struct {
 		float u, v;
 	};
+	struct {
+		float x, y;
+	};
 };
 #pragma pack(pop)
 
-#if defined INTRO_DEMO || DX_ENGINE_LEVEL == 14 || DX_ENGINE_LEVEL >= 22 // Texturing
+//#if defined INTRO_DEMO || DX_ENGINE_LEVEL == 14 || DX_ENGINE_LEVEL >= 22 // Texturing
 #pragma pack(push, 1)
 struct ModelTextureVertexType
 {
@@ -112,42 +126,41 @@ struct ModelTextureVertexType
 	float tu, tv;
 };
 #pragma pack(pop)
-#endif
+//#endif
 
-
-#if  DX_ENGINE_LEVEL >= 22 || defined USE_VIEW2D_SPRITES
-struct SentenceType
+//#if DX_ENGINE_LEVEL >= 93
+//#if defined GENERATE_ATLAS_INTEGRATION_DDS
+#pragma pack(push, 1)
+struct ModelBillboardAtlasVertexType
 {
-#if (defined OPENGL3 || defined OPENGL4)
-	ModelTextureVertexType* GLvertices = NULL;	//OPENGL
-	unsigned int	m_vertexArrayId = NULL;		//OPENGL
-	unsigned int	m_vertexBufferId = NULL;	//OPENGL
-	unsigned int	m_indexBufferId = NULL;		//OPENGL
-#endif
-
-	unsigned long* indices = NULL;				//DX Common?
-
-#if defined DX_ENGINE
-	DirectX::DXtextureVertexType* vertices = NULL;
-
-#if defined DX9 || defined DX11
-	ID3D11Buffer* vertexBuffer = NULL;	//DX11
-	ID3D11Buffer* indexBuffer = NULL;	//DX11
-#endif
-#if defined DX12
-	ID3D12Resource*				vertexBufferUpload = NULL;	//DX12
-	ID3D12Resource*				indexBufferUpload = NULL;	//DX12
-	D3D12_VERTEX_BUFFER_VIEW	m_vertexBufferView;	//DX12
-	D3D12_INDEX_BUFFER_VIEW		m_indexBufferView; 	//DX12
-	ID3D12Resource*				m_vertexBuffer = NULL;		//DX12
-	ID3D12Resource*				m_indexBuffer = NULL; 		//DX12
-#endif
-#endif
-
-	int vertexCount=0, indexCount=0, maxLength=0;			//Common
-	float red=-1, green = -1, blue = -1;					//Common
+	float x, y, z;		// Position
+	float tu, tv;		// Original per-vertex UVs (used for quad corners)
+	float nx, ny, nz;	// Normal, for lighting if needed
+	UINT atlasIndex;	// Index into billboardAtlasRegions[]
+	float ox, oy, oz;	// Per-billboard world-space origin (pivot)
+	float scale;		// Uniform scale for X/Z/Y
+	float rotY;			// Per-billboard Y rotation (radians)
 };
-#endif
+#pragma pack(pop)
+//#endif
+//#endif
+
+//#if DX_ENGINE_LEVEL >= 97 //waterfall
+//	-------------------------------------------------------------------------------------------
+#pragma pack(push, 1)
+struct ModelTextureWaterfall
+{
+	float x, y, z;		//POSITION
+	float tu, tv;		//TEXCOORD0
+	float r, g, b, a;	//COLOR
+};
+#pragma pack(pop)
+
+#define SmokeVertexType ModelTextureVertexType
+//#endif
+
+
+
 
 //	-------------------------------------------------------------------------------------------
 // NOTE: Based: https://stackoverflow.com/questions/20412807/directx-11-make-a-square
@@ -613,3 +626,6 @@ for (UINT i = 0; i < model.size(); i++)\
 		}\
 	}\
 }
+
+
+#endif

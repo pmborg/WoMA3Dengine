@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: GLcameraClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,18 +16,25 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
+#include "virtualCameraClass.h"
 #include "Math3D.h"
+
 #include "GLcameraClass.h"
+
 #if defined ANDROID_PLATFORM
 #include "math.h"
 #endif
+
+#include "GLmathClass.h"
+
+#include "OSengine.h"
+
 GLcameraClass::GLcameraClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525217;
 
 	m_positionX = 0.0f;
 	m_positionY = 0.0f;
@@ -46,7 +53,10 @@ void GLcameraClass::SetPosition(float x, float y, float z)
 	m_positionX = x;
 	m_positionY = y;
 	m_positionZ = z;
-	return;
+
+#ifdef _DEBUG
+		womalogATfirstframe( "[CAMERA SET POSITION] GL | " "POS=(%f,%f,%f)\n", x, y, z);
+#endif
 }
 
 

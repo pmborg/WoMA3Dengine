@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: DXmodelClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,60 +16,50 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: MAIN PURPOSE:
 // ----------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
+
 
 //////////////
 // INCLUDES //
 //////////////
 #include "platform.h"
-#if defined DX_ENGINE
-#if defined DX11 || defined DX9
-#include "dx11Class.h"
-#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-#include "DX12Class.h"	//#include "GLopenGLclass.h"
-
-// DX12 includes
-#include <dxgi1_4.h>	// Always 1st!	(Select Driver)
-#include <d3d12.h>		// DX12			(Select Device)
-#include <D3Dcompiler.h>// Use Compiler
-#include <DirectXMath.h>// Use Math
-using namespace DirectX;
-
-#endif
-#endif
-
-#endif
+#include "virtualModelClass.h"
 
 #if defined DX_ENGINE
 //////////////
 // INCLUDES //
 //////////////
 
+#if defined DX11 || defined DX9
+#include "dx11Class.h"
 #include "DXshaderClass.h"
-#include "virtualModelClass.h"
 #include "DXbasicTypes.h"
+#endif
 
+#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
+#include "DX12Class.h"
+#endif
 
+#include "DXcameraClass.h"
+#include "GLcameraClass.h"
 
-namespace DirectX 
-{
+extern DXcameraClass* DX_Camera;
+
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: DXmodelClass
 ////////////////////////////////////////////////////////////////////////////////
 class DXmodelClass : public VirtualModelClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234525217;
-
-	DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY = TRIANGLELIST, bool computeNormals = false, bool modelHASshadow = false, bool modelRENDERshadow = false);
+	DXmodelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive = TRIANGLELIST, bool computeNormals = false, bool modelHASshadow = false, bool modelRENDERshadow = false);
 	~DXmodelClass();
 	void Shutdown();
 	void LOADDRIVER(void* driver);
 
 	void RenderWithFade(void* pContext, float fadeLight = 1, bool FOG = false, UINT pass=0, void* lightViewMatrix=NULL, void* lightProjectionMatrix = NULL);
-	void Render(void* pContext, UINT threadID, UINT camera = 0, UINT projection = 0, UINT pass = 0, void* lightViewMatrix = NULL, void* ShadowProjectionMatrix = NULL);
+	void Render(void* pContext, UINT threadID, UINT camera = 0, UINT projection = 0, UINT pass = 0, void* lightViewMatrix = NULL, void* ShadowProjectionMatrix = NULL, bool disableFog = false);
 
 	// ----------------------------------------------------------------------
 #if defined USE_VIEW2D_SPRITES // Sprites
@@ -93,9 +83,15 @@ public:
         bool LoadTexture(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<ModelTextureVertexType>* model, std::vector<UINT>* indexList = NULL, UINT instanceCount = 0);
 #endif
 
+
 	// MODEL LOAD:
 
-	STRING MODEL_NAME=TEXT("");
+
+	// ----------------------------------------------------------------------
+	// VARS:
+	// ----------------------------------------------------------------------
+
+	//STRING MODEL_NAME=TEXT("");
 
 	// Math Aux Functions //
 	void Identity();
@@ -109,8 +105,6 @@ public:
 	void translation(float x, float y, float z);
 	
 public:
-	// VARS:
-	// ----------------------------------------------------------------------
 
 // DX Specific:
   #if defined DX11 || defined DX9
@@ -125,9 +119,6 @@ public:
 	XMFLOAT4        objectCenterOffset = XMFLOAT4(0, 0, 0, 0);
 
 #if defined USE_BOUNDING_VOLUMES
-    XMFLOAT3 minVertex = XMFLOAT3(FLT_MAX, FLT_MAX, FLT_MAX);
-    XMFLOAT3 maxVertex = XMFLOAT3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
-
     XMFLOAT3 worldMinVertex;
     XMFLOAT3 worldMaxVertex;
 
@@ -135,15 +126,16 @@ public:
 	void CreateBoundingVolumes(std::vector<XMFLOAT3>& vertPosArray);
 #endif
 
-    UINT			m_instanceCount = 0;
-
 #if defined LOADW3D
     bool LoadW3D(void* pContext, SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow = false, bool renderShadow = false, UINT instanceCount = 0);
     bool LoadW3DfromMEM(void* pContext, SHADER_TYPE shader_type, void* g_driver, STRING filename, bool castShadow = false, bool renderShadow = false, UINT instanceCount = 0);
 #endif
 
 	DXshaderClass* CreateShader(TCHAR* objectName, SHADER_TYPE ShaderType);
+
+	void GetIndices();
     bool InitializeDXbuffers(ID3D11DeviceContext* pContext, TCHAR* objectName, std::vector<STRING>* textureFile = NULL);
+
 	bool CreateDXbuffers(UINT sizeofMODELvertex, void* device, void* indices, void* vertices);
 	void SetGeometryBuffers(void* deviceContext);	//ID3D11DeviceContext
 
@@ -155,9 +147,17 @@ public:
 	std::vector<ModelColorVertexType> modelColorVertex_;				// LOAD W3D
 	bool InitializeColorBuffers(void* g_driver, void* indices);
 
+
+	// ----------------------------------------------------------------------
 	// VARS:
 	// ----------------------------------------------------------------------
-	
+	// Create TEMP INDEX buffer to copy to GRPHX. CARD
+#if defined DX11 || defined DX12 || defined DX9
+	UINT* indices = NULL;	//DX10/11/12
+#else
+	WORD* indices9 = NULL;//DX9sdk
+#endif
+
 #if defined DX11 || defined DX9
 	DirectX::DX11Class* m_driver11 = NULL;
 #endif
@@ -195,7 +195,28 @@ public:
 	float	m_xTexture=0;
 #endif
 
+	bool bottleHit = false;			// Means this player is selected to a detail view...
+
+	std::vector<ModelBillboardAtlasVertexType>* modelBillboardAtlasVertex = NULL;	// MODEL!
+	ID3D11ShaderResourceView* billboardAtlasRegionsSRV = nullptr;	// Shader resource view for the structured buffer containing UV offsets/scales
+	bool LoadWaterFall(void* pContext,
+		TCHAR* objectName, void* driver,
+		SHADER_TYPE shader_type,
+		std::vector<STRING>* textureFile, std::vector<ModelTextureWaterfall>* model,
+		std::vector<UINT>* indexList, UINT instanceCount = 0);
+	bool LoadSmoke(void* pContext,
+		TCHAR* objectName, void* driver,
+		SHADER_TYPE shader_type,
+		std::vector<STRING>* textureFile, std::vector<SmokeVertexType>* model,
+		std::vector<UINT>* indexList, UINT instanceCount = 0);
+
+	std::vector<ModelTextureWaterfall>* modelTextureWaterfall = NULL;
+	std::vector<SmokeVertexType>* modelSmoke = NULL;
+	bool InitializeTextureWaterfall(void* g_driver, UINT* indices);
+	bool InitializeTextureSmoke(void* device, void* indices);
+	float g_particleAlpha = 0;
+	void SetAlpha(float a);
 };
 
-}
+
 #endif

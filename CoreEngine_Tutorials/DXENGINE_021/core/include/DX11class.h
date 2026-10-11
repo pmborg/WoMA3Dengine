@@ -1,9 +1,9 @@
 ﻿// ----------------------------------------------------------------------------------------------
 // Filename: DX11Class.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
@@ -88,16 +88,17 @@
     #include "d3d11_3.h"
 #endif
 
-#if defined DX11 || defined DX9
+#if defined _DEBUG
+#pragma comment(lib, "dxguid.lib") //DX11 & DX12
+#endif
 
+#if defined DX11 || defined DX9
 /////////////
 // LINKING // First thing in the header is to specify the libraries to link when using this object module
 /////////////
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3d11.lib")
-#if _DEBUG
-#pragma comment(lib, "dxguid.lib")
-#endif
+
 
 #include <wrl/client.h>
 
@@ -284,7 +285,7 @@ struct DXwindowDataContainer
 // ----------------------------------------------------------------------------------------------
 // Globals:
 // ----------------------------------------------------------------------------------------------
-extern std::vector<DXwindowDataContainer> DX11windowsArray;		
+extern std::vector<DXwindowDataContainer> DX11windowsToRenderArray;		
 
 extern std::vector<UINT> FSAA_possibleValues;
 
@@ -308,12 +309,11 @@ struct DXTextLine
 class DX11Class : public WomaDriverClass
 {
 public:
-    UINT WomaIntegrityCheck = 1234525217;
     DX11Class();
     ~DX11Class();
 
     void Initialize2Dand3DCamera();
-    bool Initialize(float* clearColor);	//bool Initialize();
+    bool Initialize(float* clearColor, void* pContext=NULL);	//bool Initialize();
     void FinalizeInitialization();
 
     bool OnInit(int g_USE_MONITOR, void* hwnd, int screenWidth, int screenHeight, UINT depthBits,
@@ -376,7 +376,9 @@ public:
 
     // 3D
     XMMATRIX m_projectionMatrix = {};
+#ifdef USE_SKY_CAMERA_DOME
     XMMATRIX m_projectionMatrix_sky = {};
+#endif
     void GetProjectionMatrix(XMMATRIX&);
 
     //We need to setup our ProjectionMatrix (21) and OrthoMatrix (CH07)
@@ -404,7 +406,7 @@ public:
 	bool dx11_force_dx9 = false;
 	UINT swapbufferscount=0;
 
-#if _DEBUG
+#if defined _DEBUG
     IDXGIDebug* debugDev = NULL;
 #endif
 	
@@ -515,9 +517,6 @@ private:
 #endif
 
 public:
-
-
-    XMMATRIX m_projectionMiniMapMatrix;
 
 };
 

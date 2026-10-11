@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: GLmodelClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
 #pragma warning( disable : 4473 )
@@ -30,11 +30,10 @@
 #include "GLmodelClass.h"
 #include "GLshaderClass.h"
 
-
-GLmodelClass::GLmodelClass(bool model3d) 
+GLmodelClass::GLmodelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive, bool computeNormals, bool modelHASshadow, bool modelRENDERshadow)
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525217;
+
 
 	// SUPER: ----------------------------------------------------------------------
 	m_ObjId = 0;
@@ -46,6 +45,8 @@ GLmodelClass::GLmodelClass(bool model3d)
 	ModelHASColorMap = false;
 
 	PosX = PosY = PosZ = 0;
+
+	PrimitiveTopology = primitive;
 
 	ModelHASNormals = false;
 
@@ -77,6 +78,7 @@ GLmodelClass::GLmodelClass(bool model3d)
 	//glSamplerParameteri(linearFiltering, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	//glSamplerParameteri(linearFiltering, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 */
+
 }
 
 GLmodelClass::~GLmodelClass(){CLASSDELETE();}
@@ -154,7 +156,7 @@ bool result=false;
 
 	result = m_Shader->Initialize(ModelShaderType);
 	if(!result)
-		{ WomaFatalException(("Could not initialize the shader object.")); /*return false;*/ }
+		{ WomaFatalException(("Could not initialize the shader object."));  }
 
 	// Load Texture (manually)
 	// ------------------------------------------------------------------------------------------------
@@ -165,8 +167,8 @@ bool result=false;
 // -------------------	// COLOR
 bool GLmodelClass::LoadColor(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<ModelColorVertexType>* model, std::vector<UINT>* indexList, UINT instanceCount)
 {
-	_tprintf(TEXT("--------------------------------------------------------------\n"));
-	_tprintf(TEXT("[%d]: LOADCOLOR(): %s\n"), gettid(), objectName);
+	womalog(TEXT("--------------------------------------------------------------\n"));
+	womalog(TEXT("[%d]: LOADCOLOR(): %s\n"), gettid(), objectName);
 
 	MODEL_NAME = objectName;
 	if (shader_type == SHADER_AUTO)
@@ -209,73 +211,16 @@ void GLmodelClass::Shutdown()
 	{
 		model_fade = fade;
 
-		#if defined LINUX_PLATFORM
-		#else
-		//positionY += 75;
-		#endif
-
 		if (!UpdateBuffersRotY(pContext, positionX, positionY))
 			return false;
 
-		#define _11 0
-		#define _12 1
-		#define _13 2
-		#define _14 3
-
-		#define _21 4
-		#define _22 5
-		#define _23 6
-		#define _24 7
-
-		#define _31 8
-		#define _32 9
-		#define _33 10
-		#define _34 11
-
-		#define _41 12
-		#define _42 13
-		#define _43 14
-		#define _44 15
-
 		m_worldMatrix.mat4identity();
-		/*
-		//scale2D = scale;
-		if (scale != 1) {
-			m_worldMatrix.m[_11] = m_worldMatrix.m[_22] = m_worldMatrix.m[_33] = scale;
+
+		if (fade == -1000)
+		{
+			Render(pContext, 0, CAMERA_NORMAL, PROJECTION_MINIMAP, 0, NULL, NULL);
+			return true;
 		}
-		*/
-		//float Ypos = (WOMA::AppSettings->WINDOW_HEIGHT) / 2 - m_worldMatrix.m[_33] * SpriteTextureHeight/2;
-		//float Ypos = - m_worldMatrix.m[_33] * SpriteTextureHeight / 2;
-		//m_worldMatrix.m[_42] = Ypos;
-
-
-		/*
-		if (scale != 1) {
-			m_worldMatrix.m[4 * 0 + 0] = scale;
-			m_worldMatrix.m[4 * 1 + 1] = scale;
-			m_worldMatrix.m[4 * 2 + 2] = scale;
-		}
-		*/
-
-		#undef _11
-		#undef _12
-		#undef _13
-		#undef _14
-
-		#undef _21
-		#undef _22
-		#undef _23
-		#undef _24
-
-		#undef _31
-		#undef _32
-		#undef _33
-		#undef _34
-
-		#undef _41
-		#undef _42
-		#undef _43
-		#undef _44
 
 		Render(pContext, 0, CAMERA_NORMAL, PROJECTION_ORTHOGRAPH);
 
@@ -303,10 +248,13 @@ void GLmodelClass::Shutdown()
 		//LINUX & ANDROID:
 		top = (float)(WOMA::AppSettings->WINDOW_HEIGHT / 2) - (float)positionY;			// Calculate the screen coordinates of the top of the bitmap.
 		bottom = top - (float)SpriteTextureHeight;
+
 #if defined WINDOWS_PLATFORM //FIX OPENGL ON WINDOWS
-		#define winTopOffset 20
-		top -= winTopOffset + positionY;
-		bottom = (WOMA::AppSettings->WINDOW_HEIGHT / 2) - (winTopOffset + positionY+SpriteTextureHeight*2);
+		// OpenGL Windows Header Top compensation
+		#define winTopOffset 25
+
+		top -= winTopOffset;
+		bottom = top - (float)SpriteTextureHeight;
 #endif
 
 		//op1:
@@ -478,13 +426,25 @@ void GLmodelClass::Shutdown()
 
 #endif
 
+//#if DX_ENGINE_LEVEL >= 97
+bool GLmodelClass::LoadWaterFall(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<ModelTextureWaterfall>* model, std::vector<UINT>* indexList, UINT instanceCount)
+{
+	return false;
+}
+
+bool GLmodelClass::LoadSmoke(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<SmokeVertexType>* model, std::vector<UINT>* indexList, UINT instanceCount)
+{
+	return false;
+}
+void GLmodelClass::SetAlpha(float a) {};
+//#endif
 
 void GLmodelClass::RenderWithFade(void* pContext, float fadeLight, bool FOG, UINT pass, void* lightViewMatrix, void* lightProjectionMatrix)
 {
 	//m_Shader->fade = fadeLight;
 	Render(pContext);
 }
-void GLmodelClass::Render(void* pContext, UINT threadID, UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix)
+void GLmodelClass::Render(void* pContext, UINT threadID, UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix, bool disableFog)
 {
 	GLopenGLclass* driver = (GLopenGLclass*)m_Driver;
 
@@ -547,7 +507,9 @@ void GLmodelClass::Render(void* pContext, UINT threadID, UINT camera, UINT proje
 void GLmodelClass::GetIndices()
 {
     int j = 0;
-    //womalog("Indices: \n");
+#if false
+    womalog("Indices: \n");
+#endif
     if (indexModelList == NULL || indexModelList->size() == 0) // BASIC object, without index? One index per vertice?
     {
         m_indexCount = m_vertexCount;			// Set the number of indices in the index array.
@@ -557,12 +519,12 @@ void GLmodelClass::GetIndices()
         // getArrayIndices()
         for (UINT i = 0; i < m_indexCount; i++) {
             indices[i] = i;						// Load the index array with data:
-#if (defined _DEBUG || defined  DEBUG) && DX_ENGINE_LEVEL < 29
-        //   womalog("%u ", indices[i]);
-        //   if (j++ >= 2) {
-        //       j = 0;
-        //       womalog("\n");
-        //   }
+#if false
+           womalog("%u ", indices[i]);
+           if (j++ >= 2) {
+               j = 0;
+               womalog("\n");
+           }
 #endif
         }
 
@@ -575,12 +537,12 @@ void GLmodelClass::GetIndices()
         // cloneArrayIndices()
         for (UINT i = 0; i < m_indexCount; i++) {
             indices[i] = indexModelList->at(i);	// Load the index array with data:
-#if (defined _DEBUG || defined  DEBUG) && DX_ENGINE_LEVEL < 29
-     //       womalog("%u ", indices[i]);
-     //       if (j++ >= 2) {
-     //           j = 0;
-     //           womalog("\n");
-     //       }
+#if false
+            womalog("%u ", indices[i]);
+            if (j++ >= 2) {
+                j = 0;
+                womalog("\n");
+            }
 #endif
         }
     }
@@ -620,7 +582,7 @@ bool GLmodelClass::InitializeColorBuffers(/*GLopenGLclass*/ void* OpenGL)
 
 
 #if (defined _DEBUG || defined  DEBUG) //&& defined ANDROID_PLATFORM
-	_tprintf(TEXT("[%d]: InitializeColorBuffers::glGenVertexArrays()\n"), gettid());
+	womalog(TEXT("[%d]: InitializeColorBuffers::glGenVertexArrays()\n"), gettid());
 #endif
 	glGenVertexArrays(1, &m_vertexArrayId);	// Allocate an OpenGL vertex array object.
 	glBindVertexArray(m_vertexArrayId);		// Bind the vertex array object to store all the buffers and vertex attributes we create here.
@@ -686,6 +648,7 @@ void GLmodelClass::SetOpenGLBuffers(UINT sizeofMODELvertex, UINT* indices)
 	// Bind the INDEX BUFFER and load the index data into it:
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferId);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indexCount*sizeof(UINT), indices, GL_STATIC_DRAW);
+
 }
 
 

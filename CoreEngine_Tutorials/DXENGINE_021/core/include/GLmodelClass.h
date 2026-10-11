@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: GLmodelClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: MAIN PURPOSE:
 // ----------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
@@ -41,15 +41,18 @@
 class GLmodelClass : public VirtualModelClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234525217;
-	GLmodelClass(bool model3D=true);
+	GLmodelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive = TRIANGLELIST, bool computeNormals = false, bool modelHASshadow = false, bool modelRENDERshadow = false);
 	~GLmodelClass();
 	void Shutdown();
 
 	void RenderWithFade(void* pContext, float fadeLight = 1, bool FOG = false, UINT pass = 0, void* lightViewMatrix = NULL, void* lightProjectionMatrix = NULL);
-	void Render(void* pContext, UINT threadID=0, UINT camera = 0, UINT projection = 0, UINT pass = 0, void* lightViewMatrix = NULL, void* ShadowProjectionMatrix = NULL);
+	void Render(void* pContext, UINT threadID=0, UINT camera = 0, UINT projection = 0, UINT pass = 0, void* lightViewMatrix = NULL, void* ShadowProjectionMatrix = NULL, bool disableFog = false);
 
 	bool InitializeVertexIndexBuffers(std::vector <STRING>* textureFile);
+
+	bool LoadWaterFall(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<ModelTextureWaterfall>* model, std::vector<UINT>* indexList, UINT instanceCount);
+	bool LoadSmoke(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<SmokeVertexType>* model, std::vector<UINT>* indexList, UINT instanceCount);
+	void SetAlpha(float a);
 
 	bool LoadColor(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<ModelColorVertexType> *model, std::vector<UINT>* indexList = NULL, UINT instanceCount=0);
 #if DX_ENGINE_LEVEL >= 22 || defined INTRO_DEMO
@@ -67,7 +70,7 @@ public:
 #endif
 
 	//GLuint linearFiltering;
-	STRING MODEL_NAME;
+	//STRING MODEL_NAME;
 
 	// Math Aux Functions //
 	void Identity();
