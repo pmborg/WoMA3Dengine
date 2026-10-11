@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: corelib0.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
 #include "OSengine.h"
@@ -24,8 +24,6 @@
 #if defined WINDOWS_PLATFORM
 // safe_release_seh.cpp
 #include <windows.h>
-#include <unknwn.h>   // IUnknown
-#include <stdio.h>
 
 // Export as C so name mangling won't cause issues
 extern "C" void SafeRelease_SEH(void** pp)
@@ -39,8 +37,7 @@ extern "C" void SafeRelease_SEH(void** pp)
 		unk->Release();
 	}
 	__except (EXCEPTION_EXECUTE_HANDLER) {
-		// optional: log the exception via your logging method
-		// e.g. womalogauto(TEXT("[SAFE_RELEASE_SEH] exception during Release ptr=%p\n"), *pp);
+		womalogauto(TEXT("[SAFE_RELEASE_SEH] exception during Release ptr=%p\n"), *pp);
 	}
 	*pp = nullptr;
 }

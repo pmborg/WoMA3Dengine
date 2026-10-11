@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------
-// Filename: linuxSystemClass.h
+// Filename: linuxSystemClass.cpp
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
@@ -14,15 +14,17 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 // 
 // Eclipse Installation of C++ development for cygwin
 // http://www.badprog.com/c-eclipse-installation-of-c-c-development-tools-cdt-and-cygwin-for-windows
 
 // MORE INFO: https://www.opengl.org/wiki/Tutorial:_OpenGL_3.0_Context_Creation_%28GLX%29
 
-#include "OSengine.h" //#include "linuxsystemclass.h"
+#include "platform.h"
+
 #if defined LINUX_PLATFORM
+#include "OSengine.h" //#include "linuxsystemclass.h"
 #include <gtk/gtkmain.h>
 
 #define ENGINE_LEVEL DX_ENGINE_LEVEL
@@ -43,12 +45,10 @@ extern bool createWindow();
 #include "SceneManager.h"
 #endif
 
-
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
 #include <X11/extensions/Xrandr.h>
 
-extern int MainWindowPaint();
 extern void mainLoop();
 
 ///////////////////
@@ -114,7 +114,7 @@ void LinuxSystemClass::Shutdown()
 
 #if defined USE_SCENE_MANAGER
 	//SceneManager* sceneManager = SceneManager::GetInstance();
-	SAFE_SHUTDOWN (sceneManager);
+	SAFE_SHUTDOWN (WOMA::sceneManager);
 #endif
 
 	// Destroy Drivers:
@@ -126,8 +126,38 @@ void LinuxSystemClass::Shutdown()
 
 }
 
+#if defined USE_ALLOW_MAINWINDOW_RESIZE //CORE_ENGINE_LEVEL >= 10 // Initializing Engine
+void LinuxSystemClass::ONRESIZE(void* pContext)
+{
+	womalog("ONRESIZE()\n");
+	womalog("ONRESIZE: %ux%u\n", WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT);
+
+	if (SystemHandle) 
+	{
+		if (SystemHandle->m_Application)
+			SystemHandle->m_Application->WOMA_APPLICATION_InitGUI();
+#if defined DX_ENGINE //OPENGL TODO
+		if (DXsystemHandle) {
+			DXsystemHandle->GPH_RESIZE(pContext);
+		}
+#endif
+	}
+
+#if defined USE_STATUSBAR
+	if (!WOMA::AppSettings->FULL_SCREEN)
+	{
+		if (!SystemHandle->statusbar)
+			SystemHandle->statusbar = DoCreateStatusBar(SystemHandle->m_hWnd, 0, m_hinstance, 1);
+
+		SendMessage(SystemHandle->statusbar, SB_SETTEXT, 0, (LPARAM)DEMO_TITLE);
+	}
+#endif
+}
+#endif
+
 int LinuxSystemClass::APPLICATION_MAIN_LOOP()
 {
+	womalog("LinuxSystemClass::APPLICATION_MAIN_LOOP()\n");
 	mainLoop();
 	return WOMA::game_state;//0;
 }
@@ -152,15 +182,10 @@ bool LinuxSystemClass::APPLICATION_CORE_SYSTEM()
 bool LinuxSystemClass::APPLICATION_INIT_SYSTEM() // ApplicationInit()
 {
 	bool result = true;
-	WOMA::AppSettings->DRIVER = DRIVER_GL3; //Force OpenGL Driver
 
 	womalog("LinuxSystemClass::APPLICATION_INIT_SYSTEM()\n");
 
 	IF_NOT_RETURN_FALSE(APPLICATION_CORE_SYSTEM());
-
-#if defined USE_TINYXML_LOADER // Must be before: APPLICATION_INIT_MAIN_WINDOW()
-	IF_NOT_RETURN_FALSE(SystemClass::LoadXmlSettings());		// XML: Load Application Settings: "settings.xml", pickup "Driver" to Use.
-#endif
 
 #if defined USE_PROCESS_OS_KEYS
 	IF_NOT_RETURN_FALSE(InitOsInput());			// INIT-INPUT Devices, NOTE: After "Create MainWindow(s)"
@@ -183,6 +208,9 @@ void LinuxSystemClass::ProcessInput()
 void LinuxSystemClass::ProcessFrame() // EQUAL to: WinSystemClass::ProcessFrame()
 //-------------------------------------------------------------------------------
 {
+	static void* mainCtx = NULL;
+
+	SystemClass::FrameUpdate();	// Process: (Fx keys |ESC and F1 to F6| & get FPS)
 
 }
 

@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: woma_macros.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: DEFINE COMMON WorldOfMiddleAge 3D ENGINE MACROS
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 #pragma warning(push)
@@ -39,20 +39,6 @@
 
 #define DEG_TO_RAD ((float) 0.0174532925)
 #define RAD_TO_DEG ((float) 57.2957795)
-
-#if _NOT
-// int to TCHAR*
-// --------------------------------------------------------------------------------------------
-/*
-#if defined WINDOWS_PLATFORM
-	#ifdef UNICODE
-		#define ItoA _itow		//Bug on ANDROID APIv25 (VS 2022 API)
-	#else
-		#define ItoA _itoa		//Bug on ANDROID APIv25 (VS 2022 API)
-	#endif
-#endif
-*/
-#endif
 
 #if defined LINUX_PLATFORM
 	extern bool PLATFORM_INIT_GTK2();
@@ -83,7 +69,7 @@
 
 #define IF_NOT_RETURN_FALSE(x)			{ if( (!(x)) ) { return false; } }			// Used with "bool" IF NOT
 
-#if _DEBUG
+#if defined _DEBUG && defined WINDOWS_PLATFORM
 	#if defined VERBOSE_MEMORY_DEBUG
 		#define IF_NOT_THROW_EXCEPTION(x) { womalog("[MEM_DEBUG] NEW %s CREATED!\n", #x); if (!x) WomaFatalException("Not Enough Memory!"); }
 	#else
@@ -94,15 +80,15 @@
 #endif
 
 #if defined ANDROID_PLATFORM
-	#define ASSERT(x) { if (!(x)) _tprintf("ASSERT FAILED: FILE: %s LINE: %s - %s()\n", __FILE__, __LINE__, __func__); }
-  #if _DEBUG
-	#define ASSERT_DEBUG(x) { if (!(x)) _tprintf("ASSERT FAILED: FILE: %s LINE: %s - %s()\n", __FILE__, __LINE__, __func__); }
+	#define ASSERT(x) { if (!(x)) womalog("ASSERT FAILED: FILE: %s LINE: %s - %s()\n", __FILE__, __LINE__, __func__); }
+  #if defined _DEBUG
+	#define ASSERT_DEBUG(x) { if (!(x)) womalog("ASSERT FAILED: FILE: %s LINE: %s - %s()\n", __FILE__, __LINE__, __func__); }
   #else
-    #define ASSERT_DEBUG(x) {}
+#define ASSERT_DEBUG(x) { if (!(x)) womalog("ASSERT_DEBUG FAILED"); }
   #endif
 #else
 	#define ASSERT(x) { if (!(x)) WomaFatalException("Assert failed!"); }
-  #if _DEBUG
+  #if defined _DEBUG || defined LINUX_PLATFORM
     #define ASSERT_DEBUG(x) { if (!(x)) WomaFatalException("Assert failed!"); }
   #else
     #define ASSERT_DEBUG(x) {}
@@ -136,7 +122,7 @@ extern const wchar_t* GetWC(const char* c);
 		#define WomaFatalException(msg) throw (msg)
 	#endif
 	#if defined ANDROID_PLATFORM
-		#define WomaFatalException(msg) return false
+		#define WomaFatalException(msg) { LOGE ("FATAL ERROR\n"); return false; }
 	#endif
 #endif
 
@@ -163,34 +149,6 @@ extern const wchar_t* GetWC(const char* c);
 	#if defined WINDOWS_PLATFORM
 	  #define womalogw			wprintf	//WCHAR
 	#endif
-#endif
-
-#if CORE_ENGINE_LEVEL >=10
-
-#if defined _DEBUG && defined USE_LOG_MANAGER 
-	#define womalogATfirstframe if (m_Driver->RenderfirstTime) WOMA::logManager->DEBUG_MSG
-#else
-	#define womalogATfirstframe {}
-#endif
-
-// PRINT MATRIX:
-#if defined _DEBUG && defined USE_LOG_MANAGER
-#define DX_LOG_MATRIX(pMat) \
-{ \
-    if (pMat) { \
-        womalog(TEXT("[%.3f %.3f %.3f %.3f]\n"), \
-            ((DirectX::XMMATRIX)(*pMat)).r[0].m128_f32[0], ((DirectX::XMMATRIX)(*pMat)).r[0].m128_f32[1], ((DirectX::XMMATRIX)(*pMat)).r[0].m128_f32[2], ((DirectX::XMMATRIX)(*pMat)).r[0].m128_f32[3]); \
-        womalog(TEXT("[%.3f %.3f %.3f %.3f]\n"), \
-            ((DirectX::XMMATRIX)(*pMat)).r[1].m128_f32[0], ((DirectX::XMMATRIX)(*pMat)).r[1].m128_f32[1], ((DirectX::XMMATRIX)(*pMat)).r[1].m128_f32[2], ((DirectX::XMMATRIX)(*pMat)).r[1].m128_f32[3]); \
-        womalog(TEXT("[%.3f %.3f %.3f %.3f]\n"), \
-            ((DirectX::XMMATRIX)(*pMat)).r[2].m128_f32[0], ((DirectX::XMMATRIX)(*pMat)).r[2].m128_f32[1], ((DirectX::XMMATRIX)(*pMat)).r[2].m128_f32[2], ((DirectX::XMMATRIX)(*pMat)).r[2].m128_f32[3]); \
-        womalog(TEXT("[%.3f %.3f %.3f %.3f]\n\n"), \
-            ((DirectX::XMMATRIX)(*pMat)).r[3].m128_f32[0], ((DirectX::XMMATRIX)(*pMat)).r[3].m128_f32[1], ((DirectX::XMMATRIX)(*pMat)).r[3].m128_f32[2], ((DirectX::XMMATRIX)(*pMat)).r[3].m128_f32[3]); \
-    } \
-}
-#else
-#define DX_LOG_MATRIX(pMat)
-#endif
 
 #endif
 
@@ -198,19 +156,19 @@ extern const wchar_t* GetWC(const char* c);
 // Class Loaders - for automatic class load log
 // --------------------------------------------------------------------------------------------
 #if defined WINDOWS_PLATFORM
-#define LEVELHIGHLIGHT(level) {WOMA::ENGINE_LEVEL_USED = level; if (CORE_ENGINE_LEVEL == level) {HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, BACKGROUND_INTENSITY|FOREGROUND_BLUE | FOREGROUND_INTENSITY);}}
+#define LEVELHIGHLIGHT(level) {WOMA::ENGINE_LEVEL_USED = level; if (CORE_ENGINE_LEVEL == level) {HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, BACKGROUND_INTENSITY| FOREGROUND_BLUE|FOREGROUND_GREEN|FOREGROUND_RED | FOREGROUND_INTENSITY);}}
 #define LEVELNORMAL() { HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE|FOREGROUND_GREEN|FOREGROUND_RED);}
 #else
 #define LEVELHIGHLIGHT(level) {}
 #define LEVELNORMAL() {}
 #endif
 
-#if _DEBUG && defined WINDOWS_PLATFORM && !defined SIMPLE//defined CLASS_DEBUG
+#if defined _DEBUG && defined WINDOWS_PLATFORM && !defined SIMPLE//defined CLASS_DEBUG
 	#define CLASSLOADER() { HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN); womalog((CHAR*) "[CLASS_LOAD %d] %s\n", CLASS_LOAD_N++, __FUNCTION__); SetConsoleTextAttribute(hConsole, FOREGROUND_RED + FOREGROUND_GREEN + FOREGROUND_BLUE); }
 	#define CLASSDELETE() { HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); SetConsoleTextAttribute(hConsole, FOREGROUND_RED); womalog((CHAR*) "[CLASS_DELETE %d] %s\n", CLASS_DELETE_N++, __FUNCTION__); SetConsoleTextAttribute(hConsole, FOREGROUND_RED+FOREGROUND_GREEN+FOREGROUND_BLUE); }
 #else
-	#define CLASSLOADER() {}
-	#define CLASSDELETE() {}
+	#define CLASSLOADER() {womalog((CHAR*) "[CLASS_LOAD %d] %s\n", CLASS_LOAD_N++, __FUNCTION__);}
+	#define CLASSDELETE() {womalog((CHAR*) "[CLASS_DELETE %d] %s\n", CLASS_DELETE_N++, __FUNCTION__);}
 #endif
 
 // Basic OS low level MACROS:
@@ -245,16 +203,6 @@ extern const wchar_t* GetWC(const char* c);
 #define IS_INVALID_PTR(p) (false)
 #endif
 
-#if _NOT
-#ifndef SAFE_RELEASE
-	#if defined VERBOSE_MEMORY_DEBUG
-		#define SAFE_RELEASE(p)  { if(p) { womalogauto(TEXT("[MEM_DEBUG] RELEASE %s\n"), #p); (p)->Release(); (p)=NULL; } }
-	#else
-#define SAFE_RELEASE(p)  { if((p) && !IS_INVALID_PTR(p)) { (p)->Release(); (p)=NULL; } }
-	#endif
-#endif
-#else
-
 #ifndef SAFE_RELEASE
 #define SAFE_RELEASE(p) \
     do { \
@@ -262,8 +210,6 @@ extern const wchar_t* GetWC(const char* c);
             SafeRelease_SEH((void**)&(p)); \
         } \
     } while(0)
-#endif
-
 #endif
 
 #ifndef SAFE_DELETE
@@ -284,23 +230,7 @@ extern const wchar_t* GetWC(const char* c);
 
 // Global GAME STOP!
 // --------------------------------------------------------------------------------------------
-#if CORE_ENGINE_LEVEL >= 2
-
-#if defined WINDOWS_PLATFORM
-	#define Publish_Quit_Message(){ \
-		for (int i = 0; i < SystemHandle->windowsArray.size(); i++)\
-			::PostMessage(SystemHandle->m_hWnd, WM_CLOSE, 0, 0); /*NOTE: don't use PostQuitMessage(WM_QUIT) on multiple threads!*/\
-		WOMA::main_loop_state = -1; \
-		WOMA::game_state = GAME_STOP; \
-	} 
-#else
-	#define Publish_Quit_Message(){ \
-		WOMA::main_loop_state = -1; /*WOMA::game_state = GAME_STOP;*/ \
-	} 
-#endif
-#else
 	#define Publish_Quit_Message(){ return false; }
-#endif
 
 
 #ifndef DEG2RAD
@@ -311,36 +241,6 @@ extern const wchar_t* GetWC(const char* c);
 #endif
 
 extern bool cpuSupportsAVX512f;
-#if _NOT
-#define SAFE_FLOAT32(x)  SafeFloat32(x)
-#define SAFE_FLOAT64(x)  SafeFloat(x)
-#define SAFE_DOUBLE32(x) SafeDouble(x)
-#define SAFE_FLOAT64_DIV_TO_UINT64(n, d) (static_cast<UINT64>(SAFE_FLOAT64(n) / (d)))
-
-inline float SafeFloat32(uint32_t value) {
-#if defined(FORCE_MATH_AVX)
-	if (cpuSupportsAVX512f)
-		return static_cast<float>(value);
-#endif
-	return static_cast<float>(static_cast<int32_t>(value));
-}
-
-inline float SafeFloat(uint64_t value) {
-#if defined(FORCE_MATH_AVX)
-	if (cpuSupportsAVX512f)
-		return static_cast<float>(value); // May emit vcvtusi2ss
-#endif
-	return static_cast<float>(static_cast<int64_t>(value)); // Always safe
-}
-
-inline double SafeDouble(uint32_t value) {
-#if defined(FORCE_MATH_AVX)
-	if (cpuSupportsAVX512f)
-		return static_cast<double>(value); // May emit vcvtusi2sd
-#endif
-	return static_cast<double>(static_cast<int32_t>(value)); // Always safe
-}
-#endif
 
 #if defined INTRO_DEMO
 #define IF_RENDER_PAGE(condition) if (condition)

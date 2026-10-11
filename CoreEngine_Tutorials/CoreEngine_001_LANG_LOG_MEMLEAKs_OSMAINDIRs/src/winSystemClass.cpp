@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: winSystemClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Define APIs for winSystemClass.cpp which is the WINDOWS OS API
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
 #include "standard_platform.h"
@@ -31,6 +31,8 @@
 
 #include "SystemClass.h"
 
+#include <ShellScalingApi.h> //will use: #pragma comment(lib, "Shcore.lib")
+ 
 /////////////////////
 // Windows GLOBALS //
 /////////////////////
@@ -40,7 +42,7 @@ WinSystemClass::WinSystemClass() : SystemClass()
 //----------------------------------------------------------------------------------
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525217;
+
 
 	//public:
 	SystemHandle = this;
@@ -97,15 +99,15 @@ bool WinSystemClass::APPLICATION_BEFORE_WINDOW()
 
 bool WinSystemClass::APPLICATION_AFTER_WINDOW()
 {
-    womalog("WinSystemClass::APPLICATION_CORE_INIT_DONE()\n");
+    womalog("\nWinSystemClass::APPLICATION_CORE_INIT_DONE()\n");
 
     return true;
 }
 
+
 bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 //----------------------------------------------------------------------------
 {
-
 	// ################################# SYSTEM CHECK + CREATE WINDOW #################################
 	IF_NOT_RETURN_FALSE(APPLICATION_BEFORE_WINDOW());
 #if defined USE_SYSTEM_CHECK                                // BEFORE: APPLICATION_INIT_MAIN_WINDOW()
@@ -154,11 +156,28 @@ void WinSystemClass::GetInputs()
 }
 #endif
 
+#if defined INTRO_DEMO || defined USE_DIRECT_INPUT
+inline void WinSystemClass::WaitSpaceRelease()
+{
+	while (DXsystemHandle->m_player[g_NetID]->p_player.IsSpacePressed)
+	{
+		GetInputs();
+		Sleep(50);
+	}
+}
+#endif
+
+
+bool useRenderThread = false;
+
 //----------------------------------------------------------------------------
 int WinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 //----------------------------------------------------------------------------
 {
 	MSG msg = { 0 };							// Reset msg
+	constexpr UINT AUTO_TEST_SECONDS = 30;
+
+	womalog("WinSystemClass::APPLICATION_MAIN_LOOP()\n");
 
 	//DEBUG:
 	do
@@ -231,18 +250,28 @@ bool WinSystemClass::InitOsInput()
 }
 #endif
 
-#if defined USE_ALLOW_MAINWINDOW_RESIZE //CORE_ENGINE_LEVEL >= 10 // Initializing Engine
+#if defined USE_ALLOW_MAINWINDOW_RESIZE
 void WinSystemClass::ONRESIZE(void* pContext)
 {
+	womalog("ONRESIZE()\n");
+	womalog("ONRESIZE: %ux%u\n",
+		WOMA::AppSettings->WINDOW_WIDTH,
+		WOMA::AppSettings->WINDOW_HEIGHT);
+
 	if (SystemHandle) {
-		womalog("ONRESIZE()\n");
 		if (SystemHandle->m_Application)
 			SystemHandle->m_Application->WOMA_APPLICATION_InitGUI();
-		#if defined DX_ENGINE //OPENGL TODO
-		if (DXsystemHandle)
-			DXsystemHandle->GPH_RESIZE(pContext);
-		#endif
 	}
+
+#if defined USE_STATUSBAR
+	if (!WOMA::AppSettings->FULL_SCREEN)
+	{
+		if (!SystemHandle->statusbar)
+			SystemHandle->statusbar = DoCreateStatusBar(SystemHandle->m_hWnd, 0, m_hinstance, 1);
+
+		SendMessage(SystemHandle->statusbar, SB_SETTEXT, 0, (LPARAM)DEMO_TITLE);
+	}
+#endif
 }
 #endif
 
