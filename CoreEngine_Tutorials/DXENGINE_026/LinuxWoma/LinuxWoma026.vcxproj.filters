@@ -320,6 +320,9 @@
     <ClCompile Include="..\core\src\WomaSphere.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\core\src\vkShaderClass.cpp" />
+    <ClCompile Include="..\core\src\vkModelClass.cpp" />
+    <ClCompile Include="..\core\src\vkClass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\core\include\default_settings_xml.h">
@@ -520,6 +523,10 @@
     <ClInclude Include="..\core\include\WomaCube.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="..\core\include\vkShaderClass.h" />
+    <ClInclude Include="..\core\include\vkModelClass.h" />
+    <ClInclude Include="..\core\include\vkClass.h" />
+    <ClInclude Include="..\core\include\virtualShaderClass.h" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\world.xml" />
@@ -544,9 +551,7 @@
     <None Include="..\GLengine\texture.vs">
       <Filter>GLSL-LINUX</Filter>
     </None>
-    <None Include="..\engine\data\airports.metar">
-      <Filter>engine</Filter>
-    </None>
+    <None Include="..\..\engine\data\airports.metar" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
@@ -587,47 +592,19 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\engine\data\original\Earth_Diffuse.bmp">
-      <Filter>engine\original</Filter>
-    </Image>
-    <Image Include="..\engine\data\basics\Earth_Diffuse.bmp">
-      <Filter>engine\basics</Filter>
-    </Image>
-    <Image Include="..\engine\data\basics\Earth_Diffuse.DDS">
-      <Filter>engine\basics</Filter>
-    </Image>
-    <Image Include="..\engine\data\basics\Earth_Diffuse.jpg">
-      <Filter>engine\basics</Filter>
-    </Image>
-    <Image Include="..\engine\data\basics\Earth_Diffuse.png">
-      <Filter>engine\basics</Filter>
-    </Image>
-    <Image Include="..\engine\data\basics\Earth_Diffuse.tga">
-      <Filter>engine\basics</Filter>
-    </Image>
-    <Image Include="..\engine\data\basics\Earth_Diffuse.TIF">
-      <Filter>engine\basics</Filter>
-    </Image>
-    <Image Include="..\engine\data\basics\logotipo_small_backgroundV2.bmp">
-      <Filter>engine\basics</Filter>
-    </Image>
-    <Image Include="..\engine\data\basics\seafloor.png">
-      <Filter>engine\basics</Filter>
-    </Image>
-    <Image Include="..\engine\data\basics\target.bmp">
-      <Filter>engine\basics</Filter>
-    </Image>
-    <Image Include="..\engine\data\sky\NEW_SKY_DOME.jpg">
-      <Filter>engine</Filter>
-    </Image>
-    <Image Include="..\engine\data\sky\NEW_SKY_NIGHT.jpg">
-      <Filter>engine</Filter>
-    </Image>
-    <Image Include="..\engine\data\TITLE\WOMA_ENGINE.png">
-      <Filter>engine</Filter>
-    </Image>
-    <Image Include="..\engine\data\TITLE\WOMA_ENGINE-BIG.png">
-      <Filter>engine</Filter>
-    </Image>
+    <Image Include="..\..\engine\data\basics\Earth_Diffuse.bmp" />
+    <Image Include="..\..\engine\data\basics\Earth_Diffuse.DDS" />
+    <Image Include="..\..\engine\data\basics\Earth_Diffuse.jpg" />
+    <Image Include="..\..\engine\data\basics\Earth_Diffuse.png" />
+    <Image Include="..\..\engine\data\basics\Earth_Diffuse.tga" />
+    <Image Include="..\..\engine\data\basics\Earth_Diffuse.TIF" />
+    <Image Include="..\..\engine\data\basics\logotipo_small_backgroundV2.bmp" />
+    <Image Include="..\..\engine\data\basics\seafloor.png" />
+    <Image Include="..\..\engine\data\basics\target.bmp" />
+    <Image Include="..\..\engine\data\original\Earth_Diffuse.bmp" />
+    <Image Include="..\..\engine\data\sky\NEW_SKY_DOME.jpg" />
+    <Image Include="..\..\engine\data\sky\NEW_SKY_NIGHT.jpg" />
+    <Image Include="..\..\engine\data\TITLE\WOMA_ENGINE-BIG.png" />
+    <Image Include="..\..\engine\data\TITLE\WOMA_ENGINE.png" />
   </ItemGroup>
 </Project>
