@@ -2,7 +2,7 @@
 // Filename: DX9Class.cpp
 // --------------------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------
-// World of Middle Age  - 3D Multi-Platform ENGINE 2025
+// World of Middle Age  - 3D Multi-Platform ENGINE 2026
 //-------------------------------------------------------------------------------------------
 // code by : Pedro Borges - pmborg@yahoo.com
 // Downloaded from : woma.no-ip.org
@@ -10,7 +10,7 @@
 //  MAIN PURPOSE: Work as a DirectX 9 Driver.
 //
 // ----------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "OSengine.h"
 

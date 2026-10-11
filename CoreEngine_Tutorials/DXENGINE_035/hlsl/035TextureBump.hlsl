@@ -2,12 +2,16 @@
 // Filename: 035TextureBump.hlsl
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
-*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2023
+*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2026
+*	-------------------------------------------------------------------------------------------
 *	code by : Pedro Borges - pmborg@yahoo.com
+*	Downloaded from : https://github.com/pmborg/WoMA3Dengine
+*
 **********************************************************************************************/
+//WomaIntegrityCheck = 1234526920;								  
 
-#if (!defined DXAPI11 && !defined DXAPI12)
-    #define DXAPI11 1
+#if DXAPI11 != 1 && DXAPI12 != 1
+    #define DXAPI9 1
 #endif
 
 #define PS_USE_LIGHT
@@ -17,6 +21,7 @@
 #define PS_USE_BUMP
 
 #define TEXTURE_MODE -1 //Default is -1
+//#define TEXTURE_MODE 0
 
 //////////////
 // TYPEDEFS //
@@ -25,9 +30,9 @@
 struct VSIn
 {
 	float3 position : POSITION;
-	float2 texCoords: TEXCOORD;
-	float3 normal	: NORMAL;
-    float3 tangent : TANGENT;
+	float2 texCoords: TEXCOORD;	//21 TEXTURE
+	float3 normal	: NORMAL;	//22 LIGHT
+    float3 tangent : TANGENT;	//BUMP
 };
 
 struct PSIn
@@ -70,7 +75,6 @@ SamplerState SampleType: register(s0);
 PSIn VS_Main(VSIn input)
 {
 	PSIn output;
-	float4 cameraPosition;
 
 	if (VS_USE_WVP) {
 		output.position = mul(float4(input.position, 1), WVP);
@@ -81,20 +85,20 @@ PSIn VS_Main(VSIn input)
 		position = mul(position, projection);
 		output.position = position;
 	}
-
+	
+	//22: TEXTURE: Store the texture coordinates for the pixel shader:
 	output.texCoords = input.texCoords;
-
-	cameraPosition = mul(float4(input.position, 1), WV);
-
+	
+	//23: LIGHT: NORMAL
 	if (VShasLight || VShasSpecular)
 		output.normal = normalize(mul(input.normal, (float3x3)worldMatrix));
 
 #if defined PS_USE_SPECULAR
-	output.cameraPosition = cameraPosition;
+	output.cameraPosition = VSCameraPosition;
 	if (VShasSpecular)
 	{
 		float4 worldPosition = mul(float4(input.position, 1), worldMatrix);
-		output.viewDirection = normalize(cameraPosition.xyz - worldPosition.xyz);
+		output.viewDirection = normalize(VSCameraPosition.xyz - worldPosition.xyz);
 	}
 #endif
 
@@ -116,12 +120,15 @@ float4 GetShaderTexture(Texture2D tex, float2 texCoords, uint mipLevel, int mode
 {
     switch (mode)
     {
-        case 0: return NearestInterpolation(SampleType, tex, texCoords);
-        case 1: return BilinearInterpolation(SampleType, tex, texCoords);
-        case 2: return TrilinearInterpolation(SampleType, tex, texCoords, mipLevel);
-        case 3: return CubicInterpolation(SampleType, tex, texCoords);
+        case 0:  return NearestInterpolation(SampleType, tex, texCoords);
+        case 1:  return BilinearInterpolation(SampleType, tex, texCoords);
+        case 2:  return TrilinearInterpolation(SampleType, tex, texCoords, mipLevel);
+        case 3:  return CubicInterpolation(SampleType, tex, texCoords);
         default: return tex.Sample(SampleType, texCoords);
     }
+	
+    // fallback
+    return tex.Sample(SampleType, texCoords);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -135,6 +142,7 @@ float4 PS_Main(PSIn input) : SV_TARGET
 	// Sample base albedo
 	if (hasTexture)
 	{
+		//textureColor = shaderTexture.Sample(SampleType, input.texCoords);
 		textureColor = GetShaderTexture(shaderTexture, input.texCoords, 0, TEXTURE_MODE);
 	}
 
@@ -152,7 +160,9 @@ float4 PS_Main(PSIn input) : SV_TARGET
         
 		// Optional: normal strength parameter for tuning/debugging
 		float normalStrength = 1.0f; // <---- tune this or expose in cbuffer
-		nmap = saturate(nmap * normalStrength);
+		//nmap = saturate(nmap * normalStrength);
+		nmap.xy *= normalStrength;
+		nmap = normalize(nmap);
 
 		// Ensure tangent is orthogonal to the (transformed) normal
 		float3 T = normalize(input.tangent - dot(input.tangent, normal) * normal);
@@ -168,8 +178,6 @@ float4 PS_Main(PSIn input) : SV_TARGET
 	}
 #endif
     
-    //return float4(normalize(normal) * 0.5f + 0.5f, 1);
-    
 	// === LIGHTING ===
 	if (isSky)
     {
@@ -179,8 +187,6 @@ float4 PS_Main(PSIn input) : SV_TARGET
     {
         lightIntensity = PSlightFunc1(normal);
     }
-
-    //return float4(lightIntensity, lightIntensity, lightIntensity, 1);
     
     if (hasTexture) {
         textureColor = textureColor * saturate(emissiveColor + ambientColor + lightIntensity);
@@ -223,6 +229,9 @@ float4 PS_Main(PSIn input) : SV_TARGET
 	}
 #endif
     
-    textureColor.rgb = pow(textureColor.rgb, 1.0 / 2.2); //Apply sRGB workflow
+#if DXAPI12 != 1
+    textureColor.rgb = pow(textureColor.rgb, 1.0 / 2.2); //Apply sRGB workflow: NEW 2026 review!
+#endif
+
 	return textureColor;
 }

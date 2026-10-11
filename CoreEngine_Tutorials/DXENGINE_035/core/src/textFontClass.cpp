@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: textFontClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,11 +16,10 @@
 // --------------------------------------------------------------------------------------------
 // This code was inpired on: https://www.rastertek.com/dx11tut12.html
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
-
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
-#if defined USE_RASTERTEK_TEXT_FONT //&& defined DX_ENGINE
+#if (defined USE_RASTERTEK_TEXT_FONT || defined USE_RASTERTEK_TEXT_FONTV2)
 #include "OSengine.h"
 #pragma warning(disable : 4473) // Disable warning C4473: 'printf' : not enough arguments passed for format string
 #pragma warning(disable : 4005) // Disable warning C4005: '' : macro redefinition
@@ -30,31 +29,40 @@
 #include "virtualModelClass.h"
 #include "mem_leak.h"
 
-#if defined DX_ENGINE
+#if defined WINDOWS_PLATFORM//DX_ENGINE
 #include "dxWinSystemClass.h"
-#endif
+
 #if defined DX11
 #include "dx11Class.h"
 #endif
 #if defined DX12
 #include "dx12Class.h"
 #endif
+#endif
+
+extern GLtextureClass* GetOrCreateTexture(WomaDriverClass* driver, const STRING& filename, void* pContext, bool Model3D);
 
 textFontClass::textFontClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525217;
-
 }
 
-textFontClass::~textFontClass() { Shutdown(); CLASSDELETE();}
+textFontClass::~textFontClass() 
+{ 
+	CLASSDELETE();
+	Shutdown(); 
+}
 
 bool textFontClass::Initialize(void* ctx, void* g_driver, TCHAR* fontFilename, TCHAR* textureFilename)
 {
+#ifdef DX_ENGINE
 	HRESULT hr = S_FALSE;
 	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
+#endif
 
-	_tprintf(TEXT("textFontClass::Initialize ()\n"));
+#ifdef DEBUG_TEXT_FONT
+	womalog(TEXT("[FONT] textFontClass::Initialize ()\n"));
+#endif
 
 	if (!LoadFontData(WOMA::LoadFile(fontFilename)))				// Load in the text file containing the font data.
 		return false;
@@ -71,7 +79,7 @@ bool textFontClass::Initialize(void* ctx, void* g_driver, TCHAR* fontFilename, T
 			hr = S_OK;
 	}
 #endif
-#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
+#if (defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)) && defined DX_ENGINE
 	if (WOMA::AppSettings->DRIVER == DRIVER_DX9 || WOMA::AppSettings->DRIVER == DRIVER_DX11)
 	{
 		m_driver11 = (DirectX::DX11Class*)g_driver;
@@ -90,17 +98,18 @@ bool textFontClass::Initialize(void* ctx, void* g_driver, TCHAR* fontFilename, T
 	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
 	{
 		// Create the texture object for this model:
-		gl_Texture = NEW GLtextureClass;
+		gl_Texture = GetOrCreateTexture(m_Driver, textureFilename, ctx, false);// NEW GLtextureClass;
 		IF_NOT_THROW_EXCEPTION(gl_Texture);
-
-		// Initialize the texture object:
-		bool result = gl_Texture->Initialize(WOMA::LoadFile(textureFilename), 0, false/*Model3D*/);
-		if (!result)
-		{
-			WomaMessageBox(textureFilename, TEXT("textFontClass: Texture File not found")); return false;
-		}
 	}
 #endif	
+#if defined VULKAN
+	if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+	{
+		// Create the texture object for the font:
+		gl_Texture = GetOrCreateTexture(m_Driver, textureFilename, ctx, false);// NEW GLtextureClass;
+		IF_NOT_THROW_EXCEPTION(gl_Texture);
+	}
+#endif
 
 	return true;
 }
@@ -108,34 +117,53 @@ bool textFontClass::Initialize(void* ctx, void* g_driver, TCHAR* fontFilename, T
 void textFontClass::Shutdown()
 {
 #if defined DX11
-	meshSRV11.clear();
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX9 || WOMA::AppSettings->DRIVER == DRIVER_DX11)
+		meshSRV11.clear();
 #endif
 #if defined DX12
-	SAFE_DELETE(m_Texture);
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
+		SAFE_DELETE(m_Texture);
 #endif
 #if (defined OPENGL3 || defined OPENGL4)
-	SAFE_SHUTDOWN(gl_Texture);
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
+		SAFE_SHUTDOWN(gl_Texture);
 #endif
 	ReleaseFontData();	// Release the font data.
 }
 
 bool textFontClass::LoadFontData(TCHAR* filename)
 {
-	ifstream fin;
 	int i;
 	char temp;
 
-	_tprintf(TEXT("textFontClass::LoadFontData(%s)\n"), filename);
+#ifdef DEBUG_TEXT_FONT
+	womalog(TEXT("[FONT] textFontClass::LoadFontData(%s)\n"), filename);
+#endif
 
 	// Create the font spacing buffer.
 	m_Font = NEW FontType[95];
 	IF_NOT_THROW_EXCEPTION (m_Font);
 
-	// Read in the font size and spacing between chars.
-	CHAR file[MAX_STR_LEN] = { 0 }; wtoa(file, filename, 100);
-	fin.open(file);
-	womalogauto(TEXT("LoadFontData: %s\n"), file);
-	if(fin.fail()){return false;}
+	CHAR assetfile[MAX_STR_LEN] = { 0 };
+	wtoa(assetfile, filename, MAX_STR_LEN);
+
+#ifdef ANDROID_PLATFORM
+	AAssetManager* manager = engine.app->activity->assetManager;
+	AAsset* asset = AAssetManager_open(manager, assetfile, AASSET_MODE_BUFFER);
+	if (!asset)
+		return false;
+
+	const char* buffer = (const char*)AAsset_getBuffer(asset);
+	size_t size = AAsset_getLength(asset);
+
+	std::istringstream fin(std::string(buffer, size));
+
+#else
+	std::ifstream fin(assetfile);
+	if (fin.fail())
+		return false;
+
+#endif
 
 	// Read in the 95 used ascii characters for text.
 	for(i=0; i<95; i++)
@@ -147,17 +175,23 @@ bool textFontClass::LoadFontData(TCHAR* filename)
 
 		//ignore 2nd column
 		fin.get(temp);
-		printf("%c ", temp);
+		womalog("%c ", temp);
 		while(temp != ' ')
 			fin.get(temp);
 
 		fin >> m_Font[i].left;
 		fin >> m_Font[i].right;
 		fin >> m_Font[i].size;
-		printf("L: %f R: %f S: %i \n", m_Font[i].left, m_Font[i].right, m_Font[i].size);
+#ifdef DEBUG_TEXT_FONT
+		womalog("L: %f R: %f S: %i \n", m_Font[i].left, m_Font[i].right, m_Font[i].size);
+#endif
 	}
-	
-	fin.close();	// Close the file.
+
+#ifdef ANDROID_PLATFORM
+	AAsset_close(asset);
+#else
+	fin.close();
+#endif
 
 	return true;
 }
@@ -181,20 +215,22 @@ DX12TextureClass* textFontClass::GetTexture()
 	return m_Texture;
 }
 #endif
-void textFontClass::BuildVertexArray(void* vertices, TCHAR* sentence, float drawX, float drawY)
-{
-	VertexType* vertexPtr;
-	int numLetters, index, i, letter;
-	//WomaDriverClass* m_Driver = driverList[WOMA::AppSettings->DRIVER];
 
+void textFontClass::BuildVertexArray(void* vertices, TCHAR* sentence, float drawX_, float drawY)
+{
+	int index, i, letter;
+	float drawX = drawX_;
+
+#ifdef DEBUG_TEXT_FONT
 	if (m_Driver->RenderfirstTime)
-		_tprintf(TEXT("[%d]: BuildVertexArray(%s, drawX: %f, drawY: %f)\n"), gettid(), sentence, drawX, drawY);
+		womalog(TEXT("[FONT] [%d]: BuildVertexArray(%s, drawX: %f, drawY: %f)\n"), gettid(), sentence, drawX, drawY);
+#endif
 
 	// Coerce the input vertices into a VertexType structure.
-	vertexPtr = (VertexType*)vertices;
+	textFontVertexType* vertexPtr = (textFontVertexType*)vertices;
 
 	// Get the number of letters in the sentence.
-	numLetters = (int)_tcslen(sentence);
+	int numLetters = (int)_tcslen(sentence);
 
 	// Initialize the index to the vertex array.
 	index = 0;
@@ -207,7 +243,7 @@ void textFontClass::BuildVertexArray(void* vertices, TCHAR* sentence, float draw
 		// If the letter is a space then just move over three pixels.
 		if(letter == 0)
 		{
-			drawX = drawX + m_spaceSize;
+			drawX += m_spaceSize + 2.0f;
 		}
 		else
 		{
@@ -230,7 +266,8 @@ void textFontClass::BuildVertexArray(void* vertices, TCHAR* sentence, float draw
 
 			#define _pos6 (drawX + m_Font[letter].size), (drawY - m_fontHeight), 0.0f
 			#define _tex6 m_Font[letter].right, 1.0f
-#if defined DX_ENGINE
+
+#if defined WINDOWS_PLATFORM
 			// First triangle in quad.
 			vertexPtr[index].position = XMFLOAT3(_pos1);  // Top left.
 			vertexPtr[index].texture = XMFLOAT2(_tex1);
@@ -256,56 +293,62 @@ void textFontClass::BuildVertexArray(void* vertices, TCHAR* sentence, float draw
 			vertexPtr[index].position = XMFLOAT3(_pos6);  // Bottom right.
 			vertexPtr[index].texture = XMFLOAT2(_tex6);
 			index++;
+
+
+		#if defined(DEBUG_TEXT_FONT)
+			if (m_Driver->RenderfirstTime)
+			{
+				womalog("[FONT V1] Letter '%c'\n", sentence[i]);
+				womalog("[FONT V1] Pos=(%f,%f,%f) UV=(%f,%f)\n", _pos1, _tex1);
+				womalog("[FONT V1] Pos=(%f,%f,%f) UV=(%f,%f)\n", _pos2, _tex2);
+				womalog("[FONT V1] Pos=(%f,%f,%f) UV=(%f,%f)\n", _pos3, _tex3);
+				womalog("[FONT V1] Pos=(%f,%f,%f) UV=(%f,%f)\n", _pos4, _tex4);
+				womalog("[FONT V1] Pos=(%f,%f,%f) UV=(%f,%f)\n", _pos5, _tex5);
+				womalog("[FONT V1] Pos=(%f,%f,%f) UV=(%f,%f)\n", _pos6, _tex6);
+			}
+		#endif
 #else
-			vertexPtr[index].position = { _pos1 };
-			vertexPtr[index].texture = { _tex1 };									// Top left.
-			index++;
+		vertexPtr[index].position = { _pos1 };
+		vertexPtr[index].texture = { _tex1 };					// Top left.
+		index++;
 
-			vertexPtr[index].position = { _pos2 };  // Bottom right.
-			vertexPtr[index].texture ={ _tex2 };
-			index++;
+		vertexPtr[index].position = { _pos2 };					// Bottom right.
+		vertexPtr[index].texture ={ _tex2 };
+		index++;
 
-			vertexPtr[index].position = { _pos3 };							// Bottom left.
-			vertexPtr[index].texture ={ _tex3 };
-			index++;
+		vertexPtr[index].position = { _pos3 };					// Bottom left.
+		vertexPtr[index].texture ={ _tex3 };
+		index++;
 
-			// Second triangle in quad.
-			vertexPtr[index].position = { _pos4 };						// Top left.
-			vertexPtr[index].texture ={ _tex4 };
-			index++;
+		// Second triangle in quad.
+		vertexPtr[index].position = { _pos4 };					// Top left.
+		vertexPtr[index].texture ={ _tex4 };
+		index++;
 
-			vertexPtr[index].position = { _pos5 };  // Top right.
-			vertexPtr[index].texture ={ _tex5 };
-			index++;
+		vertexPtr[index].position = { _pos5 };  // Top right.
+		vertexPtr[index].texture ={ _tex5 };
+		index++;
 
-			vertexPtr[index].position = { _pos6 };  // Bottom right.
-			vertexPtr[index].texture ={ _tex6 };
-			index++;
-#endif
-			
-#if defined yes_please_debug_me
-			if (m_Driver->RenderfirstTime) {
-				_tprintf("XMFLOAT3(drawX: %f, drawY: %f, %f) ", _pos1); _tprintf("XMFLOAT2(u: %f, v: %f, %f)\n", _tex1);
+		vertexPtr[index].position = { _pos6 };  // Bottom right.
+		vertexPtr[index].texture ={ _tex6 };
+		index++;
+		
+		#if defined(DEBUG_TEXT_FONT)
+			if (m_Driver->RenderfirstTime)
+			{
+				womalog("[FONT V2] Letter '%c'\n", sentence[i]);
+				womalog("[FONT V2] Pos=(%f,%f,%f) UV=(%f,%f)\n", _pos1, _tex1);
+				womalog("[FONT V2] Pos=(%f,%f,%f) UV=(%f,%f)\n", _pos2, _tex2);
+				womalog("[FONT V2] Pos=(%f,%f,%f) UV=(%f,%f)\n", _pos3, _tex3);
+				womalog("[FONT V2] Pos=(%f,%f,%f) UV=(%f,%f)\n", _pos4, _tex4);
+				womalog("[FONT V2] Pos=(%f,%f,%f) UV=(%f,%f)\n", _pos5, _tex5);
+				womalog("[FONT V2] Pos=(%f,%f,%f) UV=(%f,%f)\n", _pos6, _tex6);
 			}
-			if (m_Driver->RenderfirstTime) {
-				_tprintf("XMFLOAT3(drawX: %f, drawY: %f, %f) ", _pos2); _tprintf("XMFLOAT2(u: %f, v: %f, %f)\n", _tex2);
-			}
-			if (m_Driver->RenderfirstTime) {
-				_tprintf("XMFLOAT3(drawX: %f, drawY: %f, %f) ", _pos3); _tprintf("XMFLOAT2(u: %f, v: %f, %f)\n", _tex3);
-			}
-			if (m_Driver->RenderfirstTime) {
-				_tprintf("XMFLOAT3(drawX: %f, drawY: %f, %f) ", _pos4); _tprintf("XMFLOAT2(u: %f, v: %f, %f)\n", _tex4);
-			}
-			if (m_Driver->RenderfirstTime) {
-				_tprintf("XMFLOAT3(drawX: %f, drawY: %f, %f) ", _pos5); _tprintf("XMFLOAT2(u: %f, v: %f, %f)\n", _tex5);
-			}
-			if (m_Driver->RenderfirstTime) {
-				_tprintf("XMFLOAT3(drawX: %f, drawY: %f, %f) ", _pos6); _tprintf("XMFLOAT2(u: %f, v: %f, %f)\n", _tex6);
-			}
+		#endif
 #endif
 
 			// Update the x location for drawing by the size of the letter and one pixel.
-			drawX = drawX + m_Font[letter].size + 2.0f;
+			drawX += m_Font[letter].size +2.0f;
 		}
 	}
 }
@@ -317,9 +360,33 @@ int textFontClass::GetSentencePixelLength(char* sentence)
 
 	pixelLength = 0;
 	numLetters = (int)strlen(sentence);
+
+#ifdef DEBUG_TEXT_FONT
+	if (m_Driver->RenderfirstTime)
+		womalog(TEXT("[FONT] GetSentencePixelLength: \"%s\" length=%d\n"),
+			sentence, numLetters);
+#endif
+
 	for (i = 0; i < numLetters; i++)
 	{
 		letter = ((int)sentence[i]) - 32;
+
+#ifdef DEBUG_TEXT_FONT
+		if (m_Driver->RenderfirstTime)
+		{
+			womalog(
+				TEXT("[FONT] i=%d char=%d letter=%d '%c' "
+					"left=%f right=%f size=%f\n"),
+				i,
+				(int)sentence[i],
+				letter,
+				sentence[i],
+				m_Font[letter].left,
+				m_Font[letter].right,
+				m_Font[letter].size);
+		}
+#endif
+
 		// If the letter is a space then count it as three pixels.
 		if (letter == 0)
 		{
@@ -330,6 +397,11 @@ int textFontClass::GetSentencePixelLength(char* sentence)
 			pixelLength += (m_Font[letter].size + 1);
 		}
 	}
+
+#ifdef DEBUG_TEXT_FONT
+	if (m_Driver->RenderfirstTime)
+		womalog(TEXT("[FONT] PixelLength=%d\n"), pixelLength);
+#endif
 
 	return pixelLength;
 }
