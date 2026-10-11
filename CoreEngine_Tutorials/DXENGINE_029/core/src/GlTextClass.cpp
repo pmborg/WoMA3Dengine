@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: GlTextClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,15 +17,182 @@
 // PURPOSE: 
 // Original DX11 version of the code was inpired on: https://www.rastertek.com/dx11tut12.html
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
 #include "platform.h"
-#if (defined OPENGL3 || defined OPENGL4) && defined USE_RASTERTEK_TEXT_FONT
-
-#pragma warning( disable : 4706 )	// Disable warning C4706: assignment within conditional expression
+#pragma warning(disable : 4706)	// Disable warning C4706: assignment within conditional expression
+#pragma warning(disable : 4715)	//C4715: 'g_SetCameraPosition': not all control paths return a value
 #include "OSengine.h"
+#include "GlTextClass.h"
+
+#if defined USE_RASTERTEK_TEXT_FONT || defined USE_RASTERTEK_TEXT_FONTV2
+ApplicationTextClass* g_AppTextClass = NULL;
+#endif
+#if defined USE_RASTERTEK_TEXT_FONTV2
+#include "Rapplicationclass.h"
+extern RApplicationClass* r_Application;
+#endif
+
+TCHAR* g_SetCameraRotation(float rotX, float rotY, float rotZ, float* pixelColor = NULL, int* positionX=NULL, int* positionY=NULL)
+{
+	static TCHAR dataString[50];
+	static LightClass* light = SystemHandle->m_Application->app_Light;
+
+	// Setup the X rotation string: ((float) ((int)(rotX*10))/10), ((float) ((int)(rotY*10))/10)
+#if defined TEXT_TEST
+	StringCchPrintf(dataString, sizeof(dataString), TEXT("rX:%5.1f rY:%5.1f"), rotX, rotY);
+#else
+	StringCchPrintf(dataString, sizeof(dataString), TEXT("rX:%5.1f rY:%5.1f Light: %5.1f, %5.1f, %5.1f"), rotX, rotY,
+//#if defined WINDOWS_PLATFORM
+		light->m_lightDirection.x, light->m_lightDirection.y, light->m_lightDirection.z);
+//#else
+//		light->m_lightDirection[0], light->m_lightDirection[1], light->m_lightDirection[2]);
+//#endif
+#endif
+
+#if defined USE_RASTERTEK_TEXT_FONT
+#if !defined WINDOWS_PLATFORM
+	if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+#endif
+	{
+		ASSERT(g_AppTextClass->m_Text->UpdateSentence(g_AppTextClass->m_sentence[TEXT_ROT], dataString,
+			10, Y_INIT + 40,	//position
+			0.0f, 1.0f, 0.0f)); //RGB
+	}
+#endif
+
+#if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
+	{
+		pixelColor[0] = 0;
+		pixelColor[1] = 1;
+		pixelColor[2] = 0;
+		pixelColor[3] = 1.0f;
+
+		*positionX = 10;
+		*positionY = Y_INIT + 40;
+	}
+#endif
+	return dataString;
+}
+
+
+TCHAR* g_SetFps(int fps, float* pixelColor = NULL, int* positionX=NULL, int* positionY= NULL)
+{
+	float red = 0.0f, green = 0.0f, blue = 0.0f;
+
+	if (fps >= 60)
+		green = 1.0f;	// If fps is 60 or above set the fps color to green.
+	else
+		red = 1.0f;		// If fps is below 30 set the fps color to red.
+
+	if (fps > 30)
+		green = 1.0f;	// If fps is between 30 and 60 set the fps color to "yellow."
+
+	// avoid division by zero:
+	if (fps == 0)
+		fps = 1;
+
+#if defined DEBUG_TEXT_A_ONLY
+	static TCHAR strBuffer[30] = "A";
+#else
+	static TCHAR strBuffer[30];
+#if defined EXTRA_INFO
+	StringCchPrintf(strBuffer, sizeof(strBuffer), TEXT("Fps: %d"), fps);
+#else
+	StringCchPrintf(strBuffer, sizeof(strBuffer), TEXT("Fps: %d  - ms: %4.2f"), fps, 1000.0f / fps);
+#endif
+#endif
+
+
+#if defined USE_RASTERTEK_TEXT_FONT     // VULKAN: Linux / Android
+#if !defined WINDOWS_PLATFORM
+	if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+#endif
+	{
+	ASSERT(g_AppTextClass->m_Text->UpdateSentence(g_AppTextClass->m_sentence[TEXT_FPS], strBuffer, 
+		WOMA::AppSettings->WINDOW_WIDTH - 180, Y_INIT + 20, //position
+		red, green, blue)); //RGB
+	}
+#endif
+
+	//V2: - Linux/Android OPENGL
+#if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
+	{
+		pixelColor[0] = red;
+		pixelColor[1] = green;
+		pixelColor[2] = blue;
+		pixelColor[3] = 1.0f;
+
+		*positionX = WOMA::AppSettings->WINDOW_WIDTH - 180;
+		*positionY = Y_INIT + 20;
+	}
+#endif
+	return strBuffer;
+}
+
+
+TCHAR* g_SetCameraPosition(float posX, float posY, float posZ, float* pixelColor = NULL, int* positionX = NULL, int* positionY = NULL)
+{
+	static TCHAR dataString[50];
+
+	// Setup the position string.
+	StringCchPrintf(dataString, sizeof(dataString), TEXT("X:%5.1f Z:%5.1f Y:%5.1f"), posX, posZ, posY);
+
+#if defined USE_RASTERTEK_TEXT_FONT
+#if !defined WINDOWS_PLATFORM
+	if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+#endif
+	{
+	ASSERT(g_AppTextClass->m_Text->UpdateSentence(g_AppTextClass->m_sentence[TEXT_POS], dataString,
+		10, Y_INIT + 20,	 //position
+		0.0f, 1.0f, 0.0f));  //RGB
+	}
+#endif
+
+#if defined USE_RASTERTEK_TEXT_FONT2
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
+	{
+		pixelColor[0] = 0;
+		pixelColor[1] = 1;
+		pixelColor[2] = 0;
+		pixelColor[3] = 1.0f;
+
+		*positionX = 10;
+		*positionY = Y_INIT + 20;
+	}
+#endif
+	return dataString;
+}
+
+#if defined USE_RASTERTEK_TEXT_FONT
+void ApplicationTextClass::SetCameraRotation(float rotX, float rotY, float rotZ) 
+{ 
+	g_SetCameraRotation(rotX, rotY, rotZ); 
+}
+
+void ApplicationTextClass::SetFps(int fps) 
+{ 
+	g_SetFps(fps); 
+}
+
+void ApplicationTextClass::SetCameraPosition(float posX, float posY, float posZ)
+{
+	g_SetCameraPosition(posX, posY, posZ);
+}
+
+#endif
+
+
+
+
+
+#if (defined OPENGL3 || defined OPENGL4) && defined USE_RASTERTEK_TEXT_FONT
+//OPENGL for Windows Platform only
+
 #include "mem_leak.h"
 #include "GlTextClass.h"
 #include "womadriverclass.h"
@@ -38,7 +205,7 @@
 GlTextClass::GlTextClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525217;
+
 
 	//private:
 	m_Font = NULL;
@@ -81,11 +248,11 @@ void GlTextClass::ReleaseSentence(SentenceType** sentence)
 }
 
 //SIMILAR: DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderType)
-bool GlTextClass::Initialize(void* Driver, ID3D11DeviceContext* pContext)
+bool GlTextClass::Initialize(void* Driver, void* pContext)
 {
 	bool result=false;
 
-	_tprintf(TEXT("GlTextClass::Initialize ()\n"));
+	womalog(TEXT("GlTextClass::Initialize ()\n"));
 
 	// TextClass: Initialize the font object. PART1
 	m_Font = NEW textFontClass;
@@ -121,17 +288,19 @@ bool GlTextClass::InitializeTexture(void* Driver)
 // SIMILAR: DXmodelClass::InitializeColorBuffers
 bool GlTextClass::InitializeSentence(SentenceType** sentence, int maxLength)
 {
-	_tprintf(TEXT("GlTextClass::InitializeSentence()\n"));
+	womalog(TEXT("GlTextClass::InitializeSentence()\n"));
 
 	// Create a new sentence object.
 	*sentence = NEW SentenceType;
 	IF_NOT_THROW_EXCEPTION(*sentence);
 
 	// Set the maximum length of the sentence.
-	(*sentence)->maxLength = maxLength;
+	//(*sentence)->maxLength = maxLength;
+	textmaxLength = maxLength;
 
 	// Set the number of vertices in the vertex array.
 	(*sentence)->vertexCount = 6 * maxLength;
+	//(*sentence)->vertexCount = 6 * (*sentence)->numLetters;
 
 	// Set the number of indexes in the index array.
 	(*sentence)->indexCount = (*sentence)->vertexCount;
@@ -141,7 +310,9 @@ bool GlTextClass::InitializeSentence(SentenceType** sentence, int maxLength)
 	IF_NOT_THROW_EXCEPTION((*sentence)->GLvertices);
 
 	// Create the index array.
-	(*sentence)->indices = NEW unsigned long[(*sentence)->indexCount];
+	// NOTE Vulkan requires 32-bit indices here.
+	//		Never use unsigned long: MSVC=4 bytes, GCC/Clang x64=8 bytes.
+	(*sentence)->indices = NEW uint32_t[(*sentence)->indexCount];
 	IF_NOT_THROW_EXCEPTION((*sentence)->indices);
 
 	// Initialize the index array.
@@ -190,17 +361,14 @@ bool GlTextClass::InitializeSentence(SentenceType** sentence, int maxLength)
 ////////////////////////////
 bool GlTextClass::UpdateSentence(SentenceType* sentence, TCHAR* text, int positionX, int positionY, float red, float green, float blue)
 {
-	int numLetters;
+	//int numLetters;
 	ModelTextureVertexType* vertices;
 	float drawX, drawY;
-	//WomaDriverClass* m_Driver = driverList[WOMA::AppSettings->DRIVER];
 
 	positionY += 36;
 
 	if (!sentence)
-	{
-		WomaFatalException(("Text: sentence = NULL")); //return false;
-	}
+		{ WomaFatalException(("Text: sentence = NULL")); }
 
 	// Store the color of the sentence.
 	sentence->red = red;
@@ -208,20 +376,20 @@ bool GlTextClass::UpdateSentence(SentenceType* sentence, TCHAR* text, int positi
 	sentence->blue = blue;
 
 	// Get the number of letters in the sentence.
-	numLetters = (int)_tcslen(text);
+	sentence->numLetters = (int)_tcslen(text);
 
 	// Check for possible buffer overflow.
-	if (numLetters > sentence->maxLength)
-	{
-		WomaFatalException(("Text Size Fatal Error")); //return false;
-	}
+	ASSERT_DEBUG(sentence->numLetters <= textmaxLength);
+
+	// Only render the required triangles (6 vertices per character).
+	sentence->indexCount = sentence->numLetters * 6;
 
 	// Create the vertex array.
-	vertices = NEW ModelTextureVertexType[sentence->vertexCount];
+	vertices = NEW ModelTextureVertexType[sentence->indexCount];
 	IF_NOT_THROW_EXCEPTION(vertices);
 
 	// Initialize vertex array to zeros at first.
-	memset(vertices, 0, (sizeof(ModelTextureVertexType) * sentence->vertexCount));
+	memset(vertices, 0, (sizeof(ModelTextureVertexType) * sentence->indexCount));
 
 	// Calculate the X and Y pixel position on the screen to start drawing to.
 	drawX = (float)(((WOMA::AppSettings->WINDOW_WIDTH / 2) * -1) + positionX);
@@ -232,17 +400,7 @@ bool GlTextClass::UpdateSentence(SentenceType* sentence, TCHAR* text, int positi
 
 	// Bind the vertex buffer.
 	glBindBuffer(GL_ARRAY_BUFFER, sentence->m_vertexBufferId);
-	glBufferData(GL_ARRAY_BUFFER, sentence->vertexCount * sizeof(ModelTextureVertexType), vertices, GL_STATIC_DRAW);	// Bind the vertex
-/*
-	// Get a pointer to the buffer's actual location in memory.
-	void* dataPtr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-
-	// Copy the vertex data into memory.
-	memcpy(dataPtr, vertices, sentence->vertexCount * sizeof(VertexType));
-
-	// Unlock the vertex buffer.
-	glUnmapBuffer(GL_ARRAY_BUFFER);
-*/
+	glBufferData(GL_ARRAY_BUFFER, sentence->indexCount * sizeof(ModelTextureVertexType), vertices, GL_STATIC_DRAW);	// Bind the vertex
 
 	// Release the vertex array as it is no longer needed.
 	SAFE_DELETE_ARRAY(vertices);
@@ -250,23 +408,7 @@ bool GlTextClass::UpdateSentence(SentenceType* sentence, TCHAR* text, int positi
 	return true;
 }
 
-#if NOTES
-//SIMILAR TO:
-//bool DXmodelClass::RenderSprite(void* Driver, int positionX, int positionY, float scale)
-//UpdateBuffersRotY
-//
-//m_worldMatrix = XMMatrixIdentity();
-//m_worldMatrix._11 = m_worldMatrix._22 = m_worldMatrix._33 = scale;
-//m_worldMatrix._42 = +WOMA::AppSettings->WINDOW_HEIGHT / 2 - m_worldMatrix._33 * SpriteTextureHeight / 2;
-//
-//Render(m_driver, CAMERA_NORMAL, PROJECTION_ORTHOGRAPH);
-//	SetBuffers(driver->m_device);
-//	XMMATRIX* projectionMatrix = driver->GetProjectionMatrix(Driver, camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
-//	XMMATRIX* viewMatrix = driver->GetViewMatrix(Driver, camera, projection, pass, lightViewMatrix, ShadowProjectionMatrix);
-//	m_Shader->Render(driver->m_device, m_indexCount, &m_worldMatrix, viewMatrix, projectionMatrix);	// Single Material (Optimized)
-#endif
-
-void GlTextClass::RenderSentence(SentenceType* sentence)
+void GlTextClass::RenderSentence(void* pContext, SentenceType* sentence)
 {
 #if (defined OPENGL3 || defined OPENGL4)
 	m_spriteShader->SetShader();
@@ -297,10 +439,6 @@ void GlTextClass::RenderSentence(SentenceType* sentence)
 	glDrawElements(GL_TRIANGLES, sentence->indexCount, GL_UNSIGNED_INT, 0);
 
 	SystemHandle->TotalVertexCounter += sentence->indexCount;
-	//unbind everything
-	//glBindVertexArray(NULL);				// Unbind our Vertex Array Object
-	//glBindTexture(GL_TEXTURE_2D, NULL);
-	//glUseProgram(0);						// shader->unbind(); // Unbind our shader
 #endif
 }
 

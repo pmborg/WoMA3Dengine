@@ -353,6 +353,10 @@
     <ClCompile Include="..\core\linux\src\linuxaudio.cpp">
       <Filter>src\GLEngine_029</Filter>
     </ClCompile>
+    <ClCompile Include="..\core\src\VkTextClass.cpp" />
+    <ClCompile Include="..\core\src\vkShaderClass.cpp" />
+    <ClCompile Include="..\core\src\vkModelClass.cpp" />
+    <ClCompile Include="..\core\src\vkClass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\ThirdParty\PNG_LIB\include\pngconf.h">
@@ -568,6 +572,12 @@
     <ClInclude Include="..\core\include\playerClass.h">
       <Filter>src\GLEngine_028</Filter>
     </ClInclude>
+    <ClInclude Include="..\core\include\vkTextClass.h" />
+    <ClInclude Include="..\core\include\vkShaderClass.h" />
+    <ClInclude Include="..\core\include\vkModelClass.h" />
+    <ClInclude Include="..\core\include\vkClass.h" />
+    <ClInclude Include="..\core\include\virtualTextClass.h" />
+    <ClInclude Include="..\core\include\virtualShaderClass.h" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\world_29.xml" />

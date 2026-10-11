@@ -2,7 +2,7 @@
 // Filename: 022Texture.hlsl [LATEST]
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
-*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2017
+*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2026
 *	-------------------------------------------------------------------------------------------
 *	code by : Pedro Borges - pmborg@yahoo.com
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
@@ -15,10 +15,10 @@
 		pixelHLSL.append("PS_Main");
      ...
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
-#if (!defined DXAPI11 && !defined DXAPI12)
-    #define DXAPI11 1
+#if DXAPI11 != 1 && DXAPI12 != 1
+    #define DXAPI9 1
 #endif
 
 // mode:
@@ -30,9 +30,9 @@
 
 #define TEXTURE_MODE -1 //Default is -1
 
-//#define   PS_USE_FOG           //51
-//#define   PS_USE_ALFACOLOR
-//#define   PS_USE_FADE
+//#define   PS_USE_FOG          //not sup. at this level
+//#define   PS_USE_ALFACOLOR	//not sup. at this level
+//#define   PS_USE_FADE			//not sup. at this level
 
 
 //////////////
@@ -57,19 +57,16 @@ struct PSIn
 #endif	
 };
 
+////////////////
+// CBUFFERS
+////////////////
 
-////////////////
-// CBUFFERS
-////////////////
-////////////////
-// CBUFFERS
-////////////////
 // SYNC: DXshaderClass.h -- DX12: CBV
-#if DXAPI11 == 1
+#if DXAPI9 == 1 || DXAPI11 == 1
 cbuffer VSShaderParametersBuffer	//DX11
 #endif
 #if DXAPI12 == 1
-cbuffer VSShaderParametersBuffer : register(b0)
+cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: Descriptor: 0
 #endif
 {
     // VERTEX: need to match: 
@@ -125,17 +122,15 @@ cbuffer VSShaderParametersBuffer : register(b0)
 // Note: Color shader dont have it!
 // 022Texture.hlsl at level 22 dont have it!
 
-
-
 //Set on: DXmodelClass::RenderSubMesh
-#if DXAPI11 == 1
+#if DXAPI9 == 1 || DXAPI11 == 1
 Texture2D shaderTexture;
 #endif
 #if DXAPI12 == 1
 Texture2D shaderTexture:	register(t0);
 #endif
 
-#if DXAPI11 == 1
+#if DXAPI9 == 1 || DXAPI11 == 1
 SamplerState SampleType;
 #endif
 #if DXAPI12 == 1
@@ -174,6 +169,7 @@ PSIn VS_Main(VSIn input)
     return output;
 }
 
+#if DXAPI9 == 0
 #include "TextureSampling.hlsli"
 // mode:
 // 0 = nearest
@@ -181,6 +177,7 @@ PSIn VS_Main(VSIn input)
 // 2 = trilinear
 // 3 = cubic
 // 4 = hardware sampler
+#endif
 
 //Mode	Filter Type	    FPS
 //0	    Nearest	        13111 FPS
@@ -190,6 +187,7 @@ PSIn VS_Main(VSIn input)
 
 float4 GetShaderTexture(Texture2D tex, float2 texCoords, uint mipLevel, int mode)
 {
+#if DXAPI9 == 0
     switch (mode)
     {
         case 0:
@@ -204,22 +202,19 @@ float4 GetShaderTexture(Texture2D tex, float2 texCoords, uint mipLevel, int mode
         default:
             return tex.Sample(SampleType, texCoords);
     }
+#endif
 
-    // fallback
+    // Legacy fallback (DX9 / ps_4_0_level_9_3)
     return tex.Sample(SampleType, texCoords);
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
+// Pixel Shader
+////////////////////////////////////////////////////////////////////////////////
 float4 PS_Main(PSIn input) : SV_TARGET
 {
-	//-----------------------------------------------------------------------------------
-	// lvl >=21: TEXTURE: Sample the pixel color from the texture using the sampler at this texture coordinate location
-    //replace:
-        //textureColor = shaderTexture.Sample(SampleType, input.texCoords);    
-    //with:
-    #define TEXTURE_MODE 0
     float4 textureColor = GetShaderTexture(shaderTexture, input.texCoords, 0, TEXTURE_MODE);
-    
+
 #if defined PS_USE_FOG
     float4 fogColor = float4(87.0f / 256.0f, 87 / 256.0f, 87.0f / 256.0f, 1.0f);
 #endif
@@ -251,7 +246,9 @@ float4 PS_Main(PSIn input) : SV_TARGET
     }
 #endif
     
-    //textureColor.a = 1;
-    textureColor.rgb = pow(textureColor.rgb, 1.0 / 2.2); //Apply sRGB workflow
+#if DXAPI12 != 1
+    textureColor.rgb = pow(textureColor.rgb, 1.0 / 2.2); //Apply sRGB workflow: NEW 2026 review!
+#endif
+    
     return textureColor;
 }
