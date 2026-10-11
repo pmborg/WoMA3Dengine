@@ -1,8 +1,8 @@
 // --------------------------------------------------------------------------------------------
-// Filename: 021Color.hlsl
+// Filename: 021Color.hlsl [LATEST]
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
-*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2023
+*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2026
 *	-------------------------------------------------------------------------------------------
 *	code by : Pedro Borges - pmborg@yahoo.com
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
@@ -15,13 +15,21 @@
 	    pixelHLSL.append("PS_Main");
      ...
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 //For Debug only!:
 //#define WITHOUT_CONSTANT_BUFFER
 
-#if !defined DXAPI11 && !defined DXAPI12
-#define DXAPI11 1
+#if DXAPI11 != 1 && DXAPI12 != 1
+    #define DXAPI9 1
+#endif
+
+#if DXAPI9 == 1
+    #define PS_POSITION POSITION
+    #define PS_TARGET   COLOR0
+#else
+    #define PS_POSITION SV_POSITION
+    #define PS_TARGET   SV_TARGET
 #endif
 
 //////////////
@@ -33,21 +41,21 @@
 struct VSIn
 {
     float3 position : POSITION;
-    float4 color : COLOR; //21
+    float4 color    : COLOR; //21
 };
 
 // PIXEL:
 struct PSIn
 {
-    float4 position : SV_POSITION;
-    float4 color : COLOR;
+    float4 position : PS_POSITION;
+    float4 color    : COLOR;
 };
 
 ////////////////
 // CBUFFERS
 ////////////////
 // SYNC: DXshaderClass.h -- DX12: CBV
-#if DXAPI11 == 1
+#if DXAPI9 == 1 || DXAPI11 == 1
 cbuffer VSShaderParametersBuffer	//DX11
 #endif
 #if DXAPI12 == 1
@@ -63,32 +71,6 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
     matrix projection; //projection
     matrix WV; //worldMatrix+viewMatrix
     matrix WVP; //worldMatrix+viewMatrix+projectionMatrix
-
-    // 23 BLOCK: VS2
-    //bool   VShasLight;
-    //bool   VShasSpecular;
-    //bool   VShasNormMap;
-    //bool   VShasFog;
-
-    //// 23 BLOCK: VS3
-    //float3 VSlightDirection; // LIGHT
-    //float  VSlightPAD; // 3+1=XMFLOAT4
-    //float4 VSambientColor; // LIGHT
-    //float4 VSdiffuseColor; // LIGHT
-    //float4 VSemissiveColor; // LIGHT: Ke
-	//
-    //// 31 BLOCK: VS4
-    //float  VSfogStart;
-    //float  VSfogEnd;
-    //bool   VShasShadowMap;
-    //bool   VS_USE_WVP;
-	//
-    //// 45 BLOCK: VS5
-    //matrix ViewToLightProj;
-	
-	//Future properties later...
-	//
-	//...
 };
 
 ///////////////
@@ -114,21 +96,9 @@ PSIn VS_Main(VSIn input)
     //HLSL dif. GLSL:
 	output.position = mul(float4(input.position, 1), transpose(WVPMatrix));	// Calculate the position of the vertex against the world, view, and projection matrices
 #else
-    //if (VS_USE_WVP)
-    {
-        output.position = mul(float4(input.position, 1), WVP); // Calculate the position of the vertex against the world, view, and projection matrices
-    }
-    //else
-    //{
-    //    float4 position = float4(input.position, 1);
-    //    position = mul(position, worldMatrix);
-    //    position = mul(position, view); //viewMatrix
-    //    position = mul(position, projection); //projectionMatrix
-    //    output.position = position;
-    //}
+    output.position = mul(float4(input.position, 1), WVP); // Calculate the position of the vertex against the world, view, and projection matrices
 #endif
     output.color = input.color; // Store the vertex color for the pixel shader
-
     return output;
 }
 
@@ -136,7 +106,7 @@ PSIn VS_Main(VSIn input)
 ////////////////////////////////////////////////////////////////////////////////
 // PIXEL SHADER
 ////////////////////////////////////////////////////////////////////////////////
-float4 PS_Main(PSIn input) : SV_TARGET
+float4 PS_Main(PSIn input) : PS_TARGET
 {
     return input.color; // Use Vertex Color
 }

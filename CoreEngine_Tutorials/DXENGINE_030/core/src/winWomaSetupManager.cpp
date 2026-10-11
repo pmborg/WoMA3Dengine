@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: winWomaSetupManager.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,11 +16,11 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "OSengine.h"
 #if defined CLIENT_SCENE_SETUP
-#include "StateMachine.h"
+//#include "StateMachine.h"
 #include "WomaSetupManager.h"
 #include <algorithm> 
 
@@ -32,7 +32,7 @@ extern std::vector<UINT> FSAA_possibleValues;
 WomaSetupManager::WomaSetupManager() 
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525217;
+
 
 	m_setupWnd = NULL;
 }
@@ -112,7 +112,9 @@ void ListDisplayModes(TCHAR* deviceName)
         return a.Width > b.Width;
     });
 
-    SystemHandle->allWindowsArray.push_back(scr);
+	//WOMA::allWindowsHwArray.push_back(scr);
+	WOMA::allWindowsHwArray.push_back(scr);
+
     intMonitorcounter++;
     std::wcout << L"----------------------------------------" << std::endl;
 }
@@ -206,10 +208,10 @@ bool WomaSetupManager::Initialize(void* Driver)
 		//Convert HW monitor list to windows orderder list:
 		{
 		int deviceIndex;
-		if (SystemHandle->allWindowsArray.size() == 0)
+		if (WOMA::allWindowsHwArray.size() == 0)
 			deviceIndex = 0;
 		else
-			deviceIndex = (SystemHandle->allWindowsArray[mon].deviceIndex) - 1;
+			deviceIndex = (WOMA::allWindowsHwArray[mon].deviceIndex) - 1;
 
 		StringCchPrintf(MONITOR, sizeof(MONITOR), TEXT("Resolution Mon: %d"), deviceIndex);
 		}
@@ -229,14 +231,14 @@ bool WomaSetupManager::Initialize(void* Driver)
 		UINT resolutionHeight = 0;
 
 		//Convert HW monitor list to windows orderder list:
-		//int deviceIndex=(SystemHandle->allWindowsArray[mon].deviceIndex)-1;
+		//int deviceIndex=(WOMA::allWindowsHwArray[mon].deviceIndex)-1;
 		int deviceIndex;
-		if (SystemHandle->allWindowsArray.size() == 0)
+		if (WOMA::allWindowsHwArray.size() == 0)
 			deviceIndex = 0;
 		else
-			deviceIndex = (SystemHandle->allWindowsArray[mon].deviceIndex) - 1;
+			deviceIndex = (WOMA::allWindowsHwArray[mon].deviceIndex) - 1;
 
-		if ((SystemHandle->allWindowsArray.size() > 0) && (SystemHandle->allWindowsArray[mon].ScreenResolution.size() > 1))
+		if ((WOMA::allWindowsHwArray.size() > 0) && (WOMA::allWindowsHwArray[mon].ScreenResolution.size() > 1))
 		{
 			// Get the physical width and height of the monitor
 			DEVMODE devMode;
@@ -246,13 +248,13 @@ bool WomaSetupManager::Initialize(void* Driver)
 			int cuurent_width = devMode.dmPelsWidth;
 			int cuurent_heigth = devMode.dmPelsHeight;
 
-			for (UINT res = 0; res < SystemHandle->allWindowsArray[mon].ScreenResolution.size(); res++)
+			for (UINT res = 0; res < WOMA::allWindowsHwArray[mon].ScreenResolution.size(); res++)
 			{
-				float Refresh = (float)SystemHandle->allWindowsArray[mon].ScreenResolution[res].RefreshRate_Numerator
-					/ (float)SystemHandle->allWindowsArray[mon].ScreenResolution[res].RefreshRate_Denominator;
+				float Refresh = (float)WOMA::allWindowsHwArray[mon].ScreenResolution[res].RefreshRate_Numerator
+					/ (float)WOMA::allWindowsHwArray[mon].ScreenResolution[res].RefreshRate_Denominator;
 
-				resolutionWidth = SystemHandle->allWindowsArray[mon].ScreenResolution[res].Width;
-				resolutionHeight = SystemHandle->allWindowsArray[mon].ScreenResolution[res].Height;
+				resolutionWidth = WOMA::allWindowsHwArray[mon].ScreenResolution[res].Width;
+				resolutionHeight = WOMA::allWindowsHwArray[mon].ScreenResolution[res].Height;
 				StringCchPrintf(str, sizeof(str), TEXT("%d x %d %4.2f Hz"), resolutionWidth, resolutionHeight, round(Refresh));
 
 				SendMessage(hWndComboBoxperMonitor[mon], CB_ADDSTRING, res, reinterpret_cast<LPARAM>(str));
@@ -265,10 +267,10 @@ bool WomaSetupManager::Initialize(void* Driver)
 		} 
 #else 
         {
-            for (size_t i = 0; i < SystemHandle->allWindowsArray[mon].ScreenResolution.size(); i++)
+            for (size_t i = 0; i < WOMA::allWindowsHwArray[mon].ScreenResolution.size(); i++)
             {
-                int width = SystemHandle->allWindowsArray[mon].ScreenResolution[i].Width;
-                int heigth = SystemHandle->allWindowsArray[mon].ScreenResolution[i].Height;
+                int width = WOMA::allWindowsHwArray[mon].ScreenResolution[i].Width;
+                int heigth = WOMA::allWindowsHwArray[mon].ScreenResolution[i].Height;
                 StringCchPrintf(str, sizeof(str), TEXT("%d x %d"), width, heigth);
                 SendMessage(hWndComboBoxperMonitor[mon], CB_ADDSTRING, i, reinterpret_cast<LPARAM>(str));
             }
@@ -276,7 +278,7 @@ bool WomaSetupManager::Initialize(void* Driver)
 			SendMessage(hWndComboBoxperMonitor[mon], CB_SETCURSEL, 0, NULL); //Default Value: index: 0
 		}
 #endif
-#if _NOT //!defined DX_ENGINE
+#if defined _NOT //!defined DX_ENGINE
 		if (!WOMA::AppSettings->FULL_SCREEN)
 		{
 		EnableWindow(hWndTitleLabelperMonitor[mon], false);
@@ -287,7 +289,7 @@ bool WomaSetupManager::Initialize(void* Driver)
 	}
 //#endif
 	// ---------------------------------------------------------------------------------------------
-    yPos += 30*2;
+	yPos += 30;// *2;
 
     // ---------------------------------------------------------------------------------------------
     // hWndTitleLabel[0] "Monitor Vsync:": CheckBox (lvl10)
@@ -329,11 +331,13 @@ bool WomaSetupManager::Initialize(void* Driver)
 #else
     SendMessage(hWndComboBox[2], CB_ADDSTRING, 0, reinterpret_cast<LPARAM>(TEXT("DX11 (not suppported)")));
 #endif
+
 #if (defined OPENGL3 || defined OPENGL40) 
     SendMessage(hWndComboBox[2], CB_ADDSTRING, 1, reinterpret_cast<LPARAM>(TEXT("GL3")));
 #else
     SendMessage(hWndComboBox[2], CB_ADDSTRING, 1, reinterpret_cast<LPARAM>(TEXT("GL3 (not suppported)")));
 #endif
+
 #if defined DX9sdk
     SendMessage(hWndComboBox[2], CB_ADDSTRING, 2, reinterpret_cast<LPARAM>(TEXT("DX9")));
 #elif defined DX9 && D3D11_SPEC_DATE_YEAR > 2009
@@ -341,13 +345,23 @@ bool WomaSetupManager::Initialize(void* Driver)
 #else
     SendMessage(hWndComboBox[2], CB_ADDSTRING, 2, reinterpret_cast<LPARAM>(TEXT("DX9(not suppported)")));
 #endif
+
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
     SendMessage(hWndComboBox[2], CB_ADDSTRING, 3, reinterpret_cast<LPARAM>(TEXT("DX12")));
 #else
     SendMessage(hWndComboBox[2], CB_ADDSTRING, 3, reinterpret_cast<LPARAM>(TEXT("DX12 (not suppported)")));
 #endif
 
+#if defined VULKAN
+	SendMessage(hWndComboBox[2], CB_ADDSTRING, 4,
+		reinterpret_cast<LPARAM>(TEXT("VULKAN")));
+#else
+	SendMessage(hWndComboBox[2], CB_ADDSTRING, 4,
+		reinterpret_cast<LPARAM>(TEXT("VULKAN (not supported)")));
+#endif
+
     SendMessage(hWndComboBox[2], CB_SETCURSEL, WOMA::AppSettings->DRIVER, NULL); //Default Value
+
 #if !defined DX_ENGINE
     EnableWindow(hWndTitleLabel[hWndTitleLabelIdx - 1], false);
     EnableWindow(hWndComboBox[2], false);
@@ -488,7 +502,7 @@ bool WomaSetupManager::Initialize(void* Driver)
 	EnableWindow(hWndComboBox[7], false);
 
 
-	yPos += 30*2;
+	yPos += 30;
 
 
 
@@ -521,7 +535,7 @@ bool WomaSetupManager::Initialize(void* Driver)
 	EnableWindow(hWndTitleLabel[hWndTitleLabelIdx-1], false);
 	EnableWindow(hWndCheckBox[2], false);
 
-    yPos += 30 * 2;
+    yPos += 30;
 
     // B2 "Network:": CheckBox
     // ---------------------------------------------------------------------------------------------
