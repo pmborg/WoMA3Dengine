@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: winSystemClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Define APIs for winSystemClass.cpp which is the WINDOWS OS API
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
 #include "standard_platform.h"
@@ -37,6 +37,8 @@
 
 #include "SystemClass.h"
 
+#include <ShellScalingApi.h> //will use: #pragma comment(lib, "Shcore.lib")
+ 
 /////////////////////
 // Windows GLOBALS //
 /////////////////////
@@ -48,7 +50,7 @@ WinSystemClass::WinSystemClass() : SystemClass()
 //----------------------------------------------------------------------------------
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525217;
+
 
 	//public:
 	SystemHandle = this;
@@ -70,21 +72,18 @@ WinSystemClass::WinSystemClass(WOMA::Settings* appSettings): SystemClass() //	Sy
 void WinSystemClass::ProcessFrame()
 //----------------------------------------------------------------------------
 {
-
 	SystemClass::FrameUpdate();	// Process: (Fx keys |ESC and F1 to F6| & get FPS)
 
 	if (WOMA::game_state == ENGINE_RESTART)
 		return; //Restart? so, don't render, restart now.
 
 	// Render Setup?
-#if CORE_ENGINE_LEVEL >= 5 && defined CLIENT_SCENE_SETUP
+#if CORE_ENGINE_LEVEL >= 5 && defined CLIENT_SCENE_SETUP //Native win32 WINDOWS Only.
 	if (WOMA::game_state == GAME_SETUP)
-	{
         return; //Process win32 Setup/pages so, don't render!
-	}
 #endif
 
-	Sleep((DWORD)16.66f);														// Do nothing for 16.66 ms (60 FPS)
+	Sleep((DWORD)16.66f);															// Do nothing for 16.66 ms (60 FPS)
 }
 
 void WinSystemClass::WinSystemClass_init()
@@ -153,15 +152,15 @@ bool WinSystemClass::APPLICATION_BEFORE_WINDOW()
 
 bool WinSystemClass::APPLICATION_AFTER_WINDOW()
 {
-    womalog("WinSystemClass::APPLICATION_CORE_INIT_DONE()\n");
+    womalog("\nWinSystemClass::APPLICATION_CORE_INIT_DONE()\n");
 
     return true;
 }
 
+
 bool WinSystemClass::APPLICATION_INIT_SYSTEM()
 //----------------------------------------------------------------------------
 {
-
 	// ################################# SYSTEM CHECK + CREATE WINDOW #################################
 	IF_NOT_RETURN_FALSE(APPLICATION_BEFORE_WINDOW());
 #if defined USE_SYSTEM_CHECK                                // BEFORE: APPLICATION_INIT_MAIN_WINDOW()
@@ -213,11 +212,28 @@ void WinSystemClass::GetInputs()
 }
 #endif
 
+#if defined INTRO_DEMO || defined USE_DIRECT_INPUT
+inline void WinSystemClass::WaitSpaceRelease()
+{
+	while (DXsystemHandle->m_player[g_NetID]->p_player.IsSpacePressed)
+	{
+		GetInputs();
+		Sleep(50);
+	}
+}
+#endif
+
+
+bool useRenderThread = false;
+
 //----------------------------------------------------------------------------
 int WinSystemClass::APPLICATION_MAIN_LOOP()		// [RUN] - MAIN "INFINITE" LOOP!
 //----------------------------------------------------------------------------
 {
 	MSG msg = { 0 };							// Reset msg
+	constexpr UINT AUTO_TEST_SECONDS = 30;
+
+	womalog("WinSystemClass::APPLICATION_MAIN_LOOP()\n");
 
 	//DEBUG:
 	do
@@ -272,11 +288,11 @@ void WinSystemClass::ShutdownWindows()
 	ShowCursor(true);
 
 	// For each Monitor:
-	for (int i = 0; i < windowsArray.size(); ++i)
+	for (int i = 0; i < WOMA::windowsToRenderArray.size(); ++i)
 	{
 		// Close & Destroy: this window
-		DestroyWindow(windowsArray[i].hWnd);
-		windowsArray[i].hWnd = NULL;
+		DestroyWindow(WOMA::windowsToRenderArray[i].hWnd);
+		WOMA::windowsToRenderArray[i].hWnd = NULL;
 	}
 
 	// Remove the application instance.
@@ -422,7 +438,7 @@ bool WinSystemClass::InitOsInput()
 }
 #endif
 
-bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*/ void* driver, int& width, int& height)
+bool WinSystemClass::CreateWin32MainWindow(UINT MONITOR_NUM, /*WomaDriverClass*/ void* driver, int& width, int& height)
 //----------------------------------------------------------------------------
 {
 	womalogauto((TCHAR*)TEXT("---------------------------------\n"));
@@ -439,7 +455,7 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
 
 	TCHAR   DeviceNameToUseOnFullScreen[MAX_STR_LEN] = { 0 };
 
-	// Iterate on all Monitors and get the below settings, for the target monitor defined: settings.xml (uiMonitor="2" )
+	// Iterate on all Monitors and get the below settings, for the target monitor defined: settings.xml (uiMonitor="0" )
 	// --------------------------------------------------------------------------------------------
 	// AppSettings->WINDOW_Xpos 
 	// AppSettings->WINDOW_Ypos 
@@ -450,13 +466,13 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
 	if (WOMA::AppSettings->FULL_SCREEN)
 		WOMA::AppSettings->AllowResize = true;					// Force: "Allow" User to resize to FullScreen.
 
-	if (windowsArray.size() == 0)
+	if (WOMA::windowsToRenderArray.size() == 0)
 	{
 		WOMA::WindowDataContainer screen;
-		SystemHandle->windowsArray.push_back(screen);
+		WOMA::windowsToRenderArray.push_back(screen);
 	}
 
-    // If we have multiple monitors, extract info from the monitor that we will use:
+	// If we have multiple monitors, extract info from the monitor that we will use:
 	displayDevice.cb = sizeof(DISPLAY_DEVICE);
 	while (EnumDisplayDevices(NULL, deviceNum, &displayDevice, 0))	// Get deviceNum
 	{
@@ -475,10 +491,10 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
 				((deviceNum == MONITOR_NUM) && (WOMA::AppSettings->UseAllMonitors == true)))
 			{
 				womalogauto((TCHAR*)TEXT("[Using this Monitor!]\n")); //WCHAR
-				_tcscpy_s(DeviceNameToUseOnFullScreen, 32, displayDevice.DeviceName);
+				_tcscpy_s(DeviceNameToUseOnFullScreen, CCHDEVICENAME, displayDevice.DeviceName);
 
-				//AppSettings->WINDOW_Xpos	windowsArray[MONITOR_NUM].width		AppSettings->BITSPERPEL
-				//AppSettings->WINDOW_Ypos	windowsArray[MONITOR_NUM].height
+				//AppSettings->WINDOW_Xpos	windowsToRenderArray[MONITOR_NUM].width		AppSettings->BITSPERPEL
+				//AppSettings->WINDOW_Ypos	windowsToRenderArray[MONITOR_NUM].height
 				//Mon0: 3840  -4			= 1920 1080							32
 				//Mon1: 0      0			= 3840 2160							32
 				//Mon2: -1920 16			= 1920 1080							32
@@ -488,10 +504,10 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
 				WOMA::AppSettings->WINDOW_Ypos = devMode.dmPosition.y;
 
 				Current_Screen_WIDTH = devMode.dmPelsWidth;
-				windowsArray[MONITOR_NUM].width = devMode.dmPelsWidth;
+				WOMA::windowsToRenderArray[MONITOR_NUM].width = devMode.dmPelsWidth;
 
 				Current_Screen_HEIGHT = devMode.dmPelsHeight;
-				windowsArray[MONITOR_NUM].height = devMode.dmPelsHeight;
+				WOMA::windowsToRenderArray[MONITOR_NUM].height = devMode.dmPelsHeight;
 
 				WOMA::AppSettings->BITSPERPEL = devMode.dmBitsPerPel;
 			}
@@ -562,17 +578,18 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
 		WOMA::AppSettings->SCREEN_RESOLUTION_HEIGHT = Current_Screen_HEIGHT;	//GetSystemMetrics(SM_CYSCREEN);
 	}
 
+#if true
+	//v1:
 	// -------------------------------------------------------------------------------------------
-    RECT R = { 0, 0, width, height };
-    bool FULLSCREEN_ON_WINDOWED= WOMA::AppSettings->FULLSCREEN_ON_WINDOWED;
+	RECT R = { 0, 0, width, height };
+	bool FULLSCREEN_ON_WINDOWED = WOMA::AppSettings->FULLSCREEN_ON_WINDOWED;
 	if (WOMA::AppSettings->FULL_SCREEN)
 		windowStyle = WS_POPUP | WS_VISIBLE;		// FULLSCREEN
 	else
 	{
-        // ALLOW RESIZE:
+		// ALLOW RESIZE:
 		if (WOMA::AppSettings->AllowResize)
 		{
-
 #if defined USE_NORMAL_WINDOW
 			windowStyle = WS_OVERLAPPEDWINDOW;													    // No TaskBar (bottom)
 #else
@@ -583,22 +600,24 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
 			AdjustWindowRect(&R, windowStyle, false);	// Compute "window rectangle dimensions" based on "requested client area" dimensions, for this "style"!
 		}
 		else
-        
 		{
 #if !defined USE_ALLOW_MAINWINDOW_RESIZE
 			// DO NOT ALLOW RESIZE:
-			windowStyle = (WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX) & ~WS_THICKFRAME & ~WS_BORDER;
+			windowStyle = (WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX) 
+				& ~WS_MINIMIZEBOX
+				& ~WS_THICKFRAME 
+				& ~WS_BORDER;
 #else
 			// Allow full-Screen on a Windowed:
 			if (((WOMA::AppSettings->WINDOW_WIDTH == WOMA::AppSettings->SCREEN_RESOLUTION_WIDTH) && (WOMA::AppSettings->WINDOW_HEIGHT == WOMA::AppSettings->SCREEN_RESOLUTION_HEIGHT)) || FULLSCREEN_ON_WINDOWED)
-            { 
-                windowStyle = WS_OVERLAPPED | WS_POPUP | WS_VISIBLE | WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_CLIPCHILDREN | WS_CLIPSIBLINGS & ~WS_THICKFRAME;
-                windowStyle = windowStyle & (~WS_CAPTION);
-                FULLSCREEN_ON_WINDOWED = true;
-            }
-            else {
-                windowStyle = WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
-            }
+			{
+				windowStyle = WS_OVERLAPPED | WS_POPUP | WS_VISIBLE | WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_CLIPCHILDREN | (WS_CLIPSIBLINGS & ~WS_THICKFRAME);
+				windowStyle = windowStyle & (~WS_CAPTION);
+				FULLSCREEN_ON_WINDOWED = true;
+			}
+			else {
+				windowStyle = WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
+			}
 #endif
 			windowStyle = windowStyle & (~WS_EX_TOPMOST);
 
@@ -606,18 +625,19 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
 			AdjustWindowRect(&R, windowStyle, false);
 		}
 	}
+#endif
 
-    // Determine the real / resolution of the Window on this "style":
+	// Determine the real / resolution of the Window on this "style":
 	WOMA::AppSettings->WINDOW_WIDTH = (WOMA::AppSettings->FULL_SCREEN) ? WOMA::AppSettings->WINDOW_WIDTH : (R.right - R.left);
 	WOMA::AppSettings->WINDOW_HEIGHT = (WOMA::AppSettings->FULL_SCREEN) ? WOMA::AppSettings->WINDOW_HEIGHT : (R.bottom - R.top);
 
-	#if defined USE_ASPECT_RATIO
+#if defined USE_ASPECT_RATIO
 	if (AppSettings->AllowResize)
 		aspect_r = (float)AppSettings->WINDOW_WIDTH / (float)AppSettings->WINDOW_HEIGHT;// Aspect Ratio: To keep it, on "Resize Window"
-	#endif
+#endif
 
 	// In Full-Screen, select the Window Position of that MONITOR:
-	int windowLeft=0, windowTop=0;
+	int windowLeft = 0, windowTop = 0;
 	if (WOMA::AppSettings->FULL_SCREEN || FULLSCREEN_ON_WINDOWED)
 	{
 		windowLeft = WOMA::AppSettings->WINDOW_Xpos;
@@ -625,6 +645,10 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
 	}
 	else
 	{
+		// Win32 frame compensation:
+		// Without this offset Windows minimize/maximize animations
+		// and restore positioning become visually inconsistent.
+		// Tested on Win10/11 multi-monitor setups.
 		windowLeft = WOMA::AppSettings->WINDOW_Xpos - 8;
 		windowTop = WOMA::AppSettings->WINDOW_Ypos;
 	}
@@ -637,7 +661,7 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
 		WOMA::AppSettings->WINDOW_HEIGHT = WOMA::settings.WINDOW_HEIGHT_ori;
 	}
 
-    DWORD dwExStyle = 0;
+	DWORD dwExStyle = 0;
 
 	if ((WOMA::AppSettings->WINDOW_WIDTH == 0) && (WOMA::AppSettings->WINDOW_HEIGHT == 0))
 		WomaFatalException("FATAL ERROR: Monitor Settings Invalid");
@@ -647,23 +671,87 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
 	// ------------------------------------------------------------------------------------------
 #if defined USE_NORMAL_WINDOW
 	HWND hWnd = CreateWindow(WOMA_ENGINE_CLASS, WOMA::APP_FULLNAME, WS_OVERLAPPEDWINDOW,
-        windowLeft, windowTop, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT,
+		windowLeft, windowTop, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT,
 		nullptr, nullptr, m_hinstance, nullptr);
 #else
 	int TaskBarHeigth = 0;
 #if defined _DEBUG && defined USE_STATUSBAR
-    if (!WOMA::AppSettings->FULL_SCREEN)
-    {
-	    TaskBarHeigth = WOMA::getTaskBarHeight();
+	if (!WOMA::AppSettings->FULL_SCREEN)
+	{
+		TaskBarHeigth = WOMA::getTaskBarHeight();
 		WOMA::AppSettings->WINDOW_HEIGHT = WOMA::AppSettings->WINDOW_HEIGHT; // -TaskBarHeigth - TaskBarHeigth;
-    }
+	}
 #endif
 
-	STRING TITLE = TEXT("WOMA ENGINE CORE LEVEL: "); TITLE.append(to_string(CORE_ENGINE_LEVEL));
-	#define DEFAULT_TITLE (TCHAR*)TITLE.c_str()
+	STRING TITLE = TEXT("WOMA ENGINE CORE LEVEL: "); TITLE.append(TO_STRING(CORE_ENGINE_LEVEL));
+#define DEFAULT_TITLE (TCHAR*)TITLE.c_str()
+
+	// WoMA NOTE (2026)
+	//
+	// The temporary Per-Monitor-V2 thread DPI fix is required for DX11/DX12,
+	// but must NOT be enabled for OpenGL or Vulkan.
+	//
+	// Reason:
+	// OpenGL (WGL) and Vulkan (vkCreateWin32SurfaceKHR) inherit the HWND DPI
+	// context and may receive a scaled client area (ex: 412x202 instead of
+	// 640x360), causing incorrect viewport and swapchain extents.
+	//
+	// DX11/DX12: apply fix.
+	// OpenGL/Vulkan: use normal Win32 DPI behavior.
+
+	bool applyDpiFix = true;
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3 || WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+	{
+		applyDpiFix = false;
+
+		// Remove Multi-Monitor High DPI Awareness:
+#if defined WINDOWS_PLATFORM
+		HMODULE hShcore = LoadLibraryA("shcore.dll");
+		if (hShcore) {
+			typedef HRESULT(WINAPI* PFN_SetProcessDpiAwareness)(PROCESS_DPI_AWARENESS);
+			PFN_SetProcessDpiAwareness pfnSetProcessDpiAwareness =
+				(PFN_SetProcessDpiAwareness)GetProcAddress(hShcore, "SetProcessDpiAwareness");
+
+			if (pfnSetProcessDpiAwareness) {
+				pfnSetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
+			}
+			FreeLibrary(hShcore);
+		}
+		else {
+			// Fallback para Windows 7 ou anterior
+			SetProcessDPIAware();
+		}
+#endif
+	}
 
 
-	womalog("WINDOW_WIDTH: %d, WINDOW_HEIGHT: %d1n", WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT);
+#ifdef WoMA_FIX_WINDOWS_GUI_SCALE_2026
+	// WoMA FIX (2026)
+	//
+	// Problema:
+	// - PROCESS_PER_MONITOR_DPI_AWARE aplicado ao processo inteiro provocava
+	//   uma regressão grave de desempenho apenas no DX12 (~7000 -> ~120 FPS).
+	// - PROCESS_SYSTEM_DPI_AWARE corrigia o desempenho mas fazia as janelas
+	//   abrir no monitor errado em configurações 4K(150%) + FullHD.
+	//
+	// Solução:
+	// - Ativar PER_MONITOR_AWARE_V2 apenas durante CreateWindowEx.
+	// - Restaurar imediatamente o contexto da thread.
+	// - Mantém posicionamento correto das janelas e desempenho máximo do DX12.
+
+	// [CORREÇÃO 1] Força a thread atual a entrar em modo Per-Monitor V2 temporariamente.
+	// Isto faz com que o Windows trate os valores (3840x2160) como píxeis puros no CreateWindowEx.
+
+	DPI_AWARENESS_CONTEXT oldContext = {};
+	if (applyDpiFix) {
+		oldContext = SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+		if (oldContext == NULL) {
+			oldContext = SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
+		}
+	}
+#endif
+
+	womalog("WINDOW_WIDTH: %d, WINDOW_HEIGHT: %d\n", WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT);
 	// [*] Create the window and return the handle to it:
 	HWND hWnd = WomaCreateWindowEx( dwExStyle, (TCHAR*)WOMA_ENGINE_CLASS, DEFAULT_TITLE, windowStyle,
                             		windowLeft, windowTop,
@@ -674,13 +762,37 @@ bool WinSystemClass::CreateWin32MainWindow(	UINT MONITOR_NUM, /*WomaDriverClass*
                             		NULL);	    // We aren't using multiple windows
 #endif
 
+#ifdef WoMA_FIX_WINDOWS_GUI_SCALE_2026
+	// [CORREÇÃO 2] Vincula o modo Per-Monitor DIRETAMENTE a este Handle de janela (HWND) em Runtime.
+
+	if (applyDpiFix) {
+		HMODULE hUser32 = GetModuleHandleA("user32.dll");
+		if (hUser32) {
+			typedef BOOL(WINAPI* PFN_SetWindowDpiAwarenessContext)(HWND, DPI_AWARENESS_CONTEXT);
+			PFN_SetWindowDpiAwarenessContext pfnSetWindowDpiAwarenessContext =
+				(PFN_SetWindowDpiAwarenessContext)GetProcAddress(hUser32, "SetWindowDpiAwarenessContext");
+
+			if (pfnSetWindowDpiAwarenessContext) {
+				pfnSetWindowDpiAwarenessContext(hWnd, DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+			}
+		}
+	
+
+		// [CORREÇÃO 3] Restaura o contexto original da Thread imediatamente!
+		// Isto devolve o controlo ao processo global, garantindo que o teu DX12 mantenha os 7000 FPS.
+		if (oldContext != NULL) {
+			SetThreadDpiAwarenessContext(oldContext);
+		}
+	}
+#endif
+
 	ASSERT(hWnd);
 
     // Save window for Main Monitor
     m_hWnd = hWnd;
 
     // WindowDataContainer
-    windowsArray[MONITOR_NUM].hWnd = hWnd;
+	WOMA::windowsToRenderArray[MONITOR_NUM].hWnd = hWnd;
 
     // ------------------------------------------------------------------------------------------
     // Create: WIN32 - Status bar Window 
@@ -717,8 +829,8 @@ bool WinSystemClass::ShowWindow(UINT MONITOR_NUM, int windowLeft, int windowTop)
 	UpdateWindow(m_hWnd);           // 1st Window WIN32/"Paint"  NOW!
 
 	// Save window properties
-	GetWindowRect(m_hWnd, &windowsArray[MONITOR_NUM].m_rcWindowBounds);	//{m_rcWindowBounds = {LT(3832, -21) RB(5768, 1027)  [1936 x 1048]}}
-	GetClientRect(m_hWnd, &windowsArray[MONITOR_NUM].m_rcWindowClient);	//{m_rcWindowClient = {LT(0, 0) RB(1920, 1009)  [1920 x 1009]}}	
+	GetWindowRect(m_hWnd, &WOMA::windowsToRenderArray[MONITOR_NUM].m_rcWindowBounds);	//{m_rcWindowBounds = {LT(3832, -21) RB(5768, 1027)  [1936 x 1048]}}
+	GetClientRect(m_hWnd, &WOMA::windowsToRenderArray[MONITOR_NUM].m_rcWindowClient);	//{m_rcWindowClient = {LT(0, 0) RB(1920, 1009)  [1920 x 1009]}}	
 
 	return true;
 }
@@ -788,7 +900,7 @@ BOOL CALLBACK MyInfoEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonit
         screen.refreshRate_Denominator = 1; //Default
 
         if ((info->Count == WOMA::AppSettings->UI_MONITOR) || (WOMA::AppSettings->UseAllMonitors == true))
-            SystemHandle->windowsArray.push_back(screen); //List of Monitors that will be used
+            WOMA::windowsToRenderArray.push_back(screen); //List of Monitors that will be used
 
         info->Count++;
         return true;
@@ -835,12 +947,14 @@ bool WinSystemClass::APPLICATION_INIT_MAIN_WINDOW()
 		//0 (FIXED) Means the Select Monitor: can be 0, 1 ,2...
 		IF_NOT_RETURN_FALSE(CreateWin32MainWindow(0 /*Just one monitor?*/, g_contextDriver, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT));
 	}
+	#ifdef USE_MULTI_MONITOR
 	else
 	{
 		// For each Monitor:
-		for (int i = 0; i < windowsArray.size(); ++i)
+		for (int i = 0; i < WOMA::windowsToRenderArray.size(); ++i)
 			IF_NOT_RETURN_FALSE(CreateWin32MainWindow(i /* use all these monitors*/, g_contextDriver, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT));
 	}
+	#endif
 #endif
 
 	return true;
@@ -865,18 +979,28 @@ void WinSystemClass::UNPAUSE()
 	}
 }
 
-#if defined USE_ALLOW_MAINWINDOW_RESIZE //CORE_ENGINE_LEVEL >= 10 // Initializing Engine
+#if defined USE_ALLOW_MAINWINDOW_RESIZE
 void WinSystemClass::ONRESIZE(void* pContext)
 {
+	womalog("ONRESIZE()\n");
+	womalog("ONRESIZE: %ux%u\n",
+		WOMA::AppSettings->WINDOW_WIDTH,
+		WOMA::AppSettings->WINDOW_HEIGHT);
+
 	if (SystemHandle) {
-		womalog("ONRESIZE()\n");
 		if (SystemHandle->m_Application)
 			SystemHandle->m_Application->WOMA_APPLICATION_InitGUI();
-		#if defined DX_ENGINE //OPENGL TODO
-		if (DXsystemHandle)
-			DXsystemHandle->GPH_RESIZE(pContext);
-		#endif
 	}
+
+#if defined USE_STATUSBAR
+	if (!WOMA::AppSettings->FULL_SCREEN)
+	{
+		if (!SystemHandle->statusbar)
+			SystemHandle->statusbar = DoCreateStatusBar(SystemHandle->m_hWnd, 0, m_hinstance, 1);
+
+		SendMessage(SystemHandle->statusbar, SB_SETTEXT, 0, (LPARAM)DEMO_TITLE);
+	}
+#endif
 }
 #endif
 
