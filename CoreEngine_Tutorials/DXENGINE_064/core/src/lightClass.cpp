@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: lightClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -15,8 +15,9 @@
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Paint the main window depending of engine state screen page.
+// NOTE: Used by WINDOWS, LINUX and ANDROID
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
 
@@ -24,12 +25,14 @@
 #include "TrigonometryMathClass.h"
 #include "OSengine.h"
 #include "ApplicationClass.h"
+#if defined WINDOWS_PLATFORM && defined USE_LEVEL_36V2
 #include "DXinputclass.h"
+#endif
 
 LightClass::LightClass() 
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525217;
+
 
 }
 
@@ -37,98 +40,140 @@ LightClass::~LightClass() {CLASSDELETE();}
 
 void LightClass::SetAmbientColor(float red, float green, float blue, float alpha)
 {
-#if defined DX_ENGINE
+
 	m_ambientColor = XMFLOAT4(red, green, blue, alpha);
-#else
-	m_ambientColor[0] = red;
-	m_ambientColor[1] = green;
-	m_ambientColor[2] = blue;
-	m_ambientColor[3] = alpha;
-#endif
 }
 
 void LightClass::SetDiffuseLightColor(float red, float green, float blue, float alpha)
 {
-#if defined DX_ENGINE
+
 	m_diffuseColor = XMFLOAT4(red, green, blue, alpha);
-#else
-	m_diffuseColor[0] = red;
-	m_diffuseColor[1] = green;
-	m_diffuseColor[2] = blue;
-	m_diffuseColor[3] = alpha;
-#endif
 }
 
 void LightClass::SetDirection(float x, float y, float z)
 {
-#if defined DX_ENGINE
+
 	m_lightDirection = XMFLOAT4(x, y, z, 0); // Invert Direction to avoid "-" in shader code for every vertex
-#else
-	m_lightDirection[0] = x;
-	m_lightDirection[1] = y;
-	m_lightDirection[2] = z;
-#endif
 }
 
-#if defined DX_ENGINE
+#if defined USE_SHADOW_MAP
 void LightClass::GenerateViewMatrix(float SunX, float SunY, float SunZ)
 {
-	// Used on Shadow Map
+#if defined WINDOWS_PLATFORM
 
-	// Setup the vector that points upwards.
+	// DirectXMath (Windows: DX11/DX12/OpenGL/Vulkan)
 	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	XMVECTOR position = XMVectorSet(SunX, SunY, SunZ, 0.0f);
+	XMVECTOR lightDirection = XMVectorSet(
+		m_lightDirection.x,
+		m_lightDirection.y,
+		m_lightDirection.z,
+		m_lightDirection.w);
 
-	// Create the view matrix from the three vectors.
-	XMVECTOR lightDirection = XMVectorSet(m_lightDirection.x, m_lightDirection.y, m_lightDirection.z, m_lightDirection.w);
 	m_viewMatrix = XMMatrixLookAtLH(position, lightDirection, up);
+
+#else
+
+	// GLmath (Linux / Android)
+	VectorType position, lookAt, up;
+	VectorType zAxis, xAxis, yAxis;
+	float length, result1, result2, result3;
+
+	position.x = SunX;
+	position.y = SunY;
+	position.z = SunZ;
+
+	// Keep the same behaviour as XMMatrixLookAtLH:
+	lookAt.x = m_lightDirection.x;
+	lookAt.y = m_lightDirection.y;
+	lookAt.z = m_lightDirection.z;
+
+	up.x = 0.0f;
+	up.y = 1.0f;
+	up.z = 0.0f;
+
+	// zAxis = normalize(lookAt - position)
+	zAxis.x = lookAt.x - position.x;
+	zAxis.y = lookAt.y - position.y;
+	zAxis.z = lookAt.z - position.z;
+
+	length = sqrtf(zAxis.x * zAxis.x + zAxis.y * zAxis.y + zAxis.z * zAxis.z);
+	zAxis.x /= length;
+	zAxis.y /= length;
+	zAxis.z /= length;
+
+	// xAxis = normalize(cross(up, zAxis))
+	xAxis.x = up.y * zAxis.z - up.z * zAxis.y;
+	xAxis.y = up.z * zAxis.x - up.x * zAxis.z;
+	xAxis.z = up.x * zAxis.y - up.y * zAxis.x;
+
+	length = sqrtf(xAxis.x * xAxis.x + xAxis.y * xAxis.y + xAxis.z * xAxis.z);
+	xAxis.x /= length;
+	xAxis.y /= length;
+	xAxis.z /= length;
+
+	// yAxis = cross(zAxis, xAxis)
+	yAxis.x = zAxis.y * xAxis.z - zAxis.z * xAxis.y;
+	yAxis.y = zAxis.z * xAxis.x - zAxis.x * xAxis.z;
+	yAxis.z = zAxis.x * xAxis.y - zAxis.y * xAxis.x;
+
+	result1 = -(xAxis.x * position.x + xAxis.y * position.y + xAxis.z * position.z);
+	result2 = -(yAxis.x * position.x + yAxis.y * position.y + yAxis.z * position.z);
+	result3 = -(zAxis.x * position.x + zAxis.y * position.y + zAxis.z * position.z);
+
+	m_viewMatrix.m[0] = xAxis.x;
+	m_viewMatrix.m[1] = yAxis.x;
+	m_viewMatrix.m[2] = zAxis.x;
+	m_viewMatrix.m[3] = 0.0f;
+
+	m_viewMatrix.m[4] = xAxis.y;
+	m_viewMatrix.m[5] = yAxis.y;
+	m_viewMatrix.m[6] = zAxis.y;
+	m_viewMatrix.m[7] = 0.0f;
+
+	m_viewMatrix.m[8] = xAxis.z;
+	m_viewMatrix.m[9] = yAxis.z;
+	m_viewMatrix.m[10] = zAxis.z;
+	m_viewMatrix.m[11] = 0.0f;
+
+	m_viewMatrix.m[12] = result1;
+	m_viewMatrix.m[13] = result2;
+	m_viewMatrix.m[14] = result3;
+	m_viewMatrix.m[15] = 1.0f;
+
+#endif
 }
 #endif
 
-/*const*/ float* LightClass::GetDiffuseColor()
+XMFLOAT4 LightClass::GetDiffuseColor()
 {
-#if defined DX_ENGINE
-	static float diffuseColor[4];		// Allocate static memory for result
-	diffuseColor[0] = m_diffuseColor.x;
-	diffuseColor[1] = m_diffuseColor.y;
-	diffuseColor[2] = m_diffuseColor.z;
-	diffuseColor[3] = m_diffuseColor.w;
-	return diffuseColor;				// Convert to be used by OPEN GL
-#else
 	return m_diffuseColor;
-#endif
 }
 
-/*const*/ float* LightClass::GetDirection()
+XMFLOAT4 LightClass::GetDirection()
 {
-	static float lightDirection[4];		// Allocate static memory for result
-#if defined _XM_NO_INTRINSICS_
-	lightDirection[0] = m_lightDirection.vector4_f32[0];
-	lightDirection[1] = m_lightDirection.vector4_f32[1];
-	lightDirection[2] = m_lightDirection.vector4_f32[2];
-	lightDirection[3] = m_lightDirection.vector4_f32[3];
-#else
-	#if defined DX_ENGINE
-	//NEED: _XM_SSE_INTRINSICS_ for fast code:
-	lightDirection[0] = m_lightDirection.x;		//m128_f32[0];
-	lightDirection[1] = m_lightDirection.y;		//m128_f32[1];
-	lightDirection[2] = m_lightDirection.z;		//m128_f32[2];
-	lightDirection[3] = m_lightDirection.w;		//m128_f32[3];
-	#else
-	lightDirection[0] = m_lightDirection[0];	//m128_f32[0];
-	lightDirection[1] = m_lightDirection[1];	//m128_f32[1];
-	lightDirection[2] = m_lightDirection[2];	//m128_f32[2];
-	lightDirection[3] = m_lightDirection[3];	//m128_f32[3];
-	#endif
-#endif
-
-	return &lightDirection[0];				// Convert to be used by OPEN GL
+	return m_lightDirection;				// Convert to be used by OPEN GL
 }
 
 void LightClass::GenerateOrthoMatrix(float width, float height, float depthPlane, float nearPlane)
 {
-	// Create the orthographic matrix for the light.
-	m_ligth_orthoMatrix = XMMatrixOrthographicLH((float)width, (float)height, nearPlane, depthPlane);  // 2D PROJECTION
+#if defined WINDOWS_PLATFORM
+
+	// DirectXMath (Windows)
+	m_ligth_orthoMatrix = XMMatrixOrthographicLH(width, height, nearPlane, depthPlane);
+
+#else
+
+	// GLmath (Linux / Android) - same as XMMatrixOrthographicLH
+	ZeroMemory(&m_ligth_orthoMatrix, sizeof(mat4));
+
+	m_ligth_orthoMatrix.m[0] = 2.0f / width;
+	m_ligth_orthoMatrix.m[5] = 2.0f / height;
+	m_ligth_orthoMatrix.m[10] = 1.0f / (depthPlane - nearPlane);
+	m_ligth_orthoMatrix.m[14] = nearPlane / (nearPlane - depthPlane);
+	m_ligth_orthoMatrix.m[15] = 1.0f;
+
+#endif
 }
 
 #if defined RENDER_OBJ_WITH_SPECULAR_SHININESS
@@ -154,15 +199,9 @@ float LightClass::GetSpecularPower()
 #endif
 
 
-const float* LightClass::GetAmbientColor()
+XMFLOAT4 LightClass::GetAmbientColor()
 {
-	static float ambientColor[4];		// Allocate static memory for result
-	ambientColor[0] = m_ambientColor.x;
-	ambientColor[1] = m_ambientColor.y;
-	ambientColor[2] = m_ambientColor.z;
-	ambientColor[3] = m_ambientColor.w;
-
-	return ambientColor;				// Convert to be used by OPEN GL
+	return m_ambientColor;				// Convert to be used by OPEN GL
 }
 
 
@@ -180,10 +219,8 @@ void LightClass::GenerateCameraCenteredShadowMatrices(
 	//----------------------------------------------------------
 	// 1. Raise camera to avoid terrain clipping
 	//----------------------------------------------------------
-	float terrainHeight = mainTerrain->getTerrainHeight(TERRAIN_ID,
-		cameraPos.x,
-		cameraPos.z);
-
+	float terrainHeight = mainTerrain->getTerrainHeight(TERRAIN_ID, cameraPos.x, cameraPos.z);
+	
 	// Always keep shadow camera at least +10 above terrain
 	float safeY = terrainHeight + 10.0f;
 
@@ -196,9 +233,7 @@ void LightClass::GenerateCameraCenteredShadowMatrices(
 	//----------------------------------------------------------
 	// 2. Calculate sun direction
 	//----------------------------------------------------------
-	XMVECTOR sunDir = XMVector3Normalize(
-		XMVectorSet(-m_lightDirection.x, -m_lightDirection.y,
-			-m_lightDirection.z, 0.0f));
+	XMVECTOR sunDir = XMVector3Normalize(XMVectorSet(-m_lightDirection.x, -m_lightDirection.y, -m_lightDirection.z, 0.0f));
 
 	XMVECTOR centerWS = XMVectorSet(camRaised.x, camRaised.y, camRaised.z, 1.0f);
 
@@ -207,8 +242,7 @@ void LightClass::GenerateCameraCenteredShadowMatrices(
 	//----------------------------------------------------------
 	float lightDist = orthoHalfSize * lightDistanceMultiplier;
 
-	XMVECTOR lightEyeWS =
-		XMVectorSubtract(centerWS, XMVectorScale(sunDir, lightDist));
+	XMVECTOR lightEyeWS = XMVectorSubtract(centerWS, XMVectorScale(sunDir, lightDist));
 
 	//----------------------------------------------------------
 	// 4. Build view matrix
@@ -224,14 +258,10 @@ void LightClass::GenerateCameraCenteredShadowMatrices(
 	float B = -orthoHalfSize;
 	float T = orthoHalfSize;
 
-	m_ligth_orthoMatrix =
-		XMMatrixOrthographicOffCenterLH(L, R, B, T, nearZ, farZ);
+	m_ligth_orthoMatrix = XMMatrixOrthographicOffCenterLH(L, R, B, T, nearZ, farZ);
 }
 
 
-
-// V1-compatible shadow region for small scenes
-//#if defined USE_SMALL_SHADOWS   // Levels 36–39
 
 void LightClass::GenerateSmallSceneShadowMatrices(float sunAzimuthDeg, float sunElevationDeg, float useLightSize)
 {

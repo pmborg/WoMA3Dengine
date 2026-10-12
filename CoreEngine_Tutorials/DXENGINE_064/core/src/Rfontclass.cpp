@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // ORIGINAL: Rastertek Tutorial 14: Font Engine : https://www.rastertek.com/gl4linuxtut14.html
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
@@ -172,16 +172,11 @@ bool RFontClass::LoadFontData(char* filename)
 	fin.open(filename);
 	if (fin.fail())
 	{
-#if defined LINUX_MAVERICK
-		STRING dir = "/home/pedro/projects/LinuxWoma029/CoreEngine_Tutorials/engine/";
-		dir.append(filename);
-#else
 		STRING dir = WOMA::getCurrentDir();
 		dir.append("/../../WoMA3Dengine/CoreEngine_Tutorials/DXENGINE_0");
 		dir.append(std::to_string(DX_ENGINE_LEVEL));
 		dir.append("/");
 		dir.append(filename);
-#endif
 
 		fin.open(dir);
 		if (fin.fail())
