@@ -20,7 +20,6 @@
 
 #ifndef __LINUXSYSTEMCLASS_H__
 
-//#include "platform.h"
 #include "SystemClass.h"
 
 #ifdef LINUX_PLATFORM

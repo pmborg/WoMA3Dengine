@@ -115,7 +115,6 @@ namespace WOMA
 			if (shader) {
 				strcpy_s(file_, sizeof(file_), filename);
             } else {
-				//StringCchPrintf(file_, sizeof(file_), TEXT("%s%s"), TEXT("../"), filename);
 				if (_tcsncmp(filename, TEXT("../engine"), 9) == 0)
 				{
 					_tcscpy_s(file_, filename);

@@ -2,7 +2,7 @@
 // Filename: AndroidSystemClass.h
 // --------------------------------------------------------------------------------------------
 // ********************************************************************************************
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
 // code by : Pedro Borges - pmborg@yahoo.com
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
@@ -12,8 +12,6 @@
 // ********************************************************************************************
 //WomaIntegrityCheck = 1234526920;
 #pragma once
-
-// ALL Includes to Android: http://mobilepearls.com/labs/native-android-api/
 
 //////////////
 // INCLUDES //
@@ -88,7 +86,6 @@ private:
 	// --------------------------------------------------------------
 public:
 	void*			m_hWnd = NULL;
-	//int			game_state;
 
 	STRING			userName;
 	STRING			ComputerName;
@@ -113,7 +110,7 @@ public:
 
 #if DX_ENGINE_LEVEL >= 19
 	FpsClass	m_Fps;
-	//int			fps;
+
 	int			cpu;
 #if defined USE_TIMER_CLASS
 	TimerClass	m_Timer;

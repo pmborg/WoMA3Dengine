@@ -20,8 +20,6 @@
 
 #include "OSengine.h"
 #include "WinSystemClass.h"
-//#include "OSmain_dir.h"
-//#include "stateMachine.h"
 
 #if CORE_ENGINE_LEVEL >= 2 && defined WINDOWS_PLATFORM 
 

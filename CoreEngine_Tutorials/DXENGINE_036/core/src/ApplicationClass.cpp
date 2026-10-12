@@ -389,10 +389,6 @@ bool ApplicationClass::WOMA_APPLICATION_InitGUI()
 		SystemHandle->m_scaleX = MAX(1, WOMA::AppSettings->WINDOW_HEIGHT / 1080.0f);
 		SystemHandle->m_scaleY = MAX(1, WOMA::AppSettings->WINDOW_WIDTH / 1920.0f);
 	}
-
-	//if (SystemHandle->m_scaleY > 0.9f)
-	//	SystemHandle->m_scaleY = 1;
-
 	SystemHandle->fontSizeX = MIN(MIN_WIN32_FONT_X, 48 * SystemHandle->m_scaleX); //To use on win32 window not DX
 	SystemHandle->fontSizeY = MIN(MIN_WIN32_FONT_Y, 40 * SystemHandle->m_scaleY); //To use on win32 window not DX
 	#endif
@@ -634,7 +630,6 @@ void ApplicationClass::RenderScene(void* /*unused*/, UINT monIdx, WomaDriverClas
 #if DX_ENGINE_LEVEL >= 36 && (defined USE_MINIMAP_REDENRING_THREAD || defined activate_render_in_shadowMap || defined USE_MAIN_MAP)
 	if (WOMA::AppSettings->DRIVER != DRIVER_VULKAN)				// On Vulkan this was already done!
 		AppPreRender(monIdx, driver, dayLightFade, mainCtx);	// lvl36: Render shadow sequence work.
-	// lvl91: Launch shadow & mini-map async work, (do not wait for render on level>=91) Start aux threads on this frame
 #endif
 
 	AppRender(monIdx, RENDER_PAGE, dayLightFade, mainCtx);		// [2] 3D Render "main scene" while workers run in parallel!

@@ -230,27 +230,6 @@ void GLcameraClass::BuildViewMatrix(VectorType position, VectorType lookAt, Vect
 #if  DX_ENGINE_LEVEL >= 22 || defined USE_VIEW2D_SPRITES
 void GLcameraClass::Use2DViewMatrix()
 {
-	/*
-	m_viewmatrix2D[0]  = m_viewMatrix[0];
-	m_viewmatrix2D[1]  = m_viewMatrix[1];
-	m_viewmatrix2D[2]  = m_viewMatrix[2];
-	m_viewmatrix2D[3]  = m_viewMatrix[3];
-
-	m_viewmatrix2D[4]  = m_viewMatrix[4];
-	m_viewmatrix2D[5]  = m_viewMatrix[5];
-	m_viewmatrix2D[6]  = m_viewMatrix[6];
-	m_viewmatrix2D[7]  = m_viewMatrix[7];
-
-	m_viewmatrix2D[8]  = m_viewMatrix[8];
-	m_viewmatrix2D[9]  = m_viewMatrix[9];
-	m_viewmatrix2D[10] = m_viewMatrix[10];
-	m_viewmatrix2D[11] = m_viewMatrix[11];
-
-	m_viewmatrix2D[12] = m_viewMatrix[12];
-	m_viewmatrix2D[13] = m_viewMatrix[13];
-	m_viewmatrix2D[14] = m_viewMatrix[14];
-	m_viewmatrix2D[15] = m_viewMatrix[15];
-	*/
 }
 #endif
 

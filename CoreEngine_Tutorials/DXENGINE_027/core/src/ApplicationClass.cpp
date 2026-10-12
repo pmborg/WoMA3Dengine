@@ -335,10 +335,6 @@ bool ApplicationClass::WOMA_APPLICATION_InitGUI()
 		SystemHandle->m_scaleX = MAX(1, WOMA::AppSettings->WINDOW_HEIGHT / 1080.0f);
 		SystemHandle->m_scaleY = MAX(1, WOMA::AppSettings->WINDOW_WIDTH / 1920.0f);
 	}
-
-	//if (SystemHandle->m_scaleY > 0.9f)
-	//	SystemHandle->m_scaleY = 1;
-
 	SystemHandle->fontSizeX = MIN(MIN_WIN32_FONT_X, 48 * SystemHandle->m_scaleX); //To use on win32 window not DX
 	SystemHandle->fontSizeY = MIN(MIN_WIN32_FONT_Y, 40 * SystemHandle->m_scaleY); //To use on win32 window not DX
 	#endif

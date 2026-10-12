@@ -35,14 +35,42 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Android1\Android1.NativeActivity\AndroidNewSystemClass.h" />
+    <ClInclude Include="Android1\Android1.NativeActivity\android_native_app_glue.h" />
+    <ClInclude Include="Android1\Android1.NativeActivity\defs.h" />
+    <ClInclude Include="Android1\Android1.NativeActivity\pch.h" />
+    <ClInclude Include="core\Android1\Android1.NativeActivity\Android.h" />
+    <ClInclude Include="core\Android1\Android1.NativeActivity\AndroidEngine.h" />
+    <ClInclude Include="core\Android1\Android1.NativeActivity\AndroidNewSystemClass.h" />
+    <ClInclude Include="core\Android1\Android1.NativeActivity\androidsystemclass.h" />
+    <ClInclude Include="core\Android1\Android1.NativeActivity\android_native_app_glue.h" />
+    <ClInclude Include="core\Android1\Android1.NativeActivity\AudioPlayer.h" />
+    <ClInclude Include="core\Android1\Android1.NativeActivity\AudioSource.h" />
+    <ClInclude Include="core\Android1\Android1.NativeActivity\defs.h" />
+    <ClInclude Include="core\Android1\Android1.NativeActivity\eglOpenGLclass.h" />
+    <ClInclude Include="core\Android1\Android1.NativeActivity\MathConstants.h" />
+    <ClInclude Include="core\Android1\Android1.NativeActivity\OboeAudioPlayer.h" />
+    <ClInclude Include="core\Android1\Android1.NativeActivity\pch.h" />
+    <ClInclude Include="core\Android1\Android1.NativeActivity\WavetableOscillator.h" />
+    <ClInclude Include="core\Android1\Android1.NativeActivity\WavetableSynthesizer.h" />
     <ClInclude Include="core\include\ApplicationClass.h" />
     <ClInclude Include="core\include\astroClass.h" />
     <ClInclude Include="core\include\default_settings_xml.h" />
+    <ClInclude Include="core\include\DXbasicTypes.h" />
+    <ClInclude Include="core\include\DXcameraClass.h" />
+    <ClInclude Include="core\include\DXdrivers.h" />
+    <ClInclude Include="core\include\DXmodelClass.h" />
+    <ClInclude Include="core\include\DXshaderClass.h" />
     <ClInclude Include="core\include\fileLoader.h" />
     <ClInclude Include="core\include\fpsClass.h" />
+    <ClInclude Include="core\include\GLcameraClass.h" />
     <ClInclude Include="core\include\GLmathClass.h" />
+    <ClInclude Include="core\include\GLmodelClass.h" />
+    <ClInclude Include="core\include\GLshaderClass.h" />
+    <ClInclude Include="core\include\glxOpenGLclass.h" />
     <ClInclude Include="core\include\idea.h" />
     <ClInclude Include="core\include\initWorld.h" />
+    <ClInclude Include="core\include\InputClass.h" />
     <ClInclude Include="core\include\language.h" />
     <ClInclude Include="core\include\log.h" />
     <ClInclude Include="core\include\main.h" />
@@ -54,6 +82,8 @@
     <ClInclude Include="core\include\OSmain_dir.h" />
     <ClInclude Include="core\include\packManager.h" />
     <ClInclude Include="core\include\platform.h" />
+    <ClInclude Include="core\include\playerClass.h" />
+    <ClInclude Include="core\include\positionClass.h" />
     <ClInclude Include="core\include\processorInfo.h" />
     <ClInclude Include="core\include\stackTrace.h" />
     <ClInclude Include="core\include\standard_platform.h" />
@@ -63,6 +93,10 @@
     <ClInclude Include="core\include\systemManager.h" />
     <ClInclude Include="core\include\timerClass.h" />
     <ClInclude Include="core\include\TrigonometryMathClass.h" />
+    <ClInclude Include="core\include\vertexTypes.h" />
+    <ClInclude Include="core\include\virtualCameraClass.h" />
+    <ClInclude Include="core\include\virtualModelClass.h" />
+    <ClInclude Include="core\include\virtualShaderClass.h" />
     <ClInclude Include="core\include\vkClass.h" />
     <ClInclude Include="core\include\vkModelClass.h" />
     <ClInclude Include="core\include\vkShaderClass.h" />
@@ -87,6 +121,9 @@
     <ClInclude Include="core\include\GLopenGLclass.h" />
     <ClInclude Include="core\include\wglopenglclass.h" />
     <ClInclude Include="core\include\womadriverclass.h" />
+    <ClInclude Include="core\linux\include\linux.h" />
+    <ClInclude Include="core\linux\include\linuxsystemclass.h" />
+    <ClInclude Include="core\linux\include\Rinputclass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
@@ -103,9 +140,11 @@
     <ClCompile Include="core\src\corelib6.cpp" />
     <ClCompile Include="core\src\default_settings_xml.cpp" />
     <ClCompile Include="core\src\DX11RasterizerState.cpp" />
+    <ClCompile Include="core\src\DX9\DX9Class.cpp" />
     <ClCompile Include="core\src\fileLoader.cpp" />
     <ClCompile Include="core\src\fpsClass.cpp" />
     <ClCompile Include="core\src\GLmathClass.cpp" />
+    <ClCompile Include="core\src\GLX\glxOpenGLclass.cpp" />
     <ClCompile Include="core\src\idea.cpp" />
     <ClCompile Include="core\src\initWorld.cpp" />
     <ClCompile Include="core\src\language.cpp" />

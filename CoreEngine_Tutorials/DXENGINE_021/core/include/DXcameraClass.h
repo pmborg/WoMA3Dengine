@@ -116,8 +116,8 @@ public:
 
 private:
 #if defined DX12 || defined DX11 || defined DX9
-	XMVECTOR /*XMFLOAT3*/ lookAt;
-	XMVECTOR /*XMFLOAT3*/ up;
+	XMVECTOR lookAt;
+	XMVECTOR up;
 #endif
 
 };

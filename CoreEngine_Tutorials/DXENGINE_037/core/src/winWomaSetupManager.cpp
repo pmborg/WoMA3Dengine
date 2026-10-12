@@ -20,7 +20,6 @@
 
 #include "OSengine.h"
 #if defined CLIENT_SCENE_SETUP
-//#include "StateMachine.h"
 #include "WomaSetupManager.h"
 #include <algorithm> 
 

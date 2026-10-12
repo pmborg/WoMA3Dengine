@@ -1994,7 +1994,6 @@ void vkClass::EndScene(UINT monitorWindow)
 }
 
 #if defined INTRO_DEMO || defined USE_ALPHA_BLENDING
-// MORE INFO: https://www.opengl.org/archives/resources/faq/technical/transparency.htm
 void vkClass::TurnOnAlphaBlending(void* pContext)
 {
 	//if (g_AlphaBlend) return;

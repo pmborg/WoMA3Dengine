@@ -89,13 +89,6 @@ dxWinSystemClass::dxWinSystemClass(WOMA::Settings* appSettings) : WinSystemClass
 	mResizing = false;
 	DXsystemHandle = this;
 
-//#if DX_ENGINE_LEVEL >= 21
-//	if (!m_Camera) {
-//		m_Camera = NEW DXcameraClass; // DX Implementation
-//		IF_NOT_THROW_EXCEPTION(m_Camera);
-//}
-//#endif
-
 #if defined USE_DIRECT_INPUT
 	joyFlags = NULL;
 	m_Input = NULL;

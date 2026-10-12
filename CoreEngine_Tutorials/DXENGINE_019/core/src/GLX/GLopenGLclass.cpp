@@ -210,7 +210,6 @@ void GLopenGLclass::ClearDepthBuffer(void* pContext)
 void GLopenGLclass::EndScene(UINT monitorWindow){} // Not implemented in MAIN DRIVER only in context Driver.
 
 #if defined INTRO_DEMO || defined USE_ALPHA_BLENDING
-// MORE INFO: https://www.opengl.org/archives/resources/faq/technical/transparency.htm
 void GLopenGLclass::TurnOnAlphaBlending(void* pContext)
 {
 	glEnable (GL_BLEND);

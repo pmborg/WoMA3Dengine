@@ -97,7 +97,6 @@ public:
 	HRESULT PlayIntroMovie(TCHAR* movie);
 #endif
 
-	//private:
 	void Shutdown();
 };
 

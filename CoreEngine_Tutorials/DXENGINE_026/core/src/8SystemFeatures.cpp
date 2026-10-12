@@ -30,7 +30,6 @@ SystemFeatures::SystemFeatures()
 
 SystemFeatures::~SystemFeatures() {CLASSDELETE();}
 
-//#include <iostream>
 #include <vector>
 #include <bitset>
 #include <array>

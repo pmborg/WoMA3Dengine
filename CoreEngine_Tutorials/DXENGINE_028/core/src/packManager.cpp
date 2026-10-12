@@ -22,13 +22,9 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 #include "OSengine.h"
-//#include "mem_leak.h"
 
 #if defined WINDOWS_PLATFORM
-//#include "stateMachine.h"
-//#include "systemManager.h" // isXP & isWow64
 #include "packManager.h"
-//#include "OSmain_dir.h"
 #include "winSystemClass.h"
 
 #include "idea.h"
@@ -38,9 +34,6 @@ extern int EncodeIDEA(char* filename, int whatTOdo);
 #endif
 
 STRING REPORT_FILE;
-
-
-
 
 #if defined RELEASE  || DX_ENGINE_LEVEL >= 86
 #include <sys/types.h>

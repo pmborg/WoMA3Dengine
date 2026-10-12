@@ -1251,23 +1251,19 @@ void DX12Class::EndScene(UINT monitorWindow)
 // ----------------------------------------------------------------------------------------------
 {
 	HRESULT hr;
-	//womalog("DX12 EndScene: 1 Barrier\n");
 		// Indicate that the "back-buffer" will now be used to present
 		m_commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
 			m_renderTargets[m_currentFrame].Get(),
 			D3D12_RESOURCE_STATE_RENDER_TARGET,
 			D3D12_RESOURCE_STATE_PRESENT));
 
-	//womalog("DX12 EndScene: 2 Close\n");
 		// Close the command list for this frame
 		ThrowIfFailed(m_commandList->Close());
 
-	//womalog("DX12 EndScene: 3 Execute\n");
 		// Execute command list in queue
 		ID3D12CommandList* ppCommandLists[] = { m_commandList.Get() };
 		m_commandQueue.Get()->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
 
-	//womalog("DX12 EndScene: 4 Present\n");
 #if defined USE_DX12_PRESENT_DXGI_1_0
 		hr = m_swapChain->Present(WOMA::AppSettings->VSYNC_ENABLED ? 1 : 0, 0);
 #else
@@ -1275,7 +1271,7 @@ void DX12Class::EndScene(UINT monitorWindow)
 		UINT Flags = DXGI_PRESENT_DO_NOT_WAIT;
 		hr = m_swapChain->Present1(m_VSYNC_ENABLED, Flags, &PresentDesc);
 #endif
-	//womalog("DX12 EndScene: 5 Present returned hr=0x%08X\n", hr);
+
 		if (hr == DXGI_STATUS_OCCLUDED)
 		{
 			if (m_VSYNC_ENABLED)
@@ -1307,15 +1303,12 @@ void DX12Class::EndScene(UINT monitorWindow)
 			return;
 		}
 
-	//womalog("DX12 EndScene: 6 MoveToNextFrame\n");
-
 		// Advance frame: uses the ring-buffer fence system (no unconditional full-frame stall)
 		if (m_VSYNC_ENABLED)
 			MoveToNextFrameAndWaitVSYNC();
 		else
 			MoveToNextFrame();
 
-	//womalog("DX12 EndScene: 7 Done\n");
 }
 
 	// ----------------------------------------------------------------------------------------------
@@ -1595,7 +1588,6 @@ void DX12Class::EndScene(UINT monitorWindow)
 	}
 #endif
 
-	// MORE INTO: http://msdn.microsoft.com/en-us/library/windows/desktop/ff476110%28v=vs.85%29.aspx
 	// ----------------------------------------------------------------------------------------------
 	bool DX12Class::createSetDepthStencilState(bool depthTestEnabled)
 		// ----------------------------------------------------------------------------------------------

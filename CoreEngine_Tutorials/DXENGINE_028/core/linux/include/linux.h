@@ -18,12 +18,13 @@
 
 #pragma once
 
+#if _NOT
 // MORE INFO IF NEEDED:
 // "D:\WoMAengine2014\EXTRA\DX12 Samples\CRYENGINE-release-5.4\CRYENGINE-release\Code\CryEngine\CryCommon\CryCore\Platform"
+#endif
 
 #ifndef __LINUX_H__
 
-//#include "platform.h"
 #define GL_GLEXT_PROTOTYPES
 #define GLX_GLXEXT_PROTOTYPES
 #include <GL/gl.h>
@@ -224,10 +225,10 @@ extern bool download(const std::string url, const std::string file_path);
 
 
 #define IDYES 1
-
+#if _NOT
 // GTK+		http://www.gtk.org/download/index.php
 // OPENGL	https://www.opengl.org/documentation/implementations/
-
+#endif
 extern void strcpy_s(char *strDestination, const char *strSource);
 extern void strcpy_s(char *strDestination, UINT numberOfElements, const char *strSource);
 extern void ItoA (int value, char* dest, int _Radix=10);

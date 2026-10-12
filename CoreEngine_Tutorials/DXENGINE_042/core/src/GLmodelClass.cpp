@@ -58,11 +58,6 @@ GLmodelClass::GLmodelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive, bool comp
 
 	m_Shader = NULL;
 
-	//meshSRV
-	//minVertex = XMFLOAT3(FLT_MAX, FLT_MAX, FLT_MAX);
-	//maxVertex = XMFLOAT3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
-
-	//objectCenterOffset = XMFLOAT4(0, 0, 0, 0);
 	boundingSphere = false;
 
 	m_vertexCount = m_indexCount = NULL;
@@ -75,15 +70,6 @@ GLmodelClass::GLmodelClass(bool model3d, PRIMITIVE_TOPOLOGY primitive, bool comp
 	// Initialize the world/model matrix to the identity matrix:
 	m_worldMatrix = m_worldMatrix.mat4identity();  //Identity();
 	m_viewMatrix = m_viewMatrix.mat4identity();
-/*
-	glGenSamplers(1, &linearFiltering);
-	glSamplerParameteri(linearFiltering, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	//BEST
-	glSamplerParameteri(linearFiltering, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glSamplerParameteri(linearFiltering, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	//glSamplerParameteri(linearFiltering, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	//glSamplerParameteri(linearFiltering, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-*/
 
 #if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES // Normal Bump + Instancing 
 	m_instanceCount = 0;

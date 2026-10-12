@@ -76,10 +76,10 @@ static const D3D12_INPUT_ELEMENT_DESC colorPolygonLayout[] =
 };
 #endif
 
-//-------------------------------------------------------------------------------------------------------------
+
                             // 27: SHADER_TEXTURE_FONT :	//27
 							// 72: SHADER_FIRE
-
+//-------------------------------------------------------------------------------------------------------------
 #if defined DX11 || defined DX9
 static const D3D11_INPUT_ELEMENT_DESC texturePolygonLayout11[] =
 {
@@ -95,8 +95,8 @@ static const D3D12_INPUT_ELEMENT_DESC texturePolygonLayout[] =
 };
 #endif
 
-//-------------------------------------------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------------------------------------------
 #if defined DX11 || defined DX9 // 36: SHADER_TEXTURE_LIGHT_RENDERSHADOW (Render: 3D + Shadow)
 static const D3D11_INPUT_ELEMENT_DESC lightPolygonLayout11[] =
 {
@@ -113,14 +113,6 @@ static const D3D12_INPUT_ELEMENT_DESC lightPolygonLayout[] =
 	{ "NORMAL",    0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 };
 #endif
-
-//-------------------------------------------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------------------------------
 
 namespace DirectX {
 
@@ -436,9 +428,6 @@ namespace DirectX {
 			pixelHLSL.append("PS_Main");
 			break;
 
-//NEW SHADER:
-
-//93
 
 		default:
 			WomaFatalExceptionW(TEXT("This Shader type is not supported yet!"));

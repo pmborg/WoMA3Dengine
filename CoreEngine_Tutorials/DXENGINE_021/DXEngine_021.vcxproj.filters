@@ -206,6 +206,117 @@
     <ClInclude Include="core\include\vkClass.h">
       <Filter>Vulkan</Filter>
     </ClInclude>
+    <ClInclude Include="core\include\virtualShaderClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\positionClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\playerClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\virtualModelClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\vertexTypes.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\virtualCameraClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\GLmodelClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\GLshaderClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\GLcameraClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\DXdrivers.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\DXmodelClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\DXshaderClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\DXbasicTypes.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\DXcameraClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\linux\include\linuxsystemclass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Android1\Android1.NativeActivity\AndroidNewSystemClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Android1\Android1.NativeActivity\defs.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Android1\Android1.NativeActivity\Android.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Android1\Android1.NativeActivity\androidsystemclass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\InputClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\glxOpenGLclass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\linux\include\linux.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\linux\include\Rinputclass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Android1\Android1.NativeActivity\WavetableOscillator.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Android1\Android1.NativeActivity\android_native_app_glue.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Android1\Android1.NativeActivity\AndroidNewSystemClass.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Android1\Android1.NativeActivity\defs.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Android1\Android1.NativeActivity\pch.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Android1\Android1.NativeActivity\AndroidEngine.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Android1\Android1.NativeActivity\android_native_app_glue.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Android1\Android1.NativeActivity\pch.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Android1\Android1.NativeActivity\WavetableSynthesizer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Android1\Android1.NativeActivity\MathConstants.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Android1\Android1.NativeActivity\AudioSource.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Android1\Android1.NativeActivity\OboeAudioPlayer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Android1\Android1.NativeActivity\AudioPlayer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Android1\Android1.NativeActivity\eglOpenGLclass.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
@@ -413,6 +524,12 @@
     <ClCompile Include="core\src\vkClass.cpp">
       <Filter>Vulkan</Filter>
     </ClCompile>
+    <ClCompile Include="core\src\GLX\glxOpenGLclass.cpp">
+      <Filter>src\OPENGL</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\DX9\DX9Class.cpp">
+      <Filter>src\dx9</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="settings.xml" />
@@ -430,13 +547,11 @@
     <None Include="GLengine\color.vs">
       <Filter>GLSL</Filter>
     </None>
-    <None Include="VK\021color.vert">
-      <Filter>VK</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="VK\021color.frag">
       <Filter>VK</Filter>
     </CustomBuild>
+    <CustomBuild Include="VK\021color.vert" />
   </ItemGroup>
 </Project>

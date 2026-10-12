@@ -319,7 +319,7 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 			return false;		
 		break;
 
-	// ----------------------------------------------------------------------------------------------
+		// ----------------------------------------------------------------------------------------------
 	case SHADER_TEXTURE:
 	case SHADER_TEXTURE_FONT:
 	case SHADER_TEXTURE_WATER:
@@ -329,8 +329,6 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 		if (m_vertexCount == 0)									// Better check, if object is empty...
 			return false;		
 		break;
-
-	// ----------------------------------------------------------------------------------------------
 
 	case SHADER_TEXTURE_LIGHT:						//23
 	case SHADER_TEXTURE_LIGHT98:					//98
@@ -346,18 +344,7 @@ DXshaderClass* DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderT
 	// Normal Bump + Instancing 
 	case SHADER_TEXTURE_LIGHT_SAVESHADOW_INSTANCED: //40
 
-	// ----------------------------------------------------------------------------------------------
-
-	// ----------------------------------------------------------------------------------------------
-
-	// ----------------------------------------------------------------------------------------------
-
-	// ----------------------------------------------------------------------------------------------
-
-	// ----------------------------------------------------------------------------------------------
-
-	// ----------------------------------------------------------------------------------------------
-
+	
 	default:
 		throw woma_exception("WRONG SHADER!", __FILE__, __FUNCTION__, __LINE__);
 	}
@@ -1285,16 +1272,6 @@ void DXmodelClass::SetGeometryBuffers(void* deviceContext)
 		}
 
 		// [2nd Buffer]
-		/*
-		D3D_PRIMITIVE_TOPOLOGY_UNDEFINED = 0,
-		D3D_PRIMITIVE_TOPOLOGY_POINTLIST = 1,
-		D3D_PRIMITIVE_TOPOLOGY_LINELIST = 2,		// LightRay 
-		D3D_PRIMITIVE_TOPOLOGY_LINESTRIP = 3,
-		D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST = 4,	// 1 Triangle = 3 Vert.--> DrawPrimitive( D3DPT_TRIANGLELIST, 0, 1 );
-													m_TerrainModel(level>=60+)
-		D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP = 5,	// 4 Triangle = 6 Vert.--> DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, 4 );
-													m_TerrainModel(level49-59), m_SphereModel, m_SkyModel, m_SunModel, m_MoonModel
-		*/
 		// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
 		context->IASetPrimitiveTopology((D3D11_PRIMITIVE_TOPOLOGY)(PrimitiveTopology));
 

@@ -44,10 +44,6 @@ enum PRIMITIVE_TOPOLOGY
 	LINESTRIP,		// ...not used...												6 Vertex = 5 LINEs --> DrawPrimitive( D3DPT_LINESTRIP, 0, 5 );
 	TRIANGLELIST,	// DxModel default Defined in (CREATE_MODEL_IF_NOT_EXCEPTION)   1 Triang. = 3 Vert.--> DrawPrimitive( D3DPT_TRIANGLELIST, 0, 1 );
 	TRIANGLESTRIP	// Used on Optimized Sky Mesh: Sky/Sun/Moon Terrain          	4 Triang. = 6 Vert.--> DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, 4 );
-	// LINELIST_ADJ,
-	// LINESTRIP_ADJ,
-	// TRIANGLELIST_ADJ,
-	// TRIANGLESTRIP_ADJ,
 };
 
 
@@ -89,7 +85,6 @@ struct SurfaceMaterial
 
 	bool hasNormMap = false;			//size:1	>= 37: NEW BUMP
 	int normMapTexArrayIndex = NULL;	//size:4	>= 37: NEW BUMP
-	//TOTAL		 192
 };
 #pragma pack(pop)
 
@@ -153,8 +148,6 @@ public:
 	virtual bool LoadLight(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<ModelTextureLightVertexType>* model, std::vector<UINT>* indexList = NULL, UINT instanceCount = 0) = 0;
 	virtual bool LoadBump(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<ModelNormalBumpVertexType>* model, std::vector<UINT>* indexList = NULL, UINT instanceCount = 0) = 0;
 
-
-
 #if defined USE_VIEW2D_SPRITES // Sprites
 	virtual bool RenderSprite(void* pContext, int positionX, int positionY, float scale = 1.0f, float fade = 1.0f) = 0;
 	virtual bool UpdateBuffersRotY(void* pContext, int positionX, int positionY) = 0;
@@ -167,11 +160,9 @@ public:
 	ADVOBJ3D obj3d;
 	virtual bool LoadModel(void* pContext, TCHAR* objectName, void* g_driver, SHADER_TYPE shader_type, STRING filename, bool castShadow = false, bool renderShadow = false, UINT instanceCount = 0) = 0;
 
-////#if DX_ENGINE_LEVEL >= 97
 	virtual bool LoadWaterFall(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<ModelTextureWaterfall>* model, std::vector<UINT>* indexList = NULL, UINT instanceCount = 0) = 0;
 	virtual bool LoadSmoke(void* pContext, TCHAR* objectName, void* driver, SHADER_TYPE shader_type, std::vector<STRING>* textureFile, std::vector<SmokeVertexType>* model, std::vector<UINT>* indexList, UINT instanceCount = 0) = 0;
 	virtual void SetAlpha(float a) = 0;
-////#endif
 
 	virtual void Identity() = 0;
 	virtual void multiply(void* m) = 0;	//XMMATRIX* or mat4*
@@ -200,9 +191,9 @@ public:
 	bool				ModelHASAlfaColor = false;
 	bool				ModelHASColorMap = false;
 	float				ModelAlfaColor = 1;
-//#if DX_ENGINE_LEVEL >= 62
+
 	int					shaderTypeParameter = 0;// level62
-//#endif
+
 	bool				isBill = false;
 	bool				isAnimatedBill = false;
 
@@ -220,6 +211,5 @@ public:
 
 	UINT			m_instanceCount = 0;
 };
-
 
 #endif

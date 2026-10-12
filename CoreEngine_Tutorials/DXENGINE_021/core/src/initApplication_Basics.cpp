@@ -99,19 +99,6 @@ void ApplicationClass::initColorDemo(void* pContext)
 		float Start = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/1));	// Float between 0..1
 		float End = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/1));		// Float between 0..1
 
-		//float color;
-		//for (UINT i = 0; i < SquareColorVertexVector.size(); i++)	// Step 2: Add a color to all vertices
-		//{															
-		//	if ( i == 0 || i == 3 /*|| i == 4*/ )					//  |\            \|
-		//		color = End;										//  1  v0		  1  v0 v3
-		//	else                                                    // -1  v2 v1	 -1     v1
-		//		color = Start;										//  x: -1  1	  x: -1  1
-		//
-		//	SquareColorVertexVector[i].r = color;// Red
-		//	SquareColorVertexVector[i].g = color;// Green
-		//	SquareColorVertexVector[i].b = 0.6f;	// Blue
-		//}
-
 		for (UINT i = 0; i < SquareColorVertexVector.size(); i++)
 		{
 			float color;
@@ -221,13 +208,6 @@ bool ApplicationClass::DEMO_WOMA_APPLICATION_InitializeSprites2D(void* pContext)
 // --------------------------------------------------------------------------------------------
 {
 	womalog("DEMO_WOMA_APPLICATION_InitializeSprites2D()\n");
-
-	//womalog("InitSprites2D: %ux%u scale=(%.3f %.3f)\n",
-	//	WOMA::AppSettings->WINDOW_WIDTH,
-	//	WOMA::AppSettings->WINDOW_HEIGHT,
-	//	SystemHandle->m_Application->scaleX,
-	//	SystemHandle->m_Application->scaleY);
-
 #if defined USE_TITLE_BANNER
 	initStatic2D(pContext);			//TITLE + 2D:MAP + 2D:MINI-MAP
 #endif
