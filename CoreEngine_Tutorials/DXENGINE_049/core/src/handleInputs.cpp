@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: handleInputs.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,18 +16,21 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Work as Input Manager, using inputClass as a Direct Driver
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
 
 #if defined USE_DIRECT_INPUT
-#if defined DX_ENGINE
+#if defined WINDOWS_PLATFORM//DX_ENGINE
 #include "WinSystemClass.h"
 #include "dxWinSystemClass.h"
 #endif
 #include "womadriverclass.h"
 #include "GLmathClass.h"
 #include "GLopenGLclass.h"
+#if defined VULKAN
+#include "vkClass.h"
+#endif
 
 #if defined DX11
 #include "dx11Class.h"
@@ -39,9 +42,11 @@
 #include "ApplicationClass.h"
 #include "OSengine.h"
 
+#include "DXmodelClass.h"
+
 bool f11GodState = false;
 
-#if defined DX_ENGINE
+#if defined WINDOWS_PLATFORM //DX_ENGINE
 UINT Key1[] = { DIK_1 }; //bow
 UINT Key2[] = { DIK_2 }; //sword
 
@@ -89,6 +94,7 @@ void DXInputClass::GetDirectInputKeys()
 	// =======================
 	//EXIT:
 	m_ourPlayer->p_player.IsEscapePressed	    = (m_keyboardState[DIK_ESCAPE] & 0x80) ? true:false;
+	m_ourPlayer->p_player.IsSpacePressed		= (m_keyboardState[DIK_SPACE] & 0x80) ? true : false;
 
     m_ourPlayer->p_player.Is1Pressed            = (m_keyboardState[Key1[0]] & 0x80) ? true : false; 	// Weapon:1 Bow
     m_ourPlayer->p_player.Is2Pressed            = (m_keyboardState[Key2[0]] & 0x80) ? true : false; 	// Weapon:2 Sward
@@ -155,7 +161,7 @@ bool ApplicationClass::ProcessUserKeyboardInputAndTerrainCollision(double frameT
 
     // Process "F11": GOD MODE SWITCH
     // --------------------------------------------------------------------------------------------
-#if defined DX_ENGINE
+#if defined WINDOWS_PLATFORM //DX_ENGINE
     if ((DXsystemHandle->m_player[g_NetID]->p_player.IsGodModePressed) && (!f11GodState)) {
         f11GodState = true;
     }
@@ -183,13 +189,13 @@ bool ApplicationClass::ProcessUserKeyboardInputAndTerrainCollision(double frameT
 #if defined CHECK_OBJ_COLISION //Check Compound Collision: STOP!
 	bool CompoundXnormalOK = true;
 	bool CompoundZnormalOK = true;
+#endif
 
+#if defined CHECK_OBJ_COLISION //Check Compound Collision: STOP!
 	if (!g_GOD_MODE)
 	{
 		// Only check when moving forward
-		if (DXsystemHandle->m_player[g_NetID]->p_player.IsUpPressed &&
-			(DXsystemHandle->m_Application->closestObjDist > -1) &&
-			(DXsystemHandle->m_Application->closestObjDist <= 1.0f))
+		if (!DXsystemHandle->m_player[g_NetID]->p_player.IsDownPressed && (closestObjDist > -0.5) && (closestObjDist <= 0.5f))
 		{
 			// Get surface normal from last detected object
 			XMFLOAT3 n;
@@ -203,15 +209,22 @@ bool ApplicationClass::ProcessUserKeyboardInputAndTerrainCollision(double frameT
 
 			// How much are we moving into the object?
 			float dot = dirX * nX + dirZ * nZ;
-
-			if (dot > 0.0f)
+			
+			if ((closestObjDist > -1) && (closestObjDist <= 0.5f)) 
 			{
-				// Block only the axis that mostly aligns with the collision normal
-				CompoundXnormalOK = (fabsf(nX) < 0.7f);
-				CompoundZnormalOK = (fabsf(nZ) < 0.7f);
+				CompoundXnormalOK = false;
+				CompoundZnormalOK = false;
+				m_NextPosition->m_forwardSpeed = 0; //Stop immediately
 
-				// Optionally reduce forward speed a bit instead of killing it completely
-				m_NextPosition->m_forwardSpeed *= 0.3f;
+				if (dot > -0.5f && dot < 0.5f)
+				{
+					// Block only the axis that mostly aligns with the collision normal
+					CompoundXnormalOK = (fabsf(nX) < 0.7f);
+					CompoundZnormalOK = (fabsf(nZ) < 0.7f);
+
+					// Optionally reduce forward speed a bit instead of killing it completely
+					m_NextPosition->m_forwardSpeed *= 0.3f;
+				}
 			}
 		}
 	}
@@ -228,7 +241,7 @@ bool ApplicationClass::ProcessUserKeyboardInputAndTerrainCollision(double frameT
     // --------------------------------------------------------------------------------------------
 	float height = WOMA::AppSettings->INIT_CAMY;
 
-#if defined DX_ENGINE
+#if defined WINDOWS_PLATFORM //DX_ENGINE
 #if defined USE_3RD_PERSON_CAMERA
     #define mouseCurrState DXsystemHandle->m_Input->m_mouseState
     if (g_GOD_MODE)
@@ -296,7 +309,7 @@ bool ApplicationClass::ProcessUserKeyboardInputAndTerrainCollision(double frameT
     }
 #endif
 
-    //[3] - Check Terrain Colisions
+    //[3] - Check Terrain Collisions
     // --------------------------------------------------------------------------------------------
 #if defined SCENE_TERRAIN_COLLISION
 #if NOTES
@@ -319,7 +332,6 @@ bool ApplicationClass::ProcessUserKeyboardInputAndTerrainCollision(double frameT
 		{
 			terrain_nx = SystemHandle->m_Application->loadedTerrain[2]->modelVertexVector2[(mainTerrain->m_terrainHeight * ((int)m_NextPosition->m_positionZ)) + ((int)m_NextPosition->m_positionX)].nx;//TODO: all map types
 			terrain_nz = SystemHandle->m_Application->loadedTerrain[2]->modelVertexVector2[(mainTerrain->m_terrainHeight * ((int)m_NextPosition->m_positionZ)) + ((int)m_NextPosition->m_positionX)].nz;
-
 			if (abs (terrain_nz) <= TERRAIN_COLLISION_NX || nextHeight < m_Position[g_NetID]->m_positionY) 
 			{
 				#if defined CHECK_OBJ_COLISION //Check!: CompoundZnormalOK
@@ -368,38 +380,54 @@ bool ApplicationClass::ProcessUserKeyboardInputAndTerrainCollision(double frameT
    m_Position[g_NetID]->m_rotationX = m_NextPosition->m_rotationX;
 
 #if defined USE_DIRECT_INPUT
-    //[5] After the movement for this frame has been calculated we then get the position and rotation 
-    //from the PositionObject and update the CameraClass and TextClass object with the new viewing position.
-    // Get the view point position/rotation.
+   //[5] After the movement for this frame has been calculated we then get the position and rotation
+   // from the PositionObject and update the Camera object.
 
+#if defined DX_ENGINE
+   if (WOMA::AppSettings->DRIVER == DRIVER_DX9 ||
+	   WOMA::AppSettings->DRIVER == DRIVER_DX11 ||
+	   WOMA::AppSettings->DRIVER == DRIVER_DX12)
+   {
+	   IF_RENDER_PAGE(RENDER_PAGE >= 30)
+		   DX_Camera->m_positionY = height + 1.25f;
 
+	   DX_Camera->m_positionX = posX;
+	   DX_Camera->m_positionZ = posZ;
 
-    // --------------------------------------------------------------------------------------------
-	if (WOMA::AppSettings->DRIVER != DRIVER_GL3) {
-	#if defined DX_ENGINE
-		IF_RENDER_PAGE(RENDER_PAGE >= 30)
-			DXsystemHandle->m_Camera->m_positionY = height + 1.25f; // Camera are: "x.xf" above our feets.
+	   DX_Camera->m_rotationY = m_Position[g_NetID]->m_rotationY;
+	   DX_Camera->m_rotationX = m_Position[g_NetID]->m_rotationX;
+   }
+#endif
 
-		DXsystemHandle->m_Camera->m_positionX = posX;
-		DXsystemHandle->m_Camera->m_positionZ = posZ;
+#if defined VULKAN
+   /*else*/ if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+   {
+	   vkClass* driver = (vkClass*)driverList[WOMA::AppSettings->DRIVER];
 
-		DXsystemHandle->m_Camera->m_rotationY =m_Position[g_NetID]->m_rotationY;
-		DXsystemHandle->m_Camera->m_rotationX =m_Position[g_NetID]->m_rotationX;
-	#endif
-	}
-    #if (defined OPENGL3 || defined OPENGL40) 
-	else
-	{
-		GLopenGLclass* driver = (GLopenGLclass*) driverList[WOMA::AppSettings->DRIVER];
+	   IF_RENDER_PAGE(RENDER_PAGE >= 30)
+		   driver->gl_Camera->m_positionY = height + 1.25f;
 
-		driver->gl_Camera->m_positionY = height + 1.25f; // Camera are: "x.xf" above our feets.
-		driver->gl_Camera->m_positionX = posX;
-		driver->gl_Camera->m_positionZ = posZ;
+	   driver->gl_Camera->m_positionX = posX;
+	   driver->gl_Camera->m_positionZ = posZ;
 
-		driver->gl_Camera->m_rotationY = m_Position[g_NetID]->m_rotationY;
-		driver->gl_Camera->m_rotationX = m_Position[g_NetID]->m_rotationX;
-	}
-	#endif
+	   driver->gl_Camera->m_rotationY = m_Position[g_NetID]->m_rotationY;
+	   driver->gl_Camera->m_rotationX = m_Position[g_NetID]->m_rotationX;
+   }
+#endif
+
+#if (defined OPENGL3 || defined OPENGL40)
+   /*else*/ if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
+   {
+	   GLopenGLclass* driver = (GLopenGLclass*)driverList[WOMA::AppSettings->DRIVER];
+
+	   driver->gl_Camera->m_positionY = height + 1.25f;
+	   driver->gl_Camera->m_positionX = posX;
+	   driver->gl_Camera->m_positionZ = posZ;
+
+	   driver->gl_Camera->m_rotationY = m_Position[g_NetID]->m_rotationY;
+	   driver->gl_Camera->m_rotationX = m_Position[g_NetID]->m_rotationX;
+   }
+#endif
 #endif
 
     return true;

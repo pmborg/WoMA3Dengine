@@ -28,8 +28,6 @@ extern void ImGui_Init(struct android_app* app);
 extern void ImGui_Stop();
 #endif
 
-
-
 // Process the next main command.
 void engine_handle_cmd(struct android_app* app, int32_t cmd) 
 {

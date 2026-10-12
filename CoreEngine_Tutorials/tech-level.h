@@ -694,7 +694,7 @@
 		#if defined LINUX_PLATFORM  
 			#define USE_LINUX_SOUND		
 		#endif
-        #if defined ANDROID_PLATFORM  //RENAME: C:\WoMAengine2023\Android-WomaEngine\Android2\Android2.Packaging\ARM64\Release\Package\libs\arm64-v8a\liboboe.so
+        #if defined ANDROID_PLATFORM
             #define USE_ANDROID_SOUND //LIBS:   %(LibraryDependencies);EGL;GLESv1_CM;GLESv2;GLESv3;m;z;jnigraphics;vulkan;oboe
         #endif
         #if defined WINDOWS_PLATFORM
@@ -748,8 +748,6 @@
 		//ADDED:   Light shader upgrade: 033Light.hlsl
 		//REMOVED: Light shader upgrade: 023Light.hlsl
 
-		#undef OPENGL3
-		#undef OPENGL40
 		#undef DX12
 
         #define RENDER_OBJ_WITH_ALFA
@@ -851,11 +849,6 @@
         #define USE_SHADOW_INSTANCES_ROTATION_W_V_P
     #endif
 
-#if defined _NOT
-	//TO BE DONE! DEMO - FUTURE 43: TECH AVAILABLE:
-	//#define RENDER_OBJ_WITH_ALFA          //--> _DX_ENGINE_LEVEL >= 33    //to be added later!
-#endif
-
 	#if DX_ENGINE_LEVEL >= 43 &&  DX_ENGINE_LEVEL <= 48
 		#error "LEVEL RESERVED"
 	#endif
@@ -948,8 +941,10 @@
     #endif
 
     #if DX_ENGINE_LEVEL >= 62
+		#undef VULKAN
 		#define USE_MAIN_MAP
     #endif
+
     #if DX_ENGINE_LEVEL >= 63
         #define USE_MINI_MAP
     #endif
@@ -1098,9 +1093,6 @@
     #endif
 
 #if DX_ENGINE_LEVEL >= 89
-    //ORI:          C:\WoMAengine2023\engine\data\worldMap
-    //Compressed:   C:\WoMAengine2023\engine\data\scene87ForestHuntress\worldMap
-
     #define USE_MAP_EDITOR
     //#define USE_AABB_COLISION_CHECK // Default: off
 #endif
@@ -1124,12 +1116,6 @@
 #if DX_ENGINE_LEVEL >= 93
     #define  NO3DBILL                       // No 3D Trees
     #define GENERATE_ATLAS_INTEGRATION_DDS  // Faster bills: v2
-
-    #if defined MAVERICK                    // Means filtered from public code
-    #if _DEBUG
-    #define EXPORT_ATLAS_DEBUG_PNG          // Internal Debug
-    #endif
-    #endif
 #endif
 
 #if DX_ENGINE_LEVEL >= 94
@@ -1163,8 +1149,15 @@
 #endif
 
 #if DX_ENGINE_LEVEL >= 99
-	#define USE_TERRAIN_SHADOWS
-	#undef USE_DAY_AND_NIGHT
+	#undef USE_DAY_AND_NIGHT				//Turn off: Night
+
+	#define USE_TERRAIN_SHADOWS				//Use terrain level 99.
+
+	//#define USELIGHTSIZE 20				//default value: 15
+	#undef render_debug_2nd3DModel			//on/off
+
+	#define MAIN_RENDER_LIGHT_RAY           // Default: on - [ON/OFF] - Render light ray NOTE! [Depend]: #undef  dx12_upload_old_way
+	#define SUN_LIGHT_DEMO_ANIMATION false  // Default: on - [ON/OFF] - Animate the beam of light
 #endif
 
 #if DX_ENGINE_LEVEL >= 100 // Current LATEST LEVEL READY

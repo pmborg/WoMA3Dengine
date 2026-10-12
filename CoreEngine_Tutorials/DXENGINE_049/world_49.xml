@@ -1,10 +1,10 @@
+<!-- WORLD 49 -->
 <woma>
   <camera screenNear="0.1" screenDepth="2048">
     <initPos x="0" y="0" z="0" />
-    <initRot x="25" y="45" z="0" />
+    <initRot x="0" y="43" z="0" />
   </camera>
-  <!-- ENGINE LVL 31-->
-  <fog start="32" end="256"/>
+    <fog start="32" end="256"/>
   
   <world hVisibility="128" seaLevel="0" size="512" patchSize="64"
          mainTexture="engine/data/Terrains/011map1_heightmap01_v7.bmp" 

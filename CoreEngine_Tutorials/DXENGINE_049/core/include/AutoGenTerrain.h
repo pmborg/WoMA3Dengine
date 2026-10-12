@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: AutoGenTerrain.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -22,7 +22,7 @@
 // -PopulateTerrainModelVertexVector: height[][]		-> POPULATE modelVertexVector
 // 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
@@ -173,7 +173,9 @@ public:
 
 	void PopulateTerrainModelVertexVector(UINT id, float unit);
 
+#if defined WINDOWS_PLATFORM		
 	void SaveBMPHeightMapTerrain(CHAR* maps, UINT bmp_type = SAVE_BMP_HM);
+#endif
 
 	bool InBounds(int i, int j);
 	float Average(int i, int j);
@@ -202,10 +204,10 @@ public:
 #endif
 	void		NormalizeHeightMap(float scale, float moveY);
 #if defined SCENE_MAIN_TOPO_TERRAIN
-	bool		initMainTopoTerrainDemo(UINT terrainId, ID3D11DeviceContext* pContext);
+	bool		initMainTopoTerrainDemo(UINT terrainId, void* pContext);
 #endif
 
-    void		CreateTerrainModel(ID3D11DeviceContext* pContext, UINT id, std::vector<STRING> Textures, SHADER_TYPE shader_type);
+    void		CreateTerrainModel(void* pContext, UINT id, std::vector<STRING> Textures, SHADER_TYPE shader_type);
 
 #if defined SCENE_TERRAIN_COLLISION
 	float	getTerrainHeight(UINT terrainId, float xPos, float zPos);
