@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: OSmain_dir.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -20,7 +20,7 @@
 //  - Init: PROGRAM_FILES 
 //  - Init: APPDATA
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "standard_platform.h"
 
@@ -45,7 +45,8 @@ namespace WOMA
 	extern TCHAR PROGRAM_FILES[MAX_STR_LEN];
 	extern TCHAR APPDATA1[MAX_STR_LEN];
 	extern TCHAR APPDATA[MAX_STR_LEN];
-	extern STRING womaTempPATH; //Use now: APPDATA
+	//extern STRING womaTempPATH; //Use now: APPDATA
+	//extern TCHAR womaTempPATH[MAX_STR_LEN]; //Use now: APPDATA
 	extern TCHAR* Temp;
 	extern TCHAR* Home;
 

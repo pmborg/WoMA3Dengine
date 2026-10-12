@@ -1,12 +1,16 @@
 <woma>
   <camera screenNear="0.1" screenDepth="2048">
     <initPos x="128" y="0" z="128" />
-    <initRot x="10" y="" z="0" />
+    <initRot x="10" y="307" z="0" />
+    
   </camera>
-  <!-- FOG: ON -->
   <fog start="1" end="16"/>
   <world hVisibility="128" seaLevel="0" size="512" patchSize="64"
          mainTexture="engine/data/Terrain/011map1_heightmap01_v7.bmp"
          skyDayTexture="engine/data/sky/NEW_SKY_DOME.jpg"
          skyNightTexture=""/>
+
+  <object fromPage="32" toPage="32" depend="0" scale="10" posX="0" posZ="8" translateY="0" rotX="" rotY="" rotZ="" shader="" filename="engine/data/scene30/squareGrass.obj"/>
+  <object fromPage="32" toPage="32" depend="0" scale="0.04" posX="0" posZ="8" translateY="0" rotX="" rotY="" rotZ="" shader="" filename="engine/data/scene30/Model_D0902B14.obj"/>
+  
 </woma>
