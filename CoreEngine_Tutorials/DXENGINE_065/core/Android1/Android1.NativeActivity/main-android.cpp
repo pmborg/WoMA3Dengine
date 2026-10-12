@@ -14,6 +14,40 @@ bool engine_init_display(struct womaengine* engine)
 	// initialize OpenGL ES and EGL
 	LOGE("[%d]: engine_init_display()", gettid());
 
+	LOGE("WOMA::AppSettings = [%d]\n", WOMA::AppSettings);
+
+	//
+	// SLEECT DRIVER:
+	//
+	//WOMA::AppSettings->DRIVER = DRIVER_GL3; //Force OpenGL Driver
+	WOMA::AppSettings->DRIVER = DRIVER_VULKAN; //Force OpenGL Driver
+
+	LOGE("DRIVER = [%d]\n", WOMA::AppSettings->DRIVER);
+
+	// =============================================================================
+	// DESVIO PARA O VULKAN (Garante que o EGL não corre se o driver for Vulkan)
+	// =============================================================================
+	if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+	{
+		LOGE("Vulkan Driver selected");
+
+		// Obter as dimensões físicas reais da janela do telemóvel Android
+		int32_t w = ANativeWindow_getWidth(engine->app->window);
+		int32_t h = ANativeWindow_getHeight(engine->app->window);
+
+		// POPULAR O ENGINE (Essencial para o resto do teu ciclo de vida não falhar)
+		engine->display = EGL_NO_DISPLAY;
+		engine->context = EGL_NO_CONTEXT;
+		engine->surface = EGL_NO_SURFACE;
+		engine->width = w;
+		engine->height = h;
+		engine->state.angle = 0;
+
+		LOGE("Vulkan Display: %d x %d", w, h);
+
+		return true;
+	}
+
 	/*
 	* Here specify the attributes of the desired configuration.
 	* Below, we select an EGLConfig with at least 8 bits per color
@@ -195,24 +229,41 @@ bool engine_init_display(struct womaengine* engine)
 */
 void updateRenderArea(struct womaengine* engine)
 {
-	EGLint width, height;
+	EGLint width = 0;
+	EGLint height = 0;
+	bool resized = false;
 
-	//if (engine->display == NULL) return; // No display.
-
-	eglQuerySurface(engine->display, engine->surface, EGL_WIDTH, &width);
-	eglQuerySurface(engine->display, engine->surface, EGL_HEIGHT, &height);
-
-	// Handle dimension changes.
-	if (width != engine->width || height != engine->height) 
+	if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
 	{
-		LOGE("width: %d height: %d", width, height);
-		engine->width = width;
-		engine->height = height;
-		glViewport(0, 0, engine->width, engine->height);
+		width = ANativeWindow_getWidth(engine->app->window);
+		height = ANativeWindow_getHeight(engine->app->window);
 
-		// make sure that we lazily recreate the projection matrix before we render
-		engine->shaderNeedsNewProjectionMatrix = true;
+		if (width != engine->width || height != engine->height)
+		{
+			engine->width = width;
+			engine->height = height;
+			resized = true;
+		}
 	}
+	else
+	{
+		eglQuerySurface(engine->display, engine->surface, EGL_WIDTH, &width);
+		eglQuerySurface(engine->display, engine->surface, EGL_HEIGHT, &height);
+
+		// Handle dimension changes.
+		if (width != engine->width || height != engine->height) 
+		{
+			LOGE("width: %d height: %d", width, height);
+			engine->width = width;
+			engine->height = height;
+			glViewport(0, 0, engine->width, engine->height);
+			resized = true;
+		}
+	}
+
+	// make sure that we lazily recreate the projection matrix before we render
+	if (resized)
+		engine->shaderNeedsNewProjectionMatrix = true;
 
 	if (SystemHandle) {
 		WOMA::AppSettings->WINDOW_WIDTH = engine->width;
@@ -230,23 +281,44 @@ void engine_render(struct womaengine* engine)
 /**
 * Tear down the EGL context currently associated with the display.
 */
+
 void engine_term_display(struct womaengine* engine) {
-	if (engine->display != EGL_NO_DISPLAY) {
-		eglMakeCurrent(engine->display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-		if (engine->context != EGL_NO_CONTEXT) {
-			eglDestroyContext(engine->display, engine->context);
-		}
-		if (engine->surface != EGL_NO_SURFACE) {
-			eglDestroySurface(engine->display, engine->surface);
-		}
-		eglTerminate(engine->display);
+
+#if CORE_ENGINE_LEVEL >= 10
+	// =============================================================================
+	// LIMPEZA EXCLUSIVA DO VULKAN
+	// =============================================================================
+	if (WOMA::AppSettings && WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+	{
+		LOGE("Vulkan: Terminar display detectado. A limpar recursos via driverList...");
+		driverList[DRIVER_VULKAN]->Shutdown();
 	}
+	else
+#endif
+	{
+		// =============================================================================
+		// LIMPEZA ORIGINAL DO OPENGL (EGL)
+		// =============================================================================
+		if (engine->display != EGL_NO_DISPLAY) {
+			eglMakeCurrent(engine->display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+			if (engine->context != EGL_NO_CONTEXT) {
+				eglDestroyContext(engine->display, engine->context);
+			}
+			if (engine->surface != EGL_NO_SURFACE) {
+				eglDestroySurface(engine->display, engine->surface);
+			}
+			eglTerminate(engine->display);
+		}
+	}
+
+	// Limpeza de variáveis de estado comuns
 	engine->has_focus_ = false;
 	engine->GLES = false;
 	engine->display = EGL_NO_DISPLAY;
 	engine->context = EGL_NO_CONTEXT;
 	engine->surface = EGL_NO_SURFACE;
 }
+
 
 
 void process_events(struct womaengine *engine, struct android_app* app)

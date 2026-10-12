@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: DX11ViewPort-and-Scissor.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
 #if defined DX_ENGINE
@@ -35,18 +35,18 @@ void DirectX::DX11Class::setViewportDevice(ID3D11DeviceContext* pContext, UINT m
 {
 	// The viewport also needs to be setup so that Direct3D can map clip space coordinates to the render target space. 
 	// Set this to be the entire size of the window. 
-	DX11windowsArray[monitorWindow].viewport.TopLeftX = 0.0f;	// MinX
-	DX11windowsArray[monitorWindow].viewport.TopLeftY = 0.0f;	// MinY
-	DX11windowsArray[monitorWindow].viewport.Width = (float)screenWidth;
-	DX11windowsArray[monitorWindow].viewport.Height = (float)screenHeight;
+	DX11windowsToRenderArray[monitorWindow].viewport.TopLeftX = 0.0f;	// MinX
+	DX11windowsToRenderArray[monitorWindow].viewport.TopLeftY = 0.0f;	// MinY
+	DX11windowsToRenderArray[monitorWindow].viewport.Width = (float)screenWidth;
+	DX11windowsToRenderArray[monitorWindow].viewport.Height = (float)screenHeight;
 
-	DX11windowsArray[monitorWindow].viewport.MinDepth = 0.0f;	// MinZ
-	DX11windowsArray[monitorWindow].viewport.MaxDepth = 1.0f;	// MaxZ
+	DX11windowsToRenderArray[monitorWindow].viewport.MinDepth = 0.0f;	// MinZ
+	DX11windowsToRenderArray[monitorWindow].viewport.MaxDepth = 1.0f;	// MaxZ
 
 	// Create the viewport:
-	ASSERT (DX11windowsArray[monitorWindow].viewport.Width > 0 && 
-			DX11windowsArray[monitorWindow].viewport.Height > 0);
-	pContext->RSSetViewports(1, &DX11windowsArray[monitorWindow].viewport);
+	ASSERT (DX11windowsToRenderArray[monitorWindow].viewport.Width > 0 && 
+			DX11windowsToRenderArray[monitorWindow].viewport.Height > 0);
+	pContext->RSSetViewports(1, &DX11windowsToRenderArray[monitorWindow].viewport);
 }
 
 void DirectX::DX11Class::setScissorRectangle(ID3D11DeviceContext* pContext, UINT left, UINT right, UINT top, UINT bottom, bool enabled)
