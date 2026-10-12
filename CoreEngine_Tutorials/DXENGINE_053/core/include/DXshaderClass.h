@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: DXshaderClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,9 +16,11 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: MAIN PURPOSE:
 // ----------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
+#ifndef dxshaderclass_h
+#define dxshaderclass_h
 
 //////////////
 // INCLUDES //
@@ -29,7 +31,9 @@
 
 #include "DXbasicTypes.h"
 #include "womadriverclass.h"
+#include "virtualShaderClass.h"
 #include "virtualModelClass.h"
+
 
 	#if defined DX11 || defined DX9
 	#include "Dx11Class.h"
@@ -73,7 +77,6 @@ using namespace Microsoft::WRL;
 #include <fstream>
 using namespace std;
 
-//DX_ENGINE_LEVEL >= 98
 // Must match the HLSL PointLight struct layout
 struct PointLightCPU
 {
@@ -81,24 +84,13 @@ struct PointLightCPU
 	DirectX::XMFLOAT3 color;     float intensity;
 };
 
-#if defined USE_POINTS_OF_LIGHT_FOR_LAMP
-#endif
 
 namespace DirectX
 {
-#define 	SOLID_PIPELINE_STATES		0
-
-#if defined INTRO_DEMO || defined USE_VIEW2D_SPRITES || defined USE_ALPHA_BLENDING // OLD:ENGINE_LEVEL >= 26
-#define TRANSPARENT_PIPELINE_STATES 1
-#define MAXNUM_PIPELINE_STATES		2
-#else
-#define MAXNUM_PIPELINE_STATES		1
-#endif
-
 	////////////////////////////////////////////////////////////////////////////////
 	// Class name: DXshaderClass
 	////////////////////////////////////////////////////////////////////////////////
-	class DXshaderClass
+	class DXshaderClass : public virtualShaderClass
 	{
 	private:
 		// NOTE: DONT USE "bool" USE "BOOL"
@@ -134,7 +126,7 @@ namespace DirectX
 			// 36 BLOCK: VS5
 			XMMATRIX	ViewToLightProj;
 			XMMATRIX	WorldInverseTranspose;
-			XMFLOAT4	vEye;
+			XMVECTOR	VSCameraPosition; //old: XMFLOAT4
 
 			// 42 BLOCK: VS6
 			float		VSrotX;
@@ -148,8 +140,7 @@ namespace DirectX
 			float		vsPAD3;
 			float		vsPAD4;
 
-			//FIRE:
-			//VS:
+			//FIRE-VS8:
 			float		vsframeTime = 0;
 			XMFLOAT3	scrollSpeeds;
 			XMFLOAT3	scales;
@@ -181,42 +172,41 @@ namespace DirectX
 			float		shaderTypeParameter;
 
 			// BLOCK5:
-			BOOL		hasAlfaColor;
-			float		alfaColor;
-			float		fade;
-			float		frameTime;
+			BOOL		hasAlfaColor;//32
+			float		alfaColor;   //32
+			float		fade;        //29
+			float		frameTime;	 //29
 
-			// BLOCK6:
-			BOOL		hasFog;
+			// BLOCK6:  (LEVEL33)
+			BOOL		hasFog;       //51
 			BOOL		isSky=false;
-			BOOL		hasAlfaMap;
-			BOOL		hasNormMap;
+			BOOL		hasAlfaMap;	  //33
+			BOOL		hasNormMap;   //35
 
-			// BLOCK7:
+			// BLOCK7: (LEVEL34)
 			XMFLOAT3	cameraPosition;
 			BOOL		castShadow;
 			XMFLOAT3	specularColor;
 			float		nShininess;
 
-			//FIRE:
+			//FIRE:     (LEVEL72)
 			XMFLOAT2	distortion1;
 			XMFLOAT2	distortion2;
 			XMFLOAT2	distortion3;
 			float		distortionScale;
 			float		distortionBias;
 
-		//#if DX_ENGINE_LEVEL >= 98	//Cant use this on cbuffer: after 55
+			//POINT OF LIGHTS (LEVEL98)
 			int			numPointLights;
-			float		pad[3];								// padding to keep next array 16-aligned
+			float		renderPass;
+			float		pad[2];
 			PointLightCPU pointLights[MAX_POINT_LIGHTS];    // same MAX_POINT_LIGHTS as shader
-		//#endif
 		};
 
 
 		// FUNCTIONS:
 		// ---------------------------------------------------------------------
 	public:
-		UINT WomaIntegrityCheck = 1234525217;
 		DXshaderClass(UINT ShaderVersionH, UINT ShaderVersionL, bool shader_3D);
 		~DXshaderClass();
 		void Shutdown();
@@ -295,6 +285,10 @@ namespace DirectX
 		ID3D11Buffer* m_PixelShaderBuffer11 = NULL;
 		ID3D11SamplerState* m_sampleState11 = NULL;	// Resource: "Textures" States
 
+//#if DX_ENGINE_LEVEL >= 98 && defined USE_POINTS_OF_LIGHT_FOR_LAMP
+		ID3D11Buffer* m_PointLightBuffer11 = nullptr;     // b2 in Pixel Shader
+//#endif
+
 		ID3D11SamplerState* m_sampleStateClamp11 = NULL;
 		ID3D11ShaderResourceView* texture11 = NULL;	// 21
 		ID3D11ShaderResourceView* texture11_2 = NULL;	// 43: Alfa Map
@@ -309,10 +303,10 @@ namespace DirectX
 		// --------------------------------------------------------------------------------------------
 
 		// VS7
-		float		VSshaderType = 0;	// Future
 		BOOL		isSky = false;
 		//float		vsPAD3;				// Future
 		//float		vsPAD4;				// Future
+
 
 		//VS FIRE:
 		//VS:
@@ -336,10 +330,10 @@ namespace DirectX
 		//			lightDirection (AUTO)
 
 		// BLOCK4:
-		bool		hasColorMap = false;			// 66
+		bool		hasColorMap = false;	// 66
 		float		lightType = 0;			// Light Type
-		bool		isDay = 0;		// Future
-		float		shaderTypeParameter = 0;// Future
+		bool		isDay = 0;				// level98
+		float		shaderTypeParameter = 0;// level62
 
 		// BLOCK5:
 		bool		hasAlfaColor = 0;
@@ -350,7 +344,7 @@ namespace DirectX
 	#endif
 
 		// BLOCK6:
-		BOOL		hasFog = false;
+		BOOL		hasFog = true;
 		//			isSky
 		BOOL		hasAlfaMap = false;	// 43
 		BOOL		hasNormMap = false;
@@ -367,24 +361,10 @@ namespace DirectX
 		float distortionScale, distortionBias;
 //#endif
 
-		// --------------------------------------------------------------------------------------------
-		// Internal Shader VARs to Copy to Buffers: VS
-		// --------------------------------------------------------------------------------------------
-		float		fogStart;
-		float		fogEnd;
-
-		float		watertime = 0.1f;
-
-	#if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES // Normal Bump + Instancing 
-		UINT		m_instanceCount = 0;
-	#endif
-
-
-		bool bUseGS=false;	// GS
 	};
-
 }
 
 #include "lightClass.h"
 
+#endif
 #endif

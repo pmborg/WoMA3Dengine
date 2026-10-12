@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: wGLopenGLclass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
@@ -62,16 +62,17 @@
 class wGLopenGLclass : public GLopenGLclass
 {
 public:
-	UINT WomaIntegrityCheck = 1234525217;
 	wGLopenGLclass();
 	~wGLopenGLclass();
 
+	//bool Resize(UINT USE_MONITOR, int screenWidth, int screenHeight, float screenNear, float screenDepth, BOOL fullscreen, UINT depthBits);
+	int MakeCurrent();
 	bool OnInit(int g_USE_MONITOR, void* hwnd, int screenWidth, int screenHeight, UINT depthBits, 
 						float screenDepth, float screenNear, BOOL msaa, bool vsync, 
 						BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize);
 	void Shutdown();
 	void EndScene(UINT monitorWindow);
-
+	bool Resize(UINT USE_MONITOR, int screenWidth, int screenHeight, float screenNear, float screenDepth, BOOL fullscreen, UINT depthBits);
 	//void GetWorldMatrix(float*);
 	//void GetProjectionMatrix(float*);
 	//void GetVideoCardInfo(char*);

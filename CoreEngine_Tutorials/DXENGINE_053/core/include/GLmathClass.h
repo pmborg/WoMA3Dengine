@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: GLmathClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -14,30 +14,36 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 #pragma once
+#ifndef glmathclass_h
+#define glmathclass_h
 
 #include "platform.h"
 #include "Math3D.h"				 
 
-struct vec4 {
-	float x, y, z, w;
+namespace WOMA
+{
+	struct vec4
+	{
+		float x, y, z, w;
 
-	vec4() { x = 0; y = 0; z = 0; w = 0; }
-	vec4(const float ix, const float iy, const float iz, const float iw){
-		x = ix;
-		y = iy;
-		z = iz;
-		w = iw;
-	}
-};
-
+		vec4() { x = 0; y = 0; z = 0; w = 0; }
+		vec4(const float ix, const float iy, const float iz, const float iw) {
+			x = ix;
+			y = iy;
+			z = iz;
+			w = iw;
+		}
+	};
+}
 
 #define MATRIX4X4 float m_projectionMatrix[16];
 
-struct mat4 {
+struct mat4 
+{
 
-	float	m[16];
+	float	m[16] = {};
 
 	mat4(){}
 
@@ -75,3 +81,5 @@ public:
 };
 
 extern void MatrixTranspose(mat4* result, mat4* matrix);
+
+#endif

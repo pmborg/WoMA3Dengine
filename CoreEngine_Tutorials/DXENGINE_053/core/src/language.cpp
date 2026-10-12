@@ -2,9 +2,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: language.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,10 +17,10 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Get User Language
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "OSengine.h"
-#include "OSmain_dir.h"
+#if CORE_ENGINE_LEVEL >= 4
 #include "language.h"
 #include "SystemClass.h"
 
@@ -49,9 +49,8 @@ namespace WOMA
 	// Get language as string
 	bool GetLangStringFromLangId(DWORD dwLangID_i)
 	{
-#if defined WINDOWS_PLATFORM && !defined ANDROID_PLATFORM 
+	#if defined WINDOWS_PLATFORM && !defined ANDROID_PLATFORM 
 		
-
 		// Prepare LCID
 		const LCID lcidLang = MAKELCID(dwLangID_i, SORT_DEFAULT);
 
@@ -79,9 +78,12 @@ namespace WOMA
 		TCHAR str_lang[MAX_STR_LEN]; // Will hold country
 		StringCchPrintf(str_lang, sizeof(str_lang), TEXT("Language: %s, %s\n"), szLangBuffer, SystemHandle->systemDefinitions.szCountryBuffer);
 		womalogauto(str_lang);
-#endif
+	#endif
 
 		// Return execution status
 		return true;
-	}// End GetLangStringFromLangId
+	}
+	// End GetLangStringFromLangId
 }
+
+#endif

@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: SystemClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Export APIs for systemclass.cpp which is the common OS API
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 #ifndef __SYSTEMCLASS_H__
@@ -28,13 +28,7 @@
 #include <sys/utsname.h>
 #endif
 
-struct resolutionType
-{
-	UINT Width;
-	UINT Height;
-	UINT RefreshRate_Numerator;
-	UINT RefreshRate_Denominator;
-};
+const int MAX_LANG_LEN = 50;
 
 #if defined USE_PROCESS_OS_KEYS
 	#if defined WINDOWS_PLATFORM
@@ -43,6 +37,47 @@ struct resolutionType
 	#include "Rinputclass.h"
 	#endif
 #endif
+
+struct resolutionType
+{
+	UINT Width;
+	UINT Height;
+	UINT RefreshRate_Numerator;
+	UINT RefreshRate_Denominator;
+};
+
+namespace WOMA
+{
+	struct WindowDataContainer
+	{
+		// 1
+		STRING MonitorName = TEXT("");
+		CHAR deviceName[MAX_STR_LEN] = {};
+		UINT deviceIndex = 0;
+		// 2
+		std::vector<resolutionType> ScreenResolution = {};
+		// 3
+		UINT width = 0;
+		UINT height = 0;
+		UINT refreshRate_Numerator = 0;
+		UINT refreshRate_Denominator = 0;
+#if defined WINDOWS_PLATFORM
+		// 4
+		HWND hWnd = 0;
+		// Window sizes:
+		RECT m_rcWindowBounds;    // Saved window bounds for mode switches
+		RECT m_rcWindowClient;    // Saved client area size for mode switches
+#endif
+
+#if defined LINUX_PLATFORM
+		Display* display = nullptr;
+		::Window window = 0;
+#endif
+	};
+
+	extern std::vector<WOMA::WindowDataContainer> windowsToRenderArray;	// All Monitors, that will be used to render, 1 for example.
+	extern std::vector<WOMA::WindowDataContainer> allWindowsHwArray; // All hardware Monitors available on system, 3 for example.
+}
 
 #include "fpsClass.h"
 #include "TrigonometryMathClass.h"
@@ -66,11 +101,9 @@ typedef struct {
 
 #if DX_ENGINE_LEVEL >= 19 && !defined NewWomaEngine
 #include "womadriverclass.h"
+
+// NOTE: DX11windowsToRenderArray have all DX specific settings for rendering!
 #endif
-
-
-
-
 
 	#define castShadows_false	false
 	#define renderShadows_false false
@@ -89,14 +122,10 @@ typedef struct {
 typedef struct GPU_
 {
 	TCHAR GraphicCard[MAX_STR_LEN] = {};
-	//TCHAR AdapterDACType[MAX_STR_LEN] = {};
-	//TCHAR AdapterRAM[MAX_STR_LEN] = {};
 	TCHAR DedicatedVideoMemory[MAX_STR_LEN] = {};
 	TCHAR DedicatedSystemMemory[MAX_STR_LEN] = {};
 	TCHAR SharedSystemMemory[MAX_STR_LEN] = {};
 } GPU;
-
-const int MAX_LANG_LEN = 50;
 
 typedef struct SystemSettings_
 {
@@ -159,22 +188,20 @@ typedef struct SystemSettings_
 
 } SystemSettings;
 
+
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: SystemClass
 ////////////////////////////////////////////////////////////////////////////////
 class SystemClass
 {
 public:
-    UINT WomaIntegrityCheck = 1234525217;
 	SystemClass();
 	~SystemClass();
 
 	void Shutdown();
-	
 
 	bool			mMaximized;
 	SystemSettings	systemDefinitions;
-	
 	void FrameUpdate();
     void ParseCommandLineAndApplySettings(int argc, char* argv[]);
 
@@ -183,6 +210,10 @@ public:
 #if CORE_ENGINE_LEVEL >= 2 && (defined USE_PROCESS_OS_KEYS || defined INTRO_DEMO)
 	bool InitOsInput();
 #endif
+#if DX_ENGINE_LEVEL >= 21 && defined USE_TINYXML_LOADER
+	World			world;
+#endif
+	void CalculateCameraViewAndFrustum(void* pContext);
 
 #if defined USE_PROCESS_OS_KEYS
 #if defined WINDOWS_PLATFORM
@@ -192,8 +223,7 @@ public:
 	RInputClass* m_OsInput = NULL;
 #endif
 	void ProcessOS_Fx_Keys_Input();
-	void CalculateCameraViewAndFrustum(void* pContext);
-  #if DX_ENGINE_LEVEL >= 28 && defined WINDOWS_PLATFORM
+  #if DX_ENGINE_LEVEL >= 28 && defined DX_ENGINE
 	void LogAllMatrix();
   #endif
 #endif
@@ -223,8 +253,7 @@ public:
 	JOYINFOEX joyInfo;
 	#endif
 #endif
-
-		int			fps;
+		int			fps=0;
 
 		UINT		TotalVertexCounter;
 
@@ -265,8 +294,6 @@ public:
 	ApplicationClass* m_Application = NULL;
 
 public:
-
-
 #if defined USE_ASPECT_RATIO
 	float	aspect_r;	//Global Used by: WndProc
 #endif
@@ -274,6 +301,10 @@ public:
 	void LoadAllDrivers();
 	bool InitializeDrivers(int screenWidth, int screenHeight, float screenNear, float screenDepth, BOOL vsync, BOOL fullscreen, float* clarColor);
     bool LoadAllGraphicAssets(void* pContext);
+
+#if defined USE_SCENE_MANAGER
+	void InitSceneManager();
+#endif
 
 #if defined USE_DIRECT_INPUT
 	#if defined USE_JOY && defined USE_DIRECT_INPUT
@@ -283,9 +314,10 @@ public:
 	void joyStickFrame();
 	#endif
 
-	#if defined DX_ENGINE
-	DXInputClass				m_InputManager;
 	bool						useJoystick = false;
+
+	#if defined USE_DIRECT_INPUT
+	DXInputClass				m_InputManager;
 	float						xScale = 0, xBias = 0;
 	float						yScale = 0, yBias = 0;
 	float 						zScale = 0, zBias = 0;
@@ -296,20 +328,12 @@ public:
 	DWORD						joyFlags = 0;
 	JOYCAPS						joyCaps = { 0 };
 	#endif
+
+	std::vector<PlayerClass*>	m_player;
 #endif
 
 	STRING		XML_WORLD_FILE;
-//  #if defined USE_TINYXML_LOADER
-//	#if defined USE_DEMO99
-//		World		world_map[MAX_ENGINE_LEVEL];
-//	#else
-//		World		world_map;
-//	#endif
-//  #endif
 
-#if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
-	std::vector<PlayerClass*>	m_player;
-#endif
 };
 
 extern bool InitSelectedDriver();

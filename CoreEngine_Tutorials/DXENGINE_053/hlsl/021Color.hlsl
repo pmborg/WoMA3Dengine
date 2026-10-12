@@ -1,8 +1,8 @@
 // --------------------------------------------------------------------------------------------
-// Filename: 021Color.hlsl
+// Filename: 021Color.hlsl [LATESTv2]
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
-*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2023
+*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2026
 *	-------------------------------------------------------------------------------------------
 *	code by : Pedro Borges - pmborg@yahoo.com
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
@@ -15,15 +15,22 @@
 	    pixelHLSL.append("PS_Main");
      ...
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 //For Debug only!:
 //#define WITHOUT_CONSTANT_BUFFER
 
-#if !defined DXAPI11 && !defined DXAPI12
-#define DXAPI11 1
+#if DXAPI11 != 1 && DXAPI12 != 1
+    #define DXAPI9 1
 #endif
 
+#if DXAPI9 == 1
+    #define PS_POSITION POSITION
+    #define PS_TARGET   COLOR0
+#else
+    #define PS_POSITION SV_POSITION
+    #define PS_TARGET   SV_TARGET
+#endif
 //////////////
 // TYPEDEFS //
 //////////////
@@ -39,7 +46,7 @@ struct VSIn
 // PIXEL:
 struct PSIn
 {
-    float4 position : SV_POSITION;
+    float4 position : PS_POSITION;
     float4 color : COLOR;
 };
 
@@ -47,6 +54,11 @@ struct PSIn
 // CBUFFERS
 ////////////////
 #include "cbuffer.hlsli"
+
+///////////////
+// PIXEL BUFFER
+///////////////
+//Note: Color shader dont have it!								   
 
 ////////////////////////////////////////////////////////////////////////////////
 // VERTEX SHADER
@@ -88,7 +100,7 @@ PSIn VS_Main(VSIn input)
 ////////////////////////////////////////////////////////////////////////////////
 // PIXEL SHADER
 ////////////////////////////////////////////////////////////////////////////////
-float4 PS_Main(PSIn input) : SV_TARGET
+float4 PS_Main(PSIn input) : PS_TARGET
 {
     return input.color; // Use Vertex Color
 }
