@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: MetarClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,7 +17,7 @@
 // Decode the Dynamic METAR info, from the nearest airport.
 // Source Code: (C) 2000-2016 http://git.xcsoar.org/cgit/jmw/xcsoar.git/plain/src/Weather/METARParser.cpp
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
@@ -38,7 +38,6 @@ Weather weather;
 MetarClass::MetarClass()
 {
     CLASSLOADER();
-    WomaIntegrityCheck = 1234525217;
 }
 
 MetarClass::~MetarClass() { CLASSDELETE(); }
@@ -693,25 +692,37 @@ bool MetarClass::Initialize(STRING Metar)
 {
     resetWeather();
 
-    // Setup the ID string.
-    CHAR metar[100] = { 0 };
-    wtoa(metar, Metar.c_str(), 100); // wchar ==> char
+    // Setup the metar string.
+    CHAR metar[MAX_STR_LEN] = { 0 };
+    wtoa(metar, Metar.c_str(), MAX_STR_LEN); // wchar ==> char
 
-    // get ip from xml format:
+    // Process Metar:
     char* token;
     int i = 0;
     for (token = strtok(metar, " "); token != 0; token = strtok(NULL, " "), i++) {
 
-        TCHAR metarToken[100] = { 0 }; atow(metarToken, token, 100);
+        TCHAR metarToken[MAX_STR_LEN] = { 0 }; 
+		atow(metarToken, token, MAX_STR_LEN);
         if (!parseToken(metarToken)) {
-            //something else
+			return false;
         }
     }
 
     // Formula:
     // Temperature T / Dewpoint Td / Relative Humidity RH     
     // RH: =100*(EXP((17.625*TD)/(243.04+TD))/EXP((17.625*T)/(243.04+T))) 
-    weather.relative_humidity = (UINT)(100 * (exp((17.625 * weather.dew_point) / (243.04 + weather.dew_point)) / exp((17.625 * weather.temperature) / (243.04 + weather.temperature))));
+	if (weather.temperature > -243.04f && weather.dew_point > -243.04f)
+	{
+		weather.relative_humidity = (UINT)(100 * (
+			exp((17.625 * weather.dew_point) / (243.04 + weather.dew_point)) /
+			exp((17.625 * weather.temperature) / (243.04 + weather.temperature))
+			));
+		weather.relative_humidity = MIN(100, weather.relative_humidity);
+	}
+	else
+	{
+		weather.relative_humidity = 0;
+	}
 
     return true;
 }
