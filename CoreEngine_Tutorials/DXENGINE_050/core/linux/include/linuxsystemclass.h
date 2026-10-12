@@ -14,13 +14,12 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
 #ifndef __LINUXSYSTEMCLASS_H__
 
-//#include "platform.h"
 #include "SystemClass.h"
 
 #ifdef LINUX_PLATFORM
@@ -33,18 +32,10 @@
 
 	#include <X11/Xlib.h>	// Create WINDOW
 
-	//#define GL_GLEXT_PROTOTYPES
-	//#define GLX_GLXEXT_PROTOTYPES
-
 	#include <GL/gl.h>
 	#include <GL/glu.h>
 	#include <GL/glx.h>
 
-	//#include <iostream>
-	//#include <fstream>
-	//#include <cstdint>
-	//#include <string>
-	//#include <unistd.h>
 	#include "woma_macros.h"
 
 	#include "openalclass.h"
@@ -60,7 +51,7 @@ public:
 	LinuxSystemClass(WOMA::Settings* appSettings);
 	~LinuxSystemClass();
 	void Shutdown();
-
+	void ONRESIZE(void* pContext);
 	int	 APPLICATION_MAIN_LOOP();
 
 	void ProcessFrame();
