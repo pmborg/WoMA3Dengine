@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: GLmathClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "main.h" // CLASSLOADER
 #include "GLmathClass.h"
@@ -131,26 +131,8 @@ mat4 operator * (const mat4 &mat1, const mat4 &mat2)
 
 void MatrixTranspose(mat4* result, mat4* matrix)
 {
-	result[0] = matrix[0];
-	result[1] = matrix[4];
-	result[2] = matrix[8];
-	result[3] = matrix[12];
-
-	result[4] = matrix[1];
-	result[5] = matrix[5];
-	result[6] = matrix[9];
-	result[7] = matrix[13];
-
-	result[8] = matrix[2];
-	result[9] = matrix[6];
-	result[10] = matrix[10];
-	result[11] = matrix[14];
-
-	result[12] = matrix[3];
-	result[13] = matrix[7];
-	result[14] = matrix[11];
-	result[15] = matrix[15];
-
-	return;
+	for (int r = 0; r < 4; ++r)
+		for (int c = 0; c < 4; ++c)
+			result->m[r * 4 + c] = matrix->m[c * 4 + r];
 }
 

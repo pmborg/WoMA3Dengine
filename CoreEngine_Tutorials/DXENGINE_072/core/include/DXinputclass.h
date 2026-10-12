@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: DXinputClass.h
 // ----------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Used to Manage: the Mouse and the Joystick
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 #pragma once
 
 ///////////////////////////////
@@ -62,7 +62,6 @@
 class DXInputClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234525217;
 	DXInputClass();
 	~DXInputClass();
 
