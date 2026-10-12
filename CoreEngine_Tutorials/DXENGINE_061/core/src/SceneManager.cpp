@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: SceneManager.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 // PURPOSE: The AudioClass is the Interface Audio to Client EXE 
 //			 No need to Link audio LIBs on client EXE
@@ -140,7 +140,6 @@ void SceneManager::CreateLists(UINT level)
 {
 #ifdef _DEBUG
 	quadTree.totalVertexRendered = 0;
-	//quadTree.totalRendered = 0;
 #endif	
 
 	quadTree.RenderNode(quadTree.m_QuadRootNode, level);

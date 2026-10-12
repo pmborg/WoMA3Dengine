@@ -1,9 +1,9 @@
 ﻿// --------------------------------------------------------------------------------------------
 // Filename: SystemClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Define APIs for systemclass.cpp which is the common OS API
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
@@ -24,7 +24,7 @@
 #pragma warning( disable : 4477 )
 #pragma warning( disable : 4838 )
 
-#include "SystemClass.h"
+//#include "SystemClass.h"
 #include "OSengine.h" //#include "WinSystemClass.h"
 #include "default_settings_xml.h"
 #include "woma_macros.h"
@@ -36,12 +36,19 @@
 #include "language.h"
 #endif
 
+namespace WOMA
+{
+	std::vector<WOMA::WindowDataContainer> windowsToRenderArray;// All Monitors, that will be used to render, 1 for example.
+	std::vector<WOMA::WindowDataContainer> allWindowsHwArray;	// All hardware Monitors available on system, 3 for example.
+}
+
 #if CORE_ENGINE_LEVEL >= 4 && defined USE_SYSTEM_CHECK
 #include "systemManager.h"
 #endif
 
 #if CORE_ENGINE_LEVEL >= 5 && defined WINDOWS_PLATFORM && defined USE_TINYXML_LOADER
 #include "xml_loader.h"
+#include "timerClass.h"
 #endif
 
 #if CORE_ENGINE_LEVEL >= 6 && defined USE_TIMER
@@ -66,11 +73,20 @@
 #endif
 #endif
 
+#if defined VULKAN
+#include "vkClass.h"			// WOMA	
+#endif
+
 #if D3D11_SPEC_DATE_YEAR == 2009
 #include <D3dx9core.h>		//D3DX_SDK_VERSION (Checks for the existence of the correct D3DX library version)
 #endif
 
 #include "Math3D.h"
+
+#if defined WINDOWS_PLATFORM
+#include "DXmodelClass.h"
+#endif
+
 #endif
 
 #define GET_NAME(NAME) #NAME
@@ -80,13 +96,16 @@
 #if DX_ENGINE_LEVEL >= 19 && !defined NewWomaEngine
 bool SystemClass::LoadAllGraphicAssets(void* pContext)
 {
-	//To preserve later the aspect ratio:
+	// To preserve later the aspect ratio of 2D sprites and fonts, we need to calculate the scale factor for the current screen resolution.
 	SystemHandle->m_Application->scaleX = WOMA::AppSettings->WINDOW_WIDTH / 1920.0f;
 	SystemHandle->m_Application->scaleY = WOMA::AppSettings->WINDOW_HEIGHT / 1080.0f;
 	SystemHandle->m_Application->rescale = min(SystemHandle->m_Application->scaleX, SystemHandle->m_Application->scaleY);
 	
-	//################################ LOAD ALL INITIAL 3D OBJECTS ##################################
+	// --------------------------------- LOAD ALL INITIAL 3D OBJECTS --------------------------------
 	// Load all assets that will be rendered on 1ST FRAME
+	// ----------------------------------------------------------------------------------------------
+	float benchmarktime = (float)timeGetTime();
+
 	if (!m_Application->Initialize(pContext, m_Driver))
 	{
 		womalog("m_Application->Initialize() FAILED!");
@@ -95,8 +114,14 @@ bool SystemClass::LoadAllGraphicAssets(void* pContext)
 		return false;
 	}
 
+	womalog("[benchmarktime]: %d ms to Load all objects\n", (UINT)((float)timeGetTime() - (float)benchmarktime));
+
 	return true;
 }
+#endif
+
+#if defined _DEBUG || defined LINUX_PLATFORM || defined ANDROID_PLATFORM
+UINT vkShaderClass_RenderShader_Calls = 0;
 #endif
 
 //----------------------------------------------------------------------------
@@ -193,7 +218,7 @@ SystemClass::SystemClass() // Make sure that all pointers in shutdown are here:
 	#endif
 #endif
 		,
-#if defined WINDOWS_PLATFORM
+#if false //defined WINDOWS_PLATFORM
 		// https://en.wikipedia.org/wiki/Ver_(command)
 		//VER_PRODUCTBUILD
 		Wbuffer
@@ -435,7 +460,7 @@ void SystemClass::InitializeSystemScreenF1(int x, int y)
 
 	for (UINT i = 0; i < systemDefinitions.cpuFeactures.size(); i++)
 	{
-		if (i == 10)
+		if (i == 11) //after 11 change column: 2
 		{
 			text.y = initial_y;
 			text.x = HALF;
@@ -445,7 +470,7 @@ void SystemClass::InitializeSystemScreenF1(int x, int y)
 		TextToPrint[0].push_back(text);
 	}
 
-#if defined DX_ENGINE
+#if defined WINDOWS_PLATFORM//DX_ENGINE
 	// GPU:
 	text.x = x;
 	for (UINT i = 0; i < systemDefinitions.GPUINFO.size(); i++)
@@ -487,7 +512,7 @@ void SystemClass::InitializeSystemScreenF1(int x, int y)
 
 
 //-----------------------------------------------------------------------------
-void SystemClass::refreshTitle() // Run once per second.
+void SystemClass::refreshTitle() // Run once or 2 times per second. (RELEASE / DEBUG)
 {
 #if CORE_ENGINE_LEVEL >= 10 && !defined NewWomaEngine
 	if (driverList.size() == 0)
@@ -500,7 +525,7 @@ void SystemClass::refreshTitle() // Run once per second.
 	StringCchPrintf(pstrFPS, 300, TEXT("%s"), WOMA::APP_FULLNAME);
 #else
 #if defined USE_ASTRO_CLASS
-	#if _DEBUG
+	#if defined _DEBUG
 	StringCchPrintf(pstrFPS, 300, TEXT("FPS:%d(%4.1f ms) [%s] %s shader:%s state:%d - TOTAL VERTEX: %d"), SystemHandle->fps, (SystemHandle->fps==0)?1:1000.0f/SystemHandle->fps,
 		m_Driver->driverName, WOMA::APP_FULLNAME,
 		m_Driver->szShaderModel, WOMA::game_state, SystemHandle->TotalVertexCounter);
@@ -509,82 +534,85 @@ void SystemClass::refreshTitle() // Run once per second.
 		m_Driver->driverName, WOMA::APP_FULLNAME);
 	#endif
 #else
-	StringCchPrintf(pstrFPS, 300, TEXT("FPS:%d %s [%s] shader:%s state:%d - TOTAL VERTEX: %d"), SystemHandle->fps, WOMA::APP_FULLNAME, m_Driver->driverName, m_Driver->szShaderModel, WOMA::game_state, SystemHandle->TotalVertexCounter);
+	StringCchPrintf(pstrFPS, 300, TEXT("FPS:%d [%s] %s shader:%s state:%d - TOTAL VERTEX: %d"), SystemHandle->fps, m_Driver->driverName, WOMA::APP_FULLNAME, m_Driver->szShaderModel, WOMA::game_state, SystemHandle->TotalVertexCounter);
 #endif
 #endif
 
 #if defined WINDOWS_PLATFORM && !defined ANDROID_PLATFORM
 #if defined(X64) // Set the new "Window Title"
 	PDWORD_PTR dwResult = 0;// In 64 Bits
-	for (int i = 0; i < SystemHandle->windowsArray.size(); i++)
+	for (int i = 0; i < WOMA::windowsToRenderArray.size(); i++)
 		if (ShouldDrawUI(i))
-			SendMessageTimeout(SystemHandle->windowsArray[i].hWnd, WM_SETTEXT, 0, (LPARAM)pstrFPS, SMTO_ABORTIFHUNG, 1000, dwResult);
+			SendMessageTimeout(WOMA::windowsToRenderArray[i].hWnd, WM_SETTEXT, 0, (LPARAM)pstrFPS, SMTO_ABORTIFHUNG, 1000, dwResult);
 #else
 	TCHAR		title[MAX_STR_LEN];
 	DWORD dwResult = 0;		// In 32 Bits
-	for (int i = 0; i < SystemHandle->windowsArray.size(); i++)
+	for (int i = 0; i < WOMA::windowsToRenderArray.size(); i++)
 		if (ShouldDrawUI(i)) 
-			SendMessageTimeout(SystemHandle->windowsArray[i].hWnd, WM_SETTEXT, 0, (LPARAM)pstrFPS, SMTO_ABORTIFHUNG, 1000, &dwResult);
+			SendMessageTimeout(WOMA::windowsToRenderArray[i].hWnd, WM_SETTEXT, 0, (LPARAM)pstrFPS, SMTO_ABORTIFHUNG, 1000, &dwResult);
 		else
 		{
 			StringCchPrintf(title, 300, TEXT("WOMA ENGINE - SCR: %d"), i);
-			SendMessageTimeout(SystemHandle->windowsArray[i].hWnd, WM_SETTEXT, 0, (LPARAM)title, SMTO_ABORTIFHUNG, 1000, &dwResult);
+			SendMessageTimeout(WOMA::windowsToRenderArray[i].hWnd, WM_SETTEXT, 0, (LPARAM)title, SMTO_ABORTIFHUNG, 1000, &dwResult);
 		}
 #endif
 #endif
 }
-
-#if defined USE_PROCESS_OS_KEYS //CORE_ENGINE_LEVEL >= 3
-	#ifndef DIK_ESCAPE					// Will be defined @ ENGINE_LEVEL >= 24
-	#define DIK_ESCAPE 0x01
-	#endif
-
 void SystemClass::CalculateCameraViewAndFrustum(void* pContext)
 {
-#if defined USE_WOMA_ENGINE_ONE_CBUFFER
-	womalogATfirstframe(TEXT("[DEBUG] BuildGlobalVPArray check: DX_ENGINE_LEVEL=%d  RenderPage=%u\n"), DX_ENGINE_LEVEL, RENDER_PAGE);
-#endif
-
 	// SET CAMERA (for this monitor): Prepare to Take a Shot: Generate the view matrix based on the camera's position.
 
-  #if defined DX_ENGINE
-	if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
+#if defined DX_ENGINE //WINDOWS_PLATFORM 
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX9 ||
+		WOMA::AppSettings->DRIVER == DRIVER_DX11 ||
+		WOMA::AppSettings->DRIVER == DRIVER_DX12)
 	{
-		auto* camera = DXsystemHandle->m_Camera;
+		auto* camera = DX_Camera;
 
-		if (camera) 
+		if (camera)
 		{
 			// --------------------------------------------------------------------------------------
 			// LEVEL 88+ : 3rd-person camera (default for gameplay or intro demo)
 			// --------------------------------------------------------------------------------------
-			#if defined USE_3RD_PERSON_CAMERA || defined USE_DEMO99
-				IF_RENDER_PAGE(RENDER_PAGE >= 88)
-				{
-					if (g_GOD_MODE)
-						camera->CalculateViewMatrix();
-					else
-						camera->CalculateViewMatrix_3rd_PersonCamera(main3rdPcamera.m_camYaw + XMConvertToRadians(camera->offsetDeg), main3rdPcamera.m_camPitch);
-				}
-			#endif
+#if defined USE_3RD_PERSON_CAMERA || defined USE_DEMO99
+			IF_RENDER_PAGE(RENDER_PAGE >= 88)
+			{
+				if (g_GOD_MODE)
+					camera->CalculateViewMatrix();
+				else
+					camera->CalculateViewMatrix_3rd_PersonCamera(main3rdPcamera.m_camYaw + XMConvertToRadians(camera->offsetDeg), main3rdPcamera.m_camPitch);
+			}
+#endif
 			// --------------------------------------------------------------------------------------
 			// LEGACY LEVELS (<88) : simple first-person camera
 			// --------------------------------------------------------------------------------------
-			#if !defined USE_3RD_PERSON_CAMERA || defined INTRO_DEMO
-				IF_RENDER_PAGE(RENDER_PAGE < 88)
-					camera->CalculateViewMatrix();
-			#endif
+#if !defined USE_3RD_PERSON_CAMERA || defined INTRO_DEMO
+			IF_RENDER_PAGE(RENDER_PAGE < 88)
+				camera->CalculateViewMatrix();
+#endif
 		}
 	}
-  #endif
+#endif
 
-  #if (defined OPENGL3 || defined OPENGL4)
+#if defined OPENGL3 || defined OPENGL4
 	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
 	{
-		GLopenGLclass* driver = (GLopenGLclass*)driverList[WOMA::AppSettings->DRIVER];
+		GLopenGLclass* driver = (GLopenGLclass*)driverList[DRIVER_GL3];
+
 		if (driver->gl_Camera)
 			driver->gl_Camera->CalculateViewMatrix();
 	}
-  #endif
+#endif
+
+#if defined VULKAN
+	if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+	{
+		vkClass* driver = (vkClass*)driverList[DRIVER_VULKAN];
+
+		if (driver->gl_Camera)
+			driver->gl_Camera->CalculateViewMatrix();
+	}
+#endif
 
 	// ----------------------------------------------------------------------------
 	// CONSTRUCT VIEW FRUSTUM (for visibility testing)
@@ -592,46 +620,68 @@ void SystemClass::CalculateCameraViewAndFrustum(void* pContext)
 #if defined USE_FRUSTUM
 	IF_RENDER_PAGE(RENDER_PAGE >= 30)
 	{
-	#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-	if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
-		m_Driver->frustum->ConstructFrustum(WOMA::AppSettings->SCREEN_DEPTH / 2.5f,
-			&((DX12Class*)m_Driver)->m_projectionMatrix,
-			&DXsystemHandle->m_Camera->m_viewMatrix);
-	#endif
+#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
+			m_Driver->frustum->ConstructFrustum(WOMA::AppSettings->SCREEN_DEPTH / 2.5f,
+				&((DX12Class*)m_Driver)->m_projectionMatrix,
+				&DX_Camera->m_viewMatrix);
+#endif
 
-	#if defined DX11 || defined DX9
-	if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
-		m_Driver->frustum->ConstructFrustum(WOMA::AppSettings->SCREEN_DEPTH / 2.5f,
-			&((DX11Class*)m_Driver)->m_projectionMatrix,
-			&DXsystemHandle->m_Camera->m_viewMatrix);
-	#endif
+#if (defined DX11 || defined DX9) && defined DX_ENGINE
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
+			m_Driver->frustum->ConstructFrustum(WOMA::AppSettings->SCREEN_DEPTH / 2.5f,
+				&((DX11Class*)m_Driver)->m_projectionMatrix, &DX_Camera->m_viewMatrix);
+#endif
 
-	#if (defined OPENGL3 || defined OPENGL4)
-	if (WOMA::AppSettings->DRIVER == DRIVER_GL3) {
+#if (defined OPENGL3 || defined OPENGL4 || defined VULKAN)
+		if (WOMA::AppSettings->DRIVER == DRIVER_GL3 || WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+		{
+			mat4 glPrjMatrix;
+			mat4 glvMatrix;
 
-		mat4 glPrjMatrix = ((GLopenGLclass*)m_Driver)->m_projectionMatrix;
-		XMMATRIX m_projectionMatrix = XMMatrixSet
-		(
-			glPrjMatrix.m[0], glPrjMatrix.m[1], glPrjMatrix.m[2], glPrjMatrix.m[3],
-			glPrjMatrix.m[4], glPrjMatrix.m[5], glPrjMatrix.m[6], glPrjMatrix.m[7],
-			glPrjMatrix.m[8], glPrjMatrix.m[9], glPrjMatrix.m[10], glPrjMatrix.m[11],
-			glPrjMatrix.m[12], glPrjMatrix.m[13], glPrjMatrix.m[14], glPrjMatrix.m[15]
-		);
+#if defined OPENGL3 || defined OPENGL4
+			if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
+			{
+				glPrjMatrix = ((GLopenGLclass*)m_Driver)->m_projectionMatrix;
+				glvMatrix = ((GLopenGLclass*)m_Driver)->gl_Camera->m_viewMatrix;
+			}
+#endif
+#if defined VULKAN
+			if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+			{
+				glPrjMatrix = ((vkClass*)m_Driver)->m_projectionMatrix;
+				glvMatrix = ((vkClass*)m_Driver)->gl_Camera->m_viewMatrix;
+			}
+#endif
 
-		mat4 glvMatrix = ((GLopenGLclass*)m_Driver)->gl_Camera->m_viewMatrix;
-		XMMATRIX m_viewMatrix = XMMatrixSet
-		(
-			glvMatrix.m[0], glvMatrix.m[1], glvMatrix.m[2], glvMatrix.m[3],
-			glvMatrix.m[4], glvMatrix.m[5], glvMatrix.m[6], glvMatrix.m[7],
-			glvMatrix.m[8], glvMatrix.m[9], glvMatrix.m[10], glvMatrix.m[11],
-			glvMatrix.m[12], glvMatrix.m[13], glvMatrix.m[14], glvMatrix.m[15]
-		);
+#if defined WINDOWS_PLATFORM
+			XMMATRIX m_projectionMatrix = XMMatrixSet
+#else
+			XMMATRIX m_projectionMatrix
+#endif
+				(
+					glPrjMatrix.m[0], glPrjMatrix.m[1], glPrjMatrix.m[2], glPrjMatrix.m[3],
+					glPrjMatrix.m[4], glPrjMatrix.m[5], glPrjMatrix.m[6], glPrjMatrix.m[7],
+					glPrjMatrix.m[8], glPrjMatrix.m[9], glPrjMatrix.m[10], glPrjMatrix.m[11],
+					glPrjMatrix.m[12], glPrjMatrix.m[13], glPrjMatrix.m[14], glPrjMatrix.m[15]
+					);
 
-		m_Driver->frustum->ConstructFrustum(WOMA::AppSettings->SCREEN_DEPTH / 2.5f,
-			&m_projectionMatrix,
-			&m_viewMatrix);
-	}
-	#endif
+#if defined WINDOWS_PLATFORM
+			XMMATRIX m_viewMatrix = XMMatrixSet
+#else
+			XMMATRIX m_viewMatrix
+#endif
+				(
+					glvMatrix.m[0], glvMatrix.m[1], glvMatrix.m[2], glvMatrix.m[3],
+					glvMatrix.m[4], glvMatrix.m[5], glvMatrix.m[6], glvMatrix.m[7],
+					glvMatrix.m[8], glvMatrix.m[9], glvMatrix.m[10], glvMatrix.m[11],
+					glvMatrix.m[12], glvMatrix.m[13], glvMatrix.m[14], glvMatrix.m[15]
+					);
+
+			m_Driver->frustum->ConstructFrustum(WOMA::AppSettings->SCREEN_DEPTH / 2.5f, &m_projectionMatrix, &m_viewMatrix);
+		}
+#endif
+
 	}
 #endif
 
@@ -640,21 +690,21 @@ void SystemClass::CalculateCameraViewAndFrustum(void* pContext)
 	// ----------------------------------------------------------------------------
 }
 
-#if DX_ENGINE_LEVEL >= 28 && defined WINDOWS_PLATFORM
-void SystemClass::LogAllMatrix() 
+#if DX_ENGINE_LEVEL >= 28 && defined DX_ENGINE
+void SystemClass::LogAllMatrix()
 {
 	ASSERT_DEBUG(WOMA::logManager);
 	{
 		// Log all active camera & projection matrices
 		DirectX::DX11Class* m_driver11 = (DirectX::DX11Class*)m_Driver;
 
-	#if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28
-		XMMATRIX* camNormalView = &DXsystemHandle->m_Camera->m_viewMatrix;
-		XMMATRIX* camSkyView = &DXsystemHandle->m_CameraSKY->m_viewMatrix;
-	#else
-		XMMATRIX* camNormalView = &DXsystemHandle->m_Camera->m_viewMatrix;
+#if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28
+		XMMATRIX* camNormalView = &DX_Camera->m_viewMatrix;
+		XMMATRIX* camSkyView = &DX_CameraSKY->m_viewMatrix;
+#else
+		XMMATRIX* camNormalView = &DX_Camera->m_viewMatrix;
 		XMMATRIX* camSkyView = nullptr;
-	#endif
+#endif
 
 		XMMATRIX* camMiniView = nullptr;
 
@@ -677,10 +727,20 @@ void SystemClass::LogAllMatrix()
 
 		womalog(TEXT("Projection Matrices:\n"));
 		DX_LOG_MATRIX(&m_driver11->m_projectionMatrix);
+#if DX_ENGINE_LEVEL >= 28 && defined USE_SKY_CAMERA_DOME
 		DX_LOG_MATRIX(&m_driver11->m_projectionMatrix_sky);
+#endif
+#if defined USE_VIEW2D_SPRITES
+		DX_LOG_MATRIX(&m_driver11->m_orthoMatrix);
+#endif
 	}
 }
 #endif
+
+#if defined USE_PROCESS_OS_KEYS && CORE_ENGINE_LEVEL >= 4
+	#ifndef DIK_ESCAPE					// Will be defined @ ENGINE_LEVEL >= 24
+	#define DIK_ESCAPE 0x01
+	#endif
 
 //-----------------------------------------------------------------------------------------
 void SystemClass::ProcessOS_Fx_Keys_Input() // This Function will be invoked several times per second
@@ -735,7 +795,7 @@ void SystemClass::ProcessOS_Fx_Keys_Input() // This Function will be invoked sev
 			return;
 		}
 		RENDER_PAGE = 9;
-		WOMA::game_state = GAME_WEATHER_INFO; //match*
+		WOMA::previous_game_state = WOMA::game_state = GAME_WEATHER_INFO; //match*
 		OS_REDRAW_WINDOW;
 	}
 	first_time = false;
@@ -755,7 +815,7 @@ void SystemClass::ProcessOS_Fx_Keys_Input() // This Function will be invoked sev
 			return;
 		}
 		RENDER_PAGE = 8;
-		WOMA::game_state = GAME_SHOW_POSITION; //match*
+		WOMA::previous_game_state = WOMA::game_state = GAME_SHOW_POSITION; //match*
 		OS_REDRAW_WINDOW;
 	}
 	first_time = false;
@@ -774,7 +834,7 @@ void SystemClass::ProcessOS_Fx_Keys_Input() // This Function will be invoked sev
 			return;
 		}
 		RENDER_PAGE = 7;
-		WOMA::game_state = GAME_CELESTIAL_INFO; //match*
+		WOMA::previous_game_state = WOMA::game_state = GAME_CELESTIAL_INFO; //match*
 		OS_REDRAW_WINDOW;
 	}
 	first_time = false;
@@ -833,7 +893,7 @@ void SystemClass::ProcessOS_Fx_Keys_Input() // This Function will be invoked sev
 			SAFE_SHUTDOWN(SystemHandle->womaSetup);
 		if (OS_KEY_DOWN(VK_F5)) {
 			RENDER_PAGE = LEVEL;
-			WOMA::game_state = GAME_RUN;
+			WOMA::previous_game_state = WOMA::game_state = GAME_RUN;
 			OS_REDRAW_WINDOW;
 		}
 	}
@@ -860,9 +920,13 @@ bool SystemClass::SystemCheck()
 	// -------------------------------------------------------------------------------------------
 	WOMA::settings.Endian = WOMA::endian();
 	if (WOMA::settings.Endian == LITTLE_ENDIAN)
+	{
 		womalogauto(TEXT("The machine is Little ENDIAN\n"));	//8008, 8080, 8085, 8086, ...
+	}
 	else
+	{
 		womalogauto(TEXT("The machine is Big ENDIAN\n"));		//Motorola 68000
+	}
 
 	womalogauto(TEXT("\n"));
 
@@ -968,9 +1032,27 @@ void SystemClass::Shutdown()
 	womalogauto((TCHAR*)TEXT("-------------------------------------------------------------------------------\n"));
 	womalogauto((TCHAR*)TEXT("SystemClass::Shutdown()\n"));
 	womalogauto((TCHAR*)TEXT("-------------------------------------------------------------------------------\n"));
+
+#if defined USE_DIRECT_INPUT
+	for (UINT i = 0; i < m_player.size(); i++)
+	{
+		SAFE_DELETE(((PlayerClass*)m_player[i]));
+	}
+	m_player.clear();
+#endif
+
 #if defined USE_PROCESS_OS_KEYS
 	SAFE_DELETE(m_OsInput);
 #endif
+
+#if defined VULKAN
+	if (driverList[DRIVER_VULKAN])
+	{
+		((vkClass*)driverList[DRIVER_VULKAN])->WaitForIdle();
+	}
+#endif
+
+
 
 	if (m_Application) {
 		m_Application->WOMA_APPLICATION_Shutdown();
@@ -982,6 +1064,22 @@ void SystemClass::Shutdown()
 	SAFE_DELETE(systemManager);
 #endif
 
+#if defined DX_ENGINE
+	if (DX_Camera)
+	{
+		delete ((DXcameraClass*)DX_Camera);
+		DX_Camera = NULL;
+	}
+
+	#if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28
+	if (DX_CameraSKY)
+	{
+		delete ((DXcameraClass*)DX_CameraSKY);
+		DX_CameraSKY = NULL;
+	}
+	#endif
+#endif
+
 #if CORE_ENGINE_LEVEL >= 10 && !defined NewWomaEngine
 	if (driverList.size() > 0) {
 #if (defined OPENGL3 || defined OPENGL40) 
@@ -990,22 +1088,35 @@ void SystemClass::Shutdown()
 			driverList[DRIVER_GL3] = NULL;
 		}
 #endif
-#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
+#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009 && defined DX_ENGINE
 		if (driverList[DRIVER_DX12]) {
 			delete ((DirectX::DX12Class*)driverList[DRIVER_DX12]);
 			driverList[DRIVER_DX12] = NULL;
 		}
 #endif
-#if defined DX11 //Pure DX11
+#if defined DX11 && defined DX_ENGINE//Pure DX11
 		if (driverList[DRIVER_DX11]) {
 			delete ((DirectX::DX11Class*)driverList[DRIVER_DX11]);
 			driverList[DRIVER_DX11] = NULL;
 		}
 #endif
+#if defined DX9 && D3D11_SPEC_DATE_YEAR > 2009 && defined DX_ENGINE
+		if (driverList[DRIVER_DX9]) {
+			delete ((DirectX::DX11Class*)driverList[DRIVER_DX9]);
+			driverList[DRIVER_DX9] = NULL;
+		}
+#endif
+#if defined VULKAN
+	if (driverList[DRIVER_VULKAN]) {
+		delete ((vkClass*)driverList[DRIVER_VULKAN]);
+		driverList[DRIVER_VULKAN] = NULL;
+	}
+#endif
 	}
 #endif
 
 }
+
 #if defined ANDROID_PLATFORM
 extern android_app* app;
 #endif
@@ -1013,22 +1124,33 @@ extern android_app* app;
 void SystemClass::FrameUpdate()
 {
 
-
-	#if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
+	#if defined USE_DIRECT_INPUT
 	  #if !defined ANDROID_PLATFORM
-		DXsystemHandle->GetInputs();					// READ-INPUT: WinSystemClass::ProcessInput() + DXInputClass::Frame()
+		DXsystemHandle->GetInputs();					// READ-INPUTs: WinSystemClass::ProcessInput() + DXInputClass::Frame()
 	  #endif
-	  #if defined DX_ENGINE
-		DXsystemHandle->m_Input->GetDirectInputKeys();	// Process Keyboard keys / (DXInputClass)
+	  #if defined WINDOWS_PLATFORM //DX_ENGINE
+		DXsystemHandle->m_Input->GetDirectInputKeys();	// Process DX Keyboard keys / (DXInputClass)
 	  #endif
 	#endif
 
 	#if defined USE_PROCESS_OS_KEYS && defined WINDOWS_PLATFORM
-		ProcessOS_Fx_Keys_Input();						// Process Special function keys |ESC and F1 to F6|
+		ProcessOS_Fx_Keys_Input();						// Process Special win32 function keys |ESC and F1 to F6|
 		if (WOMA::game_state == ENGINE_RESTART)
 			return;
 	#endif
 	
+	#if defined USE_DIRECT_INPUT
+		if (DXsystemHandle->m_player[g_NetID]->p_player.IsSpacePressed)
+		{
+			// Wait for space key up: (one-shot)
+			if (DXsystemHandle->m_player[g_NetID]->p_player.IsSpacePressed && WOMA::game_state != GAME_PAUSED)
+			{
+				SystemHandle->WaitSpaceRelease();
+				DXsystemHandle->PAUSE();
+			}
+		}
+	#endif
+
 	#if CORE_ENGINE_LEVEL >= 4 && defined USE_TIMER_CLASS
 		ProcessPerformanceStats();					    // Run every: FPS: m_Timer.Frame(); m_Fps.Frame(); m_Cpu.Frame();
 	#endif
@@ -1037,7 +1159,7 @@ void SystemClass::FrameUpdate()
 #if CORE_ENGINE_LEVEL >= 2 && (defined USE_PROCESS_OS_KEYS || defined INTRO_DEMO)
 bool SystemClass::InitOsInput()
 {
-  #if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
+  #if defined USE_DIRECT_INPUT
 	g_NetID = (UINT)0; // Just Us on the world? So WE will be the index: zero...
 	m_Application->SetPlayerPosition(g_NetID);
   #endif
@@ -1045,45 +1167,47 @@ bool SystemClass::InitOsInput()
 }
 #endif
 
+//
+// Runtime configuration precedence:
+//
+// 1. Built-in engine defaults.
+// 2. settings.xml overrides.
+// 3. Command-line overrides (highest priority).
+//
+// Each stage only overrides values explicitly provided,
+// preserving all previous settings.
+//
 // Used by: runtest_WindowsEngine_002-009-Core.bat
-// Used by: runtest_WindowsEngine_020-028.bat
-// Used by: runtest_WindowsEngine_030-038.bat
-// Used by: runtest_WindowsEngine_039-053.bat
-// Used by: runtest_WindowsEngine_054-065.bat
-// Used by: runtest_WindowsEngine_070-078.bat
-// Used by: runtest_WindowsEngine_082-90.bat
-// Used by: runtest_WindowsEngine_090-98.bat
+//			runtest_WindowsEngine_020-028.bat
+//			runtest_WindowsEngine_030-038.bat
+//			runtest_WindowsEngine_039-053.bat
+//			runtest_WindowsEngine_054-065.bat
+//			runtest_WindowsEngine_070-078.bat
+//			runtest_WindowsEngine_082-90.bat
+//			runtest_WindowsEngine_090-98.bat
+//			runtest_WindowsEngine_099-107.bat
+
 void SystemClass::ParseCommandLineAndApplySettings(int argc, char* argv[])
 {
 #if defined USE_TINYXML_LOADER			        // This settings.xml can be override by command line options!
     IF_NOT_THROW_EXCEPTION(LoadXmlSettings()); //  XML: Load Application Settings: "settings.xml", pickup "Driver" to Use (override default: WOMA::settings)
 #endif
 
-#if defined UNICODE
-    for (int i = 1; i < argc; ++i)
-    {
-        CHAR* parameter = argv[i];
-        TCHAR* wparameter = NULL;
-        atow(wparameter, parameter, (int)_tcslen(wparameter)); //VER_PRODUCTVERSION_STRING_FOUR_PARTS
+	WOMA::windowsToRenderArray.clear();// All Monitors, that will be used to render, 1 for example.
+	WOMA::allWindowsHwArray.clear();	// All hardware Monitors available on system, 3 for example.
 
-        if (_tcsnicmp(wparameter, TEXT("-warp"), _tcslen(wparameter)) == 0 ||
-            _tcsnicmp(wparameter, TEXT("/warp"), _tcslen(wparameter)) == 0)
-        {
-            WOMA::UseWarpDevice = true;
-        }
-    }
-#else
     for (int i = 1; i < argc; ++i)
     {
         if (strlen(argv[i]) == 0)
             continue;
-        if (_tcsnicmp(argv[i], "-warp", _tcslen(argv[i])) == 0 ||
-            _tcsnicmp(argv[i], "/warp", _tcslen(argv[i])) == 0)
+        if (_strnicmp(argv[i], "-warp", strlen(argv[i])) == 0 ||	//NOTE: Cant be: _tcslen
+			_strnicmp(argv[i], "/warp", strlen(argv[i])) == 0)		//NOTE: Cant be: _tcsnicmp
         {
             WOMA::UseWarpDevice = true;
         }
-        if (_tcsnicmp(argv[i], "-renderOnce", _tcslen(argv[i])) == 0 ||
-            _tcsnicmp(argv[i], "/renderOnce", _tcslen(argv[i])) == 0)
+
+        if (_strnicmp(argv[i], "-renderOnce", strlen(argv[i])) == 0 ||
+            _strnicmp(argv[i], "/renderOnce", strlen(argv[i])) == 0)
         {
             WOMA::renderOnce = true;
             WOMA::settings.FULLSCREEN_ON_WINDOWED = false;
@@ -1095,39 +1219,61 @@ void SystemClass::ParseCommandLineAndApplySettings(int argc, char* argv[])
             }
 #endif
         }
-        if (_tcsnicmp(argv[i], "-Xpos", _tcslen(argv[i])) == 0 ||
-            _tcsnicmp(argv[i], "/Xpos", _tcslen(argv[i])) == 0)
+
+        if (_strnicmp(argv[i], "-Xpos", strlen(argv[i])) == 0 ||
+            _strnicmp(argv[i], "/Xpos", strlen(argv[i])) == 0)
         {
             WOMA::settings.WINDOW_Xpos_ori = atoi(argv[i + 1]);
             i++;
         }
-        if (_tcsnicmp(argv[i], "-Ypos", _tcslen(argv[i])) == 0 ||
-            _tcsnicmp(argv[i], "/Ypos", _tcslen(argv[i])) == 0)
+        if (_strnicmp(argv[i], "-Ypos", strlen(argv[i])) == 0 ||
+            _strnicmp(argv[i], "/Ypos", strlen(argv[i])) == 0)
         {
             WOMA::settings.WINDOW_Ypos_ori = atoi(argv[i + 1]);
             i++;
         }
-        if (_tcsnicmp(argv[i], "-WIDTH", _tcslen(argv[i])) == 0 ||
-            _tcsnicmp(argv[i], "/WIDTH", _tcslen(argv[i])) == 0)
+        if (_strnicmp(argv[i], "-WIDTH", strlen(argv[i])) == 0 ||
+            _strnicmp(argv[i], "/WIDTH", strlen(argv[i])) == 0)
         {
             WOMA::settings.WINDOW_WIDTH_ori = atoi(argv[i + 1]);
             i++;
         }
-        if (_tcsnicmp(argv[i], "-HEIGHT", _tcslen(argv[i])) == 0 ||
-            _tcsnicmp(argv[i], "/HEIGHT", _tcslen(argv[i])) == 0)
+        if (_strnicmp(argv[i], "-HEIGHT", strlen(argv[i])) == 0 ||
+            _strnicmp(argv[i], "/HEIGHT", strlen(argv[i])) == 0)
         {
             WOMA::settings.WINDOW_HEIGHT_ori = atoi(argv[i + 1]);
             i++;
         }
+
+		if (_strnicmp(argv[i], "-DRIVER", strlen(argv[i])) == 0 ||
+			_strnicmp(argv[i], "/DRIVER", strlen(argv[i])) == 0)	
+		{
+			WOMA::settings.DRIVER = atoi(argv[i + 1]);
+			i++;
+		}
+
+		if (_strnicmp(argv[i], "-MONITOR", strlen(argv[i])) == 0 ||		//NOTE: Cant be: _tcslen or _tcsnicmp
+			_strnicmp(argv[i], "/MONITOR", strlen(argv[i])) == 0)
+		{
+			WOMA::settings.UI_MONITOR = atoi(argv[i + 1]);
+			i++;
+		}
     }
-#endif
 
 	//FORCE VSYNC on short demos:
 	if (WOMA::renderOnce)
 	{
+		womalog("DEMO renderOnce\n");
 		WOMA::AppSettings->VSYNC_ENABLED = true;
 		WOMA::AppSettings->UseAllMonitors = false;
 	}
+
+#if defined LINUX_PLATFORM
+	//WOMA::AppSettings->DRIVER = DRIVER_GL3; //Force OpenGL Driver
+	WOMA::AppSettings->DRIVER = DRIVER_VULKAN; //Force OpenGL Driver
+#endif
+
+	womalog("VSYNC_ENABLED=%d\n", WOMA::AppSettings->VSYNC_ENABLED);
 }
 
 
@@ -1137,6 +1283,10 @@ bool SystemClass::LoadXmlSettings()
 	womalog("===============================================================================\n");
 	womalogauto(TEXT("LOAD XML SETTINGS\n"));
 	womalog("===============================================================================\n");
+
+	#if defined ANDROID_PLATFORM
+		return true;
+	#endif
 
 	// Load and Parse XML FILE:"settings.xml" the Configuration file
 	//----------------------------------------------------------------------------
@@ -1176,8 +1326,9 @@ bool SystemClass::LoadXmlWorld()
 	// 1️st ADD SPECIAL COLOR LINE (used for Sun Direction visualization)
 	// ----------------------------------------------------------------------------------------
 
+	//----------------------------------------------------------------------------------------
 	// Load and Parse XML FILE:"world.xml" the WORLD file
-	//----------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------
 
   #if defined MAIN_RENDER_MAIN_XML_OBJ
 	XML_WORLD_FILE = WOMA::PUBLIC_DOCUMENTS;
@@ -1189,6 +1340,10 @@ bool SystemClass::LoadXmlWorld()
 		return false;
 	}
   #endif
+
+	//----------------------------------------------------------------------------------------
+	// ADD INSTANCES
+	//----------------------------------------------------------------------------------------
 
 		//Create WOMA_OBJECTs for all these loaded XML objects:
 		for (size_t i = 0; i < SystemHandle->xml_loader.theWorldXML.size(); i++)
@@ -1218,6 +1373,7 @@ void SystemClass::ProcessPerformanceStats()
 	m_Cpu.Frame();					// Collect CPU usage percentage, once per second!
 	cpu = m_Cpu.GetCpuPercentage(); // Get current CPU use  (updated by "m_Cpu.Frame()" every second)
   #endif
+
 }
 #endif
 
@@ -1229,19 +1385,12 @@ bool SystemClass::InitializeDrivers(int screenWidth, int screenHeight, float scr
 
 #if	!defined NewWomaEngine
 	womalog("LoadAllDrivers - DriverList:\n");
-	UINT size = (UINT)driverList.size();
-	if (size >= 1)
-		if (driverList[0])
-			womalog("driverList[0] = %s \n", driverList[0]->driverName);
-	if (size >= 2)
-		if (driverList[1])
-			womalog("driverList[1] = %s \n", driverList[1]->driverName);
-	if (size >= 3)
-		if (driverList[2])
-			womalog("driverList[2] = %s \n", driverList[2]->driverName);
-	if (size >= 4)
-		if (driverList[3])
-			womalog("driverList[3] = %s \n", driverList[3]->driverName);
+
+	for (UINT i = 0; i < DRIVER_COUNT; ++i)
+	{
+		if (i < driverList.size() && driverList[i])
+			womalog("driverList[%u] = %s\n", i, driverList[i]->driverName);
+	}
 
 	womalog("XML Conf - Selected Driver [%d]\n", WOMA::AppSettings->DRIVER);
 
@@ -1261,11 +1410,14 @@ void SystemClass::LoadAllDrivers()
 	// Allocate all Drivers:
 	womalog("SystemClass::LoadAllDrivers()\n");
 
+	driverList.clear();
+	driverList.reserve(DRIVER_COUNT);
+
 #if	!defined NewWomaEngine
 	// -------------------------------------------------------------------------------------------
-	// [0] DX11 (or DX11 with Downgrade: DX10)
+	// [0] DX11 (or DX11 with Downgrade: DX10 API)
 	// -------------------------------------------------------------------------------------------
-#if defined ( DX11 )
+#if defined DX11 && defined DX_ENGINE
 	{
 		womalog("LoadDriver[0]: DX11Class\n");//driver = g_contextDriver;	// Re-Use the same driver ( Context Driver )
 		driverList.push_back(NEW DirectX::DX11Class());
@@ -1287,22 +1439,39 @@ void SystemClass::LoadAllDrivers()
 	// -------------------------------------------------------------------------------------------
 	// [2] DX 9 (or DX11 with Downgrade: DX9)
 	// -------------------------------------------------------------------------------------------
+#if   defined DX9 && D3D11_SPEC_DATE_YEAR > 2009 && defined DX_ENGINE
+	womalog("LoadDriver[2]: DX9(DX11)Class\n");
+	driverList.push_back(NEW DirectX::DX11Class());
+	((DirectX::DX11Class*)driverList[2])->dx11_force_dx9 = true;
+	((DirectX::DX11Class*)driverList[2])->CheckAPIdriver(WOMA::AppSettings->ADAPTOR); // Recalculate the capabilities for DX9
+#else
 	driverList.push_back(NULL);
+#endif
 
 	// -------------------------------------------------------------------------------------------
 	// [3] DX 12
 	// -------------------------------------------------------------------------------------------
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
-	{
 		driverList.push_back(NEW DirectX::DX12Class());
 		//driver = g_contextDriver;	// Re-Use the same driver ( Context Driver )
 		womalog("LoadDriver[3]: DX12Class\n");
-		}
 #else
 	driverList.push_back(NULL);
 #endif
-#endif
 
+	// -------------------------------------------------------------------------------------------
+	// [4] VULKAN
+	// -------------------------------------------------------------------------------------------
+	#if (defined VULKAN) //Driver
+		womalog("LoadDriver[4]: vkClass\n");
+		driverList.push_back((WomaDriverClass*)NEW vkClass);
+	#else
+		driverList.push_back(NULL);
+	#endif
+
+	ASSERT(driverList.size() == DRIVER_COUNT);
+
+#endif
 } 
 
 //END: LoadAllDrivers()
@@ -1345,8 +1514,6 @@ void SystemClass::InitJoyStick()
 				vBias = 1.0f - joyCaps.wVmax * vScale;
 			}
 		}
-
-		// MORE INFO: https://technet.microsoft.com/pt-br/dd757103%28v=vs.71%29
 		womalog("Joystick: Detected\n");
 		womalog("Driver: %s\n", joyCaps.szPname);
 		womalog("Manufacturer identifier: %X\n", joyCaps.wMid);
@@ -1443,7 +1610,7 @@ bool InitSelectedDriver()
 #if !defined NewWomaEngine
 	switch (WOMA::AppSettings->DRIVER)
 	{
-#if defined DX11 // [0] Pure DX11
+#if defined DX11 && defined DX_ENGINE// [0] Pure DX11
 	case DRIVER_DX11:
 		IF_NOT_RETURN_FALSE(((DirectX::DX11Class*)(driverList[DRIVER_DX11]))->OnInit(WOMA::AppSettings->UI_MONITOR, SystemHandle->m_hWnd,
 			WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT, WOMA::AppSettings->DEPTH_BITS,
@@ -1462,11 +1629,35 @@ bool InitSelectedDriver()
 #endif
 		break;
 #endif
-#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009 //[3]
+#if defined DX9 && D3D11_SPEC_DATE_YEAR > 2009 && defined DX_ENGINE//[2]
+	case DRIVER_DX9:
+		ASSERT(((DirectX::DX11Class*)(driverList[DRIVER_DX9]))->OnInit(WOMA::AppSettings->UI_MONITOR, SystemHandle->m_hWnd, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT, 24 /*BufferDeep*/,
+			WOMA::AppSettings->SCREEN_DEPTH, WOMA::AppSettings->SCREEN_NEAR, WOMA::AppSettings->MSAA_Anisotropic, WOMA::AppSettings->VSYNC_ENABLED,
+			WOMA::AppSettings->FULL_SCREEN, WOMA::AppSettings->UseDoubleBuffering, WOMA::AppSettings->AllowResize));
+		break;
+#endif
+#if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009 && defined DX_ENGINE//[3]
 	case DRIVER_DX12:
         ASSERT(((DirectX::DX12Class*)(driverList[DRIVER_DX12]))->OnInit(WOMA::AppSettings->UI_MONITOR, SystemHandle->m_hWnd, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT, 24 /*BufferDeep*/, WOMA::AppSettings->SCREEN_DEPTH,
             WOMA::AppSettings->SCREEN_NEAR, WOMA::AppSettings->MSAA_Anisotropic, WOMA::AppSettings->VSYNC_ENABLED, WOMA::AppSettings->FULL_SCREEN,
             WOMA::AppSettings->UseDoubleBuffering, WOMA::AppSettings->AllowResize));
+		break;
+#endif
+#if defined VULKAN
+	case DRIVER_VULKAN:
+		ASSERT(((vkClass*)(driverList[DRIVER_VULKAN]))->OnInit(
+			/*WOMA::AppSettings->UI_MONITOR*/0,
+			SystemHandle->m_hWnd,
+			WOMA::AppSettings->WINDOW_WIDTH,
+			WOMA::AppSettings->WINDOW_HEIGHT,
+			24,
+			WOMA::AppSettings->SCREEN_DEPTH,
+			WOMA::AppSettings->SCREEN_NEAR,
+			WOMA::AppSettings->MSAA_Anisotropic,
+			WOMA::AppSettings->VSYNC_ENABLED,
+			WOMA::AppSettings->FULL_SCREEN,
+			WOMA::AppSettings->UseDoubleBuffering,
+			WOMA::AppSettings->AllowResize));
 		break;
 #endif
 };
@@ -1485,25 +1676,57 @@ bool InitSelectedDriver()
 
 #if defined DX11 // Pure DX11
 	if (driverList[DRIVER_DX11]) //Driver 11 will give backward compatibility:
+	{
 		womalogauto(TEXT("DX10 Support: %s\n"), driverList[WOMA::AppSettings->DRIVER]->m_sCapabilities.CapDX10_11 ? TEXT("true") : TEXT("false"));	//Allow DX11, scale down to DX10, if needed?		
+
+	}
 	else
+	{
 		womalogauto(TEXT("DX10 Support: false\n"));
+	}
 
 	if (driverList[DRIVER_DX11])
+	{
 		womalogauto(TEXT("DX11 Support: %s\n"), (((DirectX::DX11Class*)(driverList[DRIVER_DX11]))->ShaderVersionH >= 5) ? TEXT("true") : TEXT("false"));
+	}
 	else
+	{
 		womalogauto(TEXT("DX11 Support: false\n"));
+	}
 #endif
+
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009
 	if (driverList[DRIVER_DX12])
+	{
 		womalogauto(TEXT("DX12 Support: %s\n"), (((DirectX::DX12Class*)(driverList[DRIVER_DX12]))->ShaderVersionH >= 6) ? TEXT("true") : TEXT("false"));
+	}
 	else
+	{
 		womalogauto(TEXT("DX12 Support: false\n"));
+	}
 #endif
 #endif
 
 #if (defined OPENGL3 || defined OPENGL4)
-	womalogauto(TEXT("OPENGL3 Support: true\n"));
+	if (driverList[DRIVER_GL3])
+	{
+		womalogauto(TEXT("OPENGL3 Support: true\n"));
+	}
+	else
+	{
+		womalogauto(TEXT("OPENGL3 Support: false\n"));
+	}
+#endif
+
+#if (defined VULKAN)
+	if (driverList[DRIVER_VULKAN])
+	{
+		womalogauto(TEXT("VULKAN Support: true\n"));
+	}
+	else
+	{
+		womalogauto(TEXT("VULKAN Support: false\n"));
+	}
 #endif
 #endif
 
@@ -1535,5 +1758,29 @@ bool newDriver()
 	}
 
 	return true;
+}
+#endif
+
+#if defined USE_SCENE_MANAGER
+void SystemClass::InitSceneManager()
+//----------------------------------------------------------------------------
+{
+	//  QUADTREE:
+	// ||64|64||
+	// -----------
+	// ||64|64||
+
+	set_world_size(terrain_squares); //world.size
+   
+	set_world_patchSize(terrain_squares / 4);  
+
+	// SCENE MANAGER: Create SceneManager Engine: (Driver will use Frustum to filter)
+#if defined USE_SCENE_MANAGER
+	if (WOMA::sceneManager == NULL)
+		WOMA::sceneManager = SceneManager::GetInstance();
+
+	WOMA::sceneManager->CreateRootNode(get_world_size(), m_Application->ClearColor); // 256 x 8 --> //-512,-512, 512, 512
+	WOMA::sceneManager->quadTree.Initialize(WOMA::sceneManager->RootNode);
+#endif
 }
 #endif

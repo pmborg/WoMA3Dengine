@@ -6,7 +6,7 @@
   </camera>
 
   <!-- ENGINE LVL 31-->
-  <fog start="0" end="256"/>
+  <fog start="32" end="512"/>
   
   <world hVisibility="128" seaLevel="0" size="512" patchSize="64" skySize="25" 
          water="engine/data/Terrain/heightmap512x512.bmp" 
