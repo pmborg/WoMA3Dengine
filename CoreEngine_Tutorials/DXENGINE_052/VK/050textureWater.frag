@@ -19,5 +19,5 @@ void main()
 {
 	#define TEXTURE_MODE 0
 	outColor = GetShaderTexture(shaderTexture, inTexCoords, 0, TEXTURE_MODE);
-	outColor.a = 0.35f;
+	outColor.a = 0.5f;
 }

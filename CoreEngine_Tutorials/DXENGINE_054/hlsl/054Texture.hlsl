@@ -2,17 +2,17 @@
 // Filename: 054Texture.hlsl [LATEST]
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
-*	World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+*	World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 *	-------------------------------------------------------------------------------------------
 *	code by : Pedro Borges - pmborg@yahoo.com
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 *   water_waves
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
-#if (!defined DXAPI11 && !defined DXAPI12)
-    #define DXAPI11 1
+#if DXAPI11 != 1 && DXAPI12 != 1
+#define DXAPI9 1
 #endif
 
 //////////////
@@ -22,11 +22,12 @@
 #define PS_USE_ALFACOLOR
 //#if defined PS_USE_FADE
 
+#define TEXTURE_MODE -1 //Default is -1
+
 // VERTEX:
 struct VSIn
 {
     float3 position : POSITION;
-    float4 color : COLOR; //21
 };
 
 // PIXEL:
@@ -41,20 +42,28 @@ struct PSIn
     float3 worldPos : TEXCOORD1;
 };
 
-//Set on: DXmodelClass::RenderSubMesh
-Texture2D shaderTexture : register(t0); //DX12: SRV
-SamplerState SampleType; //3D (default) WRAP
-
 ////////////////
 // CBUFFERS
 ////////////////
 #include "cbuffer.hlsli"
 
-float rand_1_05(in float2 uv)
-{
-    float2 noise = (frac(sin(dot(uv, float2(12.9898, 78.233) * 2.0)) * 43758.5453));
-    return abs(noise.x + noise.y) * 0.5;
-}
+//Set on: DXmodelClass::RenderSubMesh
+#if DXAPI9 == 1 || DXAPI11 == 1
+Texture2D shaderTexture;
+#endif
+#if DXAPI12 == 1
+Texture2D shaderTexture:	register(t0);
+#endif
+
+#if DXAPI9 == 1 || DXAPI11 == 1
+SamplerState SampleType;
+#endif
+#if DXAPI12 == 1
+SamplerState SampleType: register(s0);
+#endif
+
+#include "light.hlsli"
+#include "TextureSampling.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
@@ -62,51 +71,62 @@ float rand_1_05(in float2 uv)
 PSIn VS_Main(VSIn input)
 {
     PSIn output;
-#if defined PS_USE_FOG
-    float4 cameraPosition;
-#endif
+
     float4 Pos = float4(input.position, 1);
     
     float s_X = 0;
     float s_Y = 0;
     float s_Z = 0;
     
-    //output.worldPos = mul(float4(input.position, 1), worldMatrix).xyz;
-    
-   //51:
-    cameraPosition = mul(float4(input.position, 1), WV);
+    // -------------------------------------------------------------------------
+    // LEVEL 51: Fog
+    // -------------------------------------------------------------------------
 #if defined PS_USE_FOG
+    float4 cameraPosition = mul(float4(input.position, 1), WV);
     if (VShasFog)
         output.fogFactor = saturate((VSfogEnd - cameraPosition.z) / (VSfogEnd - VSfogStart)); // Calculate linear fog.  
     else
         output.fogFactor = 0;
 #endif
     
-    output.textCoord = float2(Pos[0] * 50.0 / 1024, Pos[2] * 50 / 1024);
+    // -------------------------------------------------------------------------
+    // Procedural UV + scrolling (LEVEL 54)
+    // -------------------------------------------------------------------------
+    output.textCoord = float2(Pos[0] * 150.0 / 1024.0, Pos[2] * 150.0 / 1024.0);
+
+    // Strong river current
+    output.textCoord += float2(time * 0.15, time * 0.04);
     
+    // -------------------------------------------------------------------------
+    // LEVEL 54: Water/River waves
+    // -------------------------------------------------------------------------
     float2 X0 = float2(Pos[0], Pos[2]);
+    
     float height = 0;
     for (int i = 0; i < 3; i++)
     {
         float2 K = float2(1, i); // K is a wave vector
-        float w = 1.5 * (i + 1) / 3.0; // w is frequency
-        float a = 0.0075; // a is amplitude: 0.01;
+        float w = 1.5 * (i + 1); // w is frequency
+        float a = 0.0035; // a is amplitude
+        
+        float phase = dot(K, X0) - (w * time);
+        
+        // FORMULA: X = X0 - (K/k)(a*sin(K*X0 - w.t);
+        float2 X = X0 - K * a * sin(phase);
 		
-        // X = X0 - (K/k)(a*sin(K*X0 - wt);
-        float2 X = X0 - K * a * sin(dot(K, X0) - w * time * 10);
-        // y = a * cos (K*X0 - wt);
-        float y = a * cos(dot(K, X0) - w * time * 10);
+        // FORMULA: y = a * cos (K*X0 - w.t);
+        float y = a * cos(phase);
         
-        s_X += X[0] / 8 - 5;
-        s_Y += X[1] / 8 - 5;
+        s_X += X[0] / 16;
+        s_Y += X[1] / 16;
         s_Z += y; //water altitude
-        
-        // float h = 0.01 * sin(dot(K, X0) + w*time*3);
     }
 
     Pos[0] = s_X;
     Pos[2] = s_Y;
     Pos[1] = s_Z;
+    
+    
     Pos *= 7.5f;
     Pos[3] /= 7.5f;
 
@@ -115,6 +135,7 @@ PSIn VS_Main(VSIn input)
     
     output.Pos = mul(Pos, WVP); // Calculate the position of the vertex against the world, view, and projection matrices
     
+	// Base water tint
     output.Color = 0.9;
     output.Color += float4(0.1, 0.2, 0.5, 1);
     output.Color /= 1.75;
@@ -122,12 +143,42 @@ PSIn VS_Main(VSIn input)
     return output;
 }
 
+float4 GetShaderTexture(Texture2D tex, float2 texCoords, uint mipLevel, int mode)
+{
+    switch (mode)
+    {
+        case 0:
+            return NearestInterpolation(SampleType, tex, texCoords);
+        case 1:
+            return BilinearInterpolation(SampleType, tex, texCoords);
+        case 2:
+            return TrilinearInterpolation(SampleType, tex, texCoords, mipLevel);
+        case 3:
+            return CubicInterpolation(SampleType, tex, texCoords);
+        
+        default:
+            return tex.Sample(SampleType, texCoords);
+    }
+
+    // fallback
+    return tex.Sample(SampleType, texCoords);
+}
+
+float rand_1_05(in float2 uv)
+{
+    float2 noise = (frac(sin(dot(uv, float2(12.9898, 78.233) * 2.0)) * 43758.5453));
+    return abs(noise.x + noise.y) * 0.5;
+}
+
 float4 PS_Main(PSIn input) : SV_TARGET
 {
     float4 textureColor = input.Color;
     textureColor[2] += (rand_1_05(float2(input.Pos[2], input.Pos[2]))) * 0.1;
+	
     float4 color = input.Color;
-    float3 text = shaderTexture.Sample(SampleType, float2(input.textCoord[0], input.textCoord[1]));
+    
+	float3 text = GetShaderTexture(shaderTexture, float2(input.textCoord[0], input.textCoord[1]), 0, TEXTURE_MODE);
+	
     color[0] = text[0];
     color[1] = text[1];
     color[2] = text[2];
@@ -142,5 +193,8 @@ float4 PS_Main(PSIn input) : SV_TARGET
         textureColor.a = alfaColor;
 #endif
     
+	// Gloval Fade Effect (LEVEL 29)
+	textureColor.rgb *= fade;
+	
     return textureColor;
 }

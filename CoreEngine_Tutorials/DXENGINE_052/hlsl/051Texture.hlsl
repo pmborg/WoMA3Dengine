@@ -146,8 +146,8 @@ float4 PS_Main(PSIn input) : SV_TARGET
         textureColor.rgb = lerp(textureColor.rgb, fogColor.rgb, 1 - input.fogFactor);
 
 #if DXAPI12 != 1
-    else
-        textureColor.rgb = pow(textureColor.rgb, 1.0 / 2.2); //Apply sRGB workflow: NEW 2026 review!
+    //else
+    //    textureColor.rgb = pow(textureColor.rgb, 1.0 / 2.2); //Apply sRGB workflow: NEW 2026 review!
 #endif
     
     textureColor.a = 0.5f;

@@ -21,15 +21,11 @@ layout(set = 0, binding = 1) uniform sampler2D shaderTexture;
 void main()
 {
 	#define TEXTURE_MODE -1
-	//vec4 textureColor = GetShaderTexture(shaderTexture, inTexCoords, 0, TEXTURE_MODE);
-	vec4 textureColor = texture(shaderTexture, inTexCoords);
+	vec4 textureColor = GetShaderTexture(shaderTexture, inTexCoords, 0, TEXTURE_MODE);
 
-    //vec4 fogColor = vec4(87.0/256.0, 87.0/256.0, 87.0/256.0, 1.0);
-    //textureColor.rgb = mix(textureColor.rgb, fogColor.rgb, fragFogFactor);
-    //textureColor = fragFogFactor * textureColor + (1.0 - fragFogFactor) * fogColor;
+    vec4 fogColor = vec4(87.0/256.0, 87.0/256.0, 87.0/256.0, 1.0);
+	textureColor.rgb = mix(textureColor.rgb, fogColor.rgb, 1.0 - fragFogFactor);
 
-	textureColor.a =0.6f;
+	textureColor.a =0.5f;
     outColor = textureColor;
-
-    //outColor = vec4(textureColor.rgb, 1.0);
 }

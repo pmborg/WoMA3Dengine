@@ -483,8 +483,7 @@ void ApplicationClass::MainWater(UINT monitorWindow, float fadeLight, void* pCon
 #endif	
 	m_TerrainModel[WATER_TERRAIN_ID]->translation(0, -0.75, 0);
 	m_TerrainModel[WATER_TERRAIN_ID]->scale(5, 5, 5);
-	m_TerrainModel[WATER_TERRAIN_ID]->RenderWithFade(pContext, dayLightFade, true);
-	
+	m_TerrainModel[WATER_TERRAIN_ID]->RenderWithFade(pContext, dayLightFade, false);
 }
 #endif
 
