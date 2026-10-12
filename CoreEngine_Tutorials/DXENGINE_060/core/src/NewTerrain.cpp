@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: NewTerrain.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -14,15 +14,23 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma warning( disable : 4018 ) //'<': signed/unsigned mismatch
 
 #include "platform.h"
 #if DX_ENGINE_LEVEL >= 60 && defined USE_TERRAIN_TUTORIAL_CHAP_24
 #include "OSengine.h"				// To define OS [SystemHandle] Pointer (System Class) & define WomaSYSTEM for: WINDOWS, LINUX & ANDROID
+#include "ApplicationClass.h"
 #include "AutoGenTerrain.h"		
+
+#if defined WINDOWS_PLATFORM
 #include "DXmodelClass.h"
+#endif
+#if defined VULKAN
+#include "vkModelClass.h"
+#endif
+
 #include "NewTerrain.h"
 #include "mem_leak.h"
 
@@ -56,7 +64,7 @@
 
 const int TEXTURE_REPEAT = 16; //<---------
 TerrainModelType* m_TerrainModel;
-DXVertexTerrainType_21* m_vertices_21;
+WomaVertexTerrainType_21* m_vertices_21;
 
 
 //To calculate shared normals you have to go through each vertex in the terrain grid and take an average of the normals for each face that the vertex is a part of. 
@@ -455,26 +463,58 @@ void CTerrain::CalculateTextureCoordinates(float textureRepeat)
 }
 
 //LoadColorMap is very similar to the LoadHeightMap function. It opens a bitmap file and loads in color component into the height map structure array.
-bool CTerrain::LoadColorMap(char* filename)
+bool CTerrain::LoadColorMap(TCHAR* Tfilename)
 {
 	int error, imageSize, i, j, k, index, colorMapWidth, colorMapHeight;
-	FILE* filePtr;
+
+#if defined _DEBUG
+	womalog("CTerrain::LoadColorMap() - FILE: %s\n", Tfilename);
+#endif
+
+#if defined ANDROID_PLATFORM
+	File file;
+#else
+	FILE* file = NULL;
+#endif
+
 	unsigned int count;
 	BITMAPFILEHEADER bitmapFileHeader;
 	BITMAPINFOHEADER bitmapInfoHeader;
 	unsigned char* bitmapImage;
 
+	CHAR filename[MAX_STR_LEN];
+	wtoa(filename, Tfilename, MAX_STR_LEN);
+
 	// Open the color map file in binary.
-	error = fopen_s(&filePtr, filename, "rb");
-	if(error != 0)return false;
+#if defined ANDROID_PLATFORM
+	// open the BMP input file
+	if (!file.open(filename, TEXT("rb")))
+		return false;
+#else
+	error = fopen_s(&file, filename, "rb");
+	if (error != 0) return false;
+#endif
+	
 
 	// Read in the file header.
-	count = (UINT) fread(&bitmapFileHeader, sizeof(BITMAPFILEHEADER), 1, filePtr);
-	if(count != 1)return false;
+#if !defined ANDROID_PLATFORM
+	count = (UINT)fread(&bitmapFileHeader, sizeof(BITMAPFILEHEADER), 1, file);
+	if (count != 1)
+		return false;
+#else
+	if (file.read(&bitmapFileHeader, sizeof(BITMAPFILEHEADER)) != sizeof(BITMAPFILEHEADER))
+		return false;
+#endif
 
 	// Read in the bitmap info header.
-	count = (UINT)fread(&bitmapInfoHeader, sizeof(BITMAPINFOHEADER), 1, filePtr);
-	if(count != 1)return false;
+#if !defined ANDROID_PLATFORM
+	count = (UINT)fread(&bitmapInfoHeader, sizeof(BITMAPINFOHEADER), 1, file);
+	if (count != 1)
+		return false;
+#else
+	if (file.read(&bitmapInfoHeader, sizeof(BITMAPINFOHEADER)) != sizeof(BITMAPINFOHEADER))
+		return false;
+#endif
 
 	//For simplicity I ensure that the color map size is the same as the height map size. 
 	//If you would like to use any size color map and have it stretch, 
@@ -495,19 +535,30 @@ bool CTerrain::LoadColorMap(char* filename)
 	if(!bitmapImage)return false;
 
 	// Move to the beginning of the bitmap data.
-	fseek(filePtr, bitmapFileHeader.bfOffBits, SEEK_SET);
+#if !defined ANDROID_PLATFORM
+	fseek(file, bitmapFileHeader.bfOffBits, SEEK_SET);
+#else
+	androidSeek(file._A, bitmapFileHeader.bfOffBits, SEEK_SET);
+#endif
 
 	// Read in the bitmap image data.
-	count = (UINT) fread(bitmapImage, 1, imageSize, filePtr);
-	if(count != (UINT)imageSize)return false;
+#if !defined ANDROID_PLATFORM
+	count = (UINT) fread(bitmapImage, 1, imageSize, file);
+#else
+	count = (UINT)file.read(bitmapImage, imageSize);
+#endif
+	if(count != (UINT)imageSize) return false;
 
 	// Close the file.
-	if (filePtr)
-		error = fclose(filePtr);
+#if defined ANDROID_PLATFORM
+	file.close();
+#else
+	if (file)
+		error = fclose(file);
 	if(error != 0)return false;
+#endif
 
-	//The color map data is read into the r, g, and b components of the height map array.
-
+	// The color map data is read into the r, g, and b components of the height map array.
 	// Initialize the position in the image data buffer.
 	k=0;
 
@@ -531,7 +582,8 @@ bool CTerrain::LoadColorMap(char* filename)
 	return true;
 }
 
-bool CTerrain::CreateTerrain60(ID3D11DeviceContext* pContext, float xPos, float zPos) 
+
+bool CTerrain::CreateTerrain60(void* pContext, float xPos, float zPos) 
 {
 	//Populate m_heightMap_21[index].nx...ny...nz
 	IF_NOT_RETURN_FALSE (CalculateNormals());
@@ -550,7 +602,7 @@ bool CTerrain::CreateTerrain60(ID3D11DeviceContext* pContext, float xPos, float 
 	//[6]RASTER CalculateTextureCoordinates();
 	//Populate: m_heightMap_21[(m_terrainWidth * j) + i].tu...tv
 	//Populate: m_heightMap_21[(m_terrainWidth * j) + i].Maptu...Maptv
-	CalculateTextureCoordinates((float)TEXTURE_REPEAT); // not needed? AQUI!
+	CalculateTextureCoordinates((float)TEXTURE_REPEAT);
 
 	CalculateTextureCoordinates(1);
 
@@ -578,7 +630,7 @@ bool CTerrain::CreateTerrain60(ID3D11DeviceContext* pContext, float xPos, float 
 #endif
 
 	//POPULATE m_vertices_21:
-	m_vertices_21 = NEW DXVertexTerrainType_21[m_vertexCount];
+	m_vertices_21 = NEW WomaVertexTerrainType_21[m_vertexCount];
 
 	// Set the index count to the same as the vertex count.
 	m_indexCount = m_vertexCount;
@@ -645,7 +697,7 @@ bool CTerrain::CreateTerrain60(ID3D11DeviceContext* pContext, float xPos, float 
 	//m_vertices[index].color = D3DXVECTOR4
 	//m_vertices[index].mappingTexture = D3DXVECTOR4
 
-	DXVertexTerrainType_21* dx_vertice = NULL;
+	WomaVertexTerrainType_21* dx_vertice = NULL;
 	TerrainModelType* terrain_vertice = NULL;
 
 	for (size_t i = 0; i < m_vertexCount; i++)
@@ -672,10 +724,10 @@ bool CTerrain::CreateTerrain60(ID3D11DeviceContext* pContext, float xPos, float 
 
 	CREATE_MODEL_IF_NOT_EXCEPTION(SystemHandle->m_Application->m_TerrainModel[MAIN_TERRAIN_ID], I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);  // m_TerrainModel[id] = NEW
 	SystemHandle->m_Application->m_TerrainModel[MAIN_TERRAIN_ID]->ModelHASfog = true;
-	
+
 	ASSERT(SystemHandle->m_Application->m_TerrainModel[MAIN_TERRAIN_ID]->LoadTerrain(pContext, TEXT("Terrain 60"), m_Driver, SHADER_Terrain_Texture_DEMO60, &Terrain60Textures, &modelVertexVector2, &Terrain60indices));
 
 	return true;
 }
-#endif
 
+#endif
