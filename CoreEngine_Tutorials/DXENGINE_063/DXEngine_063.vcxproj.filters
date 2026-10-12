@@ -88,6 +88,9 @@
     <Filter Include="src-basic-level\040-Terrains">
       <UniqueIdentifier>{72f3fafb-3d45-4100-98a0-015186c7e98d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Vulkan">
+      <UniqueIdentifier>{4151b2cd-5057-4e13-9ece-fa175bab5e6b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\include\main.h">
@@ -340,6 +343,21 @@
     </ClInclude>
     <ClInclude Include="core\include\NewTerrain.h">
       <Filter>src-basic-level\060-Advanced-Terrains</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\VKrenderTextureClass.h">
+      <Filter>Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\vkTextClass.h">
+      <Filter>Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\vkShaderClass.h">
+      <Filter>Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\vkModelClass.h">
+      <Filter>Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\vkClass.h">
+      <Filter>Vulkan</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -625,6 +643,24 @@
     </ClCompile>
     <ClCompile Include="core\src\corelib6.cpp" />
     <ClCompile Include="core\src\corelib0.cpp" />
+    <ClCompile Include="core\src\vkW3DModelClass.cpp">
+      <Filter>Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\VKrenderTextureClass.cpp">
+      <Filter>Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\VkTextClass.cpp">
+      <Filter>Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\vkShaderClass.cpp">
+      <Filter>Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\vkModelClass.cpp">
+      <Filter>Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\vkClass.cpp">
+      <Filter>Vulkan</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="settings.xml" />

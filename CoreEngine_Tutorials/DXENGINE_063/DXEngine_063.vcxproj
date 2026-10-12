@@ -73,6 +73,11 @@
     <ClInclude Include="core\include\systemManager.h" />
     <ClInclude Include="core\include\timerClass.h" />
     <ClInclude Include="core\include\TrigonometryMathClass.h" />
+    <ClInclude Include="core\include\vkClass.h" />
+    <ClInclude Include="core\include\vkModelClass.h" />
+    <ClInclude Include="core\include\VKrenderTextureClass.h" />
+    <ClInclude Include="core\include\vkShaderClass.h" />
+    <ClInclude Include="core\include\vkTextClass.h" />
     <ClInclude Include="core\include\w3d.h" />
     <ClInclude Include="core\include\weatherClass.h" />
     <ClInclude Include="core\include\win32InputClass.h" />
@@ -137,6 +142,12 @@
     <ClCompile Include="core\src\QuadTree.cpp" />
     <ClCompile Include="core\src\SceneManager.cpp" />
     <ClCompile Include="core\src\SceneNode.cpp" />
+    <ClCompile Include="core\src\vkClass.cpp" />
+    <ClCompile Include="core\src\vkModelClass.cpp" />
+    <ClCompile Include="core\src\VKrenderTextureClass.cpp" />
+    <ClCompile Include="core\src\vkShaderClass.cpp" />
+    <ClCompile Include="core\src\VkTextClass.cpp" />
+    <ClCompile Include="core\src\vkW3DModelClass.cpp" />
     <ClCompile Include="core\src\w3d.cpp" />
     <ClCompile Include="core\src\winWomaSetupManager.cpp" />
     <ClCompile Include="..\main.cpp" />
@@ -503,25 +514,25 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;core\include;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\ZipUtils_LIB\include;..\..\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib;..\..\ThirdParty\maxminddb_LIB\libmaxminddb-main\include;..\..\ThirdParty\GL3Plus;..\..\ThirdParty\freeglut\include_;C:\WoMA3Dengine\ThirdParty\freeglut-3.6.0\include;..\..\ThirdParty\tiff-3.8.2-src;..\..\ThirdParty\external\DirectXTex\DirectXTex;..\..\ThirdParty/external/DirectXTK\Inc;..\..\ThirdParty/TIFF_LIB\include;..\..\ThirdParty/JPG_LIB/include/;..\..\ThirdParty/ZLIB_LIB/include/;..\..\ThirdParty/PNG_LIB/include/;..\..\ThirdParty/\TinyXML_LIB.v2\tinyxml2-10.0.0;..\..\ThirdParty\AUDIO\ALUT_LIB\include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\include\AL;..\..\ThirdParty\AUDIO\VORBIS_LIB\include;..\..\ThirdParty\AUDIO\OGG_LIB\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;core\include;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\ZipUtils_LIB\include;..\..\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib;..\..\ThirdParty\maxminddb_LIB\libmaxminddb-main\include;..\..\ThirdParty\GL3Plus;..\..\ThirdParty\freeglut\include_;C:\WoMA3Dengine\ThirdParty\freeglut-3.6.0\include;..\..\ThirdParty\tiff-3.8.2-src;..\..\ThirdParty\external\DirectXTex\DirectXTex;..\..\ThirdParty/external/DirectXTK\Inc;..\..\ThirdParty/TIFF_LIB\include;..\..\ThirdParty/JPG_LIB/include/;..\..\ThirdParty/ZLIB_LIB/include/;..\..\ThirdParty/PNG_LIB/include/;..\..\ThirdParty/\TinyXML_LIB.v2\tinyxml2-10.0.0;..\..\ThirdParty\AUDIO\ALUT_LIB\include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\include\AL;..\..\ThirdParty\AUDIO\VORBIS_LIB\include;..\..\ThirdParty\AUDIO\OGG_LIB\include;$(VULKAN_SDK)\Include;</IncludePath>
     <TargetName>CoreEngine_063_d</TargetName>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);.;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_063;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_063\Libs;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_063\x64\Debug;C:\WoMA3Dengine\CoreEngine_Tutorials\;..\..\ThirdParty\freeglut\lib\x64;Libs/$(Platform)/$(Configuration);..\..\ThirdParty/DirectXTK\Bin\Desktop_2013\x64\Debug;..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;C:\WoMA3Dengine\CoreEngine_Tutorials\x64\Debug;C:\WoMA3Dengine\CoreEngine_Tutorials\Libs\x64\Debug\;..\..\ThirdParty\freeglut-3.6.0\X64LIB\lib\Debug;..\..\ThirdParty\AUDIO\Output\OpenAL32_LIB;..\..\ThirdParty\AUDIO\Output\OGG_LIB;..\..\ThirdParty\AUDIO\Output\ALUT_LIB;..\..\ThirdParty\AUDIO\Output\vorbis_LIB;..\..\ThirdParty\AUDIO\Output\vorbisfile_LIB;C:\WoMA3Dengine\CoreEngine_Tutorials\Libs\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);.;C:\WoMA3Dengine\CoreEngine_Tutorials\$(ProjectName);C:\WoMA3Dengine\CoreEngine_Tutorials\$(ProjectName)\Libs;C:\WoMA3Dengine\CoreEngine_Tutorials\$(ProjectName)\x64\Debug;C:\WoMA3Dengine\CoreEngine_Tutorials\;..\..\ThirdParty\freeglut\lib\x64;Libs/$(Platform)/$(Configuration);..\..\ThirdParty/DirectXTK\Bin\Desktop_2013\x64\Debug;..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;C:\WoMA3Dengine\CoreEngine_Tutorials\x64\Debug;C:\WoMA3Dengine\CoreEngine_Tutorials\Libs\x64\Debug\;..\..\ThirdParty\freeglut-3.6.0\X64LIB\lib\Debug;..\..\ThirdParty\AUDIO\Output\OpenAL32_LIB;..\..\ThirdParty\AUDIO\Output\OGG_LIB;..\..\ThirdParty\AUDIO\Output\ALUT_LIB;..\..\ThirdParty\AUDIO\Output\vorbis_LIB;..\..\ThirdParty\AUDIO\Output\vorbisfile_LIB;C:\WoMA3Dengine\CoreEngine_Tutorials\Libs\;$(VULKAN_SDK)\Lib</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WDebug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;core\include;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\ZipUtils_LIB\include;..\..\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib;..\..\ThirdParty\maxminddb_LIB\libmaxminddb-main\include;..\..\ThirdParty\GL3Plus;..\..\ThirdParty\freeglut\include_;C:\WoMA3Dengine\ThirdParty\freeglut-3.6.0\include;..\..\ThirdParty\tiff-3.8.2-src;..\..\ThirdParty\external\DirectXTex\DirectXTex;..\..\ThirdParty/external/DirectXTK\Inc;..\..\ThirdParty/TIFF_LIB\include;..\..\ThirdParty/JPG_LIB/include/;..\..\ThirdParty/ZLIB_LIB/include/;..\..\ThirdParty/PNG_LIB/include/;..\..\ThirdParty/\TinyXML_LIB.v2\tinyxml2-10.0.0;..\..\ThirdParty\AUDIO\ALUT_LIB\include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\include\AL;..\..\ThirdParty\AUDIO\VORBIS_LIB\include;..\..\ThirdParty\AUDIO\OGG_LIB\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;core\include;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\ZipUtils_LIB\include;..\..\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib;..\..\ThirdParty\maxminddb_LIB\libmaxminddb-main\include;..\..\ThirdParty\GL3Plus;..\..\ThirdParty\freeglut\include_;C:\WoMA3Dengine\ThirdParty\freeglut-3.6.0\include;..\..\ThirdParty\tiff-3.8.2-src;..\..\ThirdParty\external\DirectXTex\DirectXTex;..\..\ThirdParty/external/DirectXTK\Inc;..\..\ThirdParty/TIFF_LIB\include;..\..\ThirdParty/JPG_LIB/include/;..\..\ThirdParty/ZLIB_LIB/include/;..\..\ThirdParty/PNG_LIB/include/;..\..\ThirdParty/\TinyXML_LIB.v2\tinyxml2-10.0.0;..\..\ThirdParty\AUDIO\ALUT_LIB\include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\include\AL;..\..\ThirdParty\AUDIO\VORBIS_LIB\include;..\..\ThirdParty\AUDIO\OGG_LIB\include;$(VULKAN_SDK)\Include;</IncludePath>
     <TargetName>CoreEngine_063</TargetName>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);.;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_063;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_063\Libs;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_063\x64\Debug;C:\WoMA3Dengine\CoreEngine_Tutorials\;..\..\ThirdParty\freeglut\lib\x64;Libs/$(Platform)/$(Configuration);..\..\ThirdParty/DirectXTK\Bin\Desktop_2013\x64\Debug;..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;C:\WoMA3Dengine\CoreEngine_Tutorials\x64\Debug;C:\WoMA3Dengine\CoreEngine_Tutorials\Libs\x64\Debug\;..\..\ThirdParty\freeglut-3.6.0\X64LIB\lib\Debug;..\..\ThirdParty\AUDIO\Output\OpenAL32_LIB;..\..\ThirdParty\AUDIO\Output\OGG_LIB;..\..\ThirdParty\AUDIO\Output\ALUT_LIB;..\..\ThirdParty\AUDIO\Output\vorbis_LIB;..\..\ThirdParty\AUDIO\Output\vorbisfile_LIB;C:\WoMA3Dengine\CoreEngine_Tutorials\Libs\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);.;C:\WoMA3Dengine\CoreEngine_Tutorials\$(ProjectName);C:\WoMA3Dengine\CoreEngine_Tutorials\$(ProjectName)\Libs;C:\WoMA3Dengine\CoreEngine_Tutorials\$(ProjectName)\x64\Debug;C:\WoMA3Dengine\CoreEngine_Tutorials\;..\..\ThirdParty\freeglut\lib\x64;Libs/$(Platform)/$(Configuration);..\..\ThirdParty/DirectXTK\Bin\Desktop_2013\x64\Debug;..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;C:\WoMA3Dengine\CoreEngine_Tutorials\x64\Debug;C:\WoMA3Dengine\CoreEngine_Tutorials\Libs\x64\Debug\;..\..\ThirdParty\freeglut-3.6.0\X64LIB\lib\Debug;..\..\ThirdParty\AUDIO\Output\OpenAL32_LIB;..\..\ThirdParty\AUDIO\Output\OGG_LIB;..\..\ThirdParty\AUDIO\Output\ALUT_LIB;..\..\ThirdParty\AUDIO\Output\vorbis_LIB;..\..\ThirdParty\AUDIO\Output\vorbisfile_LIB;C:\WoMA3Dengine\CoreEngine_Tutorials\Libs\;$(VULKAN_SDK)\Lib</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;core\include;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\ZipUtils_LIB\include;..\..\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib;..\..\ThirdParty\maxminddb_LIB\libmaxminddb-main\include;..\..\ThirdParty\GL3Plus;..\..\ThirdParty\freeglut\include_;C:\WoMA3Dengine\ThirdParty\freeglut-3.6.0\include;..\..\ThirdParty\tiff-3.8.2-src;..\..\ThirdParty\external\DirectXTex\DirectXTex;..\..\ThirdParty/external/DirectXTK\Inc;..\..\ThirdParty/TIFF_LIB\include;..\..\ThirdParty/JPG_LIB/include/;..\..\ThirdParty/ZLIB_LIB/include/;..\..\ThirdParty/PNG_LIB/include/;..\..\ThirdParty/\TinyXML_LIB.v2\tinyxml2-10.0.0;..\..\ThirdParty\AUDIO\ALUT_LIB\include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\include\AL;..\..\ThirdParty\AUDIO\VORBIS_LIB\include;..\..\ThirdParty\AUDIO\OGG_LIB\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;core\include;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\ZipUtils_LIB\include;..\..\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib;..\..\ThirdParty\maxminddb_LIB\libmaxminddb-main\include;..\..\ThirdParty\GL3Plus;..\..\ThirdParty\freeglut\include_;C:\WoMA3Dengine\ThirdParty\freeglut-3.6.0\include;..\..\ThirdParty\tiff-3.8.2-src;..\..\ThirdParty\external\DirectXTex\DirectXTex;..\..\ThirdParty/external/DirectXTK\Inc;..\..\ThirdParty/TIFF_LIB\include;..\..\ThirdParty/JPG_LIB/include/;..\..\ThirdParty/ZLIB_LIB/include/;..\..\ThirdParty/PNG_LIB/include/;..\..\ThirdParty/\TinyXML_LIB.v2\tinyxml2-10.0.0;..\..\ThirdParty\AUDIO\ALUT_LIB\include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\include\AL;..\..\ThirdParty\AUDIO\VORBIS_LIB\include;..\..\ThirdParty\AUDIO\OGG_LIB\include;$(VULKAN_SDK)\Include;</IncludePath>
     <TargetName>CoreEngine_063</TargetName>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);.;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_078;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_078\Libs;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_078\x64\Debug;C:\WoMA3Dengine\CoreEngine_Tutorials\;..\..\ThirdParty\freeglut\lib\x64;Libs/$(Platform)/$(Configuration);..\..\ThirdParty/DirectXTK\Bin\Desktop_2013\x64\Debug__;..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;C:\WoMA3Dengine\CoreEngine_Tutorials\x64\Debug__;C:\WoMA3Dengine\CoreEngine_Tutorials\Libs\x64\Debug__;..\..\ThirdParty\freeglut-3.6.0\X64LIB\lib\Debug__;..\..\ThirdParty\AUDIO\Output\OpenAL32_LIB;..\..\ThirdParty\AUDIO\Output\OGG_LIB;..\..\ThirdParty\AUDIO\Output\ALUT_LIB;..\..\ThirdParty\AUDIO\Output\vorbis_LIB;..\..\ThirdParty\AUDIO\Output\vorbisfile_LIB;C:\WoMA3Dengine\CoreEngine_Tutorials\Libs\;C:\WoMA3Dengine\CoreEngine_Tutorials\Libs\x64\Release</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);.;C:\WoMA3Dengine\CoreEngine_Tutorials\$(ProjectName);C:\WoMA3Dengine\CoreEngine_Tutorials\$(ProjectName)\Libs;C:\WoMA3Dengine\CoreEngine_Tutorials\$(ProjectName)\x64\$(Configuration);C:\WoMA3Dengine\CoreEngine_Tutorials\;..\..\ThirdParty\freeglut\lib\x64;Libs/$(Platform)/$(Configuration);..\..\ThirdParty/DirectXTK\Bin\Desktop_2013\x64\Release;..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;C:\WoMA3Dengine\CoreEngine_Tutorials\x64\$(Configuration);C:\WoMA3Dengine\CoreEngine_Tutorials\Libs\x64\$(Configuration);..\..\ThirdParty\freeglut-3.6.0\X64LIB\lib\$(Configuration);..\..\ThirdParty\AUDIO\Output\OpenAL32_LIB;..\..\ThirdParty\AUDIO\Output\OGG_LIB;..\..\ThirdParty\AUDIO\Output\ALUT_LIB;..\..\ThirdParty\AUDIO\Output\vorbis_LIB;..\..\ThirdParty\AUDIO\Output\vorbisfile_LIB;C:\WoMA3Dengine\CoreEngine_Tutorials\Libs\;$(VULKAN_SDK)\Lib</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WRelease|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;core\include;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\ZipUtils_LIB\include;..\..\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib;..\..\ThirdParty\maxminddb_LIB\libmaxminddb-main\include;..\..\ThirdParty\GL3Plus;..\..\ThirdParty\freeglut\include_;C:\WoMA3Dengine\ThirdParty\freeglut-3.6.0\include;..\..\ThirdParty\tiff-3.8.2-src;..\..\ThirdParty\external\DirectXTex\DirectXTex;..\..\ThirdParty/external/DirectXTK\Inc;..\..\ThirdParty/TIFF_LIB\include;..\..\ThirdParty/JPG_LIB/include/;..\..\ThirdParty/ZLIB_LIB/include/;..\..\ThirdParty/PNG_LIB/include/;..\..\ThirdParty/\TinyXML_LIB.v2\tinyxml2-10.0.0;..\..\ThirdParty\AUDIO\ALUT_LIB\include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\include\AL;..\..\ThirdParty\AUDIO\VORBIS_LIB\include;..\..\ThirdParty\AUDIO\OGG_LIB\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;core\include;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\ZipUtils_LIB\include;..\..\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib;..\..\ThirdParty\maxminddb_LIB\libmaxminddb-main\include;..\..\ThirdParty\GL3Plus;..\..\ThirdParty\freeglut\include_;C:\WoMA3Dengine\ThirdParty\freeglut-3.6.0\include;..\..\ThirdParty\tiff-3.8.2-src;..\..\ThirdParty\external\DirectXTex\DirectXTex;..\..\ThirdParty/external/DirectXTK\Inc;..\..\ThirdParty/TIFF_LIB\include;..\..\ThirdParty/JPG_LIB/include/;..\..\ThirdParty/ZLIB_LIB/include/;..\..\ThirdParty/PNG_LIB/include/;..\..\ThirdParty/\TinyXML_LIB.v2\tinyxml2-10.0.0;..\..\ThirdParty\AUDIO\ALUT_LIB\include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\include;..\..\ThirdParty\AUDIO\OpenAL32_LIB\include\AL;..\..\ThirdParty\AUDIO\VORBIS_LIB\include;..\..\ThirdParty\AUDIO\OGG_LIB\include;$(VULKAN_SDK)\Include;</IncludePath>
     <TargetName>CoreEngine_063</TargetName>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);.;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_063;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_063\Libs;C:\WoMA3Dengine\CoreEngine_Tutorials\DXENGINE_063\x64\Debug;C:\WoMA3Dengine\CoreEngine_Tutorials\;..\..\ThirdParty\freeglut\lib\x64;Libs/$(Platform)/$(Configuration);..\..\ThirdParty/DirectXTK\Bin\Desktop_2013\x64\Debug;..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;C:\WoMA3Dengine\CoreEngine_Tutorials\x64\Debug;C:\WoMA3Dengine\CoreEngine_Tutorials\Libs\x64\Debug\;..\..\ThirdParty\freeglut-3.6.0\X64LIB\lib\Debug;..\..\ThirdParty\AUDIO\Output\OpenAL32_LIB;..\..\ThirdParty\AUDIO\Output\OGG_LIB;..\..\ThirdParty\AUDIO\Output\ALUT_LIB;..\..\ThirdParty\AUDIO\Output\vorbis_LIB;..\..\ThirdParty\AUDIO\Output\vorbisfile_LIB;C:\WoMA3Dengine\CoreEngine_Tutorials\Libs\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);.;C:\WoMA3Dengine\CoreEngine_Tutorials\$(ProjectName);C:\WoMA3Dengine\CoreEngine_Tutorials\$(ProjectName)\Libs;C:\WoMA3Dengine\CoreEngine_Tutorials\$(ProjectName)\x64\$(Configuration);C:\WoMA3Dengine\CoreEngine_Tutorials\;..\..\ThirdParty\freeglut\lib\x64;Libs/$(Platform)/$(Configuration);..\..\ThirdParty/DirectXTK\Bin\Desktop_2013\x64\Release;..\..\ThirdParty\TinyXML_LIB.v2\tinyxml2-10.0.0;C:\WoMA3Dengine\CoreEngine_Tutorials\x64\$(Configuration);C:\WoMA3Dengine\CoreEngine_Tutorials\Libs\x64\$(Configuration);..\..\ThirdParty\freeglut-3.6.0\X64LIB\lib\$(Configuration);..\..\ThirdParty\AUDIO\Output\OpenAL32_LIB;..\..\ThirdParty\AUDIO\Output\OGG_LIB;..\..\ThirdParty\AUDIO\Output\ALUT_LIB;..\..\ThirdParty\AUDIO\Output\vorbis_LIB;..\..\ThirdParty\AUDIO\Output\vorbisfile_LIB;C:\WoMA3Dengine\CoreEngine_Tutorials\Libs\;C:\WoMA3Dengine\ThirdParty\freeglut-3.6.0\X64LIB\lib\Release;C:\WoMA3Dengine\CoreEngine_Tutorials\Libs\x64\Release;$(VULKAN_SDK)\Lib</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);.;core\include;include;../../ThirdParty/ultimateTCP_IP_LIB/inc;..\..\ThirdParty\TinyXML_LIB\include;..\..\ThirdParty\ZipUtils_LIB\include;..\..\ThirdParty\GeoLite2PP_LIB\geolite2++-0.0.1-2561-Source\src-lib;..\..\ThirdParty\maxminddb_LIB\libmaxminddb-main\include;..\..\ThirdParty\GL3Plus;..\..\ThirdParty\freeglut\include;..\..\ThirdParty\tiff-3.8.2-src;..\..\ThirdParty\external\DirectXTex\DirectXTex;..\..\ThirdParty/external/DirectXTK\Inc;..\..\ThirdParty/TIFF_LIB\include;..\..\ThirdParty/JPG_LIB/include/;..\..\ThirdParty/ZLIB_LIB/include/;..\..\ThirdParty/PNG_LIB/include/</IncludePath>
@@ -549,8 +560,9 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
-      <LanguageStandard>stdcpp14</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <IntrinsicFunctions>yes</IntrinsicFunctions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -571,6 +583,8 @@
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
       <IntrinsicFunctions>yes</IntrinsicFunctions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -586,13 +600,14 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>
       </ConformanceMode>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions512</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
-      <LanguageStandard>stdcpp14</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -610,9 +625,11 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -622,7 +639,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;;_HAS_STD_BYTE=0;%(PreprocessorDefinitions);ALUT_BUILD_LIBRARY;ALUT_API=extern;DEMO_LEVEL=63;MAINENGINE_LINUX;FREEGLUT_STATIC</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;;_HAS_STD_BYTE=0;%(PreprocessorDefinitions);ALUT_BUILD_LIBRARY;ALUT_API=extern;_HAS_STD_BYTE=0;DEMO_LEVEL=63;MAINENGINE_LINUX;FREEGLUT_STATIC</PreprocessorDefinitions>
       <ConformanceMode>
       </ConformanceMode>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
@@ -648,14 +665,14 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);ALUT_BUILD_LIBRARY;ALUT_API=extern;DEMO_LEVEL=63;MAINENGINE_LINUX;FREEGLUT_STATIC</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);ALUT_BUILD_LIBRARY;ALUT_API=extern;_HAS_STD_BYTE=0;DEMO_LEVEL=63;MAINENGINE_LINUX;FREEGLUT_STATIC</PreprocessorDefinitions>
       <ConformanceMode>
       </ConformanceMode>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
       <IntrinsicFunctions>yes</IntrinsicFunctions>
-      <LanguageStandard>stdcpp14</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -674,12 +691,12 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>yes</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>;_HAS_STD_BYTE=0;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);ALUT_BUILD_LIBRARY;ALUT_API=extern;DEMO_LEVEL=63;MAINENGINE_LINUX;FREEGLUT_STATIC;_HAS_STD_BYTE=0</PreprocessorDefinitions>
+      <PreprocessorDefinitions>;_HAS_STD_BYTE=0;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);ALUT_BUILD_LIBRARY;ALUT_API=extern;_HAS_STD_BYTE=0;DEMO_LEVEL=63;MAINENGINE_LINUX;FREEGLUT_STATIC;_HAS_STD_BYTE=0</PreprocessorDefinitions>
       <ConformanceMode>
       </ConformanceMode>
       <DebugInformationFormat>None</DebugInformationFormat>
       <FloatingPointModel>Fast</FloatingPointModel>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions512</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -708,7 +725,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>yes</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);ALUT_BUILD_LIBRARY;ALUT_API=extern;DEMO_LEVEL=63;MAINENGINE_LINUX;FREEGLUT_STATIC</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);ALUT_BUILD_LIBRARY;ALUT_API=extern;_HAS_STD_BYTE=0;DEMO_LEVEL=63;MAINENGINE_LINUX;FREEGLUT_STATIC</PreprocessorDefinitions>
       <ConformanceMode>
       </ConformanceMode>
       <DebugInformationFormat>None</DebugInformationFormat>
@@ -716,11 +733,11 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
-      <LanguageStandard>stdcpp14</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <UACExecutionLevel>AsInvoker</UACExecutionLevel>
