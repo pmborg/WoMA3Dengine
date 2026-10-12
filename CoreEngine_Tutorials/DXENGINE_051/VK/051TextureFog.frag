@@ -27,5 +27,6 @@ void main()
     textureColor.rgb = mix(textureColor.rgb, fogColor.rgb, fragFogFactor);
     textureColor = fragFogFactor * textureColor + (1.0 - fragFogFactor) * fogColor;
 
+	outColor.a = 0.5f;
     outColor = textureColor;
 }

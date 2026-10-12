@@ -1,10 +1,21 @@
-#if (!defined DXAPI11 && !defined DXAPI12)
-    #define DXAPI11 1
+// --------------------------------------------------------------------------------------------
+// Filename: cbuffer.hlsli
+// --------------------------------------------------------------------------------------------
+/**********************************************************************************************
+*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2026
+*	-------------------------------------------------------------------------------------------
+*	code by : Pedro Borges - pmborg@yahoo.com
+*	Downloaded from : https://github.com/pmborg/WoMA3Dengine
+*
+**********************************************************************************************/
+//WomaIntegrityCheck = 1234526920;
+// SYNC: DXshaderClass.h -- DX12: CBV
+
+#if DXAPI11 != 1 && DXAPI12 != 1
+    #define DXAPI9 1
 #endif
 
-
-// SYNC: DXshaderClass.h -- DX12: CBV
-#if DXAPI11 == 1
+#if DXAPI9 == 1 || DXAPI11 == 1
 cbuffer VSShaderParametersBuffer	//DX11
 #endif
 #if DXAPI12 == 1
@@ -25,11 +36,11 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
 	bool	VShasFog;
 
 	// 23 BLOCK: VS3
-	float3	VSlightDirection;	// LIGHT
+    float3  VSlightDirection;   // LIGHT (XMVECTOR = XMFLOAT4)
 	float   VSlightPAD;         // 3+1=XMFLOAT4
-	float4	VSambientColor;		// LIGHT
-	float4	VSdiffuseColor;		// LIGHT
-	float4	VSemissiveColor;	// LIGHT: Ke
+	float4	VSambientColor;		// LIGHT: Ka
+	float4	VSdiffuseColor;		// LIGHT: Kd
+    float4  VSemissiveColor;    // LIGHT: Ke
 
 	// 31 BLOCK: VS4
 	float	VSfogStart;
@@ -38,20 +49,27 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
 	bool	VS_USE_WVP;
 
 	// 45 BLOCK: VS5
-	matrix	ViewToLightProj;
+	matrix	ViewToLightProj;        // For Shadow
 	matrix	WorldInverseTranspose;	// WorldInverseTranspose
-	float4	vEye;					// camera position													   
+	float4	VSCameraPosition;		// camera position - old var: vEye
+
 	// 42 BLOCK: VS6
 	float	VSrotX;
 	float	VSrotY;
 	float	VSrotZ;
-	float	time;
+    float   time;   //water animation
 
 	// 42 BLOCK: VS7
-	float	VSshaderType;
-	float	vsPAD2;
-	float	vsPAD3;
-	float	vsPAD4;
+    float VSshaderType;
+    bool  vsIsSky = false;
+    bool  vsPAD3;
+	float vsPAD4;
+
+	//FIRE-VS8:
+    float vsframeTime = 0;
+    float3 scrollSpeeds;
+    float3 scales;
+    bool isAnimatedBill;
 };
 
 ///////////////
@@ -85,7 +103,7 @@ cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: D
 	// BLOCK4:
 	bool	hasColorMap;		// 66
 	float	lightType;			// Future
-	float	shaderType;			// Future
+	bool    isDay;				// old: float	shaderType;			// Future
 	float	shaderTypeParameter;// Future
 
 	// BLOCK5:
@@ -101,7 +119,7 @@ cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: D
 	bool	hasNormMap;
 
 	// BLOCK7:
-	float3	cameraPosition;	// Future
+	float3	cameraPosition;
 	bool	castShadow;
 	float3	specularColor;
 	float	nShininess;

@@ -85,6 +85,9 @@
     <Filter Include="src-basic-level\040-Advanced-Terrains">
       <UniqueIdentifier>{72f3fafb-3d45-4100-98a0-015186c7e98d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Vulkan">
+      <UniqueIdentifier>{8b244f1b-669d-441c-93c4-c61661d69901}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\include\main.h">
@@ -334,6 +337,21 @@
     </ClInclude>
     <ClInclude Include="core\include\AutoGenTerrain.h">
       <Filter>src-basic-level\040-Advanced-Terrains</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\VKrenderTextureClass.h">
+      <Filter>Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\vkTextClass.h">
+      <Filter>Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\vkShaderClass.h">
+      <Filter>Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\vkModelClass.h">
+      <Filter>Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="core\include\vkClass.h">
+      <Filter>Vulkan</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -613,6 +631,24 @@
     </ClCompile>
     <ClCompile Include="core\src\corelib6.cpp" />
     <ClCompile Include="core\src\corelib0.cpp" />
+    <ClCompile Include="core\src\vkW3DModelClass.cpp">
+      <Filter>Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\VKrenderTextureClass.cpp">
+      <Filter>Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\VkTextClass.cpp">
+      <Filter>Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\vkShaderClass.cpp">
+      <Filter>Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\vkModelClass.cpp">
+      <Filter>Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="core\src\vkClass.cpp">
+      <Filter>Vulkan</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="settings.xml" />
@@ -639,6 +675,9 @@
       <Filter>HLSL</Filter>
     </FxCompile>
     <FxCompile Include="hlsl\027Texture.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="hlsl\051Texture.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
   </ItemGroup>

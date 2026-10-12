@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // ORIGINAL: Rastertek Tutorial 14: Font Engine : https://www.rastertek.com/gl4linuxtut14.html
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
 #if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
@@ -52,8 +52,8 @@ bool RApplicationClass::Initialize(int screenWidth, int screenHeight)
     // Create and initialize the camera object.
     m_Camera = new RCameraClass;
 	womalogauto("new RCameraClass\n");
-    m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
-    m_Camera->Render();
+    DX_Camera->SetPosition(0.0f, 0.0f, -10.0f);
+    DX_Camera->Render();
 
     // Create and initialize the font shader object.
     m_FontShader = new RFontShaderClass;
@@ -111,7 +111,7 @@ bool RApplicationClass::Render()
 
     // Get the world, view, and ortho matrices from the opengl and camera objects.
     m_OpenGL->GetWorldMatrix(worldMatrix);	//W
-    m_Camera->GetViewMatrix(viewMatrix);	//V
+    DX_Camera->GetViewMatrix(viewMatrix);	//V
     m_OpenGL->GetOrthoMatrix(orthoMatrix);	//P
 
     // Get the color to render the text as.

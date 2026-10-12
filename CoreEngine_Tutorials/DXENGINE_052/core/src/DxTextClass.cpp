@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
-// Filename: DXtextClass.cpp
+// Filename: DxTextClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,7 +17,7 @@
 // PURPOSE: 
 // Original DX11 version of the code was inpired on: https://www.rastertek.com/dx11tut12.html
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 #pragma once
 
 #include "OSengine.h"
@@ -28,12 +28,18 @@
 #include "mem_leak.h"
 #include "dxWinSystemClass.h"	// SystemHandle
 
+#if defined VULKAN
+#include "vkClass.h"
+#endif
+
+#include "DXmodelClass.h"
+
 namespace DirectX {
 
 	DxTextClass::DxTextClass()
 	{
 		CLASSLOADER();
-		WomaIntegrityCheck = 1234525217;
+	
 
 		//private:
 		m_Font = NULL;
@@ -93,28 +99,32 @@ namespace DirectX {
 	}
 
 	//SIMILAR: DXmodelClass::CreateShader(TCHAR* objectName, SHADER_TYPE ShaderType)
-	bool DirectX::DxTextClass::Initialize(void* Driver, ID3D11DeviceContext* m_deviceContext11_)
+	bool DirectX::DxTextClass::Initialize(void* Driver, void* m_deviceContext11_)
 	{
-		m_deviceContext11 = m_deviceContext11_;
+		bool result=false;
 
-		bool result;
+#ifdef DEBUG_TEXT_FONT
+		womalog(TEXT("[DX TEXT] Initialize()\n"));
+#endif
+
 	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
 		if (WOMA::AppSettings->DRIVER == DRIVER_DX9 || WOMA::AppSettings->DRIVER == DRIVER_DX11)
 		{
+			m_deviceContext11 = (ID3D11DeviceContext*)m_deviceContext11_;
 			m_driver11 = (DirectX::DX11Class*)Driver;
-			m_baseViewMatrix = &DXsystemHandle->m_Camera->m_viewmatrix2D;
+			m_baseViewMatrix = &DX_Camera->m_viewmatrix2D;
 		}
 	#endif
 	#if defined DX12
 		if (WOMA::AppSettings->DRIVER == DRIVER_DX12) {
 			m_driver = (DirectX::DX12Class*)Driver;
-			m_baseViewMatrix = &DXsystemHandle->m_Camera->m_viewmatrix2D;
+			m_baseViewMatrix = &DX_Camera->m_viewmatrix2D;
 		}
 	#endif
 		// TextClass: Initialize the font object. PART1
 		m_Font = NEW textFontClass;
 		IF_NOT_THROW_EXCEPTION(m_Font); // Create the font object.
-        IF_NOT_RETURN_FALSE(m_Font->Initialize(m_deviceContext11, Driver, FONT_DATA_FILE, FONT_DATA_TEXTURE));
+        IF_NOT_RETURN_FALSE(m_Font->Initialize(m_deviceContext11_, Driver, FONT_DATA_FILE, FONT_DATA_TEXTURE));
 
 		// Create the color shader object:
 	#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
@@ -158,6 +168,11 @@ namespace DirectX {
 
 	bool DxTextClass::InitializeTexture(void* Driver)
 	{
+
+#ifdef DEBUG_TEXT_FONT
+		womalog(TEXT("[DX TEXT] InitializeTexture() called\n"));
+#endif
+
 #if defined DX12
 		if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 		{
@@ -212,7 +227,7 @@ namespace DirectX {
 		(*sentence)->indexBuffer = NULL;
 	#endif
 		// Set the maximum length of the sentence.
-		(*sentence)->maxLength = maxLength;
+		//(*sentence)->maxLength = maxLength;
 
 		// Set the number of vertices in the vertex array.
 		(*sentence)->vertexCount = 6 * maxLength;
@@ -225,7 +240,9 @@ namespace DirectX {
 		IF_NOT_THROW_EXCEPTION((*sentence)->vertices);
 
 		// Create the index array.
-		(*sentence)->indices = NEW unsigned long[(*sentence)->indexCount];
+		// NOTE Vulkan requires 32-bit indices here.
+		//		Never use unsigned long: MSVC=4 bytes, GCC/Clang x64=8 bytes.
+		(*sentence)->indices = NEW uint32_t[(*sentence)->indexCount];
 		IF_NOT_THROW_EXCEPTION((*sentence)->indices);
 
 		sizeofMODELvertex = sizeof(DXtextureVertexType);
@@ -352,7 +369,7 @@ namespace DirectX {
 
 		// Set up the description of the static index buffer.
 		indexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE; //D3D11_USAGE_DEFAULT;
-		indexBufferDesc.ByteWidth = sizeof(unsigned long) * (*sentence)->indexCount;
+		indexBufferDesc.ByteWidth = sizeof(uint32_t) * (*sentence)->indexCount;
 		indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 		indexBufferDesc.CPUAccessFlags = 0;
 		indexBufferDesc.MiscFlags = 0;
@@ -375,25 +392,21 @@ namespace DirectX {
 		SAFE_DELETE ((*sentence)->vertices);
 		SAFE_DELETE((*sentence)->indices);
 
-
 		return true;
 	}
 
 	//Should be similar: bool DXmodelClass::UpdateBuffersRotY(void* Driver, int positionX, int positionY)
 	bool DxTextClass::UpdateSentence(SentenceType* sentence, TCHAR* text, int positionX, int positionY, float red, float green, float blue)
 	{
-		int numLetters;
+		//int numLetters;
 		DXtextureVertexType* vertices;
 		float drawX, drawY;
 		HRESULT result;
 		D3D11_MAPPED_SUBRESOURCE mappedResource;
 		DXtextureVertexType* verticesPtr;
-		//WomaDriverClass* m_Driver = driverList[WOMA::AppSettings->DRIVER];
 
 		if (!sentence)
-		{
-			WomaFatalExceptionW(TEXT("Text: sentence = NULL")); //return false;
-		}
+			{ WomaFatalExceptionW(TEXT("Text: sentence = NULL")); }
 
 		// Store the color of the sentence.
 		sentence->red = red;
@@ -401,41 +414,44 @@ namespace DirectX {
 		sentence->blue = blue;
 
 		// Get the number of letters in the sentence.
-		numLetters = (int)_tcslen(text);
+		//numLetters = (int)_tcslen(text);
+		sentence->numLetters = (int)_tcslen(text);
 
 		// Check for possible buffer overflow.
-		if (numLetters > sentence->maxLength)
-		{
-			WomaFatalExceptionW(TEXT("Text Size Fatal Error")); //redefine: SENTENCE_MAX_LEN
-		}
+		ASSERT_DEBUG(sentence->numLetters <= textmaxLength);
+
+		sentence->indexCount = sentence->numLetters * 6;
 
 		// Create the vertex array.
-		vertices = NEW DXtextureVertexType[sentence->vertexCount];
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX9 || WOMA::AppSettings->DRIVER == DRIVER_DX11)
+			vertices = NEW DXtextureVertexType[sentence->indexCount /*sentence->vertexCount*/];
+		else
+			vertices = NEW DXtextureVertexType[sentence->vertexCount];
 		IF_NOT_THROW_EXCEPTION(vertices);
 
-		// Initialize vertex array to zeros at first.
-		memset(vertices, 0, (sizeof(DXtextureVertexType) * sentence->vertexCount));
-
+		// DX12 (Level 27):
+		// UpdateSubresources() uploads the full preallocated sentence buffer,
+		// so this temporary array must match vertexCount.
+		// Rendering still uses indexCount, so no memset is required.
 		// Calculate the X and Y pixel position on the screen to start drawing to.
 		drawX = (float)(((WOMA::AppSettings->WINDOW_WIDTH / 2) * -1) + positionX);
 		drawY = (float)((WOMA::AppSettings->WINDOW_HEIGHT / 2) - positionY);
 
-		// Use the font class to build the vertex array from the sentence text and sentence draw location.
-		//if (m_Driver->RenderfirstTime)
-			m_Font->BuildVertexArray((void*)vertices, text, drawX, drawY);
+		m_Font->BuildVertexArray((void*)vertices, text, drawX, drawY);
 
 #if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
 		if (WOMA::AppSettings->DRIVER == DRIVER_DX9 || WOMA::AppSettings->DRIVER == DRIVER_DX11)
 		{
 			// Lock the vertex buffer so it can be written to.
 			result = m_deviceContext11->Map((ID3D11Buffer*)sentence->vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-			if (FAILED(result)) return false;
+			if (FAILED(result))
+				{ SAFE_DELETE_ARRAY(vertices); return false; }
 
 			// Get a pointer to the data in the vertex buffer.
 			verticesPtr = (DXtextureVertexType*)mappedResource.pData;
 
 			// Copy the data into the vertex buffer.
-			memcpy(verticesPtr, (void*)vertices, (sizeof(DXtextureVertexType) * sentence->vertexCount));
+			memcpy(verticesPtr, (void*)vertices, (sizeof(DXtextureVertexType) * sentence->indexCount));
 
 			// Unlock the vertex buffer.
 			m_deviceContext11->Unmap((ID3D11Buffer*)sentence->vertexBuffer, 0);
@@ -443,7 +459,8 @@ namespace DirectX {
 #endif
 
 #ifdef DX12	
-		if (WOMA::AppSettings->DRIVER == DRIVER_DX12) {
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12) 
+		{
 			// VERTEX:
 			const UINT vertexBufferSize = sizeofMODELvertex * (*sentence).vertexCount; //  m_vertexCount sizeof(triangleVertices);
 
@@ -463,7 +480,8 @@ namespace DirectX {
 
 		return true;
 	}
-	void DxTextClass::RenderSentence(SentenceType* sentence)
+
+	void DxTextClass::RenderSentence(void* pContext, SentenceType* sentence)
 	{
 		// SetBuffers
 		static unsigned int stride = sizeof(DXtextureVertexType), offset = 0;

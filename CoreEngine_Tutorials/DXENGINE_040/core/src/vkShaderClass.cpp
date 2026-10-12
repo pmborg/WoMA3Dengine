@@ -1379,10 +1379,18 @@ bool vkShaderClass::InitializeShader(SHADER_TYPE shaderType, void* device, HWND 
 	transparentColorBlendState.pAttachments = &transparentBlendAttachment;
 
 	transparentBlendAttachment.blendEnable = VK_TRUE;
+#if defined INTRO_DEMO || DX_ENGINE_LEVEL >= 70
 	transparentBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+#else
+	transparentBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_COLOR; // VK_BLEND_FACTOR_SRC_ALPHA;
+#endif
 	transparentBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
 	transparentBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
+#ifdef INTRO_DEMO
+	transparentBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+#else
 	transparentBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+#endif
 	transparentBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
 	transparentBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
 	transparentBlendAttachment.colorWriteMask =

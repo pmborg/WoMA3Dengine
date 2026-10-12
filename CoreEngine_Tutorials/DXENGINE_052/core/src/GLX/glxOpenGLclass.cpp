@@ -13,11 +13,10 @@
 #include "platform.h" //LPCSTR
 #if defined LINUX_PLATFORM
 #define LINUX_PLATFORM
-//#define ENGINE_LEVEL 20
 
 #include "OSengine.h"
 
-#if defined OPENGL3 && defined LINUX_PLATFORM && DX_ENGINE_LEVEL >= 19 // Initializing Engine 
+#if (defined OPENGL3 || defined OPENGL40) && defined LINUX_PLATFORM && DX_ENGINE_LEVEL >= 19 // Initializing Engine 
 
 //////////////
 // INCLUDES //

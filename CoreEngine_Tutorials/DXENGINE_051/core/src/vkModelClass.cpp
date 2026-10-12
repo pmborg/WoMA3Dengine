@@ -177,7 +177,7 @@ void vkModelClass::RenderWithFade(void* pContext, float fadeLight, bool FOG, UIN
 
 	if (RENDER_PAGE >= 51) {
 		if (WOMA::AppSettings->START_FOG > 0 && WOMA::AppSettings->END_FOG > 0)
-			m_Shader->hasFog = (true && FOG);
+			m_Shader->hasFog = FOG;
 	}
 
 	Render(pContext, 0, 0, 0, pass, lightViewMatrix, lightProjectionMatrix);

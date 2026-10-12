@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: DXcameraClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Process the basic Camera Calculations
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
 #if defined DX_ENGINE
@@ -24,12 +24,13 @@
 #if (defined DX_ENGINE) && (defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 || defined USE_VIEW2D_SPRITES)
 
 #include "DXcameraClass.h"
+#include "OSengine.h"
 
 //The class constructor will initialize the position and rotation of the camera to be at the origin of the scene.
 DXcameraClass::DXcameraClass(UINT camera_type)
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525217;
+
 
 	//public:
 	m_positionX = m_positionY = m_positionZ = 0.0f;
@@ -58,6 +59,11 @@ void DXcameraClass::SetPosition(float x, float y, float z)
 	m_positionX = x;
 	m_positionY = y;
 	m_positionZ = z;
+
+#ifdef _DEBUG
+	if (m_Driver->RenderfirstTime)
+		womalog("[CAMERA SET POSITION] DX | " "POS=(%f,%f,%f)\n", x, y, z);
+#endif
 }
 
 void DXcameraClass::SetRotation(float x, float y, float z)
