@@ -23,7 +23,7 @@
 
 #include "platform.h"
 
-#if CORE_ENGINE_LEVEL >= 10 && defined VULKAN
+#if DX_ENGINE_LEVEL >= 21 && defined VULKAN
 #include "OSengine.h"
 
 namespace WOMA

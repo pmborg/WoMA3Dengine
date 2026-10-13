@@ -185,7 +185,7 @@ bool AndroidSystemClass::APPLICATION_CORE_SYSTEM()
 	return false;
 #endif
 
-#if CORE_ENGINE_LEVEL >= 2 && defined ANDROID_PLATFORM && !defined NewWomaEngine
+#if _NOT //CORE_ENGINE_LEVEL >= 2 && defined ANDROID_PLATFORM && !defined NewWomaEngine
 	if (SystemHandle) 
 	{
 		WOMA::AppSettings->WINDOW_WIDTH = engine.width;
@@ -198,12 +198,12 @@ bool AndroidSystemClass::APPLICATION_CORE_SYSTEM()
 		used_screen.width = ANativeWindow_getWidth(engine.app->window);
 		used_screen.height = ANativeWindow_getHeight(engine.app->window);
 
-		used_screen.refreshRate_Numerator = 60;   // depois poderás obter o refresh real
+		used_screen.refreshRate_Numerator = 60;   
 		used_screen.refreshRate_Denominator = 1;
 
 		// Android
-		//used_screen.hWnd = engine.app->window;          // se usares hWnd como void*
-		//used_screen.window = engine.app->window;        // ou apenas este, conforme a tua estrutura
+		//used_screen.hWnd = engine.app->window; 
+		//used_screen.window = engine.app->window;
 
 		WOMA::windowsToRenderArray.push_back(used_screen);
 		WOMA::allWindowsHwArray.push_back(used_screen);

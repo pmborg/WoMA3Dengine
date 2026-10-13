@@ -1193,8 +1193,10 @@ void SystemClass::ParseCommandLineAndApplySettings(int argc, char* argv[])
     IF_NOT_THROW_EXCEPTION(LoadXmlSettings()); //  XML: Load Application Settings: "settings.xml", pickup "Driver" to Use (override default: WOMA::settings)
 #endif
 
+#if CORE_ENGINE_LEVEL >= 2 && defined WINDOWS_PLATFORM
 	WOMA::windowsToRenderArray.clear();// All Monitors, that will be used to render, 1 for example.
 	WOMA::allWindowsHwArray.clear();	// All hardware Monitors available on system, 3 for example.
+#endif
 
     for (int i = 1; i < argc; ++i)
     {

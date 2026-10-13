@@ -45,6 +45,27 @@ bool engine_init_display(struct womaengine* engine)
 
 		LOGE("Vulkan Display: %d x %d", w, h);
 
+#if CORE_ENGINE_LEVEL >= 2
+		WOMA::WindowDataContainer used_screen;
+
+		used_screen.MonitorName = TEXT("Default");
+		used_screen.width = w;
+		used_screen.height = h;
+
+		used_screen.refreshRate_Numerator = 60;
+		used_screen.refreshRate_Denominator = 1;
+
+		//used_screen.display = display;
+		//used_screen.window = win;
+
+		WOMA::windowsToRenderArray.push_back(used_screen);
+		WOMA::allWindowsHwArray.push_back(used_screen);
+#endif
+
+		//womalog("engine_init_display::VKwindowsToRenderArray.size() = %d\n", VKwindowsToRenderArray.size());
+		womalog("engine_init_display::windowsToRenderArray.size() = %d\n", WOMA::windowsToRenderArray.size());
+		womalog("engine_init_display::windowsToRenderArray.size() = %d\n", WOMA::allWindowsHwArray.size());
+
 		return true;
 	}
 

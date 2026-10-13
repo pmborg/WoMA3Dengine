@@ -776,6 +776,10 @@ static_assert(false, "WIN6x: X64 or WIN32, must be selected");
 #endif
 
 #if defined ANDROID_PLATFORM || defined LINUX_PLATFORM
+#define DEMO_LEVEL 19 //63
+#endif
+
+#if defined ANDROID_PLATFORM || defined LINUX_PLATFORM
 #define _DEBUG
 #endif
 
