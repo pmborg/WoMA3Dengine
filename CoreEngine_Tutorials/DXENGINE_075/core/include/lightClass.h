@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: lightClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #ifndef _LIGHTCLASS_H_
 #define _LIGHTCLASS_H_
@@ -27,6 +27,8 @@
 // INCLUDES //
 //////////////
 #include "main.h"
+#include "vertexTypes.h"
+#include "GLmathClass.h"
 
 #pragma warning( disable : 4324 ) // 4324: '': structure was padded due to __declspec(align())
 #pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
@@ -44,7 +46,6 @@
 #endif
 
 #if defined DX_ENGINE
-#include <DirectXMath.h>// Use Math
 #if defined DX12
 	// DX12 includes
 	#include <dxgi1_4.h>	// Always 1st!	(Select Driver)
@@ -52,16 +53,18 @@
 	#include <D3Dcompiler.h>// Use Compiler
 	//#include "d3dx12.h"
 #endif
-	using namespace DirectX;
 #endif
 
+#ifdef WINDOWS_PLATFORM
+#include <DirectXMath.h> 
+using namespace DirectX;
+#endif
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: LightClass
 ////////////////////////////////////////////////////////////////////////////////
 class LightClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234525217;
 	LightClass();
 	~LightClass();
 
@@ -70,7 +73,7 @@ public:
 	void SetDiffuseLightColor(float, float, float, float);
 	void SetDirection(float, float, float);
 
-#if defined DX_ENGINE
+#if defined USE_SHADOW_MAP
 	void GenerateViewMatrix(float SunX, float SunY, float SunZ);
 #endif
 
@@ -86,37 +89,46 @@ public:
 	void SetSpecularPower(float);
 #endif
 
-	float* GetDirection();
-	float* GetDiffuseColor();
-    const float* GetAmbientColor();
+	XMFLOAT4 GetDirection();
+	XMFLOAT4 GetDiffuseColor();
+	XMFLOAT4 GetAmbientColor();
 
 //	-------------------------------------------------------------------------------------------
 //public:
 //	-------------------------------------------------------------------------------------------
-#if defined DX_ENGINE 
+//#if defined WINDOWS_PLATFORM //DX_ENGINE 
 	XMFLOAT4 m_lightDirection = {};
 	XMFLOAT4 m_ambientColor = {};
 	XMFLOAT4 m_diffuseColor = {};
 
 	XMMATRIX m_viewMatrix = {};
-#else
-	float m_lightDirection[4] = {};
-	float m_ambientColor[4] = {};
-	float m_diffuseColor[4] = {};
+//#else
+//	Vector4 m_lightDirection = {};
+//	Vector4 m_ambientColor = {};
+//	Vector4 m_diffuseColor = {};
+//
+//	mat4 m_viewMatrix = {};
+//#endif
 
-	float m_viewMatrix[4] = {};
-#endif
-
+#ifdef WINDOWS_PLATFORM
 	XMMATRIX m_ligth_orthoMatrix = {};
+#else
+	mat4 m_ligth_orthoMatrix = {};
+#endif
 
 //	-------------------------------------------------------------------------------------------
 private:
 //	-------------------------------------------------------------------------------------------
 #if defined RENDER_OBJ_WITH_SPECULAR_SHININESS
+  #ifdef WINDOWS_PLATFORM
 	XMFLOAT4 GetSpecularColor();
-	float GetSpecularPower();
-
 	XMFLOAT4 m_specularColor = {};
+  #else
+	Vector4 GetSpecularColor();
+	Vector4 m_specularColor = {};
+  #endif
+
+	float GetSpecularPower();
 	float m_specularPower=0;
 #endif
 };

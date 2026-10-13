@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: systemFeatures.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 #pragma once
 
 #include "main.h"
@@ -25,7 +25,6 @@
 class SystemFeatures
 {
 public:
-	UINT WomaIntegrityCheck = 1234525217;
     SystemFeatures();
     ~SystemFeatures();
 
@@ -45,6 +44,8 @@ public:
 	bool ssse3;
 	bool sse41;
 	bool sse42;
+	bool AES;
+	bool FMA3;
 	bool avx;
 
 	bool hypervisor; //if(hypervisor) virtualization = TRUE
@@ -54,13 +55,14 @@ public:
 	bool amd_3DNowExt;
 	bool SVM;		//if(!hypervisor) virtualization = "AMD virtualization (AMD-V)"
 	bool sse4A;
-#if _NOT
+#if defined _NOT
 	bool sse5;
 #endif
 
     // Get processor info:
 	bool avx2;
 	bool avx512;
+	bool SHA;
 
 
 private:
