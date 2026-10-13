@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: playback.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -88,8 +88,8 @@ HRESULT DShowPlayer::OpenFile(TCHAR* pszFileName)
 done:
     if (FAILED(hr))
     {
-		if (hr == 0x80040218)	// NOTE: Mandatory 32/64bits Builds: K-Lite_Codec_Pack_1095_Basic.exe
-			WomaMessageBox( TEXT("Mandatory 32/64bits Builds: K-Lite_Codec_Pack_1095_Basic.exe"), TEXT("Error: "));
+		if (hr == 0x80040218)	// NOTE: Mandatory 32/64bits Builds: K-Lite_Codec_Pack_1995_Full.exe
+			WomaMessageBox( TEXT("Mandatory 32/64bits Builds: K-Lite_Codec_Pack_1995_Full.exe"), TEXT("Error: "));
 
         TearDownGraph();
     }

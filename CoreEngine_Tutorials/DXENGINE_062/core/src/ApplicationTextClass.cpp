@@ -257,8 +257,8 @@ void ApplicationTextClass::Render(void* pContext)		// Render the text user inter
 #endif
 
 	for (UINT i = 0; i < _countof(m_sentence); i++) {
-		if (m_sentence[i]) //if (m_sentence[i]->red > -1)
-				m_Text->RenderSentence(pContext, m_sentence[i]);
+		if (m_sentence[i])
+			m_Text->RenderSentence(pContext, m_sentence[i]);
 	}
 
 }

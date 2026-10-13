@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: womamesh.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
 #include "standard_platform.h"
@@ -32,7 +32,7 @@
 
 
 #if !defined WOMA_DLL && !defined COMMONFUNCTIONS_DLL_EXPORTS
-#if _DEBUG
+#if defined _DEBUG
 #pragma comment( lib, "C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Debug\\Assimp-latest-Engine.lib" )
 #else
 #pragma comment( lib, "C:\\WoMA3Dengine\\ThirdParty\\PPG-master\\Bin\\Release\\Assimp-latest-Engine.lib" )
@@ -109,11 +109,13 @@ void InitMeshDemo(ID3D11DeviceContext* pContext, ApplicationClass* app, MeshAppl
 
 void LoadAllMeshModels(UINT this_level, ApplicationClass* app, MeshApplication* demoapp, MyDemo* demo)
 {
+	// [1] BOB MOB:
 #if DX_ENGINE_LEVEL >= 79 && defined USE_MODEL1
 	if (WOMA::game_state == GAME_STOP) return;
-    womamesh1.assimpSceneModel = SceneModel::LoadModelToScene(DX_ENGINE_LEVEL, true, 0, WOMA::LoadFile((TCHAR*)ASSIMP_MODEL_BOBLAMPCLEAN), "", womamesh1.scene, demoapp->m_Graphics);
+    womamesh1.assimpSceneModel = SceneModel::LoadModelToScene(DX_ENGINE_LEVEL, true, 0, WOMA::LoadFileA((TCHAR*)ASSIMP_MODEL_BOBLAMPCLEAN), "", womamesh1.scene, demoapp->m_Graphics);
 #endif
 
+	// [2] RUNNING MOB:
 #if DX_ENGINE_LEVEL >= 84 && defined USE_MODEL2
 	if (WOMA::game_state == GAME_STOP) return;
     womamesh2.assimpSceneModel = SceneModel::LoadModelToScene(DX_ENGINE_LEVEL, true, 0, WOMA::LoadFile((TCHAR*)ASSIMP_MODEL_FEMALE), "", womamesh2.scene, demoapp->m_Graphics);

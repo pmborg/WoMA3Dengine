@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------------------------
 // Filename: minidumperClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age  - 3D Multi-Platform ENGINE 2025
+// World of Middle Age  - 3D Multi-Platform ENGINE 2026
 //-------------------------------------------------------------------------------------------
 // code adapted by : Pedro Borges - pmborg@yahoo.com
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
@@ -30,21 +30,15 @@ Copyright (C) 2002  Andy Pennell
 //  IMPORTANT NOTE: Compile with "Security Check": NO
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "OSengine.h"
-#if defined USE_MINIDUMPER
+#if defined USE_WOMA_EXCEPTION //USE_MINIDUMPER
 #include "mem_leak.h"
 #include "minidumperClass.h"
-#include "log.h"
-
-#include "fileLoader.h"
-#include "OSmain_dir.h"
-
 #include <stdlib.h>
 
 #ifdef UNICODE
-#define char WCHAR
 #define _tcsrchr wcsrchr
 #define _tcscpy wcscpy
 #define _tcscat wcscat
@@ -73,14 +67,7 @@ LONG WINAPI VectoredExceptionHandler(PEXCEPTION_POINTERS pExceptionInfo)
 	//return EXCEPTION_CONTINUE_SEARCH;
 }
 
-MiniDumper::MiniDumper()
-{
 
-	CLASSLOADER();
-	WomaIntegrityCheck = 1234525217;
-}
-
-MiniDumper::~MiniDumper() {CLASSDELETE();}
 
 //NOTE: Before Convert to UNICODE due to Macros!
 void WriteError(TCHAR* szDumpPath)
@@ -109,7 +96,7 @@ LONG TopLevelFilter( struct _EXCEPTION_POINTERS *pExceptionInfo )
 
 	LPCTSTR szResult = NULL;
 
-	char szDbgHelpPath[_MAX_PATH] = TEXT("ConsoleTools");
+	TCHAR szDbgHelpPath[_MAX_PATH] = TEXT("ConsoleTools");
 
 	GetModuleFileName( GetModuleHandle(NULL), szDbgHelpPath, _MAX_PATH );
 
@@ -122,71 +109,6 @@ LONG TopLevelFilter( struct _EXCEPTION_POINTERS *pExceptionInfo )
 
 	if (!hDll)
 		hDll = ::LoadLibrary( TEXT("DBGHELP.DLL") );	// load any version we can
-
-	if (hDll)
-	{
-		MINIDUMPWRITEDUMP pDump = (MINIDUMPWRITEDUMP)::GetProcAddress( hDll, "MiniDumpWriteDump" );
-		if (pDump)
-		{
-			SYSTEMTIME str_t;
-			GetSystemTime(&str_t);
-
-			// NOTE: Don't USE: WOMA::APP_NAME (due special characters)!!!
-			StringCchPrintf(szDumpPath, _MAX_PATH, TEXT("%s_%s_%d-%d-%d_%d-%d-%d.%s"), WOMA::PUBLIC_DOCUMENTS, WOMA::APP_PROJECT_NAME, str_t.wYear, str_t.wMonth, str_t.wDay, str_t.wHour, str_t.wMinute, str_t.wSecond, TEXT("dmp"));
-
-            // Write Exception Error to log file ON TEMP!
-            WriteError( WOMA::LoadFile(szDumpPath) );
-#if 0
-			char szScratch[_MAX_PATH];
-
-			// ask the user if they want to save a dump file
-            if (::MessageBox(NULL, TEXT("A Fatal Exception occurred in WoMA, would you like to send us this error?"), WOMA::APP_NAME, MB_YESNO) == IDYES)
-			{
-				// create the file
-				HANDLE hFile = ::CreateFile( szDumpPath, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
-
-				if (hFile!=INVALID_HANDLE_VALUE)
-				{
-					_MINIDUMP_EXCEPTION_INFORMATION ExInfo;
-
-					ExInfo.ThreadId = ::GetCurrentThreadId();
-					ExInfo.ExceptionPointers = pExceptionInfo;
-					ExInfo.ClientPointers = NULL;
-
-					// Write the DUMP File
-					BOOL bOK = pDump( GetCurrentProcess(), GetCurrentProcessId(), hFile, MiniDumpNormal, &ExInfo, NULL, NULL );
-					if (bOK)
-					{
-                        sprintf(szScratch, TEXT("Saved file dump '%s' saved and uploaded.\nThanks for helping to make %s a better application!"), szDumpPath, WOMA::APP_NAME);
-						szResult = szScratch;
-						retval = EXCEPTION_EXECUTE_HANDLER;
-					}
-					else
-					{
-						sprintf( szScratch, TEXT("Failed to save dump to '%s' (error %d)"), szDumpPath, GetLastError() );
-						szResult = szScratch;
-					}
-					::CloseHandle(hFile);
-				}
-				else
-				{
-					sprintf( szScratch, TEXT("Failed to create dump file '%s' (error %d)"), szDumpPath, GetLastError() );
-					szResult = szScratch;
-				}
-			}
-#endif
-            retval = EXCEPTION_EXECUTE_HANDLER; // FIX: Handle the exception even if user don't want to send feedback, by Pedro Borges
-		}
-		else
-		{
-			szResult = TEXT("DBGHELP.DLL too old");
-		}
-	}
-	else
-	{
-		szResult = TEXT("DBGHELP.DLL not found");
-	}
-
 	// If there is any error show it:
 	if (szResult) 
 	{
@@ -196,3 +118,4 @@ LONG TopLevelFilter( struct _EXCEPTION_POINTERS *pExceptionInfo )
 }
 
 #endif
+
