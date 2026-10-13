@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: GLcameraClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,18 +16,25 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
+#include "virtualCameraClass.h"
 #include "Math3D.h"
+
 #include "GLcameraClass.h"
+
 #if defined ANDROID_PLATFORM
 #include "math.h"
 #endif
+
+#include "GLmathClass.h"
+
+#include "OSengine.h"
+
 GLcameraClass::GLcameraClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525217;
 
 	m_positionX = 0.0f;
 	m_positionY = 0.0f;
@@ -46,7 +53,10 @@ void GLcameraClass::SetPosition(float x, float y, float z)
 	m_positionX = x;
 	m_positionY = y;
 	m_positionZ = z;
-	return;
+
+#ifdef _DEBUG
+		womalogATfirstframe( "[CAMERA SET POSITION] GL | " "POS=(%f,%f,%f)\n", x, y, z);
+#endif
 }
 
 
@@ -219,27 +229,6 @@ void GLcameraClass::BuildViewMatrix(VectorType position, VectorType lookAt, Vect
 
 void GLcameraClass::Use2DViewMatrix()
 {
-	/*
-	m_viewmatrix2D[0]  = m_viewMatrix[0];
-	m_viewmatrix2D[1]  = m_viewMatrix[1];
-	m_viewmatrix2D[2]  = m_viewMatrix[2];
-	m_viewmatrix2D[3]  = m_viewMatrix[3];
-
-	m_viewmatrix2D[4]  = m_viewMatrix[4];
-	m_viewmatrix2D[5]  = m_viewMatrix[5];
-	m_viewmatrix2D[6]  = m_viewMatrix[6];
-	m_viewmatrix2D[7]  = m_viewMatrix[7];
-
-	m_viewmatrix2D[8]  = m_viewMatrix[8];
-	m_viewmatrix2D[9]  = m_viewMatrix[9];
-	m_viewmatrix2D[10] = m_viewMatrix[10];
-	m_viewmatrix2D[11] = m_viewMatrix[11];
-
-	m_viewmatrix2D[12] = m_viewMatrix[12];
-	m_viewmatrix2D[13] = m_viewMatrix[13];
-	m_viewmatrix2D[14] = m_viewMatrix[14];
-	m_viewmatrix2D[15] = m_viewMatrix[15];
-	*/
 }
 
 void GLcameraClass::GetViewMatrix(float* matrix)

@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------------------------------------
 // Filename: timerClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 //
 // ----------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
@@ -31,6 +31,10 @@
 //////////////
 #include "main.h" // INT64
 
+#if defined ANDROID_PLATFORM
+extern double timeGetTime(void);
+#endif
+
 #if defined  USE_TIMER_CLASS
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: TimerClass
@@ -38,7 +42,6 @@
 class TimerClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234525217;
 	TimerClass();
 	~TimerClass();
 

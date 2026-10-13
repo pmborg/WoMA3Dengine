@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------------------------------
 // Filename: platform.h
 // --------------------------------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -66,7 +66,7 @@
 // • NO GLOBAL VARIABLES OR INCLUDES :
 //      Restricts the file to only preprocessor definitions and platform detection logic, as per project guidelines
 // --------------------------------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 #pragma once
 
 #if defined NDEBUG && !defined _DEBUG
@@ -91,6 +91,7 @@ Visual Studio 2015 	    	Dev14 	        14.0 	    June 27, 2016 		October 14, 20
 Visual Studio 2017 			Dev15 			15.0 		November 8, 2022 	April 13, 2027		XP + VISTA + WIN7 + WIN8 + WIN8.1 + WIN10 | C++17 standard | NET Framework versions 4.7, 4.6.2, 4.6.1, 4.6, 4.5.2, and 3.5
 Visual Studio 2019 			Dev16 			16.0 		January 10, 2023 	April 10, 2029		XP + VISTA + WIN7 + WIN8 + WIN8.1 + WIN10 | NET Framework versions 4.8, 4.7.2, 4.7.1, 4.7, 4.6.2, 4.6.1, 4.6, 4.5.2, 4.5.1, 4.5, and 4.0
 Visual Studio 2022 			Dev17 			17.0 		January 10, 2023 	January 13, 2032	WIN7 + WIN8 + WIN8.1 + WIN10 + WIN11      | NET Framework versions 4.8.1, 4.8, 4.7.2, 4.7.1, 4.7, and 4.6.2
+Visual Studio 2026 			Dev18 	 		18.0 	  	April 28, 2026 		November 9, 2027 	NET Framework versions: 3.5 SP1, 4.6.2–4.8.1 and 8.0 - 10.0
 
 MSVC++ 5.0  _MSC_VER == 1100
 MSVC++ 6.0  _MSC_VER == 1200
@@ -105,6 +106,7 @@ MSVC++ 14.0 _MSC_VER == 1900 (Visual Studio 2015)
 MSVC++ 15.0	_MSC_VER == 1916 (Visual Studio 2017)
 MSVC++ 16.0	_MSC_VER == 1929 (Visual Studio 2019)
 MSVC++ 17.0 _MSC_VER == 1942 (Visual Studio 2022)
+MSVC++ 18.0 _MSC_VER == 1951 (Visual Studio 2026)
 
 DirectX 		Release Date 		Shader Model 		Shader Profile(s)
 ------------------------------------------------------------------------------------------------------
@@ -125,7 +127,7 @@ DirectX 12.0    Augost 21, 2015 Shader Model 5.1 — GCN 1 + , Fermi + , DirectX 1
  Shader Model 6.5 — GCN 1 + , Kepler + , Skylake + , DirectX 12 (11_0 + ) with WDDM 2.7.WIN10						=
  Shader Model 6.6 — GCN 4 + , Maxwell + , DirectX 12 (11_0 + ) with WDDM 3.0.WIN11									WIN11
  Shader Model 6.7 — GCN 4 + , Maxwell + , DirectX 12 (12_0 + ) with WDDM 3.1.WIN11									=
- Shader Model 6.8 — RDNA 1 + , Maxwell 2 + , DirectX 12 (12_0 + ) with WDDM 3.1 / 3.2 with Agility SDK				=
+ Shader Model 6.8 — RDNA 1 +, Maxwell 2 +,DirectX 12 (12_0 + ) with WDDM 3.1 / 3.2 with Agility SDK				    =
 
 DX12 Versions:
 --------------
@@ -136,6 +138,10 @@ DX12 Versions:
 10.00.18362.0116 	May 19, 2019 		Windows 10, Variable Rate Shading(VRS) support added
 10.00.19041.0928 	November 10, 2020 	Windows 10, Xbox Series X, Ultimate
 10.00.22000.1000 	October 5, 2021 	Windows 11, Added native refresh rate switching[94] and improved graphics capabilities to Windows Subsystem for Linux
+10.00.22621.3820 	September 20, 2022 	Windows 11 (22H2), DirectStorage improvements, DXR optimizations, Shader Model 6.7
+10.00.22631.2428 	October 31, 2023 	Windows 11 (23H2), further DirectX 12 Ultimate optimizations and DXIL compiler improvements
+10.00.26100.1000 	October 1, 2024 	Windows 11 (24H2) and Windows Server 2025 exclusive, support for Shader Execution Reordering(SER), Work Graphs, and Shader Model 6.8
+10.00.26200.7309 	September 30, 2025 	Windows 11 (25H2), refinements to Work Graphs, advanced DXR behavior, and GPU - driven pipeline improvements
 #endif
 
 #pragma once
@@ -149,7 +155,7 @@ DX12 Versions:
 #endif
 
 #pragma warning( disable : 4005 )	// warning C4005: '' : macro redefinition
-#pragma warning( disable : 4067 )	// warning C4067: unexpected tokens following preprocessor directive - expected a newline
+#pragma warning( disable : 4067 )	// warning C4067: unexpected tokens following pre-processor directive - expected a newline
 #pragma warning( disable : 6262 )	// warning C6262: 
 #pragma warning( disable : 4217 )	// LINK : warning LNK4217: symbol
 #pragma warning( disable : 4099 )
@@ -209,8 +215,6 @@ DX12 Versions:
 	// Global exported variable
 	WOMA_INTERFACE int g_FrameCounter;
 #endif
-
-
 
 // -------------------------------------------------------------------------------------------------------------------
 // === 32bits or 64bits DETECTION for X86 CPUs (for: WINDOWS_PLATFORM or LINUX_PLATFORM)  ===
@@ -604,11 +608,11 @@ static_assert(false, "This code is for a LOWENDIAN CPU");
 // -------------------------------------------------------------------------------------------------------------------
 // (Windows: Vista, 7 & 8) or Linux? ---> Allow OpenGL 3.3+ & 4.0
 #if defined ANDROID_PLATFORM || (defined WIN6x) || (defined LINUX_PLATFORM && !defined X64)
-	#define OPENGL3  //OPENGL-API: 3.3+ ~ DX10 for Microsoft Windows / Mac OS X / Linux / Android level:26
+	#define OPENGL3  //32bits - OPENGL-API: 3.3+ ~ DX10 for Microsoft Windows / Mac OS X / Linux / Android level:26
 #endif
 
 #if defined WIN10 || (defined LINUX_PLATFORM && defined X64)
-	#define OPENGL40 //OPENGL-API: 4.0  ~ DX11 for Microsoft Windows / Mac OS X / Linux	
+	#define OPENGL40 //64bits - OPENGL-API: 4.0  ~ DX11 for Microsoft Windows / Mac OS X / Linux	
 #endif
 
 // Android? ---> Allow GLES2
@@ -666,8 +670,8 @@ static_assert(false, "WIN6x: X64 or WIN32, must be selected");
 	#define _Windows_8_		6.2
 	#define _Windows_8_1_	6.3
 	#define _Windows_10_    10.0
-	//WIN11 _Windows_10_	(They use WIN10 API)
-	//WIN12 _Windows_10_	(They use WIN10 API)
+	//WIN11 _Windows_11_	(They use WIN10 API)
+	//WIN12 _Windows_12_	(They use WIN10 API)
 #endif
 
 // -------------------------------------------------------------------------------------------------------------------
@@ -719,7 +723,19 @@ static_assert(false, "WIN6x: X64 or WIN32, must be selected");
 
 #define MAKE_DATE(y1, y2, y3, y4, m1, m2, m3, d1, d2) y1##y2##y3##y4##m1##m2##m3##d1##D2
 
+#define WOMA_BUILD_YEAR \
+    ((BUILD_YEAR_CH0 - '0') * 1000 + \
+     (BUILD_YEAR_CH1 - '0') * 100  + \
+     (BUILD_YEAR_CH2 - '0') * 10   + \
+     (BUILD_YEAR_CH3 - '0'))
 
+#define WOMA_BUILD_MONTH \
+    ((BUILD_MONTH_CH0 - '0') * 10 + \
+     (BUILD_MONTH_CH1 - '0'))
+
+#define WOMA_BUILD_DAY \
+    ((BUILD_DAY_CH0 - '0') * 10 + \
+     (BUILD_DAY_CH1 - '0'))
 
 // -------------------------------------------------------------------------------------------------------------------
 #if defined LINUX_PLATFORM
@@ -759,9 +775,40 @@ static_assert(false, "WIN6x: X64 or WIN32, must be selected");
 	//MULTI-BYTE    
 #endif
 
+#define DEMO_LEVEL 19 //63
+
+#if defined ANDROID_PLATFORM || defined LINUX_PLATFORM
+#define _DEBUG
+#endif
+
 // -------------------------------------------------------------------------------------------------------------------
 // Define WOMA Project "Settings/Features" that will be COMPILED depending of "ENGINE_LEVEL"
 // -------------------------------------------------------------------------------------------------------------------
     #include "../../woma_engine_assets.h"				// PUBLIC (AUTO GENERATED DEMOS): WINDOWS / ANDROID / LINUX
+
+#define SOLID_PIPELINE_STATES		0
+
+#if defined INTRO_DEMO || defined USE_VIEW2D_SPRITES || defined USE_ALPHA_BLENDING // OLD:ENGINE_LEVEL >= 26
+#define TRANSPARENT_PIPELINE_STATES 1
+#define MAXNUM_PIPELINE_STATES		2
+#else
+#define MAXNUM_PIPELINE_STATES		1
+#endif
+
+#if defined(__AVX512F__)
+#define CODE_COMPILED_AVX512 true
+#else
+#define CODE_COMPILED_AVX512 false
+#endif
+
+#ifndef WINDOWS_PLATFORM
+#define XMFLOAT2 Vector2
+#define XMFLOAT3 Vector3
+#define XMFLOAT4 Vector4
+#define XMVECTOR Vector4
+#define XMVectorSet Vector4
+
+#define XMMATRIX mat4
+#endif
 
 #pragma warning(pop)
