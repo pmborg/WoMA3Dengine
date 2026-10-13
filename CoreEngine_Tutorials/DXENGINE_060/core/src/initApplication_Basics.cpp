@@ -90,7 +90,7 @@ MyAnimationScene* myScene = NULL;
 bool myScene_has_animation = false;
 #endif
 
-UINT treeGSid = -1;
+INT treeGSid = -1;
 
 
 #if defined SCENE_COLOR

@@ -641,7 +641,7 @@ extern std::vector<PositionClass*> m_Position;
 
 extern UINT world_visibleModelList_size;
 
-extern UINT treeGSid;
+extern INT treeGSid;
 
 #define SunDistance 512
 

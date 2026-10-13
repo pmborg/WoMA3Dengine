@@ -116,7 +116,8 @@ void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext, WomaDriverCla
 	WOMA::sceneManager->CreateLists(RENDER_PAGE);			//CREATE LISTS: for all 3D&2D objects to render (from WORLD.XML) and more
 
 	{
-		WOMA::sceneManager->visibleModelList.push_back(objModel[treeGSid]);
+		if (treeGSid>=0)
+			WOMA::sceneManager->visibleModelList.push_back(objModel[treeGSid]);
 	}
 
 	world_visibleModelList_size = WOMA::sceneManager->visibleModelList.size();

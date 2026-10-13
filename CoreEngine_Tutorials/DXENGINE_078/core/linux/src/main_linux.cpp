@@ -40,9 +40,23 @@ void linux_window_title()
 
 bool createWindow()
 {
-	//----------------------------------------------------------------------------
-	//bool LinuxSystemClass::APPLICATION_INIT_MAIN_WINDOW(void* OpenGL)
-	// 
+	//==============================================================================================
+	// LINUX WINDOW SYSTEM (X11)
+	//==============================================================================================
+	// PURPOSE:
+	//   Create and configure the native X11 operating system window.
+	//
+	// RESPONSIBILITIES:
+	//   - Connect to the X Server.
+	//   - Create the native X11 window.
+	//   - Configure fullscreen, title and input events.
+	//   - Store the native window handles (Display*, Window).
+	//
+	// NOTE:
+	//   This section is graphics API independent.
+	//   It is shared by OpenGL and Vulkan.
+	//==============================================================================================
+	
 	// Init globals:
 	Win.width = WOMA::AppSettings->WINDOW_WIDTH;	// screenWidth;
 	Win.height = WOMA::AppSettings->WINDOW_HEIGHT;	//screenHeight;
@@ -55,72 +69,124 @@ bool createWindow()
 		womalog("Cannot open X display\n");
 		return false;
 	}
-	if (!glXQueryExtension(display, 0, 0)) {
-		womalog("X Server doesn't support GLX extension\n");
-		return false;
+
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
+	{
+		if (!glXQueryExtension(display, 0, 0)) {
+			womalog("X Server doesn't support GLX extension\n");
+			return false;
+		}
 	}
 
 	// [2] Get a handle to the root window.
 	int screen = DefaultScreen(display);
-	//Window root_win = RootWindow(display, screen);
 	Window root_win = DefaultRootWindow(display);
 
-	//XSelectInput(display, root_win, ButtonPressMask);
 
-	// Default template
-	static const int Visual_attribs[] =
+
+
+	XVisualInfo* visinfo = nullptr;
+	XSetWindowAttributes winAttr{};
+	XVisualInfo visualInfo{};
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
 	{
-		GLX_X_RENDERABLE    , GL_TRUE,
-		GLX_DRAWABLE_TYPE   , GLX_WINDOW_BIT,
-		GLX_RENDER_TYPE     , GLX_RGBA_BIT,
-		GLX_X_VISUAL_TYPE   , GLX_TRUE_COLOR,
-		GLX_RGBA			, GL_TRUE,
-		GLX_RED_SIZE        , 8,
-		GLX_GREEN_SIZE      , 8,
-		GLX_BLUE_SIZE       , 8,
-		GLX_ALPHA_SIZE      , 8,
-		GLX_DEPTH_SIZE      , 24,
-		GLX_STENCIL_SIZE    , 8,
-		GLX_DOUBLEBUFFER    , GL_TRUE,
-		GLX_SAMPLE_BUFFERS  , 1,
-		GLX_SAMPLES         , NUM_SAMPLES,
-		None
-	};
+		int fbcount;
 
-	int attribs[MAX_STR_LEN];
-	memcpy(attribs, Visual_attribs, sizeof(Visual_attribs));
+		// Default template
+		static const int Visual_attribs[] =
+		{
+			GLX_X_RENDERABLE    , GL_TRUE,
+			GLX_DRAWABLE_TYPE   , GLX_WINDOW_BIT,
+			GLX_RENDER_TYPE     , GLX_RGBA_BIT,
+			GLX_X_VISUAL_TYPE   , GLX_TRUE_COLOR,
+			GLX_RGBA			, GL_TRUE,
+			GLX_RED_SIZE        , 8,
+			GLX_GREEN_SIZE      , 8,
+			GLX_BLUE_SIZE       , 8,
+			GLX_ALPHA_SIZE      , 8,
+			GLX_DEPTH_SIZE      , 24,
+			GLX_STENCIL_SIZE    , 8,
+			GLX_DOUBLEBUFFER    , GL_TRUE,
+			GLX_SAMPLE_BUFFERS  , 1,
+			GLX_SAMPLES         , NUM_SAMPLES,
+			None
+		};
 
-	int fbcount;
-	GLXFBConfig* fbc = glXChooseFBConfig(display, screen, attribs, &fbcount);
-	GLXFBConfig fbconfig;
-	if (fbc)
-	{
-		if (fbcount >= 1)
-			fbconfig = fbc[0];
+		int attribs[MAX_STR_LEN];
+		memcpy(attribs, Visual_attribs, sizeof(Visual_attribs));
 
-		XFree(fbc);
+		GLXFBConfig* fbc = glXChooseFBConfig(display, screen, attribs, &fbcount);
+		GLXFBConfig fbconfig{};
+		if (fbc)
+		{
+			if (fbcount >= 1)
+				fbconfig = fbc[0];
+
+			XFree(fbc);
+		}
+
+		//----------------------------------------------------------------------------
+		//Visual* visual;
+		// Obter o ponteiro temporário do GLX
+		XVisualInfo* temp_vis = glXGetVisualFromFBConfig(display, fbconfig);
+		if (!temp_vis)
+		{
+			womalog("Failed to get XVisualInfo\n");
+			return false;
+		}
+
+		visualInfo = *temp_vis;  // COPIA por valor para a nossa variável segura da stack
+		visinfo = &visualInfo;   // Aponta para a nossa variável estável
+		XFree(temp_vis);         // Liberta IMEDIATAMENTE a memória alocada pelo GLX
+
+		womalog("GL3 X Visual ID = 0x%.2x\n", int(visinfo->visualid));
+
+		// Atributos da janela para GL3
+		winAttr.colormap = XCreateColormap(display, root_win, visinfo->visual, AllocNone);
+		winAttr.event_mask = StructureNotifyMask | KeyPressMask;
+		winAttr.background_pixmap = None;
+		winAttr.background_pixel = 0;
+		winAttr.border_pixel = 0;
+		winAttr.override_redirect = 1;
 	}
-
-	//----------------------------------------------------------------------------
-	Visual* visual;
-	XVisualInfo* visinfo = glXGetVisualFromFBConfig(display, fbconfig);
-	if (!visinfo)
+	else if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
 	{
-		womalog("Failed to get XVisualInfo\n");
-		return false;
+		// [1] Obter o Visual padrão do ecrã para o Vulkan
+		Visual* defaultVisual = DefaultVisual(display, screen);
+		if (!defaultVisual)
+		{
+			womalog("Failed to get Default Visual for Vulkan\n");
+			return false;
+		}
+
+		// [2] Alocar e preencher a estrutura XVisualInfo (opcional, mas mantém compatibilidade se usares depois)
+		visinfo = &visualInfo; // Aponta com segurança para a stack
+		if (!visinfo)
+		{
+			womalog("Failed to allocate XVisualInfo\n");
+			return false;
+		}
+
+		int depth = DefaultDepth(display, screen);
+		if (XMatchVisualInfo(display, screen, depth, TrueColor, visinfo) == 0)
+		{
+			// Fallback caso não encontre TrueColor exato, usa a info básica
+			visinfo->visual = defaultVisual;
+			visinfo->visualid = XVisualIDFromVisual(defaultVisual);
+			visinfo->screen = screen;
+			visinfo->depth = depth;
+		}
+
+		womalog("Vulkan X Visual ID = 0x%.2x\n", int(visinfo->visualid));
+
+		// [3] Criar o Colormap baseado no Visual escolhido: Atributos da janela para Vulkan (Idênticos ao GL3)
+		winAttr.colormap = XCreateColormap(display, root_win, visinfo->visual, AllocNone);
+		winAttr.event_mask = StructureNotifyMask | KeyPressMask;
+		winAttr.background_pixmap = None;
+		winAttr.background_pixel = 0;
+		winAttr.border_pixel = 0;
+		winAttr.override_redirect = 1; // Mantém igual ao GL3 se precisares do mesmo comportamento de janela
 	}
-	womalog("X Visual ID = 0x%.2x\n", int(visinfo->visualid));
-
-	//----------------------------------------------------------------------------
-	XSetWindowAttributes winAttr;
-
-	// [3] Create a color map for the window for the specified visual type.
-	winAttr.colormap = XCreateColormap(display, root_win, visinfo->visual, AllocNone);
-	winAttr.event_mask = StructureNotifyMask | KeyPressMask;
-	winAttr.background_pixmap = None;
-	winAttr.background_pixel = 0;
-	winAttr.border_pixel = 0;
-	winAttr.override_redirect = 1;
 
 	unsigned int mask = CWBackPixmap | CWBorderPixel | CWColormap | CWEventMask;
 
@@ -132,15 +198,37 @@ bool createWindow()
 		Win.height = XHeightOfScreen(defaultScreen);
 	}
 
-	// [5] Create the X window with the desired settings.
-	Window win = Win.window = XCreateWindow(display, root_win,
-		WOMA::settings.WINDOW_Xpos, WOMA::settings.WINDOW_Ypos,
-		Win.width,
-		Win.height, 
-		0,
-		visinfo->depth, InputOutput,
-		visinfo->visual, mask, &winAttr);
+	Window win = None;
+	//if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
+	{
+		// [5] Create the X window with the desired settings.
+		win = Win.window = XCreateWindow(display, root_win,
+			WOMA::settings.WINDOW_Xpos, WOMA::settings.WINDOW_Ypos,
+			Win.width,
+			Win.height,
+			0,
+			visinfo->depth, InputOutput,
+			visinfo->visual, mask, &winAttr);
+	}
+	//else if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+	//{
+	//	//...
+	//}
 
+	WOMA::WindowDataContainer used_screen;
+
+	used_screen.MonitorName = TEXT("Default");
+	used_screen.width = Win.width;
+	used_screen.height = Win.height;
+	
+	used_screen.refreshRate_Numerator = 60;
+	used_screen.refreshRate_Denominator = 1;
+	
+	used_screen.display = display;
+	used_screen.window = win;
+
+	WOMA::windowsToRenderArray.push_back(used_screen);
+	WOMA::allWindowsHwArray.push_back(used_screen);
 	// -----------------------------------------------------------------------------------------------
 	// [6] Map the newly created regular window to the video display.
 	XMapWindow(display, win);
@@ -191,6 +279,25 @@ bool createWindow()
 		// Flush the display to apply all the full screen settings.
 		XFlush(display);
 	}
+
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
+	{
+	//==============================================================================================
+	// OPENGL (GLX)
+	//==============================================================================================
+	// PURPOSE:
+	//   Create the OpenGL rendering context and attach it to the X11 window.
+	//
+	// RESPONSIBILITIES:
+	//   - Create the GLX context.
+	//   - Make the context current.
+	//   - Validate the OpenGL version.
+	//   - Configure VSync.
+	//
+	// NOTE:
+	//   Vulkan does NOT execute this section.
+	//   Vulkan creates its own rendering context inside vkClass.
+	//   OpenGL is the only API that requires a GLXContext.
 
 	// [9] Create an OpenGL rendering context.
 	GLXContext context = glXCreateContext(display, visinfo, NULL, 1);
@@ -243,9 +350,28 @@ bool createWindow()
 	}
 	*/
 	glXSwapIntervalEXT(display, drawable, WOMA::AppSettings->VSYNC_ENABLED);
+	}
+	else if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+	{
+		// O Vulkan não usa contextos GLX. O contexto real (VkInstance/VkDevice) 
+		// será criado dentro da vkClass usando o Win.display e Win.window.
+		//Win.context = nullptr;
+
+		// Executar o check básico de sanidade do motor se necessário
+		check("CHECK: createWindow() Vulkan");
+
+		//----------------------------------------------------------------------------
+		// Manter os logs idênticos ao GL3 para consistência do motor WOMA
+		womalog("Vulkan Window Size = %d x %d\n", WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT);
+
+		// Nota: O controlo de VSync no Vulkan não é feito aqui, mas sim na 
+		// criação da Swapchain escolhendo o VkPresentModeKHR (FIFO = VSync On, IMMEDIATE/MAILBOX = VSync Off).
+	}
 
 	return true;
 }
+
+
 
 //-----------------------------------------------------------------------------
 /// check() - Check for GL errors, and report any queued
@@ -258,12 +384,7 @@ void check( const char hdr[] )
 		fprintf( stderr, "OpenGL Error at %s: %s\n", hdr, gluErrorString(err) );
 }
 
-//void GLopenGLclass::BeginScene(UINT monitorWindow)
-//----------------------------------------------------------------------------
-void displayCB()
-{
-	SystemHandle->ProcessFrame();
-}
+
 
 // linuxsystemclass.cpp
 //----------------------------------------------------------------------------
@@ -444,16 +565,15 @@ void mainLoop()
 	long value = XInternAtom(Win.display, "_NET_WM_WINDOW_TYPE_DESKTOP", False);
 	XChangeProperty(Win.display, Win.window, window_type, XA_ATOM, 32, PropModeReplace, (unsigned char*)&value, 1);
 
+	//
+	// Main loop
+	//
 	while (WOMA::game_state != ENGINE_RESTART)
 	{
 		if (WOMA::main_loop_state < 0) {
 			WOMA::game_state = GAME_STOP;
 			break;
 		}
-
-		// Redraw window (after it's mapped)
-		if ( Win.ready )
-			displayCB();
 
 		{
 			// Update frame rate
@@ -482,6 +602,10 @@ void mainLoop()
 				last_xcheck2 = now2;
 			}
 		}
+
+		// Redraw window (after it's mapped)
+		if ( Win.ready )
+			SystemHandle->ProcessFrame();
 	}
 }
 
