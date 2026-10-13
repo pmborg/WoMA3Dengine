@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: renderTextureClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,9 +16,10 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "OSengine.h"
+#if DX_ENGINE_LEVEL >= 36 && defined DX_ENGINE//ShadowMap
 #include "main.h"
 #include "DXrendertextureclass.h"
 #if defined DX11
@@ -44,8 +45,6 @@ DXrendertextureclass::DXrendertextureclass()
 	m_depthStencilTextureView		= NULL;
 
 	ZeroMemory(&m_TextureViewport, sizeof(m_TextureViewport));
-	m_TextureProjectionMatrix = XMMatrixIdentity();
-	m_TextureOrthoMatrix = XMMatrixIdentity();
 }
 
 DXrendertextureclass::~DXrendertextureclass() { Shutdown(); CLASSDELETE(); }
@@ -173,8 +172,8 @@ bool DXrendertextureclass::Initialize(void* Driver, int textureWidth, int textur
 	ASSERT (screenDepth > 0);
 	fieldOfView = (float)PI / 4.0f; // Or... fieldOfView = (90 / 2) * 0,0174532925f; (which is equal) for 45 degrees...
 	screenAspect =((float)textureWidth / (float)textureHeight);
-	m_TextureProjectionMatrix = XMMatrixPerspectiveFovLH( fieldOfView, screenAspect, screenNear, screenDepth);    // 3D PROJECTION
-	m_TextureOrthoMatrix = XMMatrixOrthographicLH ((float) textureWidth, (float) textureHeight, screenNear, screenDepth);  // 2D PROJECTION
+	//m_TextureProjectionMatrix = XMMatrixPerspectiveFovLH( fieldOfView, screenAspect, screenNear, screenDepth);    // 3D PROJECTION
+	//m_TextureOrthoMatrix = XMMatrixOrthographicLH ((float) textureWidth, (float) textureHeight, screenNear, screenDepth);  // 2D PROJECTION
 
 	return true;
 }
@@ -192,7 +191,6 @@ void DXrendertextureclass::Shutdown()
 void DXrendertextureclass::SetRenderTarget(void* Driver, ID3D11DeviceContext* pContext)
 {
 	DirectX::DX11Class* m_driver11 = (DirectX::DX11Class*)Driver;
-	//ID3D11DeviceContext* pContext = m_driver11->m_deviceContext;
 
 	// Bind the render target view and depth stencil buffer to the output render pipeline.
 	pContext->OMSetRenderTargets(1, &m_renderTextureTargetView, m_depthStencilTextureView);
@@ -204,7 +202,6 @@ void DXrendertextureclass::SetRenderTarget(void* Driver, ID3D11DeviceContext* pC
 void DXrendertextureclass::ClearRenderTarget(void* Driver, ID3D11DeviceContext* pContext, float red, float green, float blue, float alpha)
 {	
 	DirectX::DX11Class* m_driver11 = (DirectX::DX11Class*)Driver;
-	//ID3D11DeviceContext* pContext = m_driver11->m_deviceContext;
 
 	// Setup the color to clear the buffer to.
 	float color[4] = { red, green, blue, alpha };
@@ -216,3 +213,4 @@ void DXrendertextureclass::ClearRenderTarget(void* Driver, ID3D11DeviceContext* 
 	pContext->ClearDepthStencilView(m_depthStencilTextureView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
+#endif
