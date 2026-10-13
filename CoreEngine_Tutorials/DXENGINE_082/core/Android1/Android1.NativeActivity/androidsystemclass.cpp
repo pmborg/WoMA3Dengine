@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------
-// Filename: androidSystemClass.h
+// Filename: androidSystemClass.cpp
 // --------------------------------------------------------------------------------------------
 // World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
 // --------------------------------------------------------------------------------------------
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 //ANDROID NATIVE APLICATION: http://developer.android.com/reference/android/app/NativeActivity.html
 
@@ -28,11 +28,11 @@
 #include "OSmain_dir.h"
 #include "mem_leak.h"
 #include "stateMachine.h"
+#include "vkClass.h"
 
 AndroidSystemClass::AndroidSystemClass(WOMA::Settings* appSettings) : SystemClass()
 {
     CLASSLOADER();
-    WomaIntegrityCheck = 1234525217;
     WOMA::AppSettings = appSettings; // Super
     SystemHandle = this;
 
@@ -81,7 +81,7 @@ void AndroidSystemClass::Shutdown()
 
 #if defined USE_SCENE_MANAGER
     //SceneManager* sceneManager = SceneManager::GetInstance();
-    SAFE_SHUTDOWN(sceneManager);
+    SAFE_SHUTDOWN(WOMA::sceneManager);
 #endif
 
     SystemClass::Shutdown();
@@ -91,44 +91,143 @@ void AndroidSystemClass::Shutdown()
 #endif	
 }
 
+#if defined USE_ALLOW_MAINWINDOW_RESIZE
+void AndroidSystemClass::ONRESIZE(void* pContext)
+{
+	womalog("ONRESIZE()\n");
+	womalog("ONRESIZE: %ux%u\n", WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT);
+
+#if CORE_ENGINE_LEVEL >= 10
+	if (pContext == NULL)
+		pContext = getvoidcontext();
+#endif
+
+	if (SystemHandle)
+	{
+		if (SystemHandle->m_Application)
+			SystemHandle->m_Application->WOMA_APPLICATION_InitGUI();
+#if defined DX_ENGINE //OPENGL TODO
+		if (DXsystemHandle) {
+			DXsystemHandle->GPH_RESIZE(pContext);
+		}
+#endif
+	}
+
+#if defined USE_STATUSBAR
+	if (!WOMA::AppSettings->FULL_SCREEN)
+	{
+		if (!SystemHandle->statusbar)
+			SystemHandle->statusbar = DoCreateStatusBar(SystemHandle->m_hWnd, 0, m_hinstance, 1);
+
+		SendMessage(SystemHandle->statusbar, SB_SETTEXT, 0, (LPARAM)DEMO_TITLE);
+	}
+#endif
+}
+#endif
+
+void AndroidSystemClass::GPH_RESIZE(void* pContext)
+{
+#if CORE_ENGINE_LEVEL >= 6
+	// Return if Application was not yet created:
+	if (!SystemHandle->m_Application)
+		return;
+
+	//-------------------------------------
+	// Update application scaling
+	//-------------------------------------
+	SystemHandle->m_Application->scaleX = WOMA::AppSettings->WINDOW_WIDTH / 1920.0f;
+	SystemHandle->m_Application->scaleY = WOMA::AppSettings->WINDOW_HEIGHT / 1080.0f;
+	SystemHandle->m_Application->rescale = min(SystemHandle->m_Application->scaleX, SystemHandle->m_Application->scaleY);
+#endif
+
+#if CORE_ENGINE_LEVEL >= 10
+	if (m_Driver)
+	{
+		//-------------------------------------
+		// Shutdown application 2D for scaling:
+		//-------------------------------------
+#if DX_ENGINE_LEVEL >= 22 || defined USE_VIEW2D_SPRITES
+		SystemHandle->m_Application->DEMO_WOMA_APPLICATION_Shutdown2D();
+#endif
+
+		//-------------------------------------
+		// Driver resize
+		//-------------------------------------
+		m_Driver->Resize(0, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT,
+			WOMA::AppSettings->SCREEN_NEAR, WOMA::AppSettings->SCREEN_DEPTH,
+			false, WOMA::AppSettings->BITSPERPEL);
+
+
+		//----------------------------------------
+		// Recreate UI application 2D for scaling:
+		//----------------------------------------
+#if DX_ENGINE_LEVEL >= 24 && defined USE_VIEW2D_SPRITES
+		SystemHandle->m_Application->DEMO_WOMA_APPLICATION_InitializeSprites2D(pContext);
+#endif
+	}
+#endif
+}
+
+bool AndroidSystemClass::APPLICATION_CORE_SYSTEM()
+{
+
+#if CORE_ENGINE_LEVEL == 0
+	WomaMessageBox(WOMA::strConsoleTitle, TEXT("WOMA Hello World!"), MB_OK);
+	Sleep(3000);	//wait 3 seconds
+	return !true;	//exit
+#endif
+
+#if CORE_ENGINE_LEVEL == 1	// WINDOWS Memory leak done on Purpose! (To test: Memory leak catch system)
+	WomaMessageBox(WOMA::strConsoleTitle, TEXT("Memory leak done on Purpose for this Tutorial!\nCheck Visual Studio Output Console log for more info!\ndo a double click on windows console.\n"), true);
+	UINT* p = NEW UINT[1];
+	//free(p);
+	Sleep(3000);	//wait 3 seconds
+	return false;
+#endif
+
+#if _NOT //CORE_ENGINE_LEVEL >= 2 && defined ANDROID_PLATFORM && !defined NewWomaEngine
+	if (SystemHandle) 
+	{
+		WOMA::AppSettings->WINDOW_WIDTH = engine.width;
+		WOMA::AppSettings->WINDOW_HEIGHT = engine.height;
+
+		WOMA::WindowDataContainer used_screen;
+
+		used_screen.MonitorName = TEXT("Android");
+
+		used_screen.width = ANativeWindow_getWidth(engine.app->window);
+		used_screen.height = ANativeWindow_getHeight(engine.app->window);
+
+		used_screen.refreshRate_Numerator = 60;   
+		used_screen.refreshRate_Denominator = 1;
+
+		// Android
+		//used_screen.hWnd = engine.app->window; 
+		//used_screen.window = engine.app->window;
+
+		WOMA::windowsToRenderArray.push_back(used_screen);
+		WOMA::allWindowsHwArray.push_back(used_screen);
+	}
+#endif
+}
 
 bool AndroidSystemClass::APPLICATION_INIT_SYSTEM()
 {
     bool result = true;
-    WOMA::AppSettings->DRIVER = DRIVER_GL3; //Force OpenGL Driver
 
-    womalog ("AndroidSystemClass::APPLICATION_INIT_SYSTEM()\n");
+    womalog ("AndroidSystemClass::APPLICATION_INIT_SYSTEM() START\n");
 
+#if DX_ENGINE_LEVEL >= 29
 #if defined USE_ANDROID_SOUND
 	DownloadFiles(AUDIO_LINK, AUDIO_FILE);
 	m_main_music_id = playAudio(AUDIO_FILE);
 #endif
-
-#if defined ANDROID_PLATFORM && !defined NewWomaEngine
-    if (SystemHandle) {
-        WOMA::AppSettings->WINDOW_WIDTH = engine.width;
-        WOMA::AppSettings->WINDOW_HEIGHT = engine.height;
-}
-#endif
-
-#if CORE_ENGINE_LEVEL == 0
-    WomaMessageBox(WOMA::strConsoleTitle, TEXT("WOMA Hello World!"), MB_OK);
-    Sleep(3000);	//wait 3 seconds
-    return !true;	//exit
-#endif
-
-#if CORE_ENGINE_LEVEL == 1	// WINDOWS Memory leak done on Purpose! (To test: Memory leak catch system)
-    WomaMessageBox(WOMA::strConsoleTitle, TEXT("Memory leak done on Purpose for this Tutorial!\nCheck Visual Studio Output Console log for more info!\ndo a double click on windows console.\n"), true);
-    UINT* p = NEW UINT[1];
-    //free(p);
-    Sleep(3000);	//wait 3 seconds
-    return false;
 #endif
 
 #if CORE_ENGINE_LEVEL >= 5 // Must be before: APPLICATION_INIT_MAIN_WINDOW()
-  #if defined USE_TINYXML_LOADER
-    IF_NOT_RETURN_FALSE(SystemClass::LoadXmlSettings());	// XML: Load Application Settings: "settings.xml", pickup "Driver" to Use.
-  #endif
+#if defined USE_TINYXML_LOADER
+	IF_NOT_RETURN_FALSE(SystemClass::LoadXmlSettings());	// XML: Load Application Settings: "settings.xml", pickup "Driver" to Use.
+#endif
 #endif
 
 #if CORE_ENGINE_LEVEL >= 10
@@ -139,9 +238,9 @@ bool AndroidSystemClass::APPLICATION_INIT_SYSTEM()
     SystemHandle->m_Application->ClearColor[3] = 1;
 #else
 #if DX_ENGINE_LEVEL >= 62
-    SystemHandle->m_Application->ClearColor[0] = SystemHandle->world.clearColorR;
-    SystemHandle->m_Application->ClearColor[1] = SystemHandle->world.clearColorG;
-    SystemHandle->m_Application->ClearColor[2] = SystemHandle->world.clearColorB;
+    SystemHandle->m_Application->ClearColor[0] = world.clearColorR;
+    SystemHandle->m_Application->ClearColor[1] = world.clearColorG;
+    SystemHandle->m_Application->ClearColor[2] = world.clearColorB;
     SystemHandle->m_Application->ClearColor[3] = 1.0f;
 #else
     SystemHandle->m_Application->ClearColor[0] = 0.5f;
@@ -164,6 +263,10 @@ bool AndroidSystemClass::APPLICATION_INIT_SYSTEM()
     IF_NOT_RETURN_FALSE(SystemClass::InitOsInput());				// INIT-INPUT Devices, NOTE: After "Create MainWindow(s)"
 #endif
 
+#if defined USE_TINYXML_LOADER && DX_ENGINE_LEVEL >= 21
+	IF_NOT_RETURN_FALSE(LoadXmlWorld());					// Load all static and semi-static from WORLD.XML and add Instances!
+#endif
+
     //Create Context:
 #if CORE_ENGINE_LEVEL >= 10 && (defined OPENGL3 || defined OPENGL4)	//Create NEW CONTEXT Class: m_contextDriver
     if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
@@ -176,12 +279,25 @@ bool AndroidSystemClass::APPLICATION_INIT_SYSTEM()
     if (!InitSelectedDriver())
         return false;
 
+	// INIT SCENE-MANAGER:
+#if defined USE_SCENE_MANAGER
+	InitSceneManager();		// INIT QUAD TREE
+#endif
+
 #if DX_ENGINE_LEVEL >= 25
     m_Application->WOMA_APPLICATION_InitGUI();
 #endif
 
     //----------------------------------------------------------------------------
-    IF_NOT_RETURN_FALSE(SystemClass::LoadAllGraphicAssets(NULL));	// Load all main Graphics, that will be rendered
+	void* pContext = getvoidcontext();
+	womalog("[CONTEXT] LOAD/INIT  pContext = %p\n", pContext);
+
+	result = SystemClass::LoadAllGraphicAssets(pContext);	// Load all main Graphics, that will be rendered
+	if (!result)
+	{
+		womalog("SystemClass::LoadAllGraphicAssets() failed\n");
+		return false;
+	}
 
     //----------------------------------------------------------------------------
 
@@ -194,19 +310,28 @@ bool AndroidSystemClass::APPLICATION_INIT_SYSTEM()
 #endif
 #endif
 
+	womalog("AndroidSystemClass::APPLICATION_INIT_SYSTEM() END\n");
+
     return result;
 }
 
+#if CORE_ENGINE_LEVEL >= 10
+#if defined _DEBUG || defined LINUX_PLATFORM || defined ANDROID_PLATFORM
+extern UINT vkShaderClass_RenderShader_Calls;
+#endif
+#endif
+
 #if CORE_ENGINE_LEVEL >= 2
-//WinSystemClass::ProcessFrame()
 void AndroidSystemClass::ProcessFrame()
 {
-    // Process Input:
-    SystemClass::FrameUpdate(); // Process: (INPUT + PerformanceStats) Only!
+	if (m_Driver->RenderfirstTime)
+		womalog("AndroidSystemClass::ProcessFrame()\n");
+
+	SystemClass::FrameUpdate();	// Process: (Fx keys |ESC and F1 to F6| & get FPS)
 
 #if CORE_ENGINE_LEVEL >= 2
 	if (WOMA::game_state == ENGINE_RESTART)
-		return;
+		return; //Restart? so, don't render, restart now.
 #endif
 
 #if CORE_ENGINE_LEVEL >= 10
@@ -220,31 +345,20 @@ void AndroidSystemClass::ProcessFrame()
 		#endif
 			return;
 
-		// -----------------------
-		//m_Driver->BeginScene(0);				//RESET FRAME
-		// -----------------------
-		#define cor driverList[WOMA::AppSettings->DRIVER]->driver_ClearColor
-		glClearColor(cor[0], cor[1], cor[2], cor[3]);
-		#undef cor
-		glEnable(GL_DEPTH_TEST);
-		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+		m_Application->RenderScene(NULL, 0, m_Driver);
 
-		m_Application->RenderScene(NULL, 0, m_Driver);//RENDER ONE FRAME: 100% is done here!
+	#if defined _DEBUG || defined LINUX_PLATFORM || defined ANDROID_PLATFORM
+		if (m_Driver->RenderfirstTime)
+		{
 
-		// ------------------------------
-		//if (!m_contextDriver)															//PRESENT FRAME
-		//	m_Driver->EndScene(0);														//[DX]
-		//else
-		//	m_contextDriver->EndScene(0);												//[OPENGL]
-		// ------------------------------
-		bool swapResult = eglSwapBuffers(engine.display, engine.surface);	//[EGL]
-		assert(swapResult == EGL_TRUE);
-		
+			womalog("Render calls: %u\n", vkShaderClass_RenderShader_Calls);
 
-		if (m_Driver->RenderfirstTime) {
-			womalog("END:  AndroidSystemClass::ProcessFrame()\n");
+			vkShaderClass_RenderShader_Calls = 0;
+			womalog("1st Frame ENDED OK: WinSystemClass::ProcessFrame()\n");		// 1st frame rendered!
+			womalog("--------------------------------------------------\n");
 			m_Driver->RenderfirstTime = false;
 		}
+	#endif
 	}
 #endif
 }
@@ -260,8 +374,12 @@ extern int InitImGui(HWND hwnd_ = NULL);
 extern void ImGui_Stop();
 int AndroidSystemClass::APPLICATION_MAIN_LOOP()
 {
+	womalog("AndroidSystemClass::APPLICATION_MAIN_LOOP()\n");
+	womalog("WOMA::strConsoleTitle: %s\n", WOMA::strConsoleTitle);
+//#if DX_ENGINE_LEVEL < 30
 	WomaMessageBox(WOMA::strConsoleTitle, DEMO_TITLE, MB_OK);
 	Sleep(3000);	//wait 3 seconds
+//#endif
 
 #if !defined NewWomaEngine
     while (WOMA::game_state < GAME_STOP)

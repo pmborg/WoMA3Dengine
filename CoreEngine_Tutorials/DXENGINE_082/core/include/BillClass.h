@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: BillClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #ifndef _BILLCLASS_H_
 #define _BILLCLASS_H_
@@ -29,20 +29,18 @@
 #include "Tree.h"
 
 // Number of Billboard Trees
-
-#if defined SIMPLE
-#define N_BILLBOARD 1//3
-#define N_FENCES    0
-#define N_FIRE      0
-#define N_GRASS_0   0
-#define N_BUSH_0    0
-#else
-
 #define N_BILLBOARD 1000
 #define N_FENCES      55
 #define N_FIRE         1
 #define N_GRASS_0   2000 //11 animated grass 
 #define N_BUSH_0     750 //12 BUSHs
+
+#if defined SIMPLE	//Debug Only
+#define N_BILLBOARD 1
+#define N_FENCES    0
+#define N_FIRE      0
+#define N_GRASS_0   0
+#define N_BUSH_0    0
 #endif
 
 extern ID3D11ShaderResourceView* billFileLoaded[];

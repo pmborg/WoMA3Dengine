@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: DX11createDevice-and-SwapChain.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "OSengine.h"
 
@@ -88,7 +88,7 @@ bool DX11Class::list_resolutions()
 		#define screenWidth		WOMA::AppSettings->WINDOW_WIDTH
 		#define screenHeight	WOMA::AppSettings->WINDOW_HEIGHT
 
-#if _DEBUG
+#if defined _DEBUG
 		result = DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debugDev));
 #endif
 
@@ -273,7 +273,7 @@ static MsaaCaps ChooseMsaaCaps(ID3D11Device* dev, DXGI_FORMAT rtvFormat, DXGI_FO
 			PtrfeatureLevels = featureLevelsDX9;
 			num_levels = sizeof(featureLevelsDX9) / sizeof(D3D_FEATURE_LEVEL);
 		} 
-		
+
 		// 2) Setup Device Flags
 		if (!dx11_force_dx9) 
 		{
@@ -296,8 +296,8 @@ static MsaaCaps ChooseMsaaCaps(ID3D11Device* dev, DXGI_FORMAT rtvFormat, DXGI_FO
 			}
 		#endif
 		}
+#if defined USE_DX11_1_SETUP		
 
-#if defined USE_DX11_1_SETUP
 		D3D_DRIVER_TYPE dt = WOMA::UseWarpDevice ? D3D_DRIVER_TYPE_WARP : D3D_DRIVER_TYPE_UNKNOWN;
 
 		// 3) CREATE DXGI FACTORY: factory1 & factory6
@@ -525,7 +525,9 @@ static MsaaCaps ChooseMsaaCaps(ID3D11Device* dev, DXGI_FORMAT rtvFormat, DXGI_FO
 		switch (featureLevel_) 
 		{
 			default:
+#if _MSC_VER > 1929
 			case D3D_FEATURE_LEVEL_12_2:
+#endif
 			case D3D_FEATURE_LEVEL_12_1:
 			case D3D_FEATURE_LEVEL_12_0:
 			case D3D_FEATURE_LEVEL_11_1:

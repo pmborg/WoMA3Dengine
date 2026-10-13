@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: astroClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
@@ -30,7 +30,6 @@
 class AstroClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234525217;
 	AstroClass();
 	~AstroClass();
 
@@ -101,22 +100,5 @@ public:
 };
 
 extern AstroClass* astroClass;
-
-#if defined NOTES
-double AstroClass::Calculate_UTC_SunEvent (bool rising)
-{
-
-	// sunrise_sunset_algorithm:
-	// "rising": true: sunrise / false: sunset
-	The Solar Zenith Angle, "θs" is estimated using results from spherical trigonometry
-	Formula:		cos θs = sin φ                   * sin δ  + cos φ                   * cos δ  * cos h 
-	Implementaion:	cos θs = sin (latitude/(180/PI)) * sinDec + sin (latitude/(180/PI)) * cosDec * cosH
-
-	Where:
-    θs is the solar zenith angle
-    h is the "hour angle", in the local solar time.
-    δ is the current declination of the Sun
-    φ is the local latitude.
-#endif
 
 #endif
