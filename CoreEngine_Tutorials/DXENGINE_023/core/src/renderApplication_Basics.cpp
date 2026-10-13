@@ -348,7 +348,7 @@ void ApplicationClass::AppPosRender(UINT monitorIndex, UINT level, float dayLigh
 	//
 	// === Update Render Count: ===
 	//
-#if TUTORIAL_CHAP >= 60 && !defined RELEASE // BILLBOARD
+#if TUTORIAL_CHAP >= 60 && defined _DEBUG // BILLBOARD
 		AppTextClass->SetBillRenderCount(billboardRrenderCount, total_deltaTime);
 #endif  
 	}
