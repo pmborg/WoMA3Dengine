@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: 8SystemFeatures.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "WinSystemClass.h"
 #include "systemFeatures.h"
@@ -25,14 +25,11 @@
 SystemFeatures::SystemFeatures()
 {
 	CLASSLOADER();
-    WomaIntegrityCheck = 1234525217;
-
     displayAllCpuFeactures = TEXT("");
 }
 
 SystemFeatures::~SystemFeatures() {CLASSDELETE();}
 
-#include <iostream>
 #include <vector>
 #include <bitset>
 #include <array>
@@ -53,7 +50,7 @@ public:
     static bool MONITOR(void) { return CPU_Rep.f_1_ECX_[3]; }
     static bool VMX(void) { return CPU_Rep.f_1_ECX_[5]; }   //ADDED BY PB
     static bool SSSE3(void) { return CPU_Rep.f_1_ECX_[9]; }
-    static bool FMA(void) { return CPU_Rep.f_1_ECX_[12]; }
+    static bool FMA3(void) { return CPU_Rep.f_1_ECX_[12]; }
     static bool CMPXCHG16B(void) { return CPU_Rep.f_1_ECX_[13]; }
     static bool SSE41(void) { return CPU_Rep.f_1_ECX_[19]; }
     static bool SSE42(void) { return CPU_Rep.f_1_ECX_[20]; }
@@ -250,7 +247,7 @@ STRING SystemFeatures::Initialize()
     // Get processor Info and Features:
     cpuID((unsigned*)CPUInfo, 1);			// EAX=1
 
-    htt     = InstructionSet::HTT();        //((EDX & 1<<28) || false);
+    htt     = InstructionSet::HTT();        //((EDX & 1<<28) || false);		//hyper-thread
     mmx     = InstructionSet::MMX();        //((EDX & 1 << 23) || false);
     mmxExt  = InstructionSet::MMXEXT();     //((EDX & 1 << 22) || false);
     sse     = InstructionSet::SSE();        //((EDX & 1<<25) || false);
@@ -260,23 +257,28 @@ STRING SystemFeatures::Initialize()
     sse41   = InstructionSet::SSE41();      //((ECX & 1 << 19) || false);
 	sse42   = InstructionSet::SSE42();      //((ECX & 1<<20) || false);
 
+	AES		= InstructionSet::AES();		//((ECX & 1<<25) || false);
+	
     ssse3   = InstructionSet::SSSE3();      //((ECX & 0x9) || false);
+	FMA3 = InstructionSet::FMA3();			//((ECX & 0x12) || false);
+
 	avx     = InstructionSet::AVX();        //((ECX & 1<<28) || false);
 
     hypervisor = InstructionSet::hypervisor(); // ((ECX & 1 << 31) || false);
 
     // Get extra processor Info and Features:
-//    cpuID((unsigned*) CPUInfo, 0x80000001);	// EAX=0x80000001
+	// cpuID((unsigned*) CPUInfo, 0x80000001);	// EAX=0x80000001
 
     amd_3DNow       = InstructionSet::_3DNOW();     // ((EDX & 1 << 31) || false);	// AMD only!
     amd_3DNowExt    = InstructionSet::_3DNOWEXT();  // ((EDX & 1 << 30) || false);	// AMD only!
 
-    SVM             = InstructionSet::SVM();        //((ECX & 1 << 2) || false);	// AMD only! - AMD virtualization (AMD-V)
-    sse4A           = InstructionSet::SSE4a();      //((ECX & 1 << 6) || false);	// AMD only!
+    SVM             = InstructionSet::SVM();        // ((ECX & 1 << 2) || false);	// AMD only! - AMD virtualization (AMD-V)
+    sse4A           = InstructionSet::SSE4a();      // ((ECX & 1 << 6) || false);	// AMD only!
     // Get processor Extended Features:
     //cpuID((unsigned*)CPUInfo, 7);			// EAX=7
     avx2 = InstructionSet::AVX2(); // ((EBX & 1 << 5) || false);
     avx512 = InstructionSet::AVX512F();
+	SHA = InstructionSet::SHA();
 
     StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("MMX:  %s"), (mmx) ? TEXT("true") : TEXT("false"));
     SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
@@ -310,13 +312,20 @@ STRING SystemFeatures::Initialize()
     SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
 #endif
 
-    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("AVX: %s"), (avx) ? TEXT("true") : TEXT("false")); //bMultithreading 
+	StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("AES: %s"), (AES) ? TEXT("true") : TEXT("false"));
+	SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
+	StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("FMA3: %s"), (FMA3) ? TEXT("true") : TEXT("false"));
+	SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
+	StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("SHA: %s"), (SHA) ? TEXT("true") : TEXT("false"));
 	SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
 
-    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("AVX2: %s"), (avx2) ? TEXT("true") : TEXT("false")); //bMultithreading 
+    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("AVX: %s"), (avx) ? TEXT("true") : TEXT("false"));
 	SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
 
-    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("AVX512: %s"), (avx512) ? TEXT("true") : TEXT("false")); //bMultithreading 
+    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("AVX2: %s"), (avx2) ? TEXT("true") : TEXT("false"));
+	SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
+
+    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("AVX512: %s"), (avx512) ? TEXT("true") : TEXT("false"));
     SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
 
     for (UINT i = 0; i < SystemHandle->systemDefinitions.cpuFeactures.size(); i++) {
@@ -334,7 +343,7 @@ STRING SystemFeatures::Initialize()
     StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("SVM: %s"), (SVM) ? TEXT("true") : TEXT("false"));
     SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
 
-    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("Hyper-threading: %s"), (htt) ? TEXT("true") : TEXT("false")); //bMultithreading 
+    StringCchPrintf(cpuFeacture, MAX_STR_LEN, TEXT("Hyper-threading: %s"), (htt) ? TEXT("true") : TEXT("false"));
     SystemHandle->systemDefinitions.cpuFeactures.push_back(cpuFeacture);
 
     womalogauto(TEXT("CUP FEATURES:\n%s"), displayAllCpuFeactures.c_str());
