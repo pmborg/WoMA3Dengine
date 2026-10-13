@@ -283,11 +283,9 @@ namespace DirectX
 
 #if defined DX11 || defined DX9
 		ID3D11Buffer* m_PixelShaderBuffer11 = NULL;
-		ID3D11SamplerState* m_sampleState11 = NULL;	// Resource: "Textures" States
+		ID3D11SamplerState* m_sampleState11 = NULL;		// Resource: "Textures" States
 
-//#if DX_ENGINE_LEVEL >= 98 && defined USE_POINTS_OF_LIGHT_FOR_LAMP
-		ID3D11Buffer* m_PointLightBuffer11 = nullptr;     // b2 in Pixel Shader
-//#endif
+		ID3D11Buffer* m_PointLightBuffer11 = nullptr;   // lvl98: b2 in Pixel Shader
 
 		ID3D11SamplerState* m_sampleStateClamp11 = NULL;
 		ID3D11SamplerState* m_sampleStateFire = NULL;;
