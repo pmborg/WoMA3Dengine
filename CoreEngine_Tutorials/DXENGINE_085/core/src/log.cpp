@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: log.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Output - LOG INFO and FATAL ERRORs to "report".txt file
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "main.h"
 
@@ -126,13 +126,19 @@ LogManager::LogManager()
 #else
 	REPORT_FILE = PUBLIC_DOCUMENTS;
 	REPORT_FILE.append(FILE_REPORT_LOG);
+	REPORT_FILE.append(".");
+	STRING tmp = std::to_string(WOMA::settings.DRIVER);
+	REPORT_FILE.append(tmp.c_str());
+	REPORT_FILE.append(".");
+	tmp = std::to_string(DX_ENGINE_LEVEL);
+	REPORT_FILE.append(tmp.c_str());
 #endif
 
 	// OPEN FILE:
 	UINT errno_t = _tfopen_s(&debugFile, REPORT_FILE.c_str(), TEXT("w"));
 	if (errno_t != 0) {
 		// This means that the file is locked by another Woma APP instance, don't abort because of that!
-		womalog(TEXT("[ERROR] WARNING! - LOG MANGER - Cant Open for Write: %s\n"), REPORT_FILE.c_str());
+		_tprintf(TEXT("[ERROR] WARNING! - LOG MANGER - Cant Open for Write: %s\n"), REPORT_FILE.c_str()); // NOTE: Need to be "_tprintf"
 
 		#if defined WINDOWS_PLATFORM
         //CANT USE WomaMessageBox here so using: MessageBox
@@ -157,9 +163,9 @@ LogManager::~LogManager()
 
 		if (debugFile)
 		{
-			womalog(TEXT("-------------------------------------------------------------------------------\n"));
-			womalog(TEXT("THE END! WoMA Author: %s\n"), TEXT(WOMAAUTHOR_ID));
-			womalog(TEXT("-------------------------------------------------------------------------------\n"));
+			womalog(TEXT("-------------------------------------------------------------------------------------\n"));
+			womalog(TEXT("THE END! WoMA 3D ENGINE get latest version at: https://github.com/pmborg/WoMA3Dengine\n"));
+			womalog(TEXT("-------------------------------------------------------------------------------------\n"));
 
 			fclose(debugFile);
 			debugFile = NULL;
@@ -275,8 +281,7 @@ void start_log_manager()
 #if defined USE_LOG_MANAGER
 	logManager = ILogManager::CreateInstance();
 #endif
-	womalogauto(TEXT("LOGMANAGER STARTED\n"));
-	womalogauto(TEXT("------------------------------------------------------------------------------------------\n"));
+	womalog(TEXT("LOGMANAGER STARTED: ------------------------------------------------------------------------------------------\n"));
 
 	// [3]  PRINT Log Dirs: (After init_os_main_dirs & After logManager)
 	// -------------------------------------------------------------------------------------------
@@ -289,7 +294,7 @@ void start_log_manager()
 #ifdef RELEASE
 	womalog("Binary Type: [DEBUG RELEASE]\n");
 #else
-	womalogauto(TEXT("Binary Type: [DEBUG]\n"));
+	womalog(TEXT("Binary Type: [DEBUG]\n"));
 #endif
 #else
 #ifdef RELEASE

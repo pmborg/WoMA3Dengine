@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: 0CheckOS.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,10 +16,10 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "OSengine.h"
-#include "OSmain_dir.h"		//#include "OsDirectories.h"
+
 #include "systemManager.h"
 #include "mem_leak.h"
 #include <map>
@@ -30,7 +30,7 @@
 SystemManager::SystemManager()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525217;
+
 
 	CPUSpeedMHz = 0;
 
@@ -117,8 +117,9 @@ bool GetRealVersion(DWORD& major, DWORD& minor, DWORD& build)
 #endif
 
 // PUBLIC FUNCTIONS:
-//------------------------------------------------------------------
+
 #if defined USE_SYSTEM_CHECK
+//------------------------------------------------------------------
 bool SystemManager::CheckOS()
 //------------------------------------------------------------------
 {
@@ -127,7 +128,7 @@ bool SystemManager::CheckOS()
 #if defined WINDOWS_PLATFORM
 	//StringCchPrintf(SystemHandle->systemDefinitions.platform, MAX_STR_LEN, TEXT("Platform: %s - %s"), GetOSversionPlatform(), GetOsVersion());
 	//womalogauto(TEXT("%s\n"), SystemHandle->systemDefinitions.platform);
-  #if _DEBUG
+  #if defined _DEBUG
 	IF_NOT_RETURN_FALSE(CheckOSVersion());
   #endif
 #else
@@ -180,49 +181,106 @@ bool SystemManager::CheckOS()
 #if defined WINDOWS_PLATFORM
 	bool isWin11 = false;
 	DWORD maj, min, bld;
-	if (GetRealVersion(maj, min, bld)) {
+
+	// ------------------------------------------------
+	// If user run app in Compatibility Mode: ON
+	// ------------------------------------------------
+	//Get Compatibility Version : 6 0 6000
+	//Get Compatibility OS Core Build Version : 6000
+	//Get Compatibility OS Name : VISTA Version : 6000
+	//OS name : Microsoft Windows 11 Pro
+
+	//Get Compatibility Version : 6 0 6001
+	//Get Compatibility OS Core Build Version : 6001
+	//Get Compatibility OS Name : VISTA - SP1 Version : 6001
+	//OS name : Microsoft Windows 11 Pro
+
+	//Get Compatibility Version : 6 0 6002
+	//Get Compatibility OS Core Build Version : 6002
+	//Get Compatibility OS Name : VISTA - SP2 Version : 6002
+	//OS name : Microsoft Windows 11 Pro
+
+	//Get Compatibility Version : 6 1 7600
+	//Get Compatibility OS Core Build Version : 7600
+	//Get Compatibility OS Name : WIN7 Version : 7600
+	//OS name : Microsoft Windows 11 Pro
+
+	//Get Compatibility Version : 6 2 9200
+	//Get Compatibility OS Core Build Version : 9200
+	//Get Compatibility OS Name : WIN8 Version : 9200
+	//OS name : Microsoft Windows 11 Pro
+
+	// ------------------------------------------------
+	// Compatibility Mode: OFF
+	// ------------------------------------------------
+	//Get Compatibility Version : 10 0 26200
+	//Get Compatibility OS Core Build Version : 26200
+	//Get Compatibility OS Name : 11 Version : 25H2
+	//OS name : Microsoft Windows 11 Pro
+
+	if (GetRealVersion(maj, min, bld)) 
+	{
+		womalogauto((TCHAR*)TEXT("Get Compatibility Version: %d %d %d\n"), maj, min, bld);
+
 		// Windows 11 heuristic:
 		isWin11 = (maj == 10 && bld >= 22000);
-	}
-	BuildVersion = bld;
-	const TCHAR* family = isWin11 ? "11" : "10";
 
-	StringCchPrintf(SystemHandle->systemDefinitions.windowsVersion, MAX_STR_LEN, TEXT("Build Version: %d"), BuildVersion);
-	womalogauto((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.windowsVersion);
+		BuildVersion = bld;
+		STRING family;
+		if (bld == 6000)      family = TEXT("VISTA");
+		else if (bld == 6001) family = TEXT("VISTA-SP1");
+		else if (bld == 6002) family = TEXT("VISTA-SP2");
+		else if (bld < 9200)  family = TEXT("7");
+		else if (bld < 10240) family = TEXT("8");
+		else
+			family = isWin11 ? TEXT("11") : TEXT("10");
 
-	std::map<CString, CString> mapWindowsVersions
-	{
-		{ L"10240", L"1507" }, // Windows10 (Original  version)
-		{ L"10586", L"1511" }, // Windows10 November Update	  
-		{ L"14393", L"1607" }, // Windows10 (Anniversary Update)
-		{ L"15063", L"1703" }, // Windows10 (Creators Update)
-		{ L"16299", L"1709" }, // Windows10 (Fall Creators Update)
-		{ L"17134", L"1803" }, // Windows10 (April 2018 Update)
-		{ L"17763", L"1809" }, // Windows10 (October 2018 Update)
-		{ L"18362", L"1903" }, // Windows10 (May 2019 Update)
-		{ L"19002", L"1909" }, // Windows 10 19H2 November 2019
-		{ L"19041", L"2004" }, // May 2020 Update
-		{ L"19042", L"20H2" }, // October 2020 Update
-		{ L"19043", L"2009" }, // May 2021 Update
-		{ L"19044", L"21H2" }, // November 2021 Update
-		{ L"19045", L"22H2" }, // Windows10 (October 2023 Update)
+		StringCchPrintf(SystemHandle->systemDefinitions.windowsVersion, MAX_STR_LEN, TEXT("Get Compatibility OS Core Build Version: %d"), BuildVersion);
+		womalogauto((TCHAR*)TEXT("%s\n"), SystemHandle->systemDefinitions.windowsVersion);
 
-		// https://en.wikipedia.org/wiki/Windows_11_version_history
-		//---------------------------------------------------------------------
-		{ L"22000", L"21H2" }, // Windows11 (Original  version) October 5, 2021 
-		{ L"22621", L"22H2" }, // Windows11 September 20, 2022 
-		{ L"22631", L"23H2" }, // Windows11 October 31, 2023 
-		{ L"26100", L"24H2" }, // Windows11 October 1, 2024
-		{ L"26200", L"25H2" }, // Windows11 September 30, 2025 
-	};
-	// Get the Windows Build Version:
-	std::wstring v = std::to_wstring(BuildVersion);
-	auto it = mapWindowsVersions.find(v.c_str());
-	if (it != mapWindowsVersions.end())
-	{
-		StringCchPrintf(SystemHandle->systemDefinitions.windowsBuildVersion, MAX_STR_LEN,
-			TEXT("Windows %s Version: %s"), family, it->second);
-		womalogauto(TEXT("%s\n"), SystemHandle->systemDefinitions.windowsBuildVersion);
+		std::map<CString, CString> mapWindowsVersions
+		{
+			{ L"6000", L"6000" },	// VISTA	 6 0 6000
+			{ L"6001", L"6001" },	// VISTA-SP1 6 0 6001
+			{ L"6002", L"6002" },	// VISTA-SP2 6 0 6002
+			{ L"7600", L"7600" },	// WIN7		 6 1 7600
+			{ L"9200", L"9200" },	// WIN8		 6 2 9200
+			{ L"10240", L"1507" },	// Windows10 (Original  version)
+			{ L"10586", L"1511" },	// Windows10 November Update	  
+			{ L"14393", L"1607" },	// Windows10 (Anniversary Update)
+			{ L"15063", L"1703" },	// Windows10 (Creators Update)
+			{ L"16299", L"1709" },	// Windows10 (Fall Creators Update)
+			{ L"17134", L"1803" },	// Windows10 (April 2018 Update)
+			{ L"17763", L"1809" },	// Windows10 (October 2018 Update)
+			{ L"18362", L"1903" },	// Windows10 (May 2019 Update)
+			{ L"19002", L"1909" },	// Windows 10 19H2 November 2019
+			{ L"19041", L"2004" },	// May 2020 Update
+			{ L"19042", L"20H2" },	// October 2020 Update
+			{ L"19043", L"2009" },	// May 2021 Update
+			{ L"19044", L"21H2" },	// November 2021 Update
+			{ L"19045", L"22H2" },	// Windows10 (October 2023 Update)
+
+			// https://en.wikipedia.org/wiki/Windows_11_version_history
+			//---------------------------------------------------------------------
+			{ L"22000", L"21H2" },	// Windows11 (Original  version) October 5, 2021 
+			{ L"22621", L"22H2" },	// Windows11 September 20, 2022 
+			{ L"22631", L"23H2" },	// Windows11 October 31, 2023 
+			{ L"26100", L"24H2" },	// Windows11 October 1, 2024
+			{ L"26200", L"25H2" },	// Windows11 September 30, 2025 
+		  //{ L"28000", L"26H1" },	// Windows11 Early 2026: ARM64 only
+			{ L"26300", L"26H2" },	// Windows11 September 29, 2026
+		};
+
+		// Get the Windows Build Version:
+		std::wstring v = std::to_wstring(BuildVersion);
+		auto it = mapWindowsVersions.find(v.c_str());
+		if (it != mapWindowsVersions.end())
+		{
+			StringCchPrintf(SystemHandle->systemDefinitions.windowsBuildVersion, MAX_STR_LEN,
+				TEXT("Get Compatibility OS Name: %s Version: %s"), family.c_str(), it->second);
+			womalogauto(TEXT("%s\n"), SystemHandle->systemDefinitions.windowsBuildVersion);
+		}
+
 	}
 #else
 	womalogauto(TEXT("sysname: %s\n"), SystemHandle->systemDefinitions.ver.sysname);

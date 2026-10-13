@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: initWorld.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -19,7 +19,7 @@
 //  - Get data from AstroClass
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "OSengine.h"
 
@@ -113,7 +113,7 @@ AstroClass* astroClass = NULL;
 InitWorld::InitWorld ()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525217;
+
 
 	//public:
     LatDir = TEXT("N");
@@ -251,7 +251,7 @@ STRING		szFileName = wLOCAL_APPDATA + TEXT("myip.txt");
 #define EXTERNAL_IP TEXT("https://myexternalip.com/raw")
 //#define EXTERNAL_IP TEXT("https://myexternalip.com")
 
-#if defined USE_NETWORK //&& !defined MAVERICK
+#if defined USE_NETWORK
 	DeleteFile(szFileName.c_str());
 	//URLDownloadToFileA(LPUNKNOWN, _In_ LPCSTR, _In_opt_ LPCSTR, DWORD, _In_opt_ LPBINDSTATUSCALLBACK);
 	womalogauto(TEXT("Download: %s\n"), EXTERNAL_IP); // Note: Don't use DEBUG_MSG yet...
@@ -262,7 +262,7 @@ STRING		szFileName = wLOCAL_APPDATA + TEXT("myip.txt");
 	if(!URLDownloadToFile(NULL, EXTERNAL_IP, szFileName.c_str(), 0, NULL))
 #endif
 	{
-		_tprintf(TEXT("Could not communicate with whatismyipaddress.com Server!"));
+		womalog(TEXT("Could not communicate with whatismyipaddress.com Server!"));
 		return TEXT("");
 	}
 #endif
@@ -276,7 +276,9 @@ STRING		szFileName = wLOCAL_APPDATA + TEXT("myip.txt");
 		{ WomaMessageBox(TEXT("MyIp File not found, (use: #define USE_NETWORK) at core_engine_level.h"), (TCHAR*)szFileName.c_str()); return TEXT(""); }
 
 	getline(fileIn, str);
+#ifdef LOG_IP
 	womalog("IP: %s\n", str.c_str()); // Note: Don't use DEBUG_MSG yet...
+#endif
 	fileIn.close();	// Close the file.
 #endif
 
@@ -307,9 +309,10 @@ bool InitWorld::getMyLocation(double* latitude, double* longitude, STRING ip)
 	std::size_t found_latitude = json.find("latitude");
 	TCHAR Wbuffer[5000] = { 0 };
 	atow(Wbuffer, (CHAR*)json.substr(found_latitude, 19).c_str(), 5000);
+#ifdef LOG_IP
 	womalog((TCHAR*)Wbuffer);				//latitude" : 38.8691
 	womalog(TEXT("\n"));
-
+#endif
 	STRING str_latitude_float = Wbuffer;
 	std::size_t found_latitude_float = str_latitude_float.find(TEXT(":"));
 	STRING str_latitude = str_latitude_float.substr(found_latitude_float+2, str_latitude_float.length());
@@ -322,9 +325,10 @@ bool InitWorld::getMyLocation(double* latitude, double* longitude, STRING ip)
 	std::size_t found_longitude = json.find("longitude");	
 	TCHAR Wbuffer[5000] = { 0 };
 	atow(Wbuffer, (CHAR*)json.substr(found_longitude, 20).c_str(), 5000);
+#ifdef LOG_IP
 	womalog((TCHAR*)Wbuffer);				//longitude" : -9.0656
 	womalog(TEXT("\n"));
-
+#endif
 	STRING str_logitude_float = Wbuffer;
 	std::size_t found_logitude_float = str_logitude_float.find(TEXT(":"));
 	STRING str_logitude = str_logitude_float.substr(found_logitude_float+2, str_logitude_float.length());
@@ -335,12 +339,14 @@ bool InitWorld::getMyLocation(double* latitude, double* longitude, STRING ip)
 
 	TCHAR Wbuffer[5000] = { 0 };
 	atow(Wbuffer, (CHAR*)json.c_str(), 5000);
-#if UNICODE
+#ifdef LOG_IP
+  #if UNICODE
 	womalog((WCHAR*)Wbuffer);	//std::cout << json << std::endl;
 	womalog(L"\n");				// Add ENTER to finish the
-#else
+  #else
 	womalog((CHAR*)json.c_str());	//std::cout << json << std::endl;
 	womalog("\n");					// Add ENTER to finish the
+  #endif
 #endif
 	return true;
 }
@@ -355,7 +361,7 @@ void InitializeCelestialInfoScreen(int x, int y)
 {
 	womalog("InitializeCelestialInfoScreen...");
 
-	TCHAR str[50];
+	TCHAR str[MAX_STR_LEN] = {0};
 
 	float LINE = MIN(25, 2 * SystemHandle->fontSizeY);
 	float LINE_SPACE = MIN(35, 3 * SystemHandle->fontSizeY);
@@ -367,7 +373,7 @@ void InitializeCelestialInfoScreen(int x, int y)
 			SystemHandle->TextToPrint[1].pop_back();
 
 		// CelestialInfo:
-#if defined USE_NETWORK  && !defined MAVERICK //at: main.h
+#if CORE_ENGINE_LEVEL == 7 || defined USE_NETWORK //at: main.h
 		STRING infomode = TEXT("online");
 #else
 		STRING infomode = TEXT("offline");
@@ -454,7 +460,12 @@ bool InitializeWeatherInfoScreen(int x, int y)
 		weatherClass = NEW WeatherClass();
 	IF_NOT_THROW_EXCEPTION(weatherClass);
 
-	TCHAR* ICAO = weatherClass->findClosestAirport((float)initWorld->latitude, (float)initWorld->longitude);
+	double LONG =
+		(initWorld->longitude > 180.0)
+		? initWorld->longitude - 360.0
+		: initWorld->longitude;
+
+	TCHAR* ICAO = weatherClass->findClosestAirport((float)initWorld->latitude, (float)LONG);
 	IF_NOT_RETURN_FALSE(weatherClass->GetPresentWeather(ICAO));
 
 	// Process Weather Data from METAR in the ICAO Airport:
