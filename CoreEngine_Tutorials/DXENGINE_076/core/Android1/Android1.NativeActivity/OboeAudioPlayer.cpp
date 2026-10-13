@@ -1,3 +1,5 @@
+#if defined(__arm64) || defined(__arm64__) || defined(_M_ARM64) || defined(__aarch64__)
+
 #include "OboeAudioPlayer.h"
 
 #include <utility>
@@ -87,3 +89,4 @@ namespace wavetablesynthesizer {
         return oboe::DataCallbackResult::Continue;
     }
 }  // namespace wavetablesynthesizer
+#endif
