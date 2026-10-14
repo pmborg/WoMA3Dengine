@@ -105,6 +105,8 @@ public:
 	HWND	statusbar=0;
 #endif
 
+	bool playvideo = false;
+
 	ScreenArrayInfo info;
 	MONITORINFOEX monitorArray[MAX_WIN32_MONITORS];
 

@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: corelib0.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
 #include "OSengine.h"
@@ -24,8 +24,6 @@
 #if defined WINDOWS_PLATFORM
 // safe_release_seh.cpp
 #include <windows.h>
-#include <unknwn.h>   // IUnknown
-#include <stdio.h>
 
 // Export as C so name mangling won't cause issues
 extern "C" void SafeRelease_SEH(void** pp)
@@ -39,8 +37,7 @@ extern "C" void SafeRelease_SEH(void** pp)
 		unk->Release();
 	}
 	__except (EXCEPTION_EXECUTE_HANDLER) {
-		// optional: log the exception via your logging method
-		// e.g. womalogauto(TEXT("[SAFE_RELEASE_SEH] exception during Release ptr=%p\n"), *pp);
+		womalogauto(TEXT("[SAFE_RELEASE_SEH] exception during Release ptr=%p\n"), *pp);
 	}
 	*pp = nullptr;
 }
@@ -57,7 +54,7 @@ extern "C" void SafeRelease_SEH(void** pp)
 	#elif !defined _DEBUG && defined NDEBUG
 		#pragma comment( lib, "x64/WRelease/TinyXMLv2_LIBX64.lib" )	//RELEASE
 	#else
-		#pragma comment( lib, "x64/WRelease/TinyXMLv2_LIBX64.lib" )	//DBGREL
+		#pragma comment( lib, "x64/WDebug/TinyXMLv2_LIBX64_d.lib" )	//DBGREL
 	#endif
 #else
 	#if defined(_DEBUG) & !defined(NDEBUG)
@@ -65,7 +62,7 @@ extern "C" void SafeRelease_SEH(void** pp)
 	#elif !defined _DEBUG && defined NDEBUG
 		#pragma comment( lib, "Win32/WRelease/TinyXMLv2_LIB.lib" )	//RELEASE
 	#else
-		#pragma comment( lib, "Win32/WRelease/TinyXMLv2_LIB.lib" )	//DBGREL
+		#pragma comment( lib, "Win32/WDebug/TinyXMLv2_LIB_d.lib" )	//DBGREL
 	#endif
 #endif
 #else
@@ -75,7 +72,7 @@ extern "C" void SafeRelease_SEH(void** pp)
 	#elif !defined _DEBUG && defined NDEBUG
 		#pragma comment( lib, "x64/Release/TinyXMLv2_LIBX64.lib" )	//RELEASE
 	#else
-		#pragma comment( lib, "x64/Release/TinyXMLv2_LIBX64.lib" )	//DBGREL
+		#pragma comment( lib, "x64/WDebug/TinyXMLv2_LIBX64_d.lib" )	//DBGREL
 	#endif
 #else
 	#if defined(_DEBUG) & !defined(NDEBUG)
@@ -83,7 +80,7 @@ extern "C" void SafeRelease_SEH(void** pp)
 	#elif !defined _DEBUG && defined NDEBUG
 		#pragma comment( lib, "Win32/Release/TinyXMLv2_LIB.lib" )		//RELEASE
 	#else
-		#pragma comment( lib, "Win32/Release/TinyXMLv2_LIB.lib" )		//DBGREL
+		#pragma comment( lib, "Win32/WDebug/TinyXMLv2_LIB_d.lib" )		//DBGREL
 	#endif
 #endif
 #endif
@@ -93,9 +90,9 @@ extern "C" void SafeRelease_SEH(void** pp)
 	#if defined(_DEBUG)// && !defined(NDEBUG)
 		#pragma comment( lib, "x64/WDebug/ZipUtils_LIBX64_d.lib" )		//DEBUG
 	#elif !defined _DEBUG && defined NDEBUG
-		#pragma comment( lib, "x64/Release/ZipUtils_LIBX64.lib" )		//RELEASE: C:\WoMAengine2023\x64\Release\ZipUtils_LIBX64.lib
+		#pragma comment( lib, "x64/WRelease/ZipUtils_LIBX64.lib" )		//RELEASE:
 	#else
-		#pragma comment( lib, "x64/WRelease/ZipUtils_LIBX64.lib" )		//DBGREL
+		#pragma comment( lib, "x64/WDebug/ZipUtils_LIBX64_d.lib" )		//DBGREL
 	#endif
 #else
 	#if defined(_DEBUG)// && !defined(NDEBUG)
@@ -103,7 +100,7 @@ extern "C" void SafeRelease_SEH(void** pp)
 	#elif !defined _DEBUG && defined NDEBUG
 		#pragma comment( lib, "Win32/WRelease/ZipUtils_LIB.lib" )		//RELEASE
 	#else
-		#pragma comment( lib, "Win32/WRelease/ZipUtils_LIB.lib" )		//DBGREL
+		#pragma comment( lib, "Win32/WDebug/ZipUtils_LIB_d.lib" )		//DBGREL
 	#endif
 #endif
 #else
@@ -113,7 +110,7 @@ extern "C" void SafeRelease_SEH(void** pp)
 	#elif !defined _DEBUG && defined NDEBUG
 		#pragma comment( lib, "x64/Release/ZipUtils_LIBX64.lib" )		//RELEASE
 	#else
-		#pragma comment( lib, "x64/Release/ZipUtils_LIBX64.lib" )		//DBGREL
+		#pragma comment( lib, "x64/Debug/ZipUtils_LIBX64_d.lib" )		//DBGREL
 	#endif
 #else
 	#if defined(_DEBUG)// && !defined(NDEBUG)
@@ -121,7 +118,7 @@ extern "C" void SafeRelease_SEH(void** pp)
 	#elif !defined _DEBUG && defined NDEBUG
 		#pragma comment( lib, "Win32/Release/ZipUtils_LIB.lib" )			//RELEASE
 	#else
-		#pragma comment( lib, "Win32/Release/ZipUtils_LIB.lib" )			//DBGREL
+		#pragma comment( lib, "Win32/Debug/ZipUtils_LIB_d.lib" )			//DBGREL
 	#endif
 #endif
 #endif
@@ -132,9 +129,9 @@ extern "C" void SafeRelease_SEH(void** pp)
 #if defined(_DEBUG)// && !defined(NDEBUG)
 #pragma comment( lib, "x64/WDebug/commonfunctionsX64_d.lib" )		//DEBUG
 #elif !defined _DEBUG && defined NDEBUG
-#pragma comment( lib, "x64/Release/commonfunctionsX64.lib" )		//RELEASE: C:\WoMAengine2023\x64\Release\commonfunctionsX64.lib
+#pragma comment( lib, "x64/WRelease/commonfunctionsX64.lib" )		//RELEASE:
 #else
-#pragma comment( lib, "x64/WRelease/commonfunctionsX64.lib" )		//DBGREL
+#pragma comment( lib, "x64/WDebug/commonfunctionsX64_d.lib" )		//DBGREL
 #endif
 #else
 #if defined(_DEBUG)// && !defined(NDEBUG)
@@ -142,7 +139,7 @@ extern "C" void SafeRelease_SEH(void** pp)
 #elif !defined _DEBUG && defined NDEBUG
 #pragma comment( lib, "Win32/WRelease/commonfunctions.lib" )		//RELEASE
 #else
-#pragma comment( lib, "Win32/WRelease/commonfunctions.lib" )		//DBGREL
+#pragma comment( lib, "Win32/WDebug/commonfunctions_d.lib" )		//DBGREL
 #endif
 #endif
 #else
@@ -152,7 +149,7 @@ extern "C" void SafeRelease_SEH(void** pp)
 #elif !defined _DEBUG && defined NDEBUG
 #pragma comment( lib, "x64/Release/commonfunctionsX64.lib" )		//RELEASE
 #else
-#pragma comment( lib, "x64/Release/commonfunctionsX64.lib" )		//DBGREL
+#pragma comment( lib, "x64/Debug/commonfunctionsX64_d.lib" )		//DBGREL
 #endif
 #else
 #if defined(_DEBUG)// && !defined(NDEBUG)
@@ -160,7 +157,7 @@ extern "C" void SafeRelease_SEH(void** pp)
 #elif !defined _DEBUG && defined NDEBUG
 #pragma comment( lib, "Win32/Release/commonfunctions.lib" )			//RELEASE
 #else
-#pragma comment( lib, "Win32/Release/commonfunctions.lib" )			//DBGREL
+#pragma comment( lib, "Win32/Debug/commonfunctions_d.lib" )			//DBGREL
 #endif
 #endif
 #endif

@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------------------------------------
 // Filename: timerClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,7 +17,7 @@
 // PURPOSE:  Measure the time passed between two TimerClass::Frame() Invocations. 
 //  i.e. Allow to calc FPS (number of Frames Processed per Second)
 // ----------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 // 
 //NOTES:
 //0,000 001 [ millionth ] 	microsecond [ µs ]
@@ -32,14 +32,12 @@
 
 #include "timerClass.h"
 
-#if !defined LINUX_PLATFORM
-extern double timeGetTime(void);
-#endif
+
 
 TimerClass::TimerClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525217;
+
 
 	//public:
 	currentTime = m_startEngineTime = NULL;
@@ -78,7 +76,8 @@ bool TimerClass::Initialize()
 	QueryPerformanceCounter((LARGE_INTEGER*)&m_startTime);
 #else
 	//::gettimeofday(&m_startTime, NULL);
-	m_startTime  = (currentTime - m_startTime);
+	//m_startTime  = (currentTime - m_startTime);
+	m_startTime = timeGetTime();
 #endif
 	m_startEngineTime = m_startTime;
 

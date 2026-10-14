@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: DX11GetModesList.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "OSengine.h"
 #if defined DX_ENGINE
@@ -39,7 +39,7 @@ bool DX11Class::getModesList(int g_USE_MONITOR, int screenWidth, int screenHeigh
 	IDXGIFactory1* pDXGIFactory = NULL;
 	IDXGIOutput* outputMonitor = NULL; // MONITOR
 
-	if (SystemHandle->allWindowsArray.size() > 0)
+	if (WOMA::allWindowsHwArray.size() > 0)
 		return true; // the work was done already...
 
 	*numerator = 60;	//Setup defaults, at Start!
@@ -125,7 +125,7 @@ bool DX11Class::getModesList(int g_USE_MONITOR, int screenWidth, int screenHeigh
 	// "USE_ADAPTER" Loop as long as DXGI returns valid Adapters.
 	//
 	// PROPOSE	Set:		MonitorNumber
-	//          Populate:	SystemHandle->windowsArray
+	//          Populate:	WOMA::windowsToRenderArray
 	*******************************************************************/
 	IDXGIOutput* pMonitor = NULL;
 	while (adapterGraphicCard->EnumOutputs (MonitorNumber, &pMonitor) == S_OK)
@@ -346,11 +346,11 @@ bool DX11Class::getModesList(int g_USE_MONITOR, int screenWidth, int screenHeigh
 			womalogauto(TEXT("(%4.2f Hz)\n"), (float)screen.ScreenResolution[res].RefreshRate_Numerator / (float)screen.ScreenResolution[res].RefreshRate_Denominator);
 		}
 
-		SystemHandle->allWindowsArray.push_back(screen);
+		WOMA::allWindowsHwArray.push_back(screen);
 	} //FOR mon (go for next monitor if exits...)
 
 	// No monitors? Are we in a remote desktop machine, with no monitors attached?
-	if (SystemHandle->windowsArray.size() < 1)
+	if (WOMA::windowsToRenderArray.size() < 1)
 	{
 		WomaMessageBox(TEXT("Invalid uiMonitor number"), TEXT("Error: ")); 
 		return false;
