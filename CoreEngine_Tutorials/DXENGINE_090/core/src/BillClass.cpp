@@ -1,9 +1,9 @@
 ﻿// --------------------------------------------------------------------------------------------
 // Filename: BillClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "OSengine.h"
 
@@ -69,7 +69,7 @@ void BillClass::Shutdown()
 #include "GLmodelClass.h"
 #endif
 
-#if defined DX_ENGINE
+#if defined WINDOWS_PLATFORM
 #include "DXmodelClass.h"
 #endif
 
@@ -166,24 +166,24 @@ xmlobj3d* BillClass::fillxml(ID3D11DeviceContext* pContext, int id, UINT type)
 			xmlobj.meshSRV = billFileLoaded[type];
 #endif
 			if (m_Trees[id].type < 11)
-				_tcscpy_s(xmlobj.filename, 256, BILLBOARD_MODEL);				//engine/data/scene70Bill/060square.obj
+				strcpy_s(xmlobj.filename, 256, BILLBOARD_MODEL);				//engine/data/scene70Bill/060square.obj
 			else
 				if (m_Trees[id].type == 11)		//Windy
-					_tcscpy_s(xmlobj.filename, 256, BILLBOARD_GRASS_MODEL);		//11: engine/data/scene73grass/grass.obj
+					strcpy_s(xmlobj.filename, 256, BILLBOARD_GRASS_MODEL);		//11: engine/data/scene73grass/grass.obj
 				else
 					if (m_Trees[id].type == 12)	//Cross
-						_tcscpy_s(xmlobj.filename, 256, BILLBOARD_BUSH_MODEL);	//12: engine/data/scene74grass/bush.obj
+						strcpy_s(xmlobj.filename, 256, BILLBOARD_BUSH_MODEL);	//12: engine/data/scene74grass/bush.obj
 		}
 
 	if (m_Trees[id].type == 100)
-		_tcscpy_s(xmlobj.filename, 256, BILLBOARD_FENCE_MODEL);		    //100: engine/data/scene70Bill/fence.obj
+		strcpy_s(xmlobj.filename, 256, BILLBOARD_FENCE_MODEL);		    //100: engine/data/scene70Bill/fence.obj
 
 	if (m_Trees[id].type == 200) //FIRE
-		_tcscpy_s(xmlobj.filename, 256, BILLBOARD_FIRE_MODEL);		    //200: engine/data/scene72Fire/072fire.obj
+		strcpy_s(xmlobj.filename, 256, BILLBOARD_FIRE_MODEL);		    //200: engine/data/scene72Fire/072fire.obj
 
 	if (m_Trees[id].type == 300)
 	{
-		_tcscpy_s(xmlobj.filename, 256, FENCE1_MODEL);					//300: 3D engine/data/scene87ForestHuntress.priv/worldMap/woodfence/Fence_module.obj
+		strcpy_s(xmlobj.filename, 256, FENCE1_MODEL);					//300: 3D engine/data/scene87ForestHuntress.priv/worldMap/woodfence/Fence_module.obj
 	}
 
 	xmlobj.moveUp = false;
@@ -574,7 +574,7 @@ bool BillClass::Initialize(ID3D11DeviceContext* pContext, int m_terrainWidth, in
 
 	womalog("Bill Class: Initialized\n");
 
-#if _DEBUG
+#if defined _DEBUG
 	{
 		auto countthis = 0;
 		for (auto i = 0; i < m_Trees.size(); i++)
@@ -645,7 +645,7 @@ void RunBillboardSortDemo(UINT RENDER_PAGE, std::vector<Tree>& m_Trees)
 	switch (RENDER_PAGE)
 	{
 		// ---------------------------------------------------------
-		// 70–91 : Legacy m_Trees (AQUICHECKv4)
+		// 70–91 : Legacy m_Trees
 		// ---------------------------------------------------------
 	case 70: case 71: case 72: case 73: case 74: case 75:
 	case 76: case 77: case 78: case 82: case 83: case 84:

@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: ApplicationClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #ifndef _ApplicationClass_H_
 #define _ApplicationClass_H_
@@ -66,6 +66,7 @@
 #include "womadriverclass.h"
 #endif
 #include "playerClass.h"
+
 #include "AutoGenTerrain.h"
 
 #if defined CHECK_OBJ_COLISION
@@ -76,6 +77,20 @@
 #include "GLAnimationScene.h"
 #endif
 
+//
+// RENDER TO TEXTURE
+//
+#if (defined DX_ENGINE) && (defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 || defined USE_VIEW2D_SPRITES)
+#include "DXcameraClass.h"
+
+#if defined USE_MAIN_MAP
+extern DXcameraClass m_CameraMAP_DX;
+#endif
+#if defined USE_MINI_MAP
+extern DXcameraClass m_CameraMINIMAP_DX;
+#endif
+
+#endif
 
 #if TUTORIAL_CHAP >= 140
 #include "../network/NetworkClass.h"
@@ -83,19 +98,10 @@
 #define MAX_CLIENTS 1
 #endif
 
-#define PASS_OPAC			0
-#define PASS_TRANSPARENT	1
-#define PASS_SHADOWS		2
-#define PASS_MINIMAP1		11
-#define PASS_MINIMAP2		12
-#define PASS_MINIMAP3		13
-#define PASS_BILL			70
+
 
 #include "virtualModelClass.h"
 extern std::vector<VirtualModelClass*> m_screenShots;
-
-// -------------------------------------------------------------------------------------------------
-extern bool FORCE_RENDER_ALL;
 
 #if defined USE_DIRECT_INPUT
 extern UINT g_NetID;
@@ -141,16 +147,14 @@ struct InstanceType
 
 #if defined USE_DIRECT_INPUT
 #include "positionClass.h"
-#if defined DX_ENGINE
-	#include "DXinputClass.h"
-#endif
+#include "DXinputClass.h"
 #endif
 
 #if defined USE_SCENE_MANAGER
 #include "SceneManager.h"
 #endif
 
-#if  defined USE_RASTERTEK_TEXT_FONT
+#if defined USE_RASTERTEK_TEXT_FONT || defined USE_RASTERTEK_TEXT_FONTV2
 #include "ApplicationTextClass.h"
 #endif
 
@@ -171,8 +175,10 @@ struct InstanceType
 	#define MAX_TERRAINS 4
 #endif
 
-#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
+#if DX_ENGINE_LEVEL >= 36 && defined USE_RENDER_TO_TEXTURE
+#ifdef WINDOWS_PLATFORM
 #include "DXrenderTextureClass.h"
+#endif
 #endif
 
 #if defined SCENE_TERRAIN_QUAD_TREE
@@ -183,17 +189,17 @@ struct InstanceType
 extern int __cdecl CompoundSortCB(const VOID* arg1, const VOID* arg2);
 #endif
 
-
-
+// --------------------------------------------------
 #if defined DX_ENGINE
 	#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {\
-		model = NEW DirectX::DXmodelClass(model3D, TRIANGLELIST, false, renderShadow1); IF_NOT_THROW_EXCEPTION (model); \
+		model = NEW DXmodelClass(model3D, TRIANGLELIST, false, renderShadow1); IF_NOT_THROW_EXCEPTION (model); \
 	}
 
 	#define SAFE_SHUTDOWN_MODELDX(model) {\
-		if(model) { (model)->Shutdown(); delete ((DirectX::DXmodelClass*)model); model=NULL; } \
+		if(model) { (model)->Shutdown(); delete ((DXmodelClass*)model); model=NULL; } \
 	}
 #else
+	#define SAFE_SHUTDOWN_MODELDX(model) {}
 	#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1) {}
 	#define CREATE_MODELDX_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {}
 #endif
@@ -207,20 +213,112 @@ extern int __cdecl CompoundSortCB(const VOID* arg1, const VOID* arg2);
 		if (model) { (model)->Shutdown(); delete ((GLmodelClass*)model); model=NULL; } \
 	}
 #else
+	#define SAFE_SHUTDOWN_MODELGL3(model) {}
 	#define CREATE_MODELGL3_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {}
 #endif
 
+#if defined VULKAN
+	#define CREATE_MODELVK_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {\
+        model = NEW vkModelClass(model3D, TRIANGLELIST, false, renderShadow1); IF_NOT_THROW_EXCEPTION(model); \
+    }
 
-#define CREATE_MODEL_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2)\
-{\
-	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)\
-	{\
-		CREATE_MODELGL3_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2);	\
-	}\
-	else\
-	{\
-		CREATE_MODELDX_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2);\
-	}\
+	#define SAFE_SHUTDOWN_MODELVK(model) {\
+        if (model) { model->Shutdown(); delete ((vkModelClass*)model); model = NULL; } \
+    }
+#else
+	#define SAFE_SHUTDOWN_MODELVK(model) {}
+	#define CREATE_MODELVK_IF_NOT_EXCEPTION(model, model3D, renderShadow1, renderShadow2) {}
+#endif
+
+// --------------------------------------------------
+
+#define SAFE_SHUTDOWN_MODEL(model)                         \
+{                                                         \
+	womalog("SAFE_SHUTDOWN_MODEL() ---> %s\n", model.MODEL_NAME.c_str());      \
+    switch (WOMA::AppSettings->DRIVER)                    \
+    {                                                     \
+        case DRIVER_DX9:                                  \
+        case DRIVER_DX11:                                 \
+        case DRIVER_DX12:                                 \
+            SAFE_SHUTDOWN_MODELDX(model);                 \
+            break;                                        \
+                                                          \
+        case DRIVER_GL3:                                  \
+            SAFE_SHUTDOWN_MODELGL3(model);                \
+            break;                                        \
+                                                          \
+        case DRIVER_VULKAN:                               \
+            SAFE_SHUTDOWN_MODELVK(model);                 \
+            break;                                        \
+    }                                                     \
+}
+
+// --------------------------------------------------
+#if defined DX_ENGINE
+#define CREATE_MODELDX_WITH_TOPOLOGY_IF_NOT_EXCEPTION(model, model3D, topology, renderShadow1, renderShadow2) {\
+    model = NEW DXmodelClass(model3D, topology, false, renderShadow1, renderShadow2); \
+    IF_NOT_THROW_EXCEPTION(model); \
+}
+#else
+#define CREATE_MODELDX_WITH_TOPOLOGY_IF_NOT_EXCEPTION(model, model3D, topology, renderShadow1, renderShadow2) {}
+#endif
+
+#if defined OPENGL3 || defined OPENGL4
+#define CREATE_MODELGL3_WITH_TOPOLOGY_IF_NOT_EXCEPTION(model, model3D, topology, renderShadow1, renderShadow2) {\
+    model = NEW GLmodelClass(model3D, topology, false, renderShadow1, renderShadow2); \
+    IF_NOT_THROW_EXCEPTION(model); \
+}
+#else
+#define CREATE_MODELGL3_WITH_TOPOLOGY_IF_NOT_EXCEPTION(model, model3D, topology, renderShadow1, renderShadow2) {}
+#endif
+
+#if defined VULKAN
+#define CREATE_MODELVK_WITH_TOPOLOGY_IF_NOT_EXCEPTION(model, model3D, topology, renderShadow1, renderShadow2) {\
+    model = NEW vkModelClass(model3D, topology, false, renderShadow1, renderShadow2); \
+    IF_NOT_THROW_EXCEPTION(model); \
+}
+#else
+#define CREATE_MODELVK_WITH_TOPOLOGY_IF_NOT_EXCEPTION(model, model3D, topology, renderShadow1, renderShadow2) {}
+#endif
+
+#define CREATE_MODEL_WITH_TOPOLOGY_IF_NOT_EXCEPTION(model, IAM, TOPOLOGY, SHADOW1, SHADOW2) \
+{ \
+    switch (WOMA::AppSettings->DRIVER) \
+    { \
+        case DRIVER_GL3: \
+            CREATE_MODELGL3_WITH_TOPOLOGY_IF_NOT_EXCEPTION(model, IAM, TOPOLOGY, SHADOW1, SHADOW2); \
+            break; \
+\
+        case DRIVER_VULKAN: \
+            CREATE_MODELVK_WITH_TOPOLOGY_IF_NOT_EXCEPTION(model, IAM, TOPOLOGY, SHADOW1, SHADOW2); \
+            break; \
+\
+        default: \
+            CREATE_MODELDX_WITH_TOPOLOGY_IF_NOT_EXCEPTION(model, IAM, TOPOLOGY, SHADOW1, SHADOW2); \
+            break; \
+    } \
+}
+
+
+#define CREATE_MODEL_IF_NOT_EXCEPTION(model, IAM, SHADOW1, SHADOW2) CREATE_MODEL_WITH_TOPOLOGY_IF_NOT_EXCEPTION(model, IAM, TRIANGLELIST, SHADOW1, SHADOW2)
+
+
+#define SAFE_SHUTDOWN_MODEL(model) \
+{ \
+	switch (WOMA::AppSettings->DRIVER) \
+	{ \
+		case DRIVER_GL3: \
+			SAFE_SHUTDOWN_MODELGL3(model); \
+			break; \
+\
+		case DRIVER_VULKAN: \
+			SAFE_SHUTDOWN_MODELVK(model); \
+			break; \
+\
+		default: \
+			SAFE_SHUTDOWN_MODELDX(model); \
+			break; \
+	} \
 }
 
 #pragma warning( pop )
@@ -261,13 +359,13 @@ struct MAIN_3RD_PERSON_CAMERA
 extern MAIN_3RD_PERSON_CAMERA main3rdPcamera;
 #endif
 
+
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: ApplicationClass
 ////////////////////////////////////////////////////////////////////////////////
 class ApplicationClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234525217;
 	ApplicationClass();
 	~ApplicationClass();
 	
@@ -281,11 +379,13 @@ public:
 	bool Start();
 	void WOMA_APPLICATION_Shutdown();
 
-	#if defined USE_ASTRO_CLASS && defined USE_REAL_SUNLIGHT_DIRECTION
+#if defined USE_ASTRO_CLASS || defined USE_REAL_SUNLIGHT_DIRECTION	//lvl:7
 	float SunX, SunY, SunZ;
+#endif
+#if defined USE_ASTRO_CLASS && defined USE_REAL_SUNLIGHT_DIRECTION	//lvl:7
 	float MoonX, MoonY, MoonZ;
 	void Use3DSunMoonPosition();
-	#endif
+#endif
 
 	virtual bool WOMA_APPLICATION_InitGUI();
 
@@ -293,19 +393,17 @@ public:
 
 #if CORE_ENGINE_LEVEL >= 10 && !defined NewWomaEngine
     void SortOutWhatNeedToBeRendered(void* pContext, WomaDriverClass* driver);
-    void RenderScene(void* mainCtx, UINT monitorWindow, WomaDriverClass* driver);
+    void RenderScene(void* /*unused*/, UINT monitorWindow, WomaDriverClass* driver);
+	float rX = 0, rY = 0, rZ = 0;
 	float ProcessMovementInput_and_UpdateDemos();						// PROCESS User Update
 	void RenderMainSky(UINT monitorWindow, float fadeLight, void* pContext);
-	void WaterTerrain(UINT monitorWindow, float fadeLight, void* pContext);
 	void AppRender(UINT monitorWindow, UINT level, float fadeLight, void * pContext);								// RENDER - 3D
 	bool Initialize(void* pContext, WomaDriverClass* Driver);
 #endif
-#if defined CHECK_OBJ_COLISION
-    XMVECTOR prwsPos = {}, prwsDir = {};
-#endif
-#if DX_ENGINE_LEVEL >= 78 && defined CHECK_OBJ_COLISION
-	void DetectCollisions();
-#endif
+
+	void MainTerrain(UINT monitorWindow, float fadeLight, void* pContext);
+	void MainWater(UINT monitorWindow, float fadeLight, void* pContext);
+
 	bool InitLightandDemos(void* pContext, WomaDriverClass* Driver);
 	void InitMainSky(void* pContext, WomaDriverClass* Driver);
 	void InitTerrainandWaterSurfaces(void* pContext, WomaDriverClass* Driver);
@@ -316,127 +414,106 @@ public:
 	std::vector<ModelColorVertexType>* m_LightVertexVector;
 	LightClass* app_Light = NULL;
 
-	#if defined MAIN_RENDER_LIGHT_RAY
 	void CalculateLightRayVertex(float SunDistance);
 	void initLightRay(void* pContext);
-	#endif
+
 	void RenderHUD_Logo(void* pContext);
 	void RenderModel(void* pContext, UINT level, UINT threadID, UINT monitorWindow, WomaDriverClass* driver, UINT modelID, UINT pass, XMMATRIX* m_viewMatrix = NULL, XMMATRIX* m_projectionMatrix = NULL, float fadeLight = 1, UINT op = 0);
 #if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined USE_FRUSTUM
-	bool WOMA_LOAD_OBJ(void* pContext, UINT threadID, UINT level, WomaDriverClass* Driver, UINT i, TCHAR* wfilename);
+	bool WOMA_LOAD_OBJ(void* pContext, UINT threadID, UINT level, WomaDriverClass* Driver, UINT i, CHAR* wfilename); //Note: Cant be TCHAR, due multi OS support.
 #endif																			  
 	void RenderShadowPass(UINT monitorIndex, WomaDriverClass* Driver, void* pContext, float fadeLight);
 	void AppPreRender(UINT monitorWindow, WomaDriverClass* Driver, float fadeLight, void* mainCtx);	// PRE-RENDER - Shadows
-	void TerrainRender(UINT ThreadID, UINT monitorWindow, WomaDriverClass* Driver, float fadeLight, XMMATRIX* m_viewMatrix, XMMATRIX* m_projectionMatrix, void* ctx);
+	void TerrainRender(UINT ThreadID, UINT monitorWindow, WomaDriverClass* Driver, float fadeLight, void*/*XMMATRIX*/ m_viewMatrix, void*/* XMMATRIX* */ m_projectionMatrix, void* ctx, UINT pass=0);
 	void StartMeshDemo(ID3D11DeviceContext* ctx);
 	void UpdateMeshAnimations();
+
+	// ----------------------------------------------------------------
 	// VARS:
 	// ----------------------------------------------------------------
+	bool FORCE_RENDER_ALL;
 
-    UINT world_xml_objs = 0;
+#if defined USE_DX_DRIVER_FONT	//lvl:26 only
+	DXshaderClass* m_FontV2Shader = NULL;
+	IDXGIKeyedMutex* keyedMutex11 = NULL;
+	IDXGIKeyedMutex* keyedMutex10 = NULL;
+#endif
+
+	UINT world_xml_objs = 0;
 	UINT initial_world_xml_objs = 0;
-	UINT theWorld_size=0;
-	UINT objModel_size=0;
+	UINT theWorld_size = 0;
+	UINT objModel_size = 0;
 	UINT num_loading_objects = 1;
-
-    DWORD total_deltaTime=0;
+	DWORD total_deltaTime = 0;
 	float billangle = 0;
 
-
-    UINT world_main_size = 0;
-    UINT totalRendered = 0;
-
-#if defined USE_DX_DRIVER_FONT
-    DXshaderClass* m_FontV2Shader = NULL;
-    IDXGIKeyedMutex* keyedMutex11 = NULL;
-    IDXGIKeyedMutex* keyedMutex10 = NULL;
-#endif
-
-//83&84:
-
-
-
-#if defined USE_DIRECT_INPUT
-	std::vector<PositionClass*> m_Position;
-#endif
-
-#if defined CHECK_OBJ_COLISION
-    void pickRayVector(float mouseX, float mouseY, XMVECTOR& pickRayInWorldSpacePos, XMVECTOR& pickRayInWorldSpaceDir);
-	XMVECTOR faceNormalClosestObject = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-    float pick(
-                XMVECTOR pickRayInWorldSpacePos, 
-                XMVECTOR pickRayInWorldSpaceDir,
-                std::vector<XMFLOAT3>& vertPosArray, 
-                std::vector<UINT/*DWORD*/>& indexPosArray, 
-                XMMATRIX& worldSpace, 
-                bool getPoligon = false);
-    bool PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTOR& triV3, XMVECTOR& point);
-    
-	compoundTreeLoadOrder compoundLoadingOrder[5000] = {}; // MAX: 5000 OBJs on Scene
-#endif
-
-#if defined USE_SKY2D || ENGINE_LEVEL >= 27 // SKY
-    std::vector<ModelTextureLightVertexType> sky_vertexdata;
-    std::vector<UINT>						 sky_indexdata;
-#endif
-    std::vector<VirtualModelClass*> objModel;
-	void initShadowDebugTextureDemo(void* pContext);
-#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
-    DXrendertextureclass* m_TextureWithShadows = NULL;	//TO INTERNAL RENDER!
-#endif
-    void WOMA_APPLICATION_SetInstancePositions(UINT m_ObjId, int m_instanceCount, InstanceType* instances_, UINT type=0);
-    CTerrain* loadedTerrain[MAX_TERRAINS] = { 0 };
-#if DX_ENGINE_LEVEL >= 62 && defined USE_MAIN_MAP
-    void RenderMiniMapPass(UINT monitorWindow, WomaDriverClass* Driver, void* pContext, float fadeLight, UINT ThreadID=0);
-    void RenderMainMapMiniMap(void* pContext);
-    VirtualModelClass* m_mainMapModel = NULL;
-    VirtualModelClass* m_mainMapFrameModel = NULL;
-    bool mapKey = false;
-
-    VirtualModelClass* m_miniMapArrowModel = NULL;
-    DXrendertextureclass* m_RenderMapTexture = NULL;		//TO INTERNAL RENDER!
-    int m_pointLocationX[MAX_CLIENTS] = {}, m_pointLocationY[MAX_CLIENTS] = {}, m_pointRotation[MAX_CLIENTS] = {};
-    int m_pointMapLocationX[MAX_CLIENTS] = {}, m_pointMapLocationY[MAX_CLIENTS] = {};
-#endif
-#if DX_ENGINE_LEVEL >= 63 && defined USE_MINI_MAP
-    void PositionUpdate(int playerId, float positionX, float positionZ);
-    VirtualModelClass* m_miniMapModel = NULL;
-    VirtualModelClass* m_miniMapBorderModel = NULL;
-
-    int m_mapLocationX = 0, m_mapLocationY = 0;
-    DXrendertextureclass* m_MiniMapBitmapTexture = NULL;	//TO INTERNAL RENDER!
-    DXrendertextureclass* m_BorderTexture = NULL;
-    DXrendertextureclass* m_PointTexture = NULL;
-#endif
-    UINT billboardRrenderCount = 0;
-
-#if defined CHECK_OBJ_COLISION //CHECK_COMPOUND_COLISION //float	closestObjDist = FLT_MAX;
-	float	closestObjDist = FLT_MAX;
-#endif
-
-#if defined USE_DIRECT_INPUT// || defined INTRO_DEMO
-	void	SetPlayerPosition(UINT netID);
-	bool	ProcessUserKeyboardInputAndTerrainCollision(double frameTime);
-#endif
+	
+	UINT totalRendered = 0;
 
 #if  defined USE_RASTERTEK_TEXT_FONT
 	bool	initText(void* pContext);
-	DirectX::ApplicationTextClass* AppTextClass = NULL;
+#endif
+
+#if  defined USE_RASTERTEK_TEXT_FONT || defined USE_RASTERTEK_TEXT_FONTV2
+	ApplicationTextClass* AppTextClass = NULL;
 #endif
 
 #if defined USE_TITLE_BANNER //24
-	VirtualModelClass*		m_titleModel = NULL;
+	VirtualModelClass* m_titleModel = NULL;
 #endif
 
 	float scaleX = 0;
 	float scaleY = 0;
 	float rescale = 0;
 
+
+
+#if defined USE_DIRECT_INPUT	//lvl28
+	void	SetPlayerPosition(UINT netID);
+	bool	ProcessUserKeyboardInputAndTerrainCollision(double frameTime);
+#endif
+
+
+
+#if defined render_debug_2nd3DModel && (DX_ENGINE_LEVEL >= 36 && defined USE_SCENE_MANAGER) || DX_ENGINE_LEVEL == 99//FOR SHADOW
+	void initShadowDebugTextureDemo(void* pContext);
+#endif
+
+#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
+	void* m_TextureWithShadows = NULL;	//TO INTERNAL RENDER!
+#endif
+
+	void WOMA_APPLICATION_SetInstancePositions(UINT m_ObjId, int m_instanceCount, InstanceType* instances_, UINT type = 0);
+	CTerrain* loadedTerrain[MAX_TERRAINS] = { 0 };
+	VirtualModelClass* m_miniMapArrowModel = NULL;
+#if DX_ENGINE_LEVEL >= 62 && defined USE_MAIN_MAP
+	void RenderMiniMapPass(UINT monitorWindow, WomaDriverClass* Driver, void* pContext, float fadeLight, UINT ThreadID = 0);
+	void RenderMainMapMiniMap3Dview(void* pContext);
+	VirtualModelClass* m_mainMapModel = NULL;
+	VirtualModelClass* m_mainMapFrameModel = NULL;
+	bool mapKey = false;
+
+	/* DXrendertextureclass* */ void* m_RenderMapTexture = NULL;		//TO INTERNAL RENDER!
+	int m_pointLocationX[MAX_CLIENTS] = {}, m_pointLocationY[MAX_CLIENTS] = {}, m_pointRotation[MAX_CLIENTS] = {};
+	int m_pointMapLocationX[MAX_CLIENTS] = {}, m_pointMapLocationY[MAX_CLIENTS] = {};
+	void PositionUpdate(int playerId, float positionX, float positionZ);
+	int m_mapLocationX = 0, m_mapLocationY = 0;
+#endif
+#if DX_ENGINE_LEVEL >= 63 && defined USE_MINI_MAP
+	VirtualModelClass* m_miniMapModel = NULL;
+	VirtualModelClass* m_miniMapBorderModel = NULL;
+	/* DXrendertextureclass* */ void* m_MiniMapBitmapTexture = NULL;	//TO INTERNAL RENDER!
+	/* DXrendertextureclass* */ void* m_BorderTexture = NULL;
+	/* DXrendertextureclass* */ void* m_PointTexture = NULL;
+#endif
+
+	UINT billboardRrenderCount = 0;
+
+
 #ifdef INTRO_DEMO
 	void	initIntroCreditsDemo(void* pContext);
 #endif
 
-    UINT CHG_COMPOUND = -1; //Init with a non valid index
 
 // ---------------------------------------------------------------------
 // PRIVATE VARS:
@@ -448,23 +525,12 @@ private:
 #endif
 	void	Render_SKY_SUN_MOON(float);				//30
 
-#if defined USE_DIRECT_INPUT//|| defined INTRO_DEMO
+#if defined USE_DIRECT_INPUT
 	PositionClass* m_NextPosition;
 #endif
 
 public:
 	float	dt=0;	// Delta time
-
-#if defined SCENE_COMPOUND
-	void LoadCompound(int i, WomaDriverClass* Driver);
-	UINT totalCompoundLoaded = 0;
-	UINT totalRenderCompound = 0;
-	void RenderCompound(UINT i, UINT p);
-	void RenderAllCompounds(UINT p);
-	void RenderAllTransparentCompounds();
-
-	UINT N_COMPOUNDS;
-#endif
 
 	//---------------------------------------------------------------------
 	//TO SAFE DELETE: void ApplicationClass::WOMA_APPLICATION_Shutdown()
@@ -598,33 +664,39 @@ public:
 	#define MINIMAP_TERRAIN_ID			4 //lvl99
 	VirtualModelClass* m_TerrainModel[MAX_TERRAINS] = {};				// Model: For using only [0]
 
-#if defined SCENE_TERRAIN_QUAD_TREE //67
-	TerrainQuadtreeClass* TerrainQuadtree;
-#endif
-#if defined USE_ASSIMP_LATEST && DEMO_LEVEL >= 79 && DEMO_LEVEL <= 80
-	//The Scene
-	MyAnimationScene* myScene = NULL;
-	bool myScene_has_animation = false;
-#endif
-
-#if DX_ENGINE_LEVEL >= 89 && defined USE_MAP_EDITOR
-	void anyMouseClickToPick();
-	void CheckEditor(int hitIndex, int c);
-#endif
-
 };
-
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-#define SunDistance 512
-
-#include "commonfunctionsInterfaces.h"
 
 extern float sort_cameraX;
 extern float sort_cameraY;
 extern float sort_cameraZ;
 
 extern void* getvoidcontext();
+extern std::vector<VirtualModelClass*> objModel;
 
+#if defined USE_DIRECT_INPUT	//lvl28
+extern std::vector<PositionClass*> m_Position;
 #endif
 
+extern UINT world_visibleModelList_size;
+
+extern XMVECTOR prwsPos, prwsDir;
+extern void DetectCollisions();
+extern compoundTreeLoadOrder compoundLoadingOrder[5000]; // MAX: 5000 OBJs on Scene
+extern float	closestObjDist;
+extern XMVECTOR faceNormalClosestObject;
+extern void pickRayVector(float mouseX, float mouseY, XMVECTOR& pickRayInWorldSpacePos, XMVECTOR& pickRayInWorldSpaceDir);
+extern float pick(XMVECTOR pickRayInWorldSpacePos, XMVECTOR pickRayInWorldSpaceDir, std::vector<XMFLOAT3>& vertPosArray,
+	std::vector<UINT/*DWORD*/>& indexPosArray, XMMATRIX& worldSpace, bool getPoligon = false);
+extern bool PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTOR& triV3, XMVECTOR& point);
+
+#include "commonfunctionsInterfaces.h"
+
+extern UINT CHG_COMPOUND; //Init with a non valid index
+extern void anyMouseClickToPick();
+extern void CheckEditor(int hitIndex, int c);
+
+extern INT treeGSid;
+
+#define SunDistance 512
+
+#endif

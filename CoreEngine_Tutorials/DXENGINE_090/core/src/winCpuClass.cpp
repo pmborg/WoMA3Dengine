@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: winCpuClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,13 +17,13 @@
 //   Get processor benchmark info
 //   Allocate logical processors to different threads
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "main.h"
 
 #if CORE_ENGINE_LEVEL >= 6 && !defined WIN_XP // Initializing Engine
 #include "winCpuClass.h"
-#include <math.h>
+//#include <math.h>
 #include <Pdh.h>
 
 #ifdef X64
@@ -35,7 +35,6 @@
 WinCpuClass::WinCpuClass()
 {
 	CLASSLOADER();
-    WomaIntegrityCheck = 1234525217;
 
 	//private:
     m_canReadCpu=false;
@@ -51,18 +50,19 @@ WinCpuClass::~WinCpuClass() { Shutdown(); CLASSDELETE(); }
 
 // More Info:
 // http://technet.microsoft.com/en-us/library/cc750967.aspx
-
+// MultiThreading:
+// http://msdn.microsoft.com/en-us/library/windows/desktop/ff476884%28v=vs.85%29.aspx
+//
 //The Initialize function will setup the handle for querying the cpu on its usage. 
 //The query setup here will combine the usage of all the cpus in the system and gives us back a total instead of each 
 //individual cpu's usage. If it can't get a query handle or poll the cpu usage for whatever reason it will set the m_canReadCpu flag 
 //to false and just keep the cpu usage at zero percent. Some cpus and operating systems privilege levels can cause this to fail. 
 //We also start the timer so we only sample the cpu usage once a second.
-
+//
 void WinCpuClass::Initialize()
 {
     PDH_STATUS status;
     CONST TCHAR* COUNTER_PATH = TEXT("\\Processor(_Total)\\% processor time");            //C:\Windows\system32>typeperf -q Processor
-    //CONST PWSTR COUNTER_PATH_PT = L"\\processador(_Total)\\% de tempo do processador";  //C:\Windows\system32>typeperf -q processador
 
     // Initialize the flag indicating whether this object can read the system cpu usage or not.
     m_canReadCpu = true;
@@ -74,7 +74,6 @@ void WinCpuClass::Initialize()
 
     // Set query object to poll all cpus in the system.
     status = PdhAddEnglishCounter(m_queryHandle, COUNTER_PATH, 0, &m_counterHandle);// Req. Windows VISTA! Dont Work on XP
-    //status = PdhAddCounter(m_queryHandle, COUNTER_PATH_PT, 0, &m_counterHandle);// Win7 PT (64 bits only!)
 
     if (status != ERROR_SUCCESS)
         m_canReadCpu = false;
@@ -85,7 +84,7 @@ void WinCpuClass::Initialize()
 }
 
 //The Shutdown function releases the handle we used to query the cpu usage.
-
+//
 void WinCpuClass::Shutdown()
 {
     if (m_canReadCpu)
@@ -98,7 +97,7 @@ void WinCpuClass::Shutdown()
 //Just like the FpsClass we have to call the Frame function each frame. But to reduce the amount of querying we use a m_lastSampleTime 
 //variable to ensure we only sample once a second. So each second we ask the cpu for its usage and save that value in m_cpuUsage. 
 //More than this is not necessary.
-
+//
 void WinCpuClass::Frame()
 {
     PDH_FMT_COUNTERVALUE value;
@@ -119,7 +118,7 @@ void WinCpuClass::Frame()
 
 //The GetCpuPercentage function returns the value of the current cpu usage to any calling function. 
 //Once again if it couldn't read the cpu for whatever reason we just set the usage to zero.
-
+//
 int WinCpuClass::GetCpuPercentage()
 {
     return (m_canReadCpu) ? m_cpuUsage : 0;
@@ -128,10 +127,6 @@ int WinCpuClass::GetCpuPercentage()
 #endif
 
 #if defined USE_LOADING_THREADS
-// MultiThreading:
-// http://msdn.microsoft.com/en-us/library/windows/desktop/ff476884%28v=vs.85%29.aspx
-//
-
 int getCpuNumberFromMask(DWORD_PTR dwAffinityMask)
 {
     int id = 0;

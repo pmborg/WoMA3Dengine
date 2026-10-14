@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: xml_settings_saver.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -21,7 +21,7 @@
 //  - Release use:     C:\Users\<user>\AppData\Local\Pmborg\Woma2014\"file".xml (WOMA::APPDATA)
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma warning(disable: 4244)
 
@@ -100,16 +100,35 @@ bool XMLloader::saveXMLsettingsFile (char* file) // Note: Have to be char
 				DRIVER_DX11 = 0,
 				DRIVER_GL3,
 				DRIVER_DX9,
-				DRIVER_DX12
+				DRIVER_DX12,
+				VULKAN
 			*/
-			if (WOMA::AppSettings->DRIVER == DRIVER_DX11)
+			switch (WOMA::AppSettings->DRIVER)
+			{
+			case DRIVER_DX11:
 				child_driver->SetAttribute("name", "DX11");
-			if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
+				break;
+
+			case DRIVER_GL3:
 				child_driver->SetAttribute("name", "GL3+");
-			if (WOMA::AppSettings->DRIVER == DRIVER_DX9)
+				break;
+
+			case DRIVER_DX9:
 				child_driver->SetAttribute("name", "DX9");
-			if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
+				break;
+
+			case DRIVER_DX12:
 				child_driver->SetAttribute("name", "DX12");
+				break;
+
+			case DRIVER_VULKAN:
+				child_driver->SetAttribute("name", "VULKAN");
+				break;
+
+			default:
+				child_driver->SetAttribute("name", "DX11");
+				break;
+			}
 
 			str = (WOMA::AppSettings->UseAllMonitors) ? "true" : "false";
 			child_driver->SetAttribute("UseAllMonitors", str.c_str());

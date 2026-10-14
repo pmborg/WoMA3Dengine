@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: ApplicationTextClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
@@ -38,14 +38,12 @@
 #define TEXT_BILLRENDERCOUNT    10  // 89
 #define TEXT_LATENCY			11	// 140
 
-#if DX_ENGINE_LEVEL >= 89 && defined USE_MAP_EDITOR // #if TUTORIAL_PRE_CHAP >= 12
+#if DX_ENGINE_LEVEL >= 89// && defined USE_MAP_EDITOR // #if TUTORIAL_PRE_CHAP >= 12
 #define TEXT_COMPOUND_ID    12
 #define TEXT_COMPOUND       13 //LAST!
 #endif
 
 #define N_TEXT_MAX_SENTENCE 14 // LAST+1
-
-
 
 #if TUTORIAL_PRE_CHAP >= 45 && TUTORIAL_PRE_CHAP < 55// BILLBOARD
 #define N_TEXT_MAX_SENTENCE 8
@@ -78,21 +76,18 @@
 */
 #endif
 
-namespace DirectX {
-
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: ApplicationTextClass
 ////////////////////////////////////////////////////////////////////////////////
 class ApplicationTextClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234525217;
 	ApplicationTextClass();
 	~ApplicationTextClass();
 
-	bool Initialize(ID3D11DeviceContext* pContext, void* Driver);
+	bool Initialize(void* pContext, void* Driver);
 	bool Shutdown();
-	void Render();
+	void Render(void* pContext);
 
 	void SetFps(int);
 	void SetCpu(int);
@@ -100,38 +95,38 @@ public:
 	void SetCameraPosition(float, float, float);
 	void SetCameraRotation(float, float, float);
 
-	#if defined INTRO_DEMO
+	#if _NOT //defined INTRO_DEMO
 		void SetTime(INT64 dt);
 		void SetFade(float fade);
 		void SetScreenToShow(UINT screenToShow, UINT render_page);
 	#endif
 
-    #if DX_ENGINE_LEVEL >= 89 && defined USE_MAP_EDITOR // #if TUTORIAL_PRE_CHAP >= 12 
+    #if DX_ENGINE_LEVEL >= 89// && defined USE_MAP_EDITOR // #if TUTORIAL_PRE_CHAP >= 12 
     void SetCompoundPosition(CHAR* file, float dist, UINT, float, float, float, float scale, float rotY);
     #endif
 
-	#if DX_ENGINE_LEVEL >= 30 && _DEBUG
+	#if DX_ENGINE_LEVEL >= 30 && defined _DEBUG
     void SetRenderCount(int terrainCount, int compoundCount, UINT totalCompoundLoaded);
 	#endif
 
-	#if TUTORIAL_PRE_CHAP >= 14 && _DEBUG
+	#if TUTORIAL_PRE_CHAP >= 14 && defined _DEBUG
 	void SetLoboRenderCount(int count);
 	#endif
 
 #if TUTORIAL_CHAP >= 60 && !defined RELEASE // BILLBOARD
 	void SetBillRenderCount(int count, UINT deltaTime);
-	#endif
+#endif
 
-	#if TUTORIAL_PRE_CHAP >= 63 && _DEBUG
+	#if TUTORIAL_PRE_CHAP >= 63 && defined _DEBUG
 	void SetXP(UINT XP, UINT maxXP, float percent);
 	void SetGold(float gold);
 	#endif
 
-	#if TUTORIAL_PRE_CHAP >= 90 && _DEBUG
+	#if TUTORIAL_PRE_CHAP >= 90 && defined _DEBUG
 	void SetLatency(int latency);
 	#endif
 
-	#if TUTORIAL_PRE_CHAP >= 200 && _DEBUG
+	#if TUTORIAL_PRE_CHAP >= 200 && defined _DEBUG
 	//TextClass now has a new function for setting the data to print out.
 	void SetVideoCardInfo(char*, int);
 	void SetMousePosition(int mouseX, int mouseY, LONG mouseMovement);
@@ -142,4 +137,5 @@ public:
 	VirtualTextClass*	m_Text = NULL;
 };
 
-}
+
+
