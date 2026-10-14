@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: playerClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
@@ -25,7 +25,7 @@
 ///////////////////////////////
 #include "main.h"
 
-#if defined DX11
+#if defined WINDOWS_PLATFORM
 // -------------------------------------------------------------------------------------------
 // Use OLD xnamath from DirectX SDK June2010 or Windows Kit 8?
 // -------------------------------------------------------------------------------------------
@@ -50,7 +50,6 @@
 #include <DirectXMath.h>// Use Math
 using namespace DirectX;
 #endif
-
 	
 /////////////
 // GLOBALS //
@@ -60,7 +59,7 @@ typedef struct playerType
 {	
 	// Current Position:
 	// --------------------------------------------------------------------------------
-	#if defined DX_ENGINE
+	#if defined WINDOWS_PLATFORM
 	XMMATRIX	m_world;	// World Matrix: our position in the 3D world space
 	#endif
     bool online;			// Network State
@@ -75,13 +74,13 @@ typedef struct playerType
 
 	//EXIT:
 	bool IsEscapePressed=false;	
+	bool IsSpacePressed =false;
 
 	//BASE MOVEMENT:
 	bool IsLeftPressed;		    // a
 	bool IsRightPressed;	    // d
     bool IsUpPressed;		    // w
     bool IsDownPressed;		    // s
-#if defined USE_MAP_EDITOR
     bool IsEDITORNumPad4;	    // NumPad: 4
     bool IsEDITORNumPad6;	    // NumPad: 6
 
@@ -89,7 +88,6 @@ typedef struct playerType
     bool IsEDITORRightPressed;	// ->
     bool IsEDITORUpPressed;		//  ^
     bool IsEDITORDownPressed;	//  v
-#endif
     bool IsStrafeLeftPressed;	// q
     bool IsStrafeRightPressed;	// e
 
@@ -113,10 +111,8 @@ typedef struct playerType
 	bool IsNumPadPlus;		// work also with L CTRL or R CTRL
 	bool IsNumPadMinus;		// work also with L CTRL or R CTRL
 
-#if DX_ENGINE_LEVEL >= 89 && defined USE_MAP_EDITOR // #if TUTORIAL_PRE_CHAP >= 12
     bool IsShift;			// DEBUG - Both Shifts
     bool IsRctrlPressed;	// DEBUG
-#endif
 
 	//MAP:
 	bool IsMapPressed;		// M
@@ -132,12 +128,11 @@ typedef struct playerType
 class PlayerClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234525217;
 	PlayerClass(UINT id);
 	~PlayerClass();
 
 public:
-	playerType p_player;
+	playerType p_player = {};
 
 };
 

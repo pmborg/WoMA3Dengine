@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------------------------------------
 // Filename: DXcameraClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // ----------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
@@ -45,7 +45,7 @@
 // Windows includes
 #include <Windows.h>
 
-	// STL includes
+// STL includes
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -55,7 +55,7 @@
 #include <string>
 #include <array>
 
-	// DX12 includes
+// DX12 includes
 #include <dxgi1_4.h>	// Always 1st!	(Select Driver)
 #include <d3d12.h>		// DX12			(Select Device)
 #include <D3Dcompiler.h>// Use Comiler
@@ -80,7 +80,6 @@
 class DXcameraClass : public VirtualCameraClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234525217;
 	DXcameraClass(UINT camera_type = 0);
 	~DXcameraClass();
 
@@ -117,8 +116,8 @@ public:
 
 private:
 #if defined DX12 || defined DX11 || defined DX9
-	XMVECTOR /*XMFLOAT3*/ lookAt;
-	XMVECTOR /*XMFLOAT3*/ up;
+	XMVECTOR lookAt;
+	XMVECTOR up;
 #endif
 
 #if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28

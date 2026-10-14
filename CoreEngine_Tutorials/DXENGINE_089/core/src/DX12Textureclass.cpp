@@ -2,7 +2,7 @@
 // Filename: DX12TextureClass.cpp
 // --------------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------------
-// World of Middle Age  - 3D Multi-Platform ENGINE 2025
+// World of Middle Age  - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
 // code by : Pedro Borges - pmborg@yahoo.com
 // Downloaded from : woma.servegame.com
@@ -10,7 +10,7 @@
 // PURPOSE:
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
 
@@ -23,7 +23,7 @@
 DX12TextureClass::DX12TextureClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525217;
+
 
 	//m_textureID = NULL;
 	loaded = false;
@@ -34,7 +34,7 @@ DX12TextureClass::~DX12TextureClass() {CLASSDELETE();}
 bool DX12TextureClass::Initialize(void* g_driver, TCHAR* filename, unsigned int textureUnit, bool wrap)
 {
 	// Load the Image file.
-	loaded = loadImage(g_driver, filename, wrap);
+	loaded = loadImage(NULL, g_driver, filename, wrap);
 
 	return loaded;
 }
@@ -53,7 +53,7 @@ void DX12TextureClass::Shutdown()
 #pragma warning( push )
 #pragma warning( disable : 4996 )
 // ----------------------------------------------------------------------------------------
-bool DX12TextureClass::loadImage(void* g_driver, TCHAR *fileName, bool wrap)
+bool DX12TextureClass::loadImage(void* pContext, void* g_driver, TCHAR *fileName, bool wrap)
 // ----------------------------------------------------------------------------------------
 {
 	UINT imageSize = 0;
