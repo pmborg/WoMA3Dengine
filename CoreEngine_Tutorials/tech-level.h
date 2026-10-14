@@ -80,7 +80,7 @@
     #endif
 
 #if CORE_ENGINE_LEVEL >= 5
-    //#if !defined ANDROID_PLATFORM
+	//#if !defined ANDROID_PLATFORM && defined NewWomaEngine 
     #define USE_TINYXML_LOADER      //5
     //#endif
     #if defined WINDOWS_PLATFORM
@@ -1209,7 +1209,7 @@
     #undef  dx12_upload_old_way
 
     #if DX_ENGINE_LEVEL < 94
-    #if DX_ENGINE_LEVEL != 29 && DX_ENGINE_LEVEL != 76
+    #if DX_ENGINE_LEVEL != 29 && DX_ENGINE_LEVEL != 76 && DX_ENGINE_LEVEL != 86
     #undef USE_INTRO_VIDEO_DEMO
     #endif
     #endif

@@ -189,9 +189,10 @@ void android_main(android_app* state)       // ENTRY-POINT: ANDROID(DEBUG/RELEAS
     while (!engine.has_focus_)             //Means: window created.
         process_events(&engine, app);
 
-#if defined ANDROID_PLATFORM && DX_ENGINE_LEVEL >= 30
+#if defined ANDROID_PLATFORM && DX_ENGINE_LEVEL >= 30 && !defined NewWomaEngine
 	//AndroidSetLandscape(&engine);
 #endif
+
     int argc = 0;
     char* argv[1] = { nullptr };
     ENGINE_MAIN(argc, argv);           // ENTRY-POINT: ANDROID(DEBUG/RELEASE)!

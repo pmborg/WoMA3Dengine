@@ -33,8 +33,8 @@
 #if defined ANDROID_PLATFORM
 #define FILE_REPORT_LOG     TEXT("/report.txt") // /data/user/0/com.woma/cache/report.txt
 #else
-#define FILE_REPORT_LOG     TEXT("report.txt")  // C:\WoMAengine2023\DXEngine_055\report.txt
-#endif                                          // \\wsl.localhost\Ubuntu\home\pedro\projects\LinuxWoma\bin\x64\Debug\report.txt
+#define FILE_REPORT_LOG     TEXT("report.txt")
+#endif
 //--------------------------------------------------------------------------------------------------------
  
 #if CORE_ENGINE_LEVEL == 0
