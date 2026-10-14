@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: AudioClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,7 +17,7 @@
 // PURPOSE: The AudioClass is the Interface Audio to Client EXE 
 //			 No need to Link audio LIBs on client EXE
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "OSengine.h"
 #if DX_ENGINE_LEVEL >= 29 && (defined USE_WIN32_SOUND_MANAGER || defined USE_WIN32_PLAY_MUSIC)

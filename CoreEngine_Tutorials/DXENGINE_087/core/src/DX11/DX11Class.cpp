@@ -1,9 +1,9 @@
 ﻿// ----------------------------------------------------------------------------------------------
 // Filename: DX11Class.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -22,6 +22,7 @@
 
 #include "OSengine.h"
 #include "mem_leak.h"
+
 #if defined DX_ENGINE
 #include "OSmain_dir.h"
 
@@ -38,8 +39,8 @@
 #include "InputClass.h"
 
 #include "Math3D.h"
-#include "DXcameraClass.h"
 
+#include "DXmodelClass.h"
 #include "dxWinSystemClass.h"	// SystemHandle
 #include "dx11Class.h"
 
@@ -60,7 +61,7 @@ std::vector<DXTextLine> allTextArray;
 // Globals:
 // ----------------------------------------------------------------------------------------------
 
-std::vector<UINT> FSAA_possibleValues;
+COMMON_API std::vector<DXwindowDataContainer> DX11windowsToRenderArray;
 
 namespace DirectX {
 
@@ -79,7 +80,6 @@ DX11Class::DX11Class()
 {
 	// WomaDriverClass / Public: -------------------------------------------------
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525217;
 
 	// SUPER: 
 	dx11_force_dx9 = false;
@@ -237,7 +237,7 @@ void DX11Class::Shutdown()
 {
 	if (m_deviceContext)
 	{
-		for (int i = 0; i < DX11windowsArray.size(); i++)
+		for (int i = 0; i < DX11windowsToRenderArray.size(); i++)
 			DeleteViewBuffers(i);
 	}
 
@@ -280,9 +280,9 @@ for (UINT i = 0; i < 3; i++)
     }
 
 	// For each Monitor: 
-	for (int i = 0; i < DX11windowsArray.size(); i++) {
-		if (DX11windowsArray[i].m_swapChain1)
-			SAFE_RELEASE(DX11windowsArray[i].m_swapChain1);
+	for (int i = 0; i < DX11windowsToRenderArray.size(); i++) {
+		if (DX11windowsToRenderArray[i].m_swapChain1)
+			SAFE_RELEASE(DX11windowsToRenderArray[i].m_swapChain1);
 	}
 
     ULONG count = 0;
@@ -476,7 +476,7 @@ bool DirectX::DX11Class::OnInit(int g_USE_MONITOR, /*HWND*/void* hwnd, int scree
 
 	//Init Step: 7 - CreateWindowSizeDependentResources including SwapChain.
 	// Creates a render target view and depth stencil surface/view per SWAPCHAIN
-	for (UINT m = 0; m < SystemHandle->windowsArray.size(); m++)
+	for (UINT m = 0; m < WOMA::windowsToRenderArray.size(); m++)
 	{
 		ASSERT(Resize(m, screenWidth, screenHeight, screenNear, screenDepth, fullscreen, depthBits));
 	}
@@ -512,22 +512,22 @@ void DX11Class::DeleteViewBuffers(UINT i)
 	m_deviceContext->OMSetRenderTargets(0, NULL, NULL);
 
     // For each Monitor: 
-	if (i < DX11windowsArray.size())
+	if (i < DX11windowsToRenderArray.size())
     {
-		SAFE_RELEASE(DX11windowsArray[i].m_renderTargetView);	// (backBufferRTV)
-		SAFE_RELEASE(DX11windowsArray[i].m_depthStencilView);	// 
+		SAFE_RELEASE(DX11windowsToRenderArray[i].m_renderTargetView);	// (backBufferRTV)
+		SAFE_RELEASE(DX11windowsToRenderArray[i].m_depthStencilView);	// 
 		
-        SAFE_RELEASE(DX11windowsArray[i].m_backBuffer);			// m_renderTarget
-		SAFE_RELEASE(DX11windowsArray[i].m_depthStencilBuffer);	// 
+        SAFE_RELEASE(DX11windowsToRenderArray[i].m_backBuffer);			// m_renderTarget
+		SAFE_RELEASE(DX11windowsToRenderArray[i].m_depthStencilBuffer);	// 
     }
 
     m_deviceContext->Flush();
 
 	// For each Monitor, Before shutting down set to windowed mode or when you release the swap chain it will throw an exception.
-	//if (i < DX11windowsArray.size())
+	//if (i < DX11windowsToRenderArray.size())
 	//{
-	//	if (DX11windowsArray[i].m_swapChain1)
-	//		DX11windowsArray[i].m_swapChain1->SetFullscreenState(false, NULL);
+	//	if (DX11windowsToRenderArray[i].m_swapChain1)
+	//		DX11windowsToRenderArray[i].m_swapChain1->SetFullscreenState(false, NULL);
 	//}
 }
 
@@ -594,9 +594,9 @@ bool DirectX::DX11Class::create_or_resize_swap(UINT USE_MONITOR, int screenWidth
 		DeleteViewBuffers(USE_MONITOR); // Clear the previous window size specific context.
 
 		// #Resize: Init Step: 8 - Resize internal Buffers for new Window size:
-		if (USE_MONITOR + 1 <= DX11windowsArray.size() && DX11windowsArray[USE_MONITOR].m_swapChain1 != NULL)
+		if (USE_MONITOR + 1 <= DX11windowsToRenderArray.size() && DX11windowsToRenderArray[USE_MONITOR].m_swapChain1 != NULL)
 		{
-			result = (DX11windowsArray[USE_MONITOR].m_swapChain1->ResizeBuffers(swapbufferscount, screenWidth, screenHeight, DXGI_FORMAT_R8G8B8A8_UNORM, 0));
+			result = (DX11windowsToRenderArray[USE_MONITOR].m_swapChain1->ResizeBuffers(swapbufferscount, screenWidth, screenHeight, DXGI_FORMAT_R8G8B8A8_UNORM, 0));
 			// If the device was reset we must completely reinitialize the renderer.
 			if (result == DXGI_ERROR_DEVICE_REMOVED || result == DXGI_ERROR_DEVICE_RESET)
 			{
@@ -609,10 +609,10 @@ bool DirectX::DX11Class::create_or_resize_swap(UINT USE_MONITOR, int screenWidth
 			// --------------------
 			// SWAPCHAINDESC.FORMAT
 			// --------------------
-			if (WOMA::game_state == GAME_LOADING || (WOMA::game_state == GAME_SETUP || DX11windowsArray.size() == 0) || DX11windowsArray.size() == 0 || USE_MONITOR >= DX11windowsArray.size())
+			if (WOMA::game_state == GAME_LOADING || (WOMA::game_state == GAME_SETUP || DX11windowsToRenderArray.size() == 0) || DX11windowsToRenderArray.size() == 0 || USE_MONITOR >= DX11windowsToRenderArray.size())
 			{
 				DXwindowDataContainer DXwindow = { 0 };
-				DX11windowsArray.push_back(DXwindow);
+				DX11windowsToRenderArray.push_back(DXwindow);
 			}
 
 			// ===========================================================
@@ -653,7 +653,7 @@ bool DirectX::DX11Class::create_or_resize_swap(UINT USE_MONITOR, int screenWidth
 				swapChainDesc.SampleDesc.Count = 1;
 				swapChainDesc.SampleDesc.Quality = 0;
 			}
-	//AQUI
+
 	#if false //OP1:
 			// Disable FLIP if not on a supporting OS
 			ComPtr<IDXGIFactory2>               m_dxgiFactory;
@@ -661,7 +661,7 @@ bool DirectX::DX11Class::create_or_resize_swap(UINT USE_MONITOR, int screenWidth
 			ComPtr<IDXGIFactory4> factory4;
 			if (FAILED(m_dxgiFactory.As(&factory4)))
 			{
-				DX11windowsArray[USE_MONITOR].DX11_GPU_supportFLIP = FALSE;
+				DX11windowsToRenderArray[USE_MONITOR].DX11_GPU_supportFLIP = FALSE;
 			#ifdef _DEBUG
 				womalog("INFO: Flip swap effects not supported");
 			#endif
@@ -673,11 +673,11 @@ bool DirectX::DX11Class::create_or_resize_swap(UINT USE_MONITOR, int screenWidth
 				ComPtr<IDXGIAdapter> adp;  gdev->GetAdapter(&adp);
 				adp->GetParent(IID_PPV_ARGS(&f2));
 			}
-			DX11windowsArray[USE_MONITOR].DX11_GPU_supportFLIP = (bool)f2;
+			DX11windowsToRenderArray[USE_MONITOR].DX11_GPU_supportFLIP = (bool)f2;
 	#endif
 
 			// Discard the back buffer contents after presenting.
-			if (swapChainDesc.BufferCount > 1 && !WOMA::AppSettings->FULL_SCREEN && DX11windowsArray[USE_MONITOR].DX11_GPU_supportFLIP)
+			if (swapChainDesc.BufferCount > 1 && !WOMA::AppSettings->FULL_SCREEN && DX11windowsToRenderArray[USE_MONITOR].DX11_GPU_supportFLIP)
 			{
 				bool flipDiscardSupported = IsWindows10OrGreater();
 				swapChainDesc.SwapEffect = flipDiscardSupported ? DXGI_SWAP_EFFECT_FLIP_DISCARD
@@ -708,15 +708,23 @@ bool DirectX::DX11Class::create_or_resize_swap(UINT USE_MONITOR, int screenWidth
 			ComPtr<IDXGIFactory5> factory5;
 			if (SUCCEEDED(CreateDXGIFactory1(IID_PPV_ARGS(&factory5))))
 			{
-				hr = factory5->CheckFeatureSupport(DXGI_FEATURE_PRESENT_ALLOW_TEARING, &DX11windowsArray[USE_MONITOR].DX11_GPU_supportTearing, sizeof(DX11windowsArray[USE_MONITOR].DX11_GPU_supportTearing)); //Populate: allowTearing
-				DX11windowsArray[USE_MONITOR].DX11_GPU_supportHDR = TRUE;
+				hr = factory5->CheckFeatureSupport(DXGI_FEATURE_PRESENT_ALLOW_TEARING, &DX11windowsToRenderArray[USE_MONITOR].DX11_GPU_supportTearing, sizeof(DX11windowsToRenderArray[USE_MONITOR].DX11_GPU_supportTearing)); //Populate: allowTearing
+				DX11windowsToRenderArray[USE_MONITOR].DX11_GPU_supportHDR = TRUE;
 			}
+
+			womalog("supportTearing=%d flip=%d buffers=%d fullscreen=%d vsync=%d\n",
+				DX11windowsToRenderArray[USE_MONITOR].DX11_GPU_supportTearing,
+				DX11windowsToRenderArray[USE_MONITOR].DX11_GPU_supportFLIP,
+				swapChainDesc.BufferCount,
+				WOMA::AppSettings->FULL_SCREEN,
+				m_VSYNC_ENABLED);
+
 			// This don't allow the alt-enter switch:
-			//if (DX11windowsArray[USE_MONITOR].DX11_GPU_supportTearing && (swapChainDesc.BufferCount > 1 && !WOMA::AppSettings->FULL_SCREEN && DX11windowsArray[USE_MONITOR].DX11_GPU_supportFLIP))
-			//	swapChainDesc.Flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
+			if (DX11windowsToRenderArray[USE_MONITOR].DX11_GPU_supportTearing && (swapChainDesc.BufferCount > 1 && !WOMA::AppSettings->FULL_SCREEN && DX11windowsToRenderArray[USE_MONITOR].DX11_GPU_supportFLIP))
+				swapChainDesc.Flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
 #else
 			// Disable HDR if we are on an OS that can't support FLIP swap effects
-			DX11windowsArray[USE_MONITOR].DX11_GPU_supportHDR = FALSE;
+			DX11windowsToRenderArray[USE_MONITOR].DX11_GPU_supportHDR = FALSE;
 #endif
 
 
@@ -771,16 +779,16 @@ bool DirectX::DX11Class::create_or_resize_swap(UINT USE_MONITOR, int screenWidth
 			DXGI_SWAP_CHAIN_FULLSCREEN_DESC fsSwapChainDesc = {};
 			fsSwapChainDesc.Windowed = !fullscreen;
 
-			if (SystemHandle->windowsArray.size() == SystemHandle->allWindowsArray.size())
+			if (WOMA::windowsToRenderArray.size() == WOMA::allWindowsHwArray.size())
 			{
 				// Create a SwapChain from a Win32 window.
 				hr = dxgiFactory->CreateSwapChainForHwnd(
 					m_device11,
-					SystemHandle->windowsArray[USE_MONITOR].hWnd,
+					WOMA::windowsToRenderArray[USE_MONITOR].hWnd,
 					&swapChainDesc,
 					&fsSwapChainDesc,
 					nullptr,
-					&DX11windowsArray[USE_MONITOR].m_swapChain1
+					&DX11windowsToRenderArray[USE_MONITOR].m_swapChain1
 				);
 			}
 			else
@@ -792,7 +800,7 @@ bool DirectX::DX11Class::create_or_resize_swap(UINT USE_MONITOR, int screenWidth
 					&swapChainDesc,
 					&fsSwapChainDesc,
 					nullptr,
-					&DX11windowsArray[USE_MONITOR].m_swapChain1
+					&DX11windowsToRenderArray[USE_MONITOR].m_swapChain1
 				);
 			}
 
@@ -809,7 +817,7 @@ bool DirectX::DX11Class::create_or_resize_swap(UINT USE_MONITOR, int screenWidth
 			}
 
 #if defined USE_DX11_1_SETUP
-			if (DX11windowsArray[USE_MONITOR].DX11_GPU_supportHDR)
+			if (DX11windowsToRenderArray[USE_MONITOR].DX11_GPU_supportHDR)
 			{
 				UpdateHDRColorSpace(USE_MONITOR);
 			}
@@ -825,11 +833,18 @@ bool DX11Class::Resize (UINT USE_MONITOR, int screenWidth, int screenHeight, flo
 //----------------------------------------------------------------------------------------------
 {
 	RenderfirstTime = true;	 // Used on SPRITES!
+	BOOL full_screen = fullscreen;
 
-	IF_NOT_RETURN_FALSE(create_or_resize_swap(USE_MONITOR, screenWidth, screenHeight, fullscreen));
+	if (!DX11windowsToRenderArray.empty() && DX11windowsToRenderArray[USE_MONITOR].m_swapChain1)
+		DX11windowsToRenderArray[USE_MONITOR].m_swapChain1->GetFullscreenState(&fullscreen, nullptr);
 	
-if (m_deviceContext)
-		{
+	fullscreen = full_screen;
+
+	// [0] create_or_resize_swap
+	IF_NOT_RETURN_FALSE(create_or_resize_swap(USE_MONITOR, screenWidth, screenHeight, fullscreen));
+
+	if (m_deviceContext)
+	{
 		// #CreateViewBuffers:
 		// -------------------
 
@@ -839,13 +854,13 @@ if (m_deviceContext)
 		// [2] CreateTexture2D
 		IF_NOT_RETURN_FALSE(createDepthStencil(USE_MONITOR, screenWidth, screenHeight, fullscreen, depthBits));
 
-		// CreateDepthStencilView:
+		// [3] CreateDepthStencilView:
 		// -----------------------
 		// NOTE: need to be before createSetDepthStencilView()
 		setViewportDevice(m_deviceContext, USE_MONITOR, screenWidth, screenHeight);  // RSSetViewports: Map Screen clip space coordinates to the render target space
 
 #if defined SET_DEVICE_CAPABILITIES
-		// [3] CreateDepthStencilView / OMSetRenderTargets:
+		// [4] CreateDepthStencilView / OMSetRenderTargets:
 		ASSERT(createSetDepthStencilView(USE_MONITOR, screenWidth, screenHeight));
 #endif
 
@@ -853,17 +868,18 @@ if (m_deviceContext)
 		// This way the graphics that the pipeline renders will get drawn to our back buffer that we previously created. 
 		// With the graphics written to the back buffer we can then swap it to the front and display our graphics on the user's screen. 
 		//
-		// OMSetRenderTargets: NOTE: Need to be After [1], [2] and [3]
+		// [5] OMSetRenderTargets: NOTE: Need to be After [1], [2] and [4]
 		// For each Monitor: 
 		SetBackBufferRenderTarget(m_deviceContext, USE_MONITOR);
 
-		// #Generate new "ProjectionMatrix" and "OrthoMatrix"
+		// [6] #Generate new "ProjectionMatrix" and "OrthoMatrix"
 		// --------------------------------------------------
 		setProjectionMatrixWorldMatrixOrthoMatrix(screenWidth, screenHeight, screenNear, screenDepth);
 	}
 
-		RenderMapfirstTime = true;  // First time in main map != first time terrain render or mini mao render
+		RenderMapfirstTime = true;  // First time in main map != first time terrain render or mini map render
 
+		// [7] Initialize2Dand3DCamera
 #if defined CLIENT_SCENE_TEXT || defined USE_VIEW2D_SPRITES
 	Initialize2Dand3DCamera();
 #endif
@@ -889,14 +905,14 @@ VOID DX11Class::UpdateHDRColorSpace(UINT USE_MONITOR)
 
 	bool isDisplayMonitorHDR10 = false;
 
-	if (DX11windowsArray[USE_MONITOR].m_swapChain1)
+	if (DX11windowsToRenderArray[USE_MONITOR].m_swapChain1)
 	{
 		// To detect HDR support, we will need to check the color space in the primary
 		// DXGI output associated with the app at this point in time
 		// (using window/display intersection).
 
 		// Get the rectangle bounds of the app window.
-		RECT windowBounds = SystemHandle->windowsArray[USE_MONITOR].m_rcWindowClient;
+		RECT windowBounds = WOMA::windowsToRenderArray[USE_MONITOR].m_rcWindowClient;
 		//if (!GetWindowRect(m_window, &windowBounds))
 		//	throw std::system_error(std::error_code(static_cast<int>(GetLastError()), std::system_category()), "GetWindowRect");
 
@@ -950,35 +966,35 @@ VOID DX11Class::UpdateHDRColorSpace(UINT USE_MONITOR)
 		}
 	}
 
-	DX11windowsArray[USE_MONITOR].m_colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;	// Default for non HDR Display Monitor
+	DX11windowsToRenderArray[USE_MONITOR].m_colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;	// Default for non HDR Display Monitor
 
-	if ((DX11windowsArray[USE_MONITOR].DX11_GPU_supportHDR) && isDisplayMonitorHDR10)		//GPU support HDR and what about the monitor?
+	if ((DX11windowsToRenderArray[USE_MONITOR].DX11_GPU_supportHDR) && isDisplayMonitorHDR10)		//GPU support HDR and what about the monitor?
 	{
 		//GPU support HDR and Display monitor too? Great!
-		switch (DX11windowsArray[USE_MONITOR].m_backBufferFormat)
+		switch (DX11windowsToRenderArray[USE_MONITOR].m_backBufferFormat)
 		{
 		case DXGI_FORMAT_R10G10B10A2_UNORM:
 			// The application creates the HDR10 signal.
-			DX11windowsArray[USE_MONITOR].m_colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
+			DX11windowsToRenderArray[USE_MONITOR].m_colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
 			break;
 
 		case DXGI_FORMAT_R16G16B16A16_FLOAT:
 			// The system creates the HDR10 signal; application uses linear values.
-			DX11windowsArray[USE_MONITOR].m_colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709;
+			DX11windowsToRenderArray[USE_MONITOR].m_colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709;
 			break;
 		}
 	}
 
 	// Setup HDR Color Space:
-	ComPtr<IDXGISwapChain1>m_swapChain = DX11windowsArray[USE_MONITOR].m_swapChain1;
+	ComPtr<IDXGISwapChain1>m_swapChain = DX11windowsToRenderArray[USE_MONITOR].m_swapChain1;
 	ComPtr<IDXGISwapChain3> swapChain3;
 	if (m_swapChain && SUCCEEDED(m_swapChain.As(&swapChain3)))
 	{
 		UINT colorSpaceSupport = 0;
-		if (SUCCEEDED(swapChain3->CheckColorSpaceSupport(DX11windowsArray[USE_MONITOR].m_colorSpace, &colorSpaceSupport))
+		if (SUCCEEDED(swapChain3->CheckColorSpaceSupport(DX11windowsToRenderArray[USE_MONITOR].m_colorSpace, &colorSpaceSupport))
 			&& (colorSpaceSupport & DXGI_SWAP_CHAIN_COLOR_SPACE_SUPPORT_FLAG_PRESENT))
 		{
-			ThrowIfFailed(swapChain3->SetColorSpace1(DX11windowsArray[USE_MONITOR].m_colorSpace));
+			ThrowIfFailed(swapChain3->SetColorSpace1(DX11windowsToRenderArray[USE_MONITOR].m_colorSpace));
 		}
 	}
 }
@@ -1065,13 +1081,13 @@ void DirectX::DX11Class::SetBackBufferRenderTarget(void* ctx, UINT monitorWindow
 #if defined USE_DX11_1_SETUP
 	if (m_Context1)
 	{
-		m_Context1->OMSetRenderTargetsAndUnorderedAccessViews(1, &DX11windowsArray[monitorWindow].m_renderTargetView, DX11windowsArray[monitorWindow].m_depthStencilView, 0, 0, NULL, NULL);
-		m_Context1->RSSetViewports(1, &DX11windowsArray[monitorWindow].viewport);
+		m_Context1->OMSetRenderTargetsAndUnorderedAccessViews(1, &DX11windowsToRenderArray[monitorWindow].m_renderTargetView, DX11windowsToRenderArray[monitorWindow].m_depthStencilView, 0, 0, NULL, NULL);
+		m_Context1->RSSetViewports(1, &DX11windowsToRenderArray[monitorWindow].viewport);
 	}
 #else
 	{
-		pContext->OMSetRenderTargets(1, &DX11windowsArray[monitorWindow].m_renderTargetView, DX11windowsArray[monitorWindow].m_depthStencilView);
-		pContext->RSSetViewports(1, &DX11windowsArray[monitorWindow].viewport);
+		pContext->OMSetRenderTargets(1, &DX11windowsToRenderArray[monitorWindow].m_renderTargetView, DX11windowsToRenderArray[monitorWindow].m_depthStencilView);
+		pContext->RSSetViewports(1, &DX11windowsToRenderArray[monitorWindow].viewport);
 	}
 #endif
 }
@@ -1083,20 +1099,20 @@ bool DX11Class::CreateRenderTargetView (UINT i, int screenWidth, int screenHeigh
 {
 	// For each Monitor: 
 	{
-		if (DX11windowsArray[i].m_swapChain1) {
-			IF_FAILED_RETURN_FALSE(DX11windowsArray[i].m_swapChain1->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&DX11windowsArray[i].m_backBuffer));
+		if (DX11windowsToRenderArray[i].m_swapChain1) {
+			IF_FAILED_RETURN_FALSE(DX11windowsToRenderArray[i].m_swapChain1->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&DX11windowsToRenderArray[i].m_backBuffer));
 		} 
 		
 		CD3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDescMSAA(D3D11_RTV_DIMENSION_TEXTURE2DMS);			//MSAA_on
 		CD3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc(D3D11_RTV_DIMENSION_TEXTURE2D);					//MSAA_off
 #if defined USE_DX11_1_SETUP
-		IF_FAILED_RETURN_FALSE(m_device11->CreateRenderTargetView(DX11windowsArray[i].m_backBuffer,
+		IF_FAILED_RETURN_FALSE(m_device11->CreateRenderTargetView(DX11windowsToRenderArray[i].m_backBuffer,
 			&renderTargetViewDesc,
-			& DX11windowsArray[i].m_renderTargetView));	//backBufferRTV
+			& DX11windowsToRenderArray[i].m_renderTargetView));	//backBufferRTV
 #else
-		IF_FAILED_RETURN_FALSE(m_device11->CreateRenderTargetView	(DX11windowsArray[i].m_backBuffer, 
+		IF_FAILED_RETURN_FALSE(m_device11->CreateRenderTargetView	(DX11windowsToRenderArray[i].m_backBuffer, 
 								(WOMA::AppSettings->MSAA_Anisotropic) ? &renderTargetViewDescMSAA:&renderTargetViewDesc,
-								&DX11windowsArray[i].m_renderTargetView));	//backBufferRTV
+								&DX11windowsToRenderArray[i].m_renderTargetView));	//backBufferRTV
 #endif
 	}
 
@@ -1104,7 +1120,7 @@ bool DX11Class::CreateRenderTargetView (UINT i, int screenWidth, int screenHeigh
 }
 
 // ----------------------------------------------------------------------------------------------
-bool DX11Class::Initialize(float* clearColor)
+bool DX11Class::Initialize(float* clearColor, void* pContext)
 // ----------------------------------------------------------------------------------------------
 {
 	womalog("DX11Class::Initialize()\n");
@@ -1132,32 +1148,31 @@ void DX11Class::BeginScene(UINT monitorWindow)
 {
 #if defined USE_MULTI_MONITOR //!defined ANDROID_PLATFORM && defined DX_ENGINE && defined USE_MULTI_MONITOR && defined USE_DIRECT_INPUT
 	const float totalSpanDeg = 90.0f;            // total horizontal span across all 3
-	const float perMonitorDeg = totalSpanDeg / SystemHandle->windowsArray.size(); // 30°
-	if (SystemHandle->windowsArray.size() == 3)
+	const float perMonitorDeg = totalSpanDeg / WOMA::windowsToRenderArray.size(); // 30°
+	if (WOMA::windowsToRenderArray.size() == 3)
 	{
 		// TODO: settings.xml define: LEFT/RIGTH: Monitor
 		// Monitors Index:
 		// | 2 | 0 | 1 |
 		switch (monitorWindow) {
 		case 1:
-			DXsystemHandle->m_Camera->offsetDeg = +perMonitorDeg; //  90:3 = 30deg
+			DX_Camera->offsetDeg = +perMonitorDeg; //  90:3 = 30deg
 			break;
 		case 0:
-			DXsystemHandle->m_Camera->offsetDeg = 0;
+			DX_Camera->offsetDeg = 0;
 			break;
 		case 2:
-			DXsystemHandle->m_Camera->offsetDeg = -perMonitorDeg;	//  90:3 = 30deg
+			DX_Camera->offsetDeg = -perMonitorDeg;	//  90:3 = 30deg
 			break;
 		}
 	}
 
-	DXsystemHandle->m_Camera->m_rotationY = SystemHandle->m_Application->m_Position[g_NetID]->m_rotationY + DXsystemHandle->m_Camera->offsetDeg;
+	DX_Camera->m_rotationY = m_Position[g_NetID]->m_rotationY + DX_Camera->offsetDeg;
 #endif
 
 	// Clear Screen (RTV)
 #if defined INTRO_DEMO || (DX_ENGINE_LEVEL < 30 || !defined MAIN_RENDER_SKY) // With Sky Dome we don't need to wait time on clear screen
-	IF_RENDER_PAGE(RENDER_PAGE < 30)
-	m_deviceContext->ClearRenderTargetView(DX11windowsArray[monitorWindow].m_renderTargetView, driver_ClearColor);	// Clear the "back buffer":
+	m_deviceContext->ClearRenderTargetView(DX11windowsToRenderArray[monitorWindow].m_renderTargetView, driver_ClearColor);	// Clear the "back buffer":
 #endif
 
 	//Clear DSV
@@ -1182,7 +1197,7 @@ void DirectX::DX11Class::ResetResource(ID3D11DeviceContext* pContext, UINT monit
     //WHY 3,4,5...? hlsl use 4 registers: MAX
     //Texture2D shaderTexture			: register(t0);	// 21: Texture
     //Texture2D AlfaMapTexture			: register(t1);	// 33: AlfaMap
-    //Texture2D ShadowMapTexture : register(t2);	// 36: ShadowMap
+    //Texture2D ShadowMapTexture		: register(t2);	// 36: ShadowMap
     //									: register(t3);  t number...
 
     ID3D11ShaderResourceView* const pSRV[16] = { NULL };
@@ -1200,14 +1215,14 @@ void DX11Class::EndScene(UINT USE_MONITOR)
 	// vsync = false	Sequential	OFF	Unlimited FPS, but lower latency
 
 	// <PRINT THE 3D SCENE TO SCREEN> to Swap Chain (wait from VSYNC refresh rate, if it is the case)
-	ASSERT_DEBUG(DX11windowsArray[USE_MONITOR].m_swapChain1);
+	ASSERT_DEBUG(DX11windowsToRenderArray[USE_MONITOR].m_swapChain1);
 	{
 		UINT presentFlags = 0;
 #if defined USE_DX11_1_SETUP
-		if (IsWindows10OrGreater() && !m_VSYNC_ENABLED && DX11windowsArray[USE_MONITOR].DX11_GPU_supportTearing)
+		if (!m_VSYNC_ENABLED && DX11windowsToRenderArray[USE_MONITOR].DX11_GPU_supportTearing)
 			presentFlags = DXGI_PRESENT_ALLOW_TEARING;
 #endif
-		hr = DX11windowsArray[USE_MONITOR].m_swapChain1->Present((m_VSYNC_ENABLED == 0) ? 0 : 1, presentFlags);
+		hr = DX11windowsToRenderArray[USE_MONITOR].m_swapChain1->Present((m_VSYNC_ENABLED == 0) ? 0 : 1, presentFlags);
 	}
 
 	// Not an error: window is occluded (minimized/fully covered). You can skip work or Sleep(1).
@@ -1227,7 +1242,7 @@ void DX11Class::EndScene(UINT USE_MONITOR)
 		}
 	}
 
-	ResetResource(m_deviceContext, USE_MONITOR);
+	ResetResource(m_deviceContext, USE_MONITOR); //ResetShaderResources
 }
 
 
@@ -1242,11 +1257,9 @@ void DX11Class::GetProjectionMatrix(XMMATRIX& projectionMatrix)
 void DX11Class::setProjectionMatrixWorldMatrixOrthoMatrix (int screenWidth, int screenHeight,float screenNear, float screenDepth)
 // ----------------------------------------------------------------------------------------------
 {
-	float fieldOfView, screenAspect;
-
-	ASSERT(screenWidth * screenHeight);
-	ASSERT(screenNear > 0);
-	ASSERT(screenDepth > screenNear);
+	ASSERT_DEBUG(screenWidth * screenHeight);
+	ASSERT_DEBUG(screenNear > 0);
+	ASSERT_DEBUG(screenDepth > screenNear);
 
 	/*******************************************************************
 	* Set up: m_projectionMatrix and m_orthoMatrix
@@ -1255,15 +1268,18 @@ void DX11Class::setProjectionMatrixWorldMatrixOrthoMatrix (int screenWidth, int 
 	// We will need to keep a copy of this matrix so that we can pass it to our shaders that will be used to render our scenes. 
 
 	// Create the projection matrix:
-	UINT num_monitors = (UINT)SystemHandle->windowsArray.size();
+	UINT num_monitors = (UINT)WOMA::windowsToRenderArray.size();
 
-	fieldOfView =	(float)(PI / 4.0f) / // Or... 90deg => fieldOfView = (90 / 2) * 0,0174532925f;
-					num_monitors;		 // 90: 3(num "Impar" monitors)
-	screenAspect = (float)screenWidth / (float)screenHeight;
+	float fieldOfView =	(float)(PI / 4.0f) / // Or... 90deg => fieldOfView = (90 / 2) * 0,0174532925f;
+					     num_monitors;		 // 90: 3(num "Impar" monitors)
+	float screenAspect = (float)screenWidth / (float)screenHeight;
 
 	// Create the projection matrix for "3D" rendering.
 	m_projectionMatrix = XMMatrixPerspectiveFovLH( fieldOfView, screenAspect, screenNear, screenDepth);		// 3D PROJECTION
+
+#ifdef USE_SKY_CAMERA_DOME
     m_projectionMatrix_sky = XMMatrixPerspectiveFovLH(fieldOfView, screenAspect, screenNear, 512);			// SKY 3D PROJECTION
+#endif
 
 #if defined CLIENT_SCENE_TEXT || defined USE_VIEW2D_SPRITES
 	// And the final thing we will setup in the Initialize function is an orthographic projection matrix. 
@@ -1297,10 +1313,10 @@ void DX11Class::SetCamera2D()
 	DX11m_Camera2D.SetPosition(0.0f, 0.0f, -1.0f);	// NOTE: On 2D This values have always these values!
 
 	// Calculate: 2D ViewMatrix
-	DX11m_Camera2D.CalculateViewMatrix();			// ((OpenGLClass*)m_Driver)->m_Camera->Render(); || ((DX_CLASS*)m_Driver)->m_Camera->Render();
+	DX11m_Camera2D.CalculateViewMatrix();			// ((OpenGLClass*)m_Driver)->DX_Camera->Render(); || ((DX_CLASS*)m_Driver)->DX_Camera->Render();
 	DX11m_Camera2D.Use2DViewMatrix();				// Get the view from the camera and 2D objects.
 
-	DXsystemHandle->m_Camera->m_viewmatrix2D = DX11m_Camera2D.m_viewMatrix;
+	DX_Camera->m_viewmatrix2D = DX11m_Camera2D.m_viewMatrix;
 }
 
 // TODO: go to Virtual Class?
@@ -1309,7 +1325,7 @@ void DX11Class::Initialize2Dand3DCamera()
 // ----------------------------------------------------------------------------------------------
 {
 	// Set 2D Camera:
-	if (DXsystemHandle->m_Camera) 
+	if (DX_Camera)
 	{
 
 #if defined USE_VIEW2D_SPRITES
@@ -1317,20 +1333,20 @@ void DX11Class::Initialize2Dand3DCamera()
 #endif
 
 	// Set Normal 3D Camera: ( After: SetCamera2D() )
-	DXsystemHandle->m_Camera->SetPosition(	WOMA::AppSettings->INIT_CAMX, WOMA::AppSettings->INIT_CAMY, WOMA::AppSettings->INIT_CAMZ);
-	DXsystemHandle->m_Camera->SetRotation(	WOMA::AppSettings->INIT_ROTX, WOMA::AppSettings->INIT_ROTY, WOMA::AppSettings->INIT_ROTZ);
+	DX_Camera->SetPosition(	WOMA::AppSettings->INIT_CAMX, WOMA::AppSettings->INIT_CAMY, WOMA::AppSettings->INIT_CAMZ);
+	DX_Camera->SetRotation(	WOMA::AppSettings->INIT_ROTX, WOMA::AppSettings->INIT_ROTY, WOMA::AppSettings->INIT_ROTZ);
 	}
 
 	// Set fixed Sky Camera 3D Camera:
 #if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28
-	if (!DXsystemHandle->m_CameraSKY) {
-		DXsystemHandle->m_CameraSKY = NEW DXcameraClass; // DX Implementation
-		IF_NOT_THROW_EXCEPTION (DXsystemHandle->m_CameraSKY);
+	if (!DX_CameraSKY) {
+		DX_CameraSKY = NEW DXcameraClass; // DX Implementation
+		IF_NOT_THROW_EXCEPTION (DX_CameraSKY);
 	}
 
-	DXsystemHandle->m_CameraSKY->SetPosition(0.0f, 0.0f, 0.0f);
-	DXsystemHandle->m_CameraSKY->SetRotation(WOMA::AppSettings->INIT_ROTX, WOMA::AppSettings->INIT_ROTY, WOMA::AppSettings->INIT_ROTZ);
-	DXsystemHandle->m_CameraSKY->CalculateViewMatrix();
+	DX_CameraSKY->SetPosition(0.0f, 0.0f, 0.0f);
+	DX_CameraSKY->SetRotation(WOMA::AppSettings->INIT_ROTX, WOMA::AppSettings->INIT_ROTY, WOMA::AppSettings->INIT_ROTZ);
+	DX_CameraSKY->CalculateViewMatrix();
 #endif
 }
 
@@ -1342,12 +1358,12 @@ ID3D11DeviceContext* DX11Class::GetDeviceContext()
 }
 
 
-// TODO: go to Virtual Class?
+
 XMMATRIX* DX11Class::GetViewMatrix( UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix)
 {
 	#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
 	if (pass == PASS_SHADOWS)
-		return (XMMATRIX*)lightViewMatrix;
+		return (XMMATRIX*)lightViewMatrix;	// Use LightRay Camera position (for shadow map)!
 	else
 	#endif
 	{
@@ -1356,16 +1372,16 @@ XMMATRIX* DX11Class::GetViewMatrix( UINT camera, UINT projection, UINT pass, voi
 			default:
 			case PROJECTION_PERSPECTIVE:
 				if (camera == CAMERA_NORMAL)
-					return &DXsystemHandle->m_Camera->m_viewMatrix;		// TODO: Use a global matrix, one per frame
+					return &DX_Camera->m_viewMatrix;		
 				#if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28
 				else
-					return &DXsystemHandle->m_CameraSKY->m_viewMatrix;	// TODO: Use a global matrix, one per frame
+					return &DX_CameraSKY->m_viewMatrix;	
 				#endif
 				break;
 
 			#if defined CLIENT_SCENE_TEXT || defined USE_VIEW2D_SPRITES
 			case PROJECTION_ORTHOGRAPH:
-				 return &DXsystemHandle->m_Camera->m_viewmatrix2D;		// TODO: Use a global matrix, one per frame
+				 return &DX_Camera->m_viewmatrix2D;		
 				break;
 			#endif
 		}
@@ -1377,8 +1393,10 @@ XMMATRIX* DX11Class::GetViewMatrix( UINT camera, UINT projection, UINT pass, voi
 
 XMMATRIX* DX11Class::GetProjectionMatrix( UINT camera, UINT projection, UINT pass, void* lightViewMatrix, void* ShadowProjectionMatrix)
 {
+#ifdef USE_SKY_CAMERA_DOME
     if (camera == CAMERA_SKY)
         return &m_projectionMatrix_sky;
+#endif
 
 	#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
 	if (pass == PASS_SHADOWS)

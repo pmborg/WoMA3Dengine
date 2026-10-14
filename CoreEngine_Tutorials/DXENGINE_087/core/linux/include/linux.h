@@ -14,16 +14,17 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
+#if _NOT
 // MORE INFO IF NEEDED:
 // "D:\WoMAengine2014\EXTRA\DX12 Samples\CRYENGINE-release-5.4\CRYENGINE-release\Code\CryEngine\CryCommon\CryCore\Platform"
+#endif
 
 #ifndef __LINUX_H__
 
-//#include "platform.h"
 #define GL_GLEXT_PROTOTYPES
 #define GLX_GLXEXT_PROTOTYPES
 #include <GL/gl.h>
@@ -78,13 +79,13 @@ typedef unsigned long long   ULONGLONG;
 
 typedef struct MyWin
 {
-    Display* display;
-    Window		window;
-    int			width;
-    int			height;
-    GLXContext	context;
+    Display*	display = {};
+	Window		window = {};
+    int			width = {};
+    int			height = {};
+    GLXContext	context = {};
 
-    bool		ready;
+    bool		ready = {};
 };
 extern MyWin Win;
 
@@ -138,6 +139,7 @@ extern bool download(const std::string url, const std::string file_path);
 #define _stprintf _tprintf
 #define vsprintf_s(b,l,f,v) vsprintf(b,f,v);
 #define StringCchPrintf(a,b,format, ...) sprintf (a,format, __VA_ARGS__);
+#define StringCchPrintfA StringCchPrintf
 #define _tcslen strlen
 #define _tgetenv getenv
 #define _tcscpy_s strcpy
@@ -223,10 +225,10 @@ extern bool download(const std::string url, const std::string file_path);
 
 
 #define IDYES 1
-
+#if _NOT
 // GTK+		http://www.gtk.org/download/index.php
 // OPENGL	https://www.opengl.org/documentation/implementations/
-
+#endif
 extern void strcpy_s(char *strDestination, const char *strSource);
 extern void strcpy_s(char *strDestination, UINT numberOfElements, const char *strSource);
 extern void ItoA (int value, char* dest, int _Radix=10);
@@ -242,6 +244,9 @@ void check(const char hdr[] = "");
 #ifndef _countof
 #define _countof(x) ((sizeof(x)/sizeof(0[x])) / ((size_t)(!(sizeof(x) % sizeof(0[x])))))
 #endif
+
+#define SUCCEEDED(hr) (((HRESULT)(hr)) >= 0)
+typedef LONG            HRESULT;
 
 #ifndef S_OK
 #define S_OK         ((HRESULT)0L)

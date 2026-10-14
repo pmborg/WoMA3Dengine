@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: DXfrustumClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -14,7 +14,7 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
@@ -22,12 +22,6 @@
 #include "DXdrivers.h"
 #include <DirectXMath.h>
 using namespace DirectX;
-
-#if D3D11_SPEC_DATE_YEAR > 2009 && ENGINE_LEVEL < 60
-//error "You should Use: C:\\WoMAengine2014\\Microsoft_DirectX_SDK_June_2010\\Include"
-//C:\WoMAengine2014\Microsoft_DirectX_SDK_June_2010\Include
-//C:\WoMAengine2014\Microsoft_DirectX_SDK_June_2010\Lib\x64
-#endif
 
 // Class name: DXfrustumClass
 class DXfrustumClass
