@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: AutoGenTerrain.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -22,7 +22,7 @@
 // -PopulateTerrainModelVertexVector: height[][]		-> POPULATE modelVertexVector
 // 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
 
@@ -34,60 +34,85 @@
 #include "mem_leak.h"
 #include "ImageLoaderClass.h"
 #include "OSengine.h"				// To define OS [SystemHandle] Pointer (System Class) & define WomaSYSTEM for: WINDOWS, LINUX & ANDROID
+
+#ifdef WINDOWS_PLATFORM
 #include "winsystemclass.h"			// SystemHandle
+#include "woma_exception.h"
+#endif
+
 #include "fileLoader.h"
 #include "ApplicationClass.h"
+
+#ifdef VULKAN
+#include "vkModelClass.h"
+#endif
+
+
+
 
 // ---------------------------------------------------------------------------
 // LOAD HEIGHT MAP
 // ---------------------------------------------------------------------------
-
-// NOTE: Original version from Rastertek.
-
-// LoadHeightMapTerrain is a new function that loads the bitmap file containing the height map into the new height map array. 
-// If you want to use a more optimal file structure like .raw 
-// you can change the code to load that in instead. For simplicity however I used the bitmap format since it is very common 
-// and most people have worked with it before. 
-// Note that bitmap contains red, green, and blue colors. 
-// But since this is a grey scale image you can read either the red, green, or blue color 
-// as they will all be the same grey value and you only need one of them.
-bool CTerrain::LoadHeightMapTerrain(TCHAR* file, float xPos, float zPos, bool skipZero)
+bool CTerrain::LoadHeightMapTerrain(TCHAR* file_, float xPos, float zPos, bool skipZero)
 {
 	UINT imageSize = 0;
 	unsigned char* bitmapImage = NULL;
 	STRING filename;
-	filename.append(WOMA::LoadFile(file));
+	filename.append(WOMA::LoadFile(file_));
 
 #if D3D11_SPEC_DATE_YEAR == 2009 || LEVEL >= 60
-	FILE* filePtr;
 	int error;
 	unsigned int count;
 	BITMAPFILEHEADER bitmapFileHeader;
 	BITMAPINFOHEADER bitmapInfoHeader;
 
+#if defined ANDROID_PLATFORM
+	File file;
+#else
+	FILE* file = NULL;
+#endif
+
+#if defined _DEBUG
+	womalog("CTerrain::LoadHeightMapTerrain() - FILE: %S\n", filename.c_str());
+#endif
+
 	//[1] Begin by opening the file and then read it into a unsigned char array. Close the file after we are finished reading the data from it.
 	//	  Open the height map file in binary.
-	error = _tfopen_s(&filePtr, (TCHAR*)filename.c_str(), TEXT("rb"));
+#if defined ANDROID_PLATFORM
+	// open the BMP input file
+	if (!file.open(filename.c_str(), TEXT("rb")))
+		throwwoma_exception("LoadHeightMapTerrain failed!");
+#else
+	error = _tfopen_s(&file, (TCHAR*)filename.c_str(), TEXT("rb"));
 	if (error != 0)
-		throw woma_exception("LoadHeightMapTerrain failed!", __FILE__, __FUNCTION__, __LINE__);
+		throwwoma_exception("LoadHeightMapTerrain failed!");
+#endif
 
 	//[2] Read in the file header.
-	count = (UINT)fread(&bitmapFileHeader, sizeof(BITMAPFILEHEADER), 1, filePtr);
+#if !defined ANDROID_PLATFORM
+	count = (UINT)fread(&bitmapFileHeader, sizeof(BITMAPFILEHEADER), 1, file);
 	if (count != 1)
-		throw woma_exception("LoadHeightMapTerrain failed!", __FILE__, __FUNCTION__, __LINE__);
+#else
+	if (file.read(&bitmapFileHeader, sizeof(BITMAPFILEHEADER)) != sizeof(BITMAPFILEHEADER))
+#endif
+		throwwoma_exception("LoadHeightMapTerrain failed!");
 
 	//[3] Check Signature:
 	if (bitmapFileHeader.bfType != 0x4d42)	// "BM"
-		throw woma_exception("Error reading file!", __FILE__, __FUNCTION__, __LINE__);
+		throwwoma_exception("Error reading file!");
 
 	//[4] Read in the bitmap info header.
-	count = (UINT)fread(&bitmapInfoHeader, sizeof(BITMAPINFOHEADER), 1, filePtr);
+#if !defined ANDROID_PLATFORM
+	count = (UINT)fread(&bitmapInfoHeader, sizeof(BITMAPINFOHEADER), 1, file);
 	if (count != 1)
-		throw woma_exception("LoadHeightMapTerrain failed!", __FILE__, __FUNCTION__, __LINE__);
+#else
+	if (file.read(&bitmapInfoHeader, sizeof(BITMAPINFOHEADER)) != sizeof(BITMAPINFOHEADER))
+#endif
+	throwwoma_exception("LoadHeightMapTerrain failed!");
 
 	//[5] 1, 4 and 8 not supported:
 	if (bitmapInfoHeader.biBitCount < 24)
-		throw woma_exception("Error reading file!", __FILE__, __FUNCTION__, __LINE__);
+		throwwoma_exception("Error reading file!");
 
 	//Store the size of the terrain so we can use these values for building the vertex and index buffers as well as rendering the terrain.
 
@@ -103,18 +128,31 @@ bool CTerrain::LoadHeightMapTerrain(TCHAR* file, float xPos, float zPos, bool sk
 	IF_NOT_THROW_EXCEPTION(bitmapImage);
 
 	// Move to the beginning of the bitmap data.
-	fseek(filePtr, bitmapFileHeader.bfOffBits, SEEK_SET);
+#if !defined ANDROID_PLATFORM
+	fseek(file, bitmapFileHeader.bfOffBits, SEEK_SET);
+#else
+	androidSeek(file._A, bitmapFileHeader.bfOffBits, SEEK_SET);
+#endif
 
 	// Read in the bitmap image data.
-	count = (UINT)fread(bitmapImage, 1, imageSize, filePtr);
+#if !defined ANDROID_PLATFORM
+	count = (UINT)fread(bitmapImage, 1, imageSize, file);
+#else
+	count = (UINT)file.read(bitmapImage, imageSize);
+#endif
 	if (count != (UINT)imageSize)
-		throw woma_exception("LoadHeightMapTerrain failed!", __FILE__, __FUNCTION__, __LINE__);
+		throwwoma_exception("LoadHeightMapTerrain failed!");
 
 	// Close the file.
-	if (filePtr)
-		error = fclose(filePtr);
+#if defined ANDROID_PLATFORM
+	file.close();
+#else
+	if (file)
+		error = fclose(file);
 	if (error != 0)
-		throw woma_exception("LoadHeightMapTerrain failed!", __FILE__, __FUNCTION__, __LINE__);
+		throwwoma_exception("LoadHeightMapTerrain failed!");
+#endif
+		
 #else
 	ImageLoaderClass ImageLoader;
 
@@ -140,6 +178,7 @@ bool CTerrain::LoadHeightMapTerrain(TCHAR* file, float xPos, float zPos, bool sk
 		else
 			bitmapImage = ImageLoader.loadBMP((TCHAR*)filename.c_str(), &m_terrainWidth, &m_terrainHeight, &imageSize, LOAD_IMAGE_24bits);
 	}
+#ifdef WINDOWS_PLATFORM
 	else if (_tcsicmp(extension, TEXT(".tif")) == 0)
 	{
 		bitmapImage = ImageLoader.loadTIF((TCHAR*)filename.c_str(), &m_terrainWidth, &m_terrainHeight, &imageSize, LOAD_IMAGE_24bits);
@@ -148,8 +187,9 @@ bool CTerrain::LoadHeightMapTerrain(TCHAR* file, float xPos, float zPos, bool sk
 	{
 		bitmapImage = ImageLoader.loadDDS((TCHAR*)filename.c_str(), &m_terrainWidth, &m_terrainHeight, &imageSize, LOAD_IMAGE_24bits);
 	}
+#endif
 	else {
-		WomaFatalExceptionW(TEXT("IMAGE: Format not supported!"));
+		WomaFatalException("IMAGE: Format not supported!");
 		return false;
 	}
 
@@ -287,7 +327,9 @@ bool CTerrain::LoadHeightMapTerrain(TCHAR* file, float xPos, float zPos, bool sk
 #endif
 #endif
 
+#if defined WINDOWS_PLATFORM
 #include "DXmodelClass.h"
+#endif
 
 CTerrain::CTerrain(MY_TERRAIN_TYPE terrainType)
 {
@@ -316,7 +358,7 @@ void WorldUnderWaterMapGenerator(MY_TERRAIN_TYPE terrainType)
 	womalogauto(TEXT("Sizeof terrain: %d KBs\n"), (terrain_squares + 1)*(terrain_squares + 1) / KBs);
 	womalogauto(TEXT("Sizeof terrain: %d MBs\n"), (terrain_squares + 1)*(terrain_squares + 1) / MBs);
 
-#if !defined GOTO_BASICS
+#if !defined GOTO_BASICS && defined WINDOWS_PLATFORM
 	double delta = 0;
 	static float t = 0;
 	INT64 currentTime, currentTime2;
@@ -330,7 +372,7 @@ void WorldUnderWaterMapGenerator(MY_TERRAIN_TYPE terrainType)
 	SAFE_DELETE(terrain);
 
 	// ................................................................................................
-#if !defined GOTO_BASICS
+#if !defined GOTO_BASICS && defined WINDOWS_PLATFORM
 	QueryPerformanceCounter((LARGE_INTEGER*)& currentTime2);// Measure current Time
 	if (m_Timer.m_ticksPerUs > 0)
 		delta = ((((float)currentTime2 - (float)currentTime) / m_Timer.m_ticksPerUs) / 1000.0f);
@@ -353,7 +395,7 @@ int gp_wrap(int a)
 
 void CTerrain::DUMP_TEXT_Version(TCHAR* filename)
 {
-#if _DEBUG && false // Write ALL to a TEXT file Format, just to Debug it! 
+#if defined _DEBUG && false // Write ALL to a TEXT file Format, just to Debug it! 
 	{
 		OFSTREAM fileOut(filename);    //Open file for Write : cpp
 		for (int i = 0; i<terrain_squares; i++)
@@ -586,10 +628,10 @@ void CTerrain::GenerateRandomHeightMapTerrain(UINT randValue, bool Move_down_edg
 	}
 
 	// Smoothing:
-	womalog("Smoothing...\n");
+	//womalog("Smoothing...\n");
 	for (k = 0; k<terrain_smoothsteps; k++)
 	{
-		womalogauto(TEXT("Terrain Smoothstep: %d/%d\n"), k, terrain_smoothsteps);
+		//womalogauto(TEXT("Terrain Smoothstep: %d/%d\n"), k, terrain_smoothsteps);
 		for (i = 0; i<terrain_squares; i++)
 			for (j = 0; j<terrain_squares; j++)
 			{
@@ -674,7 +716,7 @@ void CTerrain::GenerateRandomHeightMapTerrain(UINT randValue, bool Move_down_edg
 }
 #endif
 
-#if true //DX_ENGINE_LEVEL <56 62								 
+#if defined WINDOWS_PLATFORM					 
 void CTerrain::SaveBMPHeightMapTerrain(CHAR* maps, UINT bmp_type) // NEED TO BE: "char"!
 {
 	//0...128+1 128..256+1
@@ -928,7 +970,7 @@ void CTerrain::initUnderWaterDemo(void* pContext, UINT terrainId)
 bool CTerrain::initTerrainWaterMeshDemo(void* ctx, UINT terrainId) // Used to load WATER
 // ----------------------------------------------------------------------------------
 {
-	ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
+	//ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)ctx;
 
 	SystemHandle->m_Application->loadedTerrain[terrainId]->LoadHeightMapTerrain(TEXT("engine/data/Terrain/heightmap512x512.bmp"), 0, 0);	// FLAT WATER!
 
@@ -936,20 +978,42 @@ bool CTerrain::initTerrainWaterMeshDemo(void* ctx, UINT terrainId) // Used to lo
 
 		TCHAR waterTexture[MAX_STR_LEN] = { 0 };	atow(waterTexture, get_world_waterTexture().c_str(), MAX_STR_LEN);
 		std::vector<STRING> Textures; Textures.push_back(waterTexture);		// WATER: Shader:TEXTURE
-		CreateTerrainModel(pContext, terrainId, Textures, SHADER_TEXTURE_WATER);		// m_TerrainModel[id]->Load
+
+		CREATE_MODEL_IF_NOT_EXCEPTION(SystemHandle->m_Application->m_TerrainModel[terrainId], I_AM_3D, I_HAVE_NO_SHADOWS, I_RENDER_SHADOWS);  // m_TerrainModel[id] = NEW
+
+		// FORCE FOR NOW TRANSPARENT:
+#if defined VULKAN
+		if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+		{
+			if (((vkModelClass*)SystemHandle->m_Application->m_TerrainModel[terrainId])->m_Shader)
+			{
+				((vkModelClass*)SystemHandle->m_Application->m_TerrainModel[terrainId])->m_Shader->hasAlfaColor = true;
+				((vkModelClass*)SystemHandle->m_Application->m_TerrainModel[terrainId])->m_Shader->alfaColor = 0.75f;
+			}
+		}
+#endif
+
+		CreateTerrainModel(ctx, terrainId, Textures, SHADER_TEXTURE_WATER);		// m_TerrainModel[id]->Load
 
 		// FORCE FOR NOW TRANSPARENT:
 #if defined DX11 || defined DX9
-		if (((DirectX::DXmodelClass*)SystemHandle->m_Application->m_TerrainModel[terrainId])->m_Shader11) {
-			((DirectX::DXmodelClass*)SystemHandle->m_Application->m_TerrainModel[terrainId])->m_Shader11->hasAlfaColor = true;
-			((DirectX::DXmodelClass*)SystemHandle->m_Application->m_TerrainModel[terrainId])->m_Shader11->alfaColor = 0.75f;
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX9 || WOMA::AppSettings->DRIVER == DRIVER_DX11)
+		{
+			if (((DXmodelClass*)SystemHandle->m_Application->m_TerrainModel[terrainId])->m_Shader11)
+			{
+				((DXmodelClass*)SystemHandle->m_Application->m_TerrainModel[terrainId])->m_Shader11->hasAlfaColor = true;
+				((DXmodelClass*)SystemHandle->m_Application->m_TerrainModel[terrainId])->m_Shader11->alfaColor = 0.75f;
+			}
 		}
 #endif
 #if defined DX12
-		if (((DirectX::DXmodelClass*)SystemHandle->m_Application->m_TerrainModel[terrainId])->m_Shader)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 		{
-			((DirectX::DXmodelClass*)SystemHandle->m_Application->m_TerrainModel[terrainId])->m_Shader->hasAlfaColor = true;
-			((DirectX::DXmodelClass*)SystemHandle->m_Application->m_TerrainModel[terrainId])->m_Shader->alfaColor = 0.75f;
+			if (((DXmodelClass*)SystemHandle->m_Application->m_TerrainModel[terrainId])->m_Shader)
+			{
+				((DXmodelClass*)SystemHandle->m_Application->m_TerrainModel[terrainId])->m_Shader->hasAlfaColor = true;
+				((DXmodelClass*)SystemHandle->m_Application->m_TerrainModel[terrainId])->m_Shader->alfaColor = 0.75f;
+			}
 		}
 #endif
 
@@ -1060,7 +1124,7 @@ void CTerrain::NormalizeHeightMap(float scale, float moveY)
 //2 MAIN-TERRAIN
 #if defined SCENE_MAIN_TOPO_TERRAIN
 // ----------------------------------------------------------------------------
-bool CTerrain::initMainTopoTerrainDemo(UINT terrainId, ID3D11DeviceContext* pContext)
+bool CTerrain::initMainTopoTerrainDemo(UINT terrainId, void* pContext)
 // ----------------------------------------------------------------------------
 {
 	float xpos = 0, zpos = 0;
@@ -1376,13 +1440,16 @@ bool CTerrain::CheckHeightOfTrianglev2(float x, float z, float& height, float v0
 
 // Used by TerrainId [0][1][2][3]
 // ----------------------------------------------------------------------------
-void CTerrain::CreateTerrainModel(ID3D11DeviceContext* pContext, UINT id, std::vector<STRING> Textures, SHADER_TYPE shader_type)
+void CTerrain::CreateTerrainModel(void* pContext, UINT id, std::vector<STRING> Textures, SHADER_TYPE shader_type)
 // ----------------------------------------------------------------------------
 {
 	std::vector<UINT> indices; // (2 * (terrain_squares)*(terrain_squares));
 
 	// Add TEXTURE: Create a model: NEW GLmodelClass || NEW DXmodelClass
-	CREATE_MODEL_IF_NOT_EXCEPTION(SystemHandle->m_Application->m_TerrainModel[id], I_AM_3D, I_HAVE_NO_SHADOWS, I_RENDER_SHADOWS);  // m_TerrainModel[id] = NEW
+
+	if (!SystemHandle->m_Application->m_TerrainModel[id])
+		CREATE_MODEL_IF_NOT_EXCEPTION(SystemHandle->m_Application->m_TerrainModel[id], I_AM_3D, I_HAVE_NO_SHADOWS, I_RENDER_SHADOWS);  // m_TerrainModel[id] = NEW
+
 	SystemHandle->m_Application->m_TerrainModel[id]->ModelHASfog = true;
 
 #if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX
@@ -1555,8 +1622,19 @@ void CTerrain::CreateTerrainModel(ID3D11DeviceContext* pContext, UINT id, std::v
 	}
 #endif
 
-#if _DEBUG
+#if defined _DEBUG
 	womalogauto(TEXT("TERRAIN %d Shader Type: %d\n"), id, shader_type);
+#endif
+
+#if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX
+	if (id == 2 || id == 4) {
+		if (shader_type < SHADER_Terrain_Texture_DEMO60) {
+			SystemHandle->m_Application->m_TerrainModel[id]->PrimitiveTopology = TRIANGLESTRIP; //After: Load
+		}
+		else {
+			SystemHandle->m_Application->m_TerrainModel[id]->PrimitiveTopology = TRIANGLELIST; //After: Load
+		}
+	}
 #endif
 
 #if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX
@@ -1575,15 +1653,7 @@ void CTerrain::CreateTerrainModel(ID3D11DeviceContext* pContext, UINT id, std::v
 	if (id == 2) ASSERT(SystemHandle->m_Application->m_TerrainModel[id]->LoadTerrain(pContext, TEXT("id2:terrain"), m_Driver, shader_type, &Textures, &modelVertexVector2));
 #endif
 
-	#if defined SCENE_MAIN_TOPO_TERRAIN_USE_INDEX
-	if (id == 2 || id == 4) {
-		if (shader_type < SHADER_Terrain_Texture_DEMO60) {
-			SystemHandle->m_Application->m_TerrainModel[id]->PrimitiveTopology = TRIANGLESTRIP; //After: Load
-		} else {
-			SystemHandle->m_Application->m_TerrainModel[id]->PrimitiveTopology = TRIANGLELIST; //After: Load
-		}
-	}
-	#endif
+
 
 }
 

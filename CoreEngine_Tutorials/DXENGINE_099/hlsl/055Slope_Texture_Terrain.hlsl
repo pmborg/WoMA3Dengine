@@ -8,7 +8,7 @@
 *	Downloaded from : http://woma.servegame.com
 *
 /*********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #define PS_USE_LIGHT			//23
 //#define PS_USE_FADE			//Night/Day
@@ -286,8 +286,9 @@ float4 PS_Main(PSIn input) : SV_TARGET
 		textureColor.a = alfaColor;
 #endif
 
-    //color = color * textureColor;
+#if DXAPI12 != 1
+    textureColor.rgb = pow(textureColor.rgb, 1.0 / 2.2); //Apply sRGB workflow: NEW 2026 review!
+#endif	
 	
-	//return float4(1,1,1,1);
 	return textureColor;
 }

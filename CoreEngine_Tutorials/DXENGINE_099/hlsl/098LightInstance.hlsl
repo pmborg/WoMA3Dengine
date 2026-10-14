@@ -9,7 +9,7 @@
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #define PS_USE_LIGHT		 //23
 #define PS_USE_ALFA_TEXTURE	 //33
@@ -43,7 +43,7 @@ struct PSIn
 /////////////
 // GLOBALS //
 /////////////
-//Set on: DXmodelClass::RenderSubMesh
+//Set on: DX_modelClass::RenderSubMesh
 
 Texture2D shaderTexture; //: register(t0);	// 21:
 Texture2D AlfaMapTexture; //: register(t1);	// 43: AlfaMap
@@ -155,7 +155,7 @@ PSIn VS_Main(VSIn input, uint instanceID : SV_InstanceID)
     
     if (VShasSpecular)	// If enabled on material, calculate the Specular LIGHT
     {
-        output.viewDirection = normalize(cameraPosition.xyz - worldPosition.xyz); // L = Lp - p (L = lightDirection)
+        output.viewDirection = normalize(VSCameraPosition.xyz - worldPosition.xyz); // L = Lp - p (L = lightDirection)
     }
 #endif
 

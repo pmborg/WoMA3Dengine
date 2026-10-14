@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: realSkyPlaneClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,14 +16,17 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Adopt the base idea of https://rastertek.com/tertut12.html
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
 #if defined MAIN_RENDER_CURVED_REAL_SKY_PLANE
 #include "realSkyPlaneClass.h"
 #include "vertexTypes.h"
 #include "mem_leak.h"
+
+#if defined WINDOWS_PLATFORM
 #include "DXmodelClass.h"
+#endif
 
 RealSkyPlaneClass realSkyPlaneClass;
 
@@ -42,13 +45,13 @@ void RealSkyPlaneClass::Shutdown()
 #if (defined DX_ENGINE)
 	if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
 	{
-		SAFE_SHUTDOWN_MODELDX(SystemHandle->m_Application->model_skyPlane);
+		SAFE_SHUTDOWN_MODELDX(g_model_skyPlane);
 	}
 #endif
 #if (defined OPENGL3 || defined OPENGL4)
 	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
 	{
-		SAFE_SHUTDOWN_MODELGL3(SystemHandle->m_Application->model_skyPlane);
+		SAFE_SHUTDOWN_MODELGL3(model_skyPlane);
 	}
 #endif
 }
@@ -176,9 +179,9 @@ bool RealSkyPlaneClass::InitializeSkyPlane(void* ctx, void* Driver, int skyPlane
 	sky_plane_textures.push_back(CLOUDTEXTUREFILENAME);
 	sky_plane_textures.push_back(PERTURBTEXTUREFILENAME);
 
-	if (WOMA::AppSettings->DRIVER == DRIVER_GL3) {CREATE_MODELGL3_IF_NOT_EXCEPTION(SystemHandle->m_Application->model_skyPlane, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);}
-	if (WOMA::AppSettings->DRIVER != DRIVER_GL3) {CREATE_MODELDX_IF_NOT_EXCEPTION(SystemHandle->m_Application->model_skyPlane, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);}
-	ASSERT(SystemHandle->m_Application->model_skyPlane->LoadTexture(pContext11, TEXT("sky_plane"), m_driver11, SHADER_USE_CURVED_REAL_SKY_PLANE, &sky_plane_textures, &woma_skyPlane, NULL));
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3) {CREATE_MODELGL3_IF_NOT_EXCEPTION(g_model_skyPlane, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);}
+	if (WOMA::AppSettings->DRIVER != DRIVER_GL3) {CREATE_MODELDX_IF_NOT_EXCEPTION(g_model_skyPlane, I_AM_3D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS);}
+	ASSERT(g_model_skyPlane->LoadTexture(pContext11, TEXT("sky_plane"), m_driver11, SHADER_USE_CURVED_REAL_SKY_PLANE, &sky_plane_textures, &woma_skyPlane, NULL));
 
 	return true;
 }
@@ -192,9 +195,9 @@ void RealSkyPlaneClass::Render(void* pContext)
 
 	if (m_Driver->RenderfirstTime)
 	{
-		SystemHandle->m_Application->model_skyPlane->translation(0, 0, 0);
-		SystemHandle->m_Application->model_skyPlane->scale(WOMA::AppSettings->SCREEN_DEPTH-1, WOMA::AppSettings->SCREEN_DEPTH-1, WOMA::AppSettings->SCREEN_DEPTH-1);
+		g_model_skyPlane->translation(0, 0, 0);
+		g_model_skyPlane->scale(WOMA::AppSettings->SCREEN_DEPTH-1, WOMA::AppSettings->SCREEN_DEPTH-1, WOMA::AppSettings->SCREEN_DEPTH-1);
 	}
-	SystemHandle->m_Application->model_skyPlane->RenderSky(pContext, CAMERA_SKY, 1); // Camera with fixed position: 0,0,0: (CAMERA_SKY)
+	g_model_skyPlane->RenderSky(pContext, CAMERA_SKY, 1); // Camera with fixed position: 0,0,0: (CAMERA_SKY)
 }
 #endif

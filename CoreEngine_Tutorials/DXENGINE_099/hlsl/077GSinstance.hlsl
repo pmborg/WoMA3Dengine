@@ -2,13 +2,13 @@
 // Filename: 077GSinstance.hlsl
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
-*	World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+*	World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 *	-------------------------------------------------------------------------------------------
 *	code by : Pedro Borges - pmborg@yahoo.com
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #define PS_USE_ALFACOLOR
 #define PS_USE_ALFA_TEXTURE
@@ -148,7 +148,7 @@ GSIn VS_Main(VSIn input, uint instanceID : SV_InstanceID)
 	if (VShasSpecular)	// If enabled on material, calculate the Specular LIGHT
 	{
 		float4 worldPosition = mul(float4(input.position, 1), worldMatrix);			// P
-		output.viewDirection = normalize(cameraPosition.xyz - worldPosition.xyz);	// L = Lp - p (L = lightDirection)
+		output.viewDirection = normalize(VSCameraPosition.xyz - worldPosition.xyz); // L = Lp - p (L = lightDirection)
 	}
 #endif
 

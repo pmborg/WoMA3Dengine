@@ -1,30 +1,49 @@
 // --------------------------------------------------------------------------------------------
-// Filename: 023Light.hlsl
+// Filename: 072Light.hlsl
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
-*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2023
+*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2026 [LATEST]
 *	-------------------------------------------------------------------------------------------
 *	code by : Pedro Borges - pmborg@yahoo.com
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//
+// Level 33 upgrade:
+// - BLOCK4 activated
+// - BLOCK5 activated
+// - BLOCK6 activated
+// - BLOCK7 introduced (cameraPosition, castShadow, specularColor, nShininess)
+// - Restores conditional VS/PS lighting logic
+// --------------------------------------------------------------------------------------------
 
-#if (!defined DXAPI11 && !defined DXAPI12)
-    #define DXAPI11 1
+//WomaIntegrityCheck = 1234526920;
+
+//#if DXAPI11 != 1 && DXAPI12 != 1
+//    #define DXAPI9 1
+//#endif
+#define DXAPI11 1
+
+#if DXAPI9 == 1
+    #define PS_POSITION POSITION
+    #define PS_TARGET   COLOR0
+#else
+    #define PS_POSITION SV_POSITION
+    #define PS_TARGET   SV_TARGET
 #endif
-
-#define PS_USE_LIGHT		 //23
-//#define PS_USE_ALFA_TEXTURE	 //33
-#define PS_USE_ALFACOLOR 	 //33
-//#define PS_USE_SPECULAR		 //34
-
+#if DXAPI9 == 1
+    #define PS_NORMAL TEXCOORD1
+#else
+    #define PS_NORMAL NORMAL
+#endif
 // mode:
 // -1 = hardware sampler
 //  0 = nearest
 //  1 = bilinear
 //  2 = trilinear
 //  3 = cubic
+
+#define PS_USE_ALFACOLOR
 
 #define TEXTURE_MODE -1 //Default is -1
 
@@ -46,21 +65,22 @@ struct PSIn
 	float4 position				: SV_POSITION;			// 21
 	float2 texCoords			: TEXCOORD;				// 22
 	float3 normal				: NORMAL;				// 23 LIGHT
-#if defined PS_USE_SPECULAR
 	float3 viewDirection		: TEXCOORD1;			// 34 Specular
 	float4 cameraPosition		: WS;					// 34 Specular
-#endif
-#if defined PS_USE_FOG
-    float fogFactor				: FOG;		// 51 FOG
-#endif	
 };
 
 /////////////
 // GLOBALS //
 /////////////
 
-//Set on: DXmodelClass::RenderSubMesh
-#if DXAPI11 == 1
+////////////////
+// CBUFFERS
+////////////////
+#include "cbuffer.hlsli"
+#include "light.hlsli"											 
+
+//Set on: DX_modelClass::RenderSubMesh
+#if DXAPI9 == 1 || DXAPI11 == 1
 Texture2D shaderTexture;	// 22: Texture
 Texture2D AlfaMapTexture;	// 33: AlfaMap
 #endif
@@ -69,18 +89,14 @@ Texture2D AlfaMapTexture:	register(t0); // 33: AlfaMap	//DX12: Descriptor: 2
 Texture2D shaderTexture:	register(t1); // 22: Texture	//DX12: Descriptor: 3
 #endif
 
-#if DXAPI11 == 1
+#if DXAPI9 == 1 || DXAPI11 == 1
 SamplerState SampleType;
 #endif
 #if DXAPI12 == 1
 SamplerState SampleType: register(s0);
 #endif
 
-////////////////
-// CBUFFERS
-////////////////
-#include "cbuffer.hlsli"
-#include "light.hlsli"
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
@@ -103,16 +119,16 @@ PSIn VS_Main(VSIn input)
         output.position = position;
     }
 
+    if (isAnimatedBill)
+    {
+        float phase = dot(input.position.xz, float2(1.37, 2.17));
+        output.position.x += sin(vsframeTime + phase) * (1 - input.texCoords.y) / 100;
+    }
+    
 	//22: TEXTURE: Store the texture coordinates for the pixel shader:
     output.texCoords = input.texCoords;
 	
 	cameraPosition = mul(float4(input.position, 1), WV);
-
-#if defined PS_USE_FOG
-	//51:
-    if (VShasFog) 
-        output.fogFactor = saturate((VSfogEnd - cameraPosition.z) / (VSfogEnd - VSfogStart)); // Calculate linear fog.  
-#endif
 
 	//23: LIGHT: NORMAL
     if (VShasLight || VShasSpecular) 
@@ -120,19 +136,19 @@ PSIn VS_Main(VSIn input)
 
 	//34: SPECULAR
 #if defined PS_USE_SPECULAR
-	
 	output.cameraPosition = cameraPosition;
 
 	if (VShasSpecular)	// If enabled on material, calculate the Specular LIGHT
 	{
 		float4 worldPosition = mul(float4(input.position, 1), worldMatrix);			// P
-		output.viewDirection = normalize(cameraPosition.xyz - worldPosition.xyz);	// L = Lp - p (L = lightDirection)
-	}
+        output.viewDirection = normalize(VSCameraPosition.xyz - worldPosition.xyz); // L = Lp - p (L = lightDirection)
+    }
 #endif
 
     return output;
 }
 
+#if DXAPI9 == 0
 #include "TextureSampling.hlsli"
 // mode:
 // 0 = nearest
@@ -140,15 +156,17 @@ PSIn VS_Main(VSIn input)
 // 2 = trilinear
 // 3 = cubic
 // 4 = hardware sampler
+#endif
 
 //Mode	Filter Type	    FPS
 //0	    Nearest	        13111 FPS
 //1	    Bilinear	    12945 FPS
 //2	    Trilinear	    12989 FPS
-//3	    Cubic 	        13141 FPSas
+//3	    Cubic 	        13141 FPS
 
 float4 GetShaderTexture(Texture2D tex, float2 texCoords, uint mipLevel, int mode)
 {
+#if DXAPI9 == 0
     switch (mode)
     {
         case 0:
@@ -163,35 +181,26 @@ float4 GetShaderTexture(Texture2D tex, float2 texCoords, uint mipLevel, int mode
         default:
             return tex.Sample(SampleType, texCoords);
     }
-
-    // fallback
+#endif
+    
+    // Legacy fallback (DX9 / ps_4_0_level_9_3)
     return tex.Sample(SampleType, texCoords);
 }
-
 ////////////////////////////////////////////////////////////////////////////////
 // Pixel Shader
 ////////////////////////////////////////////////////////////////////////////////
-float4 PS_Main(PSIn input) : SV_TARGET
+float4 PS_Main(PSIn input) : PS_TARGET
 {
     float4 textureColor = pixelColor; // 21: SET PIXEL COLOR
     float lightIntensity = 0;
-#if defined PS_USE_FOG
-    float4 fogColor = float4(87.0f / 256.0f, 87 / 256.0f, 87.0f / 256.0f, 1.0f);
-#endif
 
-	//-----------------------------------------------------------------------------------
-	// lvl >=21: TEXTURE: Sample the pixel color from the texture using the sampler at this texture coordinate location
-    //replace:
-        //textureColor = shaderTexture.Sample(SampleType, input.texCoords);
-    //with:
-    #define TEXTURE_MODE 0
 	 if (hasTexture)
 		textureColor = GetShaderTexture(shaderTexture, input.texCoords, 0, TEXTURE_MODE);
 		
 	// 23: LIGHT
-    //if (hasLight)
+    if (hasLight)
     {
-        if (!isSky)
+        if (lightType == 1)//(!isSky)
             lightIntensity = PSlightFunc1(input.normal);
         else
             lightIntensity = PSlightFunc2(input.normal);
@@ -205,23 +214,15 @@ float4 PS_Main(PSIn input) : SV_TARGET
             textureColor = textureColor * saturate(emissiveColor + ambientColor + (lightIntensity * diffuseColor));
         }
     }
-	
-#if defined PS_USE_FOG
-    // 31: FOG: Calculate the final color using the fog effect equation.
-    if (hasFog)
-        textureColor = input.fogFactor * textureColor + (1.0 - input.fogFactor) * fogColor;
+
+#if defined PS_USE_ALFA_TEXTURE // 33: Alfa Map: (Optional AlfaMap for blending textutres)
+	if (hasAlfaMap)
+		textureColor.a = AlfaMapTexture.Sample(SampleType, input.texCoords).r;
 #endif
 
-#if defined PS_USE_SHADOWMAP_TEXTURE//36
-    //36: SHADOWS [NEW PART!]
-    if (castShadow)
-        textureColor.rgb = textureColor.rgb * HasShadows(input.lightViewPosition);
-#endif
-
-#if defined PS_USE_FADE
-    // FADE: Used by Sun or All (at night)
-    if (fade < 1)
-        textureColor.rgb = textureColor.rgb * fade;
+#if defined PS_USE_ALFACOLOR	// 33: Alfa Color
+	if (hasAlfaColor)
+		textureColor.a = alfaColor;
 #endif
 
 #if defined PS_USE_SPECULAR //34: If enabled on material, calculate the Specular LIGHT
@@ -241,34 +242,15 @@ float4 PS_Main(PSIn input) : SV_TARGET
     }
 #endif
 
-#if defined PS_USE_FOG
-    if (hasFog)
+    if (fade < 1 && !isSky)
     {
-		//textureColor = input.fogFactor * textureColor + (1.0 - input.fogFactor) * fogColor; // FOG: Calculate the final color using the fog effect equation.
-        float4 fog4 = 0;
-        if (isSky)
-        {
-            fog4.r = 0.9;
-        }
-        else
-        {
-            fog4.r = (1.0 - input.fogFactor);
-        }
-        fog4.g = fog4.r;
-        fog4.b = fog4.r;
-        textureColor.rgb = lerp(textureColor.rgb, fogColor.rgb, fog4.rgb);
+        textureColor.rgb *= fade;
+        return textureColor;
     }
+    
+#if DXAPI12 != 1
+    textureColor.rgb = pow(textureColor.rgb, 1.0 / 2.2); //Apply sRGB workflow: NEW 2026 review!
 #endif
 
-#if defined PS_USE_ALFA_TEXTURE // 33: Alfa Map: (Optional AlfaMap for blending textutres)
-	if (hasAlfaMap)
-		textureColor.a = AlfaMapTexture.Sample(SampleType, input.texCoords).r;
-#endif
-
-#if defined PS_USE_ALFACOLOR	// 33: Alfa Color
-	if (hasAlfaColor)
-		textureColor.a = alfaColor;
-#endif
-   	
     return textureColor;
 }

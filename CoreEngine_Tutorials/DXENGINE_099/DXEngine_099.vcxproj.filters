@@ -704,7 +704,6 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="settings.xml" />
-    <Xml Include="world_98.xml" />
     <Xml Include="world_99.xml" />
   </ItemGroup>
   <ItemGroup>

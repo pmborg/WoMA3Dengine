@@ -8,13 +8,12 @@
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #if (!defined DXAPI11 && !defined DXAPI12)
     #define DXAPI11 1
 #endif
 
-#define FOGGED
 #define PS_USE_SHADOWMAP_TEXTURE
 
 //////////////
@@ -121,9 +120,7 @@ PSIn VS_Main(VSIn input)
 
     // 6. Fog depth must use *rendered* world position
     cameraPosition = mul(input.position, WV); //FOG: Calculate the camera position.
-#if defined (FOGGED)
-        output.fogFactor = saturate((VSfogEnd - cameraPosition.z) / (VSfogEnd - VSfogStart)); // Calculate linear fog.  
-#endif    
+    output.fogFactor = saturate((VSfogEnd - cameraPosition.z) / (VSfogEnd - VSfogStart)); // Calculate linear fog.  
     
     // 7. Texture mapping (unchanged)
     output.tex = input.tex; //CH05 - TEXTURE- Store the texture coordinates for the pixel shader.
@@ -137,7 +134,6 @@ PSIn VS_Main(VSIn input)
     output.verticePosition = worldRender;
 
     #if defined PS_USE_SHADOWMAP_TEXTURE
-        //output.lightViewPosition = mul(mul(input.position, worldMatrix), ViewToLightProj);
         output.lightViewPosition = mul(worldOriginal, ViewToLightProj);
     #endif
     
@@ -153,10 +149,7 @@ float4 PS_Main(PSIn input) : SV_TARGET
     float4 textureColor; //CH05 - TEXTURE
     float lightIntensity = PSlightFunc2(input.normal); //CH12 - LIGHT
     
-#if defined FOGGED
-    //float4 fogColor = (input.verticePosition.y > 0.1f) ? float4(0.5f, 0.5f, 0.5f, 1.0f) : float4(0.2f, 0.2f, 0.6f, 1.0f); //FOG
     float4 fogColor = float4(87.0f / 256.0f, 87 / 256.0f, 87.0f / 256.0f, 1.0f);
-#endif
     
     float4 grassColor; //CH17 - SLOP
     float4 slopeColor; //CH17
@@ -171,194 +164,130 @@ float4 PS_Main(PSIn input) : SV_TARGET
     float depthValue; //CH21
     float4 alphamappingColor; //CH22
 
-#if defined (FOGGED)
-        if (true /*input.fogFactor > 0*/) 
-#endif
-        {
-  		//CH19: This wll be our mapping texture:
-        mappingColor = textureMappingTexture.Sample(SampleType, input.texMapping.xy); //x1
+        
+    //This wll be our mapping texture:
+    mappingColor = textureMappingTexture.Sample(SampleType, input.texMapping.xy); //x1
 
-		// TERRAIN:
-		{	
-			    //CH17 - Start by sampling all three main textures.
-			    //------------------------------------------------------------------------------------------------------
-			    // Sample the grass color from the texture using the sampler at this texture coordinate location.
-                grassColor = grassTexture.Sample(SampleType, input.tex.xy);
+    // TERRAIN:
+			
+    //Start by sampling all three main textures.
+    //------------------------------------------------------------------------------------------------------
+    // Sample the grass color from the texture using the sampler at this texture coordinate location.
+    grassColor = grassTexture.Sample(SampleType, input.tex.xy);
 
-			    // Sample the slope color from the texture using the sampler at this texture coordinate location.
-                slopeColor = slopeTexture.Sample(SampleType, input.tex.xy);
+    // Sample the slope color from the texture using the sampler at this texture coordinate location.
+    slopeColor = slopeTexture.Sample(SampleType, input.tex.xy);
 
-			    // Sample the rock color from the texture using the sampler at this texture coordinate location.
-                rockColor = rockTexture.Sample(SampleType, input.tex.xy);
+    // Sample the rock color from the texture using the sampler at this texture coordinate location.
+    rockColor = rockTexture.Sample(SampleType, input.tex.xy);
 
-			    // ALPHA MIXTURE Flat Terrain Big Areas:
-                //------------------------------------------------------------------------------------------------------
-			    // Sample the pixel color from the detail map texture using the sampler at this texture coordinate location.
-                detailColor = detailTexture.Sample(SampleType, input.tex.xy);
-                grassColor = lerp(grassColor, detailColor, (mappingColor.r + mappingColor.g + mappingColor.b) / 3);
+    // ALPHA MIXTURE Flat Terrain Big Areas:
+    //------------------------------------------------------------------------------------------------------
+    // Sample the pixel color from the detail map texture using the sampler at this texture coordinate location.
+    detailColor = detailTexture.Sample(SampleType, input.tex.xy);
+    grassColor = lerp(grassColor, detailColor, (mappingColor.r + mappingColor.g + mappingColor.b) / 3);
             
-			    // ALPHA MIXTURE Flat Terrain Big walk Path:
-                //------------------------------------------------------------------------------------------------------
-                alphamappingColor = bigPathMappingTexture.Sample(SampleType, input.texMapping.xy); //x1
-                color = smallstonePathTexture.Sample(SampleType, input.tex.xy);
-                grassColor = lerp(grassColor, color, alphamappingColor.g);
+    // ALPHA MIXTURE Flat Terrain Big walk Path:
+    //------------------------------------------------------------------------------------------------------
+    alphamappingColor = bigPathMappingTexture.Sample(SampleType, input.texMapping.xy); //x1
+    color = smallstonePathTexture.Sample(SampleType, input.tex.xy);
+    grassColor = lerp(grassColor, color, alphamappingColor.g);
 
-			    //CH17 - Now determine the slope for this pixel, which is just one subtracted from the Y normal.
-			    //------------------------------------------------------------------------------------------------------
-                slope = 1.0f - input.normal.y; // Calculate the slope of this point.
+    //Now determine the slope for this pixel, which is just one subtracted from the Y normal.
+    //------------------------------------------------------------------------------------------------------
+    slope = 1.0f - input.normal.y; // Calculate the slope of this point.
 
-			    // Determine which texture to use based on height:
-                if (slope < 0.2f)
-                {
-                    blendAmount = slope / 0.2f;
-                    textureColor = lerp(grassColor, slopeColor, blendAmount);
-                }
-                else if (slope < 0.7f)
-                {
-                    blendAmount = (slope - 0.2f) * (1.0f / (0.7f - 0.2f));
-                    textureColor = lerp(slopeColor, rockColor, blendAmount);
-                }
-                else
-                {
-                    textureColor = rockColor;
-                }
-            }
-
-        //if( input.depthPosition.z  < 128)
-        {
-                textureColor = lerp(textureColor, stonePathTexture.Sample(SampleType, input.tex.zw), mappingColor.g / 3); //GREEN for sidewalk...
-                textureColor = lerp(textureColor, sandTexture.Sample(SampleType, input.tex.zw), mappingColor.b / 3); //BLUE for sand...
-                textureColor = lerp(textureColor, mudTexture.Sample(SampleType, input.tex.zw), mappingColor.r / 3); //RED for mud...
-
-                //CH22: Apply General BUMP
-                //------------------------------------------------------------------------------------------------------
-                float4 generalBumpMap = generalNormalTexture.Sample(SampleType, input.tex.zw); // BUMP for "stonePathTexture"
-                textureColor += (diffuseColor / 3 * lightIntensity);
-            
-                //CH24: Add transparency on Cyan
-                alphaValue = detailMappingTexture.Sample(SampleType, input.texMapping.xy); //x1	// This wll be our mapping texture:
-                if (alphaValue.g >= 0.1f && alphaValue.b >= 0.25f)
-                { // TRANSPARENT Color
-                    clip(-1.0);
-                    return (float4) 0;
-                }
-
-               // CH20 Flat Part:
-               //------------------------------------------------------------------------------------------------------
-                if (slope < 0.2f)
-                {
-                    float4 bumpMap = normalTexture.Sample(SampleType, input.tex.xy); //BUMP for "stonePathTexture"
-
-                    color = stonePathTexture.Sample(SampleType, input.tex.xy);
-                    textureColor = lerp(textureColor, color, alphaValue.g * 2.5); //GREEN for stone...
-
-                    color = sandTexture.Sample(SampleType, input.tex.xy);
-                    textureColor = lerp(textureColor, color, alphaValue.b); //BLUE for sand...
-
-                    color = mudTexture.Sample(SampleType, input.tex.xy);
-                    textureColor = lerp(textureColor, color, alphaValue.r / 1.5f); //RED for mud...
-                }
-        }
-
-        if (input.verticePosition.y < 0)
-            textureColor.rgb -= 0.2f;
-
-		//CH23:
-            if (false /*!isDay*/)
-            {
-#if defined (FOGGED)
-                fogColor.rgb -= 0.1f; // Darker Night
-                textureColor = input.fogFactor * textureColor - (1.0 - input.fogFactor) * fogColor; // FOG: Calculate the final color using the fog effect equation.
-#endif
-                textureColor /= 2;
-                color = shaderTexture.Sample(SampleType, input.texMapping.xy); //Light Map Only at night!
-                textureColor = textureColor * color;
-            }
-#if defined (FOGGED)
-            else
-            {
-                // The fog color equation does a linear interpolation between the texture color and the fog color based on the fog factor input value.
-                float4 fog4 = 0;
-                fog4.r = (1.0 - input.fogFactor);
-                fog4.g = fog4.r;
-                fog4.b = fog4.r;
-                textureColor.rgb = lerp(textureColor.rgb, fogColor.rgb, fog4.rgb);
-                textureColor.a = 1;
-            }
-#endif
-
-#if defined PS_USE_SHADOWMAP_TEXTURE//36
-        //if (castShadow)
-        {
-            float shadow = HasShadows(input.lightViewPosition);
-            textureColor.rgb = textureColor.rgb * shadow;
-        }
-#endif
-        
-        if (shaderTypeParameter > 0)
-        {
-            textureColor.a = 1;
-            textureColor *= 1.5;
-        }
-        
-        if (fade < 1)
-        {
-            textureColor.rgb *= fade*2;                                                                   //98
-            float4 m_LightMapTexture = LightMapTexture.Sample(SampleType, input.texMapping.xy); //x1    //98
-            return textureColor * m_LightMapTexture;                                                    //98
-        }
-        
-        return textureColor;
-	}
-#if defined (FOGGED)
+    // Determine which texture to use based on height:
+    if (slope < 0.2f)
+    {
+        blendAmount = slope / 0.2f;
+        textureColor = lerp(grassColor, slopeColor, blendAmount);
+    }
+    else if (slope < 0.7f)
+    {
+        blendAmount = (slope - 0.2f) * (1.0f / (0.7f - 0.2f));
+        textureColor = lerp(slopeColor, rockColor, blendAmount);
+    }
     else
     {
-        clip(-1.0);
-        return (float4) 0; // this pixel is too far away (on fog), SKIP it! CLIP IF: (x is less than zero)
+        textureColor = rockColor;
     }
-#endif
-}
+            
+
+    if( input.depthPosition.z  < 128)
+    {
+            textureColor = lerp(textureColor, stonePathTexture.Sample(SampleType, input.tex.zw), mappingColor.g / 3); //GREEN for sidewalk...
+            textureColor = lerp(textureColor, sandTexture.Sample(SampleType, input.tex.zw), mappingColor.b / 3); //BLUE for sand...
+            textureColor = lerp(textureColor, mudTexture.Sample(SampleType, input.tex.zw), mappingColor.r / 3); //RED for mud...
+
+            //CH22: Apply General BUMP
+            //------------------------------------------------------------------------------------------------------
+            float4 generalBumpMap = generalNormalTexture.Sample(SampleType, input.tex.zw); // BUMP for "stonePathTexture"
+            textureColor += (diffuseColor / 3 * lightIntensity);
+            
+            //CH24: Add transparency on Cyan
+            alphaValue = detailMappingTexture.Sample(SampleType, input.texMapping.xy); //x1	// This wll be our mapping texture:
+            if (alphaValue.g >= 0.1f && alphaValue.b >= 0.25f)
+            { // TRANSPARENT Color
+                clip(-1.0);
+                return (float4) 0;
+            }
+
+            // CH20 Flat Part:
+            //------------------------------------------------------------------------------------------------------
+            if (slope < 0.2f)
+            {
+                float4 bumpMap = normalTexture.Sample(SampleType, input.tex.xy); //BUMP for "stonePathTexture"
+
+                color = stonePathTexture.Sample(SampleType, input.tex.xy);
+                textureColor = lerp(textureColor, color, alphaValue.g * 2.5); //GREEN for stone...
+
+                color = sandTexture.Sample(SampleType, input.tex.xy);
+                textureColor = lerp(textureColor, color, alphaValue.b); //BLUE for sand...
+
+                color = mudTexture.Sample(SampleType, input.tex.xy);
+                textureColor = lerp(textureColor, color, alphaValue.r / 1.5f); //RED for mud...
+            }
+    }
+
+    if (input.verticePosition.y < 0)
+        textureColor.rgb -= 0.2f;
 
 
-// VS input/out already defined by you
-PSIn VS_Main__(VSIn input)
-{
-    PSIn o;
-    input.position.w = 1.0f;
+        
+    #if defined PS_USE_SHADOWMAP_TEXTURE//36
+    //if (castShadow)
+    {
+        float shadow = HasShadows(input.lightViewPosition);
+        textureColor.rgb = textureColor.rgb * shadow;
+    }
+    #endif
+        
+    //#if DXAPI12 != 1
+    //        textureColor.rgb = pow(textureColor.rgb, 1.0 / 2.2); //Apply sRGB workflow: NEW 2026 review!
+    //#endif
+        
+    if (fade < 1)
+    {
+        textureColor.rgb *= fade*2;                                                                 //98
+        float4 m_LightMapTexture = LightMapTexture.Sample(SampleType, input.texMapping.xy); //x1    //98
+        textureColor *= m_LightMapTexture; //98
+    }
+    
+    // ------------------------------------------------------------------------
+    // Mini-MAP Water/Terrain Rendering (No fog)
+    // ------------------------------------------------------------------------
+    //if (shaderTypeParameter > 0)
+    //{
+    //    textureColor.a = 1;
+    //    //textureColor *= 1.5;
+    //    return textureColor;
+    //}
 
-    float4 localOriginal = input.position; // used for shadow projection
-    float4 localRender = input.position; // used for final rendering
-    if (localRender.y < 0)
-        localRender.y *= 3; // underwater deformation only for rendered world
-
-    // Final clip pos (rendered)
-    o.position = mul(localRender, WVP); // keep this — it fixed your screen.
-
-    // world positions
-    float4 worldOriginal = mul(localOriginal, worldMatrix);
-    float4 worldRender = mul(localRender, worldMatrix);
-
-    // normals/tangent/binormal
-    o.normal = normalize(mul(input.normal, (float3x3) worldMatrix));
-    o.tangent = normalize(mul(input.tangent, (float3x3) worldMatrix));
-    o.binormal = normalize(mul(input.binormal, (float3x3) worldMatrix));
-
-    // fog usage (use worldRender for fog)
-    float4 camPos = mul(worldRender, view);
-    camPos = mul(camPos, projection);
-    o.fogFactor = saturate((VSfogEnd - camPos.z) / (VSfogEnd - VSfogStart));
-    o.depthPosition = camPos;
-
-    // UVs, mapping, color, etc
-    o.tex = input.tex;
-    o.texMapping = input.texMapping;
-    o.color = input.color;
-    o.verticePosition = worldRender;
-
-    // Important: compute light-projection using the SAME world positions that were used when writing the shadow map
-#if defined(PS_USE_SHADOWMAP_TEXTURE)
-    o.lightViewPosition = mul(worldOriginal, ViewToLightProj); // worldOriginal if your shadow-map was made without deformation
-#endif
-
-    return o;
+    if (input.fogFactor >= 0)
+    {
+        textureColor = input.fogFactor * textureColor + (1.0 - input.fogFactor) * fogColor;
+    }
+    
+    return textureColor;
 }

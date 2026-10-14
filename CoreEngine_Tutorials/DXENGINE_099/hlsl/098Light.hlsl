@@ -8,7 +8,7 @@
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #define DXAPI11             1   //force
 #define PS_USE_LIGHT		    //lvl 23
@@ -57,7 +57,7 @@ struct PSIn
 // GLOBALS //
 /////////////
 
-//Set on: DXmodelClass::RenderSubMesh
+//Set on: DX_modelClass::RenderSubMesh
 #if DXAPI11 == 1
 Texture2D shaderTexture;	// 22: Texture
 Texture2D NightTexture;     // 98:
@@ -133,7 +133,7 @@ PSIn VS_Main(VSIn input)
 	if (VShasSpecular)	// If enabled on material, calculate the Specular LIGHT
 	{
 		float4 worldPosition = mul(float4(input.position, 1), worldMatrix);			// P
-		output.viewDirection = normalize(cameraPosition.xyz - worldPosition.xyz);	// L = Lp - p (L = lightDirection)
+		output.viewDirection = normalize(VSCameraPosition.xyz - worldPosition.xyz); // L = Lp - p (L = lightDirection)
 	}
 #endif
     

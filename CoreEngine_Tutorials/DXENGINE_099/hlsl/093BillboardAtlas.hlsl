@@ -8,7 +8,7 @@
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #define DXAPI11             1   //force
 
@@ -42,7 +42,7 @@ struct VS_OUTPUT
 // ------------------------------------------------------------------------------------------------
 
 
-//Set on: DXmodelClass::RenderSubMesh
+//Set on: DX_modelClass::RenderSubMesh
 #if DXAPI11 == 1
 Texture2D billboardAtlasSRV;
 #endif

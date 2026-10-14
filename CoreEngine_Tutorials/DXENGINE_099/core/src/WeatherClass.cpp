@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: WeatherClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 //   Get the nearest airport, based on our IP.
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "OSengine.h"
 #if CORE_ENGINE_LEVEL >= 9 && defined USE_METARCLASS //ENGINE_LEVEL >= 13
@@ -26,8 +26,8 @@
 #include "Math3D.h"			//sqrt
 #include "TrigonometryMathClass.h"	//sim, cos table
 #include "fileLoader.h"
-#include "log.h"
-extern bool download(const std::string url, const std::string file);
+//#include "log.h"
+
 // Internet:
 #if defined USE_NETWORK && defined WINDOWS_PLATFORM
 #include <urlmon.h>
@@ -35,10 +35,7 @@ extern bool download(const std::string url, const std::string file);
 #endif
 
 #include <vector>
-
-// --------------------------------------------------------------------------------------------
-// Globals:
-// --------------------------------------------------------------------------------------------
+extern bool download(const std::string url, const std::string file);
 
 #ifdef GENERATE
 #define DATAFILE TEXT("engine/data/airports.dat")
@@ -48,7 +45,6 @@ extern bool download(const std::string url, const std::string file);
 
 WeatherClass::WeatherClass()
 {
-    WomaIntegrityCheck = 1234525217;
 	CLASSLOADER();
 
     Metar = TEXT("");
@@ -72,8 +68,6 @@ std::vector <Airport>  airportVec;
 
 void WeatherClass::Initialize()
 {
-    //1,"Goroka","Goroka","Papua New Guinea","GKA","AYGA",-6.081689,145.391881,5282,10,"U"
-    //1638,"Lisboa","Lisbon","Portugal","LIS","LPPT",38.781311,-9.135919,374,0,"E"
     IFSTREAM fileIn(WOMA::LoadFile(DATAFILE));    //Open file for Read : cpp
 	if (!fileIn) {
         TCHAR TextMsg[MAX_STR_LEN];
@@ -133,26 +127,28 @@ void WeatherClass::Initialize()
 
 TCHAR* WeatherClass::findClosestAirport(float latitude, float longitude) 
 {
-    float longi = (360 - longitude);
-    if (longi >= 360) longi -= 360;
-    if (longitude > 180) longi = -longi;
-
-    //latitude, longi
-
     UINT GoodIndx = 0;
     float minDist = FLT_MAX;
     
     for (UINT i = 0; i < airportVec.size(); i++)
     {
-        float dist = distHaversine(latitude, longi, airportVec[i].latitude, airportVec[i].longitude);
+        float dist = distHaversine(latitude, longitude, airportVec[i].latitude, airportVec[i].longitude);
         if (dist < minDist)  {
             GoodIndx = i;
             minDist = dist;
         }
     }
 
+	womalog(
+		"Closest ICAO=%s  Lat=%f Lon=%f Dist=%f km\n",
+		airportVec[GoodIndx].ICAO,
+		airportVec[GoodIndx].latitude,
+		airportVec[GoodIndx].longitude,
+		minDist
+	);
+
     if (GoodIndx >= airportVec.size()) {
-        _tprintf(TEXT("Airports file not found!"));
+        womalog(TEXT("Airports file not found!"));
 		return TEXT("");
 	}
 
@@ -162,16 +158,12 @@ TCHAR* WeatherClass::findClosestAirport(float latitude, float longitude)
 float WeatherClass::distHaversine(float lat1, float  lon1, float  lat2, float  lon2)
 {
     float R = 6371; // earth's mean radius in km
-    float dLat = (lat2 - lat1);// *0.0174532925f; //0.0174532925f (PI / 180.0f): Convert degrees to radians
-    float dLon = (lon2 - lon1);// *0.0174532925f;
+    float dLat = (lat2 - lat1) *0.0174532925f; //0.0174532925f (PI / 180.0f): Convert degrees to radians
+    float dLon = (lon2 - lon1) *0.0174532925f;
 
-    float a = FAST_sin(dLat / 2) * FAST_sin(dLat / 2) + FAST_cos(lat1) * FAST_cos(lat2) * FAST_sin(dLon / 2) * FAST_sin(dLon / 2);
-    float c = 2 * atan2(FAST_sqrt(a), FAST_sqrt(1 - a));
+	float a = sin(dLat / 2) * sin(dLat / 2) + cos(lat1) * cos(lat2) * sin(dLon / 2) * sin(dLon / 2);
+	float c = 2 * atan2(sqrt(a), sqrt(1 - a));
     float d = R * c;
-
-	//Note: 
-    //Use conversions only, for normal "trig. math" functions.
-
     return d;
 }
 
@@ -182,7 +174,7 @@ bool WeatherClass::GetPresentWeather(TCHAR* ICAO)
     IFSTREAM	fin;
     TCHAR		szFileName[80] = TEXT("present.weather");
 
-#if defined USE_NETWORK  && !defined MAVERICK
+#if (defined USE_NETWORK) || CORE_ENGINE_LEVEL == 9
     DeleteFile(WOMA::LoadFile (szFileName));
 
     TCHAR downloadFilename[100] = { 0 };
@@ -228,7 +220,6 @@ bool WeatherClass::GetPresentWeather(TCHAR* ICAO)
     int i = 0; // String Index
     while (!fileIn.eof()) {
         getline(fileIn, line);
-        //i = (int) line.find(TEXT("METAR:")); //look for "METAR:" at html file
         i = (int)line.find(ICAO); //look for "METAR:" at html file
         womalog("%s\n", line.c_str());
         if (i > 1)
@@ -237,15 +228,6 @@ bool WeatherClass::GetPresentWeather(TCHAR* ICAO)
 
     fileIn.close();
     Metar = line;
-    /*
-    if (i > 1) {
-		// Extract METAR MSG from html line:
-		int end = (int) line.find(TEXT("<br><b>short"));
-        Metar = line.substr(i+10, end);
-		end = (int) Metar.find(TEXT("<br>"));
-		Metar = Metar.substr(0, end);
-	}
-    */
     return true;
 }
 

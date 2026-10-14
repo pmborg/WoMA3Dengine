@@ -92,19 +92,19 @@
  
   <!--18 barrel_b1 -->
   <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
-  posX="130"    posZ="158"   translateY="" scale="0.02f" rotY="" rotX=""    rotZ=""      shader="31" castShadow="" renderShadows=""
+  posX="130"    posZ="158"   translateY="" scale="0.02f" rotY="" rotX=""    rotZ=""      shader="" castShadow="" renderShadows=""
   filename="engine/data/scene98/barrel_b1.w3d" soundRange="" audio="" />
   <!--19 barrel_b1_open -->
   <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
-  posX="131"    posZ="160"   translateY="0.2f" scale="0.02F" rotY="" rotX=""    rotZ=""      shader="31" castShadow="" renderShadows=""
+  posX="131"    posZ="160"   translateY="0.2f" scale="0.02F" rotY="" rotX=""    rotZ=""      shader="" castShadow="" renderShadows=""
   filename="engine/data/scene98/barrel_b1_open.w3d" soundRange="" audio="" />
   <!--20 BOX barrel_k1  -->
   <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
-  posX="127.5f"    posZ="159"   translateY="0.2f" scale="0.02" rotY="" rotX=""    rotZ=""      shader="31" castShadow="" renderShadows=""
+  posX="127.5f"    posZ="159"   translateY="0.2f" scale="0.02" rotY="" rotX=""    rotZ=""      shader="" castShadow="" renderShadows=""
   filename="engine/data/scene98/barrel_k1.w3d" soundRange="" audio="" />
   <!--21 BOX barrel_k_open-->
   <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
-  posX="127"    posZ="157"   translateY="" scale="0.02f" rotY="" rotX=""    rotZ=""      shader="31" castShadow="" renderShadows=""
+  posX="127"    posZ="157"   translateY="" scale="0.02f" rotY="" rotX=""    rotZ=""      shader="" castShadow="" renderShadows=""
   filename="engine/data/scene98/barrel_k_open.w3d" soundRange="" audio="" />
   <!--22 CartonBox -->
   <object id="0" depend="-1"  instances=""  fromPage="89" toPage="0"
