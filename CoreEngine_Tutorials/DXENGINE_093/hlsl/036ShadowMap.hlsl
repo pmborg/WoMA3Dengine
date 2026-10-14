@@ -1,14 +1,18 @@
 // --------------------------------------------------------------------------------------------
-// Filename: 036ShadowMap.hlsl
+// Filename: 045ShadowMap.hlsl
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
-*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2023
+*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2026
 *	-------------------------------------------------------------------------------------------
 *	code by : Pedro Borges - pmborg@yahoo.com
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
+
+#if DXAPI11 != 1 && DXAPI12 != 1
+    #define DXAPI9 1
+#endif
 
 //////////////
 // TYPEDEFS //
@@ -64,4 +68,3 @@ float4 PS_Main(PSIn input) : SV_TARGET
 	// Depth is z / w
 	return  float4 (input.fDepth, 0, 0, 1);		// Get the depth value of the pixel by dividing the Z pixel depth by the homogeneous W coordinate.
 }
-

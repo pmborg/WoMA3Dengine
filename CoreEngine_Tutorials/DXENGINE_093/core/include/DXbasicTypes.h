@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------------------------------------
 // Filename: DXbasicTypes.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // ----------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
@@ -205,18 +205,6 @@ namespace DirectX {
 #pragma pack(pop)
 #endif
 
-#if DX_ENGINE_LEVEL >= 60 && defined USE_TERRAIN_TUTORIAL_CHAP_24
-	typedef struct
-	{
-		XMFLOAT3 position;			// POSITION
-		XMFLOAT4 texture;			// TEXCOORD0
-		XMFLOAT3 normal;			// NORMAL
-		XMFLOAT4 color;				// COLOR
-		XMFLOAT4 mappingTexture;	// TEXCOORD1
-		XMFLOAT3 tangent;
-		XMFLOAT3 binormal;
 
-	} DXVertexTerrainType_21; //VertexType
-#endif
 
 }

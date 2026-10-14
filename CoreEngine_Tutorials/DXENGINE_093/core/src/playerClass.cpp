@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: playerClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,12 +16,12 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
 #if defined USE_DIRECT_INPUT// && defined INTRO_DEMO
 #include "main.h"
-#if defined DX_ENGINE
+#if defined WINDOWS_PLATFORM //DX_ENGINE
 #include <strsafe.h>
 #endif
 #include "playerClass.h"
@@ -29,13 +29,12 @@
 PlayerClass::PlayerClass(UINT id)
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525217;
-
-	//public:
-	ZeroMemory(&p_player, sizeof(p_player));
 	p_player.online = false;	// We are not yet with network and online...
 }
 
-PlayerClass::~PlayerClass(){CLASSDELETE();}
+PlayerClass::~PlayerClass()
+{
+	CLASSDELETE();
+}
 #endif
 

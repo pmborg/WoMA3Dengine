@@ -1,14 +1,17 @@
 // --------------------------------------------------------------------------------------------
-// Filename: 053Double_Color_Terrain.hlsl
+// Filename: 066Double_Color_Terrain.hlsl
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
-*	World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+*	World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 *	-------------------------------------------------------------------------------------------
 *	code by : Pedro Borges - pmborg@yahoo.com
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 /*********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+
+#if DXAPI11 != 1 && DXAPI12 != 1
+#define DXAPI9 1
+#endif
 
 #define PS_USE_LIGHT			//23
 //#define PS_USE_FADE			//Night/Day
@@ -17,6 +20,8 @@
 #define PS_USE_SPECULAR			//34
 #define PS_USE_FOG				//51
 //#define PS_USE_SHADOW
+
+#define TEXTURE_MODE -1 //Default is -1
 
 //////////////
 // TYPEDEFS //
@@ -61,20 +66,22 @@ struct PSIn
 // GLOBALS //
 /////////////
 //Set on: DXmodelClass::RenderSubMesh
-
+#if DXAPI11 == 1 || DXAPI12 == 1
 Texture2D shaderTexture				: register(t0);	// 21: shaderTexture
 //Texture2D AlfaMapTexture			: register(t1);	// 43: AlfaMap
 //Texture2D ShadowMapTextureTexture	: register(t2);	// 45: ShadowMap
 //Texture2D TangentMapTexture;		: register(t3);	// 47: TangentMap
+#endif
 
+#if DXAPI11 == 1 || DXAPI12 == 1
 SamplerState SampleType				: register(s0);// 3D (default) WRAP
 //SamplerState SampleTypeClamp		: register(s1);
+#endif
 
-////////////////
-// CBUFFERS
-////////////////
+
 #include "cbuffer.hlsli"
 #include "light.hlsli"
+#include "TextureSampling.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
@@ -120,7 +127,7 @@ PSIn VS_Main(VSIn input)
     if (VShasSpecular)	// If enabled on material, calculate the Specular LIGHT
     {
         float4 worldPosition = mul(float4(input.position, 1), worldMatrix); // P
-        output.viewDirection = normalize(cameraPosition.xyz - worldPosition.xyz); // L = Lp - p (L = lightDirection)
+       output.viewDirection = normalize(VSCameraPosition.xyz - worldPosition.xyz); // L = Lp - p (L = lightDirection)
     }
 #endif
 
@@ -141,12 +148,34 @@ PSIn VS_Main(VSIn input)
 	return output;
 }
 
+float4 GetShaderTexture(Texture2D tex, float2 texCoords, uint mipLevel, int mode)
+{
+    switch (mode)
+    {
+        case 0:
+            return NearestInterpolation(SampleType, tex, texCoords);
+        case 1:
+            return BilinearInterpolation(SampleType, tex, texCoords);
+        case 2:
+            return TrilinearInterpolation(SampleType, tex, texCoords, mipLevel);
+        case 3:
+            return CubicInterpolation(SampleType, tex, texCoords);
+        
+        default:
+            return tex.Sample(SampleType, texCoords);
+    }
+
+    // fallback
+    return tex.Sample(SampleType, texCoords);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // Pixel Shader
 ////////////////////////////////////////////////////////////////////////////////
 float4 PS_Main(PSIn input) : SV_TARGET
 {
-    float4	textureColor = shaderTexture.Sample(SampleType, input.texCoords);
+    //float4	textureColor = shaderTexture.Sample(SampleType, input.texCoords);
+	float4	textureColor = GetShaderTexture(shaderTexture, input.texCoords, 0, TEXTURE_MODE);
 	float	lightIntensity = 0;
     float4	color;
 	
@@ -158,13 +187,8 @@ float4 PS_Main(PSIn input) : SV_TARGET
 		return fogColor * fade;
 #endif
 	
-	// 21: TEXTURE: Sample the pixel color from the texture using the sampler at this texture coordinate location:
-	//if (hasTexture)
-	//	textureColor = shaderTexture.Sample(SampleType, input.texCoords);
-
-	// 66: Combine the color map value into the final color.
-	//if (hasColorMap)
-		textureColor = saturate(textureColor * input.color/8);
+	// Combine the color map value into the final color.
+	textureColor = saturate(textureColor * input.color/8);
 
 	// 23: LIGHT
 	//if (hasLight)
@@ -234,7 +258,11 @@ float4 PS_Main(PSIn input) : SV_TARGET
 		textureColor.a = alfaColor;
 #endif
 
-    color = color * textureColor;
-	
+    //color = color * textureColor;
+
+#if DXAPI12 != 1
+    textureColor.rgb = pow(textureColor.rgb, 1.0 / 2.2); //Apply sRGB workflow: NEW 2026 review!
+#endif	
+    
     return color;
 }

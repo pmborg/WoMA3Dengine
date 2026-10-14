@@ -2,9 +2,9 @@
 // -------------------------------------------------------------------------------------------------------------------------------------
 // Filename: WomaCube.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,12 +17,11 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: interface for a Color and Texture Cube
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
 #include "main.h"
-#if defined USE_CUBE // Cubes
 #include "vertexTypes.h"
 
 const int magic = 1;
@@ -32,7 +31,6 @@ const int n_faces = 6;
 class CCube
 {
 public:
-	UINT WomaIntegrityCheck = 1234525217;
 	CCube(int x_0, int y_0, int z_0);
 	virtual ~CCube();
 	void Shutdown();
@@ -44,4 +42,3 @@ public:
 	std::vector <ModelTextureLightVertexType> VertexCubeTextureLightModel;
 	std::vector<UINT> IndexCubeList;
 };
-#endif

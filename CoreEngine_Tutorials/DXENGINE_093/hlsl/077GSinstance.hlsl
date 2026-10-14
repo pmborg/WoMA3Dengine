@@ -2,13 +2,13 @@
 // Filename: 077GSinstance.hlsl
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
-*	World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+*	World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 *	-------------------------------------------------------------------------------------------
 *	code by : Pedro Borges - pmborg@yahoo.com
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #define PS_USE_ALFACOLOR
 #define PS_USE_ALFA_TEXTURE
@@ -21,21 +21,22 @@
 struct VSIn
 {
 	float3 position         : POSITION;				//21
-	float2 texCoords        : TEXCOORD; 			//22
+	float2 texCoords        : TEXCOORD0; 			//22
 	float3 normal	        : NORMAL;				//23
     float3 instancePosition : INSTANCEPOS;
+    //float  rotY             : TEXCOORD1;
 };
 
 //GEOMETRY:
 struct GSIn
 {
-    float4 position         : SV_POSITION; // 21
+    float4 position         : SV_POSITION;  // 21
 	//float4 worldPos 		: POSITION;
-    float2 texCoords        : TEXCOORD0; // 22
-    float3 normal           : NORMAL; // 23 & 47: LIGHT+BUMP
+    float2 texCoords        : TEXCOORD0;    // 22
+    float3 normal           : NORMAL;       // 23 & 47: LIGHT+BUMP
 	//float3 tangent 		: TANGENT;
 #if defined PS_USE_SPECULAR
-    float3 viewDirection    : TEXCOORD1; // 44 Specular: SHADER_TEXTURE_LIGHT_INSTANCED
+    float3 viewDirection    : TEXCOORD1;    // 44 Specular
 #endif
     float4 cameraPosition   : WS; // FOG & SPECULAR
 };
@@ -49,7 +50,7 @@ struct PSIn
 	float3 normal			: NORMAL;				// 23 & 47: LIGHT+BUMP
 	//float3 tangent 		: TANGENT;
 #if defined PS_USE_SPECULAR
-	float3 viewDirection	: TEXCOORD1;			// 44 Specular: SHADER_TEXTURE_LIGHT_INSTANCED
+	float3 viewDirection	: TEXCOORD1;			// 44 Specular
 #endif
 	float4 cameraPosition	: WS;					// FOG & SPECULAR
 };
@@ -72,7 +73,7 @@ SamplerState SampleType; //: register(s0);		// 3D (default) WRAP
 #include "light.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
-// Vertex Shader
+// VERTEX SHADER
 ////////////////////////////////////////////////////////////////////////////////
 GSIn VS_Main(VSIn input, uint instanceID : SV_InstanceID)
 {
@@ -91,10 +92,15 @@ GSIn VS_Main(VSIn input, uint instanceID : SV_InstanceID)
 		{ 0, 0, 1, 0 },		// sin(VSrotY),     0.0f,   cos(VSrotY),  0.0f,
 		{ 0, 0, 0, 1 }		// 0.0f,            0.0f,   0.0f,         1.0f
 	};
-	rotationAroundY[0].x = cos(VSrotY);
-	rotationAroundY[0].z = -sin(VSrotY);
-	rotationAroundY[2].x = sin(VSrotY);
-	rotationAroundY[2].z = cos(VSrotY);
+   
+    float rY = VSrotY;
+    //if (input.rotY != 0)
+    //    rY = input.rotY;
+    
+    rotationAroundY[0].x =  cos(rY);
+	rotationAroundY[0].z = -sin(rY);
+	rotationAroundY[2].x =  sin(rY);
+    rotationAroundY[2].z =  cos(rY);
     
 	//[1st] ROTATE the instance
 	float4 position = float4(input.position, 1);
@@ -142,7 +148,7 @@ GSIn VS_Main(VSIn input, uint instanceID : SV_InstanceID)
 	if (VShasSpecular)	// If enabled on material, calculate the Specular LIGHT
 	{
 		float4 worldPosition = mul(float4(input.position, 1), worldMatrix);			// P
-		output.viewDirection = normalize(cameraPosition.xyz - worldPosition.xyz);	// L = Lp - p (L = lightDirection)
+		output.viewDirection = normalize(VSCameraPosition.xyz - worldPosition.xyz); // L = Lp - p (L = lightDirection)
 	}
 #endif
 
@@ -155,14 +161,14 @@ void GS_Main(triangle GSIn input[3], inout TriangleStream<PSIn> triStream)
     PSIn output;
     float3 camPos = mul(input[0].position, WV).xyz;
 
-    //1: Instance, too distante dont render:
+    //1: Instance, too distant don't render:
     // Compute average distance of the triangle from the camera
     float3 triCenter = (input[0].position.xyz + input[1].position.xyz + input[2].position.xyz) / 3.0f;
     float dist = distance(camPos, triCenter);
     if (dist > 2000.0f)
         return; // Do not emit this triangle
 
-    //2: Instance, Out of camera dont Render:
+    //2: Instance, Out of camera don't Render:
 	//take the cross product of the input triangle edges in world space: 
     float3 wV0 = input[1].position.xyz - input[0].position.xyz;
     float3 wV1 = input[2].position.xyz - input[0].position.xyz;
@@ -188,7 +194,7 @@ void GS_Main(triangle GSIn input[3], inout TriangleStream<PSIn> triStream)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Pixel Shader
+// PIXEL SHADER
 ////////////////////////////////////////////////////////////////////////////////
 float4 PS_Main(GSIn input) : SV_TARGET
 {
@@ -238,18 +244,29 @@ float4 PS_Main(GSIn input) : SV_TARGET
 			
 			color += (diffuseColor * lightIntensity);
 			color = saturate(color);
-			float3 Reflection = normalize(2 * lightIntensity * input.normal + lightDirection);
-			float  fPhoneValue = saturate(dot(Reflection, input.viewDirection));	// (R.V)
-			float4 specular = pow(fPhoneValue, nShininess);							// Ls = (R.V)^alfa (alfa Determine the amount of specular light based on the reflection vector, viewing direction, and specular power.)
+			//float3 Reflection = normalize(2 * lightIntensity * input.normal + lightDirection);
+			//float  fPhoneValue = saturate(dot(Reflection, input.viewDirection));	// (R.V)
+			//float4 specular = pow(fPhoneValue, nShininess);							// Ls = (R.V)^alfa (alfa Determine the amount of specular light based on the reflection vector, viewing direction, and specular power.)
+            //
+			//color = color * textureColor;
+			//textureColor = saturate(textureColor + specular);		// specular = Ls (contribution of the light source) * Ks (specular component of the material)
+    
+            float3 L = normalize(-lightDirection);				// from pixel → light
+            float3 N = normalize(input.normal);					// replace with bump-normal later if needed
+            float3 R = reflect(L, N);							// reflection direction
+            float  fPhoneValue = saturate(dot(R, input.viewDirection));
+            float4 specular = pow(fPhoneValue, nShininess);
 
-			color = color * textureColor;
-			textureColor = saturate(textureColor + specular);		// specular = Ls (contribution of the light source) * Ks (specular component of the material)
+            textureColor = saturate(textureColor + specular);
 		}
 	}
 
 #endif
     
     //return float4(1,1,1,1);
+    
+    if (fade < 1)
+        textureColor.rgb *= fade;
     return textureColor;
 }
     

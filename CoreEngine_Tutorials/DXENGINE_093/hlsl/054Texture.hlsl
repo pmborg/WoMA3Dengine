@@ -7,8 +7,9 @@
 *	code by : Pedro Borges - pmborg@yahoo.com
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
+*   Water Waves
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 //////////////
 // TYPEDEFS //
@@ -21,7 +22,7 @@
 struct VSIn
 {
     float3 position : POSITION;
-    float4 color : COLOR; //21
+    //float4 color : COLOR; //21
 };
 
 // PIXEL:
@@ -52,7 +53,7 @@ float rand_1_05(in float2 uv)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Vertex Shader
+// VERTEX SHADER
 ////////////////////////////////////////////////////////////////////////////////
 PSIn VS_Main(VSIn input)
 {
@@ -129,10 +130,10 @@ float4 PS_Main(PSIn input) : SV_TARGET
     {
         //river
         textureColor = (textureColor + color) / 2.0;
-#if defined PS_USE_ALFACOLOR	// 33: Alfa Color
-        //if (hasAlfaColor)
+        #if defined PS_USE_ALFACOLOR	// 33: Alfa Color
+            //if (hasAlfaColor)
             textureColor.a = alfaColor;
-#endif
+        #endif
     }
     else
     {
@@ -141,5 +142,10 @@ float4 PS_Main(PSIn input) : SV_TARGET
         textureColor.a = 1;
     }
     
+    if (fade < 1)
+        textureColor.rgb *= fade;
+//#if DXAPI12 != 1
+//    textureColor.rgb = pow(textureColor.rgb, 1.0 / 2.2); //Apply sRGB workflow: NEW 2026 review!
+//#endif																						
     return textureColor;
 }
