@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: win32PaintEvents.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,22 +16,15 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Paint the main window depending of engine state screen page.
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "OSengine.h"
 #include "WinSystemClass.h"
-#include "OSmain_dir.h"
-#include "mem_leak.h"
-#include "stateMachine.h"
 
 #if CORE_ENGINE_LEVEL >= 2 && defined WINDOWS_PLATFORM 
 
 #if defined ALLOW_LOADING_SPLASH && defined WINDOWS_PLATFORM  //ENGINE_LEVEL >= 10 && 
 #include "fileLoader.h"
-#endif
-
-#if CORE_ENGINE_LEVEL >= 7 && defined USE_ASTRO_CLASS
-#include "initWorld.h"
 #endif
 
 #if CORE_ENGINE_LEVEL >= 4 && defined USE_USER_SETUP
@@ -40,6 +33,12 @@ int		MainWindowPaint(UINT monitor);
 
 #if defined ALLOW_LOADING_SPLASH
 void	PaintSplashScreen(HDC hdc);
+#endif
+
+#include "mem_leak.h"
+
+#if CORE_ENGINE_LEVEL >= 7 && defined USE_ASTRO_CLASS
+#include "initWorld.h"
 #endif
 
 #if CORE_ENGINE_LEVEL >= 8 && defined USE_GPS_MAP
@@ -121,14 +120,13 @@ LRESULT CALLBACK WOMA_PAINT_Message_event_handler(HWND hwnd, UINT umessage, WPAR
 		if (DXsystemHandle->g_DShowPlayer == NULL || (DXsystemHandle->g_DShowPlayer->m_state != STATE_RUNNING))
 #endif
 		{
-			for (UINT i = 0; i < SystemHandle->windowsArray.size(); i++)
+			for (UINT i = 0; i < WOMA::windowsToRenderArray.size(); i++)
 				MainWindowPaint(i);
 		}
 
 		break;
 	}
     #endif
-
 	}
 	return SystemHandle->WOMA_SYSTEM_MessageHandler(hwnd, umessage, wparam, lparam);
 }
@@ -140,18 +138,14 @@ void PaintSetup(HDC hdc, HDC hdcMem, HFONT font_title, HFONT font, int scr)
 	// ---------------------------------------------------------------------------------------------
 	if (WOMA::game_state == GAME_SETUP) 
 	{
-		SelectObject(hdcMem, font_title);		//Select the Font to Render
+		SelectObject(hdcMem, font_title);				//Select the Font to Render the SETUP TITLE
 
 		const TCHAR SETUP[] = TEXT("S E T U P");
 		TextOut(hdcMem, 25, 25, SETUP, (int)_tcslen(SETUP));
 
-	//#if CORE_ENGINE_LEVEL == 5
-		//BitBlt(hdc, 0, 0, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT, hdcMem, 0, 0, SRCCOPY);
-	//#else
 		BitBlt(hdc, 0, 0, WOMA::AppSettings->WINDOW_WIDTH, WOMA::AppSettings->WINDOW_HEIGHT, hdcMem, 0, 0, SRCPAINT);
-	//#endif
 	} else {
-		HGDIOBJ obj = SelectObject(hdcMem, font);		//Select the Font to Render
+		HGDIOBJ obj = SelectObject(hdcMem, font);		//Select the Font to Render the SETUP
 
 		if (scr >= 0)
 		{
@@ -159,7 +153,7 @@ void PaintSetup(HDC hdc, HDC hdcMem, HFONT font_title, HFONT font, int scr)
 
 			#if CORE_ENGINE_LEVEL >= 4 && defined USE_SYSTEM_CHECK // BEFORE need to be: APPLICATION_INIT_MAIN_WINDOW() & AFTER need to be: InitSelectedDriver()
 			if (TextToPrintSize == 0)
-				SystemHandle->InitializeSystemScreenF1(10, 10);		// SETUP SCREEN: F1,F2,F3,F4,F5,F6
+				SystemHandle->InitializeSystemScreenF1(10, 10);		// RENDER SCREEN: F1,F2,F3,F4,F5,F6
 			#endif
 
 			TextToPrintSize = (int)SystemHandle->TextToPrint[scr].size();
@@ -197,7 +191,7 @@ int MainWindowPaint(UINT monitor)
 	PAINTSTRUCT ps;
 
 	HDC hdc;
-	hdc = BeginPaint(SystemHandle->windowsArray[monitor].hWnd, &ps);
+	hdc = BeginPaint(WOMA::windowsToRenderArray[monitor].hWnd, &ps);
 
 	// Which Screen we will use:
 	int scr = -1;
@@ -223,7 +217,7 @@ int MainWindowPaint(UINT monitor)
 	// Paint BackGround Image:
 	// ---------------------------------------------------------------------------------------------
 	#if defined ALLOW_LOADING_SPLASH
-	if (WOMA::game_state <= GAME_MENU)
+	if (WOMA::game_state <= GAME_MENU || (CORE_ENGINE_LEVEL <= 10 && WOMA::game_state == GAME_RUN))
 		PaintSplashScreen(hdc); // (Loading Splash Screen) Default Background
 	#endif
 

@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: textFontClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -14,12 +14,12 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
 #include "platform.h"
-#ifdef USE_RASTERTEK_TEXT_FONT
+#if (defined USE_RASTERTEK_TEXT_FONT || defined USE_RASTERTEK_TEXT_FONTV2)
 
 //////////////
 // INCLUDES //
@@ -71,31 +71,7 @@ public:
 		float left, right;
 		int size;
 	};
-/*
-	//NOTE: need to be local! to not interfear with others!
-	struct VertexType
-	{
-		XMFLOAT3 position;
-		XMFLOAT2 texture;
-	};
-*/
-#if defined DX_ENGINE 
-	struct VertexType
-	{
-		XMFLOAT3 position;
-		XMFLOAT2 texture;
-	};
-#else
-	#pragma pack(push, 1)
-	struct VertexType
-	{
-		Vector3 position;
-		Vector2 texture;
-	};
-	#pragma pack(pop)
-#endif
 
-	UINT WomaIntegrityCheck = 1234525217;
 	textFontClass();
 	~textFontClass();
 
@@ -108,12 +84,11 @@ public:
 #if defined DX12
 	DX12TextureClass* GetTexture();
 #endif
-#if (defined OPENGL3 || defined OPENGL4)
+#if (defined OPENGL3 || defined OPENGL4 || defined VULKAN)
 	GLtextureClass* gl_Texture = NULL;
 #endif
+
 	void BuildVertexArray(void*, TCHAR*, float, float);
-	int m_fontHeight = 18;
-	float m_spaceSize = 2.0f;
 	int GetSentencePixelLength(char* sentence);
 	int GetFontHeight();
 
@@ -124,24 +99,28 @@ private:
 public:
 	// VARS:
 	// ----------------------------------------------------------------------
+	int m_fontHeight  = 18;  // 18 default font height
+	float m_spaceSize = 2.0; // 2.0f default space size
+
 	FontType* m_Font = NULL;
-
-#if defined DX11 || defined DX9
-	DirectX::DX11Class* m_driver11 = NULL;
-#endif
-#if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009
-	DirectX::DX12Class* m_driver = NULL;
-#endif
-
-	// [PATTERN] Image loader:
-#if defined DX9 || defined DX11
-	ID3D11ShaderResourceView* m_Texture11 = NULL;
-#endif
-#if defined DX12
-	DX12TextureClass* m_Texture = NULL;
-#endif
-#if defined DX11 || defined DX9
-	std::vector<ID3D11ShaderResourceView*> meshSRV11;	// vector with all pointer(s) to textures loaded
+#if defined DX_ENGINE
+  #if defined DX11 || defined DX9
+  	DirectX::DX11Class* m_driver11 = NULL;
+  #endif
+  #if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009
+  	DirectX::DX12Class* m_driver = NULL;
+  #endif
+  
+  	// [PATTERN] Image loader:
+  #if defined DX9 || defined DX11
+  	ID3D11ShaderResourceView* m_Texture11 = NULL;
+  #endif
+  #if defined DX12
+  	DX12TextureClass* m_Texture = NULL;
+  #endif
+  #if defined DX11 || defined DX9
+  	std::vector<ID3D11ShaderResourceView*> meshSRV11;	// vector with all pointer(s) to textures loaded
+  #endif
 #endif
 };
 

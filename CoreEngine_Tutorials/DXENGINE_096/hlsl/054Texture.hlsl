@@ -9,7 +9,7 @@
 *
 *   Water Waves
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 //////////////
 // TYPEDEFS //
@@ -22,7 +22,7 @@
 struct VSIn
 {
     float3 position : POSITION;
-    float4 color : COLOR; //21
+    //float4 color : COLOR; //21
 };
 
 // PIXEL:
@@ -144,5 +144,8 @@ float4 PS_Main(PSIn input) : SV_TARGET
     
     if (fade < 1)
         textureColor.rgb *= fade;
+//#if DXAPI12 != 1
+//    textureColor.rgb = pow(textureColor.rgb, 1.0 / 2.2); //Apply sRGB workflow: NEW 2026 review!
+//#endif																						
     return textureColor;
 }
