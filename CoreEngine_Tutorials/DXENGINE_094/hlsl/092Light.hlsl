@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------
-// Filename: 083Light.hlsl
+// Filename: 092Light.hlsl
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
 *	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2023
@@ -8,7 +8,7 @@
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #define DXAPI11             1   //force
 #define PS_USE_LIGHT		    //23
@@ -62,16 +62,6 @@ SamplerState SampleType: register(s0);
 ////////////////
 // CBUFFERS
 ////////////////
-// --------------------------------------------------------------------------------------------
-// Filename: cbuffer.hlsl
-// --------------------------------------------------------------------------------------------
-/**********************************************************************************************
-*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2023
-*	-------------------------------------------------------------------------------------------
-*	code by : Pedro Borges - pmborg@yahoo.com
-*	Downloaded from : https://github.com/pmborg/WoMA3Dengine
-*
-**********************************************************************************************/
 
 // SYNC: DXshaderClass.h -- DX12: CBV
 #if DXAPI11 == 1
@@ -86,16 +76,18 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
     matrix WVP; //worldMatrix+viewMatrix+projectionMatrix
  
     // FIRE:
-    float vsframeTime;
-    float3 scrollSpeeds;
-    float3 scales;
-    bool isAnimatedBill;
+    float   vsframeTime;
+    float3  scrollSpeeds;
+    float3  scales;
+    bool    isAnimatedBill;
+    float   fade;
+    float3  pad;
 };
 
 #include "light.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
-// Vertex Shader
+// VERTEX SHADER
 ////////////////////////////////////////////////////////////////////////////////
 PSIn VS_Main(VSIn input)
 {
@@ -124,7 +116,7 @@ PSIn VS_Main(VSIn input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Pixel Shader
+// PIXEL SHADER
 ////////////////////////////////////////////////////////////////////////////////
 float4 PS_Main(PSIn input) : SV_TARGET
 {
@@ -150,6 +142,8 @@ float4 PS_Main(PSIn input) : SV_TARGET
         textureColor.rgb = lerp(textureColor.rgb, fogColor.rgb, fog4.rgb);
     }
 #endif
-    
+
+    if (fade < 1)
+        textureColor.rgb *= fade;
 	return textureColor;
 }

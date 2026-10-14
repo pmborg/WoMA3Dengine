@@ -8,7 +8,7 @@
 *	Downloaded from : http://woma.servegame.com
 *
 /*********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #define PS_USE_LIGHT			//23
 //#define PS_USE_FADE			//Night/Day
@@ -38,17 +38,17 @@ struct VSIn
 // PIXEL:
 struct PSIn
 {
-    float4 position : SV_POSITION;
-    float4 Wposition : POSITION;
-    float2 texCoords : TEXCOORD0;
-    float3 normal : NORMAL;
-    float4 color : COLOR;
-    float4 cameraPosition : WS;
+    float4 position       : SV_POSITION;
+    float4 Wposition      : TEXCOORD4;
+    float2 texCoords      : TEXCOORD0;
+    float3 normal         : TEXCOORD1;
+    float4 color          : COLOR;
+    float4 cameraPosition : TEXCOORD2;
 #if defined PS_USE_FOG
-    float fogFactor			: FOG; // 51 FOG
+    float fogFactor		  : FOG; // 51 FOG
 #endif
 #if defined PS_USE_SPECULAR
-	float3 viewDirection	: TEXCOORD1;			
+	float3 viewDirection  : TEXCOORD3;			
 #endif
 #if defined PS_USE_SHADOWMAP_TEXTURE//45
 	float4 lightViewPosition: LIGHT_VIEW_POSITION;	
@@ -69,7 +69,7 @@ Texture2D rockTexture : register(t2); //017rock
 Texture2D blackrockTexture : register(t3);
 
 //Texture2D AlfaMapTexture			: register(t1);	// 43: AlfaMap
-//Texture2D ShadowMapTextureTexture	: register(t2);	// 45: ShadowMap
+//Texture2D ShadowMapTexture	: register(t2);	// 45: ShadowMap
 //Texture2D TangentMapTexture;		: register(t3);	// 47: TangentMap
 
 SamplerState SampleType : register(s0); // 3D (default) WRAP
@@ -82,7 +82,7 @@ SamplerState SampleType : register(s0); // 3D (default) WRAP
 #include "light.hlsli"
 
 ////////////////////////////////////////////////////////////////////////////////
-// Vertex Shader
+// VERTEX SHADER
 ////////////////////////////////////////////////////////////////////////////////
 
 PSIn VS_Main(VSIn input)
@@ -119,7 +119,9 @@ PSIn VS_Main(VSIn input)
 	
 	//23: LIGHT: NORMAL
 	//if (VShasLight || VShasSpecular)
-    output.normal = normalize(mul(input.normal, (float3x3) worldMatrix)); //23: LIGHT: Calculate the normal vector against the world matrix only.
+    //output.normal = normalize(mul(input.normal, (float3x3) worldMatrix)); //23: LIGHT: Calculate the normal vector against the world matrix only.
+    output.normal = normalize(mul(input.normal, (float3x3) WorldInverseTranspose));
+
 	
 	//34: SPECULAR
 #if defined PS_USE_SPECULAR
@@ -148,7 +150,7 @@ PSIn VS_Main(VSIn input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Pixel Shader
+// PIXEL SHADER
 ////////////////////////////////////////////////////////////////////////////////
 float4 PS_Main(PSIn input) : SV_TARGET
 {
@@ -241,12 +243,18 @@ float4 PS_Main(PSIn input) : SV_TARGET
 			color += (VSdiffuseColor * lightIntensity);
 			color = saturate(color);
 
-			float3 Reflection = normalize(2 * lightIntensity * input.normal + lightDirection);
-			float  fPhoneValue = saturate(dot(Reflection, input.viewDirection));	// (R.V)
-			float4 specular = pow(fPhoneValue, nShininess);							// Ls = (R.V)^alfa (alfa Determine the amount of specular light based on the reflection vector, viewing direction, and specular power.)
-
-			color = color * textureColor;
-			textureColor = saturate(textureColor + specular);		// specular = Ls (contribution of the light source) * Ks (specular component of the material)
+			//float3 Reflection = normalize(2 * lightIntensity * input.normal + lightDirection);
+			//float  fPhoneValue = saturate(dot(Reflection, input.viewDirection));	// (R.V)
+			//float4 specular = pow(fPhoneValue, nShininess);							// Ls = (R.V)^alfa (alfa Determine the amount of specular light based on the reflection vector, viewing direction, and specular power.)
+            //
+			//color = color * textureColor;
+			//textureColor = saturate(textureColor + specular);		// specular = Ls (contribution of the light source) * Ks (specular component of the material)
+    
+            float3 L = normalize(-lightDirection);
+            float3 R = reflect(L, normal);
+            float fPhoneValue = saturate(dot(R, input.viewDirection));
+            float4 specular = pow(fPhoneValue, nShininess);
+            textureColor = saturate(textureColor + specular);
 		}
 	}
 #endif
@@ -278,8 +286,9 @@ float4 PS_Main(PSIn input) : SV_TARGET
 		textureColor.a = alfaColor;
 #endif
 
-    //color = color * textureColor;
+#if DXAPI12 != 1
+    textureColor.rgb = pow(textureColor.rgb, 1.0 / 2.2); //Apply sRGB workflow: NEW 2026 review!
+#endif	
 	
-	//return float4(1,1,1,1);
 	return textureColor;
 }

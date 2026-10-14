@@ -2,7 +2,7 @@
 // Filename: 072fire.hlsl
 // --------------------------------------------------------------------------------------------
 /**********************************************************************************************
-*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2023
+*	DirectX 11 Tutorial - World of Middle Age  - ENGINE 3D 2026
 *	-------------------------------------------------------------------------------------------
 *	code by : Pedro Borges - pmborg@yahoo.com
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
@@ -11,7 +11,7 @@
 // --------------------------------------------------------------------------------------------
 // Original version: https://www.rastertek.com/dx11win10tut33.html
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "cbuffer.hlsli"
 
@@ -44,7 +44,7 @@ SamplerState SampleType : register(s0); // Matches PSSetSamplers(0)
 SamplerState SampleType2 : register(s1); // Matches PSSetSamplers(1)
 
 ////////////////////////////////////////////////////////////////////////////////
-// Vertex Shader
+// VERTEX SHADER
 ////////////////////////////////////////////////////////////////////////////////
 PSIn VS_Main(VSIn input)
 {
@@ -72,7 +72,7 @@ PSIn VS_Main(VSIn input)
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Pixel Shader
+// PIXEL SHADER
 ////////////////////////////////////////////////////////////////////////////////
 float4 PS_Main(PSIn input) : SV_TARGET
 {
@@ -120,8 +120,10 @@ float4 PS_Main(PSIn input) : SV_TARGET
 	// Use the clamping sample state instead of the wrap sample state to prevent flames wrapping around.
     alphaColor = alphaTexture.Sample(SampleType2, noiseCoords.xy);
 
-	// Set the alpha blending of the fire to the perturbed and distored alpha texture value.
+	// Set the alpha blending of the fire to the perturbed and distorted alpha texture value.
 	fireColor.a = alphaColor;
 	
+    //if (fade < 1)
+    //    fireColor.rgb *= fade;
     return fireColor;
 }

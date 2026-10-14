@@ -8,7 +8,7 @@
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 ////////////////////////////////////////////////////////////////////////////////
 float4 PSlightFunc1(float3 Normal)
@@ -22,3 +22,4 @@ float4 PSlightFunc2(float3 Normal)
 {
 	return saturate(dot(Normal, lightDirection));							// Calculate the amount of light on this pixel
 }
+

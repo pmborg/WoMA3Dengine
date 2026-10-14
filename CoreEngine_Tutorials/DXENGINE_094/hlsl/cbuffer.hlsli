@@ -8,10 +8,24 @@
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
+
+#if DXAPI11 != 1 && DXAPI12 != 1
+    #define DXAPI9 1
+#endif
+
+#define MAX_POINT_LIGHTS 26      // enough for all lamps
+
+struct PointLight
+{
+    float3 position;
+    float radius;
+    float3 color;
+    float intensity;
+};
 
 // SYNC: DXshaderClass.h -- DX12: CBV
-#if DXAPI11 == 1
+#if DXAPI9 == 1 || DXAPI11 == 1
 cbuffer VSShaderParametersBuffer	//DX11
 #endif
 #if DXAPI12 == 1
@@ -47,21 +61,21 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
 	// 45 BLOCK: VS5
 	matrix	ViewToLightProj;        // For Shadow
 	matrix	WorldInverseTranspose;	// WorldInverseTranspose
-	float4	vEye;					// camera position													   
+	float4	VSCameraPosition;		// camera position - old var: vEye
 
 	// 42 BLOCK: VS6
-	float	VSrotX;
-	float	VSrotY;
-	float	VSrotZ;
-    float   time;   //water animation
+	float	VSrotX=0.0f;
+	float	VSrotY=0.0f;
+	float	VSrotZ=0.0f;
+    float   time=0.0f;   //water animation
 
 	// 42 BLOCK: VS7
 	float	VSshaderType;
-	bool	vsIsSky;
+	bool  	vsIsSky = false;
 	float	vsPAD3;
 	float	vsPAD4;
 
-    // FIRE:
+    //FIRE-VS8:
     float   vsframeTime;
     float3  scrollSpeeds;
     float3  scales;
@@ -74,7 +88,7 @@ cbuffer VSShaderParametersBuffer : register(b0) //Register is needed for DX12: D
 //Note: on DX11 dont use: register()
 
 // SYNC: DXshaderClass.h -- DX12: CBV
-#if DXAPI11 == 1
+#if DXAPI9 == 1 || DXAPI11 == 1
 cbuffer PSShaderParametersBuffer	//DX11
 #endif
 #if DXAPI12 == 1
@@ -126,4 +140,10 @@ cbuffer PSShaderParametersBuffer : register(b1)	//Register is needed for DX12: D
     float2  distortion3;
     float   distortionScale;
     float   distortionBias;
+
+	//POINT OF LIGHTS (LEVEL98)
+    int         numPointLights;
+    float       renderPass;
+    float2      pad;
+    PointLight  pointLights[MAX_POINT_LIGHTS];
 };

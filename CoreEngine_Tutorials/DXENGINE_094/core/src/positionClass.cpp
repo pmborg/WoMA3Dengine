@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: positionClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,7 +17,7 @@
 // PURPOSE: Define the position of a player.
 //			Process the Dynamic movement: Newton Laws of the player.
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
 #if defined USE_DIRECT_INPUT
@@ -25,7 +25,7 @@
 
 #pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
 #include "positionClass.h"
-#if defined DX_ENGINE
+#if defined WINDOWS_PLATFORM //DX_ENGINE
 #include <mmsystem.h> //timeGetTime
 #endif
 
@@ -33,7 +33,7 @@
 PositionClass::PositionClass(UINT id)
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525217;
+
 
 	m_positionX = WOMA::AppSettings->INIT_CAMX;
 	m_positionY = WOMA::AppSettings->INIT_CAMY;
@@ -200,10 +200,6 @@ void PositionClass::MoveBackward(bool keydown, bool ctrl, bool water)
 	{
 		m_backwardSpeed += m_frameTime * 0.0005f;
         float maxSpeed = 0.001f; // MAX SPEED (Walk)
-
-#if defined INTRO_DEMO
-		maxSpeed /= 8; // MAX SPEED for INTRO_DEMO
-#endif
 
 		if (water)
 			maxSpeed/=3;

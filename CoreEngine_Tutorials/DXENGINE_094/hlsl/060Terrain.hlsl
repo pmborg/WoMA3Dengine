@@ -8,7 +8,7 @@
 *	Downloaded from : http://woma.servegame.com
 *
 /*********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 //case SHADER_Terrain_Texture_DEMO60:
 
@@ -35,18 +35,18 @@ struct VSIn
 // PIXEL:
 struct PSIn
 {
-    float4 position : SV_POSITION;	 //CH04
-	float4 tex : TEXCOORD0;			 //CH04 - TEXTURE
-	float3 normal : NORMAL;			 //CH12 - LIGHT	
+    float4 position      : SV_POSITION;	//CH04
+	float4 tex           : TEXCOORD0;	//CH04 - TEXTURE
+	float3 normal        : NORMAL;		//CH12 - LIGHT	
+                         
+	float4 color         : COLOR;		//CH13 - MIX COLOR
+	float4 texMapping    : TEXCOORD1;	//CH19
 
-	float4 color : COLOR;			 //CH13 - MIX COLOR
-	float4 texMapping : TEXCOORD1;	 //CH19
-
-	float fogFactor : FOG;			 //CH16 - FOG
-	float4 depthPosition : TEXCOORD2;//CH18
-	float4 inputPosition : TEXCOORD3;//CH40: for below water...
-    float3 tangent : TANGENT;		 //CH21
-    float3 binormal : BINORMAL;		 //CH21
+	float fogFactor      : FOG;			//CH16 - FOG
+	float4 depthPosition : TEXCOORD2;   //CH18
+	float4 inputPosition : TEXCOORD3;   //CH40: for below water...
+    float3 tangent       : TANGENT;		//CH21
+    float3 binormal      : BINORMAL;	//CH21
 };
 
 /////////////
@@ -64,13 +64,13 @@ Texture2D sandTexture :				register(t6);	//CH19	m_sandTexture			=Engine/data/019
 Texture2D mudTexture :				register(t7);	//CH19	m_mudTexture			=Engine/data/CrackedMud.jpg
 Texture2D alphaMappingTexture:		register(t8);	//CH20	m_alphaMappingTexture	=Engine/data/t_019TerrainAlfa.png
 Texture2D normalTexture:			register(t9);	//CH21	m_sidewalkTexture_bump	=Engine/data/dirt_bump.jpg
-Texture2D shaderTexture:			register(t10);	//CH23	m_colorLightMapTexture	=Engine/data/t_023TerrainMapping.jpg
+Texture2D shaderTexture:			register(t10);	//CH23	m_colorLightMapTexture	=Engine/data/t_023TerrainMapping.png
 
 //SamplerState SampleType : register(s0); // 3D (default) WRAP
 SamplerState SampleType; //CH05 - TEXTURE
 
 ////////////////////////////////////////////////////////////////////////////////
-// Vertex Shader
+// VERTEX SHADER
 ////////////////////////////////////////////////////////////////////////////////
 PSIn VS_Main(VSIn input)
 {
@@ -143,7 +143,7 @@ float3 bumpNormal;		//CH21
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Pixel Shader
+// PIXEL SHADER
 ////////////////////////////////////////////////////////////////////////////////
 float4 PS_Main(PSIn input) : SV_TARGET
 {
@@ -167,7 +167,8 @@ float4 PS_Main(PSIn input) : SV_TARGET
 
    
 	//CH16 - FOG
-	if (input.fogFactor > 0) {
+	if (input.fogFactor >= 0) 
+    {
 
 		// Get the depth value of the pixel by dividing the Z pixel depth by the homogeneous W coordinate.
 		depthValue = input.depthPosition.z / input.depthPosition.w;
@@ -194,9 +195,6 @@ float4 PS_Main(PSIn input) : SV_TARGET
 
 		if ( mappingColor.g >= 0.1f && mappingColor.b >= 0.25f) { // TRANSPARENT
 			clip (-1.0); return (float4)0;
-			//textureColor =  sandTexture.Sample(SampleType, input.tex.zw); //(Detail) Sample the rock color from the texture using the sampler at this texture coordinate location.
-			//textureColor.a =  0;
-			//return textureColor;
 		} else
 		if ( mappingColor.g >= 0.1f) { // GREEN for sidewalk...
 			// Sample the rock color from the texture using the sampler at this texture coordinate location.
@@ -222,9 +220,6 @@ float4 PS_Main(PSIn input) : SV_TARGET
 
 			// Sample the rock color from the texture using the sampler at this texture coordinate location.
 			rockColor = rockTexture.Sample(SampleType, input.tex);
-
-			//CH18 - Get the depth value of the pixel by dividing the Z pixel depth by the homogeneous W coordinate.
-			//------------------------------------------------------------------------------------------------------
 
 			// Calculate the slope of this point.
 			slope = 1.0f - input.normal.y;
@@ -258,7 +253,6 @@ float4 PS_Main(PSIn input) : SV_TARGET
 		//------------------------------------------------------------------------------------------------------
 		// CH40: 1- Set the color of the fog to grey.
 		if (input.inputPosition.y <= 0.0f) {
-			//textureColor =  textureColor * sandTexture.Sample(SampleType, input.tex.zw);             
 							//R     G     B
 			fogColor = float4(0.0f, 0.0f, 0.2f, 1.0f);
 		}
@@ -290,7 +284,10 @@ float4 PS_Main(PSIn input) : SV_TARGET
 		// 2- The fog color equation does a linear interpolation between the texture color and the fog color based on the fog factor input value.
 		color = input.fogFactor * color + (1.0 - input.fogFactor) * fogColor;	// FOG: Calculate the final color using the fog effect equation.
 
-		
+//#if DXAPI12 != 1
+//        color.rgb = pow(color.rgb, 1.0 / 2.2); //Apply sRGB workflow: NEW 2026 review!
+//#endif	
+        
 		return color;
 	} else {
 		clip (-1.0); return (float4)0; // this fixel is too far away (on fog), SKIP it! CLIP IF: (x is less than zero)
