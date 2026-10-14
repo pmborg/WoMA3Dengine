@@ -18,9 +18,10 @@
 // Version inspired: https://github.com/michal-z/SimpleDirectPBR/blob/master/Source/Shaders/SimpleForward.hlsl
 // Free Assets: https://freepbr.com/
 
-// WomaIntegrityCheck = 1234525217;
+// WomaIntegrityCheck = 1234526920;
 
 #define PS_USE_SPECULAR
+//#define USE_GAMA
 
 sampler LinearSampler   : register(s0);
 sampler PointSampler    : register(s1);
@@ -217,7 +218,7 @@ float4 main(PixelShaderInput input) : SV_TARGET
 
     float3 numerator = NDF * G * F;
     float denominator = 4.0f * saturate(max(dot(N, V), 0.0f) * max(dot(N, L), 0.0f));
-    float3 specular = numerator / max(denominator, 0.001f);
+    float3 specular = (0.1f * numerator) / max(denominator, 0.001f); // 0.1f: Reduces excessive specular highlights on the Hunter's hair.
         
     // calculate color based on rendering equation.
     // KD + KS = 1 according to energy conservation.
@@ -235,7 +236,7 @@ float4 main(PixelShaderInput input) : SV_TARGET
     float3 ambient = ambientColor.rgb * albedo * ao;
     float3 Color = saturate(ambient + Lo + emissiveColor);
         
-#if true
+#if defined USE_GAMA
     float Gamma = 1.0f / 2.2f;
     Color = Color / (Color + float3(1.0f, 1.0f, 1.0f));
     Color = pow(Color, float3(Gamma, Gamma, Gamma));
@@ -244,7 +245,6 @@ float4 main(PixelShaderInput input) : SV_TARGET
     float rim = pow(1.0 - max(dot(N, V), 0.0), 2.0);
     Color += albedo * rim * 0.1;
         
-    //textureColor.rgb = float4(Color*fade, 1.0f);
     textureColor.rgb = Color * fade;
 
 	// Output alpha (if used)

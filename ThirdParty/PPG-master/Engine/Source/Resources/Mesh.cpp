@@ -15,7 +15,7 @@
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
 // Original Code Adapted from: https://github.com/nicholaschuayunzhi/PPG
-// WomaIntegrityCheck = 1234525217;
+// WomaIntegrityCheck = 1234526920;
 
 #include "stdafx.h"
 #include "LowLevel/Graphics.h"
@@ -69,8 +69,8 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<WORD> indices, Graphics& gr
         }
     }
 
-    m_VertexBuffer = graphics.CreateBuffer(sizeof(Vertex) * m_Vertices.size(), D3D11_BIND_VERTEX_BUFFER, m_Vertices.data());
-    m_IndexBuffer = graphics.CreateBuffer(sizeof(WORD) * m_Indices.size(), D3D11_BIND_INDEX_BUFFER, m_Indices.data());
+    m_VertexBuffer = graphics.CreateBuffer(sizeof(Vertex) * m_Vertices.size(), D3D11_BIND_VERTEX_BUFFER, m_Vertices.data(), true);
+    m_IndexBuffer = graphics.CreateBuffer(sizeof(WORD) * m_Indices.size(), D3D11_BIND_INDEX_BUFFER, m_Indices.data(), true);
 }
 
 Mesh::Mesh(Mesh&& mesh) :

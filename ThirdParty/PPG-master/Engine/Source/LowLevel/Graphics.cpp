@@ -15,7 +15,7 @@
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
 // Original Code Adapted from: https://github.com/nicholaschuayunzhi/PPG
-// WomaIntegrityCheck = 1234525217;
+// WomaIntegrityCheck = 1234526920;
 
 #include "stdafx.h"
 #include "OSengine.h"
@@ -46,7 +46,7 @@ Graphics::Graphics(HINSTANCE hInstance, BOOL vSync, Window& window)
 
     // Next initialize the back buffer of the swap chain and associate it to a
     // render target view.
-	ID3D11Texture2D* backBuffer = DX11windowsArray[0].m_backBuffer;
+	ID3D11Texture2D* backBuffer = DX11windowsToRenderArray[0].m_backBuffer;
 
     m_BackBuffer = std::make_unique<Texture>(backBuffer, "Back Buffer");
     m_BackBuffer->CreateRTV(*this, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
@@ -60,7 +60,7 @@ Graphics::Graphics(HINSTANCE hInstance, BOOL vSync, Window& window)
 
 	m_RasterizerState = ((DirectX::DX11Class*)g_driver11)->m_rasterState[CULL_NONE][FILL_SOLID];
 
-	m_Viewport = DX11windowsArray[0].viewport;
+	m_Viewport = DX11windowsToRenderArray[0].viewport;
 
     D3D11_BLEND_DESC BlendState;
     ZeroMemory(&BlendState, sizeof(D3D11_BLEND_DESC));
@@ -75,14 +75,14 @@ Graphics::Graphics(HINSTANCE hInstance, BOOL vSync, Window& window)
     m_Device->CreateBlendState(&BlendState, &m_AlphaBlendState);
 }
 
-ID3D11Buffer* Graphics::CreateBuffer(UINT byteWidth, UINT bindFlags, const void* data)
+ID3D11Buffer* Graphics::CreateBuffer(UINT byteWidth, UINT bindFlags, const void* data, bool model3D)
 {
     D3D11_BUFFER_DESC bufferDesc;
     ZeroMemory(&bufferDesc, sizeof(D3D11_BUFFER_DESC));
     bufferDesc.BindFlags = bindFlags;
     bufferDesc.ByteWidth = byteWidth;
     bufferDesc.CPUAccessFlags = 0;
-    bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.Usage = (model3D) ? D3D11_USAGE_IMMUTABLE : D3D11_USAGE_DEFAULT;
     ID3D11Buffer* constantBuffer;
     HRESULT hr;
     if (data == nullptr)

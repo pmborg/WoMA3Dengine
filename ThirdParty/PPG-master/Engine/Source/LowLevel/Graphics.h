@@ -36,7 +36,7 @@ public:
     void Clear(const FLOAT clearColor[4], FLOAT clearDepth, UINT8 clearStencil);
     void ClearRenderTargetView(ID3D11RenderTargetView* rtv, const FLOAT clearColor[4]);
     void ClearDepthStencil(FLOAT clearDepth, UINT8 clearStencil);
-    ID3D11Buffer* CreateBuffer(UINT byteWidth, UINT bindFlags, const void* data);
+    ID3D11Buffer* CreateBuffer(UINT byteWidth, UINT bindFlags, const void* data, bool model3D = false);
 	void UpdateBuffer(ID3D11DeviceContext* pContext, ID3D11Buffer* buffer, const void* resource);
     void UnbindShaderResourceView(UINT startSlot);
 

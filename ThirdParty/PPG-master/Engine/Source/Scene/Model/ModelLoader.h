@@ -450,7 +450,7 @@ PBRMaterial* ModelLoader::GenerateMaterial(UINT this_level, UINT modeltype, aiMe
         // 4: Emissive
         Texture* emissive = loadTexture(this_level, modeltype, mat, aiTextureType_EMISSIVE);
         if (emissive) material->UseEmissiveMap(emissive);
-#if _NOT_YET
+#if defined _NOT_YET
         // Specular (classic)
         Texture* specular = loadTexture(this_level, modeltype, mat, aiTextureType_SPECULAR);
         if (specular) material->UseSpecularMap(specular);
@@ -490,19 +490,19 @@ PBRMaterial* ModelLoader::GenerateMaterial(UINT this_level, UINT modeltype, aiMe
             if (mat->Get(AI_MATKEY_COLOR_DIFFUSE, colour) == aiReturn_SUCCESS)
                 material->SetAlbedo(colour[0], colour[1], colour[2]);
 
-            //material->SetRoughness(0.9f);
-            //material->SetMetallic(0.0f);
+            material->SetRoughness(0.9f);
+            material->SetMetallic(0.0f);
 
-            //float shininess;
-            //if (mat->Get(AI_MATKEY_SHININESS, shininess) == aiReturn_SUCCESS)
-            //    material->SetRoughness(sqrt(2.0f / (shininess + 2.0f)));
+            float shininess;
+            if (mat->Get(AI_MATKEY_SHININESS, shininess) == aiReturn_SUCCESS)
+                material->SetRoughness(sqrt(2.0f / (shininess + 2.0f)));
         }
 
         // 8: Emissive color
         aiColor3D emissiveColor;
         if (mat->Get(AI_MATKEY_COLOR_EMISSIVE, emissiveColor) == aiReturn_SUCCESS)
             material->SetEmissive(emissiveColor[0], emissiveColor[1], emissiveColor[2]);
-#if _NOT_YET
+#if defined _NOT_YET
         // Double-sided
         int doubleSided = 0;
         if (mat->Get("$mat.twosided", 0, 0, doubleSided) == aiReturn_SUCCESS && doubleSided)

@@ -15,7 +15,7 @@
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
 // Original Code Adapted from: https://github.com/nicholaschuayunzhi/PPG
-// WomaIntegrityCheck = 1234525217;
+// WomaIntegrityCheck = 1234526920;
 
 #include "stdafx.h"
 #include <map>
@@ -53,7 +53,7 @@ void showNodeName(aiNode* node, UINT i)
 
 double TicksPerSecond=0;
 
-SceneModel* SceneModel::LoadModelToScene(UINT dxlevel, bool enginefile, UINT type, std::string meshFileName, std::string animFileName, Scene& scene, Graphics& graphics, SceneObject::Index parentIndex /*= 0*/)
+SceneModel* SceneModel::LoadModelToScene(UINT dxlevel, bool enginefile, UINT type, STRING meshFileName, std::string animFileName, Scene& scene, Graphics& graphics, SceneObject::Index parentIndex /*= 0*/)
 {
 #ifdef DEBUG_MESH
     LOG_FILE << "WOMA (" << LEVEL << ") LOAD FILE : " << (char*)meshFileName.c_str() << endl;
@@ -182,13 +182,16 @@ SceneModel* SceneModel::LoadModelToScene(UINT dxlevel, bool enginefile, UINT typ
     }
 
     // Create ModelLoader:
-    // -------------------
+	//------------------------------
 	std::string strmeshFileName = AmeshFileName;
     ModelLoader ml = ModelLoader(pAssimpScene, scene, graphics, strmeshFileName, parentIndex);
+
     // LOAD ASSIMP data to our model:
     // ------------------------------
     SceneModel* model = ml.LoadModel(dxlevel/*DX_ENGINE_LEVEL*/, type);
 
+	// IMPORT ANIMATION DATA:
+	// ------------------------------
     aiScene* assimpScene;
     Assimp::Importer animImporter;
     const aiScene* pFbxAnimScene = animImporter.ReadFile(animFileName, DX_ASSIMP_LOAD_FLAGS);

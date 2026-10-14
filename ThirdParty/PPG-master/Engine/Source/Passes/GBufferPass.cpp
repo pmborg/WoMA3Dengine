@@ -15,7 +15,7 @@
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
 // Original Code Adapted from: https://github.com/nicholaschuayunzhi/PPG
-// WomaIntegrityCheck = 1234525217;
+// WomaIntegrityCheck = 1234526920;
 
 #include "stdafx.h"
 #include "Math3D.h"
@@ -80,14 +80,14 @@ void GBufferPass::Render(ID3D11DeviceContext* deviceContext, Graphics& graphics,
         Animator* animator = meshRenderer.m_Animator;
         if (animator != nullptr && animator->m_IsEnabled)
         {
-			animator->m_FinalTransforms[127].r->m128_f32[0] = 127;			//AQUI-ANIM
+			animator->m_FinalTransforms[127].r->m128_f32[0] = 127;
             if (animator != currentAnimator)
             {
                 graphics.UpdateBuffer(deviceContext, m_BoneBuffer, animator->m_FinalTransforms);
                 currentAnimator = animator;
             }
         } 
-        else {                                                        //AQUI-ANIM
+        else {
             staticm_FinalTransforms[127].r->m128_f32[0] = 0;       
             graphics.UpdateBuffer(deviceContext, m_BoneBuffer, staticm_FinalTransforms);
         }

@@ -39,7 +39,7 @@ public:
     SceneModel(std::shared_ptr<SceneObject>& sceneObject);
     ~SceneModel();
     Skeleton* m_Skeleton;
-    static SceneModel * LoadModelToScene(UINT level, bool enginefile, UINT type, std::string meshFileName, std::string animFileName, Scene& Scene, Graphics& graphics, SceneObject::Index parentIndex = 0);
+    static SceneModel * LoadModelToScene(UINT level, bool enginefile, UINT type, STRING meshFileName, std::string animFileName, Scene& Scene, Graphics& graphics, SceneObject::Index parentIndex = 0);
 
     std::vector<const aiAnimation*> m_Animations; // Store pointers to aiAnimation ANIM!
     bool loaded = false;

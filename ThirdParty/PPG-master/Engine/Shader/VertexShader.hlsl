@@ -15,7 +15,7 @@
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
 // Original Code Adapted from: https://github.com/nicholaschuayunzhi/PPG
-// WomaIntegrityCheck = 1234525217;
+// WomaIntegrityCheck = 1234526920;
 
 #define PS_USE_SPECULAR
 
@@ -68,8 +68,8 @@ VertexShaderOutput main(VertexShaderInput input)
     matrix vp;
     VertexShaderOutput OUT;
     
-    bool skinningEnabled = (BoneTransforms[127]._11 == 127);  //AQUI-ANIM
-    if (skinningEnabled)                                      //AQUI-ANIM
+    bool skinningEnabled = (BoneTransforms[127]._11 == 127);
+    if (skinningEnabled)                                    
     {
         matrix boneTransform = input.boneWeight[0] * BoneTransforms[input.boneIds[0]];
         for (int i = 1; i < 4; ++i)

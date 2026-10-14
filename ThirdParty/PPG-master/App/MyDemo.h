@@ -15,13 +15,13 @@
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
 // Original Code Adapted from: https://github.com/nicholaschuayunzhi/PPG
-// WomaIntegrityCheck = 1234525217;
+// WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
 #include "OSengine.h"
 
-#if _DEBUG
+#if defined _DEBUG
     #pragma comment(lib, "C:\\WoMA3Dengine\\ThirdParty\\external\\assimp-build\\lib\\Debug\\assimp-vc143-mtd.lib")
 #else
     #pragma comment(lib, "C:\\WoMA3Dengine\\ThirdParty\\external\\assimp-build\\lib\\Release\\assimp-vc143-mt.lib")

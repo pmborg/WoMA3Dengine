@@ -15,15 +15,13 @@
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
 // Original Code Adapted from: https://github.com/nicholaschuayunzhi/PPG
-// WomaIntegrityCheck = 1234525217;
+// WomaIntegrityCheck = 1234526920;
 
 #include "stdafx.h"
 #include "Shader.h"
 #include "LowLevel/Graphics.h"
 #include "OSengine.h"
 
-//C:\WoMAengine2023\PPG-master\Bin\Debug\VertexShader.cso
-//C:\WoMAengine2023\PPG-master\Bin\Debug\GBuffer.ps.cso
 Shader::Shader(LPCWSTR vertexPath, LPCWSTR pixelPath, Graphics& graphics)
 {
     ID3DBlob* vertexShaderBlob;

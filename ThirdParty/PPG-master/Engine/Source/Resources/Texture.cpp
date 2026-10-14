@@ -15,7 +15,7 @@
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
 // Original Code Adapted from: https://github.com/nicholaschuayunzhi/PPG
-// WomaIntegrityCheck = 1234525217;
+// WomaIntegrityCheck = 1234526920;
 
 #include "stdafx.h"
 #include <filesystem>
@@ -53,7 +53,7 @@ Texture* Texture::CreateTextureDepthStencil(Graphics& graphics, int width, int h
     DXGI_FORMAT texFormat, UINT bindFlags, D3D11_SUBRESOURCE_DATA* data /*= NULL*/)
 {
 
-    ID3D11Texture2D* texturePtr = DX11windowsArray[0].m_depthStencilBuffer;
+    ID3D11Texture2D* texturePtr = DX11windowsToRenderArray[0].m_depthStencilBuffer;
 
     return new Texture(texturePtr, name);
 }
@@ -212,7 +212,7 @@ bool Texture::CreateRTV(Graphics& graphics, DXGI_FORMAT texFormat)
 #define m_driver11 ((DirectX::DX11Class*)driverList[WOMA::AppSettings->DRIVER])
 
     //ID3D11RenderTargetView* rtv = ((DirectX::DX11Class*)m_driver11)->DX11windowsArray[0].m_renderTargetView;
-	ID3D11RenderTargetView* rtv = DX11windowsArray[0].m_renderTargetView;
+	ID3D11RenderTargetView* rtv = DX11windowsToRenderArray[0].m_renderTargetView;
     m_TextureRTVs.push_back(rtv);
     return true;
 }
