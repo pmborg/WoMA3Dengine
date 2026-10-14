@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
-// Filename: DxTextClass.h
+// Filename: VkTextClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
@@ -24,63 +24,48 @@
 // INCLUDES //
 //////////////
 #include "platform.h"
-#if defined USE_RASTERTEK_TEXT_FONT && defined DX_ENGINE
-
-#if defined DX11
-#include "dx11Class.h"
-#endif
-#if defined DX12
-#include "dx12Class.h"
-#endif
-
+#if (defined USE_RASTERTEK_TEXT_FONT || defined USE_RASTERTEK_TEXT_FONTV2) && defined VULKAN
 #include "virtualTextClass.h"
-#include "DXshaderClass.h"
 #include "textFontClass.h"
-// ----------------------------------------
+#include "vkClass.h"
+#include "vkShaderClass.h"
 
-
-namespace DirectX {
-
-////////////////////////////////////////////////////////////////////////////////
-// Class name: DxTextClass
-////////////////////////////////////////////////////////////////////////////////
-class DxTextClass : public VirtualTextClass
+class VkTextClass : public VirtualTextClass
 {
 public:
-	UINT WomaIntegrityCheck = 1234525217;
-	DxTextClass();
-	~DxTextClass();
+	VkTextClass();
+	~VkTextClass();
 
 	void Shutdown();
-	bool Initialize(void* g_driver, ID3D11DeviceContext* pContext);
+
+	bool Initialize(void* Driver, void* pContext);
 	bool InitializeTexture(void* Driver);
 
 	bool UpdateSentence(SentenceType*, TCHAR*, int, int, float, float, float);
+
 	bool InitializeSentence(SentenceType**, int);
-	
+
 	void ReleaseSentence(SentenceType**);
-	void RenderSentence(SentenceType*);
-
-//#if defined DX_ENGINE
-	DXshaderClass* m_spriteShader = NULL;
-//#endif
-
-#if defined DX11 || defined DX9
-	DirectX::DX11Class* m_driver11 = NULL;
-	ID3D11DeviceContext* m_deviceContext11 = NULL;
-#endif
-#if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009
-	DirectX::DX12Class* m_driver = NULL;
-#endif
+	void RenderSentence(void* pContext, SentenceType*);
 
 private:
-	// VARS:
-	// ----------------------------------------------------------------------
-	textFontClass*	m_Font = NULL;
-	XMMATRIX*		m_baseViewMatrix = NULL;
-	UINT			sizeofMODELvertex = NULL;
-};
+	//
+	//  VARIABLES:
+	//
+	textFontClass* m_Font = NULL;
 
-}
+	VkPipeline m_pipeline = VK_NULL_HANDLE;
+	VkPipelineLayout m_pipelineLayout = VK_NULL_HANDLE;
+
+	VkDescriptorSetLayout m_descriptorSetLayout = VK_NULL_HANDLE;
+	VkDescriptorSet m_descriptorSet = VK_NULL_HANDLE;
+
+	//------------------------------
+	vkShaderClass* m_spriteShader = NULL;
+	mat4* m_baseViewMatrix = NULL;
+
+	VkDevice m_device = NULL;
+	vkClass* m_driver = NULL;
+};
 
 #endif

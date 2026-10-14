@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
-// Filename: GlTextClass.h
+// Filename: VkTextClass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
@@ -24,65 +24,48 @@
 // INCLUDES //
 //////////////
 #include "platform.h"
-#ifdef USE_RASTERTEK_TEXT_FONT
-
-#if (defined OPENGL3 || defined OPENGL4)
+#if (defined USE_RASTERTEK_TEXT_FONT || defined USE_RASTERTEK_TEXT_FONTV2) && defined VULKAN
 #include "virtualTextClass.h"
-#include "GLshaderClass.h"
 #include "textFontClass.h"
-// ----------------------------------------
-#include "ApplicationTextClass.h"
+#include "vkClass.h"
+#include "vkShaderClass.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// Class name: GlTextClass
-////////////////////////////////////////////////////////////////////////////////
-class GlTextClass : public VirtualTextClass
+class VkTextClass : public VirtualTextClass
 {
 public:
-	//NOTE: need to be local! to not interfear with others!
-/*
-	struct VertexType
-	{
-		XMFLOAT3 position;
-		XMFLOAT2 texture;
-	};
-*/
-
-#if defined DX_ENGINE 
-	struct VertexType
-	{
-		XMFLOAT3 position;
-		XMFLOAT2 texture;
-	};
-#else
-	#pragma pack(push, 1)
-	struct VertexType
-	{
-		Vector3 position;
-		Vector2 texture;
-	};
-	#pragma pack(pop)
-#endif
-
-	UINT WomaIntegrityCheck = 1234525217;
-	GlTextClass();
-	~GlTextClass();
+	VkTextClass();
+	~VkTextClass();
 
 	void Shutdown();
-	bool Initialize(void* g_driver, ID3D11DeviceContext* pContext);
+
+	bool Initialize(void* Driver, void* pContext);
 	bool InitializeTexture(void* Driver);
 
 	bool UpdateSentence(SentenceType*, TCHAR*, int, int, float, float, float);
+
 	bool InitializeSentence(SentenceType**, int);
 
 	void ReleaseSentence(SentenceType**);
-	void RenderSentence(SentenceType*);
+	void RenderSentence(void* pContext, SentenceType*);
 
-	GLshaderClass* m_spriteShader = NULL;
-
-	mat4* m_baseViewMatrix = NULL;
+private:
+	//
+	//  VARIABLES:
+	//
 	textFontClass* m_Font = NULL;
+
+	VkPipeline m_pipeline = VK_NULL_HANDLE;
+	VkPipelineLayout m_pipelineLayout = VK_NULL_HANDLE;
+
+	VkDescriptorSetLayout m_descriptorSetLayout = VK_NULL_HANDLE;
+	VkDescriptorSet m_descriptorSet = VK_NULL_HANDLE;
+
+	//------------------------------
+	vkShaderClass* m_spriteShader = NULL;
+	mat4* m_baseViewMatrix = NULL;
+
+	VkDevice m_device = NULL;
+	vkClass* m_driver = NULL;
 };
 
-#endif
 #endif
