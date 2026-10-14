@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: ParticlesystemClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -22,7 +22,10 @@
 #include "ParticlesystemClass.h"
 #include "vertexTypes.h"
 #include "mem_leak.h"
+
+#if defined WINDOWS_PLATFORM
 #include "DXmodelClass.h"
+#endif
 
 ParticlesystemClass particlesystemClass;
 
@@ -103,13 +106,13 @@ bool ParticlesystemClass::InitializeParticleSystem(void* ctx, void* Driver)
 	waterfall_textures.push_back(WATERFALLTEXTURENOISEFILENAME);
 	waterfall_textures.push_back(WATERFALLTEXTUREFOAMFILENAME);
 
-	if (WOMA::AppSettings->DRIVER == DRIVER_GL3) { CREATE_MODELGL3_IF_NOT_EXCEPTION(SystemHandle->m_Application->model_waterfall, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
-	if (WOMA::AppSettings->DRIVER != DRIVER_GL3) { CREATE_MODELDX_IF_NOT_EXCEPTION (SystemHandle->m_Application->model_waterfall, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
-	ASSERT(SystemHandle->m_Application->model_waterfall->LoadWaterFall(pContext11, TEXT("waterfall"),
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3) { CREATE_MODELGL3_IF_NOT_EXCEPTION(g_model_waterfall, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
+	if (WOMA::AppSettings->DRIVER != DRIVER_GL3) { CREATE_MODELDX_IF_NOT_EXCEPTION (g_model_waterfall, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
+	ASSERT(g_model_waterfall->LoadWaterFall(pContext11, TEXT("waterfall"),
 																	m_driver11, SHADER_USE_WATERFALL,
 																	&waterfall_textures, &model_waterfall, NULL));
 
-	m_vertexBuffer11 = ((DXmodelClass*)SystemHandle->m_Application->model_waterfall)->m_vertexBuffer11;
+	m_vertexBuffer11 = ((DXmodelClass*)g_model_waterfall)->m_vertexBuffer11;
 
 	// Create the vertex array for the particles that will be rendered.
 	m_vertices = NEW ModelTextureWaterfall[m_vertexCount];
@@ -353,9 +356,12 @@ void ParticlesystemClass::Render(void* pContext, float fadeLight)
 {
 	static VirtualModelClass* model_waterfall=NULL;
 
+	if (!g_model_waterfall)
+		return;
+
 	if (model_waterfall == NULL)
 	{
-		model_waterfall = SystemHandle->m_Application->model_waterfall;
+		model_waterfall = g_model_waterfall;
 		model_waterfall->scale(6, 6, 6);
 		model_waterfall->rotateY(PI / 2);
 		model_waterfall->translation(138, 15, 57);

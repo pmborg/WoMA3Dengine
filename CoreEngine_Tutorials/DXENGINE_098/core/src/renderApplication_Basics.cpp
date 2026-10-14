@@ -1,9 +1,9 @@
 ﻿// --------------------------------------------------------------------------------------------
 // Filename: renderApplication_Basics.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,11 +16,11 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
-#pragma warning(disable : 4267) // warning C4267: 'initializing': conversion from 'size_t' to 'UINT', possible loss of data
-#pragma warning(disable : 4065) // warning C4065: switch statement contains 'default' but no 'case' labels
+#pragma warning(disable : 4267)		// warning C4267: 'initializing': conversion from 'size_t' to 'UINT', possible loss of data
+#pragma warning( disable : 4065 )	//warning C4065: switch statement contains 'default' but no 'case' labels
 
 #include "OSengine.h"
 #include "OSmain_dir.h"
@@ -34,14 +34,25 @@
 extern RApplicationClass* r_Application;
 #endif
 
+//
+// Declare Drivers:
+//
+#include "womadriverclass.h"	//woma
+
+
+#if DX_ENGINE_LEVEL >= 36 && defined USE_RENDER_TO_TEXTURE && defined VULKAN
+#include "VKrenderTextureClass.h"
+#endif
+
 #if defined DX11 || defined DX9
 #include "Dx11Class.h"
 #endif
+
 #if defined DX12 && D3D11_SPEC_DATE_YEAR > 2009 //Use: WIN10SDK
 #include "Dx12Class.h"
 #endif
+
 #if (defined OPENGL3 || defined OPENGL4)
-#include "womadriverclass.h"	//woma
 #include "GLmathClass.h"		//woma	
 #include "GLopenGLclass.h"		//woma
 #if defined WINDOWS_PLATFORM
@@ -49,8 +60,27 @@ extern RApplicationClass* r_Application;
 #endif
 #endif
 
-#include "SceneManager.h"
+#if defined VULKAN
+#include "vkClass.h"
+#endif
+
+#if defined WINDOWS_PLATFORM
 #include "DXmodelClass.h"
+#endif
+
+
+
+#include "modelClass.h"
+#include "SceneManager.h"
+
+#if defined WINDOWS_PLATFORM
+#include "DXmodelClass.h"
+#endif
+
+#if defined VULKAN
+#include "vkModelClass.h"
+#endif
+#include "GLmodelClass.h"
 
 #if TUTORIAL_CHAP >= 60 // BILLBOARD
 #include "BillClass.h"	//[ch60]
@@ -111,40 +141,13 @@ extern ParticlesystemClass particlesystemClass;
 extern SmokeEmitterClass smokeEmitterClass;
 #endif
 
-//----------------------------------------------------------------------------------------------------
-void ApplicationClass::RenderScene(void* mainCtx, UINT monitorIndex, WomaDriverClass* driver) // RENDER A FULL FRAME!
-//----------------------------------------------------------------------------------------------------
-{
-	SystemHandle->TotalVertexCounter = 0;	// Reset total vertex counter
-
-	// UPDATE DYN. LIGHT RAY:
-	// --------------------------------------------------------------------------------------------
-
-#if DX_ENGINE_LEVEL >= 98 && defined USE_DAY_AND_NIGHT
-	if(RENDER_PAGE == 98)
-		dayLightFade = 0.4f;
-	else
-#endif
-		dayLightFade = 1;
-
-#if DX_ENGINE_LEVEL >= 36 && (defined USE_MINIMAP_REDENRING_THREAD || defined USE_SHADOW_MAP || defined USE_MAIN_MAP)
-	AppPreRender(monitorIndex, driver, dayLightFade, mainCtx);		// [1]	Launch shadow & mini-map async work, (do not wait for render on level>=91)
-																	//		Start aux threads on this frame
-#endif
-
-	AppRender(monitorIndex, RENDER_PAGE, dayLightFade, mainCtx);	// [2] 3D Render "main scene" while workers run in parallel!
-
-	AppPosRender(monitorIndex, RENDER_PAGE, dayLightFade, mainCtx);	// [3] 2D: Render TRANSPARENT and ontop Parts: (like: "Billboards", "Glass windows", logo, main-map and minimap, text, driver-text)
-
-#if DX_ENGINE_LEVEL >= 91 && defined USE_MINIMAP_REDENRING_THREAD
-	// [2.5] Wait here (after main scene) before using shadows/mini-map results
-	IF_RENDER_PAGE(RENDER_PAGE >= 91)
-	WaitForPreRenderTasks(mainCtx);
-#endif
-}
 
 void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext, WomaDriverClass* driver)
 {
+#if defined _DEBUG || defined LINUX_PLATFORM || defined ANDROID_PLATFORM
+	womalogATfirstframe(TEXT("ApplicationClass::SortOutWhatNeedToBeRendered()\n"));
+#endif
+
 	totalRendered = 0;
 	AtlasobjModel_outVertsCount = 0;
 	AtlasobjModel_outIdxCount = 0;
@@ -153,22 +156,37 @@ void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext, WomaDriverCla
 	// --------------------------------------------------------------------------------------------
 #if defined USE_DIRECT_INPUT && DX_ENGINE_LEVEL >= 63
 	const float SORT_OFFSET = 5.0f; // 5 METERS BEHIND CAMERA
-	sort_cameraX -= FAST_sin(SystemHandle->m_Application->m_Position[g_NetID]->m_rotationY) * SORT_OFFSET;
-	sort_cameraZ -= FAST_cos(SystemHandle->m_Application->m_Position[g_NetID]->m_rotationY) * SORT_OFFSET;
+	sort_cameraX -= FAST_sin(m_Position[g_NetID]->m_rotationY) * SORT_OFFSET;
+	sort_cameraZ -= FAST_cos(m_Position[g_NetID]->m_rotationY) * SORT_OFFSET;
 #endif
 
 	// [2] SCENEMANAGER: PROCESS/FILTER AND CREATE LISTS/TREES OF OBJECTS TO RENDER FROM: WORLD.XML
 	// --------------------------------------------------------------------------------------------
-#if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
+#if defined USE_SCENE_MANAGER //&& (defined DX_ENGINE)
 	if (RENDER_PAGE >= 30)
 	{
 	WOMA::sceneManager->visibleModelList.clear();			//Reset list of 3D objects
 	WOMA::sceneManager->visibleBillboardList.clear();		//Reset list of Billboard objects
 
-	SystemHandle->m_Application->billboardRrenderCount = 0;
-	WOMA::sceneManager->CreateLists(RENDER_PAGE);						//CREATE LISTS: for all objects to render (from WORLD.XML) and more
+	billboardRrenderCount = 0;
+	WOMA::sceneManager->CreateLists(RENDER_PAGE);			//CREATE LISTS: for all 3D&2D objects to render (from WORLD.XML) and more
 
-	world_main_size = WOMA::sceneManager->visibleModelList.size();
+	{
+		bool renderinstance = false;
+		for (const auto& lamp : streetLamps)
+		{
+			if (m_Driver->frustum->CheckSphere(lamp.pos.x, lamp.pos.y, lamp.pos.z, lamp.radius))
+			{
+				renderinstance = true;
+				break;
+			}
+		}
+		// Add model on list to be rendered later.
+		if (renderinstance)
+			WOMA::sceneManager->visibleModelList.push_back(objModel[lamppostid]);
+	}
+
+	world_visibleModelList_size = WOMA::sceneManager->visibleModelList.size();
 	}
 #endif
 
@@ -177,9 +195,9 @@ void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext, WomaDriverCla
 	// [4] RESTORE DEFAULT CAMERA POSITION:
 	// --------------------------------------------------------------------------------------------
 #if defined USE_DIRECT_INPUT && DX_ENGINE_LEVEL >= 63
-	sort_cameraX = SystemHandle->m_Application->m_Position[g_NetID]->m_positionX;
-	sort_cameraY = SystemHandle->m_Application->m_Position[g_NetID]->m_positionY;
-	sort_cameraZ = SystemHandle->m_Application->m_Position[g_NetID]->m_positionZ;
+	sort_cameraX = m_Position[g_NetID]->m_positionX;
+	sort_cameraY = m_Position[g_NetID]->m_positionY;
+	sort_cameraZ = m_Position[g_NetID]->m_positionZ;
 #endif
 
 	// [5] ROTATE BILLS:
@@ -196,14 +214,14 @@ void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext, WomaDriverCla
 		if (m_Trees[i].type == 12)       // for X cross bills to show as X and not as +
 			ry -= PI * 0.25f;
 
-		const UINT xmlid = m_Trees[i].ID + SystemHandle->m_Application->initial_world_xml_objs;
+		const UINT xmlid = m_Trees[i].ID + initial_world_xml_objs;
 	#if defined  NO3DBILL
 		if (m_Trees[i].type <= 12)  //Use all from 0..12
 	#else
 		if (m_Trees[i].type <= 10)
 	#endif
 		{
-	#if _DEBUG
+	#if defined _DEBUG
 			if (xmlid < SystemHandle->xml_loader.theWorldXML.size())
 	#endif
 	#if !defined  NO3DBILL
@@ -250,7 +268,7 @@ void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext, WomaDriverCla
 
 			gBillVB = ((DXmodelClass*)AtlasobjModel)->m_vertexBuffer11;
 			gBillIB = ((DXmodelClass*)AtlasobjModel)->m_indexBuffer11;
-			((DXmodelClass*)AtlasobjModel)->m_worldMatrix = XMMatrixIdentity();
+			AtlasobjModel->Identity();
 
 			if (RENDER_PAGE >= 94)
 				((DXmodelClass*)AtlasobjModel)->m_Shader11->VSshaderType = 127;
@@ -259,167 +277,134 @@ void ApplicationClass::SortOutWhatNeedToBeRendered(void* pContext, WomaDriverCla
 
 		UpdateBills((ID3D11DeviceContext*)pContext, outVerts, outIdx, AtlasobjModel_outVertsCount, AtlasobjModel_outIdxCount);
 
-	((DXmodelClass*)AtlasobjModel)->ready = true;
+	AtlasobjModel->ready = true;
 #endif
 	}
 }
 
+
+// Returns the graphics context associated with the active driver.
+// DX9/DX11/DX12 : ID3D*DeviceContext*
+// Vulkan        : VkCommandBuffer (or load context during GAME_LOADING)
+// OpenGL        : OpenGL context handle
+// Returns NULL if no valid rendering context exists.
 void* getvoidcontext()
 {
-	switch (WOMA::AppSettings->DRIVER)
-	{
-#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
-	case DRIVER_DX11:
-	case DRIVER_DX9:
-		return ((DX11Class*)m_Driver)->GetDeviceContext();
-		break;
+#if DX_ENGINE_LEVEL >= 22 && defined VULKAN
+	if (driverList.size() > WOMA::AppSettings->DRIVER &&
+		driverList[WOMA::AppSettings->DRIVER] && 
+		WOMA::game_state == GAME_LOADING && 
+		WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+		return ((vkClass*)m_Driver)->GetLoadContext();
 #endif
+
+	if (driverList.size() > 0 && driverList[WOMA::AppSettings->DRIVER])
+	{
+		switch (WOMA::AppSettings->DRIVER)
+		{
+#if defined DX11 && defined DX_ENGINE
+		case DRIVER_DX9:
+		case DRIVER_DX11:
+			return ((DX11Class*)m_Driver)->GetDeviceContext();
+#endif
+#if defined DX12 && defined DX_ENGINE
+		case DRIVER_DX12:
+			return ((DX12Class*)m_Driver)->GetDeviceContext();
+#endif
+#if defined OPENGL3 || defined OPENGL40
+		case DRIVER_GL3:
+			return g_contextDriver;
+#endif
+#if defined VULKAN
+		case DRIVER_VULKAN:
+			return ((vkClass*)m_Driver)->GetDeviceContext();
+#endif
+		default:
+			womalog("getvoidcontext(): Unknown DRIVER=%d\n", WOMA::AppSettings->DRIVER);
+			ASSERT_DEBUG(false);
+		}
 	}
 
 	return NULL;
 }
 
-
-
-
-//
-// RENDER TO TEXTURE
-//
-#if (defined DX_ENGINE) && (defined INTRO_DEMO || DX_ENGINE_LEVEL >= 21 || defined USE_VIEW2D_SPRITES)
-extern DXcameraClass m_CameraMINIMAP;
-extern DXcameraClass m_CameraMAP;
-#endif
-
-#if DX_ENGINE_LEVEL >= 62 && defined USE_MAIN_MAP
-void ApplicationClass::RenderMiniMapPass(UINT monitorWindow, WomaDriverClass* Driver, void* pContext, float fadeLight, UINT ThreadID)
-{
-	//---------------------------------------------------------------------------------------------------------------------------------
-#if DX_ENGINE_LEVEL >= 62 && defined USE_MAIN_MAP
-	if (!DXsystemHandle->m_CameraMAP && m_Driver->RenderfirstTime) //m_Driver->RenderfirstTime
-	{
-		//Set Camera Position - Render Camera:
-
-		//"viewMatrix": SET Camera Rotation and Position to 2D Render: TEXT and SPRITES
-		m_CameraMAP.SetRotation(+89.999f, 0, 0);
-		/*       /
-			   /     |
-			/a       | loadedTerrain[2]->m_terrainHeight/2
-			--- h--- |
-		Note:
-			angle a = 21.8f (half of our view frustum)
-		*/
-
-		// Check which Quadrant we are:
-		float Qx = (float)((int)(m_CameraMAP.m_positionX / ((loadedTerrain[2]->m_terrainWidth + 1) / 2)));
-		float Qz = (float)((int)(m_CameraMAP.m_positionZ / ((loadedTerrain[2]->m_terrainHeight + 1) / 2)));
-		float h = (float)(((float)(loadedTerrain[2]->m_terrainHeight / 4)) / tan(21.8f * 0.0174532925f) /* + 20*/);
-
-		m_CameraMAP.SetPosition((float)loadedTerrain[2]->m_terrainWidth / 4 + Qx * loadedTerrain[2]->m_terrainWidth / 2,
-			h,
-			(float)loadedTerrain[2]->m_terrainHeight / 4 + Qz * loadedTerrain[2]->m_terrainHeight / 2);            //Note: Work with 512x512: 4 x 256x256 
-
-		//MACRO RENDER:
-#if defined DX_ENGINE	
-		if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
-			m_CameraMAP.CalculateViewMatrix();
-#endif
-#if (defined OPENGL3 || defined OPENGL4)
-		if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
-		{
-			GLopenGLclass* driver = (GLopenGLclass*)driverList[WOMA::AppSettings->DRIVER];
-			if (driver->gl_Camera)
-				driver->gl_Camera->Render();
-		}
-#endif
-		// Render Water/Terrain in: to texture: m_RenderMapTexture
-		m_RenderMapTexture->SetRenderTarget(Driver, (ID3D11DeviceContext*)pContext);								// Set the render target to be the render to texture.
-		m_RenderMapTexture->ClearRenderTarget(Driver, (ID3D11DeviceContext*)pContext, 0.30f, 0.30f, 0.30f, 1.0f);	// Clear the render to texture!
-		TerrainRender(ThreadID, monitorWindow, Driver, fadeLight, &m_CameraMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix, pContext);
-	}
-#endif
-
-	//G:\DRIVE_MY_SOURCE_CODE\Dx11Engine3D\Dx11Engine3Dx64\src\terrain\Minimapclass.cpp
-	//ORI: bool MiniMapClass::RenderMiniMapToTexture(ID3D11DeviceContext* pContext)
-	//---------------------------------------------------------------------------------------------------------------------------------
-#if DX_ENGINE_LEVEL >= 63 && defined USE_MINI_MAP
-	{
-		//"viewMatrix": SET Camera Rotation and Position to 2D Render: TEXT and SPRITES
-		m_CameraMINIMAP.SetRotation(+89.999f, 0, 0);
-		m_CameraMINIMAP.SetPosition(sort_cameraX, 100, sort_cameraZ); // 100 Magic number
-
-		//MACRO RENDER:
-#if defined DX_ENGINE	
-		if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
-		{
-			m_CameraMINIMAP.CalculateViewMatrix();
-		}
-#endif
-#if defined USE_MINIMAP_EXPANSION
-		for (UINT id = 0; id < SystemHandle->m_Application->initial_world_xml_objs /*world_main_size - 1*/; id++)  //TODO: use sceneManager
-			//for (int id = world_main_size - 1; id >= 0; --id) 
-		{
-			m_MiniMapBitmapTexture->SetRenderTarget(Driver, (ID3D11DeviceContext*)pContext);					// Set the render target to be the render to texture: pContext->OMSetRenderTargets
-			RenderModel(pContext, RENDER_PAGE, 1, monitorWindow, m_Driver, id, PASS_OPAC, &m_CameraMINIMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix, fadeLight);
-			m_RenderMapTexture->SetRenderTarget(Driver, (ID3D11DeviceContext*)pContext);						// Set the render target to be the render to texture.
-			RenderModel(pContext, RENDER_PAGE, 1, monitorWindow, m_Driver, id, PASS_OPAC, &m_CameraMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix, fadeLight);
-		}
-#endif
-		
-		// Render Water/Terrain in: to texture: m_MiniMapBitmapTexture
-		m_MiniMapBitmapTexture->SetRenderTarget(Driver, (ID3D11DeviceContext*)pContext);					// Set the render target to be the render to texture: pContext->OMSetRenderTargets
-		m_MiniMapBitmapTexture->ClearRenderTarget(Driver, (ID3D11DeviceContext*)pContext, 0.0f, 0.0f, 0.0f, 1.0f);  // Clear the render to texture!
-		TerrainRender(ThreadID, monitorWindow, Driver, fadeLight, &m_CameraMINIMAP.m_viewMatrix, &((DirectX::DX11Class*)Driver)->m_projectionMiniMapMatrix, pContext);
-	}
-#endif
-}
-#endif
-
 void ApplicationClass::RenderShadowPass(UINT monitorIndex, WomaDriverClass* Driver, void* pContext, float fadeLight)
 {
 #if defined USE_SHADOW_MAP	// LATER: List all objects in front of camera with SHADOWs!
-	if (world_main_size > 0)
+	#ifdef DX_ENGINE
+			if (WOMA::AppSettings->DRIVER == DRIVER_DX9 || WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX12)
+			{
+				((DXrendertextureclass*)m_TextureWithShadows)->SetRenderTarget(Driver, (ID3D11DeviceContext*)pContext);
+				((DXrendertextureclass*)m_TextureWithShadows)->ClearRenderTarget(Driver, (ID3D11DeviceContext*)pContext, 1.0f, 1.0f, 1.0f, 1.0f);
+			}
+	#endif
+
+	if (world_visibleModelList_size > 0)
 	{
 		//RENDER SHADOWS TO TEXTURE:
 		if (fadeLight > 0.1f)
 		{
-			m_TextureWithShadows->SetRenderTarget(Driver, (ID3D11DeviceContext*)pContext);								// Set the render target to be the render to texture.
-			m_TextureWithShadows->ClearRenderTarget(Driver, (ID3D11DeviceContext*)pContext, 1.0f, 1.0f, 1.0f, 1.0f);	// Clear the render to texture!
-
 			//Update light position for shadows:
-		#if defined MAIN_RENDER_LIGHT_RAY && defined USE_SHADOW_MAP
+			#if !defined USE_LEVEL_36V2 //ON/OFF
 			app_Light->GenerateViewMatrix(	MyLightVertexVector[1].x / 100, 
 											MyLightVertexVector[1].y / 100, 
 											MyLightVertexVector[1].z / 100); //SunX, SunY, SunZ
-		#endif
+			#else
+
+			// -------------------------------------------------------------
+			// LEVEL-99 → ALWAYS use the new robust camera-centered V2
+			// -------------------------------------------------------------
+			XMFLOAT3 camPos = DX_Camera->GetPosition();
+
+			float orthoHalfSize = USELIGHTSIZE;   // 15
+			float nearZ = 0.1f;
+			float farZ = 50.0f;
+			float lightDistanceMul = 3.0f;
+
+			app_Light->GenerateCameraCenteredShadowMatrices(
+				camPos,
+				orthoHalfSize,
+				nearZ,
+				farZ,
+				lightDistanceMul
+			);
+			#endif
 
 			// RENDER SHADOWS for all these 3D STATIC OBJECTS, to texture
 			// --------------------------------------------------------------------------------------------
-		#if defined USE_SCENE_MANAGER && (defined DX_ENGINE)
+#if defined USE_RASTERIZER_STATE
+			m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);	//Set Default
+#endif
+
+#if defined USE_ALPHA_BLENDING
+			m_Driver->TurnOffAlphaBlending(pContext);						// restore default blending
+#endif
+
+		#if defined USE_SCENE_MANAGER
 			SHADER_TYPE shader_type = SHADER_AUTO;
-			for (UINT id = 0; id < WOMA::sceneManager->visibleModelList.size(); id++)																
+			for (UINT id = 0; id < WOMA::sceneManager->visibleModelList.size(); id++)
 			{
 				if (objModel[id])
 				{
-					if (SystemHandle->xml_loader.theWorldXML[WOMA::sceneManager->visibleModelList[id]->m_ObjId].type == 401)  // STREET_LAMP
+					if (SystemHandle->xml_loader.theWorldXML[WOMA::sceneManager->visibleModelList[id]->m_ObjId].type == 401)  // TERRAIN: STREET_LAMP Shadows
 					{
-						// Render left row (op = 0)
-						RenderModel(pContext, RENDER_PAGE, 0, monitorIndex, Driver, id,
-							PASS_SHADOWS, NULL, NULL, 0, 0);
+						// Render left row _________________________________________________________________________ (op = 0)
+						RenderModel(pContext, RENDER_PAGE, 0, monitorIndex, Driver, id, PASS_SHADOWS, NULL, NULL, 0, 0);
 
-						// Render right row (op = 1)
-						RenderModel(pContext, RENDER_PAGE, 0, monitorIndex, Driver, id,
-							PASS_SHADOWS, NULL, NULL, 0, 1);
+						// Render right row  _______________________________________________________________________ (op = 1)
+						RenderModel(pContext, RENDER_PAGE, 0, monitorIndex, Driver, id, PASS_SHADOWS, NULL, NULL, 0, 1);
 
 						continue; // done with this lamp
 					}
-
 					shader_type = objModel[id]->ModelShaderType;
 					if (shader_type != SHADER_TEXTURE_LIGHT_RENDERSHADOW &&
 						shader_type != SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED &&
 						shader_type != SHADER_NORMAL_BUMP_INSTANCED)
 					{
 						if (objModel[id]->ModelCastShadow)
+						{
 							RenderModel(pContext, RENDER_PAGE, 0, monitorIndex, Driver, id, (UINT)PASS_SHADOWS, NULL, NULL); // Pre-Render Shadows to Texture
+						}
 					}
 				}
 			}
@@ -448,7 +433,7 @@ void RenderMiniMapDeferred(ID3D11DeviceContext* ctx, WomaDriverClass* driver, UI
 	SystemHandle->m_Application->RenderMiniMapPass(monitorIndex, driver, ctx, fadeLight, 1); // custom function using ctx
 }
 
-void ApplicationClass::WaitForPreRenderTasks(void* ctx)
+void WaitForPreRenderTasks(void* ctx)
 {
 	ID3D11DeviceContext* mainCtx = (ID3D11DeviceContext*)ctx;
 
@@ -473,8 +458,10 @@ void ApplicationClass::WaitForPreRenderTasks(void* ctx)
 	}
 }
 
+
+void UpdateMeshAnimationsWorkerFunc() 
+{
 #if defined USE_UPDATEMESHANIMATIONS_THREAD
-void ApplicationClass::UpdateMeshAnimationsWorkerFunc() {
 	while (true) {
 		std::unique_lock<std::mutex> lock(mtx);
 
@@ -482,7 +469,7 @@ void ApplicationClass::UpdateMeshAnimationsWorkerFunc() {
 		if (stopThreads) break;
 		lock.unlock();
 
-		//UpdateMeshAnimationsCtx->ClearState(); // optional
+		UpdateMeshAnimationsCtx->ClearState(); // optional
 		UpdateMeshAnimationsDeferred(UpdateMeshAnimationsCtx, driverRef, monitorRef, fadeLightRef);
 		UpdateMeshAnimationsCtx->FinishCommandList(FALSE, &UpdateMeshAnimationsCmdList);
 
@@ -491,10 +478,12 @@ void ApplicationClass::UpdateMeshAnimationsWorkerFunc() {
 		UpdateMeshAnimationsWork = false;
 		cv.notify_all();
 	}
-}
 #endif
+}
 
-void ApplicationClass::MinimapWorkerFunc() {
+
+void MinimapWorkerFunc() 
+{
 	while (true) {
 		std::unique_lock<std::mutex> lock(mtx);
 		cv.wait(lock, [&] { return minimapWork || stopThreads; });
@@ -516,7 +505,6 @@ void ApplicationClass::MinimapWorkerFunc() {
 
 void ApplicationClass::AppPreRender(UINT monitorIndex, WomaDriverClass* Driver, float fadeLight, void* mainCtx)
 {
-	DirectX::DX11Class* m_driver11 = (DirectX::DX11Class*)Driver;
 
 #if defined USE_MINIMAP_REDENRING_THREAD
 	//FIRE AND FORGET:
@@ -537,47 +525,61 @@ void ApplicationClass::AppPreRender(UINT monitorIndex, WomaDriverClass* Driver, 
 	}
 
 	cv.notify_all(); //Re-Start aux threads on this frame
-  //#if !defined USE_UPDATEMESHANIMATIONS_THREAD
+//#if !defined USE_UPDATEMESHANIMATIONS_THREAD
 	RenderShadowPass(monitorIndex, Driver, mainCtx, fadeLight);
 
 	((DirectX::DX11Class*)Driver)->SetBackBufferRenderTarget(mainCtx, monitorIndex);	//MANDATORY! Back to default back buffer
 
-#if defined USE_ALPHA_BLENDING
+	#if defined USE_ALPHA_BLENDING
 	m_Driver->TurnOnAlphaBlending(mainCtx);												// restore default blending
-#endif
-  //#endif
+	#endif
+//#endif
 
 #else
 	// NO-THREAD version RENDER SHADOWS TO TEXTURE
 	// -------------------------------------------
-#if defined USE_SHADOW_MAP
-	RenderShadowPass(monitorIndex, Driver, mainCtx, fadeLight);
-
-	((DirectX::DX11Class*)Driver)->SetBackBufferRenderTarget(mainCtx, monitorIndex);	//MANDATORY! Back to default back buffer
-
-  #if defined USE_ALPHA_BLENDING
-	m_Driver->TurnOnAlphaBlending(mainCtx);												// restore default blending
-  #endif
+#if defined activate_render_in_shadowMap && defined USE_SHADOW_MAP
+	if (WOMA::sceneManager->visibleModelList.size() > 0)
+	{
+#ifdef VULKAN
+		if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+			((VKrenderTextureClass*)m_TextureWithShadows)->SetRenderTarget(mainCtx);	// Vulkan clears attachments during vkCmdBeginRenderPass().
 #endif
+
+		RenderShadowPass(monitorIndex, Driver, mainCtx, fadeLight);						//Render Shadows to Texture
+
+#if defined VULKAN
+		if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+			vkCmdEndRenderPass(((vkClass*)Driver)->m_offscreenCommandBuffer);
+#endif
+	}
+#endif
+
 
 	// NO-THREAD version for RENDER MAP and MINIMAP TO TEXTURE
 	// -------------------------------------------------------
-#if DX_ENGINE_LEVEL >= 62 && defined USE_MAIN_MAP && defined MAIN_RENDER_TERRAIN		// Render MAP and MINI-MAP, to texture
+#if defined USE_MAIN_MAP && defined MAIN_RENDER_TERRAIN		// Render MAP and MINI-MAP, to texture
 	RenderMiniMapPass(monitorIndex, Driver, mainCtx, fadeLight);
-
-	((DirectX::DX11Class*)Driver)->SetBackBufferRenderTarget(mainCtx, monitorIndex);	//MANDATORY! Back to default back buffer
-
-  #if defined USE_ALPHA_BLENDING
-	m_Driver->TurnOnAlphaBlending(mainCtx);												// restore default blending
-  #endif
 #endif
+
+#endif
+
+#if defined DX11
+	if (WOMA::AppSettings->DRIVER == DRIVER_DX9 || WOMA::AppSettings->DRIVER == DRIVER_DX11)
+	{
+		((DirectX::DX11Class*)Driver)->SetBackBufferRenderTarget(mainCtx, monitorIndex);//MANDATORY! Back to default back buffer
+																						//NOTE: VULKAN dont need.
+	}
+#endif
+
+#if defined USE_ALPHA_BLENDING
+	m_Driver->TurnOnAlphaBlending(mainCtx);												// restore default blending
 #endif
 }
 
 void ApplicationClass::RenderModel(void* pContext, UINT level, UINT threadID, UINT monitorIndex, WomaDriverClass* driver, UINT ID,
 	UINT pass, XMMATRIX* m_viewMatrix, XMMATRIX* m_projectionMatrix, float fadeLight, UINT op)
 {
-    
 	UINT modelID = ID;
 	if (threadID == 0)
 	{
@@ -593,7 +595,7 @@ void ApplicationClass::RenderModel(void* pContext, UINT level, UINT threadID, UI
 			modelID = WOMA::sceneManager->visibleModelList[ID]->m_ObjId;
 		}
 		else if (pass == PASS_BILL) {
-			if (SystemHandle->m_Application->billboardRrenderCount+WOMA::sceneManager->visibleBillboardList.size() == 0)
+			if (billboardRrenderCount+WOMA::sceneManager->visibleBillboardList.size() == 0)
 				return;
 			modelID = ID;
 			pass = PASS_OPAC;
@@ -603,12 +605,12 @@ void ApplicationClass::RenderModel(void* pContext, UINT level, UINT threadID, UI
 		}
 	}
 
+	VirtualModelClass* model = NULL;  //DXmodelClass* model = NULL;
 
-	DXmodelClass* model = NULL;
 	if (threadID>0)
 		model = (DXmodelClass*)objModel_minimap[modelID];
 	else
-		model = (DXmodelClass*)objModel[modelID];
+		model = objModel[modelID];
 
 	if (!model || !model->ready)
 		return; // Model not ready to render (come back later!)
@@ -668,9 +670,9 @@ void ApplicationClass::RenderModel(void* pContext, UINT level, UINT threadID, UI
 
 	// === RESET WORLD MATRIX ===
 	// ------------------------------------------------------------------------------------------------------------------------------
-    if (m_Driver->RenderfirstTime || (SystemHandle->xml_loader.theWorldXML[model->m_ObjId].rotY != 0 && modelID > world_xml_objs))
-        ((DXmodelClass*)model)->m_worldMatrix = XMMatrixIdentity();
-
+	if (/*m_Driver->RenderfirstTime || model->m_ObjId == 0 ||*/ (SystemHandle->xml_loader.theWorldXML[model->m_ObjId].rotY != 0 && modelID > world_xml_objs))
+		model->Identity();
+	else
 #if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
     if (SystemHandle->xml_loader.theWorldXML[modelID].depend == -1 ||
         SystemHandle->xml_loader.theWorldXML[modelID].meshSRV ||
@@ -679,7 +681,7 @@ void ApplicationClass::RenderModel(void* pContext, UINT level, UINT threadID, UI
 #else
     if (SystemHandle->xml_loader.theWorldXML[modelID].meshSRV)
 #endif
-        ((DXmodelClass*)model)->m_worldMatrix = XMMatrixIdentity();
+		model->Identity();
 
 	// === RESET TRANSLATION ===
 	// ------------------------------------------------------------------------------------------------------------------------------
@@ -695,10 +697,10 @@ void ApplicationClass::RenderModel(void* pContext, UINT level, UINT threadID, UI
     else
     {
 #if DX_ENGINE_LEVEL >= 72 && defined SOUND3D //SOUND3D
-    if ((m_Driver->RenderfirstTime) || SystemHandle->xml_loader.theWorldXML[modelID].depend == -1 || (SystemHandle->xml_loader.theWorldXML[modelID].meshSRV) || 
+    if ((m_Driver->RenderfirstTime || model->m_ObjId == 0) || SystemHandle->xml_loader.theWorldXML[modelID].depend == -1 || (SystemHandle->xml_loader.theWorldXML[modelID].meshSRV) ||
         SystemHandle->xml_loader.theWorldXML[model->m_ObjId].Bill)
 #else
-    if ((m_Driver->RenderfirstTime) || (SystemHandle->xml_loader.theWorldXML[modelID].meshSRV))
+    if ((m_Driver->RenderfirstTime || model->m_ObjId == 0) || (SystemHandle->xml_loader.theWorldXML[modelID].meshSRV))
 #endif
     {
         float scale = SystemHandle->xml_loader.theWorldXML[modelID].scale;
@@ -713,13 +715,13 @@ void ApplicationClass::RenderModel(void* pContext, UINT level, UINT threadID, UI
 	// === SET ROTATION IN X AXIS: ===
 	// ------------------------------------------------------------------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES // Instancing
-    if (((DXmodelClass*)model)->m_instanceCount == 0)
+    if (model->m_instanceCount == 0)
 #endif
     {
         float rx = SystemHandle->xml_loader.theWorldXML[modelID].rotX;
         if (rx == -1000) {
-            static float rX = 0.0f;
-            rX = (float)dt * (0.005f / 16.66f);	// MOVIMENT FORMULA!
+            rX = 0.0f;
+            rX += (float)dt * (0.005f / 16.66f);	// MOVIMENT FORMULA!
             model->rotateX(rX);
         }
         else
@@ -764,8 +766,8 @@ void ApplicationClass::RenderModel(void* pContext, UINT level, UINT threadID, UI
         }
 
         if (ry == -1000) {
-            static float rY = 0.0f;
-            rY = (float)dt * (0.005f / 16.66f);	// MOVIMENT FORMULA!
+            rY = 0.0f;
+            rY += (float)dt * (0.005f / 16.66f);	// MOVIMENT FORMULA!
             model->rotateY(rY);
         }
         else
@@ -776,8 +778,8 @@ void ApplicationClass::RenderModel(void* pContext, UINT level, UINT threadID, UI
 	// ------------------------------------------------------------------------------------------------------------------------------
         float rz = SystemHandle->xml_loader.theWorldXML[model->m_ObjId].rotZ;
         if (rz == -1000) {
-            static float rZ = 0.0f;
-            rZ = (float)dt * (0.005f / 16.66f);	// MOVIMENT FORMULA!
+            rZ = 0.0f;
+            rZ += (float)dt * (0.005f / 16.66f);	// MOVIMENT FORMULA!
             model->rotateZ(rZ);
         }
         else
@@ -789,17 +791,27 @@ void ApplicationClass::RenderModel(void* pContext, UINT level, UINT threadID, UI
 	// ------------------------------------------------------------------------------------------------------------------------------
 	if (SystemHandle->xml_loader.theWorldXML[model->m_ObjId].moveUp)
 	{ 
-		positionY += (model->maxVertex.y - model->minVertex.y)/2* model->m_worldMatrix.r[1].m128_f32[1]; //#define _22 r[1].m128_f32[1]
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX9 || WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX12)
+		{
+			DXmodelClass* dxModel = (DXmodelClass*)model;
+			positionY += (dxModel->maxVertex.y - dxModel->minVertex.y)/2 * dxModel->m_worldMatrix.r[1].m128_f32[1];
+		}
 	}
     model->translation(positionX, positionY, positionZ);
 
 	// === RENDER OBJ.: ===					   
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
 	((DXmodelClass*)model)->m_Shader11->PSfade = fadeLight;
-	if (m_viewMatrix == NULL && m_projectionMatrix == NULL)
-		model->Render(pContext, threadID, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass, &(app_Light->m_viewMatrix), &(app_Light->m_ligth_orthoMatrix));	// RENDER process shadows if obj use it.
-    else
-		model->Render(pContext, threadID, CAMERA_NORMAL, PROJECTION_MINIMAP, pass, m_viewMatrix, m_projectionMatrix);									// RENDER MINI MAP
+	if (m_viewMatrix == NULL && m_projectionMatrix == NULL) 
+	{
+		// RENDER Pass shadow view and proj. for a pass2 / normal pass (0 or 1) will use normal view and normal proj inside function:
+		model->Render(pContext, threadID, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass, &(app_Light->m_viewMatrix), &(app_Light->m_ligth_orthoMatrix));	
+	}
+	else
+	{
+		// RENDER MINI MAP
+		model->Render(pContext, threadID, CAMERA_NORMAL, PROJECTION_MINIMAP, pass, m_viewMatrix, m_projectionMatrix);									
+	}
 #else
 	model->Render(pContext, threadID, CAMERA_NORMAL, PROJECTION_PERSPECTIVE, pass); //RENDER don't process shadows
 #endif
@@ -835,8 +847,11 @@ void ApplicationClass::RenderMainSky(UINT monitorWindow, float fadeLight, void* 
 
 }
 
-void ApplicationClass::WaterTerrain(UINT monitorWindow, float fadeLight, void* pContext)
+void ApplicationClass::MainTerrain(UINT monitorWindow, float fadeLight, void* pContext)
 {
+#if defined USE_ALPHA_BLENDING
+	m_Driver->TurnOffAlphaBlending(pContext);						// restore default blending
+#endif
 	//----------------------------------------------------------------------------------------------------------------------
 	// TERRAIN[0]: UNDER WATER
 #if defined SCENE_GENERATEDUNDERWATER || defined SCENE_UNDERWATER_REALEARTH_TERRAIN || defined SCENE_MAIN_TERRAIN
@@ -847,7 +862,7 @@ void ApplicationClass::WaterTerrain(UINT monitorWindow, float fadeLight, void* p
 	// TERRAIN[2]: Render MAIN Terrain
 	//----------------------------------------------------------------------------------------------------------------------
 #if (defined SCENE_MAIN_TOPO_TERRAIN && !defined USE_TERRAIN_ALFA_MAP) && defined MAIN_RENDER_TERRAIN //MAIN-RENDER TERRAIN (0.3 ms)
-	static bool fog = (RENDER_PAGE == 51 || RENDER_PAGE >= 60) ? true : false;
+	static bool fog = (RENDER_PAGE == 51 || RENDER_PAGE >= 60) ? true : false; //static bool fog = (RENDER_PAGE = 51);
 	if (RENDER_PAGE >= 50)
 	{
 		if (m_TerrainModel[MAIN_TERRAIN_ID])
@@ -860,31 +875,108 @@ void ApplicationClass::WaterTerrain(UINT monitorWindow, float fadeLight, void* p
 #endif
 }
 
+#define UPDATE_WATER_TIME(shader)\
+{\
+	shader->watertime += (float)dt * (0.0025f / 16.66f);\
+	if (shader->watertime > 2 * PI)\
+		shader->watertime -= (2 * PI);\
+}
+
+#if (DX_ENGINE_LEVEL >= 50 && defined SCENE_WATER_TERRAIN) && defined MAIN_RENDER_WATER //MAIN-RENDER: WATER (0.3 ms)
+void ApplicationClass::MainWater(UINT monitorWindow, float fadeLight, void* pContext) 
+{
+#if (DX_ENGINE_LEVEL >= 54 && defined SCENE_WATER_TERRAIN) && defined MAIN_RENDER_WATER //MAIN-RENDER: WATER (0.3 ms)
+	// --------------------------------------------------------------------------------------------
+	// TERRAIN[1]: Render mesh for ***** WATER *****
+	// --------------------------------------------------------------------------------------------
+	IF_RENDER_PAGE(RENDER_PAGE >= 54)
+	{
+		virtualShaderClass* shader=NULL;
+#ifdef VULKAN
+		if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+		{
+			shader = ((vkModelClass*)m_TerrainModel[WATER_TERRAIN_ID])->m_Shader;
+			UPDATE_WATER_TIME(shader);
+			//womalog("WOMA time=%f\n", shader->watertime);
+		}
+#endif
+#ifdef DX_ENGINE
+		DXshaderClass* shader11=NULL;
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX9 || WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX12)
+		{
+			shader11 = ((DXmodelClass*)m_TerrainModel[WATER_TERRAIN_ID])->m_Shader11;
+			UPDATE_WATER_TIME(shader11);
+			//womalog("WOMA time=%f\n", shader11->watertime);
+		}
+#endif
+	}
+#endif
+
+#if defined USE_ALPHA_BLENDING
+	m_Driver->TurnOnAlphaBlending(pContext); // Re assume default
+	if (m_Driver->RenderfirstTime)
+	{
+		m_TerrainModel[WATER_TERRAIN_ID]->ModelHASAlfaColor = true;
+		m_TerrainModel[WATER_TERRAIN_ID]->ModelAlfaColor = 0.5f;
+	}
+#endif	
+	m_TerrainModel[WATER_TERRAIN_ID]->translation(0, -0.75, 0);
+	m_TerrainModel[WATER_TERRAIN_ID]->scale(5, 5, 5);
+	m_TerrainModel[WATER_TERRAIN_ID]->RenderWithFade(pContext, dayLightFade, false);
+}
+#endif
+
 //#############################################################################################################
 // [2/3] RENDER - 3D
 //#############################################################################################################
 void ApplicationClass::AppRender(UINT monitorIndex, UINT level, float fadeLight, void* pContext)
 {
+	//[1] Must be first:
 #if (defined USE_SKY_CAMERA_DOME && defined USE_SKYSPHERE) && defined MAIN_RENDER_SKY
+#if defined USE_ALPHA_BLENDING
+	m_Driver->TurnOnAlphaBlending(pContext);
+#endif
 	RenderMainSky(monitorIndex, fadeLight, pContext);
 #endif
-#if (DX_ENGINE_LEVEL >= 19 && DX_ENGINE_LEVEL < 50) || defined INTRO_DEMO
+
+#if defined USE_RASTERIZER_STATE
+	m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);	//Set Default
+#endif
+
+#if defined USE_ALPHA_BLENDING
+	m_Driver->TurnOffAlphaBlending(pContext);						// restore default blending
+#endif
+
+	// [2] RENDER LIGHT RAY:
+	// --------------------------------------------------------------------------------------------
+	if (RENDER_PAGE >= 23)
+	{
+	}
+
+#if defined USE_ALPHA_BLENDING && defined INTRO_DEMO
+	m_Driver->TurnOffAlphaBlending(pContext);
+	m_Driver->ClearDepthBuffer(pContext);
+#endif
+
+#if (DX_ENGINE_LEVEL >= 19 && DX_ENGINE_LEVEL < 49) || defined INTRO_DEMO
 	if ((RENDER_PAGE >= 19) && (RENDER_PAGE < 30) || RENDER_PAGE == 36)
 		DemoRender(pContext);	// ALL Demos!: page [19, 20, 21, 22, 23 ... 49]
 #endif
 
-//#define show_debug_2nd3DModel
-
-	#if defined _DEBUG && (DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER)
+//
+// SHADOWs Aux for DEBUG
+//
+#if defined render_debug_2nd3DModel
+	#if defined _DEBUG && (DX_ENGINE_LEVEL >= 36 && defined USE_SCENE_MANAGER)
 	if (RENDER_PAGE == 36 || RENDER_PAGE == 37 || RENDER_PAGE == 41 || RENDER_PAGE == 42) // Debug Shadow
-	{
 		m_2nd3DModel->Render(pContext, 0, 0, 0, NULL, NULL); //Render Debug Shadow Texture
-	}
 	#endif
+#endif
 
 #if defined MAIN_RENDER_TERRAIN
-	if (RENDER_PAGE >= 49)
-		WaterTerrain(monitorIndex, fadeLight, pContext);
+	if (RENDER_PAGE >= 49) {
+		MainTerrain(monitorIndex, fadeLight, pContext);
+	}
 #endif
 
 	if (RENDER_PAGE >= 93)
@@ -919,20 +1011,26 @@ void ApplicationClass::AppRender(UINT monitorIndex, UINT level, float fadeLight,
   #endif
 #endif
 
-#if DX_ENGINE_LEVEL == 34 || DX_ENGINE_LEVEL == 40 || DX_ENGINE_LEVEL == 41 || DX_ENGINE_LEVEL == 42 || defined INTRO_DEMO
-	IF_RENDER_PAGE(RENDER_PAGE == 34 || RENDER_PAGE == 40 || RENDER_PAGE == 41 || RENDER_PAGE == 42)
-		m_Driver->TurnOffAlphaBlending(pContext);
-#endif
+	m_Driver->TurnOffAlphaBlending(pContext);
+
 #if defined USE_RASTERIZER_STATE
 	m_Driver->SetRasterizerState(pContext, CULL_NONE, FILL_SOLID);	//Set Default
 #endif
-	// Render TRANSPARENT Parts of 3D OBJs (like: glass window of (Space Compound), etc...) (last part)
-	// --------------------------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------
+	// Render PASS 0 & 1 Parts of 3D OBJs (like: glass window of (Space Compound), etc...)
+	// -----------------------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined MAIN_RENDER_MAIN_XML_OBJ //MAIN-RENDER: MAIN OBJs. (9 ms)
 	IF_RENDER_PAGE(RENDER_PAGE >= 30)
 	{
-		for (UINT id = 0; id < WOMA::sceneManager->visibleModelList.size(); id++)
+		//UINT visiblemodels = WOMA::sceneManager->visibleModelList.size();
+
+		for (UINT id = 0; id < world_visibleModelList_size; id++)
 		{
+			if (WOMA::sceneManager->visibleModelList[id]->m_ObjId == 26)
+			{
+				womalog("... Rendering model ID 26\n");
+			}
+
 			switch (SystemHandle->xml_loader.theWorldXML[WOMA::sceneManager->visibleModelList[id]->m_ObjId].type)
 			{
 			case 401: //STREET_LAMP
@@ -943,10 +1041,14 @@ void ApplicationClass::AppRender(UINT monitorIndex, UINT level, float fadeLight,
 				}
 				break;
 			default:
+				//WORDL.XML: <object depend="-1000"
+				if ((objModel[id])->obj3d.hasTransparent == true && (SystemHandle->xml_loader.theWorldXML[WOMA::sceneManager->visibleModelList[id]->m_ObjId].depend == -1000))
+					m_Driver->TurnOnAlphaBlending(pContext);
+
 				if (objModel[id])
 				{
 					RenderModel(pContext, RENDER_PAGE, 0, monitorIndex, m_Driver, id, PASS_OPAC, NULL, NULL, fadeLight, 0);
-					if (id == 0 && ((DXmodelClass*)objModel[id])->obj3d.hasTransparent == true)
+					if (id == 0 && (objModel[id])->obj3d.hasTransparent == true)
 					{
 						m_Driver->TurnOnAlphaBlending(pContext);
 						IF_RENDER_PAGE(RENDER_PAGE >= 98)
@@ -979,10 +1081,9 @@ void ApplicationClass::AppRender(UINT monitorIndex, UINT level, float fadeLight,
 
 	// Render Animated meshes:
 	// -----------------------
-#if defined MAIN_RENDER_ASSIMP
+	#if defined MAIN_RENDER_ASSIMP
 	if (ShouldDrawUI(monitorIndex) && !g_GOD_MODE)
 	{
-	
 		if (RENDER_PAGE == 79 || RENDER_PAGE >= 82) //NO: IF_RENDER_PAGE
 		{
 			m_Driver->TurnOffAlphaBlending(pContext);
@@ -992,7 +1093,7 @@ void ApplicationClass::AppRender(UINT monitorIndex, UINT level, float fadeLight,
 			RenderAllMeshModels((ID3D11DeviceContext*)pContext, fadeLight);
 		}
 	}
-#endif
+	#endif
 
 	// TRANSPARENT and SEMI-TRANSPARENT:
 	// --------------------------------------------------------------------------------------------
@@ -1003,7 +1104,7 @@ void ApplicationClass::AppRender(UINT monitorIndex, UINT level, float fadeLight,
   #if defined MAIN_RENDER_WATER_FALL
 	IF_RENDER_PAGE(RENDER_PAGE >= 97)
 	{
-		if (m_Driver->frustum->CheckSphere(142, 15, 57, MAX(1, model_waterfall->boundingSphere) * 4))
+		if (m_Driver->frustum->CheckSphere(142, 15, 57, MAX(1, g_model_waterfall->boundingSphere) * 4))
 		{
 			particlesystemClass.Update();
 			particlesystemClass.Render(pContext, fadeLight);
@@ -1014,19 +1115,9 @@ void ApplicationClass::AppRender(UINT monitorIndex, UINT level, float fadeLight,
 	}
   #endif
 
-#if (DX_ENGINE_LEVEL >= 50 && defined SCENE_WATER_TERRAIN) && defined MAIN_RENDER_WATER //MAIN-RENDER: WATER (0.3 ms)
-	// TERRAIN[1]: Render Mesh for WATER:
-	// --------------------------------------------------------------------------------------------
-	IF_RENDER_PAGE(RENDER_PAGE >= 50)
-	{
-		DXshaderClass* shader11 = ((DirectX::DXmodelClass*)m_TerrainModel[WATER_TERRAIN_ID])->m_Shader11;
-		shader11->watertime += (float)dt * (0.0025f / 16.66f);
-		if (shader11->watertime > 2 * PI)
-			shader11->watertime -= (2 * PI);
-
-		m_TerrainModel[WATER_TERRAIN_ID]->translation(0, -0.75, 0);
-		m_TerrainModel[WATER_TERRAIN_ID]->scale(5, 5, 5);
-		m_TerrainModel[WATER_TERRAIN_ID]->RenderWithFade(pContext, dayLightFade, false);
+#if defined MAIN_RENDER_TERRAIN
+	if (RENDER_PAGE >= 50) {
+		MainWater(monitorIndex, fadeLight, pContext);
 	}
 #endif
 
@@ -1045,6 +1136,10 @@ void ApplicationClass::AppRender(UINT monitorIndex, UINT level, float fadeLight,
 //#############################################################################################################
 void ApplicationClass::AppPosRender(UINT monitorIndex, UINT level, float dayLightFade, void* pContext)
 {
+#if defined _DEBUG || defined LINUX_PLATFORM //|| defined ANDROID_PLATFORM
+	womalogATfirstframe("RenderfirstTime: ApplicationClass::AppPosRender() START\n");
+#endif
+
     //=============================================================================================================
     // LIGHT: Get fade (real Sun Position): Show Debug Info
 
@@ -1059,11 +1154,11 @@ void ApplicationClass::AppPosRender(UINT monitorIndex, UINT level, float dayLigh
 		for (UINT tree_id = 0; tree_id < WOMA::sceneManager->visibleBillboardList.size(); tree_id++)
 		{
 			#if DX_ENGINE_LEVEL >= 94 && defined USE_TREE_POINTER
-			obj_id = WOMA::sceneManager->visibleBillboardList[tree_id]->ID + SystemHandle->m_Application->initial_world_xml_objs;
+			obj_id = WOMA::sceneManager->visibleBillboardList[tree_id]->ID + initial_world_xml_objs;
 			if (SystemHandle->xml_loader.theWorldXML[obj_id].render)
 				RenderModel(pContext, RENDER_PAGE, 0, monitorIndex, m_Driver, obj_id, PASS_BILL, NULL, NULL, dayLightFade);    // Render: "Billboards"
 			#else
-			obj_id = WOMA::sceneManager->visibleBillboardList[tree_id].ID + SystemHandle->m_Application->initial_world_xml_objs;
+			obj_id = WOMA::sceneManager->visibleBillboardList[tree_id].ID + initial_world_xml_objs;
 			if (SystemHandle->xml_loader.theWorldXML[obj_id].render)
 				RenderModel(pContext, RENDER_PAGE, 0, monitorIndex, m_Driver, obj_id, PASS_BILL, NULL, NULL, dayLightFade);    // Render: "Billboards"
 			#endif
@@ -1089,81 +1184,73 @@ void ApplicationClass::AppPosRender(UINT monitorIndex, UINT level, float dayLigh
 #if (defined USE_MAIN_MAP || defined USE_MINI_MAP) && defined MAIN_RENDER_MINIMAP //MAIN-RENDER: MINI-MAP (0.4)
 	if (RENDER_PAGE >= 62)
 		if (ShouldDrawUI(monitorIndex))
-		RenderMainMapMiniMap(pContext);
+			RenderMainMapMiniMap3Dview(pContext);
 #endif
 
+	// -------------------------
 	// === AppTextClass-Fill: ===
+	// -------------------------
 #if defined USE_RASTERTEK_TEXT_FONT && defined MAIN_RENDER_RASTERTEK_FONT
 
+#if !defined WINDOWS_PLATFORM
+	if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+#endif
 	if (ShouldDrawUI(monitorIndex) && AppTextClass)
 	{
 		AppTextClass->SetFps(SystemHandle->fps);						// Update the FPS "Value" in the text object.
-
-#if !defined TEXT_TEST
-#if defined WINDOWS_PLATFORM && !defined WIN_XP
+#if defined WINDOWS_PLATFORM && !defined WIN_XP && defined RENDER_CPU_TEST
 		AppTextClass->SetCpu(SystemHandle->m_Cpu.GetCpuPercentage());	// Update the CPU usage "Value" in the text object.
 #endif
-#endif
 
-#if defined USE_DIRECT_INPUT			// we will use DX input method
-#if !defined TEXT_TEST
-		AppTextClass->SetCameraPosition(m_Position[g_NetID]->m_positionX,
-			m_Position[g_NetID]->m_positionY,
-			m_Position[g_NetID]->m_positionZ);
-
-		AppTextClass->SetCameraRotation(m_Position[g_NetID]->m_rotationX,
-			m_Position[g_NetID]->m_rotationY,
-			m_Position[g_NetID]->m_rotationZ);
-#endif
-#else
-#if !defined TEXT_TEST
-#if defined DX11 || (defined DX9 && D3D11_SPEC_DATE_YEAR > 2009)
-		if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
+#if defined _DEBUG
+	switch (WOMA::AppSettings->DRIVER)
+	{
+#if defined VULKAN && !defined DEBUG_TEXT_A_ONLY
+		case DRIVER_VULKAN:
 		{
+			vkClass* driver = (vkClass*)m_Driver;
 
-			AppTextClass->SetCameraPosition(DXsystemHandle->m_Camera->m_positionX,
-				DXsystemHandle->m_Camera->m_positionY,
-				DXsystemHandle->m_Camera->m_positionZ);
-
-			AppTextClass->SetCameraRotation(DXsystemHandle->m_Camera->m_rotationX,
-				DXsystemHandle->m_Camera->m_rotationY,
-				DXsystemHandle->m_Camera->m_rotationZ);
-
+			AppTextClass->SetCameraRotation(driver->gl_Camera->m_rotationX, driver->gl_Camera->m_rotationY, driver->gl_Camera->m_rotationZ);
+			AppTextClass->SetCameraPosition(driver->gl_Camera->m_positionX, driver->gl_Camera->m_positionY, driver->gl_Camera->m_positionZ);
+			break;
 		}
 #endif
-#if defined DX12
-		if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
-		{
-			AppTextClass->SetCameraPosition(DXsystemHandle->m_Camera->m_positionX,
-				DXsystemHandle->m_Camera->m_positionY,
-				DXsystemHandle->m_Camera->m_positionZ);
 
-			AppTextClass->SetCameraRotation(DXsystemHandle->m_Camera->m_rotationX,
-				DXsystemHandle->m_Camera->m_rotationY,
-				DXsystemHandle->m_Camera->m_rotationZ);
+#if defined WINDOWS_PLATFORM
+		default:
+		{
+	#if defined USE_DIRECT_INPUT			// we will use DX input method
+			AppTextClass->SetCameraRotation(m_Position[g_NetID]->m_rotationX, m_Position[g_NetID]->m_rotationY, m_Position[g_NetID]->m_rotationZ);
+			AppTextClass->SetCameraPosition(m_Position[g_NetID]->m_positionX, m_Position[g_NetID]->m_positionY, m_Position[g_NetID]->m_positionZ);
+	#else
+			AppTextClass->SetCameraPosition(DX_Camera->m_positionX, DX_Camera->m_positionY, DX_Camera->m_positionZ);
+			AppTextClass->SetCameraRotation(DX_Camera->m_rotationX, DX_Camera->m_rotationY, DX_Camera->m_rotationZ);
+	#endif			
+			break;
 		}
 #endif
-#if (defined OPENGL3 || defined OPENGL4)
-		if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
-		{
-			AppTextClass->SetCameraPosition(((GLopenGLclass*)m_Driver)->gl_Camera->m_positionX,
-				((GLopenGLclass*)m_Driver)->gl_Camera->m_positionY,
-				((GLopenGLclass*)m_Driver)->gl_Camera->m_positionZ);
 
-			AppTextClass->SetCameraRotation(((GLopenGLclass*)m_Driver)->gl_Camera->m_rotationX,
-				((GLopenGLclass*)m_Driver)->gl_Camera->m_rotationY,
-				((GLopenGLclass*)m_Driver)->gl_Camera->m_rotationZ);
+#if defined OPENGL3 || defined OPENGL4
+		case DRIVER_GL3:
+		{
+			AppTextClass->SetCameraRotation(((GLopenGLclass*)m_Driver)->gl_Camera->m_rotationX, ((GLopenGLclass*)m_Driver)->gl_Camera->m_rotationY, ((GLopenGLclass*)m_Driver)->gl_Camera->m_rotationZ);
+			AppTextClass->SetCameraPosition(((GLopenGLclass*)m_Driver)->gl_Camera->m_positionX, ((GLopenGLclass*)m_Driver)->gl_Camera->m_positionY, ((GLopenGLclass*)m_Driver)->gl_Camera->m_positionZ);
+
+			break;
 		}
 #endif
-#endif
+	}
 #endif
 
+	//
+	// === Update Render Count: ===
+	//
 #if DX_ENGINE_LEVEL >= 30 && defined USE_SCENE_MANAGER && defined _DEBUG && !defined TEXT_TEST
 		AppTextClass->SetRenderCount(WOMA::sceneManager->quadTree.totalVertexRendered,
-			SystemHandle->m_Application->totalRendered,
+			totalRendered,
 			(UINT)SystemHandle->xml_loader.theWorldXML.size());
 #endif
-#if TUTORIAL_CHAP >= 60 && !defined RELEASE // BILLBOARD
+#if TUTORIAL_CHAP >= 60 && defined _DEBUG // BILLBOARD
 #endif  
 	}
 #endif
@@ -1171,65 +1258,67 @@ void ApplicationClass::AppPosRender(UINT monitorIndex, UINT level, float dayLigh
 	// RENDER RASTERTEK V1 FONT:
 	// -------------------------
 #if (defined USE_RASTERTEK_TEXT_FONT) && defined MAIN_RENDER_RASTERTEK_FONT //MAIN-RENDER: Raster FONT: v1 (0.4 ms)
-#if !defined INTRO_DEMO //|DEMO|
-	if (ShouldDrawUI(monitorIndex) && RENDER_PAGE >= 27)
-		AppTextClass->Render();
-#else
-	if (ShouldDrawUI(monitorIndex) && RENDER_PAGE >= 27)
-		AppTextClass->Render();
-#endif
+	#if !defined WINDOWS_PLATFORM
+	if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
+	#endif
+	if (ShouldDrawUI(monitorIndex) && RENDER_PAGE > 20)
+	{
+		ASSERT_DEBUG(AppTextClass);
+		AppTextClass->Render(pContext);
+	}
 #endif
 
 	// RENDER RASTERTEK V2 FONT:
 	// -------------------------
-#if !defined WINDOWS_PLATFORM && defined USE_RASTERTEK_TEXT_FONTV2
-	// Do the frame processing for the application object.
+#if defined USE_RASTERTEK_TEXT_FONTV2
+#if !defined WINDOWS_PLATFORM
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
+#endif
 	if (ShouldDrawUI(monitorIndex))
-	if (!r_Application->Frame(NULL))
 	{
-		WOMA::main_loop_state = -1; //WOMA::game_state = GAME_STOP;
+		ASSERT_DEBUG(r_Application);
+		r_Application->Render();
 	}
+		
 #endif
 
-	// PRESENTATION SPRITE(s)  - On Top of 3D Rendered stuff:
-	// ---------------------------------------------------------------
-#if defined USE_ALPHA_BLENDING
 	m_Driver->TurnOffAlphaBlending(pContext); // Re assume default
-#endif
-#if defined INTRO_DEMO //RenderDemoIntroSprites
+#if defined INTRO_DEMO // PRESENTATION SPRITE(s)  - On Top of 3D Rendered stuff: RenderDemoIntroSprites
 	if (ShouldDrawUI(monitorIndex))
+	{
 		RenderDemoIntroSprites(pContext);
+	}
 #endif
 
 	// RENDER NATIVE TEXT:
 	// -------------------
 #if defined USE_DX_DRIVER_FONT && defined MAIN_RENDER_DRIVER_FONT //MAIN-RENDER: Driver Font (0.5 ms)
-	if (ShouldDrawUI(monitorIndex)) {
-	#if !defined INTRO_DEMO //|DEMO Force NATIVE TEXT|
-	if ((RENDER_PAGE >= 22) && (m_Driver->m_sCapabilities.USE_DXDRIVER_FONTSBoolean) && (WOMA::AppSettings->DRIVER == DRIVER_DX11))
-	#endif
+	if (ShouldDrawUI(monitorIndex) && (WOMA::AppSettings->DRIVER == DRIVER_DX11))
 	{
-		if (RENDER_PAGE >= 21) {
-		#if defined USE_DIRECT_INPUT
-			if (RENDER_PAGE >= 49) {
-				if (g_GOD_MODE)
-					StringCchPrintf(DEMO_NAME_SHOW, MAX_STR_LEN, TEXT("%s GOD-MODE: %s"), DEMO_NAME[RENDER_PAGE - 21], TEXT("ON"));		//Note: Have to be "wchar"
-				else
-					StringCchPrintf(DEMO_NAME_SHOW, MAX_STR_LEN, TEXT("%s GOD-MODE: %s"), DEMO_NAME[RENDER_PAGE - 21], TEXT("OFF"));	//Note: Have to be "wchar"
-				((DirectX::DX11Class*)m_Driver)->addText(10, WOMA::AppSettings->WINDOW_HEIGHT - 120, DEMO_NAME_SHOW, 1, 1, 1);
-			} 
-			else 
+		#if !defined INTRO_DEMO //|DEMO Force NATIVE TEXT|
+		if ((RENDER_PAGE >= 22) && (m_Driver->m_sCapabilities.USE_DXDRIVER_FONTSBoolean))
 		#endif
-			{
-				((DirectX::DX11Class*)m_Driver)->addText(10, WOMA::AppSettings->WINDOW_HEIGHT - 120, DEMO_NAME[RENDER_PAGE - 21], 1, 1, 1);
+		{
+			if (RENDER_PAGE >= 21) {
+			#if defined USE_DIRECT_INPUT
+				if (RENDER_PAGE >= 49) {
+					if (g_GOD_MODE)
+						StringCchPrintf(DEMO_NAME_SHOW, MAX_STR_LEN, TEXT("%s GOD-MODE: %s"), DEMO_NAME[RENDER_PAGE - 21], TEXT("ON"));		//Note: Have to be "wchar"
+					else
+						StringCchPrintf(DEMO_NAME_SHOW, MAX_STR_LEN, TEXT("%s GOD-MODE: %s"), DEMO_NAME[RENDER_PAGE - 21], TEXT("OFF"));	//Note: Have to be "wchar"
+					((DirectX::DX11Class*)m_Driver)->addText(10, WOMA::AppSettings->WINDOW_HEIGHT - 120, DEMO_NAME_SHOW, 1, 1, 1);
+				} 
+				else 
+			#endif
+				{
+					((DirectX::DX11Class*)m_Driver)->addText(10, WOMA::AppSettings->WINDOW_HEIGHT - 120, DEMO_NAME[RENDER_PAGE - 21], 1, 1, 1);
+				}
 			}
+
+			m_Driver->RenderDriverText(pContext);
 		}
 	}
-
-	m_Driver->RenderDriverText(pContext);
-	}
 #endif
-
 }
 
 // =============================================================================================
@@ -1237,7 +1326,7 @@ void ApplicationClass::AppPosRender(UINT monitorIndex, UINT level, float dayLigh
 // Purpose : Isolated collision detection for compounds and optional map editor picking.
 // =============================================================================================
 #if DX_ENGINE_LEVEL >= 78 && defined CHECK_OBJ_COLISION
-void ApplicationClass::DetectCollisions()
+void DetectCollisions()
 {
 	//--------------------------------------------------------------------------------------------
 	// DETECT COLISIONS: Get the closest Compound object/(s):
@@ -1254,7 +1343,7 @@ void ApplicationClass::DetectCollisions()
 	float camX = m_Position[g_NetID]->m_positionX;
 	float camZ = m_Position[g_NetID]->m_positionZ;
 
-	for (UINT c = 0; c < world_main_size; c++)
+	for (UINT c = 0; c < world_visibleModelList_size; c++)
 	{
 		int id = WOMA::sceneManager->visibleModelList[c]->xmlId;
 
@@ -1271,7 +1360,7 @@ void ApplicationClass::DetectCollisions()
 		compoundLoadingOrder[c].order = (UINT)(X * X + Z * Z);
 	}
 
-	qsort(compoundLoadingOrder, world_main_size, sizeof(compoundTreeLoadOrder), CompoundSortCB);	  // Order compound by distance:
+	qsort(compoundLoadingOrder, world_visibleModelList_size, sizeof(compoundTreeLoadOrder), CompoundSortCB);	  // Order compound by distance:
 
 	// [Collision 1] Check Collision with "10" COMPOUNDS near to us...:
 	// ----------------------------------------------------------------
@@ -1284,7 +1373,7 @@ void ApplicationClass::DetectCollisions()
 #endif
 
 	UINT closestObjId = UINT_MAX;
-	for (UINT c = 0; c < MIN(world_main_size, 5); c++) // We don't need all, right? :)
+	for (UINT c = 0; c < MIN(world_visibleModelList_size, 5); c++) // We don't need all, right? :)
 	{
 		int i = c;	// This is the compound[id] to check collisions...
 
@@ -1330,6 +1419,11 @@ float ApplicationClass::ProcessMovementInput_and_UpdateDemos()
 	// TIME Control: Show Debug Info
 	UINT64 passedTotalTime = (UINT64)((SystemHandle->m_Timer.currentTime - SystemHandle->m_Timer.m_startEngineTime) / SystemHandle->m_Timer.m_ticksPerMs);	// To control events in time (DEMO)
 
+    if (m_Driver->RenderfirstTime)
+    {
+        TCHAR tmp[MAX_STR_LEN]; _stprintf(tmp, TEXT("PASSED TOTAL TIME TO LOAD: %ju ms\n"), passedTotalTime); OutputDebugString(tmp);
+    }
+
 	// 5 INTRO CREDITS TEXT: Show time, etc..
 	if (RENDER_PAGE < 21) {
 		fadeIntro = WOMA_APPLICATION_IntroRender(passedTotalTime);
@@ -1342,6 +1436,10 @@ float ApplicationClass::ProcessMovementInput_and_UpdateDemos()
 	if (RENDER_PAGE < 15)
 		return 0;
 
+	#if defined USE_DIRECT_INPUT && defined INTRO_DEMO && !defined USE_DEMO99 // Animate Camera (INTRO_DEMO)
+	SystemHandle->m_player[g_NetID]->p_player.IsUpPressed = true;
+	//SystemHandle->m_player[g_NetID]->p_player.IsLeftCtrlPressed = true;
+	#endif
   #endif
 #endif
 
@@ -1356,8 +1454,7 @@ float ApplicationClass::ProcessMovementInput_and_UpdateDemos()
 	// ========================================================================================
 	// [3] USER INPUT (keyboard)
 	// ========================================================================================
-#if defined USE_DIRECT_INPUT					
-	IF_RENDER_PAGE(RENDER_PAGE >= 28)
+#if DX_ENGINE_LEVEL >= 28 && defined USE_DIRECT_INPUT					
 	ProcessUserKeyboardInputAndTerrainCollision(dt); //Keyboard keys
 #endif
 
@@ -1367,40 +1464,61 @@ float ApplicationClass::ProcessMovementInput_and_UpdateDemos()
 #if defined USE_SKYSPHERE && defined USE_SKY_CAMERA_DOME	
 	IF_RENDER_PAGE(RENDER_PAGE >= 28) //if (RENDER_PAGE >= 28)
 	{
-		if (WOMA::AppSettings->DRIVER != DRIVER_GL3)
+		if (WOMA::AppSettings->DRIVER == DRIVER_DX9 || WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX12)
 		{
-	#if defined DX_ENGINE
+	#if defined WINDOWS_PLATFORM
 
         #if defined USE_3RD_PERSON_CAMERA || defined INTRO_DEMO
 			IF_RENDER_PAGE(RENDER_PAGE >= 88)
 			{
 				if (g_GOD_MODE) {
-					DXsystemHandle->m_CameraSKY->m_rotationX = DXsystemHandle->m_Camera->m_rotationX;
-					DXsystemHandle->m_CameraSKY->m_rotationY = DXsystemHandle->m_Camera->m_rotationY;
-					DXsystemHandle->m_CameraSKY->CalculateViewMatrix();
+					DX_CameraSKY->m_rotationX = DX_Camera->m_rotationX;
+					DX_CameraSKY->m_rotationY = DX_Camera->m_rotationY;
+					DX_CameraSKY->CalculateViewMatrix();
 				} else {
-					DXsystemHandle->m_CameraSKY->CalculateViewMatrix_3rd_PersonCamera(main3rdPcamera.m_camYaw, main3rdPcamera.m_camPitch, true);
+					DX_CameraSKY->CalculateViewMatrix_3rd_PersonCamera(main3rdPcamera.m_camYaw, main3rdPcamera.m_camPitch, true);
 				}
 			}
 		#endif
-		#if DX_ENGINE_LEVEL < 88  || defined INTRO_DEMO
+		#if (DX_ENGINE_LEVEL < 88  || defined INTRO_DEMO) && defined DX_ENGINE
 		#if !defined USE_3RD_PERSON_CAMERA || defined INTRO_DEMO
 			IF_RENDER_PAGE(RENDER_PAGE < 88)
 			{
-				DXsystemHandle->m_CameraSKY->m_rotationX = DXsystemHandle->m_Camera->m_rotationX;
-				DXsystemHandle->m_CameraSKY->m_rotationY = DXsystemHandle->m_Camera->m_rotationY;
-				DXsystemHandle->m_CameraSKY->CalculateViewMatrix();
+				DX_CameraSKY->m_rotationX = DX_Camera->m_rotationX;
+				DX_CameraSKY->m_rotationY = DX_Camera->m_rotationY;
+				DX_CameraSKY->CalculateViewMatrix();
 			}
         #endif
 		#endif
 	#endif
 		}
-	#if (defined OPENGL3 || defined OPENGL4)
-		else
+
+#if defined VULKAN
+		if (WOMA::AppSettings->DRIVER == DRIVER_VULKAN)
 		{
-			GLopenGLclass* driver = (GLopenGLclass*)driverList[WOMA::AppSettings->DRIVER];
+			vkClass* driver = (vkClass*)driverList[WOMA::AppSettings->DRIVER];
+	#if defined WINDOWS_PLATFORM
+			driver->gl_CameraSKY->m_rotationX = m_Position[g_NetID]->m_rotationX;
+			driver->gl_CameraSKY->m_rotationY = m_Position[g_NetID]->m_rotationY;
+	#else
 			driver->gl_CameraSKY->m_rotationX = driver->gl_Camera->m_rotationX;
 			driver->gl_CameraSKY->m_rotationY = driver->gl_Camera->m_rotationY;
+	#endif
+			driver->gl_CameraSKY->CalculateViewMatrix();
+		}
+#endif
+
+	#if (defined OPENGL3 || defined OPENGL4)
+		if (WOMA::AppSettings->DRIVER == DRIVER_GL3)
+		{
+			GLopenGLclass* driver = (GLopenGLclass*)driverList[WOMA::AppSettings->DRIVER];
+#if defined  WINDOWS_PLATFORM
+			driver->gl_CameraSKY->m_rotationX = m_Position[g_NetID]->m_rotationX;
+			driver->gl_CameraSKY->m_rotationY = m_Position[g_NetID]->m_rotationY;
+#else
+			driver->gl_CameraSKY->m_rotationX = driver->gl_Camera->m_rotationX;
+			driver->gl_CameraSKY->m_rotationY = driver->gl_Camera->m_rotationY;
+#endif
 			driver->gl_CameraSKY->CalculateViewMatrix();
 		}
 	#endif
@@ -1420,9 +1538,11 @@ return fadeLight;
 
 void ApplicationClass::RenderHUD_Logo(void* pContext)
 {
-#if defined USE_ALPHA_BLENDING
-	m_Driver->TurnOnAlphaBlending(pContext);
-#endif
+
+#if DX_ENGINE_LEVEL >= 24 && defined USE_TITLE_BANNER && defined USE_VIEW2D_SPRITES
+//#if defined USE_ALPHA_BLENDING
+//	m_Driver->TurnOnAlphaBlending(pContext);
+//#endif
 	m_Driver->ClearDepthBuffer(pContext);
 	// -------------------------
 #if (defined USE_TITLE_BANNER && defined MAIN_RENDER) && defined MAIN_RENDER_TITLE	// MAIN-RENDER: TITLE (0.3 ms)
@@ -1433,6 +1553,7 @@ void ApplicationClass::RenderHUD_Logo(void* pContext)
 		int Y = 10;
 		m_titleModel->RenderSprite(pContext, X, Y, rescale, 1.0f);
 	}
+#endif
 #endif
 }
 
@@ -1460,7 +1581,7 @@ float ApplicationClass::WOMA_APPLICATION_IntroRender(UINT64 passedTotalTime)
 		fade = 0;
 		FadeIn = !FadeIn;
 		SpriteScreenToShow++;
-		womalog("SpriteScreenToShow: %d\n", SpriteScreenToShow);
+		womalog("SpriteScreenToShow: %d - ", SpriteScreenToShow);
 	}
 
 	return fade;
@@ -1525,6 +1646,9 @@ float ApplicationClass::WOMA_APPLICATION_DemoRender(UINT64 passedTotalTime)
 		if (RENDER_PAGE < DX_ENGINE_LEVEL) 
 		{
 			RENDER_PAGE++;
+#if defined INTRO_DEMO && defined DX_ENGINE
+			womalog("RENDER_PAGE: %d - posX: %4.2f posY: %4.2f posZ: %4.2f\n", RENDER_PAGE, DX_Camera->m_positionX, DX_Camera->m_positionY, DX_Camera->m_positionZ);
+#endif
 
 			// ---------------------------------------------------------------------
 			// RECENTER CAMERA when entering new demo page (after fade-out)
@@ -1533,6 +1657,7 @@ float ApplicationClass::WOMA_APPLICATION_DemoRender(UINT64 passedTotalTime)
 #if defined ANDROID_PLATFORM
 			ShowFPS(RENDER_PAGE);
 #endif
+
 #if defined USE_DIRECT_INPUT && defined USE_DEMO29
 			m_Position[g_NetID]->m_positionX = WOMA::AppSettings->INIT_CAMX;
 			m_Position[g_NetID]->m_positionY = WOMA::AppSettings->INIT_CAMY;
@@ -1559,12 +1684,6 @@ static float rY = 0.0f;
 
 void ApplicationClass::DemoRender(void* pContext)
 {
-	rY = (float)(dt) * (0.005f / 16.66f);	// MOVIMENT FORMULA!
-
-	if (RENDER_PAGE == 28)
-		FORCE_RENDER_ALL = true;
-	else
-		FORCE_RENDER_ALL = false;
 
 #if (DX_ENGINE_LEVEL >= 10 && DX_ENGINE_LEVEL <= 23) || defined INTRO_DEMO
 	#if defined INTRO_DEMO
@@ -1586,15 +1705,11 @@ void ApplicationClass::DemoRender(void* pContext)
 		cor[1] = 0.2f + 0.2f * t;  // G channel softly moves
 		cor[2] = 0.5f + 0.4f * t;  // B channel oscillates more
 
+		if (m_Driver->RenderfirstTime) womalog("dt = %f\n", dt);
+
 		#undef cor
 	}
 #endif
-
-	if (RENDER_PAGE == 28) {
-		FORCE_RENDER_ALL = true;
-	}
-	else
-		FORCE_RENDER_ALL = false;
 
 	//COLOR TUTORIAL DEMO:
 	// --------------------------------------------------------------------------------------------
@@ -1624,6 +1739,7 @@ void ApplicationClass::DemoRender(void* pContext)
 #if (DX_ENGINE_LEVEL >= 22 && defined SCENE_TEXTURE) || defined INTRO_DEMO
 #if !defined NO_SCENE_IMAGE_LOAD || defined INTRO_DEMO
 	//DEMO-1:
+
 #if defined INTRO_DEMO //DEMO Img formats
 	if (RENDER_PAGE == 22 || FORCE_RENDER_ALL)
 #endif
@@ -1674,15 +1790,24 @@ void ApplicationClass::DemoRender(void* pContext)
 #endif
 	{
 		//Square:
-		if (m_3th3DModel1 && WOMA::AppSettings->DRIVER != DRIVER_GL3)
+	#if defined INTRO_DEMO
+		if (m_3th3DModel1 && FORCE_RENDER_ALL)
+	#else
+		if (m_3th3DModel1)
+	#endif
 		{
 			if (m_Driver->RenderfirstTime)
 			{
 				float w = 8.0f;         // choose desired width
+				if (m_3th3DModel1 && FORCE_RENDER_ALL)
+					w *= 2;
 				float h = w / 1.39f;    // keep perfect aspect ratio
 				m_3th3DModel1->Identity();
 				m_3th3DModel1->scale(w, h, 1);
-				m_3th3DModel1->translation(0, 0, -5);
+				if (m_3th3DModel1 && FORCE_RENDER_ALL)
+					m_3th3DModel1->translation(0, 0, 0);
+				else
+					m_3th3DModel1->translation(0, 0, -5);
 			}
 
 			m_3th3DModel1->Render(pContext);
@@ -1699,6 +1824,7 @@ void ApplicationClass::DemoRender(void* pContext)
 		}
 	}
 #endif
+
 
 	//CUBE TUTORIAL DEMO:
 #define Y_pos 1
@@ -1735,12 +1861,12 @@ void ApplicationClass::DemoRender(void* pContext)
 	}
 
 	//DEMO-3
-	//if ((RENDER_PAGE == 25 && m_cube3Model) || FORCE_RENDER_ALL)
-#if defined INTRO_DEMO
+
+	#if defined INTRO_DEMO
 	if (RENDER_PAGE == 26 || FORCE_RENDER_ALL)
-#else
+	#else
 	if (RENDER_PAGE < 30)
-#endif
+	#endif
 	{
 		float rY = 0.0f;
 		rY = (float)dt * (0.005f / 16.66f);		// MOVIMENT FORMULA!
@@ -1752,38 +1878,10 @@ void ApplicationClass::DemoRender(void* pContext)
 
 	// SPHEREs
 	// --------------------------------------------------------------------------------------------
-#if defined USE_SPHERE && DX_ENGINE_LEVEL >= 26
-	if ((RENDER_PAGE == 26 || RENDER_PAGE == 28) && m_SphereModel1)
-#if defined INTRO_DEMO
-		if (RENDER_PAGE == 26 || FORCE_RENDER_ALL)
-#else
-		if (RENDER_PAGE < 30)
-#endif
-		{
-			float rY = 0.0f;
-			rY = (float)dt * (0.005f / 16.66f);		// MOVIMENT FORMULA!
-			m_SphereModel1->rotateY(rY);
-			m_SphereModel1->translation(-3.2f, -4, 5.0f);
-			m_SphereModel1->Render(pContext, 0, 0, 0, NULL, NULL);
-		}
 
-	if ((RENDER_PAGE == 26 || RENDER_PAGE == 28) && m_SphereModel1)
-#if defined INTRO_DEMO
-		if (RENDER_PAGE == 26 || FORCE_RENDER_ALL)
-#else
-		if (RENDER_PAGE < 30)
-#endif
-		{
-			float rY = 0.0f;
-			rY = (float)dt * (0.005f / 16.66f);		// MOVIMENT FORMULA!
-			m_SphereModel2->rotateY(rY);
-			m_SphereModel2->translation(3.2f, -4, 5.0f);
-			m_SphereModel2->Render(pContext, 0, 0, 0, NULL, NULL);
-		}
-#endif
 }
 
-#if DX_ENGINE_LEVEL >= 21 && defined INTRO_DEMO	//29  DEMO SPRITE TEXT
+#if DX_ENGINE_LEVEL >= 21 && defined INTRO_DEMO	//29  DEMO INTRO SPRITE: TEXT IMG
 void ApplicationClass::RenderDemoIntroSprites(void* pContext)
 {
 	//USING: ModelShaderType = SHADER_TEXTURE_FONT(3)/
@@ -1802,7 +1900,7 @@ void ApplicationClass::RenderDemoIntroSprites(void* pContext)
 #if defined CHECK_OBJ_COLISION
 // Calculate the world space pick ray from the 2D coordinates
 // ==================================================================================================================================
-void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickRayInWorldSpacePos, XMVECTOR& pickRayInWorldSpaceDir)
+void pickRayVector(float mouseX, float mouseY, XMVECTOR& pickRayInWorldSpacePos, XMVECTOR& pickRayInWorldSpaceDir)
 // ==================================================================================================================================
 {
     #define m_driver11 ((DirectX::DX11Class*)driverList[WOMA::AppSettings->DRIVER])
@@ -1853,7 +1951,7 @@ void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickR
 
 	pickRayToWorldSpaceMatrix = XMMatrixInverse(&matInvDeter, *camView);	//Inverse of View Space matrix is World space matrix
     
-    pickRayInWorldSpacePos = XMLoadFloat3(&DXsystemHandle->m_Camera->GetPosition());
+    pickRayInWorldSpacePos = XMLoadFloat3(&DX_Camera->GetPosition());
 	pickRayInWorldSpaceDir = XMVector3TransformNormal(pickRayInViewSpaceDir, pickRayToWorldSpaceMatrix);
     pickRayInWorldSpaceDir = XMVector3Normalize(pickRayInWorldSpaceDir);
 
@@ -1882,7 +1980,7 @@ void ApplicationClass::pickRayVector(float mouseX, float mouseY, XMVECTOR& pickR
 
 // Calculates whether the object was picked or not | getPoligon = true (detect colision)
 // ==================================================================================================================================
-float ApplicationClass::pick(XMVECTOR pickRayInWorldSpacePos, XMVECTOR pickRayInWorldSpaceDir, std::vector<XMFLOAT3>& vertPosArray, 
+float pick(XMVECTOR pickRayInWorldSpacePos, XMVECTOR pickRayInWorldSpaceDir, std::vector<XMFLOAT3>& vertPosArray, 
                             std::vector<UINT/*DWORD*/>& indexPosArray, XMMATRIX& worldSpace, bool getPoligon)
 {
 	float closer = FLT_MAX;
@@ -1922,16 +2020,16 @@ float ApplicationClass::pick(XMVECTOR pickRayInWorldSpacePos, XMVECTOR pickRayIn
 		V = tri1V3 - tri1V1;
 
 		//Compute face normal by crossing U, V
-		faceNormalClosestObject = XMVector3Cross(U, V);
-		faceNormalClosestObject = XMVector3Normalize(faceNormalClosestObject);
+		XMVECTOR triangleNormal = XMVector3Cross(U, V);
+		triangleNormal = XMVector3Normalize(triangleNormal);
 
 		//Calculate a point on the triangle for the plane equation
 		XMVECTOR triPoint = tri1V1;
 
 		//Get plane equation ("Ax + By + Cz + D = 0") Variables
-		float tri1A = XMVectorGetX(faceNormalClosestObject);
-		float tri1B = XMVectorGetY(faceNormalClosestObject);
-		float tri1C = XMVectorGetZ(faceNormalClosestObject);
+		float tri1A = XMVectorGetX(triangleNormal);
+		float tri1B = XMVectorGetY(triangleNormal);
+		float tri1C = XMVectorGetZ(triangleNormal);
 		float tri1D = (-tri1A * XMVectorGetX(triPoint) - tri1B * XMVectorGetY(triPoint) - tri1C * XMVectorGetZ(triPoint));
 
 		//Now we find where (on the ray) the ray intersects with the triangles plane
@@ -1962,7 +2060,10 @@ float ApplicationClass::pick(XMVECTOR pickRayInWorldSpacePos, XMVECTOR pickRayIn
 				//and choose whichever object is closest to the camera
 				if (getPoligon) {	//crashPoligonIndxIs = i;
 					if (abs(t / 2.0f) < abs(closer))
+					{
 						closer = t / 2.0f;
+						faceNormalClosestObject = triangleNormal;
+					}
 					found = true;
 				}
 				else
@@ -1979,7 +2080,7 @@ float ApplicationClass::pick(XMVECTOR pickRayInWorldSpacePos, XMVECTOR pickRayIn
 
 // This function is called from the pick function, and it says if a point is inside a triangle (the point has to be on the triangles plane to know for sure).
 // ==================================================================================================================================
-bool ApplicationClass::PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTOR& triV3, XMVECTOR& point)
+bool PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTOR& triV3, XMVECTOR& point)
 // ==================================================================================================================================
 {
 	//To find out if the point is inside the triangle, we will check to see if the point
@@ -2007,10 +2108,9 @@ bool ApplicationClass::PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTO
 	return false;
 }
 
-#if DX_ENGINE_LEVEL >= 89 && defined USE_MAP_EDITOR // #if defined CHECK_COMPOUND_COLISION //anyMouseClickToPick()
 // Check if the "LEFT Mouse Button" was pressed and if there is anything to pick
 // ==================================================================================================================================
-void ApplicationClass::anyMouseClickToPick()
+void anyMouseClickToPick()
 // ==================================================================================================================================
 {
 	static int pickWhat = 1;
@@ -2029,7 +2129,7 @@ void ApplicationClass::anyMouseClickToPick()
 			POINT mousePos;
 
 			GetCursorPos(&mousePos);
-			//ScreenToClient(SystemHandle->m_hWnd, &mousePos);
+			ScreenToClient(SystemHandle->m_hWnd, &mousePos);
 
 			int mousex = mousePos.x;
 			int mousey = mousePos.y;
@@ -2037,7 +2137,7 @@ void ApplicationClass::anyMouseClickToPick()
 
 			// Check all COMPOUNDS Objects:
 			// ----------------------------
-			for (UINT i = 0; i < world_main_size; i++)
+			for (UINT i = 0; i < world_visibleModelList_size; i++)
 			{
                 ((DXmodelClass*)objModel[i])->bottleHit = 0; //reset it
                 if ((DXmodelClass*)objModel[i]->ready && (DXmodelClass*)objModel[i]->visible) // Check compounds already loaded... 
@@ -2139,7 +2239,6 @@ void ApplicationClass::anyMouseClickToPick()
     CheckEditor(hitIndex, CHG_COMPOUND);
 }
 #endif
-#endif
 
 //NOTE: LoadTextureFromPathFBX work on DLL (on level >= 86)
 #if (DX_ENGINE_LEVEL == 79 || DX_ENGINE_LEVEL >= 82) && LEVEL <= 85
@@ -2150,8 +2249,7 @@ Texture* LoadTextureFromPathFBX(UINT model_type, Graphics& graphics, LPCWSTR& te
 #endif
 
 
-#if DX_ENGINE_LEVEL >= 89 && defined USE_MAP_EDITOR
-void ApplicationClass::CheckEditor(int hitIndex, int c)
+void CheckEditor(int hitIndex, int c)
 {
 
     // Process Movement Keys: + - (NUM PAD), LEFT, RIGHT, UP or DOWN (SHIFT: SLOW MOVE)
@@ -2184,7 +2282,7 @@ void ApplicationClass::CheckEditor(int hitIndex, int c)
 
     if (c >= 0 && ((DXmodelClass*)objModel[c])->ready && !firstPick)
     {
-        AppTextClass->SetCompoundPosition((CHAR*)((DXmodelClass*)objModel[c])->MODEL_NAME.c_str(), closestObjDist, c,
+		SystemHandle->m_Application->AppTextClass->SetCompoundPosition((CHAR*)((DXmodelClass*)objModel[c])->MODEL_NAME.c_str(), closestObjDist, c,
             ((DXmodelClass*)objModel[c])->m_worldMatrix._41, //X
             ((DXmodelClass*)objModel[c])->m_worldMatrix._42, //Y
             ((DXmodelClass*)objModel[c])->m_worldMatrix._43, //Z
@@ -2334,23 +2432,22 @@ void ApplicationClass::CheckEditor(int hitIndex, int c)
 #endif
 
 }
-#endif
 
-#if defined USE_MINIMAP_REDENRING_THREAD
-void ApplicationClass::CreateRenderThreads()
+//#if defined USE_MINIMAP_REDENRING_THREAD
+void CreateRenderThreads()
 {
 	driver11Ref = (DirectX::DX11Class*)m_Driver;
 
 #if defined USE_UPDATEMESHANIMATIONS_THREAD
 	UpdateMeshAnimationsCtx = driver11Ref->UpdateMeshAnimationsDeferredCtx;
-	UpdateMeshAnimationsWorker = std::thread(&ApplicationClass::UpdateMeshAnimationsWorkerFunc, this);
+	UpdateMeshAnimationsWorker = std::thread(&UpdateMeshAnimationsWorkerFunc);
 #endif
 
 	minimapCtx = driver11Ref->minimapDeferredCtx;
-	minimapWorker = std::thread(&ApplicationClass::MinimapWorkerFunc, this);
+	minimapWorker = std::thread(&MinimapWorkerFunc);
 }
 
-void ApplicationClass::StopRenderThreads()
+void StopRenderThreads()
 {
 	{
 		std::unique_lock<std::mutex> lock(mtx);
@@ -2366,4 +2463,4 @@ void ApplicationClass::StopRenderThreads()
 		minimapWorker.join();
 	}
 }
-#endif
+//#endif

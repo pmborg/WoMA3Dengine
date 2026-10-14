@@ -9,7 +9,7 @@
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #define PS_USE_LIGHT		 //23
 #define PS_USE_ALFA_TEXTURE	 //33
@@ -43,7 +43,7 @@ struct PSIn
 /////////////
 // GLOBALS //
 /////////////
-//Set on: DXmodelClass::RenderSubMesh
+//Set on: DX_modelClass::RenderSubMesh
 
 Texture2D shaderTexture; //: register(t0);	// 21:
 Texture2D AlfaMapTexture; //: register(t1);	// 43: AlfaMap
@@ -155,7 +155,7 @@ PSIn VS_Main(VSIn input, uint instanceID : SV_InstanceID)
     
     if (VShasSpecular)	// If enabled on material, calculate the Specular LIGHT
     {
-        output.viewDirection = normalize(cameraPosition.xyz - worldPosition.xyz); // L = Lp - p (L = lightDirection)
+        output.viewDirection = normalize(VSCameraPosition.xyz - worldPosition.xyz); // L = Lp - p (L = lightDirection)
     }
 #endif
 
@@ -171,7 +171,7 @@ float4 PS_Main(PSIn input) : SV_TARGET
     float4 textureColor = pixelColor; // SET PIXEL COLOR
     float lightIntensity = 0;
     
-    //return float4(length(input.worldPos) / 300.0, 0, 0, 1);
+    float3 N = normalize(input.normal);
     
 	//-----------------------------------------------------------------------------------
 	// 23: LIGHT
@@ -182,10 +182,10 @@ float4 PS_Main(PSIn input) : SV_TARGET
         else
             lightIntensity = PSlightFunc2(input.normal);
 
-        //float plIntensity = ComputePointLights(input.worldPos, normalize(input.normal));
-        float plIntensity = ComputeSpotLights(input.cameraPosition, normalize(input.normal));
+        float plIntensity = 0;
+        if (fade<0.8f)
+            ComputeSpotLights(input.worldPos, N);
         
-        //return float4(plIntensity, plIntensity, plIntensity, 1);
         float totalLight = saturate(emissiveColor + ambientColor + lightIntensity + plIntensity);
         
         if (hasTexture)
@@ -230,4 +230,5 @@ float4 PS_Main(PSIn input) : SV_TARGET
 #endif
 
     return textureColor;
+    //return float4(1,1,1,1);
 }

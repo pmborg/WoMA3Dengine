@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: systemManager.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 #pragma warning( disable : 5208 ) // warning C5208: unnamed class used in typedef name cannot declare members other than non-static data members, member enumerations, or member classes
@@ -51,14 +51,12 @@ extern int GETOS(void);
 #endif
 
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: SystemManager
 ////////////////////////////////////////////////////////////////////////////////
 class SystemManager
 {
 public:
-	UINT WomaIntegrityCheck = 1234525217;
 	SystemManager();
 	~SystemManager();
 
@@ -69,7 +67,7 @@ public:
 	bool checkDiskFreeSpace();
 	#endif
 
-	float CPUSpeedMHz;
+	float CPUSpeedMHz=0;
     ProcessorInfo processorInfo;
 
 #if defined WINDOWS_PLATFORM
@@ -107,18 +105,18 @@ private:
 	TCHAR* GetOsVersion();
 	DWORDLONG getAvailSystemMemory();
     std::vector<DriveList> drivesList;
-    UINT driveLetter;
+    UINT driveLetter=0;
 	#endif
 
 // VARS:
 public:
 	//CheckOS:
-	TCHAR	pszOS[BUFSIZE];
-	UINT	MajorVersion, MinorVersion, BuildVersion;
+	TCHAR	pszOS[BUFSIZE] = {};
+	UINT	MajorVersion=0, MinorVersion = 0, BuildVersion = 0;
 
 private:
-	TCHAR	osPlatform[BUFSIZE];
-	UINT	DXGI_H, DXGI_L;
+	TCHAR	osPlatform[BUFSIZE] = {};
+	UINT	DXGI_H = 0, DXGI_L = 0;
 };
 
 #endif

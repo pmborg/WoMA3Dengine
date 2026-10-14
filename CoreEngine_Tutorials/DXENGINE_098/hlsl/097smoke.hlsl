@@ -10,7 +10,7 @@
 // PURPOSE: Implement SHADER_USE_SMOKE
 // --------------------------------------------------------------------------------------------
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #define DXAPI11             1   //force
 
@@ -35,13 +35,13 @@ struct PSIn
 
 Texture2D smokeTex : register(t0);
 
-SamplerState SampleType: register(s0);
+SamplerState SampleType : register(s0);
 
 ////////////////
 // CBUFFERS
 ////////////////
-cbuffer VSConstants : register(b0) 
-{   //c++: struct VSSmokeCB
+cbuffer VSConstants : register(b0)
+{ //c++: struct VSSmokeCB
     matrix WVP;
     float3 cameraPos;
     float fade;

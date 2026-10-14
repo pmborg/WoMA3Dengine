@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: wGLopenGLclass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "OSengine.h"
 #if (defined OPENGL3 || defined OPENGL40) && defined WINDOWS_PLATFORM && CORE_ENGINE_LEVEL >= 10  // Initializing Engine && defined WINDOWS_PLATFORM
@@ -36,7 +36,7 @@ wGLopenGLclass::wGLopenGLclass()
 {
 	CLASS_LOAD_N--; 
 	CLASSLOADER();  //don't count super class!
-	WomaIntegrityCheck = 1234525217;
+
 
 	m_deviceContext = NULL;
 	m_renderingContext1 = NULL;
@@ -75,6 +75,16 @@ wGLopenGLclass::~wGLopenGLclass() {
 	CLASSDELETE();
 }
 
+bool wGLopenGLclass::Resize(UINT USE_MONITOR, int screenWidth, int screenHeight, float screenNear, float screenDepth, BOOL fullscreen, UINT depthBits)
+{
+	return true;
+}
+
+int wGLopenGLclass::MakeCurrent()
+{
+	return wglMakeCurrent(m_deviceContext, m_renderingContext1);
+}
+
 bool wGLopenGLclass::OnInit(int _USE_MONITOR, /*HWND*/void* hwnd, int screenWidth, int screenHeight, UINT depthBits, float screenDepth, float screenNear, 
 						BOOL msaa, bool vsync, BOOL fullscreen, BOOL g_UseDoubleBuffering, BOOL g_AllowResize)
 {
@@ -83,7 +93,7 @@ bool wGLopenGLclass::OnInit(int _USE_MONITOR, /*HWND*/void* hwnd, int screenWidt
 	PIXELFORMATDESCRIPTOR pixelFormatDescriptor = {0}; // memset(&pixelFormatDescriptor, 0, sizeof(PIXELFORMATDESCRIPTOR));
 
 	if (!hwnd)
-		{ WomaFatalException (("HWND: NULL"));	/*return false;*/ }
+		{ WomaFatalException (("HWND: NULL"));	 }
 
 	// Get the device context for "this" window.
 	m_deviceContext = GetDC((HWND)hwnd);
@@ -180,12 +190,12 @@ static PIXELFORMATDESCRIPTOR    pixelFormatDescriptor = {
 */
 	// MODEs LIST more info: https://www.opengl.org/discussion_boards/showthread.php/178106-Pixel-format-and-display-settings
 	pixelFormat = ChoosePixelFormat(m_deviceContext, &pixelFormatDescriptor);
-	if (!pixelFormat) { WomaFatalException (("Error on ChoosePixelFormat")); /*return false;*/ }
+	if (!pixelFormat) { WomaFatalException (("Error on ChoosePixelFormat"));  }
 #endif
 
 	// If the video card/display can handle our desired pixel format then we set it as the current one.
 	result = SetPixelFormat(m_deviceContext, pixelFormat, &pixelFormatDescriptor);
-	if(result != 1) { WomaFatalException (("Error setting SetPixelFormat")); /*return false;*/ }
+	if(result != 1) { WomaFatalException (("Error setting SetPixelFormat"));  }
 
 #if defined old_school
 	// Set the 4.0 version of OpenGL in the attribute list.
@@ -203,7 +213,7 @@ static PIXELFORMATDESCRIPTOR    pixelFormatDescriptor = {
 	}
 #else
 	m_renderingContext1 = wglCreateContext(m_deviceContext);
-	if (!m_renderingContext1) { WomaFatalException(("Error wglCreateContext")); /*return false;*/ }
+	if (!m_renderingContext1) { WomaFatalException(("Error wglCreateContext"));  }
 
     if (!gl3wIsSupported(3, 3))  
 		{WomaMessageBox(TEXT("Warning: OpenGL 3.3 not supported!\n"), TEXT("WARNING")); }
@@ -211,9 +221,9 @@ static PIXELFORMATDESCRIPTOR    pixelFormatDescriptor = {
 
 	// Set the rendering context to active
 	// -----------------------------------
-	result = wglMakeCurrent(m_deviceContext, m_renderingContext1);
+	result = MakeCurrent(); //wglMakeCurrent(m_deviceContext, m_renderingContext1);
 	if(result != 1)
-		{ WomaFatalException (("Error setting wglMakeCurrent")); /*return false;*/ }
+		{ WomaFatalException (("Error setting wglMakeCurrent")); }
 
 	// the default context is created with maximum version
 	// use GL3 query type, as it is the only consumer
@@ -231,7 +241,7 @@ static PIXELFORMATDESCRIPTOR    pixelFormatDescriptor = {
 #else
 	result = wglSwapIntervalEXT(vsync);	// SET VSYNC
 	if (result != 1) 
-	{ WomaFatalException(("Error on wglSwapIntervalEXT")); /*return false;*/ }
+	{ WomaFatalException(("Error on wglSwapIntervalEXT"));  }
 #endif
 
 	//Check HW:

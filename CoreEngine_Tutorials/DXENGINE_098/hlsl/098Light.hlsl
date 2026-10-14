@@ -8,7 +8,7 @@
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #define DXAPI11             1   //force
 #define PS_USE_LIGHT		    //lvl 23
@@ -57,7 +57,7 @@ struct PSIn
 // GLOBALS //
 /////////////
 
-//Set on: DXmodelClass::RenderSubMesh
+//Set on: DX_modelClass::RenderSubMesh
 #if DXAPI11 == 1
 Texture2D shaderTexture;	// 22: Texture
 Texture2D NightTexture;     // 98:
@@ -133,7 +133,7 @@ PSIn VS_Main(VSIn input)
 	if (VShasSpecular)	// If enabled on material, calculate the Specular LIGHT
 	{
 		float4 worldPosition = mul(float4(input.position, 1), worldMatrix);			// P
-		output.viewDirection = normalize(cameraPosition.xyz - worldPosition.xyz);	// L = Lp - p (L = lightDirection)
+		output.viewDirection = normalize(VSCameraPosition.xyz - worldPosition.xyz); // L = Lp - p (L = lightDirection)
 	}
 #endif
     
@@ -154,7 +154,6 @@ float4 PS_Main(PSIn input) : SV_TARGET
 #endif
 	
     float dist = length(input.worldPos - pointLights[0].position);
-    //return float4(dist / 50.0f, 0, 0, 1); // red gradient
     
 	//-----------------------------------------------------------------------------------
 	// 21 & 41: TEXTURE: Sample the pixel color from the texture using the sampler at this texture coordinate location
@@ -173,11 +172,9 @@ float4 PS_Main(PSIn input) : SV_TARGET
         else
             lightIntensity = PSlightFunc1(input.normal);
 
-        float plIntensity = ComputeSpotLights(input.worldPos, normalize(input.normal));
-        //return float4(plIntensity.xxx, 1);
-        
-        //float totalLight = saturate(emissiveColor + ambientColor + lightIntensity + plIntensity);
-        //textureColor = textureColor * totalLight;
+        float plIntensity = 0;
+        if (fade < 0.8f)
+        plIntensity = ComputeSpotLights(input.worldPos, normalize(input.normal));
         
         float totalLight = emissiveColor + ambientColor + lightIntensity;
         textureColor.rgb = textureColor.rgb * totalLight; // base shading
@@ -205,7 +202,9 @@ float4 PS_Main(PSIn input) : SV_TARGET
 		
             color = saturate(color);
 			//return color;
-            float3 Reflection = normalize(2 * lightIntensity * input.normal + lightDirection);
+            //float3 Reflection = normalize(2 * lightIntensity * input.normal + lightDirection);
+            float3 Reflection = normalize(2 * dot(input.normal, lightDirection) * input.normal - lightDirection);
+
             float fPhoneValue = saturate(dot(Reflection, input.viewDirection)); // (R.V)
             float4 specular = pow(fPhoneValue, nShininess); // Ls = (R.V)^alfa (alfa Determine the amount of specular light based on the reflection vector, viewing direction, and specular power.)
 

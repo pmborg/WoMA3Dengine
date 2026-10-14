@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: soundclass.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,7 +17,7 @@
 // PURPOSE: Add local/3D sound/effects.
 // ORIGINAL VERSION: https://en.wikibooks.org/wiki/DirectX/10.0/Direct3D/Direct_Sound
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #ifndef _SOUNDCLASS_H_
 #define _SOUNDCLASS_H_
