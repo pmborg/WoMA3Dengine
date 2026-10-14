@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: DX11Blending.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,11 +16,11 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
 
-#ifdef DX11
+#if defined DX11 && defined DX_ENGINE
 
 #include "dx11Class.h"
 
@@ -60,11 +60,14 @@ bool DX11Class::CreateBlendState()
 
 	// Create an alpha enabled blend state description.
     blendStateDescription.RenderTarget[0].BlendEnable = TRUE;
-
-    blendStateDescription.RenderTarget[0].SrcBlend =	D3D11_BLEND_SRC_ALPHA; //D3D11_BLEND_SRC_COLOR; // 
+    blendStateDescription.RenderTarget[0].SrcBlend =	D3D11_BLEND_SRC_ALPHA;
     blendStateDescription.RenderTarget[0].DestBlend =	D3D11_BLEND_INV_SRC_ALPHA; //
     blendStateDescription.RenderTarget[0].BlendOp =		D3D11_BLEND_OP_ADD;
-	blendStateDescription.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;// D3D11_BLEND_ONE;
+#ifdef INTRO_DEMO
+	blendStateDescription.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
+#else
+	blendStateDescription.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE; //D3D11_BLEND_ZERO;
+#endif
     blendStateDescription.RenderTarget[0].DestBlendAlpha =	D3D11_BLEND_ZERO;
     blendStateDescription.RenderTarget[0].BlendOpAlpha =	D3D11_BLEND_OP_ADD;
     blendStateDescription.RenderTarget[0].RenderTargetWriteMask = D3D10_COLOR_WRITE_ENABLE_ALL;
@@ -73,7 +76,7 @@ bool DX11Class::CreateBlendState()
 
 	// Create the blend state using the description.
 	result = m_device11->CreateBlendState(&blendStateDescription, &m_alphaEnableBlendingState);
-	if(FAILED(result)){WomaFatalExceptionW(TEXT("Error: CreateBlendState"));/*return false;*/}
+	if(FAILED(result)){WomaFatalExceptionW(TEXT("Error: CreateBlendState"));}
 
 	//Now to create an alpha disabled state we change the description we just made to set BlendEnable to FALSE. 
 	//The rest of the settings can be left as they are.
@@ -88,7 +91,7 @@ bool DX11Class::CreateBlendState()
 
 	// Create the blend state using the description.
 	result = m_device11->CreateBlendState(&blendStateDescription, &m_alphaDisableBlendingState);
-	if(FAILED(result)){WomaFatalExceptionW(TEXT("Error: CreateBlendState"));/*return false;*/}
+	if(FAILED(result)){WomaFatalExceptionW(TEXT("Error: CreateBlendState"));}
 
 	return true;
 }

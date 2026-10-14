@@ -24,13 +24,23 @@
 #endif
 
 #include "platform.h"
-#include "standard_platform.h"
+//#include "standard_platform.h"
 #include "log.h"
 #include <string>
 #include <d3d11.h>
 
+#if defined WINDOWS_PLATFORM
+#include "DXmodelClass.h"
+#endif
+
+
+extern DXcameraClass* DX_Camera;
+#if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28
+extern DXcameraClass* DX_CameraSKY;
+#endif
+
 namespace DirectX {
-	class DXmodelClass;
+	//class DXmodelClass;
 	class DX11Class;
 }
 enum SHADER_TYPE;
@@ -40,7 +50,7 @@ COMMON_API void Shutdownauxcommonfunctions(void);
 COMMON_API std::string CleanFilePath(const std::string& input);
 COMMON_API HRESULT extLoadBinfromMEM(DirectX::DX11Class* dx11class, ID3D11Device* pDevice,
 	STRING filename, ID3D11ShaderResourceView** ppShaderResourceView);
-COMMON_API bool extLoadW3DfromMEM(void* pContext, DirectX::DXmodelClass* dxmodelClass,
+COMMON_API bool extLoadW3DfromMEM(void* pContext, DXmodelClass* dxmodelClass,
 	SHADER_TYPE shader_type, void* g_driver, STRING filename,
 	bool castShadow, bool renderShadow, UINT instanceCount);
 COMMON_API bool InitPackLib(char* packfilename);

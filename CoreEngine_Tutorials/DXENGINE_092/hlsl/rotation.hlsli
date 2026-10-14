@@ -8,7 +8,7 @@
 *	Downloaded from : https://github.com/pmborg/WoMA3Dengine
 *
 **********************************************************************************************/
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 float3 RotateAroundYInDegrees(float3 vertex, float degrees)
 {
