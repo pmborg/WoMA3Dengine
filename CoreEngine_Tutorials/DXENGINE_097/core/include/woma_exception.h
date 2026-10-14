@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: woma_exception.h
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,18 +16,15 @@
 // --------------------------------------------------------------------------------------------
 //
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma once
 
 #include "platform.h"
 #if defined USE_WOMA_EXCEPTION
-
 using namespace std;//endl
 #include <sstream>	//wstring
 #include <fstream>	//wifstream/wofstream
-
-
 
 // --------------------------------------------------------------------------------------------
 // CLASS:
@@ -42,6 +39,6 @@ using namespace std;//endl
 	woma_exception(const std::string &arg, const char *file, const char *function, int line);
 	~woma_exception() throw();
 	};
-#else
-	#define woma_exception(X, FILE, FUNCTION, LINE) exception(X)
 #endif
+
+

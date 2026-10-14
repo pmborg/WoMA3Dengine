@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: DXshaderClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: 
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #pragma warning ( push )
 #pragma warning ( disable : 4101 ) //warning C4101 : 'cameraPosition' : unreferenced local variable
@@ -26,9 +26,16 @@
 #include <d3d11.h>
 #if (DX_ENGINE_LEVEL >= 21 || defined USE_VIEW2D_SPRITES) && ( defined DX11 || defined DX9 /*defined DX9*/ || defined DX12 )
 
+#if defined DX11 || defined DX9
+#define device11 ((ID3D11Device*)m_driver11->m_device11)
+#endif
+
 #include "DXshaderClass.h"
 #include "fileLoader.h"
 
+#if (defined DX9 && D3D11_SPEC_DATE_YEAR == 2009)
+#include "dx9Class.h"
+#endif
 #if defined DX11 || defined DX9
 #include "dx11Class.h"
 #endif
@@ -59,10 +66,11 @@ extern shaderTree shaderManager_41[];
 extern shaderTree shaderManager_50[];
 extern shaderTree shaderManager_51[];
 
+extern UINT vkShaderClass_RenderShader_Calls;
+
 //-------------------------------------------------------------------------------------------------------------
 #if defined DX11 || defined DX9
         // 21: SHADER_COLOR: v + Kd
-        // 54: SHADER_TEXTURE_WATER:
 static const D3D11_INPUT_ELEMENT_DESC colorPolygonLayout11[] =
 {
 	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,		0, 0,							 D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -77,10 +85,10 @@ static const D3D12_INPUT_ELEMENT_DESC colorPolygonLayout[] =
 };
 #endif
 
-//-------------------------------------------------------------------------------------------------------------
+
                             // 27: SHADER_TEXTURE_FONT :	//27
 							// 72: SHADER_FIRE
-
+//-------------------------------------------------------------------------------------------------------------
 #if defined DX11 || defined DX9
 static const D3D11_INPUT_ELEMENT_DESC texturePolygonLayout11[] =
 {
@@ -96,8 +104,8 @@ static const D3D12_INPUT_ELEMENT_DESC texturePolygonLayout[] =
 };
 #endif
 
-//-------------------------------------------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------------------------------------------
 #if defined DX11 || defined DX9 // 36: SHADER_TEXTURE_LIGHT_RENDERSHADOW (Render: 3D + Shadow)
 static const D3D11_INPUT_ELEMENT_DESC lightPolygonLayout11[] =
 {
@@ -155,8 +163,9 @@ static const D3D11_INPUT_ELEMENT_DESC lightNormalPolygonLayout11[] =
 	{ "BINORMAL", 0,DXGI_FORMAT_R32G32B32_FLOAT, 0, 44, D3D11_INPUT_PER_VERTEX_DATA, 0 }	//+4*3
 };
 
-//-------------------------------------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
+//-------------------------------------------------------------------------------------------------
+// 54: SHADER_TEXTURE_WATER:
 static const D3D11_INPUT_ELEMENT_DESC shadowMapPolygonLayout11[] =
 {
 	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,	0, 0,							 D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -243,7 +252,7 @@ namespace DirectX {
 	DXshaderClass::DXshaderClass(UINT ShaderVersion_H, UINT ShaderVersion_L, bool shader_3D)
 	{
 		CLASSLOADER();
-		WomaIntegrityCheck = 1234525217;
+	
 		
 #if defined DX11 || defined DX9
 		m_driver11 = ((DirectX::DX11Class*)m_Driver);
@@ -282,9 +291,7 @@ namespace DirectX {
 		m_sampleStateClamp11 = NULL;
 #endif	
 
-#if TUTORIAL_CHAP >= 62 // FIRE
 		m_sampleStateFire = 0;
-#endif
 
 		// VERTEX CBUFFER:
 		// --------------------------------------------------------------------------------------------
@@ -301,7 +308,7 @@ namespace DirectX {
 		hasLight = false;
 		hasSpecular = false;
 		hasNormMap = false;
-		hasFog = false;
+		//hasFog = false;
 
 		// BLOCK: VS3
 		//-----------
@@ -314,6 +321,9 @@ namespace DirectX {
 		//-----------
 		fogStart = WOMA::AppSettings->START_FOG;
 		fogEnd = WOMA::AppSettings->END_FOG;
+//#else
+//		fogStart = 0;
+//		fogEnd = 0;
 		castShadow = false;
 
 		// PIXEL CBUFFER:
@@ -355,21 +365,21 @@ namespace DirectX {
 		hasAlfaMap = false;
 		//BOOL		hasNormMap;	//repeated in VS
 
-		// BLOCK6:
+		// BLOCK7:
 		XMFLOAT3	cameraPosition;	//TODO: soon
 		//BOOL		castShadow;		//repeated in VS
 		specularColor = XMFLOAT3(0, 0, 0);
 		nShininess = 0;
 
-		// BLOCK7:
-		VSshaderType = 0;			// 54:WaterMovement
+		// BLOCK8:
+		VSshaderType = 0;			
 		//float	vsPAD2;
 		//float	vsPAD3;
 		//float	vsPAD4;
 
 		// --------------------------------------------------------------------------------------------
 #if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES // Normal Bump + Instancing 
-		m_instanceCount = NULL;
+		m_instanceCount = 0;
 #endif
 
 		bUseGS = false;	// GS
@@ -462,7 +472,6 @@ namespace DirectX {
 #if defined DX11 || defined DX9
 		const D3D11_INPUT_ELEMENT_DESC* polygonLayout11 = NULL;
 		DX11Class* driver11 = m_driver11;
-#define device11 ((ID3D11Device*)DriverDevice)
 #endif
 #if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009
 		const D3D12_INPUT_ELEMENT_DESC* polygonLayout = NULL;
@@ -482,7 +491,6 @@ namespace DirectX {
 		{
 
 		case SHADER_COLOR:
-		case SHADER_TEXTURE_WATER:
 #if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009
 			if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
 			{
@@ -499,6 +507,24 @@ namespace DirectX {
 #endif
 			break;
 
+		case SHADER_TEXTURE_WATER:
+#if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP
+#if defined DX12  && D3D11_SPEC_DATE_YEAR > 2009
+			if (WOMA::AppSettings->DRIVER == DRIVER_DX12)
+			{
+				polygonLayout = &shadowMapPolygonLayout11[0];
+				numElements = _countof(shadowMapPolygonLayout11);
+			}
+#endif
+#if defined DX11 || defined DX9
+			if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
+			{
+				polygonLayout11 = &shadowMapPolygonLayout11[0];
+				numElements = _countof(shadowMapPolygonLayout11);
+			}
+#endif
+			break;
+#endif
 
 		//	float3 position		: POSITION;
 		//	float2 texCoords	: TEXCOORD0; //22
@@ -608,10 +634,7 @@ namespace DirectX {
 			polygonLayout11 = &lightNormalPolygonLayout11[0];
 			numElements = sizeof(lightNormalPolygonLayout11) / sizeof(lightNormalPolygonLayout11[0]);
 			break;
-        case SHADER_TEXTURE_GS_INSTANCED:
-            polygonLayout11 = &lightGSNormalPolygonLayout11[0];
-            numElements = sizeof(lightGSNormalPolygonLayout11) / sizeof(lightGSNormalPolygonLayout11[0]);
-            break;
+
 #if DX_ENGINE_LEVEL >= 36 && defined USE_SHADOW_MAP && defined USE_SCENE_MANAGER
 		case SHADER_TEXTURE_LIGHT_SAVESHADOW:
 			polygonLayout11 = &shadowMapPolygonLayout11[0];
@@ -650,6 +673,10 @@ namespace DirectX {
 			numElements = sizeof(mappingDetailligthcolorBumpPolygonLayout11) / sizeof(mappingDetailligthcolorBumpPolygonLayout11[0]);
 			break;
 #endif
+		case SHADER_TEXTURE_GS_INSTANCED:
+			polygonLayout11 = &lightGSNormalPolygonLayout11[0];
+			numElements = sizeof(lightGSNormalPolygonLayout11) / sizeof(lightGSNormalPolygonLayout11[0]);
+			break;
 #if defined GENERATE_ATLAS_INTEGRATION_DDS
 		case SHADER_BILLBOARD_ATLAS_FAST:       // 093BillboardAtlas.hlsl
 			polygonLayout11 = &billboardAtlasLayout11[0];
@@ -682,53 +709,62 @@ namespace DirectX {
 			vertexHLSL.append("VS_Main");
 			pixelHLSL.append("PS_Main");
 			break;
+
 		case SHADER_TEXTURE:
-			vsFilename.append(L"hlsl/022Texture.hlsl");
+			vsFilename.append(L"hlsl/051Texture.hlsl");
+			
 			psFilename = vsFilename;
 			vertexHLSL.append("VS_Main");
 			pixelHLSL.append("PS_Main");
 			break;
 		case SHADER_TEXTURE_LIGHT:
-			vsFilename.append(L"hlsl/023Light.hlsl");
+				vsFilename.append(L"hlsl/073Light.hlsl");
 			psFilename = vsFilename;
 			vertexHLSL.append("VS_Main");
 			pixelHLSL.append("PS_Main");
 			break;
+
 		case SHADER_TEXTURE_FONT:
 			vsFilename.append(L"hlsl/027Texture.hlsl");
 			psFilename = vsFilename;
 			vertexHLSL.append("VS_Main");
 			pixelHLSL.append("PS_Main");
 			break;
+
 		case SHADER_NORMAL_BUMP:
 			vsFilename.append(L"hlsl/035TextureBump.hlsl");
 			psFilename = vsFilename;
 			vertexHLSL.append("VS_Main");
 			pixelHLSL.append("PS_Main");
 			break;
+
 		case SHADER_TEXTURE_LIGHT_RENDERSHADOW:			//36:			Draw Shadows
 			vsFilename.append(L"hlsl/036LightRenderShadow.hlsl");
 			psFilename = vsFilename;
 			vertexHLSL.append("VS_Main");
 			pixelHLSL.append("PS_Main");
 			break;
+
 		case SHADER_TEXTURE_LIGHT_SAVESHADOW:			//36:			Aux. Shader (render in texture)
 			vsFilename.append(L"hlsl/036ShadowMap.hlsl");
 			psFilename = vsFilename;
 			vertexHLSL.append("VS_Main");
 			pixelHLSL.append("PS_Main");
 			break;
+
 #if DX_ENGINE_LEVEL >= 40 && defined USE_INSTANCES
 		case SHADER_TEXTURE_LIGHT_INSTANCED:			//40: INSTANCED like 23 light, but using Instances
 			vsFilename.append(L"hlsl/040LightInstance.hlsl");
+
 			psFilename = vsFilename;
 			vertexHLSL.append("VS_Main");
 			pixelHLSL.append("PS_Main");
 			break;
 #endif
+
 #if DX_ENGINE_LEVEL >= 41 && defined USE_SHADOW_INSTANCES
 		case SHADER_TEXTURE_LIGHT_SAVESHADOW_INSTANCED:	//40: Aux. Shader (render in texture), but using Instances
-			vsFilename.append(L"hlsl/041ShadowMapInstance.hlsl");
+			vsFilename.append(L"hlsl/042ShadowMapInstance.hlsl");
 			psFilename = vsFilename;
 			vertexHLSL.append("VS_Main");
 			pixelHLSL.append("PS_Main");
@@ -760,7 +796,7 @@ namespace DirectX {
 			vertexHLSL.append("VS_Main");
 			pixelHLSL.append("PS_Main");
 			break;
-//NEW SHADER:
+
 #if DX_ENGINE_LEVEL >= 60 && defined USE_TERRAIN_TUTORIAL_CHAP_24
 		case SHADER_Terrain_Texture_DEMO60:
 			vsFilename.append(L"hlsl/060Terrain.hlsl");
@@ -778,30 +814,30 @@ namespace DirectX {
 			pixelHLSL.append("PS_Main");
 			break;
 #endif
-		
 		case SHADER_FIRE:
 			vsFilename.append(L"hlsl/072fire.hlsl");
 			psFilename = vsFilename;
 			vertexHLSL.append("VS_Main");
 			pixelHLSL.append("PS_Main");
 			break;
-        case SHADER_TEXTURE_GS_INSTANCED:
-            vsFilename.append(L"hlsl/077GSinstance.hlsl");
-            psFilename = vsFilename;
-            vertexHLSL.append("VS_Main");
-#if DX_ENGINE_LEVEL >= 90 && defined USE_OPTIMIZING
-            gsHLSL.append("GS_Main");
-            //bUseGS = true;
-#endif
-            pixelHLSL.append("PS_Main");
-            
-            break;
-        case SHADER_TEXTURE_LIGHT_FAST:
-            vsFilename.append(L"hlsl/083Light.hlsl");
-            psFilename = vsFilename;
-            vertexHLSL.append("VS_Main");
-            pixelHLSL.append("PS_Main");
-            break;
+		case SHADER_TEXTURE_GS_INSTANCED:
+			vsFilename.append(L"hlsl/077GSinstance.hlsl");
+			psFilename = vsFilename;
+			vertexHLSL.append("VS_Main");
+	#if DX_ENGINE_LEVEL >= 90 && defined USE_OPTIMIZING
+			gsHLSL.append("GS_Main");
+			//bUseGS = true;
+	#endif
+			pixelHLSL.append("PS_Main");
+
+			break;
+
+		case SHADER_TEXTURE_LIGHT_FAST:
+			vsFilename.append(L"hlsl/083Light.hlsl");
+			psFilename = vsFilename;
+			vertexHLSL.append("VS_Main");
+			pixelHLSL.append("PS_Main");
+			break;
 
 #if defined GENERATE_ATLAS_INTEGRATION_DDS
 		case SHADER_BILLBOARD_ATLAS_FAST:
@@ -811,6 +847,7 @@ namespace DirectX {
 			pixelHLSL.append("PS_Main");
 			break;
 #endif
+
 #if defined MAIN_RENDER_CURVED_REAL_SKY_PLANE
 		case SHADER_USE_CURVED_REAL_SKY_PLANE:
 			vsFilename.append(L"hlsl/096curved_real_sky_plane.hlsl");
@@ -819,7 +856,8 @@ namespace DirectX {
 			pixelHLSL.append("PS_Main");
 			break;
 #endif
-#if defined MAIN_RENDER_WATER_FALL
+
+	#if defined MAIN_RENDER_WATER_FALL
 		case SHADER_USE_WATERFALL:
 			vsFilename.append(L"hlsl/097waterfall.hlsl");
 			psFilename = vsFilename;
@@ -833,19 +871,20 @@ namespace DirectX {
 			vertexHLSL.append("VS_Main");
 			pixelHLSL.append("PS_Main");
 			break;
-#endif
+	#endif
 
-//93
 
 		default:
 			WomaFatalExceptionW(TEXT("This Shader type is not supported yet!"));
 			break;
 		};
 
-#if _DEBUG
+#if defined _DEBUG
 		WCHAR WMODEL_NAME[10 * MAX_STR_LEN] = { 0 };
 		MultiByteToWideChar(CP_ACP, 0, (char*)MODEL_NAME.c_str(), -1, WMODEL_NAME, MAX_STR_LEN);
 		womalogw(L"START: INIT SHADER MODEL %s - Use HLSL [%s]\n", WMODEL_NAME, vsFilename.c_str());
+
+		WideCharToMultiByte(CP_ACP, 0, (WCHAR*)vsFilename.c_str(), -1, vsFilenameUsed, MAX_STR_LEN, NULL, NULL);  // "WCHAR" to "char" converter:
 #endif
 
 #if defined DX11 || defined DX9
@@ -893,11 +932,18 @@ namespace DirectX {
 			std::stringstream sstm;
 			sstm << DX_ENGINE_LEVEL;
 			std::string level = sstm.str().c_str();
+
+			const char* isDX9Level93 =
+				(strcmp(driverList[WOMA::AppSettings->DRIVER]->ShaderModel, "4_0_level_9_3") == 0)
+				? "1"
+				: "0";
+
 			D3D_SHADER_MACRO defines[] =
 			{
 				"ENGINE_LEVEL", level.c_str(),
+				"DXAPI9", isDX9Level93 ,
 				"DXAPI11", "1",
-				NULL, NULL
+				NULL, NULL,
 			};
 
 #ifdef _DEBUG
@@ -923,6 +969,10 @@ namespace DirectX {
 				if (errorMessage) {
 					WomaMessageBox((TCHAR*)errorMessage->GetBufferPointer(), TEXT("SHADER Error description :"));
 					womalog("SHADER Error description:\n%s", (LPCSTR)errorMessage->GetBufferPointer());
+				}
+				else {
+					CHAR strfile[MAX_STR_LEN] = { 0 }; WideCharToMultiByte(CP_ACP, 0, (WCHAR*)file, -1, strfile, MAX_STR_LEN, NULL, NULL);
+					WomaMessageBox(strfile, TEXT("File not found: "));
 				}
 				return false;
 			}
@@ -950,6 +1000,10 @@ namespace DirectX {
 				WomaMessageBox((TCHAR*)errorMessage->GetBufferPointer(), TEXT("SHADER Error description :"));
 				if (errorMessage)
 					womalog("SHADER Error description:\n%s", (LPCSTR)errorMessage->GetBufferPointer());
+				else {
+					CHAR strfile[MAX_STR_LEN] = { 0 }; WideCharToMultiByte(CP_ACP, 0, (WCHAR*)file, -1, strfile, MAX_STR_LEN, NULL, NULL);
+					WomaMessageBox(strfile, TEXT("File not found: "));
+				}
 				return false;
 			}
 #endif
@@ -988,17 +1042,17 @@ namespace DirectX {
 #else
 			// Create the Vertex Shader from the buffer: (GET CODE ON "EXE")
 			result = device11->CreateVertexShader(shaderManager[shaderType].blobVS, shaderManager[shaderType].sizeVS, NULL, &m_vertexShader);
-			if (FAILED(result)) { WomaFatalExceptionW(TEXT("Error: CreateVertexShader")); /*return false;*/ }
+			if (FAILED(result)) { WomaFatalExceptionW(TEXT("Error: CreateVertexShader"));  }
 
 			// Create the Pixel Shader from the buffer: (GET CODE ON "EXE")
 			result = device11->CreatePixelShader(shaderManager[shaderType].blobPS, shaderManager[shaderType].sizePS, NULL, &m_pixelShader);
-			if (FAILED(result)) { WomaFatalExceptionW(TEXT("Error: CreatePixelShader")); /*return false;*/ }
+			if (FAILED(result)) { WomaFatalExceptionW(TEXT("Error: CreatePixelShader"));  }
 
 			// GS
 			if (bUseGS)
 			{   // Create the Geometry Shader from the buffer.
 				result = device11->CreateGeometryShader(shaderManager[shaderType].blobGS, shaderManager[shaderType].sizeGS, NULL, &m_geometryShader);
-				if (FAILED(result)) { WomaFatalExceptionW(TEXT("Error: CreateGeometryShader")); /*return false;*/ }
+				if (FAILED(result)) { WomaFatalExceptionW(TEXT("Error: CreateGeometryShader"));  }
 			}
 			// GS
 #endif
@@ -1606,6 +1660,7 @@ namespace DirectX {
 			if (m_shaderType > SHADER_COLOR)
 			{
 				{
+					//https://graphicsprogramming.github.io/learnd3d11/1-introduction/images/1-3-2-wrapmodes.png
 					if (shader2D)
 					{   //2D
 						samplerDesc.AddressU = samplerDesc.AddressV = samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_MIRROR;
@@ -1633,9 +1688,9 @@ namespace DirectX {
 					samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
 					samplerDesc.MipLODBias = 0.0f;
 					samplerDesc.MinLOD = 0.0f;
-					samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;								// hasMipmaps(filter)? D3D11_FLOAT32_MAX : 0;
+					samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;							// hasMipmaps(filter)? D3D11_FLOAT32_MAX : 0;
 
-					samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;				// Point filtering: Faster
+					samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;			// Point filtering: Faster
 					samplerDesc.MaxAnisotropy = 1;
 
 					if (WOMA::AppSettings->MSAA_bilinear)
@@ -1654,8 +1709,9 @@ namespace DirectX {
 				result = device11->CreateSamplerState(&samplerDesc, &m_sampleState11);
 				if (FAILED(result)) { WomaFatalException ("CreateSamplerState error"); } //dont use TEXT!
 			}
+
+			
 			// [2]: dont change the order:
-#if TUTORIAL_CHAP >= 62 // FIRE
 			if (m_shaderType == SHADER_FIRE)
 			{
 				D3D11_SAMPLER_DESC samplerDescFire;
@@ -1670,14 +1726,12 @@ namespace DirectX {
 				result = device11->CreateSamplerState(&samplerDescFire, &m_sampleStateFire);
 				if (FAILED(result)) { WomaFatalException("error"); return false; }
 			}
-#endif
 
 			// [3]: dont change the order:
 			if (m_shaderType == SHADER_TEXTURE_LIGHT_RENDERSHADOW || 
 				m_shaderType == SHADER_TEXTURE_LIGHT_SAVESHADOW ||
 				m_shaderType == SHADER_TEXTURE_LIGHT_SAVESHADOW_INSTANCED || 
 				m_shaderType == SHADER_TEXTURE_LIGHT_DRAWSHADOW_INSTANCED || 
-				/*m_shaderType == SHADER_Terrain_Texture_DEMO61 ||*/
 				m_shaderType == SHADER_Terrain_Texture_DEMO99
 			)
 		{
@@ -1699,7 +1753,7 @@ namespace DirectX {
 		}
 
 #if defined GENERATE_ATLAS_INTEGRATION_DDS
-		IF_RENDER_PAGE(RENDER_PAGE >= 93) //AQUI
+		IF_RENDER_PAGE(RENDER_PAGE >= 93)
 		{
 			// existing default sampler (wrap / user settings)...
 			// ... your old code that creates m_sampleState11 ...
@@ -1779,7 +1833,10 @@ namespace DirectX {
 	{
 		HRESULT result;
 		ID3D11DeviceContext* deviceContext11 = ((ID3D11DeviceContext*)Device_Context);
-		#define device11 ((ID3D11Device*)m_driver11->m_device11)
+
+#if defined DX11 || defined DX9
+		D3D11_MAPPED_SUBRESOURCE mappedResource = { 0 };
+#endif
 
 // END 99 TYPEs
 
@@ -1789,7 +1846,7 @@ namespace DirectX {
 			VSBillboardAtlasConstantBufferType* dataVSptr = nullptr;
 
 			// Map buffer for writing
-			D3D11_MAPPED_SUBRESOURCE mappedResource = { 0 };
+			//D3D11_MAPPED_SUBRESOURCE mappedResource = { 0 };									   
 			HRESULT result = deviceContext11->Map(m_VertexShaderBuffer11, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 			if (FAILED(result)) { throw woma_exception("Map failed", __FILE__, __FUNCTION__, __LINE__); }
 
@@ -1805,8 +1862,8 @@ namespace DirectX {
 
 			// VEGETATION WIND ANIMATION
 			dataVSptr->vsframeTime = SystemHandle->m_Application->shadergrassframeTime;
-			dataVSptr->scrollSpeeds = scrollSpeeds;   // existing variable
-			dataVSptr->scales = scales;         // existing variable
+			dataVSptr->scrollSpeeds = scrollSpeeds;
+			dataVSptr->scales = scales;
 			dataVSptr->isAnimatedBill = isAnimatedBill;
 			dataVSptr->fade = PSfade;
 
@@ -1823,7 +1880,7 @@ namespace DirectX {
 			deviceContext11->VSSetConstantBuffers(0, 1, &m_VertexShaderBuffer11);
 			deviceContext11->PSSetConstantBuffers(0, 1, &m_VertexShaderBuffer11);
 
-			return; // FAST PATH DONE
+			goto END; //return; // FAST PATH DONE
 		}
 #endif
 // END: SHADER_BILLBOARD_ATLAS_FAST
@@ -1834,7 +1891,7 @@ namespace DirectX {
 			VSWaterfallConstantBufferType* dataVSptr = nullptr;
 
 			// Map buffer for writing
-			D3D11_MAPPED_SUBRESOURCE mappedResource = { 0 };
+			//D3D11_MAPPED_SUBRESOURCE mappedResource = { 0 };									   
 			HRESULT result = deviceContext11->Map(m_VertexShaderBuffer11, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 			if (FAILED(result)) { throw woma_exception("Map failed", __FILE__, __FUNCTION__, __LINE__); }
 
@@ -1856,7 +1913,7 @@ namespace DirectX {
 			deviceContext11->VSSetConstantBuffers(0, 1, &m_VertexShaderBuffer11);
 			deviceContext11->PSSetConstantBuffers(0, 1, &m_VertexShaderBuffer11);
 
-			return; // FAST PATH DONE
+			goto END; // FAST PATH DONE
 		}
 
 		if (m_shaderType == SHADER_USE_SMOKE)
@@ -1900,16 +1957,15 @@ namespace DirectX {
 					WomaFatalExceptionW(TEXT("Failed to create SmokeParticleCB"));
 
 			}
-			{
-				deviceContext11->UpdateSubresource(m_particleAlphaCB, 0, nullptr, &m_particleAlpha, 0, 0);
-				deviceContext11->PSSetConstantBuffers(1, 1, &m_particleAlphaCB);
-			}
+			
+			deviceContext11->UpdateSubresource(m_particleAlphaCB, 0, nullptr, &m_particleAlpha, 0, 0);
+			deviceContext11->PSSetConstantBuffers(1, 1, &m_particleAlphaCB);
+			
 
-			return;    // nothing else needed
+			goto END;    // nothing else needed
 		}
 
 	#endif
-//END: SHADER_USE_WATERFALL
 
 	// ----------------------------------------------------------------------------
 	// ALL LEGACY <99 SHADERS:
@@ -1923,7 +1979,6 @@ namespace DirectX {
 	#endif
 
 	#if defined DX11 || defined DX9
-		D3D11_MAPPED_SUBRESOURCE mappedResource = { 0 };
 		if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 		{
 			// VERTEX SHADER: Lock the constant buffer so it can be written to
@@ -1965,7 +2020,7 @@ namespace DirectX {
 		{
 			dataVSptr->VSlightDirection = light->m_lightDirection;
 
-			if (m_shaderType < SHADER_TEXTURE_LIGHT_SAVESHADOW || m_shaderType >= SHADER_Slope_Texture_Terrain)
+			if (m_shaderType < SHADER_TEXTURE_LIGHT_SAVESHADOW || m_shaderType >= SHADER_Double_Color_Terrain)
 			{
 				dataVSptr->VSambientColor = light->m_ambientColor;		// Use Global: Light
 				dataVSptr->VSdiffuseColor = light->m_diffuseColor;
@@ -1979,7 +2034,7 @@ namespace DirectX {
 		}
 
 		// BLOCK: VS4
-		if (hasFog)
+		//if (hasFog)
 		{
 			dataVSptr->VSfogStart = fogStart;
 			dataVSptr->VSfogEnd = fogEnd;
@@ -1995,30 +2050,50 @@ namespace DirectX {
 			castShadow = false;
 
 		// terrain also needs shadows
-		if ((castShadow || m_shaderType == SHADER_Terrain_Texture_DEMO99) &&
-			lightViewMatrix && ShadowProjectionMatrix)
+		if ((castShadow || m_shaderType == SHADER_Terrain_Texture_DEMO99) && lightViewMatrix && ShadowProjectionMatrix)
 		{
 			dataVSptr->ViewToLightProj = XMMatrixTranspose((*lightViewMatrix) * (*ShadowProjectionMatrix));
 		}
 
-		dataVSptr->VSrotX = 0;
-		dataVSptr->VSrotY = 0;
-		dataVSptr->VSrotZ = 0;
-		dataVSptr->time = watertime;
+		#if defined USE_3RD_PERSON_CAMERA
+				// 3rd Person Camera:
+				dataVSptr->VSCameraPosition = DX_Camera->camPosition;
+		#else
+				// Normal Camera:
+				dataVSptr->VSCameraPosition.m128_f32[0] = m_Position[g_NetID]->m_positionX;
+				dataVSptr->VSCameraPosition.m128_f32[1] = m_Position[g_NetID]->m_positionY;
+				dataVSptr->VSCameraPosition.m128_f32[2] = m_Position[g_NetID]->m_positionZ;
+				//dataVSptr->VSCameraPosition.m128_f32[3] = 1.0f;
+		#endif
 
+		//dataVSptr->VSrotX = 0;
+		//dataVSptr->VSrotY = 0;
+		//dataVSptr->VSrotZ = 0;
+		if (WOMA::game_state == GAME_RUN)
+			dataVSptr->time = watertime;
+		else
+			dataVSptr->time = 0; // Water = 0 on MAIN-MAP
 		dataVSptr->VSshaderType = VSshaderType;
 
 		if (m_ObjId>=0 && SystemHandle->xml_loader.theWorldXML.size() > 0)
-			if (SystemHandle->xml_loader.theWorldXML[m_ObjId].rotY >= 0)
+			if (SystemHandle->xml_loader.theWorldXML[m_ObjId].rotY > 0)
 				dataVSptr->VSrotY = DEG2RAD(SystemHandle->xml_loader.theWorldXML[m_ObjId].rotY);
-#if TUTORIAL_CHAP >= 62 // FIRE
+
 		if (m_shaderType == SHADER_FIRE)
 		{
-			dataVSptr->vsframeTime = shaderfireframeTime;
+			static float frameTime = 0.0f;
+
+			// Increment the frame time counter.
+			frameTime += (float)SystemHandle->m_Application->dt * (0.01f / 16.66f);  //0.01f; //rX = (float)dt * (0.005f / 16.66f);	// MOVIMENT FORMULA!
+			if (frameTime > 1000.0f)
+				frameTime = 0.0f;
+
+			//shaderfireframeTime = frameTime;
+
+			dataVSptr->vsframeTime = frameTime;
 			dataVSptr->scrollSpeeds = scrollSpeeds;
 			dataVSptr->scales = scales;
 		}
-#endif
 
 #if DX_ENGINE_LEVEL >= 73 && defined BILLBOARD_FOR_WINDY_GRASS
 		else if (isAnimatedBill)
@@ -2045,10 +2120,8 @@ namespace DirectX {
 #endif
 
 		if (m_shaderType == SHADER_COLOR || 
-            m_shaderType == SHADER_TEXTURE_LIGHT_FAST 
-			|| m_shaderType == SHADER_Terrain_Texture_DEMO61
-            )
-			return;
+            m_shaderType == SHADER_TEXTURE_LIGHT_FAST )
+			goto END;
 
 		// --------------------------------------------------------------------------------------------
 		// PIXEL SHADER: will need to have access to some variables also (Texturing / light parameters)
@@ -2072,7 +2145,7 @@ namespace DirectX {
 #endif
 
 		// ----------------------------------------------------------------------------
-			// BLOCK1:
+		// BLOCK1:
 		dataPSptr->pixelColor = pixelColor;	// SET THE PIXEL COLOR IN PIXEL SHADER
 
 		// BLOCK2:
@@ -2086,7 +2159,7 @@ namespace DirectX {
 		{
 			dataPSptr->lightDirection = light->m_lightDirection;
 
-			if (m_shaderType < SHADER_TEXTURE_LIGHT_SAVESHADOW || m_shaderType >= SHADER_Slope_Texture_Terrain)
+			if (m_shaderType < SHADER_TEXTURE_LIGHT_SAVESHADOW || m_shaderType >= SHADER_Double_Color_Terrain)
 			{
 				dataPSptr->ambientColor = light->m_ambientColor; // Use Global Light
 				dataPSptr->diffuseColor = light->m_diffuseColor;
@@ -2108,9 +2181,9 @@ namespace DirectX {
 		dataPSptr->hasAlfaColor = hasAlfaColor;
 		dataPSptr->alfaColor = alfaColor;
 		dataPSptr->fade = PSfade;	// BASE TEXTURE!
-#if defined INTRO_DEMO
+	#if defined INTRO_DEMO
 		dataPSptr->frameTime = frameTime;		// dT
-#endif
+	#endif
 
 		// BLOCK6:
 		dataPSptr->hasFog = hasFog;
@@ -2119,17 +2192,16 @@ namespace DirectX {
 		dataPSptr->hasNormMap = hasNormMap;
 
 		// BLOCK7:
-		// cameraPosition	// NOT USED!
+		// cameraPosition	// NOT USED YET!
 		dataPSptr->castShadow = castShadow;
-#if defined RENDER_OBJ_WITH_SPECULAR_SHININESS // Shininess + Specular
+	#if defined RENDER_OBJ_WITH_SPECULAR_SHININESS // Shininess + Specular
 		if (hasSpecular)
 		{
 			dataPSptr->specularColor = specularColor;
 			dataPSptr->nShininess = nShininess;
 		}
-#endif
+	#endif
 
-#if TUTORIAL_CHAP >= 62 // FIRE
 		if (m_shaderType == SHADER_FIRE)
 		{
 			dataPSptr->distortion1 = distortion1;
@@ -2138,7 +2210,6 @@ namespace DirectX {
 			dataPSptr->distortionScale = distortionScale;
 			dataPSptr->distortionBias = distortionBias;
 		}
-#endif
 
 #if defined MAIN_RENDER_CURVED_REAL_SKY_PLANE
 		if (m_shaderType == SHADER_USE_CURVED_REAL_SKY_PLANE)
@@ -2169,10 +2240,20 @@ namespace DirectX {
 		}
 #endif
 
+		END:
+#if defined _DEBUG
+		if (m_Driver->RenderfirstTime)
+			womalog("SetShaderParameters() Model: '%s' - SHADER: %d (%s)\n", (TCHAR*)MODEL_NAME.c_str(), m_shaderType, vsFilenameUsed);
+#endif
+	; //NEEDED to compile RELEASE!
 }
 
 void DXshaderClass::RenderShader(UINT pass, void* Device_Context, int texture_index, int indexCount, int start)
-	{
+{
+#if defined _DEBUG || defined LINUX_PLATFORM || defined ANDROID_PLATFORM
+	vkShaderClass_RenderShader_Calls++;
+#endif
+
 #if defined DX11 || defined DX9
 		if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 		{
@@ -2188,13 +2269,11 @@ void DXshaderClass::RenderShader(UINT pass, void* Device_Context, int texture_in
 	#endif
 					deviceContext->PSSetSamplers(0, 1, &m_sampleState11);		// Set the Sampler state in the pixel shader (Bilinear, Trilinear: 2x, Anisotropic: 4x, 8x, 16x, ...)
 
-	#if TUTORIAL_CHAP >= 62 // FIRE
 			if (m_shaderType == SHADER_FIRE) {
 				deviceContext->PSSetSamplers(1, 1, &m_sampleStateFire);
 			}
-	#endif
 			if (castShadow)
-				deviceContext->PSSetSamplers(2, 1, &m_sampleStateClamp11); // 2, 1 or 0, 2
+				deviceContext->PSSetSamplers(2, 1, &m_sampleStateClamp11);
 
 			}
 			// ---------------------------------------------------
@@ -2343,10 +2422,18 @@ void DXshaderClass::RenderShader(UINT pass, void* Device_Context, int texture_in
 				ID3D12DescriptorHeap* ppHeaps[] = { DX12mSrvDescriptorHeap.Get() };
 				m_driver->m_commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 		#if !defined RENDER_OBJ_WITH_ALFA
-				// | Root Signature		| Shader Registers	|
-				// |0| DescriptorTable  | b0				|
-				// |1| DescriptorTable  | b1				|
-				// |2| DescriptorTable  | t0				|
+				// Root Signature:
+				//   RP0 -> b0
+				//   RP1 -> b1
+				//   RP2 -> t0
+				//
+				// Descriptor Heap (DX_ENGINE_LEVEL >= 31):
+				//   [0] CBV b0
+				//   [1] CBV b1
+				//   [2] Reserved (SRV table base)
+				//   [3] Texture0
+				//   [4] Texture1
+				//   ...
 
 				// 0 CBV
 				auto offSet = DX12mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
@@ -2356,17 +2443,29 @@ void DXshaderClass::RenderShader(UINT pass, void* Device_Context, int texture_in
 				offSet.ptr += m_CbvSrvDescriptorSize;
 				m_driver->m_commandList->SetGraphicsRootDescriptorTable(1, offSet);	//C1 Set "Constant Buffer View" 
 
-				// 2 SRV:
+				// 2 SRV: (t0)
 				offSet.ptr += m_CbvSrvDescriptorSize;
+
+				// Skip reserved descriptor; Texture0 starts at descriptor 3.
+				offSet.ptr += m_CbvSrvDescriptorSize;
+
 				for (size_t i = 0; i < texture_index; i++)
 					offSet.ptr += m_CbvSrvDescriptorSize;
 				m_driver->m_commandList->SetGraphicsRootDescriptorTable(2, offSet);	//T0 Set Texture
 		#else
-				// | Root Signature		| Shader Registers	|
-				// |0| DescriptorTable  | b0				|
-				// |1| DescriptorTable  | b1				|
-				// |2| DescriptorTable  | t0 AlfaMap		|
-				// |3| DescriptorTable  | t1 Texture		|
+				// Root Signature:
+				//   RP0 -> b0
+				//   RP1 -> b1
+				//   RP2 -> t0 (AlphaMap)
+				//   RP3 -> t1 (Texture)
+				//
+				// Descriptor Heap (DX_ENGINE_LEVEL >= 31):
+				//   [0] CBV b0
+				//   [1] CBV b1
+				//   [2] AlphaMap
+				//   [3] Texture0
+				//   [4] Texture1
+				//   ...
 
 				// 0 CBV
 				auto offSet = DX12mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
@@ -2376,17 +2475,18 @@ void DXshaderClass::RenderShader(UINT pass, void* Device_Context, int texture_in
 				offSet.ptr += m_CbvSrvDescriptorSize;
 				m_driver->m_commandList->SetGraphicsRootDescriptorTable(1, offSet);	//C1 Set "Constant Buffer View" 
 
-				// 2 SRV:
+				// 2 SRV (AlphaMap)
 				offSet.ptr += m_CbvSrvDescriptorSize;
 				if (hasAlfaMap)
 					m_driver->m_commandList->SetGraphicsRootDescriptorTable(2, offSet);	//T0 Set AlfaMap Texture
 
-				if (hasTexture) {
-				// 3 SRV:
-				offSet.ptr += m_CbvSrvDescriptorSize;
-				for (size_t i = 0; i < texture_index; i++)
+				if (hasTexture) 
+				{
+					// 3 SRV (Texture0)
 					offSet.ptr += m_CbvSrvDescriptorSize;
-				m_driver->m_commandList->SetGraphicsRootDescriptorTable(3, offSet);	//T1 Set Shader Texture
+					for (size_t i = 0; i < texture_index; i++)
+						offSet.ptr += m_CbvSrvDescriptorSize;
+					m_driver->m_commandList->SetGraphicsRootDescriptorTable(3, offSet);	//T1 Set Shader Texture
 				}
 		#endif
 				break;
@@ -2398,7 +2498,7 @@ void DXshaderClass::RenderShader(UINT pass, void* Device_Context, int texture_in
 			m_driver->m_commandList->DrawIndexedInstanced(indexCount, 1, start, 0, 0);	// Render Indexed mesh
 		}
 #endif
-#if _DEBUG
+#if defined _DEBUG
 		SystemHandle->TotalVertexCounter += indexCount;
 #endif
 	}
@@ -2408,7 +2508,7 @@ void DXshaderClass::RenderShader(UINT pass, void* Device_Context, int texture_in
 		ASSERT_DEBUG(indexCount > 0);
 		SetShaderParameters(pass, Device_Context, worldMatrix, viewMatrix, projectionMatrix);	// Set the shader parameters that it will use for rendering
 
-		RenderShader(pass, Device_Context, /*texture_index*/ 0, indexCount);						// Now render the prepared buffers with the shader
+		RenderShader(pass, Device_Context, /*texture_index*/ 0, indexCount);					// Now render the prepared buffers with the shader
 	}
 
 	void DXshaderClass::RenderSmoke(UINT pass, void* Device_Context, int indexCount, XMMATRIX* worldMatrix, XMMATRIX* viewMatrix, XMMATRIX* projectionMatrix, float m_particleAlpha)
@@ -2437,7 +2537,7 @@ void DXshaderClass::RenderShader(UINT pass, void* Device_Context, int texture_in
 #endif
 
 #if defined DX11 || defined DX9
-		D3D11_MAPPED_SUBRESOURCE mappedResource = { 0 };
+		D3D11_MAPPED_SUBRESOURCE mappedResource = { 0 };										  
 		if (WOMA::AppSettings->DRIVER == DRIVER_DX11 || WOMA::AppSettings->DRIVER == DRIVER_DX9)
 		{
 			// VERTEX SHADER: Lock the constant buffer so it can be written to

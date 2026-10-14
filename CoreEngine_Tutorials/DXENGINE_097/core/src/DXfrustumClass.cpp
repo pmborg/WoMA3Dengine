@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: DXfrustumClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -14,17 +14,27 @@
 // 
 // Downloaded from : https://github.com/pmborg/WoMA3Dengine
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
-#if DX_ENGINE_LEVEL >= 30 && (defined DX_ENGINE)
+#if DX_ENGINE_LEVEL >= 30 && defined USE_FRUSTUM
 
 #pragma warning( disable : 4005 ) // Disable warning C4005: '' : macro redefinition
 #pragma warning( disable : 4238 ) // Disable warning C4238: nonstandard extension used : class rvalue used as lvalue
 
-#include "DXfrustumclass.h"
+#if defined USE_FRUSTUM 
+  #if defined WINDOWS_PLATFORM
+	#include "DXfrustumClass.h"
+  #else
+	#include "GLfrustumClass.h"
+  #endif
+#endif
+
 #include "OSengine.h"		// Get [SystemHandle] Pointer to System Class: WINDOWS, LINUX & ANDROID
+
+#if defined DX_ENGINE
 #include "DXmodelClass.h"
+#endif
 
 DXfrustumClass::DXfrustumClass()
 {
@@ -258,41 +268,6 @@ bool DXfrustumClass::CheckAABB(float minX, float minY, float minZ, float maxX, f
 
     return true;
 }
-
-/*
-bool DXfrustumClass::CheckAABB(float xMin, float yMin, float zMin, float xMax, float yMax, float zMax)
-{
-    XMFLOAT3 corners[8] = {
-        {xMin, yMin, zMin},
-        {xMax, yMin, zMin},
-        {xMin, yMax, zMin},
-        {xMax, yMax, zMin},
-        {xMin, yMin, zMax},
-        {xMax, yMin, zMax},
-        {xMin, yMax, zMax},
-        {xMax, yMax, zMax}
-    };
-
-    for (int i = 0; i < 6; i++)
-    {
-        XMVECTOR plane = m_frustumPlane[i];
-        int out = 0;
-
-        for (int j = 0; j < 8; j++)
-        {
-            XMVECTOR corner = XMLoadFloat3(&corners[j]);
-            if (XMVectorGetX(XMPlaneDotCoord(plane, corner)) < 0.0f)
-                out++;
-        }
-
-        // All 8 points are outside this plane = culled
-        if (out == 8)
-            return false;
-    }
-
-    return true;
-}
-*/
 #endif
 
 #endif

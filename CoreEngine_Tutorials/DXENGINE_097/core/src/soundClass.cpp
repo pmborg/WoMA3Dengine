@@ -1,9 +1,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Filename: soundClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -17,7 +17,7 @@
 // PURPOSE: Add local/3D sound/effects.
 // ORIGINAL VERSION: https://en.wikibooks.org/wiki/DirectX/10.0/Direct3D/Direct_Sound
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "platform.h"
 
@@ -410,7 +410,7 @@ bool SoundClass::PlayWaveFile()
 	m_secondary3DBuffer1->SetPosition(positionX, positionY, positionZ, DS3D_IMMEDIATE);
 
 	// Set the initial position of the listener to be in the middle of the scene.
-	if (SystemHandle->m_Application->m_Position.size() == 0) {
+	if (m_Position.size() == 0) {
 		m_listener->SetPosition(0, 0, 0, DS3D_IMMEDIATE);
 	} else {
 		m_listener->SetPosition(sort_cameraX, sort_cameraY, sort_cameraZ, DS3D_IMMEDIATE);

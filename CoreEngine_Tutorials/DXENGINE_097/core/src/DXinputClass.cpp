@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: DXinputClass.cpp
 // ----------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE: Used to Manage: the Mouse and the Joystick
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
@@ -51,7 +51,8 @@ void processNormalKeys(unsigned char key, int x, int y)
 	}
 }
 
-void processSpecialKeys(int key, int x, int y) {
+void processSpecialKeys(int key, int x, int y) 
+{
 
 	switch (key) {
 	case GLUT_KEY_F1:
@@ -79,7 +80,7 @@ void processSpecialKeys(int key, int x, int y) {
 DXInputClass::DXInputClass()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525217;
+
 
 	// NOTE: rgbButtons holds the state of four of the mouse buttons. 
 	// 0 is for the left button

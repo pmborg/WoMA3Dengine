@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------------------------------------
 // Filename: DX12Class.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------
 //  MAIN PURPOSE: Work as a DirectX 12 Driver.
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 // ----------------------------------------------------------------------------------------------
 
@@ -47,15 +47,21 @@
 #include <cwctype>
 #include <exception>
 
+#include "DXmodelClass.h"
+
+extern DXcameraClass* DX_Camera;
+#if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28
+extern DXcameraClass* DX_CameraSKY;
+#endif
+
 namespace DirectX {
 
 	// ----------------------------------------------------------------------------------------------
 	DX12Class::DX12Class()
-		// ----------------------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------------------
 	{
 		// WomaDriverClass / Public: ------------------------------------------------------
 		CLASSLOADER();
-		WomaIntegrityCheck = 1234525217;
 
 		// SUPER Video Card Info:
 		// ---------------------------------------------------------------------------
@@ -89,14 +95,14 @@ namespace DirectX {
 
 		BUFFER_COLOR_FORMAT = DXGI_FORMAT_B8G8R8A8_UNORM; // "Loader Image" use this format.
 
-		//m_Camera = NULL;
+		//DX_Camera = NULL;
 		DX12viewDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 		DX12viewDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 		DX12viewDesc.Format = BUFFER_COLOR_FORMAT;
 		DX12viewDesc.Texture2D.MipLevels = 1;
 		DX12viewDesc.Texture2D.MostDetailedMip = 0;
 #if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28
-		DXsystemHandle->m_CameraSKY = NULL;
+		//DX_CameraSKY = NULL;
 #endif
 #if defined USE_FRUSTUM
 		frustum = NULL;
@@ -144,7 +150,7 @@ namespace DirectX {
 
 	//----------------------------------------------------------------------------------------------
 	void DX12Class::Shutdown()
-		//----------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	{
 		if (m_device)
 		{
@@ -185,13 +191,24 @@ namespace DirectX {
 	}
 
 	void DX12Class::addText(int Xpos, int Ypos, TCHAR* text, float R, float G, float B) {}
-    void DirectX::DX12Class::RenderDriverText(void* pContext) {}
+    void DX12Class::RenderDriverText(void* pContext) {}
 	bool DX12Class::InitD2DScreenTexture() { return true; }
+
+	void* DX12Class::GetDeviceContext()
+	{
+		return NULL;
+	}
+
+	static bool IsGraphicsDiagnosticsCapture()
+	{
+		return GetModuleHandleA("DXCaptureReplay.dll") != nullptr ||
+			GetModuleHandleA("DXCapture.dll") != nullptr;
+	}
 
 	// |Init Step: 1| This is for DIRECTX Driver only!
 	// ----------------------------------------------------------------------------------------------
 	BOOL DX12Class::CheckAPIdriver(int USE_THIS_ADAPTER)
-		// ----------------------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------------------
 	{
 		womalog(TEXT("CheckAPIdriver(DX12)\n"));
 		//
@@ -202,17 +219,17 @@ namespace DirectX {
 		// [*] Enable the debug layer (requires the Graphics Tools "optional feature").
 		// NOTE: Enabling the debug layer after device creation will invalidate the active device.
 #if defined _DEBUG && defined USE_DX12_DEBUG
+
 		ComPtr<ID3D12Debug> debugController = NULL;
 		if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
 		{
-			debugController->EnableDebugLayer();
-
-			// Enable additional debug layers:
-			dxgiFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
+			if (!IsGraphicsDiagnosticsCapture())
+			{
+				debugController->EnableDebugLayer();
+				dxgiFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
+			}
 		}
-#endif
 
-#if _DEBUG// && false
 		// Get the debug message queue
 		ComPtr<IDXGIInfoQueue> dxgiInfoQueue;
 		if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(dxgiInfoQueue.GetAddressOf()))))
@@ -289,13 +306,14 @@ namespace DirectX {
 	// [*] Create dxgi factory : "CreateDXGIFactory2"
 		womalog(TEXT("CreateDXGIFactory2"));
 		HRESULT HR = CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&dxgiFactory));
+		womalog("CreateDXGIFactory2 HR = 0x%08X\n", HR);
 		ThrowIfFailed(HR);// Create a DXGI 1.3 / 1.4 / 1.5 / 1.6 factory Interface with Factory:2
 
 		m_sCapabilities.CapDX12 = false;
 		womalog(TEXT("D3D12CreateDevice()"));
 
-		D3D12EnableExperimentalFeatures(0, nullptr, nullptr, nullptr);
-
+		//D3D12EnableExperimentalFeatures(0, nullptr, nullptr, nullptr);
+		
 		// [*] Create DX12 device
 		if (WOMA::UseWarpDevice) //CommandLineArgs
 		{
@@ -372,7 +390,7 @@ namespace DirectX {
 		//m_device->SetStablePowerState(TRUE);	// Prevent the GPU from overclocking or underclocking to get consistent timings
 #endif
 
-	// USE DXGI 1.2 API: Are we Rendering in Stereo for 3D Monitors?
+		// USE DXGI 1.2 API: Are we Rendering in Stereo for 3D Monitors?
 		m_sCapabilities.inStereoAdapterMode = dxgiFactory->IsWindowedStereoEnabled();
 
 			// Check [1] D3D12_FEATURE_DATA_D3D12_OPTIONS
@@ -699,42 +717,126 @@ namespace DirectX {
 #endif
 	}
 
-	void DX12Class::GetHardwareAdapter(IDXGIFactory4* pFactory, IDXGIAdapter1** ppAdapter, D3D_FEATURE_LEVEL feacture_level)
+	const char* FeatureLevelToString(D3D_FEATURE_LEVEL level) {
+		switch (level) {
+		case D3D_FEATURE_LEVEL_1_0_CORE: return "1.0 Core";
+		case D3D_FEATURE_LEVEL_11_0:     return "11.0";
+		case D3D_FEATURE_LEVEL_11_1:     return "11.1";
+		case D3D_FEATURE_LEVEL_12_0:     return "12.0";
+		case D3D_FEATURE_LEVEL_12_1:     return "12.1";
+		case D3D_FEATURE_LEVEL_12_2:     return "12.2";
+		default:                         return "Unknown";
+		}
+	}
+
+	void LogHardwareAdapter(const DXGI_ADAPTER_DESC1& desc, const D3D_FEATURE_LEVEL& featureLevel)
+	{
+		const char* vendor = "Unknown";
+
+		switch (desc.VendorId)
+		{
+		case 0x10DE: vendor = "NVIDIA"; break;
+		case 0x1002: vendor = "AMD"; break;
+		case 0x1022: vendor = "AMD"; break;
+		case 0x8086: vendor = "Intel"; break;
+		}
+
+		womalog("Vendor: %s (%04X)  DeviceId: %04X\n", vendor, desc.VendorId, desc.DeviceId);
+		womalog("Flags: 0x%08X\n", desc.Flags);
+
+		womalogw(L"Description: %s\n", desc.Description);
+		womalog("DedicatedVideoMemory : %llu MB\n", desc.DedicatedVideoMemory >> 20);
+		womalog("DedicatedSystemMemory: %llu MB\n", desc.DedicatedSystemMemory >> 20);
+		womalog("SharedSystemMemory   : %llu MB\n", desc.SharedSystemMemory >> 20);
+
+		womalog("Selected Feature Level: %s\n", FeatureLevelToString(featureLevel));
+	}
+
+	// ------------------------------------------------------------------------
+	// Based on Microsoft DXSample::GetHardwareAdapter()
+	// Extended by WoMA:
+	//   - FeatureLevel selection
+	//   - GPU memory logging
+	//   - DXGI 1.6 GPU preference
+	// ------------------------------------------------------------------------
+	void DX12Class::GetHardwareAdapter(IDXGIFactory4* pFactory, IDXGIAdapter1** ppAdapter, D3D_FEATURE_LEVEL featureLevel, bool requestHighPerformanceAdapter)
 	{
 		ComPtr<IDXGIAdapter1> adapter;
 		*ppAdapter = nullptr;
 
-		womalogw(L"\nGetHardwareAdapter()");
-		for (UINT adapterIndex = 0; DXGI_ERROR_NOT_FOUND != pFactory->EnumAdapters1(adapterIndex, &adapter); ++adapterIndex)
-		{
-			DXGI_ADAPTER_DESC1 desc;
-			adapter->GetDesc1(&desc);
+		womalogw(L"\nGetHardwareAdapter()\n");
 
-			if (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
+		womalog("GPU Preference: %s\n", requestHighPerformanceAdapter ? "HIGH_PERFORMANCE" : "UNSPECIFIED");
+
+		DXGI_ADAPTER_DESC1 desc;
+
+		ComPtr<IDXGIFactory6> factory6;
+		if (SUCCEEDED(pFactory->QueryInterface(IID_PPV_ARGS(&factory6))))
+		{
+			for (
+				UINT adapterIndex = 0;
+				SUCCEEDED(factory6->EnumAdapterByGpuPreference(
+					adapterIndex,
+					requestHighPerformanceAdapter == true ? DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE : DXGI_GPU_PREFERENCE_UNSPECIFIED,
+					IID_PPV_ARGS(&adapter)));
+					++adapterIndex)
 			{
-				womalogw(L"\nD3D12-Capable Software Adapter (%d) found: %s (%u MB)\n", adapterIndex, desc.Description, desc.DedicatedVideoMemory >> 20);
-				QueryVideoMemoryInfo(adapterIndex, adapter);
-				*ppAdapter = adapter.Detach();
-			}
-			else
-			{
-				// Check to see if the adapter supports Direct3D 12, but don't create the actual device yet.
-				if (SUCCEEDED(D3D12CreateDevice(adapter.Get(), feacture_level, _uuidof(ID3D12Device), nullptr)))
+				adapter->GetDesc1(&desc);
+				
+
+				if (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
+				{
+					// Don't select the Basic Render Driver adapter.
+					// If you want a software adapter, pass in "/warp" on the command line.
+					continue;
+				}
+
+				// Check to see whether the adapter supports Direct3D 12, but don't create the
+				// actual device yet.
+				if (SUCCEEDED(D3D12CreateDevice(adapter.Get(), featureLevel, _uuidof(ID3D12Device), nullptr)))
 				{
 					womalogw(L"\nD3D12-Capable Hardware Adapter (%d) found: %s (%u MB)\n", adapterIndex, desc.Description, desc.DedicatedVideoMemory >> 20);
 					QueryVideoMemoryInfo(adapterIndex, adapter);
-					*ppAdapter = adapter.Detach();
+					break;
 				}
 			}
 		}
+		else
+		{
+			for (UINT adapterIndex = 0; DXGI_ERROR_NOT_FOUND != pFactory->EnumAdapters1(adapterIndex, &adapter); ++adapterIndex)
+			{
+				adapter->GetDesc1(&desc);
+
+				if (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
+					continue;
+			
+				// Check to see if the adapter supports Direct3D 12, but don't create the actual device yet.
+				if (SUCCEEDED(D3D12CreateDevice(adapter.Get(), featureLevel, _uuidof(ID3D12Device), nullptr)))
+				{
+					womalogw(L"\nD3D12-Capable Hardware Adapter (%d) found: %s (%u MB)\n", adapterIndex, desc.Description, desc.DedicatedVideoMemory >> 20);
+					QueryVideoMemoryInfo(adapterIndex, adapter);
+					break;        // Stop here
+				}
+			}
+		}
+
+		LogHardwareAdapter(desc, featureLevel);
+
+		if (!adapter)
+		{
+			womalog("ERROR: No compatible D3D12 adapter found.\n");
+			return;
+		}
+
 		womalogw(L"\n");
+		*ppAdapter = adapter.Detach();
 		ASSERT(*ppAdapter);
 	}
 
 	// Select the Depth Buffer Format (16, 24, 32, 64, or default...)
 	//----------------------------------------------------------------------------------------------
 	void DX12Class::SelectDepthFormat(UINT depthBits, BOOL fullscreen)
-		//----------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	{
 
 	}
@@ -822,12 +924,15 @@ namespace DirectX {
 		}
 		else
 		{
-			if (WOMA::AppSettings->MSAA_bilinear)
+			if (WOMA::AppSettings->MSAA_bilinear) {
 				womalogauto(TEXT("Antialise: bilinear\n"));
-			else if (WOMA::AppSettings->MSAA_trilinear)
+			}
+			else if (WOMA::AppSettings->MSAA_trilinear) {
 				womalogauto(TEXT("Antialise: trilinear\n"));
-			else
+			}
+			else {
 				womalogauto(TEXT("Antialise: off\n"));
+			}
 		}
 
 		// [*] createSwapChain()
@@ -873,9 +978,9 @@ namespace DirectX {
 			BufferCount, (UINT)BufferCount /*placeholder*/, m_currentFrame);
 
 		// Print addresses of allocators we created:
-		for (UINT i = 0; i < BufferCount; ++i) {
-			womalog(TEXT("[DX12 INIT] m_commandAllocators[%u] = %p"), i, m_commandAllocators[i].Get());
-		}
+		//for (UINT i = 0; i < BufferCount; ++i) {
+		//	womalog(TEXT("[DX12 INIT] m_commandAllocators[%u] = %p"), i, m_commandAllocators[i].Get());
+		//}
 
 
 		// [*] render target view: "Describe" the render target view (RTV) descriptor heap:
@@ -902,8 +1007,6 @@ namespace DirectX {
 
 		m_DsvDescriptorSize = m_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 #endif
-
-
 
 		return true;
 	}
@@ -954,7 +1057,8 @@ namespace DirectX {
 		swapChainDesc.OutputWindow = hwnd;		// Set the handle for the window to render to.
 		swapChainDesc.Windowed = !fullscreen;	// Set to "Fullscreen" or "Windowed Mode":
 
-		swapChainDesc.Flags = (g_AllowResize) ? DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH : 0;
+		//swapChainDesc.Flags = (g_AllowResize) ? DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH : 0;
+		swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
 
 		// Set the scan line ordering and scaling to unspecified:
 		//swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
@@ -1024,7 +1128,7 @@ namespace DirectX {
 #endif
 
 	// ----------------------------------------------------------------------------------------------
-	bool DX12Class::Initialize(float* clearColor) //void D3D12HelloWindow::LoadAssets()
+	bool DX12Class::Initialize(float* clearColor, void* pContext) //void D3D12HelloWindow::LoadAssets()
 	// ----------------------------------------------------------------------------------------------
 	{
 		womalog("DX12Class::Initialize()\n");
@@ -1074,10 +1178,10 @@ namespace DirectX {
 		WaitForGpu();
 	}
 
-	// ----------------------------------------------------------------------------------------------
-	void DX12Class::BeginScene(UINT monitorWindow)
-	// ----------------------------------------------------------------------------------------------
-	{
+// ----------------------------------------------------------------------------------------------
+void DX12Class::BeginScene(UINT monitorWindow)
+// ----------------------------------------------------------------------------------------------
+{
 #if defined _DEBUG && defined USE_VERBOSEFRAMELOGGING
 		UINT64 gpuCompleted = m_fence->GetCompletedValue();
 		womalog(TEXT("[DX12] BeginScene - Frame=%u Alloc=%p GPU=%llu FrameFence=%llu"),
@@ -1087,16 +1191,6 @@ namespace DirectX {
 			m_fenceValues[m_currentFrame]);
 #endif
 
-		// If the GPU hasn't finished the work for this back-buffer (allocator), wait.
-		const UINT64 fenceForThisBackbuffer = m_fenceValues[m_currentFrame];
-		const UINT64 completed = m_fence->GetCompletedValue();
-		if (completed < fenceForThisBackbuffer)
-		{
-			// We must wait for the GPU to finish with this allocator before resetting it.
-			ThrowIfFailed(m_fence->SetEventOnCompletion(fenceForThisBackbuffer, m_fenceEvent));
-			WaitForSingleObjectEx(m_fenceEvent, INFINITE, FALSE);
-		}
-
 		// Reset the allocator and command list for this frame (safe now).
 		ThrowIfFailed(m_commandAllocators[m_currentFrame]->Reset());
 		ThrowIfFailed(m_commandList->Reset(m_commandAllocators[m_currentFrame].Get(), nullptr));
@@ -1105,7 +1199,6 @@ namespace DirectX {
 		m_commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
 			m_renderTargets[m_currentFrame].Get(),
 			D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
-
 
 		// Set the viewport and scissor rect
 		m_commandList->RSSetViewports(1, &m_viewport);
@@ -1133,11 +1226,11 @@ namespace DirectX {
 #if defined USE_DSV
 		ClearDepthBuffer(NULL);
 #endif
-	}
+}
 
 	// ----------------------------------------------------------------------------------------------
     void DirectX::DX12Class::ClearDepthBuffer(void* pContext)
-		// ----------------------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------------------
 	{
 	#if defined USE_DSV
 		// Clear the depth stencil buffer in preparation for rendering the shadow map.
@@ -1146,44 +1239,85 @@ namespace DirectX {
 	}
 
 
-//NOTE: using: USE_DX12_PRESENT_DXGI_1_0
-//NOTE: m_VSYNC_ENABLED is false
+#if defined _DEBUG
+	//#define ENDSCENE_DEBUG_PERFORMANCE //SWITCH: ON/OFF
+#endif
+
 // ----------------------------------------------------------------------------------------------
-	void DX12Class::EndScene(UINT monitorWindow)
+void DX12Class::OnDeviceLost()
 // ----------------------------------------------------------------------------------------------
-	{
-		// Indicate that the "back-buffer" will now be used to present.
+{
+	HRESULT reason = m_device ? m_device->GetDeviceRemovedReason() : S_OK;
+
+	womalog("DX12 Device lost! reason=0x%08X\n", reason);
+
+	WOMA::game_state = ENGINE_RESTART;
+}
+
+// ----------------------------------------------------------------------------------------------
+void DX12Class::EndScene(UINT monitorWindow)
+// ----------------------------------------------------------------------------------------------
+{
+	HRESULT hr;
+		// Indicate that the "back-buffer" will now be used to present
 		m_commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
 			m_renderTargets[m_currentFrame].Get(),
 			D3D12_RESOURCE_STATE_RENDER_TARGET,
 			D3D12_RESOURCE_STATE_PRESENT));
 
-		// Close the command list for this frame.
+		// Close the command list for this frame
 		ThrowIfFailed(m_commandList->Close());
 
-		// Execute command list(s)
+		// Execute command list in queue
 		ID3D12CommandList* ppCommandLists[] = { m_commandList.Get() };
 		m_commandQueue.Get()->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
 
-		// Present (use your existing preprocessor path)
 #if defined USE_DX12_PRESENT_DXGI_1_0
-		HRESULT hr = m_swapChain->Present(WOMA::AppSettings->VSYNC_ENABLED ? 1 : 0, 0);
+		hr = m_swapChain->Present(WOMA::AppSettings->VSYNC_ENABLED ? 1 : 0, 0);
 #else
 		DXGI_PRESENT_PARAMETERS PresentDesc = { 0 };
 		UINT Flags = DXGI_PRESENT_DO_NOT_WAIT;
-		HRESULT hr = m_swapChain->Present1(m_VSYNC_ENABLED, Flags, &PresentDesc);
+		hr = m_swapChain->Present1(m_VSYNC_ENABLED, Flags, &PresentDesc);
 #endif
 
-		// Device removed / reset handling
-		if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
+		if (hr == DXGI_STATUS_OCCLUDED)
+		{
+			if (m_VSYNC_ENABLED)
+				MoveToNextFrameAndWaitVSYNC();
+			else
+				MoveToNextFrame();
+
+			Sleep(10);
 			return;
+		}
+
+		if (hr == DXGI_ERROR_WAS_STILL_DRAWING)
+		{
+			// GPU ainda não terminou; tentar novamente na próxima frame.
+			MoveToNextFrame();
+			return;
+		}
+
+		// Tratamento de Erros Críticos (Idêntico ao DX11)
+		if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
+		{
+			// No DX12, deve ler m_device->GetDeviceRemovedReason() para saber o motivo exato do crash
+			OnDeviceLost();
+			return;
+		}
+		else if (FAILED(hr))
+		{
+			WomaFatalException("FATAL: DX12 swapChain->Present() error!");
+			return;
+		}
 
 		// Advance frame: uses the ring-buffer fence system (no unconditional full-frame stall)
 		if (m_VSYNC_ENABLED)
 			MoveToNextFrameAndWaitVSYNC();
 		else
 			MoveToNextFrame();
-	}
+
+}
 
 	// ----------------------------------------------------------------------------------------------
 	// Wait until GPU finishes all work for the current frame
@@ -1208,9 +1342,10 @@ namespace DirectX {
 	// Move to next frame (called at end of EndScene())
 	// ----------------------------------------------------------------------------------------------
 
-// ----------------------------------------------------------------------------------------------
+
+	// ----------------------------------------------------------------------------------------------
 	void DX12Class::MoveToNextFrame()
-		// ----------------------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------------------
 	{
 		const UINT currentFrame = m_currentFrame;
 
@@ -1233,9 +1368,6 @@ namespace DirectX {
 
 		if (completed < fenceForNextFrame)
 		{
-			// Log (optional)
-			// womalog(TEXT("[DX12] Waiting on fence %llu (GPU=%llu) for frame %u\n"), fenceForNextFrame, completed, m_currentFrame);
-
 			ThrowIfFailed(m_fence->SetEventOnCompletion(fenceForNextFrame, m_fenceEvent));
 			WaitForSingleObjectEx(m_fenceEvent, INFINITE, FALSE);
 		}
@@ -1408,7 +1540,6 @@ namespace DirectX {
 		m_scissorRect.top = 0;
 		m_scissorRect.right = static_cast<LONG>(screenWidth);
 		m_scissorRect.bottom = static_cast<LONG>(screenHeight);
-
 	}
 
 	//Init Step: 6 [Create] render target views (RTVs).
@@ -1442,9 +1573,10 @@ namespace DirectX {
 	// Bind the render target view and depth stencil buffer to the output render pipeline.
 	// ----------------------------------------------------------------------------------------------
 	void DX12Class::SetBackBufferRenderTarget()
-		// ----------------------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------------------
 	{
 	}
+
 #if defined USE_RASTERIZER_STATE
 	// ----------------------------------------------------------------------------------------------
     void DirectX::DX12Class::SetRasterizerState(void* pContext, UINT CullMode, UINT fillMode)
@@ -1473,16 +1605,12 @@ namespace DirectX {
 		m_deviceContext->OMSetBlendState(m_alphaBlendState2, blendFactor, 0xffffffff);
 	}
 
-// MORE INTO: http://msdn.microsoft.com/en-us/library/windows/desktop/ff476110%28v=vs.85%29.aspx
-// ----------------------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------------------
 	bool DX12Class::createSetDepthStencilState(bool depthTestEnabled)
 		// ----------------------------------------------------------------------------------------------
 	{
 		return true;
 	}
-
-
-
 
 
 #if defined USE_ALPHA_BLENDING
@@ -1513,7 +1641,7 @@ namespace DirectX {
 	//Generally the best way to use these functions is first do all your 3D rendering, then turn the Z buffer off and do your 
 	//2D rendering, and then turn the Z buffer on again.
 
-	static bool g_Zbuffer = false;
+	//static bool g_Zbuffer = false;
 	// ----------------------------------------------------------------------------------------------
     void DirectX::DX12Class::TurnZBufferOn(void* pContext)
 		// ----------------------------------------------------------------------------------------------
@@ -1555,7 +1683,7 @@ namespace DirectX {
 		// We will need to keep a copy of this matrix so that we can pass it to our shaders that will be used to render our scenes. 
 
 		// Create the projection matrix:
-		UINT num_monitors = (UINT)SystemHandle->windowsArray.size();
+		UINT num_monitors = (UINT)WOMA::windowsToRenderArray.size();
 
 		// Create the projection matrix:
 		fieldOfView = (float)(PI / 4.0f) /				// Or... 90deg => fieldOfView = (90 / 2) * 0,0174532925f;
@@ -1597,10 +1725,10 @@ namespace DirectX {
 		DX12m_Camera2D.SetPosition(0.0f, 0.0f, -1.0f);	// NOTE: On 2D This values have always these values!
 
 		// Calculate: 2D ViewMatrix
-		DX12m_Camera2D.CalculateViewMatrix();			// ((OpenGLClass*)m_Driver)->m_Camera->Render(); || ((DX_CLASS*)m_Driver)->m_Camera->Render();
+		DX12m_Camera2D.CalculateViewMatrix();			// ((OpenGLClass*)m_Driver)->DX_Camera->Render(); || ((DX_CLASS*)m_Driver)->DX_Camera->Render();
 		DX12m_Camera2D.Use2DViewMatrix();				// Get the view from the camera and 2D objects.
 
-		DXsystemHandle->m_Camera->m_viewmatrix2D = DX12m_Camera2D.m_viewMatrix;
+		DX_Camera->m_viewmatrix2D = DX12m_Camera2D.m_viewMatrix;
 	}
 
 	// TODO: go to Virtual Class?
@@ -1608,7 +1736,7 @@ namespace DirectX {
 	void DX12Class::Initialize2Dand3DCamera()
 		// ----------------------------------------------------------------------------------------------
 	{
-		if (DXsystemHandle->m_Camera) {
+		if (DX_Camera) {
 
 			// SETUP 2D Camera
 #if defined USE_VIEW2D_SPRITES // 26
@@ -1616,23 +1744,23 @@ namespace DirectX {
 #endif
 
 			// SETUP 3D Normal Camera:
-			DXsystemHandle->m_Camera->SetPosition(WOMA::AppSettings->INIT_CAMX, WOMA::AppSettings->INIT_CAMY, WOMA::AppSettings->INIT_CAMZ);
-			DXsystemHandle->m_Camera->SetRotation(WOMA::AppSettings->INIT_ROTX, WOMA::AppSettings->INIT_ROTY, WOMA::AppSettings->INIT_ROTZ);
-			DXsystemHandle->m_Camera->CalculateViewMatrix();
+			DX_Camera->SetPosition(WOMA::AppSettings->INIT_CAMX, WOMA::AppSettings->INIT_CAMY, WOMA::AppSettings->INIT_CAMZ);
+			DX_Camera->SetRotation(WOMA::AppSettings->INIT_ROTX, WOMA::AppSettings->INIT_ROTY, WOMA::AppSettings->INIT_ROTZ);
+			DX_Camera->CalculateViewMatrix();
 		}
 
 		// SETUP 3D Sky Camera:
 #if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28
-		if (!DXsystemHandle->m_CameraSKY) {
-			DXsystemHandle->m_CameraSKY = NEW DXcameraClass; // DX Implementation
-			IF_NOT_THROW_EXCEPTION(DXsystemHandle->m_CameraSKY);
+		if (!DX_CameraSKY) {
+			DX_CameraSKY = NEW DXcameraClass; // DX Implementation
+			IF_NOT_THROW_EXCEPTION(DX_CameraSKY);
 		}
 
-		DXsystemHandle->m_CameraSKY->SetPosition(0.0f, 0.0f, 0.0f);
-		DXsystemHandle->m_CameraSKY->SetRotation(WOMA::AppSettings->INIT_ROTX, WOMA::AppSettings->INIT_ROTY,
+		DX_CameraSKY->SetPosition(0.0f, 0.0f, 0.0f);
+		DX_CameraSKY->SetRotation(WOMA::AppSettings->INIT_ROTX, WOMA::AppSettings->INIT_ROTY,
 			WOMA::AppSettings->INIT_ROTZ);
 
-		DXsystemHandle->m_CameraSKY->CalculateViewMatrix();
+		DX_CameraSKY->CalculateViewMatrix();
 #endif
 	}
 
@@ -1651,16 +1779,16 @@ namespace DirectX {
 			default:
 			case PROJECTION_PERSPECTIVE:
 				if (camera == CAMERA_NORMAL)
-					return &DXsystemHandle->m_Camera->m_viewMatrix;
+					return &DX_Camera->m_viewMatrix;
 #if defined USE_SKY_CAMERA_DOME && DX_ENGINE_LEVEL >= 28
 				else
-					return &DXsystemHandle->m_CameraSKY->m_viewMatrix;
+					return &DX_CameraSKY->m_viewMatrix;
 #endif
 				break;
 
 #if defined CLIENT_SCENE_TEXT || defined USE_VIEW2D_SPRITES //26
 			case PROJECTION_ORTHOGRAPH:
-				return &DXsystemHandle->m_Camera->m_viewmatrix2D;
+				return &DX_Camera->m_viewmatrix2D;
 				break;
 #endif
 

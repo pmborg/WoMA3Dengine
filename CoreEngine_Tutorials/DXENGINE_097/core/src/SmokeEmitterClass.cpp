@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------------------
 // Filename: SmokeEmitterClass.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -23,7 +23,10 @@
 #include "SystemClass.h"
 #include "vertexTypes.h"
 #include "mem_leak.h" // NEW
+
+#if defined WINDOWS_PLATFORM
 #include "DXmodelClass.h"
+#endif
 
 SmokeEmitterClass smokeEmitterClass;
 
@@ -40,8 +43,7 @@ SmokeEmitterClass::~SmokeEmitterClass()
 
 void SmokeEmitterClass::Shutdown()
 {
-	if (SystemHandle && SystemHandle->m_Application)
-		SAFE_DELETE(SystemHandle->m_Application->m_smokeModel);
+	SAFE_DELETE(g_smokeModel);
 }
 
 void SmokeEmitterClass::Initialize(void* ctx, void* driver, const char* textureFile, Vector3 worldPos, float radius)
@@ -52,7 +54,7 @@ void SmokeEmitterClass::Initialize(void* ctx, void* driver, const char* textureF
 	ID3D11DeviceContext* pContext11 = (ID3D11DeviceContext*)ctx;
 	m_Driver_ = (DirectX::DX11Class*)driver;
 
-	//VirtualModelClass* m_smokeModel = SystemHandle->m_Application->m_smokeModel;
+	//VirtualModelClass* m_smokeModel = m_smokeModel;
 	std::vector<SmokeVertexType> SmokeVertexModel;
 	SmokeVertexType vertex;
 
@@ -66,14 +68,14 @@ void SmokeEmitterClass::Initialize(void* ctx, void* driver, const char* textureF
 
 	std::vector<UINT> indexList = { 0,2,1,  1,2,3 };
 
-	if (WOMA::AppSettings->DRIVER == DRIVER_GL3) { CREATE_MODELGL3_IF_NOT_EXCEPTION(SystemHandle->m_Application->m_smokeModel, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
-	if (WOMA::AppSettings->DRIVER != DRIVER_GL3) { CREATE_MODELDX_IF_NOT_EXCEPTION(SystemHandle->m_Application->m_smokeModel, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
-	ASSERT(SystemHandle->m_Application->m_smokeModel->LoadSmoke(pContext11, TEXT("Smoke"),
+	if (WOMA::AppSettings->DRIVER == DRIVER_GL3) { CREATE_MODELGL3_IF_NOT_EXCEPTION(g_smokeModel, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
+	if (WOMA::AppSettings->DRIVER != DRIVER_GL3) { CREATE_MODELDX_IF_NOT_EXCEPTION(g_smokeModel, I_AM_2D, I_HAVE_NO_SHADOWS, I_HAVE_NO_SHADOWS); }
+	ASSERT(g_smokeModel->LoadSmoke(pContext11, TEXT("Smoke"),
 		m_Driver_, SHADER_USE_SMOKE,
 		&smoke_textures, &SmokeVertexModel, &indexList));
 
-	SystemHandle->m_Application->m_smokeModel->translation(worldPos.x, worldPos.y, worldPos.z);
-	SystemHandle->m_Application->m_smokeModel->scale(3,3,3);
+	g_smokeModel->translation(worldPos.x, worldPos.y, worldPos.z);
+	g_smokeModel->scale(3,3,3);
 }
 
 void SmokeEmitterClass::Update(float dt)
@@ -120,8 +122,10 @@ void SmokeEmitterClass::Update(float dt)
 void SmokeEmitterClass::Render(void* pContext, float fadeLight)
 {
 	static VirtualModelClass* m_smokeModel = nullptr;
-	if (!m_smokeModel)
-		m_smokeModel = SystemHandle->m_Application->m_smokeModel;
+	if (!g_smokeModel)
+		return;
+	else
+		m_smokeModel = g_smokeModel;
 
 	Vector3 camPos(sort_cameraX, sort_cameraY, sort_cameraZ);
 
@@ -153,7 +157,7 @@ void SmokeEmitterClass::Render(void* pContext, float fadeLight)
 		m_smokeModel->rotateY(yaw);
 
 		m_smokeModel->translation(p.pos.x, p.pos.y, p.pos.z);
-		m_smokeModel->SetAlpha(p.life);
+		((DXmodelClass*)m_smokeModel)->SetAlpha(p.life);
 		m_smokeModel->Render(pContext);
 	}
 }

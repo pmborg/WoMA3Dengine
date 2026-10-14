@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------------------------------------
 // Filename: 7ProcessorInfo.cpp
 // --------------------------------------------------------------------------------------------
-// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2025
+// World of Middle Age (WoMA) - 3D Multi-Platform ENGINE 2026
 // --------------------------------------------------------------------------------------------
-// Copyright(C) 2013 - 2025 Pedro Miguel Borges [pmborg@yahoo.com]
+// Copyright(C) 2013 - 2026 Pedro Miguel Borges [pmborg@yahoo.com]
 //
 // This file is part of the WorldOfMiddleAge project.
 //
@@ -16,10 +16,10 @@
 // --------------------------------------------------------------------------------------------
 // PURPOSE:
 // --------------------------------------------------------------------------------------------
-//WomaIntegrityCheck = 1234525217;
+//WomaIntegrityCheck = 1234526920;
 
 #include "OSengine.h" //#include "WinSystemClass.h"
-#include "OSmain_dir.h"
+
 #include "standard_platform.h"
 // --------------------------------------------------------------------------------------------
 // Includes:
@@ -120,7 +120,7 @@ char* processorSetting(char* setting)
 ProcessorInfo::ProcessorInfo()
 {
 	CLASSLOADER();
-	WomaIntegrityCheck = 1234525217;
+
 
     processorName[0] = 0;
     processorId[0] = 0;
